@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class Mqtt5ClientDecoder extends ByteToMessageDecoder {
 
-    private final Mqtt5ConnackDecoder connackDecoder;
+    private final Mqtt5ConnAckDecoder connAckDecoder;
     private final Mqtt5PublishDecoder publishDecoder;
     private final Mqtt5PubAckDecoder pubAckDecoder;
     private final Mqtt5PubRecDecoder pubRecDecoder;
@@ -29,13 +29,13 @@ public class Mqtt5ClientDecoder extends ByteToMessageDecoder {
 
     @Inject
     public Mqtt5ClientDecoder(
-            final Mqtt5ConnackDecoder connackDecoder, final Mqtt5PublishDecoder publishDecoder,
+            final Mqtt5ConnAckDecoder connAckDecoder, final Mqtt5PublishDecoder publishDecoder,
             final Mqtt5PubAckDecoder pubAckDecoder, final Mqtt5PubRecDecoder pubRecDecoder,
             final Mqtt5PubRelDecoder pubRelDecoder, final Mqtt5PubCompDecoder pubCompDecoder,
             final Mqtt5SubAckDecoder subAckDecoder, final Mqtt5UnsubAckDecoder unsubAckDecoder,
             final Mqtt5PingRespDecoder pingRespDecoder, final Mqtt5DisconnectDecoder disconnectDecoder,
             final Mqtt5AuthDecoder authDecoder) {
-        this.connackDecoder = connackDecoder;
+        this.connAckDecoder = connAckDecoder;
         this.publishDecoder = publishDecoder;
         this.pubAckDecoder = pubAckDecoder;
         this.pubRecDecoder = pubRecDecoder;
@@ -91,7 +91,7 @@ public class Mqtt5ClientDecoder extends ByteToMessageDecoder {
                 in.clear();
                 break;
             case CONNACK:
-                message = connackDecoder.decode(flags, remainingLength, messageBuffer);
+                message = connAckDecoder.decode(flags, remainingLength, messageBuffer);
                 break;
             case PUBLISH:
                 message = publishDecoder.decode(flags, remainingLength, messageBuffer);
