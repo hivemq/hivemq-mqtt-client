@@ -19,7 +19,7 @@ import static org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckProperty.*;
  * @author Silvio Giebl
  */
 @Singleton
-public class Mqtt5ConnackDecoder implements Mqtt5MessageDecoder {
+public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
 
     private static final int FLAGS = 0;
     private static final int MIN_REMAINING_LENGTH = 0;
@@ -39,16 +39,16 @@ public class Mqtt5ConnackDecoder implements Mqtt5MessageDecoder {
             return null;
         }
 
-        final short connackFlags = in.readUnsignedByte();
-        if ((connackFlags & 0xFE) != 0) {
+        final short connAckFlags = in.readUnsignedByte();
+        if ((connAckFlags & 0xFE) != 0) {
             // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
             in.clear();
             return null;
         }
-        final boolean sessionPresent = (connackFlags & 0x1) != 0;
+        final boolean sessionPresent = (connAckFlags & 0x1) != 0;
 
-        final Mqtt5ConnAckReasonCode connackReasonCode = Mqtt5ConnAckReasonCode.fromCode(in.readUnsignedByte());
-        if (connackReasonCode == null) {
+        final Mqtt5ConnAckReasonCode connAckReasonCode = Mqtt5ConnAckReasonCode.fromCode(in.readUnsignedByte());
+        if (connAckReasonCode == null) {
             // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
             in.clear();
             return null;
@@ -366,12 +366,6 @@ public class Mqtt5ConnackDecoder implements Mqtt5MessageDecoder {
                     in.clear();
                     return null;
             }
-        }
-
-        if (in.isReadable()) {
-            // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-            in.clear();
-            return null;
         }
 
         return null;
