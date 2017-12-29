@@ -32,4 +32,8 @@ public enum Mqtt5MessageType {
         return values()[code];
     }
 
+    public int getCode() {
+        return ordinal();
+    }
+
 }
