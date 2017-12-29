@@ -50,7 +50,7 @@ public enum Mqtt5ConnAckReasonCode {
     private static final int ERROR_CODE_MIN = UNSPECIFIED_ERROR.code;
     private static final int ERROR_CODE_MAX = CONNECTION_RATE_EXCEEDED.code;
     private static final Mqtt5ConnAckReasonCode[] ERROR_CODE_LOOKUP =
-            new Mqtt5ConnAckReasonCode[ERROR_CODE_MAX - ERROR_CODE_MIN];
+            new Mqtt5ConnAckReasonCode[ERROR_CODE_MAX - ERROR_CODE_MIN + 1];
 
     static {
         for (final Mqtt5ConnAckReasonCode reasonCode : values()) {

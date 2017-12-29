@@ -58,7 +58,7 @@ public enum Mqtt5DisconnectReasonCode {
     private static final int ERROR_CODE_MIN = UNSPECIFIED_ERROR.code;
     private static final int ERROR_CODE_MAX = WILDCARD_SUBSCRIPTION_NOT_SUPPORTED.code;
     private static final Mqtt5DisconnectReasonCode[] ERROR_CODE_LOOKUP =
-            new Mqtt5DisconnectReasonCode[ERROR_CODE_MAX - ERROR_CODE_MIN];
+            new Mqtt5DisconnectReasonCode[ERROR_CODE_MAX - ERROR_CODE_MIN + 1];
 
     static {
         for (final Mqtt5DisconnectReasonCode reasonCode : values()) {
