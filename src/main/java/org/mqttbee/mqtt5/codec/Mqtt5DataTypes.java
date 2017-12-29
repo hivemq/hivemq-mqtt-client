@@ -19,7 +19,7 @@ public class Mqtt5DataTypes {
     private static final byte VARIABLE_BYTE_INTEGER_VALUE_MASK = (byte) 0x7f;
     private static final byte VARIABLE_BYTE_INTEGER_MAX_SHIFT = (byte) (7 * 3);
     private static final int VARIABLE_BYTE_INTEGER_MAX_VALUE = (1 << (7 * 4)) - 1;
-    private static final Charset UTF8_STRING_CHARSET = Charset.forName("UTF-8");
+    public static final Charset UTF8_STRING_CHARSET = Charset.forName("UTF-8");
     private static final Pattern UTF8_STRING_MUST_NOT_CHARACTERS_PATTERN = Pattern.compile("\\u0000|[\\uD800-\\uDFFF]");
     private static final Pattern UTF8_STRING_SHOULD_NOT_CHARACTERS_PATTERN =
             Pattern.compile("[\\u0001-\\u001F]|[\\u007F-\\u009F]|[\\uFDD0-\\uFDEF]" +
@@ -87,11 +87,11 @@ public class Mqtt5DataTypes {
 
     @Nullable
     public static String decodeUTF8String(@NotNull final ByteBuf byteBuf) {
-        final byte[] byteArray = decodeBinaryData(byteBuf);
-        if (byteArray == null) {
+        final byte[] bytes = decodeBinaryData(byteBuf);
+        if (bytes == null) {
             return null;
         }
-        final String string = new String(byteArray, UTF8_STRING_CHARSET);
+        final String string = new String(bytes, UTF8_STRING_CHARSET);
         if (checkUTF8StringMustNotCharacters(string)) {
             return null;
         }
