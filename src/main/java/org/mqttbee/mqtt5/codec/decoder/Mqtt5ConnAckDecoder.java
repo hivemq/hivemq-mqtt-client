@@ -22,12 +22,12 @@ import static org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckProperty.*;
 @Singleton
 public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
 
-    private static final int FLAGS = 0;
-    private static final int MIN_REMAINING_LENGTH = 0;
+    private static final int FLAGS = 0b0000;
+    private static final int MIN_REMAINING_LENGTH = 3;
 
     @Override
     @Nullable
-    public Mqtt5ConnAck decode(final int flags, final int remainingLength, @NotNull final ByteBuf in) {
+    public Mqtt5ConnAck decode(final int flags, @NotNull final ByteBuf in) {
         if (flags != FLAGS) {
             // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
             in.clear();

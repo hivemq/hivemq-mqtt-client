@@ -91,49 +91,49 @@ public class Mqtt5ClientDecoder extends ByteToMessageDecoder {
                 in.clear();
                 break;
             case CONNACK:
-                message = connAckDecoder.decode(flags, remainingLength, messageBuffer);
+                message = connAckDecoder.decode(flags, messageBuffer);
                 break;
             case PUBLISH:
-                message = publishDecoder.decode(flags, remainingLength, messageBuffer);
+                message = publishDecoder.decode(flags, messageBuffer);
                 break;
             case PUBACK:
-                message = pubAckDecoder.decode(flags, remainingLength, messageBuffer);
+                message = pubAckDecoder.decode(flags, messageBuffer);
                 break;
             case PUBREC:
-                message = pubRecDecoder.decode(flags, remainingLength, messageBuffer);
+                message = pubRecDecoder.decode(flags, messageBuffer);
                 break;
             case PUBREL:
-                message = pubRelDecoder.decode(flags, remainingLength, messageBuffer);
+                message = pubRelDecoder.decode(flags, messageBuffer);
                 break;
             case PUBCOMP:
-                message = pubCompDecoder.decode(flags, remainingLength, messageBuffer);
+                message = pubCompDecoder.decode(flags, messageBuffer);
                 break;
             case SUBSCRIBE:
                 // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
                 in.clear();
                 return;
             case SUBACK:
-                message = subAckDecoder.decode(flags, remainingLength, messageBuffer);
+                message = subAckDecoder.decode(flags, messageBuffer);
                 break;
             case UNSUBSCRIBE:
                 // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
                 in.clear();
                 return;
             case UNSUBACK:
-                message = unsubAckDecoder.decode(flags, remainingLength, messageBuffer);
+                message = unsubAckDecoder.decode(flags, messageBuffer);
                 break;
             case PINGREQ:
                 // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
                 in.clear();
                 return;
             case PINGRESP:
-                message = pingRespDecoder.decode(flags, remainingLength, messageBuffer);
+                message = pingRespDecoder.decode(flags, messageBuffer);
                 break;
             case DISCONNECT:
-                message = disconnectDecoder.decode(flags, remainingLength, messageBuffer);
+                message = disconnectDecoder.decode(flags, messageBuffer);
                 break;
             case AUTH:
-                message = authDecoder.decode(flags, remainingLength, messageBuffer);
+                message = authDecoder.decode(flags, messageBuffer);
                 break;
         }
 

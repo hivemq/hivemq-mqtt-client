@@ -1,7 +1,7 @@
 package org.mqttbee.mqtt5.codec.decoder;
 
 import io.netty.buffer.ByteBuf;
-import org.mqttbee.mqtt5.message.Mqtt5Message;
+import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt5.message.ping.Mqtt5PingResp;
 
 import javax.inject.Singleton;
@@ -12,8 +12,16 @@ import javax.inject.Singleton;
 @Singleton
 public class Mqtt5PingRespDecoder implements Mqtt5MessageDecoder {
 
+    private static final int FLAGS = 0b0000;
+
     @Override
-    public Mqtt5PingResp decode(final int flags, final int remainingLength, final ByteBuf in) {
+    public Mqtt5PingResp decode(final int flags, @NotNull final ByteBuf in) {
+        if (flags != FLAGS) {
+            // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
+            in.clear();
+            return null;
+        }
+
         return null;
     }
 
