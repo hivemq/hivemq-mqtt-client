@@ -17,7 +17,7 @@ public class Mqtt5PubRelDecoder implements Mqtt5MessageDecoder {
 
     @Override
     @Nullable
-    public Mqtt5PubRel decode(final int flags, final int remainingLength, @NotNull final ByteBuf in) {
+    public Mqtt5PubRel decode(final int flags, @NotNull final ByteBuf in) {
         if (flags != FLAGS) {
             // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
             in.clear();

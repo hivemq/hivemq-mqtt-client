@@ -11,6 +11,6 @@ import org.mqttbee.mqtt5.message.Mqtt5Message;
 public interface Mqtt5MessageDecoder {
 
     @Nullable
-    Mqtt5Message decode(int flags, int remainingLength, @NotNull ByteBuf in);
+    Mqtt5Message decode(int flags, @NotNull ByteBuf in);
 
 }
