@@ -3,7 +3,6 @@ package org.mqttbee.mqtt5.codec.decoder;
 import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.mqtt5.message.Mqtt5Message;
 import org.mqttbee.mqtt5.message.pubrel.Mqtt5PubRel;
 
 import javax.inject.Singleton;
@@ -14,7 +13,7 @@ import javax.inject.Singleton;
 @Singleton
 public class Mqtt5PubRelDecoder implements Mqtt5MessageDecoder {
 
-    private static final int FLAGS = 2;
+    private static final int FLAGS = 0b0010;
 
     @Override
     @Nullable

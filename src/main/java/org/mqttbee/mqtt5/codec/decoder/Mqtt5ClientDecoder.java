@@ -75,7 +75,7 @@ public class Mqtt5ClientDecoder extends ByteToMessageDecoder {
             return;
         }
 
-        final int messageType = (fixedHeader & 0xF0) >> 4;
+        final int messageType = fixedHeader >> 4;
         final int flags = fixedHeader & 0xF;
         final ByteBuf messageBuffer = in.readSlice(remainingLength);
         in.markReaderIndex();
