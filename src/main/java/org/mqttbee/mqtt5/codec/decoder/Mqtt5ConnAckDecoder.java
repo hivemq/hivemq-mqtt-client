@@ -4,6 +4,8 @@ import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
+import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifier;
+import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAck;
 import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckReasonCode;
@@ -25,8 +27,8 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
     private static final int FLAGS = 0b0000;
     private static final int MIN_REMAINING_LENGTH = 3;
 
-    @Override
     @Nullable
+    @Override
     public Mqtt5ConnAck decode(final int flags, @NotNull final ByteBuf in) {
         if (flags != FLAGS) {
             // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
@@ -72,10 +74,10 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
         }
 
         long sessionExpiryInterval = SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
-        String assignedClientIdentifier = CLIENT_IDENTIFIER_FROM_CONNECT;
+        Mqtt5ClientIdentifier assignedClientIdentifier = CLIENT_IDENTIFIER_FROM_CONNECT;
         int serverKeepAlive = KEEP_ALIVE_FROM_CONNECT;
 
-        String authenticationMethod = null;
+        Mqtt5UTF8String authenticationMethod = null;
         byte[] authenticationData = null;
 
         int receiveMaximum = DEFAULT_RECEIVE_MAXIMUM;
@@ -95,10 +97,10 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
         boolean sharedSubscriptionAvailable = DEFAULT_SHARED_SUBSCRIPTION_AVAILABLE;
         boolean sharedSubscriptionAvailablePresent = false;
 
-        String responseInformation = null;
-        String serverReference = null;
-        String reasonString = null;
-        List<Mqtt5UserProperty> userProperties = null;
+        Mqtt5UTF8String responseInformation = null;
+        Mqtt5UTF8String serverReference = null;
+        Mqtt5UTF8String reasonString = null;
+        List<Mqtt5UserProperty> userProperties = Mqtt5UserProperty.NO_USER_PROPERTIES;
 
         boolean authPresent = false;
         boolean restrictionsPresent = false;
@@ -134,7 +136,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                         in.clear();
                         return null;
                     }
-                    assignedClientIdentifier = Mqtt5DataTypes.decodeUTF8String(in);
+                    assignedClientIdentifier = Mqtt5ClientIdentifier.from(in);
                     if (assignedClientIdentifier == null) {
                         // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
                         in.clear();
@@ -160,7 +162,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                         in.clear();
                         return null;
                     }
-                    authenticationMethod = Mqtt5DataTypes.decodeUTF8String(in);
+                    authenticationMethod = Mqtt5UTF8String.from(in);
                     if (authenticationMethod == null) {
                         // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
                         in.clear();
@@ -347,7 +349,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                         in.clear();
                         return null;
                     }
-                    responseInformation = Mqtt5DataTypes.decodeUTF8String(in);
+                    responseInformation = Mqtt5UTF8String.from(in);
                     if (responseInformation == null) {
                         // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
                         in.clear();
@@ -360,7 +362,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                         in.clear();
                         return null;
                     }
-                    serverReference = Mqtt5DataTypes.decodeUTF8String(in);
+                    serverReference = Mqtt5UTF8String.from(in);
                     if (serverReference == null) {
                         // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
                         in.clear();
@@ -373,7 +375,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                         in.clear();
                         return null;
                     }
-                    reasonString = Mqtt5DataTypes.decodeUTF8String(in);
+                    reasonString = Mqtt5UTF8String.from(in);
                     if (reasonString == null) {
                         // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
                         in.clear();
@@ -381,16 +383,16 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                     }
                     break;
                 case USER_PROPERTY:
-                    if (userProperties == null) {
+                    if (userProperties == Mqtt5UserProperty.NO_USER_PROPERTIES) {
                         userProperties = new LinkedList<>();
                     }
-                    final String userPropertyName = Mqtt5DataTypes.decodeUTF8String(in);
+                    final Mqtt5UTF8String userPropertyName = Mqtt5UTF8String.from(in);
                     if (userPropertyName == null) {
                         // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
                         in.clear();
                         return null;
                     }
-                    final String userPropertyValue = Mqtt5DataTypes.decodeUTF8String(in);
+                    final Mqtt5UTF8String userPropertyValue = Mqtt5UTF8String.from(in);
                     if (userPropertyValue == null) {
                         // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
                         in.clear();
@@ -405,7 +407,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
             }
         }
 
-        Mqtt5ConnAck.Auth auth = Mqtt5ConnAck.Auth.DEFAULT;
+        Mqtt5ConnAck.Auth auth = Mqtt5ConnAck.Auth.DEFAULT_NO_AUTH;
         if (authPresent) {
             auth = new Mqtt5ConnAck.Auth(authenticationMethod, authenticationData);
         }

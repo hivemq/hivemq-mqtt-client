@@ -5,17 +5,19 @@ package org.mqttbee.mqtt5.message.publish;
  */
 public enum Mqtt5PayloadFormatIndicator {
 
-    UNSPECIFIED(0),
-    UTF_8(1);
+    UNSPECIFIED,
+    UTF_8;
 
-    private final int value;
-
-    Mqtt5PayloadFormatIndicator(final int value) {
-        this.value = value;
+    public int getCode() {
+        return ordinal();
     }
 
-    public int getValue() {
-        return value;
+    public Mqtt5PayloadFormatIndicator fromCode(final int code) {
+        final Mqtt5PayloadFormatIndicator[] values = values();
+        if (code < 0 || code >= values.length) {
+            throw new IllegalArgumentException("not a MQTT 5 payload format indicator code");
+        }
+        return values[code];
     }
 
 }
