@@ -1,6 +1,8 @@
 package org.mqttbee.mqtt5.message.subscribe;
 
+import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt5.message.Mqtt5Message;
+import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 
 /**
  * @author Silvio Giebl
@@ -21,5 +23,11 @@ public class Mqtt5Subscribe implements Mqtt5Message {
 //        private final Mqtt5RetainHandling retainHandling;
 //
 //    }
+
+    @NotNull
+    @Override
+    public Mqtt5MessageType getType() {
+        return Mqtt5MessageType.SUBSCRIBE;
+    }
 
 }

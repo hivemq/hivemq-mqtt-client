@@ -5,18 +5,20 @@ package org.mqttbee.mqtt5.message;
  */
 public enum Mqtt5QoS {
 
-    AT_MOST_ONCE(0),
-    AT_LEAST_ONCE(1),
-    EXACTLY_ONCE(2);
+    AT_MOST_ONCE,
+    AT_LEAST_ONCE,
+    EXACTLY_ONCE;
 
-    private final int value;
-
-    Mqtt5QoS(final int value) {
-        this.value = value;
+    public int getCode() {
+        return ordinal();
     }
 
-    public int getValue() {
-        return value;
+    public static Mqtt5QoS fromCode(final int code) {
+        final Mqtt5QoS[] values = values();
+        if (code < 0 || code >= values.length) {
+            throw new IllegalArgumentException("not a MQTT 5 QoS code");
+        }
+        return values[code];
     }
 
 }

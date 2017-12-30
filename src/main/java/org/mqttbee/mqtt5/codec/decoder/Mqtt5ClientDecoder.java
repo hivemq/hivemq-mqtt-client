@@ -3,9 +3,9 @@ package org.mqttbee.mqtt5.codec.decoder;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
+import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.Mqtt5Message;
-import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -15,37 +15,11 @@ import java.util.List;
  */
 public class Mqtt5ClientDecoder extends ByteToMessageDecoder {
 
-    private final Mqtt5ConnAckDecoder connAckDecoder;
-    private final Mqtt5PublishDecoder publishDecoder;
-    private final Mqtt5PubAckDecoder pubAckDecoder;
-    private final Mqtt5PubRecDecoder pubRecDecoder;
-    private final Mqtt5PubRelDecoder pubRelDecoder;
-    private final Mqtt5PubCompDecoder pubCompDecoder;
-    private final Mqtt5SubAckDecoder subAckDecoder;
-    private final Mqtt5UnsubAckDecoder unsubAckDecoder;
-    private final Mqtt5PingRespDecoder pingRespDecoder;
-    private final Mqtt5DisconnectDecoder disconnectDecoder;
-    private final Mqtt5AuthDecoder authDecoder;
+    private final Mqtt5ClientMessageDecoders decoders;
 
     @Inject
-    public Mqtt5ClientDecoder(
-            final Mqtt5ConnAckDecoder connAckDecoder, final Mqtt5PublishDecoder publishDecoder,
-            final Mqtt5PubAckDecoder pubAckDecoder, final Mqtt5PubRecDecoder pubRecDecoder,
-            final Mqtt5PubRelDecoder pubRelDecoder, final Mqtt5PubCompDecoder pubCompDecoder,
-            final Mqtt5SubAckDecoder subAckDecoder, final Mqtt5UnsubAckDecoder unsubAckDecoder,
-            final Mqtt5PingRespDecoder pingRespDecoder, final Mqtt5DisconnectDecoder disconnectDecoder,
-            final Mqtt5AuthDecoder authDecoder) {
-        this.connAckDecoder = connAckDecoder;
-        this.publishDecoder = publishDecoder;
-        this.pubAckDecoder = pubAckDecoder;
-        this.pubRecDecoder = pubRecDecoder;
-        this.pubRelDecoder = pubRelDecoder;
-        this.pubCompDecoder = pubCompDecoder;
-        this.subAckDecoder = subAckDecoder;
-        this.unsubAckDecoder = unsubAckDecoder;
-        this.pingRespDecoder = pingRespDecoder;
-        this.disconnectDecoder = disconnectDecoder;
-        this.authDecoder = authDecoder;
+    public Mqtt5ClientDecoder(final Mqtt5ClientMessageDecoders decoders) {
+        this.decoders = decoders;
     }
 
     @Override
@@ -54,6 +28,7 @@ public class Mqtt5ClientDecoder extends ByteToMessageDecoder {
             return;
         }
         in.markReaderIndex();
+        final int readerIndexBeforeFixedHeader = in.readerIndex();
 
         final byte fixedHeader = in.readByte();
         final int remainingLength = Mqtt5DataTypes.decodeVariableByteInteger(in);
@@ -70,6 +45,17 @@ public class Mqtt5ClientDecoder extends ByteToMessageDecoder {
             return;
         }
 
+        final int readerIndexAfterFixedHeader = in.readerIndex();
+        final int fixedHeaderLength = readerIndexAfterFixedHeader - readerIndexBeforeFixedHeader;
+        final int packetSize = fixedHeaderLength + remainingLength;
+        final Integer maximumPacketSize = ctx.attr(ChannelAttributes.MAXIMUM_INCOMING_PACKET_SIZE_KEY).get();
+
+        if ((maximumPacketSize != null) && (packetSize > maximumPacketSize)) {
+            // TODO: send Disconnect with reason code 0x95 Packet too large and close channel
+            in.clear();
+            return;
+        }
+
         if (in.readableBytes() < remainingLength) {
             in.resetReaderIndex();
             return;
@@ -80,62 +66,14 @@ public class Mqtt5ClientDecoder extends ByteToMessageDecoder {
         final ByteBuf messageBuffer = in.readSlice(remainingLength);
         in.markReaderIndex();
 
-        Mqtt5Message message = null;
-        switch (Mqtt5MessageType.fromCode(messageType)) {
-            case RESERVED_ZERO:
-                // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-                in.clear();
-                return;
-            case CONNECT:
-                // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
-                in.clear();
-                break;
-            case CONNACK:
-                message = connAckDecoder.decode(flags, messageBuffer);
-                break;
-            case PUBLISH:
-                message = publishDecoder.decode(flags, messageBuffer);
-                break;
-            case PUBACK:
-                message = pubAckDecoder.decode(flags, messageBuffer);
-                break;
-            case PUBREC:
-                message = pubRecDecoder.decode(flags, messageBuffer);
-                break;
-            case PUBREL:
-                message = pubRelDecoder.decode(flags, messageBuffer);
-                break;
-            case PUBCOMP:
-                message = pubCompDecoder.decode(flags, messageBuffer);
-                break;
-            case SUBSCRIBE:
-                // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
-                in.clear();
-                return;
-            case SUBACK:
-                message = subAckDecoder.decode(flags, messageBuffer);
-                break;
-            case UNSUBSCRIBE:
-                // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
-                in.clear();
-                return;
-            case UNSUBACK:
-                message = unsubAckDecoder.decode(flags, messageBuffer);
-                break;
-            case PINGREQ:
-                // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
-                in.clear();
-                return;
-            case PINGRESP:
-                message = pingRespDecoder.decode(flags, messageBuffer);
-                break;
-            case DISCONNECT:
-                message = disconnectDecoder.decode(flags, messageBuffer);
-                break;
-            case AUTH:
-                message = authDecoder.decode(flags, messageBuffer);
-                break;
+        final Mqtt5MessageDecoder decoder = decoders.get(messageType);
+        if (decoder == null) {
+            // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
+            in.clear();
+            return;
         }
+
+        final Mqtt5Message message = decoder.decode(flags, messageBuffer);
 
         if (message != null) {
             out.add(message);
