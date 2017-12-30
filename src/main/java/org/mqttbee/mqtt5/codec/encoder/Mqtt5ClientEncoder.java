@@ -6,12 +6,12 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5Message;
 import org.mqttbee.mqtt5.message.auth.Mqtt5Auth;
-import org.mqttbee.mqtt5.message.connect.Mqtt5Connect;
+import org.mqttbee.mqtt5.message.connect.Mqtt5ConnectImpl;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.mqtt5.message.ping.Mqtt5PingReq;
 import org.mqttbee.mqtt5.message.puback.Mqtt5PubAck;
 import org.mqttbee.mqtt5.message.pubcomp.Mqtt5PubComp;
-import org.mqttbee.mqtt5.message.publish.Mqtt5Publish;
+import org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl;
 import org.mqttbee.mqtt5.message.pubrec.Mqtt5PubRec;
 import org.mqttbee.mqtt5.message.pubrel.Mqtt5PubRel;
 import org.mqttbee.mqtt5.message.subscribe.Mqtt5Subscribe;
@@ -62,10 +62,10 @@ public class Mqtt5ClientEncoder extends MessageToByteEncoder<Mqtt5Message> {
     @Override
     protected void encode(final ChannelHandlerContext ctx, final Mqtt5Message message, final ByteBuf out)
             throws Exception {
-        if (message instanceof Mqtt5Connect) {
-            connectEncoder.encode((Mqtt5Connect) message, out);
-        } else if (message instanceof Mqtt5Publish) {
-            publishEncoder.encode((Mqtt5Publish) message, out);
+        if (message instanceof Mqtt5ConnectImpl) {
+            connectEncoder.encode(ctx.channel(), (Mqtt5ConnectImpl) message, out);
+        } else if (message instanceof Mqtt5PublishImpl) {
+            publishEncoder.encode((Mqtt5PublishImpl) message, out);
         } else if (message instanceof Mqtt5PubAck) {
             pubAckEncoder.encode((Mqtt5PubAck) message, out);
         } else if (message instanceof Mqtt5PubRec) {

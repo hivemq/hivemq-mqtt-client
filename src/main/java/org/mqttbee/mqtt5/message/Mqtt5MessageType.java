@@ -24,16 +24,17 @@ public enum Mqtt5MessageType {
     DISCONNECT,
     AUTH;
 
-    @NotNull
-    public static Mqtt5MessageType fromCode(final int code) {
-        if (code < 0 || code > 15) {
-            throw new IllegalArgumentException("wrong MQTT 5 message type");
-        }
-        return values()[code];
-    }
-
     public int getCode() {
         return ordinal();
+    }
+
+    @NotNull
+    public static Mqtt5MessageType fromCode(final int code) {
+        final Mqtt5MessageType[] values = values();
+        if (code < 0 || code >= values.length) {
+            throw new IllegalArgumentException("not a MQTT 5 message type code");
+        }
+        return values[code];
     }
 
 }
