@@ -1,5 +1,6 @@
 package org.mqttbee.mqtt5.codec.decoder;
 
+import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 
 import javax.inject.Inject;
@@ -9,7 +10,7 @@ import javax.inject.Singleton;
  * @author Silvio Giebl
  */
 @Singleton
-public class Mqtt5ClientMessageDecoders {
+public class Mqtt5ClientMessageDecoders implements Mqtt5MessageDecoders {
 
     private final Mqtt5MessageDecoder[] decoders;
 
@@ -35,7 +36,9 @@ public class Mqtt5ClientMessageDecoders {
         decoders[Mqtt5MessageType.AUTH.getCode()] = authDecoder;
     }
 
-    Mqtt5MessageDecoder get(final int code) {
+    @Nullable
+    @Override
+    public Mqtt5MessageDecoder get(final int code) {
         return decoders[code];
     }
 
