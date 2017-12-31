@@ -12,10 +12,10 @@ import java.util.List;
  */
 public class Mqtt5UserProperty {
 
-    public static final List<Mqtt5UserProperty> NO_USER_PROPERTIES = Collections.unmodifiableList(new ArrayList<>(0));
+    public static final List<Mqtt5UserProperty> DEFAULT_NO_USER_PROPERTIES = Collections.unmodifiableList(new ArrayList<>(0));
 
     public static void encode(@NotNull final List<Mqtt5UserProperty> userProperties, @NotNull final ByteBuf byteBuf) {
-        if (userProperties != Mqtt5UserProperty.NO_USER_PROPERTIES) {
+        if (userProperties != Mqtt5UserProperty.DEFAULT_NO_USER_PROPERTIES) {
             for (final Mqtt5UserProperty userProperty : userProperties) {
                 byteBuf.writeByte(Mqtt5Property.USER_PROPERTY);
                 userProperty.getName().to(byteBuf);
@@ -26,7 +26,7 @@ public class Mqtt5UserProperty {
 
     public static int encodedLength(@NotNull final List<Mqtt5UserProperty> userProperties) {
         int encodedLength = 0;
-        if (userProperties != Mqtt5UserProperty.NO_USER_PROPERTIES) {
+        if (userProperties != Mqtt5UserProperty.DEFAULT_NO_USER_PROPERTIES) {
             for (final Mqtt5UserProperty userProperty : userProperties) {
                 encodedLength += 1 +
                         userProperty.getName().toBinary().length +
