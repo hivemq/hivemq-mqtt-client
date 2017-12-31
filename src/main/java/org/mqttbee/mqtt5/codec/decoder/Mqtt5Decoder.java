@@ -73,7 +73,7 @@ public class Mqtt5Decoder extends ByteToMessageDecoder {
             return;
         }
 
-        final Mqtt5Message message = decoder.decode(flags, messageBuffer);
+        final Mqtt5Message message = decoder.decode(flags, ctx.channel(), messageBuffer);
 
         if (message != null) {
             out.add(message);

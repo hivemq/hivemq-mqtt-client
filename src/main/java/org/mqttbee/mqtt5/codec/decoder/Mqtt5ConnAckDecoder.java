@@ -1,6 +1,7 @@
 package org.mqttbee.mqtt5.codec.decoder;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
@@ -29,7 +30,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
 
     @Nullable
     @Override
-    public Mqtt5ConnAck decode(final int flags, @NotNull final ByteBuf in) {
+    public Mqtt5ConnAck decode(final int flags, @NotNull final Channel channel, @NotNull final ByteBuf in) {
         if (flags != FLAGS) {
             // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
             in.clear();
@@ -59,9 +60,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
 
         final int propertiesLength = Mqtt5DataTypes.decodeVariableByteInteger(in);
 
-        if (propertiesLength == Mqtt5DataTypes.VARIABLE_BYTE_INTEGER_TOO_LARGE ||
-                propertiesLength == Mqtt5DataTypes.VARIABLE_BYTE_INTEGER_NOT_MINIMUM_BYTES ||
-                propertiesLength == Mqtt5DataTypes.VARIABLE_BYTE_INTEGER_NOT_ENOUGH_BYTES) {
+        if (propertiesLength < 0) {
             // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
             in.clear();
             return null;
@@ -88,7 +87,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
         boolean maximumQoSPresent = false;
         boolean retainAvailable = DEFAULT_RETAIN_AVAILABLE;
         boolean retainAvailablePresent = false;
-        long maximumPacketSize = DEFAULT_MAXIMUM_PACKET_SIZE_INFINITY;
+        long maximumPacketSize = DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT;
         boolean maximumPacketSizePresent = false;
         boolean wildCardSubscriptionAvailable = DEFAULT_WILDCARD_SUBSCRIPTION_AVAILABLE;
         boolean wildCardSubscriptionAvailablePresent = false;
@@ -108,9 +107,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
         while (in.readableBytes() > 0) {
             final int propertyIdentifier = Mqtt5DataTypes.decodeVariableByteInteger(in);
 
-            if (propertyIdentifier == Mqtt5DataTypes.VARIABLE_BYTE_INTEGER_TOO_LARGE ||
-                    propertyIdentifier == Mqtt5DataTypes.VARIABLE_BYTE_INTEGER_NOT_MINIMUM_BYTES ||
-                    propertyIdentifier == Mqtt5DataTypes.VARIABLE_BYTE_INTEGER_NOT_ENOUGH_BYTES) {
+            if (propertyIdentifier < 0) {
                 // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
                 in.clear();
                 return null;
@@ -386,19 +383,13 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                     if (userProperties == Mqtt5UserProperty.DEFAULT_NO_USER_PROPERTIES) {
                         userProperties = new LinkedList<>();
                     }
-                    final Mqtt5UTF8String userPropertyName = Mqtt5UTF8String.from(in);
-                    if (userPropertyName == null) {
+                    final Mqtt5UserProperty userProperty = Mqtt5UserProperty.decode(in);
+                    if (userProperty == null) {
                         // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
                         in.clear();
                         return null;
                     }
-                    final Mqtt5UTF8String userPropertyValue = Mqtt5UTF8String.from(in);
-                    if (userPropertyValue == null) {
-                        // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-                        in.clear();
-                        return null;
-                    }
-                    userProperties.add(new Mqtt5UserProperty(userPropertyName, userPropertyValue));
+                    userProperties.add(userProperty);
                     break;
                 default:
                     // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel

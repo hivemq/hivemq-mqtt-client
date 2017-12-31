@@ -1,6 +1,7 @@
 package org.mqttbee.mqtt5.codec.decoder;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt5.message.pubrel.Mqtt5PubRel;
@@ -17,7 +18,7 @@ public class Mqtt5PubRelDecoder implements Mqtt5MessageDecoder {
 
     @Override
     @Nullable
-    public Mqtt5PubRel decode(final int flags, @NotNull final ByteBuf in) {
+    public Mqtt5PubRel decode(final int flags, @NotNull final Channel channel, @NotNull final ByteBuf in) {
         if (flags != FLAGS) {
             // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
             in.clear();

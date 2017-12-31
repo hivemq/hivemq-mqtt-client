@@ -2,6 +2,7 @@ package org.mqttbee.mqtt5.message;
 
 import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,14 +13,28 @@ import java.util.List;
  */
 public class Mqtt5UserProperty {
 
-    public static final List<Mqtt5UserProperty> DEFAULT_NO_USER_PROPERTIES = Collections.unmodifiableList(new ArrayList<>(0));
+    public static final List<Mqtt5UserProperty> DEFAULT_NO_USER_PROPERTIES =
+            Collections.unmodifiableList(new ArrayList<>(0));
 
-    public static void encode(@NotNull final List<Mqtt5UserProperty> userProperties, @NotNull final ByteBuf byteBuf) {
+    @Nullable
+    public static Mqtt5UserProperty decode(@NotNull final ByteBuf in) {
+        final Mqtt5UTF8String name = Mqtt5UTF8String.from(in);
+        if (name == null) {
+            return null;
+        }
+        final Mqtt5UTF8String value = Mqtt5UTF8String.from(in);
+        if (value == null) {
+            return null;
+        }
+        return new Mqtt5UserProperty(name, value);
+    }
+
+    public static void encode(@NotNull final List<Mqtt5UserProperty> userProperties, @NotNull final ByteBuf out) {
         if (userProperties != Mqtt5UserProperty.DEFAULT_NO_USER_PROPERTIES) {
             for (final Mqtt5UserProperty userProperty : userProperties) {
-                byteBuf.writeByte(Mqtt5Property.USER_PROPERTY);
-                userProperty.getName().to(byteBuf);
-                userProperty.getValue().to(byteBuf);
+                out.writeByte(Mqtt5Property.USER_PROPERTY);
+                userProperty.getName().to(out);
+                userProperty.getValue().to(out);
             }
         }
     }
