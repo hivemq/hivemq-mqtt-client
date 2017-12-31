@@ -17,9 +17,11 @@ import java.util.Optional;
  */
 public interface Mqtt5Connect extends Mqtt5Message {
 
-    int DEFAULT_SESSION_EXPIRY_INTERVAL = 0;
+    long DEFAULT_SESSION_EXPIRY_INTERVAL = 0;
     boolean DEFAULT_RESPONSE_INFORMATION_REQUESTED = false;
+    int NOT_DEFAULT_RESPONSE_INFORMATION_REQUESTED = DEFAULT_RESPONSE_INFORMATION_REQUESTED ? 0 : 1;
     boolean DEFAULT_PROBLEM_INFORMATION_REQUESTED = true;
+    int NOT_DEFAULT_PROBLEM_INFORMATION_REQUESTED = DEFAULT_PROBLEM_INFORMATION_REQUESTED ? 0 : 1;
 
     @NotNull
     Mqtt5ClientIdentifier getClientIdentifier();
@@ -28,7 +30,7 @@ public interface Mqtt5Connect extends Mqtt5Message {
 
     boolean isCleanStart();
 
-    int getSessionExpiryInterval();
+    long getSessionExpiryInterval();
 
     boolean isResponseInformationRequested();
 
@@ -70,7 +72,7 @@ public interface Mqtt5Connect extends Mqtt5Message {
     interface Restrictions {
 
         int DEFAULT_RECEIVE_MAXIMUM = 65_535;
-        int DEFAULT_TOPIC_ALIAS_MAXIMUM = 0;
+        long DEFAULT_TOPIC_ALIAS_MAXIMUM = 0;
         int DEFAULT_MAXIMUM_PACKET_SIZE_INFINITY = Integer.MAX_VALUE;
         @NotNull
         Restrictions DEFAULT = new Mqtt5ConnectImpl.RestrictionsImpl(
@@ -78,7 +80,7 @@ public interface Mqtt5Connect extends Mqtt5Message {
 
         int getReceiveMaximum();
 
-        int getTopicAliasMaximum();
+        long getTopicAliasMaximum();
 
         int getMaximumPacketSize();
 
