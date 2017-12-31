@@ -6,10 +6,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5Publish;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoders;
-import org.mqttbee.mqtt5.message.Mqtt5MessageType;
-import org.mqttbee.mqtt5.message.Mqtt5QoS;
-import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
+import org.mqttbee.mqtt5.message.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -20,7 +17,7 @@ import java.util.Optional;
  */
 public class Mqtt5PublishImpl implements Mqtt5Publish {
 
-    private final Mqtt5UTF8String topic;
+    private final Mqtt5Topic topic;
     private final byte[] payload;
     private final Mqtt5QoS qos;
     private final boolean isRetain;
@@ -31,8 +28,8 @@ public class Mqtt5PublishImpl implements Mqtt5Publish {
     private final byte[] correlationData;
     private final List<Mqtt5UserProperty> userProperties;
 
-    Mqtt5PublishImpl(
-            @NotNull final Mqtt5UTF8String topic, @Nullable final byte[] payload, @NotNull final Mqtt5QoS qos,
+    public Mqtt5PublishImpl(
+            @NotNull final Mqtt5Topic topic, @Nullable final byte[] payload, @NotNull final Mqtt5QoS qos,
             final boolean isRetain, final long messageExpiryInterval,
             @Nullable final Mqtt5PayloadFormatIndicator payloadFormatIndicator,
             @Nullable final Mqtt5UTF8String contentType, @Nullable final Mqtt5UTF8String responseTopic,
@@ -51,7 +48,7 @@ public class Mqtt5PublishImpl implements Mqtt5Publish {
 
     @NotNull
     @Override
-    public Mqtt5UTF8String getTopic() {
+    public Mqtt5Topic getTopic() {
         return topic;
     }
 

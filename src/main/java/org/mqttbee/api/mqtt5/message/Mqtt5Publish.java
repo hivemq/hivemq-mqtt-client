@@ -1,10 +1,7 @@
 package org.mqttbee.api.mqtt5.message;
 
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt5.message.Mqtt5Message;
-import org.mqttbee.mqtt5.message.Mqtt5QoS;
-import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
+import org.mqttbee.mqtt5.message.*;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 
 import java.util.List;
@@ -18,7 +15,7 @@ public interface Mqtt5Publish extends Mqtt5Message {
     long DEFAULT_MESSAGE_EXPIRY_INTERVAL_INFINITY = Long.MAX_VALUE;
 
     @NotNull
-    Mqtt5UTF8String getTopic();
+    Mqtt5Topic getTopic();
 
     @NotNull
     Optional<byte[]> getPayload();

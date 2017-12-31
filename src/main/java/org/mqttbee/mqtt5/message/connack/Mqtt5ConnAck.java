@@ -146,7 +146,7 @@ public class Mqtt5ConnAck implements Mqtt5Message {
 
         public static final int DEFAULT_RECEIVE_MAXIMUM = 65_535;
         public static final int DEFAULT_TOPIC_ALIAS_MAXIMUM = 0;
-        public static final long DEFAULT_MAXIMUM_PACKET_SIZE_INFINITY = Integer.MAX_VALUE;
+        public static final long DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT = Integer.MAX_VALUE;
         public static final byte DEFAULT_MAXIMUM_QOS = 2;
         public static final boolean DEFAULT_RETAIN_AVAILABLE = true;
         public static final boolean DEFAULT_WILDCARD_SUBSCRIPTION_AVAILABLE = true;
@@ -154,7 +154,7 @@ public class Mqtt5ConnAck implements Mqtt5Message {
         public static final boolean DEFAULT_SHARED_SUBSCRIPTION_AVAILABLE = true;
         @NotNull
         public static final Restrictions DEFAULT = new Restrictions(
-                DEFAULT_RECEIVE_MAXIMUM, DEFAULT_TOPIC_ALIAS_MAXIMUM, DEFAULT_MAXIMUM_PACKET_SIZE_INFINITY,
+                DEFAULT_RECEIVE_MAXIMUM, DEFAULT_TOPIC_ALIAS_MAXIMUM, DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT,
                 DEFAULT_MAXIMUM_QOS, DEFAULT_RETAIN_AVAILABLE, DEFAULT_WILDCARD_SUBSCRIPTION_AVAILABLE,
                 DEFAULT_SUBSCRIPTION_IDENTIFIER_AVAILABLE, DEFAULT_SHARED_SUBSCRIPTION_AVAILABLE);
 
