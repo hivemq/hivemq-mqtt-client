@@ -23,14 +23,14 @@ import java.util.List;
  * @author Silvio Giebl
  */
 @Singleton
-public class Mqtt5ConnectEncoder {
+public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl> {
 
     private static final int FIXED_HEADER = Mqtt5MessageType.CONNECT.getCode() << 4;
     private static final int VARIABLE_HEADER_FIXED_LENGTH = 6 + 1 + 1 + 2;
     private static final byte PROTOCOL_VERSION = 5;
 
     public void encode(
-            @NotNull final Channel channel, @NotNull final Mqtt5ConnectImpl connect, @NotNull final ByteBuf out) {
+            @NotNull final Mqtt5ConnectImpl connect, @NotNull final Channel channel, @NotNull final ByteBuf out) {
 
         final int propertiesLength = calculatePropertiesLength(connect);
         final int willPropertiesLength = calculateWillPropertiesLength(connect);

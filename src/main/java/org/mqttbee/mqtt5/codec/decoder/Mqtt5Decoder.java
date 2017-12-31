@@ -13,12 +13,12 @@ import java.util.List;
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5ClientDecoder extends ByteToMessageDecoder {
+public class Mqtt5Decoder extends ByteToMessageDecoder {
 
-    private final Mqtt5ClientMessageDecoders decoders;
+    private final Mqtt5MessageDecoders decoders;
 
     @Inject
-    public Mqtt5ClientDecoder(final Mqtt5ClientMessageDecoders decoders) {
+    public Mqtt5Decoder(final Mqtt5MessageDecoders decoders) {
         this.decoders = decoders;
     }
 
@@ -68,7 +68,7 @@ public class Mqtt5ClientDecoder extends ByteToMessageDecoder {
 
         final Mqtt5MessageDecoder decoder = decoders.get(messageType);
         if (decoder == null) {
-            // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
+            // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
             in.clear();
             return;
         }
