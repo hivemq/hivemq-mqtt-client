@@ -8,7 +8,7 @@ import io.netty.util.AttributeKey;
 public class ChannelAttributes {
 
     public static final AttributeKey<Integer> MAXIMUM_INCOMING_PACKET_SIZE_KEY = AttributeKey.valueOf("packet.in.size.max");
-    public static final AttributeKey<Integer> MAXIMUM_OUTGOIING_PACKET_SIZE_KEY = AttributeKey.valueOf("packet.out.size.max");
+    public static final AttributeKey<Integer> MAXIMUM_OUTGOING_PACKET_SIZE_KEY = AttributeKey.valueOf("packet.out.size.max");
 
     private ChannelAttributes() {}
 

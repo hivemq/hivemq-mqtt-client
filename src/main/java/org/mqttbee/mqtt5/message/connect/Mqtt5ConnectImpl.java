@@ -21,7 +21,7 @@ public class Mqtt5ConnectImpl implements Mqtt5Connect {
     private final Mqtt5ClientIdentifier clientIdentifier;
     private final int keepAlive;
     private final boolean isCleanStart;
-    private final int sessionExpiryInterval;
+    private final long sessionExpiryInterval;
     private final boolean isResponseInformationRequested;
     private final boolean isProblemInformationRequested;
     private final RestrictionsImpl restrictions;
@@ -31,7 +31,7 @@ public class Mqtt5ConnectImpl implements Mqtt5Connect {
 
     public Mqtt5ConnectImpl(
             @NotNull final Mqtt5ClientIdentifier clientIdentifier, final int keepAlive, final boolean isCleanStart,
-            final int sessionExpiryInterval, final boolean isResponseInformationRequested,
+            final long sessionExpiryInterval, final boolean isResponseInformationRequested,
             final boolean isProblemInformationRequested, @NotNull final RestrictionsImpl restrictions,
             @Nullable final AuthImpl auth, @Nullable final Mqtt5WillPublishImpl willPublish,
             @NotNull final List<Mqtt5UserProperty> userProperties) {
@@ -64,7 +64,7 @@ public class Mqtt5ConnectImpl implements Mqtt5Connect {
     }
 
     @Override
-    public int getSessionExpiryInterval() {
+    public long getSessionExpiryInterval() {
         return sessionExpiryInterval;
     }
 
@@ -190,11 +190,11 @@ public class Mqtt5ConnectImpl implements Mqtt5Connect {
     public static class RestrictionsImpl implements Restrictions {
 
         private final int receiveMaximum;
-        private final int topicAliasMaximum;
+        private final long topicAliasMaximum;
         private final int maximumPacketSize;
 
         public RestrictionsImpl(
-                final int receiveMaximum, final int topicAliasMaximum, final int maximumPacketSize) {
+                final int receiveMaximum, final long topicAliasMaximum, final int maximumPacketSize) {
             this.receiveMaximum = receiveMaximum;
             this.topicAliasMaximum = topicAliasMaximum;
             this.maximumPacketSize = maximumPacketSize;
@@ -206,7 +206,7 @@ public class Mqtt5ConnectImpl implements Mqtt5Connect {
         }
 
         @Override
-        public int getTopicAliasMaximum() {
+        public long getTopicAliasMaximum() {
             return topicAliasMaximum;
         }
 

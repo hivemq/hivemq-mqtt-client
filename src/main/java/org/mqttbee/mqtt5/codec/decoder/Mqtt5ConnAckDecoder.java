@@ -100,7 +100,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
         Mqtt5UTF8String responseInformation = null;
         Mqtt5UTF8String serverReference = null;
         Mqtt5UTF8String reasonString = null;
-        List<Mqtt5UserProperty> userProperties = Mqtt5UserProperty.NO_USER_PROPERTIES;
+        List<Mqtt5UserProperty> userProperties = Mqtt5UserProperty.DEFAULT_NO_USER_PROPERTIES;
 
         boolean authPresent = false;
         boolean restrictionsPresent = false;
@@ -383,7 +383,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                     }
                     break;
                 case USER_PROPERTY:
-                    if (userProperties == Mqtt5UserProperty.NO_USER_PROPERTIES) {
+                    if (userProperties == Mqtt5UserProperty.DEFAULT_NO_USER_PROPERTIES) {
                         userProperties = new LinkedList<>();
                     }
                     final Mqtt5UTF8String userPropertyName = Mqtt5UTF8String.from(in);
