@@ -73,10 +73,10 @@ public interface Mqtt5Connect extends Mqtt5Message {
 
         int DEFAULT_RECEIVE_MAXIMUM = 65_535;
         long DEFAULT_TOPIC_ALIAS_MAXIMUM = 0;
-        int DEFAULT_MAXIMUM_PACKET_SIZE_INFINITY = Integer.MAX_VALUE;
+        int DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT = Integer.MAX_VALUE;
         @NotNull
         Restrictions DEFAULT = new Mqtt5ConnectImpl.RestrictionsImpl(
-                DEFAULT_RECEIVE_MAXIMUM, DEFAULT_TOPIC_ALIAS_MAXIMUM, DEFAULT_MAXIMUM_PACKET_SIZE_INFINITY);
+                DEFAULT_RECEIVE_MAXIMUM, DEFAULT_TOPIC_ALIAS_MAXIMUM, DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT);
 
         int getReceiveMaximum();
 

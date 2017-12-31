@@ -12,7 +12,7 @@ public enum Mqtt5PayloadFormatIndicator {
         return ordinal();
     }
 
-    public Mqtt5PayloadFormatIndicator fromCode(final int code) {
+    public static Mqtt5PayloadFormatIndicator fromCode(final int code) {
         final Mqtt5PayloadFormatIndicator[] values = values();
         if (code < 0 || code >= values.length) {
             throw new IllegalArgumentException("not a MQTT 5 payload format indicator code");
