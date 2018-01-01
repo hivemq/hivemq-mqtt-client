@@ -1,21 +1,21 @@
 package org.mqttbee.mqtt5.codec.encoder;
 
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt5.message.auth.Mqtt5Auth;
-import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAck;
+import org.mqttbee.mqtt5.message.auth.Mqtt5AuthImpl;
+import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckImpl;
 import org.mqttbee.mqtt5.message.connect.Mqtt5ConnectImpl;
-import org.mqttbee.mqtt5.message.disconnect.Mqtt5Disconnect;
-import org.mqttbee.mqtt5.message.ping.Mqtt5PingReq;
-import org.mqttbee.mqtt5.message.ping.Mqtt5PingResp;
-import org.mqttbee.mqtt5.message.puback.Mqtt5PubAck;
-import org.mqttbee.mqtt5.message.pubcomp.Mqtt5PubComp;
+import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectImpl;
+import org.mqttbee.mqtt5.message.ping.Mqtt5PingReqImpl;
+import org.mqttbee.mqtt5.message.ping.Mqtt5PingRespImpl;
+import org.mqttbee.mqtt5.message.puback.Mqtt5PubAckImpl;
+import org.mqttbee.mqtt5.message.pubcomp.Mqtt5PubCompImpl;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl;
-import org.mqttbee.mqtt5.message.pubrec.Mqtt5PubRec;
-import org.mqttbee.mqtt5.message.pubrel.Mqtt5PubRel;
-import org.mqttbee.mqtt5.message.suback.Mqtt5SubAck;
-import org.mqttbee.mqtt5.message.subscribe.Mqtt5Subscribe;
-import org.mqttbee.mqtt5.message.unsuback.Mqtt5UnsubAck;
-import org.mqttbee.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
+import org.mqttbee.mqtt5.message.pubrec.Mqtt5PubRecImpl;
+import org.mqttbee.mqtt5.message.pubrel.Mqtt5PubRelImpl;
+import org.mqttbee.mqtt5.message.suback.Mqtt5SubAckImpl;
+import org.mqttbee.mqtt5.message.subscribe.Mqtt5SubscribeImpl;
+import org.mqttbee.mqtt5.message.unsuback.Mqtt5UnsubAckImpl;
+import org.mqttbee.mqtt5.message.unsubscribe.Mqtt5UnsubscribeImpl;
 
 /**
  * @author Silvio Giebl
@@ -26,45 +26,45 @@ public interface Mqtt5MessageEncoders {
     Mqtt5MessageEncoder<Mqtt5ConnectImpl> getConnectEncoder();
 
     @NotNull
-    Mqtt5MessageEncoder<Mqtt5ConnAck> getConnAckEncoder();
+    Mqtt5MessageEncoder<Mqtt5ConnAckImpl> getConnAckEncoder();
 
     @NotNull
     Mqtt5MessageEncoder<Mqtt5PublishImpl> getPublishEncoder();
 
     @NotNull
-    Mqtt5MessageEncoder<Mqtt5PubAck> getPubAckEncoder();
+    Mqtt5MessageEncoder<Mqtt5PubAckImpl> getPubAckEncoder();
 
     @NotNull
-    Mqtt5MessageEncoder<Mqtt5PubRec> getPubRecEncoder();
+    Mqtt5MessageEncoder<Mqtt5PubRecImpl> getPubRecEncoder();
 
     @NotNull
-    Mqtt5MessageEncoder<Mqtt5PubRel> getPubRelEncoder();
+    Mqtt5MessageEncoder<Mqtt5PubRelImpl> getPubRelEncoder();
 
     @NotNull
-    Mqtt5MessageEncoder<Mqtt5PubComp> getPubCompEncoder();
+    Mqtt5MessageEncoder<Mqtt5PubCompImpl> getPubCompEncoder();
 
     @NotNull
-    Mqtt5MessageEncoder<Mqtt5Subscribe> getSubscribeEncoder();
+    Mqtt5MessageEncoder<Mqtt5SubscribeImpl> getSubscribeEncoder();
 
     @NotNull
-    Mqtt5MessageEncoder<Mqtt5SubAck> getSubAckEncoder();
+    Mqtt5MessageEncoder<Mqtt5SubAckImpl> getSubAckEncoder();
 
     @NotNull
-    Mqtt5MessageEncoder<Mqtt5Unsubscribe> getUnsubscribeEncoder();
+    Mqtt5MessageEncoder<Mqtt5UnsubscribeImpl> getUnsubscribeEncoder();
 
     @NotNull
-    Mqtt5MessageEncoder<Mqtt5UnsubAck> getUnsubAckEncoder();
+    Mqtt5MessageEncoder<Mqtt5UnsubAckImpl> getUnsubAckEncoder();
 
     @NotNull
-    Mqtt5MessageEncoder<Mqtt5PingReq> getPingReqEncoder();
+    Mqtt5MessageEncoder<Mqtt5PingReqImpl> getPingReqEncoder();
 
     @NotNull
-    Mqtt5MessageEncoder<Mqtt5PingResp> getPingRespEncoder();
+    Mqtt5MessageEncoder<Mqtt5PingRespImpl> getPingRespEncoder();
 
     @NotNull
-    Mqtt5MessageEncoder<Mqtt5Disconnect> getDisconnectEncoder();
+    Mqtt5MessageEncoder<Mqtt5DisconnectImpl> getDisconnectEncoder();
 
     @NotNull
-    Mqtt5MessageEncoder<Mqtt5Auth> getAuthEncoder();
+    Mqtt5MessageEncoder<Mqtt5AuthImpl> getAuthEncoder();
 
 }

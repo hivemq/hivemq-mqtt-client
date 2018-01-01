@@ -3,7 +3,7 @@ package org.mqttbee.mqtt5.codec.encoder;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt5.message.disconnect.Mqtt5Disconnect;
+import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectImpl;
 
 import javax.inject.Singleton;
 
@@ -11,10 +11,10 @@ import javax.inject.Singleton;
  * @author Silvio Giebl
  */
 @Singleton
-public class Mqtt5DisconnectEncoder implements Mqtt5MessageEncoder<Mqtt5Disconnect> {
+public class Mqtt5DisconnectEncoder implements Mqtt5MessageEncoder<Mqtt5DisconnectImpl> {
 
     public void encode(
-            @NotNull final Mqtt5Disconnect disconnect, @NotNull final Channel channel, @NotNull final ByteBuf out) {
+            @NotNull final Mqtt5DisconnectImpl disconnect, @NotNull final Channel channel, @NotNull final ByteBuf out) {
 
     }
 

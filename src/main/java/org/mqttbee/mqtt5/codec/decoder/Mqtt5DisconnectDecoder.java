@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.mqtt5.message.disconnect.Mqtt5Disconnect;
+import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectImpl;
 
 import javax.inject.Singleton;
 
@@ -18,7 +18,7 @@ public class Mqtt5DisconnectDecoder implements Mqtt5MessageDecoder {
 
     @Override
     @Nullable
-    public Mqtt5Disconnect decode(final int flags, @NotNull final Channel channel, @NotNull final ByteBuf in) {
+    public Mqtt5DisconnectImpl decode(final int flags, @NotNull final Channel channel, @NotNull final ByteBuf in) {
         if (flags != FLAGS) {
             // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
             in.clear();

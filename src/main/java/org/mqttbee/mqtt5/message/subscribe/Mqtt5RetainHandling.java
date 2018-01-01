@@ -1,22 +1,27 @@
 package org.mqttbee.mqtt5.message.subscribe;
 
+import org.mqttbee.annotations.Nullable;
+
 /**
  * @author Silvio Giebl
  */
 public enum Mqtt5RetainHandling {
 
-    SEND(0),
-    SEND_IF_SUBSCRIPTION_DOES_NOT_EXIST(1),
-    DONT_SEND(2);
+    SEND,
+    SEND_IF_SUBSCRIPTION_DOES_NOT_EXIST,
+    DONT_SEND;
 
-    private final int value;
-
-    Mqtt5RetainHandling(final int value) {
-        this.value = value;
+    public int getCode() {
+        return ordinal();
     }
 
-    public int getValue() {
-        return value;
+    @Nullable
+    public static Mqtt5RetainHandling fromCode(final int code) {
+        final Mqtt5RetainHandling[] values = values();
+        if (code < 0 || code >= values.length) {
+            return null;
+        }
+        return values[code];
     }
 
 }
