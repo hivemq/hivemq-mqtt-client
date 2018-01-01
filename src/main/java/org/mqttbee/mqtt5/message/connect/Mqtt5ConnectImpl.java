@@ -21,6 +21,9 @@ import java.util.Optional;
  */
 public class Mqtt5ConnectImpl implements Mqtt5Connect {
 
+    public static final int NOT_DEFAULT_RESPONSE_INFORMATION_REQUESTED = DEFAULT_RESPONSE_INFORMATION_REQUESTED ? 0 : 1;
+    public static final int NOT_DEFAULT_PROBLEM_INFORMATION_REQUESTED = DEFAULT_PROBLEM_INFORMATION_REQUESTED ? 0 : 1;
+
     private final Mqtt5ClientIdentifier clientIdentifier;
     private final int keepAlive;
     private final boolean isCleanStart;
@@ -135,6 +138,9 @@ public class Mqtt5ConnectImpl implements Mqtt5Connect {
 
     public static class AuthImpl implements Auth {
 
+        @Nullable
+        public static final Auth DEFAULT_NO_AUTH = null;
+
         private final Mqtt5UTF8String username;
         private final byte[] password;
         private final Mqtt5UTF8String method;
@@ -197,6 +203,10 @@ public class Mqtt5ConnectImpl implements Mqtt5Connect {
 
 
     public static class RestrictionsImpl implements Restrictions {
+
+        @NotNull
+        public static final Restrictions DEFAULT = new RestrictionsImpl(
+                DEFAULT_RECEIVE_MAXIMUM, DEFAULT_TOPIC_ALIAS_MAXIMUM, DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT);
 
         private final int receiveMaximum;
         private final long topicAliasMaximum;

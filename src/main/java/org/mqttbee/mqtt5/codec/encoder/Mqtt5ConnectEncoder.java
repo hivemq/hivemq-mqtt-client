@@ -3,7 +3,6 @@ package org.mqttbee.mqtt5.codec.encoder;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt5.message.Mqtt5Connect;
 import org.mqttbee.api.mqtt5.message.Mqtt5WillPublish;
 import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
@@ -18,6 +17,8 @@ import org.mqttbee.mqtt5.message.publish.Mqtt5WillPublishProperty;
 
 import javax.inject.Singleton;
 import java.util.List;
+
+import static org.mqttbee.mqtt5.message.connect.Mqtt5ConnectImpl.*;
 
 /**
  * @author Silvio Giebl
@@ -58,8 +59,8 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
 
         remainingLength += connect.getClientIdentifier().encodedLength();
 
-        final Mqtt5ConnectImpl.AuthImpl auth = connect.getRawAuth();
-        if (auth != Mqtt5Connect.Auth.DEFAULT_NO_AUTH) {
+        final AuthImpl auth = connect.getRawAuth();
+        if (auth != AuthImpl.DEFAULT_NO_AUTH) {
             final Mqtt5UTF8String username = auth.getRawUsername();
             if (username != null) {
                 remainingLength += username.encodedLength();
@@ -90,31 +91,31 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
     private int calculatePropertiesLength(@NotNull final Mqtt5ConnectImpl connect) {
         int propertiesLength = 0;
 
-        if (connect.getSessionExpiryInterval() != Mqtt5Connect.DEFAULT_SESSION_EXPIRY_INTERVAL) {
+        if (connect.getSessionExpiryInterval() != DEFAULT_SESSION_EXPIRY_INTERVAL) {
             propertiesLength += 5;
         }
-        if (connect.isResponseInformationRequested() != Mqtt5Connect.DEFAULT_RESPONSE_INFORMATION_REQUESTED) {
+        if (connect.isResponseInformationRequested() != DEFAULT_RESPONSE_INFORMATION_REQUESTED) {
             propertiesLength += 2;
         }
-        if (connect.isProblemInformationRequested() != Mqtt5Connect.DEFAULT_PROBLEM_INFORMATION_REQUESTED) {
+        if (connect.isProblemInformationRequested() != DEFAULT_PROBLEM_INFORMATION_REQUESTED) {
             propertiesLength += 2;
         }
 
-        final Mqtt5ConnectImpl.RestrictionsImpl restrictions = connect.getRawRestrictions();
-        if (restrictions != Mqtt5Connect.Restrictions.DEFAULT) {
-            if (restrictions.getReceiveMaximum() != Mqtt5Connect.Restrictions.DEFAULT_RECEIVE_MAXIMUM) {
+        final RestrictionsImpl restrictions = connect.getRawRestrictions();
+        if (restrictions != RestrictionsImpl.DEFAULT) {
+            if (restrictions.getReceiveMaximum() != Restrictions.DEFAULT_RECEIVE_MAXIMUM) {
                 propertiesLength += 3;
             }
-            if (restrictions.getMaximumPacketSize() != Mqtt5Connect.Restrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT) {
+            if (restrictions.getMaximumPacketSize() != Restrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT) {
                 propertiesLength += 5;
             }
-            if (restrictions.getTopicAliasMaximum() != Mqtt5Connect.Restrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM) {
+            if (restrictions.getTopicAliasMaximum() != Restrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM) {
                 propertiesLength += 3;
             }
         }
 
-        final Mqtt5ConnectImpl.AuthImpl auth = connect.getRawAuth();
-        if (auth != Mqtt5Connect.Auth.DEFAULT_NO_AUTH) {
+        final AuthImpl auth = connect.getRawAuth();
+        if (auth != AuthImpl.DEFAULT_NO_AUTH) {
             final Mqtt5UTF8String method = auth.getRawMethod();
             if (method != null) {
                 propertiesLength += 1 + method.encodedLength();
@@ -184,8 +185,8 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
 
         int connectFlags = 0;
 
-        final Mqtt5ConnectImpl.AuthImpl auth = connect.getRawAuth();
-        if (auth != Mqtt5Connect.Auth.DEFAULT_NO_AUTH) {
+        final AuthImpl auth = connect.getRawAuth();
+        if (auth != AuthImpl.DEFAULT_NO_AUTH) {
             if (auth.getRawUsername() != null) {
                 connectFlags |= 0b1000_0000;
             }
@@ -220,25 +221,25 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
         Mqtt5DataTypes.encodeVariableByteInteger(propertiesLength, out);
 
         final long sessionExpiryInterval = connect.getSessionExpiryInterval();
-        if (sessionExpiryInterval != Mqtt5Connect.DEFAULT_SESSION_EXPIRY_INTERVAL) {
+        if (sessionExpiryInterval != DEFAULT_SESSION_EXPIRY_INTERVAL) {
             out.writeByte(Mqtt5ConnectProperty.SESSION_EXPIRY_INTERVAL);
             out.writeInt((int) sessionExpiryInterval);
         }
 
         final boolean responseInformationRequested = connect.isResponseInformationRequested();
-        if (responseInformationRequested != Mqtt5Connect.DEFAULT_RESPONSE_INFORMATION_REQUESTED) {
+        if (responseInformationRequested != DEFAULT_RESPONSE_INFORMATION_REQUESTED) {
             out.writeByte(Mqtt5ConnectProperty.REQUEST_RESPONSE_INFORMATION);
-            out.writeByte(Mqtt5Connect.NOT_DEFAULT_RESPONSE_INFORMATION_REQUESTED);
+            out.writeByte(NOT_DEFAULT_RESPONSE_INFORMATION_REQUESTED);
         }
 
         final boolean problemInformationRequested = connect.isProblemInformationRequested();
-        if (problemInformationRequested != Mqtt5Connect.DEFAULT_PROBLEM_INFORMATION_REQUESTED) {
+        if (problemInformationRequested != DEFAULT_PROBLEM_INFORMATION_REQUESTED) {
             out.writeByte(Mqtt5ConnectProperty.REQUEST_PROBLEM_INFORMATION);
-            out.writeByte(Mqtt5Connect.NOT_DEFAULT_PROBLEM_INFORMATION_REQUESTED);
+            out.writeByte(NOT_DEFAULT_PROBLEM_INFORMATION_REQUESTED);
         }
 
-        final Mqtt5ConnectImpl.AuthImpl auth = connect.getRawAuth();
-        if (auth != Mqtt5Connect.Auth.DEFAULT_NO_AUTH) {
+        final AuthImpl auth = connect.getRawAuth();
+        if (auth != AuthImpl.DEFAULT_NO_AUTH) {
             final Mqtt5UTF8String method = auth.getRawMethod();
             if (method != null) {
                 out.writeByte(Mqtt5ConnectProperty.AUTHENTICATION_METHOD);
@@ -251,20 +252,20 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
             }
         }
 
-        final Mqtt5ConnectImpl.RestrictionsImpl restrictions = connect.getRawRestrictions();
-        if (restrictions != Mqtt5Connect.Restrictions.DEFAULT) {
+        final RestrictionsImpl restrictions = connect.getRawRestrictions();
+        if (restrictions != RestrictionsImpl.DEFAULT) {
             final int receiveMaximum = restrictions.getReceiveMaximum();
-            if (receiveMaximum != Mqtt5Connect.Restrictions.DEFAULT_RECEIVE_MAXIMUM) {
+            if (receiveMaximum != Restrictions.DEFAULT_RECEIVE_MAXIMUM) {
                 out.writeByte(Mqtt5ConnectProperty.RECEIVE_MAXIMUM);
                 out.writeShort(receiveMaximum);
             }
             final long topicAliasMaximum = restrictions.getTopicAliasMaximum();
-            if (topicAliasMaximum != Mqtt5Connect.Restrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM) {
+            if (topicAliasMaximum != Restrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM) {
                 out.writeByte(Mqtt5ConnectProperty.TOPIC_ALIAS_MAXIMUM);
                 out.writeInt((int) topicAliasMaximum);
             }
             final int maximumPacketSize = restrictions.getMaximumPacketSize();
-            if (maximumPacketSize != Mqtt5Connect.Restrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT) {
+            if (maximumPacketSize != Restrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT) {
                 out.writeByte(Mqtt5ConnectProperty.MAXIMUM_PACKET_SIZE);
                 out.writeShort(maximumPacketSize);
             }
@@ -283,8 +284,8 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
 
         encodeWillPublish(connect, willPropertiesLength, out);
 
-        final Mqtt5ConnectImpl.AuthImpl auth = connect.getRawAuth();
-        if (auth != Mqtt5Connect.Auth.DEFAULT_NO_AUTH) {
+        final AuthImpl auth = connect.getRawAuth();
+        if (auth != AuthImpl.DEFAULT_NO_AUTH) {
             final Mqtt5UTF8String username = auth.getRawUsername();
             if (username != null) {
                 username.to(out);

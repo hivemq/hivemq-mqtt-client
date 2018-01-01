@@ -1,21 +1,21 @@
 package org.mqttbee.mqtt5.codec.encoder;
 
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt5.message.auth.Mqtt5Auth;
-import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAck;
+import org.mqttbee.mqtt5.message.auth.Mqtt5AuthImpl;
+import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckImpl;
 import org.mqttbee.mqtt5.message.connect.Mqtt5ConnectImpl;
-import org.mqttbee.mqtt5.message.disconnect.Mqtt5Disconnect;
-import org.mqttbee.mqtt5.message.ping.Mqtt5PingReq;
-import org.mqttbee.mqtt5.message.ping.Mqtt5PingResp;
-import org.mqttbee.mqtt5.message.puback.Mqtt5PubAck;
-import org.mqttbee.mqtt5.message.pubcomp.Mqtt5PubComp;
+import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectImpl;
+import org.mqttbee.mqtt5.message.ping.Mqtt5PingReqImpl;
+import org.mqttbee.mqtt5.message.ping.Mqtt5PingRespImpl;
+import org.mqttbee.mqtt5.message.puback.Mqtt5PubAckImpl;
+import org.mqttbee.mqtt5.message.pubcomp.Mqtt5PubCompImpl;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl;
-import org.mqttbee.mqtt5.message.pubrec.Mqtt5PubRec;
-import org.mqttbee.mqtt5.message.pubrel.Mqtt5PubRel;
-import org.mqttbee.mqtt5.message.suback.Mqtt5SubAck;
-import org.mqttbee.mqtt5.message.subscribe.Mqtt5Subscribe;
-import org.mqttbee.mqtt5.message.unsuback.Mqtt5UnsubAck;
-import org.mqttbee.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
+import org.mqttbee.mqtt5.message.pubrec.Mqtt5PubRecImpl;
+import org.mqttbee.mqtt5.message.pubrel.Mqtt5PubRelImpl;
+import org.mqttbee.mqtt5.message.suback.Mqtt5SubAckImpl;
+import org.mqttbee.mqtt5.message.subscribe.Mqtt5SubscribeImpl;
+import org.mqttbee.mqtt5.message.unsuback.Mqtt5UnsubAckImpl;
+import org.mqttbee.mqtt5.message.unsubscribe.Mqtt5UnsubscribeImpl;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -67,7 +67,7 @@ public class Mqtt5ClientMessageEncoders implements Mqtt5MessageEncoders {
 
     @NotNull
     @Override
-    public Mqtt5MessageEncoder<Mqtt5ConnAck> getConnAckEncoder() {
+    public Mqtt5MessageEncoder<Mqtt5ConnAckImpl> getConnAckEncoder() {
         throw new IllegalStateException("A MQTT 5 client does not send CONNACK packets.");
     }
 
@@ -79,73 +79,73 @@ public class Mqtt5ClientMessageEncoders implements Mqtt5MessageEncoders {
 
     @NotNull
     @Override
-    public Mqtt5MessageEncoder<Mqtt5PubAck> getPubAckEncoder() {
+    public Mqtt5MessageEncoder<Mqtt5PubAckImpl> getPubAckEncoder() {
         return pubAckEncoder;
     }
 
     @NotNull
     @Override
-    public Mqtt5MessageEncoder<Mqtt5PubRec> getPubRecEncoder() {
+    public Mqtt5MessageEncoder<Mqtt5PubRecImpl> getPubRecEncoder() {
         return pubRecEncoder;
     }
 
     @NotNull
     @Override
-    public Mqtt5MessageEncoder<Mqtt5PubRel> getPubRelEncoder() {
+    public Mqtt5MessageEncoder<Mqtt5PubRelImpl> getPubRelEncoder() {
         return pubRelEncoder;
     }
 
     @NotNull
     @Override
-    public Mqtt5MessageEncoder<Mqtt5PubComp> getPubCompEncoder() {
+    public Mqtt5MessageEncoder<Mqtt5PubCompImpl> getPubCompEncoder() {
         return pubCompEncoder;
     }
 
     @NotNull
     @Override
-    public Mqtt5MessageEncoder<Mqtt5Subscribe> getSubscribeEncoder() {
+    public Mqtt5MessageEncoder<Mqtt5SubscribeImpl> getSubscribeEncoder() {
         return subscribeEncoder;
     }
 
     @NotNull
     @Override
-    public Mqtt5MessageEncoder<Mqtt5SubAck> getSubAckEncoder() {
+    public Mqtt5MessageEncoder<Mqtt5SubAckImpl> getSubAckEncoder() {
         throw new IllegalStateException("A MQTT 5 client does not send SUBACK packets.");
     }
 
     @NotNull
     @Override
-    public Mqtt5MessageEncoder<Mqtt5Unsubscribe> getUnsubscribeEncoder() {
+    public Mqtt5MessageEncoder<Mqtt5UnsubscribeImpl> getUnsubscribeEncoder() {
         return unsubscribeEncoder;
     }
 
     @NotNull
     @Override
-    public Mqtt5MessageEncoder<Mqtt5UnsubAck> getUnsubAckEncoder() {
+    public Mqtt5MessageEncoder<Mqtt5UnsubAckImpl> getUnsubAckEncoder() {
         throw new IllegalStateException("A MQTT 5 client does not send UNSUBACK packets.");
     }
 
     @NotNull
     @Override
-    public Mqtt5MessageEncoder<Mqtt5PingReq> getPingReqEncoder() {
+    public Mqtt5MessageEncoder<Mqtt5PingReqImpl> getPingReqEncoder() {
         return pingReqEncoder;
     }
 
     @NotNull
     @Override
-    public Mqtt5MessageEncoder<Mqtt5PingResp> getPingRespEncoder() {
+    public Mqtt5MessageEncoder<Mqtt5PingRespImpl> getPingRespEncoder() {
         throw new IllegalStateException("A MQTT 5 client does not send PINGRESP packets.");
     }
 
     @NotNull
     @Override
-    public Mqtt5MessageEncoder<Mqtt5Disconnect> getDisconnectEncoder() {
+    public Mqtt5MessageEncoder<Mqtt5DisconnectImpl> getDisconnectEncoder() {
         return disconnectEncoder;
     }
 
     @NotNull
     @Override
-    public Mqtt5MessageEncoder<Mqtt5Auth> getAuthEncoder() {
+    public Mqtt5MessageEncoder<Mqtt5AuthImpl> getAuthEncoder() {
         return authEncoder;
     }
 
