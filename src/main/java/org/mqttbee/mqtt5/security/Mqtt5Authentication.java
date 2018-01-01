@@ -1,6 +1,6 @@
 package org.mqttbee.mqtt5.security;
 
-import org.mqttbee.mqtt5.message.auth.Mqtt5Auth;
+import org.mqttbee.mqtt5.message.auth.Mqtt5AuthImpl;
 
 import java.nio.ByteBuffer;
 import java.util.concurrent.CompletableFuture;
@@ -16,10 +16,10 @@ public interface Mqtt5Authentication {
 
     CompletableFuture<Boolean> onConnAck(final String clientIdentifier, ByteBuffer authenticationData);
 
-    CompletableFuture<Mqtt5Auth> onReauthenticate(final String clientIdentifier);
+    CompletableFuture<Mqtt5AuthImpl> onReauthenticate(final String clientIdentifier);
 
-    CompletableFuture<Boolean> onReauthenticated(final String clientIdentifier, Mqtt5Auth mqttAuth);
+    CompletableFuture<Boolean> onReauthenticated(final String clientIdentifier, Mqtt5AuthImpl mqttAuth);
 
-    CompletableFuture<Mqtt5Auth> onContinue(final String clientIdentifier, Mqtt5Auth mqttAuth);
+    CompletableFuture<Mqtt5AuthImpl> onContinue(final String clientIdentifier, Mqtt5AuthImpl mqttAuth);
 
 }

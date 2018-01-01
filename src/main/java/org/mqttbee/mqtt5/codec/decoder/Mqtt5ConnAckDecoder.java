@@ -8,16 +8,15 @@ import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifier;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
-import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAck;
+import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckImpl;
+import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckProperty;
 import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckReasonCode;
 
 import javax.inject.Singleton;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.mqttbee.mqtt5.message.connack.Mqtt5ConnAck.*;
-import static org.mqttbee.mqtt5.message.connack.Mqtt5ConnAck.Restrictions.*;
-import static org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckProperty.*;
+import static org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckImpl.*;
 
 /**
  * @author Silvio Giebl
@@ -30,7 +29,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
 
     @Nullable
     @Override
-    public Mqtt5ConnAck decode(final int flags, @NotNull final Channel channel, @NotNull final ByteBuf in) {
+    public Mqtt5ConnAckImpl decode(final int flags, @NotNull final Channel channel, @NotNull final ByteBuf in) {
         if (flags != FLAGS) {
             // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
             in.clear();
@@ -79,21 +78,21 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
         Mqtt5UTF8String authenticationMethod = null;
         byte[] authenticationData = null;
 
-        int receiveMaximum = DEFAULT_RECEIVE_MAXIMUM;
+        int receiveMaximum = Restrictions.DEFAULT_RECEIVE_MAXIMUM;
         boolean receiveMaximumPresent = false;
-        int topicAliasMaximum = DEFAULT_TOPIC_ALIAS_MAXIMUM;
+        int topicAliasMaximum = Restrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM;
         boolean topicAliasMaximumPresent = false;
-        byte maximumQoS = DEFAULT_MAXIMUM_QOS;
+        byte maximumQoS = Restrictions.DEFAULT_MAXIMUM_QOS;
         boolean maximumQoSPresent = false;
-        boolean retainAvailable = DEFAULT_RETAIN_AVAILABLE;
+        boolean retainAvailable = Restrictions.DEFAULT_RETAIN_AVAILABLE;
         boolean retainAvailablePresent = false;
-        long maximumPacketSize = DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT;
+        long maximumPacketSize = Restrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT;
         boolean maximumPacketSizePresent = false;
-        boolean wildCardSubscriptionAvailable = DEFAULT_WILDCARD_SUBSCRIPTION_AVAILABLE;
+        boolean wildCardSubscriptionAvailable = Restrictions.DEFAULT_WILDCARD_SUBSCRIPTION_AVAILABLE;
         boolean wildCardSubscriptionAvailablePresent = false;
-        boolean subscriptionIdentifierAvailable = DEFAULT_SUBSCRIPTION_IDENTIFIER_AVAILABLE;
+        boolean subscriptionIdentifierAvailable = Restrictions.DEFAULT_SUBSCRIPTION_IDENTIFIER_AVAILABLE;
         boolean subscriptionIdentifierAvailablePresent = false;
-        boolean sharedSubscriptionAvailable = DEFAULT_SHARED_SUBSCRIPTION_AVAILABLE;
+        boolean sharedSubscriptionAvailable = Restrictions.DEFAULT_SHARED_SUBSCRIPTION_AVAILABLE;
         boolean sharedSubscriptionAvailablePresent = false;
 
         Mqtt5UTF8String responseInformation = null;
@@ -114,7 +113,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
             }
 
             switch (propertyIdentifier) {
-                case SESSION_EXPIRY_INTERVAL:
+                case Mqtt5ConnAckProperty.SESSION_EXPIRY_INTERVAL:
                     if (sessionExpiryInterval != SESSION_EXPIRY_INTERVAL_FROM_CONNECT) {
                         // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
                         in.clear();
@@ -127,7 +126,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                     }
                     sessionExpiryInterval = in.readUnsignedInt();
                     break;
-                case ASSIGNED_CLIENT_IDENTIFIER:
+                case Mqtt5ConnAckProperty.ASSIGNED_CLIENT_IDENTIFIER:
                     if (assignedClientIdentifier != CLIENT_IDENTIFIER_FROM_CONNECT) {
                         // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
                         in.clear();
@@ -140,7 +139,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                         return null;
                     }
                     break;
-                case SERVER_KEEP_ALIVE:
+                case Mqtt5ConnAckProperty.SERVER_KEEP_ALIVE:
                     if (serverKeepAlive != KEEP_ALIVE_FROM_CONNECT) {
                         // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
                         in.clear();
@@ -153,7 +152,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                     }
                     serverKeepAlive = in.readUnsignedShort();
                     break;
-                case AUTHENTICATION_METHOD:
+                case Mqtt5ConnAckProperty.AUTHENTICATION_METHOD:
                     if (authenticationMethod != null) {
                         // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
                         in.clear();
@@ -167,7 +166,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                     }
                     authPresent = true;
                     break;
-                case AUTHENTICATION_DATA:
+                case Mqtt5ConnAckProperty.AUTHENTICATION_DATA:
                     if (authenticationData != null) {
                         // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
                         in.clear();
@@ -181,7 +180,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                     }
                     authPresent = true;
                     break;
-                case RECEIVE_MAXIMUM:
+                case Mqtt5ConnAckProperty.RECEIVE_MAXIMUM:
                     if (receiveMaximumPresent) {
                         // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
                         in.clear();
@@ -201,7 +200,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                     receiveMaximumPresent = true;
                     restrictionsPresent = true;
                     break;
-                case TOPIC_ALIAS_MAXIMUM:
+                case Mqtt5ConnAckProperty.TOPIC_ALIAS_MAXIMUM:
                     if (topicAliasMaximumPresent) {
                         // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
                         in.clear();
@@ -216,7 +215,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                     topicAliasMaximumPresent = true;
                     restrictionsPresent = true;
                     break;
-                case MAXIMUM_QOS:
+                case Mqtt5ConnAckProperty.MAXIMUM_QOS:
                     if (maximumQoSPresent) {
                         // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
                         in.clear();
@@ -236,7 +235,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                     maximumQoSPresent = true;
                     restrictionsPresent = true;
                     break;
-                case RETAIN_AVAILABLE:
+                case Mqtt5ConnAckProperty.RETAIN_AVAILABLE:
                     if (retainAvailablePresent) {
                         // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
                         in.clear();
@@ -257,7 +256,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                     retainAvailablePresent = true;
                     restrictionsPresent = true;
                     break;
-                case MAXIMUM_PACKET_SIZE:
+                case Mqtt5ConnAckProperty.MAXIMUM_PACKET_SIZE:
                     if (maximumPacketSizePresent) {
                         // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
                         in.clear();
@@ -277,7 +276,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                     maximumPacketSizePresent = true;
                     restrictionsPresent = true;
                     break;
-                case WILDCARD_SUBSCRIPTION_AVAILABLE:
+                case Mqtt5ConnAckProperty.WILDCARD_SUBSCRIPTION_AVAILABLE:
                     if (wildCardSubscriptionAvailablePresent) {
                         // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
                         in.clear();
@@ -298,7 +297,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                     wildCardSubscriptionAvailablePresent = true;
                     restrictionsPresent = true;
                     break;
-                case SUBSCRIPTION_IDENTIFIER_AVAILABLE:
+                case Mqtt5ConnAckProperty.SUBSCRIPTION_IDENTIFIER_AVAILABLE:
                     if (subscriptionIdentifierAvailablePresent) {
                         // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
                         in.clear();
@@ -319,7 +318,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                     subscriptionIdentifierAvailablePresent = true;
                     restrictionsPresent = true;
                     break;
-                case SHARED_SUBSCRIPTION_AVAILABLE:
+                case Mqtt5ConnAckProperty.SHARED_SUBSCRIPTION_AVAILABLE:
                     if (sharedSubscriptionAvailablePresent) {
                         // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
                         in.clear();
@@ -340,7 +339,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                     sharedSubscriptionAvailablePresent = true;
                     restrictionsPresent = true;
                     break;
-                case RESPONSE_INFORMATION:
+                case Mqtt5ConnAckProperty.RESPONSE_INFORMATION:
                     if (responseInformation != null) {
                         // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
                         in.clear();
@@ -353,7 +352,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                         return null;
                     }
                     break;
-                case SERVER_REFERENCE:
+                case Mqtt5ConnAckProperty.SERVER_REFERENCE:
                     if (serverReference != null) {
                         // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
                         in.clear();
@@ -366,7 +365,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                         return null;
                     }
                     break;
-                case REASON_STRING:
+                case Mqtt5ConnAckProperty.REASON_STRING:
                     if (reasonString != null) {
                         // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
                         in.clear();
@@ -379,7 +378,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                         return null;
                     }
                     break;
-                case USER_PROPERTY:
+                case Mqtt5ConnAckProperty.USER_PROPERTY:
                     if (userProperties == Mqtt5UserProperty.DEFAULT_NO_USER_PROPERTIES) {
                         userProperties = new LinkedList<>();
                     }
@@ -398,21 +397,21 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
             }
         }
 
-        Mqtt5ConnAck.Auth auth = Mqtt5ConnAck.Auth.DEFAULT_NO_AUTH;
+        AuthImpl auth = AuthImpl.DEFAULT_NO_AUTH;
         if (authPresent) {
-            auth = new Mqtt5ConnAck.Auth(authenticationMethod, authenticationData);
+            auth = new AuthImpl(authenticationMethod, authenticationData);
         }
 
-        Mqtt5ConnAck.Restrictions restrictions = Mqtt5ConnAck.Restrictions.DEFAULT;
+        RestrictionsImpl restrictions = RestrictionsImpl.DEFAULT;
         if (restrictionsPresent) {
-            restrictions = new Mqtt5ConnAck.Restrictions(
+            restrictions = new RestrictionsImpl(
                     receiveMaximum, topicAliasMaximum, maximumPacketSize, maximumQoS, retainAvailable,
                     wildCardSubscriptionAvailable, subscriptionIdentifierAvailable, sharedSubscriptionAvailable);
         }
 
-        return new Mqtt5ConnAck(
-                reasonCode, reasonString, sessionPresent, sessionExpiryInterval, serverKeepAlive,
-                assignedClientIdentifier, auth, restrictions, responseInformation, serverReference, userProperties);
+        return new Mqtt5ConnAckImpl(
+                reasonCode, sessionPresent, sessionExpiryInterval, serverKeepAlive, assignedClientIdentifier, auth,
+                restrictions, responseInformation, serverReference, reasonString, userProperties);
     }
 
 }
