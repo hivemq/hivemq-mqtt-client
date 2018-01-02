@@ -1,5 +1,6 @@
 package org.mqttbee.mqtt5.message.disconnect;
 
+import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
@@ -10,8 +11,6 @@ import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -25,17 +24,17 @@ public class Mqtt5DisconnectImpl implements Mqtt5Disconnect {
     private final long sessionExpiryInterval;
     private final Mqtt5UTF8String serverReference;
     private final Mqtt5UTF8String reasonString;
-    private final List<Mqtt5UserProperty> userProperties;
+    private final ImmutableList<Mqtt5UserProperty> userProperties;
 
     public Mqtt5DisconnectImpl(
             @NotNull final Mqtt5DisconnectReasonCode reasonCode, final long sessionExpiryInterval,
             @Nullable final Mqtt5UTF8String serverReference, @Nullable final Mqtt5UTF8String reasonString,
-            @NotNull final List<Mqtt5UserProperty> userProperties) {
+            @NotNull final ImmutableList<Mqtt5UserProperty> userProperties) {
         this.reasonCode = reasonCode;
         this.sessionExpiryInterval = sessionExpiryInterval;
         this.serverReference = serverReference;
         this.reasonString = reasonString;
-        this.userProperties = Collections.unmodifiableList(userProperties);
+        this.userProperties = userProperties;
     }
 
     @NotNull
@@ -65,7 +64,7 @@ public class Mqtt5DisconnectImpl implements Mqtt5Disconnect {
 
     @NotNull
     @Override
-    public List<Mqtt5UserProperty> getUserProperties() {
+    public ImmutableList<Mqtt5UserProperty> getUserProperties() {
         return userProperties;
     }
 

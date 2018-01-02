@@ -1,5 +1,6 @@
 package org.mqttbee.mqtt5.codec.decoder;
 
+import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
@@ -13,8 +14,6 @@ import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckProperty;
 import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckReasonCode;
 
 import javax.inject.Singleton;
-import java.util.LinkedList;
-import java.util.List;
 
 import static org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckImpl.*;
 
@@ -98,7 +97,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
         Mqtt5UTF8String responseInformation = null;
         Mqtt5UTF8String serverReference = null;
         Mqtt5UTF8String reasonString = null;
-        List<Mqtt5UserProperty> userProperties = Mqtt5UserProperty.DEFAULT_NO_USER_PROPERTIES;
+        ImmutableList.Builder<Mqtt5UserProperty> userPropertiesBuilder = null;
 
         boolean authPresent = false;
         boolean restrictionsPresent = false;
@@ -379,8 +378,8 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                     }
                     break;
                 case Mqtt5ConnAckProperty.USER_PROPERTY:
-                    if (userProperties == Mqtt5UserProperty.DEFAULT_NO_USER_PROPERTIES) {
-                        userProperties = new LinkedList<>();
+                    if (userPropertiesBuilder == null) {
+                        userPropertiesBuilder = ImmutableList.builder();
                     }
                     final Mqtt5UserProperty userProperty = Mqtt5UserProperty.decode(in);
                     if (userProperty == null) {
@@ -388,7 +387,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                         in.clear();
                         return null;
                     }
-                    userProperties.add(userProperty);
+                    userPropertiesBuilder.add(userProperty);
                     break;
                 default:
                     // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
@@ -407,6 +406,11 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
             restrictions = new RestrictionsImpl(
                     receiveMaximum, topicAliasMaximum, maximumPacketSize, maximumQoS, retainAvailable,
                     wildCardSubscriptionAvailable, subscriptionIdentifierAvailable, sharedSubscriptionAvailable);
+        }
+
+        ImmutableList<Mqtt5UserProperty> userProperties = Mqtt5UserProperty.DEFAULT_NO_USER_PROPERTIES;
+        if (userPropertiesBuilder != null) {
+            userProperties = userPropertiesBuilder.build();
         }
 
         return new Mqtt5ConnAckImpl(

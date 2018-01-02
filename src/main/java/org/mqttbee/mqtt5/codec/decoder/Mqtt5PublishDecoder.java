@@ -1,5 +1,6 @@
 package org.mqttbee.mqtt5.codec.decoder;
 
+import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
@@ -14,8 +15,6 @@ import org.mqttbee.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl;
 
 import javax.inject.Singleton;
-import java.util.LinkedList;
-import java.util.List;
 
 import static org.mqttbee.mqtt5.message.publish.Mqtt5PublishProperty.*;
 
@@ -69,7 +68,7 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
         Mqtt5UTF8String contentType = null;
         Mqtt5UTF8String responseTopic = null;
         byte[] correlationData = null;
-        List<Mqtt5UserProperty> userProperties = Mqtt5UserProperty.DEFAULT_NO_USER_PROPERTIES;
+        ImmutableList.Builder<Mqtt5UserProperty> userPropertiesBuilder = null;
 
         final int propertiesStartIndex = in.readerIndex();
         while (in.readerIndex() - propertiesStartIndex < propertiesLength) {
@@ -153,8 +152,8 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
                     }
                     break;
                 case USER_PROPERTY:
-                    if (userProperties == Mqtt5UserProperty.DEFAULT_NO_USER_PROPERTIES) {
-                        userProperties = new LinkedList<>();
+                    if (userPropertiesBuilder == null) {
+                        userPropertiesBuilder = ImmutableList.builder();
                     }
                     final Mqtt5UserProperty userProperty = Mqtt5UserProperty.decode(in);
                     if (userProperty == null) {
@@ -162,7 +161,7 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
                         in.clear();
                         return null;
                     }
-                    userProperties.add(userProperty);
+                    userPropertiesBuilder.add(userProperty);
                     break;
                 default:
                     // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
@@ -176,6 +175,11 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
         if (payloadLength > 0) {
             payload = new byte[payloadLength];
             in.readBytes(payload);
+        }
+
+        ImmutableList<Mqtt5UserProperty> userProperties = Mqtt5UserProperty.DEFAULT_NO_USER_PROPERTIES;
+        if (userPropertiesBuilder != null) {
+            userProperties = userPropertiesBuilder.build();
         }
 
         // TODO packet identifier and dup flag, maybe internal publish impl/wrapper?

@@ -16,7 +16,6 @@ import org.mqttbee.mqtt5.message.publish.Mqtt5WillPublishImpl;
 import org.mqttbee.mqtt5.message.publish.Mqtt5WillPublishProperty;
 
 import javax.inject.Singleton;
-import java.util.List;
 
 import static org.mqttbee.mqtt5.message.connect.Mqtt5ConnectImpl.*;
 
@@ -126,10 +125,7 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
             }
         }
 
-        final List<Mqtt5UserProperty> userProperties = connect.getUserProperties();
-        if (userProperties != Mqtt5UserProperty.DEFAULT_NO_USER_PROPERTIES) {
-            propertiesLength += Mqtt5UserProperty.encodedLength(userProperties);
-        }
+        propertiesLength += Mqtt5UserProperty.encodedLength(connect.getUserProperties());
 
         if (!Mqtt5DataTypes.isInVariableByteIntegerRange(propertiesLength)) {
             // TODO exception properties size exceeded
@@ -161,10 +157,9 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
             if (correlationData != null) {
                 willPropertiesLength += 1 + Mqtt5DataTypes.encodedBinaryDataLength(correlationData);
             }
-            final List<Mqtt5UserProperty> willUserProperties = willPublish.getUserProperties();
-            if (willUserProperties != Mqtt5UserProperty.DEFAULT_NO_USER_PROPERTIES) {
-                willPropertiesLength += Mqtt5UserProperty.encodedLength(willUserProperties);
-            }
+
+            willPropertiesLength += Mqtt5UserProperty.encodedLength(willPublish.getUserProperties());
+
             if (willPublish.getDelayInterval() != Mqtt5WillPublish.DEFAULT_DELAY_INTERVAL) {
                 willPropertiesLength += 5;
             }
@@ -271,10 +266,7 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
             }
         }
 
-        final List<Mqtt5UserProperty> userProperties = connect.getUserProperties();
-        if (userProperties != Mqtt5UserProperty.DEFAULT_NO_USER_PROPERTIES) {
-            Mqtt5UserProperty.encode(userProperties, out);
-        }
+        Mqtt5UserProperty.encode(connect.getUserProperties(), out);
     }
 
     private void encodePayload(
@@ -330,10 +322,9 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
                 out.writeByte(Mqtt5WillPublishProperty.CORRELATION_DATA);
                 Mqtt5DataTypes.encodeBinaryData(correlationData, out);
             }
-            final List<Mqtt5UserProperty> willUserProperties = willPublish.getUserProperties();
-            if (willUserProperties != Mqtt5UserProperty.DEFAULT_NO_USER_PROPERTIES) {
-                Mqtt5UserProperty.encode(willUserProperties, out);
-            }
+
+            Mqtt5UserProperty.encode(willPublish.getUserProperties(), out);
+
             final long delayInterval = willPublish.getDelayInterval();
             if (delayInterval != Mqtt5WillPublish.DEFAULT_DELAY_INTERVAL) {
                 out.writeByte(Mqtt5WillPublishProperty.WILL_DELAY_INTERVAL);

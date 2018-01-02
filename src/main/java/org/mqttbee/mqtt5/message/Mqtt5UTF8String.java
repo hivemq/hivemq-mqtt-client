@@ -13,8 +13,6 @@ import java.util.regex.Pattern;
  */
 public class Mqtt5UTF8String {
 
-    @NotNull
-    public static final Mqtt5UTF8String PROTOCOL_NAME = new Mqtt5UTF8String(encodeUnsafe("MQTT"));
     private static final Charset CHARSET = Charset.forName("UTF-8");
     private static final Pattern MUST_NOT_CHARACTERS_PATTERN = Pattern.compile("\\u0000|[\\uD800-\\uDFFF]");
     private static final Pattern SHOULD_NOT_CHARACTERS_PATTERN =
@@ -36,6 +34,8 @@ public class Mqtt5UTF8String {
                     "|\\uDB7F\\uDFFE|\\uDB7F\\uDFFF" +  //  U+EFFFE|F
                     "|\\uDBBF\\uDFFE|\\uDBBF\\uDFFF" +  //  U+FFFFE|F
                     "|\\uDBFF\\uDFFE|\\uDBFF\\uDFFF");  // U+10FFFE|F
+    @NotNull
+    public static final Mqtt5UTF8String PROTOCOL_NAME = new Mqtt5UTF8String(encodeUnsafe("MQTT"));
 
     @Nullable
     public static Mqtt5UTF8String from(@NotNull final byte[] binary) {

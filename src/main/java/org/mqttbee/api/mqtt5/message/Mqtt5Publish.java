@@ -1,10 +1,10 @@
 package org.mqttbee.api.mqtt5.message;
 
+import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt5.message.*;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -40,6 +40,6 @@ public interface Mqtt5Publish extends Mqtt5Message {
     Optional<byte[]> getCorrelationData();
 
     @NotNull
-    List<Mqtt5UserProperty> getUserProperties();
+    ImmutableList<Mqtt5UserProperty> getUserProperties();
 
 }

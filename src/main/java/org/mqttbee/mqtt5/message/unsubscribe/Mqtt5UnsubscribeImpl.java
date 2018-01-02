@@ -1,5 +1,6 @@
 package org.mqttbee.mqtt5.message.unsubscribe;
 
+import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
@@ -9,32 +10,30 @@ import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5TopicFilter;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 
-import java.util.Collections;
-import java.util.List;
-
 /**
  * @author Silvio Giebl
  */
 public class Mqtt5UnsubscribeImpl implements Mqtt5Unsubscribe {
 
-    private final List<Mqtt5TopicFilter> topicFilters;
-    private final List<Mqtt5UserProperty> userProperties;
+    private final ImmutableList<Mqtt5TopicFilter> topicFilters;
+    private final ImmutableList<Mqtt5UserProperty> userProperties;
 
     public Mqtt5UnsubscribeImpl(
-            @NotNull final List<Mqtt5TopicFilter> topicFilters, @NotNull final List<Mqtt5UserProperty> userProperties) {
-        this.topicFilters = Collections.unmodifiableList(topicFilters);
-        this.userProperties = Collections.unmodifiableList(userProperties);
+            @NotNull final ImmutableList<Mqtt5TopicFilter> topicFilters,
+            @NotNull final ImmutableList<Mqtt5UserProperty> userProperties) {
+        this.topicFilters = topicFilters;
+        this.userProperties = userProperties;
     }
 
     @NotNull
     @Override
-    public List<Mqtt5TopicFilter> getTopicFilters() {
+    public ImmutableList<Mqtt5TopicFilter> getTopicFilters() {
         return topicFilters;
     }
 
     @NotNull
     @Override
-    public List<Mqtt5UserProperty> getUserProperties() {
+    public ImmutableList<Mqtt5UserProperty> getUserProperties() {
         return userProperties;
     }
 
