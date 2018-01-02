@@ -135,7 +135,7 @@ public class Mqtt5ConnectImpl implements Mqtt5Connect, Mqtt5Message {
     public static class AuthImpl implements Auth {
 
         @Nullable
-        public static final Auth DEFAULT_NO_AUTH = null;
+        public static final AuthImpl DEFAULT_NO_AUTH = null;
 
         private final Mqtt5UTF8String username;
         private final byte[] password;
@@ -201,7 +201,7 @@ public class Mqtt5ConnectImpl implements Mqtt5Connect, Mqtt5Message {
     public static class RestrictionsImpl implements Restrictions {
 
         @NotNull
-        public static final Restrictions DEFAULT = new RestrictionsImpl(
+        public static final RestrictionsImpl DEFAULT = new RestrictionsImpl(
                 DEFAULT_RECEIVE_MAXIMUM, DEFAULT_TOPIC_ALIAS_MAXIMUM, DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT);
 
         private final int receiveMaximum;

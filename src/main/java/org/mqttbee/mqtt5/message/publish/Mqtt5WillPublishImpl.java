@@ -21,10 +21,10 @@ public class Mqtt5WillPublishImpl extends Mqtt5PublishImpl implements Mqtt5WillP
 
     private final long delay;
 
-    Mqtt5WillPublishImpl(
+    public Mqtt5WillPublishImpl(
             @NotNull final Mqtt5Topic topic, @Nullable final byte[] payload, @NotNull final Mqtt5QoS qos,
             final boolean isRetain, final int messageExpiryInterval,
-            @NotNull final Mqtt5PayloadFormatIndicator payloadFormatIndicator,
+            @Nullable final Mqtt5PayloadFormatIndicator payloadFormatIndicator,
             @Nullable final Mqtt5UTF8String contentType, @Nullable final Mqtt5UTF8String responseTopic,
             @Nullable final byte[] correlationData, @NotNull final ImmutableList<Mqtt5UserProperty> userProperties,
             final long delay) {
