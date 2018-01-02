@@ -5,12 +5,13 @@ import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.message.Mqtt5PingReq;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoders;
+import org.mqttbee.mqtt5.message.Mqtt5Message;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5PingReqImpl implements Mqtt5PingReq {
+public class Mqtt5PingReqImpl implements Mqtt5PingReq, Mqtt5Message {
 
     @NotNull
     @Override

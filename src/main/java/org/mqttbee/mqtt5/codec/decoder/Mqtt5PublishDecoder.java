@@ -1,11 +1,11 @@
 package org.mqttbee.mqtt5.codec.decoder;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.primitives.ImmutableIntArray;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt5.message.Mqtt5Publish;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.mqtt5.message.Mqtt5Topic;
@@ -13,10 +13,13 @@ import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl;
+import org.mqttbee.mqtt5.message.publish.Mqtt5PublishInternal;
+import org.mqttbee.mqtt5.message.publish.Mqtt5PublishProperty;
 
 import javax.inject.Singleton;
 
-import static org.mqttbee.mqtt5.message.publish.Mqtt5PublishProperty.*;
+import static org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl.DEFAULT_MESSAGE_EXPIRY_INTERVAL_INFINITY;
+import static org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl.DEFAULT_NO_TOPIC_ALIAS;
 
 /**
  * @author Silvio Giebl
@@ -26,7 +29,7 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
 
     @Override
     @Nullable
-    public Mqtt5PublishImpl decode(final int flags, @NotNull final Channel channel, @NotNull final ByteBuf in) {
+    public Mqtt5PublishInternal decode(final int flags, @NotNull final Channel channel, @NotNull final ByteBuf in) {
         final boolean dup = (flags & 0b1000) != 0;
         final boolean retain = (flags & 0b0001) != 0;
 
@@ -63,12 +66,14 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
             return null;
         }
 
-        long messageExpiryInterval = Mqtt5Publish.DEFAULT_MESSAGE_EXPIRY_INTERVAL_INFINITY;
+        long messageExpiryInterval = DEFAULT_MESSAGE_EXPIRY_INTERVAL_INFINITY;
         Mqtt5PayloadFormatIndicator payloadFormatIndicator = null;
         Mqtt5UTF8String contentType = null;
         Mqtt5UTF8String responseTopic = null;
         byte[] correlationData = null;
         ImmutableList.Builder<Mqtt5UserProperty> userPropertiesBuilder = null;
+        int topicAlias = DEFAULT_NO_TOPIC_ALIAS;
+        ImmutableIntArray.Builder subscriptionIdentifiersBuilder = null;
 
         final int propertiesStartIndex = in.readerIndex();
         while (in.readerIndex() - propertiesStartIndex < propertiesLength) {
@@ -81,8 +86,8 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
             }
 
             switch (propertyIdentifier) {
-                case MESSAGE_EXPIRY_INTERVAL:
-                    if (messageExpiryInterval != Mqtt5Publish.DEFAULT_MESSAGE_EXPIRY_INTERVAL_INFINITY) {
+                case Mqtt5PublishProperty.MESSAGE_EXPIRY_INTERVAL:
+                    if (messageExpiryInterval != DEFAULT_MESSAGE_EXPIRY_INTERVAL_INFINITY) {
                         // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
                         in.clear();
                         return null;
@@ -94,7 +99,7 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
                     }
                     messageExpiryInterval = in.readUnsignedInt();
                     break;
-                case PAYLOAD_FORMAT_INDICATOR:
+                case Mqtt5PublishProperty.PAYLOAD_FORMAT_INDICATOR:
                     if (payloadFormatIndicator != null) {
                         // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
                         in.clear();
@@ -112,7 +117,7 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
                         return null;
                     }
                     break;
-                case CONTENT_TYPE:
+                case Mqtt5PublishProperty.CONTENT_TYPE:
                     if (contentType != null) {
                         // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
                         in.clear();
@@ -125,7 +130,7 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
                         return null;
                     }
                     break;
-                case RESPONSE_TOPIC:
+                case Mqtt5PublishProperty.RESPONSE_TOPIC:
                     if (responseTopic != null) {
                         // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
                         in.clear();
@@ -138,7 +143,7 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
                         return null;
                     }
                     break;
-                case CORRELATION_DATA:
+                case Mqtt5PublishProperty.CORRELATION_DATA:
                     if (correlationData != null) {
                         // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
                         in.clear();
@@ -151,7 +156,7 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
                         return null;
                     }
                     break;
-                case USER_PROPERTY:
+                case Mqtt5PublishProperty.USER_PROPERTY:
                     if (userPropertiesBuilder == null) {
                         userPropertiesBuilder = ImmutableList.builder();
                     }
@@ -162,6 +167,31 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
                         return null;
                     }
                     userPropertiesBuilder.add(userProperty);
+                    break;
+                case Mqtt5PublishProperty.TOPIC_ALIAS:
+                    if (topicAlias != DEFAULT_NO_TOPIC_ALIAS) {
+                        // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
+                        in.clear();
+                        return null;
+                    }
+                    if (in.readableBytes() < 2) {
+                        // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
+                        in.clear();
+                        return null;
+                    }
+                    topicAlias = in.readUnsignedShort();
+                    break;
+                case Mqtt5PublishProperty.SUBSCRIPTION_IDENTIFIER:
+                    if (subscriptionIdentifiersBuilder == null) {
+                        subscriptionIdentifiersBuilder = ImmutableIntArray.builder();
+                    }
+                    final int subscriptionIdentifier = Mqtt5DataTypes.decodeVariableByteInteger(in);
+                    if (subscriptionIdentifier < 0) {
+                        // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
+                        in.clear();
+                        return null;
+                    }
+                    subscriptionIdentifiersBuilder.add(subscriptionIdentifier);
                     break;
                 default:
                     // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
@@ -182,9 +212,17 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
             userProperties = userPropertiesBuilder.build();
         }
 
-        // TODO packet identifier and dup flag, maybe internal publish impl/wrapper?
-        return new Mqtt5PublishImpl(topic, payload, qos, retain, messageExpiryInterval, payloadFormatIndicator,
-                contentType, responseTopic, correlationData, userProperties);
+        final Mqtt5PublishImpl publish = new Mqtt5PublishImpl(topic, payload, qos, retain, messageExpiryInterval,
+                payloadFormatIndicator, contentType, responseTopic, correlationData, userProperties);
+
+        final Mqtt5PublishInternal publishInternal = new Mqtt5PublishInternal(publish);
+        publishInternal.setDup(dup);
+        publishInternal.setPacketIdentifier(packetIdentifier);
+        if (subscriptionIdentifiersBuilder != null) {
+            publishInternal.setSubscriptionIdentifiers(subscriptionIdentifiersBuilder.build());
+        }
+
+        return publishInternal;
     }
 
 }

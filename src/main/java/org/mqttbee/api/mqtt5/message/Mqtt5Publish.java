@@ -2,7 +2,10 @@ package org.mqttbee.api.mqtt5.message;
 
 import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt5.message.*;
+import org.mqttbee.mqtt5.message.Mqtt5QoS;
+import org.mqttbee.mqtt5.message.Mqtt5Topic;
+import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
+import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 
 import java.util.Optional;
@@ -10,9 +13,10 @@ import java.util.Optional;
 /**
  * @author Silvio Giebl
  */
-public interface Mqtt5Publish extends Mqtt5Message {
+public interface Mqtt5Publish {
 
     long DEFAULT_MESSAGE_EXPIRY_INTERVAL_INFINITY = Long.MAX_VALUE;
+    int DEFAULT_NO_TOPIC_ALIAS = -1;
 
     @NotNull
     Mqtt5Topic getTopic();

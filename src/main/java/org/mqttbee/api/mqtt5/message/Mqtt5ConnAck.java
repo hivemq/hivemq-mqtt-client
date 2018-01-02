@@ -3,7 +3,6 @@ package org.mqttbee.api.mqtt5.message;
 import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifier;
-import org.mqttbee.mqtt5.message.Mqtt5Message;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckReasonCode;
@@ -13,7 +12,7 @@ import java.util.Optional;
 /**
  * @author Silvio Giebl
  */
-public interface Mqtt5ConnAck extends Mqtt5Message {
+public interface Mqtt5ConnAck {
 
     @NotNull
     Mqtt5ConnAckReasonCode getReasonCode();

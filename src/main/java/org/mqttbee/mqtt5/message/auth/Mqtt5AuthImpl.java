@@ -7,6 +7,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5Auth;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoders;
+import org.mqttbee.mqtt5.message.Mqtt5Message;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
@@ -16,7 +17,7 @@ import java.util.Optional;
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5AuthImpl implements Mqtt5Auth {
+public class Mqtt5AuthImpl implements Mqtt5Auth, Mqtt5Message {
 
     private final Mqtt5AuthReasonCode reasonCode;
     private final Mqtt5UTF8String method;
