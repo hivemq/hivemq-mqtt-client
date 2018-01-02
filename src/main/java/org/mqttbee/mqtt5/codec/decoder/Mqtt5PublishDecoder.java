@@ -49,7 +49,7 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
         }
 
         int packetIdentifier = NO_PACKET_IDENTIFIER_QOS_0;
-        if (qos == Mqtt5QoS.AT_MOST_ONCE) {
+        if (qos != Mqtt5QoS.AT_MOST_ONCE) {
             if (in.readableBytes() < 2) {
                 // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
                 in.clear();
