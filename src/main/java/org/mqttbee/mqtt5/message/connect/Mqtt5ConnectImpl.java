@@ -7,10 +7,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5Connect;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoders;
-import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifier;
-import org.mqttbee.mqtt5.message.Mqtt5MessageType;
-import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
+import org.mqttbee.mqtt5.message.*;
 import org.mqttbee.mqtt5.message.publish.Mqtt5WillPublishImpl;
 
 import java.util.Optional;
@@ -18,7 +15,7 @@ import java.util.Optional;
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5ConnectImpl implements Mqtt5Connect {
+public class Mqtt5ConnectImpl implements Mqtt5Connect, Mqtt5Message {
 
     public static final int NOT_DEFAULT_RESPONSE_INFORMATION_REQUESTED = DEFAULT_RESPONSE_INFORMATION_REQUESTED ? 0 : 1;
     public static final int NOT_DEFAULT_PROBLEM_INFORMATION_REQUESTED = DEFAULT_PROBLEM_INFORMATION_REQUESTED ? 0 : 1;

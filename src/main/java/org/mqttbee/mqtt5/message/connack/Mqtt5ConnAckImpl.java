@@ -7,17 +7,14 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5ConnAck;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoders;
-import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifier;
-import org.mqttbee.mqtt5.message.Mqtt5MessageType;
-import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
+import org.mqttbee.mqtt5.message.*;
 
 import java.util.Optional;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5ConnAckImpl implements Mqtt5ConnAck {
+public class Mqtt5ConnAckImpl implements Mqtt5ConnAck, Mqtt5Message {
 
     public static final long SESSION_EXPIRY_INTERVAL_FROM_CONNECT = -1;
     public static final int KEEP_ALIVE_FROM_CONNECT = -1;
