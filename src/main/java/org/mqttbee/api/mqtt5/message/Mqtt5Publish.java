@@ -16,7 +16,6 @@ import java.util.Optional;
 public interface Mqtt5Publish {
 
     long DEFAULT_MESSAGE_EXPIRY_INTERVAL_INFINITY = Long.MAX_VALUE;
-    int DEFAULT_NO_TOPIC_ALIAS = -1;
 
     @NotNull
     Mqtt5Topic getTopic();
