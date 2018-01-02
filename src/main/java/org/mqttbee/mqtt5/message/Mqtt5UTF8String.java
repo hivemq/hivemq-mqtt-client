@@ -1,5 +1,6 @@
 package org.mqttbee.mqtt5.message;
 
+import com.google.common.base.Utf8;
 import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
@@ -14,7 +15,6 @@ import java.util.regex.Pattern;
 public class Mqtt5UTF8String {
 
     private static final Charset CHARSET = Charset.forName("UTF-8");
-    private static final Pattern MUST_NOT_CHARACTERS_PATTERN = Pattern.compile("\\u0000|[\\uD800-\\uDFFF]");
     private static final Pattern SHOULD_NOT_CHARACTERS_PATTERN =
             Pattern.compile("[\\u0001-\\u001F]|[\\u007F-\\u009F]|[\\uFDD0-\\uFDEF]" +
                     "|\\uFFFE|\\uFFFF" +               //   U+FFFE|F
@@ -35,12 +35,11 @@ public class Mqtt5UTF8String {
                     "|\\uDBBF\\uDFFE|\\uDBBF\\uDFFF" +  //  U+FFFFE|F
                     "|\\uDBFF\\uDFFE|\\uDBFF\\uDFFF");  // U+10FFFE|F
     @NotNull
-    public static final Mqtt5UTF8String PROTOCOL_NAME = new Mqtt5UTF8String(encodeUnsafe("MQTT"));
+    public static final Mqtt5UTF8String PROTOCOL_NAME = new Mqtt5UTF8String(encode("MQTT"));
 
     @Nullable
     public static Mqtt5UTF8String from(@NotNull final byte[] binary) {
-        final String string = decode(binary); // TODO: containsMustNotCharacters(byte[]) without decoding
-        return (string == null) ? null : new Mqtt5UTF8String(binary, string);
+        return containsMustNotCharacters(binary) ? null : new Mqtt5UTF8String(binary);
     }
 
     @Nullable
@@ -54,24 +53,41 @@ public class Mqtt5UTF8String {
         return containsMustNotCharacters(string) ? null : new Mqtt5UTF8String(string);
     }
 
-    @Nullable
-    static String decode(@NotNull final byte[] binary) {
-        final String string = decodeUnsafe(binary);
-        return containsMustNotCharacters(string) ? null : string;
-    }
-
     @NotNull
-    private static String decodeUnsafe(@NotNull final byte[] binary) {
+    private static String decode(@NotNull final byte[] binary) {
         return new String(binary, CHARSET);
     }
 
     @NotNull
-    static byte[] encodeUnsafe(@NotNull final String string) {
+    static byte[] encode(@NotNull final String string) {
         return string.getBytes(CHARSET);
     }
 
+    static boolean containsMustNotCharacters(@NotNull final byte[] binary) {
+        if (!Utf8.isWellFormed(binary)) {
+            return false;
+        }
+        for (final byte b : binary) {
+            if (b == 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     static boolean containsMustNotCharacters(@NotNull final String string) {
-        return MUST_NOT_CHARACTERS_PATTERN.matcher(string).find();
+        boolean highSurrogate = false;
+        for (int i = 0; i < string.length(); i++) {
+            final char c = string.charAt(i);
+            if (c == 0) {
+                return true;
+            }
+            if (highSurrogate == !Character.isLowSurrogate(c)) {
+                return true;
+            }
+            highSurrogate = Character.isHighSurrogate(c);
+        }
+        return highSurrogate;
     }
 
     private byte[] binary;
@@ -85,11 +101,6 @@ public class Mqtt5UTF8String {
         this.binary = binary;
     }
 
-    Mqtt5UTF8String(@NotNull final byte[] binary, @NotNull final String string) {
-        this.binary = binary;
-        this.string = string;
-    }
-
     public boolean containsShouldNotCharacters() {
         return SHOULD_NOT_CHARACTERS_PATTERN.matcher(string).find();
     }
@@ -97,7 +108,7 @@ public class Mqtt5UTF8String {
     @NotNull
     public byte[] toBinary() {
         if (binary == null) {
-            binary = encodeUnsafe(string);
+            binary = encode(string);
         }
         return binary;
     }
@@ -106,7 +117,7 @@ public class Mqtt5UTF8String {
     @NotNull
     public String toString() {
         if (string == null) {
-            string = decodeUnsafe(binary);
+            string = decode(binary);
         }
         return string;
     }
