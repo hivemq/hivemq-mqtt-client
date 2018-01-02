@@ -1,13 +1,13 @@
 package org.mqttbee.mqtt5.message.publish;
 
 import com.google.common.collect.ImmutableList;
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5Publish;
-import org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoders;
-import org.mqttbee.mqtt5.message.*;
+import org.mqttbee.mqtt5.message.Mqtt5QoS;
+import org.mqttbee.mqtt5.message.Mqtt5Topic;
+import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
+import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 
 import java.util.Optional;
 
@@ -126,18 +126,6 @@ public class Mqtt5PublishImpl implements Mqtt5Publish {
     @Override
     public ImmutableList<Mqtt5UserProperty> getUserProperties() {
         return userProperties;
-    }
-
-    @NotNull
-    @Override
-    public Mqtt5MessageType getType() {
-        return Mqtt5MessageType.PUBLISH;
-    }
-
-    @Override
-    public void encode(
-            @NotNull final Mqtt5MessageEncoders encoders, @NotNull final Channel channel, @NotNull final ByteBuf out) {
-        encoders.getPublishEncoder().encode(this, channel, out);
     }
 
 }

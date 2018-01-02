@@ -1,13 +1,9 @@
 package org.mqttbee.mqtt5.message.puback;
 
 import com.google.common.collect.ImmutableList;
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5PubAck;
-import org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoders;
-import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 
@@ -49,18 +45,6 @@ public class Mqtt5PubAckImpl implements Mqtt5PubAck {
     @Override
     public ImmutableList<Mqtt5UserProperty> getUserProperties() {
         return userProperties;
-    }
-
-    @NotNull
-    @Override
-    public Mqtt5MessageType getType() {
-        return Mqtt5MessageType.PUBACK;
-    }
-
-    @Override
-    public void encode(
-            @NotNull final Mqtt5MessageEncoders encoders, @NotNull final Channel channel, @NotNull final ByteBuf out) {
-        encoders.getPubAckEncoder().encode(this, channel, out);
     }
 
 }
