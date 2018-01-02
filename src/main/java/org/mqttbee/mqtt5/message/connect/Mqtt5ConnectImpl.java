@@ -1,5 +1,6 @@
 package org.mqttbee.mqtt5.message.connect;
 
+import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
@@ -12,8 +13,6 @@ import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 import org.mqttbee.mqtt5.message.publish.Mqtt5WillPublishImpl;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -33,14 +32,14 @@ public class Mqtt5ConnectImpl implements Mqtt5Connect {
     private final RestrictionsImpl restrictions;
     private final AuthImpl auth;
     private final Mqtt5WillPublishImpl willPublish;
-    private final List<Mqtt5UserProperty> userProperties;
+    private final ImmutableList<Mqtt5UserProperty> userProperties;
 
     public Mqtt5ConnectImpl(
             @NotNull final Mqtt5ClientIdentifier clientIdentifier, final int keepAlive, final boolean isCleanStart,
             final long sessionExpiryInterval, final boolean isResponseInformationRequested,
             final boolean isProblemInformationRequested, @NotNull final RestrictionsImpl restrictions,
             @Nullable final AuthImpl auth, @Nullable final Mqtt5WillPublishImpl willPublish,
-            @NotNull final List<Mqtt5UserProperty> userProperties) {
+            @NotNull final ImmutableList<Mqtt5UserProperty> userProperties) {
         this.clientIdentifier = clientIdentifier;
         this.keepAlive = keepAlive;
         this.isCleanStart = isCleanStart;
@@ -50,7 +49,7 @@ public class Mqtt5ConnectImpl implements Mqtt5Connect {
         this.restrictions = restrictions;
         this.auth = auth;
         this.willPublish = willPublish;
-        this.userProperties = Collections.unmodifiableList(userProperties);
+        this.userProperties = userProperties;
     }
 
     @NotNull
@@ -119,7 +118,7 @@ public class Mqtt5ConnectImpl implements Mqtt5Connect {
 
     @NotNull
     @Override
-    public List<Mqtt5UserProperty> getUserProperties() {
+    public ImmutableList<Mqtt5UserProperty> getUserProperties() {
         return userProperties;
     }
 

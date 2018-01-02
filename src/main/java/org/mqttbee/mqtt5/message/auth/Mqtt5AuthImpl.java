@@ -1,5 +1,6 @@
 package org.mqttbee.mqtt5.message.auth;
 
+import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
@@ -10,8 +11,6 @@ import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -23,17 +22,17 @@ public class Mqtt5AuthImpl implements Mqtt5Auth {
     private final Mqtt5UTF8String method;
     private final byte[] data;
     private final Mqtt5UTF8String reasonString;
-    private final List<Mqtt5UserProperty> userProperties;
+    private final ImmutableList<Mqtt5UserProperty> userProperties;
 
     public Mqtt5AuthImpl(
             @NotNull final Mqtt5AuthReasonCode reasonCode, @NotNull final Mqtt5UTF8String method,
             @Nullable final byte[] data, @Nullable final Mqtt5UTF8String reasonString,
-            @NotNull final List<Mqtt5UserProperty> userProperties) {
+            @NotNull final ImmutableList<Mqtt5UserProperty> userProperties) {
         this.reasonCode = reasonCode;
         this.method = method;
         this.data = data;
         this.reasonString = reasonString;
-        this.userProperties = Collections.unmodifiableList(userProperties);
+        this.userProperties = userProperties;
     }
 
     @NotNull
@@ -62,7 +61,7 @@ public class Mqtt5AuthImpl implements Mqtt5Auth {
 
     @NotNull
     @Override
-    public List<Mqtt5UserProperty> getUserProperties() {
+    public ImmutableList<Mqtt5UserProperty> getUserProperties() {
         return userProperties;
     }
 
