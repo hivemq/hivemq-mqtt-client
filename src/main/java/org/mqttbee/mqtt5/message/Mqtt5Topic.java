@@ -5,19 +5,14 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 
-import java.util.regex.Pattern;
-
 /**
  * @author Silvio Giebl
  */
 public class Mqtt5Topic extends Mqtt5UTF8String {
 
-    private static final Pattern MUST_NOT_WILDCARD_CHARACTERS_PATTERN = Pattern.compile("[*#]");
-
     @Nullable
     public static Mqtt5Topic from(@NotNull final byte[] binary) {
-        final String string = decode(binary); // TODO: containsMustNotCharacters(byte[]) without decoding
-        return (string == null || containsMustNotWildcardCharacters(string)) ? null : new Mqtt5Topic(binary, string);
+        return containsMustNotCharacters(binary) ? null : new Mqtt5Topic(binary);
     }
 
     @Nullable
@@ -28,20 +23,31 @@ public class Mqtt5Topic extends Mqtt5UTF8String {
 
     @Nullable
     public static Mqtt5Topic from(@NotNull final String string) {
-        return (containsMustNotCharacters(string) || containsMustNotWildcardCharacters(string)) ? null :
-                new Mqtt5Topic(string);
+        return containsMustNotCharacters(string) ? null : new Mqtt5Topic(string);
     }
 
-    private static boolean containsMustNotWildcardCharacters(@NotNull final String string) { // TODO only one regex?
-        return MUST_NOT_WILDCARD_CHARACTERS_PATTERN.matcher(string).find();
+    static boolean containsMustNotCharacters(@NotNull final byte[] binary) {
+        if (!Mqtt5UTF8String.containsMustNotCharacters(binary)) {
+            return false;
+        }
+        for (final byte b : binary) {
+            if (b == '*' || b == '#') {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    static boolean containsMustNotCharacters(@NotNull final String string) {
+        return Mqtt5UTF8String.containsMustNotCharacters(string) || string.contains("*") || string.contains("#");
     }
 
     private Mqtt5Topic(@NotNull final String string) {
         super(string);
     }
 
-    private Mqtt5Topic(@NotNull final byte[] binary, @NotNull final String string) {
-        super(binary, string);
+    private Mqtt5Topic(@NotNull final byte[] binary) {
+        super(binary);
     }
 
 }
