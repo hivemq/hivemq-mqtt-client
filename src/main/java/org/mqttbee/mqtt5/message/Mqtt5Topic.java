@@ -27,19 +27,11 @@ public class Mqtt5Topic extends Mqtt5UTF8String {
     }
 
     static boolean containsMustNotCharacters(@NotNull final byte[] binary) {
-        if (!Mqtt5UTF8String.containsMustNotCharacters(binary)) {
-            return false;
-        }
-        for (final byte b : binary) {
-            if (b == '*' || b == '#') {
-                return false;
-            }
-        }
-        return true;
+        return Mqtt5UTF8String.containsMustNotCharacters(binary) || Mqtt5TopicFilter.containsWildcardCharacters(binary);
     }
 
     static boolean containsMustNotCharacters(@NotNull final String string) {
-        return Mqtt5UTF8String.containsMustNotCharacters(string) || string.contains("*") || string.contains("#");
+        return Mqtt5UTF8String.containsMustNotCharacters(string) || Mqtt5TopicFilter.containsWildcardCharacters(string);
     }
 
     private Mqtt5Topic(@NotNull final String string) {
