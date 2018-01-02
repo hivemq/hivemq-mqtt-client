@@ -1,5 +1,6 @@
 package org.mqttbee.mqtt5.message.subscribe;
 
+import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
@@ -10,33 +11,30 @@ import org.mqttbee.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.mqtt5.message.Mqtt5TopicFilter;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 
-import java.util.Collections;
-import java.util.List;
-
 /**
  * @author Silvio Giebl
  */
 public class Mqtt5SubscribeImpl implements Mqtt5Subscribe {
 
-    private final List<SubscriptionImpl> subscriptions;
-    private final List<Mqtt5UserProperty> userProperties;
+    private final ImmutableList<SubscriptionImpl> subscriptions;
+    private final ImmutableList<Mqtt5UserProperty> userProperties;
 
     public Mqtt5SubscribeImpl(
-            @NotNull final List<SubscriptionImpl> subscriptions,
-            @NotNull final List<Mqtt5UserProperty> userProperties) {
-        this.subscriptions = Collections.unmodifiableList(subscriptions);
-        this.userProperties = Collections.unmodifiableList(userProperties);
+            @NotNull final ImmutableList<SubscriptionImpl> subscriptions,
+            @NotNull final ImmutableList<Mqtt5UserProperty> userProperties) {
+        this.subscriptions = subscriptions;
+        this.userProperties = userProperties;
     }
 
     @NotNull
     @Override
-    public List<SubscriptionImpl> getSubscriptions() {
+    public ImmutableList<SubscriptionImpl> getSubscriptions() {
         return subscriptions;
     }
 
     @NotNull
     @Override
-    public List<Mqtt5UserProperty> getUserProperties() {
+    public ImmutableList<Mqtt5UserProperty> getUserProperties() {
         return userProperties;
     }
 

@@ -1,12 +1,12 @@
 package org.mqttbee.api.mqtt5.message;
 
+import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt5.message.Mqtt5Message;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 import org.mqttbee.mqtt5.message.pubcomp.Mqtt5PubCompReasonCode;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -21,6 +21,6 @@ public interface Mqtt5PubComp extends Mqtt5Message {
     Optional<Mqtt5UTF8String> getReasonString();
 
     @NotNull
-    List<Mqtt5UserProperty> getUserProperties();
+    ImmutableList<Mqtt5UserProperty> getUserProperties();
 
 }

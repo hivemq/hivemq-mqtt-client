@@ -1,20 +1,16 @@
 package org.mqttbee.mqtt5.message;
 
+import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * @author Silvio Giebl
  */
 public class Mqtt5UserProperty {
 
-    public static final List<Mqtt5UserProperty> DEFAULT_NO_USER_PROPERTIES =
-            Collections.unmodifiableList(new ArrayList<>(0));
+    public static final ImmutableList<Mqtt5UserProperty> DEFAULT_NO_USER_PROPERTIES = ImmutableList.of();
 
     @Nullable
     public static Mqtt5UserProperty decode(@NotNull final ByteBuf in) {
@@ -29,9 +25,11 @@ public class Mqtt5UserProperty {
         return new Mqtt5UserProperty(name, value);
     }
 
-    public static void encode(@NotNull final List<Mqtt5UserProperty> userProperties, @NotNull final ByteBuf out) {
-        if (userProperties != Mqtt5UserProperty.DEFAULT_NO_USER_PROPERTIES) {
-            for (final Mqtt5UserProperty userProperty : userProperties) {
+    public static void encode(
+            @NotNull final ImmutableList<Mqtt5UserProperty> userProperties, @NotNull final ByteBuf out) {
+        if (!userProperties.isEmpty()) {
+            for (int i = 0; i < userProperties.size(); i++) {
+                final Mqtt5UserProperty userProperty = userProperties.get(i);
                 out.writeByte(Mqtt5Property.USER_PROPERTY);
                 userProperty.getName().to(out);
                 userProperty.getValue().to(out);
@@ -39,10 +37,11 @@ public class Mqtt5UserProperty {
         }
     }
 
-    public static int encodedLength(@NotNull final List<Mqtt5UserProperty> userProperties) {
+    public static int encodedLength(@NotNull final ImmutableList<Mqtt5UserProperty> userProperties) {
         int encodedLength = 0;
-        if (userProperties != Mqtt5UserProperty.DEFAULT_NO_USER_PROPERTIES) {
-            for (final Mqtt5UserProperty userProperty : userProperties) {
+        if (!userProperties.isEmpty()) {
+            for (int i = 0; i < userProperties.size(); i++) {
+                final Mqtt5UserProperty userProperty = userProperties.get(i);
                 encodedLength += 1 +
                         userProperty.getName().toBinary().length +
                         userProperty.getValue().toBinary().length;
