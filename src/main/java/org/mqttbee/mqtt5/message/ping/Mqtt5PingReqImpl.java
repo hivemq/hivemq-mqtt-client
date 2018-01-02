@@ -13,6 +13,11 @@ import org.mqttbee.mqtt5.message.Mqtt5MessageType;
  */
 public class Mqtt5PingReqImpl implements Mqtt5PingReq, Mqtt5Message {
 
+    public static final Mqtt5PingReqImpl INSTANCE = new Mqtt5PingReqImpl();
+
+    private Mqtt5PingReqImpl() {
+    }
+
     @NotNull
     @Override
     public Mqtt5MessageType getType() {
