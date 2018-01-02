@@ -14,4 +14,17 @@ public class Mqtt5SubAckInternal {
         this.subAck = subAck;
     }
 
+    @NotNull
+    public Mqtt5SubAckImpl getSubAck() {
+        return subAck;
+    }
+
+    public int getPacketIdentifier() {
+        return packetIdentifier;
+    }
+
+    public void setPacketIdentifier(final int packetIdentifier) {
+        this.packetIdentifier = packetIdentifier;
+    }
+
 }

@@ -15,4 +15,25 @@ public class Mqtt5SubscribeInternal {
         this.subscribe = subscribe;
     }
 
+    @NotNull
+    public Mqtt5SubscribeImpl getSubscribe() {
+        return subscribe;
+    }
+
+    public int getPacketIdentfier() {
+        return packetIdentfier;
+    }
+
+    public void setPacketIdentfier(final int packetIdentfier) {
+        this.packetIdentfier = packetIdentfier;
+    }
+
+    public int getSubscriptionIdentifier() {
+        return subscriptionIdentifier;
+    }
+
+    public void setSubscriptionIdentifier(final int subscriptionIdentifier) {
+        this.subscriptionIdentifier = subscriptionIdentifier;
+    }
+
 }
