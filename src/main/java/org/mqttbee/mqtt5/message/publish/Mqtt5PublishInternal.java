@@ -4,7 +4,6 @@ import com.google.common.primitives.ImmutableIntArray;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoders;
 import org.mqttbee.mqtt5.message.Mqtt5Message;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
@@ -14,6 +13,7 @@ import org.mqttbee.mqtt5.message.Mqtt5MessageType;
  */
 public class Mqtt5PublishInternal implements Mqtt5Message {
 
+    public static final int NO_PACKET_IDENTIFIER_QOS_0 = -1;
     public static final ImmutableIntArray DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS = ImmutableIntArray.of();
 
     private final Mqtt5PublishImpl publish;
