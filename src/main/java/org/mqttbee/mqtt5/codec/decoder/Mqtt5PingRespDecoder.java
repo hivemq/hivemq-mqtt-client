@@ -7,6 +7,8 @@ import org.mqttbee.mqtt5.message.ping.Mqtt5PingRespImpl;
 
 import javax.inject.Singleton;
 
+import static org.mqttbee.mqtt5.message.ping.Mqtt5PingRespImpl.INSTANCE;
+
 /**
  * @author Silvio Giebl
  */
@@ -23,7 +25,13 @@ public class Mqtt5PingRespDecoder implements Mqtt5MessageDecoder {
             return null;
         }
 
-        return null;
+        if (in.readableBytes() != 0) {
+            // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
+            in.clear();
+            return null;
+        }
+
+        return INSTANCE;
     }
 
 }
