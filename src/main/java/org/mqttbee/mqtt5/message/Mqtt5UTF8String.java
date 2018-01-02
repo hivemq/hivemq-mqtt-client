@@ -65,14 +65,14 @@ public class Mqtt5UTF8String {
 
     static boolean containsMustNotCharacters(@NotNull final byte[] binary) {
         if (!Utf8.isWellFormed(binary)) {
-            return false;
+            return true;
         }
         for (final byte b : binary) {
             if (b == 0) {
-                return false;
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     static boolean containsMustNotCharacters(@NotNull final String string) {
