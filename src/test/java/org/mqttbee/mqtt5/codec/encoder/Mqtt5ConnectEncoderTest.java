@@ -38,34 +38,34 @@ public class Mqtt5ConnectEncoderTest {
                 68,
                 // variable header
                 //   protocol name
-                0b0000_0000, 0b0000_0100, 0b0100_1101, 0b0101_0001, 0b0101_0100, 0b0101_0100,
+                0, 4, 'M', 'Q', 'T', 'T',
                 //   protocol version
-                0b0000_0101,
+                5,
                 //   connect flags
                 (byte) 0b1100_1110,
                 //   keep alive
-                0b0000_0000, 0b0000_1010,
+                0, 10,
                 //   properties
-                0b0000_0101,
+                5,
                 //     session expiry interval
-                0b0001_0001, 0b0000_0000, 0b0000_0000, 0b0000_0000, 0b0000_1010,
+                17, 0, 0, 0, 10,
                 // payload
                 //   client identifier
-                0b0000_0000, 0b0000_0100, 't', 'e', 's', 't',
+                0, 4, 't', 'e', 's', 't',
                 //   will properties
-                0b0000_1010,
+                10,
                 //     message expiry interval
-                0b0000_0010, 0b0000_0000, 0b0000_0000, 0b0000_0000, 0b0000_1010,
+                2, 0, 0, 0, 10,
                 //     will delay interval
-                0b0001_1000, 0b0000_0000, 0b0000_0000, 0b0000_0000, 0b0000_0101,
+                24, 0, 0, 0, 5,
                 //   will topic
-                0b0000_0000, 0b0000_0101, 't', 'o', 'p', 'i', 'c',
+                0, 5, 't', 'o', 'p', 'i', 'c',
                 //   will payload
-                0b0000_0000, 0b0000_1010, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+                0, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
                 //   username
-                0b0000_0000, 0b0000_1000, 'u', 's', 'e', 'r', 'n', 'a', 'm', 'e',
+                0, 8, 'u', 's', 'e', 'r', 'n', 'a', 'm', 'e',
                 //   password
-                0b0000_0000, 0b0000_0100, 1, 5, 6, 3
+                0, 4, 1, 5, 6, 3
         };
 
         final Mqtt5ClientIdentifier clientIdentifier = Mqtt5ClientIdentifier.from("test");
