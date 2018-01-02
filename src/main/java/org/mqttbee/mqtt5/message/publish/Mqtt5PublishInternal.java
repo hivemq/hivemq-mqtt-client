@@ -14,11 +14,13 @@ import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 public class Mqtt5PublishInternal implements Mqtt5Message {
 
     public static final int NO_PACKET_IDENTIFIER_QOS_0 = -1;
+    public static final int DEFAULT_NO_TOPIC_ALIAS = -1;
     public static final ImmutableIntArray DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS = ImmutableIntArray.of();
 
     private final Mqtt5PublishImpl publish;
     private int packetIdentifier;
     private boolean isDup;
+    private int topicAlias = DEFAULT_NO_TOPIC_ALIAS;
     private ImmutableIntArray subscriptionIdentifiers = DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS;
 
     public Mqtt5PublishInternal(@NotNull final Mqtt5PublishImpl publish) {
@@ -56,6 +58,14 @@ public class Mqtt5PublishInternal implements Mqtt5Message {
 
     public void setDup(final boolean dup) {
         isDup = dup;
+    }
+
+    public int getTopicAlias() {
+        return topicAlias;
+    }
+
+    public void setTopicAlias(final int topicAlias) {
+        this.topicAlias = topicAlias;
     }
 
     @NotNull
