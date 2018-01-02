@@ -14,4 +14,17 @@ public class Mqtt5UnsubscribeInternal {
         this.unsubscribe = unsubscribe;
     }
 
+    @NotNull
+    public Mqtt5UnsubscribeImpl getUnsubscribe() {
+        return unsubscribe;
+    }
+
+    public int getPacketIdentifier() {
+        return packetIdentifier;
+    }
+
+    public void setPacketIdentifier(final int packetIdentifier) {
+        this.packetIdentifier = packetIdentifier;
+    }
+
 }

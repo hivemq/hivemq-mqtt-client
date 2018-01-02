@@ -1,18 +1,30 @@
 package org.mqttbee.mqtt5.message.pubcomp;
 
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt5.message.Mqtt5PubComp;
 
 /**
  * @author Silvio Giebl
  */
 public class Mqtt5PubCompInternal {
 
-    private final Mqtt5PubComp pubComp;
+    private final Mqtt5PubCompImpl pubComp;
     private int packetIdentifier;
 
-    public Mqtt5PubCompInternal(@NotNull final Mqtt5PubComp pubComp) {
+    public Mqtt5PubCompInternal(@NotNull final Mqtt5PubCompImpl pubComp) {
         this.pubComp = pubComp;
+    }
+
+    @NotNull
+    public Mqtt5PubCompImpl getPubComp() {
+        return pubComp;
+    }
+
+    public int getPacketIdentifier() {
+        return packetIdentifier;
+    }
+
+    public void setPacketIdentifier(final int packetIdentifier) {
+        this.packetIdentifier = packetIdentifier;
     }
 
 }

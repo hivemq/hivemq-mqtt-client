@@ -16,4 +16,33 @@ public class Mqtt5PublishInternal {
         this.publish = publish;
     }
 
+    @NotNull
+    public Mqtt5PublishImpl getPublish() {
+        return publish;
+    }
+
+    public int getPacketIdentifier() {
+        return packetIdentifier;
+    }
+
+    public void setPacketIdentifier(final int packetIdentifier) {
+        this.packetIdentifier = packetIdentifier;
+    }
+
+    public boolean isDup() {
+        return isDup;
+    }
+
+    public void setDup(final boolean dup) {
+        isDup = dup;
+    }
+
+    public int[] getSubscriptionIdentifiers() {
+        return subscriptionIdentifiers;
+    }
+
+    public void setSubscriptionIdentifiers(final int[] subscriptionIdentifiers) {
+        this.subscriptionIdentifiers = subscriptionIdentifiers;
+    }
+
 }

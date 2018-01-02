@@ -14,4 +14,17 @@ public class Mqtt5UnsubAckInternal {
         this.unsubAck = unsubAck;
     }
 
+    @NotNull
+    public Mqtt5UnsubAckImpl getUnsubAck() {
+        return unsubAck;
+    }
+
+    public int getPacketIdentifier() {
+        return packetIdentifier;
+    }
+
+    public void setPacketIdentifier(final int packetIdentifier) {
+        this.packetIdentifier = packetIdentifier;
+    }
+
 }
