@@ -90,8 +90,8 @@ public class Mqtt5UTF8String {
         return highSurrogate;
     }
 
-    private byte[] binary;
-    private String string;
+    byte[] binary;
+    String string;
 
     Mqtt5UTF8String(@NotNull final String string) {
         this.string = string;

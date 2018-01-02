@@ -10,9 +10,11 @@ import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
  */
 public class Mqtt5TopicFilter extends Mqtt5UTF8String {
 
+    private static final String SHARE_PREFIX = "$share";
+
     @Nullable
     public static Mqtt5TopicFilter from(@NotNull final byte[] binary) {
-        return containsMustNotCharacters(binary) ? null : new Mqtt5TopicFilter(binary);
+        return containsMustNotCharacters(binary) ? null : new Mqtt5TopicFilter(binary); // FIXME validate wildcards
     }
 
     @Nullable
@@ -22,8 +24,37 @@ public class Mqtt5TopicFilter extends Mqtt5UTF8String {
     }
 
     @Nullable
-    public static Mqtt5TopicFilter from(@NotNull final String string) {
+    public static Mqtt5TopicFilter from(@NotNull final String string) { // FIXME validate wildcards
         return containsMustNotCharacters(string) ? null : new Mqtt5TopicFilter(string);
+    }
+
+    static boolean containsWildcardCharacters(@NotNull final byte[] binary) {
+        for (final byte b : binary) {
+            if (b == '*' || b == '#') {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    static boolean containsWildcardCharacters(@NotNull final String string) {
+        for (int i = 0; i < string.length(); i++) {
+            final char c = string.charAt(i);
+            if (c == '*' || c == '#') {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    static boolean isShared(@NotNull final byte[] binary) {
+        return (binary[0] == SHARE_PREFIX.charAt(0)) && (binary[1] == SHARE_PREFIX.charAt(1)) &&
+                (binary[2] == SHARE_PREFIX.charAt(2)) && (binary[3] == SHARE_PREFIX.charAt(3)) &&
+                (binary[4] == SHARE_PREFIX.charAt(4)) && (binary[5] == SHARE_PREFIX.charAt(5));
+    }
+
+    static boolean isShared(@NotNull final String string) {
+        return string.startsWith(SHARE_PREFIX);
     }
 
     private Mqtt5TopicFilter(@NotNull final String string) {
@@ -34,12 +65,12 @@ public class Mqtt5TopicFilter extends Mqtt5UTF8String {
         super(binary);
     }
 
-    public boolean isShared() {
-        return false; // TODO
+    public boolean containsWildcards() {
+        return (binary == null) ? containsWildcardCharacters(string) : containsWildcardCharacters(binary);
     }
 
-    public boolean containsWildcards() {
-        return false; // TODO
+    public boolean isShared() {
+        return (binary == null) ? isShared(string) : isShared(binary);
     }
 
 }
