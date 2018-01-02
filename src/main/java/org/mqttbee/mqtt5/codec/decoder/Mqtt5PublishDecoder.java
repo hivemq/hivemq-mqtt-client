@@ -19,7 +19,7 @@ import org.mqttbee.mqtt5.message.publish.Mqtt5PublishProperty;
 import javax.inject.Singleton;
 
 import static org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl.DEFAULT_MESSAGE_EXPIRY_INTERVAL_INFINITY;
-import static org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl.DEFAULT_NO_TOPIC_ALIAS;
+import static org.mqttbee.mqtt5.message.publish.Mqtt5PublishInternal.DEFAULT_NO_TOPIC_ALIAS;
 import static org.mqttbee.mqtt5.message.publish.Mqtt5PublishInternal.NO_PACKET_IDENTIFIER_QOS_0;
 
 /**
@@ -222,6 +222,9 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
         final Mqtt5PublishInternal publishInternal = new Mqtt5PublishInternal(publish);
         publishInternal.setDup(dup);
         publishInternal.setPacketIdentifier(packetIdentifier);
+        if (topicAlias != DEFAULT_NO_TOPIC_ALIAS) {
+            publishInternal.setTopicAlias(topicAlias);
+        }
         if (subscriptionIdentifiersBuilder != null) {
             publishInternal.setSubscriptionIdentifiers(subscriptionIdentifiersBuilder.build());
         }
