@@ -61,14 +61,13 @@ public class Mqtt5PubCompDecoder implements Mqtt5MessageDecoder {
                     in.clear();
                     return null;
                 }
-                if (in.readableBytes() < propertiesLength) {
+                if (in.readableBytes() != propertiesLength) {
                     // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
                     in.clear();
                     return null;
                 }
 
-                final int propertiesStartIndex = in.readerIndex();
-                while (in.readerIndex() - propertiesStartIndex < propertiesLength) {
+                while (in.isReadable()) {
 
                     final int propertyIdentifier = Mqtt5DataTypes.decodeVariableByteInteger(in);
                     if (propertyIdentifier < 0) {

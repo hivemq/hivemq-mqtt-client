@@ -102,9 +102,9 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
         boolean authPresent = false;
         boolean restrictionsPresent = false;
 
-        while (in.readableBytes() > 0) {
-            final int propertyIdentifier = Mqtt5DataTypes.decodeVariableByteInteger(in);
+        while (in.isReadable()) {
 
+            final int propertyIdentifier = Mqtt5DataTypes.decodeVariableByteInteger(in);
             if (propertyIdentifier < 0) {
                 // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
                 in.clear();
