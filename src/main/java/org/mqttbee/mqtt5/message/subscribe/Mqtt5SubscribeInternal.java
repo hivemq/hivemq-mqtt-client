@@ -12,9 +12,11 @@ import org.mqttbee.mqtt5.message.Mqtt5MessageType;
  */
 public class Mqtt5SubscribeInternal implements Mqtt5Message {
 
+    public static final int DEFAULT_NO_SUBSCRIPTION_IDENTIFIER = -1;
+
     private final Mqtt5SubscribeImpl subscribe;
     private int packetIdentfier;
-    private int subscriptionIdentifier;
+    private int subscriptionIdentifier = DEFAULT_NO_SUBSCRIPTION_IDENTIFIER;
 
     public Mqtt5SubscribeInternal(@NotNull final Mqtt5SubscribeImpl subscribe) {
         this.subscribe = subscribe;

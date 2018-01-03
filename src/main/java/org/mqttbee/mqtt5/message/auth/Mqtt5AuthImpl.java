@@ -54,10 +54,20 @@ public class Mqtt5AuthImpl implements Mqtt5Auth, Mqtt5Message {
         return Optional.ofNullable(data);
     }
 
+    @Nullable
+    public byte[] getRawData() {
+        return data;
+    }
+
     @NotNull
     @Override
     public Optional<Mqtt5UTF8String> getReasonString() {
         return Optional.ofNullable(reasonString);
+    }
+
+    @Nullable
+    public Mqtt5UTF8String getRawReasonString() {
+        return reasonString;
     }
 
     @NotNull
