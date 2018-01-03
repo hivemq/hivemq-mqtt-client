@@ -61,6 +61,11 @@ public class Mqtt5PubRelDecoder implements Mqtt5MessageDecoder {
                     in.clear();
                     return null;
                 }
+                if (in.readableBytes() < propertiesLength) {
+                    // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
+                    in.clear();
+                    return null;
+                }
 
                 final int propertiesStartIndex = in.readerIndex();
                 while (in.readerIndex() - propertiesStartIndex < propertiesLength) {
