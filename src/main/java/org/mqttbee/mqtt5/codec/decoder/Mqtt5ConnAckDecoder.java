@@ -12,9 +12,11 @@ import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckImpl;
 import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckProperty;
 import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckReasonCode;
+import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 
 import javax.inject.Singleton;
 
+import static org.mqttbee.mqtt5.codec.decoder.Mqtt5MessageDecoderUtils.*;
 import static org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckImpl.*;
 
 /**
@@ -30,43 +32,37 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
     @Override
     public Mqtt5ConnAckImpl decode(final int flags, @NotNull final Channel channel, @NotNull final ByteBuf in) {
         if (flags != FLAGS) {
-            // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-            in.clear();
+            disconnectWrongFixedHeaderFlags("CONNACK", channel, in);
             return null;
         }
 
         if (in.readableBytes() < MIN_REMAINING_LENGTH) {
-            // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-            in.clear();
+            disconnectRemainingLengthTooShort(channel, in);
             return null;
         }
 
         final short connAckFlags = in.readUnsignedByte();
         if ((connAckFlags & 0xFE) != 0) {
-            // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-            in.clear();
+            disconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "wrong CONNACK flags", channel, in);
             return null;
         }
         final boolean sessionPresent = (connAckFlags & 0x1) != 0;
 
         final Mqtt5ConnAckReasonCode reasonCode = Mqtt5ConnAckReasonCode.fromCode(in.readUnsignedByte());
         if (reasonCode == null) {
-            // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-            in.clear();
+            disconnectWrongReasonCode("CONNACK", channel, in);
             return null;
         }
 
-        final int propertiesLength = Mqtt5DataTypes.decodeVariableByteInteger(in);
+        final int propertyLength = Mqtt5DataTypes.decodeVariableByteInteger(in);
 
-        if (propertiesLength < 0) {
-            // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-            in.clear();
+        if (propertyLength < 0) {
+            disconnectMalformedPropertyLength(channel, in);
             return null;
         }
 
-        if (in.readableBytes() != propertiesLength) {
-            // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-            in.clear();
+        if (in.readableBytes() != propertyLength) {
+            disconnectMustNotHavePayload("CONNACK", channel, in);
             return null;
         }
 
@@ -106,292 +102,197 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
 
             final int propertyIdentifier = Mqtt5DataTypes.decodeVariableByteInteger(in);
             if (propertyIdentifier < 0) {
-                // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-                in.clear();
+                disconnectMalformedPropertyIdentifier(channel, in);
                 return null;
             }
 
             switch (propertyIdentifier) {
                 case Mqtt5ConnAckProperty.SESSION_EXPIRY_INTERVAL:
-                    if (sessionExpiryInterval != SESSION_EXPIRY_INTERVAL_FROM_CONNECT) {
-                        // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
-                        in.clear();
-                        return null;
-                    }
-                    if (in.readableBytes() < 4) {
-                        // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-                        in.clear();
+                    if (!checkIntOnlyOnce(
+                            sessionExpiryInterval, SESSION_EXPIRY_INTERVAL_FROM_CONNECT, "session expiry interval",
+                            channel, in)) {
                         return null;
                     }
                     sessionExpiryInterval = in.readUnsignedInt();
                     break;
+
                 case Mqtt5ConnAckProperty.ASSIGNED_CLIENT_IDENTIFIER:
                     if (assignedClientIdentifier != CLIENT_IDENTIFIER_FROM_CONNECT) {
-                        // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
-                        in.clear();
+                        disconnectOnlyOnce("client identifier", channel, in);
                         return null;
                     }
                     assignedClientIdentifier = Mqtt5ClientIdentifier.from(in);
                     if (assignedClientIdentifier == null) {
-                        // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-                        in.clear();
+                        disconnectMalformedUTF8String("client identifier", channel, in);
                         return null;
                     }
                     break;
+
                 case Mqtt5ConnAckProperty.SERVER_KEEP_ALIVE:
-                    if (serverKeepAlive != KEEP_ALIVE_FROM_CONNECT) {
-                        // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
-                        in.clear();
-                        return null;
-                    }
-                    if (in.readableBytes() < 2) {
-                        // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-                        in.clear();
+                    if (!checkShortOnlyOnce(
+                            serverKeepAlive, KEEP_ALIVE_FROM_CONNECT, "server keep alive", channel, in)) {
                         return null;
                     }
                     serverKeepAlive = in.readUnsignedShort();
                     break;
+
                 case Mqtt5ConnAckProperty.AUTHENTICATION_METHOD:
-                    if (authenticationMethod != null) {
-                        // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
-                        in.clear();
-                        return null;
-                    }
-                    authenticationMethod = Mqtt5UTF8String.from(in);
+                    authenticationMethod = decodeUTF8StringOnlyOnce(
+                            authenticationMethod, "authentication method", channel, in);
                     if (authenticationMethod == null) {
-                        // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-                        in.clear();
                         return null;
                     }
                     authPresent = true;
                     break;
+
                 case Mqtt5ConnAckProperty.AUTHENTICATION_DATA:
-                    if (authenticationData != null) {
-                        // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
-                        in.clear();
-                        return null;
-                    }
-                    authenticationData = Mqtt5DataTypes.decodeBinaryData(in);
+                    authenticationData = decodeBinaryDataOnlyOnce(
+                            authenticationData, "authentication data", channel, in);
                     if (authenticationData == null) {
-                        // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-                        in.clear();
                         return null;
                     }
                     authPresent = true;
                     break;
+
                 case Mqtt5ConnAckProperty.RECEIVE_MAXIMUM:
-                    if (receiveMaximumPresent) {
-                        // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
-                        in.clear();
-                        return null;
-                    }
-                    if (in.readableBytes() < 2) {
-                        // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-                        in.clear();
+                    if (!checkShortOnlyOnce(receiveMaximumPresent, "receive maximum", channel, in)) {
                         return null;
                     }
                     receiveMaximum = in.readUnsignedShort();
                     if (receiveMaximum == 0) {
-                        // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
-                        in.clear();
+                        disconnect(
+                                Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "receive maximum must not be 0", channel, in);
                         return null;
                     }
                     receiveMaximumPresent = true;
                     restrictionsPresent = true;
                     break;
+
                 case Mqtt5ConnAckProperty.TOPIC_ALIAS_MAXIMUM:
-                    if (topicAliasMaximumPresent) {
-                        // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
-                        in.clear();
-                        return null;
-                    }
-                    if (in.readableBytes() < 2) {
-                        // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-                        in.clear();
+                    if (!checkShortOnlyOnce(topicAliasMaximumPresent, "receive maximum", channel, in)) {
                         return null;
                     }
                     topicAliasMaximum = in.readUnsignedShort();
                     topicAliasMaximumPresent = true;
                     restrictionsPresent = true;
                     break;
+
                 case Mqtt5ConnAckProperty.MAXIMUM_QOS:
-                    if (maximumQoSPresent) {
-                        // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
-                        in.clear();
-                        return null;
-                    }
-                    if (in.readableBytes() < 1) {
-                        // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-                        in.clear();
+                    if (!checkByteOnlyOnce(maximumQoSPresent, "maximum QoS", channel, in)) {
                         return null;
                     }
                     maximumQoS = in.readByte();
                     if (maximumQoS != 0 && maximumQoS != 1) {
-                        // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
-                        in.clear();
+                        disconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "wrong maximum QoS", channel, in);
                         return null;
                     }
                     maximumQoSPresent = true;
                     restrictionsPresent = true;
                     break;
+
                 case Mqtt5ConnAckProperty.RETAIN_AVAILABLE:
-                    if (retainAvailablePresent) {
-                        // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
-                        in.clear();
-                        return null;
-                    }
-                    if (in.readableBytes() < 1) {
-                        // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-                        in.clear();
+                    if (!checkByteOnlyOnce(retainAvailablePresent, "retain available", channel, in)) {
                         return null;
                     }
                     final byte retainAvailableByte = in.readByte();
-                    if (retainAvailableByte != 0 && retainAvailableByte != 1) {
-                        // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
-                        in.clear();
+                    if (!checkBoolean(retainAvailableByte, "retain available", channel, in)) {
                         return null;
                     }
-                    retainAvailable = retainAvailableByte == 1;
+                    retainAvailable = decodeBoolean(retainAvailableByte);
                     retainAvailablePresent = true;
                     restrictionsPresent = true;
                     break;
+
                 case Mqtt5ConnAckProperty.MAXIMUM_PACKET_SIZE:
-                    if (maximumPacketSizePresent) {
-                        // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
-                        in.clear();
-                        return null;
-                    }
-                    if (in.readableBytes() < 4) {
-                        // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-                        in.clear();
+                    if (!checkIntOnlyOnce(maximumPacketSizePresent, "maximum packet size", channel, in)) {
                         return null;
                     }
                     maximumPacketSize = in.readUnsignedInt();
                     if (maximumPacketSize == 0) {
-                        // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
-                        in.clear();
+                        disconnect(
+                                Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "maximum packet size must not be 0", channel,
+                                in);
                         return null;
                     }
                     maximumPacketSizePresent = true;
                     restrictionsPresent = true;
                     break;
+
                 case Mqtt5ConnAckProperty.WILDCARD_SUBSCRIPTION_AVAILABLE:
-                    if (wildCardSubscriptionAvailablePresent) {
-                        // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
-                        in.clear();
-                        return null;
-                    }
-                    if (in.readableBytes() < 1) {
-                        // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-                        in.clear();
+                    if (!checkByteOnlyOnce(
+                            wildCardSubscriptionAvailablePresent, "wildcard subscription available", channel, in)) {
                         return null;
                     }
                     final byte wildCardSubscriptionAvailableByte = in.readByte();
-                    if (wildCardSubscriptionAvailableByte != 0 && wildCardSubscriptionAvailableByte != 1) {
-                        // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
-                        in.clear();
+                    if (!checkBoolean(
+                            wildCardSubscriptionAvailableByte, "wildcard subscription available", channel, in)) {
                         return null;
                     }
-                    wildCardSubscriptionAvailable = wildCardSubscriptionAvailableByte == 1;
+                    wildCardSubscriptionAvailable = decodeBoolean(wildCardSubscriptionAvailableByte);
                     wildCardSubscriptionAvailablePresent = true;
                     restrictionsPresent = true;
                     break;
+
                 case Mqtt5ConnAckProperty.SUBSCRIPTION_IDENTIFIER_AVAILABLE:
-                    if (subscriptionIdentifierAvailablePresent) {
-                        // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
-                        in.clear();
-                        return null;
-                    }
-                    if (in.readableBytes() < 1) {
-                        // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-                        in.clear();
+                    if (!checkByteOnlyOnce(
+                            subscriptionIdentifierAvailablePresent, "subscription identifier available", channel, in)) {
                         return null;
                     }
                     final byte subscriptionIdentifierAvailableByte = in.readByte();
-                    if (subscriptionIdentifierAvailableByte != 0 && subscriptionIdentifierAvailableByte != 1) {
-                        // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
-                        in.clear();
+                    if (!checkBoolean(
+                            subscriptionIdentifierAvailableByte, "subscription identifier available", channel, in)) {
                         return null;
                     }
-                    subscriptionIdentifierAvailable = subscriptionIdentifierAvailableByte == 1;
+                    subscriptionIdentifierAvailable = decodeBoolean(subscriptionIdentifierAvailableByte);
                     subscriptionIdentifierAvailablePresent = true;
                     restrictionsPresent = true;
                     break;
+
                 case Mqtt5ConnAckProperty.SHARED_SUBSCRIPTION_AVAILABLE:
-                    if (sharedSubscriptionAvailablePresent) {
-                        // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
-                        in.clear();
-                        return null;
-                    }
-                    if (in.readableBytes() < 1) {
-                        // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-                        in.clear();
+                    if (!checkByteOnlyOnce(
+                            sharedSubscriptionAvailablePresent, "shared subscription available", channel, in)) {
                         return null;
                     }
                     final byte sharedSubscriptionAvailableByte = in.readByte();
-                    if (sharedSubscriptionAvailableByte != 0 && sharedSubscriptionAvailableByte != 1) {
-                        // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
-                        in.clear();
+                    if (!checkBoolean(sharedSubscriptionAvailableByte, "shared subscription available", channel, in)) {
                         return null;
                     }
-                    sharedSubscriptionAvailable = sharedSubscriptionAvailableByte == 1;
+                    sharedSubscriptionAvailable = decodeBoolean(sharedSubscriptionAvailableByte);
                     sharedSubscriptionAvailablePresent = true;
                     restrictionsPresent = true;
                     break;
+
                 case Mqtt5ConnAckProperty.RESPONSE_INFORMATION:
-                    if (responseInformation != null) {
-                        // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
-                        in.clear();
-                        return null;
-                    }
-                    responseInformation = Mqtt5UTF8String.from(in);
+                    responseInformation = decodeUTF8StringOnlyOnce(
+                            responseInformation, "response information", channel, in);
                     if (responseInformation == null) {
-                        // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-                        in.clear();
                         return null;
                     }
                     break;
+
                 case Mqtt5ConnAckProperty.SERVER_REFERENCE:
-                    if (serverReference != null) {
-                        // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
-                        in.clear();
-                        return null;
-                    }
-                    serverReference = Mqtt5UTF8String.from(in);
+                    serverReference = decodeUTF8StringOnlyOnce(serverReference, "server reference", channel, in);
                     if (serverReference == null) {
-                        // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-                        in.clear();
                         return null;
                     }
                     break;
+
                 case Mqtt5ConnAckProperty.REASON_STRING:
-                    if (reasonString != null) {
-                        // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
-                        in.clear();
-                        return null;
-                    }
-                    reasonString = Mqtt5UTF8String.from(in);
+                    reasonString = decodeUTF8StringOnlyOnce(reasonString, "reason string", channel, in);
                     if (reasonString == null) {
-                        // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-                        in.clear();
                         return null;
                     }
                     break;
+
                 case Mqtt5ConnAckProperty.USER_PROPERTY:
+                    userPropertiesBuilder = decodeUserProperty(userPropertiesBuilder, channel, in);
                     if (userPropertiesBuilder == null) {
-                        userPropertiesBuilder = ImmutableList.builder();
-                    }
-                    final Mqtt5UserProperty userProperty = Mqtt5UserProperty.decode(in);
-                    if (userProperty == null) {
-                        // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-                        in.clear();
                         return null;
                     }
-                    userPropertiesBuilder.add(userProperty);
                     break;
+
                 default:
-                    // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-                    in.clear();
+                    disconnectWrongProperty("CONNACK", channel, in);
                     return null;
             }
         }
@@ -408,10 +309,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                     wildCardSubscriptionAvailable, subscriptionIdentifierAvailable, sharedSubscriptionAvailable);
         }
 
-        ImmutableList<Mqtt5UserProperty> userProperties = Mqtt5UserProperty.DEFAULT_NO_USER_PROPERTIES;
-        if (userPropertiesBuilder != null) {
-            userProperties = userPropertiesBuilder.build();
-        }
+        final ImmutableList<Mqtt5UserProperty> userProperties = Mqtt5UserProperty.build(userPropertiesBuilder);
 
         return new Mqtt5ConnAckImpl(
                 reasonCode, sessionPresent, sessionExpiryInterval, serverKeepAlive, assignedClientIdentifier, auth,
