@@ -1,10 +1,16 @@
 package org.mqttbee.mqtt5.codec.decoder;
 
+import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
+import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
+import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 import org.mqttbee.mqtt5.message.auth.Mqtt5AuthImpl;
+import org.mqttbee.mqtt5.message.auth.Mqtt5AuthProperty;
+import org.mqttbee.mqtt5.message.auth.Mqtt5AuthReasonCode;
 
 import javax.inject.Singleton;
 
@@ -25,7 +31,116 @@ public class Mqtt5AuthDecoder implements Mqtt5MessageDecoder {
             return null;
         }
 
-        return null;
+        if (in.readableBytes() < 5) { // reason code (1) + property length (min 1) + auth method (1 + min 2)
+            // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
+            in.clear();
+            return null;
+        }
+
+        final Mqtt5AuthReasonCode reasonCode = Mqtt5AuthReasonCode.fromCode(in.readByte());
+        if (reasonCode == null) {
+            // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
+            in.clear();
+            return null;
+        }
+
+        final int propertiesLength = Mqtt5DataTypes.decodeVariableByteInteger(in);
+        if (propertiesLength < 0) {
+            // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
+            in.clear();
+            return null;
+        }
+        if (in.readableBytes() != propertiesLength) {
+            // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
+            in.clear();
+            return null;
+        }
+
+        Mqtt5UTF8String method = null;
+        byte[] data = null;
+        Mqtt5UTF8String reasonString = null;
+        ImmutableList.Builder<Mqtt5UserProperty> userPropertiesBuilder = null;
+
+        while (in.isReadable()) {
+
+            final int propertyIdentifier = Mqtt5DataTypes.decodeVariableByteInteger(in);
+            if (propertyIdentifier < 0) {
+                // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
+                in.clear();
+                return null;
+            }
+
+            switch (propertyIdentifier) {
+                case Mqtt5AuthProperty.AUTHENTICATION_METHOD:
+                    if (method != null) {
+                        // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
+                        in.clear();
+                        return null;
+                    }
+                    method = Mqtt5UTF8String.from(in);
+                    if (method == null) {
+                        // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
+                        in.clear();
+                        return null;
+                    }
+                    break;
+                case Mqtt5AuthProperty.AUTHENTICATION_DATA:
+                    if (data != null) {
+                        // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
+                        in.clear();
+                        return null;
+                    }
+                    data = Mqtt5DataTypes.decodeBinaryData(in);
+                    if (data == null) {
+                        // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
+                        in.clear();
+                        return null;
+                    }
+                    break;
+                case Mqtt5AuthProperty.REASON_STRING:
+                    if (reasonString != null) {
+                        // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
+                        in.clear();
+                        return null;
+                    }
+                    reasonString = Mqtt5UTF8String.from(in);
+                    if (reasonString == null) {
+                        // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
+                        in.clear();
+                        return null;
+                    }
+                    break;
+                case Mqtt5AuthProperty.USER_PROPERTY:
+                    if (userPropertiesBuilder == null) {
+                        userPropertiesBuilder = ImmutableList.builder();
+                    }
+                    final Mqtt5UserProperty userProperty = Mqtt5UserProperty.decode(in);
+                    if (userProperty == null) {
+                        // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
+                        in.clear();
+                        return null;
+                    }
+                    userPropertiesBuilder.add(userProperty);
+                    break;
+                default:
+                    // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
+                    in.clear();
+                    return null;
+            }
+        }
+
+        if (method == null) {
+            // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
+            in.clear();
+            return null;
+        }
+
+        ImmutableList<Mqtt5UserProperty> userProperties = Mqtt5UserProperty.DEFAULT_NO_USER_PROPERTIES;
+        if (userPropertiesBuilder != null) {
+            userProperties = userPropertiesBuilder.build();
+        }
+
+        return new Mqtt5AuthImpl(reasonCode, method, data, reasonString, userProperties);
     }
 
 }
