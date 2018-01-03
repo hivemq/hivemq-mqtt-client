@@ -32,9 +32,9 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
     public void encode(
             @NotNull final Mqtt5ConnectImpl connect, @NotNull final Channel channel, @NotNull final ByteBuf out) {
 
-        final int propertiesLength = calculatePropertiesLength(connect);
-        final int willPropertiesLength = calculateWillPropertiesLength(connect);
-        final int remainingLength = calculateRemainingLength(connect, propertiesLength, willPropertiesLength);
+        final int propertyLength = calculatePropertyLength(connect);
+        final int willPropertyLength = calculateWillPropertyLength(connect);
+        final int remainingLength = calculateRemainingLength(connect, propertyLength, willPropertyLength);
 
         final int fixedHeaderLength = 1 + Mqtt5DataTypes.encodedVariableByteIntegerLength(remainingLength);
         final int packetSize = fixedHeaderLength + remainingLength;
@@ -46,9 +46,9 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
         out.writeByte(FIXED_HEADER);
         Mqtt5DataTypes.encodeVariableByteInteger(remainingLength, out);
 
-        encodeVariableHeader(connect, propertiesLength, out);
+        encodeVariableHeader(connect, propertyLength, out);
 
-        encodePayload(connect, willPropertiesLength, out);
+        encodePayload(connect, willPropertyLength, out);
     }
 
     private int calculateRemainingLength(
@@ -87,29 +87,29 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
         return remainingLength;
     }
 
-    private int calculatePropertiesLength(@NotNull final Mqtt5ConnectImpl connect) {
-        int propertiesLength = 0;
+    private int calculatePropertyLength(@NotNull final Mqtt5ConnectImpl connect) {
+        int propertyLength = 0;
 
         if (connect.getSessionExpiryInterval() != DEFAULT_SESSION_EXPIRY_INTERVAL) {
-            propertiesLength += 5;
+            propertyLength += 5;
         }
         if (connect.isResponseInformationRequested() != DEFAULT_RESPONSE_INFORMATION_REQUESTED) {
-            propertiesLength += 2;
+            propertyLength += 2;
         }
         if (connect.isProblemInformationRequested() != DEFAULT_PROBLEM_INFORMATION_REQUESTED) {
-            propertiesLength += 2;
+            propertyLength += 2;
         }
 
         final RestrictionsImpl restrictions = connect.getRawRestrictions();
         if (restrictions != RestrictionsImpl.DEFAULT) {
             if (restrictions.getReceiveMaximum() != Restrictions.DEFAULT_RECEIVE_MAXIMUM) {
-                propertiesLength += 3;
+                propertyLength += 3;
             }
             if (restrictions.getMaximumPacketSize() != Restrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT) {
-                propertiesLength += 5;
+                propertyLength += 5;
             }
             if (restrictions.getTopicAliasMaximum() != Restrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM) {
-                propertiesLength += 3;
+                propertyLength += 3;
             }
         }
 
@@ -117,63 +117,63 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
         if (auth != AuthImpl.DEFAULT_NO_AUTH) {
             final Mqtt5UTF8String method = auth.getRawMethod();
             if (method != null) {
-                propertiesLength += 1 + method.encodedLength();
+                propertyLength += 1 + method.encodedLength();
             }
             final byte[] data = auth.getRawData();
             if (data != null) {
-                propertiesLength += 1 + Mqtt5DataTypes.encodedBinaryDataLength(data);
+                propertyLength += 1 + Mqtt5DataTypes.encodedBinaryDataLength(data);
             }
         }
 
-        propertiesLength += Mqtt5UserProperty.encodedLength(connect.getUserProperties());
+        propertyLength += Mqtt5UserProperty.encodedLength(connect.getUserProperties());
 
-        if (!Mqtt5DataTypes.isInVariableByteIntegerRange(propertiesLength)) {
+        if (!Mqtt5DataTypes.isInVariableByteIntegerRange(propertyLength)) {
             // TODO exception properties size exceeded
         }
 
-        return propertiesLength;
+        return propertyLength;
     }
 
-    private int calculateWillPropertiesLength(@NotNull final Mqtt5ConnectImpl connect) {
-        int willPropertiesLength = 0;
+    private int calculateWillPropertyLength(@NotNull final Mqtt5ConnectImpl connect) {
+        int willPropertyLength = 0;
 
         final Mqtt5WillPublishImpl willPublish = connect.getRawWillPublish();
         if (willPublish != Mqtt5WillPublishImpl.DEFAULT_NO_WILL_PUBLISH) {
             if (willPublish.getMessageExpiryInterval() != Mqtt5WillPublish.DEFAULT_MESSAGE_EXPIRY_INTERVAL_INFINITY) {
-                willPropertiesLength += 5;
+                willPropertyLength += 5;
             }
             if (willPublish.getRawPayloadFormatIndicator() != null) {
-                willPropertiesLength += 2;
+                willPropertyLength += 2;
             }
             final Mqtt5UTF8String contentType = willPublish.getRawContentType();
             if (contentType != null) {
-                willPropertiesLength += 1 + contentType.encodedLength();
+                willPropertyLength += 1 + contentType.encodedLength();
             }
             final Mqtt5UTF8String responseTopic = willPublish.getRawResponseTopic();
             if (responseTopic != null) {
-                willPropertiesLength += 1 + responseTopic.encodedLength();
+                willPropertyLength += 1 + responseTopic.encodedLength();
             }
             final byte[] correlationData = willPublish.getRawCorrelationData();
             if (correlationData != null) {
-                willPropertiesLength += 1 + Mqtt5DataTypes.encodedBinaryDataLength(correlationData);
+                willPropertyLength += 1 + Mqtt5DataTypes.encodedBinaryDataLength(correlationData);
             }
 
-            willPropertiesLength += Mqtt5UserProperty.encodedLength(willPublish.getUserProperties());
+            willPropertyLength += Mqtt5UserProperty.encodedLength(willPublish.getUserProperties());
 
             if (willPublish.getDelayInterval() != Mqtt5WillPublish.DEFAULT_DELAY_INTERVAL) {
-                willPropertiesLength += 5;
+                willPropertyLength += 5;
             }
         }
 
-        if (!Mqtt5DataTypes.isInVariableByteIntegerRange(willPropertiesLength)) {
+        if (!Mqtt5DataTypes.isInVariableByteIntegerRange(willPropertyLength)) {
             // TODO exception will properties size exceeded
         }
 
-        return willPropertiesLength;
+        return willPropertyLength;
     }
 
     private void encodeVariableHeader(
-            @NotNull final Mqtt5ConnectImpl connect, final int propertiesLength, @NotNull final ByteBuf out) {
+            @NotNull final Mqtt5ConnectImpl connect, final int propertyLength, @NotNull final ByteBuf out) {
 
         Mqtt5UTF8String.PROTOCOL_NAME.to(out);
         out.writeByte(PROTOCOL_VERSION);
@@ -207,13 +207,13 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
 
         out.writeShort(connect.getKeepAlive());
 
-        encodeProperties(connect, propertiesLength, out);
+        encodeProperties(connect, propertyLength, out);
     }
 
     private void encodeProperties(
-            @NotNull final Mqtt5ConnectImpl connect, final int propertiesLength, @NotNull final ByteBuf out) {
+            @NotNull final Mqtt5ConnectImpl connect, final int propertyLength, @NotNull final ByteBuf out) {
 
-        Mqtt5DataTypes.encodeVariableByteInteger(propertiesLength, out);
+        Mqtt5DataTypes.encodeVariableByteInteger(propertyLength, out);
 
         final long sessionExpiryInterval = connect.getSessionExpiryInterval();
         if (sessionExpiryInterval != DEFAULT_SESSION_EXPIRY_INTERVAL) {
@@ -270,11 +270,11 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
     }
 
     private void encodePayload(
-            @NotNull final Mqtt5ConnectImpl connect, final int willPropertiesLength, @NotNull final ByteBuf out) {
+            @NotNull final Mqtt5ConnectImpl connect, final int willPropertyLength, @NotNull final ByteBuf out) {
 
         connect.getClientIdentifier().to(out);
 
-        encodeWillPublish(connect, willPropertiesLength, out);
+        encodeWillPublish(connect, willPropertyLength, out);
 
         final AuthImpl auth = connect.getRawAuth();
         if (auth != AuthImpl.DEFAULT_NO_AUTH) {
@@ -290,12 +290,12 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
     }
 
     private void encodeWillPublish(
-            @NotNull final Mqtt5ConnectImpl connect, final int willPropertiesLength, @NotNull final ByteBuf out) {
+            @NotNull final Mqtt5ConnectImpl connect, final int willPropertyLength, @NotNull final ByteBuf out) {
 
         final Mqtt5WillPublishImpl willPublish = connect.getRawWillPublish();
         if (willPublish != Mqtt5WillPublishImpl.DEFAULT_NO_WILL_PUBLISH) {
 
-            Mqtt5DataTypes.encodeVariableByteInteger(willPropertiesLength, out);
+            Mqtt5DataTypes.encodeVariableByteInteger(willPropertyLength, out);
 
             final long messageExpiryInterval = willPublish.getMessageExpiryInterval();
             if (messageExpiryInterval != Mqtt5WillPublish.DEFAULT_MESSAGE_EXPIRY_INTERVAL_INFINITY) {
