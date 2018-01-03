@@ -16,6 +16,7 @@ public class Mqtt5PingReqEncoder implements Mqtt5MessageEncoder<Mqtt5PingReqImpl
 
     private final byte[] PACKET = {(byte) (Mqtt5MessageType.PINGREQ.getCode() << 4), 0};
 
+    @Override
     public void encode(
             @NotNull final Mqtt5PingReqImpl pingReq, @NotNull final Channel channel, @NotNull final ByteBuf out) {
         out.writeBytes(PACKET);

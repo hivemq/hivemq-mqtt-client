@@ -53,16 +53,30 @@ public class Mqtt5DisconnectImpl implements Mqtt5Disconnect, Mqtt5Message {
                 Optional.of(sessionExpiryInterval);
     }
 
+    public long getRawSessionExpiryInterval() {
+        return sessionExpiryInterval;
+    }
+
     @NotNull
     @Override
     public Optional<Mqtt5UTF8String> getServerReference() {
         return Optional.ofNullable(serverReference);
     }
 
+    @Nullable
+    public Mqtt5UTF8String getRawServerReference() {
+        return serverReference;
+    }
+
     @NotNull
     @Override
     public Optional<Mqtt5UTF8String> getReasonString() {
         return Optional.ofNullable(reasonString);
+    }
+
+    @Nullable
+    public Mqtt5UTF8String getRawReasonString() {
+        return reasonString;
     }
 
     @NotNull

@@ -23,7 +23,7 @@ import static org.mqttbee.mqtt5.message.pubrel.Mqtt5PubRelImpl.DEFAULT_REASON_CO
 @Singleton
 public class Mqtt5PubRelEncoder implements Mqtt5MessageEncoder<Mqtt5PubRelInternal> {
 
-    private static final int FIXED_HEADER = Mqtt5MessageType.PUBACK.getCode() << 4;
+    private static final int FIXED_HEADER = Mqtt5MessageType.PUBACK.getCode() << 4 + 0b0010;
 
     @Override
     public void encode(
@@ -75,6 +75,7 @@ public class Mqtt5PubRelEncoder implements Mqtt5MessageEncoder<Mqtt5PubRelIntern
         if (reasonString != null) {
             properyLength += 1 + reasonString.encodedLength();
         }
+
         properyLength += Mqtt5UserProperty.encodedLength(pubRel.getUserProperties());
 
         if (!Mqtt5DataTypes.isInVariableByteIntegerRange(properyLength)) {
@@ -115,6 +116,7 @@ public class Mqtt5PubRelEncoder implements Mqtt5MessageEncoder<Mqtt5PubRelIntern
             out.writeByte(Mqtt5PubRelProperty.REASON_STRING);
             reasonString.to(out);
         }
+
         Mqtt5UserProperty.encode(pubRel.getUserProperties(), out);
     }
 
