@@ -19,7 +19,9 @@ import java.util.Optional;
  */
 public class Mqtt5DisconnectImpl implements Mqtt5Disconnect, Mqtt5Message {
 
-    public final long SESSION_EXPIRY_INTERVAL_FROM_CONNECT = -1;
+    @NotNull
+    public static final Mqtt5DisconnectReasonCode DEFAULT_REASON_CODE = Mqtt5DisconnectReasonCode.NORMAL_DISCONNECTION;
+    public static final long SESSION_EXPIRY_INTERVAL_FROM_CONNECT = -1;
 
     private final Mqtt5DisconnectReasonCode reasonCode;
     private final long sessionExpiryInterval;

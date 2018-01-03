@@ -15,6 +15,7 @@ public class Mqtt5PublishInternal implements Mqtt5Message {
 
     public static final int NO_PACKET_IDENTIFIER_QOS_0 = -1;
     public static final int DEFAULT_NO_TOPIC_ALIAS = -1;
+    @NotNull
     public static final ImmutableIntArray DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS = ImmutableIntArray.of();
 
     private final Mqtt5PublishImpl publish;
