@@ -26,6 +26,7 @@ public class Mqtt5PublishEncoder implements Mqtt5MessageEncoder<Mqtt5PublishInte
 
     private static final int FIXED_HEADER = Mqtt5MessageType.PUBLISH.getCode() << 4;
 
+    @Override
     public void encode(
             @NotNull final Mqtt5PublishInternal publishInternal, @NotNull final Channel channel,
             @NotNull final ByteBuf out) {
