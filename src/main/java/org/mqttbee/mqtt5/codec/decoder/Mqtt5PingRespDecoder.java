@@ -3,10 +3,13 @@ package org.mqttbee.mqtt5.codec.decoder;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.message.ping.Mqtt5PingRespImpl;
 
 import javax.inject.Singleton;
 
+import static org.mqttbee.mqtt5.codec.decoder.Mqtt5MessageDecoderUtils.disconnect;
+import static org.mqttbee.mqtt5.codec.decoder.Mqtt5MessageDecoderUtils.disconnectWrongFixedHeaderFlags;
 import static org.mqttbee.mqtt5.message.ping.Mqtt5PingRespImpl.INSTANCE;
 
 /**
@@ -20,14 +23,14 @@ public class Mqtt5PingRespDecoder implements Mqtt5MessageDecoder {
     @Override
     public Mqtt5PingRespImpl decode(final int flags, @NotNull final Channel channel, @NotNull final ByteBuf in) {
         if (flags != FLAGS) {
-            // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-            in.clear();
+            disconnectWrongFixedHeaderFlags("PING", channel, in);
             return null;
         }
 
         if (in.readableBytes() != 0) {
-            // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-            in.clear();
+            disconnect(
+                    Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "PING must not have a variable header or payload",
+                    channel, in);
             return null;
         }
 

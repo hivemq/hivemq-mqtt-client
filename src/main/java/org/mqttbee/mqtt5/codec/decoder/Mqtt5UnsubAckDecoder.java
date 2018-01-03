@@ -15,6 +15,8 @@ import org.mqttbee.mqtt5.message.unsuback.Mqtt5UnsubAckReasonCode;
 
 import javax.inject.Singleton;
 
+import static org.mqttbee.mqtt5.codec.decoder.Mqtt5MessageDecoderUtils.*;
+
 /**
  * @author Silvio Giebl
  */
@@ -22,28 +24,30 @@ import javax.inject.Singleton;
 public class Mqtt5UnsubAckDecoder implements Mqtt5MessageDecoder {
 
     private static final int FLAGS = 0b0000;
+    private static final int MIN_REMAINING_LENGTH = 3;
 
     @Override
     @Nullable
     public Mqtt5UnsubAckInternal decode(final int flags, @NotNull final Channel channel, @NotNull final ByteBuf in) {
         if (flags != FLAGS) {
-            // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-            in.clear();
+            disconnectWrongFixedHeaderFlags("UNSUBACK", channel, in);
             return null;
         }
 
-        if (in.readableBytes() < 3) {
-            // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-            in.clear();
+        if (in.readableBytes() < MIN_REMAINING_LENGTH) {
+            disconnectRemainingLengthTooShort(channel, in);
             return null;
         }
 
         final int packetIdentifier = in.readUnsignedShort();
 
-        final int propertiesLength = Mqtt5DataTypes.decodeVariableByteInteger(in);
-        if (propertiesLength < 0) {
-            // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-            in.clear();
+        final int propertyLength = Mqtt5DataTypes.decodeVariableByteInteger(in);
+        if (propertyLength < 0) {
+            disconnectMalformedPropertyLength(channel, in);
+            return null;
+        }
+        if (in.readableBytes() < propertyLength) {
+            disconnectRemainingLengthTooShort(channel, in);
             return null;
         }
 
@@ -51,44 +55,31 @@ public class Mqtt5UnsubAckDecoder implements Mqtt5MessageDecoder {
         ImmutableList.Builder<Mqtt5UserProperty> userPropertiesBuilder = null;
 
         final int propertiesStartIndex = in.readerIndex();
-        while (in.readerIndex() - propertiesStartIndex < propertiesLength) {
+        while (in.readerIndex() - propertiesStartIndex < propertyLength) {
 
             final int propertyIdentifier = Mqtt5DataTypes.decodeVariableByteInteger(in);
             if (propertyIdentifier < 0) {
-                // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-                in.clear();
+                disconnectMalformedPropertyIdentifier(channel, in);
                 return null;
             }
 
             switch (propertyIdentifier) {
                 case Mqtt5UnsubAckProperty.REASON_STRING:
-                    if (reasonString != null) {
-                        // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
-                        in.clear();
-                        return null;
-                    }
-                    reasonString = Mqtt5UTF8String.from(in);
+                    reasonString = decodeUTF8StringOnlyOnce(reasonString, "reason string", channel, in);
                     if (reasonString == null) {
-                        // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-                        in.clear();
                         return null;
                     }
                     break;
+
                 case Mqtt5UnsubAckProperty.USER_PROPERTY:
+                    userPropertiesBuilder = decodeUserProperty(userPropertiesBuilder, channel, in);
                     if (userPropertiesBuilder == null) {
-                        userPropertiesBuilder = ImmutableList.builder();
-                    }
-                    final Mqtt5UserProperty userProperty = Mqtt5UserProperty.decode(in);
-                    if (userProperty == null) {
-                        // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-                        in.clear();
                         return null;
                     }
-                    userPropertiesBuilder.add(userProperty);
                     break;
+
                 default:
-                    // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-                    in.clear();
+                    disconnectWrongProperty("UNSUBACK", channel, in);
                     return null;
             }
         }
@@ -99,18 +90,14 @@ public class Mqtt5UnsubAckDecoder implements Mqtt5MessageDecoder {
         for (int i = 0; i < reasonCodeCount; i++) {
             final Mqtt5UnsubAckReasonCode reasonCode = Mqtt5UnsubAckReasonCode.fromCode(in.readByte());
             if (reasonCode == null) {
-                // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-                in.clear();
+                disconnectWrongReasonCode("UNSUBACK", channel, in);
                 return null;
             }
             reasonCodesBuilder.add(reasonCode);
         }
         final ImmutableList<Mqtt5UnsubAckReasonCode> reasonCodes = reasonCodesBuilder.build();
 
-        ImmutableList<Mqtt5UserProperty> userProperties = Mqtt5UserProperty.DEFAULT_NO_USER_PROPERTIES;
-        if (userPropertiesBuilder != null) {
-            userProperties = userPropertiesBuilder.build();
-        }
+        final ImmutableList<Mqtt5UserProperty> userProperties = Mqtt5UserProperty.build(userPropertiesBuilder);
 
         final Mqtt5UnsubAckImpl subAck = new Mqtt5UnsubAckImpl(reasonCodes, reasonString, userProperties);
 
