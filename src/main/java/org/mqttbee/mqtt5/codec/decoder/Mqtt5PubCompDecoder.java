@@ -15,6 +15,7 @@ import org.mqttbee.mqtt5.message.pubcomp.Mqtt5PubCompReasonCode;
 
 import javax.inject.Singleton;
 
+import static org.mqttbee.mqtt5.codec.decoder.Mqtt5MessageDecoderUtils.*;
 import static org.mqttbee.mqtt5.message.pubcomp.Mqtt5PubCompImpl.DEFAULT_REASON_CODE;
 
 /**
@@ -24,19 +25,18 @@ import static org.mqttbee.mqtt5.message.pubcomp.Mqtt5PubCompImpl.DEFAULT_REASON_
 public class Mqtt5PubCompDecoder implements Mqtt5MessageDecoder {
 
     private static final int FLAGS = 0b0000;
+    private static final int MIN_REMAINING_LENGTH = 2;
 
     @Override
     @Nullable
     public Mqtt5PubCompInternal decode(final int flags, @NotNull final Channel channel, @NotNull final ByteBuf in) {
         if (flags != FLAGS) {
-            // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-            in.clear();
+            disconnectWrongFixedHeaderFlags("PUBCOMP", channel, in);
             return null;
         }
 
-        if (in.readableBytes() < 2) {
-            // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-            in.clear();
+        if (in.readableBytes() < MIN_REMAINING_LENGTH) {
+            disconnectRemainingLengthTooShort(channel, in);
             return null;
         }
 
@@ -49,21 +49,18 @@ public class Mqtt5PubCompDecoder implements Mqtt5MessageDecoder {
         if (in.isReadable()) {
             reasonCode = Mqtt5PubCompReasonCode.fromCode(in.readUnsignedByte());
             if (reasonCode == null) {
-                // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-                in.clear();
+                disconnectWrongReasonCode("PUBCOMP", channel, in);
                 return null;
             }
 
             if (in.isReadable()) {
-                final int propertiesLength = Mqtt5DataTypes.decodeVariableByteInteger(in);
-                if (propertiesLength < 0) {
-                    // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-                    in.clear();
+                final int propertyLength = Mqtt5DataTypes.decodeVariableByteInteger(in);
+                if (propertyLength < 0) {
+                    disconnectMalformedPropertyLength(channel, in);
                     return null;
                 }
-                if (in.readableBytes() != propertiesLength) {
-                    // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-                    in.clear();
+                if (in.readableBytes() != propertyLength) {
+                    disconnectMustNotHavePayload("PUBCOMP", channel, in);
                     return null;
                 }
 
@@ -71,50 +68,34 @@ public class Mqtt5PubCompDecoder implements Mqtt5MessageDecoder {
 
                     final int propertyIdentifier = Mqtt5DataTypes.decodeVariableByteInteger(in);
                     if (propertyIdentifier < 0) {
-                        // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-                        in.clear();
+                        disconnectMalformedPropertyIdentifier(channel, in);
                         return null;
                     }
 
                     switch (propertyIdentifier) {
                         case Mqtt5PubCompProperty.REASON_STRING:
-                            if (reasonString != null) {
-                                // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
-                                in.clear();
-                                return null;
-                            }
-                            reasonString = Mqtt5UTF8String.from(in);
+                            reasonString = decodeUTF8StringOnlyOnce(reasonString, "reason string", channel, in);
                             if (reasonString == null) {
-                                // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-                                in.clear();
                                 return null;
                             }
                             break;
+
                         case Mqtt5PubCompProperty.USER_PROPERTY:
+                            userPropertiesBuilder = decodeUserProperty(userPropertiesBuilder, channel, in);
                             if (userPropertiesBuilder == null) {
-                                userPropertiesBuilder = ImmutableList.builder();
-                            }
-                            final Mqtt5UserProperty userProperty = Mqtt5UserProperty.decode(in);
-                            if (userProperty == null) {
-                                // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-                                in.clear();
                                 return null;
                             }
-                            userPropertiesBuilder.add(userProperty);
                             break;
+
                         default:
-                            // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-                            in.clear();
+                            disconnectWrongProperty("PUBCOMP", channel, in);
                             return null;
                     }
                 }
             }
         }
 
-        ImmutableList<Mqtt5UserProperty> userProperties = Mqtt5UserProperty.DEFAULT_NO_USER_PROPERTIES;
-        if (userPropertiesBuilder != null) {
-            userProperties = userPropertiesBuilder.build();
-        }
+        final ImmutableList<Mqtt5UserProperty> userProperties = Mqtt5UserProperty.build(userPropertiesBuilder);
 
         final Mqtt5PubCompImpl pubComp = new Mqtt5PubCompImpl(reasonCode, reasonString, userProperties);
 

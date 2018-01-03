@@ -50,6 +50,12 @@ public class Mqtt5UserProperty {
         return encodedLength;
     }
 
+    @NotNull
+    public static ImmutableList<Mqtt5UserProperty> build(
+            @Nullable final ImmutableList.Builder<Mqtt5UserProperty> userPropertiesBuilder) {
+        return (userPropertiesBuilder == null) ? DEFAULT_NO_USER_PROPERTIES : userPropertiesBuilder.build();
+    }
+
     private final Mqtt5UTF8String name;
     private final Mqtt5UTF8String value;
 
