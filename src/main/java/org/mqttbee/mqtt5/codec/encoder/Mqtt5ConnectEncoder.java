@@ -29,6 +29,7 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
     private static final int VARIABLE_HEADER_FIXED_LENGTH = 6 + 1 + 1 + 2;
     private static final byte PROTOCOL_VERSION = 5;
 
+    @Override
     public void encode(
             @NotNull final Mqtt5ConnectImpl connect, @NotNull final Channel channel, @NotNull final ByteBuf out) {
 
@@ -43,11 +44,8 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
             // TODO: exception maximum packet size exceeded
         }
 
-        out.writeByte(FIXED_HEADER);
-        Mqtt5DataTypes.encodeVariableByteInteger(remainingLength, out);
-
+        encodeFixedHeader(remainingLength, out);
         encodeVariableHeader(connect, propertyLength, out);
-
         encodePayload(connect, willPropertyLength, out);
     }
 
@@ -170,6 +168,11 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
         }
 
         return willPropertyLength;
+    }
+
+    private void encodeFixedHeader(final int remainingLength, @NotNull final ByteBuf out) {
+        out.writeByte(FIXED_HEADER);
+        Mqtt5DataTypes.encodeVariableByteInteger(remainingLength, out);
     }
 
     private void encodeVariableHeader(

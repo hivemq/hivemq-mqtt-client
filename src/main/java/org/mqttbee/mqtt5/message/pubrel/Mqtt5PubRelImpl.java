@@ -41,6 +41,11 @@ public class Mqtt5PubRelImpl implements Mqtt5PubRel {
         return Optional.ofNullable(reasonString);
     }
 
+    @Nullable
+    public Mqtt5UTF8String getRawReasonString() {
+        return reasonString;
+    }
+
     @NotNull
     @Override
     public ImmutableList<Mqtt5UserProperty> getUserProperties() {
