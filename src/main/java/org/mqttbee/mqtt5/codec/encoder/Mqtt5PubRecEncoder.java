@@ -75,6 +75,7 @@ public class Mqtt5PubRecEncoder implements Mqtt5MessageEncoder<Mqtt5PubRecIntern
         if (reasonString != null) {
             properyLength += 1 + reasonString.encodedLength();
         }
+
         properyLength += Mqtt5UserProperty.encodedLength(pubRec.getUserProperties());
 
         if (!Mqtt5DataTypes.isInVariableByteIntegerRange(properyLength)) {
@@ -115,6 +116,7 @@ public class Mqtt5PubRecEncoder implements Mqtt5MessageEncoder<Mqtt5PubRecIntern
             out.writeByte(Mqtt5PubRecProperty.REASON_STRING);
             reasonString.to(out);
         }
+
         Mqtt5UserProperty.encode(pubRec.getUserProperties(), out);
     }
 

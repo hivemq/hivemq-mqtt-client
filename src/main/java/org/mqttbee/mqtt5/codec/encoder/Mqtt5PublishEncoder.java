@@ -80,26 +80,32 @@ public class Mqtt5PublishEncoder implements Mqtt5MessageEncoder<Mqtt5PublishInte
         if (publish.getMessageExpiryInterval() != Mqtt5Publish.DEFAULT_MESSAGE_EXPIRY_INTERVAL_INFINITY) {
             propertyLength += 5;
         }
+
         if (publish.getRawPayloadFormatIndicator() != null) {
             propertyLength += 2;
         }
+
         final Mqtt5UTF8String contentType = publish.getRawContentType();
         if (contentType != null) {
             propertyLength += 1 + contentType.encodedLength();
         }
+
         final Mqtt5UTF8String responseTopic = publish.getRawResponseTopic();
         if (responseTopic != null) {
             propertyLength += 1 + responseTopic.encodedLength();
         }
+
         final byte[] correlationData = publish.getRawCorrelationData();
         if (correlationData != null) {
             propertyLength += 1 + Mqtt5DataTypes.encodedBinaryDataLength(correlationData);
         }
+
         propertyLength += Mqtt5UserProperty.encodedLength(publish.getUserProperties());
 
         if (publishInternal.getTopicAlias() != Mqtt5PublishInternal.DEFAULT_NO_TOPIC_ALIAS) {
             propertyLength += 3;
         }
+
         final ImmutableIntArray subscriptionIdentifiers = publishInternal.getSubscriptionIdentifiers();
         for (int i = 0; i < subscriptionIdentifiers.length(); i++) {
             propertyLength += 1 + Mqtt5DataTypes.encodedVariableByteIntegerLength(subscriptionIdentifiers.get(i));
