@@ -4,9 +4,6 @@ import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 
-import java.nio.charset.Charset;
-import java.util.regex.Pattern;
-
 /**
  * @author Silvio Giebl
  */
