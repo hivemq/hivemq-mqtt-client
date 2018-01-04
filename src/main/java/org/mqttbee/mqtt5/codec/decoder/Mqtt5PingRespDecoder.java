@@ -8,8 +8,8 @@ import org.mqttbee.mqtt5.message.ping.Mqtt5PingRespImpl;
 
 import javax.inject.Singleton;
 
-import static org.mqttbee.mqtt5.codec.decoder.Mqtt5MessageDecoderUtils.disconnect;
-import static org.mqttbee.mqtt5.codec.decoder.Mqtt5MessageDecoderUtils.disconnectWrongFixedHeaderFlags;
+import static org.mqttbee.mqtt5.codec.decoder.Mqtt5MessageDecoderUtil.disconnect;
+import static org.mqttbee.mqtt5.codec.decoder.Mqtt5MessageDecoderUtil.disconnectWrongFixedHeaderFlags;
 import static org.mqttbee.mqtt5.message.ping.Mqtt5PingRespImpl.INSTANCE;
 
 /**

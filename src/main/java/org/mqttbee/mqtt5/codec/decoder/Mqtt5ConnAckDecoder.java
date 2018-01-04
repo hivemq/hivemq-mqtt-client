@@ -16,7 +16,7 @@ import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 
 import javax.inject.Singleton;
 
-import static org.mqttbee.mqtt5.codec.decoder.Mqtt5MessageDecoderUtils.*;
+import static org.mqttbee.mqtt5.codec.decoder.Mqtt5MessageDecoderUtil.*;
 import static org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckImpl.*;
 
 /**

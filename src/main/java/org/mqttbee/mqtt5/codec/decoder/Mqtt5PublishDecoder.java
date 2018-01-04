@@ -19,7 +19,7 @@ import org.mqttbee.mqtt5.message.publish.Mqtt5PublishProperty;
 
 import javax.inject.Singleton;
 
-import static org.mqttbee.mqtt5.codec.decoder.Mqtt5MessageDecoderUtils.*;
+import static org.mqttbee.mqtt5.codec.decoder.Mqtt5MessageDecoderUtil.*;
 import static org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl.DEFAULT_MESSAGE_EXPIRY_INTERVAL_INFINITY;
 import static org.mqttbee.mqtt5.message.publish.Mqtt5PublishInternal.DEFAULT_NO_TOPIC_ALIAS;
 import static org.mqttbee.mqtt5.message.publish.Mqtt5PublishInternal.NO_PACKET_IDENTIFIER_QOS_0;
