@@ -92,7 +92,7 @@ public class Mqtt5ConnectEncoderTest {
                 Mqtt5ConnectImpl.RestrictionsImpl.DEFAULT, auth, willPublish, userProperties);
 
         channel.writeOutbound(connect);
-        final ByteBuf byteBuf = (ByteBuf) channel.readOutbound();
+        final ByteBuf byteBuf = channel.readOutbound();
 
         final byte[] actual = new byte[byteBuf.readableBytes()];
         byteBuf.readBytes(actual);

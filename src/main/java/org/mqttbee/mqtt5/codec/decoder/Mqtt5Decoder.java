@@ -48,7 +48,7 @@ public class Mqtt5Decoder extends ByteToMessageDecoder {
         final int readerIndexAfterFixedHeader = in.readerIndex();
         final int fixedHeaderLength = readerIndexAfterFixedHeader - readerIndexBeforeFixedHeader;
         final int packetSize = fixedHeaderLength + remainingLength;
-        final Integer maximumPacketSize = ctx.attr(ChannelAttributes.MAXIMUM_INCOMING_PACKET_SIZE_KEY).get();
+        final Integer maximumPacketSize = ctx.channel().attr(ChannelAttributes.MAXIMUM_INCOMING_PACKET_SIZE_KEY).get();
 
         if ((maximumPacketSize != null) && (packetSize > maximumPacketSize)) {
             // TODO: send Disconnect with reason code 0x95 Packet too large and close channel
