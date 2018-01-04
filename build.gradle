@@ -14,12 +14,18 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
-    compile group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.1.8'
-    compile group: 'io.netty', name: 'netty-handler', version: '4.0.19.Final'
-    compile group: 'com.google.dagger', name: 'dagger', version: '2.14.1'
+project.ext {
+    rxJavaVersion = '2.1.8'
+    nettyVersion = '4.1.19.Final'
+    daggerVersion = '2.14.1'
+}
 
-    apt group: 'com.google.dagger', name: 'dagger-compiler', version: '2.14.1'
+dependencies {
+    compile group: 'io.reactivex.rxjava2', name: 'rxjava', version: rxJavaVersion
+    compile group: 'io.netty', name: 'netty-handler', version: nettyVersion
+    compile group: 'com.google.dagger', name: 'dagger', version: daggerVersion
+
+    apt group: 'com.google.dagger', name: 'dagger-compiler', version: daggerVersion
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
