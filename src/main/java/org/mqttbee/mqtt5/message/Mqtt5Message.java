@@ -26,6 +26,10 @@ public interface Mqtt5Message {
         public int encodedLength() {
             if (encodedLength == -1) {
                 encodedLength = Mqtt5MessageEncoder.encodedLength(encodedRemainingLength());
+
+                if (!Mqtt5DataTypes.isInVariableByteIntegerRange(encodedLength)) {
+                    // TODO exception remaining size exceeded
+                }
             }
             return encodedLength;
         }

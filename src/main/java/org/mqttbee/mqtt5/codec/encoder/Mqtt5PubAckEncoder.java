@@ -3,7 +3,6 @@ package org.mqttbee.mqtt5.codec.encoder;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
@@ -31,12 +30,6 @@ public class Mqtt5PubAckEncoder implements Mqtt5MessageEncoder<Mqtt5PubAckIntern
     public void encode(
             @NotNull final Mqtt5PubAckInternal pubAckInternal, @NotNull final Channel channel,
             @NotNull final ByteBuf out) {
-
-        final int packetSize = pubAckInternal.encodedLength();
-        final Integer maximumPacketSize = channel.attr(ChannelAttributes.MAXIMUM_OUTGOING_PACKET_SIZE_KEY).get();
-        if ((maximumPacketSize != null) && (packetSize > maximumPacketSize)) {
-            // TODO: exception maximum packet size exceeded
-        }
 
         encodeFixedHeader(pubAckInternal, out);
         encodeVariableHeader(pubAckInternal, out);

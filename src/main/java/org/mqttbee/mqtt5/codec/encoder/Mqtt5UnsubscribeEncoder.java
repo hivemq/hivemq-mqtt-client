@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5TopicFilter;
@@ -28,12 +27,6 @@ public class Mqtt5UnsubscribeEncoder implements Mqtt5MessageEncoder<Mqtt5Unsubsc
     public void encode(
             @NotNull final Mqtt5UnsubscribeInternal unsubscribeInternal, @NotNull final Channel channel,
             @NotNull final ByteBuf out) {
-
-        final int packetSize = unsubscribeInternal.encodedLength();
-        final Integer maximumPacketSize = channel.attr(ChannelAttributes.MAXIMUM_OUTGOING_PACKET_SIZE_KEY).get();
-        if ((maximumPacketSize != null) && (packetSize > maximumPacketSize)) {
-            // TODO: exception maximum packet size exceeded
-        }
 
         encodeFixedHeader(unsubscribeInternal, out);
         encodeVariableHeader(unsubscribeInternal, out);

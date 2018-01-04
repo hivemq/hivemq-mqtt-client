@@ -100,12 +100,4 @@ public class Mqtt5ConnectEncoderTest {
         assertArrayEquals(expected, actual);
     }
 
-    private static class Mqtt5ConnectTestEncoders extends Mqtt5TestMessageEncoders {
-        @NotNull
-        @Override
-        public Mqtt5MessageEncoder<Mqtt5ConnectImpl> getConnectEncoder() {
-            return new Mqtt5ConnectEncoder();
-        }
-    }
-
 }
