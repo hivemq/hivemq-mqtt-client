@@ -23,29 +23,28 @@ import static org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectImpl.SESSION_E
 @Singleton
 public class Mqtt5DisconnectEncoder implements Mqtt5MessageEncoder<Mqtt5DisconnectImpl> {
 
+    public static final Mqtt5DisconnectEncoder INSTANCE = new Mqtt5DisconnectEncoder();
+
     private static final int FIXED_HEADER = Mqtt5MessageType.DISCONNECT.getCode() << 4;
 
     @Override
     public void encode(
             @NotNull final Mqtt5DisconnectImpl disconnect, @NotNull final Channel channel, @NotNull final ByteBuf out) {
 
-        final int propertyLength = calculatePropertyLength(disconnect);
-        final int remainingLength = calculateRemainingLength(disconnect, propertyLength);
-
-        final int fixedHeaderLength = 1 + Mqtt5DataTypes.encodedVariableByteIntegerLength(remainingLength);
-        final int packetSize = fixedHeaderLength + remainingLength;
+        final int packetSize = disconnect.encodedLength();
         final Integer maximumPacketSize = channel.attr(ChannelAttributes.MAXIMUM_OUTGOING_PACKET_SIZE_KEY).get();
         if ((maximumPacketSize != null) && (packetSize > maximumPacketSize)) {
             // TODO: exception maximum packet size exceeded
         }
 
-        encodeFixedHeader(remainingLength, out);
-        encodeVariableHeader(disconnect, propertyLength, out);
+        encodeFixedHeader(disconnect, out);
+        encodeVariableHeader(disconnect, out);
     }
 
-    private int calculateRemainingLength(@NotNull final Mqtt5DisconnectImpl disconnect, final int propertyLength) {
+    public int encodedRemainingLength(@NotNull final Mqtt5DisconnectImpl disconnect) {
         int remainingLength = 0;
 
+        final int propertyLength = disconnect.encodedPropertyLength();
         if (propertyLength == 0) {
             if (disconnect.getReasonCode() != DEFAULT_REASON_CODE) {
                 remainingLength += 1;
@@ -55,14 +54,10 @@ public class Mqtt5DisconnectEncoder implements Mqtt5MessageEncoder<Mqtt5Disconne
             remainingLength += Mqtt5DataTypes.encodedVariableByteIntegerLength(propertyLength) + propertyLength;
         }
 
-        if (!Mqtt5DataTypes.isInVariableByteIntegerRange(remainingLength)) {
-            // TODO exception remaining size exceeded
-        }
-
         return remainingLength;
     }
 
-    private int calculatePropertyLength(@NotNull final Mqtt5DisconnectImpl disconnect) {
+    public int encodedPropertyLength(@NotNull final Mqtt5DisconnectImpl disconnect) {
         int propertyLength = 0;
 
         if (disconnect.getRawSessionExpiryInterval() != SESSION_EXPIRY_INTERVAL_FROM_CONNECT) {
@@ -81,22 +76,17 @@ public class Mqtt5DisconnectEncoder implements Mqtt5MessageEncoder<Mqtt5Disconne
 
         Mqtt5UserProperty.encodedLength(disconnect.getUserProperties());
 
-        if (!Mqtt5DataTypes.isInVariableByteIntegerRange(propertyLength)) {
-            // TODO exception remaining size exceeded
-        }
-
         return propertyLength;
     }
 
-    private void encodeFixedHeader(final int remainingLength, @NotNull final ByteBuf out) {
+    private void encodeFixedHeader(@NotNull final Mqtt5DisconnectImpl disconnect, @NotNull final ByteBuf out) {
         out.writeByte(FIXED_HEADER);
-        Mqtt5DataTypes.encodeVariableByteInteger(remainingLength, out);
+        Mqtt5DataTypes.encodeVariableByteInteger(disconnect.encodedRemainingLength(), out);
     }
 
-    private void encodeVariableHeader(
-            @NotNull final Mqtt5DisconnectImpl disconnect, final int propertyLength, @NotNull final ByteBuf out) {
-
+    private void encodeVariableHeader(@NotNull final Mqtt5DisconnectImpl disconnect, @NotNull final ByteBuf out) {
         final Mqtt5DisconnectReasonCode reasonCode = disconnect.getReasonCode();
+        final int propertyLength = disconnect.encodedPropertyLength();
         if (propertyLength == 0) {
             if (reasonCode != DEFAULT_REASON_CODE) {
                 out.writeByte(reasonCode.getCode());

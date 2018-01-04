@@ -14,6 +14,9 @@ import javax.inject.Singleton;
 @Singleton
 public class Mqtt5PingReqEncoder implements Mqtt5MessageEncoder<Mqtt5PingReqImpl> {
 
+    public static final Mqtt5PingReqEncoder INSTANCE = new Mqtt5PingReqEncoder();
+    public static final int ENCODED_LENGTH = 2;
+
     private final byte[] PACKET = {(byte) (Mqtt5MessageType.PINGREQ.getCode() << 4), 0};
 
     @Override

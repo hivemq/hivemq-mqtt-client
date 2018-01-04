@@ -14,18 +14,23 @@ import javax.inject.Inject;
 @ChannelHandler.Sharable
 public class Mqtt5Encoder extends MessageToByteEncoder<Mqtt5Message> {
 
-    private final Mqtt5MessageEncoders encoders;
-
     @Inject
-    public Mqtt5Encoder(final Mqtt5MessageEncoders encoders) {
+    public Mqtt5Encoder() {
         super(Mqtt5Message.class, true);
-        this.encoders = encoders;
+    }
+
+    @Override
+    protected ByteBuf allocateBuffer(
+            final ChannelHandlerContext ctx, final Mqtt5Message message, final boolean preferDirect) throws Exception {
+
+        return ctx.alloc().ioBuffer(message.encodedLength());
     }
 
     @Override
     protected void encode(final ChannelHandlerContext ctx, final Mqtt5Message message, final ByteBuf out)
             throws Exception {
-        message.encode(encoders, ctx.channel(), out);
+
+        message.encode(ctx.channel(), out);
     }
 
 }

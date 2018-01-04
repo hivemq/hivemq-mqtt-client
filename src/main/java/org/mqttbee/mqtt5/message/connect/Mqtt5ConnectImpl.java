@@ -6,8 +6,12 @@ import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5Connect;
-import org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoders;
-import org.mqttbee.mqtt5.message.*;
+import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
+import org.mqttbee.mqtt5.codec.encoder.Mqtt5ConnectEncoder;
+import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifier;
+import org.mqttbee.mqtt5.message.Mqtt5Message;
+import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
+import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 import org.mqttbee.mqtt5.message.publish.Mqtt5WillPublishImpl;
 
 import java.util.Optional;
@@ -15,7 +19,7 @@ import java.util.Optional;
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5ConnectImpl implements Mqtt5Connect, Mqtt5Message {
+public class Mqtt5ConnectImpl extends Mqtt5Message.Mqtt5MessageWithProperties implements Mqtt5Connect {
 
     public static final int NOT_DEFAULT_RESPONSE_INFORMATION_REQUESTED = DEFAULT_RESPONSE_INFORMATION_REQUESTED ? 0 : 1;
     public static final int NOT_DEFAULT_PROBLEM_INFORMATION_REQUESTED = DEFAULT_PROBLEM_INFORMATION_REQUESTED ? 0 : 1;
@@ -30,6 +34,8 @@ public class Mqtt5ConnectImpl implements Mqtt5Connect, Mqtt5Message {
     private final AuthImpl auth;
     private final Mqtt5WillPublishImpl willPublish;
     private final ImmutableList<Mqtt5UserProperty> userProperties;
+
+    private int willPropertyLength = -1;
 
     public Mqtt5ConnectImpl(
             @NotNull final Mqtt5ClientIdentifier clientIdentifier, final int keepAlive, final boolean isCleanStart,
@@ -119,16 +125,31 @@ public class Mqtt5ConnectImpl implements Mqtt5Connect, Mqtt5Message {
         return userProperties;
     }
 
-    @NotNull
     @Override
-    public Mqtt5MessageType getType() {
-        return Mqtt5MessageType.CONNECT;
+    public void encode(@NotNull final Channel channel, @NotNull final ByteBuf out) {
+        Mqtt5ConnectEncoder.INSTANCE.encode(this, channel, out);
     }
 
     @Override
-    public void encode(
-            @NotNull final Mqtt5MessageEncoders encoders, @NotNull final Channel channel, @NotNull final ByteBuf out) {
-        encoders.getConnectEncoder().encode(this, channel, out);
+    protected int calculateEncodedRemainingLength() {
+        return Mqtt5ConnectEncoder.INSTANCE.encodedRemainingLength(this);
+    }
+
+    @Override
+    protected int calculateEncodedPropertyLength() {
+        return Mqtt5ConnectEncoder.INSTANCE.encodedPropertyLength(this);
+    }
+
+    public int encodedWillPropertyLength() {
+        if (willPropertyLength == -1) {
+            willPropertyLength = Mqtt5ConnectEncoder.INSTANCE.encodedWillPropertyLength(this);
+
+            if (!Mqtt5DataTypes.isInVariableByteIntegerRange(willPropertyLength)) {
+                // TODO exception will properties size exceeded
+                // FIXME wrong location
+            }
+        }
+        return willPropertyLength;
     }
 
 
