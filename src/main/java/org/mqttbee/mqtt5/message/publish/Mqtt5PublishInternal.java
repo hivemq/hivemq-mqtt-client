@@ -4,14 +4,13 @@ import com.google.common.primitives.ImmutableIntArray;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoders;
+import org.mqttbee.mqtt5.codec.encoder.Mqtt5PublishEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5Message;
-import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5PublishInternal implements Mqtt5Message {
+public class Mqtt5PublishInternal extends Mqtt5Message.Mqtt5MessageWithProperties {
 
     public static final int NO_PACKET_IDENTIFIER_QOS_0 = -1;
     public static final int DEFAULT_NO_TOPIC_ALIAS = -1;
@@ -31,18 +30,6 @@ public class Mqtt5PublishInternal implements Mqtt5Message {
     @NotNull
     public Mqtt5PublishImpl getPublish() {
         return publish;
-    }
-
-    @NotNull
-    @Override
-    public Mqtt5MessageType getType() {
-        return Mqtt5MessageType.PUBLISH;
-    }
-
-    @Override
-    public void encode(
-            @NotNull final Mqtt5MessageEncoders encoders, @NotNull final Channel channel, @NotNull final ByteBuf out) {
-        encoders.getPublishEncoder().encode(this, channel, out);
     }
 
     public int getPacketIdentifier() {
@@ -76,6 +63,21 @@ public class Mqtt5PublishInternal implements Mqtt5Message {
 
     public void setSubscriptionIdentifiers(@NotNull final ImmutableIntArray subscriptionIdentifiers) {
         this.subscriptionIdentifiers = subscriptionIdentifiers;
+    }
+
+    @Override
+    public void encode(@NotNull final Channel channel, @NotNull final ByteBuf out) {
+        Mqtt5PublishEncoder.INSTANCE.encode(this, channel, out);
+    }
+
+    @Override
+    protected int calculateEncodedRemainingLength() {
+        return Mqtt5PublishEncoder.INSTANCE.encodedRemainingLength(this);
+    }
+
+    @Override
+    protected int calculateEncodedPropertyLength() {
+        return Mqtt5PublishEncoder.INSTANCE.encodedPropertyLength(this);
     }
 
 }

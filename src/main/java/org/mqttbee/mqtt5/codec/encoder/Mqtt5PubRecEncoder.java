@@ -23,6 +23,8 @@ import static org.mqttbee.mqtt5.message.pubrec.Mqtt5PubRecImpl.DEFAULT_REASON_CO
 @Singleton
 public class Mqtt5PubRecEncoder implements Mqtt5MessageEncoder<Mqtt5PubRecInternal> {
 
+    public static final Mqtt5PubRecEncoder INSTANCE = new Mqtt5PubRecEncoder();
+
     private static final int FIXED_HEADER = Mqtt5MessageType.PUBACK.getCode() << 4;
 
     @Override
@@ -30,28 +32,22 @@ public class Mqtt5PubRecEncoder implements Mqtt5MessageEncoder<Mqtt5PubRecIntern
             @NotNull final Mqtt5PubRecInternal pubRecInternal, @NotNull final Channel channel,
             @NotNull final ByteBuf out) {
 
-        final int propertiesLength = calculatePropertyLength(pubRecInternal);
-        final int remainingLength = calculateRemainingLength(pubRecInternal, propertiesLength);
-
-        final int fixedHeaderLength = 1 + Mqtt5DataTypes.encodedVariableByteIntegerLength(remainingLength);
-        final int packetSize = fixedHeaderLength + remainingLength;
+        final int packetSize = pubRecInternal.encodedLength();
         final Integer maximumPacketSize = channel.attr(ChannelAttributes.MAXIMUM_OUTGOING_PACKET_SIZE_KEY).get();
         if ((maximumPacketSize != null) && (packetSize > maximumPacketSize)) {
             // TODO: exception maximum packet size exceeded
         }
 
-        encodeFixedHeader(remainingLength, out);
-        encodeVariableHeader(pubRecInternal, propertiesLength, out);
+        encodeFixedHeader(pubRecInternal, out);
+        encodeVariableHeader(pubRecInternal, out);
     }
 
-    private int calculateRemainingLength(
-            @NotNull final Mqtt5PubRecInternal pubRecInternal, final int propertyLength) {
-        final Mqtt5PubRecImpl pubRec = pubRecInternal.getPubRec();
-
+    public int encodedRemainingLength(@NotNull final Mqtt5PubRecInternal pubRecInternal) {
         int remainingLength = 2;
 
+        final int propertyLength = pubRecInternal.encodedPropertyLength();
         if (propertyLength == 0) {
-            if (pubRec.getReasonCode() != DEFAULT_REASON_CODE) {
+            if (pubRecInternal.getPubRec().getReasonCode() != DEFAULT_REASON_CODE) {
                 remainingLength += 1;
             }
         } else {
@@ -59,14 +55,10 @@ public class Mqtt5PubRecEncoder implements Mqtt5MessageEncoder<Mqtt5PubRecIntern
             remainingLength += Mqtt5DataTypes.encodedVariableByteIntegerLength(propertyLength) + propertyLength;
         }
 
-        if (!Mqtt5DataTypes.isInVariableByteIntegerRange(remainingLength)) {
-            // TODO exception remaining size exceeded
-        }
-
         return remainingLength;
     }
 
-    private int calculatePropertyLength(@NotNull final Mqtt5PubRecInternal pubRecInternal) {
+    public int encodedPropertyLength(@NotNull final Mqtt5PubRecInternal pubRecInternal) {
         final Mqtt5PubRecImpl pubRec = pubRecInternal.getPubRec();
 
         int properyLength = 0;
@@ -78,25 +70,20 @@ public class Mqtt5PubRecEncoder implements Mqtt5MessageEncoder<Mqtt5PubRecIntern
 
         properyLength += Mqtt5UserProperty.encodedLength(pubRec.getUserProperties());
 
-        if (!Mqtt5DataTypes.isInVariableByteIntegerRange(properyLength)) {
-            // TODO exception remaining size exceeded
-        }
-
         return properyLength;
     }
 
-    private void encodeFixedHeader(final int remainingLength, @NotNull final ByteBuf out) {
+    private void encodeFixedHeader(@NotNull final Mqtt5PubRecInternal pubRecInternal, @NotNull final ByteBuf out) {
         out.writeByte(FIXED_HEADER);
-        Mqtt5DataTypes.encodeVariableByteInteger(remainingLength, out);
+        Mqtt5DataTypes.encodeVariableByteInteger(pubRecInternal.encodedRemainingLength(), out);
     }
 
-    private void encodeVariableHeader(
-            @NotNull final Mqtt5PubRecInternal pubRecInternal, final int propertyLength, @NotNull final ByteBuf out) {
-        final Mqtt5PubRecImpl pubRec = pubRecInternal.getPubRec();
-
+    private void encodeVariableHeader(@NotNull final Mqtt5PubRecInternal pubRecInternal, @NotNull final ByteBuf out) {
         out.writeShort(pubRecInternal.getPacketIdentifier());
 
+        final Mqtt5PubRecImpl pubRec = pubRecInternal.getPubRec();
         final Mqtt5PubRecReasonCode reasonCode = pubRec.getReasonCode();
+        final int propertyLength = pubRecInternal.encodedPropertyLength();
         if (propertyLength == 0) {
             if (reasonCode != DEFAULT_REASON_CODE) {
                 out.writeByte(reasonCode.getCode());
@@ -109,6 +96,7 @@ public class Mqtt5PubRecEncoder implements Mqtt5MessageEncoder<Mqtt5PubRecIntern
 
     private void encodeProperties(
             @NotNull final Mqtt5PubRecImpl pubRec, final int propertyLength, @NotNull final ByteBuf out) {
+
         Mqtt5DataTypes.encodeVariableByteInteger(propertyLength, out);
 
         final Mqtt5UTF8String reasonString = pubRec.getRawReasonString();

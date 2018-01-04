@@ -3,14 +3,13 @@ package org.mqttbee.mqtt5.message.subscribe;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoders;
+import org.mqttbee.mqtt5.codec.encoder.Mqtt5SubscribeEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5Message;
-import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5SubscribeInternal implements Mqtt5Message {
+public class Mqtt5SubscribeInternal extends Mqtt5Message.Mqtt5MessageWithProperties {
 
     public static final int DEFAULT_NO_SUBSCRIPTION_IDENTIFIER = -1;
 
@@ -43,16 +42,19 @@ public class Mqtt5SubscribeInternal implements Mqtt5Message {
         this.subscriptionIdentifier = subscriptionIdentifier;
     }
 
-    @NotNull
     @Override
-    public Mqtt5MessageType getType() {
-        return Mqtt5MessageType.SUBSCRIBE;
+    public void encode(@NotNull final Channel channel, @NotNull final ByteBuf out) {
+        Mqtt5SubscribeEncoder.INSTANCE.encode(this, channel, out);
     }
 
     @Override
-    public void encode(
-            @NotNull final Mqtt5MessageEncoders encoders, @NotNull final Channel channel, @NotNull final ByteBuf out) {
-        encoders.getSubscribeEncoder().encode(this, channel, out);
+    protected int calculateEncodedRemainingLength() {
+        return Mqtt5SubscribeEncoder.INSTANCE.encodedRemainingLength(this);
+    }
+
+    @Override
+    protected int calculateEncodedPropertyLength() {
+        return Mqtt5SubscribeEncoder.INSTANCE.encodedPropertyLength(this);
     }
 
 }

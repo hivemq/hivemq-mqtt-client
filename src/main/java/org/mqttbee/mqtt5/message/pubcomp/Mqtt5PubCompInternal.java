@@ -3,14 +3,13 @@ package org.mqttbee.mqtt5.message.pubcomp;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoders;
+import org.mqttbee.mqtt5.codec.encoder.Mqtt5PubCompEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5Message;
-import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5PubCompInternal implements Mqtt5Message {
+public class Mqtt5PubCompInternal extends Mqtt5Message.Mqtt5MessageWithProperties {
 
     private final Mqtt5PubCompImpl pubComp;
     private int packetIdentifier;
@@ -32,16 +31,19 @@ public class Mqtt5PubCompInternal implements Mqtt5Message {
         this.packetIdentifier = packetIdentifier;
     }
 
-    @NotNull
     @Override
-    public Mqtt5MessageType getType() {
-        return Mqtt5MessageType.PUBCOMP;
+    public void encode(@NotNull final Channel channel, @NotNull final ByteBuf out) {
+        Mqtt5PubCompEncoder.INSTANCE.encode(this, channel, out);
     }
 
     @Override
-    public void encode(
-            @NotNull final Mqtt5MessageEncoders encoders, @NotNull final Channel channel, @NotNull final ByteBuf out) {
-        encoders.getPubCompEncoder().encode(this, channel, out);
+    protected int calculateEncodedRemainingLength() {
+        return Mqtt5PubCompEncoder.INSTANCE.encodedRemainingLength(this);
+    }
+
+    @Override
+    protected int calculateEncodedPropertyLength() {
+        return Mqtt5PubCompEncoder.INSTANCE.encodedPropertyLength(this);
     }
 
 }
