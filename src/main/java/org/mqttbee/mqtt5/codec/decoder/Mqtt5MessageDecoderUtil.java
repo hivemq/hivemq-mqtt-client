@@ -17,9 +17,9 @@ import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 /**
  * @author Silvio Giebl
  */
-class Mqtt5MessageDecoderUtils {
+class Mqtt5MessageDecoderUtil {
 
-    private Mqtt5MessageDecoderUtils() {
+    private Mqtt5MessageDecoderUtil() {
     }
 
     static void disconnect(

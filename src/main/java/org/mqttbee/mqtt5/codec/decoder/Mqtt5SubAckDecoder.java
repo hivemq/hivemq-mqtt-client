@@ -15,7 +15,7 @@ import org.mqttbee.mqtt5.message.suback.Mqtt5SubAckReasonCode;
 
 import javax.inject.Singleton;
 
-import static org.mqttbee.mqtt5.codec.decoder.Mqtt5MessageDecoderUtils.*;
+import static org.mqttbee.mqtt5.codec.decoder.Mqtt5MessageDecoderUtil.*;
 
 /**
  * @author Silvio Giebl

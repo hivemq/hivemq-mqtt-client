@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
+import org.mqttbee.mqtt5.exceptions.Mqtt5VariableByteIntegerExceededException;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 import org.mqttbee.mqtt5.message.subscribe.Mqtt5SubscribeImpl;
@@ -47,6 +48,9 @@ public class Mqtt5SubscribeEncoder implements Mqtt5MessageEncoder<Mqtt5Subscribe
             remainingLength += subscriptions.get(i).getTopicFilter().encodedLength() + 1;
         }
 
+        if (!Mqtt5DataTypes.isInVariableByteIntegerRange(remainingLength)) {
+            throw new Mqtt5VariableByteIntegerExceededException("remaining length");
+        }
         return remainingLength;
     }
 
@@ -62,6 +66,9 @@ public class Mqtt5SubscribeEncoder implements Mqtt5MessageEncoder<Mqtt5Subscribe
 
         propertyLength += Mqtt5UserProperty.encodedLength(subscribe.getUserProperties());
 
+        if (!Mqtt5DataTypes.isInVariableByteIntegerRange(propertyLength)) {
+            throw new Mqtt5VariableByteIntegerExceededException("property length");
+        }
         return propertyLength;
     }
 
