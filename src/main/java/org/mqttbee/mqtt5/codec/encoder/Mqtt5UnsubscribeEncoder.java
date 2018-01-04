@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
+import org.mqttbee.mqtt5.exceptions.Mqtt5VariableByteIntegerExceededException;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5TopicFilter;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
@@ -46,11 +47,20 @@ public class Mqtt5UnsubscribeEncoder implements Mqtt5MessageEncoder<Mqtt5Unsubsc
             remainingLength += topicFilters.get(i).encodedLength();
         }
 
+        if (!Mqtt5DataTypes.isInVariableByteIntegerRange(remainingLength)) {
+            throw new Mqtt5VariableByteIntegerExceededException("remaining length");
+        }
         return remainingLength;
     }
 
     public int encodedPropertyLength(@NotNull final Mqtt5UnsubscribeInternal unsubscribeInternal) {
-        return Mqtt5UserProperty.encodedLength(unsubscribeInternal.getUnsubscribe().getUserProperties());
+        final int propertyLength =
+                Mqtt5UserProperty.encodedLength(unsubscribeInternal.getUnsubscribe().getUserProperties());
+
+        if (!Mqtt5DataTypes.isInVariableByteIntegerRange(propertyLength)) {
+            throw new Mqtt5VariableByteIntegerExceededException("property length");
+        }
+        return propertyLength;
     }
 
     private void encodeFixedHeader(

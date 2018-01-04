@@ -15,7 +15,7 @@ import org.mqttbee.mqtt5.message.pubrel.Mqtt5PubRelReasonCode;
 
 import javax.inject.Singleton;
 
-import static org.mqttbee.mqtt5.codec.decoder.Mqtt5MessageDecoderUtils.*;
+import static org.mqttbee.mqtt5.codec.decoder.Mqtt5MessageDecoderUtil.*;
 import static org.mqttbee.mqtt5.message.pubrel.Mqtt5PubRelImpl.DEFAULT_REASON_CODE;
 
 /**

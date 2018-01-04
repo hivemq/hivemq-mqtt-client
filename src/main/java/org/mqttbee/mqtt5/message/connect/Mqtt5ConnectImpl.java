@@ -6,7 +6,6 @@ import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5Connect;
-import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5ConnectEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifier;
 import org.mqttbee.mqtt5.message.Mqtt5Message;
@@ -143,11 +142,6 @@ public class Mqtt5ConnectImpl extends Mqtt5Message.Mqtt5MessageWithProperties im
     public int encodedWillPropertyLength() {
         if (willPropertyLength == -1) {
             willPropertyLength = Mqtt5ConnectEncoder.INSTANCE.encodedWillPropertyLength(this);
-
-            if (!Mqtt5DataTypes.isInVariableByteIntegerRange(willPropertyLength)) {
-                // TODO exception will properties size exceeded
-                // FIXME wrong location
-            }
         }
         return willPropertyLength;
     }

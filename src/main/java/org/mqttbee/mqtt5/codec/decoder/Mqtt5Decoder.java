@@ -11,7 +11,7 @@ import javax.inject.Inject;
 import java.util.List;
 
 import static org.mqttbee.mqtt5.codec.Mqtt5CodecUtil.checkMaximumPacketSize;
-import static org.mqttbee.mqtt5.codec.decoder.Mqtt5MessageDecoderUtils.disconnect;
+import static org.mqttbee.mqtt5.codec.decoder.Mqtt5MessageDecoderUtil.disconnect;
 
 /**
  * @author Silvio Giebl
