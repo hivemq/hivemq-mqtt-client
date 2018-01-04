@@ -6,9 +6,8 @@ import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5Disconnect;
-import org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoders;
+import org.mqttbee.mqtt5.codec.encoder.Mqtt5DisconnectEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5Message;
-import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 
@@ -17,7 +16,7 @@ import java.util.Optional;
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5DisconnectImpl implements Mqtt5Disconnect, Mqtt5Message {
+public class Mqtt5DisconnectImpl extends Mqtt5Message.Mqtt5MessageWithProperties implements Mqtt5Disconnect {
 
     @NotNull
     public static final Mqtt5DisconnectReasonCode DEFAULT_REASON_CODE = Mqtt5DisconnectReasonCode.NORMAL_DISCONNECTION;
@@ -85,16 +84,19 @@ public class Mqtt5DisconnectImpl implements Mqtt5Disconnect, Mqtt5Message {
         return userProperties;
     }
 
-    @NotNull
     @Override
-    public Mqtt5MessageType getType() {
-        return Mqtt5MessageType.DISCONNECT;
+    public void encode(@NotNull final Channel channel, @NotNull final ByteBuf out) {
+        Mqtt5DisconnectEncoder.INSTANCE.encode(this, channel, out);
     }
 
     @Override
-    public void encode(
-            @NotNull final Mqtt5MessageEncoders encoders, @NotNull final Channel channel, @NotNull final ByteBuf out) {
-        encoders.getDisconnectEncoder().encode(this, channel, out);
+    protected int calculateEncodedRemainingLength() {
+        return Mqtt5DisconnectEncoder.INSTANCE.encodedRemainingLength(this);
+    }
+
+    @Override
+    protected int calculateEncodedPropertyLength() {
+        return Mqtt5DisconnectEncoder.INSTANCE.encodedPropertyLength(this);
     }
 
 }

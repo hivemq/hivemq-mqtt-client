@@ -6,9 +6,12 @@ import io.netty.handler.codec.ByteToMessageDecoder;
 import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.Mqtt5Message;
+import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 
 import javax.inject.Inject;
 import java.util.List;
+
+import static org.mqttbee.mqtt5.codec.decoder.Mqtt5MessageDecoderUtils.disconnect;
 
 /**
  * @author Silvio Giebl
@@ -40,8 +43,8 @@ public class Mqtt5Decoder extends ByteToMessageDecoder {
 
         if (remainingLength == Mqtt5DataTypes.VARIABLE_BYTE_INTEGER_TOO_LARGE ||
                 remainingLength == Mqtt5DataTypes.VARIABLE_BYTE_INTEGER_NOT_MINIMUM_BYTES) {
-            // TODO: send Disconnect with reason code 0x81 Malformed Packet and close channel
-            in.clear();
+
+            disconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "malformed remaining length", ctx.channel(), in);
             return;
         }
 
@@ -51,8 +54,7 @@ public class Mqtt5Decoder extends ByteToMessageDecoder {
         final Integer maximumPacketSize = ctx.channel().attr(ChannelAttributes.MAXIMUM_INCOMING_PACKET_SIZE_KEY).get();
 
         if ((maximumPacketSize != null) && (packetSize > maximumPacketSize)) {
-            // TODO: send Disconnect with reason code 0x95 Packet too large and close channel
-            in.clear();
+            disconnect(Mqtt5DisconnectReasonCode.PACKET_TOO_LARGE, null, ctx.channel(), in);
             return;
         }
 
@@ -68,8 +70,7 @@ public class Mqtt5Decoder extends ByteToMessageDecoder {
 
         final Mqtt5MessageDecoder decoder = decoders.get(messageType);
         if (decoder == null) {
-            // TODO: send Disconnect with reason code 0x82 Protocol Error and close channel
-            in.clear();
+            disconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "wrong packet", ctx.channel(), in);
             return;
         }
 

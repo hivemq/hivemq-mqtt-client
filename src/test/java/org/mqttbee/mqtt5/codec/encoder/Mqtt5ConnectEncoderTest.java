@@ -25,7 +25,7 @@ public class Mqtt5ConnectEncoderTest {
 
     @Before
     public void setUp() {
-        channel = new EmbeddedChannel(new Mqtt5Encoder(new Mqtt5ConnectTestEncoders()));
+        channel = new EmbeddedChannel(new Mqtt5Encoder());
     }
 
     @Test

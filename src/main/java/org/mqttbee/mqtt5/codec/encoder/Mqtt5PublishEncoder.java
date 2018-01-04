@@ -24,6 +24,8 @@ import javax.inject.Singleton;
 @Singleton
 public class Mqtt5PublishEncoder implements Mqtt5MessageEncoder<Mqtt5PublishInternal> {
 
+    public static final Mqtt5PublishEncoder INSTANCE = new Mqtt5PublishEncoder();
+
     private static final int FIXED_HEADER = Mqtt5MessageType.PUBLISH.getCode() << 4;
 
     @Override
@@ -31,23 +33,18 @@ public class Mqtt5PublishEncoder implements Mqtt5MessageEncoder<Mqtt5PublishInte
             @NotNull final Mqtt5PublishInternal publishInternal, @NotNull final Channel channel,
             @NotNull final ByteBuf out) {
 
-        final int propertyLength = calculatePropertyLength(publishInternal);
-        final int remainingLength = calculateRemainingLength(publishInternal, propertyLength);
-
-        final int fixedHeaderLength = 1 + Mqtt5DataTypes.encodedVariableByteIntegerLength(remainingLength);
-        final int packetSize = fixedHeaderLength + remainingLength;
+        final int packetSize = publishInternal.encodedLength();
         final Integer maximumPacketSize = channel.attr(ChannelAttributes.MAXIMUM_OUTGOING_PACKET_SIZE_KEY).get();
         if ((maximumPacketSize != null) && (packetSize > maximumPacketSize)) {
             // TODO: exception maximum packet size exceeded
         }
 
-        encodeFixedHeader(publishInternal, remainingLength, out);
-        encodeVariableHeader(publishInternal, propertyLength, out);
+        encodeFixedHeader(publishInternal, out);
+        encodeVariableHeader(publishInternal, out);
         encodePayload(publishInternal, out);
     }
 
-    private int calculateRemainingLength(
-            @NotNull final Mqtt5PublishInternal publishInternal, final int propertiesLength) {
+    public int encodedRemainingLength(@NotNull final Mqtt5PublishInternal publishInternal) {
         final Mqtt5PublishImpl publish = publishInternal.getPublish();
 
         int remainingLength = 0;
@@ -58,21 +55,18 @@ public class Mqtt5PublishEncoder implements Mqtt5MessageEncoder<Mqtt5PublishInte
             remainingLength += 2;
         }
 
-        remainingLength += Mqtt5DataTypes.encodedVariableByteIntegerLength(propertiesLength) + propertiesLength;
+        final int propertyLength = publishInternal.encodedPropertyLength();
+        remainingLength += Mqtt5DataTypes.encodedVariableByteIntegerLength(propertyLength) + propertyLength;
 
         final byte[] payload = publish.getRawPayload();
         if (payload != null) {
             remainingLength += payload.length;
         }
 
-        if (!Mqtt5DataTypes.isInVariableByteIntegerRange(remainingLength)) {
-            // TODO exception remaining size exceeded
-        }
-
         return remainingLength;
     }
 
-    private int calculatePropertyLength(@NotNull final Mqtt5PublishInternal publishInternal) {
+    public int encodedPropertyLength(@NotNull final Mqtt5PublishInternal publishInternal) {
         final Mqtt5PublishImpl publish = publishInternal.getPublish();
 
         int propertyLength = 0;
@@ -111,16 +105,10 @@ public class Mqtt5PublishEncoder implements Mqtt5MessageEncoder<Mqtt5PublishInte
             propertyLength += 1 + Mqtt5DataTypes.encodedVariableByteIntegerLength(subscriptionIdentifiers.get(i));
         }
 
-        if (!Mqtt5DataTypes.isInVariableByteIntegerRange(propertyLength)) {
-            // TODO exception properties size exceeded
-        }
-
         return propertyLength;
     }
 
-    private void encodeFixedHeader(
-            @NotNull final Mqtt5PublishInternal publishInternal, final int remainingLength,
-            @NotNull final ByteBuf out) {
+    private void encodeFixedHeader(@NotNull final Mqtt5PublishInternal publishInternal, @NotNull final ByteBuf out) {
         final Mqtt5PublishImpl publish = publishInternal.getPublish();
 
         int flags = 0;
@@ -133,12 +121,12 @@ public class Mqtt5PublishEncoder implements Mqtt5MessageEncoder<Mqtt5PublishInte
         }
 
         out.writeByte(FIXED_HEADER | flags);
+
+        final int remainingLength = publishInternal.encodedRemainingLength();
         Mqtt5DataTypes.encodeVariableByteInteger(remainingLength, out);
     }
 
-    private void encodeVariableHeader(
-            @NotNull final Mqtt5PublishInternal publishInternal, final int propertyLength,
-            @NotNull final ByteBuf out) {
+    private void encodeVariableHeader(@NotNull final Mqtt5PublishInternal publishInternal, @NotNull final ByteBuf out) {
         final Mqtt5PublishImpl publish = publishInternal.getPublish();
 
         publish.getTopic().to(out);
@@ -147,14 +135,13 @@ public class Mqtt5PublishEncoder implements Mqtt5MessageEncoder<Mqtt5PublishInte
             out.writeShort(publishInternal.getPacketIdentifier());
         }
 
-        encodeProperties(publishInternal, propertyLength, out);
+        encodeProperties(publishInternal, out);
     }
 
-    private void encodeProperties(
-            @NotNull final Mqtt5PublishInternal publishInternal, final int propertyLength,
-            @NotNull final ByteBuf out) {
+    private void encodeProperties(@NotNull final Mqtt5PublishInternal publishInternal, @NotNull final ByteBuf out) {
         final Mqtt5PublishImpl publish = publishInternal.getPublish();
 
+        final int propertyLength = publishInternal.encodedPropertyLength();
         Mqtt5DataTypes.encodeVariableByteInteger(propertyLength, out);
 
         final long messageExpiryInterval = publish.getMessageExpiryInterval();

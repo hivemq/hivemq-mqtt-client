@@ -19,38 +19,32 @@ import javax.inject.Singleton;
 @Singleton
 public class Mqtt5AuthEncoder implements Mqtt5MessageEncoder<Mqtt5AuthImpl> {
 
+    public static final Mqtt5AuthEncoder INSTANCE = new Mqtt5AuthEncoder();
+
     private static final int FIXED_HEADER = Mqtt5MessageType.AUTH.getCode() << 4;
 
     @Override
     public void encode(@NotNull final Mqtt5AuthImpl auth, @NotNull final Channel channel, @NotNull final ByteBuf out) {
-
-        final int propertyLength = calculatePropertyLength(auth);
-        final int remainingLength = calculateRemainingLength(auth, propertyLength);
-
-        final int fixedHeaderLength = 1 + Mqtt5DataTypes.encodedVariableByteIntegerLength(remainingLength);
-        final int packetSize = fixedHeaderLength + remainingLength;
+        final int packetSize = auth.encodedLength();
         final Integer maximumPacketSize = channel.attr(ChannelAttributes.MAXIMUM_OUTGOING_PACKET_SIZE_KEY).get();
         if ((maximumPacketSize != null) && (packetSize > maximumPacketSize)) {
             // TODO: exception maximum packet size exceeded
         }
 
-        encodeFixedHeader(remainingLength, out);
-        encodeVariableHeader(auth, propertyLength, out);
+        encodeFixedHeader(auth, out);
+        encodeVariableHeader(auth, out);
     }
 
-    private int calculateRemainingLength(@NotNull final Mqtt5AuthImpl auth, final int propertyLength) {
+    public int encodedRemainingLength(@NotNull final Mqtt5AuthImpl auth) {
         int remainingLength = 1;
 
+        final int propertyLength = auth.encodedPropertyLength();
         remainingLength += Mqtt5DataTypes.encodedVariableByteIntegerLength(propertyLength) + propertyLength;
-
-        if (!Mqtt5DataTypes.isInVariableByteIntegerRange(remainingLength)) {
-            // TODO exception remaining size exceeded
-        }
 
         return remainingLength;
     }
 
-    private int calculatePropertyLength(@NotNull final Mqtt5AuthImpl auth) {
+    public int encodedPropertyLength(@NotNull final Mqtt5AuthImpl auth) {
         int propertyLength = 0;
 
         propertyLength += 1 + auth.getMethod().encodedLength();
@@ -67,28 +61,21 @@ public class Mqtt5AuthEncoder implements Mqtt5MessageEncoder<Mqtt5AuthImpl> {
 
         propertyLength += Mqtt5UserProperty.encodedLength(auth.getUserProperties());
 
-        if (!Mqtt5DataTypes.isInVariableByteIntegerRange(propertyLength)) {
-            // TODO exception remaining size exceeded
-        }
-
         return propertyLength;
     }
 
-    private void encodeFixedHeader(final int remainingLength, @NotNull final ByteBuf out) {
+    private void encodeFixedHeader(@NotNull final Mqtt5AuthImpl auth, @NotNull final ByteBuf out) {
         out.writeByte(FIXED_HEADER);
-        Mqtt5DataTypes.encodeVariableByteInteger(remainingLength, out);
+        Mqtt5DataTypes.encodeVariableByteInteger(auth.encodedRemainingLength(), out);
     }
 
-    private void encodeVariableHeader(
-            @NotNull final Mqtt5AuthImpl auth, final int propertyLength, @NotNull final ByteBuf out) {
-
+    private void encodeVariableHeader(@NotNull final Mqtt5AuthImpl auth, @NotNull final ByteBuf out) {
         out.writeByte(auth.getReasonCode().getCode());
-        encodeProperties(auth, propertyLength, out);
+        encodeProperties(auth, out);
     }
 
-    private void encodeProperties(
-            @NotNull final Mqtt5AuthImpl auth, final int propertyLength, @NotNull final ByteBuf out) {
-
+    private void encodeProperties(@NotNull final Mqtt5AuthImpl auth, @NotNull final ByteBuf out) {
+        final int propertyLength = auth.encodedPropertyLength();
         Mqtt5DataTypes.encodeVariableByteInteger(propertyLength, out);
 
         out.writeByte(Mqtt5AuthProperty.AUTHENTICATION_METHOD);

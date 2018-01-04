@@ -23,16 +23,18 @@ class Mqtt5MessageDecoderUtils {
     }
 
     static void disconnect(
-            final Mqtt5DisconnectReasonCode reasonCode, @NotNull final String reasonString,
+            final Mqtt5DisconnectReasonCode reasonCode, @Nullable final String reasonString,
             @NotNull final Channel channel, @NotNull final ByteBuf in) {
 
         in.clear();
         channel.config().setAutoRead(false);
 
         Mqtt5UTF8String mqttReasonString = null;
-        final Boolean sendReasonString = channel.attr(ChannelAttributes.SEND_REASON_STRING_KEY).get();
-        if ((sendReasonString != null) && sendReasonString) {
-            mqttReasonString = Mqtt5UTF8String.from(reasonString);
+        if (reasonString != null) {
+            final Boolean sendReasonString = channel.attr(ChannelAttributes.SEND_REASON_STRING_KEY).get();
+            if ((sendReasonString != null) && sendReasonString) {
+                mqttReasonString = Mqtt5UTF8String.from(reasonString);
+            }
         }
 
         final Mqtt5DisconnectImpl disconnect = new Mqtt5DisconnectImpl(
@@ -53,7 +55,7 @@ class Mqtt5MessageDecoderUtils {
     }
 
     static void disconnectMalformedPropertyLength(@NotNull final Channel channel, @NotNull final ByteBuf in) {
-        disconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "wrong properties length", channel, in);
+        disconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "malformed properties length", channel, in);
     }
 
     static void disconnectMalformedPropertyIdentifier(@NotNull final Channel channel, @NotNull final ByteBuf in) {

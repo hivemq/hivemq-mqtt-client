@@ -6,9 +6,8 @@ import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5Auth;
-import org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoders;
+import org.mqttbee.mqtt5.codec.encoder.Mqtt5AuthEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5Message;
-import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 
@@ -17,7 +16,7 @@ import java.util.Optional;
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5AuthImpl implements Mqtt5Auth, Mqtt5Message {
+public class Mqtt5AuthImpl extends Mqtt5Message.Mqtt5MessageWithProperties implements Mqtt5Auth {
 
     private final Mqtt5AuthReasonCode reasonCode;
     private final Mqtt5UTF8String method;
@@ -76,16 +75,19 @@ public class Mqtt5AuthImpl implements Mqtt5Auth, Mqtt5Message {
         return userProperties;
     }
 
-    @NotNull
     @Override
-    public Mqtt5MessageType getType() {
-        return Mqtt5MessageType.AUTH;
+    public void encode(@NotNull final Channel channel, @NotNull final ByteBuf out) {
+        Mqtt5AuthEncoder.INSTANCE.encode(this, channel, out);
     }
 
     @Override
-    public void encode(
-            @NotNull final Mqtt5MessageEncoders encoders, @NotNull final Channel channel, @NotNull final ByteBuf out) {
-        encoders.getAuthEncoder().encode(this, channel, out);
+    protected int calculateEncodedRemainingLength() {
+        return Mqtt5AuthEncoder.INSTANCE.encodedRemainingLength(this);
+    }
+
+    @Override
+    protected int calculateEncodedPropertyLength() {
+        return Mqtt5AuthEncoder.INSTANCE.encodedPropertyLength(this);
     }
 
 }
