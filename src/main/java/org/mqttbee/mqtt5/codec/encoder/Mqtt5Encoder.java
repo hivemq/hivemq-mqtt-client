@@ -8,6 +8,8 @@ import org.mqttbee.mqtt5.message.Mqtt5Message;
 
 import javax.inject.Inject;
 
+import static org.mqttbee.mqtt5.codec.Mqtt5CodecUtil.checkMaximumPacketSize;
+
 /**
  * @author Silvio Giebl
  */
@@ -23,7 +25,13 @@ public class Mqtt5Encoder extends MessageToByteEncoder<Mqtt5Message> {
     protected ByteBuf allocateBuffer(
             final ChannelHandlerContext ctx, final Mqtt5Message message, final boolean preferDirect) throws Exception {
 
-        return ctx.alloc().ioBuffer(message.encodedLength());
+        final int encodedLength = message.encodedLength();
+
+        if (!checkMaximumPacketSize(encodedLength, ctx.channel())) {
+            // TODO: exception maximum packet size exceeded
+        }
+
+        return ctx.alloc().ioBuffer(encodedLength);
     }
 
     @Override

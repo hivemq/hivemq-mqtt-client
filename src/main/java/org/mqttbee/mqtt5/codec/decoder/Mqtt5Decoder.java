@@ -3,7 +3,6 @@ package org.mqttbee.mqtt5.codec.decoder;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
-import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.Mqtt5Message;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
@@ -11,6 +10,7 @@ import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import javax.inject.Inject;
 import java.util.List;
 
+import static org.mqttbee.mqtt5.codec.Mqtt5CodecUtil.checkMaximumPacketSize;
 import static org.mqttbee.mqtt5.codec.decoder.Mqtt5MessageDecoderUtils.disconnect;
 
 /**
@@ -51,9 +51,8 @@ public class Mqtt5Decoder extends ByteToMessageDecoder {
         final int readerIndexAfterFixedHeader = in.readerIndex();
         final int fixedHeaderLength = readerIndexAfterFixedHeader - readerIndexBeforeFixedHeader;
         final int packetSize = fixedHeaderLength + remainingLength;
-        final Integer maximumPacketSize = ctx.channel().attr(ChannelAttributes.MAXIMUM_INCOMING_PACKET_SIZE_KEY).get();
 
-        if ((maximumPacketSize != null) && (packetSize > maximumPacketSize)) {
+        if (!checkMaximumPacketSize(packetSize, ctx.channel())) {
             disconnect(Mqtt5DisconnectReasonCode.PACKET_TOO_LARGE, null, ctx.channel(), in);
             return;
         }
