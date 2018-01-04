@@ -47,7 +47,7 @@ public class Mqtt5PublishDecoderTest {
         byteBuf.writeBytes(encoded);
 
         channel.writeInbound(byteBuf);
-        final Mqtt5PublishInternal publishInternal = (Mqtt5PublishInternal) channel.readInbound();
+        final Mqtt5PublishInternal publishInternal = channel.readInbound();
 
         assertNotNull(publishInternal);
 
