@@ -33,7 +33,7 @@ public class Mqtt5Decoder extends ByteToMessageDecoder {
         in.markReaderIndex();
         final int readerIndexBeforeFixedHeader = in.readerIndex();
 
-        final byte fixedHeader = in.readByte();
+        final short fixedHeader = in.readUnsignedByte();
         final int remainingLength = Mqtt5DataTypes.decodeVariableByteInteger(in);
 
         if (remainingLength == Mqtt5DataTypes.VARIABLE_BYTE_INTEGER_NOT_ENOUGH_BYTES) {

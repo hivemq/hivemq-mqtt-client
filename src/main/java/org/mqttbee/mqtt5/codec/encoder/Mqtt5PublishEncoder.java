@@ -6,6 +6,7 @@ import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.message.Mqtt5Publish;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
+import org.mqttbee.mqtt5.exceptions.Mqtt5BinaryDataExceededException;
 import org.mqttbee.mqtt5.exceptions.Mqtt5VariableByteIntegerExceededException;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5QoS;
@@ -88,6 +89,9 @@ public class Mqtt5PublishEncoder implements Mqtt5MessageEncoder<Mqtt5PublishInte
 
         final byte[] correlationData = publish.getRawCorrelationData();
         if (correlationData != null) {
+            if (!Mqtt5DataTypes.isInBinaryDataRange(correlationData)) {
+                throw new Mqtt5BinaryDataExceededException("correlation data");
+            }
             propertyLength += 1 + Mqtt5DataTypes.encodedBinaryDataLength(correlationData);
         }
 

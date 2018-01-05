@@ -41,7 +41,7 @@ public class Mqtt5DisconnectDecoder implements Mqtt5MessageDecoder {
         ImmutableList.Builder<Mqtt5UserProperty> userPropertiesBuilder = null;
 
         if (in.isReadable()) {
-            reasonCode = Mqtt5DisconnectReasonCode.fromCode(in.readByte());
+            reasonCode = Mqtt5DisconnectReasonCode.fromCode(in.readUnsignedByte());
             if (reasonCode == null) {
                 disconnectWrongReasonCode("DISCONNECT", channel, in);
                 return null;
