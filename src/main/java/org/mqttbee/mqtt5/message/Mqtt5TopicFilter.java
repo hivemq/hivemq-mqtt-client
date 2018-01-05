@@ -12,67 +12,170 @@ public class Mqtt5TopicFilter extends Mqtt5UTF8String {
 
     public static final byte MULTI_LEVEL_WILDCARD = '#';
     public static final byte SINGLE_LEVEL_WILDCARD = '+';
-    private static final String SHARE_PREFIX = "$share";
+
+    static final int WILDCARD_CHECK_FAILURE = -1;
+    private static final int WILDCARD_FLAG_MULTI_LEVEL = 1;
+    private static final int WILDCARD_FLAG_SINGLE_LEVEL = 2;
+    private static final int WILDCARD_CHECK_STATE_NOT_BEFORE = 0;
+    private static final int WILDCARD_CHECK_STATE_BEFORE = 1;
+    private static final int WILDCARD_CHECK_STATE_MULTI_LEVEL = 2;
+    private static final int WILDCARD_CHECK_STATE_SINGLE_LEVEL = 3;
 
     @Nullable
-    public static Mqtt5TopicFilter from(@NotNull final byte[] binary) {
-        return containsMustNotCharacters(binary) ? null : new Mqtt5TopicFilter(binary); // FIXME validate wildcards
+    static Mqtt5TopicFilter fromInternal(@NotNull final byte[] binary) {
+        if ((binary.length == 0) || containsMustNotCharacters(binary)) {
+            return null;
+        }
+        if (Mqtt5SharedTopicFilter.isShared(binary)) {
+            return Mqtt5SharedTopicFilter.fromInternal(binary);
+        }
+        final int wildcardFlags = checkWildcards(binary, 0);
+        if (wildcardFlags == WILDCARD_CHECK_FAILURE) {
+            return null;
+        }
+        return new Mqtt5TopicFilter(binary, wildcardFlags);
+    }
+
+    @Nullable
+    public static Mqtt5TopicFilter from(@NotNull final String string) {
+        if ((string.length() == 0) || containsMustNotCharacters(string)) {
+            return null;
+        }
+        if (Mqtt5SharedTopicFilter.isShared(string)) {
+            return Mqtt5SharedTopicFilter.fromInternal(string);
+        }
+        final int wildcardFlags = checkWildcards(string, 0);
+        if (wildcardFlags == WILDCARD_CHECK_FAILURE) {
+            return null;
+        }
+        return new Mqtt5TopicFilter(string, wildcardFlags);
     }
 
     @Nullable
     public static Mqtt5TopicFilter from(@NotNull final ByteBuf byteBuf) {
         final byte[] binary = Mqtt5DataTypes.decodeBinaryData(byteBuf);
-        return (binary == null) ? null : from(binary);
+        return (binary == null) ? null : fromInternal(binary);
     }
 
-    @Nullable
-    public static Mqtt5TopicFilter from(@NotNull final String string) { // FIXME validate wildcards
-        return containsMustNotCharacters(string) ? null : new Mqtt5TopicFilter(string);
-    }
+    static int checkWildcards(@NotNull final byte[] binary, final int start) {
+        int wildcardFlags = 0;
 
-    static boolean containsWildcardCharacters(@NotNull final byte[] binary) {
+        int state = WILDCARD_CHECK_STATE_BEFORE;
+
         for (final byte b : binary) {
-            if (b == MULTI_LEVEL_WILDCARD || b == SINGLE_LEVEL_WILDCARD) {
-                return true;
+            switch (state) {
+                case WILDCARD_CHECK_STATE_NOT_BEFORE:
+                    if ((b == SINGLE_LEVEL_WILDCARD) || (b == MULTI_LEVEL_WILDCARD)) {
+                        return WILDCARD_CHECK_FAILURE;
+                    }
+                    break;
+                case WILDCARD_CHECK_STATE_BEFORE:
+                    switch (b) {
+                        case MULTI_LEVEL_WILDCARD:
+                            wildcardFlags |= WILDCARD_FLAG_MULTI_LEVEL;
+                            state = WILDCARD_CHECK_STATE_MULTI_LEVEL;
+                            break;
+                        case SINGLE_LEVEL_WILDCARD:
+                            wildcardFlags |= WILDCARD_FLAG_SINGLE_LEVEL;
+                            state = WILDCARD_CHECK_STATE_SINGLE_LEVEL;
+                            break;
+                        case Mqtt5Topic.TOPIC_LEVEL_SEPARATOR:
+                            state = WILDCARD_CHECK_STATE_BEFORE;
+                            break;
+                        default:
+                            state = WILDCARD_CHECK_STATE_NOT_BEFORE;
+                    }
+                    break;
+                case WILDCARD_CHECK_STATE_MULTI_LEVEL:
+                    return WILDCARD_CHECK_FAILURE;
+                case WILDCARD_CHECK_STATE_SINGLE_LEVEL:
+                    if (b != Mqtt5Topic.TOPIC_LEVEL_SEPARATOR) {
+                        return WILDCARD_CHECK_FAILURE;
+                    }
+                    state = WILDCARD_CHECK_STATE_BEFORE;
+                    break;
             }
         }
-        return false;
+
+        return wildcardFlags;
     }
 
-    static boolean containsWildcardCharacters(@NotNull final String string) {
+    static int checkWildcards(@NotNull final String string, final int start) {
+        int wildcardFlags = 0;
+
+        int state = WILDCARD_CHECK_STATE_BEFORE;
+
         for (int i = 0; i < string.length(); i++) {
-            final char c = string.charAt(i);
-            if (c == MULTI_LEVEL_WILDCARD || c == SINGLE_LEVEL_WILDCARD) {
-                return true;
+            final char b = string.charAt(i);
+            switch (state) {
+                case WILDCARD_CHECK_STATE_NOT_BEFORE:
+                    if ((b == SINGLE_LEVEL_WILDCARD) || (b == MULTI_LEVEL_WILDCARD)) {
+                        return WILDCARD_CHECK_FAILURE;
+                    }
+                    break;
+                case WILDCARD_CHECK_STATE_BEFORE:
+                    switch (b) {
+                        case MULTI_LEVEL_WILDCARD:
+                            wildcardFlags |= WILDCARD_FLAG_MULTI_LEVEL;
+                            state = WILDCARD_CHECK_STATE_MULTI_LEVEL;
+                            break;
+                        case SINGLE_LEVEL_WILDCARD:
+                            wildcardFlags |= WILDCARD_FLAG_SINGLE_LEVEL;
+                            state = WILDCARD_CHECK_STATE_SINGLE_LEVEL;
+                            break;
+                        case Mqtt5Topic.TOPIC_LEVEL_SEPARATOR:
+                            state = WILDCARD_CHECK_STATE_BEFORE;
+                            break;
+                        default:
+                            state = WILDCARD_CHECK_STATE_NOT_BEFORE;
+                    }
+                    break;
+                case WILDCARD_CHECK_STATE_MULTI_LEVEL:
+                    return WILDCARD_CHECK_FAILURE;
+                case WILDCARD_CHECK_STATE_SINGLE_LEVEL:
+                    if (b != Mqtt5Topic.TOPIC_LEVEL_SEPARATOR) {
+                        return WILDCARD_CHECK_FAILURE;
+                    }
+                    state = WILDCARD_CHECK_STATE_BEFORE;
+                    break;
             }
         }
-        return false;
+
+        return wildcardFlags;
     }
 
-    static boolean isShared(@NotNull final byte[] binary) {
-        return (binary[0] == SHARE_PREFIX.charAt(0)) && (binary[1] == SHARE_PREFIX.charAt(1)) &&
-                (binary[2] == SHARE_PREFIX.charAt(2)) && (binary[3] == SHARE_PREFIX.charAt(3)) &&
-                (binary[4] == SHARE_PREFIX.charAt(4)) && (binary[5] == SHARE_PREFIX.charAt(5));
-    }
 
-    static boolean isShared(@NotNull final String string) {
-        return string.startsWith(SHARE_PREFIX);
-    }
+    private final int wildcardFlags;
 
-    private Mqtt5TopicFilter(@NotNull final String string) {
-        super(string);
-    }
-
-    private Mqtt5TopicFilter(@NotNull final byte[] binary) {
+    Mqtt5TopicFilter(@NotNull final byte[] binary, final int wildcardFlags) {
         super(binary);
+        this.wildcardFlags = wildcardFlags;
+    }
+
+    Mqtt5TopicFilter(@NotNull final String string, final int wildcardFlags) {
+        super(string);
+        this.wildcardFlags = wildcardFlags;
+    }
+
+    @NotNull
+    public String[] getLevels() {
+        return toString().split(Character.toString((char) Mqtt5Topic.TOPIC_LEVEL_SEPARATOR));
     }
 
     public boolean containsWildcards() {
-        return (binary == null) ? containsWildcardCharacters(string) : containsWildcardCharacters(binary);
+        return wildcardFlags != 0;
+    }
+
+    public boolean containsSingleLevelWildcard() {
+        return (wildcardFlags & WILDCARD_FLAG_SINGLE_LEVEL) != 0;
+    }
+
+    public boolean containsMultiLevelWildcard() {
+        return (wildcardFlags & WILDCARD_FLAG_MULTI_LEVEL) != 0;
     }
 
     public boolean isShared() {
-        return (binary == null) ? isShared(string) : isShared(binary);
+        return false;
     }
 
 }
