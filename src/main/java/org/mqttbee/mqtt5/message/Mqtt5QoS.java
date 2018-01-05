@@ -16,7 +16,7 @@ public enum Mqtt5QoS {
     public static Mqtt5QoS fromCode(final int code) {
         final Mqtt5QoS[] values = values();
         if (code < 0 || code >= values.length) {
-            throw new IllegalArgumentException("not a MQTT 5 QoS code");
+            return null;
         }
         return values[code];
     }
