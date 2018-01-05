@@ -10,6 +10,8 @@ import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
  */
 public class Mqtt5TopicFilter extends Mqtt5UTF8String {
 
+    public static final byte MULTI_LEVEL_WILDCARD = '#';
+    public static final byte SINGLE_LEVEL_WILDCARD = '+';
     private static final String SHARE_PREFIX = "$share";
 
     @Nullable
@@ -30,7 +32,7 @@ public class Mqtt5TopicFilter extends Mqtt5UTF8String {
 
     static boolean containsWildcardCharacters(@NotNull final byte[] binary) {
         for (final byte b : binary) {
-            if (b == '*' || b == '#') {
+            if (b == MULTI_LEVEL_WILDCARD || b == SINGLE_LEVEL_WILDCARD) {
                 return true;
             }
         }
@@ -40,7 +42,7 @@ public class Mqtt5TopicFilter extends Mqtt5UTF8String {
     static boolean containsWildcardCharacters(@NotNull final String string) {
         for (int i = 0; i < string.length(); i++) {
             final char c = string.charAt(i);
-            if (c == '*' || c == '#') {
+            if (c == MULTI_LEVEL_WILDCARD || c == SINGLE_LEVEL_WILDCARD) {
                 return true;
             }
         }
