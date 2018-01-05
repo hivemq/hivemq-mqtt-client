@@ -38,7 +38,7 @@ public class Mqtt5UTF8String {
     public static final Mqtt5UTF8String PROTOCOL_NAME = new Mqtt5UTF8String(encode("MQTT"));
 
     @Nullable
-    public static Mqtt5UTF8String from(@NotNull final byte[] binary) {
+    static Mqtt5UTF8String from(@NotNull final byte[] binary) {
         return containsMustNotCharacters(binary) ? null : new Mqtt5UTF8String(binary);
     }
 
@@ -106,7 +106,7 @@ public class Mqtt5UTF8String {
     }
 
     @NotNull
-    public byte[] toBinary() {
+    byte[] toBinary() {
         if (binary == null) {
             binary = encode(string);
         }
