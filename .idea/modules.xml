@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mqtt-bee.iml" filepath="$PROJECT_DIR$/.idea/modules/mqtt-bee.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mqtt-bee_main.iml" filepath="$PROJECT_DIR$/.idea/modules/mqtt-bee_main.iml" group="mqtt-bee" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mqtt-bee_test.iml" filepath="$PROJECT_DIR$/.idea/modules/mqtt-bee_test.iml" group="mqtt-bee" />
+    </modules>
+  </component>
+</project>

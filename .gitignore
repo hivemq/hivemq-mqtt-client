@@ -1,3 +1,6 @@
-.idea
+.idea/libraries
+.idea/workspace.xml
+.idea/uiDesigner.xml
 .gradle
 /build/
+.DS_Store
