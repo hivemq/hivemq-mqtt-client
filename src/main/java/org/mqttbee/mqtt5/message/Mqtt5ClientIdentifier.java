@@ -20,14 +20,8 @@ public class Mqtt5ClientIdentifier extends Mqtt5UTF8String {
     private static final int MUST_BE_ALLOWED_BY_SERVER_MAX_BYTES = 23;
 
     @Nullable
-    public static Mqtt5ClientIdentifier from(@NotNull final byte[] binary) {
+    static Mqtt5ClientIdentifier fromInternal(@NotNull final byte[] binary) {
         return containsMustNotCharacters(binary) ? null : new Mqtt5ClientIdentifier(binary);
-    }
-
-    @Nullable
-    public static Mqtt5ClientIdentifier from(@NotNull final ByteBuf byteBuf) {
-        final byte[] binary = Mqtt5DataTypes.decodeBinaryData(byteBuf);
-        return (binary == null) ? null : from(binary);
     }
 
     @Nullable
@@ -35,12 +29,19 @@ public class Mqtt5ClientIdentifier extends Mqtt5UTF8String {
         return containsMustNotCharacters(string) ? null : new Mqtt5ClientIdentifier(string);
     }
 
-    private Mqtt5ClientIdentifier(@NotNull final String string) {
-        super(string);
+    @Nullable
+    public static Mqtt5ClientIdentifier from(@NotNull final ByteBuf byteBuf) {
+        final byte[] binary = Mqtt5DataTypes.decodeBinaryData(byteBuf);
+        return (binary == null) ? null : fromInternal(binary);
     }
+
 
     private Mqtt5ClientIdentifier(@NotNull final byte[] binary) {
         super(binary);
+    }
+
+    private Mqtt5ClientIdentifier(@NotNull final String string) {
+        super(string);
     }
 
     public boolean mustBeAllowedByServer() {

@@ -38,19 +38,19 @@ public class Mqtt5UTF8String {
     public static final Mqtt5UTF8String PROTOCOL_NAME = new Mqtt5UTF8String(encode("MQTT"));
 
     @Nullable
-    static Mqtt5UTF8String from(@NotNull final byte[] binary) {
+    static Mqtt5UTF8String fromInternal(@NotNull final byte[] binary) {
         return containsMustNotCharacters(binary) ? null : new Mqtt5UTF8String(binary);
-    }
-
-    @Nullable
-    public static Mqtt5UTF8String from(@NotNull final ByteBuf byteBuf) {
-        final byte[] binary = Mqtt5DataTypes.decodeBinaryData(byteBuf);
-        return (binary == null) ? null : from(binary);
     }
 
     @Nullable
     public static Mqtt5UTF8String from(@NotNull final String string) {
         return containsMustNotCharacters(string) ? null : new Mqtt5UTF8String(string);
+    }
+
+    @Nullable
+    public static Mqtt5UTF8String from(@NotNull final ByteBuf byteBuf) {
+        final byte[] binary = Mqtt5DataTypes.decodeBinaryData(byteBuf);
+        return (binary == null) ? null : fromInternal(binary);
     }
 
     @NotNull
@@ -90,15 +90,16 @@ public class Mqtt5UTF8String {
         return highSurrogate;
     }
 
-    byte[] binary;
-    String string;
 
-    Mqtt5UTF8String(@NotNull final String string) {
-        this.string = string;
-    }
+    private byte[] binary;
+    private String string;
 
     Mqtt5UTF8String(@NotNull final byte[] binary) {
         this.binary = binary;
+    }
+
+    Mqtt5UTF8String(@NotNull final String string) {
+        this.string = string;
     }
 
     public boolean containsShouldNotCharacters() {
