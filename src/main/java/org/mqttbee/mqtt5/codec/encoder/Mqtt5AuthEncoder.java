@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
+import org.mqttbee.mqtt5.exceptions.Mqtt5BinaryDataExceededException;
 import org.mqttbee.mqtt5.exceptions.Mqtt5VariableByteIntegerExceededException;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
@@ -48,7 +49,10 @@ public class Mqtt5AuthEncoder implements Mqtt5MessageEncoder<Mqtt5AuthImpl> {
 
         final byte[] data = auth.getRawData();
         if (data != null) {
-            propertyLength += 1 + data.length;
+            if (!Mqtt5DataTypes.isInBinaryDataRange(data)) {
+                throw new Mqtt5BinaryDataExceededException("authentication data");
+            }
+            propertyLength += 1 + Mqtt5DataTypes.encodedBinaryDataLength(data);
         }
 
         final Mqtt5UTF8String reasonString = auth.getRawReasonString();

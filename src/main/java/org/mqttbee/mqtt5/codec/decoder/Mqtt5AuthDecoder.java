@@ -39,7 +39,7 @@ public class Mqtt5AuthDecoder implements Mqtt5MessageDecoder {
             return null;
         }
 
-        final Mqtt5AuthReasonCode reasonCode = Mqtt5AuthReasonCode.fromCode(in.readByte());
+        final Mqtt5AuthReasonCode reasonCode = Mqtt5AuthReasonCode.fromCode(in.readUnsignedByte());
         if (reasonCode == null) {
             disconnectWrongReasonCode("AUTH", channel, in);
             return null;

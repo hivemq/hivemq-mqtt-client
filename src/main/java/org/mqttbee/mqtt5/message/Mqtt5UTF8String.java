@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
+import org.mqttbee.mqtt5.exceptions.Mqtt5BinaryDataExceededException;
 
 import java.nio.charset.Charset;
 import java.util.regex.Pattern;
@@ -128,7 +129,11 @@ public class Mqtt5UTF8String {
     }
 
     public int encodedLength() {
-        return Mqtt5DataTypes.encodedBinaryDataLength(toBinary());
+        final byte[] binary = toBinary();
+        if (!Mqtt5DataTypes.isInBinaryDataRange(binary)) {
+            throw new Mqtt5BinaryDataExceededException("UTF8 string");
+        }
+        return Mqtt5DataTypes.encodedBinaryDataLength(binary);
     }
 
 }

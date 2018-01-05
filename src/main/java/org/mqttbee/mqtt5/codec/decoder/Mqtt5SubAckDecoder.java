@@ -88,7 +88,7 @@ public class Mqtt5SubAckDecoder implements Mqtt5MessageDecoder {
         final ImmutableList.Builder<Mqtt5SubAckReasonCode> reasonCodesBuilder =
                 ImmutableList.builderWithExpectedSize(reasonCodeCount);
         for (int i = 0; i < reasonCodeCount; i++) {
-            final Mqtt5SubAckReasonCode reasonCode = Mqtt5SubAckReasonCode.fromCode(in.readByte());
+            final Mqtt5SubAckReasonCode reasonCode = Mqtt5SubAckReasonCode.fromCode(in.readUnsignedByte());
             if (reasonCode == null) {
                 disconnectWrongReasonCode("SUBACK", channel, in);
                 return null;

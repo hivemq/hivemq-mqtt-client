@@ -5,6 +5,7 @@ import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.message.Mqtt5WillPublish;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
+import org.mqttbee.mqtt5.exceptions.Mqtt5BinaryDataExceededException;
 import org.mqttbee.mqtt5.exceptions.Mqtt5VariableByteIntegerExceededException;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
@@ -53,15 +54,23 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
             }
             final byte[] password = auth.getRawPassword();
             if (password != null) {
+                if (!Mqtt5DataTypes.isInBinaryDataRange(password)) {
+                    throw new Mqtt5BinaryDataExceededException("password");
+                }
                 remainingLength += Mqtt5DataTypes.encodedBinaryDataLength(password);
             }
         }
 
         final Mqtt5WillPublishImpl willPublish = connect.getRawWillPublish();
         if (willPublish != Mqtt5WillPublishImpl.DEFAULT_NO_WILL_PUBLISH) {
+            final byte[] willPayload = willPublish.getRawPayload();
+            if (!Mqtt5DataTypes.isInBinaryDataRange(willPayload)) {
+                throw new Mqtt5BinaryDataExceededException("will payload");
+            }
+
             final int willPropertyLength = connect.encodedWillPropertyLength();
             remainingLength += willPublish.getTopic().encodedLength() +
-                    Mqtt5DataTypes.encodedBinaryDataLength(willPublish.getRawPayload()) +
+                    Mqtt5DataTypes.encodedBinaryDataLength(willPayload) +
                     Mqtt5DataTypes.encodedVariableByteIntegerLength(willPropertyLength) + willPropertyLength;
         }
 
@@ -108,6 +117,9 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
             }
             final byte[] data = auth.getRawData();
             if (data != null) {
+                if (!Mqtt5DataTypes.isInBinaryDataRange(data)) {
+                    throw new Mqtt5BinaryDataExceededException("authentication data");
+                }
                 propertyLength += 1 + Mqtt5DataTypes.encodedBinaryDataLength(data);
             }
         }
@@ -141,6 +153,9 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
             }
             final byte[] correlationData = willPublish.getRawCorrelationData();
             if (correlationData != null) {
+                if (!Mqtt5DataTypes.isInBinaryDataRange(correlationData)) {
+                    throw new Mqtt5BinaryDataExceededException("will correlation data");
+                }
                 willPropertyLength += 1 + Mqtt5DataTypes.encodedBinaryDataLength(correlationData);
             }
 

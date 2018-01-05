@@ -100,7 +100,7 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
                             channel, in)) {
                         return null;
                     }
-                    payloadFormatIndicator = Mqtt5PayloadFormatIndicator.fromCode(in.readByte());
+                    payloadFormatIndicator = Mqtt5PayloadFormatIndicator.fromCode(in.readUnsignedByte());
                     if (payloadFormatIndicator == null) {
                         disconnect(
                                 Mqtt5DisconnectReasonCode.MALFORMED_PACKET, " wrong payload format indicator", channel,

@@ -83,6 +83,7 @@ public class Mqtt5UTF8StringTest {
         final ByteBuf byteBuf = Unpooled.buffer();
         Mqtt5DataTypes.encodeBinaryData(string.getBytes(Charset.forName("UTF-8")), byteBuf);
         final Mqtt5UTF8String mqtt5UTF8String = Mqtt5UTF8String.from(byteBuf);
+        byteBuf.release();
 
         assertNotNull(mqtt5UTF8String);
         assertEquals(string, mqtt5UTF8String.toString());
@@ -100,6 +101,7 @@ public class Mqtt5UTF8StringTest {
         mqtt5UTF8String.to(byteBuf);
         final byte[] actual = new byte[byteBuf.readableBytes()];
         byteBuf.readBytes(actual);
+        byteBuf.release();
 
         assertArrayEquals(expected, actual);
     }
