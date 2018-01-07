@@ -32,13 +32,16 @@ public class Mqtt5DataTypes {
     }
 
     /**
-     * Decodes a variable byte integer from the current reader index of the given byte buffer.
+     * Decodes a variable byte integer from the given byte buffer at the current reader index.
+     * <p>
+     * In case of a wrong encoding the reader index of the byte buffer will be in an undefined state after the method
+     * returns.
      *
      * @param byteBuf the buffer to decode from.
-     * @return the decoded integer value
-     * or {@link #VARIABLE_BYTE_INTEGER_NOT_ENOUGH_BYTES} if there are not enough bytes in the byte buffer
-     * or {@link #VARIABLE_BYTE_INTEGER_TOO_LARGE} if the encoded variable byte integer has more than 4 bytes
-     * or {@link #VARIABLE_BYTE_INTEGER_NOT_MINIMUM_BYTES} if the value is not encoded with a minimum number of bytes.
+     * @return the decoded integer value or {@link #VARIABLE_BYTE_INTEGER_NOT_ENOUGH_BYTES} if there are not enough
+     * bytes in the byte buffer or {@link #VARIABLE_BYTE_INTEGER_TOO_LARGE} if the encoded variable byte integer has
+     * more than 4 bytes or {@link #VARIABLE_BYTE_INTEGER_NOT_MINIMUM_BYTES} if the value is not encoded with a minimum
+     * number of bytes.
      */
     public static int decodeVariableByteInteger(@NotNull final ByteBuf byteBuf) {
         byte encodedByte;
@@ -66,7 +69,8 @@ public class Mqtt5DataTypes {
     }
 
     /**
-     * Encodes the given value as a variable byte integer to the current writer index of the given byte buffer.
+     * Encodes the given value as a variable byte integer to the given byte buffer at the current writer index.
+     * <p>
      * This method does not check if the value is in range of a 4 byte variable byte integer.
      *
      * @param value   the value to encode.
@@ -95,6 +99,7 @@ public class Mqtt5DataTypes {
 
     /**
      * Calculates the byte count of the given value encoded as a variable byte integer.
+     * <p>
      * This method does not check if the value is in range of a 4 byte variable byte integer.
      *
      * @param value the value to calculate the encoded length for.
@@ -115,7 +120,7 @@ public class Mqtt5DataTypes {
     }
 
     /**
-     * Decodes binary data from the current reader index of the given byte buffer.
+     * Decodes binary data from the given byte buffer at the current reader index.
      *
      * @param byteBuf the byte buffer to decode from.
      * @return the decoded binary data or null if there are not enough bytes in the byte buffer.
@@ -135,7 +140,8 @@ public class Mqtt5DataTypes {
     }
 
     /**
-     * Encodes the given byte array as binary data to the current writer index of the given byte buffer.
+     * Encodes the given byte array as binary data to the given byte buffer at the current writer index.
+     * <p>
      * This method does not check if the byte array can be encoded as binary data.
      *
      * @param binary  the byte array to encode.
@@ -158,6 +164,7 @@ public class Mqtt5DataTypes {
 
     /**
      * Calculates the byte count of the given byte array encoded as binary data.
+     * <p>
      * This method does not check if the byte array can be encoded as binary data.
      *
      * @param binary the binary to calculate the encoded length for.

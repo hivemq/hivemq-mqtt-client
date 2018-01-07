@@ -7,36 +7,89 @@ import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 
 /**
+ * MQTT Topic Name according to the MQTT 5 specification.
+ * <p>
+ * This class lazily en/decodes between UTF-8 and UTF-16 encoding, but performs validation upfront.
+ * <p>
+ * A Topic Name has the restrictions from {@link Mqtt5UTF8String}, must be at least 1 character long and mut not contain
+ * wildcards ({@link Mqtt5TopicFilter#MULTI_LEVEL_WILDCARD}, {@link Mqtt5TopicFilter#SINGLE_LEVEL_WILDCARD}).
+ *
  * @author Silvio Giebl
  */
 public class Mqtt5Topic extends Mqtt5UTF8String {
 
+    /**
+     * The topic level separator character.
+     */
     public static final char TOPIC_LEVEL_SEPARATOR = '/';
 
     @Nullable
-    static Mqtt5Topic fromInternal(@NotNull final byte[] binary) {
+    private static Mqtt5Topic fromInternal(@NotNull final byte[] binary) {
         return (binary.length == 0) || containsMustNotCharacters(binary) ? null : new Mqtt5Topic(binary);
     }
 
+    /**
+     * Validates and creates a Topic Name from the given string.
+     *
+     * @param string the UTF-16 encoded Java string.
+     * @return the created Topic Name or null if the string is not a valid Topic Name.
+     */
     @Nullable
     public static Mqtt5Topic from(@NotNull final String string) {
         return (string.length() == 0) || containsMustNotCharacters(string) ? null : new Mqtt5Topic(string);
     }
 
+    /**
+     * Validates and decodes a Topic Name from the given byte buffer at the current reader index.
+     * <p>
+     * In case of a wrong encoding the reader index of the byte buffer will be in an undefined state after the method
+     * returns.
+     *
+     * @param byteBuf the byte buffer with the UTF-8 encoded data to decode from.
+     * @return the created Topic Name or null if the byte buffer does not contain a well-formed Topic Name.
+     */
     @Nullable
     public static Mqtt5Topic from(@NotNull final ByteBuf byteBuf) {
         final byte[] binary = Mqtt5DataTypes.decodeBinaryData(byteBuf);
         return (binary == null) ? null : fromInternal(binary);
     }
 
+    /**
+     * Checks whether the given UTF-8 encoded byte array contains characters a Topic Name must not contain according to
+     * the MQTT 5 specification.
+     * <p>
+     * These characters are the characters a UTF-8 encoded String must not contain and wildcard characters.
+     *
+     * @param binary the UTF-8 encoded byte array.
+     * @return whether the byte array contains characters a Topic Name must not contain.
+     * @see Mqtt5UTF8String#containsMustNotCharacters(byte[])
+     * @see #containsWildcardCharacters(byte[])
+     */
     static boolean containsMustNotCharacters(@NotNull final byte[] binary) {
         return Mqtt5UTF8String.containsMustNotCharacters(binary) || containsWildcardCharacters(binary);
     }
 
+    /**
+     * Checks whether the given UTF-16 encoded Java string contains characters a Topic Name must not contain according
+     * to the MQTT 5 specification.
+     * <p>
+     * These characters are the characters a UTF-8 encoded String must not contain and wildcard characters.
+     *
+     * @param string the UTF-16 encoded Java string.
+     * @return whether the string contains characters a Topic Name must not contain.
+     * @see Mqtt5UTF8String#containsMustNotCharacters(String)
+     * @see #containsWildcardCharacters(String)
+     */
     static boolean containsMustNotCharacters(@NotNull final String string) {
         return Mqtt5UTF8String.containsMustNotCharacters(string) || containsWildcardCharacters(string);
     }
 
+    /**
+     * Checks whether the given UTF-8 encoded byte array contains wildcard characters.
+     *
+     * @param binary the UTF-8 encoded byte array.
+     * @return whether the byte array contains wildcard characters.
+     */
     private static boolean containsWildcardCharacters(@NotNull final byte[] binary) {
         for (final byte b : binary) {
             if (b == Mqtt5TopicFilter.MULTI_LEVEL_WILDCARD || b == Mqtt5TopicFilter.SINGLE_LEVEL_WILDCARD) {
@@ -46,7 +99,13 @@ public class Mqtt5Topic extends Mqtt5UTF8String {
         return false;
     }
 
-    static boolean containsWildcardCharacters(@NotNull final String string) {
+    /**
+     * Checks whether the given UTF-16 encoded Java string contains wildcard characters.
+     *
+     * @param string the UTF-16 encoded Java string.
+     * @return whether the string contains wildcard characters.
+     */
+    private static boolean containsWildcardCharacters(@NotNull final String string) {
         for (int i = 0; i < string.length(); i++) {
             final char c = string.charAt(i);
             if (c == Mqtt5TopicFilter.MULTI_LEVEL_WILDCARD || c == Mqtt5TopicFilter.SINGLE_LEVEL_WILDCARD) {
@@ -56,6 +115,12 @@ public class Mqtt5Topic extends Mqtt5UTF8String {
         return false;
     }
 
+    /**
+     * Splits the levels of the given Topic Name string.
+     *
+     * @param string the Topic Name string.
+     * @return the levels of the Topic Name string.
+     */
     @NotNull
     static ImmutableList<String> splitLevels(@NotNull final String string) {
         int startIndex = 0;
@@ -80,6 +145,9 @@ public class Mqtt5Topic extends Mqtt5UTF8String {
         super(string);
     }
 
+    /**
+     * @return the levels of this Topic Name.
+     */
     @NotNull
     public ImmutableList<String> getLevels() {
         return splitLevels(toString());
