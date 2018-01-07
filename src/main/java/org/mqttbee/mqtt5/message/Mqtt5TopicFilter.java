@@ -1,5 +1,6 @@
 package org.mqttbee.mqtt5.message;
 
+import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
@@ -10,8 +11,8 @@ import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
  */
 public class Mqtt5TopicFilter extends Mqtt5UTF8String {
 
-    public static final byte MULTI_LEVEL_WILDCARD = '#';
-    public static final byte SINGLE_LEVEL_WILDCARD = '+';
+    public static final char MULTI_LEVEL_WILDCARD = '#';
+    public static final char SINGLE_LEVEL_WILDCARD = '+';
 
     static final int WILDCARD_CHECK_FAILURE = -1;
     private static final int WILDCARD_FLAG_MULTI_LEVEL = 1;
@@ -62,11 +63,15 @@ public class Mqtt5TopicFilter extends Mqtt5UTF8String {
 
         int state = WILDCARD_CHECK_STATE_BEFORE;
 
-        for (final byte b : binary) {
+        for (int i = start; i < binary.length; i++) {
+            final byte b = binary[i];
             switch (state) {
                 case WILDCARD_CHECK_STATE_NOT_BEFORE:
                     if ((b == SINGLE_LEVEL_WILDCARD) || (b == MULTI_LEVEL_WILDCARD)) {
                         return WILDCARD_CHECK_FAILURE;
+                    }
+                    if (b == Mqtt5Topic.TOPIC_LEVEL_SEPARATOR) {
+                        state = WILDCARD_CHECK_STATE_BEFORE;
                     }
                     break;
                 case WILDCARD_CHECK_STATE_BEFORE:
@@ -105,16 +110,19 @@ public class Mqtt5TopicFilter extends Mqtt5UTF8String {
 
         int state = WILDCARD_CHECK_STATE_BEFORE;
 
-        for (int i = 0; i < string.length(); i++) {
-            final char b = string.charAt(i);
+        for (int i = start; i < string.length(); i++) {
+            final char c = string.charAt(i);
             switch (state) {
                 case WILDCARD_CHECK_STATE_NOT_BEFORE:
-                    if ((b == SINGLE_LEVEL_WILDCARD) || (b == MULTI_LEVEL_WILDCARD)) {
+                    if ((c == SINGLE_LEVEL_WILDCARD) || (c == MULTI_LEVEL_WILDCARD)) {
                         return WILDCARD_CHECK_FAILURE;
+                    }
+                    if (c == Mqtt5Topic.TOPIC_LEVEL_SEPARATOR) {
+                        state = WILDCARD_CHECK_STATE_BEFORE;
                     }
                     break;
                 case WILDCARD_CHECK_STATE_BEFORE:
-                    switch (b) {
+                    switch (c) {
                         case MULTI_LEVEL_WILDCARD:
                             wildcardFlags |= WILDCARD_FLAG_MULTI_LEVEL;
                             state = WILDCARD_CHECK_STATE_MULTI_LEVEL;
@@ -133,7 +141,7 @@ public class Mqtt5TopicFilter extends Mqtt5UTF8String {
                 case WILDCARD_CHECK_STATE_MULTI_LEVEL:
                     return WILDCARD_CHECK_FAILURE;
                 case WILDCARD_CHECK_STATE_SINGLE_LEVEL:
-                    if (b != Mqtt5Topic.TOPIC_LEVEL_SEPARATOR) {
+                    if (c != Mqtt5Topic.TOPIC_LEVEL_SEPARATOR) {
                         return WILDCARD_CHECK_FAILURE;
                     }
                     state = WILDCARD_CHECK_STATE_BEFORE;
@@ -158,20 +166,20 @@ public class Mqtt5TopicFilter extends Mqtt5UTF8String {
     }
 
     @NotNull
-    public String[] getLevels() {
-        return toString().split(Character.toString((char) Mqtt5Topic.TOPIC_LEVEL_SEPARATOR));
+    public ImmutableList<String> getLevels() {
+        return Mqtt5Topic.splitLevels(toString());
     }
 
     public boolean containsWildcards() {
         return wildcardFlags != 0;
     }
 
-    public boolean containsSingleLevelWildcard() {
-        return (wildcardFlags & WILDCARD_FLAG_SINGLE_LEVEL) != 0;
-    }
-
     public boolean containsMultiLevelWildcard() {
         return (wildcardFlags & WILDCARD_FLAG_MULTI_LEVEL) != 0;
+    }
+
+    public boolean containsSingleLevelWildcard() {
+        return (wildcardFlags & WILDCARD_FLAG_SINGLE_LEVEL) != 0;
     }
 
     public boolean isShared() {

@@ -1,5 +1,6 @@
 package org.mqttbee.mqtt5.message;
 
+import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
@@ -10,16 +11,16 @@ import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
  */
 public class Mqtt5Topic extends Mqtt5UTF8String {
 
-    public static final byte TOPIC_LEVEL_SEPARATOR = '/';
+    public static final char TOPIC_LEVEL_SEPARATOR = '/';
 
     @Nullable
     static Mqtt5Topic fromInternal(@NotNull final byte[] binary) {
-        return containsMustNotCharacters(binary) ? null : new Mqtt5Topic(binary);
+        return (binary.length == 0) || containsMustNotCharacters(binary) ? null : new Mqtt5Topic(binary);
     }
 
     @Nullable
     public static Mqtt5Topic from(@NotNull final String string) {
-        return containsMustNotCharacters(string) ? null : new Mqtt5Topic(string);
+        return (string.length() == 0) || containsMustNotCharacters(string) ? null : new Mqtt5Topic(string);
     }
 
     @Nullable
@@ -55,6 +56,21 @@ public class Mqtt5Topic extends Mqtt5UTF8String {
         return false;
     }
 
+    @NotNull
+    static ImmutableList<String> splitLevels(@NotNull final String string) {
+        int startIndex = 0;
+        final ImmutableList.Builder<String> levelsBuilder = ImmutableList.builder();
+        for (int i = 0; i < string.length(); i++) {
+            final char c = string.charAt(i);
+            if (c == TOPIC_LEVEL_SEPARATOR) {
+                levelsBuilder.add(string.substring(startIndex, i));
+                startIndex = i + 1;
+            }
+        }
+        levelsBuilder.add(string.substring(startIndex, string.length()));
+        return levelsBuilder.build();
+    }
+
 
     private Mqtt5Topic(@NotNull final byte[] binary) {
         super(binary);
@@ -65,8 +81,8 @@ public class Mqtt5Topic extends Mqtt5UTF8String {
     }
 
     @NotNull
-    public String[] getLevels() {
-        return toString().split(Character.toString((char) TOPIC_LEVEL_SEPARATOR));
+    public ImmutableList<String> getLevels() {
+        return splitLevels(toString());
     }
 
 }
