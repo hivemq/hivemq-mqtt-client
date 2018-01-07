@@ -113,6 +113,7 @@ public class Mqtt5UTF8StringTest {
         final Mqtt5UTF8String mqtt5UTF8String = Mqtt5UTF8String.from(string);
         assertNotNull(mqtt5UTF8String);
         assertArrayEquals(expected, mqtt5UTF8String.toBinary());
+        assertEquals(2 + mqtt5UTF8String.toBinary().length, mqtt5UTF8String.encodedLength());
     }
 
 }
