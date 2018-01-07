@@ -70,7 +70,9 @@ public class Mqtt5UTF8StringTest {
     @Test
     public void test_zero_width_no_break_space() {
         final byte[] binary = {'a', 'b', 'c', (byte) 0xEF, (byte) 0xBB, (byte) 0xBF, 'd', 'e', 'f'};
-        final Mqtt5UTF8String mqtt5UTF8String = Mqtt5UTF8String.fromInternal(binary);
+        final ByteBuf byteBuf = Unpooled.buffer();
+        byteBuf.writeByte(0).writeByte(9).writeBytes(binary);
+        final Mqtt5UTF8String mqtt5UTF8String = Mqtt5UTF8String.from(byteBuf);
         assertNotNull(mqtt5UTF8String);
         assertArrayEquals(mqtt5UTF8String.toBinary(), binary);
         assertTrue(mqtt5UTF8String.toString().contains("\uFEFF"));

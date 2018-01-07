@@ -363,4 +363,14 @@ public class Mqtt5SharedTopicFilterTest {
         assertEquals("", levels.get(7));
     }
 
+    @Test
+    public void test_shared_share_name_must_not_contain_topc_level_separator() {
+        if (source == FROM_BYTE_BUF) {
+            final String shareName = "gro/up";
+            final String topicFilter = "abc/def/ghi";
+            final Mqtt5SharedTopicFilter mqtt5SharedTopicFilter = Mqtt5SharedTopicFilter.from(shareName, topicFilter);
+            assertNull(mqtt5SharedTopicFilter);
+        }
+    }
+
 }
