@@ -116,4 +116,13 @@ public class Mqtt5UserProperty {
         return value;
     }
 
+    @Override
+    public boolean equals(final Object obj) {
+        if ((obj == null) || (obj.getClass() != this.getClass())) {
+            return false;
+        }
+        final Mqtt5UserProperty userProperty = (Mqtt5UserProperty) obj;
+        return name.equals(userProperty.name) && value.equals(userProperty.value);
+    }
+
 }
