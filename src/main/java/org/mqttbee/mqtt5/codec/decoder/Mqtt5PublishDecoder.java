@@ -44,7 +44,7 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
 
         final Mqtt5Topic topic = Mqtt5Topic.from(in);
         if (topic == null) {
-            disconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "malformed topic", channel, in);
+            disconnect(Mqtt5DisconnectReasonCode.TOPIC_NAME_INVALID, "malformed topic", channel, in);
             return null;
         }
 
