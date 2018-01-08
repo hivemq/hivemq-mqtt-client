@@ -166,6 +166,7 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
 
         if (readPropertyLength != propertyLength) {
             disconnectMalformedPropertyLength(channel, in);
+            return null;
         }
 
         final int payloadLength = in.readableBytes();
