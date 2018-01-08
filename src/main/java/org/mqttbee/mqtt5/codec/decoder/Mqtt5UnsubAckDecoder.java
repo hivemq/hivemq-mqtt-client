@@ -106,10 +106,7 @@ public class Mqtt5UnsubAckDecoder implements Mqtt5MessageDecoder {
 
         final Mqtt5UnsubAckImpl subAck = new Mqtt5UnsubAckImpl(reasonCodes, reasonString, userProperties);
 
-        final Mqtt5UnsubAckInternal subAckInternal = new Mqtt5UnsubAckInternal(subAck);
-        subAckInternal.setPacketIdentifier(packetIdentifier);
-
-        return subAckInternal;
+        return new Mqtt5UnsubAckInternal(subAck, packetIdentifier);
     }
 
 }

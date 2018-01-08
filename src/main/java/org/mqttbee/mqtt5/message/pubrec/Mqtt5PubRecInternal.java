@@ -12,10 +12,11 @@ import org.mqttbee.mqtt5.message.Mqtt5Message;
 public class Mqtt5PubRecInternal extends Mqtt5Message.Mqtt5MessageWithProperties {
 
     private final Mqtt5PubRecImpl pubRec;
-    private int packetIdentifier;
+    private final int packetIdentifier;
 
-    public Mqtt5PubRecInternal(@NotNull final Mqtt5PubRecImpl pubRec) {
+    public Mqtt5PubRecInternal(@NotNull final Mqtt5PubRecImpl pubRec, final int packetIdentifier) {
         this.pubRec = pubRec;
+        this.packetIdentifier = packetIdentifier;
     }
 
     @NotNull
@@ -25,10 +26,6 @@ public class Mqtt5PubRecInternal extends Mqtt5Message.Mqtt5MessageWithProperties
 
     public int getPacketIdentifier() {
         return packetIdentifier;
-    }
-
-    public void setPacketIdentifier(final int packetIdentifier) {
-        this.packetIdentifier = packetIdentifier;
     }
 
     @Override

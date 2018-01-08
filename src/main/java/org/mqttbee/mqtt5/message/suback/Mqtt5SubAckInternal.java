@@ -11,10 +11,11 @@ import org.mqttbee.mqtt5.message.Mqtt5Message;
 public class Mqtt5SubAckInternal implements Mqtt5Message {
 
     private final Mqtt5SubAckImpl subAck;
-    private int packetIdentifier;
+    private final int packetIdentifier;
 
-    public Mqtt5SubAckInternal(@NotNull final Mqtt5SubAckImpl subAck) {
+    public Mqtt5SubAckInternal(@NotNull final Mqtt5SubAckImpl subAck, final int packetIdentifier) {
         this.subAck = subAck;
+        this.packetIdentifier = packetIdentifier;
     }
 
     @NotNull
@@ -24,10 +25,6 @@ public class Mqtt5SubAckInternal implements Mqtt5Message {
 
     public int getPacketIdentifier() {
         return packetIdentifier;
-    }
-
-    public void setPacketIdentifier(final int packetIdentifier) {
-        this.packetIdentifier = packetIdentifier;
     }
 
     @Override

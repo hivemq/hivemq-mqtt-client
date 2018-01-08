@@ -12,10 +12,11 @@ import org.mqttbee.mqtt5.message.Mqtt5Message;
 public class Mqtt5UnsubscribeInternal extends Mqtt5Message.Mqtt5MessageWithProperties {
 
     private final Mqtt5UnsubscribeImpl unsubscribe;
-    private int packetIdentifier;
+    private final int packetIdentifier;
 
-    public Mqtt5UnsubscribeInternal(@NotNull final Mqtt5UnsubscribeImpl unsubscribe) {
+    public Mqtt5UnsubscribeInternal(@NotNull final Mqtt5UnsubscribeImpl unsubscribe, final int packetIdentifier) {
         this.unsubscribe = unsubscribe;
+        this.packetIdentifier = packetIdentifier;
     }
 
     @NotNull
@@ -25,10 +26,6 @@ public class Mqtt5UnsubscribeInternal extends Mqtt5Message.Mqtt5MessageWithPrope
 
     public int getPacketIdentifier() {
         return packetIdentifier;
-    }
-
-    public void setPacketIdentifier(final int packetIdentifier) {
-        this.packetIdentifier = packetIdentifier;
     }
 
     @Override

@@ -18,13 +18,32 @@ public class Mqtt5PublishInternal extends Mqtt5Message.Mqtt5MessageWithPropertie
     public static final ImmutableIntArray DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS = ImmutableIntArray.of();
 
     private final Mqtt5PublishImpl publish;
-    private int packetIdentifier;
-    private boolean isDup;
-    private int topicAlias = DEFAULT_NO_TOPIC_ALIAS;
-    private ImmutableIntArray subscriptionIdentifiers = DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS;
+    private final int packetIdentifier;
+    private final boolean isDup;
+    private final int topicAlias;
+    private final ImmutableIntArray subscriptionIdentifiers;
 
     public Mqtt5PublishInternal(@NotNull final Mqtt5PublishImpl publish) {
+        this(publish, NO_PACKET_IDENTIFIER_QOS_0);
+    }
+
+    public Mqtt5PublishInternal(@NotNull final Mqtt5PublishImpl publish, final int packetIdentifier) {
+        this(publish, packetIdentifier, false);
+    }
+
+    public Mqtt5PublishInternal(
+            @NotNull final Mqtt5PublishImpl publish, final int packetIdentifier, final boolean isDup) {
+        this(publish, packetIdentifier, isDup, DEFAULT_NO_TOPIC_ALIAS, DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
+    }
+
+    public Mqtt5PublishInternal(
+            @NotNull final Mqtt5PublishImpl publish, final int packetIdentifier, final boolean isDup,
+            final int topicAlias, @NotNull final ImmutableIntArray subscriptionIdentifiers) {
         this.publish = publish;
+        this.packetIdentifier = packetIdentifier;
+        this.isDup = isDup;
+        this.topicAlias = topicAlias;
+        this.subscriptionIdentifiers = subscriptionIdentifiers;
     }
 
     @NotNull
@@ -36,33 +55,17 @@ public class Mqtt5PublishInternal extends Mqtt5Message.Mqtt5MessageWithPropertie
         return packetIdentifier;
     }
 
-    public void setPacketIdentifier(final int packetIdentifier) {
-        this.packetIdentifier = packetIdentifier;
-    }
-
     public boolean isDup() {
         return isDup;
-    }
-
-    public void setDup(final boolean dup) {
-        isDup = dup;
     }
 
     public int getTopicAlias() {
         return topicAlias;
     }
 
-    public void setTopicAlias(final int topicAlias) {
-        this.topicAlias = topicAlias;
-    }
-
     @NotNull
     public ImmutableIntArray getSubscriptionIdentifiers() {
         return subscriptionIdentifiers;
-    }
-
-    public void setSubscriptionIdentifiers(@NotNull final ImmutableIntArray subscriptionIdentifiers) {
-        this.subscriptionIdentifiers = subscriptionIdentifiers;
     }
 
     @Override
