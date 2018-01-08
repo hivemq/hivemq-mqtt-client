@@ -99,10 +99,7 @@ public class Mqtt5PubRecDecoder implements Mqtt5MessageDecoder {
 
         final Mqtt5PubRecImpl pubRec = new Mqtt5PubRecImpl(reasonCode, reasonString, userProperties);
 
-        final Mqtt5PubRecInternal pubAckInternal = new Mqtt5PubRecInternal(pubRec);
-        pubAckInternal.setPacketIdentifier(packetIdentifier);
-
-        return pubAckInternal;
+        return new Mqtt5PubRecInternal(pubRec, packetIdentifier);
     }
 
 }

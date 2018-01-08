@@ -99,10 +99,7 @@ public class Mqtt5PubCompDecoder implements Mqtt5MessageDecoder {
 
         final Mqtt5PubCompImpl pubComp = new Mqtt5PubCompImpl(reasonCode, reasonString, userProperties);
 
-        final Mqtt5PubCompInternal pubCompInternal = new Mqtt5PubCompInternal(pubComp);
-        pubCompInternal.setPacketIdentifier(packetIdentifier);
-
-        return pubCompInternal;
+        return new Mqtt5PubCompInternal(pubComp, packetIdentifier);
     }
 
 }

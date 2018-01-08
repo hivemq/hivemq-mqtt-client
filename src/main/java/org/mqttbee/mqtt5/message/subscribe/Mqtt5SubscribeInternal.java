@@ -14,11 +14,18 @@ public class Mqtt5SubscribeInternal extends Mqtt5Message.Mqtt5MessageWithPropert
     public static final int DEFAULT_NO_SUBSCRIPTION_IDENTIFIER = -1;
 
     private final Mqtt5SubscribeImpl subscribe;
-    private int packetIdentfier;
-    private int subscriptionIdentifier = DEFAULT_NO_SUBSCRIPTION_IDENTIFIER;
+    private final int packetIdentifier;
+    private final int subscriptionIdentifier;
 
-    public Mqtt5SubscribeInternal(@NotNull final Mqtt5SubscribeImpl subscribe) {
+    public Mqtt5SubscribeInternal(@NotNull final Mqtt5SubscribeImpl subscribe, final int packetIdentifier) {
+        this(subscribe, packetIdentifier, DEFAULT_NO_SUBSCRIPTION_IDENTIFIER);
+    }
+
+    public Mqtt5SubscribeInternal(
+            @NotNull final Mqtt5SubscribeImpl subscribe, final int packetIdentifier, final int subscriptionIdentifier) {
         this.subscribe = subscribe;
+        this.packetIdentifier = packetIdentifier;
+        this.subscriptionIdentifier = subscriptionIdentifier;
     }
 
     @NotNull
@@ -26,20 +33,12 @@ public class Mqtt5SubscribeInternal extends Mqtt5Message.Mqtt5MessageWithPropert
         return subscribe;
     }
 
-    public int getPacketIdentfier() {
-        return packetIdentfier;
-    }
-
-    public void setPacketIdentfier(final int packetIdentfier) {
-        this.packetIdentfier = packetIdentfier;
+    public int getPacketIdentifier() {
+        return packetIdentifier;
     }
 
     public int getSubscriptionIdentifier() {
         return subscriptionIdentifier;
-    }
-
-    public void setSubscriptionIdentifier(final int subscriptionIdentifier) {
-        this.subscriptionIdentifier = subscriptionIdentifier;
     }
 
     @Override

@@ -82,7 +82,7 @@ public class Mqtt5SubscribeEncoder implements Mqtt5MessageEncoder<Mqtt5Subscribe
     private void encodeVariableHeader(
             @NotNull final Mqtt5SubscribeInternal subscribeInternal, @NotNull final ByteBuf out) {
 
-        out.writeShort(subscribeInternal.getPacketIdentfier());
+        out.writeShort(subscribeInternal.getPacketIdentifier());
         encodeProperties(subscribeInternal, out);
     }
 
