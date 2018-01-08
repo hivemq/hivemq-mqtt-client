@@ -77,7 +77,8 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
         ImmutableIntArray.Builder subscriptionIdentifiersBuilder = null;
 
         final int propertiesStartIndex = in.readerIndex();
-        while (in.readerIndex() - propertiesStartIndex < propertyLength) {
+        int readPropertyLength;
+        while ((readPropertyLength = in.readerIndex() - propertiesStartIndex) < propertyLength) {
 
             final int propertyIdentifier = Mqtt5DataTypes.decodeVariableByteInteger(in);
             if (propertyIdentifier < 0) {
@@ -162,6 +163,10 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
                     disconnectWrongProperty("PUBLISH", channel, in);
                     return null;
             }
+        }
+
+        if (readPropertyLength != propertyLength) {
+            disconnectMalformedPropertyLength(channel, in);
         }
 
         final int payloadLength = in.readableBytes();
