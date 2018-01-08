@@ -55,7 +55,8 @@ public class Mqtt5SubAckDecoder implements Mqtt5MessageDecoder {
         ImmutableList.Builder<Mqtt5UserProperty> userPropertiesBuilder = null;
 
         final int propertiesStartIndex = in.readerIndex();
-        while (in.readerIndex() - propertiesStartIndex < propertyLength) {
+        int readPropertyLength;
+        while ((readPropertyLength = in.readerIndex() - propertiesStartIndex) < propertyLength) {
 
             final int propertyIdentifier = Mqtt5DataTypes.decodeVariableByteInteger(in);
             if (propertyIdentifier < 0) {
@@ -82,6 +83,10 @@ public class Mqtt5SubAckDecoder implements Mqtt5MessageDecoder {
                     disconnectWrongProperty("SUBACK", channel, in);
                     return null;
             }
+        }
+
+        if (readPropertyLength != propertyLength) {
+            disconnectMalformedPropertyLength(channel, in);
         }
 
         final int reasonCodeCount = in.readableBytes();
