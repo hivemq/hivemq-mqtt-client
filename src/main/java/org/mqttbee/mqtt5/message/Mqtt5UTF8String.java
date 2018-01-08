@@ -8,6 +8,7 @@ import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.exceptions.Mqtt5BinaryDataExceededException;
 
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
 /**
@@ -227,6 +228,22 @@ public class Mqtt5UTF8String {
             throw new Mqtt5BinaryDataExceededException("UTF-8 encoded String");
         }
         return Mqtt5DataTypes.encodedBinaryDataLength(binary);
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if ((obj == null) || (obj.getClass() != this.getClass())) {
+            return false;
+        }
+        final Mqtt5UTF8String utf8String = (Mqtt5UTF8String) obj;
+        if (string != null) {
+            if ((utf8String.string == null) && (binary != null)) {
+                return Arrays.equals(binary, utf8String.binary);
+            }
+            return string.equals(utf8String.toString());
+        } else {
+            return Arrays.equals(binary, utf8String.toBinary());
+        }
     }
 
 }
