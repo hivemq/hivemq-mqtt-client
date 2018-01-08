@@ -87,6 +87,7 @@ public class Mqtt5UnsubAckDecoder implements Mqtt5MessageDecoder {
 
         if (readPropertyLength != propertyLength) {
             disconnectMalformedPropertyLength(channel, in);
+            return null;
         }
 
         final int reasonCodeCount = in.readableBytes();
