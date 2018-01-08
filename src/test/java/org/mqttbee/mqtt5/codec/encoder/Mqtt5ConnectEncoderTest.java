@@ -3,9 +3,9 @@ package org.mqttbee.mqtt5.codec.encoder;
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.embedded.EmbeddedChannel;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifier;
 import org.mqttbee.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.mqtt5.message.Mqtt5Topic;
@@ -26,6 +26,11 @@ public class Mqtt5ConnectEncoderTest {
     @Before
     public void setUp() {
         channel = new EmbeddedChannel(new Mqtt5Encoder());
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        channel.close();
     }
 
     @Test
