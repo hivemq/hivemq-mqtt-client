@@ -1,6 +1,8 @@
 package org.mqttbee.mqtt5.message;
 
 /**
+ * MQTT Reason Codes that are used in 2 ore more MQTT packets according to the MQTT 5 specification.
+ *
  * @author Silvio Giebl
  */
 public enum Mqtt5ReasonCode {
@@ -36,6 +38,9 @@ public enum Mqtt5ReasonCode {
         this.code = code;
     }
 
+    /**
+     * @return the byte code of this Reason Code.
+     */
     public int getCode() {
         return code;
     }

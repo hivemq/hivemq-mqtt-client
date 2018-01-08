@@ -205,7 +205,7 @@ public class Mqtt5UTF8String {
      * Encodes this UTF-8 encoded String to the given byte buffer at the current writer index according to the MQTT 5
      * specification. Converts from the UTF-16 encoded to the UTF-8 encoded representation if necessary.
      * <p>
-     * This method does not check if this UTF-8 encoded String can not be encoded due byte count restrictions. This
+     * This method does not check if this UTF-8 encoded String can not be encoded due to byte count restrictions. This
      * check is performed with the method {@link #encodedLength()} which is generally called before this method.
      *
      * @param byteBuf the byte buffer to encode to.
@@ -218,7 +218,7 @@ public class Mqtt5UTF8String {
      * Calculates the byte count of this UTF-8 encoded String according to the MQTT 5 specification.
      *
      * @return the encoded length of this UTF-8 encoded String.
-     * @throws Mqtt5BinaryDataExceededException if this UTF-8 encoded String can not be encoded due byte count
+     * @throws Mqtt5BinaryDataExceededException if this UTF-8 encoded String can not be encoded due to byte count
      *                                          restrictions.
      */
     public int encodedLength() {

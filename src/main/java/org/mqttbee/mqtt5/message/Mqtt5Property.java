@@ -1,6 +1,8 @@
 package org.mqttbee.mqtt5.message;
 
 /**
+ * All possible MQTT properties and its byte code according to the MQTT 5 specification.
+ *
  * @author Silvio Giebl
  */
 public interface Mqtt5Property {
