@@ -22,7 +22,7 @@ public class Mqtt5UnsubscribeEncoder implements Mqtt5MessageEncoder<Mqtt5Unsubsc
 
     public static final Mqtt5UnsubscribeEncoder INSTANCE = new Mqtt5UnsubscribeEncoder();
 
-    private static final int FIXED_HEADER = Mqtt5MessageType.UNSUBSCRIBE.getCode() << 4 + 0b0010;
+    private static final int FIXED_HEADER = (Mqtt5MessageType.UNSUBSCRIBE.getCode() << 4) + 0b0010;
 
     @Override
     public void encode(
