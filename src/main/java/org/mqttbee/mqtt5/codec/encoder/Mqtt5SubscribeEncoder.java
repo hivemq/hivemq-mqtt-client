@@ -24,7 +24,7 @@ public class Mqtt5SubscribeEncoder implements Mqtt5MessageEncoder<Mqtt5Subscribe
 
     public static final Mqtt5SubscribeEncoder INSTANCE = new Mqtt5SubscribeEncoder();
 
-    private static final int FIXED_HEADER = Mqtt5MessageType.SUBSCRIBE.getCode() << 4 + 0b0010;
+    private static final int FIXED_HEADER = (Mqtt5MessageType.SUBSCRIBE.getCode() << 4) + 0b0010;
 
     @Override
     public void encode(
