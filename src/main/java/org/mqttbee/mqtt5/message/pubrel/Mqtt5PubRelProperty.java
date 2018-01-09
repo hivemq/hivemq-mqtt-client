@@ -3,6 +3,8 @@ package org.mqttbee.mqtt5.message.pubrel;
 import org.mqttbee.mqtt5.message.Mqtt5Property;
 
 /**
+ * All possible MQTT PUBREL properties and its byte code according to the MQTT 5 specification.
+ *
  * @author Silvio Giebl
  */
 public interface Mqtt5PubRelProperty {

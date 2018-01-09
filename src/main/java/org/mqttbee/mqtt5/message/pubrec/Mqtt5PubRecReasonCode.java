@@ -5,6 +5,8 @@ import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt5.message.Mqtt5ReasonCode;
 
 /**
+ * MQTT Reason Codes that can be used in PUBREC packets according to the MQTT 5 specification.
+ *
  * @author Silvio Giebl
  */
 public enum Mqtt5PubRecReasonCode {
@@ -29,11 +31,20 @@ public enum Mqtt5PubRecReasonCode {
         this(reasonCode.getCode());
     }
 
+    /**
+     * @return the byte code of this PUBREC Reason Code.
+     */
     public int getCode() {
         return code;
     }
 
-
+    /**
+     * Returns the PUBREC Reason Code belonging to the given byte code.
+     *
+     * @param code the byte code.
+     * @return the PUBREC Reason Code belonging to the given byte code or null if the byte code is not a valid PUBREC
+     * Reason Code code.
+     */
     @Nullable
     public static Mqtt5PubRecReasonCode fromCode(final int code) {
         for (final Mqtt5PubRecReasonCode reasonCode : values()) {

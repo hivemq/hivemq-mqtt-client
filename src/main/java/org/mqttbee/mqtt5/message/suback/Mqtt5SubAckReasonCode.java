@@ -5,6 +5,8 @@ import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt5.message.Mqtt5ReasonCode;
 
 /**
+ * MQTT Reason Codes that can be used in SUBACK packets according to the MQTT 5 specification.
+ *
  * @author Silvio Giebl
  */
 public enum Mqtt5SubAckReasonCode {
@@ -32,11 +34,20 @@ public enum Mqtt5SubAckReasonCode {
         this(reasonCode.getCode());
     }
 
+    /**
+     * @return the byte code of this SUBACK Reason Code.
+     */
     public int getCode() {
         return code;
     }
 
-
+    /**
+     * Returns the SUBACK Reason Code belonging to the given byte code.
+     *
+     * @param code the byte code.
+     * @return the SUBACK Reason Code belonging to the given byte code or null if the byte code is not a valid SUBACK
+     * Reason Code code.
+     */
     @Nullable
     public static Mqtt5SubAckReasonCode fromCode(final int code) {
         for (final Mqtt5SubAckReasonCode reasonCode : values()) {
