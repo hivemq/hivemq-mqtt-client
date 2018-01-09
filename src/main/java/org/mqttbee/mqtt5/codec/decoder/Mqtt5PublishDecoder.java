@@ -1,11 +1,13 @@
 package org.mqttbee.mqtt5.codec.decoder;
 
+import com.google.common.base.Utf8;
 import com.google.common.collect.ImmutableList;
 import com.google.common.primitives.ImmutableIntArray;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.mqtt5.message.Mqtt5Topic;
@@ -174,6 +176,16 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
         if (payloadLength > 0) {
             payload = new byte[payloadLength];
             in.readBytes(payload);
+
+            if (payloadFormatIndicator != null) {
+                final Boolean validatePayloadFormat = channel.attr(ChannelAttributes.VALIDATE_PAYLOAD_FORMAT_KEY).get();
+                if ((validatePayloadFormat != null) && validatePayloadFormat) {
+                    if (!Utf8.isWellFormed(payload)) {
+                        disconnectMalformedUTF8String("payload", channel, in);
+                        return null;
+                    }
+                }
+            }
         }
 
         final ImmutableList<Mqtt5UserProperty> userProperties = Mqtt5UserProperty.build(userPropertiesBuilder);
