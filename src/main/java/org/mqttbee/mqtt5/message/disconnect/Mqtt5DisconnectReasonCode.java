@@ -5,6 +5,8 @@ import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt5.message.Mqtt5ReasonCode;
 
 /**
+ * MQTT Reason Codes that can be used in DISCONNECT packets according to the MQTT 5 specification.
+ *
  * @author Silvio Giebl
  */
 public enum Mqtt5DisconnectReasonCode {
@@ -50,6 +52,9 @@ public enum Mqtt5DisconnectReasonCode {
         this(reasonCode.getCode());
     }
 
+    /**
+     * @return the byte code of this DISCONNECT Reason Code.
+     */
     public int getCode() {
         return code;
     }
@@ -68,6 +73,13 @@ public enum Mqtt5DisconnectReasonCode {
         }
     }
 
+    /**
+     * Returns the DISCONNECT Reason Code belonging to the given byte code.
+     *
+     * @param code the byte code.
+     * @return the DISCONNECT Reason Code belonging to the given byte code or null if the byte code is not a valid
+     * DISCONNECT Reason Code code.
+     */
     @Nullable
     public static Mqtt5DisconnectReasonCode fromCode(final int code) {
         if (code == NORMAL_DISCONNECTION.code) {
