@@ -8,6 +8,7 @@ import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
+import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.message.suback.Mqtt5SubAckImpl;
 import org.mqttbee.mqtt5.message.suback.Mqtt5SubAckInternal;
 import org.mqttbee.mqtt5.message.suback.Mqtt5SubAckProperty;
@@ -91,6 +92,12 @@ public class Mqtt5SubAckDecoder implements Mqtt5MessageDecoder {
         }
 
         final int reasonCodeCount = in.readableBytes();
+        if (reasonCodeCount == 0) {
+            disconnect(
+                    Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "SUBACK must contain at least one reason code", channel,
+                    in);
+        }
+
         final ImmutableList.Builder<Mqtt5SubAckReasonCode> reasonCodesBuilder =
                 ImmutableList.builderWithExpectedSize(reasonCodeCount);
         for (int i = 0; i < reasonCodeCount; i++) {
