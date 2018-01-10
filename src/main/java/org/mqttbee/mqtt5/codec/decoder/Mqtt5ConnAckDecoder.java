@@ -54,6 +54,13 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
             return null;
         }
 
+        if ((reasonCode != Mqtt5ConnAckReasonCode.SUCCESS) && sessionPresent) {
+            disconnect(
+                    Mqtt5DisconnectReasonCode.MALFORMED_PACKET,
+                    "session present must be false if reason code is not SUCCESS", channel, in);
+            return null;
+        }
+
         final int propertyLength = Mqtt5DataTypes.decodeVariableByteInteger(in);
 
         if (propertyLength < 0) {

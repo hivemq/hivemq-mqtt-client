@@ -144,6 +144,10 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
                         return null;
                     }
                     topicAlias = in.readUnsignedShort();
+                    if (topicAlias == 0) {
+                        disconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "topic alias must not be 0", channel, in);
+                        return null;
+                    }
                     break;
 
                 case Mqtt5PublishProperty.SUBSCRIPTION_IDENTIFIER:
@@ -154,6 +158,12 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
                     if (subscriptionIdentifier < 0) {
                         disconnect(
                                 Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "malformed subscription identifier",
+                                channel, in);
+                        return null;
+                    }
+                    if (subscriptionIdentifier == 0) {
+                        disconnect(
+                                Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "subscription identifier must not be 0",
                                 channel, in);
                         return null;
                     }
