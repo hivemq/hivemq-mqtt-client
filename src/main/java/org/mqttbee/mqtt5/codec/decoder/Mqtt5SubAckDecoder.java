@@ -96,6 +96,7 @@ public class Mqtt5SubAckDecoder implements Mqtt5MessageDecoder {
             disconnect(
                     Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "SUBACK must contain at least one reason code", channel,
                     in);
+            return null;
         }
 
         final ImmutableList.Builder<Mqtt5SubAckReasonCode> reasonCodesBuilder =
