@@ -2,5 +2,6 @@
 .idea/workspace.xml
 .idea/uiDesigner.xml
 .gradle
+/out/
 /build/
 .DS_Store
