@@ -37,7 +37,7 @@ public interface Mqtt5Publish {
     Optional<Mqtt5UTF8String> getContentType();
 
     @NotNull
-    Optional<Mqtt5UTF8String> getResponseTopic();
+    Optional<Mqtt5Topic> getResponseTopic();
 
     @NotNull
     Optional<byte[]> getCorrelationData();

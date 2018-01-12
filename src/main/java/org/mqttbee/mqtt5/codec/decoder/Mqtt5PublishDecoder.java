@@ -71,7 +71,7 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
         long messageExpiryInterval = DEFAULT_MESSAGE_EXPIRY_INTERVAL_INFINITY;
         Mqtt5PayloadFormatIndicator payloadFormatIndicator = null;
         Mqtt5UTF8String contentType = null;
-        Mqtt5UTF8String responseTopic = null;
+        Mqtt5Topic responseTopic = null;
         byte[] correlationData = null;
         ImmutableList.Builder<Mqtt5UserProperty> userPropertiesBuilder = null;
         int topicAlias = DEFAULT_NO_TOPIC_ALIAS;
@@ -119,8 +119,13 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
                     break;
 
                 case Mqtt5PublishProperty.RESPONSE_TOPIC:
-                    responseTopic = decodeUTF8StringOnlyOnce(responseTopic, "response topic", channel, in);
+                    if (responseTopic != null) {
+                        disconnectOnlyOnce("response topic", channel, in);
+                        return null;
+                    }
+                    responseTopic = Mqtt5Topic.from(in);
                     if (responseTopic == null) {
+                        disconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "malformed response topic", channel, in);
                         return null;
                     }
                     break;
