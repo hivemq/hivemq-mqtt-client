@@ -8,10 +8,7 @@ import org.mqttbee.api.mqtt5.message.Mqtt5Publish;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.exceptions.Mqtt5BinaryDataExceededException;
 import org.mqttbee.mqtt5.exceptions.Mqtt5VariableByteIntegerExceededException;
-import org.mqttbee.mqtt5.message.Mqtt5MessageType;
-import org.mqttbee.mqtt5.message.Mqtt5QoS;
-import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
+import org.mqttbee.mqtt5.message.*;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishInternal;
@@ -82,7 +79,7 @@ public class Mqtt5PublishEncoder implements Mqtt5MessageEncoder<Mqtt5PublishInte
             propertyLength += 1 + contentType.encodedLength();
         }
 
-        final Mqtt5UTF8String responseTopic = publish.getRawResponseTopic();
+        final Mqtt5Topic responseTopic = publish.getRawResponseTopic();
         if (responseTopic != null) {
             propertyLength += 1 + responseTopic.encodedLength();
         }
@@ -166,7 +163,7 @@ public class Mqtt5PublishEncoder implements Mqtt5MessageEncoder<Mqtt5PublishInte
             contentType.to(out);
         }
 
-        final Mqtt5UTF8String responseTopic = publish.getRawResponseTopic();
+        final Mqtt5Topic responseTopic = publish.getRawResponseTopic();
         if (responseTopic != null) {
             out.writeByte(Mqtt5PublishProperty.RESPONSE_TOPIC);
             responseTopic.to(out);

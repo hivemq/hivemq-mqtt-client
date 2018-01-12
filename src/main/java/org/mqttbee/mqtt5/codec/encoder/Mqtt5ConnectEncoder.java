@@ -8,6 +8,7 @@ import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.exceptions.Mqtt5BinaryDataExceededException;
 import org.mqttbee.mqtt5.exceptions.Mqtt5VariableByteIntegerExceededException;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
+import org.mqttbee.mqtt5.message.Mqtt5Topic;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 import org.mqttbee.mqtt5.message.connect.Mqtt5ConnectImpl;
@@ -147,7 +148,7 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
             if (contentType != null) {
                 willPropertyLength += 1 + contentType.encodedLength();
             }
-            final Mqtt5UTF8String responseTopic = willPublish.getRawResponseTopic();
+            final Mqtt5Topic responseTopic = willPublish.getRawResponseTopic();
             if (responseTopic != null) {
                 willPropertyLength += 1 + responseTopic.encodedLength();
             }
@@ -312,7 +313,7 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
                 out.writeByte(Mqtt5WillPublishProperty.CONTENT_TYPE);
                 contentType.to(out);
             }
-            final Mqtt5UTF8String responseTopic = willPublish.getRawResponseTopic();
+            final Mqtt5Topic responseTopic = willPublish.getRawResponseTopic();
             if (responseTopic != null) {
                 out.writeByte(Mqtt5WillPublishProperty.RESPONSE_TOPIC);
                 responseTopic.to(out);

@@ -23,7 +23,7 @@ public class Mqtt5PublishImpl implements Mqtt5Publish {
     private final long messageExpiryInterval;
     private final Mqtt5PayloadFormatIndicator payloadFormatIndicator;
     private final Mqtt5UTF8String contentType;
-    private final Mqtt5UTF8String responseTopic;
+    private final Mqtt5Topic responseTopic;
     private final byte[] correlationData;
     private final ImmutableList<Mqtt5UserProperty> userProperties;
 
@@ -31,7 +31,7 @@ public class Mqtt5PublishImpl implements Mqtt5Publish {
             @NotNull final Mqtt5Topic topic, @Nullable final byte[] payload, @NotNull final Mqtt5QoS qos,
             final boolean isRetain, final long messageExpiryInterval,
             @Nullable final Mqtt5PayloadFormatIndicator payloadFormatIndicator,
-            @Nullable final Mqtt5UTF8String contentType, @Nullable final Mqtt5UTF8String responseTopic,
+            @Nullable final Mqtt5UTF8String contentType, @Nullable final Mqtt5Topic responseTopic,
             @Nullable final byte[] correlationData, @NotNull final ImmutableList<Mqtt5UserProperty> userProperties) {
         this.topic = topic;
         this.payload = payload;
@@ -102,12 +102,12 @@ public class Mqtt5PublishImpl implements Mqtt5Publish {
 
     @NotNull
     @Override
-    public Optional<Mqtt5UTF8String> getResponseTopic() {
+    public Optional<Mqtt5Topic> getResponseTopic() {
         return Optional.ofNullable(responseTopic);
     }
 
     @Nullable
-    public Mqtt5UTF8String getRawResponseTopic() {
+    public Mqtt5Topic getRawResponseTopic() {
         return responseTopic;
     }
 
