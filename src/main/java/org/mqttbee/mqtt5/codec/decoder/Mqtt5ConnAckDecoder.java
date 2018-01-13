@@ -7,6 +7,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifier;
+import org.mqttbee.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckImpl;
@@ -84,7 +85,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
         boolean receiveMaximumPresent = false;
         int topicAliasMaximum = Restrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM;
         boolean topicAliasMaximumPresent = false;
-        byte maximumQoS = Restrictions.DEFAULT_MAXIMUM_QOS;
+        Mqtt5QoS maximumQoS = Restrictions.DEFAULT_MAXIMUM_QOS;
         boolean maximumQoSPresent = false;
         boolean retainAvailable = Restrictions.DEFAULT_RETAIN_AVAILABLE;
         boolean retainAvailablePresent = false;
@@ -188,11 +189,12 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                     if (!checkByteOnlyOnce(maximumQoSPresent, "maximum QoS", channel, in)) {
                         return null;
                     }
-                    maximumQoS = in.readByte();
-                    if (maximumQoS != 0 && maximumQoS != 1) {
+                    final byte maximumQoSCode = in.readByte();
+                    if (maximumQoSCode != 0 && maximumQoSCode != 1) {
                         disconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "wrong maximum QoS", channel, in);
                         return null;
                     }
+                    maximumQoS = Mqtt5QoS.fromCode(maximumQoSCode);
                     maximumQoSPresent = true;
                     restrictionsPresent = true;
                     break;

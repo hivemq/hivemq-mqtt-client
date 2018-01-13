@@ -10,6 +10,7 @@ import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5ConnAck;
 import org.mqttbee.api.mqtt5.message.Mqtt5Disconnect;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
+import org.mqttbee.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckReasonCode;
@@ -35,20 +36,20 @@ public class Mqtt5ConnAckDecoderTest {
     }
 
     @Test
-    public void test_example() {
+    public void decode_big_packet() {
         final byte[] encoded = {
                 // fixed header
                 //   type, flags
                 0b0010_0000,
-                //   remaining length
-                122,
+                //   remaining length (138)
+                (byte) (128 + 10), 1,
                 // variable header
                 //   connack flags
                 0b0000_0001,
                 //   reason code (success)
                 0x00,
-                //   properties
-                119,
+                //   properties (134)
+                (byte) (128 + 6), 1,
                 //     session expiry interval
                 0x11, 0, 0, 0, 10,
                 //     receive maximum
@@ -68,6 +69,7 @@ public class Mqtt5ConnAckDecoderTest {
                 //     user properties
                 0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e',
                 0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e', '2',
+                0x26, 0, 5, 't', 'e', 's', 't', '2', 0, 5, 'v', 'a', 'l', 'u', 'e',
                 //     wildcard subscription available
                 0x28, 0,
                 //     subscription identifiers available
@@ -108,19 +110,22 @@ public class Mqtt5ConnAckDecoderTest {
         assertEquals("server", connAck.getServerReference().get().toString());
 
         final ImmutableList<Mqtt5UserProperty> userProperties = connAck.getUserProperties();
-        assertEquals(2, userProperties.size());
+        assertEquals(3, userProperties.size());
         final Mqtt5UTF8String test = Mqtt5UTF8String.from("test");
+        final Mqtt5UTF8String test2 = Mqtt5UTF8String.from("test");
         final Mqtt5UTF8String value = Mqtt5UTF8String.from("value");
         final Mqtt5UTF8String value2 = Mqtt5UTF8String.from("value2");
         assertNotNull(test);
+        assertNotNull(test2);
         assertNotNull(value);
         assertNotNull(value2);
         assertTrue(userProperties.contains(new Mqtt5UserProperty(test, value)));
         assertTrue(userProperties.contains(new Mqtt5UserProperty(test, value2)));
+        assertTrue(userProperties.contains(new Mqtt5UserProperty(test2, value)));
 
         final Mqtt5ConnAck.Restrictions restrictions = connAck.getRestrictions();
         assertEquals(100, restrictions.getReceiveMaximum());
-        assertEquals(1, restrictions.getMaximumQoS());
+        assertEquals(Mqtt5QoS.AT_LEAST_ONCE, restrictions.getMaximumQoS());
         assertEquals(false, restrictions.isRetainAvailable());
         assertEquals(100, restrictions.getMaximumPacketSize());
         assertEquals(5, restrictions.getTopicAliasMaximum());
@@ -900,6 +905,619 @@ public class Mqtt5ConnAckDecoderTest {
         channel.writeInbound(byteBuf);
 
         testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR);
+    }
+
+    @Test
+    public void decode_can_include_multiple_user_properties() {
+        final ByteBuf byteBuf = channel.alloc().buffer();
+        // fixed header
+        //   type, flags
+        byteBuf.writeByte(0b0010_0000);
+        //   remaining length
+        byteBuf.writeByte(47);
+        // variable header
+        //   connack flags
+        byteBuf.writeByte(0b0000_0001);
+        //   reason code (success)
+        byteBuf.writeByte(0x00);
+        //   properties
+        byteBuf.writeByte(44);
+        //     user properties
+        byteBuf.writeBytes(new byte[]{0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'});
+        byteBuf.writeBytes(new byte[]{0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e', '2'});
+        byteBuf.writeBytes(new byte[]{0x26, 0, 5, 't', 'e', 's', 't', '2', 0, 5, 'v', 'a', 'l', 'u', 'e'});
+
+        channel.writeInbound(byteBuf);
+        final Mqtt5ConnAck connAck = channel.readInbound();
+        assertNotNull(connAck);
+
+        final ImmutableList<Mqtt5UserProperty> userProperties = connAck.getUserProperties();
+        assertEquals(3, userProperties.size());
+        final Mqtt5UTF8String test = Mqtt5UTF8String.from("test");
+        final Mqtt5UTF8String test2 = Mqtt5UTF8String.from("test2");
+        final Mqtt5UTF8String value = Mqtt5UTF8String.from("value");
+        final Mqtt5UTF8String value2 = Mqtt5UTF8String.from("value2");
+        assertNotNull(test);
+        assertNotNull(test2);
+        assertNotNull(value);
+        assertNotNull(value2);
+        assertTrue(userProperties.contains(new Mqtt5UserProperty(test, value)));
+        assertTrue(userProperties.contains(new Mqtt5UserProperty(test, value2)));
+        assertTrue(userProperties.contains(new Mqtt5UserProperty(test2, value)));
+    }
+
+    @Test
+    public void decode_reason_string_length_too_short() {
+        final ByteBuf byteBuf = channel.alloc().buffer();
+        // fixed header
+        //   type, flags
+        byteBuf.writeByte(0b0010_0000);
+        //   remaining length
+        byteBuf.writeByte(13);
+        // variable header
+        //   connack flags
+        byteBuf.writeByte(0b0000_0001);
+        //   reason code (success)
+        byteBuf.writeByte(0x00);
+        //   properties
+        byteBuf.writeByte(10);
+        //     reason string
+        byteBuf.writeBytes(new byte[]{0x1F, 0, 6, 's', 'u', 'c', 'c', 'e', 's', 's'});
+
+        channel.writeInbound(byteBuf);
+
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+    }
+
+    @Test
+    public void decode_reason_string_length_too_long() {
+        final ByteBuf byteBuf = channel.alloc().buffer();
+        // fixed header
+        //   type, flags
+        byteBuf.writeByte(0b0010_0000);
+        //   remaining length
+        byteBuf.writeByte(13);
+        // variable header
+        //   connack flags
+        byteBuf.writeByte(0b0000_0001);
+        //   reason code (success)
+        byteBuf.writeByte(0x00);
+        //   properties
+        byteBuf.writeByte(10);
+        //     reason string
+        byteBuf.writeBytes(new byte[]{0x1F, 0, 8, 's', 'u', 'c', 'c', 'e', 's', 's'});
+        // padding, e.g. next message
+        byteBuf.writeByte(0x00);
+
+        channel.writeInbound(byteBuf);
+
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+    }
+
+    @Test
+    public void decode_reason_string_must_not_character() {
+        final ByteBuf byteBuf = channel.alloc().buffer();
+        // fixed header
+        //   type, flags
+        byteBuf.writeByte(0b0010_0000);
+        //   remaining length
+        byteBuf.writeByte(13);
+        // variable header
+        //   connack flags
+        byteBuf.writeByte(0b0000_0001);
+        //   reason code (success)
+        byteBuf.writeByte(0x00);
+        //   properties
+        byteBuf.writeByte(10);
+        //     reason string
+        byteBuf.writeBytes(new byte[]{0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', '\0'});
+
+        channel.writeInbound(byteBuf);
+
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+    }
+
+    @Test
+    public void decode_assigned_client_identifier_length_too_short() {
+        final ByteBuf byteBuf = channel.alloc().buffer();
+        // fixed header
+        //   type, flags
+        byteBuf.writeByte(0b0010_0000);
+        //   remaining length
+        byteBuf.writeByte(10);
+        // variable header
+        //   connack flags
+        byteBuf.writeByte(0b0000_0001);
+        //   reason code (success)
+        byteBuf.writeByte(0x00);
+        //   properties
+        byteBuf.writeByte(7);
+        //     assigned client identifier
+        byteBuf.writeBytes(new byte[]{0x12, 0, 3, 't', 'e', 's', 't'});
+
+        channel.writeInbound(byteBuf);
+
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+    }
+
+    @Test
+    public void decode_assigned_client_identifier_length_too_long() {
+        final ByteBuf byteBuf = channel.alloc().buffer();
+        // fixed header
+        //   type, flags
+        byteBuf.writeByte(0b0010_0000);
+        //   remaining length
+        byteBuf.writeByte(10);
+        // variable header
+        //   connack flags
+        byteBuf.writeByte(0b0000_0001);
+        //   reason code (success)
+        byteBuf.writeByte(0x00);
+        //   properties
+        byteBuf.writeByte(7);
+        //     assigned client identifier
+        byteBuf.writeBytes(new byte[]{0x12, 0, 5, 't', 'e', 's', 't'});
+        // padding, e.g. next message
+        byteBuf.writeByte(0x00);
+
+        channel.writeInbound(byteBuf);
+
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+    }
+
+    @Test
+    public void decode_assigned_client_identifier_must_not_character() {
+        final ByteBuf byteBuf = channel.alloc().buffer();
+        // fixed header
+        //   type, flags
+        byteBuf.writeByte(0b0010_0000);
+        //   remaining length
+        byteBuf.writeByte(10);
+        // variable header
+        //   connack flags
+        byteBuf.writeByte(0b0000_0001);
+        //   reason code (success)
+        byteBuf.writeByte(0x00);
+        //   properties
+        byteBuf.writeByte(7);
+        //     assigned client identifier
+        byteBuf.writeBytes(new byte[]{0x12, 0, 4, 't', 'e', 's', '\0'});
+
+        channel.writeInbound(byteBuf);
+
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+    }
+
+    @Test
+    public void decode_response_information_length_too_short() {
+        final ByteBuf byteBuf = channel.alloc().buffer();
+        // fixed header
+        //   type, flags
+        byteBuf.writeByte(0b0010_0000);
+        //   remaining length
+        byteBuf.writeByte(14);
+        // variable header
+        //   connack flags
+        byteBuf.writeByte(0b0000_0001);
+        //   reason code (success)
+        byteBuf.writeByte(0x00);
+        //   properties
+        byteBuf.writeByte(11);
+        //     response information
+        byteBuf.writeBytes(new byte[]{0x1A, 0, 7, 'r', 'e', 's', 'p', 'o', 'n', 's', 'e'});
+
+        channel.writeInbound(byteBuf);
+
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+    }
+
+    @Test
+    public void decode_response_information_length_too_long() {
+        final ByteBuf byteBuf = channel.alloc().buffer();
+        // fixed header
+        //   type, flags
+        byteBuf.writeByte(0b0010_0000);
+        //   remaining length
+        byteBuf.writeByte(14);
+        // variable header
+        //   connack flags
+        byteBuf.writeByte(0b0000_0001);
+        //   reason code (success)
+        byteBuf.writeByte(0x00);
+        //   properties
+        byteBuf.writeByte(11);
+        //     response information
+        byteBuf.writeBytes(new byte[]{0x1A, 0, 9, 'r', 'e', 's', 'p', 'o', 'n', 's', 'e'});
+        // padding, e.g. next message
+        byteBuf.writeByte(0x00);
+
+        channel.writeInbound(byteBuf);
+
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+    }
+
+    @Test
+    public void decode_response_information_must_not_character() {
+        final ByteBuf byteBuf = channel.alloc().buffer();
+        // fixed header
+        //   type, flags
+        byteBuf.writeByte(0b0010_0000);
+        //   remaining length
+        byteBuf.writeByte(14);
+        // variable header
+        //   connack flags
+        byteBuf.writeByte(0b0000_0001);
+        //   reason code (success)
+        byteBuf.writeByte(0x00);
+        //   properties
+        byteBuf.writeByte(11);
+        //     response information
+        byteBuf.writeBytes(new byte[]{0x1A, 0, 8, 'r', 'e', 's', 'p', 'o', 'n', 's', '\0'});
+
+        channel.writeInbound(byteBuf);
+
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+    }
+
+    @Test
+    public void decode_server_reference_length_too_short() {
+        final ByteBuf byteBuf = channel.alloc().buffer();
+        // fixed header
+        //   type, flags
+        byteBuf.writeByte(0b0010_0000);
+        //   remaining length
+        byteBuf.writeByte(12);
+        // variable header
+        //   connack flags
+        byteBuf.writeByte(0b0000_0001);
+        //   reason code (success)
+        byteBuf.writeByte(0x00);
+        //   properties
+        byteBuf.writeByte(9);
+        //     server reference
+        byteBuf.writeBytes(new byte[]{0x1C, 0, 5, 's', 'e', 'r', 'v', 'e', 'r'});
+
+        channel.writeInbound(byteBuf);
+
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+    }
+
+    @Test
+    public void decode_server_reference_length_too_long() {
+        final ByteBuf byteBuf = channel.alloc().buffer();
+        // fixed header
+        //   type, flags
+        byteBuf.writeByte(0b0010_0000);
+        //   remaining length
+        byteBuf.writeByte(12);
+        // variable header
+        //   connack flags
+        byteBuf.writeByte(0b0000_0001);
+        //   reason code (success)
+        byteBuf.writeByte(0x00);
+        //   properties
+        byteBuf.writeByte(9);
+        //     server reference
+        byteBuf.writeBytes(new byte[]{0x1C, 0, 7, 's', 'e', 'r', 'v', 'e', 'r'});
+        // padding, e.g. next message
+        byteBuf.writeByte(0x00);
+
+        channel.writeInbound(byteBuf);
+
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+    }
+
+    @Test
+    public void decode_server_reference_must_not_character() {
+        final ByteBuf byteBuf = channel.alloc().buffer();
+        // fixed header
+        //   type, flags
+        byteBuf.writeByte(0b0010_0000);
+        //   remaining length
+        byteBuf.writeByte(12);
+        // variable header
+        //   connack flags
+        byteBuf.writeByte(0b0000_0001);
+        //   reason code (success)
+        byteBuf.writeByte(0x00);
+        //   properties
+        byteBuf.writeByte(9);
+        //     server reference
+        byteBuf.writeBytes(new byte[]{0x1C, 0, 6, 's', 'e', 'r', 'v', 'e', '\0'});
+
+        channel.writeInbound(byteBuf);
+
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+    }
+
+    @Test
+    public void decode_auth_method_length_too_short() {
+        final ByteBuf byteBuf = channel.alloc().buffer();
+        // fixed header
+        //   type, flags
+        byteBuf.writeByte(0b0010_0000);
+        //   remaining length
+        byteBuf.writeByte(14);
+        // variable header
+        //   connack flags
+        byteBuf.writeByte(0b0000_0001);
+        //   reason code (success)
+        byteBuf.writeByte(0x00);
+        //   properties
+        byteBuf.writeByte(11);
+        //     auth method
+        byteBuf.writeBytes(new byte[]{0x15, 0, 7, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
+
+        channel.writeInbound(byteBuf);
+
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+    }
+
+    @Test
+    public void decode_auth_method_length_too_long() {
+        final ByteBuf byteBuf = channel.alloc().buffer();
+        // fixed header
+        //   type, flags
+        byteBuf.writeByte(0b0010_0000);
+        //   remaining length
+        byteBuf.writeByte(14);
+        // variable header
+        //   connack flags
+        byteBuf.writeByte(0b0000_0001);
+        //   reason code (success)
+        byteBuf.writeByte(0x00);
+        //   properties
+        byteBuf.writeByte(11);
+        //     auth method
+        byteBuf.writeBytes(new byte[]{0x15, 0, 9, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
+        // padding, e.g. next message
+        byteBuf.writeByte(0x00);
+
+        channel.writeInbound(byteBuf);
+
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+    }
+
+    @Test
+    public void decode_auth_method_must_not_character() {
+        final ByteBuf byteBuf = channel.alloc().buffer();
+        // fixed header
+        //   type, flags
+        byteBuf.writeByte(0b0010_0000);
+        //   remaining length
+        byteBuf.writeByte(14);
+        // variable header
+        //   connack flags
+        byteBuf.writeByte(0b0000_0001);
+        //   reason code (success)
+        byteBuf.writeByte(0x00);
+        //   properties
+        byteBuf.writeByte(11);
+        //     auth method
+        byteBuf.writeBytes(new byte[]{0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '\0'});
+
+        channel.writeInbound(byteBuf);
+
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+    }
+
+    @Test
+    public void decode_user_property_name_length_too_short() {
+        final ByteBuf byteBuf = channel.alloc().buffer();
+        // fixed header
+        //   type, flags
+        byteBuf.writeByte(0b0010_0000);
+        //   remaining length
+        byteBuf.writeByte(17);
+        // variable header
+        //   connack flags
+        byteBuf.writeByte(0b0000_0001);
+        //   reason code (success)
+        byteBuf.writeByte(0x00);
+        //   properties
+        byteBuf.writeByte(14);
+        //     user properties
+        byteBuf.writeBytes(new byte[]{0x26, 0, 3, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'});
+
+        channel.writeInbound(byteBuf);
+
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+    }
+
+    @Test
+    public void decode_user_property_name_length_too_long() {
+        final ByteBuf byteBuf = channel.alloc().buffer();
+        // fixed header
+        //   type, flags
+        byteBuf.writeByte(0b0010_0000);
+        //   remaining length
+        byteBuf.writeByte(17);
+        // variable header
+        //   connack flags
+        byteBuf.writeByte(0b0000_0001);
+        //   reason code (success)
+        byteBuf.writeByte(0x00);
+        //   properties
+        byteBuf.writeByte(14);
+        //     user properties
+        byteBuf.writeBytes(new byte[]{0x26, 0, 5, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'});
+        // padding, e.g. next message
+        byteBuf.writeByte(0x00);
+
+        channel.writeInbound(byteBuf);
+
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+    }
+
+    @Test
+    public void decode_user_property_name_must_not_character() {
+        final ByteBuf byteBuf = channel.alloc().buffer();
+        // fixed header
+        //   type, flags
+        byteBuf.writeByte(0b0010_0000);
+        //   remaining length
+        byteBuf.writeByte(17);
+        // variable header
+        //   connack flags
+        byteBuf.writeByte(0b0000_0001);
+        //   reason code (success)
+        byteBuf.writeByte(0x00);
+        //   properties
+        byteBuf.writeByte(14);
+        //     user properties
+        byteBuf.writeBytes(new byte[]{0x26, 0, 4, 't', 'e', 's', '\0', 0, 5, 'v', 'a', 'l', 'u', 'e'});
+
+        channel.writeInbound(byteBuf);
+
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+    }
+
+    @Test
+    public void decode_user_property_value_length_too_short() {
+        final ByteBuf byteBuf = channel.alloc().buffer();
+        // fixed header
+        //   type, flags
+        byteBuf.writeByte(0b0010_0000);
+        //   remaining length
+        byteBuf.writeByte(17);
+        // variable header
+        //   connack flags
+        byteBuf.writeByte(0b0000_0001);
+        //   reason code (success)
+        byteBuf.writeByte(0x00);
+        //   properties
+        byteBuf.writeByte(14);
+        //     user properties
+        byteBuf.writeBytes(new byte[]{0x26, 0, 4, 't', 'e', 's', 't', 0, 4, 'v', 'a', 'l', 'u', 'e'});
+
+        channel.writeInbound(byteBuf);
+
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+    }
+
+    @Test
+    public void decode_user_property_value_length_too_long() {
+        final ByteBuf byteBuf = channel.alloc().buffer();
+        // fixed header
+        //   type, flags
+        byteBuf.writeByte(0b0010_0000);
+        //   remaining length
+        byteBuf.writeByte(17);
+        // variable header
+        //   connack flags
+        byteBuf.writeByte(0b0000_0001);
+        //   reason code (success)
+        byteBuf.writeByte(0x00);
+        //   properties
+        byteBuf.writeByte(14);
+        //     user properties
+        byteBuf.writeBytes(new byte[]{0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e'});
+        // padding, e.g. next message
+        byteBuf.writeByte(0x00);
+
+        channel.writeInbound(byteBuf);
+
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+    }
+
+    @Test
+    public void decode_user_property_value_must_not_character() {
+        final ByteBuf byteBuf = channel.alloc().buffer();
+        // fixed header
+        //   type, flags
+        byteBuf.writeByte(0b0010_0000);
+        //   remaining length
+        byteBuf.writeByte(17);
+        // variable header
+        //   connack flags
+        byteBuf.writeByte(0b0000_0001);
+        //   reason code (success)
+        byteBuf.writeByte(0x00);
+        //   properties
+        byteBuf.writeByte(14);
+        //     user properties
+        byteBuf.writeBytes(new byte[]{0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', '\0'});
+
+        channel.writeInbound(byteBuf);
+
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+    }
+
+    @Test
+    public void decode_auth_data_length_too_short() {
+        final ByteBuf byteBuf = channel.alloc().buffer();
+        // fixed header
+        //   type, flags
+        byteBuf.writeByte(0b0010_0000);
+        //   remaining length
+        byteBuf.writeByte(16);
+        // variable header
+        //   connack flags
+        byteBuf.writeByte(0b0000_0001);
+        //   reason code (success)
+        byteBuf.writeByte(0x00);
+        //   properties
+        byteBuf.writeByte(13);
+        //     auth data
+        byteBuf.writeBytes(new byte[]{0x16, 0, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
+
+        channel.writeInbound(byteBuf);
+
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+    }
+
+    @Test
+    public void decode_auth_data_length_too_long() {
+        final ByteBuf byteBuf = channel.alloc().buffer();
+        // fixed header
+        //   type, flags
+        byteBuf.writeByte(0b0010_0000);
+        //   remaining length
+        byteBuf.writeByte(16);
+        // variable header
+        //   connack flags
+        byteBuf.writeByte(0b0000_0001);
+        //   reason code (success)
+        byteBuf.writeByte(0x00);
+        //   properties
+        byteBuf.writeByte(13);
+        //     auth data
+        byteBuf.writeBytes(new byte[]{0x16, 0, 11, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
+        // padding, e.g. next message
+        byteBuf.writeByte(0x00);
+
+        channel.writeInbound(byteBuf);
+
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+    }
+
+    @Test
+    public void decode_defaults() {
+        final ByteBuf byteBuf = channel.alloc().buffer();
+        // fixed header
+        //   type, flags
+        byteBuf.writeByte(0b0010_0000);
+        //   remaining length
+        byteBuf.writeByte(3);
+        // variable header
+        //   connack flags
+        byteBuf.writeByte(0b0000_0001);
+        //   reason code (success)
+        byteBuf.writeByte(0x00);
+        //   properties
+        byteBuf.writeByte(0);
+
+        channel.writeInbound(byteBuf);
+        final Mqtt5ConnAck connAck = channel.readInbound();
+        assertNotNull(connAck);
+
+        assertEquals(0, connAck.getRestrictions().getTopicAliasMaximum());
+        assertEquals(65_535, connAck.getRestrictions().getReceiveMaximum());
+        assertEquals(Mqtt5QoS.EXACTLY_ONCE, connAck.getRestrictions().getMaximumQoS());
+        assertEquals(true, connAck.getRestrictions().isRetainAvailable());
+        assertEquals(true, connAck.getRestrictions().isWildcardSubscriptionAvailable());
+        assertEquals(true, connAck.getRestrictions().isSubscriptionIdentifierAvailable());
+        assertEquals(true, connAck.getRestrictions().isSharedSubscriptionAvailable());
     }
 
     private void testDisconnect(final Mqtt5DisconnectReasonCode reasonCode) {
