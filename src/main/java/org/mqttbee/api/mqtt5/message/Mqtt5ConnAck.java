@@ -3,6 +3,7 @@ package org.mqttbee.api.mqtt5.message;
 import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifier;
+import org.mqttbee.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckReasonCode;
@@ -63,7 +64,7 @@ public interface Mqtt5ConnAck {
         int DEFAULT_RECEIVE_MAXIMUM = 65_535;
         int DEFAULT_TOPIC_ALIAS_MAXIMUM = 0;
         long DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT = Integer.MAX_VALUE;
-        byte DEFAULT_MAXIMUM_QOS = 2;
+        Mqtt5QoS DEFAULT_MAXIMUM_QOS = Mqtt5QoS.EXACTLY_ONCE;
         boolean DEFAULT_RETAIN_AVAILABLE = true;
         boolean DEFAULT_WILDCARD_SUBSCRIPTION_AVAILABLE = true;
         boolean DEFAULT_SUBSCRIPTION_IDENTIFIER_AVAILABLE = true;
@@ -75,7 +76,7 @@ public interface Mqtt5ConnAck {
 
         long getMaximumPacketSize();
 
-        byte getMaximumQoS();
+        Mqtt5QoS getMaximumQoS();
 
         boolean isRetainAvailable();
 

@@ -6,10 +6,7 @@ import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5ConnAck;
-import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifier;
-import org.mqttbee.mqtt5.message.Mqtt5Message;
-import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
+import org.mqttbee.mqtt5.message.*;
 
 import java.util.Optional;
 
@@ -171,7 +168,7 @@ public class Mqtt5ConnAckImpl implements Mqtt5ConnAck, Mqtt5Message {
         private final int receiveMaximum;
         private final int topicAliasMaximum;
         private final long maximumPacketSize;
-        private final byte maximumQoS;
+        private final Mqtt5QoS maximumQoS;
         private final boolean isRetainAvailable;
         private final boolean isWildcardSubscriptionAvailable;
         private final boolean isSubscriptionIdentifierAvailable;
@@ -179,7 +176,7 @@ public class Mqtt5ConnAckImpl implements Mqtt5ConnAck, Mqtt5Message {
 
         public RestrictionsImpl(
                 final int receiveMaximum, final int topicAliasMaximum, final long maximumPacketSize,
-                final byte maximumQoS, final boolean isRetainAvailable, final boolean isWildcardSubscriptionAvailable,
+                final Mqtt5QoS maximumQoS, final boolean isRetainAvailable, final boolean isWildcardSubscriptionAvailable,
                 final boolean isSubscriptionIdentifierAvailable, final boolean isSharedSubscriptionAvailable) {
             this.receiveMaximum = receiveMaximum;
             this.topicAliasMaximum = topicAliasMaximum;
@@ -207,7 +204,7 @@ public class Mqtt5ConnAckImpl implements Mqtt5ConnAck, Mqtt5Message {
         }
 
         @Override
-        public byte getMaximumQoS() {
+        public Mqtt5QoS getMaximumQoS() {
             return maximumQoS;
         }
 
