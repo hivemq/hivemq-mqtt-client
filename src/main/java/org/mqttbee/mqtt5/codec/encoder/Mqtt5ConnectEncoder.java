@@ -45,7 +45,7 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
     public int encodedRemainingLength(@NotNull final Mqtt5ConnectImpl connect) {
         int remainingLength = VARIABLE_HEADER_FIXED_LENGTH;
 
-        remainingLength += connect.getClientIdentifier().encodedLength();
+        remainingLength += connect.getRawClientIdentifier().encodedLength();
 
         final AuthImpl auth = connect.getRawAuth();
         if (auth != AuthImpl.DEFAULT_NO_AUTH) {
@@ -274,7 +274,7 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
     }
 
     private void encodePayload(@NotNull final Mqtt5ConnectImpl connect, @NotNull final ByteBuf out) {
-        connect.getClientIdentifier().to(out);
+        connect.getRawClientIdentifier().to(out);
 
         encodeWillPublish(connect, out);
 

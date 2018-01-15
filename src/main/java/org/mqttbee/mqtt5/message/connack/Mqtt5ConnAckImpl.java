@@ -137,15 +137,15 @@ public class Mqtt5ConnAckImpl implements Mqtt5ConnAck, Mqtt5Message {
         private final Mqtt5UTF8String method;
         private final byte[] data;
 
-        public AuthImpl(@Nullable final Mqtt5UTF8String method, @Nullable final byte[] data) {
+        public AuthImpl(@NotNull final Mqtt5UTF8String method, @Nullable final byte[] data) {
             this.method = method;
             this.data = data;
         }
 
         @NotNull
         @Override
-        public Optional<Mqtt5UTF8String> getMethod() {
-            return Optional.ofNullable(method);
+        public Mqtt5UTF8String getMethod() {
+            return method;
         }
 
         @NotNull
@@ -176,7 +176,8 @@ public class Mqtt5ConnAckImpl implements Mqtt5ConnAck, Mqtt5Message {
 
         public RestrictionsImpl(
                 final int receiveMaximum, final int topicAliasMaximum, final long maximumPacketSize,
-                final Mqtt5QoS maximumQoS, final boolean isRetainAvailable, final boolean isWildcardSubscriptionAvailable,
+                final Mqtt5QoS maximumQoS, final boolean isRetainAvailable,
+                final boolean isWildcardSubscriptionAvailable,
                 final boolean isSubscriptionIdentifierAvailable, final boolean isSharedSubscriptionAvailable) {
             this.receiveMaximum = receiveMaximum;
             this.topicAliasMaximum = topicAliasMaximum;

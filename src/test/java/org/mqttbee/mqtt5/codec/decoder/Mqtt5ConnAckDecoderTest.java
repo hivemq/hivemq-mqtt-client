@@ -135,8 +135,7 @@ public class Mqtt5ConnAckDecoderTest {
 
         assertTrue(connAck.getAuth().isPresent());
         final Mqtt5ConnAck.Auth auth = connAck.getAuth().get();
-        assertTrue(auth.getMethod().isPresent());
-        assertEquals("GS2-KRB5", auth.getMethod().get().toString());
+        assertEquals("GS2-KRB5", auth.getMethod().toString());
         assertTrue(auth.getData().isPresent());
         assertArrayEquals(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, auth.getData().get());
     }
@@ -1450,14 +1449,16 @@ public class Mqtt5ConnAckDecoderTest {
         //   type, flags
         byteBuf.writeByte(0b0010_0000);
         //   remaining length
-        byteBuf.writeByte(16);
+        byteBuf.writeByte(27);
         // variable header
         //   connack flags
         byteBuf.writeByte(0b0000_0001);
         //   reason code (success)
         byteBuf.writeByte(0x00);
         //   properties
-        byteBuf.writeByte(13);
+        byteBuf.writeByte(24);
+        //     auth method
+        byteBuf.writeBytes(new byte[]{0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
         //     auth data
         byteBuf.writeBytes(new byte[]{0x16, 0, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
 
@@ -1473,6 +1474,33 @@ public class Mqtt5ConnAckDecoderTest {
         //   type, flags
         byteBuf.writeByte(0b0010_0000);
         //   remaining length
+        byteBuf.writeByte(27);
+        // variable header
+        //   connack flags
+        byteBuf.writeByte(0b0000_0001);
+        //   reason code (success)
+        byteBuf.writeByte(0x00);
+        //   properties
+        byteBuf.writeByte(24);
+        //     auth method
+        byteBuf.writeBytes(new byte[]{0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
+        //     auth data
+        byteBuf.writeBytes(new byte[]{0x16, 0, 11, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
+        // padding, e.g. next message
+        byteBuf.writeByte(0x00);
+
+        channel.writeInbound(byteBuf);
+
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+    }
+
+    @Test
+    public void decode_must_not_include_authentication_data_without_method() throws Exception {
+        final ByteBuf byteBuf = channel.alloc().buffer();
+        // fixed header
+        //   type, flags
+        byteBuf.writeByte(0b0010_0000);
+        //   remaining length
         byteBuf.writeByte(16);
         // variable header
         //   connack flags
@@ -1482,13 +1510,13 @@ public class Mqtt5ConnAckDecoderTest {
         //   properties
         byteBuf.writeByte(13);
         //     auth data
-        byteBuf.writeBytes(new byte[]{0x16, 0, 11, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
+        byteBuf.writeBytes(new byte[]{0x16, 0, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
         // padding, e.g. next message
         byteBuf.writeByte(0x00);
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR);
     }
 
     @Test

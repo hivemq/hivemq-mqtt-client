@@ -9,16 +9,27 @@ import org.mqttbee.mqtt5.message.pubcomp.Mqtt5PubCompReasonCode;
 import java.util.Optional;
 
 /**
+ * MQTT 5 PUBCOMP packet.
+ *
  * @author Silvio Giebl
  */
 public interface Mqtt5PubComp {
 
+    /**
+     * @return the reason code of this PUBCOMP packet.
+     */
     @NotNull
     Mqtt5PubCompReasonCode getReasonCode();
 
+    /**
+     * @return the optional reason string of this PUBCOMP packet.
+     */
     @NotNull
     Optional<Mqtt5UTF8String> getReasonString();
 
+    /**
+     * @return the optional user properties of this PUBCOMP packet.
+     */
     @NotNull
     ImmutableList<Mqtt5UserProperty> getUserProperties();
 

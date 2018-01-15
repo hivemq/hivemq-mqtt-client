@@ -103,7 +103,6 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
         Mqtt5UTF8String reasonString = null;
         ImmutableList.Builder<Mqtt5UserProperty> userPropertiesBuilder = null;
 
-        boolean authPresent = false;
         boolean restrictionsPresent = false;
 
         while (in.isReadable()) {
@@ -150,7 +149,6 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                     if (authenticationMethod == null) {
                         return null;
                     }
-                    authPresent = true;
                     break;
 
                 case Mqtt5ConnAckProperty.AUTHENTICATION_DATA:
@@ -159,7 +157,6 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                     if (authenticationData == null) {
                         return null;
                     }
-                    authPresent = true;
                     break;
 
                 case Mqtt5ConnAckProperty.RECEIVE_MAXIMUM:
@@ -307,8 +304,13 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
         }
 
         AuthImpl auth = AuthImpl.DEFAULT_NO_AUTH;
-        if (authPresent) {
+        if (authenticationMethod != null) {
             auth = new AuthImpl(authenticationMethod, authenticationData);
+        } else if (authenticationData != null) {
+            disconnect(
+                    Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+                    "authentication data must not be included if authentication method is absent", channel, in);
+            return null;
         }
 
         RestrictionsImpl restrictions = RestrictionsImpl.DEFAULT;
