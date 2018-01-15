@@ -11,6 +11,7 @@ import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5Topic;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
+import org.mqttbee.mqtt5.message.auth.Mqtt5ExtendedAuthImpl;
 import org.mqttbee.mqtt5.message.connect.Mqtt5ConnectImpl;
 import org.mqttbee.mqtt5.message.connect.Mqtt5ConnectProperty;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
@@ -47,13 +48,13 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
 
         remainingLength += connect.getRawClientIdentifier().encodedLength();
 
-        final AuthImpl auth = connect.getRawAuth();
-        if (auth != AuthImpl.DEFAULT_NO_AUTH) {
-            final Mqtt5UTF8String username = auth.getRawUsername();
+        final SimpleAuthImpl simpleAuth = connect.getRawSimpleAuth();
+        if (simpleAuth != null) {
+            final Mqtt5UTF8String username = simpleAuth.getRawUsername();
             if (username != null) {
                 remainingLength += username.encodedLength();
             }
-            final byte[] password = auth.getRawPassword();
+            final byte[] password = simpleAuth.getRawPassword();
             if (password != null) {
                 if (!Mqtt5DataTypes.isInBinaryDataRange(password)) {
                     throw new Mqtt5BinaryDataExceededException("password");
@@ -110,13 +111,11 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
             }
         }
 
-        final AuthImpl auth = connect.getRawAuth();
-        if (auth != AuthImpl.DEFAULT_NO_AUTH) {
-            final Mqtt5UTF8String method = auth.getRawMethod();
-            if (method != null) {
-                propertyLength += 1 + method.encodedLength();
-            }
-            final byte[] data = auth.getRawData();
+        final Mqtt5ExtendedAuthImpl extendedAuth = connect.getRawExtendedAuth();
+        if (extendedAuth != null) {
+            propertyLength += 1 + extendedAuth.getMethod().encodedLength();
+
+            final byte[] data = extendedAuth.getRawData();
             if (data != null) {
                 if (!Mqtt5DataTypes.isInBinaryDataRange(data)) {
                     throw new Mqtt5BinaryDataExceededException("authentication data");
@@ -185,12 +184,12 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
 
         int connectFlags = 0;
 
-        final AuthImpl auth = connect.getRawAuth();
-        if (auth != AuthImpl.DEFAULT_NO_AUTH) {
-            if (auth.getRawUsername() != null) {
+        final SimpleAuthImpl simpleAuth = connect.getRawSimpleAuth();
+        if (simpleAuth != null) {
+            if (simpleAuth.getRawUsername() != null) {
                 connectFlags |= 0b1000_0000;
             }
-            if (auth.getRawPassword() != null) {
+            if (simpleAuth.getRawPassword() != null) {
                 connectFlags |= 0b0100_0000;
             }
         }
@@ -237,14 +236,12 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
             out.writeByte(NOT_DEFAULT_PROBLEM_INFORMATION_REQUESTED);
         }
 
-        final AuthImpl auth = connect.getRawAuth();
-        if (auth != AuthImpl.DEFAULT_NO_AUTH) {
-            final Mqtt5UTF8String method = auth.getRawMethod();
-            if (method != null) {
-                out.writeByte(Mqtt5ConnectProperty.AUTHENTICATION_METHOD);
-                method.to(out);
-            }
-            final byte[] data = auth.getRawData();
+        final Mqtt5ExtendedAuthImpl extendedAuth = connect.getRawExtendedAuth();
+        if (extendedAuth != null) {
+            out.writeByte(Mqtt5ConnectProperty.AUTHENTICATION_METHOD);
+            extendedAuth.getMethod().to(out);
+
+            final byte[] data = extendedAuth.getRawData();
             if (data != null) {
                 out.writeByte(Mqtt5ConnectProperty.AUTHENTICATION_DATA);
                 Mqtt5DataTypes.encodeBinaryData(data, out);
@@ -278,13 +275,13 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
 
         encodeWillPublish(connect, out);
 
-        final AuthImpl auth = connect.getRawAuth();
-        if (auth != AuthImpl.DEFAULT_NO_AUTH) {
-            final Mqtt5UTF8String username = auth.getRawUsername();
+        final SimpleAuthImpl simpleAuth = connect.getRawSimpleAuth();
+        if (simpleAuth != null) {
+            final Mqtt5UTF8String username = simpleAuth.getRawUsername();
             if (username != null) {
                 username.to(out);
             }
-            final byte[] password = auth.getRawPassword();
+            final byte[] password = simpleAuth.getRawPassword();
             if (password != null) {
                 Mqtt5DataTypes.encodeBinaryData(password, out);
             }

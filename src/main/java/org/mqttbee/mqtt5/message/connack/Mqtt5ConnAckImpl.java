@@ -6,6 +6,7 @@ import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5ConnAck;
+import org.mqttbee.api.mqtt5.message.Mqtt5ExtendedAuth;
 import org.mqttbee.mqtt5.message.*;
 
 import java.util.Optional;
@@ -25,7 +26,7 @@ public class Mqtt5ConnAckImpl implements Mqtt5ConnAck, Mqtt5Message {
     private final long sessionExpiryInterval;
     private final int serverKeepAlive;
     private final Mqtt5ClientIdentifier assignedClientIdentifier;
-    private final AuthImpl auth;
+    private final Mqtt5ExtendedAuth extendedAuth;
     private final RestrictionsImpl restrictions;
     private final Mqtt5UTF8String responseInformation;
     private final Mqtt5UTF8String serverReference;
@@ -35,16 +36,17 @@ public class Mqtt5ConnAckImpl implements Mqtt5ConnAck, Mqtt5Message {
     public Mqtt5ConnAckImpl(
             @NotNull final Mqtt5ConnAckReasonCode reasonCode, final boolean isSessionPresent,
             final long sessionExpiryInterval, final int serverKeepAlive,
-            @Nullable final Mqtt5ClientIdentifier assignedClientIdentifier, @Nullable final AuthImpl auth,
-            @NotNull final RestrictionsImpl restrictions, @Nullable final Mqtt5UTF8String responseInformation,
-            @Nullable final Mqtt5UTF8String serverReference, @Nullable final Mqtt5UTF8String reasonString,
+            @Nullable final Mqtt5ClientIdentifier assignedClientIdentifier,
+            @Nullable final Mqtt5ExtendedAuth extendedAuth, @NotNull final RestrictionsImpl restrictions,
+            @Nullable final Mqtt5UTF8String responseInformation, @Nullable final Mqtt5UTF8String serverReference,
+            @Nullable final Mqtt5UTF8String reasonString,
             @NotNull final ImmutableList<Mqtt5UserProperty> userProperties) {
         this.reasonCode = reasonCode;
         this.isSessionPresent = isSessionPresent;
         this.sessionExpiryInterval = sessionExpiryInterval;
         this.serverKeepAlive = serverKeepAlive;
         this.assignedClientIdentifier = assignedClientIdentifier;
-        this.auth = auth;
+        this.extendedAuth = extendedAuth;
         this.restrictions = restrictions;
         this.responseInformation = responseInformation;
         this.serverReference = serverReference;
@@ -84,8 +86,8 @@ public class Mqtt5ConnAckImpl implements Mqtt5ConnAck, Mqtt5Message {
 
     @NotNull
     @Override
-    public Optional<Auth> getAuth() {
-        return Optional.ofNullable(auth);
+    public Optional<Mqtt5ExtendedAuth> getExtendedAuth() {
+        return Optional.ofNullable(extendedAuth);
     }
 
     @NotNull
@@ -129,34 +131,6 @@ public class Mqtt5ConnAckImpl implements Mqtt5ConnAck, Mqtt5Message {
     }
 
 
-    public static class AuthImpl implements Auth {
-
-        @Nullable
-        public static final AuthImpl DEFAULT_NO_AUTH = null;
-
-        private final Mqtt5UTF8String method;
-        private final byte[] data;
-
-        public AuthImpl(@NotNull final Mqtt5UTF8String method, @Nullable final byte[] data) {
-            this.method = method;
-            this.data = data;
-        }
-
-        @NotNull
-        @Override
-        public Mqtt5UTF8String getMethod() {
-            return method;
-        }
-
-        @NotNull
-        @Override
-        public Optional<byte[]> getData() {
-            return Optional.ofNullable(data);
-        }
-
-    }
-
-
     public static class RestrictionsImpl implements Restrictions {
 
         @NotNull
@@ -177,8 +151,8 @@ public class Mqtt5ConnAckImpl implements Mqtt5ConnAck, Mqtt5Message {
         public RestrictionsImpl(
                 final int receiveMaximum, final int topicAliasMaximum, final long maximumPacketSize,
                 final Mqtt5QoS maximumQoS, final boolean isRetainAvailable,
-                final boolean isWildcardSubscriptionAvailable,
-                final boolean isSubscriptionIdentifierAvailable, final boolean isSharedSubscriptionAvailable) {
+                final boolean isWildcardSubscriptionAvailable, final boolean isSubscriptionIdentifierAvailable,
+                final boolean isSharedSubscriptionAvailable) {
             this.receiveMaximum = receiveMaximum;
             this.topicAliasMaximum = topicAliasMaximum;
             this.maximumPacketSize = maximumPacketSize;

@@ -79,7 +79,7 @@ public class Mqtt5ConnectEncoderTest {
         final Mqtt5ClientIdentifier username = Mqtt5ClientIdentifier.from("username");
         assertNotNull(username);
         final byte[] password = {1, 5, 6, 3};
-        final Mqtt5ConnectImpl.AuthImpl auth = new Mqtt5ConnectImpl.AuthImpl(username, password, null, null);
+        final Mqtt5ConnectImpl.SimpleAuthImpl simpleAuth = new Mqtt5ConnectImpl.SimpleAuthImpl(username, password);
 
         final Mqtt5Topic willTopic = Mqtt5Topic.from("topic");
         assertNotNull(willTopic);
@@ -94,7 +94,7 @@ public class Mqtt5ConnectEncoderTest {
 
         final Mqtt5ConnectImpl connect = new Mqtt5ConnectImpl(
                 clientIdentifier, 10, true, 10, false, true,
-                Mqtt5ConnectImpl.RestrictionsImpl.DEFAULT, auth, willPublish, userProperties);
+                Mqtt5ConnectImpl.RestrictionsImpl.DEFAULT, simpleAuth, null, willPublish, userProperties);
 
         channel.writeOutbound(connect);
         final ByteBuf byteBuf = channel.readOutbound();

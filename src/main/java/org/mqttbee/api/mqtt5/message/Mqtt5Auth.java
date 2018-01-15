@@ -13,25 +13,13 @@ import java.util.Optional;
  *
  * @author Silvio Giebl
  */
-public interface Mqtt5Auth {
+public interface Mqtt5Auth extends Mqtt5ExtendedAuth {
 
     /**
      * @return the reason code of this AUTH packet.
      */
     @NotNull
     Mqtt5AuthReasonCode getReasonCode();
-
-    /**
-     * @return the authentication/authorization method of this AUTH packet.
-     */
-    @NotNull
-    Mqtt5UTF8String getMethod();
-
-    /**
-     * @return the optional authentication/authorization data of this AUTH packet.
-     */
-    @NotNull
-    Optional<byte[]> getData();
 
     /**
      * @return the optional reason string of this AUTH packet.
