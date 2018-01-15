@@ -9,22 +9,39 @@ import org.mqttbee.mqtt5.message.auth.Mqtt5AuthReasonCode;
 import java.util.Optional;
 
 /**
+ * MQTT 5 AUTH packet.
+ *
  * @author Silvio Giebl
  */
 public interface Mqtt5Auth {
 
+    /**
+     * @return the reason code of this AUTH packet.
+     */
     @NotNull
     Mqtt5AuthReasonCode getReasonCode();
 
+    /**
+     * @return the authentication/authorization method of this AUTH packet.
+     */
     @NotNull
     Mqtt5UTF8String getMethod();
 
+    /**
+     * @return the optional authentication/authorization data of this AUTH packet.
+     */
     @NotNull
     Optional<byte[]> getData();
 
+    /**
+     * @return the optional reason string of this AUTH packet.
+     */
     @NotNull
     Optional<Mqtt5UTF8String> getReasonString();
 
+    /**
+     * @return the optional user properties of this AUTH packet.
+     */
     @NotNull
     ImmutableList<Mqtt5UserProperty> getUserProperties();
 

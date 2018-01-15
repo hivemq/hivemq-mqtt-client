@@ -56,7 +56,13 @@ public class Mqtt5ConnectImpl extends Mqtt5Message.Mqtt5MessageWithProperties im
 
     @NotNull
     @Override
-    public Mqtt5ClientIdentifier getClientIdentifier() {
+    public Optional<Mqtt5ClientIdentifier> getClientIdentifier() {
+        return clientIdentifier == Mqtt5ClientIdentifier.REQUEST_CLIENT_IDENTIFIER_FROM_SERVER ? Optional.empty() :
+                Optional.of(clientIdentifier);
+    }
+
+    @NotNull
+    public Mqtt5ClientIdentifier getRawClientIdentifier() {
         return clientIdentifier;
     }
 
