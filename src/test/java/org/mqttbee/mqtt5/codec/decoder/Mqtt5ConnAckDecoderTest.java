@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5ConnAck;
 import org.mqttbee.api.mqtt5.message.Mqtt5Disconnect;
+import org.mqttbee.api.mqtt5.message.Mqtt5ExtendedAuth;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
@@ -133,8 +134,8 @@ public class Mqtt5ConnAckDecoderTest {
         assertEquals(true, restrictions.isSubscriptionIdentifierAvailable());
         assertEquals(false, restrictions.isSharedSubscriptionAvailable());
 
-        assertTrue(connAck.getAuth().isPresent());
-        final Mqtt5ConnAck.Auth auth = connAck.getAuth().get();
+        assertTrue(connAck.getExtendedAuth().isPresent());
+        final Mqtt5ExtendedAuth auth = connAck.getExtendedAuth().get();
         assertEquals("GS2-KRB5", auth.getMethod().toString());
         assertTrue(auth.getData().isPresent());
         assertArrayEquals(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, auth.getData().get());

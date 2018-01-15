@@ -49,10 +49,10 @@ public interface Mqtt5ConnAck {
     Optional<Mqtt5ClientIdentifier> getAssignedClientIdentifier();
 
     /**
-     * @return the optional authentication and/or authorization related data of this CONNACK packet.
+     * @return the optional extended authentication and/or authorization related data of this CONNACK packet.
      */
     @NotNull
-    Optional<Auth> getAuth();
+    Optional<Mqtt5ExtendedAuth> getExtendedAuth();
 
     /**
      * @return the restrictions set from the server.
@@ -83,26 +83,6 @@ public interface Mqtt5ConnAck {
      */
     @NotNull
     ImmutableList<Mqtt5UserProperty> getUserProperties();
-
-
-    /**
-     * Authentication and/or authorization related data in the CONNACK packet.
-     */
-    interface Auth {
-
-        /**
-         * @return the authentication/authorization method.
-         */
-        @NotNull
-        Mqtt5UTF8String getMethod();
-
-        /**
-         * @return the optional authentication/authorization data.
-         */
-        @NotNull
-        Optional<byte[]> getData();
-
-    }
 
 
     /**

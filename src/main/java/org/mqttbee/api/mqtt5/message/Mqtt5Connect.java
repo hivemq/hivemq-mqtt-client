@@ -63,10 +63,16 @@ public interface Mqtt5Connect {
     Restrictions getRestrictions();
 
     /**
-     * @return the optional authentication and/or authorization related data of this CONNECT packet.
+     * @return the optional simple authentication and/or authorization related data of this CONNECT packet.
      */
     @NotNull
-    Optional<Auth> getAuth();
+    Optional<SimpleAuth> getSimpleAuth();
+
+    /**
+     * @return the optional extended authentication and/or authorization related data of this CONNECT packet.
+     */
+    @NotNull
+    Optional<Mqtt5ExtendedAuth> getExtendedAuth();
 
     /**
      * @return the optional Will Publish of this CONNECT packet.
@@ -82,9 +88,9 @@ public interface Mqtt5Connect {
 
 
     /**
-     * Authentication and/or authorization related data in the CONNECT packet.
+     * Simple authentication and/or authorization related data in the CONNECT packet.
      */
-    interface Auth {
+    interface SimpleAuth {
 
         /**
          * @return the optional username.
@@ -97,18 +103,6 @@ public interface Mqtt5Connect {
          */
         @NotNull
         Optional<byte[]> getPassword();
-
-        /**
-         * @return the authentication/authorization method.
-         */
-        @NotNull
-        Optional<Mqtt5UTF8String> getMethod();
-
-        /**
-         * @return the optional authentication/authorization data.
-         */
-        @NotNull
-        Optional<byte[]> getData();
 
     }
 

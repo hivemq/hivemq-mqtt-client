@@ -6,11 +6,13 @@ import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5Connect;
+import org.mqttbee.api.mqtt5.message.Mqtt5ExtendedAuth;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5ConnectEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifier;
 import org.mqttbee.mqtt5.message.Mqtt5Message;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
+import org.mqttbee.mqtt5.message.auth.Mqtt5ExtendedAuthImpl;
 import org.mqttbee.mqtt5.message.publish.Mqtt5WillPublishImpl;
 
 import java.util.Optional;
@@ -30,7 +32,8 @@ public class Mqtt5ConnectImpl extends Mqtt5Message.Mqtt5MessageWithProperties im
     private final boolean isResponseInformationRequested;
     private final boolean isProblemInformationRequested;
     private final RestrictionsImpl restrictions;
-    private final AuthImpl auth;
+    private final SimpleAuthImpl simpleAuth;
+    private final Mqtt5ExtendedAuthImpl extendedAuth;
     private final Mqtt5WillPublishImpl willPublish;
     private final ImmutableList<Mqtt5UserProperty> userProperties;
 
@@ -40,7 +43,8 @@ public class Mqtt5ConnectImpl extends Mqtt5Message.Mqtt5MessageWithProperties im
             @NotNull final Mqtt5ClientIdentifier clientIdentifier, final int keepAlive, final boolean isCleanStart,
             final long sessionExpiryInterval, final boolean isResponseInformationRequested,
             final boolean isProblemInformationRequested, @NotNull final RestrictionsImpl restrictions,
-            @Nullable final AuthImpl auth, @Nullable final Mqtt5WillPublishImpl willPublish,
+            @Nullable final SimpleAuthImpl simpleAuth, @Nullable final Mqtt5ExtendedAuthImpl extendedAuth,
+            @Nullable final Mqtt5WillPublishImpl willPublish,
             @NotNull final ImmutableList<Mqtt5UserProperty> userProperties) {
         this.clientIdentifier = clientIdentifier;
         this.keepAlive = keepAlive;
@@ -49,7 +53,8 @@ public class Mqtt5ConnectImpl extends Mqtt5Message.Mqtt5MessageWithProperties im
         this.isResponseInformationRequested = isResponseInformationRequested;
         this.isProblemInformationRequested = isProblemInformationRequested;
         this.restrictions = restrictions;
-        this.auth = auth;
+        this.simpleAuth = simpleAuth;
+        this.extendedAuth = extendedAuth;
         this.willPublish = willPublish;
         this.userProperties = userProperties;
     }
@@ -104,13 +109,24 @@ public class Mqtt5ConnectImpl extends Mqtt5Message.Mqtt5MessageWithProperties im
 
     @NotNull
     @Override
-    public Optional<Auth> getAuth() {
-        return Optional.ofNullable(auth);
+    public Optional<SimpleAuth> getSimpleAuth() {
+        return Optional.ofNullable(simpleAuth);
     }
 
     @Nullable
-    public AuthImpl getRawAuth() {
-        return auth;
+    public SimpleAuthImpl getRawSimpleAuth() {
+        return simpleAuth;
+    }
+
+    @NotNull
+    @Override
+    public Optional<Mqtt5ExtendedAuth> getExtendedAuth() {
+        return Optional.ofNullable(extendedAuth);
+    }
+
+    @Nullable
+    public Mqtt5ExtendedAuthImpl getRawExtendedAuth() {
+        return extendedAuth;
     }
 
     @NotNull
@@ -153,23 +169,14 @@ public class Mqtt5ConnectImpl extends Mqtt5Message.Mqtt5MessageWithProperties im
     }
 
 
-    public static class AuthImpl implements Auth {
-
-        @Nullable
-        public static final AuthImpl DEFAULT_NO_AUTH = null;
+    public static class SimpleAuthImpl implements SimpleAuth {
 
         private final Mqtt5UTF8String username;
         private final byte[] password;
-        private final Mqtt5UTF8String method;
-        private final byte[] data;
 
-        public AuthImpl(
-                @Nullable final Mqtt5UTF8String username, @Nullable final byte[] password,
-                @Nullable final Mqtt5UTF8String method, @Nullable final byte[] data) {
+        public SimpleAuthImpl(@Nullable final Mqtt5UTF8String username, @Nullable final byte[] password) {
             this.username = username;
             this.password = password;
-            this.method = method;
-            this.data = data;
         }
 
         @NotNull
@@ -192,28 +199,6 @@ public class Mqtt5ConnectImpl extends Mqtt5Message.Mqtt5MessageWithProperties im
         @Nullable
         public byte[] getRawPassword() {
             return password;
-        }
-
-        @NotNull
-        @Override
-        public Optional<Mqtt5UTF8String> getMethod() {
-            return Optional.ofNullable(method);
-        }
-
-        @Nullable
-        public Mqtt5UTF8String getRawMethod() {
-            return method;
-        }
-
-        @NotNull
-        @Override
-        public Optional<byte[]> getData() {
-            return Optional.ofNullable(data);
-        }
-
-        @Nullable
-        public byte[] getRawData() {
-            return data;
         }
 
     }
