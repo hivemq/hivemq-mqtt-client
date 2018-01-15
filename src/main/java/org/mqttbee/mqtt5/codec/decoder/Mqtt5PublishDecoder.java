@@ -42,6 +42,10 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
             disconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "wrong QoS", channel, in);
             return null;
         }
+        if ((qos == Mqtt5QoS.AT_MOST_ONCE) && dup) {
+            disconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "DUP flag must be 0 if QoS is 0", channel, in);
+            return null;
+        }
 
         final Mqtt5Topic topic = Mqtt5Topic.from(in);
         if (topic == null) {
