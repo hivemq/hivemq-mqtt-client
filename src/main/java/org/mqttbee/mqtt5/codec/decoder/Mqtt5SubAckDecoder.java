@@ -94,7 +94,7 @@ public class Mqtt5SubAckDecoder implements Mqtt5MessageDecoder {
         final int reasonCodeCount = in.readableBytes();
         if (reasonCodeCount == 0) {
             disconnect(
-                    Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "SUBACK must contain at least one reason code", channel,
+                    Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "SUBACK must contain at least one reason code", channel,
                     in);
         }
 
