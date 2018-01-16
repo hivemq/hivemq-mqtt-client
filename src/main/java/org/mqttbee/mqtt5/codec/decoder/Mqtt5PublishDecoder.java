@@ -135,7 +135,8 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
                     }
                     responseTopic = Mqtt5Topic.from(in);
                     if (responseTopic == null) {
-                        disconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "malformed response topic", channel, in);
+                        disconnect(
+                                Mqtt5DisconnectReasonCode.TOPIC_NAME_INVALID, "malformed response topic", channel, in);
                         return null;
                     }
                     break;
@@ -160,7 +161,9 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
                     }
                     topicAlias = in.readUnsignedShort();
                     if (topicAlias == 0) {
-                        disconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "topic alias must not be 0", channel, in);
+                        disconnect(
+                                Mqtt5DisconnectReasonCode.TOPIC_ALIAS_INVALID, "topic alias must not be 0", channel,
+                                in);
                         return null;
                     }
                     topicAliasUse = TopicAliasUse.HAS;
@@ -231,11 +234,13 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
             payload = new byte[payloadLength];
             in.readBytes(payload);
 
-            if (payloadFormatIndicator != null) {
+            if (payloadFormatIndicator == Mqtt5PayloadFormatIndicator.UTF_8) {
                 final Boolean validatePayloadFormat = channel.attr(ChannelAttributes.VALIDATE_PAYLOAD_FORMAT).get();
                 if ((validatePayloadFormat != null) && validatePayloadFormat) {
                     if (!Utf8.isWellFormed(payload)) {
-                        disconnectMalformedUTF8String("payload", channel, in);
+                        disconnect(
+                                Mqtt5DisconnectReasonCode.PAYLOAD_FORMAT_INVALID, "payload is not valid UTF-8", channel,
+                                in);
                         return null;
                     }
                 }
