@@ -119,12 +119,12 @@ public interface Mqtt5Connect {
         /**
          * The default maximum amount of topic aliases the client accepts from the server.
          */
-        long DEFAULT_TOPIC_ALIAS_MAXIMUM = 0;
+        int DEFAULT_TOPIC_ALIAS_MAXIMUM = 0;
         /**
          * The default maximum packet size the client accepts from the server which indicates that the packet size is
          * not limited beyond the restrictions of the encoding.
          */
-        int DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT = Integer.MAX_VALUE;
+        long DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT = Integer.MAX_VALUE;
 
         /**
          * @return the maximum amount of not acknowledged publishes with QoS 1 or 2 the client accepts concurrently. The
@@ -136,13 +136,13 @@ public interface Mqtt5Connect {
          * @return the maximum amount of topic aliases the client accepts from the server. The default is {@link
          * #DEFAULT_TOPIC_ALIAS_MAXIMUM}.
          */
-        long getTopicAliasMaximum();
+        int getTopicAliasMaximum();
 
         /**
          * @return the maximum packet size the client accepts from the server. The default is {@link
          * #DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT}.
          */
-        int getMaximumPacketSize();
+        long getMaximumPacketSize();
 
     }
 

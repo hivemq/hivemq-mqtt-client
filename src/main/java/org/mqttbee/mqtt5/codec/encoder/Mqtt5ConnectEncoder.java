@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.message.Mqtt5WillPublish;
+import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.exceptions.Mqtt5BinaryDataExceededException;
 import org.mqttbee.mqtt5.exceptions.Mqtt5VariableByteIntegerExceededException;
@@ -39,7 +40,7 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
             @NotNull final Mqtt5ConnectImpl connect, @NotNull final Channel channel, @NotNull final ByteBuf out) {
 
         encodeFixedHeader(connect, out);
-        encodeVariableHeader(connect, out);
+        encodeVariableHeader(connect, out, channel);
         encodePayload(connect, out);
     }
 
@@ -103,11 +104,11 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
             if (restrictions.getReceiveMaximum() != Restrictions.DEFAULT_RECEIVE_MAXIMUM) {
                 propertyLength += 3;
             }
-            if (restrictions.getMaximumPacketSize() != Restrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT) {
-                propertyLength += 5;
-            }
             if (restrictions.getTopicAliasMaximum() != Restrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM) {
                 propertyLength += 3;
+            }
+            if (restrictions.getMaximumPacketSize() != Restrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT) {
+                propertyLength += 5;
             }
         }
 
@@ -178,7 +179,9 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
         Mqtt5DataTypes.encodeVariableByteInteger(connect.encodedRemainingLength(), out);
     }
 
-    private void encodeVariableHeader(@NotNull final Mqtt5ConnectImpl connect, @NotNull final ByteBuf out) {
+    private void encodeVariableHeader(
+            @NotNull final Mqtt5ConnectImpl connect, @NotNull final ByteBuf out, @NotNull final Channel channel) {
+
         Mqtt5UTF8String.PROTOCOL_NAME.to(out);
         out.writeByte(PROTOCOL_VERSION);
 
@@ -211,10 +214,12 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
 
         out.writeShort(connect.getKeepAlive());
 
-        encodeProperties(connect, out);
+        encodeProperties(connect, out, channel);
     }
 
-    private void encodeProperties(@NotNull final Mqtt5ConnectImpl connect, @NotNull final ByteBuf out) {
+    private void encodeProperties(
+            @NotNull final Mqtt5ConnectImpl connect, @NotNull final ByteBuf out, @NotNull final Channel channel) {
+
         final int propertyLength = connect.encodedPropertyLength();
         Mqtt5DataTypes.encodeVariableByteInteger(propertyLength, out);
 
@@ -254,16 +259,20 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
             if (receiveMaximum != Restrictions.DEFAULT_RECEIVE_MAXIMUM) {
                 out.writeByte(Mqtt5ConnectProperty.RECEIVE_MAXIMUM);
                 out.writeShort(receiveMaximum);
+                channel.attr(ChannelAttributes.INCOMING_RECEIVE_MAXIMUM).set(receiveMaximum);
             }
-            final long topicAliasMaximum = restrictions.getTopicAliasMaximum();
+            final int topicAliasMaximum = restrictions.getTopicAliasMaximum();
             if (topicAliasMaximum != Restrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM) {
                 out.writeByte(Mqtt5ConnectProperty.TOPIC_ALIAS_MAXIMUM);
-                out.writeInt((int) topicAliasMaximum);
+                out.writeShort(topicAliasMaximum);
+                channel.attr(ChannelAttributes.INCOMING_TOPIC_ALIAS_MAPPING)
+                        .set(new Mqtt5Topic[topicAliasMaximum]);
             }
-            final int maximumPacketSize = restrictions.getMaximumPacketSize();
+            final long maximumPacketSize = restrictions.getMaximumPacketSize();
             if (maximumPacketSize != Restrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT) {
                 out.writeByte(Mqtt5ConnectProperty.MAXIMUM_PACKET_SIZE);
-                out.writeShort(maximumPacketSize);
+                out.writeInt((int) maximumPacketSize);
+                channel.attr(ChannelAttributes.INCOMING_MAXIMUM_PACKET_SIZE).set(maximumPacketSize);
             }
         }
 

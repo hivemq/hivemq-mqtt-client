@@ -4,7 +4,6 @@ import com.google.common.primitives.ImmutableIntArray;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt5.message.Mqtt5Publish;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.exceptions.Mqtt5BinaryDataExceededException;
 import org.mqttbee.mqtt5.exceptions.Mqtt5VariableByteIntegerExceededException;
@@ -15,6 +14,9 @@ import org.mqttbee.mqtt5.message.publish.Mqtt5PublishInternal;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishProperty;
 
 import javax.inject.Singleton;
+
+import static org.mqttbee.api.mqtt5.message.Mqtt5Publish.DEFAULT_MESSAGE_EXPIRY_INTERVAL_INFINITY;
+import static org.mqttbee.mqtt5.message.publish.Mqtt5PublishInternal.DEFAULT_NO_TOPIC_ALIAS;
 
 /**
  * @author Silvio Giebl
@@ -41,7 +43,11 @@ public class Mqtt5PublishEncoder implements Mqtt5MessageEncoder<Mqtt5PublishInte
 
         int remainingLength = 0;
 
-        remainingLength += publish.getTopic().encodedLength();
+        if ((publishInternal.getTopicAlias() == DEFAULT_NO_TOPIC_ALIAS) || (publishInternal.isNewTopicAlias())) {
+            remainingLength += publish.getTopic().encodedLength();
+        } else {
+            remainingLength += 2;
+        }
 
         if (publish.getQos() != Mqtt5QoS.AT_MOST_ONCE) {
             remainingLength += 2;
@@ -66,7 +72,7 @@ public class Mqtt5PublishEncoder implements Mqtt5MessageEncoder<Mqtt5PublishInte
 
         int propertyLength = 0;
 
-        if (publish.getMessageExpiryInterval() != Mqtt5Publish.DEFAULT_MESSAGE_EXPIRY_INTERVAL_INFINITY) {
+        if (publish.getMessageExpiryInterval() != DEFAULT_MESSAGE_EXPIRY_INTERVAL_INFINITY) {
             propertyLength += 5;
         }
 
@@ -94,7 +100,7 @@ public class Mqtt5PublishEncoder implements Mqtt5MessageEncoder<Mqtt5PublishInte
 
         propertyLength += Mqtt5UserProperty.encodedLength(publish.getUserProperties());
 
-        if (publishInternal.getTopicAlias() != Mqtt5PublishInternal.DEFAULT_NO_TOPIC_ALIAS) {
+        if (publishInternal.getTopicAlias() != DEFAULT_NO_TOPIC_ALIAS) {
             propertyLength += 3;
         }
 
@@ -130,7 +136,11 @@ public class Mqtt5PublishEncoder implements Mqtt5MessageEncoder<Mqtt5PublishInte
     private void encodeVariableHeader(@NotNull final Mqtt5PublishInternal publishInternal, @NotNull final ByteBuf out) {
         final Mqtt5PublishImpl publish = publishInternal.getPublish();
 
-        publish.getTopic().to(out);
+        if ((publishInternal.getTopicAlias() == DEFAULT_NO_TOPIC_ALIAS) || (publishInternal.isNewTopicAlias())) {
+            publish.getTopic().to(out);
+        } else {
+            out.writeShort(0);
+        }
 
         if (publish.getQos() != Mqtt5QoS.AT_MOST_ONCE) {
             out.writeShort(publishInternal.getPacketIdentifier());
@@ -146,7 +156,7 @@ public class Mqtt5PublishEncoder implements Mqtt5MessageEncoder<Mqtt5PublishInte
         Mqtt5DataTypes.encodeVariableByteInteger(propertyLength, out);
 
         final long messageExpiryInterval = publish.getMessageExpiryInterval();
-        if (messageExpiryInterval != Mqtt5Publish.DEFAULT_MESSAGE_EXPIRY_INTERVAL_INFINITY) {
+        if (messageExpiryInterval != DEFAULT_MESSAGE_EXPIRY_INTERVAL_INFINITY) {
             out.writeByte(Mqtt5PublishProperty.MESSAGE_EXPIRY_INTERVAL);
             out.writeInt((int) messageExpiryInterval);
         }
@@ -178,7 +188,7 @@ public class Mqtt5PublishEncoder implements Mqtt5MessageEncoder<Mqtt5PublishInte
         Mqtt5UserProperty.encode(publish.getUserProperties(), out);
 
         final int topicAlias = publishInternal.getTopicAlias();
-        if (topicAlias != Mqtt5PublishInternal.DEFAULT_NO_TOPIC_ALIAS) {
+        if (topicAlias != DEFAULT_NO_TOPIC_ALIAS) {
             out.writeByte(Mqtt5PublishProperty.TOPIC_ALIAS);
             out.writeShort(topicAlias);
         }
