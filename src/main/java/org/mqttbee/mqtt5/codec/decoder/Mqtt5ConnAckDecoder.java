@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifier;
 import org.mqttbee.mqtt5.message.Mqtt5QoS;
@@ -15,6 +16,7 @@ import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckImpl;
 import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckProperty;
 import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckReasonCode;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
+import org.mqttbee.mqtt5.message.publish.Mqtt5TopicAliasMapping;
 
 import javax.inject.Singleton;
 
@@ -171,7 +173,10 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                         return null;
                     }
                     receiveMaximumPresent = true;
-                    restrictionsPresent = true;
+                    if (receiveMaximum != Restrictions.DEFAULT_RECEIVE_MAXIMUM) {
+                        restrictionsPresent = true;
+                        channel.attr(ChannelAttributes.OUTGOING_RECEIVE_MAXIMUM).set(receiveMaximum);
+                    }
                     break;
 
                 case Mqtt5ConnAckProperty.TOPIC_ALIAS_MAXIMUM:
@@ -180,7 +185,11 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                     }
                     topicAliasMaximum = in.readUnsignedShort();
                     topicAliasMaximumPresent = true;
-                    restrictionsPresent = true;
+                    if (topicAliasMaximum != Restrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM) {
+                        restrictionsPresent = true;
+                        channel.attr(ChannelAttributes.OUTGOING_TOPIC_ALIAS_MAPPING)
+                                .set(new Mqtt5TopicAliasMapping(topicAliasMaximum));
+                    }
                     break;
 
                 case Mqtt5ConnAckProperty.MAXIMUM_QOS:
@@ -194,7 +203,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                     }
                     maximumQoS = Mqtt5QoS.fromCode(maximumQoSCode);
                     maximumQoSPresent = true;
-                    restrictionsPresent = true;
+                    restrictionsPresent |= maximumQoS != Restrictions.DEFAULT_MAXIMUM_QOS;
                     break;
 
                 case Mqtt5ConnAckProperty.RETAIN_AVAILABLE:
@@ -207,7 +216,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                     }
                     retainAvailable = decodeBoolean(retainAvailableByte);
                     retainAvailablePresent = true;
-                    restrictionsPresent = true;
+                    restrictionsPresent |= retainAvailable != Restrictions.DEFAULT_RETAIN_AVAILABLE;
                     break;
 
                 case Mqtt5ConnAckProperty.MAXIMUM_PACKET_SIZE:
@@ -222,7 +231,10 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                         return null;
                     }
                     maximumPacketSizePresent = true;
-                    restrictionsPresent = true;
+                    if (maximumPacketSize < Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT) {
+                        restrictionsPresent = true;
+                        channel.attr(ChannelAttributes.OUTGOING_MAXIMUM_PACKET_SIZE).set(maximumPacketSize);
+                    }
                     break;
 
                 case Mqtt5ConnAckProperty.WILDCARD_SUBSCRIPTION_AVAILABLE:
@@ -237,7 +249,8 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                     }
                     wildCardSubscriptionAvailable = decodeBoolean(wildCardSubscriptionAvailableByte);
                     wildCardSubscriptionAvailablePresent = true;
-                    restrictionsPresent = true;
+                    restrictionsPresent |=
+                            wildCardSubscriptionAvailable != Restrictions.DEFAULT_WILDCARD_SUBSCRIPTION_AVAILABLE;
                     break;
 
                 case Mqtt5ConnAckProperty.SUBSCRIPTION_IDENTIFIER_AVAILABLE:
@@ -252,7 +265,8 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                     }
                     subscriptionIdentifierAvailable = decodeBoolean(subscriptionIdentifierAvailableByte);
                     subscriptionIdentifierAvailablePresent = true;
-                    restrictionsPresent = true;
+                    restrictionsPresent |=
+                            subscriptionIdentifierAvailable != Restrictions.DEFAULT_SUBSCRIPTION_IDENTIFIER_AVAILABLE;
                     break;
 
                 case Mqtt5ConnAckProperty.SHARED_SUBSCRIPTION_AVAILABLE:
@@ -266,7 +280,8 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                     }
                     sharedSubscriptionAvailable = decodeBoolean(sharedSubscriptionAvailableByte);
                     sharedSubscriptionAvailablePresent = true;
-                    restrictionsPresent = true;
+                    restrictionsPresent |=
+                            sharedSubscriptionAvailable != Restrictions.DEFAULT_SHARED_SUBSCRIPTION_AVAILABLE;
                     break;
 
                 case Mqtt5ConnAckProperty.RESPONSE_INFORMATION:

@@ -246,4 +246,9 @@ public class Mqtt5UTF8String {
         }
     }
 
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
+    }
+
 }

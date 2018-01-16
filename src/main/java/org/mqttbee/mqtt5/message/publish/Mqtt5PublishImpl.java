@@ -25,6 +25,7 @@ public class Mqtt5PublishImpl implements Mqtt5Publish {
     private final Mqtt5UTF8String contentType;
     private final Mqtt5Topic responseTopic;
     private final byte[] correlationData;
+    private final TopicAliasUse topicAliasUse;
     private final ImmutableList<Mqtt5UserProperty> userProperties;
 
     public Mqtt5PublishImpl(
@@ -32,7 +33,8 @@ public class Mqtt5PublishImpl implements Mqtt5Publish {
             final boolean isRetain, final long messageExpiryInterval,
             @Nullable final Mqtt5PayloadFormatIndicator payloadFormatIndicator,
             @Nullable final Mqtt5UTF8String contentType, @Nullable final Mqtt5Topic responseTopic,
-            @Nullable final byte[] correlationData, @NotNull final ImmutableList<Mqtt5UserProperty> userProperties) {
+            @Nullable final byte[] correlationData, @NotNull final TopicAliasUse topicAliasUse,
+            @NotNull final ImmutableList<Mqtt5UserProperty> userProperties) {
         this.topic = topic;
         this.payload = payload;
         this.qos = qos;
@@ -42,6 +44,7 @@ public class Mqtt5PublishImpl implements Mqtt5Publish {
         this.contentType = contentType;
         this.responseTopic = responseTopic;
         this.correlationData = correlationData;
+        this.topicAliasUse = topicAliasUse;
         this.userProperties = userProperties;
     }
 
@@ -120,6 +123,12 @@ public class Mqtt5PublishImpl implements Mqtt5Publish {
     @Nullable
     public byte[] getRawCorrelationData() {
         return correlationData;
+    }
+
+    @NotNull
+    @Override
+    public TopicAliasUse getTopicAliasUse() {
+        return topicAliasUse;
     }
 
     @NotNull

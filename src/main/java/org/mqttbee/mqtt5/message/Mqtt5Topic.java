@@ -23,8 +23,14 @@ public class Mqtt5Topic extends Mqtt5UTF8String {
      */
     public static final char TOPIC_LEVEL_SEPARATOR = '/';
 
+    /**
+     * Validates and decodes a Topic Name from the given byte array.
+     *
+     * @param binary the byte array with the UTF-8 encoded data to decode from.
+     * @return the created Topic Name or null if the byte array does not contain a well-formed Topic Name.
+     */
     @Nullable
-    private static Mqtt5Topic fromInternal(@NotNull final byte[] binary) {
+    public static Mqtt5Topic fromInternal(@NotNull final byte[] binary) {
         return (binary.length == 0) || containsMustNotCharacters(binary) ? null : new Mqtt5Topic(binary);
     }
 

@@ -26,6 +26,8 @@ public class Mqtt5DataTypes {
             (1 << (VARIABLE_BYTE_INTEGER_VALUE_BITS * 3)) - 1;
     private static final int VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE =
             (1 << (VARIABLE_BYTE_INTEGER_VALUE_BITS * 4)) - 1;
+    public static final int MAXIMUM_PACKET_SIZE_LIMIT =
+            1 + 4 + Mqtt5DataTypes.VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE;
     private static final int BINARY_DATA_MAX_LENGTH = 65_535;
 
     private Mqtt5DataTypes() {

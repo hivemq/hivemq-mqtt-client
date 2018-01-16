@@ -21,6 +21,10 @@ public interface Mqtt5Publish {
      * The default message expiry interval which indicates that the message does not expire.
      */
     long DEFAULT_MESSAGE_EXPIRY_INTERVAL_INFINITY = Long.MAX_VALUE;
+    /**
+     * The default handling for using a topic alias.
+     */
+    TopicAliasUse DEFAULT_TOPIC_ALIAS_USE = TopicAliasUse.MUST_NOT;
 
     /**
      * @return the topic of this PUBLISH packet.
@@ -76,9 +80,43 @@ public interface Mqtt5Publish {
     Optional<byte[]> getCorrelationData();
 
     /**
+     * @return the handling for using a topic alias.
+     */
+    @NotNull
+    TopicAliasUse getTopicAliasUse();
+
+    /**
      * @return the optional user properties of this PUBLISH packet.
      */
     @NotNull
     ImmutableList<Mqtt5UserProperty> getUserProperties();
+
+
+    /**
+     * The handling for using a topic alias.
+     */
+    enum TopicAliasUse {
+        /**
+         * Indicates that an outgoing PUBLISH packet must not use a topic alias.
+         */
+        MUST_NOT,
+        /**
+         * Indicates that an outgoing PUBLISH packet may use a topic alias.
+         */
+        MAY,
+        /**
+         * Indicates that an outgoing PUBLISH packet may use a topic alias and also may overwrite an existing topic
+         * alias mapping.
+         */
+        MAY_OVERWRITE,
+        /**
+         * Indicates that a incoming PUBLISH packet does not have a topic alias.
+         */
+        HAS_NOT,
+        /**
+         * Indicates that a incoming PUBLISH packet has a topic alias.
+         */
+        HAS
+    }
 
 }

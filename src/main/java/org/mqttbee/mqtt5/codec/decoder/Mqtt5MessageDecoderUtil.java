@@ -31,7 +31,7 @@ class Mqtt5MessageDecoderUtil {
 
         Mqtt5UTF8String mqttReasonString = null;
         if (reasonString != null) {
-            final Boolean sendReasonString = channel.attr(ChannelAttributes.SEND_REASON_STRING_KEY).get();
+            final Boolean sendReasonString = channel.attr(ChannelAttributes.SEND_REASON_STRING).get();
             if ((sendReasonString != null) && sendReasonString) {
                 mqttReasonString = Mqtt5UTF8String.from(reasonString);
             }

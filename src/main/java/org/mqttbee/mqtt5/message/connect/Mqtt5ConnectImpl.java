@@ -211,11 +211,11 @@ public class Mqtt5ConnectImpl extends Mqtt5Message.Mqtt5MessageWithProperties im
                 DEFAULT_RECEIVE_MAXIMUM, DEFAULT_TOPIC_ALIAS_MAXIMUM, DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT);
 
         private final int receiveMaximum;
-        private final long topicAliasMaximum;
-        private final int maximumPacketSize;
+        private final int topicAliasMaximum;
+        private final long maximumPacketSize;
 
         public RestrictionsImpl(
-                final int receiveMaximum, final long topicAliasMaximum, final int maximumPacketSize) {
+                final int receiveMaximum, final int topicAliasMaximum, final long maximumPacketSize) {
             this.receiveMaximum = receiveMaximum;
             this.topicAliasMaximum = topicAliasMaximum;
             this.maximumPacketSize = maximumPacketSize;
@@ -227,12 +227,12 @@ public class Mqtt5ConnectImpl extends Mqtt5Message.Mqtt5MessageWithProperties im
         }
 
         @Override
-        public long getTopicAliasMaximum() {
+        public int getTopicAliasMaximum() {
             return topicAliasMaximum;
         }
 
         @Override
-        public int getMaximumPacketSize() {
+        public long getMaximumPacketSize() {
             return maximumPacketSize;
         }
 

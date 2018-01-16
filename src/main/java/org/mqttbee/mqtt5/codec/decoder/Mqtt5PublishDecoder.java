@@ -21,6 +21,7 @@ import org.mqttbee.mqtt5.message.publish.Mqtt5PublishProperty;
 
 import javax.inject.Singleton;
 
+import static org.mqttbee.api.mqtt5.message.Mqtt5Publish.TopicAliasUse;
 import static org.mqttbee.mqtt5.codec.decoder.Mqtt5MessageDecoderUtil.*;
 import static org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl.DEFAULT_MESSAGE_EXPIRY_INTERVAL_INFINITY;
 import static org.mqttbee.mqtt5.message.publish.Mqtt5PublishInternal.*;
@@ -47,10 +48,14 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
             return null;
         }
 
-        final Mqtt5Topic topic = Mqtt5Topic.from(in);
-        if (topic == null) {
-            disconnect(Mqtt5DisconnectReasonCode.TOPIC_NAME_INVALID, "malformed topic", channel, in);
-            return null;
+        final byte[] topicBinary = Mqtt5DataTypes.decodeBinaryData(in);
+        Mqtt5Topic topic = null;
+        if (topicBinary.length != 0) {
+            topic = Mqtt5Topic.fromInternal(topicBinary);
+            if (topic == null) {
+                disconnect(Mqtt5DisconnectReasonCode.TOPIC_NAME_INVALID, "malformed topic", channel, in);
+                return null;
+            }
         }
 
         int packetIdentifier = NO_PACKET_IDENTIFIER_QOS_0;
@@ -79,6 +84,7 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
         byte[] correlationData = null;
         ImmutableList.Builder<Mqtt5UserProperty> userPropertiesBuilder = null;
         int topicAlias = DEFAULT_NO_TOPIC_ALIAS;
+        TopicAliasUse topicAliasUse = TopicAliasUse.HAS_NOT;
         ImmutableIntArray.Builder subscriptionIdentifiersBuilder = null;
 
         final int propertiesStartIndex = in.readerIndex();
@@ -157,6 +163,7 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
                         disconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "topic alias must not be 0", channel, in);
                         return null;
                     }
+                    topicAliasUse = TopicAliasUse.HAS;
                     break;
 
                 case Mqtt5PublishProperty.SUBSCRIPTION_IDENTIFIER:
@@ -190,6 +197,31 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
             return null;
         }
 
+        if (topicAlias != DEFAULT_NO_TOPIC_ALIAS) {
+            final Mqtt5Topic[] topicAliasMapping =
+                    channel.attr(ChannelAttributes.INCOMING_TOPIC_ALIAS_MAPPING).get();
+            if ((topicAliasMapping == null) || (topicAlias > topicAliasMapping.length)) {
+                disconnect(
+                        Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "topic alias must not exceed topic alias maximum",
+                        channel, in);
+                return null;
+            }
+            if (topic == null) {
+                topic = topicAliasMapping[topicAlias - 1];
+                if (topic == null) {
+                    disconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "topic alias has no mapping", channel, in);
+                    return null;
+                }
+            } else {
+                topicAliasMapping[topicAlias - 1] = topic;
+            }
+        } else if (topic == null) {
+            disconnect(
+                    Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+                    "topic alias must be present if topic name is zero length", channel, in);
+            return null;
+        }
+
         final int payloadLength = in.readableBytes();
         byte[] payload = null;
         if (payloadLength > 0) {
@@ -197,7 +229,7 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
             in.readBytes(payload);
 
             if (payloadFormatIndicator != null) {
-                final Boolean validatePayloadFormat = channel.attr(ChannelAttributes.VALIDATE_PAYLOAD_FORMAT_KEY).get();
+                final Boolean validatePayloadFormat = channel.attr(ChannelAttributes.VALIDATE_PAYLOAD_FORMAT).get();
                 if ((validatePayloadFormat != null) && validatePayloadFormat) {
                     if (!Utf8.isWellFormed(payload)) {
                         disconnectMalformedUTF8String("payload", channel, in);
@@ -210,7 +242,7 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
         final ImmutableList<Mqtt5UserProperty> userProperties = Mqtt5UserProperty.build(userPropertiesBuilder);
 
         final Mqtt5PublishImpl publish = new Mqtt5PublishImpl(topic, payload, qos, retain, messageExpiryInterval,
-                payloadFormatIndicator, contentType, responseTopic, correlationData, userProperties);
+                payloadFormatIndicator, contentType, responseTopic, correlationData, topicAliasUse, userProperties);
 
         final ImmutableIntArray subscriptionIdentifiers =
                 (subscriptionIdentifiersBuilder == null) ? DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS :

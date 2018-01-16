@@ -4,8 +4,10 @@ import com.google.common.primitives.ImmutableIntArray;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5PublishEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5Message;
+import org.mqttbee.mqtt5.message.Mqtt5Topic;
 
 /**
  * @author Silvio Giebl
@@ -21,20 +23,8 @@ public class Mqtt5PublishInternal extends Mqtt5Message.Mqtt5MessageWithPropertie
     private final int packetIdentifier;
     private final boolean isDup;
     private final int topicAlias;
+    private final boolean isNewTopicAlias;
     private final ImmutableIntArray subscriptionIdentifiers;
-
-    public Mqtt5PublishInternal(@NotNull final Mqtt5PublishImpl publish) {
-        this(publish, NO_PACKET_IDENTIFIER_QOS_0);
-    }
-
-    public Mqtt5PublishInternal(@NotNull final Mqtt5PublishImpl publish, final int packetIdentifier) {
-        this(publish, packetIdentifier, false);
-    }
-
-    public Mqtt5PublishInternal(
-            @NotNull final Mqtt5PublishImpl publish, final int packetIdentifier, final boolean isDup) {
-        this(publish, packetIdentifier, isDup, DEFAULT_NO_TOPIC_ALIAS, DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
-    }
 
     public Mqtt5PublishInternal(
             @NotNull final Mqtt5PublishImpl publish, final int packetIdentifier, final boolean isDup,
@@ -43,6 +33,29 @@ public class Mqtt5PublishInternal extends Mqtt5Message.Mqtt5MessageWithPropertie
         this.packetIdentifier = packetIdentifier;
         this.isDup = isDup;
         this.topicAlias = topicAlias;
+        this.isNewTopicAlias = topicAlias != DEFAULT_NO_TOPIC_ALIAS;
+        this.subscriptionIdentifiers = subscriptionIdentifiers;
+    }
+
+    public Mqtt5PublishInternal(
+            @NotNull final Mqtt5PublishImpl publish, final int packetIdentifier, final boolean isDup,
+            @NotNull final Channel channel, @NotNull final ImmutableIntArray subscriptionIdentifiers) {
+        this.publish = publish;
+        this.packetIdentifier = packetIdentifier;
+        this.isDup = isDup;
+
+        final Mqtt5TopicAliasMapping topicAliasMapping =
+                channel.attr(ChannelAttributes.OUTGOING_TOPIC_ALIAS_MAPPING).get();
+        final Mqtt5Topic topic = publish.getTopic();
+        final int topicAlias = topicAliasMapping.get(topic);
+        if (topicAlias != DEFAULT_NO_TOPIC_ALIAS) {
+            this.topicAlias = topicAlias;
+            this.isNewTopicAlias = false;
+        } else {
+            this.topicAlias = topicAliasMapping.set(topic, publish.getTopicAliasUse());
+            this.isNewTopicAlias = this.topicAlias != DEFAULT_NO_TOPIC_ALIAS;
+        }
+
         this.subscriptionIdentifiers = subscriptionIdentifiers;
     }
 
@@ -61,6 +74,10 @@ public class Mqtt5PublishInternal extends Mqtt5Message.Mqtt5MessageWithPropertie
 
     public int getTopicAlias() {
         return topicAlias;
+    }
+
+    public boolean isNewTopicAlias() {
+        return isNewTopicAlias;
     }
 
     @NotNull

@@ -4,12 +4,11 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
+import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.exceptions.Mqtt5MaximumPacketSizeExceededException;
 import org.mqttbee.mqtt5.message.Mqtt5Message;
 
 import javax.inject.Inject;
-
-import static org.mqttbee.mqtt5.codec.Mqtt5CodecUtil.checkMaximumPacketSize;
 
 /**
  * @author Silvio Giebl
@@ -28,7 +27,8 @@ public class Mqtt5Encoder extends MessageToByteEncoder<Mqtt5Message> {
 
         final int encodedLength = message.encodedLength();
 
-        if (!checkMaximumPacketSize(encodedLength, ctx.channel())) {
+        final Long maximumPacketSize = ctx.channel().attr(ChannelAttributes.OUTGOING_MAXIMUM_PACKET_SIZE).get();
+        if ((maximumPacketSize != null) && (encodedLength > maximumPacketSize)) {
             throw new Mqtt5MaximumPacketSizeExceededException();
         }
 
