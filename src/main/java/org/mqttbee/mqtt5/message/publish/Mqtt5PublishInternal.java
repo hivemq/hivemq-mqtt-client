@@ -28,12 +28,13 @@ public class Mqtt5PublishInternal extends Mqtt5Message.Mqtt5MessageWithPropertie
 
     public Mqtt5PublishInternal(
             @NotNull final Mqtt5PublishImpl publish, final int packetIdentifier, final boolean isDup,
-            final int topicAlias, @NotNull final ImmutableIntArray subscriptionIdentifiers) {
+            final int topicAlias, final boolean isNewTopicAlias,
+            @NotNull final ImmutableIntArray subscriptionIdentifiers) {
         this.publish = publish;
         this.packetIdentifier = packetIdentifier;
         this.isDup = isDup;
         this.topicAlias = topicAlias;
-        this.isNewTopicAlias = topicAlias != DEFAULT_NO_TOPIC_ALIAS;
+        this.isNewTopicAlias = isNewTopicAlias;
         this.subscriptionIdentifiers = subscriptionIdentifiers;
     }
 

@@ -46,10 +46,6 @@ public class Mqtt5TopicAliasMapping {
         return (topicAlias == null) ? Mqtt5PublishInternal.DEFAULT_NO_TOPIC_ALIAS : topicAlias;
     }
 
-    public boolean contains(@NotNull final Mqtt5Topic topic) {
-        return hashMap.get(topic.toString()) != null;
-    }
-
     public int size() {
         return size;
     }

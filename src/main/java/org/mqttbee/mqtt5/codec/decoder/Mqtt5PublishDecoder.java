@@ -197,27 +197,30 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
             return null;
         }
 
+        boolean isNewTopicAlias = false;
         if (topicAlias != DEFAULT_NO_TOPIC_ALIAS) {
             final Mqtt5Topic[] topicAliasMapping =
                     channel.attr(ChannelAttributes.INCOMING_TOPIC_ALIAS_MAPPING).get();
             if ((topicAliasMapping == null) || (topicAlias > topicAliasMapping.length)) {
                 disconnect(
-                        Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "topic alias must not exceed topic alias maximum",
-                        channel, in);
+                        Mqtt5DisconnectReasonCode.TOPIC_ALIAS_INVALID,
+                        "topic alias must not exceed topic alias maximum", channel, in);
                 return null;
             }
             if (topic == null) {
                 topic = topicAliasMapping[topicAlias - 1];
                 if (topic == null) {
-                    disconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "topic alias has no mapping", channel, in);
+                    disconnect(
+                            Mqtt5DisconnectReasonCode.TOPIC_ALIAS_INVALID, "topic alias has no mapping", channel, in);
                     return null;
                 }
             } else {
                 topicAliasMapping[topicAlias - 1] = topic;
+                isNewTopicAlias = true;
             }
         } else if (topic == null) {
             disconnect(
-                    Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+                    Mqtt5DisconnectReasonCode.TOPIC_ALIAS_INVALID,
                     "topic alias must be present if topic name is zero length", channel, in);
             return null;
         }
@@ -248,7 +251,8 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
                 (subscriptionIdentifiersBuilder == null) ? DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS :
                         subscriptionIdentifiersBuilder.build();
 
-        return new Mqtt5PublishInternal(publish, packetIdentifier, dup, topicAlias, subscriptionIdentifiers);
+        return new Mqtt5PublishInternal(
+                publish, packetIdentifier, dup, topicAlias, isNewTopicAlias, subscriptionIdentifiers);
     }
 
 }
