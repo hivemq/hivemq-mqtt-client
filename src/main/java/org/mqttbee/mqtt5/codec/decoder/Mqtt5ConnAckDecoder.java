@@ -73,7 +73,11 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
         }
 
         if (in.readableBytes() != propertyLength) {
-            disconnectMustNotHavePayload("CONNACK", channel, in);
+            if (in.readableBytes() < propertyLength) {
+                disconnectRemainingLengthTooShort(channel, in);
+            } else {
+                disconnectMustNotHavePayload("CONNACK", channel, in);
+            }
             return null;
         }
 
