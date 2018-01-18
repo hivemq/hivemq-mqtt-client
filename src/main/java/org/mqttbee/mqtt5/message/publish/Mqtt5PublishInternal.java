@@ -47,14 +47,19 @@ public class Mqtt5PublishInternal extends Mqtt5Message.Mqtt5MessageWithPropertie
 
         final Mqtt5TopicAliasMapping topicAliasMapping =
                 channel.attr(ChannelAttributes.OUTGOING_TOPIC_ALIAS_MAPPING).get();
-        final Mqtt5Topic topic = publish.getTopic();
-        final int topicAlias = topicAliasMapping.get(topic);
-        if (topicAlias != DEFAULT_NO_TOPIC_ALIAS) {
-            this.topicAlias = topicAlias;
+        if (topicAliasMapping == null) {
+            this.topicAlias = DEFAULT_NO_TOPIC_ALIAS;
             this.isNewTopicAlias = false;
         } else {
-            this.topicAlias = topicAliasMapping.set(topic, publish.getTopicAliasUse());
-            this.isNewTopicAlias = this.topicAlias != DEFAULT_NO_TOPIC_ALIAS;
+            final Mqtt5Topic topic = publish.getTopic();
+            final int topicAlias = topicAliasMapping.get(topic);
+            if (topicAlias != DEFAULT_NO_TOPIC_ALIAS) {
+                this.topicAlias = topicAlias;
+                this.isNewTopicAlias = false;
+            } else {
+                this.topicAlias = topicAliasMapping.set(topic, publish.getTopicAliasUse());
+                this.isNewTopicAlias = this.topicAlias != DEFAULT_NO_TOPIC_ALIAS;
+            }
         }
 
         this.subscriptionIdentifiers = subscriptionIdentifiers;
