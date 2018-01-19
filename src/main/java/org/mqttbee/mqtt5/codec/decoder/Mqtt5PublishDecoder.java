@@ -32,6 +32,8 @@ import static org.mqttbee.mqtt5.message.publish.Mqtt5PublishInternal.*;
 @Singleton
 public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
 
+    private static final int MIN_REMAINING_LENGTH = 3;
+
     @Override
     @Nullable
     public Mqtt5PublishInternal decode(final int flags, @NotNull final Channel channel, @NotNull final ByteBuf in) {
@@ -45,6 +47,11 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
         }
         if ((qos == Mqtt5QoS.AT_MOST_ONCE) && dup) {
             disconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "DUP flag must be 0 if QoS is 0", channel, in);
+            return null;
+        }
+
+        if (in.readableBytes() < MIN_REMAINING_LENGTH) {
+            disconnectRemainingLengthTooShort(channel, in);
             return null;
         }
 
