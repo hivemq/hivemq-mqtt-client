@@ -28,8 +28,15 @@ public class Mqtt5ClientIdentifier extends Mqtt5UTF8String {
     private static final int MUST_BE_ALLOWED_BY_SERVER_MIN_BYTES = 1;
     private static final int MUST_BE_ALLOWED_BY_SERVER_MAX_BYTES = 23;
 
+    /**
+     * Validates and decodes a Client Identifier from the given byte array.
+     *
+     * @param binary the byte array with the UTF-8 encoded data to decode from.
+     * @return the created Client Identifier or null if the byte array does not contain a well-formed encoded Client
+     * Identifier.
+     */
     @Nullable
-    private static Mqtt5ClientIdentifier fromInternal(@NotNull final byte[] binary) {
+    public static Mqtt5ClientIdentifier from(@NotNull final byte[] binary) {
         return containsMustNotCharacters(binary) ? null : new Mqtt5ClientIdentifier(binary);
     }
 
@@ -57,7 +64,7 @@ public class Mqtt5ClientIdentifier extends Mqtt5UTF8String {
     @Nullable
     public static Mqtt5ClientIdentifier from(@NotNull final ByteBuf byteBuf) {
         final byte[] binary = Mqtt5DataTypes.decodeBinaryData(byteBuf);
-        return (binary == null) ? null : fromInternal(binary);
+        return (binary == null) ? null : from(binary);
     }
 
 

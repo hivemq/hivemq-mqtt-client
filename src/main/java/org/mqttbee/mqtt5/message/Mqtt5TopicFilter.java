@@ -35,8 +35,14 @@ public class Mqtt5TopicFilter extends Mqtt5UTF8String {
     private static final int WILDCARD_CHECK_STATE_MULTI_LEVEL = 2;
     private static final int WILDCARD_CHECK_STATE_SINGLE_LEVEL = 3;
 
+    /**
+     * Validates and decodes a Topic Filter from the given byte array.
+     *
+     * @param binary the byte array with the UTF-8 encoded data to decode from.
+     * @return the created Topic Filter or null if the byte array does not contain a well-formed Topic Filter.
+     */
     @Nullable
-    private static Mqtt5TopicFilter fromInternal(@NotNull final byte[] binary) {
+    public static Mqtt5TopicFilter from(@NotNull final byte[] binary) {
         if ((binary.length == 0) || containsMustNotCharacters(binary)) {
             return null;
         }
@@ -83,7 +89,7 @@ public class Mqtt5TopicFilter extends Mqtt5UTF8String {
     @Nullable
     public static Mqtt5TopicFilter from(@NotNull final ByteBuf byteBuf) {
         final byte[] binary = Mqtt5DataTypes.decodeBinaryData(byteBuf);
-        return (binary == null) ? null : fromInternal(binary);
+        return (binary == null) ? null : from(binary);
     }
 
     /**

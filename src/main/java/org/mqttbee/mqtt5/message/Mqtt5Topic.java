@@ -30,7 +30,7 @@ public class Mqtt5Topic extends Mqtt5UTF8String {
      * @return the created Topic Name or null if the byte array does not contain a well-formed Topic Name.
      */
     @Nullable
-    public static Mqtt5Topic fromInternal(@NotNull final byte[] binary) {
+    public static Mqtt5Topic from(@NotNull final byte[] binary) {
         return (binary.length == 0) || containsMustNotCharacters(binary) ? null : new Mqtt5Topic(binary);
     }
 
@@ -57,7 +57,7 @@ public class Mqtt5Topic extends Mqtt5UTF8String {
     @Nullable
     public static Mqtt5Topic from(@NotNull final ByteBuf byteBuf) {
         final byte[] binary = Mqtt5DataTypes.decodeBinaryData(byteBuf);
-        return (binary == null) ? null : fromInternal(binary);
+        return (binary == null) ? null : from(binary);
     }
 
     /**

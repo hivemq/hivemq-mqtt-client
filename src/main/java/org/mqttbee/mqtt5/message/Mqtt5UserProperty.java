@@ -117,12 +117,20 @@ public class Mqtt5UserProperty {
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        if ((obj == null) || (obj.getClass() != this.getClass())) {
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Mqtt5UserProperty)) {
             return false;
         }
-        final Mqtt5UserProperty userProperty = (Mqtt5UserProperty) obj;
-        return name.equals(userProperty.name) && value.equals(userProperty.value);
+        final Mqtt5UserProperty that = (Mqtt5UserProperty) o;
+        return name.equals(that.name) && value.equals(that.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 * name.hashCode() + value.hashCode();
     }
 
 }
