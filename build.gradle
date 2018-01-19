@@ -1,3 +1,12 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'org.junit.platform', name: 'junit-platform-gradle-plugin', version: '1.0.3'
+    }
+}
+
 plugins {
     id 'net.ltgt.apt' version '0.13'
 }
@@ -7,6 +16,9 @@ version '1.0-SNAPSHOT'
 
 apply plugin: 'java'
 apply plugin: 'net.ltgt.apt'
+apply plugin: 'org.junit.platform.gradle.plugin'
+apply plugin: 'idea'
+apply plugin: 'eclipse'
 
 sourceCompatibility = 1.8
 
@@ -19,6 +31,10 @@ project.ext {
     nettyVersion = '4.1.19.Final'
     daggerVersion = '2.14.1'
     guavaVersion = '23.6-jre'
+    junit4Version = '4.12'
+    junitVintageVersion = '4.12.3'
+    junitJupiterVersion = '5.0.3'
+    junitPlatformVersion = '1.0.3'
 }
 
 dependencies {
@@ -29,5 +45,12 @@ dependencies {
 
     apt group: 'com.google.dagger', name: 'dagger-compiler', version: daggerVersion
 
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile group: 'junit', name: 'junit', version: junit4Version
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junitJupiterVersion
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junitJupiterVersion
+
+    testRuntime group: 'org.junit.vintage', name: 'junit-vintage-engine', version: junitVintageVersion
+    testRuntime group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junitJupiterVersion
+    testRuntime group: 'org.junit.platform', name: 'junit-platform-launcher', version: junitPlatformVersion
+    testRuntime group: 'org.junit.platform', name: 'junit-platform-runner', version: junitPlatformVersion
 }
