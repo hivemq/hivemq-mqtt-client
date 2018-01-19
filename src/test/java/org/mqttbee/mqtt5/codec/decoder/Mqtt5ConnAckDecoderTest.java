@@ -3,13 +3,16 @@ package org.mqttbee.mqtt5.codec.decoder;
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.embedded.EmbeddedChannel;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5ConnAck;
 import org.mqttbee.api.mqtt5.message.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt5.message.Mqtt5ExtendedAuth;
+import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
@@ -18,27 +21,27 @@ import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckImpl;
 import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckReasonCode;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5ConnAckDecoderTest {
+class Mqtt5ConnAckDecoderTest {
 
     private EmbeddedChannel channel;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         channel = new EmbeddedChannel(new Mqtt5Decoder(new Mqtt5ConnAckTestMessageDecoders()));
     }
 
-    @After
-    public void tearDown() throws Exception {
+    @AfterEach
+    void tearDown() throws Exception {
         channel.close();
     }
 
     @Test
-    public void decode_big_packet() {
+    void decode_big_packet() {
         final byte[] encoded = {
                 // fixed header
                 //   type, flags
@@ -143,7 +146,7 @@ public class Mqtt5ConnAckDecoderTest {
     }
 
     @Test
-    public void decode_minimum_packet() {
+    void decode_minimum_packet() {
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -179,8 +182,11 @@ public class Mqtt5ConnAckDecoderTest {
         assertFalse(connAck.getExtendedAuth().isPresent());
     }
 
-    @Test
-    public void decode_not_minimum_packet() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_not_minimum_packet(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -196,11 +202,11 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
     @Test
-    public void decode_not_enough_bytes() {
+    void decode_not_enough_bytes() {
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -227,7 +233,7 @@ public class Mqtt5ConnAckDecoderTest {
     }
 
     @Test
-    public void decode_not_enough_bytes_for_fixed_header() {
+    void decode_not_enough_bytes_for_fixed_header() {
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -245,8 +251,11 @@ public class Mqtt5ConnAckDecoderTest {
         assertNull(disconnect);
     }
 
-    @Test
-    public void decode_wrong_flags() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_wrong_flags(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -264,11 +273,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    @Test
-    public void decode_remaining_length_too_short() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_remaining_length_too_short(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -286,11 +298,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    @Test
-    public void decode_remaining_length_too_long() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_remaining_length_too_long(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -310,11 +325,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    @Test
-    public void decode_remaining_length_not_minimum_bytes() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_remaining_length_not_minimum_bytes(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -332,11 +350,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    @Test
-    public void decode_remaining_length_too_large() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_remaining_length_too_large(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -354,11 +375,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    @Test
-    public void decode_wrong_connack_flags() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_wrong_connack_flags(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -376,11 +400,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    @Test
-    public void decode_wrong_reason_code() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_wrong_reason_code(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -398,11 +425,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    @Test
-    public void decode_reason_code_not_0_session_present_must_be_0() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_reason_code_not_0_session_present_must_be_0(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -420,11 +450,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    @Test
-    public void decode_property_length_too_short() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_property_length_too_short(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -442,11 +475,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    @Test
-    public void decode_property_length_too_long() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_property_length_too_long(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -464,11 +500,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    @Test
-    public void decode_property_length_not_minimum_bytes() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_property_length_not_minimum_bytes(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -486,11 +525,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    @Test
-    public void decode_property_length_too_large() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_property_length_too_large(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -508,11 +550,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    @Test
-    public void decode_wrong_property() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_wrong_property(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -531,11 +576,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    @Test
-    public void decode_receive_maximum_0() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_receive_maximum_0(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -554,11 +602,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR);
+        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, sendReasonString);
     }
 
-    @Test
-    public void decode_maximum_qos_not_0_or_1() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_maximum_qos_not_0_or_1(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -577,11 +628,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR);
+        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, sendReasonString);
     }
 
-    @Test
-    public void decode_retain_available_not_0_or_1() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_retain_available_not_0_or_1(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -600,11 +654,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR);
+        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, sendReasonString);
     }
 
-    @Test
-    public void decode_maximum_packet_size_0() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_maximum_packet_size_0(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -623,11 +680,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR);
+        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, sendReasonString);
     }
 
-    @Test
-    public void decode_wildcard_subscription_available_not_0_or_1() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_wildcard_subscription_available_not_0_or_1(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -646,11 +706,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR);
+        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, sendReasonString);
     }
 
-    @Test
-    public void decode_subscription_identifiers_available_not_0_or_1() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_subscription_identifiers_available_not_0_or_1(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -669,11 +732,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR);
+        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, sendReasonString);
     }
 
-    @Test
-    public void decode_shared_subscription_available_not_0_or_1() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_shared_subscription_available_not_0_or_1(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -692,11 +758,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR);
+        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, sendReasonString);
     }
 
-    @Test
-    public void decode_must_not_multiple_session_expiry_interval() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_must_not_multiple_session_expiry_interval(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -717,11 +786,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR);
+        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, sendReasonString);
     }
 
-    @Test
-    public void decode_must_not_multiple_receive_maximum() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_must_not_multiple_receive_maximum(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -742,11 +814,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR);
+        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, sendReasonString);
     }
 
-    @Test
-    public void decode_must_not_multiple_maximum_qos() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_must_not_multiple_maximum_qos(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -767,11 +842,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR);
+        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, sendReasonString);
     }
 
-    @Test
-    public void decode_must_not_multiple_retain_available() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_must_not_multiple_retain_available(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -792,11 +870,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR);
+        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, sendReasonString);
     }
 
-    @Test
-    public void decode_must_not_multiple_maximum_packet_size() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_must_not_multiple_maximum_packet_size(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -817,11 +898,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR);
+        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, sendReasonString);
     }
 
-    @Test
-    public void decode_must_not_multiple_assigned_client_identifier() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_must_not_multiple_assigned_client_identifier(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -842,11 +926,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR);
+        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, sendReasonString);
     }
 
-    @Test
-    public void decode_must_not_multiple_topic_alias_maximum() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_must_not_multiple_topic_alias_maximum(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -867,11 +954,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR);
+        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, sendReasonString);
     }
 
-    @Test
-    public void decode_must_not_multiple_reason_string() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_must_not_multiple_reason_string(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -892,11 +982,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR);
+        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, sendReasonString);
     }
 
-    @Test
-    public void decode_must_not_multipe_wildcard_subscription_available() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_must_not_multipe_wildcard_subscription_available(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -917,11 +1010,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR);
+        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, sendReasonString);
     }
 
-    @Test
-    public void decode_must_not_multiple_subscription_identifiers_available() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_must_not_multiple_subscription_identifiers_available(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -942,11 +1038,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR);
+        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, sendReasonString);
     }
 
-    @Test
-    public void decode_must_not_multiple_shared_subscription_available() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_must_not_multiple_shared_subscription_available(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -967,11 +1066,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR);
+        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, sendReasonString);
     }
 
-    @Test
-    public void decode_must_not_multiple_server_keep_alive() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_must_not_multiple_server_keep_alive(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -992,11 +1094,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR);
+        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, sendReasonString);
     }
 
-    @Test
-    public void decode_must_not_multiple_response_information() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_must_not_multiple_response_information(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1017,11 +1122,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR);
+        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, sendReasonString);
     }
 
-    @Test
-    public void decode_must_not_multiple_server_reference() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_must_not_multiple_server_reference(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1042,11 +1150,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR);
+        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, sendReasonString);
     }
 
-    @Test
-    public void decode_must_not_multiple_auth_method() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_must_not_multiple_auth_method(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1067,11 +1178,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR);
+        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, sendReasonString);
     }
 
-    @Test
-    public void decode_must_not_multiple_auth_data() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_must_not_multiple_auth_data(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1092,11 +1206,11 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR);
+        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, sendReasonString);
     }
 
     @Test
-    public void decode_can_include_multiple_user_properties() {
+    void decode_can_include_multiple_user_properties() {
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1134,8 +1248,11 @@ public class Mqtt5ConnAckDecoderTest {
         assertTrue(userProperties.contains(new Mqtt5UserProperty(test2, value)));
     }
 
-    @Test
-    public void decode_reason_string_length_too_short() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_reason_string_length_too_short(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1154,11 +1271,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    @Test
-    public void decode_reason_string_length_too_long() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_reason_string_length_too_long(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1179,11 +1299,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    @Test
-    public void decode_reason_string_must_not_character() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_reason_string_must_not_character(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1202,11 +1325,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    @Test
-    public void decode_assigned_client_identifier_length_too_short() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_assigned_client_identifier_length_too_short(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1225,11 +1351,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    @Test
-    public void decode_assigned_client_identifier_length_too_long() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_assigned_client_identifier_length_too_long(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1250,11 +1379,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    @Test
-    public void decode_assigned_client_identifier_must_not_character() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_assigned_client_identifier_must_not_character(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1273,11 +1405,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    @Test
-    public void decode_response_information_length_too_short() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_response_information_length_too_short(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1296,11 +1431,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    @Test
-    public void decode_response_information_length_too_long() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_response_information_length_too_long(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1321,11 +1459,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    @Test
-    public void decode_response_information_must_not_character() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_response_information_must_not_character(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1344,11 +1485,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    @Test
-    public void decode_server_reference_length_too_short() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_server_reference_length_too_short(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1367,11 +1511,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    @Test
-    public void decode_server_reference_length_too_long() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_server_reference_length_too_long(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1392,11 +1539,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    @Test
-    public void decode_server_reference_must_not_character() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_server_reference_must_not_character(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1415,11 +1565,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    @Test
-    public void decode_auth_method_length_too_short() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_auth_method_length_too_short(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1438,11 +1591,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    @Test
-    public void decode_auth_method_length_too_long() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_auth_method_length_too_long(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1463,11 +1619,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    @Test
-    public void decode_auth_method_must_not_character() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_auth_method_must_not_character(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1486,11 +1645,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    @Test
-    public void decode_user_property_name_length_too_short() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_user_property_name_length_too_short(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1509,11 +1671,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    @Test
-    public void decode_user_property_name_length_too_long() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_user_property_name_length_too_long(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1534,11 +1699,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    @Test
-    public void decode_user_property_name_must_not_character() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_user_property_name_must_not_character(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1557,11 +1725,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    @Test
-    public void decode_user_property_value_length_too_short() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_user_property_value_length_too_short(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1580,11 +1751,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    @Test
-    public void decode_user_property_value_length_too_long() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_user_property_value_length_too_long(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1605,11 +1779,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    @Test
-    public void decode_user_property_value_must_not_character() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_user_property_value_must_not_character(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1628,11 +1805,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    @Test
-    public void decode_auth_data_length_too_short() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_auth_data_length_too_short(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1653,11 +1833,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    @Test
-    public void decode_auth_data_length_too_long() {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_auth_data_length_too_long(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1680,11 +1863,14 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    @Test
-    public void decode_must_not_include_authentication_data_without_method() throws Exception {
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_must_not_include_authentication_data_without_method(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1705,11 +1891,11 @@ public class Mqtt5ConnAckDecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR);
+        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, sendReasonString);
     }
 
     @Test
-    public void decode_defaults() {
+    void decode_defaults() {
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1737,13 +1923,14 @@ public class Mqtt5ConnAckDecoderTest {
         assertEquals(true, connAck.getRestrictions().isSharedSubscriptionAvailable());
     }
 
-    private void testDisconnect(final Mqtt5DisconnectReasonCode reasonCode) {
+    private void testDisconnect(final Mqtt5DisconnectReasonCode reasonCode, final boolean sendReasonString) {
         final Mqtt5ConnAck connAck = channel.readInbound();
         assertNull(connAck);
 
         final Mqtt5Disconnect disconnect = channel.readOutbound();
         assertNotNull(disconnect);
         assertEquals(reasonCode, disconnect.getReasonCode());
+        assertEquals(sendReasonString, disconnect.getReasonString().isPresent());
     }
 
     private static final byte PROPERTIES_VALID_LENGTH = 119;
