@@ -3,6 +3,8 @@ package org.mqttbee.mqtt5.message;
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -25,8 +27,18 @@ public class Mqtt5UserPropertyTest {
     }
 
     @Test
-    public void test_decode_malformed() throws Exception {
+    public void test_decode_malformed_name() throws Exception {
         final byte[] binary = {0, 4, 'n', 'a', 'm', 0, 5, 'v', 'a', 'l', 'u', 'e'};
+        final ByteBuf byteBuf = Unpooled.buffer();
+        byteBuf.writeBytes(binary);
+        final Mqtt5UserProperty userProperty = Mqtt5UserProperty.decode(byteBuf);
+        byteBuf.release();
+        assertNull(userProperty);
+    }
+
+    @Test
+    public void test_decode_malformed_value() throws Exception {
+        final byte[] binary = {0, 4, 'n', 'a', 'm', 'e', 0, 5, 'v', 'a', 'l', 'u'};
         final ByteBuf byteBuf = Unpooled.buffer();
         byteBuf.writeBytes(binary);
         final Mqtt5UserProperty userProperty = Mqtt5UserProperty.decode(byteBuf);
@@ -92,6 +104,12 @@ public class Mqtt5UserPropertyTest {
         final ImmutableList<Mqtt5UserProperty> userProperties = Mqtt5UserProperty.build(null);
         assertEquals(Mqtt5UserProperty.DEFAULT_NO_USER_PROPERTIES, userProperties);
         assertEquals(0, userProperties.size());
+    }
+
+    @Test
+    public void test_equals() {
+        EqualsVerifier.forClass(Mqtt5UserProperty.class).withNonnullFields("name", "value")
+                .suppress(Warning.STRICT_INHERITANCE).verify();
     }
 
 }

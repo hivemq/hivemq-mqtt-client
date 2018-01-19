@@ -17,6 +17,7 @@
     <orderEntry type="library" name="Gradle: junit:junit:4.12" level="project" />
     <orderEntry type="library" name="Gradle: org.junit.jupiter:junit-jupiter-api:5.0.3" level="project" />
     <orderEntry type="library" name="Gradle: org.junit.jupiter:junit-jupiter-params:5.0.3" level="project" />
+    <orderEntry type="library" name="Gradle: nl.jqno.equalsverifier:equalsverifier:2.4.1" level="project" />
     <orderEntry type="library" name="Gradle: org.reactivestreams:reactive-streams:1.0.2" level="project" />
     <orderEntry type="library" name="Gradle: io.netty:netty-buffer:4.1.19.Final" level="project" />
     <orderEntry type="library" name="Gradle: io.netty:netty-transport:4.1.19.Final" level="project" />

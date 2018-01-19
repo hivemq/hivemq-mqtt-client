@@ -50,8 +50,15 @@ public class Mqtt5UTF8String {
     @NotNull
     public static final Mqtt5UTF8String PROTOCOL_NAME = new Mqtt5UTF8String(encode("MQTT"));
 
+    /**
+     * Validates and decodes a UTF-8 encoded String from the given byte array.
+     *
+     * @param binary the byte array with the UTF-8 encoded data to decode from.
+     * @return the created UTF-8 encoded String or null if the byte array does not contain a well-formed UTF-8 encoded
+     * String.
+     */
     @Nullable
-    private static Mqtt5UTF8String fromInternal(@NotNull final byte[] binary) {
+    public static Mqtt5UTF8String from(@NotNull final byte[] binary) {
         return containsMustNotCharacters(binary) ? null : new Mqtt5UTF8String(binary);
     }
 
@@ -79,7 +86,7 @@ public class Mqtt5UTF8String {
     @Nullable
     public static Mqtt5UTF8String from(@NotNull final ByteBuf byteBuf) {
         final byte[] binary = Mqtt5DataTypes.decodeBinaryData(byteBuf);
-        return (binary == null) ? null : fromInternal(binary);
+        return (binary == null) ? null : from(binary);
     }
 
     /**
@@ -170,7 +177,7 @@ public class Mqtt5UTF8String {
      * @return whether this UTF-8 encoded String contains characters that it should not.
      */
     public boolean containsShouldNotCharacters() {
-        return SHOULD_NOT_CHARACTERS_PATTERN.matcher(string).find();
+        return SHOULD_NOT_CHARACTERS_PATTERN.matcher(toString()).find();
     }
 
     /**
@@ -231,18 +238,21 @@ public class Mqtt5UTF8String {
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        if ((obj == null) || (obj.getClass() != this.getClass())) {
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Mqtt5UTF8String)) {
             return false;
         }
-        final Mqtt5UTF8String utf8String = (Mqtt5UTF8String) obj;
+        final Mqtt5UTF8String that = (Mqtt5UTF8String) o;
         if (string != null) {
-            if ((utf8String.string == null) && (binary != null)) {
-                return Arrays.equals(binary, utf8String.binary);
+            if ((that.string == null) && (binary != null)) {
+                return Arrays.equals(binary, that.binary);
             }
-            return string.equals(utf8String.toString());
+            return string.equals(that.toString());
         } else {
-            return Arrays.equals(binary, utf8String.toBinary());
+            return Arrays.equals(binary, that.toBinary());
         }
     }
 
