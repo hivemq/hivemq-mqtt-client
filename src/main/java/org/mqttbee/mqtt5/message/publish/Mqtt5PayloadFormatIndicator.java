@@ -1,5 +1,7 @@
 package org.mqttbee.mqtt5.message.publish;
 
+import org.mqttbee.annotations.Nullable;
+
 /**
  * @author Silvio Giebl
  */
@@ -12,10 +14,11 @@ public enum Mqtt5PayloadFormatIndicator {
         return ordinal();
     }
 
+    @Nullable
     public static Mqtt5PayloadFormatIndicator fromCode(final int code) {
         final Mqtt5PayloadFormatIndicator[] values = values();
         if (code < 0 || code >= values.length) {
-            throw new IllegalArgumentException("not a MQTT 5 payload format indicator code");
+            return null;
         }
         return values[code];
     }

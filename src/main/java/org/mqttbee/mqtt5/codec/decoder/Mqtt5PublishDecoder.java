@@ -56,6 +56,10 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
         }
 
         final byte[] topicBinary = Mqtt5DataTypes.decodeBinaryData(in);
+        if (topicBinary == null) {
+            disconnect(Mqtt5DisconnectReasonCode.TOPIC_NAME_INVALID, "malformed topic", channel, in);
+            return null;
+        }
         Mqtt5Topic topic = null;
         if (topicBinary.length != 0) {
             topic = Mqtt5Topic.from(topicBinary);
