@@ -213,6 +213,20 @@ public class Mqtt5DataTypesTest {
     }
 
     @Test
+    public void test_decodeBinaryData_not_enough_bytes_for_length() {
+        final ByteBuf byteBuf = Unpooled.buffer();
+        byteBuf.writeByte(0);
+        assertNull(Mqtt5DataTypes.decodeBinaryData(byteBuf));
+    }
+
+    @Test
+    public void test_decodeBinaryData_not_enough_bytes_for_value() {
+        final ByteBuf byteBuf = Unpooled.buffer();
+        byteBuf.writeByte(0).writeByte(2).writeByte(1);
+        assertNull(Mqtt5DataTypes.decodeBinaryData(byteBuf));
+    }
+
+    @Test
     public void test_encodeBinaryData_zero_length() {
         final ByteBuf byteBuf = Unpooled.buffer();
         final byte[] binary = {};
