@@ -1,0 +1,23 @@
+<component name="ProjectDictionaryState">
+  <dictionary name="sgiebl">
+    <words>
+      <w>bugfix</w>
+      <w>connack</w>
+      <w>intelli</w>
+      <w>mqtt</w>
+      <w>nullable</w>
+      <w>pingreq</w>
+      <w>pingresp</w>
+      <w>puback</w>
+      <w>pubcomp</w>
+      <w>pubrec</w>
+      <w>pubrel</w>
+      <w>reauthenticate</w>
+      <w>reauthenticated</w>
+      <w>suback</w>
+      <w>unsub</w>
+      <w>unsuback</w>
+      <w>unsubscribe</w>
+    </words>
+  </dictionary>
+</component>

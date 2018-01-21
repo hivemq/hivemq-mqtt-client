@@ -22,7 +22,7 @@ whether it contributes to the feature as a sub-feature or a bugfix
 
 ### Commit message guidelines
 
-* Commits in feature/bugfix branches should be as atomar as possible.
+* Commits in feature/bugfix branches should be as atomic as possible.
 * Commits in feature/bugfix branches do not have to follow strict guidelines, 
 but they should describe the changes clearly.
 * When feature/bugfix branches are merged into develop, the commit message should follow these guidelines: tbd

@@ -58,19 +58,19 @@ public class Mqtt5PubAckEncoder implements Mqtt5MessageEncoder<Mqtt5PubAckIntern
     public int encodedPropertyLength(@NotNull final Mqtt5PubAckInternal pubAckInternal) {
         final Mqtt5PubAckImpl pubAck = pubAckInternal.getPubAck();
 
-        int properyLength = 0;
+        int propertyLength = 0;
 
         final Mqtt5UTF8String reasonString = pubAck.getRawReasonString();
         if (reasonString != null) {
-            properyLength += 1 + reasonString.encodedLength();
+            propertyLength += 1 + reasonString.encodedLength();
         }
 
-        properyLength += Mqtt5UserProperty.encodedLength(pubAck.getUserProperties());
+        propertyLength += Mqtt5UserProperty.encodedLength(pubAck.getUserProperties());
 
-        if (!Mqtt5DataTypes.isInVariableByteIntegerRange(properyLength)) {
+        if (!Mqtt5DataTypes.isInVariableByteIntegerRange(propertyLength)) {
             throw new Mqtt5VariableByteIntegerExceededException("property length");
         }
-        return properyLength;
+        return propertyLength;
     }
 
     private void encodeFixedHeader(final Mqtt5PubAckInternal pubAckInternal, @NotNull final ByteBuf out) {

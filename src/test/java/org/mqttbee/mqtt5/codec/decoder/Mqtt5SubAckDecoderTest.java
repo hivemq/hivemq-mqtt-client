@@ -7,7 +7,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt5.message.Mqtt5SubAck;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
@@ -15,9 +14,7 @@ import org.mqttbee.mqtt5.message.suback.Mqtt5SubAckImpl;
 import org.mqttbee.mqtt5.message.suback.Mqtt5SubAckInternal;
 import org.mqttbee.mqtt5.message.suback.Mqtt5SubAckReasonCode;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * @author Silvio Giebl

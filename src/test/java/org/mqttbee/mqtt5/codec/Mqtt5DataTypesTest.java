@@ -90,7 +90,7 @@ public class Mqtt5DataTypesTest {
     }
 
     @Test
-    public void test_decodeVariableByteInteger_not_minumum_byte() {
+    public void test_decodeVariableByteInteger_not_minimum_byte() {
         final ByteBuf byteBuf = Unpooled.buffer();
         byteBuf.writeByte(0xFF).writeByte(0x00);
         assertEquals(Mqtt5DataTypes.VARIABLE_BYTE_INTEGER_NOT_MINIMUM_BYTES,

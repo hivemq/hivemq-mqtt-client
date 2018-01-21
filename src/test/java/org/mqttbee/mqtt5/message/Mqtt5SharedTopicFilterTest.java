@@ -364,7 +364,7 @@ public class Mqtt5SharedTopicFilterTest {
     }
 
     @Test
-    public void test_shared_share_name_must_not_contain_topc_level_separator() {
+    public void test_shared_share_name_must_not_contain_topic_level_separator() {
         if (source == FROM_BYTE_BUF) {
             final String shareName = "gro/up";
             final String topicFilter = "abc/def/ghi";

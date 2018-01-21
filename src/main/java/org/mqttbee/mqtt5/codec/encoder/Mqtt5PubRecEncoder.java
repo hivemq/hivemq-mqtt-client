@@ -58,19 +58,19 @@ public class Mqtt5PubRecEncoder implements Mqtt5MessageEncoder<Mqtt5PubRecIntern
     public int encodedPropertyLength(@NotNull final Mqtt5PubRecInternal pubRecInternal) {
         final Mqtt5PubRecImpl pubRec = pubRecInternal.getPubRec();
 
-        int properyLength = 0;
+        int propertyLength = 0;
 
         final Mqtt5UTF8String reasonString = pubRec.getRawReasonString();
         if (reasonString != null) {
-            properyLength += 1 + reasonString.encodedLength();
+            propertyLength += 1 + reasonString.encodedLength();
         }
 
-        properyLength += Mqtt5UserProperty.encodedLength(pubRec.getUserProperties());
+        propertyLength += Mqtt5UserProperty.encodedLength(pubRec.getUserProperties());
 
-        if (!Mqtt5DataTypes.isInVariableByteIntegerRange(properyLength)) {
+        if (!Mqtt5DataTypes.isInVariableByteIntegerRange(propertyLength)) {
             throw new Mqtt5VariableByteIntegerExceededException("property length");
         }
-        return properyLength;
+        return propertyLength;
     }
 
     private void encodeFixedHeader(@NotNull final Mqtt5PubRecInternal pubRecInternal, @NotNull final ByteBuf out) {
