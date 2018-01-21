@@ -1013,7 +1013,7 @@ class Mqtt5ConnAckDecoderTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"true", "false"})
-    void decode_must_not_multipe_wildcard_subscription_available(final boolean sendReasonString) {
+    void decode_must_not_multiple_wildcard_subscription_available(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
         
         final ByteBuf byteBuf = channel.alloc().buffer();

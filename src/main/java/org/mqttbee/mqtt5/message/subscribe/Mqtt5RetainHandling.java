@@ -9,7 +9,7 @@ public enum Mqtt5RetainHandling {
 
     SEND,
     SEND_IF_SUBSCRIPTION_DOES_NOT_EXIST,
-    DONT_SEND;
+    DO_NOT_SEND;
 
     public int getCode() {
         return ordinal();
