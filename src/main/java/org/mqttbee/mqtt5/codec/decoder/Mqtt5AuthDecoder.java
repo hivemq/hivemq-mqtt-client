@@ -24,7 +24,7 @@ import static org.mqttbee.mqtt5.codec.decoder.Mqtt5MessageDecoderUtil.*;
 public class Mqtt5AuthDecoder implements Mqtt5MessageDecoder {
 
     private static final int FLAGS = 0b0000;
-    private static final int MIN_REMAINING_LENGTH = 5; // reason code (1) + property length (min 1) + auth method (1 + min 2)
+    private static final int MIN_REMAINING_LENGTH = 2; // reason code (1) + property length (min 1)
 
     @Override
     @Nullable

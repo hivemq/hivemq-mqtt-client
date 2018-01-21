@@ -32,7 +32,7 @@ import static org.mqttbee.mqtt5.message.publish.Mqtt5PublishInternal.*;
 @Singleton
 public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
 
-    private static final int MIN_REMAINING_LENGTH = 3;
+    private static final int MIN_REMAINING_LENGTH = 3; // topic name (min 2) + property length (min 1)
 
     @Override
     @Nullable

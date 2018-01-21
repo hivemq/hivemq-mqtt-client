@@ -572,7 +572,33 @@ class Mqtt5ConnAckDecoderTest {
         //   properties
         byteBuf.writeByte(2);
         //     wrong property
-        byteBuf.writeByte(0xFF).writeByte(0);
+        byteBuf.writeByte(127).writeByte(0);
+
+        channel.writeInbound(byteBuf);
+
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"true", "false"})
+    void decode_malformed_property(final boolean sendReasonString) {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+
+        final ByteBuf byteBuf = channel.alloc().buffer();
+        // fixed header
+        //   type, flags
+        byteBuf.writeByte(0b0010_0000);
+        //   remaining length
+        byteBuf.writeByte(7);
+        // variable header
+        //   connack flags
+        byteBuf.writeByte(0b0000_0001);
+        //   reason code (success)
+        byteBuf.writeByte(0x00);
+        //   properties
+        byteBuf.writeByte(4);
+        //     malformed receive maximum identifier
+        byteBuf.writeByte(128 + 0x21).writeByte(0).writeByte(0).writeByte(10);
 
         channel.writeInbound(byteBuf);
 
