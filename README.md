@@ -1,6 +1,9 @@
 # MQTT Bee
 
+[![Build Status](https://travis-ci.com/mqtt-bee/mqtt-bee.svg?token=QxshYePt8tWLsG9B3pgf&branch=feature/BEE-6-mqtt-5-codecs)](https://travis-ci.com/mqtt-bee/mqtt-bee)
+
 MQTT 5 compatible client library with a reactive API and back pressure support.
+
 
 ## How to build
 
