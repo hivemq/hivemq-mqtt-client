@@ -16,6 +16,7 @@ import java.util.Optional;
  */
 public interface Mqtt5Connect {
 
+    int NO_KEEP_ALIVE = 0;
     long DEFAULT_SESSION_EXPIRY_INTERVAL = 0;
     long NO_SESSION_EXPIRY = 0xFFFF_FFFF;
     boolean DEFAULT_RESPONSE_INFORMATION_REQUESTED = false;
