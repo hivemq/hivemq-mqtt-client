@@ -169,7 +169,7 @@ class Mqtt5AuthDecoderTest {
 
         assertNull(auth);
 
-        final Mqtt5Disconnect disconnect = channel.readInbound();
+        final Mqtt5Disconnect disconnect = channel.readOutbound();
 
         assertNull(disconnect);
     }
@@ -188,7 +188,7 @@ class Mqtt5AuthDecoderTest {
 
         assertNull(auth);
 
-        final Mqtt5Disconnect disconnect = channel.readInbound();
+        final Mqtt5Disconnect disconnect = channel.readOutbound();
 
         assertNull(disconnect);
     }
