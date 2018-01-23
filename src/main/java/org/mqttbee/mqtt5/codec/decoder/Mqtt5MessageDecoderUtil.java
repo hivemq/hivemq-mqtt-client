@@ -3,17 +3,13 @@ package org.mqttbee.mqtt5.codec.decoder;
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.mqtt5.ChannelAttributes;
+import org.mqttbee.mqtt5.Mqtt5Util;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.handler.Mqtt5ClientData;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
-import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
-import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectImpl;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 
 /**
@@ -28,22 +24,7 @@ class Mqtt5MessageDecoderUtil {
             final Mqtt5DisconnectReasonCode reasonCode, @Nullable final String reasonString,
             @NotNull final Channel channel) {
 
-        channel.config().setAutoRead(false);
-
-        Mqtt5UTF8StringImpl mqttReasonString = null;
-        if (reasonString != null) {
-            final Boolean sendReasonString = channel.attr(ChannelAttributes.SEND_REASON_STRING).get();
-            if ((sendReasonString != null) && sendReasonString) {
-                mqttReasonString = Mqtt5UTF8StringImpl.from(reasonString);
-            }
-        }
-
-        final Mqtt5DisconnectImpl disconnect =
-                new Mqtt5DisconnectImpl(reasonCode, Mqtt5DisconnectImpl.SESSION_EXPIRY_INTERVAL_FROM_CONNECT, null,
-                        mqttReasonString, Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES);
-        final ChannelFuture disconnectFuture = channel.writeAndFlush(disconnect);
-
-        disconnectFuture.addListener(ChannelFutureListener.CLOSE);
+        Mqtt5Util.disconnect(reasonCode, reasonString, channel);
     }
 
     static void disconnectWrongFixedHeaderFlags(@NotNull final String type, @NotNull final Channel channel) {
