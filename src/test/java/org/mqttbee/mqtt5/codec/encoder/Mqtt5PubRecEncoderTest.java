@@ -225,12 +225,11 @@ class Mqtt5PubRecEncoderTest {
 
         MaximumPacketBuilder build() {
             int maxPropertyLength = Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT
-                    - 1 // type, reserved
-                    - 4 // remaining length
-                    - 4; // property length
-
-            maxPropertyLength = maxPropertyLength - 2;
-            maxPropertyLength = maxPropertyLength - 1;
+                    - 1  // type, reserved
+                    - 4  // remaining length
+                    - 4  // property length
+                    - 2  // packet identifier
+                    - 1; // reason code
 
             final int remainingBytes = maxPropertyLength
                     - 3; // reason string identifier and length
