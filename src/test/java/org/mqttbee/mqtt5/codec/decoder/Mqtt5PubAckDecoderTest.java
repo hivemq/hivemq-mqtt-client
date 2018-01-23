@@ -43,14 +43,14 @@ class Mqtt5PubAckDecoderTest {
                 // fixed header
                 //   type, flags
                 0b0100_0000,
-                //   remaining length (141)
+                //   remaining length (150)
                 (byte) (128 + 22), 1,
                 // variable header
                 //   packet identifier
                 0, 5,
                 //   reason code (success)
                 0x00,
-                //   properties (136)
+                //   properties (145)
                 (byte) (128 + 17), 1,
                 //     reason string
                 0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', 's',
@@ -395,6 +395,8 @@ class Mqtt5PubAckDecoderTest {
         //   properties
         byteBuf.writeByte(PROPERTIES_VALID_LENGTH + 1);
         byteBuf.writeBytes(PROPERTIES_VALID);
+        // padding, e.g. next message
+        byteBuf.writeByte(0b0100_0000);
 
         channel.writeInbound(byteBuf);
 
@@ -643,8 +645,6 @@ class Mqtt5PubAckDecoderTest {
         byteBuf.writeByte(10);
         //     reason string
         byteBuf.writeBytes(new byte[]{0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', '\0'});
-        // padding, e.g. next message
-        byteBuf.writeByte(0b0100_0000);
 
         channel.writeInbound(byteBuf);
 
@@ -725,8 +725,6 @@ class Mqtt5PubAckDecoderTest {
         byteBuf.writeByte(14);
         //     user properties
         byteBuf.writeBytes(new byte[]{0x26, 0, 4, 't', 'e', 's', '\0', 0, 5, 'v', 'a', 'l', 'u', 'e'});
-        // padding, e.g. next message
-        byteBuf.writeByte(0b0100_0000);
 
         channel.writeInbound(byteBuf);
 
