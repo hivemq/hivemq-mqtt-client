@@ -513,7 +513,7 @@ class Mqtt5ConnAckDecoderTest {
         //   type, flags
         byteBuf.writeByte(0b0010_0000);
         //   remaining length
-        byteBuf.writeByte(122);
+        byteBuf.writeByte(123);
         // variable header
         //   connack flags
         byteBuf.writeByte(0b0000_0001);
