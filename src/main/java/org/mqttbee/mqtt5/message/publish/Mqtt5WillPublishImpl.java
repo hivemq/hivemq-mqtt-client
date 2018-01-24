@@ -30,7 +30,7 @@ public class Mqtt5WillPublishImpl extends Mqtt5PublishImpl implements Mqtt5WillP
             final long delay) {
 
         super(topic, payload, qos, isRetain, messageExpiryInterval, payloadFormatIndicator, contentType, responseTopic,
-                correlationData, TopicAliasUse.MUST_NOT, userProperties);
+                correlationData, TopicAliasUsage.MUST_NOT, userProperties);
         this.delay = delay;
     }
 

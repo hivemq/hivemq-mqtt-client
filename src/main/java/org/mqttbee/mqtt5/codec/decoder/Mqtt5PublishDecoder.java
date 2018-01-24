@@ -21,7 +21,7 @@ import org.mqttbee.mqtt5.message.publish.Mqtt5PublishProperty;
 
 import javax.inject.Singleton;
 
-import static org.mqttbee.api.mqtt5.message.Mqtt5Publish.TopicAliasUse;
+import static org.mqttbee.api.mqtt5.message.Mqtt5Publish.TopicAliasUsage;
 import static org.mqttbee.mqtt5.codec.decoder.Mqtt5MessageDecoderUtil.*;
 import static org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl.DEFAULT_MESSAGE_EXPIRY_INTERVAL_INFINITY;
 import static org.mqttbee.mqtt5.message.publish.Mqtt5PublishInternal.*;
@@ -95,7 +95,7 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
         byte[] correlationData = null;
         ImmutableList.Builder<Mqtt5UserProperty> userPropertiesBuilder = null;
         int topicAlias = DEFAULT_NO_TOPIC_ALIAS;
-        TopicAliasUse topicAliasUse = TopicAliasUse.HAS_NOT;
+        TopicAliasUsage topicAliasUsage = TopicAliasUsage.HAS_NOT;
         ImmutableIntArray.Builder subscriptionIdentifiersBuilder = null;
 
         final int propertiesStartIndex = in.readerIndex();
@@ -177,7 +177,7 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
                                 in);
                         return null;
                     }
-                    topicAliasUse = TopicAliasUse.HAS;
+                    topicAliasUsage = TopicAliasUsage.HAS;
                     break;
 
                 case Mqtt5PublishProperty.SUBSCRIPTION_IDENTIFIER:
@@ -261,7 +261,7 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
         final ImmutableList<Mqtt5UserProperty> userProperties = Mqtt5UserProperty.build(userPropertiesBuilder);
 
         final Mqtt5PublishImpl publish = new Mqtt5PublishImpl(topic, payload, qos, retain, messageExpiryInterval,
-                payloadFormatIndicator, contentType, responseTopic, correlationData, topicAliasUse, userProperties);
+                payloadFormatIndicator, contentType, responseTopic, correlationData, topicAliasUsage, userProperties);
 
         final ImmutableIntArray subscriptionIdentifiers =
                 (subscriptionIdentifiersBuilder == null) ? DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS :

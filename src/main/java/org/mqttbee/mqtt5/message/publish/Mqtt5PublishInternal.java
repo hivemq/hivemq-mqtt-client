@@ -57,7 +57,7 @@ public class Mqtt5PublishInternal extends Mqtt5Message.Mqtt5MessageWithPropertie
                 this.topicAlias = topicAlias;
                 this.isNewTopicAlias = false;
             } else {
-                this.topicAlias = topicAliasMapping.set(topic, publish.getTopicAliasUse());
+                this.topicAlias = topicAliasMapping.set(topic, publish.getTopicAliasUsage());
                 this.isNewTopicAlias = this.topicAlias != DEFAULT_NO_TOPIC_ALIAS;
             }
         }

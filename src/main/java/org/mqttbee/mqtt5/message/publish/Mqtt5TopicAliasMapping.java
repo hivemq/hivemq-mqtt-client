@@ -1,7 +1,7 @@
 package org.mqttbee.mqtt5.message.publish;
 
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt5.message.Mqtt5Publish;
+import org.mqttbee.api.mqtt5.message.Mqtt5Publish.TopicAliasUsage;
 import org.mqttbee.mqtt5.message.Mqtt5Topic;
 
 import java.util.HashMap;
@@ -24,11 +24,11 @@ public class Mqtt5TopicAliasMapping {
         nextTopicAlias = 1;
     }
 
-    int set(@NotNull final Mqtt5Topic topic, @NotNull final Mqtt5Publish.TopicAliasUse topicAliasUse) {
+    int set(@NotNull final Mqtt5Topic topic, @NotNull final TopicAliasUsage topicAliasUsage) {
         int topicAlias = Mqtt5PublishInternal.DEFAULT_NO_TOPIC_ALIAS;
-        if (topicAliasUse != Mqtt5Publish.TopicAliasUse.MUST_NOT) {
+        if (topicAliasUsage != TopicAliasUsage.MUST_NOT) {
             if (nextTopicAlias == size) {
-                if (topicAliasUse == Mqtt5Publish.TopicAliasUse.MAY_OVERWRITE) {
+                if (topicAliasUsage == TopicAliasUsage.MAY_OVERWRITE) {
                     topicAlias = random.nextInt(size) + 1;
                     hashMap.put(topic.toString(), topicAlias);
                 }

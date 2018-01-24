@@ -24,7 +24,7 @@ public interface Mqtt5Publish {
     /**
      * The default handling for using a topic alias.
      */
-    TopicAliasUse DEFAULT_TOPIC_ALIAS_USE = TopicAliasUse.MUST_NOT;
+    TopicAliasUsage DEFAULT_TOPIC_ALIAS_USAGE = TopicAliasUsage.MUST_NOT;
 
     /**
      * @return the topic of this PUBLISH packet.
@@ -83,7 +83,7 @@ public interface Mqtt5Publish {
      * @return the handling for using a topic alias.
      */
     @NotNull
-    TopicAliasUse getTopicAliasUse();
+    TopicAliasUsage getTopicAliasUsage();
 
     /**
      * @return the optional user properties of this PUBLISH packet.
@@ -95,7 +95,7 @@ public interface Mqtt5Publish {
     /**
      * The handling for using a topic alias.
      */
-    enum TopicAliasUse {
+    enum TopicAliasUsage {
         /**
          * Indicates that an outgoing PUBLISH packet must not use a topic alias.
          */
