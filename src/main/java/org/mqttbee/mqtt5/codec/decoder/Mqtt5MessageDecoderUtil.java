@@ -208,7 +208,7 @@ class Mqtt5MessageDecoderUtil {
                     name + " must not be included if problem information is not requested", channel, in);
             return false;
         }
-        return false;
+        return true;
     }
 
     @Nullable
