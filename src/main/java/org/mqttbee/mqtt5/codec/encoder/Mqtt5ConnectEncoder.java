@@ -240,6 +240,7 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
             out.writeByte(Mqtt5ConnectProperty.REQUEST_PROBLEM_INFORMATION);
             out.writeByte(NOT_DEFAULT_PROBLEM_INFORMATION_REQUESTED);
         }
+        channel.attr(ChannelAttributes.PROBLEM_INFORMATION_REQUESTED).set(problemInformationRequested);
 
         final Mqtt5ExtendedAuthImpl extendedAuth = connect.getRawExtendedAuth();
         if (extendedAuth != null) {

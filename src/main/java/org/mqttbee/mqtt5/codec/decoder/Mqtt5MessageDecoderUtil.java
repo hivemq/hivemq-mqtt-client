@@ -69,7 +69,8 @@ class Mqtt5MessageDecoderUtil {
 
     static void disconnectOnlyOnce(
             @NotNull final String name, @NotNull final Channel channel, @NotNull final ByteBuf in) {
-        disconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, name + " must not be included more than once", channel, in);
+        disconnect(
+                Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, name + " must not be included more than once", channel, in);
     }
 
     static void disconnectMalformedUTF8String(
@@ -195,6 +196,40 @@ class Mqtt5MessageDecoderUtil {
         }
         userPropertiesBuilder.add(userProperty);
         return userPropertiesBuilder;
+    }
+
+    private static boolean checkProblemInformationRequested(
+            @NotNull final String name, @NotNull final Channel channel, @NotNull final ByteBuf in) {
+
+        final Boolean problemInformationRequested = channel.attr(ChannelAttributes.PROBLEM_INFORMATION_REQUESTED).get();
+        if ((problemInformationRequested != null) && !problemInformationRequested) {
+            disconnect(
+                    Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+                    name + " must not be included if problem information is not requested", channel, in);
+            return false;
+        }
+        return false;
+    }
+
+    @Nullable
+    static Mqtt5UTF8String decodeReasonStringCheckProblemInformationRequested(
+            @Nullable final Mqtt5UTF8String current, @NotNull final Channel channel, @NotNull final ByteBuf in) {
+
+        if (!checkProblemInformationRequested("reason string", channel, in)) {
+            return null;
+        }
+        return decodeUTF8StringOnlyOnce(current, "reason string", channel, in);
+    }
+
+    @Nullable
+    static ImmutableList.Builder<Mqtt5UserProperty> decodeUserPropertyCheckProblemInformationRequested(
+            @Nullable final ImmutableList.Builder<Mqtt5UserProperty> userPropertiesBuilder,
+            @NotNull final Channel channel, @NotNull final ByteBuf in) {
+
+        if ((userPropertiesBuilder != null) && !checkProblemInformationRequested("user property", channel, in)) {
+            return null;
+        }
+        return decodeUserProperty(userPropertiesBuilder, channel, in);
     }
 
     static boolean checkBoolean(

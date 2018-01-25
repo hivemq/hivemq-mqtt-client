@@ -35,6 +35,9 @@ public class ChannelAttributes {
 //    public static final AttributeKey<Boolean> RESTRICTION_OUTGOING_SHARED_SUBSCRIPTION_AVAILABLE =
 //            AttributeKey.valueOf("restriction.out.shared.subscription.available");
 
+    public static final AttributeKey<Boolean> PROBLEM_INFORMATION_REQUESTED =
+            AttributeKey.valueOf("problem.information.requested");
+
     public static final AttributeKey<Boolean> SEND_REASON_STRING = AttributeKey.valueOf("reason.string.send");
 
     public static final AttributeKey<Boolean> VALIDATE_PAYLOAD_FORMAT =
