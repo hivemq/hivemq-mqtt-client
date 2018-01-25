@@ -25,7 +25,7 @@ public class Mqtt5PubCompEncoder implements Mqtt5MessageEncoder<Mqtt5PubCompInte
 
     public static final Mqtt5PubCompEncoder INSTANCE = new Mqtt5PubCompEncoder();
 
-    private static final int FIXED_HEADER = Mqtt5MessageType.PUBACK.getCode() << 4;
+    private static final int FIXED_HEADER = Mqtt5MessageType.PUBCOMP.getCode() << 4;
 
     @Override
     public void encode(
