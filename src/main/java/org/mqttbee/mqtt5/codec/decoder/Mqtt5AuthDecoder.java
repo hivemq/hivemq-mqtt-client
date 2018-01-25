@@ -84,14 +84,15 @@ public class Mqtt5AuthDecoder implements Mqtt5MessageDecoder {
                     break;
 
                 case Mqtt5AuthProperty.REASON_STRING:
-                    reasonString = decodeUTF8StringOnlyOnce(reasonString, "reason string", channel, in);
+                    reasonString = decodeReasonStringCheckProblemInformationRequested(reasonString, channel, in);
                     if (reasonString == null) {
                         return null;
                     }
                     break;
 
                 case Mqtt5AuthProperty.USER_PROPERTY:
-                    userPropertiesBuilder = decodeUserProperty(userPropertiesBuilder, channel, in);
+                    userPropertiesBuilder =
+                            decodeUserPropertyCheckProblemInformationRequested(userPropertiesBuilder, channel, in);
                     if (userPropertiesBuilder == null) {
                         return null;
                     }

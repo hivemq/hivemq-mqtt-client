@@ -74,14 +74,16 @@ public class Mqtt5PubAckDecoder implements Mqtt5MessageDecoder {
 
                     switch (propertyIdentifier) {
                         case Mqtt5PubAckProperty.REASON_STRING:
-                            reasonString = decodeUTF8StringOnlyOnce(reasonString, "reason string", channel, in);
+                            reasonString =
+                                    decodeReasonStringCheckProblemInformationRequested(reasonString, channel, in);
                             if (reasonString == null) {
                                 return null;
                             }
                             break;
 
                         case Mqtt5PubAckProperty.USER_PROPERTY:
-                            userPropertiesBuilder = decodeUserProperty(userPropertiesBuilder, channel, in);
+                            userPropertiesBuilder = decodeUserPropertyCheckProblemInformationRequested(
+                                    userPropertiesBuilder, channel, in);
                             if (userPropertiesBuilder == null) {
                                 return null;
                             }
