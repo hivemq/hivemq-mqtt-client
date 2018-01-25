@@ -25,7 +25,7 @@ public class Mqtt5PubRelEncoder implements Mqtt5MessageEncoder<Mqtt5PubRelIntern
 
     public static final Mqtt5PubRelEncoder INSTANCE = new Mqtt5PubRelEncoder();
 
-    private static final int FIXED_HEADER = (Mqtt5MessageType.PUBACK.getCode() << 4) + 0b0010;
+    private static final int FIXED_HEADER = (Mqtt5MessageType.PUBREL.getCode() << 4) + 0b0010;
 
     @Override
     public void encode(
