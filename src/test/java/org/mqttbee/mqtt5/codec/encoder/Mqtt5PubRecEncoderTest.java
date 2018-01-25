@@ -224,7 +224,7 @@ class Mqtt5PubRecEncoderTest {
         final Mqtt5UTF8String property = requireNonNull(Mqtt5UTF8String.from("property"));
 
         MaximumPacketBuilder build() {
-            int maxPropertyLength = Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT
+            final int maxPropertyLength = Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT
                     - 1  // type, reserved
                     - 4  // remaining length
                     - 4  // property length
@@ -257,7 +257,7 @@ class Mqtt5PubRecEncoderTest {
             return getMaxPaddedReasonString("");
         }
 
-        Mqtt5UTF8String getMaxPaddedReasonString(String withSuffix) {
+        Mqtt5UTF8String getMaxPaddedReasonString(final String withSuffix) {
             return Mqtt5UTF8String.from(reasonStringBuilder.toString() +  withSuffix);
         }
 
@@ -265,7 +265,7 @@ class Mqtt5PubRecEncoderTest {
             return getMaxPossibleUserProperties(0);
         }
 
-        ImmutableList<Mqtt5UserProperty> getMaxPossibleUserProperties(int withExtraUserProperties) {
+        ImmutableList<Mqtt5UserProperty> getMaxPossibleUserProperties(final int withExtraUserProperties) {
             for (int i = 0; i < withExtraUserProperties; i++) {
                 userPropertiesBuilder.add(new Mqtt5UserProperty(user, property));
             }
