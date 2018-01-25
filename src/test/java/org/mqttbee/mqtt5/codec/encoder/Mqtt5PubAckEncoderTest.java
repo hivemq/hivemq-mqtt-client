@@ -190,7 +190,7 @@ class Mqtt5PubAckEncoderTest {
     }
 
     @Test
-    void encode_omitUserProperty() {
+    void encode_omitUserPropertyIfMaxAllowedSizeTooSmall() {
         // MQTT v5.0 Spec §3.4.2.2.3
         final byte[] expected = {
                 // fixed header
