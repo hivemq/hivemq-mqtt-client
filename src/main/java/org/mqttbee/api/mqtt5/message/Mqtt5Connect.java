@@ -2,6 +2,7 @@ package org.mqttbee.api.mqtt5.message;
 
 import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifier;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
@@ -41,7 +42,7 @@ public interface Mqtt5Connect {
 
     /**
      * @return the session expiry interval the client wants to use. The default is {@link
-     * #DEFAULT_SESSION_EXPIRY_INTERVAL}. If is is {@link #NO_SESSION_EXPIRY} the session does not expire.
+     * #DEFAULT_SESSION_EXPIRY_INTERVAL}. If it is {@link #NO_SESSION_EXPIRY} the session does not expire.
      */
     long getSessionExpiryInterval();
 
@@ -125,7 +126,7 @@ public interface Mqtt5Connect {
          * The default maximum packet size the client accepts from the server which indicates that the packet size is
          * not limited beyond the restrictions of the encoding.
          */
-        long DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT = Integer.MAX_VALUE;
+        int DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT = Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT;
 
         /**
          * @return the maximum amount of not acknowledged publishes with QoS 1 or 2 the client accepts concurrently. The
@@ -143,7 +144,7 @@ public interface Mqtt5Connect {
          * @return the maximum packet size the client accepts from the server. The default is {@link
          * #DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT}.
          */
-        long getMaximumPacketSize();
+        int getMaximumPacketSize();
 
     }
 

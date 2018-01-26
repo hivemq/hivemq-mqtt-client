@@ -222,7 +222,7 @@ class Mqtt5PubRecDecoderTest {
                 0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e',
                 0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'
         };
-        channel.attr(ChannelAttributes.INCOMING_MAXIMUM_PACKET_SIZE).set((long) (encoded.length - 1));
+        channel.attr(ChannelAttributes.INCOMING_MAXIMUM_PACKET_SIZE).set(encoded.length - 1);
         decodeNok(encoded, Mqtt5DisconnectReasonCode.PACKET_TOO_LARGE);
     }
 

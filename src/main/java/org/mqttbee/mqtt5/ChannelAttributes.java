@@ -15,7 +15,7 @@ public class ChannelAttributes {
             AttributeKey.valueOf("restriction.in.receive.counter");
     public static final AttributeKey<Mqtt5Topic[]> INCOMING_TOPIC_ALIAS_MAPPING =
             AttributeKey.valueOf("in.topic.alias.mapping");
-    public static final AttributeKey<Long> INCOMING_MAXIMUM_PACKET_SIZE = AttributeKey.valueOf("in.packet.size.max");
+    public static final AttributeKey<Integer> INCOMING_MAXIMUM_PACKET_SIZE = AttributeKey.valueOf("in.packet.size.max");
 
     public static final AttributeKey<Integer> OUTGOING_RECEIVE_MAXIMUM =
             AttributeKey.valueOf("restriction.out.receive.max");
@@ -23,7 +23,8 @@ public class ChannelAttributes {
             AttributeKey.valueOf("restriction.out.receive.counter");
     public static final AttributeKey<Mqtt5TopicAliasMapping> OUTGOING_TOPIC_ALIAS_MAPPING =
             AttributeKey.valueOf("out.topic.alias.mapping");
-    public static final AttributeKey<Long> OUTGOING_MAXIMUM_PACKET_SIZE = AttributeKey.valueOf("out.packet.size.max");
+    public static final AttributeKey<Integer> OUTGOING_MAXIMUM_PACKET_SIZE =
+            AttributeKey.valueOf("out.packet.size.max");
 //    public static final AttributeKey<Integer> RESTRICTION_OUTGOING_MAXIMUM_QOS =
 //            AttributeKey.valueOf("restriction.out.qos.max");
 //    public static final AttributeKey<Boolean> RESTRICTION_OUTGOING_RETAIN_AVAILABLE =

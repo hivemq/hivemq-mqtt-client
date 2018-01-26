@@ -18,10 +18,6 @@ import java.util.Optional;
 public interface Mqtt5Publish {
 
     /**
-     * The default message expiry interval which indicates that the message does not expire.
-     */
-    long DEFAULT_MESSAGE_EXPIRY_INTERVAL_INFINITY = Long.MAX_VALUE;
-    /**
      * The default handling for using a topic alias.
      */
     TopicAliasUsage DEFAULT_TOPIC_ALIAS_USAGE = TopicAliasUsage.MUST_NOT;
@@ -50,10 +46,10 @@ public interface Mqtt5Publish {
     boolean isRetain();
 
     /**
-     * @return the message expiry interval of this PUBLISH packet. The default is {@link
-     * #DEFAULT_MESSAGE_EXPIRY_INTERVAL_INFINITY}.
+     * @return the optional message expiry interval of this PUBLISH packet.
      */
-    long getMessageExpiryInterval();
+    @NotNull
+    Optional<Long> getMessageExpiryInterval();
 
     /**
      * @return the optional payload format indicator of this PUBLISH packet.
@@ -110,11 +106,11 @@ public interface Mqtt5Publish {
          */
         MAY_OVERWRITE,
         /**
-         * Indicates that a incoming PUBLISH packet does not have a topic alias.
+         * Indicates that an incoming PUBLISH packet does not have a topic alias.
          */
         HAS_NOT,
         /**
-         * Indicates that a incoming PUBLISH packet has a topic alias.
+         * Indicates that an incoming PUBLISH packet has a topic alias.
          */
         HAS
     }
