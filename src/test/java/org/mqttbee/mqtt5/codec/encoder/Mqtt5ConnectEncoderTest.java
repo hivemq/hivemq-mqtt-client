@@ -7,7 +7,6 @@ import io.netty.handler.codec.EncoderException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mqttbee.api.mqtt5.message.Mqtt5WillPublish;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.*;
 import org.mqttbee.mqtt5.message.auth.Mqtt5ExtendedAuthImpl;
@@ -358,7 +357,7 @@ class Mqtt5ConnectEncoderTest {
         final Mqtt5ClientIdentifier clientIdentifier = requireNonNull(Mqtt5ClientIdentifier.from("test"));
         final Mqtt5WillPublishImpl willPublish = new Mqtt5WillPublishImpl(
                 willTopic, willPayload, Mqtt5QoS.AT_MOST_ONCE, false,
-                Mqtt5WillPublish.DEFAULT_MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null,
+                Mqtt5WillPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null,
                 null, null, ImmutableList.of(), 0);
         final Mqtt5ConnectImpl connect = new Mqtt5ConnectImpl(
                 clientIdentifier, 0, false, 0, false, true,
@@ -374,7 +373,7 @@ class Mqtt5ConnectEncoderTest {
         final Mqtt5ClientIdentifier clientIdentifier = requireNonNull(Mqtt5ClientIdentifier.from("test"));
         final Mqtt5WillPublishImpl willPublish = new Mqtt5WillPublishImpl(
                 willTopic, willPayload, Mqtt5QoS.AT_MOST_ONCE, false,
-                Mqtt5WillPublish.DEFAULT_MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null,
+                Mqtt5WillPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null,
                 null, null, ImmutableList.of(), 0);
         final Mqtt5ConnectImpl connect = new Mqtt5ConnectImpl(
                 clientIdentifier, 0, false, 0, false, true,
@@ -390,7 +389,7 @@ class Mqtt5ConnectEncoderTest {
         final Mqtt5ClientIdentifier clientIdentifier = requireNonNull(Mqtt5ClientIdentifier.from("test"));
         final Mqtt5WillPublishImpl willPublish = new Mqtt5WillPublishImpl(
                 willTopic, willPayload, Mqtt5QoS.AT_MOST_ONCE, false,
-                Mqtt5WillPublish.DEFAULT_MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null,
+                Mqtt5WillPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null,
                 null, null, ImmutableList.of(), 0);
         final Mqtt5ConnectImpl connect = new Mqtt5ConnectImpl(
                 clientIdentifier, 0, false, 0, false, true,
@@ -406,7 +405,7 @@ class Mqtt5ConnectEncoderTest {
         final Mqtt5ClientIdentifier clientIdentifier = requireNonNull(Mqtt5ClientIdentifier.from("test"));
         final Mqtt5WillPublishImpl willPublish = new Mqtt5WillPublishImpl(
                 willTopic, null, Mqtt5QoS.AT_MOST_ONCE, false,
-                Mqtt5WillPublish.DEFAULT_MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null,
+                Mqtt5WillPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null,
                 null, correlationData, ImmutableList.of(), 0);
         final Mqtt5ConnectImpl connect = new Mqtt5ConnectImpl(
                 clientIdentifier, 0, false, 0, false, true,
@@ -427,7 +426,7 @@ class Mqtt5ConnectEncoderTest {
         final Mqtt5ClientIdentifier clientIdentifier = requireNonNull(Mqtt5ClientIdentifier.from("test"));
         final Mqtt5WillPublishImpl willPublish = new Mqtt5WillPublishImpl(
                 willTopic, null, Mqtt5QoS.AT_MOST_ONCE, false,
-                Mqtt5WillPublish.DEFAULT_MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null,
+                Mqtt5WillPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null,
                 null, null, tooManyUserProperties, 0);
         final Mqtt5ConnectImpl connect = new Mqtt5ConnectImpl(
                 clientIdentifier, 0, false, 0, false, true,
