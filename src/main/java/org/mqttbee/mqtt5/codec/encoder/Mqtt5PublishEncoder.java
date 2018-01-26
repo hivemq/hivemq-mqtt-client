@@ -15,7 +15,7 @@ import org.mqttbee.mqtt5.message.publish.Mqtt5PublishProperty;
 
 import javax.inject.Singleton;
 
-import static org.mqttbee.api.mqtt5.message.Mqtt5Publish.DEFAULT_MESSAGE_EXPIRY_INTERVAL_INFINITY;
+import static org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY;
 import static org.mqttbee.mqtt5.message.publish.Mqtt5PublishInternal.DEFAULT_NO_TOPIC_ALIAS;
 
 /**
@@ -72,7 +72,7 @@ public class Mqtt5PublishEncoder implements Mqtt5MessageEncoder<Mqtt5PublishInte
 
         int propertyLength = 0;
 
-        if (publish.getMessageExpiryInterval() != DEFAULT_MESSAGE_EXPIRY_INTERVAL_INFINITY) {
+        if (publish.getRawMessageExpiryInterval() != MESSAGE_EXPIRY_INTERVAL_INFINITY) {
             propertyLength += 5;
         }
 
@@ -155,8 +155,8 @@ public class Mqtt5PublishEncoder implements Mqtt5MessageEncoder<Mqtt5PublishInte
         final int propertyLength = publishInternal.encodedPropertyLength();
         Mqtt5DataTypes.encodeVariableByteInteger(propertyLength, out);
 
-        final long messageExpiryInterval = publish.getMessageExpiryInterval();
-        if (messageExpiryInterval != DEFAULT_MESSAGE_EXPIRY_INTERVAL_INFINITY) {
+        final long messageExpiryInterval = publish.getRawMessageExpiryInterval();
+        if (messageExpiryInterval != MESSAGE_EXPIRY_INTERVAL_INFINITY) {
             out.writeByte(Mqtt5PublishProperty.MESSAGE_EXPIRY_INTERVAL);
             out.writeInt((int) messageExpiryInterval);
         }

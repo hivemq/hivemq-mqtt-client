@@ -96,7 +96,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
         boolean maximumQoSPresent = false;
         boolean retainAvailable = Restrictions.DEFAULT_RETAIN_AVAILABLE;
         boolean retainAvailablePresent = false;
-        long maximumPacketSize = Restrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT;
+        int maximumPacketSize = Restrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT;
         boolean maximumPacketSizePresent = false;
         boolean wildCardSubscriptionAvailable = Restrictions.DEFAULT_WILDCARD_SUBSCRIPTION_AVAILABLE;
         boolean wildCardSubscriptionAvailablePresent = false;
@@ -227,15 +227,16 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                     if (!checkIntOnlyOnce(maximumPacketSizePresent, "maximum packet size", channel, in)) {
                         return null;
                     }
-                    maximumPacketSize = in.readUnsignedInt();
-                    if (maximumPacketSize == 0) {
+                    final long maximumPacketSizeTemp = in.readUnsignedInt();
+                    if (maximumPacketSizeTemp == 0) {
                         disconnect(
                                 Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "maximum packet size must not be 0", channel,
                                 in);
                         return null;
                     }
                     maximumPacketSizePresent = true;
-                    if (maximumPacketSize < Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT) {
+                    if (maximumPacketSizeTemp < Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT) {
+                        maximumPacketSize = (int) maximumPacketSizeTemp;
                         restrictionsPresent = true;
                         channel.attr(ChannelAttributes.OUTGOING_MAXIMUM_PACKET_SIZE).set(maximumPacketSize);
                     }

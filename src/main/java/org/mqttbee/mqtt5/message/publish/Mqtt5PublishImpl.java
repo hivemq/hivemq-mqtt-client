@@ -16,6 +16,8 @@ import java.util.Optional;
  */
 public class Mqtt5PublishImpl implements Mqtt5Publish {
 
+    public static final long MESSAGE_EXPIRY_INTERVAL_INFINITY = Long.MAX_VALUE;
+
     private final Mqtt5Topic topic;
     private final byte[] payload;
     private final Mqtt5QoS qos;
@@ -76,8 +78,14 @@ public class Mqtt5PublishImpl implements Mqtt5Publish {
         return isRetain;
     }
 
+    @NotNull
     @Override
-    public long getMessageExpiryInterval() {
+    public Optional<Long> getMessageExpiryInterval() {
+        return (messageExpiryInterval == MESSAGE_EXPIRY_INTERVAL_INFINITY) ? Optional.empty() :
+                Optional.of(messageExpiryInterval);
+    }
+
+    public long getRawMessageExpiryInterval() {
         return messageExpiryInterval;
     }
 

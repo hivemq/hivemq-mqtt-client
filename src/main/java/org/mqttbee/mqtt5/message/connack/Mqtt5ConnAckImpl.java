@@ -141,7 +141,7 @@ public class Mqtt5ConnAckImpl implements Mqtt5ConnAck, Mqtt5Message {
 
         private final int receiveMaximum;
         private final int topicAliasMaximum;
-        private final long maximumPacketSize;
+        private final int maximumPacketSize;
         private final Mqtt5QoS maximumQoS;
         private final boolean isRetainAvailable;
         private final boolean isWildcardSubscriptionAvailable;
@@ -149,7 +149,7 @@ public class Mqtt5ConnAckImpl implements Mqtt5ConnAck, Mqtt5Message {
         private final boolean isSharedSubscriptionAvailable;
 
         public RestrictionsImpl(
-                final int receiveMaximum, final int topicAliasMaximum, final long maximumPacketSize,
+                final int receiveMaximum, final int topicAliasMaximum, final int maximumPacketSize,
                 final Mqtt5QoS maximumQoS, final boolean isRetainAvailable,
                 final boolean isWildcardSubscriptionAvailable, final boolean isSubscriptionIdentifierAvailable,
                 final boolean isSharedSubscriptionAvailable) {
@@ -174,7 +174,7 @@ public class Mqtt5ConnAckImpl implements Mqtt5ConnAck, Mqtt5Message {
         }
 
         @Override
-        public long getMaximumPacketSize() {
+        public int getMaximumPacketSize() {
             return maximumPacketSize;
         }
 

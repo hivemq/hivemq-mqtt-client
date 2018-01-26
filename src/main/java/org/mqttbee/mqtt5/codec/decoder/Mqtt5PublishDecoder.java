@@ -23,7 +23,7 @@ import javax.inject.Singleton;
 
 import static org.mqttbee.api.mqtt5.message.Mqtt5Publish.TopicAliasUsage;
 import static org.mqttbee.mqtt5.codec.decoder.Mqtt5MessageDecoderUtil.*;
-import static org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl.DEFAULT_MESSAGE_EXPIRY_INTERVAL_INFINITY;
+import static org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY;
 import static org.mqttbee.mqtt5.message.publish.Mqtt5PublishInternal.*;
 
 /**
@@ -88,7 +88,7 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
             return null;
         }
 
-        long messageExpiryInterval = DEFAULT_MESSAGE_EXPIRY_INTERVAL_INFINITY;
+        long messageExpiryInterval = MESSAGE_EXPIRY_INTERVAL_INFINITY;
         Mqtt5PayloadFormatIndicator payloadFormatIndicator = null;
         Mqtt5UTF8String contentType = null;
         Mqtt5Topic responseTopic = null;
@@ -111,8 +111,8 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
             switch (propertyIdentifier) {
                 case Mqtt5PublishProperty.MESSAGE_EXPIRY_INTERVAL:
                     if (!checkIntOnlyOnce(
-                            messageExpiryInterval, DEFAULT_MESSAGE_EXPIRY_INTERVAL_INFINITY, "message expiry interval",
-                            channel, in)) {
+                            messageExpiryInterval, MESSAGE_EXPIRY_INTERVAL_INFINITY, "message expiry interval", channel,
+                            in)) {
                         return null;
                     }
                     messageExpiryInterval = in.readUnsignedInt();

@@ -15,7 +15,7 @@ public class Mqtt5ClientMessageDecoders implements Mqtt5MessageDecoders {
     private final Mqtt5MessageDecoder[] decoders;
 
     @Inject
-    public Mqtt5ClientMessageDecoders(
+    Mqtt5ClientMessageDecoders(
             final Mqtt5ConnAckDecoder connAckDecoder, final Mqtt5PublishDecoder publishDecoder,
             final Mqtt5PubAckDecoder pubAckDecoder, final Mqtt5PubRecDecoder pubRecDecoder,
             final Mqtt5PubRelDecoder pubRelDecoder, final Mqtt5PubCompDecoder pubCompDecoder,
@@ -39,6 +39,9 @@ public class Mqtt5ClientMessageDecoders implements Mqtt5MessageDecoders {
     @Nullable
     @Override
     public Mqtt5MessageDecoder get(final int code) {
+        if (code < 0 || code >= decoders.length) {
+            return null;
+        }
         return decoders[code];
     }
 

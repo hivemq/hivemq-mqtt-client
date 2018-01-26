@@ -2,6 +2,7 @@ package org.mqttbee.api.mqtt5.message;
 
 import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifier;
 import org.mqttbee.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
@@ -102,7 +103,7 @@ public interface Mqtt5ConnAck {
          * The default maximum packet size the server accepts from the client which indicates that the packet size is
          * not limited beyond the restrictions of the encoding.
          */
-        long DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT = Integer.MAX_VALUE;
+        int DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT = Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT;
         /**
          * The default maximum QoS the server accepts from the client.
          */
@@ -140,7 +141,7 @@ public interface Mqtt5ConnAck {
          * @return the maximum packet size the server accepts from the client. The default is {@link
          * #DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT}.
          */
-        long getMaximumPacketSize();
+        int getMaximumPacketSize();
 
         /**
          * @return the maximum QoS the server accepts from the client. The default is {@link #DEFAULT_MAXIMUM_QOS}.

@@ -17,7 +17,7 @@ import javax.inject.Inject;
 public class Mqtt5Encoder extends MessageToByteEncoder<Mqtt5Message> {
 
     @Inject
-    public Mqtt5Encoder() {
+    Mqtt5Encoder() {
         super(Mqtt5Message.class, true);
     }
 
@@ -27,12 +27,12 @@ public class Mqtt5Encoder extends MessageToByteEncoder<Mqtt5Message> {
 
         final int encodedLength = message.encodedLength();
 
-        final Long maximumPacketSize = ctx.channel().attr(ChannelAttributes.OUTGOING_MAXIMUM_PACKET_SIZE).get();
+        final Integer maximumPacketSize = ctx.channel().attr(ChannelAttributes.OUTGOING_MAXIMUM_PACKET_SIZE).get();
         if ((maximumPacketSize != null) && (encodedLength > maximumPacketSize)) {
             throw new Mqtt5MaximumPacketSizeExceededException();
         }
 
-        return ctx.alloc().ioBuffer(encodedLength);
+        return ctx.alloc().ioBuffer(encodedLength, encodedLength);
     }
 
     @Override

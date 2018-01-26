@@ -96,7 +96,8 @@ public class Mqtt5PublishDecoderTest {
         assertEquals("topic", publish.getTopic().toString());
         assertEquals(Mqtt5QoS.AT_LEAST_ONCE, publish.getQos());
         assertEquals(true, publish.isRetain());
-        assertEquals(10, publish.getMessageExpiryInterval());
+        assertTrue(publish.getMessageExpiryInterval().isPresent());
+        assertEquals(10, (long) publish.getMessageExpiryInterval().get());
         assertTrue(publish.getPayloadFormatIndicator().isPresent());
         assertEquals(Mqtt5PayloadFormatIndicator.UNSPECIFIED, publish.getPayloadFormatIndicator().get());
         assertTrue(publish.getContentType().isPresent());
@@ -151,7 +152,7 @@ public class Mqtt5PublishDecoderTest {
         assertEquals("topic", publish.getTopic().toString());
         assertEquals(Mqtt5QoS.AT_MOST_ONCE, publish.getQos());
         assertEquals(true, publish.isRetain());
-        assertEquals(Long.MAX_VALUE, publish.getMessageExpiryInterval());
+        assertFalse(publish.getMessageExpiryInterval().isPresent());
         assertTrue(publish.getPayloadFormatIndicator().isPresent());
         assertEquals(Mqtt5PayloadFormatIndicator.UNSPECIFIED, publish.getPayloadFormatIndicator().get());
 
@@ -311,7 +312,8 @@ public class Mqtt5PublishDecoderTest {
                 0x00
         };
         final Mqtt5PublishImpl publish = decode(encoded);
-        assertEquals(10L, publish.getMessageExpiryInterval());
+        assertTrue(publish.getMessageExpiryInterval().isPresent());
+        assertEquals(10, (long) publish.getMessageExpiryInterval().get());
     }
 
     @Test

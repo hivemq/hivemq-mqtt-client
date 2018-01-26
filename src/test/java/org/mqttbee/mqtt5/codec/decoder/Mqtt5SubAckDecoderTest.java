@@ -257,7 +257,6 @@ class Mqtt5SubAckDecoderTest {
 
     @Test
     void encode_noReasonCode_returnsNull() {
-        System.out.println("hello");
         final byte[] encoded = {
                 // fixed header
                 //   type, flags

@@ -18,16 +18,18 @@ import static org.mqttbee.mqtt5.codec.decoder.Mqtt5MessageDecoderUtil.disconnect
  */
 public class Mqtt5Decoder extends ByteToMessageDecoder {
 
+    private static final int MIN_FIXED_HEADER_LENGTH = 2;
+
     private final Mqtt5MessageDecoders decoders;
 
     @Inject
-    public Mqtt5Decoder(final Mqtt5MessageDecoders decoders) {
+    Mqtt5Decoder(final Mqtt5MessageDecoders decoders) {
         this.decoders = decoders;
     }
 
     @Override
     protected void decode(final ChannelHandlerContext ctx, final ByteBuf in, final List<Object> out) throws Exception {
-        if (in.readableBytes() < 2) {
+        if (in.readableBytes() < MIN_FIXED_HEADER_LENGTH) {
             return;
         }
         in.markReaderIndex();
@@ -52,7 +54,7 @@ public class Mqtt5Decoder extends ByteToMessageDecoder {
         final int fixedHeaderLength = readerIndexAfterFixedHeader - readerIndexBeforeFixedHeader;
         final int packetSize = fixedHeaderLength + remainingLength;
 
-        final Long maximumPacketSize =
+        final Integer maximumPacketSize =
                 ctx.channel().attr(ChannelAttributes.INCOMING_MAXIMUM_PACKET_SIZE).get();
         if ((maximumPacketSize != null) && (packetSize > maximumPacketSize)) {
             disconnect(Mqtt5DisconnectReasonCode.PACKET_TOO_LARGE, null, ctx.channel(), in);
