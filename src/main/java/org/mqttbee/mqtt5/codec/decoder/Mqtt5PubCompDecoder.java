@@ -31,12 +31,12 @@ public class Mqtt5PubCompDecoder implements Mqtt5MessageDecoder {
     @Nullable
     public Mqtt5PubCompInternal decode(final int flags, @NotNull final Channel channel, @NotNull final ByteBuf in) {
         if (flags != FLAGS) {
-            disconnectWrongFixedHeaderFlags("PUBCOMP", channel, in);
+            disconnectWrongFixedHeaderFlags("PUBCOMP", channel);
             return null;
         }
 
         if (in.readableBytes() < MIN_REMAINING_LENGTH) {
-            disconnectRemainingLengthTooShort(channel, in);
+            disconnectRemainingLengthTooShort(channel);
             return null;
         }
 
@@ -49,18 +49,18 @@ public class Mqtt5PubCompDecoder implements Mqtt5MessageDecoder {
         if (in.isReadable()) {
             reasonCode = Mqtt5PubCompReasonCode.fromCode(in.readUnsignedByte());
             if (reasonCode == null) {
-                disconnectWrongReasonCode("PUBCOMP", channel, in);
+                disconnectWrongReasonCode("PUBCOMP", channel);
                 return null;
             }
 
             if (in.isReadable()) {
                 final int propertyLength = Mqtt5DataTypes.decodeVariableByteInteger(in);
                 if (propertyLength < 0) {
-                    disconnectMalformedPropertyLength(channel, in);
+                    disconnectMalformedPropertyLength(channel);
                     return null;
                 }
                 if (in.readableBytes() != propertyLength) {
-                    disconnectMustNotHavePayload("PUBCOMP", channel, in);
+                    disconnectMustNotHavePayload("PUBCOMP", channel);
                     return null;
                 }
 
@@ -68,7 +68,7 @@ public class Mqtt5PubCompDecoder implements Mqtt5MessageDecoder {
 
                     final int propertyIdentifier = Mqtt5DataTypes.decodeVariableByteInteger(in);
                     if (propertyIdentifier < 0) {
-                        disconnectMalformedPropertyIdentifier(channel, in);
+                        disconnectMalformedPropertyIdentifier(channel);
                         return null;
                     }
 
@@ -90,7 +90,7 @@ public class Mqtt5PubCompDecoder implements Mqtt5MessageDecoder {
                             break;
 
                         default:
-                            disconnectWrongProperty("PUBCOMP", channel, in);
+                            disconnectWrongProperty("PUBCOMP", channel);
                             return null;
                     }
                 }

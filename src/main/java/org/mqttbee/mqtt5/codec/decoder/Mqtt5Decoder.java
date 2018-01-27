@@ -1,6 +1,7 @@
 package org.mqttbee.mqtt5.codec.decoder;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import org.mqttbee.mqtt5.ChannelAttributes;
@@ -29,6 +30,11 @@ public class Mqtt5Decoder extends ByteToMessageDecoder {
 
     @Override
     protected void decode(final ChannelHandlerContext ctx, final ByteBuf in, final List<Object> out) throws Exception {
+        final Channel channel = ctx.channel();
+        if (!channel.isOpen()) {
+            return;
+        }
+
         if (in.readableBytes() < MIN_FIXED_HEADER_LENGTH) {
             return;
         }
@@ -46,7 +52,7 @@ public class Mqtt5Decoder extends ByteToMessageDecoder {
         if (remainingLength == Mqtt5DataTypes.VARIABLE_BYTE_INTEGER_TOO_LARGE ||
                 remainingLength == Mqtt5DataTypes.VARIABLE_BYTE_INTEGER_NOT_MINIMUM_BYTES) {
 
-            disconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "malformed remaining length", ctx.channel(), in);
+            disconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "malformed remaining length", channel);
             return;
         }
 
@@ -55,9 +61,9 @@ public class Mqtt5Decoder extends ByteToMessageDecoder {
         final int packetSize = fixedHeaderLength + remainingLength;
 
         final Integer maximumPacketSize =
-                ctx.channel().attr(ChannelAttributes.INCOMING_MAXIMUM_PACKET_SIZE).get();
+                channel.attr(ChannelAttributes.INCOMING_MAXIMUM_PACKET_SIZE).get();
         if ((maximumPacketSize != null) && (packetSize > maximumPacketSize)) {
-            disconnect(Mqtt5DisconnectReasonCode.PACKET_TOO_LARGE, null, ctx.channel(), in);
+            disconnect(Mqtt5DisconnectReasonCode.PACKET_TOO_LARGE, null, channel);
             return;
         }
 
@@ -73,11 +79,11 @@ public class Mqtt5Decoder extends ByteToMessageDecoder {
 
         final Mqtt5MessageDecoder decoder = decoders.get(messageType);
         if (decoder == null) {
-            disconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "wrong packet", ctx.channel(), in);
+            disconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "wrong packet", channel);
             return;
         }
 
-        final Mqtt5Message message = decoder.decode(flags, ctx.channel(), messageBuffer);
+        final Mqtt5Message message = decoder.decode(flags, channel, messageBuffer);
 
         if (message != null) {
             out.add(message);

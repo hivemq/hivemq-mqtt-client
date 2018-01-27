@@ -23,14 +23,14 @@ public class Mqtt5PingRespDecoder implements Mqtt5MessageDecoder {
     @Override
     public Mqtt5PingRespImpl decode(final int flags, @NotNull final Channel channel, @NotNull final ByteBuf in) {
         if (flags != FLAGS) {
-            disconnectWrongFixedHeaderFlags("PING", channel, in);
+            disconnectWrongFixedHeaderFlags("PING", channel);
             return null;
         }
 
         if (in.readableBytes() != 0) {
             disconnect(
                     Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "PING must not have a variable header or payload",
-                    channel, in);
+                    channel);
             return null;
         }
 
