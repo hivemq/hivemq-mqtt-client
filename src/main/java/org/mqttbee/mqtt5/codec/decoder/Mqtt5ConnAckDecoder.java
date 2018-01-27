@@ -36,47 +36,47 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
     @Override
     public Mqtt5ConnAckImpl decode(final int flags, @NotNull final Channel channel, @NotNull final ByteBuf in) {
         if (flags != FLAGS) {
-            disconnectWrongFixedHeaderFlags("CONNACK", channel, in);
+            disconnectWrongFixedHeaderFlags("CONNACK", channel);
             return null;
         }
 
         if (in.readableBytes() < MIN_REMAINING_LENGTH) {
-            disconnectRemainingLengthTooShort(channel, in);
+            disconnectRemainingLengthTooShort(channel);
             return null;
         }
 
         final short connAckFlags = in.readUnsignedByte();
         if ((connAckFlags & 0xFE) != 0) {
-            disconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "wrong CONNACK flags", channel, in);
+            disconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "wrong CONNACK flags", channel);
             return null;
         }
         final boolean sessionPresent = (connAckFlags & 0x1) != 0;
 
         final Mqtt5ConnAckReasonCode reasonCode = Mqtt5ConnAckReasonCode.fromCode(in.readUnsignedByte());
         if (reasonCode == null) {
-            disconnectWrongReasonCode("CONNACK", channel, in);
+            disconnectWrongReasonCode("CONNACK", channel);
             return null;
         }
 
         if ((reasonCode != Mqtt5ConnAckReasonCode.SUCCESS) && sessionPresent) {
             disconnect(
                     Mqtt5DisconnectReasonCode.MALFORMED_PACKET,
-                    "session present must be false if reason code is not SUCCESS", channel, in);
+                    "session present must be false if reason code is not SUCCESS", channel);
             return null;
         }
 
         final int propertyLength = Mqtt5DataTypes.decodeVariableByteInteger(in);
 
         if (propertyLength < 0) {
-            disconnectMalformedPropertyLength(channel, in);
+            disconnectMalformedPropertyLength(channel);
             return null;
         }
 
         if (in.readableBytes() != propertyLength) {
             if (in.readableBytes() < propertyLength) {
-                disconnectRemainingLengthTooShort(channel, in);
+                disconnectRemainingLengthTooShort(channel);
             } else {
-                disconnectMustNotHavePayload("CONNACK", channel, in);
+                disconnectMustNotHavePayload("CONNACK", channel);
             }
             return null;
         }
@@ -116,7 +116,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
 
             final int propertyIdentifier = Mqtt5DataTypes.decodeVariableByteInteger(in);
             if (propertyIdentifier < 0) {
-                disconnectMalformedPropertyIdentifier(channel, in);
+                disconnectMalformedPropertyIdentifier(channel);
                 return null;
             }
 
@@ -132,12 +132,12 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
 
                 case Mqtt5ConnAckProperty.ASSIGNED_CLIENT_IDENTIFIER:
                     if (assignedClientIdentifier != CLIENT_IDENTIFIER_FROM_CONNECT) {
-                        disconnectOnlyOnce("client identifier", channel, in);
+                        disconnectOnlyOnce("client identifier", channel);
                         return null;
                     }
                     assignedClientIdentifier = Mqtt5ClientIdentifier.from(in);
                     if (assignedClientIdentifier == null) {
-                        disconnectMalformedUTF8String("client identifier", channel, in);
+                        disconnectMalformedUTF8String("client identifier", channel);
                         return null;
                     }
                     break;
@@ -172,8 +172,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                     }
                     receiveMaximum = in.readUnsignedShort();
                     if (receiveMaximum == 0) {
-                        disconnect(
-                                Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "receive maximum must not be 0", channel, in);
+                        disconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "receive maximum must not be 0", channel);
                         return null;
                     }
                     receiveMaximumPresent = true;
@@ -202,7 +201,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                     }
                     final byte maximumQoSCode = in.readByte();
                     if (maximumQoSCode != 0 && maximumQoSCode != 1) {
-                        disconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "wrong maximum QoS", channel, in);
+                        disconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "wrong maximum QoS", channel);
                         return null;
                     }
                     maximumQoS = Mqtt5QoS.fromCode(maximumQoSCode);
@@ -215,7 +214,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                         return null;
                     }
                     final byte retainAvailableByte = in.readByte();
-                    if (!checkBoolean(retainAvailableByte, "retain available", channel, in)) {
+                    if (!checkBoolean(retainAvailableByte, "retain available", channel)) {
                         return null;
                     }
                     retainAvailable = decodeBoolean(retainAvailableByte);
@@ -230,8 +229,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                     final long maximumPacketSizeTemp = in.readUnsignedInt();
                     if (maximumPacketSizeTemp == 0) {
                         disconnect(
-                                Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "maximum packet size must not be 0", channel,
-                                in);
+                                Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "maximum packet size must not be 0", channel);
                         return null;
                     }
                     maximumPacketSizePresent = true;
@@ -248,8 +246,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                         return null;
                     }
                     final byte wildCardSubscriptionAvailableByte = in.readByte();
-                    if (!checkBoolean(
-                            wildCardSubscriptionAvailableByte, "wildcard subscription available", channel, in)) {
+                    if (!checkBoolean(wildCardSubscriptionAvailableByte, "wildcard subscription available", channel)) {
                         return null;
                     }
                     wildCardSubscriptionAvailable = decodeBoolean(wildCardSubscriptionAvailableByte);
@@ -265,7 +262,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                     }
                     final byte subscriptionIdentifierAvailableByte = in.readByte();
                     if (!checkBoolean(
-                            subscriptionIdentifierAvailableByte, "subscription identifier available", channel, in)) {
+                            subscriptionIdentifierAvailableByte, "subscription identifier available", channel)) {
                         return null;
                     }
                     subscriptionIdentifierAvailable = decodeBoolean(subscriptionIdentifierAvailableByte);
@@ -280,7 +277,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                         return null;
                     }
                     final byte sharedSubscriptionAvailableByte = in.readByte();
-                    if (!checkBoolean(sharedSubscriptionAvailableByte, "shared subscription available", channel, in)) {
+                    if (!checkBoolean(sharedSubscriptionAvailableByte, "shared subscription available", channel)) {
                         return null;
                     }
                     sharedSubscriptionAvailable = decodeBoolean(sharedSubscriptionAvailableByte);
@@ -290,8 +287,8 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                     break;
 
                 case Mqtt5ConnAckProperty.RESPONSE_INFORMATION:
-                    responseInformation = decodeUTF8StringOnlyOnce(
-                            responseInformation, "response information", channel, in);
+                    responseInformation =
+                            decodeUTF8StringOnlyOnce(responseInformation, "response information", channel, in);
                     if (responseInformation == null) {
                         return null;
                     }
@@ -319,7 +316,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                     break;
 
                 default:
-                    disconnectWrongProperty("CONNACK", channel, in);
+                    disconnectWrongProperty("CONNACK", channel);
                     return null;
             }
         }
@@ -330,7 +327,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
         } else if (authenticationData != null) {
             disconnect(
                     Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                    "authentication data must not be included if authentication method is absent", channel, in);
+                    "authentication data must not be included if authentication method is absent", channel);
             return null;
         }
 
