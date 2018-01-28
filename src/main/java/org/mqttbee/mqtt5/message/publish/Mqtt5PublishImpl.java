@@ -4,10 +4,7 @@ import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5Publish;
-import org.mqttbee.mqtt5.message.Mqtt5QoS;
-import org.mqttbee.mqtt5.message.Mqtt5Topic;
-import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
+import org.mqttbee.mqtt5.message.*;
 
 import java.util.Optional;
 
@@ -28,7 +25,7 @@ public class Mqtt5PublishImpl implements Mqtt5Publish {
     private final Mqtt5Topic responseTopic;
     private final byte[] correlationData;
     private final TopicAliasUsage topicAliasUsage;
-    private final ImmutableList<Mqtt5UserProperty> userProperties;
+    private final Mqtt5UserProperties userProperties;
 
     public Mqtt5PublishImpl(
             @NotNull final Mqtt5Topic topic, @Nullable final byte[] payload, @NotNull final Mqtt5QoS qos,
@@ -36,7 +33,7 @@ public class Mqtt5PublishImpl implements Mqtt5Publish {
             @Nullable final Mqtt5PayloadFormatIndicator payloadFormatIndicator,
             @Nullable final Mqtt5UTF8String contentType, @Nullable final Mqtt5Topic responseTopic,
             @Nullable final byte[] correlationData, @NotNull final TopicAliasUsage topicAliasUsage,
-            @NotNull final ImmutableList<Mqtt5UserProperty> userProperties) {
+            @NotNull final Mqtt5UserProperties userProperties) {
         this.topic = topic;
         this.payload = payload;
         this.qos = qos;
@@ -142,6 +139,11 @@ public class Mqtt5PublishImpl implements Mqtt5Publish {
     @NotNull
     @Override
     public ImmutableList<Mqtt5UserProperty> getUserProperties() {
+        return userProperties.asList();
+    }
+
+    @NotNull
+    public Mqtt5UserProperties getRawUserProperties() {
         return userProperties;
     }
 

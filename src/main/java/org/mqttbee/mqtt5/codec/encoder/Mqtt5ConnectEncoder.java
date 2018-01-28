@@ -11,7 +11,6 @@ import org.mqttbee.mqtt5.exceptions.Mqtt5VariableByteIntegerExceededException;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5Topic;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 import org.mqttbee.mqtt5.message.auth.Mqtt5ExtendedAuthImpl;
 import org.mqttbee.mqtt5.message.connect.Mqtt5ConnectImpl;
 import org.mqttbee.mqtt5.message.connect.Mqtt5ConnectProperty;
@@ -126,7 +125,7 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
             }
         }
 
-        propertyLength += Mqtt5UserProperty.encodedLength(connect.getUserProperties());
+        propertyLength += connect.getRawUserProperties().encodedLength();
 
         if (!Mqtt5DataTypes.isInVariableByteIntegerRange(propertyLength)) {
             throw new Mqtt5VariableByteIntegerExceededException("property length");
@@ -161,7 +160,7 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
                 willPropertyLength += 1 + Mqtt5DataTypes.encodedBinaryDataLength(correlationData);
             }
 
-            willPropertyLength += Mqtt5UserProperty.encodedLength(willPublish.getUserProperties());
+            willPropertyLength += willPublish.getRawUserProperties().encodedLength();
 
             if (willPublish.getDelayInterval() != Mqtt5WillPublish.DEFAULT_DELAY_INTERVAL) {
                 willPropertyLength += 5;
@@ -277,7 +276,7 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
             }
         }
 
-        Mqtt5UserProperty.encode(connect.getUserProperties(), out);
+        connect.getRawUserProperties().encode(out);
     }
 
     private void encodePayload(@NotNull final Mqtt5ConnectImpl connect, @NotNull final ByteBuf out) {
@@ -331,7 +330,7 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
                 Mqtt5DataTypes.encodeBinaryData(correlationData, out);
             }
 
-            Mqtt5UserProperty.encode(willPublish.getUserProperties(), out);
+            willPublish.getRawUserProperties().encode(out);
 
             final long delayInterval = willPublish.getDelayInterval();
             if (delayInterval != Mqtt5WillPublish.DEFAULT_DELAY_INTERVAL) {

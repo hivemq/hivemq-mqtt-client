@@ -8,7 +8,6 @@ import org.mqttbee.mqtt5.exceptions.Mqtt5BinaryDataExceededException;
 import org.mqttbee.mqtt5.exceptions.Mqtt5VariableByteIntegerExceededException;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 import org.mqttbee.mqtt5.message.auth.Mqtt5AuthImpl;
 import org.mqttbee.mqtt5.message.auth.Mqtt5AuthProperty;
 
@@ -60,7 +59,7 @@ public class Mqtt5AuthEncoder implements Mqtt5MessageEncoder<Mqtt5AuthImpl> {
             propertyLength += 1 + reasonString.encodedLength();
         }
 
-        propertyLength += Mqtt5UserProperty.encodedLength(auth.getUserProperties());
+        propertyLength += auth.getRawUserProperties().encodedLength();
 
         if (!Mqtt5DataTypes.isInVariableByteIntegerRange(propertyLength)) {
             throw new Mqtt5VariableByteIntegerExceededException("property length");
@@ -97,7 +96,7 @@ public class Mqtt5AuthEncoder implements Mqtt5MessageEncoder<Mqtt5AuthImpl> {
             reasonString.to(out);
         }
 
-        Mqtt5UserProperty.encode(auth.getUserProperties(), out);
+        auth.getRawUserProperties().encode(out);
     }
 
 }

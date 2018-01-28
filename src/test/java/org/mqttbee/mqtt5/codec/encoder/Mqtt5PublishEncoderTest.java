@@ -9,10 +9,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
-import org.mqttbee.mqtt5.message.Mqtt5QoS;
-import org.mqttbee.mqtt5.message.Mqtt5Topic;
-import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
+import org.mqttbee.mqtt5.message.*;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishInternal;
@@ -66,7 +63,8 @@ class Mqtt5PublishEncoderTest {
         final Mqtt5PublishImpl publish =
                 new Mqtt5PublishImpl(requireNonNull(Mqtt5Topic.from("topic")), new byte[]{1, 2, 3, 4, 5},
                         Mqtt5QoS.AT_MOST_ONCE, false, Mqtt5PublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY,
-                        Mqtt5PayloadFormatIndicator.UNSPECIFIED, null, null, null, HAS_NOT, ImmutableList.of());
+                        Mqtt5PayloadFormatIndicator.UNSPECIFIED, null, null, null, HAS_NOT,
+                        Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
 
         encode(expected, publish, -1, false, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntArray.of());
     }
@@ -91,7 +89,7 @@ class Mqtt5PublishEncoderTest {
         final Mqtt5PublishImpl publish =
                 new Mqtt5PublishImpl(requireNonNull(Mqtt5Topic.from("topic")), null, Mqtt5QoS.AT_MOST_ONCE, true,
                         Mqtt5PublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UNSPECIFIED,
-                        null, null, null, HAS_NOT, ImmutableList.of());
+                        null, null, null, HAS_NOT, Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
         encode(expected, publish, -1, false, DEFAULT_NO_TOPIC_ALIAS, false, ImmutableIntArray.of());
     }
 
@@ -117,7 +115,7 @@ class Mqtt5PublishEncoderTest {
         final Mqtt5PublishImpl publish =
                 new Mqtt5PublishImpl(requireNonNull(Mqtt5Topic.from("topic")), null, Mqtt5QoS.AT_LEAST_ONCE, false,
                         Mqtt5PublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UNSPECIFIED,
-                        null, null, null, HAS_NOT, ImmutableList.of());
+                        null, null, null, HAS_NOT, Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
         encode(expected, publish, 15, true, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntArray.of());
     }
 
@@ -143,7 +141,7 @@ class Mqtt5PublishEncoderTest {
         final Mqtt5PublishImpl publish =
                 new Mqtt5PublishImpl(requireNonNull(Mqtt5Topic.from("topic")), null, Mqtt5QoS.AT_LEAST_ONCE, false,
                         Mqtt5PublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UNSPECIFIED,
-                        null, null, null, HAS_NOT, ImmutableList.of());
+                        null, null, null, HAS_NOT, Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
         encode(expected, publish, 15, false, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntArray.of());
     }
 
@@ -169,7 +167,7 @@ class Mqtt5PublishEncoderTest {
         final Mqtt5PublishImpl publish =
                 new Mqtt5PublishImpl(requireNonNull(Mqtt5Topic.from("topic")), null, Mqtt5QoS.AT_LEAST_ONCE, false,
                         Mqtt5PublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UTF_8, null,
-                        null, null, HAS_NOT, ImmutableList.of());
+                        null, null, HAS_NOT, Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
         encode(expected, publish, 15, false, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntArray.of());
     }
 
@@ -196,7 +194,8 @@ class Mqtt5PublishEncoderTest {
 
         final Mqtt5PublishImpl publish =
                 new Mqtt5PublishImpl(requireNonNull(Mqtt5Topic.from("topic")), null, Mqtt5QoS.AT_LEAST_ONCE, false,
-                        1000, Mqtt5PayloadFormatIndicator.UTF_8, null, null, null, HAS_NOT, ImmutableList.of());
+                        1000, Mqtt5PayloadFormatIndicator.UTF_8, null, null, null, HAS_NOT,
+                        Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
         encode(expected, publish, 15, false, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntArray.of());
     }
 
@@ -224,7 +223,8 @@ class Mqtt5PublishEncoderTest {
         final Mqtt5PublishImpl publish =
                 new Mqtt5PublishImpl(requireNonNull(Mqtt5Topic.from("topic")), null, Mqtt5QoS.AT_LEAST_ONCE, false,
                         Mqtt5PublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UTF_8,
-                        Mqtt5UTF8String.from("myContentType"), null, null, HAS_NOT, ImmutableList.of());
+                        Mqtt5UTF8String.from("myContentType"), null, null, HAS_NOT,
+                        Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
         encode(expected, publish, 15, false, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntArray.of());
     }
 
@@ -252,7 +252,8 @@ class Mqtt5PublishEncoderTest {
         final Mqtt5PublishImpl publish =
                 new Mqtt5PublishImpl(requireNonNull(Mqtt5Topic.from("topic")), null, Mqtt5QoS.AT_LEAST_ONCE, false,
                         Mqtt5PublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UTF_8, null,
-                        Mqtt5Topic.from("responseTopic"), null, HAS_NOT, ImmutableList.of());
+                        Mqtt5Topic.from("responseTopic"), null, HAS_NOT,
+                        Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
         encode(expected, publish, 15, false, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntArray.of());
     }
 
@@ -282,7 +283,7 @@ class Mqtt5PublishEncoderTest {
         final Mqtt5PublishImpl publish =
                 new Mqtt5PublishImpl(requireNonNull(Mqtt5Topic.from("topic")), null, Mqtt5QoS.AT_LEAST_ONCE, false,
                         Mqtt5PublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UTF_8, null,
-                        null, correlationData, HAS_NOT, ImmutableList.of());
+                        null, correlationData, HAS_NOT, Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
         encode(expected, publish, 15, false, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntArray.of());
     }
 
@@ -292,7 +293,7 @@ class Mqtt5PublishEncoderTest {
         final Mqtt5PublishImpl publish =
                 new Mqtt5PublishImpl(requireNonNull(Mqtt5Topic.from("topic")), null, Mqtt5QoS.AT_LEAST_ONCE, false,
                         Mqtt5PublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UTF_8, null,
-                        null, correlationData, HAS_NOT, ImmutableList.of());
+                        null, correlationData, HAS_NOT, Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
 
         final Mqtt5PublishInternal publishInternal =
                 new Mqtt5PublishInternal(publish, -1, false, Mqtt5PublishInternal.DEFAULT_NO_TOPIC_ALIAS, false,
@@ -325,7 +326,7 @@ class Mqtt5PublishEncoderTest {
         final Mqtt5PublishImpl publish =
                 new Mqtt5PublishImpl(requireNonNull(Mqtt5Topic.from("topic")), null, Mqtt5QoS.AT_LEAST_ONCE, false,
                         Mqtt5PublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null, MAY,
-                        ImmutableList.of());
+                        Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
         encode(expected, publish, 15, false, 8, true, ImmutableIntArray.of());
     }
 
@@ -351,7 +352,7 @@ class Mqtt5PublishEncoderTest {
         final Mqtt5PublishImpl publish =
                 new Mqtt5PublishImpl(requireNonNull(Mqtt5Topic.from("topic")), null, Mqtt5QoS.AT_LEAST_ONCE, false,
                         Mqtt5PublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null, MAY,
-                        ImmutableList.of());
+                        Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
         encode(expected, publish, 15, false, 8, false, ImmutableIntArray.of());
     }
 
@@ -377,10 +378,11 @@ class Mqtt5PublishEncoderTest {
                 0x26, 0, 4, 'k', 'e', 'y', '2', 0, 6, 'v', 'a', 'l', 'u', 'e', '2'
         };
 
-        final ImmutableList<Mqtt5UserProperty> userProperties = ImmutableList.of(new Mqtt5UserProperty(
-                        requireNonNull(Mqtt5UTF8String.from("key")), requireNonNull(Mqtt5UTF8String.from("value"))),
+        final Mqtt5UserProperties userProperties = Mqtt5UserProperties.of(ImmutableList.of(
+                new Mqtt5UserProperty(requireNonNull(Mqtt5UTF8String.from("key")),
+                        requireNonNull(Mqtt5UTF8String.from("value"))),
                 new Mqtt5UserProperty(requireNonNull(Mqtt5UTF8String.from("key2")),
-                        requireNonNull(Mqtt5UTF8String.from("value2"))));
+                        requireNonNull(Mqtt5UTF8String.from("value2")))));
 
         final Mqtt5PublishImpl publish =
                 new Mqtt5PublishImpl(requireNonNull(Mqtt5Topic.from("topic")), null, Mqtt5QoS.AT_LEAST_ONCE, false,
@@ -411,7 +413,7 @@ class Mqtt5PublishEncoderTest {
         final Mqtt5PublishImpl publish =
                 new Mqtt5PublishImpl(requireNonNull(Mqtt5Topic.from("topic")), null, Mqtt5QoS.AT_LEAST_ONCE, false,
                         Mqtt5PublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null, HAS_NOT,
-                        ImmutableList.of());
+                        Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
         encode(expected, publish, 15, false, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntArray.of(3));
     }
 
@@ -439,7 +441,7 @@ class Mqtt5PublishEncoderTest {
         final Mqtt5PublishImpl publish =
                 new Mqtt5PublishImpl(requireNonNull(Mqtt5Topic.from("topic")), null, Mqtt5QoS.AT_LEAST_ONCE, false,
                         Mqtt5PublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null, HAS_NOT,
-                        ImmutableList.of());
+                        Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
         encode(expected, publish, 15, false, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntArray.of(3, 4));
     }
 
@@ -496,19 +498,19 @@ class Mqtt5PublishEncoderTest {
         final Mqtt5PublishImpl publishQos0 =
                 new Mqtt5PublishImpl(requireNonNull(Mqtt5Topic.from("topic")), null, Mqtt5QoS.AT_MOST_ONCE, false,
                         Mqtt5PublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UNSPECIFIED,
-                        null, null, null, HAS_NOT, ImmutableList.of());
+                        null, null, null, HAS_NOT, Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
         encode(expectedQos0, publishQos0, 7, false, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntArray.of());
 
         final Mqtt5PublishImpl publishQos1 =
                 new Mqtt5PublishImpl(requireNonNull(Mqtt5Topic.from("topic")), null, Mqtt5QoS.AT_LEAST_ONCE, false,
                         Mqtt5PublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UNSPECIFIED,
-                        null, null, null, HAS_NOT, ImmutableList.of());
+                        null, null, null, HAS_NOT, Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
         encode(expectedQos1, publishQos1, 7, false, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntArray.of());
 
         final Mqtt5PublishImpl publishQos2 =
                 new Mqtt5PublishImpl(requireNonNull(Mqtt5Topic.from("topic")), null, Mqtt5QoS.EXACTLY_ONCE, false,
                         Mqtt5PublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UNSPECIFIED,
-                        null, null, null, HAS_NOT, ImmutableList.of());
+                        null, null, null, HAS_NOT, Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
         encode(expectedQos2, publishQos2, 7, false, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntArray.of());
     }
 
@@ -611,16 +613,16 @@ class Mqtt5PublishEncoderTest {
             return Arrays.copyOf(correlationData, correlationData.length + extraBytes);
         }
 
-        ImmutableList<Mqtt5UserProperty> getMaxPossibleUserProperties() {
+        Mqtt5UserProperties getMaxPossibleUserProperties() {
             //return ImmutableList.of();
             return getMaxPossibleUserProperties(0);
         }
 
-        ImmutableList<Mqtt5UserProperty> getMaxPossibleUserProperties(final int withExtraUserProperties) {
+        Mqtt5UserProperties getMaxPossibleUserProperties(final int withExtraUserProperties) {
             for (int i = 0; i < withExtraUserProperties; i++) {
                 userPropertiesBuilder.add(new Mqtt5UserProperty(user, property));
             }
-            return userPropertiesBuilder.build();
+            return Mqtt5UserProperties.of(userPropertiesBuilder.build());
         }
     }
 

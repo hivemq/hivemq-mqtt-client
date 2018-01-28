@@ -5,6 +5,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5PubRel;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
+import org.mqttbee.mqtt5.message.Mqtt5UserProperties;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 
 import java.util.Optional;
@@ -19,11 +20,11 @@ public class Mqtt5PubRelImpl implements Mqtt5PubRel {
 
     private final Mqtt5PubRelReasonCode reasonCode;
     private final Mqtt5UTF8String reasonString;
-    private final ImmutableList<Mqtt5UserProperty> userProperties;
+    private final Mqtt5UserProperties userProperties;
 
     public Mqtt5PubRelImpl(
             @NotNull final Mqtt5PubRelReasonCode reasonCode, @Nullable final Mqtt5UTF8String reasonString,
-            @NotNull final ImmutableList<Mqtt5UserProperty> userProperties) {
+            @NotNull final Mqtt5UserProperties userProperties) {
         this.reasonCode = reasonCode;
         this.reasonString = reasonString;
         this.userProperties = userProperties;
@@ -49,6 +50,11 @@ public class Mqtt5PubRelImpl implements Mqtt5PubRel {
     @NotNull
     @Override
     public ImmutableList<Mqtt5UserProperty> getUserProperties() {
+        return userProperties.asList();
+    }
+
+    @NotNull
+    public Mqtt5UserProperties getRawUserProperties() {
         return userProperties;
     }
 

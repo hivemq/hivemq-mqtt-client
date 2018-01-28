@@ -4,10 +4,11 @@ import com.google.common.collect.ImmutableList;
 import org.junit.Test;
 import org.mqttbee.api.mqtt5.message.Mqtt5UnsubAck;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
+import org.mqttbee.mqtt5.message.Mqtt5UserProperties;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 
 import static org.junit.Assert.*;
-import static org.mqttbee.mqtt5.message.Mqtt5UserProperty.DEFAULT_NO_USER_PROPERTIES;
+import static org.mqttbee.mqtt5.message.Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES;
 
 /**
  * @author David Katz
@@ -61,9 +62,9 @@ public class Mqtt5UnsubAckTest {
 
     @Test
     public void constructor_userPropertiesEmpty() {
-        final ImmutableList<Mqtt5UserProperty> emptyUserProperties = DEFAULT_NO_USER_PROPERTIES;
+        final Mqtt5UserProperties emptyUserProperties = DEFAULT_NO_USER_PROPERTIES;
         final Mqtt5UnsubAck mqtt5UnsubAck = new Mqtt5UnsubAckImpl(reasonCodes, reasonString, emptyUserProperties);
-        assertEquals(emptyUserProperties, mqtt5UnsubAck.getUserProperties());
+        assertEquals(emptyUserProperties.asList(), mqtt5UnsubAck.getUserProperties());
     }
 
     @Test
@@ -80,10 +81,10 @@ public class Mqtt5UnsubAckTest {
         final Mqtt5UserProperty userProperty1 = new Mqtt5UserProperty(name1, value);
         final Mqtt5UserProperty userProperty2 = new Mqtt5UserProperty(name2, value);
         final Mqtt5UserProperty userProperty3 = new Mqtt5UserProperty(name3, value);
-        final ImmutableList<Mqtt5UserProperty> multipleUserProperties =
-                ImmutableList.of(userProperty1, userProperty2, userProperty3);
+        final Mqtt5UserProperties multipleUserProperties =
+                Mqtt5UserProperties.of(ImmutableList.of(userProperty1, userProperty2, userProperty3));
 
         final Mqtt5UnsubAck mqtt5UnsubAck = new Mqtt5UnsubAckImpl(reasonCodes, reasonString, multipleUserProperties);
-        assertEquals(multipleUserProperties, mqtt5UnsubAck.getUserProperties());
+        assertEquals(multipleUserProperties.asList(), mqtt5UnsubAck.getUserProperties());
     }
 }
