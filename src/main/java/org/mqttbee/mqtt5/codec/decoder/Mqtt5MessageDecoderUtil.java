@@ -10,6 +10,7 @@ import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
+import org.mqttbee.mqtt5.message.Mqtt5UserProperties;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectImpl;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
@@ -38,7 +39,7 @@ class Mqtt5MessageDecoderUtil {
 
         final Mqtt5DisconnectImpl disconnect =
                 new Mqtt5DisconnectImpl(reasonCode, Mqtt5DisconnectImpl.SESSION_EXPIRY_INTERVAL_FROM_CONNECT, null,
-                        mqttReasonString, Mqtt5UserProperty.DEFAULT_NO_USER_PROPERTIES);
+                        mqttReasonString, Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
         final ChannelFuture disconnectFuture = channel.writeAndFlush(disconnect);
 
         disconnectFuture.addListener(ChannelFutureListener.CLOSE);

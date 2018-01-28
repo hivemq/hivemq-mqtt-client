@@ -1,10 +1,8 @@
 package org.mqttbee.mqtt5.message;
 
-import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.mqtt5.exceptions.Mqtt5BinaryDataExceededException;
 
 /**
  * MQTT User Property according to the MQTT 5 specification.
@@ -14,11 +12,6 @@ import org.mqttbee.mqtt5.exceptions.Mqtt5BinaryDataExceededException;
  * @author Silvio Giebl
  */
 public class Mqtt5UserProperty {
-
-    /**
-     * Empty list of User Properties.
-     */
-    public static final ImmutableList<Mqtt5UserProperty> DEFAULT_NO_USER_PROPERTIES = ImmutableList.of();
 
     /**
      * Validates and decodes a User Property from the given byte buffer at the current reader index.
@@ -37,57 +30,6 @@ public class Mqtt5UserProperty {
             return null;
         }
         return new Mqtt5UserProperty(name, value);
-    }
-
-    /**
-     * Encodes the given list of User Properties to the given byte buffer at the current writer index.
-     * <p>
-     * This method does not check if name and value can not be encoded due to byte count restrictions. This check is
-     * performed with the method {@link #encodedLength(ImmutableList)} which is generally called before this method.
-     *
-     * @param userProperties the list of User Properties to encode.
-     * @param out            the byte buffer to encode to.
-     */
-    public static void encode(
-            @NotNull final ImmutableList<Mqtt5UserProperty> userProperties, @NotNull final ByteBuf out) {
-        if (!userProperties.isEmpty()) {
-            for (int i = 0; i < userProperties.size(); i++) {
-                final Mqtt5UserProperty userProperty = userProperties.get(i);
-                out.writeByte(Mqtt5Property.USER_PROPERTY);
-                userProperty.getName().to(out);
-                userProperty.getValue().to(out);
-            }
-        }
-    }
-
-    /**
-     * Calculates the byte count of the given list of User Properties according to the MQTT 5 specification.
-     *
-     * @param userProperties the list of User Properties to calculate the byte count for.
-     * @return the encoded length of the given list of User Properties.
-     * @throws Mqtt5BinaryDataExceededException if name and/or value can not be encoded due to byte count restrictions.
-     */
-    public static int encodedLength(@NotNull final ImmutableList<Mqtt5UserProperty> userProperties) {
-        int encodedLength = 0;
-        if (!userProperties.isEmpty()) {
-            for (int i = 0; i < userProperties.size(); i++) {
-                final Mqtt5UserProperty userProperty = userProperties.get(i);
-                encodedLength += 1 + userProperty.getName().encodedLength() + userProperty.getValue().encodedLength();
-            }
-        }
-        return encodedLength;
-    }
-
-    /**
-     * Builds a list of User Properties from the given builder.
-     *
-     * @param userPropertiesBuilder the builder for the list of User Properties.
-     * @return the built list of User Properties or {@link #DEFAULT_NO_USER_PROPERTIES} if the builder is null.
-     */
-    @NotNull
-    public static ImmutableList<Mqtt5UserProperty> build(
-            @Nullable final ImmutableList.Builder<Mqtt5UserProperty> userPropertiesBuilder) {
-        return (userPropertiesBuilder == null) ? DEFAULT_NO_USER_PROPERTIES : userPropertiesBuilder.build();
     }
 
     private final Mqtt5UTF8String name;

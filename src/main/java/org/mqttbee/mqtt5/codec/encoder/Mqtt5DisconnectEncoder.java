@@ -7,7 +7,6 @@ import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.exceptions.Mqtt5VariableByteIntegerExceededException;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectImpl;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectProperty;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
@@ -71,7 +70,7 @@ public class Mqtt5DisconnectEncoder implements Mqtt5MessageEncoder<Mqtt5Disconne
             propertyLength += 1 + reasonString.encodedLength();
         }
 
-        propertyLength += Mqtt5UserProperty.encodedLength(disconnect.getUserProperties());
+        propertyLength += disconnect.getRawUserProperties().encodedLength();
 
         if (!Mqtt5DataTypes.isInVariableByteIntegerRange(propertyLength)) {
             throw new Mqtt5VariableByteIntegerExceededException("property length");
@@ -120,7 +119,7 @@ public class Mqtt5DisconnectEncoder implements Mqtt5MessageEncoder<Mqtt5Disconne
             reasonString.to(out);
         }
 
-        Mqtt5UserProperty.encode(disconnect.getUserProperties(), out);
+        disconnect.getRawUserProperties().encode(out);
     }
 
 }

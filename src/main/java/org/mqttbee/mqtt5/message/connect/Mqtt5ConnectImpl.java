@@ -8,10 +8,7 @@ import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5Connect;
 import org.mqttbee.api.mqtt5.message.Mqtt5ExtendedAuth;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5ConnectEncoder;
-import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifier;
-import org.mqttbee.mqtt5.message.Mqtt5Message;
-import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
+import org.mqttbee.mqtt5.message.*;
 import org.mqttbee.mqtt5.message.auth.Mqtt5ExtendedAuthImpl;
 import org.mqttbee.mqtt5.message.publish.Mqtt5WillPublishImpl;
 
@@ -35,7 +32,7 @@ public class Mqtt5ConnectImpl extends Mqtt5Message.Mqtt5MessageWithProperties im
     private final SimpleAuthImpl simpleAuth;
     private final Mqtt5ExtendedAuthImpl extendedAuth;
     private final Mqtt5WillPublishImpl willPublish;
-    private final ImmutableList<Mqtt5UserProperty> userProperties;
+    private final Mqtt5UserProperties userProperties;
 
     private int willPropertyLength = -1;
 
@@ -45,7 +42,7 @@ public class Mqtt5ConnectImpl extends Mqtt5Message.Mqtt5MessageWithProperties im
             final boolean isProblemInformationRequested, @NotNull final RestrictionsImpl restrictions,
             @Nullable final SimpleAuthImpl simpleAuth, @Nullable final Mqtt5ExtendedAuthImpl extendedAuth,
             @Nullable final Mqtt5WillPublishImpl willPublish,
-            @NotNull final ImmutableList<Mqtt5UserProperty> userProperties) {
+            @NotNull final Mqtt5UserProperties userProperties) {
         this.clientIdentifier = clientIdentifier;
         this.keepAlive = keepAlive;
         this.isCleanStart = isCleanStart;
@@ -143,6 +140,11 @@ public class Mqtt5ConnectImpl extends Mqtt5Message.Mqtt5MessageWithProperties im
     @NotNull
     @Override
     public ImmutableList<Mqtt5UserProperty> getUserProperties() {
+        return userProperties.asList();
+    }
+
+    @NotNull
+    public Mqtt5UserProperties getRawUserProperties() {
         return userProperties;
     }
 

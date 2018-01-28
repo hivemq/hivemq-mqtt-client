@@ -7,10 +7,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
-import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifier;
-import org.mqttbee.mqtt5.message.Mqtt5QoS;
-import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
+import org.mqttbee.mqtt5.message.*;
 import org.mqttbee.mqtt5.message.auth.Mqtt5ExtendedAuthImpl;
 import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckImpl;
 import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckProperty;
@@ -337,7 +334,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                     sharedSubscriptionAvailable);
         }
 
-        final ImmutableList<Mqtt5UserProperty> userProperties = Mqtt5UserProperty.build(userPropertiesBuilder);
+        final Mqtt5UserProperties userProperties = Mqtt5UserProperties.build(userPropertiesBuilder);
 
         return new Mqtt5ConnAckImpl(reasonCode, sessionPresent, sessionExpiryInterval, serverKeepAlive,
                 assignedClientIdentifier, extendedAuth, restrictions, responseInformation, serverReference,

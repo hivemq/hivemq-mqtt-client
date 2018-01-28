@@ -7,7 +7,10 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.exceptions.Mqtt5BinaryDataExceededException;
 import org.mqttbee.mqtt5.exceptions.Mqtt5VariableByteIntegerExceededException;
-import org.mqttbee.mqtt5.message.*;
+import org.mqttbee.mqtt5.message.Mqtt5MessageType;
+import org.mqttbee.mqtt5.message.Mqtt5QoS;
+import org.mqttbee.mqtt5.message.Mqtt5Topic;
+import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishInternal;
@@ -98,7 +101,7 @@ public class Mqtt5PublishEncoder implements Mqtt5MessageEncoder<Mqtt5PublishInte
             propertyLength += 1 + Mqtt5DataTypes.encodedBinaryDataLength(correlationData);
         }
 
-        propertyLength += Mqtt5UserProperty.encodedLength(publish.getUserProperties());
+        propertyLength += publish.getRawUserProperties().encodedLength();
 
         if (publishInternal.getTopicAlias() != DEFAULT_NO_TOPIC_ALIAS) {
             propertyLength += 3;
@@ -185,7 +188,7 @@ public class Mqtt5PublishEncoder implements Mqtt5MessageEncoder<Mqtt5PublishInte
             Mqtt5DataTypes.encodeBinaryData(correlationData, out);
         }
 
-        Mqtt5UserProperty.encode(publish.getUserProperties(), out);
+        publish.getRawUserProperties().encode(out);
 
         final int topicAlias = publishInternal.getTopicAlias();
         if (topicAlias != DEFAULT_NO_TOPIC_ALIAS) {

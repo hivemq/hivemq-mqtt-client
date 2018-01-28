@@ -7,7 +7,6 @@ import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.exceptions.Mqtt5VariableByteIntegerExceededException;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 import org.mqttbee.mqtt5.message.pubrec.Mqtt5PubRecImpl;
 import org.mqttbee.mqtt5.message.pubrec.Mqtt5PubRecInternal;
 import org.mqttbee.mqtt5.message.pubrec.Mqtt5PubRecProperty;
@@ -65,7 +64,7 @@ public class Mqtt5PubRecEncoder implements Mqtt5MessageEncoder<Mqtt5PubRecIntern
             propertyLength += 1 + reasonString.encodedLength();
         }
 
-        propertyLength += Mqtt5UserProperty.encodedLength(pubRec.getUserProperties());
+        propertyLength += pubRec.getRawUserProperties().encodedLength();
 
         if (!Mqtt5DataTypes.isInVariableByteIntegerRange(propertyLength)) {
             throw new Mqtt5VariableByteIntegerExceededException("property length");
@@ -105,7 +104,7 @@ public class Mqtt5PubRecEncoder implements Mqtt5MessageEncoder<Mqtt5PubRecIntern
             reasonString.to(out);
         }
 
-        Mqtt5UserProperty.encode(pubRec.getUserProperties(), out);
+        pubRec.getRawUserProperties().encode(out);
     }
 
 }

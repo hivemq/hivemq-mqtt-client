@@ -31,7 +31,7 @@ public class Mqtt5ConnAckImpl implements Mqtt5ConnAck, Mqtt5Message {
     private final Mqtt5UTF8String responseInformation;
     private final Mqtt5UTF8String serverReference;
     private final Mqtt5UTF8String reasonString;
-    private final ImmutableList<Mqtt5UserProperty> userProperties;
+    private final Mqtt5UserProperties userProperties;
 
     public Mqtt5ConnAckImpl(
             @NotNull final Mqtt5ConnAckReasonCode reasonCode, final boolean isSessionPresent,
@@ -40,7 +40,7 @@ public class Mqtt5ConnAckImpl implements Mqtt5ConnAck, Mqtt5Message {
             @Nullable final Mqtt5ExtendedAuth extendedAuth, @NotNull final RestrictionsImpl restrictions,
             @Nullable final Mqtt5UTF8String responseInformation, @Nullable final Mqtt5UTF8String serverReference,
             @Nullable final Mqtt5UTF8String reasonString,
-            @NotNull final ImmutableList<Mqtt5UserProperty> userProperties) {
+            @NotNull final Mqtt5UserProperties userProperties) {
         this.reasonCode = reasonCode;
         this.isSessionPresent = isSessionPresent;
         this.sessionExpiryInterval = sessionExpiryInterval;
@@ -117,7 +117,7 @@ public class Mqtt5ConnAckImpl implements Mqtt5ConnAck, Mqtt5Message {
     @NotNull
     @Override
     public ImmutableList<Mqtt5UserProperty> getUserProperties() {
-        return userProperties;
+        return userProperties.asList();
     }
 
     @Override

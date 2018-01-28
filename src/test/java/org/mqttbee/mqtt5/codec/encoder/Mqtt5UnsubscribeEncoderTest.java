@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.Mqtt5TopicFilter;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
+import org.mqttbee.mqtt5.message.Mqtt5UserProperties;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 import org.mqttbee.mqtt5.message.unsubscribe.Mqtt5UnsubscribeImpl;
 import org.mqttbee.mqtt5.message.unsubscribe.Mqtt5UnsubscribeInternal;
@@ -58,7 +59,8 @@ class Mqtt5UnsubscribeEncoderTest {
 
         final Mqtt5UTF8String user = requireNonNull(Mqtt5UTF8String.from("user"));
         final Mqtt5UTF8String property = requireNonNull(Mqtt5UTF8String.from("property"));
-        final ImmutableList<Mqtt5UserProperty> userProperties = ImmutableList.of(new Mqtt5UserProperty(user, property));
+        final Mqtt5UserProperties userProperties =
+                Mqtt5UserProperties.of(ImmutableList.of(new Mqtt5UserProperty(user, property)));
 
         final ImmutableList<Mqtt5TopicFilter> topicFilters =
                 ImmutableList.of(requireNonNull(Mqtt5TopicFilter.from("topic/#")));
@@ -89,8 +91,8 @@ class Mqtt5UnsubscribeEncoderTest {
         final Mqtt5UTF8String user = requireNonNull(Mqtt5UTF8String.from("user"));
         final Mqtt5UTF8String property = requireNonNull(Mqtt5UTF8String.from("property"));
         final Mqtt5UserProperty mqtt5UserProperty = new Mqtt5UserProperty(user, property);
-        final ImmutableList<Mqtt5UserProperty> userProperties =
-                ImmutableList.of(mqtt5UserProperty, mqtt5UserProperty, mqtt5UserProperty);
+        final Mqtt5UserProperties userProperties =
+                Mqtt5UserProperties.of(ImmutableList.of(mqtt5UserProperty, mqtt5UserProperty, mqtt5UserProperty));
 
         final ImmutableList<Mqtt5TopicFilter> topicFilters =
                 ImmutableList.of(requireNonNull(Mqtt5TopicFilter.from("topic")));
@@ -128,7 +130,7 @@ class Mqtt5UnsubscribeEncoderTest {
     }
 
     private void encodeUnsubscribe(
-            final byte[] expected, final ImmutableList<Mqtt5UserProperty> userProperties,
+            final byte[] expected, final Mqtt5UserProperties userProperties,
             final ImmutableList<Mqtt5TopicFilter> topicFilters) {
         final Mqtt5UnsubscribeImpl unsubscribe = new Mqtt5UnsubscribeImpl(topicFilters, userProperties);
         final int packetIdentifier = 0x01;
@@ -185,15 +187,15 @@ class Mqtt5UnsubscribeEncoderTest {
             return this;
         }
 
-        ImmutableList<Mqtt5UserProperty> getMaxPossibleUserProperties() {
+        Mqtt5UserProperties getMaxPossibleUserProperties() {
             return getMaxPossibleUserProperties(0);
         }
 
-        ImmutableList<Mqtt5UserProperty> getMaxPossibleUserProperties(final int withExtraUserProperties) {
+        Mqtt5UserProperties getMaxPossibleUserProperties(final int withExtraUserProperties) {
             for (int i = 0; i < withExtraUserProperties; i++) {
                 userPropertiesBuilder.add(new Mqtt5UserProperty(user, property));
             }
-            return userPropertiesBuilder.build();
+            return Mqtt5UserProperties.of(userPropertiesBuilder.build());
         }
 
         ImmutableList<Mqtt5TopicFilter> getTopicFilter(final String withExtraCharacters) {

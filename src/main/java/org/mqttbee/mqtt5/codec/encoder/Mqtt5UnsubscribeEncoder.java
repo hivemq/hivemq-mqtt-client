@@ -8,7 +8,6 @@ import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.exceptions.Mqtt5VariableByteIntegerExceededException;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5TopicFilter;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 import org.mqttbee.mqtt5.message.unsubscribe.Mqtt5UnsubscribeImpl;
 import org.mqttbee.mqtt5.message.unsubscribe.Mqtt5UnsubscribeInternal;
 
@@ -54,8 +53,7 @@ public class Mqtt5UnsubscribeEncoder implements Mqtt5MessageEncoder<Mqtt5Unsubsc
     }
 
     public int encodedPropertyLength(@NotNull final Mqtt5UnsubscribeInternal unsubscribeInternal) {
-        final int propertyLength =
-                Mqtt5UserProperty.encodedLength(unsubscribeInternal.getUnsubscribe().getUserProperties());
+        final int propertyLength = unsubscribeInternal.getUnsubscribe().getRawUserProperties().encodedLength();
 
         if (!Mqtt5DataTypes.isInVariableByteIntegerRange(propertyLength)) {
             throw new Mqtt5VariableByteIntegerExceededException("property length");
@@ -81,7 +79,7 @@ public class Mqtt5UnsubscribeEncoder implements Mqtt5MessageEncoder<Mqtt5Unsubsc
             @NotNull final Mqtt5UnsubscribeInternal unsubscribeInternal, @NotNull final ByteBuf out) {
 
         Mqtt5DataTypes.encodeVariableByteInteger(unsubscribeInternal.encodedPropertyLength(), out);
-        Mqtt5UserProperty.encode(unsubscribeInternal.getUnsubscribe().getUserProperties(), out);
+        unsubscribeInternal.getUnsubscribe().getRawUserProperties().encode(out);
     }
 
     private void encodePayload(

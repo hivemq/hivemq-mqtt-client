@@ -11,6 +11,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
+import org.mqttbee.mqtt5.message.Mqtt5UserProperties;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 import org.mqttbee.mqtt5.message.pubrec.Mqtt5PubRecImpl;
 import org.mqttbee.mqtt5.message.pubrec.Mqtt5PubRecInternal;
@@ -56,7 +57,7 @@ class Mqtt5PubRecEncoderTest {
 
         final Mqtt5PubRecReasonCode reasonCode = Mqtt5PubRecReasonCode.TOPIC_NAME_INVALID;
         final Mqtt5UTF8String reasonString = null;
-        final ImmutableList<Mqtt5UserProperty> userProperties = ImmutableList.of();
+        final Mqtt5UserProperties userProperties = Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES;
         final Mqtt5PubRecImpl pubRec = new Mqtt5PubRecImpl(reasonCode, reasonString, userProperties);
 
         encode(expected, pubRec, 5);
@@ -75,7 +76,8 @@ class Mqtt5PubRecEncoderTest {
                 0, 5
         };
 
-        final Mqtt5PubRecImpl pubRec = new Mqtt5PubRecImpl(SUCCESS, null, ImmutableList.of());
+        final Mqtt5PubRecImpl pubRec =
+                new Mqtt5PubRecImpl(SUCCESS, null, Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
 
         encode(expected, pubRec, 5);
     }
@@ -97,7 +99,8 @@ class Mqtt5PubRecEncoderTest {
         };
 
         expected[4] = (byte) reasonCode.getCode();
-        final Mqtt5PubRecImpl pubRec = new Mqtt5PubRecImpl(reasonCode, null, ImmutableList.of());
+        final Mqtt5PubRecImpl pubRec =
+                new Mqtt5PubRecImpl(reasonCode, null, Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
 
         encode(expected, pubRec, 0x0605);
     }
@@ -123,7 +126,7 @@ class Mqtt5PubRecEncoderTest {
 
         final Mqtt5PubRecReasonCode reasonCode = Mqtt5PubRecReasonCode.TOPIC_NAME_INVALID;
         final Mqtt5UTF8String reasonString = Mqtt5UTF8String.from("reason");
-        final ImmutableList<Mqtt5UserProperty> userProperties = ImmutableList.of();
+        final Mqtt5UserProperties userProperties = Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES;
         final Mqtt5PubRecImpl pubRec = new Mqtt5PubRecImpl(reasonCode, reasonString, userProperties);
 
         encode(expected, pubRec, 9);
@@ -149,9 +152,9 @@ class Mqtt5PubRecEncoderTest {
         };
 
         final Mqtt5PubRecReasonCode reasonCode = Mqtt5PubRecReasonCode.TOPIC_NAME_INVALID;
-        final ImmutableList<Mqtt5UserProperty> userProperties = ImmutableList
+        final Mqtt5UserProperties userProperties = Mqtt5UserProperties.of(ImmutableList
                 .of(new Mqtt5UserProperty(requireNonNull(Mqtt5UTF8String.from("key")),
-                        requireNonNull(Mqtt5UTF8String.from("value"))));
+                        requireNonNull(Mqtt5UTF8String.from("value")))));
         final Mqtt5PubRecImpl pubRec = new Mqtt5PubRecImpl(reasonCode, null, userProperties);
 
         encode(expected, pubRec, 5);
@@ -245,15 +248,15 @@ class Mqtt5PubRecEncoderTest {
             return Mqtt5UTF8String.from(reasonStringBuilder.toString() + withSuffix);
         }
 
-        ImmutableList<Mqtt5UserProperty> getMaxPossibleUserProperties() {
+        Mqtt5UserProperties getMaxPossibleUserProperties() {
             return getMaxPossibleUserProperties(0);
         }
 
-        ImmutableList<Mqtt5UserProperty> getMaxPossibleUserProperties(final int withExtraUserProperties) {
+        Mqtt5UserProperties getMaxPossibleUserProperties(final int withExtraUserProperties) {
             for (int i = 0; i < withExtraUserProperties; i++) {
                 userPropertiesBuilder.add(new Mqtt5UserProperty(user, property));
             }
-            return userPropertiesBuilder.build();
+            return Mqtt5UserProperties.of(userPropertiesBuilder.build());
         }
     }
 }

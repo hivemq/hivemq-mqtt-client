@@ -7,6 +7,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
+import org.mqttbee.mqtt5.message.Mqtt5UserProperties;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 import org.mqttbee.mqtt5.message.pubcomp.Mqtt5PubCompImpl;
 import org.mqttbee.mqtt5.message.pubcomp.Mqtt5PubCompInternal;
@@ -98,7 +99,7 @@ public class Mqtt5PubCompDecoder implements Mqtt5MessageDecoder {
             }
         }
 
-        final ImmutableList<Mqtt5UserProperty> userProperties = Mqtt5UserProperty.build(userPropertiesBuilder);
+        final Mqtt5UserProperties userProperties = Mqtt5UserProperties.build(userPropertiesBuilder);
 
         final Mqtt5PubCompImpl pubComp = new Mqtt5PubCompImpl(reasonCode, reasonString, userProperties);
 

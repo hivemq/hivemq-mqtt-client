@@ -7,7 +7,6 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.exceptions.Mqtt5VariableByteIntegerExceededException;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 import org.mqttbee.mqtt5.message.subscribe.Mqtt5SubscribeImpl;
 import org.mqttbee.mqtt5.message.subscribe.Mqtt5SubscribeInternal;
 import org.mqttbee.mqtt5.message.subscribe.Mqtt5SubscribeProperty;
@@ -64,7 +63,7 @@ public class Mqtt5SubscribeEncoder implements Mqtt5MessageEncoder<Mqtt5Subscribe
             propertyLength += 1 + Mqtt5DataTypes.encodedVariableByteIntegerLength(subscriptionIdentifier);
         }
 
-        propertyLength += Mqtt5UserProperty.encodedLength(subscribe.getUserProperties());
+        propertyLength += subscribe.getRawUserProperties().encodedLength();
 
         if (!Mqtt5DataTypes.isInVariableByteIntegerRange(propertyLength)) {
             throw new Mqtt5VariableByteIntegerExceededException("property length");
@@ -95,7 +94,7 @@ public class Mqtt5SubscribeEncoder implements Mqtt5MessageEncoder<Mqtt5Subscribe
             Mqtt5DataTypes.encodeVariableByteInteger(subscriptionIdentifier, out);
         }
 
-        Mqtt5UserProperty.encode(subscribeInternal.getSubscribe().getUserProperties(), out);
+        subscribeInternal.getSubscribe().getRawUserProperties().encode(out);
     }
 
     private void encodePayload(@NotNull final Mqtt5SubscribeInternal subscribeInternal, @NotNull final ByteBuf out) {
