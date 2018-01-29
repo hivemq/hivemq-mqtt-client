@@ -9,11 +9,12 @@ import org.mqttbee.mqtt5.exceptions.Mqtt5VariableByteIntegerExceededException;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.subscribe.Mqtt5SubscribeImpl;
 import org.mqttbee.mqtt5.message.subscribe.Mqtt5SubscribeInternal;
-import org.mqttbee.mqtt5.message.subscribe.Mqtt5SubscribeProperty;
 
 import javax.inject.Singleton;
 
+import static org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoderUtil.encodeVariableByteIntegerProperty;
 import static org.mqttbee.mqtt5.message.subscribe.Mqtt5SubscribeInternal.DEFAULT_NO_SUBSCRIPTION_IDENTIFIER;
+import static org.mqttbee.mqtt5.message.subscribe.Mqtt5SubscribeProperty.SUBSCRIPTION_IDENTIFIER;
 
 /**
  * @author Silvio Giebl
@@ -88,12 +89,9 @@ public class Mqtt5SubscribeEncoder implements Mqtt5MessageEncoder<Mqtt5Subscribe
     private void encodeProperties(@NotNull final Mqtt5SubscribeInternal subscribeInternal, @NotNull final ByteBuf out) {
         Mqtt5DataTypes.encodeVariableByteInteger(subscribeInternal.encodedPropertyLength(), out);
 
-        final int subscriptionIdentifier = subscribeInternal.getSubscriptionIdentifier();
-        if (subscriptionIdentifier != DEFAULT_NO_SUBSCRIPTION_IDENTIFIER) {
-            out.writeByte(Mqtt5SubscribeProperty.SUBSCRIPTION_IDENTIFIER);
-            Mqtt5DataTypes.encodeVariableByteInteger(subscriptionIdentifier, out);
-        }
-
+        encodeVariableByteIntegerProperty(
+                SUBSCRIPTION_IDENTIFIER, subscribeInternal.getSubscriptionIdentifier(),
+                DEFAULT_NO_SUBSCRIPTION_IDENTIFIER, out);
         subscribeInternal.getSubscribe().getRawUserProperties().encode(out);
     }
 

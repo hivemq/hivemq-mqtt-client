@@ -8,13 +8,14 @@ import org.mqttbee.mqtt5.exceptions.Mqtt5VariableByteIntegerExceededException;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectImpl;
-import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectProperty;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 
 import javax.inject.Singleton;
 
+import static org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoderUtil.encodeIntProperty;
 import static org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectImpl.DEFAULT_REASON_CODE;
 import static org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectImpl.SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
+import static org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectProperty.*;
 
 /**
  * @author Silvio Giebl
@@ -101,24 +102,11 @@ public class Mqtt5DisconnectEncoder implements Mqtt5MessageEncoder<Mqtt5Disconne
 
         Mqtt5DataTypes.encodeVariableByteInteger(propertyLength, out);
 
-        final long sessionExpiryInterval = disconnect.getRawSessionExpiryInterval();
-        if (sessionExpiryInterval != SESSION_EXPIRY_INTERVAL_FROM_CONNECT) {
-            out.writeByte(Mqtt5DisconnectProperty.SESSION_EXPIRY_INTERVAL);
-            out.writeInt((int) sessionExpiryInterval);
-        }
-
-        final Mqtt5UTF8String serverReference = disconnect.getRawServerReference();
-        if (serverReference != null) {
-            out.writeByte(Mqtt5DisconnectProperty.SERVER_REFERENCE);
-            serverReference.to(out);
-        }
-
-        final Mqtt5UTF8String reasonString = disconnect.getRawReasonString();
-        if (reasonString != null) {
-            out.writeByte(Mqtt5DisconnectProperty.REASON_STRING);
-            reasonString.to(out);
-        }
-
+        encodeIntProperty(
+                SESSION_EXPIRY_INTERVAL, disconnect.getRawSessionExpiryInterval(), SESSION_EXPIRY_INTERVAL_FROM_CONNECT,
+                out);
+        Mqtt5MessageEncoderUtil.encodePropertyNullable(SERVER_REFERENCE, disconnect.getRawServerReference(), out);
+        Mqtt5MessageEncoderUtil.encodePropertyNullable(REASON_STRING, disconnect.getRawReasonString(), out);
         disconnect.getRawUserProperties().encode(out);
     }
 
