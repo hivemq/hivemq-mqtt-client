@@ -246,9 +246,10 @@ class Mqtt5PubRecEncoderTest {
             }
 
             final int numberOfUserProperties = remainingBytes / userPropertyBytes;
+            final Mqtt5UserProperty userProperty = new Mqtt5UserProperty(user, property);
             userPropertiesBuilder = new ImmutableList.Builder<>();
             for (int i = 0; i < numberOfUserProperties; i++) {
-                userPropertiesBuilder.add(new Mqtt5UserProperty(user, property));
+                userPropertiesBuilder.add(userProperty);
             }
             return this;
         }
