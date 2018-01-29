@@ -71,7 +71,7 @@ public class Mqtt5DisconnectEncoder implements Mqtt5MessageEncoder<Mqtt5Disconne
             propertyLength += 1 + reasonString.encodedLength();
         }
 
-        Mqtt5UserProperty.encodedLength(disconnect.getUserProperties());
+        propertyLength += Mqtt5UserProperty.encodedLength(disconnect.getUserProperties());
 
         if (!Mqtt5DataTypes.isInVariableByteIntegerRange(propertyLength)) {
             throw new Mqtt5VariableByteIntegerExceededException("property length");
@@ -116,7 +116,7 @@ public class Mqtt5DisconnectEncoder implements Mqtt5MessageEncoder<Mqtt5Disconne
 
         final Mqtt5UTF8String reasonString = disconnect.getRawReasonString();
         if (reasonString != null) {
-            out.writeByte(Mqtt5DisconnectProperty.USER_PROPERTY);
+            out.writeByte(Mqtt5DisconnectProperty.REASON_STRING);
             reasonString.to(out);
         }
 
