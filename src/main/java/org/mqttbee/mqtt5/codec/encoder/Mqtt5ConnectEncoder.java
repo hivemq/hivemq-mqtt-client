@@ -14,12 +14,13 @@ import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.message.auth.Mqtt5ExtendedAuthImpl;
 import org.mqttbee.mqtt5.message.connect.Mqtt5ConnectImpl;
 import org.mqttbee.mqtt5.message.connect.Mqtt5ConnectProperty;
-import org.mqttbee.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.mqtt5.message.publish.Mqtt5WillPublishImpl;
 import org.mqttbee.mqtt5.message.publish.Mqtt5WillPublishProperty;
 
 import javax.inject.Singleton;
 
+import static org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoderUtil.encodeIntProperty;
+import static org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoderUtil.encodePropertyNullable;
 import static org.mqttbee.mqtt5.message.connect.Mqtt5ConnectImpl.*;
 
 /**
@@ -304,39 +305,23 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
             final int willPropertyLength = connect.encodedWillPropertyLength();
             Mqtt5DataTypes.encodeVariableByteInteger(willPropertyLength, out);
 
-            final long messageExpiryInterval = willPublish.getRawMessageExpiryInterval();
-            if (messageExpiryInterval != Mqtt5WillPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY) {
-                out.writeByte(Mqtt5WillPublishProperty.MESSAGE_EXPIRY_INTERVAL);
-                out.writeInt((int) messageExpiryInterval);
-            }
-            final Mqtt5PayloadFormatIndicator payloadFormatIndicator = willPublish.getRawPayloadFormatIndicator();
-            if (payloadFormatIndicator != null) {
-                out.writeByte(Mqtt5WillPublishProperty.PAYLOAD_FORMAT_INDICATOR);
-                out.writeByte(payloadFormatIndicator.getCode());
-            }
-            final Mqtt5UTF8String contentType = willPublish.getRawContentType();
-            if (contentType != null) {
-                out.writeByte(Mqtt5WillPublishProperty.CONTENT_TYPE);
-                contentType.to(out);
-            }
-            final Mqtt5Topic responseTopic = willPublish.getRawResponseTopic();
-            if (responseTopic != null) {
-                out.writeByte(Mqtt5WillPublishProperty.RESPONSE_TOPIC);
-                responseTopic.to(out);
-            }
-            final byte[] correlationData = willPublish.getRawCorrelationData();
-            if (correlationData != null) {
-                out.writeByte(Mqtt5WillPublishProperty.CORRELATION_DATA);
-                Mqtt5DataTypes.encodeBinaryData(correlationData, out);
-            }
-
+            encodeIntProperty(
+                    Mqtt5WillPublishProperty.MESSAGE_EXPIRY_INTERVAL, willPublish.getRawMessageExpiryInterval(),
+                    Mqtt5WillPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, out);
+            encodePropertyNullable(
+                    Mqtt5WillPublishProperty.PAYLOAD_FORMAT_INDICATOR, willPublish.getRawPayloadFormatIndicator(), out);
+            Mqtt5MessageEncoderUtil
+                    .encodePropertyNullable(
+                            Mqtt5WillPublishProperty.CONTENT_TYPE, willPublish.getRawContentType(), out);
+            Mqtt5MessageEncoderUtil
+                    .encodePropertyNullable(Mqtt5WillPublishProperty.RESPONSE_TOPIC, willPublish.getRawResponseTopic(),
+                            out);
+            Mqtt5MessageEncoderUtil.encodePropertyNullable(Mqtt5WillPublishProperty.CORRELATION_DATA,
+                    willPublish.getRawCorrelationData(), out);
             willPublish.getRawUserProperties().encode(out);
-
-            final long delayInterval = willPublish.getDelayInterval();
-            if (delayInterval != Mqtt5WillPublish.DEFAULT_DELAY_INTERVAL) {
-                out.writeByte(Mqtt5WillPublishProperty.WILL_DELAY_INTERVAL);
-                out.writeInt((int) delayInterval);
-            }
+            encodeIntProperty(
+                    Mqtt5WillPublishProperty.WILL_DELAY_INTERVAL, willPublish.getDelayInterval(),
+                    Mqtt5WillPublish.DEFAULT_DELAY_INTERVAL, out);
 
             willPublish.getTopic().to(out);
             Mqtt5DataTypes.encodeBinaryData(willPublish.getRawPayload(), out);

@@ -9,12 +9,13 @@ import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.message.pubrel.Mqtt5PubRelImpl;
 import org.mqttbee.mqtt5.message.pubrel.Mqtt5PubRelInternal;
-import org.mqttbee.mqtt5.message.pubrel.Mqtt5PubRelProperty;
 import org.mqttbee.mqtt5.message.pubrel.Mqtt5PubRelReasonCode;
 
 import javax.inject.Singleton;
 
+import static org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoderUtil.encodePropertyNullable;
 import static org.mqttbee.mqtt5.message.pubrel.Mqtt5PubRelImpl.DEFAULT_REASON_CODE;
+import static org.mqttbee.mqtt5.message.pubrel.Mqtt5PubRelProperty.REASON_STRING;
 
 /**
  * @author Silvio Giebl
@@ -98,12 +99,7 @@ public class Mqtt5PubRelEncoder implements Mqtt5MessageEncoder<Mqtt5PubRelIntern
 
         Mqtt5DataTypes.encodeVariableByteInteger(propertyLength, out);
 
-        final Mqtt5UTF8String reasonString = pubRel.getRawReasonString();
-        if (reasonString != null) {
-            out.writeByte(Mqtt5PubRelProperty.REASON_STRING);
-            reasonString.to(out);
-        }
-
+        encodePropertyNullable(REASON_STRING, pubRel.getRawReasonString(), out);
         pubRel.getRawUserProperties().encode(out);
     }
 

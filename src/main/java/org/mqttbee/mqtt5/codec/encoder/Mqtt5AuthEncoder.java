@@ -9,9 +9,12 @@ import org.mqttbee.mqtt5.exceptions.Mqtt5VariableByteIntegerExceededException;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.message.auth.Mqtt5AuthImpl;
-import org.mqttbee.mqtt5.message.auth.Mqtt5AuthProperty;
 
 import javax.inject.Singleton;
+
+import static org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoderUtil.encodeProperty;
+import static org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoderUtil.encodePropertyNullable;
+import static org.mqttbee.mqtt5.message.auth.Mqtt5AuthProperty.*;
 
 /**
  * @author Silvio Giebl
@@ -81,21 +84,9 @@ public class Mqtt5AuthEncoder implements Mqtt5MessageEncoder<Mqtt5AuthImpl> {
         final int propertyLength = auth.encodedPropertyLength();
         Mqtt5DataTypes.encodeVariableByteInteger(propertyLength, out);
 
-        out.writeByte(Mqtt5AuthProperty.AUTHENTICATION_METHOD);
-        auth.getMethod().to(out);
-
-        final byte[] data = auth.getRawData();
-        if (data != null) {
-            out.writeByte(Mqtt5AuthProperty.AUTHENTICATION_DATA);
-            Mqtt5DataTypes.encodeBinaryData(data, out);
-        }
-
-        final Mqtt5UTF8String reasonString = auth.getRawReasonString();
-        if (reasonString != null) {
-            out.writeByte(Mqtt5AuthProperty.REASON_STRING);
-            reasonString.to(out);
-        }
-
+        encodeProperty(AUTHENTICATION_METHOD, auth.getMethod(), out);
+        encodePropertyNullable(AUTHENTICATION_DATA, auth.getRawData(), out);
+        encodePropertyNullable(REASON_STRING, auth.getRawReasonString(), out);
         auth.getRawUserProperties().encode(out);
     }
 
