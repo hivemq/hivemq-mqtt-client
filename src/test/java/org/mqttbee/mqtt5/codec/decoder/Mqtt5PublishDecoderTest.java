@@ -496,10 +496,8 @@ public class Mqtt5PublishDecoderTest {
         final Mqtt5PublishImpl publish = decode(encoded);
         final ImmutableList<Mqtt5UserProperty> userProperties = publish.getUserProperties();
         assertEquals(1, userProperties.size());
-        final Mqtt5UserProperty userProperty =
-                new Mqtt5UserProperty(
-                        requireNonNull(Mqtt5UTF8String.from("test")),
-                        requireNonNull(Mqtt5UTF8String.from("value")));
+        final Mqtt5UserProperty userProperty = new Mqtt5UserProperty(requireNonNull(Mqtt5UTF8String.from("test")),
+                requireNonNull(Mqtt5UTF8String.from("value")));
         assertTrue(userProperties.contains(userProperty));
     }
 
@@ -807,7 +805,7 @@ public class Mqtt5PublishDecoderTest {
                 //   properties
                 24,
                 //     response topic
-                0x08, 0, 8, 'r', 'e', 's', 'p', 'o', 'n', 's', 'e',
+                0x08, 0, 8, 'r', 'e', 's', 'p', 'o', 'n', 's', 'e', //
                 0x08, 0, 8, 'r', 'e', 's', 'p', 'o', 'n', 's', 'e',
                 //     payload format indicator
                 0x01, 0

@@ -36,9 +36,9 @@ class Mqtt5MessageDecoderUtil {
             }
         }
 
-        final Mqtt5DisconnectImpl disconnect = new Mqtt5DisconnectImpl(
-                reasonCode, Mqtt5DisconnectImpl.SESSION_EXPIRY_INTERVAL_FROM_CONNECT, null, mqttReasonString,
-                Mqtt5UserProperty.DEFAULT_NO_USER_PROPERTIES);
+        final Mqtt5DisconnectImpl disconnect =
+                new Mqtt5DisconnectImpl(reasonCode, Mqtt5DisconnectImpl.SESSION_EXPIRY_INTERVAL_FROM_CONNECT, null,
+                        mqttReasonString, Mqtt5UserProperty.DEFAULT_NO_USER_PROPERTIES);
         final ChannelFuture disconnectFuture = channel.writeAndFlush(disconnect);
 
         disconnectFuture.addListener(ChannelFutureListener.CLOSE);
@@ -175,8 +175,8 @@ class Mqtt5MessageDecoderUtil {
 
     @Nullable
     static ImmutableList.Builder<Mqtt5UserProperty> decodeUserProperty(
-            @Nullable ImmutableList.Builder<Mqtt5UserProperty> userPropertiesBuilder,
-            @NotNull final Channel channel, @NotNull final ByteBuf in) {
+            @Nullable ImmutableList.Builder<Mqtt5UserProperty> userPropertiesBuilder, @NotNull final Channel channel,
+            @NotNull final ByteBuf in) {
 
         final Mqtt5UserProperty userProperty = Mqtt5UserProperty.decode(in);
         if (userProperty == null) {

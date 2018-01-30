@@ -60,8 +60,8 @@ class Mqtt5UnsubscribeEncoderTest {
         final Mqtt5UTF8String property = requireNonNull(Mqtt5UTF8String.from("property"));
         final ImmutableList<Mqtt5UserProperty> userProperties = ImmutableList.of(new Mqtt5UserProperty(user, property));
 
-        final ImmutableList<Mqtt5TopicFilter> topicFilters = ImmutableList.of(
-                requireNonNull(Mqtt5TopicFilter.from("topic/#")));
+        final ImmutableList<Mqtt5TopicFilter> topicFilters =
+                ImmutableList.of(requireNonNull(Mqtt5TopicFilter.from("topic/#")));
         encodeUnsubscribe(expected, userProperties, topicFilters);
     }
 
@@ -79,8 +79,8 @@ class Mqtt5UnsubscribeEncoderTest {
                 // properties length
                 51,
                 // user properties
-                0x26, 0, 4, 'u', 's', 'e', 'r', 0, 8, 'p', 'r', 'o', 'p', 'e', 'r', 't', 'y',
-                0x26, 0, 4, 'u', 's', 'e', 'r', 0, 8, 'p', 'r', 'o', 'p', 'e', 'r', 't', 'y',
+                0x26, 0, 4, 'u', 's', 'e', 'r', 0, 8, 'p', 'r', 'o', 'p', 'e', 'r', 't', 'y', //
+                0x26, 0, 4, 'u', 's', 'e', 'r', 0, 8, 'p', 'r', 'o', 'p', 'e', 'r', 't', 'y', //
                 0x26, 0, 4, 'u', 's', 'e', 'r', 0, 8, 'p', 'r', 'o', 'p', 'e', 'r', 't', 'y',
                 // payload topic filter
                 0, 5, 't', 'o', 'p', 'i', 'c'
@@ -99,21 +99,16 @@ class Mqtt5UnsubscribeEncoderTest {
 
     @Test
     void encode_maximumPacketSizeExceeded_throwsEncoderException() {
-        final MaximumPacketBuilder maxPacket =
-                new MaximumPacketBuilder()
-                        .build();
-        final Mqtt5UnsubscribeImpl unsubscribe =
-                new Mqtt5UnsubscribeImpl(
-                        maxPacket.getTopicFilter("extraChars"), maxPacket.getMaxPossibleUserProperties());
+        final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
+        final Mqtt5UnsubscribeImpl unsubscribe = new Mqtt5UnsubscribeImpl(maxPacket.getTopicFilter("extraChars"),
+                maxPacket.getMaxPossibleUserProperties());
 
         final int packetIdentifier = 1;
         final Mqtt5UnsubscribeInternal unsubscribeInternal =
                 new Mqtt5UnsubscribeInternal(unsubscribe, packetIdentifier);
 
-        final Throwable exception = assertThrows(
-                EncoderException.class,
-                () -> channel.writeOutbound(unsubscribeInternal)
-        );
+        final Throwable exception =
+                assertThrows(EncoderException.class, () -> channel.writeOutbound(unsubscribeInternal));
         assertTrue(exception.getMessage().contains("variable byte integer size exceeded for remaining length"));
     }
 
@@ -127,10 +122,8 @@ class Mqtt5UnsubscribeEncoderTest {
         final Mqtt5UnsubscribeInternal unsubscribeInternal =
                 new Mqtt5UnsubscribeInternal(unsubscribe, packetIdentifier);
 
-        final Throwable exception = assertThrows(
-                EncoderException.class,
-                () -> channel.writeOutbound(unsubscribeInternal)
-        );
+        final Throwable exception =
+                assertThrows(EncoderException.class, () -> channel.writeOutbound(unsubscribeInternal));
         assertTrue(exception.getMessage().contains("variable byte integer size exceeded for property length"));
     }
 
@@ -164,8 +157,7 @@ class Mqtt5UnsubscribeEncoderTest {
         final Mqtt5UTF8String property = requireNonNull(Mqtt5UTF8String.from("property"));
 
         MaximumPacketBuilder build() {
-            final int maxPropertyLength = Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT
-                    - 1  // type, reserved
+            final int maxPropertyLength = Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT - 1  // type, reserved
                     - 4  // remaining length
                     - 4  // property length
                     - 2  // topic filter length

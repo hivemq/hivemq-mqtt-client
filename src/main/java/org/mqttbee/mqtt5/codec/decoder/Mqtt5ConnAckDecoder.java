@@ -122,9 +122,8 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
 
             switch (propertyIdentifier) {
                 case Mqtt5ConnAckProperty.SESSION_EXPIRY_INTERVAL:
-                    if (!checkIntOnlyOnce(
-                            sessionExpiryInterval, SESSION_EXPIRY_INTERVAL_FROM_CONNECT, "session expiry interval",
-                            channel, in)) {
+                    if (!checkIntOnlyOnce(sessionExpiryInterval, SESSION_EXPIRY_INTERVAL_FROM_CONNECT,
+                            "session expiry interval", channel, in)) {
                         return null;
                     }
                     sessionExpiryInterval = in.readUnsignedInt();
@@ -151,16 +150,16 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                     break;
 
                 case Mqtt5ConnAckProperty.AUTHENTICATION_METHOD:
-                    authenticationMethod = decodeUTF8StringOnlyOnce(
-                            authenticationMethod, "authentication method", channel, in);
+                    authenticationMethod =
+                            decodeUTF8StringOnlyOnce(authenticationMethod, "authentication method", channel, in);
                     if (authenticationMethod == null) {
                         return null;
                     }
                     break;
 
                 case Mqtt5ConnAckProperty.AUTHENTICATION_DATA:
-                    authenticationData = decodeBinaryDataOnlyOnce(
-                            authenticationData, "authentication data", channel, in);
+                    authenticationData =
+                            decodeBinaryDataOnlyOnce(authenticationData, "authentication data", channel, in);
                     if (authenticationData == null) {
                         return null;
                     }
@@ -333,16 +332,16 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
 
         RestrictionsImpl restrictions = RestrictionsImpl.DEFAULT;
         if (restrictionsPresent) {
-            restrictions = new RestrictionsImpl(
-                    receiveMaximum, topicAliasMaximum, maximumPacketSize, maximumQoS, retainAvailable,
-                    wildCardSubscriptionAvailable, subscriptionIdentifierAvailable, sharedSubscriptionAvailable);
+            restrictions = new RestrictionsImpl(receiveMaximum, topicAliasMaximum, maximumPacketSize, maximumQoS,
+                    retainAvailable, wildCardSubscriptionAvailable, subscriptionIdentifierAvailable,
+                    sharedSubscriptionAvailable);
         }
 
         final ImmutableList<Mqtt5UserProperty> userProperties = Mqtt5UserProperty.build(userPropertiesBuilder);
 
-        return new Mqtt5ConnAckImpl(
-                reasonCode, sessionPresent, sessionExpiryInterval, serverKeepAlive, assignedClientIdentifier,
-                extendedAuth, restrictions, responseInformation, serverReference, reasonString, userProperties);
+        return new Mqtt5ConnAckImpl(reasonCode, sessionPresent, sessionExpiryInterval, serverKeepAlive,
+                assignedClientIdentifier, extendedAuth, restrictions, responseInformation, serverReference,
+                reasonString, userProperties);
     }
 
 }

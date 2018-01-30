@@ -298,10 +298,7 @@ class Mqtt5PublishEncoderTest {
                 new Mqtt5PublishInternal(publish, -1, false, Mqtt5PublishInternal.DEFAULT_NO_TOPIC_ALIAS, false,
                         ImmutableIntArray.of());
 
-        final Throwable exception = assertThrows(
-                EncoderException.class,
-                () -> channel.writeOutbound(publishInternal)
-        );
+        final Throwable exception = assertThrows(EncoderException.class, () -> channel.writeOutbound(publishInternal));
         assertTrue(exception.getMessage().contains("binary data size exceeded for correlation data"));
 
     }
@@ -375,15 +372,15 @@ class Mqtt5PublishEncoderTest {
                 30,
                 //     payload format indicator
                 0x01, 1,
-                0x26, 0, 3, 'k', 'e', 'y', 0, 5, 'v', 'a', 'l', 'u', 'e',
+                //     user properties
+                0x26, 0, 3, 'k', 'e', 'y', 0, 5, 'v', 'a', 'l', 'u', 'e', //
                 0x26, 0, 4, 'k', 'e', 'y', '2', 0, 6, 'v', 'a', 'l', 'u', 'e', '2'
         };
 
-        final ImmutableList<Mqtt5UserProperty> userProperties = ImmutableList.of(
-                new Mqtt5UserProperty(
+        final ImmutableList<Mqtt5UserProperty> userProperties = ImmutableList.of(new Mqtt5UserProperty(
                         requireNonNull(Mqtt5UTF8String.from("key")), requireNonNull(Mqtt5UTF8String.from("value"))),
-                new Mqtt5UserProperty(
-                        requireNonNull(Mqtt5UTF8String.from("key2")), requireNonNull(Mqtt5UTF8String.from("value2"))));
+                new Mqtt5UserProperty(requireNonNull(Mqtt5UTF8String.from("key2")),
+                        requireNonNull(Mqtt5UTF8String.from("value2"))));
 
         final Mqtt5PublishImpl publish =
                 new Mqtt5PublishImpl(requireNonNull(Mqtt5Topic.from("topic")), null, Mqtt5QoS.AT_LEAST_ONCE, false,
@@ -529,10 +526,7 @@ class Mqtt5PublishEncoderTest {
                 new Mqtt5PublishInternal(publish, -1, false, Mqtt5PublishInternal.DEFAULT_NO_TOPIC_ALIAS, false,
                         ImmutableIntArray.of());
 
-        final Throwable exception = assertThrows(
-                EncoderException.class,
-                () -> channel.writeOutbound(publishInternal)
-        );
+        final Throwable exception = assertThrows(EncoderException.class, () -> channel.writeOutbound(publishInternal));
         assertTrue(exception.getMessage().contains("variable byte integer size exceeded for remaining length"));
     }
 
@@ -550,17 +544,13 @@ class Mqtt5PublishEncoderTest {
                 new Mqtt5PublishInternal(publish, -1, false, Mqtt5PublishInternal.DEFAULT_NO_TOPIC_ALIAS, false,
                         ImmutableIntArray.of());
 
-        final Throwable exception = assertThrows(
-                EncoderException.class,
-                () -> channel.writeOutbound(publishInternal)
-        );
+        final Throwable exception = assertThrows(EncoderException.class, () -> channel.writeOutbound(publishInternal));
         assertTrue(exception.getMessage().contains("variable byte integer size exceeded for property length"));
     }
 
     private void encode(
             final byte[] expected, final Mqtt5PublishImpl publish, final int packetIdentifier, final boolean isDup,
-            final int topicAlias, final boolean isNewTopicAlias,
-            final ImmutableIntArray subscriptionIdentifiers) {
+            final int topicAlias, final boolean isNewTopicAlias, final ImmutableIntArray subscriptionIdentifiers) {
         final Mqtt5PublishInternal publishInternal =
                 new Mqtt5PublishInternal(publish, packetIdentifier, isDup, topicAlias, isNewTopicAlias,
                         subscriptionIdentifiers);
@@ -586,8 +576,7 @@ class Mqtt5PublishEncoderTest {
         private byte[] correlationData;
 
         MaximumPacketBuilder build() {
-            final int maxPropertyLength = Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT
-                    - 1  // type, dup, qos, retain
+            final int maxPropertyLength = Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT - 1  // type, dup, qos, retain
                     - 4  // remaining length
                     - 7  // topic name 'topic'
                     - 4 // property length

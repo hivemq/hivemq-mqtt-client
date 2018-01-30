@@ -50,7 +50,8 @@ public class Mqtt5UnsubAckDecoderTest {
                 //     user property
                 0x26, 0, 4, 'n', 'a', 'm', 'e', 0, 5, 'v', 'a', 'l', 'u', 'e',
                 // payload reason code: success
-                0x00};
+                0x00
+        };
 
         final Mqtt5UnsubAckInternal unsubackInternal = decodeMqtt5UnsubAck(encoded);
         //0x0102 = 258
@@ -88,7 +89,8 @@ public class Mqtt5UnsubAckDecoderTest {
                 //     user property
                 0x26, 0, 4, 'n', 'a', 'm', 'e', 0, 5, 'v', 'a', 'l', 'u', 'e',
                 // payload reason code: success
-                0x00};
+                0x00
+        };
 
         final Mqtt5UnsubAckInternal unsubackInternal = decodeMqtt5UnsubAck(encoded);
         // 0x0F05 = 3845
@@ -124,11 +126,12 @@ public class Mqtt5UnsubAckDecoderTest {
                 //     reason string
                 0x1F, 0, 6, 'r', 'e', 'a', 's', 'o', 'n',
                 //     user properties
-                0x26, 0, 4, 'n', 'a', 'm', 'e', 0, 5, 'v', 'a', 'l', 'u', 'e',
-                0x26, 0, 4, 'n', 'a', 'm', 'e', 0, 5, 'v', 'a', 'l', 'u', 'e',
+                0x26, 0, 4, 'n', 'a', 'm', 'e', 0, 5, 'v', 'a', 'l', 'u', 'e', //
+                0x26, 0, 4, 'n', 'a', 'm', 'e', 0, 5, 'v', 'a', 'l', 'u', 'e', //
                 0x26, 0, 4, 'n', 'a', 'm', 'e', 0, 5, 'v', 'a', 'l', 'u', 'e',
                 // payload reason code: success
-                0x00};
+                0x00
+        };
 
         final Mqtt5UnsubAckInternal unsubackInternal = decodeMqtt5UnsubAck(encoded);
         assertEquals(2, unsubackInternal.getPacketIdentifier());
@@ -171,7 +174,8 @@ public class Mqtt5UnsubAckDecoderTest {
                 //     user property
                 0x26, 0, 4, 'n', 'a', 'm', 'e', 0, 5, 'v', 'a', 'l', 'u', 'e',
                 // payload reason codes, one of each possible, in order of spec
-                0x00, 0x11, (byte) 0x80, (byte) 0x83, (byte) 0x87, (byte) 0x8F, (byte) 0x91};
+                0x00, 0x11, (byte) 0x80, (byte) 0x83, (byte) 0x87, (byte) 0x8F, (byte) 0x91
+        };
 
         final Mqtt5UnsubAckInternal unsubackInternal = decodeMqtt5UnsubAck(encoded);
         // 0x0808 = 2056
@@ -217,7 +221,8 @@ public class Mqtt5UnsubAckDecoderTest {
                 //     user property
                 0x26, 0, 4, 'n', 'a', 'm', 'e', 0, 5, 'v', 'a', 'l', 'u', 'e',
                 // payload reason code
-                (byte) 0x00};
+                (byte) 0x00
+        };
 
         assertNotNull(decodeMqtt5UnsubAck(encoded));
         assertEquals(0x00, encoded[28]);
@@ -247,7 +252,8 @@ public class Mqtt5UnsubAckDecoderTest {
                 //     user property
                 0x26, 0, 4, 'n', 'a', 'm', 'e', 0, 5, 'v', 'a', 'l', 'u', 'e',
                 // payload reason code: SUCCESS
-                (byte) 0x00};
+                (byte) 0x00
+        };
 
         assertNotNull(decodeMqtt5UnsubAck(encoded));
         assertEquals(23, encoded[4]);
@@ -277,7 +283,8 @@ public class Mqtt5UnsubAckDecoderTest {
                 //     user property
                 0x26, 0, 4, 'n', 'a', 'm', 'e', 0, 5, 'v', 'a', 'l', 'u', 'e',
                 // payload reason code: SUCCESS
-                (byte) 0x00};
+                (byte) 0x00
+        };
 
         assertNotNull(decodeMqtt5UnsubAck(encoded));
         assertEquals(23, encoded[4]);
@@ -307,7 +314,8 @@ public class Mqtt5UnsubAckDecoderTest {
                 //     user property
                 0x26, 0, 4, 'n', 'a', 'm', 'e', 0, 5, 'v', 'a', 'l', 'u', 'e',
                 // payload reason code: SUCCESS
-                (byte) 0x00};
+                (byte) 0x00
+        };
 
         assertNotNull(decodeMqtt5UnsubAck(encoded));
         assertEquals(6, encoded[7]);

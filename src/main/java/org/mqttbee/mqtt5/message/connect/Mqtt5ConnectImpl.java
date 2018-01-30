@@ -207,8 +207,9 @@ public class Mqtt5ConnectImpl extends Mqtt5Message.Mqtt5MessageWithProperties im
     public static class RestrictionsImpl implements Restrictions {
 
         @NotNull
-        public static final RestrictionsImpl DEFAULT = new RestrictionsImpl(
-                DEFAULT_RECEIVE_MAXIMUM, DEFAULT_TOPIC_ALIAS_MAXIMUM, DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT);
+        public static final RestrictionsImpl DEFAULT =
+                new RestrictionsImpl(DEFAULT_RECEIVE_MAXIMUM, DEFAULT_TOPIC_ALIAS_MAXIMUM,
+                        DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT);
 
         private final int receiveMaximum;
         private final int topicAliasMaximum;

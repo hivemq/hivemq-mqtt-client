@@ -134,10 +134,11 @@ public class Mqtt5ConnAckImpl implements Mqtt5ConnAck, Mqtt5Message {
     public static class RestrictionsImpl implements Restrictions {
 
         @NotNull
-        public static final RestrictionsImpl DEFAULT = new RestrictionsImpl(
-                DEFAULT_RECEIVE_MAXIMUM, DEFAULT_TOPIC_ALIAS_MAXIMUM, DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT,
-                DEFAULT_MAXIMUM_QOS, DEFAULT_RETAIN_AVAILABLE, DEFAULT_WILDCARD_SUBSCRIPTION_AVAILABLE,
-                DEFAULT_SUBSCRIPTION_IDENTIFIER_AVAILABLE, DEFAULT_SHARED_SUBSCRIPTION_AVAILABLE);
+        public static final RestrictionsImpl DEFAULT =
+                new RestrictionsImpl(DEFAULT_RECEIVE_MAXIMUM, DEFAULT_TOPIC_ALIAS_MAXIMUM,
+                        DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT, DEFAULT_MAXIMUM_QOS, DEFAULT_RETAIN_AVAILABLE,
+                        DEFAULT_WILDCARD_SUBSCRIPTION_AVAILABLE, DEFAULT_SUBSCRIPTION_IDENTIFIER_AVAILABLE,
+                        DEFAULT_SHARED_SUBSCRIPTION_AVAILABLE);
 
         private final int receiveMaximum;
         private final int topicAliasMaximum;

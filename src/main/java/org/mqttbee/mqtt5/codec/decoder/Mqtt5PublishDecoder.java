@@ -110,17 +110,15 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
 
             switch (propertyIdentifier) {
                 case Mqtt5PublishProperty.MESSAGE_EXPIRY_INTERVAL:
-                    if (!checkIntOnlyOnce(
-                            messageExpiryInterval, MESSAGE_EXPIRY_INTERVAL_INFINITY, "message expiry interval", channel,
-                            in)) {
+                    if (!checkIntOnlyOnce(messageExpiryInterval, MESSAGE_EXPIRY_INTERVAL_INFINITY,
+                            "message expiry interval", channel, in)) {
                         return null;
                     }
                     messageExpiryInterval = in.readUnsignedInt();
                     break;
 
                 case Mqtt5PublishProperty.PAYLOAD_FORMAT_INDICATOR:
-                    if (!checkByteOnlyOnce(payloadFormatIndicator != null, "payload format indicator",
-                            channel, in)) {
+                    if (!checkByteOnlyOnce(payloadFormatIndicator != null, "payload format indicator", channel, in)) {
                         return null;
                     }
                     payloadFormatIndicator = Mqtt5PayloadFormatIndicator.fromCode(in.readUnsignedByte());
@@ -182,14 +180,12 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
                     }
                     final int subscriptionIdentifier = Mqtt5DataTypes.decodeVariableByteInteger(in);
                     if (subscriptionIdentifier < 0) {
-                        disconnect(
-                                Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "malformed subscription identifier",
+                        disconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "malformed subscription identifier",
                                 channel);
                         return null;
                     }
                     if (subscriptionIdentifier == 0) {
-                        disconnect(
-                                Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "subscription identifier must not be 0",
+                        disconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "subscription identifier must not be 0",
                                 channel);
                         return null;
                     }
@@ -209,8 +205,7 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
 
         boolean isNewTopicAlias = false;
         if (topicAlias != DEFAULT_NO_TOPIC_ALIAS) {
-            final Mqtt5Topic[] topicAliasMapping =
-                    channel.attr(ChannelAttributes.INCOMING_TOPIC_ALIAS_MAPPING).get();
+            final Mqtt5Topic[] topicAliasMapping = channel.attr(ChannelAttributes.INCOMING_TOPIC_ALIAS_MAPPING).get();
             if ((topicAliasMapping == null) || (topicAlias > topicAliasMapping.length)) {
                 disconnect(
                         Mqtt5DisconnectReasonCode.TOPIC_ALIAS_INVALID,
@@ -244,8 +239,7 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
                 final Boolean validatePayloadFormat = channel.attr(ChannelAttributes.VALIDATE_PAYLOAD_FORMAT).get();
                 if ((validatePayloadFormat != null) && validatePayloadFormat) {
                     if (!Utf8.isWellFormed(payload)) {
-                        disconnect(
-                                Mqtt5DisconnectReasonCode.PAYLOAD_FORMAT_INVALID, "payload is not valid UTF-8",
+                        disconnect(Mqtt5DisconnectReasonCode.PAYLOAD_FORMAT_INVALID, "payload is not valid UTF-8",
                                 channel);
                         return null;
                     }
@@ -255,8 +249,9 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
 
         final ImmutableList<Mqtt5UserProperty> userProperties = Mqtt5UserProperty.build(userPropertiesBuilder);
 
-        final Mqtt5PublishImpl publish = new Mqtt5PublishImpl(topic, payload, qos, retain, messageExpiryInterval,
-                payloadFormatIndicator, contentType, responseTopic, correlationData, topicAliasUsage, userProperties);
+        final Mqtt5PublishImpl publish =
+                new Mqtt5PublishImpl(topic, payload, qos, retain, messageExpiryInterval, payloadFormatIndicator,
+                        contentType, responseTopic, correlationData, topicAliasUsage, userProperties);
 
         final ImmutableIntArray subscriptionIdentifiers =
                 (subscriptionIdentifiersBuilder == null) ? DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS :
