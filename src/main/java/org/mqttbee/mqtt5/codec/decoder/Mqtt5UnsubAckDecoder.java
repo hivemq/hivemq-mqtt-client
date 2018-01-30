@@ -94,8 +94,7 @@ public class Mqtt5UnsubAckDecoder implements Mqtt5MessageDecoder {
 
         final int reasonCodeCount = in.readableBytes();
         if (reasonCodeCount == 0) {
-            disconnect(
-                    Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "UNSUBACK must contain at least one reason code",
+            disconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "UNSUBACK must contain at least one reason code",
                     channel);
             return null;
         }

@@ -62,7 +62,8 @@ public class Mqtt5DataTypesTest {
                 for (int k = 0; k < 127; k++) {
                     for (int l = 1; l < 127; l++) {
                         byteBuf.writeByte(128 + i).writeByte(128 + j).writeByte(128 + k).writeByte(l);
-                        assertEquals(i + j * 128 + k * 128 * 128 + l * 128 * 128 * 128,
+                        assertEquals(
+                                i + j * 128 + k * 128 * 128 + l * 128 * 128 * 128,
                                 Mqtt5DataTypes.decodeVariableByteInteger(byteBuf));
                         byteBuf.clear();
                     }
@@ -76,7 +77,8 @@ public class Mqtt5DataTypesTest {
     public void test_decodeVariableByteInteger_not_enough_bytes() {
         final ByteBuf byteBuf = Unpooled.buffer();
         byteBuf.writeByte(0x80);
-        assertEquals(Mqtt5DataTypes.VARIABLE_BYTE_INTEGER_NOT_ENOUGH_BYTES,
+        assertEquals(
+                Mqtt5DataTypes.VARIABLE_BYTE_INTEGER_NOT_ENOUGH_BYTES,
                 Mqtt5DataTypes.decodeVariableByteInteger(byteBuf));
         byteBuf.release();
     }
@@ -93,7 +95,8 @@ public class Mqtt5DataTypesTest {
     public void test_decodeVariableByteInteger_not_minimum_byte() {
         final ByteBuf byteBuf = Unpooled.buffer();
         byteBuf.writeByte(0xFF).writeByte(0x00);
-        assertEquals(Mqtt5DataTypes.VARIABLE_BYTE_INTEGER_NOT_MINIMUM_BYTES,
+        assertEquals(
+                Mqtt5DataTypes.VARIABLE_BYTE_INTEGER_NOT_MINIMUM_BYTES,
                 Mqtt5DataTypes.decodeVariableByteInteger(byteBuf));
         byteBuf.release();
     }
@@ -150,8 +153,8 @@ public class Mqtt5DataTypesTest {
             for (int j = 0; j < 127; j++) {
                 for (int k = 0; k < 127; k++) {
                     for (int l = 1; l < 127; l++) {
-                        Mqtt5DataTypes.encodeVariableByteInteger(
-                                i + j * 128 + k * 128 * 128 + l * 128 * 128 * 128, byteBuf);
+                        Mqtt5DataTypes
+                                .encodeVariableByteInteger(i + j * 128 + k * 128 * 128 + l * 128 * 128 * 128, byteBuf);
                         assertEquals(128 + i, byteBuf.readUnsignedByte());
                         assertEquals(128 + j, byteBuf.readUnsignedByte());
                         assertEquals(128 + k, byteBuf.readUnsignedByte());

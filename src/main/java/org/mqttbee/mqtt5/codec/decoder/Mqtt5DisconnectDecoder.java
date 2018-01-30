@@ -76,7 +76,8 @@ public class Mqtt5DisconnectDecoder implements Mqtt5MessageDecoder {
                             break;
 
                         case Mqtt5DisconnectProperty.SERVER_REFERENCE:
-                            serverReference = decodeUTF8StringOnlyOnce(serverReference, "server reference", channel, in);
+                            serverReference =
+                                    decodeUTF8StringOnlyOnce(serverReference, "server reference", channel, in);
                             if (serverReference == null) {
                                 return null;
                             }
@@ -106,7 +107,8 @@ public class Mqtt5DisconnectDecoder implements Mqtt5MessageDecoder {
 
         final ImmutableList<Mqtt5UserProperty> userProperties = Mqtt5UserProperty.build(userPropertiesBuilder);
 
-        return new Mqtt5DisconnectImpl(reasonCode, sessionExpiryInterval, serverReference, reasonString, userProperties);
+        return new Mqtt5DisconnectImpl(
+                reasonCode, sessionExpiryInterval, serverReference, reasonString, userProperties);
     }
 
 }

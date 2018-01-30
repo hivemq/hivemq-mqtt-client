@@ -58,8 +58,8 @@ class Mqtt5AuthDecoderTest {
                 //     reason string
                 0x1F, 0, 8, 'c', 'o', 'n', 't', 'i', 'n', 'u', 'e',
                 //     user properties
-                0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e',
-                0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e', '2',
+                0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e', //
+                0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e', '2', //
                 0x26, 0, 5, 't', 'e', 's', 't', '2', 0, 5, 'v', 'a', 'l', 'u', 'e',
         };
 
@@ -75,7 +75,8 @@ class Mqtt5AuthDecoderTest {
         assertTrue(auth.getData().isPresent());
         assertArrayEquals(new byte[]{
                 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4,
-                5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, auth.getData().get());
+                5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+        }, auth.getData().get());
         assertTrue(auth.getReasonString().isPresent());
         assertEquals("continue", auth.getReasonString().get().toString());
 

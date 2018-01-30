@@ -72,9 +72,7 @@ public class Mqtt5UserProperty {
         if (!userProperties.isEmpty()) {
             for (int i = 0; i < userProperties.size(); i++) {
                 final Mqtt5UserProperty userProperty = userProperties.get(i);
-                encodedLength += 1 +
-                        userProperty.getName().encodedLength() +
-                        userProperty.getValue().encodedLength();
+                encodedLength += 1 + userProperty.getName().encodedLength() + userProperty.getValue().encodedLength();
             }
         }
         return encodedLength;

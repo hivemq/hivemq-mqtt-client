@@ -26,7 +26,8 @@ public class Mqtt5UTF8String {
 
     private static final Charset CHARSET = Charset.forName("UTF-8");
     private static final Pattern SHOULD_NOT_CHARACTERS_PATTERN =
-            Pattern.compile("[\\u0001-\\u001F]|[\\u007F-\\u009F]|[\\uFDD0-\\uFDEF]" +
+            Pattern.compile("[\\u0001-\\u001F]|[\\u007F-\\u009F]" + // control characters
+                    "|[\\uFDD0-\\uFDEF]" +              // non characters
                     "|\\uFFFE|\\uFFFF" +                //   U+FFFE|F
                     "|\\uD83F\\uDFFE|\\uD83F\\uDFFF" +  //  U+1FFFE|F
                     "|\\uD87F\\uDFFE|\\uD87F\\uDFFF" +  //  U+2FFFE|F

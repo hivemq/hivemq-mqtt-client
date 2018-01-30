@@ -73,9 +73,9 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
             }
 
             final int willPropertyLength = connect.encodedWillPropertyLength();
-            remainingLength += willPublish.getTopic().encodedLength() +
-                    Mqtt5DataTypes.encodedBinaryDataLength(willPayload) +
-                    Mqtt5DataTypes.encodedVariableByteIntegerLength(willPropertyLength) + willPropertyLength;
+            remainingLength +=
+                    willPublish.getTopic().encodedLength() + Mqtt5DataTypes.encodedBinaryDataLength(willPayload) +
+                            Mqtt5DataTypes.encodedVariableByteIntegerLength(willPropertyLength) + willPropertyLength;
         }
 
         final int propertyLength = connect.encodedPropertyLength();
@@ -267,8 +267,7 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
             if (topicAliasMaximum != Restrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM) {
                 out.writeByte(Mqtt5ConnectProperty.TOPIC_ALIAS_MAXIMUM);
                 out.writeShort(topicAliasMaximum);
-                channel.attr(ChannelAttributes.INCOMING_TOPIC_ALIAS_MAPPING)
-                        .set(new Mqtt5Topic[topicAliasMaximum]);
+                channel.attr(ChannelAttributes.INCOMING_TOPIC_ALIAS_MAPPING).set(new Mqtt5Topic[topicAliasMaximum]);
             }
             final int maximumPacketSize = restrictions.getMaximumPacketSize();
             if (maximumPacketSize != Restrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT) {

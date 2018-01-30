@@ -28,8 +28,7 @@ public class Mqtt5PingRespDecoder implements Mqtt5MessageDecoder {
         }
 
         if (in.readableBytes() != 0) {
-            disconnect(
-                    Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "PING must not have a variable header or payload",
+            disconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "PING must not have a variable header or payload",
                     channel);
             return null;
         }

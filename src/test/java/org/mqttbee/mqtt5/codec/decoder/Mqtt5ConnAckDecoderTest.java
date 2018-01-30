@@ -72,9 +72,9 @@ class Mqtt5ConnAckDecoderTest {
                 //     reason string
                 0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', 's',
                 //     user properties
-                0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e',
-                0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e', '2',
-                0x26, 0, 5, 't', 'e', 's', 't', '2', 0, 5, 'v', 'a', 'l', 'u', 'e',
+                0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e', //
+                0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e', '2', //
+                0x26, 0, 5, 't', 'e', 's', 't', '2', 0, 5, 'v', 'a', 'l', 'u', 'e', //
                 //     wildcard subscription available
                 0x28, 0,
                 //     subscription identifiers available
@@ -255,7 +255,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_wrong_flags(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -280,7 +280,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_remaining_length_too_short(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -305,7 +305,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_remaining_length_too_long(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -332,7 +332,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_remaining_length_not_minimum_bytes(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -357,7 +357,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_remaining_length_too_large(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -382,7 +382,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_wrong_connack_flags(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -407,7 +407,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_wrong_reason_code(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -432,7 +432,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_reason_code_not_0_session_present_must_be_0(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -457,7 +457,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_property_length_too_short(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -482,7 +482,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_property_length_too_long(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -507,7 +507,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_property_length_not_minimum_bytes(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -532,7 +532,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_property_length_too_large(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -557,7 +557,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_wrong_property(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -609,7 +609,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_receive_maximum_0(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -635,7 +635,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_maximum_qos_not_0_or_1(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -661,7 +661,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_retain_available_not_0_or_1(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -687,7 +687,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_maximum_packet_size_0(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -713,7 +713,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_wildcard_subscription_available_not_0_or_1(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -739,7 +739,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_subscription_identifiers_available_not_0_or_1(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -765,7 +765,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_shared_subscription_available_not_0_or_1(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -791,7 +791,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_must_not_multiple_session_expiry_interval(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -819,7 +819,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_must_not_multiple_receive_maximum(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -847,7 +847,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_must_not_multiple_maximum_qos(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -875,7 +875,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_must_not_multiple_retain_available(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -903,7 +903,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_must_not_multiple_maximum_packet_size(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -931,7 +931,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_must_not_multiple_assigned_client_identifier(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -959,7 +959,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_must_not_multiple_topic_alias_maximum(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -987,7 +987,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_must_not_multiple_reason_string(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1015,7 +1015,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_must_not_multiple_wildcard_subscription_available(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1043,7 +1043,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_must_not_multiple_subscription_identifiers_available(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1071,7 +1071,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_must_not_multiple_shared_subscription_available(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1099,7 +1099,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_must_not_multiple_server_keep_alive(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1127,7 +1127,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_must_not_multiple_response_information(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1155,7 +1155,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_must_not_multiple_server_reference(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1183,7 +1183,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_must_not_multiple_auth_method(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1211,7 +1211,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_must_not_multiple_auth_data(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1278,7 +1278,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_reason_string_length_too_short(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1304,7 +1304,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_reason_string_length_too_long(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1332,7 +1332,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_reason_string_must_not_character(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1358,7 +1358,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_assigned_client_identifier_length_too_short(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1384,7 +1384,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_assigned_client_identifier_length_too_long(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1412,7 +1412,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_assigned_client_identifier_must_not_character(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1438,7 +1438,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_response_information_length_too_short(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1464,7 +1464,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_response_information_length_too_long(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1492,7 +1492,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_response_information_must_not_character(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1518,7 +1518,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_server_reference_length_too_short(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1544,7 +1544,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_server_reference_length_too_long(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1572,7 +1572,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_server_reference_must_not_character(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1598,7 +1598,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_auth_method_length_too_short(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1624,7 +1624,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_auth_method_length_too_long(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1652,7 +1652,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_auth_method_must_not_character(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1678,7 +1678,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_user_property_name_length_too_short(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1704,7 +1704,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_user_property_name_length_too_long(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1732,7 +1732,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_user_property_name_must_not_character(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1758,7 +1758,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_user_property_value_length_too_short(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1784,7 +1784,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_user_property_value_length_too_long(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1812,7 +1812,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_user_property_value_must_not_character(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1838,7 +1838,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_auth_data_length_too_short(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1866,7 +1866,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_auth_data_length_too_long(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1896,7 +1896,7 @@ class Mqtt5ConnAckDecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_must_not_include_authentication_data_without_method(final boolean sendReasonString) {
         channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
-        
+
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -1978,7 +1978,7 @@ class Mqtt5ConnAckDecoderTest {
             //     reason string
             0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', 's',
             //     user properties
-            0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e',
+            0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e', //
             0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e', '2',
             //     wildcard subscription available
             0x28, 0,

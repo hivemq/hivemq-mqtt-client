@@ -63,7 +63,7 @@ class Mqtt5PubRelDecoderTest {
                 //     reason string
                 0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', 's',
                 //     user properties
-                0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e',
+                0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e', //
                 0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e', '2',
         };
 
@@ -141,7 +141,7 @@ class Mqtt5PubRelDecoderTest {
                 //   properties
                 29,
                 // user properties
-                0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e',
+                0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e', //
                 0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e', '2'
         };
 
@@ -191,7 +191,7 @@ class Mqtt5PubRelDecoderTest {
                 //   properties
                 28,
                 // user properties
-                0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e',
+                0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e', //
                 0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'
         };
         channel.attr(ChannelAttributes.INCOMING_MAXIMUM_PACKET_SIZE).set(encoded.length - 1);

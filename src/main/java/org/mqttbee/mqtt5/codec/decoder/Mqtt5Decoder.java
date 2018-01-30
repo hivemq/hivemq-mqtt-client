@@ -60,8 +60,7 @@ public class Mqtt5Decoder extends ByteToMessageDecoder {
         final int fixedHeaderLength = readerIndexAfterFixedHeader - readerIndexBeforeFixedHeader;
         final int packetSize = fixedHeaderLength + remainingLength;
 
-        final Integer maximumPacketSize =
-                channel.attr(ChannelAttributes.INCOMING_MAXIMUM_PACKET_SIZE).get();
+        final Integer maximumPacketSize = channel.attr(ChannelAttributes.INCOMING_MAXIMUM_PACKET_SIZE).get();
         if ((maximumPacketSize != null) && (packetSize > maximumPacketSize)) {
             disconnect(Mqtt5DisconnectReasonCode.PACKET_TOO_LARGE, null, channel);
             return;

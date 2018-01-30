@@ -82,8 +82,9 @@ public class Mqtt5PubCompDecoder implements Mqtt5MessageDecoder {
                             break;
 
                         case Mqtt5PubCompProperty.USER_PROPERTY:
-                            userPropertiesBuilder = decodeUserPropertyCheckProblemInformationRequested(
-                                    userPropertiesBuilder, channel, in);
+                            userPropertiesBuilder =
+                                    decodeUserPropertyCheckProblemInformationRequested(userPropertiesBuilder, channel,
+                                            in);
                             if (userPropertiesBuilder == null) {
                                 return null;
                             }

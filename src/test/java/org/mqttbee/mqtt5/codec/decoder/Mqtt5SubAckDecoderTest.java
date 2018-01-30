@@ -100,7 +100,7 @@ class Mqtt5SubAckDecoderTest {
                 //     reason string
                 0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', 's',
                 //     user properties
-                0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e',
+                0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e', //
                 0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e', '2',
                 // payload
                 0x00
@@ -234,8 +234,8 @@ class Mqtt5SubAckDecoderTest {
                 //   properties
                 0,
                 // payload
-                0x00, 0x02, 0x01, (byte) 0x80, (byte) 0x83, (byte) 0x87, (byte) 0x8F,
-                (byte) 0x91, (byte) 0x97, (byte) 0x9E, (byte) 0xA1, (byte) 0xA2
+                0x00, 0x02, 0x01, (byte) 0x80, (byte) 0x83, (byte) 0x87, (byte) 0x8F, (byte) 0x91, (byte) 0x97,
+                (byte) 0x9E, (byte) 0xA1, (byte) 0xA2
         };
 
         final Mqtt5SubAckImpl subAck = decode(encoded);
@@ -344,6 +344,7 @@ class Mqtt5SubAckDecoderTest {
                 // variable header
                 //   packet identifier
                 0, 3,
+                //   property length
                 -1
         };
         decodeNok(encoded, MALFORMED_PACKET);

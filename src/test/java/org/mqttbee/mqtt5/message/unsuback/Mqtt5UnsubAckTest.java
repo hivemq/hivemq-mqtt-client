@@ -38,8 +38,8 @@ public class Mqtt5UnsubAckTest {
 
     @Test
     public void constructor_reasonCodesMultiple() {
-        final ImmutableList<Mqtt5UnsubAckReasonCode> multipleReasonCodes = ImmutableList.of(
-                Mqtt5UnsubAckReasonCode.NO_SUBSCRIPTIONS_EXISTED, Mqtt5UnsubAckReasonCode.NOT_AUTHORIZED);
+        final ImmutableList<Mqtt5UnsubAckReasonCode> multipleReasonCodes = ImmutableList
+                .of(Mqtt5UnsubAckReasonCode.NO_SUBSCRIPTIONS_EXISTED, Mqtt5UnsubAckReasonCode.NOT_AUTHORIZED);
         final Mqtt5UnsubAck mqtt5UnsubAck =
                 new Mqtt5UnsubAckImpl(multipleReasonCodes, reasonString, DEFAULT_NO_USER_PROPERTIES);
         assertEquals(multipleReasonCodes, mqtt5UnsubAck.getReasonCodes());
