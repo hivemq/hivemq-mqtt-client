@@ -100,6 +100,7 @@ class Mqtt5ConnAckDecoderTest {
 
         assertNotNull(connAck);
 
+        assertTrue(connAck.isSessionPresent());
         assertEquals(Mqtt5ConnAckReasonCode.SUCCESS, connAck.getReasonCode());
         assertTrue(connAck.getSessionExpiryInterval().isPresent());
         assertEquals(10, (long) connAck.getSessionExpiryInterval().get());
@@ -155,7 +156,7 @@ class Mqtt5ConnAckDecoderTest {
         byteBuf.writeByte(3);
         // variable header
         //   connack flags
-        byteBuf.writeByte(0b0000_0001);
+        byteBuf.writeByte(0b0000_0000);
         //   reason code (success)
         byteBuf.writeByte(0x00);
         //   properties
@@ -166,6 +167,7 @@ class Mqtt5ConnAckDecoderTest {
 
         assertNotNull(connAck);
 
+        assertFalse(connAck.isSessionPresent());
         assertEquals(Mqtt5ConnAckReasonCode.SUCCESS, connAck.getReasonCode());
         assertFalse(connAck.getSessionExpiryInterval().isPresent());
         assertFalse(connAck.getAssignedClientIdentifier().isPresent());
