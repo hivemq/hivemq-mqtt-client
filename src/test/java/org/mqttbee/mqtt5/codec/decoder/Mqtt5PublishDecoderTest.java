@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5Disconnect;
+import org.mqttbee.api.mqtt5.message.Mqtt5Publish;
 import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.message.*;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
@@ -106,6 +107,7 @@ public class Mqtt5PublishDecoderTest {
         assertEquals("response", publish.getResponseTopic().get().toString());
         assertTrue(publish.getCorrelationData().isPresent());
         assertArrayEquals(new byte[]{5, 4, 3, 2, 1}, publish.getCorrelationData().get());
+        assertEquals(Mqtt5Publish.TopicAliasUsage.HAS, publish.getTopicAliasUsage());
 
         final ImmutableList<Mqtt5UserProperty> userProperties = publish.getUserProperties();
         assertEquals(1, userProperties.size());
@@ -155,6 +157,7 @@ public class Mqtt5PublishDecoderTest {
         assertFalse(publish.getMessageExpiryInterval().isPresent());
         assertTrue(publish.getPayloadFormatIndicator().isPresent());
         assertEquals(Mqtt5PayloadFormatIndicator.UNSPECIFIED, publish.getPayloadFormatIndicator().get());
+        assertEquals(Mqtt5Publish.TopicAliasUsage.HAS_NOT, publish.getTopicAliasUsage());
 
         assertTrue(publish.getPayload().isPresent());
         assertArrayEquals(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, publish.getPayload().get());
