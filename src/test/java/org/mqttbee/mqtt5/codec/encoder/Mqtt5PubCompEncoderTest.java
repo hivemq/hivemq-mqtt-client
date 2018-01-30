@@ -196,6 +196,8 @@ class Mqtt5PubCompEncoderTest {
 
         final byte[] actual = new byte[byteBuf.readableBytes()];
         byteBuf.readBytes(actual);
+        byteBuf.release();
+
         assertArrayEquals(expected, actual);
     }
 

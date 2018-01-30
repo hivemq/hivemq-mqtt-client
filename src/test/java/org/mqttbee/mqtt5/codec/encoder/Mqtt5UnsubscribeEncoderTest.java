@@ -144,6 +144,7 @@ class Mqtt5UnsubscribeEncoderTest {
 
         final byte[] actual = new byte[byteBuf.readableBytes()];
         byteBuf.readBytes(actual);
+        byteBuf.release();
 
         assertArrayEquals(expected, actual);
     }
