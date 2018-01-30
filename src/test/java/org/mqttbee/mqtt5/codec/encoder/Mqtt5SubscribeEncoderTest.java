@@ -8,10 +8,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
-import org.mqttbee.mqtt5.message.Mqtt5QoS;
-import org.mqttbee.mqtt5.message.Mqtt5TopicFilter;
-import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
+import org.mqttbee.mqtt5.message.*;
 import org.mqttbee.mqtt5.message.subscribe.Mqtt5RetainHandling;
 import org.mqttbee.mqtt5.message.subscribe.Mqtt5SubscribeImpl;
 import org.mqttbee.mqtt5.message.subscribe.Mqtt5SubscribeInternal;
@@ -67,7 +64,7 @@ class Mqtt5SubscribeEncoderTest {
         final Mqtt5UTF8String user = requireNonNull(Mqtt5UTF8String.from("user"));
         final Mqtt5UTF8String property = requireNonNull(Mqtt5UTF8String.from("property"));
         final Mqtt5UserProperty mqtt5UserProperty = new Mqtt5UserProperty(user, property);
-        final ImmutableList<Mqtt5UserProperty> userProperties = ImmutableList.of(mqtt5UserProperty);
+        final Mqtt5UserProperties userProperties = Mqtt5UserProperties.of(ImmutableList.of(mqtt5UserProperty));
 
         final Mqtt5TopicFilter topicFiler = Mqtt5TopicFilter.from("topic/#");
         final Mqtt5QoS qos = Mqtt5QoS.AT_LEAST_ONCE;
@@ -106,7 +103,8 @@ class Mqtt5SubscribeEncoderTest {
         final Mqtt5UTF8String user = requireNonNull(Mqtt5UTF8String.from("user"));
         final Mqtt5UTF8String property = requireNonNull(Mqtt5UTF8String.from("property"));
         final Mqtt5UserProperty mqtt5UserProperty = new Mqtt5UserProperty(user, property);
-        final ImmutableList<Mqtt5UserProperty> userProperties = ImmutableList.of(mqtt5UserProperty, mqtt5UserProperty);
+        final Mqtt5UserProperties userProperties =
+                Mqtt5UserProperties.of(ImmutableList.of(mqtt5UserProperty, mqtt5UserProperty));
 
         final Mqtt5TopicFilter topicFiler = Mqtt5TopicFilter.from("topic/#");
         final Mqtt5QoS qos = Mqtt5QoS.AT_LEAST_ONCE;
@@ -144,7 +142,7 @@ class Mqtt5SubscribeEncoderTest {
         final Mqtt5UTF8String user = requireNonNull(Mqtt5UTF8String.from("user"));
         final Mqtt5UTF8String property = requireNonNull(Mqtt5UTF8String.from("property"));
         final Mqtt5UserProperty mqtt5UserProperty = new Mqtt5UserProperty(user, property);
-        final ImmutableList<Mqtt5UserProperty> userProperties = ImmutableList.of(mqtt5UserProperty);
+        final Mqtt5UserProperties userProperties = Mqtt5UserProperties.of(ImmutableList.of(mqtt5UserProperty));
 
         final Mqtt5TopicFilter topicFiler = Mqtt5TopicFilter.from("topic/#");
         final Mqtt5QoS qos = Mqtt5QoS.AT_LEAST_ONCE;
@@ -187,7 +185,8 @@ class Mqtt5SubscribeEncoderTest {
         final ImmutableList<Mqtt5SubscribeImpl.SubscriptionImpl> subscriptions = ImmutableList
                 .of(new Mqtt5SubscribeImpl.SubscriptionImpl(requireNonNull(topicFiler), qos, isNoLocal, retainHandling,
                         isRetainAsPublished));
-        final Mqtt5SubscribeImpl subscribe = new Mqtt5SubscribeImpl(subscriptions, ImmutableList.of());
+        final Mqtt5SubscribeImpl subscribe =
+                new Mqtt5SubscribeImpl(subscriptions, Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
         final Mqtt5SubscribeInternal subscribeInternal = new Mqtt5SubscribeInternal(subscribe, 10, 111);
 
         encodeInternal(expected, subscribeInternal);
@@ -224,7 +223,7 @@ class Mqtt5SubscribeEncoderTest {
         final boolean isNoLocal = true;
         final Mqtt5RetainHandling retainHandling = Mqtt5RetainHandling.SEND_IF_SUBSCRIPTION_DOES_NOT_EXIST;
         final boolean isRetainAsPublished = true;
-        final ImmutableList<Mqtt5UserProperty> tooManyUserProperties = maxPacket
+        final Mqtt5UserProperties tooManyUserProperties = maxPacket
                 .getUserProperties((VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE / maxPacket.userPropertyBytes) + 1);
 
         final ImmutableList<Mqtt5SubscribeImpl.SubscriptionImpl> subscriptions = ImmutableList
@@ -292,20 +291,20 @@ class Mqtt5SubscribeEncoderTest {
             return this;
         }
 
-        ImmutableList<Mqtt5UserProperty> getMaxPossibleUserProperties() {
-            return userPropertiesBuilder.build();
+        Mqtt5UserProperties getMaxPossibleUserProperties() {
+            return Mqtt5UserProperties.of(userPropertiesBuilder.build());
         }
 
         Mqtt5TopicFilter getTopicFilterTooLong() {
             return requireNonNull(Mqtt5TopicFilter.from(TOPIC + new String(topicStringBytes) + "x"));
         }
 
-        ImmutableList<Mqtt5UserProperty> getUserProperties(final int totalCount) {
+        Mqtt5UserProperties getUserProperties(final int totalCount) {
             final ImmutableList.Builder<Mqtt5UserProperty> builder = new ImmutableList.Builder<>();
             for (int i = 0; i < totalCount; i++) {
                 builder.add(userProperty);
             }
-            return builder.build();
+            return Mqtt5UserProperties.of(builder.build());
         }
     }
 }
