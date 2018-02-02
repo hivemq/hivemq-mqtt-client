@@ -4,25 +4,22 @@ import com.google.common.base.Utf8;
 import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.exceptions.Mqtt5BinaryDataExceededException;
 
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
 /**
- * UTF-8 encoded String according to the MQTT 5 specification.
- * <p>
  * This class lazily en/decodes between UTF-8 and UTF-16 encoding, but performs validation upfront.
- * <p>
- * A UTF-8 encoded String must not contain the null character U+0000 and UTF-16 surrogates.
- * <p>
- * A UTF-8 encoded String should not contain control characters and non-characters.
  *
  * @author Silvio Giebl
+ * @see Mqtt5UTF8String
  */
-public class Mqtt5UTF8String {
+public class Mqtt5UTF8StringImpl implements Mqtt5UTF8String {
 
     private static final Charset CHARSET = Charset.forName("UTF-8");
     private static final Pattern SHOULD_NOT_CHARACTERS_PATTERN =
@@ -49,7 +46,7 @@ public class Mqtt5UTF8String {
      * MQTT Protocol name as a UTF-8 encoded String.
      */
     @NotNull
-    public static final Mqtt5UTF8String PROTOCOL_NAME = new Mqtt5UTF8String(encode("MQTT"));
+    public static final Mqtt5UTF8StringImpl PROTOCOL_NAME = new Mqtt5UTF8StringImpl(encode("MQTT"));
 
     /**
      * Validates and decodes a UTF-8 encoded String from the given byte array.
@@ -59,8 +56,8 @@ public class Mqtt5UTF8String {
      * String.
      */
     @Nullable
-    public static Mqtt5UTF8String from(@NotNull final byte[] binary) {
-        return containsMustNotCharacters(binary) ? null : new Mqtt5UTF8String(binary);
+    public static Mqtt5UTF8StringImpl from(@NotNull final byte[] binary) {
+        return containsMustNotCharacters(binary) ? null : new Mqtt5UTF8StringImpl(binary);
     }
 
     /**
@@ -70,8 +67,8 @@ public class Mqtt5UTF8String {
      * @return the created UTF-8 encoded String or null if the string is not a valid UTF-8 encoded String.
      */
     @Nullable
-    public static Mqtt5UTF8String from(@NotNull final String string) {
-        return containsMustNotCharacters(string) ? null : new Mqtt5UTF8String(string);
+    public static Mqtt5UTF8StringImpl from(@NotNull final String string) {
+        return containsMustNotCharacters(string) ? null : new Mqtt5UTF8StringImpl(string);
     }
 
     /**
@@ -85,7 +82,7 @@ public class Mqtt5UTF8String {
      * String.
      */
     @Nullable
-    public static Mqtt5UTF8String from(@NotNull final ByteBuf byteBuf) {
+    public static Mqtt5UTF8StringImpl from(@NotNull final ByteBuf byteBuf) {
         final byte[] binary = Mqtt5DataTypes.decodeBinaryData(byteBuf);
         return (binary == null) ? null : from(binary);
     }
@@ -161,24 +158,23 @@ public class Mqtt5UTF8String {
     private byte[] binary;
     private String string;
 
-    Mqtt5UTF8String(@NotNull final byte[] binary) {
+    Mqtt5UTF8StringImpl(@NotNull final byte[] binary) {
         this.binary = binary;
     }
 
-    Mqtt5UTF8String(@NotNull final String string) {
+    Mqtt5UTF8StringImpl(@NotNull final String string) {
         this.string = string;
     }
 
-    /**
-     * Checks whether this UTF-8 encoded String contains characters that it should not according to the MQTT 5
-     * specification.
-     * <p>
-     * These characters are control characters and non-characters.
-     *
-     * @return whether this UTF-8 encoded String contains characters that it should not.
-     */
+    @Override
     public boolean containsShouldNotCharacters() {
         return SHOULD_NOT_CHARACTERS_PATTERN.matcher(toString()).find();
+    }
+
+    @NotNull
+    @Override
+    public ByteBuffer toByteBuffer() {
+        return ByteBuffer.wrap(toBinary()).asReadOnlyBuffer();
     }
 
     /**
@@ -201,8 +197,8 @@ public class Mqtt5UTF8String {
      *
      * @return the UTF-16 encoded string.
      */
-    @Override
     @NotNull
+    @Override
     public String toString() {
         if (string == null) {
             string = decode(binary);
@@ -243,10 +239,10 @@ public class Mqtt5UTF8String {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Mqtt5UTF8String)) {
+        if (!(o instanceof Mqtt5UTF8StringImpl)) {
             return false;
         }
-        final Mqtt5UTF8String that = (Mqtt5UTF8String) o;
+        final Mqtt5UTF8StringImpl that = (Mqtt5UTF8StringImpl) o;
         if (string != null) {
             if ((that.string == null) && (binary != null)) {
                 return Arrays.equals(binary, that.binary);

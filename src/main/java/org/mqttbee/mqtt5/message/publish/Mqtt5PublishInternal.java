@@ -7,7 +7,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5PublishEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5Message;
-import org.mqttbee.mqtt5.message.Mqtt5Topic;
+import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
 
 /**
  * @author Silvio Giebl
@@ -51,7 +51,7 @@ public class Mqtt5PublishInternal extends Mqtt5Message.Mqtt5MessageWithPropertie
             this.topicAlias = DEFAULT_NO_TOPIC_ALIAS;
             this.isNewTopicAlias = false;
         } else {
-            final Mqtt5Topic topic = publish.getTopic();
+            final Mqtt5TopicImpl topic = publish.getTopic();
             final int topicAlias = topicAliasMapping.get(topic);
             if (topicAlias != DEFAULT_NO_TOPIC_ALIAS) {
                 this.topicAlias = topicAlias;

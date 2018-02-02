@@ -12,7 +12,10 @@ import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt5.message.Mqtt5Publish;
 import org.mqttbee.mqtt5.ChannelAttributes;
-import org.mqttbee.mqtt5.message.*;
+import org.mqttbee.mqtt5.message.Mqtt5MessageType;
+import org.mqttbee.mqtt5.message.Mqtt5QoS;
+import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
+import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl;
@@ -21,7 +24,6 @@ import org.mqttbee.mqtt5.message.publish.Mqtt5PublishInternal;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 
-import static java.util.Objects.requireNonNull;
 import static org.junit.Assert.*;
 import static org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.*;
 
@@ -111,11 +113,8 @@ public class Mqtt5PublishDecoderTest {
 
         final ImmutableList<Mqtt5UserProperty> userProperties = publish.getUserProperties();
         assertEquals(1, userProperties.size());
-        final Mqtt5UTF8String test = Mqtt5UTF8String.from("test");
-        final Mqtt5UTF8String value = Mqtt5UTF8String.from("value");
-        assertNotNull(test);
-        assertNotNull(value);
-        assertTrue(userProperties.contains(new Mqtt5UserProperty(test, value)));
+        assertEquals("test", userProperties.get(0).getName().toString());
+        assertEquals("value", userProperties.get(0).getValue().toString());
 
         assertTrue(publish.getPayload().isPresent());
         assertArrayEquals(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, publish.getPayload().get());
@@ -499,9 +498,8 @@ public class Mqtt5PublishDecoderTest {
         final Mqtt5PublishImpl publish = decode(encoded);
         final ImmutableList<Mqtt5UserProperty> userProperties = publish.getUserProperties();
         assertEquals(1, userProperties.size());
-        final Mqtt5UserProperty userProperty = new Mqtt5UserProperty(requireNonNull(Mqtt5UTF8String.from("test")),
-                requireNonNull(Mqtt5UTF8String.from("value")));
-        assertTrue(userProperties.contains(userProperty));
+        assertEquals("test", userProperties.get(0).getName().toString());
+        assertEquals("value", userProperties.get(0).getValue().toString());
     }
 
     @Test
@@ -1159,7 +1157,7 @@ public class Mqtt5PublishDecoderTest {
 
     private void createChannel() {
         channel = new EmbeddedChannel(new Mqtt5Decoder(new Mqtt5PublishTestMessageDecoders()));
-        channel.attr(ChannelAttributes.INCOMING_TOPIC_ALIAS_MAPPING).set(new Mqtt5Topic[3]);
+        channel.attr(ChannelAttributes.INCOMING_TOPIC_ALIAS_MAPPING).set(new Mqtt5TopicImpl[3]);
     }
 
 }

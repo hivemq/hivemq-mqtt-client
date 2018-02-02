@@ -3,10 +3,7 @@ package org.mqttbee.api.mqtt5.message;
 import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
-import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifier;
-import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
-import org.mqttbee.mqtt5.message.publish.Mqtt5WillPublishImpl;
 
 import java.util.Optional;
 
@@ -80,7 +77,7 @@ public interface Mqtt5Connect {
      * @return the optional Will Publish of this CONNECT packet.
      */
     @NotNull
-    Optional<Mqtt5WillPublishImpl> getWillPublish();
+    Optional<Mqtt5WillPublish> getWillPublish();
 
     /**
      * @return the optional user properties of this CONNECT packet.

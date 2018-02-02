@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
-import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
+import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 
 /**
@@ -19,7 +19,7 @@ class Mqtt5MessageEncoderUtil {
         return Mqtt5DataTypes.encodedVariableByteIntegerLength(encodedLength) + encodedLength;
     }
 
-    static int nullableEncodedLength(@Nullable final Mqtt5UTF8String string) {
+    static int nullableEncodedLength(@Nullable final Mqtt5UTF8StringImpl string) {
         return (string == null) ? 0 : string.encodedLength();
     }
 
@@ -27,7 +27,7 @@ class Mqtt5MessageEncoderUtil {
         return (binary == null) ? 0 : Mqtt5DataTypes.encodedBinaryDataLength(binary);
     }
 
-    static void encodeNullable(@Nullable final Mqtt5UTF8String string, @NotNull final ByteBuf out) {
+    static void encodeNullable(@Nullable final Mqtt5UTF8StringImpl string, @NotNull final ByteBuf out) {
         if (string != null) {
             string.to(out);
         }
@@ -39,11 +39,11 @@ class Mqtt5MessageEncoderUtil {
         }
     }
 
-    static int propertyEncodedLength(@NotNull final Mqtt5UTF8String string) {
+    static int propertyEncodedLength(@NotNull final Mqtt5UTF8StringImpl string) {
         return 1 + string.encodedLength();
     }
 
-    static int nullablePropertyEncodedLength(@Nullable final Mqtt5UTF8String string) {
+    static int nullablePropertyEncodedLength(@Nullable final Mqtt5UTF8StringImpl string) {
         return (string == null) ? 0 : propertyEncodedLength(string);
     }
 
@@ -78,14 +78,14 @@ class Mqtt5MessageEncoderUtil {
     }
 
     static void encodeProperty(
-            final int propertyIdentifier, @NotNull final Mqtt5UTF8String string, @NotNull final ByteBuf out) {
+            final int propertyIdentifier, @NotNull final Mqtt5UTF8StringImpl string, @NotNull final ByteBuf out) {
 
         out.writeByte(propertyIdentifier);
         string.to(out);
     }
 
     static void encodeNullableProperty(
-            final int propertyIdentifier, @Nullable final Mqtt5UTF8String string, @NotNull final ByteBuf out) {
+            final int propertyIdentifier, @Nullable final Mqtt5UTF8StringImpl string, @NotNull final ByteBuf out) {
 
         if (string != null) {
             encodeProperty(propertyIdentifier, string, out);

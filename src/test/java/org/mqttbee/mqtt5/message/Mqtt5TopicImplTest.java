@@ -17,7 +17,7 @@ import static org.junit.Assert.*;
  * @author Silvio Giebl
  */
 @RunWith(Parameterized.class)
-public class Mqtt5TopicTest {
+public class Mqtt5TopicImplTest {
 
     @Parameterized.Parameters
     public static Collection<Boolean> parameters() {
@@ -26,28 +26,28 @@ public class Mqtt5TopicTest {
 
     private final boolean isFromByteBuf;
 
-    public Mqtt5TopicTest(final boolean isFromByteBuf) {
+    public Mqtt5TopicImplTest(final boolean isFromByteBuf) {
         this.isFromByteBuf = isFromByteBuf;
     }
 
-    private Mqtt5Topic from(final String string) {
+    private Mqtt5TopicImpl from(final String string) {
         if (isFromByteBuf) {
             final ByteBuf byteBuf = Unpooled.buffer();
             final byte[] binary = string.getBytes(Charset.forName("UTF-8"));
             byteBuf.writeShort(binary.length);
             byteBuf.writeBytes(binary);
-            final Mqtt5Topic mqtt5Topic = Mqtt5Topic.from(byteBuf);
+            final Mqtt5TopicImpl mqtt5Topic = Mqtt5TopicImpl.from(byteBuf);
             byteBuf.release();
             return mqtt5Topic;
         } else {
-            return Mqtt5Topic.from(string);
+            return Mqtt5TopicImpl.from(string);
         }
     }
 
     @Test
     public void test_must_not_be_zero_length() {
         final String string = "";
-        final Mqtt5Topic mqtt5Topic = from(string);
+        final Mqtt5TopicImpl mqtt5Topic = from(string);
         assertNull(mqtt5Topic);
     }
 
@@ -55,8 +55,8 @@ public class Mqtt5TopicTest {
     public void test_must_be_case_sensitive() {
         final String string1 = "abc";
         final String string2 = "ABC";
-        final Mqtt5Topic mqtt5Topic1 = from(string1);
-        final Mqtt5Topic mqtt5Topic2 = from(string2);
+        final Mqtt5TopicImpl mqtt5Topic1 = from(string1);
+        final Mqtt5TopicImpl mqtt5Topic2 = from(string2);
         assertNotNull(mqtt5Topic1);
         assertNotNull(mqtt5Topic2);
         assertNotEquals(mqtt5Topic1.toString(), mqtt5Topic2.toString());
@@ -65,21 +65,21 @@ public class Mqtt5TopicTest {
     @Test
     public void test_can_contain_space() {
         final String string = "ab c/def";
-        final Mqtt5Topic mqtt5Topic = from(string);
+        final Mqtt5TopicImpl mqtt5Topic = from(string);
         assertNotNull(mqtt5Topic);
     }
 
     @Test
     public void test_can_be_only_space() {
         final String string = " ";
-        final Mqtt5Topic mqtt5Topic = from(string);
+        final Mqtt5TopicImpl mqtt5Topic = from(string);
         assertNotNull(mqtt5Topic);
     }
 
     @Test
     public void test_can_be_only_topic_level_separator() {
         final String string = "/";
-        final Mqtt5Topic mqtt5Topic = from(string);
+        final Mqtt5TopicImpl mqtt5Topic = from(string);
         assertNotNull(mqtt5Topic);
         final ImmutableList<String> levels = mqtt5Topic.getLevels();
         assertEquals(2, levels.size());
@@ -90,21 +90,21 @@ public class Mqtt5TopicTest {
     @Test
     public void test_must_not_contain_multi_level_wildcard() {
         final String string = "abc/def/#";
-        final Mqtt5Topic mqtt5Topic = from(string);
+        final Mqtt5TopicImpl mqtt5Topic = from(string);
         assertNull(mqtt5Topic);
     }
 
     @Test
     public void test_must_not_contain_single_level_wildcard() {
         final String string = "abc/+/def";
-        final Mqtt5Topic mqtt5Topic = from(string);
+        final Mqtt5TopicImpl mqtt5Topic = from(string);
         assertNull(mqtt5Topic);
     }
 
     @Test
     public void test_getLevels() {
         final String string = "abc/def/ghi";
-        final Mqtt5Topic mqtt5Topic = from(string);
+        final Mqtt5TopicImpl mqtt5Topic = from(string);
         assertNotNull(mqtt5Topic);
         final ImmutableList<String> levels = mqtt5Topic.getLevels();
         assertEquals(3, levels.size());
@@ -116,7 +116,7 @@ public class Mqtt5TopicTest {
     @Test
     public void test_getLevels_empty_levels() {
         final String string = "/abc//def///ghi/";
-        final Mqtt5Topic mqtt5Topic = from(string);
+        final Mqtt5TopicImpl mqtt5Topic = from(string);
         assertNotNull(mqtt5Topic);
         final ImmutableList<String> levels = mqtt5Topic.getLevels();
         assertEquals(8, levels.size());

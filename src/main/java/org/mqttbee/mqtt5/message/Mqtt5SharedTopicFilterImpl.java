@@ -3,25 +3,15 @@ package org.mqttbee.mqtt5.message;
 import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt5.message.Mqtt5SharedTopicFilter;
 
 /**
- * MQTT Shared Topic Filter according to the MQTT 5 specification.
- * <p>
- * This class lazily en/decodes between UTF-8 and UTF-16 encoding, but performs validation upfront.
- * <p>
- * A Shared Topic Filter consists of the {@link #SHARE_PREFIX} a Share Name and a Topic Filter. The Share Name has the
- * restrictions from {@link Mqtt5UTF8String}, must be at least 1 character long and mut not contain wildcards ({@link
- * Mqtt5TopicFilter#MULTI_LEVEL_WILDCARD}, {@link Mqtt5TopicFilter#SINGLE_LEVEL_WILDCARD}) and the {@link
- * Mqtt5Topic#TOPIC_LEVEL_SEPARATOR}. The Topic Filter has the same restrictions from {@link Mqtt5TopicFilter}.
- *
  * @author Silvio Giebl
+ * @see Mqtt5UTF8StringImpl
+ * @see Mqtt5SharedTopicFilter
  */
-public class Mqtt5SharedTopicFilter extends Mqtt5TopicFilter {
+public class Mqtt5SharedTopicFilterImpl extends Mqtt5TopicFilterImpl implements Mqtt5SharedTopicFilter {
 
-    /**
-     * The prefix of a Shared Topic Filter.
-     */
-    public static final String SHARE_PREFIX = "$share" + Mqtt5Topic.TOPIC_LEVEL_SEPARATOR;
     private static final int SHARE_PREFIX_LENGTH = SHARE_PREFIX.length();
 
     /**
@@ -58,18 +48,18 @@ public class Mqtt5SharedTopicFilter extends Mqtt5TopicFilter {
     /**
      * Validates and creates a Shared Topic Filter from the given byte array.
      * <p>
-     * This method does not validate {@link Mqtt5TopicFilter#containsMustNotCharacters(byte[])} and {@link
+     * This method does not validate {@link Mqtt5TopicFilterImpl#containsMustNotCharacters(byte[])} and {@link
      * #isShared(byte[])}.
      *
      * @param binary the UTF-8 encoded byte array staring with {@link #SHARE_PREFIX}.
      * @return the created Shared Topic Filter or null if the byte array is not a valid Shared Topic Filter.
      */
     @Nullable
-    static Mqtt5SharedTopicFilter fromInternal(@NotNull final byte[] binary) {
+    static Mqtt5SharedTopicFilterImpl fromInternal(@NotNull final byte[] binary) {
         int shareNameEnd = SHARE_PREFIX_LENGTH;
         while (shareNameEnd < binary.length) {
             final byte b = binary[shareNameEnd];
-            if (b == Mqtt5Topic.TOPIC_LEVEL_SEPARATOR) {
+            if (b == Mqtt5TopicImpl.TOPIC_LEVEL_SEPARATOR) {
                 break;
             }
             if ((b == MULTI_LEVEL_WILDCARD) || (b == SINGLE_LEVEL_WILDCARD)) {
@@ -84,25 +74,25 @@ public class Mqtt5SharedTopicFilter extends Mqtt5TopicFilter {
         if (wildcardFlags == WILDCARD_CHECK_FAILURE) {
             return null;
         }
-        return new Mqtt5SharedTopicFilter(binary, wildcardFlags);
+        return new Mqtt5SharedTopicFilterImpl(binary, wildcardFlags);
     }
 
     /**
      * Validates and creates a Shared Topic Filter from the given string.
      * <p>
-     * This method does not validate {@link Mqtt5TopicFilter#containsMustNotCharacters(byte[])} and {@link
+     * This method does not validate {@link Mqtt5TopicFilterImpl#containsMustNotCharacters(byte[])} and {@link
      * #isShared(byte[])}.
      *
      * @param string the UTF-16 encoded Java string staring with {@link #SHARE_PREFIX}.
      * @return the created Shared Topic Filter or null if the string is not a valid Shared Topic Filter.
      */
     @Nullable
-    static Mqtt5SharedTopicFilter fromInternal(@NotNull final String string) {
+    static Mqtt5SharedTopicFilterImpl fromInternal(@NotNull final String string) {
         // no isShared and containsMustNotCharacters, already checked in TopicFilter
         int shareNameEnd = SHARE_PREFIX_LENGTH;
         while (shareNameEnd < string.length()) {
             final char c = string.charAt(shareNameEnd);
-            if (c == Mqtt5Topic.TOPIC_LEVEL_SEPARATOR) {
+            if (c == Mqtt5TopicImpl.TOPIC_LEVEL_SEPARATOR) {
                 break;
             }
             if ((c == MULTI_LEVEL_WILDCARD) || (c == SINGLE_LEVEL_WILDCARD)) {
@@ -117,7 +107,7 @@ public class Mqtt5SharedTopicFilter extends Mqtt5TopicFilter {
         if (wildcardFlags == WILDCARD_CHECK_FAILURE) {
             return null;
         }
-        return new Mqtt5SharedTopicFilter(string, shareNameEnd, wildcardFlags);
+        return new Mqtt5SharedTopicFilterImpl(string, shareNameEnd, wildcardFlags);
     }
 
     /**
@@ -129,7 +119,7 @@ public class Mqtt5SharedTopicFilter extends Mqtt5TopicFilter {
      * is not a valid Topic Filter.
      */
     @Nullable
-    public static Mqtt5SharedTopicFilter from(@NotNull final String shareName, @NotNull final String topicFilter) {
+    public static Mqtt5SharedTopicFilterImpl from(@NotNull final String shareName, @NotNull final String topicFilter) {
         if ((topicFilter.length() == 0) || !validateShareName(shareName)) {
             return null;
         }
@@ -137,7 +127,7 @@ public class Mqtt5SharedTopicFilter extends Mqtt5TopicFilter {
         if (wildcardFlags == WILDCARD_CHECK_FAILURE) {
             return null;
         }
-        return new Mqtt5SharedTopicFilter(shareName, topicFilter, wildcardFlags);
+        return new Mqtt5SharedTopicFilterImpl(shareName, topicFilter, wildcardFlags);
     }
 
     /**
@@ -153,7 +143,7 @@ public class Mqtt5SharedTopicFilter extends Mqtt5TopicFilter {
         for (int i = 0; i < string.length(); i++) {
             final char c = string.charAt(i);
             if ((c == MULTI_LEVEL_WILDCARD) || (c == SINGLE_LEVEL_WILDCARD) ||
-                    (c == Mqtt5Topic.TOPIC_LEVEL_SEPARATOR)) {
+                    (c == Mqtt5TopicImpl.TOPIC_LEVEL_SEPARATOR)) {
                 return false;
             }
         }
@@ -163,27 +153,28 @@ public class Mqtt5SharedTopicFilter extends Mqtt5TopicFilter {
 
     private int shareNameCharEnd;
 
-    private Mqtt5SharedTopicFilter(@NotNull final byte[] binary, final int wildcardFlags) {
+    private Mqtt5SharedTopicFilterImpl(@NotNull final byte[] binary, final int wildcardFlags) {
         super(binary, wildcardFlags);
         shareNameCharEnd = -1;
     }
 
-    private Mqtt5SharedTopicFilter(@NotNull final String string, final int shareNameCharEnd, final int wildcardFlags) {
+    private Mqtt5SharedTopicFilterImpl(
+            @NotNull final String string, final int shareNameCharEnd, final int wildcardFlags) {
         super(string, wildcardFlags);
         this.shareNameCharEnd = shareNameCharEnd;
     }
 
-    private Mqtt5SharedTopicFilter(
+    private Mqtt5SharedTopicFilterImpl(
             @NotNull final String shareName, @NotNull final String topicFilter, final int wildcardFlags) {
 
-        super(SHARE_PREFIX + shareName + Mqtt5Topic.TOPIC_LEVEL_SEPARATOR + topicFilter, wildcardFlags);
+        super(SHARE_PREFIX + shareName + Mqtt5TopicImpl.TOPIC_LEVEL_SEPARATOR + topicFilter, wildcardFlags);
         this.shareNameCharEnd = SHARE_PREFIX_LENGTH + shareName.length();
     }
 
     @NotNull
     @Override
     public ImmutableList<String> getLevels() {
-        return Mqtt5Topic.splitLevels(getTopicFilter());
+        return Mqtt5TopicImpl.splitLevels(getTopicFilter());
     }
 
     @Override
@@ -191,16 +182,12 @@ public class Mqtt5SharedTopicFilter extends Mqtt5TopicFilter {
         return true;
     }
 
-    /**
-     * @return the Share Name of this Shared Topic Filter.
-     */
+    @Override
     public String getShareName() {
         return toString().substring(SHARE_PREFIX_LENGTH, getShareNameCharEnd());
     }
 
-    /**
-     * @return the Topic Filter of this Shared Topic Filter as a string.
-     */
+    @Override
     public String getTopicFilter() {
         return toString().substring(getShareNameCharEnd() + 1);
     }
@@ -209,7 +196,7 @@ public class Mqtt5SharedTopicFilter extends Mqtt5TopicFilter {
         final String string = toString();
         if (shareNameCharEnd == -1) {
             for (int i = SHARE_PREFIX_LENGTH; i < string.length(); i++) {
-                if (string.charAt(i) == Mqtt5Topic.TOPIC_LEVEL_SEPARATOR) {
+                if (string.charAt(i) == Mqtt5TopicImpl.TOPIC_LEVEL_SEPARATOR) {
                     shareNameCharEnd = i;
                     break;
                 }

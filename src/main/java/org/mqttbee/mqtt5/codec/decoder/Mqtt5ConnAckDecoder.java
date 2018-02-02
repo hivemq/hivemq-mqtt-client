@@ -79,10 +79,10 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
         }
 
         long sessionExpiryInterval = SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
-        Mqtt5ClientIdentifier assignedClientIdentifier = CLIENT_IDENTIFIER_FROM_CONNECT;
+        Mqtt5ClientIdentifierImpl assignedClientIdentifier = CLIENT_IDENTIFIER_FROM_CONNECT;
         int serverKeepAlive = KEEP_ALIVE_FROM_CONNECT;
 
-        Mqtt5UTF8String authenticationMethod = null;
+        Mqtt5UTF8StringImpl authenticationMethod = null;
         byte[] authenticationData = null;
 
         int receiveMaximum = Restrictions.DEFAULT_RECEIVE_MAXIMUM;
@@ -102,9 +102,9 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
         boolean sharedSubscriptionAvailable = Restrictions.DEFAULT_SHARED_SUBSCRIPTION_AVAILABLE;
         boolean sharedSubscriptionAvailablePresent = false;
 
-        Mqtt5UTF8String responseInformation = null;
-        Mqtt5UTF8String serverReference = null;
-        Mqtt5UTF8String reasonString = null;
+        Mqtt5UTF8StringImpl responseInformation = null;
+        Mqtt5UTF8StringImpl serverReference = null;
+        Mqtt5UTF8StringImpl reasonString = null;
         ImmutableList.Builder<Mqtt5UserProperty> userPropertiesBuilder = null;
 
         boolean restrictionsPresent = false;
@@ -131,7 +131,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                         disconnectOnlyOnce("client identifier", channel);
                         return null;
                     }
-                    assignedClientIdentifier = Mqtt5ClientIdentifier.from(in);
+                    assignedClientIdentifier = Mqtt5ClientIdentifierImpl.from(in);
                     if (assignedClientIdentifier == null) {
                         disconnectMalformedUTF8String("client identifier", channel);
                         return null;

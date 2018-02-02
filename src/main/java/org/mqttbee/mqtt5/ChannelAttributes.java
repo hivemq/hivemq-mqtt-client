@@ -1,7 +1,7 @@
 package org.mqttbee.mqtt5;
 
 import io.netty.util.AttributeKey;
-import org.mqttbee.mqtt5.message.Mqtt5Topic;
+import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
 import org.mqttbee.mqtt5.message.publish.Mqtt5TopicAliasMapping;
 
 /**
@@ -13,7 +13,7 @@ public class ChannelAttributes {
             AttributeKey.valueOf("restriction.in.receive.max");
     public static final AttributeKey<Integer> INCOMING_RECEIVE_COUNTER =
             AttributeKey.valueOf("restriction.in.receive.counter");
-    public static final AttributeKey<Mqtt5Topic[]> INCOMING_TOPIC_ALIAS_MAPPING =
+    public static final AttributeKey<Mqtt5TopicImpl[]> INCOMING_TOPIC_ALIAS_MAPPING =
             AttributeKey.valueOf("in.topic.alias.mapping");
     public static final AttributeKey<Integer> INCOMING_MAXIMUM_PACKET_SIZE = AttributeKey.valueOf("in.packet.size.max");
 

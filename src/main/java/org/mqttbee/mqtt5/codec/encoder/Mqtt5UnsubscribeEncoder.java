@@ -7,7 +7,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.exceptions.Mqtt5VariableByteIntegerExceededException;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
-import org.mqttbee.mqtt5.message.Mqtt5TopicFilter;
+import org.mqttbee.mqtt5.message.Mqtt5TopicFilterImpl;
 import org.mqttbee.mqtt5.message.unsubscribe.Mqtt5UnsubscribeImpl;
 import org.mqttbee.mqtt5.message.unsubscribe.Mqtt5UnsubscribeInternal;
 
@@ -42,7 +42,7 @@ public class Mqtt5UnsubscribeEncoder implements Mqtt5MessageEncoder<Mqtt5Unsubsc
         final int propertyLength = unsubscribeInternal.encodedPropertyLength();
         remainingLength += Mqtt5DataTypes.encodedVariableByteIntegerLength(propertyLength) + propertyLength;
 
-        final ImmutableList<Mqtt5TopicFilter> topicFilters = unsubscribe.getTopicFilters();
+        final ImmutableList<Mqtt5TopicFilterImpl> topicFilters = unsubscribe.getTopicFilters();
         for (int i = 0; i < topicFilters.size(); i++) {
             remainingLength += topicFilters.get(i).encodedLength();
         }
@@ -86,7 +86,7 @@ public class Mqtt5UnsubscribeEncoder implements Mqtt5MessageEncoder<Mqtt5Unsubsc
     private void encodePayload(
             @NotNull final Mqtt5UnsubscribeInternal unsubscribeInternal, @NotNull final ByteBuf out) {
 
-        final ImmutableList<Mqtt5TopicFilter> topicFilters = unsubscribeInternal.getUnsubscribe().getTopicFilters();
+        final ImmutableList<Mqtt5TopicFilterImpl> topicFilters = unsubscribeInternal.getUnsubscribe().getTopicFilters();
         for (int i = 0; i < topicFilters.size(); i++) {
             topicFilters.get(i).to(out);
         }

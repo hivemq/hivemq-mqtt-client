@@ -2,7 +2,7 @@ package org.mqttbee.mqtt5.message.publish;
 
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.message.Mqtt5Publish.TopicAliasUsage;
-import org.mqttbee.mqtt5.message.Mqtt5Topic;
+import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
 
 import java.util.HashMap;
 import java.util.Random;
@@ -24,7 +24,7 @@ public class Mqtt5TopicAliasMapping {
         nextTopicAlias = 1;
     }
 
-    int set(@NotNull final Mqtt5Topic topic, @NotNull final TopicAliasUsage topicAliasUsage) {
+    int set(@NotNull final Mqtt5TopicImpl topic, @NotNull final TopicAliasUsage topicAliasUsage) {
         int topicAlias = Mqtt5PublishInternal.DEFAULT_NO_TOPIC_ALIAS;
         if (topicAliasUsage != TopicAliasUsage.MUST_NOT) {
             if (nextTopicAlias == size) {
@@ -41,7 +41,7 @@ public class Mqtt5TopicAliasMapping {
         return topicAlias;
     }
 
-    int get(@NotNull final Mqtt5Topic topic) {
+    int get(@NotNull final Mqtt5TopicImpl topic) {
         final Integer topicAlias = hashMap.get(topic.toString());
         return (topicAlias == null) ? Mqtt5PublishInternal.DEFAULT_NO_TOPIC_ALIAS : topicAlias;
     }

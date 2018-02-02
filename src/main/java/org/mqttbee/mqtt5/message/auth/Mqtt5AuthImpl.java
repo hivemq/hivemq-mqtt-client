@@ -6,9 +6,10 @@ import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5Auth;
+import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5AuthEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5Message;
-import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
+import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperties;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 
@@ -20,14 +21,14 @@ import java.util.Optional;
 public class Mqtt5AuthImpl extends Mqtt5Message.Mqtt5MessageWithProperties implements Mqtt5Auth {
 
     private final Mqtt5AuthReasonCode reasonCode;
-    private final Mqtt5UTF8String method;
+    private final Mqtt5UTF8StringImpl method;
     private final byte[] data;
-    private final Mqtt5UTF8String reasonString;
+    private final Mqtt5UTF8StringImpl reasonString;
     private final Mqtt5UserProperties userProperties;
 
     public Mqtt5AuthImpl(
-            @NotNull final Mqtt5AuthReasonCode reasonCode, @NotNull final Mqtt5UTF8String method,
-            @Nullable final byte[] data, @Nullable final Mqtt5UTF8String reasonString,
+            @NotNull final Mqtt5AuthReasonCode reasonCode, @NotNull final Mqtt5UTF8StringImpl method,
+            @Nullable final byte[] data, @Nullable final Mqtt5UTF8StringImpl reasonString,
             @NotNull final Mqtt5UserProperties userProperties) {
         this.reasonCode = reasonCode;
         this.method = method;
@@ -44,7 +45,7 @@ public class Mqtt5AuthImpl extends Mqtt5Message.Mqtt5MessageWithProperties imple
 
     @NotNull
     @Override
-    public Mqtt5UTF8String getMethod() {
+    public Mqtt5UTF8StringImpl getMethod() {
         return method;
     }
 
@@ -66,7 +67,7 @@ public class Mqtt5AuthImpl extends Mqtt5Message.Mqtt5MessageWithProperties imple
     }
 
     @Nullable
-    public Mqtt5UTF8String getRawReasonString() {
+    public Mqtt5UTF8StringImpl getRawReasonString() {
         return reasonString;
     }
 

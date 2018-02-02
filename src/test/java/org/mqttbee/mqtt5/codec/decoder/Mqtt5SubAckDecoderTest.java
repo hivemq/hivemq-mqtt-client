@@ -12,17 +12,14 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5Disconnect;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
-import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.message.suback.Mqtt5SubAckImpl;
 import org.mqttbee.mqtt5.message.suback.Mqtt5SubAckInternal;
 import org.mqttbee.mqtt5.message.suback.Mqtt5SubAckReasonCode;
 
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.MALFORMED_PACKET;
-
 
 /**
  * @author Silvio Giebl
@@ -73,11 +70,8 @@ class Mqtt5SubAckDecoderTest {
 
         final ImmutableList<Mqtt5UserProperty> userProperties = subAck.getUserProperties();
         assertEquals(1, userProperties.size());
-        final Mqtt5UTF8String test = Mqtt5UTF8String.from("test");
-        final Mqtt5UTF8String value = Mqtt5UTF8String.from("value");
-        assertNotNull(test);
-        assertNotNull(value);
-        assertTrue(userProperties.contains(new Mqtt5UserProperty(test, value)));
+        assertEquals("test", userProperties.get(0).getName().toString());
+        assertEquals("value", userProperties.get(0).getValue().toString());
 
         final ImmutableList<Mqtt5SubAckReasonCode> reasonCodes = subAck.getReasonCodes();
         assertEquals(1, reasonCodes.size());
@@ -113,14 +107,10 @@ class Mqtt5SubAckDecoderTest {
 
         final ImmutableList<Mqtt5UserProperty> userProperties = subAck.getUserProperties();
         assertEquals(2, userProperties.size());
-        final Mqtt5UTF8String test = Mqtt5UTF8String.from("test");
-        final Mqtt5UTF8String value = Mqtt5UTF8String.from("value");
-        final Mqtt5UTF8String value2 = Mqtt5UTF8String.from("value2");
-        assertNotNull(test);
-        assertNotNull(value);
-        assertNotNull(value2);
-        assertTrue(userProperties.contains(new Mqtt5UserProperty(test, value)));
-        assertTrue(userProperties.contains(new Mqtt5UserProperty(test, value2)));
+        assertEquals("test", userProperties.get(0).getName().toString());
+        assertEquals("value", userProperties.get(0).getValue().toString());
+        assertEquals("test", userProperties.get(1).getName().toString());
+        assertEquals("value2", userProperties.get(1).getValue().toString());
 
         final ImmutableList<Mqtt5SubAckReasonCode> reasonCodes = subAck.getReasonCodes();
         assertEquals(1, reasonCodes.size());

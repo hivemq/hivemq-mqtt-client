@@ -1,7 +1,6 @@
 package org.mqttbee.api.mqtt5.message;
 
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
 
 import java.util.Optional;
 

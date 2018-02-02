@@ -14,16 +14,14 @@ import org.mqttbee.api.mqtt5.message.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt5.message.Mqtt5PubRel;
 import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
-import org.mqttbee.mqtt5.message.Mqtt5Topic;
-import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
+import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.message.pubrec.Mqtt5PubRecInternal;
 import org.mqttbee.mqtt5.message.pubrel.Mqtt5PubRelInternal;
 import org.mqttbee.mqtt5.message.pubrel.Mqtt5PubRelReasonCode;
 
-import static java.util.Objects.requireNonNull;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.MALFORMED_PACKET;
 import static org.mqttbee.mqtt5.message.pubrel.Mqtt5PubRelReasonCode.SUCCESS;
 
@@ -75,14 +73,10 @@ class Mqtt5PubRelDecoderTest {
 
         final ImmutableList<Mqtt5UserProperty> userProperties = pubRel.getUserProperties();
         assertEquals(2, userProperties.size());
-        final Mqtt5UTF8String test = Mqtt5UTF8String.from("test");
-        final Mqtt5UTF8String value = Mqtt5UTF8String.from("value");
-        final Mqtt5UTF8String value2 = Mqtt5UTF8String.from("value2");
-        assertNotNull(test);
-        assertNotNull(value);
-        assertNotNull(value2);
-        assertTrue(userProperties.contains(new Mqtt5UserProperty(test, value)));
-        assertTrue(userProperties.contains(new Mqtt5UserProperty(test, value2)));
+        assertEquals("test", userProperties.get(0).getName().toString());
+        assertEquals("value", userProperties.get(0).getValue().toString());
+        assertEquals("test", userProperties.get(1).getName().toString());
+        assertEquals("value2", userProperties.get(1).getValue().toString());
     }
 
     @Test
@@ -148,14 +142,10 @@ class Mqtt5PubRelDecoderTest {
         final Mqtt5PubRel pubRel = decode(encoded);
         final ImmutableList<Mqtt5UserProperty> userProperties = pubRel.getUserProperties();
         assertEquals(2, userProperties.size());
-
-        assertTrue(userProperties.contains(new Mqtt5UserProperty(
-                requireNonNull(Mqtt5UTF8String.from("test")),
-                requireNonNull(Mqtt5UTF8String.from("value")))));
-
-        assertTrue(userProperties.contains(new Mqtt5UserProperty(
-                requireNonNull(Mqtt5UTF8String.from("test")),
-                requireNonNull(Mqtt5UTF8String.from("value2")))));
+        assertEquals("test", userProperties.get(0).getName().toString());
+        assertEquals("value", userProperties.get(0).getValue().toString());
+        assertEquals("test", userProperties.get(1).getName().toString());
+        assertEquals("value2", userProperties.get(1).getValue().toString());
     }
 
     @Test
@@ -385,7 +375,7 @@ class Mqtt5PubRelDecoderTest {
 
     private void createChannel() {
         channel = new EmbeddedChannel(new Mqtt5Decoder(new Mqtt5PubRelTestMessageDecoders()));
-        channel.attr(ChannelAttributes.INCOMING_TOPIC_ALIAS_MAPPING).set(new Mqtt5Topic[3]);
+        channel.attr(ChannelAttributes.INCOMING_TOPIC_ALIAS_MAPPING).set(new Mqtt5TopicImpl[3]);
     }
 
     private static class Mqtt5PubRelTestMessageDecoders implements Mqtt5MessageDecoders {

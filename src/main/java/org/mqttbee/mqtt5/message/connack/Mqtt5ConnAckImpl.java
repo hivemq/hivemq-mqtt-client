@@ -5,8 +5,10 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt5.message.Mqtt5ClientIdentifier;
 import org.mqttbee.api.mqtt5.message.Mqtt5ConnAck;
 import org.mqttbee.api.mqtt5.message.Mqtt5ExtendedAuth;
+import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.message.*;
 
 import java.util.Optional;
@@ -19,27 +21,28 @@ public class Mqtt5ConnAckImpl implements Mqtt5ConnAck, Mqtt5Message {
     public static final long SESSION_EXPIRY_INTERVAL_FROM_CONNECT = -1;
     public static final int KEEP_ALIVE_FROM_CONNECT = -1;
     @Nullable
-    public static final Mqtt5ClientIdentifier CLIENT_IDENTIFIER_FROM_CONNECT = null;
+    public static final Mqtt5ClientIdentifierImpl CLIENT_IDENTIFIER_FROM_CONNECT = null;
 
     private final Mqtt5ConnAckReasonCode reasonCode;
     private final boolean isSessionPresent;
     private final long sessionExpiryInterval;
     private final int serverKeepAlive;
-    private final Mqtt5ClientIdentifier assignedClientIdentifier;
+    private final Mqtt5ClientIdentifierImpl assignedClientIdentifier;
     private final Mqtt5ExtendedAuth extendedAuth;
     private final RestrictionsImpl restrictions;
-    private final Mqtt5UTF8String responseInformation;
-    private final Mqtt5UTF8String serverReference;
-    private final Mqtt5UTF8String reasonString;
+    private final Mqtt5UTF8StringImpl responseInformation;
+    private final Mqtt5UTF8StringImpl serverReference;
+    private final Mqtt5UTF8StringImpl reasonString;
     private final Mqtt5UserProperties userProperties;
 
     public Mqtt5ConnAckImpl(
             @NotNull final Mqtt5ConnAckReasonCode reasonCode, final boolean isSessionPresent,
             final long sessionExpiryInterval, final int serverKeepAlive,
-            @Nullable final Mqtt5ClientIdentifier assignedClientIdentifier,
+            @Nullable final Mqtt5ClientIdentifierImpl assignedClientIdentifier,
             @Nullable final Mqtt5ExtendedAuth extendedAuth, @NotNull final RestrictionsImpl restrictions,
-            @Nullable final Mqtt5UTF8String responseInformation, @Nullable final Mqtt5UTF8String serverReference,
-            @Nullable final Mqtt5UTF8String reasonString, @NotNull final Mqtt5UserProperties userProperties) {
+            @Nullable final Mqtt5UTF8StringImpl responseInformation,
+            @Nullable final Mqtt5UTF8StringImpl serverReference, @Nullable final Mqtt5UTF8StringImpl reasonString,
+            @NotNull final Mqtt5UserProperties userProperties) {
         this.reasonCode = reasonCode;
         this.isSessionPresent = isSessionPresent;
         this.sessionExpiryInterval = sessionExpiryInterval;

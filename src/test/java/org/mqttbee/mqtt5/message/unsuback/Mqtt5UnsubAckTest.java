@@ -3,7 +3,7 @@ package org.mqttbee.mqtt5.message.unsuback;
 import com.google.common.collect.ImmutableList;
 import org.junit.Test;
 import org.mqttbee.api.mqtt5.message.Mqtt5UnsubAck;
-import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
+import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperties;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 
@@ -16,7 +16,7 @@ import static org.mqttbee.mqtt5.message.Mqtt5UserProperties.DEFAULT_NO_USER_PROP
 
 public class Mqtt5UnsubAckTest {
 
-    private final Mqtt5UTF8String reasonString = Mqtt5UTF8String.from("reasonString");
+    private final Mqtt5UTF8StringImpl reasonString = Mqtt5UTF8StringImpl.from("reasonString");
     private final ImmutableList<Mqtt5UnsubAckReasonCode> reasonCodes =
             ImmutableList.of(Mqtt5UnsubAckReasonCode.SUCCESS);
 
@@ -69,10 +69,10 @@ public class Mqtt5UnsubAckTest {
 
     @Test
     public void constructor_userPropertiesMultiple() {
-        final Mqtt5UTF8String name1 = Mqtt5UTF8String.from("name1");
-        final Mqtt5UTF8String name2 = Mqtt5UTF8String.from("name2");
-        final Mqtt5UTF8String name3 = Mqtt5UTF8String.from("name3");
-        final Mqtt5UTF8String value = Mqtt5UTF8String.from("value");
+        final Mqtt5UTF8StringImpl name1 = Mqtt5UTF8StringImpl.from("name1");
+        final Mqtt5UTF8StringImpl name2 = Mqtt5UTF8StringImpl.from("name2");
+        final Mqtt5UTF8StringImpl name3 = Mqtt5UTF8StringImpl.from("name3");
+        final Mqtt5UTF8StringImpl value = Mqtt5UTF8StringImpl.from("value");
         assertNotNull(name1);
         assertNotNull(name2);
         assertNotNull(name3);

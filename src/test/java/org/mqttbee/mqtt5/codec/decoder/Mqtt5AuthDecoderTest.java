@@ -13,7 +13,6 @@ import org.mqttbee.api.mqtt5.message.Mqtt5Auth;
 import org.mqttbee.api.mqtt5.message.Mqtt5Disconnect;
 import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
-import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 import org.mqttbee.mqtt5.message.auth.Mqtt5AuthReasonCode;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
@@ -82,17 +81,12 @@ class Mqtt5AuthDecoderTest {
 
         final ImmutableList<Mqtt5UserProperty> userProperties = auth.getUserProperties();
         assertEquals(3, userProperties.size());
-        final Mqtt5UTF8String test = Mqtt5UTF8String.from("test");
-        final Mqtt5UTF8String test2 = Mqtt5UTF8String.from("test2");
-        final Mqtt5UTF8String value = Mqtt5UTF8String.from("value");
-        final Mqtt5UTF8String value2 = Mqtt5UTF8String.from("value2");
-        assertNotNull(test);
-        assertNotNull(test2);
-        assertNotNull(value);
-        assertNotNull(value2);
-        assertTrue(userProperties.contains(new Mqtt5UserProperty(test, value)));
-        assertTrue(userProperties.contains(new Mqtt5UserProperty(test, value2)));
-        assertTrue(userProperties.contains(new Mqtt5UserProperty(test2, value)));
+        assertEquals("test", userProperties.get(0).getName().toString());
+        assertEquals("value", userProperties.get(0).getValue().toString());
+        assertEquals("test", userProperties.get(1).getName().toString());
+        assertEquals("value2", userProperties.get(1).getValue().toString());
+        assertEquals("test2", userProperties.get(2).getName().toString());
+        assertEquals("value", userProperties.get(2).getValue().toString());
     }
 
     @Test
@@ -617,17 +611,12 @@ class Mqtt5AuthDecoderTest {
 
         final ImmutableList<Mqtt5UserProperty> userProperties = auth.getUserProperties();
         assertEquals(3, userProperties.size());
-        final Mqtt5UTF8String test = Mqtt5UTF8String.from("test");
-        final Mqtt5UTF8String test2 = Mqtt5UTF8String.from("test2");
-        final Mqtt5UTF8String value = Mqtt5UTF8String.from("value");
-        final Mqtt5UTF8String value2 = Mqtt5UTF8String.from("value2");
-        assertNotNull(test);
-        assertNotNull(test2);
-        assertNotNull(value);
-        assertNotNull(value2);
-        assertTrue(userProperties.contains(new Mqtt5UserProperty(test, value)));
-        assertTrue(userProperties.contains(new Mqtt5UserProperty(test, value2)));
-        assertTrue(userProperties.contains(new Mqtt5UserProperty(test2, value)));
+        assertEquals("test", userProperties.get(0).getName().toString());
+        assertEquals("value", userProperties.get(0).getValue().toString());
+        assertEquals("test", userProperties.get(1).getName().toString());
+        assertEquals("value2", userProperties.get(1).getValue().toString());
+        assertEquals("test2", userProperties.get(2).getName().toString());
+        assertEquals("value", userProperties.get(2).getValue().toString());
     }
 
     @ParameterizedTest
