@@ -5,12 +5,9 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
-import org.mqttbee.mqtt5.exceptions.Mqtt5BinaryDataExceededException;
 import org.mqttbee.mqtt5.exceptions.Mqtt5VariableByteIntegerExceededException;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5QoS;
-import org.mqttbee.mqtt5.message.Mqtt5Topic;
-import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishInternal;
 
@@ -56,8 +53,7 @@ public class Mqtt5PublishEncoder implements Mqtt5MessageEncoder<Mqtt5PublishInte
             remainingLength += 2;
         }
 
-        final int propertyLength = publishInternal.encodedPropertyLength();
-        remainingLength += Mqtt5DataTypes.encodedVariableByteIntegerLength(propertyLength) + propertyLength;
+        remainingLength += encodedLengthWithHeader(publishInternal.encodedPropertyLength());
 
         final byte[] payload = publish.getRawPayload();
         if (payload != null) {
@@ -65,7 +61,7 @@ public class Mqtt5PublishEncoder implements Mqtt5MessageEncoder<Mqtt5PublishInte
         }
 
         if (!Mqtt5DataTypes.isInVariableByteIntegerRange(remainingLength)) {
-            throw new Mqtt5VariableByteIntegerExceededException("remaining length");
+            throw new Mqtt5VariableByteIntegerExceededException("remaining length"); // TODO
         }
         return remainingLength;
     }
@@ -75,45 +71,23 @@ public class Mqtt5PublishEncoder implements Mqtt5MessageEncoder<Mqtt5PublishInte
 
         int propertyLength = 0;
 
-        if (publish.getRawMessageExpiryInterval() != MESSAGE_EXPIRY_INTERVAL_INFINITY) {
-            propertyLength += 5;
-        }
-
-        if (publish.getRawPayloadFormatIndicator() != null) {
-            propertyLength += 2;
-        }
-
-        final Mqtt5UTF8String contentType = publish.getRawContentType();
-        if (contentType != null) {
-            propertyLength += 1 + contentType.encodedLength();
-        }
-
-        final Mqtt5Topic responseTopic = publish.getRawResponseTopic();
-        if (responseTopic != null) {
-            propertyLength += 1 + responseTopic.encodedLength();
-        }
-
-        final byte[] correlationData = publish.getRawCorrelationData();
-        if (correlationData != null) {
-            if (!Mqtt5DataTypes.isInBinaryDataRange(correlationData)) {
-                throw new Mqtt5BinaryDataExceededException("correlation data");
-            }
-            propertyLength += 1 + Mqtt5DataTypes.encodedBinaryDataLength(correlationData);
-        }
-
+        propertyLength +=
+                intPropertyEncodedLength(publish.getRawMessageExpiryInterval(), MESSAGE_EXPIRY_INTERVAL_INFINITY);
+        propertyLength += propertyEncodedLength(publish.getRawPayloadFormatIndicator());
+        propertyLength += nullablePropertyEncodedLength(publish.getRawContentType());
+        propertyLength += nullablePropertyEncodedLength(publish.getRawResponseTopic());
+        propertyLength += nullablePropertyEncodedLength(publish.getRawCorrelationData());
         propertyLength += publish.getRawUserProperties().encodedLength();
 
-        if (publishInternal.getTopicAlias() != DEFAULT_NO_TOPIC_ALIAS) {
-            propertyLength += 3;
-        }
+        propertyLength += shortPropertyEncodedLength(publishInternal.getTopicAlias(), DEFAULT_NO_TOPIC_ALIAS);
 
         final ImmutableIntArray subscriptionIdentifiers = publishInternal.getSubscriptionIdentifiers();
         for (int i = 0; i < subscriptionIdentifiers.length(); i++) {
-            propertyLength += 1 + Mqtt5DataTypes.encodedVariableByteIntegerLength(subscriptionIdentifiers.get(i));
+            propertyLength += variableByteIntegerPropertyEncodedLength(subscriptionIdentifiers.get(i));
         }
 
         if (!Mqtt5DataTypes.isInVariableByteIntegerRange(propertyLength)) {
-            throw new Mqtt5VariableByteIntegerExceededException("property length");
+            throw new Mqtt5VariableByteIntegerExceededException("property length"); // TODO
         }
         return propertyLength;
     }
@@ -132,8 +106,7 @@ public class Mqtt5PublishEncoder implements Mqtt5MessageEncoder<Mqtt5PublishInte
 
         out.writeByte(FIXED_HEADER | flags);
 
-        final int remainingLength = publishInternal.encodedRemainingLength();
-        Mqtt5DataTypes.encodeVariableByteInteger(remainingLength, out);
+        Mqtt5DataTypes.encodeVariableByteInteger(publishInternal.encodedRemainingLength(), out);
     }
 
     private void encodeVariableHeader(@NotNull final Mqtt5PublishInternal publishInternal, @NotNull final ByteBuf out) {
@@ -160,10 +133,10 @@ public class Mqtt5PublishEncoder implements Mqtt5MessageEncoder<Mqtt5PublishInte
 
         encodeIntProperty(
                 MESSAGE_EXPIRY_INTERVAL, publish.getRawMessageExpiryInterval(), MESSAGE_EXPIRY_INTERVAL_INFINITY, out);
-        encodePropertyNullable(PAYLOAD_FORMAT_INDICATOR, publish.getRawPayloadFormatIndicator(), out);
-        encodePropertyNullable(CONTENT_TYPE, publish.getRawContentType(), out);
-        encodePropertyNullable(RESPONSE_TOPIC, publish.getRawResponseTopic(), out);
-        encodePropertyNullable(CORRELATION_DATA, publish.getRawCorrelationData(), out);
+        encodeNullableProperty(PAYLOAD_FORMAT_INDICATOR, publish.getRawPayloadFormatIndicator(), out);
+        encodeNullableProperty(CONTENT_TYPE, publish.getRawContentType(), out);
+        encodeNullableProperty(RESPONSE_TOPIC, publish.getRawResponseTopic(), out);
+        encodeNullableProperty(CORRELATION_DATA, publish.getRawCorrelationData(), out);
         publish.getRawUserProperties().encode(out);
 
         encodeShortProperty(TOPIC_ALIAS, publishInternal.getTopicAlias(), DEFAULT_NO_TOPIC_ALIAS, out);
