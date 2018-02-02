@@ -30,7 +30,6 @@ class Mqtt5PubAckReasonCodeTest {
                 Arguments.of(Mqtt5PubAckReasonCode.TOPIC_NAME_INVALID, 0x90),
                 Arguments.of(Mqtt5PubAckReasonCode.PACKET_IDENTIFIER_IN_USE, 0x91),
                 Arguments.of(Mqtt5PubAckReasonCode.QUOTA_EXCEEDED, 0x97),
-                Arguments.of(Mqtt5PubAckReasonCode.PAYLOAD_FORMAT_INVALID, 0x99)
-        );
+                Arguments.of(Mqtt5PubAckReasonCode.PAYLOAD_FORMAT_INVALID, 0x99));
     }
 }

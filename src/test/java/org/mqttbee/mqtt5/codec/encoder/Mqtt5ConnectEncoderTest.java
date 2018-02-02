@@ -403,10 +403,9 @@ class Mqtt5ConnectEncoderTest {
         final Mqtt5Topic willTopic = requireNonNull(Mqtt5Topic.from("topic"));
         final byte[] correlationData = new byte[65536];
         final Mqtt5ClientIdentifier clientIdentifier = requireNonNull(Mqtt5ClientIdentifier.from("test"));
-        final Mqtt5WillPublishImpl willPublish =
-                new Mqtt5WillPublishImpl(willTopic, null, Mqtt5QoS.AT_MOST_ONCE, false,
-                        Mqtt5WillPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, correlationData,
-                        Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES, 0);
+        final Mqtt5WillPublishImpl willPublish = new Mqtt5WillPublishImpl(willTopic, null, Mqtt5QoS.AT_MOST_ONCE, false,
+                Mqtt5WillPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, correlationData,
+                Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES, 0);
         final Mqtt5ConnectImpl connect =
                 new Mqtt5ConnectImpl(clientIdentifier, 0, false, 0, false, true, DEFAULT, null, null, willPublish,
                         Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
@@ -417,16 +416,14 @@ class Mqtt5ConnectEncoderTest {
     @Test
     void encode_willPropertyLengthExceedsMax_throwsEncoderException() {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder();
-        final Mqtt5UserProperties tooManyUserProperties =
-                maxPacket.getUserProperties(
-                        (VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE / maxPacket.userPropertyBytes) + 1);
+        final Mqtt5UserProperties tooManyUserProperties = maxPacket
+                .getUserProperties((VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE / maxPacket.userPropertyBytes) + 1);
 
         final Mqtt5Topic willTopic = requireNonNull(Mqtt5Topic.from("topic"));
         final Mqtt5ClientIdentifier clientIdentifier = requireNonNull(Mqtt5ClientIdentifier.from("test"));
-        final Mqtt5WillPublishImpl willPublish =
-                new Mqtt5WillPublishImpl(willTopic, null, Mqtt5QoS.AT_MOST_ONCE, false,
-                        Mqtt5WillPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null,
-                        tooManyUserProperties, 0);
+        final Mqtt5WillPublishImpl willPublish = new Mqtt5WillPublishImpl(willTopic, null, Mqtt5QoS.AT_MOST_ONCE, false,
+                Mqtt5WillPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null, tooManyUserProperties,
+                0);
         final Mqtt5ConnectImpl connect =
                 new Mqtt5ConnectImpl(clientIdentifier, 0, false, 0, false, true, DEFAULT, null, null, willPublish,
                         Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);

@@ -47,7 +47,8 @@ class Mqtt5UserPropertiesTest {
     void test_encode() throws Exception {
         final byte[] expected = {
                 Mqtt5Property.USER_PROPERTY, 0, 4, 'n', 'a', 'm', 'e', 0, 5, 'v', 'a', 'l', 'u', 'e',
-                Mqtt5Property.USER_PROPERTY, 0, 4, 'n', 'a', 'm', 'e', 0, 4, 't', 'e', 's', 't'};
+                Mqtt5Property.USER_PROPERTY, 0, 4, 'n', 'a', 'm', 'e', 0, 4, 't', 'e', 's', 't'
+        };
         final Mqtt5UTF8String name = requireNonNull(Mqtt5UTF8String.from("name"));
         final Mqtt5UTF8String value = requireNonNull(Mqtt5UTF8String.from("value"));
         final Mqtt5UTF8String value2 = requireNonNull(Mqtt5UTF8String.from("test"));
