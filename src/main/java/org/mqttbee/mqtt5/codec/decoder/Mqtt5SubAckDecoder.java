@@ -6,7 +6,7 @@ import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
-import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
+import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperties;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
@@ -53,7 +53,7 @@ public class Mqtt5SubAckDecoder implements Mqtt5MessageDecoder {
             return null;
         }
 
-        Mqtt5UTF8String reasonString = null;
+        Mqtt5UTF8StringImpl reasonString = null;
         ImmutableList.Builder<Mqtt5UserProperty> userPropertiesBuilder = null;
 
         final int propertiesStartIndex = in.readerIndex();

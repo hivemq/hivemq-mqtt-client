@@ -4,8 +4,8 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5WillPublish;
 import org.mqttbee.mqtt5.message.Mqtt5QoS;
-import org.mqttbee.mqtt5.message.Mqtt5Topic;
-import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
+import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
+import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperties;
 
 /**
@@ -21,10 +21,10 @@ public class Mqtt5WillPublishImpl extends Mqtt5PublishImpl implements Mqtt5WillP
     private final long delay;
 
     public Mqtt5WillPublishImpl(
-            @NotNull final Mqtt5Topic topic, @Nullable final byte[] payload, @NotNull final Mqtt5QoS qos,
+            @NotNull final Mqtt5TopicImpl topic, @Nullable final byte[] payload, @NotNull final Mqtt5QoS qos,
             final boolean isRetain, final long messageExpiryInterval,
             @Nullable final Mqtt5PayloadFormatIndicator payloadFormatIndicator,
-            @Nullable final Mqtt5UTF8String contentType, @Nullable final Mqtt5Topic responseTopic,
+            @Nullable final Mqtt5UTF8StringImpl contentType, @Nullable final Mqtt5TopicImpl responseTopic,
             @Nullable final byte[] correlationData, @NotNull final Mqtt5UserProperties userProperties,
             final long delay) {
 

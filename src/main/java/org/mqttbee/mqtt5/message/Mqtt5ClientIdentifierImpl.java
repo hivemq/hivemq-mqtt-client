@@ -3,27 +3,24 @@ package org.mqttbee.mqtt5.message;
 import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt5.message.Mqtt5ClientIdentifier;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 
 import java.util.regex.Pattern;
 
 /**
- * MQTT Client Identifier according to the MQTT 5 specification.
- * <p>
- * This class lazily en/decodes between UTF-8 and UTF-16 encoding, but performs validation upfront.
- * <p>
- * A Client Identifier has the same restrictions from {@link Mqtt5UTF8String}.
- *
  * @author Silvio Giebl
+ * @see Mqtt5ClientIdentifier
+ * @see Mqtt5UTF8StringImpl
  */
-public class Mqtt5ClientIdentifier extends Mqtt5UTF8String {
+public class Mqtt5ClientIdentifierImpl extends Mqtt5UTF8StringImpl implements Mqtt5ClientIdentifier {
 
     /**
      * Placeholder for a Client Identifier to indicate that the MQTT broker should assign the Client Identifier.
      */
     @NotNull
-    public static final Mqtt5ClientIdentifier REQUEST_CLIENT_IDENTIFIER_FROM_SERVER =
-            new Mqtt5ClientIdentifier(encode(""));
+    public static final Mqtt5ClientIdentifierImpl REQUEST_CLIENT_IDENTIFIER_FROM_SERVER =
+            new Mqtt5ClientIdentifierImpl(encode(""));
     private static final Pattern MUST_BE_ALLOWED_BY_SERVER_PATTERN = Pattern.compile("([0-9]|[a-z]|[A-Z])*");
     private static final int MUST_BE_ALLOWED_BY_SERVER_MIN_BYTES = 1;
     private static final int MUST_BE_ALLOWED_BY_SERVER_MAX_BYTES = 23;
@@ -36,8 +33,8 @@ public class Mqtt5ClientIdentifier extends Mqtt5UTF8String {
      * Identifier.
      */
     @Nullable
-    public static Mqtt5ClientIdentifier from(@NotNull final byte[] binary) {
-        return containsMustNotCharacters(binary) ? null : new Mqtt5ClientIdentifier(binary);
+    public static Mqtt5ClientIdentifierImpl from(@NotNull final byte[] binary) {
+        return containsMustNotCharacters(binary) ? null : new Mqtt5ClientIdentifierImpl(binary);
     }
 
     /**
@@ -47,8 +44,8 @@ public class Mqtt5ClientIdentifier extends Mqtt5UTF8String {
      * @return the created Client Identifier or null if the given string is not a valid Client Identifier.
      */
     @Nullable
-    public static Mqtt5ClientIdentifier from(@NotNull final String string) {
-        return containsMustNotCharacters(string) ? null : new Mqtt5ClientIdentifier(string);
+    public static Mqtt5ClientIdentifierImpl from(@NotNull final String string) {
+        return containsMustNotCharacters(string) ? null : new Mqtt5ClientIdentifierImpl(string);
     }
 
     /**
@@ -62,28 +59,21 @@ public class Mqtt5ClientIdentifier extends Mqtt5UTF8String {
      * Identifier.
      */
     @Nullable
-    public static Mqtt5ClientIdentifier from(@NotNull final ByteBuf byteBuf) {
+    public static Mqtt5ClientIdentifierImpl from(@NotNull final ByteBuf byteBuf) {
         final byte[] binary = Mqtt5DataTypes.decodeBinaryData(byteBuf);
         return (binary == null) ? null : from(binary);
     }
 
 
-    private Mqtt5ClientIdentifier(@NotNull final byte[] binary) {
+    private Mqtt5ClientIdentifierImpl(@NotNull final byte[] binary) {
         super(binary);
     }
 
-    private Mqtt5ClientIdentifier(@NotNull final String string) {
+    private Mqtt5ClientIdentifierImpl(@NotNull final String string) {
         super(string);
     }
 
-    /**
-     * Checks whether this Client Identifier must be allowed by a MQTT broker according to the MQTT 5 specification.
-     * <p>
-     * A Client Identifier must be allowed by a MQTT broker if it is between 1 and 23 characters long and only contains
-     * lower or uppercase alphabetical characters or numbers.
-     *
-     * @return whether this Client Identifier must be allowed by a MQTT broker.
-     */
+    @Override
     public boolean mustBeAllowedByServer() {
         final byte[] binary = toBinary();
         return binary.length >= MUST_BE_ALLOWED_BY_SERVER_MIN_BYTES &&

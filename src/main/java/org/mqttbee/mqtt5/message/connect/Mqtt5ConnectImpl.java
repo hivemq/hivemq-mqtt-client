@@ -5,8 +5,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt5.message.Mqtt5Connect;
-import org.mqttbee.api.mqtt5.message.Mqtt5ExtendedAuth;
+import org.mqttbee.api.mqtt5.message.*;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5ConnectEncoder;
 import org.mqttbee.mqtt5.message.*;
 import org.mqttbee.mqtt5.message.auth.Mqtt5ExtendedAuthImpl;
@@ -19,7 +18,7 @@ import java.util.Optional;
  */
 public class Mqtt5ConnectImpl extends Mqtt5Message.Mqtt5MessageWithProperties implements Mqtt5Connect {
 
-    private final Mqtt5ClientIdentifier clientIdentifier;
+    private final Mqtt5ClientIdentifierImpl clientIdentifier;
     private final int keepAlive;
     private final boolean isCleanStart;
     private final long sessionExpiryInterval;
@@ -34,7 +33,7 @@ public class Mqtt5ConnectImpl extends Mqtt5Message.Mqtt5MessageWithProperties im
     private int willPropertyLength = -1;
 
     public Mqtt5ConnectImpl(
-            @NotNull final Mqtt5ClientIdentifier clientIdentifier, final int keepAlive, final boolean isCleanStart,
+            @NotNull final Mqtt5ClientIdentifierImpl clientIdentifier, final int keepAlive, final boolean isCleanStart,
             final long sessionExpiryInterval, final boolean isResponseInformationRequested,
             final boolean isProblemInformationRequested, @NotNull final RestrictionsImpl restrictions,
             @Nullable final SimpleAuthImpl simpleAuth, @Nullable final Mqtt5ExtendedAuthImpl extendedAuth,
@@ -55,12 +54,12 @@ public class Mqtt5ConnectImpl extends Mqtt5Message.Mqtt5MessageWithProperties im
     @NotNull
     @Override
     public Optional<Mqtt5ClientIdentifier> getClientIdentifier() {
-        return clientIdentifier == Mqtt5ClientIdentifier.REQUEST_CLIENT_IDENTIFIER_FROM_SERVER ? Optional.empty() :
+        return clientIdentifier == Mqtt5ClientIdentifierImpl.REQUEST_CLIENT_IDENTIFIER_FROM_SERVER ? Optional.empty() :
                 Optional.of(clientIdentifier);
     }
 
     @NotNull
-    public Mqtt5ClientIdentifier getRawClientIdentifier() {
+    public Mqtt5ClientIdentifierImpl getRawClientIdentifier() {
         return clientIdentifier;
     }
 
@@ -124,7 +123,7 @@ public class Mqtt5ConnectImpl extends Mqtt5Message.Mqtt5MessageWithProperties im
 
     @NotNull
     @Override
-    public Optional<Mqtt5WillPublishImpl> getWillPublish() {
+    public Optional<Mqtt5WillPublish> getWillPublish() {
         return Optional.ofNullable(willPublish);
     }
 
@@ -169,10 +168,10 @@ public class Mqtt5ConnectImpl extends Mqtt5Message.Mqtt5MessageWithProperties im
 
     public static class SimpleAuthImpl implements SimpleAuth {
 
-        private final Mqtt5UTF8String username;
+        private final Mqtt5UTF8StringImpl username;
         private final byte[] password;
 
-        public SimpleAuthImpl(@Nullable final Mqtt5UTF8String username, @Nullable final byte[] password) {
+        public SimpleAuthImpl(@Nullable final Mqtt5UTF8StringImpl username, @Nullable final byte[] password) {
             this.username = username;
             this.password = password;
         }
@@ -184,7 +183,7 @@ public class Mqtt5ConnectImpl extends Mqtt5Message.Mqtt5MessageWithProperties im
         }
 
         @Nullable
-        public Mqtt5UTF8String getRawUsername() {
+        public Mqtt5UTF8StringImpl getRawUsername() {
             return username;
         }
 

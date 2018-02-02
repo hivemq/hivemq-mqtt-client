@@ -9,7 +9,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
-import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
+import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperties;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectImpl;
@@ -29,11 +29,11 @@ class Mqtt5MessageDecoderUtil {
 
         channel.config().setAutoRead(false);
 
-        Mqtt5UTF8String mqttReasonString = null;
+        Mqtt5UTF8StringImpl mqttReasonString = null;
         if (reasonString != null) {
             final Boolean sendReasonString = channel.attr(ChannelAttributes.SEND_REASON_STRING).get();
             if ((sendReasonString != null) && sendReasonString) {
-                mqttReasonString = Mqtt5UTF8String.from(reasonString);
+                mqttReasonString = Mqtt5UTF8StringImpl.from(reasonString);
             }
         }
 
@@ -158,15 +158,15 @@ class Mqtt5MessageDecoderUtil {
     }
 
     @Nullable
-    static Mqtt5UTF8String decodeUTF8StringOnlyOnce(
-            @Nullable final Mqtt5UTF8String current, @NotNull final String name, @NotNull final Channel channel,
+    static Mqtt5UTF8StringImpl decodeUTF8StringOnlyOnce(
+            @Nullable final Mqtt5UTF8StringImpl current, @NotNull final String name, @NotNull final Channel channel,
             @NotNull final ByteBuf in) {
 
         if (current != null) {
             disconnectOnlyOnce(name, channel);
             return null;
         }
-        final Mqtt5UTF8String decoded = Mqtt5UTF8String.from(in);
+        final Mqtt5UTF8StringImpl decoded = Mqtt5UTF8StringImpl.from(in);
         if (decoded == null) {
             disconnectMalformedUTF8String(name, channel);
             return null;
@@ -205,8 +205,8 @@ class Mqtt5MessageDecoderUtil {
     }
 
     @Nullable
-    static Mqtt5UTF8String decodeReasonStringCheckProblemInformationRequested(
-            @Nullable final Mqtt5UTF8String current, @NotNull final Channel channel, @NotNull final ByteBuf in) {
+    static Mqtt5UTF8StringImpl decodeReasonStringCheckProblemInformationRequested(
+            @Nullable final Mqtt5UTF8StringImpl current, @NotNull final Channel channel, @NotNull final ByteBuf in) {
 
         if (!checkProblemInformationRequested("reason string", channel)) {
             return null;

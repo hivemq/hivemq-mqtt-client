@@ -15,8 +15,8 @@ class Mqtt5UserPropertiesTest {
 
     @Test
     void test_of() {
-        final Mqtt5UTF8String name = requireNonNull(Mqtt5UTF8String.from("name"));
-        final Mqtt5UTF8String value = requireNonNull(Mqtt5UTF8String.from("value"));
+        final Mqtt5UTF8StringImpl name = requireNonNull(Mqtt5UTF8StringImpl.from("name"));
+        final Mqtt5UTF8StringImpl value = requireNonNull(Mqtt5UTF8StringImpl.from("value"));
         final Mqtt5UserProperty userProperty = new Mqtt5UserProperty(name, value);
         final ImmutableList<Mqtt5UserProperty> userPropertiesList = ImmutableList.of(userProperty);
         final Mqtt5UserProperties userProperties = Mqtt5UserProperties.of(userPropertiesList);
@@ -26,8 +26,8 @@ class Mqtt5UserPropertiesTest {
     @Test
     void test_build_not_null() {
         final ImmutableList.Builder<Mqtt5UserProperty> builder = ImmutableList.builder();
-        final Mqtt5UTF8String name = requireNonNull(Mqtt5UTF8String.from("name"));
-        final Mqtt5UTF8String value = requireNonNull(Mqtt5UTF8String.from("value"));
+        final Mqtt5UTF8StringImpl name = requireNonNull(Mqtt5UTF8StringImpl.from("name"));
+        final Mqtt5UTF8StringImpl value = requireNonNull(Mqtt5UTF8StringImpl.from("value"));
         builder.add(new Mqtt5UserProperty(name, value));
         final Mqtt5UserProperties userProperties = Mqtt5UserProperties.build(builder);
         final ImmutableList<Mqtt5UserProperty> userPropertiesList = userProperties.asList();
@@ -49,9 +49,9 @@ class Mqtt5UserPropertiesTest {
                 Mqtt5Property.USER_PROPERTY, 0, 4, 'n', 'a', 'm', 'e', 0, 5, 'v', 'a', 'l', 'u', 'e',
                 Mqtt5Property.USER_PROPERTY, 0, 4, 'n', 'a', 'm', 'e', 0, 4, 't', 'e', 's', 't'
         };
-        final Mqtt5UTF8String name = requireNonNull(Mqtt5UTF8String.from("name"));
-        final Mqtt5UTF8String value = requireNonNull(Mqtt5UTF8String.from("value"));
-        final Mqtt5UTF8String value2 = requireNonNull(Mqtt5UTF8String.from("test"));
+        final Mqtt5UTF8StringImpl name = requireNonNull(Mqtt5UTF8StringImpl.from("name"));
+        final Mqtt5UTF8StringImpl value = requireNonNull(Mqtt5UTF8StringImpl.from("value"));
+        final Mqtt5UTF8StringImpl value2 = requireNonNull(Mqtt5UTF8StringImpl.from("test"));
         final Mqtt5UserProperty userProperty1 = new Mqtt5UserProperty(name, value);
         final Mqtt5UserProperty userProperty2 = new Mqtt5UserProperty(name, value2);
         final Mqtt5UserProperties userProperties =
@@ -68,9 +68,9 @@ class Mqtt5UserPropertiesTest {
 
     @Test
     void test_encodedLength() throws Exception {
-        final Mqtt5UTF8String name = requireNonNull(Mqtt5UTF8String.from("name"));
-        final Mqtt5UTF8String value = requireNonNull(Mqtt5UTF8String.from("value"));
-        final Mqtt5UTF8String value2 = requireNonNull(Mqtt5UTF8String.from("test"));
+        final Mqtt5UTF8StringImpl name = requireNonNull(Mqtt5UTF8StringImpl.from("name"));
+        final Mqtt5UTF8StringImpl value = requireNonNull(Mqtt5UTF8StringImpl.from("value"));
+        final Mqtt5UTF8StringImpl value2 = requireNonNull(Mqtt5UTF8StringImpl.from("test"));
         final Mqtt5UserProperty userProperty1 = new Mqtt5UserProperty(name, value);
         final Mqtt5UserProperty userProperty2 = new Mqtt5UserProperty(name, value2);
         final Mqtt5UserProperties userProperties =

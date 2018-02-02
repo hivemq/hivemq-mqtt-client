@@ -4,6 +4,8 @@ import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5Publish;
+import org.mqttbee.api.mqtt5.message.Mqtt5Topic;
+import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.message.*;
 
 import java.util.Optional;
@@ -15,23 +17,23 @@ public class Mqtt5PublishImpl implements Mqtt5Publish {
 
     public static final long MESSAGE_EXPIRY_INTERVAL_INFINITY = Long.MAX_VALUE;
 
-    private final Mqtt5Topic topic;
+    private final Mqtt5TopicImpl topic;
     private final byte[] payload;
     private final Mqtt5QoS qos;
     private final boolean isRetain;
     private final long messageExpiryInterval;
     private final Mqtt5PayloadFormatIndicator payloadFormatIndicator;
-    private final Mqtt5UTF8String contentType;
-    private final Mqtt5Topic responseTopic;
+    private final Mqtt5UTF8StringImpl contentType;
+    private final Mqtt5TopicImpl responseTopic;
     private final byte[] correlationData;
     private final TopicAliasUsage topicAliasUsage;
     private final Mqtt5UserProperties userProperties;
 
     public Mqtt5PublishImpl(
-            @NotNull final Mqtt5Topic topic, @Nullable final byte[] payload, @NotNull final Mqtt5QoS qos,
+            @NotNull final Mqtt5TopicImpl topic, @Nullable final byte[] payload, @NotNull final Mqtt5QoS qos,
             final boolean isRetain, final long messageExpiryInterval,
             @Nullable final Mqtt5PayloadFormatIndicator payloadFormatIndicator,
-            @Nullable final Mqtt5UTF8String contentType, @Nullable final Mqtt5Topic responseTopic,
+            @Nullable final Mqtt5UTF8StringImpl contentType, @Nullable final Mqtt5TopicImpl responseTopic,
             @Nullable final byte[] correlationData, @NotNull final TopicAliasUsage topicAliasUsage,
             @NotNull final Mqtt5UserProperties userProperties) {
         this.topic = topic;
@@ -49,7 +51,7 @@ public class Mqtt5PublishImpl implements Mqtt5Publish {
 
     @NotNull
     @Override
-    public Mqtt5Topic getTopic() {
+    public Mqtt5TopicImpl getTopic() {
         return topic;
     }
 
@@ -104,7 +106,7 @@ public class Mqtt5PublishImpl implements Mqtt5Publish {
     }
 
     @Nullable
-    public Mqtt5UTF8String getRawContentType() {
+    public Mqtt5UTF8StringImpl getRawContentType() {
         return contentType;
     }
 
@@ -115,7 +117,7 @@ public class Mqtt5PublishImpl implements Mqtt5Publish {
     }
 
     @Nullable
-    public Mqtt5Topic getRawResponseTopic() {
+    public Mqtt5TopicImpl getRawResponseTopic() {
         return responseTopic;
     }
 

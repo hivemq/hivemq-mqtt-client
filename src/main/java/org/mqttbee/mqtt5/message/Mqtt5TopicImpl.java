@@ -4,24 +4,15 @@ import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt5.message.Mqtt5Topic;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 
 /**
- * MQTT Topic Name according to the MQTT 5 specification.
- * <p>
- * This class lazily en/decodes between UTF-8 and UTF-16 encoding, but performs validation upfront.
- * <p>
- * A Topic Name has the restrictions from {@link Mqtt5UTF8String}, must be at least 1 character long and mut not contain
- * wildcards ({@link Mqtt5TopicFilter#MULTI_LEVEL_WILDCARD}, {@link Mqtt5TopicFilter#SINGLE_LEVEL_WILDCARD}).
- *
  * @author Silvio Giebl
+ * @see Mqtt5Topic
+ * @see Mqtt5UTF8StringImpl
  */
-public class Mqtt5Topic extends Mqtt5UTF8String {
-
-    /**
-     * The topic level separator character.
-     */
-    public static final char TOPIC_LEVEL_SEPARATOR = '/';
+public class Mqtt5TopicImpl extends Mqtt5UTF8StringImpl implements Mqtt5Topic {
 
     /**
      * Validates and decodes a Topic Name from the given byte array.
@@ -30,8 +21,8 @@ public class Mqtt5Topic extends Mqtt5UTF8String {
      * @return the created Topic Name or null if the byte array does not contain a well-formed Topic Name.
      */
     @Nullable
-    public static Mqtt5Topic from(@NotNull final byte[] binary) {
-        return (binary.length == 0) || containsMustNotCharacters(binary) ? null : new Mqtt5Topic(binary);
+    public static Mqtt5TopicImpl from(@NotNull final byte[] binary) {
+        return (binary.length == 0) || containsMustNotCharacters(binary) ? null : new Mqtt5TopicImpl(binary);
     }
 
     /**
@@ -41,8 +32,8 @@ public class Mqtt5Topic extends Mqtt5UTF8String {
      * @return the created Topic Name or null if the string is not a valid Topic Name.
      */
     @Nullable
-    public static Mqtt5Topic from(@NotNull final String string) {
-        return (string.length() == 0) || containsMustNotCharacters(string) ? null : new Mqtt5Topic(string);
+    public static Mqtt5TopicImpl from(@NotNull final String string) {
+        return (string.length() == 0) || containsMustNotCharacters(string) ? null : new Mqtt5TopicImpl(string);
     }
 
     /**
@@ -55,7 +46,7 @@ public class Mqtt5Topic extends Mqtt5UTF8String {
      * @return the created Topic Name or null if the byte buffer does not contain a well-formed Topic Name.
      */
     @Nullable
-    public static Mqtt5Topic from(@NotNull final ByteBuf byteBuf) {
+    public static Mqtt5TopicImpl from(@NotNull final ByteBuf byteBuf) {
         final byte[] binary = Mqtt5DataTypes.decodeBinaryData(byteBuf);
         return (binary == null) ? null : from(binary);
     }
@@ -68,11 +59,11 @@ public class Mqtt5Topic extends Mqtt5UTF8String {
      *
      * @param binary the UTF-8 encoded byte array.
      * @return whether the byte array contains characters a Topic Name must not contain.
-     * @see Mqtt5UTF8String#containsMustNotCharacters(byte[])
+     * @see Mqtt5UTF8StringImpl#containsMustNotCharacters(byte[])
      * @see #containsWildcardCharacters(byte[])
      */
     static boolean containsMustNotCharacters(@NotNull final byte[] binary) {
-        return Mqtt5UTF8String.containsMustNotCharacters(binary) || containsWildcardCharacters(binary);
+        return Mqtt5UTF8StringImpl.containsMustNotCharacters(binary) || containsWildcardCharacters(binary);
     }
 
     /**
@@ -83,11 +74,11 @@ public class Mqtt5Topic extends Mqtt5UTF8String {
      *
      * @param string the UTF-16 encoded Java string.
      * @return whether the string contains characters a Topic Name must not contain.
-     * @see Mqtt5UTF8String#containsMustNotCharacters(String)
+     * @see Mqtt5UTF8StringImpl#containsMustNotCharacters(String)
      * @see #containsWildcardCharacters(String)
      */
     static boolean containsMustNotCharacters(@NotNull final String string) {
-        return Mqtt5UTF8String.containsMustNotCharacters(string) || containsWildcardCharacters(string);
+        return Mqtt5UTF8StringImpl.containsMustNotCharacters(string) || containsWildcardCharacters(string);
     }
 
     /**
@@ -98,7 +89,7 @@ public class Mqtt5Topic extends Mqtt5UTF8String {
      */
     private static boolean containsWildcardCharacters(@NotNull final byte[] binary) {
         for (final byte b : binary) {
-            if (b == Mqtt5TopicFilter.MULTI_LEVEL_WILDCARD || b == Mqtt5TopicFilter.SINGLE_LEVEL_WILDCARD) {
+            if (b == Mqtt5TopicFilterImpl.MULTI_LEVEL_WILDCARD || b == Mqtt5TopicFilterImpl.SINGLE_LEVEL_WILDCARD) {
                 return true;
             }
         }
@@ -114,7 +105,7 @@ public class Mqtt5Topic extends Mqtt5UTF8String {
     private static boolean containsWildcardCharacters(@NotNull final String string) {
         for (int i = 0; i < string.length(); i++) {
             final char c = string.charAt(i);
-            if (c == Mqtt5TopicFilter.MULTI_LEVEL_WILDCARD || c == Mqtt5TopicFilter.SINGLE_LEVEL_WILDCARD) {
+            if (c == Mqtt5TopicFilterImpl.MULTI_LEVEL_WILDCARD || c == Mqtt5TopicFilterImpl.SINGLE_LEVEL_WILDCARD) {
                 return true;
             }
         }
@@ -143,18 +134,16 @@ public class Mqtt5Topic extends Mqtt5UTF8String {
     }
 
 
-    private Mqtt5Topic(@NotNull final byte[] binary) {
+    private Mqtt5TopicImpl(@NotNull final byte[] binary) {
         super(binary);
     }
 
-    private Mqtt5Topic(@NotNull final String string) {
+    private Mqtt5TopicImpl(@NotNull final String string) {
         super(string);
     }
 
-    /**
-     * @return the levels of this Topic Name.
-     */
     @NotNull
+    @Override
     public ImmutableList<String> getLevels() {
         return splitLevels(toString());
     }

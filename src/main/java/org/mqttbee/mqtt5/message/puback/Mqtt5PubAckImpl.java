@@ -4,7 +4,8 @@ import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5PubAck;
-import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
+import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
+import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperties;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 
@@ -19,11 +20,11 @@ public class Mqtt5PubAckImpl implements Mqtt5PubAck {
     public static final Mqtt5PubAckReasonCode DEFAULT_REASON_CODE = Mqtt5PubAckReasonCode.SUCCESS;
 
     private final Mqtt5PubAckReasonCode reasonCode;
-    private final Mqtt5UTF8String reasonString;
+    private final Mqtt5UTF8StringImpl reasonString;
     private final Mqtt5UserProperties userProperties;
 
     public Mqtt5PubAckImpl(
-            @NotNull final Mqtt5PubAckReasonCode reasonCode, @Nullable final Mqtt5UTF8String reasonString,
+            @NotNull final Mqtt5PubAckReasonCode reasonCode, @Nullable final Mqtt5UTF8StringImpl reasonString,
             @NotNull final Mqtt5UserProperties userProperties) {
         this.reasonCode = reasonCode;
         this.reasonString = reasonString;
@@ -43,7 +44,7 @@ public class Mqtt5PubAckImpl implements Mqtt5PubAck {
     }
 
     @Nullable
-    public Mqtt5UTF8String getRawReasonString() {
+    public Mqtt5UTF8StringImpl getRawReasonString() {
         return reasonString;
     }
 

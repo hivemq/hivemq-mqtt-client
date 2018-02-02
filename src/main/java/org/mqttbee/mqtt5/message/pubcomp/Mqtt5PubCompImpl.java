@@ -4,7 +4,8 @@ import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5PubComp;
-import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
+import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
+import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperties;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 
@@ -19,11 +20,11 @@ public class Mqtt5PubCompImpl implements Mqtt5PubComp {
     public static final Mqtt5PubCompReasonCode DEFAULT_REASON_CODE = Mqtt5PubCompReasonCode.SUCCESS;
 
     private final Mqtt5PubCompReasonCode reasonCode;
-    private final Mqtt5UTF8String reasonString;
+    private final Mqtt5UTF8StringImpl reasonString;
     private final Mqtt5UserProperties userProperties;
 
     public Mqtt5PubCompImpl(
-            @NotNull final Mqtt5PubCompReasonCode reasonCode, @Nullable final Mqtt5UTF8String reasonString,
+            @NotNull final Mqtt5PubCompReasonCode reasonCode, @Nullable final Mqtt5UTF8StringImpl reasonString,
             @NotNull final Mqtt5UserProperties userProperties) {
         this.reasonCode = reasonCode;
         this.reasonString = reasonString;
@@ -43,7 +44,7 @@ public class Mqtt5PubCompImpl implements Mqtt5PubComp {
     }
 
     @Nullable
-    public Mqtt5UTF8String getRawReasonString() {
+    public Mqtt5UTF8StringImpl getRawReasonString() {
         return reasonString;
     }
 

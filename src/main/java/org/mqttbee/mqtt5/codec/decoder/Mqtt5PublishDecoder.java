@@ -57,9 +57,9 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
             disconnect(Mqtt5DisconnectReasonCode.TOPIC_NAME_INVALID, "malformed topic", channel);
             return null;
         }
-        Mqtt5Topic topic = null;
+        Mqtt5TopicImpl topic = null;
         if (topicBinary.length != 0) {
-            topic = Mqtt5Topic.from(topicBinary);
+            topic = Mqtt5TopicImpl.from(topicBinary);
             if (topic == null) {
                 disconnect(Mqtt5DisconnectReasonCode.TOPIC_NAME_INVALID, "malformed topic", channel);
                 return null;
@@ -87,8 +87,8 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
 
         long messageExpiryInterval = MESSAGE_EXPIRY_INTERVAL_INFINITY;
         Mqtt5PayloadFormatIndicator payloadFormatIndicator = null;
-        Mqtt5UTF8String contentType = null;
-        Mqtt5Topic responseTopic = null;
+        Mqtt5UTF8StringImpl contentType = null;
+        Mqtt5TopicImpl responseTopic = null;
         byte[] correlationData = null;
         ImmutableList.Builder<Mqtt5UserProperty> userPropertiesBuilder = null;
         int topicAlias = DEFAULT_NO_TOPIC_ALIAS;
@@ -138,7 +138,7 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
                         disconnectOnlyOnce("response topic", channel);
                         return null;
                     }
-                    responseTopic = Mqtt5Topic.from(in);
+                    responseTopic = Mqtt5TopicImpl.from(in);
                     if (responseTopic == null) {
                         disconnect(Mqtt5DisconnectReasonCode.TOPIC_NAME_INVALID, "malformed response topic", channel);
                         return null;
@@ -202,7 +202,8 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
 
         boolean isNewTopicAlias = false;
         if (topicAlias != DEFAULT_NO_TOPIC_ALIAS) {
-            final Mqtt5Topic[] topicAliasMapping = channel.attr(ChannelAttributes.INCOMING_TOPIC_ALIAS_MAPPING).get();
+            final Mqtt5TopicImpl[] topicAliasMapping =
+                    channel.attr(ChannelAttributes.INCOMING_TOPIC_ALIAS_MAPPING).get();
             if ((topicAliasMapping == null) || (topicAlias > topicAliasMapping.length)) {
                 disconnect(
                         Mqtt5DisconnectReasonCode.TOPIC_ALIAS_INVALID,

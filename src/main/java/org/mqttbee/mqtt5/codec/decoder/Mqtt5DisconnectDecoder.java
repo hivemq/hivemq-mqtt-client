@@ -6,7 +6,7 @@ import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
-import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
+import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperties;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectImpl;
@@ -37,8 +37,8 @@ public class Mqtt5DisconnectDecoder implements Mqtt5MessageDecoder {
 
         Mqtt5DisconnectReasonCode reasonCode = DEFAULT_REASON_CODE;
         long sessionExpiryInterval = SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
-        Mqtt5UTF8String serverReference = null;
-        Mqtt5UTF8String reasonString = null;
+        Mqtt5UTF8StringImpl serverReference = null;
+        Mqtt5UTF8StringImpl reasonString = null;
         ImmutableList.Builder<Mqtt5UserProperty> userPropertiesBuilder = null;
 
         if (in.isReadable()) {

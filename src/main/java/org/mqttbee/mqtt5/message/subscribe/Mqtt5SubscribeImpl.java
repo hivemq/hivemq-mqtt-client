@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.message.Mqtt5Subscribe;
 import org.mqttbee.mqtt5.message.Mqtt5QoS;
-import org.mqttbee.mqtt5.message.Mqtt5TopicFilter;
+import org.mqttbee.mqtt5.message.Mqtt5TopicFilterImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperties;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 
@@ -43,14 +43,14 @@ public class Mqtt5SubscribeImpl implements Mqtt5Subscribe {
 
     public static class SubscriptionImpl implements Subscription {
 
-        private final Mqtt5TopicFilter topicFilter;
+        private final Mqtt5TopicFilterImpl topicFilter;
         private final Mqtt5QoS qos;
         private final boolean isNoLocal;
         private final Mqtt5RetainHandling retainHandling;
         private final boolean isRetainAsPublished;
 
         public SubscriptionImpl(
-                @NotNull final Mqtt5TopicFilter topicFilter, @NotNull final Mqtt5QoS qos, final boolean isNoLocal,
+                @NotNull final Mqtt5TopicFilterImpl topicFilter, @NotNull final Mqtt5QoS qos, final boolean isNoLocal,
                 @NotNull final Mqtt5RetainHandling retainHandling, final boolean isRetainAsPublished) {
             this.topicFilter = topicFilter;
             this.qos = qos;
@@ -61,7 +61,7 @@ public class Mqtt5SubscribeImpl implements Mqtt5Subscribe {
 
         @NotNull
         @Override
-        public Mqtt5TopicFilter getTopicFilter() {
+        public Mqtt5TopicFilterImpl getTopicFilter() {
             return topicFilter;
         }
 

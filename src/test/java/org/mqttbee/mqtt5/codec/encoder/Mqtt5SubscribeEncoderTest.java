@@ -61,12 +61,12 @@ class Mqtt5SubscribeEncoderTest {
                 0b0001_1101
         };
 
-        final Mqtt5UTF8String user = requireNonNull(Mqtt5UTF8String.from("user"));
-        final Mqtt5UTF8String property = requireNonNull(Mqtt5UTF8String.from("property"));
+        final Mqtt5UTF8StringImpl user = requireNonNull(Mqtt5UTF8StringImpl.from("user"));
+        final Mqtt5UTF8StringImpl property = requireNonNull(Mqtt5UTF8StringImpl.from("property"));
         final Mqtt5UserProperty mqtt5UserProperty = new Mqtt5UserProperty(user, property);
         final Mqtt5UserProperties userProperties = Mqtt5UserProperties.of(ImmutableList.of(mqtt5UserProperty));
 
-        final Mqtt5TopicFilter topicFiler = Mqtt5TopicFilter.from("topic/#");
+        final Mqtt5TopicFilterImpl topicFiler = Mqtt5TopicFilterImpl.from("topic/#");
         final Mqtt5QoS qos = Mqtt5QoS.AT_LEAST_ONCE;
         final boolean isNoLocal = true;
         final Mqtt5RetainHandling retainHandling = Mqtt5RetainHandling.SEND_IF_SUBSCRIPTION_DOES_NOT_EXIST;
@@ -100,13 +100,13 @@ class Mqtt5SubscribeEncoderTest {
                 0b0001_1101
         };
 
-        final Mqtt5UTF8String user = requireNonNull(Mqtt5UTF8String.from("user"));
-        final Mqtt5UTF8String property = requireNonNull(Mqtt5UTF8String.from("property"));
+        final Mqtt5UTF8StringImpl user = requireNonNull(Mqtt5UTF8StringImpl.from("user"));
+        final Mqtt5UTF8StringImpl property = requireNonNull(Mqtt5UTF8StringImpl.from("property"));
         final Mqtt5UserProperty mqtt5UserProperty = new Mqtt5UserProperty(user, property);
         final Mqtt5UserProperties userProperties =
                 Mqtt5UserProperties.of(ImmutableList.of(mqtt5UserProperty, mqtt5UserProperty));
 
-        final Mqtt5TopicFilter topicFiler = Mqtt5TopicFilter.from("topic/#");
+        final Mqtt5TopicFilterImpl topicFiler = Mqtt5TopicFilterImpl.from("topic/#");
         final Mqtt5QoS qos = Mqtt5QoS.AT_LEAST_ONCE;
         final boolean isNoLocal = true;
         final Mqtt5RetainHandling retainHandling = Mqtt5RetainHandling.SEND_IF_SUBSCRIPTION_DOES_NOT_EXIST;
@@ -139,12 +139,12 @@ class Mqtt5SubscribeEncoderTest {
                 0b0001_1101
         };
 
-        final Mqtt5UTF8String user = requireNonNull(Mqtt5UTF8String.from("user"));
-        final Mqtt5UTF8String property = requireNonNull(Mqtt5UTF8String.from("property"));
+        final Mqtt5UTF8StringImpl user = requireNonNull(Mqtt5UTF8StringImpl.from("user"));
+        final Mqtt5UTF8StringImpl property = requireNonNull(Mqtt5UTF8StringImpl.from("property"));
         final Mqtt5UserProperty mqtt5UserProperty = new Mqtt5UserProperty(user, property);
         final Mqtt5UserProperties userProperties = Mqtt5UserProperties.of(ImmutableList.of(mqtt5UserProperty));
 
-        final Mqtt5TopicFilter topicFiler = Mqtt5TopicFilter.from("topic/#");
+        final Mqtt5TopicFilterImpl topicFiler = Mqtt5TopicFilterImpl.from("topic/#");
         final Mqtt5QoS qos = Mqtt5QoS.AT_LEAST_ONCE;
         final boolean isNoLocal = true;
         final Mqtt5RetainHandling retainHandling = Mqtt5RetainHandling.SEND_IF_SUBSCRIPTION_DOES_NOT_EXIST;
@@ -177,7 +177,7 @@ class Mqtt5SubscribeEncoderTest {
                 0b0001_1101
         };
 
-        final Mqtt5TopicFilter topicFiler = Mqtt5TopicFilter.from("topic/#");
+        final Mqtt5TopicFilterImpl topicFiler = Mqtt5TopicFilterImpl.from("topic/#");
         final Mqtt5QoS qos = Mqtt5QoS.AT_LEAST_ONCE;
         final boolean isNoLocal = true;
         final Mqtt5RetainHandling retainHandling = Mqtt5RetainHandling.SEND_IF_SUBSCRIPTION_DOES_NOT_EXIST;
@@ -195,7 +195,7 @@ class Mqtt5SubscribeEncoderTest {
     @Test
     void encode_maximumPacketSizeExceeded_throwsEncoderException() {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
-        final Mqtt5TopicFilter topicFiler = maxPacket.getTopicFilterTooLong();
+        final Mqtt5TopicFilterImpl topicFiler = maxPacket.getTopicFilterTooLong();
         final Mqtt5QoS qos = Mqtt5QoS.AT_LEAST_ONCE;
         final boolean isNoLocal = true;
         final Mqtt5RetainHandling retainHandling = Mqtt5RetainHandling.SEND_IF_SUBSCRIPTION_DOES_NOT_EXIST;
@@ -218,7 +218,7 @@ class Mqtt5SubscribeEncoderTest {
     @Test
     void encode_propertyLengthExceedsMax_throwsEncoderException() {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
-        final Mqtt5TopicFilter topicFiler = Mqtt5TopicFilter.from("topic/#");
+        final Mqtt5TopicFilterImpl topicFiler = Mqtt5TopicFilterImpl.from("topic/#");
         final Mqtt5QoS qos = Mqtt5QoS.AT_LEAST_ONCE;
         final boolean isNoLocal = true;
         final Mqtt5RetainHandling retainHandling = Mqtt5RetainHandling.SEND_IF_SUBSCRIPTION_DOES_NOT_EXIST;
@@ -260,9 +260,8 @@ class Mqtt5SubscribeEncoderTest {
         private static final String TOPIC = "topic";
         private char[] topicStringBytes;
         private ImmutableList.Builder<Mqtt5UserProperty> userPropertiesBuilder;
-        final Mqtt5UserProperty userProperty = new Mqtt5UserProperty(
-                requireNonNull(Mqtt5UTF8String.from("user")),
-                requireNonNull(Mqtt5UTF8String.from("property")));
+        final Mqtt5UserProperty userProperty = new Mqtt5UserProperty(requireNonNull(Mqtt5UTF8StringImpl.from("user")),
+                requireNonNull(Mqtt5UTF8StringImpl.from("property")));
         final int userPropertyBytes = 1 // identifier
                 + 2 // key length
                 + 4 // bytes to encode "user"
@@ -295,8 +294,8 @@ class Mqtt5SubscribeEncoderTest {
             return Mqtt5UserProperties.of(userPropertiesBuilder.build());
         }
 
-        Mqtt5TopicFilter getTopicFilterTooLong() {
-            return requireNonNull(Mqtt5TopicFilter.from(TOPIC + new String(topicStringBytes) + "x"));
+        Mqtt5TopicFilterImpl getTopicFilterTooLong() {
+            return requireNonNull(Mqtt5TopicFilterImpl.from(TOPIC + new String(topicStringBytes) + "x"));
         }
 
         Mqtt5UserProperties getUserProperties(final int totalCount) {

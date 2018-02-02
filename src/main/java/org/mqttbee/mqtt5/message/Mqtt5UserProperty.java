@@ -21,21 +21,21 @@ public class Mqtt5UserProperty {
      */
     @Nullable
     public static Mqtt5UserProperty decode(@NotNull final ByteBuf in) {
-        final Mqtt5UTF8String name = Mqtt5UTF8String.from(in);
+        final Mqtt5UTF8StringImpl name = Mqtt5UTF8StringImpl.from(in);
         if (name == null) {
             return null;
         }
-        final Mqtt5UTF8String value = Mqtt5UTF8String.from(in);
+        final Mqtt5UTF8StringImpl value = Mqtt5UTF8StringImpl.from(in);
         if (value == null) {
             return null;
         }
         return new Mqtt5UserProperty(name, value);
     }
 
-    private final Mqtt5UTF8String name;
-    private final Mqtt5UTF8String value;
+    private final Mqtt5UTF8StringImpl name;
+    private final Mqtt5UTF8StringImpl value;
 
-    public Mqtt5UserProperty(@NotNull final Mqtt5UTF8String name, @NotNull final Mqtt5UTF8String value) {
+    public Mqtt5UserProperty(@NotNull final Mqtt5UTF8StringImpl name, @NotNull final Mqtt5UTF8StringImpl value) {
         this.name = name;
         this.value = value;
     }
@@ -44,7 +44,7 @@ public class Mqtt5UserProperty {
      * @return the name of this User Property.
      */
     @NotNull
-    public Mqtt5UTF8String getName() {
+    public Mqtt5UTF8StringImpl getName() {
         return name;
     }
 
@@ -52,7 +52,7 @@ public class Mqtt5UserProperty {
      * @return the value of this User Property.
      */
     @NotNull
-    public Mqtt5UTF8String getValue() {
+    public Mqtt5UTF8StringImpl getValue() {
         return value;
     }
 

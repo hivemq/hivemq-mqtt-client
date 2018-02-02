@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
-import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
+import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperties;
 import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 import org.mqttbee.mqtt5.message.pubrel.Mqtt5PubRelImpl;
@@ -56,7 +56,7 @@ class Mqtt5PubRelEncoderTest {
         };
 
         final Mqtt5PubRelReasonCode reasonCode = Mqtt5PubRelReasonCode.PACKET_IDENTIFIER_NOT_FOUND;
-        final Mqtt5UTF8String reasonString = null;
+        final Mqtt5UTF8StringImpl reasonString = null;
         final Mqtt5UserProperties userProperties = Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES;
         final Mqtt5PubRelImpl pubRel = new Mqtt5PubRelImpl(reasonCode, reasonString, userProperties);
 
@@ -125,7 +125,7 @@ class Mqtt5PubRelEncoderTest {
         };
 
         final Mqtt5PubRelReasonCode reasonCode = Mqtt5PubRelReasonCode.PACKET_IDENTIFIER_NOT_FOUND;
-        final Mqtt5UTF8String reasonString = Mqtt5UTF8String.from("reason");
+        final Mqtt5UTF8StringImpl reasonString = Mqtt5UTF8StringImpl.from("reason");
         final Mqtt5UserProperties userProperties = Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES;
         final Mqtt5PubRelImpl pubRel = new Mqtt5PubRelImpl(reasonCode, reasonString, userProperties);
 
@@ -153,8 +153,8 @@ class Mqtt5PubRelEncoderTest {
 
         final Mqtt5PubRelReasonCode reasonCode = Mqtt5PubRelReasonCode.PACKET_IDENTIFIER_NOT_FOUND;
         final Mqtt5UserProperties userProperties = Mqtt5UserProperties.of(ImmutableList
-                .of(new Mqtt5UserProperty(requireNonNull(Mqtt5UTF8String.from("key")),
-                        requireNonNull(Mqtt5UTF8String.from("value")))));
+                .of(new Mqtt5UserProperty(requireNonNull(Mqtt5UTF8StringImpl.from("key")),
+                        requireNonNull(Mqtt5UTF8StringImpl.from("value")))));
         final Mqtt5PubRelImpl pubRel = new Mqtt5PubRelImpl(reasonCode, null, userProperties);
 
         encode(expected, pubRel, 5);
@@ -208,8 +208,8 @@ class Mqtt5PubRelEncoderTest {
 
         private StringBuilder reasonStringBuilder;
         private ImmutableList.Builder<Mqtt5UserProperty> userPropertiesBuilder;
-        final Mqtt5UTF8String user = requireNonNull(Mqtt5UTF8String.from("user"));
-        final Mqtt5UTF8String property = requireNonNull(Mqtt5UTF8String.from("property"));
+        final Mqtt5UTF8StringImpl user = requireNonNull(Mqtt5UTF8StringImpl.from("user"));
+        final Mqtt5UTF8StringImpl property = requireNonNull(Mqtt5UTF8StringImpl.from("property"));
 
         MaximumPacketBuilder build() {
             final int maxPropertyLength = Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT - 1  // type, reserved
@@ -240,12 +240,12 @@ class Mqtt5PubRelEncoderTest {
             return this;
         }
 
-        Mqtt5UTF8String getMaxPaddedReasonString() {
+        Mqtt5UTF8StringImpl getMaxPaddedReasonString() {
             return getMaxPaddedReasonString("");
         }
 
-        Mqtt5UTF8String getMaxPaddedReasonString(final String withSuffix) {
-            return Mqtt5UTF8String.from(reasonStringBuilder.toString() + withSuffix);
+        Mqtt5UTF8StringImpl getMaxPaddedReasonString(final String withSuffix) {
+            return Mqtt5UTF8StringImpl.from(reasonStringBuilder.toString() + withSuffix);
         }
 
         Mqtt5UserProperties getMaxPossibleUserProperties() {
