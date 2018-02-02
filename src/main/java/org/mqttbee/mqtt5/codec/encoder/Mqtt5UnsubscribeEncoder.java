@@ -22,6 +22,7 @@ public class Mqtt5UnsubscribeEncoder implements Mqtt5MessageEncoder<Mqtt5Unsubsc
     public static final Mqtt5UnsubscribeEncoder INSTANCE = new Mqtt5UnsubscribeEncoder();
 
     private static final int FIXED_HEADER = (Mqtt5MessageType.UNSUBSCRIBE.getCode() << 4) | 0b0010;
+    private static final int VARIABLE_HEADER_FIXED_LENGTH = 2; // packet identifier
 
     @Override
     public void encode(
@@ -36,7 +37,7 @@ public class Mqtt5UnsubscribeEncoder implements Mqtt5MessageEncoder<Mqtt5Unsubsc
     public int encodedRemainingLength(@NotNull final Mqtt5UnsubscribeInternal unsubscribeInternal) {
         final Mqtt5UnsubscribeImpl unsubscribe = unsubscribeInternal.getUnsubscribe();
 
-        int remainingLength = 2;
+        int remainingLength = VARIABLE_HEADER_FIXED_LENGTH;
 
         final int propertyLength = unsubscribeInternal.encodedPropertyLength();
         remainingLength += Mqtt5DataTypes.encodedVariableByteIntegerLength(propertyLength) + propertyLength;
@@ -47,7 +48,7 @@ public class Mqtt5UnsubscribeEncoder implements Mqtt5MessageEncoder<Mqtt5Unsubsc
         }
 
         if (!Mqtt5DataTypes.isInVariableByteIntegerRange(remainingLength)) {
-            throw new Mqtt5VariableByteIntegerExceededException("remaining length");
+            throw new Mqtt5VariableByteIntegerExceededException("remaining length"); // TODO
         }
         return remainingLength;
     }
@@ -56,7 +57,7 @@ public class Mqtt5UnsubscribeEncoder implements Mqtt5MessageEncoder<Mqtt5Unsubsc
         final int propertyLength = unsubscribeInternal.getUnsubscribe().getRawUserProperties().encodedLength();
 
         if (!Mqtt5DataTypes.isInVariableByteIntegerRange(propertyLength)) {
-            throw new Mqtt5VariableByteIntegerExceededException("property length");
+            throw new Mqtt5VariableByteIntegerExceededException("property length"); // TODO
         }
         return propertyLength;
     }

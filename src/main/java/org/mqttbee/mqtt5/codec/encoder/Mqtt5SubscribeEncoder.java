@@ -12,7 +12,7 @@ import org.mqttbee.mqtt5.message.subscribe.Mqtt5SubscribeInternal;
 
 import javax.inject.Singleton;
 
-import static org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoderUtil.encodeVariableByteIntegerProperty;
+import static org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoderUtil.*;
 import static org.mqttbee.mqtt5.message.subscribe.Mqtt5SubscribeInternal.DEFAULT_NO_SUBSCRIPTION_IDENTIFIER;
 import static org.mqttbee.mqtt5.message.subscribe.Mqtt5SubscribeProperty.SUBSCRIPTION_IDENTIFIER;
 
@@ -25,6 +25,7 @@ public class Mqtt5SubscribeEncoder implements Mqtt5MessageEncoder<Mqtt5Subscribe
     public static final Mqtt5SubscribeEncoder INSTANCE = new Mqtt5SubscribeEncoder();
 
     private static final int FIXED_HEADER = (Mqtt5MessageType.SUBSCRIBE.getCode() << 4) | 0b0010;
+    private static final int VARIABLE_HEADER_FIXED_LENGTH = 2; // packet identifier
 
     @Override
     public void encode(
@@ -37,10 +38,9 @@ public class Mqtt5SubscribeEncoder implements Mqtt5MessageEncoder<Mqtt5Subscribe
     }
 
     public int encodedRemainingLength(@NotNull final Mqtt5SubscribeInternal subscribeInternal) {
-        int remainingLength = 2;
+        int remainingLength = VARIABLE_HEADER_FIXED_LENGTH;
 
-        final int propertyLength = subscribeInternal.encodedPropertyLength();
-        remainingLength += Mqtt5DataTypes.encodedVariableByteIntegerLength(propertyLength) + propertyLength;
+        remainingLength += encodedLengthWithHeader(subscribeInternal.encodedPropertyLength());
 
         final ImmutableList<Mqtt5SubscribeImpl.SubscriptionImpl> subscriptions =
                 subscribeInternal.getSubscribe().getSubscriptions();
@@ -49,7 +49,7 @@ public class Mqtt5SubscribeEncoder implements Mqtt5MessageEncoder<Mqtt5Subscribe
         }
 
         if (!Mqtt5DataTypes.isInVariableByteIntegerRange(remainingLength)) {
-            throw new Mqtt5VariableByteIntegerExceededException("remaining length");
+            throw new Mqtt5VariableByteIntegerExceededException("remaining length"); // TODO
         }
         return remainingLength;
     }
@@ -59,15 +59,12 @@ public class Mqtt5SubscribeEncoder implements Mqtt5MessageEncoder<Mqtt5Subscribe
 
         int propertyLength = 0;
 
-        final int subscriptionIdentifier = subscribeInternal.getSubscriptionIdentifier();
-        if (subscriptionIdentifier != DEFAULT_NO_SUBSCRIPTION_IDENTIFIER) {
-            propertyLength += 1 + Mqtt5DataTypes.encodedVariableByteIntegerLength(subscriptionIdentifier);
-        }
-
+        propertyLength += variableByteIntegerPropertyEncodedLength(subscribeInternal.getSubscriptionIdentifier(),
+                DEFAULT_NO_SUBSCRIPTION_IDENTIFIER);
         propertyLength += subscribe.getRawUserProperties().encodedLength();
 
         if (!Mqtt5DataTypes.isInVariableByteIntegerRange(propertyLength)) {
-            throw new Mqtt5VariableByteIntegerExceededException("property length");
+            throw new Mqtt5VariableByteIntegerExceededException("property length"); // TODO
         }
         return propertyLength;
     }

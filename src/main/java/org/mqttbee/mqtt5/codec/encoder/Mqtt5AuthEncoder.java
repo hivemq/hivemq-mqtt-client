@@ -4,16 +4,13 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
-import org.mqttbee.mqtt5.exceptions.Mqtt5BinaryDataExceededException;
 import org.mqttbee.mqtt5.exceptions.Mqtt5VariableByteIntegerExceededException;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
-import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.message.auth.Mqtt5AuthImpl;
 
 import javax.inject.Singleton;
 
-import static org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoderUtil.encodeProperty;
-import static org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoderUtil.encodePropertyNullable;
+import static org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoderUtil.*;
 import static org.mqttbee.mqtt5.message.auth.Mqtt5AuthProperty.*;
 
 /**
@@ -25,6 +22,7 @@ public class Mqtt5AuthEncoder implements Mqtt5MessageEncoder<Mqtt5AuthImpl> {
     public static final Mqtt5AuthEncoder INSTANCE = new Mqtt5AuthEncoder();
 
     private static final int FIXED_HEADER = Mqtt5MessageType.AUTH.getCode() << 4;
+    private static final int VARIABLE_HEADER_FIXED_LENGTH = 1; // reason code
 
     @Override
     public void encode(@NotNull final Mqtt5AuthImpl auth, @NotNull final Channel channel, @NotNull final ByteBuf out) {
@@ -33,13 +31,12 @@ public class Mqtt5AuthEncoder implements Mqtt5MessageEncoder<Mqtt5AuthImpl> {
     }
 
     public int encodedRemainingLength(@NotNull final Mqtt5AuthImpl auth) {
-        int remainingLength = 1;
+        int remainingLength = VARIABLE_HEADER_FIXED_LENGTH;
 
-        final int propertyLength = auth.encodedPropertyLength();
-        remainingLength += Mqtt5DataTypes.encodedVariableByteIntegerLength(propertyLength) + propertyLength;
+        remainingLength += encodedLengthWithHeader(auth.encodedPropertyLength());
 
         if (!Mqtt5DataTypes.isInVariableByteIntegerRange(remainingLength)) {
-            throw new Mqtt5VariableByteIntegerExceededException("remaining length");
+            throw new Mqtt5VariableByteIntegerExceededException("remaining length"); // TODO
         }
         return remainingLength;
     }
@@ -47,25 +44,13 @@ public class Mqtt5AuthEncoder implements Mqtt5MessageEncoder<Mqtt5AuthImpl> {
     public int encodedPropertyLength(@NotNull final Mqtt5AuthImpl auth) {
         int propertyLength = 0;
 
-        propertyLength += 1 + auth.getMethod().encodedLength();
-
-        final byte[] data = auth.getRawData();
-        if (data != null) {
-            if (!Mqtt5DataTypes.isInBinaryDataRange(data)) {
-                throw new Mqtt5BinaryDataExceededException("authentication data");
-            }
-            propertyLength += 1 + Mqtt5DataTypes.encodedBinaryDataLength(data);
-        }
-
-        final Mqtt5UTF8String reasonString = auth.getRawReasonString();
-        if (reasonString != null) {
-            propertyLength += 1 + reasonString.encodedLength();
-        }
-
+        propertyLength += propertyEncodedLength(auth.getMethod());
+        propertyLength += nullablePropertyEncodedLength(auth.getRawData());
+        propertyLength += nullablePropertyEncodedLength(auth.getRawReasonString());
         propertyLength += auth.getRawUserProperties().encodedLength();
 
         if (!Mqtt5DataTypes.isInVariableByteIntegerRange(propertyLength)) {
-            throw new Mqtt5VariableByteIntegerExceededException("property length");
+            throw new Mqtt5VariableByteIntegerExceededException("property length"); // TODO
         }
         return propertyLength;
     }
@@ -85,8 +70,8 @@ public class Mqtt5AuthEncoder implements Mqtt5MessageEncoder<Mqtt5AuthImpl> {
         Mqtt5DataTypes.encodeVariableByteInteger(propertyLength, out);
 
         encodeProperty(AUTHENTICATION_METHOD, auth.getMethod(), out);
-        encodePropertyNullable(AUTHENTICATION_DATA, auth.getRawData(), out);
-        encodePropertyNullable(REASON_STRING, auth.getRawReasonString(), out);
+        encodeNullableProperty(AUTHENTICATION_DATA, auth.getRawData(), out);
+        encodeNullableProperty(REASON_STRING, auth.getRawReasonString(), out);
         auth.getRawUserProperties().encode(out);
     }
 
