@@ -89,8 +89,7 @@ public class Mqtt5SubscribeEncoder implements Mqtt5MessageEncoder<Mqtt5Subscribe
     private void encodeProperties(@NotNull final Mqtt5SubscribeInternal subscribeInternal, @NotNull final ByteBuf out) {
         Mqtt5DataTypes.encodeVariableByteInteger(subscribeInternal.encodedPropertyLength(), out);
 
-        encodeVariableByteIntegerProperty(
-                SUBSCRIPTION_IDENTIFIER, subscribeInternal.getSubscriptionIdentifier(),
+        encodeVariableByteIntegerProperty(SUBSCRIPTION_IDENTIFIER, subscribeInternal.getSubscriptionIdentifier(),
                 DEFAULT_NO_SUBSCRIPTION_IDENTIFIER, out);
         subscribeInternal.getSubscribe().getRawUserProperties().encode(out);
     }

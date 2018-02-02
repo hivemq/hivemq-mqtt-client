@@ -102,9 +102,8 @@ public class Mqtt5DisconnectEncoder implements Mqtt5MessageEncoder<Mqtt5Disconne
 
         Mqtt5DataTypes.encodeVariableByteInteger(propertyLength, out);
 
-        encodeIntProperty(
-                SESSION_EXPIRY_INTERVAL, disconnect.getRawSessionExpiryInterval(), SESSION_EXPIRY_INTERVAL_FROM_CONNECT,
-                out);
+        encodeIntProperty(SESSION_EXPIRY_INTERVAL, disconnect.getRawSessionExpiryInterval(),
+                SESSION_EXPIRY_INTERVAL_FROM_CONNECT, out);
         Mqtt5MessageEncoderUtil.encodePropertyNullable(SERVER_REFERENCE, disconnect.getRawServerReference(), out);
         Mqtt5MessageEncoderUtil.encodePropertyNullable(REASON_STRING, disconnect.getRawReasonString(), out);
         disconnect.getRawUserProperties().encode(out);

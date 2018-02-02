@@ -41,8 +41,7 @@ public class Mqtt5ConnectImpl extends Mqtt5Message.Mqtt5MessageWithProperties im
             final long sessionExpiryInterval, final boolean isResponseInformationRequested,
             final boolean isProblemInformationRequested, @NotNull final RestrictionsImpl restrictions,
             @Nullable final SimpleAuthImpl simpleAuth, @Nullable final Mqtt5ExtendedAuthImpl extendedAuth,
-            @Nullable final Mqtt5WillPublishImpl willPublish,
-            @NotNull final Mqtt5UserProperties userProperties) {
+            @Nullable final Mqtt5WillPublishImpl willPublish, @NotNull final Mqtt5UserProperties userProperties) {
         this.clientIdentifier = clientIdentifier;
         this.keepAlive = keepAlive;
         this.isCleanStart = isCleanStart;

@@ -39,8 +39,7 @@ public class Mqtt5ConnAckImpl implements Mqtt5ConnAck, Mqtt5Message {
             @Nullable final Mqtt5ClientIdentifier assignedClientIdentifier,
             @Nullable final Mqtt5ExtendedAuth extendedAuth, @NotNull final RestrictionsImpl restrictions,
             @Nullable final Mqtt5UTF8String responseInformation, @Nullable final Mqtt5UTF8String serverReference,
-            @Nullable final Mqtt5UTF8String reasonString,
-            @NotNull final Mqtt5UserProperties userProperties) {
+            @Nullable final Mqtt5UTF8String reasonString, @NotNull final Mqtt5UserProperties userProperties) {
         this.reasonCode = reasonCode;
         this.isSessionPresent = isSessionPresent;
         this.sessionExpiryInterval = sessionExpiryInterval;

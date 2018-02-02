@@ -305,22 +305,21 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
             final int willPropertyLength = connect.encodedWillPropertyLength();
             Mqtt5DataTypes.encodeVariableByteInteger(willPropertyLength, out);
 
-            encodeIntProperty(
-                    Mqtt5WillPublishProperty.MESSAGE_EXPIRY_INTERVAL, willPublish.getRawMessageExpiryInterval(),
-                    Mqtt5WillPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, out);
+            encodeIntProperty(Mqtt5WillPublishProperty.MESSAGE_EXPIRY_INTERVAL,
+                    willPublish.getRawMessageExpiryInterval(), Mqtt5WillPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY,
+                    out);
             encodePropertyNullable(
                     Mqtt5WillPublishProperty.PAYLOAD_FORMAT_INDICATOR, willPublish.getRawPayloadFormatIndicator(), out);
             Mqtt5MessageEncoderUtil
-                    .encodePropertyNullable(
-                            Mqtt5WillPublishProperty.CONTENT_TYPE, willPublish.getRawContentType(), out);
+                    .encodePropertyNullable(Mqtt5WillPublishProperty.CONTENT_TYPE, willPublish.getRawContentType(),
+                            out);
             Mqtt5MessageEncoderUtil
                     .encodePropertyNullable(Mqtt5WillPublishProperty.RESPONSE_TOPIC, willPublish.getRawResponseTopic(),
                             out);
             Mqtt5MessageEncoderUtil.encodePropertyNullable(Mqtt5WillPublishProperty.CORRELATION_DATA,
                     willPublish.getRawCorrelationData(), out);
             willPublish.getRawUserProperties().encode(out);
-            encodeIntProperty(
-                    Mqtt5WillPublishProperty.WILL_DELAY_INTERVAL, willPublish.getDelayInterval(),
+            encodeIntProperty(Mqtt5WillPublishProperty.WILL_DELAY_INTERVAL, willPublish.getDelayInterval(),
                     Mqtt5WillPublish.DEFAULT_DELAY_INTERVAL, out);
 
             willPublish.getTopic().to(out);
