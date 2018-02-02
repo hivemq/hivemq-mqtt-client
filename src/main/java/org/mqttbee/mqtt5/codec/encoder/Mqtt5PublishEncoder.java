@@ -166,7 +166,7 @@ public class Mqtt5PublishEncoder implements Mqtt5MessageEncoder<Mqtt5PublishInte
         encodePropertyNullable(CORRELATION_DATA, publish.getRawCorrelationData(), out);
         publish.getRawUserProperties().encode(out);
 
-        encodeShortProperty(TOPIC_ALIAS, DEFAULT_NO_TOPIC_ALIAS, publishInternal.getTopicAlias(), out);
+        encodeShortProperty(TOPIC_ALIAS, publishInternal.getTopicAlias(), DEFAULT_NO_TOPIC_ALIAS, out);
 
         final ImmutableIntArray subscriptionIdentifiers = publishInternal.getSubscriptionIdentifiers();
         for (int i = 0; i < subscriptionIdentifiers.length(); i++) {
