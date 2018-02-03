@@ -10,6 +10,7 @@ import org.mqttbee.mqtt5.codec.encoder.Mqtt5AuthEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5Message;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
+import org.mqttbee.mqtt5.message.util.ByteBufUtil;
 
 import java.util.Optional;
 
@@ -49,8 +50,8 @@ public class Mqtt5AuthImpl extends Mqtt5Message.Mqtt5MessageWithProperties imple
 
     @NotNull
     @Override
-    public Optional<byte[]> getData() {
-        return Optional.ofNullable(data);
+    public Optional<ByteBuf> getData() {
+        return ByteBufUtil.optionalReadOnly(data);
     }
 
     @Nullable

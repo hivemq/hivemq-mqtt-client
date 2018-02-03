@@ -1,5 +1,6 @@
 package org.mqttbee.api.mqtt5.message;
 
+import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 
@@ -23,6 +24,6 @@ public interface Mqtt5ExtendedAuth {
      * @return the optional authentication/authorization data.
      */
     @NotNull
-    Optional<byte[]> getData();
+    Optional<ByteBuf> getData();
 
 }

@@ -12,6 +12,7 @@ import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 import org.mqttbee.mqtt5.message.auth.Mqtt5ExtendedAuthImpl;
 import org.mqttbee.mqtt5.message.publish.Mqtt5WillPublishImpl;
+import org.mqttbee.mqtt5.message.util.ByteBufUtil;
 
 import java.util.Optional;
 
@@ -186,8 +187,8 @@ public class Mqtt5ConnectImpl extends Mqtt5Message.Mqtt5MessageWithProperties im
 
         @NotNull
         @Override
-        public Optional<byte[]> getPassword() {
-            return Optional.ofNullable(password);
+        public Optional<ByteBuf> getPassword() {
+            return ByteBufUtil.optionalReadOnly(password);
         }
 
         @Nullable

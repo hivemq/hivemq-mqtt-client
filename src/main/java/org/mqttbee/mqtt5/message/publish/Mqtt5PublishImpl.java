@@ -1,5 +1,6 @@
 package org.mqttbee.mqtt5.message.publish;
 
+import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5Publish;
@@ -9,6 +10,7 @@ import org.mqttbee.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
+import org.mqttbee.mqtt5.message.util.ByteBufUtil;
 
 import java.util.Optional;
 
@@ -59,8 +61,8 @@ public class Mqtt5PublishImpl implements Mqtt5Publish {
 
     @NotNull
     @Override
-    public Optional<byte[]> getPayload() {
-        return Optional.ofNullable(payload);
+    public Optional<ByteBuf> getPayload() {
+        return ByteBufUtil.optionalReadOnly(payload);
     }
 
     @Nullable
@@ -125,8 +127,8 @@ public class Mqtt5PublishImpl implements Mqtt5Publish {
 
     @NotNull
     @Override
-    public Optional<byte[]> getCorrelationData() {
-        return Optional.ofNullable(correlationData);
+    public Optional<ByteBuf> getCorrelationData() {
+        return ByteBufUtil.optionalReadOnly(correlationData);
     }
 
     @Nullable
