@@ -61,7 +61,7 @@ public class Mqtt5SubscribeEncoder implements Mqtt5MessageEncoder<Mqtt5Subscribe
 
         propertyLength += variableByteIntegerPropertyEncodedLength(subscribeInternal.getSubscriptionIdentifier(),
                 DEFAULT_NO_SUBSCRIPTION_IDENTIFIER);
-        propertyLength += subscribe.getRawUserProperties().encodedLength();
+        propertyLength += subscribe.getUserProperties().encodedLength();
 
         if (!Mqtt5DataTypes.isInVariableByteIntegerRange(propertyLength)) {
             throw new Mqtt5VariableByteIntegerExceededException("property length"); // TODO
@@ -88,7 +88,7 @@ public class Mqtt5SubscribeEncoder implements Mqtt5MessageEncoder<Mqtt5Subscribe
 
         encodeVariableByteIntegerProperty(SUBSCRIPTION_IDENTIFIER, subscribeInternal.getSubscriptionIdentifier(),
                 DEFAULT_NO_SUBSCRIPTION_IDENTIFIER, out);
-        subscribeInternal.getSubscribe().getRawUserProperties().encode(out);
+        subscribeInternal.getSubscribe().getUserProperties().encode(out);
     }
 
     private void encodePayload(@NotNull final Mqtt5SubscribeInternal subscribeInternal, @NotNull final ByteBuf out) {

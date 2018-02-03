@@ -7,8 +7,8 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperties;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
+import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
+import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 import org.mqttbee.mqtt5.message.auth.Mqtt5AuthImpl;
 import org.mqttbee.mqtt5.message.auth.Mqtt5AuthProperty;
 import org.mqttbee.mqtt5.message.auth.Mqtt5AuthReasonCode;
@@ -59,7 +59,7 @@ public class Mqtt5AuthDecoder implements Mqtt5MessageDecoder {
         Mqtt5UTF8StringImpl method = null;
         byte[] data = null;
         Mqtt5UTF8StringImpl reasonString = null;
-        ImmutableList.Builder<Mqtt5UserProperty> userPropertiesBuilder = null;
+        ImmutableList.Builder<Mqtt5UserPropertyImpl> userPropertiesBuilder = null;
 
         while (in.isReadable()) {
 
@@ -110,7 +110,7 @@ public class Mqtt5AuthDecoder implements Mqtt5MessageDecoder {
             return null;
         }
 
-        final Mqtt5UserProperties userProperties = Mqtt5UserProperties.build(userPropertiesBuilder);
+        final Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.build(userPropertiesBuilder);
 
         return new Mqtt5AuthImpl(reasonCode, method, data, reasonString, userProperties);
     }

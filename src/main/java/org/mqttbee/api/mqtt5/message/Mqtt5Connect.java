@@ -1,9 +1,8 @@
 package org.mqttbee.api.mqtt5.message;
 
-import com.google.common.collect.ImmutableList;
+import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 
 import java.util.Optional;
 
@@ -12,6 +11,7 @@ import java.util.Optional;
  *
  * @author Silvio Giebl
  */
+@DoNotImplement
 public interface Mqtt5Connect {
 
     int NO_KEEP_ALIVE = 0;
@@ -83,7 +83,7 @@ public interface Mqtt5Connect {
      * @return the optional user properties of this CONNECT packet.
      */
     @NotNull
-    ImmutableList<Mqtt5UserProperty> getUserProperties();
+    Mqtt5UserProperties getUserProperties();
 
 
     /**

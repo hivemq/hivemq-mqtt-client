@@ -1,6 +1,5 @@
 package org.mqttbee.mqtt5.message.connack;
 
-import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
@@ -33,7 +32,7 @@ public class Mqtt5ConnAckImpl implements Mqtt5ConnAck, Mqtt5Message {
     private final Mqtt5UTF8StringImpl responseInformation;
     private final Mqtt5UTF8StringImpl serverReference;
     private final Mqtt5UTF8StringImpl reasonString;
-    private final Mqtt5UserProperties userProperties;
+    private final Mqtt5UserPropertiesImpl userProperties;
 
     public Mqtt5ConnAckImpl(
             @NotNull final Mqtt5ConnAckReasonCode reasonCode, final boolean isSessionPresent,
@@ -42,7 +41,7 @@ public class Mqtt5ConnAckImpl implements Mqtt5ConnAck, Mqtt5Message {
             @Nullable final Mqtt5ExtendedAuth extendedAuth, @NotNull final RestrictionsImpl restrictions,
             @Nullable final Mqtt5UTF8StringImpl responseInformation,
             @Nullable final Mqtt5UTF8StringImpl serverReference, @Nullable final Mqtt5UTF8StringImpl reasonString,
-            @NotNull final Mqtt5UserProperties userProperties) {
+            @NotNull final Mqtt5UserPropertiesImpl userProperties) {
         this.reasonCode = reasonCode;
         this.isSessionPresent = isSessionPresent;
         this.sessionExpiryInterval = sessionExpiryInterval;
@@ -118,8 +117,8 @@ public class Mqtt5ConnAckImpl implements Mqtt5ConnAck, Mqtt5Message {
 
     @NotNull
     @Override
-    public ImmutableList<Mqtt5UserProperty> getUserProperties() {
-        return userProperties.asList();
+    public Mqtt5UserPropertiesImpl getUserProperties() {
+        return userProperties;
     }
 
     @Override

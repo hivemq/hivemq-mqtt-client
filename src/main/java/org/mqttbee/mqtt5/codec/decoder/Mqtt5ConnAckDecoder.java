@@ -105,7 +105,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
         Mqtt5UTF8StringImpl responseInformation = null;
         Mqtt5UTF8StringImpl serverReference = null;
         Mqtt5UTF8StringImpl reasonString = null;
-        ImmutableList.Builder<Mqtt5UserProperty> userPropertiesBuilder = null;
+        ImmutableList.Builder<Mqtt5UserPropertyImpl> userPropertiesBuilder = null;
 
         boolean restrictionsPresent = false;
 
@@ -334,7 +334,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                     sharedSubscriptionAvailable);
         }
 
-        final Mqtt5UserProperties userProperties = Mqtt5UserProperties.build(userPropertiesBuilder);
+        final Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.build(userPropertiesBuilder);
 
         return new Mqtt5ConnAckImpl(reasonCode, sessionPresent, sessionExpiryInterval, serverKeepAlive,
                 assignedClientIdentifier, extendedAuth, restrictions, responseInformation, serverReference,

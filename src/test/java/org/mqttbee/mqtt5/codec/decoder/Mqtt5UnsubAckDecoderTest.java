@@ -9,7 +9,7 @@ import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
+import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.message.unsuback.Mqtt5UnsubAckImpl;
 import org.mqttbee.mqtt5.message.unsuback.Mqtt5UnsubAckInternal;
@@ -64,7 +64,7 @@ public class Mqtt5UnsubAckDecoderTest {
         assertTrue(reasonString.isPresent());
         assertEquals("reason", reasonString.get().toString());
 
-        final List<Mqtt5UserProperty> userProperties = unsuback.getUserProperties();
+        final List<Mqtt5UserPropertyImpl> userProperties = unsuback.getUserProperties().asList();
         assertEquals(1, userProperties.size());
         assertEquals("name", userProperties.get(0).getName().toString());
         assertEquals("value", userProperties.get(0).getValue().toString());
@@ -101,7 +101,7 @@ public class Mqtt5UnsubAckDecoderTest {
 
         assertFalse(unsuback.getReasonString().isPresent());
 
-        final List<Mqtt5UserProperty> userProperties = unsuback.getUserProperties();
+        final List<Mqtt5UserPropertyImpl> userProperties = unsuback.getUserProperties().asList();
         assertEquals(1, userProperties.size());
         assertEquals("name", userProperties.get(0).getName().toString());
         assertEquals("value", userProperties.get(0).getValue().toString());
@@ -143,7 +143,7 @@ public class Mqtt5UnsubAckDecoderTest {
         assertTrue(reasonString.isPresent());
         assertEquals("reason", reasonString.get().toString());
 
-        final List<Mqtt5UserProperty> userProperties = unsuback.getUserProperties().asList();
+        final List<Mqtt5UserPropertyImpl> userProperties = unsuback.getUserProperties().asList();
         assertEquals(3, userProperties.size());
         assertEquals("name", userProperties.get(0).getName().toString());
         assertEquals("value", userProperties.get(0).getValue().toString());
@@ -188,7 +188,7 @@ public class Mqtt5UnsubAckDecoderTest {
         assertTrue(reasonString.isPresent());
         assertEquals("reason", reasonString.get().toString());
 
-        final List<Mqtt5UserProperty> userProperties = unsuback.getUserProperties();
+        final List<Mqtt5UserPropertyImpl> userProperties = unsuback.getUserProperties().asList();
         assertEquals(1, userProperties.size());
         assertEquals("name", userProperties.get(0).getName().toString());
         assertEquals("value", userProperties.get(0).getValue().toString());

@@ -7,8 +7,8 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperties;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
+import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
+import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 import org.mqttbee.mqtt5.message.puback.Mqtt5PubAckImpl;
 import org.mqttbee.mqtt5.message.puback.Mqtt5PubAckInternal;
 import org.mqttbee.mqtt5.message.puback.Mqtt5PubAckProperty;
@@ -45,7 +45,7 @@ public class Mqtt5PubAckDecoder implements Mqtt5MessageDecoder {
 
         Mqtt5PubAckReasonCode reasonCode = DEFAULT_REASON_CODE;
         Mqtt5UTF8StringImpl reasonString = null;
-        ImmutableList.Builder<Mqtt5UserProperty> userPropertiesBuilder = null;
+        ImmutableList.Builder<Mqtt5UserPropertyImpl> userPropertiesBuilder = null;
 
         if (in.isReadable()) {
             reasonCode = Mqtt5PubAckReasonCode.fromCode(in.readUnsignedByte());
@@ -99,7 +99,7 @@ public class Mqtt5PubAckDecoder implements Mqtt5MessageDecoder {
             }
         }
 
-        final Mqtt5UserProperties userProperties = Mqtt5UserProperties.build(userPropertiesBuilder);
+        final Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.build(userPropertiesBuilder);
 
         final Mqtt5PubAckImpl pubAck = new Mqtt5PubAckImpl(reasonCode, reasonString, userProperties);
 

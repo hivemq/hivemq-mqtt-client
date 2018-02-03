@@ -1,8 +1,8 @@
 package org.mqttbee.api.mqtt5.message;
 
 import com.google.common.collect.ImmutableList;
+import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 import org.mqttbee.mqtt5.message.unsuback.Mqtt5UnsubAckReasonCode;
 
 import java.util.Optional;
@@ -12,6 +12,7 @@ import java.util.Optional;
  *
  * @author Silvio Giebl
  */
+@DoNotImplement
 public interface Mqtt5UnsubAck {
 
     /**
@@ -31,6 +32,6 @@ public interface Mqtt5UnsubAck {
      * @return the optional user properties of this UNSUBACK packet.
      */
     @NotNull
-    ImmutableList<Mqtt5UserProperty> getUserProperties();
+    Mqtt5UserProperties getUserProperties();
 
 }

@@ -11,14 +11,14 @@ import static org.junit.Assert.*;
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5UserPropertyTest {
+public class Mqtt5UserPropertyImplTest {
 
     @Test
     public void test_decode() throws Exception {
         final byte[] binary = {0, 4, 'n', 'a', 'm', 'e', 0, 5, 'v', 'a', 'l', 'u', 'e'};
         final ByteBuf byteBuf = Unpooled.buffer();
         byteBuf.writeBytes(binary);
-        final Mqtt5UserProperty userProperty = Mqtt5UserProperty.decode(byteBuf);
+        final Mqtt5UserPropertyImpl userProperty = Mqtt5UserPropertyImpl.decode(byteBuf);
         byteBuf.release();
         assertNotNull(userProperty);
         assertEquals("name", userProperty.getName().toString());
@@ -30,7 +30,7 @@ public class Mqtt5UserPropertyTest {
         final byte[] binary = {0, 4, 'n', 'a', 'm', 0, 5, 'v', 'a', 'l', 'u', 'e'};
         final ByteBuf byteBuf = Unpooled.buffer();
         byteBuf.writeBytes(binary);
-        final Mqtt5UserProperty userProperty = Mqtt5UserProperty.decode(byteBuf);
+        final Mqtt5UserPropertyImpl userProperty = Mqtt5UserPropertyImpl.decode(byteBuf);
         byteBuf.release();
         assertNull(userProperty);
     }
@@ -40,14 +40,14 @@ public class Mqtt5UserPropertyTest {
         final byte[] binary = {0, 4, 'n', 'a', 'm', 'e', 0, 5, 'v', 'a', 'l', 'u'};
         final ByteBuf byteBuf = Unpooled.buffer();
         byteBuf.writeBytes(binary);
-        final Mqtt5UserProperty userProperty = Mqtt5UserProperty.decode(byteBuf);
+        final Mqtt5UserPropertyImpl userProperty = Mqtt5UserPropertyImpl.decode(byteBuf);
         byteBuf.release();
         assertNull(userProperty);
     }
 
     @Test
     public void test_equals() {
-        EqualsVerifier.forClass(Mqtt5UserProperty.class).withNonnullFields("name", "value")
+        EqualsVerifier.forClass(Mqtt5UserPropertyImpl.class).withNonnullFields("name", "value")
                 .suppress(Warning.STRICT_INHERITANCE).verify();
     }
 

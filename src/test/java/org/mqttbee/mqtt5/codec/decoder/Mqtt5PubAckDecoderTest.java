@@ -12,7 +12,7 @@ import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5Disconnect;
 import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
+import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.message.puback.Mqtt5PubAckImpl;
 import org.mqttbee.mqtt5.message.puback.Mqtt5PubAckInternal;
@@ -81,7 +81,7 @@ class Mqtt5PubAckDecoderTest {
         assertTrue(pubAck.getReasonString().isPresent());
         assertEquals("success", pubAck.getReasonString().get().toString());
 
-        final ImmutableList<Mqtt5UserProperty> userProperties = pubAck.getUserProperties();
+        final ImmutableList<Mqtt5UserPropertyImpl> userProperties = pubAck.getUserProperties().asList();
         assertEquals(9, userProperties.size());
         for (int i = 0; i < 9; i++) {
             assertEquals("test" + i, userProperties.get(i).getName().toString());
@@ -112,7 +112,7 @@ class Mqtt5PubAckDecoderTest {
 
         assertEquals(Mqtt5PubAckReasonCode.SUCCESS, pubAck.getReasonCode());
         assertFalse(pubAck.getReasonString().isPresent());
-        assertEquals(0, pubAck.getUserProperties().size());
+        assertEquals(0, pubAck.getUserProperties().asList().size());
     }
 
     @Test
@@ -140,7 +140,7 @@ class Mqtt5PubAckDecoderTest {
 
         assertEquals(Mqtt5PubAckReasonCode.NO_MATCHING_SUBSCRIBERS, pubAck.getReasonCode());
         assertFalse(pubAck.getReasonString().isPresent());
-        assertEquals(0, pubAck.getUserProperties().size());
+        assertEquals(0, pubAck.getUserProperties().asList().size());
     }
 
     @ParameterizedTest
@@ -563,7 +563,7 @@ class Mqtt5PubAckDecoderTest {
         assertEquals(Mqtt5PubAckReasonCode.SUCCESS, pubAck.getReasonCode());
         assertFalse(pubAck.getReasonString().isPresent());
 
-        final ImmutableList<Mqtt5UserProperty> userProperties = pubAck.getUserProperties();
+        final ImmutableList<Mqtt5UserPropertyImpl> userProperties = pubAck.getUserProperties().asList();
         assertEquals(2, userProperties.size());
         assertEquals("test", userProperties.get(0).getName().toString());
         assertEquals("value", userProperties.get(0).getValue().toString());

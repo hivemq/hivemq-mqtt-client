@@ -6,7 +6,7 @@ import org.mqttbee.api.mqtt5.message.Mqtt5WillPublish;
 import org.mqttbee.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperties;
+import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 
 /**
  * @author Silvio Giebl
@@ -25,7 +25,7 @@ public class Mqtt5WillPublishImpl extends Mqtt5PublishImpl implements Mqtt5WillP
             final boolean isRetain, final long messageExpiryInterval,
             @Nullable final Mqtt5PayloadFormatIndicator payloadFormatIndicator,
             @Nullable final Mqtt5UTF8StringImpl contentType, @Nullable final Mqtt5TopicImpl responseTopic,
-            @Nullable final byte[] correlationData, @NotNull final Mqtt5UserProperties userProperties,
+            @Nullable final byte[] correlationData, @NotNull final Mqtt5UserPropertiesImpl userProperties,
             final long delay) {
 
         super(topic, payload, qos, isRetain, messageExpiryInterval, payloadFormatIndicator, contentType, responseTopic,

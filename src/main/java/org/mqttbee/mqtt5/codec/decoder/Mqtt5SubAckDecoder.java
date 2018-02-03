@@ -7,8 +7,8 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperties;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
+import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
+import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.message.suback.Mqtt5SubAckImpl;
 import org.mqttbee.mqtt5.message.suback.Mqtt5SubAckInternal;
@@ -54,7 +54,7 @@ public class Mqtt5SubAckDecoder implements Mqtt5MessageDecoder {
         }
 
         Mqtt5UTF8StringImpl reasonString = null;
-        ImmutableList.Builder<Mqtt5UserProperty> userPropertiesBuilder = null;
+        ImmutableList.Builder<Mqtt5UserPropertyImpl> userPropertiesBuilder = null;
 
         final int propertiesStartIndex = in.readerIndex();
         int readPropertyLength;
@@ -112,7 +112,7 @@ public class Mqtt5SubAckDecoder implements Mqtt5MessageDecoder {
         }
         final ImmutableList<Mqtt5SubAckReasonCode> reasonCodes = reasonCodesBuilder.build();
 
-        final Mqtt5UserProperties userProperties = Mqtt5UserProperties.build(userPropertiesBuilder);
+        final Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.build(userPropertiesBuilder);
 
         final Mqtt5SubAckImpl subAck = new Mqtt5SubAckImpl(reasonCodes, reasonString, userProperties);
 

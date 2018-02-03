@@ -54,7 +54,7 @@ public class Mqtt5UnsubscribeEncoder implements Mqtt5MessageEncoder<Mqtt5Unsubsc
     }
 
     public int encodedPropertyLength(@NotNull final Mqtt5UnsubscribeInternal unsubscribeInternal) {
-        final int propertyLength = unsubscribeInternal.getUnsubscribe().getRawUserProperties().encodedLength();
+        final int propertyLength = unsubscribeInternal.getUnsubscribe().getUserProperties().encodedLength();
 
         if (!Mqtt5DataTypes.isInVariableByteIntegerRange(propertyLength)) {
             throw new Mqtt5VariableByteIntegerExceededException("property length"); // TODO
@@ -80,7 +80,7 @@ public class Mqtt5UnsubscribeEncoder implements Mqtt5MessageEncoder<Mqtt5Unsubsc
             @NotNull final Mqtt5UnsubscribeInternal unsubscribeInternal, @NotNull final ByteBuf out) {
 
         Mqtt5DataTypes.encodeVariableByteInteger(unsubscribeInternal.encodedPropertyLength(), out);
-        unsubscribeInternal.getUnsubscribe().getRawUserProperties().encode(out);
+        unsubscribeInternal.getUnsubscribe().getUserProperties().encode(out);
     }
 
     private void encodePayload(

@@ -15,7 +15,7 @@ import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
+import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl;
@@ -111,7 +111,7 @@ public class Mqtt5PublishDecoderTest {
         assertArrayEquals(new byte[]{5, 4, 3, 2, 1}, publish.getCorrelationData().get());
         assertEquals(Mqtt5Publish.TopicAliasUsage.HAS, publish.getTopicAliasUsage());
 
-        final ImmutableList<Mqtt5UserProperty> userProperties = publish.getUserProperties();
+        final ImmutableList<Mqtt5UserPropertyImpl> userProperties = publish.getUserProperties().asList();
         assertEquals(1, userProperties.size());
         assertEquals("test", userProperties.get(0).getName().toString());
         assertEquals("value", userProperties.get(0).getValue().toString());
@@ -496,7 +496,7 @@ public class Mqtt5PublishDecoderTest {
 
         };
         final Mqtt5PublishImpl publish = decode(encoded);
-        final ImmutableList<Mqtt5UserProperty> userProperties = publish.getUserProperties();
+        final ImmutableList<Mqtt5UserPropertyImpl> userProperties = publish.getUserProperties().asList();
         assertEquals(1, userProperties.size());
         assertEquals("test", userProperties.get(0).getName().toString());
         assertEquals("value", userProperties.get(0).getValue().toString());

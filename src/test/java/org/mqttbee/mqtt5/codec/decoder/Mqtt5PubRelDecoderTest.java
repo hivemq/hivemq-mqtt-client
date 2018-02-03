@@ -15,9 +15,10 @@ import org.mqttbee.api.mqtt5.message.Mqtt5PubRel;
 import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
+import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.message.pubrec.Mqtt5PubRecInternal;
+import org.mqttbee.mqtt5.message.pubrel.Mqtt5PubRelImpl;
 import org.mqttbee.mqtt5.message.pubrel.Mqtt5PubRelInternal;
 import org.mqttbee.mqtt5.message.pubrel.Mqtt5PubRelReasonCode;
 
@@ -65,13 +66,13 @@ class Mqtt5PubRelDecoderTest {
                 0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e', '2',
         };
 
-        final Mqtt5PubRel pubRel = decode(encoded);
+        final Mqtt5PubRelImpl pubRel = decode(encoded);
 
         assertEquals(SUCCESS, pubRel.getReasonCode());
         assertTrue(pubRel.getReasonString().isPresent());
         assertEquals("success", pubRel.getReasonString().get().toString());
 
-        final ImmutableList<Mqtt5UserProperty> userProperties = pubRel.getUserProperties();
+        final ImmutableList<Mqtt5UserPropertyImpl> userProperties = pubRel.getUserProperties().asList();
         assertEquals(2, userProperties.size());
         assertEquals("test", userProperties.get(0).getName().toString());
         assertEquals("value", userProperties.get(0).getValue().toString());
@@ -139,8 +140,8 @@ class Mqtt5PubRelDecoderTest {
                 0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e', '2'
         };
 
-        final Mqtt5PubRel pubRel = decode(encoded);
-        final ImmutableList<Mqtt5UserProperty> userProperties = pubRel.getUserProperties();
+        final Mqtt5PubRelImpl pubRel = decode(encoded);
+        final ImmutableList<Mqtt5UserPropertyImpl> userProperties = pubRel.getUserProperties().asList();
         assertEquals(2, userProperties.size());
         assertEquals("test", userProperties.get(0).getName().toString());
         assertEquals("value", userProperties.get(0).getValue().toString());
@@ -350,7 +351,7 @@ class Mqtt5PubRelDecoderTest {
     }
 
     @NotNull
-    private Mqtt5PubRel decode(final byte[] encode) {
+    private Mqtt5PubRelImpl decode(final byte[] encode) {
         final Mqtt5PubRelInternal pubRelInternal = decodeInternal(encode);
         assertNotNull(pubRelInternal);
         return pubRelInternal.getPubRel();

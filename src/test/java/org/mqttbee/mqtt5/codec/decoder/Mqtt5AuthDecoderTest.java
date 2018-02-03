@@ -13,7 +13,8 @@ import org.mqttbee.api.mqtt5.message.Mqtt5Auth;
 import org.mqttbee.api.mqtt5.message.Mqtt5Disconnect;
 import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
+import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
+import org.mqttbee.mqtt5.message.auth.Mqtt5AuthImpl;
 import org.mqttbee.mqtt5.message.auth.Mqtt5AuthReasonCode;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 
@@ -65,7 +66,7 @@ class Mqtt5AuthDecoderTest {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
-        final Mqtt5Auth auth = channel.readInbound();
+        final Mqtt5AuthImpl auth = channel.readInbound();
 
         assertNotNull(auth);
 
@@ -79,7 +80,7 @@ class Mqtt5AuthDecoderTest {
         assertTrue(auth.getReasonString().isPresent());
         assertEquals("continue", auth.getReasonString().get().toString());
 
-        final ImmutableList<Mqtt5UserProperty> userProperties = auth.getUserProperties();
+        final ImmutableList<Mqtt5UserPropertyImpl> userProperties = auth.getUserProperties().asList();
         assertEquals(3, userProperties.size());
         assertEquals("test", userProperties.get(0).getName().toString());
         assertEquals("value", userProperties.get(0).getValue().toString());
@@ -109,7 +110,7 @@ class Mqtt5AuthDecoderTest {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
-        final Mqtt5Auth auth = channel.readInbound();
+        final Mqtt5AuthImpl auth = channel.readInbound();
 
         assertNotNull(auth);
 
@@ -118,7 +119,7 @@ class Mqtt5AuthDecoderTest {
         assertFalse(auth.getData().isPresent());
         assertFalse(auth.getReasonString().isPresent());
 
-        final ImmutableList<Mqtt5UserProperty> userProperties = auth.getUserProperties();
+        final ImmutableList<Mqtt5UserPropertyImpl> userProperties = auth.getUserProperties().asList();
         assertEquals(0, userProperties.size());
     }
 
@@ -606,10 +607,10 @@ class Mqtt5AuthDecoderTest {
         byteBuf.writeBytes(new byte[]{0x26, 0, 5, 't', 'e', 's', 't', '2', 0, 5, 'v', 'a', 'l', 'u', 'e'});
 
         channel.writeInbound(byteBuf);
-        final Mqtt5Auth auth = channel.readInbound();
+        final Mqtt5AuthImpl auth = channel.readInbound();
         assertNotNull(auth);
 
-        final ImmutableList<Mqtt5UserProperty> userProperties = auth.getUserProperties();
+        final ImmutableList<Mqtt5UserPropertyImpl> userProperties = auth.getUserProperties().asList();
         assertEquals(3, userProperties.size());
         assertEquals("test", userProperties.get(0).getName().toString());
         assertEquals("value", userProperties.get(0).getValue().toString());

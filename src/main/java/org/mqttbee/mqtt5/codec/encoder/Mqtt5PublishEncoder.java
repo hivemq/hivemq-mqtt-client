@@ -77,7 +77,7 @@ public class Mqtt5PublishEncoder implements Mqtt5MessageEncoder<Mqtt5PublishInte
         propertyLength += nullablePropertyEncodedLength(publish.getRawContentType());
         propertyLength += nullablePropertyEncodedLength(publish.getRawResponseTopic());
         propertyLength += nullablePropertyEncodedLength(publish.getRawCorrelationData());
-        propertyLength += publish.getRawUserProperties().encodedLength();
+        propertyLength += publish.getUserProperties().encodedLength();
 
         propertyLength += shortPropertyEncodedLength(publishInternal.getTopicAlias(), DEFAULT_NO_TOPIC_ALIAS);
 
@@ -137,7 +137,7 @@ public class Mqtt5PublishEncoder implements Mqtt5MessageEncoder<Mqtt5PublishInte
         encodeNullableProperty(CONTENT_TYPE, publish.getRawContentType(), out);
         encodeNullableProperty(RESPONSE_TOPIC, publish.getRawResponseTopic(), out);
         encodeNullableProperty(CORRELATION_DATA, publish.getRawCorrelationData(), out);
-        publish.getRawUserProperties().encode(out);
+        publish.getUserProperties().encode(out);
 
         encodeShortProperty(TOPIC_ALIAS, publishInternal.getTopicAlias(), DEFAULT_NO_TOPIC_ALIAS, out);
 

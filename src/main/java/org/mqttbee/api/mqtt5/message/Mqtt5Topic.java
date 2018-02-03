@@ -1,6 +1,8 @@
 package org.mqttbee.api.mqtt5.message;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
 
@@ -12,6 +14,7 @@ import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
  *
  * @author Silvio Giebl
  */
+@DoNotImplement
 public interface Mqtt5Topic extends Mqtt5UTF8String {
 
     /**
@@ -28,6 +31,8 @@ public interface Mqtt5Topic extends Mqtt5UTF8String {
      */
     @NotNull
     static Mqtt5Topic from(@NotNull final String string) {
+        Preconditions.checkNotNull(string);
+
         final Mqtt5Topic topic = Mqtt5TopicImpl.from(string);
         if (topic == null) {
             throw new IllegalArgumentException("The string: [" + string + "] is not a valid Topic Name.");

@@ -2,6 +2,7 @@ package org.mqttbee.mqtt5.message;
 
 import com.google.common.base.Utf8;
 import io.netty.buffer.ByteBuf;
+import org.mqttbee.annotations.MustNotBeImplementedException;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
@@ -47,6 +48,20 @@ public class Mqtt5UTF8StringImpl implements Mqtt5UTF8String {
      */
     @NotNull
     public static final Mqtt5UTF8StringImpl PROTOCOL_NAME = new Mqtt5UTF8StringImpl(encode("MQTT"));
+
+    /**
+     * Checks if the given UTF-8 encoded String is instance of this implementation.
+     *
+     * @param utf8String the UTF-8 encoded String.
+     * @return the casted UTF-8 encoded String.
+     * @throws MustNotBeImplementedException if the UTF-8 encoded String is not instance of this implementation.
+     */
+    public static Mqtt5UTF8StringImpl checkNotImplemented(@NotNull final Mqtt5UTF8String utf8String) {
+        if (utf8String instanceof Mqtt5UTF8StringImpl) {
+            return (Mqtt5UTF8StringImpl) utf8String;
+        }
+        throw new MustNotBeImplementedException(Mqtt5UTF8String.class);
+    }
 
     /**
      * Validates and decodes a UTF-8 encoded String from the given byte array.

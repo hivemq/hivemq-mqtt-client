@@ -90,7 +90,7 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
         Mqtt5UTF8StringImpl contentType = null;
         Mqtt5TopicImpl responseTopic = null;
         byte[] correlationData = null;
-        ImmutableList.Builder<Mqtt5UserProperty> userPropertiesBuilder = null;
+        ImmutableList.Builder<Mqtt5UserPropertyImpl> userPropertiesBuilder = null;
         int topicAlias = DEFAULT_NO_TOPIC_ALIAS;
         TopicAliasUsage topicAliasUsage = TopicAliasUsage.HAS_NOT;
         ImmutableIntArray.Builder subscriptionIdentifiersBuilder = null;
@@ -245,7 +245,7 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
             }
         }
 
-        final Mqtt5UserProperties userProperties = Mqtt5UserProperties.build(userPropertiesBuilder);
+        final Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.build(userPropertiesBuilder);
 
         final Mqtt5PublishImpl publish =
                 new Mqtt5PublishImpl(topic, payload, qos, retain, messageExpiryInterval, payloadFormatIndicator,

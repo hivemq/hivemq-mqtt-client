@@ -15,7 +15,7 @@ import org.mqttbee.api.mqtt5.message.Mqtt5ExtendedAuth;
 import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5QoS;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
+import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckImpl;
 import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckReasonCode;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
@@ -95,7 +95,7 @@ class Mqtt5ConnAckDecoderTest {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
-        final Mqtt5ConnAck connAck = channel.readInbound();
+        final Mqtt5ConnAckImpl connAck = channel.readInbound();
 
         assertNotNull(connAck);
 
@@ -114,7 +114,7 @@ class Mqtt5ConnAckDecoderTest {
         assertTrue(connAck.getServerReference().isPresent());
         assertEquals("server", connAck.getServerReference().get().toString());
 
-        final ImmutableList<Mqtt5UserProperty> userProperties = connAck.getUserProperties();
+        final ImmutableList<Mqtt5UserPropertyImpl> userProperties = connAck.getUserProperties().asList();
         assertEquals(3, userProperties.size());
         assertEquals("test", userProperties.get(0).getName().toString());
         assertEquals("value", userProperties.get(0).getValue().toString());
@@ -157,7 +157,7 @@ class Mqtt5ConnAckDecoderTest {
         byteBuf.writeByte(0);
 
         channel.writeInbound(byteBuf);
-        final Mqtt5ConnAck connAck = channel.readInbound();
+        final Mqtt5ConnAckImpl connAck = channel.readInbound();
 
         assertNotNull(connAck);
 
@@ -170,7 +170,7 @@ class Mqtt5ConnAckDecoderTest {
         assertFalse(connAck.getResponseInformation().isPresent());
         assertFalse(connAck.getServerReference().isPresent());
 
-        final ImmutableList<Mqtt5UserProperty> userProperties = connAck.getUserProperties();
+        final ImmutableList<Mqtt5UserPropertyImpl> userProperties = connAck.getUserProperties().asList();
         assertEquals(0, userProperties.size());
 
         assertEquals(Mqtt5ConnAckImpl.RestrictionsImpl.DEFAULT, connAck.getRestrictions());
@@ -1252,10 +1252,10 @@ class Mqtt5ConnAckDecoderTest {
         byteBuf.writeBytes(new byte[]{0x26, 0, 5, 't', 'e', 's', 't', '2', 0, 5, 'v', 'a', 'l', 'u', 'e'});
 
         channel.writeInbound(byteBuf);
-        final Mqtt5ConnAck connAck = channel.readInbound();
+        final Mqtt5ConnAckImpl connAck = channel.readInbound();
         assertNotNull(connAck);
 
-        final ImmutableList<Mqtt5UserProperty> userProperties = connAck.getUserProperties();
+        final ImmutableList<Mqtt5UserPropertyImpl> userProperties = connAck.getUserProperties().asList();
         assertEquals(3, userProperties.size());
         assertEquals("test", userProperties.get(0).getName().toString());
         assertEquals("value", userProperties.get(0).getValue().toString());

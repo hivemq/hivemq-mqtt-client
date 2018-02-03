@@ -1,6 +1,5 @@
 package org.mqttbee.mqtt5.message.disconnect;
 
-import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
@@ -10,8 +9,7 @@ import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5DisconnectEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5Message;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperties;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
+import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 
 import java.util.Optional;
 
@@ -28,12 +26,12 @@ public class Mqtt5DisconnectImpl extends Mqtt5Message.Mqtt5MessageWithProperties
     private final long sessionExpiryInterval;
     private final Mqtt5UTF8StringImpl serverReference;
     private final Mqtt5UTF8StringImpl reasonString;
-    private final Mqtt5UserProperties userProperties;
+    private final Mqtt5UserPropertiesImpl userProperties;
 
     public Mqtt5DisconnectImpl(
             @NotNull final Mqtt5DisconnectReasonCode reasonCode, final long sessionExpiryInterval,
             @Nullable final Mqtt5UTF8StringImpl serverReference, @Nullable final Mqtt5UTF8StringImpl reasonString,
-            @NotNull final Mqtt5UserProperties userProperties) {
+            @NotNull final Mqtt5UserPropertiesImpl userProperties) {
         this.reasonCode = reasonCode;
         this.sessionExpiryInterval = sessionExpiryInterval;
         this.serverReference = serverReference;
@@ -82,12 +80,7 @@ public class Mqtt5DisconnectImpl extends Mqtt5Message.Mqtt5MessageWithProperties
 
     @NotNull
     @Override
-    public ImmutableList<Mqtt5UserProperty> getUserProperties() {
-        return userProperties.asList();
-    }
-
-    @NotNull
-    public Mqtt5UserProperties getRawUserProperties() {
+    public Mqtt5UserPropertiesImpl getUserProperties() {
         return userProperties;
     }
 
