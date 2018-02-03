@@ -60,7 +60,7 @@ public class Mqtt5DisconnectEncoder implements Mqtt5MessageEncoder<Mqtt5Disconne
                 SESSION_EXPIRY_INTERVAL_FROM_CONNECT);
         propertyLength += nullablePropertyEncodedLength(disconnect.getRawServerReference());
         propertyLength += nullablePropertyEncodedLength(disconnect.getRawReasonString());
-        propertyLength += disconnect.getRawUserProperties().encodedLength();
+        propertyLength += disconnect.getUserProperties().encodedLength();
 
         if (!Mqtt5DataTypes.isInVariableByteIntegerRange(propertyLength)) {
             throw new Mqtt5VariableByteIntegerExceededException("property length"); // TODO
@@ -95,7 +95,7 @@ public class Mqtt5DisconnectEncoder implements Mqtt5MessageEncoder<Mqtt5Disconne
                 SESSION_EXPIRY_INTERVAL_FROM_CONNECT, out);
         encodeNullableProperty(SERVER_REFERENCE, disconnect.getRawServerReference(), out);
         encodeNullableProperty(REASON_STRING, disconnect.getRawReasonString(), out);
-        disconnect.getRawUserProperties().encode(out);
+        disconnect.getUserProperties().encode(out);
     }
 
 }

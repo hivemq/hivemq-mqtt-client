@@ -1,13 +1,11 @@
 package org.mqttbee.mqtt5.message.pubrec;
 
-import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5PubRec;
 import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperties;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
+import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 
 import java.util.Optional;
 
@@ -21,11 +19,11 @@ public class Mqtt5PubRecImpl implements Mqtt5PubRec {
 
     private final Mqtt5PubRecReasonCode reasonCode;
     private final Mqtt5UTF8StringImpl reasonString;
-    private final Mqtt5UserProperties userProperties;
+    private final Mqtt5UserPropertiesImpl userProperties;
 
     public Mqtt5PubRecImpl(
             @NotNull final Mqtt5PubRecReasonCode reasonCode, @Nullable final Mqtt5UTF8StringImpl reasonString,
-            @NotNull final Mqtt5UserProperties userProperties) {
+            @NotNull final Mqtt5UserPropertiesImpl userProperties) {
         this.reasonCode = reasonCode;
         this.reasonString = reasonString;
         this.userProperties = userProperties;
@@ -50,12 +48,7 @@ public class Mqtt5PubRecImpl implements Mqtt5PubRec {
 
     @NotNull
     @Override
-    public ImmutableList<Mqtt5UserProperty> getUserProperties() {
-        return userProperties.asList();
-    }
-
-    @NotNull
-    public Mqtt5UserProperties getRawUserProperties() {
+    public Mqtt5UserPropertiesImpl getUserProperties() {
         return userProperties;
     }
 

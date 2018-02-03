@@ -13,8 +13,9 @@ import org.mqttbee.api.mqtt5.message.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt5.message.Mqtt5PubComp;
 import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
+import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
+import org.mqttbee.mqtt5.message.pubcomp.Mqtt5PubCompImpl;
 import org.mqttbee.mqtt5.message.pubcomp.Mqtt5PubCompInternal;
 import org.mqttbee.mqtt5.message.pubcomp.Mqtt5PubCompReasonCode;
 
@@ -75,13 +76,13 @@ class Mqtt5PubCompDecoderTest {
 
         assertEquals(5, pubCompInternal.getPacketIdentifier());
 
-        final Mqtt5PubComp pubComp = pubCompInternal.getPubComp();
+        final Mqtt5PubCompImpl pubComp = pubCompInternal.getPubComp();
 
         assertEquals(Mqtt5PubCompReasonCode.SUCCESS, pubComp.getReasonCode());
         assertTrue(pubComp.getReasonString().isPresent());
         assertEquals("success", pubComp.getReasonString().get().toString());
 
-        final ImmutableList<Mqtt5UserProperty> userProperties = pubComp.getUserProperties();
+        final ImmutableList<Mqtt5UserPropertyImpl> userProperties = pubComp.getUserProperties().asList();
         assertEquals(9, userProperties.size());
         for (int i = 0; i < 9; i++) {
             assertEquals("test" + i, userProperties.get(i).getName().toString());
@@ -112,7 +113,7 @@ class Mqtt5PubCompDecoderTest {
 
         assertEquals(Mqtt5PubCompReasonCode.SUCCESS, pubComp.getReasonCode());
         assertFalse(pubComp.getReasonString().isPresent());
-        assertEquals(0, pubComp.getUserProperties().size());
+        assertEquals(0, pubComp.getUserProperties().asList().size());
     }
 
     @Test
@@ -140,7 +141,7 @@ class Mqtt5PubCompDecoderTest {
 
         assertEquals(Mqtt5PubCompReasonCode.PACKET_IDENTIFIER_NOT_FOUND, pubComp.getReasonCode());
         assertFalse(pubComp.getReasonString().isPresent());
-        assertEquals(0, pubComp.getUserProperties().size());
+        assertEquals(0, pubComp.getUserProperties().asList().size());
     }
 
     @ParameterizedTest
@@ -558,12 +559,12 @@ class Mqtt5PubCompDecoderTest {
 
         assertEquals(5, pubCompInternal.getPacketIdentifier());
 
-        final Mqtt5PubComp pubComp = pubCompInternal.getPubComp();
+        final Mqtt5PubCompImpl pubComp = pubCompInternal.getPubComp();
 
         assertEquals(Mqtt5PubCompReasonCode.SUCCESS, pubComp.getReasonCode());
         assertFalse(pubComp.getReasonString().isPresent());
 
-        final ImmutableList<Mqtt5UserProperty> userProperties = pubComp.getUserProperties();
+        final ImmutableList<Mqtt5UserPropertyImpl> userProperties = pubComp.getUserProperties().asList();
         assertEquals(2, userProperties.size());
         assertEquals("test", userProperties.get(0).getName().toString());
         assertEquals("value", userProperties.get(0).getValue().toString());

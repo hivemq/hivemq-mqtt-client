@@ -11,8 +11,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperties;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
+import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
+import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 import org.mqttbee.mqtt5.message.auth.Mqtt5AuthImpl;
 import org.mqttbee.mqtt5.message.auth.Mqtt5AuthReasonCode;
 
@@ -77,9 +77,9 @@ class Mqtt5AuthEncoderTest {
         final Mqtt5UTF8StringImpl test2 = requireNonNull(Mqtt5UTF8StringImpl.from("test2"));
         final Mqtt5UTF8StringImpl value = requireNonNull(Mqtt5UTF8StringImpl.from("value"));
         final Mqtt5UTF8StringImpl value2 = requireNonNull(Mqtt5UTF8StringImpl.from("value2"));
-        final Mqtt5UserProperties userProperties = Mqtt5UserProperties.of(ImmutableList
-                .of(new Mqtt5UserProperty(test, value), new Mqtt5UserProperty(test, value2),
-                        new Mqtt5UserProperty(test2, value)));
+        final Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.of(ImmutableList
+                .of(new Mqtt5UserPropertyImpl(test, value), new Mqtt5UserPropertyImpl(test, value2),
+                        new Mqtt5UserPropertyImpl(test2, value)));
 
         final Mqtt5UTF8StringImpl method = requireNonNull(Mqtt5UTF8StringImpl.from("GS2-KRB5"));
         final Mqtt5AuthImpl auth =
@@ -107,7 +107,7 @@ class Mqtt5AuthEncoderTest {
 
         final Mqtt5UTF8StringImpl method = requireNonNull(Mqtt5UTF8StringImpl.from(""));
         final Mqtt5AuthImpl auth = new Mqtt5AuthImpl(Mqtt5AuthReasonCode.SUCCESS, method, null, null,
-                Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
+                Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES);
         encode(expected, auth);
     }
 
@@ -130,7 +130,7 @@ class Mqtt5AuthEncoderTest {
 
         final Mqtt5UTF8StringImpl method = requireNonNull(Mqtt5UTF8StringImpl.from("x"));
         final Mqtt5AuthImpl auth = new Mqtt5AuthImpl(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, method, null, null,
-                Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
+                Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES);
         encode(expected, auth);
     }
 
@@ -156,7 +156,7 @@ class Mqtt5AuthEncoderTest {
         expected[2] = (byte) reasonCode.getCode();
         final Mqtt5UTF8StringImpl method = requireNonNull(Mqtt5UTF8StringImpl.from("x"));
         final Mqtt5AuthImpl auth =
-                new Mqtt5AuthImpl(reasonCode, method, null, null, Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
+                new Mqtt5AuthImpl(reasonCode, method, null, null, Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES);
         encode(expected, auth);
     }
 
@@ -182,7 +182,7 @@ class Mqtt5AuthEncoderTest {
         final byte[] data = new byte[]{1};
         final Mqtt5UTF8StringImpl method = requireNonNull(Mqtt5UTF8StringImpl.from("x"));
         final Mqtt5AuthImpl auth = new Mqtt5AuthImpl(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, method, data, null,
-                Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
+                Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES);
         encode(expected, auth);
     }
 
@@ -191,7 +191,7 @@ class Mqtt5AuthEncoderTest {
         final byte[] data = new byte[65536];
         final Mqtt5UTF8StringImpl method = requireNonNull(Mqtt5UTF8StringImpl.from("x"));
         final Mqtt5AuthImpl auth = new Mqtt5AuthImpl(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, method, data, null,
-                Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
+                Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES);
         encodeNok(auth, EncoderException.class, "binary data size exceeded for authentication data");
     }
 
@@ -218,7 +218,7 @@ class Mqtt5AuthEncoderTest {
         final Mqtt5UTF8StringImpl method = requireNonNull(Mqtt5UTF8StringImpl.from("x"));
         final Mqtt5AuthImpl auth =
                 new Mqtt5AuthImpl(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, method, null, reasonString,
-                        Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
+                        Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES);
         encode(expected, auth);
     }
 
@@ -246,7 +246,7 @@ class Mqtt5AuthEncoderTest {
         final Mqtt5UTF8StringImpl method = requireNonNull(Mqtt5UTF8StringImpl.from("x"));
         final Mqtt5AuthImpl auth =
                 new Mqtt5AuthImpl(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, method, null, reasonString,
-                        Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
+                        Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES);
         encode(expected, auth);
     }
 
@@ -264,7 +264,7 @@ class Mqtt5AuthEncoderTest {
     void encode_propertyLengthExceedsMax_throwsEncoderException() {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder();
         final Mqtt5UTF8StringImpl method = requireNonNull(Mqtt5UTF8StringImpl.from("x"));
-        final Mqtt5UserProperties tooManyUserProperties = maxPacket
+        final Mqtt5UserPropertiesImpl tooManyUserProperties = maxPacket
                 .getUserProperties((VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE / maxPacket.userPropertyBytes) + 1);
 
         final Mqtt5AuthImpl auth = new Mqtt5AuthImpl(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, method, null, null,
@@ -292,9 +292,10 @@ class Mqtt5AuthEncoderTest {
 
     private class MaximumPacketBuilder {
 
-        private ImmutableList.Builder<Mqtt5UserProperty> userPropertiesBuilder;
-        final Mqtt5UserProperty userProperty = new Mqtt5UserProperty(requireNonNull(Mqtt5UTF8StringImpl.from("user")),
-                requireNonNull(Mqtt5UTF8StringImpl.from("property")));
+        private ImmutableList.Builder<Mqtt5UserPropertyImpl> userPropertiesBuilder;
+        final Mqtt5UserPropertyImpl userProperty =
+                new Mqtt5UserPropertyImpl(requireNonNull(Mqtt5UTF8StringImpl.from("user")),
+                        requireNonNull(Mqtt5UTF8StringImpl.from("property")));
 
         char[] reasonStringBytes;
         final int maxPropertyLength = Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT - 1  // type, reserved
@@ -324,16 +325,16 @@ class Mqtt5AuthEncoderTest {
             return this;
         }
 
-        Mqtt5UserProperties getMaxPossibleUserProperties() {
-            return Mqtt5UserProperties.of(userPropertiesBuilder.build());
+        Mqtt5UserPropertiesImpl getMaxPossibleUserProperties() {
+            return Mqtt5UserPropertiesImpl.of(userPropertiesBuilder.build());
         }
 
-        Mqtt5UserProperties getUserProperties(final int totalCount) {
-            final ImmutableList.Builder<Mqtt5UserProperty> builder = new ImmutableList.Builder<>();
+        Mqtt5UserPropertiesImpl getUserProperties(final int totalCount) {
+            final ImmutableList.Builder<Mqtt5UserPropertyImpl> builder = new ImmutableList.Builder<>();
             for (int i = 0; i < totalCount; i++) {
                 builder.add(userProperty);
             }
-            return Mqtt5UserProperties.of(builder.build());
+            return Mqtt5UserPropertiesImpl.of(builder.build());
         }
 
         Mqtt5UTF8StringImpl getReasonStringTooLong() {

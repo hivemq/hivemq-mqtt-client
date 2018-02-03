@@ -62,7 +62,7 @@ public class Mqtt5PubRecEncoder implements Mqtt5MessageEncoder<Mqtt5PubRecIntern
         int propertyLength = 0;
 
         propertyLength += nullablePropertyEncodedLength(pubRec.getRawReasonString());
-        propertyLength += pubRec.getRawUserProperties().encodedLength();
+        propertyLength += pubRec.getUserProperties().encodedLength();
 
         if (!Mqtt5DataTypes.isInVariableByteIntegerRange(propertyLength)) {
             throw new Mqtt5VariableByteIntegerExceededException("property length"); // TODO
@@ -97,7 +97,7 @@ public class Mqtt5PubRecEncoder implements Mqtt5MessageEncoder<Mqtt5PubRecIntern
         Mqtt5DataTypes.encodeVariableByteInteger(propertyLength, out);
 
         encodeNullableProperty(REASON_STRING, pubRec.getRawReasonString(), out);
-        pubRec.getRawUserProperties().encode(out);
+        pubRec.getUserProperties().encode(out);
     }
 
 }

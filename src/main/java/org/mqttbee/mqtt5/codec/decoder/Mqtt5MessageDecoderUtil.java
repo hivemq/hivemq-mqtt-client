@@ -10,8 +10,8 @@ import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperties;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
+import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
+import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectImpl;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 
@@ -39,7 +39,7 @@ class Mqtt5MessageDecoderUtil {
 
         final Mqtt5DisconnectImpl disconnect =
                 new Mqtt5DisconnectImpl(reasonCode, Mqtt5DisconnectImpl.SESSION_EXPIRY_INTERVAL_FROM_CONNECT, null,
-                        mqttReasonString, Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
+                        mqttReasonString, Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES);
         final ChannelFuture disconnectFuture = channel.writeAndFlush(disconnect);
 
         disconnectFuture.addListener(ChannelFutureListener.CLOSE);
@@ -175,11 +175,11 @@ class Mqtt5MessageDecoderUtil {
     }
 
     @Nullable
-    static ImmutableList.Builder<Mqtt5UserProperty> decodeUserProperty(
-            @Nullable ImmutableList.Builder<Mqtt5UserProperty> userPropertiesBuilder, @NotNull final Channel channel,
-            @NotNull final ByteBuf in) {
+    static ImmutableList.Builder<Mqtt5UserPropertyImpl> decodeUserProperty(
+            @Nullable ImmutableList.Builder<Mqtt5UserPropertyImpl> userPropertiesBuilder,
+            @NotNull final Channel channel, @NotNull final ByteBuf in) {
 
-        final Mqtt5UserProperty userProperty = Mqtt5UserProperty.decode(in);
+        final Mqtt5UserPropertyImpl userProperty = Mqtt5UserPropertyImpl.decode(in);
         if (userProperty == null) {
             disconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "malformed user property", channel);
             return null;
@@ -215,8 +215,8 @@ class Mqtt5MessageDecoderUtil {
     }
 
     @Nullable
-    static ImmutableList.Builder<Mqtt5UserProperty> decodeUserPropertyCheckProblemInformationRequested(
-            @Nullable final ImmutableList.Builder<Mqtt5UserProperty> userPropertiesBuilder,
+    static ImmutableList.Builder<Mqtt5UserPropertyImpl> decodeUserPropertyCheckProblemInformationRequested(
+            @Nullable final ImmutableList.Builder<Mqtt5UserPropertyImpl> userPropertiesBuilder,
             @NotNull final Channel channel, @NotNull final ByteBuf in) {
 
         if ((userPropertiesBuilder != null) && !checkProblemInformationRequested("user property", channel)) {

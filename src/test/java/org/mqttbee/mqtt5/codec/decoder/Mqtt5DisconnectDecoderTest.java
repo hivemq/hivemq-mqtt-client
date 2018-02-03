@@ -12,7 +12,8 @@ import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5Disconnect;
 import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
+import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
+import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectImpl;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -68,7 +69,7 @@ class Mqtt5DisconnectDecoderTest {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
-        final Mqtt5Disconnect disconnect = channel.readInbound();
+        final Mqtt5DisconnectImpl disconnect = channel.readInbound();
 
         assertNotNull(disconnect);
 
@@ -80,7 +81,7 @@ class Mqtt5DisconnectDecoderTest {
         assertTrue(disconnect.getServerReference().isPresent());
         assertEquals("reference", disconnect.getServerReference().get().toString());
 
-        final ImmutableList<Mqtt5UserProperty> userProperties = disconnect.getUserProperties();
+        final ImmutableList<Mqtt5UserPropertyImpl> userProperties = disconnect.getUserProperties().asList();
         assertEquals(9, userProperties.size());
         for (int i = 0; i < 9; i++) {
             assertEquals("test" + i, userProperties.get(i).getName().toString());
@@ -106,7 +107,7 @@ class Mqtt5DisconnectDecoderTest {
         assertFalse(disconnect.getSessionExpiryInterval().isPresent());
         assertFalse(disconnect.getReasonString().isPresent());
         assertFalse(disconnect.getServerReference().isPresent());
-        assertEquals(0, disconnect.getUserProperties().size());
+        assertEquals(0, disconnect.getUserProperties().asList().size());
     }
 
     @Test
@@ -130,7 +131,7 @@ class Mqtt5DisconnectDecoderTest {
         assertFalse(disconnect.getSessionExpiryInterval().isPresent());
         assertFalse(disconnect.getReasonString().isPresent());
         assertFalse(disconnect.getServerReference().isPresent());
-        assertEquals(0, disconnect.getUserProperties().size());
+        assertEquals(0, disconnect.getUserProperties().asList().size());
     }
 
     @Test
@@ -540,7 +541,7 @@ class Mqtt5DisconnectDecoderTest {
         byteBuf.writeBytes(new byte[]{0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'});
 
         channel.writeInbound(byteBuf);
-        final Mqtt5Disconnect disconnect = channel.readInbound();
+        final Mqtt5DisconnectImpl disconnect = channel.readInbound();
 
         assertNotNull(disconnect);
 
@@ -549,7 +550,7 @@ class Mqtt5DisconnectDecoderTest {
         assertFalse(disconnect.getReasonString().isPresent());
         assertFalse(disconnect.getServerReference().isPresent());
 
-        final ImmutableList<Mqtt5UserProperty> userProperties = disconnect.getUserProperties();
+        final ImmutableList<Mqtt5UserPropertyImpl> userProperties = disconnect.getUserProperties().asList();
         assertEquals(2, userProperties.size());
         assertEquals("test", userProperties.get(0).getName().toString());
         assertEquals("value", userProperties.get(0).getValue().toString());

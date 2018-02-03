@@ -1,8 +1,7 @@
 package org.mqttbee.api.mqtt5.message;
 
-import com.google.common.collect.ImmutableList;
+import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 import org.mqttbee.mqtt5.message.pubrec.Mqtt5PubRecReasonCode;
 
 import java.util.Optional;
@@ -12,6 +11,7 @@ import java.util.Optional;
  *
  * @author Silvio Giebl
  */
+@DoNotImplement
 public interface Mqtt5PubRec {
 
     /**
@@ -30,6 +30,6 @@ public interface Mqtt5PubRec {
      * @return the optional user properties of this PUBREC packet.
      */
     @NotNull
-    ImmutableList<Mqtt5UserProperty> getUserProperties();
+    Mqtt5UserProperties getUserProperties();
 
 }

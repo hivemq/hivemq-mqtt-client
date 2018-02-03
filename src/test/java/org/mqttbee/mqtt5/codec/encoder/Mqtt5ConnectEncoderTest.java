@@ -127,11 +127,11 @@ class Mqtt5ConnectEncoderTest {
         final Mqtt5UTF8StringImpl test2 = requireNonNull(Mqtt5UTF8StringImpl.from("test2"));
         final Mqtt5UTF8StringImpl value = requireNonNull(Mqtt5UTF8StringImpl.from("value"));
         final Mqtt5UTF8StringImpl value2 = requireNonNull(Mqtt5UTF8StringImpl.from("value2"));
-        final Mqtt5UserProperty userProperty1 = new Mqtt5UserProperty(test, value);
-        final Mqtt5UserProperty userProperty2 = new Mqtt5UserProperty(test, value2);
-        final Mqtt5UserProperty userProperty3 = new Mqtt5UserProperty(test2, value);
-        final Mqtt5UserProperties userProperties =
-                Mqtt5UserProperties.of(ImmutableList.of(userProperty1, userProperty2, userProperty3));
+        final Mqtt5UserPropertyImpl userProperty1 = new Mqtt5UserPropertyImpl(test, value);
+        final Mqtt5UserPropertyImpl userProperty2 = new Mqtt5UserPropertyImpl(test, value2);
+        final Mqtt5UserPropertyImpl userProperty3 = new Mqtt5UserPropertyImpl(test2, value);
+        final Mqtt5UserPropertiesImpl userProperties =
+                Mqtt5UserPropertiesImpl.of(ImmutableList.of(userProperty1, userProperty2, userProperty3));
 
         final Mqtt5TopicImpl willTopic = requireNonNull(Mqtt5TopicImpl.from("topic"));
         final byte[] willPayload = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
@@ -179,7 +179,7 @@ class Mqtt5ConnectEncoderTest {
         final Mqtt5ClientIdentifierImpl clientIdentifier = requireNonNull(Mqtt5ClientIdentifierImpl.from("test"));
         final Mqtt5ConnectImpl connect =
                 new Mqtt5ConnectImpl(clientIdentifier, 0, false, 0, false, true, DEFAULT, null, null, null,
-                        Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
+                        Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES);
 
         encode(expected, connect);
     }
@@ -216,7 +216,7 @@ class Mqtt5ConnectEncoderTest {
 
         final Mqtt5ConnectImpl connect =
                 new Mqtt5ConnectImpl(clientIdentifier, 0, false, 0, false, true, DEFAULT, simpleAuth, null, null,
-                        Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
+                        Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES);
 
         encode(expected, connect);
     }
@@ -232,7 +232,7 @@ class Mqtt5ConnectEncoderTest {
 
         final Mqtt5ConnectImpl connect =
                 new Mqtt5ConnectImpl(clientIdentifier, 0, false, 0, false, true, DEFAULT, simpleAuth, null, null,
-                        Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
+                        Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES);
 
         encodeNok(connect, EncoderException.class, "binary data size exceeded for UTF-8 encoded String");
     }
@@ -270,7 +270,7 @@ class Mqtt5ConnectEncoderTest {
 
         final Mqtt5ConnectImpl connect =
                 new Mqtt5ConnectImpl(clientIdentifier, 0, false, 0, false, true, DEFAULT, simpleAuth, null, null,
-                        Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
+                        Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES);
 
         encode(expected, connect);
     }
@@ -283,7 +283,7 @@ class Mqtt5ConnectEncoderTest {
 
         final Mqtt5ConnectImpl connect =
                 new Mqtt5ConnectImpl(clientIdentifier, 0, false, 0, false, true, DEFAULT, simpleAuth, null, null,
-                        Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
+                        Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES);
 
         encodeNok(connect, EncoderException.class, "binary data size exceeded for password");
     }
@@ -317,7 +317,7 @@ class Mqtt5ConnectEncoderTest {
 
         final Mqtt5ConnectImpl connect =
                 new Mqtt5ConnectImpl(clientIdentifier, 0, false, 0, false, true, DEFAULT, null, null, null,
-                        Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
+                        Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES);
 
         encode(expected, connect);
     }
@@ -358,10 +358,10 @@ class Mqtt5ConnectEncoderTest {
         final Mqtt5WillPublishImpl willPublish =
                 new Mqtt5WillPublishImpl(willTopic, willPayload, Mqtt5QoS.AT_MOST_ONCE, false,
                         Mqtt5WillPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null,
-                        Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES, 0);
+                        Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES, 0);
         final Mqtt5ConnectImpl connect =
                 new Mqtt5ConnectImpl(clientIdentifier, 0, false, 0, false, true, DEFAULT, null, null, willPublish,
-                        Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
+                        Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES);
 
         encode(expected, connect);
     }
@@ -374,10 +374,10 @@ class Mqtt5ConnectEncoderTest {
         final Mqtt5WillPublishImpl willPublish =
                 new Mqtt5WillPublishImpl(willTopic, willPayload, Mqtt5QoS.AT_MOST_ONCE, false,
                         Mqtt5WillPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null,
-                        Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES, 0);
+                        Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES, 0);
         final Mqtt5ConnectImpl connect =
                 new Mqtt5ConnectImpl(clientIdentifier, 0, false, 0, false, true, DEFAULT, null, null, willPublish,
-                        Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
+                        Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES);
 
         encodeNok(connect, EncoderException.class, "binary data size exceeded for will payload");
     }
@@ -390,10 +390,10 @@ class Mqtt5ConnectEncoderTest {
         final Mqtt5WillPublishImpl willPublish =
                 new Mqtt5WillPublishImpl(willTopic, willPayload, Mqtt5QoS.AT_MOST_ONCE, false,
                         Mqtt5WillPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null,
-                        Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES, 0);
+                        Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES, 0);
         final Mqtt5ConnectImpl connect =
                 new Mqtt5ConnectImpl(clientIdentifier, 0, false, 0, false, true, DEFAULT, null, null, willPublish,
-                        Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
+                        Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES);
 
         encodeNok(connect, EncoderException.class, "binary data size exceeded for will payload");
     }
@@ -405,10 +405,10 @@ class Mqtt5ConnectEncoderTest {
         final Mqtt5ClientIdentifierImpl clientIdentifier = requireNonNull(Mqtt5ClientIdentifierImpl.from("test"));
         final Mqtt5WillPublishImpl willPublish = new Mqtt5WillPublishImpl(willTopic, null, Mqtt5QoS.AT_MOST_ONCE, false,
                 Mqtt5WillPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, correlationData,
-                Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES, 0);
+                Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES, 0);
         final Mqtt5ConnectImpl connect =
                 new Mqtt5ConnectImpl(clientIdentifier, 0, false, 0, false, true, DEFAULT, null, null, willPublish,
-                        Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
+                        Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES);
 
         encodeNok(connect, EncoderException.class, "binary data size exceeded for will correlation data");
     }
@@ -416,7 +416,7 @@ class Mqtt5ConnectEncoderTest {
     @Test
     void encode_willPropertyLengthExceedsMax_throwsEncoderException() {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder();
-        final Mqtt5UserProperties tooManyUserProperties = maxPacket
+        final Mqtt5UserPropertiesImpl tooManyUserProperties = maxPacket
                 .getUserProperties((VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE / maxPacket.userPropertyBytes) + 1);
 
         final Mqtt5TopicImpl willTopic = requireNonNull(Mqtt5TopicImpl.from("topic"));
@@ -426,7 +426,7 @@ class Mqtt5ConnectEncoderTest {
                 0);
         final Mqtt5ConnectImpl connect =
                 new Mqtt5ConnectImpl(clientIdentifier, 0, false, 0, false, true, DEFAULT, null, null, willPublish,
-                        Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
+                        Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES);
 
         encodeNok(connect, EncoderException.class, "variable byte integer size exceeded for will properties length");
     }
@@ -467,7 +467,7 @@ class Mqtt5ConnectEncoderTest {
 
         final Mqtt5ConnectImpl connect =
                 new Mqtt5ConnectImpl(clientIdentifier, 0, false, 0, false, true, DEFAULT, null, extendedAuth, null,
-                        Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
+                        Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES);
 
         encode(expected, connect);
     }
@@ -481,7 +481,7 @@ class Mqtt5ConnectEncoderTest {
 
         final Mqtt5ConnectImpl connect =
                 new Mqtt5ConnectImpl(clientIdentifier, 0, false, 0, false, true, DEFAULT, null, extendedAuth, null,
-                        Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
+                        Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES);
 
         encodeNok(connect, EncoderException.class, "binary data size exceeded for authentication data");
     }
@@ -532,9 +532,10 @@ class Mqtt5ConnectEncoderTest {
 
     private class MaximumPacketBuilder {
 
-        private ImmutableList.Builder<Mqtt5UserProperty> userPropertiesBuilder;
-        final Mqtt5UserProperty userProperty = new Mqtt5UserProperty(requireNonNull(Mqtt5UTF8StringImpl.from("user")),
-                requireNonNull(Mqtt5UTF8StringImpl.from("property")));
+        private ImmutableList.Builder<Mqtt5UserPropertyImpl> userPropertiesBuilder;
+        final Mqtt5UserPropertyImpl userProperty =
+                new Mqtt5UserPropertyImpl(requireNonNull(Mqtt5UTF8StringImpl.from("user")),
+                        requireNonNull(Mqtt5UTF8StringImpl.from("property")));
         char[] clientIdBytes;
         final int maxPropertyLength = Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT - 1  // type, reserved
                 - 4  // remaining length
@@ -572,24 +573,24 @@ class Mqtt5ConnectEncoderTest {
             return new String(clientIdBytes) + extraChars;
         }
 
-        Mqtt5UserProperties getMaxPossibleUserProperties() {
+        Mqtt5UserPropertiesImpl getMaxPossibleUserProperties() {
             //return ImmutableList.of();
             return getMaxPossibleUserProperties(0);
         }
 
-        Mqtt5UserProperties getMaxPossibleUserProperties(final int withExtraUserProperties) {
+        Mqtt5UserPropertiesImpl getMaxPossibleUserProperties(final int withExtraUserProperties) {
             for (int i = 0; i < withExtraUserProperties; i++) {
                 userPropertiesBuilder.add(userProperty);
             }
-            return Mqtt5UserProperties.of(userPropertiesBuilder.build());
+            return Mqtt5UserPropertiesImpl.of(userPropertiesBuilder.build());
         }
 
-        Mqtt5UserProperties getUserProperties(final int totalCount) {
-            final ImmutableList.Builder<Mqtt5UserProperty> builder = new ImmutableList.Builder<>();
+        Mqtt5UserPropertiesImpl getUserProperties(final int totalCount) {
+            final ImmutableList.Builder<Mqtt5UserPropertyImpl> builder = new ImmutableList.Builder<>();
             for (int i = 0; i < totalCount; i++) {
                 builder.add(userProperty);
             }
-            return Mqtt5UserProperties.of(builder.build());
+            return Mqtt5UserPropertiesImpl.of(builder.build());
         }
     }
 }

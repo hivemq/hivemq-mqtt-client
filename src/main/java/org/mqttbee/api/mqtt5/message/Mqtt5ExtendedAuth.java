@@ -1,5 +1,6 @@
 package org.mqttbee.api.mqtt5.message;
 
+import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 
 import java.util.Optional;
@@ -9,6 +10,7 @@ import java.util.Optional;
  *
  * @author Silvio Giebl
  */
+@DoNotImplement
 public interface Mqtt5ExtendedAuth {
 
     /**

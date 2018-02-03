@@ -6,8 +6,7 @@ import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.api.mqtt5.message.Mqtt5UnsubAck;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperties;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
+import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 
 import java.util.Optional;
 
@@ -18,11 +17,11 @@ public class Mqtt5UnsubAckImpl implements Mqtt5UnsubAck {
 
     private final ImmutableList<Mqtt5UnsubAckReasonCode> reasonCodes;
     private final Mqtt5UTF8StringImpl reasonString;
-    private final Mqtt5UserProperties userProperties;
+    private final Mqtt5UserPropertiesImpl userProperties;
 
     public Mqtt5UnsubAckImpl(
             @NotNull final ImmutableList<Mqtt5UnsubAckReasonCode> reasonCodes,
-            @Nullable final Mqtt5UTF8StringImpl reasonString, @NotNull final Mqtt5UserProperties userProperties) {
+            @Nullable final Mqtt5UTF8StringImpl reasonString, @NotNull final Mqtt5UserPropertiesImpl userProperties) {
         this.reasonCodes = reasonCodes;
         this.reasonString = reasonString;
         this.userProperties = userProperties;
@@ -42,8 +41,8 @@ public class Mqtt5UnsubAckImpl implements Mqtt5UnsubAck {
 
     @NotNull
     @Override
-    public ImmutableList<Mqtt5UserProperty> getUserProperties() {
-        return userProperties.asList();
+    public Mqtt5UserPropertiesImpl getUserProperties() {
+        return userProperties;
     }
 
 }

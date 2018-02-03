@@ -4,8 +4,7 @@ import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.message.Mqtt5Unsubscribe;
 import org.mqttbee.mqtt5.message.Mqtt5TopicFilterImpl;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperties;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
+import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 
 /**
  * @author Silvio Giebl
@@ -13,11 +12,11 @@ import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 public class Mqtt5UnsubscribeImpl implements Mqtt5Unsubscribe {
 
     private final ImmutableList<Mqtt5TopicFilterImpl> topicFilters;
-    private final Mqtt5UserProperties userProperties;
+    private final Mqtt5UserPropertiesImpl userProperties;
 
     public Mqtt5UnsubscribeImpl(
             @NotNull final ImmutableList<Mqtt5TopicFilterImpl> topicFilters,
-            @NotNull final Mqtt5UserProperties userProperties) {
+            @NotNull final Mqtt5UserPropertiesImpl userProperties) {
         this.topicFilters = topicFilters;
         this.userProperties = userProperties;
     }
@@ -30,12 +29,7 @@ public class Mqtt5UnsubscribeImpl implements Mqtt5Unsubscribe {
 
     @NotNull
     @Override
-    public ImmutableList<Mqtt5UserProperty> getUserProperties() {
-        return userProperties.asList();
-    }
-
-    @NotNull
-    public Mqtt5UserProperties getRawUserProperties() {
+    public Mqtt5UserPropertiesImpl getUserProperties() {
         return userProperties;
     }
 

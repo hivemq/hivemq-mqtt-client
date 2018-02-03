@@ -1,5 +1,7 @@
 package org.mqttbee.api.mqtt5.message;
 
+import com.google.common.base.Preconditions;
+import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt5.message.Mqtt5SharedTopicFilterImpl;
 
@@ -13,6 +15,7 @@ import org.mqttbee.mqtt5.message.Mqtt5SharedTopicFilterImpl;
  *
  * @author Silvio Giebl
  */
+@DoNotImplement
 public interface Mqtt5SharedTopicFilter extends Mqtt5TopicFilter {
 
     /**
@@ -31,6 +34,9 @@ public interface Mqtt5SharedTopicFilter extends Mqtt5TopicFilter {
      */
     @NotNull
     static Mqtt5SharedTopicFilter from(@NotNull final String shareName, @NotNull final String topicFilter) {
+        Preconditions.checkNotNull(shareName);
+        Preconditions.checkNotNull(topicFilter);
+
         final Mqtt5SharedTopicFilter sharedTopicFilter = Mqtt5SharedTopicFilterImpl.from(shareName, topicFilter);
         if (sharedTopicFilter == null) {
             throw new IllegalArgumentException("The shareName: [" + shareName + "] is not a valid Topic Name.");

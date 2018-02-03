@@ -12,7 +12,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5Disconnect;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
+import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.message.suback.Mqtt5SubAckImpl;
 import org.mqttbee.mqtt5.message.suback.Mqtt5SubAckInternal;
@@ -68,7 +68,7 @@ class Mqtt5SubAckDecoderTest {
         assertTrue(subAck.getReasonString().isPresent());
         assertEquals("success", subAck.getReasonString().get().toString());
 
-        final ImmutableList<Mqtt5UserProperty> userProperties = subAck.getUserProperties();
+        final ImmutableList<Mqtt5UserPropertyImpl> userProperties = subAck.getUserProperties().asList();
         assertEquals(1, userProperties.size());
         assertEquals("test", userProperties.get(0).getName().toString());
         assertEquals("value", userProperties.get(0).getValue().toString());
@@ -105,7 +105,7 @@ class Mqtt5SubAckDecoderTest {
         assertTrue(subAck.getReasonString().isPresent());
         assertEquals("success", subAck.getReasonString().get().toString());
 
-        final ImmutableList<Mqtt5UserProperty> userProperties = subAck.getUserProperties();
+        final ImmutableList<Mqtt5UserPropertyImpl> userProperties = subAck.getUserProperties().asList();
         assertEquals(2, userProperties.size());
         assertEquals("test", userProperties.get(0).getName().toString());
         assertEquals("value", userProperties.get(0).getValue().toString());

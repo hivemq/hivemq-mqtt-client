@@ -1,12 +1,14 @@
 package org.mqttbee.mqtt5.message.publish;
 
-import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5Publish;
 import org.mqttbee.api.mqtt5.message.Mqtt5Topic;
 import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
-import org.mqttbee.mqtt5.message.*;
+import org.mqttbee.mqtt5.message.Mqtt5QoS;
+import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
+import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
+import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 
 import java.util.Optional;
 
@@ -27,7 +29,7 @@ public class Mqtt5PublishImpl implements Mqtt5Publish {
     private final Mqtt5TopicImpl responseTopic;
     private final byte[] correlationData;
     private final TopicAliasUsage topicAliasUsage;
-    private final Mqtt5UserProperties userProperties;
+    private final Mqtt5UserPropertiesImpl userProperties;
 
     public Mqtt5PublishImpl(
             @NotNull final Mqtt5TopicImpl topic, @Nullable final byte[] payload, @NotNull final Mqtt5QoS qos,
@@ -35,7 +37,7 @@ public class Mqtt5PublishImpl implements Mqtt5Publish {
             @Nullable final Mqtt5PayloadFormatIndicator payloadFormatIndicator,
             @Nullable final Mqtt5UTF8StringImpl contentType, @Nullable final Mqtt5TopicImpl responseTopic,
             @Nullable final byte[] correlationData, @NotNull final TopicAliasUsage topicAliasUsage,
-            @NotNull final Mqtt5UserProperties userProperties) {
+            @NotNull final Mqtt5UserPropertiesImpl userProperties) {
         this.topic = topic;
         this.payload = payload;
         this.qos = qos;
@@ -140,12 +142,7 @@ public class Mqtt5PublishImpl implements Mqtt5Publish {
 
     @NotNull
     @Override
-    public ImmutableList<Mqtt5UserProperty> getUserProperties() {
-        return userProperties.asList();
-    }
-
-    @NotNull
-    public Mqtt5UserProperties getRawUserProperties() {
+    public Mqtt5UserPropertiesImpl getUserProperties() {
         return userProperties;
     }
 

@@ -11,26 +11,26 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * @author Silvio Giebl
  */
-class Mqtt5UserPropertiesTest {
+class Mqtt5UserPropertiesImplTest {
 
     @Test
     void test_of() {
         final Mqtt5UTF8StringImpl name = requireNonNull(Mqtt5UTF8StringImpl.from("name"));
         final Mqtt5UTF8StringImpl value = requireNonNull(Mqtt5UTF8StringImpl.from("value"));
-        final Mqtt5UserProperty userProperty = new Mqtt5UserProperty(name, value);
-        final ImmutableList<Mqtt5UserProperty> userPropertiesList = ImmutableList.of(userProperty);
-        final Mqtt5UserProperties userProperties = Mqtt5UserProperties.of(userPropertiesList);
+        final Mqtt5UserPropertyImpl userProperty = new Mqtt5UserPropertyImpl(name, value);
+        final ImmutableList<Mqtt5UserPropertyImpl> userPropertiesList = ImmutableList.of(userProperty);
+        final Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.of(userPropertiesList);
         assertSame(userPropertiesList, userProperties.asList());
     }
 
     @Test
     void test_build_not_null() {
-        final ImmutableList.Builder<Mqtt5UserProperty> builder = ImmutableList.builder();
+        final ImmutableList.Builder<Mqtt5UserPropertyImpl> builder = ImmutableList.builder();
         final Mqtt5UTF8StringImpl name = requireNonNull(Mqtt5UTF8StringImpl.from("name"));
         final Mqtt5UTF8StringImpl value = requireNonNull(Mqtt5UTF8StringImpl.from("value"));
-        builder.add(new Mqtt5UserProperty(name, value));
-        final Mqtt5UserProperties userProperties = Mqtt5UserProperties.build(builder);
-        final ImmutableList<Mqtt5UserProperty> userPropertiesList = userProperties.asList();
+        builder.add(new Mqtt5UserPropertyImpl(name, value));
+        final Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.build(builder);
+        final ImmutableList<Mqtt5UserPropertyImpl> userPropertiesList = userProperties.asList();
         assertEquals(1, userPropertiesList.size());
         assertEquals(name, userPropertiesList.get(0).getName());
         assertEquals(value, userPropertiesList.get(0).getValue());
@@ -38,8 +38,8 @@ class Mqtt5UserPropertiesTest {
 
     @Test
     void test_build_null() {
-        final Mqtt5UserProperties userProperties = Mqtt5UserProperties.build(null);
-        assertEquals(Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES, userProperties);
+        final Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.build(null);
+        assertEquals(Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES, userProperties);
         assertEquals(0, userProperties.asList().size());
     }
 
@@ -52,10 +52,10 @@ class Mqtt5UserPropertiesTest {
         final Mqtt5UTF8StringImpl name = requireNonNull(Mqtt5UTF8StringImpl.from("name"));
         final Mqtt5UTF8StringImpl value = requireNonNull(Mqtt5UTF8StringImpl.from("value"));
         final Mqtt5UTF8StringImpl value2 = requireNonNull(Mqtt5UTF8StringImpl.from("test"));
-        final Mqtt5UserProperty userProperty1 = new Mqtt5UserProperty(name, value);
-        final Mqtt5UserProperty userProperty2 = new Mqtt5UserProperty(name, value2);
-        final Mqtt5UserProperties userProperties =
-                Mqtt5UserProperties.of(ImmutableList.of(userProperty1, userProperty2));
+        final Mqtt5UserPropertyImpl userProperty1 = new Mqtt5UserPropertyImpl(name, value);
+        final Mqtt5UserPropertyImpl userProperty2 = new Mqtt5UserPropertyImpl(name, value2);
+        final Mqtt5UserPropertiesImpl userProperties =
+                Mqtt5UserPropertiesImpl.of(ImmutableList.of(userProperty1, userProperty2));
 
         final ByteBuf byteBuf = Unpooled.buffer();
         userProperties.encode(byteBuf);
@@ -71,10 +71,10 @@ class Mqtt5UserPropertiesTest {
         final Mqtt5UTF8StringImpl name = requireNonNull(Mqtt5UTF8StringImpl.from("name"));
         final Mqtt5UTF8StringImpl value = requireNonNull(Mqtt5UTF8StringImpl.from("value"));
         final Mqtt5UTF8StringImpl value2 = requireNonNull(Mqtt5UTF8StringImpl.from("test"));
-        final Mqtt5UserProperty userProperty1 = new Mqtt5UserProperty(name, value);
-        final Mqtt5UserProperty userProperty2 = new Mqtt5UserProperty(name, value2);
-        final Mqtt5UserProperties userProperties =
-                Mqtt5UserProperties.of(ImmutableList.of(userProperty1, userProperty2));
+        final Mqtt5UserPropertyImpl userProperty1 = new Mqtt5UserPropertyImpl(name, value);
+        final Mqtt5UserPropertyImpl userProperty2 = new Mqtt5UserPropertyImpl(name, value2);
+        final Mqtt5UserPropertiesImpl userProperties =
+                Mqtt5UserPropertiesImpl.of(ImmutableList.of(userProperty1, userProperty2));
 
         assertEquals(27, userProperties.encodedLength());
     }

@@ -5,8 +5,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.message.Mqtt5Subscribe;
 import org.mqttbee.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.mqtt5.message.Mqtt5TopicFilterImpl;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperties;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
+import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 
 /**
  * @author Silvio Giebl
@@ -14,11 +13,11 @@ import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
 public class Mqtt5SubscribeImpl implements Mqtt5Subscribe {
 
     private final ImmutableList<SubscriptionImpl> subscriptions;
-    private final Mqtt5UserProperties userProperties;
+    private final Mqtt5UserPropertiesImpl userProperties;
 
     public Mqtt5SubscribeImpl(
             @NotNull final ImmutableList<SubscriptionImpl> subscriptions,
-            @NotNull final Mqtt5UserProperties userProperties) {
+            @NotNull final Mqtt5UserPropertiesImpl userProperties) {
         this.subscriptions = subscriptions;
         this.userProperties = userProperties;
     }
@@ -31,12 +30,7 @@ public class Mqtt5SubscribeImpl implements Mqtt5Subscribe {
 
     @NotNull
     @Override
-    public ImmutableList<Mqtt5UserProperty> getUserProperties() {
-        return userProperties.asList();
-    }
-
-    @NotNull
-    public Mqtt5UserProperties getRawUserProperties() {
+    public Mqtt5UserPropertiesImpl getUserProperties() {
         return userProperties;
     }
 

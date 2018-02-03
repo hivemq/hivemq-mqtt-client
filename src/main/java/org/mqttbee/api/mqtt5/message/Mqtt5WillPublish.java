@@ -1,10 +1,13 @@
 package org.mqttbee.api.mqtt5.message;
 
+import org.mqttbee.annotations.DoNotImplement;
+
 /**
  * MQTT 5 Will Publish which can be a part of the CONNECT packet.
  *
  * @author Silvio Giebl
  */
+@DoNotImplement
 public interface Mqtt5WillPublish extends Mqtt5Publish {
 
     /**

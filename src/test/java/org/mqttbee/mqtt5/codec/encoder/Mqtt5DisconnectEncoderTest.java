@@ -11,8 +11,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperties;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
+import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
+import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectImpl;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 
@@ -76,10 +76,10 @@ class Mqtt5DisconnectEncoderTest {
         final Mqtt5UTF8StringImpl test = requireNonNull(Mqtt5UTF8StringImpl.from("test"));
         final Mqtt5UTF8StringImpl value = requireNonNull(Mqtt5UTF8StringImpl.from("value"));
         final Mqtt5UTF8StringImpl value2 = requireNonNull(Mqtt5UTF8StringImpl.from("value2"));
-        final Mqtt5UserProperty userProperty1 = new Mqtt5UserProperty(test, value);
-        final Mqtt5UserProperty userProperty2 = new Mqtt5UserProperty(test, value2);
-        final Mqtt5UserProperties userProperties =
-                Mqtt5UserProperties.of(ImmutableList.of(userProperty1, userProperty2));
+        final Mqtt5UserPropertyImpl userProperty1 = new Mqtt5UserPropertyImpl(test, value);
+        final Mqtt5UserPropertyImpl userProperty2 = new Mqtt5UserPropertyImpl(test, value2);
+        final Mqtt5UserPropertiesImpl userProperties =
+                Mqtt5UserPropertiesImpl.of(ImmutableList.of(userProperty1, userProperty2));
 
         final Mqtt5DisconnectImpl disconnect =
                 new Mqtt5DisconnectImpl(MALFORMED_PACKET, sessionExpiryInterval, serverReference, reasonString,
@@ -103,7 +103,7 @@ class Mqtt5DisconnectEncoderTest {
 
         final Mqtt5DisconnectImpl disconnect =
                 new Mqtt5DisconnectImpl(MALFORMED_PACKET, SESSION_EXPIRY_INTERVAL_FROM_CONNECT, null, null,
-                        Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
+                        Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES);
         encode(expected, disconnect);
     }
 
@@ -124,7 +124,7 @@ class Mqtt5DisconnectEncoderTest {
         expected[2] = (byte) reasonCode.getCode();
         final Mqtt5DisconnectImpl disconnect =
                 new Mqtt5DisconnectImpl(reasonCode, SESSION_EXPIRY_INTERVAL_FROM_CONNECT, null, null,
-                        Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
+                        Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES);
         encode(expected, disconnect);
     }
 
@@ -140,7 +140,7 @@ class Mqtt5DisconnectEncoderTest {
 
         final Mqtt5DisconnectImpl disconnect =
                 new Mqtt5DisconnectImpl(NORMAL_DISCONNECTION, SESSION_EXPIRY_INTERVAL_FROM_CONNECT, null, null,
-                        Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
+                        Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES);
         encode(expected, disconnect);
     }
 
@@ -165,7 +165,7 @@ class Mqtt5DisconnectEncoderTest {
         final Mqtt5UTF8StringImpl reasonString = Mqtt5UTF8StringImpl.from("reason");
         final Mqtt5DisconnectImpl disconnect =
                 new Mqtt5DisconnectImpl(MALFORMED_PACKET, SESSION_EXPIRY_INTERVAL_FROM_CONNECT, null, reasonString,
-                        Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
+                        Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES);
 
         encode(expected, disconnect);
     }
@@ -192,7 +192,7 @@ class Mqtt5DisconnectEncoderTest {
         final Mqtt5UTF8StringImpl serverReference = Mqtt5UTF8StringImpl.from("server");
         final Mqtt5DisconnectImpl disconnect =
                 new Mqtt5DisconnectImpl(MALFORMED_PACKET, SESSION_EXPIRY_INTERVAL_FROM_CONNECT, serverReference, null,
-                        Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
+                        Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES);
 
         encode(expected, disconnect);
     }
@@ -218,7 +218,7 @@ class Mqtt5DisconnectEncoderTest {
         final long sessionExpiryInterval = 123456789;
         final Mqtt5DisconnectImpl disconnect =
                 new Mqtt5DisconnectImpl(MALFORMED_PACKET, sessionExpiryInterval, null, null,
-                        Mqtt5UserProperties.DEFAULT_NO_USER_PROPERTIES);
+                        Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES);
 
         encode(expected, disconnect);
     }
@@ -261,9 +261,10 @@ class Mqtt5DisconnectEncoderTest {
 
     private class MaximumPacketBuilder {
 
-        private ImmutableList.Builder<Mqtt5UserProperty> userPropertiesBuilder;
-        final Mqtt5UserProperty userProperty = new Mqtt5UserProperty(requireNonNull(Mqtt5UTF8StringImpl.from("user")),
-                requireNonNull(Mqtt5UTF8StringImpl.from("property")));
+        private ImmutableList.Builder<Mqtt5UserPropertyImpl> userPropertiesBuilder;
+        final Mqtt5UserPropertyImpl userProperty =
+                new Mqtt5UserPropertyImpl(requireNonNull(Mqtt5UTF8StringImpl.from("user")),
+                        requireNonNull(Mqtt5UTF8StringImpl.from("property")));
         char[] reasonStringBytes;
         final int maxPropertyLength = Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT - 1  // type, reserved
                 - 4  // remaining length
@@ -291,16 +292,16 @@ class Mqtt5DisconnectEncoderTest {
             return this;
         }
 
-        Mqtt5UserProperties getMaxPossibleUserProperties() {
-            return Mqtt5UserProperties.of(userPropertiesBuilder.build());
+        Mqtt5UserPropertiesImpl getMaxPossibleUserProperties() {
+            return Mqtt5UserPropertiesImpl.of(userPropertiesBuilder.build());
         }
 
-        Mqtt5UserProperties getUserProperties(final int totalCount) {
-            final ImmutableList.Builder<Mqtt5UserProperty> builder = new ImmutableList.Builder<>();
+        Mqtt5UserPropertiesImpl getUserProperties(final int totalCount) {
+            final ImmutableList.Builder<Mqtt5UserPropertyImpl> builder = new ImmutableList.Builder<>();
             for (int i = 0; i < totalCount; i++) {
                 builder.add(userProperty);
             }
-            return Mqtt5UserProperties.of(builder.build());
+            return Mqtt5UserPropertiesImpl.of(builder.build());
         }
 
         Mqtt5UTF8StringImpl getReasonStringTooLong() {

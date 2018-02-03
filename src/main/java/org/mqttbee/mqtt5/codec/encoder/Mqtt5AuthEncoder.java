@@ -47,7 +47,7 @@ public class Mqtt5AuthEncoder implements Mqtt5MessageEncoder<Mqtt5AuthImpl> {
         propertyLength += propertyEncodedLength(auth.getMethod());
         propertyLength += nullablePropertyEncodedLength(auth.getRawData());
         propertyLength += nullablePropertyEncodedLength(auth.getRawReasonString());
-        propertyLength += auth.getRawUserProperties().encodedLength();
+        propertyLength += auth.getUserProperties().encodedLength();
 
         if (!Mqtt5DataTypes.isInVariableByteIntegerRange(propertyLength)) {
             throw new Mqtt5VariableByteIntegerExceededException("property length"); // TODO
@@ -72,7 +72,7 @@ public class Mqtt5AuthEncoder implements Mqtt5MessageEncoder<Mqtt5AuthImpl> {
         encodeProperty(AUTHENTICATION_METHOD, auth.getMethod(), out);
         encodeNullableProperty(AUTHENTICATION_DATA, auth.getRawData(), out);
         encodeNullableProperty(REASON_STRING, auth.getRawReasonString(), out);
-        auth.getRawUserProperties().encode(out);
+        auth.getUserProperties().encode(out);
     }
 
 }

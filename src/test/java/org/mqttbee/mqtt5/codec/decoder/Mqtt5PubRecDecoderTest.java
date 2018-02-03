@@ -15,8 +15,9 @@ import org.mqttbee.api.mqtt5.message.Mqtt5PubRec;
 import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
-import org.mqttbee.mqtt5.message.Mqtt5UserProperty;
+import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
+import org.mqttbee.mqtt5.message.pubrec.Mqtt5PubRecImpl;
 import org.mqttbee.mqtt5.message.pubrec.Mqtt5PubRecInternal;
 import org.mqttbee.mqtt5.message.pubrec.Mqtt5PubRecReasonCode;
 
@@ -64,13 +65,13 @@ class Mqtt5PubRecDecoderTest {
                 0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e', '2',
         };
 
-        final Mqtt5PubRec pubRec = decode(encoded);
+        final Mqtt5PubRecImpl pubRec = decode(encoded);
 
         assertEquals(SUCCESS, pubRec.getReasonCode());
         assertTrue(pubRec.getReasonString().isPresent());
         assertEquals("success", pubRec.getReasonString().get().toString());
 
-        final ImmutableList<Mqtt5UserProperty> userProperties = pubRec.getUserProperties();
+        final ImmutableList<Mqtt5UserPropertyImpl> userProperties = pubRec.getUserProperties().asList();
         assertEquals(2, userProperties.size());
         assertEquals("test", userProperties.get(0).getName().toString());
         assertEquals("value", userProperties.get(0).getValue().toString());
@@ -397,7 +398,7 @@ class Mqtt5PubRecDecoderTest {
     }
 
     @NotNull
-    private Mqtt5PubRec decode(final byte[] encoded) {
+    private Mqtt5PubRecImpl decode(final byte[] encoded) {
         final Mqtt5PubRecInternal pubRecInternal = decodeInternal(encoded);
         assertNotNull(pubRecInternal);
         return pubRecInternal.getPubRec();
