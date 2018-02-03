@@ -18,7 +18,7 @@ public class Mqtt5UserPropertiesImpl implements Mqtt5UserProperties {
     /**
      * Empty collection of User Properties.
      */
-    public static final Mqtt5UserPropertiesImpl NO_USER_PROPERTIES = of(ImmutableList.of());
+    public static final Mqtt5UserPropertiesImpl NO_USER_PROPERTIES = new Mqtt5UserPropertiesImpl(ImmutableList.of());
 
     /**
      * Checks if the given collection of User Properties is instance of this implementation.
@@ -128,6 +128,23 @@ public class Mqtt5UserPropertiesImpl implements Mqtt5UserProperties {
             }
         }
         return encodedLength;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Mqtt5UserPropertiesImpl)) {
+            return false;
+        }
+        final Mqtt5UserPropertiesImpl that = (Mqtt5UserPropertiesImpl) o;
+        return userProperties.equals(that.userProperties);
+    }
+
+    @Override
+    public int hashCode() {
+        return userProperties.hashCode();
     }
 
 }
