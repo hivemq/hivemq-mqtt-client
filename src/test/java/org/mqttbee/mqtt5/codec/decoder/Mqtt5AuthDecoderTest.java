@@ -2,6 +2,7 @@ package org.mqttbee.mqtt5.codec.decoder;
 
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.embedded.EmbeddedChannel;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -76,7 +77,7 @@ class Mqtt5AuthDecoderTest {
         assertArrayEquals(new byte[]{
                 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4,
                 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
-        }, auth.getData().get());
+        }, ByteBufUtil.getBytes(auth.getData().get()));
         assertTrue(auth.getReasonString().isPresent());
         assertEquals("continue", auth.getReasonString().get().toString());
 

@@ -1,5 +1,6 @@
 package org.mqttbee.api.mqtt5.message;
 
+import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
@@ -101,7 +102,7 @@ public interface Mqtt5Connect {
          * @return the optional password.
          */
         @NotNull
-        Optional<byte[]> getPassword();
+        Optional<ByteBuf> getPassword();
 
     }
 

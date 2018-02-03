@@ -3,6 +3,8 @@ package org.mqttbee.mqtt5.codec.decoder;
 import com.google.common.collect.ImmutableList;
 import com.google.common.primitives.ImmutableIntArray;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.embedded.EmbeddedChannel;
 import org.junit.After;
 import org.junit.Before;
@@ -108,7 +110,7 @@ public class Mqtt5PublishDecoderTest {
         assertTrue(publish.getResponseTopic().isPresent());
         assertEquals("response", publish.getResponseTopic().get().toString());
         assertTrue(publish.getCorrelationData().isPresent());
-        assertArrayEquals(new byte[]{5, 4, 3, 2, 1}, publish.getCorrelationData().get());
+        assertArrayEquals(new byte[]{5, 4, 3, 2, 1}, ByteBufUtil.getBytes(publish.getCorrelationData().get()));
         assertEquals(Mqtt5Publish.TopicAliasUsage.HAS, publish.getTopicAliasUsage());
 
         final ImmutableList<Mqtt5UserPropertyImpl> userProperties = publish.getUserProperties().asList();
@@ -117,7 +119,7 @@ public class Mqtt5PublishDecoderTest {
         assertEquals("value", userProperties.get(0).getValue().toString());
 
         assertTrue(publish.getPayload().isPresent());
-        assertArrayEquals(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, publish.getPayload().get());
+        assertEquals(Unpooled.wrappedBuffer(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}), publish.getPayload().get());
     }
 
     @Test
@@ -159,7 +161,7 @@ public class Mqtt5PublishDecoderTest {
         assertEquals(Mqtt5Publish.TopicAliasUsage.HAS_NOT, publish.getTopicAliasUsage());
 
         assertTrue(publish.getPayload().isPresent());
-        assertArrayEquals(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, publish.getPayload().get());
+        assertArrayEquals(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, ByteBufUtil.getBytes(publish.getPayload().get()));
     }
 
     @Test
@@ -368,7 +370,7 @@ public class Mqtt5PublishDecoderTest {
         assertTrue(publish.getPayloadFormatIndicator().isPresent());
         assertEquals(Mqtt5PayloadFormatIndicator.UTF_8, publish.getPayloadFormatIndicator().get());
         assertTrue(publish.getPayload().isPresent());
-        assertEquals("你 好", new String(publish.getPayload().get(), StandardCharsets.UTF_8.name()));
+        assertEquals("你 好", publish.getPayload().get().toString(StandardCharsets.UTF_8));
     }
 
     @Test
@@ -741,7 +743,7 @@ public class Mqtt5PublishDecoderTest {
         };
         final Mqtt5PublishImpl publish = decode(encoded);
         assertTrue(publish.getCorrelationData().isPresent());
-        assertArrayEquals(new byte[]{5, 4, 3, 2, 1}, publish.getCorrelationData().get());
+        assertArrayEquals(new byte[]{5, 4, 3, 2, 1}, ByteBufUtil.getBytes(publish.getCorrelationData().get()));
     }
 
     @Test
