@@ -61,7 +61,7 @@ public class Mqtt5UnsubAckTest {
     public void constructor_userPropertiesEmpty() {
         final Mqtt5UserPropertiesImpl emptyUserProperties = NO_USER_PROPERTIES;
         final Mqtt5UnsubAck mqtt5UnsubAck = new Mqtt5UnsubAckImpl(reasonCodes, reasonString, emptyUserProperties);
-        assertEquals(emptyUserProperties.asList(), mqtt5UnsubAck.getUserProperties());
+        assertEquals(emptyUserProperties, mqtt5UnsubAck.getUserProperties());
     }
 
     @Test
@@ -82,6 +82,6 @@ public class Mqtt5UnsubAckTest {
                 Mqtt5UserPropertiesImpl.of(ImmutableList.of(userProperty1, userProperty2, userProperty3));
 
         final Mqtt5UnsubAck mqtt5UnsubAck = new Mqtt5UnsubAckImpl(reasonCodes, reasonString, multipleUserProperties);
-        assertEquals(multipleUserProperties.asList(), mqtt5UnsubAck.getUserProperties());
+        assertEquals(multipleUserProperties, mqtt5UnsubAck.getUserProperties());
     }
 }
