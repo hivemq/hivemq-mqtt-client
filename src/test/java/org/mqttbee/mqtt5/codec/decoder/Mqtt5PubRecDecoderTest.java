@@ -11,14 +11,12 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5Disconnect;
-import org.mqttbee.api.mqtt5.message.Mqtt5PubRec;
 import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.message.pubrec.Mqtt5PubRecImpl;
-import org.mqttbee.mqtt5.message.pubrec.Mqtt5PubRecInternal;
 import org.mqttbee.mqtt5.message.pubrec.Mqtt5PubRecReasonCode;
 
 import static org.junit.Assert.*;
@@ -94,7 +92,7 @@ class Mqtt5PubRecDecoderTest {
                 0x00
         };
 
-        final Mqtt5PubRec pubRec = decode(encoded);
+        final Mqtt5PubRecImpl pubRec = decode(encoded);
         assertEquals(SUCCESS, pubRec.getReasonCode());
     }
 
@@ -117,7 +115,7 @@ class Mqtt5PubRecDecoderTest {
                 0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e',
         };
 
-        final Mqtt5PubRec pubRec = decode(encoded);
+        final Mqtt5PubRecImpl pubRec = decode(encoded);
         assertEquals(SUCCESS, pubRec.getReasonCode());
     }
 
@@ -141,7 +139,7 @@ class Mqtt5PubRecDecoderTest {
                 0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'
         };
 
-        final Mqtt5PubRec pubRec = decode(encoded);
+        final Mqtt5PubRecImpl pubRec = decode(encoded);
         assertEquals(SUCCESS, pubRec.getReasonCode());
     }
 
@@ -162,7 +160,7 @@ class Mqtt5PubRecDecoderTest {
         };
 
         encoded[4] = (byte) reasonCode;
-        final Mqtt5PubRec pubRec = decode(encoded);
+        final Mqtt5PubRecImpl pubRec = decode(encoded);
         assertEquals(Mqtt5PubRecReasonCode.fromCode(reasonCode), pubRec.getReasonCode());
     }
 
@@ -179,7 +177,7 @@ class Mqtt5PubRecDecoderTest {
                 0, 5
         };
 
-        final Mqtt5PubRec pubRec = decode(encoded);
+        final Mqtt5PubRecImpl pubRec = decode(encoded);
         assertEquals(SUCCESS, pubRec.getReasonCode());
     }
 
@@ -333,7 +331,7 @@ class Mqtt5PubRecDecoderTest {
                 0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', 's'
         };
 
-        final Mqtt5PubRec pubRec = decode(encoded);
+        final Mqtt5PubRecImpl pubRec = decode(encoded);
         assertTrue(pubRec.getReasonString().isPresent());
         assertEquals("success", pubRec.getReasonString().get().toString());
     }
@@ -399,33 +397,35 @@ class Mqtt5PubRecDecoderTest {
 
     @NotNull
     private Mqtt5PubRecImpl decode(final byte[] encoded) {
-        final Mqtt5PubRecInternal pubRecInternal = decodeInternal(encoded);
-        assertNotNull(pubRecInternal);
-        return pubRecInternal.getPubRec();
+        final ByteBuf byteBuf = channel.alloc().buffer();
+        byteBuf.writeBytes(encoded);
+        channel.writeInbound(byteBuf);
+        byteBuf.release();
+
+        final Mqtt5PubRecImpl pubRec = channel.readInbound();
+        assertNotNull(pubRec);
+        return pubRec;
     }
 
     private void decodeNok(final byte[] encoded, final Mqtt5DisconnectReasonCode reasonCode) {
-        // try to decode the encoded byte array.
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
-        final Mqtt5PubRecInternal pubRecInternal = channel.readInbound();
+        byteBuf.release();
 
-        // Should not work! Mqtt5PubRecInternal returned should be null
-        assertNull(pubRecInternal);
+        final Mqtt5PubRecImpl pubRec = channel.readInbound();
+        assertNull(pubRec);
 
-        // check that the reason code is correct and reset channel
         final Mqtt5Disconnect disconnect = channel.readOutbound();
         assertNotNull(disconnect);
         assertEquals(reasonCode, disconnect.getReasonCode());
+
         createChannel();
     }
 
-    private Mqtt5PubRecInternal decodeInternal(final byte[] encoded) {
-        final ByteBuf byteBuf = channel.alloc().buffer();
-        byteBuf.writeBytes(encoded);
-        channel.writeInbound(byteBuf);
-        return channel.readInbound();
+    private void createChannel() {
+        channel = new EmbeddedChannel(new Mqtt5Decoder(new Mqtt5PubRecTestMessageDecoders()));
+        channel.attr(ChannelAttributes.INCOMING_TOPIC_ALIAS_MAPPING).set(new Mqtt5TopicImpl[3]);
     }
 
     private static class Mqtt5PubRecTestMessageDecoders implements Mqtt5MessageDecoders {
@@ -437,11 +437,6 @@ class Mqtt5PubRecDecoderTest {
             }
             return null;
         }
-    }
-
-    private void createChannel() {
-        channel = new EmbeddedChannel(new Mqtt5Decoder(new Mqtt5PubRecTestMessageDecoders()));
-        channel.attr(ChannelAttributes.INCOMING_TOPIC_ALIAS_MAPPING).set(new Mqtt5TopicImpl[3]);
     }
 
 }

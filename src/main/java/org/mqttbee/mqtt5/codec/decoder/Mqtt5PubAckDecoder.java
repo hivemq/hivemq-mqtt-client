@@ -10,7 +10,6 @@ import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 import org.mqttbee.mqtt5.message.puback.Mqtt5PubAckImpl;
-import org.mqttbee.mqtt5.message.puback.Mqtt5PubAckInternal;
 import org.mqttbee.mqtt5.message.puback.Mqtt5PubAckProperty;
 import org.mqttbee.mqtt5.message.puback.Mqtt5PubAckReasonCode;
 
@@ -30,7 +29,7 @@ public class Mqtt5PubAckDecoder implements Mqtt5MessageDecoder {
 
     @Override
     @Nullable
-    public Mqtt5PubAckInternal decode(final int flags, @NotNull final Channel channel, @NotNull final ByteBuf in) {
+    public Mqtt5PubAckImpl decode(final int flags, @NotNull final Channel channel, @NotNull final ByteBuf in) {
         if (flags != FLAGS) {
             disconnectWrongFixedHeaderFlags("PUBACK", channel);
             return null;
@@ -101,9 +100,7 @@ public class Mqtt5PubAckDecoder implements Mqtt5MessageDecoder {
 
         final Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.build(userPropertiesBuilder);
 
-        final Mqtt5PubAckImpl pubAck = new Mqtt5PubAckImpl(reasonCode, reasonString, userProperties);
-
-        return new Mqtt5PubAckInternal(pubAck, packetIdentifier);
+        return new Mqtt5PubAckImpl(packetIdentifier, reasonCode, reasonString, userProperties);
     }
 
 }
