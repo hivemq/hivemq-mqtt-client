@@ -33,7 +33,7 @@ class Mqtt5PubRecDecoderTest {
 
     @BeforeEach
     void setUp() {
-        channel = new EmbeddedChannel(new Mqtt5Decoder(new Mqtt5PubRecTestMessageDecoders()));
+        createChannel();
     }
 
     @AfterEach
@@ -63,7 +63,7 @@ class Mqtt5PubRecDecoderTest {
                 0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e', '2',
         };
 
-        final Mqtt5PubRecImpl pubRec = decode(encoded);
+        final Mqtt5PubRecImpl pubRec = decodeOk(encoded);
 
         assertEquals(SUCCESS, pubRec.getReasonCode());
         assertTrue(pubRec.getReasonString().isPresent());
@@ -92,7 +92,7 @@ class Mqtt5PubRecDecoderTest {
                 0x00
         };
 
-        final Mqtt5PubRecImpl pubRec = decode(encoded);
+        final Mqtt5PubRecImpl pubRec = decodeOk(encoded);
         assertEquals(SUCCESS, pubRec.getReasonCode());
     }
 
@@ -115,7 +115,7 @@ class Mqtt5PubRecDecoderTest {
                 0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e',
         };
 
-        final Mqtt5PubRecImpl pubRec = decode(encoded);
+        final Mqtt5PubRecImpl pubRec = decodeOk(encoded);
         assertEquals(SUCCESS, pubRec.getReasonCode());
     }
 
@@ -139,7 +139,7 @@ class Mqtt5PubRecDecoderTest {
                 0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'
         };
 
-        final Mqtt5PubRecImpl pubRec = decode(encoded);
+        final Mqtt5PubRecImpl pubRec = decodeOk(encoded);
         assertEquals(SUCCESS, pubRec.getReasonCode());
     }
 
@@ -160,7 +160,7 @@ class Mqtt5PubRecDecoderTest {
         };
 
         encoded[4] = (byte) reasonCode;
-        final Mqtt5PubRecImpl pubRec = decode(encoded);
+        final Mqtt5PubRecImpl pubRec = decodeOk(encoded);
         assertEquals(Mqtt5PubRecReasonCode.fromCode(reasonCode), pubRec.getReasonCode());
     }
 
@@ -177,7 +177,7 @@ class Mqtt5PubRecDecoderTest {
                 0, 5
         };
 
-        final Mqtt5PubRecImpl pubRec = decode(encoded);
+        final Mqtt5PubRecImpl pubRec = decodeOk(encoded);
         assertEquals(SUCCESS, pubRec.getReasonCode());
     }
 
@@ -331,7 +331,7 @@ class Mqtt5PubRecDecoderTest {
                 0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', 's'
         };
 
-        final Mqtt5PubRecImpl pubRec = decode(encoded);
+        final Mqtt5PubRecImpl pubRec = decodeOk(encoded);
         assertTrue(pubRec.getReasonString().isPresent());
         assertEquals("success", pubRec.getReasonString().get().toString());
     }
@@ -396,24 +396,14 @@ class Mqtt5PubRecDecoderTest {
     }
 
     @NotNull
-    private Mqtt5PubRecImpl decode(final byte[] encoded) {
-        final ByteBuf byteBuf = channel.alloc().buffer();
-        byteBuf.writeBytes(encoded);
-        channel.writeInbound(byteBuf);
-        byteBuf.release();
-
-        final Mqtt5PubRecImpl pubRec = channel.readInbound();
+    private Mqtt5PubRecImpl decodeOk(final byte[] encoded) {
+        final Mqtt5PubRecImpl pubRec = decode(encoded);
         assertNotNull(pubRec);
         return pubRec;
     }
 
     private void decodeNok(final byte[] encoded, final Mqtt5DisconnectReasonCode reasonCode) {
-        final ByteBuf byteBuf = channel.alloc().buffer();
-        byteBuf.writeBytes(encoded);
-        channel.writeInbound(byteBuf);
-        byteBuf.release();
-
-        final Mqtt5PubRecImpl pubRec = channel.readInbound();
+        final Mqtt5PubRecImpl pubRec = decode(encoded);
         assertNull(pubRec);
 
         final Mqtt5Disconnect disconnect = channel.readOutbound();
@@ -421,6 +411,15 @@ class Mqtt5PubRecDecoderTest {
         assertEquals(reasonCode, disconnect.getReasonCode());
 
         createChannel();
+    }
+
+    @Nullable
+    private Mqtt5PubRecImpl decode(final byte[] encoded) {
+        final ByteBuf byteBuf = channel.alloc().buffer();
+        byteBuf.writeBytes(encoded);
+        channel.writeInbound(byteBuf);
+
+        return channel.readInbound();
     }
 
     private void createChannel() {

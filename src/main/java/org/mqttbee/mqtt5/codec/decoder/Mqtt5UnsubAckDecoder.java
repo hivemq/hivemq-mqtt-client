@@ -11,7 +11,6 @@ import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.message.unsuback.Mqtt5UnsubAckImpl;
-import org.mqttbee.mqtt5.message.unsuback.Mqtt5UnsubAckInternal;
 import org.mqttbee.mqtt5.message.unsuback.Mqtt5UnsubAckProperty;
 import org.mqttbee.mqtt5.message.unsuback.Mqtt5UnsubAckReasonCode;
 
@@ -30,7 +29,7 @@ public class Mqtt5UnsubAckDecoder implements Mqtt5MessageDecoder {
 
     @Override
     @Nullable
-    public Mqtt5UnsubAckInternal decode(final int flags, @NotNull final Channel channel, @NotNull final ByteBuf in) {
+    public Mqtt5UnsubAckImpl decode(final int flags, @NotNull final Channel channel, @NotNull final ByteBuf in) {
         if (flags != FLAGS) {
             disconnectWrongFixedHeaderFlags("UNSUBACK", channel);
             return null;
@@ -114,9 +113,7 @@ public class Mqtt5UnsubAckDecoder implements Mqtt5MessageDecoder {
 
         final Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.build(userPropertiesBuilder);
 
-        final Mqtt5UnsubAckImpl subAck = new Mqtt5UnsubAckImpl(reasonCodes, reasonString, userProperties);
-
-        return new Mqtt5UnsubAckInternal(subAck, packetIdentifier);
+        return new Mqtt5UnsubAckImpl(packetIdentifier, reasonCodes, reasonString, userProperties);
     }
 
 }

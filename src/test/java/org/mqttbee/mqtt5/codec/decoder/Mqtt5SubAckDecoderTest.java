@@ -15,7 +15,6 @@ import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.message.suback.Mqtt5SubAckImpl;
-import org.mqttbee.mqtt5.message.suback.Mqtt5SubAckInternal;
 import org.mqttbee.mqtt5.message.suback.Mqtt5SubAckReasonCode;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,7 +30,7 @@ class Mqtt5SubAckDecoderTest {
 
     @BeforeEach
     void setUp() {
-        channel = new EmbeddedChannel(new Mqtt5Decoder(new Mqtt5SubAckTestMessageDecoders()));
+        createChannel();
     }
 
     @AfterEach
@@ -60,11 +59,9 @@ class Mqtt5SubAckDecoderTest {
                 0x00
         };
 
-        final Mqtt5SubAckInternal subAckInternal = decodeInternal(encoded);
-        assertEquals(3, subAckInternal.getPacketIdentifier());
-        final Mqtt5SubAckImpl subAck = subAckInternal.getSubAck();
-        assertNotNull(subAck);
+        final Mqtt5SubAckImpl subAck = decodeOk(encoded);
 
+        assertEquals(3, subAck.getPacketIdentifier());
         assertTrue(subAck.getReasonString().isPresent());
         assertEquals("success", subAck.getReasonString().get().toString());
 
@@ -100,7 +97,7 @@ class Mqtt5SubAckDecoderTest {
                 0x00
         };
 
-        final Mqtt5SubAckImpl subAck = decode(encoded);
+        final Mqtt5SubAckImpl subAck = decodeOk(encoded);
 
         assertTrue(subAck.getReasonString().isPresent());
         assertEquals("success", subAck.getReasonString().get().toString());
@@ -135,7 +132,7 @@ class Mqtt5SubAckDecoderTest {
                 // payload
                 0x00
         };
-        decode(encoded);
+        decodeOk(encoded);
         encoded[8] = (byte) '\uFFFF';
         decodeNok(encoded, MALFORMED_PACKET);
     }
@@ -159,7 +156,7 @@ class Mqtt5SubAckDecoderTest {
                 0x00
         };
 
-        final Mqtt5SubAckImpl subAck = decode(encoded);
+        final Mqtt5SubAckImpl subAck = decodeOk(encoded);
         assertTrue(subAck.getReasonString().isPresent());
         assertEquals("success", subAck.getReasonString().get().toString());
     }
@@ -204,7 +201,7 @@ class Mqtt5SubAckDecoderTest {
         };
 
         encoded[5] = (byte) reasonCode.getCode();
-        final Mqtt5SubAckImpl subAck = decode(encoded);
+        final Mqtt5SubAckImpl subAck = decodeOk(encoded);
         final ImmutableList<Mqtt5SubAckReasonCode> reasonCodes = subAck.getReasonCodes();
         assertEquals(1, reasonCodes.size());
         assertEquals(reasonCode, reasonCodes.get(0));
@@ -228,7 +225,7 @@ class Mqtt5SubAckDecoderTest {
                 (byte) 0x9E, (byte) 0xA1, (byte) 0xA2
         };
 
-        final Mqtt5SubAckImpl subAck = decode(encoded);
+        final Mqtt5SubAckImpl subAck = decodeOk(encoded);
         final ImmutableList<Mqtt5SubAckReasonCode> reasonCodes = subAck.getReasonCodes();
         assertEquals(12, reasonCodes.size());
         assertEquals(Mqtt5SubAckReasonCode.GRANTED_QOS_0, reasonCodes.get(0));
@@ -279,14 +276,16 @@ class Mqtt5SubAckDecoderTest {
                 0x00
         };
 
-        final Mqtt5SubAckImpl subAck = decode(encoded);
+        final Mqtt5SubAckImpl subAck = decodeOk(encoded);
         final ImmutableList<Mqtt5SubAckReasonCode> reasonCodes = subAck.getReasonCodes();
         assertEquals(1, reasonCodes.size());
         assertEquals(Mqtt5SubAckReasonCode.GRANTED_QOS_0, reasonCodes.get(0));
+
         encoded[5] = (byte) 0xA5; // invalid reason code
         decodeNok(encoded, MALFORMED_PACKET);
+
         encoded[5] = (byte) 0x00; // ok reason code
-        decode(encoded);
+        decodeOk(encoded);
     }
 
     @Test
@@ -359,7 +358,8 @@ class Mqtt5SubAckDecoderTest {
                 0x00
         };
 
-        decode(encoded);
+        decodeOk(encoded);
+
         encoded[5] = 0x01; // invalid property type for suback
         decodeNok(encoded, MALFORMED_PACKET);
     }
@@ -384,7 +384,8 @@ class Mqtt5SubAckDecoderTest {
                 0x00
         };
 
-        decode(encoded);
+        decodeOk(encoded);
+
         encoded[4] = (byte) (encoded[4] + 2); // make property length longer than readable bytes
         decodeNok(encoded, MALFORMED_PACKET);
     }
@@ -408,7 +409,8 @@ class Mqtt5SubAckDecoderTest {
                 0x00
         };
 
-        decode(encoded);
+        decodeOk(encoded);
+
         encoded[4] = (byte) (encoded[4] - 1); // make property length shorter
         decodeNok(encoded, MALFORMED_PACKET);
     }
@@ -432,32 +434,41 @@ class Mqtt5SubAckDecoderTest {
                 0x00
         };
 
-        decode(encoded);
+        decodeOk(encoded);
+
         encoded[5] = (byte) 0xFF; // invalid property type for suback
         decodeNok(encoded, MALFORMED_PACKET);
     }
 
     @NotNull
-    private Mqtt5SubAckImpl decode(final byte[] encoded) {
-        final Mqtt5SubAckInternal subAckInternal = decodeInternal(encoded);
-        assertNotNull(subAckInternal);
-        return subAckInternal.getSubAck();
+    private Mqtt5SubAckImpl decodeOk(final byte[] encoded) {
+        final Mqtt5SubAckImpl subAck = decode(encoded);
+        assertNotNull(subAck);
+        return subAck;
     }
 
     private void decodeNok(final byte[] encoded, final Mqtt5DisconnectReasonCode reasonCode) {
-        final Mqtt5SubAckInternal subAckInternal = decodeInternal(encoded);
-        assertNull(subAckInternal);
+        final Mqtt5SubAckImpl subAck = decode(encoded);
+        assertNull(subAck);
+
         final Mqtt5Disconnect disconnect = channel.readOutbound();
         assertNotNull(disconnect);
         assertEquals(reasonCode, disconnect.getReasonCode());
+
         createChannel();
     }
 
-    private Mqtt5SubAckInternal decodeInternal(final byte[] encoded) {
+    @Nullable
+    private Mqtt5SubAckImpl decode(final byte[] encoded) {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
+
         return channel.readInbound();
+    }
+
+    private void createChannel() {
+        channel = new EmbeddedChannel(new Mqtt5Decoder(new Mqtt5SubAckTestMessageDecoders()));
     }
 
     private static class Mqtt5SubAckTestMessageDecoders implements Mqtt5MessageDecoders {
@@ -469,10 +480,6 @@ class Mqtt5SubAckDecoderTest {
             }
             return null;
         }
-    }
-
-    private void createChannel() {
-        channel = new EmbeddedChannel(new Mqtt5Decoder(new Mqtt5SubAckTestMessageDecoders()));
     }
 
 }
