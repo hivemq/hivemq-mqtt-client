@@ -378,9 +378,8 @@ class Mqtt5PublishEncoderTest {
                 0x26, 0, 4, 'k', 'e', 'y', '2', 0, 6, 'v', 'a', 'l', 'u', 'e', '2'
         };
 
-        final Mqtt5UserPropertiesImpl userProperties =
-                Mqtt5UserPropertiesImpl.of(ImmutableList.of(new Mqtt5UserPropertyImpl(
-                        requireNonNull(Mqtt5UTF8StringImpl.from("key")),
+        final Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.of(ImmutableList
+                .of(new Mqtt5UserPropertyImpl(requireNonNull(Mqtt5UTF8StringImpl.from("key")),
                         requireNonNull(Mqtt5UTF8StringImpl.from("value"))), new Mqtt5UserPropertyImpl(
                         requireNonNull(Mqtt5UTF8StringImpl.from("key2")),
                                 requireNonNull(Mqtt5UTF8StringImpl.from("value2")))));

@@ -10,7 +10,6 @@ import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 import org.mqttbee.mqtt5.message.pubrel.Mqtt5PubRelImpl;
-import org.mqttbee.mqtt5.message.pubrel.Mqtt5PubRelInternal;
 import org.mqttbee.mqtt5.message.pubrel.Mqtt5PubRelProperty;
 import org.mqttbee.mqtt5.message.pubrel.Mqtt5PubRelReasonCode;
 
@@ -30,7 +29,7 @@ public class Mqtt5PubRelDecoder implements Mqtt5MessageDecoder {
 
     @Override
     @Nullable
-    public Mqtt5PubRelInternal decode(final int flags, @NotNull final Channel channel, @NotNull final ByteBuf in) {
+    public Mqtt5PubRelImpl decode(final int flags, @NotNull final Channel channel, @NotNull final ByteBuf in) {
         if (flags != FLAGS) {
             disconnectWrongFixedHeaderFlags("PUBREL", channel);
             return null;
@@ -101,9 +100,7 @@ public class Mqtt5PubRelDecoder implements Mqtt5MessageDecoder {
 
         final Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.build(userPropertiesBuilder);
 
-        final Mqtt5PubRelImpl pubRel = new Mqtt5PubRelImpl(reasonCode, reasonString, userProperties);
-
-        return new Mqtt5PubRelInternal(pubRel, packetIdentifier);
+        return new Mqtt5PubRelImpl(packetIdentifier, reasonCode, reasonString, userProperties);
     }
 
 }

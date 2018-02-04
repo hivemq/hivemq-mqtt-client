@@ -17,7 +17,6 @@ import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 import org.mqttbee.mqtt5.message.puback.Mqtt5PubAckImpl;
-import org.mqttbee.mqtt5.message.puback.Mqtt5PubAckInternal;
 import org.mqttbee.mqtt5.message.puback.Mqtt5PubAckReasonCode;
 
 import static java.util.Objects.requireNonNull;
@@ -73,9 +72,9 @@ class Mqtt5PubAckEncoderTest {
         final Mqtt5UserPropertiesImpl userProperties =
                 Mqtt5UserPropertiesImpl.of(ImmutableList.of(new Mqtt5UserPropertyImpl(user, property)));
 
-        final Mqtt5PubAckImpl pubAck = new Mqtt5PubAckImpl(Mqtt5PubAckReasonCode.SUCCESS, reasonString, userProperties);
-        final int packetIdentifier = (127 * 256) + 1;
-        encode(expected, pubAck, packetIdentifier);
+        final Mqtt5PubAckImpl pubAck =
+                new Mqtt5PubAckImpl((127 * 256) + 1, Mqtt5PubAckReasonCode.SUCCESS, reasonString, userProperties);
+        encode(expected, pubAck);
     }
 
     @Test
@@ -100,9 +99,8 @@ class Mqtt5PubAckEncoderTest {
         final Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES;
 
         final Mqtt5PubAckImpl pubAck =
-                new Mqtt5PubAckImpl(Mqtt5PubAckReasonCode.NO_MATCHING_SUBSCRIBERS, reasonString, userProperties);
-        final int packetIdentifier = 1;
-        encode(expected, pubAck, packetIdentifier);
+                new Mqtt5PubAckImpl(1, Mqtt5PubAckReasonCode.NO_MATCHING_SUBSCRIBERS, reasonString, userProperties);
+        encode(expected, pubAck);
     }
 
     @Test
@@ -121,9 +119,8 @@ class Mqtt5PubAckEncoderTest {
 
         final Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES;
 
-        final Mqtt5PubAckImpl pubAck = new Mqtt5PubAckImpl(Mqtt5PubAckReasonCode.SUCCESS, null, userProperties);
-        final int packetIdentifier = 1;
-        encode(expected, pubAck, packetIdentifier);
+        final Mqtt5PubAckImpl pubAck = new Mqtt5PubAckImpl(1, Mqtt5PubAckReasonCode.SUCCESS, null, userProperties);
+        encode(expected, pubAck);
     }
 
     @ParameterizedTest
@@ -145,9 +142,8 @@ class Mqtt5PubAckEncoderTest {
 
         final Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES;
 
-        final Mqtt5PubAckImpl pubAck = new Mqtt5PubAckImpl(reasonCode, null, userProperties);
-        final int packetIdentifier = 1;
-        encode(expected, pubAck, packetIdentifier);
+        final Mqtt5PubAckImpl pubAck = new Mqtt5PubAckImpl(1, reasonCode, null, userProperties);
+        encode(expected, pubAck);
     }
 
     @Test
@@ -180,9 +176,8 @@ class Mqtt5PubAckEncoderTest {
                 Mqtt5UserPropertiesImpl.of(ImmutableList.of(new Mqtt5UserPropertyImpl(user, property)));
 
         final Mqtt5PubAckImpl pubAck =
-                new Mqtt5PubAckImpl(Mqtt5PubAckReasonCode.NO_MATCHING_SUBSCRIBERS, reasonString, userProperties);
-        final int packetIdentifier = 1;
-        encode(expected, pubAck, packetIdentifier);
+                new Mqtt5PubAckImpl(1, Mqtt5PubAckReasonCode.NO_MATCHING_SUBSCRIBERS, reasonString, userProperties);
+        encode(expected, pubAck);
     }
 
     @Test
@@ -214,21 +209,9 @@ class Mqtt5PubAckEncoderTest {
         final Mqtt5UserPropertiesImpl userProperties =
                 Mqtt5UserPropertiesImpl.of(ImmutableList.of(new Mqtt5UserPropertyImpl(user, property)));
 
-        final Mqtt5PubAckImpl pubAck = new Mqtt5PubAckImpl(Mqtt5PubAckReasonCode.SUCCESS, reasonString, userProperties);
-        final int packetIdentifier = 1;
-        encode(expected, pubAck, packetIdentifier);
-    }
-
-    private void encode(final byte[] expected, final Mqtt5PubAckImpl pubAck, final int packetIdentifier) {
-        final Mqtt5PubAckInternal pubAckInternal = new Mqtt5PubAckInternal(pubAck, packetIdentifier);
-
-        channel.writeOutbound(pubAckInternal);
-        final ByteBuf byteBuf = channel.readOutbound();
-
-        final byte[] actual = new byte[byteBuf.readableBytes()];
-        byteBuf.readBytes(actual);
-
-        assertArrayEquals(expected, actual);
+        final Mqtt5PubAckImpl pubAck =
+                new Mqtt5PubAckImpl(1, Mqtt5PubAckReasonCode.SUCCESS, reasonString, userProperties);
+        encode(expected, pubAck);
     }
 
     @Test
@@ -288,20 +271,15 @@ class Mqtt5PubAckEncoderTest {
         }
 
         final Mqtt5UTF8StringImpl reasonString = Mqtt5UTF8StringImpl.from(reasonStringBuilder.toString());
-        final Mqtt5PubAckImpl pubAck = new Mqtt5PubAckImpl(Mqtt5PubAckReasonCode.SUCCESS, reasonString,
+        final Mqtt5PubAckImpl pubAck = new Mqtt5PubAckImpl(1, Mqtt5PubAckReasonCode.SUCCESS, reasonString,
                 Mqtt5UserPropertiesImpl.of(userPropertiesBuilder.build()));
-        final int packetIdentifier = 1;
-        final Mqtt5PubAckInternal pubAckInternal = new Mqtt5PubAckInternal(pubAck, packetIdentifier);
-
-        channel.writeOutbound(pubAckInternal);
-        final ByteBuf byteBuf = channel.readOutbound();
-
-        final byte[] actual = new byte[byteBuf.readableBytes()];
-        byteBuf.readBytes(actual);
 
         final byte[] expectedBytes = new byte[expected.readableBytes()];
         expected.readBytes(expectedBytes);
-        assertArrayEquals(expectedBytes, actual);
+
+        encode(expectedBytes, pubAck);
+
+        expected.release();
     }
 
     @Test
@@ -310,12 +288,10 @@ class Mqtt5PubAckEncoderTest {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
 
         final Mqtt5PubAckImpl pubAck =
-                new Mqtt5PubAckImpl(Mqtt5PubAckReasonCode.SUCCESS, maxPacket.getMaxPaddedReasonString("a"),
+                new Mqtt5PubAckImpl(1, Mqtt5PubAckReasonCode.SUCCESS, maxPacket.getMaxPaddedReasonString("a"),
                         maxPacket.getMaxPossibleUserProperties());
-        final int packetIdentifier = 1;
-        final Mqtt5PubAckInternal pubAckInternal = new Mqtt5PubAckInternal(pubAck, packetIdentifier);
 
-        final Throwable exception = assertThrows(EncoderException.class, () -> channel.writeOutbound(pubAckInternal));
+        final Throwable exception = assertThrows(EncoderException.class, () -> channel.writeOutbound(pubAck));
         assertTrue(exception.getMessage().contains("variable byte integer size exceeded for remaining length"));
     }
 
@@ -325,12 +301,10 @@ class Mqtt5PubAckEncoderTest {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
 
         final Mqtt5PubAckImpl pubAck =
-                new Mqtt5PubAckImpl(Mqtt5PubAckReasonCode.SUCCESS, maxPacket.getMaxPaddedReasonString(),
+                new Mqtt5PubAckImpl(1, Mqtt5PubAckReasonCode.SUCCESS, maxPacket.getMaxPaddedReasonString(),
                         maxPacket.getMaxPossibleUserProperties(1));
-        final int packetIdentifier = 1;
-        final Mqtt5PubAckInternal pubAckInternal = new Mqtt5PubAckInternal(pubAck, packetIdentifier);
 
-        final Throwable exception = assertThrows(EncoderException.class, () -> channel.writeOutbound(pubAckInternal));
+        final Throwable exception = assertThrows(EncoderException.class, () -> channel.writeOutbound(pubAck));
         assertTrue(exception.getMessage().contains("variable byte integer size exceeded for property length"));
     }
 
@@ -350,9 +324,8 @@ class Mqtt5PubAckEncoderTest {
 
         final Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES;
 
-        final Mqtt5PubAckImpl pubAck = new Mqtt5PubAckImpl(Mqtt5PubAckReasonCode.SUCCESS, null, userProperties);
-        final int packetIdentifier = 1;
-        encode(expected, pubAck, packetIdentifier);
+        final Mqtt5PubAckImpl pubAck = new Mqtt5PubAckImpl(1, Mqtt5PubAckReasonCode.SUCCESS, null, userProperties);
+        encode(expected, pubAck);
     }
 
     @ParameterizedTest
@@ -385,9 +358,19 @@ class Mqtt5PubAckEncoderTest {
         final Mqtt5UserPropertiesImpl userProperties =
                 Mqtt5UserPropertiesImpl.of(ImmutableList.of(new Mqtt5UserPropertyImpl(user, property)));
 
-        final Mqtt5PubAckImpl pubAck = new Mqtt5PubAckImpl(reasonCode, reasonString, userProperties);
-        final int packetIdentifier = 1;
-        encode(expected, pubAck, packetIdentifier);
+        final Mqtt5PubAckImpl pubAck = new Mqtt5PubAckImpl(1, reasonCode, reasonString, userProperties);
+        encode(expected, pubAck);
+    }
+
+    private void encode(final byte[] expected, final Mqtt5PubAckImpl pubAck) {
+        channel.writeOutbound(pubAck);
+        final ByteBuf byteBuf = channel.readOutbound();
+
+        final byte[] actual = new byte[byteBuf.readableBytes()];
+        byteBuf.readBytes(actual);
+        byteBuf.release();
+
+        assertArrayEquals(expected, actual);
     }
 
     private class MaximumPacketBuilder {

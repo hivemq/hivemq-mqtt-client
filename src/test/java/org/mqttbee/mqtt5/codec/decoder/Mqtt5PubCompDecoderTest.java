@@ -10,13 +10,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5Disconnect;
-import org.mqttbee.api.mqtt5.message.Mqtt5PubComp;
 import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.message.pubcomp.Mqtt5PubCompImpl;
-import org.mqttbee.mqtt5.message.pubcomp.Mqtt5PubCompInternal;
 import org.mqttbee.mqtt5.message.pubcomp.Mqtt5PubCompReasonCode;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -70,14 +68,11 @@ class Mqtt5PubCompDecoderTest {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
-        final Mqtt5PubCompInternal pubCompInternal = channel.readInbound();
+        final Mqtt5PubCompImpl pubComp = channel.readInbound();
 
-        assertNotNull(pubCompInternal);
+        assertNotNull(pubComp);
 
-        assertEquals(5, pubCompInternal.getPacketIdentifier());
-
-        final Mqtt5PubCompImpl pubComp = pubCompInternal.getPubComp();
-
+        assertEquals(5, pubComp.getPacketIdentifier());
         assertEquals(Mqtt5PubCompReasonCode.SUCCESS, pubComp.getReasonCode());
         assertTrue(pubComp.getReasonString().isPresent());
         assertEquals("success", pubComp.getReasonString().get().toString());
@@ -103,14 +98,11 @@ class Mqtt5PubCompDecoderTest {
         byteBuf.writeByte(0).writeByte(5);
 
         channel.writeInbound(byteBuf);
-        final Mqtt5PubCompInternal pubCompInternal = channel.readInbound();
+        final Mqtt5PubCompImpl pubComp = channel.readInbound();
 
-        assertNotNull(pubCompInternal);
+        assertNotNull(pubComp);
 
-        assertEquals(5, pubCompInternal.getPacketIdentifier());
-
-        final Mqtt5PubComp pubComp = pubCompInternal.getPubComp();
-
+        assertEquals(5, pubComp.getPacketIdentifier());
         assertEquals(Mqtt5PubCompReasonCode.SUCCESS, pubComp.getReasonCode());
         assertFalse(pubComp.getReasonString().isPresent());
         assertEquals(0, pubComp.getUserProperties().asList().size());
@@ -131,14 +123,11 @@ class Mqtt5PubCompDecoderTest {
         byteBuf.writeByte(0x92);
 
         channel.writeInbound(byteBuf);
-        final Mqtt5PubCompInternal pubCompInternal = channel.readInbound();
+        final Mqtt5PubCompImpl pubComp = channel.readInbound();
 
-        assertNotNull(pubCompInternal);
+        assertNotNull(pubComp);
 
-        assertEquals(5, pubCompInternal.getPacketIdentifier());
-
-        final Mqtt5PubComp pubComp = pubCompInternal.getPubComp();
-
+        assertEquals(5, pubComp.getPacketIdentifier());
         assertEquals(Mqtt5PubCompReasonCode.PACKET_IDENTIFIER_NOT_FOUND, pubComp.getReasonCode());
         assertFalse(pubComp.getReasonString().isPresent());
         assertEquals(0, pubComp.getUserProperties().asList().size());
@@ -177,7 +166,7 @@ class Mqtt5PubCompDecoderTest {
         byteBuf.writeByte(0);
 
         channel.writeInbound(byteBuf);
-        final Mqtt5PubComp pubComp = channel.readInbound();
+        final Mqtt5PubCompImpl pubComp = channel.readInbound();
 
         assertNull(pubComp);
 
@@ -196,7 +185,7 @@ class Mqtt5PubCompDecoderTest {
         byteBuf.writeByte(128);
 
         channel.writeInbound(byteBuf);
-        final Mqtt5PubComp pubComp = channel.readInbound();
+        final Mqtt5PubCompImpl pubComp = channel.readInbound();
 
         assertNull(pubComp);
 
@@ -553,14 +542,11 @@ class Mqtt5PubCompDecoderTest {
         byteBuf.writeBytes(new byte[]{0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'});
 
         channel.writeInbound(byteBuf);
-        final Mqtt5PubCompInternal pubCompInternal = channel.readInbound();
+        final Mqtt5PubCompImpl pubComp = channel.readInbound();
 
-        assertNotNull(pubCompInternal);
+        assertNotNull(pubComp);
 
-        assertEquals(5, pubCompInternal.getPacketIdentifier());
-
-        final Mqtt5PubCompImpl pubComp = pubCompInternal.getPubComp();
-
+        assertEquals(5, pubComp.getPacketIdentifier());
         assertEquals(Mqtt5PubCompReasonCode.SUCCESS, pubComp.getReasonCode());
         assertFalse(pubComp.getReasonString().isPresent());
 
@@ -813,8 +799,8 @@ class Mqtt5PubCompDecoderTest {
     }
 
     private void testDisconnect(final Mqtt5DisconnectReasonCode reasonCode, final boolean sendReasonString) {
-        final Mqtt5PubCompInternal pubCompInternal = channel.readInbound();
-        assertNull(pubCompInternal);
+        final Mqtt5PubCompImpl pubComp = channel.readInbound();
+        assertNull(pubComp);
 
         final Mqtt5Disconnect disconnect = channel.readOutbound();
         assertNotNull(disconnect);

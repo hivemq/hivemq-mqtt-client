@@ -15,7 +15,6 @@ import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.message.puback.Mqtt5PubAckImpl;
-import org.mqttbee.mqtt5.message.puback.Mqtt5PubAckInternal;
 import org.mqttbee.mqtt5.message.puback.Mqtt5PubAckReasonCode;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -69,14 +68,11 @@ class Mqtt5PubAckDecoderTest {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
-        final Mqtt5PubAckInternal pubAckInternal = channel.readInbound();
+        final Mqtt5PubAckImpl pubAck = channel.readInbound();
 
-        assertNotNull(pubAckInternal);
+        assertNotNull(pubAck);
 
-        assertEquals(5, pubAckInternal.getPacketIdentifier());
-
-        final Mqtt5PubAckImpl pubAck = pubAckInternal.getPubAck();
-
+        assertEquals(5, pubAck.getPacketIdentifier());
         assertEquals(Mqtt5PubAckReasonCode.SUCCESS, pubAck.getReasonCode());
         assertTrue(pubAck.getReasonString().isPresent());
         assertEquals("success", pubAck.getReasonString().get().toString());
@@ -102,14 +98,11 @@ class Mqtt5PubAckDecoderTest {
         byteBuf.writeByte(0).writeByte(5);
 
         channel.writeInbound(byteBuf);
-        final Mqtt5PubAckInternal pubAckInternal = channel.readInbound();
+        final Mqtt5PubAckImpl pubAck = channel.readInbound();
 
-        assertNotNull(pubAckInternal);
+        assertNotNull(pubAck);
 
-        assertEquals(5, pubAckInternal.getPacketIdentifier());
-
-        final Mqtt5PubAckImpl pubAck = pubAckInternal.getPubAck();
-
+        assertEquals(5, pubAck.getPacketIdentifier());
         assertEquals(Mqtt5PubAckReasonCode.SUCCESS, pubAck.getReasonCode());
         assertFalse(pubAck.getReasonString().isPresent());
         assertEquals(0, pubAck.getUserProperties().asList().size());
@@ -130,14 +123,11 @@ class Mqtt5PubAckDecoderTest {
         byteBuf.writeByte(0x10);
 
         channel.writeInbound(byteBuf);
-        final Mqtt5PubAckInternal pubAckInternal = channel.readInbound();
+        final Mqtt5PubAckImpl pubAck = channel.readInbound();
 
-        assertNotNull(pubAckInternal);
+        assertNotNull(pubAck);
 
-        assertEquals(5, pubAckInternal.getPacketIdentifier());
-
-        final Mqtt5PubAckImpl pubAck = pubAckInternal.getPubAck();
-
+        assertEquals(5, pubAck.getPacketIdentifier());
         assertEquals(Mqtt5PubAckReasonCode.NO_MATCHING_SUBSCRIBERS, pubAck.getReasonCode());
         assertFalse(pubAck.getReasonString().isPresent());
         assertEquals(0, pubAck.getUserProperties().asList().size());
@@ -176,9 +166,9 @@ class Mqtt5PubAckDecoderTest {
         byteBuf.writeByte(0);
 
         channel.writeInbound(byteBuf);
-        final Mqtt5PubAckInternal pubAckInternal = channel.readInbound();
+        final Mqtt5PubAckImpl pubAck = channel.readInbound();
 
-        assertNull(pubAckInternal);
+        assertNull(pubAck);
 
         final Mqtt5Disconnect disconnect = channel.readOutbound();
 
@@ -195,9 +185,9 @@ class Mqtt5PubAckDecoderTest {
         byteBuf.writeByte(128);
 
         channel.writeInbound(byteBuf);
-        final Mqtt5PubAckInternal pubAckInternal = channel.readInbound();
+        final Mqtt5PubAckImpl pubAck = channel.readInbound();
 
-        assertNull(pubAckInternal);
+        assertNull(pubAck);
 
         final Mqtt5Disconnect disconnect = channel.readOutbound();
 
@@ -552,14 +542,11 @@ class Mqtt5PubAckDecoderTest {
         byteBuf.writeBytes(new byte[]{0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'});
 
         channel.writeInbound(byteBuf);
-        final Mqtt5PubAckInternal pubAckInternal = channel.readInbound();
+        final Mqtt5PubAckImpl pubAck = channel.readInbound();
 
-        assertNotNull(pubAckInternal);
+        assertNotNull(pubAck);
 
-        assertEquals(5, pubAckInternal.getPacketIdentifier());
-
-        final Mqtt5PubAckImpl pubAck = pubAckInternal.getPubAck();
-
+        assertEquals(5, pubAck.getPacketIdentifier());
         assertEquals(Mqtt5PubAckReasonCode.SUCCESS, pubAck.getReasonCode());
         assertFalse(pubAck.getReasonString().isPresent());
 
@@ -812,8 +799,8 @@ class Mqtt5PubAckDecoderTest {
     }
 
     private void testDisconnect(final Mqtt5DisconnectReasonCode reasonCode, final boolean sendReasonString) {
-        final Mqtt5PubAckInternal pubAckInternal = channel.readInbound();
-        assertNull(pubAckInternal);
+        final Mqtt5PubAckImpl pubAck = channel.readInbound();
+        assertNull(pubAck);
 
         final Mqtt5Disconnect disconnect = channel.readOutbound();
         assertNotNull(disconnect);
