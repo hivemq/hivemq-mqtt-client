@@ -63,7 +63,7 @@ class Mqtt5PubRelDecoderTest {
                 0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e', '2',
         };
 
-        final Mqtt5PubRelImpl pubRel = decode(encoded);
+        final Mqtt5PubRelImpl pubRel = decodeOk(encoded);
 
         assertEquals(SUCCESS, pubRel.getReasonCode());
         assertTrue(pubRel.getReasonString().isPresent());
@@ -90,7 +90,7 @@ class Mqtt5PubRelDecoderTest {
                 0, 5
         };
 
-        final Mqtt5PubRelImpl pubRel = decode(encoded);
+        final Mqtt5PubRelImpl pubRel = decodeOk(encoded);
         assertEquals(SUCCESS, pubRel.getReasonCode());
     }
 
@@ -113,7 +113,7 @@ class Mqtt5PubRelDecoderTest {
 
         };
         encoded[4] = (byte) reasonCode.getCode();
-        final Mqtt5PubRelImpl pubRel = decode(encoded);
+        final Mqtt5PubRelImpl pubRel = decodeOk(encoded);
         assertEquals(reasonCode, pubRel.getReasonCode());
     }
 
@@ -137,7 +137,7 @@ class Mqtt5PubRelDecoderTest {
                 0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e', '2'
         };
 
-        final Mqtt5PubRelImpl pubRel = decode(encoded);
+        final Mqtt5PubRelImpl pubRel = decodeOk(encoded);
         final ImmutableList<Mqtt5UserPropertyImpl> userProperties = pubRel.getUserProperties().asList();
         assertEquals(2, userProperties.size());
         assertEquals("test", userProperties.get(0).getName().toString());
@@ -337,24 +337,14 @@ class Mqtt5PubRelDecoderTest {
     }
 
     @NotNull
-    private Mqtt5PubRelImpl decode(final byte[] encode) {
-        final ByteBuf byteBuf = channel.alloc().buffer();
-        byteBuf.writeBytes(encode);
-        channel.writeInbound(byteBuf);
-        byteBuf.release();
-
-        final Mqtt5PubRelImpl pubRel = channel.readInbound();
+    private Mqtt5PubRelImpl decodeOk(final byte[] encoded) {
+        final Mqtt5PubRelImpl pubRel = decode(encoded);
         assertNotNull(pubRel);
         return pubRel;
     }
 
     private void decodeNok(final byte[] encoded, final Mqtt5DisconnectReasonCode reasonCode) {
-        final ByteBuf byteBuf = channel.alloc().buffer();
-        byteBuf.writeBytes(encoded);
-        channel.writeInbound(byteBuf);
-        byteBuf.release();
-
-        final Mqtt5PubRelImpl pubRel = channel.readInbound();
+        final Mqtt5PubRelImpl pubRel = decode(encoded);
         assertNull(pubRel);
 
         final Mqtt5Disconnect disconnect = channel.readOutbound();
@@ -362,6 +352,15 @@ class Mqtt5PubRelDecoderTest {
         assertEquals(reasonCode, disconnect.getReasonCode());
 
         createChannel();
+    }
+
+    @Nullable
+    private Mqtt5PubRelImpl decode(final byte[] encoded) {
+        final ByteBuf byteBuf = channel.alloc().buffer();
+        byteBuf.writeBytes(encoded);
+        channel.writeInbound(byteBuf);
+
+        return channel.readInbound();
     }
 
     private void createChannel() {

@@ -23,7 +23,8 @@ public class Mqtt5UnsubAckTest {
     @Test
     public void constructor_reasonCodesEmpty_throwsException() {
         final ImmutableList<Mqtt5UnsubAckReasonCode> emptyReasonCodes = ImmutableList.of();
-        final Mqtt5UnsubAck mqtt5UnsubAck = new Mqtt5UnsubAckImpl(emptyReasonCodes, reasonString, NO_USER_PROPERTIES);
+        final Mqtt5UnsubAck mqtt5UnsubAck =
+                new Mqtt5UnsubAckImpl(1, emptyReasonCodes, reasonString, NO_USER_PROPERTIES);
         assertEquals(emptyReasonCodes, mqtt5UnsubAck.getReasonCodes());
     }
 
@@ -31,7 +32,8 @@ public class Mqtt5UnsubAckTest {
     public void constructor_reasonCodesSingle() {
         final ImmutableList<Mqtt5UnsubAckReasonCode> singleReasonCodes =
                 ImmutableList.of(Mqtt5UnsubAckReasonCode.IMPLEMENTATION_SPECIFIC_ERROR);
-        final Mqtt5UnsubAck mqtt5UnsubAck = new Mqtt5UnsubAckImpl(singleReasonCodes, reasonString, NO_USER_PROPERTIES);
+        final Mqtt5UnsubAck mqtt5UnsubAck =
+                new Mqtt5UnsubAckImpl(1, singleReasonCodes, reasonString, NO_USER_PROPERTIES);
         assertEquals(singleReasonCodes, mqtt5UnsubAck.getReasonCodes());
     }
 
@@ -40,19 +42,19 @@ public class Mqtt5UnsubAckTest {
         final ImmutableList<Mqtt5UnsubAckReasonCode> multipleReasonCodes = ImmutableList
                 .of(Mqtt5UnsubAckReasonCode.NO_SUBSCRIPTIONS_EXISTED, Mqtt5UnsubAckReasonCode.NOT_AUTHORIZED);
         final Mqtt5UnsubAck mqtt5UnsubAck =
-                new Mqtt5UnsubAckImpl(multipleReasonCodes, reasonString, NO_USER_PROPERTIES);
+                new Mqtt5UnsubAckImpl(1, multipleReasonCodes, reasonString, NO_USER_PROPERTIES);
         assertEquals(multipleReasonCodes, mqtt5UnsubAck.getReasonCodes());
     }
 
     @Test
     public void constructor_reasonStringNull() {
-        final Mqtt5UnsubAck mqtt5UnsubAck = new Mqtt5UnsubAckImpl(reasonCodes, null, NO_USER_PROPERTIES);
+        final Mqtt5UnsubAck mqtt5UnsubAck = new Mqtt5UnsubAckImpl(1, reasonCodes, null, NO_USER_PROPERTIES);
         assertFalse(mqtt5UnsubAck.getReasonString().isPresent());
     }
 
     @Test
     public void constructor_reasonString() {
-        final Mqtt5UnsubAck mqtt5UnsubAck = new Mqtt5UnsubAckImpl(reasonCodes, reasonString, NO_USER_PROPERTIES);
+        final Mqtt5UnsubAck mqtt5UnsubAck = new Mqtt5UnsubAckImpl(1, reasonCodes, reasonString, NO_USER_PROPERTIES);
         assertTrue(mqtt5UnsubAck.getReasonString().isPresent());
         assertEquals(reasonString, mqtt5UnsubAck.getReasonString().get());
     }
@@ -60,7 +62,7 @@ public class Mqtt5UnsubAckTest {
     @Test
     public void constructor_userPropertiesEmpty() {
         final Mqtt5UserPropertiesImpl emptyUserProperties = NO_USER_PROPERTIES;
-        final Mqtt5UnsubAck mqtt5UnsubAck = new Mqtt5UnsubAckImpl(reasonCodes, reasonString, emptyUserProperties);
+        final Mqtt5UnsubAck mqtt5UnsubAck = new Mqtt5UnsubAckImpl(1, reasonCodes, reasonString, emptyUserProperties);
         assertEquals(emptyUserProperties, mqtt5UnsubAck.getUserProperties());
     }
 
@@ -81,7 +83,7 @@ public class Mqtt5UnsubAckTest {
         final Mqtt5UserPropertiesImpl multipleUserProperties =
                 Mqtt5UserPropertiesImpl.of(ImmutableList.of(userProperty1, userProperty2, userProperty3));
 
-        final Mqtt5UnsubAck mqtt5UnsubAck = new Mqtt5UnsubAckImpl(reasonCodes, reasonString, multipleUserProperties);
+        final Mqtt5UnsubAck mqtt5UnsubAck = new Mqtt5UnsubAckImpl(1, reasonCodes, reasonString, multipleUserProperties);
         assertEquals(multipleUserProperties, mqtt5UnsubAck.getUserProperties());
     }
 }
