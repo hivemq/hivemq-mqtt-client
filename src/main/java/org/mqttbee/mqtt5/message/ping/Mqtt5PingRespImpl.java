@@ -22,7 +22,7 @@ public class Mqtt5PingRespImpl implements Mqtt5PingResp, Mqtt5Message {
     }
 
     @Override
-    public int encodedLength() {
+    public int encodedLength(final int maxPacketSize) {
         throw new UnsupportedOperationException();
     }
 

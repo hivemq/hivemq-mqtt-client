@@ -9,11 +9,10 @@ import org.mqttbee.mqtt5.message.Mqtt5Message;
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5SubscribeInternal extends Mqtt5Message.Mqtt5MessageWithProperties {
+public class Mqtt5SubscribeInternal extends Mqtt5Message.Mqtt5MessageWithUserPropertiesWrapper<Mqtt5SubscribeImpl> {
 
     public static final int DEFAULT_NO_SUBSCRIPTION_IDENTIFIER = -1;
 
-    private final Mqtt5SubscribeImpl subscribe;
     private final int packetIdentifier;
     private final int subscriptionIdentifier;
 
@@ -23,14 +22,9 @@ public class Mqtt5SubscribeInternal extends Mqtt5Message.Mqtt5MessageWithPropert
 
     public Mqtt5SubscribeInternal(
             @NotNull final Mqtt5SubscribeImpl subscribe, final int packetIdentifier, final int subscriptionIdentifier) {
-        this.subscribe = subscribe;
+        super(subscribe);
         this.packetIdentifier = packetIdentifier;
         this.subscriptionIdentifier = subscriptionIdentifier;
-    }
-
-    @NotNull
-    public Mqtt5SubscribeImpl getSubscribe() {
-        return subscribe;
     }
 
     public int getPacketIdentifier() {
@@ -47,13 +41,13 @@ public class Mqtt5SubscribeInternal extends Mqtt5Message.Mqtt5MessageWithPropert
     }
 
     @Override
-    protected int calculateEncodedRemainingLength() {
-        return Mqtt5SubscribeEncoder.INSTANCE.encodedRemainingLength(this);
+    protected int additionalRemainingLength() {
+        return 0;
     }
 
     @Override
-    protected int calculateEncodedPropertyLength() {
-        return Mqtt5SubscribeEncoder.INSTANCE.encodedPropertyLength(this);
+    protected int additionalPropertyLength() {
+        return Mqtt5SubscribeEncoder.INSTANCE.additionalPropertyLength(this);
     }
 
 }

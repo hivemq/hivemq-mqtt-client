@@ -16,7 +16,7 @@ import java.util.Optional;
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5DisconnectImpl extends Mqtt5Message.Mqtt5MessageWithProperties implements Mqtt5Disconnect {
+public class Mqtt5DisconnectImpl extends Mqtt5Message.Mqtt5MessageWithOmissibleProperties implements Mqtt5Disconnect {
 
     @NotNull
     public static final Mqtt5DisconnectReasonCode DEFAULT_REASON_CODE = Mqtt5DisconnectReasonCode.NORMAL_DISCONNECTION;
@@ -25,18 +25,15 @@ public class Mqtt5DisconnectImpl extends Mqtt5Message.Mqtt5MessageWithProperties
     private final Mqtt5DisconnectReasonCode reasonCode;
     private final long sessionExpiryInterval;
     private final Mqtt5UTF8StringImpl serverReference;
-    private final Mqtt5UTF8StringImpl reasonString;
-    private final Mqtt5UserPropertiesImpl userProperties;
 
     public Mqtt5DisconnectImpl(
             @NotNull final Mqtt5DisconnectReasonCode reasonCode, final long sessionExpiryInterval,
             @Nullable final Mqtt5UTF8StringImpl serverReference, @Nullable final Mqtt5UTF8StringImpl reasonString,
             @NotNull final Mqtt5UserPropertiesImpl userProperties) {
+        super(reasonString, userProperties);
         this.reasonCode = reasonCode;
         this.sessionExpiryInterval = sessionExpiryInterval;
         this.serverReference = serverReference;
-        this.reasonString = reasonString;
-        this.userProperties = userProperties;
     }
 
     @NotNull
@@ -65,23 +62,6 @@ public class Mqtt5DisconnectImpl extends Mqtt5Message.Mqtt5MessageWithProperties
     @Nullable
     public Mqtt5UTF8StringImpl getRawServerReference() {
         return serverReference;
-    }
-
-    @NotNull
-    @Override
-    public Optional<Mqtt5UTF8String> getReasonString() {
-        return Optional.ofNullable(reasonString);
-    }
-
-    @Nullable
-    public Mqtt5UTF8StringImpl getRawReasonString() {
-        return reasonString;
-    }
-
-    @NotNull
-    @Override
-    public Mqtt5UserPropertiesImpl getUserProperties() {
-        return userProperties;
     }
 
     @Override

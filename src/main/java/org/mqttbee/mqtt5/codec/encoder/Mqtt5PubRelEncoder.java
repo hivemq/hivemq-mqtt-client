@@ -4,17 +4,14 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
-import org.mqttbee.mqtt5.exceptions.Mqtt5VariableByteIntegerExceededException;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.pubrel.Mqtt5PubRelImpl;
 import org.mqttbee.mqtt5.message.pubrel.Mqtt5PubRelReasonCode;
 
 import javax.inject.Singleton;
 
-import static org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoderUtil.encodeNullableProperty;
 import static org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoderUtil.nullablePropertyEncodedLength;
 import static org.mqttbee.mqtt5.message.pubrel.Mqtt5PubRelImpl.DEFAULT_REASON_CODE;
-import static org.mqttbee.mqtt5.message.pubrel.Mqtt5PubRelProperty.REASON_STRING;
 
 /**
  * @author Silvio Giebl
@@ -38,19 +35,10 @@ public class Mqtt5PubRelEncoder implements Mqtt5MessageEncoder<Mqtt5PubRelImpl> 
     public int encodedRemainingLength(@NotNull final Mqtt5PubRelImpl pubRel) {
         int remainingLength = VARIABLE_HEADER_FIXED_LENGTH;
 
-        final int propertyLength = pubRel.encodedPropertyLength();
-        if (propertyLength == 0) {
-            if (pubRel.getReasonCode() != DEFAULT_REASON_CODE) {
-                remainingLength += 1;
-            }
-        } else {
+        if ((pubRel.encodedPropertyLength() != 0) || (pubRel.getReasonCode() != DEFAULT_REASON_CODE)) {
             remainingLength += 1;
-            remainingLength += Mqtt5DataTypes.encodedVariableByteIntegerLength(propertyLength) + propertyLength;
         }
 
-        if (!Mqtt5DataTypes.isInVariableByteIntegerRange(remainingLength)) {
-            throw new Mqtt5VariableByteIntegerExceededException("remaining length"); // TODO
-        }
         return remainingLength;
     }
 
@@ -60,22 +48,21 @@ public class Mqtt5PubRelEncoder implements Mqtt5MessageEncoder<Mqtt5PubRelImpl> 
         propertyLength += nullablePropertyEncodedLength(pubRel.getRawReasonString());
         propertyLength += pubRel.getUserProperties().encodedLength();
 
-        if (!Mqtt5DataTypes.isInVariableByteIntegerRange(propertyLength)) {
-            throw new Mqtt5VariableByteIntegerExceededException("property length"); // TODO
-        }
         return propertyLength;
     }
 
     private void encodeFixedHeader(@NotNull final Mqtt5PubRelImpl pubRel, @NotNull final ByteBuf out) {
         out.writeByte(FIXED_HEADER);
-        Mqtt5DataTypes.encodeVariableByteInteger(pubRel.encodedRemainingLength(), out);
+        Mqtt5DataTypes
+                .encodeVariableByteInteger(pubRel.encodedRemainingLength(Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT),
+                        out); // TODO
     }
 
     private void encodeVariableHeader(@NotNull final Mqtt5PubRelImpl pubRel, @NotNull final ByteBuf out) {
         out.writeShort(pubRel.getPacketIdentifier());
 
         final Mqtt5PubRelReasonCode reasonCode = pubRel.getReasonCode();
-        final int propertyLength = pubRel.encodedPropertyLength();
+        final int propertyLength = pubRel.encodedPropertyLength(Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT); // TODO
         if (propertyLength == 0) {
             if (reasonCode != DEFAULT_REASON_CODE) {
                 out.writeByte(reasonCode.getCode());
@@ -91,8 +78,8 @@ public class Mqtt5PubRelEncoder implements Mqtt5MessageEncoder<Mqtt5PubRelImpl> 
 
         Mqtt5DataTypes.encodeVariableByteInteger(propertyLength, out);
 
-        encodeNullableProperty(REASON_STRING, pubRel.getRawReasonString(), out);
-        pubRel.getUserProperties().encode(out);
+        pubRel.encodeReasonString(Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT, out); // TODO
+        pubRel.encodeUserProperties(Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT, out); // TODO
     }
 
 }

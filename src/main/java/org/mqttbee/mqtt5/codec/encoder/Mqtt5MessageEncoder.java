@@ -3,7 +3,6 @@ package org.mqttbee.mqtt5.codec.encoder;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.Mqtt5Message;
 
 /**
@@ -12,16 +11,6 @@ import org.mqttbee.mqtt5.message.Mqtt5Message;
  * @author Silvio Giebl
  */
 public interface Mqtt5MessageEncoder<T extends Mqtt5Message> {
-
-    /**
-     * Calculates the encoded length of a MQTT message with the given remaining length.
-     *
-     * @param remainingLength the remaining length of the MQTT message.
-     * @return the encoded length of the MQTT message.
-     */
-    static int encodedLength(final int remainingLength) {
-        return 1 + Mqtt5DataTypes.encodedVariableByteIntegerLength(remainingLength) + remainingLength;
-    }
 
     /**
      * Encodes the given MQTT message to the given byte buffer which will be written to the given channel.

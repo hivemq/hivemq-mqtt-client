@@ -12,14 +12,13 @@ import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5PublishInternal extends Mqtt5Message.Mqtt5MessageWithProperties {
+public class Mqtt5PublishInternal extends Mqtt5Message.Mqtt5MessageWithUserPropertiesWrapper<Mqtt5PublishImpl> {
 
     public static final int NO_PACKET_IDENTIFIER_QOS_0 = -1;
     public static final int DEFAULT_NO_TOPIC_ALIAS = -1;
     @NotNull
     public static final ImmutableIntArray DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS = ImmutableIntArray.of();
 
-    private final Mqtt5PublishImpl publish;
     private final int packetIdentifier;
     private final boolean isDup;
     private final int topicAlias;
@@ -30,7 +29,7 @@ public class Mqtt5PublishInternal extends Mqtt5Message.Mqtt5MessageWithPropertie
             @NotNull final Mqtt5PublishImpl publish, final int packetIdentifier, final boolean isDup,
             final int topicAlias, final boolean isNewTopicAlias,
             @NotNull final ImmutableIntArray subscriptionIdentifiers) {
-        this.publish = publish;
+        super(publish);
         this.packetIdentifier = packetIdentifier;
         this.isDup = isDup;
         this.topicAlias = topicAlias;
@@ -41,7 +40,7 @@ public class Mqtt5PublishInternal extends Mqtt5Message.Mqtt5MessageWithPropertie
     public Mqtt5PublishInternal(
             @NotNull final Mqtt5PublishImpl publish, final int packetIdentifier, final boolean isDup,
             @NotNull final Channel channel, @NotNull final ImmutableIntArray subscriptionIdentifiers) {
-        this.publish = publish;
+        super(publish);
         this.packetIdentifier = packetIdentifier;
         this.isDup = isDup;
 
@@ -63,11 +62,6 @@ public class Mqtt5PublishInternal extends Mqtt5Message.Mqtt5MessageWithPropertie
         }
 
         this.subscriptionIdentifiers = subscriptionIdentifiers;
-    }
-
-    @NotNull
-    public Mqtt5PublishImpl getPublish() {
-        return publish;
     }
 
     public int getPacketIdentifier() {
@@ -97,13 +91,13 @@ public class Mqtt5PublishInternal extends Mqtt5Message.Mqtt5MessageWithPropertie
     }
 
     @Override
-    protected int calculateEncodedRemainingLength() {
-        return Mqtt5PublishEncoder.INSTANCE.encodedRemainingLength(this);
+    protected int additionalRemainingLength() {
+        return Mqtt5PublishEncoder.INSTANCE.additionalRemainingLength(this);
     }
 
     @Override
-    protected int calculateEncodedPropertyLength() {
-        return Mqtt5PublishEncoder.INSTANCE.encodedPropertyLength(this);
+    protected int additionalPropertyLength() {
+        return Mqtt5PublishEncoder.INSTANCE.additionalPropertyLength(this);
     }
 
 }

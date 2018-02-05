@@ -4,7 +4,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
-import org.mqttbee.mqtt5.exceptions.Mqtt5VariableByteIntegerExceededException;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectImpl;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
@@ -14,7 +13,8 @@ import javax.inject.Singleton;
 import static org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoderUtil.*;
 import static org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectImpl.DEFAULT_REASON_CODE;
 import static org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectImpl.SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
-import static org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectProperty.*;
+import static org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectProperty.SERVER_REFERENCE;
+import static org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectProperty.SESSION_EXPIRY_INTERVAL;
 
 /**
  * @author Silvio Giebl
@@ -37,19 +37,10 @@ public class Mqtt5DisconnectEncoder implements Mqtt5MessageEncoder<Mqtt5Disconne
     public int encodedRemainingLength(@NotNull final Mqtt5DisconnectImpl disconnect) {
         int remainingLength = 0;
 
-        final int propertyLength = disconnect.encodedPropertyLength();
-        if (propertyLength == 0) {
-            if (disconnect.getReasonCode() != DEFAULT_REASON_CODE) {
-                remainingLength += 1;
-            }
-        } else {
+        if ((disconnect.encodedPropertyLength() != 0) || (disconnect.getReasonCode() != DEFAULT_REASON_CODE)) {
             remainingLength += 1;
-            remainingLength += Mqtt5DataTypes.encodedVariableByteIntegerLength(propertyLength) + propertyLength;
         }
 
-        if (!Mqtt5DataTypes.isInVariableByteIntegerRange(remainingLength)) {
-            throw new Mqtt5VariableByteIntegerExceededException("remaining length"); // TODO
-        }
         return remainingLength;
     }
 
@@ -62,20 +53,19 @@ public class Mqtt5DisconnectEncoder implements Mqtt5MessageEncoder<Mqtt5Disconne
         propertyLength += nullablePropertyEncodedLength(disconnect.getRawReasonString());
         propertyLength += disconnect.getUserProperties().encodedLength();
 
-        if (!Mqtt5DataTypes.isInVariableByteIntegerRange(propertyLength)) {
-            throw new Mqtt5VariableByteIntegerExceededException("property length"); // TODO
-        }
         return propertyLength;
     }
 
     private void encodeFixedHeader(@NotNull final Mqtt5DisconnectImpl disconnect, @NotNull final ByteBuf out) {
         out.writeByte(FIXED_HEADER);
-        Mqtt5DataTypes.encodeVariableByteInteger(disconnect.encodedRemainingLength(), out);
+        Mqtt5DataTypes
+                .encodeVariableByteInteger(disconnect.encodedRemainingLength(Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT),
+                        out); // TODO
     }
 
     private void encodeVariableHeader(@NotNull final Mqtt5DisconnectImpl disconnect, @NotNull final ByteBuf out) {
         final Mqtt5DisconnectReasonCode reasonCode = disconnect.getReasonCode();
-        final int propertyLength = disconnect.encodedPropertyLength();
+        final int propertyLength = disconnect.encodedPropertyLength(Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT); // TODO
         if (propertyLength == 0) {
             if (reasonCode != DEFAULT_REASON_CODE) {
                 out.writeByte(reasonCode.getCode());
@@ -94,8 +84,8 @@ public class Mqtt5DisconnectEncoder implements Mqtt5MessageEncoder<Mqtt5Disconne
         encodeIntProperty(SESSION_EXPIRY_INTERVAL, disconnect.getRawSessionExpiryInterval(),
                 SESSION_EXPIRY_INTERVAL_FROM_CONNECT, out);
         encodeNullableProperty(SERVER_REFERENCE, disconnect.getRawServerReference(), out);
-        encodeNullableProperty(REASON_STRING, disconnect.getRawReasonString(), out);
-        disconnect.getUserProperties().encode(out);
+        disconnect.encodeReasonString(Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT, out); // TODO
+        disconnect.encodeUserProperties(Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT, out); // TODO
     }
 
 }

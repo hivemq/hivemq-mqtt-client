@@ -19,7 +19,7 @@ import java.util.Optional;
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5ConnectImpl extends Mqtt5Message.Mqtt5MessageWithProperties implements Mqtt5Connect {
+public class Mqtt5ConnectImpl extends Mqtt5Message.Mqtt5MessageWithUserProperties implements Mqtt5Connect {
 
     private final Mqtt5ClientIdentifierImpl clientIdentifier;
     private final int keepAlive;
@@ -31,7 +31,6 @@ public class Mqtt5ConnectImpl extends Mqtt5Message.Mqtt5MessageWithProperties im
     private final SimpleAuthImpl simpleAuth;
     private final Mqtt5ExtendedAuthImpl extendedAuth;
     private final Mqtt5WillPublishImpl willPublish;
-    private final Mqtt5UserPropertiesImpl userProperties;
 
     private int willPropertyLength = -1;
 
@@ -41,6 +40,7 @@ public class Mqtt5ConnectImpl extends Mqtt5Message.Mqtt5MessageWithProperties im
             final boolean isProblemInformationRequested, @NotNull final RestrictionsImpl restrictions,
             @Nullable final SimpleAuthImpl simpleAuth, @Nullable final Mqtt5ExtendedAuthImpl extendedAuth,
             @Nullable final Mqtt5WillPublishImpl willPublish, @NotNull final Mqtt5UserPropertiesImpl userProperties) {
+        super(userProperties);
         this.clientIdentifier = clientIdentifier;
         this.keepAlive = keepAlive;
         this.isCleanStart = isCleanStart;
@@ -51,7 +51,6 @@ public class Mqtt5ConnectImpl extends Mqtt5Message.Mqtt5MessageWithProperties im
         this.simpleAuth = simpleAuth;
         this.extendedAuth = extendedAuth;
         this.willPublish = willPublish;
-        this.userProperties = userProperties;
     }
 
     @NotNull
@@ -133,12 +132,6 @@ public class Mqtt5ConnectImpl extends Mqtt5Message.Mqtt5MessageWithProperties im
     @Nullable
     public Mqtt5WillPublishImpl getRawWillPublish() {
         return willPublish;
-    }
-
-    @NotNull
-    @Override
-    public Mqtt5UserPropertiesImpl getUserProperties() {
-        return userProperties;
     }
 
     @Override

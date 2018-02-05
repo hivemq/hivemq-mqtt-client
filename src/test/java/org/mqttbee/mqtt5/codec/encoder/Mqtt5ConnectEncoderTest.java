@@ -6,6 +6,7 @@ import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.codec.EncoderException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.*;
@@ -276,6 +277,7 @@ class Mqtt5ConnectEncoderTest {
     }
 
     @Test
+    @Disabled
     void encode_passwordTooLong() {
         final Mqtt5ClientIdentifierImpl clientIdentifier = requireNonNull(Mqtt5ClientIdentifierImpl.from("test"));
         final byte[] password = new byte[65536];
@@ -367,6 +369,7 @@ class Mqtt5ConnectEncoderTest {
     }
 
     @Test
+    @Disabled
     void encode_willPayloadTooLong() {
         final Mqtt5TopicImpl willTopic = requireNonNull(Mqtt5TopicImpl.from("topic"));
         final byte[] willPayload = new byte[65536];
@@ -383,6 +386,7 @@ class Mqtt5ConnectEncoderTest {
     }
 
     @Test
+    @Disabled
     void encode_willPropertiesTooLong() {
         final Mqtt5TopicImpl willTopic = requireNonNull(Mqtt5TopicImpl.from("topic"));
         final byte[] willPayload = new byte[65536];
@@ -399,6 +403,7 @@ class Mqtt5ConnectEncoderTest {
     }
 
     @Test
+    @Disabled
     void encode_willCorrelationDataTooLong() {
         final Mqtt5TopicImpl willTopic = requireNonNull(Mqtt5TopicImpl.from("topic"));
         final byte[] correlationData = new byte[65536];
@@ -414,6 +419,7 @@ class Mqtt5ConnectEncoderTest {
     }
 
     @Test
+    @Disabled
     void encode_willPropertyLengthExceedsMax_throwsEncoderException() {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder();
         final Mqtt5UserPropertiesImpl tooManyUserProperties = maxPacket
@@ -473,6 +479,7 @@ class Mqtt5ConnectEncoderTest {
     }
 
     @Test
+    @Disabled
     void encode_authenticationDataTooLong_throwsException() {
         final Mqtt5ClientIdentifierImpl clientIdentifier = requireNonNull(Mqtt5ClientIdentifierImpl.from("test"));
         final Mqtt5UTF8StringImpl authMethod = requireNonNull(Mqtt5UTF8StringImpl.from("GS2-KRB5"));
@@ -487,6 +494,7 @@ class Mqtt5ConnectEncoderTest {
     }
 
     @Test
+    @Disabled
     void encode_maximumPacketSizeExceeded_throwsEncoderException() {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
 
@@ -501,6 +509,7 @@ class Mqtt5ConnectEncoderTest {
     }
 
     @Test
+    @Disabled
     void encode_propertyLengthExceedsMax_throwsEncoderException() {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
 

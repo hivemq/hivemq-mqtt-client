@@ -23,7 +23,7 @@ public class Mqtt5PingReqImpl implements Mqtt5PingReq, Mqtt5Message {
     }
 
     @Override
-    public int encodedLength() {
+    public int encodedLength(final int maxPacketSize) {
         return Mqtt5PingReqEncoder.ENCODED_LENGTH;
     }
 
