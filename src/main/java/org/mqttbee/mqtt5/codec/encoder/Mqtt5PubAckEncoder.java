@@ -35,7 +35,7 @@ public class Mqtt5PubAckEncoder implements Mqtt5MessageEncoder<Mqtt5PubAckImpl> 
     public int encodedRemainingLength(@NotNull final Mqtt5PubAckImpl pubAck) {
         int remainingLength = VARIABLE_HEADER_FIXED_LENGTH;
 
-        if ((pubAck.encodedPropertyLength() != 0) || (pubAck.getReasonCode() != DEFAULT_REASON_CODE)) {
+        if ((pubAck.maxEncodedPropertyLength() != 0) || (pubAck.getReasonCode() != DEFAULT_REASON_CODE)) {
             remainingLength += 1;
         }
 
