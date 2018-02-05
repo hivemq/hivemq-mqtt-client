@@ -621,6 +621,31 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, sendReasonString);
     }
 
+    @Test
+    void decode_receive_maximum_too_short() {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(true);
+
+        final ByteBuf byteBuf = channel.alloc().buffer();
+        // fixed header
+        //   type, flags
+        byteBuf.writeByte(0b0010_0000);
+        //   remaining length
+        byteBuf.writeByte(5);
+        // variable header
+        //   connack flags
+        byteBuf.writeByte(0b0000_0001);
+        //   reason code (success)
+        byteBuf.writeByte(0x00);
+        //   properties
+        byteBuf.writeByte(2);
+        //     receive maximum should be 2 bytes long
+        byteBuf.writeBytes(new byte[]{0x21, 0});
+
+        channel.writeInbound(byteBuf);
+
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, true);
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {"true", "false"})
     void decode_maximum_qos_not_0_or_1(final boolean sendReasonString) {
@@ -697,6 +722,31 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         channel.writeInbound(byteBuf);
 
         testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, sendReasonString);
+    }
+
+    @Test
+    void decode_maximum_packet_size_too_short() {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(true);
+
+        final ByteBuf byteBuf = channel.alloc().buffer();
+        // fixed header
+        //   type, flags
+        byteBuf.writeByte(0b0010_0000);
+        //   remaining length
+        byteBuf.writeByte(6);
+        // variable header
+        //   connack flags
+        byteBuf.writeByte(0b0000_0001);
+        //   reason code (success)
+        byteBuf.writeByte(0x00);
+        //   properties
+        byteBuf.writeByte(3);
+        //     maximum packet size should be 4 bytes long
+        byteBuf.writeBytes(new byte[]{0x27, 0, 0});
+
+        channel.writeInbound(byteBuf);
+
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, true);
     }
 
     @ParameterizedTest
@@ -859,6 +909,31 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         channel.writeInbound(byteBuf);
 
         testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, sendReasonString);
+    }
+
+    @Test
+    void decode_invalid_maximum_qos_too_short() {
+        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(true);
+
+        final ByteBuf byteBuf = channel.alloc().buffer();
+        // fixed header
+        //   type, flags
+        byteBuf.writeByte(0b0010_0000);
+        //   remaining length
+        byteBuf.writeByte(4);
+        // variable header
+        //   connack flags
+        byteBuf.writeByte(0b0000_0001);
+        //   reason code (success)
+        byteBuf.writeByte(0x00);
+        //   properties
+        byteBuf.writeByte(1);
+        //     maximum qos should be 1 byte long
+        byteBuf.writeBytes(new byte[]{0x24});
+
+        channel.writeInbound(byteBuf);
+
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, true);
     }
 
     @ParameterizedTest
