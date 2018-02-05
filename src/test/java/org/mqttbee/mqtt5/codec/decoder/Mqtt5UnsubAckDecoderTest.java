@@ -1,20 +1,28 @@
 package org.mqttbee.mqtt5.codec.decoder;
 
+import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
+import org.mqttbee.api.mqtt5.message.Mqtt5UnsubAck;
+import org.mqttbee.api.mqtt5.message.Mqtt5UserProperty;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.message.unsuback.Mqtt5UnsubAckImpl;
+import org.mqttbee.mqtt5.message.unsuback.Mqtt5UnsubAckReasonCode;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.MALFORMED_PACKET;
+import static org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.PROTOCOL_ERROR;
 import static org.mqttbee.mqtt5.message.unsuback.Mqtt5UnsubAckReasonCode.*;
 
 /**
@@ -70,6 +78,80 @@ class Mqtt5UnsubAckDecoderTest extends AbstractMqtt5DecoderTest {
     }
 
     @Test
+    void decode_propertyLengthNegative_returnsNull() {
+        final byte[] encoded = {
+                // fixed header
+                //   type _ flags (reserved)
+                (byte) 0b1011_0000,
+                //   remaining length
+                3,
+                // variable header
+                //   packet identifier MSB, LSB
+                1, 2,
+                //   properties length in bytes
+                -1
+        };
+        decodeNok(encoded, MALFORMED_PACKET);
+    }
+
+    @Test
+    void decode_negativePropertyIdentifier_returnsNull() {
+        final byte[] encoded = {
+                // fixed header
+                //   type _ flags (reserved)
+                (byte) 0b1011_0000,
+                //   remaining length
+                13,
+                // variable header
+                //   packet identifier MSB, LSB
+                1, 2,
+                //   properties length in bytes
+                9,
+                //     reason string
+                (byte) 0xFF, 0, 6, 'r', 'e', 'a', 's', 'o', 'n',
+                // payload reason code: success
+                0x00
+        };
+        decodeNok(encoded, MALFORMED_PACKET);
+    }
+
+    @Test
+    void decode_invalidHeaderFlags_returnsNull() {
+        final byte[] encoded = {
+                // fixed header
+                //   type _ flags (reserved)
+                (byte) 0b1011_1000,
+                //   remaining length
+                27,
+                // variable header
+                //   packet identifier MSB, LSB
+                1, 2,
+                //   properties length in bytes
+                23,
+                //     reason string
+                0x1F, 0, 6, 'r', 'e', 'a', 's', 'o', 'n',
+                //     user property
+                0x26, 0, 4, 'n', 'a', 'm', 'e', 0, 5, 'v', 'a', 'l', 'u', 'e',
+                // payload reason code: success
+                0x00
+        };
+        decodeNok(encoded, MALFORMED_PACKET);
+    }
+
+    @Test
+    void decode_tooShort_returnsNull() {
+        final byte[] encoded = {
+                // fixed header
+                //   type _ flags (reserved)
+                (byte) 0b1011_0000,
+                //   remaining length
+                0
+        };
+
+        decodeNok(encoded, MALFORMED_PACKET);
+    }
+
+    @Test
     void decode_reasonStringMissing() {
         final byte[] encoded = {
                 // fixed header
@@ -101,6 +183,54 @@ class Mqtt5UnsubAckDecoderTest extends AbstractMqtt5DecoderTest {
 
         assertEquals(1, unsubAck.getReasonCodes().size());
         assertEquals(SUCCESS, unsubAck.getReasonCodes().get(0));
+    }
+
+    @Test
+    void decode_userProperty() {
+        final byte[] encoded = {
+                // fixed header
+                //   type _ flags (reserved)
+                (byte) 0b1011_0000,
+                //   remaining length
+                18,
+                // variable header
+                //   packet identifier MSB, LSB
+                0, 2,
+                //   properties length in bytes
+                14,
+                //     user properties
+                0x26, 0, 4, 'n', 'a', 'm', 'e', 0, 5, 'v', 'a', 'l', 'u', 'e',
+                // payload reason code: success
+                0x00
+        };
+
+        final Mqtt5UnsubAck unsuback = decodeOk(encoded);
+        assertNotNull(unsuback);
+        final ImmutableList<? extends Mqtt5UserProperty> userProperties = unsuback.getUserProperties().asList();
+        assertEquals(1, userProperties.size());
+        assertEquals("name", userProperties.get(0).getName().toString());
+        assertEquals("value", userProperties.get(0).getValue().toString());
+    }
+
+    @Test
+    void decode_userPropertyInvalid_returnsNull() {
+        final byte[] encoded = {
+                // fixed header
+                //   type _ flags (reserved)
+                (byte) 0b1011_0000,
+                //   remaining length
+                8,
+                // variable header
+                //   packet identifier MSB, LSB
+                0, 2,
+                //   properties length in bytes
+                4,
+                //     user properties
+                0x26, 0, 1, 'n',
+                // payload reason code: success
+                0x00
+        };
+        decodeNok(encoded, MALFORMED_PACKET);
     }
 
     @Test
@@ -144,6 +274,50 @@ class Mqtt5UnsubAckDecoderTest extends AbstractMqtt5DecoderTest {
 
         assertEquals(1, unsubAck.getReasonCodes().size());
         assertEquals(SUCCESS, unsubAck.getReasonCodes().get(0));
+    }
+
+
+    @ParameterizedTest
+    @EnumSource(Mqtt5UnsubAckReasonCode.class)
+    void decode_reasonCodes(final Mqtt5UnsubAckReasonCode reasonCode) {
+        final byte[] encoded = {
+                // fixed header
+                //   type _ flags (reserved)
+                (byte) 0b1011_0000,
+                //   remaining length
+                4,
+                // variable header
+                //   packet identifier MSB, LSB
+                8, 8,
+                //   properties length in bytes
+                0,
+                // placeholder payload reason codes
+                (byte) 0xFF
+        };
+
+        encoded[5] = (byte) reasonCode.getCode();
+        final Mqtt5UnsubAck unsuback = decodeOk(encoded);
+        assertNotNull(unsuback);
+        assertEquals(1, unsuback.getReasonCodes().size());
+        assertEquals(reasonCode, unsuback.getReasonCodes().get(0));
+    }
+
+    @Test
+    void decode_missingReasonCode_returnsNull() {
+        final byte[] encoded = {
+                // fixed header
+                //   type _ flags (reserved)
+                (byte) 0b1011_0000,
+                //   remaining length
+                3,
+                // variable header
+                //   packet identifier MSB, LSB
+                8, 8,
+                //   properties length in bytes
+                0
+        };
+
+        decodeNok(encoded, PROTOCOL_ERROR);
     }
 
     @Test
@@ -215,7 +389,7 @@ class Mqtt5UnsubAckDecoderTest extends AbstractMqtt5DecoderTest {
         assertEquals(0x00, encoded[28]);
 
         encoded[28] = (byte) 0xFF; // invalid reason code
-        decodeNok(encoded, Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+        decodeNok(encoded, MALFORMED_PACKET);
 
         encoded[28] = 0x00; // set reason code ok again
         decodeOk(encoded);
@@ -246,7 +420,7 @@ class Mqtt5UnsubAckDecoderTest extends AbstractMqtt5DecoderTest {
         assertEquals(23, encoded[4]);
 
         encoded[4] = 125; // property length
-        decodeNok(encoded, Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+        decodeNok(encoded, MALFORMED_PACKET);
 
         encoded[4] = 23; // set length ok again
         decodeOk(encoded);
@@ -277,10 +451,56 @@ class Mqtt5UnsubAckDecoderTest extends AbstractMqtt5DecoderTest {
         assertEquals(23, encoded[4]);
 
         encoded[4] = 10; // set length too short
-        decodeNok(encoded, Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+        decodeNok(encoded, MALFORMED_PACKET);
 
         encoded[4] = 23; // set length ok again
         decodeOk(encoded);
+    }
+
+    @Test
+    void decode_reasonString() {
+        final byte[] encoded = {
+                // fixed header
+                //   type _ flags (reserved)
+                (byte) 0b1011_0000,
+                //   remaining length
+                13,
+                // variable header
+                //   packet identifier MSB, LSB
+                0, 1,
+                //   properties length in bytes
+                9,
+                //     reason string
+                0x1F, 0, 6, 'r', 'e', 'a', 's', 'o', 'n',
+                // payload reason code: SUCCESS
+                (byte) 0x00
+        };
+
+        final Mqtt5UnsubAck unsuback = decodeOk(encoded);
+        final Optional<Mqtt5UTF8String> reasonString = unsuback.getReasonString();
+        assertTrue(reasonString.isPresent());
+        assertEquals("reason", reasonString.get().toString());
+    }
+
+    @Test
+    void decode_reasonString_invalid_returnsNull() {
+        final byte[] encoded = {
+                // fixed header
+                //   type _ flags (reserved)
+                (byte) 0b1011_0000,
+                //   remaining length
+                8,
+                // variable header
+                //   packet identifier MSB, LSB
+                0, 1,
+                //   properties length in bytes
+                3,
+                //     reason string with invalid character
+                0x1F, 0, 1, '\u0000',
+                // payload reason code: SUCCESS
+                (byte) 0x00
+        };
+        decodeNok(encoded, MALFORMED_PACKET);
     }
 
     @Test
@@ -308,7 +528,7 @@ class Mqtt5UnsubAckDecoderTest extends AbstractMqtt5DecoderTest {
         assertEquals(6, encoded[7]);
 
         encoded[7] = 7; // set length too long
-        decodeNok(encoded, Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+        decodeNok(encoded, MALFORMED_PACKET);
 
         encoded[7] = 6; // set length ok again
         decodeOk(encoded);
