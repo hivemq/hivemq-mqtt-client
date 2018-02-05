@@ -90,7 +90,7 @@ class Mqtt5UnsubscribeEncoderTest extends AbstractMqtt5EncoderTest {
     }
 
     @Test
-    @Disabled
+    @Disabled("transform to encode_maximumPacketSizeExceeded_omitUserPropertiesAndReasonString")
     void encode_maximumPacketSizeExceeded_throwsEncoderException() {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
         final Mqtt5UnsubscribeImpl unsubscribe = new Mqtt5UnsubscribeImpl(maxPacket.getTopicFilter("extraChars"),
@@ -106,7 +106,7 @@ class Mqtt5UnsubscribeEncoderTest extends AbstractMqtt5EncoderTest {
     }
 
     @Test
-    @Disabled
+    @Disabled("transform to encode_propertyLengthExceeded_omitUserPropertiesAndReasonString")
     void encode_propertyLengthExceedsMax_throwsEncoderException() {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
         final Mqtt5UnsubscribeImpl unsubscribe =

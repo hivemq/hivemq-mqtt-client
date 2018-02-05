@@ -79,72 +79,24 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
         encode(expected, auth);
     }
 
-    @Test
-    void encode_simpleSuccess() {
-        final byte[] expected = {
-                // fixed header
-                //   type, flags
-                (byte) 0b1111_0000,
-                //   remaining length
-                5,
-                // variable header
-                //   reason code (continue)
-                0x00,
-                //   properties
-                (byte) 3,
-                //     auth method
-                0x15, 0, 0
-        };
-
-        final Mqtt5UTF8StringImpl method = requireNonNull(Mqtt5UTF8StringImpl.from(""));
-        final Mqtt5AuthImpl auth = new Mqtt5AuthImpl(Mqtt5AuthReasonCode.SUCCESS, method, null, null,
-                Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES);
-        encode(expected, auth);
-    }
-
-    @Test
-    void encode_simple() {
-        final byte[] expected = {
-                // fixed header
-                //   type, flags
-                (byte) 0b1111_0000,
-                //   remaining length
-                6,
-                // variable header
-                //   reason code (continue)
-                0x18,
-                //   properties
-                (byte) 4,
-                //     auth method
-                0x15, 0, 1, 'x'
-        };
-
-        final Mqtt5UTF8StringImpl method = requireNonNull(Mqtt5UTF8StringImpl.from("x"));
-        final Mqtt5AuthImpl auth = new Mqtt5AuthImpl(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, method, null, null,
-                Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES);
-        encode(expected, auth);
-    }
-
     @ParameterizedTest
-    @EnumSource(value = Mqtt5AuthReasonCode.class, mode = EnumSource.Mode.EXCLUDE, names = "SUCCESS")
-    void encode_reasonCodes(final Mqtt5AuthReasonCode reasonCode) {
-
+    @EnumSource(value = Mqtt5AuthReasonCode.class)
+    void encode_simple_reasonCodes(final Mqtt5AuthReasonCode reasonCode) {
         final byte[] expected = {
                 // fixed header
                 //   type, flags
                 (byte) 0b1111_0000,
-                //   remaining length (132)
+                //   remaining length
                 6,
                 // variable header
                 //   reason code placeholder
-                (byte) 0xFF,
+                (byte) reasonCode.getCode(),
                 //   properties
                 4,
                 //     auth method
                 0x15, 0, 1, 'x'
         };
 
-        expected[2] = (byte) reasonCode.getCode();
         final Mqtt5UTF8StringImpl method = requireNonNull(Mqtt5UTF8StringImpl.from("x"));
         final Mqtt5AuthImpl auth =
                 new Mqtt5AuthImpl(reasonCode, method, null, null, Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES);
@@ -157,7 +109,7 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
                 // fixed header
                 //   type, flags
                 (byte) 0b1111_0000,
-                //   remaining length (132)
+                //   remaining length
                 10,
                 // variable header
                 //   reason code (continue)
@@ -178,7 +130,7 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
     }
 
     @Test
-    @Disabled
+    @Disabled("auth data will be validated in the builder, remove this test")
     void encode_authenticationDataTooLarge_throwsEncoderException() {
         final byte[] data = new byte[65536];
         final Mqtt5UTF8StringImpl method = requireNonNull(Mqtt5UTF8StringImpl.from("x"));
@@ -214,7 +166,6 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
         encode(expected, auth);
     }
 
-
     @Test
     void encode_reasonStringEmpty() {
         final byte[] expected = {
@@ -242,28 +193,28 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
         encode(expected, auth);
     }
 
-
     @Test
-    @Disabled
-    void encode_maximumPacketSizeExceeded_throwsEncoderException() {
+    void encode_maximumPacketSizeExceeded_omitUserPropertiesAndReasonString() {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
-        final Mqtt5UTF8StringImpl method = requireNonNull(Mqtt5UTF8StringImpl.from("x"));
-        final Mqtt5AuthImpl auth = new Mqtt5AuthImpl(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, method, null,
-                maxPacket.getReasonStringTooLong(), maxPacket.getMaxPossibleUserProperties());
-        encodeNok(auth, EncoderException.class, "variable byte integer size exceeded for remaining length");
+
+        final Mqtt5AuthImpl auth =
+                new Mqtt5AuthImpl(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, maxPacket.getMethod(), null,
+                        maxPacket.getReasonStringTooLong(), maxPacket.getMaxPossibleUserProperties());
+
+        encode(maxPacket.getWithOmittedUserPropertiesAndReasonString(), auth);
     }
 
     @Test
-    @Disabled
-    void encode_propertyLengthExceedsMax_throwsEncoderException() {
+    void encode_propertyLengthExceeded_omitUserPropertiesAndReasonString() {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder();
-        final Mqtt5UTF8StringImpl method = requireNonNull(Mqtt5UTF8StringImpl.from("x"));
         final Mqtt5UserPropertiesImpl tooManyUserProperties = maxPacket
                 .getUserProperties((VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE / maxPacket.userPropertyBytes) + 1);
 
-        final Mqtt5AuthImpl auth = new Mqtt5AuthImpl(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, method, null, null,
-                tooManyUserProperties);
-        encodeNok(auth, EncoderException.class, "variable byte integer size exceeded for property length");
+        final Mqtt5AuthImpl auth =
+                new Mqtt5AuthImpl(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, maxPacket.getMethod(), null, null,
+                        tooManyUserProperties);
+
+        encode(maxPacket.getWithOmittedUserPropertiesAndReasonString(), auth);
     }
 
 
@@ -333,6 +284,27 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
 
         Mqtt5UTF8StringImpl getReasonStringTooLong() {
             return Mqtt5UTF8StringImpl.from("r" + new String(reasonStringBytes) + "x");
+        }
+
+        Mqtt5UTF8StringImpl getMethod() {
+            return requireNonNull(Mqtt5UTF8StringImpl.from("x"));
+        }
+
+        byte[] getWithOmittedUserPropertiesAndReasonString() {
+            return new byte[]{
+                    // fixed header
+                    //   type, flags
+                    (byte) 0b1111_0000,
+                    //   remaining length
+                    6,
+                    // variable header
+                    //   reason code (continue)
+                    0x18,
+                    //   properties
+                    4,
+                    //     auth method
+                    0x15, 0, 1, 'x'
+            };
         }
     }
 }
