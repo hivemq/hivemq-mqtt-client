@@ -172,6 +172,7 @@ public class Mqtt5UTF8StringImpl implements Mqtt5UTF8String {
 
     private byte[] binary;
     private String string;
+    private int conversions;
 
     Mqtt5UTF8StringImpl(@NotNull final byte[] binary) {
         this.binary = binary;
@@ -202,6 +203,10 @@ public class Mqtt5UTF8StringImpl implements Mqtt5UTF8String {
     byte[] toBinary() {
         if (binary == null) {
             binary = encode(string);
+            conversions++;
+            if (conversions < 3) {
+                string = null;
+            }
         }
         return binary;
     }
@@ -217,6 +222,10 @@ public class Mqtt5UTF8StringImpl implements Mqtt5UTF8String {
     public String toString() {
         if (string == null) {
             string = decode(binary);
+            conversions++;
+            if (conversions < 3) {
+                binary = null;
+            }
         }
         return string;
     }
