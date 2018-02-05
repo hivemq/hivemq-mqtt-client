@@ -28,6 +28,6 @@ public class Mqtt3PubRelDecoder implements Mqtt3MessageDecoder {
 
         final int packetID = in.readShort();
 
-        return new Mqtt3PubRelImpl(packetId);
+        return new Mqtt3PubRelImpl(packetID);
     }
 }

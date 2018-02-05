@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
+import org.mqttbee.mqtt3.message.Mqtt3Message;
 import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.codec.decoder.Mqtt5MessageDecoder;
@@ -82,14 +83,14 @@ public class Mqtt3Decoder extends ByteToMessageDecoder {
         final ByteBuf messageBuffer = in.readSlice(remainingLength);
         in.markReaderIndex();
 
-        final Mqtt5MessageDecoder decoder = decoders.get(messageType);
+        final Mqtt3MessageDecoder decoder = decoders.get(messageType);
         if (decoder == null) {
             //TODO
             //disconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "wrong packet", channel);
             return;
         }
 
-        final Mqtt5Message message = decoder.decode(flags, channel, messageBuffer);
+        final Mqtt3Message message = decoder.decode(flags, channel, messageBuffer);
 
         if (message != null) {
             out.add(message);

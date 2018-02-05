@@ -48,6 +48,10 @@ public class Mqtt3ConnAckDecoder implements Mqtt3MessageDecoder {
 
         final int code = in.readByte();
         final Mqtt3ConnAckReasonCode reasonCode = Mqtt3ConnAckReasonCode.fromCode(code);
+        if(reasonCode==null){
+            return null;
+        }
+
 
         //TODO replace dummy
         return new Mqtt3ConnAckImpl(reasonCode, sessionPresent);
