@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mqttbee.api.mqtt5.message.Mqtt5ConnAck;
 import org.mqttbee.api.mqtt5.message.Mqtt5Disconnect;
@@ -416,6 +417,35 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         channel.writeInbound(byteBuf);
 
         testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
+    }
+
+    @ParameterizedTest
+    @EnumSource(Mqtt5ConnAckReasonCode.class)
+    void decode_reason_codes(final Mqtt5ConnAckReasonCode reasonCode) {
+        final byte[] encoded = {
+                // fixed header
+                //   type, flags
+                0b0010_0000,
+                //   remaining length
+                3,
+                // variable header
+                //   connack flags
+                0b0000_0000,
+                //   reason code placeholder
+                (byte) 0xFF,
+                //   properties
+                0
+        };
+
+        encoded[3] = (byte) reasonCode.getCode();
+        final ByteBuf byteBuf = channel.alloc().buffer();
+        byteBuf.writeBytes(encoded);
+        channel.writeInbound(byteBuf);
+        final Mqtt5ConnAck connAck = channel.readInbound();
+
+        assertNotNull(connAck);
+        assertEquals(reasonCode, connAck.getReasonCode());
+
     }
 
     @ParameterizedTest
