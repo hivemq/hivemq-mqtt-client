@@ -35,7 +35,7 @@ public class Mqtt5PubCompEncoder implements Mqtt5MessageEncoder<Mqtt5PubCompImpl
     public int encodedRemainingLength(@NotNull final Mqtt5PubCompImpl pubComp) {
         int remainingLength = VARIABLE_HEADER_FIXED_LENGTH;
 
-        if ((pubComp.encodedPropertyLength() != 0) || (pubComp.getReasonCode() != DEFAULT_REASON_CODE)) {
+        if ((pubComp.maxEncodedPropertyLength() != 0) || (pubComp.getReasonCode() != DEFAULT_REASON_CODE)) {
             remainingLength += 1;
         }
 

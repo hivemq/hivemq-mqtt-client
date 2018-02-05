@@ -37,7 +37,7 @@ public class Mqtt5DisconnectEncoder implements Mqtt5MessageEncoder<Mqtt5Disconne
     public int encodedRemainingLength(@NotNull final Mqtt5DisconnectImpl disconnect) {
         int remainingLength = 0;
 
-        if ((disconnect.encodedPropertyLength() != 0) || (disconnect.getReasonCode() != DEFAULT_REASON_CODE)) {
+        if ((disconnect.maxEncodedPropertyLength() != 0) || (disconnect.getReasonCode() != DEFAULT_REASON_CODE)) {
             remainingLength += 1;
         }
 
