@@ -19,7 +19,12 @@ public class Mqtt5PingReqImpl implements Mqtt5PingReq, Mqtt5Message {
 
     @Override
     public void encode(@NotNull final Channel channel, @NotNull final ByteBuf out) {
-        Mqtt5PingReqEncoder.INSTANCE.encode(this, channel, out);
+        // no op as the same packet is used always.
+    }
+
+    @Override
+    public ByteBuf allocateBuffer(final int maxPacketSize, @NotNull final Channel channel) {
+        return Mqtt5PingReqEncoder.PACKET;
     }
 
     @Override

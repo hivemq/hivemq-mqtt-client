@@ -6,6 +6,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoderUtil;
+import org.mqttbee.mqtt5.exceptions.Mqtt5MaximumPacketSizeExceededException;
 
 import java.util.Optional;
 
@@ -26,6 +27,14 @@ public interface Mqtt5Message {
      */
     void encode(@NotNull Channel channel, @NotNull ByteBuf out);
 
+    default ByteBuf allocateBuffer(final int maxPacketSize, @NotNull final Channel channel) {
+        final int encodedLength = encodedLength(maxPacketSize);
+        if (encodedLength < 0) {
+            throw new Mqtt5MaximumPacketSizeExceededException(this, maxPacketSize);
+        }
+        return channel.alloc().ioBuffer(encodedLength, encodedLength);
+    }
+
     /**
      * Returns the byte count of this MQTT message respecting the given maximum packet size. Calculation is only
      * performed if necessary.
@@ -34,7 +43,7 @@ public interface Mqtt5Message {
      * @return the encoded length of this MQTT message respecting the maximum packet size or -1 if the minimal encoded
      * length of this message is bigger than the maximum packet size.
      */
-    int encodedLength(int maxPacketSize);
+    int encodedLength(final int maxPacketSize);
 
 
     /**
@@ -68,7 +77,7 @@ public interface Mqtt5Message {
 
 
     /**
-     * Base class for MQTT messages with a properties field with user properties in its variable header.
+     * Base class for MQTT messages with a properties field with omissible user properties in its variable header.
      */
     abstract class Mqtt5MessageWithOmissibleUserProperties implements Mqtt5MessageWithProperties {
 
@@ -77,7 +86,7 @@ public interface Mqtt5Message {
         private int propertyLength = -1;
 
         @Override
-        public final int encodedLength(final int maxPacketSize) {
+        public int encodedLength(final int maxPacketSize) {
             int encodedLength = encodedLength();
             if (encodedLength <= maxPacketSize) {
                 return encodedLength;
@@ -195,6 +204,10 @@ public interface Mqtt5Message {
 
     }
 
+
+    /**
+     * Base class for MQTT messages with a properties field with user properties in its variable header.
+     */
     abstract class Mqtt5MessageWithUserProperties extends Mqtt5MessageWithOmissibleUserProperties {
 
         private final Mqtt5UserPropertiesImpl userProperties;
@@ -220,6 +233,7 @@ public interface Mqtt5Message {
         }
 
     }
+
 
     /**
      * Base class for MQTT messages with a properties field with a reason string property in its variable header.
@@ -259,11 +273,14 @@ public interface Mqtt5Message {
 
     }
 
+
+    /**
+     * Base class for MQTT messages with a omissible properties field in its variable header.
+     */
     abstract class Mqtt5MessageWithOmissibleProperties extends Mqtt5MessageWithReasonString {
 
         public Mqtt5MessageWithOmissibleProperties(
-                @Nullable final Mqtt5UTF8StringImpl reasonString,
-                @NotNull final Mqtt5UserPropertiesImpl userProperties) {
+                @Nullable final Mqtt5UTF8StringImpl reasonString, @NotNull final Mqtt5UserPropertiesImpl userProperties) {
             super(reasonString, userProperties);
         }
 
@@ -274,8 +291,11 @@ public interface Mqtt5Message {
 
     }
 
-    abstract class Mqtt5MessageWithUserPropertiesWrapper<T extends WrappedMqtt5MessageWithUserProperties>
-            extends Mqtt5MessageWithOmissibleUserProperties {
+
+    /**
+     * Base class for MQTT message wrappers with user properties in its variable header.
+     */
+    abstract class Mqtt5MessageWithUserPropertiesWrapper<T extends WrappedMqtt5MessageWithUserProperties> extends Mqtt5MessageWithOmissibleUserProperties {
 
         private final T wrapped;
 
@@ -315,6 +335,10 @@ public interface Mqtt5Message {
 
     }
 
+
+    /**
+     * Base class for wrapped MQTT messages with user properties in its variable header.
+     */
     abstract class WrappedMqtt5MessageWithUserProperties {
 
         private final Mqtt5UserPropertiesImpl userProperties;
