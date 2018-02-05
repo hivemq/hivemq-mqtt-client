@@ -5,6 +5,9 @@ import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.EncoderException;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.*;
 import org.mqttbee.mqtt5.message.subscribe.Mqtt5RetainHandling;
@@ -17,6 +20,7 @@ import static java.util.Objects.requireNonNull;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES;
 
 
 /**
@@ -148,6 +152,106 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderTest {
         encode(expected, subscribe, 10);
     }
 
+    @ParameterizedTest
+    @EnumSource(Mqtt5QoS.class)
+    void encode_subscriptionOptionsQos(final Mqtt5QoS qos) {
+        final byte[] expected = {
+                // fixed header
+                // type, reserved
+                (byte) 0b1000_0010,
+                // remaining length
+                13,
+                // packet identifier
+                0, 10,
+                // variable header
+                // properties length
+                0,
+                // payload topic filter
+                0, 7, 't', 'o', 'p', 'i', 'c', '/', '#',
+                // subscription options
+                0b0000_1100
+        };
+
+        expected[14] |= qos.getCode();
+
+        final Mqtt5TopicFilterImpl topicFiler = Mqtt5TopicFilterImpl.from("topic/#");
+        final boolean isNoLocal = true;
+        final boolean isRetainAsPublished = true;
+        final Mqtt5RetainHandling retainHandling = Mqtt5RetainHandling.SEND;
+        final ImmutableList<Mqtt5SubscribeImpl.SubscriptionImpl> subscriptions = ImmutableList
+                .of(new Mqtt5SubscribeImpl.SubscriptionImpl(requireNonNull(topicFiler), qos, isNoLocal, retainHandling,
+                        isRetainAsPublished));
+        final Mqtt5SubscribeImpl subscribe = new Mqtt5SubscribeImpl(subscriptions, NO_USER_PROPERTIES);
+        encode(expected, subscribe, 10);
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {0, 1})
+    void encode_subscriptionOptionsNoLocal(final int noLocal) {
+        final byte[] expected = {
+                // fixed header
+                // type, reserved
+                (byte) 0b1000_0010,
+                // remaining length
+                13,
+                // packet identifier
+                0, 10,
+                // variable header
+                // properties length
+                0,
+                // payload topic filter
+                0, 7, 't', 'o', 'p', 'i', 'c', '/', '#',
+                // subscription options
+                0b0000_1000
+        };
+
+        expected[14] |= noLocal << 2;
+
+        final Mqtt5TopicFilterImpl topicFiler = Mqtt5TopicFilterImpl.from("topic/#");
+        final boolean isNoLocal = noLocal == 1;
+        final boolean isRetainAsPublished = true;
+        final Mqtt5RetainHandling retainHandling = Mqtt5RetainHandling.SEND;
+        final Mqtt5QoS qos = Mqtt5QoS.AT_MOST_ONCE;
+        final ImmutableList<Mqtt5SubscribeImpl.SubscriptionImpl> subscriptions = ImmutableList
+                .of(new Mqtt5SubscribeImpl.SubscriptionImpl(requireNonNull(topicFiler), qos, isNoLocal, retainHandling,
+                        isRetainAsPublished));
+        final Mqtt5SubscribeImpl subscribe = new Mqtt5SubscribeImpl(subscriptions, NO_USER_PROPERTIES);
+        encode(expected, subscribe, 10);
+    }
+
+    @ParameterizedTest
+    @EnumSource(Mqtt5RetainHandling.class)
+    void encode_subscriptionOptionsRetain(final Mqtt5RetainHandling retainHandling) {
+        final byte[] expected = {
+                // fixed header
+                // type, reserved
+                (byte) 0b1000_0010,
+                // remaining length
+                13,
+                // packet identifier
+                0, 10,
+                // variable header
+                // properties length
+                0,
+                // payload topic filter
+                0, 7, 't', 'o', 'p', 'i', 'c', '/', '#',
+                // subscription options
+                0b0000_1101
+        };
+
+        expected[14] |= retainHandling.getCode() << 4;
+
+        final Mqtt5TopicFilterImpl topicFiler = Mqtt5TopicFilterImpl.from("topic/#");
+        final Mqtt5QoS qos = Mqtt5QoS.AT_LEAST_ONCE;
+        final boolean isNoLocal = true;
+        final boolean isRetainAsPublished = true;
+        final ImmutableList<Mqtt5SubscribeImpl.SubscriptionImpl> subscriptions = ImmutableList
+                .of(new Mqtt5SubscribeImpl.SubscriptionImpl(requireNonNull(topicFiler), qos, isNoLocal, retainHandling,
+                        isRetainAsPublished));
+        final Mqtt5SubscribeImpl subscribe = new Mqtt5SubscribeImpl(subscriptions, NO_USER_PROPERTIES);
+        encode(expected, subscribe, 10);
+    }
+
     @Test
     void encode_subscriptionIdentifier() {
         final byte[] expected = {
@@ -178,7 +282,7 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderTest {
                 .of(new Mqtt5SubscribeImpl.SubscriptionImpl(requireNonNull(topicFiler), qos, isNoLocal, retainHandling,
                         isRetainAsPublished));
         final Mqtt5SubscribeImpl subscribe =
-                new Mqtt5SubscribeImpl(subscriptions, Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES);
+                new Mqtt5SubscribeImpl(subscriptions, NO_USER_PROPERTIES);
         final Mqtt5SubscribeInternal subscribeInternal = new Mqtt5SubscribeInternal(subscribe, 10, 111);
 
         encodeInternal(expected, subscribeInternal);
