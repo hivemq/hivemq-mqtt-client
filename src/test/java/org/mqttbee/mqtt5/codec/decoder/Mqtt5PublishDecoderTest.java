@@ -18,7 +18,6 @@ import org.mqttbee.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishInternal;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -172,6 +171,18 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
         };
         final Mqtt5PublishImpl publish = decode(encoded);
         assertEquals("t", publish.getTopic().toString());
+    }
+
+    @Test
+    void decode_tooShort() {
+        final byte[] encoded = {
+                // fixed header
+                //   type, flags
+                0b0011_0000,
+                //   remaining length
+                0
+        };
+        decodeNok(encoded, MALFORMED_PACKET);
     }
 
     @Test
@@ -339,7 +350,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
 
 
     @Test
-    void decode_payloadFormatIndicatorUtf8() throws UnsupportedEncodingException {
+    void decode_payloadFormatIndicatorUtf8() {
         channel.attr(ChannelAttributes.VALIDATE_PAYLOAD_FORMAT).set(true);
         final byte[] encoded = {
                 // fixed header
@@ -711,6 +722,23 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
         };
         final Mqtt5PublishInternal publishInternal = decodeInternal(encoded);
         assertEquals(12, publishInternal.getPacketIdentifier());
+    }
+
+    @Test
+    void decode_packetIdentifierMissingWithQos2() {
+        final byte[] encoded = {
+                // fixed header
+                //   type, flags
+                0b0011_0100,
+                //   remaining length
+                8,
+                // variable header
+                //   topic name
+                0, 5, 't', 'o', 'p', 'i', 'c',
+                //   properties
+                0
+        };
+        decodeNok(encoded, MALFORMED_PACKET);
     }
 
     @Test
@@ -1088,6 +1116,56 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
     }
 
     @Test
+    void decode_propertyLengthTooLong_returnsNull() {
+        final byte[] encoded = {
+                // fixed header
+                //   type, flags
+                0b0011_0000,
+                //   remaining length
+                10,
+                // variable header
+                //   topic name
+                0, 5, 't', 'o', 'p', 'i', 'c',
+                //   properties
+                3,
+                //     payload format indicator
+                0x01, 0
+        };
+        decodeNok(encoded, MALFORMED_PACKET);
+    }
+
+    @Test
+    void decode_propertyLengthTooShort_returnsNull() {
+        final byte[] encoded = {
+                // fixed header
+                //   type, flags
+                0b0011_0000,
+                //   remaining length
+                10,
+                // variable header
+                //   topic name
+                0, 5, 't', 'o', 'p', 'i', 'c',
+                //   properties
+                1,
+                //     payload format indicator
+                0x01, 0
+        };
+        decodeNok(encoded, MALFORMED_PACKET);
+    }
+
+    @Test
+    void decode_remainingLengthMissing_returnsNull() {
+        final byte[] encoded = {
+                // fixed header
+                //   type, flags
+                0b0011_0000,
+                //   remaining length
+                0
+        };
+        decodeNok(encoded, MALFORMED_PACKET);
+    }
+
+    @Test
     void decode_topicNullNoAlias_returnsNull() {
         final byte[] encoded = {
                 // fixed header
@@ -1104,6 +1182,25 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
                 0x01, 0
         };
         decodeNok(encoded, TOPIC_ALIAS_INVALID);
+    }
+
+    @Test
+    void decode_invalidMessageType_returnsNull() {
+        final byte[] encoded = {
+                // fixed header
+                //   type, flags
+                (byte) 0b1111_0000,
+                //   remaining length
+                5,
+                // variable header
+                //   topic name null, no alias
+                0, 0,
+                //   properties length
+                2,
+                //     payload format indicator
+                0x01, 0
+        };
+        decodeNok(encoded, PROTOCOL_ERROR);
     }
 
     @NotNull
