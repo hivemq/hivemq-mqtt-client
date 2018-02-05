@@ -3,6 +3,8 @@ package org.mqttbee.mqtt5.message.subscribe;
 import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.message.Mqtt5Subscribe;
+import org.mqttbee.mqtt5.codec.encoder.Mqtt5SubscribeEncoder;
+import org.mqttbee.mqtt5.message.Mqtt5Message;
 import org.mqttbee.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.mqtt5.message.Mqtt5TopicFilterImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
@@ -10,16 +12,15 @@ import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5SubscribeImpl implements Mqtt5Subscribe {
+public class Mqtt5SubscribeImpl extends Mqtt5Message.WrappedMqtt5MessageWithUserProperties implements Mqtt5Subscribe {
 
     private final ImmutableList<SubscriptionImpl> subscriptions;
-    private final Mqtt5UserPropertiesImpl userProperties;
 
     public Mqtt5SubscribeImpl(
             @NotNull final ImmutableList<SubscriptionImpl> subscriptions,
             @NotNull final Mqtt5UserPropertiesImpl userProperties) {
+        super(userProperties);
         this.subscriptions = subscriptions;
-        this.userProperties = userProperties;
     }
 
     @NotNull
@@ -28,10 +29,14 @@ public class Mqtt5SubscribeImpl implements Mqtt5Subscribe {
         return subscriptions;
     }
 
-    @NotNull
     @Override
-    public Mqtt5UserPropertiesImpl getUserProperties() {
-        return userProperties;
+    protected int calculateEncodedRemainingLengthWithoutProperties() {
+        return Mqtt5SubscribeEncoder.INSTANCE.encodedRemainingLengthWithoutProperties(this);
+    }
+
+    @Override
+    protected int calculateEncodedPropertyLength() {
+        return Mqtt5SubscribeEncoder.INSTANCE.encodedPropertyLength(this);
     }
 
 

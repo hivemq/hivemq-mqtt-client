@@ -111,12 +111,12 @@ public class Mqtt5DataTypes {
         int length = 1;
         if (value > VARIABLE_BYTE_INTEGER_ONE_BYTE_MAX_VALUE) {
             length++;
-        }
-        if (value > VARIABLE_BYTE_INTEGER_TWO_BYTES_MAX_VALUE) {
-            length++;
-        }
-        if (value > VARIABLE_BYTE_INTEGER_THREE_BYTES_MAX_VALUE) {
-            length++;
+            if (value > VARIABLE_BYTE_INTEGER_TWO_BYTES_MAX_VALUE) {
+                length++;
+                if (value > VARIABLE_BYTE_INTEGER_THREE_BYTES_MAX_VALUE) {
+                    length++;
+                }
+            }
         }
         return length;
     }

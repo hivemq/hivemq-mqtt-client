@@ -10,12 +10,28 @@ import org.mqttbee.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 /**
  * @author Silvio Giebl
  */
-class Mqtt5MessageEncoderUtil {
+public class Mqtt5MessageEncoderUtil {
 
     private Mqtt5MessageEncoderUtil() {
     }
 
-    static int encodedLengthWithHeader(final int encodedLength) {
+    /**
+     * Calculates the encoded length of a MQTT message with the given remaining length.
+     *
+     * @param remainingLength the remaining length of the MQTT message.
+     * @return the encoded length of the MQTT message.
+     */
+    public static int encodedPacketLength(final int remainingLength) {
+        return 1 + encodedLengthWithHeader(remainingLength);
+    }
+
+    /**
+     * Calculates the encoded length with a prefixed header.
+     *
+     * @param encodedLength the encoded length.
+     * @return the encoded length with a prefixed header.
+     */
+    public static int encodedLengthWithHeader(final int encodedLength) {
         return Mqtt5DataTypes.encodedVariableByteIntegerLength(encodedLength) + encodedLength;
     }
 
@@ -43,7 +59,7 @@ class Mqtt5MessageEncoderUtil {
         return 1 + string.encodedLength();
     }
 
-    static int nullablePropertyEncodedLength(@Nullable final Mqtt5UTF8StringImpl string) {
+    public static int nullablePropertyEncodedLength(@Nullable final Mqtt5UTF8StringImpl string) {
         return (string == null) ? 0 : propertyEncodedLength(string);
     }
 
@@ -84,7 +100,7 @@ class Mqtt5MessageEncoderUtil {
         string.to(out);
     }
 
-    static void encodeNullableProperty(
+    public static void encodeNullableProperty(
             final int propertyIdentifier, @Nullable final Mqtt5UTF8StringImpl string, @NotNull final ByteBuf out) {
 
         if (string != null) {

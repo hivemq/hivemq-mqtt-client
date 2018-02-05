@@ -94,7 +94,7 @@ public class Mqtt5PublishDecoderTest {
         assertEquals(1, subscriptionIdentifiers.length());
         assertTrue(subscriptionIdentifiers.contains(123));
 
-        final Mqtt5PublishImpl publish = publishInternal.getPublish();
+        final Mqtt5PublishImpl publish = publishInternal.getWrapped();
 
         assertNotNull(publish);
 
@@ -148,7 +148,7 @@ public class Mqtt5PublishDecoderTest {
         final ImmutableIntArray subscriptionIdentifiers = publishInternal.getSubscriptionIdentifiers();
         assertEquals(0, subscriptionIdentifiers.length());
 
-        final Mqtt5PublishImpl publish = publishInternal.getPublish();
+        final Mqtt5PublishImpl publish = publishInternal.getWrapped();
 
         assertNotNull(publish);
 
@@ -1116,7 +1116,7 @@ public class Mqtt5PublishDecoderTest {
 
     @NotNull
     private Mqtt5PublishImpl decode(final byte[] encoded) {
-        return decodeInternal(encoded).getPublish();
+        return decodeInternal(encoded).getWrapped();
     }
 
     @NotNull

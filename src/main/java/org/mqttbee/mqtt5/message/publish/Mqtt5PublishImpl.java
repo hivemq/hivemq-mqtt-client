@@ -6,10 +6,8 @@ import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5Publish;
 import org.mqttbee.api.mqtt5.message.Mqtt5Topic;
 import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
-import org.mqttbee.mqtt5.message.Mqtt5QoS;
-import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
-import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
-import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
+import org.mqttbee.mqtt5.codec.encoder.Mqtt5PublishEncoder;
+import org.mqttbee.mqtt5.message.*;
 import org.mqttbee.mqtt5.message.util.ByteBufUtil;
 
 import java.util.Optional;
@@ -17,7 +15,7 @@ import java.util.Optional;
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5PublishImpl implements Mqtt5Publish {
+public class Mqtt5PublishImpl extends Mqtt5Message.WrappedMqtt5MessageWithUserProperties implements Mqtt5Publish {
 
     public static final long MESSAGE_EXPIRY_INTERVAL_INFINITY = Long.MAX_VALUE;
 
@@ -31,7 +29,6 @@ public class Mqtt5PublishImpl implements Mqtt5Publish {
     private final Mqtt5TopicImpl responseTopic;
     private final byte[] correlationData;
     private final TopicAliasUsage topicAliasUsage;
-    private final Mqtt5UserPropertiesImpl userProperties;
 
     public Mqtt5PublishImpl(
             @NotNull final Mqtt5TopicImpl topic, @Nullable final byte[] payload, @NotNull final Mqtt5QoS qos,
@@ -40,6 +37,7 @@ public class Mqtt5PublishImpl implements Mqtt5Publish {
             @Nullable final Mqtt5UTF8StringImpl contentType, @Nullable final Mqtt5TopicImpl responseTopic,
             @Nullable final byte[] correlationData, @NotNull final TopicAliasUsage topicAliasUsage,
             @NotNull final Mqtt5UserPropertiesImpl userProperties) {
+        super(userProperties);
         this.topic = topic;
         this.payload = payload;
         this.qos = qos;
@@ -50,7 +48,6 @@ public class Mqtt5PublishImpl implements Mqtt5Publish {
         this.responseTopic = responseTopic;
         this.correlationData = correlationData;
         this.topicAliasUsage = topicAliasUsage;
-        this.userProperties = userProperties;
     }
 
     @NotNull
@@ -142,10 +139,14 @@ public class Mqtt5PublishImpl implements Mqtt5Publish {
         return topicAliasUsage;
     }
 
-    @NotNull
     @Override
-    public Mqtt5UserPropertiesImpl getUserProperties() {
-        return userProperties;
+    protected int calculateEncodedRemainingLengthWithoutProperties() {
+        return Mqtt5PublishEncoder.INSTANCE.encodedRemainingLengthWithoutProperties(this);
+    }
+
+    @Override
+    protected int calculateEncodedPropertyLength() {
+        return Mqtt5PublishEncoder.INSTANCE.encodedPropertyLength(this);
     }
 
 }

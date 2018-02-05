@@ -15,7 +15,7 @@ import java.util.Optional;
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5ConnAckImpl implements Mqtt5ConnAck, Mqtt5Message {
+public class Mqtt5ConnAckImpl extends Mqtt5Message.Mqtt5MessageWithReasonString implements Mqtt5ConnAck {
 
     public static final long SESSION_EXPIRY_INTERVAL_FROM_CONNECT = -1;
     public static final int KEEP_ALIVE_FROM_CONNECT = -1;
@@ -31,8 +31,6 @@ public class Mqtt5ConnAckImpl implements Mqtt5ConnAck, Mqtt5Message {
     private final RestrictionsImpl restrictions;
     private final Mqtt5UTF8StringImpl responseInformation;
     private final Mqtt5UTF8StringImpl serverReference;
-    private final Mqtt5UTF8StringImpl reasonString;
-    private final Mqtt5UserPropertiesImpl userProperties;
 
     public Mqtt5ConnAckImpl(
             @NotNull final Mqtt5ConnAckReasonCode reasonCode, final boolean isSessionPresent,
@@ -42,6 +40,7 @@ public class Mqtt5ConnAckImpl implements Mqtt5ConnAck, Mqtt5Message {
             @Nullable final Mqtt5UTF8StringImpl responseInformation,
             @Nullable final Mqtt5UTF8StringImpl serverReference, @Nullable final Mqtt5UTF8StringImpl reasonString,
             @NotNull final Mqtt5UserPropertiesImpl userProperties) {
+        super(reasonString, userProperties);
         this.reasonCode = reasonCode;
         this.isSessionPresent = isSessionPresent;
         this.sessionExpiryInterval = sessionExpiryInterval;
@@ -51,8 +50,6 @@ public class Mqtt5ConnAckImpl implements Mqtt5ConnAck, Mqtt5Message {
         this.restrictions = restrictions;
         this.responseInformation = responseInformation;
         this.serverReference = serverReference;
-        this.reasonString = reasonString;
-        this.userProperties = userProperties;
     }
 
     @NotNull
@@ -109,25 +106,18 @@ public class Mqtt5ConnAckImpl implements Mqtt5ConnAck, Mqtt5Message {
         return Optional.ofNullable(serverReference);
     }
 
-    @NotNull
-    @Override
-    public Optional<Mqtt5UTF8String> getReasonString() {
-        return Optional.ofNullable(reasonString);
-    }
-
-    @NotNull
-    @Override
-    public Mqtt5UserPropertiesImpl getUserProperties() {
-        return userProperties;
-    }
-
     @Override
     public void encode(@NotNull final Channel channel, @NotNull final ByteBuf out) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public int encodedLength() {
+    protected int calculateEncodedRemainingLength() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    protected int calculateEncodedPropertyLength() {
         throw new UnsupportedOperationException();
     }
 

@@ -6,6 +6,7 @@ import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.codec.EncoderException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -162,6 +163,7 @@ class Mqtt5PubRelEncoderTest {
     }
 
     @Test
+    @Disabled
     void encode_maximumPacketSizeExceeded_throwsEncoderException() {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
         final Mqtt5PubRelImpl pubRel = new Mqtt5PubRelImpl(1, SUCCESS, maxPacket.getMaxPaddedReasonString("a"),
@@ -172,6 +174,7 @@ class Mqtt5PubRelEncoderTest {
     }
 
     @Test
+    @Disabled
     void encode_propertyLengthExceedsMax_throwsEncoderException() {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
         final Mqtt5PubRelImpl pubRel = new Mqtt5PubRelImpl(1, SUCCESS, maxPacket.getMaxPaddedReasonString(),

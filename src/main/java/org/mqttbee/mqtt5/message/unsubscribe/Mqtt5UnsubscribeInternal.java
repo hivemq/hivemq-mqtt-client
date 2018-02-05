@@ -9,7 +9,7 @@ import org.mqttbee.mqtt5.message.Mqtt5Message;
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5UnsubscribeInternal extends Mqtt5Message.Mqtt5MessageWithProperties {
+public class Mqtt5UnsubscribeInternal implements Mqtt5Message.Mqtt5MessageWithProperties {
 
     private final Mqtt5UnsubscribeImpl unsubscribe;
     private final int packetIdentifier;
@@ -20,7 +20,7 @@ public class Mqtt5UnsubscribeInternal extends Mqtt5Message.Mqtt5MessageWithPrope
     }
 
     @NotNull
-    public Mqtt5UnsubscribeImpl getUnsubscribe() {
+    public Mqtt5UnsubscribeImpl getWrapped() {
         return unsubscribe;
     }
 
@@ -34,13 +34,18 @@ public class Mqtt5UnsubscribeInternal extends Mqtt5Message.Mqtt5MessageWithPrope
     }
 
     @Override
-    protected int calculateEncodedRemainingLength() {
-        return Mqtt5UnsubscribeEncoder.INSTANCE.encodedRemainingLength(this);
+    public int encodedLength(final int maxPacketSize) {
+        return unsubscribe.encodedLength(maxPacketSize);
     }
 
     @Override
-    protected int calculateEncodedPropertyLength() {
-        return Mqtt5UnsubscribeEncoder.INSTANCE.encodedPropertyLength(this);
+    public int encodedRemainingLength(final int maxPacketSize) {
+        return unsubscribe.encodedRemainingLength(maxPacketSize);
+    }
+
+    @Override
+    public int encodedPropertyLength(final int maxPacketSize) {
+        return unsubscribe.encodedPropertyLength(maxPacketSize);
     }
 
 }

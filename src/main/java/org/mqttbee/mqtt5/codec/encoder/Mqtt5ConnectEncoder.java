@@ -61,11 +61,6 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
             remainingLength += Mqtt5DataTypes.encodedBinaryDataLength(willPublish.getRawPayload());
         }
 
-        remainingLength += encodedLengthWithHeader(connect.encodedPropertyLength());
-
-        if (!Mqtt5DataTypes.isInVariableByteIntegerRange(remainingLength)) {
-            throw new Mqtt5VariableByteIntegerExceededException("remaining length"); // TODO
-        }
         return remainingLength;
     }
 
@@ -96,9 +91,6 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
 
         propertyLength += connect.getUserProperties().encodedLength();
 
-        if (!Mqtt5DataTypes.isInVariableByteIntegerRange(propertyLength)) {
-            throw new Mqtt5VariableByteIntegerExceededException("property length"); // TODO
-        }
         return propertyLength;
     }
 
@@ -127,7 +119,9 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
 
     private void encodeFixedHeader(@NotNull final Mqtt5ConnectImpl connect, @NotNull final ByteBuf out) {
         out.writeByte(FIXED_HEADER);
-        Mqtt5DataTypes.encodeVariableByteInteger(connect.encodedRemainingLength(), out);
+        Mqtt5DataTypes
+                .encodeVariableByteInteger(connect.encodedRemainingLength(Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT),
+                        out); // TODO
     }
 
     private void encodeVariableHeader(
@@ -171,7 +165,7 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
     private void encodeProperties(
             @NotNull final Mqtt5ConnectImpl connect, @NotNull final ByteBuf out, @NotNull final Channel channel) {
 
-        final int propertyLength = connect.encodedPropertyLength();
+        final int propertyLength = connect.encodedPropertyLength(Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT); // TODO
         Mqtt5DataTypes.encodeVariableByteInteger(propertyLength, out);
 
         encodeIntProperty(
@@ -212,7 +206,7 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
             }
         }
 
-        connect.getUserProperties().encode(out);
+        connect.encodeUserProperties(Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT, out); // TODO
     }
 
     private void encodePayload(@NotNull final Mqtt5ConnectImpl connect, @NotNull final ByteBuf out) {

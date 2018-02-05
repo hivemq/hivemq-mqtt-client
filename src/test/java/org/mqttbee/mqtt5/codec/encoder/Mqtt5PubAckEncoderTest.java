@@ -283,6 +283,7 @@ class Mqtt5PubAckEncoderTest {
     }
 
     @Test
+    @Disabled
     void encode_maximumPacketSizeExceeded_throwsEncoderException() {
 
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
@@ -296,6 +297,7 @@ class Mqtt5PubAckEncoderTest {
     }
 
     @Test
+    @Disabled
     void encode_maximumPropertiesSizeExceeded_throwsEncoderException() {
 
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
