@@ -29,7 +29,7 @@ public class Mqtt5Decoder extends ByteToMessageDecoder {
     }
 
     @Override
-    protected void decode(final ChannelHandlerContext ctx, final ByteBuf in, final List<Object> out) throws Exception {
+    protected void decode(final ChannelHandlerContext ctx, final ByteBuf in, final List<Object> out) {
         final Channel channel = ctx.channel();
         if (!channel.isOpen()) {
             return;
