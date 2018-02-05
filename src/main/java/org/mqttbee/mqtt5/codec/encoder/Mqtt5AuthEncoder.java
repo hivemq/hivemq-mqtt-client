@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
+import org.mqttbee.mqtt5.handler.Mqtt5ServerData;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.auth.Mqtt5AuthImpl;
 
@@ -26,8 +27,10 @@ public class Mqtt5AuthEncoder implements Mqtt5MessageEncoder<Mqtt5AuthImpl> {
 
     @Override
     public void encode(@NotNull final Mqtt5AuthImpl auth, @NotNull final Channel channel, @NotNull final ByteBuf out) {
-        encodeFixedHeader(auth, out);
-        encodeVariableHeader(auth, out);
+        final int maximumPacketSize = Mqtt5ServerData.get(channel).getMaximumPacketSize();
+
+        encodeFixedHeader(auth, out, maximumPacketSize);
+        encodeVariableHeader(auth, out, maximumPacketSize);
     }
 
     public int encodedRemainingLength() {
@@ -45,25 +48,28 @@ public class Mqtt5AuthEncoder implements Mqtt5MessageEncoder<Mqtt5AuthImpl> {
         return propertyLength;
     }
 
-    private void encodeFixedHeader(@NotNull final Mqtt5AuthImpl auth, @NotNull final ByteBuf out) {
+    private void encodeFixedHeader(
+            @NotNull final Mqtt5AuthImpl auth, @NotNull final ByteBuf out, final int maximumPacketSize) {
+
         out.writeByte(FIXED_HEADER);
-        Mqtt5DataTypes.encodeVariableByteInteger(auth.encodedRemainingLength(Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT),
-                out); // TODO
+        Mqtt5DataTypes.encodeVariableByteInteger(auth.encodedRemainingLength(maximumPacketSize), out);
     }
 
-    private void encodeVariableHeader(@NotNull final Mqtt5AuthImpl auth, @NotNull final ByteBuf out) {
+    private void encodeVariableHeader(
+            @NotNull final Mqtt5AuthImpl auth, @NotNull final ByteBuf out, final int maximumPacketSize) {
+
         out.writeByte(auth.getReasonCode().getCode());
-        encodeProperties(auth, out);
+        encodeProperties(auth, out, maximumPacketSize);
     }
 
-    private void encodeProperties(@NotNull final Mqtt5AuthImpl auth, @NotNull final ByteBuf out) {
-        Mqtt5DataTypes.encodeVariableByteInteger(auth.encodedPropertyLength(Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT),
-                out); // TODO
+    private void encodeProperties(
+            @NotNull final Mqtt5AuthImpl auth, @NotNull final ByteBuf out, final int maximumPacketSize) {
 
+        Mqtt5DataTypes.encodeVariableByteInteger(auth.encodedPropertyLength(maximumPacketSize), out);
         encodeProperty(AUTHENTICATION_METHOD, auth.getMethod(), out);
         encodeNullableProperty(AUTHENTICATION_DATA, auth.getRawData(), out);
-        auth.encodeReasonString(Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT, out); // TODO
-        auth.encodeUserProperties(Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT, out); // TODO
+        auth.encodeReasonString(maximumPacketSize, out);
+        auth.encodeUserProperties(maximumPacketSize, out);
     }
 
 }

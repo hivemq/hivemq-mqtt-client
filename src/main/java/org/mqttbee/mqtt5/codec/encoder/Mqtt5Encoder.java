@@ -4,7 +4,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
-import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.Mqtt5Message;
 
 import javax.inject.Inject;
@@ -24,10 +23,7 @@ public class Mqtt5Encoder extends MessageToByteEncoder<Mqtt5Message> {
     protected ByteBuf allocateBuffer(
             final ChannelHandlerContext ctx, final Mqtt5Message message, final boolean preferDirect) throws Exception {
 
-//        final Integer test = ctx.channel().attr(ChannelAttributes.OUTGOING_MAXIMUM_PACKET_SIZE).get();
-//        final int maximumPacketSize = (test == null) ? Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT : test;
-        final int maximumPacketSize = Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT;
-        return message.allocateBuffer(maximumPacketSize, ctx.channel());
+        return message.allocateBuffer(ctx.channel());
     }
 
     @Override

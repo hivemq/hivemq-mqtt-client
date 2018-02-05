@@ -3,15 +3,11 @@ package org.mqttbee.mqtt5.codec.encoder;
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.codec.EncoderException;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
@@ -29,18 +25,10 @@ import static org.mqttbee.mqtt5.codec.Mqtt5DataTypes.encodeVariableByteInteger;
 /**
  * @author Christian Hoff
  */
-class Mqtt5PubAckEncoderTest {
+class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderTest {
 
-    private EmbeddedChannel channel;
-
-    @BeforeEach
-    void setUp() {
-        channel = new EmbeddedChannel(new Mqtt5Encoder());
-    }
-
-    @AfterEach
-    void tearDown() {
-        channel.close();
+    Mqtt5PubAckEncoderTest() {
+        super(true);
     }
 
     @Test
@@ -74,32 +62,6 @@ class Mqtt5PubAckEncoderTest {
 
         final Mqtt5PubAckImpl pubAck =
                 new Mqtt5PubAckImpl((127 * 256) + 1, Mqtt5PubAckReasonCode.SUCCESS, reasonString, userProperties);
-        encode(expected, pubAck);
-    }
-
-    @Test
-    @Disabled("logic to omit reason string missing from encoder. Ticket has been added")
-    void encode_omitReasonStringIfMaxSizeTooSmall() {
-        // MQTT v5.0 Spec §3.4.2.2.2
-        final byte[] expected = {
-                // fixed header
-                //   type, reserved
-                (byte) 0b0100_0000,
-                //   remaining length
-                3,
-                // variable header
-                //   packet identifier
-                0, 1,
-                //   PUBACK reason code
-                0x10
-        };
-        channel.attr(ChannelAttributes.OUTGOING_MAXIMUM_PACKET_SIZE).set((expected.length + 2));
-
-        final Mqtt5UTF8StringImpl reasonString = Mqtt5UTF8StringImpl.from("reason");
-        final Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES;
-
-        final Mqtt5PubAckImpl pubAck =
-                new Mqtt5PubAckImpl(1, Mqtt5PubAckReasonCode.NO_MATCHING_SUBSCRIBERS, reasonString, userProperties);
         encode(expected, pubAck);
     }
 
@@ -147,7 +109,31 @@ class Mqtt5PubAckEncoderTest {
     }
 
     @Test
-    @Disabled("logic to omit user properties missing from encoder. Ticket has been added")
+    void encode_omitReasonStringIfMaxSizeTooSmall() {
+        // MQTT v5.0 Spec §3.4.2.2.2
+        final byte[] expected = {
+                // fixed header
+                //   type, reserved
+                (byte) 0b0100_0000,
+                //   remaining length
+                3,
+                // variable header
+                //   packet identifier
+                0, 1,
+                //   PUBACK reason code
+                0x10
+        };
+        createServerData(expected.length + 2);
+
+        final Mqtt5UTF8StringImpl reasonString = Mqtt5UTF8StringImpl.from("reason");
+        final Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES;
+
+        final Mqtt5PubAckImpl pubAck =
+                new Mqtt5PubAckImpl(1, Mqtt5PubAckReasonCode.NO_MATCHING_SUBSCRIBERS, reasonString, userProperties);
+        encode(expected, pubAck);
+    }
+
+    @Test
     void encode_omitUserPropertyIfMaxAllowedSizeTooSmall() {
         // MQTT v5.0 Spec §3.4.2.2.3
         final byte[] expected = {
@@ -155,19 +141,41 @@ class Mqtt5PubAckEncoderTest {
                 //   type, reserved
                 (byte) 0b0100_0000,
                 //   remaining length
-                13,
+                3,
                 // variable header
                 //   packet identifier
                 0, 1,
                 //   PUBACK reason code
-                0x10,
-                //   properties length
-                9,
-                //   properties
-                //     reason string
-                0x1F, 0, 6, 'r', 'e', 'a', 's', 'o', 'n',
+                0x10
         };
-        channel.attr(ChannelAttributes.OUTGOING_MAXIMUM_PACKET_SIZE).set((expected.length + 2));
+        createServerData(expected.length + 2);
+
+        final Mqtt5UTF8StringImpl user = requireNonNull(Mqtt5UTF8StringImpl.from("user"));
+        final Mqtt5UTF8StringImpl property = requireNonNull(Mqtt5UTF8StringImpl.from("property"));
+        final Mqtt5UserPropertiesImpl userProperties =
+                Mqtt5UserPropertiesImpl.of(ImmutableList.of(new Mqtt5UserPropertyImpl(user, property)));
+
+        final Mqtt5PubAckImpl pubAck =
+                new Mqtt5PubAckImpl(1, Mqtt5PubAckReasonCode.NO_MATCHING_SUBSCRIBERS, null, userProperties);
+        encode(expected, pubAck);
+    }
+
+    @Test
+    void encode_omitReasonStringAndUserPropertyIfMaxAllowedSizeTooSmall() {
+        // MQTT v5.0 Spec §3.4.2.2.3
+        final byte[] expected = {
+                // fixed header
+                //   type, reserved
+                (byte) 0b0100_0000,
+                //   remaining length
+                3,
+                // variable header
+                //   packet identifier
+                0, 1,
+                //   PUBACK reason code
+                0x10
+        };
+        createServerData(expected.length + 2);
 
         final Mqtt5UTF8StringImpl user = requireNonNull(Mqtt5UTF8StringImpl.from("user"));
         final Mqtt5UTF8StringImpl property = requireNonNull(Mqtt5UTF8StringImpl.from("property"));

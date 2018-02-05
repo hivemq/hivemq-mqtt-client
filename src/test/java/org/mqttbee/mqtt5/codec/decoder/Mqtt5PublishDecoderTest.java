@@ -5,18 +5,13 @@ import com.google.common.primitives.ImmutableIntArray;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.embedded.EmbeddedChannel;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt5.message.Mqtt5Publish;
 import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5QoS;
-import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
@@ -26,29 +21,26 @@ import org.mqttbee.mqtt5.message.publish.Mqtt5PublishInternal;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.*;
 
 /**
  * @author Silvio Giebl
  * @author David Katz
  */
-public class Mqtt5PublishDecoderTest {
+class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
 
-    private EmbeddedChannel channel;
-
-    @Before
-    public void setUp() {
-        createChannel();
-    }
-
-    @After
-    public void tearDown() {
-        channel.close();
+    Mqtt5PublishDecoderTest() {
+        super(code -> {
+            if (code == Mqtt5MessageType.PUBLISH.getCode()) {
+                return new Mqtt5PublishDecoder();
+            }
+            return null;
+        });
     }
 
     @Test
-    public void decode_allProperties() {
+    void decode_allProperties() {
         final byte[] encoded = {
                 // fixed header
                 //   type, flags
@@ -123,7 +115,7 @@ public class Mqtt5PublishDecoderTest {
     }
 
     @Test
-    public void decode_simple() {
+    void decode_simple() {
         final byte[] encoded = {
                 // fixed header
                 //   type, flags
@@ -165,7 +157,7 @@ public class Mqtt5PublishDecoderTest {
     }
 
     @Test
-    public void decode_minimal() {
+    void decode_minimal() {
         final byte[] encoded = {
                 // fixed header
                 //   type, flags
@@ -183,7 +175,7 @@ public class Mqtt5PublishDecoderTest {
     }
 
     @Test
-    public void decode_fixedHeaderQos() {
+    void decode_fixedHeaderQos() {
         final byte[] encodedQos0 = {
                 // fixed header
                 //   type, flags
@@ -243,7 +235,7 @@ public class Mqtt5PublishDecoderTest {
     }
 
     @Test
-    public void decode_fixedHeaderQosInvalid_returnsNull() {
+    void decode_fixedHeaderQosInvalid_returnsNull() {
         final byte[] encodedQosInvalid = {
                 // fixed header
                 //   type, flags
@@ -264,7 +256,7 @@ public class Mqtt5PublishDecoderTest {
     }
 
     @Test
-    public void decode_dupTrueForQos0_returnsNull() {
+    void decode_dupTrueForQos0_returnsNull() {
         final byte[] encoded = {
                 // fixed header
                 //   type, flags
@@ -281,7 +273,7 @@ public class Mqtt5PublishDecoderTest {
     }
 
     @Test
-    public void decode_topicNameInvalidStringLength_returnsNull() {
+    void decode_topicNameInvalidStringLength_returnsNull() {
         final byte[] encoded = {
                 // fixed header
                 //   type, flags
@@ -296,7 +288,7 @@ public class Mqtt5PublishDecoderTest {
     }
 
     @Test
-    public void decode_messageExpiryInterval() {
+    void decode_messageExpiryInterval() {
         final byte[] encoded = {
                 // fixed header
                 //   type, flags
@@ -321,7 +313,7 @@ public class Mqtt5PublishDecoderTest {
     }
 
     @Test
-    public void decode_messageExpiryIntervalDuplicate_returnsNull() {
+    void decode_messageExpiryIntervalDuplicate_returnsNull() {
         final byte[] encoded = {
                 // fixed header
                 //   type, flags
@@ -347,7 +339,7 @@ public class Mqtt5PublishDecoderTest {
 
 
     @Test
-    public void decode_payloadFormatIndicatorUtf8() throws UnsupportedEncodingException {
+    void decode_payloadFormatIndicatorUtf8() throws UnsupportedEncodingException {
         channel.attr(ChannelAttributes.VALIDATE_PAYLOAD_FORMAT).set(true);
         final byte[] encoded = {
                 // fixed header
@@ -374,7 +366,7 @@ public class Mqtt5PublishDecoderTest {
     }
 
     @Test
-    public void decode_invalidPayloadFormatIndicator_returnsNull() {
+    void decode_invalidPayloadFormatIndicator_returnsNull() {
         channel.attr(ChannelAttributes.VALIDATE_PAYLOAD_FORMAT).set(true);
         final byte[] encoded = {
                 // fixed header
@@ -394,7 +386,7 @@ public class Mqtt5PublishDecoderTest {
     }
 
     @Test
-    public void decode_payloadFormatIndicatorMoreThanOnce_returnsNull() {
+    void decode_payloadFormatIndicatorMoreThanOnce_returnsNull() {
         final byte[] encoded = {
                 // fixed header
                 //   type, flags
@@ -417,7 +409,7 @@ public class Mqtt5PublishDecoderTest {
     }
 
     @Test
-    public void decode_PayloadUtf8NotWellFormed_returnsNull() {
+    void decode_PayloadUtf8NotWellFormed_returnsNull() {
         channel.attr(ChannelAttributes.VALIDATE_PAYLOAD_FORMAT).set(true);
         final byte[] encoded = {
                 // fixed header
@@ -440,7 +432,7 @@ public class Mqtt5PublishDecoderTest {
     }
 
     @Test
-    public void decode_contentType() {
+    void decode_contentType() {
         final byte[] encoded = {
                 // fixed header
                 //   type, flags
@@ -462,7 +454,7 @@ public class Mqtt5PublishDecoderTest {
     }
 
     @Test
-    public void decode_invalidContentType_returnsNull() {
+    void decode_invalidContentType_returnsNull() {
         final byte[] encoded = {
                 // fixed header
                 //   type, flags
@@ -481,7 +473,7 @@ public class Mqtt5PublishDecoderTest {
     }
 
     @Test
-    public void decode_userProperty() {
+    void decode_userProperty() {
         final byte[] encoded = {
                 // fixed header
                 //   type, flags
@@ -505,7 +497,7 @@ public class Mqtt5PublishDecoderTest {
     }
 
     @Test
-    public void decode_invalidUserProperty_returnsNull() {
+    void decode_invalidUserProperty_returnsNull() {
         final byte[] encoded = {
                 // fixed header
                 //   type, flags
@@ -525,7 +517,7 @@ public class Mqtt5PublishDecoderTest {
     }
 
     @Test
-    public void decode_subscriptionIdentifier() {
+    void decode_subscriptionIdentifier() {
         final byte[] encoded = {
                 // fixed header
                 //   type, flags
@@ -551,7 +543,7 @@ public class Mqtt5PublishDecoderTest {
     }
 
     @Test
-    public void decode_subscriptionIdentifierZero_returnsNull() {
+    void decode_subscriptionIdentifierZero_returnsNull() {
         final byte[] encoded = {
                 // fixed header
                 //   type, flags
@@ -574,7 +566,7 @@ public class Mqtt5PublishDecoderTest {
     }
 
     @Test
-    public void decode_subscriptionIdentifierNegative_returnsNull() {
+    void decode_subscriptionIdentifierNegative_returnsNull() {
         final byte[] encoded = {
                 // fixed header
                 //   type, flags
@@ -597,7 +589,7 @@ public class Mqtt5PublishDecoderTest {
     }
 
     @Test
-    public void decode_subscriptionIdentifierMax() {
+    void decode_subscriptionIdentifierMax() {
         final byte[] encoded = {
                 // fixed header
                 //   type, flags
@@ -623,7 +615,7 @@ public class Mqtt5PublishDecoderTest {
     }
 
     @Test
-    public void decode_subscriptionIdentifierMultiple() {
+    void decode_subscriptionIdentifierMultiple() {
         final byte[] encoded = {
                 // fixed header
                 //   type, flags
@@ -652,7 +644,7 @@ public class Mqtt5PublishDecoderTest {
     }
 
     @Test
-    public void decode_packetIdentifierWithQos0isNotSet() {
+    void decode_packetIdentifierWithQos0isNotSet() {
         final byte[] encoded = {
                 // fixed header
                 //   type, flags
@@ -674,7 +666,7 @@ public class Mqtt5PublishDecoderTest {
     }
 
     @Test
-    public void decode_packetIdentifierWithQos1() {
+    void decode_packetIdentifierWithQos1() {
         final byte[] encoded = {
                 // fixed header
                 //   type, flags
@@ -698,7 +690,7 @@ public class Mqtt5PublishDecoderTest {
     }
 
     @Test
-    public void decode_packetIdentifierWithQos2() {
+    void decode_packetIdentifierWithQos2() {
         final byte[] encoded = {
                 // fixed header
                 //   type, flags
@@ -722,7 +714,7 @@ public class Mqtt5PublishDecoderTest {
     }
 
     @Test
-    public void decode_correlationData() {
+    void decode_correlationData() {
         final byte[] encoded = {
                 // fixed header
                 //   type, flags
@@ -747,7 +739,7 @@ public class Mqtt5PublishDecoderTest {
     }
 
     @Test
-    public void decode_correlationDataMoreThanOnce_returnsNull() {
+    void decode_correlationDataMoreThanOnce_returnsNull() {
         final byte[] encoded = {
                 // fixed header
                 //   type, flags
@@ -772,7 +764,7 @@ public class Mqtt5PublishDecoderTest {
     }
 
     @Test
-    public void decode_responseTopic() {
+    void decode_responseTopic() {
         final byte[] encoded = {
                 // fixed header
                 //   type, flags
@@ -795,7 +787,7 @@ public class Mqtt5PublishDecoderTest {
     }
 
     @Test
-    public void decode_responseTopicMoreThanOnce_returnsNull() {
+    void decode_responseTopicMoreThanOnce_returnsNull() {
         final byte[] encoded = {
                 // fixed header
                 //   type, flags
@@ -817,7 +809,7 @@ public class Mqtt5PublishDecoderTest {
     }
 
     @Test
-    public void decode_responseTopicWithWildcards_returnsNull() {
+    void decode_responseTopicWithWildcards_returnsNull() {
         final byte[] encoded = {
                 // fixed header
                 //   type, flags
@@ -856,7 +848,7 @@ public class Mqtt5PublishDecoderTest {
     }
 
     @Test
-    public void decode_topicAlias() {
+    void decode_topicAlias() {
         final byte[] encodedWithTopicName = {
                 // fixed header
                 //   type, flags
@@ -897,7 +889,7 @@ public class Mqtt5PublishDecoderTest {
     }
 
     @Test
-    public void decode_topicAliasDuplicate_returnsNull() {
+    void decode_topicAliasDuplicate_returnsNull() {
         final byte[] encoded = {
                 // fixed header
                 //   type, flags
@@ -920,7 +912,7 @@ public class Mqtt5PublishDecoderTest {
     }
 
     @Test
-    public void decode_noTopicAliasFound_returnsNull() {
+    void decode_noTopicAliasFound_returnsNull() {
         final byte[] encodedWithTopicName = {
                 // fixed header
                 //   type, flags
@@ -960,7 +952,7 @@ public class Mqtt5PublishDecoderTest {
     }
 
     @Test
-    public void decode_topicAliasZero_returnsNull() {
+    void decode_topicAliasZero_returnsNull() {
         final byte[] encoded = {
                 // fixed header
                 //   type, flags
@@ -982,7 +974,7 @@ public class Mqtt5PublishDecoderTest {
 
 
     @Test
-    public void decode_topicAliasTooLarge_returnsNull() {
+    void decode_topicAliasTooLarge_returnsNull() {
         final byte[] encoded = {
                 // fixed header
                 //   type, flags
@@ -1003,7 +995,7 @@ public class Mqtt5PublishDecoderTest {
     }
 
     @Test
-    public void decode_topicWithWildcard_returnsNull() {
+    void decode_topicWithWildcard_returnsNull() {
         final byte[] encoded = {
                 // fixed header
                 //   type, flags
@@ -1037,7 +1029,7 @@ public class Mqtt5PublishDecoderTest {
     }
 
     @Test
-    public void decode_negativePropertyIdentifier_returnsNull() {
+    void decode_negativePropertyIdentifier_returnsNull() {
         final byte[] encoded = {
                 // fixed header
                 //   type, flags
@@ -1058,7 +1050,7 @@ public class Mqtt5PublishDecoderTest {
     }
 
     @Test
-    public void decode_invalidPropertyIdentifier_returnsNull() {
+    void decode_invalidPropertyIdentifier_returnsNull() {
         final byte[] encoded = {
                 // fixed header
                 //   type, flags
@@ -1079,7 +1071,7 @@ public class Mqtt5PublishDecoderTest {
     }
 
     @Test
-    public void decode_propertyLengthNegative_returnsNull() {
+    void decode_propertyLengthNegative_returnsNull() {
         final byte[] encoded = {
                 // fixed header
                 //   type, flags
@@ -1096,7 +1088,7 @@ public class Mqtt5PublishDecoderTest {
     }
 
     @Test
-    public void decode_topicNullNoAlias_returnsNull() {
+    void decode_topicNullNoAlias_returnsNull() {
         final byte[] encoded = {
                 // fixed header
                 //   type, flags
@@ -1144,22 +1136,6 @@ public class Mqtt5PublishDecoderTest {
         assertEquals(reasonCode, disconnect.getReasonCode());
 
         createChannel();
-    }
-
-    private static class Mqtt5PublishTestMessageDecoders implements Mqtt5MessageDecoders {
-        @Nullable
-        @Override
-        public Mqtt5MessageDecoder get(final int code) {
-            if (code == Mqtt5MessageType.PUBLISH.getCode()) {
-                return new Mqtt5PublishDecoder();
-            }
-            return null;
-        }
-    }
-
-    private void createChannel() {
-        channel = new EmbeddedChannel(new Mqtt5Decoder(new Mqtt5PublishTestMessageDecoders()));
-        channel.attr(ChannelAttributes.INCOMING_TOPIC_ALIAS_MAPPING).set(new Mqtt5TopicImpl[3]);
     }
 
 }

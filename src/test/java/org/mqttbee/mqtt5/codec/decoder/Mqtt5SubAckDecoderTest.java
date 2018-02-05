@@ -2,9 +2,6 @@ package org.mqttbee.mqtt5.codec.decoder;
 
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.embedded.EmbeddedChannel;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -24,18 +21,15 @@ import static org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.MAL
  * @author Silvio Giebl
  * @author David Katz
  */
-class Mqtt5SubAckDecoderTest {
+class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
 
-    private EmbeddedChannel channel;
-
-    @BeforeEach
-    void setUp() {
-        createChannel();
-    }
-
-    @AfterEach
-    void tearDown() {
-        channel.close();
+    Mqtt5SubAckDecoderTest() {
+        super(code -> {
+            if (code == Mqtt5MessageType.SUBACK.getCode()) {
+                return new Mqtt5SubAckDecoder();
+            }
+            return null;
+        });
     }
 
     @Test
@@ -465,21 +459,6 @@ class Mqtt5SubAckDecoderTest {
         channel.writeInbound(byteBuf);
 
         return channel.readInbound();
-    }
-
-    private void createChannel() {
-        channel = new EmbeddedChannel(new Mqtt5Decoder(new Mqtt5SubAckTestMessageDecoders()));
-    }
-
-    private static class Mqtt5SubAckTestMessageDecoders implements Mqtt5MessageDecoders {
-        @Nullable
-        @Override
-        public Mqtt5MessageDecoder get(final int code) {
-            if (code == Mqtt5MessageType.SUBACK.getCode()) {
-                return new Mqtt5SubAckDecoder();
-            }
-            return null;
-        }
     }
 
 }

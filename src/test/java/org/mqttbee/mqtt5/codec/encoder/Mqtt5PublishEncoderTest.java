@@ -3,10 +3,7 @@ package org.mqttbee.mqtt5.codec.encoder;
 import com.google.common.collect.ImmutableList;
 import com.google.common.primitives.ImmutableIntArray;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.codec.EncoderException;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
@@ -28,18 +25,10 @@ import static org.mqttbee.mqtt5.message.publish.Mqtt5PublishInternal.DEFAULT_NO_
 /**
  * @author David Katz
  */
-class Mqtt5PublishEncoderTest {
+class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
 
-    private EmbeddedChannel channel;
-
-    @BeforeEach
-    void setUp() {
-        channel = new EmbeddedChannel(new Mqtt5Encoder());
-    }
-
-    @AfterEach
-    void tearDown() {
-        channel.close();
+    Mqtt5PublishEncoderTest() {
+        super(true);
     }
 
     @Test

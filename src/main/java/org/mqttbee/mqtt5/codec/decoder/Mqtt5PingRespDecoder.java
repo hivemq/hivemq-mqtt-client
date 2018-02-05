@@ -3,6 +3,7 @@ package org.mqttbee.mqtt5.codec.decoder;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.mqtt5.handler.Mqtt5ClientData;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.message.ping.Mqtt5PingRespImpl;
 
@@ -21,7 +22,10 @@ public class Mqtt5PingRespDecoder implements Mqtt5MessageDecoder {
     private static final int FLAGS = 0b0000;
 
     @Override
-    public Mqtt5PingRespImpl decode(final int flags, @NotNull final Channel channel, @NotNull final ByteBuf in) {
+    public Mqtt5PingRespImpl decode(
+            final int flags, @NotNull final ByteBuf in, @NotNull final Mqtt5ClientData clientData) {
+        final Channel channel = clientData.getChannel();
+
         if (flags != FLAGS) {
             disconnectWrongFixedHeaderFlags("PING", channel);
             return null;

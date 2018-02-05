@@ -6,6 +6,7 @@ import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
+import org.mqttbee.mqtt5.handler.Mqtt5ClientData;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
@@ -29,7 +30,10 @@ public class Mqtt5SubAckDecoder implements Mqtt5MessageDecoder {
 
     @Override
     @Nullable
-    public Mqtt5SubAckImpl decode(final int flags, @NotNull final Channel channel, @NotNull final ByteBuf in) {
+    public Mqtt5SubAckImpl decode(
+            final int flags, @NotNull final ByteBuf in, @NotNull final Mqtt5ClientData clientData) {
+        final Channel channel = clientData.getChannel();
+
         if (flags != FLAGS) {
             disconnectWrongFixedHeaderFlags("SUBACK", channel);
             return null;
@@ -67,7 +71,7 @@ public class Mqtt5SubAckDecoder implements Mqtt5MessageDecoder {
 
             switch (propertyIdentifier) {
                 case Mqtt5SubAckProperty.REASON_STRING:
-                    reasonString = decodeReasonStringCheckProblemInformationRequested(reasonString, channel, in);
+                    reasonString = decodeReasonStringCheckProblemInformationRequested(reasonString, clientData, in);
                     if (reasonString == null) {
                         return null;
                     }
@@ -75,7 +79,7 @@ public class Mqtt5SubAckDecoder implements Mqtt5MessageDecoder {
 
                 case Mqtt5SubAckProperty.USER_PROPERTY:
                     userPropertiesBuilder =
-                            decodeUserPropertyCheckProblemInformationRequested(userPropertiesBuilder, channel, in);
+                            decodeUserPropertyCheckProblemInformationRequested(userPropertiesBuilder, clientData, in);
                     if (userPropertiesBuilder == null) {
                         return null;
                     }

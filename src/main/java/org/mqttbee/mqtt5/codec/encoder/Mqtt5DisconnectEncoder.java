@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
+import org.mqttbee.mqtt5.handler.Mqtt5ServerData;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectImpl;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
@@ -29,9 +30,10 @@ public class Mqtt5DisconnectEncoder implements Mqtt5MessageEncoder<Mqtt5Disconne
     @Override
     public void encode(
             @NotNull final Mqtt5DisconnectImpl disconnect, @NotNull final Channel channel, @NotNull final ByteBuf out) {
+        final int maximumPacketSize = Mqtt5ServerData.get(channel).getMaximumPacketSize();
 
-        encodeFixedHeader(disconnect, out);
-        encodeVariableHeader(disconnect, out);
+        encodeFixedHeader(disconnect, out, maximumPacketSize);
+        encodeVariableHeader(disconnect, out, maximumPacketSize);
     }
 
     public int encodedRemainingLength(@NotNull final Mqtt5DisconnectImpl disconnect) {
@@ -56,36 +58,37 @@ public class Mqtt5DisconnectEncoder implements Mqtt5MessageEncoder<Mqtt5Disconne
         return propertyLength;
     }
 
-    private void encodeFixedHeader(@NotNull final Mqtt5DisconnectImpl disconnect, @NotNull final ByteBuf out) {
+    private void encodeFixedHeader(
+            @NotNull final Mqtt5DisconnectImpl disconnect, @NotNull final ByteBuf out, final int maximumPacketSize) {
         out.writeByte(FIXED_HEADER);
-        Mqtt5DataTypes
-                .encodeVariableByteInteger(disconnect.encodedRemainingLength(Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT),
-                        out); // TODO
+        Mqtt5DataTypes.encodeVariableByteInteger(disconnect.encodedRemainingLength(maximumPacketSize), out);
     }
 
-    private void encodeVariableHeader(@NotNull final Mqtt5DisconnectImpl disconnect, @NotNull final ByteBuf out) {
+    private void encodeVariableHeader(
+            @NotNull final Mqtt5DisconnectImpl disconnect, @NotNull final ByteBuf out, final int maximumPacketSize) {
+
         final Mqtt5DisconnectReasonCode reasonCode = disconnect.getReasonCode();
-        final int propertyLength = disconnect.encodedPropertyLength(Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT); // TODO
+        final int propertyLength = disconnect.encodedPropertyLength(Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT);
         if (propertyLength == 0) {
             if (reasonCode != DEFAULT_REASON_CODE) {
                 out.writeByte(reasonCode.getCode());
             }
         } else {
             out.writeByte(reasonCode.getCode());
-            encodeProperties(disconnect, propertyLength, out);
+            encodeProperties(disconnect, propertyLength, out, maximumPacketSize);
         }
     }
 
     private void encodeProperties(
-            @NotNull final Mqtt5DisconnectImpl disconnect, final int propertyLength, @NotNull final ByteBuf out) {
+            @NotNull final Mqtt5DisconnectImpl disconnect, final int propertyLength, @NotNull final ByteBuf out,
+            final int maximumPacketSize) {
 
         Mqtt5DataTypes.encodeVariableByteInteger(propertyLength, out);
-
         encodeIntProperty(SESSION_EXPIRY_INTERVAL, disconnect.getRawSessionExpiryInterval(),
                 SESSION_EXPIRY_INTERVAL_FROM_CONNECT, out);
         encodeNullableProperty(SERVER_REFERENCE, disconnect.getRawServerReference(), out);
-        disconnect.encodeReasonString(Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT, out); // TODO
-        disconnect.encodeUserProperties(Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT, out); // TODO
+        disconnect.encodeReasonString(maximumPacketSize, out);
+        disconnect.encodeUserProperties(maximumPacketSize, out);
     }
 
 }

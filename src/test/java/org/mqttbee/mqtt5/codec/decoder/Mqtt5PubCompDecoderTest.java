@@ -2,13 +2,9 @@ package org.mqttbee.mqtt5.codec.decoder;
 
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.embedded.EmbeddedChannel;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5Disconnect;
 import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
@@ -22,18 +18,15 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * @author Silvio Giebl
  */
-class Mqtt5PubCompDecoderTest {
+class Mqtt5PubCompDecoderTest extends AbstractMqtt5DecoderTest {
 
-    private EmbeddedChannel channel;
-
-    @BeforeEach
-    void setUp() {
-        channel = new EmbeddedChannel(new Mqtt5Decoder(new Mqtt5PubCompTestMessageDecoders()));
-    }
-
-    @AfterEach
-    void tearDown() throws Exception {
-        channel.close();
+    Mqtt5PubCompDecoderTest() {
+        super(code -> {
+            if (code == Mqtt5MessageType.PUBCOMP.getCode()) {
+                return new Mqtt5PubCompDecoder();
+            }
+            return null;
+        });
     }
 
     @Test
@@ -817,16 +810,5 @@ class Mqtt5PubCompDecoderTest {
             0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e', '2', //
             0x26, 0, 5, 't', 'e', 's', 't', '2', 0, 5, 'v', 'a', 'l', 'u', 'e'
     };
-
-    private static class Mqtt5PubCompTestMessageDecoders implements Mqtt5MessageDecoders {
-        @Nullable
-        @Override
-        public Mqtt5MessageDecoder get(final int code) {
-            if (code == Mqtt5MessageType.PUBCOMP.getCode()) {
-                return new Mqtt5PubCompDecoder();
-            }
-            return null;
-        }
-    }
 
 }

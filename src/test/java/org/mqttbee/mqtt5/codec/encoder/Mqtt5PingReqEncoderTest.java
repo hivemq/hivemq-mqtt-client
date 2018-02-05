@@ -1,9 +1,6 @@
 package org.mqttbee.mqtt5.codec.encoder;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.embedded.EmbeddedChannel;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mqttbee.mqtt5.message.ping.Mqtt5PingReqImpl;
 
@@ -12,18 +9,10 @@ import static org.junit.Assert.assertArrayEquals;
 /**
  * @author David Katz
  */
-class Mqtt5PingReqEncoderTest {
+class Mqtt5PingReqEncoderTest extends AbstractMqtt5EncoderTest {
 
-    private EmbeddedChannel channel;
-
-    @BeforeEach
-    void setUp() {
-        channel = new EmbeddedChannel(new Mqtt5Encoder());
-    }
-
-    @AfterEach
-    void tearDown() {
-        channel.close();
+    Mqtt5PingReqEncoderTest() {
+        super(true);
     }
 
     @Test

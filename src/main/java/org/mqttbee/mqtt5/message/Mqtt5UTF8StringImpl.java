@@ -244,7 +244,7 @@ public class Mqtt5UTF8StringImpl implements Mqtt5UTF8String {
     public int encodedLength() {
         final byte[] binary = toBinary();
         if (!Mqtt5DataTypes.isInBinaryDataRange(binary)) {
-            throw new Mqtt5BinaryDataExceededException("UTF-8 encoded String");
+            throw new Mqtt5BinaryDataExceededException("UTF-8 encoded String"); // TODO
         }
         return Mqtt5DataTypes.encodedBinaryDataLength(binary);
     }
