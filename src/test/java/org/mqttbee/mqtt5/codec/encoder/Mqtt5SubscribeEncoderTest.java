@@ -185,7 +185,7 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderTest {
     }
 
     @Test
-    @Disabled
+    @Disabled("transform to encode_maximumPacketSizeExceeded_omitUserPropertiesAndReasonString")
     void encode_maximumPacketSizeExceeded_throwsEncoderException() {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
         final Mqtt5TopicFilterImpl topicFiler = maxPacket.getTopicFilterTooLong();
@@ -209,7 +209,7 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderTest {
     }
 
     @Test
-    @Disabled
+    @Disabled("transform to encode_propertyLengthExceeded_omitUserPropertiesAndReasonString")
     void encode_propertyLengthExceedsMax_throwsEncoderException() {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
         final Mqtt5TopicFilterImpl topicFiler = Mqtt5TopicFilterImpl.from("topic/#");

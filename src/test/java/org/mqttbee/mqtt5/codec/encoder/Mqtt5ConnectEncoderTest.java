@@ -267,7 +267,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
     }
 
     @Test
-    @Disabled
+    @Disabled("password will be validated in the builder, remove this test")
     void encode_passwordTooLong() {
         final Mqtt5ClientIdentifierImpl clientIdentifier = requireNonNull(Mqtt5ClientIdentifierImpl.from("test"));
         final byte[] password = new byte[65536];
@@ -282,7 +282,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
 
 
     @Test
-    void encode_ZeroLengthClientIdentifier() {
+    void encode_zeroLengthClientIdentifier() {
         final byte[] expected = {
                 // fixed header
                 //   type, flags
@@ -359,7 +359,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
     }
 
     @Test
-    @Disabled
+    @Disabled("will payload will be validated in the builder, remove this test")
     void encode_willPayloadTooLong() {
         final Mqtt5TopicImpl willTopic = requireNonNull(Mqtt5TopicImpl.from("topic"));
         final byte[] willPayload = new byte[65536];
@@ -376,24 +376,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
     }
 
     @Test
-    @Disabled
-    void encode_willPropertiesTooLong() {
-        final Mqtt5TopicImpl willTopic = requireNonNull(Mqtt5TopicImpl.from("topic"));
-        final byte[] willPayload = new byte[65536];
-        final Mqtt5ClientIdentifierImpl clientIdentifier = requireNonNull(Mqtt5ClientIdentifierImpl.from("test"));
-        final Mqtt5WillPublishImpl willPublish =
-                new Mqtt5WillPublishImpl(willTopic, willPayload, Mqtt5QoS.AT_MOST_ONCE, false,
-                        Mqtt5WillPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null,
-                        Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES, 0);
-        final Mqtt5ConnectImpl connect =
-                new Mqtt5ConnectImpl(clientIdentifier, 0, false, 0, false, true, DEFAULT, null, null, willPublish,
-                        Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES);
-
-        encodeNok(connect, EncoderException.class, "binary data size exceeded for will payload");
-    }
-
-    @Test
-    @Disabled
+    @Disabled("will correlation data will be validated in the builder, remove this test")
     void encode_willCorrelationDataTooLong() {
         final Mqtt5TopicImpl willTopic = requireNonNull(Mqtt5TopicImpl.from("topic"));
         final byte[] correlationData = new byte[65536];
@@ -409,7 +392,6 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
     }
 
     @Test
-    @Disabled
     void encode_willPropertyLengthExceedsMax_throwsEncoderException() {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder();
         final Mqtt5UserPropertiesImpl tooManyUserProperties = maxPacket
@@ -426,7 +408,6 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
 
         encodeNok(connect, EncoderException.class, "variable byte integer size exceeded for will properties length");
     }
-
 
     @Test
     void encode_authentication() {
@@ -469,7 +450,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
     }
 
     @Test
-    @Disabled
+    @Disabled("authentication data will be validated in the builder, remove this test")
     void encode_authenticationDataTooLong_throwsException() {
         final Mqtt5ClientIdentifierImpl clientIdentifier = requireNonNull(Mqtt5ClientIdentifierImpl.from("test"));
         final Mqtt5UTF8StringImpl authMethod = requireNonNull(Mqtt5UTF8StringImpl.from("GS2-KRB5"));
@@ -484,7 +465,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
     }
 
     @Test
-    @Disabled
+    @Disabled("transform to encode_maximumPacketSizeExceeded_omitUserPropertiesAndReasonString")
     void encode_maximumPacketSizeExceeded_throwsEncoderException() {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
 
@@ -499,7 +480,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
     }
 
     @Test
-    @Disabled
+    @Disabled("transform to encode_propertyLengthExceeded_omitUserPropertiesAndReasonString")
     void encode_propertyLengthExceedsMax_throwsEncoderException() {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
 
@@ -539,15 +520,15 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         final int maxPropertyLength = Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT - 1  // type, reserved
                 - 4  // remaining length
                 - 7  // protocol name + version
-                - 1  //  connect flags
+                - 1  // connect flags
                 - 2  // keep alive
                 - 4  // properties length
                 - 2; // client id
 
         final int userPropertyBytes = 1 // identifier
-                + 2 // key length
-                + 4 // bytes to encode "user"
-                + 2 // value length
+                + 2  // key length
+                + 4  // bytes to encode "user"
+                + 2  // value length
                 + 8; // bytes to encode "property"
 
         MaximumPacketBuilder build() {

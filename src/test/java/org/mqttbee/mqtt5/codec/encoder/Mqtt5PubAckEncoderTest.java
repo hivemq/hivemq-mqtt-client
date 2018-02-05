@@ -291,7 +291,7 @@ class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderTest {
     }
 
     @Test
-    @Disabled
+    @Disabled("transform to encode_maximumPacketSizeExceeded_omitUserPropertiesAndReasonString")
     void encode_maximumPacketSizeExceeded_throwsEncoderException() {
 
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
@@ -305,7 +305,7 @@ class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderTest {
     }
 
     @Test
-    @Disabled
+    @Disabled("transform to encode_propertyLengthExceeded_omitUserPropertiesAndReasonString")
     void encode_maximumPropertiesSizeExceeded_throwsEncoderException() {
 
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();

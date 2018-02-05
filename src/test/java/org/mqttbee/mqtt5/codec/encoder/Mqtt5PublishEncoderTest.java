@@ -278,7 +278,7 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
     }
 
     @Test
-    @Disabled
+    @Disabled("correlation data will be validated in the builder, remove this test")
     void encode_correlationDataTooLong_throwsEncoderException() {
         final byte[] correlationData = new byte[65536];
         final Mqtt5PublishImpl publish =
@@ -506,7 +506,7 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
     }
 
     @Test
-    @Disabled
+    @Disabled("transform to encode_maximumPacketSizeExceeded_omitUserPropertiesAndReasonString")
     void encode_maximumPacketSizeExceeded_throwsEncoderException() {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
 
@@ -525,7 +525,7 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
     }
 
     @Test
-    @Disabled
+    @Disabled("transform to encode_propertyLengthExceeded_omitUserPropertiesAndReasonString")
     void encode_propertyLengthExceedsMax_throwsEncoderException() {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
 

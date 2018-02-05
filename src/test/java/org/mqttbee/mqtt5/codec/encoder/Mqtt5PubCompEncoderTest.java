@@ -152,7 +152,7 @@ class Mqtt5PubCompEncoderTest extends AbstractMqtt5EncoderTest {
     }
 
     @Test
-    @Disabled
+    @Disabled("transform to encode_maximumPacketSizeExceeded_omitUserPropertiesAndReasonString")
     void encode_maximumPacketSizeExceeded_throwsEncoderException() {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
         final Mqtt5PubCompImpl pubComp = new Mqtt5PubCompImpl(1, SUCCESS, maxPacket.getMaxPaddedReasonString("a"),
@@ -163,7 +163,7 @@ class Mqtt5PubCompEncoderTest extends AbstractMqtt5EncoderTest {
     }
 
     @Test
-    @Disabled
+    @Disabled("transform to encode_propertyLengthExceeded_omitUserPropertiesAndReasonString")
     void encode_propertyLengthExceedsMax_throwsEncoderException() {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
         final Mqtt5PubCompImpl pubComp = new Mqtt5PubCompImpl(1, SUCCESS, maxPacket.getMaxPaddedReasonString(),
