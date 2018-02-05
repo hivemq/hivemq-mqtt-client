@@ -70,16 +70,29 @@ public class Mqtt5ConnAckImpl extends Mqtt5Message.Mqtt5MessageWithReasonString 
                 Optional.of(sessionExpiryInterval);
     }
 
+    public long getRawSessionExpiryInterval() {
+        return sessionExpiryInterval;
+    }
+
     @NotNull
     @Override
     public Optional<Integer> getServerKeepAlive() {
         return (serverKeepAlive == KEEP_ALIVE_FROM_CONNECT) ? Optional.empty() : Optional.of(serverKeepAlive);
     }
 
+    public int getRawServerKeepAlive() {
+        return serverKeepAlive;
+    }
+
     @NotNull
     @Override
     public Optional<Mqtt5ClientIdentifier> getAssignedClientIdentifier() {
         return Optional.ofNullable(assignedClientIdentifier);
+    }
+
+    @Nullable
+    public Mqtt5ClientIdentifierImpl getRawAssignedClientIdentifier() {
+        return assignedClientIdentifier;
     }
 
     @NotNull
@@ -90,7 +103,7 @@ public class Mqtt5ConnAckImpl extends Mqtt5Message.Mqtt5MessageWithReasonString 
 
     @NotNull
     @Override
-    public Restrictions getRestrictions() {
+    public RestrictionsImpl getRestrictions() {
         return restrictions;
     }
 

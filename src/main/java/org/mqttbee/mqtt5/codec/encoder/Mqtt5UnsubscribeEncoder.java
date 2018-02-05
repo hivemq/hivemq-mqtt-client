@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
+import org.mqttbee.mqtt5.handler.Mqtt5ServerData;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5TopicFilterImpl;
 import org.mqttbee.mqtt5.message.unsubscribe.Mqtt5UnsubscribeImpl;
@@ -27,9 +28,10 @@ public class Mqtt5UnsubscribeEncoder implements Mqtt5MessageEncoder<Mqtt5Unsubsc
     public void encode(
             @NotNull final Mqtt5UnsubscribeInternal unsubscribeInternal, @NotNull final Channel channel,
             @NotNull final ByteBuf out) {
+        final int maximumPacketSize = Mqtt5ServerData.get(channel).getMaximumPacketSize();
 
-        encodeFixedHeader(unsubscribeInternal, out);
-        encodeVariableHeader(unsubscribeInternal, out);
+        encodeFixedHeader(unsubscribeInternal, out, maximumPacketSize);
+        encodeVariableHeader(unsubscribeInternal, out, maximumPacketSize);
         encodePayload(unsubscribeInternal, out);
     }
 
@@ -49,26 +51,27 @@ public class Mqtt5UnsubscribeEncoder implements Mqtt5MessageEncoder<Mqtt5Unsubsc
     }
 
     private void encodeFixedHeader(
-            @NotNull final Mqtt5UnsubscribeInternal unsubscribeInternal, @NotNull final ByteBuf out) {
+            @NotNull final Mqtt5UnsubscribeInternal unsubscribeInternal, @NotNull final ByteBuf out,
+            final int maximumPacketSize) {
 
         out.writeByte(FIXED_HEADER);
-        Mqtt5DataTypes.encodeVariableByteInteger(
-                unsubscribeInternal.encodedRemainingLength(Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT), out); // TODO
+        Mqtt5DataTypes.encodeVariableByteInteger(unsubscribeInternal.encodedRemainingLength(maximumPacketSize), out);
     }
 
     private void encodeVariableHeader(
-            @NotNull final Mqtt5UnsubscribeInternal unsubscribeInternal, @NotNull final ByteBuf out) {
+            @NotNull final Mqtt5UnsubscribeInternal unsubscribeInternal, @NotNull final ByteBuf out,
+            final int maximumPacketSize) {
 
         out.writeShort(unsubscribeInternal.getPacketIdentifier());
-        encodeProperties(unsubscribeInternal, out);
+        encodeProperties(unsubscribeInternal, out, maximumPacketSize);
     }
 
     private void encodeProperties(
-            @NotNull final Mqtt5UnsubscribeInternal unsubscribeInternal, @NotNull final ByteBuf out) {
+            @NotNull final Mqtt5UnsubscribeInternal unsubscribeInternal, @NotNull final ByteBuf out,
+            final int maximumPacketSize) {
 
-        Mqtt5DataTypes.encodeVariableByteInteger(
-                unsubscribeInternal.encodedPropertyLength(Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT), out); // TODO
-        unsubscribeInternal.getWrapped().encodeUserProperties(Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT, out); // TODO
+        Mqtt5DataTypes.encodeVariableByteInteger(unsubscribeInternal.encodedPropertyLength(maximumPacketSize), out);
+        unsubscribeInternal.getWrapped().encodeUserProperties(maximumPacketSize, out);
     }
 
     private void encodePayload(

@@ -3,13 +3,9 @@ package org.mqttbee.mqtt5.codec.decoder;
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
-import io.netty.channel.embedded.EmbeddedChannel;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5Auth;
 import org.mqttbee.api.mqtt5.message.Mqtt5Disconnect;
 import org.mqttbee.mqtt5.ChannelAttributes;
@@ -24,18 +20,15 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * @author Silvio Giebl
  */
-class Mqtt5AuthDecoderTest {
+class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
 
-    private EmbeddedChannel channel;
-
-    @BeforeEach
-    void setUp() {
-        channel = new EmbeddedChannel(new Mqtt5Decoder(new Mqtt5AuthTestMessageDecoders()));
-    }
-
-    @AfterEach
-    void tearDown() throws Exception {
-        channel.close();
+    Mqtt5AuthDecoderTest() {
+        super(code -> {
+            if (code == Mqtt5MessageType.AUTH.getCode()) {
+                return new Mqtt5AuthDecoder();
+            }
+            return null;
+        });
     }
 
     @Test
@@ -997,17 +990,6 @@ class Mqtt5AuthDecoderTest {
         assertNotNull(disconnect);
         assertEquals(reasonCode, disconnect.getReasonCode());
         assertEquals(sendReasonString, disconnect.getReasonString().isPresent());
-    }
-
-    private static class Mqtt5AuthTestMessageDecoders implements Mqtt5MessageDecoders {
-        @Nullable
-        @Override
-        public Mqtt5MessageDecoder get(final int code) {
-            if (code == Mqtt5MessageType.AUTH.getCode()) {
-                return new Mqtt5AuthDecoder();
-            }
-            return null;
-        }
     }
 
 }

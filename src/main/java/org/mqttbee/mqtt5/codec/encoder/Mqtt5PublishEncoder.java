@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
+import org.mqttbee.mqtt5.handler.Mqtt5ServerData;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl;
@@ -31,9 +32,10 @@ public class Mqtt5PublishEncoder implements Mqtt5MessageEncoder<Mqtt5PublishInte
     public void encode(
             @NotNull final Mqtt5PublishInternal publishInternal, @NotNull final Channel channel,
             @NotNull final ByteBuf out) {
+        final int maximumPacketSize = Mqtt5ServerData.get(channel).getMaximumPacketSize();
 
-        encodeFixedHeader(publishInternal, out);
-        encodeVariableHeader(publishInternal, out);
+        encodeFixedHeader(publishInternal, out, maximumPacketSize);
+        encodeVariableHeader(publishInternal, out, maximumPacketSize);
         encodePayload(publishInternal, out);
     }
 
@@ -91,7 +93,9 @@ public class Mqtt5PublishEncoder implements Mqtt5MessageEncoder<Mqtt5PublishInte
         return additionalPropertyLength;
     }
 
-    private void encodeFixedHeader(@NotNull final Mqtt5PublishInternal publishInternal, @NotNull final ByteBuf out) {
+    private void encodeFixedHeader(
+            @NotNull final Mqtt5PublishInternal publishInternal, @NotNull final ByteBuf out,
+            final int maximumPacketSize) {
         final Mqtt5PublishImpl publish = publishInternal.getWrapped();
 
         int flags = 0;
@@ -105,11 +109,12 @@ public class Mqtt5PublishEncoder implements Mqtt5MessageEncoder<Mqtt5PublishInte
 
         out.writeByte(FIXED_HEADER | flags);
 
-        Mqtt5DataTypes.encodeVariableByteInteger(
-                publishInternal.encodedRemainingLength(Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT), out); // TODO
+        Mqtt5DataTypes.encodeVariableByteInteger(publishInternal.encodedRemainingLength(maximumPacketSize), out);
     }
 
-    private void encodeVariableHeader(@NotNull final Mqtt5PublishInternal publishInternal, @NotNull final ByteBuf out) {
+    private void encodeVariableHeader(
+            @NotNull final Mqtt5PublishInternal publishInternal, @NotNull final ByteBuf out,
+            final int maximumPacketSize) {
         final Mqtt5PublishImpl publish = publishInternal.getWrapped();
 
         if ((publishInternal.getTopicAlias() == DEFAULT_NO_TOPIC_ALIAS) || (publishInternal.isNewTopicAlias())) {
@@ -122,14 +127,15 @@ public class Mqtt5PublishEncoder implements Mqtt5MessageEncoder<Mqtt5PublishInte
             out.writeShort(publishInternal.getPacketIdentifier());
         }
 
-        encodeProperties(publishInternal, out);
+        encodeProperties(publishInternal, out, maximumPacketSize);
     }
 
-    private void encodeProperties(@NotNull final Mqtt5PublishInternal publishInternal, @NotNull final ByteBuf out) {
+    private void encodeProperties(
+            @NotNull final Mqtt5PublishInternal publishInternal, @NotNull final ByteBuf out,
+            final int maximumPacketSize) {
         final Mqtt5PublishImpl publish = publishInternal.getWrapped();
 
-        final int propertyLength =
-                publishInternal.encodedPropertyLength(Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT); // TODO
+        final int propertyLength = publishInternal.encodedPropertyLength(maximumPacketSize);
         Mqtt5DataTypes.encodeVariableByteInteger(propertyLength, out);
 
         encodeIntProperty(
@@ -138,7 +144,7 @@ public class Mqtt5PublishEncoder implements Mqtt5MessageEncoder<Mqtt5PublishInte
         encodeNullableProperty(CONTENT_TYPE, publish.getRawContentType(), out);
         encodeNullableProperty(RESPONSE_TOPIC, publish.getRawResponseTopic(), out);
         encodeNullableProperty(CORRELATION_DATA, publish.getRawCorrelationData(), out);
-        publishInternal.encodeUserProperties(Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT, out); // TODO
+        publishInternal.encodeUserProperties(maximumPacketSize, out);
 
         encodeShortProperty(TOPIC_ALIAS, publishInternal.getTopicAlias(), DEFAULT_NO_TOPIC_ALIAS, out);
 
@@ -148,7 +154,9 @@ public class Mqtt5PublishEncoder implements Mqtt5MessageEncoder<Mqtt5PublishInte
         }
     }
 
-    private void encodePayload(@NotNull final Mqtt5PublishInternal publishInternal, @NotNull final ByteBuf out) {
+    private void encodePayload(
+            @NotNull final Mqtt5PublishInternal publishInternal, @NotNull final ByteBuf out) {
+
         final byte[] payload = publishInternal.getWrapped().getRawPayload();
         if (payload != null) {
             out.writeBytes(payload);

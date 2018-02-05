@@ -7,6 +7,7 @@ import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoderUtil;
 import org.mqttbee.mqtt5.exceptions.Mqtt5MaximumPacketSizeExceededException;
+import org.mqttbee.mqtt5.handler.Mqtt5ServerData;
 
 import java.util.Optional;
 
@@ -30,14 +31,14 @@ public interface Mqtt5Message {
     /**
      * Creates a byte buffer with the correct size for this MQTT message.
      *
-     * @param maxPacketSize the maximum packet size.
-     * @param channel       the channel where the allocated byte buffer will be written to.
+     * @param channel the channel where the allocated byte buffer will be written to.
      * @return the allocated byte buffer.
      */
-    default ByteBuf allocateBuffer(final int maxPacketSize, @NotNull final Channel channel) {
-        final int encodedLength = encodedLength(maxPacketSize);
+    default ByteBuf allocateBuffer(@NotNull final Channel channel) {
+        final int maximumPacketSize = Mqtt5ServerData.getMaximumPacketSize(channel);
+        final int encodedLength = encodedLength(maximumPacketSize);
         if (encodedLength < 0) {
-            throw new Mqtt5MaximumPacketSizeExceededException(this, maxPacketSize);
+            throw new Mqtt5MaximumPacketSizeExceededException(this, maximumPacketSize);
         }
         return channel.alloc().ioBuffer(encodedLength, encodedLength);
     }

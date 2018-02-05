@@ -3,13 +3,9 @@ package org.mqttbee.mqtt5.codec.decoder;
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
-import io.netty.channel.embedded.EmbeddedChannel;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5ConnAck;
 import org.mqttbee.api.mqtt5.message.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt5.message.Mqtt5ExtendedAuth;
@@ -26,18 +22,15 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * @author Silvio Giebl
  */
-class Mqtt5ConnAckDecoderTest {
+class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
 
-    private EmbeddedChannel channel;
-
-    @BeforeEach
-    void setUp() {
-        channel = new EmbeddedChannel(new Mqtt5Decoder(new Mqtt5ConnAckTestMessageDecoders()));
-    }
-
-    @AfterEach
-    void tearDown() throws Exception {
-        channel.close();
+    Mqtt5ConnAckDecoderTest() {
+        super(code -> {
+            if (code == Mqtt5MessageType.CONNACK.getCode()) {
+                return new Mqtt5ConnAckDecoder();
+            }
+            return null;
+        });
     }
 
     @Test
@@ -1989,16 +1982,5 @@ class Mqtt5ConnAckDecoderTest {
             //     auth data
             0x16, 0, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
     };
-
-    private static class Mqtt5ConnAckTestMessageDecoders implements Mqtt5MessageDecoders {
-        @Nullable
-        @Override
-        public Mqtt5MessageDecoder get(final int code) {
-            if (code == Mqtt5MessageType.CONNACK.getCode()) {
-                return new Mqtt5ConnAckDecoder();
-            }
-            return null;
-        }
-    }
 
 }

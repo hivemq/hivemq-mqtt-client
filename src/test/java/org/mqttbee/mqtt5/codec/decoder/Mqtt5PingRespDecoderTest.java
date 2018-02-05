@@ -1,13 +1,9 @@
 package org.mqttbee.mqtt5.codec.decoder;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.embedded.EmbeddedChannel;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt5.message.Mqtt5PingResp;
 import org.mqttbee.mqtt5.ChannelAttributes;
@@ -19,18 +15,15 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * @author Silvio Giebl
  */
-class Mqtt5PingRespDecoderTest {
+class Mqtt5PingRespDecoderTest extends AbstractMqtt5DecoderTest {
 
-    private EmbeddedChannel channel;
-
-    @BeforeEach
-    void setUp() {
-        channel = new EmbeddedChannel(new Mqtt5Decoder(new Mqtt5PingRespTestMessageDecoders()));
-    }
-
-    @AfterEach
-    void tearDown() throws Exception {
-        channel.close();
+    Mqtt5PingRespDecoderTest() {
+        super(code -> {
+            if (code == Mqtt5MessageType.PINGRESP.getCode()) {
+                return new Mqtt5PingRespDecoder();
+            }
+            return null;
+        });
     }
 
     @Test
@@ -108,17 +101,6 @@ class Mqtt5PingRespDecoderTest {
         assertNotNull(disconnect);
         assertEquals(reasonCode, disconnect.getReasonCode());
         assertEquals(sendReasonString, disconnect.getReasonString().isPresent());
-    }
-
-    private static class Mqtt5PingRespTestMessageDecoders implements Mqtt5MessageDecoders {
-        @Nullable
-        @Override
-        public Mqtt5MessageDecoder get(final int code) {
-            if (code == Mqtt5MessageType.PINGRESP.getCode()) {
-                return new Mqtt5PingRespDecoder();
-            }
-            return null;
-        }
     }
 
 }

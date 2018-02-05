@@ -92,12 +92,7 @@ public class Mqtt5ConnectImpl extends Mqtt5Message.Mqtt5MessageWithUserPropertie
 
     @NotNull
     @Override
-    public Restrictions getRestrictions() {
-        return restrictions;
-    }
-
-    @NotNull
-    public RestrictionsImpl getRawRestrictions() {
+    public RestrictionsImpl getRestrictions() {
         return restrictions;
     }
 

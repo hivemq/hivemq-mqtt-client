@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
+import org.mqttbee.mqtt5.handler.Mqtt5ServerData;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.puback.Mqtt5PubAckImpl;
 import org.mqttbee.mqtt5.message.puback.Mqtt5PubAckReasonCode;
@@ -27,9 +28,10 @@ public class Mqtt5PubAckEncoder implements Mqtt5MessageEncoder<Mqtt5PubAckImpl> 
     @Override
     public void encode(
             @NotNull final Mqtt5PubAckImpl pubAck, @NotNull final Channel channel, @NotNull final ByteBuf out) {
+        final int maximumPacketSize = Mqtt5ServerData.get(channel).getMaximumPacketSize();
 
-        encodeFixedHeader(channel, pubAck, out);
-        encodeVariableHeader(channel, pubAck, out);
+        encodeFixedHeader(pubAck, out, maximumPacketSize);
+        encodeVariableHeader(pubAck, out, maximumPacketSize);
     }
 
     public int encodedRemainingLength(@NotNull final Mqtt5PubAckImpl pubAck) {
@@ -52,44 +54,35 @@ public class Mqtt5PubAckEncoder implements Mqtt5MessageEncoder<Mqtt5PubAckImpl> 
     }
 
     private void encodeFixedHeader(
-            final Channel channel, final Mqtt5PubAckImpl pubAck, @NotNull final ByteBuf out) {
+            final Mqtt5PubAckImpl pubAck, @NotNull final ByteBuf out, final int maximumPacketSize) {
+
         out.writeByte(FIXED_HEADER);
-//        final Integer test = channel.attr(ChannelAttributes.OUTGOING_MAXIMUM_PACKET_SIZE).get();
-//        final int maximumPacketSize = (test == null) ? Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT : test;
-        final int maximumPacketSize = Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT;
-        Mqtt5DataTypes.encodeVariableByteInteger(pubAck.encodedRemainingLength(maximumPacketSize), out); // TODO
+        Mqtt5DataTypes.encodeVariableByteInteger(pubAck.encodedRemainingLength(maximumPacketSize), out);
     }
 
     private void encodeVariableHeader(
-            final Channel channel, @NotNull final Mqtt5PubAckImpl pubAck, @NotNull final ByteBuf out) {
+            @NotNull final Mqtt5PubAckImpl pubAck, @NotNull final ByteBuf out, final int maximumPacketSize) {
         out.writeShort(pubAck.getPacketIdentifier());
 
         final Mqtt5PubAckReasonCode reasonCode = pubAck.getReasonCode();
-//        final Integer test = channel.attr(ChannelAttributes.OUTGOING_MAXIMUM_PACKET_SIZE).get();
-//        final int maximumPacketSize = (test == null) ? Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT : test;
-        final int maximumPacketSize = Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT;
-        final int propertyLength = pubAck.encodedPropertyLength(maximumPacketSize); // TODO
+        final int propertyLength = pubAck.encodedPropertyLength(maximumPacketSize);
         if (propertyLength == 0) {
             if (reasonCode != DEFAULT_REASON_CODE) {
                 out.writeByte(reasonCode.getCode());
             }
         } else {
             out.writeByte(reasonCode.getCode());
-            encodeProperties(channel, pubAck, propertyLength, out);
+            encodeProperties(pubAck, propertyLength, out, maximumPacketSize);
         }
     }
 
     private void encodeProperties(
-            final Channel channel, @NotNull final Mqtt5PubAckImpl pubAck, final int propertyLength,
-            @NotNull final ByteBuf out) {
+            @NotNull final Mqtt5PubAckImpl pubAck, final int propertyLength, @NotNull final ByteBuf out,
+            final int maximumPacketSize) {
 
         Mqtt5DataTypes.encodeVariableByteInteger(propertyLength, out);
-
-//        final Integer test = channel.attr(ChannelAttributes.OUTGOING_MAXIMUM_PACKET_SIZE).get();
-//        final int maximumPacketSize = (test == null) ? Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT : test;
-        final int maximumPacketSize = Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT;
-        pubAck.encodeReasonString(maximumPacketSize, out); // TODO
-        pubAck.encodeUserProperties(maximumPacketSize, out); // TODO
+        pubAck.encodeReasonString(maximumPacketSize, out);
+        pubAck.encodeUserProperties(maximumPacketSize, out);
     }
 
 }

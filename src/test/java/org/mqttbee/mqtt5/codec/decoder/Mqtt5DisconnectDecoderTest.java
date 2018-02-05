@@ -2,13 +2,9 @@ package org.mqttbee.mqtt5.codec.decoder;
 
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.embedded.EmbeddedChannel;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5Disconnect;
 import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
@@ -21,18 +17,15 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * @author Silvio Giebl
  */
-class Mqtt5DisconnectDecoderTest {
+class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
 
-    private EmbeddedChannel channel;
-
-    @BeforeEach
-    void setUp() {
-        channel = new EmbeddedChannel(new Mqtt5Decoder(new Mqtt5DisconnectTestMessageDecoders()));
-    }
-
-    @AfterEach
-    void tearDown() throws Exception {
-        channel.close();
+    Mqtt5DisconnectDecoderTest() {
+        super(code -> {
+            if (code == Mqtt5MessageType.DISCONNECT.getCode()) {
+                return new Mqtt5DisconnectDecoder();
+            }
+            return null;
+        });
     }
 
     @Test
@@ -877,16 +870,5 @@ class Mqtt5DisconnectDecoderTest {
             //     server reference
             0x1C, 0, 9, 'r', 'e', 'f', 'e', 'r', 'e', 'n', 'c', 'e'
     };
-
-    private static class Mqtt5DisconnectTestMessageDecoders implements Mqtt5MessageDecoders {
-        @Nullable
-        @Override
-        public Mqtt5MessageDecoder get(final int code) {
-            if (code == Mqtt5MessageType.DISCONNECT.getCode()) {
-                return new Mqtt5DisconnectDecoder();
-            }
-            return null;
-        }
-    }
 
 }

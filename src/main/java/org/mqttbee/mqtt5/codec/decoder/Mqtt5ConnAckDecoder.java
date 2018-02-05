@@ -5,15 +5,14 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
+import org.mqttbee.mqtt5.handler.Mqtt5ClientData;
 import org.mqttbee.mqtt5.message.*;
 import org.mqttbee.mqtt5.message.auth.Mqtt5ExtendedAuthImpl;
 import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckImpl;
 import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckProperty;
 import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckReasonCode;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.mqtt5.message.publish.Mqtt5TopicAliasMapping;
 
 import javax.inject.Singleton;
 
@@ -31,7 +30,10 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
 
     @Nullable
     @Override
-    public Mqtt5ConnAckImpl decode(final int flags, @NotNull final Channel channel, @NotNull final ByteBuf in) {
+    public Mqtt5ConnAckImpl decode(
+            final int flags, @NotNull final ByteBuf in, @NotNull final Mqtt5ClientData clientData) {
+        final Channel channel = clientData.getChannel();
+
         if (flags != FLAGS) {
             disconnectWrongFixedHeaderFlags("CONNACK", channel);
             return null;
@@ -174,7 +176,6 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                     receiveMaximumPresent = true;
                     if (receiveMaximum != Restrictions.DEFAULT_RECEIVE_MAXIMUM) {
                         restrictionsPresent = true;
-                        channel.attr(ChannelAttributes.OUTGOING_RECEIVE_MAXIMUM).set(receiveMaximum);
                     }
                     break;
 
@@ -186,8 +187,6 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                     topicAliasMaximumPresent = true;
                     if (topicAliasMaximum != Restrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM) {
                         restrictionsPresent = true;
-                        channel.attr(ChannelAttributes.OUTGOING_TOPIC_ALIAS_MAPPING)
-                                .set(new Mqtt5TopicAliasMapping(topicAliasMaximum));
                     }
                     break;
 
@@ -232,7 +231,6 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                     if (maximumPacketSizeTemp < Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT) {
                         maximumPacketSize = (int) maximumPacketSizeTemp;
                         restrictionsPresent = true;
-                        channel.attr(ChannelAttributes.OUTGOING_MAXIMUM_PACKET_SIZE).set(maximumPacketSize);
                     }
                     break;
 

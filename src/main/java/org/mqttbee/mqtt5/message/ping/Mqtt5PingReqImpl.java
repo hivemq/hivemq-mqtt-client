@@ -23,7 +23,7 @@ public class Mqtt5PingReqImpl implements Mqtt5PingReq, Mqtt5Message {
     }
 
     @Override
-    public ByteBuf allocateBuffer(final int maxPacketSize, @NotNull final Channel channel) {
+    public ByteBuf allocateBuffer(@NotNull final Channel channel) {
         return Mqtt5PingReqEncoder.PACKET;
     }
 

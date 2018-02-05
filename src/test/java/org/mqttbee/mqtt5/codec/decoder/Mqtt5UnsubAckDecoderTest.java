@@ -1,9 +1,7 @@
 package org.mqttbee.mqtt5.codec.decoder;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.embedded.EmbeddedChannel;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5Disconnect;
@@ -16,23 +14,25 @@ import org.mqttbee.mqtt5.message.unsuback.Mqtt5UnsubAckImpl;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mqttbee.mqtt5.message.unsuback.Mqtt5UnsubAckReasonCode.*;
 
 /**
  * @author David Katz
  */
-public class Mqtt5UnsubAckDecoderTest {
+class Mqtt5UnsubAckDecoderTest extends AbstractMqtt5DecoderTest {
 
-    private EmbeddedChannel channel;
-
-    @Before
-    public void setUp() {
-        createChannel();
+    Mqtt5UnsubAckDecoderTest() {
+        super(code -> {
+            if (Mqtt5MessageType.UNSUBACK.getCode() == code) {
+                return new Mqtt5UnsubAckDecoder();
+            }
+            return null;
+        });
     }
 
     @Test
-    public void decode_simple() {
+    void decode_simple() {
         final byte[] encoded = {
                 // fixed header
                 //   type _ flags (reserved)
@@ -70,7 +70,7 @@ public class Mqtt5UnsubAckDecoderTest {
     }
 
     @Test
-    public void decode_reasonStringMissing() {
+    void decode_reasonStringMissing() {
         final byte[] encoded = {
                 // fixed header
                 //   type _ flags (reserved)
@@ -104,7 +104,7 @@ public class Mqtt5UnsubAckDecoderTest {
     }
 
     @Test
-    public void decode_userPropertiesMultiple() {
+    void decode_userPropertiesMultiple() {
         final byte[] encoded = {
                 // fixed header
                 //   type _ flags (reserved)
@@ -147,7 +147,7 @@ public class Mqtt5UnsubAckDecoderTest {
     }
 
     @Test
-    public void decode_reasonCodesMultiple() {
+    void decode_reasonCodesMultiple() {
         final byte[] encoded = {
                 // fixed header
                 //   type _ flags (reserved)
@@ -191,7 +191,7 @@ public class Mqtt5UnsubAckDecoderTest {
     }
 
     @Test
-    public void decode_reasonCodesInvalid_returnsNull() {
+    void decode_reasonCodesInvalid_returnsNull() {
         final byte[] encoded = {
                 // fixed header
                 //   type _ flags (reserved)
@@ -222,7 +222,7 @@ public class Mqtt5UnsubAckDecoderTest {
     }
 
     @Test
-    public void decode_propertiesLengthTooLong_returnsNull() {
+    void decode_propertiesLengthTooLong_returnsNull() {
         final byte[] encoded = {
                 // fixed header
                 //   type _ flags (reserved)
@@ -253,7 +253,7 @@ public class Mqtt5UnsubAckDecoderTest {
     }
 
     @Test
-    public void decode_propertiesLengthTooShort_returnsNull() {
+    void decode_propertiesLengthTooShort_returnsNull() {
         final byte[] encoded = {
                 // fixed header
                 //   type _ flags (reserved)
@@ -284,7 +284,7 @@ public class Mqtt5UnsubAckDecoderTest {
     }
 
     @Test
-    public void decode_reasonStringLengthTooLong_returnsNull() {
+    void decode_reasonStringLengthTooLong_returnsNull() {
         final byte[] encoded = {
                 // fixed header
                 //   type _ flags (reserved)
@@ -341,18 +341,4 @@ public class Mqtt5UnsubAckDecoderTest {
         return channel.readInbound();
     }
 
-    private void createChannel() {
-        channel = new EmbeddedChannel(new Mqtt5Decoder(new Mqtt5UnsubAckTestMessageDecoders()));
-    }
-
-    private static class Mqtt5UnsubAckTestMessageDecoders implements Mqtt5MessageDecoders {
-        @Nullable
-        @Override
-        public Mqtt5MessageDecoder get(final int code) {
-            if (Mqtt5MessageType.UNSUBACK.getCode() == code) {
-                return new Mqtt5UnsubAckDecoder();
-            }
-            return null;
-        }
-    }
 }

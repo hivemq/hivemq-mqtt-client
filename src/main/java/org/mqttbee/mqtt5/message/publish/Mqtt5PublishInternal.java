@@ -4,8 +4,8 @@ import com.google.common.primitives.ImmutableIntArray;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5PublishEncoder;
+import org.mqttbee.mqtt5.handler.Mqtt5ServerData;
 import org.mqttbee.mqtt5.message.Mqtt5Message;
 import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
 
@@ -44,8 +44,7 @@ public class Mqtt5PublishInternal extends Mqtt5Message.Mqtt5MessageWithUserPrope
         this.packetIdentifier = packetIdentifier;
         this.isDup = isDup;
 
-        final Mqtt5TopicAliasMapping topicAliasMapping =
-                channel.attr(ChannelAttributes.OUTGOING_TOPIC_ALIAS_MAPPING).get();
+        final Mqtt5TopicAliasMapping topicAliasMapping = Mqtt5ServerData.get(channel).getTopicAliasMapping();
         if (topicAliasMapping == null) {
             this.topicAlias = DEFAULT_NO_TOPIC_ALIAS;
             this.isNewTopicAlias = false;

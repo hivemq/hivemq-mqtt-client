@@ -2,18 +2,13 @@ package org.mqttbee.mqtt5.codec.decoder;
 
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.embedded.EmbeddedChannel;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5Disconnect;
-import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
-import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.message.pubrel.Mqtt5PubRelImpl;
@@ -27,18 +22,15 @@ import static org.mqttbee.mqtt5.message.pubrel.Mqtt5PubRelReasonCode.SUCCESS;
  * @author Silvio Giebl
  * @author David Katz
  */
-class Mqtt5PubRelDecoderTest {
+class Mqtt5PubRelDecoderTest extends AbstractMqtt5DecoderTest {
 
-    private EmbeddedChannel channel;
-
-    @BeforeEach
-    void setUp() {
-        createChannel();
-    }
-
-    @AfterEach
-    void tearDown() {
-        channel.close();
+    Mqtt5PubRelDecoderTest() {
+        super(code -> {
+            if (code == Mqtt5MessageType.PUBREL.getCode()) {
+                return new Mqtt5PubRelDecoder();
+            }
+            return null;
+        });
     }
 
     @Test
@@ -181,7 +173,7 @@ class Mqtt5PubRelDecoderTest {
                 0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e', //
                 0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'
         };
-        channel.attr(ChannelAttributes.INCOMING_MAXIMUM_PACKET_SIZE).set(encoded.length - 1);
+        createClientData(encoded.length - 1);
         decodeNok(encoded, Mqtt5DisconnectReasonCode.PACKET_TOO_LARGE);
     }
 
@@ -361,22 +353,6 @@ class Mqtt5PubRelDecoderTest {
         channel.writeInbound(byteBuf);
 
         return channel.readInbound();
-    }
-
-    private void createChannel() {
-        channel = new EmbeddedChannel(new Mqtt5Decoder(new Mqtt5PubRelTestMessageDecoders()));
-        channel.attr(ChannelAttributes.INCOMING_TOPIC_ALIAS_MAPPING).set(new Mqtt5TopicImpl[3]);
-    }
-
-    private static class Mqtt5PubRelTestMessageDecoders implements Mqtt5MessageDecoders {
-        @Nullable
-        @Override
-        public Mqtt5MessageDecoder get(final int code) {
-            if (code == Mqtt5MessageType.PUBREL.getCode()) {
-                return new Mqtt5PubRelDecoder();
-            }
-            return null;
-        }
     }
 
 }
