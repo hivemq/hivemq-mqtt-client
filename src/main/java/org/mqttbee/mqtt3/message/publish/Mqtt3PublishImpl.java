@@ -17,12 +17,19 @@ public class Mqtt3PublishImpl implements Mqtt3Publish, Mqtt3Message {
     private final Mqtt5Topic topic;
     private final Mqtt5QoS qos;
     private final boolean isRetained;
+    private final boolean isDup;
+    private final int packetId;
 
-    public Mqtt3PublishImpl(byte[] payload, Mqtt5Topic topic, Mqtt5QoS qos, boolean isRetained) {
+    public static final int PACKET_ID_NOT_SET = -1;
+
+    public Mqtt3PublishImpl(
+            byte[] payload, Mqtt5Topic topic, Mqtt5QoS qos, boolean isRetained, boolean dup, int packetId) {
         this.payload = payload;
         this.topic = topic;
         this.qos = qos;
         this.isRetained = isRetained;
+        this.isDup = dup;
+        this.packetId = packetId;
     }
 
 
@@ -44,6 +51,9 @@ public class Mqtt3PublishImpl implements Mqtt3Publish, Mqtt3Message {
     }
 
 
+    public int getPacketId() {
+        return packetId;
+    }
 
     @NotNull
     @Override
@@ -64,7 +74,11 @@ public class Mqtt3PublishImpl implements Mqtt3Publish, Mqtt3Message {
     }
 
     @Override
-    public boolean isRetain() {
+    public boolean isRetained() {
         return isRetained;
+    }
+
+    public boolean isDup() {
+        return isDup;
     }
 }

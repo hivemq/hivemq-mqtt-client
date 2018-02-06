@@ -24,12 +24,12 @@ public class Mqtt3ConnAckDecoder implements Mqtt3MessageDecoder {
 
 
         if (flags != FLAGS) {
-            //TODO
+            channel.close();
             return null;
         }
 
         if (in.readableBytes() != REMAINING_LENGTH) {
-            //TODO
+            channel.close();
             return null;
         }
 
@@ -41,10 +41,7 @@ public class Mqtt3ConnAckDecoder implements Mqtt3MessageDecoder {
             return null;
         }
 
-        boolean sessionPresent = (firstByte & 0b1) ==1;
-
-
-
+        final boolean sessionPresent = (firstByte & 0b1) ==1;
 
         final int code = in.readByte();
         final Mqtt3ConnAckReasonCode reasonCode = Mqtt3ConnAckReasonCode.fromCode(code);
@@ -52,8 +49,6 @@ public class Mqtt3ConnAckDecoder implements Mqtt3MessageDecoder {
             return null;
         }
 
-
-        //TODO replace dummy
         return new Mqtt3ConnAckImpl(reasonCode, sessionPresent);
     }
 }
