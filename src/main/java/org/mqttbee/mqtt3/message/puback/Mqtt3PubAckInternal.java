@@ -3,7 +3,9 @@ package org.mqttbee.mqtt3.message.puback;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.mqtt3.codec.encoder.Mqtt3PubAckEncoder;
 import org.mqttbee.mqtt3.message.Mqtt3Message;
+import org.mqttbee.mqtt5.codec.encoder.Mqtt5PubAckEncoder;
 
 public class Mqtt3PubAckInternal implements Mqtt3Message{
 
@@ -27,12 +29,11 @@ public class Mqtt3PubAckInternal implements Mqtt3Message{
     @Override
     public void encode(
             @NotNull Channel channel, @NotNull ByteBuf out) {
-        //TODO
+        Mqtt3PubAckEncoder.INSTANCE.encode(this, channel, out);
     }
 
     @Override
     public int encodedLength() {
-        //TODO
-        return 0;
+        return 4;
     }
 }

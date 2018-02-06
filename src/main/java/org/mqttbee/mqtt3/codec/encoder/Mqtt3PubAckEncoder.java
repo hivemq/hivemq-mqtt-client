@@ -18,7 +18,7 @@ public class Mqtt3PubAckEncoder implements Mqtt3MessageEncoder<Mqtt3PubAckIntern
 
     public static final Mqtt3PubAckEncoder INSTANCE = new Mqtt3PubAckEncoder();
 
-    private static final int FIXED_HEADER = Mqtt3MessageType.PUBACK.getCode() << 4;
+    private static final byte FIXED_HEADER = (byte)(Mqtt3MessageType.PUBACK.getCode() << 4);
     private static final int FIXED_LENGTH =2;
     private static final int REMAINING_LENGTH = 2;
 
