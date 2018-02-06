@@ -20,13 +20,15 @@ public class Mqtt3PubRecDecoder implements Mqtt3MessageDecoder {
             int flags, @NotNull Channel channel, @NotNull ByteBuf in) {
 
         if (flags != FLAGS) {
+            channel.close();
             return null;
         }
         if (in.readableBytes() != REMAINING_LENGTH) {
+            channel.close();
             return null;
         }
 
-        final int packetId = in.readShort();
+        final int packetId = in.readUnsignedShort();
         return new Mqtt3PubRecImpl(packetId);
 
     }

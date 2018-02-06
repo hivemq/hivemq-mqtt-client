@@ -41,7 +41,7 @@ public class Mqtt3SubAckImpl implements Mqtt3SubAck, Mqtt3Message {
 
     @NotNull
     @Override
-    public ImmutableList<Mqtt5SubAckReasonCode> getReasonCodes() {
-        return null;
+    public ImmutableList<Mqtt3SubAckReasonCode> getReasonCodes() {
+        return reasonCodes;
     }
 }
