@@ -16,6 +16,10 @@ public class Mqtt3UnsubAckImpl implements Mqtt3UnsubAck, Mqtt3Message {
         this.packetId = packetId;
     }
 
+    public int getPacketId() {
+        return packetId;
+    }
+
     @Override
     public void encode(@NotNull Channel channel, @NotNull ByteBuf out) {
 

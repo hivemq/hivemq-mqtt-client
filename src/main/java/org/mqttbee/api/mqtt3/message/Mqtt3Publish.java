@@ -29,7 +29,7 @@ public interface Mqtt3Publish {
     /**
      * @return whether this PUBLISH packet is a retained message.
      */
-    boolean isRetain();
+    boolean isRetained();
 
 
 }

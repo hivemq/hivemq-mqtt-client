@@ -14,12 +14,8 @@ import java.util.List;
 
 public class Mqtt3SubAckDecoder implements Mqtt3MessageDecoder {
 
-
-
     private static final int FLAGS = 0b0000;
     private static final int MIN_REMAINING_LENGTH = 3; // 2 for the packetId + 1 for at least one Subscription
-
-
 
     @Nullable
     @Override
@@ -28,34 +24,28 @@ public class Mqtt3SubAckDecoder implements Mqtt3MessageDecoder {
 
 
         if(flags != FLAGS){
+            channel.close();
             return null;
         }
 
         if(in.readableBytes() < MIN_REMAINING_LENGTH){
+            channel.close();
             return null;
         }
 
-        final int packetID = in.readShort();
+        final int packetID = in.readUnsignedShort();
         final int subscriptions = in.readableBytes();
         final List<Mqtt3SubAckReasonCode> subscriptionsAcks = new ArrayList<>();
 
-
         for(int i =0; i < subscriptions; i++ ){
-            final Mqtt3SubAckReasonCode ackReturnCode = Mqtt3SubAckReasonCode.from(in.readByte());
+            final Mqtt3SubAckReasonCode ackReturnCode = Mqtt3SubAckReasonCode.from(in.readUnsignedByte());
             if(ackReturnCode ==null){
+                channel.close();
                 return null;
             }
             subscriptionsAcks.add(ackReturnCode);
         }
-
-
-
-
-        ImmutableList<Mqtt3SubAckReasonCode> reasonCodes = ImmutableList.copyOf(subscriptionsAcks);
-
-
-
-
+        final ImmutableList<Mqtt3SubAckReasonCode> reasonCodes = ImmutableList.copyOf(subscriptionsAcks);
         return new Mqtt3SubAckImpl(packetID, reasonCodes);
     }
 }
