@@ -35,9 +35,8 @@ public class Mqtt5SubscribeBuilder {
     }
 
     public Mqtt5Subscribe build() {
-        Preconditions.checkNotNull(subscriptionBuilder);
         final ImmutableList<Mqtt5SubscribeImpl.SubscriptionImpl> subscriptions = subscriptionBuilder.build();
-        Preconditions.checkState(subscriptions.isEmpty());
+        Preconditions.checkState(!subscriptions.isEmpty());
         return new Mqtt5SubscribeImpl(subscriptions, userProperties);
     }
 
