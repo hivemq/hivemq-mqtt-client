@@ -3,6 +3,7 @@ package org.mqttbee.api.mqtt5.message;
 import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.api.mqtt5.message.Mqtt5SubscribeBuilder.SubscriptionBuilder;
 import org.mqttbee.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.mqtt5.message.subscribe.Mqtt5RetainHandling;
 
@@ -13,6 +14,10 @@ import org.mqttbee.mqtt5.message.subscribe.Mqtt5RetainHandling;
  */
 @DoNotImplement
 public interface Mqtt5Subscribe {
+
+    static Mqtt5SubscribeBuilder builder() {
+        return new Mqtt5SubscribeBuilder();
+    }
 
     /**
      * @return the {@link Subscription}s of this SUBSCRIBE packet. The list contains at least one subscription.
@@ -42,6 +47,10 @@ public interface Mqtt5Subscribe {
          * The default for whether the retain flag for incoming publishes must be set to its original value.
          */
         boolean DEFAULT_RETAIN_AS_PUBLISHED = false;
+
+        static SubscriptionBuilder builder() {
+            return new SubscriptionBuilder();
+        }
 
         /**
          * @return the Topic Filter of this subscription.
