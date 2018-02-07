@@ -20,47 +20,53 @@ import static org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl.MESSAGE_EXPIRY_
  */
 public class Mqtt5PublishBuilder {
 
-    private Mqtt5TopicImpl topic;
-    private byte[] payload;
-    private Mqtt5QoS qos;
-    private boolean retain;
-    private long messageExpiryInterval = MESSAGE_EXPIRY_INTERVAL_INFINITY;
-    private Mqtt5PayloadFormatIndicator payloadFormatIndicator;
-    private Mqtt5UTF8StringImpl contentType;
-    private Mqtt5TopicImpl responseTopic;
-    private byte[] correlationData;
+    Mqtt5TopicImpl topic;
+    byte[] payload;
+    Mqtt5QoS qos;
+    boolean retain;
+    long messageExpiryInterval = MESSAGE_EXPIRY_INTERVAL_INFINITY;
+    Mqtt5PayloadFormatIndicator payloadFormatIndicator;
+    Mqtt5UTF8StringImpl contentType;
+    Mqtt5TopicImpl responseTopic;
+    byte[] correlationData;
     private TopicAliasUsage topicAliasUsage = DEFAULT_TOPIC_ALIAS_USAGE;
-    private Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES;
+    Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES;
 
+    @NotNull
     public Mqtt5PublishBuilder setTopic(@NotNull final Mqtt5Topic topic) {
         Preconditions.checkNotNull(topic);
         this.topic = MustNotBeImplementedUtil.checkNotImplemented(topic, Mqtt5TopicImpl.class);
         return this;
     }
 
+    @NotNull
     public Mqtt5PublishBuilder setPayload(@NotNull final byte[] payload) { // TODO
         Preconditions.checkNotNull(payload);
         this.payload = payload;
         return this;
     }
 
+    @NotNull
     public Mqtt5PublishBuilder setQos(@NotNull final Mqtt5QoS qos) {
         Preconditions.checkNotNull(qos);
         this.qos = qos;
         return this;
     }
 
+    @NotNull
     public Mqtt5PublishBuilder isRetain(final boolean retain) {
         this.retain = retain;
         return this;
     }
 
+    @NotNull
     public Mqtt5PublishBuilder setMessageExpiryInterval(final long messageExpiryInterval) {
         Preconditions.checkArgument(UnsignedDataTypes.isUnsignedInt(messageExpiryInterval));
         this.messageExpiryInterval = messageExpiryInterval;
         return this;
     }
 
+    @NotNull
     public Mqtt5PublishBuilder setPayloadFormatIndicator(
             @NotNull final Mqtt5PayloadFormatIndicator payloadFormatIndicator) {
 
@@ -69,37 +75,42 @@ public class Mqtt5PublishBuilder {
         return this;
     }
 
+    @NotNull
     public Mqtt5PublishBuilder setContentType(@NotNull final Mqtt5UTF8String contentType) {
         Preconditions.checkNotNull(contentType);
         this.contentType = MustNotBeImplementedUtil.checkNotImplemented(contentType, Mqtt5UTF8StringImpl.class);
         return this;
     }
 
+    @NotNull
     public Mqtt5PublishBuilder setResponseTopic(@NotNull final Mqtt5Topic responseTopic) {
         Preconditions.checkNotNull(responseTopic);
         this.responseTopic = MustNotBeImplementedUtil.checkNotImplemented(responseTopic, Mqtt5TopicImpl.class);
         return this;
     }
 
+    @NotNull
     public Mqtt5PublishBuilder setCorrelationData(@NotNull final byte[] correlationData) { // TODO
         Preconditions.checkNotNull(correlationData);
         this.correlationData = correlationData;
         return this;
     }
 
+    @NotNull
     public Mqtt5PublishBuilder setTopicAliasUsage(@NotNull final TopicAliasUsage topicAliasUsage) {
         Preconditions.checkNotNull(topicAliasUsage);
         this.topicAliasUsage = topicAliasUsage;
         return this;
     }
 
+    @NotNull
     public Mqtt5PublishBuilder setUserProperties(@NotNull final Mqtt5UserProperties userProperties) {
         Preconditions.checkNotNull(userProperties);
-        this.userProperties =
-                MustNotBeImplementedUtil.checkNotImplemented(userProperties, Mqtt5UserPropertiesImpl.class);
+        this.userProperties = MustNotBeImplementedUtil.checkNotImplemented(userProperties, Mqtt5UserPropertiesImpl.class);
         return this;
     }
 
+    @NotNull
     public Mqtt5Publish build() {
         Preconditions.checkNotNull(topic);
         Preconditions.checkNotNull(qos);

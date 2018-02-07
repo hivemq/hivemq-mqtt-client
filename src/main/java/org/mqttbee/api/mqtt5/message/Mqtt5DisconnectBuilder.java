@@ -23,41 +23,45 @@ public class Mqtt5DisconnectBuilder {
     private Mqtt5UTF8StringImpl reasonString;
     private Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES;
 
+    @NotNull
     public Mqtt5DisconnectBuilder withWillMessage(final boolean withWillMessage) {
         this.withWillMessage = withWillMessage;
         return this;
     }
 
+    @NotNull
     public Mqtt5DisconnectBuilder setSessionExpiryInterval(final long sessionExpiryInterval) {
         Preconditions.checkArgument(UnsignedDataTypes.isUnsignedInt(sessionExpiryInterval));
         this.sessionExpiryInterval = sessionExpiryInterval;
         return this;
     }
 
+    @NotNull
     public Mqtt5DisconnectBuilder setServerReference(@NotNull final Mqtt5UTF8String serverReference) {
         Preconditions.checkNotNull(serverReference);
         this.serverReference = MustNotBeImplementedUtil.checkNotImplemented(serverReference, Mqtt5UTF8StringImpl.class);
         return this;
     }
 
+    @NotNull
     public Mqtt5DisconnectBuilder setReasonString(@NotNull final Mqtt5UTF8String reasonString) {
         Preconditions.checkNotNull(reasonString);
         this.reasonString = MustNotBeImplementedUtil.checkNotImplemented(reasonString, Mqtt5UTF8StringImpl.class);
         return this;
     }
 
+    @NotNull
     public Mqtt5DisconnectBuilder setUserProperties(@NotNull final Mqtt5UserProperties userProperties) {
         Preconditions.checkNotNull(userProperties);
-        this.userProperties =
-                MustNotBeImplementedUtil.checkNotImplemented(userProperties, Mqtt5UserPropertiesImpl.class);
+        this.userProperties = MustNotBeImplementedUtil.checkNotImplemented(userProperties, Mqtt5UserPropertiesImpl.class);
         return this;
     }
 
+    @NotNull
     public Mqtt5Disconnect build() {
         final Mqtt5DisconnectReasonCode reasonCode =
                 withWillMessage ? DISCONNECT_WITH_WILL_MESSAGE : NORMAL_DISCONNECTION;
-        return new Mqtt5DisconnectImpl(
-                reasonCode, sessionExpiryInterval, serverReference, reasonString, userProperties);
+        return new Mqtt5DisconnectImpl(reasonCode, sessionExpiryInterval, serverReference, reasonString, userProperties);
     }
 
 }

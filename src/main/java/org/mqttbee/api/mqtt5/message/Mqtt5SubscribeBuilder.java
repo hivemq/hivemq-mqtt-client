@@ -21,19 +21,21 @@ public class Mqtt5SubscribeBuilder {
     private final ImmutableList.Builder<SubscriptionImpl> subscriptionBuilder = ImmutableList.builder();
     private Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES;
 
+    @NotNull
     public Mqtt5SubscribeBuilder addSubscription(@NotNull final Subscription subscription) {
         Preconditions.checkNotNull(subscription);
         subscriptionBuilder.add(MustNotBeImplementedUtil.checkNotImplemented(subscription, SubscriptionImpl.class));
         return this;
     }
 
+    @NotNull
     public Mqtt5SubscribeBuilder setUserProperties(@NotNull final Mqtt5UserProperties userProperties) {
         Preconditions.checkNotNull(userProperties);
-        this.userProperties =
-                MustNotBeImplementedUtil.checkNotImplemented(userProperties, Mqtt5UserPropertiesImpl.class);
+        this.userProperties = MustNotBeImplementedUtil.checkNotImplemented(userProperties, Mqtt5UserPropertiesImpl.class);
         return this;
     }
 
+    @NotNull
     public Mqtt5Subscribe build() {
         final ImmutableList<Mqtt5SubscribeImpl.SubscriptionImpl> subscriptions = subscriptionBuilder.build();
         Preconditions.checkState(!subscriptions.isEmpty());
@@ -49,34 +51,40 @@ public class Mqtt5SubscribeBuilder {
         private Mqtt5RetainHandling retainHandling = Subscription.DEFAULT_RETAIN_HANDLING;
         private boolean retainAsPublished = Subscription.DEFAULT_RETAIN_AS_PUBLISHED;
 
+        @NotNull
         public SubscriptionBuilder setTopicFilter(@NotNull final Mqtt5TopicFilter topicFilter) {
             Preconditions.checkNotNull(topicFilter);
             this.topicFilter = MustNotBeImplementedUtil.checkNotImplemented(topicFilter, Mqtt5TopicFilterImpl.class);
             return this;
         }
 
+        @NotNull
         public SubscriptionBuilder setQoS(@NotNull final Mqtt5QoS qos) {
             Preconditions.checkNotNull(qos);
             this.qos = qos;
             return this;
         }
 
+        @NotNull
         public SubscriptionBuilder setNoLocal(final boolean noLocal) {
             this.noLocal = noLocal;
             return this;
         }
 
+        @NotNull
         public SubscriptionBuilder setRetainHandling(@NotNull final Mqtt5RetainHandling retainHandling) {
             Preconditions.checkNotNull(retainHandling);
             this.retainHandling = retainHandling;
             return this;
         }
 
+        @NotNull
         public SubscriptionBuilder setRetainAsPublished(final boolean retainAsPublished) {
             this.retainAsPublished = retainAsPublished;
             return this;
         }
 
+        @NotNull
         public Subscription build() {
             Preconditions.checkNotNull(topicFilter);
             Preconditions.checkNotNull(qos);

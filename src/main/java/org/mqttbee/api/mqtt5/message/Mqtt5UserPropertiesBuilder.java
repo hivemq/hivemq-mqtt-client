@@ -14,6 +14,7 @@ public class Mqtt5UserPropertiesBuilder {
 
     private ImmutableList.Builder<Mqtt5UserPropertyImpl> listBuilder;
 
+    @NotNull
     public Mqtt5UserPropertiesBuilder add(@NotNull final Mqtt5UserProperty userProperty) {
         Preconditions.checkNotNull(userProperty);
         if (listBuilder == null) {
@@ -23,6 +24,7 @@ public class Mqtt5UserPropertiesBuilder {
         return this;
     }
 
+    @NotNull
     public Mqtt5UserProperties build() {
         return Mqtt5UserPropertiesImpl.build(listBuilder);
     }
