@@ -18,8 +18,8 @@ import static java.util.Objects.requireNonNull;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mqttbee.api.mqtt5.message.Mqtt5Publish.TopicAliasUsage.HAS_NOT;
-import static org.mqttbee.api.mqtt5.message.Mqtt5Publish.TopicAliasUsage.MAY;
+import static org.mqttbee.api.mqtt5.message.Mqtt5Publish.DEFAULT_TOPIC_ALIAS_USAGE;
+import static org.mqttbee.api.mqtt5.message.Mqtt5Publish.TopicAliasUsage.*;
 import static org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES;
 import static org.mqttbee.mqtt5.message.publish.Mqtt5PublishInternal.DEFAULT_NO_TOPIC_ALIAS;
 
@@ -134,6 +134,32 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
                         Mqtt5PublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UNSPECIFIED,
                         null, null, null, HAS_NOT, NO_USER_PROPERTIES);
         encode(expected, publish, 15, false, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntArray.of());
+    }
+
+    @Test
+    void encode_isDupTrue() {
+        final byte[] expected = {
+                // fixed header
+                //   type, flags
+                0b0011_1010,
+                //   remaining length
+                12,
+                // variable header
+                //   topic name
+                0, 5, 't', 'o', 'p', 'i', 'c',
+                // Packet Identifier
+                0, 17,
+                //   properties
+                2,
+                //     payload format indicator
+                0x01, 0
+        };
+
+        final Mqtt5PublishImpl publish =
+                new Mqtt5PublishImpl(requireNonNull(Mqtt5TopicImpl.from("topic")), null, Mqtt5QoS.AT_LEAST_ONCE, false,
+                        Mqtt5PublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UNSPECIFIED,
+                        null, null, null, HAS_NOT, NO_USER_PROPERTIES);
+        encode(expected, publish, 17, true, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntArray.of());
     }
 
     @Test
@@ -320,6 +346,56 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
                         Mqtt5PublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null, MAY,
                         NO_USER_PROPERTIES);
         encode(expected, publish, 15, false, 8, true, ImmutableIntArray.of());
+    }
+
+    @Test
+    void encode_withoutTopicAlias() {
+        final byte[] expected = {
+                // fixed header
+                //   type, flags
+                0b0011_0010,
+                //   remaining length
+                10,
+                // variable header
+                //   topic name
+                0, 5, 't', 'o', 'p', 'i', 'c',
+                //   Packet Identifier
+                0, 15,
+                //   properties
+                0
+        };
+
+        final Mqtt5PublishImpl publish =
+                new Mqtt5PublishImpl(requireNonNull(Mqtt5TopicImpl.from("topic")), null, Mqtt5QoS.AT_LEAST_ONCE, false,
+                        Mqtt5PublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null,
+                        MUST_NOT, NO_USER_PROPERTIES);
+        encode(expected, publish, 15, false, ImmutableIntArray.of());
+    }
+
+    @Test
+    void encode_withoutTopicAliasUsingDefault() {
+        final byte[] expected = {
+                // fixed header
+                //   type, flags
+                0b0011_1010,
+                //   remaining length
+                10,
+                // variable header
+                //   topic name
+                0, 5, 't', 'o', 'p', 'i', 'c',
+                //   Packet Identifier
+                0, 2,
+                //   properties
+                0
+        };
+
+        final Mqtt5PublishImpl publish =
+                new Mqtt5PublishImpl(requireNonNull(Mqtt5TopicImpl.from("topic")), null, Mqtt5QoS.AT_LEAST_ONCE, false,
+                        Mqtt5PublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY,
+                        null, null, null, null,
+                        DEFAULT_TOPIC_ALIAS_USAGE,
+                        NO_USER_PROPERTIES);
+        encode(expected, publish, 2, true, ImmutableIntArray.of());
     }
 
     @Test
@@ -521,7 +597,7 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
                         ImmutableIntArray.of());
 
         final Throwable exception = assertThrows(EncoderException.class, () -> channel.writeOutbound(publishInternal));
-        assertTrue(exception.getMessage().contains("org.mqttbee.mqtt5.exceptions.Mqtt5MaximumPacketSizeExceededException"));
+        assertTrue(exception.getMessage().contains("Mqtt5MaximumPacketSizeExceededException"));
     }
 
     @Test
@@ -551,15 +627,25 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
         final Mqtt5PublishImpl publish =
                 new Mqtt5PublishImpl(requireNonNull(Mqtt5TopicImpl.from("topic")), null, Mqtt5QoS.AT_MOST_ONCE, false,
                         Mqtt5PublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UNSPECIFIED,
-                        null, null, maxPacket.getCorrelationData(), HAS_NOT, maxPacket.getMaxPossibleUserProperties(1));
+                        null, null, maxPacket.getCorrelationData(), HAS_NOT,
+                        maxPacket.getMaxPossibleUserProperties(1));
 
 
         final Mqtt5PublishInternal publishInternal =
-                new Mqtt5PublishInternal(publish, -1, false, Mqtt5PublishInternal.DEFAULT_NO_TOPIC_ALIAS, false,
+                new Mqtt5PublishInternal(publish, -1, false,
+                        Mqtt5PublishInternal.DEFAULT_NO_TOPIC_ALIAS, false,
                         ImmutableIntArray.of());
 
         final Throwable exception = assertThrows(EncoderException.class, () -> channel.writeOutbound(publishInternal));
         assertTrue(exception.getMessage().contains("variable byte integer size exceeded for property length"));
+    }
+
+    private void encode(
+            final byte[] expected, final Mqtt5PublishImpl publish, final int packetIdentifier, final boolean isDup,
+            final ImmutableIntArray subscriptionIdentifiers) {
+        final Mqtt5PublishInternal publishInternal =
+                new Mqtt5PublishInternal(publish, packetIdentifier, isDup, channel, subscriptionIdentifiers);
+        encodeInternal(expected, publishInternal);
     }
 
     private void encode(
