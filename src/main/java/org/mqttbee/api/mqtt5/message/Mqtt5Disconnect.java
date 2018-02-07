@@ -14,6 +14,10 @@ import java.util.Optional;
 @DoNotImplement
 public interface Mqtt5Disconnect {
 
+    static Mqtt5DisconnectBuilder builder() {
+        return new Mqtt5DisconnectBuilder();
+    }
+
     /**
      * @return the reason code of this DISCONNECT packet.
      */
