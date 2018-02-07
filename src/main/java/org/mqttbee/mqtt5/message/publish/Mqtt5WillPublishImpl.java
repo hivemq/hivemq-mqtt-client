@@ -13,8 +13,6 @@ import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
  */
 public class Mqtt5WillPublishImpl extends Mqtt5PublishImpl implements Mqtt5WillPublish {
 
-    @Nullable
-    public static final Mqtt5WillPublishImpl DEFAULT_NO_WILL_PUBLISH = null;
     @NotNull
     private static final byte[] DEFAULT_NO_PAYLOAD = new byte[0];
 

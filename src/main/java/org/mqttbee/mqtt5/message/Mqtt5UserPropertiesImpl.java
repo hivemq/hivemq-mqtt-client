@@ -2,11 +2,9 @@ package org.mqttbee.mqtt5.message;
 
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
-import org.mqttbee.annotations.MustNotBeImplementedException;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5UserProperties;
-import org.mqttbee.api.mqtt5.message.Mqtt5UserProperty;
 import org.mqttbee.mqtt5.exceptions.Mqtt5BinaryDataExceededException;
 
 /**
@@ -19,37 +17,6 @@ public class Mqtt5UserPropertiesImpl implements Mqtt5UserProperties {
      * Empty collection of User Properties.
      */
     public static final Mqtt5UserPropertiesImpl NO_USER_PROPERTIES = new Mqtt5UserPropertiesImpl(ImmutableList.of());
-
-    /**
-     * Checks if the given collection of User Properties is instance of this implementation.
-     *
-     * @param userProperties the collection of User Property.
-     * @return the casted collection of User Properties.
-     * @throws MustNotBeImplementedException if the collection of User Property is not instance of this implementation.
-     */
-    @NotNull
-    public static Mqtt5UserPropertiesImpl checkNotImplemented(@NotNull final Mqtt5UserProperties userProperties) {
-        if (userProperties instanceof Mqtt5UserPropertiesImpl) {
-            return (Mqtt5UserPropertiesImpl) userProperties;
-        }
-        throw new MustNotBeImplementedException(Mqtt5UserProperties.class);
-    }
-
-    /**
-     * Creates a collection of User Properties from the given User Properties.
-     *
-     * @param userProperties the User Properties.
-     * @return the created collection of User Properties.
-     */
-    @NotNull
-    public static Mqtt5UserPropertiesImpl of(@NotNull final Mqtt5UserProperty... userProperties) {
-        final ImmutableList.Builder<Mqtt5UserPropertyImpl> builder =
-                ImmutableList.builderWithExpectedSize(userProperties.length);
-        for (final Mqtt5UserProperty userProperty : userProperties) {
-            builder.add(Mqtt5UserPropertyImpl.checkNotImplemented(userProperty));
-        }
-        return of(builder.build());
-    }
 
     /**
      * Creates a collection of User Properties from the given immutable list of User Properties.

@@ -5,6 +5,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckReasonCode;
+import org.mqttbee.util.UnsignedDataTypes;
 
 import java.util.Optional;
 
@@ -87,12 +88,13 @@ public interface Mqtt5ConnAck {
     /**
      * Restrictions from the the server in the CONNACK packet.
      */
+    @DoNotImplement
     interface Restrictions {
 
         /**
          * The default maximum amount of not acknowledged publishes with QoS 1 or 2 the server accepts concurrently.
          */
-        int DEFAULT_RECEIVE_MAXIMUM = 65_535;
+        int DEFAULT_RECEIVE_MAXIMUM = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE;
         /**
          * The default maximum amount of topic aliases the server accepts from the client.
          */

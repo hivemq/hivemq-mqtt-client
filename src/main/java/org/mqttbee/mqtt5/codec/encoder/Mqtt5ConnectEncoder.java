@@ -53,7 +53,7 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
         }
 
         final Mqtt5WillPublishImpl willPublish = connect.getRawWillPublish();
-        if (willPublish != Mqtt5WillPublishImpl.DEFAULT_NO_WILL_PUBLISH) {
+        if (willPublish != null) {
             remainingLength += encodedLengthWithHeader(connect.encodedWillPropertyLength());
             remainingLength += willPublish.getTopic().encodedLength();
             remainingLength += Mqtt5DataTypes.encodedBinaryDataLength(willPublish.getRawPayload());
@@ -96,7 +96,7 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
         int willPropertyLength = 0;
 
         final Mqtt5WillPublishImpl willPublish = connect.getRawWillPublish();
-        if (willPublish != Mqtt5WillPublishImpl.DEFAULT_NO_WILL_PUBLISH) {
+        if (willPublish != null) {
             willPropertyLength += intPropertyEncodedLength(willPublish.getRawMessageExpiryInterval(),
                     Mqtt5WillPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY);
             willPropertyLength += propertyEncodedLength(willPublish.getRawPayloadFormatIndicator());
@@ -140,7 +140,7 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
         }
 
         final Mqtt5WillPublishImpl willPublish = connect.getRawWillPublish();
-        if (willPublish != Mqtt5WillPublishImpl.DEFAULT_NO_WILL_PUBLISH) {
+        if (willPublish != null) {
             if (willPublish.isRetain()) {
                 connectFlags |= 0b0010_0000;
             }
@@ -205,8 +205,7 @@ public class Mqtt5ConnectEncoder implements Mqtt5MessageEncoder<Mqtt5ConnectImpl
 
     private void encodeWillPublish(@NotNull final Mqtt5ConnectImpl connect, @NotNull final ByteBuf out) {
         final Mqtt5WillPublishImpl willPublish = connect.getRawWillPublish();
-        if (willPublish != Mqtt5WillPublishImpl.DEFAULT_NO_WILL_PUBLISH) {
-
+        if (willPublish != null) {
             final int willPropertyLength = connect.encodedWillPropertyLength();
             Mqtt5DataTypes.encodeVariableByteInteger(willPropertyLength, out);
 

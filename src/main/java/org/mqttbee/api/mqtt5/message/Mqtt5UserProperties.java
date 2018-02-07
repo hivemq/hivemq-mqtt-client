@@ -5,6 +5,8 @@ import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
+import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
+import org.mqttbee.util.MustNotBeImplementedUtil;
 
 /**
  * Collection of {@link Mqtt5UserProperty User Properties}.
@@ -32,7 +34,16 @@ public interface Mqtt5UserProperties {
     static Mqtt5UserProperties of(@NotNull final Mqtt5UserProperty... userProperties) {
         Preconditions.checkNotNull(userProperties);
 
-        return Mqtt5UserPropertiesImpl.of(userProperties);
+        final ImmutableList.Builder<Mqtt5UserPropertyImpl> builder =
+                ImmutableList.builderWithExpectedSize(userProperties.length);
+        for (final Mqtt5UserProperty userProperty : userProperties) {
+            builder.add(MustNotBeImplementedUtil.checkNotImplemented(userProperty, Mqtt5UserPropertyImpl.class));
+        }
+        return Mqtt5UserPropertiesImpl.of(builder.build());
+    }
+
+    static Mqtt5UserPropertiesBuilder builder() {
+        return new Mqtt5UserPropertiesBuilder();
     }
 
     /**
