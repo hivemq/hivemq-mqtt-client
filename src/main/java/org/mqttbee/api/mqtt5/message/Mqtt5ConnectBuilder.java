@@ -64,13 +64,13 @@ public class Mqtt5ConnectBuilder {
         return this;
     }
 
-    public Mqtt5ConnectBuilder setRestrictions(@NotNull final Mqtt5Connect.Restrictions restrictions) {
+    public Mqtt5ConnectBuilder setRestrictions(@NotNull final Restrictions restrictions) {
         Preconditions.checkNotNull(restrictions);
         this.restrictions = MustNotBeImplementedUtil.checkNotImplemented(restrictions, RestrictionsImpl.class);
         return this;
     }
 
-    public Mqtt5ConnectBuilder setSimpleAuth(@NotNull final Mqtt5Connect.SimpleAuth simpleAuth) {
+    public Mqtt5ConnectBuilder setSimpleAuth(@NotNull final SimpleAuth simpleAuth) {
         Preconditions.checkNotNull(simpleAuth);
         this.simpleAuth = MustNotBeImplementedUtil.checkNotImplemented(simpleAuth, SimpleAuthImpl.class);
         return this;
@@ -113,7 +113,7 @@ public class Mqtt5ConnectBuilder {
             return this;
         }
 
-        public SimpleAuthBuilder setPassword(@NotNull final byte[] password) {
+        public SimpleAuthBuilder setPassword(@NotNull final byte[] password) { // TODO
             Preconditions.checkNotNull(password);
             Preconditions.checkArgument(Mqtt5DataTypes.isInBinaryDataRange(password));
             this.password = password;
