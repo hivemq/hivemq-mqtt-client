@@ -6,7 +6,6 @@ import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt3.message.Mqtt3SubAck;
 import org.mqttbee.mqtt3.message.Mqtt3Message;
-import org.mqttbee.mqtt5.message.suback.Mqtt5SubAckReasonCode;
 
 public class Mqtt3SubAckImpl implements Mqtt3SubAck, Mqtt3Message {
 
@@ -16,7 +15,7 @@ public class Mqtt3SubAckImpl implements Mqtt3SubAck, Mqtt3Message {
 
 
     public Mqtt3SubAckImpl(
-            int packetId, ImmutableList<Mqtt3SubAckReasonCode> reasonCodes) {
+            final int packetId, final ImmutableList<Mqtt3SubAckReasonCode> reasonCodes) {
         this.packetId = packetId;
         this.reasonCodes = reasonCodes;
     }
@@ -29,8 +28,9 @@ public class Mqtt3SubAckImpl implements Mqtt3SubAck, Mqtt3Message {
 
     @Override
     public void encode(
-            @NotNull Channel channel, @NotNull ByteBuf out) {
-        //TODO
+            @NotNull final Channel channel, @NotNull final ByteBuf out) {
+        //todo
+        // Mqtt3SubAckEncoder.INSTANCE.encode(this, channel, out);
     }
 
     @Override

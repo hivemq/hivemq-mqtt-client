@@ -11,12 +11,12 @@ public enum Mqtt3SubAckReasonCode {
 
     private final int code;
 
-    Mqtt3SubAckReasonCode(int code) {
+    Mqtt3SubAckReasonCode(final int code) {
         this.code = code;
     }
 
 
-    public static Mqtt3SubAckReasonCode from(int code) {
+    public static Mqtt3SubAckReasonCode from(final int code) {
         switch (code) {
             case 0:
                 return SUCCESS_MAXIMUM_QOS_0;

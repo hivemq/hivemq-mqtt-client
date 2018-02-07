@@ -3,7 +3,6 @@ package org.mqttbee.mqtt3.codec.decoder;
 import com.google.common.primitives.Bytes;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.embedded.EmbeddedChannel;
-;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +13,8 @@ import org.mqttbee.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.mqtt3.message.puback.Mqtt3PubAckImpl;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+;
 
 class Mqtt3PubAckDecoderTest {
 
@@ -80,7 +81,8 @@ class Mqtt3PubAckDecoderTest {
     @Test
     void decode_ERROR_TOO_LONG() throws Exception {
         //final byte[] encoded = Bytes.concat(MALFORMED_PUBACK_BEGIN_WRONG_FLAGS, MAX_PACKET_ID);
-        final byte[] encoded = Bytes.concat(MALFORMED_PUBACK_BEGIN_TOO_LONG_LENGTH, MAX_PACKET_ID, ENDING_TOO_LONG_MALFORMED);
+        final byte[] encoded =
+                Bytes.concat(MALFORMED_PUBACK_BEGIN_TOO_LONG_LENGTH, MAX_PACKET_ID, ENDING_TOO_LONG_MALFORMED);
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
@@ -88,8 +90,6 @@ class Mqtt3PubAckDecoderTest {
         assertFalse(channel.isOpen());
         assertNull(pubAck);
     }
-
-
 
 
     private static class Mqtt3PubAckTestMessageDecoders implements Mqtt3MessageDecoders {

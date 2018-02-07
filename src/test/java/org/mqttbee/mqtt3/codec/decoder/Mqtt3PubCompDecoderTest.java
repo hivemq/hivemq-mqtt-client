@@ -73,7 +73,8 @@ class Mqtt3PubCompDecoderTest {
                 encoded = Bytes.concat(MALFORMED_PUBCOMP_BEGIN_WRONG_FLAGS, MAX_PACKET_ID);
                 break;
             case 2:
-                encoded = Bytes.concat(MALFORMED_PUBCOMP_BEGIN_TOO_LONG_LENGTH, MIN_PACKET_ID, ENDING_TOO_LONG_MALFORMED);
+                encoded =
+                        Bytes.concat(MALFORMED_PUBCOMP_BEGIN_TOO_LONG_LENGTH, MIN_PACKET_ID, ENDING_TOO_LONG_MALFORMED);
                 break;
             default:
                 throw new Exception();

@@ -10,7 +10,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt3.message.Mqtt3UnsubAck;
 import org.mqttbee.mqtt3.message.Mqtt3MessageType;
-import org.mqttbee.mqtt3.message.pubcomp.Mqtt3PubCompImpl;
 import org.mqttbee.mqtt3.message.unsuback.Mqtt3UnsubAckImpl;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,19 +19,19 @@ class Mqtt3UnsubAckDecoderTest {
 
     private static final byte[] WELLFORMED_UNSUBACK_BEGIN = {
             //   type, flags
-            (byte)0b1011_0000,
+            (byte) 0b1011_0000,
             //remaining length
             0b0000_0010
     };
     private static final byte[] MALFORMED_UNSUBACK_BEGIN_WRONG_FLAGS = {
             //   type, flags
-            (byte)0b1011_0100,
+            (byte) 0b1011_0100,
             //remaining length
             0b0000_0010
     };
     private static final byte[] MALFORMED_UNSUBACK_BEGIN_TOO_LONG_LENGTH = {
             //   type, flags
-            (byte)0b1011_0000,
+            (byte) 0b1011_0000,
             //remaining length
             0b0000_0011
     };
@@ -77,7 +76,8 @@ class Mqtt3UnsubAckDecoderTest {
                 encoded = Bytes.concat(MALFORMED_UNSUBACK_BEGIN_WRONG_FLAGS, MAX_PACKET_ID);
                 break;
             case 2:
-                encoded = Bytes.concat(MALFORMED_UNSUBACK_BEGIN_TOO_LONG_LENGTH, MIN_PACKET_ID, ENDING_TOO_LONG_MALFORMED);
+                encoded = Bytes.concat(MALFORMED_UNSUBACK_BEGIN_TOO_LONG_LENGTH, MIN_PACKET_ID,
+                        ENDING_TOO_LONG_MALFORMED);
                 break;
             default:
                 throw new Exception();

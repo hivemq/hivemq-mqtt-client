@@ -7,14 +7,9 @@ import io.netty.handler.codec.ByteToMessageDecoder;
 import org.mqttbee.mqtt3.message.Mqtt3Message;
 import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
-import org.mqttbee.mqtt5.codec.decoder.Mqtt5MessageDecoder;
-import org.mqttbee.mqtt5.codec.decoder.Mqtt5MessageDecoders;
-import org.mqttbee.mqtt5.message.Mqtt5Message;
-
 
 import javax.inject.Inject;
 import java.util.List;
-
 
 
 /**
@@ -69,7 +64,7 @@ public class Mqtt3Decoder extends ByteToMessageDecoder {
         final Integer maximumPacketSize = channel.attr(ChannelAttributes.INCOMING_MAXIMUM_PACKET_SIZE).get();
         if ((maximumPacketSize != null) && (packetSize > maximumPacketSize)) {
             //TODO
-           // disconnect(Mqtt5DisconnectReasonCode.PACKET_TOO_LARGE, null, channel);
+            // disconnect(Mqtt5DisconnectReasonCode.PACKET_TOO_LARGE, null, channel);
             return;
         }
 
