@@ -1,10 +1,8 @@
 package org.mqttbee.mqtt5.message;
 
 import io.netty.buffer.ByteBuf;
-import org.mqttbee.annotations.MustNotBeImplementedException;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.api.mqtt5.message.Mqtt5UserProperty;
 
 /**
@@ -14,30 +12,16 @@ import org.mqttbee.api.mqtt5.message.Mqtt5UserProperty;
 public class Mqtt5UserPropertyImpl implements Mqtt5UserProperty {
 
     /**
-     * Checks if the given User Property is instance of this implementation.
-     *
-     * @param userProperty the User Property.
-     * @return the casted User Property.
-     * @throws MustNotBeImplementedException if the User Property is not instance of this implementation.
-     */
-    @NotNull
-    public static Mqtt5UserPropertyImpl checkNotImplemented(@NotNull final Mqtt5UserProperty userProperty) {
-        if (userProperty instanceof Mqtt5UserPropertyImpl) {
-            return (Mqtt5UserPropertyImpl) userProperty;
-        }
-        throw new MustNotBeImplementedException(Mqtt5UserProperty.class);
-    }
-
-    /**
      * Creates an User Property of the given name and value.
      *
      * @param name  the name of the User Property.
      * @param value the value of the User Property.
      * @return the created User Property.
      */
-    public static Mqtt5UserPropertyImpl of(@NotNull final Mqtt5UTF8String name, @NotNull final Mqtt5UTF8String value) {
-        return new Mqtt5UserPropertyImpl(
-                Mqtt5UTF8StringImpl.checkNotImplemented(name), Mqtt5UTF8StringImpl.checkNotImplemented(value));
+    public static Mqtt5UserPropertyImpl of(
+            @NotNull final Mqtt5UTF8StringImpl name, @NotNull final Mqtt5UTF8StringImpl value) {
+
+        return new Mqtt5UserPropertyImpl(name, value);
     }
 
     /**

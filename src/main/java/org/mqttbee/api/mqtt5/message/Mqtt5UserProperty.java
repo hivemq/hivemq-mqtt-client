@@ -3,7 +3,9 @@ package org.mqttbee.api.mqtt5.message;
 import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
+import org.mqttbee.util.MustNotBeImplementedUtil;
 
 /**
  * MQTT User Property according to the MQTT 5 specification.
@@ -26,7 +28,9 @@ public interface Mqtt5UserProperty {
         Preconditions.checkNotNull(name);
         Preconditions.checkNotNull(value);
 
-        return Mqtt5UserPropertyImpl.of(name, value);
+        return Mqtt5UserPropertyImpl.of(
+                MustNotBeImplementedUtil.checkNotImplemented(name, Mqtt5UTF8StringImpl.class),
+                MustNotBeImplementedUtil.checkNotImplemented(value, Mqtt5UTF8StringImpl.class));
     }
 
     /**

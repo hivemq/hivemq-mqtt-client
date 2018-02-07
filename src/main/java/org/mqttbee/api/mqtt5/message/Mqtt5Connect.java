@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
+import org.mqttbee.util.UnsignedDataTypes;
 
 import java.util.Optional;
 
@@ -16,10 +17,16 @@ import java.util.Optional;
 public interface Mqtt5Connect {
 
     int NO_KEEP_ALIVE = 0;
+    int DEFAULT_KEEP_ALIVE = 60; // TODO
+    boolean DEFAULT_CLEAN_START = true; // TODO
     long DEFAULT_SESSION_EXPIRY_INTERVAL = 0;
-    long NO_SESSION_EXPIRY = 0xFFFF_FFFF;
+    long NO_SESSION_EXPIRY = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE;
     boolean DEFAULT_RESPONSE_INFORMATION_REQUESTED = false;
     boolean DEFAULT_PROBLEM_INFORMATION_REQUESTED = true;
+
+    static Mqtt5ConnectBuilder builder() {
+        return new Mqtt5ConnectBuilder();
+    }
 
     /**
      * @return the optional client identifier of this CONNECT packet. If absent, the server may assign a client
@@ -90,7 +97,12 @@ public interface Mqtt5Connect {
     /**
      * Simple authentication and/or authorization related data in the CONNECT packet.
      */
+    @DoNotImplement
     interface SimpleAuth {
+
+        static Mqtt5ConnectBuilder.SimpleAuthBuilder builder() {
+            return new Mqtt5ConnectBuilder.SimpleAuthBuilder();
+        }
 
         /**
          * @return the optional username.
@@ -110,6 +122,7 @@ public interface Mqtt5Connect {
     /**
      * Restrictions from the the server in the CONNECT packet.
      */
+    @DoNotImplement
     interface Restrictions {
 
         /**
@@ -125,6 +138,10 @@ public interface Mqtt5Connect {
          * not limited beyond the restrictions of the encoding.
          */
         int DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT = Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT;
+
+        static Mqtt5ConnectBuilder.RestrictionsBuilder builder() {
+            return new Mqtt5ConnectBuilder.RestrictionsBuilder();
+        }
 
         /**
          * @return the maximum amount of not acknowledged publishes with QoS 1 or 2 the client accepts concurrently. The
