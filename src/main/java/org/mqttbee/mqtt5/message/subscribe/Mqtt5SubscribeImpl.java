@@ -2,10 +2,11 @@ package org.mqttbee.mqtt5.message.subscribe;
 
 import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt5.message.Mqtt5Subscribe;
+import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
+import org.mqttbee.api.mqtt5.message.subscribe.Mqtt5RetainHandling;
+import org.mqttbee.api.mqtt5.message.subscribe.Mqtt5Subscribe;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5SubscribeEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5Message;
-import org.mqttbee.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.mqtt5.message.Mqtt5TopicFilterImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 

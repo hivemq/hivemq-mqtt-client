@@ -2,8 +2,10 @@ package org.mqttbee.mqtt5.message.publish;
 
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt5.message.Mqtt5WillPublish;
-import org.mqttbee.mqtt5.message.Mqtt5QoS;
+import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
+import org.mqttbee.api.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
+import org.mqttbee.api.mqtt5.message.publish.Mqtt5WillPublish;
+import org.mqttbee.api.mqtt5.message.publish.TopicAliasUsage;
 import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;

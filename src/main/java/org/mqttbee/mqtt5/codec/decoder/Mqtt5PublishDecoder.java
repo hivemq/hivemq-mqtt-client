@@ -7,19 +7,23 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
+import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
+import org.mqttbee.api.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
+import org.mqttbee.api.mqtt5.message.publish.TopicAliasUsage;
 import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.handler.Mqtt5ClientData;
-import org.mqttbee.mqtt5.message.*;
-import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
+import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
+import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
+import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
+import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishInternal;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishProperty;
 
 import javax.inject.Singleton;
 
-import static org.mqttbee.api.mqtt5.message.Mqtt5Publish.TopicAliasUsage;
 import static org.mqttbee.mqtt5.codec.decoder.Mqtt5MessageDecoderUtil.*;
 import static org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY;
 import static org.mqttbee.mqtt5.message.publish.Mqtt5PublishInternal.*;

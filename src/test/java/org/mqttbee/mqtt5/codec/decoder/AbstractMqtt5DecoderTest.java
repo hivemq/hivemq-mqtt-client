@@ -4,7 +4,7 @@ import io.netty.channel.embedded.EmbeddedChannel;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt5.message.Mqtt5Connect;
+import org.mqttbee.api.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.mqtt5.handler.Mqtt5ClientData;
 import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifierImpl;
 

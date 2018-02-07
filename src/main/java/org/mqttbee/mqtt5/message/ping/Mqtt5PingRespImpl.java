@@ -3,7 +3,7 @@ package org.mqttbee.mqtt5.message.ping;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt5.message.Mqtt5PingResp;
+import org.mqttbee.api.mqtt5.message.ping.Mqtt5PingResp;
 import org.mqttbee.mqtt5.message.Mqtt5Message;
 
 /**

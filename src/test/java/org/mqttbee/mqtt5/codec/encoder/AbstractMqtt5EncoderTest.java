@@ -3,9 +3,9 @@ package org.mqttbee.mqtt5.codec.encoder;
 import io.netty.channel.embedded.EmbeddedChannel;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.handler.Mqtt5ServerData;
-import org.mqttbee.mqtt5.message.Mqtt5QoS;
 
 /**
  * @author Silvio Giebl

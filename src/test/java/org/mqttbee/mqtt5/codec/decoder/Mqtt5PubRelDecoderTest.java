@@ -7,16 +7,16 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt5.message.Mqtt5Disconnect;
+import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5Disconnect;
+import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
+import org.mqttbee.api.mqtt5.message.pubrel.Mqtt5PubRelReasonCode;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
-import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.message.pubrel.Mqtt5PubRelImpl;
-import org.mqttbee.mqtt5.message.pubrel.Mqtt5PubRelReasonCode;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.MALFORMED_PACKET;
-import static org.mqttbee.mqtt5.message.pubrel.Mqtt5PubRelReasonCode.SUCCESS;
+import static org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.MALFORMED_PACKET;
+import static org.mqttbee.api.mqtt5.message.pubrel.Mqtt5PubRelReasonCode.SUCCESS;
 
 /**
  * @author Silvio Giebl

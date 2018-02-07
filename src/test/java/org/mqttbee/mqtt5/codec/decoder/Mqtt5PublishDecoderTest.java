@@ -7,21 +7,21 @@ import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import org.junit.jupiter.api.Test;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt5.message.Mqtt5Disconnect;
-import org.mqttbee.api.mqtt5.message.Mqtt5Publish;
+import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
+import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5Disconnect;
+import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
+import org.mqttbee.api.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
+import org.mqttbee.api.mqtt5.message.publish.TopicAliasUsage;
 import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
-import org.mqttbee.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
-import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishInternal;
 
 import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.*;
+import static org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.*;
 
 /**
  * @author Silvio Giebl
@@ -102,7 +102,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
         assertEquals("response", publish.getResponseTopic().get().toString());
         assertTrue(publish.getCorrelationData().isPresent());
         assertArrayEquals(new byte[]{5, 4, 3, 2, 1}, ByteBufUtil.getBytes(publish.getCorrelationData().get()));
-        assertEquals(Mqtt5Publish.TopicAliasUsage.HAS, publish.getTopicAliasUsage());
+        assertEquals(TopicAliasUsage.HAS, publish.getTopicAliasUsage());
 
         final ImmutableList<Mqtt5UserPropertyImpl> userProperties = publish.getUserProperties().asList();
         assertEquals(1, userProperties.size());
@@ -149,7 +149,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
         assertFalse(publish.getMessageExpiryInterval().isPresent());
         assertTrue(publish.getPayloadFormatIndicator().isPresent());
         assertEquals(Mqtt5PayloadFormatIndicator.UNSPECIFIED, publish.getPayloadFormatIndicator().get());
-        assertEquals(Mqtt5Publish.TopicAliasUsage.HAS_NOT, publish.getTopicAliasUsage());
+        assertEquals(TopicAliasUsage.HAS_NOT, publish.getTopicAliasUsage());
 
         assertTrue(publish.getPayload().isPresent());
         assertArrayEquals(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, ByteBufUtil.getBytes(publish.getPayload().get()));

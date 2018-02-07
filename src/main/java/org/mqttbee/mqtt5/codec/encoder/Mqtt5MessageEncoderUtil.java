@@ -3,9 +3,9 @@ package org.mqttbee.mqtt5.codec.encoder;
 import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
-import org.mqttbee.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 
 /**
  * @author Silvio Giebl

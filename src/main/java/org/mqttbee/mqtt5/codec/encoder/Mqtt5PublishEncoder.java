@@ -4,10 +4,10 @@ import com.google.common.primitives.ImmutableIntArray;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.handler.Mqtt5ServerData;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
-import org.mqttbee.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishInternal;
 

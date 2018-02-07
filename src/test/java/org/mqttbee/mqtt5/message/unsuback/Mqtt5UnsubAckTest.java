@@ -2,7 +2,8 @@ package org.mqttbee.mqtt5.message.unsuback;
 
 import com.google.common.collect.ImmutableList;
 import org.junit.Test;
-import org.mqttbee.api.mqtt5.message.Mqtt5UnsubAck;
+import org.mqttbee.api.mqtt5.message.unsuback.Mqtt5UnsubAck;
+import org.mqttbee.api.mqtt5.message.unsuback.Mqtt5UnsubAckReasonCode;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;

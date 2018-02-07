@@ -5,11 +5,12 @@ import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.EncoderException;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
+import org.mqttbee.api.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.*;
 import org.mqttbee.mqtt5.message.auth.Mqtt5ExtendedAuthImpl;
 import org.mqttbee.mqtt5.message.connect.Mqtt5ConnectImpl;
-import org.mqttbee.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.mqtt5.message.publish.Mqtt5WillPublishImpl;
 
 import java.util.Arrays;
