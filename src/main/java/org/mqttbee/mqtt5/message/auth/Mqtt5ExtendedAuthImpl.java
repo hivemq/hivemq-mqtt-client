@@ -5,7 +5,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5ExtendedAuth;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
-import org.mqttbee.mqtt5.message.util.ByteBufUtil;
+import org.mqttbee.util.ByteBufUtil;
 
 import java.util.Optional;
 

@@ -1,4 +1,4 @@
-package org.mqttbee.mqtt5.message.util;
+package org.mqttbee.util;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
