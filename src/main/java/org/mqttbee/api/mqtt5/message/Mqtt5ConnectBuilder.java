@@ -30,13 +30,14 @@ public class Mqtt5ConnectBuilder {
     private Mqtt5WillPublishImpl willPublish;
     private Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES;
 
+    @NotNull
     public Mqtt5ConnectBuilder setClientIdentifier(@NotNull final Mqtt5ClientIdentifier clientIdentifier) {
         Preconditions.checkNotNull(clientIdentifier);
-        this.clientIdentifier =
-                MustNotBeImplementedUtil.checkNotImplemented(clientIdentifier, Mqtt5ClientIdentifierImpl.class);
+        this.clientIdentifier = MustNotBeImplementedUtil.checkNotImplemented(clientIdentifier, Mqtt5ClientIdentifierImpl.class);
         return this;
     }
 
+    @NotNull
     public Mqtt5ConnectBuilder setKeepAlive(final int keepAlive) {
         Preconditions.checkArgument(UnsignedDataTypes.isUnsignedShort(keepAlive));
         this.keepAlive = keepAlive;
@@ -48,53 +49,61 @@ public class Mqtt5ConnectBuilder {
         return this;
     }
 
+    @NotNull
     public Mqtt5ConnectBuilder setSessionExpiryInterval(final long sessionExpiryInterval) {
         Preconditions.checkArgument(UnsignedDataTypes.isUnsignedInt(sessionExpiryInterval));
         this.sessionExpiryInterval = sessionExpiryInterval;
         return this;
     }
 
+    @NotNull
     public Mqtt5ConnectBuilder setResponseInformationRequested(final boolean isResponseInformationRequested) {
         this.isResponseInformationRequested = isResponseInformationRequested;
         return this;
     }
 
+    @NotNull
     public Mqtt5ConnectBuilder setProblemInformationRequested(final boolean isProblemInformationRequested) {
         this.isProblemInformationRequested = isProblemInformationRequested;
         return this;
     }
 
+    @NotNull
     public Mqtt5ConnectBuilder setRestrictions(@NotNull final Restrictions restrictions) {
         Preconditions.checkNotNull(restrictions);
         this.restrictions = MustNotBeImplementedUtil.checkNotImplemented(restrictions, RestrictionsImpl.class);
         return this;
     }
 
+    @NotNull
     public Mqtt5ConnectBuilder setSimpleAuth(@NotNull final SimpleAuth simpleAuth) {
         Preconditions.checkNotNull(simpleAuth);
         this.simpleAuth = MustNotBeImplementedUtil.checkNotImplemented(simpleAuth, SimpleAuthImpl.class);
         return this;
     }
 
+    @NotNull
     public Mqtt5ConnectBuilder setExtendedAuth(@NotNull final Mqtt5ExtendedAuth extendedAuth) {
         Preconditions.checkNotNull(extendedAuth);
         this.extendedAuth = MustNotBeImplementedUtil.checkNotImplemented(extendedAuth, Mqtt5ExtendedAuthImpl.class);
         return this;
     }
 
+    @NotNull
     public Mqtt5ConnectBuilder setWillPublish(@NotNull final Mqtt5WillPublish willPublish) {
         Preconditions.checkNotNull(willPublish);
         this.willPublish = MustNotBeImplementedUtil.checkNotImplemented(willPublish, Mqtt5WillPublishImpl.class);
         return this;
     }
 
+    @NotNull
     public Mqtt5ConnectBuilder setUserProperties(@NotNull final Mqtt5UserProperties userProperties) {
         Preconditions.checkNotNull(userProperties);
-        this.userProperties =
-                MustNotBeImplementedUtil.checkNotImplemented(userProperties, Mqtt5UserPropertiesImpl.class);
+        this.userProperties = MustNotBeImplementedUtil.checkNotImplemented(userProperties, Mqtt5UserPropertiesImpl.class);
         return this;
     }
 
+    @NotNull
     public Mqtt5Connect build() {
         return new Mqtt5ConnectImpl(clientIdentifier, keepAlive, isCleanStart, sessionExpiryInterval,
                 isResponseInformationRequested, isProblemInformationRequested, restrictions, simpleAuth, extendedAuth,
@@ -107,12 +116,14 @@ public class Mqtt5ConnectBuilder {
         private Mqtt5UTF8StringImpl username;
         private byte[] password;
 
+        @NotNull
         public SimpleAuthBuilder setUsername(@NotNull final Mqtt5UTF8String username) {
             Preconditions.checkNotNull(username);
             this.username = MustNotBeImplementedUtil.checkNotImplemented(username, Mqtt5UTF8StringImpl.class);
             return this;
         }
 
+        @NotNull
         public SimpleAuthBuilder setPassword(@NotNull final byte[] password) { // TODO
             Preconditions.checkNotNull(password);
             Preconditions.checkArgument(Mqtt5DataTypes.isInBinaryDataRange(password));
@@ -120,6 +131,7 @@ public class Mqtt5ConnectBuilder {
             return this;
         }
 
+        @NotNull
         public SimpleAuth build() {
             Preconditions.checkState(username != null || password != null);
             return new SimpleAuthImpl(username, password);
@@ -134,24 +146,28 @@ public class Mqtt5ConnectBuilder {
         private int topicAliasMaximum = Restrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM;
         private int maximumPacketSize = Restrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT;
 
+        @NotNull
         public RestrictionsBuilder setReceiveMaximum(final int receiveMaximum) {
             Preconditions.checkArgument(UnsignedDataTypes.isUnsignedShort(receiveMaximum));
             this.receiveMaximum = receiveMaximum;
             return this;
         }
 
+        @NotNull
         public RestrictionsBuilder setTopicAliasMaximum(final int topicAliasMaximum) {
             Preconditions.checkArgument(UnsignedDataTypes.isUnsignedShort(topicAliasMaximum));
             this.topicAliasMaximum = topicAliasMaximum;
             return this;
         }
 
+        @NotNull
         public RestrictionsBuilder setMaximumPacketSize(final int maximumPacketSize) {
             Preconditions.checkArgument(UnsignedDataTypes.isUnsignedInt(maximumPacketSize));
             this.maximumPacketSize = maximumPacketSize;
             return this;
         }
 
+        @NotNull
         public Restrictions build() {
             return new RestrictionsImpl(receiveMaximum, topicAliasMaximum, maximumPacketSize);
         }
