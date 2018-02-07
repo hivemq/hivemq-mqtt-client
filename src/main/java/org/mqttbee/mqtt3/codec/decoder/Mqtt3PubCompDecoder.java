@@ -15,7 +15,7 @@ public class Mqtt3PubCompDecoder implements Mqtt3MessageDecoder {
     @Nullable
     @Override
     public Mqtt3PubCompImpl decode(
-            int flags, @NotNull Channel channel, @NotNull ByteBuf in) {
+            final int flags, @NotNull final Channel channel, @NotNull final ByteBuf in) {
 
         if (flags != FLAGS) {
             channel.close();

@@ -20,7 +20,7 @@ public class Mqtt3ConnAckDecoder implements Mqtt3MessageDecoder {
 
     @Nullable
     @Override
-    public Mqtt3Message decode(int flags, @NotNull Channel channel, @NotNull ByteBuf in) {
+    public Mqtt3Message decode(final int flags, @NotNull final Channel channel, @NotNull final ByteBuf in) {
 
 
         if (flags != FLAGS) {
@@ -36,16 +36,16 @@ public class Mqtt3ConnAckDecoder implements Mqtt3MessageDecoder {
 
         final byte firstByte = in.readByte();
 
-        if((firstByte & 0xfe) != 0){  //all bits except the last ust be 0
+        if ((firstByte & 0xfe) != 0) {  //all bits except the last ust be 0
 
             return null;
         }
 
-        final boolean sessionPresent = (firstByte & 0b1) ==1;
+        final boolean sessionPresent = (firstByte & 0b1) == 1;
 
         final int code = in.readByte();
         final Mqtt3ConnAckReasonCode reasonCode = Mqtt3ConnAckReasonCode.fromCode(code);
-        if(reasonCode==null){
+        if (reasonCode == null) {
             return null;
         }
 

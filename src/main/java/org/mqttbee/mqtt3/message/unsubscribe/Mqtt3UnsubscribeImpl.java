@@ -17,7 +17,7 @@ public class Mqtt3UnsubscribeImpl implements Mqtt3Unsubscribe, Mqtt3Message {
     }
 
     @Override
-    public void encode(@NotNull Channel channel, @NotNull ByteBuf out) {
+    public void encode(@NotNull final Channel channel, @NotNull final ByteBuf out) {
         //TODO
     }
 

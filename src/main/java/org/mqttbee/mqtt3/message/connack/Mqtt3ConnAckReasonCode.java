@@ -33,10 +33,10 @@ public enum Mqtt3ConnAckReasonCode {
      */
     @Nullable
     public static Mqtt3ConnAckReasonCode fromCode(final int code) {
-        if(code<0){
+        if (code < 0) {
             return null;
         }
-        if(code>NOT_AUTHORIZED.ordinal()){
+        if (code > NOT_AUTHORIZED.ordinal()) {
             return null;
         }
         return Mqtt3ConnAckReasonCode.values()[code];

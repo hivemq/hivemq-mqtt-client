@@ -20,15 +20,15 @@ public class Mqtt3SubAckDecoder implements Mqtt3MessageDecoder {
     @Nullable
     @Override
     public Mqtt3SubAckImpl decode(
-            int flags, @NotNull Channel channel, @NotNull ByteBuf in) {
+            final int flags, @NotNull final Channel channel, @NotNull final ByteBuf in) {
 
 
-        if(flags != FLAGS){
+        if (flags != FLAGS) {
             channel.close();
             return null;
         }
 
-        if(in.readableBytes() < MIN_REMAINING_LENGTH){
+        if (in.readableBytes() < MIN_REMAINING_LENGTH) {
             channel.close();
             return null;
         }
@@ -37,9 +37,9 @@ public class Mqtt3SubAckDecoder implements Mqtt3MessageDecoder {
         final int subscriptions = in.readableBytes();
         final List<Mqtt3SubAckReasonCode> subscriptionsAcks = new ArrayList<>();
 
-        for(int i =0; i < subscriptions; i++ ){
+        for (int i = 0; i < subscriptions; i++) {
             final Mqtt3SubAckReasonCode ackReturnCode = Mqtt3SubAckReasonCode.from(in.readUnsignedByte());
-            if(ackReturnCode ==null){
+            if (ackReturnCode == null) {
                 channel.close();
                 return null;
             }

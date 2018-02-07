@@ -5,11 +5,11 @@ import io.netty.channel.embedded.EmbeddedChannel;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mqttbee.mqtt3.message.puback.Mqtt3PubAckImpl;
+import org.mqttbee.mqtt3.message.pubrel.Mqtt3PubRelImpl;
 
 import static org.junit.Assert.assertArrayEquals;
 
-class Mqtt3PubAckEncoderTest {
+class Mqtt3PubRelEncoderTest {
 
     private EmbeddedChannel channel;
 
@@ -29,18 +29,17 @@ class Mqtt3PubAckEncoderTest {
         int id = 1;
         final byte msb = (byte) (id >>> 8);
         final byte lsb = (byte) id;
-        byte[] exspected = {0x40, 0x02, msb, lsb};
-        Mqtt3PubAckImpl internal = new Mqtt3PubAckImpl(id);
+        byte[] exspected = {0x60, 0x02, msb, lsb};
+        Mqtt3PubRelImpl internal = new Mqtt3PubRelImpl(id);
         encode(exspected, internal);
     }
-
 
     @Test
     void encodedRemainingLength() {
     }
 
-    private void encode(final byte[] expected, final Mqtt3PubAckImpl pubAck) {
-        channel.writeOutbound(pubAck);
+    private void encode(final byte[] expected, final Mqtt3PubRelImpl pubComp) {
+        channel.writeOutbound(pubComp);
         final ByteBuf byteBuf = channel.readOutbound();
         final byte[] actual = new byte[byteBuf.readableBytes()];
         byteBuf.readBytes(actual);

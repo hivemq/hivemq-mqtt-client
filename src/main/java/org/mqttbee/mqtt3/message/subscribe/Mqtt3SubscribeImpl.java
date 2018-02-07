@@ -9,11 +9,9 @@ import org.mqttbee.mqtt3.message.Mqtt3Message;
 public class Mqtt3SubscribeImpl implements Mqtt3Subscribe, Mqtt3Message {
 
 
-
-
     @Override
     public void encode(
-            @NotNull Channel channel, @NotNull ByteBuf out) {
+            @NotNull final Channel channel, @NotNull final ByteBuf out) {
         //TODO
 
     }
