@@ -14,13 +14,12 @@ public class Mqtt3DataTypes {
     public static int encodedVariableByteIntegerLength(int value) {
         int length = 1;
 
-        while(value >= 1<<7){
+        while (value >= 1 << 7) {
             length++;
-            value = value>>7;
+            value = value >> 7;
         }
         return length;
     }
-
 
 
 }

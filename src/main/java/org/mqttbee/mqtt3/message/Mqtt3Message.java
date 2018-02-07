@@ -7,7 +7,6 @@ import org.mqttbee.annotations.NotNull;
 public interface Mqtt3Message {
 
 
-
     /**
      * Encodes this MQTT message.
      *
@@ -22,7 +21,5 @@ public interface Mqtt3Message {
      * @return the encoded length of this MQTT message.
      */
     int encodedLength();
-
-
 
 }

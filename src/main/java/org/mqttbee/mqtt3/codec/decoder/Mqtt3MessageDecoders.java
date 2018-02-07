@@ -1,7 +1,6 @@
 package org.mqttbee.mqtt3.codec.decoder;
 
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.mqtt5.codec.decoder.Mqtt5MessageDecoder;
 
 /**
  * Collection of decoders for MQTT messages which can be queried by the MQTT message type code.

@@ -5,14 +5,13 @@ import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt3.message.Mqtt3Message;
 
-public class Mqtt3PublishInternal implements Mqtt3Message{
-
+public class Mqtt3PublishInternal implements Mqtt3Message {
 
 
     private final Mqtt3PublishImpl publish;
     private final int packetId;
 
-    public Mqtt3PublishInternal(Mqtt3PublishImpl publish, int packetId){
+    public Mqtt3PublishInternal(final Mqtt3PublishImpl publish, final int packetId) {
         this.packetId = packetId;
         this.publish = publish;
     }
@@ -27,7 +26,7 @@ public class Mqtt3PublishInternal implements Mqtt3Message{
 
     @Override
     public void encode(
-            @NotNull Channel channel, @NotNull ByteBuf out) {
+            @NotNull final Channel channel, @NotNull final ByteBuf out) {
         //TODO
     }
 

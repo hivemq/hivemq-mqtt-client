@@ -5,15 +5,13 @@ import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt3.codec.Mqtt3DataTypes;
 import org.mqttbee.mqtt3.message.Mqtt3Message;
-import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
-import org.mqttbee.mqtt5.message.Mqtt5Message;
 
 /**
  * Encoder for a MQTT message according to the MQTT 5 specification.
  *
  * @author Silvio Giebl
  */
-public interface Mqtt3MessageEncoder<T extends Mqtt3Message> {
+interface Mqtt3MessageEncoder<T extends Mqtt3Message> {
 
     /**
      * Calculates the encoded length of a MQTT message with the given remaining length.

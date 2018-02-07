@@ -7,7 +7,6 @@ import io.netty.handler.codec.MessageToByteEncoder;
 import org.mqttbee.mqtt3.message.Mqtt3Message;
 import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.exceptions.Mqtt5MaximumPacketSizeExceededException;
-import org.mqttbee.mqtt5.message.Mqtt5Message;
 
 import javax.inject.Inject;
 

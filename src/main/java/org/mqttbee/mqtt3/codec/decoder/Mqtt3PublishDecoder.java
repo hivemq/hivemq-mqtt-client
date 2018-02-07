@@ -18,12 +18,12 @@ public class Mqtt3PublishDecoder implements Mqtt3MessageDecoder {
     @Nullable
     @Override
     public Mqtt3Message decode(
-            int flags, @NotNull Channel channel, @NotNull ByteBuf in) {
+            final int flags, @NotNull final Channel channel, @NotNull final ByteBuf in) {
 
         final boolean dup = (flags & 0b1000) != 0;
         final int code = (flags & 0b0110) >> 1;
         final Mqtt5QoS qos = Mqtt5QoS.fromCode(code); //Mqtt5QoS same as Mqtt3 will be renamed
-        if(qos==null){
+        if (qos == null) {
             channel.close();
             return null;
         }
@@ -42,24 +42,24 @@ public class Mqtt3PublishDecoder implements Mqtt3MessageDecoder {
         }
 
         final int packetId;
-        if(qos.getCode() !=0){
+        if (qos.getCode() != 0) {
             if (in.readableBytes() < 2) {
                 // at least two more bytes are needed for the packet identifier + payload
                 return null;
             }
-            packetId = (int)in.readShort();
-        }else{
-            packetId=-1;
+            packetId = (int) in.readShort();
+        } else {
+            packetId = -1;
         }
 
         final int remainingBytes = in.readableBytes();
 
-        if(remainingBytes > 0){
+        if (remainingBytes > 0) {
             final byte[] payloadBytes = new byte[remainingBytes];
             in.readBytes(payloadBytes);
             final Mqtt3PublishImpl publish = new Mqtt3PublishImpl(payloadBytes, topic, qos, isRetained, dup, packetId);
             return new Mqtt3PublishInternal(publish, packetId);
-        }else{
+        } else {
             final Mqtt3PublishImpl publish = new Mqtt3PublishImpl(null, topic, qos, isRetained, dup, packetId);
             return new Mqtt3PublishInternal(publish, packetId);
         }

@@ -12,7 +12,6 @@ import org.mqttbee.api.mqtt3.message.Mqtt3ConnAck;
 import org.mqttbee.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.mqtt3.message.connack.Mqtt3ConnAckReasonCode;
 import org.mqttbee.mqtt3.message.puback.Mqtt3PubAckImpl;
-import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -177,7 +176,8 @@ class Mqtt3ConnAckDecoderTest {
                 encoded = Bytes.concat(MALFORMED_CONNACK_BEGIN_WORNG_FLAGS, SESSION_PRESENT_FALSE, REASON_CODE_BAD);
                 break;
             case 2:
-                encoded = Bytes.concat(MALFORMED_CONNACK_BEGIN_TOO_LONG_LENGTH, SESSION_PRESENT_FALSE, REASON_CODE_BAD, ENDING_TOO_LONG_MALFORMED);
+                encoded = Bytes.concat(MALFORMED_CONNACK_BEGIN_TOO_LONG_LENGTH, SESSION_PRESENT_FALSE, REASON_CODE_BAD,
+                        ENDING_TOO_LONG_MALFORMED);
                 break;
             default:
                 throw new Exception();

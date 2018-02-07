@@ -2,7 +2,6 @@ package org.mqttbee.mqtt3.codec.decoder;
 
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt3.message.Mqtt3MessageType;
-import org.mqttbee.mqtt5.codec.decoder.*;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

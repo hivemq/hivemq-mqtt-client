@@ -16,7 +16,7 @@ public class Mqtt3ConnAckImpl implements Mqtt3ConnAck, Mqtt3Message {
     private final boolean isSessionPresent;
 
 
-    public Mqtt3ConnAckImpl(Mqtt3ConnAckReasonCode reasonCode, boolean isSessionPresent) {
+    public Mqtt3ConnAckImpl(final Mqtt3ConnAckReasonCode reasonCode, final boolean isSessionPresent) {
         this.reasonCode = reasonCode;
         this.isSessionPresent = isSessionPresent;
     }

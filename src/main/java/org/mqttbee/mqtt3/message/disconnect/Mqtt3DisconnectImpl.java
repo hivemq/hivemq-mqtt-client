@@ -9,7 +9,7 @@ import org.mqttbee.mqtt3.message.Mqtt3Message;
 public class Mqtt3DisconnectImpl implements Mqtt3Disconnect, Mqtt3Message {
     @Override
     public void encode(
-            @NotNull Channel channel, @NotNull ByteBuf out) {
+            @NotNull final Channel channel, @NotNull final ByteBuf out) {
         //TODO
     }
 
