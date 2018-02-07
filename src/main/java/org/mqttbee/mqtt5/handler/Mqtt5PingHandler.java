@@ -87,7 +87,7 @@ public class Mqtt5PingHandler extends ChannelDuplexHandler {
 
         @Override
         public void run() {
-            if (Thread.currentThread().isInterrupted()) {
+            if (!Thread.currentThread().isInterrupted()) {
                 channel.close();
             }
         }
