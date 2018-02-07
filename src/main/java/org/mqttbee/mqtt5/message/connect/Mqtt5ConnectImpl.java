@@ -12,7 +12,7 @@ import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 import org.mqttbee.mqtt5.message.auth.Mqtt5ExtendedAuthImpl;
 import org.mqttbee.mqtt5.message.publish.Mqtt5WillPublishImpl;
-import org.mqttbee.mqtt5.message.util.ByteBufUtil;
+import org.mqttbee.util.ByteBufUtil;
 
 import java.util.Optional;
 

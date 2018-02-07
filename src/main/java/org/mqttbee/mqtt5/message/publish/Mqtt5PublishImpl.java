@@ -8,7 +8,7 @@ import org.mqttbee.api.mqtt5.message.Mqtt5Topic;
 import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5PublishEncoder;
 import org.mqttbee.mqtt5.message.*;
-import org.mqttbee.mqtt5.message.util.ByteBufUtil;
+import org.mqttbee.util.ByteBufUtil;
 
 import java.util.Optional;
 
