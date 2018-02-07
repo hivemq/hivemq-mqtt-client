@@ -7,16 +7,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mqttbee.api.mqtt5.message.Mqtt5ConnAck;
-import org.mqttbee.api.mqtt5.message.Mqtt5Disconnect;
-import org.mqttbee.api.mqtt5.message.Mqtt5ExtendedAuth;
+import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
+import org.mqttbee.api.mqtt5.message.auth.Mqtt5ExtendedAuth;
+import org.mqttbee.api.mqtt5.message.connack.Mqtt5ConnAck;
+import org.mqttbee.api.mqtt5.message.connack.Mqtt5ConnAckReasonCode;
+import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5Disconnect;
+import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
-import org.mqttbee.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckImpl;
-import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckReasonCode;
-import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 
 import static org.junit.jupiter.api.Assertions.*;
 

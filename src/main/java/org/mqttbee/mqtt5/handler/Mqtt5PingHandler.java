@@ -9,9 +9,9 @@ import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.concurrent.ScheduledFuture;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt5.message.Mqtt5Connect;
-import org.mqttbee.api.mqtt5.message.Mqtt5PingReq;
-import org.mqttbee.api.mqtt5.message.Mqtt5PingResp;
+import org.mqttbee.api.mqtt5.message.connect.Mqtt5Connect;
+import org.mqttbee.api.mqtt5.message.ping.Mqtt5PingReq;
+import org.mqttbee.api.mqtt5.message.ping.Mqtt5PingResp;
 import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckImpl;
 import org.mqttbee.mqtt5.message.ping.Mqtt5PingReqImpl;
 

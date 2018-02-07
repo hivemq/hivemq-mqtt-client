@@ -1,7 +1,7 @@
 package org.mqttbee.mqtt5.message.publish;
 
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt5.message.Mqtt5Publish.TopicAliasUsage;
+import org.mqttbee.api.mqtt5.message.publish.TopicAliasUsage;
 import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
 
 import java.util.HashMap;

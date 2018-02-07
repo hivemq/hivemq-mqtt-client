@@ -5,15 +5,15 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
+import org.mqttbee.api.mqtt5.message.unsuback.Mqtt5UnsubAckReasonCode;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.handler.Mqtt5ClientData;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
-import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.message.unsuback.Mqtt5UnsubAckImpl;
 import org.mqttbee.mqtt5.message.unsuback.Mqtt5UnsubAckProperty;
-import org.mqttbee.mqtt5.message.unsuback.Mqtt5UnsubAckReasonCode;
 
 import javax.inject.Singleton;
 

@@ -5,13 +5,13 @@ import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mqttbee.api.mqtt5.message.Mqtt5Disconnect;
+import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5Disconnect;
+import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
+import org.mqttbee.api.mqtt5.message.pubcomp.Mqtt5PubCompReasonCode;
 import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
-import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.message.pubcomp.Mqtt5PubCompImpl;
-import org.mqttbee.mqtt5.message.pubcomp.Mqtt5PubCompReasonCode;
 
 import static org.junit.jupiter.api.Assertions.*;
 

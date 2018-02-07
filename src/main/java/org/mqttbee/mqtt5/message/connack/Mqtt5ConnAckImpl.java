@@ -5,10 +5,15 @@ import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5ClientIdentifier;
-import org.mqttbee.api.mqtt5.message.Mqtt5ConnAck;
-import org.mqttbee.api.mqtt5.message.Mqtt5ExtendedAuth;
+import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
-import org.mqttbee.mqtt5.message.*;
+import org.mqttbee.api.mqtt5.message.auth.Mqtt5ExtendedAuth;
+import org.mqttbee.api.mqtt5.message.connack.Mqtt5ConnAck;
+import org.mqttbee.api.mqtt5.message.connack.Mqtt5ConnAckReasonCode;
+import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifierImpl;
+import org.mqttbee.mqtt5.message.Mqtt5Message;
+import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
+import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 
 import java.util.Optional;
 

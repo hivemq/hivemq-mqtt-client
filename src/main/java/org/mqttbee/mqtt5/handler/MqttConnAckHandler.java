@@ -4,9 +4,9 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.api.mqtt5.message.connack.Mqtt5ConnAckReasonCode;
 import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifierImpl;
 import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckImpl;
-import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckReasonCode;
 
 /**
  * @author Silvio Giebl

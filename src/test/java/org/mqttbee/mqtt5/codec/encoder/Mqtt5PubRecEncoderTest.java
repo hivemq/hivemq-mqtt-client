@@ -7,19 +7,19 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.mqttbee.api.mqtt5.message.pubrec.Mqtt5PubRecReasonCode;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 import org.mqttbee.mqtt5.message.pubrec.Mqtt5PubRecImpl;
-import org.mqttbee.mqtt5.message.pubrec.Mqtt5PubRecReasonCode;
 
 import static java.util.Objects.requireNonNull;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
-import static org.mqttbee.mqtt5.message.pubrec.Mqtt5PubRecReasonCode.SUCCESS;
+import static org.mqttbee.api.mqtt5.message.pubrec.Mqtt5PubRecReasonCode.SUCCESS;
 
 /**
  * @author David Katz
