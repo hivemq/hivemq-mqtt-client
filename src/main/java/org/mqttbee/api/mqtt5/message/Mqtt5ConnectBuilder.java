@@ -147,7 +147,7 @@ public class Mqtt5ConnectBuilder {
         }
 
         public RestrictionsBuilder setMaximumPacketSize(final int maximumPacketSize) {
-            Preconditions.checkArgument(Mqtt5DataTypes.isInVariableByteIntegerRange(maximumPacketSize));
+            Preconditions.checkArgument(UnsignedDataTypes.isUnsignedInt(maximumPacketSize));
             this.maximumPacketSize = maximumPacketSize;
             return this;
         }

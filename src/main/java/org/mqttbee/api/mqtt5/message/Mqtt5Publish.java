@@ -21,6 +21,10 @@ public interface Mqtt5Publish {
      */
     TopicAliasUsage DEFAULT_TOPIC_ALIAS_USAGE = TopicAliasUsage.MUST_NOT;
 
+    static Mqtt5PublishBuilder builder() {
+        return new Mqtt5PublishBuilder();
+    }
+
     /**
      * @return the topic of this PUBLISH packet.
      */

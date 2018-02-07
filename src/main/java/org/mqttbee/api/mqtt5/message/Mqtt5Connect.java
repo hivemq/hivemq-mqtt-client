@@ -8,6 +8,9 @@ import org.mqttbee.util.UnsignedDataTypes;
 
 import java.util.Optional;
 
+import static org.mqttbee.api.mqtt5.message.Mqtt5ConnectBuilder.RestrictionsBuilder;
+import static org.mqttbee.api.mqtt5.message.Mqtt5ConnectBuilder.SimpleAuthBuilder;
+
 /**
  * MQTT 5 CONNECT packet.
  *
@@ -100,8 +103,8 @@ public interface Mqtt5Connect {
     @DoNotImplement
     interface SimpleAuth {
 
-        static Mqtt5ConnectBuilder.SimpleAuthBuilder builder() {
-            return new Mqtt5ConnectBuilder.SimpleAuthBuilder();
+        static SimpleAuthBuilder builder() {
+            return new SimpleAuthBuilder();
         }
 
         /**
@@ -139,8 +142,8 @@ public interface Mqtt5Connect {
          */
         int DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT = Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT;
 
-        static Mqtt5ConnectBuilder.RestrictionsBuilder builder() {
-            return new Mqtt5ConnectBuilder.RestrictionsBuilder();
+        static RestrictionsBuilder builder() {
+            return new RestrictionsBuilder();
         }
 
         /**
