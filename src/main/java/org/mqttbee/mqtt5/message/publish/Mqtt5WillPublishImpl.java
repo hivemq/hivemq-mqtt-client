@@ -16,7 +16,7 @@ public class Mqtt5WillPublishImpl extends Mqtt5PublishImpl implements Mqtt5WillP
     @NotNull
     private static final byte[] DEFAULT_NO_PAYLOAD = new byte[0];
 
-    private final long delay;
+    private final long delayInterval;
 
     public Mqtt5WillPublishImpl(
             @NotNull final Mqtt5TopicImpl topic, @Nullable final byte[] payload, @NotNull final Mqtt5QoS qos,
@@ -24,11 +24,11 @@ public class Mqtt5WillPublishImpl extends Mqtt5PublishImpl implements Mqtt5WillP
             @Nullable final Mqtt5PayloadFormatIndicator payloadFormatIndicator,
             @Nullable final Mqtt5UTF8StringImpl contentType, @Nullable final Mqtt5TopicImpl responseTopic,
             @Nullable final byte[] correlationData, @NotNull final Mqtt5UserPropertiesImpl userProperties,
-            final long delay) {
+            final long delayInterval) {
 
         super(topic, payload, qos, isRetain, messageExpiryInterval, payloadFormatIndicator, contentType, responseTopic,
                 correlationData, TopicAliasUsage.MUST_NOT, userProperties);
-        this.delay = delay;
+        this.delayInterval = delayInterval;
     }
 
     @NotNull
@@ -40,7 +40,7 @@ public class Mqtt5WillPublishImpl extends Mqtt5PublishImpl implements Mqtt5WillP
 
     @Override
     public long getDelayInterval() {
-        return delay;
+        return delayInterval;
     }
 
 }
