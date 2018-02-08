@@ -33,6 +33,7 @@ class Mqtt5ClientMessageDecodersTest {
         assertNull(clientMessageDecoders.get(-1));
         assertNull(clientMessageDecoders.get(Mqtt5MessageType.values().length));
         assertNull(clientMessageDecoders.get(0));
+        assertNull(clientMessageDecoders.get(1));
         assertSame(connAckDecoder, clientMessageDecoders.get(2));
         assertSame(publishDecoder, clientMessageDecoders.get(3));
         assertSame(pubAckDecoder, clientMessageDecoders.get(4));
