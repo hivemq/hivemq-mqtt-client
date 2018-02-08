@@ -1,9 +1,8 @@
-package org.mqttbee.mqtt5.message;
+package org.mqttbee.api.mqtt5.message.disconnect;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
