@@ -16,14 +16,14 @@ public class Mqtt5ExtendedAuthBuilder {
     private byte[] data;
 
     @NotNull
-    public Mqtt5ExtendedAuthBuilder setMethod(@NotNull final Mqtt5UTF8String method) {
+    public Mqtt5ExtendedAuthBuilder withMethod(@NotNull final Mqtt5UTF8String method) {
         Preconditions.checkNotNull(method);
         this.method = MustNotBeImplementedUtil.checkNotImplemented(method, Mqtt5UTF8StringImpl.class);
         return this;
     }
 
     @NotNull
-    public Mqtt5ExtendedAuthBuilder setData(@NotNull final byte[] data) {
+    public Mqtt5ExtendedAuthBuilder withData(@NotNull final byte[] data) {
         Preconditions.checkNotNull(method);
         Preconditions.checkArgument(Mqtt5DataTypes.isInBinaryDataRange(data));
         this.data = data;

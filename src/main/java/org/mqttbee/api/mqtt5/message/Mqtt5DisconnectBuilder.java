@@ -30,28 +30,28 @@ public class Mqtt5DisconnectBuilder {
     }
 
     @NotNull
-    public Mqtt5DisconnectBuilder setSessionExpiryInterval(final long sessionExpiryInterval) {
+    public Mqtt5DisconnectBuilder withSessionExpiryInterval(final long sessionExpiryInterval) {
         Preconditions.checkArgument(UnsignedDataTypes.isUnsignedInt(sessionExpiryInterval));
         this.sessionExpiryInterval = sessionExpiryInterval;
         return this;
     }
 
     @NotNull
-    public Mqtt5DisconnectBuilder setServerReference(@NotNull final Mqtt5UTF8String serverReference) {
+    public Mqtt5DisconnectBuilder withServerReference(@NotNull final Mqtt5UTF8String serverReference) {
         Preconditions.checkNotNull(serverReference);
         this.serverReference = MustNotBeImplementedUtil.checkNotImplemented(serverReference, Mqtt5UTF8StringImpl.class);
         return this;
     }
 
     @NotNull
-    public Mqtt5DisconnectBuilder setReasonString(@NotNull final Mqtt5UTF8String reasonString) {
+    public Mqtt5DisconnectBuilder withReasonString(@NotNull final Mqtt5UTF8String reasonString) {
         Preconditions.checkNotNull(reasonString);
         this.reasonString = MustNotBeImplementedUtil.checkNotImplemented(reasonString, Mqtt5UTF8StringImpl.class);
         return this;
     }
 
     @NotNull
-    public Mqtt5DisconnectBuilder setUserProperties(@NotNull final Mqtt5UserProperties userProperties) {
+    public Mqtt5DisconnectBuilder withUserProperties(@NotNull final Mqtt5UserProperties userProperties) {
         Preconditions.checkNotNull(userProperties);
         this.userProperties = MustNotBeImplementedUtil.checkNotImplemented(userProperties, Mqtt5UserPropertiesImpl.class);
         return this;
