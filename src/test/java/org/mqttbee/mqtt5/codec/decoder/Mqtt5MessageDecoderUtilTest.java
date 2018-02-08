@@ -2,6 +2,7 @@ package org.mqttbee.mqtt5.codec.decoder;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.embedded.EmbeddedChannel;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -25,6 +26,12 @@ class Mqtt5MessageDecoderUtilTest {
     void setUp() {
         channel = new EmbeddedChannel(new Mqtt5Decoder(new Mqtt5MessageUtilDecoder()));
         in = channel.alloc().buffer();
+    }
+
+    @AfterEach
+    void tearDown() {
+        in.release();
+        channel.close();
     }
 
     @Test
