@@ -17,12 +17,12 @@ public class Mqtt5WillPublishBuilder extends Mqtt5PublishBuilder {
     @NotNull
     @Override
     @Deprecated
-    public Mqtt5PublishBuilder setTopicAliasUsage(@NotNull final Mqtt5Publish.TopicAliasUsage topicAliasUsage) {
+    public Mqtt5PublishBuilder withTopicAliasUsage(@NotNull final Mqtt5Publish.TopicAliasUsage topicAliasUsage) {
         throw new UnsupportedOperationException();
     }
 
     @NotNull
-    public Mqtt5PublishBuilder setDelayInterval(final long delayInterval) {
+    public Mqtt5PublishBuilder withDelayInterval(final long delayInterval) {
         Preconditions.checkArgument(UnsignedDataTypes.isUnsignedInt(delayInterval));
         this.delayInterval = delayInterval;
         return this;

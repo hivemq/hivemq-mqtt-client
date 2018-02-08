@@ -33,41 +33,41 @@ public class Mqtt5PublishBuilder {
     Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES;
 
     @NotNull
-    public Mqtt5PublishBuilder setTopic(@NotNull final Mqtt5Topic topic) {
+    public Mqtt5PublishBuilder withTopic(@NotNull final Mqtt5Topic topic) {
         Preconditions.checkNotNull(topic);
         this.topic = MustNotBeImplementedUtil.checkNotImplemented(topic, Mqtt5TopicImpl.class);
         return this;
     }
 
     @NotNull
-    public Mqtt5PublishBuilder setPayload(@NotNull final byte[] payload) { // TODO
+    public Mqtt5PublishBuilder withPayload(@NotNull final byte[] payload) { // TODO
         Preconditions.checkNotNull(payload);
         this.payload = payload;
         return this;
     }
 
     @NotNull
-    public Mqtt5PublishBuilder setQos(@NotNull final Mqtt5QoS qos) {
+    public Mqtt5PublishBuilder withQos(@NotNull final Mqtt5QoS qos) {
         Preconditions.checkNotNull(qos);
         this.qos = qos;
         return this;
     }
 
     @NotNull
-    public Mqtt5PublishBuilder isRetain(final boolean retain) {
+    public Mqtt5PublishBuilder withRetain(final boolean retain) {
         this.retain = retain;
         return this;
     }
 
     @NotNull
-    public Mqtt5PublishBuilder setMessageExpiryInterval(final long messageExpiryInterval) {
+    public Mqtt5PublishBuilder withMessageExpiryInterval(final long messageExpiryInterval) {
         Preconditions.checkArgument(UnsignedDataTypes.isUnsignedInt(messageExpiryInterval));
         this.messageExpiryInterval = messageExpiryInterval;
         return this;
     }
 
     @NotNull
-    public Mqtt5PublishBuilder setPayloadFormatIndicator(
+    public Mqtt5PublishBuilder withPayloadFormatIndicator(
             @NotNull final Mqtt5PayloadFormatIndicator payloadFormatIndicator) {
 
         Preconditions.checkNotNull(payloadFormatIndicator);
@@ -76,35 +76,35 @@ public class Mqtt5PublishBuilder {
     }
 
     @NotNull
-    public Mqtt5PublishBuilder setContentType(@NotNull final Mqtt5UTF8String contentType) {
+    public Mqtt5PublishBuilder withContentType(@NotNull final Mqtt5UTF8String contentType) {
         Preconditions.checkNotNull(contentType);
         this.contentType = MustNotBeImplementedUtil.checkNotImplemented(contentType, Mqtt5UTF8StringImpl.class);
         return this;
     }
 
     @NotNull
-    public Mqtt5PublishBuilder setResponseTopic(@NotNull final Mqtt5Topic responseTopic) {
+    public Mqtt5PublishBuilder withResponseTopic(@NotNull final Mqtt5Topic responseTopic) {
         Preconditions.checkNotNull(responseTopic);
         this.responseTopic = MustNotBeImplementedUtil.checkNotImplemented(responseTopic, Mqtt5TopicImpl.class);
         return this;
     }
 
     @NotNull
-    public Mqtt5PublishBuilder setCorrelationData(@NotNull final byte[] correlationData) { // TODO
+    public Mqtt5PublishBuilder withCorrelationData(@NotNull final byte[] correlationData) { // TODO
         Preconditions.checkNotNull(correlationData);
         this.correlationData = correlationData;
         return this;
     }
 
     @NotNull
-    public Mqtt5PublishBuilder setTopicAliasUsage(@NotNull final TopicAliasUsage topicAliasUsage) {
+    public Mqtt5PublishBuilder withTopicAliasUsage(@NotNull final TopicAliasUsage topicAliasUsage) {
         Preconditions.checkNotNull(topicAliasUsage);
         this.topicAliasUsage = topicAliasUsage;
         return this;
     }
 
     @NotNull
-    public Mqtt5PublishBuilder setUserProperties(@NotNull final Mqtt5UserProperties userProperties) {
+    public Mqtt5PublishBuilder withUserProperties(@NotNull final Mqtt5UserProperties userProperties) {
         Preconditions.checkNotNull(userProperties);
         this.userProperties = MustNotBeImplementedUtil.checkNotImplemented(userProperties, Mqtt5UserPropertiesImpl.class);
         return this;

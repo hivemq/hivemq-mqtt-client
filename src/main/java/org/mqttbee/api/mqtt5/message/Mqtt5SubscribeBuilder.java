@@ -29,7 +29,7 @@ public class Mqtt5SubscribeBuilder {
     }
 
     @NotNull
-    public Mqtt5SubscribeBuilder setUserProperties(@NotNull final Mqtt5UserProperties userProperties) {
+    public Mqtt5SubscribeBuilder withUserProperties(@NotNull final Mqtt5UserProperties userProperties) {
         Preconditions.checkNotNull(userProperties);
         this.userProperties = MustNotBeImplementedUtil.checkNotImplemented(userProperties, Mqtt5UserPropertiesImpl.class);
         return this;
@@ -52,34 +52,34 @@ public class Mqtt5SubscribeBuilder {
         private boolean retainAsPublished = Subscription.DEFAULT_RETAIN_AS_PUBLISHED;
 
         @NotNull
-        public SubscriptionBuilder setTopicFilter(@NotNull final Mqtt5TopicFilter topicFilter) {
+        public SubscriptionBuilder withTopicFilter(@NotNull final Mqtt5TopicFilter topicFilter) {
             Preconditions.checkNotNull(topicFilter);
             this.topicFilter = MustNotBeImplementedUtil.checkNotImplemented(topicFilter, Mqtt5TopicFilterImpl.class);
             return this;
         }
 
         @NotNull
-        public SubscriptionBuilder setQoS(@NotNull final Mqtt5QoS qos) {
+        public SubscriptionBuilder withQoS(@NotNull final Mqtt5QoS qos) {
             Preconditions.checkNotNull(qos);
             this.qos = qos;
             return this;
         }
 
         @NotNull
-        public SubscriptionBuilder setNoLocal(final boolean noLocal) {
+        public SubscriptionBuilder withNoLocal(final boolean noLocal) {
             this.noLocal = noLocal;
             return this;
         }
 
         @NotNull
-        public SubscriptionBuilder setRetainHandling(@NotNull final Mqtt5RetainHandling retainHandling) {
+        public SubscriptionBuilder withRetainHandling(@NotNull final Mqtt5RetainHandling retainHandling) {
             Preconditions.checkNotNull(retainHandling);
             this.retainHandling = retainHandling;
             return this;
         }
 
         @NotNull
-        public SubscriptionBuilder setRetainAsPublished(final boolean retainAsPublished) {
+        public SubscriptionBuilder withRetainAsPublished(final boolean retainAsPublished) {
             this.retainAsPublished = retainAsPublished;
             return this;
         }

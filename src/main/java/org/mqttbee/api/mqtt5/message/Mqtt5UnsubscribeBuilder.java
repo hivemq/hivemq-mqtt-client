@@ -17,14 +17,14 @@ public class Mqtt5UnsubscribeBuilder {
     private Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES;
 
     @NotNull
-    public Mqtt5UnsubscribeBuilder addTopicFilters(@NotNull final Mqtt5TopicFilter topicFilter) {
+    public Mqtt5UnsubscribeBuilder addTopicFilter(@NotNull final Mqtt5TopicFilter topicFilter) {
         Preconditions.checkNotNull(topicFilter);
         topicFiltersBuilder.add(MustNotBeImplementedUtil.checkNotImplemented(topicFilter, Mqtt5TopicFilterImpl.class));
         return this;
     }
 
     @NotNull
-    public Mqtt5UnsubscribeBuilder setUserProperties(@NotNull final Mqtt5UserProperties userProperties) {
+    public Mqtt5UnsubscribeBuilder withUserProperties(@NotNull final Mqtt5UserProperties userProperties) {
         Preconditions.checkNotNull(userProperties);
         this.userProperties = MustNotBeImplementedUtil.checkNotImplemented(userProperties, Mqtt5UserPropertiesImpl.class);
         return this;
