@@ -1,8 +1,6 @@
-package org.mqttbee.mqtt5.message;
-
+package org.mqttbee.api.mqtt5.message.subscribe;
 
 import org.junit.jupiter.api.Test;
-import org.mqttbee.mqtt5.message.subscribe.Mqtt5RetainHandling;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
