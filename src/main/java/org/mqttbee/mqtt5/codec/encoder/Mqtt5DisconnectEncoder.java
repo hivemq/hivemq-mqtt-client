@@ -6,10 +6,11 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.handler.Mqtt5ServerData;
+import org.mqttbee.mqtt5.message.Mqtt5MessageEncoder.Mqtt5MessageWithOmissibleReasonCodeEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectImpl;
 
-import javax.inject.Singleton;
+import java.util.function.Function;
 
 import static org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoderUtil.*;
 import static org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectImpl.DEFAULT_REASON_CODE;
@@ -20,75 +21,73 @@ import static org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectProperty.SESSI
 /**
  * @author Silvio Giebl
  */
-@Singleton
-public class Mqtt5DisconnectEncoder implements Mqtt5MessageEncoder<Mqtt5DisconnectImpl> {
+public class Mqtt5DisconnectEncoder extends Mqtt5MessageWithOmissibleReasonCodeEncoder<Mqtt5DisconnectImpl> {
 
-    public static final Mqtt5DisconnectEncoder INSTANCE = new Mqtt5DisconnectEncoder();
+    public static final Function<Mqtt5DisconnectImpl, Mqtt5DisconnectEncoder> PROVIDER = Mqtt5DisconnectEncoder::new;
 
     private static final int FIXED_HEADER = Mqtt5MessageType.DISCONNECT.getCode() << 4;
+    private static final int VARIABLE_HEADER_LENGTH = 1; // reason code
+
+    private Mqtt5DisconnectEncoder(@NotNull final Mqtt5DisconnectImpl message) {
+        super(message);
+    }
 
     @Override
-    public void encode(
-            @NotNull final Mqtt5DisconnectImpl disconnect, @NotNull final Channel channel, @NotNull final ByteBuf out) {
-        final int maximumPacketSize = Mqtt5ServerData.get(channel).getMaximumPacketSize();
-
-        encodeFixedHeader(disconnect, out, maximumPacketSize);
-        encodeVariableHeader(disconnect, out, maximumPacketSize);
+    protected boolean canOmitReasonCode() {
+        return message.getReasonCode() == DEFAULT_REASON_CODE;
     }
 
-    public int encodedRemainingLength(@NotNull final Mqtt5DisconnectImpl disconnect) {
-        int remainingLength = 0;
-
-        if ((disconnect.maxEncodedPropertyLength() != 0) || (disconnect.getReasonCode() != DEFAULT_REASON_CODE)) {
-            remainingLength += 1;
-        }
-
-        return remainingLength;
+    @Override
+    protected int calculateEncodedRemainingLength() {
+        return VARIABLE_HEADER_LENGTH;
     }
 
-    public int encodedPropertyLength(@NotNull final Mqtt5DisconnectImpl disconnect) {
+    @Override
+    public int calculateEncodedPropertyLength() {
         int propertyLength = 0;
 
-        propertyLength += intPropertyEncodedLength(disconnect.getRawSessionExpiryInterval(),
-                SESSION_EXPIRY_INTERVAL_FROM_CONNECT);
-        propertyLength += nullablePropertyEncodedLength(disconnect.getRawServerReference());
-        propertyLength += nullablePropertyEncodedLength(disconnect.getRawReasonString());
-        propertyLength += disconnect.getUserProperties().encodedLength();
+        propertyLength +=
+                intPropertyEncodedLength(message.getRawSessionExpiryInterval(), SESSION_EXPIRY_INTERVAL_FROM_CONNECT);
+        propertyLength += nullablePropertyEncodedLength(message.getRawServerReference());
+        propertyLength += nullablePropertyEncodedLength(message.getRawReasonString());
+        propertyLength += message.getUserProperties().encodedLength();
 
         return propertyLength;
     }
 
-    private void encodeFixedHeader(
-            @NotNull final Mqtt5DisconnectImpl disconnect, @NotNull final ByteBuf out, final int maximumPacketSize) {
-        out.writeByte(FIXED_HEADER);
-        Mqtt5DataTypes.encodeVariableByteInteger(disconnect.encodedRemainingLength(maximumPacketSize), out);
+    @Override
+    public void encode(@NotNull final Channel channel, @NotNull final ByteBuf out) {
+        final int maximumPacketSize = Mqtt5ServerData.get(channel).getMaximumPacketSize();
+
+        encodeFixedHeader(out, maximumPacketSize);
+        encodeVariableHeader(out, maximumPacketSize);
     }
 
-    private void encodeVariableHeader(
-            @NotNull final Mqtt5DisconnectImpl disconnect, @NotNull final ByteBuf out, final int maximumPacketSize) {
+    private void encodeFixedHeader(@NotNull final ByteBuf out, final int maximumPacketSize) {
+        out.writeByte(FIXED_HEADER);
+        Mqtt5DataTypes.encodeVariableByteInteger(encodedRemainingLength(maximumPacketSize), out);
+    }
 
-        final Mqtt5DisconnectReasonCode reasonCode = disconnect.getReasonCode();
-        final int propertyLength = disconnect.encodedPropertyLength(Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT);
+    private void encodeVariableHeader(@NotNull final ByteBuf out, final int maximumPacketSize) {
+        final Mqtt5DisconnectReasonCode reasonCode = message.getReasonCode();
+        final int propertyLength = encodedPropertyLength(Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT);
         if (propertyLength == 0) {
             if (reasonCode != DEFAULT_REASON_CODE) {
                 out.writeByte(reasonCode.getCode());
             }
         } else {
             out.writeByte(reasonCode.getCode());
-            encodeProperties(disconnect, propertyLength, out, maximumPacketSize);
+            encodeProperties(propertyLength, out, maximumPacketSize);
         }
     }
 
-    private void encodeProperties(
-            @NotNull final Mqtt5DisconnectImpl disconnect, final int propertyLength, @NotNull final ByteBuf out,
-            final int maximumPacketSize) {
-
+    private void encodeProperties(final int propertyLength, @NotNull final ByteBuf out, final int maximumPacketSize) {
         Mqtt5DataTypes.encodeVariableByteInteger(propertyLength, out);
-        encodeIntProperty(SESSION_EXPIRY_INTERVAL, disconnect.getRawSessionExpiryInterval(),
+        encodeIntProperty(SESSION_EXPIRY_INTERVAL, message.getRawSessionExpiryInterval(),
                 SESSION_EXPIRY_INTERVAL_FROM_CONNECT, out);
-        encodeNullableProperty(SERVER_REFERENCE, disconnect.getRawServerReference(), out);
-        disconnect.encodeReasonString(maximumPacketSize, out);
-        disconnect.encodeUserProperties(maximumPacketSize, out);
+        encodeNullableProperty(SERVER_REFERENCE, message.getRawServerReference(), out);
+        encodeReasonString(maximumPacketSize, out);
+        encodeUserProperties(maximumPacketSize, out);
     }
 
 }

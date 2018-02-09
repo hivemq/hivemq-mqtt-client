@@ -6,6 +6,7 @@ import io.netty.handler.codec.EncoderException;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
+import org.mqttbee.mqtt5.codec.encoder.Mqtt5UnsubscribeEncoder.Mqtt5WrappedUnsubscribeEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5TopicFilterImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
@@ -94,11 +95,10 @@ class Mqtt5UnsubscribeEncoderTest extends AbstractMqtt5EncoderTest {
     void encode_maximumPacketSizeExceeded_throwsEncoderException() {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
         final Mqtt5UnsubscribeImpl unsubscribe = new Mqtt5UnsubscribeImpl(maxPacket.getTopicFilter("extraChars"),
-                maxPacket.getMaxPossibleUserProperties());
+                maxPacket.getMaxPossibleUserProperties(), Mqtt5WrappedUnsubscribeEncoder.PROVIDER);
 
         final int packetIdentifier = 1;
-        final Mqtt5UnsubscribeInternal unsubscribeInternal =
-                new Mqtt5UnsubscribeInternal(unsubscribe, packetIdentifier);
+        final Mqtt5UnsubscribeInternal unsubscribeInternal = unsubscribe.wrap(packetIdentifier);
 
         final Throwable exception =
                 assertThrows(EncoderException.class, () -> channel.writeOutbound(unsubscribeInternal));
@@ -110,11 +110,11 @@ class Mqtt5UnsubscribeEncoderTest extends AbstractMqtt5EncoderTest {
     void encode_propertyLengthExceedsMax_throwsEncoderException() {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
         final Mqtt5UnsubscribeImpl unsubscribe =
-                new Mqtt5UnsubscribeImpl(maxPacket.getTopicFilter(), maxPacket.getMaxPossibleUserProperties(1));
+                new Mqtt5UnsubscribeImpl(maxPacket.getTopicFilter(), maxPacket.getMaxPossibleUserProperties(1),
+                        Mqtt5WrappedUnsubscribeEncoder.PROVIDER);
 
         final int packetIdentifier = 1;
-        final Mqtt5UnsubscribeInternal unsubscribeInternal =
-                new Mqtt5UnsubscribeInternal(unsubscribe, packetIdentifier);
+        final Mqtt5UnsubscribeInternal unsubscribeInternal = unsubscribe.wrap(packetIdentifier);
 
         final Throwable exception =
                 assertThrows(EncoderException.class, () -> channel.writeOutbound(unsubscribeInternal));
@@ -124,10 +124,10 @@ class Mqtt5UnsubscribeEncoderTest extends AbstractMqtt5EncoderTest {
     private void encodeUnsubscribe(
             final byte[] expected, final Mqtt5UserPropertiesImpl userProperties,
             final ImmutableList<Mqtt5TopicFilterImpl> topicFilters) {
-        final Mqtt5UnsubscribeImpl unsubscribe = new Mqtt5UnsubscribeImpl(topicFilters, userProperties);
+        final Mqtt5UnsubscribeImpl unsubscribe =
+                new Mqtt5UnsubscribeImpl(topicFilters, userProperties, Mqtt5WrappedUnsubscribeEncoder.PROVIDER);
         final int packetIdentifier = 0x01;
-        final Mqtt5UnsubscribeInternal unsubscribeInternal =
-                new Mqtt5UnsubscribeInternal(unsubscribe, packetIdentifier);
+        final Mqtt5UnsubscribeInternal unsubscribeInternal = unsubscribe.wrap(packetIdentifier);
 
         encodeInternal(expected, unsubscribeInternal);
     }

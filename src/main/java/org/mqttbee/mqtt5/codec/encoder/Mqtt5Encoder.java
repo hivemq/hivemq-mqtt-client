@@ -23,14 +23,14 @@ public class Mqtt5Encoder extends MessageToByteEncoder<Mqtt5Message> {
     protected ByteBuf allocateBuffer(
             final ChannelHandlerContext ctx, final Mqtt5Message message, final boolean preferDirect) throws Exception {
 
-        return message.allocateBuffer(ctx.channel());
+        return message.getEncoder().allocateBuffer(ctx.channel());
     }
 
     @Override
     protected void encode(final ChannelHandlerContext ctx, final Mqtt5Message message, final ByteBuf out)
             throws Exception {
 
-        message.encode(ctx.channel(), out);
+        message.getEncoder().encode(ctx.channel(), out);
     }
 
 }

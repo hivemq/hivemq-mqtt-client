@@ -6,6 +6,7 @@ import io.netty.channel.ChannelFutureListener;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
+import org.mqttbee.mqtt5.codec.encoder.Mqtt5DisconnectEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectImpl;
@@ -31,7 +32,7 @@ public class Mqtt5Util {
 
         final Mqtt5DisconnectImpl disconnect =
                 new Mqtt5DisconnectImpl(reasonCode, Mqtt5DisconnectImpl.SESSION_EXPIRY_INTERVAL_FROM_CONNECT, null,
-                        mqttReasonString, Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES);
+                        mqttReasonString, Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES, Mqtt5DisconnectEncoder.PROVIDER);
         final ChannelFuture disconnectFuture = channel.writeAndFlush(disconnect);
 
         disconnectFuture.addListener(ChannelFutureListener.CLOSE);

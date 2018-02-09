@@ -1,7 +1,5 @@
 package org.mqttbee.mqtt5.message.connack;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5ClientIdentifier;
@@ -11,7 +9,7 @@ import org.mqttbee.api.mqtt5.message.auth.Mqtt5ExtendedAuth;
 import org.mqttbee.api.mqtt5.message.connack.Mqtt5ConnAck;
 import org.mqttbee.api.mqtt5.message.connack.Mqtt5ConnAckReasonCode;
 import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifierImpl;
-import org.mqttbee.mqtt5.message.Mqtt5Message;
+import org.mqttbee.mqtt5.message.Mqtt5Message.Mqtt5MessageWithReasonString;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 
@@ -20,7 +18,7 @@ import java.util.Optional;
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5ConnAckImpl extends Mqtt5Message.Mqtt5MessageWithReasonString implements Mqtt5ConnAck {
+public class Mqtt5ConnAckImpl extends Mqtt5MessageWithReasonString<Mqtt5ConnAckImpl> implements Mqtt5ConnAck {
 
     public static final long SESSION_EXPIRY_INTERVAL_FROM_CONNECT = -1;
     public static final int KEEP_ALIVE_FROM_CONNECT = -1;
@@ -45,7 +43,8 @@ public class Mqtt5ConnAckImpl extends Mqtt5Message.Mqtt5MessageWithReasonString 
             @Nullable final Mqtt5UTF8StringImpl responseInformation,
             @Nullable final Mqtt5UTF8StringImpl serverReference, @Nullable final Mqtt5UTF8StringImpl reasonString,
             @NotNull final Mqtt5UserPropertiesImpl userProperties) {
-        super(reasonString, userProperties);
+
+        super(reasonString, userProperties, null);
         this.reasonCode = reasonCode;
         this.isSessionPresent = isSessionPresent;
         this.sessionExpiryInterval = sessionExpiryInterval;
@@ -125,18 +124,8 @@ public class Mqtt5ConnAckImpl extends Mqtt5Message.Mqtt5MessageWithReasonString 
     }
 
     @Override
-    public void encode(@NotNull final Channel channel, @NotNull final ByteBuf out) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    protected int calculateEncodedRemainingLength() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    protected int calculateEncodedPropertyLength() {
-        throw new UnsupportedOperationException();
+    protected Mqtt5ConnAckImpl getCodable() {
+        return this;
     }
 
 

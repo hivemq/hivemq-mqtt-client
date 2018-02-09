@@ -6,10 +6,11 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.message.puback.Mqtt5PubAckReasonCode;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.handler.Mqtt5ServerData;
+import org.mqttbee.mqtt5.message.Mqtt5MessageEncoder.Mqtt5MessageWithOmissibleReasonCodeEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.puback.Mqtt5PubAckImpl;
 
-import javax.inject.Singleton;
+import java.util.function.Function;
 
 import static org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoderUtil.nullablePropertyEncodedLength;
 import static org.mqttbee.mqtt5.message.puback.Mqtt5PubAckImpl.DEFAULT_REASON_CODE;
@@ -17,72 +18,71 @@ import static org.mqttbee.mqtt5.message.puback.Mqtt5PubAckImpl.DEFAULT_REASON_CO
 /**
  * @author Silvio Giebl
  */
-@Singleton
-public class Mqtt5PubAckEncoder implements Mqtt5MessageEncoder<Mqtt5PubAckImpl> {
+public class Mqtt5PubAckEncoder extends Mqtt5MessageWithOmissibleReasonCodeEncoder<Mqtt5PubAckImpl> {
 
-    public static final Mqtt5PubAckEncoder INSTANCE = new Mqtt5PubAckEncoder();
+    public static final Function<Mqtt5PubAckImpl, Mqtt5PubAckEncoder> PROVIDER = Mqtt5PubAckEncoder::new;
 
     private static final int FIXED_HEADER = Mqtt5MessageType.PUBACK.getCode() << 4;
-    private static final int VARIABLE_HEADER_FIXED_LENGTH = 2; // packet identifier
+    private static final int VARIABLE_HEADER_LENGTH = 3;// packet identifier (2) + reason code (1)
+
+    private Mqtt5PubAckEncoder(@NotNull final Mqtt5PubAckImpl message) {
+        super(message);
+    }
 
     @Override
-    public void encode(
-            @NotNull final Mqtt5PubAckImpl pubAck, @NotNull final Channel channel, @NotNull final ByteBuf out) {
-        final int maximumPacketSize = Mqtt5ServerData.get(channel).getMaximumPacketSize();
-
-        encodeFixedHeader(pubAck, out, maximumPacketSize);
-        encodeVariableHeader(pubAck, out, maximumPacketSize);
+    protected boolean canOmitReasonCode() {
+        return message.getReasonCode() == DEFAULT_REASON_CODE;
     }
 
-    public int encodedRemainingLength(@NotNull final Mqtt5PubAckImpl pubAck) {
-        int remainingLength = VARIABLE_HEADER_FIXED_LENGTH;
-
-        if ((pubAck.maxEncodedPropertyLength() != 0) || (pubAck.getReasonCode() != DEFAULT_REASON_CODE)) {
-            remainingLength += 1;
-        }
-
-        return remainingLength;
+    @Override
+    protected int calculateEncodedRemainingLength() {
+        return VARIABLE_HEADER_LENGTH;
     }
 
-    public int encodedPropertyLength(@NotNull final Mqtt5PubAckImpl pubAck) {
+    @Override
+    protected int calculateEncodedPropertyLength() {
         int propertyLength = 0;
 
-        propertyLength += nullablePropertyEncodedLength(pubAck.getRawReasonString());
-        propertyLength += pubAck.getUserProperties().encodedLength();
+        propertyLength += nullablePropertyEncodedLength(message.getRawReasonString());
+        propertyLength += message.getUserProperties().encodedLength();
 
         return propertyLength;
     }
 
-    private void encodeFixedHeader(
-            final Mqtt5PubAckImpl pubAck, @NotNull final ByteBuf out, final int maximumPacketSize) {
+    @Override
+    public void encode(@NotNull final Channel channel, @NotNull final ByteBuf out) {
+        final int maximumPacketSize = Mqtt5ServerData.get(channel).getMaximumPacketSize();
 
-        out.writeByte(FIXED_HEADER);
-        Mqtt5DataTypes.encodeVariableByteInteger(pubAck.encodedRemainingLength(maximumPacketSize), out);
+        encodeFixedHeader(out, maximumPacketSize);
+        encodeVariableHeader(out, maximumPacketSize);
     }
 
-    private void encodeVariableHeader(
-            @NotNull final Mqtt5PubAckImpl pubAck, @NotNull final ByteBuf out, final int maximumPacketSize) {
-        out.writeShort(pubAck.getPacketIdentifier());
+    private void encodeFixedHeader(@NotNull final ByteBuf out, final int maximumPacketSize) {
+        out.writeByte(FIXED_HEADER);
+        Mqtt5DataTypes.encodeVariableByteInteger(encodedRemainingLength(maximumPacketSize), out);
+    }
 
-        final Mqtt5PubAckReasonCode reasonCode = pubAck.getReasonCode();
-        final int propertyLength = pubAck.encodedPropertyLength(maximumPacketSize);
+    private void encodeVariableHeader(@NotNull final ByteBuf out, final int maximumPacketSize) {
+        out.writeShort(message.getPacketIdentifier());
+
+        final Mqtt5PubAckReasonCode reasonCode = message.getReasonCode();
+        final int propertyLength = encodedPropertyLength(maximumPacketSize);
         if (propertyLength == 0) {
             if (reasonCode != DEFAULT_REASON_CODE) {
                 out.writeByte(reasonCode.getCode());
             }
         } else {
             out.writeByte(reasonCode.getCode());
-            encodeProperties(pubAck, propertyLength, out, maximumPacketSize);
+            encodeProperties(propertyLength, out, maximumPacketSize);
         }
     }
 
     private void encodeProperties(
-            @NotNull final Mqtt5PubAckImpl pubAck, final int propertyLength, @NotNull final ByteBuf out,
-            final int maximumPacketSize) {
+            final int propertyLength, @NotNull final ByteBuf out, final int maximumPacketSize) {
 
         Mqtt5DataTypes.encodeVariableByteInteger(propertyLength, out);
-        pubAck.encodeReasonString(maximumPacketSize, out);
-        pubAck.encodeUserProperties(maximumPacketSize, out);
+        encodeReasonString(maximumPacketSize, out);
+        encodeUserProperties(maximumPacketSize, out);
     }
 
 }

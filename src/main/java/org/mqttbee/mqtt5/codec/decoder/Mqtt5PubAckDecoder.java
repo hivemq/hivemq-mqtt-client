@@ -7,6 +7,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.puback.Mqtt5PubAckReasonCode;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
+import org.mqttbee.mqtt5.codec.encoder.Mqtt5PubAckEncoder;
 import org.mqttbee.mqtt5.handler.Mqtt5ClientData;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
@@ -104,7 +105,8 @@ public class Mqtt5PubAckDecoder implements Mqtt5MessageDecoder {
 
         final Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.build(userPropertiesBuilder);
 
-        return new Mqtt5PubAckImpl(packetIdentifier, reasonCode, reasonString, userProperties);
+        return new Mqtt5PubAckImpl(
+                packetIdentifier, reasonCode, reasonString, userProperties, Mqtt5PubAckEncoder.PROVIDER);
     }
 
 }

@@ -2,6 +2,7 @@
   <dictionary name="sgiebl">
     <words>
       <w>bugfix</w>
+      <w>codable</w>
       <w>connack</w>
       <w>intelli</w>
       <w>mqtt</w>

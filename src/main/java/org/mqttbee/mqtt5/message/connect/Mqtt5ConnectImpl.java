@@ -1,7 +1,6 @@
 package org.mqttbee.mqtt5.message.connect;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5ClientIdentifier;
@@ -9,9 +8,9 @@ import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.api.mqtt5.message.auth.Mqtt5ExtendedAuth;
 import org.mqttbee.api.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.api.mqtt5.message.publish.Mqtt5WillPublish;
-import org.mqttbee.mqtt5.codec.encoder.Mqtt5ConnectEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifierImpl;
-import org.mqttbee.mqtt5.message.Mqtt5Message;
+import org.mqttbee.mqtt5.message.Mqtt5Message.Mqtt5MessageWithUserProperties;
+import org.mqttbee.mqtt5.message.Mqtt5MessageEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 import org.mqttbee.mqtt5.message.auth.Mqtt5ExtendedAuthImpl;
@@ -19,11 +18,12 @@ import org.mqttbee.mqtt5.message.publish.Mqtt5WillPublishImpl;
 import org.mqttbee.util.ByteBufUtil;
 
 import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5ConnectImpl extends Mqtt5Message.Mqtt5MessageWithUserProperties implements Mqtt5Connect {
+public class Mqtt5ConnectImpl extends Mqtt5MessageWithUserProperties<Mqtt5ConnectImpl> implements Mqtt5Connect {
 
     private final Mqtt5ClientIdentifierImpl clientIdentifier;
     private final int keepAlive;
@@ -36,15 +36,15 @@ public class Mqtt5ConnectImpl extends Mqtt5Message.Mqtt5MessageWithUserPropertie
     private final Mqtt5ExtendedAuthImpl extendedAuth;
     private final Mqtt5WillPublishImpl willPublish;
 
-    private int willPropertyLength = -1;
-
     public Mqtt5ConnectImpl(
             @NotNull final Mqtt5ClientIdentifierImpl clientIdentifier, final int keepAlive, final boolean isCleanStart,
             final long sessionExpiryInterval, final boolean isResponseInformationRequested,
             final boolean isProblemInformationRequested, @NotNull final RestrictionsImpl restrictions,
             @Nullable final SimpleAuthImpl simpleAuth, @Nullable final Mqtt5ExtendedAuthImpl extendedAuth,
-            @Nullable final Mqtt5WillPublishImpl willPublish, @NotNull final Mqtt5UserPropertiesImpl userProperties) {
-        super(userProperties);
+            @Nullable final Mqtt5WillPublishImpl willPublish, @NotNull final Mqtt5UserPropertiesImpl userProperties,
+            @NotNull final Function<Mqtt5ConnectImpl, ? extends Mqtt5MessageEncoder<Mqtt5ConnectImpl>> encoderProvider) {
+
+        super(userProperties, encoderProvider);
         this.clientIdentifier = clientIdentifier;
         this.keepAlive = keepAlive;
         this.isCleanStart = isCleanStart;
@@ -134,25 +134,8 @@ public class Mqtt5ConnectImpl extends Mqtt5Message.Mqtt5MessageWithUserPropertie
     }
 
     @Override
-    public void encode(@NotNull final Channel channel, @NotNull final ByteBuf out) {
-        Mqtt5ConnectEncoder.INSTANCE.encode(this, channel, out);
-    }
-
-    @Override
-    protected int calculateEncodedRemainingLength() {
-        return Mqtt5ConnectEncoder.INSTANCE.encodedRemainingLength(this);
-    }
-
-    @Override
-    protected int calculateEncodedPropertyLength() {
-        return Mqtt5ConnectEncoder.INSTANCE.encodedPropertyLength(this);
-    }
-
-    public int encodedWillPropertyLength() {
-        if (willPropertyLength == -1) {
-            willPropertyLength = Mqtt5ConnectEncoder.INSTANCE.encodedWillPropertyLength(this);
-        }
-        return willPropertyLength;
+    protected Mqtt5ConnectImpl getCodable() {
+        return this;
     }
 
 

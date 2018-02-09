@@ -8,6 +8,7 @@ import org.mqttbee.api.mqtt5.message.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt5.message.auth.Mqtt5ExtendedAuth;
 import org.mqttbee.api.mqtt5.message.publish.Mqtt5WillPublish;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
+import org.mqttbee.mqtt5.codec.encoder.Mqtt5ConnectEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifierImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
@@ -114,7 +115,7 @@ public class Mqtt5ConnectBuilder {
     public Mqtt5Connect build() {
         return new Mqtt5ConnectImpl(clientIdentifier, keepAlive, isCleanStart, sessionExpiryInterval,
                 isResponseInformationRequested, isProblemInformationRequested, restrictions, simpleAuth, extendedAuth,
-                willPublish, userProperties);
+                willPublish, userProperties, Mqtt5ConnectEncoder.PROVIDER);
     }
 
 
