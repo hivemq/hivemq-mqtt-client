@@ -5,8 +5,8 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.api.mqtt5.message.subscribe.Mqtt5RetainHandling;
 import org.mqttbee.api.mqtt5.message.subscribe.Mqtt5Subscribe;
+import org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageWrapperEncoder.Mqtt5WrappedMessageEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5MessageWrapper.Mqtt5WrappedMessage;
-import org.mqttbee.mqtt5.message.Mqtt5MessageWrapperEncoder.Mqtt5WrappedMessageEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5TopicFilterImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 

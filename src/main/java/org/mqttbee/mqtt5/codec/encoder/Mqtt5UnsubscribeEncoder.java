@@ -7,7 +7,6 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.handler.Mqtt5ServerData;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
-import org.mqttbee.mqtt5.message.Mqtt5MessageWrapperEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5TopicFilterImpl;
 import org.mqttbee.mqtt5.message.unsubscribe.Mqtt5UnsubscribeImpl;
 import org.mqttbee.mqtt5.message.unsubscribe.Mqtt5UnsubscribeInternal;
@@ -72,7 +71,7 @@ public class Mqtt5UnsubscribeEncoder extends Mqtt5MessageWrapperEncoder<Mqtt5Uns
         }
 
         @Override
-        protected int calculateEncodedRemainingLengthWithoutProperties() {
+        int calculateEncodedRemainingLengthWithoutProperties() {
             int remainingLength = VARIABLE_HEADER_FIXED_LENGTH;
 
             final ImmutableList<Mqtt5TopicFilterImpl> topicFilters = message.getTopicFilters();
@@ -84,7 +83,7 @@ public class Mqtt5UnsubscribeEncoder extends Mqtt5MessageWrapperEncoder<Mqtt5Uns
         }
 
         @Override
-        protected int calculateEncodedPropertyLength() {
+        int calculateEncodedPropertyLength() {
             return message.getUserProperties().encodedLength();
         }
 

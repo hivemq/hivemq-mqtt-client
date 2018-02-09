@@ -5,8 +5,8 @@ import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.message.pubrec.Mqtt5PubRecReasonCode;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
+import org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoder.Mqtt5MessageWithOmissibleReasonCodeEncoder;
 import org.mqttbee.mqtt5.handler.Mqtt5ServerData;
-import org.mqttbee.mqtt5.message.Mqtt5MessageEncoder.Mqtt5MessageWithOmissibleReasonCodeEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.pubrec.Mqtt5PubRecImpl;
 
@@ -30,17 +30,17 @@ public class Mqtt5PubRecEncoder extends Mqtt5MessageWithOmissibleReasonCodeEncod
     }
 
     @Override
-    protected boolean canOmitReasonCode() {
+    boolean canOmitReasonCode() {
         return message.getReasonCode() == DEFAULT_REASON_CODE;
     }
 
     @Override
-    protected int calculateEncodedRemainingLength() {
+    int calculateEncodedRemainingLength() {
         return VARIABLE_HEADER_LENGTH;
     }
 
     @Override
-    protected int calculateEncodedPropertyLength() {
+    int calculateEncodedPropertyLength() {
         int propertyLength = 0;
 
         propertyLength += nullablePropertyEncodedLength(message.getRawReasonString());

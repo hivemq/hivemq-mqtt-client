@@ -5,8 +5,8 @@ import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.message.publish.Mqtt5WillPublish;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
+import org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoder.Mqtt5MessageWithUserPropertiesEncoder;
 import org.mqttbee.mqtt5.exceptions.Mqtt5VariableByteIntegerExceededException;
-import org.mqttbee.mqtt5.message.Mqtt5MessageEncoder.Mqtt5MessageWithUserPropertiesEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.auth.Mqtt5ExtendedAuthImpl;
@@ -39,7 +39,7 @@ public class Mqtt5ConnectEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
     }
 
     @Override
-    public int calculateEncodedRemainingLength() {
+    int calculateEncodedRemainingLength() {
         int remainingLength = VARIABLE_HEADER_FIXED_LENGTH;
 
         remainingLength += message.getRawClientIdentifier().encodedLength();
@@ -61,7 +61,7 @@ public class Mqtt5ConnectEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
     }
 
     @Override
-    public int calculateEncodedPropertyLength() {
+    int calculateEncodedPropertyLength() {
         int propertyLength = 0;
 
         propertyLength += intPropertyEncodedLength(message.getSessionExpiryInterval(), DEFAULT_SESSION_EXPIRY_INTERVAL);
