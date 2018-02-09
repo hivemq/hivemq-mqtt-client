@@ -4,8 +4,8 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.puback.Mqtt5PubAck;
 import org.mqttbee.api.mqtt5.message.puback.Mqtt5PubAckReasonCode;
+import org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5Message.Mqtt5MessageWithReasonString;
-import org.mqttbee.mqtt5.message.Mqtt5MessageEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 

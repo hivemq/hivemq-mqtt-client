@@ -5,7 +5,6 @@ import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.handler.Mqtt5ServerData;
-import org.mqttbee.mqtt5.message.Mqtt5MessageEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.auth.Mqtt5AuthImpl;
 
@@ -30,12 +29,12 @@ public class Mqtt5AuthEncoder extends Mqtt5MessageEncoder.Mqtt5MessageWithReason
     }
 
     @Override
-    protected int calculateEncodedRemainingLength() {
+    int calculateEncodedRemainingLength() {
         return VARIABLE_HEADER_FIXED_LENGTH;
     }
 
     @Override
-    protected int calculateEncodedPropertyLength() {
+    int calculateEncodedPropertyLength() {
         int propertyLength = 0;
 
         propertyLength += propertyEncodedLength(message.getMethod());

@@ -1,11 +1,12 @@
-package org.mqttbee.mqtt5.message;
+package org.mqttbee.mqtt5.codec.encoder;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoderUtil;
 import org.mqttbee.mqtt5.exceptions.Mqtt5MaximumPacketSizeExceededException;
 import org.mqttbee.mqtt5.handler.Mqtt5ServerData;
+import org.mqttbee.mqtt5.message.Mqtt5Message;
+import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 
 import static org.mqttbee.mqtt5.message.Mqtt5Message.Mqtt5MessageWithReasonString;
 import static org.mqttbee.mqtt5.message.Mqtt5Message.Mqtt5MessageWithUserProperties;
@@ -116,7 +117,7 @@ public abstract class Mqtt5MessageEncoder<T extends Mqtt5Message> {
          * @param maxPacketSize the maximum packet size.
          * @return the encoded remaining length of this MQTT message respecting the maximum packet size.
          */
-        protected final int encodedRemainingLength(final int maxPacketSize) {
+        final int encodedRemainingLength(final int maxPacketSize) {
             return mustOmitProperties(maxPacketSize) ? minEncodedRemainingLength() : maxEncodedRemainingLength();
         }
 
@@ -150,7 +151,7 @@ public abstract class Mqtt5MessageEncoder<T extends Mqtt5Message> {
          *
          * @return the encoded remaining length of this MQTT message.
          */
-        protected abstract int calculateEncodedRemainingLength();
+        abstract int calculateEncodedRemainingLength();
 
         /**
          * Returns the property length byte count of this MQTT message respecting the given maximum packet size.
@@ -161,7 +162,7 @@ public abstract class Mqtt5MessageEncoder<T extends Mqtt5Message> {
          * @param maxPacketSize the maximum packet size.
          * @return the encoded property length of this MQTT message respecting the maximum packet size.
          */
-        protected final int encodedPropertyLength(final int maxPacketSize) {
+        final int encodedPropertyLength(final int maxPacketSize) {
             return mustOmitProperties(maxPacketSize) ? minEncodedPropertyLength() : maxEncodedPropertyLength();
         }
 
@@ -193,7 +194,7 @@ public abstract class Mqtt5MessageEncoder<T extends Mqtt5Message> {
          *
          * @return the encoded property length of this MQTT message.
          */
-        protected abstract int calculateEncodedPropertyLength();
+        abstract int calculateEncodedPropertyLength();
 
         /**
          * Checks whether properties of this MQTT message must be omitted to fit the given maximum packet size.
@@ -224,7 +225,7 @@ public abstract class Mqtt5MessageEncoder<T extends Mqtt5Message> {
          * @param maxPacketSize the maximum packet size.
          * @param out           the byte buffer to encode to.
          */
-        protected final void encodeUserProperties(final int maxPacketSize, @NotNull final ByteBuf out) {
+        final void encodeUserProperties(final int maxPacketSize, @NotNull final ByteBuf out) {
             if (!mustOmitProperties(maxPacketSize)) {
                 getUserProperties().encode(out);
             }
@@ -236,10 +237,10 @@ public abstract class Mqtt5MessageEncoder<T extends Mqtt5Message> {
     /**
      * Base class for MQTT messages with a properties field with a reason string property in its variable header.
      */
-    public static abstract class Mqtt5MessageWithUserPropertiesEncoder<T extends Mqtt5MessageWithUserProperties>
+    static abstract class Mqtt5MessageWithUserPropertiesEncoder<T extends Mqtt5MessageWithUserProperties>
             extends Mqtt5MessageWithPropertiesEncoder<T> {
 
-        public Mqtt5MessageWithUserPropertiesEncoder(@NotNull final T message) {
+        Mqtt5MessageWithUserPropertiesEncoder(@NotNull final T message) {
             super(message);
         }
 
@@ -254,10 +255,10 @@ public abstract class Mqtt5MessageEncoder<T extends Mqtt5Message> {
     /**
      * Base class for MQTT messages with a properties field with a reason string property in its variable header.
      */
-    public static abstract class Mqtt5MessageWithReasonStringEncoder<T extends Mqtt5MessageWithReasonString>
+    static abstract class Mqtt5MessageWithReasonStringEncoder<T extends Mqtt5MessageWithReasonString>
             extends Mqtt5MessageWithUserPropertiesEncoder<T> {
 
-        public Mqtt5MessageWithReasonStringEncoder(@NotNull final T message) {
+        Mqtt5MessageWithReasonStringEncoder(@NotNull final T message) {
             super(message);
         }
 
@@ -274,7 +275,7 @@ public abstract class Mqtt5MessageEncoder<T extends Mqtt5Message> {
          * @param maxPacketSize the maximum packet size.
          * @param out           the byte buffer to encode to.
          */
-        protected void encodeReasonString(final int maxPacketSize, @NotNull final ByteBuf out) {
+        void encodeReasonString(final int maxPacketSize, @NotNull final ByteBuf out) {
             if (!mustOmitProperties(maxPacketSize)) {
                 Mqtt5MessageEncoderUtil.encodeNullableProperty(REASON_STRING, message.getRawReasonString(), out);
             }
@@ -286,14 +287,14 @@ public abstract class Mqtt5MessageEncoder<T extends Mqtt5Message> {
     /**
      * Base class for MQTT messages with a omissible properties field in its variable header.
      */
-    public static abstract class Mqtt5MessageWithOmissibleReasonCodeEncoder<T extends Mqtt5MessageWithReasonString>
+    static abstract class Mqtt5MessageWithOmissibleReasonCodeEncoder<T extends Mqtt5MessageWithReasonString>
             extends Mqtt5MessageWithReasonStringEncoder<T> {
 
-        public Mqtt5MessageWithOmissibleReasonCodeEncoder(@NotNull final T message) {
+        Mqtt5MessageWithOmissibleReasonCodeEncoder(@NotNull final T message) {
             super(message);
         }
 
-        protected abstract boolean canOmitReasonCode();
+        abstract boolean canOmitReasonCode();
 
         @Override
         int encodedPropertyLengthWithHeader(final int propertyLength) {

@@ -7,7 +7,6 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.handler.Mqtt5ServerData;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
-import org.mqttbee.mqtt5.message.Mqtt5MessageWrapperEncoder;
 import org.mqttbee.mqtt5.message.subscribe.Mqtt5SubscribeImpl;
 import org.mqttbee.mqtt5.message.subscribe.Mqtt5SubscribeInternal;
 
@@ -33,7 +32,7 @@ public class Mqtt5SubscribeEncoder extends Mqtt5MessageWrapperEncoder<Mqtt5Subsc
     }
 
     @Override
-    public int additionalPropertyLength() {
+    int additionalPropertyLength() {
         return variableByteIntegerPropertyEncodedLength(
                 message.getSubscriptionIdentifier(),
                 DEFAULT_NO_SUBSCRIPTION_IDENTIFIER);
@@ -99,7 +98,7 @@ public class Mqtt5SubscribeEncoder extends Mqtt5MessageWrapperEncoder<Mqtt5Subsc
         }
 
         @Override
-        protected int calculateEncodedRemainingLengthWithoutProperties() {
+        int calculateEncodedRemainingLengthWithoutProperties() {
             int remainingLength = VARIABLE_HEADER_FIXED_LENGTH;
 
             final ImmutableList<Mqtt5SubscribeImpl.SubscriptionImpl> subscriptions = message.getSubscriptions();
@@ -111,7 +110,7 @@ public class Mqtt5SubscribeEncoder extends Mqtt5MessageWrapperEncoder<Mqtt5Subsc
         }
 
         @Override
-        protected int calculateEncodedPropertyLength() {
+        int calculateEncodedPropertyLength() {
             return message.getUserProperties().encodedLength();
         }
 

@@ -8,7 +8,6 @@ import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.handler.Mqtt5ServerData;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
-import org.mqttbee.mqtt5.message.Mqtt5MessageWrapperEncoder;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishInternal;
 
@@ -33,7 +32,7 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWrapperEncoder<Mqtt5Publish
     }
 
     @Override
-    public int additionalRemainingLength() {
+    int additionalRemainingLength() {
         int additionalRemainingLength = 0;
 
         if ((message.getTopicAlias() != DEFAULT_NO_TOPIC_ALIAS) && !message.isNewTopicAlias()) {
@@ -44,7 +43,7 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWrapperEncoder<Mqtt5Publish
     }
 
     @Override
-    public int additionalPropertyLength() {
+    int additionalPropertyLength() {
         int additionalPropertyLength = 0;
 
         additionalPropertyLength += shortPropertyEncodedLength(message.getTopicAlias(), DEFAULT_NO_TOPIC_ALIAS);
@@ -140,7 +139,7 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWrapperEncoder<Mqtt5Publish
         }
 
         @Override
-        protected int calculateEncodedRemainingLengthWithoutProperties() {
+        int calculateEncodedRemainingLengthWithoutProperties() {
             int remainingLength = 0;
 
             remainingLength += message.getTopic().encodedLength();
@@ -158,7 +157,7 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWrapperEncoder<Mqtt5Publish
         }
 
         @Override
-        protected int calculateEncodedPropertyLength() {
+        int calculateEncodedPropertyLength() {
             int propertyLength = 0;
 
             propertyLength +=

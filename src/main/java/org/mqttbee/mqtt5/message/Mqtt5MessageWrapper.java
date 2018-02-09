@@ -2,7 +2,8 @@ package org.mqttbee.mqtt5.message;
 
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.mqtt5.message.Mqtt5MessageWrapperEncoder.Mqtt5WrappedMessageEncoder;
+import org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageWrapperEncoder;
+import org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageWrapperEncoder.Mqtt5WrappedMessageEncoder;
 
 import java.util.function.Function;
 
