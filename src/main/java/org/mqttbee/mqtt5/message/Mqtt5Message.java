@@ -9,6 +9,9 @@ import java.util.Optional;
 import java.util.function.Function;
 
 /**
+ * Base class for MQTT messages.
+ *
+ * @param <T> the type of the codable MQTT message. This is usually the MQTT message type itself.
  * @author Silvio Giebl
  */
 public abstract class Mqtt5Message<T extends Mqtt5Message<T>> {
@@ -20,6 +23,9 @@ public abstract class Mqtt5Message<T extends Mqtt5Message<T>> {
         this.encoderProvider = encoderProvider;
     }
 
+    /**
+     * @return the encoder of this MQTT message.
+     */
     @NotNull
     public Mqtt5MessageEncoder<T> getEncoder() {
         if (encoder != null) {
@@ -31,17 +37,23 @@ public abstract class Mqtt5Message<T extends Mqtt5Message<T>> {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * @return the codable object. This is usually the MQTT message object itself.
+     */
     protected abstract T getCodable();
 
 
-    public static abstract class Mqtt5MessageWithUserProperties<T extends Mqtt5MessageWithUserProperties<T>>
-            extends Mqtt5Message<T> {
+    /**
+     * Base class for MQTT messages with optional User Properties.
+     *
+     * @param <T> the type of the codable MQTT message. This is usually the MQTT message type itself.
+     */
+    public static abstract class Mqtt5MessageWithUserProperties<T extends Mqtt5MessageWithUserProperties<T>> extends Mqtt5Message<T> {
 
         private final Mqtt5UserPropertiesImpl userProperties;
 
         public Mqtt5MessageWithUserProperties(
-                @NotNull final Mqtt5UserPropertiesImpl userProperties,
-                @Nullable final Function<T, ? extends Mqtt5MessageEncoder<T>> encoderProvider) {
+                @NotNull final Mqtt5UserPropertiesImpl userProperties, @Nullable final Function<T, ? extends Mqtt5MessageEncoder<T>> encoderProvider) {
 
             super(encoderProvider);
             this.userProperties = userProperties;
@@ -55,8 +67,12 @@ public abstract class Mqtt5Message<T extends Mqtt5Message<T>> {
     }
 
 
-    public static abstract class Mqtt5MessageWithReasonString<T extends Mqtt5MessageWithReasonString<T>>
-            extends Mqtt5MessageWithUserProperties<T> {
+    /**
+     * Base class for MQTT messages with optional User Properties and an optional reason string.
+     *
+     * @param <T> the type of the codable MQTT message. This is usually the MQTT message type itself.
+     */
+    public static abstract class Mqtt5MessageWithReasonString<T extends Mqtt5MessageWithReasonString<T>> extends Mqtt5MessageWithUserProperties<T> {
 
         private final Mqtt5UTF8StringImpl reasonString;
 
