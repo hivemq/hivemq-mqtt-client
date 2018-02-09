@@ -16,7 +16,7 @@ import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl;
-import org.mqttbee.mqtt5.message.publish.Mqtt5PublishInternal;
+import org.mqttbee.mqtt5.message.publish.Mqtt5PublishWrapper;
 
 import java.nio.charset.StandardCharsets;
 
@@ -73,7 +73,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
                 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
         };
 
-        final Mqtt5PublishInternal publishInternal = decodeInternal(encoded);
+        final Mqtt5PublishWrapper publishInternal = decodeInternal(encoded);
 
         assertNotNull(publishInternal);
 
@@ -132,7 +132,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
                 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
         };
 
-        final Mqtt5PublishInternal publishInternal = decodeInternal(encoded);
+        final Mqtt5PublishWrapper publishInternal = decodeInternal(encoded);
 
         assertEquals(false, publishInternal.isDup());
 
@@ -547,7 +547,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
                 //     payload format indicator
                 0x01, 0
         };
-        final Mqtt5PublishInternal publishInternal = decodeInternal(encoded);
+        final Mqtt5PublishWrapper publishInternal = decodeInternal(encoded);
         final ImmutableIntArray subscriptionIdentifiers = publishInternal.getSubscriptionIdentifiers();
         assertEquals(1, subscriptionIdentifiers.length());
         assertTrue(subscriptionIdentifiers.contains(123));
@@ -619,7 +619,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
                 //     payload format indicator
                 0x01, 0
         };
-        final Mqtt5PublishInternal publishInternal = decodeInternal(encoded);
+        final Mqtt5PublishWrapper publishInternal = decodeInternal(encoded);
         final ImmutableIntArray subscriptionIdentifiers = publishInternal.getSubscriptionIdentifiers();
         assertEquals(1, subscriptionIdentifiers.length());
         assertTrue(subscriptionIdentifiers.contains(268435455));
@@ -647,7 +647,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
                 //     payload format indicator
                 0x01, 0
         };
-        final Mqtt5PublishInternal publishInternal = decodeInternal(encoded);
+        final Mqtt5PublishWrapper publishInternal = decodeInternal(encoded);
         final ImmutableIntArray subscriptionIdentifiers = publishInternal.getSubscriptionIdentifiers();
         assertEquals(2, subscriptionIdentifiers.length());
         assertTrue(subscriptionIdentifiers.contains(128));
@@ -672,7 +672,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
                 //     payload format indicator
                 0x01, 0
         };
-        final Mqtt5PublishInternal publishInternal = decodeInternal(encoded);
+        final Mqtt5PublishWrapper publishInternal = decodeInternal(encoded);
         assertEquals(-1, publishInternal.getPacketIdentifier());
     }
 
@@ -696,7 +696,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
                 //     payload format indicator
                 0x01, 0
         };
-        final Mqtt5PublishInternal publishInternal = decodeInternal(encoded);
+        final Mqtt5PublishWrapper publishInternal = decodeInternal(encoded);
         assertEquals(12, publishInternal.getPacketIdentifier());
     }
 
@@ -720,7 +720,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
                 //     payload format indicator
                 0x01, 0
         };
-        final Mqtt5PublishInternal publishInternal = decodeInternal(encoded);
+        final Mqtt5PublishWrapper publishInternal = decodeInternal(encoded);
         assertEquals(12, publishInternal.getPacketIdentifier());
     }
 
@@ -893,7 +893,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
                 //     payload format indicator
                 0x01, 0
         };
-        final Mqtt5PublishInternal publishInternal = decodeInternal(encodedWithTopicName);
+        final Mqtt5PublishWrapper publishInternal = decodeInternal(encodedWithTopicName);
         assertEquals(3, publishInternal.getTopicAlias());
 
         final byte[] encodedWithTopicAliasOnly = {
@@ -912,7 +912,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
                 //     payload format indicator
                 0x01, 0
         };
-        final Mqtt5PublishInternal publishInternalTopicAliasOnly = decodeInternal(encodedWithTopicAliasOnly);
+        final Mqtt5PublishWrapper publishInternalTopicAliasOnly = decodeInternal(encodedWithTopicAliasOnly);
         assertEquals(3, publishInternalTopicAliasOnly.getTopicAlias());
     }
 
@@ -957,7 +957,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
                 //     payload format indicator
                 0x01, 0
         };
-        final Mqtt5PublishInternal publishInternal = decodeInternal(encodedWithTopicName);
+        final Mqtt5PublishWrapper publishInternal = decodeInternal(encodedWithTopicName);
         assertEquals(3, publishInternal.getTopicAlias());
 
         final byte[] encodedWithWrongTopicAlias = {
@@ -1209,12 +1209,12 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
     }
 
     @NotNull
-    private Mqtt5PublishInternal decodeInternal(final byte[] encoded) {
+    private Mqtt5PublishWrapper decodeInternal(final byte[] encoded) {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
 
-        final Mqtt5PublishInternal publishInternal = channel.readInbound();
+        final Mqtt5PublishWrapper publishInternal = channel.readInbound();
         assertNotNull(publishInternal);
 
         return publishInternal;
@@ -1225,7 +1225,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
 
-        final Mqtt5PublishInternal publishInternal = channel.readInbound();
+        final Mqtt5PublishWrapper publishInternal = channel.readInbound();
         assertNull(publishInternal);
 
         final Mqtt5Disconnect disconnect = channel.readOutbound();

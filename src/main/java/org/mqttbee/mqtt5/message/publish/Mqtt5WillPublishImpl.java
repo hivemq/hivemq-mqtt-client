@@ -6,7 +6,7 @@ import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.api.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.api.mqtt5.message.publish.Mqtt5WillPublish;
 import org.mqttbee.api.mqtt5.message.publish.TopicAliasUsage;
-import org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageWrapperEncoder.Mqtt5WrappedMessageEncoder;
+import org.mqttbee.mqtt5.codec.encoder.Mqtt5WrappedMessageEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
@@ -30,7 +30,7 @@ public class Mqtt5WillPublishImpl extends Mqtt5PublishImpl implements Mqtt5WillP
             @Nullable final Mqtt5UTF8StringImpl contentType, @Nullable final Mqtt5TopicImpl responseTopic,
             @Nullable final byte[] correlationData, @NotNull final Mqtt5UserPropertiesImpl userProperties,
             final long delayInterval,
-            @NotNull final Function<Mqtt5PublishImpl, ? extends Mqtt5WrappedMessageEncoder<Mqtt5PublishImpl, Mqtt5PublishInternal>> encoderProvider) {
+            @NotNull final Function<Mqtt5PublishImpl, ? extends Mqtt5WrappedMessageEncoder<Mqtt5PublishImpl, Mqtt5PublishWrapper>> encoderProvider) {
 
         super(topic, payload, qos, isRetain, messageExpiryInterval, payloadFormatIndicator, contentType, responseTopic,
                 correlationData, TopicAliasUsage.MUST_NOT, userProperties, encoderProvider);

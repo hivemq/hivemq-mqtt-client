@@ -10,11 +10,11 @@ import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.api.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.api.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.api.mqtt5.message.publish.TopicAliasUsage;
-import org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageWrapperEncoder.Mqtt5WrappedMessageEncoder;
-import org.mqttbee.mqtt5.message.Mqtt5MessageWrapper.Mqtt5WrappedMessage;
+import org.mqttbee.mqtt5.codec.encoder.Mqtt5WrappedMessageEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
+import org.mqttbee.mqtt5.message.Mqtt5WrappedMessage;
 import org.mqttbee.util.ByteBufUtil;
 
 import java.util.Optional;
@@ -23,7 +23,7 @@ import java.util.function.Function;
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5PublishImpl extends Mqtt5WrappedMessage<Mqtt5PublishImpl, Mqtt5PublishInternal>
+public class Mqtt5PublishImpl extends Mqtt5WrappedMessage<Mqtt5PublishImpl, Mqtt5PublishWrapper>
         implements Mqtt5Publish {
 
     public static final long MESSAGE_EXPIRY_INTERVAL_INFINITY = Long.MAX_VALUE;
@@ -46,7 +46,7 @@ public class Mqtt5PublishImpl extends Mqtt5WrappedMessage<Mqtt5PublishImpl, Mqtt
             @Nullable final Mqtt5UTF8StringImpl contentType, @Nullable final Mqtt5TopicImpl responseTopic,
             @Nullable final byte[] correlationData, @NotNull final TopicAliasUsage topicAliasUsage,
             @NotNull final Mqtt5UserPropertiesImpl userProperties,
-            @NotNull final Function<Mqtt5PublishImpl, ? extends Mqtt5WrappedMessageEncoder<Mqtt5PublishImpl, Mqtt5PublishInternal>> encoderProvider) {
+            @NotNull final Function<Mqtt5PublishImpl, ? extends Mqtt5WrappedMessageEncoder<Mqtt5PublishImpl, Mqtt5PublishWrapper>> encoderProvider) {
 
         super(userProperties, encoderProvider);
         this.topic = topic;
@@ -155,11 +155,11 @@ public class Mqtt5PublishImpl extends Mqtt5WrappedMessage<Mqtt5PublishImpl, Mqtt
         return this;
     }
 
-    public Mqtt5PublishInternal wrap(
+    public Mqtt5PublishWrapper wrap(
             final int packetIdentifier, final boolean isDup, final int topicAlias, final boolean isNewTopicAlias,
             @NotNull final ImmutableIntArray subscriptionIdentifiers) {
 
-        return new Mqtt5PublishInternal(
+        return new Mqtt5PublishWrapper(
                 this, packetIdentifier, isDup, topicAlias, isNewTopicAlias, subscriptionIdentifiers);
     }
 

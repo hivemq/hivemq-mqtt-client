@@ -4,13 +4,13 @@ import com.google.common.primitives.ImmutableIntArray;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt5.handler.Mqtt5ServerData;
-import org.mqttbee.mqtt5.message.Mqtt5MessageWrapper;
 import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
+import org.mqttbee.mqtt5.message.Mqtt5WrappedMessage.Mqtt5MessageWrapper;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5PublishInternal extends Mqtt5MessageWrapper<Mqtt5PublishInternal, Mqtt5PublishImpl> {
+public class Mqtt5PublishWrapper extends Mqtt5MessageWrapper<Mqtt5PublishWrapper, Mqtt5PublishImpl> {
 
     public static final int NO_PACKET_IDENTIFIER_QOS_0 = -1;
     public static final int DEFAULT_NO_TOPIC_ALIAS = -1;
@@ -23,7 +23,7 @@ public class Mqtt5PublishInternal extends Mqtt5MessageWrapper<Mqtt5PublishIntern
     private final boolean isNewTopicAlias;
     private final ImmutableIntArray subscriptionIdentifiers;
 
-    Mqtt5PublishInternal(
+    Mqtt5PublishWrapper(
             @NotNull final Mqtt5PublishImpl publish, final int packetIdentifier, final boolean isDup,
             final int topicAlias, final boolean isNewTopicAlias,
             @NotNull final ImmutableIntArray subscriptionIdentifiers) {
@@ -36,7 +36,7 @@ public class Mqtt5PublishInternal extends Mqtt5MessageWrapper<Mqtt5PublishIntern
         this.subscriptionIdentifiers = subscriptionIdentifiers;
     }
 
-    public Mqtt5PublishInternal( // TODO
+    public Mqtt5PublishWrapper( // TODO
             @NotNull final Mqtt5PublishImpl publish, final int packetIdentifier, final boolean isDup,
             @NotNull final Channel channel, @NotNull final ImmutableIntArray subscriptionIdentifiers) {
 
@@ -85,7 +85,7 @@ public class Mqtt5PublishInternal extends Mqtt5MessageWrapper<Mqtt5PublishIntern
     }
 
     @Override
-    protected Mqtt5PublishInternal getCodable() {
+    protected Mqtt5PublishWrapper getCodable() {
         return this;
     }
 
