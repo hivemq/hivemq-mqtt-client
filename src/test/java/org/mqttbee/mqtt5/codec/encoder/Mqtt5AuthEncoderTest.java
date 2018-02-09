@@ -75,7 +75,7 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
         final Mqtt5UTF8StringImpl method = requireNonNull(Mqtt5UTF8StringImpl.from("GS2-KRB5"));
         final Mqtt5AuthImpl auth =
                 new Mqtt5AuthImpl(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, method, data, reasonString,
-                        userProperties);
+                        userProperties, Mqtt5AuthEncoder.PROVIDER);
         encode(expected, auth);
     }
 
@@ -99,7 +99,8 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
 
         final Mqtt5UTF8StringImpl method = requireNonNull(Mqtt5UTF8StringImpl.from("x"));
         final Mqtt5AuthImpl auth =
-                new Mqtt5AuthImpl(reasonCode, method, null, null, Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES);
+                new Mqtt5AuthImpl(reasonCode, method, null, null, Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES,
+                        Mqtt5AuthEncoder.PROVIDER);
         encode(expected, auth);
     }
 
@@ -125,7 +126,7 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
         final byte[] data = new byte[]{1};
         final Mqtt5UTF8StringImpl method = requireNonNull(Mqtt5UTF8StringImpl.from("x"));
         final Mqtt5AuthImpl auth = new Mqtt5AuthImpl(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, method, data, null,
-                Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES);
+                Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES, Mqtt5AuthEncoder.PROVIDER);
         encode(expected, auth);
     }
 
@@ -135,7 +136,7 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
         final byte[] data = new byte[65536];
         final Mqtt5UTF8StringImpl method = requireNonNull(Mqtt5UTF8StringImpl.from("x"));
         final Mqtt5AuthImpl auth = new Mqtt5AuthImpl(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, method, data, null,
-                Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES);
+                Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES, Mqtt5AuthEncoder.PROVIDER);
         encodeNok(auth, EncoderException.class, "binary data size exceeded for authentication data");
     }
 
@@ -162,7 +163,7 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
         final Mqtt5UTF8StringImpl method = requireNonNull(Mqtt5UTF8StringImpl.from("x"));
         final Mqtt5AuthImpl auth =
                 new Mqtt5AuthImpl(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, method, null, reasonString,
-                        Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES);
+                        Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES, Mqtt5AuthEncoder.PROVIDER);
         encode(expected, auth);
     }
 
@@ -189,7 +190,7 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
         final Mqtt5UTF8StringImpl method = requireNonNull(Mqtt5UTF8StringImpl.from("x"));
         final Mqtt5AuthImpl auth =
                 new Mqtt5AuthImpl(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, method, null, reasonString,
-                        Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES);
+                        Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES, Mqtt5AuthEncoder.PROVIDER);
         encode(expected, auth);
     }
 
@@ -199,7 +200,8 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
 
         final Mqtt5AuthImpl auth =
                 new Mqtt5AuthImpl(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, maxPacket.getMethod(), null,
-                        maxPacket.getReasonStringTooLong(), maxPacket.getMaxPossibleUserProperties());
+                        maxPacket.getReasonStringTooLong(), maxPacket.getMaxPossibleUserProperties(),
+                        Mqtt5AuthEncoder.PROVIDER);
 
         encode(maxPacket.getWithOmittedUserPropertiesAndReasonString(), auth);
     }
@@ -212,7 +214,7 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
 
         final Mqtt5AuthImpl auth =
                 new Mqtt5AuthImpl(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, maxPacket.getMethod(), null, null,
-                        tooManyUserProperties);
+                        tooManyUserProperties, Mqtt5AuthEncoder.PROVIDER);
 
         encode(maxPacket.getWithOmittedUserPropertiesAndReasonString(), auth);
     }

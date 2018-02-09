@@ -2,6 +2,7 @@ package org.mqttbee.api.mqtt5.message.publish;
 
 import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.mqtt5.codec.encoder.Mqtt5PublishEncoder.Mqtt5WrappedPublishEncoder;
 import org.mqttbee.mqtt5.message.publish.Mqtt5WillPublishImpl;
 import org.mqttbee.util.UnsignedDataTypes;
 
@@ -32,7 +33,8 @@ public class Mqtt5WillPublishBuilder extends Mqtt5PublishBuilder {
     @Override
     public Mqtt5WillPublish build() {
         return new Mqtt5WillPublishImpl(topic, payload, qos, retain, messageExpiryInterval, payloadFormatIndicator,
-                contentType, responseTopic, correlationData, userProperties, delayInterval);
+                contentType, responseTopic, correlationData, userProperties, delayInterval,
+                Mqtt5WrappedPublishEncoder.PROVIDER);
     }
 
 }

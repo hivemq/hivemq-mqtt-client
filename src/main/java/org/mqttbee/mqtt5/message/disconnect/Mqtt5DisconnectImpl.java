@@ -1,23 +1,23 @@
 package org.mqttbee.mqtt5.message.disconnect;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.mqtt5.codec.encoder.Mqtt5DisconnectEncoder;
-import org.mqttbee.mqtt5.message.Mqtt5Message;
+import org.mqttbee.mqtt5.message.Mqtt5MessageEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 
 import java.util.Optional;
+import java.util.function.Function;
+
+import static org.mqttbee.mqtt5.message.Mqtt5Message.Mqtt5MessageWithReasonString;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5DisconnectImpl extends Mqtt5Message.Mqtt5MessageWithOmissibleProperties implements Mqtt5Disconnect {
+public class Mqtt5DisconnectImpl extends Mqtt5MessageWithReasonString<Mqtt5DisconnectImpl> implements Mqtt5Disconnect {
 
     @NotNull
     public static final Mqtt5DisconnectReasonCode DEFAULT_REASON_CODE = Mqtt5DisconnectReasonCode.NORMAL_DISCONNECTION;
@@ -30,8 +30,10 @@ public class Mqtt5DisconnectImpl extends Mqtt5Message.Mqtt5MessageWithOmissibleP
     public Mqtt5DisconnectImpl(
             @NotNull final Mqtt5DisconnectReasonCode reasonCode, final long sessionExpiryInterval,
             @Nullable final Mqtt5UTF8StringImpl serverReference, @Nullable final Mqtt5UTF8StringImpl reasonString,
-            @NotNull final Mqtt5UserPropertiesImpl userProperties) {
-        super(reasonString, userProperties);
+            @NotNull final Mqtt5UserPropertiesImpl userProperties,
+            @NotNull final Function<Mqtt5DisconnectImpl, ? extends Mqtt5MessageEncoder<Mqtt5DisconnectImpl>> encoderProvider) {
+
+        super(reasonString, userProperties, encoderProvider);
         this.reasonCode = reasonCode;
         this.sessionExpiryInterval = sessionExpiryInterval;
         this.serverReference = serverReference;
@@ -66,18 +68,8 @@ public class Mqtt5DisconnectImpl extends Mqtt5Message.Mqtt5MessageWithOmissibleP
     }
 
     @Override
-    public void encode(@NotNull final Channel channel, @NotNull final ByteBuf out) {
-        Mqtt5DisconnectEncoder.INSTANCE.encode(this, channel, out);
-    }
-
-    @Override
-    protected int calculateEncodedRemainingLength() {
-        return Mqtt5DisconnectEncoder.INSTANCE.encodedRemainingLength(this);
-    }
-
-    @Override
-    protected int calculateEncodedPropertyLength() {
-        return Mqtt5DisconnectEncoder.INSTANCE.encodedPropertyLength(this);
+    protected Mqtt5DisconnectImpl getCodable() {
+        return this;
     }
 
 }

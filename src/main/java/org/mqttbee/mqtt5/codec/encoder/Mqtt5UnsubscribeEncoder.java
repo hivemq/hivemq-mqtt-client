@@ -7,80 +7,92 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.handler.Mqtt5ServerData;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
+import org.mqttbee.mqtt5.message.Mqtt5MessageWrapperEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5TopicFilterImpl;
 import org.mqttbee.mqtt5.message.unsubscribe.Mqtt5UnsubscribeImpl;
 import org.mqttbee.mqtt5.message.unsubscribe.Mqtt5UnsubscribeInternal;
 
-import javax.inject.Singleton;
+import java.util.function.Function;
 
 /**
  * @author Silvio Giebl
  */
-@Singleton
-public class Mqtt5UnsubscribeEncoder implements Mqtt5MessageEncoder<Mqtt5UnsubscribeInternal> {
+public class Mqtt5UnsubscribeEncoder extends Mqtt5MessageWrapperEncoder<Mqtt5UnsubscribeInternal> {
 
-    public static final Mqtt5UnsubscribeEncoder INSTANCE = new Mqtt5UnsubscribeEncoder();
+    public static final Function<Mqtt5UnsubscribeInternal, Mqtt5UnsubscribeEncoder> PROVIDER =
+            Mqtt5UnsubscribeEncoder::new;
 
     private static final int FIXED_HEADER = (Mqtt5MessageType.UNSUBSCRIBE.getCode() << 4) | 0b0010;
     private static final int VARIABLE_HEADER_FIXED_LENGTH = 2; // packet identifier
 
+    private Mqtt5UnsubscribeEncoder(@NotNull final Mqtt5UnsubscribeInternal wrapper) {
+        super(wrapper);
+    }
+
     @Override
-    public void encode(
-            @NotNull final Mqtt5UnsubscribeInternal unsubscribeInternal, @NotNull final Channel channel,
-            @NotNull final ByteBuf out) {
+    public void encode(@NotNull final Channel channel, @NotNull final ByteBuf out) {
         final int maximumPacketSize = Mqtt5ServerData.get(channel).getMaximumPacketSize();
 
-        encodeFixedHeader(unsubscribeInternal, out, maximumPacketSize);
-        encodeVariableHeader(unsubscribeInternal, out, maximumPacketSize);
-        encodePayload(unsubscribeInternal, out);
+        encodeFixedHeader(out, maximumPacketSize);
+        encodeVariableHeader(out, maximumPacketSize);
+        encodePayload(out);
     }
 
-    public int encodedRemainingLength(@NotNull final Mqtt5UnsubscribeImpl unsubscribe) {
-        int remainingLength = VARIABLE_HEADER_FIXED_LENGTH;
-
-        final ImmutableList<Mqtt5TopicFilterImpl> topicFilters = unsubscribe.getTopicFilters();
-        for (int i = 0; i < topicFilters.size(); i++) {
-            remainingLength += topicFilters.get(i).encodedLength();
-        }
-
-        return remainingLength;
-    }
-
-    public int encodedPropertyLength(@NotNull final Mqtt5UnsubscribeImpl unsubscribe) {
-        return unsubscribe.getUserProperties().encodedLength();
-    }
-
-    private void encodeFixedHeader(
-            @NotNull final Mqtt5UnsubscribeInternal unsubscribeInternal, @NotNull final ByteBuf out,
-            final int maximumPacketSize) {
-
+    private void encodeFixedHeader(@NotNull final ByteBuf out, final int maximumPacketSize) {
         out.writeByte(FIXED_HEADER);
-        Mqtt5DataTypes.encodeVariableByteInteger(unsubscribeInternal.encodedRemainingLength(maximumPacketSize), out);
+        Mqtt5DataTypes.encodeVariableByteInteger(encodedRemainingLength(maximumPacketSize), out);
     }
 
-    private void encodeVariableHeader(
-            @NotNull final Mqtt5UnsubscribeInternal unsubscribeInternal, @NotNull final ByteBuf out,
-            final int maximumPacketSize) {
-
-        out.writeShort(unsubscribeInternal.getPacketIdentifier());
-        encodeProperties(unsubscribeInternal, out, maximumPacketSize);
+    private void encodeVariableHeader(@NotNull final ByteBuf out, final int maximumPacketSize) {
+        out.writeShort(message.getPacketIdentifier());
+        encodeProperties(out, maximumPacketSize);
     }
 
-    private void encodeProperties(
-            @NotNull final Mqtt5UnsubscribeInternal unsubscribeInternal, @NotNull final ByteBuf out,
-            final int maximumPacketSize) {
-
-        Mqtt5DataTypes.encodeVariableByteInteger(unsubscribeInternal.encodedPropertyLength(maximumPacketSize), out);
-        unsubscribeInternal.getWrapped().encodeUserProperties(maximumPacketSize, out);
+    private void encodeProperties(@NotNull final ByteBuf out, final int maximumPacketSize) {
+        Mqtt5DataTypes.encodeVariableByteInteger(encodedPropertyLength(maximumPacketSize), out);
+        encodeUserProperties(maximumPacketSize, out);
     }
 
-    private void encodePayload(
-            @NotNull final Mqtt5UnsubscribeInternal unsubscribeInternal, @NotNull final ByteBuf out) {
-
-        final ImmutableList<Mqtt5TopicFilterImpl> topicFilters = unsubscribeInternal.getWrapped().getTopicFilters();
+    private void encodePayload(@NotNull final ByteBuf out) {
+        final ImmutableList<Mqtt5TopicFilterImpl> topicFilters = message.getWrapped().getTopicFilters();
         for (int i = 0; i < topicFilters.size(); i++) {
             topicFilters.get(i).to(out);
         }
+    }
+
+
+    public static class Mqtt5WrappedUnsubscribeEncoder
+            extends Mqtt5WrappedMessageEncoder<Mqtt5UnsubscribeImpl, Mqtt5UnsubscribeInternal> {
+
+        public static final Function<Mqtt5UnsubscribeImpl, Mqtt5WrappedUnsubscribeEncoder> PROVIDER =
+                Mqtt5WrappedUnsubscribeEncoder::new;
+
+        private Mqtt5WrappedUnsubscribeEncoder(@NotNull final Mqtt5UnsubscribeImpl message) {
+            super(message);
+        }
+
+        @Override
+        protected int calculateEncodedRemainingLengthWithoutProperties() {
+            int remainingLength = VARIABLE_HEADER_FIXED_LENGTH;
+
+            final ImmutableList<Mqtt5TopicFilterImpl> topicFilters = message.getTopicFilters();
+            for (int i = 0; i < topicFilters.size(); i++) {
+                remainingLength += topicFilters.get(i).encodedLength();
+            }
+
+            return remainingLength;
+        }
+
+        @Override
+        protected int calculateEncodedPropertyLength() {
+            return message.getUserProperties().encodedLength();
+        }
+
+        @Override
+        public Function<Mqtt5UnsubscribeInternal, ? extends Mqtt5MessageWrapperEncoder<Mqtt5UnsubscribeInternal>> wrap() {
+            return Mqtt5UnsubscribeEncoder.PROVIDER;
+        }
+
     }
 
 }

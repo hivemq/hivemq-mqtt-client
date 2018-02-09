@@ -1,18 +1,16 @@
 package org.mqttbee.mqtt5.message.publish;
 
 import com.google.common.primitives.ImmutableIntArray;
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt5.codec.encoder.Mqtt5PublishEncoder;
 import org.mqttbee.mqtt5.handler.Mqtt5ServerData;
-import org.mqttbee.mqtt5.message.Mqtt5Message;
+import org.mqttbee.mqtt5.message.Mqtt5MessageWrapper;
 import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5PublishInternal extends Mqtt5Message.Mqtt5MessageWithUserPropertiesWrapper<Mqtt5PublishImpl> {
+public class Mqtt5PublishInternal extends Mqtt5MessageWrapper<Mqtt5PublishInternal, Mqtt5PublishImpl> {
 
     public static final int NO_PACKET_IDENTIFIER_QOS_0 = -1;
     public static final int DEFAULT_NO_TOPIC_ALIAS = -1;
@@ -25,11 +23,12 @@ public class Mqtt5PublishInternal extends Mqtt5Message.Mqtt5MessageWithUserPrope
     private final boolean isNewTopicAlias;
     private final ImmutableIntArray subscriptionIdentifiers;
 
-    public Mqtt5PublishInternal(
+    Mqtt5PublishInternal(
             @NotNull final Mqtt5PublishImpl publish, final int packetIdentifier, final boolean isDup,
             final int topicAlias, final boolean isNewTopicAlias,
             @NotNull final ImmutableIntArray subscriptionIdentifiers) {
-        super(publish);
+
+        super(publish, publish.getEncoder().wrap());
         this.packetIdentifier = packetIdentifier;
         this.isDup = isDup;
         this.topicAlias = topicAlias;
@@ -37,10 +36,11 @@ public class Mqtt5PublishInternal extends Mqtt5Message.Mqtt5MessageWithUserPrope
         this.subscriptionIdentifiers = subscriptionIdentifiers;
     }
 
-    public Mqtt5PublishInternal(
+    public Mqtt5PublishInternal( // TODO
             @NotNull final Mqtt5PublishImpl publish, final int packetIdentifier, final boolean isDup,
             @NotNull final Channel channel, @NotNull final ImmutableIntArray subscriptionIdentifiers) {
-        super(publish);
+
+        super(publish, publish.getEncoder().wrap());
         this.packetIdentifier = packetIdentifier;
         this.isDup = isDup;
 
@@ -85,18 +85,8 @@ public class Mqtt5PublishInternal extends Mqtt5Message.Mqtt5MessageWithUserPrope
     }
 
     @Override
-    public void encode(@NotNull final Channel channel, @NotNull final ByteBuf out) {
-        Mqtt5PublishEncoder.INSTANCE.encode(this, channel, out);
-    }
-
-    @Override
-    protected int additionalRemainingLength() {
-        return Mqtt5PublishEncoder.INSTANCE.additionalRemainingLength(this);
-    }
-
-    @Override
-    protected int additionalPropertyLength() {
-        return Mqtt5PublishEncoder.INSTANCE.additionalPropertyLength(this);
+    protected Mqtt5PublishInternal getCodable() {
+        return this;
     }
 
 }

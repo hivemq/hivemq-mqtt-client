@@ -6,6 +6,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.api.mqtt5.message.Mqtt5TopicFilter;
 import org.mqttbee.api.mqtt5.message.Mqtt5UserProperties;
+import org.mqttbee.mqtt5.codec.encoder.Mqtt5SubscribeEncoder.Mqtt5WrappedSubscribeEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5TopicFilterImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 import org.mqttbee.mqtt5.message.subscribe.Mqtt5SubscribeImpl;
@@ -41,7 +42,7 @@ public class Mqtt5SubscribeBuilder {
     public Mqtt5Subscribe build() {
         final ImmutableList<Mqtt5SubscribeImpl.SubscriptionImpl> subscriptions = subscriptionBuilder.build();
         Preconditions.checkState(!subscriptions.isEmpty());
-        return new Mqtt5SubscribeImpl(subscriptions, userProperties);
+        return new Mqtt5SubscribeImpl(subscriptions, userProperties, Mqtt5WrappedSubscribeEncoder.PROVIDER);
     }
 
 

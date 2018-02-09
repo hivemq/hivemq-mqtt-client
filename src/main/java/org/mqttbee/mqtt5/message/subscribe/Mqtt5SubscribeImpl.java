@@ -5,22 +5,27 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.api.mqtt5.message.subscribe.Mqtt5RetainHandling;
 import org.mqttbee.api.mqtt5.message.subscribe.Mqtt5Subscribe;
-import org.mqttbee.mqtt5.codec.encoder.Mqtt5SubscribeEncoder;
-import org.mqttbee.mqtt5.message.Mqtt5Message;
+import org.mqttbee.mqtt5.message.Mqtt5MessageWrapper.Mqtt5WrappedMessage;
+import org.mqttbee.mqtt5.message.Mqtt5MessageWrapperEncoder.Mqtt5WrappedMessageEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5TopicFilterImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
+
+import java.util.function.Function;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5SubscribeImpl extends Mqtt5Message.WrappedMqtt5MessageWithUserProperties implements Mqtt5Subscribe {
+public class Mqtt5SubscribeImpl extends Mqtt5WrappedMessage<Mqtt5SubscribeImpl, Mqtt5SubscribeInternal>
+        implements Mqtt5Subscribe {
 
     private final ImmutableList<SubscriptionImpl> subscriptions;
 
     public Mqtt5SubscribeImpl(
             @NotNull final ImmutableList<SubscriptionImpl> subscriptions,
-            @NotNull final Mqtt5UserPropertiesImpl userProperties) {
-        super(userProperties);
+            @NotNull final Mqtt5UserPropertiesImpl userProperties,
+            @NotNull final Function<Mqtt5SubscribeImpl, ? extends Mqtt5WrappedMessageEncoder<Mqtt5SubscribeImpl, Mqtt5SubscribeInternal>> encoderProvider) {
+
+        super(userProperties, encoderProvider);
         this.subscriptions = subscriptions;
     }
 
@@ -31,13 +36,12 @@ public class Mqtt5SubscribeImpl extends Mqtt5Message.WrappedMqtt5MessageWithUser
     }
 
     @Override
-    protected int calculateEncodedRemainingLengthWithoutProperties() {
-        return Mqtt5SubscribeEncoder.INSTANCE.encodedRemainingLengthWithoutProperties(this);
+    protected Mqtt5SubscribeImpl getCodable() {
+        return this;
     }
 
-    @Override
-    protected int calculateEncodedPropertyLength() {
-        return Mqtt5SubscribeEncoder.INSTANCE.encodedPropertyLength(this);
+    public Mqtt5SubscribeInternal wrap(final int packetIdentifier, final int subscriptionIdentifier) {
+        return new Mqtt5SubscribeInternal(this, packetIdentifier, subscriptionIdentifier);
     }
 
 

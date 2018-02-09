@@ -1,5 +1,6 @@
 package org.mqttbee.mqtt5.message.publish;
 
+import com.google.common.primitives.ImmutableIntArray;
 import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
@@ -9,19 +10,21 @@ import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.api.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.api.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.api.mqtt5.message.publish.TopicAliasUsage;
-import org.mqttbee.mqtt5.codec.encoder.Mqtt5PublishEncoder;
-import org.mqttbee.mqtt5.message.Mqtt5Message;
+import org.mqttbee.mqtt5.message.Mqtt5MessageWrapper.Mqtt5WrappedMessage;
+import org.mqttbee.mqtt5.message.Mqtt5MessageWrapperEncoder.Mqtt5WrappedMessageEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 import org.mqttbee.util.ByteBufUtil;
 
 import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5PublishImpl extends Mqtt5Message.WrappedMqtt5MessageWithUserProperties implements Mqtt5Publish {
+public class Mqtt5PublishImpl extends Mqtt5WrappedMessage<Mqtt5PublishImpl, Mqtt5PublishInternal>
+        implements Mqtt5Publish {
 
     public static final long MESSAGE_EXPIRY_INTERVAL_INFINITY = Long.MAX_VALUE;
 
@@ -42,8 +45,10 @@ public class Mqtt5PublishImpl extends Mqtt5Message.WrappedMqtt5MessageWithUserPr
             @Nullable final Mqtt5PayloadFormatIndicator payloadFormatIndicator,
             @Nullable final Mqtt5UTF8StringImpl contentType, @Nullable final Mqtt5TopicImpl responseTopic,
             @Nullable final byte[] correlationData, @NotNull final TopicAliasUsage topicAliasUsage,
-            @NotNull final Mqtt5UserPropertiesImpl userProperties) {
-        super(userProperties);
+            @NotNull final Mqtt5UserPropertiesImpl userProperties,
+            @NotNull final Function<Mqtt5PublishImpl, ? extends Mqtt5WrappedMessageEncoder<Mqtt5PublishImpl, Mqtt5PublishInternal>> encoderProvider) {
+
+        super(userProperties, encoderProvider);
         this.topic = topic;
         this.payload = payload;
         this.qos = qos;
@@ -146,13 +151,16 @@ public class Mqtt5PublishImpl extends Mqtt5Message.WrappedMqtt5MessageWithUserPr
     }
 
     @Override
-    protected int calculateEncodedRemainingLengthWithoutProperties() {
-        return Mqtt5PublishEncoder.INSTANCE.encodedRemainingLengthWithoutProperties(this);
+    protected Mqtt5PublishImpl getCodable() {
+        return this;
     }
 
-    @Override
-    protected int calculateEncodedPropertyLength() {
-        return Mqtt5PublishEncoder.INSTANCE.encodedPropertyLength(this);
+    public Mqtt5PublishInternal wrap(
+            final int packetIdentifier, final boolean isDup, final int topicAlias, final boolean isNewTopicAlias,
+            @NotNull final ImmutableIntArray subscriptionIdentifiers) {
+
+        return new Mqtt5PublishInternal(
+                this, packetIdentifier, isDup, topicAlias, isNewTopicAlias, subscriptionIdentifiers);
     }
 
 }

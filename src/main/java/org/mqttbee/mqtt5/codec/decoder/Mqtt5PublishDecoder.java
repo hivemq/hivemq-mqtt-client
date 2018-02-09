@@ -13,6 +13,7 @@ import org.mqttbee.api.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.api.mqtt5.message.publish.TopicAliasUsage;
 import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
+import org.mqttbee.mqtt5.codec.encoder.Mqtt5PublishEncoder.Mqtt5WrappedPublishEncoder;
 import org.mqttbee.mqtt5.handler.Mqtt5ClientData;
 import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
@@ -256,14 +257,14 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
 
         final Mqtt5PublishImpl publish =
                 new Mqtt5PublishImpl(topic, payload, qos, retain, messageExpiryInterval, payloadFormatIndicator,
-                        contentType, responseTopic, correlationData, topicAliasUsage, userProperties);
+                        contentType, responseTopic, correlationData, topicAliasUsage, userProperties,
+                        Mqtt5WrappedPublishEncoder.PROVIDER);
 
         final ImmutableIntArray subscriptionIdentifiers =
                 (subscriptionIdentifiersBuilder == null) ? DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS :
                         subscriptionIdentifiersBuilder.build();
 
-        return new Mqtt5PublishInternal(
-                publish, packetIdentifier, dup, topicAlias, isNewTopicAlias, subscriptionIdentifiers);
+        return publish.wrap(packetIdentifier, dup, topicAlias, isNewTopicAlias, subscriptionIdentifiers);
     }
 
 }

@@ -14,7 +14,7 @@ public class Mqtt5MaximumPacketSizeExceededException extends RuntimeException {
 
     public Mqtt5MaximumPacketSizeExceededException(@NotNull final Mqtt5Message message, final int maxPacketSize) {
         super("packet size exceeded for " + message.getClass().getSimpleName() + ", size: " +
-                message.encodedLength(Integer.MAX_VALUE) + ", maximum: " + maxPacketSize);
+                message.getEncoder().encodedLength(Integer.MAX_VALUE) + ", maximum: " + maxPacketSize);
     }
 
     @Override

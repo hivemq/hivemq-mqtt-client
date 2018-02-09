@@ -8,6 +8,7 @@ import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.auth.Mqtt5AuthReasonCode;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
+import org.mqttbee.mqtt5.codec.encoder.Mqtt5AuthEncoder;
 import org.mqttbee.mqtt5.handler.Mqtt5ClientData;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
@@ -115,7 +116,7 @@ public class Mqtt5AuthDecoder implements Mqtt5MessageDecoder {
 
         final Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.build(userPropertiesBuilder);
 
-        return new Mqtt5AuthImpl(reasonCode, method, data, reasonString, userProperties);
+        return new Mqtt5AuthImpl(reasonCode, method, data, reasonString, userProperties, Mqtt5AuthEncoder.PROVIDER);
     }
 
 }

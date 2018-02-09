@@ -1,20 +1,20 @@
 package org.mqttbee.mqtt5.message.pubrel;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.pubrel.Mqtt5PubRel;
 import org.mqttbee.api.mqtt5.message.pubrel.Mqtt5PubRelReasonCode;
-import org.mqttbee.mqtt5.codec.encoder.Mqtt5PubRelEncoder;
-import org.mqttbee.mqtt5.message.Mqtt5Message;
+import org.mqttbee.mqtt5.message.Mqtt5Message.Mqtt5MessageWithReasonString;
+import org.mqttbee.mqtt5.message.Mqtt5MessageEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
+
+import java.util.function.Function;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5PubRelImpl extends Mqtt5Message.Mqtt5MessageWithOmissibleProperties implements Mqtt5PubRel {
+public class Mqtt5PubRelImpl extends Mqtt5MessageWithReasonString<Mqtt5PubRelImpl> implements Mqtt5PubRel {
 
     @NotNull
     public static final Mqtt5PubRelReasonCode DEFAULT_REASON_CODE = Mqtt5PubRelReasonCode.SUCCESS;
@@ -24,8 +24,10 @@ public class Mqtt5PubRelImpl extends Mqtt5Message.Mqtt5MessageWithOmissiblePrope
 
     public Mqtt5PubRelImpl(
             final int packetIdentifier, @NotNull final Mqtt5PubRelReasonCode reasonCode,
-            @Nullable final Mqtt5UTF8StringImpl reasonString, @NotNull final Mqtt5UserPropertiesImpl userProperties) {
-        super(reasonString, userProperties);
+            @Nullable final Mqtt5UTF8StringImpl reasonString, @NotNull final Mqtt5UserPropertiesImpl userProperties,
+            @NotNull final Function<Mqtt5PubRelImpl, ? extends Mqtt5MessageEncoder<Mqtt5PubRelImpl>> encoderProvider) {
+
+        super(reasonString, userProperties, encoderProvider);
         this.packetIdentifier = packetIdentifier;
         this.reasonCode = reasonCode;
     }
@@ -41,18 +43,8 @@ public class Mqtt5PubRelImpl extends Mqtt5Message.Mqtt5MessageWithOmissiblePrope
     }
 
     @Override
-    public void encode(@NotNull final Channel channel, @NotNull final ByteBuf out) {
-        Mqtt5PubRelEncoder.INSTANCE.encode(this, channel, out);
-    }
-
-    @Override
-    protected int calculateEncodedRemainingLength() {
-        return Mqtt5PubRelEncoder.INSTANCE.encodedRemainingLength(this);
-    }
-
-    @Override
-    protected int calculateEncodedPropertyLength() {
-        return Mqtt5PubRelEncoder.INSTANCE.encodedPropertyLength(this);
+    protected Mqtt5PubRelImpl getCodable() {
+        return this;
     }
 
 }
