@@ -13,21 +13,21 @@ import org.mqttbee.api.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.api.mqtt5.message.publish.TopicAliasUsage;
 import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
-import org.mqttbee.mqtt5.codec.encoder.Mqtt5PublishEncoder.Mqtt5WrappedPublishEncoder;
+import org.mqttbee.mqtt5.codec.encoder.Mqtt5PublishEncoder;
 import org.mqttbee.mqtt5.handler.Mqtt5ClientData;
 import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl;
-import org.mqttbee.mqtt5.message.publish.Mqtt5PublishInternal;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishProperty;
+import org.mqttbee.mqtt5.message.publish.Mqtt5PublishWrapper;
 
 import javax.inject.Singleton;
 
 import static org.mqttbee.mqtt5.codec.decoder.Mqtt5MessageDecoderUtil.*;
 import static org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY;
-import static org.mqttbee.mqtt5.message.publish.Mqtt5PublishInternal.*;
+import static org.mqttbee.mqtt5.message.publish.Mqtt5PublishWrapper.*;
 
 /**
  * @author Silvio Giebl
@@ -39,7 +39,7 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
 
     @Override
     @Nullable
-    public Mqtt5PublishInternal decode(
+    public Mqtt5PublishWrapper decode(
             final int flags, @NotNull final ByteBuf in, @NotNull final Mqtt5ClientData clientData) {
         final Channel channel = clientData.getChannel();
 
@@ -258,7 +258,7 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
         final Mqtt5PublishImpl publish =
                 new Mqtt5PublishImpl(topic, payload, qos, retain, messageExpiryInterval, payloadFormatIndicator,
                         contentType, responseTopic, correlationData, topicAliasUsage, userProperties,
-                        Mqtt5WrappedPublishEncoder.PROVIDER);
+                        Mqtt5PublishEncoder.PROVIDER);
 
         final ImmutableIntArray subscriptionIdentifiers =
                 (subscriptionIdentifiersBuilder == null) ? DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS :

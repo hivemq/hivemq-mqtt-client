@@ -25,7 +25,7 @@ public class Mqtt5TopicAliasMapping {
     }
 
     int set(@NotNull final Mqtt5TopicImpl topic, @NotNull final TopicAliasUsage topicAliasUsage) {
-        int topicAlias = Mqtt5PublishInternal.DEFAULT_NO_TOPIC_ALIAS;
+        int topicAlias = Mqtt5PublishWrapper.DEFAULT_NO_TOPIC_ALIAS;
         if (topicAliasUsage != TopicAliasUsage.MUST_NOT) {
             if (nextTopicAlias == size) {
                 if (topicAliasUsage == TopicAliasUsage.MAY_OVERWRITE) {
@@ -43,7 +43,7 @@ public class Mqtt5TopicAliasMapping {
 
     int get(@NotNull final Mqtt5TopicImpl topic) {
         final Integer topicAlias = hashMap.get(topic.toString());
-        return (topicAlias == null) ? Mqtt5PublishInternal.DEFAULT_NO_TOPIC_ALIAS : topicAlias;
+        return (topicAlias == null) ? Mqtt5PublishWrapper.DEFAULT_NO_TOPIC_ALIAS : topicAlias;
     }
 
     public int size() {
