@@ -14,6 +14,11 @@ import org.mqttbee.api.mqtt5.message.Mqtt5UserProperties;
 @DoNotImplement
 public interface Mqtt5Unsubscribe {
 
+    @NotNull
+    static Mqtt5UnsubscribeBuilder build() {
+        return new Mqtt5UnsubscribeBuilder();
+    }
+
     /**
      * @return the Topic Filters of this UNSUBSCRIBE packet. The list contains at least one Topic Filter.
      */

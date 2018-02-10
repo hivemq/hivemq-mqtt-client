@@ -16,6 +16,7 @@ import org.mqttbee.api.mqtt5.message.subscribe.Mqtt5SubscribeBuilder.Subscriptio
 @DoNotImplement
 public interface Mqtt5Subscribe {
 
+    @NotNull
     static Mqtt5SubscribeBuilder builder() {
         return new Mqtt5SubscribeBuilder();
     }
@@ -49,6 +50,7 @@ public interface Mqtt5Subscribe {
          */
         boolean DEFAULT_RETAIN_AS_PUBLISHED = false;
 
+        @NotNull
         static SubscriptionBuilder builder() {
             return new SubscriptionBuilder();
         }

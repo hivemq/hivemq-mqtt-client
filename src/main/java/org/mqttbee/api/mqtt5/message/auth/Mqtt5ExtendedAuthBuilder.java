@@ -18,7 +18,6 @@ public class Mqtt5ExtendedAuthBuilder {
 
     @NotNull
     public Mqtt5ExtendedAuthBuilder withMethod(@NotNull final Mqtt5UTF8String method) {
-        Preconditions.checkNotNull(method);
         this.method = MustNotBeImplementedUtil.checkNotImplemented(method, Mqtt5UTF8StringImpl.class);
         return this;
     }

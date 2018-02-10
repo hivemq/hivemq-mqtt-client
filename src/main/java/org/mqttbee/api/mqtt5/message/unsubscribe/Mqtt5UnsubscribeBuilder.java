@@ -19,16 +19,17 @@ public class Mqtt5UnsubscribeBuilder {
     private final ImmutableList.Builder<Mqtt5TopicFilterImpl> topicFiltersBuilder = ImmutableList.builder();
     private Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES;
 
+    Mqtt5UnsubscribeBuilder() {
+    }
+
     @NotNull
     public Mqtt5UnsubscribeBuilder addTopicFilter(@NotNull final Mqtt5TopicFilter topicFilter) {
-        Preconditions.checkNotNull(topicFilter);
         topicFiltersBuilder.add(MustNotBeImplementedUtil.checkNotImplemented(topicFilter, Mqtt5TopicFilterImpl.class));
         return this;
     }
 
     @NotNull
     public Mqtt5UnsubscribeBuilder withUserProperties(@NotNull final Mqtt5UserProperties userProperties) {
-        Preconditions.checkNotNull(userProperties);
         this.userProperties =
                 MustNotBeImplementedUtil.checkNotImplemented(userProperties, Mqtt5UserPropertiesImpl.class);
         return this;

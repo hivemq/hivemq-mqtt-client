@@ -1,5 +1,7 @@
 package org.mqttbee.api.mqtt5.message;
 
+import org.mqttbee.annotations.Nullable;
+
 /**
  * MQTT Quality of Service according to the MQTT 5 specification.
  *
@@ -33,6 +35,7 @@ public enum Mqtt5QoS {
      * @param code the byte code.
      * @return the QoS belonging to the given byte code or null if the byte code is not a valid QoS code.
      */
+    @Nullable
     public static Mqtt5QoS fromCode(final int code) {
         final Mqtt5QoS[] values = values();
         if (code < 0 || code >= values.length) {

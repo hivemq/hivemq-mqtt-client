@@ -1,6 +1,7 @@
 package org.mqttbee.api.mqtt5.message.publish;
 
 import org.mqttbee.annotations.DoNotImplement;
+import org.mqttbee.annotations.NotNull;
 
 /**
  * MQTT 5 Will Publish which can be a part of the CONNECT packet.
@@ -9,6 +10,16 @@ import org.mqttbee.annotations.DoNotImplement;
  */
 @DoNotImplement
 public interface Mqtt5WillPublish extends Mqtt5Publish {
+
+    @NotNull
+    static Mqtt5WillPublishBuilder build() {
+        return new Mqtt5WillPublishBuilder();
+    }
+
+    @NotNull
+    static Mqtt5WillPublishBuilder extend(@NotNull final Mqtt5Publish publish) {
+        return new Mqtt5WillPublishBuilder(publish);
+    }
 
     /**
      * The default delay of Will Publishes.
