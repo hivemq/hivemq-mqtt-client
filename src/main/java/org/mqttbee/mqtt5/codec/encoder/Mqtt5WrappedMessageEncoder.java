@@ -1,7 +1,6 @@
 package org.mqttbee.mqtt5.codec.encoder;
 
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoder.Mqtt5MessageWithPropertiesEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 import org.mqttbee.mqtt5.message.Mqtt5WrappedMessage;
 import org.mqttbee.mqtt5.message.Mqtt5WrappedMessage.Mqtt5MessageWrapper;
