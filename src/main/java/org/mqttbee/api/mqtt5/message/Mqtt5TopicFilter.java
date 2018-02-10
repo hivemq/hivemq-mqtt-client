@@ -44,6 +44,21 @@ public interface Mqtt5TopicFilter extends Mqtt5UTF8String {
         return topicFilter;
     }
 
+    @NotNull
+    static Mqtt5TopicFilterBuilder builder(@NotNull final String topTopic) {
+        return new Mqtt5TopicFilterBuilder(topTopic);
+    }
+
+    @NotNull
+    static Mqtt5TopicFilterBuilder extend(@NotNull final Mqtt5TopicFilter topicFilter) {
+        return new Mqtt5TopicFilterBuilder(topicFilter.toString());
+    }
+
+    @NotNull
+    static Mqtt5TopicFilterBuilder filter(@NotNull final Mqtt5Topic topic) {
+        return new Mqtt5TopicFilterBuilder(topic.toString());
+    }
+
     /**
      * @return the levels of this Topic Filter.
      */

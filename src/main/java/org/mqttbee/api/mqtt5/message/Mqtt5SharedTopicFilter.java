@@ -39,9 +39,32 @@ public interface Mqtt5SharedTopicFilter extends Mqtt5TopicFilter {
 
         final Mqtt5SharedTopicFilter sharedTopicFilter = Mqtt5SharedTopicFilterImpl.from(shareName, topicFilter);
         if (sharedTopicFilter == null) {
-            throw new IllegalArgumentException("The shareName: [" + shareName + "] is not a valid Topic Name.");
+            throw new IllegalArgumentException(
+                    "The string: [" + SHARE_PREFIX + shareName + topicFilter + "] is not a valid Topic Name.");
         }
         return sharedTopicFilter;
+    }
+
+    @NotNull
+    static Mqtt5SharedTopicFilterBuilder builder(@NotNull final String shareName, @NotNull final String topTopic) {
+        return new Mqtt5SharedTopicFilterBuilder(shareName, topTopic);
+    }
+
+    @NotNull
+    static Mqtt5SharedTopicFilterBuilder extend(@NotNull final Mqtt5SharedTopicFilter sharedTopicFilter) {
+        return new Mqtt5SharedTopicFilterBuilder(sharedTopicFilter.getShareName(), sharedTopicFilter.getTopicFilter());
+    }
+
+    @NotNull
+    static Mqtt5SharedTopicFilterBuilder share(
+            @NotNull final String shareName, @NotNull final Mqtt5TopicFilter topicFilter) {
+
+        return new Mqtt5SharedTopicFilterBuilder(shareName, topicFilter.toString());
+    }
+
+    @NotNull
+    static Mqtt5SharedTopicFilterBuilder share(@NotNull final String shareName, @NotNull final Mqtt5Topic topic) {
+        return new Mqtt5SharedTopicFilterBuilder(shareName, topic.toString());
     }
 
     /**
