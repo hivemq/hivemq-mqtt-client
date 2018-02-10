@@ -53,7 +53,7 @@ public class Mqtt5PublishEncoder extends Mqtt5WrappedMessageEncoder<Mqtt5Publish
 
         propertyLength +=
                 intPropertyEncodedLength(message.getRawMessageExpiryInterval(), MESSAGE_EXPIRY_INTERVAL_INFINITY);
-        propertyLength += propertyEncodedLength(message.getRawPayloadFormatIndicator());
+        propertyLength += nullablePropertyEncodedLength(message.getRawPayloadFormatIndicator());
         propertyLength += nullablePropertyEncodedLength(message.getRawContentType());
         propertyLength += nullablePropertyEncodedLength(message.getRawResponseTopic());
         propertyLength += nullablePropertyEncodedLength(message.getRawCorrelationData());

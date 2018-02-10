@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
+import org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoder.Mqtt5MessageWithReasonStringEncoder;
 import org.mqttbee.mqtt5.handler.Mqtt5ServerData;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.auth.Mqtt5AuthImpl;
@@ -17,7 +18,7 @@ import static org.mqttbee.mqtt5.message.auth.Mqtt5AuthProperty.AUTHENTICATION_ME
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5AuthEncoder extends Mqtt5MessageEncoder.Mqtt5MessageWithReasonStringEncoder<Mqtt5AuthImpl> {
+public class Mqtt5AuthEncoder extends Mqtt5MessageWithReasonStringEncoder<Mqtt5AuthImpl> {
 
     public static final Function<Mqtt5AuthImpl, Mqtt5AuthEncoder> PROVIDER = Mqtt5AuthEncoder::new;
 
