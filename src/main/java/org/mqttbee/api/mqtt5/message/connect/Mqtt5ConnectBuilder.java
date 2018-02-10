@@ -143,15 +143,14 @@ public class Mqtt5ConnectBuilder {
         }
 
         @NotNull
-        public SimpleAuthBuilder withUsername(@NotNull final Mqtt5UTF8String username) {
-            this.username = MustNotBeImplementedUtil.checkNotImplemented(username, Mqtt5UTF8StringImpl.class);
+        public SimpleAuthBuilder withUsername(@Nullable final Mqtt5UTF8String username) {
+            this.username = MustNotBeImplementedUtil.checkNullOrNotImplemented(username, Mqtt5UTF8StringImpl.class);
             return this;
         }
 
         @NotNull
-        public SimpleAuthBuilder withPassword(@NotNull final byte[] password) { // TODO
-            Preconditions.checkNotNull(password);
-            Preconditions.checkArgument(Mqtt5DataTypes.isInBinaryDataRange(password));
+        public SimpleAuthBuilder withPassword(@Nullable final byte[] password) { // TODO
+            Preconditions.checkArgument((password == null) || Mqtt5DataTypes.isInBinaryDataRange(password));
             this.password = password;
             return this;
         }
