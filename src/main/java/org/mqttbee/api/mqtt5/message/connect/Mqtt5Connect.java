@@ -32,8 +32,14 @@ public interface Mqtt5Connect {
     boolean DEFAULT_RESPONSE_INFORMATION_REQUESTED = false;
     boolean DEFAULT_PROBLEM_INFORMATION_REQUESTED = true;
 
+    @NotNull
     static Mqtt5ConnectBuilder builder() {
         return new Mqtt5ConnectBuilder();
+    }
+
+    @NotNull
+    static Mqtt5ConnectBuilder extend(@NotNull final Mqtt5Connect connect) {
+        return new Mqtt5ConnectBuilder(connect);
     }
 
     /**
@@ -108,6 +114,7 @@ public interface Mqtt5Connect {
     @DoNotImplement
     interface SimpleAuth {
 
+        @NotNull
         static SimpleAuthBuilder builder() {
             return new SimpleAuthBuilder();
         }
@@ -147,6 +154,7 @@ public interface Mqtt5Connect {
          */
         int DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT = Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT;
 
+        @NotNull
         static RestrictionsBuilder builder() {
             return new RestrictionsBuilder();
         }

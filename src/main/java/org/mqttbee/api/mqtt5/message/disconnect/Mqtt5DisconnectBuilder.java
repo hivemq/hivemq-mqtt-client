@@ -2,6 +2,7 @@ package org.mqttbee.api.mqtt5.message.disconnect;
 
 import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.api.mqtt5.message.Mqtt5UserProperties;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5DisconnectEncoder;
@@ -25,6 +26,9 @@ public class Mqtt5DisconnectBuilder {
     private Mqtt5UTF8StringImpl reasonString;
     private Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES;
 
+    Mqtt5DisconnectBuilder() {
+    }
+
     @NotNull
     public Mqtt5DisconnectBuilder withWillMessage(final boolean withWillMessage) {
         this.withWillMessage = withWillMessage;
@@ -39,22 +43,20 @@ public class Mqtt5DisconnectBuilder {
     }
 
     @NotNull
-    public Mqtt5DisconnectBuilder withServerReference(@NotNull final Mqtt5UTF8String serverReference) {
-        Preconditions.checkNotNull(serverReference);
-        this.serverReference = MustNotBeImplementedUtil.checkNotImplemented(serverReference, Mqtt5UTF8StringImpl.class);
+    public Mqtt5DisconnectBuilder withServerReference(@Nullable final Mqtt5UTF8String serverReference) {
+        this.serverReference =
+                MustNotBeImplementedUtil.checkNullOrNotImplemented(serverReference, Mqtt5UTF8StringImpl.class);
         return this;
     }
 
     @NotNull
-    public Mqtt5DisconnectBuilder withReasonString(@NotNull final Mqtt5UTF8String reasonString) {
-        Preconditions.checkNotNull(reasonString);
-        this.reasonString = MustNotBeImplementedUtil.checkNotImplemented(reasonString, Mqtt5UTF8StringImpl.class);
+    public Mqtt5DisconnectBuilder withReasonString(@Nullable final Mqtt5UTF8String reasonString) {
+        this.reasonString = MustNotBeImplementedUtil.checkNullOrNotImplemented(reasonString, Mqtt5UTF8StringImpl.class);
         return this;
     }
 
     @NotNull
     public Mqtt5DisconnectBuilder withUserProperties(@NotNull final Mqtt5UserProperties userProperties) {
-        Preconditions.checkNotNull(userProperties);
         this.userProperties =
                 MustNotBeImplementedUtil.checkNotImplemented(userProperties, Mqtt5UserPropertiesImpl.class);
         return this;

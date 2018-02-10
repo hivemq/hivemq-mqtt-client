@@ -15,6 +15,7 @@ import java.util.Optional;
 @DoNotImplement
 public interface Mqtt5Disconnect {
 
+    @NotNull
     static Mqtt5DisconnectBuilder builder() {
         return new Mqtt5DisconnectBuilder();
     }

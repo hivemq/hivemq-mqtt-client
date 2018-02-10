@@ -42,8 +42,14 @@ public interface Mqtt5UserProperties {
         return Mqtt5UserPropertiesImpl.of(builder.build());
     }
 
+    @NotNull
     static Mqtt5UserPropertiesBuilder builder() {
         return new Mqtt5UserPropertiesBuilder();
+    }
+
+    @NotNull
+    static Mqtt5UserPropertiesBuilder extend(@NotNull final Mqtt5UserProperties userProperties) {
+        return new Mqtt5UserPropertiesBuilder(userProperties);
     }
 
     /**

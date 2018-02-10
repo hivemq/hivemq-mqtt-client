@@ -23,16 +23,17 @@ public class Mqtt5SubscribeBuilder {
     private final ImmutableList.Builder<SubscriptionImpl> subscriptionBuilder = ImmutableList.builder();
     private Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES;
 
+    Mqtt5SubscribeBuilder() {
+    }
+
     @NotNull
     public Mqtt5SubscribeBuilder addSubscription(@NotNull final Subscription subscription) {
-        Preconditions.checkNotNull(subscription);
         subscriptionBuilder.add(MustNotBeImplementedUtil.checkNotImplemented(subscription, SubscriptionImpl.class));
         return this;
     }
 
     @NotNull
     public Mqtt5SubscribeBuilder withUserProperties(@NotNull final Mqtt5UserProperties userProperties) {
-        Preconditions.checkNotNull(userProperties);
         this.userProperties =
                 MustNotBeImplementedUtil.checkNotImplemented(userProperties, Mqtt5UserPropertiesImpl.class);
         return this;
@@ -54,17 +55,18 @@ public class Mqtt5SubscribeBuilder {
         private Mqtt5RetainHandling retainHandling = Subscription.DEFAULT_RETAIN_HANDLING;
         private boolean retainAsPublished = Subscription.DEFAULT_RETAIN_AS_PUBLISHED;
 
+        SubscriptionBuilder() {
+        }
+
         @NotNull
         public SubscriptionBuilder withTopicFilter(@NotNull final Mqtt5TopicFilter topicFilter) {
-            Preconditions.checkNotNull(topicFilter);
             this.topicFilter = MustNotBeImplementedUtil.checkNotImplemented(topicFilter, Mqtt5TopicFilterImpl.class);
             return this;
         }
 
         @NotNull
         public SubscriptionBuilder withQoS(@NotNull final Mqtt5QoS qos) {
-            Preconditions.checkNotNull(qos);
-            this.qos = qos;
+            this.qos = Preconditions.checkNotNull(qos);
             return this;
         }
 
@@ -76,8 +78,7 @@ public class Mqtt5SubscribeBuilder {
 
         @NotNull
         public SubscriptionBuilder withRetainHandling(@NotNull final Mqtt5RetainHandling retainHandling) {
-            Preconditions.checkNotNull(retainHandling);
-            this.retainHandling = retainHandling;
+            this.retainHandling = Preconditions.checkNotNull(retainHandling);
             return this;
         }
 

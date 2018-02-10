@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5PublishEncoder;
 import org.mqttbee.mqtt5.message.publish.Mqtt5WillPublishImpl;
+import org.mqttbee.util.MustNotBeImplementedUtil;
 import org.mqttbee.util.UnsignedDataTypes;
 
 import static org.mqttbee.mqtt5.message.publish.Mqtt5WillPublishImpl.DEFAULT_DELAY_INTERVAL;
@@ -14,6 +15,17 @@ import static org.mqttbee.mqtt5.message.publish.Mqtt5WillPublishImpl.DEFAULT_DEL
 public class Mqtt5WillPublishBuilder extends Mqtt5PublishBuilder {
 
     private long delayInterval = DEFAULT_DELAY_INTERVAL;
+
+    Mqtt5WillPublishBuilder() {
+    }
+
+    Mqtt5WillPublishBuilder(@NotNull final Mqtt5Publish publish) {
+        super(publish);
+        if (publish instanceof Mqtt5WillPublish) {
+            delayInterval = MustNotBeImplementedUtil.checkNotImplemented(publish, Mqtt5WillPublishImpl.class)
+                    .getDelayInterval();
+        }
+    }
 
     @NotNull
     @Override

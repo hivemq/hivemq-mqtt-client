@@ -21,10 +21,17 @@ public interface Mqtt5Publish {
     /**
      * The default handling for using a topic alias.
      */
+    @NotNull
     TopicAliasUsage DEFAULT_TOPIC_ALIAS_USAGE = TopicAliasUsage.MUST_NOT;
 
+    @NotNull
     static Mqtt5PublishBuilder builder() {
         return new Mqtt5PublishBuilder();
+    }
+
+    @NotNull
+    static Mqtt5PublishBuilder extend(@NotNull final Mqtt5Publish publish) {
+        return new Mqtt5PublishBuilder(publish);
     }
 
     /**

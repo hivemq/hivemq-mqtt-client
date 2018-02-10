@@ -2,6 +2,7 @@ package org.mqttbee.api.mqtt5.message.connect;
 
 import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5ClientIdentifier;
 import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.api.mqtt5.message.Mqtt5UserProperties;
@@ -36,9 +37,27 @@ public class Mqtt5ConnectBuilder {
     private Mqtt5WillPublishImpl willPublish;
     private Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES;
 
+    Mqtt5ConnectBuilder() {
+    }
+
+    Mqtt5ConnectBuilder(@NotNull final Mqtt5Connect connect) {
+        final Mqtt5ConnectImpl connectImpl =
+                MustNotBeImplementedUtil.checkNotImplemented(connect, Mqtt5ConnectImpl.class);
+        clientIdentifier = connectImpl.getRawClientIdentifier();
+        keepAlive = connectImpl.getKeepAlive();
+        isCleanStart = connectImpl.isCleanStart();
+        sessionExpiryInterval = connectImpl.getSessionExpiryInterval();
+        isResponseInformationRequested = connectImpl.isResponseInformationRequested();
+        isProblemInformationRequested = connectImpl.isProblemInformationRequested();
+        restrictions = connectImpl.getRestrictions();
+        simpleAuth = connectImpl.getRawSimpleAuth();
+        extendedAuth = connectImpl.getRawExtendedAuth();
+        willPublish = connectImpl.getRawWillPublish();
+        userProperties = connectImpl.getUserProperties();
+    }
+
     @NotNull
     public Mqtt5ConnectBuilder withClientIdentifier(@NotNull final Mqtt5ClientIdentifier clientIdentifier) {
-        Preconditions.checkNotNull(clientIdentifier);
         this.clientIdentifier =
                 MustNotBeImplementedUtil.checkNotImplemented(clientIdentifier, Mqtt5ClientIdentifierImpl.class);
         return this;
@@ -77,35 +96,31 @@ public class Mqtt5ConnectBuilder {
 
     @NotNull
     public Mqtt5ConnectBuilder withRestrictions(@NotNull final Restrictions restrictions) {
-        Preconditions.checkNotNull(restrictions);
         this.restrictions = MustNotBeImplementedUtil.checkNotImplemented(restrictions, RestrictionsImpl.class);
         return this;
     }
 
     @NotNull
-    public Mqtt5ConnectBuilder withSimpleAuth(@NotNull final SimpleAuth simpleAuth) {
-        Preconditions.checkNotNull(simpleAuth);
-        this.simpleAuth = MustNotBeImplementedUtil.checkNotImplemented(simpleAuth, SimpleAuthImpl.class);
+    public Mqtt5ConnectBuilder withSimpleAuth(@Nullable final SimpleAuth simpleAuth) {
+        this.simpleAuth = MustNotBeImplementedUtil.checkNullOrNotImplemented(simpleAuth, SimpleAuthImpl.class);
         return this;
     }
 
     @NotNull
-    public Mqtt5ConnectBuilder withExtendedAuth(@NotNull final Mqtt5ExtendedAuth extendedAuth) {
-        Preconditions.checkNotNull(extendedAuth);
-        this.extendedAuth = MustNotBeImplementedUtil.checkNotImplemented(extendedAuth, Mqtt5ExtendedAuthImpl.class);
+    public Mqtt5ConnectBuilder withExtendedAuth(@Nullable final Mqtt5ExtendedAuth extendedAuth) {
+        this.extendedAuth =
+                MustNotBeImplementedUtil.checkNullOrNotImplemented(extendedAuth, Mqtt5ExtendedAuthImpl.class);
         return this;
     }
 
     @NotNull
-    public Mqtt5ConnectBuilder withWillPublish(@NotNull final Mqtt5WillPublish willPublish) {
-        Preconditions.checkNotNull(willPublish);
-        this.willPublish = MustNotBeImplementedUtil.checkNotImplemented(willPublish, Mqtt5WillPublishImpl.class);
+    public Mqtt5ConnectBuilder withWillPublish(@Nullable final Mqtt5WillPublish willPublish) {
+        this.willPublish = MustNotBeImplementedUtil.checkNullOrNotImplemented(willPublish, Mqtt5WillPublishImpl.class);
         return this;
     }
 
     @NotNull
     public Mqtt5ConnectBuilder withUserProperties(@NotNull final Mqtt5UserProperties userProperties) {
-        Preconditions.checkNotNull(userProperties);
         this.userProperties =
                 MustNotBeImplementedUtil.checkNotImplemented(userProperties, Mqtt5UserPropertiesImpl.class);
         return this;
@@ -124,9 +139,11 @@ public class Mqtt5ConnectBuilder {
         private Mqtt5UTF8StringImpl username;
         private byte[] password;
 
+        SimpleAuthBuilder() {
+        }
+
         @NotNull
         public SimpleAuthBuilder withUsername(@NotNull final Mqtt5UTF8String username) {
-            Preconditions.checkNotNull(username);
             this.username = MustNotBeImplementedUtil.checkNotImplemented(username, Mqtt5UTF8StringImpl.class);
             return this;
         }
@@ -153,6 +170,9 @@ public class Mqtt5ConnectBuilder {
         private int receiveMaximum = Restrictions.DEFAULT_RECEIVE_MAXIMUM;
         private int topicAliasMaximum = Restrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM;
         private int maximumPacketSize = Restrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT;
+
+        RestrictionsBuilder() {
+        }
 
         @NotNull
         public RestrictionsBuilder withReceiveMaximum(final int receiveMaximum) {

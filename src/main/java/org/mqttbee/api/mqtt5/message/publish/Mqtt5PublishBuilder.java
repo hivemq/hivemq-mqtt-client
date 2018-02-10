@@ -2,10 +2,12 @@ package org.mqttbee.api.mqtt5.message.publish;
 
 import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.api.mqtt5.message.Mqtt5Topic;
 import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.api.mqtt5.message.Mqtt5UserProperties;
+import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5PublishEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
@@ -34,24 +36,40 @@ public class Mqtt5PublishBuilder {
     private TopicAliasUsage topicAliasUsage = DEFAULT_TOPIC_ALIAS_USAGE;
     Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES;
 
+    Mqtt5PublishBuilder() {
+    }
+
+    Mqtt5PublishBuilder(@NotNull final Mqtt5Publish publish) {
+        final Mqtt5PublishImpl publishImpl =
+                MustNotBeImplementedUtil.checkNotImplemented(publish, Mqtt5PublishImpl.class);
+        topic = publishImpl.getTopic();
+        payload = publishImpl.getRawPayload();
+        qos = publishImpl.getQos();
+        retain = publishImpl.isRetain();
+        messageExpiryInterval = publishImpl.getRawMessageExpiryInterval();
+        payloadFormatIndicator = publishImpl.getRawPayloadFormatIndicator();
+        contentType = publishImpl.getRawContentType();
+        responseTopic = publishImpl.getRawResponseTopic();
+        correlationData = publishImpl.getRawCorrelationData();
+        topicAliasUsage = publishImpl.getTopicAliasUsage();
+        userProperties = publishImpl.getUserProperties();
+    }
+
     @NotNull
     public Mqtt5PublishBuilder withTopic(@NotNull final Mqtt5Topic topic) {
-        Preconditions.checkNotNull(topic);
         this.topic = MustNotBeImplementedUtil.checkNotImplemented(topic, Mqtt5TopicImpl.class);
         return this;
     }
 
     @NotNull
-    public Mqtt5PublishBuilder withPayload(@NotNull final byte[] payload) { // TODO
-        Preconditions.checkNotNull(payload);
+    public Mqtt5PublishBuilder withPayload(@Nullable final byte[] payload) { // TODO
         this.payload = payload;
         return this;
     }
 
     @NotNull
     public Mqtt5PublishBuilder withQos(@NotNull final Mqtt5QoS qos) {
-        Preconditions.checkNotNull(qos);
-        this.qos = qos;
+        this.qos = Preconditions.checkNotNull(qos);
         return this;
     }
 
@@ -70,30 +88,27 @@ public class Mqtt5PublishBuilder {
 
     @NotNull
     public Mqtt5PublishBuilder withPayloadFormatIndicator(
-            @NotNull final Mqtt5PayloadFormatIndicator payloadFormatIndicator) {
+            @Nullable final Mqtt5PayloadFormatIndicator payloadFormatIndicator) {
 
-        Preconditions.checkNotNull(payloadFormatIndicator);
         this.payloadFormatIndicator = payloadFormatIndicator;
         return this;
     }
 
     @NotNull
-    public Mqtt5PublishBuilder withContentType(@NotNull final Mqtt5UTF8String contentType) {
-        Preconditions.checkNotNull(contentType);
-        this.contentType = MustNotBeImplementedUtil.checkNotImplemented(contentType, Mqtt5UTF8StringImpl.class);
+    public Mqtt5PublishBuilder withContentType(@Nullable final Mqtt5UTF8String contentType) {
+        this.contentType = MustNotBeImplementedUtil.checkNullOrNotImplemented(contentType, Mqtt5UTF8StringImpl.class);
         return this;
     }
 
     @NotNull
-    public Mqtt5PublishBuilder withResponseTopic(@NotNull final Mqtt5Topic responseTopic) {
-        Preconditions.checkNotNull(responseTopic);
-        this.responseTopic = MustNotBeImplementedUtil.checkNotImplemented(responseTopic, Mqtt5TopicImpl.class);
+    public Mqtt5PublishBuilder withResponseTopic(@Nullable final Mqtt5Topic responseTopic) {
+        this.responseTopic = MustNotBeImplementedUtil.checkNullOrNotImplemented(responseTopic, Mqtt5TopicImpl.class);
         return this;
     }
 
     @NotNull
-    public Mqtt5PublishBuilder withCorrelationData(@NotNull final byte[] correlationData) { // TODO
-        Preconditions.checkNotNull(correlationData);
+    public Mqtt5PublishBuilder withCorrelationData(@Nullable final byte[] correlationData) { // TODO
+        Preconditions.checkArgument((correlationData == null) || Mqtt5DataTypes.isInBinaryDataRange(correlationData));
         this.correlationData = correlationData;
         return this;
     }
@@ -107,7 +122,6 @@ public class Mqtt5PublishBuilder {
 
     @NotNull
     public Mqtt5PublishBuilder withUserProperties(@NotNull final Mqtt5UserProperties userProperties) {
-        Preconditions.checkNotNull(userProperties);
         this.userProperties =
                 MustNotBeImplementedUtil.checkNotImplemented(userProperties, Mqtt5UserPropertiesImpl.class);
         return this;
