@@ -2,6 +2,7 @@ package org.mqttbee.api.mqtt5.message.auth;
 
 import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
@@ -23,9 +24,8 @@ public class Mqtt5ExtendedAuthBuilder {
     }
 
     @NotNull
-    public Mqtt5ExtendedAuthBuilder withData(@NotNull final byte[] data) {
-        Preconditions.checkNotNull(method);
-        Preconditions.checkArgument(Mqtt5DataTypes.isInBinaryDataRange(data));
+    public Mqtt5ExtendedAuthBuilder withData(@Nullable final byte[] data) {
+        Preconditions.checkArgument((data == null) || Mqtt5DataTypes.isInBinaryDataRange(data));
         this.data = data;
         return this;
     }
