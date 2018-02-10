@@ -21,7 +21,7 @@ public class Mqtt5MessageEncoderUtil {
      * @param remainingLength the remaining length of the MQTT message.
      * @return the encoded length of the MQTT message.
      */
-    public static int encodedPacketLength(final int remainingLength) {
+    static int encodedPacketLength(final int remainingLength) {
         return 1 + encodedLengthWithHeader(remainingLength);
     }
 
@@ -31,7 +31,7 @@ public class Mqtt5MessageEncoderUtil {
      * @param encodedLength the encoded length.
      * @return the encoded length with a prefixed header.
      */
-    public static int encodedLengthWithHeader(final int encodedLength) {
+    static int encodedLengthWithHeader(final int encodedLength) {
         return Mqtt5DataTypes.encodedVariableByteIntegerLength(encodedLength) + encodedLength;
     }
 
@@ -59,7 +59,7 @@ public class Mqtt5MessageEncoderUtil {
         return 1 + string.encodedLength();
     }
 
-    public static int nullablePropertyEncodedLength(@Nullable final Mqtt5UTF8StringImpl string) {
+    static int nullablePropertyEncodedLength(@Nullable final Mqtt5UTF8StringImpl string) {
         return (string == null) ? 0 : propertyEncodedLength(string);
     }
 
@@ -67,9 +67,7 @@ public class Mqtt5MessageEncoderUtil {
         return (binary == null) ? 0 : 1 + Mqtt5DataTypes.encodedBinaryDataLength(binary);
     }
 
-    static int propertyEncodedLength(
-            @Nullable final Mqtt5PayloadFormatIndicator payloadFormatIndicator) {
-
+    static int nullablePropertyEncodedLength(@Nullable final Mqtt5PayloadFormatIndicator payloadFormatIndicator) {
         return (payloadFormatIndicator == null) ? 0 : 2;
     }
 
@@ -100,7 +98,7 @@ public class Mqtt5MessageEncoderUtil {
         string.to(out);
     }
 
-    public static void encodeNullableProperty(
+    static void encodeNullableProperty(
             final int propertyIdentifier, @Nullable final Mqtt5UTF8StringImpl string, @NotNull final ByteBuf out) {
 
         if (string != null) {

@@ -107,7 +107,7 @@ public class Mqtt5ConnectEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
         if (willPublish != null) {
             willPropertyLength += intPropertyEncodedLength(willPublish.getRawMessageExpiryInterval(),
                     Mqtt5WillPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY);
-            willPropertyLength += propertyEncodedLength(willPublish.getRawPayloadFormatIndicator());
+            willPropertyLength += nullablePropertyEncodedLength(willPublish.getRawPayloadFormatIndicator());
             willPropertyLength += nullablePropertyEncodedLength(willPublish.getRawContentType());
             willPropertyLength += nullablePropertyEncodedLength(willPublish.getRawResponseTopic());
             willPropertyLength += nullablePropertyEncodedLength(willPublish.getRawCorrelationData());
