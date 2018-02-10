@@ -92,6 +92,7 @@ public class Mqtt5SubscribeBuilder {
         public Subscription build() {
             Preconditions.checkNotNull(topicFilter);
             Preconditions.checkNotNull(qos);
+            Preconditions.checkArgument(!(topicFilter.isShared() && noLocal));
             return new SubscriptionImpl(topicFilter, qos, noLocal, retainHandling, retainAsPublished);
         }
 
