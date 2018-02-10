@@ -1,5 +1,6 @@
 package org.mqttbee.mqtt5.codec.encoder;
 
+import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 import org.mqttbee.mqtt5.message.Mqtt5WrappedMessage;
@@ -23,10 +24,10 @@ public abstract class Mqtt5WrappedMessageEncoder<T extends Mqtt5WrappedMessage<T
     }
 
     /**
-     * Returns the remaining length byte count without the properties of the MQTT message. Calculation is only performed
-     * if necessary.
+     * Returns the remaining length byte count without the properties of the wrapped MQTT message. Calculation is only
+     * performed if necessary.
      *
-     * @return the remaining length without the properties of the MQTT message.
+     * @return the remaining length without the properties of the wrapped MQTT message.
      */
     final int encodedRemainingLengthWithoutProperties() {
         if (remainingLengthWithoutProperties == -1) {
@@ -36,16 +37,16 @@ public abstract class Mqtt5WrappedMessageEncoder<T extends Mqtt5WrappedMessage<T
     }
 
     /**
-     * Calculates the remaining length byte count without the properties of the MQTT message.
+     * Calculates the remaining length byte count without the properties of the wrapped MQTT message.
      *
-     * @return the remaining length without the properties of the MQTT message.
+     * @return the remaining length without the properties of the wrapped MQTT message.
      */
     abstract int calculateEncodedRemainingLengthWithoutProperties();
 
     /**
-     * Returns the property length byte count of the MQTT message. Calculation is only performed if necessary.
+     * Returns the property length byte count of the wrapped MQTT message. Calculation is only performed if necessary.
      *
-     * @return the encoded property length of the MQTT message.
+     * @return the property length of the wrapped MQTT message.
      */
     final int encodedPropertyLength() {
         if (propertyLength == -1) {
@@ -55,12 +56,22 @@ public abstract class Mqtt5WrappedMessageEncoder<T extends Mqtt5WrappedMessage<T
     }
 
     /**
-     * Calculates the property length byte count of this MQTT message.
+     * Calculates the property length byte count of the wrapped MQTT message.
      *
-     * @return the property length of this MQTT message.
+     * @return the property length of the wrapped MQTT message.
      */
     abstract int calculateEncodedPropertyLength();
 
+    /**
+     * Encodes the properties of the wrapped MQTT message which must not be omitted by the wrapper.
+     */
+    void encodeFixedProperties(@NotNull final ByteBuf out) {
+        // default no op
+    }
+
+    /**
+     * @return a new encoder for a wrapper around the MQTT message.
+     */
     public abstract Function<W, ? extends Mqtt5MessageWrapperEncoder<W>> wrap();
 
 

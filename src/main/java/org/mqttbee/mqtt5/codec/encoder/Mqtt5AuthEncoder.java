@@ -40,8 +40,7 @@ public class Mqtt5AuthEncoder extends Mqtt5MessageWithReasonStringEncoder<Mqtt5A
 
         propertyLength += propertyEncodedLength(message.getMethod());
         propertyLength += nullablePropertyEncodedLength(message.getRawData());
-        propertyLength += nullablePropertyEncodedLength(message.getRawReasonString());
-        propertyLength += message.getUserProperties().encodedLength();
+        propertyLength += omissiblePropertiesLength();
 
         return propertyLength;
     }

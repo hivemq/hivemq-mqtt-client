@@ -168,7 +168,7 @@ abstract class Mqtt5MessageWithPropertiesEncoder<T extends Mqtt5Message> extends
      * @return the length of properties which must be omitted to fit the maximum packet size.
      */
     int omittedPropertiesLength(final int maxPacketSize) {
-        return getUserProperties().encodedLength();
+        return userPropertiesLength();
     }
 
     /**
@@ -181,7 +181,12 @@ abstract class Mqtt5MessageWithPropertiesEncoder<T extends Mqtt5Message> extends
         return Mqtt5MessageEncoderUtil.encodedLengthWithHeader(propertyLength);
     }
 
-    abstract Mqtt5UserPropertiesImpl getUserProperties();
+    /**
+     * @return the length of the omissible properties of the MQTT message.
+     */
+    int omissiblePropertiesLength() {
+        return userPropertiesLength();
+    }
 
     /**
      * Encodes the omissible properties of the MQTT message if they must not be omitted due to the given maximum packet
@@ -195,6 +200,12 @@ abstract class Mqtt5MessageWithPropertiesEncoder<T extends Mqtt5Message> extends
             getUserProperties().encode(out);
         }
     }
+
+    final int userPropertiesLength() {
+        return getUserProperties().encodedLength();
+    }
+
+    abstract Mqtt5UserPropertiesImpl getUserProperties();
 
 
     /**
@@ -231,7 +242,12 @@ abstract class Mqtt5MessageWithPropertiesEncoder<T extends Mqtt5Message> extends
             if (encodedLengthFromOmittedProperties(reasonStringLength) <= maxPacketSize) {
                 return reasonStringLength;
             }
-            return reasonStringLength + getUserProperties().encodedLength();
+            return reasonStringLength + userPropertiesLength();
+        }
+
+        @Override
+        final int omissiblePropertiesLength() {
+            return reasonStringLength() + userPropertiesLength();
         }
 
         @Override

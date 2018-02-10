@@ -52,7 +52,7 @@ public class Mqtt5ConnectEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
 
         final Mqtt5WillPublishImpl willPublish = message.getRawWillPublish();
         if (willPublish != null) {
-            remainingLength += encodedLengthWithHeader(encodedWillPropertyLength());
+            remainingLength += encodedLengthWithHeader(willPropertyLength());
             remainingLength += willPublish.getTopic().encodedLength();
             remainingLength += Mqtt5DataTypes.encodedBinaryDataLength(willPublish.getRawPayload());
         }
@@ -88,31 +88,24 @@ public class Mqtt5ConnectEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
             propertyLength += nullablePropertyEncodedLength(extendedAuth.getRawData());
         }
 
-        propertyLength += message.getUserProperties().encodedLength();
+        propertyLength += omissiblePropertiesLength();
 
         return propertyLength;
     }
 
-    private int encodedWillPropertyLength() {
+    private int willPropertyLength() {
         if (willPropertyLength == -1) {
-            willPropertyLength = calculateEncodedWillPropertyLength();
+            willPropertyLength = calculateWillPropertyLength();
         }
         return willPropertyLength;
     }
 
-    private int calculateEncodedWillPropertyLength() {
+    private int calculateWillPropertyLength() {
         int willPropertyLength = 0;
 
         final Mqtt5WillPublishImpl willPublish = message.getRawWillPublish();
         if (willPublish != null) {
-            willPropertyLength += intPropertyEncodedLength(willPublish.getRawMessageExpiryInterval(),
-                    Mqtt5WillPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY);
-            willPropertyLength += nullablePropertyEncodedLength(willPublish.getRawPayloadFormatIndicator());
-            willPropertyLength += nullablePropertyEncodedLength(willPublish.getRawContentType());
-            willPropertyLength += nullablePropertyEncodedLength(willPublish.getRawResponseTopic());
-            willPropertyLength += nullablePropertyEncodedLength(willPublish.getRawCorrelationData());
-            willPropertyLength += willPublish.getUserProperties().encodedLength();
-            willPropertyLength +=
+            willPropertyLength = willPublish.getEncoder().encodedPropertyLength() +
                     intPropertyEncodedLength(willPublish.getDelayInterval(), Mqtt5WillPublish.DEFAULT_DELAY_INTERVAL);
 
             if (!Mqtt5DataTypes.isInVariableByteIntegerRange(willPropertyLength)) {
@@ -215,17 +208,9 @@ public class Mqtt5ConnectEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
     private void encodeWillPublish(@NotNull final ByteBuf out) {
         final Mqtt5WillPublishImpl willPublish = message.getRawWillPublish();
         if (willPublish != null) {
-            final int willPropertyLength = encodedWillPropertyLength();
-            Mqtt5DataTypes.encodeVariableByteInteger(willPropertyLength, out);
+            Mqtt5DataTypes.encodeVariableByteInteger(willPropertyLength(), out);
 
-            encodeIntProperty(Mqtt5WillPublishProperty.MESSAGE_EXPIRY_INTERVAL,
-                    willPublish.getRawMessageExpiryInterval(), Mqtt5WillPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY,
-                    out);
-            encodeNullableProperty(
-                    Mqtt5WillPublishProperty.PAYLOAD_FORMAT_INDICATOR, willPublish.getRawPayloadFormatIndicator(), out);
-            encodeNullableProperty(Mqtt5WillPublishProperty.CONTENT_TYPE, willPublish.getRawContentType(), out);
-            encodeNullableProperty(Mqtt5WillPublishProperty.RESPONSE_TOPIC, willPublish.getRawResponseTopic(), out);
-            encodeNullableProperty(Mqtt5WillPublishProperty.CORRELATION_DATA, willPublish.getRawCorrelationData(), out);
+            willPublish.getEncoder().encodeFixedProperties(out);
             willPublish.getUserProperties().encode(out);
             encodeIntProperty(Mqtt5WillPublishProperty.WILL_DELAY_INTERVAL, willPublish.getDelayInterval(),
                     Mqtt5WillPublish.DEFAULT_DELAY_INTERVAL, out);

@@ -37,6 +37,56 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
     }
 
     @Test
+    void encode_allProperties() {
+        final byte[] expected = {
+                // fixed header
+                //   type, flags
+                0b0011_0000,
+                //   remaining length (151)
+                (byte) (128 + 23), 1,
+                // variable header
+                //   topic name
+                0, 5, 't', 'o', 'p', 'i', 'c',
+                //   properties (137)
+                (byte) (128 + 9), 1,
+                //     message expiry interval
+                0x02, 0, 0, 0, 10,
+                //     payload format indicator
+                0x01, 0,
+                //     content type
+                0x03, 0, 13, 'm', 'y', 'C', 'o', 'n', 't', 'e', 'n', 't', 'T', 'y', 'p', 'e',
+                //     response topic
+                0x08, 0, 13, 'r', 'e', 's', 'p', 'o', 'n', 's', 'e', 'T', 'o', 'p', 'i', 'c',
+                //     correlation data
+                0x09, 0, 5, 1, 2, 3, 4, 5,
+                //     user properties
+                0x26, 0, 5, 't', 'e', 's', 't', '1', 0, 5, 'v', 'a', 'l', 'u', 'e', //
+                0x26, 0, 5, 't', 'e', 's', 't', '1', 0, 5, 'v', 'a', 'l', 'u', 'e', //
+                0x26, 0, 5, 't', 'e', 's', 't', '1', 0, 5, 'v', 'a', 'l', 'u', 'e', //
+                0x26, 0, 5, 't', 'e', 's', 't', '1', 0, 5, 'v', 'a', 'l', 'u', 'e', //
+                0x26, 0, 5, 't', 'e', 's', 't', '1', 0, 5, 'v', 'a', 'l', 'u', 'e', //
+                0x26, 0, 5, 't', 'e', 's', 't', '1', 0, 5, 'v', 'a', 'l', 'u', 'e', //
+                // payload
+                1, 2, 3, 4, 5
+        };
+
+        final Mqtt5UserPropertyImpl userProperty =
+                new Mqtt5UserPropertyImpl(requireNonNull(Mqtt5UTF8StringImpl.from("test1")),
+                        requireNonNull(Mqtt5UTF8StringImpl.from("value")));
+        final Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.of(ImmutableList
+                .of(userProperty, userProperty, userProperty, userProperty, userProperty, userProperty));
+
+        final Mqtt5PublishImpl publish =
+                new Mqtt5PublishImpl(requireNonNull(Mqtt5TopicImpl.from("topic")), new byte[]{1, 2, 3, 4, 5},
+                        Mqtt5QoS.AT_MOST_ONCE, false, 10, Mqtt5PayloadFormatIndicator.UNSPECIFIED,
+                        requireNonNull(Mqtt5UTF8StringImpl.from("myContentType")),
+                        requireNonNull(Mqtt5TopicImpl.from("responseTopic")), new byte[]{1, 2, 3, 4, 5}, HAS_NOT,
+                        userProperties, Mqtt5PublishEncoder.PROVIDER);
+
+        encode(expected, publish, -1, false, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntArray.of());
+    }
+
+    @Test
     void encode_simple() {
         final byte[] expected = {
                 // fixed header
@@ -237,7 +287,7 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
                 18,
                 //     payload format indicator
                 0x01, 1,
-                //     message expiry interval
+                //     content type
                 0x03, 0, 13, 'm', 'y', 'C', 'o', 'n', 't', 'e', 'n', 't', 'T', 'y', 'p', 'e'
         };
 
