@@ -81,7 +81,7 @@ public class Mqtt5SubscribeEncoder extends Mqtt5WrappedMessageEncoder<Mqtt5Subsc
 
         private void encodeFixedHeader(@NotNull final ByteBuf out, final int maximumPacketSize) {
             out.writeByte(FIXED_HEADER);
-            Mqtt5DataTypes.encodeVariableByteInteger(encodedRemainingLength(maximumPacketSize), out);
+            Mqtt5DataTypes.encodeVariableByteInteger(remainingLength(maximumPacketSize), out);
         }
 
         private void encodeVariableHeader(@NotNull final ByteBuf out, final int maximumPacketSize) {
@@ -90,10 +90,10 @@ public class Mqtt5SubscribeEncoder extends Mqtt5WrappedMessageEncoder<Mqtt5Subsc
         }
 
         private void encodeProperties(@NotNull final ByteBuf out, final int maximumPacketSize) {
-            Mqtt5DataTypes.encodeVariableByteInteger(encodedPropertyLength(maximumPacketSize), out);
+            Mqtt5DataTypes.encodeVariableByteInteger(propertyLength(maximumPacketSize), out);
             encodeVariableByteIntegerProperty(SUBSCRIPTION_IDENTIFIER, message.getSubscriptionIdentifier(),
                     DEFAULT_NO_SUBSCRIPTION_IDENTIFIER, out);
-            encodeUserProperties(maximumPacketSize, out);
+            encodeOmissibleProperties(maximumPacketSize, out);
         }
 
         private void encodePayload(@NotNull final ByteBuf out) {

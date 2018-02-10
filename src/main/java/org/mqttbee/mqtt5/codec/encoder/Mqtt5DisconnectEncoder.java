@@ -38,12 +38,12 @@ public class Mqtt5DisconnectEncoder extends Mqtt5MessageWithOmissibleReasonCodeE
     }
 
     @Override
-    int calculateEncodedRemainingLength() {
+    int calculateRemainingLength() {
         return VARIABLE_HEADER_LENGTH;
     }
 
     @Override
-    int calculateEncodedPropertyLength() {
+    int calculatePropertyLength() {
         int propertyLength = 0;
 
         propertyLength +=
@@ -65,12 +65,12 @@ public class Mqtt5DisconnectEncoder extends Mqtt5MessageWithOmissibleReasonCodeE
 
     private void encodeFixedHeader(@NotNull final ByteBuf out, final int maximumPacketSize) {
         out.writeByte(FIXED_HEADER);
-        Mqtt5DataTypes.encodeVariableByteInteger(encodedRemainingLength(maximumPacketSize), out);
+        Mqtt5DataTypes.encodeVariableByteInteger(remainingLength(maximumPacketSize), out);
     }
 
     private void encodeVariableHeader(@NotNull final ByteBuf out, final int maximumPacketSize) {
         final Mqtt5DisconnectReasonCode reasonCode = message.getReasonCode();
-        final int propertyLength = encodedPropertyLength(Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT);
+        final int propertyLength = propertyLength(Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT);
         if (propertyLength == 0) {
             if (reasonCode != DEFAULT_REASON_CODE) {
                 out.writeByte(reasonCode.getCode());
@@ -86,8 +86,7 @@ public class Mqtt5DisconnectEncoder extends Mqtt5MessageWithOmissibleReasonCodeE
         encodeIntProperty(SESSION_EXPIRY_INTERVAL, message.getRawSessionExpiryInterval(),
                 SESSION_EXPIRY_INTERVAL_FROM_CONNECT, out);
         encodeNullableProperty(SERVER_REFERENCE, message.getRawServerReference(), out);
-        encodeReasonString(maximumPacketSize, out);
-        encodeUserProperties(maximumPacketSize, out);
+        encodeOmissibleProperties(maximumPacketSize, out);
     }
 
 }

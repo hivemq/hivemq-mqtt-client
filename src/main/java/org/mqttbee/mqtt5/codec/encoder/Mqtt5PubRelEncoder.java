@@ -35,12 +35,12 @@ public class Mqtt5PubRelEncoder extends Mqtt5MessageWithOmissibleReasonCodeEncod
     }
 
     @Override
-    int calculateEncodedRemainingLength() {
+    int calculateRemainingLength() {
         return VARIABLE_HEADER_LENGTH;
     }
 
     @Override
-    int calculateEncodedPropertyLength() {
+    int calculatePropertyLength() {
         int propertyLength = 0;
 
         propertyLength += nullablePropertyEncodedLength(message.getRawReasonString());
@@ -59,14 +59,14 @@ public class Mqtt5PubRelEncoder extends Mqtt5MessageWithOmissibleReasonCodeEncod
 
     private void encodeFixedHeader(@NotNull final ByteBuf out, final int maximumPacketSize) {
         out.writeByte(FIXED_HEADER);
-        Mqtt5DataTypes.encodeVariableByteInteger(encodedRemainingLength(maximumPacketSize), out);
+        Mqtt5DataTypes.encodeVariableByteInteger(remainingLength(maximumPacketSize), out);
     }
 
     private void encodeVariableHeader(@NotNull final ByteBuf out, final int maximumPacketSize) {
         out.writeShort(message.getPacketIdentifier());
 
         final Mqtt5PubRelReasonCode reasonCode = message.getReasonCode();
-        final int propertyLength = encodedPropertyLength(maximumPacketSize);
+        final int propertyLength = propertyLength(maximumPacketSize);
         if (propertyLength == 0) {
             if (reasonCode != DEFAULT_REASON_CODE) {
                 out.writeByte(reasonCode.getCode());
@@ -81,8 +81,7 @@ public class Mqtt5PubRelEncoder extends Mqtt5MessageWithOmissibleReasonCodeEncod
             final int propertyLength, @NotNull final ByteBuf out, final int maximumPacketSize) {
 
         Mqtt5DataTypes.encodeVariableByteInteger(propertyLength, out);
-        encodeReasonString(maximumPacketSize, out);
-        encodeUserProperties(maximumPacketSize, out);
+        encodeOmissibleProperties(maximumPacketSize, out);
     }
 
 }

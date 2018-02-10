@@ -75,11 +75,11 @@ public abstract class Mqtt5MessageEncoder<T extends Mqtt5Message> {
 
         @Override
         public final int encodedLength(final int maxPacketSize) {
-            int encodedLength = maxEncodedLength();
+            int encodedLength = encodedLength();
             if (encodedLength <= maxPacketSize) {
                 return encodedLength;
             }
-            encodedLength = minEncodedLength();
+            encodedLength = encodedLengthFromOmittedProperties(omittedPropertiesLength(maxPacketSize));
             if (encodedLength <= maxPacketSize) {
                 return encodedLength;
             }
@@ -92,118 +92,136 @@ public abstract class Mqtt5MessageEncoder<T extends Mqtt5Message> {
          *
          * @return the encoded length of this MQTT message without omitting any properties.
          */
-        private int maxEncodedLength() {
+        private int encodedLength() {
             if (encodedLength == -1) {
-                encodedLength = Mqtt5MessageEncoderUtil.encodedPacketLength(maxEncodedRemainingLength());
+                encodedLength = Mqtt5MessageEncoderUtil.encodedPacketLength(remainingLength());
             }
             return encodedLength;
         }
 
         /**
-         * Returns the minimal byte count of the MQTT message. All properties which can be omitted are omitted.
+         * Calculates the byte count of the MQTT message if properties with the given length are omitted.
          *
-         * @return the minimal encoded length of the MQTT message.
+         * @param omittedPropertiesLength the length of the omitted properties.
+         * @return the encoded length of the MQTT message if properties with the given length are omitted.
          */
-        private int minEncodedLength() {
-            return Mqtt5MessageEncoderUtil.encodedPacketLength(minEncodedRemainingLength());
+        final int encodedLengthFromOmittedProperties(final int omittedPropertiesLength) {
+            return Mqtt5MessageEncoderUtil
+                    .encodedPacketLength(remainingLengthFromOmittedProperties(omittedPropertiesLength));
         }
 
         /**
          * Returns the remaining length byte count of this MQTT message respecting the given maximum packet size.
          * <p>
-         * If the minimal encoded length of the MQTT message is bigger than the given maximum packet size the returned
-         * value is unspecified.
+         * If the minimal encoded length of the MQTT message is bigger than the maximum packet size, the returned value
+         * is unspecified.
          *
          * @param maxPacketSize the maximum packet size.
-         * @return the encoded remaining length of the MQTT message respecting the maximum packet size.
+         * @return the remaining length of the MQTT message respecting the maximum packet size.
          */
-        final int encodedRemainingLength(final int maxPacketSize) {
-            return mustOmitProperties(maxPacketSize) ? minEncodedRemainingLength() : maxEncodedRemainingLength();
+        final int remainingLength(final int maxPacketSize) {
+            return (mustOmitProperties(maxPacketSize)) ?
+                    remainingLengthFromOmittedProperties(omittedPropertiesLength(maxPacketSize)) : remainingLength();
         }
 
         /**
          * Returns the remaining length byte count of the MQTT message without omitting any properties. Calculation is
          * only performed if necessary.
          *
-         * @return the encoded remaining length of the MQTT message without omitting any properties.
+         * @return the remaining length of the MQTT message without omitting any properties.
          */
-        private int maxEncodedRemainingLength() {
+        private int remainingLength() {
             if (remainingLength == -1) {
-                remainingLength =
-                        calculateEncodedRemainingLength() + encodedPropertyLengthWithHeader(maxEncodedPropertyLength());
+                remainingLength = calculateRemainingLength() + encodedPropertyLengthWithHeader(propertyLength());
             }
             return remainingLength;
         }
 
         /**
-         * Returns the minimal remaining length byte count of the MQTT message. All properties which can be omitted are
-         * omitted.
-         *
-         * @return the minimal encoded remaining length of the MQTT message.
-         */
-        private int minEncodedRemainingLength() {
-            return maxEncodedRemainingLength() - encodedPropertyLengthWithHeader(maxEncodedPropertyLength()) +
-                    encodedPropertyLengthWithHeader(minEncodedPropertyLength());
-        }
-
-        /**
          * Calculates the remaining length byte count without the properties of the MQTT message.
          *
-         * @return the encoded remaining length without the properties of the MQTT message.
+         * @return the remaining length without the properties of the MQTT message.
          */
-        abstract int calculateEncodedRemainingLength();
+        abstract int calculateRemainingLength();
+
+        /**
+         * Calculates the remaining length byte count of the MQTT message if properties with the given length are
+         * omitted.
+         *
+         * @param omittedPropertiesLength the length of the omitted properties.
+         * @return the remaining length of the MQTT message if properties with the given length are omitted.
+         */
+        private int remainingLengthFromOmittedProperties(final int omittedPropertiesLength) {
+            return remainingLength() - encodedPropertyLengthWithHeader(propertyLength()) +
+                    encodedPropertyLengthWithHeader(propertyLengthFromOmittedProperties(omittedPropertiesLength));
+        }
 
         /**
          * Returns the property length byte count of the MQTT message respecting the given maximum packet size.
          * <p>
-         * If the minimal encoded length of the MQTT message is bigger than the given maximum packet size the returned
-         * value is unspecified.
+         * If the minimal encoded length of the MQTT message is bigger than the maximum packet, size the returned value
+         * is unspecified.
          *
          * @param maxPacketSize the maximum packet size.
-         * @return the encoded property length of the MQTT message respecting the maximum packet size.
+         * @return the property length of the MQTT message respecting the maximum packet size.
          */
-        final int encodedPropertyLength(final int maxPacketSize) {
-            return mustOmitProperties(maxPacketSize) ? minEncodedPropertyLength() : maxEncodedPropertyLength();
+        final int propertyLength(final int maxPacketSize) {
+            return (mustOmitProperties(maxPacketSize)) ?
+                    propertyLengthFromOmittedProperties(omittedPropertiesLength(maxPacketSize)) : propertyLength();
         }
 
         /**
          * Returns the property length byte count of the MQTT message without omitting any properties. Calculation is
          * only performed if necessary.
          *
-         * @return the encoded property length of the MQTT message without omitting any properties.
+         * @return the property length of the MQTT message without omitting any properties.
          */
-        private int maxEncodedPropertyLength() {
+        private int propertyLength() {
             if (propertyLength == -1) {
-                propertyLength = calculateEncodedPropertyLength();
+                propertyLength = calculatePropertyLength();
             }
             return propertyLength;
         }
 
         /**
-         * Returns the minimal property length byte count of the MQTT message. All properties which can be omitted are
-         * omitted.
-         *
-         * @return the minimal encoded property length of the MQTT message.
-         */
-        int minEncodedPropertyLength() {
-            return maxEncodedPropertyLength() - getUserProperties().encodedLength();
-        }
-
-        /**
          * Calculates the property length byte count of the MQTT message.
          *
-         * @return the encoded property length of the MQTT message.
+         * @return the property length of the MQTT message.
          */
-        abstract int calculateEncodedPropertyLength();
+        abstract int calculatePropertyLength();
+
+        /**
+         * Calculates the property length byte count of the MQTT message if properties with the given length are
+         * omitted.
+         *
+         * @param omittedPropertiesLength the length of the omitted properties.
+         * @return the property length of the MQTT message if properties with the given length are omitted.
+         */
+        private int propertyLengthFromOmittedProperties(final int omittedPropertiesLength) {
+            return propertyLength() - omittedPropertiesLength;
+        }
 
         /**
          * Checks whether properties of the MQTT message must be omitted to fit the given maximum packet size.
          *
          * @param maxPacketSize the maximum packet size.
-         * @return whether properties of this MQTT message must be omitted.
+         * @return whether properties of this MQTT message must be omitted to fit the maximum packet size.
          */
         final boolean mustOmitProperties(final int maxPacketSize) {
-            return maxEncodedLength() > maxPacketSize;
+            return encodedLength() > maxPacketSize;
+        }
+
+        /**
+         * Calculates the length of properties which must be omitted to fit the given maximum packet size.
+         * <p>
+         * If the minimal encoded length of the MQTT message is bigger than the maximum packet size, the length of all
+         * omissible properties is returned.
+         *
+         * @param maxPacketSize the maximum packet size.
+         * @return the length of properties which must be omitted to fit the maximum packet size.
+         */
+        int omittedPropertiesLength(final int maxPacketSize) {
+            return getUserProperties().encodedLength();
         }
 
         /**
@@ -219,13 +237,13 @@ public abstract class Mqtt5MessageEncoder<T extends Mqtt5Message> {
         abstract Mqtt5UserPropertiesImpl getUserProperties();
 
         /**
-         * Encodes the user properties of the MQTT message if they must not be omitted due to the given maximum packet
-         * size.
+         * Encodes the omissible properties of the MQTT message if they must not be omitted due to the given maximum
+         * packet size.
          *
          * @param maxPacketSize the maximum packet size.
          * @param out           the byte buffer to encode to.
          */
-        final void encodeUserProperties(final int maxPacketSize, @NotNull final ByteBuf out) {
+        void encodeOmissibleProperties(final int maxPacketSize, @NotNull final ByteBuf out) {
             if (!mustOmitProperties(maxPacketSize)) {
                 getUserProperties().encode(out);
             }
@@ -263,22 +281,26 @@ public abstract class Mqtt5MessageEncoder<T extends Mqtt5Message> {
         }
 
         @Override
-        int minEncodedPropertyLength() {
-            return super.minEncodedPropertyLength() -
-                    Mqtt5MessageEncoderUtil.nullablePropertyEncodedLength(message.getRawReasonString());
+        final int omittedPropertiesLength(final int maxPacketSize) {
+            final int reasonStringLength = reasonStringLength();
+            if (encodedLengthFromOmittedProperties(reasonStringLength) <= maxPacketSize) {
+                return reasonStringLength;
+            }
+            return reasonStringLength + getUserProperties().encodedLength();
         }
 
-        /**
-         * Encodes the Reason String of the MQTT message of this encoder if it must not be omitted due to the given
-         * maximum packet size.
-         *
-         * @param maxPacketSize the maximum packet size.
-         * @param out           the byte buffer to encode to.
-         */
-        void encodeReasonString(final int maxPacketSize, @NotNull final ByteBuf out) {
+        @Override
+        final void encodeOmissibleProperties(final int maxPacketSize, @NotNull final ByteBuf out) {
             if (!mustOmitProperties(maxPacketSize)) {
                 Mqtt5MessageEncoderUtil.encodeNullableProperty(REASON_STRING, message.getRawReasonString(), out);
+                getUserProperties().encode(out);
+            } else if (encodedLengthFromOmittedProperties(reasonStringLength()) <= maxPacketSize) {
+                getUserProperties().encode(out);
             }
+        }
+
+        private int reasonStringLength() {
+            return Mqtt5MessageEncoderUtil.nullablePropertyEncodedLength(message.getRawReasonString());
         }
 
     }
@@ -302,7 +324,7 @@ public abstract class Mqtt5MessageEncoder<T extends Mqtt5Message> {
         abstract boolean canOmitReasonCode();
 
         @Override
-        int encodedPropertyLengthWithHeader(final int propertyLength) {
+        final int encodedPropertyLengthWithHeader(final int propertyLength) {
             if (propertyLength == 0) {
                 if (canOmitReasonCode()) {
                     return -1;

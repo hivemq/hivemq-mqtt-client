@@ -29,12 +29,12 @@ public class Mqtt5AuthEncoder extends Mqtt5MessageEncoder.Mqtt5MessageWithReason
     }
 
     @Override
-    int calculateEncodedRemainingLength() {
+    int calculateRemainingLength() {
         return VARIABLE_HEADER_FIXED_LENGTH;
     }
 
     @Override
-    int calculateEncodedPropertyLength() {
+    int calculatePropertyLength() {
         int propertyLength = 0;
 
         propertyLength += propertyEncodedLength(message.getMethod());
@@ -55,7 +55,7 @@ public class Mqtt5AuthEncoder extends Mqtt5MessageEncoder.Mqtt5MessageWithReason
 
     private void encodeFixedHeader(@NotNull final ByteBuf out, final int maximumPacketSize) {
         out.writeByte(FIXED_HEADER);
-        Mqtt5DataTypes.encodeVariableByteInteger(encodedRemainingLength(maximumPacketSize), out);
+        Mqtt5DataTypes.encodeVariableByteInteger(remainingLength(maximumPacketSize), out);
     }
 
     private void encodeVariableHeader(@NotNull final ByteBuf out, final int maximumPacketSize) {
@@ -64,11 +64,10 @@ public class Mqtt5AuthEncoder extends Mqtt5MessageEncoder.Mqtt5MessageWithReason
     }
 
     private void encodeProperties(@NotNull final ByteBuf out, final int maximumPacketSize) {
-        Mqtt5DataTypes.encodeVariableByteInteger(encodedPropertyLength(maximumPacketSize), out);
+        Mqtt5DataTypes.encodeVariableByteInteger(propertyLength(maximumPacketSize), out);
         encodeProperty(AUTHENTICATION_METHOD, message.getMethod(), out);
         encodeNullableProperty(AUTHENTICATION_DATA, message.getRawData(), out);
-        encodeReasonString(maximumPacketSize, out);
-        encodeUserProperties(maximumPacketSize, out);
+        encodeOmissibleProperties(maximumPacketSize, out);
     }
 
 }
