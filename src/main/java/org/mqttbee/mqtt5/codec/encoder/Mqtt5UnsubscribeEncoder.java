@@ -71,7 +71,7 @@ public class Mqtt5UnsubscribeEncoder extends Mqtt5WrappedMessageEncoder<Mqtt5Uns
 
         private void encodeFixedHeader(@NotNull final ByteBuf out, final int maximumPacketSize) {
             out.writeByte(FIXED_HEADER);
-            Mqtt5DataTypes.encodeVariableByteInteger(encodedRemainingLength(maximumPacketSize), out);
+            Mqtt5DataTypes.encodeVariableByteInteger(remainingLength(maximumPacketSize), out);
         }
 
         private void encodeVariableHeader(@NotNull final ByteBuf out, final int maximumPacketSize) {
@@ -80,8 +80,8 @@ public class Mqtt5UnsubscribeEncoder extends Mqtt5WrappedMessageEncoder<Mqtt5Uns
         }
 
         private void encodeProperties(@NotNull final ByteBuf out, final int maximumPacketSize) {
-            Mqtt5DataTypes.encodeVariableByteInteger(encodedPropertyLength(maximumPacketSize), out);
-            encodeUserProperties(maximumPacketSize, out);
+            Mqtt5DataTypes.encodeVariableByteInteger(propertyLength(maximumPacketSize), out);
+            encodeOmissibleProperties(maximumPacketSize, out);
         }
 
         private void encodePayload(@NotNull final ByteBuf out) {

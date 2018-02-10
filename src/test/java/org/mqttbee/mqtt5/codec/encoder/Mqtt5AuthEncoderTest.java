@@ -1,6 +1,7 @@
 package org.mqttbee.mqtt5.codec.encoder;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.primitives.Bytes;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.EncoderException;
 import org.junit.jupiter.api.Disabled;
@@ -195,7 +196,7 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
     }
 
     @Test
-    void encode_maximumPacketSizeExceeded_omitUserPropertiesAndReasonString() {
+    void encode_maximumPacketSizeExceededByReasonString_omitReasonString_keepUserProperties() {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
 
         final Mqtt5AuthImpl auth =
@@ -203,11 +204,11 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
                         maxPacket.getReasonStringTooLong(), maxPacket.getMaxPossibleUserProperties(),
                         Mqtt5AuthEncoder.PROVIDER);
 
-        encode(maxPacket.getWithOmittedUserPropertiesAndReasonString(), auth);
+        encode(maxPacket.getWithOmittedReasonString(), auth);
     }
 
     @Test
-    void encode_propertyLengthExceeded_omitUserPropertiesAndReasonString() {
+    void encode_maximumPacketSizeExceededByUserProperties_omitUserPropertiesAndReasonString() {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder();
         final Mqtt5UserPropertiesImpl tooManyUserProperties = maxPacket
                 .getUserProperties((VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE / maxPacket.userPropertyBytes) + 1);
@@ -307,6 +308,44 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
                     //     auth method
                     0x15, 0, 1, 'x'
             };
+        }
+
+        byte[] getWithOmittedReasonString() {
+            final int userPropertyCount = userPropertiesBuilder.build().size();
+
+            final int remainingLength = 9 + userPropertyBytes * userPropertyCount;
+            final byte remainingLength1 = (byte) (remainingLength % 128 + 0b1000_0000);
+            final byte remainingLength2 = (byte) ((remainingLength >>> 7) % 128 + 0b1000_0000);
+            final byte remainingLength3 = (byte) ((remainingLength >>> 14) % 128 + 0b1000_0000);
+            final byte remainingLength4 = (byte) ((remainingLength >>> 21) % 128);
+
+            final int propertyLength = 4 + userPropertyBytes * userPropertyCount;
+            final byte propertyLength1 = (byte) (propertyLength % 128 + 0b1000_0000);
+            final byte propertyLength2 = (byte) ((propertyLength >>> 7) % 128 + 0b1000_0000);
+            final byte propertyLength3 = (byte) ((propertyLength >>> 14) % 128 + 0b1000_0000);
+            final byte propertyLength4 = (byte) ((propertyLength >>> 21) % 128);
+
+            byte[] encoded = {
+                    // fixed header
+                    //   type, flags
+                    (byte) 0b1111_0000,
+                    //   remaining length
+                    remainingLength1, remainingLength2, remainingLength3, remainingLength4,
+                    // variable header
+                    //   reason code (continue)
+                    0x18,
+                    //   properties
+                    propertyLength1, propertyLength2, propertyLength3, propertyLength4,
+                    //     auth method
+                    0x15, 0, 1, 'x'
+            };
+            final byte[] userPropertyByteArray = {
+                    0x26, 0, 4, 'u', 's', 'e', 'r', 0, 8, 'p', 'r', 'o', 'p', 'e', 'r', 't', 'y'
+            };
+            final byte[][] properties = new byte[userPropertyCount][];
+            Arrays.fill(properties, userPropertyByteArray);
+            encoded = Bytes.concat(encoded, Bytes.concat(properties));
+            return encoded;
         }
     }
 }

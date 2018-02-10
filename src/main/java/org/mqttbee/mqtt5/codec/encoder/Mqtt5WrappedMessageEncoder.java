@@ -10,6 +10,8 @@ import java.util.function.Function;
 
 /**
  * Base class for encoders of wrapped MQTT messages with User Properties.
+ *
+ * @author Silvio Giebl
  */
 public abstract class Mqtt5WrappedMessageEncoder<T extends Mqtt5WrappedMessage<T, W>, W extends Mqtt5MessageWrapper<W, T>> {
 
@@ -22,10 +24,10 @@ public abstract class Mqtt5WrappedMessageEncoder<T extends Mqtt5WrappedMessage<T
     }
 
     /**
-     * Returns the remaining length byte count of the MQTT message without omitting any properties. Calculation is only
-     * performed if necessary.
+     * Returns the remaining length byte count without the properties of the MQTT message. Calculation is only performed
+     * if necessary.
      *
-     * @return the encoded remaining length of the MQTT message without omitting any properties.
+     * @return the remaining length without the properties of the MQTT message.
      */
     final int encodedRemainingLengthWithoutProperties() {
         if (remainingLengthWithoutProperties == -1) {
@@ -35,17 +37,16 @@ public abstract class Mqtt5WrappedMessageEncoder<T extends Mqtt5WrappedMessage<T
     }
 
     /**
-     * Calculates the remaining length byte count without the properties of this MQTT message.
+     * Calculates the remaining length byte count without the properties of the MQTT message.
      *
-     * @return the encoded remaining length without the properties of this MQTT message.
+     * @return the remaining length without the properties of the MQTT message.
      */
     abstract int calculateEncodedRemainingLengthWithoutProperties();
 
     /**
-     * Returns the property length byte count of the MQTT message without omitting any properties. Calculation is only
-     * performed if necessary.
+     * Returns the property length byte count of the MQTT message. Calculation is only performed if necessary.
      *
-     * @return the encoded property length of the MQTT message without omitting any properties.
+     * @return the encoded property length of the MQTT message.
      */
     final int encodedPropertyLength() {
         if (propertyLength == -1) {
@@ -57,7 +58,7 @@ public abstract class Mqtt5WrappedMessageEncoder<T extends Mqtt5WrappedMessage<T
     /**
      * Calculates the property length byte count of this MQTT message.
      *
-     * @return the encoded property length of this MQTT message.
+     * @return the property length of this MQTT message.
      */
     abstract int calculateEncodedPropertyLength();
 
@@ -66,8 +67,6 @@ public abstract class Mqtt5WrappedMessageEncoder<T extends Mqtt5WrappedMessage<T
 
     /**
      * Base class for encoders of wrappers around MQTT messages with User Properties.
-     *
-     * @author Silvio Giebl
      */
     public abstract static class Mqtt5MessageWrapperEncoder<T extends Mqtt5MessageWrapper>
             extends Mqtt5MessageWithPropertiesEncoder<T> {
@@ -77,7 +76,7 @@ public abstract class Mqtt5WrappedMessageEncoder<T extends Mqtt5WrappedMessage<T
         }
 
         @Override
-        final int calculateEncodedRemainingLength() {
+        final int calculateRemainingLength() {
             return message.getWrapped().getEncoder().encodedRemainingLengthWithoutProperties() +
                     additionalRemainingLength();
         }
@@ -92,7 +91,7 @@ public abstract class Mqtt5WrappedMessageEncoder<T extends Mqtt5WrappedMessage<T
         }
 
         @Override
-        final int calculateEncodedPropertyLength() {
+        final int calculatePropertyLength() {
             return message.getWrapped().getEncoder().encodedPropertyLength() + additionalPropertyLength();
         }
 

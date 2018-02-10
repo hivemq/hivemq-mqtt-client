@@ -127,7 +127,7 @@ public class Mqtt5PublishEncoder extends Mqtt5WrappedMessageEncoder<Mqtt5Publish
 
             out.writeByte(FIXED_HEADER | flags);
 
-            Mqtt5DataTypes.encodeVariableByteInteger(encodedRemainingLength(maximumPacketSize), out);
+            Mqtt5DataTypes.encodeVariableByteInteger(remainingLength(maximumPacketSize), out);
         }
 
         private void encodeVariableHeader(@NotNull final ByteBuf out, final int maximumPacketSize) {
@@ -149,7 +149,7 @@ public class Mqtt5PublishEncoder extends Mqtt5WrappedMessageEncoder<Mqtt5Publish
         private void encodeProperties(@NotNull final ByteBuf out, final int maximumPacketSize) {
             final Mqtt5PublishImpl publish = message.getWrapped();
 
-            final int propertyLength = encodedPropertyLength(maximumPacketSize);
+            final int propertyLength = propertyLength(maximumPacketSize);
             Mqtt5DataTypes.encodeVariableByteInteger(propertyLength, out);
 
             encodeIntProperty(MESSAGE_EXPIRY_INTERVAL, publish.getRawMessageExpiryInterval(),
@@ -158,7 +158,7 @@ public class Mqtt5PublishEncoder extends Mqtt5WrappedMessageEncoder<Mqtt5Publish
             encodeNullableProperty(CONTENT_TYPE, publish.getRawContentType(), out);
             encodeNullableProperty(RESPONSE_TOPIC, publish.getRawResponseTopic(), out);
             encodeNullableProperty(CORRELATION_DATA, publish.getRawCorrelationData(), out);
-            encodeUserProperties(maximumPacketSize, out);
+            encodeOmissibleProperties(maximumPacketSize, out);
 
             encodeShortProperty(TOPIC_ALIAS, message.getTopicAlias(), DEFAULT_NO_TOPIC_ALIAS, out);
 

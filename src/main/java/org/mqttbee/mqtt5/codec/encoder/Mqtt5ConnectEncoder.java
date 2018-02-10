@@ -39,7 +39,7 @@ public class Mqtt5ConnectEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
     }
 
     @Override
-    int calculateEncodedRemainingLength() {
+    int calculateRemainingLength() {
         int remainingLength = VARIABLE_HEADER_FIXED_LENGTH;
 
         remainingLength += message.getRawClientIdentifier().encodedLength();
@@ -61,7 +61,7 @@ public class Mqtt5ConnectEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
     }
 
     @Override
-    int calculateEncodedPropertyLength() {
+    int calculatePropertyLength() {
         int propertyLength = 0;
 
         propertyLength += intPropertyEncodedLength(message.getSessionExpiryInterval(), DEFAULT_SESSION_EXPIRY_INTERVAL);
@@ -132,7 +132,7 @@ public class Mqtt5ConnectEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
 
     private void encodeFixedHeader(@NotNull final ByteBuf out) {
         out.writeByte(FIXED_HEADER);
-        Mqtt5DataTypes.encodeVariableByteInteger(encodedRemainingLength(Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT), out);
+        Mqtt5DataTypes.encodeVariableByteInteger(remainingLength(Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT), out);
     }
 
     private void encodeVariableHeader(@NotNull final ByteBuf out) {
@@ -172,9 +172,7 @@ public class Mqtt5ConnectEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
     }
 
     private void encodeProperties(@NotNull final ByteBuf out) {
-
-        final int propertyLength = encodedPropertyLength(Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT);
-        Mqtt5DataTypes.encodeVariableByteInteger(propertyLength, out);
+        Mqtt5DataTypes.encodeVariableByteInteger(propertyLength(Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT), out);
 
         encodeIntProperty(
                 SESSION_EXPIRY_INTERVAL, message.getSessionExpiryInterval(), DEFAULT_SESSION_EXPIRY_INTERVAL, out);
@@ -199,7 +197,7 @@ public class Mqtt5ConnectEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
                     Restrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT, out);
         }
 
-        encodeUserProperties(Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT, out);
+        encodeOmissibleProperties(Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT, out);
     }
 
     private void encodePayload(@NotNull final ByteBuf out) {
