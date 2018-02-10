@@ -40,6 +40,16 @@ public interface Mqtt5Topic extends Mqtt5UTF8String {
         return topic;
     }
 
+    @NotNull
+    static Mqtt5TopicBuilder builder(@NotNull final String topTopic) {
+        return new Mqtt5TopicBuilder(topTopic);
+    }
+
+    @NotNull
+    static Mqtt5TopicBuilder extend(@NotNull final Mqtt5Topic topic) {
+        return new Mqtt5TopicBuilder(topic.toString());
+    }
+
     /**
      * @return the levels of this Topic Name.
      */
