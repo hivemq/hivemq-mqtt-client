@@ -12,7 +12,6 @@ import org.mqttbee.mqtt5.message.pubrel.Mqtt5PubRelImpl;
 
 import java.util.function.Function;
 
-import static org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoderUtil.nullablePropertyEncodedLength;
 import static org.mqttbee.mqtt5.message.pubrel.Mqtt5PubRelImpl.DEFAULT_REASON_CODE;
 
 /**
@@ -41,12 +40,7 @@ public class Mqtt5PubRelEncoder extends Mqtt5MessageWithOmissibleReasonCodeEncod
 
     @Override
     int calculatePropertyLength() {
-        int propertyLength = 0;
-
-        propertyLength += nullablePropertyEncodedLength(message.getRawReasonString());
-        propertyLength += message.getUserProperties().encodedLength();
-
-        return propertyLength;
+        return omissiblePropertiesLength();
     }
 
     @Override

@@ -63,6 +63,16 @@ public class Mqtt5PublishEncoder extends Mqtt5WrappedMessageEncoder<Mqtt5Publish
     }
 
     @Override
+    void encodeFixedProperties(@NotNull final ByteBuf out) {
+        encodeIntProperty(MESSAGE_EXPIRY_INTERVAL, message.getRawMessageExpiryInterval(),
+                MESSAGE_EXPIRY_INTERVAL_INFINITY, out);
+        encodeNullableProperty(PAYLOAD_FORMAT_INDICATOR, message.getRawPayloadFormatIndicator(), out);
+        encodeNullableProperty(CONTENT_TYPE, message.getRawContentType(), out);
+        encodeNullableProperty(RESPONSE_TOPIC, message.getRawResponseTopic(), out);
+        encodeNullableProperty(CORRELATION_DATA, message.getRawCorrelationData(), out);
+    }
+
+    @Override
     public Function<Mqtt5PublishWrapper, Mqtt5PublishWrapperEncoder> wrap() {
         return Mqtt5PublishWrapperEncoder.PROVIDER;
     }
@@ -147,17 +157,10 @@ public class Mqtt5PublishEncoder extends Mqtt5WrappedMessageEncoder<Mqtt5Publish
         }
 
         private void encodeProperties(@NotNull final ByteBuf out, final int maximumPacketSize) {
-            final Mqtt5PublishImpl publish = message.getWrapped();
-
             final int propertyLength = propertyLength(maximumPacketSize);
             Mqtt5DataTypes.encodeVariableByteInteger(propertyLength, out);
 
-            encodeIntProperty(MESSAGE_EXPIRY_INTERVAL, publish.getRawMessageExpiryInterval(),
-                    MESSAGE_EXPIRY_INTERVAL_INFINITY, out);
-            encodeNullableProperty(PAYLOAD_FORMAT_INDICATOR, publish.getRawPayloadFormatIndicator(), out);
-            encodeNullableProperty(CONTENT_TYPE, publish.getRawContentType(), out);
-            encodeNullableProperty(RESPONSE_TOPIC, publish.getRawResponseTopic(), out);
-            encodeNullableProperty(CORRELATION_DATA, publish.getRawCorrelationData(), out);
+            message.getWrapped().getEncoder().encodeFixedProperties(out);
             encodeOmissibleProperties(maximumPacketSize, out);
 
             encodeShortProperty(TOPIC_ALIAS, message.getTopicAlias(), DEFAULT_NO_TOPIC_ALIAS, out);

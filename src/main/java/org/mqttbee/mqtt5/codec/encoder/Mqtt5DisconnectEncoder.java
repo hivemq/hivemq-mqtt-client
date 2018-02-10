@@ -49,8 +49,7 @@ public class Mqtt5DisconnectEncoder extends Mqtt5MessageWithOmissibleReasonCodeE
         propertyLength +=
                 intPropertyEncodedLength(message.getRawSessionExpiryInterval(), SESSION_EXPIRY_INTERVAL_FROM_CONNECT);
         propertyLength += nullablePropertyEncodedLength(message.getRawServerReference());
-        propertyLength += nullablePropertyEncodedLength(message.getRawReasonString());
-        propertyLength += message.getUserProperties().encodedLength();
+        propertyLength += omissiblePropertiesLength();
 
         return propertyLength;
     }
