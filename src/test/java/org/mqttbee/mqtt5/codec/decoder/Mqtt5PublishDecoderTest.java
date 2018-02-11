@@ -3,8 +3,6 @@ package org.mqttbee.mqtt5.codec.decoder;
 import com.google.common.collect.ImmutableList;
 import com.google.common.primitives.ImmutableIntArray;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
-import io.netty.buffer.Unpooled;
 import org.junit.jupiter.api.Test;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
@@ -17,7 +15,9 @@ import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishWrapper;
+import org.mqttbee.util.ByteBufferUtil;
 
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -101,7 +101,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
         assertTrue(publish.getResponseTopic().isPresent());
         assertEquals("response", publish.getResponseTopic().get().toString());
         assertTrue(publish.getCorrelationData().isPresent());
-        assertArrayEquals(new byte[]{5, 4, 3, 2, 1}, ByteBufUtil.getBytes(publish.getCorrelationData().get()));
+        assertEquals(ByteBuffer.wrap(new byte[]{5, 4, 3, 2, 1}), publish.getCorrelationData().get());
         assertEquals(TopicAliasUsage.HAS, publish.getTopicAliasUsage());
 
         final ImmutableList<Mqtt5UserPropertyImpl> userProperties = publish.getUserProperties().asList();
@@ -110,7 +110,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
         assertEquals("value", userProperties.get(0).getValue().toString());
 
         assertTrue(publish.getPayload().isPresent());
-        assertEquals(Unpooled.wrappedBuffer(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}), publish.getPayload().get());
+        assertEquals(ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}), publish.getPayload().get());
     }
 
     @Test
@@ -152,7 +152,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
         assertEquals(TopicAliasUsage.HAS_NOT, publish.getTopicAliasUsage());
 
         assertTrue(publish.getPayload().isPresent());
-        assertArrayEquals(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, ByteBufUtil.getBytes(publish.getPayload().get()));
+        assertEquals(ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}), publish.getPayload().get());
     }
 
     @Test
@@ -373,7 +373,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
         assertTrue(publish.getPayloadFormatIndicator().isPresent());
         assertEquals(Mqtt5PayloadFormatIndicator.UTF_8, publish.getPayloadFormatIndicator().get());
         assertTrue(publish.getPayload().isPresent());
-        assertEquals("你 好", publish.getPayload().get().toString(StandardCharsets.UTF_8));
+        assertEquals("你 好", new String(ByteBufferUtil.getBytes(publish.getPayload().get()), StandardCharsets.UTF_8));
     }
 
     @Test
@@ -763,7 +763,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
         };
         final Mqtt5PublishImpl publish = decode(encoded);
         assertTrue(publish.getCorrelationData().isPresent());
-        assertArrayEquals(new byte[]{5, 4, 3, 2, 1}, ByteBufUtil.getBytes(publish.getCorrelationData().get()));
+        assertEquals(ByteBuffer.wrap(new byte[]{5, 4, 3, 2, 1}), publish.getCorrelationData().get());
     }
 
     @Test

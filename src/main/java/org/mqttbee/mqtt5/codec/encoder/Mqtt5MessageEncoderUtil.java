@@ -7,10 +7,12 @@ import org.mqttbee.api.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 
+import java.nio.ByteBuffer;
+
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5MessageEncoderUtil {
+class Mqtt5MessageEncoderUtil {
 
     private Mqtt5MessageEncoderUtil() {
     }
@@ -39,8 +41,13 @@ public class Mqtt5MessageEncoderUtil {
         return (string == null) ? 0 : string.encodedLength();
     }
 
-    static int nullableEncodedLength(@Nullable final byte[] binary) {
-        return (binary == null) ? 0 : Mqtt5DataTypes.encodedBinaryDataLength(binary);
+    static int nullableEncodedLength(@Nullable final ByteBuffer byteBuffer) {
+        return (byteBuffer == null) ? 0 : Mqtt5DataTypes.encodedBinaryDataLength(byteBuffer);
+    }
+
+    static int encodedOrEmptyLength(@Nullable final ByteBuffer byteBuffer) {
+        return (byteBuffer == null) ? Mqtt5DataTypes.EMPTY_BINARY_DATA_LENGTH :
+                Mqtt5DataTypes.encodedBinaryDataLength(byteBuffer);
     }
 
     static void encodeNullable(@Nullable final Mqtt5UTF8StringImpl string, @NotNull final ByteBuf out) {
@@ -49,9 +56,17 @@ public class Mqtt5MessageEncoderUtil {
         }
     }
 
-    static void encodeNullable(@Nullable final byte[] binary, @NotNull final ByteBuf out) {
-        if (binary != null) {
-            Mqtt5DataTypes.encodeBinaryData(binary, out);
+    static void encodeNullable(@Nullable final ByteBuffer byteBuffer, @NotNull final ByteBuf out) {
+        if (byteBuffer != null) {
+            Mqtt5DataTypes.encodeBinaryData(byteBuffer, out);
+        }
+    }
+
+    static void encodeOrEmpty(@Nullable final ByteBuffer byteBuffer, @NotNull final ByteBuf out) {
+        if (byteBuffer != null) {
+            Mqtt5DataTypes.encodeBinaryData(byteBuffer, out);
+        } else {
+            Mqtt5DataTypes.encodeEmptyBinaryData(out);
         }
     }
 
@@ -63,8 +78,8 @@ public class Mqtt5MessageEncoderUtil {
         return (string == null) ? 0 : propertyEncodedLength(string);
     }
 
-    static int nullablePropertyEncodedLength(@Nullable final byte[] binary) {
-        return (binary == null) ? 0 : 1 + Mqtt5DataTypes.encodedBinaryDataLength(binary);
+    static int nullablePropertyEncodedLength(@Nullable final ByteBuffer byteBuffer) {
+        return (byteBuffer == null) ? 0 : 1 + Mqtt5DataTypes.encodedBinaryDataLength(byteBuffer);
     }
 
     static int nullablePropertyEncodedLength(@Nullable final Mqtt5PayloadFormatIndicator payloadFormatIndicator) {
@@ -107,11 +122,11 @@ public class Mqtt5MessageEncoderUtil {
     }
 
     static void encodeNullableProperty(
-            final int propertyIdentifier, @Nullable final byte[] binary, @NotNull final ByteBuf out) {
+            final int propertyIdentifier, @Nullable final ByteBuffer byteBuffer, @NotNull final ByteBuf out) {
 
-        if (binary != null) {
+        if (byteBuffer != null) {
             out.writeByte(propertyIdentifier);
-            Mqtt5DataTypes.encodeBinaryData(binary, out);
+            Mqtt5DataTypes.encodeBinaryData(byteBuffer, out);
         }
     }
 

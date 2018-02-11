@@ -2,7 +2,6 @@ package org.mqttbee.mqtt5.codec.decoder;
 
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -17,6 +16,8 @@ import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckImpl;
+
+import java.nio.ByteBuffer;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -132,7 +133,7 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         final Mqtt5ExtendedAuth auth = connAck.getExtendedAuth().get();
         assertEquals("GS2-KRB5", auth.getMethod().toString());
         assertTrue(auth.getData().isPresent());
-        assertArrayEquals(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, ByteBufUtil.getBytes(auth.getData().get()));
+        assertEquals(ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}), auth.getData().get());
     }
 
     @Test

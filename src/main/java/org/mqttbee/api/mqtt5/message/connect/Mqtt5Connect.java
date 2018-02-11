@@ -1,6 +1,5 @@
 package org.mqttbee.api.mqtt5.message.connect;
 
-import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.message.Mqtt5ClientIdentifier;
@@ -11,6 +10,7 @@ import org.mqttbee.api.mqtt5.message.publish.Mqtt5WillPublish;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.util.UnsignedDataTypes;
 
+import java.nio.ByteBuffer;
 import java.util.Optional;
 
 import static org.mqttbee.api.mqtt5.message.connect.Mqtt5ConnectBuilder.RestrictionsBuilder;
@@ -129,7 +129,7 @@ public interface Mqtt5Connect {
          * @return the optional password.
          */
         @NotNull
-        Optional<ByteBuf> getPassword();
+        Optional<ByteBuffer> getPassword();
 
     }
 

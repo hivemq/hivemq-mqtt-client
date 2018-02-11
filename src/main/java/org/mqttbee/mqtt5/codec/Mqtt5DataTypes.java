@@ -4,6 +4,8 @@ import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 
+import java.nio.ByteBuffer;
+
 /**
  * Utility for decoding, encoding and checking variable byte integers and binary data according to the MQTT 5
  * specification.
@@ -29,6 +31,7 @@ public class Mqtt5DataTypes {
     public static final int MAXIMUM_PACKET_SIZE_LIMIT =
             1 + 4 + Mqtt5DataTypes.VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE;
     private static final int BINARY_DATA_MAX_LENGTH = 65_535;
+    public static final int EMPTY_BINARY_DATA_LENGTH = 2;
 
     private Mqtt5DataTypes() {
     }
@@ -142,6 +145,28 @@ public class Mqtt5DataTypes {
     }
 
     /**
+     * Decodes binary data from the given byte buffer at the current reader index.
+     *
+     * @param byteBuf the byte buffer to decode from.
+     * @param direct  whether the created byte buffer should be direct.
+     * @return the decoded binary data or null if there are not enough bytes in the byte buffer.
+     */
+    @Nullable
+    public static ByteBuffer decodeBinaryData(@NotNull final ByteBuf byteBuf, final boolean direct) {
+        if (byteBuf.readableBytes() < 2) {
+            return null;
+        }
+        final int length = byteBuf.readUnsignedShort();
+        if (byteBuf.readableBytes() < length) {
+            return null;
+        }
+        final ByteBuffer byteBuffer = direct ? ByteBuffer.allocateDirect(length) : ByteBuffer.allocate(length);
+        byteBuf.readBytes(byteBuffer);
+        byteBuffer.position(0);
+        return byteBuffer;
+    }
+
+    /**
      * Encodes the given byte array as binary data to the given byte buffer at the current writer index.
      * <p>
      * This method does not check if the byte array can be encoded as binary data.
@@ -155,6 +180,28 @@ public class Mqtt5DataTypes {
     }
 
     /**
+     * Encodes the given byte buffer as binary data to the given byte buffer at the current writer index.
+     * <p>
+     * This method does not check if the byte buffer can be encoded as binary data.
+     *
+     * @param byteBuffer the byte buffer to encode.
+     * @param byteBuf    the byte buffer to encode to.
+     */
+    public static void encodeBinaryData(@NotNull final ByteBuffer byteBuffer, @NotNull final ByteBuf byteBuf) {
+        byteBuf.writeShort(byteBuffer.remaining());
+        byteBuf.writeBytes(byteBuffer);
+    }
+
+    /**
+     * Encodes a zero length binary data to the given byte buffer at the current writer index.
+     *
+     * @param byteBuf the byte buffer to encode to.
+     */
+    public static void encodeEmptyBinaryData(@NotNull final ByteBuf byteBuf) {
+        byteBuf.writeShort(0);
+    }
+
+    /**
      * Checks if the given byte array can be encoded as binary data.
      *
      * @param binary the byte array to check.
@@ -165,15 +212,37 @@ public class Mqtt5DataTypes {
     }
 
     /**
+     * Checks if the given byte buffer can be encoded as binary data.
+     *
+     * @param byteBuffer the byte buffer to check.
+     * @return whether the byte buffer can be encoded as binary data.
+     */
+    public static boolean isInBinaryDataRange(@NotNull final ByteBuffer byteBuffer) {
+        return byteBuffer.remaining() <= BINARY_DATA_MAX_LENGTH;
+    }
+
+    /**
      * Calculates the byte count of the given byte array encoded as binary data.
      * <p>
      * This method does not check if the byte array can be encoded as binary data.
      *
-     * @param binary the binary to calculate the encoded length for.
+     * @param binary the byte array to calculate the encoded length for.
      * @return the encoded length of the byte array.
      */
     public static int encodedBinaryDataLength(@NotNull final byte[] binary) {
         return 2 + binary.length;
+    }
+
+    /**
+     * Calculates the byte count of the given byte buffer encoded as binary data.
+     * <p>
+     * This method does not check if the byte buffer can be encoded as binary data.
+     *
+     * @param byteBuffer the byte buffer to calculate the encoded length for.
+     * @return the encoded length of the byte buffer.
+     */
+    public static int encodedBinaryDataLength(@NotNull final ByteBuffer byteBuffer) {
+        return 2 + byteBuffer.remaining();
     }
 
 }

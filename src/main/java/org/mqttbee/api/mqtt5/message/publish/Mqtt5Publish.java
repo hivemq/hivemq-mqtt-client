@@ -1,6 +1,5 @@
 package org.mqttbee.api.mqtt5.message.publish;
 
-import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
@@ -8,6 +7,7 @@ import org.mqttbee.api.mqtt5.message.Mqtt5Topic;
 import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.api.mqtt5.message.Mqtt5UserProperties;
 
+import java.nio.ByteBuffer;
 import java.util.Optional;
 
 /**
@@ -44,7 +44,7 @@ public interface Mqtt5Publish {
      * @return the optional payload of this PUBLISH packet.
      */
     @NotNull
-    Optional<ByteBuf> getPayload();
+    Optional<ByteBuffer> getPayload();
 
     /**
      * @return the QoS of this PUBLISH packet.
@@ -85,7 +85,7 @@ public interface Mqtt5Publish {
      * @return the optional correlation data of this PUBLISH packet.
      */
     @NotNull
-    Optional<ByteBuf> getCorrelationData();
+    Optional<ByteBuffer> getCorrelationData();
 
     /**
      * @return the handling for using a topic alias.

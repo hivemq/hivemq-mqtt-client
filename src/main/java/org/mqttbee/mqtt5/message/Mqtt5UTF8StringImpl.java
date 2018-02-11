@@ -7,8 +7,8 @@ import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.exceptions.Mqtt5BinaryDataExceededException;
-import org.mqttbee.util.ByteBufUtil;
 
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.regex.Pattern;
@@ -174,8 +174,8 @@ public class Mqtt5UTF8StringImpl implements Mqtt5UTF8String {
 
     @NotNull
     @Override
-    public ByteBuf toByteBuf() {
-        return ByteBufUtil.wrapReadOnly(toBinary());
+    public ByteBuffer toByteBuffer() {
+        return ByteBuffer.wrap(toBinary()).asReadOnlyBuffer();
     }
 
     /**

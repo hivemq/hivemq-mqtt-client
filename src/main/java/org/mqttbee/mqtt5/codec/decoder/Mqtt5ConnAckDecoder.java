@@ -19,6 +19,7 @@ import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckImpl;
 import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckProperty;
 
 import javax.inject.Singleton;
+import java.nio.ByteBuffer;
 
 import static org.mqttbee.mqtt5.codec.decoder.Mqtt5MessageDecoderUtil.*;
 import static org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckImpl.*;
@@ -89,7 +90,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
         int serverKeepAlive = KEEP_ALIVE_FROM_CONNECT;
 
         Mqtt5UTF8StringImpl authenticationMethod = null;
-        byte[] authenticationData = null;
+        ByteBuffer authenticationData = null;
 
         int receiveMaximum = Restrictions.DEFAULT_RECEIVE_MAXIMUM;
         boolean receiveMaximumPresent = false;
@@ -160,9 +161,9 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                     }
                     break;
 
-                case Mqtt5ConnAckProperty.AUTHENTICATION_DATA:
+                case Mqtt5ConnAckProperty.AUTHENTICATION_DATA: // TODO direct
                     authenticationData =
-                            decodeBinaryDataOnlyOnce(authenticationData, "authentication data", channel, in);
+                            decodeBinaryDataOnlyOnce(authenticationData, "authentication data", channel, in, false);
                     if (authenticationData == null) {
                         return null;
                     }

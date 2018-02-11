@@ -1,10 +1,10 @@
 package org.mqttbee.api.mqtt5.message.auth;
 
-import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 
+import java.nio.ByteBuffer;
 import java.util.Optional;
 
 /**
@@ -30,6 +30,6 @@ public interface Mqtt5ExtendedAuth {
      * @return the optional authentication/authorization data.
      */
     @NotNull
-    Optional<ByteBuf> getData();
+    Optional<ByteBuffer> getData();
 
 }

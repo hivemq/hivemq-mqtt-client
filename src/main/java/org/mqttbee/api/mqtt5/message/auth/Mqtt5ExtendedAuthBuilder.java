@@ -7,7 +7,10 @@ import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.auth.Mqtt5ExtendedAuthImpl;
+import org.mqttbee.util.ByteBufferUtil;
 import org.mqttbee.util.MustNotBeImplementedUtil;
+
+import java.nio.ByteBuffer;
 
 /**
  * @author Silvio Giebl
@@ -15,7 +18,7 @@ import org.mqttbee.util.MustNotBeImplementedUtil;
 public class Mqtt5ExtendedAuthBuilder {
 
     private Mqtt5UTF8StringImpl method;
-    private byte[] data;
+    private ByteBuffer data;
 
     @NotNull
     public Mqtt5ExtendedAuthBuilder withMethod(@NotNull final Mqtt5UTF8String method) {
@@ -26,7 +29,14 @@ public class Mqtt5ExtendedAuthBuilder {
     @NotNull
     public Mqtt5ExtendedAuthBuilder withData(@Nullable final byte[] data) {
         Preconditions.checkArgument((data == null) || Mqtt5DataTypes.isInBinaryDataRange(data));
-        this.data = data;
+        this.data = ByteBufferUtil.wrap(data);
+        return this;
+    }
+
+    @NotNull
+    public Mqtt5ExtendedAuthBuilder withData(@Nullable final ByteBuffer data) {
+        Preconditions.checkArgument((data == null) || Mqtt5DataTypes.isInBinaryDataRange(data));
+        this.data = ByteBufferUtil.slice(data);
         return this;
     }
 

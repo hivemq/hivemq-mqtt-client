@@ -13,8 +13,11 @@ import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl;
+import org.mqttbee.util.ByteBufferUtil;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 import org.mqttbee.util.UnsignedDataTypes;
+
+import java.nio.ByteBuffer;
 
 import static org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl.DEFAULT_TOPIC_ALIAS_USAGE;
 import static org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY;
@@ -25,14 +28,14 @@ import static org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl.MESSAGE_EXPIRY_
 public class Mqtt5PublishBuilder {
 
     Mqtt5TopicImpl topic;
-    byte[] payload;
+    ByteBuffer payload;
     Mqtt5QoS qos;
     boolean retain;
     long messageExpiryInterval = MESSAGE_EXPIRY_INTERVAL_INFINITY;
     Mqtt5PayloadFormatIndicator payloadFormatIndicator;
     Mqtt5UTF8StringImpl contentType;
     Mqtt5TopicImpl responseTopic;
-    byte[] correlationData;
+    ByteBuffer correlationData;
     private TopicAliasUsage topicAliasUsage = DEFAULT_TOPIC_ALIAS_USAGE;
     Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES;
 
@@ -62,8 +65,14 @@ public class Mqtt5PublishBuilder {
     }
 
     @NotNull
-    public Mqtt5PublishBuilder withPayload(@Nullable final byte[] payload) { // TODO
-        this.payload = payload;
+    public Mqtt5PublishBuilder withPayload(@Nullable final byte[] payload) {
+        this.payload = ByteBufferUtil.wrap(payload);
+        return this;
+    }
+
+    @NotNull
+    public Mqtt5PublishBuilder withPayload(@Nullable final ByteBuffer payload) {
+        this.payload = ByteBufferUtil.slice(payload);
         return this;
     }
 
@@ -107,9 +116,16 @@ public class Mqtt5PublishBuilder {
     }
 
     @NotNull
-    public Mqtt5PublishBuilder withCorrelationData(@Nullable final byte[] correlationData) { // TODO
+    public Mqtt5PublishBuilder withCorrelationData(@Nullable final byte[] correlationData) {
         Preconditions.checkArgument((correlationData == null) || Mqtt5DataTypes.isInBinaryDataRange(correlationData));
-        this.correlationData = correlationData;
+        this.correlationData = ByteBufferUtil.wrap(correlationData);
+        return this;
+    }
+
+    @NotNull
+    public Mqtt5PublishBuilder withCorrelationData(@Nullable final ByteBuffer correlationData) {
+        Preconditions.checkArgument((correlationData == null) || Mqtt5DataTypes.isInBinaryDataRange(correlationData));
+        this.correlationData = ByteBufferUtil.slice(correlationData);
         return this;
     }
 

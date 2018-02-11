@@ -13,6 +13,7 @@ import org.mqttbee.mqtt5.message.auth.Mqtt5ExtendedAuthImpl;
 import org.mqttbee.mqtt5.message.connect.Mqtt5ConnectImpl;
 import org.mqttbee.mqtt5.message.publish.Mqtt5WillPublishImpl;
 
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 import static java.util.Objects.requireNonNull;
@@ -108,11 +109,11 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         final Mqtt5ClientIdentifierImpl clientIdentifier = requireNonNull(Mqtt5ClientIdentifierImpl.from("test"));
 
         final Mqtt5ClientIdentifierImpl username = requireNonNull(Mqtt5ClientIdentifierImpl.from("username"));
-        final byte[] password = {1, 5, 6, 3};
+        final ByteBuffer password = ByteBuffer.wrap(new byte[]{1, 5, 6, 3});
         final Mqtt5ConnectImpl.SimpleAuthImpl simpleAuth = new Mqtt5ConnectImpl.SimpleAuthImpl(username, password);
 
         final Mqtt5UTF8StringImpl authMethod = requireNonNull(Mqtt5UTF8StringImpl.from("GS2-KRB5"));
-        final byte[] authData = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        final ByteBuffer authData = ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
         final Mqtt5ExtendedAuthImpl extendedAuth = new Mqtt5ExtendedAuthImpl(authMethod, authData);
 
         final Mqtt5UTF8StringImpl test = requireNonNull(Mqtt5UTF8StringImpl.from("test"));
@@ -126,11 +127,11 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
                 Mqtt5UserPropertiesImpl.of(ImmutableList.of(userProperty1, userProperty2, userProperty3));
 
         final Mqtt5TopicImpl willTopic = requireNonNull(Mqtt5TopicImpl.from("topic"));
-        final byte[] willPayload = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        final ByteBuffer willPayload = ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
         final Mqtt5QoS willQoS = Mqtt5QoS.AT_LEAST_ONCE;
         final Mqtt5UTF8StringImpl willContentType = requireNonNull(Mqtt5UTF8StringImpl.from("text"));
         final Mqtt5TopicImpl willResponseTopic = requireNonNull(Mqtt5TopicImpl.from("response"));
-        final byte[] willCorrelationData = {5, 4, 3, 2, 1};
+        final ByteBuffer willCorrelationData = ByteBuffer.wrap(new byte[]{5, 4, 3, 2, 1});
         final Mqtt5WillPublishImpl willPublish =
                 new Mqtt5WillPublishImpl(willTopic, willPayload, willQoS, true, 10, Mqtt5PayloadFormatIndicator.UTF_8,
                         willContentType, willResponseTopic, willCorrelationData, userProperties, 5,
@@ -258,7 +259,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         };
 
         final Mqtt5ClientIdentifierImpl clientIdentifier = requireNonNull(Mqtt5ClientIdentifierImpl.from("test"));
-        final byte[] password = {1, 5, 6, 3};
+        final ByteBuffer password = ByteBuffer.wrap(new byte[]{1, 5, 6, 3});
         final Mqtt5ConnectImpl.SimpleAuthImpl simpleAuth = new Mqtt5ConnectImpl.SimpleAuthImpl(null, password);
 
         final Mqtt5ConnectImpl connect =
@@ -272,7 +273,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
     @Disabled("password will be validated in the builder, remove this test")
     void encode_passwordTooLong() {
         final Mqtt5ClientIdentifierImpl clientIdentifier = requireNonNull(Mqtt5ClientIdentifierImpl.from("test"));
-        final byte[] password = new byte[65536];
+        final ByteBuffer password = ByteBuffer.wrap(new byte[65536]);
         final Mqtt5ConnectImpl.SimpleAuthImpl simpleAuth = new Mqtt5ConnectImpl.SimpleAuthImpl(null, password);
 
         final Mqtt5ConnectImpl connect =
@@ -347,7 +348,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         };
 
         final Mqtt5TopicImpl willTopic = requireNonNull(Mqtt5TopicImpl.from("topic"));
-        final byte[] willPayload = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        final ByteBuffer willPayload = ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
         final Mqtt5ClientIdentifierImpl clientIdentifier = requireNonNull(Mqtt5ClientIdentifierImpl.from("test"));
         final Mqtt5WillPublishImpl willPublish =
                 new Mqtt5WillPublishImpl(willTopic, willPayload, Mqtt5QoS.AT_MOST_ONCE, false,
@@ -364,7 +365,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
     @Disabled("will payload will be validated in the builder, remove this test")
     void encode_willPayloadTooLong() {
         final Mqtt5TopicImpl willTopic = requireNonNull(Mqtt5TopicImpl.from("topic"));
-        final byte[] willPayload = new byte[65536];
+        final ByteBuffer willPayload = ByteBuffer.wrap(new byte[65536]);
         final Mqtt5ClientIdentifierImpl clientIdentifier = requireNonNull(Mqtt5ClientIdentifierImpl.from("test"));
         final Mqtt5WillPublishImpl willPublish =
                 new Mqtt5WillPublishImpl(willTopic, willPayload, Mqtt5QoS.AT_MOST_ONCE, false,
@@ -381,7 +382,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
     @Disabled("will correlation data will be validated in the builder, remove this test")
     void encode_willCorrelationDataTooLong() {
         final Mqtt5TopicImpl willTopic = requireNonNull(Mqtt5TopicImpl.from("topic"));
-        final byte[] correlationData = new byte[65536];
+        final ByteBuffer correlationData = ByteBuffer.wrap(new byte[65536]);
         final Mqtt5ClientIdentifierImpl clientIdentifier = requireNonNull(Mqtt5ClientIdentifierImpl.from("test"));
         final Mqtt5WillPublishImpl willPublish = new Mqtt5WillPublishImpl(willTopic, null, Mqtt5QoS.AT_MOST_ONCE, false,
                 Mqtt5WillPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, correlationData,
@@ -441,7 +442,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
 
         final Mqtt5ClientIdentifierImpl clientIdentifier = requireNonNull(Mqtt5ClientIdentifierImpl.from("test"));
         final Mqtt5UTF8StringImpl authMethod = requireNonNull(Mqtt5UTF8StringImpl.from("GS2-KRB5"));
-        final byte[] authData = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        final ByteBuffer authData = ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
         final Mqtt5ExtendedAuthImpl extendedAuth = new Mqtt5ExtendedAuthImpl(authMethod, authData);
 
         final Mqtt5ConnectImpl connect =
@@ -456,7 +457,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
     void encode_authenticationDataTooLong_throwsException() {
         final Mqtt5ClientIdentifierImpl clientIdentifier = requireNonNull(Mqtt5ClientIdentifierImpl.from("test"));
         final Mqtt5UTF8StringImpl authMethod = requireNonNull(Mqtt5UTF8StringImpl.from("GS2-KRB5"));
-        final byte[] authData = new byte[65536];
+        final ByteBuffer authData = ByteBuffer.wrap(new byte[65536]);
         final Mqtt5ExtendedAuthImpl extendedAuth = new Mqtt5ExtendedAuthImpl(authMethod, authData);
 
         final Mqtt5ConnectImpl connect =

@@ -16,6 +16,7 @@ import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishWrapper;
 
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 import static java.util.Objects.requireNonNull;
@@ -76,12 +77,11 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
         final Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.of(ImmutableList
                 .of(userProperty, userProperty, userProperty, userProperty, userProperty, userProperty));
 
-        final Mqtt5PublishImpl publish =
-                new Mqtt5PublishImpl(requireNonNull(Mqtt5TopicImpl.from("topic")), new byte[]{1, 2, 3, 4, 5},
-                        Mqtt5QoS.AT_MOST_ONCE, false, 10, Mqtt5PayloadFormatIndicator.UNSPECIFIED,
-                        requireNonNull(Mqtt5UTF8StringImpl.from("myContentType")),
-                        requireNonNull(Mqtt5TopicImpl.from("responseTopic")), new byte[]{1, 2, 3, 4, 5}, HAS_NOT,
-                        userProperties, Mqtt5PublishEncoder.PROVIDER);
+        final Mqtt5PublishImpl publish = new Mqtt5PublishImpl(requireNonNull(Mqtt5TopicImpl.from("topic")),
+                ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5}), Mqtt5QoS.AT_MOST_ONCE, false, 10,
+                Mqtt5PayloadFormatIndicator.UNSPECIFIED, requireNonNull(Mqtt5UTF8StringImpl.from("myContentType")),
+                requireNonNull(Mqtt5TopicImpl.from("responseTopic")), ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5}),
+                HAS_NOT, userProperties, Mqtt5PublishEncoder.PROVIDER);
 
         encode(expected, publish, -1, false, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntArray.of());
     }
@@ -105,11 +105,10 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
                 1, 2, 3, 4, 5
         };
 
-        final Mqtt5PublishImpl publish =
-                new Mqtt5PublishImpl(requireNonNull(Mqtt5TopicImpl.from("topic")), new byte[]{1, 2, 3, 4, 5},
-                        Mqtt5QoS.AT_MOST_ONCE, false, Mqtt5PublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY,
-                        Mqtt5PayloadFormatIndicator.UNSPECIFIED, null, null, null, HAS_NOT, NO_USER_PROPERTIES,
-                        Mqtt5PublishEncoder.PROVIDER);
+        final Mqtt5PublishImpl publish = new Mqtt5PublishImpl(requireNonNull(Mqtt5TopicImpl.from("topic")),
+                ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5}), Mqtt5QoS.AT_MOST_ONCE, false,
+                Mqtt5PublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UNSPECIFIED, null, null,
+                null, HAS_NOT, NO_USER_PROPERTIES, Mqtt5PublishEncoder.PROVIDER);
 
         encode(expected, publish, -1, false, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntArray.of());
     }
@@ -350,7 +349,7 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
                 0x09, 0, 5, 1, 2, 3, 4, 5
         };
 
-        final byte[] correlationData = {1, 2, 3, 4, 5};
+        final ByteBuffer correlationData = ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5});
         final Mqtt5PublishImpl publish =
                 new Mqtt5PublishImpl(requireNonNull(Mqtt5TopicImpl.from("topic")), null, Mqtt5QoS.AT_LEAST_ONCE, false,
                         Mqtt5PublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UTF_8, null,
@@ -361,7 +360,7 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
     @Test
     @Disabled("correlation data will be validated in the builder, remove this test")
     void encode_correlationDataTooLong_throwsEncoderException() {
-        final byte[] correlationData = new byte[65536];
+        final ByteBuffer correlationData = ByteBuffer.wrap(new byte[65536]);
         final Mqtt5PublishImpl publish =
                 new Mqtt5PublishImpl(requireNonNull(Mqtt5TopicImpl.from("topic")), null, Mqtt5QoS.AT_LEAST_ONCE, false,
                         Mqtt5PublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UTF_8, null,
@@ -636,7 +635,7 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
     @Test
     void encode_maximumOutgoingPacketSizeExceeded_throwsEncoderException() {
         createServerData(100);
-        final byte[] correlationData = new byte[100];
+        final ByteBuffer correlationData = ByteBuffer.wrap(new byte[100]);
         final Mqtt5PublishImpl publish =
                 new Mqtt5PublishImpl(requireNonNull(Mqtt5TopicImpl.from("topic")), null, Mqtt5QoS.AT_MOST_ONCE, false,
                         Mqtt5PublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UNSPECIFIED,
@@ -750,12 +749,12 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
             return this;
         }
 
-        byte[] getCorrelationData() {
+        ByteBuffer getCorrelationData() {
             return getCorrelationData(0);
         }
 
-        byte[] getCorrelationData(final int extraBytes) {
-            return Arrays.copyOf(correlationData, correlationData.length + extraBytes);
+        ByteBuffer getCorrelationData(final int extraBytes) {
+            return ByteBuffer.wrap(Arrays.copyOf(correlationData, correlationData.length + extraBytes));
         }
 
         Mqtt5UserPropertiesImpl getMaxPossibleUserProperties() {
