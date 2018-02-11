@@ -1,10 +1,11 @@
 package org.mqttbee.api.mqtt5.message;
 
 import com.google.common.base.Preconditions;
-import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
+
+import java.nio.ByteBuffer;
 
 /**
  * UTF-8 encoded String according to the MQTT 5 specification.
@@ -52,6 +53,6 @@ public interface Mqtt5UTF8String {
      * @return the UTF-8 encoded read-only byte buffer.
      */
     @NotNull
-    ByteBuf toByteBuf();
+    ByteBuffer toByteBuffer();
 
 }

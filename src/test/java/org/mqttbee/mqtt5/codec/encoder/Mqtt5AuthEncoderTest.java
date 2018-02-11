@@ -15,6 +15,7 @@ import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 import org.mqttbee.mqtt5.message.auth.Mqtt5AuthImpl;
 
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 import static java.util.Objects.requireNonNull;
@@ -59,10 +60,10 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
                 0x26, 0, 5, 't', 'e', 's', 't', '2', 0, 5, 'v', 'a', 'l', 'u', 'e',
         };
 
-        final byte[] data = new byte[]{
+        final ByteBuffer data = ByteBuffer.wrap(new byte[]{
                 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4,
                 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
-        };
+        });
 
         final Mqtt5UTF8StringImpl reasonString = Mqtt5UTF8StringImpl.from("continue");
         final Mqtt5UTF8StringImpl test = requireNonNull(Mqtt5UTF8StringImpl.from("test"));
@@ -124,7 +125,7 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
                 0x16, 0, 1, 1
         };
 
-        final byte[] data = new byte[]{1};
+        final ByteBuffer data = ByteBuffer.wrap(new byte[]{1});
         final Mqtt5UTF8StringImpl method = requireNonNull(Mqtt5UTF8StringImpl.from("x"));
         final Mqtt5AuthImpl auth = new Mqtt5AuthImpl(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, method, data, null,
                 Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES, Mqtt5AuthEncoder.PROVIDER);
@@ -134,7 +135,7 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
     @Test
     @Disabled("auth data will be validated in the builder, remove this test")
     void encode_authenticationDataTooLarge_throwsEncoderException() {
-        final byte[] data = new byte[65536];
+        final ByteBuffer data = ByteBuffer.wrap(new byte[65536]);
         final Mqtt5UTF8StringImpl method = requireNonNull(Mqtt5UTF8StringImpl.from("x"));
         final Mqtt5AuthImpl auth = new Mqtt5AuthImpl(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, method, data, null,
                 Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES, Mqtt5AuthEncoder.PROVIDER);

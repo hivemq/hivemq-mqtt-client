@@ -12,6 +12,8 @@ import org.mqttbee.mqtt5.handler.Mqtt5ClientData;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 
+import java.nio.ByteBuffer;
+
 /**
  * @author Silvio Giebl
  */
@@ -123,15 +125,15 @@ class Mqtt5MessageDecoderUtil {
     }
 
     @Nullable
-    static byte[] decodeBinaryDataOnlyOnce(
-            @Nullable final byte[] current, @NotNull final String name, @NotNull final Channel channel,
-            @NotNull final ByteBuf in) {
+    static ByteBuffer decodeBinaryDataOnlyOnce(
+            @Nullable final ByteBuffer current, @NotNull final String name, @NotNull final Channel channel,
+            @NotNull final ByteBuf in, final boolean direct) {
 
         if (current != null) {
             disconnectOnlyOnce(name, channel);
             return null;
         }
-        final byte[] decoded = Mqtt5DataTypes.decodeBinaryData(in);
+        final ByteBuffer decoded = Mqtt5DataTypes.decodeBinaryData(in, direct);
         if (decoded == null) {
             disconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "malformed binary data for " + name, channel);
             return null;

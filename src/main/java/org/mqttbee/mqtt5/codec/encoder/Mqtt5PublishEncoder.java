@@ -11,6 +11,7 @@ import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishWrapper;
 
+import java.nio.ByteBuffer;
 import java.util.function.Function;
 
 import static org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoderUtil.*;
@@ -39,9 +40,9 @@ public class Mqtt5PublishEncoder extends Mqtt5WrappedMessageEncoder<Mqtt5Publish
             remainingLength += 2;
         }
 
-        final byte[] payload = message.getRawPayload();
+        final ByteBuffer payload = message.getRawPayload();
         if (payload != null) {
-            remainingLength += payload.length;
+            remainingLength += payload.remaining();
         }
 
         return remainingLength;
@@ -94,7 +95,8 @@ public class Mqtt5PublishEncoder extends Mqtt5WrappedMessageEncoder<Mqtt5Publish
             int additionalRemainingLength = 0;
 
             if ((message.getTopicAlias() != DEFAULT_NO_TOPIC_ALIAS) && !message.isNewTopicAlias()) {
-                additionalRemainingLength = 2 - message.getWrapped().getTopic().encodedLength();
+                additionalRemainingLength =
+                        Mqtt5DataTypes.EMPTY_BINARY_DATA_LENGTH - message.getWrapped().getTopic().encodedLength();
             }
 
             return additionalRemainingLength;
@@ -146,7 +148,7 @@ public class Mqtt5PublishEncoder extends Mqtt5WrappedMessageEncoder<Mqtt5Publish
             if ((message.getTopicAlias() == DEFAULT_NO_TOPIC_ALIAS) || (message.isNewTopicAlias())) {
                 publish.getTopic().to(out);
             } else {
-                out.writeShort(0);
+                Mqtt5DataTypes.encodeEmptyBinaryData(out);
             }
 
             if (publish.getQos() != Mqtt5QoS.AT_MOST_ONCE) {
@@ -172,7 +174,7 @@ public class Mqtt5PublishEncoder extends Mqtt5WrappedMessageEncoder<Mqtt5Publish
         }
 
         private void encodePayload(@NotNull final ByteBuf out) {
-            final byte[] payload = message.getWrapped().getRawPayload();
+            final ByteBuffer payload = message.getWrapped().getRawPayload();
             if (payload != null) {
                 out.writeBytes(payload);
             }

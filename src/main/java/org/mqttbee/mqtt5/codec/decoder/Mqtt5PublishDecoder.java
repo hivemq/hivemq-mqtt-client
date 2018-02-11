@@ -22,8 +22,10 @@ import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishProperty;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishWrapper;
+import org.mqttbee.util.ByteBufferUtil;
 
 import javax.inject.Singleton;
+import java.nio.ByteBuffer;
 
 import static org.mqttbee.mqtt5.codec.decoder.Mqtt5MessageDecoderUtil.*;
 import static org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY;
@@ -98,7 +100,7 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
         Mqtt5PayloadFormatIndicator payloadFormatIndicator = null;
         Mqtt5UTF8StringImpl contentType = null;
         Mqtt5TopicImpl responseTopic = null;
-        byte[] correlationData = null;
+        ByteBuffer correlationData = null;
         ImmutableList.Builder<Mqtt5UserPropertyImpl> userPropertiesBuilder = null;
         int topicAlias = DEFAULT_NO_TOPIC_ALIAS;
         TopicAliasUsage topicAliasUsage = TopicAliasUsage.HAS_NOT;
@@ -154,8 +156,8 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
                     }
                     break;
 
-                case Mqtt5PublishProperty.CORRELATION_DATA:
-                    correlationData = decodeBinaryDataOnlyOnce(correlationData, "correlation data", channel, in);
+                case Mqtt5PublishProperty.CORRELATION_DATA: // TODO direct
+                    correlationData = decodeBinaryDataOnlyOnce(correlationData, "correlation data", channel, in, false);
                     if (correlationData == null) {
                         return null;
                     }
@@ -236,15 +238,16 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
         }
 
         final int payloadLength = in.readableBytes();
-        byte[] payload = null;
+        ByteBuffer payload = null;
         if (payloadLength > 0) {
-            payload = new byte[payloadLength];
+            payload = ByteBuffer.allocate(payloadLength); // TODO direct
             in.readBytes(payload);
+            payload.position(0);
 
             if (payloadFormatIndicator == Mqtt5PayloadFormatIndicator.UTF_8) {
                 final Boolean validatePayloadFormat = channel.attr(ChannelAttributes.VALIDATE_PAYLOAD_FORMAT).get();
                 if ((validatePayloadFormat != null) && validatePayloadFormat) {
-                    if (!Utf8.isWellFormed(payload)) {
+                    if (!Utf8.isWellFormed(ByteBufferUtil.getBytes(payload))) {
                         disconnect(Mqtt5DisconnectReasonCode.PAYLOAD_FORMAT_INVALID, "payload is not valid UTF-8",
                                 channel);
                         return null;

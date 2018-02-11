@@ -54,7 +54,7 @@ public class Mqtt5ConnectEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
         if (willPublish != null) {
             remainingLength += encodedLengthWithHeader(willPropertyLength());
             remainingLength += willPublish.getTopic().encodedLength();
-            remainingLength += Mqtt5DataTypes.encodedBinaryDataLength(willPublish.getRawPayload());
+            remainingLength += encodedOrEmptyLength(willPublish.getRawPayload());
         }
 
         return remainingLength;
@@ -216,7 +216,7 @@ public class Mqtt5ConnectEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
                     Mqtt5WillPublish.DEFAULT_DELAY_INTERVAL, out);
 
             willPublish.getTopic().to(out);
-            Mqtt5DataTypes.encodeBinaryData(willPublish.getRawPayload(), out);
+            encodeOrEmpty(willPublish.getRawPayload(), out);
         }
     }
 

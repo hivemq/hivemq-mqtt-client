@@ -17,6 +17,7 @@ import org.mqttbee.mqtt5.message.auth.Mqtt5AuthImpl;
 import org.mqttbee.mqtt5.message.auth.Mqtt5AuthProperty;
 
 import javax.inject.Singleton;
+import java.nio.ByteBuffer;
 
 import static org.mqttbee.mqtt5.codec.decoder.Mqtt5MessageDecoderUtil.*;
 
@@ -61,7 +62,7 @@ public class Mqtt5AuthDecoder implements Mqtt5MessageDecoder {
         }
 
         Mqtt5UTF8StringImpl method = null;
-        byte[] data = null;
+        ByteBuffer data = null;
         Mqtt5UTF8StringImpl reasonString = null;
         ImmutableList.Builder<Mqtt5UserPropertyImpl> userPropertiesBuilder = null;
 
@@ -81,8 +82,8 @@ public class Mqtt5AuthDecoder implements Mqtt5MessageDecoder {
                     }
                     break;
 
-                case Mqtt5AuthProperty.AUTHENTICATION_DATA:
-                    data = decodeBinaryDataOnlyOnce(data, "authentication data", channel, in);
+                case Mqtt5AuthProperty.AUTHENTICATION_DATA: // TODO direct
+                    data = decodeBinaryDataOnlyOnce(data, "authentication data", channel, in, false);
                     if (data == null) {
                         return null;
                     }

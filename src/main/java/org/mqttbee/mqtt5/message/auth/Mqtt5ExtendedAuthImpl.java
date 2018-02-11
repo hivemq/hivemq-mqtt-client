@@ -1,12 +1,12 @@
 package org.mqttbee.mqtt5.message.auth;
 
-import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.auth.Mqtt5ExtendedAuth;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
-import org.mqttbee.util.ByteBufUtil;
+import org.mqttbee.util.ByteBufferUtil;
 
+import java.nio.ByteBuffer;
 import java.util.Optional;
 
 /**
@@ -15,9 +15,9 @@ import java.util.Optional;
 public class Mqtt5ExtendedAuthImpl implements Mqtt5ExtendedAuth {
 
     private final Mqtt5UTF8StringImpl method;
-    private final byte[] data;
+    private final ByteBuffer data;
 
-    public Mqtt5ExtendedAuthImpl(@NotNull final Mqtt5UTF8StringImpl method, @Nullable final byte[] data) {
+    public Mqtt5ExtendedAuthImpl(@NotNull final Mqtt5UTF8StringImpl method, @Nullable final ByteBuffer data) {
         this.method = method;
         this.data = data;
     }
@@ -30,12 +30,12 @@ public class Mqtt5ExtendedAuthImpl implements Mqtt5ExtendedAuth {
 
     @NotNull
     @Override
-    public Optional<ByteBuf> getData() {
-        return ByteBufUtil.optionalReadOnly(data);
+    public Optional<ByteBuffer> getData() {
+        return ByteBufferUtil.optionalReadOnly(data);
     }
 
     @Nullable
-    public byte[] getRawData() {
+    public ByteBuffer getRawData() {
         return data;
     }
 

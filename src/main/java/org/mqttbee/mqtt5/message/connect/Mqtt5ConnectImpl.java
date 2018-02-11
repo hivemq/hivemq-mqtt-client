@@ -1,6 +1,5 @@
 package org.mqttbee.mqtt5.message.connect;
 
-import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5ClientIdentifier;
@@ -15,8 +14,9 @@ import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 import org.mqttbee.mqtt5.message.auth.Mqtt5ExtendedAuthImpl;
 import org.mqttbee.mqtt5.message.publish.Mqtt5WillPublishImpl;
-import org.mqttbee.util.ByteBufUtil;
+import org.mqttbee.util.ByteBufferUtil;
 
+import java.nio.ByteBuffer;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -142,9 +142,9 @@ public class Mqtt5ConnectImpl extends Mqtt5MessageWithUserProperties<Mqtt5Connec
     public static class SimpleAuthImpl implements SimpleAuth {
 
         private final Mqtt5UTF8StringImpl username;
-        private final byte[] password;
+        private final ByteBuffer password;
 
-        public SimpleAuthImpl(@Nullable final Mqtt5UTF8StringImpl username, @Nullable final byte[] password) {
+        public SimpleAuthImpl(@Nullable final Mqtt5UTF8StringImpl username, @Nullable final ByteBuffer password) {
             this.username = username;
             this.password = password;
         }
@@ -162,12 +162,12 @@ public class Mqtt5ConnectImpl extends Mqtt5MessageWithUserProperties<Mqtt5Connec
 
         @NotNull
         @Override
-        public Optional<ByteBuf> getPassword() {
-            return ByteBufUtil.optionalReadOnly(password);
+        public Optional<ByteBuffer> getPassword() {
+            return ByteBufferUtil.optionalReadOnly(password);
         }
 
         @Nullable
-        public byte[] getRawPassword() {
+        public ByteBuffer getRawPassword() {
             return password;
         }
 

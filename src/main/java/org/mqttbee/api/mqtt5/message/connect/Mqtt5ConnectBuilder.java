@@ -16,8 +16,11 @@ import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 import org.mqttbee.mqtt5.message.auth.Mqtt5ExtendedAuthImpl;
 import org.mqttbee.mqtt5.message.connect.Mqtt5ConnectImpl;
 import org.mqttbee.mqtt5.message.publish.Mqtt5WillPublishImpl;
+import org.mqttbee.util.ByteBufferUtil;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 import org.mqttbee.util.UnsignedDataTypes;
+
+import java.nio.ByteBuffer;
 
 import static org.mqttbee.api.mqtt5.message.connect.Mqtt5Connect.*;
 import static org.mqttbee.mqtt5.message.connect.Mqtt5ConnectImpl.RestrictionsImpl;
@@ -137,7 +140,7 @@ public class Mqtt5ConnectBuilder {
     public static class SimpleAuthBuilder {
 
         private Mqtt5UTF8StringImpl username;
-        private byte[] password;
+        private ByteBuffer password;
 
         SimpleAuthBuilder() {
         }
@@ -149,9 +152,16 @@ public class Mqtt5ConnectBuilder {
         }
 
         @NotNull
-        public SimpleAuthBuilder withPassword(@Nullable final byte[] password) { // TODO
+        public SimpleAuthBuilder withPassword(@Nullable final byte[] password) {
             Preconditions.checkArgument((password == null) || Mqtt5DataTypes.isInBinaryDataRange(password));
-            this.password = password;
+            this.password = ByteBufferUtil.wrap(password);
+            return this;
+        }
+
+        @NotNull
+        public SimpleAuthBuilder withPassword(@Nullable final ByteBuffer password) {
+            Preconditions.checkArgument((password == null) || Mqtt5DataTypes.isInBinaryDataRange(password));
+            this.password = ByteBufferUtil.slice(password);
             return this;
         }
 

@@ -1,7 +1,6 @@
 package org.mqttbee.mqtt5.message.publish;
 
 import com.google.common.primitives.ImmutableIntArray;
-import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
@@ -15,8 +14,9 @@ import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 import org.mqttbee.mqtt5.message.Mqtt5WrappedMessage;
-import org.mqttbee.util.ByteBufUtil;
+import org.mqttbee.util.ByteBufferUtil;
 
+import java.nio.ByteBuffer;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -29,22 +29,22 @@ public class Mqtt5PublishImpl extends Mqtt5WrappedMessage<Mqtt5PublishImpl, Mqtt
     public static final long MESSAGE_EXPIRY_INTERVAL_INFINITY = Long.MAX_VALUE;
 
     private final Mqtt5TopicImpl topic;
-    private final byte[] payload;
+    private final ByteBuffer payload;
     private final Mqtt5QoS qos;
     private final boolean isRetain;
     private final long messageExpiryInterval;
     private final Mqtt5PayloadFormatIndicator payloadFormatIndicator;
     private final Mqtt5UTF8StringImpl contentType;
     private final Mqtt5TopicImpl responseTopic;
-    private final byte[] correlationData;
+    private final ByteBuffer correlationData;
     private final TopicAliasUsage topicAliasUsage;
 
     public Mqtt5PublishImpl(
-            @NotNull final Mqtt5TopicImpl topic, @Nullable final byte[] payload, @NotNull final Mqtt5QoS qos,
+            @NotNull final Mqtt5TopicImpl topic, @Nullable final ByteBuffer payload, @NotNull final Mqtt5QoS qos,
             final boolean isRetain, final long messageExpiryInterval,
             @Nullable final Mqtt5PayloadFormatIndicator payloadFormatIndicator,
             @Nullable final Mqtt5UTF8StringImpl contentType, @Nullable final Mqtt5TopicImpl responseTopic,
-            @Nullable final byte[] correlationData, @NotNull final TopicAliasUsage topicAliasUsage,
+            @Nullable final ByteBuffer correlationData, @NotNull final TopicAliasUsage topicAliasUsage,
             @NotNull final Mqtt5UserPropertiesImpl userProperties,
             @NotNull final Function<Mqtt5PublishImpl, ? extends Mqtt5WrappedMessageEncoder<Mqtt5PublishImpl, Mqtt5PublishWrapper>> encoderProvider) {
 
@@ -69,12 +69,12 @@ public class Mqtt5PublishImpl extends Mqtt5WrappedMessage<Mqtt5PublishImpl, Mqtt
 
     @NotNull
     @Override
-    public Optional<ByteBuf> getPayload() {
-        return ByteBufUtil.optionalReadOnly(payload);
+    public Optional<ByteBuffer> getPayload() {
+        return ByteBufferUtil.optionalReadOnly(payload);
     }
 
     @Nullable
-    public byte[] getRawPayload() {
+    public ByteBuffer getRawPayload() {
         return payload;
     }
 
@@ -135,12 +135,12 @@ public class Mqtt5PublishImpl extends Mqtt5WrappedMessage<Mqtt5PublishImpl, Mqtt
 
     @NotNull
     @Override
-    public Optional<ByteBuf> getCorrelationData() {
-        return ByteBufUtil.optionalReadOnly(correlationData);
+    public Optional<ByteBuffer> getCorrelationData() {
+        return ByteBufferUtil.optionalReadOnly(correlationData);
     }
 
     @Nullable
-    public byte[] getRawCorrelationData() {
+    public ByteBuffer getRawCorrelationData() {
         return correlationData;
     }
 
