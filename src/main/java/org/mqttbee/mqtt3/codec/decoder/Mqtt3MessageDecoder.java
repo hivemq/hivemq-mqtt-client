@@ -25,4 +25,5 @@ public interface Mqtt3MessageDecoder {
      */
     @Nullable
     Mqtt3Message decode(int flags, @NotNull Channel channel, @NotNull ByteBuf in);
+
 }

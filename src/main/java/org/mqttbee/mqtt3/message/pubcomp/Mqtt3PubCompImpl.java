@@ -15,7 +15,6 @@ public class Mqtt3PubCompImpl implements Mqtt3PubComp, Mqtt3Message {
         this.packetId = packetId;
     }
 
-
     @Override
     public void encode(
             @NotNull final Channel channel, @NotNull final ByteBuf out) {
@@ -27,8 +26,8 @@ public class Mqtt3PubCompImpl implements Mqtt3PubComp, Mqtt3Message {
         return 4;
     }
 
-
     public int getPacketId() {
         return packetId;
     }
+
 }

@@ -15,7 +15,6 @@ public class Mqtt3PubRecImpl implements Mqtt3PubRec, Mqtt3Message {
         this.packetId = packetId;
     }
 
-
     @Override
     public void encode(
             @NotNull final Channel channel, @NotNull final ByteBuf out) {
@@ -32,4 +31,5 @@ public class Mqtt3PubRecImpl implements Mqtt3PubRec, Mqtt3Message {
     public int getPacketId() {
         return packetId;
     }
+
 }

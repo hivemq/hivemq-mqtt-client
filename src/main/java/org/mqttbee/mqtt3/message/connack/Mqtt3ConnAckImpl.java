@@ -11,16 +11,13 @@ import org.mqttbee.mqtt3.message.Mqtt3Message;
  */
 public class Mqtt3ConnAckImpl implements Mqtt3ConnAck, Mqtt3Message {
 
-
     private final Mqtt3ConnAckReasonCode reasonCode;
     private final boolean isSessionPresent;
-
 
     public Mqtt3ConnAckImpl(final Mqtt3ConnAckReasonCode reasonCode, final boolean isSessionPresent) {
         this.reasonCode = reasonCode;
         this.isSessionPresent = isSessionPresent;
     }
-
 
     @NotNull
     @Override
@@ -32,7 +29,6 @@ public class Mqtt3ConnAckImpl implements Mqtt3ConnAck, Mqtt3Message {
     public boolean isSessionPresent() {
         return this.isSessionPresent;
     }
-
 
     @Override
     public void encode(@NotNull final Channel channel, @NotNull final ByteBuf out) {

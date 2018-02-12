@@ -9,7 +9,6 @@ import org.mqttbee.mqtt3.message.puback.Mqtt3PubAckImpl;
 
 public class Mqtt3PubAckDecoder implements Mqtt3MessageDecoder {
 
-
     private static final int FLAGS = 0b0000;
     private static final int REMAINING_LENGTH = 2;
 
@@ -22,7 +21,6 @@ public class Mqtt3PubAckDecoder implements Mqtt3MessageDecoder {
             return null;
         }
 
-
         if (in.readableBytes() != REMAINING_LENGTH) {
             channel.close();
             return null;
@@ -32,4 +30,5 @@ public class Mqtt3PubAckDecoder implements Mqtt3MessageDecoder {
 
         return new Mqtt3PubAckImpl(packetId);
     }
+
 }

@@ -2,7 +2,6 @@ package org.mqttbee.mqtt3.codec;
 
 public class Mqtt3DataTypes {
 
-
     /**
      * Calculates the byte count of the given value encoded as a variable byte integer.
      * <p>
@@ -20,6 +19,5 @@ public class Mqtt3DataTypes {
         }
         return length;
     }
-
 
 }

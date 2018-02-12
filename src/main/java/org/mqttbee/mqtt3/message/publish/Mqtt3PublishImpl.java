@@ -5,25 +5,24 @@ import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt3.message.Mqtt3Publish;
+import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.mqtt3.message.Mqtt3Message;
-import org.mqttbee.mqtt5.message.Mqtt5QoS;
-import org.mqttbee.mqtt5.message.Mqtt5Topic;
+import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
 
 import java.util.Optional;
 
 public class Mqtt3PublishImpl implements Mqtt3Publish, Mqtt3Message {
 
-
     public static final int PACKET_ID_NOT_SET = -1;
     private final byte[] payload;
-    private final Mqtt5Topic topic;
+    private final Mqtt5TopicImpl topic;
     private final Mqtt5QoS qos;
     private final boolean isRetained;
     private final boolean isDup;
     private final int packetId;
 
     public Mqtt3PublishImpl(
-            final byte[] payload, final Mqtt5Topic topic, final Mqtt5QoS qos, final boolean isRetained,
+            final byte[] payload, final Mqtt5TopicImpl topic, final Mqtt5QoS qos, final boolean isRetained,
             final boolean dup, final int packetId) {
         this.payload = payload;
         this.topic = topic;
@@ -32,7 +31,6 @@ public class Mqtt3PublishImpl implements Mqtt3Publish, Mqtt3Message {
         this.isDup = dup;
         this.packetId = packetId;
     }
-
 
     @Override
     public void encode(
@@ -47,14 +45,13 @@ public class Mqtt3PublishImpl implements Mqtt3Publish, Mqtt3Message {
         return 0;
     }
 
-
     public int getPacketId() {
         return packetId;
     }
 
     @NotNull
     @Override
-    public Mqtt5Topic getTopic() {
+    public Mqtt5TopicImpl getTopic() {
         return topic;
     }
 
@@ -83,4 +80,5 @@ public class Mqtt3PublishImpl implements Mqtt3Publish, Mqtt3Message {
     public boolean isDup() {
         return isDup;
     }
+
 }
