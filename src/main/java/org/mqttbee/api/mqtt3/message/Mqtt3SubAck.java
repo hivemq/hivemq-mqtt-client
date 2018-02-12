@@ -3,7 +3,6 @@ package org.mqttbee.api.mqtt3.message;
 import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt3.message.suback.Mqtt3SubAckReasonCode;
-import org.mqttbee.mqtt5.message.suback.Mqtt5SubAckReasonCode;
 
 public interface Mqtt3SubAck {
 
@@ -13,6 +12,5 @@ public interface Mqtt3SubAck {
      */
     @NotNull
     ImmutableList<Mqtt3SubAckReasonCode> getReasonCodes();
-
 
 }

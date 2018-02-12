@@ -27,4 +27,5 @@ public class Mqtt3UnsubAckImpl implements Mqtt3UnsubAck, Mqtt3Message {
     public int encodedLength() {
         return 0;
     }
+
 }

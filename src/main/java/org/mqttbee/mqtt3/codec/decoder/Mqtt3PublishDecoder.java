@@ -4,21 +4,19 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.mqtt3.message.Mqtt3Message;
 import org.mqttbee.mqtt3.message.publish.Mqtt3PublishImpl;
 import org.mqttbee.mqtt3.message.publish.Mqtt3PublishInternal;
-import org.mqttbee.mqtt5.message.Mqtt5QoS;
-import org.mqttbee.mqtt5.message.Mqtt5Topic;
+import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
 
 import static org.mqttbee.mqtt3.codec.decoder.Mqtt3DecoderUtil.disconnectUngracefully;
 
 public class Mqtt3PublishDecoder implements Mqtt3MessageDecoder {
 
-
     @Nullable
     @Override
-    public Mqtt3Message decode(
-            final int flags, @NotNull final Channel channel, @NotNull final ByteBuf in) {
+    public Mqtt3Message decode(final int flags, @NotNull final Channel channel, @NotNull final ByteBuf in) {
 
         final boolean dup = (flags & 0b1000) != 0;
         final int code = (flags & 0b0110) >> 1;
@@ -34,7 +32,7 @@ public class Mqtt3PublishDecoder implements Mqtt3MessageDecoder {
             return null;
         }
 
-        final Mqtt5Topic topic = Mqtt5Topic.from(in);
+        final Mqtt5TopicImpl topic = Mqtt5TopicImpl.from(in);
         if (topic == null) {
             // we must close the network connection in case of a null character and may close it if any other illegal character is contained
             disconnectUngracefully(channel);
@@ -64,4 +62,5 @@ public class Mqtt3PublishDecoder implements Mqtt3MessageDecoder {
             return new Mqtt3PublishInternal(publish, packetId);
         }
     }
+
 }

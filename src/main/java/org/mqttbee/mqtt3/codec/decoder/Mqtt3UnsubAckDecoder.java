@@ -8,10 +8,8 @@ import org.mqttbee.mqtt3.message.unsuback.Mqtt3UnsubAckImpl;
 
 public class Mqtt3UnsubAckDecoder implements Mqtt3MessageDecoder {
 
-
     private static final int FLAGS = 0b0000;
     private static final int REMAINING_LENGTH = 2; // 2 for the packetId
-
 
     @Nullable
     @Override
@@ -31,4 +29,5 @@ public class Mqtt3UnsubAckDecoder implements Mqtt3MessageDecoder {
         final int packetId = in.readUnsignedShort();
         return new Mqtt3UnsubAckImpl(packetId);
     }
+
 }

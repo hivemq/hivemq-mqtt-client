@@ -23,7 +23,6 @@ class Mqtt3PubAckEncoderTest {
         channel.close();
     }
 
-
     @Test
     void encode() {
         int id = 1;
@@ -33,7 +32,6 @@ class Mqtt3PubAckEncoderTest {
         Mqtt3PubAckImpl internal = new Mqtt3PubAckImpl(id);
         encode(exspected, internal);
     }
-
 
     @Test
     void encodedRemainingLength() {
@@ -46,4 +44,5 @@ class Mqtt3PubAckEncoderTest {
         byteBuf.readBytes(actual);
         assertArrayEquals(expected, actual);
     }
+
 }

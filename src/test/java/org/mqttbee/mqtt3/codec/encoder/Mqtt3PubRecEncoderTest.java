@@ -23,7 +23,6 @@ class Mqtt3PubRecEncoderTest {
         channel.close();
     }
 
-
     @Test
     void encode() {
         int id = 1;
@@ -45,4 +44,5 @@ class Mqtt3PubRecEncoderTest {
         byteBuf.readBytes(actual);
         assertArrayEquals(expected, actual);
     }
+
 }

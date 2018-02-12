@@ -8,7 +8,6 @@ import org.mqttbee.mqtt3.message.puback.Mqtt3PubAckImpl;
 
 import javax.inject.Singleton;
 
-
 /**
  * @author Daniel Krüger
  */
@@ -33,7 +32,6 @@ public class Mqtt3PubAckEncoder implements Mqtt3MessageEncoder<Mqtt3PubAckImpl> 
         return REMAINING_LENGTH;
     }
 
-
     private void encodeFixedHeader(@NotNull final ByteBuf out) {
         out.writeByte(FIXED_HEADER);
         out.writeByte(FIXED_LENGTH);
@@ -42,4 +40,5 @@ public class Mqtt3PubAckEncoder implements Mqtt3MessageEncoder<Mqtt3PubAckImpl> 
     private void encodeVariableHeader(@NotNull final Mqtt3PubAckImpl pubAck, @NotNull final ByteBuf out) {
         out.writeShort(pubAck.getPacketId());
     }
+
 }
