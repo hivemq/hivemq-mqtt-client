@@ -61,7 +61,7 @@ class Mqtt5PingRespDecoderTest extends AbstractMqtt5DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"false", "true"})
     void decode_wrong_flags(final boolean sendReasonString) {
-        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        ChannelAttributes.sendReasonString(sendReasonString, channel);
 
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
@@ -78,7 +78,7 @@ class Mqtt5PingRespDecoderTest extends AbstractMqtt5DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"false", "true"})
     void decode_remaining_length_not_0(final boolean sendReasonString) {
-        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        ChannelAttributes.sendReasonString(sendReasonString, channel);
 
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header

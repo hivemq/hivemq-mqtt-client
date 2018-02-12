@@ -7,6 +7,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.auth.Mqtt5AuthReasonCode;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
+import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5AuthEncoder;
 import org.mqttbee.mqtt5.handler.Mqtt5ClientData;
@@ -82,8 +83,9 @@ public class Mqtt5AuthDecoder implements Mqtt5MessageDecoder {
                     }
                     break;
 
-                case Mqtt5AuthProperty.AUTHENTICATION_DATA: // TODO direct
-                    data = decodeBinaryDataOnlyOnce(data, "authentication data", channel, in, false);
+                case Mqtt5AuthProperty.AUTHENTICATION_DATA:
+                    data = decodeBinaryDataOnlyOnce(data, "authentication data", channel, in,
+                            ChannelAttributes.useDirectBufferForAuth(channel));
                     if (data == null) {
                         return null;
                     }
