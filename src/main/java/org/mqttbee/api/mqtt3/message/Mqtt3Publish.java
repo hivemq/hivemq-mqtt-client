@@ -1,8 +1,8 @@
 package org.mqttbee.api.mqtt3.message;
 
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt5.message.Mqtt5QoS;
-import org.mqttbee.mqtt5.message.Mqtt5Topic;
+import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
+import org.mqttbee.api.mqtt5.message.Mqtt5Topic;
 
 import java.util.Optional;
 
@@ -30,6 +30,5 @@ public interface Mqtt3Publish {
      * @return whether this PUBLISH packet is a retained message.
      */
     boolean isRetained();
-
 
 }

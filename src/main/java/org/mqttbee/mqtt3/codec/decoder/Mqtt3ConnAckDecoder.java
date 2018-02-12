@@ -14,14 +14,12 @@ import org.mqttbee.mqtt3.message.connack.Mqtt3ConnAckReasonCode;
  */
 public class Mqtt3ConnAckDecoder implements Mqtt3MessageDecoder {
 
-
     private static final int FLAGS = 0b0000;
     private static final int REMAINING_LENGTH = 2;
 
     @Nullable
     @Override
     public Mqtt3Message decode(final int flags, @NotNull final Channel channel, @NotNull final ByteBuf in) {
-
 
         if (flags != FLAGS) {
             channel.close();
@@ -32,7 +30,6 @@ public class Mqtt3ConnAckDecoder implements Mqtt3MessageDecoder {
             channel.close();
             return null;
         }
-
 
         final byte firstByte = in.readByte();
 
@@ -51,4 +48,5 @@ public class Mqtt3ConnAckDecoder implements Mqtt3MessageDecoder {
 
         return new Mqtt3ConnAckImpl(reasonCode, sessionPresent);
     }
+
 }

@@ -7,9 +7,9 @@ import org.mqttbee.api.mqtt3.message.Mqtt3Disconnect;
 import org.mqttbee.mqtt3.message.Mqtt3Message;
 
 public class Mqtt3DisconnectImpl implements Mqtt3Disconnect, Mqtt3Message {
+
     @Override
-    public void encode(
-            @NotNull final Channel channel, @NotNull final ByteBuf out) {
+    public void encode(@NotNull final Channel channel, @NotNull final ByteBuf out) {
         //TODO
     }
 
@@ -18,4 +18,5 @@ public class Mqtt3DisconnectImpl implements Mqtt3Disconnect, Mqtt3Message {
         //TODO
         return 0;
     }
+
 }

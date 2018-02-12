@@ -9,10 +9,8 @@ import org.mqttbee.mqtt3.message.Mqtt3Message;
 
 public class Mqtt3SubAckImpl implements Mqtt3SubAck, Mqtt3Message {
 
-
     private final int packetId;
     private final ImmutableList<Mqtt3SubAckReasonCode> reasonCodes;
-
 
     public Mqtt3SubAckImpl(
             final int packetId, final ImmutableList<Mqtt3SubAckReasonCode> reasonCodes) {
@@ -20,11 +18,9 @@ public class Mqtt3SubAckImpl implements Mqtt3SubAck, Mqtt3Message {
         this.reasonCodes = reasonCodes;
     }
 
-
     public int getPacketId() {
         return packetId;
     }
-
 
     @Override
     public void encode(
@@ -44,4 +40,5 @@ public class Mqtt3SubAckImpl implements Mqtt3SubAck, Mqtt3Message {
     public ImmutableList<Mqtt3SubAckReasonCode> getReasonCodes() {
         return reasonCodes;
     }
+
 }

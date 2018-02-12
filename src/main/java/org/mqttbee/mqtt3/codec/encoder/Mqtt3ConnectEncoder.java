@@ -9,10 +9,9 @@ import org.mqttbee.mqtt3.message.publish.Mqtt3PublishImpl;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.exceptions.Mqtt5BinaryDataExceededException;
 import org.mqttbee.mqtt5.exceptions.Mqtt5VariableByteIntegerExceededException;
-import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
+import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 
 import javax.inject.Singleton;
-
 
 @Singleton
 public class Mqtt3ConnectEncoder implements Mqtt3MessageEncoder<Mqtt3ConnectImpl> {
@@ -23,28 +22,23 @@ public class Mqtt3ConnectEncoder implements Mqtt3MessageEncoder<Mqtt3ConnectImpl
             6 /* protocol name */ + 1 /* protocol version */ + 1 /* connect flags */ + 2 /* keep alive */;
     private static final byte PROTOCOL_VERSION = 4;
 
-
     @Override
     public void encode(
             @NotNull final Mqtt3ConnectImpl connect, @NotNull final Channel channel, @NotNull final ByteBuf out) {
+
         encodeFixedHeader(connect, out);
         encodeVariableHeader(connect, out);
         encodePayload(connect, out);
-
     }
-
 
     private void encodeFixedHeader(@NotNull final Mqtt3ConnectImpl connect, @NotNull final ByteBuf out) {
         out.writeByte(FIXED_HEADER);
         Mqtt5DataTypes.encodeVariableByteInteger(encodedRemainingLength(connect), out);
     }
 
-
-    private void encodeVariableHeader(
-            @NotNull final Mqtt3ConnectImpl connect, @NotNull final ByteBuf out) {
-
+    private void encodeVariableHeader(@NotNull final Mqtt3ConnectImpl connect, @NotNull final ByteBuf out) {
         //protocol name
-        Mqtt5UTF8String.PROTOCOL_NAME.to(out);
+        Mqtt5UTF8StringImpl.PROTOCOL_NAME.to(out);
         //protcol version
         out.writeByte(PROTOCOL_VERSION);
         int connectFlags = 0;
@@ -79,9 +73,7 @@ public class Mqtt3ConnectEncoder implements Mqtt3MessageEncoder<Mqtt3ConnectImpl
         out.writeShort(connect.getKeepAlive());
     }
 
-
     private void encodePayload(@NotNull final Mqtt3ConnectImpl connect, @NotNull final ByteBuf out) {
-
         //write clientId;
         connect.getClientId().to(out);
         //write will
@@ -107,7 +99,6 @@ public class Mqtt3ConnectEncoder implements Mqtt3MessageEncoder<Mqtt3ConnectImpl
         }
     }
 
-
     public int encodedRemainingLength(@NotNull final Mqtt3ConnectImpl connect) {
         //length variable header, this is fixed
         int remainingLength = VARIABLE_HEADER_FIXED_LENGTH;
@@ -132,7 +123,7 @@ public class Mqtt3ConnectEncoder implements Mqtt3MessageEncoder<Mqtt3ConnectImpl
         }
 
         //username
-        final Mqtt5UTF8String username = connect.getUsername();
+        final Mqtt5UTF8StringImpl username = connect.getUsername();
         if (username != null) {
             remainingLength += username.encodedLength();
         }
@@ -151,6 +142,5 @@ public class Mqtt3ConnectEncoder implements Mqtt3MessageEncoder<Mqtt3ConnectImpl
         }
         return remainingLength;
     }
-
 
 }

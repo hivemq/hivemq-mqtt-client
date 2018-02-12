@@ -8,16 +8,15 @@ import org.eclipse.paho.client.mqttv3.internal.wire.MqttConnect;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.mqtt3.message.connect.Mqtt3ConnectImpl;
 import org.mqttbee.mqtt3.message.publish.Mqtt3PublishImpl;
-import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifier;
-import org.mqttbee.mqtt5.message.Mqtt5QoS;
-import org.mqttbee.mqtt5.message.Mqtt5Topic;
-import org.mqttbee.mqtt5.message.Mqtt5UTF8String;
+import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifierImpl;
+import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
+import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
 
 class Mqtt3ConnectEncoderTest {
 
@@ -55,27 +54,23 @@ class Mqtt3ConnectEncoderTest {
 
     @Test
     void encode_SUCCESS() throws Exception {
-        Mqtt5UTF8String username = null;
+        Mqtt5UTF8StringImpl username = null;
         byte[] password = null;
         Mqtt3PublishImpl will = null;
-        Mqtt5ClientIdentifier identifier = Mqtt5ClientIdentifier.from("TEST");
+        Mqtt5ClientIdentifierImpl identifier = Mqtt5ClientIdentifierImpl.from("TEST");
         Mqtt3ConnectImpl connect = new Mqtt3ConnectImpl(username, password, will, true, 60, identifier);
         encode(EXAMPLE_CONNECT, connect);
     }
 
-
     @Test
     void encodedLength_SUCESS() {
-        Mqtt5UTF8String username = null;
+        Mqtt5UTF8StringImpl username = null;
         byte[] password = null;
         Mqtt3PublishImpl will = null;
-        Mqtt5ClientIdentifier identifier = Mqtt5ClientIdentifier.from("TEST");
+        Mqtt5ClientIdentifierImpl identifier = Mqtt5ClientIdentifierImpl.from("TEST");
         Mqtt3ConnectImpl connect = new Mqtt3ConnectImpl(username, password, will, true, 60, identifier);
         assertEquals(18, connect.encodedLength());
     }
-
-
-
 
     @Test
     void test_SUCCESS_WITH_WILL_WITH_PAHO() throws Exception {
@@ -101,12 +96,12 @@ class Mqtt3ConnectEncoderTest {
 
 
         Mqtt3PublishImpl willMessage =
-                new Mqtt3PublishImpl(myLastWill.getBytes(), Mqtt5Topic.from(willTopic), Mqtt5QoS.fromCode(qosWill),
+                new Mqtt3PublishImpl(myLastWill.getBytes(), Mqtt5TopicImpl.from(willTopic), Mqtt5QoS.fromCode(qosWill),
                         isRetained, false, -1);
 
-        Mqtt5UTF8String usernameUTF8 = null;
+        Mqtt5UTF8StringImpl usernameUTF8 = null;
         if (username != null) {
-            usernameUTF8 = Mqtt5UTF8String.from(username);
+            usernameUTF8 = Mqtt5UTF8StringImpl.from(username);
         }
 
         final byte[] passwordBytes = password == null ? null : password.getBytes();
@@ -114,7 +109,7 @@ class Mqtt3ConnectEncoderTest {
 
         Mqtt3ConnectImpl connect =
                 new Mqtt3ConnectImpl(usernameUTF8, passwordBytes, willMessage, cleansession, keepAlive,
-                        Mqtt5ClientIdentifier.from(clientId));
+                        Mqtt5ClientIdentifierImpl.from(clientId));
 
 
         encode(expected, connect);

@@ -5,12 +5,10 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import org.mqttbee.mqtt3.message.Mqtt3Message;
-import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 
 import javax.inject.Inject;
 import java.util.List;
-
 
 /**
  * @author Daniel Krüger
@@ -61,8 +59,8 @@ public class Mqtt3Decoder extends ByteToMessageDecoder {
         final int fixedHeaderLength = readerIndexAfterFixedHeader - readerIndexBeforeFixedHeader;
         final int packetSize = fixedHeaderLength + remainingLength;
 
-        final Integer maximumPacketSize = channel.attr(ChannelAttributes.INCOMING_MAXIMUM_PACKET_SIZE).get();
-        if ((maximumPacketSize != null) && (packetSize > maximumPacketSize)) {
+        final int maximumPacketSize = Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT; // TODO
+        if (packetSize > maximumPacketSize) {
             //TODO
             // disconnect(Mqtt5DisconnectReasonCode.PACKET_TOO_LARGE, null, channel);
             return;

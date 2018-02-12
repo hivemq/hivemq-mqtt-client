@@ -9,13 +9,11 @@ import org.mqttbee.mqtt3.message.Mqtt3Message;
 
 public class Mqtt3PubAckImpl implements Mqtt3PubAck, Mqtt3Message {
 
-
     private final int packetId;
 
     public Mqtt3PubAckImpl(final int packetId) {
         this.packetId = packetId;
     }
-
 
     @Override
     public void encode(
@@ -30,8 +28,8 @@ public class Mqtt3PubAckImpl implements Mqtt3PubAck, Mqtt3Message {
         return 4;
     }
 
-
     public int getPacketId() {
         return packetId;
     }
+
 }

@@ -4,5 +4,4 @@ public interface Mqtt3PubComp {
 
     //intentionally empty
 
-
 }

@@ -8,7 +8,6 @@ import org.mqttbee.mqtt3.message.pubrec.Mqtt3PubRecImpl;
 
 import javax.inject.Singleton;
 
-
 /**
  * @author Daniel Krüger
  */
@@ -33,7 +32,6 @@ public class Mqtt3PubRecEncoder implements Mqtt3MessageEncoder<Mqtt3PubRecImpl> 
         return REMAINING_LENGTH;
     }
 
-
     private void encodeFixedHeader(@NotNull final ByteBuf out) {
         out.writeByte(FIXED_HEADER);
         out.writeByte(FIXED_LENGTH);
@@ -42,4 +40,5 @@ public class Mqtt3PubRecEncoder implements Mqtt3MessageEncoder<Mqtt3PubRecImpl> 
     private void encodeVariableHeader(@NotNull final Mqtt3PubRecImpl pubRec, @NotNull final ByteBuf out) {
         out.writeShort(pubRec.getPacketId());
     }
+
 }

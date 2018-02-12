@@ -8,7 +8,6 @@ import org.mqttbee.mqtt3.message.Mqtt3Message;
 
 public class Mqtt3PingRespDecoder implements Mqtt3MessageDecoder {
 
-
     @Nullable
     @Override
     public Mqtt3Message decode(final int flags, @NotNull final Channel channel, @NotNull final ByteBuf in) {
@@ -16,7 +15,6 @@ public class Mqtt3PingRespDecoder implements Mqtt3MessageDecoder {
     }
 
     //FIXME same as mqtt5
-
 
 }
 

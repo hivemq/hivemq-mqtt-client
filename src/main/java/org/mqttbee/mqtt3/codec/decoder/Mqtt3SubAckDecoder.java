@@ -11,7 +11,6 @@ import org.mqttbee.mqtt3.message.suback.Mqtt3SubAckReasonCode;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class Mqtt3SubAckDecoder implements Mqtt3MessageDecoder {
 
     private static final int FLAGS = 0b0000;
@@ -19,9 +18,7 @@ public class Mqtt3SubAckDecoder implements Mqtt3MessageDecoder {
 
     @Nullable
     @Override
-    public Mqtt3SubAckImpl decode(
-            final int flags, @NotNull final Channel channel, @NotNull final ByteBuf in) {
-
+    public Mqtt3SubAckImpl decode(final int flags, @NotNull final Channel channel, @NotNull final ByteBuf in) {
 
         if (flags != FLAGS) {
             channel.close();
@@ -48,4 +45,5 @@ public class Mqtt3SubAckDecoder implements Mqtt3MessageDecoder {
         final ImmutableList<Mqtt3SubAckReasonCode> reasonCodes = ImmutableList.copyOf(subscriptionsAcks);
         return new Mqtt3SubAckImpl(packetID, reasonCodes);
     }
+
 }

@@ -16,8 +16,4 @@ public interface Mqtt3ConnAck {
      */
     boolean isSessionPresent();
 
-
-
-
-
 }

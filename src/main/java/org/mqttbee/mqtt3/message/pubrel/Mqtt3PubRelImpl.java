@@ -9,7 +9,6 @@ import org.mqttbee.mqtt3.message.Mqtt3Message;
 
 public class Mqtt3PubRelImpl implements Mqtt3PubRel, Mqtt3Message {
 
-
     private final int packetId;
 
     public Mqtt3PubRelImpl(final int packetId) {
@@ -31,4 +30,5 @@ public class Mqtt3PubRelImpl implements Mqtt3PubRel, Mqtt3Message {
     public int encodedLength() {
         return 4;
     }
+
 }
