@@ -8,9 +8,6 @@ import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt3.message.suback.Mqtt3SubAckImpl;
 import org.mqttbee.mqtt3.message.suback.Mqtt3SubAckReasonCode;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Mqtt3SubAckDecoder implements Mqtt3MessageDecoder {
 
     private static final int FLAGS = 0b0000;
@@ -32,18 +29,18 @@ public class Mqtt3SubAckDecoder implements Mqtt3MessageDecoder {
 
         final int packetID = in.readUnsignedShort();
         final int subscriptions = in.readableBytes();
-        final List<Mqtt3SubAckReasonCode> subscriptionsAcks = new ArrayList<>();
+        final ImmutableList.Builder<Mqtt3SubAckReasonCode> returnCodesBuilder = ImmutableList.builder();
 
         for (int i = 0; i < subscriptions; i++) {
-            final Mqtt3SubAckReasonCode ackReturnCode = Mqtt3SubAckReasonCode.from(in.readUnsignedByte());
-            if (ackReturnCode == null) {
+            final Mqtt3SubAckReasonCode returnCode = Mqtt3SubAckReasonCode.from(in.readUnsignedByte());
+            if (returnCode == null) {
                 channel.close();
                 return null;
             }
-            subscriptionsAcks.add(ackReturnCode);
+            returnCodesBuilder.add(returnCode);
         }
-        final ImmutableList<Mqtt3SubAckReasonCode> reasonCodes = ImmutableList.copyOf(subscriptionsAcks);
-        return new Mqtt3SubAckImpl(packetID, reasonCodes);
+
+        return new Mqtt3SubAckImpl(packetID, returnCodesBuilder.build());
     }
 
 }

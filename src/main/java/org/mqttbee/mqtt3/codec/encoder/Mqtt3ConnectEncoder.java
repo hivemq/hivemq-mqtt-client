@@ -83,10 +83,11 @@ public class Mqtt3ConnectEncoder implements Mqtt3MessageEncoder<Mqtt3ConnectImpl
         //write username
         if (connect.hasUsername()) {
             connect.getUsername().to(out);
-        }
-        //write password
-        if (connect.hasUsername() && connect.hasPassword()) {
-            Mqtt5DataTypes.encodeBinaryData(connect.getPassword(), out);
+
+            //write password
+            if (connect.hasPassword()) {
+                Mqtt5DataTypes.encodeBinaryData(connect.getPassword(), out);
+            }
         }
     }
 
@@ -96,6 +97,8 @@ public class Mqtt3ConnectEncoder implements Mqtt3MessageEncoder<Mqtt3ConnectImpl
         final byte[] rawPayload = willPublish.getRawPayload();
         if (rawPayload != null) {
             Mqtt5DataTypes.encodeBinaryData(rawPayload, out);
+        } else {
+            Mqtt5DataTypes.encodeEmptyBinaryData(out);
         }
     }
 
@@ -108,18 +111,17 @@ public class Mqtt3ConnectEncoder implements Mqtt3MessageEncoder<Mqtt3ConnectImpl
         //will
         if (connect.hasWill()) {
             final Mqtt3PublishImpl willPublish = connect.getWillPublish();
-            final byte[] nullablePayload = willPublish.getRawPayload();
-            //avoid payload being null.
-            final byte[] payload;
-            if (nullablePayload == null) {
-                payload = new byte[0];
+            final byte[] payload = willPublish.getRawPayload();
+            if (payload != null) {
+                if (!Mqtt5DataTypes.isInBinaryDataRange(payload)) {
+                    throw new Mqtt5BinaryDataExceededException("will payload");
+                }
+
+                remainingLength += Mqtt5DataTypes.encodedBinaryDataLength(payload);
             } else {
-                payload = nullablePayload;
+                remainingLength += Mqtt5DataTypes.EMPTY_BINARY_DATA_LENGTH;
             }
-            if (!Mqtt5DataTypes.isInBinaryDataRange(payload)) {
-                throw new Mqtt5BinaryDataExceededException("will payload");
-            }
-            remainingLength += willPublish.getTopic().encodedLength() + Mqtt5DataTypes.encodedBinaryDataLength(payload);
+            remainingLength += willPublish.getTopic().encodedLength();
         }
 
         //username

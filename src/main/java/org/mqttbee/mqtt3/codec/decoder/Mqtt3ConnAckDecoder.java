@@ -31,16 +31,16 @@ public class Mqtt3ConnAckDecoder implements Mqtt3MessageDecoder {
             return null;
         }
 
-        final byte firstByte = in.readByte();
+        final byte connAckFlags = in.readByte();
 
-        if ((firstByte & 0xfe) != 0) {  //all bits except the last ust be 0
-
+        if ((connAckFlags & 0xfe) != 0) {  //all bits except the last ust be 0
+            channel.close();
             return null;
         }
 
-        final boolean sessionPresent = (firstByte & 0b1) == 1;
+        final boolean sessionPresent = (connAckFlags & 0b1) == 1;
 
-        final int code = in.readByte();
+        final int code = in.readUnsignedByte();
         final Mqtt3ConnAckReasonCode reasonCode = Mqtt3ConnAckReasonCode.fromCode(code);
         if (reasonCode == null) {
             return null;
