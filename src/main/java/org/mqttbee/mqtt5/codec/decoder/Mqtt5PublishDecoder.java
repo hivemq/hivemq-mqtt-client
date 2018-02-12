@@ -156,8 +156,9 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
                     }
                     break;
 
-                case Mqtt5PublishProperty.CORRELATION_DATA: // TODO direct
-                    correlationData = decodeBinaryDataOnlyOnce(correlationData, "correlation data", channel, in, false);
+                case Mqtt5PublishProperty.CORRELATION_DATA:
+                    correlationData = decodeBinaryDataOnlyOnce(correlationData, "correlation data", channel, in,
+                            ChannelAttributes.useDirectBufferForCorrelationData(channel));
                     if (correlationData == null) {
                         return null;
                     }
@@ -240,13 +241,12 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
         final int payloadLength = in.readableBytes();
         ByteBuffer payload = null;
         if (payloadLength > 0) {
-            payload = ByteBuffer.allocate(payloadLength); // TODO direct
+            payload = ByteBufferUtil.allocate(payloadLength, ChannelAttributes.useDirectBufferForPayload(channel));
             in.readBytes(payload);
             payload.position(0);
 
             if (payloadFormatIndicator == Mqtt5PayloadFormatIndicator.UTF_8) {
-                final Boolean validatePayloadFormat = channel.attr(ChannelAttributes.VALIDATE_PAYLOAD_FORMAT).get();
-                if ((validatePayloadFormat != null) && validatePayloadFormat) {
+                if (ChannelAttributes.validatePayloadFormat(channel)) {
                     if (!Utf8.isWellFormed(ByteBufferUtil.getBytes(payload))) {
                         disconnect(Mqtt5DisconnectReasonCode.PAYLOAD_FORMAT_INVALID, "payload is not valid UTF-8",
                                 channel);

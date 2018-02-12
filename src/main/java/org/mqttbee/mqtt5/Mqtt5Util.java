@@ -23,11 +23,8 @@ public class Mqtt5Util {
         channel.config().setAutoRead(false);
 
         Mqtt5UTF8StringImpl mqttReasonString = null;
-        if (reasonString != null) {
-            final Boolean sendReasonString = channel.attr(ChannelAttributes.SEND_REASON_STRING).get();
-            if ((sendReasonString != null) && sendReasonString) {
-                mqttReasonString = Mqtt5UTF8StringImpl.from(reasonString);
-            }
+        if ((reasonString != null) && ChannelAttributes.sendReasonString(channel)) {
+            mqttReasonString = Mqtt5UTF8StringImpl.from(reasonString);
         }
 
         final Mqtt5DisconnectImpl disconnect =

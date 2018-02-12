@@ -3,6 +3,7 @@ package org.mqttbee.mqtt5.codec;
 import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.util.ByteBufferUtil;
 
 import java.nio.ByteBuffer;
 
@@ -160,7 +161,7 @@ public class Mqtt5DataTypes {
         if (byteBuf.readableBytes() < length) {
             return null;
         }
-        final ByteBuffer byteBuffer = direct ? ByteBuffer.allocateDirect(length) : ByteBuffer.allocate(length);
+        final ByteBuffer byteBuffer = ByteBufferUtil.allocate(length, direct);
         byteBuf.readBytes(byteBuffer);
         byteBuffer.position(0);
         return byteBuffer;

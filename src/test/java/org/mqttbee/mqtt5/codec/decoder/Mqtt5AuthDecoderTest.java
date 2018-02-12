@@ -121,7 +121,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"false", "true"})
     void decode_not_minimum_packet(final boolean sendReasonString) {
-        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        ChannelAttributes.sendReasonString(sendReasonString, channel);
 
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
@@ -187,7 +187,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"false", "true"})
     void decode_wrong_flags(final boolean sendReasonString) {
-        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        ChannelAttributes.sendReasonString(sendReasonString, channel);
 
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
@@ -211,7 +211,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"false", "true"})
     void decode_remaining_length_too_short(final boolean sendReasonString) {
-        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        ChannelAttributes.sendReasonString(sendReasonString, channel);
 
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
@@ -235,7 +235,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"false", "true"})
     void decode_remaining_length_too_long(final boolean sendReasonString) {
-        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        ChannelAttributes.sendReasonString(sendReasonString, channel);
 
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
@@ -261,7 +261,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"false", "true"})
     void decode_remaining_length_not_minimum_bytes(final boolean sendReasonString) {
-        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        ChannelAttributes.sendReasonString(sendReasonString, channel);
 
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
@@ -285,7 +285,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"false", "true"})
     void decode_remaining_length_too_large(final boolean sendReasonString) {
-        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        ChannelAttributes.sendReasonString(sendReasonString, channel);
 
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
@@ -309,7 +309,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"false", "true"})
     void decode_wrong_reason_code(final boolean sendReasonString) {
-        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        ChannelAttributes.sendReasonString(sendReasonString, channel);
 
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
@@ -333,7 +333,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"false", "true"})
     void decode_property_length_too_short(final boolean sendReasonString) {
-        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        ChannelAttributes.sendReasonString(sendReasonString, channel);
 
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
@@ -357,7 +357,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"false", "true"})
     void decode_property_length_too_long(final boolean sendReasonString) {
-        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        ChannelAttributes.sendReasonString(sendReasonString, channel);
 
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
@@ -383,7 +383,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"false", "true"})
     void decode_property_length_not_minimum_bytes(final boolean sendReasonString) {
-        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        ChannelAttributes.sendReasonString(sendReasonString, channel);
 
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
@@ -407,7 +407,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"false", "true"})
     void decode_property_length_too_large(final boolean sendReasonString) {
-        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        ChannelAttributes.sendReasonString(sendReasonString, channel);
 
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
@@ -431,7 +431,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"false", "true"})
     void decode_wrong_property(final boolean sendReasonString) {
-        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        ChannelAttributes.sendReasonString(sendReasonString, channel);
 
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
@@ -457,7 +457,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"false", "true"})
     void decode_malformed_property(final boolean sendReasonString) {
-        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        ChannelAttributes.sendReasonString(sendReasonString, channel);
 
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
@@ -483,7 +483,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"false", "true"})
     void decode_must_not_omit_auth_method(final boolean sendReasonString) {
-        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        ChannelAttributes.sendReasonString(sendReasonString, channel);
 
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
@@ -505,7 +505,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"false", "true"})
     void decode_must_not_multiple_auth_method(final boolean sendReasonString) {
-        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        ChannelAttributes.sendReasonString(sendReasonString, channel);
 
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
@@ -530,7 +530,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"false", "true"})
     void decode_must_not_multiple_auth_data(final boolean sendReasonString) {
-        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        ChannelAttributes.sendReasonString(sendReasonString, channel);
 
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
@@ -557,7 +557,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"false", "true"})
     void decode_must_not_multiple_reason_string(final boolean sendReasonString) {
-        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        ChannelAttributes.sendReasonString(sendReasonString, channel);
 
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
@@ -618,7 +618,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"false", "true"})
     void decode_auth_method_length_too_short(final boolean sendReasonString) {
-        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        ChannelAttributes.sendReasonString(sendReasonString, channel);
 
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
@@ -642,7 +642,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"false", "true"})
     void decode_auth_method_length_too_long(final boolean sendReasonString) {
-        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        ChannelAttributes.sendReasonString(sendReasonString, channel);
 
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
@@ -668,7 +668,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"false", "true"})
     void decode_auth_method_must_not_character(final boolean sendReasonString) {
-        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        ChannelAttributes.sendReasonString(sendReasonString, channel);
 
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
@@ -692,7 +692,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"false", "true"})
     void decode_auth_data_length_too_short(final boolean sendReasonString) {
-        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        ChannelAttributes.sendReasonString(sendReasonString, channel);
 
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
@@ -718,7 +718,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"false", "true"})
     void decode_auth_data_length_too_long(final boolean sendReasonString) {
-        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        ChannelAttributes.sendReasonString(sendReasonString, channel);
 
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
@@ -746,7 +746,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"false", "true"})
     void decode_reason_string_length_too_short(final boolean sendReasonString) {
-        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        ChannelAttributes.sendReasonString(sendReasonString, channel);
 
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
@@ -772,7 +772,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"false", "true"})
     void decode_reason_string_length_too_long(final boolean sendReasonString) {
-        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        ChannelAttributes.sendReasonString(sendReasonString, channel);
 
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
@@ -800,7 +800,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"false", "true"})
     void decode_reason_string_must_not_character(final boolean sendReasonString) {
-        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        ChannelAttributes.sendReasonString(sendReasonString, channel);
 
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
@@ -826,7 +826,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"false", "true"})
     void decode_user_property_name_length_too_short(final boolean sendReasonString) {
-        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        ChannelAttributes.sendReasonString(sendReasonString, channel);
 
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
@@ -852,7 +852,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"false", "true"})
     void decode_user_property_name_length_too_long(final boolean sendReasonString) {
-        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        ChannelAttributes.sendReasonString(sendReasonString, channel);
 
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
@@ -880,7 +880,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"false", "true"})
     void decode_user_property_name_must_not_character(final boolean sendReasonString) {
-        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        ChannelAttributes.sendReasonString(sendReasonString, channel);
 
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
@@ -906,7 +906,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"false", "true"})
     void decode_user_property_value_length_too_short(final boolean sendReasonString) {
-        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        ChannelAttributes.sendReasonString(sendReasonString, channel);
 
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
@@ -932,7 +932,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"false", "true"})
     void decode_user_property_value_length_too_long(final boolean sendReasonString) {
-        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        ChannelAttributes.sendReasonString(sendReasonString, channel);
 
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
@@ -960,7 +960,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"false", "true"})
     void decode_user_property_value_must_not_character(final boolean sendReasonString) {
-        channel.attr(ChannelAttributes.SEND_REASON_STRING).set(sendReasonString);
+        ChannelAttributes.sendReasonString(sendReasonString, channel);
 
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header

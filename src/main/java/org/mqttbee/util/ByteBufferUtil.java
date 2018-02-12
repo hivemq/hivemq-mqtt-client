@@ -11,6 +11,11 @@ import java.util.Optional;
  */
 public class ByteBufferUtil {
 
+    @NotNull
+    public static ByteBuffer allocate(final int capacity, final boolean direct) {
+        return direct ? ByteBuffer.allocateDirect(capacity) : ByteBuffer.allocate(capacity);
+    }
+
     @Nullable
     public static ByteBuffer wrap(@Nullable final byte[] binary) {
         return (binary == null) ? null : ByteBuffer.wrap(binary);

@@ -8,6 +8,7 @@ import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.api.mqtt5.message.connack.Mqtt5ConnAckReasonCode;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
+import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.handler.Mqtt5ClientData;
 import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifierImpl;
@@ -161,9 +162,10 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                     }
                     break;
 
-                case Mqtt5ConnAckProperty.AUTHENTICATION_DATA: // TODO direct
+                case Mqtt5ConnAckProperty.AUTHENTICATION_DATA:
                     authenticationData =
-                            decodeBinaryDataOnlyOnce(authenticationData, "authentication data", channel, in, false);
+                            decodeBinaryDataOnlyOnce(authenticationData, "authentication data", channel, in,
+                                    ChannelAttributes.useDirectBufferForAuth(channel));
                     if (authenticationData == null) {
                         return null;
                     }

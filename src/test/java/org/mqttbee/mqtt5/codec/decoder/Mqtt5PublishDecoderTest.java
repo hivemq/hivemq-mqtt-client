@@ -351,7 +351,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
 
     @Test
     void decode_payloadFormatIndicatorUtf8() {
-        channel.attr(ChannelAttributes.VALIDATE_PAYLOAD_FORMAT).set(true);
+        ChannelAttributes.validatePayloadFormat(true, channel);
         final byte[] encoded = {
                 // fixed header
                 //   type, flags
@@ -378,7 +378,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
 
     @Test
     void decode_invalidPayloadFormatIndicator_returnsNull() {
-        channel.attr(ChannelAttributes.VALIDATE_PAYLOAD_FORMAT).set(true);
+        ChannelAttributes.validatePayloadFormat(true, channel);
         final byte[] encoded = {
                 // fixed header
                 //   type, flags
@@ -421,7 +421,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
 
     @Test
     void decode_PayloadUtf8NotWellFormed_returnsNull() {
-        channel.attr(ChannelAttributes.VALIDATE_PAYLOAD_FORMAT).set(true);
+        ChannelAttributes.validatePayloadFormat(true, channel);
         final byte[] encoded = {
                 // fixed header
                 //   type, flags
