@@ -14,6 +14,8 @@ import static org.mqttbee.mqtt3.codec.decoder.Mqtt3DecoderUtil.disconnectUngrace
 
 public class Mqtt3PublishDecoder implements Mqtt3MessageDecoder {
 
+    private static final int MIN_REMAINING_LENGTH = 2; // 2 for the packetId
+
     @Nullable
     @Override
     public Mqtt3Message decode(final int flags, @NotNull final Channel channel, @NotNull final ByteBuf in) {
@@ -28,7 +30,8 @@ public class Mqtt3PublishDecoder implements Mqtt3MessageDecoder {
 
         final boolean isRetained = (flags & 0b0001) != 0;
 
-        if (in.readableBytes() < 2) {
+        if (in.readableBytes() < MIN_REMAINING_LENGTH) {
+            channel.close();
             return null;
         }
 
@@ -40,7 +43,7 @@ public class Mqtt3PublishDecoder implements Mqtt3MessageDecoder {
         }
 
         final int packetId;
-        if (qos.getCode() != 0) {
+        if (qos != Mqtt5QoS.AT_MOST_ONCE) {
             if (in.readableBytes() < 2) {
                 // at least two more bytes are needed for the packet identifier + payload
                 return null;
@@ -50,17 +53,15 @@ public class Mqtt3PublishDecoder implements Mqtt3MessageDecoder {
             packetId = -1;
         }
 
+        byte[] payload = null;
         final int remainingBytes = in.readableBytes();
-
         if (remainingBytes > 0) {
-            final byte[] payloadBytes = new byte[remainingBytes];
-            in.readBytes(payloadBytes);
-            final Mqtt3PublishImpl publish = new Mqtt3PublishImpl(payloadBytes, topic, qos, isRetained, dup, packetId);
-            return new Mqtt3PublishInternal(publish, packetId);
-        } else {
-            final Mqtt3PublishImpl publish = new Mqtt3PublishImpl(null, topic, qos, isRetained, dup, packetId);
-            return new Mqtt3PublishInternal(publish, packetId);
+            payload = new byte[remainingBytes];
+            in.readBytes(payload);
         }
+
+        final Mqtt3PublishImpl publish = new Mqtt3PublishImpl(payload, topic, qos, isRetained, dup, packetId);
+        return new Mqtt3PublishInternal(publish, packetId);
     }
 
 }
