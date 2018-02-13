@@ -2,17 +2,18 @@ package org.mqttbee.api.mqtt5.message.pubrel;
 
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.mqtt5.message.Mqtt5ReasonCode;
+import org.mqttbee.api.mqtt5.message.Mqtt5ReasonCode;
+import org.mqttbee.mqtt5.message.Mqtt5CommonReasonCode;
 
 /**
  * MQTT Reason Codes that can be used in PUBREL packets according to the MQTT 5 specification.
  *
  * @author Silvio Giebl
  */
-public enum Mqtt5PubRelReasonCode {
+public enum Mqtt5PubRelReasonCode implements Mqtt5ReasonCode {
 
-    SUCCESS(Mqtt5ReasonCode.SUCCESS),
-    PACKET_IDENTIFIER_NOT_FOUND(Mqtt5ReasonCode.PACKET_IDENTIFIER_NOT_FOUND);
+    SUCCESS(Mqtt5CommonReasonCode.SUCCESS),
+    PACKET_IDENTIFIER_NOT_FOUND(Mqtt5CommonReasonCode.PACKET_IDENTIFIER_NOT_FOUND);
 
     private final int code;
 
@@ -20,7 +21,7 @@ public enum Mqtt5PubRelReasonCode {
         this.code = code;
     }
 
-    Mqtt5PubRelReasonCode(@NotNull final Mqtt5ReasonCode reasonCode) {
+    Mqtt5PubRelReasonCode(@NotNull final Mqtt5CommonReasonCode reasonCode) {
         this(reasonCode.getCode());
     }
 

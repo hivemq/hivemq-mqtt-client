@@ -2,24 +2,25 @@ package org.mqttbee.api.mqtt5.message.puback;
 
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.mqtt5.message.Mqtt5ReasonCode;
+import org.mqttbee.api.mqtt5.message.Mqtt5ReasonCode;
+import org.mqttbee.mqtt5.message.Mqtt5CommonReasonCode;
 
 /**
  * MQTT Reason Codes that can be used in PUBACK packets according to the MQTT 5 specification.
  *
  * @author Silvio Giebl
  */
-public enum Mqtt5PubAckReasonCode {
+public enum Mqtt5PubAckReasonCode implements Mqtt5ReasonCode {
 
-    SUCCESS(Mqtt5ReasonCode.SUCCESS),
-    NO_MATCHING_SUBSCRIBERS(Mqtt5ReasonCode.NO_MATCHING_SUBSCRIBERS),
-    UNSPECIFIED_ERROR(Mqtt5ReasonCode.UNSPECIFIED_ERROR),
-    IMPLEMENTATION_SPECIFIC_ERROR(Mqtt5ReasonCode.IMPLEMENTATION_SPECIFIC_ERROR),
-    NOT_AUTHORIZED(Mqtt5ReasonCode.NOT_AUTHORIZED),
-    TOPIC_NAME_INVALID(Mqtt5ReasonCode.TOPIC_NAME_INVALID),
-    PACKET_IDENTIFIER_IN_USE(Mqtt5ReasonCode.PACKET_IDENTIFIER_IN_USE),
-    QUOTA_EXCEEDED(Mqtt5ReasonCode.QUOTA_EXCEEDED),
-    PAYLOAD_FORMAT_INVALID(Mqtt5ReasonCode.PAYLOAD_FORMAT_INVALID);
+    SUCCESS(Mqtt5CommonReasonCode.SUCCESS),
+    NO_MATCHING_SUBSCRIBERS(Mqtt5CommonReasonCode.NO_MATCHING_SUBSCRIBERS),
+    UNSPECIFIED_ERROR(Mqtt5CommonReasonCode.UNSPECIFIED_ERROR),
+    IMPLEMENTATION_SPECIFIC_ERROR(Mqtt5CommonReasonCode.IMPLEMENTATION_SPECIFIC_ERROR),
+    NOT_AUTHORIZED(Mqtt5CommonReasonCode.NOT_AUTHORIZED),
+    TOPIC_NAME_INVALID(Mqtt5CommonReasonCode.TOPIC_NAME_INVALID),
+    PACKET_IDENTIFIER_IN_USE(Mqtt5CommonReasonCode.PACKET_IDENTIFIER_IN_USE),
+    QUOTA_EXCEEDED(Mqtt5CommonReasonCode.QUOTA_EXCEEDED),
+    PAYLOAD_FORMAT_INVALID(Mqtt5CommonReasonCode.PAYLOAD_FORMAT_INVALID);
 
     private final int code;
 
@@ -27,7 +28,7 @@ public enum Mqtt5PubAckReasonCode {
         this.code = code;
     }
 
-    Mqtt5PubAckReasonCode(@NotNull final Mqtt5ReasonCode reasonCode) {
+    Mqtt5PubAckReasonCode(@NotNull final Mqtt5CommonReasonCode reasonCode) {
         this(reasonCode.getCode());
     }
 

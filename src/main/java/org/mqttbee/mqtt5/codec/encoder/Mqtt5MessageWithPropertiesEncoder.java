@@ -229,7 +229,7 @@ abstract class Mqtt5MessageWithPropertiesEncoder<T extends Mqtt5Message> extends
     /**
      * Base class for encoders of MQTT messages with an omissible Reason String and omissible User Properties.
      */
-    static abstract class Mqtt5MessageWithReasonStringEncoder<T extends Mqtt5Message.Mqtt5MessageWithReasonString>
+    static abstract class Mqtt5MessageWithReasonStringEncoder<T extends Mqtt5Message.Mqtt5MessageWithReasonCode>
             extends Mqtt5MessageWithUserPropertiesEncoder<T> {
 
         Mqtt5MessageWithReasonStringEncoder(@NotNull final T message) {
@@ -271,7 +271,7 @@ abstract class Mqtt5MessageWithPropertiesEncoder<T extends Mqtt5Message> extends
      * Base class for encoders of MQTT messages with an omissible Reason Code, an omissible Reason String and omissible
      * User Properties. The Reason Code is omitted if it is the default and the property length is 0.
      */
-    static abstract class Mqtt5MessageWithOmissibleReasonCodeEncoder<T extends Mqtt5Message.Mqtt5MessageWithReasonString>
+    static abstract class Mqtt5MessageWithOmissibleReasonCodeEncoder<T extends Mqtt5Message.Mqtt5MessageWithReasonCode>
             extends Mqtt5MessageWithReasonStringEncoder<T> {
 
         Mqtt5MessageWithOmissibleReasonCodeEncoder(@NotNull final T message) {

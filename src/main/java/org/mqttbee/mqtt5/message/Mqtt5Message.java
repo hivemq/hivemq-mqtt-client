@@ -1,7 +1,9 @@
 package org.mqttbee.mqtt5.message;
 
+import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt5.message.Mqtt5ReasonCode;
 import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoder;
 
@@ -53,7 +55,7 @@ public abstract class Mqtt5Message<T extends Mqtt5Message<T>> {
 
         private final Mqtt5UserPropertiesImpl userProperties;
 
-        public Mqtt5MessageWithUserProperties(
+        Mqtt5MessageWithUserProperties(
                 @NotNull final Mqtt5UserPropertiesImpl userProperties,
                 @Nullable final Function<T, ? extends Mqtt5MessageEncoder<T>> encoderProvider) {
 
@@ -70,7 +72,7 @@ public abstract class Mqtt5Message<T extends Mqtt5Message<T>> {
 
 
     /**
-     * Base class for MQTT messages with optional User Properties and an optional reason string.
+     * Base class for MQTT messages with an optional Reason String and optional User Properties.
      *
      * @param <T> the type of the codable MQTT message. This is usually the MQTT message type itself.
      */
@@ -79,7 +81,7 @@ public abstract class Mqtt5Message<T extends Mqtt5Message<T>> {
 
         private final Mqtt5UTF8StringImpl reasonString;
 
-        public Mqtt5MessageWithReasonString(
+        Mqtt5MessageWithReasonString(
                 @Nullable final Mqtt5UTF8StringImpl reasonString, @NotNull final Mqtt5UserPropertiesImpl userProperties,
                 @Nullable final Function<T, ? extends Mqtt5MessageEncoder<T>> encoderProvider) {
 
@@ -95,6 +97,117 @@ public abstract class Mqtt5Message<T extends Mqtt5Message<T>> {
         @Nullable
         public Mqtt5UTF8StringImpl getRawReasonString() {
             return reasonString;
+        }
+
+    }
+
+
+    /**
+     * Base class for MQTT messages with a Reason Code, an optional Reason String and optional User Properties.
+     *
+     * @param <T> the type of the codable MQTT message. This is usually the MQTT message type itself.
+     * @param <R> the type of the Reason Code.
+     */
+    public static abstract class Mqtt5MessageWithReasonCode<T extends Mqtt5MessageWithReasonCode<T, R>, R extends Mqtt5ReasonCode>
+            extends Mqtt5MessageWithReasonString<T> {
+
+        private final R reasonCode;
+
+        public Mqtt5MessageWithReasonCode(
+                @NotNull final R reasonCode, @Nullable final Mqtt5UTF8StringImpl reasonString,
+                @NotNull final Mqtt5UserPropertiesImpl userProperties,
+                @Nullable final Function<T, ? extends Mqtt5MessageEncoder<T>> encoderProvider) {
+
+            super(reasonString, userProperties, encoderProvider);
+            this.reasonCode = reasonCode;
+        }
+
+        @NotNull
+        public R getReasonCode() {
+            return reasonCode;
+        }
+
+    }
+
+
+    /**
+     * Base class for MQTT messages with a Packet Identifier, a Reason Code, an optional Reason String and optional User
+     * Properties.
+     *
+     * @param <T> the type of the codable MQTT message. This is usually the MQTT message type itself.
+     * @param <R> the type of the Reason Code.
+     */
+    public static abstract class Mqtt5MessageWithReasonCodeAndPacketId<T extends Mqtt5MessageWithReasonCodeAndPacketId<T, R>, R extends Mqtt5ReasonCode>
+            extends Mqtt5MessageWithReasonCode<T, R> {
+
+        private final int packetIdentifier;
+
+        public Mqtt5MessageWithReasonCodeAndPacketId(
+                final int packetIdentifier, @NotNull final R reasonCode,
+                @Nullable final Mqtt5UTF8StringImpl reasonString, @NotNull final Mqtt5UserPropertiesImpl userProperties,
+                @Nullable final Function<T, ? extends Mqtt5MessageEncoder<T>> encoderProvider) {
+
+            super(reasonCode, reasonString, userProperties, encoderProvider);
+            this.packetIdentifier = packetIdentifier;
+        }
+
+        public int getPacketIdentifier() {
+            return packetIdentifier;
+        }
+
+    }
+
+
+    /**
+     * Base class for MQTT messages with a Reason Codes, an optional Reason String and optional User Properties.
+     *
+     * @param <T> the type of the codable MQTT message. This is usually the MQTT message type itself.
+     * @param <R> the type of the Reason Codes.
+     */
+    public static abstract class Mqtt5MessageWithReasonCodes<T extends Mqtt5MessageWithReasonCodes<T, R>, R extends Mqtt5ReasonCode>
+            extends Mqtt5MessageWithReasonString<T> {
+
+        private final ImmutableList<R> reasonCodes;
+
+        Mqtt5MessageWithReasonCodes(
+                @NotNull final ImmutableList<R> reasonCodes, @Nullable final Mqtt5UTF8StringImpl reasonString,
+                @NotNull final Mqtt5UserPropertiesImpl userProperties,
+                @Nullable final Function<T, ? extends Mqtt5MessageEncoder<T>> encoderProvider) {
+
+            super(reasonString, userProperties, encoderProvider);
+            this.reasonCodes = reasonCodes;
+        }
+
+        @NotNull
+        public ImmutableList<R> getReasonCodes() {
+            return reasonCodes;
+        }
+
+    }
+
+
+    /**
+     * Base class for MQTT messages with a Reason Codes, an optional Reason String and optional User Properties.
+     *
+     * @param <T> the type of the codable MQTT message. This is usually the MQTT message type itself.
+     * @param <R> the type of the Reason Codes.
+     */
+    public static abstract class Mqtt5MessageWithReasonCodesAndPacketId<T extends Mqtt5MessageWithReasonCodes<T, R>, R extends Mqtt5ReasonCode>
+            extends Mqtt5MessageWithReasonCodes<T, R> {
+
+        private final int packetIdentifier;
+
+        public Mqtt5MessageWithReasonCodesAndPacketId(
+                final int packetIdentifier, @NotNull final ImmutableList<R> reasonCodes,
+                @Nullable final Mqtt5UTF8StringImpl reasonString, @NotNull final Mqtt5UserPropertiesImpl userProperties,
+                @Nullable final Function<T, ? extends Mqtt5MessageEncoder<T>> encoderProvider) {
+
+            super(reasonCodes, reasonString, userProperties, encoderProvider);
+            this.packetIdentifier = packetIdentifier;
+        }
+
+        public int getPacketIdentifier() {
+            return packetIdentifier;
         }
 
     }
