@@ -1,11 +1,13 @@
 package org.mqttbee.mqtt5.message;
 
+import org.mqttbee.api.mqtt5.message.Mqtt5ReasonCode;
+
 /**
  * MQTT Reason Codes that are used in 2 ore more MQTT packets according to the MQTT 5 specification.
  *
  * @author Silvio Giebl
  */
-public enum Mqtt5ReasonCode {
+public enum Mqtt5CommonReasonCode implements Mqtt5ReasonCode {
 
     SUCCESS(0x00),
     NO_MATCHING_SUBSCRIBERS(0x10),
@@ -34,7 +36,7 @@ public enum Mqtt5ReasonCode {
 
     private final int code;
 
-    Mqtt5ReasonCode(final int code) {
+    Mqtt5CommonReasonCode(final int code) {
         this.code = code;
     }
 

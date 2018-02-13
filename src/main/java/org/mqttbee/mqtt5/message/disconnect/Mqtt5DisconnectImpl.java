@@ -12,18 +12,18 @@ import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 import java.util.Optional;
 import java.util.function.Function;
 
-import static org.mqttbee.mqtt5.message.Mqtt5Message.Mqtt5MessageWithReasonString;
+import static org.mqttbee.mqtt5.message.Mqtt5Message.Mqtt5MessageWithReasonCode;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5DisconnectImpl extends Mqtt5MessageWithReasonString<Mqtt5DisconnectImpl> implements Mqtt5Disconnect {
+public class Mqtt5DisconnectImpl extends Mqtt5MessageWithReasonCode<Mqtt5DisconnectImpl, Mqtt5DisconnectReasonCode>
+        implements Mqtt5Disconnect {
 
     @NotNull
     public static final Mqtt5DisconnectReasonCode DEFAULT_REASON_CODE = Mqtt5DisconnectReasonCode.NORMAL_DISCONNECTION;
     public static final long SESSION_EXPIRY_INTERVAL_FROM_CONNECT = -1;
 
-    private final Mqtt5DisconnectReasonCode reasonCode;
     private final long sessionExpiryInterval;
     private final Mqtt5UTF8StringImpl serverReference;
 
@@ -33,16 +33,9 @@ public class Mqtt5DisconnectImpl extends Mqtt5MessageWithReasonString<Mqtt5Disco
             @NotNull final Mqtt5UserPropertiesImpl userProperties,
             @NotNull final Function<Mqtt5DisconnectImpl, ? extends Mqtt5MessageEncoder<Mqtt5DisconnectImpl>> encoderProvider) {
 
-        super(reasonString, userProperties, encoderProvider);
-        this.reasonCode = reasonCode;
+        super(reasonCode, reasonString, userProperties, encoderProvider);
         this.sessionExpiryInterval = sessionExpiryInterval;
         this.serverReference = serverReference;
-    }
-
-    @NotNull
-    @Override
-    public Mqtt5DisconnectReasonCode getReasonCode() {
-        return reasonCode;
     }
 
     @NotNull

@@ -2,16 +2,17 @@ package org.mqttbee.api.mqtt5.message.auth;
 
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.mqtt5.message.Mqtt5ReasonCode;
+import org.mqttbee.api.mqtt5.message.Mqtt5ReasonCode;
+import org.mqttbee.mqtt5.message.Mqtt5CommonReasonCode;
 
 /**
  * MQTT Reason Codes that can be used in AUTH packets according to the MQTT 5 specification.
  *
  * @author Silvio Giebl
  */
-public enum Mqtt5AuthReasonCode {
+public enum Mqtt5AuthReasonCode implements Mqtt5ReasonCode {
 
-    SUCCESS(Mqtt5ReasonCode.SUCCESS),
+    SUCCESS(Mqtt5CommonReasonCode.SUCCESS),
     CONTINUE_AUTHENTICATION(0x18),
     REAUTHENTICATE(0x19);
 
@@ -21,7 +22,7 @@ public enum Mqtt5AuthReasonCode {
         this.code = code;
     }
 
-    Mqtt5AuthReasonCode(@NotNull final Mqtt5ReasonCode reasonCode) {
+    Mqtt5AuthReasonCode(@NotNull final Mqtt5CommonReasonCode reasonCode) {
         this(reasonCode.getCode());
     }
 

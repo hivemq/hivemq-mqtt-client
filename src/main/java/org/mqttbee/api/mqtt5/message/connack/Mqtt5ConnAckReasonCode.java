@@ -2,37 +2,38 @@ package org.mqttbee.api.mqtt5.message.connack;
 
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.mqtt5.message.Mqtt5ReasonCode;
+import org.mqttbee.api.mqtt5.message.Mqtt5ReasonCode;
+import org.mqttbee.mqtt5.message.Mqtt5CommonReasonCode;
 
 /**
  * MQTT Reason Codes that can be used in CONNACK packets according to the MQTT 5 specification.
  *
  * @author Silvio Giebl
  */
-public enum Mqtt5ConnAckReasonCode {
+public enum Mqtt5ConnAckReasonCode implements Mqtt5ReasonCode {
 
-    SUCCESS(Mqtt5ReasonCode.SUCCESS),
-    UNSPECIFIED_ERROR(Mqtt5ReasonCode.UNSPECIFIED_ERROR),
-    MALFORMED_PACKET(Mqtt5ReasonCode.MALFORMED_PACKET),
-    PROTOCOL_ERROR(Mqtt5ReasonCode.PROTOCOL_ERROR),
-    IMPLEMENTATION_SPECIFIC_ERROR(Mqtt5ReasonCode.IMPLEMENTATION_SPECIFIC_ERROR),
+    SUCCESS(Mqtt5CommonReasonCode.SUCCESS),
+    UNSPECIFIED_ERROR(Mqtt5CommonReasonCode.UNSPECIFIED_ERROR),
+    MALFORMED_PACKET(Mqtt5CommonReasonCode.MALFORMED_PACKET),
+    PROTOCOL_ERROR(Mqtt5CommonReasonCode.PROTOCOL_ERROR),
+    IMPLEMENTATION_SPECIFIC_ERROR(Mqtt5CommonReasonCode.IMPLEMENTATION_SPECIFIC_ERROR),
     UNSUPPORTED_PROTOCOL_VERSION(0x84),
     CLIENT_IDENTIFIER_NOT_VALID(0x85),
     BAD_USER_NAME_OR_PASSWORD(0x86),
-    NOT_AUTHORIZED(Mqtt5ReasonCode.NOT_AUTHORIZED),
+    NOT_AUTHORIZED(Mqtt5CommonReasonCode.NOT_AUTHORIZED),
     SERVER_UNAVAILABLE(0x88),
-    SERVER_BUSY(Mqtt5ReasonCode.SERVER_BUSY),
+    SERVER_BUSY(Mqtt5CommonReasonCode.SERVER_BUSY),
     BANNED(0x8A),
-    BAD_AUTHENTICATION_METHOD(Mqtt5ReasonCode.BAD_AUTHENTICATION_METHOD),
-    TOPIC_NAME_INVALID(Mqtt5ReasonCode.TOPIC_NAME_INVALID),
-    PACKET_TOO_LARGE(Mqtt5ReasonCode.PACKET_TOO_LARGE),
-    QUOTA_EXCEEDED(Mqtt5ReasonCode.QUOTA_EXCEEDED),
-    PAYLOAD_FORMAT_INVALID(Mqtt5ReasonCode.PAYLOAD_FORMAT_INVALID),
-    RETAIN_NOT_SUPPORTED(Mqtt5ReasonCode.RETAIN_NOT_SUPPORTED),
-    QOS_NOT_SUPPORTED(Mqtt5ReasonCode.QOS_NOT_SUPPORTED),
-    USE_ANOTHER_SERVER(Mqtt5ReasonCode.USE_ANOTHER_SERVER),
-    SERVER_MOVED(Mqtt5ReasonCode.SERVER_MOVED),
-    CONNECTION_RATE_EXCEEDED(Mqtt5ReasonCode.CONNECTION_RATE_EXCEEDED);
+    BAD_AUTHENTICATION_METHOD(Mqtt5CommonReasonCode.BAD_AUTHENTICATION_METHOD),
+    TOPIC_NAME_INVALID(Mqtt5CommonReasonCode.TOPIC_NAME_INVALID),
+    PACKET_TOO_LARGE(Mqtt5CommonReasonCode.PACKET_TOO_LARGE),
+    QUOTA_EXCEEDED(Mqtt5CommonReasonCode.QUOTA_EXCEEDED),
+    PAYLOAD_FORMAT_INVALID(Mqtt5CommonReasonCode.PAYLOAD_FORMAT_INVALID),
+    RETAIN_NOT_SUPPORTED(Mqtt5CommonReasonCode.RETAIN_NOT_SUPPORTED),
+    QOS_NOT_SUPPORTED(Mqtt5CommonReasonCode.QOS_NOT_SUPPORTED),
+    USE_ANOTHER_SERVER(Mqtt5CommonReasonCode.USE_ANOTHER_SERVER),
+    SERVER_MOVED(Mqtt5CommonReasonCode.SERVER_MOVED),
+    CONNECTION_RATE_EXCEEDED(Mqtt5CommonReasonCode.CONNECTION_RATE_EXCEEDED);
 
     private final int code;
 
@@ -40,7 +41,7 @@ public enum Mqtt5ConnAckReasonCode {
         this.code = code;
     }
 
-    Mqtt5ConnAckReasonCode(@NotNull final Mqtt5ReasonCode reasonCode) {
+    Mqtt5ConnAckReasonCode(@NotNull final Mqtt5CommonReasonCode reasonCode) {
         this(reasonCode.getCode());
     }
 

@@ -9,7 +9,7 @@ import org.mqttbee.api.mqtt5.message.auth.Mqtt5ExtendedAuth;
 import org.mqttbee.api.mqtt5.message.connack.Mqtt5ConnAck;
 import org.mqttbee.api.mqtt5.message.connack.Mqtt5ConnAckReasonCode;
 import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifierImpl;
-import org.mqttbee.mqtt5.message.Mqtt5Message.Mqtt5MessageWithReasonString;
+import org.mqttbee.mqtt5.message.Mqtt5Message.Mqtt5MessageWithReasonCode;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 
@@ -18,14 +18,14 @@ import java.util.Optional;
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5ConnAckImpl extends Mqtt5MessageWithReasonString<Mqtt5ConnAckImpl> implements Mqtt5ConnAck {
+public class Mqtt5ConnAckImpl extends Mqtt5MessageWithReasonCode<Mqtt5ConnAckImpl, Mqtt5ConnAckReasonCode>
+        implements Mqtt5ConnAck {
 
     public static final long SESSION_EXPIRY_INTERVAL_FROM_CONNECT = -1;
     public static final int KEEP_ALIVE_FROM_CONNECT = -1;
     @Nullable
     public static final Mqtt5ClientIdentifierImpl CLIENT_IDENTIFIER_FROM_CONNECT = null;
 
-    private final Mqtt5ConnAckReasonCode reasonCode;
     private final boolean isSessionPresent;
     private final long sessionExpiryInterval;
     private final int serverKeepAlive;
@@ -44,8 +44,7 @@ public class Mqtt5ConnAckImpl extends Mqtt5MessageWithReasonString<Mqtt5ConnAckI
             @Nullable final Mqtt5UTF8StringImpl serverReference, @Nullable final Mqtt5UTF8StringImpl reasonString,
             @NotNull final Mqtt5UserPropertiesImpl userProperties) {
 
-        super(reasonString, userProperties, null);
-        this.reasonCode = reasonCode;
+        super(reasonCode, reasonString, userProperties, null);
         this.isSessionPresent = isSessionPresent;
         this.sessionExpiryInterval = sessionExpiryInterval;
         this.serverKeepAlive = serverKeepAlive;
@@ -54,12 +53,6 @@ public class Mqtt5ConnAckImpl extends Mqtt5MessageWithReasonString<Mqtt5ConnAckI
         this.restrictions = restrictions;
         this.responseInformation = responseInformation;
         this.serverReference = serverReference;
-    }
-
-    @NotNull
-    @Override
-    public Mqtt5ConnAckReasonCode getReasonCode() {
-        return reasonCode;
     }
 
     @Override
