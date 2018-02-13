@@ -16,7 +16,7 @@ public class Mqtt5SubscribeWrapper extends Mqtt5MessageWrapper<Mqtt5SubscribeWra
     Mqtt5SubscribeWrapper(
             @NotNull final Mqtt5SubscribeImpl subscribe, final int packetIdentifier, final int subscriptionIdentifier) {
 
-        super(subscribe, subscribe.getEncoder().wrap());
+        super(subscribe);
         this.packetIdentifier = packetIdentifier;
         this.subscriptionIdentifier = subscriptionIdentifier;
     }

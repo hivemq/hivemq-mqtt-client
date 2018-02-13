@@ -10,7 +10,7 @@ import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5AuthEncoder;
-import org.mqttbee.mqtt5.handler.Mqtt5ClientData;
+import org.mqttbee.mqtt5.handler.Mqtt5ClientDataImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
@@ -33,7 +33,8 @@ public class Mqtt5AuthDecoder implements Mqtt5MessageDecoder {
 
     @Override
     @Nullable
-    public Mqtt5AuthImpl decode(final int flags, @NotNull final ByteBuf in, @NotNull final Mqtt5ClientData clientData) {
+    public Mqtt5AuthImpl decode(
+            final int flags, @NotNull final ByteBuf in, @NotNull final Mqtt5ClientDataImpl clientData) {
         final Channel channel = clientData.getChannel();
 
         if (flags != FLAGS) {

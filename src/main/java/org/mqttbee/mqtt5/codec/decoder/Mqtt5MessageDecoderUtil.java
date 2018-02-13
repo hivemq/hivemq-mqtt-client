@@ -8,7 +8,7 @@ import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.Mqtt5Util;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
-import org.mqttbee.mqtt5.handler.Mqtt5ClientData;
+import org.mqttbee.mqtt5.handler.Mqtt5ClientDataImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 
@@ -176,7 +176,7 @@ class Mqtt5MessageDecoderUtil {
     }
 
     private static boolean checkProblemInformationRequested(
-            @NotNull final String name, @NotNull final Mqtt5ClientData clientData) {
+            @NotNull final String name, @NotNull final Mqtt5ClientDataImpl clientData) {
 
         if (!clientData.isProblemInformationRequested()) {
             disconnect(
@@ -189,7 +189,7 @@ class Mqtt5MessageDecoderUtil {
 
     @Nullable
     static Mqtt5UTF8StringImpl decodeReasonStringCheckProblemInformationRequested(
-            @Nullable final Mqtt5UTF8StringImpl current, @NotNull final Mqtt5ClientData clientData,
+            @Nullable final Mqtt5UTF8StringImpl current, @NotNull final Mqtt5ClientDataImpl clientData,
             @NotNull final ByteBuf in) {
 
         if (!checkProblemInformationRequested("reason string", clientData)) {
@@ -201,7 +201,7 @@ class Mqtt5MessageDecoderUtil {
     @Nullable
     static ImmutableList.Builder<Mqtt5UserPropertyImpl> decodeUserPropertyCheckProblemInformationRequested(
             @Nullable final ImmutableList.Builder<Mqtt5UserPropertyImpl> userPropertiesBuilder,
-            @NotNull final Mqtt5ClientData clientData, @NotNull final ByteBuf in) {
+            @NotNull final Mqtt5ClientDataImpl clientData, @NotNull final ByteBuf in) {
 
         if ((userPropertiesBuilder != null) && !checkProblemInformationRequested("user property", clientData)) {
             return null;

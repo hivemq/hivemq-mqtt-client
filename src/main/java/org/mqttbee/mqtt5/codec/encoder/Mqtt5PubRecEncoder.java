@@ -6,7 +6,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.message.pubrec.Mqtt5PubRecReasonCode;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageWithPropertiesEncoder.Mqtt5MessageWithOmissibleReasonCodeEncoder;
-import org.mqttbee.mqtt5.handler.Mqtt5ServerData;
+import org.mqttbee.mqtt5.handler.Mqtt5ServerDataImpl;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.pubrec.Mqtt5PubRecImpl;
 
@@ -45,7 +45,7 @@ public class Mqtt5PubRecEncoder extends Mqtt5MessageWithOmissibleReasonCodeEncod
 
     @Override
     public void encode(@NotNull final Channel channel, @NotNull final ByteBuf out) {
-        final int maximumPacketSize = Mqtt5ServerData.get(channel).getMaximumPacketSize();
+        final int maximumPacketSize = Mqtt5ServerDataImpl.get(channel).getMaximumPacketSize();
 
         encodeFixedHeader(out, maximumPacketSize);
         encodeVariableHeader(out, maximumPacketSize);

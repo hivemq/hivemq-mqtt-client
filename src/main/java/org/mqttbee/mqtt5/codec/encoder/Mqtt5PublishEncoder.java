@@ -6,7 +6,7 @@ import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
-import org.mqttbee.mqtt5.handler.Mqtt5ServerData;
+import org.mqttbee.mqtt5.handler.Mqtt5ServerDataImpl;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishWrapper;
@@ -31,7 +31,7 @@ public class Mqtt5PublishEncoder extends Mqtt5WrappedMessageEncoder<Mqtt5Publish
     }
 
     @Override
-    int calculateEncodedRemainingLengthWithoutProperties() {
+    int calculateRemainingLengthWithoutProperties() {
         int remainingLength = 0;
 
         remainingLength += message.getTopic().encodedLength();
@@ -49,7 +49,7 @@ public class Mqtt5PublishEncoder extends Mqtt5WrappedMessageEncoder<Mqtt5Publish
     }
 
     @Override
-    int calculateEncodedPropertyLength() {
+    int calculatePropertyLength() {
         int propertyLength = 0;
 
         propertyLength +=
@@ -81,7 +81,7 @@ public class Mqtt5PublishEncoder extends Mqtt5WrappedMessageEncoder<Mqtt5Publish
 
     public static class Mqtt5PublishWrapperEncoder extends Mqtt5MessageWrapperEncoder<Mqtt5PublishWrapper> {
 
-        public static final Function<Mqtt5PublishWrapper, Mqtt5PublishWrapperEncoder> PROVIDER =
+        static final Function<Mqtt5PublishWrapper, Mqtt5PublishWrapperEncoder> PROVIDER =
                 Mqtt5PublishWrapperEncoder::new;
 
         private static final int FIXED_HEADER = Mqtt5MessageType.PUBLISH.getCode() << 4;
@@ -118,7 +118,7 @@ public class Mqtt5PublishEncoder extends Mqtt5WrappedMessageEncoder<Mqtt5Publish
 
         @Override
         public void encode(@NotNull final Channel channel, @NotNull final ByteBuf out) {
-            final int maximumPacketSize = Mqtt5ServerData.get(channel).getMaximumPacketSize();
+            final int maximumPacketSize = Mqtt5ServerDataImpl.get(channel).getMaximumPacketSize();
 
             encodeFixedHeader(out, maximumPacketSize);
             encodeVariableHeader(out, maximumPacketSize);

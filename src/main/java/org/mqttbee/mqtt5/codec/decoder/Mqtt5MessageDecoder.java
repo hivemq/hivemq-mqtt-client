@@ -3,7 +3,7 @@ package org.mqttbee.mqtt5.codec.decoder;
 import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.mqtt5.handler.Mqtt5ClientData;
+import org.mqttbee.mqtt5.handler.Mqtt5ClientDataImpl;
 import org.mqttbee.mqtt5.message.Mqtt5Message;
 
 /**
@@ -23,6 +23,6 @@ public interface Mqtt5MessageDecoder {
      * did not contain a valid encoded MQTT message.
      */
     @Nullable
-    Mqtt5Message decode(int flags, @NotNull ByteBuf in, @NotNull Mqtt5ClientData clientData);
+    Mqtt5Message decode(int flags, @NotNull ByteBuf in, @NotNull Mqtt5ClientDataImpl clientData);
 
 }

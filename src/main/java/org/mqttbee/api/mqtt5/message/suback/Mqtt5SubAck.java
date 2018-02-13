@@ -5,6 +5,7 @@ import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.api.mqtt5.message.Mqtt5UserProperties;
+import org.mqttbee.api.mqtt5.message.subscribe.Mqtt5SubscribeResult;
 
 import java.util.Optional;
 
@@ -14,7 +15,7 @@ import java.util.Optional;
  * @author Silvio Giebl
  */
 @DoNotImplement
-public interface Mqtt5SubAck {
+public interface Mqtt5SubAck extends Mqtt5SubscribeResult {
 
     /**
      * @return the reason codes of this SUBACK packet, each belonging to a subscription in the corresponding SUBSCRIBE

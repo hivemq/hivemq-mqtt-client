@@ -11,7 +11,7 @@ public class Mqtt5UnsubscribeWrapper extends Mqtt5MessageWrapper<Mqtt5Unsubscrib
     private final int packetIdentifier;
 
     Mqtt5UnsubscribeWrapper(@NotNull final Mqtt5UnsubscribeImpl unsubscribe, final int packetIdentifier) {
-        super(unsubscribe, unsubscribe.getEncoder().wrap());
+        super(unsubscribe);
         this.packetIdentifier = packetIdentifier;
     }
 

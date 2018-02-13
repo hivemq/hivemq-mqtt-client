@@ -3,7 +3,7 @@ package org.mqttbee.mqtt5.message.publish;
 import com.google.common.primitives.ImmutableIntArray;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt5.handler.Mqtt5ServerData;
+import org.mqttbee.mqtt5.handler.Mqtt5ServerDataImpl;
 import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
 import org.mqttbee.mqtt5.message.Mqtt5WrappedMessage.Mqtt5MessageWrapper;
 
@@ -28,7 +28,7 @@ public class Mqtt5PublishWrapper extends Mqtt5MessageWrapper<Mqtt5PublishWrapper
             final int topicAlias, final boolean isNewTopicAlias,
             @NotNull final ImmutableIntArray subscriptionIdentifiers) {
 
-        super(publish, publish.getEncoder().wrap());
+        super(publish);
         this.packetIdentifier = packetIdentifier;
         this.isDup = isDup;
         this.topicAlias = topicAlias;
@@ -40,11 +40,11 @@ public class Mqtt5PublishWrapper extends Mqtt5MessageWrapper<Mqtt5PublishWrapper
             @NotNull final Mqtt5PublishImpl publish, final int packetIdentifier, final boolean isDup,
             @NotNull final Channel channel, @NotNull final ImmutableIntArray subscriptionIdentifiers) {
 
-        super(publish, publish.getEncoder().wrap());
+        super(publish);
         this.packetIdentifier = packetIdentifier;
         this.isDup = isDup;
 
-        final Mqtt5TopicAliasMapping topicAliasMapping = Mqtt5ServerData.get(channel).getTopicAliasMapping();
+        final Mqtt5TopicAliasMapping topicAliasMapping = Mqtt5ServerDataImpl.get(channel).getTopicAliasMapping();
         if (topicAliasMapping == null) {
             this.topicAlias = DEFAULT_NO_TOPIC_ALIAS;
             this.isNewTopicAlias = false;

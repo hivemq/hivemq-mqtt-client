@@ -63,11 +63,8 @@ public abstract class Mqtt5WrappedMessage<T extends Mqtt5WrappedMessage<T, W>, W
 
         private final T wrapped;
 
-        public Mqtt5MessageWrapper(
-                @NotNull final T wrapped,
-                @Nullable final Function<W, ? extends Mqtt5WrappedMessageEncoder.Mqtt5MessageWrapperEncoder<W>> encoderProvider) {
-
-            super(encoderProvider);
+        public Mqtt5MessageWrapper(@NotNull final T wrapped) {
+            super(wrapped.getEncoder().wrap());
             this.wrapped = wrapped;
         }
 

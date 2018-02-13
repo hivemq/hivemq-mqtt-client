@@ -2,10 +2,9 @@ package org.mqttbee.api.mqtt5.message.connect;
 
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt5.message.Mqtt5ClientIdentifier;
+import org.mqttbee.api.mqtt5.auth.Mqtt5ExtendedAuthProvider;
 import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.api.mqtt5.message.Mqtt5UserProperties;
-import org.mqttbee.api.mqtt5.message.auth.Mqtt5ExtendedAuth;
 import org.mqttbee.api.mqtt5.message.publish.Mqtt5WillPublish;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.util.UnsignedDataTypes;
@@ -41,13 +40,6 @@ public interface Mqtt5Connect {
     static Mqtt5ConnectBuilder extend(@NotNull final Mqtt5Connect connect) {
         return new Mqtt5ConnectBuilder(connect);
     }
-
-    /**
-     * @return the optional client identifier of this CONNECT packet. If absent, the server may assign a client
-     * identifier and return it in the corresponding CONNACK packet.
-     */
-    @NotNull
-    Optional<Mqtt5ClientIdentifier> getClientIdentifier();
 
     /**
      * @return the keep alive the client wants to use.
@@ -90,10 +82,10 @@ public interface Mqtt5Connect {
     Optional<SimpleAuth> getSimpleAuth();
 
     /**
-     * @return the optional extended authentication and/or authorization related data of this CONNECT packet.
+     * @return the optional extended authentication and/or authorization provider of this CONNECT packet.
      */
     @NotNull
-    Optional<Mqtt5ExtendedAuth> getExtendedAuth();
+    Optional<Mqtt5ExtendedAuthProvider> getExtendedAuthProvider();
 
     /**
      * @return the optional Will Publish of this CONNECT packet.

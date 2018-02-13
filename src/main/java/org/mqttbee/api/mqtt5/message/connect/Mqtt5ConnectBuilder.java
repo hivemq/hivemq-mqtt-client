@@ -3,17 +3,14 @@ package org.mqttbee.api.mqtt5.message.connect;
 import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt5.message.Mqtt5ClientIdentifier;
+import org.mqttbee.api.mqtt5.auth.Mqtt5ExtendedAuthProvider;
 import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.api.mqtt5.message.Mqtt5UserProperties;
-import org.mqttbee.api.mqtt5.message.auth.Mqtt5ExtendedAuth;
 import org.mqttbee.api.mqtt5.message.publish.Mqtt5WillPublish;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5ConnectEncoder;
-import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifierImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
-import org.mqttbee.mqtt5.message.auth.Mqtt5ExtendedAuthImpl;
 import org.mqttbee.mqtt5.message.connect.Mqtt5ConnectImpl;
 import org.mqttbee.mqtt5.message.publish.Mqtt5WillPublishImpl;
 import org.mqttbee.util.ByteBufferUtil;
@@ -28,7 +25,6 @@ import static org.mqttbee.mqtt5.message.connect.Mqtt5ConnectImpl.SimpleAuthImpl;
 
 public class Mqtt5ConnectBuilder {
 
-    private Mqtt5ClientIdentifierImpl clientIdentifier; // TODO
     private int keepAlive = DEFAULT_KEEP_ALIVE;
     private boolean isCleanStart = DEFAULT_CLEAN_START;
     private long sessionExpiryInterval = DEFAULT_SESSION_EXPIRY_INTERVAL;
@@ -36,7 +32,7 @@ public class Mqtt5ConnectBuilder {
     private boolean isProblemInformationRequested = DEFAULT_PROBLEM_INFORMATION_REQUESTED;
     private RestrictionsImpl restrictions;
     private SimpleAuthImpl simpleAuth;
-    private Mqtt5ExtendedAuthImpl extendedAuth;
+    private Mqtt5ExtendedAuthProvider extendedAuthProvider;
     private Mqtt5WillPublishImpl willPublish;
     private Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES;
 
@@ -46,7 +42,6 @@ public class Mqtt5ConnectBuilder {
     Mqtt5ConnectBuilder(@NotNull final Mqtt5Connect connect) {
         final Mqtt5ConnectImpl connectImpl =
                 MustNotBeImplementedUtil.checkNotImplemented(connect, Mqtt5ConnectImpl.class);
-        clientIdentifier = connectImpl.getRawClientIdentifier();
         keepAlive = connectImpl.getKeepAlive();
         isCleanStart = connectImpl.isCleanStart();
         sessionExpiryInterval = connectImpl.getSessionExpiryInterval();
@@ -54,16 +49,9 @@ public class Mqtt5ConnectBuilder {
         isProblemInformationRequested = connectImpl.isProblemInformationRequested();
         restrictions = connectImpl.getRestrictions();
         simpleAuth = connectImpl.getRawSimpleAuth();
-        extendedAuth = connectImpl.getRawExtendedAuth();
+        extendedAuthProvider = connectImpl.getRawExtendedAuthProvider();
         willPublish = connectImpl.getRawWillPublish();
         userProperties = connectImpl.getUserProperties();
-    }
-
-    @NotNull
-    public Mqtt5ConnectBuilder withClientIdentifier(@NotNull final Mqtt5ClientIdentifier clientIdentifier) {
-        this.clientIdentifier =
-                MustNotBeImplementedUtil.checkNotImplemented(clientIdentifier, Mqtt5ClientIdentifierImpl.class);
-        return this;
     }
 
     @NotNull
@@ -110,9 +98,8 @@ public class Mqtt5ConnectBuilder {
     }
 
     @NotNull
-    public Mqtt5ConnectBuilder withExtendedAuth(@Nullable final Mqtt5ExtendedAuth extendedAuth) {
-        this.extendedAuth =
-                MustNotBeImplementedUtil.checkNullOrNotImplemented(extendedAuth, Mqtt5ExtendedAuthImpl.class);
+    public Mqtt5ConnectBuilder withExtendedAuth(@Nullable final Mqtt5ExtendedAuthProvider extendedAuthProvider) {
+        this.extendedAuthProvider = extendedAuthProvider;
         return this;
     }
 
@@ -131,9 +118,9 @@ public class Mqtt5ConnectBuilder {
 
     @NotNull
     public Mqtt5Connect build() {
-        return new Mqtt5ConnectImpl(clientIdentifier, keepAlive, isCleanStart, sessionExpiryInterval,
-                isResponseInformationRequested, isProblemInformationRequested, restrictions, simpleAuth, extendedAuth,
-                willPublish, userProperties, Mqtt5ConnectEncoder.PROVIDER);
+        return new Mqtt5ConnectImpl(keepAlive, isCleanStart, sessionExpiryInterval, isResponseInformationRequested,
+                isProblemInformationRequested, restrictions, simpleAuth, extendedAuthProvider, willPublish,
+                userProperties, Mqtt5ConnectEncoder.PROVIDER);
     }
 
 

@@ -15,11 +15,6 @@ import java.util.Optional;
 @DoNotImplement
 public interface Mqtt5ExtendedAuth {
 
-    @NotNull
-    static Mqtt5ExtendedAuthBuilder builder() {
-        return new Mqtt5ExtendedAuthBuilder();
-    }
-
     /**
      * @return the authentication/authorization method.
      */
