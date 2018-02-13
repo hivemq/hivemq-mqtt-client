@@ -8,7 +8,7 @@ import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.puback.Mqtt5PubAckReasonCode;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5PubAckEncoder;
-import org.mqttbee.mqtt5.handler.Mqtt5ClientData;
+import org.mqttbee.mqtt5.handler.Mqtt5ClientDataImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
@@ -32,7 +32,7 @@ public class Mqtt5PubAckDecoder implements Mqtt5MessageDecoder {
     @Override
     @Nullable
     public Mqtt5PubAckImpl decode(
-            final int flags, @NotNull final ByteBuf in, @NotNull final Mqtt5ClientData clientData) {
+            final int flags, @NotNull final ByteBuf in, @NotNull final Mqtt5ClientDataImpl clientData) {
         final Channel channel = clientData.getChannel();
 
         if (flags != FLAGS) {

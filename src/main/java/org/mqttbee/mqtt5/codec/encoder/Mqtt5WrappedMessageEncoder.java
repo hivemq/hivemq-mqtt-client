@@ -31,7 +31,7 @@ public abstract class Mqtt5WrappedMessageEncoder<T extends Mqtt5WrappedMessage<T
      */
     final int encodedRemainingLengthWithoutProperties() {
         if (remainingLengthWithoutProperties == -1) {
-            remainingLengthWithoutProperties = calculateEncodedRemainingLengthWithoutProperties();
+            remainingLengthWithoutProperties = calculateRemainingLengthWithoutProperties();
         }
         return remainingLengthWithoutProperties;
     }
@@ -41,7 +41,7 @@ public abstract class Mqtt5WrappedMessageEncoder<T extends Mqtt5WrappedMessage<T
      *
      * @return the remaining length without the properties of the wrapped MQTT message.
      */
-    abstract int calculateEncodedRemainingLengthWithoutProperties();
+    abstract int calculateRemainingLengthWithoutProperties();
 
     /**
      * Returns the property length byte count of the wrapped MQTT message. Calculation is only performed if necessary.
@@ -50,7 +50,7 @@ public abstract class Mqtt5WrappedMessageEncoder<T extends Mqtt5WrappedMessage<T
      */
     final int encodedPropertyLength() {
         if (propertyLength == -1) {
-            propertyLength = calculateEncodedPropertyLength();
+            propertyLength = calculatePropertyLength();
         }
         return propertyLength;
     }
@@ -60,7 +60,7 @@ public abstract class Mqtt5WrappedMessageEncoder<T extends Mqtt5WrappedMessage<T
      *
      * @return the property length of the wrapped MQTT message.
      */
-    abstract int calculateEncodedPropertyLength();
+    abstract int calculatePropertyLength();
 
     /**
      * Encodes the properties of the wrapped MQTT message which must not be omitted by the wrapper.
@@ -78,10 +78,10 @@ public abstract class Mqtt5WrappedMessageEncoder<T extends Mqtt5WrappedMessage<T
     /**
      * Base class for encoders of wrappers around MQTT messages with User Properties.
      */
-    public abstract static class Mqtt5MessageWrapperEncoder<T extends Mqtt5MessageWrapper>
-            extends Mqtt5MessageWithPropertiesEncoder<T> {
+    abstract static class Mqtt5MessageWrapperEncoder<W extends Mqtt5MessageWrapper>
+            extends Mqtt5MessageWithPropertiesEncoder<W> {
 
-        Mqtt5MessageWrapperEncoder(@NotNull final T wrapper) {
+        Mqtt5MessageWrapperEncoder(@NotNull final W wrapper) {
             super(wrapper);
         }
 

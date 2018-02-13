@@ -5,6 +5,7 @@ import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt5.Mqtt5ServerData;
 import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.publish.Mqtt5TopicAliasMapping;
@@ -12,17 +13,17 @@ import org.mqttbee.mqtt5.message.publish.Mqtt5TopicAliasMapping;
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5ServerData {
+public class Mqtt5ServerDataImpl implements Mqtt5ServerData {
 
-    private static final AttributeKey<Mqtt5ServerData> KEY = AttributeKey.valueOf("server.data");
+    private static final AttributeKey<Mqtt5ServerDataImpl> KEY = AttributeKey.valueOf("server.data");
 
     @NotNull
-    public static Mqtt5ServerData get(@NotNull final Channel channel) {
+    public static Mqtt5ServerDataImpl get(@NotNull final Channel channel) {
         return Preconditions.checkNotNull(channel.attr(KEY).get());
     }
 
     public static int getMaximumPacketSize(@NotNull final Channel channel) {
-        final Mqtt5ServerData serverData = channel.attr(KEY).get();
+        final Mqtt5ServerDataImpl serverData = channel.attr(KEY).get();
         return (serverData == null) ? Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT : serverData.getMaximumPacketSize();
     }
 
@@ -35,7 +36,7 @@ public class Mqtt5ServerData {
     private final boolean isSubscriptionIdentifierAvailable;
     private final boolean isSharedSubscriptionAvailable;
 
-    public Mqtt5ServerData(
+    public Mqtt5ServerDataImpl(
             final int receiveMaximum, final int maximumPacketSize, final int topicAliasMaximum,
             final Mqtt5QoS maximumQoS, final boolean isRetainAvailable, final boolean isWildcardSubscriptionAvailable,
             final boolean isSubscriptionIdentifierAvailable, final boolean isSharedSubscriptionAvailable) {
@@ -49,10 +50,12 @@ public class Mqtt5ServerData {
         this.isSharedSubscriptionAvailable = isSharedSubscriptionAvailable;
     }
 
+    @Override
     public int getReceiveMaximum() {
         return receiveMaximum;
     }
 
+    @Override
     public int getTopicAliasMaximum() {
         return (topicAliasMapping == null) ? 0 : topicAliasMapping.size();
     }
@@ -62,26 +65,33 @@ public class Mqtt5ServerData {
         return topicAliasMapping;
     }
 
+    @Override
     public int getMaximumPacketSize() {
         return maximumPacketSize;
     }
 
+    @NotNull
+    @Override
     public Mqtt5QoS getMaximumQoS() {
         return maximumQoS;
     }
 
+    @Override
     public boolean isRetainAvailable() {
         return isRetainAvailable;
     }
 
+    @Override
     public boolean isWildcardSubscriptionAvailable() {
         return isWildcardSubscriptionAvailable;
     }
 
+    @Override
     public boolean isSubscriptionIdentifierAvailable() {
         return isSubscriptionIdentifierAvailable;
     }
 
+    @Override
     public boolean isSharedSubscriptionAvailable() {
         return isSharedSubscriptionAvailable;
     }

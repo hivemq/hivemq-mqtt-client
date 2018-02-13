@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.mqtt5.handler.Mqtt5ClientData;
+import org.mqttbee.mqtt5.handler.Mqtt5ClientDataImpl;
 import org.mqttbee.mqtt5.message.ping.Mqtt5PingRespImpl;
 
 import javax.inject.Singleton;
@@ -23,7 +23,7 @@ public class Mqtt5PingRespDecoder implements Mqtt5MessageDecoder {
 
     @Override
     public Mqtt5PingRespImpl decode(
-            final int flags, @NotNull final ByteBuf in, @NotNull final Mqtt5ClientData clientData) {
+            final int flags, @NotNull final ByteBuf in, @NotNull final Mqtt5ClientDataImpl clientData) {
         final Channel channel = clientData.getChannel();
 
         if (flags != FLAGS) {

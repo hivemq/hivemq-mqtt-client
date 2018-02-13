@@ -6,7 +6,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
-import org.mqttbee.mqtt5.handler.Mqtt5ClientData;
+import org.mqttbee.mqtt5.handler.Mqtt5ClientDataImpl;
 import org.mqttbee.mqtt5.message.Mqtt5Message;
 
 import javax.inject.Inject;
@@ -60,7 +60,7 @@ public class Mqtt5Decoder extends ByteToMessageDecoder {
         final int fixedHeaderLength = readerIndexAfterFixedHeader - readerIndexBeforeFixedHeader;
         final int packetSize = fixedHeaderLength + remainingLength;
 
-        final Mqtt5ClientData clientData = Mqtt5ClientData.get(channel);
+        final Mqtt5ClientDataImpl clientData = Mqtt5ClientDataImpl.get(channel);
         if (packetSize > clientData.getMaximumPacketSize()) {
             disconnect(Mqtt5DisconnectReasonCode.PACKET_TOO_LARGE, null, channel);
             return;

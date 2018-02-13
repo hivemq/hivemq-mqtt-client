@@ -31,7 +31,7 @@ public class MqttConnAckHandler extends ChannelInboundHandlerAdapter {
     }
 
     private void updateClientData(@NotNull final Mqtt5ConnAckImpl connAck, @NotNull final Channel channel) {
-        final Mqtt5ClientData clientData = Mqtt5ClientData.get(channel);
+        final Mqtt5ClientDataImpl clientData = Mqtt5ClientDataImpl.get(channel);
 
         final Mqtt5ClientIdentifierImpl assignedClientIdentifier = connAck.getRawAssignedClientIdentifier();
         if (assignedClientIdentifier == null) {
@@ -54,8 +54,8 @@ public class MqttConnAckHandler extends ChannelInboundHandlerAdapter {
     private void addServerData(@NotNull final Mqtt5ConnAckImpl connAck, @NotNull final Channel channel) {
         final Mqtt5ConnAckImpl.RestrictionsImpl restrictions = connAck.getRestrictions();
 
-        final Mqtt5ServerData serverData =
-                new Mqtt5ServerData(restrictions.getReceiveMaximum(), restrictions.getTopicAliasMaximum(),
+        final Mqtt5ServerDataImpl serverData =
+                new Mqtt5ServerDataImpl(restrictions.getReceiveMaximum(), restrictions.getTopicAliasMaximum(),
                         restrictions.getMaximumPacketSize(), restrictions.getMaximumQoS(),
                         restrictions.isRetainAvailable(), restrictions.isWildcardSubscriptionAvailable(),
                         restrictions.isSubscriptionIdentifierAvailable(), restrictions.isSharedSubscriptionAvailable());

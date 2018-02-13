@@ -5,7 +5,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
-import org.mqttbee.mqtt5.handler.Mqtt5ServerData;
+import org.mqttbee.mqtt5.handler.Mqtt5ServerDataImpl;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.subscribe.Mqtt5SubscribeImpl;
 import org.mqttbee.mqtt5.message.subscribe.Mqtt5SubscribeWrapper;
@@ -31,7 +31,7 @@ public class Mqtt5SubscribeEncoder extends Mqtt5WrappedMessageEncoder<Mqtt5Subsc
     }
 
     @Override
-    int calculateEncodedRemainingLengthWithoutProperties() {
+    int calculateRemainingLengthWithoutProperties() {
         int remainingLength = VARIABLE_HEADER_FIXED_LENGTH;
 
         final ImmutableList<Mqtt5SubscribeImpl.SubscriptionImpl> subscriptions = message.getSubscriptions();
@@ -43,7 +43,7 @@ public class Mqtt5SubscribeEncoder extends Mqtt5WrappedMessageEncoder<Mqtt5Subsc
     }
 
     @Override
-    int calculateEncodedPropertyLength() {
+    int calculatePropertyLength() {
         return message.getUserProperties().encodedLength();
     }
 
@@ -55,7 +55,7 @@ public class Mqtt5SubscribeEncoder extends Mqtt5WrappedMessageEncoder<Mqtt5Subsc
 
     public static class Mqtt5SubscribeWrapperEncoder extends Mqtt5MessageWrapperEncoder<Mqtt5SubscribeWrapper> {
 
-        public static final Function<Mqtt5SubscribeWrapper, Mqtt5SubscribeWrapperEncoder> PROVIDER =
+        static final Function<Mqtt5SubscribeWrapper, Mqtt5SubscribeWrapperEncoder> PROVIDER =
                 Mqtt5SubscribeWrapperEncoder::new;
 
         private static final int FIXED_HEADER = (Mqtt5MessageType.SUBSCRIBE.getCode() << 4) | 0b0010;
@@ -72,7 +72,7 @@ public class Mqtt5SubscribeEncoder extends Mqtt5WrappedMessageEncoder<Mqtt5Subsc
 
         @Override
         public void encode(@NotNull final Channel channel, @NotNull final ByteBuf out) {
-            final int maximumPacketSize = Mqtt5ServerData.get(channel).getMaximumPacketSize();
+            final int maximumPacketSize = Mqtt5ServerDataImpl.get(channel).getMaximumPacketSize();
 
             encodeFixedHeader(out, maximumPacketSize);
             encodeVariableHeader(out, maximumPacketSize);

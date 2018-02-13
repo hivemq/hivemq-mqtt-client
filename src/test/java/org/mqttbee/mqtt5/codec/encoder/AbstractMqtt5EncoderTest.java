@@ -5,7 +5,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
-import org.mqttbee.mqtt5.handler.Mqtt5ServerData;
+import org.mqttbee.mqtt5.handler.Mqtt5ServerDataImpl;
 
 /**
  * @author Silvio Giebl
@@ -38,8 +38,8 @@ class AbstractMqtt5EncoderTest {
     }
 
     void createServerData(final int maximumPacketSize) {
-        final Mqtt5ServerData serverData =
-                new Mqtt5ServerData(10, maximumPacketSize, 3, Mqtt5QoS.EXACTLY_ONCE, true, true, true, true);
+        final Mqtt5ServerDataImpl serverData =
+                new Mqtt5ServerDataImpl(10, maximumPacketSize, 3, Mqtt5QoS.EXACTLY_ONCE, true, true, true, true);
         serverData.set(channel);
     }
 
