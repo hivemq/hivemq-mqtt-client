@@ -63,8 +63,8 @@ abstract class Mqtt5MessageWithPropertiesEncoder<T extends Mqtt5Message<T>> exte
      * @return the encoded length of the MQTT message if properties with the given length are omitted.
      */
     final int encodedLengthFromOmittedProperties(final int omittedPropertiesLength) {
-        return Mqtt5MessageEncoderUtil
-                .encodedPacketLength(remainingLengthFromOmittedProperties(omittedPropertiesLength));
+        return Mqtt5MessageEncoderUtil.encodedPacketLength(
+                remainingLengthFromOmittedProperties(omittedPropertiesLength));
     }
 
     /**

@@ -74,8 +74,8 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
         final Mqtt5UserPropertyImpl userProperty =
                 new Mqtt5UserPropertyImpl(requireNonNull(Mqtt5UTF8StringImpl.from("test1")),
                         requireNonNull(Mqtt5UTF8StringImpl.from("value")));
-        final Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.of(ImmutableList
-                .of(userProperty, userProperty, userProperty, userProperty, userProperty, userProperty));
+        final Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.of(
+                ImmutableList.of(userProperty, userProperty, userProperty, userProperty, userProperty, userProperty));
 
         final Mqtt5PublishImpl publish = new Mqtt5PublishImpl(requireNonNull(Mqtt5TopicImpl.from("topic")),
                 ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5}), Mqtt5QoS.AT_MOST_ONCE, false, 10,
@@ -496,11 +496,11 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
                 0x26, 0, 4, 'k', 'e', 'y', '2', 0, 6, 'v', 'a', 'l', 'u', 'e', '2'
         };
 
-        final Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.of(ImmutableList
-                .of(new Mqtt5UserPropertyImpl(requireNonNull(Mqtt5UTF8StringImpl.from("key")),
-                                requireNonNull(Mqtt5UTF8StringImpl.from("value"))),
-                        new Mqtt5UserPropertyImpl(requireNonNull(Mqtt5UTF8StringImpl.from("key2")),
-                                requireNonNull(Mqtt5UTF8StringImpl.from("value2")))));
+        final Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.of(ImmutableList.of(
+                new Mqtt5UserPropertyImpl(requireNonNull(Mqtt5UTF8StringImpl.from("key")),
+                        requireNonNull(Mqtt5UTF8StringImpl.from("value"))),
+                new Mqtt5UserPropertyImpl(requireNonNull(Mqtt5UTF8StringImpl.from("key2")),
+                        requireNonNull(Mqtt5UTF8StringImpl.from("value2")))));
 
         final Mqtt5PublishImpl publish =
                 new Mqtt5PublishImpl(requireNonNull(Mqtt5TopicImpl.from("topic")), null, Mqtt5QoS.AT_LEAST_ONCE, false,

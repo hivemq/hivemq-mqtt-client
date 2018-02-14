@@ -153,8 +153,8 @@ public class Mqtt5DataTypesTest {
             for (int j = 0; j < 127; j++) {
                 for (int k = 0; k < 127; k++) {
                     for (int l = 1; l < 127; l++) {
-                        Mqtt5DataTypes
-                                .encodeVariableByteInteger(i + j * 128 + k * 128 * 128 + l * 128 * 128 * 128, byteBuf);
+                        Mqtt5DataTypes.encodeVariableByteInteger(
+                                i + j * 128 + k * 128 * 128 + l * 128 * 128 * 128, byteBuf);
                         assertEquals(128 + i, byteBuf.readUnsignedByte());
                         assertEquals(128 + j, byteBuf.readUnsignedByte());
                         assertEquals(128 + k, byteBuf.readUnsignedByte());

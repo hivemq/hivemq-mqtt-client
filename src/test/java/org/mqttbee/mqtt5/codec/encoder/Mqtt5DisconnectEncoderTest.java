@@ -235,8 +235,8 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderTest {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
 
         final Mqtt5DisconnectImpl disconnect =
-                new Mqtt5DisconnectImpl(MALFORMED_PACKET, SESSION_EXPIRY_INTERVAL_FROM_CONNECT, null, null, maxPacket
-                        .getUserProperties(
+                new Mqtt5DisconnectImpl(MALFORMED_PACKET, SESSION_EXPIRY_INTERVAL_FROM_CONNECT, null, null,
+                        maxPacket.getUserProperties(
                                 (VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE / maxPacket.userPropertyBytes) + 1),
                         Mqtt5DisconnectEncoder.PROVIDER);
 

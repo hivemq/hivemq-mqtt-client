@@ -33,8 +33,8 @@ public class Mqtt5UTF8StringImplTest {
 
         for (int b = 0xA0; b <= 0xBF; b++) {
             for (int b2 = 0; b2 < 0xFF; b2++) {
-                assertNull(Mqtt5UTF8StringImpl
-                        .from(new byte[]{'a', 'b', 'c', (byte) 0xED, (byte) b, (byte) b2, 'd', 'e', 'f'}));
+                assertNull(Mqtt5UTF8StringImpl.from(
+                        new byte[]{'a', 'b', 'c', (byte) 0xED, (byte) b, (byte) b2, 'd', 'e', 'f'}));
             }
         }
     }
