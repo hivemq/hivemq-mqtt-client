@@ -1,4 +1,4 @@
-package org.mqttbee.mqtt5.handler;
+package org.mqttbee.mqtt5;
 
 import com.google.common.base.Preconditions;
 import io.netty.channel.Channel;

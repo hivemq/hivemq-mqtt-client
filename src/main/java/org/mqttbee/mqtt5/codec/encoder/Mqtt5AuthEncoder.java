@@ -3,9 +3,9 @@ package org.mqttbee.mqtt5.codec.encoder;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.mqtt5.Mqtt5ServerDataImpl;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageWithPropertiesEncoder.Mqtt5MessageWithReasonStringEncoder;
-import org.mqttbee.mqtt5.handler.Mqtt5ServerDataImpl;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.auth.Mqtt5AuthImpl;
 

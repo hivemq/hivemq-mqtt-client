@@ -5,8 +5,8 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
+import org.mqttbee.mqtt5.Mqtt5ClientDataImpl;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
-import org.mqttbee.mqtt5.handler.Mqtt5ClientDataImpl;
 import org.mqttbee.mqtt5.message.Mqtt5Message;
 
 import javax.inject.Inject;

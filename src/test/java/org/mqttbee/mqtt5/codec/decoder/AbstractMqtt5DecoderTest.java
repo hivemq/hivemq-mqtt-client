@@ -5,7 +5,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.message.connect.Mqtt5Connect;
-import org.mqttbee.mqtt5.handler.Mqtt5ClientDataImpl;
+import org.mqttbee.mqtt5.Mqtt5ClientDataImpl;
 import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifierImpl;
 
 import java.util.Objects;

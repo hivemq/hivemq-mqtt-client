@@ -3,7 +3,7 @@ package org.mqttbee.mqtt5.codec.decoder;
 import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.mqtt5.handler.Mqtt5ClientDataImpl;
+import org.mqttbee.mqtt5.Mqtt5ClientDataImpl;
 import org.mqttbee.mqtt5.message.Mqtt5Message;
 
 /**
