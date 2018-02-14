@@ -615,15 +615,24 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
 
         @NotNull
         @Override
-        public CompletableFuture<Void> onAuthenticate(
-                @NotNull final Mqtt5Connect connect, @NotNull final Mqtt5ExtendedAuthBuilderImpl authBuilder) {
+        public CompletableFuture<Void> onAuth(
+                @NotNull final Mqtt5ClientData clientData, @NotNull final Mqtt5Connect connect,
+                @NotNull final Mqtt5ExtendedAuthBuilderImpl authBuilder) {
             throw new UnsupportedOperationException();
         }
 
         @NotNull
         @Override
-        public CompletableFuture<Void> onReauthenticate(
+        public CompletableFuture<Void> onReAuth(
                 @NotNull final Mqtt5ClientData clientData, @NotNull final Mqtt5AuthBuilderImpl authBuilder) {
+            throw new UnsupportedOperationException();
+        }
+
+        @NotNull
+        @Override
+        public CompletableFuture<Void> onServerReAuth(
+                @NotNull final Mqtt5ClientData clientData, @NotNull final Mqtt5Auth auth,
+                @NotNull final Mqtt5AuthBuilderImpl authBuilder) {
             throw new UnsupportedOperationException();
         }
 
@@ -637,18 +646,29 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
 
         @NotNull
         @Override
-        public CompletableFuture<Boolean> onAuthenticated(
+        public CompletableFuture<Boolean> onAuthSuccess(
                 @NotNull final Mqtt5ClientData clientData, @NotNull final Mqtt5ConnAck connAck) {
             throw new UnsupportedOperationException();
         }
 
         @NotNull
         @Override
-        public CompletableFuture<Boolean> onReauthenticated(
-                @NotNull final Mqtt5ClientData clientData, @NotNull final Mqtt5Auth mqttAuth) {
+        public CompletableFuture<Boolean> onReAuthSuccess(
+                @NotNull final Mqtt5ClientData clientData, @NotNull final Mqtt5Auth auth) {
             throw new UnsupportedOperationException();
         }
 
+        @Override
+        public void onAuthError(
+                @NotNull final Mqtt5ClientData clientData, @NotNull final Mqtt5ConnAck connAck) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void onReAuthError(
+                @NotNull final Mqtt5ClientData clientData, @NotNull final Mqtt5Auth auth) {
+            throw new UnsupportedOperationException();
+        }
     }
 
 }
