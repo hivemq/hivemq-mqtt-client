@@ -1,12 +1,12 @@
 package org.mqttbee.mqtt5.message.subscribe;
 
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt5.message.Mqtt5WrappedMessage.Mqtt5MessageWrapperWithPacketId;
+import org.mqttbee.mqtt5.message.Mqtt5WrappedMessage.Mqtt5MessageWrapperWithId;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5SubscribeWrapper extends Mqtt5MessageWrapperWithPacketId<Mqtt5SubscribeWrapper, Mqtt5SubscribeImpl> {
+public class Mqtt5SubscribeWrapper extends Mqtt5MessageWrapperWithId<Mqtt5SubscribeWrapper, Mqtt5SubscribeImpl> {
 
     public static final int DEFAULT_NO_SUBSCRIPTION_IDENTIFIER = -1;
 

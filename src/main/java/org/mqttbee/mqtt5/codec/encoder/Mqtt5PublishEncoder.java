@@ -79,7 +79,8 @@ public class Mqtt5PublishEncoder extends Mqtt5WrappedMessageEncoder<Mqtt5Publish
     }
 
 
-    public static class Mqtt5PublishWrapperEncoder extends Mqtt5MessageWrapperEncoder<Mqtt5PublishWrapper> {
+    public static class Mqtt5PublishWrapperEncoder
+            extends Mqtt5MessageWrapperEncoder<Mqtt5PublishWrapper, Mqtt5PublishImpl> {
 
         static final Function<Mqtt5PublishWrapper, Mqtt5PublishWrapperEncoder> PROVIDER =
                 Mqtt5PublishWrapperEncoder::new;

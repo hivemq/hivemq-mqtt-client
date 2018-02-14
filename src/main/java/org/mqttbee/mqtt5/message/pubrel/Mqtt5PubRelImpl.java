@@ -5,7 +5,7 @@ import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.pubrel.Mqtt5PubRel;
 import org.mqttbee.api.mqtt5.message.pubrel.Mqtt5PubRelReasonCode;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageEncoder;
-import org.mqttbee.mqtt5.message.Mqtt5Message.Mqtt5MessageWithReasonCodeAndPacketId;
+import org.mqttbee.mqtt5.message.Mqtt5Message.Mqtt5MessageWithIdAndReasonCode;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 import org.mqttbee.mqtt5.message.publish.Mqtt5QoSMessage;
@@ -15,7 +15,7 @@ import java.util.function.Function;
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5PubRelImpl extends Mqtt5MessageWithReasonCodeAndPacketId<Mqtt5PubRelImpl, Mqtt5PubRelReasonCode>
+public class Mqtt5PubRelImpl extends Mqtt5MessageWithIdAndReasonCode<Mqtt5PubRelImpl, Mqtt5PubRelReasonCode>
         implements Mqtt5PubRel, Mqtt5QoSMessage {
 
     @NotNull

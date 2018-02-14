@@ -86,12 +86,12 @@ public abstract class Mqtt5WrappedMessage<T extends Mqtt5WrappedMessage<T, W>, W
      * @param <T> the type of the wrapped MQTT message.
      * @author Silvio Giebl
      */
-    public abstract static class Mqtt5MessageWrapperWithPacketId<W extends Mqtt5MessageWrapperWithPacketId<W, T>, T extends Mqtt5WrappedMessage<T, W>>
+    public abstract static class Mqtt5MessageWrapperWithId<W extends Mqtt5MessageWrapperWithId<W, T>, T extends Mqtt5WrappedMessage<T, W>>
             extends Mqtt5MessageWrapper<W, T> {
 
         private final int packetIdentifier;
 
-        public Mqtt5MessageWrapperWithPacketId(@NotNull final T wrapped, final int packetIdentifier) {
+        public Mqtt5MessageWrapperWithId(@NotNull final T wrapped, final int packetIdentifier) {
             super(wrapped);
             this.packetIdentifier = packetIdentifier;
         }

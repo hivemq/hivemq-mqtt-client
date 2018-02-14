@@ -72,13 +72,13 @@ public abstract class Mqtt5WrappedMessageEncoder<T extends Mqtt5WrappedMessage<T
     /**
      * @return a new encoder for a wrapper around the MQTT message.
      */
-    public abstract Function<W, ? extends Mqtt5MessageWrapperEncoder<W>> wrap();
+    public abstract Function<W, ? extends Mqtt5MessageWrapperEncoder<W, T>> wrap();
 
 
     /**
      * Base class for encoders of wrappers around MQTT messages with User Properties.
      */
-    abstract static class Mqtt5MessageWrapperEncoder<W extends Mqtt5MessageWrapper>
+    abstract static class Mqtt5MessageWrapperEncoder<W extends Mqtt5MessageWrapper<W, T>, T extends Mqtt5WrappedMessage<T, W>>
             extends Mqtt5MessageWithPropertiesEncoder<W> {
 
         Mqtt5MessageWrapperEncoder(@NotNull final W wrapper) {
