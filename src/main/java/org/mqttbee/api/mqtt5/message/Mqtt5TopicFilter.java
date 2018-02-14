@@ -1,10 +1,9 @@
 package org.mqttbee.api.mqtt5.message;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt5.message.Mqtt5TopicFilterImpl;
+import org.mqttbee.mqtt5.Mqtt5BuilderUtil;
 
 /**
  * MQTT Topic Filter according to the MQTT 5 specification.
@@ -35,13 +34,7 @@ public interface Mqtt5TopicFilter extends Mqtt5UTF8String {
      */
     @NotNull
     static Mqtt5TopicFilter from(@NotNull final String string) {
-        Preconditions.checkNotNull(string);
-
-        final Mqtt5TopicFilter topicFilter = Mqtt5TopicFilterImpl.from(string);
-        if (topicFilter == null) {
-            throw new IllegalArgumentException("The string: [" + string + "] is not a valid Topic Name.");
-        }
-        return topicFilter;
+        return Mqtt5BuilderUtil.topicFilter(string);
     }
 
     @NotNull

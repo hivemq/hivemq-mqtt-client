@@ -17,6 +17,7 @@ public class Mqtt5ClientBuilder {
     private final int numberOfNettyThreads;
 
     private boolean followRedirects = false;
+    private boolean useServerReAuth = false;
 
     public Mqtt5ClientBuilder(
             @NotNull final Mqtt5ClientIdentifierImpl identifier, @NotNull final String host, final int port,
@@ -32,6 +33,12 @@ public class Mqtt5ClientBuilder {
     @NotNull
     public Mqtt5ClientBuilder followRedirects(final boolean followRedirects) {
         this.followRedirects = followRedirects;
+        return this;
+    }
+
+    @NotNull
+    public Mqtt5ClientBuilder useServerReAuth(final boolean useServerReAuth) {
+        this.useServerReAuth = useServerReAuth;
         return this;
     }
 

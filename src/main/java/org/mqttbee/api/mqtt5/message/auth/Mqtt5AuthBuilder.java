@@ -21,6 +21,9 @@ public interface Mqtt5AuthBuilder {
     Mqtt5AuthBuilder withData(@Nullable ByteBuffer data);
 
     @NotNull
+    Mqtt5AuthBuilder withReasonString(@Nullable String reasonString);
+
+    @NotNull
     Mqtt5AuthBuilder withReasonString(@Nullable Mqtt5UTF8String reasonString);
 
     @NotNull
