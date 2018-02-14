@@ -1,4 +1,4 @@
-package org.mqttbee.mqtt5.handler;
+package org.mqttbee.mqtt5;
 
 import com.google.common.base.Preconditions;
 import io.netty.channel.Channel;
@@ -60,7 +60,7 @@ public class Mqtt5ClientDataImpl implements Mqtt5ClientData {
         return clientIdentifier;
     }
 
-    void setClientIdentifier(@NotNull final Mqtt5ClientIdentifierImpl clientIdentifier) {
+    public void setClientIdentifier(@NotNull final Mqtt5ClientIdentifierImpl clientIdentifier) {
         this.clientIdentifier = clientIdentifier;
     }
 
@@ -69,7 +69,7 @@ public class Mqtt5ClientDataImpl implements Mqtt5ClientData {
         return keepAlive;
     }
 
-    void setKeepAlive(final int keepAlive) {
+    public void setKeepAlive(final int keepAlive) {
         this.keepAlive = keepAlive;
     }
 
@@ -78,7 +78,7 @@ public class Mqtt5ClientDataImpl implements Mqtt5ClientData {
         return sessionExpiryInterval;
     }
 
-    void setSessionExpiryInterval(final long sessionExpiryInterval) {
+    public void setSessionExpiryInterval(final long sessionExpiryInterval) {
         this.sessionExpiryInterval = sessionExpiryInterval;
     }
 

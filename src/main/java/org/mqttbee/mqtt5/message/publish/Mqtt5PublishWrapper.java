@@ -3,7 +3,7 @@ package org.mqttbee.mqtt5.message.publish;
 import com.google.common.primitives.ImmutableIntArray;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt5.handler.Mqtt5ServerDataImpl;
+import org.mqttbee.mqtt5.Mqtt5ServerDataImpl;
 import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
 import org.mqttbee.mqtt5.message.Mqtt5WrappedMessage.Mqtt5MessageWrapperWithId;
 

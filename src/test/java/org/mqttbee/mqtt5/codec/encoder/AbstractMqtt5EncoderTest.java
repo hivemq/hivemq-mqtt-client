@@ -4,8 +4,8 @@ import io.netty.channel.embedded.EmbeddedChannel;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
+import org.mqttbee.mqtt5.Mqtt5ServerDataImpl;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
-import org.mqttbee.mqtt5.handler.Mqtt5ServerDataImpl;
 
 /**
  * @author Silvio Giebl
