@@ -411,8 +411,8 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
     @Test
     void encode_willPropertyLengthExceedsMax_throwsEncoderException() {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder();
-        final Mqtt5UserPropertiesImpl tooManyUserProperties = maxPacket
-                .getUserProperties((VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE / maxPacket.userPropertyBytes) + 1);
+        final Mqtt5UserPropertiesImpl tooManyUserProperties = maxPacket.getUserProperties(
+                (VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE / maxPacket.userPropertyBytes) + 1);
 
         final Mqtt5TopicImpl willTopic = requireNonNull(Mqtt5TopicImpl.from("topic"));
         final Mqtt5ClientIdentifierImpl clientIdentifier = requireNonNull(Mqtt5ClientIdentifierImpl.from("test"));

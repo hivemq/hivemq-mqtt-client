@@ -47,8 +47,10 @@ public class Mqtt5UserPropertyImplTest {
 
     @Test
     public void test_equals() {
-        EqualsVerifier.forClass(Mqtt5UserPropertyImpl.class).withNonnullFields("name", "value")
-                .suppress(Warning.STRICT_INHERITANCE).verify();
+        EqualsVerifier.forClass(Mqtt5UserPropertyImpl.class)
+                .withNonnullFields("name", "value")
+                .suppress(Warning.STRICT_INHERITANCE)
+                .verify();
     }
 
 }

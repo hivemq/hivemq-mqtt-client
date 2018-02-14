@@ -70,8 +70,8 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
         final Mqtt5UTF8StringImpl test2 = requireNonNull(Mqtt5UTF8StringImpl.from("test2"));
         final Mqtt5UTF8StringImpl value = requireNonNull(Mqtt5UTF8StringImpl.from("value"));
         final Mqtt5UTF8StringImpl value2 = requireNonNull(Mqtt5UTF8StringImpl.from("value2"));
-        final Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.of(ImmutableList
-                .of(new Mqtt5UserPropertyImpl(test, value), new Mqtt5UserPropertyImpl(test, value2),
+        final Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.of(
+                ImmutableList.of(new Mqtt5UserPropertyImpl(test, value), new Mqtt5UserPropertyImpl(test, value2),
                         new Mqtt5UserPropertyImpl(test2, value)));
 
         final Mqtt5UTF8StringImpl method = requireNonNull(Mqtt5UTF8StringImpl.from("GS2-KRB5"));
@@ -211,8 +211,8 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
     @Test
     void encode_maximumPacketSizeExceededByUserProperties_omitUserPropertiesAndReasonString() {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder();
-        final Mqtt5UserPropertiesImpl tooManyUserProperties = maxPacket
-                .getUserProperties((VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE / maxPacket.userPropertyBytes) + 1);
+        final Mqtt5UserPropertiesImpl tooManyUserProperties = maxPacket.getUserProperties(
+                (VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE / maxPacket.userPropertyBytes) + 1);
 
         final Mqtt5AuthImpl auth =
                 new Mqtt5AuthImpl(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, maxPacket.getMethod(), null, null,
