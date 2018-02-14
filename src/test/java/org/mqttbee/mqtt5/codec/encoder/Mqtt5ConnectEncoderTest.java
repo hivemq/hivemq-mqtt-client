@@ -11,13 +11,13 @@ import org.mqttbee.api.mqtt5.auth.Mqtt5ExtendedAuthProvider;
 import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.api.mqtt5.message.auth.Mqtt5Auth;
+import org.mqttbee.api.mqtt5.message.auth.Mqtt5AuthBuilder;
+import org.mqttbee.api.mqtt5.message.auth.Mqtt5ExtendedAuthBuilder;
 import org.mqttbee.api.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.api.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.api.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.*;
-import org.mqttbee.mqtt5.message.auth.Mqtt5AuthBuilderImpl;
-import org.mqttbee.mqtt5.message.auth.Mqtt5ExtendedAuthBuilderImpl;
 import org.mqttbee.mqtt5.message.auth.Mqtt5ExtendedAuthImpl;
 import org.mqttbee.mqtt5.message.connect.Mqtt5ConnectImpl;
 import org.mqttbee.mqtt5.message.connect.Mqtt5ConnectWrapper;
@@ -617,14 +617,14 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         @Override
         public CompletableFuture<Void> onAuth(
                 @NotNull final Mqtt5ClientData clientData, @NotNull final Mqtt5Connect connect,
-                @NotNull final Mqtt5ExtendedAuthBuilderImpl authBuilder) {
+                @NotNull final Mqtt5ExtendedAuthBuilder authBuilder) {
             throw new UnsupportedOperationException();
         }
 
         @NotNull
         @Override
         public CompletableFuture<Void> onReAuth(
-                @NotNull final Mqtt5ClientData clientData, @NotNull final Mqtt5AuthBuilderImpl authBuilder) {
+                @NotNull final Mqtt5ClientData clientData, @NotNull final Mqtt5AuthBuilder authBuilder) {
             throw new UnsupportedOperationException();
         }
 
@@ -632,7 +632,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         @Override
         public CompletableFuture<Void> onServerReAuth(
                 @NotNull final Mqtt5ClientData clientData, @NotNull final Mqtt5Auth auth,
-                @NotNull final Mqtt5AuthBuilderImpl authBuilder) {
+                @NotNull final Mqtt5AuthBuilder authBuilder) {
             throw new UnsupportedOperationException();
         }
 
@@ -640,7 +640,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         @Override
         public CompletableFuture<Void> onContinue(
                 @NotNull final Mqtt5ClientData clientData, @NotNull final Mqtt5Auth auth,
-                @NotNull final Mqtt5AuthBuilderImpl authBuilder) {
+                @NotNull final Mqtt5AuthBuilder authBuilder) {
             throw new UnsupportedOperationException();
         }
 
@@ -659,14 +659,12 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         }
 
         @Override
-        public void onAuthError(
-                @NotNull final Mqtt5ClientData clientData, @NotNull final Mqtt5ConnAck connAck) {
+        public void onAuthError(@NotNull final Mqtt5ClientData clientData, @NotNull final Mqtt5ConnAck connAck) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public void onReAuthError(
-                @NotNull final Mqtt5ClientData clientData, @NotNull final Mqtt5Auth auth) {
+        public void onReAuthError(@NotNull final Mqtt5ClientData clientData, @NotNull final Mqtt5Auth auth) {
             throw new UnsupportedOperationException();
         }
     }
