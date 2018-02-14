@@ -12,7 +12,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.api.mqtt5.message.ping.Mqtt5PingReq;
 import org.mqttbee.api.mqtt5.message.ping.Mqtt5PingResp;
-import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckImpl;
+import org.mqttbee.mqtt5.message.connect.connack.Mqtt5ConnAckImpl;
 import org.mqttbee.mqtt5.message.ping.Mqtt5PingReqImpl;
 
 import java.util.concurrent.TimeUnit;

@@ -6,14 +6,14 @@ import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.api.mqtt5.message.unsuback.Mqtt5UnsubAckReasonCode;
+import org.mqttbee.api.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAckReasonCode;
 import org.mqttbee.mqtt5.Mqtt5ClientDataImpl;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
-import org.mqttbee.mqtt5.message.unsuback.Mqtt5UnsubAckImpl;
-import org.mqttbee.mqtt5.message.unsuback.Mqtt5UnsubAckProperty;
+import org.mqttbee.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAckImpl;
+import org.mqttbee.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAckProperty;
 
 import javax.inject.Singleton;
 

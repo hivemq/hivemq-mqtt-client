@@ -1,9 +1,9 @@
 package org.mqttbee.api.mqtt5.advanced;
 
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt5.message.puback.Mqtt5PubAck;
-import org.mqttbee.api.mqtt5.message.puback.Mqtt5PubAckBuilder;
 import org.mqttbee.api.mqtt5.message.publish.Mqtt5Publish;
+import org.mqttbee.api.mqtt5.message.publish.puback.Mqtt5PubAck;
+import org.mqttbee.api.mqtt5.message.publish.puback.Mqtt5PubAckBuilder;
 
 /**
  * @author Silvio Giebl

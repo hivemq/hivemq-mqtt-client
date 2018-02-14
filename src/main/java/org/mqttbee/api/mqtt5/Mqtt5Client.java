@@ -4,15 +4,15 @@ import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt5.message.connack.Mqtt5ConnAck;
 import org.mqttbee.api.mqtt5.message.connect.Mqtt5Connect;
+import org.mqttbee.api.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt5.message.publish.Mqtt5Publish;
-import org.mqttbee.api.mqtt5.message.suback.Mqtt5SubAck;
 import org.mqttbee.api.mqtt5.message.subscribe.Mqtt5Subscribe;
 import org.mqttbee.api.mqtt5.message.subscribe.Mqtt5SubscribeResult;
-import org.mqttbee.api.mqtt5.message.unsuback.Mqtt5UnsubAck;
+import org.mqttbee.api.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.api.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
+import org.mqttbee.api.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
 import org.mqttbee.rx.FlowableWithSingle;
 
 /**

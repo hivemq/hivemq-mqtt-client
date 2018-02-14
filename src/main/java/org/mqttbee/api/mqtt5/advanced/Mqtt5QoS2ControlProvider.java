@@ -1,13 +1,13 @@
 package org.mqttbee.api.mqtt5.advanced;
 
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt5.message.pubcomp.Mqtt5PubComp;
-import org.mqttbee.api.mqtt5.message.pubcomp.Mqtt5PubCompBuilder;
 import org.mqttbee.api.mqtt5.message.publish.Mqtt5Publish;
-import org.mqttbee.api.mqtt5.message.pubrec.Mqtt5PubRec;
-import org.mqttbee.api.mqtt5.message.pubrec.Mqtt5PubRecBuilder;
-import org.mqttbee.api.mqtt5.message.pubrel.Mqtt5PubRel;
-import org.mqttbee.api.mqtt5.message.pubrel.Mqtt5PubRelBuilder;
+import org.mqttbee.api.mqtt5.message.publish.pubcomp.Mqtt5PubComp;
+import org.mqttbee.api.mqtt5.message.publish.pubcomp.Mqtt5PubCompBuilder;
+import org.mqttbee.api.mqtt5.message.publish.pubrec.Mqtt5PubRec;
+import org.mqttbee.api.mqtt5.message.publish.pubrec.Mqtt5PubRecBuilder;
+import org.mqttbee.api.mqtt5.message.publish.pubrel.Mqtt5PubRel;
+import org.mqttbee.api.mqtt5.message.publish.pubrel.Mqtt5PubRelBuilder;
 
 /**
  * @author Silvio Giebl

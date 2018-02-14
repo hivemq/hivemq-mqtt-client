@@ -5,20 +5,20 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt5.message.puback.Mqtt5PubAckReasonCode;
+import org.mqttbee.api.mqtt5.message.publish.puback.Mqtt5PubAckReasonCode;
 import org.mqttbee.mqtt5.Mqtt5ClientDataImpl;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5PubAckEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
-import org.mqttbee.mqtt5.message.puback.Mqtt5PubAckImpl;
-import org.mqttbee.mqtt5.message.puback.Mqtt5PubAckProperty;
+import org.mqttbee.mqtt5.message.publish.puback.Mqtt5PubAckImpl;
+import org.mqttbee.mqtt5.message.publish.puback.Mqtt5PubAckProperty;
 
 import javax.inject.Singleton;
 
 import static org.mqttbee.mqtt5.codec.decoder.Mqtt5MessageDecoderUtil.*;
-import static org.mqttbee.mqtt5.message.puback.Mqtt5PubAckImpl.DEFAULT_REASON_CODE;
+import static org.mqttbee.mqtt5.message.publish.puback.Mqtt5PubAckImpl.DEFAULT_REASON_CODE;
 
 /**
  * @author Silvio Giebl
