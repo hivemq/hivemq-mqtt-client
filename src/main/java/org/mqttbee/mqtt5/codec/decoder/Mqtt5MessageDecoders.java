@@ -7,7 +7,7 @@ import org.mqttbee.annotations.Nullable;
  *
  * @author Silvio Giebl
  */
-public interface Mqtt5MessageDecoders {
+interface Mqtt5MessageDecoders {
 
     /**
      * Returns the corresponding decoder to the given MQTT message type code.

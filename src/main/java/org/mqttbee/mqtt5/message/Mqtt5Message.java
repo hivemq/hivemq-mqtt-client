@@ -21,7 +21,7 @@ public abstract class Mqtt5Message<T extends Mqtt5Message<T>> {
     private final Function<T, ? extends Mqtt5MessageEncoder<T>> encoderProvider;
     private Mqtt5MessageEncoder<T> encoder;
 
-    public Mqtt5Message(@Nullable final Function<T, ? extends Mqtt5MessageEncoder<T>> encoderProvider) {
+    protected Mqtt5Message(@Nullable final Function<T, ? extends Mqtt5MessageEncoder<T>> encoderProvider) {
         this.encoderProvider = encoderProvider;
     }
 
@@ -113,7 +113,7 @@ public abstract class Mqtt5Message<T extends Mqtt5Message<T>> {
 
         private final R reasonCode;
 
-        public Mqtt5MessageWithReasonCode(
+        protected Mqtt5MessageWithReasonCode(
                 @NotNull final R reasonCode, @Nullable final Mqtt5UTF8StringImpl reasonString,
                 @NotNull final Mqtt5UserPropertiesImpl userProperties,
                 @Nullable final Function<T, ? extends Mqtt5MessageEncoder<T>> encoderProvider) {
@@ -142,7 +142,7 @@ public abstract class Mqtt5Message<T extends Mqtt5Message<T>> {
 
         private final int packetIdentifier;
 
-        public Mqtt5MessageWithIdAndReasonCode(
+        protected Mqtt5MessageWithIdAndReasonCode(
                 final int packetIdentifier, @NotNull final R reasonCode,
                 @Nullable final Mqtt5UTF8StringImpl reasonString, @NotNull final Mqtt5UserPropertiesImpl userProperties,
                 @Nullable final Function<T, ? extends Mqtt5MessageEncoder<T>> encoderProvider) {
@@ -198,7 +198,7 @@ public abstract class Mqtt5Message<T extends Mqtt5Message<T>> {
 
         private final int packetIdentifier;
 
-        public Mqtt5MessageWithIdAndReasonCodes(
+        protected Mqtt5MessageWithIdAndReasonCodes(
                 final int packetIdentifier, @NotNull final ImmutableList<R> reasonCodes,
                 @Nullable final Mqtt5UTF8StringImpl reasonString, @NotNull final Mqtt5UserPropertiesImpl userProperties,
                 @Nullable final Function<T, ? extends Mqtt5MessageEncoder<T>> encoderProvider) {

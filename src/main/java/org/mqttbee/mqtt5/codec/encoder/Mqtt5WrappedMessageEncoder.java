@@ -15,7 +15,7 @@ import java.util.function.Function;
  */
 public abstract class Mqtt5WrappedMessageEncoder<T extends Mqtt5WrappedMessage<T, W>, W extends Mqtt5MessageWrapper<W, T>> {
 
-    protected final T message;
+    final T message;
     private int remainingLengthWithoutProperties = -1;
     private int propertyLength = -1;
 
