@@ -137,12 +137,12 @@ public abstract class Mqtt5Message<T extends Mqtt5Message<T>> {
      * @param <T> the type of the codable MQTT message. This is usually the MQTT message type itself.
      * @param <R> the type of the Reason Code.
      */
-    public static abstract class Mqtt5MessageWithReasonCodeAndPacketId<T extends Mqtt5MessageWithReasonCodeAndPacketId<T, R>, R extends Mqtt5ReasonCode>
+    public static abstract class Mqtt5MessageWithIdAndReasonCode<T extends Mqtt5MessageWithIdAndReasonCode<T, R>, R extends Mqtt5ReasonCode>
             extends Mqtt5MessageWithReasonCode<T, R> {
 
         private final int packetIdentifier;
 
-        public Mqtt5MessageWithReasonCodeAndPacketId(
+        public Mqtt5MessageWithIdAndReasonCode(
                 final int packetIdentifier, @NotNull final R reasonCode,
                 @Nullable final Mqtt5UTF8StringImpl reasonString, @NotNull final Mqtt5UserPropertiesImpl userProperties,
                 @Nullable final Function<T, ? extends Mqtt5MessageEncoder<T>> encoderProvider) {
@@ -187,17 +187,18 @@ public abstract class Mqtt5Message<T extends Mqtt5Message<T>> {
 
 
     /**
-     * Base class for MQTT messages with a Reason Codes, an optional Reason String and optional User Properties.
+     * Base class for MQTT messages with a Packet Identifier, Reason Codes, an optional Reason String and optional User
+     * Properties.
      *
      * @param <T> the type of the codable MQTT message. This is usually the MQTT message type itself.
      * @param <R> the type of the Reason Codes.
      */
-    public static abstract class Mqtt5MessageWithReasonCodesAndPacketId<T extends Mqtt5MessageWithReasonCodes<T, R>, R extends Mqtt5ReasonCode>
+    public static abstract class Mqtt5MessageWithIdAndReasonCodes<T extends Mqtt5MessageWithReasonCodes<T, R>, R extends Mqtt5ReasonCode>
             extends Mqtt5MessageWithReasonCodes<T, R> {
 
         private final int packetIdentifier;
 
-        public Mqtt5MessageWithReasonCodesAndPacketId(
+        public Mqtt5MessageWithIdAndReasonCodes(
                 final int packetIdentifier, @NotNull final ImmutableList<R> reasonCodes,
                 @Nullable final Mqtt5UTF8StringImpl reasonString, @NotNull final Mqtt5UserPropertiesImpl userProperties,
                 @Nullable final Function<T, ? extends Mqtt5MessageEncoder<T>> encoderProvider) {

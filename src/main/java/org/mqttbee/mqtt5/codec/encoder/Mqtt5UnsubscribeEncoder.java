@@ -44,12 +44,13 @@ public class Mqtt5UnsubscribeEncoder extends Mqtt5WrappedMessageEncoder<Mqtt5Uns
     }
 
     @Override
-    public Function<Mqtt5UnsubscribeWrapper, ? extends Mqtt5MessageWrapperEncoder<Mqtt5UnsubscribeWrapper>> wrap() {
+    public Function<Mqtt5UnsubscribeWrapper, Mqtt5UnsubscribeWrapperEncoder> wrap() {
         return Mqtt5UnsubscribeWrapperEncoder.PROVIDER;
     }
 
 
-    public static class Mqtt5UnsubscribeWrapperEncoder extends Mqtt5MessageWrapperEncoder<Mqtt5UnsubscribeWrapper> {
+    public static class Mqtt5UnsubscribeWrapperEncoder
+            extends Mqtt5MessageWrapperEncoder<Mqtt5UnsubscribeWrapper, Mqtt5UnsubscribeImpl> {
 
         static final Function<Mqtt5UnsubscribeWrapper, Mqtt5UnsubscribeWrapperEncoder> PROVIDER =
                 Mqtt5UnsubscribeWrapperEncoder::new;

@@ -68,9 +68,12 @@ public class Mqtt5ConnectEncoder extends Mqtt5WrappedMessageEncoder<Mqtt5Connect
 
         final RestrictionsImpl restrictions = message.getRestrictions();
         if (restrictions != RestrictionsImpl.DEFAULT) {
-            propertyLength += shortPropertyEncodedLength(restrictions.getReceiveMaximum(), Restrictions.DEFAULT_RECEIVE_MAXIMUM);
-            propertyLength += shortPropertyEncodedLength(restrictions.getTopicAliasMaximum(), Restrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM);
-            propertyLength += intPropertyEncodedLength(restrictions.getMaximumPacketSize(), Restrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT);
+            propertyLength +=
+                    shortPropertyEncodedLength(restrictions.getReceiveMaximum(), Restrictions.DEFAULT_RECEIVE_MAXIMUM);
+            propertyLength += shortPropertyEncodedLength(restrictions.getTopicAliasMaximum(),
+                    Restrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM);
+            propertyLength += intPropertyEncodedLength(restrictions.getMaximumPacketSize(),
+                    Restrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT);
         }
 
         propertyLength += message.getUserProperties().encodedLength();
@@ -102,12 +105,13 @@ public class Mqtt5ConnectEncoder extends Mqtt5WrappedMessageEncoder<Mqtt5Connect
     }
 
     @Override
-    public Function<Mqtt5ConnectWrapper, ? extends Mqtt5MessageWrapperEncoder<Mqtt5ConnectWrapper>> wrap() {
+    public Function<Mqtt5ConnectWrapper, Mqtt5ConnectWrapperEncoder> wrap() {
         return Mqtt5ConnectWrapperEncoder.PROVIDER;
     }
 
 
-    public static class Mqtt5ConnectWrapperEncoder extends Mqtt5MessageWrapperEncoder<Mqtt5ConnectWrapper> {
+    public static class Mqtt5ConnectWrapperEncoder
+            extends Mqtt5MessageWrapperEncoder<Mqtt5ConnectWrapper, Mqtt5ConnectImpl> {
 
         static final Function<Mqtt5ConnectWrapper, Mqtt5ConnectWrapperEncoder> PROVIDER =
                 Mqtt5ConnectWrapperEncoder::new;

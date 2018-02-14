@@ -48,12 +48,13 @@ public class Mqtt5SubscribeEncoder extends Mqtt5WrappedMessageEncoder<Mqtt5Subsc
     }
 
     @Override
-    public Function<Mqtt5SubscribeWrapper, ? extends Mqtt5MessageWrapperEncoder<Mqtt5SubscribeWrapper>> wrap() {
+    public Function<Mqtt5SubscribeWrapper, Mqtt5SubscribeWrapperEncoder> wrap() {
         return Mqtt5SubscribeWrapperEncoder.PROVIDER;
     }
 
 
-    public static class Mqtt5SubscribeWrapperEncoder extends Mqtt5MessageWrapperEncoder<Mqtt5SubscribeWrapper> {
+    public static class Mqtt5SubscribeWrapperEncoder
+            extends Mqtt5MessageWrapperEncoder<Mqtt5SubscribeWrapper, Mqtt5SubscribeImpl> {
 
         static final Function<Mqtt5SubscribeWrapper, Mqtt5SubscribeWrapperEncoder> PROVIDER =
                 Mqtt5SubscribeWrapperEncoder::new;
