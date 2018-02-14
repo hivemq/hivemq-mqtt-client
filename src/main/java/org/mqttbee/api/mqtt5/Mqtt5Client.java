@@ -38,7 +38,7 @@ public interface Mqtt5Client {
     void publish(@NotNull Flowable<Mqtt5Publish> publishFlowable);
 
     @NotNull
-    Completable reauthenticate();
+    Completable reauth();
 
     @NotNull
     Completable disconnect(@NotNull Mqtt5Disconnect disconnect);
