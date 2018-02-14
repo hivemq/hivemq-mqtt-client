@@ -4,10 +4,10 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.Mqtt5ClientData;
 import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.api.mqtt5.message.auth.Mqtt5Auth;
+import org.mqttbee.api.mqtt5.message.auth.Mqtt5AuthBuilder;
+import org.mqttbee.api.mqtt5.message.auth.Mqtt5ExtendedAuthBuilder;
 import org.mqttbee.api.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.api.mqtt5.message.connect.connack.Mqtt5ConnAck;
-import org.mqttbee.mqtt5.message.auth.Mqtt5AuthBuilderImpl;
-import org.mqttbee.mqtt5.message.auth.Mqtt5ExtendedAuthBuilderImpl;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -37,7 +37,7 @@ public interface Mqtt5ExtendedAuthProvider {
     @NotNull
     CompletableFuture<Void> onAuth(
             @NotNull Mqtt5ClientData clientData, @NotNull Mqtt5Connect connect,
-            @NotNull Mqtt5ExtendedAuthBuilderImpl authBuilder);
+            @NotNull Mqtt5ExtendedAuthBuilder authBuilder);
 
     /**
      * Called when a client reauthenticates and used this extended authentication/authorization provider during
@@ -49,12 +49,12 @@ public interface Mqtt5ExtendedAuthProvider {
      * to the builder.
      */
     @NotNull
-    CompletableFuture<Void> onReAuth(@NotNull Mqtt5ClientData clientData, @NotNull Mqtt5AuthBuilderImpl authBuilder);
+    CompletableFuture<Void> onReAuth(@NotNull Mqtt5ClientData clientData, @NotNull Mqtt5AuthBuilder authBuilder);
 
     /**
      * Called when a server reauthenticates a client and the client used this extended authentication/authorization
      * provider during connection. This is an addition to the MQTT 5 specification and so defaults to {@link
-     * #onReAuth(Mqtt5ClientData, Mqtt5AuthBuilderImpl)}.
+     * #onReAuth(Mqtt5ClientData, Mqtt5AuthBuilder)}.
      *
      * @param clientData  the data of the client.
      * @param auth        the Auth message sent by the server.
@@ -65,7 +65,7 @@ public interface Mqtt5ExtendedAuthProvider {
     @NotNull
     default CompletableFuture<Void> onServerReAuth(
             @NotNull final Mqtt5ClientData clientData, @NotNull @SuppressWarnings("unused") final Mqtt5Auth auth,
-            @NotNull final Mqtt5AuthBuilderImpl authBuilder) {
+            @NotNull final Mqtt5AuthBuilder authBuilder) {
 
         return onReAuth(clientData, authBuilder);
     }
@@ -82,7 +82,7 @@ public interface Mqtt5ExtendedAuthProvider {
      */
     @NotNull
     CompletableFuture<Void> onContinue(
-            @NotNull Mqtt5ClientData clientData, @NotNull Mqtt5Auth auth, @NotNull Mqtt5AuthBuilderImpl authBuilder);
+            @NotNull Mqtt5ClientData clientData, @NotNull Mqtt5Auth auth, @NotNull Mqtt5AuthBuilder authBuilder);
 
     /**
      * Called when a server accepted authentication/authorization of a client which used this extended
