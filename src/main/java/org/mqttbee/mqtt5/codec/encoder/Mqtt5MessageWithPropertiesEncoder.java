@@ -286,9 +286,9 @@ abstract class Mqtt5MessageWithPropertiesEncoder<T extends Mqtt5Message<T>> exte
             super(message);
         }
 
-        protected abstract int getFixedHeader();
+        abstract int getFixedHeader();
 
-        protected abstract R getDefaultReasonCode();
+        abstract R getDefaultReasonCode();
 
         @Override
         final int calculateRemainingLength() {

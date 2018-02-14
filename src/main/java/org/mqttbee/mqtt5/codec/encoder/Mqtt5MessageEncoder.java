@@ -14,9 +14,9 @@ import org.mqttbee.mqtt5.message.Mqtt5Message;
  */
 public abstract class Mqtt5MessageEncoder<T extends Mqtt5Message> {
 
-    protected final T message;
+    final T message;
 
-    public Mqtt5MessageEncoder(@NotNull final T message) {
+    Mqtt5MessageEncoder(@NotNull final T message) {
         this.message = message;
     }
 
