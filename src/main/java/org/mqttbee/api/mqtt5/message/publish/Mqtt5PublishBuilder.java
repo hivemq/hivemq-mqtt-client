@@ -7,7 +7,7 @@ import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.api.mqtt5.message.Mqtt5Topic;
 import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.api.mqtt5.message.Mqtt5UserProperties;
-import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
+import org.mqttbee.mqtt5.Mqtt5BuilderUtil;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5PublishEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
@@ -59,20 +59,26 @@ public class Mqtt5PublishBuilder {
     }
 
     @NotNull
+    public Mqtt5PublishBuilder withTopic(@NotNull final String topic) {
+        this.topic = Mqtt5BuilderUtil.topic(topic);
+        return this;
+    }
+
+    @NotNull
     public Mqtt5PublishBuilder withTopic(@NotNull final Mqtt5Topic topic) {
-        this.topic = MustNotBeImplementedUtil.checkNotImplemented(topic, Mqtt5TopicImpl.class);
+        this.topic = Mqtt5BuilderUtil.topic(topic);
         return this;
     }
 
     @NotNull
     public Mqtt5PublishBuilder withPayload(@Nullable final byte[] payload) {
-        this.payload = ByteBufferUtil.wrap(payload);
+        this.payload = (payload == null) ? null : ByteBufferUtil.wrap(payload);
         return this;
     }
 
     @NotNull
     public Mqtt5PublishBuilder withPayload(@Nullable final ByteBuffer payload) {
-        this.payload = ByteBufferUtil.slice(payload);
+        this.payload = (payload == null) ? null : ByteBufferUtil.slice(payload);
         return this;
     }
 
@@ -104,28 +110,38 @@ public class Mqtt5PublishBuilder {
     }
 
     @NotNull
+    public Mqtt5PublishBuilder withContentType(@Nullable final String contentType) {
+        this.contentType = Mqtt5BuilderUtil.stringOrNull(contentType);
+        return this;
+    }
+
+    @NotNull
     public Mqtt5PublishBuilder withContentType(@Nullable final Mqtt5UTF8String contentType) {
-        this.contentType = MustNotBeImplementedUtil.checkNullOrNotImplemented(contentType, Mqtt5UTF8StringImpl.class);
+        this.contentType = Mqtt5BuilderUtil.stringOrNull(contentType);
+        return this;
+    }
+
+    @NotNull
+    public Mqtt5PublishBuilder withResponseTopic(@Nullable final String responseTopic) {
+        this.responseTopic = Mqtt5BuilderUtil.topicOrNull(responseTopic);
         return this;
     }
 
     @NotNull
     public Mqtt5PublishBuilder withResponseTopic(@Nullable final Mqtt5Topic responseTopic) {
-        this.responseTopic = MustNotBeImplementedUtil.checkNullOrNotImplemented(responseTopic, Mqtt5TopicImpl.class);
+        this.responseTopic = Mqtt5BuilderUtil.topicOrNull(responseTopic);
         return this;
     }
 
     @NotNull
     public Mqtt5PublishBuilder withCorrelationData(@Nullable final byte[] correlationData) {
-        Preconditions.checkArgument((correlationData == null) || Mqtt5DataTypes.isInBinaryDataRange(correlationData));
-        this.correlationData = ByteBufferUtil.wrap(correlationData);
+        this.correlationData = Mqtt5BuilderUtil.binaryDataOrNull(correlationData);
         return this;
     }
 
     @NotNull
     public Mqtt5PublishBuilder withCorrelationData(@Nullable final ByteBuffer correlationData) {
-        Preconditions.checkArgument((correlationData == null) || Mqtt5DataTypes.isInBinaryDataRange(correlationData));
-        this.correlationData = ByteBufferUtil.slice(correlationData);
+        this.correlationData = Mqtt5BuilderUtil.binaryDataOrNull(correlationData);
         return this;
     }
 

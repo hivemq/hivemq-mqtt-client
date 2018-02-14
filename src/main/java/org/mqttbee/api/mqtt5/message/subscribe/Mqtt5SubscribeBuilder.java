@@ -6,6 +6,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.api.mqtt5.message.Mqtt5TopicFilter;
 import org.mqttbee.api.mqtt5.message.Mqtt5UserProperties;
+import org.mqttbee.mqtt5.Mqtt5BuilderUtil;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5SubscribeEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5TopicFilterImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
@@ -59,8 +60,14 @@ public class Mqtt5SubscribeBuilder {
         }
 
         @NotNull
+        public SubscriptionBuilder withTopicFilter(@NotNull final String topicFilter) {
+            this.topicFilter = Mqtt5BuilderUtil.topicFilter(topicFilter);
+            return this;
+        }
+
+        @NotNull
         public SubscriptionBuilder withTopicFilter(@NotNull final Mqtt5TopicFilter topicFilter) {
-            this.topicFilter = MustNotBeImplementedUtil.checkNotImplemented(topicFilter, Mqtt5TopicFilterImpl.class);
+            this.topicFilter = Mqtt5BuilderUtil.topicFilter(topicFilter);
             return this;
         }
 

@@ -4,8 +4,8 @@ import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.Mqtt5ClientBuilder;
 import org.mqttbee.api.mqtt5.message.Mqtt5ClientIdentifier;
+import org.mqttbee.mqtt5.Mqtt5BuilderUtil;
 import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifierImpl;
-import org.mqttbee.util.MustNotBeImplementedUtil;
 
 import java.util.concurrent.Executor;
 
@@ -21,8 +21,14 @@ public class MqttClientBuilder {
     private int numberOfNettyThreads;
 
     @NotNull
+    public MqttClientBuilder withIdentifier(@NotNull final String identifier) {
+        this.identifier = Mqtt5BuilderUtil.clientIdentifier(identifier);
+        return this;
+    }
+
+    @NotNull
     public MqttClientBuilder withIdentifier(@NotNull final Mqtt5ClientIdentifier identifier) {
-        this.identifier = MustNotBeImplementedUtil.checkNotImplemented(identifier, Mqtt5ClientIdentifierImpl.class);
+        this.identifier = Mqtt5BuilderUtil.clientIdentifier(identifier);
         return this;
     }
 

@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.message.Mqtt5TopicFilter;
 import org.mqttbee.api.mqtt5.message.Mqtt5UserProperties;
+import org.mqttbee.mqtt5.Mqtt5BuilderUtil;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5UnsubscribeEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5TopicFilterImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
@@ -23,8 +24,14 @@ public class Mqtt5UnsubscribeBuilder {
     }
 
     @NotNull
+    public Mqtt5UnsubscribeBuilder addTopicFilter(@NotNull final String topicFilter) {
+        topicFiltersBuilder.add(Mqtt5BuilderUtil.topicFilter(topicFilter));
+        return this;
+    }
+
+    @NotNull
     public Mqtt5UnsubscribeBuilder addTopicFilter(@NotNull final Mqtt5TopicFilter topicFilter) {
-        topicFiltersBuilder.add(MustNotBeImplementedUtil.checkNotImplemented(topicFilter, Mqtt5TopicFilterImpl.class));
+        topicFiltersBuilder.add(Mqtt5BuilderUtil.topicFilter(topicFilter));
         return this;
     }
 

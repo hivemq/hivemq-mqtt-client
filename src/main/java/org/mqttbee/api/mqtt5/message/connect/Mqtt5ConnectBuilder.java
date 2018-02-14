@@ -7,13 +7,12 @@ import org.mqttbee.api.mqtt5.auth.Mqtt5ExtendedAuthProvider;
 import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.api.mqtt5.message.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt5.message.publish.Mqtt5WillPublish;
-import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
+import org.mqttbee.mqtt5.Mqtt5BuilderUtil;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5ConnectEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 import org.mqttbee.mqtt5.message.connect.Mqtt5ConnectImpl;
 import org.mqttbee.mqtt5.message.publish.Mqtt5WillPublishImpl;
-import org.mqttbee.util.ByteBufferUtil;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 import org.mqttbee.util.UnsignedDataTypes;
 
@@ -133,22 +132,26 @@ public class Mqtt5ConnectBuilder {
         }
 
         @NotNull
+        public SimpleAuthBuilder withUsername(@Nullable final String username) {
+            this.username = Mqtt5BuilderUtil.stringOrNull(username);
+            return this;
+        }
+
+        @NotNull
         public SimpleAuthBuilder withUsername(@Nullable final Mqtt5UTF8String username) {
-            this.username = MustNotBeImplementedUtil.checkNullOrNotImplemented(username, Mqtt5UTF8StringImpl.class);
+            this.username = Mqtt5BuilderUtil.stringOrNull(username);
             return this;
         }
 
         @NotNull
         public SimpleAuthBuilder withPassword(@Nullable final byte[] password) {
-            Preconditions.checkArgument((password == null) || Mqtt5DataTypes.isInBinaryDataRange(password));
-            this.password = ByteBufferUtil.wrap(password);
+            this.password = Mqtt5BuilderUtil.binaryDataOrNull(password);
             return this;
         }
 
         @NotNull
         public SimpleAuthBuilder withPassword(@Nullable final ByteBuffer password) {
-            Preconditions.checkArgument((password == null) || Mqtt5DataTypes.isInBinaryDataRange(password));
-            this.password = ByteBufferUtil.slice(password);
+            this.password = Mqtt5BuilderUtil.binaryDataOrNull(password);
             return this;
         }
 

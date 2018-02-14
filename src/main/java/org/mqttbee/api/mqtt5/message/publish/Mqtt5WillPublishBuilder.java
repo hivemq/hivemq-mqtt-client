@@ -7,7 +7,7 @@ import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.api.mqtt5.message.Mqtt5Topic;
 import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.api.mqtt5.message.Mqtt5UserProperties;
-import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
+import org.mqttbee.mqtt5.Mqtt5BuilderUtil;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5PublishEncoder;
 import org.mqttbee.mqtt5.message.publish.Mqtt5WillPublishImpl;
 import org.mqttbee.util.MustNotBeImplementedUtil;
@@ -37,6 +37,13 @@ public class Mqtt5WillPublishBuilder extends Mqtt5PublishBuilder {
 
     @NotNull
     @Override
+    public Mqtt5WillPublishBuilder withTopic(@NotNull final String topic) {
+        super.withTopic(topic);
+        return this;
+    }
+
+    @NotNull
+    @Override
     public Mqtt5WillPublishBuilder withTopic(@NotNull final Mqtt5Topic topic) {
         super.withTopic(topic);
         return this;
@@ -45,16 +52,14 @@ public class Mqtt5WillPublishBuilder extends Mqtt5PublishBuilder {
     @NotNull
     @Override
     public Mqtt5WillPublishBuilder withPayload(@Nullable final byte[] payload) {
-        Preconditions.checkArgument((payload == null) || Mqtt5DataTypes.isInBinaryDataRange(payload));
-        super.withPayload(payload);
+        this.payload = Mqtt5BuilderUtil.binaryDataOrNull(payload);
         return this;
     }
 
     @NotNull
     @Override
     public Mqtt5WillPublishBuilder withPayload(@Nullable final ByteBuffer payload) {
-        Preconditions.checkArgument((payload == null) || Mqtt5DataTypes.isInBinaryDataRange(payload));
-        super.withPayload(payload);
+        this.payload = Mqtt5BuilderUtil.binaryDataOrNull(payload);
         return this;
     }
 
@@ -83,8 +88,22 @@ public class Mqtt5WillPublishBuilder extends Mqtt5PublishBuilder {
 
     @NotNull
     @Override
+    public Mqtt5WillPublishBuilder withContentType(@Nullable final String contentType) {
+        super.withContentType(contentType);
+        return this;
+    }
+
+    @NotNull
+    @Override
     public Mqtt5WillPublishBuilder withContentType(@Nullable final Mqtt5UTF8String contentType) {
         super.withContentType(contentType);
+        return this;
+    }
+
+    @NotNull
+    @Override
+    public Mqtt5WillPublishBuilder withResponseTopic(@Nullable final String responseTopic) {
+        super.withResponseTopic(responseTopic);
         return this;
     }
 

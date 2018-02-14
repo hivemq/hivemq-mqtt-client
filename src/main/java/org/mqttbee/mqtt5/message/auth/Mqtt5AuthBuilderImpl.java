@@ -7,11 +7,10 @@ import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.api.mqtt5.message.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt5.message.auth.Mqtt5AuthBuilder;
 import org.mqttbee.api.mqtt5.message.auth.Mqtt5AuthReasonCode;
-import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
+import org.mqttbee.mqtt5.Mqtt5BuilderUtil;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5AuthEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
-import org.mqttbee.util.ByteBufferUtil;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 
 import java.nio.ByteBuffer;
@@ -39,23 +38,28 @@ public class Mqtt5AuthBuilderImpl implements Mqtt5AuthBuilder {
     @NotNull
     @Override
     public Mqtt5AuthBuilderImpl withData(@Nullable final byte[] data) {
-        Preconditions.checkArgument((data == null) || Mqtt5DataTypes.isInBinaryDataRange(data));
-        this.data = ByteBufferUtil.wrap(data);
+        this.data = Mqtt5BuilderUtil.binaryDataOrNull(data);
         return this;
     }
 
     @NotNull
     @Override
     public Mqtt5AuthBuilderImpl withData(@Nullable final ByteBuffer data) {
-        Preconditions.checkArgument((data == null) || Mqtt5DataTypes.isInBinaryDataRange(data));
-        this.data = ByteBufferUtil.slice(data);
+        this.data = Mqtt5BuilderUtil.binaryDataOrNull(data);
+        return this;
+    }
+
+    @NotNull
+    @Override
+    public Mqtt5AuthBuilderImpl withReasonString(@Nullable final String reasonString) {
+        this.reasonString = Mqtt5BuilderUtil.stringOrNull(reasonString);
         return this;
     }
 
     @NotNull
     @Override
     public Mqtt5AuthBuilderImpl withReasonString(@Nullable final Mqtt5UTF8String reasonString) {
-        this.reasonString = MustNotBeImplementedUtil.checkNullOrNotImplemented(reasonString, Mqtt5UTF8StringImpl.class);
+        this.reasonString = Mqtt5BuilderUtil.stringOrNull(reasonString);
         return this;
     }
 

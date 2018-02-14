@@ -5,6 +5,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.api.mqtt5.message.Mqtt5UserProperties;
+import org.mqttbee.mqtt5.Mqtt5BuilderUtil;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5DisconnectEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
@@ -43,15 +44,26 @@ public class Mqtt5DisconnectBuilder {
     }
 
     @NotNull
+    public Mqtt5DisconnectBuilder withServerReference(@Nullable final String serverReference) {
+        this.serverReference = Mqtt5BuilderUtil.stringOrNull(serverReference);
+        return this;
+    }
+
+    @NotNull
     public Mqtt5DisconnectBuilder withServerReference(@Nullable final Mqtt5UTF8String serverReference) {
-        this.serverReference =
-                MustNotBeImplementedUtil.checkNullOrNotImplemented(serverReference, Mqtt5UTF8StringImpl.class);
+        this.serverReference = Mqtt5BuilderUtil.stringOrNull(serverReference);
+        return this;
+    }
+
+    @NotNull
+    public Mqtt5DisconnectBuilder withReasonString(@Nullable final String reasonString) {
+        this.reasonString = Mqtt5BuilderUtil.stringOrNull(reasonString);
         return this;
     }
 
     @NotNull
     public Mqtt5DisconnectBuilder withReasonString(@Nullable final Mqtt5UTF8String reasonString) {
-        this.reasonString = MustNotBeImplementedUtil.checkNullOrNotImplemented(reasonString, Mqtt5UTF8StringImpl.class);
+        this.reasonString = Mqtt5BuilderUtil.stringOrNull(reasonString);
         return this;
     }
 

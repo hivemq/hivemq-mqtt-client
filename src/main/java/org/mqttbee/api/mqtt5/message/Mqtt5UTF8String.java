@@ -1,9 +1,8 @@
 package org.mqttbee.api.mqtt5.message;
 
-import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
+import org.mqttbee.mqtt5.Mqtt5BuilderUtil;
 
 import java.nio.ByteBuffer;
 
@@ -28,13 +27,7 @@ public interface Mqtt5UTF8String {
      */
     @NotNull
     static Mqtt5UTF8String from(@NotNull final String string) {
-        Preconditions.checkNotNull(string);
-
-        final Mqtt5UTF8String utf8String = Mqtt5UTF8StringImpl.from(string);
-        if (utf8String == null) {
-            throw new IllegalArgumentException("The string: [" + string + "] is not a valid UTF-8 encoded String.");
-        }
-        return utf8String;
+        return Mqtt5BuilderUtil.string(string);
     }
 
     /**
