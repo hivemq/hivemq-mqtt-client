@@ -6,7 +6,7 @@ import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
-import org.mqttbee.api.mqtt5.message.connack.Mqtt5ConnAckReasonCode;
+import org.mqttbee.api.mqtt5.message.connect.connack.Mqtt5ConnAckReasonCode;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.Mqtt5ClientDataImpl;
@@ -16,14 +16,14 @@ import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 import org.mqttbee.mqtt5.message.auth.Mqtt5ExtendedAuthImpl;
-import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckImpl;
-import org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckProperty;
+import org.mqttbee.mqtt5.message.connect.connack.Mqtt5ConnAckImpl;
+import org.mqttbee.mqtt5.message.connect.connack.Mqtt5ConnAckProperty;
 
 import javax.inject.Singleton;
 import java.nio.ByteBuffer;
 
 import static org.mqttbee.mqtt5.codec.decoder.Mqtt5MessageDecoderUtil.*;
-import static org.mqttbee.mqtt5.message.connack.Mqtt5ConnAckImpl.*;
+import static org.mqttbee.mqtt5.message.connect.connack.Mqtt5ConnAckImpl.*;
 
 /**
  * @author Silvio Giebl

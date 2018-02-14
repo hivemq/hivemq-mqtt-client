@@ -11,11 +11,11 @@ import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.api.mqtt5.message.Mqtt5UserProperty;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.api.mqtt5.message.unsuback.Mqtt5UnsubAck;
-import org.mqttbee.api.mqtt5.message.unsuback.Mqtt5UnsubAckReasonCode;
+import org.mqttbee.api.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
+import org.mqttbee.api.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAckReasonCode;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
-import org.mqttbee.mqtt5.message.unsuback.Mqtt5UnsubAckImpl;
+import org.mqttbee.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAckImpl;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +23,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.MALFORMED_PACKET;
 import static org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.PROTOCOL_ERROR;
-import static org.mqttbee.api.mqtt5.message.unsuback.Mqtt5UnsubAckReasonCode.*;
+import static org.mqttbee.api.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAckReasonCode.*;
 
 /**
  * @author David Katz

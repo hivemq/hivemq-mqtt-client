@@ -9,14 +9,14 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.api.mqtt5.message.pubrec.Mqtt5PubRecReasonCode;
+import org.mqttbee.api.mqtt5.message.publish.pubrec.Mqtt5PubRecReasonCode;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
-import org.mqttbee.mqtt5.message.pubrec.Mqtt5PubRecImpl;
+import org.mqttbee.mqtt5.message.publish.pubrec.Mqtt5PubRecImpl;
 
 import static org.junit.Assert.*;
 import static org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.MALFORMED_PACKET;
-import static org.mqttbee.api.mqtt5.message.pubrec.Mqtt5PubRecReasonCode.SUCCESS;
+import static org.mqttbee.api.mqtt5.message.publish.pubrec.Mqtt5PubRecReasonCode.SUCCESS;
 
 /**
  * @author Silvio Giebl

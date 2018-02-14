@@ -9,10 +9,10 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.api.mqtt5.message.suback.Mqtt5SubAckReasonCode;
+import org.mqttbee.api.mqtt5.message.subscribe.suback.Mqtt5SubAckReasonCode;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
-import org.mqttbee.mqtt5.message.suback.Mqtt5SubAckImpl;
+import org.mqttbee.mqtt5.message.subscribe.suback.Mqtt5SubAckImpl;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.MALFORMED_PACKET;

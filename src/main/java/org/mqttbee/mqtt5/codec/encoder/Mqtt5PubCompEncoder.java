@@ -1,14 +1,14 @@
 package org.mqttbee.mqtt5.codec.encoder;
 
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt5.message.pubcomp.Mqtt5PubCompReasonCode;
+import org.mqttbee.api.mqtt5.message.publish.pubcomp.Mqtt5PubCompReasonCode;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageWithPropertiesEncoder.Mqtt5MessageWithIdAndOmissibleReasonCodeEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
-import org.mqttbee.mqtt5.message.pubcomp.Mqtt5PubCompImpl;
+import org.mqttbee.mqtt5.message.publish.pubcomp.Mqtt5PubCompImpl;
 
 import java.util.function.Function;
 
-import static org.mqttbee.mqtt5.message.pubcomp.Mqtt5PubCompImpl.DEFAULT_REASON_CODE;
+import static org.mqttbee.mqtt5.message.publish.pubcomp.Mqtt5PubCompImpl.DEFAULT_REASON_CODE;
 
 /**
  * @author Silvio Giebl

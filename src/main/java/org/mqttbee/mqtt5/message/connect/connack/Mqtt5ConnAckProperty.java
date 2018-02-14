@@ -1,0 +1,30 @@
+package org.mqttbee.mqtt5.message.connect.connack;
+
+import org.mqttbee.mqtt5.message.Mqtt5Property;
+
+/**
+ * All possible MQTT CONNACK properties and its byte code according to the MQTT 5 specification.
+ *
+ * @author Silvio Giebl
+ */
+public interface Mqtt5ConnAckProperty {
+
+    int SESSION_EXPIRY_INTERVAL = Mqtt5Property.SESSION_EXPIRY_INTERVAL;
+    int ASSIGNED_CLIENT_IDENTIFIER = Mqtt5Property.ASSIGNED_CLIENT_IDENTIFIER;
+    int SERVER_KEEP_ALIVE = Mqtt5Property.SERVER_KEEP_ALIVE;
+    int AUTHENTICATION_METHOD = Mqtt5Property.AUTHENTICATION_METHOD;
+    int AUTHENTICATION_DATA = Mqtt5Property.AUTHENTICATION_DATA;
+    int RESPONSE_INFORMATION = Mqtt5Property.RESPONSE_INFORMATION;
+    int SERVER_REFERENCE = Mqtt5Property.SERVER_REFERENCE;
+    int REASON_STRING = Mqtt5Property.REASON_STRING;
+    int RECEIVE_MAXIMUM = Mqtt5Property.RECEIVE_MAXIMUM;
+    int TOPIC_ALIAS_MAXIMUM = Mqtt5Property.TOPIC_ALIAS_MAXIMUM;
+    int MAXIMUM_QOS = Mqtt5Property.MAXIMUM_QOS;
+    int RETAIN_AVAILABLE = Mqtt5Property.RETAIN_AVAILABLE;
+    int USER_PROPERTY = Mqtt5Property.USER_PROPERTY;
+    int MAXIMUM_PACKET_SIZE = Mqtt5Property.MAXIMUM_PACKET_SIZE;
+    int WILDCARD_SUBSCRIPTION_AVAILABLE = Mqtt5Property.WILDCARD_SUBSCRIPTION_AVAILABLE;
+    int SUBSCRIPTION_IDENTIFIER_AVAILABLE = Mqtt5Property.SUBSCRIPTION_IDENTIFIER_AVAILABLE;
+    int SHARED_SUBSCRIPTION_AVAILABLE = Mqtt5Property.SHARED_SUBSCRIPTION_AVAILABLE;
+
+}
