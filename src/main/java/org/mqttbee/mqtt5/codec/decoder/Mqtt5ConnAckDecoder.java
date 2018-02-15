@@ -19,6 +19,7 @@ import org.mqttbee.mqtt5.message.auth.Mqtt5ExtendedAuthImpl;
 import org.mqttbee.mqtt5.message.connect.connack.Mqtt5ConnAckImpl;
 import org.mqttbee.mqtt5.message.connect.connack.Mqtt5ConnAckProperty;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.nio.ByteBuffer;
 
@@ -33,6 +34,10 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
 
     private static final int FLAGS = 0b0000;
     private static final int MIN_REMAINING_LENGTH = 3;
+
+    @Inject
+    Mqtt5ConnAckDecoder() {
+    }
 
     @Nullable
     @Override

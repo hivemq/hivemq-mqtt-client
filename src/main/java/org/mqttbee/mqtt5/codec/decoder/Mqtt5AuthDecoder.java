@@ -17,6 +17,7 @@ import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 import org.mqttbee.mqtt5.message.auth.Mqtt5AuthImpl;
 import org.mqttbee.mqtt5.message.auth.Mqtt5AuthProperty;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.nio.ByteBuffer;
 
@@ -30,6 +31,10 @@ public class Mqtt5AuthDecoder implements Mqtt5MessageDecoder {
 
     private static final int FLAGS = 0b0000;
     private static final int MIN_REMAINING_LENGTH = 2; // reason code (1) + property length (min 1)
+
+    @Inject
+    Mqtt5AuthDecoder() {
+    }
 
     @Override
     @Nullable

@@ -24,6 +24,7 @@ import org.mqttbee.mqtt5.message.publish.Mqtt5PublishProperty;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishWrapper;
 import org.mqttbee.util.ByteBufferUtil;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.nio.ByteBuffer;
 
@@ -38,6 +39,10 @@ import static org.mqttbee.mqtt5.message.publish.Mqtt5PublishWrapper.*;
 public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
 
     private static final int MIN_REMAINING_LENGTH = 3; // topic name (min 2) + property length (min 1)
+
+    @Inject
+    Mqtt5PublishDecoder() {
+    }
 
     @Override
     @Nullable

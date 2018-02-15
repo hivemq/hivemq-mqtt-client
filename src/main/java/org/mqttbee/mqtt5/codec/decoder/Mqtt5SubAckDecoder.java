@@ -15,6 +15,7 @@ import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 import org.mqttbee.mqtt5.message.subscribe.suback.Mqtt5SubAckImpl;
 import org.mqttbee.mqtt5.message.subscribe.suback.Mqtt5SubAckProperty;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import static org.mqttbee.mqtt5.codec.decoder.Mqtt5MessageDecoderUtil.*;
@@ -27,6 +28,10 @@ public class Mqtt5SubAckDecoder implements Mqtt5MessageDecoder {
 
     private static final int FLAGS = 0b0000;
     private static final int MIN_REMAINING_LENGTH = 3;
+
+    @Inject
+    Mqtt5SubAckDecoder() {
+    }
 
     @Override
     @Nullable

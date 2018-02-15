@@ -10,10 +10,7 @@ import org.mqttbee.api.mqtt5.exception.ChannelClosedException;
 import org.mqttbee.api.mqtt5.exception.Mqtt5MessageException;
 import org.mqttbee.api.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.mqtt5.Mqtt5ClientConnectionDataImpl;
-import org.mqttbee.mqtt5.Mqtt5ClientDataImpl;
-import org.mqttbee.mqtt5.Mqtt5ServerConnectionDataImpl;
-import org.mqttbee.mqtt5.Mqtt5Util;
+import org.mqttbee.mqtt5.*;
 import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifierImpl;
 import org.mqttbee.mqtt5.message.Mqtt5Message;
 import org.mqttbee.mqtt5.message.connect.Mqtt5ConnectImpl;
@@ -35,9 +32,7 @@ public class Mqtt5ConnectHandler extends ChannelDuplexHandler {
     }
 
     @Override
-    public void write(final ChannelHandlerContext ctx, final Object msg, final ChannelPromise promise)
-            throws Exception {
-
+    public void write(final ChannelHandlerContext ctx, final Object msg, final ChannelPromise promise) {
         if (msg instanceof Mqtt5ConnectImpl) {
             handleConnect((Mqtt5ConnectImpl) msg, ctx, promise);
         } else {
@@ -53,9 +48,7 @@ public class Mqtt5ConnectHandler extends ChannelDuplexHandler {
 
         addClientData(connect, ctx.channel());
         ctx.write(connect, promise);
-        promise.addListener(future -> {
-//            ctx.pipeline().addLast(new Mqtt5Decoder(new Mqtt5ClientMessageDecoders())); TODO dependency injection
-        });
+        promise.addListener(future -> ctx.pipeline().addLast(Mqtt5Component.INSTANCE.decoder()));
     }
 
     private void addClientData(@NotNull final Mqtt5ConnectImpl connect, @NotNull final Channel channel) {
@@ -72,7 +65,7 @@ public class Mqtt5ConnectHandler extends ChannelDuplexHandler {
     }
 
     @Override
-    public void channelRead(final ChannelHandlerContext ctx, final Object msg) throws Exception {
+    public void channelRead(final ChannelHandlerContext ctx, final Object msg) {
         if (msg instanceof Mqtt5ConnAckImpl) {
             handleConnAck((Mqtt5ConnAckImpl) msg, ctx.channel());
         } else {
@@ -155,7 +148,7 @@ public class Mqtt5ConnectHandler extends ChannelDuplexHandler {
     }
 
     @Override
-    public void channelInactive(final ChannelHandlerContext ctx) throws Exception {
+    public void channelInactive(final ChannelHandlerContext ctx) {
         connAckEmitter.onError(new ChannelClosedException());
         ctx.fireChannelInactive();
     }

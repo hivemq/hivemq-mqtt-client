@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
 public class Mqtt5UserPropertyImplTest {
 
     @Test
-    public void test_decode() throws Exception {
+    public void test_decode() {
         final byte[] binary = {0, 4, 'n', 'a', 'm', 'e', 0, 5, 'v', 'a', 'l', 'u', 'e'};
         final ByteBuf byteBuf = Unpooled.buffer();
         byteBuf.writeBytes(binary);
@@ -26,7 +26,7 @@ public class Mqtt5UserPropertyImplTest {
     }
 
     @Test
-    public void test_decode_malformed_name() throws Exception {
+    public void test_decode_malformed_name() {
         final byte[] binary = {0, 4, 'n', 'a', 'm', 0, 5, 'v', 'a', 'l', 'u', 'e'};
         final ByteBuf byteBuf = Unpooled.buffer();
         byteBuf.writeBytes(binary);
@@ -36,7 +36,7 @@ public class Mqtt5UserPropertyImplTest {
     }
 
     @Test
-    public void test_decode_malformed_value() throws Exception {
+    public void test_decode_malformed_value() {
         final byte[] binary = {0, 4, 'n', 'a', 'm', 'e', 0, 5, 'v', 'a', 'l', 'u'};
         final ByteBuf byteBuf = Unpooled.buffer();
         byteBuf.writeBytes(binary);
