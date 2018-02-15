@@ -133,7 +133,7 @@ public class Mqtt5ConnectHandler extends ChannelDuplexHandler {
             }
         } else {
             if (assignedClientIdentifier != null) {
-                LOGGER.warn("Server overwrote the Client Identifier " + clientIdentifier + " with " +
+                LOGGER.warn("Server overwrote the Client Identifier {} with {}", clientIdentifier,
                         assignedClientIdentifier);
             }
         }
