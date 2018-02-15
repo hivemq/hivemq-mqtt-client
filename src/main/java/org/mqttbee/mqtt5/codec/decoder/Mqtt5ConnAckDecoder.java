@@ -295,6 +295,11 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
                     break;
 
                 case Mqtt5ConnAckProperty.RESPONSE_INFORMATION:
+                    if (!clientConnectionData.isResponseInformationRequested()) {
+                        disconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+                                "response information must not be included if it was not requested", channel);
+                        return null;
+                    }
                     responseInformation =
                             decodeUTF8StringOnlyOnce(responseInformation, "response information", channel, in);
                     if (responseInformation == null) {
