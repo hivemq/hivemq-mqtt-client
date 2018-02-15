@@ -3,6 +3,7 @@ package org.mqttbee.api.mqtt5.message.connect;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.auth.Mqtt5ExtendedAuthProvider;
+import org.mqttbee.api.mqtt5.message.Mqtt5Message;
 import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.api.mqtt5.message.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt5.message.publish.Mqtt5WillPublish;
@@ -21,11 +22,11 @@ import static org.mqttbee.api.mqtt5.message.connect.Mqtt5ConnectBuilder.SimpleAu
  * @author Silvio Giebl
  */
 @DoNotImplement
-public interface Mqtt5Connect {
+public interface Mqtt5Connect extends Mqtt5Message {
 
     int NO_KEEP_ALIVE = 0;
-    int DEFAULT_KEEP_ALIVE = 60; // TODO
-    boolean DEFAULT_CLEAN_START = true; // TODO
+    int DEFAULT_KEEP_ALIVE = 60;
+    boolean DEFAULT_CLEAN_START = true;
     long DEFAULT_SESSION_EXPIRY_INTERVAL = 0;
     long NO_SESSION_EXPIRY = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE;
     boolean DEFAULT_RESPONSE_INFORMATION_REQUESTED = false;

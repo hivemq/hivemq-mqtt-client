@@ -3,6 +3,7 @@ package org.mqttbee.api.mqtt5.message.subscribe;
 import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.api.mqtt5.message.Mqtt5Message;
 import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.api.mqtt5.message.Mqtt5TopicFilter;
 import org.mqttbee.api.mqtt5.message.Mqtt5UserProperties;
@@ -14,7 +15,7 @@ import org.mqttbee.api.mqtt5.message.subscribe.Mqtt5SubscribeBuilder.Subscriptio
  * @author Silvio Giebl
  */
 @DoNotImplement
-public interface Mqtt5Subscribe {
+public interface Mqtt5Subscribe extends Mqtt5Message {
 
     @NotNull
     static Mqtt5SubscribeBuilder builder() {

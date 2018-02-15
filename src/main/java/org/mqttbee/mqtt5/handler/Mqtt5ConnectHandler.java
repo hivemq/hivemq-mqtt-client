@@ -5,19 +5,24 @@ import io.reactivex.SingleEmitter;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.exception.ChannelClosedException;
 import org.mqttbee.api.mqtt5.exception.Mqtt5MessageException;
+import org.mqttbee.api.mqtt5.message.Mqtt5ClientIdentifier;
+import org.mqttbee.api.mqtt5.message.Mqtt5Message;
 import org.mqttbee.api.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.*;
 import org.mqttbee.mqtt5.codec.decoder.Mqtt5Decoder;
 import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifierImpl;
-import org.mqttbee.mqtt5.message.Mqtt5Message;
 import org.mqttbee.mqtt5.message.connect.Mqtt5ConnectImpl;
 import org.mqttbee.mqtt5.message.connect.connack.Mqtt5ConnAckImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Silvio Giebl
  */
 public class Mqtt5ConnectHandler extends ChannelDuplexHandler {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Mqtt5ConnectHandler.class);
 
     public static final String NAME = "connect";
 
@@ -118,14 +123,18 @@ public class Mqtt5ConnectHandler extends ChannelDuplexHandler {
     }
 
     private boolean validateConnack(@NotNull final Mqtt5ConnAckImpl connAck) {
-        if (clientData.getRawClientIdentifier() == Mqtt5ClientIdentifierImpl.REQUEST_CLIENT_IDENTIFIER_FROM_SERVER) {
-            if (connAck.getRawAssignedClientIdentifier() == null) {
+        final Mqtt5ClientIdentifier clientIdentifier = clientData.getRawClientIdentifier();
+        final Mqtt5ClientIdentifierImpl assignedClientIdentifier = connAck.getRawAssignedClientIdentifier();
+
+        if (clientIdentifier == Mqtt5ClientIdentifierImpl.REQUEST_CLIENT_IDENTIFIER_FROM_SERVER) {
+            if (assignedClientIdentifier == null) {
                 connAckEmitter.onError(new Mqtt5MessageException("Server did not assign a Client Identifier", connAck));
                 return false;
             }
         } else {
-            if (connAck.getRawAssignedClientIdentifier() != null) {
-                // TODO: log warning client identifier overwritten
+            if (assignedClientIdentifier != null) {
+                LOGGER.warn("Server overwrote the Client Identifier " + clientIdentifier + " with " +
+                        assignedClientIdentifier);
             }
         }
         return true;

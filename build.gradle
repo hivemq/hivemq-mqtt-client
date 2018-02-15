@@ -30,6 +30,7 @@ project.ext {
     nettyVersion = '4.1.19.Final'
     daggerVersion = '2.14.1'
     guavaVersion = '23.6-jre'
+    logbackVersion = '1.2.3'
     junit4Version = '4.12'
     junitVintageVersion = '4.12.3'
     junitJupiterVersion = '5.0.3'
@@ -41,6 +42,7 @@ dependencies {
     compile group: 'io.netty', name: 'netty-handler', version: nettyVersion
     compile group: 'com.google.dagger', name: 'dagger', version: daggerVersion
     compile group: 'com.google.guava', name: 'guava', version: guavaVersion
+    compile group: 'ch.qos.logback', name: 'logback-classic', version: logbackVersion
 
     apt group: 'com.google.dagger', name: 'dagger-compiler', version: daggerVersion
 

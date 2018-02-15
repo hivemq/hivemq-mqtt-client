@@ -2,10 +2,7 @@ package org.mqttbee.api.mqtt5.message.connect.connack;
 
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt5.message.Mqtt5ClientIdentifier;
-import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
-import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
-import org.mqttbee.api.mqtt5.message.Mqtt5UserProperties;
+import org.mqttbee.api.mqtt5.message.*;
 import org.mqttbee.api.mqtt5.message.auth.Mqtt5ExtendedAuth;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.util.UnsignedDataTypes;
@@ -18,7 +15,7 @@ import java.util.Optional;
  * @author Silvio Giebl
  */
 @DoNotImplement
-public interface Mqtt5ConnAck {
+public interface Mqtt5ConnAck extends Mqtt5Message {
 
     /**
      * @return the reason code of this CONNACK packet.

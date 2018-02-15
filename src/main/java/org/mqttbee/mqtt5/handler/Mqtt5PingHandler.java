@@ -21,7 +21,7 @@ public class Mqtt5PingHandler extends ChannelInboundHandlerAdapter implements Ru
 
     public static final String NAME = "ping";
     private static final String IDLE_STATE_HANDLER_NAME = "ping.idle";
-    private static final int PING_RESP_TIMEOUT = 60;
+    private static final int PING_RESP_TIMEOUT = 60; // TODO configurable
 
     private final int keepAlive;
     private Channel channel;
