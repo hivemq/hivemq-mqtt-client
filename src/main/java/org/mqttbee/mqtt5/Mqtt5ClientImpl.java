@@ -24,6 +24,7 @@ import org.mqttbee.api.mqtt5.message.subscribe.Mqtt5SubscribeResult;
 import org.mqttbee.api.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.api.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.api.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
+import org.mqttbee.mqtt5.codec.encoder.Mqtt5Encoder;
 import org.mqttbee.mqtt5.handler.Mqtt5ConnectHandler;
 import org.mqttbee.mqtt5.message.connect.Mqtt5ConnectImpl;
 import org.mqttbee.rx.FlowableWithSingle;
@@ -58,8 +59,8 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
                 @Override
                 protected void initChannel(final SocketChannel channel) {
                     channel.pipeline()
-                            .addLast(new Mqtt5ConnectHandler(connAckEmitter, clientData))
-                            .addLast(Mqtt5Component.INSTANCE.encoder());
+                            .addLast(Mqtt5Encoder.NAME, Mqtt5Component.INSTANCE.encoder())
+                            .addLast(Mqtt5ConnectHandler.NAME, new Mqtt5ConnectHandler(connAckEmitter, clientData));
                 }
             });
 

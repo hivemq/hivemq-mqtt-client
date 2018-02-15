@@ -16,6 +16,8 @@ import javax.inject.Singleton;
 @Singleton
 public class Mqtt5Encoder extends MessageToByteEncoder<Mqtt5Message> {
 
+    public static final String NAME = "encoder.mqtt5";
+
     @Inject
     Mqtt5Encoder() {
         super(Mqtt5Message.class, true);
