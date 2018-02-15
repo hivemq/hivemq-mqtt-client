@@ -1,11 +1,9 @@
 package org.mqttbee.mqtt5;
 
-import com.google.common.base.Preconditions;
 import io.netty.channel.Channel;
-import io.netty.util.AttributeKey;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt5.Mqtt5ServerData;
+import org.mqttbee.api.mqtt5.Mqtt5ServerConnectionData;
 import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.publish.Mqtt5TopicAliasMapping;
@@ -13,18 +11,20 @@ import org.mqttbee.mqtt5.message.publish.Mqtt5TopicAliasMapping;
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5ServerDataImpl implements Mqtt5ServerData {
-
-    private static final AttributeKey<Mqtt5ServerDataImpl> KEY = AttributeKey.valueOf("server.data");
-
-    @NotNull
-    public static Mqtt5ServerDataImpl get(@NotNull final Channel channel) {
-        return Preconditions.checkNotNull(channel.attr(KEY).get());
-    }
+public class Mqtt5ServerConnectionDataImpl implements Mqtt5ServerConnectionData {
 
     public static int getMaximumPacketSize(@NotNull final Channel channel) {
-        final Mqtt5ServerDataImpl serverData = channel.attr(KEY).get();
-        return (serverData == null) ? Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT : serverData.getMaximumPacketSize();
+        final Mqtt5ServerConnectionDataImpl serverConnectionData =
+                Mqtt5ClientDataImpl.from(channel).getRawServerConnectionData();
+        return (serverConnectionData == null) ? Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT :
+                serverConnectionData.getMaximumPacketSize();
+    }
+
+    @Nullable
+    public static Mqtt5TopicAliasMapping getTopicAliasMapping(@NotNull final Channel channel) {
+        final Mqtt5ServerConnectionDataImpl serverConnectionData =
+                Mqtt5ClientDataImpl.from(channel).getRawServerConnectionData();
+        return (serverConnectionData == null) ? null : serverConnectionData.getTopicAliasMapping();
     }
 
     private final int receiveMaximum;
@@ -36,7 +36,7 @@ public class Mqtt5ServerDataImpl implements Mqtt5ServerData {
     private final boolean isSubscriptionIdentifierAvailable;
     private final boolean isSharedSubscriptionAvailable;
 
-    public Mqtt5ServerDataImpl(
+    public Mqtt5ServerConnectionDataImpl(
             final int receiveMaximum, final int maximumPacketSize, final int topicAliasMaximum,
             final Mqtt5QoS maximumQoS, final boolean isRetainAvailable, final boolean isWildcardSubscriptionAvailable,
             final boolean isSubscriptionIdentifierAvailable, final boolean isSharedSubscriptionAvailable) {
@@ -94,10 +94,6 @@ public class Mqtt5ServerDataImpl implements Mqtt5ServerData {
     @Override
     public boolean isSharedSubscriptionAvailable() {
         return isSharedSubscriptionAvailable;
-    }
-
-    public void set(@NotNull final Channel channel) {
-        channel.attr(KEY).set(this);
     }
 
 }

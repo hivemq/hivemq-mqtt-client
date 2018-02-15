@@ -3,7 +3,7 @@ package org.mqttbee.mqtt5.codec.decoder;
 import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.mqtt5.Mqtt5ClientDataImpl;
+import org.mqttbee.mqtt5.Mqtt5ClientConnectionDataImpl;
 import org.mqttbee.mqtt5.message.Mqtt5Message;
 
 /**
@@ -16,13 +16,13 @@ public interface Mqtt5MessageDecoder {
     /**
      * Decodes a MQTT message from the given byte buffer which was read from the given channel.
      *
-     * @param flags      the flags of the fixed header.
-     * @param in         the byte buffer which contains the encoded message without the fixed header.
-     * @param clientData the client data.
+     * @param flags                the flags of the fixed header.
+     * @param in                   the byte buffer which contains the encoded message without the fixed header.
+     * @param clientConnectionData the client data.
      * @return the decoded MQTT message of null if there are not enough byte in the byte buffer or if the byte buffer
      * did not contain a valid encoded MQTT message.
      */
     @Nullable
-    Mqtt5Message decode(int flags, @NotNull ByteBuf in, @NotNull Mqtt5ClientDataImpl clientData);
+    Mqtt5Message decode(int flags, @NotNull ByteBuf in, @NotNull Mqtt5ClientConnectionDataImpl clientConnectionData);
 
 }

@@ -3,7 +3,7 @@ package org.mqttbee.mqtt5.message.publish;
 import com.google.common.primitives.ImmutableIntArray;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt5.Mqtt5ServerDataImpl;
+import org.mqttbee.mqtt5.Mqtt5ServerConnectionDataImpl;
 import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
 import org.mqttbee.mqtt5.message.Mqtt5WrappedMessage.Mqtt5MessageWrapperWithId;
 
@@ -42,7 +42,7 @@ public class Mqtt5PublishWrapper extends Mqtt5MessageWrapperWithId<Mqtt5PublishW
         super(publish, packetIdentifier);
         this.isDup = isDup;
 
-        final Mqtt5TopicAliasMapping topicAliasMapping = Mqtt5ServerDataImpl.get(channel).getTopicAliasMapping();
+        final Mqtt5TopicAliasMapping topicAliasMapping = Mqtt5ServerConnectionDataImpl.getTopicAliasMapping(channel);
         if (topicAliasMapping == null) {
             this.topicAlias = DEFAULT_NO_TOPIC_ALIAS;
             this.isNewTopicAlias = false;

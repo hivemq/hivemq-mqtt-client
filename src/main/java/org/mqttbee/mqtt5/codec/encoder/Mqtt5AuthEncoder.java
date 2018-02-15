@@ -3,7 +3,7 @@ package org.mqttbee.mqtt5.codec.encoder;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt5.Mqtt5ServerDataImpl;
+import org.mqttbee.mqtt5.Mqtt5ServerConnectionDataImpl;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5MessageWithPropertiesEncoder.Mqtt5MessageWithReasonStringEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
@@ -47,7 +47,7 @@ public class Mqtt5AuthEncoder extends Mqtt5MessageWithReasonStringEncoder<Mqtt5A
 
     @Override
     public void encode(@NotNull final Channel channel, @NotNull final ByteBuf out) {
-        final int maximumPacketSize = Mqtt5ServerDataImpl.get(channel).getMaximumPacketSize();
+        final int maximumPacketSize = Mqtt5ServerConnectionDataImpl.getMaximumPacketSize(channel);
 
         encodeFixedHeader(out, maximumPacketSize);
         encodeVariableHeader(out, maximumPacketSize);

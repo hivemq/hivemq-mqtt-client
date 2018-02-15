@@ -8,7 +8,7 @@ import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.auth.Mqtt5AuthReasonCode;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.ChannelAttributes;
-import org.mqttbee.mqtt5.Mqtt5ClientDataImpl;
+import org.mqttbee.mqtt5.Mqtt5ClientConnectionDataImpl;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5AuthEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
@@ -34,8 +34,10 @@ public class Mqtt5AuthDecoder implements Mqtt5MessageDecoder {
     @Override
     @Nullable
     public Mqtt5AuthImpl decode(
-            final int flags, @NotNull final ByteBuf in, @NotNull final Mqtt5ClientDataImpl clientData) {
-        final Channel channel = clientData.getChannel();
+            final int flags, @NotNull final ByteBuf in,
+            @NotNull final Mqtt5ClientConnectionDataImpl clientConnectionData) {
+
+        final Channel channel = clientConnectionData.getChannel();
 
         if (flags != FLAGS) {
             disconnectWrongFixedHeaderFlags("AUTH", channel);
@@ -93,15 +95,16 @@ public class Mqtt5AuthDecoder implements Mqtt5MessageDecoder {
                     break;
 
                 case Mqtt5AuthProperty.REASON_STRING:
-                    reasonString = decodeReasonStringCheckProblemInformationRequested(reasonString, clientData, in);
+                    reasonString =
+                            decodeReasonStringCheckProblemInformationRequested(reasonString, clientConnectionData, in);
                     if (reasonString == null) {
                         return null;
                     }
                     break;
 
                 case Mqtt5AuthProperty.USER_PROPERTY:
-                    userPropertiesBuilder =
-                            decodeUserPropertyCheckProblemInformationRequested(userPropertiesBuilder, clientData, in);
+                    userPropertiesBuilder = decodeUserPropertyCheckProblemInformationRequested(userPropertiesBuilder,
+                            clientConnectionData, in);
                     if (userPropertiesBuilder == null) {
                         return null;
                     }

@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.message.Mqtt5ReasonCode;
-import org.mqttbee.mqtt5.Mqtt5ServerDataImpl;
+import org.mqttbee.mqtt5.Mqtt5ServerConnectionDataImpl;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.Mqtt5Message;
 import org.mqttbee.mqtt5.message.Mqtt5Message.Mqtt5MessageWithIdAndReasonCode;
@@ -310,7 +310,7 @@ abstract class Mqtt5MessageWithPropertiesEncoder<T extends Mqtt5Message<T>> exte
 
         @Override
         public final void encode(@NotNull final Channel channel, @NotNull final ByteBuf out) {
-            final int maximumPacketSize = Mqtt5ServerDataImpl.get(channel).getMaximumPacketSize();
+            final int maximumPacketSize = Mqtt5ServerConnectionDataImpl.getMaximumPacketSize(channel);
 
             encodeFixedHeader(out, maximumPacketSize);
             encodeVariableHeader(out, maximumPacketSize);

@@ -5,7 +5,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
-import org.mqttbee.mqtt5.Mqtt5ServerDataImpl;
+import org.mqttbee.mqtt5.Mqtt5ServerConnectionDataImpl;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl;
@@ -119,7 +119,7 @@ public class Mqtt5PublishEncoder extends Mqtt5WrappedMessageEncoder<Mqtt5Publish
 
         @Override
         public void encode(@NotNull final Channel channel, @NotNull final ByteBuf out) {
-            final int maximumPacketSize = Mqtt5ServerDataImpl.get(channel).getMaximumPacketSize();
+            final int maximumPacketSize = Mqtt5ServerConnectionDataImpl.getMaximumPacketSize(channel);
 
             encodeFixedHeader(out, maximumPacketSize);
             encodeVariableHeader(out, maximumPacketSize);

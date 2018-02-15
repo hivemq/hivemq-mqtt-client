@@ -12,7 +12,7 @@ import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.api.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.api.mqtt5.message.publish.TopicAliasUsage;
 import org.mqttbee.mqtt5.ChannelAttributes;
-import org.mqttbee.mqtt5.Mqtt5ClientDataImpl;
+import org.mqttbee.mqtt5.Mqtt5ClientConnectionDataImpl;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5PublishEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
@@ -42,8 +42,10 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
     @Override
     @Nullable
     public Mqtt5PublishWrapper decode(
-            final int flags, @NotNull final ByteBuf in, @NotNull final Mqtt5ClientDataImpl clientData) {
-        final Channel channel = clientData.getChannel();
+            final int flags, @NotNull final ByteBuf in,
+            @NotNull final Mqtt5ClientConnectionDataImpl clientConnectionData) {
+
+        final Channel channel = clientConnectionData.getChannel();
 
         final boolean dup = (flags & 0b1000) != 0;
         final boolean retain = (flags & 0b0001) != 0;
@@ -214,7 +216,7 @@ public class Mqtt5PublishDecoder implements Mqtt5MessageDecoder {
 
         boolean isNewTopicAlias = false;
         if (topicAlias != DEFAULT_NO_TOPIC_ALIAS) {
-            final Mqtt5TopicImpl[] topicAliasMapping = Mqtt5ClientDataImpl.get(channel).getTopicAliasMapping();
+            final Mqtt5TopicImpl[] topicAliasMapping = clientConnectionData.getTopicAliasMapping();
             if ((topicAliasMapping == null) || (topicAlias > topicAliasMapping.length)) {
                 disconnect(
                         Mqtt5DisconnectReasonCode.TOPIC_ALIAS_INVALID,
