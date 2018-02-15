@@ -15,6 +15,7 @@ import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 import org.mqttbee.mqtt5.message.publish.pubcomp.Mqtt5PubCompImpl;
 import org.mqttbee.mqtt5.message.publish.pubcomp.Mqtt5PubCompProperty;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import static org.mqttbee.mqtt5.codec.decoder.Mqtt5MessageDecoderUtil.*;
@@ -28,6 +29,10 @@ public class Mqtt5PubCompDecoder implements Mqtt5MessageDecoder {
 
     private static final int FLAGS = 0b0000;
     private static final int MIN_REMAINING_LENGTH = 2;
+
+    @Inject
+    Mqtt5PubCompDecoder() {
+    }
 
     @Override
     @Nullable

@@ -7,6 +7,7 @@ import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.Mqtt5ClientConnectionDataImpl;
 import org.mqttbee.mqtt5.message.ping.Mqtt5PingRespImpl;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import static org.mqttbee.mqtt5.codec.decoder.Mqtt5MessageDecoderUtil.disconnect;
@@ -20,6 +21,10 @@ import static org.mqttbee.mqtt5.message.ping.Mqtt5PingRespImpl.INSTANCE;
 public class Mqtt5PingRespDecoder implements Mqtt5MessageDecoder {
 
     private static final int FLAGS = 0b0000;
+
+    @Inject
+    Mqtt5PingRespDecoder() {
+    }
 
     @Override
     public Mqtt5PingRespImpl decode(

@@ -56,8 +56,10 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
 
             bootstrap.handler(new ChannelInitializer<SocketChannel>() {
                 @Override
-                protected void initChannel(final SocketChannel channel) throws Exception {
-                    channel.pipeline().addLast(new Mqtt5ConnectHandler(connAckEmitter, clientData));
+                protected void initChannel(final SocketChannel channel) {
+                    channel.pipeline()
+                            .addLast(new Mqtt5ConnectHandler(connAckEmitter, clientData))
+                            .addLast(Mqtt5Component.INSTANCE.encoder());
                 }
             });
 

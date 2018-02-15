@@ -8,17 +8,16 @@ buildscript {
 }
 
 plugins {
-    id 'net.ltgt.apt' version '0.13'
+    id 'net.ltgt.apt' version '0.10'
 }
 
-group 'org.mqtt-bee'
-version '1.0-SNAPSHOT'
-
 apply plugin: 'java'
-apply plugin: 'net.ltgt.apt'
 apply plugin: 'org.junit.platform.gradle.plugin'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
+
+group 'org.mqtt-bee'
+version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
 

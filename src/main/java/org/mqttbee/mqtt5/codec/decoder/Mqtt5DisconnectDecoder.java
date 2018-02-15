@@ -15,6 +15,7 @@ import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectImpl;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectProperty;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import static org.mqttbee.mqtt5.codec.decoder.Mqtt5MessageDecoderUtil.*;
@@ -28,6 +29,10 @@ import static org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectImpl.SESSION_E
 public class Mqtt5DisconnectDecoder implements Mqtt5MessageDecoder {
 
     private static final int FLAGS = 0b0000;
+
+    @Inject
+    Mqtt5DisconnectDecoder() {
+    }
 
     @Override
     @Nullable
