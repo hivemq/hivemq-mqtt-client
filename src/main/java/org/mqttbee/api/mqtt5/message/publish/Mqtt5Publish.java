@@ -2,10 +2,7 @@ package org.mqttbee.api.mqtt5.message.publish;
 
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
-import org.mqttbee.api.mqtt5.message.Mqtt5Topic;
-import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
-import org.mqttbee.api.mqtt5.message.Mqtt5UserProperties;
+import org.mqttbee.api.mqtt5.message.*;
 import org.mqttbee.api.mqtt5.message.subscribe.Mqtt5SubscribeResult;
 
 import java.nio.ByteBuffer;
@@ -17,7 +14,7 @@ import java.util.Optional;
  * @author Silvio Giebl
  */
 @DoNotImplement
-public interface Mqtt5Publish extends Mqtt5SubscribeResult {
+public interface Mqtt5Publish extends Mqtt5Message, Mqtt5SubscribeResult {
 
     /**
      * The default handling for using a topic alias.

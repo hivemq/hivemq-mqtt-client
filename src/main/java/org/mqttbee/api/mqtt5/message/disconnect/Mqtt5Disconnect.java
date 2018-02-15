@@ -2,6 +2,7 @@ package org.mqttbee.api.mqtt5.message.disconnect;
 
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.api.mqtt5.message.Mqtt5Message;
 import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.api.mqtt5.message.Mqtt5UserProperties;
 
@@ -13,7 +14,7 @@ import java.util.Optional;
  * @author Silvio Giebl
  */
 @DoNotImplement
-public interface Mqtt5Disconnect {
+public interface Mqtt5Disconnect extends Mqtt5Message {
 
     @NotNull
     static Mqtt5DisconnectBuilder builder() {
