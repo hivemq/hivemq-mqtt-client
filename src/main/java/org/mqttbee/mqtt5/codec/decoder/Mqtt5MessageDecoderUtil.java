@@ -6,7 +6,7 @@ import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.mqtt5.Mqtt5ClientDataImpl;
+import org.mqttbee.mqtt5.Mqtt5ClientConnectionDataImpl;
 import org.mqttbee.mqtt5.Mqtt5Util;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
@@ -176,12 +176,13 @@ class Mqtt5MessageDecoderUtil {
     }
 
     private static boolean checkProblemInformationRequested(
-            @NotNull final String name, @NotNull final Mqtt5ClientDataImpl clientData) {
+            @NotNull final String name, @NotNull final Mqtt5ClientConnectionDataImpl clientConnectionData) {
 
-        if (!clientData.isProblemInformationRequested()) {
+        if (!clientConnectionData.isProblemInformationRequested()) {
             disconnect(
                     Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                    name + " must not be included if problem information is not requested", clientData.getChannel());
+                    name + " must not be included if problem information is not requested",
+                    clientConnectionData.getChannel());
             return false;
         }
         return true;
@@ -189,24 +190,25 @@ class Mqtt5MessageDecoderUtil {
 
     @Nullable
     static Mqtt5UTF8StringImpl decodeReasonStringCheckProblemInformationRequested(
-            @Nullable final Mqtt5UTF8StringImpl current, @NotNull final Mqtt5ClientDataImpl clientData,
-            @NotNull final ByteBuf in) {
+            @Nullable final Mqtt5UTF8StringImpl current,
+            @NotNull final Mqtt5ClientConnectionDataImpl clientConnectionData, @NotNull final ByteBuf in) {
 
-        if (!checkProblemInformationRequested("reason string", clientData)) {
+        if (!checkProblemInformationRequested("reason string", clientConnectionData)) {
             return null;
         }
-        return decodeUTF8StringOnlyOnce(current, "reason string", clientData.getChannel(), in);
+        return decodeUTF8StringOnlyOnce(current, "reason string", clientConnectionData.getChannel(), in);
     }
 
     @Nullable
     static ImmutableList.Builder<Mqtt5UserPropertyImpl> decodeUserPropertyCheckProblemInformationRequested(
             @Nullable final ImmutableList.Builder<Mqtt5UserPropertyImpl> userPropertiesBuilder,
-            @NotNull final Mqtt5ClientDataImpl clientData, @NotNull final ByteBuf in) {
+            @NotNull final Mqtt5ClientConnectionDataImpl clientConnectionData, @NotNull final ByteBuf in) {
 
-        if ((userPropertiesBuilder != null) && !checkProblemInformationRequested("user property", clientData)) {
+        if ((userPropertiesBuilder != null) &&
+                !checkProblemInformationRequested("user property", clientConnectionData)) {
             return null;
         }
-        return decodeUserProperty(userPropertiesBuilder, clientData.getChannel(), in);
+        return decodeUserProperty(userPropertiesBuilder, clientConnectionData.getChannel(), in);
     }
 
     static boolean checkBoolean(final byte value, @NotNull final String name, @NotNull final Channel channel) {

@@ -634,7 +634,7 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
 
     @Test
     void encode_maximumOutgoingPacketSizeExceeded_throwsEncoderException() {
-        createServerData(100);
+        createServerConnectionData(100);
         final ByteBuffer correlationData = ByteBuffer.wrap(new byte[100]);
         final Mqtt5PublishImpl publish =
                 new Mqtt5PublishImpl(requireNonNull(Mqtt5TopicImpl.from("topic")), null, Mqtt5QoS.AT_MOST_ONCE, false,

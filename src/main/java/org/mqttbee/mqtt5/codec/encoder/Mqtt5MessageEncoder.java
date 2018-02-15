@@ -3,7 +3,7 @@ package org.mqttbee.mqtt5.codec.encoder;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt5.Mqtt5ServerDataImpl;
+import org.mqttbee.mqtt5.Mqtt5ServerConnectionDataImpl;
 import org.mqttbee.mqtt5.exceptions.Mqtt5MaximumPacketSizeExceededException;
 import org.mqttbee.mqtt5.message.Mqtt5Message;
 
@@ -36,7 +36,7 @@ public abstract class Mqtt5MessageEncoder<T extends Mqtt5Message> {
      */
     @NotNull
     public ByteBuf allocateBuffer(@NotNull final Channel channel) {
-        final int maximumPacketSize = Mqtt5ServerDataImpl.getMaximumPacketSize(channel);
+        final int maximumPacketSize = Mqtt5ServerConnectionDataImpl.getMaximumPacketSize(channel);
         final int encodedLength = encodedLength(maximumPacketSize);
         if (encodedLength < 0) {
             throw new Mqtt5MaximumPacketSizeExceededException(message, maximumPacketSize);

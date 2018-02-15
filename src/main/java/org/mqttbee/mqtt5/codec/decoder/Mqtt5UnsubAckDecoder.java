@@ -7,7 +7,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.api.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAckReasonCode;
-import org.mqttbee.mqtt5.Mqtt5ClientDataImpl;
+import org.mqttbee.mqtt5.Mqtt5ClientConnectionDataImpl;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
@@ -31,8 +31,10 @@ public class Mqtt5UnsubAckDecoder implements Mqtt5MessageDecoder {
     @Override
     @Nullable
     public Mqtt5UnsubAckImpl decode(
-            final int flags, @NotNull final ByteBuf in, @NotNull final Mqtt5ClientDataImpl clientData) {
-        final Channel channel = clientData.getChannel();
+            final int flags, @NotNull final ByteBuf in,
+            @NotNull final Mqtt5ClientConnectionDataImpl clientConnectionData) {
+
+        final Channel channel = clientConnectionData.getChannel();
 
         if (flags != FLAGS) {
             disconnectWrongFixedHeaderFlags("UNSUBACK", channel);
@@ -71,15 +73,16 @@ public class Mqtt5UnsubAckDecoder implements Mqtt5MessageDecoder {
 
             switch (propertyIdentifier) {
                 case Mqtt5UnsubAckProperty.REASON_STRING:
-                    reasonString = decodeReasonStringCheckProblemInformationRequested(reasonString, clientData, in);
+                    reasonString =
+                            decodeReasonStringCheckProblemInformationRequested(reasonString, clientConnectionData, in);
                     if (reasonString == null) {
                         return null;
                     }
                     break;
 
                 case Mqtt5UnsubAckProperty.USER_PROPERTY:
-                    userPropertiesBuilder =
-                            decodeUserPropertyCheckProblemInformationRequested(userPropertiesBuilder, clientData, in);
+                    userPropertiesBuilder = decodeUserPropertyCheckProblemInformationRequested(userPropertiesBuilder,
+                            clientConnectionData, in);
                     if (userPropertiesBuilder == null) {
                         return null;
                     }

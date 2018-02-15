@@ -6,7 +6,7 @@ import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
 /**
  * @author Silvio Giebl
  */
-public interface Mqtt5ServerData {
+public interface Mqtt5ServerConnectionData {
 
     int getReceiveMaximum();
 

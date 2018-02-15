@@ -5,6 +5,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
+import org.mqttbee.mqtt5.Mqtt5ClientConnectionDataImpl;
 import org.mqttbee.mqtt5.Mqtt5ClientDataImpl;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.Mqtt5Message;
@@ -60,8 +61,9 @@ public class Mqtt5Decoder extends ByteToMessageDecoder {
         final int fixedHeaderLength = readerIndexAfterFixedHeader - readerIndexBeforeFixedHeader;
         final int packetSize = fixedHeaderLength + remainingLength;
 
-        final Mqtt5ClientDataImpl clientData = Mqtt5ClientDataImpl.get(channel);
-        if (packetSize > clientData.getMaximumPacketSize()) {
+        final Mqtt5ClientConnectionDataImpl clientConnectionData =
+                Mqtt5ClientDataImpl.from(channel).getRawClientConnectionData();
+        if (packetSize > clientConnectionData.getMaximumPacketSize()) {
             disconnect(Mqtt5DisconnectReasonCode.PACKET_TOO_LARGE, null, channel);
             return;
         }
@@ -82,7 +84,7 @@ public class Mqtt5Decoder extends ByteToMessageDecoder {
             return;
         }
 
-        final Mqtt5Message message = decoder.decode(flags, messageBuffer, clientData);
+        final Mqtt5Message message = decoder.decode(flags, messageBuffer, clientConnectionData);
 
         if (message != null) {
             out.add(message);

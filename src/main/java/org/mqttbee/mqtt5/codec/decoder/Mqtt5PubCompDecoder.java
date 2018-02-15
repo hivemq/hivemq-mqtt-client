@@ -6,7 +6,7 @@ import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.publish.pubcomp.Mqtt5PubCompReasonCode;
-import org.mqttbee.mqtt5.Mqtt5ClientDataImpl;
+import org.mqttbee.mqtt5.Mqtt5ClientConnectionDataImpl;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5PubCompEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
@@ -32,8 +32,10 @@ public class Mqtt5PubCompDecoder implements Mqtt5MessageDecoder {
     @Override
     @Nullable
     public Mqtt5PubCompImpl decode(
-            final int flags, @NotNull final ByteBuf in, @NotNull final Mqtt5ClientDataImpl clientData) {
-        final Channel channel = clientData.getChannel();
+            final int flags, @NotNull final ByteBuf in,
+            @NotNull final Mqtt5ClientConnectionDataImpl clientConnectionData) {
+
+        final Channel channel = clientConnectionData.getChannel();
 
         if (flags != FLAGS) {
             disconnectWrongFixedHeaderFlags("PUBCOMP", channel);
@@ -79,8 +81,8 @@ public class Mqtt5PubCompDecoder implements Mqtt5MessageDecoder {
 
                     switch (propertyIdentifier) {
                         case Mqtt5PubCompProperty.REASON_STRING:
-                            reasonString =
-                                    decodeReasonStringCheckProblemInformationRequested(reasonString, clientData, in);
+                            reasonString = decodeReasonStringCheckProblemInformationRequested(reasonString,
+                                    clientConnectionData, in);
                             if (reasonString == null) {
                                 return null;
                             }
@@ -89,7 +91,7 @@ public class Mqtt5PubCompDecoder implements Mqtt5MessageDecoder {
                         case Mqtt5PubCompProperty.USER_PROPERTY:
                             userPropertiesBuilder =
                                     decodeUserPropertyCheckProblemInformationRequested(userPropertiesBuilder,
-                                            clientData, in);
+                                            clientConnectionData, in);
                             if (userPropertiesBuilder == null) {
                                 return null;
                             }

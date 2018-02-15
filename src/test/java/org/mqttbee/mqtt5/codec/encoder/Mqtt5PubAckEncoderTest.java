@@ -126,7 +126,7 @@ class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderTest {
                 //   PUBACK reason code
                 0x10
         };
-        createServerData(expected.length + 2);
+        createServerConnectionData(expected.length + 2);
 
         final Mqtt5UTF8StringImpl reasonString = Mqtt5UTF8StringImpl.from("reason");
         final Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES;
@@ -152,7 +152,7 @@ class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderTest {
                 //   PUBACK reason code
                 0x10
         };
-        createServerData(expected.length + 2);
+        createServerConnectionData(expected.length + 2);
 
         final Mqtt5UTF8StringImpl user = requireNonNull(Mqtt5UTF8StringImpl.from("user"));
         final Mqtt5UTF8StringImpl property = requireNonNull(Mqtt5UTF8StringImpl.from("property"));
@@ -180,7 +180,7 @@ class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderTest {
                 //   PUBACK reason code
                 0x10
         };
-        createServerData(expected.length + 2);
+        createServerConnectionData(expected.length + 2);
 
         final Mqtt5UTF8StringImpl user = requireNonNull(Mqtt5UTF8StringImpl.from("user"));
         final Mqtt5UTF8StringImpl property = requireNonNull(Mqtt5UTF8StringImpl.from("property"));

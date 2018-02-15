@@ -208,7 +208,7 @@ class Mqtt5PubRecDecoderTest extends AbstractMqtt5DecoderTest {
                 0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e', //
                 0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'
         };
-        createClientData(encoded.length - 1);
+        createClientConnectionData(encoded.length - 1);
         decodeNok(encoded, Mqtt5DisconnectReasonCode.PACKET_TOO_LARGE);
     }
 

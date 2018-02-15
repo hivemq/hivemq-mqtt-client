@@ -5,12 +5,14 @@ import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt5.Mqtt5ClientConnectionData;
 import org.mqttbee.api.mqtt5.Mqtt5ClientData;
-import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
+import org.mqttbee.api.mqtt5.Mqtt5ServerConnectionData;
+import org.mqttbee.api.mqtt5.message.Mqtt5ClientIdentifier;
 import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifierImpl;
-import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
 
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author Silvio Giebl
@@ -20,43 +22,36 @@ public class Mqtt5ClientDataImpl implements Mqtt5ClientData {
     private static final AttributeKey<Mqtt5ClientDataImpl> KEY = AttributeKey.valueOf("client.data");
 
     @NotNull
-    public static Mqtt5ClientDataImpl get(@NotNull final Channel channel) {
+    public static Mqtt5ClientDataImpl from(@NotNull final Channel channel) {
         return Preconditions.checkNotNull(channel.attr(KEY).get());
     }
 
     private Mqtt5ClientIdentifierImpl clientIdentifier;
-    private int keepAlive;
-    private long sessionExpiryInterval;
-    private final int receiveMaximum;
-    private final Mqtt5TopicImpl[] topicAliasMapping;
-    private final int maximumPacketSize;
-    private final Mqtt5UTF8String authMethod;
-    private final boolean hasWillPublish;
-    private final boolean problemInformationRequested;
-    private final Channel channel;
+    private final String serverHost;
+    private final int serverPort;
+    private final AtomicBoolean connected;
+    private Mqtt5ClientConnectionDataImpl clientConnectionData;
+    private Mqtt5ServerConnectionDataImpl serverConnectionData;
 
     public Mqtt5ClientDataImpl(
-            @NotNull final Mqtt5ClientIdentifierImpl clientIdentifier, final int keepAlive,
-            final long sessionExpiryInterval, final int receiveMaximum, final int topicAliasMaximum,
-            final int maximumPacketSize, final Mqtt5UTF8String authMethod, final boolean hasWillPublish,
-            final boolean problemInformationRequested, @NotNull final Channel channel) {
-        this.clientIdentifier = clientIdentifier;
-        this.keepAlive = keepAlive;
-        this.sessionExpiryInterval = sessionExpiryInterval;
-        this.receiveMaximum = receiveMaximum;
-        this.topicAliasMapping = (topicAliasMaximum == 0) ? null : new Mqtt5TopicImpl[topicAliasMaximum];
-        this.maximumPacketSize = maximumPacketSize;
-        this.authMethod = authMethod;
-        this.hasWillPublish = hasWillPublish;
-        this.problemInformationRequested = problemInformationRequested;
-        this.channel = channel;
+            @NotNull final Mqtt5ClientIdentifierImpl clientIdentifier, @NotNull final String serverHost,
+            final int serverPort) {
 
-        channel.attr(KEY).set(this);
+        this.clientIdentifier = clientIdentifier;
+        this.serverHost = serverHost;
+        this.serverPort = serverPort;
+        this.connected = new AtomicBoolean();
     }
 
     @NotNull
     @Override
-    public Mqtt5ClientIdentifierImpl getClientIdentifier() {
+    public Optional<Mqtt5ClientIdentifier> getClientIdentifier() {
+        return (clientIdentifier == Mqtt5ClientIdentifierImpl.REQUEST_CLIENT_IDENTIFIER_FROM_SERVER) ?
+                Optional.empty() : Optional.of(clientIdentifier);
+    }
+
+    @NotNull
+    public Mqtt5ClientIdentifier getRawClientIdentifier() {
         return clientIdentifier;
     }
 
@@ -64,67 +59,58 @@ public class Mqtt5ClientDataImpl implements Mqtt5ClientData {
         this.clientIdentifier = clientIdentifier;
     }
 
+    @NotNull
     @Override
-    public int getKeepAlive() {
-        return keepAlive;
-    }
-
-    public void setKeepAlive(final int keepAlive) {
-        this.keepAlive = keepAlive;
+    public String getServerHost() {
+        return serverHost;
     }
 
     @Override
-    public long getSessionExpiryInterval() {
-        return sessionExpiryInterval;
-    }
-
-    public void setSessionExpiryInterval(final long sessionExpiryInterval) {
-        this.sessionExpiryInterval = sessionExpiryInterval;
+    public int getServerPort() {
+        return serverPort;
     }
 
     @Override
-    public int getReceiveMaximum() {
-        return receiveMaximum;
+    public boolean isConnected() {
+        return connected.get();
     }
 
-    @Override
-    public int getTopicAliasMaximum() {
-        return (topicAliasMapping == null) ? 0 : topicAliasMapping.length;
-    }
-
-    @Nullable
-    public Mqtt5TopicImpl[] getTopicAliasMapping() {
-        return topicAliasMapping;
-    }
-
-    @Override
-    public int getMaximumPacketSize() {
-        return maximumPacketSize;
+    public boolean setConnected(final boolean connected) {
+        return this.connected.compareAndSet(!connected, connected);
     }
 
     @NotNull
     @Override
-    public Optional<Mqtt5UTF8String> getAuthMethod() {
-        return Optional.ofNullable(authMethod);
+    public Optional<Mqtt5ClientConnectionData> getClientConnectionData() {
+        return Optional.of(clientConnectionData);
+    }
+
+    @NotNull
+    public Mqtt5ClientConnectionDataImpl getRawClientConnectionData() {
+        return Preconditions.checkNotNull(clientConnectionData);
+    }
+
+    public void setClientConnectionData(@NotNull final Mqtt5ClientConnectionDataImpl clientConnectionData) {
+        this.clientConnectionData = clientConnectionData;
+    }
+
+    @NotNull
+    @Override
+    public Optional<Mqtt5ServerConnectionData> getServerConnectionData() {
+        return Optional.of(serverConnectionData);
     }
 
     @Nullable
-    public Mqtt5UTF8String getRawAuthMethod() {
-        return authMethod;
+    public Mqtt5ServerConnectionDataImpl getRawServerConnectionData() {
+        return serverConnectionData;
     }
 
-    @Override
-    public boolean hasWillPublish() {
-        return hasWillPublish;
+    public void setServerConnectionData(@NotNull final Mqtt5ServerConnectionDataImpl serverConnectionData) {
+        this.serverConnectionData = serverConnectionData;
     }
 
-    @Override
-    public boolean isProblemInformationRequested() {
-        return problemInformationRequested;
-    }
-
-    public Channel getChannel() {
-        return channel;
+    public void to(@NotNull final Channel channel) {
+        channel.attr(KEY).set(this);
     }
 
 }
