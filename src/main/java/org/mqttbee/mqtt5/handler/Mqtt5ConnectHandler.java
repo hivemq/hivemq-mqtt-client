@@ -1,9 +1,6 @@
 package org.mqttbee.mqtt5.handler;
 
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelDuplexHandler;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelPromise;
+import io.netty.channel.*;
 import io.reactivex.SingleEmitter;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.exception.ChannelClosedException;
@@ -11,6 +8,7 @@ import org.mqttbee.api.mqtt5.exception.Mqtt5MessageException;
 import org.mqttbee.api.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.*;
+import org.mqttbee.mqtt5.codec.decoder.Mqtt5Decoder;
 import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifierImpl;
 import org.mqttbee.mqtt5.message.Mqtt5Message;
 import org.mqttbee.mqtt5.message.connect.Mqtt5ConnectImpl;
@@ -20,6 +18,8 @@ import org.mqttbee.mqtt5.message.connect.connack.Mqtt5ConnAckImpl;
  * @author Silvio Giebl
  */
 public class Mqtt5ConnectHandler extends ChannelDuplexHandler {
+
+    public static final String NAME = "connect";
 
     private final SingleEmitter<Mqtt5ConnAck> connAckEmitter;
     private final Mqtt5ClientDataImpl clientData;
@@ -36,9 +36,7 @@ public class Mqtt5ConnectHandler extends ChannelDuplexHandler {
         if (msg instanceof Mqtt5ConnectImpl) {
             handleConnect((Mqtt5ConnectImpl) msg, ctx, promise);
         } else {
-            final IllegalStateException illegalStateException = new IllegalStateException();
-            connAckEmitter.onError(illegalStateException);
-            promise.setFailure(illegalStateException);
+            handleOtherThanConnect(promise);
         }
     }
 
@@ -48,7 +46,13 @@ public class Mqtt5ConnectHandler extends ChannelDuplexHandler {
 
         addClientData(connect, ctx.channel());
         ctx.write(connect, promise);
-        promise.addListener(future -> ctx.pipeline().addLast(Mqtt5Component.INSTANCE.decoder()));
+        promise.addListener(future -> ctx.pipeline().addLast(Mqtt5Decoder.NAME, Mqtt5Component.INSTANCE.decoder()));
+    }
+
+    private void handleOtherThanConnect(final ChannelPromise promise) { // TODO
+        final IllegalStateException illegalStateException = new IllegalStateException();
+        connAckEmitter.onError(illegalStateException);
+        promise.setFailure(illegalStateException);
     }
 
     private void addClientData(@NotNull final Mqtt5ConnectImpl connect, @NotNull final Channel channel) {
@@ -74,16 +78,26 @@ public class Mqtt5ConnectHandler extends ChannelDuplexHandler {
     }
 
     private void handleConnAck(@NotNull final Mqtt5ConnAckImpl connAck, @NotNull final Channel channel) {
+        final ChannelPipeline pipeline = channel.pipeline();
+
         if (connAck.getReasonCode().isError()) {
             connAckEmitter.onError(
                     new Mqtt5MessageException("Connection failed with CONNACK with Error Code", connAck));
-            channel.pipeline().remove(this); // removed to not trigger channelInactive of this handler
+            pipeline.remove(this); // removed to not trigger channelInactive of this handler
             channel.close();
         } else {
             if (validateConnack(connAck)) {
                 updateClientData(connAck);
                 addServerData(connAck);
-                channel.pipeline().remove(this).addLast(Mqtt5DisconnectOnConnAckHandler.INSTANCE);
+
+                pipeline.remove(this);
+                final int keepAlive = clientData.getRawClientConnectionData().getKeepAlive();
+                if (keepAlive > 0) {
+                    pipeline.addLast(Mqtt5PingHandler.NAME, new Mqtt5PingHandler(keepAlive));
+                }
+                pipeline.addLast(
+                        Mqtt5DisconnectOnConnAckHandler.NAME, Mqtt5Component.INSTANCE.disconnectOnConnAckHandler());
+
                 connAckEmitter.onSuccess(connAck);
             }
         }

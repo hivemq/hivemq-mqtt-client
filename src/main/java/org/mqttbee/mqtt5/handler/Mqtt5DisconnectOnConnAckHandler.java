@@ -7,15 +7,20 @@ import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.Mqtt5Util;
 import org.mqttbee.mqtt5.message.connect.connack.Mqtt5ConnAckImpl;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 /**
  * @author Silvio Giebl
  */
 @ChannelHandler.Sharable
+@Singleton
 public class Mqtt5DisconnectOnConnAckHandler extends ChannelInboundHandlerAdapter {
 
-    static final Mqtt5DisconnectOnConnAckHandler INSTANCE = new Mqtt5DisconnectOnConnAckHandler();
+    public static final String NAME = "disconnect.on.connack";
 
-    private Mqtt5DisconnectOnConnAckHandler() {
+    @Inject
+    Mqtt5DisconnectOnConnAckHandler() {
     }
 
     @Override

@@ -1,97 +1,74 @@
 package org.mqttbee.mqtt5.handler;
 
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelPromise;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.concurrent.ScheduledFuture;
-import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt5.message.connect.Mqtt5Connect;
-import org.mqttbee.api.mqtt5.message.ping.Mqtt5PingReq;
-import org.mqttbee.api.mqtt5.message.ping.Mqtt5PingResp;
-import org.mqttbee.mqtt5.message.connect.connack.Mqtt5ConnAckImpl;
+import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
+import org.mqttbee.mqtt5.Mqtt5Util;
 import org.mqttbee.mqtt5.message.ping.Mqtt5PingReqImpl;
+import org.mqttbee.mqtt5.message.ping.Mqtt5PingRespImpl;
 
 import java.util.concurrent.TimeUnit;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5PingHandler extends ChannelDuplexHandler {
+public class Mqtt5PingHandler extends ChannelInboundHandlerAdapter implements Runnable {
 
-    public static final String NAME = "PING";
-    private static final String IDLE_STATE_HANDLER_NAME = "PING_IDLE";
-    private static final int PING_RESP_DELAY = 60;
+    public static final String NAME = "ping";
+    private static final String IDLE_STATE_HANDLER_NAME = "ping.idle";
+    private static final int PING_RESP_TIMEOUT = 60;
 
-    private int keepAlive;
+    private final int keepAlive;
+    private Channel channel;
     private ScheduledFuture<?> disconnectNoPingRespFuture;
 
-    @Override
-    public void write(final ChannelHandlerContext ctx, final Object msg, final ChannelPromise promise)
-            throws Exception {
-        if (msg instanceof Mqtt5Connect) {
-            keepAlive = ((Mqtt5Connect) msg).getKeepAlive();
-        }
-        if (msg instanceof Mqtt5PingReq) {
-            if (disconnectNoPingRespFuture == null) {
-                disconnectNoPingRespFuture = ctx.executor()
-                        .schedule(new DisconnectNoPingRespRunnable(ctx.channel()), PING_RESP_DELAY, TimeUnit.SECONDS);
-            }
-        }
-        super.write(ctx, msg, promise);
+    Mqtt5PingHandler(final int keepAlive) {
+        this.keepAlive = keepAlive;
     }
 
     @Override
-    public void channelRead(final ChannelHandlerContext ctx, final Object msg) throws Exception {
-        if (msg instanceof Mqtt5ConnAckImpl) {
-            final int serverKeepAlive = ((Mqtt5ConnAckImpl) msg).getRawServerKeepAlive();
-            if (serverKeepAlive != Mqtt5ConnAckImpl.KEEP_ALIVE_FROM_CONNECT) {
-                keepAlive = serverKeepAlive;
-            }
-            if (keepAlive == 0) {
-                ctx.pipeline().remove(this);
-            } else {
-                ctx.pipeline().addAfter(NAME, IDLE_STATE_HANDLER_NAME, new IdleStateHandler(0, keepAlive, 0));
-            }
-        } else if (msg instanceof Mqtt5PingResp) {
+    public void handlerAdded(final ChannelHandlerContext ctx) {
+        channel = ctx.channel();
+        ctx.pipeline().addAfter(NAME, IDLE_STATE_HANDLER_NAME, new IdleStateHandler(0, keepAlive, 0));
+    }
+
+    @Override
+    public void channelRead(final ChannelHandlerContext ctx, final Object msg) {
+        if (msg instanceof Mqtt5PingRespImpl) {
             if (disconnectNoPingRespFuture != null) {
                 disconnectNoPingRespFuture.cancel(true);
                 disconnectNoPingRespFuture = null;
             }
         }
-        super.channelRead(ctx, msg);
+        ctx.fireChannelRead(msg);
     }
 
     @Override
-    public void userEventTriggered(final ChannelHandlerContext ctx, final Object evt) throws Exception {
+    public void userEventTriggered(final ChannelHandlerContext ctx, final Object evt) {
         if (evt instanceof IdleStateEvent) {
             if (((IdleStateEvent) evt).state() == IdleState.WRITER_IDLE) {
-                ctx.channel().writeAndFlush(Mqtt5PingReqImpl.INSTANCE);
+                ctx.writeAndFlush(Mqtt5PingReqImpl.INSTANCE);
+                disconnectNoPingRespFuture = ctx.executor().schedule(this, PING_RESP_TIMEOUT, TimeUnit.SECONDS);
                 return;
             }
         }
-        super.userEventTriggered(ctx, evt);
+        ctx.fireUserEventTriggered(evt);
     }
 
-
-    private static class DisconnectNoPingRespRunnable implements Runnable {
-
-        private final Channel channel;
-
-        DisconnectNoPingRespRunnable(@NotNull final Channel channel) {
-            this.channel = channel;
-        }
-
-        @Override
-        public void run() {
-            if (!Thread.currentThread().isInterrupted()) {
+    @Override
+    public void run() {
+        if (!Thread.currentThread().isInterrupted()) {
+            if (channel.isActive()) {
+                Mqtt5Util.disconnect(Mqtt5DisconnectReasonCode.KEEP_ALIVE_TIMEOUT, channel);
+            } else {
                 channel.close();
             }
         }
-
     }
 
 }

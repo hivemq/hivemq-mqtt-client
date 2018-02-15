@@ -4,6 +4,7 @@ import dagger.Component;
 import org.mqttbee.mqtt5.codec.decoder.Mqtt5Decoder;
 import org.mqttbee.mqtt5.codec.decoder.Mqtt5DecoderModule;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5Encoder;
+import org.mqttbee.mqtt5.handler.Mqtt5DisconnectOnConnAckHandler;
 
 import javax.inject.Singleton;
 
@@ -19,5 +20,7 @@ public interface Mqtt5Component {
     Mqtt5Decoder decoder();
 
     Mqtt5Encoder encoder();
+
+    Mqtt5DisconnectOnConnAckHandler disconnectOnConnAckHandler();
 
 }

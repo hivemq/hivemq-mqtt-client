@@ -20,6 +20,8 @@ import static org.mqttbee.mqtt5.codec.decoder.Mqtt5MessageDecoderUtil.disconnect
  */
 public class Mqtt5Decoder extends ByteToMessageDecoder {
 
+    public static final String NAME = "decoder.mqtt5";
+
     private static final int MIN_FIXED_HEADER_LENGTH = 2;
 
     private final Mqtt5MessageDecoders decoders;
