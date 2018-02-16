@@ -12,6 +12,7 @@ import org.mqttbee.api.mqtt5.message.Mqtt5ClientIdentifier;
 import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifierImpl;
 
 import java.util.Optional;
+import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -29,24 +30,31 @@ public class Mqtt5ClientDataImpl implements Mqtt5ClientData {
     private Mqtt5ClientIdentifierImpl clientIdentifier;
     private final String serverHost;
     private final int serverPort;
+    private final boolean usesSSL;
     private final AtomicBoolean connecting;
     private final AtomicBoolean connected;
     private Mqtt5ClientConnectionDataImpl clientConnectionData;
     private Mqtt5ServerConnectionDataImpl serverConnectionData;
     private final boolean followsRedirects;
     private final boolean allowsServerReAuth;
+    private final Executor executor;
+    private final int numberOfNettyThreads;
 
     public Mqtt5ClientDataImpl(
             @NotNull final Mqtt5ClientIdentifierImpl clientIdentifier, @NotNull final String serverHost,
-            final int serverPort, final boolean followsRedirects, final boolean allowsServerReAuth) {
+            final int serverPort, final boolean usesSSL, final boolean followsRedirects,
+            final boolean allowsServerReAuth, @Nullable final Executor executor, final int numberOfNettyThreads) {
 
         this.clientIdentifier = clientIdentifier;
         this.serverHost = serverHost;
         this.serverPort = serverPort;
+        this.usesSSL = usesSSL;
         this.connecting = new AtomicBoolean();
         this.connected = new AtomicBoolean();
         this.followsRedirects = followsRedirects;
         this.allowsServerReAuth = allowsServerReAuth;
+        this.executor = executor;
+        this.numberOfNettyThreads = numberOfNettyThreads;
     }
 
     @NotNull
@@ -74,6 +82,11 @@ public class Mqtt5ClientDataImpl implements Mqtt5ClientData {
     @Override
     public int getServerPort() {
         return serverPort;
+    }
+
+    @Override
+    public boolean usesSSL() {
+        return usesSSL;
     }
 
     @Override
@@ -132,6 +145,15 @@ public class Mqtt5ClientDataImpl implements Mqtt5ClientData {
     @Override
     public boolean allowsServerReAuth() {
         return allowsServerReAuth;
+    }
+
+    @Nullable
+    public Executor getExecutor() {
+        return executor;
+    }
+
+    public int getNumberOfNettyThreads() {
+        return numberOfNettyThreads;
     }
 
     public void to(@NotNull final Channel channel) {

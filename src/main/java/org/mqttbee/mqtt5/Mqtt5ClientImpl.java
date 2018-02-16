@@ -1,13 +1,8 @@
 package org.mqttbee.mqtt5;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.socket.nio.NioSocketChannel;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
@@ -58,8 +53,8 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
                 return;
             }
 
-            final EventLoopGroup eventLoopGroup = new NioEventLoopGroup(); // TODO share event loop group, epoll
-            final Bootstrap bootstrap = bootstrap(eventLoopGroup);
+            final Bootstrap bootstrap = Mqtt5Component.INSTANCE.nettyBootstrap()
+                    .bootstrap(clientData.getExecutor(), clientData.getNumberOfNettyThreads());
 
             bootstrap.handler(new ChannelInitializer<SocketChannel>() {
                 @Override
@@ -85,15 +80,6 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
                 clientData.setConnecting(false);
             }
         });
-    }
-
-    @NotNull
-    private Bootstrap bootstrap(@NotNull final EventLoopGroup eventLoopGroup) { // TODO epoll
-        return new Bootstrap().group(eventLoopGroup)
-                .channel(NioSocketChannel.class)
-                .option(ChannelOption.SO_KEEPALIVE, true)
-                .option(ChannelOption.TCP_NODELAY, true)
-                .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
     }
 
     @NotNull

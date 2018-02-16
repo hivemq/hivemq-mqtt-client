@@ -11,7 +11,6 @@ import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.api.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.api.mqtt5.message.publish.TopicAliasUsage;
-import org.mqttbee.mqtt5.ChannelAttributes;
 import org.mqttbee.mqtt5.Mqtt5ClientConnectionDataImpl;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5PublishEncoder;
@@ -22,6 +21,7 @@ import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishProperty;
 import org.mqttbee.mqtt5.message.publish.Mqtt5PublishWrapper;
+import org.mqttbee.mqtt5.netty.ChannelAttributes;
 import org.mqttbee.util.ByteBufferUtil;
 
 import javax.inject.Inject;

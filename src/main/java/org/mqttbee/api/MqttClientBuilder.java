@@ -15,8 +15,9 @@ import java.util.concurrent.Executor;
 public class MqttClientBuilder {
 
     private Mqtt5ClientIdentifierImpl identifier = Mqtt5ClientIdentifierImpl.REQUEST_CLIENT_IDENTIFIER_FROM_SERVER;
-    private String host = "localhost";
-    private int port = 1883;
+    private String serverHost = "localhost";
+    private int serverPort = 1883;
+    private boolean usesSSL;
     private Executor executor;
     private int numberOfNettyThreads;
 
@@ -36,34 +37,40 @@ public class MqttClientBuilder {
     }
 
     @NotNull
-    public MqttClientBuilder forServer(@NotNull final String host) {
-        this.host = host;
+    public MqttClientBuilder forServerHost(@NotNull final String host) {
+        this.serverHost = host;
         return this;
     }
 
     @NotNull
     public MqttClientBuilder forServerPort(final int port) {
-        this.port = port;
+        this.serverPort = port;
         return this;
     }
 
     @NotNull
-    public MqttClientBuilder using(@NotNull final Executor executor) {
+    public MqttClientBuilder usingSSL(final boolean usesSSl) {
+        this.usesSSL = usesSSl;
+        return this;
+    }
+
+    @NotNull
+    public MqttClientBuilder usingExecutor(@NotNull final Executor executor) {
         Preconditions.checkNotNull(executor);
         this.executor = executor;
         return this;
     }
 
     @NotNull
-    public MqttClientBuilder using(final int numberOfNettyThreads) {
+    public MqttClientBuilder usingNettyThreads(final int numberOfNettyThreads) {
         Preconditions.checkArgument(numberOfNettyThreads > 0);
         this.numberOfNettyThreads = numberOfNettyThreads;
         return this;
     }
 
     @NotNull
-    public Mqtt5ClientBuilder useMqtt5() {
-        return new Mqtt5ClientBuilder(identifier, host, port, executor, numberOfNettyThreads);
+    public Mqtt5ClientBuilder usingMqtt5() {
+        return new Mqtt5ClientBuilder(identifier, serverHost, serverPort, usesSSL, executor, numberOfNettyThreads);
     }
 
 }

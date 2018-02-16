@@ -14,37 +14,39 @@ import java.util.concurrent.Executor;
 public class Mqtt5ClientBuilder {
 
     private final Mqtt5ClientIdentifierImpl identifier;
-    private final String host;
-    private final int port;
+    private final String serverHost;
+    private final int serverPort;
+    private final boolean usesSSL;
     private final Executor executor;
     private final int numberOfNettyThreads;
 
-    private boolean followRedirects = false;
-    private boolean allowServerReAuth = false;
+    private boolean followsRedirects = false;
+    private boolean allowsServerReAuth = false;
 
     public Mqtt5ClientBuilder(
-            @NotNull final Mqtt5ClientIdentifierImpl identifier, @NotNull final String host, final int port,
-            final Executor executor, final int numberOfNettyThreads) {
+            @NotNull final Mqtt5ClientIdentifierImpl identifier, @NotNull final String serverHost, final int serverPort,
+            final boolean usesSSL, final Executor executor, final int numberOfNettyThreads) {
 
         Preconditions.checkNotNull(identifier);
-        Preconditions.checkNotNull(host);
+        Preconditions.checkNotNull(serverHost);
 
         this.identifier = identifier;
-        this.host = host;
-        this.port = port;
+        this.serverHost = serverHost;
+        this.serverPort = serverPort;
+        this.usesSSL = usesSSL;
         this.executor = executor;
         this.numberOfNettyThreads = numberOfNettyThreads;
     }
 
     @NotNull
-    public Mqtt5ClientBuilder followRedirects(final boolean followRedirects) {
-        this.followRedirects = followRedirects;
+    public Mqtt5ClientBuilder followingRedirects(final boolean followsRedirects) {
+        this.followsRedirects = followsRedirects;
         return this;
     }
 
     @NotNull
-    public Mqtt5ClientBuilder allowServerReAuth(final boolean allowServerReAuth) {
-        this.allowServerReAuth = allowServerReAuth;
+    public Mqtt5ClientBuilder allowingServerReAuth(final boolean allowsServerReAuth) {
+        this.allowsServerReAuth = allowsServerReAuth;
         return this;
     }
 
@@ -54,7 +56,8 @@ public class Mqtt5ClientBuilder {
     }
 
     private Mqtt5ClientDataImpl buildClientData() {
-        return new Mqtt5ClientDataImpl(identifier, host, port, followRedirects, allowServerReAuth);
+        return new Mqtt5ClientDataImpl(identifier, serverHost, serverPort, usesSSL, followsRedirects,
+                allowsServerReAuth, executor, numberOfNettyThreads);
     }
 
 }
