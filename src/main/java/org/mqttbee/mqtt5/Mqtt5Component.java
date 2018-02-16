@@ -4,6 +4,7 @@ import dagger.Component;
 import org.mqttbee.mqtt5.codec.decoder.Mqtt5Decoder;
 import org.mqttbee.mqtt5.codec.decoder.Mqtt5DecoderModule;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5Encoder;
+import org.mqttbee.mqtt5.handler.Mqtt5ChannelInitializerProvider;
 import org.mqttbee.mqtt5.handler.Mqtt5DisconnectOnConnAckHandler;
 import org.mqttbee.mqtt5.netty.NettyBootstrap;
 import org.mqttbee.mqtt5.netty.NettyModule;
@@ -20,6 +21,8 @@ public interface Mqtt5Component {
     Mqtt5Component INSTANCE = DaggerMqtt5Component.create();
 
     NettyBootstrap nettyBootstrap();
+
+    Mqtt5ChannelInitializerProvider channelInitializerProvider();
 
     Mqtt5Decoder decoder();
 

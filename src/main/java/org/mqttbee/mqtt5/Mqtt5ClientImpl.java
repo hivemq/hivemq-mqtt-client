@@ -1,8 +1,6 @@
 package org.mqttbee.mqtt5;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.socket.SocketChannel;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
@@ -19,8 +17,6 @@ import org.mqttbee.api.mqtt5.message.subscribe.Mqtt5SubscribeResult;
 import org.mqttbee.api.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.api.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.api.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
-import org.mqttbee.mqtt5.codec.encoder.Mqtt5Encoder;
-import org.mqttbee.mqtt5.handler.Mqtt5ConnectHandler;
 import org.mqttbee.mqtt5.message.connect.Mqtt5ConnectImpl;
 import org.mqttbee.rx.FlowableWithSingle;
 import org.mqttbee.util.MustNotBeImplementedUtil;
@@ -56,15 +52,8 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
             final Bootstrap bootstrap = Mqtt5Component.INSTANCE.nettyBootstrap()
                     .bootstrap(clientData.getExecutor(), clientData.getNumberOfNettyThreads());
 
-            bootstrap.handler(new ChannelInitializer<SocketChannel>() {
-                @Override
-                protected void initChannel(final SocketChannel channel) {
-                    channel.pipeline()
-                            .addLast(Mqtt5Encoder.NAME, Mqtt5Component.INSTANCE.encoder())
-                            .addLast(Mqtt5ConnectHandler.NAME,
-                                    new Mqtt5ConnectHandler(connectImpl, connAckEmitter, clientData));
-                }
-            });
+            bootstrap.handler(
+                    Mqtt5Component.INSTANCE.channelInitializerProvider().get(connectImpl, connAckEmitter, clientData));
 
             bootstrap.connect(clientData.getServerHost(), clientData.getServerPort()).addListener(future -> {
                 if (!future.isSuccess()) {
