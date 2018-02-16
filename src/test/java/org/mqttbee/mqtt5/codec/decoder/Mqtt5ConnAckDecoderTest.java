@@ -7,7 +7,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
-import org.mqttbee.api.mqtt5.message.auth.Mqtt5ExtendedAuth;
+import org.mqttbee.api.mqtt5.message.auth.Mqtt5EnhancedAuth;
 import org.mqttbee.api.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.api.mqtt5.message.connect.connack.Mqtt5ConnAckReasonCode;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5Disconnect;
@@ -129,8 +129,8 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         assertEquals(true, restrictions.isSubscriptionIdentifierAvailable());
         assertEquals(false, restrictions.isSharedSubscriptionAvailable());
 
-        assertTrue(connAck.getExtendedAuth().isPresent());
-        final Mqtt5ExtendedAuth auth = connAck.getExtendedAuth().get();
+        assertTrue(connAck.getEnhancedAuth().isPresent());
+        final Mqtt5EnhancedAuth auth = connAck.getEnhancedAuth().get();
         assertEquals("GS2-KRB5", auth.getMethod().toString());
         assertTrue(auth.getData().isPresent());
         assertEquals(ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}), auth.getData().get());
@@ -171,7 +171,7 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
 
         assertEquals(Mqtt5ConnAckImpl.RestrictionsImpl.DEFAULT, connAck.getRestrictions());
 
-        assertFalse(connAck.getExtendedAuth().isPresent());
+        assertFalse(connAck.getEnhancedAuth().isPresent());
     }
 
     @ParameterizedTest

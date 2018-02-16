@@ -4,7 +4,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifierImpl;
 import org.mqttbee.mqtt5.message.Mqtt5WrappedMessage;
-import org.mqttbee.mqtt5.message.auth.Mqtt5ExtendedAuthImpl;
+import org.mqttbee.mqtt5.message.auth.Mqtt5EnhancedAuthImpl;
 
 /**
  * @author Silvio Giebl
@@ -13,15 +13,15 @@ public class Mqtt5ConnectWrapper
         extends Mqtt5WrappedMessage.Mqtt5MessageWrapper<Mqtt5ConnectWrapper, Mqtt5ConnectImpl> {
 
     private final Mqtt5ClientIdentifierImpl clientIdentifier;
-    private final Mqtt5ExtendedAuthImpl extendedAuth;
+    private final Mqtt5EnhancedAuthImpl enhancedAuth;
 
     Mqtt5ConnectWrapper(
             @NotNull final Mqtt5ConnectImpl wrapped, @NotNull final Mqtt5ClientIdentifierImpl clientIdentifier,
-            @Nullable final Mqtt5ExtendedAuthImpl extendedAuth) {
+            @Nullable final Mqtt5EnhancedAuthImpl enhancedAuth) {
 
         super(wrapped);
         this.clientIdentifier = clientIdentifier;
-        this.extendedAuth = extendedAuth;
+        this.enhancedAuth = enhancedAuth;
     }
 
     @NotNull
@@ -30,8 +30,8 @@ public class Mqtt5ConnectWrapper
     }
 
     @Nullable
-    public Mqtt5ExtendedAuthImpl getExtendedAuth() {
-        return extendedAuth;
+    public Mqtt5EnhancedAuthImpl getEnhancedAuth() {
+        return enhancedAuth;
     }
 
     @Override

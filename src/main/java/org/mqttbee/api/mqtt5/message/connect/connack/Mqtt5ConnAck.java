@@ -3,7 +3,7 @@ package org.mqttbee.api.mqtt5.message.connect.connack;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.message.*;
-import org.mqttbee.api.mqtt5.message.auth.Mqtt5ExtendedAuth;
+import org.mqttbee.api.mqtt5.message.auth.Mqtt5EnhancedAuth;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.util.UnsignedDataTypes;
 
@@ -49,10 +49,10 @@ public interface Mqtt5ConnAck extends Mqtt5Message {
     Optional<Mqtt5ClientIdentifier> getAssignedClientIdentifier();
 
     /**
-     * @return the optional extended authentication and/or authorization related data of this CONNACK packet.
+     * @return the optional enhanced authentication and/or authorization related data of this CONNACK packet.
      */
     @NotNull
-    Optional<Mqtt5ExtendedAuth> getExtendedAuth();
+    Optional<Mqtt5EnhancedAuth> getEnhancedAuth();
 
     /**
      * @return the restrictions set from the server.

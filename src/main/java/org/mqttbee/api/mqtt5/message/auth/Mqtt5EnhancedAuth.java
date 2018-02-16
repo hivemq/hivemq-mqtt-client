@@ -8,12 +8,12 @@ import java.nio.ByteBuffer;
 import java.util.Optional;
 
 /**
- * Data for extended authentication and/or authorization.
+ * Data for enhanced authentication and/or authorization.
  *
  * @author Silvio Giebl
  */
 @DoNotImplement
-public interface Mqtt5ExtendedAuth {
+public interface Mqtt5EnhancedAuth {
 
     /**
      * @return the authentication/authorization method.

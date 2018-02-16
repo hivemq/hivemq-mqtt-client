@@ -14,7 +14,7 @@ import java.util.Optional;
  * @author Silvio Giebl
  */
 @DoNotImplement
-public interface Mqtt5Auth extends Mqtt5Message, Mqtt5ExtendedAuth {
+public interface Mqtt5Auth extends Mqtt5Message, Mqtt5EnhancedAuth {
 
     /**
      * @return the reason code of this AUTH packet.

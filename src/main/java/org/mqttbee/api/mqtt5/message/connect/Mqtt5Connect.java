@@ -2,7 +2,7 @@ package org.mqttbee.api.mqtt5.message.connect;
 
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt5.auth.Mqtt5ExtendedAuthProvider;
+import org.mqttbee.api.mqtt5.auth.Mqtt5EnhancedAuthProvider;
 import org.mqttbee.api.mqtt5.message.Mqtt5Message;
 import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.api.mqtt5.message.Mqtt5UserProperties;
@@ -83,10 +83,10 @@ public interface Mqtt5Connect extends Mqtt5Message {
     Optional<SimpleAuth> getSimpleAuth();
 
     /**
-     * @return the optional extended authentication and/or authorization provider of this CONNECT packet.
+     * @return the optional enhanced authentication and/or authorization provider of this CONNECT packet.
      */
     @NotNull
-    Optional<Mqtt5ExtendedAuthProvider> getExtendedAuthProvider();
+    Optional<Mqtt5EnhancedAuthProvider> getEnhancedAuthProvider();
 
     /**
      * @return the optional Will Publish of this CONNECT packet.

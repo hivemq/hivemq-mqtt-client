@@ -3,7 +3,7 @@ package org.mqttbee.api.mqtt5.message.connect;
 import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt5.auth.Mqtt5ExtendedAuthProvider;
+import org.mqttbee.api.mqtt5.auth.Mqtt5EnhancedAuthProvider;
 import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.api.mqtt5.message.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt5.message.publish.Mqtt5WillPublish;
@@ -31,7 +31,7 @@ public class Mqtt5ConnectBuilder {
     private boolean isProblemInformationRequested = DEFAULT_PROBLEM_INFORMATION_REQUESTED;
     private RestrictionsImpl restrictions;
     private SimpleAuthImpl simpleAuth;
-    private Mqtt5ExtendedAuthProvider extendedAuthProvider;
+    private Mqtt5EnhancedAuthProvider enhancedAuthProvider;
     private Mqtt5WillPublishImpl willPublish;
     private Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES;
 
@@ -48,7 +48,7 @@ public class Mqtt5ConnectBuilder {
         isProblemInformationRequested = connectImpl.isProblemInformationRequested();
         restrictions = connectImpl.getRestrictions();
         simpleAuth = connectImpl.getRawSimpleAuth();
-        extendedAuthProvider = connectImpl.getRawExtendedAuthProvider();
+        enhancedAuthProvider = connectImpl.getRawEnhancedAuthProvider();
         willPublish = connectImpl.getRawWillPublish();
         userProperties = connectImpl.getUserProperties();
     }
@@ -97,8 +97,8 @@ public class Mqtt5ConnectBuilder {
     }
 
     @NotNull
-    public Mqtt5ConnectBuilder withExtendedAuth(@Nullable final Mqtt5ExtendedAuthProvider extendedAuthProvider) {
-        this.extendedAuthProvider = extendedAuthProvider;
+    public Mqtt5ConnectBuilder withEnhancedAuth(@Nullable final Mqtt5EnhancedAuthProvider enhancedAuthProvider) {
+        this.enhancedAuthProvider = enhancedAuthProvider;
         return this;
     }
 
@@ -118,7 +118,7 @@ public class Mqtt5ConnectBuilder {
     @NotNull
     public Mqtt5Connect build() {
         return new Mqtt5ConnectImpl(keepAlive, isCleanStart, sessionExpiryInterval, isResponseInformationRequested,
-                isProblemInformationRequested, restrictions, simpleAuth, extendedAuthProvider, willPublish,
+                isProblemInformationRequested, restrictions, simpleAuth, enhancedAuthProvider, willPublish,
                 userProperties, Mqtt5ConnectEncoder.PROVIDER);
     }
 

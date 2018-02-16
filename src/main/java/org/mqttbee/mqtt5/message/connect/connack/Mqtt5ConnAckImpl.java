@@ -5,7 +5,7 @@ import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5ClientIdentifier;
 import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
-import org.mqttbee.api.mqtt5.message.auth.Mqtt5ExtendedAuth;
+import org.mqttbee.api.mqtt5.message.auth.Mqtt5EnhancedAuth;
 import org.mqttbee.api.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.api.mqtt5.message.connect.connack.Mqtt5ConnAckReasonCode;
 import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifierImpl;
@@ -30,7 +30,7 @@ public class Mqtt5ConnAckImpl extends Mqtt5MessageWithReasonCode<Mqtt5ConnAckImp
     private final long sessionExpiryInterval;
     private final int serverKeepAlive;
     private final Mqtt5ClientIdentifierImpl assignedClientIdentifier;
-    private final Mqtt5ExtendedAuth extendedAuth;
+    private final Mqtt5EnhancedAuth enhancedAuth;
     private final RestrictionsImpl restrictions;
     private final Mqtt5UTF8StringImpl responseInformation;
     private final Mqtt5UTF8StringImpl serverReference;
@@ -39,7 +39,7 @@ public class Mqtt5ConnAckImpl extends Mqtt5MessageWithReasonCode<Mqtt5ConnAckImp
             @NotNull final Mqtt5ConnAckReasonCode reasonCode, final boolean isSessionPresent,
             final long sessionExpiryInterval, final int serverKeepAlive,
             @Nullable final Mqtt5ClientIdentifierImpl assignedClientIdentifier,
-            @Nullable final Mqtt5ExtendedAuth extendedAuth, @NotNull final RestrictionsImpl restrictions,
+            @Nullable final Mqtt5EnhancedAuth enhancedAuth, @NotNull final RestrictionsImpl restrictions,
             @Nullable final Mqtt5UTF8StringImpl responseInformation,
             @Nullable final Mqtt5UTF8StringImpl serverReference, @Nullable final Mqtt5UTF8StringImpl reasonString,
             @NotNull final Mqtt5UserPropertiesImpl userProperties) {
@@ -49,7 +49,7 @@ public class Mqtt5ConnAckImpl extends Mqtt5MessageWithReasonCode<Mqtt5ConnAckImp
         this.sessionExpiryInterval = sessionExpiryInterval;
         this.serverKeepAlive = serverKeepAlive;
         this.assignedClientIdentifier = assignedClientIdentifier;
-        this.extendedAuth = extendedAuth;
+        this.enhancedAuth = enhancedAuth;
         this.restrictions = restrictions;
         this.responseInformation = responseInformation;
         this.serverReference = serverReference;
@@ -94,8 +94,8 @@ public class Mqtt5ConnAckImpl extends Mqtt5MessageWithReasonCode<Mqtt5ConnAckImp
 
     @NotNull
     @Override
-    public Optional<Mqtt5ExtendedAuth> getExtendedAuth() {
-        return Optional.ofNullable(extendedAuth);
+    public Optional<Mqtt5EnhancedAuth> getEnhancedAuth() {
+        return Optional.ofNullable(enhancedAuth);
     }
 
     @NotNull
