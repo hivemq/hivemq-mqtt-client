@@ -8,6 +8,7 @@ import org.mqttbee.api.mqtt5.message.auth.Mqtt5AuthBuilder;
 import org.mqttbee.api.mqtt5.message.auth.Mqtt5EnhancedAuthBuilder;
 import org.mqttbee.api.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.api.mqtt5.message.connect.connack.Mqtt5ConnAck;
+import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5Disconnect;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -124,8 +125,8 @@ public interface Mqtt5EnhancedAuthProvider {
      * authentication/authorization provider during connection.
      *
      * @param clientData the data of the client.
-     * @param auth       the Auth message sent by the server.
+     * @param disconnect the Disconnect message sent by the server.
      */
-    void onReAuthError(@NotNull Mqtt5ClientData clientData, @NotNull Mqtt5Auth auth);
+    void onReAuthError(@NotNull Mqtt5ClientData clientData, @NotNull Mqtt5Disconnect disconnect);
 
 }

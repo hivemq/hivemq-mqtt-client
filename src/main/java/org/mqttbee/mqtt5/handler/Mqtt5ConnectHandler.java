@@ -8,7 +8,6 @@ import io.reactivex.SingleEmitter;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.exception.ChannelClosedException;
 import org.mqttbee.api.mqtt5.exception.Mqtt5MessageException;
-import org.mqttbee.api.mqtt5.message.Mqtt5ClientIdentifier;
 import org.mqttbee.api.mqtt5.message.Mqtt5Message;
 import org.mqttbee.api.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
@@ -169,7 +168,7 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerAdapter {
      * @return true if the CONNACK message is valid, otherwise false.
      */
     private boolean validateConnack(@NotNull final Mqtt5ConnAckImpl connAck, @NotNull final Channel channel) {
-        final Mqtt5ClientIdentifier clientIdentifier = clientData.getRawClientIdentifier();
+        final Mqtt5ClientIdentifierImpl clientIdentifier = clientData.getRawClientIdentifier();
         final Mqtt5ClientIdentifierImpl assignedClientIdentifier = connAck.getRawAssignedClientIdentifier();
 
         if (clientIdentifier == Mqtt5ClientIdentifierImpl.REQUEST_CLIENT_IDENTIFIER_FROM_SERVER) {

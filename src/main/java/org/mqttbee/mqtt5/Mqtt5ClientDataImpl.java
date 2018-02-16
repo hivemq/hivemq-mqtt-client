@@ -65,7 +65,7 @@ public class Mqtt5ClientDataImpl implements Mqtt5ClientData {
     }
 
     @NotNull
-    public Mqtt5ClientIdentifier getRawClientIdentifier() {
+    public Mqtt5ClientIdentifierImpl getRawClientIdentifier() {
         return clientIdentifier;
     }
 
