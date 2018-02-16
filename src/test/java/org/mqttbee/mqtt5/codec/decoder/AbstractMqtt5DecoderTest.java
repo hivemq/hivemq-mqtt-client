@@ -25,7 +25,7 @@ abstract class AbstractMqtt5DecoderTest {
         this.decoders = decoders;
         clientData =
                 new Mqtt5ClientDataImpl(Objects.requireNonNull(Mqtt5ClientIdentifierImpl.from("test")), "localhost",
-                        1883);
+                        1883, false, false);
     }
 
     @BeforeEach

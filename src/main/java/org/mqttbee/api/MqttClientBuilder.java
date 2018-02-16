@@ -20,6 +20,9 @@ public class MqttClientBuilder {
     private Executor executor;
     private int numberOfNettyThreads;
 
+    MqttClientBuilder() {
+    }
+
     @NotNull
     public MqttClientBuilder withIdentifier(@NotNull final String identifier) {
         this.identifier = Mqtt5BuilderUtil.clientIdentifier(identifier);

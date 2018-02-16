@@ -25,7 +25,7 @@ class AbstractMqtt5EncoderTest {
         this.connected = connected;
         clientData =
                 new Mqtt5ClientDataImpl(Objects.requireNonNull(Mqtt5ClientIdentifierImpl.from("test")), "localhost",
-                        1883);
+                        1883, false, false);
     }
 
     @BeforeEach
