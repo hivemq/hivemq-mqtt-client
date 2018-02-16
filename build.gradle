@@ -27,7 +27,7 @@ repositories {
 
 project.ext {
     rxJavaVersion = '2.1.8'
-    nettyVersion = '4.1.19.Final'
+    nettyVersion = '4.1.21.Final'
     daggerVersion = '2.14.1'
     guavaVersion = '23.6-jre'
     logbackVersion = '1.2.3'
@@ -40,6 +40,7 @@ project.ext {
 dependencies {
     compile group: 'io.reactivex.rxjava2', name: 'rxjava', version: rxJavaVersion
     compile group: 'io.netty', name: 'netty-handler', version: nettyVersion
+    compile group: 'io.netty', name: 'netty-transport-native-epoll', version: nettyVersion, classifier: 'linux-x86_64'
     compile group: 'com.google.dagger', name: 'dagger', version: daggerVersion
     compile group: 'com.google.guava', name: 'guava', version: guavaVersion
     compile group: 'ch.qos.logback', name: 'logback-classic', version: logbackVersion

@@ -10,6 +10,7 @@ import org.mqttbee.mqtt5.codec.encoder.Mqtt5DisconnectEncoder;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectImpl;
+import org.mqttbee.mqtt5.netty.ChannelAttributes;
 
 /**
  * @author Silvio Giebl
