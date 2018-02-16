@@ -16,4 +16,8 @@ public interface Mqtt5ClientData extends MqttClientData {
     @NotNull
     Optional<Mqtt5ServerConnectionData> getServerConnectionData();
 
+    boolean followsRedirects();
+
+    boolean allowsServerReAuth();
+
 }

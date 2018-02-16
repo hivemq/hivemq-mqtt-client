@@ -33,16 +33,20 @@ public class Mqtt5ClientDataImpl implements Mqtt5ClientData {
     private final AtomicBoolean connected;
     private Mqtt5ClientConnectionDataImpl clientConnectionData;
     private Mqtt5ServerConnectionDataImpl serverConnectionData;
+    private final boolean followsRedirects;
+    private final boolean allowsServerReAuth;
 
     public Mqtt5ClientDataImpl(
             @NotNull final Mqtt5ClientIdentifierImpl clientIdentifier, @NotNull final String serverHost,
-            final int serverPort) {
+            final int serverPort, final boolean followsRedirects, final boolean allowsServerReAuth) {
 
         this.clientIdentifier = clientIdentifier;
         this.serverHost = serverHost;
         this.serverPort = serverPort;
         this.connecting = new AtomicBoolean();
         this.connected = new AtomicBoolean();
+        this.followsRedirects = followsRedirects;
+        this.allowsServerReAuth = allowsServerReAuth;
     }
 
     @NotNull
@@ -118,6 +122,16 @@ public class Mqtt5ClientDataImpl implements Mqtt5ClientData {
 
     public void setServerConnectionData(@NotNull final Mqtt5ServerConnectionDataImpl serverConnectionData) {
         this.serverConnectionData = serverConnectionData;
+    }
+
+    @Override
+    public boolean followsRedirects() {
+        return followsRedirects;
+    }
+
+    @Override
+    public boolean allowsServerReAuth() {
+        return allowsServerReAuth;
     }
 
     public void to(@NotNull final Channel channel) {

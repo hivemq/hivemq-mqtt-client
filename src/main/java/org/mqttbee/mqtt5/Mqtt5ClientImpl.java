@@ -12,8 +12,8 @@ import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.MqttClientData;
 import org.mqttbee.api.mqtt5.Mqtt5Client;
+import org.mqttbee.api.mqtt5.Mqtt5ClientData;
 import org.mqttbee.api.mqtt5.exception.AlreadyConnectedException;
 import org.mqttbee.api.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.api.mqtt5.message.connect.connack.Mqtt5ConnAck;
@@ -141,7 +141,7 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
 
     @NotNull
     @Override
-    public MqttClientData getClientData() {
+    public Mqtt5ClientData getClientData() {
         return clientData;
     }
 
