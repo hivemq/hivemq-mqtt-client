@@ -2,7 +2,7 @@ package org.mqttbee.mqtt5.message.connect;
 
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt5.auth.Mqtt5ExtendedAuthProvider;
+import org.mqttbee.api.mqtt5.auth.Mqtt5EnhancedAuthProvider;
 import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.api.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.api.mqtt5.message.publish.Mqtt5WillPublish;
@@ -11,7 +11,7 @@ import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifierImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 import org.mqttbee.mqtt5.message.Mqtt5WrappedMessage;
-import org.mqttbee.mqtt5.message.auth.Mqtt5ExtendedAuthImpl;
+import org.mqttbee.mqtt5.message.auth.Mqtt5EnhancedAuthImpl;
 import org.mqttbee.mqtt5.message.publish.Mqtt5WillPublishImpl;
 import org.mqttbee.util.ByteBufferUtil;
 
@@ -32,14 +32,14 @@ public class Mqtt5ConnectImpl extends Mqtt5WrappedMessage<Mqtt5ConnectImpl, Mqtt
     private final boolean isProblemInformationRequested;
     private final RestrictionsImpl restrictions;
     private final SimpleAuthImpl simpleAuth;
-    private final Mqtt5ExtendedAuthProvider extendedAuthProvider;
+    private final Mqtt5EnhancedAuthProvider enhancedAuthProvider;
     private final Mqtt5WillPublishImpl willPublish;
 
     public Mqtt5ConnectImpl(
             final int keepAlive, final boolean isCleanStart, final long sessionExpiryInterval,
             final boolean isResponseInformationRequested, final boolean isProblemInformationRequested,
             @NotNull final RestrictionsImpl restrictions, @Nullable final SimpleAuthImpl simpleAuth,
-            @Nullable final Mqtt5ExtendedAuthProvider extendedAuthProvider,
+            @Nullable final Mqtt5EnhancedAuthProvider enhancedAuthProvider,
             @Nullable final Mqtt5WillPublishImpl willPublish, @NotNull final Mqtt5UserPropertiesImpl userProperties,
             @NotNull final Function<Mqtt5ConnectImpl, ? extends Mqtt5WrappedMessageEncoder<Mqtt5ConnectImpl, Mqtt5ConnectWrapper>> encoderProvider) {
 
@@ -51,7 +51,7 @@ public class Mqtt5ConnectImpl extends Mqtt5WrappedMessage<Mqtt5ConnectImpl, Mqtt
         this.isProblemInformationRequested = isProblemInformationRequested;
         this.restrictions = restrictions;
         this.simpleAuth = simpleAuth;
-        this.extendedAuthProvider = extendedAuthProvider;
+        this.enhancedAuthProvider = enhancedAuthProvider;
         this.willPublish = willPublish;
     }
 
@@ -99,13 +99,13 @@ public class Mqtt5ConnectImpl extends Mqtt5WrappedMessage<Mqtt5ConnectImpl, Mqtt
 
     @NotNull
     @Override
-    public Optional<Mqtt5ExtendedAuthProvider> getExtendedAuthProvider() {
-        return Optional.ofNullable(extendedAuthProvider);
+    public Optional<Mqtt5EnhancedAuthProvider> getEnhancedAuthProvider() {
+        return Optional.ofNullable(enhancedAuthProvider);
     }
 
     @Nullable
-    public Mqtt5ExtendedAuthProvider getRawExtendedAuthProvider() {
-        return extendedAuthProvider;
+    public Mqtt5EnhancedAuthProvider getRawEnhancedAuthProvider() {
+        return enhancedAuthProvider;
     }
 
     @NotNull
@@ -126,9 +126,9 @@ public class Mqtt5ConnectImpl extends Mqtt5WrappedMessage<Mqtt5ConnectImpl, Mqtt
 
     public Mqtt5ConnectWrapper wrap(
             @NotNull final Mqtt5ClientIdentifierImpl clientIdentifier,
-            @Nullable final Mqtt5ExtendedAuthImpl extendedAuth) {
+            @Nullable final Mqtt5EnhancedAuthImpl enhancedAuth) {
 
-        return new Mqtt5ConnectWrapper(this, clientIdentifier, extendedAuth);
+        return new Mqtt5ConnectWrapper(this, clientIdentifier, enhancedAuth);
     }
 
 

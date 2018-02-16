@@ -4,7 +4,7 @@ import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.Mqtt5ClientConnectionData;
-import org.mqttbee.api.mqtt5.auth.Mqtt5ExtendedAuthProvider;
+import org.mqttbee.api.mqtt5.auth.Mqtt5EnhancedAuthProvider;
 import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
 
@@ -20,7 +20,7 @@ public class Mqtt5ClientConnectionDataImpl implements Mqtt5ClientConnectionData 
     private final int receiveMaximum;
     private final Mqtt5TopicImpl[] topicAliasMapping;
     private final int maximumPacketSize;
-    private final Mqtt5ExtendedAuthProvider extendedAuthProvider;
+    private final Mqtt5EnhancedAuthProvider enhancedAuthProvider;
     private final boolean hasWillPublish;
     private final boolean problemInformationRequested;
     private final boolean responseInformationRequested;
@@ -29,7 +29,7 @@ public class Mqtt5ClientConnectionDataImpl implements Mqtt5ClientConnectionData 
     public Mqtt5ClientConnectionDataImpl(
             final int keepAlive, final long sessionExpiryInterval, final int receiveMaximum,
             final int topicAliasMaximum, final int maximumPacketSize,
-            @Nullable final Mqtt5ExtendedAuthProvider extendedAuthProvider, final boolean hasWillPublish,
+            @Nullable final Mqtt5EnhancedAuthProvider enhancedAuthProvider, final boolean hasWillPublish,
             final boolean problemInformationRequested, final boolean responseInformationRequested,
             @NotNull final Channel channel) {
 
@@ -38,7 +38,7 @@ public class Mqtt5ClientConnectionDataImpl implements Mqtt5ClientConnectionData 
         this.receiveMaximum = receiveMaximum;
         this.topicAliasMapping = (topicAliasMaximum == 0) ? null : new Mqtt5TopicImpl[topicAliasMaximum];
         this.maximumPacketSize = maximumPacketSize;
-        this.extendedAuthProvider = extendedAuthProvider;
+        this.enhancedAuthProvider = enhancedAuthProvider;
         this.hasWillPublish = hasWillPublish;
         this.problemInformationRequested = problemInformationRequested;
         this.responseInformationRequested = responseInformationRequested;
@@ -86,12 +86,12 @@ public class Mqtt5ClientConnectionDataImpl implements Mqtt5ClientConnectionData 
     @NotNull
     @Override
     public Optional<Mqtt5UTF8String> getAuthMethod() {
-        return (extendedAuthProvider == null) ? Optional.empty() : Optional.of(extendedAuthProvider.getMethod());
+        return (enhancedAuthProvider == null) ? Optional.empty() : Optional.of(enhancedAuthProvider.getMethod());
     }
 
     @Nullable
-    public Mqtt5ExtendedAuthProvider getExtendedAuthProvider() {
-        return extendedAuthProvider;
+    public Mqtt5EnhancedAuthProvider getEnhancedAuthProvider() {
+        return enhancedAuthProvider;
     }
 
     @Override

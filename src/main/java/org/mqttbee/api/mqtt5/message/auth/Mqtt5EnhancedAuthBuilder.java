@@ -10,12 +10,12 @@ import java.nio.ByteBuffer;
  * @author Silvio Giebl
  */
 @DoNotImplement
-public interface Mqtt5ExtendedAuthBuilder {
+public interface Mqtt5EnhancedAuthBuilder {
 
     @NotNull
-    Mqtt5ExtendedAuthBuilder withData(@Nullable byte[] data);
+    Mqtt5EnhancedAuthBuilder withData(@Nullable byte[] data);
 
     @NotNull
-    Mqtt5ExtendedAuthBuilder withData(@Nullable ByteBuffer data);
+    Mqtt5EnhancedAuthBuilder withData(@Nullable ByteBuffer data);
 
 }

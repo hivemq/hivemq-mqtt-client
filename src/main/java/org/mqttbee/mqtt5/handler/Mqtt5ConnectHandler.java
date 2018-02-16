@@ -40,7 +40,7 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerAdapter {
     private final SingleEmitter<Mqtt5ConnAck> connAckEmitter;
     private final Mqtt5ClientDataImpl clientData;
 
-    public Mqtt5ConnectHandler(
+    Mqtt5ConnectHandler(
             @NotNull final Mqtt5ConnectImpl connect, @NotNull final SingleEmitter<Mqtt5ConnAck> connAckEmitter,
             @NotNull final Mqtt5ClientDataImpl clientData) {
 
@@ -67,7 +67,7 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerAdapter {
         clientData.setClientConnectionData(
                 new Mqtt5ClientConnectionDataImpl(connect.getKeepAlive(), connect.getSessionExpiryInterval(),
                         restrictions.getReceiveMaximum(), restrictions.getTopicAliasMaximum(),
-                        restrictions.getMaximumPacketSize(), connect.getRawExtendedAuthProvider(),
+                        restrictions.getMaximumPacketSize(), connect.getRawEnhancedAuthProvider(),
                         connect.getRawWillPublish() != null, connect.isProblemInformationRequested(),
                         connect.isResponseInformationRequested(), channel));
 

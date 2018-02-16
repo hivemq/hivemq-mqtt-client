@@ -14,7 +14,7 @@ import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifierImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
-import org.mqttbee.mqtt5.message.auth.Mqtt5ExtendedAuthImpl;
+import org.mqttbee.mqtt5.message.auth.Mqtt5EnhancedAuthImpl;
 import org.mqttbee.mqtt5.message.connect.connack.Mqtt5ConnAckImpl;
 import org.mqttbee.mqtt5.message.connect.connack.Mqtt5ConnAckProperty;
 import org.mqttbee.mqtt5.netty.ChannelAttributes;
@@ -334,9 +334,9 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
             }
         }
 
-        Mqtt5ExtendedAuthImpl extendedAuth = null;
+        Mqtt5EnhancedAuthImpl enhancedAuth = null;
         if (authenticationMethod != null) {
-            extendedAuth = new Mqtt5ExtendedAuthImpl(authenticationMethod, authenticationData);
+            enhancedAuth = new Mqtt5EnhancedAuthImpl(authenticationMethod, authenticationData);
         } else if (authenticationData != null) {
             disconnect(
                     Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
@@ -354,7 +354,7 @@ public class Mqtt5ConnAckDecoder implements Mqtt5MessageDecoder {
         final Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.build(userPropertiesBuilder);
 
         return new Mqtt5ConnAckImpl(reasonCode, sessionPresent, sessionExpiryInterval, serverKeepAlive,
-                assignedClientIdentifier, extendedAuth, restrictions, responseInformation, serverReference,
+                assignedClientIdentifier, enhancedAuth, restrictions, responseInformation, serverReference,
                 reasonString, userProperties);
     }
 

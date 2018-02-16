@@ -8,7 +8,7 @@ import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.exceptions.Mqtt5VariableByteIntegerExceededException;
 import org.mqttbee.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
-import org.mqttbee.mqtt5.message.auth.Mqtt5ExtendedAuthImpl;
+import org.mqttbee.mqtt5.message.auth.Mqtt5EnhancedAuthImpl;
 import org.mqttbee.mqtt5.message.connect.Mqtt5ConnectImpl;
 import org.mqttbee.mqtt5.message.connect.Mqtt5ConnectWrapper;
 import org.mqttbee.mqtt5.message.publish.Mqtt5WillPublishImpl;
@@ -132,10 +132,10 @@ public class Mqtt5ConnectEncoder extends Mqtt5WrappedMessageEncoder<Mqtt5Connect
         int additionalPropertyLength() {
             int additionalPropertyLength = 0;
 
-            final Mqtt5ExtendedAuthImpl extendedAuth = message.getExtendedAuth();
-            if (extendedAuth != null) {
-                additionalPropertyLength += propertyEncodedLength(extendedAuth.getMethod());
-                additionalPropertyLength += nullablePropertyEncodedLength(extendedAuth.getRawData());
+            final Mqtt5EnhancedAuthImpl enhancedAuth = message.getEnhancedAuth();
+            if (enhancedAuth != null) {
+                additionalPropertyLength += propertyEncodedLength(enhancedAuth.getMethod());
+                additionalPropertyLength += nullablePropertyEncodedLength(enhancedAuth.getRawData());
             }
 
             return additionalPropertyLength;
@@ -203,10 +203,10 @@ public class Mqtt5ConnectEncoder extends Mqtt5WrappedMessageEncoder<Mqtt5Connect
             encodeBooleanProperty(REQUEST_PROBLEM_INFORMATION, connect.isProblemInformationRequested(),
                     DEFAULT_PROBLEM_INFORMATION_REQUESTED, out);
 
-            final Mqtt5ExtendedAuthImpl extendedAuth = message.getExtendedAuth();
-            if (extendedAuth != null) {
-                encodeProperty(AUTHENTICATION_METHOD, extendedAuth.getMethod(), out);
-                encodeNullableProperty(AUTHENTICATION_DATA, extendedAuth.getRawData(), out);
+            final Mqtt5EnhancedAuthImpl enhancedAuth = message.getEnhancedAuth();
+            if (enhancedAuth != null) {
+                encodeProperty(AUTHENTICATION_METHOD, enhancedAuth.getMethod(), out);
+                encodeNullableProperty(AUTHENTICATION_DATA, enhancedAuth.getRawData(), out);
             }
 
             final RestrictionsImpl restrictions = connect.getRestrictions();
