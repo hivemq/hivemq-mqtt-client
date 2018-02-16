@@ -2,7 +2,6 @@ package org.mqttbee.mqtt5;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
@@ -44,15 +43,16 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
     @NotNull
     @Override
     public Single<Mqtt5ConnAck> connect(@NotNull final Mqtt5Connect connect) {
-        MustNotBeImplementedUtil.checkNotImplemented(connect, Mqtt5ConnectImpl.class);
+        final Mqtt5ConnectImpl connectImpl =
+                MustNotBeImplementedUtil.checkNotImplemented(connect, Mqtt5ConnectImpl.class);
 
-        return Single.create(connAckEmitter -> {
+        return Single.<Mqtt5ConnAck>create(connAckEmitter -> {
             if (!clientData.setConnected(true)) {
                 connAckEmitter.onError(new IllegalStateException()); // TODO right exception
                 return;
             }
 
-            final EventLoopGroup eventLoopGroup = new NioEventLoopGroup();
+            final EventLoopGroup eventLoopGroup = new NioEventLoopGroup(); // TODO share event loop group, epoll
             final Bootstrap bootstrap = bootstrap(eventLoopGroup);
 
             bootstrap.handler(new ChannelInitializer<SocketChannel>() {
@@ -60,23 +60,18 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
                 protected void initChannel(final SocketChannel channel) {
                     channel.pipeline()
                             .addLast(Mqtt5Encoder.NAME, Mqtt5Component.INSTANCE.encoder())
-                            .addLast(Mqtt5ConnectHandler.NAME, new Mqtt5ConnectHandler(connAckEmitter, clientData));
+                            .addLast(Mqtt5ConnectHandler.NAME,
+                                    new Mqtt5ConnectHandler(connectImpl, connAckEmitter, clientData));
                 }
             });
 
-            final ChannelFuture connectFuture =
-                    bootstrap.connect(clientData.getServerHost(), clientData.getServerPort());
-
-            connectFuture.addListener(future -> {
-                if (future.isSuccess()) {
-                    connectFuture.channel().writeAndFlush(connect);
-                } else {
-                    clientData.setConnected(false);
+            bootstrap.connect(clientData.getServerHost(), clientData.getServerPort()).addListener(future -> {
+                if (!future.isSuccess()) {
                     connAckEmitter.onError(future.cause());
-                    eventLoopGroup.shutdownGracefully(); // TODO handle future
+                    // TODO shutdown eventLoopGroup
                 }
             });
-        });
+        }).doOnError(throwable -> clientData.setConnected(false));
     }
 
     @NotNull
