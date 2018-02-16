@@ -29,6 +29,7 @@ public class Mqtt5ClientDataImpl implements Mqtt5ClientData {
     private Mqtt5ClientIdentifierImpl clientIdentifier;
     private final String serverHost;
     private final int serverPort;
+    private final AtomicBoolean connecting;
     private final AtomicBoolean connected;
     private Mqtt5ClientConnectionDataImpl clientConnectionData;
     private Mqtt5ServerConnectionDataImpl serverConnectionData;
@@ -40,6 +41,7 @@ public class Mqtt5ClientDataImpl implements Mqtt5ClientData {
         this.clientIdentifier = clientIdentifier;
         this.serverHost = serverHost;
         this.serverPort = serverPort;
+        this.connecting = new AtomicBoolean();
         this.connected = new AtomicBoolean();
     }
 
@@ -68,6 +70,15 @@ public class Mqtt5ClientDataImpl implements Mqtt5ClientData {
     @Override
     public int getServerPort() {
         return serverPort;
+    }
+
+    @Override
+    public boolean isConnecting() {
+        return connecting.get();
+    }
+
+    public boolean setConnecting(final boolean connecting) {
+        return this.connecting.compareAndSet(!connecting, connecting);
     }
 
     @Override

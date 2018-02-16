@@ -18,6 +18,8 @@ public interface MqttClientData {
 
     int getServerPort();
 
+    boolean isConnecting();
+
     boolean isConnected();
 
 }

@@ -14,6 +14,7 @@ import io.reactivex.Single;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.MqttClientData;
 import org.mqttbee.api.mqtt5.Mqtt5Client;
+import org.mqttbee.api.mqtt5.exception.AlreadyConnectedException;
 import org.mqttbee.api.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.api.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5Disconnect;
@@ -47,8 +48,13 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
                 MustNotBeImplementedUtil.checkNotImplemented(connect, Mqtt5ConnectImpl.class);
 
         return Single.<Mqtt5ConnAck>create(connAckEmitter -> {
-            if (!clientData.setConnected(true)) {
-                connAckEmitter.onError(new IllegalStateException()); // TODO right exception
+            if (!clientData.setConnecting(true)) {
+                connAckEmitter.onError(new AlreadyConnectedException(true));
+                return;
+            }
+            if (clientData.isConnected()) {
+                clientData.setConnecting(false);
+                connAckEmitter.onError(new AlreadyConnectedException(false));
                 return;
             }
 
@@ -71,7 +77,14 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
                     // TODO shutdown eventLoopGroup
                 }
             });
-        }).doOnError(throwable -> clientData.setConnected(false));
+        }).doOnSuccess(connAck -> {
+            clientData.setConnected(true);
+            clientData.setConnecting(false);
+        }).doOnError(throwable -> {
+            if (!(throwable instanceof AlreadyConnectedException)) {
+                clientData.setConnecting(false);
+            }
+        });
     }
 
     @NotNull
