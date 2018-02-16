@@ -1,11 +1,11 @@
-package org.mqttbee.mqtt5.handler;
+package org.mqttbee.mqtt5.handler.auth;
 
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.Mqtt5Util;
-import org.mqttbee.mqtt5.message.connect.connack.Mqtt5ConnAckImpl;
+import org.mqttbee.mqtt5.message.auth.Mqtt5AuthImpl;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -15,19 +15,18 @@ import javax.inject.Singleton;
  */
 @ChannelHandler.Sharable
 @Singleton
-public class Mqtt5DisconnectOnConnAckHandler extends ChannelInboundHandlerAdapter {
+public class Mqtt5DisconnectOnAuthHandler extends ChannelInboundHandlerAdapter {
 
-    public static final String NAME = "disconnect.on.connack";
+    public static final String NAME = "disconnect.on.auth";
 
     @Inject
-    Mqtt5DisconnectOnConnAckHandler() {
+    Mqtt5DisconnectOnAuthHandler() {
     }
 
     @Override
     public void channelRead(final ChannelHandlerContext ctx, final Object msg) {
-        if (msg instanceof Mqtt5ConnAckImpl) {
-            Mqtt5Util.disconnect(
-                    Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "Must not receive second CONNACK", ctx.channel());
+        if (msg instanceof Mqtt5AuthImpl) {
+            Mqtt5Util.disconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "Server must not send AUTH", ctx.channel());
             // TODO notify API
         }
         ctx.fireChannelRead(msg);

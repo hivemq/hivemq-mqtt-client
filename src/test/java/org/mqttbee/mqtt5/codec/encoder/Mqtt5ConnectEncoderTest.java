@@ -15,6 +15,7 @@ import org.mqttbee.api.mqtt5.message.auth.Mqtt5AuthBuilder;
 import org.mqttbee.api.mqtt5.message.auth.Mqtt5EnhancedAuthBuilder;
 import org.mqttbee.api.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.api.mqtt5.message.connect.connack.Mqtt5ConnAck;
+import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
 import org.mqttbee.mqtt5.message.*;
@@ -664,7 +665,8 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         }
 
         @Override
-        public void onReAuthError(@NotNull final Mqtt5ClientData clientData, @NotNull final Mqtt5Auth auth) {
+        public void onReAuthError(
+                @NotNull final Mqtt5ClientData clientData, @NotNull final Mqtt5Disconnect disconnect) {
             throw new UnsupportedOperationException();
         }
     }
