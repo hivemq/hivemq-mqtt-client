@@ -630,7 +630,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
 
         @NotNull
         @Override
-        public CompletableFuture<Void> onServerReAuth(
+        public CompletableFuture<Boolean> onServerReAuth(
                 @NotNull final Mqtt5ClientData clientData, @NotNull final Mqtt5Auth auth,
                 @NotNull final Mqtt5AuthBuilder authBuilder) {
             throw new UnsupportedOperationException();
@@ -638,7 +638,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
 
         @NotNull
         @Override
-        public CompletableFuture<Void> onContinue(
+        public CompletableFuture<Boolean> onContinue(
                 @NotNull final Mqtt5ClientData clientData, @NotNull final Mqtt5Auth auth,
                 @NotNull final Mqtt5AuthBuilder authBuilder) {
             throw new UnsupportedOperationException();

@@ -59,15 +59,16 @@ public interface Mqtt5EnhancedAuthProvider {
      * @param clientData  the data of the client.
      * @param auth        the Auth message sent by the server.
      * @param authBuilder the builder for the outgoing Auth message.
-     * @return a {@link CompletableFuture} succeeding when the required data for authentication/authorization is added
-     * to the builder.
+     * @return a {@link CompletableFuture} succeeding with a boolean indicating whether the client accepts the
+     * authentication/authorization step and when the required data for authentication/authorization is added to the
+     * builder.
      */
     @NotNull
-    default CompletableFuture<Void> onServerReAuth(
+    default CompletableFuture<Boolean> onServerReAuth(
             @NotNull final Mqtt5ClientData clientData, @NotNull @SuppressWarnings("unused") final Mqtt5Auth auth,
             @NotNull final Mqtt5AuthBuilder authBuilder) {
 
-        return onReAuth(clientData, authBuilder);
+        return onReAuth(clientData, authBuilder).thenApply(aVoid -> true);
     }
 
     /**
@@ -77,11 +78,12 @@ public interface Mqtt5EnhancedAuthProvider {
      * @param clientData  the data of the client.
      * @param auth        the Auth message sent by the server.
      * @param authBuilder the builder for the outgoing Auth message.
-     * @return a {@link CompletableFuture} succeeding when the required data for authentication/authorization is added
-     * to the builder.
+     * @return a {@link CompletableFuture} succeeding with a boolean indicating whether the client accepts the
+     * authentication/authorization step and when the required data for authentication/authorization is added to the
+     * builder.
      */
     @NotNull
-    CompletableFuture<Void> onContinue(
+    CompletableFuture<Boolean> onContinue(
             @NotNull Mqtt5ClientData clientData, @NotNull Mqtt5Auth auth, @NotNull Mqtt5AuthBuilder authBuilder);
 
     /**
