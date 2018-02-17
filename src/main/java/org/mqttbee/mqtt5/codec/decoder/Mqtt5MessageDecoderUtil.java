@@ -7,8 +7,8 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.Mqtt5ClientConnectionDataImpl;
-import org.mqttbee.mqtt5.Mqtt5Util;
 import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
+import org.mqttbee.mqtt5.handler.disconnect.Mqtt5DisconnectUtil;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
 
@@ -23,10 +23,10 @@ class Mqtt5MessageDecoderUtil {
     }
 
     static void disconnect(
-            final Mqtt5DisconnectReasonCode reasonCode, @Nullable final String reasonString,
+            final Mqtt5DisconnectReasonCode reasonCode, @NotNull final String reasonString,
             @NotNull final Channel channel) {
 
-        Mqtt5Util.disconnect(reasonCode, reasonString, channel);
+        Mqtt5DisconnectUtil.disconnect(channel, reasonCode, reasonString);
     }
 
     static void disconnectWrongFixedHeaderFlags(@NotNull final String type, @NotNull final Channel channel) {

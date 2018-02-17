@@ -5,9 +5,10 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.auth.Mqtt5EnhancedAuthProvider;
+import org.mqttbee.api.mqtt5.exception.Mqtt5MessageException;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.Mqtt5ClientDataImpl;
-import org.mqttbee.mqtt5.Mqtt5Util;
+import org.mqttbee.mqtt5.handler.disconnect.Mqtt5DisconnectUtil;
 import org.mqttbee.mqtt5.message.auth.Mqtt5AuthBuilderImpl;
 import org.mqttbee.mqtt5.message.auth.Mqtt5AuthImpl;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectImpl;
@@ -85,7 +86,8 @@ public class Mqtt5ReAuthHandler extends ChannelInboundHandlerAdapter {
 
         enhancedAuthProvider.onReAuthSuccess(clientData, auth).thenAcceptAsync(accepted -> {
             if (!accepted) {
-                writeDisconnect(ctx.channel());
+                Mqtt5DisconnectUtil.disconnect(
+                        ctx.channel(), Mqtt5DisconnectReasonCode.NOT_AUTHORIZED, "Server auth success not accepted");
             }
         }, ctx.executor());
     }
@@ -102,12 +104,13 @@ public class Mqtt5ReAuthHandler extends ChannelInboundHandlerAdapter {
                 if (accepted) {
                     ctx.writeAndFlush(authBuilder.build());
                 } else {
-                    writeDisconnect(ctx.channel());
+                    Mqtt5DisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.NOT_AUTHORIZED,
+                            new Mqtt5MessageException(auth, "Server reauth not accepted"));
                 }
             }, ctx.executor());
         } else {
-            Mqtt5Util.disconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                    "Server must not send AUTH with the Reason Code REAUTHENTICATE", ctx.channel()); // TODO notify API
+            Mqtt5DisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+                    new Mqtt5MessageException(auth, "Server must not send AUTH with the Reason Code REAUTHENTICATE"));
         }
     }
 
