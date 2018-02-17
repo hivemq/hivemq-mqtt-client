@@ -1,4 +1,4 @@
-package org.mqttbee.mqtt5.handler;
+package org.mqttbee.mqtt5.handler.connect;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -16,6 +16,7 @@ import org.mqttbee.mqtt5.Mqtt5ServerConnectionDataImpl;
 import org.mqttbee.mqtt5.codec.decoder.Mqtt5Decoder;
 import org.mqttbee.mqtt5.handler.disconnect.ChannelCloseEvent;
 import org.mqttbee.mqtt5.handler.disconnect.Mqtt5DisconnectUtil;
+import org.mqttbee.mqtt5.handler.ping.Mqtt5PingHandler;
 import org.mqttbee.mqtt5.handler.util.ChannelInboundHandlerWithTimeout;
 import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifierImpl;
 import org.mqttbee.mqtt5.message.connect.Mqtt5ConnectImpl;
@@ -44,7 +45,7 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerWithTimeout {
     private final SingleEmitter<Mqtt5ConnAck> connAckEmitter;
     private final Mqtt5ClientDataImpl clientData;
 
-    Mqtt5ConnectHandler(
+    public Mqtt5ConnectHandler(
             @NotNull final Mqtt5ConnectImpl connect, @NotNull final SingleEmitter<Mqtt5ConnAck> connAckEmitter,
             @NotNull final Mqtt5ClientDataImpl clientData) {
 

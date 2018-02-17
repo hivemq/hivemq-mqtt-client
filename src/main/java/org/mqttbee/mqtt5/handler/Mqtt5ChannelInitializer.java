@@ -11,6 +11,7 @@ import org.mqttbee.mqtt5.Mqtt5Component;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5Encoder;
 import org.mqttbee.mqtt5.handler.auth.Mqtt5AuthHandler;
 import org.mqttbee.mqtt5.handler.auth.Mqtt5DisconnectOnAuthHandler;
+import org.mqttbee.mqtt5.handler.connect.Mqtt5ConnectHandler;
 import org.mqttbee.mqtt5.handler.disconnect.Mqtt5DisconnectHandler;
 import org.mqttbee.mqtt5.message.connect.Mqtt5ConnectImpl;
 
