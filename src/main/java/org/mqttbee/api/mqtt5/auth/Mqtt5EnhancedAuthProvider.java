@@ -30,6 +30,12 @@ public interface Mqtt5EnhancedAuthProvider {
     Mqtt5UTF8String getMethod();
 
     /**
+     * @return the maximum time interval in seconds between messages of the enhanced authentication/authorization
+     * handshake (CONNECT, AUTH, CONNACK). This method must always return the same value.
+     */
+    int getTimeout();
+
+    /**
      * Called when a client connects using this enhanced authentication/authorization provider.
      *
      * @param clientData  the data of the client.

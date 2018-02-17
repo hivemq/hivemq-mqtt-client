@@ -90,9 +90,9 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerAdapter {
     private void writeConnect(@NotNull final ChannelHandlerContext ctx) {
         ctx.writeAndFlush(connect).addListener(future -> {
             if (future.isSuccess()) {
-                ctx.pipeline().addLast(Mqtt5Decoder.NAME, Mqtt5Component.INSTANCE.decoder());
+                ctx.pipeline().addFirst(Mqtt5Decoder.NAME, Mqtt5Component.INSTANCE.decoder());
             } else {
-                Mqtt5DisconnectUtil.close(future.cause(), ctx.channel());
+                Mqtt5DisconnectUtil.close(ctx.channel(), future.cause());
             }
         });
     }
@@ -122,7 +122,7 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerAdapter {
 
         if (connAck.getReasonCode().isError()) {
             Mqtt5DisconnectUtil.close(
-                    new Mqtt5MessageException(connAck, "Connection failed with CONNACK with Error Code"), channel);
+                    channel, new Mqtt5MessageException(connAck, "Connection failed with CONNACK with Error Code"));
         } else {
             if (validateConnack(connAck, channel)) {
                 updateClientData(connAck);
@@ -160,8 +160,7 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerAdapter {
             Mqtt5DisconnectUtil.disconnect(channel, Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
                     new Mqtt5MessageException(mqttMessage, message));
         } else {
-            Mqtt5DisconnectUtil.close(
-                    new IllegalStateException("No data must be received before CONNECT is sent"), channel);
+            Mqtt5DisconnectUtil.close(channel, "No data must be received before CONNECT is sent");
         }
     }
 

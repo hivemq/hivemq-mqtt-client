@@ -3,7 +3,6 @@ package org.mqttbee.mqtt5.handler.disconnect;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import org.mqttbee.api.mqtt5.exception.ChannelClosedException;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -23,10 +22,8 @@ public class Mqtt5DisconnectHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelInactive(final ChannelHandlerContext ctx) {
-        ctx.pipeline()
-                .fireUserEventTriggered(
-                        new ChannelCloseEvent(new ChannelClosedException("Server closed channel without DISCONNECT")));
         ctx.pipeline().remove(this);
+        Mqtt5DisconnectUtil.close(ctx.channel(), "Server closed channel without DISCONNECT");
         ctx.fireChannelInactive();
     }
 

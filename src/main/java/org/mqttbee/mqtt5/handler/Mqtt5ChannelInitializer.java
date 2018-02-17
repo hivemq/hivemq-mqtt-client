@@ -38,7 +38,7 @@ public class Mqtt5ChannelInitializer extends ChannelInitializer<SocketChannel> {
         if (clientData.getRawClientConnectionData().getEnhancedAuthProvider() == null) {
             pipeline.addLast(Mqtt5DisconnectOnAuthHandler.NAME, Mqtt5Component.INSTANCE.disconnectOnAuthHandler());
         } else {
-            pipeline.addLast(Mqtt5AuthHandler.NAME, Mqtt5Component.INSTANCE.authHandler());
+            pipeline.addLast(Mqtt5AuthHandler.NAME, new Mqtt5AuthHandler());
         }
         pipeline.addLast(Mqtt5ConnectHandler.NAME, new Mqtt5ConnectHandler(connect, connAckEmitter, clientData));
     }

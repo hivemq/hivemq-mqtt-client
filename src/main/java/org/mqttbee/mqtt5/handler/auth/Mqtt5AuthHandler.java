@@ -1,7 +1,5 @@
 package org.mqttbee.mqtt5.handler.auth;
 
-import io.netty.channel.ChannelDuplexHandler;
-import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import org.mqttbee.annotations.NotNull;
@@ -9,31 +7,20 @@ import org.mqttbee.api.mqtt5.auth.Mqtt5EnhancedAuthProvider;
 import org.mqttbee.api.mqtt5.exception.Mqtt5MessageException;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.Mqtt5ClientDataImpl;
-import org.mqttbee.mqtt5.Mqtt5Component;
 import org.mqttbee.mqtt5.handler.disconnect.Mqtt5DisconnectUtil;
+import org.mqttbee.mqtt5.handler.util.DefaultChannelOutboundHandler;
 import org.mqttbee.mqtt5.message.auth.Mqtt5AuthImpl;
 import org.mqttbee.mqtt5.message.auth.Mqtt5EnhancedAuthBuilderImpl;
 import org.mqttbee.mqtt5.message.connect.Mqtt5ConnectImpl;
 import org.mqttbee.mqtt5.message.connect.Mqtt5ConnectWrapper;
 import org.mqttbee.mqtt5.message.connect.connack.Mqtt5ConnAckImpl;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-import static org.mqttbee.mqtt5.handler.auth.Mqtt5AuthHandlerUtil.*;
-
 /**
  * @author Silvio Giebl
  */
-@ChannelHandler.Sharable
-@Singleton
-public class Mqtt5AuthHandler extends ChannelDuplexHandler {
+public class Mqtt5AuthHandler extends AbstractMqtt5AuthHandler implements DefaultChannelOutboundHandler {
 
     public static final String NAME = "auth";
-
-    @Inject
-    Mqtt5AuthHandler() {
-    }
 
     @Override
     public void write(final ChannelHandlerContext ctx, final Object msg, final ChannelPromise promise) {
@@ -55,7 +42,7 @@ public class Mqtt5AuthHandler extends ChannelDuplexHandler {
         enhancedAuthProvider.onAuth(clientData, connect, enhancedAuthBuilder).thenRunAsync(() -> {
             final Mqtt5ConnectWrapper connectWrapper =
                     connect.wrap(clientData.getRawClientIdentifier(), enhancedAuthBuilder.build());
-            ctx.writeAndFlush(connectWrapper, promise);
+            ctx.writeAndFlush(connectWrapper, promise).addListener(this);
         }, ctx.executor());
     }
 
@@ -71,12 +58,16 @@ public class Mqtt5AuthHandler extends ChannelDuplexHandler {
     }
 
     private void readConnAck(@NotNull final Mqtt5ConnAckImpl connAck, @NotNull final ChannelHandlerContext ctx) {
+        cancelTimeout();
+
         final Mqtt5ClientDataImpl clientData = Mqtt5ClientDataImpl.from(ctx.channel());
         final Mqtt5EnhancedAuthProvider enhancedAuthProvider = getEnhancedAuthProvider(clientData);
 
         if (connAck.getReasonCode().isError()) {
             enhancedAuthProvider.onAuthError(clientData, connAck);
-            ctx.fireChannelRead(connAck);
+            Mqtt5DisconnectUtil.close(
+                    ctx.channel(),
+                    new Mqtt5MessageException(connAck, "Connection failed with CONNACK with Error Code"));
         } else {
             if (validateEnhancedAuth(ctx.channel(), connAck, enhancedAuthProvider)) {
                 enhancedAuthProvider.onAuthSuccess(clientData, connAck).thenAcceptAsync(accepted -> {
@@ -86,12 +77,14 @@ public class Mqtt5AuthHandler extends ChannelDuplexHandler {
                     }
                 }, ctx.executor());
                 ctx.fireChannelRead(connAck);
-                ctx.pipeline().replace(this, Mqtt5ReAuthHandler.NAME, Mqtt5Component.INSTANCE.reAuthHandler());
+                ctx.pipeline().replace(this, Mqtt5ReAuthHandler.NAME, new Mqtt5ReAuthHandler());
             }
         }
     }
 
     private void readAuth(@NotNull final Mqtt5AuthImpl auth, @NotNull final ChannelHandlerContext ctx) {
+        cancelTimeout();
+
         final Mqtt5ClientDataImpl clientData = Mqtt5ClientDataImpl.from(ctx.channel());
         final Mqtt5EnhancedAuthProvider enhancedAuthProvider = getEnhancedAuthProvider(clientData);
 
@@ -119,6 +112,12 @@ public class Mqtt5AuthHandler extends ChannelDuplexHandler {
         Mqtt5DisconnectUtil.disconnect(
                 ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, new Mqtt5MessageException(auth,
                         "Server must not send an AUTH message with the Reason Code REAUTHENTICATE"));
+    }
+
+    @NotNull
+    @Override
+    protected String getTimeoutReasonString() {
+        return "Timeout while waiting for AUTH or CONNACK";
     }
 
 }
