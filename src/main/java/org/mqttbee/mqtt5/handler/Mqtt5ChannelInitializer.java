@@ -11,6 +11,7 @@ import org.mqttbee.mqtt5.Mqtt5Component;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5Encoder;
 import org.mqttbee.mqtt5.handler.auth.Mqtt5AuthHandler;
 import org.mqttbee.mqtt5.handler.auth.Mqtt5DisconnectOnAuthHandler;
+import org.mqttbee.mqtt5.handler.disconnect.Mqtt5DisconnectHandler;
 import org.mqttbee.mqtt5.message.connect.Mqtt5ConnectImpl;
 
 /**
@@ -35,12 +36,15 @@ public class Mqtt5ChannelInitializer extends ChannelInitializer<SocketChannel> {
     protected void initChannel(final SocketChannel channel) {
         final ChannelPipeline pipeline = channel.pipeline();
         pipeline.addLast(Mqtt5Encoder.NAME, Mqtt5Component.INSTANCE.encoder());
-        if (clientData.getRawClientConnectionData().getEnhancedAuthProvider() == null) {
+
+        if (connect.getRawEnhancedAuthProvider() == null) {
             pipeline.addLast(Mqtt5DisconnectOnAuthHandler.NAME, Mqtt5Component.INSTANCE.disconnectOnAuthHandler());
         } else {
             pipeline.addLast(Mqtt5AuthHandler.NAME, new Mqtt5AuthHandler());
         }
+
         pipeline.addLast(Mqtt5ConnectHandler.NAME, new Mqtt5ConnectHandler(connect, connAckEmitter, clientData));
+        pipeline.addLast(Mqtt5DisconnectHandler.NAME, Mqtt5Component.INSTANCE.disconnectHandler());
     }
 
 }

@@ -118,6 +118,8 @@ public class Mqtt5ReAuthHandler extends AbstractMqtt5AuthHandler {
         final Mqtt5EnhancedAuthProvider enhancedAuthProvider = getEnhancedAuthProvider(clientData);
 
         enhancedAuthProvider.onReAuthError(clientData, disconnect);
+
+        ctx.fireChannelRead(disconnect);
     }
 
     @NotNull

@@ -118,7 +118,7 @@ public class Mqtt5ClientDataImpl implements Mqtt5ClientData {
         return Preconditions.checkNotNull(clientConnectionData);
     }
 
-    public void setClientConnectionData(@NotNull final Mqtt5ClientConnectionDataImpl clientConnectionData) {
+    public void setClientConnectionData(@Nullable final Mqtt5ClientConnectionDataImpl clientConnectionData) {
         this.clientConnectionData = clientConnectionData;
     }
 
@@ -133,7 +133,7 @@ public class Mqtt5ClientDataImpl implements Mqtt5ClientData {
         return serverConnectionData;
     }
 
-    public void setServerConnectionData(@NotNull final Mqtt5ServerConnectionDataImpl serverConnectionData) {
+    public void setServerConnectionData(@Nullable final Mqtt5ServerConnectionDataImpl serverConnectionData) {
         this.serverConnectionData = serverConnectionData;
     }
 
