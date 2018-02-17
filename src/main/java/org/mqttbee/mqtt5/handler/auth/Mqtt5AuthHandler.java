@@ -72,38 +72,41 @@ public class Mqtt5AuthHandler extends ChannelDuplexHandler {
 
     private void readConnAck(@NotNull final Mqtt5ConnAckImpl connAck, @NotNull final ChannelHandlerContext ctx) {
         final Mqtt5ClientDataImpl clientData = Mqtt5ClientDataImpl.from(ctx.channel());
-        final Mqtt5EnhancedAuthProvider enhancedAuthProvider =
-                clientData.getRawClientConnectionData().getEnhancedAuthProvider();
-        assert enhancedAuthProvider != null;
+        final Mqtt5EnhancedAuthProvider enhancedAuthProvider = getEnhancedAuthProvider(clientData);
 
         if (connAck.getReasonCode().isError()) {
             enhancedAuthProvider.onAuthError(clientData, connAck);
+            ctx.fireChannelRead(connAck);
         } else {
-            enhancedAuthProvider.onAuthSuccess(clientData, connAck).thenAcceptAsync(accepted -> {
-                if (!accepted) {
-                    Mqtt5DisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.NOT_AUTHORIZED,
-                            new Mqtt5MessageException(connAck, "Server auth success not accepted"));
-                }
-            }, ctx.executor());
-            ctx.pipeline().replace(this, Mqtt5ReAuthHandler.NAME, Mqtt5Component.INSTANCE.reAuthHandler());
+            if (validateEnhancedAuth(ctx.channel(), connAck, enhancedAuthProvider)) {
+                enhancedAuthProvider.onAuthSuccess(clientData, connAck).thenAcceptAsync(accepted -> {
+                    if (!accepted) {
+                        Mqtt5DisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.NOT_AUTHORIZED,
+                                new Mqtt5MessageException(connAck, "Server auth success not accepted"));
+                    }
+                }, ctx.executor());
+                ctx.fireChannelRead(connAck);
+                ctx.pipeline().replace(this, Mqtt5ReAuthHandler.NAME, Mqtt5Component.INSTANCE.reAuthHandler());
+            }
         }
-        ctx.fireChannelRead(connAck);
     }
 
     private void readAuth(@NotNull final Mqtt5AuthImpl auth, @NotNull final ChannelHandlerContext ctx) {
         final Mqtt5ClientDataImpl clientData = Mqtt5ClientDataImpl.from(ctx.channel());
         final Mqtt5EnhancedAuthProvider enhancedAuthProvider = getEnhancedAuthProvider(clientData);
 
-        switch (auth.getReasonCode()) {
-            case CONTINUE_AUTHENTICATION:
-                readAuthContinue(ctx, auth, clientData, enhancedAuthProvider);
-                break;
-            case SUCCESS:
-                readAuthSuccess(ctx, auth);
-                break;
-            case REAUTHENTICATE:
-                readReAuth(ctx, auth);
-                break;
+        if (validateAuth(ctx.channel(), auth, enhancedAuthProvider)) {
+            switch (auth.getReasonCode()) {
+                case CONTINUE_AUTHENTICATION:
+                    readAuthContinue(ctx, auth, clientData, enhancedAuthProvider);
+                    break;
+                case SUCCESS:
+                    readAuthSuccess(ctx, auth);
+                    break;
+                case REAUTHENTICATE:
+                    readReAuth(ctx, auth);
+                    break;
+            }
         }
     }
 

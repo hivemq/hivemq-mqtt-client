@@ -8,6 +8,7 @@ import org.mqttbee.mqtt5.handler.Mqtt5ChannelInitializerProvider;
 import org.mqttbee.mqtt5.handler.Mqtt5DisconnectOnConnAckHandler;
 import org.mqttbee.mqtt5.handler.auth.Mqtt5AuthHandler;
 import org.mqttbee.mqtt5.handler.auth.Mqtt5DisconnectOnAuthHandler;
+import org.mqttbee.mqtt5.handler.auth.Mqtt5ReAuthEvent;
 import org.mqttbee.mqtt5.handler.auth.Mqtt5ReAuthHandler;
 import org.mqttbee.mqtt5.handler.disconnect.Mqtt5DisconnectHandler;
 import org.mqttbee.mqtt5.netty.NettyBootstrap;
@@ -38,7 +39,7 @@ public interface Mqtt5Component {
 
     Mqtt5ReAuthHandler reAuthHandler();
 
-    Mqtt5ReAuthHandler.Mqtt5ReAuthEvent reAuthEvent();
+    Mqtt5ReAuthEvent reAuthEvent();
 
     Mqtt5DisconnectOnAuthHandler disconnectOnAuthHandler();
 
