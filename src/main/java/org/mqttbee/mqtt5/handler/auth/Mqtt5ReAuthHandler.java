@@ -1,8 +1,6 @@
 package org.mqttbee.mqtt5.handler.auth;
 
-import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.auth.Mqtt5EnhancedAuthProvider;
 import org.mqttbee.api.mqtt5.exception.Mqtt5MessageException;
@@ -13,23 +11,16 @@ import org.mqttbee.mqtt5.message.auth.Mqtt5AuthBuilderImpl;
 import org.mqttbee.mqtt5.message.auth.Mqtt5AuthImpl;
 import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectImpl;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import static org.mqttbee.api.mqtt5.message.auth.Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION;
 import static org.mqttbee.api.mqtt5.message.auth.Mqtt5AuthReasonCode.REAUTHENTICATE;
-import static org.mqttbee.mqtt5.handler.auth.Mqtt5AuthHandlerUtil.*;
 
 /**
  * @author Silvio Giebl
  */
-@ChannelHandler.Sharable
-@Singleton
-public class Mqtt5ReAuthHandler extends ChannelInboundHandlerAdapter {
+public class Mqtt5ReAuthHandler extends AbstractMqtt5AuthHandler {
 
     public static final String NAME = "reauth";
 
-    @Inject
     Mqtt5ReAuthHandler() {
     }
 
@@ -63,6 +54,8 @@ public class Mqtt5ReAuthHandler extends ChannelInboundHandlerAdapter {
     }
 
     private void readAuth(@NotNull final Mqtt5AuthImpl auth, @NotNull final ChannelHandlerContext ctx) {
+        cancelTimeout();
+
         final Mqtt5ClientDataImpl clientData = Mqtt5ClientDataImpl.from(ctx.channel());
         final Mqtt5EnhancedAuthProvider enhancedAuthProvider = getEnhancedAuthProvider(clientData);
 
@@ -119,10 +112,18 @@ public class Mqtt5ReAuthHandler extends ChannelInboundHandlerAdapter {
     private void readDisconnect(
             @NotNull final Mqtt5DisconnectImpl disconnect, @NotNull final ChannelHandlerContext ctx) {
 
+        cancelTimeout();
+
         final Mqtt5ClientDataImpl clientData = Mqtt5ClientDataImpl.from(ctx.channel());
         final Mqtt5EnhancedAuthProvider enhancedAuthProvider = getEnhancedAuthProvider(clientData);
 
         enhancedAuthProvider.onReAuthError(clientData, disconnect);
+    }
+
+    @NotNull
+    @Override
+    protected String getTimeoutReasonString() {
+        return "Timeout while waiting for AUTH or DISCONNECT";
     }
 
 }

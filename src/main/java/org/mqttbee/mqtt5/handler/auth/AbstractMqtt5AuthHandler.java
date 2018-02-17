@@ -10,6 +10,7 @@ import org.mqttbee.api.mqtt5.message.auth.Mqtt5EnhancedAuth;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.Mqtt5ClientDataImpl;
 import org.mqttbee.mqtt5.handler.disconnect.Mqtt5DisconnectUtil;
+import org.mqttbee.mqtt5.handler.util.ChannelInboundHandlerWithTimeout;
 import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
 import org.mqttbee.mqtt5.message.auth.Mqtt5AuthBuilderImpl;
 import org.mqttbee.mqtt5.message.auth.Mqtt5AuthImpl;
@@ -21,10 +22,7 @@ import static org.mqttbee.api.mqtt5.message.auth.Mqtt5AuthReasonCode.CONTINUE_AU
 /**
  * @author Silvio Giebl
  */
-class Mqtt5AuthHandlerUtil {
-
-    private Mqtt5AuthHandlerUtil() {
-    }
+abstract class AbstractMqtt5AuthHandler extends ChannelInboundHandlerWithTimeout {
 
     @NotNull
     static Mqtt5EnhancedAuthProvider getEnhancedAuthProvider(@NotNull final Mqtt5ClientDataImpl clientData) {
@@ -34,13 +32,14 @@ class Mqtt5AuthHandlerUtil {
         return enhancedAuthProvider;
     }
 
+    @NotNull
     static Mqtt5AuthBuilderImpl getAuthBuilder(
-            @NotNull final Mqtt5AuthReasonCode reasonCode,
-            @NotNull final Mqtt5EnhancedAuthProvider enhancedAuthProvider) {
+            @NotNull final Mqtt5AuthReasonCode reasonCode, @NotNull final Mqtt5EnhancedAuthProvider enhancedAuthProvider) {
 
         return new Mqtt5AuthBuilderImpl(reasonCode, (Mqtt5UTF8StringImpl) enhancedAuthProvider.getMethod());
     }
 
+    @NotNull
     static Mqtt5EnhancedAuthBuilderImpl getEnhancedAuthBuilder(
             @NotNull final Mqtt5EnhancedAuthProvider enhancedAuthProvider) {
 
@@ -77,7 +76,7 @@ class Mqtt5AuthHandlerUtil {
         return true;
     }
 
-    static void readAuthContinue(
+    void readAuthContinue(
             @NotNull final ChannelHandlerContext ctx, @NotNull final Mqtt5AuthImpl auth,
             @NotNull final Mqtt5ClientDataImpl clientData,
             @NotNull final Mqtt5EnhancedAuthProvider enhancedAuthProvider) {
@@ -86,12 +85,23 @@ class Mqtt5AuthHandlerUtil {
 
         enhancedAuthProvider.onContinue(clientData, auth, authBuilder).thenAcceptAsync(accepted -> {
             if (accepted) {
-                ctx.writeAndFlush(authBuilder.build());
+                ctx.writeAndFlush(authBuilder.build()).addListener(this);
             } else {
                 Mqtt5DisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.NOT_AUTHORIZED,
                         new Mqtt5MessageException(auth, "Server auth not accepted"));
             }
         }, ctx.executor());
+    }
+
+    @Override
+    protected final long getTimeout(@NotNull final ChannelHandlerContext ctx) {
+        return getEnhancedAuthProvider(Mqtt5ClientDataImpl.from(ctx.channel())).getTimeout();
+    }
+
+    @NotNull
+    @Override
+    protected final Mqtt5DisconnectReasonCode getTimeoutReasonCode() {
+        return Mqtt5DisconnectReasonCode.NOT_AUTHORIZED;
     }
 
 }

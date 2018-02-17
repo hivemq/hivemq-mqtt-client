@@ -614,6 +614,11 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
             return method;
         }
 
+        @Override
+        public int getTimeout() {
+            return 60;
+        }
+
         @NotNull
         @Override
         public CompletableFuture<Void> onAuth(

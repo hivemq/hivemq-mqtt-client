@@ -4,6 +4,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt5.exception.ChannelClosedException;
 import org.mqttbee.api.mqtt5.exception.Mqtt5MessageException;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.codec.encoder.Mqtt5DisconnectEncoder;
@@ -49,10 +50,14 @@ public class Mqtt5DisconnectUtil {
         disconnect(channel, reasonCode, cause.getMessage(), cause);
     }
 
-    public static void close(@NotNull final Throwable cause, @NotNull final Channel channel) {
+    public static void close(@NotNull final Channel channel, @NotNull final Throwable cause) {
         channel.config().setAutoRead(false);
         channel.pipeline().fireUserEventTriggered(new ChannelCloseEvent(cause));
         channel.close();
+    }
+
+    public static void close(@NotNull final Channel channel, @NotNull final String reason) {
+        close(channel, new ChannelClosedException(reason));
     }
 
 }
