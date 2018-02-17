@@ -98,6 +98,11 @@ public class Mqtt5ConnAckImpl extends Mqtt5MessageWithReasonCode<Mqtt5ConnAckImp
         return Optional.ofNullable(enhancedAuth);
     }
 
+    @Nullable
+    public Mqtt5EnhancedAuth getRawEnhancedAuth() {
+        return enhancedAuth;
+    }
+
     @NotNull
     @Override
     public RestrictionsImpl getRestrictions() {

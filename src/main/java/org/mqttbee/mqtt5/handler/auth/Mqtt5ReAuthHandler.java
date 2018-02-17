@@ -66,16 +66,18 @@ public class Mqtt5ReAuthHandler extends ChannelInboundHandlerAdapter {
         final Mqtt5ClientDataImpl clientData = Mqtt5ClientDataImpl.from(ctx.channel());
         final Mqtt5EnhancedAuthProvider enhancedAuthProvider = getEnhancedAuthProvider(clientData);
 
-        switch (auth.getReasonCode()) {
-            case CONTINUE_AUTHENTICATION:
-                readAuthContinue(ctx, auth, clientData, enhancedAuthProvider);
-                break;
-            case SUCCESS:
-                readAuthSuccess(ctx, auth, clientData, enhancedAuthProvider);
-                break;
-            case REAUTHENTICATE:
-                readReAuth(ctx, auth, clientData, enhancedAuthProvider);
-                break;
+        if (validateAuth(ctx.channel(), auth, enhancedAuthProvider)) {
+            switch (auth.getReasonCode()) {
+                case CONTINUE_AUTHENTICATION:
+                    readAuthContinue(ctx, auth, clientData, enhancedAuthProvider);
+                    break;
+                case SUCCESS:
+                    readAuthSuccess(ctx, auth, clientData, enhancedAuthProvider);
+                    break;
+                case REAUTHENTICATE:
+                    readReAuth(ctx, auth, clientData, enhancedAuthProvider);
+                    break;
+            }
         }
     }
 
@@ -121,14 +123,6 @@ public class Mqtt5ReAuthHandler extends ChannelInboundHandlerAdapter {
         final Mqtt5EnhancedAuthProvider enhancedAuthProvider = getEnhancedAuthProvider(clientData);
 
         enhancedAuthProvider.onReAuthError(clientData, disconnect);
-    }
-
-
-    @Singleton
-    public static class Mqtt5ReAuthEvent {
-        @Inject
-        Mqtt5ReAuthEvent() {
-        }
     }
 
 }
