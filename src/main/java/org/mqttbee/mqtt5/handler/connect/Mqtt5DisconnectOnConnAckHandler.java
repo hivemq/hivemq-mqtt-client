@@ -1,4 +1,4 @@
-package org.mqttbee.mqtt5.handler;
+package org.mqttbee.mqtt5.handler.connect;
 
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
