@@ -14,6 +14,7 @@ import javax.annotation.concurrent.ThreadSafe;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executor;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Silvio Giebl
@@ -24,7 +25,9 @@ public abstract class NettyBootstrap {
     private static final Logger LOGGER = LoggerFactory.getLogger(NettyBootstrap.class);
 
     private MultithreadEventLoopGroup defaultEventLoopGroup;
+    private AtomicInteger defaultEventLoopGroupReferenceCount;
     private Map<Executor, MultithreadEventLoopGroup> eventLoopGroups;
+    private Map<Executor, AtomicInteger> eventLoopGroupReferenceCounts;
 
     NettyBootstrap() {
     }
@@ -60,6 +63,7 @@ public abstract class NettyBootstrap {
                         defaultThreadCount, numberOfNettyThreads);
             }
         }
+        defaultEventLoopGroupReferenceCount.incrementAndGet();
         return defaultEventLoopGroup;
     }
 
@@ -69,11 +73,13 @@ public abstract class NettyBootstrap {
 
         if (eventLoopGroups == null) {
             eventLoopGroups = new HashMap<>(4);
+            eventLoopGroupReferenceCounts = new HashMap<>(4);
         }
         MultithreadEventLoopGroup eventLoopGroup = eventLoopGroups.get(executor);
         if (eventLoopGroup == null) {
             eventLoopGroup = newExecutorEventLoopGroup(executor, numberOfNettyThreads);
             eventLoopGroups.put(executor, eventLoopGroup);
+            eventLoopGroupReferenceCounts.put(executor, new AtomicInteger(1));
         } else {
             final int threadCount = eventLoopGroup.executorCount();
             if (threadCount != numberOfNettyThreads) {
@@ -81,6 +87,7 @@ public abstract class NettyBootstrap {
                         "Tried to use a different amount of Netty threads for the same executor. Using {} threads instead of {}",
                         threadCount, numberOfNettyThreads);
             }
+            eventLoopGroupReferenceCounts.get(executor).incrementAndGet();
         }
         return eventLoopGroup;
     }
@@ -94,5 +101,34 @@ public abstract class NettyBootstrap {
 
     @NotNull
     abstract Class<? extends Channel> getChannelClass();
+
+    public synchronized void free(@Nullable final Executor executor) {
+        if (executor == null) {
+            freeDefaultEventLoopGroup();
+        } else {
+            freeExecutorEventLoopGroup(executor);
+        }
+    }
+
+    private void freeDefaultEventLoopGroup() {
+        if (defaultEventLoopGroupReferenceCount.decrementAndGet() == 0) {
+            defaultEventLoopGroup.shutdownGracefully();
+            defaultEventLoopGroup = null;
+            defaultEventLoopGroupReferenceCount = null;
+        }
+    }
+
+    private void freeExecutorEventLoopGroup(@Nullable final Executor executor) {
+        final MultithreadEventLoopGroup eventLoopGroup = eventLoopGroups.get(executor);
+        if (eventLoopGroupReferenceCounts.get(executor).decrementAndGet() == 0) {
+            eventLoopGroup.shutdownGracefully();
+            eventLoopGroups.remove(executor);
+            eventLoopGroupReferenceCounts.remove(executor);
+            if (eventLoopGroups.size() == 0) {
+                eventLoopGroups = null;
+                eventLoopGroupReferenceCounts = null;
+            }
+        }
+    }
 
 }

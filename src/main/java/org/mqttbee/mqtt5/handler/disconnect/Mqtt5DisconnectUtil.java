@@ -32,7 +32,9 @@ public class Mqtt5DisconnectUtil {
                         mqttReasonString, Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES, Mqtt5DisconnectEncoder.PROVIDER);
 
         channel.config().setAutoRead(false);
-        channel.pipeline().fireUserEventTriggered(new Mqtt5MessageException(disconnect, reasonString, cause));
+        channel.pipeline()
+                .fireUserEventTriggered(
+                        new ChannelCloseEvent(new Mqtt5MessageException(disconnect, reasonString, cause)));
         channel.writeAndFlush(disconnect).addListener(ChannelFutureListener.CLOSE);
     }
 

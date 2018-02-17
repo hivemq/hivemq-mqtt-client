@@ -58,14 +58,23 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
             bootstrap.connect(clientData.getServerHost(), clientData.getServerPort()).addListener(future -> {
                 if (!future.isSuccess()) {
                     connAckEmitter.onError(future.cause());
-                    // TODO shutdown eventLoopGroup
                 }
             });
         }).doOnSuccess(connAck -> {
             clientData.setConnected(true);
             clientData.setConnecting(false);
+
+            clientData.getRawClientConnectionData().getChannel().closeFuture().addListener(future -> {
+                Mqtt5Component.INSTANCE.nettyBootstrap().free(clientData.getExecutor());
+                clientData.setClientConnectionData(null);
+                clientData.setServerConnectionData(null);
+                clientData.setConnected(false);
+            });
         }).doOnError(throwable -> {
             if (!(throwable instanceof AlreadyConnectedException)) {
+                Mqtt5Component.INSTANCE.nettyBootstrap().free(clientData.getExecutor());
+                clientData.setClientConnectionData(null);
+                clientData.setServerConnectionData(null);
                 clientData.setConnecting(false);
             }
         });
