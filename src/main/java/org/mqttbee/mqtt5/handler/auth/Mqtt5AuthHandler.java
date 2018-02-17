@@ -6,10 +6,11 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.auth.Mqtt5EnhancedAuthProvider;
+import org.mqttbee.api.mqtt5.exception.Mqtt5MessageException;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.Mqtt5ClientDataImpl;
 import org.mqttbee.mqtt5.Mqtt5Component;
-import org.mqttbee.mqtt5.Mqtt5Util;
+import org.mqttbee.mqtt5.handler.disconnect.Mqtt5DisconnectUtil;
 import org.mqttbee.mqtt5.message.auth.Mqtt5AuthImpl;
 import org.mqttbee.mqtt5.message.auth.Mqtt5EnhancedAuthBuilderImpl;
 import org.mqttbee.mqtt5.message.connect.Mqtt5ConnectImpl;
@@ -80,7 +81,8 @@ public class Mqtt5AuthHandler extends ChannelDuplexHandler {
         } else {
             enhancedAuthProvider.onAuthSuccess(clientData, connAck).thenAcceptAsync(accepted -> {
                 if (!accepted) {
-                    writeDisconnect(ctx.channel());
+                    Mqtt5DisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.NOT_AUTHORIZED,
+                            new Mqtt5MessageException(connAck, "Server auth success not accepted"));
                 }
             }, ctx.executor());
             ctx.pipeline().replace(this, Mqtt5ReAuthHandler.NAME, Mqtt5Component.INSTANCE.reAuthHandler());
@@ -97,22 +99,23 @@ public class Mqtt5AuthHandler extends ChannelDuplexHandler {
                 readAuthContinue(ctx, auth, clientData, enhancedAuthProvider);
                 break;
             case SUCCESS:
-                readAuthSuccess(ctx);
+                readAuthSuccess(ctx, auth);
                 break;
             case REAUTHENTICATE:
-                readReAuth(ctx);
+                readReAuth(ctx, auth);
                 break;
         }
     }
 
-    private void readAuthSuccess(@NotNull final ChannelHandlerContext ctx) {
-        Mqtt5Util.disconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                "Server must not send AUTH with the Reason Code SUCCESS", ctx.channel()); // TODO notify API
+    private void readAuthSuccess(@NotNull final ChannelHandlerContext ctx, @NotNull final Mqtt5AuthImpl auth) {
+        Mqtt5DisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+                new Mqtt5MessageException(auth, "Server must not send an AUTH message with the Reason Code SUCCESS"));
     }
 
-    private void readReAuth(@NotNull final ChannelHandlerContext ctx) {
-        Mqtt5Util.disconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                "Server must not send AUTH with the Reason Code REAUTHENTICATE", ctx.channel()); // TODO notify API
+    private void readReAuth(@NotNull final ChannelHandlerContext ctx, @NotNull final Mqtt5AuthImpl auth) {
+        Mqtt5DisconnectUtil.disconnect(
+                ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, new Mqtt5MessageException(auth,
+                        "Server must not send an AUTH message with the Reason Code REAUTHENTICATE"));
     }
 
 }

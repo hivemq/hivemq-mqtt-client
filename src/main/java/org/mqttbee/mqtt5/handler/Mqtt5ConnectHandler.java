@@ -6,13 +6,17 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelPipeline;
 import io.reactivex.SingleEmitter;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt5.exception.ChannelClosedException;
 import org.mqttbee.api.mqtt5.exception.Mqtt5MessageException;
 import org.mqttbee.api.mqtt5.message.Mqtt5Message;
 import org.mqttbee.api.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.mqtt5.*;
+import org.mqttbee.mqtt5.Mqtt5ClientConnectionDataImpl;
+import org.mqttbee.mqtt5.Mqtt5ClientDataImpl;
+import org.mqttbee.mqtt5.Mqtt5Component;
+import org.mqttbee.mqtt5.Mqtt5ServerConnectionDataImpl;
 import org.mqttbee.mqtt5.codec.decoder.Mqtt5Decoder;
+import org.mqttbee.mqtt5.handler.disconnect.ChannelCloseEvent;
+import org.mqttbee.mqtt5.handler.disconnect.Mqtt5DisconnectUtil;
 import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifierImpl;
 import org.mqttbee.mqtt5.message.connect.Mqtt5ConnectImpl;
 import org.mqttbee.mqtt5.message.connect.connack.Mqtt5ConnAckImpl;
@@ -88,7 +92,7 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerAdapter {
             if (future.isSuccess()) {
                 ctx.pipeline().addLast(Mqtt5Decoder.NAME, Mqtt5Component.INSTANCE.decoder());
             } else {
-                closeChannel(ctx.channel(), future.cause());
+                Mqtt5DisconnectUtil.close(future.cause(), ctx.channel());
             }
         });
     }
@@ -117,7 +121,8 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerAdapter {
         final ChannelPipeline pipeline = channel.pipeline();
 
         if (connAck.getReasonCode().isError()) {
-            closeChannel(channel, new Mqtt5MessageException("Connection failed with CONNACK with Error Code", connAck));
+            Mqtt5DisconnectUtil.close(
+                    new Mqtt5MessageException(connAck, "Connection failed with CONNACK with Error Code"), channel);
         } else {
             if (validateConnack(connAck, channel)) {
                 updateClientData(connAck);
@@ -149,12 +154,14 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerAdapter {
      */
     private void handleOtherThanConnAck(@NotNull final Object msg, @NotNull final Channel channel) {
         if (msg instanceof Mqtt5Message) {
-            final Mqtt5Message message = (Mqtt5Message) msg;
-            final String errorMessage =
-                    message.getClass().getSimpleName() + " message must not be received before CONNACK";
-            disconnect(channel, new Mqtt5MessageException(errorMessage, message));
+            final Mqtt5Message mqttMessage = (Mqtt5Message) msg;
+            final String message = mqttMessage.getClass().getSimpleName() +
+                    " message must not be received before CONNACK"; // TODO replace simpleName
+            Mqtt5DisconnectUtil.disconnect(channel, Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+                    new Mqtt5MessageException(mqttMessage, message));
         } else {
-            closeChannel(channel, new IllegalStateException("No data must be received before CONNECT is sent"));
+            Mqtt5DisconnectUtil.close(
+                    new IllegalStateException("No data must be received before CONNECT is sent"), channel);
         }
     }
 
@@ -173,7 +180,8 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerAdapter {
 
         if (clientIdentifier == Mqtt5ClientIdentifierImpl.REQUEST_CLIENT_IDENTIFIER_FROM_SERVER) {
             if (assignedClientIdentifier == null) {
-                disconnect(channel, new Mqtt5MessageException("Server did not assign a Client Identifier", connAck));
+                Mqtt5DisconnectUtil.disconnect(channel, Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+                        new Mqtt5MessageException(connAck, "Server did not assign a Client Identifier"));
                 return false;
             }
         } else {
@@ -226,33 +234,11 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-    public void channelInactive(final ChannelHandlerContext ctx) {
-        connAckEmitter.onError(new ChannelClosedException());
-        ctx.fireChannelInactive();
-    }
-
-    /**
-     * Closes the channel and notifies the {@link #connAckEmitter}.
-     *
-     * @param channel the channel to close.
-     * @param cause   the cause for closing.
-     */
-    private void closeChannel(@NotNull final Channel channel, @NotNull final Throwable cause) {
-        connAckEmitter.onError(cause);
-        channel.pipeline().remove(this); // removed to not trigger channelInactive of this handler
-        channel.close();
-    }
-
-    /**
-     * Sends a DISCONNECT message, closes the channel and notifies the {@link #connAckEmitter}.
-     *
-     * @param channel the channel to disconnect.
-     * @param cause   the cause for disconnecting.
-     */
-    private void disconnect(@NotNull final Channel channel, @NotNull final Throwable cause) {
-        connAckEmitter.onError(cause);
-        channel.pipeline().remove(this); // removed to not trigger channelInactive of this handler
-        Mqtt5Util.disconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, cause.getMessage(), channel);
+    public void userEventTriggered(final ChannelHandlerContext ctx, final Object evt) {
+        if (evt instanceof ChannelCloseEvent) {
+            connAckEmitter.onError(((ChannelCloseEvent) evt).getCause());
+        }
+        ctx.fireUserEventTriggered(evt);
     }
 
 }

@@ -8,7 +8,7 @@ import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.concurrent.ScheduledFuture;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.mqtt5.Mqtt5Util;
+import org.mqttbee.mqtt5.handler.disconnect.Mqtt5DisconnectUtil;
 import org.mqttbee.mqtt5.message.ping.Mqtt5PingReqImpl;
 import org.mqttbee.mqtt5.message.ping.Mqtt5PingRespImpl;
 
@@ -64,7 +64,8 @@ public class Mqtt5PingHandler extends ChannelInboundHandlerAdapter implements Ru
     public void run() {
         if (!Thread.currentThread().isInterrupted()) {
             if (channel.isActive()) {
-                Mqtt5Util.disconnect(Mqtt5DisconnectReasonCode.KEEP_ALIVE_TIMEOUT, channel);
+                Mqtt5DisconnectUtil.disconnect(
+                        channel, Mqtt5DisconnectReasonCode.KEEP_ALIVE_TIMEOUT, "Timeout while waiting for PINGRESP");
             } else {
                 channel.close();
             }
