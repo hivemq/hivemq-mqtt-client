@@ -48,7 +48,7 @@ public abstract class ChannelInboundHandlerWithTimeout extends ChannelInboundHan
         }
     }
 
-    private void scheduleTimeout(@NotNull final ChannelHandlerContext ctx) {
+    protected void scheduleTimeout(@NotNull final ChannelHandlerContext ctx) {
         timeoutFuture = ctx.executor().schedule(this, getTimeout(ctx), TimeUnit.SECONDS);
     }
 
