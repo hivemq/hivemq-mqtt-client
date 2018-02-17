@@ -14,6 +14,9 @@ import java.util.concurrent.CompletableFuture;
 
 /**
  * Interface for providers for the enhanced authentication/authorization according to the MQTT 5 specification.
+ * <p>
+ * If an implementation stores state, an object of the implementation can not be shared by different clients. If no
+ * state is stored, it has to be thread safe that it can be shared.
  *
  * @author Silvio Giebl
  */
