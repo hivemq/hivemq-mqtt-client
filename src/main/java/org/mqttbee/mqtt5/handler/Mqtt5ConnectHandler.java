@@ -2,7 +2,6 @@ package org.mqttbee.mqtt5.handler;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelPipeline;
 import io.reactivex.SingleEmitter;
 import org.mqttbee.annotations.NotNull;
@@ -17,6 +16,7 @@ import org.mqttbee.mqtt5.Mqtt5ServerConnectionDataImpl;
 import org.mqttbee.mqtt5.codec.decoder.Mqtt5Decoder;
 import org.mqttbee.mqtt5.handler.disconnect.ChannelCloseEvent;
 import org.mqttbee.mqtt5.handler.disconnect.Mqtt5DisconnectUtil;
+import org.mqttbee.mqtt5.handler.util.ChannelInboundHandlerWithTimeout;
 import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifierImpl;
 import org.mqttbee.mqtt5.message.connect.Mqtt5ConnectImpl;
 import org.mqttbee.mqtt5.message.connect.connack.Mqtt5ConnAckImpl;
@@ -33,11 +33,12 @@ import org.slf4j.LoggerFactory;
  *
  * @author Silvio Giebl
  */
-public class Mqtt5ConnectHandler extends ChannelInboundHandlerAdapter {
+public class Mqtt5ConnectHandler extends ChannelInboundHandlerWithTimeout {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Mqtt5ConnectHandler.class);
 
     public static final String NAME = "connect";
+    private static final int CONNACK_TIMEOUT = 60; // TODO configurable
 
     private final Mqtt5ConnectImpl connect;
     private final SingleEmitter<Mqtt5ConnAck> connAckEmitter;
@@ -90,6 +91,11 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerAdapter {
     private void writeConnect(@NotNull final ChannelHandlerContext ctx) {
         ctx.writeAndFlush(connect).addListener(future -> {
             if (future.isSuccess()) {
+                final Mqtt5ClientDataImpl clientData = Mqtt5ClientDataImpl.from(ctx.channel());
+                if (clientData.getRawClientConnectionData().getEnhancedAuthProvider() != null) {
+                    scheduleTimeout(ctx);
+                }
+
                 ctx.pipeline().addFirst(Mqtt5Decoder.NAME, Mqtt5Component.INSTANCE.decoder());
             } else {
                 Mqtt5DisconnectUtil.close(ctx.channel(), future.cause());
@@ -99,6 +105,8 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(final ChannelHandlerContext ctx, final Object msg) {
+        cancelTimeout();
+
         if (msg instanceof Mqtt5ConnAckImpl) {
             handleConnAck((Mqtt5ConnAckImpl) msg, ctx.channel());
         } else {
@@ -118,8 +126,6 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerAdapter {
      * @param channel the channel.
      */
     private void handleConnAck(@NotNull final Mqtt5ConnAckImpl connAck, @NotNull final Channel channel) {
-        final ChannelPipeline pipeline = channel.pipeline();
-
         if (connAck.getReasonCode().isError()) {
             Mqtt5DisconnectUtil.close(
                     channel, new Mqtt5MessageException(connAck, "Connection failed with CONNACK with Error Code"));
@@ -128,6 +134,7 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerAdapter {
                 updateClientData(connAck);
                 addServerData(connAck);
 
+                final ChannelPipeline pipeline = channel.pipeline();
                 pipeline.remove(this);
                 final int keepAlive = clientData.getRawClientConnectionData().getKeepAlive();
                 if (keepAlive > 0) {
@@ -238,6 +245,23 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerAdapter {
             connAckEmitter.onError(((ChannelCloseEvent) evt).getCause());
         }
         ctx.fireUserEventTriggered(evt);
+    }
+
+    @Override
+    protected long getTimeout(@NotNull final ChannelHandlerContext ctx) {
+        return CONNACK_TIMEOUT;
+    }
+
+    @NotNull
+    @Override
+    protected Mqtt5DisconnectReasonCode getTimeoutReasonCode() {
+        return Mqtt5DisconnectReasonCode.PROTOCOL_ERROR;
+    }
+
+    @NotNull
+    @Override
+    protected String getTimeoutReasonString() {
+        return "Timeout while waiting for CONNACK";
     }
 
 }
