@@ -16,6 +16,8 @@ import org.mqttbee.mqtt5.handler.disconnect.Mqtt5DisconnectHandler;
 import org.mqttbee.mqtt5.message.connect.Mqtt5ConnectImpl;
 
 /**
+ * Default channel initializer.
+ *
  * @author Silvio Giebl
  */
 public class Mqtt5ChannelInitializer extends ChannelInitializer<SocketChannel> {

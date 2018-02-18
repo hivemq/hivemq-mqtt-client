@@ -2,8 +2,12 @@ package org.mqttbee.mqtt5.handler.auth;
 
 import io.netty.channel.ChannelHandlerContext;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.api.mqtt5.Mqtt5ClientData;
 import org.mqttbee.api.mqtt5.auth.Mqtt5EnhancedAuthProvider;
 import org.mqttbee.api.mqtt5.exception.Mqtt5MessageException;
+import org.mqttbee.api.mqtt5.message.auth.Mqtt5Auth;
+import org.mqttbee.api.mqtt5.message.auth.Mqtt5AuthBuilder;
+import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt5.Mqtt5ClientDataImpl;
 import org.mqttbee.mqtt5.handler.disconnect.Mqtt5DisconnectUtil;
@@ -15,6 +19,8 @@ import static org.mqttbee.api.mqtt5.message.auth.Mqtt5AuthReasonCode.CONTINUE_AU
 import static org.mqttbee.api.mqtt5.message.auth.Mqtt5AuthReasonCode.REAUTHENTICATE;
 
 /**
+ * Enhanced reauth handling according during connection according to the MQTT 5 specification.
+ *
  * @author Silvio Giebl
  */
 public class Mqtt5ReAuthHandler extends AbstractMqtt5AuthHandler {
@@ -33,6 +39,12 @@ public class Mqtt5ReAuthHandler extends AbstractMqtt5AuthHandler {
         }
     }
 
+    /**
+     * Sends a AUTH message with the Reason Code REAUTHENTICATE. Calls
+     * {@link Mqtt5EnhancedAuthProvider#onReAuth(Mqtt5ClientData, Mqtt5AuthBuilder)}.
+     *
+     * @param ctx the channel handler context.
+     */
     private void writeReAuth(@NotNull final ChannelHandlerContext ctx) {
         final Mqtt5ClientDataImpl clientData = Mqtt5ClientDataImpl.from(ctx.channel());
         final Mqtt5EnhancedAuthProvider enhancedAuthProvider = getEnhancedAuthProvider(clientData);
@@ -45,36 +57,27 @@ public class Mqtt5ReAuthHandler extends AbstractMqtt5AuthHandler {
     @Override
     public void channelRead(final ChannelHandlerContext ctx, final Object msg) {
         if (msg instanceof Mqtt5AuthImpl) {
-            readAuth((Mqtt5AuthImpl) msg, ctx);
+            readAuth(ctx, (Mqtt5AuthImpl) msg);
         } else if (msg instanceof Mqtt5DisconnectImpl) {
-            readDisconnect((Mqtt5DisconnectImpl) msg, ctx);
+            readDisconnect(ctx, (Mqtt5DisconnectImpl) msg);
         } else {
             ctx.fireChannelRead(msg);
         }
     }
 
-    private void readAuth(@NotNull final Mqtt5AuthImpl auth, @NotNull final ChannelHandlerContext ctx) {
-        cancelTimeout();
-
-        final Mqtt5ClientDataImpl clientData = Mqtt5ClientDataImpl.from(ctx.channel());
-        final Mqtt5EnhancedAuthProvider enhancedAuthProvider = getEnhancedAuthProvider(clientData);
-
-        if (validateAuth(ctx.channel(), auth, enhancedAuthProvider)) {
-            switch (auth.getReasonCode()) {
-                case CONTINUE_AUTHENTICATION:
-                    readAuthContinue(ctx, auth, clientData, enhancedAuthProvider);
-                    break;
-                case SUCCESS:
-                    readAuthSuccess(ctx, auth, clientData, enhancedAuthProvider);
-                    break;
-                case REAUTHENTICATE:
-                    readReAuth(ctx, auth, clientData, enhancedAuthProvider);
-                    break;
-            }
-        }
-    }
-
-    private void readAuthSuccess(
+    /**
+     * Handles an incoming AUTH message with the Reason Code SUCCESS.
+     * <ul>
+     * <li>Calls {@link Mqtt5EnhancedAuthProvider#onReAuthSuccess(Mqtt5ClientData, Mqtt5Auth)}.</li>
+     * <li>Sends a DISCONNECT message if the enhanced auth provider did not accept the AUTH message.</li>
+     * </ul>
+     *
+     * @param ctx                  the channel handler context.
+     * @param auth                 the incoming AUTH message.
+     * @param clientData           the data of the client.
+     * @param enhancedAuthProvider the enhanced auth provider.
+     */
+    void readAuthSuccess(
             @NotNull final ChannelHandlerContext ctx, @NotNull final Mqtt5AuthImpl auth,
             @NotNull final Mqtt5ClientDataImpl clientData,
             @NotNull final Mqtt5EnhancedAuthProvider enhancedAuthProvider) {
@@ -87,7 +90,22 @@ public class Mqtt5ReAuthHandler extends AbstractMqtt5AuthHandler {
         }, ctx.executor());
     }
 
-    private void readReAuth(
+    /**
+     * Handles an incoming AUTH message with the Reason Code REAUTHENTICATE.
+     * <ul>
+     * <li>Sends a DISCONNECT message if server reauth is not allowed.</li>
+     * <li>Otherwise calls
+     * {@link Mqtt5EnhancedAuthProvider#onServerReAuth(Mqtt5ClientData, Mqtt5Auth, Mqtt5AuthBuilder)}.</li>
+     * <li>Sends a new AUTH message if the enhanced auth provider accepted the incoming AUTH message.</li>
+     * <li>Otherwise sends a DISCONNECT message.</li>
+     * </ul>
+     *
+     * @param ctx                  the channel handler context.
+     * @param auth                 the incoming AUTH message.
+     * @param clientData           the data of the client.
+     * @param enhancedAuthProvider the enhanced auth provider.
+     */
+    void readReAuth(
             @NotNull final ChannelHandlerContext ctx, @NotNull final Mqtt5AuthImpl auth,
             @NotNull final Mqtt5ClientDataImpl clientData,
             @NotNull final Mqtt5EnhancedAuthProvider enhancedAuthProvider) {
@@ -109,8 +127,15 @@ public class Mqtt5ReAuthHandler extends AbstractMqtt5AuthHandler {
         }
     }
 
+    /**
+     * Handles an incoming DISCONNECT message. Calls
+     * {@link Mqtt5EnhancedAuthProvider#onReAuthError(Mqtt5ClientData, Mqtt5Disconnect)}.
+     *
+     * @param ctx        the channel handler context.
+     * @param disconnect the incoming DISCONNECT message.
+     */
     private void readDisconnect(
-            @NotNull final Mqtt5DisconnectImpl disconnect, @NotNull final ChannelHandlerContext ctx) {
+            @NotNull final ChannelHandlerContext ctx, @NotNull final Mqtt5DisconnectImpl disconnect) {
 
         cancelTimeout();
 

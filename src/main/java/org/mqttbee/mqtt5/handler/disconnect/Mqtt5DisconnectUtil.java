@@ -14,6 +14,8 @@ import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectImpl;
 import org.mqttbee.mqtt5.netty.ChannelAttributes;
 
 /**
+ * Util for sending a DISCONNECT message and channel closing from the client side. Fires {@link ChannelCloseEvent}s.
+ *
  * @author Silvio Giebl
  */
 public class Mqtt5DisconnectUtil {

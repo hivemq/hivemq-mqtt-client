@@ -10,6 +10,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
+ * Provider for the channel initializer.
+ *
  * @author Silvio Giebl
  */
 @Singleton
@@ -19,6 +21,14 @@ public class Mqtt5ChannelInitializerProvider {
     Mqtt5ChannelInitializerProvider() {
     }
 
+    /**
+     * Returns the appropriate channel initializer for the given data.
+     *
+     * @param connect        the CONNECT message.
+     * @param connAckEmitter the emitter for the CONNACK message.
+     * @param clientData     the data of the client.
+     * @return the appropriate channel initializer.
+     */
     public Mqtt5ChannelInitializer get(
             @NotNull final Mqtt5ConnectImpl connect, @NotNull final SingleEmitter<Mqtt5ConnAck> connAckEmitter,
             @NotNull final Mqtt5ClientDataImpl clientData) {

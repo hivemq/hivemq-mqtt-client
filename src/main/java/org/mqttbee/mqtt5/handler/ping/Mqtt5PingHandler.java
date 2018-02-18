@@ -11,6 +11,12 @@ import org.mqttbee.mqtt5.message.ping.Mqtt5PingReqImpl;
 import org.mqttbee.mqtt5.message.ping.Mqtt5PingRespImpl;
 
 /**
+ * MQTT Keep Alive Handling.
+ * <ul>
+ * <li>Sends a PINGREQ message when no write has been performed for the Keep Alive interval.</li>
+ * <li>Disconnects or closes the channel if the PINGRESP message is not received in the timeout.</li>
+ * </ul>
+ *
  * @author Silvio Giebl
  */
 public class Mqtt5PingHandler extends ChannelInboundHandlerWithTimeout {

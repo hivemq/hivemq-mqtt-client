@@ -14,6 +14,9 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
+ * Sends a DISCONNECT message if an AUTH message or a CONNACK message with enhanced auth data is received. This handler
+ * is added if enhanced auth is not used at connection.
+ *
  * @author Silvio Giebl
  */
 @ChannelHandler.Sharable
