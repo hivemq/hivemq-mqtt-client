@@ -27,9 +27,10 @@ import org.slf4j.LoggerFactory;
 /**
  * Handles the connection to a MQTT Server.
  * <ul>
- *     <li>Writes the CONNECT message.</li>
- *     <li>Handles the CONNACK message.</li>
- *     <li>Disconnects or closes the channel on receiving other messages before CONNACK.</li>
+ * <li>Writes the CONNECT message.</li>
+ * <li>Handles the CONNACK message.</li>
+ * <li>Disconnects or closes the channel on receiving other messages before CONNACK.</li>
+ * <li>Disconnects or closes the channel if the CONNACK message is not received in the timeout.</li>
  * </ul>
  *
  * @author Silvio Giebl
@@ -94,7 +95,7 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerWithTimeout {
             if (future.isSuccess()) {
                 final Mqtt5ClientDataImpl clientData = Mqtt5ClientDataImpl.from(ctx.channel());
                 if (clientData.getRawClientConnectionData().getEnhancedAuthProvider() != null) {
-                    scheduleTimeout(ctx);
+                    scheduleTimeout();
                 }
 
                 ctx.pipeline().addFirst(Mqtt5Decoder.NAME, Mqtt5Component.INSTANCE.decoder());
@@ -175,7 +176,7 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerWithTimeout {
     /**
      * Validates the given CONNACK message.
      * <p>
-     * If validation fails disconnection and closing of the channel is already handled.
+     * If validation fails, disconnection and closing of the channel is already handled.
      *
      * @param connAck the CONNACK message.
      * @param channel the channel.

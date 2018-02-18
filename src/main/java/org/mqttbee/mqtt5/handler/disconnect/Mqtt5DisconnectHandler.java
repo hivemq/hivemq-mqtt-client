@@ -11,6 +11,9 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
+ * Fires {@link ChannelCloseEvent}s if a DISCONNECT message is received or the channel was closed by the server. Only
+ * one {@link ChannelCloseEvent} will be fired.
+ *
  * @author Silvio Giebl
  */
 @ChannelHandler.Sharable

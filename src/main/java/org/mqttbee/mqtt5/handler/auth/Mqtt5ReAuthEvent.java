@@ -4,6 +4,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
+ * Event that is fired when the user triggers reauth.
+ *
  * @author Silvio Giebl
  */
 @Singleton
