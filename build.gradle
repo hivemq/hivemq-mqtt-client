@@ -1,17 +1,23 @@
 buildscript {
     repositories {
         mavenCentral()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
     dependencies {
         classpath group: 'org.junit.platform', name: 'junit-platform-gradle-plugin', version: '1.0.3'
+        classpath group: 'net.ltgt.gradle', name: 'gradle-apt-plugin', version: '0.15'
     }
 }
 
 plugins {
-    id 'net.ltgt.apt' version '0.10'
+    id "net.ltgt.apt-idea" version "0.15"
     id "com.github.hierynomus.license" version "0.14.0"
 }
 
+apply plugin: 'net.ltgt.apt-idea'
+apply plugin: 'net.ltgt.apt-eclipse'
 apply plugin: 'java'
 apply plugin: 'org.junit.platform.gradle.plugin'
 apply plugin: 'idea'
@@ -41,20 +47,23 @@ project.ext {
     junitVintageVersion = '4.12.3'
     junitJupiterVersion = '5.0.3'
     junitPlatformVersion = '1.0.3'
+    intellijAnnotationsVersion = '12.0'
 }
 
 dependencies {
     compile group: 'io.reactivex.rxjava2', name: 'rxjava', version: rxJavaVersion
     compile group: 'io.netty', name: 'netty-handler', version: nettyVersion
     compile group: 'io.netty', name: 'netty-transport-native-epoll', version: nettyVersion, classifier: 'linux-x86_64'
-    compile group: 'com.google.dagger', name: 'dagger', version: daggerVersion
     compile group: 'com.google.guava', name: 'guava', version: guavaVersion
     compile group: 'ch.qos.logback', name: 'logback-classic', version: logbackVersion
     compile group: 'org.jctools', name: 'jctools-core', version: jcToolsVersion
 
-    apt group: 'com.google.dagger', name: 'dagger-compiler', version: daggerVersion
+    implementation group: 'com.google.dagger', name: 'dagger', version: daggerVersion
+    annotationProcessor group: 'com.google.dagger', name: 'dagger-compiler', version: daggerVersion
 
     testCompile group: 'org.eclipse.paho', name: 'org.eclipse.paho.client.mqttv3', version: '1.2.0'
+    compileOnly  group: 'com.intellij', name: 'annotations', version: intellijAnnotationsVersion
+
     testCompile group: 'junit', name: 'junit', version: junit4Version
     testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junitJupiterVersion
     testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junitJupiterVersion
@@ -68,4 +77,24 @@ dependencies {
 
 license {
     header file('codestyle/Apache2_license_header.txt')
+}
+
+testClasses {
+    doFirst {
+        mkdir('.idea/modules')
+    }
+}
+
+idea {
+    project {
+        configureAnnotationProcessing = true
+    }
+    module {
+        apt {
+            // whether generated sources dirs are added as generated sources root
+            addGeneratedSourcesDirs = true
+            // whether the annotationProcessor/apt and testAnnotationProcessor/testApt dependencies are added as module dependencies
+            addAptDependencies = true
+        }
+    }
 }

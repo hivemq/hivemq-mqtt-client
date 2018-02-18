@@ -1,7 +1,6 @@
-.idea/libraries
-.idea/workspace.xml
-.idea/uiDesigner.xml
 .gradle
 /out/
 /build/
 .DS_Store
+mqtt-bee.iml
+.idea
