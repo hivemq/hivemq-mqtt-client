@@ -52,7 +52,7 @@ but they should describe the changes clearly.
 
 ## Code style guidelines
 
-* As a starting point we will use the default code style of IntelliJ.
+* Please import the code style settings found in the codeStyle folder. 
 * The project uses its own @NotNull and @Nullable annotations, 
 every non-primitive parameter should be annotated with one of them.
 * Optional will only be used in the public API.
