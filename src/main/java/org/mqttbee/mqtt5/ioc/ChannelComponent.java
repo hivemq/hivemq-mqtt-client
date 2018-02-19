@@ -14,11 +14,13 @@ import org.mqttbee.mqtt5.handler.auth.Mqtt5ReAuthHandler;
 import org.mqttbee.mqtt5.handler.connect.Mqtt5DisconnectOnConnAckHandler;
 import org.mqttbee.mqtt5.handler.disconnect.Mqtt5DisconnectHandler;
 import org.mqttbee.mqtt5.handler.disconnect.MqttDisconnecter;
+import org.mqttbee.mqtt5.handler.publish.Mqtt5OutgoingQoSHandler;
+import org.mqttbee.mqtt5.persistence.Mqtt5PersistenceModule;
 
 /**
  * @author Silvio Giebl
  */
-@Subcomponent(modules = {ChannelModule.class, MqttDecoderModule.class})
+@Subcomponent(modules = {ChannelModule.class, MqttDecoderModule.class, Mqtt5PersistenceModule.class})
 @ChannelScope
 public interface ChannelComponent {
 
@@ -54,5 +56,7 @@ public interface ChannelComponent {
     Mqtt5DisconnectOnAuthHandler disconnectOnAuthHandler();
 
     Mqtt5DisconnectHandler disconnectHandler();
+
+    Mqtt5OutgoingQoSHandler outgoingQoSHandler();
 
 }
