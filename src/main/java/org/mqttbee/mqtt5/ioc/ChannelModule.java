@@ -8,6 +8,8 @@ import org.mqttbee.mqtt.MqttClientDataImpl;
 import org.mqttbee.mqtt5.handler.disconnect.Mqtt3Disconnecter;
 import org.mqttbee.mqtt5.handler.disconnect.Mqtt5Disconnecter;
 import org.mqttbee.mqtt5.handler.disconnect.MqttDisconnecter;
+import org.mqttbee.util.Ranges;
+import org.mqttbee.util.UnsignedDataTypes;
 
 /**
  * @author Silvio Giebl
@@ -39,6 +41,12 @@ public class ChannelModule {
             default:
                 throw new IllegalStateException();
         }
+    }
+
+    @Provides
+    @ChannelScope
+    static Ranges providePacketIdentifiers() {
+        return new Ranges(UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE);
     }
 
 }
