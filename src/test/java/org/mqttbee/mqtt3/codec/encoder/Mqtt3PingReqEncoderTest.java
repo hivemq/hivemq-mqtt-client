@@ -33,9 +33,16 @@ class Mqtt3PingReqEncoderTest {
         channel.writeOutbound(pingRequest);
 
         // Then
-        final ByteBuf byteBuf = channel.readOutbound();
-        final byte[] actual = new byte[byteBuf.readableBytes()];
-        byteBuf.readBytes(actual);
-        assertArrayEquals(expected, actual);
+        ByteBuf byteBuf = null;
+        try {
+            byteBuf = channel.readOutbound();
+            final byte[] actual = new byte[byteBuf.readableBytes()];
+            byteBuf.readBytes(actual);
+            assertArrayEquals(expected, actual);
+        } finally {
+            if (byteBuf != null) {
+                byteBuf.release();
+            }
+        }
     }
 }
