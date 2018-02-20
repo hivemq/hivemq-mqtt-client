@@ -3,7 +3,8 @@ package org.mqttbee.mqtt3.message;
 import org.mqttbee.annotations.NotNull;
 
 /**
- * MQTT message type according to the MQTT 5 specification.
+ * MQTT message type according to the MQTT 3 specification.
+ * See also <a href="http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html">the official MQTT 3.1.1 specification</a>.
  *
  * @author Silvio Giebl
  */
@@ -31,19 +32,19 @@ public enum Mqtt3MessageType {
      *
      * @param code the byte code.
      * @return the MQTT message type belonging to the given byte code.
-     * @throws IllegalArgumentException if the byte code is not a valid MQTT message type code.
+     * @throws IllegalArgumentException if the byte code is not a valid MQTT 3 message type code.
      */
     @NotNull
     public static Mqtt3MessageType fromCode(final int code) {
         final Mqtt3MessageType[] values = values();
         if (code < 0 || code >= values.length) {
-            throw new IllegalArgumentException("not a MQTT 5 message type code");
+            throw new IllegalArgumentException(code + " is not a valid MQTT 3 message type code");
         }
         return values[code];
     }
 
     /**
-     * @return the byte code of this MQTT message type.
+     * @return the byte code of this MQTT 3 message type.
      */
     public int getCode() {
         return ordinal();
