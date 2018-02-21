@@ -1,18 +1,18 @@
-package org.mqttbee.api.mqtt5.message;
+package org.mqttbee.api.mqtt.datatypes;
 
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.MqttBuilderUtil;
 
 /**
- * MQTT Client Identifier according to the MQTT 5 specification.
+ * MQTT Client Identifier according to the MQTT specification.
  * <p>
- * A Client Identifier has the same restrictions from {@link Mqtt5UTF8String}.
+ * A Client Identifier has the same restrictions from {@link MqttUTF8String}.
  *
  * @author Silvio Giebl
  */
 @DoNotImplement
-public interface Mqtt5ClientIdentifier extends Mqtt5UTF8String {
+public interface MqttClientIdentifier extends MqttUTF8String {
 
     /**
      * Validates and creates a Client Identifier from the given string.
@@ -22,12 +22,12 @@ public interface Mqtt5ClientIdentifier extends Mqtt5UTF8String {
      * @throws IllegalArgumentException if the string is not a valid Client Identifier.
      */
     @NotNull
-    static Mqtt5ClientIdentifier from(@NotNull final String string) {
+    static MqttClientIdentifier from(@NotNull final String string) {
         return MqttBuilderUtil.clientIdentifier(string);
     }
 
     /**
-     * Checks whether this Client Identifier must be allowed by a MQTT broker according to the MQTT 5 specification.
+     * Checks whether this Client Identifier must be allowed by a MQTT broker according to the MQTT specification.
      * <p>
      * A Client Identifier must be allowed by a MQTT broker if it is between 1 and 23 characters long and only contains
      * lower or uppercase alphabetical characters or numbers.

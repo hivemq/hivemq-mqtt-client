@@ -2,8 +2,8 @@ package org.mqttbee.mqtt.message.connect;
 
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt5.auth.Mqtt5EnhancedAuthProvider;
-import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.api.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.api.mqtt5.message.publish.Mqtt5WillPublish;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
@@ -146,7 +146,7 @@ public class MqttConnectImpl
 
         @NotNull
         @Override
-        public Optional<Mqtt5UTF8String> getUsername() {
+        public Optional<MqttUTF8String> getUsername() {
             return Optional.ofNullable(username);
         }
 

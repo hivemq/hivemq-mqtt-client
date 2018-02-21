@@ -3,8 +3,8 @@ package org.mqttbee.mqtt.message.auth;
 import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
-import org.mqttbee.api.mqtt5.message.Mqtt5UserProperties;
+import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.datatypes.mqtt5.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt5.message.auth.Mqtt5AuthBuilder;
 import org.mqttbee.api.mqtt5.message.auth.Mqtt5AuthReasonCode;
 import org.mqttbee.mqtt.MqttBuilderUtil;
@@ -58,7 +58,7 @@ public class MqttAuthBuilderImpl implements Mqtt5AuthBuilder {
 
     @NotNull
     @Override
-    public MqttAuthBuilderImpl withReasonString(@Nullable final Mqtt5UTF8String reasonString) {
+    public MqttAuthBuilderImpl withReasonString(@Nullable final MqttUTF8String reasonString) {
         this.reasonString = MqttBuilderUtil.stringOrNull(reasonString);
         return this;
     }

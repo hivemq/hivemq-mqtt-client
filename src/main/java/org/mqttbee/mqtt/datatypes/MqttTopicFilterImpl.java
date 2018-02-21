@@ -4,14 +4,14 @@ import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt5.message.Mqtt5TopicFilter;
+import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
 
 /**
  * @author Silvio Giebl
- * @see Mqtt5TopicFilter
+ * @see MqttTopicFilter
  * @see MqttUTF8StringImpl
  */
-public class MqttTopicFilterImpl extends MqttUTF8StringImpl implements Mqtt5TopicFilter {
+public class MqttTopicFilterImpl extends MqttUTF8StringImpl implements MqttTopicFilter {
 
     static final int WILDCARD_CHECK_FAILURE = -1;
     private static final int WILDCARD_FLAG_MULTI_LEVEL = 1;

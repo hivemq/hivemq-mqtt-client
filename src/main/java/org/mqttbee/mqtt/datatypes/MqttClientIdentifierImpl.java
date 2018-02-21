@@ -3,16 +3,16 @@ package org.mqttbee.mqtt.datatypes;
 import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt5.message.Mqtt5ClientIdentifier;
+import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
 
 import java.util.regex.Pattern;
 
 /**
  * @author Silvio Giebl
- * @see Mqtt5ClientIdentifier
+ * @see MqttClientIdentifier
  * @see MqttUTF8StringImpl
  */
-public class MqttClientIdentifierImpl extends MqttUTF8StringImpl implements Mqtt5ClientIdentifier {
+public class MqttClientIdentifierImpl extends MqttUTF8StringImpl implements MqttClientIdentifier {
 
     /**
      * Placeholder for a Client Identifier to indicate that the MQTT broker should assign the Client Identifier.

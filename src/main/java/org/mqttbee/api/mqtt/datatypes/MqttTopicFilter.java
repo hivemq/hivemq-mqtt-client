@@ -1,4 +1,4 @@
-package org.mqttbee.api.mqtt5.message;
+package org.mqttbee.api.mqtt.datatypes;
 
 import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.DoNotImplement;
@@ -6,15 +6,15 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.MqttBuilderUtil;
 
 /**
- * MQTT Topic Filter according to the MQTT 5 specification.
+ * MQTT Topic Filter according to the MQTT specification.
  * <p>
- * A Topic Filter has the restrictions from {@link Mqtt5UTF8String}, must be at least one character long, may contain
+ * A Topic Filter has the restrictions from {@link MqttUTF8String}, must be at least one character long, may contain
  * one {@link #MULTI_LEVEL_WILDCARD} at the end and may contain multiple {@link #SINGLE_LEVEL_WILDCARD}s.
  *
  * @author Silvio Giebl
  */
 @DoNotImplement
-public interface Mqtt5TopicFilter extends Mqtt5UTF8String {
+public interface MqttTopicFilter extends MqttUTF8String {
 
     /**
      * The multi-level wildcard character.
@@ -33,23 +33,23 @@ public interface Mqtt5TopicFilter extends Mqtt5UTF8String {
      * @throws IllegalArgumentException if the string is not a valid Topic Filter.
      */
     @NotNull
-    static Mqtt5TopicFilter from(@NotNull final String string) {
+    static MqttTopicFilter from(@NotNull final String string) {
         return MqttBuilderUtil.topicFilter(string);
     }
 
     @NotNull
-    static Mqtt5TopicFilterBuilder builder(@NotNull final String topTopic) {
-        return new Mqtt5TopicFilterBuilder(topTopic);
+    static MqttTopicFilterBuilder builder(@NotNull final String topTopic) {
+        return new MqttTopicFilterBuilder(topTopic);
     }
 
     @NotNull
-    static Mqtt5TopicFilterBuilder extend(@NotNull final Mqtt5TopicFilter topicFilter) {
-        return new Mqtt5TopicFilterBuilder(topicFilter.toString());
+    static MqttTopicFilterBuilder extend(@NotNull final MqttTopicFilter topicFilter) {
+        return new MqttTopicFilterBuilder(topicFilter.toString());
     }
 
     @NotNull
-    static Mqtt5TopicFilterBuilder filter(@NotNull final Mqtt5Topic topic) {
-        return new Mqtt5TopicFilterBuilder(topic.toString());
+    static MqttTopicFilterBuilder filter(@NotNull final MqttTopic topic) {
+        return new MqttTopicFilterBuilder(topic.toString());
     }
 
     /**

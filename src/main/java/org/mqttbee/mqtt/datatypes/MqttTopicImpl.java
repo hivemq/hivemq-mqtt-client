@@ -4,14 +4,14 @@ import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt5.message.Mqtt5Topic;
+import org.mqttbee.api.mqtt.datatypes.MqttTopic;
 
 /**
  * @author Silvio Giebl
- * @see Mqtt5Topic
+ * @see MqttTopic
  * @see MqttUTF8StringImpl
  */
-public class MqttTopicImpl extends MqttUTF8StringImpl implements Mqtt5Topic {
+public class MqttTopicImpl extends MqttUTF8StringImpl implements MqttTopic {
 
     /**
      * Validates and decodes a Topic Name from the given byte array.

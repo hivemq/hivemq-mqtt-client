@@ -4,7 +4,7 @@ import com.google.common.base.Utf8;
 import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
+import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.mqtt.exceptions.MqttBinaryDataExceededException;
 
 import java.nio.ByteBuffer;
@@ -16,9 +16,9 @@ import java.util.regex.Pattern;
  * This class lazily en/decodes between UTF-8 and UTF-16 encoding, but performs validation upfront.
  *
  * @author Silvio Giebl
- * @see Mqtt5UTF8String
+ * @see MqttUTF8String
  */
-public class MqttUTF8StringImpl implements Mqtt5UTF8String {
+public class MqttUTF8StringImpl implements MqttUTF8String {
 
     private static final Charset CHARSET = Charset.forName("UTF-8");
     private static final Pattern SHOULD_NOT_CHARACTERS_PATTERN =

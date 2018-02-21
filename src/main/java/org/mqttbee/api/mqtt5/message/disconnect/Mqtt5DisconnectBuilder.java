@@ -3,8 +3,8 @@ package org.mqttbee.api.mqtt5.message.disconnect;
 import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
-import org.mqttbee.api.mqtt5.message.Mqtt5UserProperties;
+import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.datatypes.mqtt5.Mqtt5UserProperties;
 import org.mqttbee.mqtt.MqttBuilderUtil;
 import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5DisconnectEncoder;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
@@ -50,7 +50,7 @@ public class Mqtt5DisconnectBuilder {
     }
 
     @NotNull
-    public Mqtt5DisconnectBuilder withServerReference(@Nullable final Mqtt5UTF8String serverReference) {
+    public Mqtt5DisconnectBuilder withServerReference(@Nullable final MqttUTF8String serverReference) {
         this.serverReference = MqttBuilderUtil.stringOrNull(serverReference);
         return this;
     }
@@ -62,7 +62,7 @@ public class Mqtt5DisconnectBuilder {
     }
 
     @NotNull
-    public Mqtt5DisconnectBuilder withReasonString(@Nullable final Mqtt5UTF8String reasonString) {
+    public Mqtt5DisconnectBuilder withReasonString(@Nullable final MqttUTF8String reasonString) {
         this.reasonString = MqttBuilderUtil.stringOrNull(reasonString);
         return this;
     }

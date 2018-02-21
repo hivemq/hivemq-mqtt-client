@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt5.message.Mqtt5UserProperties;
+import org.mqttbee.api.mqtt.datatypes.mqtt5.Mqtt5UserProperties;
 import org.mqttbee.mqtt.exceptions.MqttBinaryDataExceededException;
 import org.mqttbee.mqtt.message.MqttProperty;
 

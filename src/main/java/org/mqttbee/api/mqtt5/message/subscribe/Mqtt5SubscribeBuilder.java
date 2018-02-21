@@ -3,9 +3,9 @@ package org.mqttbee.api.mqtt5.message.subscribe;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
+import org.mqttbee.api.mqtt.datatypes.mqtt5.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
-import org.mqttbee.api.mqtt5.message.Mqtt5TopicFilter;
-import org.mqttbee.api.mqtt5.message.Mqtt5UserProperties;
 import org.mqttbee.mqtt.MqttBuilderUtil;
 import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5SubscribeEncoder;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
@@ -66,7 +66,7 @@ public class Mqtt5SubscribeBuilder {
         }
 
         @NotNull
-        public SubscriptionBuilder withTopicFilter(@NotNull final Mqtt5TopicFilter topicFilter) {
+        public SubscriptionBuilder withTopicFilter(@NotNull final MqttTopicFilter topicFilter) {
             this.topicFilter = MqttBuilderUtil.topicFilter(topicFilter);
             return this;
         }
