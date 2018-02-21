@@ -2,7 +2,7 @@ package org.mqttbee.api.mqtt5.message;
 
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt5.Mqtt5BuilderUtil;
+import org.mqttbee.mqtt.MqttBuilderUtil;
 
 import java.nio.ByteBuffer;
 
@@ -27,7 +27,7 @@ public interface Mqtt5UTF8String {
      */
     @NotNull
     static Mqtt5UTF8String from(@NotNull final String string) {
-        return Mqtt5BuilderUtil.string(string);
+        return MqttBuilderUtil.string(string);
     }
 
     /**

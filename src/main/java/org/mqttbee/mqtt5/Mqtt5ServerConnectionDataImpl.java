@@ -5,8 +5,8 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.Mqtt5ServerConnectionData;
 import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
-import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
-import org.mqttbee.mqtt5.message.publish.Mqtt5TopicAliasMapping;
+import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
+import org.mqttbee.mqtt.message.publish.MqttTopicAliasMapping;
 
 /**
  * @author Silvio Giebl
@@ -16,19 +16,19 @@ public class Mqtt5ServerConnectionDataImpl implements Mqtt5ServerConnectionData 
     public static int getMaximumPacketSize(@NotNull final Channel channel) {
         final Mqtt5ServerConnectionDataImpl serverConnectionData =
                 Mqtt5ClientDataImpl.from(channel).getRawServerConnectionData();
-        return (serverConnectionData == null) ? Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT :
+        return (serverConnectionData == null) ? MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT :
                 serverConnectionData.getMaximumPacketSize();
     }
 
     @Nullable
-    public static Mqtt5TopicAliasMapping getTopicAliasMapping(@NotNull final Channel channel) {
+    public static MqttTopicAliasMapping getTopicAliasMapping(@NotNull final Channel channel) {
         final Mqtt5ServerConnectionDataImpl serverConnectionData =
                 Mqtt5ClientDataImpl.from(channel).getRawServerConnectionData();
         return (serverConnectionData == null) ? null : serverConnectionData.getTopicAliasMapping();
     }
 
     private final int receiveMaximum;
-    private final Mqtt5TopicAliasMapping topicAliasMapping;
+    private final MqttTopicAliasMapping topicAliasMapping;
     private final int maximumPacketSize;
     private final Mqtt5QoS maximumQoS;
     private final boolean isRetainAvailable;
@@ -42,7 +42,7 @@ public class Mqtt5ServerConnectionDataImpl implements Mqtt5ServerConnectionData 
             final boolean isSubscriptionIdentifierAvailable, final boolean isSharedSubscriptionAvailable) {
         this.receiveMaximum = receiveMaximum;
         this.maximumPacketSize = maximumPacketSize;
-        this.topicAliasMapping = topicAliasMaximum == 0 ? null : new Mqtt5TopicAliasMapping(topicAliasMaximum);
+        this.topicAliasMapping = topicAliasMaximum == 0 ? null : new MqttTopicAliasMapping(topicAliasMaximum);
         this.maximumQoS = maximumQoS;
         this.isRetainAvailable = isRetainAvailable;
         this.isWildcardSubscriptionAvailable = isWildcardSubscriptionAvailable;
@@ -61,7 +61,7 @@ public class Mqtt5ServerConnectionDataImpl implements Mqtt5ServerConnectionData 
     }
 
     @Nullable
-    public Mqtt5TopicAliasMapping getTopicAliasMapping() {
+    public MqttTopicAliasMapping getTopicAliasMapping() {
         return topicAliasMapping;
     }
 

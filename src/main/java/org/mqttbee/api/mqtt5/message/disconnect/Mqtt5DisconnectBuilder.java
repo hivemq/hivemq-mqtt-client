@@ -5,11 +5,11 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.api.mqtt5.message.Mqtt5UserProperties;
-import org.mqttbee.mqtt5.Mqtt5BuilderUtil;
-import org.mqttbee.mqtt5.codec.encoder.Mqtt5DisconnectEncoder;
-import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
-import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
-import org.mqttbee.mqtt5.message.disconnect.Mqtt5DisconnectImpl;
+import org.mqttbee.mqtt.MqttBuilderUtil;
+import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5DisconnectEncoder;
+import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
+import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
+import org.mqttbee.mqtt.message.disconnect.MqttDisconnectImpl;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 import org.mqttbee.util.UnsignedDataTypes;
 
@@ -22,10 +22,10 @@ import static org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode
 public class Mqtt5DisconnectBuilder {
 
     private boolean withWillMessage = false;
-    private long sessionExpiryInterval = Mqtt5DisconnectImpl.SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
-    private Mqtt5UTF8StringImpl serverReference;
-    private Mqtt5UTF8StringImpl reasonString;
-    private Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES;
+    private long sessionExpiryInterval = MqttDisconnectImpl.SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
+    private MqttUTF8StringImpl serverReference;
+    private MqttUTF8StringImpl reasonString;
+    private MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
 
     Mqtt5DisconnectBuilder() {
     }
@@ -45,32 +45,32 @@ public class Mqtt5DisconnectBuilder {
 
     @NotNull
     public Mqtt5DisconnectBuilder withServerReference(@Nullable final String serverReference) {
-        this.serverReference = Mqtt5BuilderUtil.stringOrNull(serverReference);
+        this.serverReference = MqttBuilderUtil.stringOrNull(serverReference);
         return this;
     }
 
     @NotNull
     public Mqtt5DisconnectBuilder withServerReference(@Nullable final Mqtt5UTF8String serverReference) {
-        this.serverReference = Mqtt5BuilderUtil.stringOrNull(serverReference);
+        this.serverReference = MqttBuilderUtil.stringOrNull(serverReference);
         return this;
     }
 
     @NotNull
     public Mqtt5DisconnectBuilder withReasonString(@Nullable final String reasonString) {
-        this.reasonString = Mqtt5BuilderUtil.stringOrNull(reasonString);
+        this.reasonString = MqttBuilderUtil.stringOrNull(reasonString);
         return this;
     }
 
     @NotNull
     public Mqtt5DisconnectBuilder withReasonString(@Nullable final Mqtt5UTF8String reasonString) {
-        this.reasonString = Mqtt5BuilderUtil.stringOrNull(reasonString);
+        this.reasonString = MqttBuilderUtil.stringOrNull(reasonString);
         return this;
     }
 
     @NotNull
     public Mqtt5DisconnectBuilder withUserProperties(@NotNull final Mqtt5UserProperties userProperties) {
         this.userProperties =
-                MustNotBeImplementedUtil.checkNotImplemented(userProperties, Mqtt5UserPropertiesImpl.class);
+                MustNotBeImplementedUtil.checkNotImplemented(userProperties, MqttUserPropertiesImpl.class);
         return this;
     }
 
@@ -78,7 +78,7 @@ public class Mqtt5DisconnectBuilder {
     public Mqtt5Disconnect build() {
         final Mqtt5DisconnectReasonCode reasonCode =
                 withWillMessage ? DISCONNECT_WITH_WILL_MESSAGE : NORMAL_DISCONNECTION;
-        return new Mqtt5DisconnectImpl(reasonCode, sessionExpiryInterval, serverReference, reasonString, userProperties,
+        return new MqttDisconnectImpl(reasonCode, sessionExpiryInterval, serverReference, reasonString, userProperties,
                 Mqtt5DisconnectEncoder.PROVIDER);
     }
 

@@ -3,7 +3,7 @@ package org.mqttbee.api.mqtt5.message.auth;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5ReasonCode;
-import org.mqttbee.mqtt5.message.Mqtt5CommonReasonCode;
+import org.mqttbee.mqtt.message.MqttCommonReasonCode;
 
 /**
  * MQTT Reason Codes that can be used in AUTH packets according to the MQTT 5 specification.
@@ -12,7 +12,7 @@ import org.mqttbee.mqtt5.message.Mqtt5CommonReasonCode;
  */
 public enum Mqtt5AuthReasonCode implements Mqtt5ReasonCode {
 
-    SUCCESS(Mqtt5CommonReasonCode.SUCCESS),
+    SUCCESS(MqttCommonReasonCode.SUCCESS),
     CONTINUE_AUTHENTICATION(0x18),
     REAUTHENTICATE(0x19);
 
@@ -22,7 +22,7 @@ public enum Mqtt5AuthReasonCode implements Mqtt5ReasonCode {
         this.code = code;
     }
 
-    Mqtt5AuthReasonCode(@NotNull final Mqtt5CommonReasonCode reasonCode) {
+    Mqtt5AuthReasonCode(@NotNull final MqttCommonReasonCode reasonCode) {
         this(reasonCode.getCode());
     }
 

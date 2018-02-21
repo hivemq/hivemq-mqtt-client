@@ -7,20 +7,20 @@ import org.mqttbee.api.mqtt5.auth.Mqtt5EnhancedAuthProvider;
 import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.api.mqtt5.message.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt5.message.publish.Mqtt5WillPublish;
-import org.mqttbee.mqtt5.Mqtt5BuilderUtil;
-import org.mqttbee.mqtt5.codec.encoder.Mqtt5ConnectEncoder;
-import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
-import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
-import org.mqttbee.mqtt5.message.connect.Mqtt5ConnectImpl;
-import org.mqttbee.mqtt5.message.publish.Mqtt5WillPublishImpl;
+import org.mqttbee.mqtt.MqttBuilderUtil;
+import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5ConnectEncoder;
+import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
+import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
+import org.mqttbee.mqtt.message.connect.MqttConnectImpl;
+import org.mqttbee.mqtt.message.publish.MqttWillPublishImpl;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 import org.mqttbee.util.UnsignedDataTypes;
 
 import java.nio.ByteBuffer;
 
 import static org.mqttbee.api.mqtt5.message.connect.Mqtt5Connect.*;
-import static org.mqttbee.mqtt5.message.connect.Mqtt5ConnectImpl.RestrictionsImpl;
-import static org.mqttbee.mqtt5.message.connect.Mqtt5ConnectImpl.SimpleAuthImpl;
+import static org.mqttbee.mqtt.message.connect.MqttConnectImpl.RestrictionsImpl;
+import static org.mqttbee.mqtt.message.connect.MqttConnectImpl.SimpleAuthImpl;
 
 public class Mqtt5ConnectBuilder {
 
@@ -32,15 +32,15 @@ public class Mqtt5ConnectBuilder {
     private RestrictionsImpl restrictions;
     private SimpleAuthImpl simpleAuth;
     private Mqtt5EnhancedAuthProvider enhancedAuthProvider;
-    private Mqtt5WillPublishImpl willPublish;
-    private Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES;
+    private MqttWillPublishImpl willPublish;
+    private MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
 
     Mqtt5ConnectBuilder() {
     }
 
     Mqtt5ConnectBuilder(@NotNull final Mqtt5Connect connect) {
-        final Mqtt5ConnectImpl connectImpl =
-                MustNotBeImplementedUtil.checkNotImplemented(connect, Mqtt5ConnectImpl.class);
+        final MqttConnectImpl connectImpl =
+                MustNotBeImplementedUtil.checkNotImplemented(connect, MqttConnectImpl.class);
         keepAlive = connectImpl.getKeepAlive();
         isCleanStart = connectImpl.isCleanStart();
         sessionExpiryInterval = connectImpl.getSessionExpiryInterval();
@@ -104,20 +104,20 @@ public class Mqtt5ConnectBuilder {
 
     @NotNull
     public Mqtt5ConnectBuilder withWillPublish(@Nullable final Mqtt5WillPublish willPublish) {
-        this.willPublish = MustNotBeImplementedUtil.checkNullOrNotImplemented(willPublish, Mqtt5WillPublishImpl.class);
+        this.willPublish = MustNotBeImplementedUtil.checkNullOrNotImplemented(willPublish, MqttWillPublishImpl.class);
         return this;
     }
 
     @NotNull
     public Mqtt5ConnectBuilder withUserProperties(@NotNull final Mqtt5UserProperties userProperties) {
         this.userProperties =
-                MustNotBeImplementedUtil.checkNotImplemented(userProperties, Mqtt5UserPropertiesImpl.class);
+                MustNotBeImplementedUtil.checkNotImplemented(userProperties, MqttUserPropertiesImpl.class);
         return this;
     }
 
     @NotNull
     public Mqtt5Connect build() {
-        return new Mqtt5ConnectImpl(keepAlive, isCleanStart, sessionExpiryInterval, isResponseInformationRequested,
+        return new MqttConnectImpl(keepAlive, isCleanStart, sessionExpiryInterval, isResponseInformationRequested,
                 isProblemInformationRequested, restrictions, simpleAuth, enhancedAuthProvider, willPublish,
                 userProperties, Mqtt5ConnectEncoder.PROVIDER);
     }
@@ -125,7 +125,7 @@ public class Mqtt5ConnectBuilder {
 
     public static class SimpleAuthBuilder {
 
-        private Mqtt5UTF8StringImpl username;
+        private MqttUTF8StringImpl username;
         private ByteBuffer password;
 
         SimpleAuthBuilder() {
@@ -133,25 +133,25 @@ public class Mqtt5ConnectBuilder {
 
         @NotNull
         public SimpleAuthBuilder withUsername(@Nullable final String username) {
-            this.username = Mqtt5BuilderUtil.stringOrNull(username);
+            this.username = MqttBuilderUtil.stringOrNull(username);
             return this;
         }
 
         @NotNull
         public SimpleAuthBuilder withUsername(@Nullable final Mqtt5UTF8String username) {
-            this.username = Mqtt5BuilderUtil.stringOrNull(username);
+            this.username = MqttBuilderUtil.stringOrNull(username);
             return this;
         }
 
         @NotNull
         public SimpleAuthBuilder withPassword(@Nullable final byte[] password) {
-            this.password = Mqtt5BuilderUtil.binaryDataOrNull(password);
+            this.password = MqttBuilderUtil.binaryDataOrNull(password);
             return this;
         }
 
         @NotNull
         public SimpleAuthBuilder withPassword(@Nullable final ByteBuffer password) {
-            this.password = Mqtt5BuilderUtil.binaryDataOrNull(password);
+            this.password = MqttBuilderUtil.binaryDataOrNull(password);
             return this;
         }
 

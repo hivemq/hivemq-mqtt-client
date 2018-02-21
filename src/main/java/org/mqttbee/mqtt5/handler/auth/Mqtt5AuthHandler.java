@@ -12,15 +12,15 @@ import org.mqttbee.api.mqtt5.message.auth.Mqtt5EnhancedAuthBuilder;
 import org.mqttbee.api.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.api.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
+import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
+import org.mqttbee.mqtt.message.auth.MqttAuthImpl;
+import org.mqttbee.mqtt.message.auth.MqttEnhancedAuthBuilderImpl;
+import org.mqttbee.mqtt.message.connect.MqttConnectImpl;
+import org.mqttbee.mqtt.message.connect.MqttConnectWrapper;
+import org.mqttbee.mqtt.message.connect.connack.MqttConnAckImpl;
 import org.mqttbee.mqtt5.Mqtt5ClientDataImpl;
 import org.mqttbee.mqtt5.handler.disconnect.Mqtt5DisconnectUtil;
 import org.mqttbee.mqtt5.handler.util.DefaultChannelOutboundHandler;
-import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
-import org.mqttbee.mqtt5.message.auth.Mqtt5AuthImpl;
-import org.mqttbee.mqtt5.message.auth.Mqtt5EnhancedAuthBuilderImpl;
-import org.mqttbee.mqtt5.message.connect.Mqtt5ConnectImpl;
-import org.mqttbee.mqtt5.message.connect.Mqtt5ConnectWrapper;
-import org.mqttbee.mqtt5.message.connect.connack.Mqtt5ConnAckImpl;
 
 /**
  * Enhanced auth handling according during connection according to the MQTT 5 specification.
@@ -35,8 +35,8 @@ public class Mqtt5AuthHandler extends AbstractMqtt5AuthHandler implements Defaul
 
     @Override
     public void write(final ChannelHandlerContext ctx, final Object msg, final ChannelPromise promise) {
-        if (msg instanceof Mqtt5ConnectImpl) {
-            writeConnect(ctx, (Mqtt5ConnectImpl) msg, promise);
+        if (msg instanceof MqttConnectImpl) {
+            writeConnect(ctx, (MqttConnectImpl) msg, promise);
         } else {
             ctx.write(msg, promise);
         }
@@ -55,15 +55,16 @@ public class Mqtt5AuthHandler extends AbstractMqtt5AuthHandler implements Defaul
      * @param promise the write promise of the CONNECT message.
      */
     private void writeConnect(
-            @NotNull final ChannelHandlerContext ctx, @NotNull final Mqtt5ConnectImpl connect, @NotNull final ChannelPromise promise) {
+            @NotNull final ChannelHandlerContext ctx, @NotNull final MqttConnectImpl connect,
+            @NotNull final ChannelPromise promise) {
 
         final Mqtt5ClientDataImpl clientData = Mqtt5ClientDataImpl.from(ctx.channel());
         final Mqtt5EnhancedAuthProvider enhancedAuthProvider = getEnhancedAuthProvider(clientData);
-        final Mqtt5EnhancedAuthBuilderImpl enhancedAuthBuilder =
-                new Mqtt5EnhancedAuthBuilderImpl((Mqtt5UTF8StringImpl) enhancedAuthProvider.getMethod());
+        final MqttEnhancedAuthBuilderImpl enhancedAuthBuilder =
+                new MqttEnhancedAuthBuilderImpl((MqttUTF8StringImpl) enhancedAuthProvider.getMethod());
 
         enhancedAuthProvider.onAuth(clientData, connect, enhancedAuthBuilder).thenRunAsync(() -> {
-            final Mqtt5ConnectWrapper connectWrapper =
+            final MqttConnectWrapper connectWrapper =
                     connect.wrap(clientData.getRawClientIdentifier(), enhancedAuthBuilder.build());
             ctx.writeAndFlush(connectWrapper, promise).addListener(this);
         }, ctx.executor());
@@ -71,10 +72,10 @@ public class Mqtt5AuthHandler extends AbstractMqtt5AuthHandler implements Defaul
 
     @Override
     public void channelRead(final ChannelHandlerContext ctx, final Object msg) {
-        if (msg instanceof Mqtt5ConnAckImpl) {
-            readConnAck(ctx, (Mqtt5ConnAckImpl) msg);
-        } else if (msg instanceof Mqtt5AuthImpl) {
-            readAuth(ctx, (Mqtt5AuthImpl) msg);
+        if (msg instanceof MqttConnAckImpl) {
+            readConnAck(ctx, (MqttConnAckImpl) msg);
+        } else if (msg instanceof MqttAuthImpl) {
+            readAuth(ctx, (MqttAuthImpl) msg);
         } else {
             ctx.fireChannelRead(msg);
         }
@@ -94,7 +95,7 @@ public class Mqtt5AuthHandler extends AbstractMqtt5AuthHandler implements Defaul
      * @param connAck the received CONNACK message.
      */
     private void readConnAck(
-            @NotNull final ChannelHandlerContext ctx, @NotNull final Mqtt5ConnAckImpl connAck) {
+            @NotNull final ChannelHandlerContext ctx, @NotNull final MqttConnAckImpl connAck) {
         cancelTimeout();
 
         final Mqtt5ClientDataImpl clientData = Mqtt5ClientDataImpl.from(ctx.channel());
@@ -130,7 +131,7 @@ public class Mqtt5AuthHandler extends AbstractMqtt5AuthHandler implements Defaul
      * @return true if the enhanced auth data of the CONNACK message is valid, otherwise false.
      */
     private boolean validateConnAck(
-            @NotNull final Channel channel, @NotNull final Mqtt5ConnAckImpl connAck,
+            @NotNull final Channel channel, @NotNull final MqttConnAckImpl connAck,
             @NotNull final Mqtt5EnhancedAuthProvider enhancedAuthProvider) {
 
         final Mqtt5EnhancedAuth enhancedAuth = connAck.getRawEnhancedAuth();
@@ -157,7 +158,7 @@ public class Mqtt5AuthHandler extends AbstractMqtt5AuthHandler implements Defaul
      */
     @Override
     void readAuthSuccess(
-            @NotNull final ChannelHandlerContext ctx, @NotNull final Mqtt5AuthImpl auth,
+            @NotNull final ChannelHandlerContext ctx, @NotNull final MqttAuthImpl auth,
             @NotNull final Mqtt5ClientDataImpl clientData,
             @NotNull final Mqtt5EnhancedAuthProvider enhancedAuthProvider) {
 
@@ -175,7 +176,7 @@ public class Mqtt5AuthHandler extends AbstractMqtt5AuthHandler implements Defaul
      */
     @Override
     void readReAuth(
-            @NotNull final ChannelHandlerContext ctx, @NotNull final Mqtt5AuthImpl auth,
+            @NotNull final ChannelHandlerContext ctx, @NotNull final MqttAuthImpl auth,
             @NotNull final Mqtt5ClientDataImpl clientData,
             @NotNull final Mqtt5EnhancedAuthProvider enhancedAuthProvider) {
 

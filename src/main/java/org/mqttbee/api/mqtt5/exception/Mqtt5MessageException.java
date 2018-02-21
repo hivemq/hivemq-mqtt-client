@@ -19,13 +19,6 @@ public class Mqtt5MessageException extends Exception {
     }
 
     public Mqtt5MessageException(
-            @NotNull final Mqtt5Message mqtt5Message, @NotNull final Throwable cause) {
-
-        super(cause);
-        this.mqtt5Message = mqtt5Message;
-    }
-
-    public Mqtt5MessageException(
             @NotNull final Mqtt5Message mqtt5Message, @Nullable final String message, @Nullable final Throwable cause) {
 
         super(message, cause);

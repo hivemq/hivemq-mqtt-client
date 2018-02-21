@@ -1,0 +1,83 @@
+package org.mqttbee.mqtt.datatypes;
+
+import com.google.common.collect.ImmutableList;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import org.junit.jupiter.api.Test;
+import org.mqttbee.mqtt.message.MqttProperty;
+
+import static java.util.Objects.requireNonNull;
+import static org.junit.jupiter.api.Assertions.*;
+
+/**
+ * @author Silvio Giebl
+ */
+class MqttUserPropertiesImplTest {
+
+    @Test
+    void test_of() {
+        final MqttUTF8StringImpl name = requireNonNull(MqttUTF8StringImpl.from("name"));
+        final MqttUTF8StringImpl value = requireNonNull(MqttUTF8StringImpl.from("value"));
+        final MqttUserPropertyImpl userProperty = new MqttUserPropertyImpl(name, value);
+        final ImmutableList<MqttUserPropertyImpl> userPropertiesList = ImmutableList.of(userProperty);
+        final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.of(userPropertiesList);
+        assertSame(userPropertiesList, userProperties.asList());
+    }
+
+    @Test
+    void test_build_not_null() {
+        final ImmutableList.Builder<MqttUserPropertyImpl> builder = ImmutableList.builder();
+        final MqttUTF8StringImpl name = requireNonNull(MqttUTF8StringImpl.from("name"));
+        final MqttUTF8StringImpl value = requireNonNull(MqttUTF8StringImpl.from("value"));
+        builder.add(new MqttUserPropertyImpl(name, value));
+        final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.build(builder);
+        final ImmutableList<MqttUserPropertyImpl> userPropertiesList = userProperties.asList();
+        assertEquals(1, userPropertiesList.size());
+        assertEquals(name, userPropertiesList.get(0).getName());
+        assertEquals(value, userPropertiesList.get(0).getValue());
+    }
+
+    @Test
+    void test_build_null() {
+        final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.build(null);
+        assertEquals(MqttUserPropertiesImpl.NO_USER_PROPERTIES, userProperties);
+        assertEquals(0, userProperties.asList().size());
+    }
+
+    @Test
+    void test_encode() {
+        final byte[] expected = {
+                MqttProperty.USER_PROPERTY, 0, 4, 'n', 'a', 'm', 'e', 0, 5, 'v', 'a', 'l', 'u', 'e',
+                MqttProperty.USER_PROPERTY, 0, 4, 'n', 'a', 'm', 'e', 0, 4, 't', 'e', 's', 't'
+        };
+        final MqttUTF8StringImpl name = requireNonNull(MqttUTF8StringImpl.from("name"));
+        final MqttUTF8StringImpl value = requireNonNull(MqttUTF8StringImpl.from("value"));
+        final MqttUTF8StringImpl value2 = requireNonNull(MqttUTF8StringImpl.from("test"));
+        final MqttUserPropertyImpl userProperty1 = new MqttUserPropertyImpl(name, value);
+        final MqttUserPropertyImpl userProperty2 = new MqttUserPropertyImpl(name, value2);
+        final MqttUserPropertiesImpl userProperties =
+                MqttUserPropertiesImpl.of(ImmutableList.of(userProperty1, userProperty2));
+
+        final ByteBuf byteBuf = Unpooled.buffer();
+        userProperties.encode(byteBuf);
+        final byte[] actual = new byte[byteBuf.readableBytes()];
+        byteBuf.readBytes(actual);
+        byteBuf.release();
+
+        assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    void test_encodedLength() {
+        final MqttUTF8StringImpl name = requireNonNull(MqttUTF8StringImpl.from("name"));
+        final MqttUTF8StringImpl value = requireNonNull(MqttUTF8StringImpl.from("value"));
+        final MqttUTF8StringImpl value2 = requireNonNull(MqttUTF8StringImpl.from("test"));
+        final MqttUserPropertyImpl userProperty1 = new MqttUserPropertyImpl(name, value);
+        final MqttUserPropertyImpl userProperty2 = new MqttUserPropertyImpl(name, value2);
+        final MqttUserPropertiesImpl userProperties =
+                MqttUserPropertiesImpl.of(ImmutableList.of(userProperty1, userProperty2));
+
+        assertEquals(27, userProperties.encodedLength());
+    }
+
+}

@@ -4,8 +4,8 @@ import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.Mqtt5ClientBuilder;
 import org.mqttbee.api.mqtt5.message.Mqtt5ClientIdentifier;
-import org.mqttbee.mqtt5.Mqtt5BuilderUtil;
-import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifierImpl;
+import org.mqttbee.mqtt.MqttBuilderUtil;
+import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 
 import java.util.concurrent.Executor;
 
@@ -14,7 +14,7 @@ import java.util.concurrent.Executor;
  */
 public class MqttClientBuilder {
 
-    private Mqtt5ClientIdentifierImpl identifier = Mqtt5ClientIdentifierImpl.REQUEST_CLIENT_IDENTIFIER_FROM_SERVER;
+    private MqttClientIdentifierImpl identifier = MqttClientIdentifierImpl.REQUEST_CLIENT_IDENTIFIER_FROM_SERVER;
     private String serverHost = "localhost";
     private int serverPort = 1883;
     private boolean usesSSL;
@@ -26,13 +26,13 @@ public class MqttClientBuilder {
 
     @NotNull
     public MqttClientBuilder withIdentifier(@NotNull final String identifier) {
-        this.identifier = Mqtt5BuilderUtil.clientIdentifier(identifier);
+        this.identifier = MqttBuilderUtil.clientIdentifier(identifier);
         return this;
     }
 
     @NotNull
     public MqttClientBuilder withIdentifier(@NotNull final Mqtt5ClientIdentifier identifier) {
-        this.identifier = Mqtt5BuilderUtil.clientIdentifier(identifier);
+        this.identifier = MqttBuilderUtil.clientIdentifier(identifier);
         return this;
     }
 
