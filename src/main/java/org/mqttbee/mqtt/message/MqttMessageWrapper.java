@@ -1,6 +1,7 @@
 package org.mqttbee.mqtt.message;
 
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
 
 /**
@@ -24,6 +25,11 @@ public abstract class MqttMessageWrapper< //
         this.wrapped = wrapped;
     }
 
+    @Override
+    public Mqtt5MessageType getType() {
+        return wrapped.getType();
+    }
+
     /**
      * @return the wrapped MQTT message.
      */
@@ -41,7 +47,7 @@ public abstract class MqttMessageWrapper< //
      * @param <P> the type of the encoder provider for the MQTT message wrapper.
      * @author Silvio Giebl
      */
-    public abstract static class Mqtt5MessageWrapperWithId< //
+    public abstract static class MqttMessageWrapperWithId< //
             W extends MqttMessageWrapper<W, M, P>, //
             M extends MqttWrappedMessage<M, W, P>, //
             P extends MqttMessageEncoderProvider<W>> //
@@ -49,7 +55,7 @@ public abstract class MqttMessageWrapper< //
 
         private final int packetIdentifier;
 
-        protected Mqtt5MessageWrapperWithId(@NotNull final M wrapped, final int packetIdentifier) {
+        protected MqttMessageWrapperWithId(@NotNull final M wrapped, final int packetIdentifier) {
             super(wrapped);
             this.packetIdentifier = packetIdentifier;
         }

@@ -3,6 +3,7 @@ package org.mqttbee.mqtt.message.disconnect;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
@@ -57,6 +58,11 @@ public class MqttDisconnectImpl extends
     @Nullable
     public MqttUTF8StringImpl getRawServerReference() {
         return serverReference;
+    }
+
+    @Override
+    public Mqtt5MessageType getType() {
+        return Mqtt5MessageType.DISCONNECT;
     }
 
     @NotNull

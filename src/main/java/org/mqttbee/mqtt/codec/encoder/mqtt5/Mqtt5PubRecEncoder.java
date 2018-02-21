@@ -1,9 +1,9 @@
 package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
+import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrec.Mqtt5PubRecReasonCode;
 import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageWithUserPropertiesEncoder.Mqtt5MessageWithIdAndOmissibleReasonCodeEncoder;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttPubRecEncoderProvider;
-import org.mqttbee.mqtt.message.MqttMessageType;
 import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRecImpl;
 
 import static org.mqttbee.mqtt.message.publish.pubrec.MqttPubRecImpl.DEFAULT_REASON_CODE;
@@ -17,7 +17,7 @@ public class Mqtt5PubRecEncoder extends
     public static final MqttPubRecEncoderProvider PROVIDER =
             new MqttPubRecEncoderProvider(Mqtt5PubRecEncoder::new, Mqtt5PubRelEncoder.PROVIDER);
 
-    private static final int FIXED_HEADER = MqttMessageType.PUBREC.getCode() << 4;
+    private static final int FIXED_HEADER = Mqtt5MessageType.PUBREC.getCode() << 4;
 
     @Override
     protected int getFixedHeader() {

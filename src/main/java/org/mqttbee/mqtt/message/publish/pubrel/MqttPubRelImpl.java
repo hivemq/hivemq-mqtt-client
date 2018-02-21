@@ -2,6 +2,7 @@ package org.mqttbee.mqtt.message.publish.pubrel;
 
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrel.Mqtt5PubRel;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrel.Mqtt5PubRelReasonCode;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttPubRelEncoderProvider;
@@ -26,6 +27,11 @@ public class MqttPubRelImpl
             @NotNull final MqttPubRelEncoderProvider encoderProvider) {
 
         super(packetIdentifier, reasonCode, reasonString, userProperties, encoderProvider);
+    }
+
+    @Override
+    public Mqtt5MessageType getType() {
+        return Mqtt5MessageType.PUBREL;
     }
 
     @NotNull

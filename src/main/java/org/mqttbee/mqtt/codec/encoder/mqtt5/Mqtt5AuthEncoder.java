@@ -3,10 +3,10 @@ package org.mqttbee.mqtt.codec.encoder.mqtt5;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageWithUserPropertiesEncoder.Mqtt5MessageWithReasonStringEncoder;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
-import org.mqttbee.mqtt.message.MqttMessageType;
 import org.mqttbee.mqtt.message.auth.MqttAuthImpl;
 import org.mqttbee.mqtt5.Mqtt5ServerConnectionDataImpl;
 
@@ -22,7 +22,7 @@ public class Mqtt5AuthEncoder
 
     public static final MqttMessageEncoderProvider<MqttAuthImpl> PROVIDER = Mqtt5AuthEncoder::new;
 
-    private static final int FIXED_HEADER = MqttMessageType.AUTH.getCode() << 4;
+    private static final int FIXED_HEADER = Mqtt5MessageType.AUTH.getCode() << 4;
     private static final int VARIABLE_HEADER_FIXED_LENGTH = 1; // reason code
 
     @Override

@@ -2,13 +2,13 @@ package org.mqttbee.mqtt.message.subscribe;
 
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
-import org.mqttbee.mqtt.message.MqttMessageWrapper.Mqtt5MessageWrapperWithId;
+import org.mqttbee.mqtt.message.MqttMessageWrapper.MqttMessageWrapperWithId;
 
 /**
  * @author Silvio Giebl
  */
 public class MqttSubscribeWrapper extends
-        Mqtt5MessageWrapperWithId<MqttSubscribeWrapper, MqttSubscribeImpl, MqttMessageEncoderProvider<MqttSubscribeWrapper>> {
+        MqttMessageWrapperWithId<MqttSubscribeWrapper, MqttSubscribeImpl, MqttMessageEncoderProvider<MqttSubscribeWrapper>> {
 
     public static final int DEFAULT_NO_SUBSCRIPTION_IDENTIFIER = -1;
 

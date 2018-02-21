@@ -7,11 +7,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAckReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
-import org.mqttbee.mqtt.message.MqttMessageType;
 import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAckImpl;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,7 +25,7 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
 
     Mqtt5SubAckDecoderTest() {
         super(code -> {
-            if (code == MqttMessageType.SUBACK.getCode()) {
+            if (code == Mqtt5MessageType.SUBACK.getCode()) {
                 return new Mqtt5SubAckDecoder();
             }
             return null;

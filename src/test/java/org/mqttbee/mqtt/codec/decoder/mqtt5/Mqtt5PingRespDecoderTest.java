@@ -4,10 +4,10 @@ import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.ping.Mqtt5PingResp;
-import org.mqttbee.mqtt.message.MqttMessageType;
 import org.mqttbee.mqtt5.netty.ChannelAttributes;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -19,7 +19,7 @@ class Mqtt5PingRespDecoderTest extends AbstractMqtt5DecoderTest {
 
     Mqtt5PingRespDecoderTest() {
         super(code -> {
-            if (code == MqttMessageType.PINGRESP.getCode()) {
+            if (code == Mqtt5MessageType.PINGRESP.getCode()) {
                 return new Mqtt5PingRespDecoder();
             }
             return null;

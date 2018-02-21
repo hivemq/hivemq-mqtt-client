@@ -5,11 +5,11 @@ import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubCompReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
-import org.mqttbee.mqtt.message.MqttMessageType;
 import org.mqttbee.mqtt.message.publish.pubcomp.MqttPubCompImpl;
 import org.mqttbee.mqtt5.netty.ChannelAttributes;
 
@@ -22,7 +22,7 @@ class Mqtt5PubCompDecoderTest extends AbstractMqtt5DecoderTest {
 
     Mqtt5PubCompDecoderTest() {
         super(code -> {
-            if (code == MqttMessageType.PUBCOMP.getCode()) {
+            if (code == Mqtt5MessageType.PUBCOMP.getCode()) {
                 return new Mqtt5PubCompDecoder();
             }
             return null;

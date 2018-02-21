@@ -7,11 +7,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrec.Mqtt5PubRecReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
-import org.mqttbee.mqtt.message.MqttMessageType;
 import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRecImpl;
 
 import static org.junit.Assert.*;
@@ -26,7 +26,7 @@ class Mqtt5PubRecDecoderTest extends AbstractMqtt5DecoderTest {
 
     Mqtt5PubRecDecoderTest() {
         super(code -> {
-            if (code == MqttMessageType.PUBREC.getCode()) {
+            if (code == Mqtt5MessageType.PUBREC.getCode()) {
                 return new Mqtt5PubRecDecoder();
             }
             return null;

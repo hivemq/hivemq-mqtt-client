@@ -5,12 +5,12 @@ import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5Auth;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
-import org.mqttbee.mqtt.message.MqttMessageType;
 import org.mqttbee.mqtt.message.auth.MqttAuthImpl;
 import org.mqttbee.mqtt5.netty.ChannelAttributes;
 
@@ -25,7 +25,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
 
     Mqtt5AuthDecoderTest() {
         super(code -> {
-            if (code == MqttMessageType.AUTH.getCode()) {
+            if (code == Mqtt5MessageType.AUTH.getCode()) {
                 return new Mqtt5AuthDecoder();
             }
             return null;

@@ -13,8 +13,7 @@ import org.mqttbee.mqtt.message.MqttMessage;
 public class MqttMaximumPacketSizeExceededException extends RuntimeException {
 
     public MqttMaximumPacketSizeExceededException(@NotNull final MqttMessage message, final int maxPacketSize) {
-        // TODO replace simple name
-        super("packet size exceeded for " + message.getClass().getSimpleName() + ", encoded length: " +
+        super("packet size exceeded for " + message.getType() + ", encoded length: " +
                 message.getEncoder().encodedLength(Integer.MAX_VALUE) + ", maximum: " + maxPacketSize);
     }
 

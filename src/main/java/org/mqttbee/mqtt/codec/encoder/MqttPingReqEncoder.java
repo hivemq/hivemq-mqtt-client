@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt.message.MqttMessageType;
+import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 
 /**
  * @author Silvio Giebl
@@ -15,7 +15,7 @@ public class MqttPingReqEncoder implements MqttMessageEncoder {
 
     private static final int ENCODED_LENGTH = 2;
     private static final ByteBuf PACKET =
-            Unpooled.directBuffer(ENCODED_LENGTH).writeByte(MqttMessageType.PINGREQ.getCode() << 4).writeByte(0);
+            Unpooled.directBuffer(ENCODED_LENGTH).writeByte(Mqtt5MessageType.PINGREQ.getCode() << 4).writeByte(0);
 
     @Override
     public int encodedLength(final int maxPacketSize) {
