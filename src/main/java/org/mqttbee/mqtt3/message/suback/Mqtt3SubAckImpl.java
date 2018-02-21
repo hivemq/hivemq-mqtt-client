@@ -4,16 +4,17 @@ import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt3.message.Mqtt3SubAck;
+import org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAck;
+import org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAckReturnCode;
 import org.mqttbee.mqtt3.message.Mqtt3Message;
 
 public class Mqtt3SubAckImpl implements Mqtt3SubAck, Mqtt3Message {
 
     private final int packetId;
-    private final ImmutableList<Mqtt3SubAckReasonCode> reasonCodes;
+    private final ImmutableList<Mqtt3SubAckReturnCode> reasonCodes;
 
     public Mqtt3SubAckImpl(
-            final int packetId, final ImmutableList<Mqtt3SubAckReasonCode> reasonCodes) {
+            final int packetId, final ImmutableList<Mqtt3SubAckReturnCode> reasonCodes) {
         this.packetId = packetId;
         this.reasonCodes = reasonCodes;
     }
@@ -37,7 +38,7 @@ public class Mqtt3SubAckImpl implements Mqtt3SubAck, Mqtt3Message {
 
     @NotNull
     @Override
-    public ImmutableList<Mqtt3SubAckReasonCode> getReasonCodes() {
+    public ImmutableList<Mqtt3SubAckReturnCode> getReasonCodes() {
         return reasonCodes;
     }
 

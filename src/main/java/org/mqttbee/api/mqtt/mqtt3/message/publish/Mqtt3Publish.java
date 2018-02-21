@@ -1,4 +1,4 @@
-package org.mqttbee.api.mqtt3.message;
+package org.mqttbee.api.mqtt.mqtt3.message.publish;
 
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.message.Mqtt5QoS;

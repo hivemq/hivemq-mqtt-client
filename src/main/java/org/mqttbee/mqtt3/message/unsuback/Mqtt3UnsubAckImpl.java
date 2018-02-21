@@ -3,7 +3,7 @@ package org.mqttbee.mqtt3.message.unsuback;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt3.message.Mqtt3UnsubAck;
+import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.unsuback.Mqtt3UnsubAck;
 import org.mqttbee.mqtt3.message.Mqtt3Message;
 
 public class Mqtt3UnsubAckImpl implements Mqtt3UnsubAck, Mqtt3Message {

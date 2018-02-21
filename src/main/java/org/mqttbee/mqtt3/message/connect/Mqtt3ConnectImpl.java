@@ -3,7 +3,7 @@ package org.mqttbee.mqtt3.message.connect;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt3.message.Mqtt3Connect;
+import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3Connect;
 import org.mqttbee.mqtt3.codec.encoder.Mqtt3ConnectEncoder;
 import org.mqttbee.mqtt3.message.Mqtt3Message;
 import org.mqttbee.mqtt3.message.publish.Mqtt3PublishImpl;

@@ -1,8 +1,7 @@
-package org.mqttbee.api.mqtt3.message;
+package org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback;
 
 import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt3.message.suback.Mqtt3SubAckReasonCode;
 
 public interface Mqtt3SubAck {
 
@@ -11,6 +10,6 @@ public interface Mqtt3SubAck {
      * packet in the same order.
      */
     @NotNull
-    ImmutableList<Mqtt3SubAckReasonCode> getReasonCodes();
+    ImmutableList<Mqtt3SubAckReturnCode> getReasonCodes();
 
 }

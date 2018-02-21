@@ -1,6 +1,6 @@
-package org.mqttbee.mqtt3.message.suback;
+package org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback;
 
-public enum Mqtt3SubAckReasonCode {
+public enum Mqtt3SubAckReturnCode {
 
 
     SUCCESS_MAXIMUM_QOS_0(0),
@@ -11,12 +11,12 @@ public enum Mqtt3SubAckReasonCode {
 
     private final int code;
 
-    Mqtt3SubAckReasonCode(final int code) {
+    Mqtt3SubAckReturnCode(final int code) {
         this.code = code;
     }
 
 
-    public static Mqtt3SubAckReasonCode from(final int code) {
+    public static Mqtt3SubAckReturnCode from(final int code) {
         switch (code) {
             case 0:
                 return SUCCESS_MAXIMUM_QOS_0;

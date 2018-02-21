@@ -8,9 +8,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt3.message.Mqtt3ConnAck;
+import org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck;
+import org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAckReturnCode;
 import org.mqttbee.mqtt3.message.Mqtt3MessageType;
-import org.mqttbee.mqtt3.message.connack.Mqtt3ConnAckReasonCode;
 import org.mqttbee.mqtt3.message.puback.Mqtt3PubAckImpl;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -73,7 +73,7 @@ class Mqtt3ConnAckDecoderTest {
         channel.writeInbound(byteBuf);
         final Mqtt3ConnAck connAck = channel.readInbound();
         assertNotNull(connAck);
-        assertEquals(Mqtt3ConnAckReasonCode.SUCCESS, connAck.getReasonCode());
+        assertEquals(Mqtt3ConnAckReturnCode.SUCCESS, connAck.getReasonCode());
         assertEquals(sessionPresent, connAck.isSessionPresent());
     }
 
@@ -89,7 +89,7 @@ class Mqtt3ConnAckDecoderTest {
         channel.writeInbound(byteBuf);
         final Mqtt3ConnAck connAck = channel.readInbound();
         assertNotNull(connAck);
-        assertEquals(Mqtt3ConnAckReasonCode.UNSUPPORTED_PROTOCOL_VERSION, connAck.getReasonCode());
+        assertEquals(Mqtt3ConnAckReturnCode.UNSUPPORTED_PROTOCOL_VERSION, connAck.getReasonCode());
         assertEquals(sessionPresent, connAck.isSessionPresent());
     }
 
@@ -104,7 +104,7 @@ class Mqtt3ConnAckDecoderTest {
         channel.writeInbound(byteBuf);
         final Mqtt3ConnAck connAck = channel.readInbound();
         assertNotNull(connAck);
-        assertEquals(Mqtt3ConnAckReasonCode.IDENTIFIER_REJECTED, connAck.getReasonCode());
+        assertEquals(Mqtt3ConnAckReturnCode.IDENTIFIER_REJECTED, connAck.getReasonCode());
         assertEquals(sessionPresent, connAck.isSessionPresent());
     }
 
@@ -119,7 +119,7 @@ class Mqtt3ConnAckDecoderTest {
         channel.writeInbound(byteBuf);
         final Mqtt3ConnAck connAck = channel.readInbound();
         assertNotNull(connAck);
-        assertEquals(Mqtt3ConnAckReasonCode.SERVER_UNAVAILABLE, connAck.getReasonCode());
+        assertEquals(Mqtt3ConnAckReturnCode.SERVER_UNAVAILABLE, connAck.getReasonCode());
         assertEquals(sessionPresent, connAck.isSessionPresent());
     }
 
@@ -135,7 +135,7 @@ class Mqtt3ConnAckDecoderTest {
         channel.writeInbound(byteBuf);
         final Mqtt3ConnAck connAck = channel.readInbound();
         assertNotNull(connAck);
-        assertEquals(Mqtt3ConnAckReasonCode.BAD_USERNAME_OR_PASSWORD, connAck.getReasonCode());
+        assertEquals(Mqtt3ConnAckReturnCode.BAD_USERNAME_OR_PASSWORD, connAck.getReasonCode());
         assertEquals(sessionPresent, connAck.isSessionPresent());
     }
 
@@ -150,7 +150,7 @@ class Mqtt3ConnAckDecoderTest {
         channel.writeInbound(byteBuf);
         final Mqtt3ConnAck connAck = channel.readInbound();
         assertNotNull(connAck);
-        assertEquals(Mqtt3ConnAckReasonCode.NOT_AUTHORIZED, connAck.getReasonCode());
+        assertEquals(Mqtt3ConnAckReturnCode.NOT_AUTHORIZED, connAck.getReasonCode());
         assertEquals(sessionPresent, connAck.isSessionPresent());
     }
 

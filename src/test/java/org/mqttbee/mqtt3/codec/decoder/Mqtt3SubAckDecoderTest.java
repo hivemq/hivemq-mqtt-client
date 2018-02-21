@@ -8,9 +8,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAckReturnCode;
 import org.mqttbee.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.mqtt3.message.suback.Mqtt3SubAckImpl;
-import org.mqttbee.mqtt3.message.suback.Mqtt3SubAckReasonCode;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -69,10 +69,10 @@ class Mqtt3SubAckDecoderTest {
         final Mqtt3SubAckImpl subAckImpl = channel.readInbound();
         assertNotNull(subAckImpl);
         assertEquals(useMaxPacketId ? 65535 : 0, subAckImpl.getPacketId());
-        assertEquals(Mqtt3SubAckReasonCode.SUCCESS_MAXIMUM_QOS_0, subAckImpl.getReasonCodes().get(0));
-        assertEquals(Mqtt3SubAckReasonCode.SUCCESS_MAXIMUM_QOS_1, subAckImpl.getReasonCodes().get(1));
-        assertEquals(Mqtt3SubAckReasonCode.SUCCESS_MAXIMUM_QOS_2, subAckImpl.getReasonCodes().get(2));
-        assertEquals(Mqtt3SubAckReasonCode.FAILURE, subAckImpl.getReasonCodes().get(3));
+        assertEquals(Mqtt3SubAckReturnCode.SUCCESS_MAXIMUM_QOS_0, subAckImpl.getReasonCodes().get(0));
+        assertEquals(Mqtt3SubAckReturnCode.SUCCESS_MAXIMUM_QOS_1, subAckImpl.getReasonCodes().get(1));
+        assertEquals(Mqtt3SubAckReturnCode.SUCCESS_MAXIMUM_QOS_2, subAckImpl.getReasonCodes().get(2));
+        assertEquals(Mqtt3SubAckReturnCode.FAILURE, subAckImpl.getReasonCodes().get(3));
     }
 
 
