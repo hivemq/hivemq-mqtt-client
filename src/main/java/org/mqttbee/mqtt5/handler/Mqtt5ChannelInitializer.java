@@ -6,14 +6,14 @@ import io.netty.channel.socket.SocketChannel;
 import io.reactivex.SingleEmitter;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.message.connect.connack.Mqtt5ConnAck;
+import org.mqttbee.mqtt.codec.encoder.MqttEncoder;
+import org.mqttbee.mqtt.message.connect.MqttConnectImpl;
 import org.mqttbee.mqtt5.Mqtt5ClientDataImpl;
 import org.mqttbee.mqtt5.Mqtt5Component;
-import org.mqttbee.mqtt5.codec.encoder.Mqtt5Encoder;
 import org.mqttbee.mqtt5.handler.auth.Mqtt5AuthHandler;
 import org.mqttbee.mqtt5.handler.auth.Mqtt5DisconnectOnAuthHandler;
 import org.mqttbee.mqtt5.handler.connect.Mqtt5ConnectHandler;
 import org.mqttbee.mqtt5.handler.disconnect.Mqtt5DisconnectHandler;
-import org.mqttbee.mqtt5.message.connect.Mqtt5ConnectImpl;
 
 /**
  * Default channel initializer.
@@ -22,12 +22,12 @@ import org.mqttbee.mqtt5.message.connect.Mqtt5ConnectImpl;
  */
 public class Mqtt5ChannelInitializer extends ChannelInitializer<SocketChannel> {
 
-    private final Mqtt5ConnectImpl connect;
+    private final MqttConnectImpl connect;
     private final SingleEmitter<Mqtt5ConnAck> connAckEmitter;
     private final Mqtt5ClientDataImpl clientData;
 
     Mqtt5ChannelInitializer(
-            @NotNull final Mqtt5ConnectImpl connect, @NotNull final SingleEmitter<Mqtt5ConnAck> connAckEmitter,
+            @NotNull final MqttConnectImpl connect, @NotNull final SingleEmitter<Mqtt5ConnAck> connAckEmitter,
             @NotNull final Mqtt5ClientDataImpl clientData) {
 
         this.connect = connect;
@@ -38,7 +38,7 @@ public class Mqtt5ChannelInitializer extends ChannelInitializer<SocketChannel> {
     @Override
     protected void initChannel(final SocketChannel channel) {
         final ChannelPipeline pipeline = channel.pipeline();
-        pipeline.addLast(Mqtt5Encoder.NAME, Mqtt5Component.INSTANCE.encoder());
+        pipeline.addLast(MqttEncoder.NAME, Mqtt5Component.INSTANCE.encoder());
 
         if (connect.getRawEnhancedAuthProvider() == null) {
             pipeline.addLast(Mqtt5DisconnectOnAuthHandler.NAME, Mqtt5Component.INSTANCE.disconnectOnAuthHandler());

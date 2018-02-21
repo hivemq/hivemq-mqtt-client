@@ -4,7 +4,7 @@ import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.message.*;
 import org.mqttbee.api.mqtt5.message.auth.Mqtt5EnhancedAuth;
-import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
+import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.util.UnsignedDataTypes;
 
 import java.util.Optional;
@@ -103,7 +103,7 @@ public interface Mqtt5ConnAck extends Mqtt5Message {
          * The default maximum packet size the server accepts from the client which indicates that the packet size is
          * not limited beyond the restrictions of the encoding.
          */
-        int DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT = Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT;
+        int DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT;
         /**
          * The default maximum QoS the server accepts from the client.
          */

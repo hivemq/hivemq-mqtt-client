@@ -2,9 +2,9 @@ package org.mqttbee.api.mqtt5;
 
 import dagger.internal.Preconditions;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt5.Mqtt5ClientDataImpl;
 import org.mqttbee.mqtt5.Mqtt5ClientImpl;
-import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifierImpl;
 
 import java.util.concurrent.Executor;
 
@@ -13,7 +13,7 @@ import java.util.concurrent.Executor;
  */
 public class Mqtt5ClientBuilder {
 
-    private final Mqtt5ClientIdentifierImpl identifier;
+    private final MqttClientIdentifierImpl identifier;
     private final String serverHost;
     private final int serverPort;
     private final boolean usesSSL;
@@ -24,7 +24,7 @@ public class Mqtt5ClientBuilder {
     private boolean allowsServerReAuth = false;
 
     public Mqtt5ClientBuilder(
-            @NotNull final Mqtt5ClientIdentifierImpl identifier, @NotNull final String serverHost, final int serverPort,
+            @NotNull final MqttClientIdentifierImpl identifier, @NotNull final String serverHost, final int serverPort,
             final boolean usesSSL, final Executor executor, final int numberOfNettyThreads) {
 
         Preconditions.checkNotNull(identifier);

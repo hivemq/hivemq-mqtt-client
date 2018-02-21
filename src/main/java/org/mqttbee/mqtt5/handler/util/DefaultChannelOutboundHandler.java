@@ -7,7 +7,7 @@ import io.netty.channel.ChannelPromise;
 import java.net.SocketAddress;
 
 /**
- * Default interface to make it easier to extend a subsclass of {@link io.netty.channel.ChannelInboundHandlerAdapter}
+ * Default interface to make it easier to extend a subclass of {@link io.netty.channel.ChannelInboundHandlerAdapter}
  * and also implement {@link ChannelOutboundHandler}.
  *
  * @author Silvio Giebl

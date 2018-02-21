@@ -7,44 +7,44 @@ import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.api.mqtt5.message.Mqtt5Topic;
 import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.api.mqtt5.message.Mqtt5UserProperties;
-import org.mqttbee.mqtt5.Mqtt5BuilderUtil;
-import org.mqttbee.mqtt5.codec.encoder.Mqtt5PublishEncoder;
-import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
-import org.mqttbee.mqtt5.message.Mqtt5UTF8StringImpl;
-import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
-import org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl;
+import org.mqttbee.mqtt.MqttBuilderUtil;
+import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5PublishEncoder;
+import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
+import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
+import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
+import org.mqttbee.mqtt.message.publish.MqttPublishImpl;
 import org.mqttbee.util.ByteBufferUtil;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 import org.mqttbee.util.UnsignedDataTypes;
 
 import java.nio.ByteBuffer;
 
-import static org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl.DEFAULT_TOPIC_ALIAS_USAGE;
-import static org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY;
+import static org.mqttbee.mqtt.message.publish.MqttPublishImpl.DEFAULT_TOPIC_ALIAS_USAGE;
+import static org.mqttbee.mqtt.message.publish.MqttPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY;
 
 /**
  * @author Silvio Giebl
  */
 public class Mqtt5PublishBuilder {
 
-    Mqtt5TopicImpl topic;
+    MqttTopicImpl topic;
     ByteBuffer payload;
     Mqtt5QoS qos;
     boolean retain;
     long messageExpiryInterval = MESSAGE_EXPIRY_INTERVAL_INFINITY;
     Mqtt5PayloadFormatIndicator payloadFormatIndicator;
-    Mqtt5UTF8StringImpl contentType;
-    Mqtt5TopicImpl responseTopic;
+    MqttUTF8StringImpl contentType;
+    MqttTopicImpl responseTopic;
     ByteBuffer correlationData;
     private TopicAliasUsage topicAliasUsage = DEFAULT_TOPIC_ALIAS_USAGE;
-    Mqtt5UserPropertiesImpl userProperties = Mqtt5UserPropertiesImpl.NO_USER_PROPERTIES;
+    MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
 
     Mqtt5PublishBuilder() {
     }
 
     Mqtt5PublishBuilder(@NotNull final Mqtt5Publish publish) {
-        final Mqtt5PublishImpl publishImpl =
-                MustNotBeImplementedUtil.checkNotImplemented(publish, Mqtt5PublishImpl.class);
+        final MqttPublishImpl publishImpl =
+                MustNotBeImplementedUtil.checkNotImplemented(publish, MqttPublishImpl.class);
         topic = publishImpl.getTopic();
         payload = publishImpl.getRawPayload();
         qos = publishImpl.getQos();
@@ -60,13 +60,13 @@ public class Mqtt5PublishBuilder {
 
     @NotNull
     public Mqtt5PublishBuilder withTopic(@NotNull final String topic) {
-        this.topic = Mqtt5BuilderUtil.topic(topic);
+        this.topic = MqttBuilderUtil.topic(topic);
         return this;
     }
 
     @NotNull
     public Mqtt5PublishBuilder withTopic(@NotNull final Mqtt5Topic topic) {
-        this.topic = Mqtt5BuilderUtil.topic(topic);
+        this.topic = MqttBuilderUtil.topic(topic);
         return this;
     }
 
@@ -111,37 +111,37 @@ public class Mqtt5PublishBuilder {
 
     @NotNull
     public Mqtt5PublishBuilder withContentType(@Nullable final String contentType) {
-        this.contentType = Mqtt5BuilderUtil.stringOrNull(contentType);
+        this.contentType = MqttBuilderUtil.stringOrNull(contentType);
         return this;
     }
 
     @NotNull
     public Mqtt5PublishBuilder withContentType(@Nullable final Mqtt5UTF8String contentType) {
-        this.contentType = Mqtt5BuilderUtil.stringOrNull(contentType);
+        this.contentType = MqttBuilderUtil.stringOrNull(contentType);
         return this;
     }
 
     @NotNull
     public Mqtt5PublishBuilder withResponseTopic(@Nullable final String responseTopic) {
-        this.responseTopic = Mqtt5BuilderUtil.topicOrNull(responseTopic);
+        this.responseTopic = MqttBuilderUtil.topicOrNull(responseTopic);
         return this;
     }
 
     @NotNull
     public Mqtt5PublishBuilder withResponseTopic(@Nullable final Mqtt5Topic responseTopic) {
-        this.responseTopic = Mqtt5BuilderUtil.topicOrNull(responseTopic);
+        this.responseTopic = MqttBuilderUtil.topicOrNull(responseTopic);
         return this;
     }
 
     @NotNull
     public Mqtt5PublishBuilder withCorrelationData(@Nullable final byte[] correlationData) {
-        this.correlationData = Mqtt5BuilderUtil.binaryDataOrNull(correlationData);
+        this.correlationData = MqttBuilderUtil.binaryDataOrNull(correlationData);
         return this;
     }
 
     @NotNull
     public Mqtt5PublishBuilder withCorrelationData(@Nullable final ByteBuffer correlationData) {
-        this.correlationData = Mqtt5BuilderUtil.binaryDataOrNull(correlationData);
+        this.correlationData = MqttBuilderUtil.binaryDataOrNull(correlationData);
         return this;
     }
 
@@ -155,7 +155,7 @@ public class Mqtt5PublishBuilder {
     @NotNull
     public Mqtt5PublishBuilder withUserProperties(@NotNull final Mqtt5UserProperties userProperties) {
         this.userProperties =
-                MustNotBeImplementedUtil.checkNotImplemented(userProperties, Mqtt5UserPropertiesImpl.class);
+                MustNotBeImplementedUtil.checkNotImplemented(userProperties, MqttUserPropertiesImpl.class);
         return this;
     }
 
@@ -163,7 +163,7 @@ public class Mqtt5PublishBuilder {
     public Mqtt5Publish build() {
         Preconditions.checkNotNull(topic);
         Preconditions.checkNotNull(qos);
-        return new Mqtt5PublishImpl(topic, payload, qos, retain, messageExpiryInterval, payloadFormatIndicator,
+        return new MqttPublishImpl(topic, payload, qos, retain, messageExpiryInterval, payloadFormatIndicator,
                 contentType, responseTopic, correlationData, topicAliasUsage, userProperties,
                 Mqtt5PublishEncoder.PROVIDER);
     }

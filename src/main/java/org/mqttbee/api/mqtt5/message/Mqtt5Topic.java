@@ -3,7 +3,7 @@ package org.mqttbee.api.mqtt5.message;
 import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt5.Mqtt5BuilderUtil;
+import org.mqttbee.mqtt.MqttBuilderUtil;
 
 /**
  * MQTT Topic Name according to the MQTT 5 specification.
@@ -30,7 +30,7 @@ public interface Mqtt5Topic extends Mqtt5UTF8String {
      */
     @NotNull
     static Mqtt5Topic from(@NotNull final String string) {
-        return Mqtt5BuilderUtil.topic(string);
+        return MqttBuilderUtil.topic(string);
     }
 
     @NotNull

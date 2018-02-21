@@ -3,7 +3,7 @@ package org.mqttbee.api.mqtt5.message.subscribe.suback;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5ReasonCode;
-import org.mqttbee.mqtt5.message.Mqtt5CommonReasonCode;
+import org.mqttbee.mqtt.message.MqttCommonReasonCode;
 
 /**
  * MQTT Reason Codes that can be used in SUBACK packets according to the MQTT 5 specification.
@@ -15,15 +15,15 @@ public enum Mqtt5SubAckReasonCode implements Mqtt5ReasonCode {
     GRANTED_QOS_0(0x00),
     GRANTED_QOS_1(0x01),
     GRANTED_QOS_2(0x02),
-    UNSPECIFIED_ERROR(Mqtt5CommonReasonCode.UNSPECIFIED_ERROR),
-    IMPLEMENTATION_SPECIFIC_ERROR(Mqtt5CommonReasonCode.IMPLEMENTATION_SPECIFIC_ERROR),
-    NOT_AUTHORIZED(Mqtt5CommonReasonCode.NOT_AUTHORIZED),
-    TOPIC_FILTER_INVALID(Mqtt5CommonReasonCode.TOPIC_FILTER_INVALID),
-    PACKET_IDENTIFIER_IN_USE(Mqtt5CommonReasonCode.PACKET_IDENTIFIER_IN_USE),
-    QUOTA_EXCEEDED(Mqtt5CommonReasonCode.QUOTA_EXCEEDED),
-    SHARED_SUBSCRIPTION_NOT_SUPPORTED(Mqtt5CommonReasonCode.SHARED_SUBSCRIPTION_NOT_SUPPORTED),
-    SUBSCRIPTION_IDENTIFIERS_NOT_SUPPORTED(Mqtt5CommonReasonCode.SUBSCRIPTION_IDENTIFIERS_NOT_SUPPORTED),
-    WILDCARD_SUBSCRIPTION_NOT_SUPPORTED(Mqtt5CommonReasonCode.WILDCARD_SUBSCRIPTION_NOT_SUPPORTED);
+    UNSPECIFIED_ERROR(MqttCommonReasonCode.UNSPECIFIED_ERROR),
+    IMPLEMENTATION_SPECIFIC_ERROR(MqttCommonReasonCode.IMPLEMENTATION_SPECIFIC_ERROR),
+    NOT_AUTHORIZED(MqttCommonReasonCode.NOT_AUTHORIZED),
+    TOPIC_FILTER_INVALID(MqttCommonReasonCode.TOPIC_FILTER_INVALID),
+    PACKET_IDENTIFIER_IN_USE(MqttCommonReasonCode.PACKET_IDENTIFIER_IN_USE),
+    QUOTA_EXCEEDED(MqttCommonReasonCode.QUOTA_EXCEEDED),
+    SHARED_SUBSCRIPTION_NOT_SUPPORTED(MqttCommonReasonCode.SHARED_SUBSCRIPTION_NOT_SUPPORTED),
+    SUBSCRIPTION_IDENTIFIERS_NOT_SUPPORTED(MqttCommonReasonCode.SUBSCRIPTION_IDENTIFIERS_NOT_SUPPORTED),
+    WILDCARD_SUBSCRIPTION_NOT_SUPPORTED(MqttCommonReasonCode.WILDCARD_SUBSCRIPTION_NOT_SUPPORTED);
 
     private final int code;
 
@@ -31,7 +31,7 @@ public enum Mqtt5SubAckReasonCode implements Mqtt5ReasonCode {
         this.code = code;
     }
 
-    Mqtt5SubAckReasonCode(@NotNull final Mqtt5CommonReasonCode reasonCode) {
+    Mqtt5SubAckReasonCode(@NotNull final MqttCommonReasonCode reasonCode) {
         this(reasonCode.getCode());
     }
 

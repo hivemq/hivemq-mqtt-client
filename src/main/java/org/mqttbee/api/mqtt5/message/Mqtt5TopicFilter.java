@@ -3,7 +3,7 @@ package org.mqttbee.api.mqtt5.message;
 import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt5.Mqtt5BuilderUtil;
+import org.mqttbee.mqtt.MqttBuilderUtil;
 
 /**
  * MQTT Topic Filter according to the MQTT 5 specification.
@@ -34,7 +34,7 @@ public interface Mqtt5TopicFilter extends Mqtt5UTF8String {
      */
     @NotNull
     static Mqtt5TopicFilter from(@NotNull final String string) {
-        return Mqtt5BuilderUtil.topicFilter(string);
+        return MqttBuilderUtil.topicFilter(string);
     }
 
     @NotNull

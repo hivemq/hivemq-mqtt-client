@@ -17,7 +17,7 @@ import org.mqttbee.api.mqtt5.message.subscribe.Mqtt5SubscribeResult;
 import org.mqttbee.api.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.api.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.api.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
-import org.mqttbee.mqtt5.message.connect.Mqtt5ConnectImpl;
+import org.mqttbee.mqtt.message.connect.MqttConnectImpl;
 import org.mqttbee.rx.FlowableWithSingle;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 
@@ -35,8 +35,8 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
     @NotNull
     @Override
     public Single<Mqtt5ConnAck> connect(@NotNull final Mqtt5Connect connect) {
-        final Mqtt5ConnectImpl connectImpl =
-                MustNotBeImplementedUtil.checkNotImplemented(connect, Mqtt5ConnectImpl.class);
+        final MqttConnectImpl connectImpl =
+                MustNotBeImplementedUtil.checkNotImplemented(connect, MqttConnectImpl.class);
 
         return Single.<Mqtt5ConnAck>create(connAckEmitter -> {
             if (!clientData.setConnecting(true)) {

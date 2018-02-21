@@ -7,7 +7,7 @@ import org.mqttbee.api.mqtt5.message.Mqtt5Message;
 import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.api.mqtt5.message.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt5.message.publish.Mqtt5WillPublish;
-import org.mqttbee.mqtt5.codec.Mqtt5DataTypes;
+import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.util.UnsignedDataTypes;
 
 import java.nio.ByteBuffer;
@@ -145,7 +145,7 @@ public interface Mqtt5Connect extends Mqtt5Message {
          * The default maximum packet size the client accepts from the server which indicates that the packet size is
          * not limited beyond the restrictions of the encoding.
          */
-        int DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT = Mqtt5DataTypes.MAXIMUM_PACKET_SIZE_LIMIT;
+        int DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT;
 
         @NotNull
         static RestrictionsBuilder builder() {

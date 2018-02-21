@@ -9,7 +9,7 @@ import org.mqttbee.api.mqtt5.Mqtt5ClientConnectionData;
 import org.mqttbee.api.mqtt5.Mqtt5ClientData;
 import org.mqttbee.api.mqtt5.Mqtt5ServerConnectionData;
 import org.mqttbee.api.mqtt5.message.Mqtt5ClientIdentifier;
-import org.mqttbee.mqtt5.message.Mqtt5ClientIdentifierImpl;
+import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 
 import java.util.Optional;
 import java.util.concurrent.Executor;
@@ -27,7 +27,7 @@ public class Mqtt5ClientDataImpl implements Mqtt5ClientData {
         return Preconditions.checkNotNull(channel.attr(KEY).get());
     }
 
-    private Mqtt5ClientIdentifierImpl clientIdentifier;
+    private MqttClientIdentifierImpl clientIdentifier;
     private final String serverHost;
     private final int serverPort;
     private final boolean usesSSL;
@@ -41,7 +41,7 @@ public class Mqtt5ClientDataImpl implements Mqtt5ClientData {
     private final int numberOfNettyThreads;
 
     public Mqtt5ClientDataImpl(
-            @NotNull final Mqtt5ClientIdentifierImpl clientIdentifier, @NotNull final String serverHost,
+            @NotNull final MqttClientIdentifierImpl clientIdentifier, @NotNull final String serverHost,
             final int serverPort, final boolean usesSSL, final boolean followsRedirects,
             final boolean allowsServerReAuth, @Nullable final Executor executor, final int numberOfNettyThreads) {
 
@@ -60,16 +60,16 @@ public class Mqtt5ClientDataImpl implements Mqtt5ClientData {
     @NotNull
     @Override
     public Optional<Mqtt5ClientIdentifier> getClientIdentifier() {
-        return (clientIdentifier == Mqtt5ClientIdentifierImpl.REQUEST_CLIENT_IDENTIFIER_FROM_SERVER) ?
+        return (clientIdentifier == MqttClientIdentifierImpl.REQUEST_CLIENT_IDENTIFIER_FROM_SERVER) ?
                 Optional.empty() : Optional.of(clientIdentifier);
     }
 
     @NotNull
-    public Mqtt5ClientIdentifierImpl getRawClientIdentifier() {
+    public MqttClientIdentifierImpl getRawClientIdentifier() {
         return clientIdentifier;
     }
 
-    public void setClientIdentifier(@NotNull final Mqtt5ClientIdentifierImpl clientIdentifier) {
+    public void setClientIdentifier(@NotNull final MqttClientIdentifierImpl clientIdentifier) {
         this.clientIdentifier = clientIdentifier;
     }
 

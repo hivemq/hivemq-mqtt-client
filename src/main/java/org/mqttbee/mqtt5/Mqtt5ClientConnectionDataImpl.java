@@ -6,7 +6,7 @@ import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.Mqtt5ClientConnectionData;
 import org.mqttbee.api.mqtt5.auth.Mqtt5EnhancedAuthProvider;
 import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
-import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;
+import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 
 import java.util.Optional;
 
@@ -18,7 +18,7 @@ public class Mqtt5ClientConnectionDataImpl implements Mqtt5ClientConnectionData 
     private int keepAlive;
     private long sessionExpiryInterval;
     private final int receiveMaximum;
-    private final Mqtt5TopicImpl[] topicAliasMapping;
+    private final MqttTopicImpl[] topicAliasMapping;
     private final int maximumPacketSize;
     private final Mqtt5EnhancedAuthProvider enhancedAuthProvider;
     private final boolean hasWillPublish;
@@ -36,7 +36,7 @@ public class Mqtt5ClientConnectionDataImpl implements Mqtt5ClientConnectionData 
         this.keepAlive = keepAlive;
         this.sessionExpiryInterval = sessionExpiryInterval;
         this.receiveMaximum = receiveMaximum;
-        this.topicAliasMapping = (topicAliasMaximum == 0) ? null : new Mqtt5TopicImpl[topicAliasMaximum];
+        this.topicAliasMapping = (topicAliasMaximum == 0) ? null : new MqttTopicImpl[topicAliasMaximum];
         this.maximumPacketSize = maximumPacketSize;
         this.enhancedAuthProvider = enhancedAuthProvider;
         this.hasWillPublish = hasWillPublish;
@@ -74,7 +74,7 @@ public class Mqtt5ClientConnectionDataImpl implements Mqtt5ClientConnectionData 
     }
 
     @Nullable
-    public Mqtt5TopicImpl[] getTopicAliasMapping() {
+    public MqttTopicImpl[] getTopicAliasMapping() {
         return topicAliasMapping;
     }
 

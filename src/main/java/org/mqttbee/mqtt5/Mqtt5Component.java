@@ -1,9 +1,9 @@
 package org.mqttbee.mqtt5;
 
 import dagger.Component;
-import org.mqttbee.mqtt5.codec.decoder.Mqtt5Decoder;
-import org.mqttbee.mqtt5.codec.decoder.Mqtt5DecoderModule;
-import org.mqttbee.mqtt5.codec.encoder.Mqtt5Encoder;
+import org.mqttbee.mqtt.codec.decoder.Mqtt5DecoderModule;
+import org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5Decoder;
+import org.mqttbee.mqtt.codec.encoder.MqttEncoder;
 import org.mqttbee.mqtt5.handler.Mqtt5ChannelInitializerProvider;
 import org.mqttbee.mqtt5.handler.auth.Mqtt5DisconnectOnAuthHandler;
 import org.mqttbee.mqtt5.handler.auth.Mqtt5ReAuthEvent;
@@ -29,7 +29,7 @@ public interface Mqtt5Component {
 
     Mqtt5Decoder decoder();
 
-    Mqtt5Encoder encoder();
+    MqttEncoder encoder();
 
     Mqtt5DisconnectOnConnAckHandler disconnectOnConnAckHandler();
 

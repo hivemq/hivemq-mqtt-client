@@ -3,7 +3,7 @@ package org.mqttbee.api.mqtt5.message.unsubscribe.unsuback;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5ReasonCode;
-import org.mqttbee.mqtt5.message.Mqtt5CommonReasonCode;
+import org.mqttbee.mqtt.message.MqttCommonReasonCode;
 
 /**
  * MQTT Reason Codes that can be used in UNSUBACK packets according to the MQTT 5 specification.
@@ -12,13 +12,13 @@ import org.mqttbee.mqtt5.message.Mqtt5CommonReasonCode;
  */
 public enum Mqtt5UnsubAckReasonCode implements Mqtt5ReasonCode {
 
-    SUCCESS(Mqtt5CommonReasonCode.SUCCESS),
+    SUCCESS(MqttCommonReasonCode.SUCCESS),
     NO_SUBSCRIPTIONS_EXISTED(0x11),
-    UNSPECIFIED_ERROR(Mqtt5CommonReasonCode.UNSPECIFIED_ERROR),
-    IMPLEMENTATION_SPECIFIC_ERROR(Mqtt5CommonReasonCode.IMPLEMENTATION_SPECIFIC_ERROR),
-    NOT_AUTHORIZED(Mqtt5CommonReasonCode.NOT_AUTHORIZED),
-    TOPIC_FILTER_INVALID(Mqtt5CommonReasonCode.TOPIC_FILTER_INVALID),
-    PACKET_IDENTIFIER_IN_USE(Mqtt5CommonReasonCode.PACKET_IDENTIFIER_IN_USE);
+    UNSPECIFIED_ERROR(MqttCommonReasonCode.UNSPECIFIED_ERROR),
+    IMPLEMENTATION_SPECIFIC_ERROR(MqttCommonReasonCode.IMPLEMENTATION_SPECIFIC_ERROR),
+    NOT_AUTHORIZED(MqttCommonReasonCode.NOT_AUTHORIZED),
+    TOPIC_FILTER_INVALID(MqttCommonReasonCode.TOPIC_FILTER_INVALID),
+    PACKET_IDENTIFIER_IN_USE(MqttCommonReasonCode.PACKET_IDENTIFIER_IN_USE);
 
     private final int code;
 
@@ -26,7 +26,7 @@ public enum Mqtt5UnsubAckReasonCode implements Mqtt5ReasonCode {
         this.code = code;
     }
 
-    Mqtt5UnsubAckReasonCode(@NotNull final Mqtt5CommonReasonCode reasonCode) {
+    Mqtt5UnsubAckReasonCode(@NotNull final MqttCommonReasonCode reasonCode) {
         this(reasonCode.getCode());
     }
 

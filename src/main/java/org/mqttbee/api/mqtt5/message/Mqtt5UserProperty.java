@@ -2,8 +2,8 @@ package org.mqttbee.api.mqtt5.message;
 
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt5.Mqtt5BuilderUtil;
-import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
+import org.mqttbee.mqtt.MqttBuilderUtil;
+import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 
 /**
  * MQTT User Property according to the MQTT 5 specification.
@@ -24,7 +24,7 @@ public interface Mqtt5UserProperty {
      */
     @NotNull
     static Mqtt5UserProperty of(@NotNull final String name, @NotNull final String value) {
-        return Mqtt5UserPropertyImpl.of(Mqtt5BuilderUtil.string(name), Mqtt5BuilderUtil.string(value));
+        return MqttUserPropertyImpl.of(MqttBuilderUtil.string(name), MqttBuilderUtil.string(value));
     }
 
     /**
@@ -36,7 +36,7 @@ public interface Mqtt5UserProperty {
      */
     @NotNull
     static Mqtt5UserProperty of(@NotNull final Mqtt5UTF8String name, @NotNull final Mqtt5UTF8String value) {
-        return Mqtt5UserPropertyImpl.of(Mqtt5BuilderUtil.string(name), Mqtt5BuilderUtil.string(value));
+        return MqttUserPropertyImpl.of(MqttBuilderUtil.string(name), MqttBuilderUtil.string(value));
     }
 
     /**

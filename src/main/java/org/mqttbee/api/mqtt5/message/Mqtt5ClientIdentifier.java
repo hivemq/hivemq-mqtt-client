@@ -2,7 +2,7 @@ package org.mqttbee.api.mqtt5.message;
 
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt5.Mqtt5BuilderUtil;
+import org.mqttbee.mqtt.MqttBuilderUtil;
 
 /**
  * MQTT Client Identifier according to the MQTT 5 specification.
@@ -23,7 +23,7 @@ public interface Mqtt5ClientIdentifier extends Mqtt5UTF8String {
      */
     @NotNull
     static Mqtt5ClientIdentifier from(@NotNull final String string) {
-        return Mqtt5BuilderUtil.clientIdentifier(string);
+        return MqttBuilderUtil.clientIdentifier(string);
     }
 
     /**

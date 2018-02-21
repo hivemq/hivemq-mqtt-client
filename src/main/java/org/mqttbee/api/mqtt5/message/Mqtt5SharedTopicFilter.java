@@ -2,7 +2,7 @@ package org.mqttbee.api.mqtt5.message;
 
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt5.Mqtt5BuilderUtil;
+import org.mqttbee.mqtt.MqttBuilderUtil;
 
 /**
  * MQTT Shared Topic Filter according to the MQTT 5 specification.
@@ -33,7 +33,7 @@ public interface Mqtt5SharedTopicFilter extends Mqtt5TopicFilter {
      */
     @NotNull
     static Mqtt5SharedTopicFilter from(@NotNull final String shareName, @NotNull final String topicFilter) {
-        return Mqtt5BuilderUtil.sharedTopicFilter(shareName, topicFilter);
+        return MqttBuilderUtil.sharedTopicFilter(shareName, topicFilter);
     }
 
     @NotNull

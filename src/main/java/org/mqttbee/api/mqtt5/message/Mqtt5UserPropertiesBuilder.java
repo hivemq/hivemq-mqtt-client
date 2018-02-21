@@ -2,8 +2,8 @@ package org.mqttbee.api.mqtt5.message;
 
 import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt5.message.Mqtt5UserPropertiesImpl;
-import org.mqttbee.mqtt5.message.Mqtt5UserPropertyImpl;
+import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
+import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 
 /**
@@ -11,14 +11,14 @@ import org.mqttbee.util.MustNotBeImplementedUtil;
  */
 public class Mqtt5UserPropertiesBuilder {
 
-    private ImmutableList.Builder<Mqtt5UserPropertyImpl> listBuilder;
+    private ImmutableList.Builder<MqttUserPropertyImpl> listBuilder;
 
     Mqtt5UserPropertiesBuilder() {
     }
 
     Mqtt5UserPropertiesBuilder(@NotNull final Mqtt5UserProperties userProperties) {
-        final Mqtt5UserPropertiesImpl userPropertiesImpl =
-                MustNotBeImplementedUtil.checkNotImplemented(userProperties, Mqtt5UserPropertiesImpl.class);
+        final MqttUserPropertiesImpl userPropertiesImpl =
+                MustNotBeImplementedUtil.checkNotImplemented(userProperties, MqttUserPropertiesImpl.class);
         listBuilder = ImmutableList.builder();
         listBuilder.addAll(userPropertiesImpl.asList());
     }
@@ -28,13 +28,13 @@ public class Mqtt5UserPropertiesBuilder {
         if (listBuilder == null) {
             listBuilder = ImmutableList.builder();
         }
-        listBuilder.add(MustNotBeImplementedUtil.checkNotImplemented(userProperty, Mqtt5UserPropertyImpl.class));
+        listBuilder.add(MustNotBeImplementedUtil.checkNotImplemented(userProperty, MqttUserPropertyImpl.class));
         return this;
     }
 
     @NotNull
     public Mqtt5UserProperties build() {
-        return Mqtt5UserPropertiesImpl.build(listBuilder);
+        return MqttUserPropertiesImpl.build(listBuilder);
     }
 
 }

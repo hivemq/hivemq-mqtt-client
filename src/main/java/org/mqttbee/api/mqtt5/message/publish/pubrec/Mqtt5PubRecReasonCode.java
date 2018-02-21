@@ -3,7 +3,7 @@ package org.mqttbee.api.mqtt5.message.publish.pubrec;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt5.message.Mqtt5ReasonCode;
-import org.mqttbee.mqtt5.message.Mqtt5CommonReasonCode;
+import org.mqttbee.mqtt.message.MqttCommonReasonCode;
 
 /**
  * MQTT Reason Codes that can be used in PUBREC packets according to the MQTT 5 specification.
@@ -12,15 +12,15 @@ import org.mqttbee.mqtt5.message.Mqtt5CommonReasonCode;
  */
 public enum Mqtt5PubRecReasonCode implements Mqtt5ReasonCode {
 
-    SUCCESS(Mqtt5CommonReasonCode.SUCCESS),
-    NO_MATCHING_SUBSCRIBERS(Mqtt5CommonReasonCode.NO_MATCHING_SUBSCRIBERS),
-    UNSPECIFIED_ERROR(Mqtt5CommonReasonCode.UNSPECIFIED_ERROR),
-    IMPLEMENTATION_SPECIFIC_ERROR(Mqtt5CommonReasonCode.IMPLEMENTATION_SPECIFIC_ERROR),
-    NOT_AUTHORIZED(Mqtt5CommonReasonCode.NOT_AUTHORIZED),
-    TOPIC_NAME_INVALID(Mqtt5CommonReasonCode.TOPIC_NAME_INVALID),
-    PACKET_IDENTIFIER_IN_USE(Mqtt5CommonReasonCode.PACKET_IDENTIFIER_IN_USE),
-    QUOTA_EXCEEDED(Mqtt5CommonReasonCode.QUOTA_EXCEEDED),
-    PAYLOAD_FORMAT_INVALID(Mqtt5CommonReasonCode.PAYLOAD_FORMAT_INVALID);
+    SUCCESS(MqttCommonReasonCode.SUCCESS),
+    NO_MATCHING_SUBSCRIBERS(MqttCommonReasonCode.NO_MATCHING_SUBSCRIBERS),
+    UNSPECIFIED_ERROR(MqttCommonReasonCode.UNSPECIFIED_ERROR),
+    IMPLEMENTATION_SPECIFIC_ERROR(MqttCommonReasonCode.IMPLEMENTATION_SPECIFIC_ERROR),
+    NOT_AUTHORIZED(MqttCommonReasonCode.NOT_AUTHORIZED),
+    TOPIC_NAME_INVALID(MqttCommonReasonCode.TOPIC_NAME_INVALID),
+    PACKET_IDENTIFIER_IN_USE(MqttCommonReasonCode.PACKET_IDENTIFIER_IN_USE),
+    QUOTA_EXCEEDED(MqttCommonReasonCode.QUOTA_EXCEEDED),
+    PAYLOAD_FORMAT_INVALID(MqttCommonReasonCode.PAYLOAD_FORMAT_INVALID);
 
     private final int code;
 
@@ -28,7 +28,7 @@ public enum Mqtt5PubRecReasonCode implements Mqtt5ReasonCode {
         this.code = code;
     }
 
-    Mqtt5PubRecReasonCode(@NotNull final Mqtt5CommonReasonCode reasonCode) {
+    Mqtt5PubRecReasonCode(@NotNull final MqttCommonReasonCode reasonCode) {
         this(reasonCode.getCode());
     }
 
