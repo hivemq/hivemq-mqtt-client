@@ -5,7 +5,7 @@ import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
+import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.message.ping.MqttPingReqImpl;
 import org.mqttbee.mqtt.message.ping.MqttPingRespImpl;
 import org.mqttbee.mqtt5.handler.util.ChannelInboundHandlerWithTimeout;

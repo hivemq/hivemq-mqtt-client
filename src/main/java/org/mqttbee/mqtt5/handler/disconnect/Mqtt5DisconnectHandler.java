@@ -4,7 +4,7 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt5.exception.Mqtt5MessageException;
+import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnectImpl;
 
 import javax.inject.Inject;

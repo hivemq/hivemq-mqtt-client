@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
-import org.mqttbee.api.mqtt5.message.subscribe.Mqtt5RetainHandling;
+import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5QoS;
+import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5RetainHandling;
 import org.mqttbee.mqtt.codec.encoder.AbstractMqtt5EncoderTest;
 import org.mqttbee.mqtt.datatypes.*;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribeImpl;
@@ -21,7 +21,7 @@ import static java.util.Objects.requireNonNull;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mqttbee.api.mqtt5.message.subscribe.Mqtt5Subscribe.Subscription.*;
+import static org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe.Subscription.*;
 
 
 /**

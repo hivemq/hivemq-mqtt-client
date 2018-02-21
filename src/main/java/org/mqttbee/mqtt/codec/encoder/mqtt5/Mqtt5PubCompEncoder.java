@@ -1,6 +1,6 @@
 package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
-import org.mqttbee.api.mqtt5.message.publish.pubcomp.Mqtt5PubCompReasonCode;
+import org.mqttbee.api.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubCompReasonCode;
 import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageWithUserPropertiesEncoder.Mqtt5MessageWithIdAndOmissibleReasonCodeEncoder;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
 import org.mqttbee.mqtt.message.MqttMessageType;

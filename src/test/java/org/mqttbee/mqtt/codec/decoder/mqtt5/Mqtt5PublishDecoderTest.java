@@ -5,11 +5,11 @@ import com.google.common.primitives.ImmutableIntArray;
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.Test;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
-import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5Disconnect;
-import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.api.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
-import org.mqttbee.api.mqtt5.message.publish.TopicAliasUsage;
+import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5QoS;
+import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
+import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
+import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
+import org.mqttbee.api.mqtt.mqtt5.message.publish.TopicAliasUsage;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.message.MqttMessageType;
 import org.mqttbee.mqtt.message.publish.MqttPublishImpl;
@@ -21,7 +21,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.*;
+import static org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.*;
 
 /**
  * @author Silvio Giebl

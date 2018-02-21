@@ -1,6 +1,6 @@
 package org.mqttbee.mqtt.message;
 
-import org.mqttbee.api.mqtt5.message.Mqtt5ReasonCode;
+import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5ReasonCode;
 
 /**
  * MQTT Reason Codes that are used in 2 ore more MQTT packets according to the MQTT 5 specification.

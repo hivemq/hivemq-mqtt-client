@@ -3,13 +3,13 @@ package org.mqttbee.mqtt5.handler.auth;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt5.Mqtt5ClientData;
-import org.mqttbee.api.mqtt5.auth.Mqtt5EnhancedAuthProvider;
-import org.mqttbee.api.mqtt5.exception.Mqtt5MessageException;
-import org.mqttbee.api.mqtt5.message.auth.Mqtt5Auth;
-import org.mqttbee.api.mqtt5.message.auth.Mqtt5AuthBuilder;
-import org.mqttbee.api.mqtt5.message.auth.Mqtt5AuthReasonCode;
-import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
+import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientData;
+import org.mqttbee.api.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
+import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
+import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5Auth;
+import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthBuilder;
+import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode;
+import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.message.auth.MqttAuthBuilderImpl;
 import org.mqttbee.mqtt.message.auth.MqttAuthImpl;
@@ -17,7 +17,7 @@ import org.mqttbee.mqtt5.Mqtt5ClientDataImpl;
 import org.mqttbee.mqtt5.handler.disconnect.Mqtt5DisconnectUtil;
 import org.mqttbee.mqtt5.handler.util.ChannelInboundHandlerWithTimeout;
 
-import static org.mqttbee.api.mqtt5.message.auth.Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION;
+import static org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION;
 
 /**
  * Base for enhanced auth handling according to the MQTT 5 specification.
