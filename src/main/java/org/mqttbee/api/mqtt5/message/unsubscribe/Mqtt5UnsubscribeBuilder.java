@@ -3,8 +3,8 @@ package org.mqttbee.api.mqtt5.message.unsubscribe;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt5.message.Mqtt5TopicFilter;
-import org.mqttbee.api.mqtt5.message.Mqtt5UserProperties;
+import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
+import org.mqttbee.api.mqtt.datatypes.mqtt5.Mqtt5UserProperties;
 import org.mqttbee.mqtt.MqttBuilderUtil;
 import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5UnsubscribeEncoder;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
@@ -30,7 +30,7 @@ public class Mqtt5UnsubscribeBuilder {
     }
 
     @NotNull
-    public Mqtt5UnsubscribeBuilder addTopicFilter(@NotNull final Mqtt5TopicFilter topicFilter) {
+    public Mqtt5UnsubscribeBuilder addTopicFilter(@NotNull final MqttTopicFilter topicFilter) {
         topicFiltersBuilder.add(MqttBuilderUtil.topicFilter(topicFilter));
         return this;
     }

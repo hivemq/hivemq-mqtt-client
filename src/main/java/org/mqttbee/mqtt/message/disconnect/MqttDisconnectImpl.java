@@ -2,7 +2,7 @@ package org.mqttbee.mqtt.message.disconnect;
 
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
+import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
@@ -50,7 +50,7 @@ public class MqttDisconnectImpl extends
 
     @NotNull
     @Override
-    public Optional<Mqtt5UTF8String> getServerReference() {
+    public Optional<MqttUTF8String> getServerReference() {
         return Optional.ofNullable(serverReference);
     }
 

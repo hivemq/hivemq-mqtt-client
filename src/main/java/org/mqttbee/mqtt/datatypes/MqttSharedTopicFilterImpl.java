@@ -3,14 +3,14 @@ package org.mqttbee.mqtt.datatypes;
 import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt5.message.Mqtt5SharedTopicFilter;
+import org.mqttbee.api.mqtt.datatypes.MqttSharedTopicFilter;
 
 /**
  * @author Silvio Giebl
+ * @see MqttSharedTopicFilter
  * @see MqttUTF8StringImpl
- * @see Mqtt5SharedTopicFilter
  */
-public class MqttSharedTopicFilterImpl extends MqttTopicFilterImpl implements Mqtt5SharedTopicFilter {
+public class MqttSharedTopicFilterImpl extends MqttTopicFilterImpl implements MqttSharedTopicFilter {
 
     private static final int SHARE_PREFIX_LENGTH = SHARE_PREFIX.length();
 

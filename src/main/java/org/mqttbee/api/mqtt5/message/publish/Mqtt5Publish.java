@@ -2,7 +2,11 @@ package org.mqttbee.api.mqtt5.message.publish;
 
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt5.message.*;
+import org.mqttbee.api.mqtt.datatypes.MqttTopic;
+import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.datatypes.mqtt5.Mqtt5UserProperties;
+import org.mqttbee.api.mqtt5.message.Mqtt5Message;
+import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.api.mqtt5.message.subscribe.Mqtt5SubscribeResult;
 
 import java.nio.ByteBuffer;
@@ -36,7 +40,7 @@ public interface Mqtt5Publish extends Mqtt5Message, Mqtt5SubscribeResult {
      * @return the topic of this PUBLISH packet.
      */
     @NotNull
-    Mqtt5Topic getTopic();
+    MqttTopic getTopic();
 
     /**
      * @return the optional payload of this PUBLISH packet.
@@ -71,13 +75,13 @@ public interface Mqtt5Publish extends Mqtt5Message, Mqtt5SubscribeResult {
      * @return the optional content type of this PUBLISH packet.
      */
     @NotNull
-    Optional<Mqtt5UTF8String> getContentType();
+    Optional<MqttUTF8String> getContentType();
 
     /**
      * @return the optional response topic of this PUBLISH packet.
      */
     @NotNull
-    Optional<Mqtt5Topic> getResponseTopic();
+    Optional<MqttTopic> getResponseTopic();
 
     /**
      * @return the optional correlation data of this PUBLISH packet.

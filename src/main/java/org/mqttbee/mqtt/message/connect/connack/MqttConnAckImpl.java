@@ -2,9 +2,9 @@ package org.mqttbee.mqtt.message.connect.connack;
 
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt5.message.Mqtt5ClientIdentifier;
+import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
+import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
-import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.api.mqtt5.message.auth.Mqtt5EnhancedAuth;
 import org.mqttbee.api.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.api.mqtt5.message.connect.connack.Mqtt5ConnAckReasonCode;
@@ -84,7 +84,7 @@ public class MqttConnAckImpl extends
 
     @NotNull
     @Override
-    public Optional<Mqtt5ClientIdentifier> getAssignedClientIdentifier() {
+    public Optional<MqttClientIdentifier> getAssignedClientIdentifier() {
         return Optional.ofNullable(assignedClientIdentifier);
     }
 
@@ -112,13 +112,13 @@ public class MqttConnAckImpl extends
 
     @NotNull
     @Override
-    public Optional<Mqtt5UTF8String> getResponseInformation() {
+    public Optional<MqttUTF8String> getResponseInformation() {
         return Optional.ofNullable(responseInformation);
     }
 
     @NotNull
     @Override
-    public Optional<Mqtt5UTF8String> getServerReference() {
+    public Optional<MqttUTF8String> getServerReference() {
         return Optional.ofNullable(serverReference);
     }
 

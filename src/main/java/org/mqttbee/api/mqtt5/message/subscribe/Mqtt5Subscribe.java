@@ -3,10 +3,10 @@ package org.mqttbee.api.mqtt5.message.subscribe;
 import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
+import org.mqttbee.api.mqtt.datatypes.mqtt5.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt5.message.Mqtt5Message;
 import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
-import org.mqttbee.api.mqtt5.message.Mqtt5TopicFilter;
-import org.mqttbee.api.mqtt5.message.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt5.message.subscribe.Mqtt5SubscribeBuilder.SubscriptionBuilder;
 
 /**
@@ -60,7 +60,7 @@ public interface Mqtt5Subscribe extends Mqtt5Message {
          * @return the Topic Filter of this subscription.
          */
         @NotNull
-        Mqtt5TopicFilter getTopicFilter();
+        MqttTopicFilter getTopicFilter();
 
         /**
          * @return the QoS of this subscription.

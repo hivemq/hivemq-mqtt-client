@@ -1,4 +1,4 @@
-package org.mqttbee.api.mqtt5.message;
+package org.mqttbee.api.mqtt.datatypes;
 
 import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.DoNotImplement;
@@ -6,15 +6,15 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.MqttBuilderUtil;
 
 /**
- * MQTT Topic Name according to the MQTT 5 specification.
+ * MQTT Topic Name according to the MQTT specification.
  * <p>
- * A Topic Name has the restrictions from {@link Mqtt5UTF8String}, must be at least 1 character long and mut not contain
- * wildcards ({@link Mqtt5TopicFilter#MULTI_LEVEL_WILDCARD}, {@link Mqtt5TopicFilter#SINGLE_LEVEL_WILDCARD}).
+ * A Topic Name has the restrictions from {@link MqttUTF8String}, must be at least 1 character long and mut not contain
+ * wildcards ({@link MqttTopicFilter#MULTI_LEVEL_WILDCARD}, {@link MqttTopicFilter#SINGLE_LEVEL_WILDCARD}).
  *
  * @author Silvio Giebl
  */
 @DoNotImplement
-public interface Mqtt5Topic extends Mqtt5UTF8String {
+public interface MqttTopic extends MqttUTF8String {
 
     /**
      * The topic level separator character.
@@ -29,18 +29,18 @@ public interface Mqtt5Topic extends Mqtt5UTF8String {
      * @throws IllegalArgumentException if the string is not a valid Topic Name.
      */
     @NotNull
-    static Mqtt5Topic from(@NotNull final String string) {
+    static MqttTopic from(@NotNull final String string) {
         return MqttBuilderUtil.topic(string);
     }
 
     @NotNull
-    static Mqtt5TopicBuilder builder(@NotNull final String topTopic) {
-        return new Mqtt5TopicBuilder(topTopic);
+    static MqttTopicBuilder builder(@NotNull final String topTopic) {
+        return new MqttTopicBuilder(topTopic);
     }
 
     @NotNull
-    static Mqtt5TopicBuilder extend(@NotNull final Mqtt5Topic topic) {
-        return new Mqtt5TopicBuilder(topic.toString());
+    static MqttTopicBuilder extend(@NotNull final MqttTopic topic) {
+        return new MqttTopicBuilder(topic.toString());
     }
 
     /**

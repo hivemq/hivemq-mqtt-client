@@ -1,4 +1,4 @@
-package org.mqttbee.api.mqtt5.message;
+package org.mqttbee.api.mqtt.datatypes.mqtt5;
 
 import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;

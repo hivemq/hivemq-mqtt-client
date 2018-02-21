@@ -3,10 +3,10 @@ package org.mqttbee.api.mqtt5.message.publish;
 import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt.datatypes.MqttTopic;
+import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.datatypes.mqtt5.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
-import org.mqttbee.api.mqtt5.message.Mqtt5Topic;
-import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
-import org.mqttbee.api.mqtt5.message.Mqtt5UserProperties;
 import org.mqttbee.mqtt.MqttBuilderUtil;
 import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5PublishEncoder;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
@@ -65,7 +65,7 @@ public class Mqtt5PublishBuilder {
     }
 
     @NotNull
-    public Mqtt5PublishBuilder withTopic(@NotNull final Mqtt5Topic topic) {
+    public Mqtt5PublishBuilder withTopic(@NotNull final MqttTopic topic) {
         this.topic = MqttBuilderUtil.topic(topic);
         return this;
     }
@@ -116,7 +116,7 @@ public class Mqtt5PublishBuilder {
     }
 
     @NotNull
-    public Mqtt5PublishBuilder withContentType(@Nullable final Mqtt5UTF8String contentType) {
+    public Mqtt5PublishBuilder withContentType(@Nullable final MqttUTF8String contentType) {
         this.contentType = MqttBuilderUtil.stringOrNull(contentType);
         return this;
     }
@@ -128,7 +128,7 @@ public class Mqtt5PublishBuilder {
     }
 
     @NotNull
-    public Mqtt5PublishBuilder withResponseTopic(@Nullable final Mqtt5Topic responseTopic) {
+    public Mqtt5PublishBuilder withResponseTopic(@Nullable final MqttTopic responseTopic) {
         this.responseTopic = MqttBuilderUtil.topicOrNull(responseTopic);
         return this;
     }

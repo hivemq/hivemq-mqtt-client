@@ -2,10 +2,10 @@ package org.mqttbee.api.mqtt5.message.connect;
 
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.datatypes.mqtt5.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt5.auth.Mqtt5EnhancedAuthProvider;
 import org.mqttbee.api.mqtt5.message.Mqtt5Message;
-import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
-import org.mqttbee.api.mqtt5.message.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt5.message.publish.Mqtt5WillPublish;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.util.UnsignedDataTypes;
@@ -116,7 +116,7 @@ public interface Mqtt5Connect extends Mqtt5Message {
          * @return the optional username.
          */
         @NotNull
-        Optional<Mqtt5UTF8String> getUsername();
+        Optional<MqttUTF8String> getUsername();
 
         /**
          * @return the optional password.

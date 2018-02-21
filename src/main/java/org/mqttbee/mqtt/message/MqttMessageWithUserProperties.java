@@ -3,8 +3,8 @@ package org.mqttbee.mqtt.message;
 import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt5.message.Mqtt5ReasonCode;
-import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
@@ -59,7 +59,7 @@ public abstract class MqttMessageWithUserProperties< //
         }
 
         @NotNull
-        public Optional<Mqtt5UTF8String> getReasonString() {
+        public Optional<MqttUTF8String> getReasonString() {
             return Optional.ofNullable(reasonString);
         }
 

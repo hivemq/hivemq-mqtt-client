@@ -3,7 +3,7 @@ package org.mqttbee.mqtt;
 import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt5.message.*;
+import org.mqttbee.api.mqtt.datatypes.*;
 import org.mqttbee.mqtt.datatypes.*;
 import org.mqttbee.util.ByteBufferUtil;
 import org.mqttbee.util.MustNotBeImplementedUtil;
@@ -26,7 +26,7 @@ public class MqttBuilderUtil {
     }
 
     @NotNull
-    public static MqttUTF8StringImpl string(@NotNull final Mqtt5UTF8String string) {
+    public static MqttUTF8StringImpl string(@NotNull final MqttUTF8String string) {
         Preconditions.checkNotNull(string);
         return MustNotBeImplementedUtil.checkNotImplemented(string, MqttUTF8StringImpl.class);
     }
@@ -37,7 +37,7 @@ public class MqttBuilderUtil {
     }
 
     @Nullable
-    public static MqttUTF8StringImpl stringOrNull(@Nullable final Mqtt5UTF8String string) {
+    public static MqttUTF8StringImpl stringOrNull(@Nullable final MqttUTF8String string) {
         return MustNotBeImplementedUtil.checkNullOrNotImplemented(string, MqttUTF8StringImpl.class);
     }
 
@@ -52,7 +52,7 @@ public class MqttBuilderUtil {
     }
 
     @NotNull
-    public static MqttTopicImpl topic(@NotNull final Mqtt5Topic topic) {
+    public static MqttTopicImpl topic(@NotNull final MqttTopic topic) {
         Preconditions.checkNotNull(topic);
         return MustNotBeImplementedUtil.checkNotImplemented(topic, MqttTopicImpl.class);
     }
@@ -63,7 +63,7 @@ public class MqttBuilderUtil {
     }
 
     @Nullable
-    public static MqttTopicImpl topicOrNull(@Nullable final Mqtt5Topic topic) {
+    public static MqttTopicImpl topicOrNull(@Nullable final MqttTopic topic) {
         return MustNotBeImplementedUtil.checkNullOrNotImplemented(topic, MqttTopicImpl.class);
     }
 
@@ -78,7 +78,7 @@ public class MqttBuilderUtil {
     }
 
     @NotNull
-    public static MqttTopicFilterImpl topicFilter(@NotNull final Mqtt5TopicFilter topic) {
+    public static MqttTopicFilterImpl topicFilter(@NotNull final MqttTopicFilter topic) {
         Preconditions.checkNotNull(topic);
         return MustNotBeImplementedUtil.checkNotImplemented(topic, MqttTopicFilterImpl.class);
     }
@@ -92,7 +92,7 @@ public class MqttBuilderUtil {
         final MqttSharedTopicFilterImpl sharedTopicFilter = MqttSharedTopicFilterImpl.from(shareName, topicFilter);
         if (sharedTopicFilter == null) {
             throw new IllegalArgumentException(
-                    "The string: [" + Mqtt5SharedTopicFilter.SHARE_PREFIX + shareName + topicFilter +
+                    "The string: [" + MqttSharedTopicFilter.SHARE_PREFIX + shareName + topicFilter +
                             "] is not a valid Shared Topic Filter.");
         }
         return sharedTopicFilter;
@@ -109,7 +109,7 @@ public class MqttBuilderUtil {
     }
 
     @NotNull
-    public static MqttClientIdentifierImpl clientIdentifier(@NotNull final Mqtt5ClientIdentifier clientIdentifier) {
+    public static MqttClientIdentifierImpl clientIdentifier(@NotNull final MqttClientIdentifier clientIdentifier) {
         Preconditions.checkNotNull(clientIdentifier);
         return MustNotBeImplementedUtil.checkNotImplemented(clientIdentifier, MqttClientIdentifierImpl.class);
     }

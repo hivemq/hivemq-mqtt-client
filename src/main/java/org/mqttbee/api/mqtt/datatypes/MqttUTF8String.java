@@ -1,4 +1,4 @@
-package org.mqttbee.api.mqtt5.message;
+package org.mqttbee.api.mqtt.datatypes;
 
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
@@ -7,7 +7,7 @@ import org.mqttbee.mqtt.MqttBuilderUtil;
 import java.nio.ByteBuffer;
 
 /**
- * UTF-8 encoded String according to the MQTT 5 specification.
+ * UTF-8 encoded String according to the MQTT specification.
  * <p>
  * A UTF-8 encoded String must not contain the null character U+0000 and UTF-16 surrogates.
  * <p>
@@ -16,7 +16,7 @@ import java.nio.ByteBuffer;
  * @author Silvio Giebl
  */
 @DoNotImplement
-public interface Mqtt5UTF8String {
+public interface MqttUTF8String {
 
     /**
      * Validates and creates a UTF-8 encoded String from the given string.
@@ -26,12 +26,12 @@ public interface Mqtt5UTF8String {
      * @throws IllegalArgumentException if the string is not a valid UTF-8 encoded String.
      */
     @NotNull
-    static Mqtt5UTF8String from(@NotNull final String string) {
+    static MqttUTF8String from(@NotNull final String string) {
         return MqttBuilderUtil.string(string);
     }
 
     /**
-     * Checks whether this UTF-8 encoded String contains characters that it should not according to the MQTT 5
+     * Checks whether this UTF-8 encoded String contains characters that it should not according to the MQTT
      * specification.
      * <p>
      * These characters are control characters and non-characters.

@@ -3,9 +3,9 @@ package org.mqttbee.mqtt.message.publish;
 import com.google.common.primitives.ImmutableIntArray;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt.datatypes.MqttTopic;
+import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
-import org.mqttbee.api.mqtt5.message.Mqtt5Topic;
-import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
 import org.mqttbee.api.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.api.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.api.mqtt5.message.publish.TopicAliasUsage;
@@ -113,7 +113,7 @@ public class MqttPublishImpl extends MqttWrappedMessage<MqttPublishImpl, MqttPub
 
     @NotNull
     @Override
-    public Optional<Mqtt5UTF8String> getContentType() {
+    public Optional<MqttUTF8String> getContentType() {
         return Optional.ofNullable(contentType);
     }
 
@@ -124,7 +124,7 @@ public class MqttPublishImpl extends MqttWrappedMessage<MqttPublishImpl, MqttPub
 
     @NotNull
     @Override
-    public Optional<Mqtt5Topic> getResponseTopic() {
+    public Optional<MqttTopic> getResponseTopic() {
         return Optional.ofNullable(responseTopic);
     }
 

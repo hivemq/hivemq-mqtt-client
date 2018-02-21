@@ -3,7 +3,7 @@ package org.mqttbee.mqtt.datatypes;
 import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt5.message.Mqtt5UserProperty;
+import org.mqttbee.api.mqtt.datatypes.mqtt5.Mqtt5UserProperty;
 
 /**
  * @author Silvio Giebl

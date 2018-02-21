@@ -3,9 +3,9 @@ package org.mqttbee.api.mqtt5.message.connect;
 import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.datatypes.mqtt5.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt5.auth.Mqtt5EnhancedAuthProvider;
-import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
-import org.mqttbee.api.mqtt5.message.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt5.message.publish.Mqtt5WillPublish;
 import org.mqttbee.mqtt.MqttBuilderUtil;
 import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5ConnectEncoder;
@@ -138,7 +138,7 @@ public class Mqtt5ConnectBuilder {
         }
 
         @NotNull
-        public SimpleAuthBuilder withUsername(@Nullable final Mqtt5UTF8String username) {
+        public SimpleAuthBuilder withUsername(@Nullable final MqttUTF8String username) {
             this.username = MqttBuilderUtil.stringOrNull(username);
             return this;
         }

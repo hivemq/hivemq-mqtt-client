@@ -5,10 +5,10 @@ import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
 import org.mqttbee.api.mqtt5.Mqtt5ClientConnectionData;
 import org.mqttbee.api.mqtt5.Mqtt5ClientData;
 import org.mqttbee.api.mqtt5.Mqtt5ServerConnectionData;
-import org.mqttbee.api.mqtt5.message.Mqtt5ClientIdentifier;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 
 import java.util.Optional;
@@ -59,7 +59,7 @@ public class Mqtt5ClientDataImpl implements Mqtt5ClientData {
 
     @NotNull
     @Override
-    public Optional<Mqtt5ClientIdentifier> getClientIdentifier() {
+    public Optional<MqttClientIdentifier> getClientIdentifier() {
         return (clientIdentifier == MqttClientIdentifierImpl.REQUEST_CLIENT_IDENTIFIER_FROM_SERVER) ?
                 Optional.empty() : Optional.of(clientIdentifier);
     }

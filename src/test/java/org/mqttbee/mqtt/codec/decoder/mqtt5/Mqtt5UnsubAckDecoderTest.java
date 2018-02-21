@@ -7,8 +7,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt5.message.Mqtt5UTF8String;
-import org.mqttbee.api.mqtt5.message.Mqtt5UserProperty;
+import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.datatypes.mqtt5.Mqtt5UserProperty;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.api.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
@@ -64,7 +64,7 @@ class Mqtt5UnsubAckDecoderTest extends AbstractMqtt5DecoderTest {
 
         //0x0102 = 258
         assertEquals(258, unsubAck.getPacketIdentifier());
-        final Optional<Mqtt5UTF8String> reasonString = unsubAck.getReasonString();
+        final Optional<MqttUTF8String> reasonString = unsubAck.getReasonString();
         assertTrue(reasonString.isPresent());
         assertEquals("reason", reasonString.get().toString());
 
@@ -259,7 +259,7 @@ class Mqtt5UnsubAckDecoderTest extends AbstractMqtt5DecoderTest {
         final MqttUnsubAckImpl unsubAck = decodeOk(encoded);
 
         assertEquals(2, unsubAck.getPacketIdentifier());
-        final Optional<Mqtt5UTF8String> reasonString = unsubAck.getReasonString();
+        final Optional<MqttUTF8String> reasonString = unsubAck.getReasonString();
         assertTrue(reasonString.isPresent());
         assertEquals("reason", reasonString.get().toString());
 
@@ -345,7 +345,7 @@ class Mqtt5UnsubAckDecoderTest extends AbstractMqtt5DecoderTest {
 
         // 0x0808 = 2056
         assertEquals(2056, unsubAck.getPacketIdentifier());
-        final Optional<Mqtt5UTF8String> reasonString = unsubAck.getReasonString();
+        final Optional<MqttUTF8String> reasonString = unsubAck.getReasonString();
         assertTrue(reasonString.isPresent());
         assertEquals("reason", reasonString.get().toString());
 
@@ -477,7 +477,7 @@ class Mqtt5UnsubAckDecoderTest extends AbstractMqtt5DecoderTest {
         };
 
         final Mqtt5UnsubAck unsuback = decodeOk(encoded);
-        final Optional<Mqtt5UTF8String> reasonString = unsuback.getReasonString();
+        final Optional<MqttUTF8String> reasonString = unsuback.getReasonString();
         assertTrue(reasonString.isPresent());
         assertEquals("reason", reasonString.get().toString());
     }

@@ -2,8 +2,8 @@ package org.mqttbee.api;
 
 import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
 import org.mqttbee.api.mqtt5.Mqtt5ClientBuilder;
-import org.mqttbee.api.mqtt5.message.Mqtt5ClientIdentifier;
 import org.mqttbee.mqtt.MqttBuilderUtil;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 
@@ -31,7 +31,7 @@ public class MqttClientBuilder {
     }
 
     @NotNull
-    public MqttClientBuilder withIdentifier(@NotNull final Mqtt5ClientIdentifier identifier) {
+    public MqttClientBuilder withIdentifier(@NotNull final MqttClientIdentifier identifier) {
         this.identifier = MqttBuilderUtil.clientIdentifier(identifier);
         return this;
     }
