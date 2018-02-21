@@ -21,6 +21,10 @@ import org.mqttbee.mqtt.message.connect.connack.MqttConnAckImpl;
 import org.mqttbee.mqtt5.Mqtt5ClientDataImpl;
 import org.mqttbee.mqtt5.handler.disconnect.Mqtt5DisconnectUtil;
 import org.mqttbee.mqtt5.handler.util.DefaultChannelOutboundHandler;
+import org.mqttbee.mqtt5.ioc.ChannelComponent;
+import org.mqttbee.mqtt5.ioc.ChannelScope;
+
+import javax.inject.Inject;
 
 /**
  * Enhanced auth handling according during connection according to the MQTT 5 specification.
@@ -29,9 +33,14 @@ import org.mqttbee.mqtt5.handler.util.DefaultChannelOutboundHandler;
  *
  * @author Silvio Giebl
  */
+@ChannelScope
 public class Mqtt5AuthHandler extends AbstractMqtt5AuthHandler implements DefaultChannelOutboundHandler {
 
     public static final String NAME = "auth";
+
+    @Inject
+    Mqtt5AuthHandler() {
+    }
 
     @Override
     public void write(final ChannelHandlerContext ctx, final Object msg, final ChannelPromise promise) {
@@ -63,10 +72,14 @@ public class Mqtt5AuthHandler extends AbstractMqtt5AuthHandler implements Defaul
         final MqttEnhancedAuthBuilderImpl enhancedAuthBuilder =
                 new MqttEnhancedAuthBuilderImpl((MqttUTF8StringImpl) enhancedAuthProvider.getMethod());
 
-        enhancedAuthProvider.onAuth(clientData, connect, enhancedAuthBuilder).thenRunAsync(() -> {
-            final MqttConnectWrapper connectWrapper =
-                    connect.wrap(clientData.getRawClientIdentifier(), enhancedAuthBuilder.build());
-            ctx.writeAndFlush(connectWrapper, promise).addListener(this);
+        enhancedAuthProvider.onAuth(clientData, connect, enhancedAuthBuilder).whenCompleteAsync((aVoid, throwable) -> {
+            if (enhancedAuthProviderAccepted(throwable)) {
+                final MqttConnectWrapper connectWrapper =
+                        connect.wrap(clientData.getRawClientIdentifier(), enhancedAuthBuilder.build());
+                ctx.writeAndFlush(connectWrapper, promise).addListener(this);
+            } else {
+                Mqtt5DisconnectUtil.close(ctx.channel(), throwable);
+            }
         }, ctx.executor());
     }
 
@@ -108,14 +121,16 @@ public class Mqtt5AuthHandler extends AbstractMqtt5AuthHandler implements Defaul
                     new Mqtt5MessageException(connAck, "Connection failed with CONNACK with Error Code"));
         } else {
             if (validateConnAck(ctx.channel(), connAck, enhancedAuthProvider)) {
-                enhancedAuthProvider.onAuthSuccess(clientData, connAck).thenAcceptAsync(accepted -> {
-                    if (!accepted) {
+                enhancedAuthProvider.onAuthSuccess(clientData, connAck).whenCompleteAsync((accepted, throwable) -> {
+                    if (!enhancedAuthProviderAccepted(accepted, throwable)) {
                         Mqtt5DisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.NOT_AUTHORIZED,
                                 new Mqtt5MessageException(connAck, "Server auth success not accepted"));
                     }
                 }, ctx.executor());
                 ctx.fireChannelRead(connAck);
-                ctx.pipeline().replace(this, Mqtt5ReAuthHandler.NAME, new Mqtt5ReAuthHandler());
+                ctx.pipeline()
+                        .replace(this, Mqtt5ReAuthHandler.NAME,
+                                ChannelComponent.forChannel(ctx.channel()).reAuthHandler());
             }
         }
     }

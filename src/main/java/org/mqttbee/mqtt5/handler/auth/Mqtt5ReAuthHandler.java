@@ -14,6 +14,9 @@ import org.mqttbee.mqtt.message.auth.MqttAuthImpl;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnectImpl;
 import org.mqttbee.mqtt5.Mqtt5ClientDataImpl;
 import org.mqttbee.mqtt5.handler.disconnect.Mqtt5DisconnectUtil;
+import org.mqttbee.mqtt5.ioc.ChannelScope;
+
+import javax.inject.Inject;
 
 import static org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION;
 import static org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode.REAUTHENTICATE;
@@ -23,10 +26,12 @@ import static org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode.REAUTH
  *
  * @author Silvio Giebl
  */
+@ChannelScope
 public class Mqtt5ReAuthHandler extends AbstractMqtt5AuthHandler {
 
     public static final String NAME = "reauth";
 
+    @Inject
     Mqtt5ReAuthHandler() {
     }
 
@@ -50,8 +55,11 @@ public class Mqtt5ReAuthHandler extends AbstractMqtt5AuthHandler {
         final Mqtt5EnhancedAuthProvider enhancedAuthProvider = getEnhancedAuthProvider(clientData);
         final MqttAuthBuilderImpl authBuilder = getAuthBuilder(REAUTHENTICATE, enhancedAuthProvider);
 
-        enhancedAuthProvider.onReAuth(clientData, authBuilder)
-                .thenRunAsync(() -> ctx.writeAndFlush(authBuilder.build()), ctx.executor());
+        enhancedAuthProvider.onReAuth(clientData, authBuilder).whenCompleteAsync((aVoid, throwable) -> {
+            if (enhancedAuthProviderAccepted(throwable)) {
+                ctx.writeAndFlush(authBuilder.build());
+            }
+        }, ctx.executor());
     }
 
     @Override
@@ -82,8 +90,8 @@ public class Mqtt5ReAuthHandler extends AbstractMqtt5AuthHandler {
             @NotNull final Mqtt5ClientDataImpl clientData,
             @NotNull final Mqtt5EnhancedAuthProvider enhancedAuthProvider) {
 
-        enhancedAuthProvider.onReAuthSuccess(clientData, auth).thenAcceptAsync(accepted -> {
-            if (!accepted) {
+        enhancedAuthProvider.onReAuthSuccess(clientData, auth).whenCompleteAsync((accepted, throwable) -> {
+            if (!enhancedAuthProviderAccepted(accepted, throwable)) {
                 Mqtt5DisconnectUtil.disconnect(
                         ctx.channel(), Mqtt5DisconnectReasonCode.NOT_AUTHORIZED, "Server auth success not accepted");
             }
@@ -113,14 +121,15 @@ public class Mqtt5ReAuthHandler extends AbstractMqtt5AuthHandler {
         if (clientData.allowsServerReAuth()) {
             final MqttAuthBuilderImpl authBuilder = getAuthBuilder(CONTINUE_AUTHENTICATION, enhancedAuthProvider);
 
-            enhancedAuthProvider.onServerReAuth(clientData, auth, authBuilder).thenAcceptAsync(accepted -> {
-                if (accepted) {
-                    ctx.writeAndFlush(authBuilder.build());
-                } else {
-                    Mqtt5DisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.NOT_AUTHORIZED,
-                            new Mqtt5MessageException(auth, "Server reauth not accepted"));
-                }
-            }, ctx.executor());
+            enhancedAuthProvider.onServerReAuth(clientData, auth, authBuilder)
+                    .whenCompleteAsync((accepted, throwable) -> {
+                        if (enhancedAuthProviderAccepted(accepted, throwable)) {
+                            ctx.writeAndFlush(authBuilder.build());
+                        } else {
+                            Mqtt5DisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.NOT_AUTHORIZED,
+                                    new Mqtt5MessageException(auth, "Server reauth not accepted"));
+                        }
+                    }, ctx.executor());
         } else {
             Mqtt5DisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
                     new Mqtt5MessageException(auth, "Server must not send AUTH with the Reason Code REAUTHENTICATE"));

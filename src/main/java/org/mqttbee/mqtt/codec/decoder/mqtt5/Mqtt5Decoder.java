@@ -11,6 +11,7 @@ import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.MqttMessage;
 import org.mqttbee.mqtt5.Mqtt5ClientConnectionDataImpl;
 import org.mqttbee.mqtt5.Mqtt5ClientDataImpl;
+import org.mqttbee.mqtt5.ioc.ChannelScope;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -20,6 +21,7 @@ import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.disco
 /**
  * @author Silvio Giebl
  */
+@ChannelScope
 public class Mqtt5Decoder extends ByteToMessageDecoder {
 
     public static final String NAME = "decoder.mqtt5";

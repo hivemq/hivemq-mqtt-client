@@ -15,12 +15,13 @@ import org.mqttbee.mqtt.message.connect.MqttConnectImpl;
 import org.mqttbee.mqtt.message.connect.connack.MqttConnAckImpl;
 import org.mqttbee.mqtt5.Mqtt5ClientConnectionDataImpl;
 import org.mqttbee.mqtt5.Mqtt5ClientDataImpl;
-import org.mqttbee.mqtt5.Mqtt5Component;
 import org.mqttbee.mqtt5.Mqtt5ServerConnectionDataImpl;
 import org.mqttbee.mqtt5.handler.disconnect.ChannelCloseEvent;
 import org.mqttbee.mqtt5.handler.disconnect.Mqtt5DisconnectUtil;
 import org.mqttbee.mqtt5.handler.ping.Mqtt5PingHandler;
 import org.mqttbee.mqtt5.handler.util.ChannelInboundHandlerWithTimeout;
+import org.mqttbee.mqtt5.ioc.ChannelComponent;
+import org.mqttbee.mqtt5.ioc.ChannelScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +36,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Silvio Giebl
  */
+@ChannelScope
 public class Mqtt5ConnectHandler extends ChannelInboundHandlerWithTimeout {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Mqtt5ConnectHandler.class);
@@ -98,7 +100,7 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerWithTimeout {
                     scheduleTimeout();
                 }
 
-                ctx.pipeline().addFirst(Mqtt5Decoder.NAME, Mqtt5Component.INSTANCE.decoder());
+                ctx.pipeline().addFirst(Mqtt5Decoder.NAME, ChannelComponent.forChannel(ctx.channel()).decoder());
             } else {
                 Mqtt5DisconnectUtil.close(ctx.channel(), future.cause());
             }
@@ -143,7 +145,8 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerWithTimeout {
                     pipeline.addLast(Mqtt5PingHandler.NAME, new Mqtt5PingHandler(keepAlive));
                 }
                 pipeline.addLast(
-                        Mqtt5DisconnectOnConnAckHandler.NAME, Mqtt5Component.INSTANCE.disconnectOnConnAckHandler());
+                        Mqtt5DisconnectOnConnAckHandler.NAME,
+                        ChannelComponent.forChannel(channel).disconnectOnConnAckHandler());
 
                 connAckEmitter.onSuccess(connAck);
             }
