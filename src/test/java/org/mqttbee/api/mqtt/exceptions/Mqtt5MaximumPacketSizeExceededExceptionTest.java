@@ -1,4 +1,4 @@
-package org.mqttbee.mqtt.exceptions;
+package org.mqttbee.api.mqtt.exceptions;
 
 import org.junit.jupiter.api.Test;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode;

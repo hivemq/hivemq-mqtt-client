@@ -1,4 +1,4 @@
-package org.mqttbee.mqtt.exceptions;
+package org.mqttbee.api.mqtt.exceptions;
 
 import org.mqttbee.annotations.NotNull;
 
