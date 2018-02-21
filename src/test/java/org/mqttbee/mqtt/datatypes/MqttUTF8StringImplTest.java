@@ -5,7 +5,7 @@ import com.google.common.base.Utf8;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.junit.Test;
-import org.mqttbee.mqtt.exceptions.MqttBinaryDataExceededException;
+import org.mqttbee.api.mqtt.exceptions.MqttBinaryDataExceededException;
 
 import java.nio.charset.Charset;
 import java.util.Arrays;

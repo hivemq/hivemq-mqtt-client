@@ -5,7 +5,7 @@ import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
-import org.mqttbee.mqtt.exceptions.MqttBinaryDataExceededException;
+import org.mqttbee.api.mqtt.exceptions.MqttBinaryDataExceededException;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;

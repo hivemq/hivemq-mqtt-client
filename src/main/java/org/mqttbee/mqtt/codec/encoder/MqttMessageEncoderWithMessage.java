@@ -3,8 +3,8 @@ package org.mqttbee.mqtt.codec.encoder;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.api.mqtt.exceptions.MqttMaximumPacketSizeExceededException;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderApplier;
-import org.mqttbee.mqtt.exceptions.MqttMaximumPacketSizeExceededException;
 import org.mqttbee.mqtt.message.MqttMessage;
 import org.mqttbee.mqtt5.Mqtt5ServerConnectionDataImpl;
 
