@@ -2,8 +2,8 @@ package org.mqttbee.mqtt.message.publish.puback;
 
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt5.message.publish.puback.Mqtt5PubAck;
-import org.mqttbee.api.mqtt5.message.publish.puback.Mqtt5PubAckReasonCode;
+import org.mqttbee.api.mqtt.mqtt5.message.publish.puback.Mqtt5PubAck;
+import org.mqttbee.api.mqtt.mqtt5.message.publish.puback.Mqtt5PubAckReasonCode;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;

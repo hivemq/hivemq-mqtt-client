@@ -3,7 +3,7 @@ package org.mqttbee.mqtt.codec.decoder.mqtt5;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
+import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.message.ping.MqttPingRespImpl;
 import org.mqttbee.mqtt5.Mqtt5ClientConnectionDataImpl;

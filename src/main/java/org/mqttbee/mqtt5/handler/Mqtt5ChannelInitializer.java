@@ -5,7 +5,7 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.reactivex.SingleEmitter;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt5.message.connect.connack.Mqtt5ConnAck;
+import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.mqtt.codec.encoder.MqttEncoder;
 import org.mqttbee.mqtt.message.connect.MqttConnectImpl;
 import org.mqttbee.mqtt5.Mqtt5ClientDataImpl;

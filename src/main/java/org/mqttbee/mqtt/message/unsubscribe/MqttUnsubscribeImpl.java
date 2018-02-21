@@ -2,7 +2,7 @@ package org.mqttbee.mqtt.message.unsubscribe;
 
 import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
+import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
