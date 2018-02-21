@@ -4,6 +4,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
+import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
@@ -118,6 +119,11 @@ public class MqttConnectImpl
     @Nullable
     public MqttWillPublishImpl getRawWillPublish() {
         return willPublish;
+    }
+
+    @Override
+    public Mqtt5MessageType getType() {
+        return Mqtt5MessageType.CONNECT;
     }
 
     @NotNull

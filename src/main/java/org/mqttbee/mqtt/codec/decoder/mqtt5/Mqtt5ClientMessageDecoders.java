@@ -1,9 +1,9 @@
 package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoders;
-import org.mqttbee.mqtt.message.MqttMessageType;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -25,18 +25,18 @@ public class Mqtt5ClientMessageDecoders implements MqttMessageDecoders {
             final Mqtt5PingRespDecoder pingRespDecoder, final Mqtt5DisconnectDecoder disconnectDecoder,
             final Mqtt5AuthDecoder authDecoder) {
 
-        decoders = new MqttMessageDecoder[MqttMessageType.values().length];
-        decoders[MqttMessageType.CONNACK.getCode()] = connAckDecoder;
-        decoders[MqttMessageType.PUBLISH.getCode()] = publishDecoder;
-        decoders[MqttMessageType.PUBACK.getCode()] = pubAckDecoder;
-        decoders[MqttMessageType.PUBREC.getCode()] = pubRecDecoder;
-        decoders[MqttMessageType.PUBREL.getCode()] = pubRelDecoder;
-        decoders[MqttMessageType.PUBCOMP.getCode()] = pubCompDecoder;
-        decoders[MqttMessageType.SUBACK.getCode()] = subAckDecoder;
-        decoders[MqttMessageType.UNSUBACK.getCode()] = unsubAckDecoder;
-        decoders[MqttMessageType.PINGRESP.getCode()] = pingRespDecoder;
-        decoders[MqttMessageType.DISCONNECT.getCode()] = disconnectDecoder;
-        decoders[MqttMessageType.AUTH.getCode()] = authDecoder;
+        decoders = new MqttMessageDecoder[Mqtt5MessageType.values().length];
+        decoders[Mqtt5MessageType.CONNACK.getCode()] = connAckDecoder;
+        decoders[Mqtt5MessageType.PUBLISH.getCode()] = publishDecoder;
+        decoders[Mqtt5MessageType.PUBACK.getCode()] = pubAckDecoder;
+        decoders[Mqtt5MessageType.PUBREC.getCode()] = pubRecDecoder;
+        decoders[Mqtt5MessageType.PUBREL.getCode()] = pubRelDecoder;
+        decoders[Mqtt5MessageType.PUBCOMP.getCode()] = pubCompDecoder;
+        decoders[Mqtt5MessageType.SUBACK.getCode()] = subAckDecoder;
+        decoders[Mqtt5MessageType.UNSUBACK.getCode()] = unsubAckDecoder;
+        decoders[Mqtt5MessageType.PINGRESP.getCode()] = pingRespDecoder;
+        decoders[Mqtt5MessageType.DISCONNECT.getCode()] = disconnectDecoder;
+        decoders[Mqtt5MessageType.AUTH.getCode()] = authDecoder;
     }
 
     @Nullable

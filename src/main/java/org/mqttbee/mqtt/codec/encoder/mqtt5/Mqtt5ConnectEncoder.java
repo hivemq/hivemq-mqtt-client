@@ -3,6 +3,7 @@ package org.mqttbee.mqtt.codec.encoder.mqtt5;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
 import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoder;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
@@ -11,7 +12,6 @@ import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.exceptions.MqttVariableByteIntegerExceededException;
-import org.mqttbee.mqtt.message.MqttMessageType;
 import org.mqttbee.mqtt.message.auth.MqttEnhancedAuthImpl;
 import org.mqttbee.mqtt.message.connect.MqttConnectImpl;
 import org.mqttbee.mqtt.message.connect.MqttConnectWrapper;
@@ -116,7 +116,7 @@ public class Mqtt5ConnectEncoder extends Mqtt5WrappedMessageEncoder<MqttConnectI
         private static final MqttMessageWrapperEncoderApplier<MqttConnectWrapper, MqttConnectImpl, Mqtt5ConnectEncoder>
                 APPLIER = new ThreadLocalMqttMessageWrapperEncoderApplier<>(Mqtt5ConnectWrapperEncoder::new);
 
-        private static final int FIXED_HEADER = MqttMessageType.CONNECT.getCode() << 4;
+        private static final int FIXED_HEADER = Mqtt5MessageType.CONNECT.getCode() << 4;
         private static final byte PROTOCOL_VERSION = 5;
 
         @Override

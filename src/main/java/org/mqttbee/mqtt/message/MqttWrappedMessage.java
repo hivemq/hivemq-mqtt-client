@@ -2,6 +2,7 @@ package org.mqttbee.mqtt.message;
 
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
 import org.mqttbee.mqtt.codec.encoder.MqttWrappedMessageEncoder;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderApplier;
@@ -18,7 +19,8 @@ import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 public abstract class MqttWrappedMessage< //
         M extends MqttWrappedMessage<M, W, P>, //
         W extends MqttMessageWrapper<W, M, P>, //
-        P extends MqttMessageEncoderProvider<W>> {
+        P extends MqttMessageEncoderProvider<W>> //
+        implements Mqtt5Message {
 
     final MqttWrappedMessageEncoderProvider<M, W, P> encoderProvider;
     private MqttWrappedMessageEncoderApplier<M, W> encoderApplier;

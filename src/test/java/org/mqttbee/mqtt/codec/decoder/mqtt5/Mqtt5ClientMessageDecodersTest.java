@@ -1,7 +1,7 @@
 package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
 import org.junit.jupiter.api.Test;
-import org.mqttbee.mqtt.message.MqttMessageType;
+import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -31,7 +31,7 @@ class Mqtt5ClientMessageDecodersTest {
                         disconnectDecoder, authDecoder);
 
         assertNull(clientMessageDecoders.get(-1));
-        assertNull(clientMessageDecoders.get(MqttMessageType.values().length));
+        assertNull(clientMessageDecoders.get(Mqtt5MessageType.values().length));
         assertNull(clientMessageDecoders.get(0));
         assertNull(clientMessageDecoders.get(1));
         assertSame(connAckDecoder, clientMessageDecoders.get(2));

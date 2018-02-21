@@ -2,6 +2,7 @@ package org.mqttbee.mqtt.message.auth;
 
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5Auth;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
@@ -49,6 +50,11 @@ public class MqttAuthImpl
     @Nullable
     public ByteBuffer getRawData() {
         return data;
+    }
+
+    @Override
+    public Mqtt5MessageType getType() {
+        return Mqtt5MessageType.AUTH;
     }
 
     @NotNull

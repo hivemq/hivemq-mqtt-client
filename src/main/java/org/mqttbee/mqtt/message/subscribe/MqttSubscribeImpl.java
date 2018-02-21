@@ -2,6 +2,7 @@ package org.mqttbee.mqtt.message.subscribe;
 
 import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5RetainHandling;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
@@ -33,6 +34,11 @@ public class MqttSubscribeImpl extends
     @Override
     public ImmutableList<SubscriptionImpl> getSubscriptions() {
         return subscriptions;
+    }
+
+    @Override
+    public Mqtt5MessageType getType() {
+        return Mqtt5MessageType.SUBSCRIBE;
     }
 
     @NotNull

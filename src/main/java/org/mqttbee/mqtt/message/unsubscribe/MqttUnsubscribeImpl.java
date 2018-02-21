@@ -2,6 +2,7 @@ package org.mqttbee.mqtt.message.unsubscribe;
 
 import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider;
@@ -31,6 +32,11 @@ public class MqttUnsubscribeImpl extends
     @Override
     public ImmutableList<MqttTopicFilterImpl> getTopicFilters() {
         return topicFilters;
+    }
+
+    @Override
+    public Mqtt5MessageType getType() {
+        return Mqtt5MessageType.UNSUBSCRIBE;
     }
 
     @NotNull

@@ -5,14 +5,14 @@ import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttPublishEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
-import org.mqttbee.mqtt.message.MqttMessageWrapper.Mqtt5MessageWrapperWithId;
+import org.mqttbee.mqtt.message.MqttMessageWrapper.MqttMessageWrapperWithId;
 import org.mqttbee.mqtt5.Mqtt5ServerConnectionDataImpl;
 
 /**
  * @author Silvio Giebl
  */
 public class MqttPublishWrapper
-        extends Mqtt5MessageWrapperWithId<MqttPublishWrapper, MqttPublishImpl, MqttPublishEncoderProvider>
+        extends MqttMessageWrapperWithId<MqttPublishWrapper, MqttPublishImpl, MqttPublishEncoderProvider>
         implements MqttQoSMessage {
 
     public static final int NO_PACKET_IDENTIFIER_QOS_0 = -1;

@@ -1,7 +1,6 @@
-package org.mqttbee.api.mqtt5.message;
+package org.mqttbee.api.mqtt.mqtt5.message;
 
 import org.junit.Test;
-import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5QoS;
 
 import static org.junit.Assert.*;
 

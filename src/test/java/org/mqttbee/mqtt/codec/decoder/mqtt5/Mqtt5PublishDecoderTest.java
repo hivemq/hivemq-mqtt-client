@@ -5,13 +5,13 @@ import com.google.common.primitives.ImmutableIntArray;
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.Test;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.TopicAliasUsage;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
-import org.mqttbee.mqtt.message.MqttMessageType;
 import org.mqttbee.mqtt.message.publish.MqttPublishImpl;
 import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
 import org.mqttbee.mqtt5.netty.ChannelAttributes;
@@ -31,7 +31,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
 
     Mqtt5PublishDecoderTest() {
         super(code -> {
-            if (code == MqttMessageType.PUBLISH.getCode()) {
+            if (code == Mqtt5MessageType.PUBLISH.getCode()) {
                 return new Mqtt5PublishDecoder();
             }
             return null;

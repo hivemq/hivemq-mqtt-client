@@ -164,8 +164,7 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerWithTimeout {
     private void handleOtherThanConnAck(@NotNull final Object msg, @NotNull final Channel channel) {
         if (msg instanceof Mqtt5Message) {
             final Mqtt5Message mqttMessage = (Mqtt5Message) msg;
-            final String message = mqttMessage.getClass().getSimpleName() +
-                    " message must not be received before CONNACK"; // TODO replace simpleName
+            final String message = mqttMessage.getType() + " message must not be received before CONNACK";
             Mqtt5DisconnectUtil.disconnect(channel, Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
                     new Mqtt5MessageException(mqttMessage, message));
         } else {

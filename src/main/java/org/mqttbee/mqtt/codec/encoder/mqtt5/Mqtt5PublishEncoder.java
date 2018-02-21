@@ -4,6 +4,7 @@ import com.google.common.primitives.ImmutableIntArray;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoder;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageWrapperEncoderApplier;
@@ -11,7 +12,6 @@ import org.mqttbee.mqtt.codec.encoder.provider.MqttPublishEncoderProvider;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttBinaryData;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
-import org.mqttbee.mqtt.message.MqttMessageType;
 import org.mqttbee.mqtt.message.publish.MqttPublishImpl;
 import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
 import org.mqttbee.mqtt5.Mqtt5ServerConnectionDataImpl;
@@ -90,7 +90,7 @@ public class Mqtt5PublishEncoder extends Mqtt5WrappedMessageEncoder<MqttPublishI
         private static final MqttMessageWrapperEncoderApplier<MqttPublishWrapper, MqttPublishImpl, Mqtt5PublishEncoder>
                 APPLIER = new ThreadLocalMqttMessageWrapperEncoderApplier<>(Mqtt5PublishWrapperEncoder::new);
 
-        private static final int FIXED_HEADER = MqttMessageType.PUBLISH.getCode() << 4;
+        private static final int FIXED_HEADER = Mqtt5MessageType.PUBLISH.getCode() << 4;
 
         @Override
         int additionalRemainingLength() {

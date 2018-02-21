@@ -1,4 +1,4 @@
-package org.mqttbee.mqtt.message;
+package org.mqttbee.api.mqtt.mqtt5.message;
 
 import org.mqttbee.annotations.NotNull;
 
@@ -7,7 +7,7 @@ import org.mqttbee.annotations.NotNull;
  *
  * @author Silvio Giebl
  */
-public enum MqttMessageType {
+public enum Mqtt5MessageType {
 
     RESERVED_ZERO,
     CONNECT,
@@ -41,8 +41,8 @@ public enum MqttMessageType {
      * @throws IllegalArgumentException if the byte code is not a valid MQTT message type code.
      */
     @NotNull
-    public static MqttMessageType fromCode(final int code) {
-        final MqttMessageType[] values = values();
+    public static Mqtt5MessageType fromCode(final int code) {
+        final Mqtt5MessageType[] values = values();
         if (code < 0 || code >= values.length) {
             throw new IllegalArgumentException("not a MQTT 5 message type code");
         }
