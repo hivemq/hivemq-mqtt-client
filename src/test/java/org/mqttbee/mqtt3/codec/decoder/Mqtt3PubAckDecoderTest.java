@@ -14,8 +14,6 @@ import org.mqttbee.mqtt3.message.puback.Mqtt3PubAckImpl;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-;
-
 class Mqtt3PubAckDecoderTest {
 
 
