@@ -10,9 +10,9 @@ import static org.junit.Assert.assertArrayEquals;
 /**
  * @author David Katz
  */
-class Mqtt5PingReqEncoderTest extends AbstractMqtt5EncoderTest {
+class MqttPingReqEncoderTest extends AbstractMqtt5EncoderTest {
 
-    Mqtt5PingReqEncoderTest() {
+    MqttPingReqEncoderTest() {
         super(true);
     }
 

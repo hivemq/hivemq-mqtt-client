@@ -1,21 +1,17 @@
-package org.mqttbee.mqtt.codec.encoder.mqtt5;
+package org.mqttbee.mqtt.codec.encoder;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoder;
-import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
 import org.mqttbee.mqtt.message.MqttMessageType;
-import org.mqttbee.mqtt.message.ping.MqttPingReqImpl;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5PingReqEncoder extends MqttMessageEncoder<MqttPingReqImpl> {
+public class MqttPingReqEncoder implements MqttMessageEncoder {
 
-    private static final Mqtt5PingReqEncoder INSTANCE = new Mqtt5PingReqEncoder();
-    public static final MqttMessageEncoderProvider<MqttPingReqImpl> PROVIDER = () -> INSTANCE;
+    public static final MqttPingReqEncoder INSTANCE = new MqttPingReqEncoder();
 
     private static final int ENCODED_LENGTH = 2;
     private static final ByteBuf PACKET =

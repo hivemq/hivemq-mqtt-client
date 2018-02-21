@@ -10,7 +10,7 @@ import org.mqttbee.mqtt5.netty.NettyThreadLocals;
 import java.util.function.Supplier;
 
 /**
- * Applies a {@link MqttMessageWrapper} to a {@link MqttMessageEncoder} for a MQTT message wrapper.
+ * Applies a {@link MqttMessageWrapper} to a {@link MqttMessageEncoder}.
  *
  * @param <W> the type of the MQTT message wrapper.
  * @param <M> the type of the wrapped MQTT message.
@@ -30,11 +30,11 @@ public interface MqttMessageWrapperEncoderApplier< //
      * @return the encoder for the MQTT message wrapper.
      */
     @NotNull
-    MqttMessageEncoder<W> apply(@NotNull W message, @NotNull E wrappedEncoder);
+    MqttMessageEncoder apply(@NotNull W message, @NotNull E wrappedEncoder);
 
 
     /**
-     * Applies a {@link MqttMessageWrapper} to thread local {@link MqttMessageEncoder} for a MQTT message wrapper.
+     * Applies a {@link MqttMessageWrapper} to thread local {@link MqttMessageEncoder}.
      *
      * @param <W> the type of the MQTT message wrapper.
      * @param <M> the type of the wrapped MQTT message.
@@ -57,7 +57,7 @@ public interface MqttMessageWrapperEncoderApplier< //
 
         @NotNull
         @Override
-        public MqttMessageEncoder<W> apply(@NotNull final W message, @NotNull final E wrappedEncoder) {
+        public MqttMessageEncoder apply(@NotNull final W message, @NotNull final E wrappedEncoder) {
             return threadLocal.get().apply(message, wrappedEncoder);
         }
 

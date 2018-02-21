@@ -77,7 +77,7 @@ public class Mqtt5PublishEncoder extends Mqtt5WrappedMessageEncoder<MqttPublishI
 
     @NotNull
     @Override
-    public MqttMessageEncoder<MqttPublishWrapper> wrap(@NotNull final MqttPublishWrapper wrapper) {
+    public MqttMessageEncoder wrap(@NotNull final MqttPublishWrapper wrapper) {
         return Mqtt5PublishWrapperEncoder.APPLIER.apply(wrapper, this);
     }
 

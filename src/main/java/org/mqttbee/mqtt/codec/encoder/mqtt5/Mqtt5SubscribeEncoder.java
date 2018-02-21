@@ -49,7 +49,7 @@ public class Mqtt5SubscribeEncoder extends Mqtt5WrappedMessageEncoder<MqttSubscr
 
     @NotNull
     @Override
-    public MqttMessageEncoder<MqttSubscribeWrapper> wrap(@NotNull final MqttSubscribeWrapper wrapper) {
+    public MqttMessageEncoder wrap(@NotNull final MqttSubscribeWrapper wrapper) {
         return Mqtt5SubscribeWrapperEncoder.APPLIER.apply(wrapper, this);
     }
 

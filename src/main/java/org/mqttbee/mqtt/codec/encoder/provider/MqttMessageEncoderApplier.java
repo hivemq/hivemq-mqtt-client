@@ -10,7 +10,7 @@ import org.mqttbee.mqtt.message.MqttMessage;
  * @param <M> the type of the MQTT message.
  * @author Silvio Giebl
  */
-public interface MqttMessageEncoderApplier<M extends MqttMessage<M, ?>> {
+public interface MqttMessageEncoderApplier<M extends MqttMessage> {
 
     /**
      * Returns a encoder for a MQTT message that is applied to the given MQTT message.
@@ -19,6 +19,6 @@ public interface MqttMessageEncoderApplier<M extends MqttMessage<M, ?>> {
      * @return the encoder for the MQTT message encoder.
      */
     @NotNull
-    MqttMessageEncoder<M> apply(@NotNull M message);
+    MqttMessageEncoder apply(@NotNull M message);
 
 }

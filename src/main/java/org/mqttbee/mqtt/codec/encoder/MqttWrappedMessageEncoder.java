@@ -20,6 +20,6 @@ public interface MqttWrappedMessageEncoder<M extends MqttWrappedMessage<M, W, ?>
      * @return the encoder for the MQTT message wrapper
      */
     @NotNull
-    MqttMessageEncoder<W> wrap(@NotNull final W wrapper);
+    MqttMessageEncoder wrap(@NotNull final W wrapper);
 
 }

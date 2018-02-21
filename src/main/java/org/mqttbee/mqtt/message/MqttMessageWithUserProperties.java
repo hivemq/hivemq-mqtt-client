@@ -20,7 +20,7 @@ import java.util.Optional;
 public abstract class MqttMessageWithUserProperties< //
         M extends MqttMessageWithUserProperties<M, P>, //
         P extends MqttMessageEncoderProvider<M>> //
-        extends MqttMessage<M, P> {
+        extends MqttMessageWithEncoder<M, P> {
 
     private final MqttUserPropertiesImpl userProperties;
 
@@ -135,37 +135,6 @@ public abstract class MqttMessageWithUserProperties< //
 
 
     /**
-     * Base class for MQTT messages with a Reason Codes, an optional Reason String and optional User Properties.
-     *
-     * @param <M> the type of the MQTT message.
-     * @param <R> the type of the Reason Codes.
-     * @param <P> the type of the encoder provider for the MQTT message.
-     */
-    public abstract static class MqttMessageWithReasonCodes< //
-            M extends MqttMessageWithReasonCodes<M, R, P>, //
-            R extends Mqtt5ReasonCode, //
-            P extends MqttMessageEncoderProvider<M>> //
-            extends MqttMessageWithReasonString<M, P> {
-
-        private final ImmutableList<R> reasonCodes;
-
-        MqttMessageWithReasonCodes(
-                @NotNull final ImmutableList<R> reasonCodes, @Nullable final MqttUTF8StringImpl reasonString,
-                @NotNull final MqttUserPropertiesImpl userProperties, @Nullable final P encoderProvider) {
-
-            super(reasonString, userProperties, encoderProvider);
-            this.reasonCodes = reasonCodes;
-        }
-
-        @NotNull
-        public ImmutableList<R> getReasonCodes() {
-            return reasonCodes;
-        }
-
-    }
-
-
-    /**
      * Base class for MQTT messages with a Packet Identifier, Reason Codes, an optional Reason String and optional User
      * Properties.
      *
@@ -174,24 +143,31 @@ public abstract class MqttMessageWithUserProperties< //
      * @param <P> the type of the encoder provider for the MQTT message.
      */
     public abstract static class MqttMessageWithIdAndReasonCodes< //
-            M extends MqttMessageWithReasonCodes<M, R, P>, //
+            M extends MqttMessageWithIdAndReasonCodes<M, R, P>, //
             R extends Mqtt5ReasonCode, //
             P extends MqttMessageEncoderProvider<M>> //
-            extends MqttMessageWithReasonCodes<M, R, P> {
+            extends MqttMessageWithReasonString<M, P> {
 
         private final int packetIdentifier;
+        private final ImmutableList<R> reasonCodes;
 
         protected MqttMessageWithIdAndReasonCodes(
                 final int packetIdentifier, @NotNull final ImmutableList<R> reasonCodes,
                 @Nullable final MqttUTF8StringImpl reasonString, @NotNull final MqttUserPropertiesImpl userProperties,
                 @Nullable final P encoderProvider) {
 
-            super(reasonCodes, reasonString, userProperties, encoderProvider);
+            super(reasonString, userProperties, encoderProvider);
             this.packetIdentifier = packetIdentifier;
+            this.reasonCodes = reasonCodes;
         }
 
         public int getPacketIdentifier() {
             return packetIdentifier;
+        }
+
+        @NotNull
+        public ImmutableList<R> getReasonCodes() {
+            return reasonCodes;
         }
 
     }
