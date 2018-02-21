@@ -18,6 +18,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
 import org.mqttbee.mqtt.message.connect.MqttConnectImpl;
+import org.mqttbee.mqtt5.ioc.MqttBeeComponent;
 import org.mqttbee.rx.FlowableWithSingle;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 
@@ -49,11 +50,11 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
                 return;
             }
 
-            final Bootstrap bootstrap = Mqtt5Component.INSTANCE.nettyBootstrap()
+            final Bootstrap bootstrap = MqttBeeComponent.INSTANCE.nettyBootstrap()
                     .bootstrap(clientData.getExecutor(), clientData.getNumberOfNettyThreads());
 
-            bootstrap.handler(
-                    Mqtt5Component.INSTANCE.channelInitializerProvider().get(connectImpl, connAckEmitter, clientData));
+            bootstrap.handler(MqttBeeComponent.INSTANCE.channelInitializerProvider()
+                    .get(connectImpl, connAckEmitter, clientData));
 
             bootstrap.connect(clientData.getServerHost(), clientData.getServerPort()).addListener(future -> {
                 if (!future.isSuccess()) {
@@ -65,14 +66,14 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
             clientData.setConnecting(false);
 
             clientData.getRawClientConnectionData().getChannel().closeFuture().addListener(future -> {
-                Mqtt5Component.INSTANCE.nettyBootstrap().free(clientData.getExecutor());
+                MqttBeeComponent.INSTANCE.nettyBootstrap().free(clientData.getExecutor());
                 clientData.setClientConnectionData(null);
                 clientData.setServerConnectionData(null);
                 clientData.setConnected(false);
             });
         }).doOnError(throwable -> {
             if (!(throwable instanceof AlreadyConnectedException)) {
-                Mqtt5Component.INSTANCE.nettyBootstrap().free(clientData.getExecutor());
+                MqttBeeComponent.INSTANCE.nettyBootstrap().free(clientData.getExecutor());
                 clientData.setClientConnectionData(null);
                 clientData.setServerConnectionData(null);
                 clientData.setConnecting(false);

@@ -9,6 +9,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.message.ping.MqttPingReqImpl;
 import org.mqttbee.mqtt.message.ping.MqttPingRespImpl;
 import org.mqttbee.mqtt5.handler.util.ChannelInboundHandlerWithTimeout;
+import org.mqttbee.mqtt5.ioc.ChannelScope;
 
 /**
  * MQTT Keep Alive Handling.
@@ -19,6 +20,7 @@ import org.mqttbee.mqtt5.handler.util.ChannelInboundHandlerWithTimeout;
  *
  * @author Silvio Giebl
  */
+@ChannelScope
 public class Mqtt5PingHandler extends ChannelInboundHandlerWithTimeout {
 
     public static final String NAME = "ping";
