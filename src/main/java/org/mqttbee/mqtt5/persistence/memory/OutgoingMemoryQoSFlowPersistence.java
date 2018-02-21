@@ -1,9 +1,9 @@
 package org.mqttbee.mqtt5.persistence.memory;
 
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt5.message.publish.Mqtt5PublishWrapper;
-import org.mqttbee.mqtt5.message.publish.Mqtt5QoSMessage;
-import org.mqttbee.mqtt5.message.publish.pubrel.Mqtt5PubRelImpl;
+import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
+import org.mqttbee.mqtt.message.publish.MqttQoSMessage;
+import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRelImpl;
 import org.mqttbee.mqtt5.persistence.OutgoingQoSFlowPersistence;
 
 import javax.inject.Inject;
@@ -16,7 +16,7 @@ import java.util.concurrent.CompletableFuture;
  */
 public class OutgoingMemoryQoSFlowPersistence implements OutgoingQoSFlowPersistence {
 
-    private final Map<Integer, Mqtt5QoSMessage> messages;
+    private final Map<Integer, MqttQoSMessage> messages;
 
     @Inject
     OutgoingMemoryQoSFlowPersistence() {
@@ -24,19 +24,19 @@ public class OutgoingMemoryQoSFlowPersistence implements OutgoingQoSFlowPersiste
     }
 
     @Override
-    public CompletableFuture<Void> persist(@NotNull final Mqtt5PublishWrapper publishWrapper) {
+    public CompletableFuture<Void> persist(@NotNull final MqttPublishWrapper publishWrapper) {
         messages.put(publishWrapper.getPacketIdentifier(), publishWrapper);
         return CompletableFuture.completedFuture(null);
     }
 
     @Override
-    public CompletableFuture<Void> persist(@NotNull final Mqtt5PubRelImpl pubRel) {
+    public CompletableFuture<Void> persist(@NotNull final MqttPubRelImpl pubRel) {
         messages.put(pubRel.getPacketIdentifier(), pubRel);
         return CompletableFuture.completedFuture(null);
     }
 
     @Override
-    public CompletableFuture<Mqtt5QoSMessage> get(final int packetIdentifier) {
+    public CompletableFuture<MqttQoSMessage> get(final int packetIdentifier) {
         return CompletableFuture.completedFuture(messages.get(packetIdentifier));
     }
 

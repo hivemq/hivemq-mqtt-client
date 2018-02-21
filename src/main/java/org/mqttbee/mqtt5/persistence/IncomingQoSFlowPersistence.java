@@ -1,6 +1,6 @@
 package org.mqttbee.mqtt5.persistence;
 
-import org.mqttbee.mqtt5.message.Mqtt5MessageType;
+import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 
 import java.util.concurrent.CompletableFuture;
 
