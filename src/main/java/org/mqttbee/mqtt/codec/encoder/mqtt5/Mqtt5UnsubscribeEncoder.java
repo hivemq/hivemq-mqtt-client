@@ -44,7 +44,7 @@ public class Mqtt5UnsubscribeEncoder extends Mqtt5WrappedMessageEncoder<MqttUnsu
 
     @NotNull
     @Override
-    public MqttMessageEncoder<MqttUnsubscribeWrapper> wrap(@NotNull final MqttUnsubscribeWrapper wrapper) {
+    public MqttMessageEncoder wrap(@NotNull final MqttUnsubscribeWrapper wrapper) {
         return Mqtt5UnsubscribeWrapperEncoder.APPLIER.apply(wrapper, this);
     }
 

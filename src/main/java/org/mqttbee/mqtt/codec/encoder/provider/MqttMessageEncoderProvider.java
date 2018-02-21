@@ -10,7 +10,6 @@ import java.util.function.Supplier;
  * @param <M> the type of the MQTT message.
  * @author Silvio Giebl
  */
-public interface MqttMessageEncoderProvider<M extends MqttMessage<M, ?>>
-        extends Supplier<MqttMessageEncoderApplier<M>> {
+public interface MqttMessageEncoderProvider<M extends MqttMessage> extends Supplier<MqttMessageEncoderApplier<M>> {
 
 }

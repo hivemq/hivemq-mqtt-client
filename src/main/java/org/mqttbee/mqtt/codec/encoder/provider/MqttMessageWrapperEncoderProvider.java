@@ -6,7 +6,7 @@ import org.mqttbee.mqtt.message.MqttMessageWrapper;
 import org.mqttbee.mqtt.message.MqttWrappedMessage;
 
 /**
- * Provider and applier for a {@link MqttMessageEncoder} for a MQTT message wrapper.
+ * Provider and applier for a {@link MqttMessageEncoder} for a {@link MqttMessageWrapper}.
  *
  * @param <W> the type of the MQTT message wrapper.
  * @param <M> the type of the wrapped MQTT message.
@@ -26,7 +26,7 @@ public class MqttMessageWrapperEncoderProvider< //
 
     @NotNull
     @Override
-    public MqttMessageEncoder<W> apply(@NotNull final W message) {
+    public MqttMessageEncoder apply(@NotNull final W message) {
         return message.getWrapped().getEncoder().wrap(message);
     }
 

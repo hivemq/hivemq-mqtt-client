@@ -105,7 +105,7 @@ public class Mqtt5ConnectEncoder extends Mqtt5WrappedMessageEncoder<MqttConnectI
 
     @NotNull
     @Override
-    public MqttMessageEncoder<MqttConnectWrapper> wrap(@NotNull final MqttConnectWrapper wrapper) {
+    public MqttMessageEncoder wrap(@NotNull final MqttConnectWrapper wrapper) {
         return Mqtt5ConnectWrapperEncoder.APPLIER.apply(wrapper, this);
     }
 

@@ -15,7 +15,7 @@ public abstract class MqttMessageWrapper< //
         W extends MqttMessageWrapper<W, M, P>, //
         M extends MqttWrappedMessage<M, W, P>, //
         P extends MqttMessageEncoderProvider<W>> //
-        extends MqttMessage<W, P> {
+        extends MqttMessageWithEncoder<W, P> {
 
     private final M wrapped;
 

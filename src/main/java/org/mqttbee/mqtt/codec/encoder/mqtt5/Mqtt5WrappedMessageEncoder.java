@@ -86,15 +86,13 @@ public abstract class Mqtt5WrappedMessageEncoder<M extends MqttWrappedMessage<M,
     abstract static class Mqtt5MessageWrapperEncoder< //
             W extends MqttMessageWrapper<W, M, P>, M extends MqttWrappedMessage<M, W, P>, //
             P extends MqttMessageEncoderProvider<W>, E extends Mqtt5WrappedMessageEncoder<M, W>>
-            extends Mqtt5MessageWithPropertiesEncoder<W> implements MqttMessageWrapperEncoderApplier<W, M, E> {
+            extends Mqtt5MessageWithUserPropertiesEncoder<W> implements MqttMessageWrapperEncoderApplier<W, M, E> {
 
         E wrappedEncoder;
 
         @NotNull
         @Override
-        public MqttMessageEncoder<W> apply(
-                @NotNull final W message, @NotNull final E wrappedEncoder) {
-
+        public MqttMessageEncoder apply(@NotNull final W message, @NotNull final E wrappedEncoder) {
             this.wrappedEncoder = wrappedEncoder;
             return apply(message);
         }

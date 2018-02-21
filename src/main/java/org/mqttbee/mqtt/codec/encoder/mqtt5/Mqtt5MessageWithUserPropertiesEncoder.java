@@ -5,11 +5,11 @@ import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt5.message.Mqtt5ReasonCode;
 import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoder;
+import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoderWithMessage;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.MqttMessage;
-import org.mqttbee.mqtt.message.MqttMessageWithUserProperties;
 import org.mqttbee.mqtt.message.MqttMessageWithUserProperties.MqttMessageWithIdAndReasonCode;
 import org.mqttbee.mqtt.message.MqttMessageWithUserProperties.MqttMessageWithReasonCode;
 import org.mqttbee.mqtt.message.MqttMessageWithUserProperties.MqttMessageWithReasonString;
@@ -22,7 +22,7 @@ import static org.mqttbee.mqtt.message.MqttProperty.REASON_STRING;
  *
  * @author Silvio Giebl
  */
-abstract class Mqtt5MessageWithPropertiesEncoder<M extends MqttMessage<M, ?>> extends MqttMessageEncoder<M> {
+abstract class Mqtt5MessageWithUserPropertiesEncoder<M extends MqttMessage> extends MqttMessageEncoderWithMessage<M> {
 
     private int encodedLength = -1;
     private int remainingLength = -1;
@@ -30,7 +30,7 @@ abstract class Mqtt5MessageWithPropertiesEncoder<M extends MqttMessage<M, ?>> ex
 
     @NotNull
     @Override
-    public MqttMessageEncoder<M> apply(@NotNull final M message) {
+    public MqttMessageEncoder apply(@NotNull final M message) {
         if (this.message != message) {
             encodedLength = remainingLength = propertyLength = -1;
         }
@@ -224,24 +224,10 @@ abstract class Mqtt5MessageWithPropertiesEncoder<M extends MqttMessage<M, ?>> ex
 
 
     /**
-     * Base class for encoders of MQTT messages with omissible User Properties.
-     */
-    static abstract class Mqtt5MessageWithUserPropertiesEncoder<T extends MqttMessageWithUserProperties<T, P>, P extends MqttMessageEncoderProvider<T>>
-            extends Mqtt5MessageWithPropertiesEncoder<T> {
-
-        @Override
-        MqttUserPropertiesImpl getUserProperties() {
-            return message.getUserProperties();
-        }
-
-    }
-
-
-    /**
      * Base class for encoders of MQTT messages with an omissible Reason String and omissible User Properties.
      */
     static abstract class Mqtt5MessageWithReasonStringEncoder<T extends MqttMessageWithReasonString<T, P>, P extends MqttMessageEncoderProvider<T>>
-            extends Mqtt5MessageWithUserPropertiesEncoder<T, P> {
+            extends Mqtt5MessageWithUserPropertiesEncoder<T> {
 
         @Override
         final int omittedPropertiesLength(final int maxPacketSize) {
@@ -269,6 +255,11 @@ abstract class Mqtt5MessageWithPropertiesEncoder<M extends MqttMessage<M, ?>> ex
 
         private int reasonStringLength() {
             return Mqtt5MessageEncoderUtil.nullablePropertyEncodedLength(message.getRawReasonString());
+        }
+
+        @Override
+        MqttUserPropertiesImpl getUserProperties() {
+            return message.getUserProperties();
         }
 
     }
