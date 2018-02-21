@@ -1,4 +1,4 @@
-package org.mqttbee.api.mqtt3.message;
+package org.mqttbee.api.mqtt.mqtt3.message.publish.pubcomp;
 
 public interface Mqtt3PubComp {
 

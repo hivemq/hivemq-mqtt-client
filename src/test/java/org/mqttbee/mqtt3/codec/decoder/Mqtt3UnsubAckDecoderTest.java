@@ -8,7 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt3.message.Mqtt3UnsubAck;
+import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.unsuback.Mqtt3UnsubAck;
 import org.mqttbee.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.mqtt3.message.unsuback.Mqtt3UnsubAckImpl;
 

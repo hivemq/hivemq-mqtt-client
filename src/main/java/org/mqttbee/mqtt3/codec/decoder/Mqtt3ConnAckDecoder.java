@@ -4,9 +4,9 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAckReturnCode;
 import org.mqttbee.mqtt3.message.Mqtt3Message;
 import org.mqttbee.mqtt3.message.connack.Mqtt3ConnAckImpl;
-import org.mqttbee.mqtt3.message.connack.Mqtt3ConnAckReasonCode;
 
 
 /**
@@ -41,7 +41,7 @@ public class Mqtt3ConnAckDecoder implements Mqtt3MessageDecoder {
         final boolean sessionPresent = (connAckFlags & 0b1) == 1;
 
         final int code = in.readUnsignedByte();
-        final Mqtt3ConnAckReasonCode reasonCode = Mqtt3ConnAckReasonCode.fromCode(code);
+        final Mqtt3ConnAckReturnCode reasonCode = Mqtt3ConnAckReturnCode.fromCode(code);
         if (reasonCode == null) {
             return null;
         }

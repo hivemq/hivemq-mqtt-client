@@ -5,8 +5,8 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAckReturnCode;
 import org.mqttbee.mqtt3.message.suback.Mqtt3SubAckImpl;
-import org.mqttbee.mqtt3.message.suback.Mqtt3SubAckReasonCode;
 
 public class Mqtt3SubAckDecoder implements Mqtt3MessageDecoder {
 
@@ -29,10 +29,10 @@ public class Mqtt3SubAckDecoder implements Mqtt3MessageDecoder {
 
         final int packetID = in.readUnsignedShort();
         final int subscriptions = in.readableBytes();
-        final ImmutableList.Builder<Mqtt3SubAckReasonCode> returnCodesBuilder = ImmutableList.builder();
+        final ImmutableList.Builder<Mqtt3SubAckReturnCode> returnCodesBuilder = ImmutableList.builder();
 
         for (int i = 0; i < subscriptions; i++) {
-            final Mqtt3SubAckReasonCode returnCode = Mqtt3SubAckReasonCode.from(in.readUnsignedByte());
+            final Mqtt3SubAckReturnCode returnCode = Mqtt3SubAckReturnCode.from(in.readUnsignedByte());
             if (returnCode == null) {
                 channel.close();
                 return null;

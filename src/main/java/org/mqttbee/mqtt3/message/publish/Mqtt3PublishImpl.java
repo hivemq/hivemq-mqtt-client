@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt3.message.Mqtt3Publish;
+import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.mqtt3.message.Mqtt3Message;
 import org.mqttbee.mqtt5.message.Mqtt5TopicImpl;

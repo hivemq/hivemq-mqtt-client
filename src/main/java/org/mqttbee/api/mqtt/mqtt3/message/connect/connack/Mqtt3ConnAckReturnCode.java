@@ -1,10 +1,10 @@
-package org.mqttbee.mqtt3.message.connack;
+package org.mqttbee.api.mqtt.mqtt3.message.connect.connack;
 
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt3.message.Mqtt3ReasonCode;
 
-public enum Mqtt3ConnAckReasonCode {
+public enum Mqtt3ConnAckReturnCode {
 
     SUCCESS(Mqtt3ReasonCode.SUCCESS),
     UNSUPPORTED_PROTOCOL_VERSION(1),
@@ -16,11 +16,11 @@ public enum Mqtt3ConnAckReasonCode {
 
     private final int code;
 
-    Mqtt3ConnAckReasonCode(final int code) {
+    Mqtt3ConnAckReturnCode(final int code) {
         this.code = code;
     }
 
-    Mqtt3ConnAckReasonCode(@NotNull final Mqtt3ReasonCode reasonCode) {
+    Mqtt3ConnAckReturnCode(@NotNull final Mqtt3ReasonCode reasonCode) {
         this(reasonCode.getCode());
     }
 
@@ -32,14 +32,14 @@ public enum Mqtt3ConnAckReasonCode {
      * Reason Code code.
      */
     @Nullable
-    public static Mqtt3ConnAckReasonCode fromCode(final int code) {
+    public static Mqtt3ConnAckReturnCode fromCode(final int code) {
         if (code < 0) {
             return null;
         }
         if (code > NOT_AUTHORIZED.ordinal()) {
             return null;
         }
-        return Mqtt3ConnAckReasonCode.values()[code];
+        return Mqtt3ConnAckReturnCode.values()[code];
     }
 
     /**
