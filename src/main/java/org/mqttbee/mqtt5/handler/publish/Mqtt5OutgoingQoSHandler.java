@@ -4,13 +4,13 @@ import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
+import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5QoS;
+import org.mqttbee.mqtt.message.publish.MqttPublishImpl;
+import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
+import org.mqttbee.mqtt.message.publish.puback.MqttPubAckImpl;
+import org.mqttbee.mqtt.message.publish.pubcomp.MqttPubCompImpl;
+import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRecImpl;
 import org.mqttbee.mqtt5.ioc.ChannelScope;
-import org.mqttbee.mqtt5.message.publish.Mqtt5PublishImpl;
-import org.mqttbee.mqtt5.message.publish.Mqtt5PublishWrapper;
-import org.mqttbee.mqtt5.message.publish.puback.Mqtt5PubAckImpl;
-import org.mqttbee.mqtt5.message.publish.pubcomp.Mqtt5PubCompImpl;
-import org.mqttbee.mqtt5.message.publish.pubrec.Mqtt5PubRecImpl;
 import org.mqttbee.mqtt5.persistence.OutgoingQoSFlowPersistence;
 import org.mqttbee.util.Ranges;
 import org.slf4j.Logger;
@@ -39,15 +39,16 @@ public class Mqtt5OutgoingQoSHandler extends ChannelDuplexHandler {
 
     @Override
     public void write(final ChannelHandlerContext ctx, final Object msg, final ChannelPromise promise) {
-        if (msg instanceof Mqtt5PublishImpl) {
-            handlePublish(ctx, (Mqtt5PublishImpl) msg, promise);
+        if (msg instanceof MqttPublishImpl) {
+            handlePublish(ctx, (MqttPublishImpl) msg, promise);
         } else {
             ctx.write(msg, promise);
         }
     }
 
     private void handlePublish(
-            @NotNull final ChannelHandlerContext ctx, @NotNull final Mqtt5PublishImpl publish, @NotNull final ChannelPromise promise) {
+            @NotNull final ChannelHandlerContext ctx, @NotNull final MqttPublishImpl publish,
+            @NotNull final ChannelPromise promise) {
 
         if (publish.getQos() == Mqtt5QoS.AT_MOST_ONCE) {
             handlePublishQoS0(ctx, publish, promise);
@@ -57,19 +58,19 @@ public class Mqtt5OutgoingQoSHandler extends ChannelDuplexHandler {
     }
 
     private void handlePublishQoS0(
-            @NotNull final ChannelHandlerContext ctx, @NotNull final Mqtt5PublishImpl publish,
+            @NotNull final ChannelHandlerContext ctx, @NotNull final MqttPublishImpl publish,
             @NotNull final ChannelPromise promise) {
 
-        final int packetIdentifier = Mqtt5PublishWrapper.NO_PACKET_IDENTIFIER_QOS_0;
-        final Mqtt5PublishWrapper publishWrapper =
-                publish.wrap(packetIdentifier, false, Mqtt5PublishWrapper.DEFAULT_NO_TOPIC_ALIAS, false,
-                        Mqtt5PublishWrapper.DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS); // TODO topic alias
+        final int packetIdentifier = MqttPublishWrapper.NO_PACKET_IDENTIFIER_QOS_0;
+        final MqttPublishWrapper publishWrapper =
+                publish.wrap(packetIdentifier, false, MqttPublishWrapper.DEFAULT_NO_TOPIC_ALIAS, false,
+                        MqttPublishWrapper.DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS); // TODO topic alias
 
         ctx.write(publishWrapper, promise);
     }
 
     private void handlePublishQoS1Or2(
-            @NotNull final ChannelHandlerContext ctx, @NotNull final Mqtt5PublishImpl publish,
+            @NotNull final ChannelHandlerContext ctx, @NotNull final MqttPublishImpl publish,
             @NotNull final ChannelPromise promise) {
 
         final int packetIdentifier = packetIdentifiers.getId();
@@ -77,9 +78,9 @@ public class Mqtt5OutgoingQoSHandler extends ChannelDuplexHandler {
             // TODO
         }
 
-        final Mqtt5PublishWrapper publishWrapper =
-                publish.wrap(packetIdentifier, false, Mqtt5PublishWrapper.DEFAULT_NO_TOPIC_ALIAS, false,
-                        Mqtt5PublishWrapper.DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS); // TODO topic alias
+        final MqttPublishWrapper publishWrapper =
+                publish.wrap(packetIdentifier, false, MqttPublishWrapper.DEFAULT_NO_TOPIC_ALIAS, false,
+                        MqttPublishWrapper.DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS); // TODO topic alias
 
         persistence.persist(publishWrapper).whenCompleteAsync((aVoid, throwable) -> {
             if (throwable == null) {
@@ -93,26 +94,26 @@ public class Mqtt5OutgoingQoSHandler extends ChannelDuplexHandler {
 
     @Override
     public void channelRead(final ChannelHandlerContext ctx, final Object msg) {
-        if (msg instanceof Mqtt5PubAckImpl) {
-            handlePubAck(ctx, (Mqtt5PubAckImpl) msg);
-        } else if (msg instanceof Mqtt5PubRecImpl) {
-            handlePubRec(ctx, (Mqtt5PubRecImpl) msg);
-        } else if (msg instanceof Mqtt5PubCompImpl) {
-            handlePubComp(ctx, (Mqtt5PubCompImpl) msg);
+        if (msg instanceof MqttPubAckImpl) {
+            handlePubAck(ctx, (MqttPubAckImpl) msg);
+        } else if (msg instanceof MqttPubRecImpl) {
+            handlePubRec(ctx, (MqttPubRecImpl) msg);
+        } else if (msg instanceof MqttPubCompImpl) {
+            handlePubComp(ctx, (MqttPubCompImpl) msg);
         } else {
             ctx.fireChannelRead(msg);
         }
     }
 
-    private void handlePubAck(final ChannelHandlerContext ctx, final Mqtt5PubAckImpl pubAck) {
+    private void handlePubAck(final ChannelHandlerContext ctx, final MqttPubAckImpl pubAck) {
         persistence.remove(pubAck.getPacketIdentifier());
     }
 
-    private void handlePubRec(final ChannelHandlerContext ctx, final Mqtt5PubRecImpl pubRec) {
+    private void handlePubRec(final ChannelHandlerContext ctx, final MqttPubRecImpl pubRec) {
 
     }
 
-    private void handlePubComp(final ChannelHandlerContext ctx, final Mqtt5PubCompImpl pubComp) {
+    private void handlePubComp(final ChannelHandlerContext ctx, final MqttPubCompImpl pubComp) {
 
     }
 
