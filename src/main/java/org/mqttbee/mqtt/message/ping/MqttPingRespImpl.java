@@ -18,12 +18,6 @@ public class MqttPingRespImpl implements MqttMessage, Mqtt5PingResp {
 
     @NotNull
     @Override
-    public Mqtt5MessageType getType() {
-        return Mqtt5MessageType.PINGRESP;
-    }
-
-    @NotNull
-    @Override
     public MqttMessageEncoder getEncoder() {
         throw new UnsupportedOperationException();
     }

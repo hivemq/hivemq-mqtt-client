@@ -31,12 +31,6 @@ public class MqttPubAckImpl extends
 
     @NotNull
     @Override
-    public Mqtt5MessageType getType() {
-        return Mqtt5MessageType.PUBACK;
-    }
-
-    @NotNull
-    @Override
     protected MqttPubAckImpl getCodable() {
         return this;
     }

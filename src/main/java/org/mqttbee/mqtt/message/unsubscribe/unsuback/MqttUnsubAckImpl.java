@@ -27,12 +27,6 @@ public class MqttUnsubAckImpl extends
 
     @NotNull
     @Override
-    public Mqtt5MessageType getType() {
-        return Mqtt5MessageType.UNSUBACK;
-    }
-
-    @NotNull
-    @Override
     protected MqttUnsubAckImpl getCodable() {
         return this;
     }

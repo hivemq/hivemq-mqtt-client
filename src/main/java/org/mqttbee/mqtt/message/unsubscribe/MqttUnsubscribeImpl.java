@@ -36,12 +36,6 @@ public class MqttUnsubscribeImpl extends
 
     @NotNull
     @Override
-    public Mqtt5MessageType getType() {
-        return Mqtt5MessageType.UNSUBSCRIBE;
-    }
-
-    @NotNull
-    @Override
     protected MqttUnsubscribeImpl getCodable() {
         return this;
     }

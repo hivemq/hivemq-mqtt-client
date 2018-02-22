@@ -31,12 +31,6 @@ public class MqttPubCompImpl extends
 
     @NotNull
     @Override
-    public Mqtt5MessageType getType() {
-        return Mqtt5MessageType.PUBCOMP;
-    }
-
-    @NotNull
-    @Override
     protected MqttPubCompImpl getCodable() {
         return this;
     }

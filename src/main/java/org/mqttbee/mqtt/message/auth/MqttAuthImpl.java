@@ -54,12 +54,6 @@ public class MqttAuthImpl
 
     @NotNull
     @Override
-    public Mqtt5MessageType getType() {
-        return Mqtt5MessageType.AUTH;
-    }
-
-    @NotNull
-    @Override
     protected MqttAuthImpl getCodable() {
         return this;
     }

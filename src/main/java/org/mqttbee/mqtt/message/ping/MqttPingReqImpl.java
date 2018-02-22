@@ -19,12 +19,6 @@ public class MqttPingReqImpl implements MqttMessage, Mqtt5PingReq {
 
     @NotNull
     @Override
-    public Mqtt5MessageType getType() {
-        return Mqtt5MessageType.PINGREQ;
-    }
-
-    @NotNull
-    @Override
     public MqttMessageEncoder getEncoder() {
         return MqttPingReqEncoder.INSTANCE;
     }

@@ -5,6 +5,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
+import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 
 import java.util.Optional;
 
@@ -33,5 +34,11 @@ public interface Mqtt5PubRec extends Mqtt5Message {
      */
     @NotNull
     Mqtt5UserProperties getUserProperties();
+
+    @NotNull
+    @Override
+    default Mqtt5MessageType getType() {
+        return Mqtt5MessageType.AUTH;
+    }
 
 }

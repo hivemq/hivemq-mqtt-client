@@ -153,12 +153,6 @@ public class MqttPublishImpl extends MqttWrappedMessage<MqttPublishImpl, MqttPub
 
     @NotNull
     @Override
-    public Mqtt5MessageType getType() {
-        return Mqtt5MessageType.PUBLISH;
-    }
-
-    @NotNull
-    @Override
     protected MqttPublishImpl getCodable() {
         return this;
     }
