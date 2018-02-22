@@ -3,10 +3,10 @@ package org.mqttbee.api.mqtt.mqtt5.message.connect.connack;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
+import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
-import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5EnhancedAuth;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.util.UnsignedDataTypes;
@@ -111,7 +111,7 @@ public interface Mqtt5ConnAck extends Mqtt5Message {
         /**
          * The default maximum QoS the server accepts from the client.
          */
-        Mqtt5QoS DEFAULT_MAXIMUM_QOS = Mqtt5QoS.EXACTLY_ONCE;
+        MqttQoS DEFAULT_MAXIMUM_QOS = MqttQoS.EXACTLY_ONCE;
         /**
          * The default for whether the server accepts retained messages.
          */
@@ -150,7 +150,7 @@ public interface Mqtt5ConnAck extends Mqtt5Message {
         /**
          * @return the maximum QoS the server accepts from the client. The default is {@link #DEFAULT_MAXIMUM_QOS}.
          */
-        Mqtt5QoS getMaximumQoS();
+        MqttQoS getMaximumQoS();
 
         /**
          * @return whether the server accepts retained messages. The default is {@link #DEFAULT_RETAIN_AVAILABLE}.

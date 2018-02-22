@@ -2,11 +2,11 @@ package org.mqttbee.api.mqtt.mqtt5.message.publish;
 
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
-import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeResult;
 
 import java.nio.ByteBuffer;
@@ -52,7 +52,7 @@ public interface Mqtt5Publish extends Mqtt5Message, Mqtt5SubscribeResult {
      * @return the QoS of this PUBLISH packet.
      */
     @NotNull
-    Mqtt5QoS getQos();
+    MqttQoS getQos();
 
     /**
      * @return whether this PUBLISH packet is a retained message.

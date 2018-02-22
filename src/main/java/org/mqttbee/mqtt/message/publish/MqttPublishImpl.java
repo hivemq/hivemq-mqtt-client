@@ -3,10 +3,10 @@ package org.mqttbee.mqtt.message.publish;
 import com.google.common.primitives.ImmutableIntArray;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
-import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.TopicAliasUsage;
@@ -31,7 +31,7 @@ public class MqttPublishImpl extends MqttWrappedMessage<MqttPublishImpl, MqttPub
 
     private final MqttTopicImpl topic;
     private final ByteBuffer payload;
-    private final Mqtt5QoS qos;
+    private final MqttQoS qos;
     private final boolean isRetain;
     private final long messageExpiryInterval;
     private final Mqtt5PayloadFormatIndicator payloadFormatIndicator;
@@ -41,7 +41,7 @@ public class MqttPublishImpl extends MqttWrappedMessage<MqttPublishImpl, MqttPub
     private final TopicAliasUsage topicAliasUsage;
 
     public MqttPublishImpl(
-            @NotNull final MqttTopicImpl topic, @Nullable final ByteBuffer payload, @NotNull final Mqtt5QoS qos,
+            @NotNull final MqttTopicImpl topic, @Nullable final ByteBuffer payload, @NotNull final MqttQoS qos,
             final boolean isRetain, final long messageExpiryInterval,
             @Nullable final Mqtt5PayloadFormatIndicator payloadFormatIndicator,
             @Nullable final MqttUTF8StringImpl contentType, @Nullable final MqttTopicImpl responseTopic,
@@ -81,7 +81,7 @@ public class MqttPublishImpl extends MqttWrappedMessage<MqttPublishImpl, MqttPub
 
     @NotNull
     @Override
-    public Mqtt5QoS getQos() {
+    public MqttQoS getQos() {
         return qos;
     }
 
@@ -151,6 +151,7 @@ public class MqttPublishImpl extends MqttWrappedMessage<MqttPublishImpl, MqttPub
         return topicAliasUsage;
     }
 
+    @NotNull
     @Override
     public Mqtt5MessageType getType() {
         return Mqtt5MessageType.PUBLISH;

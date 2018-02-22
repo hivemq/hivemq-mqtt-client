@@ -25,7 +25,7 @@ public class MqttPingReqEncoder implements MqttMessageEncoder {
     @NotNull
     @Override
     public ByteBuf allocateBuffer(@NotNull final Channel channel) {
-        return PACKET;
+        return PACKET.retainedDuplicate();
     }
 
     @Override

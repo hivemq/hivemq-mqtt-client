@@ -7,7 +7,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5QoS;
+import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.TopicAliasUsage;
@@ -52,12 +52,12 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
         final boolean dup = (flags & 0b1000) != 0;
         final boolean retain = (flags & 0b0001) != 0;
 
-        final Mqtt5QoS qos = Mqtt5QoS.fromCode((flags & 0b0110) >> 1);
+        final MqttQoS qos = MqttQoS.fromCode((flags & 0b0110) >> 1);
         if (qos == null) {
             disconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "wrong QoS", channel);
             return null;
         }
-        if ((qos == Mqtt5QoS.AT_MOST_ONCE) && dup) {
+        if ((qos == MqttQoS.AT_MOST_ONCE) && dup) {
             disconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "DUP flag must be 0 if QoS is 0", channel);
             return null;
         }
@@ -82,7 +82,7 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
         }
 
         int packetIdentifier = NO_PACKET_IDENTIFIER_QOS_0;
-        if (qos != Mqtt5QoS.AT_MOST_ONCE) {
+        if (qos != MqttQoS.AT_MOST_ONCE) {
             if (in.readableBytes() < 2) {
                 disconnectRemainingLengthTooShort(channel);
                 return null;

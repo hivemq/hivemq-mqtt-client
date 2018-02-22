@@ -3,7 +3,7 @@ package org.mqttbee.mqtt.codec.encoder;
 import io.netty.channel.embedded.EmbeddedChannel;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5QoS;
+import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt5.Mqtt5ClientDataImpl;
@@ -47,7 +47,7 @@ public class AbstractMqtt5EncoderTest {
 
     protected void createServerConnectionData(final int maximumPacketSize) {
         clientData.setServerConnectionData(
-                new Mqtt5ServerConnectionDataImpl(10, maximumPacketSize, 3, Mqtt5QoS.EXACTLY_ONCE, true, true, true,
+                new Mqtt5ServerConnectionDataImpl(10, maximumPacketSize, 3, MqttQoS.EXACTLY_ONCE, true, true, true,
                         true));
     }
 

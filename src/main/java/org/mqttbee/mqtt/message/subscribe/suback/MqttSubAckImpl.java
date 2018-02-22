@@ -25,6 +25,7 @@ public class MqttSubAckImpl extends
         super(packetIdentifier, reasonCodes, reasonString, userProperties, null);
     }
 
+    @NotNull
     @Override
     public Mqtt5MessageType getType() {
         return Mqtt5MessageType.SUBACK;

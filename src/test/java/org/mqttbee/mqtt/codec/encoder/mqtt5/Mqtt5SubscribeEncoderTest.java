@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5QoS;
+import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5RetainHandling;
 import org.mqttbee.mqtt.codec.encoder.AbstractMqtt5EncoderTest;
 import org.mqttbee.mqtt.datatypes.*;
@@ -64,7 +64,7 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderTest {
         final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.of(ImmutableList.of(mqtt5UserProperty));
 
         final MqttTopicFilterImpl topicFiler = MqttTopicFilterImpl.from("topic/#");
-        final Mqtt5QoS qos = Mqtt5QoS.AT_LEAST_ONCE;
+        final MqttQoS qos = MqttQoS.AT_LEAST_ONCE;
         final boolean isNoLocal = true;
         final Mqtt5RetainHandling retainHandling = Mqtt5RetainHandling.SEND_IF_SUBSCRIPTION_DOES_NOT_EXIST;
         final boolean isRetainAsPublished = true;
@@ -105,7 +105,7 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderTest {
                 MqttUserPropertiesImpl.of(ImmutableList.of(mqtt5UserProperty, mqtt5UserProperty));
 
         final MqttTopicFilterImpl topicFiler = MqttTopicFilterImpl.from("topic/#");
-        final Mqtt5QoS qos = Mqtt5QoS.AT_LEAST_ONCE;
+        final MqttQoS qos = MqttQoS.AT_LEAST_ONCE;
         final ImmutableList<MqttSubscribeImpl.SubscriptionImpl> subscriptions = ImmutableList.of(
                 new MqttSubscribeImpl.SubscriptionImpl(requireNonNull(topicFiler), qos, DEFAULT_NO_LOCAL,
                         DEFAULT_RETAIN_HANDLING, DEFAULT_RETAIN_AS_PUBLISHED));
@@ -141,7 +141,7 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderTest {
         final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.of(ImmutableList.of(mqtt5UserProperty));
 
         final MqttTopicFilterImpl topicFiler = MqttTopicFilterImpl.from("topic/#");
-        final Mqtt5QoS qos = Mqtt5QoS.AT_LEAST_ONCE;
+        final MqttQoS qos = MqttQoS.AT_LEAST_ONCE;
         final ImmutableList<MqttSubscribeImpl.SubscriptionImpl> subscriptions = ImmutableList.of(
                 new MqttSubscribeImpl.SubscriptionImpl(requireNonNull(topicFiler), qos, DEFAULT_NO_LOCAL,
                         DEFAULT_RETAIN_HANDLING, DEFAULT_RETAIN_AS_PUBLISHED));
@@ -151,8 +151,8 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderTest {
     }
 
     @ParameterizedTest
-    @EnumSource(Mqtt5QoS.class)
-    void encode_subscriptionOptionsQos(final Mqtt5QoS qos) {
+    @EnumSource(MqttQoS.class)
+    void encode_subscriptionOptionsQos(final MqttQoS qos) {
         final byte[] expected = {
                 // fixed header
                 // type, reserved
@@ -207,7 +207,7 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderTest {
         final MqttTopicFilterImpl topicFiler = MqttTopicFilterImpl.from("topic/#");
         final boolean isNoLocal = noLocal == 1;
         final Mqtt5RetainHandling retainHandling = Mqtt5RetainHandling.SEND;
-        final Mqtt5QoS qos = Mqtt5QoS.AT_MOST_ONCE;
+        final MqttQoS qos = MqttQoS.AT_MOST_ONCE;
         final ImmutableList<MqttSubscribeImpl.SubscriptionImpl> subscriptions = ImmutableList.of(
                 new MqttSubscribeImpl.SubscriptionImpl(requireNonNull(topicFiler), qos, isNoLocal, retainHandling,
                         DEFAULT_RETAIN_AS_PUBLISHED));
@@ -240,7 +240,7 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderTest {
         expected[14] |= retainHandling.getCode() << 4;
 
         final MqttTopicFilterImpl topicFiler = MqttTopicFilterImpl.from("topic/#");
-        final Mqtt5QoS qos = Mqtt5QoS.AT_LEAST_ONCE;
+        final MqttQoS qos = MqttQoS.AT_LEAST_ONCE;
         final boolean isNoLocal = true;
         final ImmutableList<MqttSubscribeImpl.SubscriptionImpl> subscriptions = ImmutableList.of(
                 new MqttSubscribeImpl.SubscriptionImpl(requireNonNull(topicFiler), qos, isNoLocal, retainHandling,
@@ -273,7 +273,7 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderTest {
         };
 
         final MqttTopicFilterImpl topicFiler = MqttTopicFilterImpl.from("topic/#");
-        final Mqtt5QoS qos = Mqtt5QoS.AT_LEAST_ONCE;
+        final MqttQoS qos = MqttQoS.AT_LEAST_ONCE;
         final ImmutableList<MqttSubscribeImpl.SubscriptionImpl> subscriptions = ImmutableList.of(
                 new MqttSubscribeImpl.SubscriptionImpl(requireNonNull(topicFiler), qos, DEFAULT_NO_LOCAL,
                         DEFAULT_RETAIN_HANDLING, DEFAULT_RETAIN_AS_PUBLISHED));
@@ -290,7 +290,7 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderTest {
     void encode_maximumPacketSizeExceeded_throwsEncoderException() {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
         final MqttTopicFilterImpl topicFiler = maxPacket.getTopicFilterTooLong();
-        final Mqtt5QoS qos = Mqtt5QoS.AT_LEAST_ONCE;
+        final MqttQoS qos = MqttQoS.AT_LEAST_ONCE;
         final ImmutableList<MqttSubscribeImpl.SubscriptionImpl> subscriptions = ImmutableList.of(
                 new MqttSubscribeImpl.SubscriptionImpl(requireNonNull(topicFiler), qos, DEFAULT_NO_LOCAL,
                         DEFAULT_RETAIN_HANDLING, DEFAULT_RETAIN_AS_PUBLISHED));
@@ -312,7 +312,7 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderTest {
     void encode_propertyLengthExceedsMax_throwsEncoderException() {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
         final MqttTopicFilterImpl topicFiler = MqttTopicFilterImpl.from("topic/#");
-        final Mqtt5QoS qos = Mqtt5QoS.AT_LEAST_ONCE;
+        final MqttQoS qos = MqttQoS.AT_LEAST_ONCE;
         final MqttUserPropertiesImpl tooManyUserProperties = maxPacket.getUserProperties(
                 (VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE / maxPacket.userPropertyBytes) + 1);
 

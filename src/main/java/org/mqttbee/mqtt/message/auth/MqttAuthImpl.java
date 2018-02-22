@@ -52,6 +52,7 @@ public class MqttAuthImpl
         return data;
     }
 
+    @NotNull
     @Override
     public Mqtt5MessageType getType() {
         return Mqtt5MessageType.AUTH;

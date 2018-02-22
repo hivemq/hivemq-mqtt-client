@@ -34,6 +34,7 @@ public class MqttUnsubscribeImpl extends
         return topicFilters;
     }
 
+    @NotNull
     @Override
     public Mqtt5MessageType getType() {
         return Mqtt5MessageType.UNSUBSCRIBE;

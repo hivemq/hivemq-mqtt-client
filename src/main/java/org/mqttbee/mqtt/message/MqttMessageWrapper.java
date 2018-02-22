@@ -25,6 +25,7 @@ public abstract class MqttMessageWrapper< //
         this.wrapped = wrapped;
     }
 
+    @NotNull
     @Override
     public Mqtt5MessageType getType() {
         return wrapped.getType();

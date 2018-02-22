@@ -4,12 +4,13 @@ import com.google.common.primitives.ImmutableIntArray;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
-import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoder;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageWrapperEncoderApplier;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttPublishEncoderProvider;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider;
+import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider.NewMqttWrappedMessageEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttBinaryData;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.publish.MqttPublishImpl;
@@ -30,7 +31,7 @@ public class Mqtt5PublishEncoder extends Mqtt5WrappedMessageEncoder<MqttPublishI
 
     public static final MqttWrappedMessageEncoderProvider<MqttPublishImpl, MqttPublishWrapper, MqttPublishEncoderProvider>
             PROVIDER =
-            new MqttWrappedMessageEncoderProvider<>(Mqtt5PublishEncoder::new, Mqtt5PublishWrapperEncoder.PROVIDER);
+            new NewMqttWrappedMessageEncoderProvider<>(Mqtt5PublishEncoder::new, Mqtt5PublishWrapperEncoder.PROVIDER);
 
     @Override
     int calculateRemainingLengthWithoutProperties() {
@@ -38,7 +39,7 @@ public class Mqtt5PublishEncoder extends Mqtt5WrappedMessageEncoder<MqttPublishI
 
         remainingLength += message.getTopic().encodedLength();
 
-        if (message.getQos() != Mqtt5QoS.AT_MOST_ONCE) {
+        if (message.getQos() != MqttQoS.AT_MOST_ONCE) {
             remainingLength += 2;
         }
 
@@ -153,7 +154,7 @@ public class Mqtt5PublishEncoder extends Mqtt5WrappedMessageEncoder<MqttPublishI
                 MqttBinaryData.encodeEmpty(out);
             }
 
-            if (publish.getQos() != Mqtt5QoS.AT_MOST_ONCE) {
+            if (publish.getQos() != MqttQoS.AT_MOST_ONCE) {
                 out.writeShort(message.getPacketIdentifier());
             }
 

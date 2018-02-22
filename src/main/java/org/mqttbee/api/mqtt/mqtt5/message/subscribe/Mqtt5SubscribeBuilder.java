@@ -3,9 +3,9 @@ package org.mqttbee.api.mqtt.mqtt5.message.subscribe;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
-import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.mqtt.MqttBuilderUtil;
 import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5SubscribeEncoder;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
@@ -51,7 +51,7 @@ public class Mqtt5SubscribeBuilder {
     public static class SubscriptionBuilder {
 
         private MqttTopicFilterImpl topicFilter;
-        private Mqtt5QoS qos;
+        private MqttQoS qos;
         private boolean noLocal = Subscription.DEFAULT_NO_LOCAL;
         private Mqtt5RetainHandling retainHandling = Subscription.DEFAULT_RETAIN_HANDLING;
         private boolean retainAsPublished = Subscription.DEFAULT_RETAIN_AS_PUBLISHED;
@@ -72,7 +72,7 @@ public class Mqtt5SubscribeBuilder {
         }
 
         @NotNull
-        public SubscriptionBuilder withQoS(@NotNull final Mqtt5QoS qos) {
+        public SubscriptionBuilder withQoS(@NotNull final MqttQoS qos) {
             this.qos = Preconditions.checkNotNull(qos);
             return this;
         }

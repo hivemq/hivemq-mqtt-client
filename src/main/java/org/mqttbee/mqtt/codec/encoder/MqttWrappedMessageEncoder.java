@@ -1,6 +1,7 @@
 package org.mqttbee.mqtt.codec.encoder;
 
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderApplier;
 import org.mqttbee.mqtt.message.MqttMessageWrapper;
 import org.mqttbee.mqtt.message.MqttWrappedMessage;
 
@@ -11,7 +12,8 @@ import org.mqttbee.mqtt.message.MqttWrappedMessage;
  * @param <W> the type of the MQTT message wrapper.
  * @author Silvio Giebl
  */
-public interface MqttWrappedMessageEncoder<M extends MqttWrappedMessage<M, W, ?>, W extends MqttMessageWrapper<W, M, ?>> {
+public interface MqttWrappedMessageEncoder<M extends MqttWrappedMessage<M, W, ?>, W extends MqttMessageWrapper<W, M, ?>>
+        extends MqttWrappedMessageEncoderApplier<M, W> {
 
     /**
      * Returns the encoder for the given wrapper around the MQTT message.

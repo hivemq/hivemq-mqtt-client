@@ -6,7 +6,6 @@ import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoder;
 import org.mqttbee.mqtt.codec.encoder.MqttWrappedMessageEncoder;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageWrapperEncoderApplier;
-import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderApplier;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.MqttMessageWrapper;
 import org.mqttbee.mqtt.message.MqttWrappedMessage;
@@ -17,7 +16,7 @@ import org.mqttbee.mqtt.message.MqttWrappedMessage;
  * @author Silvio Giebl
  */
 public abstract class Mqtt5WrappedMessageEncoder<M extends MqttWrappedMessage<M, W, ?>, W extends MqttMessageWrapper<W, M, ?>>
-        implements MqttWrappedMessageEncoder<M, W>, MqttWrappedMessageEncoderApplier<M, W> {
+        implements MqttWrappedMessageEncoder<M, W> {
 
     M message;
     private int remainingLengthWithoutProperties = -1;

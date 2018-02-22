@@ -1,52 +1,40 @@
 package org.mqttbee.api.mqtt.mqtt3.message.connect.connack;
 
-import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.mqtt3.message.Mqtt3ReasonCode;
 
+/**
+ * CONNACK Return Code according to the MQTT 3.1.1 specification.
+ */
 public enum Mqtt3ConnAckReturnCode {
 
-    SUCCESS(Mqtt3ReasonCode.SUCCESS),
-    UNSUPPORTED_PROTOCOL_VERSION(1),
-    IDENTIFIER_REJECTED(2),
-    SERVER_UNAVAILABLE(3),
-    BAD_USERNAME_OR_PASSWORD(4),
-    NOT_AUTHORIZED(5);
+    SUCCESS,
+    UNSUPPORTED_PROTOCOL_VERSION,
+    IDENTIFIER_REJECTED,
+    SERVER_UNAVAILABLE,
+    BAD_USER_NAME_OR_PASSWORD,
+    NOT_AUTHORIZED;
 
-
-    private final int code;
-
-    Mqtt3ConnAckReturnCode(final int code) {
-        this.code = code;
-    }
-
-    Mqtt3ConnAckReturnCode(@NotNull final Mqtt3ReasonCode reasonCode) {
-        this(reasonCode.getCode());
+    /**
+     * @return the byte code of this CONNACK Return Code.
+     */
+    public int getCode() {
+        return ordinal();
     }
 
     /**
-     * Returns the CONNACK Reason Code belonging to the given byte code.
+     * Returns the CONNACK Return Code belonging to the given byte code.
      *
      * @param code the byte code.
-     * @return the CONNACK Reason Code belonging to the given byte code or null if the byte code is not a valid CONNACK
-     * Reason Code code.
+     * @return the CONNACK Return Code belonging to the given byte code or null if the byte code is not a valid CONNACK
+     * Return Code code.
      */
     @Nullable
     public static Mqtt3ConnAckReturnCode fromCode(final int code) {
-        if (code < 0) {
+        final Mqtt3ConnAckReturnCode[] values = values();
+        if (code < 0 || code >= values.length) {
             return null;
         }
-        if (code > NOT_AUTHORIZED.ordinal()) {
-            return null;
-        }
-        return Mqtt3ConnAckReturnCode.values()[code];
-    }
-
-    /**
-     * @return the byte code of this CONNACK Reason Code.
-     */
-    public int getCode() {
-        return code;
+        return values[code];
     }
 
 }

@@ -29,6 +29,7 @@ public class MqttPubRelImpl
         super(packetIdentifier, reasonCode, reasonString, userProperties, encoderProvider);
     }
 
+    @NotNull
     @Override
     public Mqtt5MessageType getType() {
         return Mqtt5MessageType.PUBREL;
