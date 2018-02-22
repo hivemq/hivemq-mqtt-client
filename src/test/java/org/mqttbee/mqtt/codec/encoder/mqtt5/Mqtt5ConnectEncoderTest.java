@@ -6,10 +6,10 @@ import io.netty.handler.codec.EncoderException;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientData;
 import org.mqttbee.api.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
-import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5Auth;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5EnhancedAuthBuilder;
@@ -141,7 +141,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
 
         final MqttTopicImpl willTopic = requireNonNull(MqttTopicImpl.from("topic"));
         final ByteBuffer willPayload = ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
-        final Mqtt5QoS willQoS = Mqtt5QoS.AT_LEAST_ONCE;
+        final MqttQoS willQoS = MqttQoS.AT_LEAST_ONCE;
         final MqttUTF8StringImpl willContentType = requireNonNull(MqttUTF8StringImpl.from("text"));
         final MqttTopicImpl willResponseTopic = requireNonNull(MqttTopicImpl.from("response"));
         final ByteBuffer willCorrelationData = ByteBuffer.wrap(new byte[]{5, 4, 3, 2, 1});
@@ -363,7 +363,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         final ByteBuffer willPayload = ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
         final MqttClientIdentifierImpl clientIdentifier = requireNonNull(MqttClientIdentifierImpl.from("test"));
         final MqttWillPublishImpl willPublish =
-                new MqttWillPublishImpl(willTopic, willPayload, Mqtt5QoS.AT_MOST_ONCE, false,
+                new MqttWillPublishImpl(willTopic, willPayload, MqttQoS.AT_MOST_ONCE, false,
                         MqttWillPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null,
                         MqttUserPropertiesImpl.NO_USER_PROPERTIES, 0, Mqtt5PublishEncoder.PROVIDER);
         final MqttConnectImpl connect = new MqttConnectImpl(0, false, 0, false, true, DEFAULT, null, null, willPublish,
@@ -380,7 +380,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         final ByteBuffer willPayload = ByteBuffer.wrap(new byte[65536]);
         final MqttClientIdentifierImpl clientIdentifier = requireNonNull(MqttClientIdentifierImpl.from("test"));
         final MqttWillPublishImpl willPublish =
-                new MqttWillPublishImpl(willTopic, willPayload, Mqtt5QoS.AT_MOST_ONCE, false,
+                new MqttWillPublishImpl(willTopic, willPayload, MqttQoS.AT_MOST_ONCE, false,
                         MqttWillPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null,
                         MqttUserPropertiesImpl.NO_USER_PROPERTIES, 0, Mqtt5PublishEncoder.PROVIDER);
         final MqttConnectImpl connect = new MqttConnectImpl(0, false, 0, false, true, DEFAULT, null, null, willPublish,
@@ -396,7 +396,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         final MqttTopicImpl willTopic = requireNonNull(MqttTopicImpl.from("topic"));
         final ByteBuffer correlationData = ByteBuffer.wrap(new byte[65536]);
         final MqttClientIdentifierImpl clientIdentifier = requireNonNull(MqttClientIdentifierImpl.from("test"));
-        final MqttWillPublishImpl willPublish = new MqttWillPublishImpl(willTopic, null, Mqtt5QoS.AT_MOST_ONCE, false,
+        final MqttWillPublishImpl willPublish = new MqttWillPublishImpl(willTopic, null, MqttQoS.AT_MOST_ONCE, false,
                 MqttWillPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, correlationData,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES, 0, Mqtt5PublishEncoder.PROVIDER);
         final MqttConnectImpl connect = new MqttConnectImpl(0, false, 0, false, true, DEFAULT, null, null, willPublish,
@@ -414,7 +414,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
 
         final MqttTopicImpl willTopic = requireNonNull(MqttTopicImpl.from("topic"));
         final MqttClientIdentifierImpl clientIdentifier = requireNonNull(MqttClientIdentifierImpl.from("test"));
-        final MqttWillPublishImpl willPublish = new MqttWillPublishImpl(willTopic, null, Mqtt5QoS.AT_MOST_ONCE, false,
+        final MqttWillPublishImpl willPublish = new MqttWillPublishImpl(willTopic, null, MqttQoS.AT_MOST_ONCE, false,
                 MqttWillPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null, tooManyUserProperties, 0,
                 Mqtt5PublishEncoder.PROVIDER);
         final MqttConnectImpl connect = new MqttConnectImpl(0, false, 0, false, true, DEFAULT, null, null, willPublish,

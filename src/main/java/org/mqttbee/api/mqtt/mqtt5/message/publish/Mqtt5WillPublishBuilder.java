@@ -3,10 +3,10 @@ package org.mqttbee.api.mqtt.mqtt5.message.publish;
 import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
-import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.mqtt.MqttBuilderUtil;
 import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5PublishEncoder;
 import org.mqttbee.mqtt.message.publish.MqttWillPublishImpl;
@@ -65,7 +65,7 @@ public class Mqtt5WillPublishBuilder extends Mqtt5PublishBuilder {
 
     @NotNull
     @Override
-    public Mqtt5WillPublishBuilder withQos(@NotNull final Mqtt5QoS qos) {
+    public Mqtt5WillPublishBuilder withQos(@NotNull final MqttQoS qos) {
         super.withQos(qos);
         return this;
     }

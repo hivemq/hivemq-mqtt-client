@@ -60,6 +60,7 @@ public class MqttDisconnectImpl extends
         return serverReference;
     }
 
+    @NotNull
     @Override
     public Mqtt5MessageType getType() {
         return Mqtt5MessageType.DISCONNECT;

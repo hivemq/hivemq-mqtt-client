@@ -1,27 +1,24 @@
 package org.mqttbee.mqtt.codec.encoder.provider;
 
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider.ThreadLocalMqttMessageEncoderProvider;
 import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRecImpl;
+
+import java.util.function.Supplier;
 
 /**
  * @author Silvio Giebl
  */
-public class MqttPubRecEncoderProvider implements MqttMessageEncoderProvider<MqttPubRecImpl> {
+public class MqttPubRecEncoderProvider extends ThreadLocalMqttMessageEncoderProvider<MqttPubRecImpl> {
 
-    private final MqttMessageEncoderProvider<MqttPubRecImpl> provider;
     private final MqttPubRelEncoderProvider pubRelEncoderProvider;
 
     public MqttPubRecEncoderProvider(
-            @NotNull final MqttMessageEncoderProvider<MqttPubRecImpl> provider,
+            @NotNull final Supplier<MqttMessageEncoderApplier<MqttPubRecImpl>> supplier,
             @NotNull final MqttPubRelEncoderProvider pubRelEncoderProvider) {
 
-        this.provider = provider;
+        super(supplier);
         this.pubRelEncoderProvider = pubRelEncoderProvider;
-    }
-
-    @Override
-    public MqttMessageEncoderApplier<MqttPubRecImpl> get() {
-        return provider.get();
     }
 
     @NotNull

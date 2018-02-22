@@ -6,6 +6,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageWithUserPropertiesEncoder.Mqtt5MessageWithReasonStringEncoder;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
+import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider.ThreadLocalMqttMessageEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.auth.MqttAuthImpl;
 import org.mqttbee.mqtt5.Mqtt5ServerConnectionDataImpl;
@@ -20,7 +21,8 @@ import static org.mqttbee.mqtt.message.auth.MqttAuthProperty.AUTHENTICATION_METH
 public class Mqtt5AuthEncoder
         extends Mqtt5MessageWithReasonStringEncoder<MqttAuthImpl, MqttMessageEncoderProvider<MqttAuthImpl>> {
 
-    public static final MqttMessageEncoderProvider<MqttAuthImpl> PROVIDER = Mqtt5AuthEncoder::new;
+    public static final MqttMessageEncoderProvider<MqttAuthImpl> PROVIDER =
+            new ThreadLocalMqttMessageEncoderProvider<>(Mqtt5AuthEncoder::new);
 
     private static final int FIXED_HEADER = Mqtt5MessageType.AUTH.getCode() << 4;
     private static final int VARIABLE_HEADER_FIXED_LENGTH = 1; // reason code

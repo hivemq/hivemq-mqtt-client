@@ -2,7 +2,7 @@ package org.mqttbee.mqtt.message.publish;
 
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5QoS;
+import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.TopicAliasUsage;
@@ -22,7 +22,7 @@ public class MqttWillPublishImpl extends MqttPublishImpl implements Mqtt5WillPub
     private final long delayInterval;
 
     public MqttWillPublishImpl(
-            @NotNull final MqttTopicImpl topic, @Nullable final ByteBuffer payload, @NotNull final Mqtt5QoS qos,
+            @NotNull final MqttTopicImpl topic, @Nullable final ByteBuffer payload, @NotNull final MqttQoS qos,
             final boolean isRetain, final long messageExpiryInterval,
             @Nullable final Mqtt5PayloadFormatIndicator payloadFormatIndicator,
             @Nullable final MqttUTF8StringImpl contentType, @Nullable final MqttTopicImpl responseTopic,

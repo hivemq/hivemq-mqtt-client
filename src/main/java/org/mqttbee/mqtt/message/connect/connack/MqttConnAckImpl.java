@@ -3,9 +3,9 @@ package org.mqttbee.mqtt.message.connect.connack;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
+import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
-import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5EnhancedAuth;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckReasonCode;
@@ -123,6 +123,7 @@ public class MqttConnAckImpl extends
         return Optional.ofNullable(serverReference);
     }
 
+    @NotNull
     @Override
     public Mqtt5MessageType getType() {
         return Mqtt5MessageType.CONNACK;
@@ -147,7 +148,7 @@ public class MqttConnAckImpl extends
         private final int receiveMaximum;
         private final int topicAliasMaximum;
         private final int maximumPacketSize;
-        private final Mqtt5QoS maximumQoS;
+        private final MqttQoS maximumQoS;
         private final boolean isRetainAvailable;
         private final boolean isWildcardSubscriptionAvailable;
         private final boolean isSubscriptionIdentifierAvailable;
@@ -155,7 +156,7 @@ public class MqttConnAckImpl extends
 
         public RestrictionsImpl(
                 final int receiveMaximum, final int topicAliasMaximum, final int maximumPacketSize,
-                final Mqtt5QoS maximumQoS, final boolean isRetainAvailable,
+                final MqttQoS maximumQoS, final boolean isRetainAvailable,
                 final boolean isWildcardSubscriptionAvailable, final boolean isSubscriptionIdentifierAvailable,
                 final boolean isSharedSubscriptionAvailable) {
             this.receiveMaximum = receiveMaximum;
@@ -184,7 +185,7 @@ public class MqttConnAckImpl extends
         }
 
         @Override
-        public Mqtt5QoS getMaximumQoS() {
+        public MqttQoS getMaximumQoS() {
             return maximumQoS;
         }
 

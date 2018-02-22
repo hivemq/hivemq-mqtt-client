@@ -6,8 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
-import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5QoS;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5EnhancedAuth;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckReasonCode;
@@ -121,7 +121,7 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
 
         final Mqtt5ConnAck.Restrictions restrictions = connAck.getRestrictions();
         assertEquals(100, restrictions.getReceiveMaximum());
-        assertEquals(Mqtt5QoS.AT_LEAST_ONCE, restrictions.getMaximumQoS());
+        assertEquals(MqttQoS.AT_LEAST_ONCE, restrictions.getMaximumQoS());
         assertEquals(false, restrictions.isRetainAvailable());
         assertEquals(100, restrictions.getMaximumPacketSize());
         assertEquals(5, restrictions.getTopicAliasMaximum());
@@ -2033,7 +2033,7 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
 
         assertEquals(0, connAck.getRestrictions().getTopicAliasMaximum());
         assertEquals(65_535, connAck.getRestrictions().getReceiveMaximum());
-        assertEquals(Mqtt5QoS.EXACTLY_ONCE, connAck.getRestrictions().getMaximumQoS());
+        assertEquals(MqttQoS.EXACTLY_ONCE, connAck.getRestrictions().getMaximumQoS());
         assertEquals(true, connAck.getRestrictions().isRetainAvailable());
         assertEquals(true, connAck.getRestrictions().isWildcardSubscriptionAvailable());
         assertEquals(true, connAck.getRestrictions().isSubscriptionIdentifierAvailable());

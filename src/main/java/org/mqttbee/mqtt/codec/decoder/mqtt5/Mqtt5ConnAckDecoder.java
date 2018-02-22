@@ -5,7 +5,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5QoS;
+import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
@@ -101,7 +101,7 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
         boolean receiveMaximumPresent = false;
         int topicAliasMaximum = Restrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM;
         boolean topicAliasMaximumPresent = false;
-        Mqtt5QoS maximumQoS = Restrictions.DEFAULT_MAXIMUM_QOS;
+        MqttQoS maximumQoS = Restrictions.DEFAULT_MAXIMUM_QOS;
         boolean maximumQoSPresent = false;
         boolean retainAvailable = Restrictions.DEFAULT_RETAIN_AVAILABLE;
         boolean retainAvailablePresent = false;
@@ -210,7 +210,7 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
                         disconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "wrong maximum QoS", channel);
                         return null;
                     }
-                    maximumQoS = Mqtt5QoS.fromCode(maximumQoSCode);
+                    maximumQoS = MqttQoS.fromCode(maximumQoSCode);
                     maximumQoSPresent = true;
                     restrictionsPresent |= maximumQoS != Restrictions.DEFAULT_MAXIMUM_QOS;
                     break;

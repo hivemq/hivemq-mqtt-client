@@ -10,6 +10,7 @@ import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoder;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageWrapperEncoderApplier;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider;
+import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider.NewMqttWrappedMessageEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.auth.MqttEnhancedAuthImpl;
@@ -18,6 +19,7 @@ import org.mqttbee.mqtt.message.connect.MqttConnectWrapper;
 import org.mqttbee.mqtt.message.publish.MqttWillPublishImpl;
 import org.mqttbee.mqtt.message.publish.MqttWillPublishProperty;
 
+import static org.mqttbee.mqtt.codec.encoder.MqttMessageEncoderUtil.*;
 import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.*;
 import static org.mqttbee.mqtt.message.connect.MqttConnectImpl.*;
 import static org.mqttbee.mqtt.message.connect.MqttConnectProperty.*;
@@ -28,7 +30,7 @@ import static org.mqttbee.mqtt.message.connect.MqttConnectProperty.*;
 public class Mqtt5ConnectEncoder extends Mqtt5WrappedMessageEncoder<MqttConnectImpl, MqttConnectWrapper> {
 
     public static final MqttWrappedMessageEncoderProvider<MqttConnectImpl, MqttConnectWrapper, MqttMessageEncoderProvider<MqttConnectWrapper>>
-            PROVIDER = MqttWrappedMessageEncoderProvider.create(Mqtt5ConnectEncoder::new);
+            PROVIDER = NewMqttWrappedMessageEncoderProvider.create(Mqtt5ConnectEncoder::new);
 
     private static final int VARIABLE_HEADER_FIXED_LENGTH =
             6 /* protocol name */ + 1 /* protocol version */ + 1 /* connect flags */ + 2 /* keep alive */;

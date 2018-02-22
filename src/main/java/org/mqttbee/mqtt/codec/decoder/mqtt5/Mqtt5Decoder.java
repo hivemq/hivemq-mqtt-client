@@ -63,8 +63,7 @@ public class Mqtt5Decoder extends ByteToMessageDecoder {
             return;
         }
 
-        final int readerIndexAfterFixedHeader = in.readerIndex();
-        final int fixedHeaderLength = readerIndexAfterFixedHeader - readerIndexBeforeFixedHeader;
+        final int fixedHeaderLength = in.readerIndex() - readerIndexBeforeFixedHeader;
         final int packetSize = fixedHeaderLength + remainingLength;
 
         final Mqtt5ClientConnectionDataImpl clientConnectionData =
@@ -83,7 +82,6 @@ public class Mqtt5Decoder extends ByteToMessageDecoder {
         final int messageType = fixedHeader >> 4;
         final int flags = fixedHeader & 0xF;
         final ByteBuf messageBuffer = in.readSlice(remainingLength);
-        in.markReaderIndex();
 
         final MqttMessageDecoder decoder = decoders.get(messageType);
         if (decoder == null) {

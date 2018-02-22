@@ -9,6 +9,7 @@ import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoder;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageWrapperEncoderApplier;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider;
+import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider.NewMqttWrappedMessageEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribeImpl;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribeImpl.SubscriptionImpl;
@@ -26,7 +27,7 @@ import static org.mqttbee.mqtt.message.subscribe.MqttSubscribeWrapper.DEFAULT_NO
 public class Mqtt5SubscribeEncoder extends Mqtt5WrappedMessageEncoder<MqttSubscribeImpl, MqttSubscribeWrapper> {
 
     public static final MqttWrappedMessageEncoderProvider<MqttSubscribeImpl, MqttSubscribeWrapper, MqttMessageEncoderProvider<MqttSubscribeWrapper>>
-            PROVIDER = MqttWrappedMessageEncoderProvider.create(Mqtt5SubscribeEncoder::new);
+            PROVIDER = NewMqttWrappedMessageEncoderProvider.create(Mqtt5SubscribeEncoder::new);
 
     private static final int VARIABLE_HEADER_FIXED_LENGTH = 2; // packet identifier
 

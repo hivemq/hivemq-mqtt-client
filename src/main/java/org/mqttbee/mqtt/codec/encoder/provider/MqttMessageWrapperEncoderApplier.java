@@ -46,7 +46,7 @@ public interface MqttMessageWrapperEncoderApplier< //
             E extends MqttWrappedMessageEncoder<M, W>> //
             implements MqttMessageWrapperEncoderApplier<W, M, E> {
 
-        final ThreadLocal<MqttMessageWrapperEncoderApplier<W, M, E>> threadLocal;
+        private final ThreadLocal<MqttMessageWrapperEncoderApplier<W, M, E>> threadLocal;
 
         public ThreadLocalMqttMessageWrapperEncoderApplier(
                 @NotNull final Supplier<MqttMessageWrapperEncoderApplier<W, M, E>> supplier) {

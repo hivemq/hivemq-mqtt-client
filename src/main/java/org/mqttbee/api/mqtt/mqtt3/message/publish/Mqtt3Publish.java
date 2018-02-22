@@ -1,34 +1,49 @@
 package org.mqttbee.api.mqtt.mqtt3.message.publish;
 
+import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt5.message.Mqtt5QoS;
-import org.mqttbee.api.mqtt5.message.Mqtt5Topic;
+import org.mqttbee.api.mqtt.datatypes.MqttQoS;
+import org.mqttbee.api.mqtt.datatypes.MqttTopic;
+import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3Message;
+import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 
+import java.nio.ByteBuffer;
 import java.util.Optional;
 
-public interface Mqtt3Publish {
+/**
+ * MQTT 3 PUBLISH packet.
+ */
+@DoNotImplement
+public interface Mqtt3Publish extends Mqtt3Message {
 
     /**
      * @return the topic of this PUBLISH packet.
      */
     @NotNull
-    Mqtt5Topic getTopic();
+    MqttTopic getTopic();
 
     /**
      * @return the optional payload of this PUBLISH packet.
      */
     @NotNull
-    Optional<byte[]> getPayload();
+    Optional<ByteBuffer> getPayload();
 
     /**
      * @return the QoS of this PUBLISH packet.
      */
     @NotNull
-    Mqtt5QoS getQos();
+    MqttQoS getQos();
 
     /**
      * @return whether this PUBLISH packet is a retained message.
      */
-    boolean isRetained();
+    boolean isRetain();
+
+    @NotNull
+    @Override
+    default Mqtt3MessageType getType() {
+        return Mqtt3MessageType.PUBLISH;
+    }
+
 
 }

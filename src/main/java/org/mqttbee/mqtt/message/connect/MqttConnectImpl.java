@@ -121,6 +121,7 @@ public class MqttConnectImpl
         return willPublish;
     }
 
+    @NotNull
     @Override
     public Mqtt5MessageType getType() {
         return Mqtt5MessageType.CONNECT;
