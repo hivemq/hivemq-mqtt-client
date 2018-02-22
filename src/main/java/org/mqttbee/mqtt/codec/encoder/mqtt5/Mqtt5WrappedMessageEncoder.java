@@ -38,7 +38,7 @@ public abstract class Mqtt5WrappedMessageEncoder<M extends MqttWrappedMessage<M,
      *
      * @return the remaining length without the properties of the wrapped MQTT message.
      */
-    final int encodedRemainingLengthWithoutProperties() {
+    final int remainingLengthWithoutProperties() {
         if (remainingLengthWithoutProperties == -1) {
             remainingLengthWithoutProperties = calculateRemainingLengthWithoutProperties();
         }
@@ -57,7 +57,7 @@ public abstract class Mqtt5WrappedMessageEncoder<M extends MqttWrappedMessage<M,
      *
      * @return the property length of the wrapped MQTT message.
      */
-    final int encodedPropertyLength() {
+    final int propertyLength() {
         if (propertyLength == -1) {
             propertyLength = calculatePropertyLength();
         }
@@ -98,7 +98,7 @@ public abstract class Mqtt5WrappedMessageEncoder<M extends MqttWrappedMessage<M,
 
         @Override
         final int calculateRemainingLength() {
-            return wrappedEncoder.encodedRemainingLengthWithoutProperties() + additionalRemainingLength();
+            return wrappedEncoder.remainingLengthWithoutProperties() + additionalRemainingLength();
         }
 
         /**
@@ -112,7 +112,7 @@ public abstract class Mqtt5WrappedMessageEncoder<M extends MqttWrappedMessage<M,
 
         @Override
         final int calculatePropertyLength() {
-            return wrappedEncoder.encodedPropertyLength() + additionalPropertyLength();
+            return wrappedEncoder.propertyLength() + additionalPropertyLength();
         }
 
         /**

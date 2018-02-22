@@ -94,7 +94,7 @@ public class Mqtt5ConnectEncoder extends Mqtt5WrappedMessageEncoder<MqttConnectI
 
         final MqttWillPublishImpl willPublish = message.getRawWillPublish();
         if (willPublish != null) {
-            willPropertyLength = ((Mqtt5PublishEncoder) willPublish.getEncoder()).encodedPropertyLength() +
+            willPropertyLength = ((Mqtt5PublishEncoder) willPublish.getEncoder()).propertyLength() +
                     intPropertyEncodedLength(willPublish.getDelayInterval(), Mqtt5WillPublish.DEFAULT_DELAY_INTERVAL);
 
             if (!MqttVariableByteInteger.isInRange(willPropertyLength)) {
