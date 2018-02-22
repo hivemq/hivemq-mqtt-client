@@ -4,7 +4,8 @@ import org.mqttbee.annotations.NotNull;
 
 /**
  * MQTT message type according to the MQTT 3 specification.
- * See also <a href="http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html">the official MQTT 3.1.1 specification</a>.
+ * See also <a href="http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html">the official MQTT 3.1.1
+ * specification</a>.
  *
  * @author Silvio Giebl
  */

@@ -69,7 +69,7 @@ class Mqtt5PubCompEncoderTest extends AbstractMqtt5EncoderTest {
         };
 
         final MqttPubCompImpl pubComp = new MqttPubCompImpl(5, SUCCESS, null, MqttUserPropertiesImpl.NO_USER_PROPERTIES,
-                        Mqtt5PubCompEncoder.PROVIDER);
+                Mqtt5PubCompEncoder.PROVIDER);
 
         encode(expected, pubComp);
     }
