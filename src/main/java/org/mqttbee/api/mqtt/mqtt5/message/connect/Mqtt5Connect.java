@@ -6,6 +6,7 @@ import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
+import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.util.UnsignedDataTypes;
@@ -99,6 +100,12 @@ public interface Mqtt5Connect extends Mqtt5Message {
      */
     @NotNull
     Mqtt5UserProperties getUserProperties();
+
+    @NotNull
+    @Override
+    default Mqtt5MessageType getType() {
+        return Mqtt5MessageType.CONNECT;
+    }
 
 
     /**

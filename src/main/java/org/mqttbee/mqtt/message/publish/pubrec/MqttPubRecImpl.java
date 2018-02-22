@@ -29,12 +29,6 @@ public class MqttPubRecImpl
         super(packetIdentifier, reasonCode, reasonString, userProperties, encoderProvider);
     }
 
-    @NotNull
-    @Override
-    public Mqtt5MessageType getType() {
-        return Mqtt5MessageType.PUBREC;
-    }
-
 //    public MqttPubRelImpl ack() {
 //        return new MqttPubRelImpl(getPacketIdentifier(), Mqtt5PubRelReasonCode.SUCCESS, null,
 //                MqttUserPropertiesImpl.NO_USER_PROPERTIES, encoderProvider.getPubRelEncoderProvider());

@@ -62,12 +62,6 @@ public class MqttDisconnectImpl extends
 
     @NotNull
     @Override
-    public Mqtt5MessageType getType() {
-        return Mqtt5MessageType.DISCONNECT;
-    }
-
-    @NotNull
-    @Override
     protected MqttDisconnectImpl getCodable() {
         return this;
     }

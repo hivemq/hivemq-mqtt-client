@@ -38,12 +38,6 @@ public class MqttSubscribeImpl extends
 
     @NotNull
     @Override
-    public Mqtt5MessageType getType() {
-        return Mqtt5MessageType.SUBSCRIBE;
-    }
-
-    @NotNull
-    @Override
     protected MqttSubscribeImpl getCodable() {
         return this;
     }

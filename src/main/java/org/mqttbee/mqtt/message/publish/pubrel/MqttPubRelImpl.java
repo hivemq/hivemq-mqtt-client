@@ -31,12 +31,6 @@ public class MqttPubRelImpl
 
     @NotNull
     @Override
-    public Mqtt5MessageType getType() {
-        return Mqtt5MessageType.PUBREL;
-    }
-
-    @NotNull
-    @Override
     protected MqttPubRelImpl getCodable() {
         return this;
     }

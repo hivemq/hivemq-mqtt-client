@@ -7,6 +7,7 @@ import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
+import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeBuilder.SubscriptionBuilder;
 
 /**
@@ -33,6 +34,12 @@ public interface Mqtt5Subscribe extends Mqtt5Message {
      */
     @NotNull
     Mqtt5UserProperties getUserProperties();
+
+    @NotNull
+    @Override
+    default Mqtt5MessageType getType() {
+        return Mqtt5MessageType.SUBSCRIBE;
+    }
 
 
     interface Subscription {

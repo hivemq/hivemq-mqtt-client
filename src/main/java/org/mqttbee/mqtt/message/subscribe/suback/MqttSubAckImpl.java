@@ -27,12 +27,6 @@ public class MqttSubAckImpl extends
 
     @NotNull
     @Override
-    public Mqtt5MessageType getType() {
-        return Mqtt5MessageType.SUBACK;
-    }
-
-    @NotNull
-    @Override
     protected MqttSubAckImpl getCodable() {
         return this;
     }

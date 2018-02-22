@@ -123,12 +123,6 @@ public class MqttConnectImpl
 
     @NotNull
     @Override
-    public Mqtt5MessageType getType() {
-        return Mqtt5MessageType.CONNECT;
-    }
-
-    @NotNull
-    @Override
     protected MqttConnectImpl getCodable() {
         return this;
     }

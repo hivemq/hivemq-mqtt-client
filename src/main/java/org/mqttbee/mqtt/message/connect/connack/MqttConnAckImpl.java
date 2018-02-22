@@ -125,12 +125,6 @@ public class MqttConnAckImpl extends
 
     @NotNull
     @Override
-    public Mqtt5MessageType getType() {
-        return Mqtt5MessageType.CONNACK;
-    }
-
-    @NotNull
-    @Override
     protected MqttConnAckImpl getCodable() {
         return this;
     }
