@@ -60,8 +60,8 @@ public class Mqtt5ClientDataImpl implements Mqtt5ClientData {
     @NotNull
     @Override
     public Optional<MqttClientIdentifier> getClientIdentifier() {
-        return (clientIdentifier == MqttClientIdentifierImpl.REQUEST_CLIENT_IDENTIFIER_FROM_SERVER) ?
-                Optional.empty() : Optional.of(clientIdentifier);
+        return (clientIdentifier == MqttClientIdentifierImpl.REQUEST_CLIENT_IDENTIFIER_FROM_SERVER) ? Optional.empty() :
+                Optional.of(clientIdentifier);
     }
 
     @NotNull
