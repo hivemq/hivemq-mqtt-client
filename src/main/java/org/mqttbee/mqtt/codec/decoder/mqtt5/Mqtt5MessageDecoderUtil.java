@@ -6,11 +6,11 @@ import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
+import org.mqttbee.mqtt.MqttClientConnectionDataImpl;
 import org.mqttbee.mqtt.datatypes.MqttBinaryData;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
-import org.mqttbee.mqtt5.Mqtt5ClientConnectionDataImpl;
-import org.mqttbee.mqtt5.handler.disconnect.Mqtt5DisconnectUtil;
+import org.mqttbee.mqtt5.handler.disconnect.MqttDisconnectUtil;
 
 import java.nio.ByteBuffer;
 
@@ -26,7 +26,7 @@ class Mqtt5MessageDecoderUtil {
             final Mqtt5DisconnectReasonCode reasonCode, @NotNull final String reasonString,
             @NotNull final Channel channel) {
 
-        Mqtt5DisconnectUtil.disconnect(channel, reasonCode, reasonString);
+        MqttDisconnectUtil.disconnect(channel, reasonCode, reasonString);
     }
 
     static void disconnectWrongFixedHeaderFlags(@NotNull final String type, @NotNull final Channel channel) {
@@ -176,7 +176,7 @@ class Mqtt5MessageDecoderUtil {
     }
 
     private static boolean checkProblemInformationRequested(
-            @NotNull final String name, @NotNull final Mqtt5ClientConnectionDataImpl clientConnectionData) {
+            @NotNull final String name, @NotNull final MqttClientConnectionDataImpl clientConnectionData) {
 
         if (!clientConnectionData.isProblemInformationRequested()) {
             disconnect(
@@ -191,7 +191,7 @@ class Mqtt5MessageDecoderUtil {
     @Nullable
     static MqttUTF8StringImpl decodeReasonStringCheckProblemInformationRequested(
             @Nullable final MqttUTF8StringImpl current,
-            @NotNull final Mqtt5ClientConnectionDataImpl clientConnectionData, @NotNull final ByteBuf in) {
+            @NotNull final MqttClientConnectionDataImpl clientConnectionData, @NotNull final ByteBuf in) {
 
         if (!checkProblemInformationRequested("reason string", clientConnectionData)) {
             return null;
@@ -202,7 +202,7 @@ class Mqtt5MessageDecoderUtil {
     @Nullable
     static ImmutableList.Builder<MqttUserPropertyImpl> decodeUserPropertyCheckProblemInformationRequested(
             @Nullable final ImmutableList.Builder<MqttUserPropertyImpl> userPropertiesBuilder,
-            @NotNull final Mqtt5ClientConnectionDataImpl clientConnectionData, @NotNull final ByteBuf in) {
+            @NotNull final MqttClientConnectionDataImpl clientConnectionData, @NotNull final ByteBuf in) {
 
         if ((userPropertiesBuilder != null) &&
                 !checkProblemInformationRequested("user property", clientConnectionData)) {

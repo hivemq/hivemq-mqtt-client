@@ -4,8 +4,8 @@ import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientBuilder;
-import org.mqttbee.mqtt.MqttBuilderUtil;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
+import org.mqttbee.mqtt.util.MqttBuilderUtil;
 
 import java.util.concurrent.Executor;
 

@@ -17,6 +17,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeResult;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
+import org.mqttbee.mqtt.MqttClientDataImpl;
 import org.mqttbee.mqtt.message.connect.MqttConnectImpl;
 import org.mqttbee.mqtt5.ioc.MqttBeeComponent;
 import org.mqttbee.rx.FlowableWithSingle;
@@ -27,9 +28,9 @@ import org.mqttbee.util.MustNotBeImplementedUtil;
  */
 public class Mqtt5ClientImpl implements Mqtt5Client {
 
-    private final Mqtt5ClientDataImpl clientData;
+    private final MqttClientDataImpl clientData;
 
-    public Mqtt5ClientImpl(@NotNull final Mqtt5ClientDataImpl clientData) {
+    public Mqtt5ClientImpl(@NotNull final MqttClientDataImpl clientData) {
         this.clientData = clientData;
     }
 

@@ -4,6 +4,7 @@
       <w>bugfix</w>
       <w>codable</w>
       <w>connack</w>
+      <w>disconnecter</w>
       <w>intelli</w>
       <w>mqtt</w>
       <w>nullable</w>

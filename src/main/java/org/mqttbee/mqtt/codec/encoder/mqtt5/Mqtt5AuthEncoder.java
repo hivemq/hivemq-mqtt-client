@@ -4,12 +4,12 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
+import org.mqttbee.mqtt.MqttServerConnectionDataImpl;
 import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageWithUserPropertiesEncoder.Mqtt5MessageWithReasonStringEncoder;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider.ThreadLocalMqttMessageEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.auth.MqttAuthImpl;
-import org.mqttbee.mqtt5.Mqtt5ServerConnectionDataImpl;
 
 import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.*;
 import static org.mqttbee.mqtt.message.auth.MqttAuthProperty.AUTHENTICATION_DATA;
@@ -45,7 +45,7 @@ public class Mqtt5AuthEncoder
 
     @Override
     public void encode(@NotNull final ByteBuf out, @NotNull final Channel channel) {
-        final int maximumPacketSize = Mqtt5ServerConnectionDataImpl.getMaximumPacketSize(channel);
+        final int maximumPacketSize = MqttServerConnectionDataImpl.getMaximumPacketSize(channel);
 
         encodeFixedHeader(out, maximumPacketSize);
         encodeVariableHeader(out, maximumPacketSize);

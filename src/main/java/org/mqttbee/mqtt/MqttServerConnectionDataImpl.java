@@ -1,4 +1,4 @@
-package org.mqttbee.mqtt5;
+package org.mqttbee.mqtt;
 
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
@@ -11,19 +11,19 @@ import org.mqttbee.mqtt.message.publish.MqttTopicAliasMapping;
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5ServerConnectionDataImpl implements Mqtt5ServerConnectionData {
+public class MqttServerConnectionDataImpl implements Mqtt5ServerConnectionData {
 
     public static int getMaximumPacketSize(@NotNull final Channel channel) {
-        final Mqtt5ServerConnectionDataImpl serverConnectionData =
-                Mqtt5ClientDataImpl.from(channel).getRawServerConnectionData();
+        final MqttServerConnectionDataImpl serverConnectionData =
+                MqttClientDataImpl.from(channel).getRawServerConnectionData();
         return (serverConnectionData == null) ? MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT :
                 serverConnectionData.getMaximumPacketSize();
     }
 
     @Nullable
     public static MqttTopicAliasMapping getTopicAliasMapping(@NotNull final Channel channel) {
-        final Mqtt5ServerConnectionDataImpl serverConnectionData =
-                Mqtt5ClientDataImpl.from(channel).getRawServerConnectionData();
+        final MqttServerConnectionDataImpl serverConnectionData =
+                MqttClientDataImpl.from(channel).getRawServerConnectionData();
         return (serverConnectionData == null) ? null : serverConnectionData.getTopicAliasMapping();
     }
 
@@ -36,7 +36,7 @@ public class Mqtt5ServerConnectionDataImpl implements Mqtt5ServerConnectionData 
     private final boolean isSubscriptionIdentifierAvailable;
     private final boolean isSharedSubscriptionAvailable;
 
-    public Mqtt5ServerConnectionDataImpl(
+    public MqttServerConnectionDataImpl(
             final int receiveMaximum, final int maximumPacketSize, final int topicAliasMaximum,
             final MqttQoS maximumQoS, final boolean isRetainAvailable, final boolean isWildcardSubscriptionAvailable,
             final boolean isSubscriptionIdentifierAvailable, final boolean isSharedSubscriptionAvailable) {

@@ -3,10 +3,10 @@ package org.mqttbee.mqtt.message.publish;
 import com.google.common.primitives.ImmutableIntArray;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.mqtt.MqttServerConnectionDataImpl;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttPublishEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.message.MqttMessageWrapper.MqttMessageWrapperWithId;
-import org.mqttbee.mqtt5.Mqtt5ServerConnectionDataImpl;
 
 /**
  * @author Silvio Giebl
@@ -44,7 +44,7 @@ public class MqttPublishWrapper
         super(publish, packetIdentifier);
         this.isDup = isDup;
 
-        final MqttTopicAliasMapping topicAliasMapping = Mqtt5ServerConnectionDataImpl.getTopicAliasMapping(channel);
+        final MqttTopicAliasMapping topicAliasMapping = MqttServerConnectionDataImpl.getTopicAliasMapping(channel);
         if (topicAliasMapping == null) {
             this.topicAlias = DEFAULT_NO_TOPIC_ALIAS;
             this.isNewTopicAlias = false;

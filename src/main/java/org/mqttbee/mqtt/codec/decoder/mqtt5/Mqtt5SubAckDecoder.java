@@ -7,13 +7,13 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAckReasonCode;
+import org.mqttbee.mqtt.MqttClientConnectionDataImpl;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAckImpl;
-import org.mqttbee.mqtt5.Mqtt5ClientConnectionDataImpl;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -39,7 +39,7 @@ public class Mqtt5SubAckDecoder implements MqttMessageDecoder {
     @Nullable
     public MqttSubAckImpl decode(
             final int flags, @NotNull final ByteBuf in,
-            @NotNull final Mqtt5ClientConnectionDataImpl clientConnectionData) {
+            @NotNull final MqttClientConnectionDataImpl clientConnectionData) {
 
         final Channel channel = clientConnectionData.getChannel();
 

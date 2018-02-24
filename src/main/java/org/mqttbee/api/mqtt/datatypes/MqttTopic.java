@@ -3,7 +3,7 @@ package org.mqttbee.api.mqtt.datatypes;
 import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt.MqttBuilderUtil;
+import org.mqttbee.mqtt.util.MqttBuilderUtil;
 
 /**
  * MQTT Topic Name according to the MQTT specification.

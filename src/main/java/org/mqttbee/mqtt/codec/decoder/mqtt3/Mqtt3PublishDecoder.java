@@ -5,12 +5,12 @@ import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
+import org.mqttbee.mqtt.MqttClientConnectionDataImpl;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.message.publish.MqttPublishImpl;
 import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
 import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishView;
-import org.mqttbee.mqtt5.Mqtt5ClientConnectionDataImpl;
 import org.mqttbee.mqtt5.netty.ChannelAttributes;
 import org.mqttbee.util.ByteBufferUtil;
 
@@ -35,7 +35,7 @@ public class Mqtt3PublishDecoder implements MqttMessageDecoder {
     @Override
     public MqttPublishWrapper decode(
             final int flags, @NotNull final ByteBuf in,
-            @NotNull final Mqtt5ClientConnectionDataImpl clientConnectionData) {
+            @NotNull final MqttClientConnectionDataImpl clientConnectionData) {
 
         final Channel channel = clientConnectionData.getChannel();
 

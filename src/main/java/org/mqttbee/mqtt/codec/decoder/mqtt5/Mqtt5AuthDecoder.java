@@ -7,6 +7,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
+import org.mqttbee.mqtt.MqttClientConnectionDataImpl;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5AuthEncoder;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
@@ -14,7 +15,6 @@ import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.auth.MqttAuthImpl;
-import org.mqttbee.mqtt5.Mqtt5ClientConnectionDataImpl;
 import org.mqttbee.mqtt5.netty.ChannelAttributes;
 
 import javax.inject.Inject;
@@ -41,7 +41,7 @@ public class Mqtt5AuthDecoder implements MqttMessageDecoder {
     @Nullable
     public MqttAuthImpl decode(
             final int flags, @NotNull final ByteBuf in,
-            @NotNull final Mqtt5ClientConnectionDataImpl clientConnectionData) {
+            @NotNull final MqttClientConnectionDataImpl clientConnectionData) {
 
         final Channel channel = clientConnectionData.getChannel();
 

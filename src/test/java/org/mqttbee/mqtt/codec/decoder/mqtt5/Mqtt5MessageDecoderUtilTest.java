@@ -1,17 +1,13 @@
 package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.embedded.EmbeddedChannel;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
-import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoders;
 
 import java.util.stream.IntStream;
 
@@ -19,21 +15,24 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.MALFORMED_PACKET;
 import static org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.PROTOCOL_ERROR;
 
-class Mqtt5MessageDecoderUtilTest {
+class Mqtt5MessageDecoderUtilTest extends AbstractMqtt5DecoderTest {
 
-    private EmbeddedChannel channel;
     private ByteBuf in;
 
+    Mqtt5MessageDecoderUtilTest() {
+        super((code) -> null);
+    }
+
     @BeforeEach
-    void setUp() {
-        channel = new EmbeddedChannel(new Mqtt5Decoder(new Mqtt5MessageUtilDecoder()));
+    protected void setUp() {
+        super.setUp();
         in = channel.alloc().buffer();
     }
 
     @AfterEach
-    void tearDown() {
+    protected void tearDown() {
         in.release();
-        channel.close();
+        super.tearDown();
     }
 
     @Test
@@ -98,20 +97,10 @@ class Mqtt5MessageDecoderUtilTest {
         assertEquals(length, in.readableBytes());
     }
 
-
     private void checkClosed(final Mqtt5DisconnectReasonCode reasonCode) {
-
         final Mqtt5Disconnect disconnect = channel.readOutbound();
         assertNotNull(disconnect);
         assertEquals(reasonCode, disconnect.getReasonCode());
-    }
-
-    private static class Mqtt5MessageUtilDecoder implements MqttMessageDecoders {
-        @Nullable
-        @Override
-        public MqttMessageDecoder get(final int code) {
-            return null;
-        }
     }
 
 }

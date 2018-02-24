@@ -9,15 +9,15 @@ import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5Decoder;
+import org.mqttbee.mqtt.MqttClientConnectionDataImpl;
+import org.mqttbee.mqtt.MqttClientDataImpl;
+import org.mqttbee.mqtt.MqttServerConnectionDataImpl;
+import org.mqttbee.mqtt.codec.decoder.MqttDecoder;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt.message.connect.MqttConnectImpl;
 import org.mqttbee.mqtt.message.connect.connack.MqttConnAckImpl;
-import org.mqttbee.mqtt5.Mqtt5ClientConnectionDataImpl;
-import org.mqttbee.mqtt5.Mqtt5ClientDataImpl;
-import org.mqttbee.mqtt5.Mqtt5ServerConnectionDataImpl;
 import org.mqttbee.mqtt5.handler.disconnect.ChannelCloseEvent;
-import org.mqttbee.mqtt5.handler.disconnect.Mqtt5DisconnectUtil;
+import org.mqttbee.mqtt5.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt5.handler.ping.Mqtt5PingHandler;
 import org.mqttbee.mqtt5.handler.util.ChannelInboundHandlerWithTimeout;
 import org.mqttbee.mqtt5.ioc.ChannelComponent;
@@ -46,11 +46,11 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerWithTimeout {
 
     private final MqttConnectImpl connect;
     private final SingleEmitter<Mqtt5ConnAck> connAckEmitter;
-    private final Mqtt5ClientDataImpl clientData;
+    private final MqttClientDataImpl clientData;
 
     public Mqtt5ConnectHandler(
             @NotNull final MqttConnectImpl connect, @NotNull final SingleEmitter<Mqtt5ConnAck> connAckEmitter,
-            @NotNull final Mqtt5ClientDataImpl clientData) {
+            @NotNull final MqttClientDataImpl clientData) {
 
         this.connect = connect;
         this.connAckEmitter = connAckEmitter;
@@ -65,7 +65,7 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerWithTimeout {
     }
 
     /**
-     * Adds the {@link Mqtt5ClientDataImpl} and the {@link Mqtt5ClientConnectionDataImpl} to the channel.
+     * Adds the {@link MqttClientDataImpl} and the {@link MqttClientConnectionDataImpl} to the channel.
      *
      * @param channel the channel to add the client data to.
      */
@@ -73,7 +73,7 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerWithTimeout {
         final MqttConnectImpl.RestrictionsImpl restrictions = connect.getRestrictions();
 
         clientData.setClientConnectionData(
-                new Mqtt5ClientConnectionDataImpl(connect.getKeepAlive(), connect.getSessionExpiryInterval(),
+                new MqttClientConnectionDataImpl(connect.getKeepAlive(), connect.getSessionExpiryInterval(),
                         restrictions.getReceiveMaximum(), restrictions.getTopicAliasMaximum(),
                         restrictions.getMaximumPacketSize(), connect.getRawEnhancedAuthProvider(),
                         connect.getRawWillPublish() != null, connect.isProblemInformationRequested(),
@@ -95,14 +95,14 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerWithTimeout {
     private void writeConnect(@NotNull final ChannelHandlerContext ctx) {
         ctx.writeAndFlush(connect).addListener(future -> {
             if (future.isSuccess()) {
-                final Mqtt5ClientDataImpl clientData = Mqtt5ClientDataImpl.from(ctx.channel());
+                final MqttClientDataImpl clientData = MqttClientDataImpl.from(ctx.channel());
                 if (clientData.getRawClientConnectionData().getEnhancedAuthProvider() != null) {
                     scheduleTimeout();
                 }
 
-                ctx.pipeline().addFirst(Mqtt5Decoder.NAME, ChannelComponent.forChannel(ctx.channel()).decoder());
+                ctx.pipeline().addFirst(MqttDecoder.NAME, ChannelComponent.get(ctx.channel()).decoder());
             } else {
-                Mqtt5DisconnectUtil.close(ctx.channel(), future.cause());
+                MqttDisconnectUtil.close(ctx.channel(), future.cause());
             }
         });
     }
@@ -131,7 +131,7 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerWithTimeout {
      */
     private void handleConnAck(@NotNull final MqttConnAckImpl connAck, @NotNull final Channel channel) {
         if (connAck.getReasonCode().isError()) {
-            Mqtt5DisconnectUtil.close(
+            MqttDisconnectUtil.close(
                     channel, new Mqtt5MessageException(connAck, "Connection failed with CONNACK with Error Code"));
         } else {
             if (validateConnack(connAck, channel)) {
@@ -144,9 +144,8 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerWithTimeout {
                 if (keepAlive > 0) {
                     pipeline.addLast(Mqtt5PingHandler.NAME, new Mqtt5PingHandler(keepAlive));
                 }
-                pipeline.addLast(
-                        Mqtt5DisconnectOnConnAckHandler.NAME,
-                        ChannelComponent.forChannel(channel).disconnectOnConnAckHandler());
+                pipeline.addLast(Mqtt5DisconnectOnConnAckHandler.NAME,
+                        ChannelComponent.get(channel).disconnectOnConnAckHandler());
 
                 connAckEmitter.onSuccess(connAck);
             }
@@ -168,10 +167,10 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerWithTimeout {
         if (msg instanceof Mqtt5Message) {
             final Mqtt5Message mqttMessage = (Mqtt5Message) msg;
             final String message = mqttMessage.getType() + " message must not be received before CONNACK";
-            Mqtt5DisconnectUtil.disconnect(channel, Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+            MqttDisconnectUtil.disconnect(channel, Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
                     new Mqtt5MessageException(mqttMessage, message));
         } else {
-            Mqtt5DisconnectUtil.close(channel, "No data must be received before CONNECT is sent");
+            MqttDisconnectUtil.close(channel, "No data must be received before CONNECT is sent");
         }
     }
 
@@ -190,7 +189,7 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerWithTimeout {
 
         if (clientIdentifier == MqttClientIdentifierImpl.REQUEST_CLIENT_IDENTIFIER_FROM_SERVER) {
             if (assignedClientIdentifier == null) {
-                Mqtt5DisconnectUtil.disconnect(channel, Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+                MqttDisconnectUtil.disconnect(channel, Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
                         new Mqtt5MessageException(connAck, "Server did not assign a Client Identifier"));
                 return false;
             }
@@ -204,7 +203,7 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerWithTimeout {
     }
 
     /**
-     * Updates the {@link Mqtt5ClientConnectionDataImpl} with data of the given CONNACK message.
+     * Updates the {@link MqttClientConnectionDataImpl} with data of the given CONNACK message.
      *
      * @param connAck the CONNACK message.
      */
@@ -214,7 +213,7 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerWithTimeout {
             clientData.setClientIdentifier(assignedClientIdentifier);
         }
 
-        final Mqtt5ClientConnectionDataImpl clientConnectionData = clientData.getRawClientConnectionData();
+        final MqttClientConnectionDataImpl clientConnectionData = clientData.getRawClientConnectionData();
 
         final int serverKeepAlive = connAck.getRawServerKeepAlive();
         if (serverKeepAlive != MqttConnAckImpl.KEEP_ALIVE_FROM_CONNECT) {
@@ -228,7 +227,7 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerWithTimeout {
     }
 
     /**
-     * Adds the {@link Mqtt5ServerConnectionDataImpl} to the channel.
+     * Adds the {@link MqttServerConnectionDataImpl} to the channel.
      *
      * @param connAck the CONNACK message.
      */
@@ -236,7 +235,7 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerWithTimeout {
         final MqttConnAckImpl.RestrictionsImpl restrictions = connAck.getRestrictions();
 
         clientData.setServerConnectionData(
-                new Mqtt5ServerConnectionDataImpl(restrictions.getReceiveMaximum(), restrictions.getTopicAliasMaximum(),
+                new MqttServerConnectionDataImpl(restrictions.getReceiveMaximum(), restrictions.getTopicAliasMaximum(),
                         restrictions.getMaximumPacketSize(), restrictions.getMaximumQoS(),
                         restrictions.isRetainAvailable(), restrictions.isWildcardSubscriptionAvailable(),
                         restrictions.isSubscriptionIdentifierAvailable(),

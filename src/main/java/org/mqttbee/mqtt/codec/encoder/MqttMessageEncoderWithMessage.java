@@ -4,9 +4,9 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.exceptions.MqttMaximumPacketSizeExceededException;
+import org.mqttbee.mqtt.MqttServerConnectionDataImpl;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderApplier;
 import org.mqttbee.mqtt.message.MqttMessage;
-import org.mqttbee.mqtt5.Mqtt5ServerConnectionDataImpl;
 
 /**
  * Encoder for a MQTT message with a {@link MqttMessage} that is applied for encoding.
@@ -32,7 +32,7 @@ public abstract class MqttMessageEncoderWithMessage<M extends MqttMessage>
     @NotNull
     @Override
     public ByteBuf allocateBuffer(@NotNull final Channel channel) {
-        final int maximumPacketSize = Mqtt5ServerConnectionDataImpl.getMaximumPacketSize(channel);
+        final int maximumPacketSize = MqttServerConnectionDataImpl.getMaximumPacketSize(channel);
         final int encodedLength = encodedLength(maximumPacketSize);
         if (encodedLength < 0) {
             throw new MqttMaximumPacketSizeExceededException(message, maximumPacketSize);

@@ -4,10 +4,11 @@ import io.netty.channel.embedded.EmbeddedChannel;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
+import org.mqttbee.mqtt.MqttClientDataImpl;
+import org.mqttbee.mqtt.MqttServerConnectionDataImpl;
+import org.mqttbee.mqtt.MqttVersion;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
-import org.mqttbee.mqtt5.Mqtt5ClientDataImpl;
-import org.mqttbee.mqtt5.Mqtt5ServerConnectionDataImpl;
 
 import java.util.Objects;
 
@@ -17,14 +18,15 @@ import java.util.Objects;
 public class AbstractMqtt5EncoderTest {
 
     private final boolean connected;
-    private final Mqtt5ClientDataImpl clientData;
+    private final MqttClientDataImpl clientData;
 
     protected EmbeddedChannel channel;
 
     protected AbstractMqtt5EncoderTest(final boolean connected) {
         this.connected = connected;
-        clientData = new Mqtt5ClientDataImpl(Objects.requireNonNull(MqttClientIdentifierImpl.from("test")), "localhost",
-                1883, false, false, false, null, 0);
+        clientData = new MqttClientDataImpl(MqttVersion.MQTT_5_0,
+                Objects.requireNonNull(MqttClientIdentifierImpl.from("test")), "localhost", 1883, false, false, false,
+                null, 0);
     }
 
     @BeforeEach
@@ -47,7 +49,7 @@ public class AbstractMqtt5EncoderTest {
 
     protected void createServerConnectionData(final int maximumPacketSize) {
         clientData.setServerConnectionData(
-                new Mqtt5ServerConnectionDataImpl(10, maximumPacketSize, 3, MqttQoS.EXACTLY_ONCE, true, true, true,
+                new MqttServerConnectionDataImpl(10, maximumPacketSize, 3, MqttQoS.EXACTLY_ONCE, true, true, true,
                         true));
     }
 

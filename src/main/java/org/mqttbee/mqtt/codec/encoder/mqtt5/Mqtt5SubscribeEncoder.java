@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
+import org.mqttbee.mqtt.MqttServerConnectionDataImpl;
 import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoder;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageWrapperEncoderApplier;
@@ -14,7 +15,6 @@ import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribeImpl;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribeImpl.SubscriptionImpl;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribeWrapper;
-import org.mqttbee.mqtt5.Mqtt5ServerConnectionDataImpl;
 
 import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.encodeVariableByteIntegerProperty;
 import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.variableByteIntegerPropertyEncodedLength;
@@ -71,7 +71,7 @@ public class Mqtt5SubscribeEncoder extends Mqtt5WrappedMessageEncoder<MqttSubscr
 
         @Override
         public void encode(@NotNull final ByteBuf out, @NotNull final Channel channel) {
-            final int maximumPacketSize = Mqtt5ServerConnectionDataImpl.getMaximumPacketSize(channel);
+            final int maximumPacketSize = MqttServerConnectionDataImpl.getMaximumPacketSize(channel);
 
             encodeFixedHeader(out, maximumPacketSize);
             encodeVariableHeader(out, maximumPacketSize);

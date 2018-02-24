@@ -3,8 +3,8 @@ package org.mqttbee.mqtt5.handler;
 import io.reactivex.SingleEmitter;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
+import org.mqttbee.mqtt.MqttClientDataImpl;
 import org.mqttbee.mqtt.message.connect.MqttConnectImpl;
-import org.mqttbee.mqtt5.Mqtt5ClientDataImpl;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -31,7 +31,7 @@ public class Mqtt5ChannelInitializerProvider {
      */
     public Mqtt5ChannelInitializer get(
             @NotNull final MqttConnectImpl connect, @NotNull final SingleEmitter<Mqtt5ConnAck> connAckEmitter,
-            @NotNull final Mqtt5ClientDataImpl clientData) {
+            @NotNull final MqttClientDataImpl clientData) {
 
         if (clientData.usesSSL()) {
             throw new UnsupportedOperationException(); // TODO

@@ -1,4 +1,4 @@
-package org.mqttbee.mqtt5;
+package org.mqttbee.mqtt;
 
 import com.google.common.base.Preconditions;
 import io.netty.channel.Channel;
@@ -18,33 +18,36 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5ClientDataImpl implements Mqtt5ClientData {
+public class MqttClientDataImpl implements Mqtt5ClientData {
 
-    private static final AttributeKey<Mqtt5ClientDataImpl> KEY = AttributeKey.valueOf("client.data");
+    private static final AttributeKey<MqttClientDataImpl> KEY = AttributeKey.valueOf("client.data");
 
     @NotNull
-    public static Mqtt5ClientDataImpl from(@NotNull final Channel channel) {
+    public static MqttClientDataImpl from(@NotNull final Channel channel) {
         return Preconditions.checkNotNull(channel.attr(KEY).get());
     }
 
+    private final MqttVersion mqttVersion;
     private MqttClientIdentifierImpl clientIdentifier;
     private final String serverHost;
     private final int serverPort;
     private final boolean usesSSL;
     private final AtomicBoolean connecting;
     private final AtomicBoolean connected;
-    private Mqtt5ClientConnectionDataImpl clientConnectionData;
-    private Mqtt5ServerConnectionDataImpl serverConnectionData;
+    private MqttClientConnectionDataImpl clientConnectionData;
+    private MqttServerConnectionDataImpl serverConnectionData;
     private final boolean followsRedirects;
     private final boolean allowsServerReAuth;
     private final Executor executor;
     private final int numberOfNettyThreads;
 
-    public Mqtt5ClientDataImpl(
-            @NotNull final MqttClientIdentifierImpl clientIdentifier, @NotNull final String serverHost,
-            final int serverPort, final boolean usesSSL, final boolean followsRedirects,
-            final boolean allowsServerReAuth, @Nullable final Executor executor, final int numberOfNettyThreads) {
+    public MqttClientDataImpl(
+            @NotNull final MqttVersion mqttVersion, @Nullable final MqttClientIdentifierImpl clientIdentifier,
+            @NotNull final String serverHost, final int serverPort, final boolean usesSSL,
+            final boolean followsRedirects, final boolean allowsServerReAuth, @Nullable final Executor executor,
+            final int numberOfNettyThreads) {
 
+        this.mqttVersion = mqttVersion;
         this.clientIdentifier = clientIdentifier;
         this.serverHost = serverHost;
         this.serverPort = serverPort;
@@ -55,6 +58,11 @@ public class Mqtt5ClientDataImpl implements Mqtt5ClientData {
         this.allowsServerReAuth = allowsServerReAuth;
         this.executor = executor;
         this.numberOfNettyThreads = numberOfNettyThreads;
+    }
+
+    @NotNull
+    public MqttVersion getMqttVersion() {
+        return mqttVersion;
     }
 
     @NotNull
@@ -114,11 +122,11 @@ public class Mqtt5ClientDataImpl implements Mqtt5ClientData {
     }
 
     @NotNull
-    public Mqtt5ClientConnectionDataImpl getRawClientConnectionData() {
+    public MqttClientConnectionDataImpl getRawClientConnectionData() {
         return Preconditions.checkNotNull(clientConnectionData);
     }
 
-    public void setClientConnectionData(@Nullable final Mqtt5ClientConnectionDataImpl clientConnectionData) {
+    public void setClientConnectionData(@Nullable final MqttClientConnectionDataImpl clientConnectionData) {
         this.clientConnectionData = clientConnectionData;
     }
 
@@ -129,11 +137,11 @@ public class Mqtt5ClientDataImpl implements Mqtt5ClientData {
     }
 
     @Nullable
-    public Mqtt5ServerConnectionDataImpl getRawServerConnectionData() {
+    public MqttServerConnectionDataImpl getRawServerConnectionData() {
         return serverConnectionData;
     }
 
-    public void setServerConnectionData(@Nullable final Mqtt5ServerConnectionDataImpl serverConnectionData) {
+    public void setServerConnectionData(@Nullable final MqttServerConnectionDataImpl serverConnectionData) {
         this.serverConnectionData = serverConnectionData;
     }
 
