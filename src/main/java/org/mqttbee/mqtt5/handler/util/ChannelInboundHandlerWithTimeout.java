@@ -7,7 +7,7 @@ import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.ScheduledFuture;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.mqtt5.handler.disconnect.Mqtt5DisconnectUtil;
+import org.mqttbee.mqtt5.handler.disconnect.MqttDisconnectUtil;
 
 import java.util.concurrent.TimeUnit;
 
@@ -37,7 +37,7 @@ public abstract class ChannelInboundHandlerWithTimeout extends ChannelInboundHan
         if (future.isSuccess()) {
             scheduleTimeout();
         } else {
-            Mqtt5DisconnectUtil.close(ctx.channel(), future.cause());
+            MqttDisconnectUtil.close(ctx.channel(), future.cause());
         }
     }
 
@@ -49,9 +49,9 @@ public abstract class ChannelInboundHandlerWithTimeout extends ChannelInboundHan
     public void run() {
         if (!Thread.currentThread().isInterrupted()) {
             if (ctx.channel().isActive()) {
-                Mqtt5DisconnectUtil.disconnect(ctx.channel(), getTimeoutReasonCode(), getTimeoutReasonString());
+                MqttDisconnectUtil.disconnect(ctx.channel(), getTimeoutReasonCode(), getTimeoutReasonString());
             } else {
-                Mqtt5DisconnectUtil.close(ctx.channel(), getTimeoutReasonString());
+                MqttDisconnectUtil.close(ctx.channel(), getTimeoutReasonString());
             }
         }
     }

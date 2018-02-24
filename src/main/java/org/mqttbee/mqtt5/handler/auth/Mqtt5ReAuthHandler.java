@@ -9,11 +9,11 @@ import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5Auth;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
+import org.mqttbee.mqtt.MqttClientDataImpl;
 import org.mqttbee.mqtt.message.auth.MqttAuthBuilderImpl;
 import org.mqttbee.mqtt.message.auth.MqttAuthImpl;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnectImpl;
-import org.mqttbee.mqtt5.Mqtt5ClientDataImpl;
-import org.mqttbee.mqtt5.handler.disconnect.Mqtt5DisconnectUtil;
+import org.mqttbee.mqtt5.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt5.ioc.ChannelScope;
 
 import javax.inject.Inject;
@@ -51,7 +51,7 @@ public class Mqtt5ReAuthHandler extends AbstractMqtt5AuthHandler {
      * @param ctx the channel handler context.
      */
     private void writeReAuth(@NotNull final ChannelHandlerContext ctx) {
-        final Mqtt5ClientDataImpl clientData = Mqtt5ClientDataImpl.from(ctx.channel());
+        final MqttClientDataImpl clientData = MqttClientDataImpl.from(ctx.channel());
         final Mqtt5EnhancedAuthProvider enhancedAuthProvider = getEnhancedAuthProvider(clientData);
         final MqttAuthBuilderImpl authBuilder = getAuthBuilder(REAUTHENTICATE, enhancedAuthProvider);
 
@@ -87,12 +87,12 @@ public class Mqtt5ReAuthHandler extends AbstractMqtt5AuthHandler {
      */
     void readAuthSuccess(
             @NotNull final ChannelHandlerContext ctx, @NotNull final MqttAuthImpl auth,
-            @NotNull final Mqtt5ClientDataImpl clientData,
+            @NotNull final MqttClientDataImpl clientData,
             @NotNull final Mqtt5EnhancedAuthProvider enhancedAuthProvider) {
 
         enhancedAuthProvider.onReAuthSuccess(clientData, auth).whenCompleteAsync((accepted, throwable) -> {
             if (!enhancedAuthProviderAccepted(accepted, throwable)) {
-                Mqtt5DisconnectUtil.disconnect(
+                MqttDisconnectUtil.disconnect(
                         ctx.channel(), Mqtt5DisconnectReasonCode.NOT_AUTHORIZED, "Server auth success not accepted");
             }
         }, ctx.executor());
@@ -115,7 +115,7 @@ public class Mqtt5ReAuthHandler extends AbstractMqtt5AuthHandler {
      */
     void readReAuth(
             @NotNull final ChannelHandlerContext ctx, @NotNull final MqttAuthImpl auth,
-            @NotNull final Mqtt5ClientDataImpl clientData,
+            @NotNull final MqttClientDataImpl clientData,
             @NotNull final Mqtt5EnhancedAuthProvider enhancedAuthProvider) {
 
         if (clientData.allowsServerReAuth()) {
@@ -126,12 +126,12 @@ public class Mqtt5ReAuthHandler extends AbstractMqtt5AuthHandler {
                         if (enhancedAuthProviderAccepted(accepted, throwable)) {
                             ctx.writeAndFlush(authBuilder.build());
                         } else {
-                            Mqtt5DisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.NOT_AUTHORIZED,
+                            MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.NOT_AUTHORIZED,
                                     new Mqtt5MessageException(auth, "Server reauth not accepted"));
                         }
                     }, ctx.executor());
         } else {
-            Mqtt5DisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+            MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
                     new Mqtt5MessageException(auth, "Server must not send AUTH with the Reason Code REAUTHENTICATE"));
         }
     }
@@ -148,7 +148,7 @@ public class Mqtt5ReAuthHandler extends AbstractMqtt5AuthHandler {
 
         cancelTimeout();
 
-        final Mqtt5ClientDataImpl clientData = Mqtt5ClientDataImpl.from(ctx.channel());
+        final MqttClientDataImpl clientData = MqttClientDataImpl.from(ctx.channel());
         final Mqtt5EnhancedAuthProvider enhancedAuthProvider = getEnhancedAuthProvider(clientData);
 
         enhancedAuthProvider.onReAuthError(clientData, disconnect);

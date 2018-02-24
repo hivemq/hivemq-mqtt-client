@@ -3,8 +3,8 @@ package org.mqttbee.api.mqtt.mqtt5.datatypes;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
-import org.mqttbee.mqtt.MqttBuilderUtil;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
+import org.mqttbee.mqtt.util.MqttBuilderUtil;
 
 /**
  * MQTT User Property according to the MQTT 5 specification.

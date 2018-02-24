@@ -1,37 +1,35 @@
-package org.mqttbee.mqtt.codec.decoder.mqtt5;
+package org.mqttbee.mqtt.codec.decoder;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
-import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoders;
+import org.mqttbee.mqtt.MqttClientConnectionDataImpl;
+import org.mqttbee.mqtt.MqttClientDataImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.MqttMessage;
-import org.mqttbee.mqtt5.Mqtt5ClientConnectionDataImpl;
-import org.mqttbee.mqtt5.Mqtt5ClientDataImpl;
 import org.mqttbee.mqtt5.ioc.ChannelScope;
 
 import javax.inject.Inject;
 import java.util.List;
 
-import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.disconnect;
+import static org.mqttbee.mqtt5.handler.disconnect.MqttDisconnectUtil.disconnect;
 
 /**
  * @author Silvio Giebl
  */
 @ChannelScope
-public class Mqtt5Decoder extends ByteToMessageDecoder {
+public class MqttDecoder extends ByteToMessageDecoder {
 
-    public static final String NAME = "decoder.mqtt5";
+    public static final String NAME = "decoder";
 
     private static final int MIN_FIXED_HEADER_LENGTH = 2;
 
     private final MqttMessageDecoders decoders;
 
     @Inject
-    Mqtt5Decoder(final MqttMessageDecoders decoders) {
+    MqttDecoder(final MqttMessageDecoders decoders) {
         this.decoders = decoders;
     }
 
@@ -59,18 +57,18 @@ public class Mqtt5Decoder extends ByteToMessageDecoder {
         if (remainingLength == MqttVariableByteInteger.TOO_LARGE ||
                 remainingLength == MqttVariableByteInteger.NOT_MINIMUM_BYTES) {
 
-            disconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "malformed remaining length", channel);
+            disconnect(channel, Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "malformed remaining length");
             return;
         }
 
         final int fixedHeaderLength = in.readerIndex() - readerIndexBeforeFixedHeader;
         final int packetSize = fixedHeaderLength + remainingLength;
 
-        final Mqtt5ClientConnectionDataImpl clientConnectionData =
-                Mqtt5ClientDataImpl.from(channel).getRawClientConnectionData();
+        final MqttClientConnectionDataImpl clientConnectionData =
+                MqttClientDataImpl.from(channel).getRawClientConnectionData();
         if (packetSize > clientConnectionData.getMaximumPacketSize()) {
-            disconnect(Mqtt5DisconnectReasonCode.PACKET_TOO_LARGE, "incoming packet exceeded maximum packet size",
-                    channel);
+            disconnect(channel, Mqtt5DisconnectReasonCode.PACKET_TOO_LARGE,
+                    "incoming packet exceeded maximum packet size");
             return;
         }
 
@@ -85,7 +83,7 @@ public class Mqtt5Decoder extends ByteToMessageDecoder {
 
         final MqttMessageDecoder decoder = decoders.get(messageType);
         if (decoder == null) {
-            disconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "wrong packet", channel);
+            disconnect(channel, Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "wrong packet");
             return;
         }
 

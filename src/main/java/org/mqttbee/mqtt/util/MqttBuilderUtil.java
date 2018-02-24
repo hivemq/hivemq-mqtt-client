@@ -1,4 +1,4 @@
-package org.mqttbee.mqtt;
+package org.mqttbee.mqtt.util;
 
 import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.NotNull;

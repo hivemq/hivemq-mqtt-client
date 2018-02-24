@@ -1,53 +1,40 @@
 package org.mqttbee.mqtt.codec.decoder.mqtt3;
 
-import io.netty.channel.embedded.EmbeddedChannel;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;
+import org.mqttbee.mqtt.MqttClientConnectionDataImpl;
+import org.mqttbee.mqtt.MqttClientDataImpl;
+import org.mqttbee.mqtt.MqttVersion;
+import org.mqttbee.mqtt.codec.decoder.AbstractMqttDecoderTest;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoders;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
-import org.mqttbee.mqtt5.Mqtt5ClientConnectionDataImpl;
-import org.mqttbee.mqtt5.Mqtt5ClientDataImpl;
+import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
+import org.mqttbee.mqtt5.ioc.ChannelComponent;
 
 import java.util.Objects;
 
 /**
  * @author Silvio Giebl
  */
-abstract class AbstractMqtt3DecoderTest {
+abstract class AbstractMqtt3DecoderTest extends AbstractMqttDecoderTest {
 
-    private final MqttMessageDecoders decoders;
-    private final Mqtt5ClientDataImpl clientData;
-
-    EmbeddedChannel channel;
+    private final MqttClientDataImpl clientData;
 
     AbstractMqtt3DecoderTest(@NotNull final MqttMessageDecoders decoders) {
-        this.decoders = decoders;
-        clientData = new Mqtt5ClientDataImpl(Objects.requireNonNull(MqttClientIdentifierImpl.from("test")), "localhost",
-                1883, false, false, false, null, 0);
+        super(decoders);
+        clientData = new MqttClientDataImpl(MqttVersion.MQTT_3_1_1,
+                Objects.requireNonNull(MqttClientIdentifierImpl.from("test")), "localhost", 1883, false, false, false,
+                null, 0);
     }
 
-    @BeforeEach
-    void setUp() {
-        createChannel();
-    }
-
-    @AfterEach
-    void tearDown() {
-        channel.close();
-    }
-
-    void createChannel() {
-        channel = new EmbeddedChannel(new Mqtt3Decoder(decoders));
+    @Override
+    protected void createChannel() {
+        super.createChannel();
         clientData.to(channel);
-        createClientConnectionData(Mqtt5Connect.Restrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT);
-    }
-
-    void createClientConnectionData(final int maximumPacketSize) {
-        clientData.setClientConnectionData(
-                new Mqtt5ClientConnectionDataImpl(10, 10, Mqtt5Connect.Restrictions.DEFAULT_RECEIVE_MAXIMUM, 3,
-                        maximumPacketSize, null, false, true, true, channel));
+        ChannelComponent.create(channel, clientData);
+        clientData.setClientConnectionData(new MqttClientConnectionDataImpl(10, Mqtt5Connect.NO_SESSION_EXPIRY,
+                Mqtt5Connect.Restrictions.DEFAULT_RECEIVE_MAXIMUM, 0, MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT,
+                null, false, false, false, channel));
     }
 
 }

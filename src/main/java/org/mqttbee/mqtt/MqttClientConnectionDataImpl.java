@@ -1,4 +1,4 @@
-package org.mqttbee.mqtt5;
+package org.mqttbee.mqtt;
 
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
@@ -13,7 +13,7 @@ import java.util.Optional;
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5ClientConnectionDataImpl implements Mqtt5ClientConnectionData {
+public class MqttClientConnectionDataImpl implements Mqtt5ClientConnectionData {
 
     private int keepAlive;
     private long sessionExpiryInterval;
@@ -26,7 +26,7 @@ public class Mqtt5ClientConnectionDataImpl implements Mqtt5ClientConnectionData 
     private final boolean responseInformationRequested;
     private final Channel channel;
 
-    public Mqtt5ClientConnectionDataImpl(
+    public MqttClientConnectionDataImpl(
             final int keepAlive, final long sessionExpiryInterval, final int receiveMaximum,
             final int topicAliasMaximum, final int maximumPacketSize,
             @Nullable final Mqtt5EnhancedAuthProvider enhancedAuthProvider, final boolean hasWillPublish,

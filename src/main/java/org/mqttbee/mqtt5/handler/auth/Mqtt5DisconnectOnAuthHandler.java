@@ -8,7 +8,7 @@ import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.message.auth.MqttAuthImpl;
 import org.mqttbee.mqtt.message.connect.connack.MqttConnAckImpl;
-import org.mqttbee.mqtt5.handler.disconnect.Mqtt5DisconnectUtil;
+import org.mqttbee.mqtt5.handler.disconnect.MqttDisconnectUtil;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -41,13 +41,13 @@ public class Mqtt5DisconnectOnAuthHandler extends ChannelInboundHandlerAdapter {
     }
 
     private void readAuth(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttAuthImpl auth) {
-        Mqtt5DisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+        MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
                 new Mqtt5MessageException(auth, "Server must not send AUTH"));
     }
 
     private void readConnAck(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttConnAckImpl connAck) {
         if (connAck.getRawEnhancedAuth() != null) {
-            Mqtt5DisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+            MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
                     new Mqtt5MessageException(connAck, "Server must not include auth in CONNACK"));
         } else {
             ctx.fireChannelRead(connAck);

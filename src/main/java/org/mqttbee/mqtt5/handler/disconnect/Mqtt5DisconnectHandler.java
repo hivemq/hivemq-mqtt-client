@@ -39,13 +39,13 @@ public class Mqtt5DisconnectHandler extends ChannelInboundHandlerAdapter {
             @NotNull final ChannelHandlerContext ctx, @NotNull final MqttDisconnectImpl disconnect) {
 
         ctx.pipeline().remove(this);
-        Mqtt5DisconnectUtil.close(ctx.channel(), new Mqtt5MessageException(disconnect, "Server sent DISCONNECT"));
+        MqttDisconnectUtil.close(ctx.channel(), new Mqtt5MessageException(disconnect, "Server sent DISCONNECT"));
     }
 
     @Override
     public void channelInactive(final ChannelHandlerContext ctx) {
         ctx.pipeline().remove(this);
-        Mqtt5DisconnectUtil.close(ctx.channel(), "Server closed channel without DISCONNECT");
+        MqttDisconnectUtil.close(ctx.channel(), "Server closed channel without DISCONNECT");
         ctx.fireChannelInactive();
     }
 

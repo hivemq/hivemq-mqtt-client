@@ -2,8 +2,9 @@ package org.mqttbee.api.mqtt.mqtt5;
 
 import dagger.internal.Preconditions;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.mqtt.MqttClientDataImpl;
+import org.mqttbee.mqtt.MqttVersion;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
-import org.mqttbee.mqtt5.Mqtt5ClientDataImpl;
 import org.mqttbee.mqtt5.Mqtt5ClientImpl;
 
 import java.util.concurrent.Executor;
@@ -55,9 +56,9 @@ public class Mqtt5ClientBuilder {
         return new Mqtt5ClientImpl(buildClientData());
     }
 
-    private Mqtt5ClientDataImpl buildClientData() {
-        return new Mqtt5ClientDataImpl(identifier, serverHost, serverPort, usesSSL, followsRedirects,
-                allowsServerReAuth, executor, numberOfNettyThreads);
+    private MqttClientDataImpl buildClientData() {
+        return new MqttClientDataImpl(MqttVersion.MQTT_5_0, identifier, serverHost, serverPort, usesSSL,
+                followsRedirects, allowsServerReAuth, executor, numberOfNettyThreads);
     }
 
 }

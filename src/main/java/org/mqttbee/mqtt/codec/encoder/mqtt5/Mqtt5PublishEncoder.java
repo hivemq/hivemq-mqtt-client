@@ -6,6 +6,7 @@ import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
+import org.mqttbee.mqtt.MqttServerConnectionDataImpl;
 import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoder;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageWrapperEncoderApplier;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttPublishEncoderProvider;
@@ -15,7 +16,6 @@ import org.mqttbee.mqtt.datatypes.MqttBinaryData;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.publish.MqttPublishImpl;
 import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
-import org.mqttbee.mqtt5.Mqtt5ServerConnectionDataImpl;
 
 import java.nio.ByteBuffer;
 
@@ -121,7 +121,7 @@ public class Mqtt5PublishEncoder extends Mqtt5WrappedMessageEncoder<MqttPublishI
 
         @Override
         public void encode(@NotNull final ByteBuf out, @NotNull final Channel channel) {
-            final int maximumPacketSize = Mqtt5ServerConnectionDataImpl.getMaximumPacketSize(channel);
+            final int maximumPacketSize = MqttServerConnectionDataImpl.getMaximumPacketSize(channel);
 
             encodeFixedHeader(out, maximumPacketSize);
             encodeVariableHeader(out, maximumPacketSize);

@@ -4,8 +4,8 @@ import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5EnhancedAuthBuilder;
-import org.mqttbee.mqtt.MqttBuilderUtil;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
+import org.mqttbee.mqtt.util.MqttBuilderUtil;
 
 import java.nio.ByteBuffer;
 

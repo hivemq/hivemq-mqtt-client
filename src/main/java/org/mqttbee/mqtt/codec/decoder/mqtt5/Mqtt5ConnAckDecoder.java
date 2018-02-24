@@ -8,11 +8,11 @@ import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
+import org.mqttbee.mqtt.MqttClientConnectionDataImpl;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.datatypes.*;
 import org.mqttbee.mqtt.message.auth.MqttEnhancedAuthImpl;
 import org.mqttbee.mqtt.message.connect.connack.MqttConnAckImpl;
-import org.mqttbee.mqtt5.Mqtt5ClientConnectionDataImpl;
 import org.mqttbee.mqtt5.netty.ChannelAttributes;
 
 import javax.inject.Inject;
@@ -40,7 +40,7 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
     @Override
     public MqttConnAckImpl decode(
             final int flags, @NotNull final ByteBuf in,
-            @NotNull final Mqtt5ClientConnectionDataImpl clientConnectionData) {
+            @NotNull final MqttClientConnectionDataImpl clientConnectionData) {
 
         final Channel channel = clientConnectionData.getChannel();
 

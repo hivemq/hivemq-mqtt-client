@@ -4,7 +4,6 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt.exceptions.ChannelClosedException;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5DisconnectEncoder;
@@ -13,14 +12,22 @@ import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnectImpl;
 import org.mqttbee.mqtt5.netty.ChannelAttributes;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 /**
  * Util for sending a DISCONNECT message and channel closing from the client side. Fires {@link ChannelCloseEvent}s.
  *
  * @author Silvio Giebl
  */
-public class Mqtt5DisconnectUtil {
+@Singleton
+public class Mqtt5Disconnecter implements MqttDisconnecter {
 
-    private static void disconnect(
+    @Inject
+    Mqtt5Disconnecter() {
+    }
+
+    private void disconnect(
             @NotNull final Channel channel, final Mqtt5DisconnectReasonCode reasonCode,
             @Nullable final String reasonString, @Nullable final Throwable cause) {
 
@@ -40,28 +47,20 @@ public class Mqtt5DisconnectUtil {
         channel.writeAndFlush(disconnect).addListener(ChannelFutureListener.CLOSE);
     }
 
-    public static void disconnect(
+    @Override
+    public void disconnect(
             @NotNull final Channel channel, final Mqtt5DisconnectReasonCode reasonCode,
             @NotNull final String reasonString) {
 
         disconnect(channel, reasonCode, reasonString, null);
     }
 
-    public static void disconnect(
+    @Override
+    public void disconnect(
             @NotNull final Channel channel, final Mqtt5DisconnectReasonCode reasonCode,
             @NotNull final Throwable cause) {
 
         disconnect(channel, reasonCode, cause.getMessage(), cause);
-    }
-
-    public static void close(@NotNull final Channel channel, @NotNull final Throwable cause) {
-        channel.config().setAutoRead(false);
-        channel.pipeline().fireUserEventTriggered(new ChannelCloseEvent(cause));
-        channel.close();
-    }
-
-    public static void close(@NotNull final Channel channel, @NotNull final String reason) {
-        close(channel, new ChannelClosedException(reason));
     }
 
 }

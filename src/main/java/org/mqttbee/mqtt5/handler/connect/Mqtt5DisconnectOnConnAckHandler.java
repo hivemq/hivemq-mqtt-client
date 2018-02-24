@@ -7,7 +7,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.message.connect.connack.MqttConnAckImpl;
-import org.mqttbee.mqtt5.handler.disconnect.Mqtt5DisconnectUtil;
+import org.mqttbee.mqtt5.handler.disconnect.MqttDisconnectUtil;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -38,7 +38,7 @@ public class Mqtt5DisconnectOnConnAckHandler extends ChannelInboundHandlerAdapte
     }
 
     private void readConnAck(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttConnAckImpl connAck) {
-        Mqtt5DisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+        MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
                 new Mqtt5MessageException(connAck, "Must not receive second CONNACK"));
     }
 

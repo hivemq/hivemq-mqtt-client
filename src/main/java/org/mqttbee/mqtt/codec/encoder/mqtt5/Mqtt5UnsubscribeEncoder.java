@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
+import org.mqttbee.mqtt.MqttServerConnectionDataImpl;
 import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoder;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageWrapperEncoderApplier;
@@ -14,7 +15,6 @@ import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribeImpl;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribeWrapper;
-import org.mqttbee.mqtt5.Mqtt5ServerConnectionDataImpl;
 
 /**
  * @author Silvio Giebl
@@ -60,7 +60,7 @@ public class Mqtt5UnsubscribeEncoder extends Mqtt5WrappedMessageEncoder<MqttUnsu
 
         @Override
         public void encode(@NotNull final ByteBuf out, @NotNull final Channel channel) {
-            final int maximumPacketSize = Mqtt5ServerConnectionDataImpl.getMaximumPacketSize(channel);
+            final int maximumPacketSize = MqttServerConnectionDataImpl.getMaximumPacketSize(channel);
 
             encodeFixedHeader(out, maximumPacketSize);
             encodeVariableHeader(out, maximumPacketSize);

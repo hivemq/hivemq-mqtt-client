@@ -20,6 +20,6 @@ public interface MqttBeeComponent {
 
     Mqtt5ChannelInitializerProvider channelInitializerProvider();
 
-    ChannelComponent channelComponent();
+    ChannelComponent channelComponent(ChannelModule channelModule);
 
 }
