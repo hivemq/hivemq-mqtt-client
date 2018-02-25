@@ -47,7 +47,7 @@ public class Mqtt5SubAckDecoder implements MqttMessageDecoder {
         final Channel channel = clientConnectionData.getChannel();
 
         if (flags != FLAGS) {
-            disconnectWrongFixedHeaderFlags("SUBACK", channel);
+            disconnectWrongFixedHeaderFlags(channel, "SUBACK");
             return null;
         }
 
@@ -99,7 +99,7 @@ public class Mqtt5SubAckDecoder implements MqttMessageDecoder {
                     break;
 
                 default:
-                    disconnectWrongProperty("SUBACK", channel);
+                    disconnectWrongProperty(channel, "SUBACK");
                     return null;
             }
         }
@@ -121,7 +121,7 @@ public class Mqtt5SubAckDecoder implements MqttMessageDecoder {
         for (int i = 0; i < reasonCodeCount; i++) {
             final Mqtt5SubAckReasonCode reasonCode = Mqtt5SubAckReasonCode.fromCode(in.readUnsignedByte());
             if (reasonCode == null) {
-                disconnectWrongReasonCode("SUBACK", channel);
+                disconnectWrongReasonCode(channel, "SUBACK");
                 return null;
             }
             reasonCodesBuilder.add(reasonCode);

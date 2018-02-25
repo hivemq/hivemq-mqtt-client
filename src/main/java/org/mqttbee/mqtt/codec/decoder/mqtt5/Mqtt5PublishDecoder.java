@@ -152,7 +152,7 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
 
                 case RESPONSE_TOPIC:
                     if (responseTopic != null) {
-                        disconnectOnlyOnce("response topic", channel);
+                        disconnectOnlyOnce(channel, "response topic");
                         return null;
                     }
                     responseTopic = MqttTopicImpl.from(in);
@@ -208,7 +208,7 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
                     break;
 
                 default:
-                    disconnectWrongProperty("PUBLISH", channel);
+                    disconnectWrongProperty(channel, "PUBLISH");
                     return null;
             }
         }

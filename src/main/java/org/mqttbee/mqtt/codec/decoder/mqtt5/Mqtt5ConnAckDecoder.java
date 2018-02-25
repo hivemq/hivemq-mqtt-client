@@ -47,7 +47,7 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
         final Channel channel = clientConnectionData.getChannel();
 
         if (flags != FLAGS) {
-            disconnectWrongFixedHeaderFlags("CONNACK", channel);
+            disconnectWrongFixedHeaderFlags(channel, "CONNACK");
             return null;
         }
 
@@ -65,7 +65,7 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
 
         final Mqtt5ConnAckReasonCode reasonCode = Mqtt5ConnAckReasonCode.fromCode(in.readUnsignedByte());
         if (reasonCode == null) {
-            disconnectWrongReasonCode("CONNACK", channel);
+            disconnectWrongReasonCode(channel, "CONNACK");
             return null;
         }
 
@@ -86,7 +86,7 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
             if (in.readableBytes() < propertyLength) {
                 disconnectRemainingLengthTooShort(channel);
             } else {
-                disconnectMustNotHavePayload("CONNACK", channel);
+                disconnectMustNotHavePayload(channel, "CONNACK");
             }
             return null;
         }
@@ -141,12 +141,12 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
 
                 case ASSIGNED_CLIENT_IDENTIFIER:
                     if (assignedClientIdentifier != CLIENT_IDENTIFIER_FROM_CONNECT) {
-                        disconnectOnlyOnce("client identifier", channel);
+                        disconnectOnlyOnce(channel, "client identifier");
                         return null;
                     }
                     assignedClientIdentifier = MqttClientIdentifierImpl.from(in);
                     if (assignedClientIdentifier == null) {
-                        disconnectMalformedUTF8String("client identifier", channel);
+                        disconnectMalformedUTF8String(channel, "client identifier");
                         return null;
                     }
                     break;
@@ -327,7 +327,7 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
                     break;
 
                 default:
-                    disconnectWrongProperty("CONNACK", channel);
+                    disconnectWrongProperty(channel, "CONNACK");
                     return null;
             }
         }

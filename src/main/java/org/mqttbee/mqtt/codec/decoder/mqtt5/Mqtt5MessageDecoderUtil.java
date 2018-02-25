@@ -32,15 +32,15 @@ class Mqtt5MessageDecoderUtil {
         disconnect(channel, Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "malformed property identifier");
     }
 
-    static void disconnectWrongProperty(@NotNull final String type, @NotNull final Channel channel) {
+    static void disconnectWrongProperty(@NotNull final Channel channel, @NotNull final String type) {
         disconnect(channel, Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "wrong property for " + type);
     }
 
-    static void disconnectOnlyOnce(@NotNull final String name, @NotNull final Channel channel) {
+    static void disconnectOnlyOnce(@NotNull final Channel channel, @NotNull final String name) {
         disconnect(channel, Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, name + " must not be included more than once");
     }
 
-    static void disconnectWrongReasonCode(@NotNull final String type, @NotNull final Channel channel) {
+    static void disconnectWrongReasonCode(@NotNull final Channel channel, @NotNull final String type) {
         disconnect(channel, Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "wrong reason code for " + type);
     }
 
@@ -49,7 +49,7 @@ class Mqtt5MessageDecoderUtil {
             @NotNull final ByteBuf in) {
 
         if (present) {
-            disconnectOnlyOnce(name, channel);
+            disconnectOnlyOnce(channel, name);
             return false;
         }
         if (in.readableBytes() < 1) {
@@ -64,7 +64,7 @@ class Mqtt5MessageDecoderUtil {
             @NotNull final ByteBuf in) {
 
         if (present) {
-            disconnectOnlyOnce(name, channel);
+            disconnectOnlyOnce(channel, name);
             return false;
         }
         if (in.readableBytes() < 2) {
@@ -86,7 +86,7 @@ class Mqtt5MessageDecoderUtil {
             @NotNull final ByteBuf in) {
 
         if (present) {
-            disconnectOnlyOnce(name, channel);
+            disconnectOnlyOnce(channel, name);
             return false;
         }
         if (in.readableBytes() < 4) {
@@ -109,7 +109,7 @@ class Mqtt5MessageDecoderUtil {
             @NotNull final ByteBuf in, final boolean direct) {
 
         if (current != null) {
-            disconnectOnlyOnce(name, channel);
+            disconnectOnlyOnce(channel, name);
             return null;
         }
         final ByteBuffer decoded = MqttBinaryData.decode(in, direct);
@@ -126,12 +126,12 @@ class Mqtt5MessageDecoderUtil {
             @NotNull final ByteBuf in) {
 
         if (current != null) {
-            disconnectOnlyOnce(name, channel);
+            disconnectOnlyOnce(channel, name);
             return null;
         }
         final MqttUTF8StringImpl decoded = MqttUTF8StringImpl.from(in);
         if (decoded == null) {
-            disconnectMalformedUTF8String(name, channel);
+            disconnectMalformedUTF8String(channel, name);
             return null;
         }
         return decoded;
