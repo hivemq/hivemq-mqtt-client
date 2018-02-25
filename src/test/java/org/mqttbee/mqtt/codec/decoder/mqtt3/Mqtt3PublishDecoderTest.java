@@ -73,11 +73,11 @@ class Mqtt3PublishDecoderTest extends AbstractMqtt3DecoderTest {
 
     @ParameterizedTest
     @CsvSource({
-            "true, true, 0", "true, false , 0", "false, true , 0", "false, false , 0", //all qos=0 combination
+            "true, false , 0", "false, false , 0", //all qos=0 combination
             "true, true, 1", "true, false , 1", "false, true , 1", "false, false , 1", "true, true, 2",
             "true, false , 2", "false, true , 2", "false, false , 2"
     })
-    void decode_SUCESS(final boolean retained, final boolean isDup, final int qos) throws Exception {
+    void decode_SUCCESS(final boolean retained, final boolean isDup, final int qos) throws Exception {
         final String topic = "Hello/World/Topic";
         final String payload = "Hallo World!";
         final int packetId = 1;
@@ -86,8 +86,7 @@ class Mqtt3PublishDecoderTest extends AbstractMqtt3DecoderTest {
         channel.writeInbound(byteBuf);
         final MqttPublishWrapper publishInternal = channel.readInbound();
         assertNotNull(publishInternal);
-        //TODO equal topics
-        //assertEquals(topic, publishInternal.getPublish().getTopic().);
+        assertEquals(topic, publishInternal.getWrapped().getTopic().toString());
         assertTrue(publishInternal.getWrapped().getPayload().isPresent());
         assertArrayEquals(payload.getBytes(), ByteBufferUtil.getBytes(publishInternal.getWrapped().getPayload().get()));
         assertEquals(isDup, publishInternal.isDup());
@@ -102,11 +101,11 @@ class Mqtt3PublishDecoderTest extends AbstractMqtt3DecoderTest {
 
     @ParameterizedTest
     @CsvSource({
-            "true, true, 0", "true, false , 0", "false, true , 0", "false, false , 0", //all qos=0 combination
+            "true, false , 0", "false, false , 0", //all qos=0 combination
             "true, true, 1", "true, false , 1", "false, true , 1", "false, false , 1", "true, true, 2",
             "true, false , 2", "false, true , 2", "false, false , 2"
     })
-    void decode_SUCESS_NO_PAYLOAD(final boolean retained, final boolean isDup, final int qos) throws Exception {
+    void decode_SUCCESS_NO_PAYLOAD(final boolean retained, final boolean isDup, final int qos) throws Exception {
         final String topic = "Hello/World/Topic";
         final String payload = "";
         final int packetId = 1;
@@ -115,8 +114,7 @@ class Mqtt3PublishDecoderTest extends AbstractMqtt3DecoderTest {
         channel.writeInbound(byteBuf);
         final MqttPublishWrapper publishInternal = channel.readInbound();
         assertNotNull(publishInternal);
-        //TODO equal topics
-        //assertEquals(topic, publishInternal.getPublish().getTopic().);
+        assertEquals(topic, publishInternal.getWrapped().getTopic().toString());
         assertFalse(publishInternal.getWrapped().getPayload().isPresent());
         assertEquals(isDup, publishInternal.isDup());
         assertEquals(qos, publishInternal.getWrapped().getQos().getCode());
@@ -130,7 +128,7 @@ class Mqtt3PublishDecoderTest extends AbstractMqtt3DecoderTest {
 
     @ParameterizedTest
     @CsvSource({
-            "true, true, 0", "true, false , 0", "false, true , 0", "false, false , 0", //all qos=0 combination
+            "true, false , 0", "false, false , 0", //all qos=0 combination
             "true, true, 1", "true, false , 1", "false, true , 1", "false, false , 1", "true, true, 2",
             "true, false , 2", "false, true , 2", "false, false , 2"
     })

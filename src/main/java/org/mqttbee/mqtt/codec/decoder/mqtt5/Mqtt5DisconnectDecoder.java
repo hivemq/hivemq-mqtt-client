@@ -2,24 +2,22 @@ package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.MqttClientConnectionDataImpl;
+import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5DisconnectEncoder;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
-import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnectImpl;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.disconnectMustNotHavePayload;
-import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.disconnectWrongFixedHeaderFlags;
+import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.checkFixedHeaderFlags;
 import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.*;
 import static org.mqttbee.mqtt.message.disconnect.MqttDisconnectImpl.DEFAULT_REASON_CODE;
 import static org.mqttbee.mqtt.message.disconnect.MqttDisconnectImpl.SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
@@ -41,14 +39,9 @@ public class Mqtt5DisconnectDecoder implements MqttMessageDecoder {
     @Nullable
     public MqttDisconnectImpl decode(
             final int flags, @NotNull final ByteBuf in,
-            @NotNull final MqttClientConnectionDataImpl clientConnectionData) {
+            @NotNull final MqttClientConnectionDataImpl clientConnectionData) throws MqttDecoderException {
 
-        final Channel channel = clientConnectionData.getChannel();
-
-        if (flags != FLAGS) {
-            disconnectWrongFixedHeaderFlags(channel, "DISCONNECT");
-            return null;
-        }
+        checkFixedHeaderFlags(FLAGS, flags);
 
         Mqtt5DisconnectReasonCode reasonCode = DEFAULT_REASON_CODE;
         long sessionExpiryInterval = SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
@@ -59,63 +52,34 @@ public class Mqtt5DisconnectDecoder implements MqttMessageDecoder {
         if (in.isReadable()) {
             reasonCode = Mqtt5DisconnectReasonCode.fromCode(in.readUnsignedByte());
             if (reasonCode == null) {
-                disconnectWrongReasonCode(channel, "DISCONNECT");
-                return null;
+                throw wrongReasonCode();
             }
 
             if (in.isReadable()) {
-                final int propertyLength = MqttVariableByteInteger.decode(in);
-                if (propertyLength < 0) {
-                    disconnectMalformedPropertyLength(channel);
-                    return null;
-                }
-                if (in.readableBytes() != propertyLength) {
-                    disconnectMustNotHavePayload(channel, "DISCONNECT");
-                    return null;
-                }
+                checkPropertyLengthNoPayload(in);
 
                 while (in.isReadable()) {
-
-                    final int propertyIdentifier = MqttVariableByteInteger.decode(in);
-                    if (propertyIdentifier < 0) {
-                        disconnectMalformedPropertyIdentifier(channel);
-                        return null;
-                    }
+                    final int propertyIdentifier = decodePropertyIdentifier(in);
 
                     switch (propertyIdentifier) {
                         case SESSION_EXPIRY_INTERVAL:
-                            if (!checkIntOnlyOnce(sessionExpiryInterval, SESSION_EXPIRY_INTERVAL_FROM_CONNECT,
-                                    "session expiry interval", channel, in)) {
-                                return null;
-                            }
-                            sessionExpiryInterval = in.readUnsignedInt();
+                            sessionExpiryInterval = decodeSessionExpiryInterval(sessionExpiryInterval, in);
                             break;
 
                         case SERVER_REFERENCE:
-                            serverReference =
-                                    decodeUTF8StringOnlyOnce(serverReference, "server reference", channel, in);
-                            if (serverReference == null) {
-                                return null;
-                            }
+                            serverReference = decodeServerReference(serverReference, in);
                             break;
 
                         case REASON_STRING:
-                            reasonString = decodeUTF8StringOnlyOnce(reasonString, "reason string", channel, in);
-                            if (reasonString == null) {
-                                return null;
-                            }
+                            reasonString = decodeReasonString(reasonString, in);
                             break;
 
                         case USER_PROPERTY:
-                            userPropertiesBuilder = decodeUserProperty(userPropertiesBuilder, channel, in);
-                            if (userPropertiesBuilder == null) {
-                                return null;
-                            }
+                            userPropertiesBuilder = decodeUserProperty(userPropertiesBuilder, in);
                             break;
 
                         default:
-                            disconnectWrongProperty(channel, "DISCONNECT");
-                            return null;
+                            throw wrongProperty(propertyIdentifier);
                     }
                 }
             }

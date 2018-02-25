@@ -1,6 +1,6 @@
 package org.mqttbee.api.mqtt.mqtt5.message;
 
-import org.mqttbee.annotations.NotNull;
+import org.mqttbee.annotations.Nullable;
 
 /**
  * MQTT message type according to the MQTT 5 specification.
@@ -37,14 +37,14 @@ public enum Mqtt5MessageType {
      * Returns the MQTT message type belonging to the given byte code.
      *
      * @param code the byte code.
-     * @return the MQTT message type belonging to the given byte code.
-     * @throws IllegalArgumentException if the byte code is not a valid MQTT message type code.
+     * @return the MQTT message type belonging to the given byte code or null if the byte code is not a valid MQTT
+     * message type code.
      */
-    @NotNull
+    @Nullable
     public static Mqtt5MessageType fromCode(final int code) {
         final Mqtt5MessageType[] values = values();
         if (code < 0 || code >= values.length) {
-            throw new IllegalArgumentException("not a MQTT 5 message type code");
+            return null;
         }
         return values[code];
     }

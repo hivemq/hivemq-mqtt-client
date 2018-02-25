@@ -2,23 +2,23 @@ package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.puback.Mqtt5PubAckReasonCode;
 import org.mqttbee.mqtt.MqttClientConnectionDataImpl;
+import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5PubAckEncoder;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
-import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.publish.puback.MqttPubAckImpl;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.*;
+import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.checkFixedHeaderFlags;
+import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.remainingLengthTooShort;
 import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.*;
 import static org.mqttbee.mqtt.message.publish.puback.MqttPubAckImpl.DEFAULT_REASON_CODE;
 import static org.mqttbee.mqtt.message.publish.puback.MqttPubAckProperty.REASON_STRING;
@@ -41,18 +41,12 @@ public class Mqtt5PubAckDecoder implements MqttMessageDecoder {
     @Nullable
     public MqttPubAckImpl decode(
             final int flags, @NotNull final ByteBuf in,
-            @NotNull final MqttClientConnectionDataImpl clientConnectionData) {
+            @NotNull final MqttClientConnectionDataImpl clientConnectionData) throws MqttDecoderException {
 
-        final Channel channel = clientConnectionData.getChannel();
-
-        if (flags != FLAGS) {
-            disconnectWrongFixedHeaderFlags(channel, "PUBACK");
-            return null;
-        }
+        checkFixedHeaderFlags(FLAGS, flags);
 
         if (in.readableBytes() < MIN_REMAINING_LENGTH) {
-            disconnectRemainingLengthTooShort(channel);
-            return null;
+            throw remainingLengthTooShort();
         }
 
         final int packetIdentifier = in.readUnsignedShort();
@@ -64,50 +58,27 @@ public class Mqtt5PubAckDecoder implements MqttMessageDecoder {
         if (in.isReadable()) {
             reasonCode = Mqtt5PubAckReasonCode.fromCode(in.readUnsignedByte());
             if (reasonCode == null) {
-                disconnectWrongReasonCode(channel, "PUBACK");
-                return null;
+                throw wrongReasonCode();
             }
 
             if (in.isReadable()) {
-                final int propertyLength = MqttVariableByteInteger.decode(in);
-                if (propertyLength < 0) {
-                    disconnectMalformedPropertyLength(channel);
-                    return null;
-                }
-                if (in.readableBytes() != propertyLength) {
-                    disconnectMustNotHavePayload(channel, "PUBACK");
-                    return null;
-                }
+                checkPropertyLengthNoPayload(in);
 
                 while (in.isReadable()) {
-
-                    final int propertyIdentifier = MqttVariableByteInteger.decode(in);
-                    if (propertyIdentifier < 0) {
-                        disconnectMalformedPropertyIdentifier(channel);
-                        return null;
-                    }
+                    final int propertyIdentifier = decodePropertyIdentifier(in);
 
                     switch (propertyIdentifier) {
                         case REASON_STRING:
-                            reasonString = decodeReasonStringCheckProblemInformationRequested(reasonString,
-                                    clientConnectionData, in);
-                            if (reasonString == null) {
-                                return null;
-                            }
+                            reasonString = decodeReasonStringIfRequested(reasonString, clientConnectionData, in);
                             break;
 
                         case USER_PROPERTY:
                             userPropertiesBuilder =
-                                    decodeUserPropertyCheckProblemInformationRequested(userPropertiesBuilder,
-                                            clientConnectionData, in);
-                            if (userPropertiesBuilder == null) {
-                                return null;
-                            }
+                                    decodeUserPropertyIfRequested(userPropertiesBuilder, clientConnectionData, in);
                             break;
 
                         default:
-                            disconnectWrongProperty(channel, "PUBACK");
-                            return null;
+                            throw wrongProperty(propertyIdentifier);
                     }
                 }
             }

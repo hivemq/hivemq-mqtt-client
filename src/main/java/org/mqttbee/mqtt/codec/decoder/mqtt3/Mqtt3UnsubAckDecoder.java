@@ -1,16 +1,19 @@
 package org.mqttbee.mqtt.codec.decoder.mqtt3;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt.MqttClientConnectionDataImpl;
+import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.message.unsubscribe.unsuback.MqttUnsubAckImpl;
 import org.mqttbee.mqtt.message.unsubscribe.unsuback.mqtt3.Mqtt3UnsubAckView;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.checkFixedHeaderFlags;
+import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.checkRemainingLength;
 
 /**
  * @author Daniel Krüger
@@ -30,19 +33,10 @@ public class Mqtt3UnsubAckDecoder implements MqttMessageDecoder {
     @Override
     public MqttUnsubAckImpl decode(
             final int flags, @NotNull final ByteBuf in,
-            @NotNull final MqttClientConnectionDataImpl clientConnectionData) {
+            @NotNull final MqttClientConnectionDataImpl clientConnectionData) throws MqttDecoderException {
 
-        final Channel channel = clientConnectionData.getChannel();
-
-        if (flags != FLAGS) {
-            channel.close(); // TODO
-            return null;
-        }
-
-        if (in.readableBytes() != REMAINING_LENGTH) {
-            channel.close(); // TODO
-            return null;
-        }
+        checkFixedHeaderFlags(FLAGS, flags);
+        checkRemainingLength(REMAINING_LENGTH, in.readableBytes());
 
         final int packetIdentifier = in.readUnsignedShort();
 

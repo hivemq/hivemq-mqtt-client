@@ -1,6 +1,6 @@
 package org.mqttbee.api.mqtt.mqtt3.message;
 
-import org.mqttbee.annotations.NotNull;
+import org.mqttbee.annotations.Nullable;
 
 /**
  * MQTT message type according to the MQTT 3 specification.
@@ -38,14 +38,14 @@ public enum Mqtt3MessageType {
      * Returns the MQTT message type belonging to the given byte code.
      *
      * @param code the byte code.
-     * @return the MQTT message type belonging to the given byte code.
-     * @throws IllegalArgumentException if the byte code is not a valid MQTT 3 message type code.
+     * @return the MQTT message type belonging to the given byte code or null if the byte code is not a valid MQTT 3
+     * message type code.
      */
-    @NotNull
+    @Nullable
     public static Mqtt3MessageType fromCode(final int code) {
         final Mqtt3MessageType[] values = values();
         if (code < 0 || code >= values.length) {
-            throw new IllegalArgumentException(code + " is not a valid MQTT 3 message type code");
+            return null;
         }
         return values[code];
     }
