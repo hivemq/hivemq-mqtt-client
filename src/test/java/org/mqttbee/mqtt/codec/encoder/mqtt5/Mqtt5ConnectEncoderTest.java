@@ -20,7 +20,9 @@ import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.mqtt.codec.encoder.AbstractMqtt5EncoderTest;
 import org.mqttbee.mqtt.datatypes.*;
 import org.mqttbee.mqtt.message.auth.MqttEnhancedAuthImpl;
+import org.mqttbee.mqtt.message.auth.MqttSimpleAuthImpl;
 import org.mqttbee.mqtt.message.connect.MqttConnectImpl;
+import org.mqttbee.mqtt.message.connect.MqttConnectRestrictionsImpl;
 import org.mqttbee.mqtt.message.connect.MqttConnectWrapper;
 import org.mqttbee.mqtt.message.publish.MqttWillPublishImpl;
 
@@ -32,7 +34,7 @@ import static java.util.Objects.requireNonNull;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mqttbee.mqtt.message.connect.MqttConnectImpl.RestrictionsImpl.DEFAULT;
+import static org.mqttbee.mqtt.message.connect.MqttConnectRestrictionsImpl.DEFAULT;
 
 /**
  * @author Silvio Giebl
@@ -122,7 +124,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
 
         final MqttClientIdentifierImpl username = requireNonNull(MqttClientIdentifierImpl.from("username"));
         final ByteBuffer password = ByteBuffer.wrap(new byte[]{1, 5, 6, 3});
-        final MqttConnectImpl.SimpleAuthImpl simpleAuth = new MqttConnectImpl.SimpleAuthImpl(username, password);
+        final MqttSimpleAuthImpl simpleAuth = new MqttSimpleAuthImpl(username, password);
 
         final MqttUTF8StringImpl authMethod = requireNonNull(MqttUTF8StringImpl.from("GS2-KRB5"));
         final ByteBuffer authData = ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
@@ -150,7 +152,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
                         willContentType, willResponseTopic, willCorrelationData, userProperties, 5,
                         Mqtt5PublishEncoder.PROVIDER);
 
-        final MqttConnectImpl.RestrictionsImpl restrictions = new MqttConnectImpl.RestrictionsImpl(5, 10, 100);
+        final MqttConnectRestrictionsImpl restrictions = new MqttConnectRestrictionsImpl(5, 10, 100);
 
         final MqttConnectImpl connect =
                 new MqttConnectImpl(10, true, 10, true, false, restrictions, simpleAuth, enhancedAuthProvider,
@@ -220,7 +222,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
 
         final MqttClientIdentifierImpl clientIdentifier = requireNonNull(MqttClientIdentifierImpl.from("test"));
         final MqttUTF8StringImpl username = requireNonNull(MqttUTF8StringImpl.from("username"));
-        final MqttConnectImpl.SimpleAuthImpl simpleAuth = new MqttConnectImpl.SimpleAuthImpl(username, null);
+        final MqttSimpleAuthImpl simpleAuth = new MqttSimpleAuthImpl(username, null);
 
         final MqttConnectImpl connect = new MqttConnectImpl(0, false, 0, false, true, DEFAULT, simpleAuth, null, null,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES, Mqtt5ConnectEncoder.PROVIDER);
@@ -235,7 +237,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         final char[] chars = new char[65536];
         Arrays.fill(chars, 'a');
         final MqttUTF8StringImpl username = MqttUTF8StringImpl.from(new String(chars));
-        final MqttConnectImpl.SimpleAuthImpl simpleAuth = new MqttConnectImpl.SimpleAuthImpl(username, null);
+        final MqttSimpleAuthImpl simpleAuth = new MqttSimpleAuthImpl(username, null);
 
         final MqttConnectImpl connect = new MqttConnectImpl(0, false, 0, false, true, DEFAULT, simpleAuth, null, null,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES, Mqtt5ConnectEncoder.PROVIDER);
@@ -273,7 +275,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
 
         final MqttClientIdentifierImpl clientIdentifier = requireNonNull(MqttClientIdentifierImpl.from("test"));
         final ByteBuffer password = ByteBuffer.wrap(new byte[]{1, 5, 6, 3});
-        final MqttConnectImpl.SimpleAuthImpl simpleAuth = new MqttConnectImpl.SimpleAuthImpl(null, password);
+        final MqttSimpleAuthImpl simpleAuth = new MqttSimpleAuthImpl(null, password);
 
         final MqttConnectImpl connect = new MqttConnectImpl(0, false, 0, false, true, DEFAULT, simpleAuth, null, null,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES, Mqtt5ConnectEncoder.PROVIDER);
@@ -287,7 +289,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
     void encode_passwordTooLong() {
         final MqttClientIdentifierImpl clientIdentifier = requireNonNull(MqttClientIdentifierImpl.from("test"));
         final ByteBuffer password = ByteBuffer.wrap(new byte[65536]);
-        final MqttConnectImpl.SimpleAuthImpl simpleAuth = new MqttConnectImpl.SimpleAuthImpl(null, password);
+        final MqttSimpleAuthImpl simpleAuth = new MqttSimpleAuthImpl(null, password);
 
         final MqttConnectImpl connect = new MqttConnectImpl(0, false, 0, false, true, DEFAULT, simpleAuth, null, null,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES, Mqtt5ConnectEncoder.PROVIDER);

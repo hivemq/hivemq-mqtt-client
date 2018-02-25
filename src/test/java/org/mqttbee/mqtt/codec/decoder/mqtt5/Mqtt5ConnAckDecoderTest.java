@@ -11,10 +11,12 @@ import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5EnhancedAuth;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckReasonCode;
+import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.message.connect.connack.MqttConnAckImpl;
+import org.mqttbee.mqtt.message.connect.connack.MqttConnAckRestrictionsImpl;
 import org.mqttbee.mqtt5.netty.ChannelAttributes;
 
 import java.nio.ByteBuffer;
@@ -119,7 +121,7 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         assertEquals("test2", userProperties.get(2).getName().toString());
         assertEquals("value", userProperties.get(2).getValue().toString());
 
-        final Mqtt5ConnAck.Restrictions restrictions = connAck.getRestrictions();
+        final Mqtt5ConnAckRestrictions restrictions = connAck.getRestrictions();
         assertEquals(100, restrictions.getReceiveMaximum());
         assertEquals(MqttQoS.AT_LEAST_ONCE, restrictions.getMaximumQoS());
         assertEquals(false, restrictions.isRetainAvailable());
@@ -169,7 +171,7 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         final ImmutableList<MqttUserPropertyImpl> userProperties = connAck.getUserProperties().asList();
         assertEquals(0, userProperties.size());
 
-        assertEquals(MqttConnAckImpl.RestrictionsImpl.DEFAULT, connAck.getRestrictions());
+        assertEquals(MqttConnAckRestrictionsImpl.DEFAULT, connAck.getRestrictions());
 
         assertFalse(connAck.getEnhancedAuth().isPresent());
     }

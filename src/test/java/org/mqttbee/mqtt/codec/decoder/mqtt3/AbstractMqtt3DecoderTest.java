@@ -2,6 +2,7 @@ package org.mqttbee.mqtt.codec.decoder.mqtt3;
 
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;
+import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions;
 import org.mqttbee.mqtt.MqttClientConnectionDataImpl;
 import org.mqttbee.mqtt.MqttClientDataImpl;
 import org.mqttbee.mqtt.MqttVersion;
@@ -33,7 +34,7 @@ abstract class AbstractMqtt3DecoderTest extends AbstractMqttDecoderTest {
         clientData.to(channel);
         ChannelComponent.create(channel, clientData);
         clientData.setClientConnectionData(new MqttClientConnectionDataImpl(10, Mqtt5Connect.NO_SESSION_EXPIRY,
-                Mqtt5Connect.Restrictions.DEFAULT_RECEIVE_MAXIMUM, 0, MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT,
+                Mqtt5ConnectRestrictions.DEFAULT_RECEIVE_MAXIMUM, 0, MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT,
                 null, false, false, false, channel));
     }
 

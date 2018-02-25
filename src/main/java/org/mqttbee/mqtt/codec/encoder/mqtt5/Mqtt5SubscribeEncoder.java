@@ -13,8 +13,8 @@ import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider
 import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider.NewMqttWrappedMessageEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribeImpl;
-import org.mqttbee.mqtt.message.subscribe.MqttSubscribeImpl.SubscriptionImpl;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribeWrapper;
+import org.mqttbee.mqtt.message.subscribe.MqttSubscriptionImpl;
 
 import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.encodeVariableByteIntegerProperty;
 import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.variableByteIntegerPropertyEncodedLength;
@@ -35,7 +35,7 @@ public class Mqtt5SubscribeEncoder extends Mqtt5WrappedMessageEncoder<MqttSubscr
     int calculateRemainingLengthWithoutProperties() {
         int remainingLength = VARIABLE_HEADER_FIXED_LENGTH;
 
-        final ImmutableList<SubscriptionImpl> subscriptions = message.getSubscriptions();
+        final ImmutableList<MqttSubscriptionImpl> subscriptions = message.getSubscriptions();
         for (int i = 0; i < subscriptions.size(); i++) {
             remainingLength += subscriptions.get(i).getTopicFilter().encodedLength() + 1;
         }
@@ -96,9 +96,9 @@ public class Mqtt5SubscribeEncoder extends Mqtt5WrappedMessageEncoder<MqttSubscr
         }
 
         private void encodePayload(@NotNull final ByteBuf out) {
-            final ImmutableList<SubscriptionImpl> subscriptions = message.getWrapped().getSubscriptions();
+            final ImmutableList<MqttSubscriptionImpl> subscriptions = message.getWrapped().getSubscriptions();
             for (int i = 0; i < subscriptions.size(); i++) {
-                final SubscriptionImpl subscription = subscriptions.get(i);
+                final MqttSubscriptionImpl subscription = subscriptions.get(i);
 
                 subscription.getTopicFilter().to(out);
 

@@ -3,24 +3,20 @@ package org.mqttbee.api.mqtt.mqtt5.message.connect;
 import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
+import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5SimpleAuth;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
 import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5ConnectEncoder;
-import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
+import org.mqttbee.mqtt.message.auth.MqttSimpleAuthImpl;
 import org.mqttbee.mqtt.message.connect.MqttConnectImpl;
+import org.mqttbee.mqtt.message.connect.MqttConnectRestrictionsImpl;
 import org.mqttbee.mqtt.message.publish.MqttWillPublishImpl;
-import org.mqttbee.mqtt.util.MqttBuilderUtil;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 import org.mqttbee.util.UnsignedDataTypes;
 
-import java.nio.ByteBuffer;
-
 import static org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect.*;
-import static org.mqttbee.mqtt.message.connect.MqttConnectImpl.RestrictionsImpl;
-import static org.mqttbee.mqtt.message.connect.MqttConnectImpl.SimpleAuthImpl;
 
 public class Mqtt5ConnectBuilder {
 
@@ -29,8 +25,8 @@ public class Mqtt5ConnectBuilder {
     private long sessionExpiryInterval = DEFAULT_SESSION_EXPIRY_INTERVAL;
     private boolean isResponseInformationRequested = DEFAULT_RESPONSE_INFORMATION_REQUESTED;
     private boolean isProblemInformationRequested = DEFAULT_PROBLEM_INFORMATION_REQUESTED;
-    private RestrictionsImpl restrictions;
-    private SimpleAuthImpl simpleAuth;
+    private MqttConnectRestrictionsImpl restrictions;
+    private MqttSimpleAuthImpl simpleAuth;
     private Mqtt5EnhancedAuthProvider enhancedAuthProvider;
     private MqttWillPublishImpl willPublish;
     private MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
@@ -85,14 +81,15 @@ public class Mqtt5ConnectBuilder {
     }
 
     @NotNull
-    public Mqtt5ConnectBuilder withRestrictions(@NotNull final Restrictions restrictions) {
-        this.restrictions = MustNotBeImplementedUtil.checkNotImplemented(restrictions, RestrictionsImpl.class);
+    public Mqtt5ConnectBuilder withRestrictions(@NotNull final Mqtt5ConnectRestrictions restrictions) {
+        this.restrictions =
+                MustNotBeImplementedUtil.checkNotImplemented(restrictions, MqttConnectRestrictionsImpl.class);
         return this;
     }
 
     @NotNull
-    public Mqtt5ConnectBuilder withSimpleAuth(@Nullable final SimpleAuth simpleAuth) {
-        this.simpleAuth = MustNotBeImplementedUtil.checkNullOrNotImplemented(simpleAuth, SimpleAuthImpl.class);
+    public Mqtt5ConnectBuilder withSimpleAuth(@Nullable final Mqtt5SimpleAuth simpleAuth) {
+        this.simpleAuth = MustNotBeImplementedUtil.checkNullOrNotImplemented(simpleAuth, MqttSimpleAuthImpl.class);
         return this;
     }
 
@@ -120,85 +117,6 @@ public class Mqtt5ConnectBuilder {
         return new MqttConnectImpl(keepAlive, isCleanStart, sessionExpiryInterval, isResponseInformationRequested,
                 isProblemInformationRequested, restrictions, simpleAuth, enhancedAuthProvider, willPublish,
                 userProperties, Mqtt5ConnectEncoder.PROVIDER);
-    }
-
-
-    public static class SimpleAuthBuilder {
-
-        private MqttUTF8StringImpl username;
-        private ByteBuffer password;
-
-        SimpleAuthBuilder() {
-        }
-
-        @NotNull
-        public SimpleAuthBuilder withUsername(@Nullable final String username) {
-            this.username = MqttBuilderUtil.stringOrNull(username);
-            return this;
-        }
-
-        @NotNull
-        public SimpleAuthBuilder withUsername(@Nullable final MqttUTF8String username) {
-            this.username = MqttBuilderUtil.stringOrNull(username);
-            return this;
-        }
-
-        @NotNull
-        public SimpleAuthBuilder withPassword(@Nullable final byte[] password) {
-            this.password = MqttBuilderUtil.binaryDataOrNull(password);
-            return this;
-        }
-
-        @NotNull
-        public SimpleAuthBuilder withPassword(@Nullable final ByteBuffer password) {
-            this.password = MqttBuilderUtil.binaryDataOrNull(password);
-            return this;
-        }
-
-        @NotNull
-        public SimpleAuth build() {
-            Preconditions.checkState(username != null || password != null);
-            return new SimpleAuthImpl(username, password);
-        }
-
-    }
-
-
-    public static class RestrictionsBuilder {
-
-        private int receiveMaximum = Restrictions.DEFAULT_RECEIVE_MAXIMUM;
-        private int topicAliasMaximum = Restrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM;
-        private int maximumPacketSize = Restrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT;
-
-        RestrictionsBuilder() {
-        }
-
-        @NotNull
-        public RestrictionsBuilder withReceiveMaximum(final int receiveMaximum) {
-            Preconditions.checkArgument(UnsignedDataTypes.isUnsignedShort(receiveMaximum));
-            this.receiveMaximum = receiveMaximum;
-            return this;
-        }
-
-        @NotNull
-        public RestrictionsBuilder withTopicAliasMaximum(final int topicAliasMaximum) {
-            Preconditions.checkArgument(UnsignedDataTypes.isUnsignedShort(topicAliasMaximum));
-            this.topicAliasMaximum = topicAliasMaximum;
-            return this;
-        }
-
-        @NotNull
-        public RestrictionsBuilder withMaximumPacketSize(final int maximumPacketSize) {
-            Preconditions.checkArgument(UnsignedDataTypes.isUnsignedInt(maximumPacketSize));
-            this.maximumPacketSize = maximumPacketSize;
-            return this;
-        }
-
-        @NotNull
-        public Restrictions build() {
-            return new RestrictionsImpl(receiveMaximum, topicAliasMaximum, maximumPacketSize);
-        }
-
     }
 
 }

@@ -4,7 +4,6 @@ import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
-import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5EnhancedAuth;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
@@ -35,7 +34,7 @@ public class MqttConnAckImpl extends
     private final int serverKeepAlive;
     private final MqttClientIdentifierImpl assignedClientIdentifier;
     private final Mqtt5EnhancedAuth enhancedAuth;
-    private final RestrictionsImpl restrictions;
+    private final MqttConnAckRestrictionsImpl restrictions;
     private final MqttUTF8StringImpl responseInformation;
     private final MqttUTF8StringImpl serverReference;
 
@@ -43,7 +42,7 @@ public class MqttConnAckImpl extends
             @NotNull final Mqtt5ConnAckReasonCode reasonCode, final boolean isSessionPresent,
             final long sessionExpiryInterval, final int serverKeepAlive,
             @Nullable final MqttClientIdentifierImpl assignedClientIdentifier,
-            @Nullable final Mqtt5EnhancedAuth enhancedAuth, @NotNull final RestrictionsImpl restrictions,
+            @Nullable final Mqtt5EnhancedAuth enhancedAuth, @NotNull final MqttConnAckRestrictionsImpl restrictions,
             @Nullable final MqttUTF8StringImpl responseInformation, @Nullable final MqttUTF8StringImpl serverReference,
             @Nullable final MqttUTF8StringImpl reasonString, @NotNull final MqttUserPropertiesImpl userProperties) {
 
@@ -108,7 +107,7 @@ public class MqttConnAckImpl extends
 
     @NotNull
     @Override
-    public RestrictionsImpl getRestrictions() {
+    public MqttConnAckRestrictionsImpl getRestrictions() {
         return restrictions;
     }
 
@@ -128,81 +127,6 @@ public class MqttConnAckImpl extends
     @Override
     protected MqttConnAckImpl getCodable() {
         return this;
-    }
-
-
-    @Immutable
-    public static class RestrictionsImpl implements Restrictions {
-
-        @NotNull
-        public static final RestrictionsImpl DEFAULT =
-                new RestrictionsImpl(DEFAULT_RECEIVE_MAXIMUM, DEFAULT_TOPIC_ALIAS_MAXIMUM,
-                        DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT, DEFAULT_MAXIMUM_QOS, DEFAULT_RETAIN_AVAILABLE,
-                        DEFAULT_WILDCARD_SUBSCRIPTION_AVAILABLE, DEFAULT_SUBSCRIPTION_IDENTIFIER_AVAILABLE,
-                        DEFAULT_SHARED_SUBSCRIPTION_AVAILABLE);
-
-        private final int receiveMaximum;
-        private final int topicAliasMaximum;
-        private final int maximumPacketSize;
-        private final MqttQoS maximumQoS;
-        private final boolean isRetainAvailable;
-        private final boolean isWildcardSubscriptionAvailable;
-        private final boolean isSubscriptionIdentifierAvailable;
-        private final boolean isSharedSubscriptionAvailable;
-
-        public RestrictionsImpl(
-                final int receiveMaximum, final int topicAliasMaximum, final int maximumPacketSize, final MqttQoS maximumQoS, final boolean isRetainAvailable,
-                final boolean isWildcardSubscriptionAvailable, final boolean isSubscriptionIdentifierAvailable, final boolean isSharedSubscriptionAvailable) {
-            this.receiveMaximum = receiveMaximum;
-            this.topicAliasMaximum = topicAliasMaximum;
-            this.maximumPacketSize = maximumPacketSize;
-            this.maximumQoS = maximumQoS;
-            this.isRetainAvailable = isRetainAvailable;
-            this.isWildcardSubscriptionAvailable = isWildcardSubscriptionAvailable;
-            this.isSubscriptionIdentifierAvailable = isSubscriptionIdentifierAvailable;
-            this.isSharedSubscriptionAvailable = isSharedSubscriptionAvailable;
-        }
-
-        @Override
-        public int getReceiveMaximum() {
-            return receiveMaximum;
-        }
-
-        @Override
-        public int getTopicAliasMaximum() {
-            return topicAliasMaximum;
-        }
-
-        @Override
-        public int getMaximumPacketSize() {
-            return maximumPacketSize;
-        }
-
-        @Override
-        public MqttQoS getMaximumQoS() {
-            return maximumQoS;
-        }
-
-        @Override
-        public boolean isRetainAvailable() {
-            return isRetainAvailable;
-        }
-
-        @Override
-        public boolean isWildcardSubscriptionAvailable() {
-            return isWildcardSubscriptionAvailable;
-        }
-
-        @Override
-        public boolean isSubscriptionIdentifierAvailable() {
-            return isSubscriptionIdentifierAvailable;
-        }
-
-        @Override
-        public boolean isSharedSubscriptionAvailable() {
-            return isSharedSubscriptionAvailable;
-        }
-
     }
 
 }

@@ -3,12 +3,9 @@ package org.mqttbee.mqtt.message.subscribe;
 import com.google.common.collect.ImmutableList;
 import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt.datatypes.MqttQoS;
-import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5RetainHandling;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider;
-import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.MqttWrappedMessage;
 
@@ -20,10 +17,10 @@ public class MqttSubscribeImpl extends
         MqttWrappedMessage<MqttSubscribeImpl, MqttSubscribeWrapper, MqttMessageEncoderProvider<MqttSubscribeWrapper>>
         implements Mqtt5Subscribe {
 
-    private final ImmutableList<SubscriptionImpl> subscriptions;
+    private final ImmutableList<MqttSubscriptionImpl> subscriptions;
 
     public MqttSubscribeImpl(
-            @NotNull final ImmutableList<SubscriptionImpl> subscriptions,
+            @NotNull final ImmutableList<MqttSubscriptionImpl> subscriptions,
             @NotNull final MqttUserPropertiesImpl userProperties,
             @NotNull final MqttWrappedMessageEncoderProvider<MqttSubscribeImpl, MqttSubscribeWrapper, MqttMessageEncoderProvider<MqttSubscribeWrapper>> encoderProvider) {
 
@@ -33,7 +30,7 @@ public class MqttSubscribeImpl extends
 
     @NotNull
     @Override
-    public ImmutableList<SubscriptionImpl> getSubscriptions() {
+    public ImmutableList<MqttSubscriptionImpl> getSubscriptions() {
         return subscriptions;
     }
 
@@ -45,55 +42,6 @@ public class MqttSubscribeImpl extends
 
     public MqttSubscribeWrapper wrap(final int packetIdentifier, final int subscriptionIdentifier) {
         return new MqttSubscribeWrapper(this, packetIdentifier, subscriptionIdentifier);
-    }
-
-
-    @Immutable
-    public static class SubscriptionImpl implements Subscription {
-
-        private final MqttTopicFilterImpl topicFilter;
-        private final MqttQoS qos;
-        private final boolean isNoLocal;
-        private final Mqtt5RetainHandling retainHandling;
-        private final boolean isRetainAsPublished;
-
-        public SubscriptionImpl(
-                @NotNull final MqttTopicFilterImpl topicFilter, @NotNull final MqttQoS qos, final boolean isNoLocal, @NotNull final Mqtt5RetainHandling retainHandling, final boolean isRetainAsPublished) {
-            this.topicFilter = topicFilter;
-            this.qos = qos;
-            this.isNoLocal = isNoLocal;
-            this.retainHandling = retainHandling;
-            this.isRetainAsPublished = isRetainAsPublished;
-        }
-
-        @NotNull
-        @Override
-        public MqttTopicFilterImpl getTopicFilter() {
-            return topicFilter;
-        }
-
-        @NotNull
-        @Override
-        public MqttQoS getQoS() {
-            return qos;
-        }
-
-        @Override
-        public boolean isNoLocal() {
-            return isNoLocal;
-        }
-
-        @NotNull
-        @Override
-        public Mqtt5RetainHandling getRetainHandling() {
-            return retainHandling;
-        }
-
-        @Override
-        public boolean isRetainAsPublished() {
-            return isRetainAsPublished;
-        }
-
     }
 
 }

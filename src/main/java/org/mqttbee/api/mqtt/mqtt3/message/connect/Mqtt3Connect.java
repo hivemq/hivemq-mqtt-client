@@ -2,12 +2,11 @@ package org.mqttbee.api.mqtt.mqtt3.message.connect;
 
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3Message;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
+import org.mqttbee.api.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;
 
-import java.nio.ByteBuffer;
 import java.util.Optional;
 
 /**
@@ -35,7 +34,7 @@ public interface Mqtt3Connect extends Mqtt3Message {
      * @return the optional simple authentication and/or authorization related data of this CONNECT packet.
      */
     @NotNull
-    Optional<SimpleAuth> getSimpleAuth();
+    Optional<Mqtt3SimpleAuth> getSimpleAuth();
 
     /**
      * @return the optional Will Publish of this CONNECT packet.
@@ -47,26 +46,6 @@ public interface Mqtt3Connect extends Mqtt3Message {
     @Override
     default Mqtt3MessageType getType() {
         return Mqtt3MessageType.CONNECT;
-    }
-
-    /**
-     * Simple authentication and/or authorization related data in the CONNECT packet.
-     */
-    @DoNotImplement
-    interface SimpleAuth {
-
-        /**
-         * @return the username.
-         */
-        @NotNull
-        MqttUTF8String getUsername();
-
-        /**
-         * @return the optional password.
-         */
-        @NotNull
-        Optional<ByteBuffer> getPassword();
-
     }
 
 }
