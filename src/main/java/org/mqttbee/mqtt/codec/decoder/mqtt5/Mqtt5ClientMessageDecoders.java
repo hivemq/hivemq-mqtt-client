@@ -4,6 +4,7 @@ import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoders;
+import org.mqttbee.mqtt.codec.decoder.MqttPingRespDecoder;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -22,7 +23,7 @@ public class Mqtt5ClientMessageDecoders implements MqttMessageDecoders {
             final Mqtt5PubAckDecoder pubAckDecoder, final Mqtt5PubRecDecoder pubRecDecoder,
             final Mqtt5PubRelDecoder pubRelDecoder, final Mqtt5PubCompDecoder pubCompDecoder,
             final Mqtt5SubAckDecoder subAckDecoder, final Mqtt5UnsubAckDecoder unsubAckDecoder,
-            final Mqtt5PingRespDecoder pingRespDecoder, final Mqtt5DisconnectDecoder disconnectDecoder,
+            final MqttPingRespDecoder pingRespDecoder, final Mqtt5DisconnectDecoder disconnectDecoder,
             final Mqtt5AuthDecoder authDecoder) {
 
         decoders = new MqttMessageDecoder[Mqtt5MessageType.values().length];

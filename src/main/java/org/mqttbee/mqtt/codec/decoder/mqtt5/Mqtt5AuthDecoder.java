@@ -21,8 +21,10 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.nio.ByteBuffer;
 
+import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.*;
 import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.*;
 import static org.mqttbee.mqtt.message.auth.MqttAuthProperty.*;
+import static org.mqttbee.mqtt5.handler.disconnect.MqttDisconnectUtil.disconnect;
 
 /**
  * @author Silvio Giebl
@@ -123,7 +125,7 @@ public class Mqtt5AuthDecoder implements MqttMessageDecoder {
         }
 
         if (method == null) {
-            disconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "AUTH must not omit authentication method", channel);
+            disconnect(channel, Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "AUTH must not omit authentication method");
             return null;
         }
 
