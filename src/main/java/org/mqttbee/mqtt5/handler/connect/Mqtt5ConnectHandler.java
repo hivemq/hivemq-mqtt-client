@@ -15,7 +15,9 @@ import org.mqttbee.mqtt.MqttServerConnectionDataImpl;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoder;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt.message.connect.MqttConnectImpl;
+import org.mqttbee.mqtt.message.connect.MqttConnectRestrictionsImpl;
 import org.mqttbee.mqtt.message.connect.connack.MqttConnAckImpl;
+import org.mqttbee.mqtt.message.connect.connack.MqttConnAckRestrictionsImpl;
 import org.mqttbee.mqtt5.handler.disconnect.ChannelCloseEvent;
 import org.mqttbee.mqtt5.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt5.handler.ping.Mqtt5PingHandler;
@@ -70,7 +72,7 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerWithTimeout {
      * @param channel the channel to add the client data to.
      */
     private void addClientData(@NotNull final Channel channel) {
-        final MqttConnectImpl.RestrictionsImpl restrictions = connect.getRestrictions();
+        final MqttConnectRestrictionsImpl restrictions = connect.getRestrictions();
 
         clientData.setClientConnectionData(
                 new MqttClientConnectionDataImpl(connect.getKeepAlive(), connect.getSessionExpiryInterval(),
@@ -232,7 +234,7 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerWithTimeout {
      * @param connAck the CONNACK message.
      */
     private void addServerData(@NotNull final MqttConnAckImpl connAck) {
-        final MqttConnAckImpl.RestrictionsImpl restrictions = connAck.getRestrictions();
+        final MqttConnAckRestrictionsImpl restrictions = connAck.getRestrictions();
 
         clientData.setServerConnectionData(
                 new MqttServerConnectionDataImpl(restrictions.getReceiveMaximum(), restrictions.getTopicAliasMaximum(),

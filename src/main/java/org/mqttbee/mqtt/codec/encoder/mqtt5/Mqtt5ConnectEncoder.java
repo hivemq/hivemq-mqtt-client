@@ -5,6 +5,7 @@ import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.exceptions.MqttVariableByteIntegerExceededException;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
+import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
 import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoder;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
@@ -14,7 +15,9 @@ import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.auth.MqttEnhancedAuthImpl;
+import org.mqttbee.mqtt.message.auth.MqttSimpleAuthImpl;
 import org.mqttbee.mqtt.message.connect.MqttConnectImpl;
+import org.mqttbee.mqtt.message.connect.MqttConnectRestrictionsImpl;
 import org.mqttbee.mqtt.message.connect.MqttConnectWrapper;
 import org.mqttbee.mqtt.message.publish.MqttWillPublishImpl;
 import org.mqttbee.mqtt.message.publish.MqttWillPublishProperty;
@@ -41,7 +44,7 @@ public class Mqtt5ConnectEncoder extends Mqtt5WrappedMessageEncoder<MqttConnectI
     int calculateRemainingLengthWithoutProperties() {
         int remainingLength = VARIABLE_HEADER_FIXED_LENGTH;
 
-        final SimpleAuthImpl simpleAuth = message.getRawSimpleAuth();
+        final MqttSimpleAuthImpl simpleAuth = message.getRawSimpleAuth();
         if (simpleAuth != null) {
             remainingLength += nullableEncodedLength(simpleAuth.getRawUsername());
             remainingLength += nullableEncodedLength(simpleAuth.getRawPassword());
@@ -67,14 +70,14 @@ public class Mqtt5ConnectEncoder extends Mqtt5WrappedMessageEncoder<MqttConnectI
         propertyLength += booleanPropertyEncodedLength(message.isProblemInformationRequested(),
                 DEFAULT_PROBLEM_INFORMATION_REQUESTED);
 
-        final RestrictionsImpl restrictions = message.getRestrictions();
-        if (restrictions != RestrictionsImpl.DEFAULT) {
-            propertyLength +=
-                    shortPropertyEncodedLength(restrictions.getReceiveMaximum(), Restrictions.DEFAULT_RECEIVE_MAXIMUM);
+        final MqttConnectRestrictionsImpl restrictions = message.getRestrictions();
+        if (restrictions != MqttConnectRestrictionsImpl.DEFAULT) {
+            propertyLength += shortPropertyEncodedLength(restrictions.getReceiveMaximum(),
+                    Mqtt5ConnectRestrictions.DEFAULT_RECEIVE_MAXIMUM);
             propertyLength += shortPropertyEncodedLength(restrictions.getTopicAliasMaximum(),
-                    Restrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM);
+                    Mqtt5ConnectRestrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM);
             propertyLength += intPropertyEncodedLength(restrictions.getMaximumPacketSize(),
-                    Restrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT);
+                    Mqtt5ConnectRestrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT);
         }
 
         propertyLength += message.getUserProperties().encodedLength();
@@ -159,7 +162,7 @@ public class Mqtt5ConnectEncoder extends Mqtt5WrappedMessageEncoder<MqttConnectI
 
             int connectFlags = 0;
 
-            final SimpleAuthImpl simpleAuth = connect.getRawSimpleAuth();
+            final MqttSimpleAuthImpl simpleAuth = connect.getRawSimpleAuth();
             if (simpleAuth != null) {
                 if (simpleAuth.getRawUsername() != null) {
                     connectFlags |= 0b1000_0000;
@@ -207,14 +210,15 @@ public class Mqtt5ConnectEncoder extends Mqtt5WrappedMessageEncoder<MqttConnectI
                 encodeNullableProperty(AUTHENTICATION_DATA, enhancedAuth.getRawData(), out);
             }
 
-            final RestrictionsImpl restrictions = connect.getRestrictions();
-            if (restrictions != RestrictionsImpl.DEFAULT) {
+            final MqttConnectRestrictionsImpl restrictions = connect.getRestrictions();
+            if (restrictions != MqttConnectRestrictionsImpl.DEFAULT) {
                 encodeShortProperty(
-                        RECEIVE_MAXIMUM, restrictions.getReceiveMaximum(), Restrictions.DEFAULT_RECEIVE_MAXIMUM, out);
+                        RECEIVE_MAXIMUM, restrictions.getReceiveMaximum(),
+                        Mqtt5ConnectRestrictions.DEFAULT_RECEIVE_MAXIMUM, out);
                 encodeShortProperty(TOPIC_ALIAS_MAXIMUM, restrictions.getTopicAliasMaximum(),
-                        Restrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM, out);
+                        Mqtt5ConnectRestrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM, out);
                 encodeIntProperty(MAXIMUM_PACKET_SIZE, restrictions.getMaximumPacketSize(),
-                        Restrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT, out);
+                        Mqtt5ConnectRestrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT, out);
             }
 
             encodeOmissibleProperties(MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT, out);
@@ -225,7 +229,7 @@ public class Mqtt5ConnectEncoder extends Mqtt5WrappedMessageEncoder<MqttConnectI
 
             encodeWillPublish(out);
 
-            final SimpleAuthImpl simpleAuth = message.getWrapped().getRawSimpleAuth();
+            final MqttSimpleAuthImpl simpleAuth = message.getWrapped().getRawSimpleAuth();
             if (simpleAuth != null) {
                 encodeNullable(simpleAuth.getRawUsername(), out);
                 encodeNullable(simpleAuth.getRawPassword(), out);

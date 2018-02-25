@@ -1,7 +1,7 @@
 package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;
+import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions;
 import org.mqttbee.mqtt.MqttClientConnectionDataImpl;
 import org.mqttbee.mqtt.MqttClientDataImpl;
 import org.mqttbee.mqtt.MqttVersion;
@@ -31,12 +31,12 @@ abstract class AbstractMqtt5DecoderTest extends AbstractMqttDecoderTest {
         super.createChannel();
         clientData.to(channel);
         ChannelComponent.create(channel, clientData);
-        createClientConnectionData(Mqtt5Connect.Restrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT);
+        createClientConnectionData(Mqtt5ConnectRestrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT);
     }
 
     void createClientConnectionData(final int maximumPacketSize) {
         clientData.setClientConnectionData(
-                new MqttClientConnectionDataImpl(10, 10, Mqtt5Connect.Restrictions.DEFAULT_RECEIVE_MAXIMUM, 3,
+                new MqttClientConnectionDataImpl(10, 10, Mqtt5ConnectRestrictions.DEFAULT_RECEIVE_MAXIMUM, 3,
                         maximumPacketSize, null, false, true, true, channel));
     }
 

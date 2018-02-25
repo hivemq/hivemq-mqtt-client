@@ -1,0 +1,50 @@
+package org.mqttbee.api.mqtt.mqtt5.message.connect;
+
+import org.mqttbee.annotations.DoNotImplement;
+import org.mqttbee.annotations.NotNull;
+import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
+
+/**
+ * Restrictions from the client in the MQTT 5 CONNECT packet.
+ */
+@DoNotImplement
+public interface Mqtt5ConnectRestrictions {
+
+    /**
+     * The default maximum amount of not acknowledged publishes with QoS 1 or 2 the client accepts concurrently.
+     */
+    int DEFAULT_RECEIVE_MAXIMUM = 65_535;
+    /**
+     * The default maximum amount of topic aliases the client accepts from the server.
+     */
+    int DEFAULT_TOPIC_ALIAS_MAXIMUM = 0;
+    /**
+     * The default maximum packet size the client accepts from the server which indicates that the packet size is
+     * not limited beyond the restrictions of the encoding.
+     */
+    int DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT;
+
+    @NotNull
+    static Mqtt5ConnectRestrictionsBuilder builder() {
+        return new Mqtt5ConnectRestrictionsBuilder();
+    }
+
+    /**
+     * @return the maximum amount of not acknowledged publishes with QoS 1 or 2 the client accepts concurrently. The
+     * default is {@link #DEFAULT_RECEIVE_MAXIMUM}.
+     */
+    int getReceiveMaximum();
+
+    /**
+     * @return the maximum amount of topic aliases the client accepts from the server. The default is {@link
+     * #DEFAULT_TOPIC_ALIAS_MAXIMUM}.
+     */
+    int getTopicAliasMaximum();
+
+    /**
+     * @return the maximum packet size the client accepts from the server. The default is {@link
+     * #DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT}.
+     */
+    int getMaximumPacketSize();
+
+}

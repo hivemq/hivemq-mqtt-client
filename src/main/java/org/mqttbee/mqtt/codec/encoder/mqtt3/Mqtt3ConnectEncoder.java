@@ -9,12 +9,12 @@ import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider
 import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider.ThreadLocalMqttWrappedMessageEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
+import org.mqttbee.mqtt.message.auth.MqttSimpleAuthImpl;
 import org.mqttbee.mqtt.message.connect.MqttConnectImpl;
 import org.mqttbee.mqtt.message.connect.MqttConnectWrapper;
 import org.mqttbee.mqtt.message.publish.MqttWillPublishImpl;
 
 import static org.mqttbee.mqtt.codec.encoder.MqttMessageEncoderUtil.*;
-import static org.mqttbee.mqtt.message.connect.MqttConnectImpl.SimpleAuthImpl;
 
 /**
  * @author Silvio Giebl
@@ -35,7 +35,7 @@ public class Mqtt3ConnectEncoder extends Mqtt3WrappedMessageEncoder<MqttConnectI
 
         remainingLength += message.getClientIdentifier().encodedLength();
 
-        final SimpleAuthImpl simpleAuth = wrapped.getRawSimpleAuth();
+        final MqttSimpleAuthImpl simpleAuth = wrapped.getRawSimpleAuth();
         if (simpleAuth != null) {
             remainingLength += nullableEncodedLength(simpleAuth.getRawUsername());
             remainingLength += nullableEncodedLength(simpleAuth.getRawPassword());
@@ -68,7 +68,7 @@ public class Mqtt3ConnectEncoder extends Mqtt3WrappedMessageEncoder<MqttConnectI
 
         int connectFlags = 0;
 
-        final SimpleAuthImpl simpleAuth = wrapped.getRawSimpleAuth();
+        final MqttSimpleAuthImpl simpleAuth = wrapped.getRawSimpleAuth();
         if (simpleAuth != null) {
             if (simpleAuth.getRawUsername() != null) {
                 connectFlags |= 0b1000_0000;
@@ -101,7 +101,7 @@ public class Mqtt3ConnectEncoder extends Mqtt3WrappedMessageEncoder<MqttConnectI
 
         encodeWillPublish(out);
 
-        final SimpleAuthImpl simpleAuth = wrapped.getRawSimpleAuth();
+        final MqttSimpleAuthImpl simpleAuth = wrapped.getRawSimpleAuth();
         if (simpleAuth != null) {
             encodeNullable(simpleAuth.getRawUsername(), out);
             encodeNullable(simpleAuth.getRawPassword(), out);

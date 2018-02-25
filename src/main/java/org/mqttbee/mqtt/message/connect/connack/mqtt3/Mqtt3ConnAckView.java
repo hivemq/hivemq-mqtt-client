@@ -7,6 +7,7 @@ import org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAckReturnCode
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.connect.connack.MqttConnAckImpl;
+import org.mqttbee.mqtt.message.connect.connack.MqttConnAckRestrictionsImpl;
 
 import static org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAckReturnCode.*;
 
@@ -22,7 +23,7 @@ public class Mqtt3ConnAckView implements Mqtt3ConnAck {
 
         return new MqttConnAckImpl(wrappedReasonCode(returnCode), isSessionPresent,
                 MqttConnAckImpl.SESSION_EXPIRY_INTERVAL_FROM_CONNECT, MqttConnAckImpl.KEEP_ALIVE_FROM_CONNECT,
-                MqttConnAckImpl.CLIENT_IDENTIFIER_FROM_CONNECT, null, MqttConnAckImpl.RestrictionsImpl.DEFAULT, null,
+                MqttConnAckImpl.CLIENT_IDENTIFIER_FROM_CONNECT, null, MqttConnAckRestrictionsImpl.DEFAULT, null,
                 null, null, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
     }
 
