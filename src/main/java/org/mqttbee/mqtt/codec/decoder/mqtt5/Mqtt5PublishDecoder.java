@@ -24,10 +24,12 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.nio.ByteBuffer;
 
+import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.disconnectRemainingLengthTooShort;
 import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.*;
 import static org.mqttbee.mqtt.message.publish.MqttPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY;
 import static org.mqttbee.mqtt.message.publish.MqttPublishProperty.*;
 import static org.mqttbee.mqtt.message.publish.MqttPublishWrapper.*;
+import static org.mqttbee.mqtt5.handler.disconnect.MqttDisconnectUtil.disconnect;
 
 /**
  * @author Silvio Giebl
@@ -54,11 +56,11 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
 
         final MqttQoS qos = MqttQoS.fromCode((flags & 0b0110) >> 1);
         if (qos == null) {
-            disconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "wrong QoS", channel);
+            disconnect(channel, Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "wrong QoS");
             return null;
         }
         if ((qos == MqttQoS.AT_MOST_ONCE) && dup) {
-            disconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "DUP flag must be 0 if QoS is 0", channel);
+            disconnect(channel, Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "DUP flag must be 0 if QoS is 0");
             return null;
         }
 
@@ -69,14 +71,14 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
 
         final byte[] topicBinary = MqttBinaryData.decode(in);
         if (topicBinary == null) {
-            disconnect(Mqtt5DisconnectReasonCode.TOPIC_NAME_INVALID, "malformed topic", channel);
+            disconnect(channel, Mqtt5DisconnectReasonCode.TOPIC_NAME_INVALID, "malformed topic");
             return null;
         }
         MqttTopicImpl topic = null;
         if (topicBinary.length != 0) {
             topic = MqttTopicImpl.from(topicBinary);
             if (topic == null) {
-                disconnect(Mqtt5DisconnectReasonCode.TOPIC_NAME_INVALID, "malformed topic", channel);
+                disconnect(channel, Mqtt5DisconnectReasonCode.TOPIC_NAME_INVALID, "malformed topic");
                 return null;
             }
         }
@@ -136,7 +138,7 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
                     payloadFormatIndicator = Mqtt5PayloadFormatIndicator.fromCode(in.readUnsignedByte());
                     if (payloadFormatIndicator == null) {
                         disconnect(
-                                Mqtt5DisconnectReasonCode.MALFORMED_PACKET, " wrong payload format indicator", channel);
+                                channel, Mqtt5DisconnectReasonCode.MALFORMED_PACKET, " wrong payload format indicator");
                         return null;
                     }
                     break;
@@ -155,7 +157,7 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
                     }
                     responseTopic = MqttTopicImpl.from(in);
                     if (responseTopic == null) {
-                        disconnect(Mqtt5DisconnectReasonCode.TOPIC_NAME_INVALID, "malformed response topic", channel);
+                        disconnect(channel, Mqtt5DisconnectReasonCode.TOPIC_NAME_INVALID, "malformed response topic");
                         return null;
                     }
                     break;
@@ -181,7 +183,7 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
                     }
                     topicAlias = in.readUnsignedShort();
                     if (topicAlias == 0) {
-                        disconnect(Mqtt5DisconnectReasonCode.TOPIC_ALIAS_INVALID, "topic alias must not be 0", channel);
+                        disconnect(channel, Mqtt5DisconnectReasonCode.TOPIC_ALIAS_INVALID, "topic alias must not be 0");
                         return null;
                     }
                     topicAliasUsage = TopicAliasUsage.HAS;
@@ -193,13 +195,13 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
                     }
                     final int subscriptionIdentifier = MqttVariableByteInteger.decode(in);
                     if (subscriptionIdentifier < 0) {
-                        disconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "malformed subscription identifier",
-                                channel);
+                        disconnect(channel, Mqtt5DisconnectReasonCode.MALFORMED_PACKET,
+                                "malformed subscription identifier");
                         return null;
                     }
                     if (subscriptionIdentifier == 0) {
-                        disconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "subscription identifier must not be 0",
-                                channel);
+                        disconnect(channel, Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+                                "subscription identifier must not be 0");
                         return null;
                     }
                     subscriptionIdentifiersBuilder.add(subscriptionIdentifier);
@@ -220,15 +222,14 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
         if (topicAlias != DEFAULT_NO_TOPIC_ALIAS) {
             final MqttTopicImpl[] topicAliasMapping = clientConnectionData.getTopicAliasMapping();
             if ((topicAliasMapping == null) || (topicAlias > topicAliasMapping.length)) {
-                disconnect(
-                        Mqtt5DisconnectReasonCode.TOPIC_ALIAS_INVALID,
-                        "topic alias must not exceed topic alias maximum", channel);
+                disconnect(channel, Mqtt5DisconnectReasonCode.TOPIC_ALIAS_INVALID,
+                        "topic alias must not exceed topic alias maximum");
                 return null;
             }
             if (topic == null) {
                 topic = topicAliasMapping[topicAlias - 1];
                 if (topic == null) {
-                    disconnect(Mqtt5DisconnectReasonCode.TOPIC_ALIAS_INVALID, "topic alias has no mapping", channel);
+                    disconnect(channel, Mqtt5DisconnectReasonCode.TOPIC_ALIAS_INVALID, "topic alias has no mapping");
                     return null;
                 }
             } else {
@@ -236,9 +237,8 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
                 isNewTopicAlias = true;
             }
         } else if (topic == null) {
-            disconnect(
-                    Mqtt5DisconnectReasonCode.TOPIC_ALIAS_INVALID,
-                    "topic alias must be present if topic name is zero length", channel);
+            disconnect(channel, Mqtt5DisconnectReasonCode.TOPIC_ALIAS_INVALID,
+                    "topic alias must be present if topic name is zero length");
             return null;
         }
 
@@ -252,8 +252,8 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
             if (payloadFormatIndicator == Mqtt5PayloadFormatIndicator.UTF_8) {
                 if (ChannelAttributes.validatePayloadFormat(channel)) {
                     if (!Utf8.isWellFormed(ByteBufferUtil.getBytes(payload))) {
-                        disconnect(Mqtt5DisconnectReasonCode.PAYLOAD_FORMAT_INVALID, "payload is not valid UTF-8",
-                                channel);
+                        disconnect(channel, Mqtt5DisconnectReasonCode.PAYLOAD_FORMAT_INVALID,
+                                "payload is not valid UTF-8");
                         return null;
                     }
                 }

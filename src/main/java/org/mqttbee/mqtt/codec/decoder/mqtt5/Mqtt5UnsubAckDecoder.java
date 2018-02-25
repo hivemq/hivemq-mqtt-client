@@ -18,9 +18,12 @@ import org.mqttbee.mqtt.message.unsubscribe.unsuback.MqttUnsubAckImpl;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.disconnectRemainingLengthTooShort;
+import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.disconnectWrongFixedHeaderFlags;
 import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.*;
 import static org.mqttbee.mqtt.message.unsubscribe.unsuback.MqttUnsubAckProperty.REASON_STRING;
 import static org.mqttbee.mqtt.message.unsubscribe.unsuback.MqttUnsubAckProperty.USER_PROPERTY;
+import static org.mqttbee.mqtt5.handler.disconnect.MqttDisconnectUtil.disconnect;
 
 /**
  * @author Silvio Giebl
@@ -108,8 +111,8 @@ public class Mqtt5UnsubAckDecoder implements MqttMessageDecoder {
 
         final int reasonCodeCount = in.readableBytes();
         if (reasonCodeCount == 0) {
-            disconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "UNSUBACK must contain at least one reason code",
-                    channel);
+            disconnect(channel, Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+                    "UNSUBACK must contain at least one reason code");
             return null;
         }
 

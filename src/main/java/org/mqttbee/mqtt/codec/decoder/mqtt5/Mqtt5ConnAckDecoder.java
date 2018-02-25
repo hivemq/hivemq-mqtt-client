@@ -19,9 +19,11 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.nio.ByteBuffer;
 
+import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.*;
 import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.*;
 import static org.mqttbee.mqtt.message.connect.connack.MqttConnAckImpl.*;
 import static org.mqttbee.mqtt.message.connect.connack.MqttConnAckProperty.*;
+import static org.mqttbee.mqtt5.handler.disconnect.MqttDisconnectUtil.disconnect;
 
 /**
  * @author Silvio Giebl
@@ -56,7 +58,7 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
 
         final short connAckFlags = in.readUnsignedByte();
         if ((connAckFlags & 0xFE) != 0) {
-            disconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "wrong CONNACK flags", channel);
+            disconnect(channel, Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "wrong CONNACK flags");
             return null;
         }
         final boolean sessionPresent = (connAckFlags & 0x1) != 0;
@@ -68,9 +70,8 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
         }
 
         if ((reasonCode != Mqtt5ConnAckReasonCode.SUCCESS) && sessionPresent) {
-            disconnect(
-                    Mqtt5DisconnectReasonCode.MALFORMED_PACKET,
-                    "session present must be false if reason code is not SUCCESS", channel);
+            disconnect(channel, Mqtt5DisconnectReasonCode.MALFORMED_PACKET,
+                    "session present must be false if reason code is not SUCCESS");
             return null;
         }
 
@@ -181,7 +182,7 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
                     }
                     receiveMaximum = in.readUnsignedShort();
                     if (receiveMaximum == 0) {
-                        disconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "receive maximum must not be 0", channel);
+                        disconnect(channel, Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "receive maximum must not be 0");
                         return null;
                     }
                     receiveMaximumPresent = true;
@@ -207,7 +208,7 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
                     }
                     final byte maximumQoSCode = in.readByte();
                     if (maximumQoSCode != 0 && maximumQoSCode != 1) {
-                        disconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "wrong maximum QoS", channel);
+                        disconnect(channel, Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "wrong maximum QoS");
                         return null;
                     }
                     maximumQoS = MqttQoS.fromCode(maximumQoSCode);
@@ -235,7 +236,7 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
                     final long maximumPacketSizeTemp = in.readUnsignedInt();
                     if (maximumPacketSizeTemp == 0) {
                         disconnect(
-                                Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "maximum packet size must not be 0", channel);
+                                channel, Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "maximum packet size must not be 0");
                         return null;
                     }
                     maximumPacketSizePresent = true;
@@ -293,8 +294,8 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
 
                 case RESPONSE_INFORMATION:
                     if (!clientConnectionData.isResponseInformationRequested()) {
-                        disconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                                "response information must not be included if it was not requested", channel);
+                        disconnect(channel, Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+                                "response information must not be included if it was not requested");
                         return null;
                     }
                     responseInformation =
@@ -335,9 +336,8 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
         if (authenticationMethod != null) {
             enhancedAuth = new MqttEnhancedAuthImpl(authenticationMethod, authenticationData);
         } else if (authenticationData != null) {
-            disconnect(
-                    Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                    "authentication data must not be included if authentication method is absent", channel);
+            disconnect(channel, Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+                    "authentication data must not be included if authentication method is absent");
             return null;
         }
 

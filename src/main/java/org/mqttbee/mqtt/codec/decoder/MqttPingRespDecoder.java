@@ -1,32 +1,31 @@
-package org.mqttbee.mqtt.codec.decoder.mqtt3;
+package org.mqttbee.mqtt.codec.decoder;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.MqttClientConnectionDataImpl;
-import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.message.ping.MqttPingRespImpl;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.disconnectWrongFixedHeaderFlags;
 import static org.mqttbee.mqtt.message.ping.MqttPingRespImpl.INSTANCE;
+import static org.mqttbee.mqtt5.handler.disconnect.MqttDisconnectUtil.disconnect;
 
 /**
- * @author Daniel Krüger
  * @author Silvio Giebl
  */
 @Singleton
-public class Mqtt3PingRespDecoder implements MqttMessageDecoder {
+public class MqttPingRespDecoder implements MqttMessageDecoder {
 
     private static final int FLAGS = 0b0000;
 
     @Inject
-    Mqtt3PingRespDecoder() {
+    MqttPingRespDecoder() {
     }
 
-    @Nullable
     @Override
     public MqttPingRespImpl decode(
             final int flags, @NotNull final ByteBuf in,
@@ -35,12 +34,13 @@ public class Mqtt3PingRespDecoder implements MqttMessageDecoder {
         final Channel channel = clientConnectionData.getChannel();
 
         if (flags != FLAGS) {
-            channel.close(); // TODO
+            disconnectWrongFixedHeaderFlags("PING", channel);
             return null;
         }
 
         if (in.readableBytes() != 0) {
-            channel.close(); // TODO
+            disconnect(channel, Mqtt5DisconnectReasonCode.MALFORMED_PACKET,
+                    "PING must not have a variable header or payload");
             return null;
         }
 
@@ -48,4 +48,3 @@ public class Mqtt3PingRespDecoder implements MqttMessageDecoder {
     }
 
 }
-

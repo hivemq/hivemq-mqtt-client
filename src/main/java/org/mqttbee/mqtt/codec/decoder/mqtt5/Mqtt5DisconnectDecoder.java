@@ -18,6 +18,8 @@ import org.mqttbee.mqtt.message.disconnect.MqttDisconnectImpl;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.disconnectMustNotHavePayload;
+import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.disconnectWrongFixedHeaderFlags;
 import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.*;
 import static org.mqttbee.mqtt.message.disconnect.MqttDisconnectImpl.DEFAULT_REASON_CODE;
 import static org.mqttbee.mqtt.message.disconnect.MqttDisconnectImpl.SESSION_EXPIRY_INTERVAL_FROM_CONNECT;

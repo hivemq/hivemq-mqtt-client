@@ -20,7 +20,7 @@ class Mqtt5PingRespDecoderTest extends AbstractMqtt5DecoderTest {
     Mqtt5PingRespDecoderTest() {
         super(code -> {
             if (code == Mqtt5MessageType.PINGRESP.getCode()) {
-                return new Mqtt5PingRespDecoder();
+                return createPingRespDecoder();
             }
             return null;
         });

@@ -32,4 +32,8 @@ public class AbstractMqttDecoderTest {
         channel = new EmbeddedChannel(new MqttDecoder(decoders));
     }
 
+    public static MqttPingRespDecoder createPingRespDecoder() {
+        return new MqttPingRespDecoder();
+    }
+
 }

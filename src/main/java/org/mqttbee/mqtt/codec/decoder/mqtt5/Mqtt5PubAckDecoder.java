@@ -18,6 +18,7 @@ import org.mqttbee.mqtt.message.publish.puback.MqttPubAckImpl;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.*;
 import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.*;
 import static org.mqttbee.mqtt.message.publish.puback.MqttPubAckImpl.DEFAULT_REASON_CODE;
 import static org.mqttbee.mqtt.message.publish.puback.MqttPubAckProperty.REASON_STRING;

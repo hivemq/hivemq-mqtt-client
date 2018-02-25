@@ -4,6 +4,7 @@ import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoders;
+import org.mqttbee.mqtt.codec.decoder.MqttPingRespDecoder;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -22,7 +23,7 @@ public class Mqtt3ClientMessageDecoders implements MqttMessageDecoders {
             final Mqtt3PubAckDecoder pubAckDecoder, final Mqtt3PubRecDecoder pubRecDecoder,
             final Mqtt3PubRelDecoder pubRelDecoder, final Mqtt3PubCompDecoder pubCompDecoder,
             final Mqtt3SubAckDecoder subAckDecoder, final Mqtt3UnsubAckDecoder unsubAckDecoder,
-            final Mqtt3PingRespDecoder pingRespDecoder) {
+            final MqttPingRespDecoder pingRespDecoder) {
 
         decoders = new MqttMessageDecoder[Mqtt3MessageType.values().length];
         decoders[Mqtt3MessageType.CONNACK.getCode()] = connAckDecoder;

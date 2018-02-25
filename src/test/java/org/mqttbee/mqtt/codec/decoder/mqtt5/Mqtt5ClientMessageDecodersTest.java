@@ -2,6 +2,8 @@ package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
 import org.junit.jupiter.api.Test;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
+import org.mqttbee.mqtt.codec.decoder.AbstractMqttDecoderTest;
+import org.mqttbee.mqtt.codec.decoder.MqttPingRespDecoder;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -21,7 +23,7 @@ class Mqtt5ClientMessageDecodersTest {
         final Mqtt5PubCompDecoder pubCompDecoder = new Mqtt5PubCompDecoder();
         final Mqtt5SubAckDecoder subAckDecoder = new Mqtt5SubAckDecoder();
         final Mqtt5UnsubAckDecoder unsubAckDecoder = new Mqtt5UnsubAckDecoder();
-        final Mqtt5PingRespDecoder pingRespDecoder = new Mqtt5PingRespDecoder();
+        final MqttPingRespDecoder pingRespDecoder = AbstractMqttDecoderTest.createPingRespDecoder();
         final Mqtt5DisconnectDecoder disconnectDecoder = new Mqtt5DisconnectDecoder();
         final Mqtt5AuthDecoder authDecoder = new Mqtt5AuthDecoder();
 
