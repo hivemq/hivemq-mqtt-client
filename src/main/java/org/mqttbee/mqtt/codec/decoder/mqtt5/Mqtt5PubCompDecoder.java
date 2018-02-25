@@ -46,7 +46,7 @@ public class Mqtt5PubCompDecoder implements MqttMessageDecoder {
         final Channel channel = clientConnectionData.getChannel();
 
         if (flags != FLAGS) {
-            disconnectWrongFixedHeaderFlags("PUBCOMP", channel);
+            disconnectWrongFixedHeaderFlags(channel, "PUBCOMP");
             return null;
         }
 
@@ -64,7 +64,7 @@ public class Mqtt5PubCompDecoder implements MqttMessageDecoder {
         if (in.isReadable()) {
             reasonCode = Mqtt5PubCompReasonCode.fromCode(in.readUnsignedByte());
             if (reasonCode == null) {
-                disconnectWrongReasonCode("PUBCOMP", channel);
+                disconnectWrongReasonCode(channel, "PUBCOMP");
                 return null;
             }
 
@@ -75,7 +75,7 @@ public class Mqtt5PubCompDecoder implements MqttMessageDecoder {
                     return null;
                 }
                 if (in.readableBytes() != propertyLength) {
-                    disconnectMustNotHavePayload("PUBCOMP", channel);
+                    disconnectMustNotHavePayload(channel, "PUBCOMP");
                     return null;
                 }
 
@@ -106,7 +106,7 @@ public class Mqtt5PubCompDecoder implements MqttMessageDecoder {
                             break;
 
                         default:
-                            disconnectWrongProperty("PUBCOMP", channel);
+                            disconnectWrongProperty(channel, "PUBCOMP");
                             return null;
                     }
                 }

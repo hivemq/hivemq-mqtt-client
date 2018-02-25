@@ -46,7 +46,7 @@ public class Mqtt5DisconnectDecoder implements MqttMessageDecoder {
         final Channel channel = clientConnectionData.getChannel();
 
         if (flags != FLAGS) {
-            disconnectWrongFixedHeaderFlags("DISCONNECT", channel);
+            disconnectWrongFixedHeaderFlags(channel, "DISCONNECT");
             return null;
         }
 
@@ -59,7 +59,7 @@ public class Mqtt5DisconnectDecoder implements MqttMessageDecoder {
         if (in.isReadable()) {
             reasonCode = Mqtt5DisconnectReasonCode.fromCode(in.readUnsignedByte());
             if (reasonCode == null) {
-                disconnectWrongReasonCode("DISCONNECT", channel);
+                disconnectWrongReasonCode(channel, "DISCONNECT");
                 return null;
             }
 
@@ -70,7 +70,7 @@ public class Mqtt5DisconnectDecoder implements MqttMessageDecoder {
                     return null;
                 }
                 if (in.readableBytes() != propertyLength) {
-                    disconnectMustNotHavePayload("DISCONNECT", channel);
+                    disconnectMustNotHavePayload(channel, "DISCONNECT");
                     return null;
                 }
 
@@ -114,7 +114,7 @@ public class Mqtt5DisconnectDecoder implements MqttMessageDecoder {
                             break;
 
                         default:
-                            disconnectWrongProperty("DISCONNECT", channel);
+                            disconnectWrongProperty(channel, "DISCONNECT");
                             return null;
                     }
                 }

@@ -48,7 +48,7 @@ public class Mqtt5AuthDecoder implements MqttMessageDecoder {
         final Channel channel = clientConnectionData.getChannel();
 
         if (flags != FLAGS) {
-            disconnectWrongFixedHeaderFlags("AUTH", channel);
+            disconnectWrongFixedHeaderFlags(channel, "AUTH");
             return null;
         }
 
@@ -59,7 +59,7 @@ public class Mqtt5AuthDecoder implements MqttMessageDecoder {
 
         final Mqtt5AuthReasonCode reasonCode = Mqtt5AuthReasonCode.fromCode(in.readUnsignedByte());
         if (reasonCode == null) {
-            disconnectWrongReasonCode("AUTH", channel);
+            disconnectWrongReasonCode(channel, "AUTH");
             return null;
         }
 
@@ -69,7 +69,7 @@ public class Mqtt5AuthDecoder implements MqttMessageDecoder {
             return null;
         }
         if (in.readableBytes() != propertyLength) {
-            disconnectMustNotHavePayload("AUTH", channel);
+            disconnectMustNotHavePayload(channel, "AUTH");
             return null;
         }
 
@@ -119,7 +119,7 @@ public class Mqtt5AuthDecoder implements MqttMessageDecoder {
                     break;
 
                 default:
-                    disconnectWrongProperty("AUTH", channel);
+                    disconnectWrongProperty(channel, "AUTH");
                     return null;
             }
         }

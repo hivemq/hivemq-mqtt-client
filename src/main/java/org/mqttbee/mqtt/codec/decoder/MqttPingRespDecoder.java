@@ -34,7 +34,7 @@ public class MqttPingRespDecoder implements MqttMessageDecoder {
         final Channel channel = clientConnectionData.getChannel();
 
         if (flags != FLAGS) {
-            disconnectWrongFixedHeaderFlags("PING", channel);
+            disconnectWrongFixedHeaderFlags(channel, "PING");
             return null;
         }
 

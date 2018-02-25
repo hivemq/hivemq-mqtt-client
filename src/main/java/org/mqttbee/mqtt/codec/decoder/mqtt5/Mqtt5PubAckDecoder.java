@@ -46,7 +46,7 @@ public class Mqtt5PubAckDecoder implements MqttMessageDecoder {
         final Channel channel = clientConnectionData.getChannel();
 
         if (flags != FLAGS) {
-            disconnectWrongFixedHeaderFlags("PUBACK", channel);
+            disconnectWrongFixedHeaderFlags(channel, "PUBACK");
             return null;
         }
 
@@ -64,7 +64,7 @@ public class Mqtt5PubAckDecoder implements MqttMessageDecoder {
         if (in.isReadable()) {
             reasonCode = Mqtt5PubAckReasonCode.fromCode(in.readUnsignedByte());
             if (reasonCode == null) {
-                disconnectWrongReasonCode("PUBACK", channel);
+                disconnectWrongReasonCode(channel, "PUBACK");
                 return null;
             }
 
@@ -75,7 +75,7 @@ public class Mqtt5PubAckDecoder implements MqttMessageDecoder {
                     return null;
                 }
                 if (in.readableBytes() != propertyLength) {
-                    disconnectMustNotHavePayload("PUBACK", channel);
+                    disconnectMustNotHavePayload(channel, "PUBACK");
                     return null;
                 }
 
@@ -106,7 +106,7 @@ public class Mqtt5PubAckDecoder implements MqttMessageDecoder {
                             break;
 
                         default:
-                            disconnectWrongProperty("PUBACK", channel);
+                            disconnectWrongProperty(channel, "PUBACK");
                             return null;
                     }
                 }
