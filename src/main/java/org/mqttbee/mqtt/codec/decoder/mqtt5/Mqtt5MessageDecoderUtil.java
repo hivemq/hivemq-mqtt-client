@@ -7,14 +7,18 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.MqttClientConnectionDataImpl;
+import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
 import org.mqttbee.mqtt.datatypes.MqttBinaryData;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
+import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
+import org.mqttbee.mqtt5.netty.ChannelAttributes;
 
 import java.nio.ByteBuffer;
 
-import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.disconnectMalformedUTF8String;
-import static org.mqttbee.mqtt5.handler.disconnect.MqttDisconnectUtil.disconnect;
+import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.malformedUTF8String;
+import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.remainingLengthTooShort;
+import static org.mqttbee.mqtt.message.connect.connack.MqttConnAckImpl.SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
 
 /**
  * @author Silvio Giebl
@@ -24,128 +28,180 @@ class Mqtt5MessageDecoderUtil {
     private Mqtt5MessageDecoderUtil() {
     }
 
-    static void disconnectMalformedPropertyLength(@NotNull final Channel channel) {
-        disconnect(channel, Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "malformed properties length");
+    @NotNull
+    static MqttDecoderException wrongReasonCode() {
+        return new MqttDecoderException("wrong reason code");
     }
 
-    static void disconnectMalformedPropertyIdentifier(@NotNull final Channel channel) {
-        disconnect(channel, Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "malformed property identifier");
+    @NotNull
+    static MqttDecoderException malformedPropertyLength() {
+        return new MqttDecoderException("malformed properties length");
     }
 
-    static void disconnectWrongProperty(@NotNull final Channel channel, @NotNull final String type) {
-        disconnect(channel, Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "wrong property for " + type);
+    @NotNull
+    static MqttDecoderException wrongProperty(final int propertyIdentifier) {
+        return new MqttDecoderException("wrong property with identifier " + propertyIdentifier);
     }
 
-    static void disconnectOnlyOnce(@NotNull final Channel channel, @NotNull final String name) {
-        disconnect(channel, Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, name + " must not be included more than once");
+    @NotNull
+    static MqttDecoderException moreThanOnce(@NotNull final String name) {
+        return new MqttDecoderException(
+                Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, name + " must not be included more than once");
     }
 
-    static void disconnectWrongReasonCode(@NotNull final Channel channel, @NotNull final String type) {
-        disconnect(channel, Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "wrong reason code for " + type);
+    @NotNull
+    static MqttDecoderException noReasonCodes() {
+        return new MqttDecoderException(
+                Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "must contain at least one reason code");
     }
 
-    static boolean checkByteOnlyOnce(
-            final boolean present, @NotNull final String name, @NotNull final Channel channel,
-            @NotNull final ByteBuf in) {
+    static void checkPropertyLengthNoPayload(@NotNull final ByteBuf in) throws MqttDecoderException {
+        final int propertyLength = MqttVariableByteInteger.decode(in);
+        if (propertyLength < 0) {
+            throw malformedPropertyLength();
+        }
+        if (in.readableBytes() != propertyLength) {
+            if (in.readableBytes() < propertyLength) {
+                throw remainingLengthTooShort();
+            } else {
+                throw new MqttDecoderException("must not have a payload");
+            }
+        }
+    }
+
+    static int decodePropertyLength(@NotNull final ByteBuf in) throws MqttDecoderException {
+        final int propertyLength = MqttVariableByteInteger.decode(in);
+        if (propertyLength < 0) {
+            throw malformedPropertyLength();
+        }
+        if (in.readableBytes() < propertyLength) {
+            throw remainingLengthTooShort();
+        }
+        return propertyLength;
+    }
+
+    static int decodePropertyIdentifier(@NotNull final ByteBuf in) throws MqttDecoderException {
+        final int propertyIdentifier = MqttVariableByteInteger.decode(in);
+        if (propertyIdentifier < 0) {
+            throw new MqttDecoderException("malformed property identifier");
+        }
+        return propertyIdentifier;
+    }
+
+    static boolean booleanOnlyOnce(final boolean present, @NotNull final String name, @NotNull final ByteBuf in)
+            throws MqttDecoderException {
 
         if (present) {
-            disconnectOnlyOnce(channel, name);
-            return false;
+            throw moreThanOnce(name);
         }
         if (in.readableBytes() < 1) {
-            disconnect(channel, Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "malformed properties length");
+            throw new MqttDecoderException("malformed properties length");
+        }
+        final byte value = in.readByte();
+        if (value == 0) {
             return false;
         }
-        return true;
+        if (value == 1) {
+            return true;
+        }
+        throw new MqttDecoderException(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "malformed boolean for " + name);
     }
 
-    static boolean checkShortOnlyOnce(
-            final boolean present, @NotNull final String name, @NotNull final Channel channel,
-            @NotNull final ByteBuf in) {
+    static short unsignedByteOnlyOnce(
+            final boolean present, @NotNull final String name, @NotNull final ByteBuf in) throws MqttDecoderException {
 
         if (present) {
-            disconnectOnlyOnce(channel, name);
-            return false;
+            throw moreThanOnce(name);
+        }
+        if (in.readableBytes() < 1) {
+            throw new MqttDecoderException("malformed properties length");
+        }
+        return in.readUnsignedByte();
+    }
+
+    static int unsignedShortOnlyOnce(
+            final boolean present, @NotNull final String name, @NotNull final ByteBuf in) throws MqttDecoderException {
+
+        if (present) {
+            throw moreThanOnce(name);
         }
         if (in.readableBytes() < 2) {
-            disconnect(channel, Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "malformed properties length");
-            return false;
+            throw new MqttDecoderException("malformed properties length");
         }
-        return true;
+        return in.readUnsignedShort();
     }
 
-    static boolean checkShortOnlyOnce(
-            final int current, final int notPresent, @NotNull final String name, @NotNull final Channel channel,
-            @NotNull final ByteBuf in) {
+    static int unsignedShortOnlyOnce(
+            final int current, final int notPresent, @NotNull final String name, @NotNull final ByteBuf in)
+            throws MqttDecoderException {
 
-        return checkShortOnlyOnce(current != notPresent, name, channel, in);
+        return unsignedShortOnlyOnce(current != notPresent, name, in);
     }
 
-    static boolean checkIntOnlyOnce(
-            final boolean present, @NotNull final String name, @NotNull final Channel channel,
-            @NotNull final ByteBuf in) {
+    static long unsignedIntOnlyOnce(
+            final boolean present, @NotNull final String name, @NotNull final ByteBuf in) throws MqttDecoderException {
 
         if (present) {
-            disconnectOnlyOnce(channel, name);
-            return false;
+            throw moreThanOnce(name);
         }
         if (in.readableBytes() < 4) {
-            disconnect(channel, Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "malformed properties length");
-            return false;
+            throw new MqttDecoderException("malformed properties length");
         }
-        return true;
+        return in.readUnsignedInt();
     }
 
-    static boolean checkIntOnlyOnce(
-            final long current, final long notPresent, @NotNull final String name, @NotNull final Channel channel,
-            @NotNull final ByteBuf in) {
+    static long unsignedIntOnlyOnce(
+            final long current, final long notPresent, @NotNull final String name, @NotNull final ByteBuf in)
+            throws MqttDecoderException {
 
-        return checkIntOnlyOnce(current != notPresent, name, channel, in);
+        return unsignedIntOnlyOnce(current != notPresent, name, in);
     }
 
-    @Nullable
+    @NotNull
     static ByteBuffer decodeBinaryDataOnlyOnce(
-            @Nullable final ByteBuffer current, @NotNull final String name, @NotNull final Channel channel,
-            @NotNull final ByteBuf in, final boolean direct) {
+            @Nullable final ByteBuffer current, @NotNull final String name, @NotNull final ByteBuf in,
+            final boolean direct) throws MqttDecoderException {
 
         if (current != null) {
-            disconnectOnlyOnce(channel, name);
-            return null;
+            throw moreThanOnce(name);
         }
         final ByteBuffer decoded = MqttBinaryData.decode(in, direct);
         if (decoded == null) {
-            disconnect(channel, Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "malformed binary data for " + name);
-            return null;
+            throw new MqttDecoderException("malformed binary data for " + name);
         }
         return decoded;
     }
 
-    @Nullable
+    @NotNull
     static MqttUTF8StringImpl decodeUTF8StringOnlyOnce(
-            @Nullable final MqttUTF8StringImpl current, @NotNull final String name, @NotNull final Channel channel,
-            @NotNull final ByteBuf in) {
+            @Nullable final MqttUTF8StringImpl current, @NotNull final String name, @NotNull final ByteBuf in)
+            throws MqttDecoderException {
 
         if (current != null) {
-            disconnectOnlyOnce(channel, name);
-            return null;
+            throw moreThanOnce(name);
         }
         final MqttUTF8StringImpl decoded = MqttUTF8StringImpl.from(in);
         if (decoded == null) {
-            disconnectMalformedUTF8String(channel, name);
-            return null;
+            throw malformedUTF8String(name);
         }
         return decoded;
     }
 
-    @Nullable
+    @NotNull
+    static MqttUTF8StringImpl decodeReasonString(
+            @Nullable final MqttUTF8StringImpl current, @NotNull final ByteBuf in) throws MqttDecoderException {
+
+        return decodeUTF8StringOnlyOnce(current, "reason string", in);
+    }
+
+    @NotNull
     static ImmutableList.Builder<MqttUserPropertyImpl> decodeUserProperty(
-            @Nullable ImmutableList.Builder<MqttUserPropertyImpl> userPropertiesBuilder, @NotNull final Channel channel,
-            @NotNull final ByteBuf in) {
+            @Nullable ImmutableList.Builder<MqttUserPropertyImpl> userPropertiesBuilder, @NotNull final ByteBuf in)
+            throws MqttDecoderException {
 
         final MqttUserPropertyImpl userProperty = MqttUserPropertyImpl.decode(in);
         if (userProperty == null) {
-            disconnect(channel, Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "malformed user property");
-            return null;
+            throw new MqttDecoderException("malformed user property");
         }
         if (userPropertiesBuilder == null) {
             userPropertiesBuilder = ImmutableList.builder();
@@ -154,50 +210,59 @@ class Mqtt5MessageDecoderUtil {
         return userPropertiesBuilder;
     }
 
-    private static boolean checkProblemInformationRequested(
-            @NotNull final String name, @NotNull final MqttClientConnectionDataImpl clientConnectionData) {
+    private static MqttDecoderException checkProblemInformationRequested(@NotNull final String name) {
+        return new MqttDecoderException(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+                name + " must not be included if problem information is not requested");
+    }
+
+    @NotNull
+    static MqttUTF8StringImpl decodeReasonStringIfRequested(
+            @Nullable final MqttUTF8StringImpl current,
+            @NotNull final MqttClientConnectionDataImpl clientConnectionData, @NotNull final ByteBuf in)
+            throws MqttDecoderException {
 
         if (!clientConnectionData.isProblemInformationRequested()) {
-            disconnect(clientConnectionData.getChannel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                    name + " must not be included if problem information is not requested");
-            return false;
+            throw checkProblemInformationRequested("reason string");
         }
-        return true;
+        return decodeReasonString(current, in);
     }
 
-    @Nullable
-    static MqttUTF8StringImpl decodeReasonStringCheckProblemInformationRequested(
-            @Nullable final MqttUTF8StringImpl current,
-            @NotNull final MqttClientConnectionDataImpl clientConnectionData, @NotNull final ByteBuf in) {
-
-        if (!checkProblemInformationRequested("reason string", clientConnectionData)) {
-            return null;
-        }
-        return decodeUTF8StringOnlyOnce(current, "reason string", clientConnectionData.getChannel(), in);
-    }
-
-    @Nullable
-    static ImmutableList.Builder<MqttUserPropertyImpl> decodeUserPropertyCheckProblemInformationRequested(
+    @NotNull
+    static ImmutableList.Builder<MqttUserPropertyImpl> decodeUserPropertyIfRequested(
             @Nullable final ImmutableList.Builder<MqttUserPropertyImpl> userPropertiesBuilder,
-            @NotNull final MqttClientConnectionDataImpl clientConnectionData, @NotNull final ByteBuf in) {
+            @NotNull final MqttClientConnectionDataImpl clientConnectionData, @NotNull final ByteBuf in)
+            throws MqttDecoderException {
 
-        if ((userPropertiesBuilder != null) &&
-                !checkProblemInformationRequested("user property", clientConnectionData)) {
-            return null;
+        if ((userPropertiesBuilder == null) && !clientConnectionData.isProblemInformationRequested()) {
+            throw checkProblemInformationRequested("user property");
         }
-        return decodeUserProperty(userPropertiesBuilder, clientConnectionData.getChannel(), in);
+        return decodeUserProperty(userPropertiesBuilder, in);
     }
 
-    static boolean checkBoolean(final byte value, @NotNull final String name, @NotNull final Channel channel) {
-        if ((value != 0) && (value != 1)) {
-            disconnect(channel, Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "malformed boolean for " + name);
-            return false;
-        }
-        return true;
+    @NotNull
+    static MqttUTF8StringImpl decodeAuthMethod(
+            @Nullable final MqttUTF8StringImpl current, @NotNull final ByteBuf in) throws MqttDecoderException {
+
+        return decodeUTF8StringOnlyOnce(current, "auth method", in);
     }
 
-    static boolean decodeBoolean(final byte value) {
-        return value == 1;
+    @NotNull
+    static ByteBuffer decodeAuthData(
+            @Nullable final ByteBuffer current, @NotNull final ByteBuf in, @NotNull final Channel channel)
+            throws MqttDecoderException {
+
+        return decodeBinaryDataOnlyOnce(current, "auth data", in, ChannelAttributes.useDirectBufferForAuth(channel));
+    }
+
+    @NotNull
+    static MqttUTF8StringImpl decodeServerReference(
+            @Nullable final MqttUTF8StringImpl current, @NotNull final ByteBuf in) throws MqttDecoderException {
+
+        return decodeUTF8StringOnlyOnce(current, "server reference", in);
+    }
+
+    static long decodeSessionExpiryInterval(final long current, @NotNull final ByteBuf in) throws MqttDecoderException {
+        return unsignedIntOnlyOnce(current, SESSION_EXPIRY_INTERVAL_FROM_CONNECT, "session expiry interval", in);
     }
 
 }

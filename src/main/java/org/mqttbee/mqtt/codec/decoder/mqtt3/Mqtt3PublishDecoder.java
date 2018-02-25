@@ -6,6 +6,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.mqtt.MqttClientConnectionDataImpl;
+import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.message.publish.MqttPublishImpl;
@@ -17,6 +18,8 @@ import org.mqttbee.util.ByteBufferUtil;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.nio.ByteBuffer;
+
+import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.*;
 
 /**
  * @author Daniel Krüger
@@ -35,41 +38,24 @@ public class Mqtt3PublishDecoder implements MqttMessageDecoder {
     @Override
     public MqttPublishWrapper decode(
             final int flags, @NotNull final ByteBuf in,
-            @NotNull final MqttClientConnectionDataImpl clientConnectionData) {
+            @NotNull final MqttClientConnectionDataImpl clientConnectionData) throws MqttDecoderException {
 
         final Channel channel = clientConnectionData.getChannel();
 
         final boolean dup = (flags & 0b1000) != 0;
-        final int code = (flags & 0b0110) >> 1;
-        final MqttQoS qos = MqttQoS.fromCode(code);
-        if (qos == null) {
-            channel.close(); // TODO
-            return null;
-        }
-
-        final boolean isRetain = (flags & 0b0001) != 0;
+        final MqttQoS qos = decodePublishQoS(flags, dup);
+        final boolean retain = (flags & 0b0001) != 0;
 
         if (in.readableBytes() < MIN_REMAINING_LENGTH) {
-            channel.close(); // TODO
-            return null;
+            throw remainingLengthTooShort();
         }
 
         final MqttTopicImpl topic = MqttTopicImpl.from(in);
         if (topic == null) {
-            channel.close(); // TODO
-            return null;
+            throw malformedTopic();
         }
 
-        final int packetIdentifier;
-        if (qos != MqttQoS.AT_MOST_ONCE) {
-            if (in.readableBytes() < 2) {
-                channel.close(); // TODO
-                return null;
-            }
-            packetIdentifier = in.readUnsignedShort();
-        } else {
-            packetIdentifier = MqttPublishWrapper.NO_PACKET_IDENTIFIER_QOS_0;
-        }
+        final int packetIdentifier = decodePublishPacketIdentifier(qos, in);
 
         final int payloadLength = in.readableBytes();
         ByteBuffer payload = null;
@@ -79,7 +65,7 @@ public class Mqtt3PublishDecoder implements MqttMessageDecoder {
             payload.position(0);
         }
 
-        final MqttPublishImpl publish = Mqtt3PublishView.wrapped(topic, payload, qos, isRetain);
+        final MqttPublishImpl publish = Mqtt3PublishView.wrapped(topic, payload, qos, retain);
 
         return Mqtt3PublishView.wrapped(publish, packetIdentifier, dup);
     }

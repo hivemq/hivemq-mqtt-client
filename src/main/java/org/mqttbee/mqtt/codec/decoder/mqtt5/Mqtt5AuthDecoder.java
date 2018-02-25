@@ -8,23 +8,22 @@ import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.MqttClientConnectionDataImpl;
+import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5AuthEncoder;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
-import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.auth.MqttAuthImpl;
-import org.mqttbee.mqtt5.netty.ChannelAttributes;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.nio.ByteBuffer;
 
-import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.*;
+import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.checkFixedHeaderFlags;
+import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.remainingLengthTooShort;
 import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.*;
 import static org.mqttbee.mqtt.message.auth.MqttAuthProperty.*;
-import static org.mqttbee.mqtt5.handler.disconnect.MqttDisconnectUtil.disconnect;
 
 /**
  * @author Silvio Giebl
@@ -43,35 +42,22 @@ public class Mqtt5AuthDecoder implements MqttMessageDecoder {
     @Nullable
     public MqttAuthImpl decode(
             final int flags, @NotNull final ByteBuf in,
-            @NotNull final MqttClientConnectionDataImpl clientConnectionData) {
+            @NotNull final MqttClientConnectionDataImpl clientConnectionData) throws MqttDecoderException {
 
         final Channel channel = clientConnectionData.getChannel();
 
-        if (flags != FLAGS) {
-            disconnectWrongFixedHeaderFlags(channel, "AUTH");
-            return null;
-        }
+        checkFixedHeaderFlags(FLAGS, flags);
 
         if (in.readableBytes() < MIN_REMAINING_LENGTH) {
-            disconnectRemainingLengthTooShort(channel);
-            return null;
+            throw remainingLengthTooShort();
         }
 
         final Mqtt5AuthReasonCode reasonCode = Mqtt5AuthReasonCode.fromCode(in.readUnsignedByte());
         if (reasonCode == null) {
-            disconnectWrongReasonCode(channel, "AUTH");
-            return null;
+            throw wrongReasonCode();
         }
 
-        final int propertyLength = MqttVariableByteInteger.decode(in);
-        if (propertyLength < 0) {
-            disconnectMalformedPropertyLength(channel);
-            return null;
-        }
-        if (in.readableBytes() != propertyLength) {
-            disconnectMustNotHavePayload(channel, "AUTH");
-            return null;
-        }
+        checkPropertyLengthNoPayload(in);
 
         MqttUTF8StringImpl method = null;
         ByteBuffer data = null;
@@ -79,54 +65,34 @@ public class Mqtt5AuthDecoder implements MqttMessageDecoder {
         ImmutableList.Builder<MqttUserPropertyImpl> userPropertiesBuilder = null;
 
         while (in.isReadable()) {
-
-            final int propertyIdentifier = MqttVariableByteInteger.decode(in);
-            if (propertyIdentifier < 0) {
-                disconnectMalformedPropertyIdentifier(channel);
-                return null;
-            }
+            final int propertyIdentifier = decodePropertyIdentifier(in);
 
             switch (propertyIdentifier) {
                 case AUTHENTICATION_METHOD:
-                    method = decodeUTF8StringOnlyOnce(method, "authentication method", channel, in);
-                    if (method == null) {
-                        return null;
-                    }
+                    method = decodeAuthMethod(method, in);
                     break;
 
                 case AUTHENTICATION_DATA:
-                    data = decodeBinaryDataOnlyOnce(data, "authentication data", channel, in,
-                            ChannelAttributes.useDirectBufferForAuth(channel));
-                    if (data == null) {
-                        return null;
-                    }
+                    data = decodeAuthData(data, in, channel);
                     break;
 
                 case REASON_STRING:
-                    reasonString =
-                            decodeReasonStringCheckProblemInformationRequested(reasonString, clientConnectionData, in);
-                    if (reasonString == null) {
-                        return null;
-                    }
+                    reasonString = decodeReasonStringIfRequested(reasonString, clientConnectionData, in);
                     break;
 
                 case USER_PROPERTY:
-                    userPropertiesBuilder = decodeUserPropertyCheckProblemInformationRequested(userPropertiesBuilder,
-                            clientConnectionData, in);
-                    if (userPropertiesBuilder == null) {
-                        return null;
-                    }
+                    userPropertiesBuilder =
+                            decodeUserPropertyIfRequested(userPropertiesBuilder, clientConnectionData, in);
                     break;
 
                 default:
-                    disconnectWrongProperty(channel, "AUTH");
-                    return null;
+                    throw wrongProperty(propertyIdentifier);
             }
         }
 
         if (method == null) {
-            disconnect(channel, Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "AUTH must not omit authentication method");
-            return null;
+            throw new MqttDecoderException(
+                    Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "must not omit authentication method");
         }
 
         final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.build(userPropertiesBuilder);

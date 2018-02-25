@@ -6,12 +6,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
-import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
+import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
 
-import java.util.stream.IntStream;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.MALFORMED_PACKET;
 import static org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.PROTOCOL_ERROR;
 
@@ -36,71 +34,92 @@ class Mqtt5MessageDecoderUtilTest extends AbstractMqtt5DecoderTest {
     }
 
     @Test
-    void checkByteOnlyOnce() {
+    void booleanOnlyOnce() throws MqttDecoderException {
         in.writeByte(1);
-        assertTrue(Mqtt5MessageDecoderUtil.checkByteOnlyOnce(false, "name", channel, in));
+        assertEquals(true, Mqtt5MessageDecoderUtil.booleanOnlyOnce(false, "name", in));
+        in.writeByte(0);
+        assertEquals(false, Mqtt5MessageDecoderUtil.booleanOnlyOnce(false, "name", in));
     }
 
     @Test
-    void checkByteOnlyOnce_inputLengthTooShort() {
-        assertFalse(Mqtt5MessageDecoderUtil.checkByteOnlyOnce(false, "name", channel, in));
-        checkClosed(MALFORMED_PACKET);
+    void booleanOnlyOnce_inputLengthTooShort() {
+        final MqttDecoderException exception = assertThrows(MqttDecoderException.class,
+                () -> Mqtt5MessageDecoderUtil.booleanOnlyOnce(false, "name", in));
+        assertEquals(MALFORMED_PACKET, exception.getReasonCode());
     }
 
     @Test
-    void checkShortOnlyOnce() {
-        in.writeByte(0);
+    void booleanOnlyOnce_present() {
         in.writeByte(1);
-        assertTrue(Mqtt5MessageDecoderUtil.checkShortOnlyOnce(false, "name", channel, in));
+        final MqttDecoderException exception = assertThrows(MqttDecoderException.class,
+                () -> Mqtt5MessageDecoderUtil.booleanOnlyOnce(true, "name", in));
+        assertEquals(PROTOCOL_ERROR, exception.getReasonCode());
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {0, 1})
-    void checkShortOnlyOnce_inputLengthTooShort(final int length) {
-        pushBytes(in, length);
-        assertFalse(Mqtt5MessageDecoderUtil.checkShortOnlyOnce(false, "name", channel, in));
-        checkClosed(MALFORMED_PACKET);
+    @ValueSource(ints = {0, 1, 255})
+    void unsignedByteOnlyOnce(final int value) throws MqttDecoderException {
+        in.writeByte(value);
+        assertEquals(value, Mqtt5MessageDecoderUtil.unsignedByteOnlyOnce(false, "name", in));
     }
 
     @Test
-    void checkIntOnlyOnce() {
-        in.writeByte(0);
-        in.writeByte(0);
-        in.writeByte(0);
+    void unsignedByteOnlyOnce_inputLengthTooShort() {
+        final MqttDecoderException exception = assertThrows(MqttDecoderException.class,
+                () -> Mqtt5MessageDecoderUtil.unsignedByteOnlyOnce(false, "name", in));
+        assertEquals(MALFORMED_PACKET, exception.getReasonCode());
+    }
+
+    @Test
+    void unsignedByteOnlyOnce_present() {
         in.writeByte(1);
-        assertTrue(Mqtt5MessageDecoderUtil.checkIntOnlyOnce(false, "name", channel, in));
+        final MqttDecoderException exception = assertThrows(MqttDecoderException.class,
+                () -> Mqtt5MessageDecoderUtil.unsignedByteOnlyOnce(true, "name", in));
+        assertEquals(PROTOCOL_ERROR, exception.getReasonCode());
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {0, 1, 2, 3})
-    void checkIntOnlyOnce_inputLengthTooShort(final int length) {
-        pushBytes(in, length);
-        assertFalse(Mqtt5MessageDecoderUtil.checkIntOnlyOnce(false, "name", channel, in));
-        checkClosed(MALFORMED_PACKET);
+    @ValueSource(ints = {0, 1, 65_535})
+    void unsignedShortOnlyOnce(final int value) throws MqttDecoderException {
+        in.writeShort(value);
+        assertEquals(value, Mqtt5MessageDecoderUtil.unsignedShortOnlyOnce(false, "name", in));
+    }
+
+    @Test
+    void unsignedShortOnlyOnce_inputLengthTooShort() {
+        final MqttDecoderException exception = assertThrows(MqttDecoderException.class,
+                () -> Mqtt5MessageDecoderUtil.unsignedShortOnlyOnce(false, "name", in));
+        assertEquals(MALFORMED_PACKET, exception.getReasonCode());
+    }
+
+    @Test
+    void unsignedShortOnlyOnce_present() {
+        in.writeShort(1);
+        final MqttDecoderException exception = assertThrows(MqttDecoderException.class,
+                () -> Mqtt5MessageDecoderUtil.unsignedShortOnlyOnce(true, "name", in));
+        assertEquals(PROTOCOL_ERROR, exception.getReasonCode());
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {0, 1})
-    void checkBoolean(final int booleanAsInt) {
-        assertTrue(Mqtt5MessageDecoderUtil.checkBoolean((byte) booleanAsInt, "name", channel));
+    @ValueSource(longs = {0, 1, 4_294_967_295L})
+    void unsignedIntOnlyOnce(final long value) throws MqttDecoderException {
+        in.writeInt((int) value);
+        assertEquals(value, Mqtt5MessageDecoderUtil.unsignedIntOnlyOnce(false, "name", in));
     }
 
-    @ParameterizedTest
-    @ValueSource(ints = {-1, 3, 1000})
-    void checkBooleanIncorrect(final int booleanAsInt) {
-        assertFalse(Mqtt5MessageDecoderUtil.checkBoolean((byte) booleanAsInt, "name", channel));
-        checkClosed(PROTOCOL_ERROR);
+    @Test
+    void unsignedIntOnlyOnce_inputLengthTooShort() {
+        final MqttDecoderException exception = assertThrows(MqttDecoderException.class,
+                () -> Mqtt5MessageDecoderUtil.unsignedIntOnlyOnce(false, "name", in));
+        assertEquals(MALFORMED_PACKET, exception.getReasonCode());
     }
 
-    private void pushBytes(final ByteBuf in, final int length) {
-        IntStream.range(0, length).forEach(in::writeByte);
-        assertEquals(length, in.readableBytes());
-    }
-
-    private void checkClosed(final Mqtt5DisconnectReasonCode reasonCode) {
-        final Mqtt5Disconnect disconnect = channel.readOutbound();
-        assertNotNull(disconnect);
-        assertEquals(reasonCode, disconnect.getReasonCode());
+    @Test
+    void unsignedIntOnlyOnce_present() {
+        in.writeInt(1);
+        final MqttDecoderException exception = assertThrows(MqttDecoderException.class,
+                () -> Mqtt5MessageDecoderUtil.unsignedIntOnlyOnce(true, "name", in));
+        assertEquals(PROTOCOL_ERROR, exception.getReasonCode());
     }
 
 }

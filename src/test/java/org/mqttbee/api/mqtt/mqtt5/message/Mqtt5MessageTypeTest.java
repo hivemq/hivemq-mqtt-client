@@ -2,6 +2,7 @@ package org.mqttbee.api.mqtt.mqtt5.message;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -165,14 +166,14 @@ public class Mqtt5MessageTypeTest {
         assertSame(Mqtt5MessageType.AUTH, Mqtt5MessageType.fromCode(15));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void test_fromCode_16() {
-        Mqtt5MessageType.fromCode(16);
+        assertNull(Mqtt5MessageType.fromCode(16));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void test_fromCode_negative() {
-        Mqtt5MessageType.fromCode(-1);
+        assertNull(Mqtt5MessageType.fromCode(-1));
     }
 
 }

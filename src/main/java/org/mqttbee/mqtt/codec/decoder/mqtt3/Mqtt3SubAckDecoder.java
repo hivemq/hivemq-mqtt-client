@@ -2,17 +2,21 @@ package org.mqttbee.mqtt.codec.decoder.mqtt3;
 
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAckReturnCode;
 import org.mqttbee.mqtt.MqttClientConnectionDataImpl;
+import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAckImpl;
 import org.mqttbee.mqtt.message.subscribe.suback.mqtt3.Mqtt3SubAckView;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.checkFixedHeaderFlags;
+import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.remainingLengthTooShort;
+import static org.mqttbee.mqtt.codec.decoder.mqtt3.Mqtt3MessageDecoderUtil.wrongReturnCode;
 
 /**
  * @author Daniel Krüger
@@ -32,18 +36,12 @@ public class Mqtt3SubAckDecoder implements MqttMessageDecoder {
     @Override
     public MqttSubAckImpl decode(
             final int flags, @NotNull final ByteBuf in,
-            @NotNull final MqttClientConnectionDataImpl clientConnectionData) {
+            @NotNull final MqttClientConnectionDataImpl clientConnectionData) throws MqttDecoderException {
 
-        final Channel channel = clientConnectionData.getChannel();
-
-        if (flags != FLAGS) {
-            channel.close(); // TODO
-            return null;
-        }
+        checkFixedHeaderFlags(FLAGS, flags);
 
         if (in.readableBytes() < MIN_REMAINING_LENGTH) {
-            channel.close(); // TODO
-            return null;
+            throw remainingLengthTooShort();
         }
 
         final int packetIdentifier = in.readUnsignedShort();
@@ -53,8 +51,7 @@ public class Mqtt3SubAckDecoder implements MqttMessageDecoder {
         for (int i = 0; i < returnCodeCount; i++) {
             final Mqtt3SubAckReturnCode returnCode = Mqtt3SubAckReturnCode.from(in.readUnsignedByte());
             if (returnCode == null) {
-                channel.close(); // TODO
-                return null;
+                throw wrongReturnCode();
             }
             returnCodesBuilder.add(returnCode);
         }

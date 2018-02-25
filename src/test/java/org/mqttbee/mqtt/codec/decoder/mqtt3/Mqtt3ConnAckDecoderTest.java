@@ -76,10 +76,14 @@ class Mqtt3ConnAckDecoderTest extends AbstractMqtt3DecoderTest {
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
         final MqttConnAckImpl connAck = channel.readInbound();
-        assertNotNull(connAck);
-        assertEquals(Mqtt5ConnAckReasonCode.UNSUPPORTED_PROTOCOL_VERSION, connAck.getReasonCode());
-        // Mqtt3ConnAckReturnCode.UNSUPPORTED_PROTOCOL_VERSION
-        assertEquals(sessionPresent, connAck.isSessionPresent());
+        if (sessionPresent) {
+            assertNull(connAck);
+        } else {
+            assertNotNull(connAck);
+            assertEquals(Mqtt5ConnAckReasonCode.UNSUPPORTED_PROTOCOL_VERSION, connAck.getReasonCode());
+            // Mqtt3ConnAckReturnCode.UNSUPPORTED_PROTOCOL_VERSION
+            assertFalse(connAck.isSessionPresent());
+        }
     }
 
     @ParameterizedTest
@@ -92,10 +96,14 @@ class Mqtt3ConnAckDecoderTest extends AbstractMqtt3DecoderTest {
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
         final MqttConnAckImpl connAck = channel.readInbound();
-        assertNotNull(connAck);
-        assertEquals(Mqtt5ConnAckReasonCode.CLIENT_IDENTIFIER_NOT_VALID, connAck.getReasonCode());
-        // Mqtt3ConnAckReturnCode.IDENTIFIER_REJECTED
-        assertEquals(sessionPresent, connAck.isSessionPresent());
+        if (sessionPresent) {
+            assertNull(connAck);
+        } else {
+            assertNotNull(connAck);
+            assertEquals(Mqtt5ConnAckReasonCode.CLIENT_IDENTIFIER_NOT_VALID, connAck.getReasonCode());
+            // Mqtt3ConnAckReturnCode.IDENTIFIER_REJECTED
+            assertFalse(connAck.isSessionPresent());
+        }
     }
 
     @ParameterizedTest
@@ -108,10 +116,14 @@ class Mqtt3ConnAckDecoderTest extends AbstractMqtt3DecoderTest {
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
         final MqttConnAckImpl connAck = channel.readInbound();
-        assertNotNull(connAck);
-        assertEquals(Mqtt5ConnAckReasonCode.SERVER_UNAVAILABLE, connAck.getReasonCode());
-        // Mqtt3ConnAckReturnCode.SERVER_UNAVAILABLE
-        assertEquals(sessionPresent, connAck.isSessionPresent());
+        if (sessionPresent) {
+            assertNull(connAck);
+        } else {
+            assertNotNull(connAck);
+            assertEquals(Mqtt5ConnAckReasonCode.SERVER_UNAVAILABLE, connAck.getReasonCode());
+            // Mqtt3ConnAckReturnCode.SERVER_UNAVAILABLE
+            assertFalse(connAck.isSessionPresent());
+        }
     }
 
     @ParameterizedTest
@@ -124,10 +136,14 @@ class Mqtt3ConnAckDecoderTest extends AbstractMqtt3DecoderTest {
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
         final MqttConnAckImpl connAck = channel.readInbound();
-        assertNotNull(connAck);
-        assertEquals(Mqtt5ConnAckReasonCode.BAD_USER_NAME_OR_PASSWORD, connAck.getReasonCode());
-        // Mqtt3ConnAckReturnCode.BAD_USER_NAME_OR_PASSWORD
-        assertEquals(sessionPresent, connAck.isSessionPresent());
+        if (sessionPresent) {
+            assertNull(connAck);
+        } else {
+            assertNotNull(connAck);
+            assertEquals(Mqtt5ConnAckReasonCode.BAD_USER_NAME_OR_PASSWORD, connAck.getReasonCode());
+            // Mqtt3ConnAckReturnCode.BAD_USER_NAME_OR_PASSWORD
+            assertFalse(connAck.isSessionPresent());
+        }
     }
 
     @ParameterizedTest
@@ -140,10 +156,14 @@ class Mqtt3ConnAckDecoderTest extends AbstractMqtt3DecoderTest {
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
         final MqttConnAckImpl connAck = channel.readInbound();
-        assertNotNull(connAck);
-        assertEquals(Mqtt5ConnAckReasonCode.NOT_AUTHORIZED, connAck.getReasonCode());
-        // Mqtt3ConnAckReturnCode.NOT_AUTHORIZED
-        assertEquals(sessionPresent, connAck.isSessionPresent());
+        if (sessionPresent) {
+            assertNull(connAck);
+        } else {
+            assertNotNull(connAck);
+            assertEquals(Mqtt5ConnAckReasonCode.NOT_AUTHORIZED, connAck.getReasonCode());
+            // Mqtt3ConnAckReturnCode.NOT_AUTHORIZED
+            assertFalse(connAck.isSessionPresent());
+        }
     }
 
     @ParameterizedTest
