@@ -1,6 +1,7 @@
 package org.mqttbee.mqtt.message.subscribe.mqtt3;
 
 import com.google.common.collect.ImmutableList;
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
@@ -12,6 +13,7 @@ import org.mqttbee.mqtt.message.subscribe.MqttSubscribeImpl;
 /**
  * @author Silvio Giebl
  */
+@Immutable
 public class Mqtt3SubscribeView implements Mqtt3Subscribe {
 
     public static MqttSubscribeImpl wrapped(

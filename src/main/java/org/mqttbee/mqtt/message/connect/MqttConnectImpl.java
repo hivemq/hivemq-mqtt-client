@@ -1,5 +1,6 @@
 package org.mqttbee.mqtt.message.connect;
 
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
@@ -22,6 +23,7 @@ import java.util.Optional;
 /**
  * @author Silvio Giebl
  */
+@Immutable
 public class MqttConnectImpl
         extends MqttWrappedMessage<MqttConnectImpl, MqttConnectWrapper, MqttMessageEncoderProvider<MqttConnectWrapper>>
         implements Mqtt5Connect {
@@ -134,6 +136,7 @@ public class MqttConnectImpl
     }
 
 
+    @Immutable
     public static class SimpleAuthImpl implements SimpleAuth {
 
         private final MqttUTF8StringImpl username;
@@ -169,6 +172,7 @@ public class MqttConnectImpl
     }
 
 
+    @Immutable
     public static class RestrictionsImpl implements Restrictions {
 
         @NotNull

@@ -1,6 +1,7 @@
 package org.mqttbee.mqtt.message.unsubscribe.unsuback.mqtt3;
 
 import com.google.common.collect.ImmutableList;
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.unsuback.Mqtt3UnsubAck;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
@@ -9,6 +10,7 @@ import org.mqttbee.mqtt.message.unsubscribe.unsuback.MqttUnsubAckImpl;
 /**
  * @author Silvio Giebl
  */
+@Immutable
 public class Mqtt3UnsubAckView implements Mqtt3UnsubAck {
 
     private static Mqtt3UnsubAckView INSTANCE;

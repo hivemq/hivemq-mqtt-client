@@ -1,6 +1,7 @@
 package org.mqttbee.mqtt.message.subscribe;
 
 import com.google.common.collect.ImmutableList;
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5RetainHandling;
@@ -14,6 +15,7 @@ import org.mqttbee.mqtt.message.MqttWrappedMessage;
 /**
  * @author Silvio Giebl
  */
+@Immutable
 public class MqttSubscribeImpl extends
         MqttWrappedMessage<MqttSubscribeImpl, MqttSubscribeWrapper, MqttMessageEncoderProvider<MqttSubscribeWrapper>>
         implements Mqtt5Subscribe {
@@ -46,6 +48,7 @@ public class MqttSubscribeImpl extends
     }
 
 
+    @Immutable
     public static class SubscriptionImpl implements Subscription {
 
         private final MqttTopicFilterImpl topicFilter;
@@ -55,8 +58,7 @@ public class MqttSubscribeImpl extends
         private final boolean isRetainAsPublished;
 
         public SubscriptionImpl(
-                @NotNull final MqttTopicFilterImpl topicFilter, @NotNull final MqttQoS qos, final boolean isNoLocal,
-                @NotNull final Mqtt5RetainHandling retainHandling, final boolean isRetainAsPublished) {
+                @NotNull final MqttTopicFilterImpl topicFilter, @NotNull final MqttQoS qos, final boolean isNoLocal, @NotNull final Mqtt5RetainHandling retainHandling, final boolean isRetainAsPublished) {
             this.topicFilter = topicFilter;
             this.qos = qos;
             this.isNoLocal = isNoLocal;

@@ -1,5 +1,6 @@
 package org.mqttbee.mqtt.message.publish.pubrel.mqtt3;
 
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.pubrel.Mqtt3PubRel;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrel.Mqtt5PubRelReasonCode;
 import org.mqttbee.mqtt.codec.encoder.mqtt3.Mqtt3PubRelEncoder;
@@ -9,6 +10,7 @@ import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRelImpl;
 /**
  * @author Silvio Giebl
  */
+@Immutable
 public class Mqtt3PubRelView implements Mqtt3PubRel {
 
     private static Mqtt3PubRelView INSTANCE;

@@ -1,5 +1,6 @@
 package org.mqttbee.mqtt.message.disconnect;
 
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
@@ -15,6 +16,7 @@ import java.util.Optional;
 /**
  * @author Silvio Giebl
  */
+@Immutable
 public class MqttDisconnectImpl extends
         MqttMessageWithReasonCode<MqttDisconnectImpl, Mqtt5DisconnectReasonCode, MqttMessageEncoderProvider<MqttDisconnectImpl>>
         implements Mqtt5Disconnect {

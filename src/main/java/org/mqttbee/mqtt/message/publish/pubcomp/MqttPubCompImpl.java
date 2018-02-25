@@ -1,5 +1,6 @@
 package org.mqttbee.mqtt.message.publish.pubcomp;
 
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubComp;
@@ -13,6 +14,7 @@ import org.mqttbee.mqtt.message.publish.MqttQoSMessage;
 /**
  * @author Silvio Giebl
  */
+@Immutable
 public class MqttPubCompImpl extends
         MqttMessageWithIdAndReasonCode<MqttPubCompImpl, Mqtt5PubCompReasonCode, MqttMessageEncoderProvider<MqttPubCompImpl>>
         implements Mqtt5PubComp, MqttQoSMessage {

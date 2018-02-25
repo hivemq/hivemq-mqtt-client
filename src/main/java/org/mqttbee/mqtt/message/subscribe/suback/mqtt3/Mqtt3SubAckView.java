@@ -1,6 +1,7 @@
 package org.mqttbee.mqtt.message.subscribe.suback.mqtt3;
 
 import com.google.common.collect.ImmutableList;
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAck;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAckReturnCode;
@@ -13,9 +14,8 @@ import static org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAckRet
 /**
  * @author Silvio Giebl
  */
+@Immutable
 public class Mqtt3SubAckView implements Mqtt3SubAck {
-
-    private final MqttSubAckImpl wrapped;
 
     @NotNull
     public static MqttSubAckImpl wrapped(
@@ -87,6 +87,8 @@ public class Mqtt3SubAckView implements Mqtt3SubAck {
 
         return new Mqtt3SubAckView(wrapped(packetIdentifier, returnCodes));
     }
+
+    private final MqttSubAckImpl wrapped;
 
     private Mqtt3SubAckView(@NotNull final MqttSubAckImpl wrapped) {
         this.wrapped = wrapped;

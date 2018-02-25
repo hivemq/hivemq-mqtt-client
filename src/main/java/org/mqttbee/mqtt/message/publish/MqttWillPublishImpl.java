@@ -1,5 +1,6 @@
 package org.mqttbee.mqtt.message.publish;
 
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
@@ -17,6 +18,7 @@ import java.nio.ByteBuffer;
 /**
  * @author Silvio Giebl
  */
+@Immutable
 public class MqttWillPublishImpl extends MqttPublishImpl implements Mqtt5WillPublish {
 
     private final long delayInterval;

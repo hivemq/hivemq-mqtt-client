@@ -1,5 +1,6 @@
 package org.mqttbee.mqtt.message.connect.mqtt3;
 
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
@@ -17,9 +18,8 @@ import java.util.Optional;
 /**
  * @author Silvio Giebl
  */
+@Immutable
 public class Mqtt3ConnectView implements Mqtt3Connect {
-
-    private final MqttConnectImpl wrapped;
 
     @NotNull
     public static MqttConnectImpl wrapped(
@@ -41,6 +41,8 @@ public class Mqtt3ConnectView implements Mqtt3Connect {
 
         return new Mqtt3ConnectView(wrapped(keepAlive, isCleanSession, simpleAuth, willPublish));
     }
+
+    private final MqttConnectImpl wrapped;
 
     private Mqtt3ConnectView(@NotNull final MqttConnectImpl wrapped) {
         this.wrapped = wrapped;
@@ -75,6 +77,7 @@ public class Mqtt3ConnectView implements Mqtt3Connect {
     }
 
 
+    @Immutable
     public class SimpleAuthView implements SimpleAuth {
 
         private final MqttConnectImpl.SimpleAuthImpl simpleAuth;

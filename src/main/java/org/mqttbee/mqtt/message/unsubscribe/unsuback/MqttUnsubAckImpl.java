@@ -1,6 +1,7 @@
 package org.mqttbee.mqtt.message.unsubscribe.unsuback;
 
 import com.google.common.collect.ImmutableList;
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
@@ -13,6 +14,7 @@ import org.mqttbee.mqtt.message.MqttMessageWithUserProperties.MqttMessageWithIdA
 /**
  * @author Silvio Giebl
  */
+@Immutable
 public class MqttUnsubAckImpl extends
         MqttMessageWithIdAndReasonCodes<MqttUnsubAckImpl, Mqtt5UnsubAckReasonCode, MqttMessageEncoderProvider<MqttUnsubAckImpl>>
         implements Mqtt5UnsubAck {

@@ -1,5 +1,6 @@
 package org.mqttbee.mqtt.message.disconnect.mqtt3;
 
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.disconnect.Mqtt3Disconnect;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
@@ -10,6 +11,7 @@ import org.mqttbee.mqtt.message.disconnect.MqttDisconnectImpl;
 /**
  * @author Silvio Giebl
  */
+@Immutable
 public class Mqtt3DisconnectView implements Mqtt3Disconnect {
 
     private static MqttDisconnectImpl WRAPPED;

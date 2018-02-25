@@ -2,6 +2,7 @@ package org.mqttbee.mqtt.message.publish;
 
 import com.google.common.primitives.ImmutableIntArray;
 import io.netty.channel.Channel;
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.MqttServerConnectionDataImpl;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttPublishEncoderProvider;
@@ -11,6 +12,7 @@ import org.mqttbee.mqtt.message.MqttMessageWrapper.MqttMessageWrapperWithId;
 /**
  * @author Silvio Giebl
  */
+@Immutable
 public class MqttPublishWrapper
         extends MqttMessageWrapperWithId<MqttPublishWrapper, MqttPublishImpl, MqttPublishEncoderProvider>
         implements MqttQoSMessage {
