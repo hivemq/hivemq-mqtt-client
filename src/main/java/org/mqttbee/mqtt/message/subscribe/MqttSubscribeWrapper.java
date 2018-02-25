@@ -1,5 +1,6 @@
 package org.mqttbee.mqtt.message.subscribe;
 
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
 import org.mqttbee.mqtt.message.MqttMessageWrapper.MqttMessageWrapperWithId;
@@ -7,6 +8,7 @@ import org.mqttbee.mqtt.message.MqttMessageWrapper.MqttMessageWrapperWithId;
 /**
  * @author Silvio Giebl
  */
+@Immutable
 public class MqttSubscribeWrapper extends
         MqttMessageWrapperWithId<MqttSubscribeWrapper, MqttSubscribeImpl, MqttMessageEncoderProvider<MqttSubscribeWrapper>> {
 

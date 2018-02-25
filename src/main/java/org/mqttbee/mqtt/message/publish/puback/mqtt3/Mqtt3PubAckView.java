@@ -1,5 +1,6 @@
 package org.mqttbee.mqtt.message.publish.puback.mqtt3;
 
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.puback.Mqtt3PubAck;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.puback.Mqtt5PubAckReasonCode;
 import org.mqttbee.mqtt.codec.encoder.mqtt3.Mqtt3PubAckEncoder;
@@ -9,6 +10,7 @@ import org.mqttbee.mqtt.message.publish.puback.MqttPubAckImpl;
 /**
  * @author Silvio Giebl
  */
+@Immutable
 public class Mqtt3PubAckView implements Mqtt3PubAck {
 
     private static Mqtt3PubAckView INSTANCE;

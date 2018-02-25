@@ -1,5 +1,6 @@
 package org.mqttbee.mqtt.message.publish.puback;
 
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.puback.Mqtt5PubAck;
@@ -13,6 +14,7 @@ import org.mqttbee.mqtt.message.publish.MqttQoSMessage;
 /**
  * @author Silvio Giebl
  */
+@Immutable
 public class MqttPubAckImpl extends
         MqttMessageWithIdAndReasonCode<MqttPubAckImpl, Mqtt5PubAckReasonCode, MqttMessageEncoderProvider<MqttPubAckImpl>>
         implements Mqtt5PubAck, MqttQoSMessage {

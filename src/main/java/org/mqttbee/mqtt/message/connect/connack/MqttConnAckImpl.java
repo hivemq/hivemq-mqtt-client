@@ -1,5 +1,6 @@
 package org.mqttbee.mqtt.message.connect.connack;
 
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
@@ -19,6 +20,7 @@ import java.util.Optional;
 /**
  * @author Silvio Giebl
  */
+@Immutable
 public class MqttConnAckImpl extends
         MqttMessageWithReasonCode<MqttConnAckImpl, Mqtt5ConnAckReasonCode, MqttMessageEncoderProvider<MqttConnAckImpl>>
         implements Mqtt5ConnAck {
@@ -129,6 +131,7 @@ public class MqttConnAckImpl extends
     }
 
 
+    @Immutable
     public static class RestrictionsImpl implements Restrictions {
 
         @NotNull
@@ -148,10 +151,8 @@ public class MqttConnAckImpl extends
         private final boolean isSharedSubscriptionAvailable;
 
         public RestrictionsImpl(
-                final int receiveMaximum, final int topicAliasMaximum, final int maximumPacketSize,
-                final MqttQoS maximumQoS, final boolean isRetainAvailable,
-                final boolean isWildcardSubscriptionAvailable, final boolean isSubscriptionIdentifierAvailable,
-                final boolean isSharedSubscriptionAvailable) {
+                final int receiveMaximum, final int topicAliasMaximum, final int maximumPacketSize, final MqttQoS maximumQoS, final boolean isRetainAvailable,
+                final boolean isWildcardSubscriptionAvailable, final boolean isSubscriptionIdentifierAvailable, final boolean isSharedSubscriptionAvailable) {
             this.receiveMaximum = receiveMaximum;
             this.topicAliasMaximum = topicAliasMaximum;
             this.maximumPacketSize = maximumPacketSize;

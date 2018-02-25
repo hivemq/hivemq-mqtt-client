@@ -1,5 +1,6 @@
 package org.mqttbee.mqtt.message.publish.mqtt3;
 
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
@@ -18,6 +19,7 @@ import java.util.Optional;
 /**
  * @author Silvio Giebl
  */
+@Immutable
 public class Mqtt3PublishView implements Mqtt3Publish {
 
     public static MqttPublishImpl wrapped(

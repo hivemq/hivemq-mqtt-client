@@ -1,6 +1,7 @@
 package org.mqttbee.mqtt.message.publish;
 
 import com.google.common.primitives.ImmutableIntArray;
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
@@ -23,6 +24,7 @@ import java.util.Optional;
 /**
  * @author Silvio Giebl
  */
+@Immutable
 public class MqttPublishImpl extends MqttWrappedMessage<MqttPublishImpl, MqttPublishWrapper, MqttPublishEncoderProvider>
         implements Mqtt5Publish {
 

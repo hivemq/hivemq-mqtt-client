@@ -1,5 +1,6 @@
 package org.mqttbee.mqtt.message.auth;
 
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5EnhancedAuth;
@@ -12,6 +13,7 @@ import java.util.Optional;
 /**
  * @author Silvio Giebl
  */
+@Immutable
 public class MqttEnhancedAuthImpl implements Mqtt5EnhancedAuth {
 
     private final MqttUTF8StringImpl method;

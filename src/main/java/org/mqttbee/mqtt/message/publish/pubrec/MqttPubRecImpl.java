@@ -1,5 +1,6 @@
 package org.mqttbee.mqtt.message.publish.pubrec;
 
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrec.Mqtt5PubRec;
@@ -13,6 +14,7 @@ import org.mqttbee.mqtt.message.publish.MqttQoSMessage;
 /**
  * @author Silvio Giebl
  */
+@Immutable
 public class MqttPubRecImpl
         extends MqttMessageWithIdAndReasonCode<MqttPubRecImpl, Mqtt5PubRecReasonCode, MqttPubRecEncoderProvider>
         implements Mqtt5PubRec, MqttQoSMessage {

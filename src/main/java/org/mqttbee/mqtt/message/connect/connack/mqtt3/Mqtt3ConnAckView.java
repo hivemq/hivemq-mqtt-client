@@ -1,5 +1,6 @@
 package org.mqttbee.mqtt.message.connect.connack.mqtt3;
 
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAckReturnCode;
@@ -12,6 +13,7 @@ import static org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAckRet
 /**
  * @author Silvio Giebl
  */
+@Immutable
 public class Mqtt3ConnAckView implements Mqtt3ConnAck {
 
     @NotNull
