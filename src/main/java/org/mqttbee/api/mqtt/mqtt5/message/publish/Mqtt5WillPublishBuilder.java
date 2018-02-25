@@ -8,14 +8,14 @@ import org.mqttbee.api.mqtt.datatypes.MqttTopic;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5PublishEncoder;
-import org.mqttbee.mqtt.message.publish.MqttWillPublishImpl;
+import org.mqttbee.mqtt.message.publish.MqttWillPublish;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 import org.mqttbee.util.UnsignedDataTypes;
 
 import java.nio.ByteBuffer;
 
-import static org.mqttbee.mqtt.message.publish.MqttWillPublishImpl.DEFAULT_DELAY_INTERVAL;
+import static org.mqttbee.mqtt.message.publish.MqttWillPublish.DEFAULT_DELAY_INTERVAL;
 
 /**
  * @author Silvio Giebl
@@ -31,7 +31,7 @@ public class Mqtt5WillPublishBuilder extends Mqtt5PublishBuilder {
         super(publish);
         if (publish instanceof Mqtt5WillPublish) {
             delayInterval =
-                    MustNotBeImplementedUtil.checkNotImplemented(publish, MqttWillPublishImpl.class).getDelayInterval();
+                    MustNotBeImplementedUtil.checkNotImplemented(publish, MqttWillPublish.class).getDelayInterval();
         }
     }
 
@@ -152,7 +152,7 @@ public class Mqtt5WillPublishBuilder extends Mqtt5PublishBuilder {
     @NotNull
     @Override
     public Mqtt5WillPublish build() {
-        return new MqttWillPublishImpl(topic, payload, qos, retain, messageExpiryInterval, payloadFormatIndicator,
+        return new MqttWillPublish(topic, payload, qos, retain, messageExpiryInterval, payloadFormatIndicator,
                 contentType, responseTopic, correlationData, userProperties, delayInterval,
                 Mqtt5PublishEncoder.PROVIDER);
     }

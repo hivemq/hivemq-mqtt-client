@@ -9,7 +9,7 @@ import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAckReasonCode;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoders;
-import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAckImpl;
+import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAck;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -56,7 +56,7 @@ class Mqtt3SubAckDecoderTest extends AbstractMqtt3DecoderTest {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
-        final MqttSubAckImpl subAckImpl = channel.readInbound();
+        final MqttSubAck subAckImpl = channel.readInbound();
         assertNotNull(subAckImpl);
         assertEquals(useMaxPacketId ? 65535 : 0, subAckImpl.getPacketIdentifier());
         assertEquals(Mqtt5SubAckReasonCode.GRANTED_QOS_0, subAckImpl.getReasonCodes().get(0));
@@ -95,7 +95,7 @@ class Mqtt3SubAckDecoderTest extends AbstractMqtt3DecoderTest {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
-        final MqttSubAckImpl subAckImpl = channel.readInbound();
+        final MqttSubAck subAckImpl = channel.readInbound();
         assertFalse(channel.isOpen());
         assertNull(subAckImpl);
     }

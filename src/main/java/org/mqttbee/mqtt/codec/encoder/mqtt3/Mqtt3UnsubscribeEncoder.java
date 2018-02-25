@@ -10,15 +10,15 @@ import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider
 import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider.ThreadLocalMqttWrappedMessageEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
-import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribeImpl;
+import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribe;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribeWrapper;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt3UnsubscribeEncoder extends Mqtt3WrappedMessageEncoder<MqttUnsubscribeImpl, MqttUnsubscribeWrapper> {
+public class Mqtt3UnsubscribeEncoder extends Mqtt3WrappedMessageEncoder<MqttUnsubscribe, MqttUnsubscribeWrapper> {
 
-    public static final MqttWrappedMessageEncoderProvider<MqttUnsubscribeImpl, MqttUnsubscribeWrapper, MqttMessageEncoderProvider<MqttUnsubscribeWrapper>>
+    public static final MqttWrappedMessageEncoderProvider<MqttUnsubscribe, MqttUnsubscribeWrapper, MqttMessageEncoderProvider<MqttUnsubscribeWrapper>>
             PROVIDER = ThreadLocalMqttWrappedMessageEncoderProvider.create(Mqtt3UnsubscribeEncoder::new);
 
     private static final int FIXED_HEADER = (Mqtt3MessageType.UNSUBSCRIBE.getCode() << 4) | 0b0010;

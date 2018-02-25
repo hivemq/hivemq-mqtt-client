@@ -3,7 +3,7 @@ package org.mqttbee.mqtt.codec.encoder.mqtt3;
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.Test;
 import org.mqttbee.mqtt.codec.encoder.AbstractMqtt5EncoderTest;
-import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRelImpl;
+import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRel;
 import org.mqttbee.mqtt.message.publish.pubrel.mqtt3.Mqtt3PubRelView;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -20,7 +20,7 @@ class Mqtt3PubRelEncoderTest extends AbstractMqtt5EncoderTest {
         final byte msb = (byte) (id >>> 8);
         final byte lsb = (byte) id;
         final byte[] expected = {0x60, 0x02, msb, lsb};
-        final MqttPubRelImpl pubRel = Mqtt3PubRelView.wrapped(id);
+        final MqttPubRel pubRel = Mqtt3PubRelView.wrapped(id);
         encode(expected, pubRel);
     }
 
@@ -28,7 +28,7 @@ class Mqtt3PubRelEncoderTest extends AbstractMqtt5EncoderTest {
     void encodedRemainingLength() {
     }
 
-    private void encode(final byte[] expected, final MqttPubRelImpl pubRel) {
+    private void encode(final byte[] expected, final MqttPubRel pubRel) {
         channel.writeOutbound(pubRel);
         final ByteBuf byteBuf = channel.readOutbound();
         final byte[] actual = new byte[byteBuf.readableBytes()];

@@ -14,12 +14,12 @@ import java.util.Optional;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttEnhancedAuthImpl implements Mqtt5EnhancedAuth {
+public class MqttEnhancedAuth implements Mqtt5EnhancedAuth {
 
     private final MqttUTF8StringImpl method;
     private final ByteBuffer data;
 
-    public MqttEnhancedAuthImpl(@NotNull final MqttUTF8StringImpl method, @Nullable final ByteBuffer data) {
+    public MqttEnhancedAuth(@NotNull final MqttUTF8StringImpl method, @Nullable final ByteBuffer data) {
         this.method = method;
         this.data = data;
     }

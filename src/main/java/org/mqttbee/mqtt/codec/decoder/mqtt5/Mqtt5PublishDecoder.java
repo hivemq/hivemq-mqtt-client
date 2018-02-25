@@ -16,7 +16,7 @@ import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5PublishEncoder;
 import org.mqttbee.mqtt.datatypes.*;
-import org.mqttbee.mqtt.message.publish.MqttPublishImpl;
+import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
 import org.mqttbee.mqtt5.netty.ChannelAttributes;
 import org.mqttbee.util.ByteBufferUtil;
@@ -27,7 +27,7 @@ import java.nio.ByteBuffer;
 
 import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.*;
 import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.*;
-import static org.mqttbee.mqtt.message.publish.MqttPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY;
+import static org.mqttbee.mqtt.message.publish.MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY;
 import static org.mqttbee.mqtt.message.publish.MqttPublishProperty.*;
 import static org.mqttbee.mqtt.message.publish.MqttPublishWrapper.DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS;
 import static org.mqttbee.mqtt.message.publish.MqttPublishWrapper.DEFAULT_NO_TOPIC_ALIAS;
@@ -209,8 +209,8 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
 
         final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.build(userPropertiesBuilder);
 
-        final MqttPublishImpl publish =
-                new MqttPublishImpl(topic, payload, qos, retain, messageExpiryInterval, payloadFormatIndicator,
+        final MqttPublish publish =
+                new MqttPublish(topic, payload, qos, retain, messageExpiryInterval, payloadFormatIndicator,
                         contentType, responseTopic, correlationData, topicAliasUsage, userProperties,
                         Mqtt5PublishEncoder.PROVIDER);
 

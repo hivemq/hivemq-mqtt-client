@@ -12,7 +12,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrec.Mqtt5PubRecReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
-import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRecImpl;
+import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRec;
 
 import static org.junit.Assert.*;
 import static org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.MALFORMED_PACKET;
@@ -55,7 +55,7 @@ class Mqtt5PubRecDecoderTest extends AbstractMqtt5DecoderTest {
                 0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e', '2',
         };
 
-        final MqttPubRecImpl pubRec = decodeOk(encoded);
+        final MqttPubRec pubRec = decodeOk(encoded);
 
         assertEquals(SUCCESS, pubRec.getReasonCode());
         assertTrue(pubRec.getReasonString().isPresent());
@@ -84,7 +84,7 @@ class Mqtt5PubRecDecoderTest extends AbstractMqtt5DecoderTest {
                 0x00
         };
 
-        final MqttPubRecImpl pubRec = decodeOk(encoded);
+        final MqttPubRec pubRec = decodeOk(encoded);
         assertEquals(SUCCESS, pubRec.getReasonCode());
     }
 
@@ -107,7 +107,7 @@ class Mqtt5PubRecDecoderTest extends AbstractMqtt5DecoderTest {
                 0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e',
         };
 
-        final MqttPubRecImpl pubRec = decodeOk(encoded);
+        final MqttPubRec pubRec = decodeOk(encoded);
         assertEquals(SUCCESS, pubRec.getReasonCode());
     }
 
@@ -131,7 +131,7 @@ class Mqtt5PubRecDecoderTest extends AbstractMqtt5DecoderTest {
                 0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'
         };
 
-        final MqttPubRecImpl pubRec = decodeOk(encoded);
+        final MqttPubRec pubRec = decodeOk(encoded);
         assertEquals(SUCCESS, pubRec.getReasonCode());
     }
 
@@ -152,7 +152,7 @@ class Mqtt5PubRecDecoderTest extends AbstractMqtt5DecoderTest {
         };
 
         encoded[4] = (byte) reasonCode;
-        final MqttPubRecImpl pubRec = decodeOk(encoded);
+        final MqttPubRec pubRec = decodeOk(encoded);
         assertEquals(Mqtt5PubRecReasonCode.fromCode(reasonCode), pubRec.getReasonCode());
     }
 
@@ -169,7 +169,7 @@ class Mqtt5PubRecDecoderTest extends AbstractMqtt5DecoderTest {
                 0, 5
         };
 
-        final MqttPubRecImpl pubRec = decodeOk(encoded);
+        final MqttPubRec pubRec = decodeOk(encoded);
         assertEquals(SUCCESS, pubRec.getReasonCode());
     }
 
@@ -323,7 +323,7 @@ class Mqtt5PubRecDecoderTest extends AbstractMqtt5DecoderTest {
                 0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', 's'
         };
 
-        final MqttPubRecImpl pubRec = decodeOk(encoded);
+        final MqttPubRec pubRec = decodeOk(encoded);
         assertTrue(pubRec.getReasonString().isPresent());
         assertEquals("success", pubRec.getReasonString().get().toString());
     }
@@ -388,14 +388,14 @@ class Mqtt5PubRecDecoderTest extends AbstractMqtt5DecoderTest {
     }
 
     @NotNull
-    private MqttPubRecImpl decodeOk(final byte[] encoded) {
-        final MqttPubRecImpl pubRec = decode(encoded);
+    private MqttPubRec decodeOk(final byte[] encoded) {
+        final MqttPubRec pubRec = decode(encoded);
         assertNotNull(pubRec);
         return pubRec;
     }
 
     private void decodeNok(final byte[] encoded, final Mqtt5DisconnectReasonCode reasonCode) {
-        final MqttPubRecImpl pubRec = decode(encoded);
+        final MqttPubRec pubRec = decode(encoded);
         assertNull(pubRec);
 
         final Mqtt5Disconnect disconnect = channel.readOutbound();
@@ -406,7 +406,7 @@ class Mqtt5PubRecDecoderTest extends AbstractMqtt5DecoderTest {
     }
 
     @Nullable
-    private MqttPubRecImpl decode(final byte[] encoded) {
+    private MqttPubRec decode(final byte[] encoded) {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);

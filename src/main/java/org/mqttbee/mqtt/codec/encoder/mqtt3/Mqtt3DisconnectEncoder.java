@@ -7,7 +7,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoder;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
-import org.mqttbee.mqtt.message.disconnect.MqttDisconnectImpl;
+import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
 
 /**
  * @author Silvio Giebl
@@ -15,7 +15,7 @@ import org.mqttbee.mqtt.message.disconnect.MqttDisconnectImpl;
 public class Mqtt3DisconnectEncoder implements MqttMessageEncoder {
 
     private static final Mqtt3DisconnectEncoder INSTANCE = new Mqtt3DisconnectEncoder();
-    public static final MqttMessageEncoderProvider<MqttDisconnectImpl> PROVIDER = () -> (message) -> INSTANCE;
+    public static final MqttMessageEncoderProvider<MqttDisconnect> PROVIDER = () -> (message) -> INSTANCE;
 
     private static final int ENCODED_LENGTH = 2;
     private static final ByteBuf PACKET =

@@ -9,7 +9,7 @@ import org.mqttbee.mqtt.MqttClientConnectionDataImpl;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
-import org.mqttbee.mqtt.message.publish.MqttPublishImpl;
+import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
 import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishView;
 import org.mqttbee.mqtt5.netty.ChannelAttributes;
@@ -65,7 +65,7 @@ public class Mqtt3PublishDecoder implements MqttMessageDecoder {
             payload.position(0);
         }
 
-        final MqttPublishImpl publish = Mqtt3PublishView.wrapped(topic, payload, qos, retain);
+        final MqttPublish publish = Mqtt3PublishView.wrapped(topic, payload, qos, retain);
 
         return Mqtt3PublishView.wrapped(publish, packetIdentifier, dup);
     }

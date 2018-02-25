@@ -11,7 +11,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
-import org.mqttbee.mqtt.message.auth.MqttAuthImpl;
+import org.mqttbee.mqtt.message.auth.MqttAuth;
 import org.mqttbee.mqtt5.netty.ChannelAttributes;
 
 import java.nio.ByteBuffer;
@@ -61,7 +61,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
-        final MqttAuthImpl auth = channel.readInbound();
+        final MqttAuth auth = channel.readInbound();
 
         assertNotNull(auth);
 
@@ -105,7 +105,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
-        final MqttAuthImpl auth = channel.readInbound();
+        final MqttAuth auth = channel.readInbound();
 
         assertNotNull(auth);
 
@@ -602,7 +602,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
         byteBuf.writeBytes(new byte[]{0x26, 0, 5, 't', 'e', 's', 't', '2', 0, 5, 'v', 'a', 'l', 'u', 'e'});
 
         channel.writeInbound(byteBuf);
-        final MqttAuthImpl auth = channel.readInbound();
+        final MqttAuth auth = channel.readInbound();
         assertNotNull(auth);
 
         final ImmutableList<MqttUserPropertyImpl> userProperties = auth.getUserProperties().asList();

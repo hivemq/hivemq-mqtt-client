@@ -6,21 +6,21 @@ import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt.message.MqttMessageWrapper;
-import org.mqttbee.mqtt.message.auth.MqttEnhancedAuthImpl;
+import org.mqttbee.mqtt.message.auth.MqttEnhancedAuth;
 
 /**
  * @author Silvio Giebl
  */
 @Immutable
 public class MqttConnectWrapper extends
-        MqttMessageWrapper<MqttConnectWrapper, MqttConnectImpl, MqttMessageEncoderProvider<MqttConnectWrapper>> {
+        MqttMessageWrapper<MqttConnectWrapper, MqttConnect, MqttMessageEncoderProvider<MqttConnectWrapper>> {
 
     private final MqttClientIdentifierImpl clientIdentifier;
-    private final MqttEnhancedAuthImpl enhancedAuth;
+    private final MqttEnhancedAuth enhancedAuth;
 
     MqttConnectWrapper(
-            @NotNull final MqttConnectImpl wrapped, @NotNull final MqttClientIdentifierImpl clientIdentifier,
-            @Nullable final MqttEnhancedAuthImpl enhancedAuth) {
+            @NotNull final MqttConnect wrapped, @NotNull final MqttClientIdentifierImpl clientIdentifier,
+            @Nullable final MqttEnhancedAuth enhancedAuth) {
 
         super(wrapped);
         this.clientIdentifier = clientIdentifier;
@@ -33,7 +33,7 @@ public class MqttConnectWrapper extends
     }
 
     @Nullable
-    public MqttEnhancedAuthImpl getEnhancedAuth() {
+    public MqttEnhancedAuth getEnhancedAuth() {
         return enhancedAuth;
     }
 

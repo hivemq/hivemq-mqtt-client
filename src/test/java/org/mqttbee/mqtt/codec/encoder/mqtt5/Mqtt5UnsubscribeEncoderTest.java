@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mqttbee.mqtt.codec.encoder.AbstractMqtt5EncoderTest;
 import org.mqttbee.mqtt.datatypes.*;
-import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribeImpl;
+import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribe;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribeWrapper;
 
 import static java.util.Objects.requireNonNull;
@@ -90,7 +90,7 @@ class Mqtt5UnsubscribeEncoderTest extends AbstractMqtt5EncoderTest {
     @Disabled("transform to encode_maximumPacketSizeExceeded_omitUserPropertiesAndReasonString")
     void encode_maximumPacketSizeExceeded_throwsEncoderException() {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
-        final MqttUnsubscribeImpl unsubscribe = new MqttUnsubscribeImpl(
+        final MqttUnsubscribe unsubscribe = new MqttUnsubscribe(
                 maxPacket.getTopicFilter("extraChars"),
                 maxPacket.getMaxPossibleUserProperties(), Mqtt5UnsubscribeEncoder.PROVIDER);
 
@@ -106,8 +106,8 @@ class Mqtt5UnsubscribeEncoderTest extends AbstractMqtt5EncoderTest {
     @Disabled("transform to encode_propertyLengthExceeded_omitUserPropertiesAndReasonString")
     void encode_propertyLengthExceedsMax_throwsEncoderException() {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
-        final MqttUnsubscribeImpl unsubscribe =
-                new MqttUnsubscribeImpl(maxPacket.getTopicFilter(), maxPacket.getMaxPossibleUserProperties(1),
+        final MqttUnsubscribe unsubscribe =
+                new MqttUnsubscribe(maxPacket.getTopicFilter(), maxPacket.getMaxPossibleUserProperties(1),
                         Mqtt5UnsubscribeEncoder.PROVIDER);
 
         final int packetIdentifier = 1;
@@ -121,8 +121,8 @@ class Mqtt5UnsubscribeEncoderTest extends AbstractMqtt5EncoderTest {
     private void encodeUnsubscribe(
             final byte[] expected, final MqttUserPropertiesImpl userProperties,
             final ImmutableList<MqttTopicFilterImpl> topicFilters) {
-        final MqttUnsubscribeImpl unsubscribe =
-                new MqttUnsubscribeImpl(topicFilters, userProperties, Mqtt5UnsubscribeEncoder.PROVIDER);
+        final MqttUnsubscribe unsubscribe =
+                new MqttUnsubscribe(topicFilters, userProperties, Mqtt5UnsubscribeEncoder.PROVIDER);
         final int packetIdentifier = 0x01;
         final MqttUnsubscribeWrapper unsubscribeInternal = unsubscribe.wrap(packetIdentifier);
 

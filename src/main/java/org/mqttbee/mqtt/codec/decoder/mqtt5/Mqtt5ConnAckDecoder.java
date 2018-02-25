@@ -13,9 +13,9 @@ import org.mqttbee.mqtt.MqttClientConnectionDataImpl;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.datatypes.*;
-import org.mqttbee.mqtt.message.auth.MqttEnhancedAuthImpl;
-import org.mqttbee.mqtt.message.connect.connack.MqttConnAckImpl;
-import org.mqttbee.mqtt.message.connect.connack.MqttConnAckRestrictionsImpl;
+import org.mqttbee.mqtt.message.auth.MqttEnhancedAuth;
+import org.mqttbee.mqtt.message.connect.connack.MqttConnAck;
+import org.mqttbee.mqtt.message.connect.connack.MqttConnAckRestrictions;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -23,7 +23,7 @@ import java.nio.ByteBuffer;
 
 import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.*;
 import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.*;
-import static org.mqttbee.mqtt.message.connect.connack.MqttConnAckImpl.*;
+import static org.mqttbee.mqtt.message.connect.connack.MqttConnAck.*;
 import static org.mqttbee.mqtt.message.connect.connack.MqttConnAckProperty.*;
 
 /**
@@ -41,7 +41,7 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
 
     @Nullable
     @Override
-    public MqttConnAckImpl decode(
+    public MqttConnAck decode(
             final int flags, @NotNull final ByteBuf in,
             @NotNull final MqttClientConnectionDataImpl clientConnectionData) throws MqttDecoderException {
 
@@ -230,25 +230,24 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
             }
         }
 
-        MqttEnhancedAuthImpl enhancedAuth = null;
+        MqttEnhancedAuth enhancedAuth = null;
         if (authMethod != null) {
-            enhancedAuth = new MqttEnhancedAuthImpl(authMethod, authData);
+            enhancedAuth = new MqttEnhancedAuth(authMethod, authData);
         } else if (authData != null) {
             throw new MqttDecoderException(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
                     "auth data must not be included if auth method is absent");
         }
 
-        MqttConnAckRestrictionsImpl restrictions = MqttConnAckRestrictionsImpl.DEFAULT;
+        MqttConnAckRestrictions restrictions = MqttConnAckRestrictions.DEFAULT;
         if (restrictionsPresent) {
-            restrictions =
-                    new MqttConnAckRestrictionsImpl(receiveMaximum, topicAliasMaximum, maximumPacketSize, maximumQoS,
+            restrictions = new MqttConnAckRestrictions(receiveMaximum, topicAliasMaximum, maximumPacketSize, maximumQoS,
                             retainAvailable, wildCardSubscriptionAvailable, subscriptionIdentifierAvailable,
                             sharedSubscriptionAvailable);
         }
 
         final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.build(userPropertiesBuilder);
 
-        return new MqttConnAckImpl(reasonCode, sessionPresent, sessionExpiryInterval, serverKeepAlive,
+        return new MqttConnAck(reasonCode, sessionPresent, sessionExpiryInterval, serverKeepAlive,
                 assignedClientIdentifier, enhancedAuth, restrictions, responseInformation, serverReference,
                 reasonString, userProperties);
     }

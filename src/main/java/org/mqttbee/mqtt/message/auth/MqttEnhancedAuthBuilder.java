@@ -12,33 +12,33 @@ import java.nio.ByteBuffer;
 /**
  * @author Silvio Giebl
  */
-public class MqttEnhancedAuthBuilderImpl implements Mqtt5EnhancedAuthBuilder {
+public class MqttEnhancedAuthBuilder implements Mqtt5EnhancedAuthBuilder {
 
     private final MqttUTF8StringImpl method;
     private ByteBuffer data;
 
-    public MqttEnhancedAuthBuilderImpl(@NotNull final MqttUTF8StringImpl method) {
+    public MqttEnhancedAuthBuilder(@NotNull final MqttUTF8StringImpl method) {
         Preconditions.checkNotNull(method);
         this.method = method;
     }
 
     @NotNull
     @Override
-    public MqttEnhancedAuthBuilderImpl withData(@Nullable final byte[] data) {
+    public MqttEnhancedAuthBuilder withData(@Nullable final byte[] data) {
         this.data = MqttBuilderUtil.binaryDataOrNull(data);
         return this;
     }
 
     @NotNull
     @Override
-    public MqttEnhancedAuthBuilderImpl withData(@Nullable final ByteBuffer data) {
+    public MqttEnhancedAuthBuilder withData(@Nullable final ByteBuffer data) {
         this.data = MqttBuilderUtil.binaryDataOrNull(data);
         return this;
     }
 
     @NotNull
-    public MqttEnhancedAuthImpl build() {
-        return new MqttEnhancedAuthImpl(method, data);
+    public MqttEnhancedAuth build() {
+        return new MqttEnhancedAuth(method, data);
     }
 
 }

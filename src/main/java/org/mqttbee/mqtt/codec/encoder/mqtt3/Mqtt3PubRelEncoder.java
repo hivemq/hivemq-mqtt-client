@@ -6,13 +6,13 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoderWithMessage;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttPubRelEncoderProvider;
-import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRelImpl;
+import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRel;
 
 /**
  * @author Daniel Krüger
  * @author Silvio Giebl
  */
-public class Mqtt3PubRelEncoder extends MqttMessageEncoderWithMessage<MqttPubRelImpl> {
+public class Mqtt3PubRelEncoder extends MqttMessageEncoderWithMessage<MqttPubRel> {
 
     public static final MqttPubRelEncoderProvider PROVIDER =
             new MqttPubRelEncoderProvider(Mqtt3PubRelEncoder::new, Mqtt3PubCompEncoder.PROVIDER);

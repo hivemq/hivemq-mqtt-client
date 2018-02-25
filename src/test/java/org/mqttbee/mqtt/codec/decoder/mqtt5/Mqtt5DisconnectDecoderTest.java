@@ -9,7 +9,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
-import org.mqttbee.mqtt.message.disconnect.MqttDisconnectImpl;
+import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
 import org.mqttbee.mqtt5.netty.ChannelAttributes;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -62,7 +62,7 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
-        final MqttDisconnectImpl disconnect = channel.readInbound();
+        final MqttDisconnect disconnect = channel.readInbound();
 
         assertNotNull(disconnect);
 
@@ -534,7 +534,7 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
         byteBuf.writeBytes(new byte[]{0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'});
 
         channel.writeInbound(byteBuf);
-        final MqttDisconnectImpl disconnect = channel.readInbound();
+        final MqttDisconnect disconnect = channel.readInbound();
 
         assertNotNull(disconnect);
 

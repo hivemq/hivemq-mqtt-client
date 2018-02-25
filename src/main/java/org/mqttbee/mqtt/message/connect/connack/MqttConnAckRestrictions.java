@@ -9,11 +9,11 @@ import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictio
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttConnAckRestrictionsImpl implements Mqtt5ConnAckRestrictions {
+public class MqttConnAckRestrictions implements Mqtt5ConnAckRestrictions {
 
     @NotNull
-    public static final MqttConnAckRestrictionsImpl DEFAULT =
-            new MqttConnAckRestrictionsImpl(DEFAULT_RECEIVE_MAXIMUM, DEFAULT_TOPIC_ALIAS_MAXIMUM,
+    public static final MqttConnAckRestrictions DEFAULT =
+            new MqttConnAckRestrictions(DEFAULT_RECEIVE_MAXIMUM, DEFAULT_TOPIC_ALIAS_MAXIMUM,
                     DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT, DEFAULT_MAXIMUM_QOS, DEFAULT_RETAIN_AVAILABLE,
                     DEFAULT_WILDCARD_SUBSCRIPTION_AVAILABLE, DEFAULT_SUBSCRIPTION_IDENTIFIER_AVAILABLE,
                     DEFAULT_SHARED_SUBSCRIPTION_AVAILABLE);
@@ -27,7 +27,7 @@ public class MqttConnAckRestrictionsImpl implements Mqtt5ConnAckRestrictions {
     private final boolean isSubscriptionIdentifierAvailable;
     private final boolean isSharedSubscriptionAvailable;
 
-    public MqttConnAckRestrictionsImpl(
+    public MqttConnAckRestrictions(
             final int receiveMaximum, final int topicAliasMaximum, final int maximumPacketSize,
             final MqttQoS maximumQoS, final boolean isRetainAvailable, final boolean isWildcardSubscriptionAvailable,
             final boolean isSubscriptionIdentifierAvailable, final boolean isSharedSubscriptionAvailable) {

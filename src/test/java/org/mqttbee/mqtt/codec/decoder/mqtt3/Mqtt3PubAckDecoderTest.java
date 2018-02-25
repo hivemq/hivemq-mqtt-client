@@ -9,7 +9,7 @@ import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoders;
-import org.mqttbee.mqtt.message.publish.puback.MqttPubAckImpl;
+import org.mqttbee.mqtt.message.publish.puback.MqttPubAck;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -49,7 +49,7 @@ class Mqtt3PubAckDecoderTest extends AbstractMqtt3DecoderTest {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
-        final MqttPubAckImpl pubAck = channel.readInbound();
+        final MqttPubAck pubAck = channel.readInbound();
         assertNotNull(pubAck);
         assertEquals(useMaxPacketId ? 65535 : 0, pubAck.getPacketIdentifier());
     }
@@ -60,7 +60,7 @@ class Mqtt3PubAckDecoderTest extends AbstractMqtt3DecoderTest {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
-        final MqttPubAckImpl pubAck = channel.readInbound();
+        final MqttPubAck pubAck = channel.readInbound();
         assertFalse(channel.isOpen());
         assertNull(pubAck);
     }
@@ -74,7 +74,7 @@ class Mqtt3PubAckDecoderTest extends AbstractMqtt3DecoderTest {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
-        final MqttPubAckImpl pubAck = channel.readInbound();
+        final MqttPubAck pubAck = channel.readInbound();
         assertFalse(channel.isOpen());
         assertNull(pubAck);
     }

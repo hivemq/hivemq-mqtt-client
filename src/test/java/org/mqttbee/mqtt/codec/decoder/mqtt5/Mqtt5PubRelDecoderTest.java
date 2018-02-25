@@ -12,7 +12,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrel.Mqtt5PubRelReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
-import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRelImpl;
+import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRel;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.MALFORMED_PACKET;
@@ -55,7 +55,7 @@ class Mqtt5PubRelDecoderTest extends AbstractMqtt5DecoderTest {
                 0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e', '2',
         };
 
-        final MqttPubRelImpl pubRel = decodeOk(encoded);
+        final MqttPubRel pubRel = decodeOk(encoded);
 
         assertEquals(SUCCESS, pubRel.getReasonCode());
         assertTrue(pubRel.getReasonString().isPresent());
@@ -82,7 +82,7 @@ class Mqtt5PubRelDecoderTest extends AbstractMqtt5DecoderTest {
                 0, 5
         };
 
-        final MqttPubRelImpl pubRel = decodeOk(encoded);
+        final MqttPubRel pubRel = decodeOk(encoded);
         assertEquals(SUCCESS, pubRel.getReasonCode());
     }
 
@@ -105,7 +105,7 @@ class Mqtt5PubRelDecoderTest extends AbstractMqtt5DecoderTest {
 
         };
         encoded[4] = (byte) reasonCode.getCode();
-        final MqttPubRelImpl pubRel = decodeOk(encoded);
+        final MqttPubRel pubRel = decodeOk(encoded);
         assertEquals(reasonCode, pubRel.getReasonCode());
     }
 
@@ -129,7 +129,7 @@ class Mqtt5PubRelDecoderTest extends AbstractMqtt5DecoderTest {
                 0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e', '2'
         };
 
-        final MqttPubRelImpl pubRel = decodeOk(encoded);
+        final MqttPubRel pubRel = decodeOk(encoded);
         final ImmutableList<MqttUserPropertyImpl> userProperties = pubRel.getUserProperties().asList();
         assertEquals(2, userProperties.size());
         assertEquals("test", userProperties.get(0).getName().toString());
@@ -329,14 +329,14 @@ class Mqtt5PubRelDecoderTest extends AbstractMqtt5DecoderTest {
     }
 
     @NotNull
-    private MqttPubRelImpl decodeOk(final byte[] encoded) {
-        final MqttPubRelImpl pubRel = decode(encoded);
+    private MqttPubRel decodeOk(final byte[] encoded) {
+        final MqttPubRel pubRel = decode(encoded);
         assertNotNull(pubRel);
         return pubRel;
     }
 
     private void decodeNok(final byte[] encoded, final Mqtt5DisconnectReasonCode reasonCode) {
-        final MqttPubRelImpl pubRel = decode(encoded);
+        final MqttPubRel pubRel = decode(encoded);
         assertNull(pubRel);
 
         final Mqtt5Disconnect disconnect = channel.readOutbound();
@@ -347,7 +347,7 @@ class Mqtt5PubRelDecoderTest extends AbstractMqtt5DecoderTest {
     }
 
     @Nullable
-    private MqttPubRelImpl decode(final byte[] encoded) {
+    private MqttPubRel decode(final byte[] encoded) {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);

@@ -10,14 +10,14 @@ import org.mqttbee.mqtt.message.MqttMessageWrapper.MqttMessageWrapperWithId;
  */
 @Immutable
 public class MqttSubscribeWrapper extends
-        MqttMessageWrapperWithId<MqttSubscribeWrapper, MqttSubscribeImpl, MqttMessageEncoderProvider<MqttSubscribeWrapper>> {
+        MqttMessageWrapperWithId<MqttSubscribeWrapper, MqttSubscribe, MqttMessageEncoderProvider<MqttSubscribeWrapper>> {
 
     public static final int DEFAULT_NO_SUBSCRIPTION_IDENTIFIER = -1;
 
     private final int subscriptionIdentifier;
 
     MqttSubscribeWrapper(
-            @NotNull final MqttSubscribeImpl subscribe, final int packetIdentifier, final int subscriptionIdentifier) {
+            @NotNull final MqttSubscribe subscribe, final int packetIdentifier, final int subscriptionIdentifier) {
 
         super(subscribe, packetIdentifier);
         this.subscriptionIdentifier = subscriptionIdentifier;

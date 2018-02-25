@@ -8,18 +8,18 @@ import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttConnectRestrictionsImpl implements Mqtt5ConnectRestrictions {
+public class MqttConnectRestrictions implements Mqtt5ConnectRestrictions {
 
     @NotNull
-    public static final MqttConnectRestrictionsImpl DEFAULT =
-            new MqttConnectRestrictionsImpl(DEFAULT_RECEIVE_MAXIMUM, DEFAULT_TOPIC_ALIAS_MAXIMUM,
+    public static final MqttConnectRestrictions DEFAULT =
+            new MqttConnectRestrictions(DEFAULT_RECEIVE_MAXIMUM, DEFAULT_TOPIC_ALIAS_MAXIMUM,
                     DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT);
 
     private final int receiveMaximum;
     private final int topicAliasMaximum;
     private final int maximumPacketSize;
 
-    public MqttConnectRestrictionsImpl(
+    public MqttConnectRestrictions(
             final int receiveMaximum, final int topicAliasMaximum, final int maximumPacketSize) {
 
         this.receiveMaximum = receiveMaximum;

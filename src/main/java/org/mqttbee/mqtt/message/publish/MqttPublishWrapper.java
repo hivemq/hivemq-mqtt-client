@@ -14,7 +14,7 @@ import org.mqttbee.mqtt.message.MqttMessageWrapper.MqttMessageWrapperWithId;
  */
 @Immutable
 public class MqttPublishWrapper
-        extends MqttMessageWrapperWithId<MqttPublishWrapper, MqttPublishImpl, MqttPublishEncoderProvider>
+        extends MqttMessageWrapperWithId<MqttPublishWrapper, MqttPublish, MqttPublishEncoderProvider>
         implements MqttQoSMessage {
 
     public static final int NO_PACKET_IDENTIFIER_QOS_0 = -1;
@@ -28,7 +28,7 @@ public class MqttPublishWrapper
     private final ImmutableIntArray subscriptionIdentifiers;
 
     MqttPublishWrapper(
-            @NotNull final MqttPublishImpl publish, final int packetIdentifier, final boolean isDup,
+            @NotNull final MqttPublish publish, final int packetIdentifier, final boolean isDup,
             final int topicAlias, final boolean isNewTopicAlias,
             @NotNull final ImmutableIntArray subscriptionIdentifiers) {
 
@@ -40,7 +40,7 @@ public class MqttPublishWrapper
     }
 
     public MqttPublishWrapper( // TODO
-            @NotNull final MqttPublishImpl publish, final int packetIdentifier, final boolean isDup,
+            @NotNull final MqttPublish publish, final int packetIdentifier, final boolean isDup,
             @NotNull final Channel channel, @NotNull final ImmutableIntArray subscriptionIdentifiers) {
 
         super(publish, packetIdentifier);

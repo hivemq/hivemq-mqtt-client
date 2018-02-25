@@ -14,7 +14,7 @@ import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
-import org.mqttbee.mqtt.message.publish.puback.MqttPubAckImpl;
+import org.mqttbee.mqtt.message.publish.puback.MqttPubAck;
 
 import static java.util.Objects.requireNonNull;
 import static org.junit.Assert.assertArrayEquals;
@@ -60,8 +60,8 @@ class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderTest {
         final MqttUserPropertiesImpl userProperties =
                 MqttUserPropertiesImpl.of(ImmutableList.of(new MqttUserPropertyImpl(user, property)));
 
-        final MqttPubAckImpl pubAck =
-                new MqttPubAckImpl((127 * 256) + 1, Mqtt5PubAckReasonCode.SUCCESS, reasonString, userProperties,
+        final MqttPubAck pubAck =
+                new MqttPubAck((127 * 256) + 1, Mqtt5PubAckReasonCode.SUCCESS, reasonString, userProperties,
                         Mqtt5PubAckEncoder.PROVIDER);
         encode(expected, pubAck);
     }
@@ -82,8 +82,8 @@ class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderTest {
 
         final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
 
-        final MqttPubAckImpl pubAck =
-                new MqttPubAckImpl(1, Mqtt5PubAckReasonCode.SUCCESS, null, userProperties, Mqtt5PubAckEncoder.PROVIDER);
+        final MqttPubAck pubAck =
+                new MqttPubAck(1, Mqtt5PubAckReasonCode.SUCCESS, null, userProperties, Mqtt5PubAckEncoder.PROVIDER);
         encode(expected, pubAck);
     }
 
@@ -106,8 +106,7 @@ class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderTest {
 
         final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
 
-        final MqttPubAckImpl pubAck =
-                new MqttPubAckImpl(1, reasonCode, null, userProperties, Mqtt5PubAckEncoder.PROVIDER);
+        final MqttPubAck pubAck = new MqttPubAck(1, reasonCode, null, userProperties, Mqtt5PubAckEncoder.PROVIDER);
         encode(expected, pubAck);
     }
 
@@ -131,8 +130,8 @@ class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderTest {
         final MqttUTF8StringImpl reasonString = MqttUTF8StringImpl.from("reason");
         final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
 
-        final MqttPubAckImpl pubAck =
-                new MqttPubAckImpl(1, Mqtt5PubAckReasonCode.NO_MATCHING_SUBSCRIBERS, reasonString, userProperties,
+        final MqttPubAck pubAck =
+                new MqttPubAck(1, Mqtt5PubAckReasonCode.NO_MATCHING_SUBSCRIBERS, reasonString, userProperties,
                         Mqtt5PubAckEncoder.PROVIDER);
         encode(expected, pubAck);
     }
@@ -159,8 +158,7 @@ class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderTest {
         final MqttUserPropertiesImpl userProperties =
                 MqttUserPropertiesImpl.of(ImmutableList.of(new MqttUserPropertyImpl(user, property)));
 
-        final MqttPubAckImpl pubAck =
-                new MqttPubAckImpl(1, Mqtt5PubAckReasonCode.NO_MATCHING_SUBSCRIBERS, null, userProperties,
+        final MqttPubAck pubAck = new MqttPubAck(1, Mqtt5PubAckReasonCode.NO_MATCHING_SUBSCRIBERS, null, userProperties,
                         Mqtt5PubAckEncoder.PROVIDER);
         encode(expected, pubAck);
     }
@@ -188,8 +186,8 @@ class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderTest {
         final MqttUserPropertiesImpl userProperties =
                 MqttUserPropertiesImpl.of(ImmutableList.of(new MqttUserPropertyImpl(user, property)));
 
-        final MqttPubAckImpl pubAck =
-                new MqttPubAckImpl(1, Mqtt5PubAckReasonCode.NO_MATCHING_SUBSCRIBERS, reasonString, userProperties,
+        final MqttPubAck pubAck =
+                new MqttPubAck(1, Mqtt5PubAckReasonCode.NO_MATCHING_SUBSCRIBERS, reasonString, userProperties,
                         Mqtt5PubAckEncoder.PROVIDER);
         encode(expected, pubAck);
     }
@@ -223,7 +221,7 @@ class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderTest {
         final MqttUserPropertiesImpl userProperties =
                 MqttUserPropertiesImpl.of(ImmutableList.of(new MqttUserPropertyImpl(user, property)));
 
-        final MqttPubAckImpl pubAck = new MqttPubAckImpl(1, Mqtt5PubAckReasonCode.SUCCESS, reasonString, userProperties,
+        final MqttPubAck pubAck = new MqttPubAck(1, Mqtt5PubAckReasonCode.SUCCESS, reasonString, userProperties,
                 Mqtt5PubAckEncoder.PROVIDER);
         encode(expected, pubAck);
     }
@@ -285,7 +283,7 @@ class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderTest {
         }
 
         final MqttUTF8StringImpl reasonString = MqttUTF8StringImpl.from(reasonStringBuilder.toString());
-        final MqttPubAckImpl pubAck = new MqttPubAckImpl(1, Mqtt5PubAckReasonCode.SUCCESS, reasonString,
+        final MqttPubAck pubAck = new MqttPubAck(1, Mqtt5PubAckReasonCode.SUCCESS, reasonString,
                 MqttUserPropertiesImpl.of(userPropertiesBuilder.build()), Mqtt5PubAckEncoder.PROVIDER);
 
         final byte[] expectedBytes = new byte[expected.readableBytes()];
@@ -302,8 +300,8 @@ class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderTest {
 
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
 
-        final MqttPubAckImpl pubAck =
-                new MqttPubAckImpl(1, Mqtt5PubAckReasonCode.SUCCESS, maxPacket.getMaxPaddedReasonString("a"),
+        final MqttPubAck pubAck =
+                new MqttPubAck(1, Mqtt5PubAckReasonCode.SUCCESS, maxPacket.getMaxPaddedReasonString("a"),
                         maxPacket.getMaxPossibleUserProperties(), Mqtt5PubAckEncoder.PROVIDER);
 
         final Throwable exception = assertThrows(EncoderException.class, () -> channel.writeOutbound(pubAck));
@@ -316,8 +314,7 @@ class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderTest {
 
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
 
-        final MqttPubAckImpl pubAck =
-                new MqttPubAckImpl(1, Mqtt5PubAckReasonCode.SUCCESS, maxPacket.getMaxPaddedReasonString(),
+        final MqttPubAck pubAck = new MqttPubAck(1, Mqtt5PubAckReasonCode.SUCCESS, maxPacket.getMaxPaddedReasonString(),
                         maxPacket.getMaxPossibleUserProperties(1), Mqtt5PubAckEncoder.PROVIDER);
 
         final Throwable exception = assertThrows(EncoderException.class, () -> channel.writeOutbound(pubAck));
@@ -340,8 +337,8 @@ class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderTest {
 
         final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
 
-        final MqttPubAckImpl pubAck =
-                new MqttPubAckImpl(1, Mqtt5PubAckReasonCode.SUCCESS, null, userProperties, Mqtt5PubAckEncoder.PROVIDER);
+        final MqttPubAck pubAck =
+                new MqttPubAck(1, Mqtt5PubAckReasonCode.SUCCESS, null, userProperties, Mqtt5PubAckEncoder.PROVIDER);
         encode(expected, pubAck);
     }
 
@@ -375,12 +372,12 @@ class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderTest {
         final MqttUserPropertiesImpl userProperties =
                 MqttUserPropertiesImpl.of(ImmutableList.of(new MqttUserPropertyImpl(user, property)));
 
-        final MqttPubAckImpl pubAck =
-                new MqttPubAckImpl(1, reasonCode, reasonString, userProperties, Mqtt5PubAckEncoder.PROVIDER);
+        final MqttPubAck pubAck =
+                new MqttPubAck(1, reasonCode, reasonString, userProperties, Mqtt5PubAckEncoder.PROVIDER);
         encode(expected, pubAck);
     }
 
-    private void encode(final byte[] expected, final MqttPubAckImpl pubAck) {
+    private void encode(final byte[] expected, final MqttPubAck pubAck) {
         channel.writeOutbound(pubAck);
         final ByteBuf byteBuf = channel.readOutbound();
 

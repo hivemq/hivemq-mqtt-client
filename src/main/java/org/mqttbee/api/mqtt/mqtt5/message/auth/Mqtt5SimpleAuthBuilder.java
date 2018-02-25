@@ -5,7 +5,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
-import org.mqttbee.mqtt.message.auth.MqttSimpleAuthImpl;
+import org.mqttbee.mqtt.message.auth.MqttSimpleAuth;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 
 import java.nio.ByteBuffer;
@@ -48,7 +48,7 @@ public class Mqtt5SimpleAuthBuilder {
     @NotNull
     public Mqtt5SimpleAuth build() {
         Preconditions.checkState(username != null || password != null);
-        return new MqttSimpleAuthImpl(username, password);
+        return new MqttSimpleAuth(username, password);
     }
 
 }

@@ -10,7 +10,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.puback.Mqtt5PubAckReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
-import org.mqttbee.mqtt.message.publish.puback.MqttPubAckImpl;
+import org.mqttbee.mqtt.message.publish.puback.MqttPubAck;
 import org.mqttbee.mqtt5.netty.ChannelAttributes;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -61,7 +61,7 @@ class Mqtt5PubAckDecoderTest extends AbstractMqtt5DecoderTest {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
-        final MqttPubAckImpl pubAck = channel.readInbound();
+        final MqttPubAck pubAck = channel.readInbound();
 
         assertNotNull(pubAck);
 
@@ -91,7 +91,7 @@ class Mqtt5PubAckDecoderTest extends AbstractMqtt5DecoderTest {
         byteBuf.writeByte(0).writeByte(5);
 
         channel.writeInbound(byteBuf);
-        final MqttPubAckImpl pubAck = channel.readInbound();
+        final MqttPubAck pubAck = channel.readInbound();
 
         assertNotNull(pubAck);
 
@@ -116,7 +116,7 @@ class Mqtt5PubAckDecoderTest extends AbstractMqtt5DecoderTest {
         byteBuf.writeByte(0x10);
 
         channel.writeInbound(byteBuf);
-        final MqttPubAckImpl pubAck = channel.readInbound();
+        final MqttPubAck pubAck = channel.readInbound();
 
         assertNotNull(pubAck);
 
@@ -159,7 +159,7 @@ class Mqtt5PubAckDecoderTest extends AbstractMqtt5DecoderTest {
         byteBuf.writeByte(0);
 
         channel.writeInbound(byteBuf);
-        final MqttPubAckImpl pubAck = channel.readInbound();
+        final MqttPubAck pubAck = channel.readInbound();
 
         assertNull(pubAck);
 
@@ -178,7 +178,7 @@ class Mqtt5PubAckDecoderTest extends AbstractMqtt5DecoderTest {
         byteBuf.writeByte(128);
 
         channel.writeInbound(byteBuf);
-        final MqttPubAckImpl pubAck = channel.readInbound();
+        final MqttPubAck pubAck = channel.readInbound();
 
         assertNull(pubAck);
 
@@ -535,7 +535,7 @@ class Mqtt5PubAckDecoderTest extends AbstractMqtt5DecoderTest {
         byteBuf.writeBytes(new byte[]{0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'});
 
         channel.writeInbound(byteBuf);
-        final MqttPubAckImpl pubAck = channel.readInbound();
+        final MqttPubAck pubAck = channel.readInbound();
 
         assertNotNull(pubAck);
 
@@ -792,7 +792,7 @@ class Mqtt5PubAckDecoderTest extends AbstractMqtt5DecoderTest {
     }
 
     private void testDisconnect(final Mqtt5DisconnectReasonCode reasonCode, final boolean sendReasonString) {
-        final MqttPubAckImpl pubAck = channel.readInbound();
+        final MqttPubAck pubAck = channel.readInbound();
         assertNull(pubAck);
 
         final Mqtt5Disconnect disconnect = channel.readOutbound();

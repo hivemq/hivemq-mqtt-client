@@ -11,7 +11,7 @@ import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
-import org.mqttbee.mqtt.message.unsubscribe.unsuback.MqttUnsubAckImpl;
+import org.mqttbee.mqtt.message.unsubscribe.unsuback.MqttUnsubAck;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -37,7 +37,7 @@ public class Mqtt5UnsubAckDecoder implements MqttMessageDecoder {
 
     @Override
     @Nullable
-    public MqttUnsubAckImpl decode(
+    public MqttUnsubAck decode(
             final int flags, @NotNull final ByteBuf in,
             @NotNull final MqttClientConnectionDataImpl clientConnectionData) throws MqttDecoderException {
 
@@ -97,7 +97,7 @@ public class Mqtt5UnsubAckDecoder implements MqttMessageDecoder {
 
         final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.build(userPropertiesBuilder);
 
-        return new MqttUnsubAckImpl(packetIdentifier, reasonCodes, reasonString, userProperties);
+        return new MqttUnsubAck(packetIdentifier, reasonCodes, reasonString, userProperties);
     }
 
 }

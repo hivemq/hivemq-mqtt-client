@@ -7,7 +7,7 @@ import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import org.mqttbee.mqtt.codec.encoder.mqtt3.Mqtt3UnsubscribeEncoder;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
-import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribeImpl;
+import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribe;
 
 /**
  * @author Silvio Giebl
@@ -15,8 +15,8 @@ import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribeImpl;
 @Immutable
 public class Mqtt3UnsubscribeView implements Mqtt3Unsubscribe {
 
-    public static MqttUnsubscribeImpl wrapped(@NotNull final ImmutableList<MqttTopicFilterImpl> topicFilters) {
-        return new MqttUnsubscribeImpl(topicFilters, MqttUserPropertiesImpl.NO_USER_PROPERTIES,
+    public static MqttUnsubscribe wrapped(@NotNull final ImmutableList<MqttTopicFilterImpl> topicFilters) {
+        return new MqttUnsubscribe(topicFilters, MqttUserPropertiesImpl.NO_USER_PROPERTIES,
                 Mqtt3UnsubscribeEncoder.PROVIDER);
     }
 
@@ -24,9 +24,9 @@ public class Mqtt3UnsubscribeView implements Mqtt3Unsubscribe {
         return new Mqtt3UnsubscribeView((wrapped(topicFilters)));
     }
 
-    private final MqttUnsubscribeImpl wrapped;
+    private final MqttUnsubscribe wrapped;
 
-    private Mqtt3UnsubscribeView(@NotNull final MqttUnsubscribeImpl wrapped) {
+    private Mqtt3UnsubscribeView(@NotNull final MqttUnsubscribe wrapped) {
         this.wrapped = wrapped;
     }
 
@@ -37,7 +37,7 @@ public class Mqtt3UnsubscribeView implements Mqtt3Unsubscribe {
     }
 
     @NotNull
-    public MqttUnsubscribeImpl getWrapped() {
+    public MqttUnsubscribe getWrapped() {
         return wrapped;
     }
 

@@ -9,16 +9,16 @@ import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider.ThreadLocalMqttWrappedMessageEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
-import org.mqttbee.mqtt.message.subscribe.MqttSubscribeImpl;
+import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribeWrapper;
-import org.mqttbee.mqtt.message.subscribe.MqttSubscriptionImpl;
+import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt3SubscribeEncoder extends Mqtt3WrappedMessageEncoder<MqttSubscribeImpl, MqttSubscribeWrapper> {
+public class Mqtt3SubscribeEncoder extends Mqtt3WrappedMessageEncoder<MqttSubscribe, MqttSubscribeWrapper> {
 
-    public static final MqttWrappedMessageEncoderProvider<MqttSubscribeImpl, MqttSubscribeWrapper, MqttMessageEncoderProvider<MqttSubscribeWrapper>>
+    public static final MqttWrappedMessageEncoderProvider<MqttSubscribe, MqttSubscribeWrapper, MqttMessageEncoderProvider<MqttSubscribeWrapper>>
             PROVIDER = ThreadLocalMqttWrappedMessageEncoderProvider.create(Mqtt3SubscribeEncoder::new);
 
     private static final int FIXED_HEADER = (Mqtt3MessageType.SUBSCRIBE.getCode() << 4) | 0b0010;
@@ -28,9 +28,9 @@ public class Mqtt3SubscribeEncoder extends Mqtt3WrappedMessageEncoder<MqttSubscr
     int calculateRemainingLength() {
         int remainingLength = VARIABLE_HEADER_FIXED_LENGTH;
 
-        final ImmutableList<MqttSubscriptionImpl> subscriptions = wrapped.getSubscriptions();
+        final ImmutableList<MqttSubscription> subscriptions = wrapped.getSubscriptions();
         for (int i = 0; i < subscriptions.size(); i++) {
-            final MqttSubscriptionImpl subscription = subscriptions.get(i);
+            final MqttSubscription subscription = subscriptions.get(i);
             remainingLength += subscription.getTopicFilter().encodedLength() + 1; // QoS
         }
 
@@ -54,9 +54,9 @@ public class Mqtt3SubscribeEncoder extends Mqtt3WrappedMessageEncoder<MqttSubscr
     }
 
     private void encodePayload(@NotNull final ByteBuf out) {
-        final ImmutableList<MqttSubscriptionImpl> subscriptions = wrapped.getSubscriptions();
+        final ImmutableList<MqttSubscription> subscriptions = wrapped.getSubscriptions();
         for (int i = 0; i < subscriptions.size(); i++) {
-            final MqttSubscriptionImpl subscription = subscriptions.get(i);
+            final MqttSubscription subscription = subscriptions.get(i);
             subscription.getTopicFilter().to(out);
             out.writeByte(subscription.getQoS().getCode());
         }

@@ -5,7 +5,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
-import org.mqttbee.mqtt.message.auth.MqttSimpleAuthImpl;
+import org.mqttbee.mqtt.message.auth.MqttSimpleAuth;
 
 import java.nio.ByteBuffer;
 import java.util.Optional;
@@ -16,9 +16,9 @@ import java.util.Optional;
 @Immutable
 public class Mqtt3SimpleAuthView implements Mqtt3SimpleAuth {
 
-    private final MqttSimpleAuthImpl simpleAuth;
+    private final MqttSimpleAuth simpleAuth;
 
-    public Mqtt3SimpleAuthView(@NotNull final MqttSimpleAuthImpl simpleAuth) {
+    public Mqtt3SimpleAuthView(@NotNull final MqttSimpleAuth simpleAuth) {
         this.simpleAuth = simpleAuth;
     }
 

@@ -2,7 +2,7 @@ package org.mqttbee.api.mqtt.mqtt5.message.connect;
 
 import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt.message.connect.MqttConnectRestrictionsImpl;
+import org.mqttbee.mqtt.message.connect.MqttConnectRestrictions;
 import org.mqttbee.util.UnsignedDataTypes;
 
 /**
@@ -40,7 +40,7 @@ public class Mqtt5ConnectRestrictionsBuilder {
 
     @NotNull
     public Mqtt5ConnectRestrictions build() {
-        return new MqttConnectRestrictionsImpl(receiveMaximum, topicAliasMaximum, maximumPacketSize);
+        return new MqttConnectRestrictions(receiveMaximum, topicAliasMaximum, maximumPacketSize);
     }
 
 }

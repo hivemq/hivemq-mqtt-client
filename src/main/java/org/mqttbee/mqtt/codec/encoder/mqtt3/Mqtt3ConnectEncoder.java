@@ -9,19 +9,19 @@ import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider
 import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider.ThreadLocalMqttWrappedMessageEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
-import org.mqttbee.mqtt.message.auth.MqttSimpleAuthImpl;
-import org.mqttbee.mqtt.message.connect.MqttConnectImpl;
+import org.mqttbee.mqtt.message.auth.MqttSimpleAuth;
+import org.mqttbee.mqtt.message.connect.MqttConnect;
 import org.mqttbee.mqtt.message.connect.MqttConnectWrapper;
-import org.mqttbee.mqtt.message.publish.MqttWillPublishImpl;
+import org.mqttbee.mqtt.message.publish.MqttWillPublish;
 
 import static org.mqttbee.mqtt.codec.encoder.MqttMessageEncoderUtil.*;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt3ConnectEncoder extends Mqtt3WrappedMessageEncoder<MqttConnectImpl, MqttConnectWrapper> {
+public class Mqtt3ConnectEncoder extends Mqtt3WrappedMessageEncoder<MqttConnect, MqttConnectWrapper> {
 
-    public static final MqttWrappedMessageEncoderProvider<MqttConnectImpl, MqttConnectWrapper, MqttMessageEncoderProvider<MqttConnectWrapper>>
+    public static final MqttWrappedMessageEncoderProvider<MqttConnect, MqttConnectWrapper, MqttMessageEncoderProvider<MqttConnectWrapper>>
             PROVIDER = ThreadLocalMqttWrappedMessageEncoderProvider.create(Mqtt3ConnectEncoder::new);
 
     private static final int FIXED_HEADER = Mqtt3MessageType.CONNECT.getCode() << 4;
@@ -35,13 +35,13 @@ public class Mqtt3ConnectEncoder extends Mqtt3WrappedMessageEncoder<MqttConnectI
 
         remainingLength += message.getClientIdentifier().encodedLength();
 
-        final MqttSimpleAuthImpl simpleAuth = wrapped.getRawSimpleAuth();
+        final MqttSimpleAuth simpleAuth = wrapped.getRawSimpleAuth();
         if (simpleAuth != null) {
             remainingLength += nullableEncodedLength(simpleAuth.getRawUsername());
             remainingLength += nullableEncodedLength(simpleAuth.getRawPassword());
         }
 
-        final MqttWillPublishImpl willPublish = wrapped.getRawWillPublish();
+        final MqttWillPublish willPublish = wrapped.getRawWillPublish();
         if (willPublish != null) {
             remainingLength += willPublish.getTopic().encodedLength();
             remainingLength += encodedOrEmptyLength(willPublish.getRawPayload());
@@ -68,7 +68,7 @@ public class Mqtt3ConnectEncoder extends Mqtt3WrappedMessageEncoder<MqttConnectI
 
         int connectFlags = 0;
 
-        final MqttSimpleAuthImpl simpleAuth = wrapped.getRawSimpleAuth();
+        final MqttSimpleAuth simpleAuth = wrapped.getRawSimpleAuth();
         if (simpleAuth != null) {
             if (simpleAuth.getRawUsername() != null) {
                 connectFlags |= 0b1000_0000;
@@ -78,7 +78,7 @@ public class Mqtt3ConnectEncoder extends Mqtt3WrappedMessageEncoder<MqttConnectI
             }
         }
 
-        final MqttWillPublishImpl willPublish = wrapped.getRawWillPublish();
+        final MqttWillPublish willPublish = wrapped.getRawWillPublish();
         if (willPublish != null) {
             connectFlags |= 0b0000_0100;
             connectFlags |= (willPublish.getQos().getCode() << 3);
@@ -101,7 +101,7 @@ public class Mqtt3ConnectEncoder extends Mqtt3WrappedMessageEncoder<MqttConnectI
 
         encodeWillPublish(out);
 
-        final MqttSimpleAuthImpl simpleAuth = wrapped.getRawSimpleAuth();
+        final MqttSimpleAuth simpleAuth = wrapped.getRawSimpleAuth();
         if (simpleAuth != null) {
             encodeNullable(simpleAuth.getRawUsername(), out);
             encodeNullable(simpleAuth.getRawPassword(), out);
@@ -109,7 +109,7 @@ public class Mqtt3ConnectEncoder extends Mqtt3WrappedMessageEncoder<MqttConnectI
     }
 
     private void encodeWillPublish(@NotNull final ByteBuf out) {
-        final MqttWillPublishImpl willPublish = wrapped.getRawWillPublish();
+        final MqttWillPublish willPublish = wrapped.getRawWillPublish();
         if (willPublish != null) {
             willPublish.getTopic().to(out);
             encodeNullable(willPublish.getRawPayload(), out);

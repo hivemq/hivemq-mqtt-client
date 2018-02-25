@@ -7,7 +7,7 @@ import org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAckReturnCode
 import org.mqttbee.mqtt.MqttClientConnectionDataImpl;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
-import org.mqttbee.mqtt.message.connect.connack.MqttConnAckImpl;
+import org.mqttbee.mqtt.message.connect.connack.MqttConnAck;
 import org.mqttbee.mqtt.message.connect.connack.mqtt3.Mqtt3ConnAckView;
 
 import javax.inject.Inject;
@@ -33,7 +33,7 @@ public class Mqtt3ConnAckDecoder implements MqttMessageDecoder {
 
     @Nullable
     @Override
-    public MqttConnAckImpl decode(
+    public MqttConnAck decode(
             final int flags, @NotNull final ByteBuf in,
             @NotNull final MqttClientConnectionDataImpl clientConnectionData) throws MqttDecoderException {
 

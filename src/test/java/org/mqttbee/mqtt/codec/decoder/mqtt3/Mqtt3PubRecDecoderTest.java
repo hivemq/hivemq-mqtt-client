@@ -8,7 +8,7 @@ import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoders;
-import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRecImpl;
+import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRec;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -48,7 +48,7 @@ class Mqtt3PubRecDecoderTest extends AbstractMqtt3DecoderTest {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
-        final MqttPubRecImpl pubRec = channel.readInbound();
+        final MqttPubRec pubRec = channel.readInbound();
         assertNotNull(pubRec);
         assertEquals(useMaxPacketId ? 65535 : 0, pubRec.getPacketIdentifier());
     }
@@ -72,7 +72,7 @@ class Mqtt3PubRecDecoderTest extends AbstractMqtt3DecoderTest {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
-        final MqttPubRecImpl pubRec = channel.readInbound();
+        final MqttPubRec pubRec = channel.readInbound();
         assertFalse(channel.isOpen());
         assertNull(pubRec);
     }

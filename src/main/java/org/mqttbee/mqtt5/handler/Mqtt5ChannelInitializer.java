@@ -8,7 +8,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.mqtt.MqttClientDataImpl;
 import org.mqttbee.mqtt.codec.encoder.MqttEncoder;
-import org.mqttbee.mqtt.message.connect.MqttConnectImpl;
+import org.mqttbee.mqtt.message.connect.MqttConnect;
 import org.mqttbee.mqtt5.handler.auth.Mqtt5AuthHandler;
 import org.mqttbee.mqtt5.handler.auth.Mqtt5DisconnectOnAuthHandler;
 import org.mqttbee.mqtt5.handler.connect.Mqtt5ConnectHandler;
@@ -22,12 +22,12 @@ import org.mqttbee.mqtt5.ioc.ChannelComponent;
  */
 public class Mqtt5ChannelInitializer extends ChannelInitializer<SocketChannel> {
 
-    private final MqttConnectImpl connect;
+    private final MqttConnect connect;
     private final SingleEmitter<Mqtt5ConnAck> connAckEmitter;
     private final MqttClientDataImpl clientData;
 
     Mqtt5ChannelInitializer(
-            @NotNull final MqttConnectImpl connect, @NotNull final SingleEmitter<Mqtt5ConnAck> connAckEmitter,
+            @NotNull final MqttConnect connect, @NotNull final SingleEmitter<Mqtt5ConnAck> connAckEmitter,
             @NotNull final MqttClientDataImpl clientData) {
 
         this.connect = connect;

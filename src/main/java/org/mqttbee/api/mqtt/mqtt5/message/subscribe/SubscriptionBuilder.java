@@ -5,7 +5,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
-import org.mqttbee.mqtt.message.subscribe.MqttSubscriptionImpl;
+import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 
 /**
@@ -63,7 +63,7 @@ public class SubscriptionBuilder {
         Preconditions.checkNotNull(topicFilter);
         Preconditions.checkNotNull(qos);
         Preconditions.checkArgument(!(topicFilter.isShared() && noLocal));
-        return new MqttSubscriptionImpl(topicFilter, qos, noLocal, retainHandling, retainAsPublished);
+        return new MqttSubscription(topicFilter, qos, noLocal, retainHandling, retainAsPublished);
     }
 
 }

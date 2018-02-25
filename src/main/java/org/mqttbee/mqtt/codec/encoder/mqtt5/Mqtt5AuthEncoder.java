@@ -9,7 +9,7 @@ import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageWithUserPropertiesEncode
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider.ThreadLocalMqttMessageEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
-import org.mqttbee.mqtt.message.auth.MqttAuthImpl;
+import org.mqttbee.mqtt.message.auth.MqttAuth;
 
 import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.*;
 import static org.mqttbee.mqtt.message.auth.MqttAuthProperty.AUTHENTICATION_DATA;
@@ -19,9 +19,9 @@ import static org.mqttbee.mqtt.message.auth.MqttAuthProperty.AUTHENTICATION_METH
  * @author Silvio Giebl
  */
 public class Mqtt5AuthEncoder
-        extends Mqtt5MessageWithReasonStringEncoder<MqttAuthImpl, MqttMessageEncoderProvider<MqttAuthImpl>> {
+        extends Mqtt5MessageWithReasonStringEncoder<MqttAuth, MqttMessageEncoderProvider<MqttAuth>> {
 
-    public static final MqttMessageEncoderProvider<MqttAuthImpl> PROVIDER =
+    public static final MqttMessageEncoderProvider<MqttAuth> PROVIDER =
             new ThreadLocalMqttMessageEncoderProvider<>(Mqtt5AuthEncoder::new);
 
     private static final int FIXED_HEADER = Mqtt5MessageType.AUTH.getCode() << 4;

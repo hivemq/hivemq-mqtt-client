@@ -6,11 +6,11 @@ import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageWithUserPropertiesEncoder.Mqtt5MessageWithOmissibleReasonCodeEncoder;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
-import org.mqttbee.mqtt.message.disconnect.MqttDisconnectImpl;
+import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
 
 import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.*;
-import static org.mqttbee.mqtt.message.disconnect.MqttDisconnectImpl.DEFAULT_REASON_CODE;
-import static org.mqttbee.mqtt.message.disconnect.MqttDisconnectImpl.SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
+import static org.mqttbee.mqtt.message.disconnect.MqttDisconnect.DEFAULT_REASON_CODE;
+import static org.mqttbee.mqtt.message.disconnect.MqttDisconnect.SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
 import static org.mqttbee.mqtt.message.disconnect.MqttDisconnectProperty.SERVER_REFERENCE;
 import static org.mqttbee.mqtt.message.disconnect.MqttDisconnectProperty.SESSION_EXPIRY_INTERVAL;
 
@@ -18,9 +18,9 @@ import static org.mqttbee.mqtt.message.disconnect.MqttDisconnectProperty.SESSION
  * @author Silvio Giebl
  */
 public class Mqtt5DisconnectEncoder extends
-        Mqtt5MessageWithOmissibleReasonCodeEncoder<MqttDisconnectImpl, Mqtt5DisconnectReasonCode, MqttMessageEncoderProvider<MqttDisconnectImpl>> {
+        Mqtt5MessageWithOmissibleReasonCodeEncoder<MqttDisconnect, Mqtt5DisconnectReasonCode, MqttMessageEncoderProvider<MqttDisconnect>> {
 
-    public static final MqttMessageEncoderProvider<MqttDisconnectImpl> PROVIDER = Mqtt5DisconnectEncoder::new;
+    public static final MqttMessageEncoderProvider<MqttDisconnect> PROVIDER = Mqtt5DisconnectEncoder::new;
 
     private static final int FIXED_HEADER = Mqtt5MessageType.DISCONNECT.getCode() << 4;
 

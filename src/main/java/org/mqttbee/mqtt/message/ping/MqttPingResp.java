@@ -10,11 +10,11 @@ import org.mqttbee.mqtt.message.MqttMessage;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttPingRespImpl implements MqttMessage, Mqtt5PingResp {
+public class MqttPingResp implements MqttMessage, Mqtt5PingResp {
 
-    public static final MqttPingRespImpl INSTANCE = new MqttPingRespImpl();
+    public static final MqttPingResp INSTANCE = new MqttPingResp();
 
-    private MqttPingRespImpl() {
+    private MqttPingResp() {
     }
 
     @NotNull

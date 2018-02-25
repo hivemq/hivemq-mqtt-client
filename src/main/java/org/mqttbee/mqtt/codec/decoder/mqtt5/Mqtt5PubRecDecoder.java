@@ -12,7 +12,7 @@ import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5PubRecEncoder;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
-import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRecImpl;
+import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRec;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -20,7 +20,7 @@ import javax.inject.Singleton;
 import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.checkFixedHeaderFlags;
 import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.remainingLengthTooShort;
 import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.*;
-import static org.mqttbee.mqtt.message.publish.pubrec.MqttPubRecImpl.DEFAULT_REASON_CODE;
+import static org.mqttbee.mqtt.message.publish.pubrec.MqttPubRec.DEFAULT_REASON_CODE;
 import static org.mqttbee.mqtt.message.publish.pubrec.MqttPubRecProperty.REASON_STRING;
 import static org.mqttbee.mqtt.message.publish.pubrec.MqttPubRecProperty.USER_PROPERTY;
 
@@ -39,7 +39,7 @@ public class Mqtt5PubRecDecoder implements MqttMessageDecoder {
 
     @Override
     @Nullable
-    public MqttPubRecImpl decode(
+    public MqttPubRec decode(
             final int flags, @NotNull final ByteBuf in,
             @NotNull final MqttClientConnectionDataImpl clientConnectionData) throws MqttDecoderException {
 
@@ -86,7 +86,7 @@ public class Mqtt5PubRecDecoder implements MqttMessageDecoder {
 
         final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.build(userPropertiesBuilder);
 
-        return new MqttPubRecImpl(
+        return new MqttPubRec(
                 packetIdentifier, reasonCode, reasonString, userProperties, Mqtt5PubRecEncoder.PROVIDER);
     }
 

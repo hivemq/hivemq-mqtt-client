@@ -10,9 +10,9 @@ import org.mqttbee.mqtt.message.MqttMessageWrapper.MqttMessageWrapperWithId;
  */
 @Immutable
 public class MqttUnsubscribeWrapper extends
-        MqttMessageWrapperWithId<MqttUnsubscribeWrapper, MqttUnsubscribeImpl, MqttMessageEncoderProvider<MqttUnsubscribeWrapper>> {
+        MqttMessageWrapperWithId<MqttUnsubscribeWrapper, MqttUnsubscribe, MqttMessageEncoderProvider<MqttUnsubscribeWrapper>> {
 
-    MqttUnsubscribeWrapper(@NotNull final MqttUnsubscribeImpl unsubscribe, final int packetIdentifier) {
+    MqttUnsubscribeWrapper(@NotNull final MqttUnsubscribe unsubscribe, final int packetIdentifier) {
         super(unsubscribe, packetIdentifier);
     }
 

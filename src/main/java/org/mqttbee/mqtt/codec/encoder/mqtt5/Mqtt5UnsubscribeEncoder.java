@@ -13,15 +13,15 @@ import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider
 import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider.NewMqttWrappedMessageEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
-import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribeImpl;
+import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribe;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribeWrapper;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5UnsubscribeEncoder extends Mqtt5WrappedMessageEncoder<MqttUnsubscribeImpl, MqttUnsubscribeWrapper> {
+public class Mqtt5UnsubscribeEncoder extends Mqtt5WrappedMessageEncoder<MqttUnsubscribe, MqttUnsubscribeWrapper> {
 
-    public static final MqttWrappedMessageEncoderProvider<MqttUnsubscribeImpl, MqttUnsubscribeWrapper, MqttMessageEncoderProvider<MqttUnsubscribeWrapper>>
+    public static final MqttWrappedMessageEncoderProvider<MqttUnsubscribe, MqttUnsubscribeWrapper, MqttMessageEncoderProvider<MqttUnsubscribeWrapper>>
             PROVIDER = NewMqttWrappedMessageEncoderProvider.create(Mqtt5UnsubscribeEncoder::new);
 
     private static final int VARIABLE_HEADER_FIXED_LENGTH = 2; // packet identifier
@@ -51,9 +51,9 @@ public class Mqtt5UnsubscribeEncoder extends Mqtt5WrappedMessageEncoder<MqttUnsu
 
 
     public static class Mqtt5UnsubscribeWrapperEncoder extends
-            Mqtt5MessageWrapperEncoder<MqttUnsubscribeWrapper, MqttUnsubscribeImpl, MqttMessageEncoderProvider<MqttUnsubscribeWrapper>, Mqtt5UnsubscribeEncoder> {
+            Mqtt5MessageWrapperEncoder<MqttUnsubscribeWrapper, MqttUnsubscribe, MqttMessageEncoderProvider<MqttUnsubscribeWrapper>, Mqtt5UnsubscribeEncoder> {
 
-        private static final MqttMessageWrapperEncoderApplier<MqttUnsubscribeWrapper, MqttUnsubscribeImpl, Mqtt5UnsubscribeEncoder>
+        private static final MqttMessageWrapperEncoderApplier<MqttUnsubscribeWrapper, MqttUnsubscribe, Mqtt5UnsubscribeEncoder>
                 APPLIER = new ThreadLocalMqttMessageWrapperEncoderApplier<>(Mqtt5UnsubscribeWrapperEncoder::new);
 
         private static final int FIXED_HEADER = (Mqtt5MessageType.UNSUBSCRIBE.getCode() << 4) | 0b0010;
