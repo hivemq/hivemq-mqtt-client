@@ -1,6 +1,7 @@
 package org.mqttbee.mqtt.datatypes;
 
 import io.netty.buffer.ByteBuf;
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperty;
@@ -9,6 +10,7 @@ import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperty;
  * @author Silvio Giebl
  * @see Mqtt5UserProperty
  */
+@Immutable
 public class MqttUserPropertyImpl implements Mqtt5UserProperty {
 
     /**

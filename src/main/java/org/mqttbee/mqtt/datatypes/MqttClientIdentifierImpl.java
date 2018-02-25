@@ -1,6 +1,7 @@
 package org.mqttbee.mqtt.datatypes;
 
 import io.netty.buffer.ByteBuf;
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
@@ -12,6 +13,7 @@ import java.util.regex.Pattern;
  * @see MqttClientIdentifier
  * @see MqttUTF8StringImpl
  */
+@Immutable
 public class MqttClientIdentifierImpl extends MqttUTF8StringImpl implements MqttClientIdentifier {
 
     /**
