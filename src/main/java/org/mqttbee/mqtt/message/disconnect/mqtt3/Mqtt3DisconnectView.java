@@ -6,7 +6,7 @@ import org.mqttbee.api.mqtt.mqtt3.message.disconnect.Mqtt3Disconnect;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.codec.encoder.mqtt3.Mqtt3DisconnectEncoder;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
-import org.mqttbee.mqtt.message.disconnect.MqttDisconnectImpl;
+import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
 
 /**
  * @author Silvio Giebl
@@ -14,16 +14,16 @@ import org.mqttbee.mqtt.message.disconnect.MqttDisconnectImpl;
 @Immutable
 public class Mqtt3DisconnectView implements Mqtt3Disconnect {
 
-    private static MqttDisconnectImpl WRAPPED;
+    private static MqttDisconnect WRAPPED;
     private static Mqtt3DisconnectView INSTANCE;
 
     @NotNull
-    public static MqttDisconnectImpl wrapped() {
+    public static MqttDisconnect wrapped() {
         if (WRAPPED != null) {
             return WRAPPED;
         }
-        return WRAPPED = new MqttDisconnectImpl(Mqtt5DisconnectReasonCode.NORMAL_DISCONNECTION,
-                MqttDisconnectImpl.SESSION_EXPIRY_INTERVAL_FROM_CONNECT, null, null,
+        return WRAPPED = new MqttDisconnect(Mqtt5DisconnectReasonCode.NORMAL_DISCONNECTION,
+                MqttDisconnect.SESSION_EXPIRY_INTERVAL_FROM_CONNECT, null, null,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES, Mqtt3DisconnectEncoder.PROVIDER);
     }
 
@@ -39,7 +39,7 @@ public class Mqtt3DisconnectView implements Mqtt3Disconnect {
     }
 
     @NotNull
-    public MqttDisconnectImpl getWrapped() {
+    public MqttDisconnect getWrapped() {
         return WRAPPED;
     }
 

@@ -13,16 +13,16 @@ import org.mqttbee.mqtt.message.MqttWrappedMessage;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttSubscribeImpl extends
-        MqttWrappedMessage<MqttSubscribeImpl, MqttSubscribeWrapper, MqttMessageEncoderProvider<MqttSubscribeWrapper>>
+public class MqttSubscribe extends
+        MqttWrappedMessage<MqttSubscribe, MqttSubscribeWrapper, MqttMessageEncoderProvider<MqttSubscribeWrapper>>
         implements Mqtt5Subscribe {
 
-    private final ImmutableList<MqttSubscriptionImpl> subscriptions;
+    private final ImmutableList<MqttSubscription> subscriptions;
 
-    public MqttSubscribeImpl(
-            @NotNull final ImmutableList<MqttSubscriptionImpl> subscriptions,
+    public MqttSubscribe(
+            @NotNull final ImmutableList<MqttSubscription> subscriptions,
             @NotNull final MqttUserPropertiesImpl userProperties,
-            @NotNull final MqttWrappedMessageEncoderProvider<MqttSubscribeImpl, MqttSubscribeWrapper, MqttMessageEncoderProvider<MqttSubscribeWrapper>> encoderProvider) {
+            @NotNull final MqttWrappedMessageEncoderProvider<MqttSubscribe, MqttSubscribeWrapper, MqttMessageEncoderProvider<MqttSubscribeWrapper>> encoderProvider) {
 
         super(userProperties, encoderProvider);
         this.subscriptions = subscriptions;
@@ -30,13 +30,13 @@ public class MqttSubscribeImpl extends
 
     @NotNull
     @Override
-    public ImmutableList<MqttSubscriptionImpl> getSubscriptions() {
+    public ImmutableList<MqttSubscription> getSubscriptions() {
         return subscriptions;
     }
 
     @NotNull
     @Override
-    protected MqttSubscribeImpl getCodable() {
+    protected MqttSubscribe getCodable() {
         return this;
     }
 

@@ -17,8 +17,8 @@ import java.util.Optional;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttDisconnectImpl extends
-        MqttMessageWithReasonCode<MqttDisconnectImpl, Mqtt5DisconnectReasonCode, MqttMessageEncoderProvider<MqttDisconnectImpl>>
+public class MqttDisconnect extends
+        MqttMessageWithReasonCode<MqttDisconnect, Mqtt5DisconnectReasonCode, MqttMessageEncoderProvider<MqttDisconnect>>
         implements Mqtt5Disconnect {
 
     @NotNull
@@ -28,11 +28,11 @@ public class MqttDisconnectImpl extends
     private final long sessionExpiryInterval;
     private final MqttUTF8StringImpl serverReference;
 
-    public MqttDisconnectImpl(
+    public MqttDisconnect(
             @NotNull final Mqtt5DisconnectReasonCode reasonCode, final long sessionExpiryInterval,
             @Nullable final MqttUTF8StringImpl serverReference, @Nullable final MqttUTF8StringImpl reasonString,
             @NotNull final MqttUserPropertiesImpl userProperties,
-            @NotNull final MqttMessageEncoderProvider<MqttDisconnectImpl> encoderProvider) {
+            @NotNull final MqttMessageEncoderProvider<MqttDisconnect> encoderProvider) {
 
         super(reasonCode, reasonString, userProperties, encoderProvider);
         this.sessionExpiryInterval = sessionExpiryInterval;
@@ -63,7 +63,7 @@ public class MqttDisconnectImpl extends
 
     @NotNull
     @Override
-    protected MqttDisconnectImpl getCodable() {
+    protected MqttDisconnect getCodable() {
         return this;
     }
 

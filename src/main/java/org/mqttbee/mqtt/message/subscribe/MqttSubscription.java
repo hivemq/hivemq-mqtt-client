@@ -11,7 +11,7 @@ import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttSubscriptionImpl implements Mqtt5Subscription {
+public class MqttSubscription implements Mqtt5Subscription {
 
     private final MqttTopicFilterImpl topicFilter;
     private final MqttQoS qos;
@@ -19,7 +19,7 @@ public class MqttSubscriptionImpl implements Mqtt5Subscription {
     private final Mqtt5RetainHandling retainHandling;
     private final boolean isRetainAsPublished;
 
-    public MqttSubscriptionImpl(
+    public MqttSubscription(
             @NotNull final MqttTopicFilterImpl topicFilter, @NotNull final MqttQoS qos, final boolean isNoLocal,
             @NotNull final Mqtt5RetainHandling retainHandling, final boolean isRetainAsPublished) {
 

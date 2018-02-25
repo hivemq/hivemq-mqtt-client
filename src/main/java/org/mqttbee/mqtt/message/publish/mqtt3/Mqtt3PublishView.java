@@ -10,7 +10,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.publish.TopicAliasUsage;
 import org.mqttbee.mqtt.codec.encoder.mqtt3.Mqtt3PublishEncoder;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
-import org.mqttbee.mqtt.message.publish.MqttPublishImpl;
+import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
 
 import java.nio.ByteBuffer;
@@ -22,17 +22,17 @@ import java.util.Optional;
 @Immutable
 public class Mqtt3PublishView implements Mqtt3Publish {
 
-    public static MqttPublishImpl wrapped(
+    public static MqttPublish wrapped(
             @NotNull final MqttTopicImpl topic, @Nullable final ByteBuffer payload, @NotNull final MqttQoS qos,
             final boolean isRetain) {
 
-        return new MqttPublishImpl(topic, payload, qos, isRetain, MqttPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY,
+        return new MqttPublish(topic, payload, qos, isRetain, MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY,
                 null, null, null, null, TopicAliasUsage.MUST_NOT, MqttUserPropertiesImpl.NO_USER_PROPERTIES,
                 Mqtt3PublishEncoder.PROVIDER);
     }
 
     public static MqttPublishWrapper wrapped(
-            @NotNull final MqttPublishImpl publish, final int packetIdentifier, final boolean isDup) {
+            @NotNull final MqttPublish publish, final int packetIdentifier, final boolean isDup) {
 
         return publish.wrap(packetIdentifier, isDup, MqttPublishWrapper.DEFAULT_NO_TOPIC_ALIAS, false,
                 MqttPublishWrapper.DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
@@ -45,9 +45,9 @@ public class Mqtt3PublishView implements Mqtt3Publish {
         return new Mqtt3PublishView(wrapped(topic, payload, qos, isRetain));
     }
 
-    private final MqttPublishImpl wrapped;
+    private final MqttPublish wrapped;
 
-    private Mqtt3PublishView(@NotNull final MqttPublishImpl wrapped) {
+    private Mqtt3PublishView(@NotNull final MqttPublish wrapped) {
         this.wrapped = wrapped;
     }
 
@@ -75,7 +75,7 @@ public class Mqtt3PublishView implements Mqtt3Publish {
     }
 
     @NotNull
-    public MqttPublishImpl getWrapped() {
+    public MqttPublish getWrapped() {
         return wrapped;
     }
 

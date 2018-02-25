@@ -13,8 +13,8 @@ import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.MqttClientDataImpl;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
-import org.mqttbee.mqtt.message.auth.MqttAuthBuilderImpl;
-import org.mqttbee.mqtt.message.auth.MqttAuthImpl;
+import org.mqttbee.mqtt.message.auth.MqttAuth;
+import org.mqttbee.mqtt.message.auth.MqttAuthBuilder;
 import org.mqttbee.mqtt5.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt5.handler.util.ChannelInboundHandlerWithTimeout;
 import org.slf4j.Logger;
@@ -53,11 +53,11 @@ abstract class AbstractMqtt5AuthHandler extends ChannelInboundHandlerWithTimeout
      * @return a builder for a new AUTH message.
      */
     @NotNull
-    static MqttAuthBuilderImpl getAuthBuilder(
+    static MqttAuthBuilder getAuthBuilder(
             @NotNull final Mqtt5AuthReasonCode reasonCode,
             @NotNull final Mqtt5EnhancedAuthProvider enhancedAuthProvider) {
 
-        return new MqttAuthBuilderImpl(reasonCode, (MqttUTF8StringImpl) enhancedAuthProvider.getMethod());
+        return new MqttAuthBuilder(reasonCode, (MqttUTF8StringImpl) enhancedAuthProvider.getMethod());
     }
 
     static boolean enhancedAuthProviderAccepted(@Nullable final Throwable throwable) {
@@ -85,7 +85,7 @@ abstract class AbstractMqtt5AuthHandler extends ChannelInboundHandlerWithTimeout
      * @param ctx  the channel handler context.
      * @param auth the incoming AUTH message.
      */
-    final void readAuth(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttAuthImpl auth) {
+    final void readAuth(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttAuth auth) {
         cancelTimeout();
 
         final MqttClientDataImpl clientData = MqttClientDataImpl.from(ctx.channel());
@@ -117,7 +117,7 @@ abstract class AbstractMqtt5AuthHandler extends ChannelInboundHandlerWithTimeout
      * @return true if the AUTH message is valid, otherwise false.
      */
     private boolean validateAuth(
-            @NotNull final Channel channel, @NotNull final MqttAuthImpl auth,
+            @NotNull final Channel channel, @NotNull final MqttAuth auth,
             @NotNull final Mqtt5EnhancedAuthProvider enhancedAuthProvider) {
 
         if (!auth.getMethod().equals(enhancedAuthProvider.getMethod())) {
@@ -142,11 +142,11 @@ abstract class AbstractMqtt5AuthHandler extends ChannelInboundHandlerWithTimeout
      * @param enhancedAuthProvider the enhanced auth provider.
      */
     private void readAuthContinue(
-            @NotNull final ChannelHandlerContext ctx, @NotNull final MqttAuthImpl auth,
+            @NotNull final ChannelHandlerContext ctx, @NotNull final MqttAuth auth,
             @NotNull final MqttClientDataImpl clientData,
             @NotNull final Mqtt5EnhancedAuthProvider enhancedAuthProvider) {
 
-        final MqttAuthBuilderImpl authBuilder = getAuthBuilder(CONTINUE_AUTHENTICATION, enhancedAuthProvider);
+        final MqttAuthBuilder authBuilder = getAuthBuilder(CONTINUE_AUTHENTICATION, enhancedAuthProvider);
 
         enhancedAuthProvider.onContinue(clientData, auth, authBuilder).whenCompleteAsync((accepted, throwable) -> {
             if (enhancedAuthProviderAccepted(accepted, throwable)) {
@@ -167,7 +167,7 @@ abstract class AbstractMqtt5AuthHandler extends ChannelInboundHandlerWithTimeout
      * @param enhancedAuthProvider the enhanced auth provider.
      */
     abstract void readAuthSuccess(
-            @NotNull ChannelHandlerContext ctx, @NotNull MqttAuthImpl auth, @NotNull MqttClientDataImpl clientData,
+            @NotNull ChannelHandlerContext ctx, @NotNull MqttAuth auth, @NotNull MqttClientDataImpl clientData,
             @NotNull Mqtt5EnhancedAuthProvider enhancedAuthProvider);
 
     /**
@@ -179,7 +179,7 @@ abstract class AbstractMqtt5AuthHandler extends ChannelInboundHandlerWithTimeout
      * @param enhancedAuthProvider the enhanced auth provider.
      */
     abstract void readReAuth(
-            @NotNull ChannelHandlerContext ctx, @NotNull MqttAuthImpl auth, @NotNull MqttClientDataImpl clientData,
+            @NotNull ChannelHandlerContext ctx, @NotNull MqttAuth auth, @NotNull MqttClientDataImpl clientData,
             @NotNull Mqtt5EnhancedAuthProvider enhancedAuthProvider);
 
     @Override

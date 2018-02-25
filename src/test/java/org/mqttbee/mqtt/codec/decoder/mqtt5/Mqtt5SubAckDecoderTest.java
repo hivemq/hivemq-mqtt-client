@@ -12,7 +12,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAckReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
-import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAckImpl;
+import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAck;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.MALFORMED_PACKET;
@@ -53,7 +53,7 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
                 0x00
         };
 
-        final MqttSubAckImpl subAck = decodeOk(encoded);
+        final MqttSubAck subAck = decodeOk(encoded);
 
         assertEquals(3, subAck.getPacketIdentifier());
         assertTrue(subAck.getReasonString().isPresent());
@@ -91,7 +91,7 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
                 0x00
         };
 
-        final MqttSubAckImpl subAck = decodeOk(encoded);
+        final MqttSubAck subAck = decodeOk(encoded);
 
         assertTrue(subAck.getReasonString().isPresent());
         assertEquals("success", subAck.getReasonString().get().toString());
@@ -150,7 +150,7 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
                 0x00
         };
 
-        final MqttSubAckImpl subAck = decodeOk(encoded);
+        final MqttSubAck subAck = decodeOk(encoded);
         assertTrue(subAck.getReasonString().isPresent());
         assertEquals("success", subAck.getReasonString().get().toString());
     }
@@ -195,7 +195,7 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
         };
 
         encoded[5] = (byte) reasonCode.getCode();
-        final MqttSubAckImpl subAck = decodeOk(encoded);
+        final MqttSubAck subAck = decodeOk(encoded);
         final ImmutableList<Mqtt5SubAckReasonCode> reasonCodes = subAck.getReasonCodes();
         assertEquals(1, reasonCodes.size());
         assertEquals(reasonCode, reasonCodes.get(0));
@@ -219,7 +219,7 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
                 (byte) 0x9E, (byte) 0xA1, (byte) 0xA2
         };
 
-        final MqttSubAckImpl subAck = decodeOk(encoded);
+        final MqttSubAck subAck = decodeOk(encoded);
         final ImmutableList<Mqtt5SubAckReasonCode> reasonCodes = subAck.getReasonCodes();
         assertEquals(12, reasonCodes.size());
         assertEquals(Mqtt5SubAckReasonCode.GRANTED_QOS_0, reasonCodes.get(0));
@@ -270,7 +270,7 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
                 0x00
         };
 
-        final MqttSubAckImpl subAck = decodeOk(encoded);
+        final MqttSubAck subAck = decodeOk(encoded);
         final ImmutableList<Mqtt5SubAckReasonCode> reasonCodes = subAck.getReasonCodes();
         assertEquals(1, reasonCodes.size());
         assertEquals(Mqtt5SubAckReasonCode.GRANTED_QOS_0, reasonCodes.get(0));
@@ -435,14 +435,14 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
     }
 
     @NotNull
-    private MqttSubAckImpl decodeOk(final byte[] encoded) {
-        final MqttSubAckImpl subAck = decode(encoded);
+    private MqttSubAck decodeOk(final byte[] encoded) {
+        final MqttSubAck subAck = decode(encoded);
         assertNotNull(subAck);
         return subAck;
     }
 
     private void decodeNok(final byte[] encoded, final Mqtt5DisconnectReasonCode reasonCode) {
-        final MqttSubAckImpl subAck = decode(encoded);
+        final MqttSubAck subAck = decode(encoded);
         assertNull(subAck);
 
         final Mqtt5Disconnect disconnect = channel.readOutbound();
@@ -453,7 +453,7 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
     }
 
     @Nullable
-    private MqttSubAckImpl decode(final byte[] encoded) {
+    private MqttSubAck decode(final byte[] encoded) {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);

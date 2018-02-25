@@ -11,7 +11,7 @@ import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5PublishEncoder;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
-import org.mqttbee.mqtt.message.publish.MqttPublishImpl;
+import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 import org.mqttbee.util.ByteBufferUtil;
 import org.mqttbee.util.MustNotBeImplementedUtil;
@@ -19,8 +19,8 @@ import org.mqttbee.util.UnsignedDataTypes;
 
 import java.nio.ByteBuffer;
 
-import static org.mqttbee.mqtt.message.publish.MqttPublishImpl.DEFAULT_TOPIC_ALIAS_USAGE;
-import static org.mqttbee.mqtt.message.publish.MqttPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY;
+import static org.mqttbee.mqtt.message.publish.MqttPublish.DEFAULT_TOPIC_ALIAS_USAGE;
+import static org.mqttbee.mqtt.message.publish.MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY;
 
 /**
  * @author Silvio Giebl
@@ -43,8 +43,7 @@ public class Mqtt5PublishBuilder {
     }
 
     Mqtt5PublishBuilder(@NotNull final Mqtt5Publish publish) {
-        final MqttPublishImpl publishImpl =
-                MustNotBeImplementedUtil.checkNotImplemented(publish, MqttPublishImpl.class);
+        final MqttPublish publishImpl = MustNotBeImplementedUtil.checkNotImplemented(publish, MqttPublish.class);
         topic = publishImpl.getTopic();
         payload = publishImpl.getRawPayload();
         qos = publishImpl.getQos();
@@ -163,7 +162,7 @@ public class Mqtt5PublishBuilder {
     public Mqtt5Publish build() {
         Preconditions.checkNotNull(topic);
         Preconditions.checkNotNull(qos);
-        return new MqttPublishImpl(topic, payload, qos, retain, messageExpiryInterval, payloadFormatIndicator,
+        return new MqttPublish(topic, payload, qos, retain, messageExpiryInterval, payloadFormatIndicator,
                 contentType, responseTopic, correlationData, topicAliasUsage, userProperties,
                 Mqtt5PublishEncoder.PROVIDER);
     }

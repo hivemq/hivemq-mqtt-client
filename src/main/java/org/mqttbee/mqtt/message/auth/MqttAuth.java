@@ -18,18 +18,18 @@ import java.util.Optional;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttAuthImpl
-        extends MqttMessageWithReasonCode<MqttAuthImpl, Mqtt5AuthReasonCode, MqttMessageEncoderProvider<MqttAuthImpl>>
+public class MqttAuth
+        extends MqttMessageWithReasonCode<MqttAuth, Mqtt5AuthReasonCode, MqttMessageEncoderProvider<MqttAuth>>
         implements Mqtt5Auth {
 
     private final MqttUTF8StringImpl method;
     private final ByteBuffer data;
 
-    public MqttAuthImpl(
+    public MqttAuth(
             @NotNull final Mqtt5AuthReasonCode reasonCode, @NotNull final MqttUTF8StringImpl method,
             @Nullable final ByteBuffer data, @Nullable final MqttUTF8StringImpl reasonString,
             @NotNull final MqttUserPropertiesImpl userProperties,
-            @NotNull final MqttMessageEncoderProvider<MqttAuthImpl> encoderProvider) {
+            @NotNull final MqttMessageEncoderProvider<MqttAuth> encoderProvider) {
 
         super(reasonCode, reasonString, userProperties, encoderProvider);
         this.method = method;
@@ -55,7 +55,7 @@ public class MqttAuthImpl
 
     @NotNull
     @Override
-    protected MqttAuthImpl getCodable() {
+    protected MqttAuth getCodable() {
         return this;
     }
 

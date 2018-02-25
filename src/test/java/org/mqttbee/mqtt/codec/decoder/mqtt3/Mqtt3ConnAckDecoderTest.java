@@ -9,7 +9,7 @@ import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckReasonCode;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoders;
-import org.mqttbee.mqtt.message.connect.connack.MqttConnAckImpl;
+import org.mqttbee.mqtt.message.connect.connack.MqttConnAck;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -60,7 +60,7 @@ class Mqtt3ConnAckDecoderTest extends AbstractMqtt3DecoderTest {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
-        final MqttConnAckImpl connAck = channel.readInbound();
+        final MqttConnAck connAck = channel.readInbound();
         assertNotNull(connAck);
         assertEquals(Mqtt5ConnAckReasonCode.SUCCESS, connAck.getReasonCode()); // Mqtt3ConnAckReturnCode.SUCCESS
         assertEquals(sessionPresent, connAck.isSessionPresent());
@@ -75,7 +75,7 @@ class Mqtt3ConnAckDecoderTest extends AbstractMqtt3DecoderTest {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
-        final MqttConnAckImpl connAck = channel.readInbound();
+        final MqttConnAck connAck = channel.readInbound();
         if (sessionPresent) {
             assertNull(connAck);
         } else {
@@ -95,7 +95,7 @@ class Mqtt3ConnAckDecoderTest extends AbstractMqtt3DecoderTest {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
-        final MqttConnAckImpl connAck = channel.readInbound();
+        final MqttConnAck connAck = channel.readInbound();
         if (sessionPresent) {
             assertNull(connAck);
         } else {
@@ -115,7 +115,7 @@ class Mqtt3ConnAckDecoderTest extends AbstractMqtt3DecoderTest {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
-        final MqttConnAckImpl connAck = channel.readInbound();
+        final MqttConnAck connAck = channel.readInbound();
         if (sessionPresent) {
             assertNull(connAck);
         } else {
@@ -135,7 +135,7 @@ class Mqtt3ConnAckDecoderTest extends AbstractMqtt3DecoderTest {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
-        final MqttConnAckImpl connAck = channel.readInbound();
+        final MqttConnAck connAck = channel.readInbound();
         if (sessionPresent) {
             assertNull(connAck);
         } else {
@@ -155,7 +155,7 @@ class Mqtt3ConnAckDecoderTest extends AbstractMqtt3DecoderTest {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
-        final MqttConnAckImpl connAck = channel.readInbound();
+        final MqttConnAck connAck = channel.readInbound();
         if (sessionPresent) {
             assertNull(connAck);
         } else {
@@ -175,7 +175,7 @@ class Mqtt3ConnAckDecoderTest extends AbstractMqtt3DecoderTest {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
-        final MqttConnAckImpl connAck = channel.readInbound();
+        final MqttConnAck connAck = channel.readInbound();
         assertNull(connAck);
     }
 
@@ -198,7 +198,7 @@ class Mqtt3ConnAckDecoderTest extends AbstractMqtt3DecoderTest {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
-        final MqttConnAckImpl connAck = channel.readInbound();
+        final MqttConnAck connAck = channel.readInbound();
         assertFalse(channel.isOpen());
         assertNull(connAck);
     }

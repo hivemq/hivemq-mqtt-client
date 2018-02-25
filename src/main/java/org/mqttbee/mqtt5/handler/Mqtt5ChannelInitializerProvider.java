@@ -4,7 +4,7 @@ import io.reactivex.SingleEmitter;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.mqtt.MqttClientDataImpl;
-import org.mqttbee.mqtt.message.connect.MqttConnectImpl;
+import org.mqttbee.mqtt.message.connect.MqttConnect;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -30,7 +30,7 @@ public class Mqtt5ChannelInitializerProvider {
      * @return the appropriate channel initializer.
      */
     public Mqtt5ChannelInitializer get(
-            @NotNull final MqttConnectImpl connect, @NotNull final SingleEmitter<Mqtt5ConnAck> connAckEmitter,
+            @NotNull final MqttConnect connect, @NotNull final SingleEmitter<Mqtt5ConnAck> connAckEmitter,
             @NotNull final MqttClientDataImpl clientData) {
 
         if (clientData.usesSSL()) {

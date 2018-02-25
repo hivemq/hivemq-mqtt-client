@@ -19,18 +19,18 @@ import java.nio.ByteBuffer;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttWillPublishImpl extends MqttPublishImpl implements Mqtt5WillPublish {
+public class MqttWillPublish extends MqttPublish implements Mqtt5WillPublish {
 
     private final long delayInterval;
 
-    public MqttWillPublishImpl(
+    public MqttWillPublish(
             @NotNull final MqttTopicImpl topic, @Nullable final ByteBuffer payload, @NotNull final MqttQoS qos,
             final boolean isRetain, final long messageExpiryInterval,
             @Nullable final Mqtt5PayloadFormatIndicator payloadFormatIndicator,
             @Nullable final MqttUTF8StringImpl contentType, @Nullable final MqttTopicImpl responseTopic,
             @Nullable final ByteBuffer correlationData, @NotNull final MqttUserPropertiesImpl userProperties,
             final long delayInterval,
-            @NotNull final MqttWrappedMessageEncoderProvider<MqttPublishImpl, MqttPublishWrapper, MqttPublishEncoderProvider> encoderProvider) {
+            @NotNull final MqttWrappedMessageEncoderProvider<MqttPublish, MqttPublishWrapper, MqttPublishEncoderProvider> encoderProvider) {
 
         super(topic, payload, qos, isRetain, messageExpiryInterval, payloadFormatIndicator, contentType, responseTopic,
                 correlationData, TopicAliasUsage.MUST_NOT, userProperties, encoderProvider);

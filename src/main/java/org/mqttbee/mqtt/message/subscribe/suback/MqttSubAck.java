@@ -1,11 +1,11 @@
-package org.mqttbee.mqtt.message.unsubscribe.unsuback;
+package org.mqttbee.mqtt.message.subscribe.suback;
 
 import com.google.common.collect.ImmutableList;
 import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
-import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAckReasonCode;
+import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
+import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAckReasonCode;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
@@ -15,12 +15,12 @@ import org.mqttbee.mqtt.message.MqttMessageWithUserProperties.MqttMessageWithIdA
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttUnsubAckImpl extends
-        MqttMessageWithIdAndReasonCodes<MqttUnsubAckImpl, Mqtt5UnsubAckReasonCode, MqttMessageEncoderProvider<MqttUnsubAckImpl>>
-        implements Mqtt5UnsubAck {
+public class MqttSubAck extends
+        MqttMessageWithIdAndReasonCodes<MqttSubAck, Mqtt5SubAckReasonCode, MqttMessageEncoderProvider<MqttSubAck>>
+        implements Mqtt5SubAck {
 
-    public MqttUnsubAckImpl(
-            final int packetIdentifier, @NotNull final ImmutableList<Mqtt5UnsubAckReasonCode> reasonCodes,
+    public MqttSubAck(
+            final int packetIdentifier, @NotNull final ImmutableList<Mqtt5SubAckReasonCode> reasonCodes,
             @Nullable final MqttUTF8StringImpl reasonString, @NotNull final MqttUserPropertiesImpl userProperties) {
 
         super(packetIdentifier, reasonCodes, reasonString, userProperties, null);
@@ -28,7 +28,7 @@ public class MqttUnsubAckImpl extends
 
     @NotNull
     @Override
-    protected MqttUnsubAckImpl getCodable() {
+    protected MqttSubAck getCodable() {
         return this;
     }
 

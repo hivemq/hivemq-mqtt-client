@@ -6,8 +6,8 @@ import org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAckReturnCode;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
-import org.mqttbee.mqtt.message.connect.connack.MqttConnAckImpl;
-import org.mqttbee.mqtt.message.connect.connack.MqttConnAckRestrictionsImpl;
+import org.mqttbee.mqtt.message.connect.connack.MqttConnAck;
+import org.mqttbee.mqtt.message.connect.connack.MqttConnAckRestrictions;
 
 import static org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAckReturnCode.*;
 
@@ -18,12 +18,12 @@ import static org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAckRet
 public class Mqtt3ConnAckView implements Mqtt3ConnAck {
 
     @NotNull
-    public static MqttConnAckImpl wrapped(
+    public static MqttConnAck wrapped(
             @NotNull final Mqtt3ConnAckReturnCode returnCode, final boolean isSessionPresent) {
 
-        return new MqttConnAckImpl(wrappedReasonCode(returnCode), isSessionPresent,
-                MqttConnAckImpl.SESSION_EXPIRY_INTERVAL_FROM_CONNECT, MqttConnAckImpl.KEEP_ALIVE_FROM_CONNECT,
-                MqttConnAckImpl.CLIENT_IDENTIFIER_FROM_CONNECT, null, MqttConnAckRestrictionsImpl.DEFAULT, null,
+        return new MqttConnAck(wrappedReasonCode(returnCode), isSessionPresent,
+                MqttConnAck.SESSION_EXPIRY_INTERVAL_FROM_CONNECT, MqttConnAck.KEEP_ALIVE_FROM_CONNECT,
+                MqttConnAck.CLIENT_IDENTIFIER_FROM_CONNECT, null, MqttConnAckRestrictions.DEFAULT, null,
                 null, null, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
     }
 
@@ -74,9 +74,9 @@ public class Mqtt3ConnAckView implements Mqtt3ConnAck {
         return new Mqtt3ConnAckView(wrapped(returnCode, isSessionPresent));
     }
 
-    private final MqttConnAckImpl wrapped;
+    private final MqttConnAck wrapped;
 
-    private Mqtt3ConnAckView(@NotNull final MqttConnAckImpl wrapped) {
+    private Mqtt3ConnAckView(@NotNull final MqttConnAck wrapped) {
         this.wrapped = wrapped;
     }
 
@@ -92,7 +92,7 @@ public class Mqtt3ConnAckView implements Mqtt3ConnAck {
     }
 
     @NotNull
-    public MqttConnAckImpl getWrapped() {
+    public MqttConnAck getWrapped() {
         return wrapped;
     }
 

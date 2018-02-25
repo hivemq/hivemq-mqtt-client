@@ -25,7 +25,7 @@ import java.util.Optional;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttPublishImpl extends MqttWrappedMessage<MqttPublishImpl, MqttPublishWrapper, MqttPublishEncoderProvider>
+public class MqttPublish extends MqttWrappedMessage<MqttPublish, MqttPublishWrapper, MqttPublishEncoderProvider>
         implements Mqtt5Publish {
 
     public static final long MESSAGE_EXPIRY_INTERVAL_INFINITY = Long.MAX_VALUE;
@@ -41,14 +41,14 @@ public class MqttPublishImpl extends MqttWrappedMessage<MqttPublishImpl, MqttPub
     private final ByteBuffer correlationData;
     private final TopicAliasUsage topicAliasUsage;
 
-    public MqttPublishImpl(
+    public MqttPublish(
             @NotNull final MqttTopicImpl topic, @Nullable final ByteBuffer payload, @NotNull final MqttQoS qos,
             final boolean isRetain, final long messageExpiryInterval,
             @Nullable final Mqtt5PayloadFormatIndicator payloadFormatIndicator,
             @Nullable final MqttUTF8StringImpl contentType, @Nullable final MqttTopicImpl responseTopic,
             @Nullable final ByteBuffer correlationData, @NotNull final TopicAliasUsage topicAliasUsage,
             @NotNull final MqttUserPropertiesImpl userProperties,
-            @NotNull final MqttWrappedMessageEncoderProvider<MqttPublishImpl, MqttPublishWrapper, MqttPublishEncoderProvider> encoderProvider) {
+            @NotNull final MqttWrappedMessageEncoderProvider<MqttPublish, MqttPublishWrapper, MqttPublishEncoderProvider> encoderProvider) {
 
         super(userProperties, encoderProvider);
         this.topic = topic;
@@ -154,7 +154,7 @@ public class MqttPublishImpl extends MqttWrappedMessage<MqttPublishImpl, MqttPub
 
     @NotNull
     @Override
-    protected MqttPublishImpl getCodable() {
+    protected MqttPublish getCodable() {
         return this;
     }
 

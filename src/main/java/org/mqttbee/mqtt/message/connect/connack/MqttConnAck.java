@@ -20,8 +20,8 @@ import java.util.Optional;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttConnAckImpl extends
-        MqttMessageWithReasonCode<MqttConnAckImpl, Mqtt5ConnAckReasonCode, MqttMessageEncoderProvider<MqttConnAckImpl>>
+public class MqttConnAck
+        extends MqttMessageWithReasonCode<MqttConnAck, Mqtt5ConnAckReasonCode, MqttMessageEncoderProvider<MqttConnAck>>
         implements Mqtt5ConnAck {
 
     public static final long SESSION_EXPIRY_INTERVAL_FROM_CONNECT = -1;
@@ -34,15 +34,15 @@ public class MqttConnAckImpl extends
     private final int serverKeepAlive;
     private final MqttClientIdentifierImpl assignedClientIdentifier;
     private final Mqtt5EnhancedAuth enhancedAuth;
-    private final MqttConnAckRestrictionsImpl restrictions;
+    private final MqttConnAckRestrictions restrictions;
     private final MqttUTF8StringImpl responseInformation;
     private final MqttUTF8StringImpl serverReference;
 
-    public MqttConnAckImpl(
+    public MqttConnAck(
             @NotNull final Mqtt5ConnAckReasonCode reasonCode, final boolean isSessionPresent,
             final long sessionExpiryInterval, final int serverKeepAlive,
             @Nullable final MqttClientIdentifierImpl assignedClientIdentifier,
-            @Nullable final Mqtt5EnhancedAuth enhancedAuth, @NotNull final MqttConnAckRestrictionsImpl restrictions,
+            @Nullable final Mqtt5EnhancedAuth enhancedAuth, @NotNull final MqttConnAckRestrictions restrictions,
             @Nullable final MqttUTF8StringImpl responseInformation, @Nullable final MqttUTF8StringImpl serverReference,
             @Nullable final MqttUTF8StringImpl reasonString, @NotNull final MqttUserPropertiesImpl userProperties) {
 
@@ -107,7 +107,7 @@ public class MqttConnAckImpl extends
 
     @NotNull
     @Override
-    public MqttConnAckRestrictionsImpl getRestrictions() {
+    public MqttConnAckRestrictions getRestrictions() {
         return restrictions;
     }
 
@@ -125,7 +125,7 @@ public class MqttConnAckImpl extends
 
     @NotNull
     @Override
-    protected MqttConnAckImpl getCodable() {
+    protected MqttConnAck getCodable() {
         return this;
     }
 

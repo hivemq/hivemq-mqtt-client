@@ -9,7 +9,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5DisconnectEncoder;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
-import org.mqttbee.mqtt.message.disconnect.MqttDisconnectImpl;
+import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
 import org.mqttbee.mqtt5.netty.ChannelAttributes;
 
 import javax.inject.Inject;
@@ -36,8 +36,8 @@ public class Mqtt5Disconnecter implements MqttDisconnecter {
             mqttReasonString = MqttUTF8StringImpl.from(reasonString);
         }
 
-        final MqttDisconnectImpl disconnect =
-                new MqttDisconnectImpl(reasonCode, MqttDisconnectImpl.SESSION_EXPIRY_INTERVAL_FROM_CONNECT, null,
+        final MqttDisconnect disconnect =
+                new MqttDisconnect(reasonCode, MqttDisconnect.SESSION_EXPIRY_INTERVAL_FROM_CONNECT, null,
                         mqttReasonString, MqttUserPropertiesImpl.NO_USER_PROPERTIES, Mqtt5DisconnectEncoder.PROVIDER);
 
         channel.config().setAutoRead(false);

@@ -12,9 +12,9 @@ import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5RetainHandling;
 import org.mqttbee.mqtt.codec.encoder.AbstractMqtt5EncoderTest;
 import org.mqttbee.mqtt.datatypes.*;
-import org.mqttbee.mqtt.message.subscribe.MqttSubscribeImpl;
+import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribeWrapper;
-import org.mqttbee.mqtt.message.subscribe.MqttSubscriptionImpl;
+import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
 
 import java.util.Arrays;
 
@@ -69,11 +69,11 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderTest {
         final boolean isNoLocal = true;
         final Mqtt5RetainHandling retainHandling = Mqtt5RetainHandling.SEND_IF_SUBSCRIPTION_DOES_NOT_EXIST;
         final boolean isRetainAsPublished = true;
-        final ImmutableList<MqttSubscriptionImpl> subscriptions =
-                ImmutableList.of(new MqttSubscriptionImpl(requireNonNull(topicFiler), qos, isNoLocal, retainHandling,
+        final ImmutableList<MqttSubscription> subscriptions =
+                ImmutableList.of(new MqttSubscription(requireNonNull(topicFiler), qos, isNoLocal, retainHandling,
                         isRetainAsPublished));
-        final MqttSubscribeImpl subscribe =
-                new MqttSubscribeImpl(subscriptions, userProperties, Mqtt5SubscribeEncoder.PROVIDER);
+        final MqttSubscribe subscribe =
+                new MqttSubscribe(subscriptions, userProperties, Mqtt5SubscribeEncoder.PROVIDER);
         encode(expected, subscribe, 1);
     }
 
@@ -107,11 +107,11 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderTest {
 
         final MqttTopicFilterImpl topicFiler = MqttTopicFilterImpl.from("topic/#");
         final MqttQoS qos = MqttQoS.AT_LEAST_ONCE;
-        final ImmutableList<MqttSubscriptionImpl> subscriptions =
-                ImmutableList.of(new MqttSubscriptionImpl(requireNonNull(topicFiler), qos, DEFAULT_NO_LOCAL,
+        final ImmutableList<MqttSubscription> subscriptions =
+                ImmutableList.of(new MqttSubscription(requireNonNull(topicFiler), qos, DEFAULT_NO_LOCAL,
                         DEFAULT_RETAIN_HANDLING, DEFAULT_RETAIN_AS_PUBLISHED));
-        final MqttSubscribeImpl subscribe =
-                new MqttSubscribeImpl(subscriptions, userProperties, Mqtt5SubscribeEncoder.PROVIDER);
+        final MqttSubscribe subscribe =
+                new MqttSubscribe(subscriptions, userProperties, Mqtt5SubscribeEncoder.PROVIDER);
         encode(expected, subscribe, 10);
     }
 
@@ -143,11 +143,11 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderTest {
 
         final MqttTopicFilterImpl topicFiler = MqttTopicFilterImpl.from("topic/#");
         final MqttQoS qos = MqttQoS.AT_LEAST_ONCE;
-        final ImmutableList<MqttSubscriptionImpl> subscriptions =
-                ImmutableList.of(new MqttSubscriptionImpl(requireNonNull(topicFiler), qos, DEFAULT_NO_LOCAL,
+        final ImmutableList<MqttSubscription> subscriptions =
+                ImmutableList.of(new MqttSubscription(requireNonNull(topicFiler), qos, DEFAULT_NO_LOCAL,
                         DEFAULT_RETAIN_HANDLING, DEFAULT_RETAIN_AS_PUBLISHED));
-        final MqttSubscribeImpl subscribe =
-                new MqttSubscribeImpl(subscriptions, userProperties, Mqtt5SubscribeEncoder.PROVIDER);
+        final MqttSubscribe subscribe =
+                new MqttSubscribe(subscriptions, userProperties, Mqtt5SubscribeEncoder.PROVIDER);
         encode(expected, subscribe, 10);
     }
 
@@ -174,11 +174,10 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderTest {
         expected[14] |= qos.getCode();
 
         final MqttTopicFilterImpl topicFiler = MqttTopicFilterImpl.from("topic/#");
-        final ImmutableList<MqttSubscriptionImpl> subscriptions =
-                ImmutableList.of(new MqttSubscriptionImpl(requireNonNull(topicFiler), qos, DEFAULT_NO_LOCAL,
+        final ImmutableList<MqttSubscription> subscriptions =
+                ImmutableList.of(new MqttSubscription(requireNonNull(topicFiler), qos, DEFAULT_NO_LOCAL,
                         DEFAULT_RETAIN_HANDLING, DEFAULT_RETAIN_AS_PUBLISHED));
-        final MqttSubscribeImpl subscribe =
-                new MqttSubscribeImpl(subscriptions, MqttUserPropertiesImpl.NO_USER_PROPERTIES,
+        final MqttSubscribe subscribe = new MqttSubscribe(subscriptions, MqttUserPropertiesImpl.NO_USER_PROPERTIES,
                         Mqtt5SubscribeEncoder.PROVIDER);
         encode(expected, subscribe, 10);
     }
@@ -209,11 +208,10 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderTest {
         final boolean isNoLocal = noLocal == 1;
         final Mqtt5RetainHandling retainHandling = Mqtt5RetainHandling.SEND;
         final MqttQoS qos = MqttQoS.AT_MOST_ONCE;
-        final ImmutableList<MqttSubscriptionImpl> subscriptions =
-                ImmutableList.of(new MqttSubscriptionImpl(requireNonNull(topicFiler), qos, isNoLocal, retainHandling,
+        final ImmutableList<MqttSubscription> subscriptions =
+                ImmutableList.of(new MqttSubscription(requireNonNull(topicFiler), qos, isNoLocal, retainHandling,
                         DEFAULT_RETAIN_AS_PUBLISHED));
-        final MqttSubscribeImpl subscribe =
-                new MqttSubscribeImpl(subscriptions, MqttUserPropertiesImpl.NO_USER_PROPERTIES,
+        final MqttSubscribe subscribe = new MqttSubscribe(subscriptions, MqttUserPropertiesImpl.NO_USER_PROPERTIES,
                         Mqtt5SubscribeEncoder.PROVIDER);
         encode(expected, subscribe, 10);
     }
@@ -243,11 +241,10 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderTest {
         final MqttTopicFilterImpl topicFiler = MqttTopicFilterImpl.from("topic/#");
         final MqttQoS qos = MqttQoS.AT_LEAST_ONCE;
         final boolean isNoLocal = true;
-        final ImmutableList<MqttSubscriptionImpl> subscriptions =
-                ImmutableList.of(new MqttSubscriptionImpl(requireNonNull(topicFiler), qos, isNoLocal, retainHandling,
+        final ImmutableList<MqttSubscription> subscriptions =
+                ImmutableList.of(new MqttSubscription(requireNonNull(topicFiler), qos, isNoLocal, retainHandling,
                         DEFAULT_RETAIN_AS_PUBLISHED));
-        final MqttSubscribeImpl subscribe =
-                new MqttSubscribeImpl(subscriptions, MqttUserPropertiesImpl.NO_USER_PROPERTIES,
+        final MqttSubscribe subscribe = new MqttSubscribe(subscriptions, MqttUserPropertiesImpl.NO_USER_PROPERTIES,
                         Mqtt5SubscribeEncoder.PROVIDER);
         encode(expected, subscribe, 10);
     }
@@ -275,11 +272,10 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderTest {
 
         final MqttTopicFilterImpl topicFiler = MqttTopicFilterImpl.from("topic/#");
         final MqttQoS qos = MqttQoS.AT_LEAST_ONCE;
-        final ImmutableList<MqttSubscriptionImpl> subscriptions =
-                ImmutableList.of(new MqttSubscriptionImpl(requireNonNull(topicFiler), qos, DEFAULT_NO_LOCAL,
+        final ImmutableList<MqttSubscription> subscriptions =
+                ImmutableList.of(new MqttSubscription(requireNonNull(topicFiler), qos, DEFAULT_NO_LOCAL,
                         DEFAULT_RETAIN_HANDLING, DEFAULT_RETAIN_AS_PUBLISHED));
-        final MqttSubscribeImpl subscribe =
-                new MqttSubscribeImpl(subscriptions, MqttUserPropertiesImpl.NO_USER_PROPERTIES,
+        final MqttSubscribe subscribe = new MqttSubscribe(subscriptions, MqttUserPropertiesImpl.NO_USER_PROPERTIES,
                         Mqtt5SubscribeEncoder.PROVIDER);
         final MqttSubscribeWrapper subscribeInternal = subscribe.wrap(10, 111);
 
@@ -292,11 +288,10 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderTest {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
         final MqttTopicFilterImpl topicFiler = maxPacket.getTopicFilterTooLong();
         final MqttQoS qos = MqttQoS.AT_LEAST_ONCE;
-        final ImmutableList<MqttSubscriptionImpl> subscriptions =
-                ImmutableList.of(new MqttSubscriptionImpl(requireNonNull(topicFiler), qos, DEFAULT_NO_LOCAL,
+        final ImmutableList<MqttSubscription> subscriptions =
+                ImmutableList.of(new MqttSubscription(requireNonNull(topicFiler), qos, DEFAULT_NO_LOCAL,
                         DEFAULT_RETAIN_HANDLING, DEFAULT_RETAIN_AS_PUBLISHED));
-        final MqttSubscribeImpl subscribe =
-                new MqttSubscribeImpl(subscriptions, maxPacket.getMaxPossibleUserProperties(),
+        final MqttSubscribe subscribe = new MqttSubscribe(subscriptions, maxPacket.getMaxPossibleUserProperties(),
                         Mqtt5SubscribeEncoder.PROVIDER);
 
         final int packetIdentifier = 1;
@@ -317,11 +312,11 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderTest {
         final MqttUserPropertiesImpl tooManyUserProperties = maxPacket.getUserProperties(
                 (VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE / maxPacket.userPropertyBytes) + 1);
 
-        final ImmutableList<MqttSubscriptionImpl> subscriptions =
-                ImmutableList.of(new MqttSubscriptionImpl(requireNonNull(topicFiler), qos, DEFAULT_NO_LOCAL,
+        final ImmutableList<MqttSubscription> subscriptions =
+                ImmutableList.of(new MqttSubscription(requireNonNull(topicFiler), qos, DEFAULT_NO_LOCAL,
                         DEFAULT_RETAIN_HANDLING, DEFAULT_RETAIN_AS_PUBLISHED));
-        final MqttSubscribeImpl subscribe =
-                new MqttSubscribeImpl(subscriptions, tooManyUserProperties, Mqtt5SubscribeEncoder.PROVIDER);
+        final MqttSubscribe subscribe =
+                new MqttSubscribe(subscriptions, tooManyUserProperties, Mqtt5SubscribeEncoder.PROVIDER);
 
         final int packetIdentifier = 2;
         final MqttSubscribeWrapper subscribeInternal =
@@ -332,7 +327,7 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderTest {
         assertTrue(exception.getMessage().contains("variable byte integer size exceeded for property length"));
     }
 
-    private void encode(final byte[] expected, final MqttSubscribeImpl subscribe, final int packetIdentifier) {
+    private void encode(final byte[] expected, final MqttSubscribe subscribe, final int packetIdentifier) {
         final MqttSubscribeWrapper subscribeInternal =
                 subscribe.wrap(packetIdentifier, MqttSubscribeWrapper.DEFAULT_NO_SUBSCRIPTION_IDENTIFIER);
         encodeInternal(expected, subscribeInternal);

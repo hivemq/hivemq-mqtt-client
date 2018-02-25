@@ -12,7 +12,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.TopicAliasUsage;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
-import org.mqttbee.mqtt.message.publish.MqttPublishImpl;
+import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
 import org.mqttbee.mqtt5.netty.ChannelAttributes;
 import org.mqttbee.util.ByteBufferUtil;
@@ -85,7 +85,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
         assertEquals(1, subscriptionIdentifiers.length());
         assertTrue(subscriptionIdentifiers.contains(123));
 
-        final MqttPublishImpl publish = publishInternal.getWrapped();
+        final MqttPublish publish = publishInternal.getWrapped();
 
         assertNotNull(publish);
 
@@ -139,7 +139,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
         final ImmutableIntArray subscriptionIdentifiers = publishInternal.getSubscriptionIdentifiers();
         assertEquals(0, subscriptionIdentifiers.length());
 
-        final MqttPublishImpl publish = publishInternal.getWrapped();
+        final MqttPublish publish = publishInternal.getWrapped();
 
         assertNotNull(publish);
 
@@ -169,7 +169,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
                 // properties
                 0
         };
-        final MqttPublishImpl publish = decode(encoded);
+        final MqttPublish publish = decode(encoded);
         assertEquals("t", publish.getTopic().toString());
     }
 
@@ -203,7 +203,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
                 //     payload format indicator
                 0x01, 0
         };
-        final MqttPublishImpl decodeQos0 = decode(encodedQos0);
+        final MqttPublish decodeQos0 = decode(encodedQos0);
         assertEquals(MqttQoS.AT_MOST_ONCE, decodeQos0.getQos());
 
         final byte[] encodedQos1 = {
@@ -222,7 +222,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
                 //     payload format indicator
                 0x01, 0
         };
-        final MqttPublishImpl decodeQos1 = decode(encodedQos1);
+        final MqttPublish decodeQos1 = decode(encodedQos1);
         assertEquals(MqttQoS.AT_LEAST_ONCE, decodeQos1.getQos());
 
         final byte[] encodedQos2 = {
@@ -241,7 +241,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
                 //     payload format indicator
                 0x01, 0
         };
-        final MqttPublishImpl decodeQos2 = decode(encodedQos2);
+        final MqttPublish decodeQos2 = decode(encodedQos2);
         assertEquals(MqttQoS.EXACTLY_ONCE, decodeQos2.getQos());
     }
 
@@ -318,7 +318,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
                 // payload
                 0x00
         };
-        final MqttPublishImpl publish = decode(encoded);
+        final MqttPublish publish = decode(encoded);
         assertTrue(publish.getMessageExpiryInterval().isPresent());
         assertEquals(10, (long) publish.getMessageExpiryInterval().get());
     }
@@ -369,7 +369,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
                 (byte) 0xE4, (byte) 0xBD, (byte) 0xA0, 0x20, (byte) 0xE5, (byte) 0xA5, (byte) 0xBD
         };
 
-        final MqttPublishImpl publish = decode(encoded);
+        final MqttPublish publish = decode(encoded);
         assertTrue(publish.getPayloadFormatIndicator().isPresent());
         assertEquals(Mqtt5PayloadFormatIndicator.UTF_8, publish.getPayloadFormatIndicator().get());
         assertTrue(publish.getPayload().isPresent());
@@ -459,7 +459,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
                 0x03, 0, 4, 't', 'e', 'x', 't',
 
         };
-        final MqttPublishImpl publish = decode(encoded);
+        final MqttPublish publish = decode(encoded);
         assertTrue(publish.getContentType().isPresent());
         assertEquals("text", publish.getContentType().get().toString());
     }
@@ -500,7 +500,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
                 0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'
 
         };
-        final MqttPublishImpl publish = decode(encoded);
+        final MqttPublish publish = decode(encoded);
         final ImmutableList<MqttUserPropertyImpl> userProperties = publish.getUserProperties().asList();
         assertEquals(1, userProperties.size());
         assertEquals("test", userProperties.get(0).getName().toString());
@@ -761,7 +761,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
                 //     payload format indicator
                 0x01, 0
         };
-        final MqttPublishImpl publish = decode(encoded);
+        final MqttPublish publish = decode(encoded);
         assertTrue(publish.getCorrelationData().isPresent());
         assertEquals(ByteBuffer.wrap(new byte[]{5, 4, 3, 2, 1}), publish.getCorrelationData().get());
     }
@@ -809,7 +809,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
                 //     payload format indicator
                 0x01, 0
         };
-        final MqttPublishImpl publish = decode(encoded);
+        final MqttPublish publish = decode(encoded);
         assertTrue(publish.getResponseTopic().isPresent());
         assertEquals("response", publish.getResponseTopic().get().toString());
     }
@@ -854,7 +854,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
                 //     payload format indicator
                 0x01, 0
         };
-        MqttPublishImpl publish = decode(encoded);
+        MqttPublish publish = decode(encoded);
         assertTrue(publish.getResponseTopic().isPresent());
         assertEquals("rtopic/a", publish.getResponseTopic().get().toString());
 
@@ -1038,7 +1038,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
                 //     payload format indicator
                 0x01, 0
         };
-        MqttPublishImpl decode = decode(encoded);
+        MqttPublish decode = decode(encoded);
         assertEquals("topic/a", decode.getTopic().toString());
 
         encoded[10] = '#';
@@ -1204,7 +1204,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
     }
 
     @NotNull
-    private MqttPublishImpl decode(final byte[] encoded) {
+    private MqttPublish decode(final byte[] encoded) {
         return decodeInternal(encoded).getWrapped();
     }
 

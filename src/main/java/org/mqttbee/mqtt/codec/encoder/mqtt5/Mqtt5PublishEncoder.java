@@ -14,22 +14,22 @@ import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider
 import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider.NewMqttWrappedMessageEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttBinaryData;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
-import org.mqttbee.mqtt.message.publish.MqttPublishImpl;
+import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
 
 import java.nio.ByteBuffer;
 
 import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.*;
-import static org.mqttbee.mqtt.message.publish.MqttPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY;
+import static org.mqttbee.mqtt.message.publish.MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY;
 import static org.mqttbee.mqtt.message.publish.MqttPublishProperty.*;
 import static org.mqttbee.mqtt.message.publish.MqttPublishWrapper.DEFAULT_NO_TOPIC_ALIAS;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5PublishEncoder extends Mqtt5WrappedMessageEncoder<MqttPublishImpl, MqttPublishWrapper> {
+public class Mqtt5PublishEncoder extends Mqtt5WrappedMessageEncoder<MqttPublish, MqttPublishWrapper> {
 
-    public static final MqttWrappedMessageEncoderProvider<MqttPublishImpl, MqttPublishWrapper, MqttPublishEncoderProvider>
+    public static final MqttWrappedMessageEncoderProvider<MqttPublish, MqttPublishWrapper, MqttPublishEncoderProvider>
             PROVIDER =
             new NewMqttWrappedMessageEncoderProvider<>(Mqtt5PublishEncoder::new, Mqtt5PublishWrapperEncoder.PROVIDER);
 
@@ -84,11 +84,11 @@ public class Mqtt5PublishEncoder extends Mqtt5WrappedMessageEncoder<MqttPublishI
 
 
     public static class Mqtt5PublishWrapperEncoder extends
-            Mqtt5MessageWrapperEncoder<MqttPublishWrapper, MqttPublishImpl, MqttPublishEncoderProvider, Mqtt5PublishEncoder> {
+            Mqtt5MessageWrapperEncoder<MqttPublishWrapper, MqttPublish, MqttPublishEncoderProvider, Mqtt5PublishEncoder> {
 
         private static final MqttPublishEncoderProvider PROVIDER =
                 new MqttPublishEncoderProvider(Mqtt5PubAckEncoder.PROVIDER, Mqtt5PubRecEncoder.PROVIDER);
-        private static final MqttMessageWrapperEncoderApplier<MqttPublishWrapper, MqttPublishImpl, Mqtt5PublishEncoder>
+        private static final MqttMessageWrapperEncoderApplier<MqttPublishWrapper, MqttPublish, Mqtt5PublishEncoder>
                 APPLIER = new ThreadLocalMqttMessageWrapperEncoderApplier<>(Mqtt5PublishWrapperEncoder::new);
 
         private static final int FIXED_HEADER = Mqtt5MessageType.PUBLISH.getCode() << 4;
@@ -129,7 +129,7 @@ public class Mqtt5PublishEncoder extends Mqtt5WrappedMessageEncoder<MqttPublishI
         }
 
         private void encodeFixedHeader(@NotNull final ByteBuf out, final int maximumPacketSize) {
-            final MqttPublishImpl publish = message.getWrapped();
+            final MqttPublish publish = message.getWrapped();
 
             int flags = 0;
             if (message.isDup()) {
@@ -146,7 +146,7 @@ public class Mqtt5PublishEncoder extends Mqtt5WrappedMessageEncoder<MqttPublishI
         }
 
         private void encodeVariableHeader(@NotNull final ByteBuf out, final int maximumPacketSize) {
-            final MqttPublishImpl publish = message.getWrapped();
+            final MqttPublish publish = message.getWrapped();
 
             if ((message.getTopicAlias() == DEFAULT_NO_TOPIC_ALIAS) || (message.isNewTopicAlias())) {
                 publish.getTopic().to(out);

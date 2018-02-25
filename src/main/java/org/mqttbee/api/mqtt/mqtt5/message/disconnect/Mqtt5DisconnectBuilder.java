@@ -8,7 +8,7 @@ import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5DisconnectEncoder;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
-import org.mqttbee.mqtt.message.disconnect.MqttDisconnectImpl;
+import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 import org.mqttbee.util.UnsignedDataTypes;
@@ -22,7 +22,7 @@ import static org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReaso
 public class Mqtt5DisconnectBuilder {
 
     private boolean withWillMessage = false;
-    private long sessionExpiryInterval = MqttDisconnectImpl.SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
+    private long sessionExpiryInterval = MqttDisconnect.SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
     private MqttUTF8StringImpl serverReference;
     private MqttUTF8StringImpl reasonString;
     private MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
@@ -78,7 +78,7 @@ public class Mqtt5DisconnectBuilder {
     public Mqtt5Disconnect build() {
         final Mqtt5DisconnectReasonCode reasonCode =
                 withWillMessage ? DISCONNECT_WITH_WILL_MESSAGE : NORMAL_DISCONNECTION;
-        return new MqttDisconnectImpl(reasonCode, sessionExpiryInterval, serverReference, reasonString, userProperties,
+        return new MqttDisconnect(reasonCode, sessionExpiryInterval, serverReference, reasonString, userProperties,
                 Mqtt5DisconnectEncoder.PROVIDER);
     }
 

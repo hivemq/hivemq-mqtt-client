@@ -6,7 +6,7 @@ import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt.MqttClientConnectionDataImpl;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
-import org.mqttbee.mqtt.message.unsubscribe.unsuback.MqttUnsubAckImpl;
+import org.mqttbee.mqtt.message.unsubscribe.unsuback.MqttUnsubAck;
 import org.mqttbee.mqtt.message.unsubscribe.unsuback.mqtt3.Mqtt3UnsubAckView;
 
 import javax.inject.Inject;
@@ -31,7 +31,7 @@ public class Mqtt3UnsubAckDecoder implements MqttMessageDecoder {
 
     @Nullable
     @Override
-    public MqttUnsubAckImpl decode(
+    public MqttUnsubAck decode(
             final int flags, @NotNull final ByteBuf in,
             @NotNull final MqttClientConnectionDataImpl clientConnectionData) throws MqttDecoderException {
 

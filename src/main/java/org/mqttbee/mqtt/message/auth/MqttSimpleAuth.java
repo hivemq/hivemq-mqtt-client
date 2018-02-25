@@ -15,12 +15,12 @@ import java.util.Optional;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttSimpleAuthImpl implements Mqtt5SimpleAuth {
+public class MqttSimpleAuth implements Mqtt5SimpleAuth {
 
     private final MqttUTF8StringImpl username;
     private final ByteBuffer password;
 
-    public MqttSimpleAuthImpl(@Nullable final MqttUTF8StringImpl username, @Nullable final ByteBuffer password) {
+    public MqttSimpleAuth(@Nullable final MqttUTF8StringImpl username, @Nullable final ByteBuffer password) {
         this.username = username;
         this.password = password;
     }

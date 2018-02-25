@@ -14,7 +14,7 @@ import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5AuthEncoder;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
-import org.mqttbee.mqtt.message.auth.MqttAuthImpl;
+import org.mqttbee.mqtt.message.auth.MqttAuth;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -40,7 +40,7 @@ public class Mqtt5AuthDecoder implements MqttMessageDecoder {
 
     @Override
     @Nullable
-    public MqttAuthImpl decode(
+    public MqttAuth decode(
             final int flags, @NotNull final ByteBuf in,
             @NotNull final MqttClientConnectionDataImpl clientConnectionData) throws MqttDecoderException {
 
@@ -97,7 +97,7 @@ public class Mqtt5AuthDecoder implements MqttMessageDecoder {
 
         final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.build(userPropertiesBuilder);
 
-        return new MqttAuthImpl(reasonCode, method, data, reasonString, userProperties, Mqtt5AuthEncoder.PROVIDER);
+        return new MqttAuth(reasonCode, method, data, reasonString, userProperties, Mqtt5AuthEncoder.PROVIDER);
     }
 
 }

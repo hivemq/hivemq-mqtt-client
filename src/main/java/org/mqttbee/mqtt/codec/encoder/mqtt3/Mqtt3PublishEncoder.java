@@ -11,7 +11,7 @@ import org.mqttbee.mqtt.codec.encoder.provider.MqttPublishEncoderProvider;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider.ThreadLocalMqttWrappedMessageEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
-import org.mqttbee.mqtt.message.publish.MqttPublishImpl;
+import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
 
 import java.nio.ByteBuffer;
@@ -21,11 +21,11 @@ import static org.mqttbee.mqtt.codec.encoder.MqttMessageEncoderUtil.nullableEnco
 /**
  * @author Silvio Giebl
  */
-public class Mqtt3PublishEncoder extends Mqtt3WrappedMessageEncoder<MqttPublishImpl, MqttPublishWrapper> {
+public class Mqtt3PublishEncoder extends Mqtt3WrappedMessageEncoder<MqttPublish, MqttPublishWrapper> {
 
     private static final MqttPublishEncoderProvider WRAPPER_PROVIDER =
             new MqttPublishEncoderProvider(Mqtt5PubAckEncoder.PROVIDER, Mqtt5PubRecEncoder.PROVIDER);
-    public static final MqttWrappedMessageEncoderProvider<MqttPublishImpl, MqttPublishWrapper, MqttPublishEncoderProvider>
+    public static final MqttWrappedMessageEncoderProvider<MqttPublish, MqttPublishWrapper, MqttPublishEncoderProvider>
             PROVIDER = new ThreadLocalMqttWrappedMessageEncoderProvider<>(Mqtt3PublishEncoder::new, WRAPPER_PROVIDER);
 
     private static final int FIXED_HEADER = Mqtt3MessageType.PUBLISH.getCode() << 4;

@@ -2,7 +2,7 @@ package org.mqttbee.mqtt.codec.encoder;
 
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.Test;
-import org.mqttbee.mqtt.message.ping.MqttPingReqImpl;
+import org.mqttbee.mqtt.message.ping.MqttPingReq;
 
 import static org.junit.Assert.assertArrayEquals;
 
@@ -25,7 +25,7 @@ class MqttPingReqEncoderTest extends AbstractMqtt5EncoderTest {
                 0
         };
 
-        final MqttPingReqImpl pingReq = MqttPingReqImpl.INSTANCE;
+        final MqttPingReq pingReq = MqttPingReq.INSTANCE;
         channel.writeOutbound(pingReq);
         final ByteBuf byteBuf = channel.readOutbound();
 

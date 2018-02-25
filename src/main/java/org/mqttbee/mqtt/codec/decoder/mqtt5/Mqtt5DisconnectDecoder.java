@@ -12,15 +12,15 @@ import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5DisconnectEncoder;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
-import org.mqttbee.mqtt.message.disconnect.MqttDisconnectImpl;
+import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.checkFixedHeaderFlags;
 import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.*;
-import static org.mqttbee.mqtt.message.disconnect.MqttDisconnectImpl.DEFAULT_REASON_CODE;
-import static org.mqttbee.mqtt.message.disconnect.MqttDisconnectImpl.SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
+import static org.mqttbee.mqtt.message.disconnect.MqttDisconnect.DEFAULT_REASON_CODE;
+import static org.mqttbee.mqtt.message.disconnect.MqttDisconnect.SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
 import static org.mqttbee.mqtt.message.disconnect.MqttDisconnectProperty.*;
 
 /**
@@ -37,7 +37,7 @@ public class Mqtt5DisconnectDecoder implements MqttMessageDecoder {
 
     @Override
     @Nullable
-    public MqttDisconnectImpl decode(
+    public MqttDisconnect decode(
             final int flags, @NotNull final ByteBuf in,
             @NotNull final MqttClientConnectionDataImpl clientConnectionData) throws MqttDecoderException {
 
@@ -87,7 +87,7 @@ public class Mqtt5DisconnectDecoder implements MqttMessageDecoder {
 
         final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.build(userPropertiesBuilder);
 
-        return new MqttDisconnectImpl(reasonCode, sessionExpiryInterval, serverReference, reasonString, userProperties,
+        return new MqttDisconnect(reasonCode, sessionExpiryInterval, serverReference, reasonString, userProperties,
                 Mqtt5DisconnectEncoder.PROVIDER);
     }
 

@@ -7,7 +7,7 @@ import org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAck;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAckReturnCode;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAckReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
-import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAckImpl;
+import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAck;
 
 import static org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAckReturnCode.*;
 
@@ -18,10 +18,10 @@ import static org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAckRet
 public class Mqtt3SubAckView implements Mqtt3SubAck {
 
     @NotNull
-    public static MqttSubAckImpl wrapped(
+    public static MqttSubAck wrapped(
             final int packetIdentifier, @NotNull final ImmutableList<Mqtt3SubAckReturnCode> returnCodes) {
 
-        return new MqttSubAckImpl(
+        return new MqttSubAck(
                 packetIdentifier, wrappedReturnCodes(returnCodes), null, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
     }
 
@@ -88,9 +88,9 @@ public class Mqtt3SubAckView implements Mqtt3SubAck {
         return new Mqtt3SubAckView(wrapped(packetIdentifier, returnCodes));
     }
 
-    private final MqttSubAckImpl wrapped;
+    private final MqttSubAck wrapped;
 
-    private Mqtt3SubAckView(@NotNull final MqttSubAckImpl wrapped) {
+    private Mqtt3SubAckView(@NotNull final MqttSubAck wrapped) {
         this.wrapped = wrapped;
     }
 
@@ -101,7 +101,7 @@ public class Mqtt3SubAckView implements Mqtt3SubAck {
     }
 
     @NotNull
-    public MqttSubAckImpl getWrapped() {
+    public MqttSubAck getWrapped() {
         return wrapped;
     }
 

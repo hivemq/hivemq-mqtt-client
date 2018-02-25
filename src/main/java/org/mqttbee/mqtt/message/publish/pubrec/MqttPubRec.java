@@ -15,14 +15,14 @@ import org.mqttbee.mqtt.message.publish.MqttQoSMessage;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttPubRecImpl
-        extends MqttMessageWithIdAndReasonCode<MqttPubRecImpl, Mqtt5PubRecReasonCode, MqttPubRecEncoderProvider>
+public class MqttPubRec
+        extends MqttMessageWithIdAndReasonCode<MqttPubRec, Mqtt5PubRecReasonCode, MqttPubRecEncoderProvider>
         implements Mqtt5PubRec, MqttQoSMessage {
 
     @NotNull
     public static final Mqtt5PubRecReasonCode DEFAULT_REASON_CODE = Mqtt5PubRecReasonCode.SUCCESS;
 
-    public MqttPubRecImpl(
+    public MqttPubRec(
             final int packetIdentifier, @NotNull final Mqtt5PubRecReasonCode reasonCode,
             @Nullable final MqttUTF8StringImpl reasonString, @NotNull final MqttUserPropertiesImpl userProperties,
             @NotNull final MqttPubRecEncoderProvider encoderProvider) {
@@ -30,14 +30,14 @@ public class MqttPubRecImpl
         super(packetIdentifier, reasonCode, reasonString, userProperties, encoderProvider);
     }
 
-//    public MqttPubRelImpl ack() {
-//        return new MqttPubRelImpl(getPacketIdentifier(), Mqtt5PubRelReasonCode.SUCCESS, null,
+//    public MqttPubRel ack() {
+//        return new MqttPubRel(getPacketIdentifier(), Mqtt5PubRelReasonCode.SUCCESS, null,
 //                MqttUserPropertiesImpl.NO_USER_PROPERTIES, encoderProvider.getPubRelEncoderProvider());
 //    }
 
     @NotNull
     @Override
-    protected MqttPubRecImpl getCodable() {
+    protected MqttPubRec getCodable() {
         return this;
     }
 

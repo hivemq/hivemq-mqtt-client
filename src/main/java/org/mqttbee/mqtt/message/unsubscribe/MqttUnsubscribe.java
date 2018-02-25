@@ -14,16 +14,16 @@ import org.mqttbee.mqtt.message.MqttWrappedMessage;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttUnsubscribeImpl extends
-        MqttWrappedMessage<MqttUnsubscribeImpl, MqttUnsubscribeWrapper, MqttMessageEncoderProvider<MqttUnsubscribeWrapper>>
+public class MqttUnsubscribe extends
+        MqttWrappedMessage<MqttUnsubscribe, MqttUnsubscribeWrapper, MqttMessageEncoderProvider<MqttUnsubscribeWrapper>>
         implements Mqtt5Unsubscribe {
 
     private final ImmutableList<MqttTopicFilterImpl> topicFilters;
 
-    public MqttUnsubscribeImpl(
+    public MqttUnsubscribe(
             @NotNull final ImmutableList<MqttTopicFilterImpl> topicFilters,
             @NotNull final MqttUserPropertiesImpl userProperties,
-            @NotNull final MqttWrappedMessageEncoderProvider<MqttUnsubscribeImpl, MqttUnsubscribeWrapper, MqttMessageEncoderProvider<MqttUnsubscribeWrapper>> encoderProvider) {
+            @NotNull final MqttWrappedMessageEncoderProvider<MqttUnsubscribe, MqttUnsubscribeWrapper, MqttMessageEncoderProvider<MqttUnsubscribeWrapper>> encoderProvider) {
 
         super(userProperties, encoderProvider);
         this.topicFilters = topicFilters;
@@ -37,7 +37,7 @@ public class MqttUnsubscribeImpl extends
 
     @NotNull
     @Override
-    protected MqttUnsubscribeImpl getCodable() {
+    protected MqttUnsubscribe getCodable() {
         return this;
     }
 

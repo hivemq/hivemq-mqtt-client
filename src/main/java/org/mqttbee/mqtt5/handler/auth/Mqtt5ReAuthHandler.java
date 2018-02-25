@@ -10,9 +10,9 @@ import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.MqttClientDataImpl;
-import org.mqttbee.mqtt.message.auth.MqttAuthBuilderImpl;
-import org.mqttbee.mqtt.message.auth.MqttAuthImpl;
-import org.mqttbee.mqtt.message.disconnect.MqttDisconnectImpl;
+import org.mqttbee.mqtt.message.auth.MqttAuth;
+import org.mqttbee.mqtt.message.auth.MqttAuthBuilder;
+import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
 import org.mqttbee.mqtt5.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt5.ioc.ChannelScope;
 
@@ -53,7 +53,7 @@ public class Mqtt5ReAuthHandler extends AbstractMqtt5AuthHandler {
     private void writeReAuth(@NotNull final ChannelHandlerContext ctx) {
         final MqttClientDataImpl clientData = MqttClientDataImpl.from(ctx.channel());
         final Mqtt5EnhancedAuthProvider enhancedAuthProvider = getEnhancedAuthProvider(clientData);
-        final MqttAuthBuilderImpl authBuilder = getAuthBuilder(REAUTHENTICATE, enhancedAuthProvider);
+        final MqttAuthBuilder authBuilder = getAuthBuilder(REAUTHENTICATE, enhancedAuthProvider);
 
         enhancedAuthProvider.onReAuth(clientData, authBuilder).whenCompleteAsync((aVoid, throwable) -> {
             if (enhancedAuthProviderAccepted(throwable)) {
@@ -64,10 +64,10 @@ public class Mqtt5ReAuthHandler extends AbstractMqtt5AuthHandler {
 
     @Override
     public void channelRead(final ChannelHandlerContext ctx, final Object msg) {
-        if (msg instanceof MqttAuthImpl) {
-            readAuth(ctx, (MqttAuthImpl) msg);
-        } else if (msg instanceof MqttDisconnectImpl) {
-            readDisconnect(ctx, (MqttDisconnectImpl) msg);
+        if (msg instanceof MqttAuth) {
+            readAuth(ctx, (MqttAuth) msg);
+        } else if (msg instanceof MqttDisconnect) {
+            readDisconnect(ctx, (MqttDisconnect) msg);
         } else {
             ctx.fireChannelRead(msg);
         }
@@ -86,7 +86,7 @@ public class Mqtt5ReAuthHandler extends AbstractMqtt5AuthHandler {
      * @param enhancedAuthProvider the enhanced auth provider.
      */
     void readAuthSuccess(
-            @NotNull final ChannelHandlerContext ctx, @NotNull final MqttAuthImpl auth,
+            @NotNull final ChannelHandlerContext ctx, @NotNull final MqttAuth auth,
             @NotNull final MqttClientDataImpl clientData,
             @NotNull final Mqtt5EnhancedAuthProvider enhancedAuthProvider) {
 
@@ -114,12 +114,12 @@ public class Mqtt5ReAuthHandler extends AbstractMqtt5AuthHandler {
      * @param enhancedAuthProvider the enhanced auth provider.
      */
     void readReAuth(
-            @NotNull final ChannelHandlerContext ctx, @NotNull final MqttAuthImpl auth,
+            @NotNull final ChannelHandlerContext ctx, @NotNull final MqttAuth auth,
             @NotNull final MqttClientDataImpl clientData,
             @NotNull final Mqtt5EnhancedAuthProvider enhancedAuthProvider) {
 
         if (clientData.allowsServerReAuth()) {
-            final MqttAuthBuilderImpl authBuilder = getAuthBuilder(CONTINUE_AUTHENTICATION, enhancedAuthProvider);
+            final MqttAuthBuilder authBuilder = getAuthBuilder(CONTINUE_AUTHENTICATION, enhancedAuthProvider);
 
             enhancedAuthProvider.onServerReAuth(clientData, auth, authBuilder)
                     .whenCompleteAsync((accepted, throwable) -> {
@@ -144,7 +144,7 @@ public class Mqtt5ReAuthHandler extends AbstractMqtt5AuthHandler {
      * @param disconnect the incoming DISCONNECT message.
      */
     private void readDisconnect(
-            @NotNull final ChannelHandlerContext ctx, @NotNull final MqttDisconnectImpl disconnect) {
+            @NotNull final ChannelHandlerContext ctx, @NotNull final MqttDisconnect disconnect) {
 
         cancelTimeout();
 

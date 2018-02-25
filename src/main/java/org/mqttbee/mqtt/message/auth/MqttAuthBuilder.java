@@ -18,7 +18,7 @@ import java.nio.ByteBuffer;
 /**
  * @author Silvio Giebl
  */
-public class MqttAuthBuilderImpl implements Mqtt5AuthBuilder {
+public class MqttAuthBuilder implements Mqtt5AuthBuilder {
 
     private final MqttUTF8StringImpl method;
     private ByteBuffer data;
@@ -26,7 +26,7 @@ public class MqttAuthBuilderImpl implements Mqtt5AuthBuilder {
     private MqttUTF8StringImpl reasonString;
     private MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
 
-    public MqttAuthBuilderImpl(
+    public MqttAuthBuilder(
             @NotNull final Mqtt5AuthReasonCode reasonCode, @NotNull final MqttUTF8StringImpl method) {
 
         Preconditions.checkNotNull(reasonCode);
@@ -37,43 +37,43 @@ public class MqttAuthBuilderImpl implements Mqtt5AuthBuilder {
 
     @NotNull
     @Override
-    public MqttAuthBuilderImpl withData(@Nullable final byte[] data) {
+    public MqttAuthBuilder withData(@Nullable final byte[] data) {
         this.data = MqttBuilderUtil.binaryDataOrNull(data);
         return this;
     }
 
     @NotNull
     @Override
-    public MqttAuthBuilderImpl withData(@Nullable final ByteBuffer data) {
+    public MqttAuthBuilder withData(@Nullable final ByteBuffer data) {
         this.data = MqttBuilderUtil.binaryDataOrNull(data);
         return this;
     }
 
     @NotNull
     @Override
-    public MqttAuthBuilderImpl withReasonString(@Nullable final String reasonString) {
+    public MqttAuthBuilder withReasonString(@Nullable final String reasonString) {
         this.reasonString = MqttBuilderUtil.stringOrNull(reasonString);
         return this;
     }
 
     @NotNull
     @Override
-    public MqttAuthBuilderImpl withReasonString(@Nullable final MqttUTF8String reasonString) {
+    public MqttAuthBuilder withReasonString(@Nullable final MqttUTF8String reasonString) {
         this.reasonString = MqttBuilderUtil.stringOrNull(reasonString);
         return this;
     }
 
     @NotNull
     @Override
-    public MqttAuthBuilderImpl withUserProperties(@NotNull final Mqtt5UserProperties userProperties) {
+    public MqttAuthBuilder withUserProperties(@NotNull final Mqtt5UserProperties userProperties) {
         this.userProperties =
                 MustNotBeImplementedUtil.checkNotImplemented(userProperties, MqttUserPropertiesImpl.class);
         return this;
     }
 
     @NotNull
-    public MqttAuthImpl build() {
-        return new MqttAuthImpl(
+    public MqttAuth build() {
+        return new MqttAuth(
                 reasonCode, method, data, reasonString, userProperties, Mqtt5AuthEncoder.PROVIDER); // TODO
     }
 

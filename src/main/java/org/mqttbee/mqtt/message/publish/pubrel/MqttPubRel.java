@@ -15,14 +15,14 @@ import org.mqttbee.mqtt.message.publish.MqttQoSMessage;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttPubRelImpl
-        extends MqttMessageWithIdAndReasonCode<MqttPubRelImpl, Mqtt5PubRelReasonCode, MqttPubRelEncoderProvider>
+public class MqttPubRel
+        extends MqttMessageWithIdAndReasonCode<MqttPubRel, Mqtt5PubRelReasonCode, MqttPubRelEncoderProvider>
         implements Mqtt5PubRel, MqttQoSMessage {
 
     @NotNull
     public static final Mqtt5PubRelReasonCode DEFAULT_REASON_CODE = Mqtt5PubRelReasonCode.SUCCESS;
 
-    public MqttPubRelImpl(
+    public MqttPubRel(
             final int packetIdentifier, @NotNull final Mqtt5PubRelReasonCode reasonCode,
             @Nullable final MqttUTF8StringImpl reasonString, @NotNull final MqttUserPropertiesImpl userProperties,
             @NotNull final MqttPubRelEncoderProvider encoderProvider) {
@@ -32,7 +32,7 @@ public class MqttPubRelImpl
 
     @NotNull
     @Override
-    protected MqttPubRelImpl getCodable() {
+    protected MqttPubRel getCodable() {
         return this;
     }
 

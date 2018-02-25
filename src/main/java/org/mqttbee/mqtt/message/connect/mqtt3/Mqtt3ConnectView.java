@@ -8,11 +8,11 @@ import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3Connect;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import org.mqttbee.mqtt.codec.encoder.mqtt3.Mqtt3ConnectEncoder;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
-import org.mqttbee.mqtt.message.auth.MqttSimpleAuthImpl;
+import org.mqttbee.mqtt.message.auth.MqttSimpleAuth;
 import org.mqttbee.mqtt.message.auth.mqtt3.Mqtt3SimpleAuthView;
-import org.mqttbee.mqtt.message.connect.MqttConnectImpl;
-import org.mqttbee.mqtt.message.connect.MqttConnectRestrictionsImpl;
-import org.mqttbee.mqtt.message.publish.MqttWillPublishImpl;
+import org.mqttbee.mqtt.message.connect.MqttConnect;
+import org.mqttbee.mqtt.message.connect.MqttConnectRestrictions;
+import org.mqttbee.mqtt.message.publish.MqttWillPublish;
 
 import java.util.Optional;
 
@@ -23,27 +23,27 @@ import java.util.Optional;
 public class Mqtt3ConnectView implements Mqtt3Connect {
 
     @NotNull
-    public static MqttConnectImpl wrapped(
-            final int keepAlive, final boolean isCleanSession, @Nullable final MqttSimpleAuthImpl simpleAuth,
-            @Nullable final MqttWillPublishImpl willPublish) {
+    public static MqttConnect wrapped(
+            final int keepAlive, final boolean isCleanSession, @Nullable final MqttSimpleAuth simpleAuth,
+            @Nullable final MqttWillPublish willPublish) {
 
-        return new MqttConnectImpl(keepAlive, isCleanSession, isCleanSession ? 0 : MqttConnectImpl.NO_SESSION_EXPIRY,
-                MqttConnectImpl.DEFAULT_RESPONSE_INFORMATION_REQUESTED,
-                MqttConnectImpl.DEFAULT_PROBLEM_INFORMATION_REQUESTED, MqttConnectRestrictionsImpl.DEFAULT, simpleAuth,
+        return new MqttConnect(keepAlive, isCleanSession, isCleanSession ? 0 : MqttConnect.NO_SESSION_EXPIRY,
+                MqttConnect.DEFAULT_RESPONSE_INFORMATION_REQUESTED, MqttConnect.DEFAULT_PROBLEM_INFORMATION_REQUESTED,
+                MqttConnectRestrictions.DEFAULT, simpleAuth,
                 null, willPublish, MqttUserPropertiesImpl.NO_USER_PROPERTIES, Mqtt3ConnectEncoder.PROVIDER);
     }
 
     @NotNull
     public static Mqtt3ConnectView create(
-            final int keepAlive, final boolean isCleanSession, @Nullable final MqttSimpleAuthImpl simpleAuth,
-            @Nullable final MqttWillPublishImpl willPublish) {
+            final int keepAlive, final boolean isCleanSession, @Nullable final MqttSimpleAuth simpleAuth,
+            @Nullable final MqttWillPublish willPublish) {
 
         return new Mqtt3ConnectView(wrapped(keepAlive, isCleanSession, simpleAuth, willPublish));
     }
 
-    private final MqttConnectImpl wrapped;
+    private final MqttConnect wrapped;
 
-    private Mqtt3ConnectView(@NotNull final MqttConnectImpl wrapped) {
+    private Mqtt3ConnectView(@NotNull final MqttConnect wrapped) {
         this.wrapped = wrapped;
     }
 
@@ -60,7 +60,7 @@ public class Mqtt3ConnectView implements Mqtt3Connect {
     @NotNull
     @Override
     public Optional<Mqtt3SimpleAuth> getSimpleAuth() {
-        final MqttSimpleAuthImpl simpleAuth = wrapped.getRawSimpleAuth();
+        final MqttSimpleAuth simpleAuth = wrapped.getRawSimpleAuth();
         return (simpleAuth == null) ? Optional.empty() : Optional.of(new Mqtt3SimpleAuthView(simpleAuth));
     }
 
@@ -71,7 +71,7 @@ public class Mqtt3ConnectView implements Mqtt3Connect {
     }
 
     @NotNull
-    public MqttConnectImpl getWrapped() {
+    public MqttConnect getWrapped() {
         return wrapped;
     }
 

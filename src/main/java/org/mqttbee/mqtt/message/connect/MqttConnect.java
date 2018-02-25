@@ -12,9 +12,9 @@ import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.MqttWrappedMessage;
-import org.mqttbee.mqtt.message.auth.MqttEnhancedAuthImpl;
-import org.mqttbee.mqtt.message.auth.MqttSimpleAuthImpl;
-import org.mqttbee.mqtt.message.publish.MqttWillPublishImpl;
+import org.mqttbee.mqtt.message.auth.MqttEnhancedAuth;
+import org.mqttbee.mqtt.message.auth.MqttSimpleAuth;
+import org.mqttbee.mqtt.message.publish.MqttWillPublish;
 
 import java.util.Optional;
 
@@ -22,8 +22,8 @@ import java.util.Optional;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttConnectImpl
-        extends MqttWrappedMessage<MqttConnectImpl, MqttConnectWrapper, MqttMessageEncoderProvider<MqttConnectWrapper>>
+public class MqttConnect
+        extends MqttWrappedMessage<MqttConnect, MqttConnectWrapper, MqttMessageEncoderProvider<MqttConnectWrapper>>
         implements Mqtt5Connect {
 
     private final int keepAlive;
@@ -31,18 +31,18 @@ public class MqttConnectImpl
     private final long sessionExpiryInterval;
     private final boolean isResponseInformationRequested;
     private final boolean isProblemInformationRequested;
-    private final MqttConnectRestrictionsImpl restrictions;
-    private final MqttSimpleAuthImpl simpleAuth;
+    private final MqttConnectRestrictions restrictions;
+    private final MqttSimpleAuth simpleAuth;
     private final Mqtt5EnhancedAuthProvider enhancedAuthProvider;
-    private final MqttWillPublishImpl willPublish;
+    private final MqttWillPublish willPublish;
 
-    public MqttConnectImpl(
+    public MqttConnect(
             final int keepAlive, final boolean isCleanStart, final long sessionExpiryInterval,
             final boolean isResponseInformationRequested, final boolean isProblemInformationRequested,
-            @NotNull final MqttConnectRestrictionsImpl restrictions, @Nullable final MqttSimpleAuthImpl simpleAuth,
-            @Nullable final Mqtt5EnhancedAuthProvider enhancedAuthProvider,
-            @Nullable final MqttWillPublishImpl willPublish, @NotNull final MqttUserPropertiesImpl userProperties,
-            @NotNull final MqttWrappedMessageEncoderProvider<MqttConnectImpl, MqttConnectWrapper, MqttMessageEncoderProvider<MqttConnectWrapper>> encoderProvider) {
+            @NotNull final MqttConnectRestrictions restrictions, @Nullable final MqttSimpleAuth simpleAuth,
+            @Nullable final Mqtt5EnhancedAuthProvider enhancedAuthProvider, @Nullable final MqttWillPublish willPublish,
+            @NotNull final MqttUserPropertiesImpl userProperties,
+            @NotNull final MqttWrappedMessageEncoderProvider<MqttConnect, MqttConnectWrapper, MqttMessageEncoderProvider<MqttConnectWrapper>> encoderProvider) {
 
         super(userProperties, encoderProvider);
         this.keepAlive = keepAlive;
@@ -83,7 +83,7 @@ public class MqttConnectImpl
 
     @NotNull
     @Override
-    public MqttConnectRestrictionsImpl getRestrictions() {
+    public MqttConnectRestrictions getRestrictions() {
         return restrictions;
     }
 
@@ -94,7 +94,7 @@ public class MqttConnectImpl
     }
 
     @Nullable
-    public MqttSimpleAuthImpl getRawSimpleAuth() {
+    public MqttSimpleAuth getRawSimpleAuth() {
         return simpleAuth;
     }
 
@@ -116,19 +116,18 @@ public class MqttConnectImpl
     }
 
     @Nullable
-    public MqttWillPublishImpl getRawWillPublish() {
+    public MqttWillPublish getRawWillPublish() {
         return willPublish;
     }
 
     @NotNull
     @Override
-    protected MqttConnectImpl getCodable() {
+    protected MqttConnect getCodable() {
         return this;
     }
 
     public MqttConnectWrapper wrap(
-            @NotNull final MqttClientIdentifierImpl clientIdentifier,
-            @Nullable final MqttEnhancedAuthImpl enhancedAuth) {
+            @NotNull final MqttClientIdentifierImpl clientIdentifier, @Nullable final MqttEnhancedAuth enhancedAuth) {
 
         return new MqttConnectWrapper(this, clientIdentifier, enhancedAuth);
     }

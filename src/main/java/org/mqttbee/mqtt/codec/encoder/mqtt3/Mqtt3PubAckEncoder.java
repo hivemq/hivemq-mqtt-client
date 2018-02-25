@@ -6,15 +6,15 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoderWithMessage;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
-import org.mqttbee.mqtt.message.publish.puback.MqttPubAckImpl;
+import org.mqttbee.mqtt.message.publish.puback.MqttPubAck;
 
 /**
  * @author Daniel Krüger
  * @author Silvio Giebl
  */
-public class Mqtt3PubAckEncoder extends MqttMessageEncoderWithMessage<MqttPubAckImpl> {
+public class Mqtt3PubAckEncoder extends MqttMessageEncoderWithMessage<MqttPubAck> {
 
-    public static final MqttMessageEncoderProvider<MqttPubAckImpl> PROVIDER = Mqtt3PubAckEncoder::new;
+    public static final MqttMessageEncoderProvider<MqttPubAck> PROVIDER = Mqtt3PubAckEncoder::new;
 
     public static final Mqtt3PubAckEncoder INSTANCE = new Mqtt3PubAckEncoder();
 

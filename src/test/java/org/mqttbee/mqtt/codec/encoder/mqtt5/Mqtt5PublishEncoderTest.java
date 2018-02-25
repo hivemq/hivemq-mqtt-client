@@ -10,7 +10,7 @@ import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.mqtt.codec.encoder.AbstractMqtt5EncoderTest;
 import org.mqttbee.mqtt.datatypes.*;
-import org.mqttbee.mqtt.message.publish.MqttPublishImpl;
+import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
 
 import java.nio.ByteBuffer;
@@ -74,7 +74,8 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
         final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.of(
                 ImmutableList.of(userProperty, userProperty, userProperty, userProperty, userProperty, userProperty));
 
-        final MqttPublishImpl publish = new MqttPublishImpl(requireNonNull(MqttTopicImpl.from("topic")),
+        final MqttPublish publish = new MqttPublish(
+                requireNonNull(MqttTopicImpl.from("topic")),
                 ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5}), MqttQoS.AT_MOST_ONCE, false, 10,
                 Mqtt5PayloadFormatIndicator.UNSPECIFIED, requireNonNull(MqttUTF8StringImpl.from("myContentType")),
                 requireNonNull(MqttTopicImpl.from("responseTopic")), ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5}),
@@ -102,9 +103,9 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
                 1, 2, 3, 4, 5
         };
 
-        final MqttPublishImpl publish = new MqttPublishImpl(requireNonNull(MqttTopicImpl.from("topic")),
+        final MqttPublish publish = new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")),
                 ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5}), MqttQoS.AT_MOST_ONCE, false,
-                MqttPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UNSPECIFIED, null, null,
+                MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UNSPECIFIED, null, null,
                 null, HAS_NOT, NO_USER_PROPERTIES, Mqtt5PublishEncoder.PROVIDER);
 
         encode(expected, publish, -1, false, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntArray.of());
@@ -127,9 +128,9 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
                 0x01, 0
         };
 
-        final MqttPublishImpl publish =
-                new MqttPublishImpl(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_MOST_ONCE, true,
-                        MqttPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UNSPECIFIED, null,
+        final MqttPublish publish =
+                new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_MOST_ONCE, true,
+                        MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UNSPECIFIED, null,
                         null, null, HAS_NOT, NO_USER_PROPERTIES, Mqtt5PublishEncoder.PROVIDER);
         encode(expected, publish, -1, false, DEFAULT_NO_TOPIC_ALIAS, false, ImmutableIntArray.of());
     }
@@ -153,9 +154,9 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
                 0x01, 0
         };
 
-        final MqttPublishImpl publish =
-                new MqttPublishImpl(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_LEAST_ONCE, false,
-                        MqttPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UNSPECIFIED, null,
+        final MqttPublish publish =
+                new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_LEAST_ONCE, false,
+                        MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UNSPECIFIED, null,
                         null, null, HAS_NOT, NO_USER_PROPERTIES, Mqtt5PublishEncoder.PROVIDER);
         encode(expected, publish, 15, true, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntArray.of());
     }
@@ -179,9 +180,9 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
                 0x01, 0
         };
 
-        final MqttPublishImpl publish =
-                new MqttPublishImpl(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_LEAST_ONCE, false,
-                        MqttPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UNSPECIFIED, null,
+        final MqttPublish publish =
+                new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_LEAST_ONCE, false,
+                        MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UNSPECIFIED, null,
                         null, null, HAS_NOT, NO_USER_PROPERTIES, Mqtt5PublishEncoder.PROVIDER);
         encode(expected, publish, 15, false, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntArray.of());
     }
@@ -205,9 +206,9 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
                 0x01, 0
         };
 
-        final MqttPublishImpl publish =
-                new MqttPublishImpl(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_LEAST_ONCE, false,
-                        MqttPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UNSPECIFIED, null,
+        final MqttPublish publish =
+                new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_LEAST_ONCE, false,
+                        MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UNSPECIFIED, null,
                         null, null, HAS_NOT, NO_USER_PROPERTIES, Mqtt5PublishEncoder.PROVIDER);
         encode(expected, publish, 17, true, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntArray.of());
     }
@@ -231,9 +232,9 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
                 0x01, 1
         };
 
-        final MqttPublishImpl publish =
-                new MqttPublishImpl(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_LEAST_ONCE, false,
-                        MqttPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UTF_8, null, null,
+        final MqttPublish publish =
+                new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_LEAST_ONCE, false,
+                        MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UTF_8, null, null,
                         null, HAS_NOT, NO_USER_PROPERTIES, Mqtt5PublishEncoder.PROVIDER);
         encode(expected, publish, 15, false, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntArray.of());
     }
@@ -259,8 +260,8 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
                 0x01, 1
         };
 
-        final MqttPublishImpl publish =
-                new MqttPublishImpl(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_LEAST_ONCE, false,
+        final MqttPublish publish =
+                new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_LEAST_ONCE, false,
                         1000, Mqtt5PayloadFormatIndicator.UTF_8, null, null, null, HAS_NOT, NO_USER_PROPERTIES,
                         Mqtt5PublishEncoder.PROVIDER);
         encode(expected, publish, 15, false, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntArray.of());
@@ -287,9 +288,9 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
                 0x03, 0, 13, 'm', 'y', 'C', 'o', 'n', 't', 'e', 'n', 't', 'T', 'y', 'p', 'e'
         };
 
-        final MqttPublishImpl publish =
-                new MqttPublishImpl(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_LEAST_ONCE, false,
-                        MqttPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UTF_8,
+        final MqttPublish publish =
+                new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_LEAST_ONCE, false,
+                        MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UTF_8,
                         MqttUTF8StringImpl.from("myContentType"), null, null, HAS_NOT, NO_USER_PROPERTIES,
                         Mqtt5PublishEncoder.PROVIDER);
         encode(expected, publish, 15, false, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntArray.of());
@@ -316,9 +317,9 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
                 0x08, 0, 13, 'r', 'e', 's', 'p', 'o', 'n', 's', 'e', 'T', 'o', 'p', 'i', 'c'
         };
 
-        final MqttPublishImpl publish =
-                new MqttPublishImpl(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_LEAST_ONCE, false,
-                        MqttPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UTF_8, null,
+        final MqttPublish publish =
+                new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_LEAST_ONCE, false,
+                        MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UTF_8, null,
                         MqttTopicImpl.from("responseTopic"), null, HAS_NOT, NO_USER_PROPERTIES,
                         Mqtt5PublishEncoder.PROVIDER);
         encode(expected, publish, 15, false, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntArray.of());
@@ -347,9 +348,9 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
         };
 
         final ByteBuffer correlationData = ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5});
-        final MqttPublishImpl publish =
-                new MqttPublishImpl(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_LEAST_ONCE, false,
-                        MqttPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UTF_8, null, null,
+        final MqttPublish publish =
+                new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_LEAST_ONCE, false,
+                        MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UTF_8, null, null,
                         correlationData, HAS_NOT, NO_USER_PROPERTIES, Mqtt5PublishEncoder.PROVIDER);
         encode(expected, publish, 15, false, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntArray.of());
     }
@@ -358,9 +359,9 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
     @Disabled("correlation data will be validated in the builder, remove this test")
     void encode_correlationDataTooLong_throwsEncoderException() {
         final ByteBuffer correlationData = ByteBuffer.wrap(new byte[65536]);
-        final MqttPublishImpl publish =
-                new MqttPublishImpl(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_LEAST_ONCE, false,
-                        MqttPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UTF_8, null, null,
+        final MqttPublish publish =
+                new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_LEAST_ONCE, false,
+                        MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UTF_8, null, null,
                         correlationData, HAS_NOT, NO_USER_PROPERTIES, Mqtt5PublishEncoder.PROVIDER);
 
         final MqttPublishWrapper publishInternal =
@@ -390,9 +391,9 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
                 0x23, 0, 8
         };
 
-        final MqttPublishImpl publish =
-                new MqttPublishImpl(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_LEAST_ONCE, false,
-                        MqttPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null, MAY,
+        final MqttPublish publish =
+                new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_LEAST_ONCE, false,
+                        MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null, MAY,
                         NO_USER_PROPERTIES, Mqtt5PublishEncoder.PROVIDER);
         encode(expected, publish, 15, false, 8, true, ImmutableIntArray.of());
     }
@@ -414,9 +415,9 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
                 0
         };
 
-        final MqttPublishImpl publish =
-                new MqttPublishImpl(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_LEAST_ONCE, false,
-                        MqttPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null, MUST_NOT,
+        final MqttPublish publish =
+                new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_LEAST_ONCE, false,
+                        MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null, MUST_NOT,
                         NO_USER_PROPERTIES, Mqtt5PublishEncoder.PROVIDER);
         encode(expected, publish, 15, false, ImmutableIntArray.of());
     }
@@ -438,9 +439,9 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
                 0
         };
 
-        final MqttPublishImpl publish =
-                new MqttPublishImpl(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_LEAST_ONCE, false,
-                        MqttPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null,
+        final MqttPublish publish =
+                new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_LEAST_ONCE, false,
+                        MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null,
                         DEFAULT_TOPIC_ALIAS_USAGE, NO_USER_PROPERTIES, Mqtt5PublishEncoder.PROVIDER);
         encode(expected, publish, 2, true, ImmutableIntArray.of());
     }
@@ -464,9 +465,9 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
                 0x23, 0, 8
         };
 
-        final MqttPublishImpl publish =
-                new MqttPublishImpl(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_LEAST_ONCE, false,
-                        MqttPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null, MAY,
+        final MqttPublish publish =
+                new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_LEAST_ONCE, false,
+                        MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null, MAY,
                         NO_USER_PROPERTIES, Mqtt5PublishEncoder.PROVIDER);
         encode(expected, publish, 15, false, 8, false, ImmutableIntArray.of());
     }
@@ -499,9 +500,9 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
                 new MqttUserPropertyImpl(requireNonNull(MqttUTF8StringImpl.from("key2")),
                         requireNonNull(MqttUTF8StringImpl.from("value2")))));
 
-        final MqttPublishImpl publish =
-                new MqttPublishImpl(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_LEAST_ONCE, false,
-                        MqttPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UTF_8, null, null,
+        final MqttPublish publish =
+                new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_LEAST_ONCE, false,
+                        MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UTF_8, null, null,
                         null, HAS_NOT, userProperties, Mqtt5PublishEncoder.PROVIDER);
         encode(expected, publish, 15, false, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntArray.of());
     }
@@ -525,9 +526,9 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
                 0x0b, 3
         };
 
-        final MqttPublishImpl publish =
-                new MqttPublishImpl(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_LEAST_ONCE, false,
-                        MqttPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null, HAS_NOT,
+        final MqttPublish publish =
+                new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_LEAST_ONCE, false,
+                        MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null, HAS_NOT,
                         NO_USER_PROPERTIES, Mqtt5PublishEncoder.PROVIDER);
         encode(expected, publish, 15, false, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntArray.of(3));
     }
@@ -553,9 +554,9 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
                 0x0b, 4
         };
 
-        final MqttPublishImpl publish =
-                new MqttPublishImpl(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_LEAST_ONCE, false,
-                        MqttPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null, HAS_NOT,
+        final MqttPublish publish =
+                new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_LEAST_ONCE, false,
+                        MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null, HAS_NOT,
                         NO_USER_PROPERTIES, Mqtt5PublishEncoder.PROVIDER);
         encode(expected, publish, 15, false, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntArray.of(3, 4));
     }
@@ -610,21 +611,21 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
                 //     payload format indicator
                 0x01, 0
         };
-        final MqttPublishImpl publishQos0 =
-                new MqttPublishImpl(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_MOST_ONCE, false,
-                        MqttPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UNSPECIFIED, null,
+        final MqttPublish publishQos0 =
+                new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_MOST_ONCE, false,
+                        MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UNSPECIFIED, null,
                         null, null, HAS_NOT, NO_USER_PROPERTIES, Mqtt5PublishEncoder.PROVIDER);
         encode(expectedQos0, publishQos0, 7, false, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntArray.of());
 
-        final MqttPublishImpl publishQos1 =
-                new MqttPublishImpl(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_LEAST_ONCE, false,
-                        MqttPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UNSPECIFIED, null,
+        final MqttPublish publishQos1 =
+                new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_LEAST_ONCE, false,
+                        MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UNSPECIFIED, null,
                         null, null, HAS_NOT, NO_USER_PROPERTIES, Mqtt5PublishEncoder.PROVIDER);
         encode(expectedQos1, publishQos1, 7, false, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntArray.of());
 
-        final MqttPublishImpl publishQos2 =
-                new MqttPublishImpl(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.EXACTLY_ONCE, false,
-                        MqttPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UNSPECIFIED, null,
+        final MqttPublish publishQos2 =
+                new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.EXACTLY_ONCE, false,
+                        MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UNSPECIFIED, null,
                         null, null, HAS_NOT, NO_USER_PROPERTIES, Mqtt5PublishEncoder.PROVIDER);
         encode(expectedQos2, publishQos2, 7, false, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntArray.of());
     }
@@ -633,9 +634,9 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
     void encode_maximumOutgoingPacketSizeExceeded_throwsEncoderException() {
         createServerConnectionData(100);
         final ByteBuffer correlationData = ByteBuffer.wrap(new byte[100]);
-        final MqttPublishImpl publish =
-                new MqttPublishImpl(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_MOST_ONCE, false,
-                        MqttPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UNSPECIFIED, null,
+        final MqttPublish publish =
+                new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_MOST_ONCE, false,
+                        MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UNSPECIFIED, null,
                         null, correlationData, HAS_NOT, NO_USER_PROPERTIES, Mqtt5PublishEncoder.PROVIDER);
 
 
@@ -651,9 +652,9 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
     void encode_maximumPacketSizeExceeded_throwsEncoderException() {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
 
-        final MqttPublishImpl publish =
-                new MqttPublishImpl(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_MOST_ONCE, false,
-                        MqttPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UNSPECIFIED, null,
+        final MqttPublish publish =
+                new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_MOST_ONCE, false,
+                        MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UNSPECIFIED, null,
                         null, maxPacket.getCorrelationData(1), HAS_NOT, maxPacket.getMaxPossibleUserProperties(),
                         Mqtt5PublishEncoder.PROVIDER);
 
@@ -670,9 +671,9 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
     void encode_propertyLengthExceedsMax_throwsEncoderException() {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
 
-        final MqttPublishImpl publish =
-                new MqttPublishImpl(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_MOST_ONCE, false,
-                        MqttPublishImpl.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UNSPECIFIED, null,
+        final MqttPublish publish =
+                new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_MOST_ONCE, false,
+                        MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UNSPECIFIED, null,
                         null, maxPacket.getCorrelationData(), HAS_NOT, maxPacket.getMaxPossibleUserProperties(1),
                         Mqtt5PublishEncoder.PROVIDER);
 
@@ -685,7 +686,7 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
     }
 
     private void encode(
-            final byte[] expected, final MqttPublishImpl publish, final int packetIdentifier, final boolean isDup,
+            final byte[] expected, final MqttPublish publish, final int packetIdentifier, final boolean isDup,
             final ImmutableIntArray subscriptionIdentifiers) {
         final MqttPublishWrapper publishInternal =
                 new MqttPublishWrapper(publish, packetIdentifier, isDup, channel, subscriptionIdentifiers);
@@ -693,7 +694,7 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
     }
 
     private void encode(
-            final byte[] expected, final MqttPublishImpl publish, final int packetIdentifier, final boolean isDup,
+            final byte[] expected, final MqttPublish publish, final int packetIdentifier, final boolean isDup,
             final int topicAlias, final boolean isNewTopicAlias, final ImmutableIntArray subscriptionIdentifiers) {
         final MqttPublishWrapper publishInternal =
                 publish.wrap(packetIdentifier, isDup, topicAlias, isNewTopicAlias, subscriptionIdentifiers);

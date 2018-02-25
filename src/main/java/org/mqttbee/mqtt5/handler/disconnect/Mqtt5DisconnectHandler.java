@@ -5,7 +5,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
-import org.mqttbee.mqtt.message.disconnect.MqttDisconnectImpl;
+import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -28,15 +28,15 @@ public class Mqtt5DisconnectHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(final ChannelHandlerContext ctx, final Object msg) throws Exception {
-        if (msg instanceof MqttDisconnectImpl) {
-            readDisconnect(ctx, (MqttDisconnectImpl) msg);
+        if (msg instanceof MqttDisconnect) {
+            readDisconnect(ctx, (MqttDisconnect) msg);
         } else {
             super.channelRead(ctx, msg);
         }
     }
 
     private void readDisconnect(
-            @NotNull final ChannelHandlerContext ctx, @NotNull final MqttDisconnectImpl disconnect) {
+            @NotNull final ChannelHandlerContext ctx, @NotNull final MqttDisconnect disconnect) {
 
         ctx.pipeline().remove(this);
         MqttDisconnectUtil.close(ctx.channel(), new Mqtt5MessageException(disconnect, "Server sent DISCONNECT"));

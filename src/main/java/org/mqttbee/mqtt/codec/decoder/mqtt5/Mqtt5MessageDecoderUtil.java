@@ -18,7 +18,7 @@ import java.nio.ByteBuffer;
 
 import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.malformedUTF8String;
 import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.remainingLengthTooShort;
-import static org.mqttbee.mqtt.message.connect.connack.MqttConnAckImpl.SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
+import static org.mqttbee.mqtt.message.connect.connack.MqttConnAck.SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
 
 /**
  * Util for decoders of MQTT 5 messages.

@@ -12,9 +12,9 @@ import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageWrapperEncoderApplier;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider.NewMqttWrappedMessageEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
-import org.mqttbee.mqtt.message.subscribe.MqttSubscribeImpl;
+import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribeWrapper;
-import org.mqttbee.mqtt.message.subscribe.MqttSubscriptionImpl;
+import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
 
 import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.encodeVariableByteIntegerProperty;
 import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.variableByteIntegerPropertyEncodedLength;
@@ -24,9 +24,9 @@ import static org.mqttbee.mqtt.message.subscribe.MqttSubscribeWrapper.DEFAULT_NO
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5SubscribeEncoder extends Mqtt5WrappedMessageEncoder<MqttSubscribeImpl, MqttSubscribeWrapper> {
+public class Mqtt5SubscribeEncoder extends Mqtt5WrappedMessageEncoder<MqttSubscribe, MqttSubscribeWrapper> {
 
-    public static final MqttWrappedMessageEncoderProvider<MqttSubscribeImpl, MqttSubscribeWrapper, MqttMessageEncoderProvider<MqttSubscribeWrapper>>
+    public static final MqttWrappedMessageEncoderProvider<MqttSubscribe, MqttSubscribeWrapper, MqttMessageEncoderProvider<MqttSubscribeWrapper>>
             PROVIDER = NewMqttWrappedMessageEncoderProvider.create(Mqtt5SubscribeEncoder::new);
 
     private static final int VARIABLE_HEADER_FIXED_LENGTH = 2; // packet identifier
@@ -35,7 +35,7 @@ public class Mqtt5SubscribeEncoder extends Mqtt5WrappedMessageEncoder<MqttSubscr
     int calculateRemainingLengthWithoutProperties() {
         int remainingLength = VARIABLE_HEADER_FIXED_LENGTH;
 
-        final ImmutableList<MqttSubscriptionImpl> subscriptions = message.getSubscriptions();
+        final ImmutableList<MqttSubscription> subscriptions = message.getSubscriptions();
         for (int i = 0; i < subscriptions.size(); i++) {
             remainingLength += subscriptions.get(i).getTopicFilter().encodedLength() + 1;
         }
@@ -56,9 +56,9 @@ public class Mqtt5SubscribeEncoder extends Mqtt5WrappedMessageEncoder<MqttSubscr
 
 
     public static class Mqtt5SubscribeWrapperEncoder extends
-            Mqtt5MessageWrapperEncoder<MqttSubscribeWrapper, MqttSubscribeImpl, MqttMessageEncoderProvider<MqttSubscribeWrapper>, Mqtt5SubscribeEncoder> {
+            Mqtt5MessageWrapperEncoder<MqttSubscribeWrapper, MqttSubscribe, MqttMessageEncoderProvider<MqttSubscribeWrapper>, Mqtt5SubscribeEncoder> {
 
-        private static final MqttMessageWrapperEncoderApplier<MqttSubscribeWrapper, MqttSubscribeImpl, Mqtt5SubscribeEncoder>
+        private static final MqttMessageWrapperEncoderApplier<MqttSubscribeWrapper, MqttSubscribe, Mqtt5SubscribeEncoder>
                 APPLIER = new ThreadLocalMqttMessageWrapperEncoderApplier<>(Mqtt5SubscribeWrapperEncoder::new);
 
         private static final int FIXED_HEADER = (Mqtt5MessageType.SUBSCRIBE.getCode() << 4) | 0b0010;
@@ -96,9 +96,9 @@ public class Mqtt5SubscribeEncoder extends Mqtt5WrappedMessageEncoder<MqttSubscr
         }
 
         private void encodePayload(@NotNull final ByteBuf out) {
-            final ImmutableList<MqttSubscriptionImpl> subscriptions = message.getWrapped().getSubscriptions();
+            final ImmutableList<MqttSubscription> subscriptions = message.getWrapped().getSubscriptions();
             for (int i = 0; i < subscriptions.size(); i++) {
-                final MqttSubscriptionImpl subscription = subscriptions.get(i);
+                final MqttSubscription subscription = subscriptions.get(i);
 
                 subscription.getTopicFilter().to(out);
 

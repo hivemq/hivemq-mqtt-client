@@ -7,8 +7,8 @@ import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscription;
 import org.mqttbee.mqtt.codec.encoder.mqtt3.Mqtt3SubscribeEncoder;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
-import org.mqttbee.mqtt.message.subscribe.MqttSubscribeImpl;
-import org.mqttbee.mqtt.message.subscribe.MqttSubscriptionImpl;
+import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
+import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
 
 /**
  * @author Silvio Giebl
@@ -16,15 +16,15 @@ import org.mqttbee.mqtt.message.subscribe.MqttSubscriptionImpl;
 @Immutable
 public class Mqtt3SubscribeView implements Mqtt3Subscribe {
 
-    public static MqttSubscribeImpl wrapped(
-            @NotNull final ImmutableList<MqttSubscriptionImpl> subscriptions) {
+    public static MqttSubscribe wrapped(
+            @NotNull final ImmutableList<MqttSubscription> subscriptions) {
 
-        return new MqttSubscribeImpl(subscriptions, MqttUserPropertiesImpl.NO_USER_PROPERTIES,
+        return new MqttSubscribe(subscriptions, MqttUserPropertiesImpl.NO_USER_PROPERTIES,
                 Mqtt3SubscribeEncoder.PROVIDER);
     }
 
     private static ImmutableList<Mqtt3SubscriptionView> wrapSubscriptions(
-            @NotNull final ImmutableList<MqttSubscriptionImpl> subscriptions) {
+            @NotNull final ImmutableList<MqttSubscription> subscriptions) {
 
         final ImmutableList.Builder<Mqtt3SubscriptionView> builder =
                 ImmutableList.builderWithExpectedSize(subscriptions.size());
@@ -35,14 +35,14 @@ public class Mqtt3SubscribeView implements Mqtt3Subscribe {
     }
 
     public static Mqtt3SubscribeView create(
-            @NotNull final ImmutableList<MqttSubscriptionImpl> subscriptions) {
+            @NotNull final ImmutableList<MqttSubscription> subscriptions) {
 
         return new Mqtt3SubscribeView((wrapped(subscriptions)));
     }
 
-    private final MqttSubscribeImpl wrapped;
+    private final MqttSubscribe wrapped;
 
-    private Mqtt3SubscribeView(@NotNull final MqttSubscribeImpl wrapped) {
+    private Mqtt3SubscribeView(@NotNull final MqttSubscribe wrapped) {
         this.wrapped = wrapped;
     }
 
@@ -53,7 +53,7 @@ public class Mqtt3SubscribeView implements Mqtt3Subscribe {
     }
 
     @NotNull
-    public MqttSubscribeImpl getWrapped() {
+    public MqttSubscribe getWrapped() {
         return wrapped;
     }
 

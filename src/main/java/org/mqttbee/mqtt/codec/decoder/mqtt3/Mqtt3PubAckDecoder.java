@@ -6,7 +6,7 @@ import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt.MqttClientConnectionDataImpl;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
-import org.mqttbee.mqtt.message.publish.puback.MqttPubAckImpl;
+import org.mqttbee.mqtt.message.publish.puback.MqttPubAck;
 import org.mqttbee.mqtt.message.publish.puback.mqtt3.Mqtt3PubAckView;
 
 import javax.inject.Inject;
@@ -31,7 +31,7 @@ public class Mqtt3PubAckDecoder implements MqttMessageDecoder {
 
     @Nullable
     @Override
-    public MqttPubAckImpl decode(
+    public MqttPubAck decode(
             final int flags, @NotNull final ByteBuf in,
             @NotNull final MqttClientConnectionDataImpl clientConnectionData) throws MqttDecoderException {
 
