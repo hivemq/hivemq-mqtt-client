@@ -10,6 +10,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
+ * Collection of decoders of MQTT 3 messages a client can receive.
+ *
  * @author Silvio Giebl
  */
 @Singleton

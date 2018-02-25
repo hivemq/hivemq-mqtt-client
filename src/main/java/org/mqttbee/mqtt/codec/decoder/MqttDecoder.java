@@ -16,6 +16,9 @@ import javax.inject.Inject;
 import java.util.List;
 
 /**
+ * Main decoder for MQTT messages which delegates to the individual {@link MqttMessageDecoder}s when the fixed header
+ * has been read and validated.
+ *
  * @author Silvio Giebl
  */
 @ChannelScope

@@ -21,6 +21,8 @@ import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.remainingLen
 import static org.mqttbee.mqtt.message.connect.connack.MqttConnAckImpl.SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
 
 /**
+ * Util for decoders of MQTT 5 messages.
+ *
  * @author Silvio Giebl
  */
 class Mqtt5MessageDecoderUtil {
