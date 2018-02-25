@@ -5,8 +5,8 @@ import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.MqttClientDataImpl;
-import org.mqttbee.mqtt.codec.decoder.Mqtt5DecoderModule;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoder;
+import org.mqttbee.mqtt.codec.decoder.MqttDecoderModule;
 import org.mqttbee.mqtt.codec.encoder.MqttEncoder;
 import org.mqttbee.mqtt5.handler.auth.Mqtt5AuthHandler;
 import org.mqttbee.mqtt5.handler.auth.Mqtt5DisconnectOnAuthHandler;
@@ -19,7 +19,7 @@ import org.mqttbee.mqtt5.handler.disconnect.MqttDisconnecter;
 /**
  * @author Silvio Giebl
  */
-@Subcomponent(modules = {ChannelModule.class, Mqtt5DecoderModule.class})
+@Subcomponent(modules = {ChannelModule.class, MqttDecoderModule.class})
 @ChannelScope
 public interface ChannelComponent {
 

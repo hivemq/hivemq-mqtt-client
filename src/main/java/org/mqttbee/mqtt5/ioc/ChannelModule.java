@@ -27,6 +27,7 @@ public class ChannelModule {
     }
 
     @Provides
+    @ChannelScope
     MqttDisconnecter provideDisconnecter(
             final Lazy<Mqtt5Disconnecter> mqtt5Disconnecter, final Lazy<Mqtt3Disconnecter> mqtt3Disconnecter) {
 
