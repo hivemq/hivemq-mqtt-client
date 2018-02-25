@@ -10,6 +10,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
+ * Main encoder for MQTT messages which delegates to the individual {@link MqttMessageEncoder}s.
+ *
  * @author Silvio Giebl
  */
 @ChannelHandler.Sharable

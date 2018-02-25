@@ -10,6 +10,8 @@ import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import java.nio.ByteBuffer;
 
 /**
+ * Util for encoders of MQTT messages for different versions.
+ *
  * @author Silvio Giebl
  */
 public class MqttMessageEncoderUtil {
