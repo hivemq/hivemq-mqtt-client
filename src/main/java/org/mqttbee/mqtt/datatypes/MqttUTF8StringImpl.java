@@ -2,6 +2,7 @@ package org.mqttbee.mqtt.datatypes;
 
 import com.google.common.base.Utf8;
 import io.netty.buffer.ByteBuf;
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
@@ -18,6 +19,7 @@ import java.util.regex.Pattern;
  * @author Silvio Giebl
  * @see MqttUTF8String
  */
+@Immutable
 public class MqttUTF8StringImpl implements MqttUTF8String {
 
     private static final Charset CHARSET = Charset.forName("UTF-8");

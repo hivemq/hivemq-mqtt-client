@@ -1,6 +1,7 @@
 package org.mqttbee.mqtt.datatypes;
 
 import com.google.common.collect.ImmutableList;
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttSharedTopicFilter;
@@ -10,6 +11,7 @@ import org.mqttbee.api.mqtt.datatypes.MqttSharedTopicFilter;
  * @see MqttSharedTopicFilter
  * @see MqttUTF8StringImpl
  */
+@Immutable
 public class MqttSharedTopicFilterImpl extends MqttTopicFilterImpl implements MqttSharedTopicFilter {
 
     private static final int SHARE_PREFIX_LENGTH = SHARE_PREFIX.length();

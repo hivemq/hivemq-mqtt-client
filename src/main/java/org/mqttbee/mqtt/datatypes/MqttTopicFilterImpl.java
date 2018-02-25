@@ -2,6 +2,7 @@ package org.mqttbee.mqtt.datatypes;
 
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
@@ -11,6 +12,7 @@ import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
  * @see MqttTopicFilter
  * @see MqttUTF8StringImpl
  */
+@Immutable
 public class MqttTopicFilterImpl extends MqttUTF8StringImpl implements MqttTopicFilter {
 
     static final int WILDCARD_CHECK_FAILURE = -1;

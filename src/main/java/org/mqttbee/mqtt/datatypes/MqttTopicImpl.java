@@ -2,6 +2,7 @@ package org.mqttbee.mqtt.datatypes;
 
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
@@ -11,6 +12,7 @@ import org.mqttbee.api.mqtt.datatypes.MqttTopic;
  * @see MqttTopic
  * @see MqttUTF8StringImpl
  */
+@Immutable
 public class MqttTopicImpl extends MqttUTF8StringImpl implements MqttTopic {
 
     /**
