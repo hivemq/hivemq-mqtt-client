@@ -1,9 +1,10 @@
 package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.EncoderException;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -11,18 +12,24 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5RetainHandling;
 import org.mqttbee.mqtt.codec.encoder.AbstractMqtt5EncoderTest;
-import org.mqttbee.mqtt.datatypes.*;
+import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
+import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
+import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
+import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribeWrapper;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscription.*;
+import static org.mqttbee.mqtt.datatypes.MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT;
 
 
 /**
@@ -30,9 +37,9 @@ import static org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscription.*;
  */
 class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderTest {
 
-    private static final int VARIABLE_BYTE_INTEGER_VALUE_BITS = 7;
-    private static final int VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE =
-            (1 << (VARIABLE_BYTE_INTEGER_VALUE_BITS * 4)) - 1;
+    private static final int UTF8_STRING_MAX_LENGTH = 65535;
+    private static final int SUBSCRIPTION_OPTIONS_LENGTH = 1;
+    private static final int UTF8_LENGTH_ENCODED = 2;
 
     Mqtt5SubscribeEncoderTest() {
         super(true);
@@ -283,40 +290,110 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderTest {
     }
 
     @Test
-    @Disabled("transform to encode_maximumPacketSizeExceeded_omitUserPropertiesAndReasonString")
-    void encode_maximumPacketSizeExceeded_throwsEncoderException() {
-        final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
-        final MqttTopicFilterImpl topicFiler = maxPacket.getTopicFilterTooLong();
+    void maximumPacketSizeExceeded_omitUserProperties() {
+        final ByteBuf expected = Unpooled.buffer();
+        final String topic = "topic";
+        final MqttTopicFilterImpl topicFilter = requireNonNull(MqttTopicFilterImpl.from(topic));
+
+        final int bytesPerUserProperty = 1 // identifier
+                + 2 // key length
+                + 4 // bytes to encode "user"
+                + 2 // value length
+                + 8; // bytes to encode "property"
+
+        final int maxUserPropertiesLength = MAXIMUM_PACKET_SIZE_LIMIT - 1  // type, reserved
+                - 4  // remaining length
+                - 2  // packet identifier
+                - 4  // properties length
+                - 2  // subscription identifier
+                - 1  // subscription options
+                - topicFilter.encodedLength();
+
+        final int userPropertiesCount = maxUserPropertiesLength / bytesPerUserProperty;
+        final int leftoverBytes = maxUserPropertiesLength % bytesPerUserProperty;
+        // make the topic too long to fit with all those user properties
+        final char[] padding = new char[leftoverBytes +1];
+        Arrays.fill(padding, 'x');
+        final String paddedTopic = topic + new String(padding);
+        final MqttTopicFilterImpl paddedTopicFilter = requireNonNull(MqttTopicFilterImpl.from(paddedTopic));
+
+        //final MqttTopicFilterImpl topicFiler = maxPacket.getTopicFilterTooLong();
+        final int remainingLength =
+                2 + // packet identifier
+                1 + // properties length
+                2 + // subscription identifier
+                1 + // subscription options
+                paddedTopicFilter.encodedLength();
+
+        // fixed header
+        // type, reserved
+        expected.writeByte(0b1000_0010);
+        // remaining length
+        expected.writeByte(remainingLength);
+        // packet identifier
+        expected.writeBytes(new byte[] {0, 10});
+        // properties length
+        expected.writeByte(2);
+        // subscription identifier
+        expected.writeBytes(new byte[] {0x0B, 111});
+        // topic filter
+        paddedTopicFilter.to(expected);
+        // subscription options
+        expected.writeByte(0b0000_0001);
+
         final MqttQoS qos = MqttQoS.AT_LEAST_ONCE;
-        final ImmutableList<MqttSubscription> subscriptions =
-                ImmutableList.of(new MqttSubscription(requireNonNull(topicFiler), qos, DEFAULT_NO_LOCAL,
-                        DEFAULT_RETAIN_HANDLING, DEFAULT_RETAIN_AS_PUBLISHED));
-        final MqttSubscribe subscribe = new MqttSubscribe(subscriptions, maxPacket.getMaxPossibleUserProperties(),
-                        Mqtt5SubscribeEncoder.PROVIDER);
+        final ImmutableList<MqttSubscription> subscriptions = ImmutableList
+                .of(new MqttSubscription(requireNonNull(paddedTopicFilter), qos, DEFAULT_NO_LOCAL,
+                        DEFAULT_RETAIN_HANDLING,
+                        DEFAULT_RETAIN_AS_PUBLISHED));
 
-        final int packetIdentifier = 1;
-        final MqttSubscribeWrapper subscribeInternal =
-                subscribe.wrap(packetIdentifier, MqttSubscribeWrapper.DEFAULT_NO_SUBSCRIPTION_IDENTIFIER);
+        final MqttUserPropertiesImpl maxUserProperties = getUserProperties(userPropertiesCount);
 
-        final Throwable exception =
-                assertThrows(EncoderException.class, () -> channel.writeOutbound(subscribeInternal));
-        assertTrue(exception.getMessage().contains("variable byte integer size exceeded for remaining length"));
+        final MqttSubscribe subscribe =
+                new MqttSubscribe(subscriptions, maxUserProperties, Mqtt5SubscribeEncoder.PROVIDER);
+        final int packetIdentifier = 10;
+        final int subscriptionIdentifier = 111;
+        final MqttSubscribeWrapper subscribeInternal = subscribe.wrap(packetIdentifier, subscriptionIdentifier);
+
+        final byte[] expectedBytes = new byte[expected.readableBytes()];
+        expected.readBytes(expectedBytes);
+        encodeInternal(expectedBytes, subscribeInternal);
     }
 
     @Test
-    @Disabled("transform to encode_propertyLengthExceeded_omitUserPropertiesAndReasonString")
-    void encode_propertyLengthExceedsMax_throwsEncoderException() {
-        final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
-        final MqttTopicFilterImpl topicFiler = MqttTopicFilterImpl.from("topic/#");
-        final MqttQoS qos = MqttQoS.AT_LEAST_ONCE;
-        final MqttUserPropertiesImpl tooManyUserProperties = maxPacket.getUserProperties(
-                (VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE / maxPacket.userPropertyBytes) + 1);
+    void encocde_maximumPacketSizeExceeded_throws() {
+        final int headerLength =
+                1 + // packet type
+                4 + // remaining length
+                2 + // packet identifier
+                1 + // properties length
+                2; // subscription identifier
 
-        final ImmutableList<MqttSubscription> subscriptions =
-                ImmutableList.of(new MqttSubscription(requireNonNull(topicFiler), qos, DEFAULT_NO_LOCAL,
-                        DEFAULT_RETAIN_HANDLING, DEFAULT_RETAIN_AS_PUBLISHED));
+        final int numberOfMaxTopicFilters = (MAXIMUM_PACKET_SIZE_LIMIT - headerLength) / (UTF8_LENGTH_ENCODED + UTF8_STRING_MAX_LENGTH + SUBSCRIPTION_OPTIONS_LENGTH);
+        final int leftoverlength = (MAXIMUM_PACKET_SIZE_LIMIT - headerLength) % (UTF8_LENGTH_ENCODED + UTF8_STRING_MAX_LENGTH + SUBSCRIPTION_OPTIONS_LENGTH);
+
+        final char[] topicBytes = new char[UTF8_STRING_MAX_LENGTH];
+        Arrays.fill(topicBytes, 'x');
+        final String topic = new String(topicBytes);
+        // fill remaining bytes to max, and then add one more byte to make topic too long
+        final char[] leftoverTopicBytes = new char[leftoverlength - SUBSCRIPTION_OPTIONS_LENGTH + 1];
+        Arrays.fill(leftoverTopicBytes, 'x');
+        final String leftoverTopic = new String(leftoverTopicBytes);
+
+        final MqttTopicFilterImpl topicFilter = MqttTopicFilterImpl.from(topic);
+        final MqttQoS qos = MqttQoS.AT_LEAST_ONCE;
+        final List<MqttSubscription> maxSizeSubscriptions = Collections.nCopies(numberOfMaxTopicFilters, new MqttSubscription(requireNonNull(topicFilter), qos, DEFAULT_NO_LOCAL,
+                DEFAULT_RETAIN_HANDLING, DEFAULT_RETAIN_AS_PUBLISHED));
+
+        final MqttTopicFilterImpl leftoverTopicFilter = MqttTopicFilterImpl.from(leftoverTopic);
+        final List<MqttSubscription> leftoverSubscription = ImmutableList.of(
+                (new MqttSubscription(requireNonNull(leftoverTopicFilter), qos, DEFAULT_NO_LOCAL,
+                        DEFAULT_RETAIN_HANDLING, DEFAULT_RETAIN_AS_PUBLISHED)));
+
+        final Iterable<MqttSubscription> subscriptions = Iterables.concat(maxSizeSubscriptions, leftoverSubscription);
+
         final MqttSubscribe subscribe =
-                new MqttSubscribe(subscriptions, tooManyUserProperties, Mqtt5SubscribeEncoder.PROVIDER);
+                new MqttSubscribe(ImmutableList.copyOf(subscriptions), MqttUserPropertiesImpl.NO_USER_PROPERTIES, Mqtt5SubscribeEncoder.PROVIDER);
 
         final int packetIdentifier = 2;
         final MqttSubscribeWrapper subscribeInternal =
@@ -324,7 +401,7 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderTest {
 
         final Throwable exception =
                 assertThrows(EncoderException.class, () -> channel.writeOutbound(subscribeInternal));
-        assertTrue(exception.getMessage().contains("variable byte integer size exceeded for property length"));
+        assertTrue(exception.getMessage().contains("encoded length: 268435461, maximum: 268435460"));
     }
 
     private void encode(final byte[] expected, final MqttSubscribe subscribe, final int packetIdentifier) {
@@ -344,56 +421,15 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderTest {
         assertArrayEquals(expected, actual);
     }
 
-    private class MaximumPacketBuilder {
-
-        private static final String TOPIC = "topic";
-        private char[] topicStringBytes;
-        private ImmutableList.Builder<MqttUserPropertyImpl> userPropertiesBuilder;
+    private MqttUserPropertiesImpl getUserProperties(final int totalCount) {
         final MqttUserPropertyImpl userProperty =
                 new MqttUserPropertyImpl(requireNonNull(MqttUTF8StringImpl.from("user")),
                         requireNonNull(MqttUTF8StringImpl.from("property")));
-        final int userPropertyBytes = 1 // identifier
-                + 2 // key length
-                + 4 // bytes to encode "user"
-                + 2 // value length
-                + 8; // bytes to encode "property"
-
-        MaximumPacketBuilder build() {
-            final int maxPropertyLength = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT - 1  // type, reserved
-                    - 2  // packet identifier
-                    - 4  // remaining length
-                    - 4  // property length
-                    - 2  // topic filter length
-                    - 1  // subscribe options
-                    - TOPIC.length(); // default topic filter
-
-            final int topicFilterLength = maxPropertyLength % userPropertyBytes;
-
-            topicStringBytes = new char[topicFilterLength];
-            Arrays.fill(topicStringBytes, 'x');
-
-            final int numberOfUserProperties = maxPropertyLength / userPropertyBytes;
-            userPropertiesBuilder = new ImmutableList.Builder<>();
-            for (int i = 0; i < numberOfUserProperties; i++) {
-                userPropertiesBuilder.add(userProperty);
-            }
-            return this;
+        final ImmutableList.Builder<MqttUserPropertyImpl> builder = new ImmutableList.Builder<>();
+        for (int i = 0; i < totalCount; i++) {
+            builder.add(userProperty);
         }
-
-        MqttUserPropertiesImpl getMaxPossibleUserProperties() {
-            return MqttUserPropertiesImpl.of(userPropertiesBuilder.build());
-        }
-
-        MqttTopicFilterImpl getTopicFilterTooLong() {
-            return requireNonNull(MqttTopicFilterImpl.from(TOPIC + new String(topicStringBytes) + "x"));
-        }
-
-        MqttUserPropertiesImpl getUserProperties(final int totalCount) {
-            final ImmutableList.Builder<MqttUserPropertyImpl> builder = new ImmutableList.Builder<>();
-            for (int i = 0; i < totalCount; i++) {
-                builder.add(userProperty);
-            }
-            return MqttUserPropertiesImpl.of(builder.build());
-        }
+        return MqttUserPropertiesImpl.of(builder.build());
     }
+
 }
