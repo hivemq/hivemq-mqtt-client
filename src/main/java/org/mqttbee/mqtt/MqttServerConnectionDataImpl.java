@@ -37,7 +37,7 @@ public class MqttServerConnectionDataImpl implements Mqtt5ServerConnectionData {
     private final boolean isSharedSubscriptionAvailable;
 
     public MqttServerConnectionDataImpl(
-            final int receiveMaximum, final int maximumPacketSize, final int topicAliasMaximum,
+            final int receiveMaximum, final int topicAliasMaximum, final int maximumPacketSize,
             final MqttQoS maximumQoS, final boolean isRetainAvailable, final boolean isWildcardSubscriptionAvailable,
             final boolean isSubscriptionIdentifierAvailable, final boolean isSharedSubscriptionAvailable) {
         this.receiveMaximum = receiveMaximum;

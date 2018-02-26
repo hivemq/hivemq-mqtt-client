@@ -1,7 +1,6 @@
 package org.mqttbee.api.mqtt.mqtt5.exceptions;
 
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
 
 /**
@@ -19,9 +18,9 @@ public class Mqtt5MessageException extends Exception {
     }
 
     public Mqtt5MessageException(
-            @NotNull final Mqtt5Message mqtt5Message, @Nullable final String message, @Nullable final Throwable cause) {
+            @NotNull final Mqtt5Message mqtt5Message, @NotNull final Throwable cause) {
 
-        super(message, cause);
+        super(cause.getMessage(), cause);
         this.mqtt5Message = mqtt5Message;
     }
 
