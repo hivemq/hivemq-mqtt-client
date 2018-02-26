@@ -19,6 +19,7 @@ import org.mqttbee.mqtt.message.auth.MqttEnhancedAuthBuilder;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
 import org.mqttbee.mqtt.message.connect.MqttConnectWrapper;
 import org.mqttbee.mqtt.message.connect.connack.MqttConnAck;
+import org.mqttbee.mqtt5.handler.disconnect.ChannelCloseEvent;
 import org.mqttbee.mqtt5.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt5.handler.util.DefaultChannelOutboundHandler;
 import org.mqttbee.mqtt5.ioc.ChannelComponent;
@@ -37,6 +38,17 @@ import javax.inject.Inject;
 public class Mqtt5AuthHandler extends AbstractMqtt5AuthHandler implements DefaultChannelOutboundHandler {
 
     public static final String NAME = "auth";
+
+    /**
+     * Flag indicating whether enhanced auth is done. It is true when
+     * <ul>
+     * <li>{@link Mqtt5EnhancedAuthProvider#onAuthSuccess(Mqtt5ClientData, Mqtt5ConnAck)},</li>
+     * <li>{@link Mqtt5EnhancedAuthProvider#onAuthRejected(Mqtt5ClientData, Mqtt5ConnAck)} or</li>
+     * <li>{@link Mqtt5EnhancedAuthProvider#onAuthError(Mqtt5ClientData, Throwable)}</li>
+     * </ul>
+     * have been called.
+     */
+    private boolean done;
 
     @Inject
     Mqtt5AuthHandler() {
@@ -97,8 +109,8 @@ public class Mqtt5AuthHandler extends AbstractMqtt5AuthHandler implements Defaul
     /**
      * Handles the incoming CONNACK message.
      * <ul>
-     * <li>Calls {@link Mqtt5EnhancedAuthProvider#onAuthError(Mqtt5ClientData, Mqtt5ConnAck)} and closes the channel if
-     * the CONNACK message contains an Error Code.</li>
+     * <li>Calls {@link Mqtt5EnhancedAuthProvider#onAuthRejected(Mqtt5ClientData, Mqtt5ConnAck)} and closes the channel
+     * if the CONNACK message contains an Error Code.</li>
      * <li>Sends a DISCONNECT message if the enhanced auth data of the CONNACK message is not valid.</li>
      * <li>Otherwise calls {@link Mqtt5EnhancedAuthProvider#onAuthSuccess(Mqtt5ClientData, Mqtt5ConnAck)}.</li>
      * <li>Sends a DISCONNECT message if the enhanced auth provider did not accept the enhanced auth data.</li>
@@ -107,30 +119,31 @@ public class Mqtt5AuthHandler extends AbstractMqtt5AuthHandler implements Defaul
      * @param ctx     the channel handler context.
      * @param connAck the received CONNACK message.
      */
-    private void readConnAck(
-            @NotNull final ChannelHandlerContext ctx, @NotNull final MqttConnAck connAck) {
+    private void readConnAck(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttConnAck connAck) {
         cancelTimeout();
 
         final MqttClientDataImpl clientData = MqttClientDataImpl.from(ctx.channel());
         final Mqtt5EnhancedAuthProvider enhancedAuthProvider = getEnhancedAuthProvider(clientData);
 
         if (connAck.getReasonCode().isError()) {
-            enhancedAuthProvider.onAuthError(clientData, connAck);
+            enhancedAuthProvider.onAuthRejected(clientData, connAck);
+            done = true;
+
             MqttDisconnectUtil.close(
                     ctx.channel(),
                     new Mqtt5MessageException(connAck, "Connection failed with CONNACK with Error Code"));
-        } else {
-            if (validateConnAck(ctx.channel(), connAck, enhancedAuthProvider)) {
-                enhancedAuthProvider.onAuthSuccess(clientData, connAck).whenCompleteAsync((accepted, throwable) -> {
-                    if (!enhancedAuthProviderAccepted(accepted, throwable)) {
-                        MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.NOT_AUTHORIZED,
-                                new Mqtt5MessageException(connAck, "Server auth success not accepted"));
-                    }
-                }, ctx.executor());
-                ctx.fireChannelRead(connAck);
-                ctx.pipeline()
-                        .replace(this, Mqtt5ReAuthHandler.NAME, ChannelComponent.get(ctx.channel()).reAuthHandler());
-            }
+
+        } else if (validateConnAck(ctx.channel(), connAck, enhancedAuthProvider)) {
+            enhancedAuthProvider.onAuthSuccess(clientData, connAck).whenCompleteAsync((accepted, throwable) -> {
+                if (!enhancedAuthProviderAccepted(accepted, throwable)) {
+                    MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.NOT_AUTHORIZED,
+                            new Mqtt5MessageException(connAck, "Server auth success not accepted"));
+                }
+            }, ctx.executor());
+            done = true;
+
+            ctx.fireChannelRead(connAck);
+            ctx.pipeline().replace(this, Mqtt5ReAuthHandler.NAME, ChannelComponent.get(ctx.channel()).reAuthHandler());
         }
     }
 
@@ -198,6 +211,35 @@ public class Mqtt5AuthHandler extends AbstractMqtt5AuthHandler implements Defaul
                 new Mqtt5MessageException(
                         auth,
                         "Server must not send an AUTH message with the Reason Code REAUTHENTICATE"));
+    }
+
+    @Override
+    public void userEventTriggered(final ChannelHandlerContext ctx, final Object evt) {
+        if (evt instanceof ChannelCloseEvent) {
+            handleChannelCloseEvent(ctx, (ChannelCloseEvent) evt);
+        }
+        ctx.fireUserEventTriggered(evt);
+    }
+
+    /**
+     * Calls {@link Mqtt5EnhancedAuthProvider#onAuthError(Mqtt5ClientData, Throwable)} with the cause why the channel
+     * was closed if auth is not {@link #done} yet.
+     *
+     * @param ctx               the channel handler context.
+     * @param channelCloseEvent the channel close event.
+     */
+    private void handleChannelCloseEvent(
+            @NotNull final ChannelHandlerContext ctx, @NotNull final ChannelCloseEvent channelCloseEvent) {
+
+        cancelTimeout();
+
+        if (!done) {
+            final MqttClientDataImpl clientData = MqttClientDataImpl.from(ctx.channel());
+            final Mqtt5EnhancedAuthProvider enhancedAuthProvider = getEnhancedAuthProvider(clientData);
+
+            enhancedAuthProvider.onAuthError(clientData, channelCloseEvent.getCause());
+            done = true;
+        }
     }
 
     @NotNull

@@ -10,7 +10,6 @@ import org.mqttbee.mqtt.codec.decoder.MqttDecoderModule;
 import org.mqttbee.mqtt.codec.encoder.MqttEncoder;
 import org.mqttbee.mqtt5.handler.auth.Mqtt5AuthHandler;
 import org.mqttbee.mqtt5.handler.auth.Mqtt5DisconnectOnAuthHandler;
-import org.mqttbee.mqtt5.handler.auth.Mqtt5ReAuthEvent;
 import org.mqttbee.mqtt5.handler.auth.Mqtt5ReAuthHandler;
 import org.mqttbee.mqtt5.handler.connect.Mqtt5DisconnectOnConnAckHandler;
 import org.mqttbee.mqtt5.handler.disconnect.Mqtt5DisconnectHandler;
@@ -53,8 +52,6 @@ public interface ChannelComponent {
     Mqtt5ReAuthHandler reAuthHandler();
 
     Mqtt5DisconnectOnAuthHandler disconnectOnAuthHandler();
-
-    Mqtt5ReAuthEvent reAuthEvent();
 
     Mqtt5DisconnectHandler disconnectHandler();
 

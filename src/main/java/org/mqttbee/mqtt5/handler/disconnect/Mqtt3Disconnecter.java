@@ -8,6 +8,9 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
+ * MQTT 3 disconnecter which just closes a channel without sending a DISCONNECT message from the client side. Fires
+ * {@link ChannelCloseEvent}s.
+ *
  * @author Silvio Giebl
  */
 @Singleton

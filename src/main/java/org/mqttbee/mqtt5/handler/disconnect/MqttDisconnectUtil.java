@@ -11,24 +11,49 @@ import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
 import org.mqttbee.mqtt5.ioc.ChannelComponent;
 
 /**
+ * Util for sending a DISCONNECT message or channel closing without sending a DISCONNECT message from the client side.
+ * Fires {@link ChannelCloseEvent}s.
+ *
  * @author Silvio Giebl
  */
 public class MqttDisconnectUtil {
 
+    /**
+     * Closes the channel from the client side without sending a DISCONNECT message.
+     *
+     * @param channel the channel to close.
+     * @param cause   the cause why the channel is closed.
+     */
     public static void close(@NotNull final Channel channel, @NotNull final Throwable cause) {
-        fireChannelCloseEvent(channel, cause);
+        fireChannelCloseEvent(channel, cause, false);
         channel.close();
     }
 
+    /**
+     * Closes the channel from the client side without sending a DISCONNECT message.
+     *
+     * @param channel the channel to close.
+     * @param reason  the reason why the channel is closed.
+     */
     public static void close(@NotNull final Channel channel, @NotNull final String reason) {
         close(channel, new ChannelClosedException(reason));
     }
 
+    /**
+     * Disconnects the client through the API.
+     *
+     * @param channel    the channel to close.
+     * @param disconnect the DISCONNECT message to send.
+     * @return the channel future succeeding when the DISCONNECT message is written.
+     */
     public static ChannelFuture disconnect(@NotNull final Channel channel, @NotNull final MqttDisconnect disconnect) {
-        fireChannelCloseEvent(channel, new Mqtt5MessageException(disconnect, "DISCONNECT through API"));
+        fireChannelCloseEvent(channel, new Mqtt5MessageException(disconnect, "DISCONNECT through API"), false);
         return disconnectAndClose(channel, disconnect);
     }
 
+    /**
+     * @see MqttDisconnecter#disconnect(Channel, Mqtt5DisconnectReasonCode, String).
+     */
     public static void disconnect(
             @NotNull final Channel channel, final Mqtt5DisconnectReasonCode reasonCode,
             @NotNull final String reasonString) {
@@ -36,6 +61,9 @@ public class MqttDisconnectUtil {
         getDisconnecter(channel).disconnect(channel, reasonCode, reasonString);
     }
 
+    /**
+     * @see MqttDisconnecter#disconnect(Channel, Mqtt5DisconnectReasonCode, Throwable).
+     */
     public static void disconnect(
             @NotNull final Channel channel, final Mqtt5DisconnectReasonCode reasonCode,
             @NotNull final Throwable cause) {
@@ -43,9 +71,11 @@ public class MqttDisconnectUtil {
         getDisconnecter(channel).disconnect(channel, reasonCode, cause);
     }
 
-    static void fireChannelCloseEvent(@NotNull final Channel channel, @NotNull final Throwable cause) {
+    static void fireChannelCloseEvent(
+            @NotNull final Channel channel, @NotNull final Throwable cause, final boolean fromServer) {
+
         channel.config().setAutoRead(false);
-        channel.pipeline().fireUserEventTriggered(new ChannelCloseEvent(cause));
+        channel.pipeline().fireUserEventTriggered(new ChannelCloseEvent(cause, fromServer));
     }
 
     static ChannelFuture disconnectAndClose(@NotNull final Channel channel, @NotNull final MqttDisconnect disconnect) {

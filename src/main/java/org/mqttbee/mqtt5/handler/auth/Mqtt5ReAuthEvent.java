@@ -1,18 +1,24 @@
 package org.mqttbee.mqtt5.handler.auth;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import io.reactivex.CompletableEmitter;
+import org.mqttbee.annotations.NotNull;
 
 /**
  * Event that is fired when the user triggers reauth.
  *
  * @author Silvio Giebl
  */
-@Singleton
 public class Mqtt5ReAuthEvent {
 
-    @Inject
-    Mqtt5ReAuthEvent() {
+    private final CompletableEmitter reAuthEmitter;
+
+    public Mqtt5ReAuthEvent(@NotNull final CompletableEmitter reAuthEmitter) {
+        this.reAuthEmitter = reAuthEmitter;
+    }
+
+    @NotNull
+    public CompletableEmitter getReAuthEmitter() {
+        return reAuthEmitter;
     }
 
 }

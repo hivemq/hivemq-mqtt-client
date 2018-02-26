@@ -15,7 +15,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
- * Util for sending a DISCONNECT message and channel closing from the client side. Fires {@link ChannelCloseEvent}s.
+ * MQTT 5 disconnecter which sends a DISCONNECT messages before closing a channel from the client side. Fires
+ * {@link ChannelCloseEvent}s.
  *
  * @author Silvio Giebl
  */
@@ -32,7 +33,7 @@ public class Mqtt5Disconnecter implements MqttDisconnecter {
             @NotNull final String reasonString) {
 
         final MqttDisconnect disconnect = createDisconnect(channel, reasonCode, reasonString);
-        MqttDisconnectUtil.fireChannelCloseEvent(channel, new Mqtt5MessageException(disconnect, reasonString));
+        MqttDisconnectUtil.fireChannelCloseEvent(channel, new Mqtt5MessageException(disconnect, reasonString), false);
         MqttDisconnectUtil.disconnectAndClose(channel, disconnect);
     }
 
@@ -42,7 +43,7 @@ public class Mqtt5Disconnecter implements MqttDisconnecter {
             @NotNull final Throwable cause) {
 
         final MqttDisconnect disconnect = createDisconnect(channel, reasonCode, cause.getMessage());
-        MqttDisconnectUtil.fireChannelCloseEvent(channel, new Mqtt5MessageException(disconnect, cause));
+        MqttDisconnectUtil.fireChannelCloseEvent(channel, new Mqtt5MessageException(disconnect, cause), false);
         MqttDisconnectUtil.disconnectAndClose(channel, disconnect);
     }
 
