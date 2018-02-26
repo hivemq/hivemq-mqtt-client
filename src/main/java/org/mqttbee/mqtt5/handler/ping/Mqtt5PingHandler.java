@@ -36,7 +36,7 @@ public class Mqtt5PingHandler extends ChannelInboundHandlerWithTimeout {
     @Override
     public void handlerAdded(final ChannelHandlerContext ctx) {
         super.handlerAdded(ctx);
-        ctx.pipeline().addAfter(NAME, IDLE_STATE_HANDLER_NAME, new IdleStateHandler(0, keepAlive, 0));
+        ctx.pipeline().addBefore(NAME, IDLE_STATE_HANDLER_NAME, new IdleStateHandler(0, keepAlive, 0));
     }
 
     @Override
