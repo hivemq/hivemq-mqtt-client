@@ -63,6 +63,7 @@ public class MqttDecoder extends ByteToMessageDecoder {
 
             final MqttClientConnectionDataImpl clientConnectionData =
                     MqttClientDataImpl.from(ctx.channel()).getRawClientConnectionData();
+            assert clientConnectionData != null;
             if (packetSize > clientConnectionData.getMaximumPacketSize()) {
                 throw new MqttDecoderException(Mqtt5DisconnectReasonCode.PACKET_TOO_LARGE,
                         "incoming packet exceeded maximum packet size");

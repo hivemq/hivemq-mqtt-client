@@ -11,6 +11,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5Auth;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
+import org.mqttbee.mqtt.MqttClientConnectionDataImpl;
 import org.mqttbee.mqtt.MqttClientDataImpl;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.message.auth.MqttAuth;
@@ -39,8 +40,9 @@ abstract class AbstractMqtt5AuthHandler extends ChannelInboundHandlerWithTimeout
      */
     @NotNull
     static Mqtt5EnhancedAuthProvider getEnhancedAuthProvider(@NotNull final MqttClientDataImpl clientData) {
-        final Mqtt5EnhancedAuthProvider enhancedAuthProvider =
-                clientData.getRawClientConnectionData().getEnhancedAuthProvider();
+        final MqttClientConnectionDataImpl clientConnectionData = clientData.getRawClientConnectionData();
+        assert clientConnectionData != null;
+        final Mqtt5EnhancedAuthProvider enhancedAuthProvider = clientConnectionData.getEnhancedAuthProvider();
         assert enhancedAuthProvider != null;
         return enhancedAuthProvider;
     }

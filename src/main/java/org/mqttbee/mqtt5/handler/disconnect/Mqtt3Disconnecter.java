@@ -22,7 +22,7 @@ public class Mqtt3Disconnecter implements MqttDisconnecter {
             @NotNull final Channel channel, final Mqtt5DisconnectReasonCode reasonCode,
             @NotNull final String reasonString) {
 
-        close(channel, reasonString);
+        MqttDisconnectUtil.close(channel, reasonString);
     }
 
     @Override
@@ -30,7 +30,7 @@ public class Mqtt3Disconnecter implements MqttDisconnecter {
             @NotNull final Channel channel, final Mqtt5DisconnectReasonCode reasonCode,
             @NotNull final Throwable cause) {
 
-        close(channel, cause);
+        MqttDisconnectUtil.close(channel, cause);
     }
 
 }

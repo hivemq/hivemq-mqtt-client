@@ -1,7 +1,6 @@
 package org.mqttbee.mqtt5.handler.disconnect;
 
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelFutureListener;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
@@ -27,32 +26,14 @@ public class Mqtt5Disconnecter implements MqttDisconnecter {
     Mqtt5Disconnecter() {
     }
 
-    private void disconnect(
-            @NotNull final Channel channel, final Mqtt5DisconnectReasonCode reasonCode,
-            @Nullable final String reasonString, @Nullable final Throwable cause) {
-
-        MqttUTF8StringImpl mqttReasonString = null;
-        if ((reasonString != null) && ChannelAttributes.sendReasonString(channel)) {
-            mqttReasonString = MqttUTF8StringImpl.from(reasonString);
-        }
-
-        final MqttDisconnect disconnect =
-                new MqttDisconnect(reasonCode, MqttDisconnect.SESSION_EXPIRY_INTERVAL_FROM_CONNECT, null,
-                        mqttReasonString, MqttUserPropertiesImpl.NO_USER_PROPERTIES, Mqtt5DisconnectEncoder.PROVIDER);
-
-        channel.config().setAutoRead(false);
-        channel.pipeline()
-                .fireUserEventTriggered(
-                        new ChannelCloseEvent(new Mqtt5MessageException(disconnect, reasonString, cause)));
-        channel.writeAndFlush(disconnect).addListener(ChannelFutureListener.CLOSE);
-    }
-
     @Override
     public void disconnect(
             @NotNull final Channel channel, final Mqtt5DisconnectReasonCode reasonCode,
             @NotNull final String reasonString) {
 
-        disconnect(channel, reasonCode, reasonString, null);
+        final MqttDisconnect disconnect = createDisconnect(channel, reasonCode, reasonString);
+        MqttDisconnectUtil.fireChannelCloseEvent(channel, new Mqtt5MessageException(disconnect, reasonString));
+        MqttDisconnectUtil.disconnectAndClose(channel, disconnect);
     }
 
     @Override
@@ -60,7 +41,22 @@ public class Mqtt5Disconnecter implements MqttDisconnecter {
             @NotNull final Channel channel, final Mqtt5DisconnectReasonCode reasonCode,
             @NotNull final Throwable cause) {
 
-        disconnect(channel, reasonCode, cause.getMessage(), cause);
+        final MqttDisconnect disconnect = createDisconnect(channel, reasonCode, cause.getMessage());
+        MqttDisconnectUtil.fireChannelCloseEvent(channel, new Mqtt5MessageException(disconnect, cause));
+        MqttDisconnectUtil.disconnectAndClose(channel, disconnect);
+    }
+
+    private MqttDisconnect createDisconnect(
+            @NotNull final Channel channel, final Mqtt5DisconnectReasonCode reasonCode,
+            @Nullable final String reasonString) {
+
+        MqttUTF8StringImpl mqttReasonString = null;
+        if ((reasonString != null) && ChannelAttributes.sendReasonString(channel)) {
+            mqttReasonString = MqttUTF8StringImpl.from(reasonString);
+        }
+
+        return new MqttDisconnect(reasonCode, MqttDisconnect.SESSION_EXPIRY_INTERVAL_FROM_CONNECT, null,
+                mqttReasonString, MqttUserPropertiesImpl.NO_USER_PROPERTIES, Mqtt5DisconnectEncoder.PROVIDER);
     }
 
 }

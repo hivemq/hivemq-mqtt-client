@@ -97,8 +97,9 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerWithTimeout {
     private void writeConnect(@NotNull final ChannelHandlerContext ctx) {
         ctx.writeAndFlush(connect).addListener(future -> {
             if (future.isSuccess()) {
-                final MqttClientDataImpl clientData = MqttClientDataImpl.from(ctx.channel());
-                if (clientData.getRawClientConnectionData().getEnhancedAuthProvider() == null) {
+                final MqttClientConnectionDataImpl clientConnectionData = clientData.getRawClientConnectionData();
+                assert clientConnectionData != null;
+                if (clientConnectionData.getEnhancedAuthProvider() == null) {
                     scheduleTimeout();
                 }
 
@@ -142,10 +143,14 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerWithTimeout {
 
                 final ChannelPipeline pipeline = channel.pipeline();
                 pipeline.remove(this);
-                final int keepAlive = clientData.getRawClientConnectionData().getKeepAlive();
+
+                final MqttClientConnectionDataImpl clientConnectionData = clientData.getRawClientConnectionData();
+                assert clientConnectionData != null;
+                final int keepAlive = clientConnectionData.getKeepAlive();
                 if (keepAlive > 0) {
                     pipeline.addLast(Mqtt5PingHandler.NAME, new Mqtt5PingHandler(keepAlive));
                 }
+
                 pipeline.addLast(Mqtt5DisconnectOnConnAckHandler.NAME,
                         ChannelComponent.get(channel).disconnectOnConnAckHandler());
 
@@ -216,6 +221,7 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerWithTimeout {
         }
 
         final MqttClientConnectionDataImpl clientConnectionData = clientData.getRawClientConnectionData();
+        assert clientConnectionData != null;
 
         final int serverKeepAlive = connAck.getRawServerKeepAlive();
         if (serverKeepAlive != MqttConnAck.KEEP_ALIVE_FROM_CONNECT) {

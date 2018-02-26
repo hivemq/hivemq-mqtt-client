@@ -121,9 +121,9 @@ public class MqttClientDataImpl implements Mqtt5ClientData {
         return Optional.of(clientConnectionData);
     }
 
-    @NotNull
+    @Nullable
     public MqttClientConnectionDataImpl getRawClientConnectionData() {
-        return Preconditions.checkNotNull(clientConnectionData);
+        return clientConnectionData;
     }
 
     public void setClientConnectionData(@Nullable final MqttClientConnectionDataImpl clientConnectionData) {

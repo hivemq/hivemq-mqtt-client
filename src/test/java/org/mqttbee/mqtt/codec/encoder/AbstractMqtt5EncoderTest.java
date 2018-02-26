@@ -49,7 +49,7 @@ public class AbstractMqtt5EncoderTest {
 
     protected void createServerConnectionData(final int maximumPacketSize) {
         clientData.setServerConnectionData(
-                new MqttServerConnectionDataImpl(10, maximumPacketSize, 3, MqttQoS.EXACTLY_ONCE, true, true, true,
+                new MqttServerConnectionDataImpl(10, 3, maximumPacketSize, MqttQoS.EXACTLY_ONCE, true, true, true,
                         true));
     }
 
