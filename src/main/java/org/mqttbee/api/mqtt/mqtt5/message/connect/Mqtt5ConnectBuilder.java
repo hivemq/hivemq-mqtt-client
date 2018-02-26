@@ -25,7 +25,7 @@ public class Mqtt5ConnectBuilder {
     private long sessionExpiryInterval = DEFAULT_SESSION_EXPIRY_INTERVAL;
     private boolean isResponseInformationRequested = DEFAULT_RESPONSE_INFORMATION_REQUESTED;
     private boolean isProblemInformationRequested = DEFAULT_PROBLEM_INFORMATION_REQUESTED;
-    private MqttConnectRestrictions restrictions;
+    private MqttConnectRestrictions restrictions = MqttConnectRestrictions.DEFAULT;
     private MqttSimpleAuth simpleAuth;
     private Mqtt5EnhancedAuthProvider enhancedAuthProvider;
     private MqttWillPublish willPublish;

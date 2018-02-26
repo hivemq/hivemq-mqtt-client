@@ -56,6 +56,7 @@ public abstract class NettyBootstrap {
     private MultithreadEventLoopGroup getDefaultEventLoopGroup(final int numberOfNettyThreads) {
         if (defaultEventLoopGroup == null) {
             defaultEventLoopGroup = newDefaultEventLoopGroup(numberOfNettyThreads);
+            defaultEventLoopGroupReferenceCount = new AtomicInteger(1);
         } else {
             final int defaultThreadCount = defaultEventLoopGroup.executorCount();
             if (defaultThreadCount != numberOfNettyThreads) {
@@ -63,8 +64,8 @@ public abstract class NettyBootstrap {
                         "Tried to use the default executor with a different amount of Netty threads. Using {} threads instead of {}",
                         defaultThreadCount, numberOfNettyThreads);
             }
+            defaultEventLoopGroupReferenceCount.incrementAndGet();
         }
-        defaultEventLoopGroupReferenceCount.incrementAndGet();
         return defaultEventLoopGroup;
     }
 
