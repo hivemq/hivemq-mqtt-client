@@ -98,7 +98,7 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerWithTimeout {
         ctx.writeAndFlush(connect).addListener(future -> {
             if (future.isSuccess()) {
                 final MqttClientDataImpl clientData = MqttClientDataImpl.from(ctx.channel());
-                if (clientData.getRawClientConnectionData().getEnhancedAuthProvider() != null) {
+                if (clientData.getRawClientConnectionData().getEnhancedAuthProvider() == null) {
                     scheduleTimeout();
                 }
 
