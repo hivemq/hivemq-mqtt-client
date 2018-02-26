@@ -1,9 +1,11 @@
 package org.mqttbee.mqtt5.handler.disconnect;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.api.mqtt.exceptions.ChannelClosedException;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
 
@@ -39,13 +41,13 @@ public class Mqtt5DisconnectHandler extends ChannelInboundHandlerAdapter {
             @NotNull final ChannelHandlerContext ctx, @NotNull final MqttDisconnect disconnect) {
 
         ctx.pipeline().remove(this);
-        MqttDisconnectUtil.close(ctx.channel(), new Mqtt5MessageException(disconnect, "Server sent DISCONNECT"));
+        closeFromServer(ctx.channel(), new Mqtt5MessageException(disconnect, "Server sent DISCONNECT"));
     }
 
     @Override
     public void channelInactive(final ChannelHandlerContext ctx) {
         ctx.pipeline().remove(this);
-        MqttDisconnectUtil.close(ctx.channel(), "Server closed channel without DISCONNECT");
+        closeFromServer(ctx.channel(), new ChannelClosedException("Server closed channel without DISCONNECT"));
         ctx.fireChannelInactive();
     }
 
@@ -55,6 +57,11 @@ public class Mqtt5DisconnectHandler extends ChannelInboundHandlerAdapter {
             ctx.pipeline().remove(this);
         }
         ctx.fireUserEventTriggered(evt);
+    }
+
+    private static void closeFromServer(@NotNull final Channel channel, @NotNull final Throwable cause) {
+        MqttDisconnectUtil.fireChannelCloseEvent(channel, cause, true);
+        channel.close();
     }
 
 }

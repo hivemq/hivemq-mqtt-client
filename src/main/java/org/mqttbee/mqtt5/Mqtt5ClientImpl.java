@@ -22,6 +22,7 @@ import org.mqttbee.mqtt.MqttClientConnectionDataImpl;
 import org.mqttbee.mqtt.MqttClientDataImpl;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
+import org.mqttbee.mqtt5.handler.auth.Mqtt5ReAuthEvent;
 import org.mqttbee.mqtt5.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt5.ioc.MqttBeeComponent;
 import org.mqttbee.rx.FlowableWithSingle;
@@ -121,7 +122,14 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
     @NotNull
     @Override
     public Completable reauth() {
-        return null;
+        return Completable.create(emitter -> {
+            final MqttClientConnectionDataImpl clientConnectionData = clientData.getRawClientConnectionData();
+            if (clientConnectionData != null) {
+                clientConnectionData.getChannel().pipeline().fireUserEventTriggered(new Mqtt5ReAuthEvent(emitter));
+            } else {
+                emitter.onError(new NotConnectedException());
+            }
+        });
     }
 
     @NotNull

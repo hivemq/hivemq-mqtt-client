@@ -64,7 +64,7 @@ abstract class AbstractMqtt5AuthHandler extends ChannelInboundHandlerWithTimeout
 
     static boolean enhancedAuthProviderAccepted(@Nullable final Throwable throwable) {
         if (throwable != null) {
-            LOGGER.error("reauth cancelled because of an unexpected exception", throwable);
+            LOGGER.error("auth cancelled because of an unexpected exception", throwable);
             return false;
         }
         return true;
@@ -72,10 +72,10 @@ abstract class AbstractMqtt5AuthHandler extends ChannelInboundHandlerWithTimeout
 
     static boolean enhancedAuthProviderAccepted(@Nullable final Boolean accepted, @Nullable final Throwable throwable) {
         if (throwable != null) {
-            LOGGER.error("reauth cancelled because of an unexpected exception", throwable);
+            LOGGER.error("auth cancelled because of an unexpected exception", throwable);
             return false;
         } else if (accepted == null) {
-            LOGGER.error("reauth cancelled because of an unexpected null value");
+            LOGGER.error("auth cancelled because of an unexpected null value");
             return false;
         }
         return accepted;

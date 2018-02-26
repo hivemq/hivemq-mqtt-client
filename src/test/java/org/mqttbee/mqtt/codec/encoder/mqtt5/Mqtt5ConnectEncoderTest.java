@@ -155,8 +155,8 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         final MqttConnectRestrictions restrictions = new MqttConnectRestrictions(5, 10, 100);
 
         final MqttConnect connect =
-                new MqttConnect(10, true, 10, true, false, restrictions, simpleAuth, enhancedAuthProvider,
-                        willPublish, userProperties, Mqtt5ConnectEncoder.PROVIDER);
+                new MqttConnect(10, true, 10, true, false, restrictions, simpleAuth, enhancedAuthProvider, willPublish,
+                        userProperties, Mqtt5ConnectEncoder.PROVIDER);
         final MqttConnectWrapper connectWrapper = connect.wrap(clientIdentifier, enhancedAuth);
 
         encode(expected, connectWrapper);
@@ -366,7 +366,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         final MqttClientIdentifierImpl clientIdentifier = requireNonNull(MqttClientIdentifierImpl.from("test"));
         final MqttWillPublish willPublish = new MqttWillPublish(willTopic, willPayload, MqttQoS.AT_MOST_ONCE, false,
                 MqttWillPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null,
-                        MqttUserPropertiesImpl.NO_USER_PROPERTIES, 0, Mqtt5PublishEncoder.PROVIDER);
+                MqttUserPropertiesImpl.NO_USER_PROPERTIES, 0, Mqtt5PublishEncoder.PROVIDER);
         final MqttConnect connect = new MqttConnect(0, false, 0, false, true, DEFAULT, null, null, willPublish,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES, Mqtt5ConnectEncoder.PROVIDER);
         final MqttConnectWrapper connectWrapper = connect.wrap(clientIdentifier, null);
@@ -382,7 +382,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         final MqttClientIdentifierImpl clientIdentifier = requireNonNull(MqttClientIdentifierImpl.from("test"));
         final MqttWillPublish willPublish = new MqttWillPublish(willTopic, willPayload, MqttQoS.AT_MOST_ONCE, false,
                 MqttWillPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null,
-                        MqttUserPropertiesImpl.NO_USER_PROPERTIES, 0, Mqtt5PublishEncoder.PROVIDER);
+                MqttUserPropertiesImpl.NO_USER_PROPERTIES, 0, Mqtt5PublishEncoder.PROVIDER);
         final MqttConnect connect = new MqttConnect(0, false, 0, false, true, DEFAULT, null, null, willPublish,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES, Mqtt5ConnectEncoder.PROVIDER);
         final MqttConnectWrapper connectWrapper = connect.wrap(clientIdentifier, null);
@@ -460,7 +460,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         final Mqtt5EnhancedAuthProvider enhancedAuthProvider = new TestEnhancedAuthProvider(authMethod);
 
         final MqttConnect connect = new MqttConnect(0, false, 0, false, true, DEFAULT, null, enhancedAuthProvider, null,
-                        MqttUserPropertiesImpl.NO_USER_PROPERTIES, Mqtt5ConnectEncoder.PROVIDER);
+                MqttUserPropertiesImpl.NO_USER_PROPERTIES, Mqtt5ConnectEncoder.PROVIDER);
         final MqttConnectWrapper connectWrapper = connect.wrap(clientIdentifier, enhancedAuth);
 
         encode(expected, connectWrapper);
@@ -476,7 +476,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         final Mqtt5EnhancedAuthProvider enhancedAuthProvider = new TestEnhancedAuthProvider(authMethod);
 
         final MqttConnect connect = new MqttConnect(0, false, 0, false, true, DEFAULT, null, enhancedAuthProvider, null,
-                        MqttUserPropertiesImpl.NO_USER_PROPERTIES, Mqtt5ConnectEncoder.PROVIDER);
+                MqttUserPropertiesImpl.NO_USER_PROPERTIES, Mqtt5ConnectEncoder.PROVIDER);
         final MqttConnectWrapper connectWrapper = connect.wrap(clientIdentifier, enhancedAuth);
 
         encodeNok(connectWrapper, EncoderException.class, "binary data size exceeded for authentication data");
@@ -659,13 +659,23 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         }
 
         @Override
-        public void onAuthError(@NotNull final Mqtt5ClientData clientData, @NotNull final Mqtt5ConnAck connAck) {
+        public void onAuthRejected(@NotNull final Mqtt5ClientData clientData, @NotNull final Mqtt5ConnAck connAck) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public void onReAuthError(
+        public void onReAuthRejected(
                 @NotNull final Mqtt5ClientData clientData, @NotNull final Mqtt5Disconnect disconnect) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void onAuthError(@NotNull final Mqtt5ClientData clientData, @NotNull final Throwable cause) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void onReAuthError(@NotNull final Mqtt5ClientData clientData, @NotNull final Throwable cause) {
             throw new UnsupportedOperationException();
         }
     }
