@@ -24,7 +24,7 @@ public class MqttUnsubAck extends
             final int packetIdentifier, @NotNull final ImmutableList<Mqtt5UnsubAckReasonCode> reasonCodes,
             @Nullable final MqttUTF8StringImpl reasonString, @NotNull final MqttUserPropertiesImpl userProperties) {
 
-        super(packetIdentifier, reasonCodes, reasonString, userProperties, null);
+        super(packetIdentifier, reasonCodes, reasonString, userProperties, MqttMessageEncoderProvider.notCodable());
     }
 
     @NotNull

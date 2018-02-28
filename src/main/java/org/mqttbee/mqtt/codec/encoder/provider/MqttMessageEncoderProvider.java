@@ -15,6 +15,17 @@ import java.util.function.Supplier;
  */
 public interface MqttMessageEncoderProvider<M extends MqttMessage> extends Supplier<MqttMessageEncoderApplier<M>> {
 
+    @NotNull
+    MqttMessageEncoderProvider<? extends MqttMessage> NOT_CODABLE = () -> {
+        throw new UnsupportedOperationException();
+    };
+
+    @SuppressWarnings("unchecked")
+    static <M extends MqttMessage> MqttMessageEncoderProvider<M> notCodable() {
+        return (MqttMessageEncoderProvider<M>) NOT_CODABLE;
+    }
+
+
     /**
      * Provider for a thread local {@link MqttMessageEncoderApplier}.
      *
