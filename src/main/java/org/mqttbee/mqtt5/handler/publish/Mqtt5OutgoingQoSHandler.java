@@ -1,12 +1,16 @@
 package org.mqttbee.mqtt5.handler.publish;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
+import org.mqttbee.mqtt.MqttServerConnectionDataImpl;
+import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
+import org.mqttbee.mqtt.message.publish.MqttTopicAliasMapping;
 import org.mqttbee.mqtt.message.publish.puback.MqttPubAck;
 import org.mqttbee.mqtt.message.publish.pubcomp.MqttPubComp;
 import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRec;
@@ -19,6 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+
+import static org.mqttbee.mqtt.message.publish.MqttPublishWrapper.*;
 
 /**
  * @author Silvio Giebl
@@ -63,11 +69,8 @@ public class Mqtt5OutgoingQoSHandler extends ChannelDuplexHandler {
             @NotNull final ChannelHandlerContext ctx, @NotNull final MqttPublish publish,
             @NotNull final ChannelPromise promise) {
 
-        final int packetIdentifier = MqttPublishWrapper.NO_PACKET_IDENTIFIER_QOS_0;
         final MqttPublishWrapper publishWrapper =
-                publish.wrap(packetIdentifier, false, MqttPublishWrapper.DEFAULT_NO_TOPIC_ALIAS, false,
-                        MqttPublishWrapper.DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS); // TODO topic alias
-
+                wrapPublish(ctx.channel(), publish, NO_PACKET_IDENTIFIER_QOS_0, false);
         ctx.write(publishWrapper, promise);
     }
 
@@ -80,16 +83,36 @@ public class Mqtt5OutgoingQoSHandler extends ChannelDuplexHandler {
             // TODO
         }
 
-        final MqttPublishWrapper publishWrapper =
-                publish.wrap(packetIdentifier, false, MqttPublishWrapper.DEFAULT_NO_TOPIC_ALIAS, false,
-                        MqttPublishWrapper.DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS); // TODO topic alias
-
+        final MqttPublishWrapper publishWrapper = wrapPublish(ctx.channel(), publish, packetIdentifier, false);
         persistence.persist(publishWrapper).whenCompleteAsync((aVoid, throwable) -> {
             ctx.writeAndFlush(publishWrapper, promise);
             if (throwable != null) {
                 LOGGER.error("Unexpected exception while persisting PUBLISH in outgoing QoSFlowPersistence", throwable);
             }
         }, ctx.executor());
+    }
+
+    private MqttPublishWrapper wrapPublish(
+            @NotNull final Channel channel, @NotNull final MqttPublish publish, final int packetIdentifier,
+            final boolean isDup) {
+
+        final MqttTopicAliasMapping topicAliasMapping = MqttServerConnectionDataImpl.getTopicAliasMapping(channel);
+        int topicAlias;
+        final boolean isNewTopicAlias;
+        if (topicAliasMapping == null) {
+            topicAlias = DEFAULT_NO_TOPIC_ALIAS;
+            isNewTopicAlias = false;
+        } else {
+            final MqttTopicImpl topic = publish.getTopic();
+            topicAlias = topicAliasMapping.get(topic);
+            if (topicAlias != DEFAULT_NO_TOPIC_ALIAS) {
+                isNewTopicAlias = false;
+            } else {
+                topicAlias = topicAliasMapping.set(topic, publish.getTopicAliasUsage());
+                isNewTopicAlias = topicAlias != DEFAULT_NO_TOPIC_ALIAS;
+            }
+        }
+        return publish.wrap(packetIdentifier, isDup, topicAlias, isNewTopicAlias, DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
     }
 
     @Override
@@ -107,23 +130,27 @@ public class Mqtt5OutgoingQoSHandler extends ChannelDuplexHandler {
 
     private void handlePubAck(@NotNull final MqttPubAck pubAck) {
         // TODO call control provider
+
         persistence.remove(pubAck.getPacketIdentifier());
     }
 
     private void handlePubRec(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttPubRec pubRec) {
         final MqttPubRelBuilder pubRelBuilder = new MqttPubRelBuilder(pubRec);
+
         // TODO call control provider, add user properties
+
         final MqttPubRel pubRel = pubRelBuilder.build();
         persistence.persist(pubRel).whenCompleteAsync((aVoid, throwable) -> {
             ctx.writeAndFlush(pubRel);
             if (throwable != null) {
                 LOGGER.error("Unexpected exception while persisting PUBREL in outgoing QoSFlowPersistence", throwable);
             }
-        });
+        }, ctx.executor());
     }
 
     private void handlePubComp(@NotNull final MqttPubComp pubComp) {
         // TODO call control provider
+
         persistence.remove(pubComp.getPacketIdentifier());
     }
 
