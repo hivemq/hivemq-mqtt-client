@@ -24,7 +24,7 @@ public class MqttTopicAliasMapping {
         nextTopicAlias = 1;
     }
 
-    int set(@NotNull final MqttTopicImpl topic, @NotNull final TopicAliasUsage topicAliasUsage) {
+    public int set(@NotNull final MqttTopicImpl topic, @NotNull final TopicAliasUsage topicAliasUsage) {
         int topicAlias = MqttPublishWrapper.DEFAULT_NO_TOPIC_ALIAS;
         if (topicAliasUsage != TopicAliasUsage.MUST_NOT) {
             if (nextTopicAlias == size) {
@@ -41,7 +41,7 @@ public class MqttTopicAliasMapping {
         return topicAlias;
     }
 
-    int get(@NotNull final MqttTopicImpl topic) {
+    public int get(@NotNull final MqttTopicImpl topic) {
         final Integer topicAlias = hashMap.get(topic.toString());
         return (topicAlias == null) ? MqttPublishWrapper.DEFAULT_NO_TOPIC_ALIAS : topicAlias;
     }

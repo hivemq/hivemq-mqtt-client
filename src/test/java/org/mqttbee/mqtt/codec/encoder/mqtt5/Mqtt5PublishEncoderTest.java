@@ -709,7 +709,7 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
             final byte[] expected, final MqttPublish publish, final int packetIdentifier, final boolean isDup,
             final ImmutableIntArray subscriptionIdentifiers) {
         final MqttPublishWrapper publishInternal =
-                new MqttPublishWrapper(publish, packetIdentifier, isDup, channel, subscriptionIdentifiers);
+                publish.wrap(packetIdentifier, isDup, DEFAULT_NO_TOPIC_ALIAS, false, subscriptionIdentifiers);
         encodeInternal(expected, publishInternal);
     }
 
