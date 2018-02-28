@@ -27,12 +27,17 @@ public abstract class MqttMessageWithEncoder<M extends MqttMessageWithEncoder<M,
     @Override
     public MqttMessageEncoder getEncoder() {
         if (encoderApplier == null) {
-            if (encoderProvider == null) {
-                throw new UnsupportedOperationException();
-            }
-            encoderApplier = encoderProvider.get();
+            encoderApplier = getEncoderProvider().get();
         }
         return encoderApplier.apply(getCodable());
+    }
+
+    @NotNull
+    public P getEncoderProvider() {
+        if (encoderProvider == null) {
+            throw new UnsupportedOperationException();
+        }
+        return encoderProvider;
     }
 
     /**

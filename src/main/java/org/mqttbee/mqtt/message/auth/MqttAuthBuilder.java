@@ -11,7 +11,6 @@ import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5AuthEncoder;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
-import org.mqttbee.util.MustNotBeImplementedUtil;
 
 import java.nio.ByteBuffer;
 
@@ -66,15 +65,13 @@ public class MqttAuthBuilder implements Mqtt5AuthBuilder {
     @NotNull
     @Override
     public MqttAuthBuilder withUserProperties(@NotNull final Mqtt5UserProperties userProperties) {
-        this.userProperties =
-                MustNotBeImplementedUtil.checkNotImplemented(userProperties, MqttUserPropertiesImpl.class);
+        this.userProperties = MqttBuilderUtil.userProperties(userProperties);
         return this;
     }
 
     @NotNull
     public MqttAuth build() {
-        return new MqttAuth(
-                reasonCode, method, data, reasonString, userProperties, Mqtt5AuthEncoder.PROVIDER); // TODO
+        return new MqttAuth(reasonCode, method, data, reasonString, userProperties, Mqtt5AuthEncoder.PROVIDER); // TODO
     }
 
 }

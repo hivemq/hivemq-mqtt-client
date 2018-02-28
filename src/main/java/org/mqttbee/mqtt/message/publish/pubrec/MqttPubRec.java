@@ -31,11 +31,6 @@ public class MqttPubRec
         super(packetIdentifier, reasonCode, reasonString, userProperties, encoderProvider);
     }
 
-//    public MqttPubRel ack() {
-//        return new MqttPubRel(getPacketIdentifier(), Mqtt5PubRelReasonCode.SUCCESS, null,
-//                MqttUserPropertiesImpl.NO_USER_PROPERTIES, encoderProvider.getPubRelEncoderProvider());
-//    }
-
     @NotNull
     @Override
     protected MqttPubRec getCodable() {

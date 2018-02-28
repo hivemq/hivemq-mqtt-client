@@ -10,7 +10,6 @@ import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribe;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
-import org.mqttbee.util.MustNotBeImplementedUtil;
 
 /**
  * @author Silvio Giebl
@@ -37,8 +36,7 @@ public class Mqtt5UnsubscribeBuilder {
 
     @NotNull
     public Mqtt5UnsubscribeBuilder withUserProperties(@NotNull final Mqtt5UserProperties userProperties) {
-        this.userProperties =
-                MustNotBeImplementedUtil.checkNotImplemented(userProperties, MqttUserPropertiesImpl.class);
+        this.userProperties = MqttBuilderUtil.userProperties(userProperties);
         return this;
     }
 

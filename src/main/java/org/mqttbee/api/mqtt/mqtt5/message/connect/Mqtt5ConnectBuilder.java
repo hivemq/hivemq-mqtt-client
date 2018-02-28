@@ -13,6 +13,7 @@ import org.mqttbee.mqtt.message.auth.MqttSimpleAuth;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
 import org.mqttbee.mqtt.message.connect.MqttConnectRestrictions;
 import org.mqttbee.mqtt.message.publish.MqttWillPublish;
+import org.mqttbee.mqtt.util.MqttBuilderUtil;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 import org.mqttbee.util.UnsignedDataTypes;
 
@@ -105,8 +106,7 @@ public class Mqtt5ConnectBuilder {
 
     @NotNull
     public Mqtt5ConnectBuilder withUserProperties(@NotNull final Mqtt5UserProperties userProperties) {
-        this.userProperties =
-                MustNotBeImplementedUtil.checkNotImplemented(userProperties, MqttUserPropertiesImpl.class);
+        this.userProperties = MqttBuilderUtil.userProperties(userProperties);
         return this;
     }
 
