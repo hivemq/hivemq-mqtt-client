@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.*;
+import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.mqtt.datatypes.*;
 import org.mqttbee.util.ByteBufferUtil;
 import org.mqttbee.util.MustNotBeImplementedUtil;
@@ -130,6 +131,11 @@ public class MqttBuilderUtil {
         }
         Preconditions.checkArgument(MqttBinaryData.isInRange(binary));
         return ByteBufferUtil.slice(binary);
+    }
+
+    @NotNull
+    public static MqttUserPropertiesImpl userProperties(@NotNull final Mqtt5UserProperties userProperties) {
+        return MustNotBeImplementedUtil.checkNotImplemented(userProperties, MqttUserPropertiesImpl.class);
     }
 
 }

@@ -153,8 +153,7 @@ public class Mqtt5PublishBuilder {
 
     @NotNull
     public Mqtt5PublishBuilder withUserProperties(@NotNull final Mqtt5UserProperties userProperties) {
-        this.userProperties =
-                MustNotBeImplementedUtil.checkNotImplemented(userProperties, MqttUserPropertiesImpl.class);
+        this.userProperties = MqttBuilderUtil.userProperties(userProperties);
         return this;
     }
 
@@ -162,9 +161,8 @@ public class Mqtt5PublishBuilder {
     public Mqtt5Publish build() {
         Preconditions.checkNotNull(topic);
         Preconditions.checkNotNull(qos);
-        return new MqttPublish(topic, payload, qos, retain, messageExpiryInterval, payloadFormatIndicator,
-                contentType, responseTopic, correlationData, topicAliasUsage, userProperties,
-                Mqtt5PublishEncoder.PROVIDER);
+        return new MqttPublish(topic, payload, qos, retain, messageExpiryInterval, payloadFormatIndicator, contentType,
+                responseTopic, correlationData, topicAliasUsage, userProperties, Mqtt5PublishEncoder.PROVIDER);
     }
 
 }

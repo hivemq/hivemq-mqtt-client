@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
+import org.mqttbee.mqtt.util.MqttBuilderUtil;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 
 /**
@@ -17,8 +18,7 @@ public class Mqtt5UserPropertiesBuilder {
     }
 
     Mqtt5UserPropertiesBuilder(@NotNull final Mqtt5UserProperties userProperties) {
-        final MqttUserPropertiesImpl userPropertiesImpl =
-                MustNotBeImplementedUtil.checkNotImplemented(userProperties, MqttUserPropertiesImpl.class);
+        final MqttUserPropertiesImpl userPropertiesImpl = MqttBuilderUtil.userProperties(userProperties);
         listBuilder = ImmutableList.builder();
         listBuilder.addAll(userPropertiesImpl.asList());
     }

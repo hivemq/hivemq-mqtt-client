@@ -10,6 +10,8 @@ import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
 import org.mqttbee.mqtt.message.publish.puback.MqttPubAck;
 import org.mqttbee.mqtt.message.publish.pubcomp.MqttPubComp;
 import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRec;
+import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRel;
+import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRelBuilder;
 import org.mqttbee.mqtt5.ioc.ChannelScope;
 import org.mqttbee.mqtt5.persistence.OutgoingQoSFlowPersistence;
 import org.mqttbee.util.Ranges;
@@ -83,11 +85,9 @@ public class Mqtt5OutgoingQoSHandler extends ChannelDuplexHandler {
                         MqttPublishWrapper.DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS); // TODO topic alias
 
         persistence.persist(publishWrapper).whenCompleteAsync((aVoid, throwable) -> {
-            if (throwable == null) {
-                ctx.writeAndFlush(publishWrapper, promise);
-            } else {
+            ctx.writeAndFlush(publishWrapper, promise);
+            if (throwable != null) {
                 LOGGER.error("Unexpected exception while persisting PUBLISH in outgoing QoSFlowPersistence", throwable);
-                promise.setFailure(throwable);
             }
         }, ctx.executor());
     }
@@ -95,26 +95,36 @@ public class Mqtt5OutgoingQoSHandler extends ChannelDuplexHandler {
     @Override
     public void channelRead(final ChannelHandlerContext ctx, final Object msg) {
         if (msg instanceof MqttPubAck) {
-            handlePubAck(ctx, (MqttPubAck) msg);
+            handlePubAck((MqttPubAck) msg);
         } else if (msg instanceof MqttPubRec) {
             handlePubRec(ctx, (MqttPubRec) msg);
         } else if (msg instanceof MqttPubComp) {
-            handlePubComp(ctx, (MqttPubComp) msg);
+            handlePubComp((MqttPubComp) msg);
         } else {
             ctx.fireChannelRead(msg);
         }
     }
 
-    private void handlePubAck(final ChannelHandlerContext ctx, final MqttPubAck pubAck) {
+    private void handlePubAck(@NotNull final MqttPubAck pubAck) {
+        // TODO call control provider
         persistence.remove(pubAck.getPacketIdentifier());
     }
 
-    private void handlePubRec(final ChannelHandlerContext ctx, final MqttPubRec pubRec) {
-
+    private void handlePubRec(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttPubRec pubRec) {
+        final MqttPubRelBuilder pubRelBuilder = new MqttPubRelBuilder(pubRec);
+        // TODO call control provider, add user properties
+        final MqttPubRel pubRel = pubRelBuilder.build();
+        persistence.persist(pubRel).whenCompleteAsync((aVoid, throwable) -> {
+            ctx.writeAndFlush(pubRel);
+            if (throwable != null) {
+                LOGGER.error("Unexpected exception while persisting PUBREL in outgoing QoSFlowPersistence", throwable);
+            }
+        });
     }
 
-    private void handlePubComp(final ChannelHandlerContext ctx, final MqttPubComp pubComp) {
-
+    private void handlePubComp(@NotNull final MqttPubComp pubComp) {
+        // TODO call control provider
+        persistence.remove(pubComp.getPacketIdentifier());
     }
 
 }
