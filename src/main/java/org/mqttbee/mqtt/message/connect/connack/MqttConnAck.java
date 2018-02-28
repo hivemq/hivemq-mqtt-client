@@ -46,7 +46,7 @@ public class MqttConnAck
             @Nullable final MqttUTF8StringImpl responseInformation, @Nullable final MqttUTF8StringImpl serverReference,
             @Nullable final MqttUTF8StringImpl reasonString, @NotNull final MqttUserPropertiesImpl userProperties) {
 
-        super(reasonCode, reasonString, userProperties, null);
+        super(reasonCode, reasonString, userProperties, MqttMessageEncoderProvider.notCodable());
         this.isSessionPresent = isSessionPresent;
         this.sessionExpiryInterval = sessionExpiryInterval;
         this.serverKeepAlive = serverKeepAlive;

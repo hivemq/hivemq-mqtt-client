@@ -25,7 +25,7 @@ public abstract class MqttMessageWithUserProperties< //
     private final MqttUserPropertiesImpl userProperties;
 
     MqttMessageWithUserProperties(
-            @NotNull final MqttUserPropertiesImpl userProperties, @Nullable final P encoderProvider) {
+            @NotNull final MqttUserPropertiesImpl userProperties, @NotNull final P encoderProvider) {
 
         super(encoderProvider);
         this.userProperties = userProperties;
@@ -52,7 +52,7 @@ public abstract class MqttMessageWithUserProperties< //
 
         MqttMessageWithReasonString(
                 @Nullable final MqttUTF8StringImpl reasonString, @NotNull final MqttUserPropertiesImpl userProperties,
-                @Nullable final P encoderProvider) {
+                @NotNull final P encoderProvider) {
 
             super(userProperties, encoderProvider);
             this.reasonString = reasonString;
@@ -88,7 +88,7 @@ public abstract class MqttMessageWithUserProperties< //
 
         protected MqttMessageWithReasonCode(
                 @NotNull final R reasonCode, @Nullable final MqttUTF8StringImpl reasonString,
-                @NotNull final MqttUserPropertiesImpl userProperties, @Nullable final P encoderProvider) {
+                @NotNull final MqttUserPropertiesImpl userProperties, @NotNull final P encoderProvider) {
 
             super(reasonString, userProperties, encoderProvider);
             this.reasonCode = reasonCode;
@@ -121,7 +121,7 @@ public abstract class MqttMessageWithUserProperties< //
         protected MqttMessageWithIdAndReasonCode(
                 final int packetIdentifier, @NotNull final R reasonCode,
                 @Nullable final MqttUTF8StringImpl reasonString, @NotNull final MqttUserPropertiesImpl userProperties,
-                @Nullable final P encoderProvider) {
+                @NotNull final P encoderProvider) {
 
             super(reasonCode, reasonString, userProperties, encoderProvider);
             this.packetIdentifier = packetIdentifier;
@@ -154,7 +154,7 @@ public abstract class MqttMessageWithUserProperties< //
         protected MqttMessageWithIdAndReasonCodes(
                 final int packetIdentifier, @NotNull final ImmutableList<R> reasonCodes,
                 @Nullable final MqttUTF8StringImpl reasonString, @NotNull final MqttUserPropertiesImpl userProperties,
-                @Nullable final P encoderProvider) {
+                @NotNull final P encoderProvider) {
 
             super(reasonString, userProperties, encoderProvider);
             this.packetIdentifier = packetIdentifier;

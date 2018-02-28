@@ -1,7 +1,6 @@
 package org.mqttbee.mqtt.message;
 
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoder;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderApplier;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
@@ -16,10 +15,10 @@ import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
 public abstract class MqttMessageWithEncoder<M extends MqttMessageWithEncoder<M, P>, P extends MqttMessageEncoderProvider<M>>
         implements MqttMessage {
 
-    protected final P encoderProvider;
+    private final P encoderProvider;
     private MqttMessageEncoderApplier<M> encoderApplier;
 
-    MqttMessageWithEncoder(@Nullable final P encoderProvider) {
+    MqttMessageWithEncoder(@NotNull final P encoderProvider) {
         this.encoderProvider = encoderProvider;
     }
 
@@ -27,16 +26,13 @@ public abstract class MqttMessageWithEncoder<M extends MqttMessageWithEncoder<M,
     @Override
     public MqttMessageEncoder getEncoder() {
         if (encoderApplier == null) {
-            encoderApplier = getEncoderProvider().get();
+            encoderApplier = encoderProvider.get();
         }
         return encoderApplier.apply(getCodable());
     }
 
     @NotNull
     public P getEncoderProvider() {
-        if (encoderProvider == null) {
-            throw new UnsupportedOperationException();
-        }
         return encoderProvider;
     }
 
