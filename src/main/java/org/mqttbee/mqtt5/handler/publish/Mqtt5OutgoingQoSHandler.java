@@ -137,13 +137,14 @@ public class Mqtt5OutgoingQoSHandler extends ChannelDuplexHandler {
     private void handlePubAck(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttPubAck pubAck) {
         final MqttAdvancedClientData advanced = MqttClientData.from(ctx.channel()).getRawAdvancedClientData();
         if ((advanced != null)) {
-            final Mqtt5OutgoingQoS1ControlProvider control = advanced.getRawOutgoingQoS1ControlProvider();
+            final Mqtt5OutgoingQoS1ControlProvider control = advanced.getOutgoingQoS1ControlProvider();
             if (control != null) {
                 control.onPubAck(pubAck);
             }
         }
 
         persistence.remove(pubAck.getPacketIdentifier());
+        packetIdentifiers.returnId(pubAck.getPacketIdentifier());
     }
 
     private void handlePubRec(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttPubRec pubRec) {
@@ -151,7 +152,7 @@ public class Mqtt5OutgoingQoSHandler extends ChannelDuplexHandler {
 
         final MqttAdvancedClientData advanced = MqttClientData.from(ctx.channel()).getRawAdvancedClientData();
         if ((advanced != null)) {
-            final Mqtt5OutgoingQoS2ControlProvider control = advanced.getRawOutgoingQoS2ControlProvider();
+            final Mqtt5OutgoingQoS2ControlProvider control = advanced.getOutgoingQoS2ControlProvider();
             if (control != null) {
                 control.onPubRec(pubRec, pubRelBuilder);
             }
@@ -169,13 +170,14 @@ public class Mqtt5OutgoingQoSHandler extends ChannelDuplexHandler {
     private void handlePubComp(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttPubComp pubComp) {
         final MqttAdvancedClientData advanced = MqttClientData.from(ctx.channel()).getRawAdvancedClientData();
         if ((advanced != null)) {
-            final Mqtt5OutgoingQoS2ControlProvider control = advanced.getRawOutgoingQoS2ControlProvider();
+            final Mqtt5OutgoingQoS2ControlProvider control = advanced.getOutgoingQoS2ControlProvider();
             if (control != null) {
                 control.onPubComp(pubComp);
             }
         }
 
         persistence.remove(pubComp.getPacketIdentifier());
+        packetIdentifiers.returnId(pubComp.getPacketIdentifier());
     }
 
 }
