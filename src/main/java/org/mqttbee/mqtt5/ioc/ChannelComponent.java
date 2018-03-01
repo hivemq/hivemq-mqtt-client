@@ -4,7 +4,7 @@ import dagger.Subcomponent;
 import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt.MqttClientDataImpl;
+import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoder;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoderModule;
 import org.mqttbee.mqtt.codec.encoder.MqttEncoder;
@@ -27,7 +27,7 @@ public interface ChannelComponent {
     AttributeKey<ChannelComponent> KEY = AttributeKey.valueOf("channel.component");
 
     @NotNull
-    static ChannelComponent create(@NotNull final Channel channel, @NotNull final MqttClientDataImpl clientData) {
+    static ChannelComponent create(@NotNull final Channel channel, @NotNull final MqttClientData clientData) {
         final ChannelComponent channelComponent =
                 MqttBeeComponent.INSTANCE.channelComponent(new ChannelModule(clientData));
         channel.attr(KEY).set(channelComponent);
@@ -39,7 +39,7 @@ public interface ChannelComponent {
         return channel.attr(KEY).get();
     }
 
-    MqttClientDataImpl clientData();
+    MqttClientData clientData();
 
     MqttDecoder decoder();
 

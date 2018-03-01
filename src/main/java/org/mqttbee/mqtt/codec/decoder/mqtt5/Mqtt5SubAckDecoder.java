@@ -5,7 +5,7 @@ import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAckReasonCode;
-import org.mqttbee.mqtt.MqttClientConnectionDataImpl;
+import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
@@ -38,8 +38,8 @@ public class Mqtt5SubAckDecoder implements MqttMessageDecoder {
     @Override
     @Nullable
     public MqttSubAck decode(
-            final int flags, @NotNull final ByteBuf in,
-            @NotNull final MqttClientConnectionDataImpl clientConnectionData) throws MqttDecoderException {
+            final int flags, @NotNull final ByteBuf in, @NotNull final MqttClientConnectionData clientConnectionData)
+            throws MqttDecoderException {
 
         checkFixedHeaderFlags(FLAGS, flags);
 

@@ -18,8 +18,8 @@ import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeResult;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
-import org.mqttbee.mqtt.MqttClientConnectionDataImpl;
-import org.mqttbee.mqtt.MqttClientDataImpl;
+import org.mqttbee.mqtt.MqttClientConnectionData;
+import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
 import org.mqttbee.mqtt5.handler.auth.Mqtt5ReAuthEvent;
@@ -33,9 +33,9 @@ import org.mqttbee.util.MustNotBeImplementedUtil;
  */
 public class Mqtt5ClientImpl implements Mqtt5Client {
 
-    private final MqttClientDataImpl clientData;
+    private final MqttClientData clientData;
 
-    public Mqtt5ClientImpl(@NotNull final MqttClientDataImpl clientData) {
+    public Mqtt5ClientImpl(@NotNull final MqttClientData clientData) {
         this.clientData = clientData;
     }
 
@@ -70,7 +70,7 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
             clientData.setConnected(true);
             clientData.setConnecting(false);
 
-            final MqttClientConnectionDataImpl clientConnectionData = clientData.getRawClientConnectionData();
+            final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
             assert clientConnectionData != null;
             clientConnectionData.getChannel().closeFuture().addListener(future -> {
                 MqttBeeComponent.INSTANCE.nettyBootstrap().free(clientData.getExecutorConfig());
@@ -123,7 +123,7 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
     @Override
     public Completable reauth() {
         return Completable.create(emitter -> {
-            final MqttClientConnectionDataImpl clientConnectionData = clientData.getRawClientConnectionData();
+            final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
             if (clientConnectionData != null) {
                 clientConnectionData.getChannel().pipeline().fireUserEventTriggered(new Mqtt5ReAuthEvent(emitter));
             } else {
@@ -139,7 +139,7 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
                 MustNotBeImplementedUtil.checkNotImplemented(disconnect, MqttDisconnect.class);
 
         return Completable.create(emitter -> {
-            final MqttClientConnectionDataImpl clientConnectionData = clientData.getRawClientConnectionData();
+            final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
             if (clientConnectionData != null) {
                 MqttDisconnectUtil.disconnect(clientConnectionData.getChannel(), mqttDisconnect).addListener(future -> {
                     if (future.isSuccess()) {

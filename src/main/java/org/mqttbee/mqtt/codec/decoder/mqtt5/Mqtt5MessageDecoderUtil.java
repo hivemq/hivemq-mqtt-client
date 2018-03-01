@@ -6,7 +6,7 @@ import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.mqtt.MqttClientConnectionDataImpl;
+import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
 import org.mqttbee.mqtt.datatypes.MqttBinaryData;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
@@ -219,8 +219,8 @@ class Mqtt5MessageDecoderUtil {
 
     @NotNull
     static MqttUTF8StringImpl decodeReasonStringIfRequested(
-            @Nullable final MqttUTF8StringImpl current,
-            @NotNull final MqttClientConnectionDataImpl clientConnectionData, @NotNull final ByteBuf in)
+            @Nullable final MqttUTF8StringImpl current, @NotNull final MqttClientConnectionData clientConnectionData,
+            @NotNull final ByteBuf in)
             throws MqttDecoderException {
 
         if (!clientConnectionData.isProblemInformationRequested()) {
@@ -232,7 +232,7 @@ class Mqtt5MessageDecoderUtil {
     @NotNull
     static ImmutableList.Builder<MqttUserPropertyImpl> decodeUserPropertyIfRequested(
             @Nullable final ImmutableList.Builder<MqttUserPropertyImpl> userPropertiesBuilder,
-            @NotNull final MqttClientConnectionDataImpl clientConnectionData, @NotNull final ByteBuf in)
+            @NotNull final MqttClientConnectionData clientConnectionData, @NotNull final ByteBuf in)
             throws MqttDecoderException {
 
         if ((userPropertiesBuilder == null) && !clientConnectionData.isProblemInformationRequested()) {

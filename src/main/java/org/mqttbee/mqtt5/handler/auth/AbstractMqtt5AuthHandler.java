@@ -11,8 +11,8 @@ import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5Auth;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.mqtt.MqttClientConnectionDataImpl;
-import org.mqttbee.mqtt.MqttClientDataImpl;
+import org.mqttbee.mqtt.MqttClientConnectionData;
+import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.message.auth.MqttAuth;
 import org.mqttbee.mqtt.message.auth.MqttAuthBuilder;
@@ -39,8 +39,8 @@ abstract class AbstractMqtt5AuthHandler extends ChannelInboundHandlerWithTimeout
      * @return the enhanced auth provider.
      */
     @NotNull
-    static Mqtt5EnhancedAuthProvider getEnhancedAuthProvider(@NotNull final MqttClientDataImpl clientData) {
-        final MqttClientConnectionDataImpl clientConnectionData = clientData.getRawClientConnectionData();
+    static Mqtt5EnhancedAuthProvider getEnhancedAuthProvider(@NotNull final MqttClientData clientData) {
+        final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
         assert clientConnectionData != null;
         final Mqtt5EnhancedAuthProvider enhancedAuthProvider = clientConnectionData.getEnhancedAuthProvider();
         assert enhancedAuthProvider != null;
@@ -90,7 +90,7 @@ abstract class AbstractMqtt5AuthHandler extends ChannelInboundHandlerWithTimeout
     final void readAuth(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttAuth auth) {
         cancelTimeout();
 
-        final MqttClientDataImpl clientData = MqttClientDataImpl.from(ctx.channel());
+        final MqttClientData clientData = MqttClientData.from(ctx.channel());
         final Mqtt5EnhancedAuthProvider enhancedAuthProvider = getEnhancedAuthProvider(clientData);
 
         if (validateAuth(ctx.channel(), auth, enhancedAuthProvider)) {
@@ -145,8 +145,7 @@ abstract class AbstractMqtt5AuthHandler extends ChannelInboundHandlerWithTimeout
      */
     private void readAuthContinue(
             @NotNull final ChannelHandlerContext ctx, @NotNull final MqttAuth auth,
-            @NotNull final MqttClientDataImpl clientData,
-            @NotNull final Mqtt5EnhancedAuthProvider enhancedAuthProvider) {
+            @NotNull final MqttClientData clientData, @NotNull final Mqtt5EnhancedAuthProvider enhancedAuthProvider) {
 
         final MqttAuthBuilder authBuilder = getAuthBuilder(CONTINUE_AUTHENTICATION, enhancedAuthProvider);
 
@@ -169,7 +168,7 @@ abstract class AbstractMqtt5AuthHandler extends ChannelInboundHandlerWithTimeout
      * @param enhancedAuthProvider the enhanced auth provider.
      */
     abstract void readAuthSuccess(
-            @NotNull ChannelHandlerContext ctx, @NotNull MqttAuth auth, @NotNull MqttClientDataImpl clientData,
+            @NotNull ChannelHandlerContext ctx, @NotNull MqttAuth auth, @NotNull MqttClientData clientData,
             @NotNull Mqtt5EnhancedAuthProvider enhancedAuthProvider);
 
     /**
@@ -181,12 +180,12 @@ abstract class AbstractMqtt5AuthHandler extends ChannelInboundHandlerWithTimeout
      * @param enhancedAuthProvider the enhanced auth provider.
      */
     abstract void readReAuth(
-            @NotNull ChannelHandlerContext ctx, @NotNull MqttAuth auth, @NotNull MqttClientDataImpl clientData,
+            @NotNull ChannelHandlerContext ctx, @NotNull MqttAuth auth, @NotNull MqttClientData clientData,
             @NotNull Mqtt5EnhancedAuthProvider enhancedAuthProvider);
 
     @Override
     protected final long getTimeout(@NotNull final ChannelHandlerContext ctx) {
-        return getEnhancedAuthProvider(MqttClientDataImpl.from(ctx.channel())).getTimeout();
+        return getEnhancedAuthProvider(MqttClientData.from(ctx.channel())).getTimeout();
     }
 
     @NotNull

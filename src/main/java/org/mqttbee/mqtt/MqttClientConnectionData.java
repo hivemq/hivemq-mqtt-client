@@ -13,7 +13,7 @@ import java.util.Optional;
 /**
  * @author Silvio Giebl
  */
-public class MqttClientConnectionDataImpl implements Mqtt5ClientConnectionData {
+public class MqttClientConnectionData implements Mqtt5ClientConnectionData {
 
     private int keepAlive;
     private long sessionExpiryInterval;
@@ -26,7 +26,7 @@ public class MqttClientConnectionDataImpl implements Mqtt5ClientConnectionData {
     private final boolean responseInformationRequested;
     private final Channel channel;
 
-    public MqttClientConnectionDataImpl(
+    public MqttClientConnectionData(
             final int keepAlive, final long sessionExpiryInterval, final int receiveMaximum,
             final int topicAliasMaximum, final int maximumPacketSize,
             @Nullable final Mqtt5EnhancedAuthProvider enhancedAuthProvider, final boolean hasWillPublish,

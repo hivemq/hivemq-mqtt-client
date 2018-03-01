@@ -7,7 +7,7 @@ import io.netty.channel.ChannelPromise;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.mqtt.MqttClientDataImpl;
+import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.message.auth.MqttAuth;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
 import org.mqttbee.mqtt.message.connect.connack.MqttConnAck;
@@ -45,7 +45,7 @@ public class Mqtt5DisconnectOnAuthHandler extends ChannelDuplexHandler {
             @NotNull final ChannelHandlerContext ctx, @NotNull final MqttConnect connect,
             @NotNull final ChannelPromise promise) {
 
-        final MqttClientDataImpl clientData = MqttClientDataImpl.from(ctx.channel());
+        final MqttClientData clientData = MqttClientData.from(ctx.channel());
         ctx.writeAndFlush(connect.wrap(clientData.getRawClientIdentifier(), null), promise);
     }
 

@@ -9,9 +9,9 @@ import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.mqtt.MqttClientConnectionDataImpl;
-import org.mqttbee.mqtt.MqttClientDataImpl;
-import org.mqttbee.mqtt.MqttServerConnectionDataImpl;
+import org.mqttbee.mqtt.MqttClientConnectionData;
+import org.mqttbee.mqtt.MqttClientData;
+import org.mqttbee.mqtt.MqttServerConnectionData;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoder;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
@@ -48,11 +48,11 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerWithTimeout {
 
     private final MqttConnect connect;
     private final SingleEmitter<Mqtt5ConnAck> connAckEmitter;
-    private final MqttClientDataImpl clientData;
+    private final MqttClientData clientData;
 
     public Mqtt5ConnectHandler(
             @NotNull final MqttConnect connect, @NotNull final SingleEmitter<Mqtt5ConnAck> connAckEmitter,
-            @NotNull final MqttClientDataImpl clientData) {
+            @NotNull final MqttClientData clientData) {
 
         this.connect = connect;
         this.connAckEmitter = connAckEmitter;
@@ -67,7 +67,7 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerWithTimeout {
     }
 
     /**
-     * Adds the {@link MqttClientDataImpl} and the {@link MqttClientConnectionDataImpl} to the channel.
+     * Adds the {@link MqttClientData} and the {@link MqttClientConnectionData} to the channel.
      *
      * @param channel the channel to add the client data to.
      */
@@ -75,7 +75,7 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerWithTimeout {
         final MqttConnectRestrictions restrictions = connect.getRestrictions();
 
         clientData.setClientConnectionData(
-                new MqttClientConnectionDataImpl(connect.getKeepAlive(), connect.getSessionExpiryInterval(),
+                new MqttClientConnectionData(connect.getKeepAlive(), connect.getSessionExpiryInterval(),
                         restrictions.getReceiveMaximum(), restrictions.getTopicAliasMaximum(),
                         restrictions.getMaximumPacketSize(), connect.getRawEnhancedAuthProvider(),
                         connect.getRawWillPublish() != null, connect.isProblemInformationRequested(),
@@ -97,7 +97,7 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerWithTimeout {
     private void writeConnect(@NotNull final ChannelHandlerContext ctx) {
         ctx.writeAndFlush(connect).addListener(future -> {
             if (future.isSuccess()) {
-                final MqttClientConnectionDataImpl clientConnectionData = clientData.getRawClientConnectionData();
+                final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
                 assert clientConnectionData != null;
                 if (clientConnectionData.getEnhancedAuthProvider() == null) {
                     scheduleTimeout();
@@ -144,7 +144,7 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerWithTimeout {
                 final ChannelPipeline pipeline = channel.pipeline();
                 pipeline.remove(this);
 
-                final MqttClientConnectionDataImpl clientConnectionData = clientData.getRawClientConnectionData();
+                final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
                 assert clientConnectionData != null;
                 final int keepAlive = clientConnectionData.getKeepAlive();
                 if (keepAlive > 0) {
@@ -210,7 +210,7 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerWithTimeout {
     }
 
     /**
-     * Updates the {@link MqttClientConnectionDataImpl} with data of the given CONNACK message.
+     * Updates the {@link MqttClientConnectionData} with data of the given CONNACK message.
      *
      * @param connAck the CONNACK message.
      */
@@ -220,7 +220,7 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerWithTimeout {
             clientData.setClientIdentifier(assignedClientIdentifier);
         }
 
-        final MqttClientConnectionDataImpl clientConnectionData = clientData.getRawClientConnectionData();
+        final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
         assert clientConnectionData != null;
 
         final int serverKeepAlive = connAck.getRawServerKeepAlive();
@@ -235,7 +235,7 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerWithTimeout {
     }
 
     /**
-     * Adds the {@link MqttServerConnectionDataImpl} to the channel.
+     * Adds the {@link MqttServerConnectionData} to the channel.
      *
      * @param connAck the CONNACK message.
      */
@@ -243,7 +243,7 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerWithTimeout {
         final MqttConnAckRestrictions restrictions = connAck.getRestrictions();
 
         clientData.setServerConnectionData(
-                new MqttServerConnectionDataImpl(restrictions.getReceiveMaximum(), restrictions.getTopicAliasMaximum(),
+                new MqttServerConnectionData(restrictions.getReceiveMaximum(), restrictions.getTopicAliasMaximum(),
                         restrictions.getMaximumPacketSize(), restrictions.getMaximumQoS(),
                         restrictions.isRetainAvailable(), restrictions.isWildcardSubscriptionAvailable(),
                         restrictions.isSubscriptionIdentifierAvailable(),

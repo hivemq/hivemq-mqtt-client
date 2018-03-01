@@ -11,19 +11,17 @@ import org.mqttbee.mqtt.message.publish.MqttTopicAliasMapping;
 /**
  * @author Silvio Giebl
  */
-public class MqttServerConnectionDataImpl implements Mqtt5ServerConnectionData {
+public class MqttServerConnectionData implements Mqtt5ServerConnectionData {
 
     public static int getMaximumPacketSize(@NotNull final Channel channel) {
-        final MqttServerConnectionDataImpl serverConnectionData =
-                MqttClientDataImpl.from(channel).getRawServerConnectionData();
+        final MqttServerConnectionData serverConnectionData = MqttClientData.from(channel).getRawServerConnectionData();
         return (serverConnectionData == null) ? MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT :
                 serverConnectionData.getMaximumPacketSize();
     }
 
     @Nullable
     public static MqttTopicAliasMapping getTopicAliasMapping(@NotNull final Channel channel) {
-        final MqttServerConnectionDataImpl serverConnectionData =
-                MqttClientDataImpl.from(channel).getRawServerConnectionData();
+        final MqttServerConnectionData serverConnectionData = MqttClientData.from(channel).getRawServerConnectionData();
         return (serverConnectionData == null) ? null : serverConnectionData.getTopicAliasMapping();
     }
 
@@ -36,7 +34,7 @@ public class MqttServerConnectionDataImpl implements Mqtt5ServerConnectionData {
     private final boolean isSubscriptionIdentifierAvailable;
     private final boolean isSharedSubscriptionAvailable;
 
-    public MqttServerConnectionDataImpl(
+    public MqttServerConnectionData(
             final int receiveMaximum, final int topicAliasMaximum, final int maximumPacketSize,
             final MqttQoS maximumQoS, final boolean isRetainAvailable, final boolean isWildcardSubscriptionAvailable,
             final boolean isSubscriptionIdentifierAvailable, final boolean isSharedSubscriptionAvailable) {

@@ -5,8 +5,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.mqtt.MqttClientConnectionDataImpl;
-import org.mqttbee.mqtt.MqttClientDataImpl;
+import org.mqttbee.mqtt.MqttClientConnectionData;
+import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.MqttMessage;
 import org.mqttbee.mqtt5.handler.disconnect.MqttDisconnectUtil;
@@ -61,8 +61,8 @@ public class MqttDecoder extends ByteToMessageDecoder {
             final int fixedHeaderLength = in.readerIndex() - readerIndexBeforeFixedHeader;
             final int packetSize = fixedHeaderLength + remainingLength;
 
-            final MqttClientConnectionDataImpl clientConnectionData =
-                    MqttClientDataImpl.from(ctx.channel()).getRawClientConnectionData();
+            final MqttClientConnectionData clientConnectionData =
+                    MqttClientData.from(ctx.channel()).getRawClientConnectionData();
             assert clientConnectionData != null;
             if (packetSize > clientConnectionData.getMaximumPacketSize()) {
                 throw new MqttDecoderException(Mqtt5DisconnectReasonCode.PACKET_TOO_LARGE,

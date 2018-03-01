@@ -3,7 +3,7 @@ package org.mqttbee.mqtt.codec.decoder;
 import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.mqtt.MqttClientConnectionDataImpl;
+import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.message.MqttMessage;
 
 /**
@@ -23,7 +23,7 @@ public interface MqttMessageDecoder {
      * @throws MqttDecoderException if the byte buffer did not contain a valid encoded MQTT message.
      */
     @Nullable
-    MqttMessage decode(int flags, @NotNull ByteBuf in, @NotNull MqttClientConnectionDataImpl clientConnectionData)
+    MqttMessage decode(int flags, @NotNull ByteBuf in, @NotNull MqttClientConnectionData clientConnectionData)
             throws MqttDecoderException;
 
 }
