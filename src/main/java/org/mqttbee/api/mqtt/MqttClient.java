@@ -5,13 +5,14 @@ import org.mqttbee.annotations.NotNull;
 /**
  * @author Silvio Giebl
  */
-public interface MqttClient<T extends MqttClientData> {
+public interface MqttClient {
 
+    @NotNull
     static MqttClientBuilder builder() {
         return new MqttClientBuilder();
     }
 
     @NotNull
-    T getClientData();
+    MqttClientData getClientData();
 
 }

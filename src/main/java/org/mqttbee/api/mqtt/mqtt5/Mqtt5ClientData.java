@@ -2,6 +2,7 @@ package org.mqttbee.api.mqtt.mqtt5;
 
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttClientData;
+import org.mqttbee.api.mqtt.mqtt5.advanced.Mqtt5AdvancedClientData;
 import org.mqttbee.api.mqtt.MqttClientExecutorConfig;
 
 import java.util.Optional;
@@ -11,17 +12,20 @@ import java.util.Optional;
  */
 public interface Mqtt5ClientData extends MqttClientData {
 
-    @NotNull
-    Optional<Mqtt5ClientConnectionData> getClientConnectionData();
-
-    @NotNull
-    Optional<Mqtt5ServerConnectionData> getServerConnectionData();
-
     boolean followsRedirects();
 
     boolean allowsServerReAuth();
 
     @NotNull
     MqttClientExecutorConfig getExecutorConfig();
+
+    @NotNull
+    Optional<Mqtt5AdvancedClientData> getAdvancedClientData();
+
+    @NotNull
+    Optional<Mqtt5ClientConnectionData> getClientConnectionData();
+
+    @NotNull
+    Optional<Mqtt5ServerConnectionData> getServerConnectionData();
 
 }
