@@ -5,7 +5,7 @@ import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrec.Mqtt5PubRecReasonCode;
-import org.mqttbee.mqtt.MqttClientConnectionDataImpl;
+import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5PubRecEncoder;
@@ -40,8 +40,8 @@ public class Mqtt5PubRecDecoder implements MqttMessageDecoder {
     @Override
     @Nullable
     public MqttPubRec decode(
-            final int flags, @NotNull final ByteBuf in,
-            @NotNull final MqttClientConnectionDataImpl clientConnectionData) throws MqttDecoderException {
+            final int flags, @NotNull final ByteBuf in, @NotNull final MqttClientConnectionData clientConnectionData)
+            throws MqttDecoderException {
 
         checkFixedHeaderFlags(FLAGS, flags);
 

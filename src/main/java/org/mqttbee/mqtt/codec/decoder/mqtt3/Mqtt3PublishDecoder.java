@@ -5,7 +5,7 @@ import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
-import org.mqttbee.mqtt.MqttClientConnectionDataImpl;
+import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
@@ -37,8 +37,8 @@ public class Mqtt3PublishDecoder implements MqttMessageDecoder {
     @Nullable
     @Override
     public MqttPublishWrapper decode(
-            final int flags, @NotNull final ByteBuf in,
-            @NotNull final MqttClientConnectionDataImpl clientConnectionData) throws MqttDecoderException {
+            final int flags, @NotNull final ByteBuf in, @NotNull final MqttClientConnectionData clientConnectionData)
+            throws MqttDecoderException {
 
         final Channel channel = clientConnectionData.getChannel();
 

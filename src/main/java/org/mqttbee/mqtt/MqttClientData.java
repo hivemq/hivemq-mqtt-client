@@ -19,12 +19,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * @author Silvio Giebl
  */
-public class MqttClientDataImpl implements Mqtt5ClientData {
+public class MqttClientData implements Mqtt5ClientData {
 
-    private static final AttributeKey<MqttClientDataImpl> KEY = AttributeKey.valueOf("client.data");
+    private static final AttributeKey<MqttClientData> KEY = AttributeKey.valueOf("client.data");
 
     @NotNull
-    public static MqttClientDataImpl from(@NotNull final Channel channel) {
+    public static MqttClientData from(@NotNull final Channel channel) {
         return Preconditions.checkNotNull(channel.attr(KEY).get());
     }
 
@@ -39,10 +39,10 @@ public class MqttClientDataImpl implements Mqtt5ClientData {
     private final boolean allowsServerReAuth;
     private final MqttClientExecutorConfigImpl executorConfig;
     private final MqttAdvancedClientData advancedClientData;
-    private MqttClientConnectionDataImpl clientConnectionData;
-    private MqttServerConnectionDataImpl serverConnectionData;
+    private MqttClientConnectionData clientConnectionData;
+    private MqttServerConnectionData serverConnectionData;
 
-    public MqttClientDataImpl(
+    public MqttClientData(
             @NotNull final MqttVersion mqttVersion, @Nullable final MqttClientIdentifierImpl clientIdentifier,
             @NotNull final String serverHost, final int serverPort, final boolean usesSSL,
             final boolean followsRedirects, final boolean allowsServerReAuth,
@@ -150,11 +150,11 @@ public class MqttClientDataImpl implements Mqtt5ClientData {
     }
 
     @Nullable
-    public MqttClientConnectionDataImpl getRawClientConnectionData() {
+    public MqttClientConnectionData getRawClientConnectionData() {
         return clientConnectionData;
     }
 
-    public void setClientConnectionData(@Nullable final MqttClientConnectionDataImpl clientConnectionData) {
+    public void setClientConnectionData(@Nullable final MqttClientConnectionData clientConnectionData) {
         this.clientConnectionData = clientConnectionData;
     }
 
@@ -165,11 +165,11 @@ public class MqttClientDataImpl implements Mqtt5ClientData {
     }
 
     @Nullable
-    public MqttServerConnectionDataImpl getRawServerConnectionData() {
+    public MqttServerConnectionData getRawServerConnectionData() {
         return serverConnectionData;
     }
 
-    public void setServerConnectionData(@Nullable final MqttServerConnectionDataImpl serverConnectionData) {
+    public void setServerConnectionData(@Nullable final MqttServerConnectionData serverConnectionData) {
         this.serverConnectionData = serverConnectionData;
     }
 

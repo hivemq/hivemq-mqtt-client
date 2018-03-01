@@ -5,9 +5,9 @@ import io.netty.channel.embedded.EmbeddedChannel;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
-import org.mqttbee.mqtt.MqttClientDataImpl;
+import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.MqttClientExecutorConfigImpl;
-import org.mqttbee.mqtt.MqttServerConnectionDataImpl;
+import org.mqttbee.mqtt.MqttServerConnectionData;
 import org.mqttbee.mqtt.MqttVersion;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
@@ -22,15 +22,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class AbstractMqtt5EncoderTest {
 
     private final boolean connected;
-    private final MqttClientDataImpl clientData;
+    private final MqttClientData clientData;
 
     protected EmbeddedChannel channel;
 
     protected AbstractMqtt5EncoderTest(final boolean connected) {
         this.connected = connected;
-        clientData = new MqttClientDataImpl(MqttVersion.MQTT_5_0,
-                Objects.requireNonNull(MqttClientIdentifierImpl.from("test")), "localhost", 1883, false, false, false,
-                MqttClientExecutorConfigImpl.DEFAULT, null);
+        clientData =
+                new MqttClientData(MqttVersion.MQTT_5_0, Objects.requireNonNull(MqttClientIdentifierImpl.from("test")),
+                        "localhost", 1883, false, false, false, MqttClientExecutorConfigImpl.DEFAULT, null);
     }
 
     @BeforeEach
@@ -53,8 +53,7 @@ public class AbstractMqtt5EncoderTest {
 
     protected void createServerConnectionData(final int maximumPacketSize) {
         clientData.setServerConnectionData(
-                new MqttServerConnectionDataImpl(10, 3, maximumPacketSize, MqttQoS.EXACTLY_ONCE, true, true, true,
-                        true));
+                new MqttServerConnectionData(10, 3, maximumPacketSize, MqttQoS.EXACTLY_ONCE, true, true, true, true));
     }
 
     protected void encode(final Object message, final byte[] expected) {

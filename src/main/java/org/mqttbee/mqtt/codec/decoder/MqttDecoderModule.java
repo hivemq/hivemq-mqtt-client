@@ -3,7 +3,7 @@ package org.mqttbee.mqtt.codec.decoder;
 import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
-import org.mqttbee.mqtt.MqttClientDataImpl;
+import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.codec.decoder.mqtt3.Mqtt3ClientMessageDecoders;
 import org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5ClientMessageDecoders;
 import org.mqttbee.mqtt5.ioc.ChannelScope;
@@ -17,7 +17,7 @@ public class MqttDecoderModule {
     @Provides
     @ChannelScope
     static MqttMessageDecoders provideMessageDecoders(
-            final MqttClientDataImpl clientData, final Lazy<Mqtt5ClientMessageDecoders> mqtt5ClientMessageDecoders,
+            final MqttClientData clientData, final Lazy<Mqtt5ClientMessageDecoders> mqtt5ClientMessageDecoders,
             final Lazy<Mqtt3ClientMessageDecoders> mqtt3ClientMessageDecoders) {
 
         switch (clientData.getMqttVersion()) {

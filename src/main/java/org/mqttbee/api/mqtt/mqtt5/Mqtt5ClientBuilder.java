@@ -4,7 +4,7 @@ import dagger.internal.Preconditions;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.advanced.Mqtt5AdvancedClientData;
-import org.mqttbee.mqtt.MqttClientDataImpl;
+import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.MqttClientExecutorConfigImpl;
 import org.mqttbee.mqtt.MqttVersion;
 import org.mqttbee.mqtt.advanced.MqttAdvancedClientData;
@@ -65,9 +65,9 @@ public class Mqtt5ClientBuilder {
         return new Mqtt5ClientImpl(buildClientData());
     }
 
-    private MqttClientDataImpl buildClientData() {
-        return new MqttClientDataImpl(MqttVersion.MQTT_5_0, identifier, serverHost, serverPort, usesSSL,
-                followsRedirects, allowsServerReAuth, executorConfig, advancedClientData);
+    private MqttClientData buildClientData() {
+        return new MqttClientData(MqttVersion.MQTT_5_0, identifier, serverHost, serverPort, usesSSL, followsRedirects,
+                allowsServerReAuth, executorConfig, advancedClientData);
     }
 
 }

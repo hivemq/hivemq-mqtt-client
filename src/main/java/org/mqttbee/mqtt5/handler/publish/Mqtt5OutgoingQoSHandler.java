@@ -9,8 +9,8 @@ import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.exceptions.PacketIdentifiersExceededException;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5OutgoingQoS1ControlProvider;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5OutgoingQoS2ControlProvider;
-import org.mqttbee.mqtt.MqttClientDataImpl;
-import org.mqttbee.mqtt.MqttServerConnectionDataImpl;
+import org.mqttbee.mqtt.MqttClientData;
+import org.mqttbee.mqtt.MqttServerConnectionData;
 import org.mqttbee.mqtt.advanced.MqttAdvancedClientData;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
@@ -102,7 +102,7 @@ public class Mqtt5OutgoingQoSHandler extends ChannelDuplexHandler {
             @NotNull final Channel channel, @NotNull final MqttPublish publish, final int packetIdentifier,
             final boolean isDup) {
 
-        final MqttTopicAliasMapping topicAliasMapping = MqttServerConnectionDataImpl.getTopicAliasMapping(channel);
+        final MqttTopicAliasMapping topicAliasMapping = MqttServerConnectionData.getTopicAliasMapping(channel);
         int topicAlias;
         final boolean isNewTopicAlias;
         if (topicAliasMapping == null) {
@@ -135,7 +135,7 @@ public class Mqtt5OutgoingQoSHandler extends ChannelDuplexHandler {
     }
 
     private void handlePubAck(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttPubAck pubAck) {
-        final MqttAdvancedClientData advanced = MqttClientDataImpl.from(ctx.channel()).getRawAdvancedClientData();
+        final MqttAdvancedClientData advanced = MqttClientData.from(ctx.channel()).getRawAdvancedClientData();
         if ((advanced != null)) {
             final Mqtt5OutgoingQoS1ControlProvider control = advanced.getRawOutgoingQoS1ControlProvider();
             if (control != null) {
@@ -149,7 +149,7 @@ public class Mqtt5OutgoingQoSHandler extends ChannelDuplexHandler {
     private void handlePubRec(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttPubRec pubRec) {
         final MqttPubRelBuilder pubRelBuilder = new MqttPubRelBuilder(pubRec);
 
-        final MqttAdvancedClientData advanced = MqttClientDataImpl.from(ctx.channel()).getRawAdvancedClientData();
+        final MqttAdvancedClientData advanced = MqttClientData.from(ctx.channel()).getRawAdvancedClientData();
         if ((advanced != null)) {
             final Mqtt5OutgoingQoS2ControlProvider control = advanced.getRawOutgoingQoS2ControlProvider();
             if (control != null) {
@@ -167,7 +167,7 @@ public class Mqtt5OutgoingQoSHandler extends ChannelDuplexHandler {
     }
 
     private void handlePubComp(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttPubComp pubComp) {
-        final MqttAdvancedClientData advanced = MqttClientDataImpl.from(ctx.channel()).getRawAdvancedClientData();
+        final MqttAdvancedClientData advanced = MqttClientData.from(ctx.channel()).getRawAdvancedClientData();
         if ((advanced != null)) {
             final Mqtt5OutgoingQoS2ControlProvider control = advanced.getRawOutgoingQoS2ControlProvider();
             if (control != null) {

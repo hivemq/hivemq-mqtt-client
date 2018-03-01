@@ -4,7 +4,7 @@ import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt.MqttClientDataImpl;
+import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt5.handler.disconnect.Mqtt3Disconnecter;
 import org.mqttbee.mqtt5.handler.disconnect.Mqtt5Disconnecter;
 import org.mqttbee.mqtt5.handler.disconnect.MqttDisconnecter;
@@ -17,14 +17,14 @@ import org.mqttbee.util.UnsignedDataTypes;
 @Module
 public class ChannelModule {
 
-    private final MqttClientDataImpl clientData;
+    private final MqttClientData clientData;
 
-    ChannelModule(@NotNull final MqttClientDataImpl clientData) {
+    ChannelModule(@NotNull final MqttClientData clientData) {
         this.clientData = clientData;
     }
 
     @Provides
-    MqttClientDataImpl provideClientData() {
+    MqttClientData provideClientData() {
         return clientData;
     }
 
