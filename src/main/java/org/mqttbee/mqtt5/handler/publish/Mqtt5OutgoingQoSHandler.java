@@ -6,6 +6,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
+import org.mqttbee.api.mqtt.exceptions.PacketIdentifiersExceededException;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5OutgoingQoS1ControlProvider;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5OutgoingQoS2ControlProvider;
 import org.mqttbee.mqtt.MqttClientDataImpl;
@@ -84,7 +85,8 @@ public class Mqtt5OutgoingQoSHandler extends ChannelDuplexHandler {
 
         final int packetIdentifier = packetIdentifiers.getId();
         if (packetIdentifier < 0) {
-            // TODO
+            promise.setFailure(PacketIdentifiersExceededException.INSTANCE);
+            return;
         }
 
         final MqttPublishWrapper publishWrapper = wrapPublish(ctx.channel(), publish, packetIdentifier, false);
