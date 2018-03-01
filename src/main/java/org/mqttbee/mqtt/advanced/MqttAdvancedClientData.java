@@ -30,22 +30,22 @@ public class MqttAdvancedClientData implements Mqtt5AdvancedClientData {
     }
 
     @Nullable
-    public Mqtt5IncomingQoS1ControlProvider getRawIncomingQoS1ControlProvider() {
+    public Mqtt5IncomingQoS1ControlProvider getIncomingQoS1ControlProvider() {
         return incomingQoS1ControlProvider;
     }
 
     @Nullable
-    public Mqtt5OutgoingQoS1ControlProvider getRawOutgoingQoS1ControlProvider() {
+    public Mqtt5OutgoingQoS1ControlProvider getOutgoingQoS1ControlProvider() {
         return outgoingQoS1ControlProvider;
     }
 
     @Nullable
-    public Mqtt5IncomingQoS2ControlProvider getRawIncomingQoS2ControlProvider() {
+    public Mqtt5IncomingQoS2ControlProvider getIncomingQoS2ControlProvider() {
         return incomingQoS2ControlProvider;
     }
 
     @Nullable
-    public Mqtt5OutgoingQoS2ControlProvider getRawOutgoingQoS2ControlProvider() {
+    public Mqtt5OutgoingQoS2ControlProvider getOutgoingQoS2ControlProvider() {
         return outgoingQoS2ControlProvider;
     }
 
