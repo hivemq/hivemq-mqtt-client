@@ -19,7 +19,7 @@ import org.mqttbee.rx.FlowableWithSingle;
 /**
  * @author Silvio Giebl
  */
-public interface Mqtt5Client extends MqttClient<Mqtt5ClientData> {
+public interface Mqtt5Client extends MqttClient {
 
     @NotNull
     Single<Mqtt5ConnAck> connect(@NotNull Mqtt5Connect connect);
@@ -43,5 +43,9 @@ public interface Mqtt5Client extends MqttClient<Mqtt5ClientData> {
 
     @NotNull
     Completable disconnect(@NotNull Mqtt5Disconnect disconnect);
+
+    @NotNull
+    @Override
+    Mqtt5ClientData getClientData();
 
 }
