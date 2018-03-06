@@ -8,7 +8,11 @@ buildscript {
 }
 
 plugins {
+    id 'com.gradle.build-scan' version '1.12.1'
     id 'net.ltgt.apt' version '0.10'
+    id "com.github.johnrengelman.shadow" version "2.0.3"
+    id 'maven-publish'
+    id "com.github.jk1.dependency-license-report" version "0.6.1"
 }
 
 apply plugin: 'java'
@@ -41,12 +45,18 @@ project.ext {
     junitPlatformVersion = '1.0.3'
 }
 
+configurations.all {
+    resolutionStrategy.force "com.google.guava:guava:${guavaVersion}"
+    resolutionStrategy.force "org.checkerframework:checker-compat-qual:2.3.0"
+}
+
 dependencies {
     compile group: 'io.reactivex.rxjava2', name: 'rxjava', version: rxJavaVersion
     compile group: 'io.netty', name: 'netty-handler', version: nettyVersion
     compile group: 'io.netty', name: 'netty-transport-native-epoll', version: nettyVersion, classifier: 'linux-x86_64'
     compile group: 'com.google.dagger', name: 'dagger', version: daggerVersion
     compile group: 'com.google.guava', name: 'guava', version: guavaVersion
+
     compile group: 'ch.qos.logback', name: 'logback-classic', version: logbackVersion
 
     apt group: 'com.google.dagger', name: 'dagger-compiler', version: daggerVersion
@@ -61,4 +71,37 @@ dependencies {
     testRuntime group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junitJupiterVersion
     testRuntime group: 'org.junit.platform', name: 'junit-platform-launcher', version: junitPlatformVersion
     testRuntime group: 'org.junit.platform', name: 'junit-platform-runner', version: junitPlatformVersion
+}
+
+
+def repackagedDir = 'shaded'
+
+shadowJar {
+    exclude 'afu.org'
+    relocate 'ch.qos.logback', "${repackagedDir}.ch.qos.logback"
+    relocate 'com.google', "${repackagedDir}.com.google"
+    relocate 'dagger', "${repackagedDir}.dagger"
+    relocate 'io.netty', "${repackagedDir}.io.netty"
+    relocate 'io.reactivex', "${repackagedDir}.io.reactivex"
+    relocate 'org.checkerframework', "${repackagedDir}.org.checkerframework"
+    relocate 'org.codehaus', "${repackagedDir}.org.codehaus"
+    relocate 'org.reactivestreams', "${repackagedDir}.org.reactivestreams"
+    relocate 'org.slf4j', "${repackagedDir}.org.slf4j"
+}
+
+
+
+publishing {
+    publications {
+        shadow(MavenPublication) { publication ->
+            project.shadow.component(publication)
+        }
+    }
+    /*
+    repositories {
+        maven {
+            mavenCentral()
+        }
+    }
+    */
 }
