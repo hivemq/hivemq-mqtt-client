@@ -11,6 +11,8 @@ import io.reactivex.functions.BiConsumer;
 import io.reactivex.internal.fuseable.ConditionalSubscriber;
 import io.reactivex.internal.fuseable.QueueSubscription;
 import io.reactivex.plugins.RxJavaPlugins;
+import org.mqttbee.annotations.NotNull;
+import org.mqttbee.annotations.Nullable;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
@@ -20,10 +22,14 @@ import org.reactivestreams.Subscription;
  * items of type {@link T}.
  * <p>
  * Only a single item of type S will be emitted. Any further items of type S emitted from the upstream are ignored.
- * Items emitted from the upstream which are instances of T but neither of S nor T are ignored. <dl>
- * <dt><b>Backpressure:</b></dt> <dd>The operator doesn't interfere with backpressure which is determined by the source
- * {@code Publisher}'s backpressure behavior.</dd> <dt><b>Scheduler:</b></dt> <dd>{@code cast} does not operate by
- * default on a particular {@link Scheduler}.</dd> </dl>
+ * Items emitted from the upstream which are instances of T but neither of S nor T are ignored.
+ * <dl>
+ * <dt><b>Backpressure:</b></dt>
+ * <dd>The operator doesn't interfere with backpressure which is determined by the source {@code Publisher}'s
+ * backpressure behavior.</dd>
+ * <dt><b>Scheduler:</b></dt>
+ * <dd>{@code cast} does not operate by default on a particular {@link Scheduler}.</dd>
+ * </dl>
  *
  * @param <T> the type of the upstream, which is a supertype of S and F.
  * @param <S> the type of the single item.
@@ -46,7 +52,10 @@ public class FlowableWithSingle<T, S extends T, F extends T> extends Flowable<F>
      * @param singleClass   the class of the single item type.
      * @param flowableClass the class of the type of the item stream.
      */
-    public FlowableWithSingle(final Flowable<T> source, final Class<S> singleClass, final Class<F> flowableClass) {
+    public FlowableWithSingle(
+            @NotNull final Flowable<T> source, @NotNull final Class<S> singleClass,
+            @NotNull final Class<F> flowableClass) {
+
         this(source, singleClass, flowableClass, null);
     }
 
@@ -58,9 +67,10 @@ public class FlowableWithSingle<T, S extends T, F extends T> extends Flowable<F>
      * @param flowableClass  the class of the type of the item stream.
      * @param singleConsumer the consumer of the single item.
      */
-    public FlowableWithSingle(
-            final Flowable<T> source, final Class<S> singleClass, final Class<F> flowableClass,
-            final BiConsumer<S, Subscription> singleConsumer) {
+    private FlowableWithSingle(
+            @NotNull final Flowable<T> source, @NotNull final Class<S> singleClass,
+            @NotNull final Class<F> flowableClass, @Nullable final BiConsumer<S, Subscription> singleConsumer) {
+
         this.source = source;
         this.singleClass = singleClass;
         this.flowableClass = flowableClass;
@@ -88,8 +98,8 @@ public class FlowableWithSingle<T, S extends T, F extends T> extends Flowable<F>
      */
     @BackpressureSupport(BackpressureKind.FULL)
     @SchedulerSupport(SchedulerSupport.CUSTOM)
-    public FlowableWithSingle<T, S, F> observeOnWithSingle(final Scheduler scheduler) {
-        return new FlowableWithSingle<>(source.observeOn(scheduler), singleClass, flowableClass);
+    public FlowableWithSingle<T, S, F> observeOnWithSingle(@NotNull final Scheduler scheduler) {
+        return new FlowableWithSingle<>(source.observeOn(scheduler), singleClass, flowableClass, singleConsumer);
     }
 
     /**
@@ -102,8 +112,11 @@ public class FlowableWithSingle<T, S extends T, F extends T> extends Flowable<F>
      */
     @BackpressureSupport(BackpressureKind.FULL)
     @SchedulerSupport(SchedulerSupport.CUSTOM)
-    public FlowableWithSingle<T, S, F> observeOnWithSingle(final Scheduler scheduler, final boolean delayError) {
-        return new FlowableWithSingle<>(source.observeOn(scheduler, delayError), singleClass, flowableClass);
+    public FlowableWithSingle<T, S, F> observeOnWithSingle(
+            @NotNull final Scheduler scheduler, final boolean delayError) {
+
+        return new FlowableWithSingle<>(
+                source.observeOn(scheduler, delayError), singleClass, flowableClass, singleConsumer);
     }
 
     /**
@@ -118,9 +131,10 @@ public class FlowableWithSingle<T, S extends T, F extends T> extends Flowable<F>
     @BackpressureSupport(BackpressureKind.FULL)
     @SchedulerSupport(SchedulerSupport.CUSTOM)
     public FlowableWithSingle<T, S, F> observeOnWithSingle(
-            final Scheduler scheduler, final boolean delayError, final int bufferSize) {
+            @NotNull final Scheduler scheduler, final boolean delayError, final int bufferSize) {
+
         return new FlowableWithSingle<>(
-                source.observeOn(scheduler, delayError, bufferSize), singleClass, flowableClass);
+                source.observeOn(scheduler, delayError, bufferSize), singleClass, flowableClass, singleConsumer);
     }
 
     /**
@@ -132,7 +146,7 @@ public class FlowableWithSingle<T, S extends T, F extends T> extends Flowable<F>
      */
     @BackpressureSupport(BackpressureKind.NONE)
     @SchedulerSupport(SchedulerSupport.NONE)
-    public Flowable<F> doOnSingle(final BiConsumer<S, Subscription> singleConsumer) {
+    public Flowable<F> doOnSingle(@NotNull final BiConsumer<S, Subscription> singleConsumer) {
         return new FlowableWithSingle<>(source, singleClass, flowableClass, singleConsumer);
     }
 
@@ -150,8 +164,9 @@ public class FlowableWithSingle<T, S extends T, F extends T> extends Flowable<F>
         private int sourceMode;
 
         private FlowableWithSingleAbstractSubscriber(
-                final Subscriber<? super F> actual, final Class<S> singleClass, final Class<F> flowableClass,
-                final BiConsumer<S, Subscription> singleConsumer) {
+                @NotNull final Subscriber<? super F> actual, @NotNull final Class<S> singleClass,
+                @NotNull final Class<F> flowableClass, @Nullable final BiConsumer<S, Subscription> singleConsumer) {
+
             this.actual = actual;
             this.singleClass = singleClass;
             this.flowableClass = flowableClass;
@@ -304,8 +319,9 @@ public class FlowableWithSingle<T, S extends T, F extends T> extends Flowable<F>
             extends FlowableWithSingleAbstractSubscriber<T, S, F> {
 
         private FlowableWithSingleSubscriber(
-                final Subscriber<? super F> actual, final Class<S> singleClass, final Class<F> flowableClass,
-                final BiConsumer<S, Subscription> singleConsumer) {
+                @NotNull final Subscriber<? super F> actual, @NotNull final Class<S> singleClass,
+                @NotNull final Class<F> flowableClass, @Nullable final BiConsumer<S, Subscription> singleConsumer) {
+
             super(actual, singleClass, flowableClass, singleConsumer);
         }
 
@@ -323,8 +339,9 @@ public class FlowableWithSingle<T, S extends T, F extends T> extends Flowable<F>
         private final ConditionalSubscriber<? super F> conditionalActual;
 
         private FlowableWithSingleConditionalSubscriber(
-                final ConditionalSubscriber<? super F> actual, final Class<S> singleClass, final Class<F> flowableClass,
-                final BiConsumer<S, Subscription> singleConsumer) {
+                @NotNull final ConditionalSubscriber<? super F> actual, @NotNull final Class<S> singleClass,
+                @NotNull final Class<F> flowableClass, @Nullable final BiConsumer<S, Subscription> singleConsumer) {
+
             super(actual, singleClass, flowableClass, singleConsumer);
             this.conditionalActual = actual;
         }
