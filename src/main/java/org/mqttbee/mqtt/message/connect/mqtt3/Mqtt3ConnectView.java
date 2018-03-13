@@ -13,6 +13,7 @@ import org.mqttbee.mqtt.message.auth.mqtt3.Mqtt3SimpleAuthView;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
 import org.mqttbee.mqtt.message.connect.MqttConnectRestrictions;
 import org.mqttbee.mqtt.message.publish.MqttWillPublish;
+import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishView;
 
 import java.util.Optional;
 
@@ -67,7 +68,8 @@ public class Mqtt3ConnectView implements Mqtt3Connect {
     @NotNull
     @Override
     public Optional<Mqtt3Publish> getWillPublish() {
-        return Optional.empty();
+        final MqttWillPublish willPublish = wrapped.getRawWillPublish();
+        return (willPublish == null) ? Optional.empty() : Optional.of(new Mqtt3PublishView(willPublish));
     }
 
     @NotNull

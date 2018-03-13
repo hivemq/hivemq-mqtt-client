@@ -47,7 +47,7 @@ public class Mqtt3PublishView implements Mqtt3Publish {
 
     private final MqttPublish wrapped;
 
-    private Mqtt3PublishView(@NotNull final MqttPublish wrapped) {
+    public Mqtt3PublishView(@NotNull final MqttPublish wrapped) {
         this.wrapped = wrapped;
     }
 
