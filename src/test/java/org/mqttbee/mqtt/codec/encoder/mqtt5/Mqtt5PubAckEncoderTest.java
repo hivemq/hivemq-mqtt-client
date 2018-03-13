@@ -340,7 +340,7 @@ class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderTest {
         final int userPropertyCount = maxPacket.getMaxUserPropertiesCount();
         final MqttUserPropertiesImpl maxUserProperties = getUserProperties(userPropertyCount);
 
-        final ByteBuf expected = Unpooled.buffer();
+        final ByteBuf expected = Unpooled.buffer(5 + 268435447, 5 + 268435447);
 
         // fixed header
         // type, reserved
@@ -367,10 +367,7 @@ class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderTest {
                 new MqttPubAck(1, Mqtt5PubAckReasonCode.SUCCESS, maxPacket.getReasonStringTooLong("a"),
                         maxPacket.getMaxPossibleUserProperties(), Mqtt5PubAckEncoder.PROVIDER);
 
-        final byte[] expectedBytes = new byte[expected.readableBytes()];
-        expected.readBytes(expectedBytes);
-
-        encode(expectedBytes, pubAck);
+        encode(expected.array(), pubAck);
         expected.release();
     }
 
