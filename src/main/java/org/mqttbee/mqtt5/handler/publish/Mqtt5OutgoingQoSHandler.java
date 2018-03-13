@@ -90,7 +90,7 @@ public class Mqtt5OutgoingQoSHandler extends ChannelDuplexHandler {
         }
 
         final MqttPublishWrapper publishWrapper = wrapPublish(ctx.channel(), publish, packetIdentifier, false);
-        persistence.persist(publishWrapper).whenCompleteAsync((aVoid, throwable) -> {
+        persistence.store(publishWrapper).whenCompleteAsync((aVoid, throwable) -> {
             ctx.writeAndFlush(publishWrapper, promise);
             if (throwable != null) {
                 LOGGER.error("Unexpected exception while persisting PUBLISH in outgoing QoSFlowPersistence", throwable);
@@ -143,11 +143,30 @@ public class Mqtt5OutgoingQoSHandler extends ChannelDuplexHandler {
             }
         }
 
-        persistence.remove(pubAck.getPacketIdentifier());
-        packetIdentifiers.returnId(pubAck.getPacketIdentifier());
+        finish(pubAck.getPacketIdentifier());
     }
 
     private void handlePubRec(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttPubRec pubRec) {
+        if (pubRec.getReasonCode().isError()) {
+            handlePubRecError(ctx, pubRec);
+        } else {
+            handlePubRecSuccess(ctx, pubRec);
+        }
+    }
+
+    private void handlePubRecError(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttPubRec pubRec) {
+        final MqttAdvancedClientData advanced = MqttClientData.from(ctx.channel()).getRawAdvancedClientData();
+        if ((advanced != null)) {
+            final Mqtt5OutgoingQoS2ControlProvider control = advanced.getOutgoingQoS2ControlProvider();
+            if (control != null) {
+                control.onPubRecError(pubRec);
+            }
+        }
+
+        finish(pubRec.getPacketIdentifier());
+    }
+
+    private void handlePubRecSuccess(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttPubRec pubRec) {
         final MqttPubRelBuilder pubRelBuilder = new MqttPubRelBuilder(pubRec);
 
         final MqttAdvancedClientData advanced = MqttClientData.from(ctx.channel()).getRawAdvancedClientData();
@@ -159,7 +178,7 @@ public class Mqtt5OutgoingQoSHandler extends ChannelDuplexHandler {
         }
 
         final MqttPubRel pubRel = pubRelBuilder.build();
-        persistence.persist(pubRel).whenCompleteAsync((aVoid, throwable) -> {
+        persistence.store(pubRel).whenCompleteAsync((aVoid, throwable) -> {
             ctx.writeAndFlush(pubRel);
             if (throwable != null) {
                 LOGGER.error("Unexpected exception while persisting PUBREL in outgoing QoSFlowPersistence", throwable);
@@ -176,8 +195,12 @@ public class Mqtt5OutgoingQoSHandler extends ChannelDuplexHandler {
             }
         }
 
-        persistence.remove(pubComp.getPacketIdentifier());
-        packetIdentifiers.returnId(pubComp.getPacketIdentifier());
+        finish(pubComp.getPacketIdentifier());
+    }
+
+    private void finish(final int packetIdentifier) {
+        persistence.discard(packetIdentifier);
+        packetIdentifiers.returnId(packetIdentifier);
     }
 
 }

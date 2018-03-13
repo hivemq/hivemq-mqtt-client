@@ -1,6 +1,7 @@
 package org.mqttbee.mqtt5.persistence;
 
-import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
+import org.mqttbee.annotations.NotNull;
+import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRec;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -9,12 +10,13 @@ import java.util.concurrent.CompletableFuture;
  */
 public interface IncomingQoSFlowPersistence {
 
-    CompletableFuture<Void> persistPublish(int packetIdentifier);
+    @NotNull
+    CompletableFuture<Void> store(@NotNull MqttPubRec pubRec);
 
-    CompletableFuture<Void> persistPubRel(int packetIdentifier);
+    @NotNull
+    CompletableFuture<MqttPubRec> get(int packetIdentifier);
 
-    CompletableFuture<Mqtt5MessageType> get(int packetIdentifier);
-
-    CompletableFuture<Void> remove(int packetIdentifier);
+    @NotNull
+    CompletableFuture<Void> discard(int packetIdentifier);
 
 }
