@@ -20,6 +20,9 @@ public interface MqttClientData {
 
     boolean usesSSL();
 
+    @NotNull
+    MqttClientExecutorConfig getExecutorConfig();
+
     boolean isConnecting();
 
     boolean isConnected();
