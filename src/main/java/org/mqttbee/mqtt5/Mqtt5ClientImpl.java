@@ -85,7 +85,7 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
                 clientData.setServerConnectionData(null);
                 clientData.setConnecting(false);
             }
-        });
+        }).observeOn(clientData.getExecutorConfig().getRxJavaScheduler());
     }
 
     @NotNull
@@ -129,7 +129,7 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
             } else {
                 emitter.onError(new NotConnectedException());
             }
-        });
+        }).observeOn(clientData.getExecutorConfig().getRxJavaScheduler());
     }
 
     @NotNull
@@ -151,7 +151,7 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
             } else {
                 emitter.onError(new NotConnectedException());
             }
-        });
+        }).observeOn(clientData.getExecutorConfig().getRxJavaScheduler());
     }
 
     @NotNull
