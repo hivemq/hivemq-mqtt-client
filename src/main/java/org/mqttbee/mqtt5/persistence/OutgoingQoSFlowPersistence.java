@@ -12,12 +12,16 @@ import java.util.concurrent.CompletableFuture;
  */
 public interface OutgoingQoSFlowPersistence {
 
-    CompletableFuture<Void> persist(@NotNull MqttPublishWrapper publishWrapper);
+    @NotNull
+    CompletableFuture<Void> store(@NotNull MqttPublishWrapper publishWrapper);
 
-    CompletableFuture<Void> persist(@NotNull MqttPubRel pubRel);
+    @NotNull
+    CompletableFuture<Void> store(@NotNull MqttPubRel pubRel);
 
+    @NotNull
     CompletableFuture<MqttQoSMessage> get(int packetIdentifier);
 
-    CompletableFuture<Void> remove(int packetIdentifier);
+    @NotNull
+    CompletableFuture<Void> discard(int packetIdentifier);
 
 }

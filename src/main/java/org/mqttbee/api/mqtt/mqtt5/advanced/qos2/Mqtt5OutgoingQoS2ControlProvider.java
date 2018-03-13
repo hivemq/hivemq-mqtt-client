@@ -23,6 +23,15 @@ public interface Mqtt5OutgoingQoS2ControlProvider {
     void onPubRec(@NotNull Mqtt5PubRec pubRec, @NotNull Mqtt5PubRelBuilder pubRelBuilder);
 
     /**
+     * Called when a server sent a PUBREC message for a PUBLISH with QoS 2 with an Error Code.
+     * <p>
+     * This method must not block.
+     *
+     * @param pubRec the PUBREC message sent by the server.
+     */
+    void onPubRecError(@NotNull Mqtt5PubRec pubRec);
+
+    /**
      * Called when a server sent a PUBCOMP message for a PUBLISH with QoS 2.
      * <p>
      * This method must not block.
