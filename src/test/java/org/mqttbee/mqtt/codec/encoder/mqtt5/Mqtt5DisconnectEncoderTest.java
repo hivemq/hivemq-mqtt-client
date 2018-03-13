@@ -237,7 +237,7 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderTest {
                 maxPacket.getUserProperties(maxPacket.getMaxPossibleUserPropertiesCount());
         final MqttUTF8StringImpl reasonString = maxPacket.getReasonStringTooLong();
 
-        final ByteBuf expected = Unpooled.buffer();
+        final ByteBuf expected = Unpooled.buffer(5 + 268435445, 5 + 268435445);
 
         // fixed header
         // type, reserved
@@ -261,9 +261,7 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderTest {
                 new MqttDisconnect(PROTOCOL_ERROR, SESSION_EXPIRY_INTERVAL_FROM_CONNECT, null, reasonString,
                         maxUserProperties, Mqtt5DisconnectEncoder.PROVIDER);
 
-        final byte[] expectedBytes = new byte[expected.readableBytes()];
-        expected.readBytes(expectedBytes);
-        encode(expectedBytes, disconnect);
+        encode(expected.array(), disconnect);
     }
 
     @Test
@@ -335,7 +333,7 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderTest {
         Arrays.fill(reasonStringBytes, 'r');
         final MqttUTF8StringImpl reasonString = MqttUTF8StringImpl.from(new String(reasonStringBytes));
 
-        final ByteBuf expected = Unpooled.buffer();
+        final ByteBuf expected = Unpooled.buffer(5 + 268435445, 5 + 268435445);
 
         // fixed header
         // type, reserved
@@ -359,9 +357,7 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderTest {
                 new MqttDisconnect(MALFORMED_PACKET, SESSION_EXPIRY_INTERVAL_FROM_CONNECT, null, reasonString,
                         maxUserProperties, Mqtt5DisconnectEncoder.PROVIDER);
 
-        final byte[] expectedBytes = new byte[expected.readableBytes()];
-        expected.readBytes(expectedBytes);
-        encode(expectedBytes, disconnect);
+        encode(expected.array(), disconnect);
     }
 
     private void encode(final byte[] expected, final MqttDisconnect disconnect) {
