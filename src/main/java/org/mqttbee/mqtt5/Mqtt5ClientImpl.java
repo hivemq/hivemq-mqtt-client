@@ -55,8 +55,8 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
                 return;
             }
 
-            final Bootstrap bootstrap = MqttBeeComponent.INSTANCE.nettyBootstrap()
-                    .bootstrap(clientData.getExecutor(), clientData.getNumberOfNettyThreads());
+            final Bootstrap bootstrap =
+                    MqttBeeComponent.INSTANCE.nettyBootstrap().bootstrap(clientData.getExecutorConfig());
 
             bootstrap.handler(MqttBeeComponent.INSTANCE.channelInitializerProvider()
                     .get(mqttConnect, connAckEmitter, clientData));
@@ -73,14 +73,14 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
             final MqttClientConnectionDataImpl clientConnectionData = clientData.getRawClientConnectionData();
             assert clientConnectionData != null;
             clientConnectionData.getChannel().closeFuture().addListener(future -> {
-                MqttBeeComponent.INSTANCE.nettyBootstrap().free(clientData.getExecutor());
+                MqttBeeComponent.INSTANCE.nettyBootstrap().free(clientData.getExecutorConfig());
                 clientData.setClientConnectionData(null);
                 clientData.setServerConnectionData(null);
                 clientData.setConnected(false);
             });
         }).doOnError(throwable -> {
             if (!(throwable instanceof AlreadyConnectedException)) {
-                MqttBeeComponent.INSTANCE.nettyBootstrap().free(clientData.getExecutor());
+                MqttBeeComponent.INSTANCE.nettyBootstrap().free(clientData.getExecutorConfig());
                 clientData.setClientConnectionData(null);
                 clientData.setServerConnectionData(null);
                 clientData.setConnecting(false);

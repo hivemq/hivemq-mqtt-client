@@ -8,6 +8,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.MultithreadEventLoopGroup;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.mqtt.MqttClientExecutorConfigImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,8 +35,8 @@ public abstract class NettyBootstrap {
     }
 
     @NotNull
-    public Bootstrap bootstrap(@Nullable final Executor executor, final int numberOfNettyThreads) {
-        return new Bootstrap().group(getEventLoopGroup(executor, numberOfNettyThreads))
+    public Bootstrap bootstrap(@NotNull final MqttClientExecutorConfigImpl executorConfig) {
+        return new Bootstrap().group(getEventLoopGroup(executorConfig))
                 .channel(getChannelClass())
                 .option(ChannelOption.SO_KEEPALIVE, true)
                 .option(ChannelOption.TCP_NODELAY, true)
@@ -44,12 +45,12 @@ public abstract class NettyBootstrap {
 
     @NotNull
     private synchronized MultithreadEventLoopGroup getEventLoopGroup(
-            @Nullable final Executor executor, final int numberOfNettyThreads) {
+            @NotNull final MqttClientExecutorConfigImpl executorConfig) {
 
-        if (executor == null) {
-            return getDefaultEventLoopGroup(numberOfNettyThreads);
+        if (executorConfig.getRawNettyExecutor() == null) {
+            return getDefaultEventLoopGroup(executorConfig.getRawNettyThreads());
         }
-        return getExecutorEventLoopGroup(executor, numberOfNettyThreads);
+        return getExecutorEventLoopGroup(executorConfig.getRawNettyExecutor(), executorConfig.getRawNettyThreads());
     }
 
     @NotNull
@@ -104,11 +105,11 @@ public abstract class NettyBootstrap {
     @NotNull
     abstract Class<? extends Channel> getChannelClass();
 
-    public synchronized void free(@Nullable final Executor executor) {
-        if (executor == null) {
+    public synchronized void free(@NotNull final MqttClientExecutorConfigImpl executorConfig) {
+        if (executorConfig.getRawNettyExecutor() == null) {
             freeDefaultEventLoopGroup();
         } else {
-            freeExecutorEventLoopGroup(executor);
+            freeExecutorEventLoopGroup(executorConfig.getRawNettyExecutor());
         }
     }
 

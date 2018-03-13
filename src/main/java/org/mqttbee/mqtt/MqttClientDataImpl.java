@@ -12,7 +12,6 @@ import org.mqttbee.api.mqtt.mqtt5.Mqtt5ServerConnectionData;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 
 import java.util.Optional;
-import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -38,14 +37,13 @@ public class MqttClientDataImpl implements Mqtt5ClientData {
     private MqttServerConnectionDataImpl serverConnectionData;
     private final boolean followsRedirects;
     private final boolean allowsServerReAuth;
-    private final Executor executor;
-    private final int numberOfNettyThreads;
+    private final MqttClientExecutorConfigImpl executorConfig;
 
     public MqttClientDataImpl(
             @NotNull final MqttVersion mqttVersion, @Nullable final MqttClientIdentifierImpl clientIdentifier,
             @NotNull final String serverHost, final int serverPort, final boolean usesSSL,
-            final boolean followsRedirects, final boolean allowsServerReAuth, @Nullable final Executor executor,
-            final int numberOfNettyThreads) {
+            final boolean followsRedirects, final boolean allowsServerReAuth,
+            @NotNull final MqttClientExecutorConfigImpl executorConfig) {
 
         this.mqttVersion = mqttVersion;
         this.clientIdentifier = clientIdentifier;
@@ -56,8 +54,7 @@ public class MqttClientDataImpl implements Mqtt5ClientData {
         this.connected = new AtomicBoolean();
         this.followsRedirects = followsRedirects;
         this.allowsServerReAuth = allowsServerReAuth;
-        this.executor = executor;
-        this.numberOfNettyThreads = numberOfNettyThreads;
+        this.executorConfig = executorConfig;
     }
 
     @NotNull
@@ -155,13 +152,10 @@ public class MqttClientDataImpl implements Mqtt5ClientData {
         return allowsServerReAuth;
     }
 
-    @Nullable
-    public Executor getExecutor() {
-        return executor;
-    }
-
-    public int getNumberOfNettyThreads() {
-        return numberOfNettyThreads;
+    @NotNull
+    @Override
+    public MqttClientExecutorConfigImpl getExecutorConfig() {
+        return executorConfig;
     }
 
     public void to(@NotNull final Channel channel) {

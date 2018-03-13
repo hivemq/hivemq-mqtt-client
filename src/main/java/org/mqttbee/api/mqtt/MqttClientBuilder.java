@@ -1,13 +1,12 @@
 package org.mqttbee.api.mqtt;
 
-import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientBuilder;
+import org.mqttbee.mqtt.MqttClientExecutorConfigImpl;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
-
-import java.util.concurrent.Executor;
+import org.mqttbee.util.MustNotBeImplementedUtil;
 
 /**
  * @author Silvio Giebl
@@ -18,8 +17,7 @@ public class MqttClientBuilder {
     private String serverHost = "localhost";
     private int serverPort = 1883;
     private boolean usesSSL;
-    private Executor executor;
-    private int numberOfNettyThreads;
+    private MqttClientExecutorConfigImpl executorConfig = MqttClientExecutorConfigImpl.DEFAULT;
 
     MqttClientBuilder() {
     }
@@ -55,22 +53,15 @@ public class MqttClientBuilder {
     }
 
     @NotNull
-    public MqttClientBuilder usingExecutor(@NotNull final Executor executor) {
-        Preconditions.checkNotNull(executor);
-        this.executor = executor;
-        return this;
-    }
-
-    @NotNull
-    public MqttClientBuilder usingNettyThreads(final int numberOfNettyThreads) {
-        Preconditions.checkArgument(numberOfNettyThreads > 0);
-        this.numberOfNettyThreads = numberOfNettyThreads;
+    public MqttClientBuilder usingExecutorConfig(@NotNull final MqttClientExecutorConfig executorConfig) {
+        this.executorConfig =
+                MustNotBeImplementedUtil.checkNotImplemented(executorConfig, MqttClientExecutorConfigImpl.class);
         return this;
     }
 
     @NotNull
     public Mqtt5ClientBuilder usingMqtt5() {
-        return new Mqtt5ClientBuilder(identifier, serverHost, serverPort, usesSSL, executor, numberOfNettyThreads);
+        return new Mqtt5ClientBuilder(identifier, serverHost, serverPort, usesSSL, executorConfig);
     }
 
 }

@@ -4,6 +4,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions;
 import org.mqttbee.mqtt.MqttClientConnectionDataImpl;
 import org.mqttbee.mqtt.MqttClientDataImpl;
+import org.mqttbee.mqtt.MqttClientExecutorConfigImpl;
 import org.mqttbee.mqtt.MqttVersion;
 import org.mqttbee.mqtt.codec.decoder.AbstractMqttDecoderTest;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoders;
@@ -23,7 +24,7 @@ abstract class AbstractMqtt5DecoderTest extends AbstractMqttDecoderTest {
         super(decoders);
         clientData = new MqttClientDataImpl(MqttVersion.MQTT_5_0,
                 Objects.requireNonNull(MqttClientIdentifierImpl.from("test")), "localhost", 1883, false, false, false,
-                null, 0);
+                MqttClientExecutorConfigImpl.DEFAULT);
     }
 
     @Override
