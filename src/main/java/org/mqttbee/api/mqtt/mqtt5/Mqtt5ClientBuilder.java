@@ -3,11 +3,10 @@ package org.mqttbee.api.mqtt.mqtt5;
 import dagger.internal.Preconditions;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.MqttClientDataImpl;
+import org.mqttbee.mqtt.MqttClientExecutorConfigImpl;
 import org.mqttbee.mqtt.MqttVersion;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt5.Mqtt5ClientImpl;
-
-import java.util.concurrent.Executor;
 
 /**
  * @author Silvio Giebl
@@ -18,15 +17,14 @@ public class Mqtt5ClientBuilder {
     private final String serverHost;
     private final int serverPort;
     private final boolean usesSSL;
-    private final Executor executor;
-    private final int numberOfNettyThreads;
+    private final MqttClientExecutorConfigImpl executorConfig;
 
     private boolean followsRedirects = false;
     private boolean allowsServerReAuth = false;
 
     public Mqtt5ClientBuilder(
             @NotNull final MqttClientIdentifierImpl identifier, @NotNull final String serverHost, final int serverPort,
-            final boolean usesSSL, final Executor executor, final int numberOfNettyThreads) {
+            final boolean usesSSL, @NotNull final MqttClientExecutorConfigImpl executorConfig) {
 
         Preconditions.checkNotNull(identifier);
         Preconditions.checkNotNull(serverHost);
@@ -35,8 +33,7 @@ public class Mqtt5ClientBuilder {
         this.serverHost = serverHost;
         this.serverPort = serverPort;
         this.usesSSL = usesSSL;
-        this.executor = executor;
-        this.numberOfNettyThreads = numberOfNettyThreads;
+        this.executorConfig = executorConfig;
     }
 
     @NotNull
@@ -58,7 +55,7 @@ public class Mqtt5ClientBuilder {
 
     private MqttClientDataImpl buildClientData() {
         return new MqttClientDataImpl(MqttVersion.MQTT_5_0, identifier, serverHost, serverPort, usesSSL,
-                followsRedirects, allowsServerReAuth, executor, numberOfNettyThreads);
+                followsRedirects, allowsServerReAuth, executorConfig);
     }
 
 }

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.mqtt.MqttClientDataImpl;
+import org.mqttbee.mqtt.MqttClientExecutorConfigImpl;
 import org.mqttbee.mqtt.MqttServerConnectionDataImpl;
 import org.mqttbee.mqtt.MqttVersion;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
@@ -26,7 +27,7 @@ public class AbstractMqtt5EncoderTest {
         this.connected = connected;
         clientData = new MqttClientDataImpl(MqttVersion.MQTT_5_0,
                 Objects.requireNonNull(MqttClientIdentifierImpl.from("test")), "localhost", 1883, false, false, false,
-                null, 0);
+                MqttClientExecutorConfigImpl.DEFAULT);
     }
 
     @BeforeEach
