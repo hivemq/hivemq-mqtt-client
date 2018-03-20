@@ -4,15 +4,15 @@ import com.google.common.collect.ImmutableList;
 import io.reactivex.Flowable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
-import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeResult;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
+import org.mqttbee.mqtt.message.subscribe.MqttSubscribeResult;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
 import org.reactivestreams.Subscriber;
 
 /**
  * @author Silvio Giebl
  */
-public class MqttSubscriptionFlowable extends Flowable<Mqtt5SubscribeResult> {
+public class MqttSubscriptionFlowable extends Flowable<MqttSubscribeResult> {
 
     private final MqttSubscribe subscribe;
     private final MqttIncomingPublishService incomingPublishService;
@@ -25,7 +25,7 @@ public class MqttSubscriptionFlowable extends Flowable<Mqtt5SubscribeResult> {
     }
 
     @Override
-    protected void subscribeActual(final Subscriber<? super Mqtt5SubscribeResult> s) {
+    protected void subscribeActual(final Subscriber<? super MqttSubscribeResult> s) {
         final MqttSubscriptionFlow flow = new MqttSubscriptionFlow(s, getTopicFilters(), incomingPublishService);
         incomingPublishService.onSubscribe(flow);
         s.onSubscribe(flow);

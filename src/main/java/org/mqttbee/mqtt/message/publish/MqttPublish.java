@@ -15,6 +15,7 @@ import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.MqttWrappedMessage;
+import org.mqttbee.mqtt.message.subscribe.MqttSubscribeResult;
 import org.mqttbee.util.ByteBufferUtil;
 
 import javax.annotation.concurrent.Immutable;
@@ -26,7 +27,7 @@ import java.util.Optional;
  */
 @Immutable
 public class MqttPublish extends MqttWrappedMessage<MqttPublish, MqttPublishWrapper, MqttPublishEncoderProvider>
-        implements Mqtt5Publish {
+        implements Mqtt5Publish, MqttSubscribeResult {
 
     public static final long MESSAGE_EXPIRY_INTERVAL_INFINITY = Long.MAX_VALUE;
 
