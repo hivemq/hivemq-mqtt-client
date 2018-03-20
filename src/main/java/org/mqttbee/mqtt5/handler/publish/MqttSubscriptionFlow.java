@@ -6,7 +6,7 @@ import io.reactivex.Scheduler;
 import io.reactivex.internal.util.BackpressureHelper;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
-import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeResult;
+import org.mqttbee.mqtt.message.subscribe.MqttSubscribeResult;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
@@ -17,9 +17,9 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * @author Silvio Giebl
  */
-public class MqttSubscriptionFlow implements Emitter<Mqtt5SubscribeResult>, Subscription {
+public class MqttSubscriptionFlow implements Emitter<MqttSubscribeResult>, Subscription {
 
-    private final Subscriber<? super Mqtt5SubscribeResult> actual;
+    private final Subscriber<? super MqttSubscribeResult> actual;
     private final ImmutableList<MqttTopicFilter> topicFilters;
     private final MqttIncomingPublishService incomingPublishService;
 
@@ -38,7 +38,7 @@ public class MqttSubscriptionFlow implements Emitter<Mqtt5SubscribeResult>, Subs
     private final AtomicBoolean scheduled = new AtomicBoolean();
 
     MqttSubscriptionFlow(
-            @NotNull final Subscriber<? super Mqtt5SubscribeResult> actual,
+            @NotNull final Subscriber<? super MqttSubscribeResult> actual,
             @NotNull final ImmutableList<MqttTopicFilter> topicFilters,
             @NotNull final MqttIncomingPublishService incomingPublishService) {
 
@@ -48,7 +48,7 @@ public class MqttSubscriptionFlow implements Emitter<Mqtt5SubscribeResult>, Subs
     }
 
     @Override
-    public void onNext(@NotNull final Mqtt5SubscribeResult result) {
+    public void onNext(@NotNull final MqttSubscribeResult result) {
         if (done) {
             return;
         }

@@ -40,7 +40,7 @@ import org.reactivestreams.Subscription;
 @SchedulerSupport(SchedulerSupport.NONE)
 public class FlowableWithSingle<T, S extends T, F extends T> extends Flowable<F> {
 
-    private final Flowable<T> source;
+    private final Flowable<? super T> source;
     private final Class<S> singleClass;
     private final Class<F> flowableClass;
     private final BiConsumer<S, Subscription> singleConsumer;
@@ -53,7 +53,7 @@ public class FlowableWithSingle<T, S extends T, F extends T> extends Flowable<F>
      * @param flowableClass the class of the type of the item stream.
      */
     public FlowableWithSingle(
-            @NotNull final Flowable<T> source, @NotNull final Class<S> singleClass,
+            @NotNull final Flowable<? super T> source, @NotNull final Class<S> singleClass,
             @NotNull final Class<F> flowableClass) {
 
         this(source, singleClass, flowableClass, null);
@@ -68,7 +68,7 @@ public class FlowableWithSingle<T, S extends T, F extends T> extends Flowable<F>
      * @param singleConsumer the consumer of the single item.
      */
     private FlowableWithSingle(
-            @NotNull final Flowable<T> source, @NotNull final Class<S> singleClass,
+            @NotNull final Flowable<? super T> source, @NotNull final Class<S> singleClass,
             @NotNull final Class<F> flowableClass, @Nullable final BiConsumer<S, Subscription> singleConsumer) {
 
         this.source = source;
