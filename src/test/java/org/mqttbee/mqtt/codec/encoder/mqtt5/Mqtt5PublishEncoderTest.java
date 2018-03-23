@@ -4,11 +4,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.primitives.ImmutableIntArray;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.EncoderException;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
-import org.mqttbee.mqtt.codec.encoder.AbstractMqtt5EncoderTest;
 import org.mqttbee.mqtt.datatypes.*;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
@@ -28,7 +26,7 @@ import static org.mqttbee.mqtt.message.publish.MqttPublishWrapper.DEFAULT_NO_TOP
 /**
  * @author David Katz
  */
-class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
+class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest {
 
     Mqtt5PublishEncoderTest() {
         super(true);
@@ -74,12 +72,12 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
         final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.of(
                 ImmutableList.of(userProperty, userProperty, userProperty, userProperty, userProperty, userProperty));
 
-        final MqttPublish publish = new MqttPublish(
-                requireNonNull(MqttTopicImpl.from("topic")),
-                ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5}), MqttQoS.AT_MOST_ONCE, false, 10,
-                Mqtt5PayloadFormatIndicator.UNSPECIFIED, requireNonNull(MqttUTF8StringImpl.from("myContentType")),
-                requireNonNull(MqttTopicImpl.from("responseTopic")), ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5}),
-                HAS_NOT, userProperties, Mqtt5PublishEncoder.PROVIDER);
+        final MqttPublish publish =
+                new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5}),
+                        MqttQoS.AT_MOST_ONCE, false, 10, Mqtt5PayloadFormatIndicator.UNSPECIFIED,
+                        requireNonNull(MqttUTF8StringImpl.from("myContentType")),
+                        requireNonNull(MqttTopicImpl.from("responseTopic")), ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5}),
+                        HAS_NOT, userProperties, Mqtt5PublishEncoder.PROVIDER);
 
         encode(expected, publish, -1, false, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntArray.of());
     }
@@ -103,10 +101,11 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
                 1, 2, 3, 4, 5
         };
 
-        final MqttPublish publish = new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")),
-                ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5}), MqttQoS.AT_MOST_ONCE, false,
-                MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UNSPECIFIED, null, null,
-                null, HAS_NOT, NO_USER_PROPERTIES, Mqtt5PublishEncoder.PROVIDER);
+        final MqttPublish publish =
+                new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5}),
+                        MqttQoS.AT_MOST_ONCE, false, MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY,
+                        Mqtt5PayloadFormatIndicator.UNSPECIFIED, null, null, null, HAS_NOT, NO_USER_PROPERTIES,
+                        Mqtt5PublishEncoder.PROVIDER);
 
         encode(expected, publish, -1, false, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntArray.of());
     }
@@ -261,8 +260,8 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
         };
 
         final MqttPublish publish =
-                new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_LEAST_ONCE, false,
-                        1000, Mqtt5PayloadFormatIndicator.UTF_8, null, null, null, HAS_NOT, NO_USER_PROPERTIES,
+                new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_LEAST_ONCE, false, 1000,
+                        Mqtt5PayloadFormatIndicator.UTF_8, null, null, null, HAS_NOT, NO_USER_PROPERTIES,
                         Mqtt5PublishEncoder.PROVIDER);
         encode(expected, publish, 15, false, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntArray.of());
     }
@@ -356,23 +355,6 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
     }
 
     @Test
-    @Disabled("correlation data will be validated in the builder, remove this test")
-    void encode_correlationDataTooLong_throwsEncoderException() {
-        final ByteBuffer correlationData = ByteBuffer.wrap(new byte[65536]);
-        final MqttPublish publish =
-                new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_LEAST_ONCE, false,
-                        MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UTF_8, null, null,
-                        correlationData, HAS_NOT, NO_USER_PROPERTIES, Mqtt5PublishEncoder.PROVIDER);
-
-        final MqttPublishWrapper publishInternal =
-                publish.wrap(-1, false, MqttPublishWrapper.DEFAULT_NO_TOPIC_ALIAS, false, ImmutableIntArray.of());
-
-        final Throwable exception = assertThrows(EncoderException.class, () -> channel.writeOutbound(publishInternal));
-        assertTrue(exception.getMessage().contains("binary data size exceeded for correlation data"));
-
-    }
-
-    @Test
     void encode_newTopicAlias() {
         final byte[] expected = {
                 // fixed header
@@ -393,8 +375,8 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
 
         final MqttPublish publish =
                 new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_LEAST_ONCE, false,
-                        MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null, MAY,
-                        NO_USER_PROPERTIES, Mqtt5PublishEncoder.PROVIDER);
+                        MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null, MAY, NO_USER_PROPERTIES,
+                        Mqtt5PublishEncoder.PROVIDER);
         encode(expected, publish, 15, false, 8, true, ImmutableIntArray.of());
     }
 
@@ -441,8 +423,8 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
 
         final MqttPublish publish =
                 new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_LEAST_ONCE, false,
-                        MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null,
-                        DEFAULT_TOPIC_ALIAS_USAGE, NO_USER_PROPERTIES, Mqtt5PublishEncoder.PROVIDER);
+                        MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null, DEFAULT_TOPIC_ALIAS_USAGE,
+                        NO_USER_PROPERTIES, Mqtt5PublishEncoder.PROVIDER);
         encode(expected, publish, 2, true, ImmutableIntArray.of());
     }
 
@@ -467,8 +449,8 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
 
         final MqttPublish publish =
                 new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_LEAST_ONCE, false,
-                        MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null, MAY,
-                        NO_USER_PROPERTIES, Mqtt5PublishEncoder.PROVIDER);
+                        MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null, MAY, NO_USER_PROPERTIES,
+                        Mqtt5PublishEncoder.PROVIDER);
         encode(expected, publish, 15, false, 8, false, ImmutableIntArray.of());
     }
 
@@ -479,26 +461,22 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
                 //   type, flags
                 0b0011_0010,
                 //   remaining length
-                40,
+                46,
                 // variable header
                 //   topic name
                 0, 5, 't', 'o', 'p', 'i', 'c',
                 //   Packet Identifier
                 0, 15,
                 //   properties
-                30,
+                36,
                 //     payload format indicator
                 0x01, 1,
                 //     user properties
-                0x26, 0, 3, 'k', 'e', 'y', 0, 5, 'v', 'a', 'l', 'u', 'e', //
-                0x26, 0, 4, 'k', 'e', 'y', '2', 0, 6, 'v', 'a', 'l', 'u', 'e', '2'
+                0x26, 0, 4, 'u', 's', 'e', 'r', 0, 8, 'p', 'r', 'o', 'p', 'e', 'r', 't', 'y', 0x26, 0, 4, 'u', 's', 'e',
+                'r', 0, 8, 'p', 'r', 'o', 'p', 'e', 'r', 't', 'y'
         };
 
-        final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.of(ImmutableList.of(
-                new MqttUserPropertyImpl(requireNonNull(MqttUTF8StringImpl.from("key")),
-                        requireNonNull(MqttUTF8StringImpl.from("value"))),
-                new MqttUserPropertyImpl(requireNonNull(MqttUTF8StringImpl.from("key2")),
-                        requireNonNull(MqttUTF8StringImpl.from("value2")))));
+        final MqttUserPropertiesImpl userProperties = getUserProperties(2);
 
         final MqttPublish publish =
                 new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_LEAST_ONCE, false,
@@ -648,41 +626,66 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
     }
 
     @Test
-    @Disabled("transform to encode_maximumPacketSizeExceeded_omitUserPropertiesAndReasonString")
-    void encode_maximumPacketSizeExceeded_throwsEncoderException() {
-        final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
+    void encode_maximumPacketSizeExceeded_omitUserProperties() {
+        final byte[] expected = {
+                // fixed header
+                //   type, flags
+                0b0011_0000,
+                //   remaining length
+                15,
+                // variable header
+                //   topic name
+                0, 5, 't', 'o', 'p', 'i', 'c',
+                //   properties
+                2,
+                //     payload format indicator
+                0x01, 0,
+                // payload
+                1, 2, 3, 4, 5
+        };
+
+        // big enough to fit one of the user properties, but not both. Should then omit both.
+        createServerConnectionData(expected.length + 2 + userPropertyBytes);
+        final MqttUserPropertiesImpl userProperties = getUserProperties(2);
 
         final MqttPublish publish =
-                new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_MOST_ONCE, false,
-                        MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UNSPECIFIED, null,
-                        null, maxPacket.getCorrelationData(1), HAS_NOT, maxPacket.getMaxPossibleUserProperties(),
+                new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5}),
+                        MqttQoS.AT_MOST_ONCE, false, MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY,
+                        Mqtt5PayloadFormatIndicator.UNSPECIFIED, null, null, null, HAS_NOT, userProperties,
                         Mqtt5PublishEncoder.PROVIDER);
 
-
-        final MqttPublishWrapper publishInternal =
-                publish.wrap(-1, false, MqttPublishWrapper.DEFAULT_NO_TOPIC_ALIAS, false, ImmutableIntArray.of());
-
-        final Throwable exception = assertThrows(EncoderException.class, () -> channel.writeOutbound(publishInternal));
-        assertTrue(exception.getMessage().contains("variable byte integer size exceeded for remaining length"));
+        encode(expected, publish, -1, false, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntArray.of());
     }
 
     @Test
-    @Disabled("transform to encode_propertyLengthExceeded_omitUserPropertiesAndReasonString")
-    void encode_propertyLengthExceedsMax_throwsEncoderException() {
-        final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
+    void encode_propertyLengthExceeded_omitUserProperties() {
+        final byte[] expected = {
+                // fixed header
+                //   type, flags
+                0b0011_0000,
+                //   remaining length
+                15,
+                // variable header
+                //   topic name
+                0, 5, 't', 'o', 'p', 'i', 'c',
+                //   properties
+                2,
+                //     payload format indicator
+                0x01, 0,
+                // payload
+                1, 2, 3, 4, 5
+        };
+
+        final MqttUserPropertiesImpl userProperties = getUserProperties(1);
 
         final MqttPublish publish =
-                new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQoS.AT_MOST_ONCE, false,
-                        MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UNSPECIFIED, null,
-                        null, maxPacket.getCorrelationData(), HAS_NOT, maxPacket.getMaxPossibleUserProperties(1),
-                        Mqtt5PublishEncoder.PROVIDER);
+                new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5}),
+                        MqttQoS.AT_MOST_ONCE, false, MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY,
+                        Mqtt5PayloadFormatIndicator.UNSPECIFIED, null, null, getMaxCorrelationData(), HAS_NOT,
+                        userProperties, Mqtt5PublishEncoder.PROVIDER);
 
+        encode(expected, publish, -1, false, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntArray.of());
 
-        final MqttPublishWrapper publishInternal =
-                publish.wrap(-1, false, MqttPublishWrapper.DEFAULT_NO_TOPIC_ALIAS, false, ImmutableIntArray.of());
-
-        final Throwable exception = assertThrows(EncoderException.class, () -> channel.writeOutbound(publishInternal));
-        assertTrue(exception.getMessage().contains("variable byte integer size exceeded for property length"));
     }
 
     private void encode(
@@ -712,61 +715,19 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderTest {
         assertArrayEquals(expected, actual);
     }
 
-    private class MaximumPacketBuilder {
-
-        private ImmutableList.Builder<MqttUserPropertyImpl> userPropertiesBuilder;
-        final MqttUTF8StringImpl user = requireNonNull(MqttUTF8StringImpl.from("user"));
-        final MqttUTF8StringImpl property = requireNonNull(MqttUTF8StringImpl.from("property"));
-        @SuppressWarnings("MismatchedReadAndWriteOfArray")
-        // byte array initialized to 0's, used to pad max packet.
-        private byte[] correlationData;
-
-        MaximumPacketBuilder build() {
-            final int maxPropertyLength =
-                    MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT - 1  // type, dup, qos, retain
-                            - 4  // remaining length
-                            - 7  // topic name 'topic'
-                            - 4 // property length
-                            - 2  // payload format
-                            - 4; // correlation data id, 2 byte length and 1 byte data
-
-            final int userPropertyBytes = 1 // identifier
-                    + 2 // key length
-                    + 4 // bytes to encode "user"
-                    + 2 // value length
-                    + 8; // bytes to encode "property"
-            final int extraCorrelationDataBytes = maxPropertyLength % userPropertyBytes;
-
-            correlationData = new byte[1 + extraCorrelationDataBytes];
-
-            final int numberOfUserProperties = maxPropertyLength / userPropertyBytes;
-            userPropertiesBuilder = new ImmutableList.Builder<>();
-            final MqttUserPropertyImpl userProperty = new MqttUserPropertyImpl(user, property);
-            for (int i = 0; i < numberOfUserProperties; i++) {
-                userPropertiesBuilder.add(userProperty);
-            }
-            return this;
-        }
-
-        ByteBuffer getCorrelationData() {
-            return getCorrelationData(0);
-        }
-
-        ByteBuffer getCorrelationData(final int extraBytes) {
-            return ByteBuffer.wrap(Arrays.copyOf(correlationData, correlationData.length + extraBytes));
-        }
-
-        MqttUserPropertiesImpl getMaxPossibleUserProperties() {
-            //return ImmutableList.of();
-            return getMaxPossibleUserProperties(0);
-        }
-
-        MqttUserPropertiesImpl getMaxPossibleUserProperties(final int withExtraUserProperties) {
-            for (int i = 0; i < withExtraUserProperties; i++) {
-                userPropertiesBuilder.add(new MqttUserPropertyImpl(user, property));
-            }
-            return MqttUserPropertiesImpl.of(userPropertiesBuilder.build());
-        }
+    private ByteBuffer getMaxCorrelationData() {
+        final byte[] correlationData = new byte[VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE - 2];
+        Arrays.fill(correlationData, (byte) 0x00);
+        return ByteBuffer.wrap(Arrays.copyOf(correlationData, correlationData.length));
     }
 
+    @Override
+    int getMaxPropertyLength() {
+        return MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT - 1  // type, dup, qos, retain
+                - 4  // remaining length
+                - 7  // topic name 'topic'
+                - 4 // property length
+                - 2  // payload format
+                - 4; // correlation data id, 2 byte length and 1 byte data
+    }
 }
