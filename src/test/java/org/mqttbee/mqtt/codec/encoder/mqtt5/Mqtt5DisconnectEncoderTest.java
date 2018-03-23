@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.mqtt.codec.encoder.AbstractMqtt5EncoderTest;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
@@ -25,11 +24,7 @@ import static org.mqttbee.mqtt.message.disconnect.MqttDisconnect.SESSION_EXPIRY_
 /**
  * @author David Katz
  */
-class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderTest {
-
-    private static final int VARIABLE_BYTE_INTEGER_VALUE_BITS = 7;
-    private static final int VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE =
-            (1 << (VARIABLE_BYTE_INTEGER_VALUE_BITS * 4)) - 1;
+class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest {
 
     Mqtt5DisconnectEncoderTest() {
         super(true);
@@ -224,7 +219,7 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderTest {
 
         final MqttDisconnect disconnect =
                 new MqttDisconnect(NORMAL_DISCONNECTION, SESSION_EXPIRY_INTERVAL_FROM_CONNECT, null, null,
-                        maxPacket.getUserProperties(maxPacket.getMaxPossibleUserPropertiesCount() + 1),
+                        getUserProperties(maxPacket.getMaxUserPropertiesCount() + 1),
                         Mqtt5DisconnectEncoder.PROVIDER);
 
         encode(expected, disconnect);
@@ -234,8 +229,8 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderTest {
     void encode_maximumPacketSizeExceeded_omitReasonString() {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
         final MqttUserPropertiesImpl maxUserProperties =
-                maxPacket.getUserProperties(maxPacket.getMaxPossibleUserPropertiesCount());
-        final MqttUTF8StringImpl reasonString = maxPacket.getReasonStringTooLong();
+                getUserProperties(maxPacket.getMaxUserPropertiesCount());
+        final MqttUTF8StringImpl reasonString = getPaddedUtf8String(maxPacket.getRemainingPropertyBytes() + 1);
 
         final ByteBuf expected = Unpooled.buffer(5 + 268435445, 5 + 268435445);
 
@@ -262,6 +257,7 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderTest {
                         maxUserProperties, Mqtt5DisconnectEncoder.PROVIDER);
 
         encode(expected.array(), disconnect);
+        expected.release();
     }
 
     @Test
@@ -277,7 +273,7 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderTest {
 
         final MqttDisconnect disconnect =
                 new MqttDisconnect(PROTOCOL_ERROR, SESSION_EXPIRY_INTERVAL_FROM_CONNECT, null, null,
-                        maxPacket.getUserProperties(maxPacket.getMaxPossibleUserPropertiesCount() + 1),
+                        getUserProperties(maxPacket.getMaxUserPropertiesCount() + 1),
                         Mqtt5DisconnectEncoder.PROVIDER);
 
         encode(expected, disconnect);
@@ -285,7 +281,6 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderTest {
 
     @Test
     void encode_propertyLengthExceededOnSuccess_omitUserProperties() {
-        final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
         final byte[] expected = {
                 // fixed header
                 //   type, flags
@@ -296,8 +291,8 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderTest {
 
         final MqttDisconnect disconnect =
                 new MqttDisconnect(NORMAL_DISCONNECTION, SESSION_EXPIRY_INTERVAL_FROM_CONNECT, null, null,
-                        maxPacket.getUserProperties(
-                                (VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE / maxPacket.userPropertyBytes) + 1),
+                        getUserProperties(
+                                (VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE / userPropertyBytes) + 1),
                         Mqtt5DisconnectEncoder.PROVIDER);
 
         encode(expected, disconnect);
@@ -305,7 +300,6 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderTest {
 
     @Test
     void encode_propertyLengthExceeded_omitUserProperties() {
-        final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
         final byte[] expected = {
                 // fixed header
                 //   type, flags
@@ -316,8 +310,8 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderTest {
 
         final MqttDisconnect disconnect =
                 new MqttDisconnect(MALFORMED_PACKET, SESSION_EXPIRY_INTERVAL_FROM_CONNECT, null, null,
-                        maxPacket.getUserProperties(
-                                (VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE / maxPacket.userPropertyBytes) + 1),
+                        getUserProperties(
+                                (VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE / userPropertyBytes) + 1),
                         Mqtt5DisconnectEncoder.PROVIDER);
 
         encode(expected, disconnect);
@@ -325,10 +319,9 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderTest {
 
     @Test
     void encode_propertyLengthExceeded_omitReasonString() {
-        final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
-        final int maxUserPropertiesCount = VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE / maxPacket.userPropertyBytes;
-        final MqttUserPropertiesImpl maxUserProperties = maxPacket.getUserProperties(maxUserPropertiesCount);
-        final int maxReasonStringLength = VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE % maxPacket.userPropertyBytes;
+        final int maxUserPropertiesCount = VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE / userPropertyBytes;
+        final MqttUserPropertiesImpl maxUserProperties = getUserProperties(maxUserPropertiesCount);
+        final int maxReasonStringLength = VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE % userPropertyBytes;
         final char[] reasonStringBytes = new char[maxReasonStringLength];
         Arrays.fill(reasonStringBytes, 'r');
         final MqttUTF8StringImpl reasonString = MqttUTF8StringImpl.from(new String(reasonStringBytes));
@@ -358,6 +351,7 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderTest {
                         maxUserProperties, Mqtt5DisconnectEncoder.PROVIDER);
 
         encode(expected.array(), disconnect);
+        expected.release();
     }
 
     private void encode(final byte[] expected, final MqttDisconnect disconnect) {
@@ -371,50 +365,12 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderTest {
         assertArrayEquals(expected, actual);
     }
 
-    private class MaximumPacketBuilder {
-
-        final MqttUserPropertyImpl userProperty =
-                new MqttUserPropertyImpl(requireNonNull(MqttUTF8StringImpl.from("user")),
-                        requireNonNull(MqttUTF8StringImpl.from("property")));
-        char[] reasonStringBytes;
-        final int maxPropertyLength = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT - 1  // type, reserved
+    @Override
+    int getMaxPropertyLength() {
+        return MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT - 1  // type, reserved
                 - 4  // remaining length
                 - 1  // reason code
                 - 4  // properties length
                 - 3; // minimum reason string 'r'
-
-        final int userPropertyBytes = 1 // identifier
-                + 2 // key length
-                + 4 // bytes to encode "user"
-                + 2 // value length
-                + 8; // bytes to encode "property"
-
-        int maxNumberOfUserProperties;
-
-        MaximumPacketBuilder build() {
-            final int reasonStringLength = 1 + (maxPropertyLength % userPropertyBytes);
-
-            reasonStringBytes = new char[reasonStringLength];
-            Arrays.fill(reasonStringBytes, 'r');
-
-            maxNumberOfUserProperties = maxPropertyLength / userPropertyBytes;
-            return this;
-        }
-
-        int getMaxPossibleUserPropertiesCount() {
-            return maxNumberOfUserProperties;
-        }
-
-        MqttUserPropertiesImpl getUserProperties(final int totalCount) {
-            final ImmutableList.Builder<MqttUserPropertyImpl> builder = new ImmutableList.Builder<>();
-            for (int i = 0; i < totalCount; i++) {
-                builder.add(userProperty);
-            }
-            return MqttUserPropertiesImpl.of(builder.build());
-        }
-
-        MqttUTF8StringImpl getReasonStringTooLong() {
-            return MqttUTF8StringImpl.from(new String(reasonStringBytes) + "x");
-        }
     }
 }
