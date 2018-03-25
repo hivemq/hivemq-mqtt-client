@@ -1,13 +1,14 @@
 package org.mqttbee.mqtt.message.subscribe;
 
 import com.google.common.collect.ImmutableList;
-import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.MqttWrappedMessage;
+
+import javax.annotation.concurrent.Immutable;
 
 /**
  * @author Silvio Giebl

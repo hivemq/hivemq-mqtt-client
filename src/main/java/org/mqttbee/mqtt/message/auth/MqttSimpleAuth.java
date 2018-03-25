@@ -1,6 +1,5 @@
 package org.mqttbee.mqtt.message.auth;
 
-import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
@@ -8,6 +7,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5SimpleAuth;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.util.ByteBufferUtil;
 
+import javax.annotation.concurrent.Immutable;
 import java.nio.ByteBuffer;
 import java.util.Optional;
 

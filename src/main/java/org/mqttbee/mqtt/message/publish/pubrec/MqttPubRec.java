@@ -1,6 +1,5 @@
 package org.mqttbee.mqtt.message.publish.pubrec;
 
-import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrec.Mqtt5PubRec;
@@ -10,6 +9,8 @@ import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.MqttMessageWithUserProperties.MqttMessageWithIdAndReasonCode;
 import org.mqttbee.mqtt.message.publish.MqttQoSMessage;
+
+import javax.annotation.concurrent.Immutable;
 
 /**
  * @author Silvio Giebl

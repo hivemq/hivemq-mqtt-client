@@ -1,13 +1,14 @@
 package org.mqttbee.mqtt.message.subscribe.suback.mqtt3;
 
 import com.google.common.collect.ImmutableList;
-import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAck;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAckReturnCode;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAckReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAck;
+
+import javax.annotation.concurrent.Immutable;
 
 import static org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAckReturnCode.*;
 

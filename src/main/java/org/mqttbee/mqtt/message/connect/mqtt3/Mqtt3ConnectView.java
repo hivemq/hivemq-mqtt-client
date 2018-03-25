@@ -1,6 +1,5 @@
 package org.mqttbee.mqtt.message.connect.mqtt3;
 
-import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
@@ -15,6 +14,7 @@ import org.mqttbee.mqtt.message.connect.MqttConnectRestrictions;
 import org.mqttbee.mqtt.message.publish.MqttWillPublish;
 import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishView;
 
+import javax.annotation.concurrent.Immutable;
 import java.util.Optional;
 
 /**
@@ -30,8 +30,8 @@ public class Mqtt3ConnectView implements Mqtt3Connect {
 
         return new MqttConnect(keepAlive, isCleanSession, isCleanSession ? 0 : MqttConnect.NO_SESSION_EXPIRY,
                 MqttConnect.DEFAULT_RESPONSE_INFORMATION_REQUESTED, MqttConnect.DEFAULT_PROBLEM_INFORMATION_REQUESTED,
-                MqttConnectRestrictions.DEFAULT, simpleAuth,
-                null, willPublish, MqttUserPropertiesImpl.NO_USER_PROPERTIES, Mqtt3ConnectEncoder.PROVIDER);
+                MqttConnectRestrictions.DEFAULT, simpleAuth, null, willPublish,
+                MqttUserPropertiesImpl.NO_USER_PROPERTIES, Mqtt3ConnectEncoder.PROVIDER);
     }
 
     @NotNull

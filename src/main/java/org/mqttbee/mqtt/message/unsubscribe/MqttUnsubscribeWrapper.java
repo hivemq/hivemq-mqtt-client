@@ -1,9 +1,10 @@
 package org.mqttbee.mqtt.message.unsubscribe;
 
-import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
 import org.mqttbee.mqtt.message.MqttMessageWrapper.MqttMessageWrapperWithId;
+
+import javax.annotation.concurrent.Immutable;
 
 /**
  * @author Silvio Giebl

@@ -1,11 +1,12 @@
 package org.mqttbee.mqtt.message.publish.pubrel.mqtt3;
 
-import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.pubrel.Mqtt3PubRel;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrel.Mqtt5PubRelReasonCode;
 import org.mqttbee.mqtt.codec.encoder.mqtt3.Mqtt3PubRelEncoder;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRel;
+
+import javax.annotation.concurrent.Immutable;
 
 /**
  * @author Silvio Giebl

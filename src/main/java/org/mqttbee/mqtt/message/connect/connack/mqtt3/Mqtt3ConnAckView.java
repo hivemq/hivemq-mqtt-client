@@ -1,6 +1,5 @@
 package org.mqttbee.mqtt.message.connect.connack.mqtt3;
 
-import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAckReturnCode;
@@ -8,6 +7,8 @@ import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckReasonCode
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.connect.connack.MqttConnAck;
 import org.mqttbee.mqtt.message.connect.connack.MqttConnAckRestrictions;
+
+import javax.annotation.concurrent.Immutable;
 
 import static org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAckReturnCode.*;
 
@@ -23,8 +24,8 @@ public class Mqtt3ConnAckView implements Mqtt3ConnAck {
 
         return new MqttConnAck(wrappedReasonCode(returnCode), isSessionPresent,
                 MqttConnAck.SESSION_EXPIRY_INTERVAL_FROM_CONNECT, MqttConnAck.KEEP_ALIVE_FROM_CONNECT,
-                MqttConnAck.CLIENT_IDENTIFIER_FROM_CONNECT, null, MqttConnAckRestrictions.DEFAULT, null,
-                null, null, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
+                MqttConnAck.CLIENT_IDENTIFIER_FROM_CONNECT, null, MqttConnAckRestrictions.DEFAULT, null, null, null,
+                MqttUserPropertiesImpl.NO_USER_PROPERTIES);
     }
 
     @NotNull

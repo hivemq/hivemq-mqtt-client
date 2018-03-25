@@ -2,12 +2,13 @@ package org.mqttbee.mqtt.message.publish;
 
 import com.google.common.primitives.ImmutableIntArray;
 import io.netty.channel.Channel;
-import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.MqttServerConnectionDataImpl;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttPublishEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.message.MqttMessageWrapper.MqttMessageWrapperWithId;
+
+import javax.annotation.concurrent.Immutable;
 
 /**
  * @author Silvio Giebl
@@ -28,9 +29,8 @@ public class MqttPublishWrapper
     private final ImmutableIntArray subscriptionIdentifiers;
 
     MqttPublishWrapper(
-            @NotNull final MqttPublish publish, final int packetIdentifier, final boolean isDup,
-            final int topicAlias, final boolean isNewTopicAlias,
-            @NotNull final ImmutableIntArray subscriptionIdentifiers) {
+            @NotNull final MqttPublish publish, final int packetIdentifier, final boolean isDup, final int topicAlias,
+            final boolean isNewTopicAlias, @NotNull final ImmutableIntArray subscriptionIdentifiers) {
 
         super(publish, packetIdentifier);
         this.isDup = isDup;
