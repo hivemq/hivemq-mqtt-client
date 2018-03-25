@@ -1,11 +1,11 @@
 package org.mqttbee.mqtt.datatypes;
 
 import io.netty.buffer.ByteBuf;
-import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
 
+import javax.annotation.concurrent.Immutable;
 import java.util.regex.Pattern;
 
 /**

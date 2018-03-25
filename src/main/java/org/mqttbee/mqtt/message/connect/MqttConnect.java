@@ -1,6 +1,5 @@
 package org.mqttbee.mqtt.message.connect;
 
-import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
@@ -16,6 +15,7 @@ import org.mqttbee.mqtt.message.auth.MqttEnhancedAuth;
 import org.mqttbee.mqtt.message.auth.MqttSimpleAuth;
 import org.mqttbee.mqtt.message.publish.MqttWillPublish;
 
+import javax.annotation.concurrent.Immutable;
 import java.util.Optional;
 
 /**

@@ -1,7 +1,8 @@
 package org.mqttbee.mqtt.message.ping.mqtt3;
 
-import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.api.mqtt.mqtt3.message.ping.Mqtt3PingReq;
+
+import javax.annotation.concurrent.Immutable;
 
 /**
  * @author Silvio Giebl

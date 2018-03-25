@@ -1,7 +1,6 @@
 package org.mqttbee.mqtt.message.subscribe.mqtt3;
 
 import com.google.common.collect.ImmutableList;
-import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscription;
@@ -9,6 +8,8 @@ import org.mqttbee.mqtt.codec.encoder.mqtt3.Mqtt3SubscribeEncoder;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
+
+import javax.annotation.concurrent.Immutable;
 
 /**
  * @author Silvio Giebl

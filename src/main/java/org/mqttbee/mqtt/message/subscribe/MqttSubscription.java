@@ -1,11 +1,12 @@
 package org.mqttbee.mqtt.message.subscribe;
 
-import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5RetainHandling;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscription;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
+
+import javax.annotation.concurrent.Immutable;
 
 /**
  * @author Silvio Giebl

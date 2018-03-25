@@ -1,6 +1,5 @@
 package org.mqttbee.mqtt.message.connect;
 
-import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
@@ -8,12 +7,14 @@ import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt.message.MqttMessageWrapper;
 import org.mqttbee.mqtt.message.auth.MqttEnhancedAuth;
 
+import javax.annotation.concurrent.Immutable;
+
 /**
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttConnectWrapper extends
-        MqttMessageWrapper<MqttConnectWrapper, MqttConnect, MqttMessageEncoderProvider<MqttConnectWrapper>> {
+public class MqttConnectWrapper
+        extends MqttMessageWrapper<MqttConnectWrapper, MqttConnect, MqttMessageEncoderProvider<MqttConnectWrapper>> {
 
     private final MqttClientIdentifierImpl clientIdentifier;
     private final MqttEnhancedAuth enhancedAuth;

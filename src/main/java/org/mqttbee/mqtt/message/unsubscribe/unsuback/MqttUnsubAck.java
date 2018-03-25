@@ -1,7 +1,6 @@
 package org.mqttbee.mqtt.message.unsubscribe.unsuback;
 
 import com.google.common.collect.ImmutableList;
-import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
@@ -10,6 +9,8 @@ import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.MqttMessageWithUserProperties.MqttMessageWithIdAndReasonCodes;
+
+import javax.annotation.concurrent.Immutable;
 
 /**
  * @author Silvio Giebl

@@ -1,9 +1,10 @@
 package org.mqttbee.mqtt.message.connect.connack;
 
-import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions;
+
+import javax.annotation.concurrent.Immutable;
 
 /**
  * @author Silvio Giebl

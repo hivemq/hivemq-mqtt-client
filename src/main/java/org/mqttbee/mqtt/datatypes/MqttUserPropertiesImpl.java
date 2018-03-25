@@ -2,12 +2,13 @@ package org.mqttbee.mqtt.datatypes;
 
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
-import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.exceptions.MqttBinaryDataExceededException;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.mqtt.message.MqttProperty;
+
+import javax.annotation.concurrent.Immutable;
 
 /**
  * @author Silvio Giebl

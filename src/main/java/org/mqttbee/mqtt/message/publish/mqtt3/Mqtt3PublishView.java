@@ -1,6 +1,5 @@
 package org.mqttbee.mqtt.message.publish.mqtt3;
 
-import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
@@ -13,6 +12,7 @@ import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
 
+import javax.annotation.concurrent.Immutable;
 import java.nio.ByteBuffer;
 import java.util.Optional;
 
@@ -26,8 +26,8 @@ public class Mqtt3PublishView implements Mqtt3Publish {
             @NotNull final MqttTopicImpl topic, @Nullable final ByteBuffer payload, @NotNull final MqttQoS qos,
             final boolean isRetain) {
 
-        return new MqttPublish(topic, payload, qos, isRetain, MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY,
-                null, null, null, null, TopicAliasUsage.MUST_NOT, MqttUserPropertiesImpl.NO_USER_PROPERTIES,
+        return new MqttPublish(topic, payload, qos, isRetain, MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null,
+                null, null, TopicAliasUsage.MUST_NOT, MqttUserPropertiesImpl.NO_USER_PROPERTIES,
                 Mqtt3PublishEncoder.PROVIDER);
     }
 

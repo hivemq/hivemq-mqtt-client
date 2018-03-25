@@ -1,6 +1,5 @@
 package org.mqttbee.mqtt.message.publish;
 
-import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
@@ -13,6 +12,7 @@ import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 
+import javax.annotation.concurrent.Immutable;
 import java.nio.ByteBuffer;
 
 /**
