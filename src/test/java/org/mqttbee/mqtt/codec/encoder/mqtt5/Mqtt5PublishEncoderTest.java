@@ -3,12 +3,14 @@ package org.mqttbee.mqtt.codec.encoder.mqtt5;
 import com.google.common.collect.ImmutableList;
 import com.google.common.primitives.ImmutableIntArray;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.EncoderException;
 import org.junit.jupiter.api.Test;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.mqtt.datatypes.*;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
+import org.mqttbee.mqtt.message.publish.MqttPublishProperty;
 import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
 
 import java.nio.ByteBuffer;
@@ -659,33 +661,47 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
 
     @Test
     void encode_propertyLengthExceeded_omitUserProperties() {
-        final byte[] expected = {
-                // fixed header
-                //   type, flags
-                0b0011_0000,
-                //   remaining length
-                15,
-                // variable header
-                //   topic name
-                0, 5, 't', 'o', 'p', 'i', 'c',
-                //   properties
-                2,
-                //     payload format indicator
-                0x01, 0,
-                // payload
-                1, 2, 3, 4, 5
-        };
+        final ByteBuffer correlationData =
+                getMaxCorrelationData(7 + 4 + 2 + 5); // 7 topic, 4 property length, 2 payload format, 5 payload
+
+        final ByteBuf expected = Unpooled.buffer(5 + VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE,
+                5 + VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE);
+
+        // fixed header
+        //   type, flags
+        expected.writeByte(0b0011_0000);
+        //   remaining length
+        expected.writeByte(0xff);
+        expected.writeByte(0xff);
+        expected.writeByte(0xff);
+        expected.writeByte(0x7f);
+        // variable header
+        //   topic name
+        expected.writeBytes(new byte[]{0, 5, 't', 'o', 'p', 'i', 'c'});
+        //   properties
+        expected.writeByte(0xef);
+        expected.writeByte(0xff);
+        expected.writeByte(0xff);
+        expected.writeByte(0x7f);
+        //     payload format indicator
+        expected.writeBytes(new byte[]{0x01, 0});
+        //     correlation data
+        expected.writeByte(MqttPublishProperty.CORRELATION_DATA);
+        expected.writeShort(correlationData.capacity());
+        expected.writeBytes(correlationData);
+        correlationData.rewind();
+        // payload
+        expected.writeBytes(new byte[]{1, 2, 3, 4, 5});
 
         final MqttUserPropertiesImpl userProperties = getUserProperties(1);
 
         final MqttPublish publish =
                 new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5}),
                         MqttQoS.AT_MOST_ONCE, false, MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY,
-                        Mqtt5PayloadFormatIndicator.UNSPECIFIED, null, null, getMaxCorrelationData(), HAS_NOT,
-                        userProperties, Mqtt5PublishEncoder.PROVIDER);
+                        Mqtt5PayloadFormatIndicator.UNSPECIFIED, null, null, correlationData, HAS_NOT, userProperties,
+                        Mqtt5PublishEncoder.PROVIDER);
 
-        encode(expected, publish, -1, false, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntArray.of());
-
+        encode(expected.array(), publish, -1, false, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntArray.of());
     }
 
     private void encode(
@@ -715,8 +731,8 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
         assertArrayEquals(expected, actual);
     }
 
-    private ByteBuffer getMaxCorrelationData() {
-        final byte[] correlationData = new byte[VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE - 2];
+    private ByteBuffer getMaxCorrelationData(final int otherLength) {
+        final byte[] correlationData = new byte[VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE - otherLength - 3];
         Arrays.fill(correlationData, (byte) 0x00);
         return ByteBuffer.wrap(Arrays.copyOf(correlationData, correlationData.length));
     }
