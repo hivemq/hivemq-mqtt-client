@@ -14,7 +14,6 @@ import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.publish.puback.MqttPubAck;
 
 import static java.util.Objects.requireNonNull;
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
 import static org.mqttbee.mqtt.datatypes.MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT;
 
@@ -447,13 +446,7 @@ class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
     }
 
     private void encode(final byte[] expected, final MqttPubAck pubAck) {
-        channel.writeOutbound(pubAck);
-        final ByteBuf byteBuf = channel.readOutbound();
-
-        final byte[] actual = new byte[byteBuf.readableBytes()];
-        byteBuf.readBytes(actual);
-        assertArrayEquals(expected, actual);
-        byteBuf.release();
+        encode(pubAck, expected);
     }
 
     int getMaxPropertyLength() {

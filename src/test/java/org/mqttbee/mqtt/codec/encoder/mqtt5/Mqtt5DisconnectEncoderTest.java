@@ -16,7 +16,6 @@ import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
 import java.util.Arrays;
 
 import static java.util.Objects.requireNonNull;
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
 import static org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.*;
 import static org.mqttbee.mqtt.message.disconnect.MqttDisconnect.SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
@@ -355,14 +354,7 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesT
     }
 
     private void encode(final byte[] expected, final MqttDisconnect disconnect) {
-        channel.writeOutbound(disconnect);
-        final ByteBuf byteBuf = channel.readOutbound();
-
-        final byte[] actual = new byte[byteBuf.readableBytes()];
-        byteBuf.readBytes(actual);
-        byteBuf.release();
-
-        assertArrayEquals(expected, actual);
+        encode(disconnect, expected);
     }
 
     @Override

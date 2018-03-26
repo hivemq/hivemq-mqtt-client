@@ -1,7 +1,6 @@
 package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
 import com.google.common.collect.ImmutableList;
-import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.EncoderException;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -31,7 +30,6 @@ import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 
 import static java.util.Objects.requireNonNull;
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mqttbee.mqtt.message.connect.MqttConnectRestrictions.DEFAULT;
@@ -511,14 +509,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
     }
 
     private void encode(final byte[] expected, final MqttConnectWrapper connectWrapper) {
-        channel.writeOutbound(connectWrapper);
-        final ByteBuf byteBuf = channel.readOutbound();
-
-        final byte[] actual = new byte[byteBuf.readableBytes()];
-        byteBuf.readBytes(actual);
-        byteBuf.release();
-
-        assertArrayEquals(expected, actual);
+        encode(connectWrapper, expected);
     }
 
     private void encodeNok(

@@ -12,7 +12,6 @@ import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.publish.pubcomp.MqttPubComp;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
@@ -268,13 +267,7 @@ class Mqtt5PubCompEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
     }
 
     private void encode(final byte[] expected, final MqttPubComp pubComp) {
-        channel.writeOutbound(pubComp);
-        final ByteBuf byteBuf = channel.readOutbound();
-
-        final byte[] actual = new byte[byteBuf.readableBytes()];
-        byteBuf.readBytes(actual);
-        assertArrayEquals(expected, actual);
-        byteBuf.release();
+        encode(pubComp, expected);
     }
 
     int getMaxPropertyLength() {

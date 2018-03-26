@@ -14,10 +14,8 @@ import org.mqttbee.mqtt.message.publish.MqttPublishProperty;
 import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
 
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 
 import static java.util.Objects.requireNonNull;
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish.DEFAULT_TOPIC_ALIAS_USAGE;
@@ -661,11 +659,11 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
 
     @Test
     void encode_propertyLengthExceeded_omitUserProperties() {
-        final ByteBuffer correlationData =
-                getMaxCorrelationData(7 + 4 + 2 + 5); // 7 topic, 4 property length, 2 payload format, 5 payload
-
         final ByteBuf expected = Unpooled.buffer(5 + VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE,
                 5 + VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE);
+
+        // 7 topic, 4 property length, 2 payload format, 5 payload, 3 correlation data header
+        final int correlationDataLength = VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE - 7 - 4 - 2 - 5 - 3;
 
         // fixed header
         //   type, flags
@@ -687,12 +685,14 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
         expected.writeBytes(new byte[]{0x01, 0});
         //     correlation data
         expected.writeByte(MqttPublishProperty.CORRELATION_DATA);
-        expected.writeShort(correlationData.capacity());
-        expected.writeBytes(correlationData);
-        correlationData.rewind();
+        expected.writeShort(correlationDataLength);
+        for (int i = 0; i < correlationDataLength; i++) {
+            expected.writeByte(i);
+        }
         // payload
         expected.writeBytes(new byte[]{1, 2, 3, 4, 5});
 
+        final ByteBuffer correlationData = ByteBuffer.wrap(expected.array(), 21, correlationDataLength);
         final MqttUserPropertiesImpl userProperties = getUserProperties(1);
 
         final MqttPublish publish =
@@ -702,6 +702,7 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
                         Mqtt5PublishEncoder.PROVIDER);
 
         encode(expected.array(), publish, -1, false, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntArray.of());
+        expected.release();
     }
 
     private void encode(
@@ -721,20 +722,7 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
     }
 
     private void encodeInternal(final byte[] expected, final MqttPublishWrapper publishInternal) {
-        channel.writeOutbound(publishInternal);
-        final ByteBuf byteBuf = channel.readOutbound();
-
-        final byte[] actual = new byte[byteBuf.readableBytes()];
-        byteBuf.readBytes(actual);
-        byteBuf.release();
-
-        assertArrayEquals(expected, actual);
-    }
-
-    private ByteBuffer getMaxCorrelationData(final int otherLength) {
-        final byte[] correlationData = new byte[VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE - otherLength - 3];
-        Arrays.fill(correlationData, (byte) 0x00);
-        return ByteBuffer.wrap(Arrays.copyOf(correlationData, correlationData.length));
+        encode(publishInternal, expected);
     }
 
     @Override

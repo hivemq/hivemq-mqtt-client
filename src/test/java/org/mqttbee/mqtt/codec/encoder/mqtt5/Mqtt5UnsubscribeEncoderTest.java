@@ -1,7 +1,6 @@
 package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
 import com.google.common.collect.ImmutableList;
-import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.EncoderException;
 import org.junit.jupiter.api.Test;
 import org.mqttbee.mqtt.codec.encoder.AbstractMqtt5EncoderTest;
@@ -10,7 +9,6 @@ import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribe;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribeWrapper;
 
 import static java.util.Objects.requireNonNull;
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -168,14 +166,7 @@ class Mqtt5UnsubscribeEncoderTest extends AbstractMqtt5EncoderTest {
     }
 
     private void encodeInternal(final byte[] expected, final MqttUnsubscribeWrapper unsubscribeInternal) {
-        channel.writeOutbound(unsubscribeInternal);
-        final ByteBuf byteBuf = channel.readOutbound();
-
-        final byte[] actual = new byte[byteBuf.readableBytes()];
-        byteBuf.readBytes(actual);
-        byteBuf.release();
-
-        assertArrayEquals(expected, actual);
+        encode(unsubscribeInternal, expected);
     }
 
     private class MaximumPacketBuilder {
