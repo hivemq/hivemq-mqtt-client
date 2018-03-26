@@ -2,7 +2,6 @@ package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
-import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.EncoderException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -23,7 +22,6 @@ import java.util.Collections;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscription.*;
@@ -371,14 +369,7 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTe
     }
 
     private void encodeInternal(final byte[] expected, final MqttSubscribeWrapper subscribeInternal) {
-        channel.writeOutbound(subscribeInternal);
-        final ByteBuf byteBuf = channel.readOutbound();
-
-        final byte[] actual = new byte[byteBuf.readableBytes()];
-        byteBuf.readBytes(actual);
-        byteBuf.release();
-
-        assertArrayEquals(expected, actual);
+        encode(subscribeInternal, expected);
     }
 
     @Override

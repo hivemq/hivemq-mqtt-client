@@ -11,7 +11,6 @@ import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRel;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
 import static org.mqttbee.api.mqtt.mqtt5.message.publish.pubrel.Mqtt5PubRelReasonCode.SUCCESS;
 import static org.mqttbee.mqtt.datatypes.MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT;
@@ -262,14 +261,7 @@ class Mqtt5PubRelEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
 
 
     private void encode(final byte[] expected, final MqttPubRel pubRel) {
-        channel.writeOutbound(pubRel);
-        final ByteBuf byteBuf = channel.readOutbound();
-
-        final byte[] actual = new byte[byteBuf.readableBytes()];
-        byteBuf.readBytes(actual);
-        byteBuf.release();
-
-        assertArrayEquals(expected, actual);
+        encode(pubRel, expected);
     }
 
     @Override

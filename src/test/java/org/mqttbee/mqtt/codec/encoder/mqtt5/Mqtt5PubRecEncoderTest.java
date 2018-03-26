@@ -10,7 +10,6 @@ import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRec;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
 import static org.mqttbee.api.mqtt.mqtt5.message.publish.pubrec.Mqtt5PubRecReasonCode.SUCCESS;
 import static org.mqttbee.mqtt.datatypes.MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT;
@@ -262,14 +261,7 @@ class Mqtt5PubRecEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
 
 
     private void encode(final byte[] expected, final MqttPubRec pubRec) {
-        channel.writeOutbound(pubRec);
-        final ByteBuf byteBuf = channel.readOutbound();
-
-        final byte[] actual = new byte[byteBuf.readableBytes()];
-        byteBuf.readBytes(actual);
-        byteBuf.release();
-
-        assertArrayEquals(expected, actual);
+        encode(pubRec, expected);
     }
 
     @Override

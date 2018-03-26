@@ -1,8 +1,8 @@
 package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.primitives.Bytes;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.EncoderException;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,8 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 import static java.util.Objects.requireNonNull;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author David Katz
@@ -76,8 +77,9 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
                         new MqttUserPropertyImpl(test2, value)));
 
         final MqttUTF8StringImpl method = requireNonNull(MqttUTF8StringImpl.from("GS2-KRB5"));
-        final MqttAuth auth = new MqttAuth(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, method, data, reasonString,
-                        userProperties, Mqtt5AuthEncoder.PROVIDER);
+        final MqttAuth auth =
+                new MqttAuth(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, method, data, reasonString, userProperties,
+                        Mqtt5AuthEncoder.PROVIDER);
         encode(expected, auth);
     }
 
@@ -101,7 +103,7 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
 
         final MqttUTF8StringImpl method = requireNonNull(MqttUTF8StringImpl.from("x"));
         final MqttAuth auth = new MqttAuth(reasonCode, method, null, null, MqttUserPropertiesImpl.NO_USER_PROPERTIES,
-                        Mqtt5AuthEncoder.PROVIDER);
+                Mqtt5AuthEncoder.PROVIDER);
         encode(expected, auth);
     }
 
@@ -163,7 +165,7 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
         final MqttUTF8StringImpl reasonString = MqttUTF8StringImpl.from("reason");
         final MqttUTF8StringImpl method = requireNonNull(MqttUTF8StringImpl.from("x"));
         final MqttAuth auth = new MqttAuth(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, method, null, reasonString,
-                        MqttUserPropertiesImpl.NO_USER_PROPERTIES, Mqtt5AuthEncoder.PROVIDER);
+                MqttUserPropertiesImpl.NO_USER_PROPERTIES, Mqtt5AuthEncoder.PROVIDER);
         encode(expected, auth);
     }
 
@@ -189,7 +191,7 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
         final MqttUTF8StringImpl reasonString = MqttUTF8StringImpl.from("");
         final MqttUTF8StringImpl method = requireNonNull(MqttUTF8StringImpl.from("x"));
         final MqttAuth auth = new MqttAuth(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, method, null, reasonString,
-                        MqttUserPropertiesImpl.NO_USER_PROPERTIES, Mqtt5AuthEncoder.PROVIDER);
+                MqttUserPropertiesImpl.NO_USER_PROPERTIES, Mqtt5AuthEncoder.PROVIDER);
         encode(expected, auth);
     }
 
@@ -198,8 +200,8 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
 
         final MqttAuth auth = new MqttAuth(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, maxPacket.getMethod(), null,
-                        maxPacket.getReasonStringTooLong(), maxPacket.getMaxPossibleUserProperties(),
-                        Mqtt5AuthEncoder.PROVIDER);
+                maxPacket.getReasonStringTooLong(), maxPacket.getMaxPossibleUserProperties(),
+                Mqtt5AuthEncoder.PROVIDER);
 
         encode(maxPacket.getWithOmittedReasonString(), auth);
     }
@@ -219,14 +221,7 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
 
 
     private void encode(final byte[] expected, final MqttAuth auth) {
-        channel.writeOutbound(auth);
-        final ByteBuf byteBuf = channel.readOutbound();
-
-        final byte[] actual = new byte[byteBuf.readableBytes()];
-        byteBuf.readBytes(actual);
-        byteBuf.release();
-
-        assertArrayEquals(expected, actual);
+        encode(auth, expected);
     }
 
     private void encodeNok(
@@ -322,27 +317,34 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
             final byte propertyLength3 = (byte) ((propertyLength >>> 14) % 128 + 0b1000_0000);
             final byte propertyLength4 = (byte) ((propertyLength >>> 21) % 128);
 
-            byte[] encoded = {
-                    // fixed header
-                    //   type, flags
-                    (byte) 0b1111_0000,
-                    //   remaining length
-                    remainingLength1, remainingLength2, remainingLength3, remainingLength4,
-                    // variable header
-                    //   reason code (continue)
-                    0x18,
-                    //   properties
-                    propertyLength1, propertyLength2, propertyLength3, propertyLength4,
-                    //     auth method
-                    0x15, 0, 1, 'x'
-            };
+            final ByteBuf byteBuf = Unpooled.buffer(5 + remainingLength, 5 + remainingLength);
+
+            // fixed header
+            //   type, flags
+            byteBuf.writeByte(0b1111_0000);
+            //   remaining length
+            byteBuf.writeByte(remainingLength1);
+            byteBuf.writeByte(remainingLength2);
+            byteBuf.writeByte(remainingLength3);
+            byteBuf.writeByte(remainingLength4);
+            // variable header
+            //   reason code (continue)
+            byteBuf.writeByte(0x18);
+            //   properties
+            byteBuf.writeByte(propertyLength1);
+            byteBuf.writeByte(propertyLength2);
+            byteBuf.writeByte(propertyLength3);
+            byteBuf.writeByte(propertyLength4);
+            //     auth method
+            byteBuf.writeBytes(new byte[]{0x15, 0, 1, 'x'});
+
             final byte[] userPropertyByteArray = {
                     0x26, 0, 4, 'u', 's', 'e', 'r', 0, 8, 'p', 'r', 'o', 'p', 'e', 'r', 't', 'y'
             };
-            final byte[][] properties = new byte[userPropertyCount][];
-            Arrays.fill(properties, userPropertyByteArray);
-            encoded = Bytes.concat(encoded, Bytes.concat(properties));
-            return encoded;
+            for (int i = 0; i < userPropertyCount; i++) {
+                byteBuf.writeBytes(userPropertyByteArray);
+            }
+            return byteBuf.array();
         }
     }
 }
