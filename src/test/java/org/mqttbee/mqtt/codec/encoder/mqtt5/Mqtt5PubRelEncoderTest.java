@@ -233,7 +233,7 @@ class Mqtt5PubRelEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
 
         // fixed header
         // type, reserved
-        expected.writeByte(0b0101_0000);
+        expected.writeByte(0b0110_0010);
         // remaining length (2 + 1 + 4 + (userPropertyBytes * maxPossibleUserPropertiesCount) = 268435447
         expected.writeByte(0xf7);
         expected.writeByte(0xff);
@@ -243,7 +243,7 @@ class Mqtt5PubRelEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
         expected.writeByte(0);
         expected.writeByte(5);
         // reason code
-        expected.writeByte(0x90);
+        expected.writeByte(0x92);
         // properties length
         expected.writeByte(0xf0);
         expected.writeByte(0xff);
@@ -253,7 +253,7 @@ class Mqtt5PubRelEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
         maxUserProperties.encode(expected);
 
         final Mqtt5PubRelReasonCode reasonCode = Mqtt5PubRelReasonCode.PACKET_IDENTIFIER_NOT_FOUND;
-        final MqttUTF8StringImpl reasonString = getPaddedUtf8String(1);
+        final MqttUTF8StringImpl reasonString = maxPacket.getPaddedUtf8StringTooLong();
         final MqttPubRel pubRel =
                 new MqttPubRel(5, reasonCode, reasonString, maxUserProperties, Mqtt5PubRelEncoder.PROVIDER);
         encode(expected.array(), pubRel);
