@@ -33,7 +33,7 @@ project.ext {
     rxJavaVersion = '2.1.12'
     nettyVersion = '4.1.22.Final'
     daggerVersion = '2.15'
-    guavaVersion = '23.6-jre'
+    guavaVersion = '24.1-jre'
     logbackVersion = '1.2.3'
     junit4Version = '4.12'
     junitVintageVersion = '4.12.3'
