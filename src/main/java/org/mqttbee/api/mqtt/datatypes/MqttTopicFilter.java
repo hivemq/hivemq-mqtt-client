@@ -78,4 +78,20 @@ public interface MqttTopicFilter extends MqttUTF8String {
      */
     boolean isShared();
 
+    /**
+     * Matches this Topic Filter with the given Topic Name.
+     *
+     * @param topic the Topic Name to match.
+     * @return true if this Topic Filter matches the Topic Name, otherwise false.
+     */
+    boolean matches(@NotNull MqttTopic topic);
+
+    /**
+     * Matches this Topic Filter with the given Topic Filter.
+     *
+     * @param topicFilter the Topic Filter to match.
+     * @return true if this Topic Filter matches the given Topic Filter, otherwise false.
+     */
+    boolean matches(@NotNull MqttTopicFilter topicFilter);
+
 }

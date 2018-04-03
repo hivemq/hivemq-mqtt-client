@@ -105,13 +105,8 @@ public class MqttTopicImpl extends MqttUTF8StringImpl implements MqttTopic {
      * @return whether the string contains wildcard characters.
      */
     private static boolean containsWildcardCharacters(@NotNull final String string) {
-        for (int i = 0; i < string.length(); i++) {
-            final char c = string.charAt(i);
-            if (c == MqttTopicFilterImpl.MULTI_LEVEL_WILDCARD || c == MqttTopicFilterImpl.SINGLE_LEVEL_WILDCARD) {
-                return true;
-            }
-        }
-        return false;
+        return (string.indexOf(MqttTopicFilterImpl.MULTI_LEVEL_WILDCARD) != -1) ||
+                (string.indexOf(MqttTopicFilterImpl.SINGLE_LEVEL_WILDCARD) != -1);
     }
 
     /**
@@ -122,17 +117,17 @@ public class MqttTopicImpl extends MqttUTF8StringImpl implements MqttTopic {
      */
     @NotNull
     static ImmutableList<String> splitLevels(@NotNull final String string) {
-        int startIndex = 0;
         final ImmutableList.Builder<String> levelsBuilder = ImmutableList.builder();
-        for (int i = 0; i < string.length(); i++) {
-            final char c = string.charAt(i);
-            if (c == TOPIC_LEVEL_SEPARATOR) {
-                levelsBuilder.add(string.substring(startIndex, i));
-                startIndex = i + 1;
+        int start = 0;
+        while (true) {
+            final int end = string.indexOf(TOPIC_LEVEL_SEPARATOR, start);
+            if (end == -1) {
+                levelsBuilder.add(string.substring(start, string.length()));
+                return levelsBuilder.build();
             }
+            levelsBuilder.add(string.substring(start, end));
+            start = end + 1;
         }
-        levelsBuilder.add(string.substring(startIndex, string.length()));
-        return levelsBuilder.build();
     }
 
 

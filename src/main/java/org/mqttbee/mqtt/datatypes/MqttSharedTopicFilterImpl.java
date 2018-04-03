@@ -77,7 +77,7 @@ public class MqttSharedTopicFilterImpl extends MqttTopicFilterImpl implements Mq
         if (wildcardFlags == WILDCARD_CHECK_FAILURE) {
             return null;
         }
-        return new MqttSharedTopicFilterImpl(binary, wildcardFlags);
+        return new MqttSharedTopicFilterImpl(binary, shareNameEnd, wildcardFlags);
     }
 
     /**
@@ -154,24 +154,31 @@ public class MqttSharedTopicFilterImpl extends MqttTopicFilterImpl implements Mq
     }
 
 
-    private int shareNameCharEnd;
+    private int filterByteStart;
+    private int filterCharStart;
 
-    private MqttSharedTopicFilterImpl(@NotNull final byte[] binary, final int wildcardFlags) {
+    private MqttSharedTopicFilterImpl(
+            @NotNull final byte[] binary, final int shareNameByteEnd, final int wildcardFlags) {
+
         super(binary, wildcardFlags);
-        shareNameCharEnd = -1;
+        this.filterByteStart = shareNameByteEnd + 1;
+        filterCharStart = -1;
     }
 
     private MqttSharedTopicFilterImpl(
             @NotNull final String string, final int shareNameCharEnd, final int wildcardFlags) {
+
         super(string, wildcardFlags);
-        this.shareNameCharEnd = shareNameCharEnd;
+        filterByteStart = -1;
+        this.filterCharStart = shareNameCharEnd + 1;
     }
 
     private MqttSharedTopicFilterImpl(
             @NotNull final String shareName, @NotNull final String topicFilter, final int wildcardFlags) {
 
         super(SHARE_PREFIX + shareName + MqttTopicImpl.TOPIC_LEVEL_SEPARATOR + topicFilter, wildcardFlags);
-        this.shareNameCharEnd = SHARE_PREFIX_LENGTH + shareName.length();
+        filterByteStart = -1;
+        this.filterCharStart = SHARE_PREFIX_LENGTH + shareName.length() + 1;
     }
 
     @NotNull
@@ -187,25 +194,34 @@ public class MqttSharedTopicFilterImpl extends MqttTopicFilterImpl implements Mq
 
     @Override
     public String getShareName() {
-        return toString().substring(SHARE_PREFIX_LENGTH, getShareNameCharEnd());
+        return toString().substring(SHARE_PREFIX_LENGTH, getFilterCharStart() - 1);
     }
 
     @Override
     public String getTopicFilter() {
-        return toString().substring(getShareNameCharEnd() + 1);
+        return toString().substring(getFilterCharStart());
     }
 
-    private int getShareNameCharEnd() {
-        final String string = toString();
-        if (shareNameCharEnd == -1) {
-            for (int i = SHARE_PREFIX_LENGTH; i < string.length(); i++) {
-                if (string.charAt(i) == MqttTopicImpl.TOPIC_LEVEL_SEPARATOR) {
-                    shareNameCharEnd = i;
+    @Override
+    int getFilterByteStart() {
+        if (filterByteStart == -1) {
+            final byte[] binary = toBinary();
+            for (int i = SHARE_PREFIX_LENGTH; i < binary.length; i++) {
+                if (binary[i] == MqttTopicImpl.TOPIC_LEVEL_SEPARATOR) {
+                    filterByteStart = i + 1;
                     break;
                 }
             }
         }
-        return shareNameCharEnd;
+        return filterByteStart;
+    }
+
+    private int getFilterCharStart() {
+        if (filterCharStart == -1) {
+            final String string = toString();
+            filterCharStart = string.indexOf(MqttTopicImpl.TOPIC_LEVEL_SEPARATOR, SHARE_PREFIX_LENGTH + 1) + 1;
+        }
+        return filterCharStart;
     }
 
 }
