@@ -16,6 +16,10 @@ public class Ranges {
         rootRange = new Range(0, maxId + 1);
     }
 
+    public Ranges(final int minId, final int maxId) {
+        rootRange = new Range(minId, maxId + 1);
+    }
+
     public int getId() {
         return rootRange.getId();
     }
