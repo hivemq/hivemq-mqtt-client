@@ -4,7 +4,9 @@ import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt.datatypes.MqttTopic;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
+import org.mqttbee.util.MustNotBeImplementedUtil;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -230,6 +232,89 @@ public class MqttTopicFilterImpl extends MqttUTF8StringImpl implements MqttTopic
     @Override
     public boolean isShared() {
         return false;
+    }
+
+    int getFilterByteStart() {
+        return 0;
+    }
+
+    @Override
+    public boolean matches(@NotNull final MqttTopic topic) {
+        return matches(MustNotBeImplementedUtil.checkNotImplemented(topic, MqttTopicImpl.class));
+    }
+
+    public boolean matches(@NotNull final MqttTopicImpl topic) {
+        return matches(toBinary(), getFilterByteStart(), topic.toBinary());
+    }
+
+    private static boolean matches(@NotNull final byte[] filter, final int offset, @NotNull final byte[] topic) {
+        int fi = offset;
+        int ti = 0;
+        while (fi < filter.length) {
+            final byte fb = filter[fi++];
+            if (fb == MULTI_LEVEL_WILDCARD) {
+                return true;
+            } else if (fb == SINGLE_LEVEL_WILDCARD) {
+                while (ti < topic.length) { // loop until next topic level separator or end
+                    if (topic[ti] == MqttTopic.TOPIC_LEVEL_SEPARATOR) {
+                        break;
+                    }
+                    ti++; // only increment when not topic level separator
+                }
+            } else {
+                if (ti == topic.length) {
+                    // lookahead for "/#" as it includes the parent level
+                    return (fb == MqttTopic.TOPIC_LEVEL_SEPARATOR) && (fi + 1 == filter.length) &&
+                            (filter[fi] == MULTI_LEVEL_WILDCARD);
+                }
+                if (topic[ti++] != fb) {
+                    return false;
+                }
+            }
+        }
+        return (fi == filter.length) && (ti == topic.length);
+    }
+
+    @Override
+    public boolean matches(@NotNull final MqttTopicFilter topicFilter) {
+        return matches(MustNotBeImplementedUtil.checkNotImplemented(topicFilter, MqttTopicFilterImpl.class));
+    }
+
+    public boolean matches(@NotNull final MqttTopicFilterImpl topicFilter) {
+        return matches(toBinary(), getFilterByteStart(), topicFilter.toBinary(), topicFilter.getFilterByteStart());
+    }
+
+    private static boolean matches(
+            @NotNull final byte[] filter1, final int offset1, @NotNull final byte[] filter2, final int offset2) {
+
+        int i1 = offset1;
+        int i2 = offset2;
+        while (i1 < filter1.length) {
+            final byte b1 = filter1[i1++];
+            if (b1 == MULTI_LEVEL_WILDCARD) {
+                return true;
+            } else if (b1 == SINGLE_LEVEL_WILDCARD) {
+                if (filter2[i2] == MULTI_LEVEL_WILDCARD) { // single level wildcard is weaker
+                    return false;
+                }
+                while (i2 < filter2.length) { // loop until next topic level separator or end
+                    if (filter2[i2] == MqttTopic.TOPIC_LEVEL_SEPARATOR) {
+                        break;
+                    }
+                    i2++; // only increment when not topic level separator
+                }
+            } else {
+                if (i2 == filter2.length) {
+                    // lookahead for "/#" as it includes the parent level
+                    return (b1 == MqttTopic.TOPIC_LEVEL_SEPARATOR) && (i1 + 1 == filter1.length) &&
+                            (filter1[i1] == MULTI_LEVEL_WILDCARD);
+                }
+                if (filter2[i2++] != b1) {
+                    return false;
+                }
+            }
+        }
+        return (i1 == filter1.length) && (i2 == filter2.length);
     }
 
 }
