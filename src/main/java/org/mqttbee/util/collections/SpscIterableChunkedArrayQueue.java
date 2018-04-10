@@ -1,4 +1,4 @@
-package org.mqttbee.util;
+package org.mqttbee.util.collections;
 
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
@@ -154,7 +154,7 @@ public class SpscIterableChunkedArrayQueue<E> implements Iterable<E> {
 
 
     /**
-     * {@link Iterator} for a {@link org.mqttbee.util.SpscIterableChunkedArrayQueue}.
+     * {@link Iterator} for a {@link SpscIterableChunkedArrayQueue}.
      */
     private class SpscChunkedArrayQueueIterator implements Iterator<E> {
 

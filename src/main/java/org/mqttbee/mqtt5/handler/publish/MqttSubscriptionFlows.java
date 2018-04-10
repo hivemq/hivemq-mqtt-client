@@ -1,19 +1,28 @@
 package org.mqttbee.mqtt5.handler.publish;
 
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt.datatypes.MqttTopic;
-import org.mqttbee.util.ScLinkedList;
+import org.mqttbee.annotations.Nullable;
+import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
+import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
+import org.mqttbee.util.collections.ScNodeList;
+
+import javax.annotation.concurrent.NotThreadSafe;
+import java.util.function.Consumer;
 
 /**
  * @author Silvio Giebl
  */
+@NotThreadSafe
 public interface MqttSubscriptionFlows {
 
-    void add(@NotNull MqttSubscriptionFlow subscriptionFlow);
+    void subscribe(@NotNull final MqttTopicFilterImpl topicFilter, @NotNull MqttSubscriptionFlow flow);
 
-    void remove(@NotNull MqttSubscriptionFlow subscriptionFlow);
+    void unsubscribe(
+            @NotNull final MqttTopicFilterImpl topicFilter,
+            @Nullable final Consumer<MqttSubscriptionFlow> unsubscribedCallback);
 
-    @NotNull
-    ScLinkedList<MqttSubscriptionFlow> findMatching(@NotNull MqttTopic topic);
+    void cancel(@NotNull MqttSubscriptionFlow flow);
+
+    boolean findMatching(@NotNull MqttTopicImpl topic, final ScNodeList<MqttIncomingPublishFlow> matchingFlows);
 
 }

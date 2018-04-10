@@ -20,6 +20,8 @@ public interface Mqtt5ClientConnectionData {
 
     int getMaximumPacketSize();
 
+    int getSubscriptionIdentifierMaximum();
+
     @NotNull
     Optional<MqttUTF8String> getAuthMethod();
 
