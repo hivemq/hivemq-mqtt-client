@@ -1,15 +1,16 @@
 package org.mqttbee.mqtt5.persistence.memory;
 
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.mqtt.MqttClientConnectionData;
+import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
 import org.mqttbee.mqtt.message.publish.MqttQoSMessage;
 import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRel;
 import org.mqttbee.mqtt5.ioc.ChannelScope;
 import org.mqttbee.mqtt5.persistence.OutgoingQoSFlowPersistence;
+import org.mqttbee.util.collections.IntMap;
 
 import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -18,11 +19,13 @@ import java.util.concurrent.CompletableFuture;
 @ChannelScope
 public class OutgoingQoSFlowMemoryPersistence implements OutgoingQoSFlowPersistence {
 
-    private final Map<Integer, MqttQoSMessage> messages;
+    private final IntMap<MqttQoSMessage> messages;
 
     @Inject
-    OutgoingQoSFlowMemoryPersistence() {
-        this.messages = new HashMap<>();
+    OutgoingQoSFlowMemoryPersistence(final MqttClientData clientData) {
+        final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
+        assert clientConnectionData != null;
+        this.messages = new IntMap<>(clientConnectionData.getReceiveMaximum());
     }
 
     @NotNull

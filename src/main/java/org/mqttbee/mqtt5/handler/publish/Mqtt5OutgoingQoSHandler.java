@@ -7,6 +7,7 @@ import io.netty.channel.ChannelPromise;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.exceptions.PacketIdentifiersExceededException;
+import org.mqttbee.api.mqtt.mqtt5.Mqtt5ServerConnectionData;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5OutgoingQoS1ControlProvider;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5OutgoingQoS2ControlProvider;
 import org.mqttbee.mqtt.MqttClientData;
@@ -21,9 +22,11 @@ import org.mqttbee.mqtt.message.publish.pubcomp.MqttPubComp;
 import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRec;
 import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRel;
 import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRelBuilder;
+import org.mqttbee.mqtt5.handler.subscribe.MqttSubscriptionHandler;
 import org.mqttbee.mqtt5.ioc.ChannelScope;
 import org.mqttbee.mqtt5.persistence.OutgoingQoSFlowPersistence;
 import org.mqttbee.util.Ranges;
+import org.mqttbee.util.UnsignedDataTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,11 +45,17 @@ public class Mqtt5OutgoingQoSHandler extends ChannelDuplexHandler {
     private final Ranges packetIdentifiers;
     private final OutgoingQoSFlowPersistence persistence;
 
-    @Inject
-    Mqtt5OutgoingQoSHandler(
-            final Ranges packetIdentifiers, @NotNull final OutgoingQoSFlowPersistence persistence) {
+    public static int getPubReceiveMaximum(final int receiveMaximum) {
+        final int max = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE - MqttSubscriptionHandler.MAX_SUB_PENDING;
+        return Math.min(receiveMaximum, max);
+    }
 
-        this.packetIdentifiers = packetIdentifiers;
+    @Inject
+    Mqtt5OutgoingQoSHandler(final MqttClientData clientData, final OutgoingQoSFlowPersistence persistence) {
+        final Mqtt5ServerConnectionData serverConnectionData = clientData.getRawServerConnectionData();
+        assert serverConnectionData != null;
+
+        this.packetIdentifiers = new Ranges(getPubReceiveMaximum(serverConnectionData.getReceiveMaximum()));
         this.persistence = persistence;
     }
 

@@ -1,37 +1,30 @@
 package org.mqttbee.mqtt5.ioc;
 
+import dagger.Binds;
 import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
-import org.mqttbee.annotations.NotNull;
+import io.reactivex.Scheduler;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt5.handler.disconnect.Mqtt3Disconnecter;
 import org.mqttbee.mqtt5.handler.disconnect.Mqtt5Disconnecter;
 import org.mqttbee.mqtt5.handler.disconnect.MqttDisconnecter;
-import org.mqttbee.util.Ranges;
-import org.mqttbee.util.UnsignedDataTypes;
+import org.mqttbee.mqtt5.handler.publish.MqttSubscriptionFlowTree;
+import org.mqttbee.mqtt5.handler.publish.MqttSubscriptionFlows;
+
+import javax.inject.Named;
 
 /**
  * @author Silvio Giebl
  */
 @Module
-public class ChannelModule {
-
-    private final MqttClientData clientData;
-
-    ChannelModule(@NotNull final MqttClientData clientData) {
-        this.clientData = clientData;
-    }
-
-    @Provides
-    MqttClientData provideClientData() {
-        return clientData;
-    }
+public abstract class ChannelModule {
 
     @Provides
     @ChannelScope
-    MqttDisconnecter provideDisconnecter(
-            final Lazy<Mqtt5Disconnecter> mqtt5Disconnecter, final Lazy<Mqtt3Disconnecter> mqtt3Disconnecter) {
+    static MqttDisconnecter provideDisconnecter(
+            final MqttClientData clientData, final Lazy<Mqtt5Disconnecter> mqtt5Disconnecter,
+            final Lazy<Mqtt3Disconnecter> mqtt3Disconnecter) {
 
         switch (clientData.getMqttVersion()) {
             case MQTT_5_0:
@@ -45,8 +38,12 @@ public class ChannelModule {
 
     @Provides
     @ChannelScope
-    static Ranges providePacketIdentifiers() {
-        return new Ranges(UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE);
+    @Named("incomingPublish")
+    static Scheduler.Worker provideIncomingPublishWorker(final MqttClientData clientData) {
+        return clientData.getExecutorConfig().getRxJavaScheduler().createWorker();
     }
+
+    @Binds
+    abstract MqttSubscriptionFlows provideSubscriptionFlows(final MqttSubscriptionFlowTree tree);
 
 }

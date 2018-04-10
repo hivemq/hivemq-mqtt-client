@@ -7,6 +7,7 @@ import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientConnectionData;
 import org.mqttbee.api.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
+import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 
 import java.util.Optional;
 
@@ -20,6 +21,7 @@ public class MqttClientConnectionData implements Mqtt5ClientConnectionData {
     private final int receiveMaximum;
     private final MqttTopicImpl[] topicAliasMapping;
     private final int maximumPacketSize;
+    private final int subscriptionIdentifierMaximum;
     private final Mqtt5EnhancedAuthProvider enhancedAuthProvider;
     private final boolean hasWillPublish;
     private final boolean problemInformationRequested;
@@ -38,6 +40,8 @@ public class MqttClientConnectionData implements Mqtt5ClientConnectionData {
         this.receiveMaximum = receiveMaximum;
         this.topicAliasMapping = (topicAliasMaximum == 0) ? null : new MqttTopicImpl[topicAliasMaximum];
         this.maximumPacketSize = maximumPacketSize;
+        this.subscriptionIdentifierMaximum =
+                MqttVariableByteInteger.FOUR_BYTES_MAX_VALUE; // TODO CONNECT + CONNACK user properties
         this.enhancedAuthProvider = enhancedAuthProvider;
         this.hasWillPublish = hasWillPublish;
         this.problemInformationRequested = problemInformationRequested;
@@ -76,6 +80,11 @@ public class MqttClientConnectionData implements Mqtt5ClientConnectionData {
     @Nullable
     public MqttTopicImpl[] getTopicAliasMapping() {
         return topicAliasMapping;
+    }
+
+    @Override
+    public int getSubscriptionIdentifierMaximum() {
+        return subscriptionIdentifierMaximum;
     }
 
     @Override

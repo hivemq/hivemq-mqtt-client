@@ -1,5 +1,6 @@
 package org.mqttbee.mqtt5.ioc;
 
+import dagger.BindsInstance;
 import dagger.Subcomponent;
 import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
@@ -29,7 +30,7 @@ public interface ChannelComponent {
     @NotNull
     static ChannelComponent create(@NotNull final Channel channel, @NotNull final MqttClientData clientData) {
         final ChannelComponent channelComponent =
-                MqttBeeComponent.INSTANCE.channelComponent(new ChannelModule(clientData));
+                MqttBeeComponent.INSTANCE.channelComponentBuilder().clientData(clientData).build();
         channel.attr(KEY).set(channelComponent);
         return channelComponent;
     }
@@ -58,5 +59,16 @@ public interface ChannelComponent {
     Mqtt5DisconnectHandler disconnectHandler();
 
     Mqtt5OutgoingQoSHandler outgoingQoSHandler();
+
+
+    @Subcomponent.Builder
+    interface Builder {
+
+        @BindsInstance
+        Builder clientData(MqttClientData clientData);
+
+        ChannelComponent build();
+
+    }
 
 }
