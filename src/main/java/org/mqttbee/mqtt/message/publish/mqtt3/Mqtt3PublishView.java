@@ -5,12 +5,14 @@ import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;
+import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.TopicAliasUsage;
 import org.mqttbee.mqtt.codec.encoder.mqtt3.Mqtt3PublishEncoder;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
+import org.mqttbee.mqtt.message.publish.MqttWillPublish;
 
 import javax.annotation.concurrent.Immutable;
 import java.nio.ByteBuffer;
@@ -77,6 +79,14 @@ public class Mqtt3PublishView implements Mqtt3Publish {
     @NotNull
     public MqttPublish getWrapped() {
         return wrapped;
+    }
+
+    @NotNull
+    public MqttWillPublish getWrappedWill() {
+        if (wrapped instanceof MqttWillPublish) {
+            return (MqttWillPublish) wrapped;
+        }
+        return (MqttWillPublish) Mqtt5WillPublish.extend(wrapped).build();
     }
 
 }

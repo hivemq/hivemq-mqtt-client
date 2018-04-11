@@ -26,8 +26,8 @@ public interface Mqtt5Subscription {
     boolean DEFAULT_RETAIN_AS_PUBLISHED = false;
 
     @NotNull
-    static SubscriptionBuilder builder() {
-        return new SubscriptionBuilder();
+    static Mqtt5SubscriptionBuilder builder() {
+        return new Mqtt5SubscriptionBuilder();
     }
 
     /**

@@ -13,6 +13,11 @@ import java.util.Optional;
 @DoNotImplement
 public interface Mqtt3SimpleAuth {
 
+    @NotNull
+    static Mqtt3SimpleAuthBuilder builder() {
+        return new Mqtt3SimpleAuthBuilder();
+    }
+
     /**
      * @return the username.
      */

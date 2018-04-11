@@ -13,6 +13,11 @@ import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 @DoNotImplement
 public interface Mqtt3Unsubscribe extends Mqtt3Message {
 
+    @NotNull
+    static Mqtt3UnsubscribeBuilder builder() {
+        return new Mqtt3UnsubscribeBuilder();
+    }
+
     /**
      * @return the Topic Filters of this UNSUBSCRIBE packet. The list contains at least one Topic Filter.
      */
