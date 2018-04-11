@@ -1,0 +1,84 @@
+package org.mqttbee.mqtt.message.publish;
+
+import org.mqttbee.annotations.NotNull;
+import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
+import org.mqttbee.mqtt.message.publish.puback.MqttPubAck;
+import org.mqttbee.mqtt.message.publish.pubcomp.MqttPubComp;
+
+/**
+ * @author Silvio Giebl
+ */
+public class MqttPublishResult implements Mqtt5PublishResult {
+
+    @NotNull
+    private final MqttPublish publish;
+    @Nullable
+    private final Throwable error;
+
+    public MqttPublishResult(@NotNull final MqttPublish publish, @Nullable final Throwable error) {
+        this.publish = publish;
+        this.error = error;
+    }
+
+    @NotNull
+    @Override
+    public MqttPublish getPublish() {
+        return publish;
+    }
+
+    @Override
+    public boolean isSuccess() {
+        return error == null;
+    }
+
+    @Nullable
+    @Override
+    public Throwable getError() {
+        return error;
+    }
+
+
+    public static class MqttQoS1Result extends MqttPublishResult implements Mqtt5QoS1Result {
+
+        @NotNull
+        private final MqttPubAck pubAck;
+
+        public MqttQoS1Result(
+                @NotNull final MqttPublish publish, @Nullable final Throwable error, @NotNull final MqttPubAck pubAck) {
+
+            super(publish, error);
+            this.pubAck = pubAck;
+        }
+
+        @NotNull
+        @Override
+        public MqttPubAck getPubAck() {
+            return pubAck;
+        }
+
+    }
+
+
+    public static class MqttQoS2Result extends MqttPublishResult implements Mqtt5QoS2Result {
+
+        @NotNull
+        private final MqttPubComp pubComp;
+
+        public MqttQoS2Result(
+                @NotNull final MqttPublish publish, @Nullable final Throwable error,
+                @NotNull final MqttPubComp pubComp) {
+
+            super(publish, error);
+            this.pubComp = pubComp;
+        }
+
+        @NotNull
+        @Override
+        public MqttPubComp getPubComp() {
+            return pubComp;
+        }
+
+    }
+
+}

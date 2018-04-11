@@ -1,9 +1,9 @@
 package org.mqttbee.api.mqtt.mqtt5.message.publish;
 
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.puback.Mqtt5PubAck;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubComp;
-import org.mqttbee.mqtt.message.publish.MqttPublish;
 
 /**
  * @author Silvio Giebl
@@ -11,10 +11,11 @@ import org.mqttbee.mqtt.message.publish.MqttPublish;
 public interface Mqtt5PublishResult {
 
     @NotNull
-    MqttPublish getPublish();
+    Mqtt5Publish getPublish();
 
     boolean isSuccess();
 
+    @Nullable
     Throwable getError();
 
 
