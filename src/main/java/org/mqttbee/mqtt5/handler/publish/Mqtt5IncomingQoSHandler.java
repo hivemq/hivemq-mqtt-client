@@ -24,6 +24,8 @@ import javax.inject.Inject;
 @ChannelScope
 public class Mqtt5IncomingQoSHandler extends ChannelInboundHandlerAdapter {
 
+    public static final String NAME = "qos.incoming";
+
     private final IncomingQoSFlowPersistence persistence;
 
     @Inject

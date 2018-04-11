@@ -13,6 +13,7 @@ import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.MqttServerConnectionData;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoder;
+import org.mqttbee.mqtt.codec.encoder.MqttEncoder;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
 import org.mqttbee.mqtt.message.connect.MqttConnectRestrictions;
@@ -21,6 +22,9 @@ import org.mqttbee.mqtt.message.connect.connack.MqttConnAckRestrictions;
 import org.mqttbee.mqtt5.handler.disconnect.ChannelCloseEvent;
 import org.mqttbee.mqtt5.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt5.handler.ping.Mqtt5PingHandler;
+import org.mqttbee.mqtt5.handler.publish.Mqtt5IncomingQoSHandler;
+import org.mqttbee.mqtt5.handler.publish.Mqtt5OutgoingQoSHandler;
+import org.mqttbee.mqtt5.handler.subscribe.MqttSubscriptionHandler;
 import org.mqttbee.mqtt5.handler.util.ChannelInboundHandlerWithTimeout;
 import org.mqttbee.mqtt5.ioc.ChannelComponent;
 import org.mqttbee.mqtt5.ioc.ChannelScope;
@@ -142,17 +146,24 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerWithTimeout {
                 addServerData(connAck);
 
                 final ChannelPipeline pipeline = channel.pipeline();
+                final ChannelComponent channelComponent = ChannelComponent.get(channel);
+
                 pipeline.remove(this);
 
                 final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
                 assert clientConnectionData != null;
                 final int keepAlive = clientConnectionData.getKeepAlive();
                 if (keepAlive > 0) {
-                    pipeline.addLast(Mqtt5PingHandler.NAME, new Mqtt5PingHandler(keepAlive));
+                    pipeline.addAfter(MqttEncoder.NAME, Mqtt5PingHandler.NAME, new Mqtt5PingHandler(keepAlive));
                 }
 
-                pipeline.addLast(Mqtt5DisconnectOnConnAckHandler.NAME,
-                        ChannelComponent.get(channel).disconnectOnConnAckHandler());
+                pipeline.addAfter(
+                        Mqtt5PingHandler.NAME, MqttSubscriptionHandler.NAME, channelComponent.subscriptionHandler());
+                pipeline.addAfter(
+                        Mqtt5PingHandler.NAME, Mqtt5IncomingQoSHandler.NAME, channelComponent.incomingQoSHandler());
+                pipeline.addAfter(
+                        Mqtt5PingHandler.NAME, Mqtt5OutgoingQoSHandler.NAME, channelComponent.outgoingQoSHandler());
+                pipeline.addLast(Mqtt5DisconnectOnConnAckHandler.NAME, channelComponent.disconnectOnConnAckHandler());
 
                 connAckEmitter.onSuccess(connAck);
             }

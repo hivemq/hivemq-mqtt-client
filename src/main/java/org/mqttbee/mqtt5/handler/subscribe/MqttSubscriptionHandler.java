@@ -36,6 +36,7 @@ import java.util.LinkedList;
 @ChannelScope
 public class MqttSubscriptionHandler extends ChannelDuplexHandler {
 
+    public static final String NAME = "subscription";
     public static final int MAX_SUB_PENDING = 10; // TODO configurable
 
     private final MqttIncomingPublishFlows subscriptionFlows;
