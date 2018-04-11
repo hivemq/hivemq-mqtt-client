@@ -40,6 +40,8 @@ import static org.mqttbee.mqtt.message.publish.MqttPublishWrapper.*;
 @ChannelScope
 public class Mqtt5OutgoingQoSHandler extends ChannelDuplexHandler {
 
+    public static final String NAME = "qos.outgoing";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(Mqtt5OutgoingQoSHandler.class);
 
     private final Ranges packetIdentifiers;
