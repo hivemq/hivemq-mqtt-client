@@ -35,6 +35,7 @@ project.ext {
     daggerVersion = '2.15'
     guavaVersion = '24.1-jre'
     logbackVersion = '1.2.3'
+    jcToolsVersion = '2.1.1'
     junit4Version = '4.12'
     junitVintageVersion = '4.12.3'
     junitJupiterVersion = '5.0.3'
@@ -48,6 +49,7 @@ dependencies {
     compile group: 'com.google.dagger', name: 'dagger', version: daggerVersion
     compile group: 'com.google.guava', name: 'guava', version: guavaVersion
     compile group: 'ch.qos.logback', name: 'logback-classic', version: logbackVersion
+    compile group: 'org.jctools', name: 'jctools-core', version: jcToolsVersion
 
     apt group: 'com.google.dagger', name: 'dagger-compiler', version: daggerVersion
 

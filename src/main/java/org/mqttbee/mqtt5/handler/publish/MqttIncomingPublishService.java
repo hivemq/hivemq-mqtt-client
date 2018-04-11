@@ -34,16 +34,16 @@ public class MqttIncomingPublishService {
     @Inject
     MqttIncomingPublishService(
             final MqttIncomingPublishFlows incomingPublishFlows,
-            @Named("incomingPublish") final Scheduler.Worker worker, final MqttClientData clientData) {
+            @Named("incomingPublish") final Scheduler.Worker rxEventLoop, final MqttClientData clientData) {
 
         final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
         assert clientConnectionData != null;
-        final int receiveMaximum = clientConnectionData.getReceiveMaximum();
 
         this.incomingPublishFlows = incomingPublishFlows;
-        rxEventLoop = worker;
+        this.rxEventLoop = rxEventLoop;
         nettyEventLoop = clientConnectionData.getChannel().eventLoop();
 
+        final int receiveMaximum = clientConnectionData.getReceiveMaximum();
         queue = new SpscIterableChunkedArrayQueue<>(receiveMaximum, 64);
 
         publishRunnable = this::runPublish;
