@@ -12,6 +12,11 @@ import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 @DoNotImplement
 public interface Mqtt3Subscribe extends Mqtt3Message {
 
+    @NotNull
+    static Mqtt3SubscribeBuilder builder() {
+        return new Mqtt3SubscribeBuilder();
+    }
+
     /**
      * @return the {@link Mqtt3Subscription}s of this SUBSCRIBE packet. The list contains at least one subscription.
      */

@@ -12,7 +12,7 @@ import org.mqttbee.annotations.NotNull;
 public interface Mqtt5WillPublish extends Mqtt5Publish {
 
     @NotNull
-    static Mqtt5WillPublishBuilder build() {
+    static Mqtt5WillPublishBuilder builder() {
         return new Mqtt5WillPublishBuilder();
     }
 

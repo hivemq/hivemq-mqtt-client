@@ -16,6 +16,16 @@ import java.util.Optional;
 @DoNotImplement
 public interface Mqtt3Publish extends Mqtt3Message {
 
+    @NotNull
+    static Mqtt3PublishBuilder builder() {
+        return new Mqtt3PublishBuilder();
+    }
+
+    @NotNull
+    static Mqtt3PublishBuilder extend(@NotNull final Mqtt3Publish publish) {
+        return new Mqtt3PublishBuilder(publish);
+    }
+
     /**
      * @return the topic of this PUBLISH packet.
      */

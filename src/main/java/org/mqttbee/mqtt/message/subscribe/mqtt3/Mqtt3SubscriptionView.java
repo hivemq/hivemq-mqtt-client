@@ -4,6 +4,8 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscription;
+import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5RetainHandling;
+import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
 
 /**
@@ -11,8 +13,18 @@ import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
  */
 public class Mqtt3SubscriptionView implements Mqtt3Subscription {
 
-    public static Mqtt3SubscriptionView wrapped(@NotNull final MqttSubscription subscription) {
-        return new Mqtt3SubscriptionView(subscription);
+    @NotNull
+    public static MqttSubscription wrapped(
+            @NotNull final MqttTopicFilterImpl topicFilter, @NotNull final MqttQoS qos) {
+
+        return new MqttSubscription(topicFilter, qos, false, Mqtt5RetainHandling.SEND, false);
+    }
+
+    @NotNull
+    public static Mqtt3SubscriptionView create(
+            @NotNull final MqttTopicFilterImpl topicFilter, @NotNull final MqttQoS qos) {
+
+        return new Mqtt3SubscriptionView(wrapped(topicFilter, qos));
     }
 
     private final MqttSubscription wrapped;
@@ -31,6 +43,11 @@ public class Mqtt3SubscriptionView implements Mqtt3Subscription {
     @Override
     public MqttQoS getQoS() {
         return wrapped.getQoS();
+    }
+
+    @NotNull
+    public MqttSubscription getWrapped() {
+        return wrapped;
     }
 
 }

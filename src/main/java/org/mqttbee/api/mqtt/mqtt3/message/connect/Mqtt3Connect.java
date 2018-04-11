@@ -19,6 +19,16 @@ public interface Mqtt3Connect extends Mqtt3Message {
     int DEFAULT_KEEP_ALIVE = 60;
     boolean DEFAULT_CLEAN_SESSION = true;
 
+    @NotNull
+    static Mqtt3ConnectBuilder builder() {
+        return new Mqtt3ConnectBuilder();
+    }
+
+    @NotNull
+    static Mqtt3ConnectBuilder extend(@NotNull final Mqtt3Connect connect) {
+        return new Mqtt3ConnectBuilder(connect);
+    }
+
     /**
      * @return the keep alive the client wants to use.
      */

@@ -11,6 +11,11 @@ import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
  */
 public interface Mqtt3Subscription {
 
+    @NotNull
+    static Mqtt3SubscriptionBuilder builder() {
+        return new Mqtt3SubscriptionBuilder();
+    }
+
     /**
      * @return the Topic Filter of this subscription.
      */
