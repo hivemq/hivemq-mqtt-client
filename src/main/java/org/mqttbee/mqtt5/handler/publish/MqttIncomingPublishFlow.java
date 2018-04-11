@@ -70,8 +70,8 @@ public abstract class MqttIncomingPublishFlow implements Emitter<MqttSubscribeRe
 
     @Override
     public void request(final long n) {
-        BackpressureHelper.add(newRequested, n);
         if (!cancelled.get()) {
+            BackpressureHelper.add(newRequested, n);
             schedule(requestRunnable);
         }
     }

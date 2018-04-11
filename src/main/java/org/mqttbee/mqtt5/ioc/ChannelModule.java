@@ -39,7 +39,21 @@ public abstract class ChannelModule {
     @Provides
     @ChannelScope
     @Named("incomingPublish")
-    static Scheduler.Worker provideIncomingPublishWorker(final MqttClientData clientData) {
+    static Scheduler.Worker provideIncomingPublishRxEventLoop(final MqttClientData clientData) {
+        return clientData.getExecutorConfig().getRxJavaScheduler().createWorker();
+    }
+
+    @Provides
+    @ChannelScope
+    @Named("outgoingPublish")
+    static Scheduler.Worker provideOutgoingPublishRxEventLoop(final MqttClientData clientData) {
+        return clientData.getExecutorConfig().getRxJavaScheduler().createWorker();
+    }
+
+    @Provides
+    @ChannelScope
+    @Named("outgoingPublishFlows")
+    static Scheduler.Worker provideOutgoingPublishFlowsRxEventLoop(final MqttClientData clientData) {
         return clientData.getExecutorConfig().getRxJavaScheduler().createWorker();
     }
 

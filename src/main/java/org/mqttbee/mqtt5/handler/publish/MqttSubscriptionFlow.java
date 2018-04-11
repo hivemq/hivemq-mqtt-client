@@ -15,7 +15,7 @@ public class MqttSubscriptionFlow extends MqttIncomingPublishFlow {
     private final ScNodeList<MqttTopicFilterImpl> topicFilters;
     private int subscriptionIdentifier = MqttSubscribeWrapper.DEFAULT_NO_SUBSCRIPTION_IDENTIFIER;
 
-    public MqttSubscriptionFlow(
+    MqttSubscriptionFlow(
             @NotNull final Subscriber<? super MqttSubscribeResult> actual,
             @NotNull final MqttIncomingPublishService incomingPublishService) {
 
