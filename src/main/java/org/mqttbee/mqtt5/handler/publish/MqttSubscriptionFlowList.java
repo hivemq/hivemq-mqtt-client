@@ -47,9 +47,8 @@ public class MqttSubscriptionFlowList implements MqttSubscriptionFlows {
             final ScNodeList<MqttTopicFilterImpl> flowTopicFilters = flow.getTopicFilters();
             for (final Iterator<MqttTopicFilterImpl> iterator = flowTopicFilters.iterator(); iterator.hasNext(); ) {
                 final MqttTopicFilterImpl flowTopicFilter = iterator.next();
-                if (topicFilter.matches(flowTopicFilter)) {
+                if (topicFilter.equals(flowTopicFilter)) {
                     iterator.remove();
-                    subscribedTopicFilters.remove(topicFilter);
                 }
             }
             if (flowTopicFilters.isEmpty()) {
@@ -59,7 +58,7 @@ public class MqttSubscriptionFlowList implements MqttSubscriptionFlows {
                 }
             }
         }
-        subscribedTopicFilters.removeIf(topicFilter::matches);
+        subscribedTopicFilters.remove(topicFilter);
     }
 
     @Override
