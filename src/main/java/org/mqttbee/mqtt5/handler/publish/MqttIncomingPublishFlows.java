@@ -13,6 +13,7 @@ import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
 import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAck;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribeWrapper;
 import org.mqttbee.mqtt.message.unsubscribe.unsuback.MqttUnsubAck;
+import org.mqttbee.mqtt.message.unsubscribe.unsuback.mqtt3.Mqtt3UnsubAckView;
 import org.mqttbee.mqtt5.ioc.ChannelScope;
 import org.mqttbee.util.collections.ScNodeList;
 import org.slf4j.Logger;
@@ -62,8 +63,9 @@ public class MqttIncomingPublishFlows {
     public void unsubscribe(@NotNull final MqttUnsubscribeWrapper unsubscribe, @NotNull final MqttUnsubAck unsubAck) {
         final ImmutableList<MqttTopicFilterImpl> topicFilters = unsubscribe.getWrapped().getTopicFilters();
         final ImmutableList<Mqtt5UnsubAckReasonCode> reasonCodes = unsubAck.getReasonCodes();
+        final boolean areAllSuccess = reasonCodes == Mqtt3UnsubAckView.REASON_CODES_ALL_SUCCESS;
         for (int i = 0; i < topicFilters.size(); i++) {
-            if (!reasonCodes.get(i).isError()) {
+            if (areAllSuccess || !reasonCodes.get(i).isError()) {
                 unsubscribe(topicFilters.get(i));
             }
         }
