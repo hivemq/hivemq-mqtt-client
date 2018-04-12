@@ -10,10 +10,7 @@ import org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3PublishResult;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
-import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3SubscribeResult;
-import org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAck;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
-import org.mqttbee.rx.FlowableWithSingle;
 
 /**
  * @author Silvio Giebl
@@ -24,7 +21,7 @@ public interface Mqtt3Client extends MqttClient {
     Single<Mqtt3ConnAck> connect(@NotNull Mqtt3Connect connect);
 
     @NotNull
-    FlowableWithSingle<Mqtt3SubscribeResult, Mqtt3SubAck, Mqtt3Publish> subscribe(@NotNull Mqtt3Subscribe subscribe);
+    Flowable<Mqtt3Publish> subscribe(@NotNull Mqtt3Subscribe subscribe); // TODO temp
 
     @NotNull
     Flowable<Mqtt3Publish> remainingPublishes();
