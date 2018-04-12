@@ -179,7 +179,7 @@ public class Mqtt5PublishEncoder extends Mqtt5WrappedMessageEncoder<MqttPublish,
         private void encodePayload(@NotNull final ByteBuf out) {
             final ByteBuffer payload = message.getWrapped().getRawPayload();
             if (payload != null) {
-                out.writeBytes(payload);
+                out.writeBytes(payload.duplicate());
             }
         }
 

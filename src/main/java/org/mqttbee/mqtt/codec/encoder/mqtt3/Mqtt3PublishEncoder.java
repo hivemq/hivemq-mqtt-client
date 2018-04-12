@@ -16,8 +16,6 @@ import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
 
 import java.nio.ByteBuffer;
 
-import static org.mqttbee.mqtt.codec.encoder.MqttMessageEncoderUtil.nullableEncodedLength;
-
 /**
  * @author Silvio Giebl
  */
@@ -29,14 +27,21 @@ public class Mqtt3PublishEncoder extends Mqtt3WrappedMessageEncoder<MqttPublish,
             PROVIDER = new ThreadLocalMqttWrappedMessageEncoderProvider<>(Mqtt3PublishEncoder::new, WRAPPER_PROVIDER);
 
     private static final int FIXED_HEADER = Mqtt3MessageType.PUBLISH.getCode() << 4;
-    private static final int VARIABLE_HEADER_FIXED_LENGTH = 2; // packet identifier
 
     @Override
     int calculateRemainingLength() {
-        int remainingLength = VARIABLE_HEADER_FIXED_LENGTH;
+        int remainingLength = 0;
 
         remainingLength += wrapped.getTopic().encodedLength();
-        remainingLength += nullableEncodedLength(wrapped.getRawPayload());
+
+        if (wrapped.getQos() != MqttQoS.AT_MOST_ONCE) {
+            remainingLength += 2;
+        }
+
+        final ByteBuffer payload = wrapped.getRawPayload();
+        if (payload != null) {
+            remainingLength += payload.remaining();
+        }
 
         return remainingLength;
     }
@@ -74,7 +79,7 @@ public class Mqtt3PublishEncoder extends Mqtt3WrappedMessageEncoder<MqttPublish,
     private void encodePayload(@NotNull final ByteBuf out) {
         final ByteBuffer payload = wrapped.getRawPayload();
         if (payload != null) {
-            out.writeBytes(payload);
+            out.writeBytes(payload.duplicate());
         }
     }
 

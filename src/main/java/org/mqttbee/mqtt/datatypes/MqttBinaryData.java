@@ -85,7 +85,7 @@ public class MqttBinaryData {
      */
     public static void encode(@NotNull final ByteBuffer byteBuffer, @NotNull final ByteBuf byteBuf) {
         byteBuf.writeShort(byteBuffer.remaining());
-        byteBuf.writeBytes(byteBuffer);
+        byteBuf.writeBytes(byteBuffer.duplicate());
     }
 
     /**
