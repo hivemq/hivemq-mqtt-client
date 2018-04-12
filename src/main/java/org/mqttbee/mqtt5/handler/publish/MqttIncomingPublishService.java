@@ -1,6 +1,5 @@
 package org.mqttbee.mqtt5.handler.publish;
 
-import dagger.Lazy;
 import io.netty.channel.EventLoop;
 import io.reactivex.Scheduler;
 import org.mqttbee.annotations.NotNull;
@@ -35,13 +34,13 @@ public class MqttIncomingPublishService {
 
     @Inject
     MqttIncomingPublishService(
-            final Lazy<Mqtt5IncomingQoSHandler> incomingQoSHandler, final MqttIncomingPublishFlows incomingPublishFlows,
+            final Mqtt5IncomingQoSHandler incomingQoSHandler, final MqttIncomingPublishFlows incomingPublishFlows,
             @Named("incomingPublish") final Scheduler.Worker rxEventLoop, final MqttClientData clientData) {
 
         final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
         assert clientConnectionData != null;
 
-        this.incomingQoSHandler = incomingQoSHandler.get(); // TODO temp
+        this.incomingQoSHandler = incomingQoSHandler; // TODO temp
         this.incomingPublishFlows = incomingPublishFlows;
         this.rxEventLoop = rxEventLoop;
         nettyEventLoop = clientConnectionData.getChannel().eventLoop();
