@@ -1,5 +1,6 @@
 package org.mqttbee.mqtt5.handler.publish;
 
+import dagger.Lazy;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.mqttbee.annotations.NotNull;
@@ -27,7 +28,8 @@ public class Mqtt5IncomingQoSHandler extends ChannelInboundHandlerAdapter {
 
     public static final String NAME = "qos.incoming";
 
-    private final MqttIncomingPublishService incomingPublishService;
+    private MqttIncomingPublishService incomingPublishService;
+    private final Lazy<MqttIncomingPublishService> incomingPublishServiceLazy; // TODO temp
     private final IntMap<MqttPubRec> pubRecs;
     private final IntMap<MqttPubRel> pubRels;
     private final IntMap<Boolean> pubComps;
@@ -35,11 +37,13 @@ public class Mqtt5IncomingQoSHandler extends ChannelInboundHandlerAdapter {
     private ChannelHandlerContext ctx;
 
     @Inject
-    Mqtt5IncomingQoSHandler(final MqttIncomingPublishService incomingPublishService, final MqttClientData clientData) {
+    Mqtt5IncomingQoSHandler(
+            final Lazy<MqttIncomingPublishService> incomingPublishServiceLazy, final MqttClientData clientData) {
+
         final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
         assert clientConnectionData != null;
 
-        this.incomingPublishService = incomingPublishService;
+        this.incomingPublishServiceLazy = incomingPublishServiceLazy;
         final int receiveMaximum = clientConnectionData.getReceiveMaximum();
         pubRecs = new IntMap<>(receiveMaximum);
         pubRels = new IntMap<>(receiveMaximum);
@@ -76,12 +80,19 @@ public class Mqtt5IncomingQoSHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
+    private MqttIncomingPublishService getIncomingPublishService() { // TODO temp
+        if (incomingPublishService == null) {
+            incomingPublishService = incomingPublishServiceLazy.get();
+        }
+        return incomingPublishService;
+    }
+
     private void handlePublishQoS0(@NotNull final MqttPublishWrapper publish) {
-        incomingPublishService.onPublish(publish);
+        getIncomingPublishService().onPublish(publish);
     }
 
     private void handlePublishQoS1(@NotNull final MqttPublishWrapper publish) {
-        incomingPublishService.onPublish(publish);
+        getIncomingPublishService().onPublish(publish);
     }
 
     private void handlePublishQoS2(
@@ -110,7 +121,7 @@ public class Mqtt5IncomingQoSHandler extends ChannelInboundHandlerAdapter {
 
         final MqttPubRec pubRec = pubRecBuilder.build();
         pubRecs.put(pubRec.getPacketIdentifier(), pubRec);
-        incomingPublishService.onPublish(publish);
+        getIncomingPublishService().onPublish(publish);
         ctx.writeAndFlush(pubRec);
     }
 
