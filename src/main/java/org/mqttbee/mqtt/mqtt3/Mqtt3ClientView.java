@@ -11,17 +11,15 @@ import org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3PublishResult;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
-import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3SubscribeResult;
-import org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAck;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import org.mqttbee.mqtt.message.connect.connack.mqtt3.Mqtt3ConnAckView;
 import org.mqttbee.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
 import org.mqttbee.mqtt.message.disconnect.mqtt3.Mqtt3DisconnectView;
 import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishResultView;
 import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishView;
+import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeView;
 import org.mqttbee.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeView;
 import org.mqttbee.mqtt5.Mqtt5ClientImpl;
-import org.mqttbee.rx.FlowableWithSingle;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 
 /**
@@ -45,13 +43,11 @@ public class Mqtt3ClientView implements Mqtt3Client {
 
     @NotNull
     @Override
-    public FlowableWithSingle<Mqtt3SubscribeResult, Mqtt3SubAck, Mqtt3Publish> subscribe(
-            @NotNull final Mqtt3Subscribe subscribe) {
-        final Mqtt3ConnectView subscribeView =
-                MustNotBeImplementedUtil.checkNotImplemented(subscribe, Mqtt3ConnectView.class);
+    public Flowable<Mqtt3Publish> subscribe(@NotNull final Mqtt3Subscribe subscribe) {
+        final Mqtt3SubscribeView subscribeView =
+                MustNotBeImplementedUtil.checkNotImplemented(subscribe, Mqtt3SubscribeView.class);
 
-//        return wrapped.subscribe(subscribeView.getWrapped());
-        return null;
+        return wrapped.subscribe(subscribeView.getWrapped()).map(Mqtt3PublishView::create);
     }
 
     @NotNull
