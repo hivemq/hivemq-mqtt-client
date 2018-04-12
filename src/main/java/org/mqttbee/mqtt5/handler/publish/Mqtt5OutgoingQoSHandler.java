@@ -58,7 +58,7 @@ public class Mqtt5OutgoingQoSHandler extends ChannelInboundHandlerAdapter {
         assert serverConnectionData != null;
 
         final int pubReceiveMaximum = getPubReceiveMaximum(serverConnectionData.getReceiveMaximum());
-        packetIdentifiers = new Ranges(pubReceiveMaximum);
+        packetIdentifiers = new Ranges(1, pubReceiveMaximum);
         qos1Or2Publishes = new IntMap<>(pubReceiveMaximum);
     }
 
@@ -86,7 +86,7 @@ public class Mqtt5OutgoingQoSHandler extends ChannelInboundHandlerAdapter {
 
         final MqttPublishWrapper publishWrapper =
                 wrapPublish(ctx.channel(), publishWithFlow.getPublish(), NO_PACKET_IDENTIFIER_QOS_0, false);
-        ctx.write(publishWrapper)
+        ctx.writeAndFlush(publishWrapper)
                 .addListener(future -> publishWithFlow.getIncomingAckFlow()
                         .onNext(new MqttPublishResult(publishWithFlow.getPublish(), null)));
     }
