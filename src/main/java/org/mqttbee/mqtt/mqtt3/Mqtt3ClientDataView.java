@@ -17,7 +17,7 @@ public class Mqtt3ClientDataView implements Mqtt3ClientData {
 
     private final MqttClientData wrapped;
 
-    private Mqtt3ClientDataView(@NotNull final MqttClientData wrapped) {
+    Mqtt3ClientDataView(@NotNull final MqttClientData wrapped) {
         this.wrapped = wrapped;
     }
 
