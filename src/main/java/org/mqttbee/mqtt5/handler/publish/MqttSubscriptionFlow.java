@@ -1,8 +1,8 @@
 package org.mqttbee.mqtt5.handler.publish;
 
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeResult;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
-import org.mqttbee.mqtt.message.subscribe.MqttSubscribeResult;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribeWrapper;
 import org.mqttbee.util.collections.ScNodeList;
 import org.reactivestreams.Subscriber;
@@ -16,7 +16,7 @@ public class MqttSubscriptionFlow extends MqttIncomingPublishFlow {
     private int subscriptionIdentifier = MqttSubscribeWrapper.DEFAULT_NO_SUBSCRIPTION_IDENTIFIER;
 
     MqttSubscriptionFlow(
-            @NotNull final Subscriber<? super MqttSubscribeResult> actual,
+            @NotNull final Subscriber<? super Mqtt5SubscribeResult> actual,
             @NotNull final MqttIncomingPublishService incomingPublishService) {
 
         super(actual, incomingPublishService);

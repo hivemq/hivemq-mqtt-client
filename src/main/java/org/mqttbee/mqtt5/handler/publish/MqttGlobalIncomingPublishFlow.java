@@ -1,7 +1,7 @@
 package org.mqttbee.mqtt5.handler.publish;
 
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt.message.subscribe.MqttSubscribeResult;
+import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeResult;
 import org.mqttbee.util.collections.ScNodeList;
 import org.reactivestreams.Subscriber;
 
@@ -19,7 +19,7 @@ public class MqttGlobalIncomingPublishFlow extends MqttIncomingPublishFlow {
     private ScNodeList.Handle<MqttGlobalIncomingPublishFlow> handle;
 
     MqttGlobalIncomingPublishFlow(
-            @NotNull final Subscriber<? super MqttSubscribeResult> actual,
+            @NotNull final Subscriber<? super Mqtt5SubscribeResult> actual,
             @NotNull final MqttIncomingPublishService incomingPublishService, final int type) {
 
         super(actual, incomingPublishService);
