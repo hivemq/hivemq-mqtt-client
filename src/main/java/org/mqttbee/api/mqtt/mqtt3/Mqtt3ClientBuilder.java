@@ -36,7 +36,7 @@ public class Mqtt3ClientBuilder {
     }
 
     private MqttClientData buildClientData() {
-        return new MqttClientData(MqttVersion.MQTT_5_0, identifier, serverHost, serverPort, usesSSL, false, false,
+        return new MqttClientData(MqttVersion.MQTT_3_1_1, identifier, serverHost, serverPort, usesSSL, false, false,
                 executorConfig, null);
     }
 
