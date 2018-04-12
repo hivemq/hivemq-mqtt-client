@@ -1,6 +1,5 @@
 package org.mqttbee.mqtt5.handler.publish;
 
-import dagger.Lazy;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.mqttbee.annotations.NotNull;
@@ -19,6 +18,7 @@ import org.mqttbee.mqtt5.ioc.ChannelScope;
 import org.mqttbee.util.collections.IntMap;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 /**
  * @author Silvio Giebl
@@ -29,7 +29,7 @@ public class Mqtt5IncomingQoSHandler extends ChannelInboundHandlerAdapter {
     public static final String NAME = "qos.incoming";
 
     private MqttIncomingPublishService incomingPublishService;
-    private final Lazy<MqttIncomingPublishService> incomingPublishServiceLazy; // TODO temp
+    private final Provider<MqttIncomingPublishService> incomingPublishServiceLazy; // TODO temp
     private final IntMap<MqttPubRec> pubRecs;
     private final IntMap<MqttPubRel> pubRels;
     private final IntMap<Boolean> pubComps;
@@ -38,7 +38,7 @@ public class Mqtt5IncomingQoSHandler extends ChannelInboundHandlerAdapter {
 
     @Inject
     Mqtt5IncomingQoSHandler(
-            final Lazy<MqttIncomingPublishService> incomingPublishServiceLazy, final MqttClientData clientData) {
+            final Provider<MqttIncomingPublishService> incomingPublishServiceLazy, final MqttClientData clientData) {
 
         final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
         assert clientConnectionData != null;
