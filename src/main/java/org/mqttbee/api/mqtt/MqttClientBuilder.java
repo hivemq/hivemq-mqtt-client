@@ -2,6 +2,7 @@ package org.mqttbee.api.mqtt;
 
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
+import org.mqttbee.api.mqtt.mqtt3.Mqtt3ClientBuilder;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientBuilder;
 import org.mqttbee.mqtt.MqttClientExecutorConfigImpl;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
@@ -57,6 +58,11 @@ public class MqttClientBuilder {
         this.executorConfig =
                 MustNotBeImplementedUtil.checkNotImplemented(executorConfig, MqttClientExecutorConfigImpl.class);
         return this;
+    }
+
+    @NotNull
+    public Mqtt3ClientBuilder usingMqtt3() {
+        return new Mqtt3ClientBuilder(identifier, serverHost, serverPort, usesSSL, executorConfig);
     }
 
     @NotNull

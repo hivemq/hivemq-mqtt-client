@@ -8,7 +8,6 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.exceptions.AlreadyConnectedException;
 import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5Client;
-import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientData;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
@@ -192,7 +191,7 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
 
     @NotNull
     @Override
-    public Mqtt5ClientData getClientData() {
+    public MqttClientData getClientData() {
         return clientData;
     }
 

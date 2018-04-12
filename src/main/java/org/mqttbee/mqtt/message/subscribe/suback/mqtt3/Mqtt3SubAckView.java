@@ -4,9 +4,11 @@ import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAck;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAckReturnCode;
+import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAckReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAck;
+import org.mqttbee.util.MustNotBeImplementedUtil;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -87,6 +89,11 @@ public class Mqtt3SubAckView implements Mqtt3SubAck {
             final int packetIdentifier, @NotNull final ImmutableList<Mqtt3SubAckReturnCode> returnCodes) {
 
         return new Mqtt3SubAckView(wrapped(packetIdentifier, returnCodes));
+    }
+
+    @NotNull
+    public static Mqtt3SubAckView create(@NotNull final Mqtt5SubAck subAck) {
+        return new Mqtt3SubAckView(MustNotBeImplementedUtil.checkNotImplemented(subAck, MqttSubAck.class));
     }
 
     private final MqttSubAck wrapped;

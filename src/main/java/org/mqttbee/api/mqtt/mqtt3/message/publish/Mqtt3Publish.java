@@ -6,6 +6,7 @@ import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3Message;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
+import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3SubscribeResult;
 
 import java.nio.ByteBuffer;
 import java.util.Optional;
@@ -14,7 +15,7 @@ import java.util.Optional;
  * MQTT 3 PUBLISH packet.
  */
 @DoNotImplement
-public interface Mqtt3Publish extends Mqtt3Message {
+public interface Mqtt3Publish extends Mqtt3Message, Mqtt3SubscribeResult {
 
     @NotNull
     static Mqtt3PublishBuilder builder() {

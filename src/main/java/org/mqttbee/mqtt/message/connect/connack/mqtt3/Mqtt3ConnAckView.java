@@ -3,10 +3,12 @@ package org.mqttbee.mqtt.message.connect.connack.mqtt3;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAckReturnCode;
+import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.connect.connack.MqttConnAck;
 import org.mqttbee.mqtt.message.connect.connack.MqttConnAckRestrictions;
+import org.mqttbee.util.MustNotBeImplementedUtil;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -73,6 +75,11 @@ public class Mqtt3ConnAckView implements Mqtt3ConnAck {
             @NotNull final Mqtt3ConnAckReturnCode returnCode, final boolean isSessionPresent) {
 
         return new Mqtt3ConnAckView(wrapped(returnCode, isSessionPresent));
+    }
+
+    @NotNull
+    public static Mqtt3ConnAckView create(@NotNull final Mqtt5ConnAck connAck) {
+        return new Mqtt3ConnAckView(MustNotBeImplementedUtil.checkNotImplemented(connAck, MqttConnAck.class));
     }
 
     private final MqttConnAck wrapped;

@@ -4,6 +4,7 @@ import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.mqtt3.Mqtt3ClientConnectionData;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientConnectionData;
 import org.mqttbee.api.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
@@ -14,7 +15,7 @@ import java.util.Optional;
 /**
  * @author Silvio Giebl
  */
-public class MqttClientConnectionData implements Mqtt5ClientConnectionData {
+public class MqttClientConnectionData implements Mqtt5ClientConnectionData, Mqtt3ClientConnectionData {
 
     private int keepAlive;
     private long sessionExpiryInterval;
