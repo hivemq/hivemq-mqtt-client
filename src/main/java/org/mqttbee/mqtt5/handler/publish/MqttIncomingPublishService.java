@@ -1,5 +1,6 @@
 package org.mqttbee.mqtt5.handler.publish;
 
+import dagger.Lazy;
 import io.netty.channel.EventLoop;
 import io.reactivex.Scheduler;
 import org.mqttbee.annotations.NotNull;
@@ -21,6 +22,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @ChannelScope
 public class MqttIncomingPublishService {
 
+    private final Mqtt5IncomingQoSHandler incomingQoSHandler; // TODO temp
     private final MqttIncomingPublishFlows incomingPublishFlows;
     private final Scheduler.Worker rxEventLoop;
     private final EventLoop nettyEventLoop;
@@ -33,12 +35,13 @@ public class MqttIncomingPublishService {
 
     @Inject
     MqttIncomingPublishService(
-            final MqttIncomingPublishFlows incomingPublishFlows,
+            final Lazy<Mqtt5IncomingQoSHandler> incomingQoSHandler, final MqttIncomingPublishFlows incomingPublishFlows,
             @Named("incomingPublish") final Scheduler.Worker rxEventLoop, final MqttClientData clientData) {
 
         final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
         assert clientConnectionData != null;
 
+        this.incomingQoSHandler = incomingQoSHandler.get(); // TODO temp
         this.incomingPublishFlows = incomingPublishFlows;
         this.rxEventLoop = rxEventLoop;
         nettyEventLoop = clientConnectionData.getChannel().eventLoop();
@@ -93,7 +96,7 @@ public class MqttIncomingPublishService {
             if (acknowledge) {
                 if (entry.flows.isEmpty()) {
                     queueIt.remove();
-//                    netty.fireEvent(ack(entry.publish)); // TODO
+                    incomingQoSHandler.ack(entry.publish); // TODO temp
                 } else {
                     acknowledge = false;
                     for (final MqttIncomingPublishFlow flow : entry.flows) {

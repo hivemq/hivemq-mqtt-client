@@ -1,16 +1,15 @@
 package org.mqttbee.mqtt5.handler.subscribe;
 
 import com.google.common.collect.ImmutableList;
-import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelPromise;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.reactivex.Scheduler;
 import io.reactivex.SingleEmitter;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt.exceptions.PacketIdentifiersExceededException;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5ReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
+import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.MqttServerConnectionData;
@@ -34,7 +33,7 @@ import java.util.LinkedList;
  * @author Silvio Giebl
  */
 @ChannelScope
-public class MqttSubscriptionHandler extends ChannelDuplexHandler {
+public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
 
     public static final String NAME = "subscription";
     public static final int MAX_SUB_PENDING = 10; // TODO configurable
@@ -47,6 +46,8 @@ public class MqttSubscriptionHandler extends ChannelDuplexHandler {
     private final IntMap<MqttUnsubscribeWrapperWithFlow> unsubscribes;
     private final LinkedList<Object> queued;
     private int pending;
+
+    private ChannelHandlerContext ctx; // TODO temp
 
     @Inject
     MqttSubscriptionHandler(
@@ -71,19 +72,16 @@ public class MqttSubscriptionHandler extends ChannelDuplexHandler {
     }
 
     @Override
-    public void write(final ChannelHandlerContext ctx, final Object msg, final ChannelPromise promise) {
-        if (msg instanceof MqttSubscribeWithFlow) {
-            handleSubscribe(ctx, (MqttSubscribeWithFlow) msg, promise);
-        } else if (msg instanceof MqttUnsubscribeWithFlow) {
-            handleUnsubscribe(ctx, (MqttUnsubscribeWithFlow) msg, promise);
-        } else {
-            ctx.write(msg, promise);
-        }
+    public void handlerAdded(final ChannelHandlerContext ctx) {
+        this.ctx = ctx; // TODO temp
+    }
+
+    public void subscribe(@NotNull final MqttSubscribeWithFlow subscribeWithFlow) {
+        ctx.executor().execute(() -> handleSubscribe(ctx, subscribeWithFlow)); // TODO temp
     }
 
     private void handleSubscribe(
-            @NotNull final ChannelHandlerContext ctx, @NotNull final MqttSubscribeWithFlow subscribeWithFlow,
-            @NotNull final ChannelPromise promise) {
+            @NotNull final ChannelHandlerContext ctx, @NotNull final MqttSubscribeWithFlow subscribeWithFlow) {
 
         if (pending == MAX_SUB_PENDING) {
             queued.offer(subscribeWithFlow);
@@ -92,22 +90,22 @@ public class MqttSubscriptionHandler extends ChannelDuplexHandler {
 
         final int packetIdentifier = packetIdentifiers.getId();
         if (packetIdentifier == -1) {
-            promise.setFailure(PacketIdentifiersExceededException.INSTANCE); // TODO must not happen
+            // TODO must not happen
             return;
         }
-        writeSubscribe(ctx, subscribeWithFlow, packetIdentifier, promise);
+        writeSubscribe(ctx, subscribeWithFlow, packetIdentifier);
     }
 
     private void writeSubscribe(
             @NotNull final ChannelHandlerContext ctx, @NotNull final MqttSubscribeWithFlow subscribeWithFlow,
-            final int packetIdentifier, @NotNull final ChannelPromise promise) {
+            final int packetIdentifier) {
 
         final MqttSubscribeWrapperWithFlow subscribeWrapperWithFlow =
                 subscribeWithFlow.wrap(packetIdentifier, subscriptionIdentifiers.getId());
         subscribes.put(packetIdentifier, subscribeWrapperWithFlow);
         pending++;
         final MqttSubscriptionFlow flow = subscribeWrapperWithFlow.getFlow();
-        ctx.write(subscribeWrapperWithFlow.getSubscribe(), promise).addListener(future -> {
+        ctx.write(subscribeWrapperWithFlow.getSubscribe()).addListener(future -> {
             if (!future.isSuccess()) {
                 worker.schedule(() -> flow.onError(future.cause()));
                 handleComplete(ctx, packetIdentifier);
@@ -115,9 +113,12 @@ public class MqttSubscriptionHandler extends ChannelDuplexHandler {
         });
     }
 
+    public void unsubscribe(@NotNull final MqttUnsubscribeWithFlow unsubscribeWithFlow) {
+        ctx.executor().execute(() -> handleUnsubscribe(ctx, unsubscribeWithFlow)); // TODO temp
+    }
+
     private void handleUnsubscribe(
-            @NotNull final ChannelHandlerContext ctx, @NotNull final MqttUnsubscribeWithFlow unsubscribeWithFlow,
-            @NotNull final ChannelPromise promise) {
+            @NotNull final ChannelHandlerContext ctx, @NotNull final MqttUnsubscribeWithFlow unsubscribeWithFlow) {
 
         if (pending == MAX_SUB_PENDING) {
             queued.offer(unsubscribeWithFlow);
@@ -126,23 +127,23 @@ public class MqttSubscriptionHandler extends ChannelDuplexHandler {
 
         final int packetIdentifier = packetIdentifiers.getId();
         if (packetIdentifier == -1) {
-            promise.setFailure(PacketIdentifiersExceededException.INSTANCE); // TODO must not happen
+            // TODO must not happen
             return;
         }
-        writeUnsubscribe(ctx, unsubscribeWithFlow, packetIdentifier, promise);
+        writeUnsubscribe(ctx, unsubscribeWithFlow, packetIdentifier);
     }
 
     private void writeUnsubscribe(
             @NotNull final ChannelHandlerContext ctx, @NotNull final MqttUnsubscribeWithFlow unsubscribeWithFlow,
-            final int packetIdentifier, @NotNull final ChannelPromise promise) {
+            final int packetIdentifier) {
 
         final MqttUnsubscribeWrapperWithFlow unsubscribeWrapperWithFlow = unsubscribeWithFlow.wrap(packetIdentifier);
         unsubscribes.put(packetIdentifier, unsubscribeWrapperWithFlow);
         pending++;
-        final SingleEmitter<MqttUnsubAck> flow = unsubscribeWithFlow.getFlow();
-        ctx.write(unsubscribeWrapperWithFlow.getUnsubscribe(), promise).addListener(future -> {
+        final SingleEmitter<Mqtt5UnsubAck> flow = unsubscribeWithFlow.getFlow();
+        ctx.write(unsubscribeWrapperWithFlow.getUnsubscribe()).addListener(future -> {
             if (!future.isSuccess()) {
-                worker.schedule(() -> flow.onError(future.cause()));
+                worker.schedule(() -> flow.onError(future.cause())); // TODO different worker
                 handleComplete(ctx, packetIdentifier);
             }
         });
@@ -169,6 +170,8 @@ public class MqttSubscriptionHandler extends ChannelDuplexHandler {
             return;
         }
 
+        // TODO validate reason code count
+
         final MqttSubscriptionFlow flow = subscribeWrapperWithFlow.getFlow();
         if (allErrorCodes(subAck.getReasonCodes())) {
             worker.schedule(() -> flow.onError(new Mqtt5MessageException(subAck, "SUBACK contains only Error Codes")));
@@ -190,12 +193,15 @@ public class MqttSubscriptionHandler extends ChannelDuplexHandler {
             return;
         }
 
-        final SingleEmitter<MqttUnsubAck> flow = unsubscribeWrapperWithFlow.getFlow();
+        // TODO validate reason code count
+
+        final SingleEmitter<Mqtt5UnsubAck> flow = unsubscribeWrapperWithFlow.getFlow();
         if (allErrorCodes(unsubAck.getReasonCodes())) {
             worker.schedule(
                     () -> flow.onError(new Mqtt5MessageException(unsubAck, "UNSUBACK contains only Error Codes")));
+            // TODO different worker
         } else {
-            worker.schedule(() -> flow.onSuccess(unsubAck));
+            worker.schedule(() -> flow.onSuccess(unsubAck)); // TODO different worker
             subscriptionFlows.unsubscribe(unsubscribeWrapperWithFlow.getUnsubscribe(), unsubAck);
         }
 
@@ -209,10 +215,9 @@ public class MqttSubscriptionHandler extends ChannelDuplexHandler {
             packetIdentifiers.returnId(packetIdentifier);
         } else {
             if (subscribeOrUnsubscribe instanceof MqttSubscribeWithFlow) {
-                writeSubscribe(ctx, (MqttSubscribeWithFlow) subscribeOrUnsubscribe, packetIdentifier, ctx.newPromise());
+                writeSubscribe(ctx, (MqttSubscribeWithFlow) subscribeOrUnsubscribe, packetIdentifier);
             } else {
-                writeUnsubscribe(
-                        ctx, (MqttUnsubscribeWithFlow) subscribeOrUnsubscribe, packetIdentifier, ctx.newPromise());
+                writeUnsubscribe(ctx, (MqttUnsubscribeWithFlow) subscribeOrUnsubscribe, packetIdentifier);
             }
         }
     }

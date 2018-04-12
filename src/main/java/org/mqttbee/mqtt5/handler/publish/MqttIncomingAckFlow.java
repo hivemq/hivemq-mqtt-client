@@ -4,7 +4,7 @@ import io.reactivex.Emitter;
 import io.reactivex.internal.util.BackpressureHelper;
 import org.jctools.queues.SpscChunkedArrayQueue;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt.message.publish.MqttPublishResult;
+import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
 import org.mqttbee.util.UnsignedDataTypes;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
@@ -16,12 +16,12 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * @author Silvio Giebl
  */
-public class MqttIncomingAckFlow implements Emitter<MqttPublishResult>, Subscription, Runnable {
+public class MqttIncomingAckFlow implements Emitter<Mqtt5PublishResult>, Subscription, Runnable {
 
     private static final int REQUEST_BATCH_LIMIT = 64;
 
     @NotNull
-    private final Subscriber<? super MqttPublishResult> actual;
+    private final Subscriber<? super Mqtt5PublishResult> actual;
     @NotNull
     private final MqttOutgoingPublishService outgoingPublishService;
 
@@ -30,11 +30,11 @@ public class MqttIncomingAckFlow implements Emitter<MqttPublishResult>, Subscrip
     private volatile boolean done;
     private Throwable error;
 
-    private final SpscChunkedArrayQueue<MqttPublishResult> queue;
+    private final SpscChunkedArrayQueue<Mqtt5PublishResult> queue;
     private final AtomicInteger wip = new AtomicInteger();
 
     MqttIncomingAckFlow(
-            @NotNull final Subscriber<? super MqttPublishResult> actual,
+            @NotNull final Subscriber<? super Mqtt5PublishResult> actual,
             @NotNull final MqttOutgoingPublishService outgoingPublishService) {
 
         this.actual = actual;
@@ -43,7 +43,7 @@ public class MqttIncomingAckFlow implements Emitter<MqttPublishResult>, Subscrip
     }
 
     @Override
-    public void onNext(@NotNull final MqttPublishResult result) {
+    public void onNext(@NotNull final Mqtt5PublishResult result) {
         if (done) {
             return;
         }
@@ -93,8 +93,8 @@ public class MqttIncomingAckFlow implements Emitter<MqttPublishResult>, Subscrip
     public void run() {
         int missed = 1;
 
-        final Subscriber<? super MqttPublishResult> actual = this.actual;
-        final SpscChunkedArrayQueue<MqttPublishResult> queue = this.queue;
+        final Subscriber<? super Mqtt5PublishResult> actual = this.actual;
+        final SpscChunkedArrayQueue<Mqtt5PublishResult> queue = this.queue;
 
         long emitted = 0;
 
@@ -104,7 +104,7 @@ public class MqttIncomingAckFlow implements Emitter<MqttPublishResult>, Subscrip
             while (emitted != requested) {
                 final boolean done = this.done;
 
-                final MqttPublishResult result = queue.poll();
+                final Mqtt5PublishResult result = queue.poll();
 
                 if (result == null) {
                     if (checkTerminated(done, true)) {

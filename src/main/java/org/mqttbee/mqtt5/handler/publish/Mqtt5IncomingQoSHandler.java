@@ -5,6 +5,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5IncomingQoS1ControlProvider;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5IncomingQoS2ControlProvider;
+import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.advanced.MqttAdvancedClientData;
 import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
@@ -14,7 +15,7 @@ import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRec;
 import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRecBuilder;
 import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRel;
 import org.mqttbee.mqtt5.ioc.ChannelScope;
-import org.mqttbee.mqtt5.persistence.IncomingQoSFlowPersistence;
+import org.mqttbee.util.collections.IntMap;
 
 import javax.inject.Inject;
 
@@ -26,11 +27,28 @@ public class Mqtt5IncomingQoSHandler extends ChannelInboundHandlerAdapter {
 
     public static final String NAME = "qos.incoming";
 
-    private final IncomingQoSFlowPersistence persistence;
+    private final MqttIncomingPublishService incomingPublishService;
+    private final IntMap<MqttPubRec> pubRecs;
+    private final IntMap<MqttPubRel> pubRels;
+    private final IntMap<Boolean> pubComps;
+
+    private ChannelHandlerContext ctx;
 
     @Inject
-    Mqtt5IncomingQoSHandler(final IncomingQoSFlowPersistence persistence) {
-        this.persistence = persistence;
+    Mqtt5IncomingQoSHandler(final MqttIncomingPublishService incomingPublishService, final MqttClientData clientData) {
+        final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
+        assert clientConnectionData != null;
+
+        this.incomingPublishService = incomingPublishService;
+        final int receiveMaximum = clientConnectionData.getReceiveMaximum();
+        pubRecs = new IntMap<>(receiveMaximum);
+        pubRels = new IntMap<>(receiveMaximum);
+        pubComps = new IntMap<>(receiveMaximum);
+    }
+
+    @Override
+    public void handlerAdded(final ChannelHandlerContext ctx) {
+        this.ctx = ctx;
     }
 
     @Override
@@ -47,10 +65,10 @@ public class Mqtt5IncomingQoSHandler extends ChannelInboundHandlerAdapter {
     private void handlePublish(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttPublishWrapper publish) {
         switch (publish.getWrapped().getQos()) {
             case AT_MOST_ONCE:
-                handlePublishQoS0(ctx, publish);
+                handlePublishQoS0(publish);
                 break;
             case AT_LEAST_ONCE:
-                handlePublishQoS1(ctx, publish);
+                handlePublishQoS1(publish);
                 break;
             case EXACTLY_ONCE:
                 handlePublishQoS2(ctx, publish);
@@ -58,40 +76,23 @@ public class Mqtt5IncomingQoSHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
-    private void handlePublishQoS0(
-            @NotNull final ChannelHandlerContext ctx, @NotNull final MqttPublishWrapper publish) {
-
-        ctx.fireChannelRead(publish.getWrapped());
+    private void handlePublishQoS0(@NotNull final MqttPublishWrapper publish) {
+        incomingPublishService.onPublish(publish);
     }
 
-    private void handlePublishQoS1(
-            @NotNull final ChannelHandlerContext ctx, @NotNull final MqttPublishWrapper publish) {
-
-        ctx.fireChannelRead(publish.getWrapped());
-
-        final MqttPubAckBuilder pubAckBuilder = new MqttPubAckBuilder(publish);
-
-        final MqttAdvancedClientData advanced = MqttClientData.from(ctx.channel()).getRawAdvancedClientData();
-        if ((advanced != null)) {
-            final Mqtt5IncomingQoS1ControlProvider control = advanced.getIncomingQoS1ControlProvider();
-            if (control != null) {
-                control.onPublish(publish.getWrapped(), pubAckBuilder);
-            }
-        }
-
-        ctx.writeAndFlush(pubAckBuilder.build());
+    private void handlePublishQoS1(@NotNull final MqttPublishWrapper publish) {
+        incomingPublishService.onPublish(publish);
     }
 
     private void handlePublishQoS2(
             @NotNull final ChannelHandlerContext ctx, @NotNull final MqttPublishWrapper publish) {
 
-        persistence.get(publish.getPacketIdentifier()).whenCompleteAsync((pubRec, throwable) -> {
-            if (pubRec == null) {
-                handleNewPublishQoS2(ctx, publish);
-            } else {
-                handleDupPublishQoS2(ctx, publish, pubRec);
-            }
-        }, ctx.executor());
+        final MqttPubRec pubRec = pubRecs.get(publish.getPacketIdentifier());
+        if (pubRec == null) {
+            handleNewPublishQoS2(ctx, publish);
+        } else {
+            handleDupPublishQoS2(ctx, publish, pubRec);
+        }
     }
 
     private void handleNewPublishQoS2(
@@ -108,23 +109,70 @@ public class Mqtt5IncomingQoSHandler extends ChannelInboundHandlerAdapter {
         }
 
         final MqttPubRec pubRec = pubRecBuilder.build();
-        persistence.store(pubRec).whenCompleteAsync((aVoid, throwable) -> {
-            ctx.fireChannelRead(publish.getWrapped());
-            ctx.writeAndFlush(pubRec);
-        }, ctx.executor());
+        pubRecs.put(pubRec.getPacketIdentifier(), pubRec);
+        incomingPublishService.onPublish(publish);
+        ctx.writeAndFlush(pubRec);
     }
 
     private void handleDupPublishQoS2(
             @NotNull final ChannelHandlerContext ctx, @NotNull final MqttPublishWrapper publish,
             @NotNull final MqttPubRec pubRec) {
 
-        // TODO validate dup flag
+        if (!publish.isDup()) {
+            // TODO
+            return;
+        }
         ctx.writeAndFlush(pubRec);
     }
 
     private void handlePubRel(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttPubRel pubRel) {
-        persistence.discard(pubRel.getPacketIdentifier());
+        final int packetIdentifier = pubRel.getPacketIdentifier();
+        pubRecs.remove(packetIdentifier);
+        if (pubComps.remove(packetIdentifier) == null) {
+            pubRels.put(packetIdentifier, pubRel);
+        } else {
+            writePubComp(ctx, pubRel);
+        }
+    }
 
+    void ack(@NotNull final MqttPublishWrapper publishWrapper) {
+        ctx.executor().execute(() -> {
+            switch (publishWrapper.getWrapped().getQos()) {
+                case AT_LEAST_ONCE:
+                    ackQoS1(publishWrapper);
+                    break;
+                case EXACTLY_ONCE:
+                    ackQoS2(publishWrapper);
+                    break;
+            }
+        });
+    }
+
+    private void ackQoS1(@NotNull final MqttPublishWrapper publish) {
+        final MqttPubAckBuilder pubAckBuilder = new MqttPubAckBuilder(publish);
+
+        final MqttAdvancedClientData advanced = MqttClientData.from(ctx.channel()).getRawAdvancedClientData();
+        if ((advanced != null)) {
+            final Mqtt5IncomingQoS1ControlProvider control = advanced.getIncomingQoS1ControlProvider();
+            if (control != null) {
+                control.onPublish(publish.getWrapped(), pubAckBuilder);
+            }
+        }
+
+        ctx.writeAndFlush(pubAckBuilder.build());
+    }
+
+    private void ackQoS2(@NotNull final MqttPublishWrapper publishWrapper) {
+        final int packetIdentifier = publishWrapper.getPacketIdentifier();
+        final MqttPubRel pubRel = pubRels.remove(packetIdentifier);
+        if (pubRel == null) {
+            pubComps.put(packetIdentifier, Boolean.TRUE);
+        } else {
+            writePubComp(ctx, pubRel);
+        }
+    }
+
+    private void writePubComp(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttPubRel pubRel) {
         final MqttPubCompBuilder pubCompBuilder = new MqttPubCompBuilder(pubRel);
 
         final MqttAdvancedClientData advanced = MqttClientData.from(ctx.channel()).getRawAdvancedClientData();

@@ -1,20 +1,22 @@
 package org.mqttbee.mqtt5.handler.publish;
 
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelPromise;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
-import org.mqttbee.api.mqtt.exceptions.PacketIdentifiersExceededException;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ServerConnectionData;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5OutgoingQoS1ControlProvider;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5OutgoingQoS2ControlProvider;
+import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.MqttServerConnectionData;
 import org.mqttbee.mqtt.advanced.MqttAdvancedClientData;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
+import org.mqttbee.mqtt.message.publish.MqttPublishResult;
+import org.mqttbee.mqtt.message.publish.MqttPublishResult.MqttQoS1Result;
+import org.mqttbee.mqtt.message.publish.MqttPublishResult.MqttQoS2Result;
 import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
 import org.mqttbee.mqtt.message.publish.MqttTopicAliasMapping;
 import org.mqttbee.mqtt.message.publish.puback.MqttPubAck;
@@ -24,11 +26,9 @@ import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRel;
 import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRelBuilder;
 import org.mqttbee.mqtt5.handler.subscribe.MqttSubscriptionHandler;
 import org.mqttbee.mqtt5.ioc.ChannelScope;
-import org.mqttbee.mqtt5.persistence.OutgoingQoSFlowPersistence;
 import org.mqttbee.util.Ranges;
 import org.mqttbee.util.UnsignedDataTypes;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.mqttbee.util.collections.IntMap;
 
 import javax.inject.Inject;
 
@@ -38,75 +38,72 @@ import static org.mqttbee.mqtt.message.publish.MqttPublishWrapper.*;
  * @author Silvio Giebl
  */
 @ChannelScope
-public class Mqtt5OutgoingQoSHandler extends ChannelDuplexHandler {
+public class Mqtt5OutgoingQoSHandler extends ChannelInboundHandlerAdapter {
 
     public static final String NAME = "qos.outgoing";
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(Mqtt5OutgoingQoSHandler.class);
-
-    private final Ranges packetIdentifiers;
-    private final OutgoingQoSFlowPersistence persistence;
 
     public static int getPubReceiveMaximum(final int receiveMaximum) {
         final int max = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE - MqttSubscriptionHandler.MAX_SUB_PENDING;
         return Math.min(receiveMaximum, max);
     }
 
+    private final Ranges packetIdentifiers;
+    private final IntMap<MqttPublishWithFlow> qos1Or2Publishes;
+
+    private ChannelHandlerContext ctx; // TODO temp
+
     @Inject
-    Mqtt5OutgoingQoSHandler(final MqttClientData clientData, final OutgoingQoSFlowPersistence persistence) {
+    Mqtt5OutgoingQoSHandler(final MqttClientData clientData) {
         final Mqtt5ServerConnectionData serverConnectionData = clientData.getRawServerConnectionData();
         assert serverConnectionData != null;
 
-        this.packetIdentifiers = new Ranges(getPubReceiveMaximum(serverConnectionData.getReceiveMaximum()));
-        this.persistence = persistence;
+        final int pubReceiveMaximum = getPubReceiveMaximum(serverConnectionData.getReceiveMaximum());
+        packetIdentifiers = new Ranges(pubReceiveMaximum);
+        qos1Or2Publishes = new IntMap<>(pubReceiveMaximum);
     }
 
     @Override
-    public void write(final ChannelHandlerContext ctx, final Object msg, final ChannelPromise promise) {
-        if (msg instanceof MqttPublish) {
-            handlePublish(ctx, (MqttPublish) msg, promise);
-        } else {
-            ctx.write(msg, promise);
-        }
+    public void handlerAdded(final ChannelHandlerContext ctx) {
+        this.ctx = ctx;
+    }
+
+    void publish(@NotNull final MqttPublishWithFlow publishWithFlow) {
+        ctx.executor().execute(() -> handlePublish(ctx, publishWithFlow));
     }
 
     private void handlePublish(
-            @NotNull final ChannelHandlerContext ctx, @NotNull final MqttPublish publish,
-            @NotNull final ChannelPromise promise) {
+            @NotNull final ChannelHandlerContext ctx, @NotNull final MqttPublishWithFlow publishWithFlow) {
 
-        if (publish.getQos() == MqttQoS.AT_MOST_ONCE) {
-            handlePublishQoS0(ctx, publish, promise);
+        if (publishWithFlow.getPublish().getQos() == MqttQoS.AT_MOST_ONCE) {
+            handlePublishQoS0(ctx, publishWithFlow);
         } else {
-            handlePublishQoS1Or2(ctx, publish, promise);
+            handlePublishQoS1Or2(ctx, publishWithFlow);
         }
     }
 
     private void handlePublishQoS0(
-            @NotNull final ChannelHandlerContext ctx, @NotNull final MqttPublish publish,
-            @NotNull final ChannelPromise promise) {
+            @NotNull final ChannelHandlerContext ctx, @NotNull final MqttPublishWithFlow publishWithFlow) {
 
         final MqttPublishWrapper publishWrapper =
-                wrapPublish(ctx.channel(), publish, NO_PACKET_IDENTIFIER_QOS_0, false);
-        ctx.write(publishWrapper, promise);
+                wrapPublish(ctx.channel(), publishWithFlow.getPublish(), NO_PACKET_IDENTIFIER_QOS_0, false);
+        ctx.write(publishWrapper)
+                .addListener(future -> publishWithFlow.getIncomingAckFlow()
+                        .onNext(new MqttPublishResult(publishWithFlow.getPublish(), null)));
     }
 
     private void handlePublishQoS1Or2(
-            @NotNull final ChannelHandlerContext ctx, @NotNull final MqttPublish publish,
-            @NotNull final ChannelPromise promise) {
+            @NotNull final ChannelHandlerContext ctx, @NotNull final MqttPublishWithFlow publishWithFlow) {
 
         final int packetIdentifier = packetIdentifiers.getId();
         if (packetIdentifier < 0) {
-            promise.setFailure(PacketIdentifiersExceededException.INSTANCE);
+            // TODO must not happen
             return;
         }
 
-        final MqttPublishWrapper publishWrapper = wrapPublish(ctx.channel(), publish, packetIdentifier, false);
-        persistence.store(publishWrapper).whenCompleteAsync((aVoid, throwable) -> {
-            ctx.writeAndFlush(publishWrapper, promise);
-            if (throwable != null) {
-                LOGGER.error("Unexpected exception while persisting PUBLISH in outgoing QoSFlowPersistence", throwable);
-            }
-        }, ctx.executor());
+        qos1Or2Publishes.put(packetIdentifier, publishWithFlow);
+        final MqttPublishWrapper publishWrapper =
+                wrapPublish(ctx.channel(), publishWithFlow.getPublish(), packetIdentifier, false);
+        ctx.writeAndFlush(publishWrapper);
     }
 
     private MqttPublishWrapper wrapPublish(
@@ -154,7 +151,12 @@ public class Mqtt5OutgoingQoSHandler extends ChannelDuplexHandler {
             }
         }
 
-        finish(pubAck.getPacketIdentifier());
+        final MqttPublishWithFlow publishWithFlow = remove(pubAck.getPacketIdentifier());
+        if ((publishWithFlow == null) || (publishWithFlow.getPublish().getQos() != MqttQoS.AT_LEAST_ONCE)) {
+            // TODO
+            return;
+        }
+        publishWithFlow.getIncomingAckFlow().onNext(new MqttQoS1Result(publishWithFlow.getPublish(), null, pubAck));
     }
 
     private void handlePubRec(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttPubRec pubRec) {
@@ -174,7 +176,14 @@ public class Mqtt5OutgoingQoSHandler extends ChannelDuplexHandler {
             }
         }
 
-        finish(pubRec.getPacketIdentifier());
+        final MqttPublishWithFlow publishWithFlow = remove(pubRec.getPacketIdentifier());
+        if ((publishWithFlow == null) || (publishWithFlow.getPublish().getQos() != MqttQoS.EXACTLY_ONCE)) {
+            // TODO
+            return;
+        }
+        publishWithFlow.getIncomingAckFlow()
+                .onNext(new MqttPublishResult(publishWithFlow.getPublish(),
+                        new Mqtt5MessageException(pubRec, "PUBREC contained an Error Code")));
     }
 
     private void handlePubRecSuccess(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttPubRec pubRec) {
@@ -189,12 +198,7 @@ public class Mqtt5OutgoingQoSHandler extends ChannelDuplexHandler {
         }
 
         final MqttPubRel pubRel = pubRelBuilder.build();
-        persistence.store(pubRel).whenCompleteAsync((aVoid, throwable) -> {
-            ctx.writeAndFlush(pubRel);
-            if (throwable != null) {
-                LOGGER.error("Unexpected exception while persisting PUBREL in outgoing QoSFlowPersistence", throwable);
-            }
-        }, ctx.executor());
+        ctx.writeAndFlush(pubRel);
     }
 
     private void handlePubComp(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttPubComp pubComp) {
@@ -206,12 +210,17 @@ public class Mqtt5OutgoingQoSHandler extends ChannelDuplexHandler {
             }
         }
 
-        finish(pubComp.getPacketIdentifier());
+        final MqttPublishWithFlow publishWithFlow = remove(pubComp.getPacketIdentifier());
+        if ((publishWithFlow == null) || (publishWithFlow.getPublish().getQos() != MqttQoS.EXACTLY_ONCE)) {
+            // TODO
+            return;
+        }
+        publishWithFlow.getIncomingAckFlow().onNext(new MqttQoS2Result(publishWithFlow.getPublish(), null, pubComp));
     }
 
-    private void finish(final int packetIdentifier) {
-        persistence.discard(packetIdentifier);
+    private MqttPublishWithFlow remove(final int packetIdentifier) {
         packetIdentifiers.returnId(packetIdentifier);
+        return qos1Or2Publishes.remove(packetIdentifier);
     }
 
 }

@@ -6,14 +6,11 @@ import io.reactivex.Scheduler;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.MqttServerConnectionData;
-import org.mqttbee.mqtt.message.publish.puback.MqttPubAck;
-import org.mqttbee.mqtt.message.publish.pubcomp.MqttPubComp;
 import org.mqttbee.mqtt5.ioc.ChannelScope;
 import org.reactivestreams.Subscription;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Silvio Giebl
@@ -21,26 +18,25 @@ import java.util.concurrent.ConcurrentHashMap;
 @ChannelScope
 public class MqttOutgoingPublishService implements FlowableSubscriber<MqttPublishWithFlow> {
 
+    private final Mqtt5OutgoingQoSHandler outgoingQoSHandler;
     private final Scheduler.Worker rxEventLoop;
 
     private Subscription subscription;
 
-    private final ConcurrentHashMap<Integer, MqttPublishWithFlow> map;
     private final int receiveMaximum;
-
 
     @Inject
     MqttOutgoingPublishService(
-            final MqttPublishFlowables publishFlowables, @Named("outgoingPublish") final Scheduler.Worker rxEventLoop,
-            final MqttClientData clientData) {
+            final Mqtt5OutgoingQoSHandler outgoingQoSHandler, final MqttPublishFlowables publishFlowables,
+            @Named("outgoingPublish") final Scheduler.Worker rxEventLoop, final MqttClientData clientData) {
 
         final MqttServerConnectionData serverConnectionData = clientData.getRawServerConnectionData();
         assert serverConnectionData != null;
 
+        this.outgoingQoSHandler = outgoingQoSHandler;
         this.rxEventLoop = rxEventLoop;
 
         receiveMaximum = serverConnectionData.getReceiveMaximum();
-        map = new ConcurrentHashMap<>();
 
         Flowable.mergeDelayError(publishFlowables).subscribe(this);
     }
@@ -53,7 +49,7 @@ public class MqttOutgoingPublishService implements FlowableSubscriber<MqttPublis
 
     @Override
     public void onNext(final MqttPublishWithFlow publishWithFlow) {
-//        map.put(packetIdentifier, publishWithFlow); // TODO
+        outgoingQoSHandler.publish(publishWithFlow);
     }
 
     @Override
@@ -65,13 +61,6 @@ public class MqttOutgoingPublishService implements FlowableSubscriber<MqttPublis
     public void onComplete() {
         // TODO does not happen as the flowable is global and never completed
     }
-
-    void onPubAck(@NotNull final MqttPubAck pubAck) {
-    }
-
-    void onPubComp(@NotNull final MqttPubComp pubComp) {
-    }
-
 
     public void request(final long amount) {
         subscription.request(amount);

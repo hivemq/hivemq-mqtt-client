@@ -2,9 +2,9 @@ package org.mqttbee.mqtt5.handler.subscribe;
 
 import io.reactivex.SingleEmitter;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribe;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribeWrapper;
-import org.mqttbee.mqtt.message.unsubscribe.unsuback.MqttUnsubAck;
 
 /**
  * @author Silvio Giebl
@@ -12,10 +12,10 @@ import org.mqttbee.mqtt.message.unsubscribe.unsuback.MqttUnsubAck;
 public class MqttUnsubscribeWithFlow {
 
     private final MqttUnsubscribe unsubscribe;
-    private final SingleEmitter<MqttUnsubAck> flow;
+    private final SingleEmitter<Mqtt5UnsubAck> flow;
 
     public MqttUnsubscribeWithFlow(
-            @NotNull final MqttUnsubscribe unsubscribe, @NotNull final SingleEmitter<MqttUnsubAck> flow) {
+            @NotNull final MqttUnsubscribe unsubscribe, @NotNull final SingleEmitter<Mqtt5UnsubAck> flow) {
 
         this.unsubscribe = unsubscribe;
         this.flow = flow;
@@ -27,7 +27,7 @@ public class MqttUnsubscribeWithFlow {
     }
 
     @NotNull
-    public SingleEmitter<MqttUnsubAck> getFlow() {
+    public SingleEmitter<Mqtt5UnsubAck> getFlow() {
         return flow;
     }
 
@@ -40,10 +40,10 @@ public class MqttUnsubscribeWithFlow {
     public static class MqttUnsubscribeWrapperWithFlow {
 
         private final MqttUnsubscribeWrapper unsubscribe;
-        private final SingleEmitter<MqttUnsubAck> flow;
+        private final SingleEmitter<Mqtt5UnsubAck> flow;
 
         private MqttUnsubscribeWrapperWithFlow(
-                @NotNull final MqttUnsubscribeWrapper unsubscribe, @NotNull final SingleEmitter<MqttUnsubAck> flow) {
+                @NotNull final MqttUnsubscribeWrapper unsubscribe, @NotNull final SingleEmitter<Mqtt5UnsubAck> flow) {
 
             this.unsubscribe = unsubscribe;
             this.flow = flow;
@@ -55,7 +55,7 @@ public class MqttUnsubscribeWithFlow {
         }
 
         @NotNull
-        public SingleEmitter<MqttUnsubAck> getFlow() {
+        public SingleEmitter<Mqtt5UnsubAck> getFlow() {
             return flow;
         }
 

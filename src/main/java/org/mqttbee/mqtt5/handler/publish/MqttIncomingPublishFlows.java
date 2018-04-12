@@ -34,7 +34,7 @@ public class MqttIncomingPublishFlows {
     @NotNull
     private final MqttSubscriptionFlows subscriptionFlows;
     @NotNull
-    private ScNodeList<MqttGlobalIncomingPublishFlow>[] globalFlows;
+    private final ScNodeList<MqttGlobalIncomingPublishFlow>[] globalFlows;
 
     @Inject
     @SuppressWarnings("unchecked")

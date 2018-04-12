@@ -3,7 +3,7 @@ package org.mqttbee.mqtt5.handler.publish;
 import io.reactivex.Emitter;
 import io.reactivex.internal.util.BackpressureHelper;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt.message.subscribe.MqttSubscribeResult;
+import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeResult;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
@@ -14,9 +14,9 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * @author Silvio Giebl
  */
-public abstract class MqttIncomingPublishFlow implements Emitter<MqttSubscribeResult>, Subscription {
+public abstract class MqttIncomingPublishFlow implements Emitter<Mqtt5SubscribeResult>, Subscription {
 
-    private final Subscriber<? super MqttSubscribeResult> actual;
+    private final Subscriber<? super Mqtt5SubscribeResult> actual;
     final MqttIncomingPublishService incomingPublishService;
 
     private long requested;
@@ -32,7 +32,7 @@ public abstract class MqttIncomingPublishFlow implements Emitter<MqttSubscribeRe
     private final AtomicBoolean scheduled = new AtomicBoolean();
 
     MqttIncomingPublishFlow(
-            @NotNull final Subscriber<? super MqttSubscribeResult> actual,
+            @NotNull final Subscriber<? super Mqtt5SubscribeResult> actual,
             @NotNull final MqttIncomingPublishService incomingPublishService) {
 
         this.actual = actual;
@@ -40,7 +40,7 @@ public abstract class MqttIncomingPublishFlow implements Emitter<MqttSubscribeRe
     }
 
     @Override
-    public void onNext(@NotNull final MqttSubscribeResult result) {
+    public void onNext(@NotNull final Mqtt5SubscribeResult result) {
         if (done) {
             return;
         }

@@ -9,7 +9,6 @@ import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.MqttMessageWithUserProperties.MqttMessageWithIdAndReasonCodes;
-import org.mqttbee.mqtt.message.subscribe.MqttSubscribeResult;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -19,7 +18,7 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public class MqttSubAck extends
         MqttMessageWithIdAndReasonCodes<MqttSubAck, Mqtt5SubAckReasonCode, MqttMessageEncoderProvider<MqttSubAck>>
-        implements Mqtt5SubAck, MqttSubscribeResult {
+        implements Mqtt5SubAck {
 
     public MqttSubAck(
             final int packetIdentifier, @NotNull final ImmutableList<Mqtt5SubAckReasonCode> reasonCodes,
