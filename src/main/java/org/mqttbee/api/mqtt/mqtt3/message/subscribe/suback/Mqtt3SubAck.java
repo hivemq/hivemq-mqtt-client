@@ -5,12 +5,13 @@ import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3Message;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
+import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3SubscribeResult;
 
 /**
  * MQTT 3 SUBACK packet.
  */
 @DoNotImplement
-public interface Mqtt3SubAck extends Mqtt3Message {
+public interface Mqtt3SubAck extends Mqtt3Message, Mqtt3SubscribeResult {
 
     /**
      * @return the Return Codes of this SUBACK packet, each belonging to a subscription in the corresponding SUBSCRIBE
