@@ -19,7 +19,7 @@ public class Mqtt3PubRelEncoder extends MqttMessageEncoderWithMessage<MqttPubRel
 
     public static final Mqtt3PubRelEncoder INSTANCE = new Mqtt3PubRelEncoder();
 
-    private static final int FIXED_HEADER = Mqtt3MessageType.PUBREL.getCode() << 4;
+    private static final int FIXED_HEADER = (Mqtt3MessageType.PUBREL.getCode() << 4) | 0b0010;
     private static final int FIXED_HEADER_LENGTH = 2;
     private static final int ENCODED_LENGTH = FIXED_HEADER_LENGTH + 2;
 
