@@ -5,8 +5,6 @@ import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
-import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5PubAckEncoder;
-import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5PubRecEncoder;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttPublishEncoderProvider;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider.ThreadLocalMqttWrappedMessageEncoderProvider;
@@ -22,7 +20,7 @@ import java.nio.ByteBuffer;
 public class Mqtt3PublishEncoder extends Mqtt3WrappedMessageEncoder<MqttPublish, MqttPublishWrapper> {
 
     private static final MqttPublishEncoderProvider WRAPPER_PROVIDER =
-            new MqttPublishEncoderProvider(Mqtt5PubAckEncoder.PROVIDER, Mqtt5PubRecEncoder.PROVIDER);
+            new MqttPublishEncoderProvider(Mqtt3PubAckEncoder.PROVIDER, Mqtt3PubRecEncoder.PROVIDER);
     public static final MqttWrappedMessageEncoderProvider<MqttPublish, MqttPublishWrapper, MqttPublishEncoderProvider>
             PROVIDER = new ThreadLocalMqttWrappedMessageEncoderProvider<>(Mqtt3PublishEncoder::new, WRAPPER_PROVIDER);
 
