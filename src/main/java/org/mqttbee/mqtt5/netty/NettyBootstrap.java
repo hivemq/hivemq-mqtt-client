@@ -60,7 +60,8 @@ public abstract class NettyBootstrap {
             defaultEventLoopGroupReferenceCount = new AtomicInteger(1);
         } else {
             final int defaultThreadCount = defaultEventLoopGroup.executorCount();
-            if (defaultThreadCount != numberOfNettyThreads) {
+            if ((numberOfNettyThreads != MqttClientExecutorConfigImpl.DEFAULT_NETTY_THREADS) &&
+                    (defaultThreadCount != numberOfNettyThreads)) {
                 LOGGER.warn(
                         "Tried to use the default executor with a different amount of Netty threads. Using {} threads instead of {}",
                         defaultThreadCount, numberOfNettyThreads);
@@ -85,7 +86,8 @@ public abstract class NettyBootstrap {
             eventLoopGroupReferenceCounts.put(executor, new AtomicInteger(1));
         } else {
             final int threadCount = eventLoopGroup.executorCount();
-            if (threadCount != numberOfNettyThreads) {
+            if ((numberOfNettyThreads != MqttClientExecutorConfigImpl.DEFAULT_NETTY_THREADS) &&
+                    (threadCount != numberOfNettyThreads)) {
                 LOGGER.warn(
                         "Tried to use a different amount of Netty threads for the same executor. Using {} threads instead of {}",
                         threadCount, numberOfNettyThreads);
