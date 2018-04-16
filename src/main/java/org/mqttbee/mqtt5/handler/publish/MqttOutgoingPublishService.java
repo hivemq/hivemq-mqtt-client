@@ -36,7 +36,7 @@ public class MqttOutgoingPublishService implements FlowableSubscriber<MqttPublis
         this.outgoingQoSHandler = outgoingQoSHandler;
         this.rxEventLoop = rxEventLoop;
 
-        receiveMaximum = serverConnectionData.getReceiveMaximum();
+        receiveMaximum = Mqtt5OutgoingQoSHandler.getPubReceiveMaximum(serverConnectionData.getReceiveMaximum());
 
         Flowable.mergeDelayError(publishFlowables).subscribe(this);
     }
