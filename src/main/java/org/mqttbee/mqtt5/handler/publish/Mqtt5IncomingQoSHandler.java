@@ -2,6 +2,7 @@ package org.mqttbee.mqtt5.handler.publish;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import org.jctools.queues.SpscChunkedArrayQueue;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5IncomingQoS1ControlProvider;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5IncomingQoS2ControlProvider;
@@ -19,6 +20,7 @@ import org.mqttbee.util.collections.IntMap;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Silvio Giebl
@@ -34,6 +36,10 @@ public class Mqtt5IncomingQoSHandler extends ChannelInboundHandlerAdapter {
     private final IntMap<MqttPubRel> pubRels;
     private final IntMap<Boolean> pubComps;
 
+    private final SpscChunkedArrayQueue<MqttPublishWrapper> ackQueue;
+    private final Runnable ackRunnable = this::runAck;
+    private final AtomicInteger wip = new AtomicInteger();
+
     private ChannelHandlerContext ctx;
 
     @Inject
@@ -48,6 +54,7 @@ public class Mqtt5IncomingQoSHandler extends ChannelInboundHandlerAdapter {
         pubRecs = new IntMap<>(receiveMaximum);
         pubRels = new IntMap<>(receiveMaximum);
         pubComps = new IntMap<>(receiveMaximum);
+        ackQueue = new SpscChunkedArrayQueue<>(64, receiveMaximum);
     }
 
     @Override
@@ -143,20 +150,38 @@ public class Mqtt5IncomingQoSHandler extends ChannelInboundHandlerAdapter {
             pubRels.put(packetIdentifier, pubRel);
         } else {
             writePubComp(ctx, pubRel);
+            ctx.flush();
         }
     }
 
     void ack(@NotNull final MqttPublishWrapper publishWrapper) {
-        ctx.executor().execute(() -> {
-            switch (publishWrapper.getWrapped().getQos()) {
+        ackQueue.offer(publishWrapper);
+        if (wip.getAndIncrement() == 0) {
+            ctx.executor().execute(ackRunnable);
+        }
+    }
+
+    private void runAck() {
+        boolean flush = false;
+        final int working = Math.min(wip.get(), 64);
+        for (int i = 0; i < working; i++) {
+            final MqttPublishWrapper publishToAck = ackQueue.poll();
+            switch (publishToAck.getWrapped().getQos()) {
                 case AT_LEAST_ONCE:
-                    ackQoS1(publishWrapper);
+                    ackQoS1(publishToAck);
+                    flush = true;
                     break;
                 case EXACTLY_ONCE:
-                    ackQoS2(publishWrapper);
+                    flush |= ackQoS2(publishToAck);
                     break;
             }
-        });
+        }
+        if (flush) {
+            ctx.flush();
+        }
+        if (wip.addAndGet(-working) > 0) {
+            ctx.executor().execute(ackRunnable);
+        }
     }
 
     private void ackQoS1(@NotNull final MqttPublishWrapper publish) {
@@ -170,16 +195,18 @@ public class Mqtt5IncomingQoSHandler extends ChannelInboundHandlerAdapter {
             }
         }
 
-        ctx.writeAndFlush(pubAckBuilder.build());
+        ctx.write(pubAckBuilder.build());
     }
 
-    private void ackQoS2(@NotNull final MqttPublishWrapper publishWrapper) {
+    private boolean ackQoS2(@NotNull final MqttPublishWrapper publishWrapper) {
         final int packetIdentifier = publishWrapper.getPacketIdentifier();
         final MqttPubRel pubRel = pubRels.remove(packetIdentifier);
         if (pubRel == null) {
             pubComps.put(packetIdentifier, Boolean.TRUE);
+            return false;
         } else {
             writePubComp(ctx, pubRel);
+            return true;
         }
     }
 
@@ -194,7 +221,7 @@ public class Mqtt5IncomingQoSHandler extends ChannelInboundHandlerAdapter {
             }
         }
 
-        ctx.writeAndFlush(pubCompBuilder.build());
+        ctx.write(pubCompBuilder.build());
     }
 
 }
