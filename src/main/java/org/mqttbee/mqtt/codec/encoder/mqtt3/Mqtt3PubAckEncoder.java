@@ -14,9 +14,8 @@ import org.mqttbee.mqtt.message.publish.puback.MqttPubAck;
  */
 public class Mqtt3PubAckEncoder extends MqttMessageEncoderWithMessage<MqttPubAck> {
 
-    public static final MqttMessageEncoderProvider<MqttPubAck> PROVIDER = Mqtt3PubAckEncoder::new;
-
     public static final Mqtt3PubAckEncoder INSTANCE = new Mqtt3PubAckEncoder();
+    public static final MqttMessageEncoderProvider<MqttPubAck> PROVIDER = () -> INSTANCE;
 
     private static final int FIXED_HEADER = Mqtt3MessageType.PUBACK.getCode() << 4;
     private static final int FIXED_HEADER_LENGTH = 2;

@@ -14,9 +14,8 @@ import org.mqttbee.mqtt.message.publish.pubcomp.MqttPubComp;
  */
 public class Mqtt3PubCompEncoder extends MqttMessageEncoderWithMessage<MqttPubComp> {
 
-    public static final MqttMessageEncoderProvider<MqttPubComp> PROVIDER = Mqtt3PubCompEncoder::new;
-
     public static final Mqtt3PubCompEncoder INSTANCE = new Mqtt3PubCompEncoder();
+    public static final MqttMessageEncoderProvider<MqttPubComp> PROVIDER = () -> INSTANCE;
 
     private static final int FIXED_HEADER = Mqtt3MessageType.PUBCOMP.getCode() << 4;
     private static final int FIXED_HEADER_LENGTH = 2;
