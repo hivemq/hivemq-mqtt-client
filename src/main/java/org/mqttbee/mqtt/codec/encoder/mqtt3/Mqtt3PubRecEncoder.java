@@ -14,10 +14,9 @@ import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRec;
  */
 public class Mqtt3PubRecEncoder extends MqttMessageEncoderWithMessage<MqttPubRec> {
 
-    public static final MqttPubRecEncoderProvider PROVIDER =
-            new MqttPubRecEncoderProvider(Mqtt3PubRecEncoder::new, Mqtt3PubRelEncoder.PROVIDER);
-
     public static final Mqtt3PubRecEncoder INSTANCE = new Mqtt3PubRecEncoder();
+    public static final MqttPubRecEncoderProvider PROVIDER =
+            new MqttPubRecEncoderProvider(() -> INSTANCE, Mqtt3PubRelEncoder.PROVIDER);
 
     private static final int FIXED_HEADER = Mqtt3MessageType.PUBREC.getCode() << 4;
     private static final int FIXED_HEADER_LENGTH = 2;

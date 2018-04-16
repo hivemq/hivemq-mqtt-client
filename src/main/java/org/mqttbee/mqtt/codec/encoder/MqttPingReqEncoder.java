@@ -14,8 +14,8 @@ public class MqttPingReqEncoder implements MqttMessageEncoder {
     public static final MqttPingReqEncoder INSTANCE = new MqttPingReqEncoder();
 
     private static final int ENCODED_LENGTH = 2;
-    private static final ByteBuf PACKET =
-            Unpooled.directBuffer(ENCODED_LENGTH).writeByte(Mqtt5MessageType.PINGREQ.getCode() << 4).writeByte(0);
+    private static final ByteBuf PACKET = Unpooled.unreleasableBuffer(
+            Unpooled.directBuffer(ENCODED_LENGTH).writeByte(Mqtt5MessageType.PINGREQ.getCode() << 4).writeByte(0));
 
     @Override
     public int encodedLength(final int maxPacketSize) {
@@ -25,7 +25,7 @@ public class MqttPingReqEncoder implements MqttMessageEncoder {
     @NotNull
     @Override
     public ByteBuf allocateBuffer(@NotNull final Channel channel) {
-        return PACKET.retainedDuplicate();
+        return PACKET;
     }
 
     @Override
