@@ -2,8 +2,28 @@
 
 [![Build Status](https://travis-ci.com/mqtt-bee/mqtt-bee.svg?token=QxshYePt8tWLsG9B3pgf&branch=feature/BEE-6-mqtt-5-codecs)](https://travis-ci.com/mqtt-bee/mqtt-bee)
 
-MQTT 5 compatible client library with a reactive API and back pressure support.
+MQTT 5.0 and 3.1.1 compatible client library with a reactive API and back pressure support.
 
+# Status
+IMPORTANT: ALPHA STATUS, DO NOT USE IN PRODUCTION YET!
+
+## DONE
+ - Basic MQTT 3.1.1 and MQTT 5.0 functionality
+ - Reactive API
+ - Backpressure support for QoS 1 and 2
+ - Additional MQTT 5 features: Server-Reauth
+
+## TODO
+ - APIs are not stable yet
+ - Backpressure support for QoS 0
+ - Reconnect Handling and Message redelivery
+ - SSL integration (branch need to be integrated)
+ - Websocket support
+ - Simpler APIs
+ - Disk Persistence
+
+# Example
+tbd
 
 ## How to build
 
