@@ -3,6 +3,7 @@ package org.mqttbee.mqtt5.handler.publish;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import org.jctools.queues.SpscChunkedArrayQueue;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ServerConnectionData;
@@ -31,6 +32,7 @@ import org.mqttbee.util.UnsignedDataTypes;
 import org.mqttbee.util.collections.IntMap;
 
 import javax.inject.Inject;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.mqttbee.mqtt.message.publish.MqttPublishWrapper.*;
 
@@ -47,6 +49,9 @@ public class Mqtt5OutgoingQoSHandler extends ChannelInboundHandlerAdapter {
         return Math.min(receiveMaximum, max);
     }
 
+    private final SpscChunkedArrayQueue<MqttPublishWithFlow> publishQueue;
+    private final Runnable publishRunnable = this::runPublish;
+    private final AtomicInteger wip = new AtomicInteger();
     private final Ranges packetIdentifiers;
     private final IntMap<MqttPublishWithFlow> qos1Or2Publishes;
 
@@ -58,6 +63,7 @@ public class Mqtt5OutgoingQoSHandler extends ChannelInboundHandlerAdapter {
         assert serverConnectionData != null;
 
         final int pubReceiveMaximum = getPubReceiveMaximum(serverConnectionData.getReceiveMaximum());
+        publishQueue = new SpscChunkedArrayQueue<>(64, pubReceiveMaximum);
         packetIdentifiers = new Ranges(1, pubReceiveMaximum);
         qos1Or2Publishes = new IntMap<>(pubReceiveMaximum);
     }
@@ -68,7 +74,21 @@ public class Mqtt5OutgoingQoSHandler extends ChannelInboundHandlerAdapter {
     }
 
     void publish(@NotNull final MqttPublishWithFlow publishWithFlow) {
-        ctx.executor().execute(() -> handlePublish(ctx, publishWithFlow));
+        publishQueue.offer(publishWithFlow);
+        if (wip.getAndIncrement() == 0) {
+            ctx.executor().execute(publishRunnable);
+        }
+    }
+
+    private void runPublish() {
+        final int working = Math.min(wip.get(), 64);
+        for (int i = 0; i < working; i++) {
+            handlePublish(ctx, publishQueue.poll());
+        }
+        ctx.flush();
+        if (wip.addAndGet(-working) > 0) {
+            ctx.executor().execute(publishRunnable);
+        }
     }
 
     private void handlePublish(
@@ -86,7 +106,7 @@ public class Mqtt5OutgoingQoSHandler extends ChannelInboundHandlerAdapter {
 
         final MqttPublishWrapper publishWrapper =
                 wrapPublish(ctx.channel(), publishWithFlow.getPublish(), NO_PACKET_IDENTIFIER_QOS_0, false);
-        ctx.writeAndFlush(publishWrapper)
+        ctx.write(publishWrapper)
                 .addListener(future -> publishWithFlow.getIncomingAckFlow()
                         .onNext(new MqttPublishResult(publishWithFlow.getPublish(), null)));
     }
@@ -103,7 +123,7 @@ public class Mqtt5OutgoingQoSHandler extends ChannelInboundHandlerAdapter {
         qos1Or2Publishes.put(packetIdentifier, publishWithFlow);
         final MqttPublishWrapper publishWrapper =
                 wrapPublish(ctx.channel(), publishWithFlow.getPublish(), packetIdentifier, false);
-        ctx.writeAndFlush(publishWrapper);
+        ctx.write(publishWrapper);
     }
 
     private MqttPublishWrapper wrapPublish(
