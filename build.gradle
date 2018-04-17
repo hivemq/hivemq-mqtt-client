@@ -9,6 +9,7 @@ buildscript {
 
 plugins {
     id 'net.ltgt.apt' version '0.10'
+    id "com.github.hierynomus.license" version "0.14.0"
 }
 
 apply plugin: 'java'
@@ -63,4 +64,8 @@ dependencies {
     testRuntime group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junitJupiterVersion
     testRuntime group: 'org.junit.platform', name: 'junit-platform-launcher', version: junitPlatformVersion
     testRuntime group: 'org.junit.platform', name: 'junit-platform-runner', version: junitPlatformVersion
+}
+
+license {
+    header file('codestyle/Apache2_license_header.txt')
 }
