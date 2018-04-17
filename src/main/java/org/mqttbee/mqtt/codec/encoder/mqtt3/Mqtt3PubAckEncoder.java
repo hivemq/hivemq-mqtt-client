@@ -23,6 +23,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoderWithMessage;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
+import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider.ThreadLocalMqttMessageEncoderProvider;
 import org.mqttbee.mqtt.message.publish.puback.MqttPubAck;
 
 /**
@@ -31,8 +32,8 @@ import org.mqttbee.mqtt.message.publish.puback.MqttPubAck;
  */
 public class Mqtt3PubAckEncoder extends MqttMessageEncoderWithMessage<MqttPubAck> {
 
-    public static final Mqtt3PubAckEncoder INSTANCE = new Mqtt3PubAckEncoder();
-    public static final MqttMessageEncoderProvider<MqttPubAck> PROVIDER = () -> INSTANCE;
+    public static final MqttMessageEncoderProvider<MqttPubAck> PROVIDER =
+            new ThreadLocalMqttMessageEncoderProvider<>(Mqtt3PubAckEncoder::new);
 
     private static final int FIXED_HEADER = Mqtt3MessageType.PUBACK.getCode() << 4;
     private static final int FIXED_HEADER_LENGTH = 2;
