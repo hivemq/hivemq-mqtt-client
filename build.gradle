@@ -54,6 +54,7 @@ dependencies {
     testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junitJupiterVersion
     testCompile group: 'nl.jqno.equalsverifier', name: 'equalsverifier', version: '2.4.1'
     testCompile group: 'org.mockito', name: 'mockito-core', version: '2.18.3'
+    testCompile group: 'commons-cli', name: 'commons-cli', version: '1.4'
 
     testRuntime group: 'org.junit.vintage', name: 'junit-vintage-engine', version: junitVintageVersion
     testRuntime group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junitJupiterVersion
@@ -68,3 +69,10 @@ license {
 test {
     useJUnitPlatform()
 }
+
+task execute(type:JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath + sourceSets.test.runtimeClasspath
+    main = project.hasProperty("mainClass") ? project.getProperty("mainClass") : ""
+    systemProperties = System.properties
+}
+
