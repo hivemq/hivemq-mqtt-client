@@ -1,27 +1,11 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-    }
-    dependencies {
-        classpath group: 'org.junit.platform', name: 'junit-platform-gradle-plugin', version: '1.0.3'
-        classpath group: 'net.ltgt.gradle', name: 'gradle-apt-plugin', version: '0.15'
-    }
-}
-
 plugins {
+    id 'java'
+    id 'idea'
+    id 'eclipse'
     id "net.ltgt.apt-idea" version "0.15"
+    id "net.ltgt.apt-eclipse" version "0.15"
     id "com.github.hierynomus.license" version "0.14.0"
 }
-
-apply plugin: 'net.ltgt.apt-idea'
-apply plugin: 'net.ltgt.apt-eclipse'
-apply plugin: 'java'
-apply plugin: 'org.junit.platform.gradle.plugin'
-apply plugin: 'idea'
-apply plugin: 'eclipse'
 
 group 'org.mqtt-bee'
 version '1.0-SNAPSHOT'
@@ -33,7 +17,9 @@ tasks.withType(JavaCompile) {
 }
 
 repositories {
+    mavenLocal()
     mavenCentral()
+    jcenter()
 }
 
 project.ext {
@@ -77,6 +63,10 @@ dependencies {
 
 license {
     header file('codestyle/Apache2_license_header.txt')
+}
+
+test {
+    useJUnitPlatform()
 }
 
 testClasses {
