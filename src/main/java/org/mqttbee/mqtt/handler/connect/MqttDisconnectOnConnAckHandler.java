@@ -15,7 +15,7 @@
  *
  */
 
-package org.mqttbee.mqtt5.handler.connect;
+package org.mqttbee.mqtt.handler.connect;
 
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -37,12 +37,12 @@ import javax.inject.Singleton;
  */
 @ChannelHandler.Sharable
 @Singleton
-public class Mqtt5DisconnectOnConnAckHandler extends ChannelInboundHandlerAdapter {
+public class MqttDisconnectOnConnAckHandler extends ChannelInboundHandlerAdapter {
 
     public static final String NAME = "disconnect.on.connack";
 
     @Inject
-    Mqtt5DisconnectOnConnAckHandler() {
+    MqttDisconnectOnConnAckHandler() {
     }
 
     @Override

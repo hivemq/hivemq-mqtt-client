@@ -15,7 +15,7 @@
  *
  */
 
-package org.mqttbee.mqtt5.handler.connect;
+package org.mqttbee.mqtt.handler.connect;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -60,9 +60,9 @@ import org.slf4j.LoggerFactory;
  * @author Silvio Giebl
  */
 @ChannelScope
-public class Mqtt5ConnectHandler extends ChannelInboundHandlerWithTimeout {
+public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Mqtt5ConnectHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MqttConnectHandler.class);
 
     public static final String NAME = "connect";
     private static final int CONNACK_TIMEOUT = 60; // TODO configurable
@@ -71,7 +71,7 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerWithTimeout {
     private final SingleEmitter<Mqtt5ConnAck> connAckEmitter;
     private final MqttClientData clientData;
 
-    public Mqtt5ConnectHandler(
+    public MqttConnectHandler(
             @NotNull final MqttConnect connect, @NotNull final SingleEmitter<Mqtt5ConnAck> connAckEmitter,
             @NotNull final MqttClientData clientData) {
 
@@ -148,7 +148,7 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerWithTimeout {
      * If it contains an Error Code, the channel is closed.
      * <p>
      * Otherwise it is validated. Then this handler is removed from the pipeline and the {@link Mqtt5PingHandler} and
-     * {@link Mqtt5DisconnectOnConnAckHandler} are added to the pipeline.
+     * {@link MqttDisconnectOnConnAckHandler} are added to the pipeline.
      *
      * @param connAck the CONNACK message.
      * @param channel the channel.
@@ -180,7 +180,7 @@ public class Mqtt5ConnectHandler extends ChannelInboundHandlerWithTimeout {
                         Mqtt5PingHandler.NAME, Mqtt5IncomingQoSHandler.NAME, channelComponent.incomingQoSHandler());
                 pipeline.addAfter(
                         Mqtt5PingHandler.NAME, Mqtt5OutgoingQoSHandler.NAME, channelComponent.outgoingQoSHandler());
-                pipeline.addLast(Mqtt5DisconnectOnConnAckHandler.NAME, channelComponent.disconnectOnConnAckHandler());
+                pipeline.addLast(MqttDisconnectOnConnAckHandler.NAME, channelComponent.disconnectOnConnAckHandler());
 
                 connAckEmitter.onSuccess(connAck);
             }
