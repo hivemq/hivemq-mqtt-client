@@ -15,7 +15,7 @@
  *
  */
 
-package org.mqttbee.mqtt5.handler;
+package org.mqttbee.mqtt.handler;
 
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
