@@ -15,7 +15,7 @@
  *
  */
 
-package org.mqttbee.mqtt5.ioc;
+package org.mqttbee.mqtt.ioc;
 
 import dagger.BindsInstance;
 import dagger.Subcomponent;

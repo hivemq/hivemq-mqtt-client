@@ -30,20 +30,20 @@ import org.mqttbee.mqtt.handler.auth.MqttAuthHandler;
 import org.mqttbee.mqtt.handler.auth.MqttDisconnectOnAuthHandler;
 import org.mqttbee.mqtt.handler.connect.MqttConnectHandler;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectHandler;
-import org.mqttbee.mqtt5.ioc.ChannelComponent;
+import org.mqttbee.mqtt.ioc.ChannelComponent;
 
 /**
  * Default channel initializer.
  *
  * @author Silvio Giebl
  */
-public class Mqtt5ChannelInitializer extends ChannelInitializer<SocketChannel> {
+public class MqttChannelInitializer extends ChannelInitializer<SocketChannel> {
 
     private final MqttConnect connect;
     private final SingleEmitter<Mqtt5ConnAck> connAckEmitter;
     private final MqttClientData clientData;
 
-    Mqtt5ChannelInitializer(
+    MqttChannelInitializer(
             @NotNull final MqttConnect connect, @NotNull final SingleEmitter<Mqtt5ConnAck> connAckEmitter,
             @NotNull final MqttClientData clientData) {
 

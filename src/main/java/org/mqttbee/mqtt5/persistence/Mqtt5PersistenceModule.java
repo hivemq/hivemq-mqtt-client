@@ -21,7 +21,7 @@ import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt5.ioc.ChannelScope;
+import org.mqttbee.mqtt.ioc.ChannelScope;
 import org.mqttbee.mqtt5.persistence.memory.IncomingQoSFlowMemoryPersistence;
 import org.mqttbee.mqtt5.persistence.memory.OutgoingQoSFlowMemoryPersistence;
 

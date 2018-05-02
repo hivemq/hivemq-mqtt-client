@@ -23,7 +23,7 @@ import dagger.Provides;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.codec.decoder.mqtt3.Mqtt3ClientMessageDecoders;
 import org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5ClientMessageDecoders;
-import org.mqttbee.mqtt5.ioc.ChannelScope;
+import org.mqttbee.mqtt.ioc.ChannelScope;
 
 /**
  * @author Silvio Giebl

@@ -23,7 +23,7 @@ import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
 import org.mqttbee.mqtt.message.publish.MqttQoSMessage;
 import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRel;
-import org.mqttbee.mqtt5.ioc.ChannelScope;
+import org.mqttbee.mqtt.ioc.ChannelScope;
 import org.mqttbee.mqtt5.persistence.OutgoingQoSFlowPersistence;
 import org.mqttbee.util.collections.IntMap;
 

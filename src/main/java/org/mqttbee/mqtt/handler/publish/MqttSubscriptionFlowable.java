@@ -27,7 +27,7 @@ import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
 import org.mqttbee.mqtt.handler.subscribe.MqttSubscribeWithFlow;
 import org.mqttbee.mqtt.handler.subscribe.MqttSubscriptionHandler;
-import org.mqttbee.mqtt5.ioc.ChannelComponent;
+import org.mqttbee.mqtt.ioc.ChannelComponent;
 import org.reactivestreams.Subscriber;
 
 /**

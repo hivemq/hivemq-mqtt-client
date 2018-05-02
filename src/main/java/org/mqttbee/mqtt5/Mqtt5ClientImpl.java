@@ -50,8 +50,8 @@ import org.mqttbee.mqtt.handler.publish.MqttIncomingAckFlowable;
 import org.mqttbee.mqtt.handler.publish.MqttSubscriptionFlowable;
 import org.mqttbee.mqtt.handler.subscribe.MqttSubscriptionHandler;
 import org.mqttbee.mqtt.handler.subscribe.MqttUnsubscribeWithFlow;
-import org.mqttbee.mqtt5.ioc.ChannelComponent;
-import org.mqttbee.mqtt5.ioc.MqttBeeComponent;
+import org.mqttbee.mqtt.ioc.ChannelComponent;
+import org.mqttbee.mqtt.ioc.MqttBeeComponent;
 import org.mqttbee.rx.FlowableWithSingle;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 

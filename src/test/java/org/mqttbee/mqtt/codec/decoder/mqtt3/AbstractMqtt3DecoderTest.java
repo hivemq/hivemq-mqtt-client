@@ -28,7 +28,7 @@ import org.mqttbee.mqtt.codec.decoder.AbstractMqttDecoderTest;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoders;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
-import org.mqttbee.mqtt5.ioc.ChannelComponent;
+import org.mqttbee.mqtt.ioc.ChannelComponent;
 
 import java.util.Objects;
 

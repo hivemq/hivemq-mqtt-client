@@ -32,7 +32,7 @@ import org.mqttbee.mqtt.message.publish.pubcomp.MqttPubCompBuilder;
 import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRec;
 import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRecBuilder;
 import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRel;
-import org.mqttbee.mqtt5.ioc.ChannelScope;
+import org.mqttbee.mqtt.ioc.ChannelScope;
 import org.mqttbee.util.collections.IntMap;
 
 import javax.inject.Inject;

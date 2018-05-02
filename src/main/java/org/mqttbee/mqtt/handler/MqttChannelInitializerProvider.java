@@ -32,10 +32,10 @@ import javax.inject.Singleton;
  * @author Silvio Giebl
  */
 @Singleton
-public class Mqtt5ChannelInitializerProvider {
+public class MqttChannelInitializerProvider {
 
     @Inject
-    Mqtt5ChannelInitializerProvider() {
+    MqttChannelInitializerProvider() {
     }
 
     /**
@@ -46,14 +46,14 @@ public class Mqtt5ChannelInitializerProvider {
      * @param clientData     the data of the client.
      * @return the appropriate channel initializer.
      */
-    public Mqtt5ChannelInitializer get(
+    public MqttChannelInitializer get(
             @NotNull final MqttConnect connect, @NotNull final SingleEmitter<Mqtt5ConnAck> connAckEmitter,
             @NotNull final MqttClientData clientData) {
 
         if (clientData.usesSSL()) {
             throw new UnsupportedOperationException(); // TODO
         } else {
-            return new Mqtt5ChannelInitializer(connect, connAckEmitter, clientData);
+            return new MqttChannelInitializer(connect, connAckEmitter, clientData);
         }
     }
 
