@@ -15,7 +15,7 @@
  *
  */
 
-package org.mqttbee.mqtt5.handler.subscribe;
+package org.mqttbee.mqtt.handler.subscribe;
 
 import io.reactivex.SingleEmitter;
 import org.mqttbee.annotations.NotNull;

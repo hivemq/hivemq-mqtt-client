@@ -42,7 +42,7 @@ import org.mqttbee.mqtt.message.publish.pubcomp.MqttPubComp;
 import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRec;
 import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRel;
 import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRelBuilder;
-import org.mqttbee.mqtt5.handler.subscribe.MqttSubscriptionHandler;
+import org.mqttbee.mqtt.handler.subscribe.MqttSubscriptionHandler;
 import org.mqttbee.mqtt5.ioc.ChannelScope;
 import org.mqttbee.util.Ranges;
 import org.mqttbee.util.UnsignedDataTypes;
