@@ -26,7 +26,7 @@ import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.MqttServerConnectionData;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
-import org.mqttbee.mqtt5.ioc.ChannelComponent;
+import org.mqttbee.mqtt.ioc.ChannelComponent;
 import org.reactivestreams.Subscriber;
 
 /**

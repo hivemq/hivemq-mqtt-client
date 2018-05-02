@@ -27,7 +27,7 @@ import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.MqttMessage;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
-import org.mqttbee.mqtt5.ioc.ChannelScope;
+import org.mqttbee.mqtt.ioc.ChannelScope;
 
 import javax.inject.Inject;
 import java.util.List;

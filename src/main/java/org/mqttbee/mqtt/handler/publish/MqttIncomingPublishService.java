@@ -23,7 +23,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
-import org.mqttbee.mqtt5.ioc.ChannelScope;
+import org.mqttbee.mqtt.ioc.ChannelScope;
 import org.mqttbee.util.collections.ScNodeList;
 import org.mqttbee.util.collections.SpscIterableChunkedArrayQueue;
 

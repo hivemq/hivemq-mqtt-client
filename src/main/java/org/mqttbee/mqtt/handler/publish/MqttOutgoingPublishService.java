@@ -23,7 +23,7 @@ import io.reactivex.Scheduler;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.MqttServerConnectionData;
-import org.mqttbee.mqtt5.ioc.ChannelScope;
+import org.mqttbee.mqtt.ioc.ChannelScope;
 import org.reactivestreams.Subscription;
 
 import javax.inject.Inject;

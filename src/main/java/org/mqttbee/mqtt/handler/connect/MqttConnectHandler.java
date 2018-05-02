@@ -43,8 +43,8 @@ import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.handler.ping.MqttPingHandler;
 import org.mqttbee.mqtt.handler.subscribe.MqttSubscriptionHandler;
 import org.mqttbee.mqtt.handler.util.ChannelInboundHandlerWithTimeout;
-import org.mqttbee.mqtt5.ioc.ChannelComponent;
-import org.mqttbee.mqtt5.ioc.ChannelScope;
+import org.mqttbee.mqtt.ioc.ChannelComponent;
+import org.mqttbee.mqtt.ioc.ChannelScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

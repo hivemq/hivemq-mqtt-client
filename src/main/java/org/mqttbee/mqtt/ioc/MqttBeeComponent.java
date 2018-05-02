@@ -15,10 +15,10 @@
  *
  */
 
-package org.mqttbee.mqtt5.ioc;
+package org.mqttbee.mqtt.ioc;
 
 import dagger.Component;
-import org.mqttbee.mqtt.handler.Mqtt5ChannelInitializerProvider;
+import org.mqttbee.mqtt.handler.MqttChannelInitializerProvider;
 import org.mqttbee.mqtt5.netty.NettyBootstrap;
 import org.mqttbee.mqtt5.netty.NettyModule;
 
@@ -35,7 +35,7 @@ public interface MqttBeeComponent {
 
     NettyBootstrap nettyBootstrap();
 
-    Mqtt5ChannelInitializerProvider channelInitializerProvider();
+    MqttChannelInitializerProvider channelInitializerProvider();
 
     ChannelComponent.Builder channelComponentBuilder();
 

@@ -31,7 +31,7 @@ import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAck;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribeWrapper;
 import org.mqttbee.mqtt.message.unsubscribe.unsuback.MqttUnsubAck;
 import org.mqttbee.mqtt.message.unsubscribe.unsuback.mqtt3.Mqtt3UnsubAckView;
-import org.mqttbee.mqtt5.ioc.ChannelScope;
+import org.mqttbee.mqtt.ioc.ChannelScope;
 import org.mqttbee.util.collections.ScNodeList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

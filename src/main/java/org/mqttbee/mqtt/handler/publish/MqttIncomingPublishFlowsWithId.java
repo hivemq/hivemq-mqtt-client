@@ -28,7 +28,7 @@ import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribeWrapper;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
 import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAck;
-import org.mqttbee.mqtt5.ioc.ChannelScope;
+import org.mqttbee.mqtt.ioc.ChannelScope;
 import org.mqttbee.util.collections.IntMap;
 import org.mqttbee.util.collections.ScNodeList;
 
