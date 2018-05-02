@@ -18,7 +18,7 @@
 package org.mqttbee.mqtt5.ioc;
 
 import dagger.Component;
-import org.mqttbee.mqtt5.handler.Mqtt5ChannelInitializerProvider;
+import org.mqttbee.mqtt.handler.Mqtt5ChannelInitializerProvider;
 import org.mqttbee.mqtt5.netty.NettyBootstrap;
 import org.mqttbee.mqtt5.netty.NettyModule;
 
