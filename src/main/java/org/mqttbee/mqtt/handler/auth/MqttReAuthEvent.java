@@ -15,7 +15,7 @@
  *
  */
 
-package org.mqttbee.mqtt5.handler.auth;
+package org.mqttbee.mqtt.handler.auth;
 
 import io.reactivex.CompletableEmitter;
 import org.mqttbee.annotations.NotNull;
@@ -25,11 +25,11 @@ import org.mqttbee.annotations.NotNull;
  *
  * @author Silvio Giebl
  */
-public class Mqtt5ReAuthEvent {
+public class MqttReAuthEvent {
 
     private final CompletableEmitter reAuthEmitter;
 
-    public Mqtt5ReAuthEvent(@NotNull final CompletableEmitter reAuthEmitter) {
+    public MqttReAuthEvent(@NotNull final CompletableEmitter reAuthEmitter) {
         this.reAuthEmitter = reAuthEmitter;
     }
 

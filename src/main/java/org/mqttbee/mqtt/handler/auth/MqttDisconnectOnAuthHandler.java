@@ -15,7 +15,7 @@
  *
  */
 
-package org.mqttbee.mqtt5.handler.auth;
+package org.mqttbee.mqtt.handler.auth;
 
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandler;
@@ -41,12 +41,12 @@ import javax.inject.Singleton;
  */
 @ChannelHandler.Sharable
 @Singleton
-public class Mqtt5DisconnectOnAuthHandler extends ChannelDuplexHandler {
+public class MqttDisconnectOnAuthHandler extends ChannelDuplexHandler {
 
     public static final String NAME = "disconnect.on.auth";
 
     @Inject
-    Mqtt5DisconnectOnAuthHandler() {
+    MqttDisconnectOnAuthHandler() {
     }
 
     @Override

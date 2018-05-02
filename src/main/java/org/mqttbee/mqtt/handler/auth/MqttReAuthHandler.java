@@ -15,7 +15,7 @@
  *
  */
 
-package org.mqttbee.mqtt5.handler.auth;
+package org.mqttbee.mqtt.handler.auth;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.reactivex.CompletableEmitter;
@@ -46,7 +46,7 @@ import static org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode.REAUTH
  * @author Silvio Giebl
  */
 @ChannelScope
-public class Mqtt5ReAuthHandler extends AbstractMqtt5AuthHandler {
+public class MqttReAuthHandler extends AbstractMqttAuthHandler {
 
     public static final String NAME = "reauth";
 
@@ -63,13 +63,13 @@ public class Mqtt5ReAuthHandler extends AbstractMqtt5AuthHandler {
     private CompletableEmitter reAuthEmitter;
 
     @Inject
-    Mqtt5ReAuthHandler() {
+    MqttReAuthHandler() {
     }
 
     @Override
     public void userEventTriggered(final ChannelHandlerContext ctx, final Object evt) {
-        if (evt instanceof Mqtt5ReAuthEvent) {
-            writeReAuth(ctx, (Mqtt5ReAuthEvent) evt);
+        if (evt instanceof MqttReAuthEvent) {
+            writeReAuth(ctx, (MqttReAuthEvent) evt);
         } else if (evt instanceof ChannelCloseEvent) {
             handleChannelCloseEvent(ctx, (ChannelCloseEvent) evt);
         } else {
@@ -84,7 +84,7 @@ public class Mqtt5ReAuthHandler extends AbstractMqtt5AuthHandler {
      * @param ctx         the channel handler context.
      * @param reAuthEvent the reauth event.
      */
-    private void writeReAuth(@NotNull final ChannelHandlerContext ctx, @NotNull final Mqtt5ReAuthEvent reAuthEvent) {
+    private void writeReAuth(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttReAuthEvent reAuthEvent) {
         reAuthEmitter = reAuthEvent.getReAuthEmitter();
 
         final MqttClientData clientData = MqttClientData.from(ctx.channel());

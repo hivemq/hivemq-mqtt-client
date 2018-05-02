@@ -15,7 +15,7 @@
  *
  */
 
-package org.mqttbee.mqtt5.handler.auth;
+package org.mqttbee.mqtt.handler.auth;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -47,12 +47,12 @@ import javax.inject.Inject;
 /**
  * Enhanced auth handling according during connection according to the MQTT 5 specification.
  * <p>
- * After successful connection the handler replaces itself with a {@link Mqtt5ReAuthHandler}.
+ * After successful connection the handler replaces itself with a {@link MqttReAuthHandler}.
  *
  * @author Silvio Giebl
  */
 @ChannelScope
-public class Mqtt5AuthHandler extends AbstractMqtt5AuthHandler implements DefaultChannelOutboundHandler {
+public class MqttAuthHandler extends AbstractMqttAuthHandler implements DefaultChannelOutboundHandler {
 
     public static final String NAME = "auth";
 
@@ -68,7 +68,7 @@ public class Mqtt5AuthHandler extends AbstractMqtt5AuthHandler implements Defaul
     private boolean done;
 
     @Inject
-    Mqtt5AuthHandler() {
+    MqttAuthHandler() {
     }
 
     @Override
@@ -160,7 +160,7 @@ public class Mqtt5AuthHandler extends AbstractMqtt5AuthHandler implements Defaul
             done = true;
 
             ctx.fireChannelRead(connAck);
-            ctx.pipeline().replace(this, Mqtt5ReAuthHandler.NAME, ChannelComponent.get(ctx.channel()).reAuthHandler());
+            ctx.pipeline().replace(this, MqttReAuthHandler.NAME, ChannelComponent.get(ctx.channel()).reAuthHandler());
         }
     }
 

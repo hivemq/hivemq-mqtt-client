@@ -26,9 +26,9 @@ import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoder;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoderModule;
 import org.mqttbee.mqtt.codec.encoder.MqttEncoder;
-import org.mqttbee.mqtt5.handler.auth.Mqtt5AuthHandler;
-import org.mqttbee.mqtt5.handler.auth.Mqtt5DisconnectOnAuthHandler;
-import org.mqttbee.mqtt5.handler.auth.Mqtt5ReAuthHandler;
+import org.mqttbee.mqtt.handler.auth.MqttAuthHandler;
+import org.mqttbee.mqtt.handler.auth.MqttDisconnectOnAuthHandler;
+import org.mqttbee.mqtt.handler.auth.MqttReAuthHandler;
 import org.mqttbee.mqtt5.handler.connect.Mqtt5DisconnectOnConnAckHandler;
 import org.mqttbee.mqtt5.handler.disconnect.Mqtt5DisconnectHandler;
 import org.mqttbee.mqtt5.handler.disconnect.MqttDisconnecter;
@@ -68,11 +68,11 @@ public interface ChannelComponent {
 
     Mqtt5DisconnectOnConnAckHandler disconnectOnConnAckHandler();
 
-    Mqtt5AuthHandler authHandler();
+    MqttAuthHandler authHandler();
 
-    Mqtt5ReAuthHandler reAuthHandler();
+    MqttReAuthHandler reAuthHandler();
 
-    Mqtt5DisconnectOnAuthHandler disconnectOnAuthHandler();
+    MqttDisconnectOnAuthHandler disconnectOnAuthHandler();
 
     Mqtt5DisconnectHandler disconnectHandler();
 
