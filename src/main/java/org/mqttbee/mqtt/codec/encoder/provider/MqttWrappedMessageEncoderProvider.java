@@ -21,7 +21,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.codec.encoder.MqttWrappedMessageEncoder;
 import org.mqttbee.mqtt.message.MqttMessageWrapper;
 import org.mqttbee.mqtt.message.MqttWrappedMessage;
-import org.mqttbee.mqtt5.netty.NettyThreadLocals;
+import org.mqttbee.mqtt.netty.NettyThreadLocals;
 
 import java.util.function.Supplier;
 

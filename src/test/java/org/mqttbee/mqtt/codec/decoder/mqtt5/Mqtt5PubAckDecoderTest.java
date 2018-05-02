@@ -28,7 +28,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.puback.Mqtt5PubAckReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.message.publish.puback.MqttPubAck;
-import org.mqttbee.mqtt5.netty.ChannelAttributes;
+import org.mqttbee.mqtt.netty.ChannelAttributes;
 
 import static org.junit.jupiter.api.Assertions.*;
 

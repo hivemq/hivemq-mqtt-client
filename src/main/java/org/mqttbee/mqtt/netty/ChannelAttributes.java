@@ -15,7 +15,7 @@
  *
  */
 
-package org.mqttbee.mqtt5.netty;
+package org.mqttbee.mqtt.netty;
 
 import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;

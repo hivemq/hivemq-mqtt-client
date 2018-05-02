@@ -19,8 +19,8 @@ package org.mqttbee.mqtt.ioc;
 
 import dagger.Component;
 import org.mqttbee.mqtt.handler.MqttChannelInitializerProvider;
-import org.mqttbee.mqtt5.netty.NettyBootstrap;
-import org.mqttbee.mqtt5.netty.NettyModule;
+import org.mqttbee.mqtt.netty.NettyBootstrap;
+import org.mqttbee.mqtt.netty.NettyModule;
 
 import javax.inject.Singleton;
 

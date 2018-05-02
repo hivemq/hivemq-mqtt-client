@@ -20,7 +20,7 @@ package org.mqttbee.mqtt.codec.encoder.provider;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoder;
 import org.mqttbee.mqtt.message.MqttMessage;
-import org.mqttbee.mqtt5.netty.NettyThreadLocals;
+import org.mqttbee.mqtt.netty.NettyThreadLocals;
 
 import java.util.function.Supplier;
 
