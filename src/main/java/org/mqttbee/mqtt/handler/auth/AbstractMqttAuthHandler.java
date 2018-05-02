@@ -15,7 +15,7 @@
  *
  */
 
-package org.mqttbee.mqtt5.handler.auth;
+package org.mqttbee.mqtt.handler.auth;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -45,9 +45,9 @@ import static org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode.CONTIN
  *
  * @author Silvio Giebl
  */
-abstract class AbstractMqtt5AuthHandler extends ChannelInboundHandlerWithTimeout {
+abstract class AbstractMqttAuthHandler extends ChannelInboundHandlerWithTimeout {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractMqtt5AuthHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractMqttAuthHandler.class);
 
     /**
      * Utility method to get the non null enhanced auth provider for the client data.

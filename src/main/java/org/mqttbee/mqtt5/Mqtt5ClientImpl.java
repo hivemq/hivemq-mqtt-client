@@ -42,7 +42,7 @@ import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribe;
-import org.mqttbee.mqtt5.handler.auth.Mqtt5ReAuthEvent;
+import org.mqttbee.mqtt.handler.auth.MqttReAuthEvent;
 import org.mqttbee.mqtt5.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt5.handler.publish.MqttGlobalIncomingPublishFlow;
 import org.mqttbee.mqtt5.handler.publish.MqttGlobalIncomingPublishFlowable;
@@ -177,7 +177,7 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
         return Completable.create(emitter -> {
             final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
             if (clientConnectionData != null) {
-                clientConnectionData.getChannel().pipeline().fireUserEventTriggered(new Mqtt5ReAuthEvent(emitter));
+                clientConnectionData.getChannel().pipeline().fireUserEventTriggered(new MqttReAuthEvent(emitter));
             } else {
                 emitter.onError(new NotConnectedException());
             }
