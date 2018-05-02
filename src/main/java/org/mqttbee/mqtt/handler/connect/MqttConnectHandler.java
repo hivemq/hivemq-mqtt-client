@@ -32,6 +32,8 @@ import org.mqttbee.mqtt.MqttServerConnectionData;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoder;
 import org.mqttbee.mqtt.codec.encoder.MqttEncoder;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
+import org.mqttbee.mqtt.handler.publish.MqttIncomingQoSHandler;
+import org.mqttbee.mqtt.handler.publish.MqttOutgoingQoSHandler;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
 import org.mqttbee.mqtt.message.connect.MqttConnectRestrictions;
 import org.mqttbee.mqtt.message.connect.connack.MqttConnAck;
@@ -39,8 +41,6 @@ import org.mqttbee.mqtt.message.connect.connack.MqttConnAckRestrictions;
 import org.mqttbee.mqtt.handler.disconnect.ChannelCloseEvent;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.handler.ping.MqttPingHandler;
-import org.mqttbee.mqtt5.handler.publish.Mqtt5IncomingQoSHandler;
-import org.mqttbee.mqtt5.handler.publish.Mqtt5OutgoingQoSHandler;
 import org.mqttbee.mqtt.handler.subscribe.MqttSubscriptionHandler;
 import org.mqttbee.mqtt.handler.util.ChannelInboundHandlerWithTimeout;
 import org.mqttbee.mqtt5.ioc.ChannelComponent;
@@ -177,9 +177,9 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
                 pipeline.addAfter(
                         MqttPingHandler.NAME, MqttSubscriptionHandler.NAME, channelComponent.subscriptionHandler());
                 pipeline.addAfter(
-                        MqttPingHandler.NAME, Mqtt5IncomingQoSHandler.NAME, channelComponent.incomingQoSHandler());
+                        MqttPingHandler.NAME, MqttIncomingQoSHandler.NAME, channelComponent.incomingQoSHandler());
                 pipeline.addAfter(
-                        MqttPingHandler.NAME, Mqtt5OutgoingQoSHandler.NAME, channelComponent.outgoingQoSHandler());
+                        MqttPingHandler.NAME, MqttOutgoingQoSHandler.NAME, channelComponent.outgoingQoSHandler());
                 pipeline.addLast(MqttDisconnectOnConnAckHandler.NAME, channelComponent.disconnectOnConnAckHandler());
 
                 connAckEmitter.onSuccess(connAck);

@@ -15,7 +15,7 @@
  *
  */
 
-package org.mqttbee.mqtt5.handler.publish;
+package org.mqttbee.mqtt.handler.publish;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -57,7 +57,7 @@ import static org.mqttbee.mqtt.message.publish.MqttPublishWrapper.*;
  * @author Silvio Giebl
  */
 @ChannelScope
-public class Mqtt5OutgoingQoSHandler extends ChannelInboundHandlerAdapter {
+public class MqttOutgoingQoSHandler extends ChannelInboundHandlerAdapter {
 
     public static final String NAME = "qos.outgoing";
 
@@ -75,7 +75,7 @@ public class Mqtt5OutgoingQoSHandler extends ChannelInboundHandlerAdapter {
     private ChannelHandlerContext ctx; // TODO temp
 
     @Inject
-    Mqtt5OutgoingQoSHandler(final MqttClientData clientData) {
+    MqttOutgoingQoSHandler(final MqttClientData clientData) {
         final Mqtt5ServerConnectionData serverConnectionData = clientData.getRawServerConnectionData();
         assert serverConnectionData != null;
 

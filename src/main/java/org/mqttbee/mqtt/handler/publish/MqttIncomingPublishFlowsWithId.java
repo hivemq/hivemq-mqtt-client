@@ -15,7 +15,7 @@
  *
  */
 
-package org.mqttbee.mqtt5.handler.publish;
+package org.mqttbee.mqtt.handler.publish;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.primitives.ImmutableIntArray;

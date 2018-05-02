@@ -15,7 +15,7 @@
  *
  */
 
-package org.mqttbee.mqtt5.handler.publish;
+package org.mqttbee.mqtt.handler.publish;
 
 import io.reactivex.Flowable;
 import io.reactivex.internal.subscriptions.EmptySubscription;

@@ -30,12 +30,12 @@ import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.MqttServerConnectionData;
+import org.mqttbee.mqtt.handler.publish.MqttOutgoingQoSHandler;
 import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAck;
 import org.mqttbee.mqtt.message.unsubscribe.unsuback.MqttUnsubAck;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
-import org.mqttbee.mqtt5.handler.publish.Mqtt5OutgoingQoSHandler;
-import org.mqttbee.mqtt5.handler.publish.MqttIncomingPublishFlows;
-import org.mqttbee.mqtt5.handler.publish.MqttSubscriptionFlow;
+import org.mqttbee.mqtt.handler.publish.MqttIncomingPublishFlows;
+import org.mqttbee.mqtt.handler.publish.MqttSubscriptionFlow;
 import org.mqttbee.mqtt.handler.subscribe.MqttSubscribeWithFlow.MqttSubscribeWrapperWithFlow;
 import org.mqttbee.mqtt.handler.subscribe.MqttUnsubscribeWithFlow.MqttUnsubscribeWrapperWithFlow;
 import org.mqttbee.mqtt5.ioc.ChannelScope;
@@ -81,7 +81,7 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
         assert serverConnectionData != null;
 
         minPacketIdentifier =
-                Mqtt5OutgoingQoSHandler.getPubReceiveMaximum(serverConnectionData.getReceiveMaximum()) + 1;
+                MqttOutgoingQoSHandler.getPubReceiveMaximum(serverConnectionData.getReceiveMaximum()) + 1;
         packetIdentifiers = new Ranges(minPacketIdentifier, minPacketIdentifier + MAX_SUB_PENDING - 1);
         subscriptionIdentifiers = new Ranges(1, clientConnectionData.getSubscriptionIdentifierMaximum());
         subscribes = new IntMap<>(MAX_SUB_PENDING);

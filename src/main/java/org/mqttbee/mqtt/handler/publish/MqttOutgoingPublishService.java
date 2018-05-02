@@ -15,7 +15,7 @@
  *
  */
 
-package org.mqttbee.mqtt5.handler.publish;
+package org.mqttbee.mqtt.handler.publish;
 
 import io.reactivex.Flowable;
 import io.reactivex.FlowableSubscriber;
@@ -35,7 +35,7 @@ import javax.inject.Named;
 @ChannelScope
 public class MqttOutgoingPublishService implements FlowableSubscriber<MqttPublishWithFlow> {
 
-    private final Mqtt5OutgoingQoSHandler outgoingQoSHandler;
+    private final MqttOutgoingQoSHandler outgoingQoSHandler;
     private final Scheduler.Worker rxEventLoop;
 
     private Subscription subscription;
@@ -44,8 +44,8 @@ public class MqttOutgoingPublishService implements FlowableSubscriber<MqttPublis
 
     @Inject
     MqttOutgoingPublishService(
-            final Mqtt5OutgoingQoSHandler outgoingQoSHandler, final MqttPublishFlowables publishFlowables,
-            @Named("outgoingPublish") final Scheduler.Worker rxEventLoop, final MqttClientData clientData) {
+        final MqttOutgoingQoSHandler outgoingQoSHandler, final MqttPublishFlowables publishFlowables,
+        @Named("outgoingPublish") final Scheduler.Worker rxEventLoop, final MqttClientData clientData) {
 
         final MqttServerConnectionData serverConnectionData = clientData.getRawServerConnectionData();
         assert serverConnectionData != null;
@@ -53,7 +53,7 @@ public class MqttOutgoingPublishService implements FlowableSubscriber<MqttPublis
         this.outgoingQoSHandler = outgoingQoSHandler;
         this.rxEventLoop = rxEventLoop;
 
-        receiveMaximum = Mqtt5OutgoingQoSHandler.getPubReceiveMaximum(serverConnectionData.getReceiveMaximum());
+        receiveMaximum = MqttOutgoingQoSHandler.getPubReceiveMaximum(serverConnectionData.getReceiveMaximum());
 
         Flowable.mergeDelayError(publishFlowables).subscribe(this);
     }

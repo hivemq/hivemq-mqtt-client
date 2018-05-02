@@ -15,7 +15,7 @@
  *
  */
 
-package org.mqttbee.mqtt5.handler.publish;
+package org.mqttbee.mqtt.handler.publish;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -43,7 +43,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author Silvio Giebl
  */
 @ChannelScope
-public class Mqtt5IncomingQoSHandler extends ChannelInboundHandlerAdapter {
+public class MqttIncomingQoSHandler extends ChannelInboundHandlerAdapter {
 
     public static final String NAME = "qos.incoming";
 
@@ -60,7 +60,7 @@ public class Mqtt5IncomingQoSHandler extends ChannelInboundHandlerAdapter {
     private ChannelHandlerContext ctx;
 
     @Inject
-    Mqtt5IncomingQoSHandler(
+    MqttIncomingQoSHandler(
             final Provider<MqttIncomingPublishService> incomingPublishServiceLazy, final MqttClientData clientData) {
 
         final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
