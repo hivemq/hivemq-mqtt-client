@@ -25,7 +25,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.message.ping.MqttPingReq;
 import org.mqttbee.mqtt.message.ping.MqttPingResp;
-import org.mqttbee.mqtt5.handler.util.ChannelInboundHandlerWithTimeout;
+import org.mqttbee.mqtt.handler.util.ChannelInboundHandlerWithTimeout;
 import org.mqttbee.mqtt5.ioc.ChannelScope;
 
 /**
