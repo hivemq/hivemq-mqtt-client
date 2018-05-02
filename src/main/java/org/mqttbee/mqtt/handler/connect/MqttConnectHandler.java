@@ -41,7 +41,7 @@ import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.handler.ping.MqttPingHandler;
 import org.mqttbee.mqtt5.handler.publish.Mqtt5IncomingQoSHandler;
 import org.mqttbee.mqtt5.handler.publish.Mqtt5OutgoingQoSHandler;
-import org.mqttbee.mqtt5.handler.subscribe.MqttSubscriptionHandler;
+import org.mqttbee.mqtt.handler.subscribe.MqttSubscriptionHandler;
 import org.mqttbee.mqtt5.handler.util.ChannelInboundHandlerWithTimeout;
 import org.mqttbee.mqtt5.ioc.ChannelComponent;
 import org.mqttbee.mqtt5.ioc.ChannelScope;

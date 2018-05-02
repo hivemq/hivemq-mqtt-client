@@ -15,7 +15,7 @@
  *
  */
 
-package org.mqttbee.mqtt5.handler.subscribe;
+package org.mqttbee.mqtt.handler.subscribe;
 
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;

@@ -15,7 +15,7 @@
  *
  */
 
-package org.mqttbee.mqtt5.handler.subscribe;
+package org.mqttbee.mqtt.handler.subscribe;
 
 import com.google.common.collect.ImmutableList;
 import io.netty.channel.ChannelHandlerContext;
@@ -36,8 +36,8 @@ import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt5.handler.publish.Mqtt5OutgoingQoSHandler;
 import org.mqttbee.mqtt5.handler.publish.MqttIncomingPublishFlows;
 import org.mqttbee.mqtt5.handler.publish.MqttSubscriptionFlow;
-import org.mqttbee.mqtt5.handler.subscribe.MqttSubscribeWithFlow.MqttSubscribeWrapperWithFlow;
-import org.mqttbee.mqtt5.handler.subscribe.MqttUnsubscribeWithFlow.MqttUnsubscribeWrapperWithFlow;
+import org.mqttbee.mqtt.handler.subscribe.MqttSubscribeWithFlow.MqttSubscribeWrapperWithFlow;
+import org.mqttbee.mqtt.handler.subscribe.MqttUnsubscribeWithFlow.MqttUnsubscribeWrapperWithFlow;
 import org.mqttbee.mqtt5.ioc.ChannelScope;
 import org.mqttbee.util.Ranges;
 import org.mqttbee.util.collections.IntMap;
