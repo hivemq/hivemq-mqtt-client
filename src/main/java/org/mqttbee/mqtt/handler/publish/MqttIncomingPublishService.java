@@ -15,7 +15,7 @@
  *
  */
 
-package org.mqttbee.mqtt5.handler.publish;
+package org.mqttbee.mqtt.handler.publish;
 
 import io.netty.channel.EventLoop;
 import io.reactivex.Scheduler;
@@ -38,7 +38,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @ChannelScope
 public class MqttIncomingPublishService {
 
-    private final Mqtt5IncomingQoSHandler incomingQoSHandler; // TODO temp
+    private final MqttIncomingQoSHandler incomingQoSHandler; // TODO temp
     private final MqttIncomingPublishFlows incomingPublishFlows;
     private final Scheduler.Worker rxEventLoop;
     private final EventLoop nettyEventLoop;
@@ -51,8 +51,8 @@ public class MqttIncomingPublishService {
 
     @Inject
     MqttIncomingPublishService(
-            final Mqtt5IncomingQoSHandler incomingQoSHandler, final MqttIncomingPublishFlows incomingPublishFlows,
-            @Named("incomingPublish") final Scheduler.Worker rxEventLoop, final MqttClientData clientData) {
+        final MqttIncomingQoSHandler incomingQoSHandler, final MqttIncomingPublishFlows incomingPublishFlows,
+        @Named("incomingPublish") final Scheduler.Worker rxEventLoop, final MqttClientData clientData) {
 
         final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
         assert clientConnectionData != null;

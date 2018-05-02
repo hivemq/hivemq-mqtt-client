@@ -15,49 +15,47 @@
  *
  */
 
-package org.mqttbee.mqtt5.handler.publish;
+package org.mqttbee.mqtt.handler.publish;
 
 import io.reactivex.Flowable;
 import io.reactivex.internal.subscriptions.EmptySubscription;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
-import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
+import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeResult;
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
-import org.mqttbee.mqtt.MqttServerConnectionData;
-import org.mqttbee.mqtt.message.publish.MqttPublish;
+import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
+import org.mqttbee.mqtt.handler.subscribe.MqttSubscribeWithFlow;
+import org.mqttbee.mqtt.handler.subscribe.MqttSubscriptionHandler;
 import org.mqttbee.mqtt5.ioc.ChannelComponent;
 import org.reactivestreams.Subscriber;
 
 /**
  * @author Silvio Giebl
  */
-public class MqttIncomingAckFlowable extends Flowable<Mqtt5PublishResult> {
+public class MqttSubscriptionFlowable extends Flowable<Mqtt5SubscribeResult> {
 
-    private final Flowable<MqttPublish> publishFlowable;
+    private final MqttSubscribe subscribe;
     private final MqttClientData clientData;
 
-    public MqttIncomingAckFlowable(
-            @NotNull final Flowable<MqttPublish> publishFlowable, @NotNull final MqttClientData clientData) {
-
-        this.publishFlowable = publishFlowable;
+    public MqttSubscriptionFlowable(@NotNull final MqttSubscribe subscribe, @NotNull final MqttClientData clientData) {
+        this.subscribe = subscribe;
         this.clientData = clientData;
     }
 
     @Override
-    protected void subscribeActual(final Subscriber<? super Mqtt5PublishResult> s) {
+    protected void subscribeActual(final Subscriber<? super Mqtt5SubscribeResult> s) {
         final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData(); // TODO temp
-        final MqttServerConnectionData serverConnectionData = clientData.getRawServerConnectionData(); // TODO temp
-        if ((clientConnectionData == null) || (serverConnectionData == null)) {
+        if (clientConnectionData == null) {
             EmptySubscription.error(new NotConnectedException(), s);
         } else {
             final ChannelComponent channelComponent = ChannelComponent.get(clientConnectionData.getChannel());
-            final MqttOutgoingPublishService outgoingPublishService = channelComponent.outgoingPublishService();
-            final MqttPublishFlowables publishFlowables = channelComponent.publishFlowables();
+            final MqttIncomingPublishService incomingPublishService = channelComponent.incomingPublishService();
+            final MqttSubscriptionHandler subscriptionHandler = channelComponent.subscriptionHandler();
 
-            final MqttIncomingAckFlow incomingAckFlow = new MqttIncomingAckFlow(s, outgoingPublishService);
-            s.onSubscribe(incomingAckFlow);
-            publishFlowables.add(publishFlowable.map(publish -> new MqttPublishWithFlow(publish, incomingAckFlow)));
+            final MqttSubscriptionFlow flow = new MqttSubscriptionFlow(s, incomingPublishService);
+            s.onSubscribe(flow);
+            subscriptionHandler.subscribe(new MqttSubscribeWithFlow(subscribe, flow)); // TODO temp
         }
     }
 
