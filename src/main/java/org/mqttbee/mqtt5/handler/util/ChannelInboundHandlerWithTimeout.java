@@ -24,7 +24,7 @@ import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.ScheduledFuture;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.mqtt5.handler.disconnect.MqttDisconnectUtil;
+import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 
 import java.util.concurrent.TimeUnit;
 

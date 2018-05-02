@@ -28,7 +28,7 @@ import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.message.auth.MqttAuth;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
 import org.mqttbee.mqtt.message.connect.connack.MqttConnAck;
-import org.mqttbee.mqtt5.handler.disconnect.MqttDisconnectUtil;
+import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

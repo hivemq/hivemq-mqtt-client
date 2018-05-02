@@ -23,9 +23,9 @@ import dagger.Module;
 import dagger.Provides;
 import io.reactivex.Scheduler;
 import org.mqttbee.mqtt.MqttClientData;
-import org.mqttbee.mqtt5.handler.disconnect.Mqtt3Disconnecter;
-import org.mqttbee.mqtt5.handler.disconnect.Mqtt5Disconnecter;
-import org.mqttbee.mqtt5.handler.disconnect.MqttDisconnecter;
+import org.mqttbee.mqtt.handler.disconnect.Mqtt3Disconnecter;
+import org.mqttbee.mqtt.handler.disconnect.Mqtt5Disconnecter;
+import org.mqttbee.mqtt.handler.disconnect.MqttDisconnecter;
 import org.mqttbee.mqtt5.handler.publish.MqttSubscriptionFlowTree;
 import org.mqttbee.mqtt5.handler.publish.MqttSubscriptionFlows;
 

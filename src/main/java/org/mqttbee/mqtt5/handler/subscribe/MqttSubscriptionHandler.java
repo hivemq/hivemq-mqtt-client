@@ -32,7 +32,7 @@ import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.MqttServerConnectionData;
 import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAck;
 import org.mqttbee.mqtt.message.unsubscribe.unsuback.MqttUnsubAck;
-import org.mqttbee.mqtt5.handler.disconnect.MqttDisconnectUtil;
+import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt5.handler.publish.Mqtt5OutgoingQoSHandler;
 import org.mqttbee.mqtt5.handler.publish.MqttIncomingPublishFlows;
 import org.mqttbee.mqtt5.handler.publish.MqttSubscriptionFlow;
