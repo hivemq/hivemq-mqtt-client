@@ -29,7 +29,7 @@ import org.mqttbee.mqtt.codec.encoder.MqttEncoder;
 import org.mqttbee.mqtt.handler.auth.MqttAuthHandler;
 import org.mqttbee.mqtt.handler.auth.MqttDisconnectOnAuthHandler;
 import org.mqttbee.mqtt.handler.auth.MqttReAuthHandler;
-import org.mqttbee.mqtt5.handler.connect.Mqtt5DisconnectOnConnAckHandler;
+import org.mqttbee.mqtt.handler.connect.MqttDisconnectOnConnAckHandler;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectHandler;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnecter;
 import org.mqttbee.mqtt5.handler.publish.*;
@@ -66,7 +66,7 @@ public interface ChannelComponent {
 
     MqttDisconnecter disconnecter();
 
-    Mqtt5DisconnectOnConnAckHandler disconnectOnConnAckHandler();
+    MqttDisconnectOnConnAckHandler disconnectOnConnAckHandler();
 
     MqttAuthHandler authHandler();
 
