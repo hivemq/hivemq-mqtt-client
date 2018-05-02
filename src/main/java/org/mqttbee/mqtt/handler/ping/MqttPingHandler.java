@@ -15,7 +15,7 @@
  *
  */
 
-package org.mqttbee.mqtt5.handler.ping;
+package org.mqttbee.mqtt.handler.ping;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.timeout.IdleState;
@@ -38,7 +38,7 @@ import org.mqttbee.mqtt5.ioc.ChannelScope;
  * @author Silvio Giebl
  */
 @ChannelScope
-public class Mqtt5PingHandler extends ChannelInboundHandlerWithTimeout {
+public class MqttPingHandler extends ChannelInboundHandlerWithTimeout {
 
     public static final String NAME = "ping";
     private static final String IDLE_STATE_HANDLER_NAME = "ping.idle";
@@ -46,7 +46,7 @@ public class Mqtt5PingHandler extends ChannelInboundHandlerWithTimeout {
 
     private final int keepAlive;
 
-    public Mqtt5PingHandler(final int keepAlive) {
+    public MqttPingHandler(final int keepAlive) {
         this.keepAlive = keepAlive;
     }
 

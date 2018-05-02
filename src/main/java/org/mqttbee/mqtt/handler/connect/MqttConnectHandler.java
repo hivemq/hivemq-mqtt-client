@@ -38,7 +38,7 @@ import org.mqttbee.mqtt.message.connect.connack.MqttConnAck;
 import org.mqttbee.mqtt.message.connect.connack.MqttConnAckRestrictions;
 import org.mqttbee.mqtt.handler.disconnect.ChannelCloseEvent;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
-import org.mqttbee.mqtt5.handler.ping.Mqtt5PingHandler;
+import org.mqttbee.mqtt.handler.ping.MqttPingHandler;
 import org.mqttbee.mqtt5.handler.publish.Mqtt5IncomingQoSHandler;
 import org.mqttbee.mqtt5.handler.publish.Mqtt5OutgoingQoSHandler;
 import org.mqttbee.mqtt5.handler.subscribe.MqttSubscriptionHandler;
@@ -147,7 +147,7 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
      * <p>
      * If it contains an Error Code, the channel is closed.
      * <p>
-     * Otherwise it is validated. Then this handler is removed from the pipeline and the {@link Mqtt5PingHandler} and
+     * Otherwise it is validated. Then this handler is removed from the pipeline and the {@link MqttPingHandler} and
      * {@link MqttDisconnectOnConnAckHandler} are added to the pipeline.
      *
      * @param connAck the CONNACK message.
@@ -171,15 +171,15 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
                 assert clientConnectionData != null;
                 final int keepAlive = clientConnectionData.getKeepAlive();
                 if (keepAlive > 0) {
-                    pipeline.addAfter(MqttEncoder.NAME, Mqtt5PingHandler.NAME, new Mqtt5PingHandler(keepAlive));
+                    pipeline.addAfter(MqttEncoder.NAME, MqttPingHandler.NAME, new MqttPingHandler(keepAlive));
                 }
 
                 pipeline.addAfter(
-                        Mqtt5PingHandler.NAME, MqttSubscriptionHandler.NAME, channelComponent.subscriptionHandler());
+                        MqttPingHandler.NAME, MqttSubscriptionHandler.NAME, channelComponent.subscriptionHandler());
                 pipeline.addAfter(
-                        Mqtt5PingHandler.NAME, Mqtt5IncomingQoSHandler.NAME, channelComponent.incomingQoSHandler());
+                        MqttPingHandler.NAME, Mqtt5IncomingQoSHandler.NAME, channelComponent.incomingQoSHandler());
                 pipeline.addAfter(
-                        Mqtt5PingHandler.NAME, Mqtt5OutgoingQoSHandler.NAME, channelComponent.outgoingQoSHandler());
+                        MqttPingHandler.NAME, Mqtt5OutgoingQoSHandler.NAME, channelComponent.outgoingQoSHandler());
                 pipeline.addLast(MqttDisconnectOnConnAckHandler.NAME, channelComponent.disconnectOnConnAckHandler());
 
                 connAckEmitter.onSuccess(connAck);
