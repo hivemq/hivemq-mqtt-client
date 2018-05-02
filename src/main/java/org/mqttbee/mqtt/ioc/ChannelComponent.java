@@ -34,12 +34,12 @@ import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectHandler;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnecter;
 import org.mqttbee.mqtt.handler.publish.*;
 import org.mqttbee.mqtt.handler.subscribe.MqttSubscriptionHandler;
-import org.mqttbee.mqtt5.persistence.Mqtt5PersistenceModule;
+import org.mqttbee.mqtt.persistence.MqttPersistenceModule;
 
 /**
  * @author Silvio Giebl
  */
-@Subcomponent(modules = {ChannelModule.class, MqttDecoderModule.class, Mqtt5PersistenceModule.class})
+@Subcomponent(modules = {ChannelModule.class, MqttDecoderModule.class, MqttPersistenceModule.class})
 @ChannelScope
 public interface ChannelComponent {
 

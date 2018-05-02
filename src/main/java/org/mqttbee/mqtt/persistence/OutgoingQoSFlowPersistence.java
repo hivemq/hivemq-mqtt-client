@@ -15,7 +15,7 @@
  *
  */
 
-package org.mqttbee.mqtt5.persistence;
+package org.mqttbee.mqtt.persistence;
 
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;

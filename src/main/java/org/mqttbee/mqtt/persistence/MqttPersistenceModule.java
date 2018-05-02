@@ -15,21 +15,21 @@
  *
  */
 
-package org.mqttbee.mqtt5.persistence;
+package org.mqttbee.mqtt.persistence;
 
 import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.ioc.ChannelScope;
-import org.mqttbee.mqtt5.persistence.memory.IncomingQoSFlowMemoryPersistence;
-import org.mqttbee.mqtt5.persistence.memory.OutgoingQoSFlowMemoryPersistence;
+import org.mqttbee.mqtt.persistence.memory.IncomingQoSFlowMemoryPersistence;
+import org.mqttbee.mqtt.persistence.memory.OutgoingQoSFlowMemoryPersistence;
 
 /**
  * @author Silvio Giebl
  */
 @Module
-public class Mqtt5PersistenceModule {
+public class MqttPersistenceModule {
 
     @Provides
     @ChannelScope
