@@ -35,7 +35,7 @@ import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5PublishEncoder;
 import org.mqttbee.mqtt.datatypes.*;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
-import org.mqttbee.mqtt5.netty.ChannelAttributes;
+import org.mqttbee.mqtt.netty.ChannelAttributes;
 import org.mqttbee.util.ByteBufferUtil;
 
 import javax.inject.Inject;

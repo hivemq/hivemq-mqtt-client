@@ -15,7 +15,7 @@
  *
  */
 
-package org.mqttbee.mqtt5.netty;
+package org.mqttbee.mqtt.netty;
 
 import dagger.Lazy;
 import dagger.Module;

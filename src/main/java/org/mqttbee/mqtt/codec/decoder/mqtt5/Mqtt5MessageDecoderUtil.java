@@ -29,7 +29,7 @@ import org.mqttbee.mqtt.datatypes.MqttBinaryData;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
-import org.mqttbee.mqtt5.netty.ChannelAttributes;
+import org.mqttbee.mqtt.netty.ChannelAttributes;
 
 import java.nio.ByteBuffer;
 

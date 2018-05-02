@@ -26,7 +26,7 @@ import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5DisconnectEncoder;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
-import org.mqttbee.mqtt5.netty.ChannelAttributes;
+import org.mqttbee.mqtt.netty.ChannelAttributes;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

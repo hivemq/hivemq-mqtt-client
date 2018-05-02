@@ -29,7 +29,7 @@ import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
 import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishView;
-import org.mqttbee.mqtt5.netty.ChannelAttributes;
+import org.mqttbee.mqtt.netty.ChannelAttributes;
 import org.mqttbee.util.ByteBufferUtil;
 
 import javax.inject.Inject;
