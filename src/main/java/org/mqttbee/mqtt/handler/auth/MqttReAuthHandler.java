@@ -31,8 +31,8 @@ import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.message.auth.MqttAuth;
 import org.mqttbee.mqtt.message.auth.MqttAuthBuilder;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
-import org.mqttbee.mqtt5.handler.disconnect.ChannelCloseEvent;
-import org.mqttbee.mqtt5.handler.disconnect.MqttDisconnectUtil;
+import org.mqttbee.mqtt.handler.disconnect.ChannelCloseEvent;
+import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt5.ioc.ChannelScope;
 
 import javax.inject.Inject;

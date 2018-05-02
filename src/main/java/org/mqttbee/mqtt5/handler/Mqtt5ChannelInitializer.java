@@ -29,7 +29,7 @@ import org.mqttbee.mqtt.message.connect.MqttConnect;
 import org.mqttbee.mqtt.handler.auth.MqttAuthHandler;
 import org.mqttbee.mqtt.handler.auth.MqttDisconnectOnAuthHandler;
 import org.mqttbee.mqtt5.handler.connect.Mqtt5ConnectHandler;
-import org.mqttbee.mqtt5.handler.disconnect.Mqtt5DisconnectHandler;
+import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectHandler;
 import org.mqttbee.mqtt5.ioc.ChannelComponent;
 
 /**
@@ -66,7 +66,7 @@ public class Mqtt5ChannelInitializer extends ChannelInitializer<SocketChannel> {
         }
 
         pipeline.addLast(Mqtt5ConnectHandler.NAME, new Mqtt5ConnectHandler(connect, connAckEmitter, clientData));
-        pipeline.addLast(Mqtt5DisconnectHandler.NAME, channelComponent.disconnectHandler());
+        pipeline.addLast(MqttDisconnectHandler.NAME, channelComponent.disconnectHandler());
     }
 
 }

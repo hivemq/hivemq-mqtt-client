@@ -30,8 +30,8 @@ import org.mqttbee.mqtt.handler.auth.MqttAuthHandler;
 import org.mqttbee.mqtt.handler.auth.MqttDisconnectOnAuthHandler;
 import org.mqttbee.mqtt.handler.auth.MqttReAuthHandler;
 import org.mqttbee.mqtt5.handler.connect.Mqtt5DisconnectOnConnAckHandler;
-import org.mqttbee.mqtt5.handler.disconnect.Mqtt5DisconnectHandler;
-import org.mqttbee.mqtt5.handler.disconnect.MqttDisconnecter;
+import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectHandler;
+import org.mqttbee.mqtt.handler.disconnect.MqttDisconnecter;
 import org.mqttbee.mqtt5.handler.publish.*;
 import org.mqttbee.mqtt5.handler.subscribe.MqttSubscriptionHandler;
 import org.mqttbee.mqtt5.persistence.Mqtt5PersistenceModule;
@@ -74,7 +74,7 @@ public interface ChannelComponent {
 
     MqttDisconnectOnAuthHandler disconnectOnAuthHandler();
 
-    Mqtt5DisconnectHandler disconnectHandler();
+    MqttDisconnectHandler disconnectHandler();
 
     MqttSubscriptionHandler subscriptionHandler();
 

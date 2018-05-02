@@ -43,7 +43,7 @@ import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribe;
 import org.mqttbee.mqtt.handler.auth.MqttReAuthEvent;
-import org.mqttbee.mqtt5.handler.disconnect.MqttDisconnectUtil;
+import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt5.handler.publish.MqttGlobalIncomingPublishFlow;
 import org.mqttbee.mqtt5.handler.publish.MqttGlobalIncomingPublishFlowable;
 import org.mqttbee.mqtt5.handler.publish.MqttIncomingAckFlowable;

@@ -15,7 +15,7 @@
  *
  */
 
-package org.mqttbee.mqtt5.handler.disconnect;
+package org.mqttbee.mqtt.handler.disconnect;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
