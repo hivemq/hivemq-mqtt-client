@@ -15,7 +15,7 @@
  *
  */
 
-package org.mqttbee.mqtt5.handler.util;
+package org.mqttbee.mqtt.handler.util;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;

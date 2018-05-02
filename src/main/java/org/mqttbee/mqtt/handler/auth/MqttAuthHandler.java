@@ -38,7 +38,7 @@ import org.mqttbee.mqtt.message.connect.MqttConnectWrapper;
 import org.mqttbee.mqtt.message.connect.connack.MqttConnAck;
 import org.mqttbee.mqtt.handler.disconnect.ChannelCloseEvent;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
-import org.mqttbee.mqtt5.handler.util.DefaultChannelOutboundHandler;
+import org.mqttbee.mqtt.handler.util.DefaultChannelOutboundHandler;
 import org.mqttbee.mqtt5.ioc.ChannelComponent;
 import org.mqttbee.mqtt5.ioc.ChannelScope;
 

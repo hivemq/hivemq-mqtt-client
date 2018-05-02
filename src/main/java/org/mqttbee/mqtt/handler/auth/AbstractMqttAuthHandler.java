@@ -34,7 +34,7 @@ import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.message.auth.MqttAuth;
 import org.mqttbee.mqtt.message.auth.MqttAuthBuilder;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
-import org.mqttbee.mqtt5.handler.util.ChannelInboundHandlerWithTimeout;
+import org.mqttbee.mqtt.handler.util.ChannelInboundHandlerWithTimeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
