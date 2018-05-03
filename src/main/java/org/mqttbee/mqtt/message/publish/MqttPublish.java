@@ -98,6 +98,7 @@ public class MqttPublish extends MqttWrappedMessage<MqttPublish, MqttPublishWrap
     }
 
     @NotNull
+    @Override
     public byte[] getPayloadAsBytes() {
         if (payload == null) {
             return new byte[0];
