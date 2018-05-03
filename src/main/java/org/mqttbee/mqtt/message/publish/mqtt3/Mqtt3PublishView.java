@@ -99,6 +99,12 @@ public class Mqtt3PublishView implements Mqtt3Publish {
 
     @NotNull
     @Override
+    public byte[] getPayloadAsBytes() {
+        return wrapped.getPayloadAsBytes();
+    }
+
+    @NotNull
+    @Override
     public MqttQoS getQos() {
         return wrapped.getQos();
     }

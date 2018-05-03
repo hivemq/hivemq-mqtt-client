@@ -36,7 +36,7 @@ import static org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl.NO_USER_PROPERTI
  */
 public class MqttPublishTest {
 
-    private MqttPublish createPublishFromPayload(final ByteBuffer payload) {
+    public static MqttPublish createPublishFromPayload(final ByteBuffer payload) {
         return new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), payload, MqttQoS.AT_MOST_ONCE, false,
             MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UNSPECIFIED, null, null, null,
             HAS_NOT, NO_USER_PROPERTIES, Mqtt5PublishEncoder.PROVIDER);
