@@ -57,6 +57,12 @@ public interface Mqtt3Publish extends Mqtt3Message, Mqtt3SubscribeResult {
     Optional<ByteBuffer> getPayload();
 
     /**
+     * @return the payload of this PUBLISH packet as byte array. Empty byte array if the payload is null.
+     */
+    @NotNull
+    byte[] getPayloadAsBytes();
+
+    /**
      * @return the QoS of this PUBLISH packet.
      */
     @NotNull
