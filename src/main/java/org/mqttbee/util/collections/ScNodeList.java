@@ -17,138 +17,127 @@
 
 package org.mqttbee.util.collections;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import javax.annotation.concurrent.NotThreadSafe;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 
-import javax.annotation.concurrent.NotThreadSafe;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @NotThreadSafe
 public class ScNodeList<E> implements ScListNode, Iterable<E> {
 
-    @Nullable
-    private NextNode<E> head;
-    @NotNull
-    private final ScLinkedListIterator iterator = new ScLinkedListIterator();
+  @Nullable private NextNode<E> head;
+  @NotNull private final ScLinkedListIterator iterator = new ScLinkedListIterator();
 
-    public Handle<E> add(@NotNull final E element) {
-        return head = new NextNode<>(element, this, head);
+  public Handle<E> add(@NotNull final E element) {
+    return head = new NextNode<>(element, this, head);
+  }
+
+  public boolean isEmpty() {
+    return head == null;
+  }
+
+  @Override
+  public boolean removeNext() {
+    if (head == null) {
+      return true;
     }
+    final NextNode<E> next = head.next;
+    head = next;
+    if (next == null) {
+      return true;
+    }
+    next.prev = this;
+    return false;
+  }
 
-    public boolean isEmpty() {
-        return head == null;
+  @NotNull
+  @Override
+  public Iterator<E> iterator() {
+    iterator.clear();
+    return iterator;
+  }
+
+  private static class NextNode<E> implements ScListNode, Handle<E> {
+
+    private final E element;
+    @NotNull private ScListNode prev;
+    @Nullable private NextNode<E> next;
+
+    NextNode(
+        @NotNull final E element,
+        @NotNull final ScListNode prev,
+        @Nullable final NextNode<E> next) {
+      this.element = element;
+      this.prev = prev;
+      this.next = next;
+      if (next != null) {
+        next.prev = this;
+      }
     }
 
     @Override
     public boolean removeNext() {
-        if (head == null) {
-            return true;
+      if (next != null) {
+        final NextNode<E> next = this.next.next;
+        this.next = next;
+        if (next != null) {
+          next.prev = this;
         }
-        final NextNode<E> next = head.next;
-        head = next;
-        if (next == null) {
-            return true;
-        }
-        next.prev = this;
-        return false;
+      }
+      return false;
     }
 
-    @NotNull
     @Override
-    public Iterator<E> iterator() {
-        iterator.clear();
-        return iterator;
+    public E getElement() {
+      return element;
     }
 
+    @Override
+    public boolean remove() {
+      return prev.removeNext();
+    }
+  }
 
-    private static class NextNode<E> implements ScListNode, Handle<E> {
+  public interface Handle<E> {
 
-        private final E element;
-        @NotNull
-        private ScListNode prev;
-        @Nullable
-        private NextNode<E> next;
+    E getElement();
 
-        NextNode(@NotNull final E element, @NotNull final ScListNode prev, @Nullable final NextNode<E> next) {
-            this.element = element;
-            this.prev = prev;
-            this.next = next;
-            if (next != null) {
-                next.prev = this;
-            }
-        }
+    boolean remove();
+  }
 
-        @Override
-        public boolean removeNext() {
-            if (next != null) {
-                final NextNode<E> next = this.next.next;
-                this.next = next;
-                if (next != null) {
-                    next.prev = this;
-                }
-            }
-            return false;
-        }
+  private class ScLinkedListIterator implements Iterator<E> {
 
-        @Override
-        public E getElement() {
-            return element;
-        }
+    private NextNode<E> current;
+    private NextNode<E> next;
 
-        @Override
-        public boolean remove() {
-            return prev.removeNext();
-        }
-
+    private void clear() {
+      current = null;
+      next = head;
     }
 
-
-    public interface Handle<E> {
-
-        E getElement();
-
-        boolean remove();
-
+    @Override
+    public boolean hasNext() {
+      current = next;
+      if (current == null) {
+        return false;
+      }
+      next = current.next;
+      return true;
     }
 
-
-    private class ScLinkedListIterator implements Iterator<E> {
-
-        private NextNode<E> current;
-        private NextNode<E> next;
-
-        private void clear() {
-            current = null;
-            next = head;
-        }
-
-        @Override
-        public boolean hasNext() {
-            current = next;
-            if (current == null) {
-                return false;
-            }
-            next = current.next;
-            return true;
-        }
-
-        @Override
-        public E next() {
-            if (current == null) {
-                throw new NoSuchElementException();
-            }
-            return current.element;
-        }
-
-        @Override
-        public void remove() {
-            current.remove();
-        }
-
+    @Override
+    public E next() {
+      if (current == null) {
+        throw new NoSuchElementException();
+      }
+      return current.element;
     }
 
+    @Override
+    public void remove() {
+      current.remove();
+    }
+  }
 }

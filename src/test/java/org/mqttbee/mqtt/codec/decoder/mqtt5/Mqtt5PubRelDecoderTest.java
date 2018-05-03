@@ -17,6 +17,10 @@
 
 package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.MALFORMED_PACKET;
+import static org.mqttbee.api.mqtt.mqtt5.message.publish.pubrel.Mqtt5PubRelReasonCode.SUCCESS;
+
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.Test;
@@ -31,345 +35,466 @@ import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrel.Mqtt5PubRelReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRel;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.MALFORMED_PACKET;
-import static org.mqttbee.api.mqtt.mqtt5.message.publish.pubrel.Mqtt5PubRelReasonCode.SUCCESS;
-
 /**
  * @author Silvio Giebl
  * @author David Katz
  */
 class Mqtt5PubRelDecoderTest extends AbstractMqtt5DecoderTest {
 
-    Mqtt5PubRelDecoderTest() {
-        super(code -> {
-            if (code == Mqtt5MessageType.PUBREL.getCode()) {
-                return new Mqtt5PubRelDecoder();
-            }
-            return null;
+  Mqtt5PubRelDecoderTest() {
+    super(
+        code -> {
+          if (code == Mqtt5MessageType.PUBREL.getCode()) {
+            return new Mqtt5PubRelDecoder();
+          }
+          return null;
         });
-    }
+  }
 
-    @Test
-    void decode_allParameters() {
-        final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                0b0110_0010,
-                //   remaining length
-                43,
-                // variable header
-                //   packet identifier
-                0, 5,
-                //   reason code (success)
-                0x00,
-                //   properties
-                39,
-                //     reason string
-                0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', 's',
-                //     user properties
-                0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e', //
-                0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e', '2',
-        };
+  @Test
+  void decode_allParameters() {
+    final byte[] encoded = {
+      // fixed header
+      //   type, flags
+      0b0110_0010,
+      //   remaining length
+      43,
+      // variable header
+      //   packet identifier
+      0,
+      5,
+      //   reason code (success)
+      0x00,
+      //   properties
+      39,
+      //     reason string
+      0x1F,
+      0,
+      7,
+      's',
+      'u',
+      'c',
+      'c',
+      'e',
+      's',
+      's',
+      //     user properties
+      0x26,
+      0,
+      4,
+      't',
+      'e',
+      's',
+      't',
+      0,
+      5,
+      'v',
+      'a',
+      'l',
+      'u',
+      'e', //
+      0x26,
+      0,
+      4,
+      't',
+      'e',
+      's',
+      't',
+      0,
+      6,
+      'v',
+      'a',
+      'l',
+      'u',
+      'e',
+      '2',
+    };
 
-        final MqttPubRel pubRel = decodeOk(encoded);
+    final MqttPubRel pubRel = decodeOk(encoded);
 
-        assertEquals(SUCCESS, pubRel.getReasonCode());
-        assertTrue(pubRel.getReasonString().isPresent());
-        assertEquals("success", pubRel.getReasonString().get().toString());
+    assertEquals(SUCCESS, pubRel.getReasonCode());
+    assertTrue(pubRel.getReasonString().isPresent());
+    assertEquals("success", pubRel.getReasonString().get().toString());
 
-        final ImmutableList<MqttUserPropertyImpl> userProperties = pubRel.getUserProperties().asList();
-        assertEquals(2, userProperties.size());
-        assertEquals("test", userProperties.get(0).getName().toString());
-        assertEquals("value", userProperties.get(0).getValue().toString());
-        assertEquals("test", userProperties.get(1).getName().toString());
-        assertEquals("value2", userProperties.get(1).getValue().toString());
-    }
+    final ImmutableList<MqttUserPropertyImpl> userProperties = pubRel.getUserProperties().asList();
+    assertEquals(2, userProperties.size());
+    assertEquals("test", userProperties.get(0).getName().toString());
+    assertEquals("value", userProperties.get(0).getValue().toString());
+    assertEquals("test", userProperties.get(1).getName().toString());
+    assertEquals("value2", userProperties.get(1).getValue().toString());
+  }
 
-    @Test
-    void decode_reasonCodeAndPropertiesOmittedOnSuccess() {
-        final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                0b0110_0010,
-                //   remaining length
-                2,
-                // variable header
-                //   packet identifier
-                0, 5
-        };
+  @Test
+  void decode_reasonCodeAndPropertiesOmittedOnSuccess() {
+    final byte[] encoded = {
+      // fixed header
+      //   type, flags
+      0b0110_0010,
+      //   remaining length
+      2,
+      // variable header
+      //   packet identifier
+      0,
+      5
+    };
 
-        final MqttPubRel pubRel = decodeOk(encoded);
-        assertEquals(SUCCESS, pubRel.getReasonCode());
-    }
+    final MqttPubRel pubRel = decodeOk(encoded);
+    assertEquals(SUCCESS, pubRel.getReasonCode());
+  }
 
-    @ParameterizedTest
-    @EnumSource(value = Mqtt5PubRelReasonCode.class, mode = EnumSource.Mode.EXCLUDE, names = {"SUCCESS"})
-    void decode_allReasonCodes(final Mqtt5PubRelReasonCode reasonCode) {
-        final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                0b0110_0010,
-                //   remaining length
-                4,
-                // variable header
-                //   packet identifier
-                0, 5,
-                //   reason code placeholder
-                0x00,
-                //   properties length
-                0
+  @ParameterizedTest
+  @EnumSource(
+    value = Mqtt5PubRelReasonCode.class,
+    mode = EnumSource.Mode.EXCLUDE,
+    names = {"SUCCESS"}
+  )
+  void decode_allReasonCodes(final Mqtt5PubRelReasonCode reasonCode) {
+    final byte[] encoded = {
+      // fixed header
+      //   type, flags
+      0b0110_0010,
+      //   remaining length
+      4,
+      // variable header
+      //   packet identifier
+      0,
+      5,
+      //   reason code placeholder
+      0x00,
+      //   properties length
+      0
+    };
+    encoded[4] = (byte) reasonCode.getCode();
+    final MqttPubRel pubRel = decodeOk(encoded);
+    assertEquals(reasonCode, pubRel.getReasonCode());
+  }
 
-        };
-        encoded[4] = (byte) reasonCode.getCode();
-        final MqttPubRel pubRel = decodeOk(encoded);
-        assertEquals(reasonCode, pubRel.getReasonCode());
-    }
+  @Test
+  void decode_multipleUserProperties() {
+    final byte[] encoded = {
+      // fixed header
+      //   type, flags
+      0b0110_0010,
+      //   remaining length
+      33,
+      // variable header
+      //   packet identifier
+      0,
+      5,
+      // reason code
+      0x00,
+      //   properties
+      29,
+      // user properties
+      0x26,
+      0,
+      4,
+      't',
+      'e',
+      's',
+      't',
+      0,
+      5,
+      'v',
+      'a',
+      'l',
+      'u',
+      'e', //
+      0x26,
+      0,
+      4,
+      't',
+      'e',
+      's',
+      't',
+      0,
+      6,
+      'v',
+      'a',
+      'l',
+      'u',
+      'e',
+      '2'
+    };
 
-    @Test
-    void decode_multipleUserProperties() {
-        final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                0b0110_0010,
-                //   remaining length
-                33,
-                // variable header
-                //   packet identifier
-                0, 5,
-                // reason code
-                0x00,
-                //   properties
-                29,
-                // user properties
-                0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e', //
-                0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e', '2'
-        };
+    final MqttPubRel pubRel = decodeOk(encoded);
+    final ImmutableList<MqttUserPropertyImpl> userProperties = pubRel.getUserProperties().asList();
+    assertEquals(2, userProperties.size());
+    assertEquals("test", userProperties.get(0).getName().toString());
+    assertEquals("value", userProperties.get(0).getValue().toString());
+    assertEquals("test", userProperties.get(1).getName().toString());
+    assertEquals("value2", userProperties.get(1).getValue().toString());
+  }
 
-        final MqttPubRel pubRel = decodeOk(encoded);
-        final ImmutableList<MqttUserPropertyImpl> userProperties = pubRel.getUserProperties().asList();
-        assertEquals(2, userProperties.size());
-        assertEquals("test", userProperties.get(0).getName().toString());
-        assertEquals("value", userProperties.get(0).getValue().toString());
-        assertEquals("test", userProperties.get(1).getName().toString());
-        assertEquals("value2", userProperties.get(1).getValue().toString());
-    }
+  @Test
+  void decode_invalidFlags_returnsNull() {
+    final byte[] encoded = {
+      // fixed header
+      //   type, flags
+      0b0110_1010,
+      //   remaining length
+      2,
+      // variable header
+      //   packet identifier
+      0,
+      5
+    };
+    decodeNok(encoded, MALFORMED_PACKET);
+  }
 
-    @Test
-    void decode_invalidFlags_returnsNull() {
-        final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                0b0110_1010,
-                //   remaining length
-                2,
-                // variable header
-                //   packet identifier
-                0, 5
-        };
-        decodeNok(encoded, MALFORMED_PACKET);
-    }
+  @Test
+  void decode_packetLengthLargerThanMaxPacketSize_returnsNull() {
+    final byte[] encoded = {
+      // fixed header
+      //   type, flags
+      0b0110_0010,
+      //   remaining length
+      32,
+      // variable header
+      //   packet identifier
+      0,
+      5,
+      // reason code
+      0x00,
+      //   properties
+      28,
+      // user properties
+      0x26,
+      0,
+      4,
+      't',
+      'e',
+      's',
+      't',
+      0,
+      5,
+      'v',
+      'a',
+      'l',
+      'u',
+      'e', //
+      0x26,
+      0,
+      4,
+      't',
+      'e',
+      's',
+      't',
+      0,
+      5,
+      'v',
+      'a',
+      'l',
+      'u',
+      'e'
+    };
+    createClientConnectionData(encoded.length - 1);
+    decodeNok(encoded, Mqtt5DisconnectReasonCode.PACKET_TOO_LARGE);
+  }
 
+  @Test
+  void decode_packetTooSmall_returnsNull() {
+    final byte[] encoded = {
+      // fixed header
+      //   type, flags
+      0b0110_0010,
+      //   remaining length
+      0
+    };
+    decodeNok(encoded, MALFORMED_PACKET);
+  }
 
-    @Test
-    void decode_packetLengthLargerThanMaxPacketSize_returnsNull() {
-        final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                0b0110_0010,
-                //   remaining length
-                32,
-                // variable header
-                //   packet identifier
-                0, 5,
-                // reason code
-                0x00,
-                //   properties
-                28,
-                // user properties
-                0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e', //
-                0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'
-        };
-        createClientConnectionData(encoded.length - 1);
-        decodeNok(encoded, Mqtt5DisconnectReasonCode.PACKET_TOO_LARGE);
-    }
+  @Test
+  void decode_propertyLengthLessThanZero_returnsNull() {
+    final byte[] encoded = {
+      // fixed header
+      //   type, flags
+      0b0110_0010,
+      //   remaining length
+      4,
+      // variable header
+      //   packet identifier
+      0,
+      5,
+      // reason code
+      0x00,
+      //   properties
+      -1
+    };
+    decodeNok(encoded, MALFORMED_PACKET);
+  }
 
-    @Test
-    void decode_packetTooSmall_returnsNull() {
-        final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                0b0110_0010,
-                //   remaining length
-                0
-        };
-        decodeNok(encoded, MALFORMED_PACKET);
-    }
+  @Test
+  void decode_propertyLengthTooLarge_returnsNull() {
+    final byte[] encoded = {
+      // fixed header
+      //   type, flags
+      0b0110_0010,
+      //   remaining length
+      4,
+      // variable header
+      //   packet identifier
+      0,
+      5,
+      // reason code
+      0x00,
+      //   properties
+      10
+    };
+    decodeNok(encoded, MALFORMED_PACKET);
+  }
 
-    @Test
-    void decode_propertyLengthLessThanZero_returnsNull() {
-        final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                0b0110_0010,
-                //   remaining length
-                4,
-                // variable header
-                //   packet identifier
-                0, 5,
-                // reason code
-                0x00,
-                //   properties
-                -1
-        };
-        decodeNok(encoded, MALFORMED_PACKET);
-    }
+  @Test
+  void decode_negativePropertyIdentifier_returnsNull() {
+    final byte[] encoded = {
+      // fixed header
+      //   type, flags
+      0b0110_0010,
+      //   remaining length
+      11,
+      // variable header
+      //   packet identifier
+      0,
+      5,
+      // reason code
+      0x00,
+      //   properties
+      7,
+      // negative property id
+      (byte) -3,
+      0,
+      4,
+      't',
+      'e',
+      's',
+      't'
+    };
+    decodeNok(encoded, MALFORMED_PACKET);
+  }
 
-    @Test
-    void decode_propertyLengthTooLarge_returnsNull() {
-        final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                0b0110_0010,
-                //   remaining length
-                4,
-                // variable header
-                //   packet identifier
-                0, 5,
-                // reason code
-                0x00,
-                //   properties
-                10
-        };
-        decodeNok(encoded, MALFORMED_PACKET);
-    }
+  @Test
+  void decode_invalidPropertyIdentifier_returnsNull() {
+    final byte[] encoded = {
+      // fixed header
+      //   type, flags
+      0b0110_0010,
+      //   remaining length
+      11,
+      // variable header
+      //   packet identifier
+      0,
+      5,
+      // reason code
+      0x00,
+      //   properties
+      7,
+      // invalid property id
+      (byte) 0x03,
+      0,
+      4,
+      't',
+      'e',
+      's',
+      't'
+    };
+    decodeNok(encoded, MALFORMED_PACKET);
+  }
 
-    @Test
-    void decode_negativePropertyIdentifier_returnsNull() {
-        final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                0b0110_0010,
-                //   remaining length
-                11,
-                // variable header
-                //   packet identifier
-                0, 5,
-                // reason code
-                0x00,
-                //   properties
-                7,
-                // negative property id
-                (byte) -3, 0, 4, 't', 'e', 's', 't'
-        };
-        decodeNok(encoded, MALFORMED_PACKET);
-    }
+  @Test
+  void decode_invalidReasonCode_returnsNull() {
+    final byte[] encoded = {
+      // fixed header
+      //   type, flags
+      0b0110_0010,
+      //   remaining length
+      3,
+      // variable header
+      //   packet identifier
+      0,
+      5,
+      //   reason code (success)
+      (byte) 0xFF
+    };
+    decodeNok(encoded, MALFORMED_PACKET);
+  }
 
-    @Test
-    void decode_invalidPropertyIdentifier_returnsNull() {
-        final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                0b0110_0010,
-                //   remaining length
-                11,
-                // variable header
-                //   packet identifier
-                0, 5,
-                // reason code
-                0x00,
-                //   properties
-                7,
-                // invalid property id
-                (byte) 0x03, 0, 4, 't', 'e', 's', 't'
-        };
-        decodeNok(encoded, MALFORMED_PACKET);
-    }
+  @Test
+  void decode_nullUserProperty_returnsNull() {
+    final byte[] encoded = {
+      // fixed header
+      //   type, flags
+      0b0110_0010,
+      //   remaining length
+      11,
+      // variable header
+      //   packet identifier
+      0,
+      5,
+      // reason code
+      0x00,
+      //   properties
+      7,
+      // user properties
+      0x26,
+      0,
+      1,
+      '\u0000',
+      0,
+      1,
+      'x'
+    };
+    decodeNok(encoded, Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
+  }
 
-    @Test
-    void decode_invalidReasonCode_returnsNull() {
-        final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                0b0110_0010,
-                //   remaining length
-                3,
-                // variable header
-                //   packet identifier
-                0, 5,
-                //   reason code (success)
-                (byte) 0xFF
-        };
-        decodeNok(encoded, MALFORMED_PACKET);
-    }
+  @Test
+  void decode_nullReasonString_returnsNull() {
+    final byte[] encoded = {
+      // fixed header
+      //   type, flags
+      0b0110_0010,
+      //   remaining length
+      8,
+      // variable header
+      //   packet identifier
+      0,
+      5,
+      //   reason code (success)
+      0x00,
+      //   properties
+      4,
+      //     reason string
+      0x1F,
+      0,
+      1,
+      '\u0000'
+    };
+    decodeNok(encoded, MALFORMED_PACKET);
+  }
 
-    @Test
-    void decode_nullUserProperty_returnsNull() {
-        final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                0b0110_0010,
-                //   remaining length
-                11,
-                // variable header
-                //   packet identifier
-                0, 5,
-                // reason code
-                0x00,
-                //   properties
-                7,
-                // user properties
-                0x26, 0, 1, '\u0000', 0, 1, 'x'
-        };
-        decodeNok(encoded, Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
-    }
+  @NotNull
+  private MqttPubRel decodeOk(final byte[] encoded) {
+    final MqttPubRel pubRel = decode(encoded);
+    assertNotNull(pubRel);
+    return pubRel;
+  }
 
-    @Test
-    void decode_nullReasonString_returnsNull() {
-        final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                0b0110_0010,
-                //   remaining length
-                8,
-                // variable header
-                //   packet identifier
-                0, 5,
-                //   reason code (success)
-                0x00,
-                //   properties
-                4,
-                //     reason string
-                0x1F, 0, 1, '\u0000'
-        };
-        decodeNok(encoded, MALFORMED_PACKET);
-    }
+  private void decodeNok(final byte[] encoded, final Mqtt5DisconnectReasonCode reasonCode) {
+    final MqttPubRel pubRel = decode(encoded);
+    assertNull(pubRel);
 
-    @NotNull
-    private MqttPubRel decodeOk(final byte[] encoded) {
-        final MqttPubRel pubRel = decode(encoded);
-        assertNotNull(pubRel);
-        return pubRel;
-    }
+    final Mqtt5Disconnect disconnect = channel.readOutbound();
+    assertNotNull(disconnect);
+    assertEquals(reasonCode, disconnect.getReasonCode());
 
-    private void decodeNok(final byte[] encoded, final Mqtt5DisconnectReasonCode reasonCode) {
-        final MqttPubRel pubRel = decode(encoded);
-        assertNull(pubRel);
+    createChannel();
+  }
 
-        final Mqtt5Disconnect disconnect = channel.readOutbound();
-        assertNotNull(disconnect);
-        assertEquals(reasonCode, disconnect.getReasonCode());
+  @Nullable
+  private MqttPubRel decode(final byte[] encoded) {
+    final ByteBuf byteBuf = channel.alloc().buffer();
+    byteBuf.writeBytes(encoded);
+    channel.writeInbound(byteBuf);
 
-        createChannel();
-    }
-
-    @Nullable
-    private MqttPubRel decode(final byte[] encoded) {
-        final ByteBuf byteBuf = channel.alloc().buffer();
-        byteBuf.writeBytes(encoded);
-        channel.writeInbound(byteBuf);
-
-        return channel.readInbound();
-    }
-
+    return channel.readInbound();
+  }
 }

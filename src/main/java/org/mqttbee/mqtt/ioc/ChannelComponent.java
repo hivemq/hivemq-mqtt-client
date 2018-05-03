@@ -36,67 +36,63 @@ import org.mqttbee.mqtt.handler.publish.*;
 import org.mqttbee.mqtt.handler.subscribe.MqttSubscriptionHandler;
 import org.mqttbee.mqtt.persistence.MqttPersistenceModule;
 
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @Subcomponent(modules = {ChannelModule.class, MqttDecoderModule.class, MqttPersistenceModule.class})
 @ChannelScope
 public interface ChannelComponent {
 
-    AttributeKey<ChannelComponent> KEY = AttributeKey.valueOf("channel.component");
+  AttributeKey<ChannelComponent> KEY = AttributeKey.valueOf("channel.component");
 
-    @NotNull
-    static ChannelComponent create(@NotNull final Channel channel, @NotNull final MqttClientData clientData) {
-        final ChannelComponent channelComponent =
-                MqttBeeComponent.INSTANCE.channelComponentBuilder().clientData(clientData).build();
-        channel.attr(KEY).set(channelComponent);
-        return channelComponent;
-    }
+  @NotNull
+  static ChannelComponent create(
+      @NotNull final Channel channel, @NotNull final MqttClientData clientData) {
+    final ChannelComponent channelComponent =
+        MqttBeeComponent.INSTANCE.channelComponentBuilder().clientData(clientData).build();
+    channel.attr(KEY).set(channelComponent);
+    return channelComponent;
+  }
 
-    @NotNull
-    static ChannelComponent get(@NotNull final Channel channel) {
-        return channel.attr(KEY).get();
-    }
+  @NotNull
+  static ChannelComponent get(@NotNull final Channel channel) {
+    return channel.attr(KEY).get();
+  }
 
-    MqttClientData clientData();
+  MqttClientData clientData();
 
-    MqttDecoder decoder();
+  MqttDecoder decoder();
 
-    MqttEncoder encoder();
+  MqttEncoder encoder();
 
-    MqttDisconnecter disconnecter();
+  MqttDisconnecter disconnecter();
 
-    MqttDisconnectOnConnAckHandler disconnectOnConnAckHandler();
+  MqttDisconnectOnConnAckHandler disconnectOnConnAckHandler();
 
-    MqttAuthHandler authHandler();
+  MqttAuthHandler authHandler();
 
-    MqttReAuthHandler reAuthHandler();
+  MqttReAuthHandler reAuthHandler();
 
-    MqttDisconnectOnAuthHandler disconnectOnAuthHandler();
+  MqttDisconnectOnAuthHandler disconnectOnAuthHandler();
 
-    MqttDisconnectHandler disconnectHandler();
+  MqttDisconnectHandler disconnectHandler();
 
-    MqttSubscriptionHandler subscriptionHandler();
+  MqttSubscriptionHandler subscriptionHandler();
 
-    MqttIncomingQoSHandler incomingQoSHandler();
+  MqttIncomingQoSHandler incomingQoSHandler();
 
-    MqttOutgoingQoSHandler outgoingQoSHandler();
+  MqttOutgoingQoSHandler outgoingQoSHandler();
 
-    MqttIncomingPublishService incomingPublishService();
+  MqttIncomingPublishService incomingPublishService();
 
-    MqttOutgoingPublishService outgoingPublishService();
+  MqttOutgoingPublishService outgoingPublishService();
 
-    MqttPublishFlowables publishFlowables();
+  MqttPublishFlowables publishFlowables();
 
+  @Subcomponent.Builder
+  interface Builder {
 
-    @Subcomponent.Builder
-    interface Builder {
+    @BindsInstance
+    Builder clientData(MqttClientData clientData);
 
-        @BindsInstance
-        Builder clientData(MqttClientData clientData);
-
-        ChannelComponent build();
-
-    }
-
+    ChannelComponent build();
+  }
 }

@@ -25,26 +25,23 @@ import org.mqttbee.mqtt.ioc.ChannelScope;
 import org.mqttbee.mqtt.persistence.memory.IncomingQoSFlowMemoryPersistence;
 import org.mqttbee.mqtt.persistence.memory.OutgoingQoSFlowMemoryPersistence;
 
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @Module
 public class MqttPersistenceModule {
 
-    @Provides
-    @ChannelScope
-    static OutgoingQoSFlowPersistence provideOutgoingQoSFlowPersistence(
-            @NotNull final Lazy<OutgoingQoSFlowMemoryPersistence> memoryPersistence) {
+  @Provides
+  @ChannelScope
+  static OutgoingQoSFlowPersistence provideOutgoingQoSFlowPersistence(
+      @NotNull final Lazy<OutgoingQoSFlowMemoryPersistence> memoryPersistence) {
 
-        return memoryPersistence.get(); // TODO file persistence
-    }
+    return memoryPersistence.get(); // TODO file persistence
+  }
 
-    @Provides
-    @ChannelScope
-    static IncomingQoSFlowPersistence provideIncomingQoSFlowPersistence(
-            @NotNull final Lazy<IncomingQoSFlowMemoryPersistence> memoryPersistence) {
+  @Provides
+  @ChannelScope
+  static IncomingQoSFlowPersistence provideIncomingQoSFlowPersistence(
+      @NotNull final Lazy<IncomingQoSFlowMemoryPersistence> memoryPersistence) {
 
-        return memoryPersistence.get(); // TODO file persistence
-    }
-
+    return memoryPersistence.get(); // TODO file persistence
+  }
 }

@@ -22,35 +22,32 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.mqttbee.annotations.NotNull;
 
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class AbstractMqttDecoderTest {
 
-    private final MqttMessageDecoders decoders;
+  private final MqttMessageDecoders decoders;
 
-    protected EmbeddedChannel channel;
+  protected EmbeddedChannel channel;
 
-    public AbstractMqttDecoderTest(@NotNull final MqttMessageDecoders decoders) {
-        this.decoders = decoders;
-    }
+  public AbstractMqttDecoderTest(@NotNull final MqttMessageDecoders decoders) {
+    this.decoders = decoders;
+  }
 
-    @BeforeEach
-    protected void setUp() {
-        createChannel();
-    }
+  @BeforeEach
+  protected void setUp() {
+    createChannel();
+  }
 
-    @AfterEach
-    protected void tearDown() {
-        channel.close();
-    }
+  @AfterEach
+  protected void tearDown() {
+    channel.close();
+  }
 
-    protected void createChannel() {
-        channel = new EmbeddedChannel(new MqttDecoder(decoders));
-    }
+  protected void createChannel() {
+    channel = new EmbeddedChannel(new MqttDecoder(decoders));
+  }
 
-    public static MqttPingRespDecoder createPingRespDecoder() {
-        return new MqttPingRespDecoder();
-    }
-
+  public static MqttPingRespDecoder createPingRespDecoder() {
+    return new MqttPingRespDecoder();
+  }
 }

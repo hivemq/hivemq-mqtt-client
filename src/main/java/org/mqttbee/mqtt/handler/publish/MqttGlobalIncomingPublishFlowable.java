@@ -27,34 +27,36 @@ import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.ioc.ChannelComponent;
 import org.reactivestreams.Subscriber;
 
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class MqttGlobalIncomingPublishFlowable extends Flowable<Mqtt5SubscribeResult> {
 
-    private final int type;
-    private final MqttClientData clientData;
+  private final int type;
+  private final MqttClientData clientData;
 
-    public MqttGlobalIncomingPublishFlowable(final int type, @NotNull final MqttClientData clientData) {
-        this.type = type;
-        this.clientData = clientData;
+  public MqttGlobalIncomingPublishFlowable(
+      final int type, @NotNull final MqttClientData clientData) {
+    this.type = type;
+    this.clientData = clientData;
+  }
+
+  @Override
+  protected void subscribeActual(final Subscriber<? super Mqtt5SubscribeResult> s) {
+    final MqttClientConnectionData clientConnectionData =
+        clientData.getRawClientConnectionData(); // TODO temp
+    if (clientConnectionData == null) {
+      EmptySubscription.error(new NotConnectedException(), s);
+    } else {
+      final ChannelComponent channelComponent =
+          ChannelComponent.get(clientConnectionData.getChannel());
+      final MqttIncomingPublishService incomingPublishService =
+          channelComponent.incomingPublishService();
+
+      final MqttGlobalIncomingPublishFlow flow =
+          new MqttGlobalIncomingPublishFlow(s, incomingPublishService, type);
+      incomingPublishService
+          .getNettyEventLoop()
+          .execute(() -> incomingPublishService.getIncomingPublishFlows().subscribeGlobal(flow));
+      s.onSubscribe(flow);
     }
-
-    @Override
-    protected void subscribeActual(final Subscriber<? super Mqtt5SubscribeResult> s) {
-        final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData(); // TODO temp
-        if (clientConnectionData == null) {
-            EmptySubscription.error(new NotConnectedException(), s);
-        } else {
-            final ChannelComponent channelComponent = ChannelComponent.get(clientConnectionData.getChannel());
-            final MqttIncomingPublishService incomingPublishService = channelComponent.incomingPublishService();
-
-            final MqttGlobalIncomingPublishFlow flow =
-                    new MqttGlobalIncomingPublishFlow(s, incomingPublishService, type);
-            incomingPublishService.getNettyEventLoop()
-                    .execute(() -> incomingPublishService.getIncomingPublishFlows().subscribeGlobal(flow));
-            s.onSubscribe(flow);
-        }
-    }
-
+  }
 }

@@ -17,6 +17,8 @@
 
 package org.mqttbee.mqtt.message.connect;
 
+import java.util.Optional;
+import javax.annotation.concurrent.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
@@ -32,121 +34,125 @@ import org.mqttbee.mqtt.message.auth.MqttEnhancedAuth;
 import org.mqttbee.mqtt.message.auth.MqttSimpleAuth;
 import org.mqttbee.mqtt.message.publish.MqttWillPublish;
 
-import javax.annotation.concurrent.Immutable;
-import java.util.Optional;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @Immutable
 public class MqttConnect
-        extends MqttWrappedMessage<MqttConnect, MqttConnectWrapper, MqttMessageEncoderProvider<MqttConnectWrapper>>
-        implements Mqtt5Connect {
+    extends MqttWrappedMessage<
+        MqttConnect, MqttConnectWrapper, MqttMessageEncoderProvider<MqttConnectWrapper>>
+    implements Mqtt5Connect {
 
-    private final int keepAlive;
-    private final boolean isCleanStart;
-    private final long sessionExpiryInterval;
-    private final boolean isResponseInformationRequested;
-    private final boolean isProblemInformationRequested;
-    private final MqttConnectRestrictions restrictions;
-    private final MqttSimpleAuth simpleAuth;
-    private final Mqtt5EnhancedAuthProvider enhancedAuthProvider;
-    private final MqttWillPublish willPublish;
+  private final int keepAlive;
+  private final boolean isCleanStart;
+  private final long sessionExpiryInterval;
+  private final boolean isResponseInformationRequested;
+  private final boolean isProblemInformationRequested;
+  private final MqttConnectRestrictions restrictions;
+  private final MqttSimpleAuth simpleAuth;
+  private final Mqtt5EnhancedAuthProvider enhancedAuthProvider;
+  private final MqttWillPublish willPublish;
 
-    public MqttConnect(
-            final int keepAlive, final boolean isCleanStart, final long sessionExpiryInterval,
-            final boolean isResponseInformationRequested, final boolean isProblemInformationRequested,
-            @NotNull final MqttConnectRestrictions restrictions, @Nullable final MqttSimpleAuth simpleAuth,
-            @Nullable final Mqtt5EnhancedAuthProvider enhancedAuthProvider, @Nullable final MqttWillPublish willPublish,
-            @NotNull final MqttUserPropertiesImpl userProperties,
-            @NotNull final MqttWrappedMessageEncoderProvider<MqttConnect, MqttConnectWrapper, MqttMessageEncoderProvider<MqttConnectWrapper>> encoderProvider) {
+  public MqttConnect(
+      final int keepAlive,
+      final boolean isCleanStart,
+      final long sessionExpiryInterval,
+      final boolean isResponseInformationRequested,
+      final boolean isProblemInformationRequested,
+      @NotNull final MqttConnectRestrictions restrictions,
+      @Nullable final MqttSimpleAuth simpleAuth,
+      @Nullable final Mqtt5EnhancedAuthProvider enhancedAuthProvider,
+      @Nullable final MqttWillPublish willPublish,
+      @NotNull final MqttUserPropertiesImpl userProperties,
+      @NotNull
+          final MqttWrappedMessageEncoderProvider<
+                  MqttConnect, MqttConnectWrapper, MqttMessageEncoderProvider<MqttConnectWrapper>>
+              encoderProvider) {
 
-        super(userProperties, encoderProvider);
-        this.keepAlive = keepAlive;
-        this.isCleanStart = isCleanStart;
-        this.sessionExpiryInterval = sessionExpiryInterval;
-        this.isResponseInformationRequested = isResponseInformationRequested;
-        this.isProblemInformationRequested = isProblemInformationRequested;
-        this.restrictions = restrictions;
-        this.simpleAuth = simpleAuth;
-        this.enhancedAuthProvider = enhancedAuthProvider;
-        this.willPublish = willPublish;
-    }
+    super(userProperties, encoderProvider);
+    this.keepAlive = keepAlive;
+    this.isCleanStart = isCleanStart;
+    this.sessionExpiryInterval = sessionExpiryInterval;
+    this.isResponseInformationRequested = isResponseInformationRequested;
+    this.isProblemInformationRequested = isProblemInformationRequested;
+    this.restrictions = restrictions;
+    this.simpleAuth = simpleAuth;
+    this.enhancedAuthProvider = enhancedAuthProvider;
+    this.willPublish = willPublish;
+  }
 
-    @Override
-    public int getKeepAlive() {
-        return keepAlive;
-    }
+  @Override
+  public int getKeepAlive() {
+    return keepAlive;
+  }
 
-    @Override
-    public boolean isCleanStart() {
-        return isCleanStart;
-    }
+  @Override
+  public boolean isCleanStart() {
+    return isCleanStart;
+  }
 
-    @Override
-    public long getSessionExpiryInterval() {
-        return sessionExpiryInterval;
-    }
+  @Override
+  public long getSessionExpiryInterval() {
+    return sessionExpiryInterval;
+  }
 
-    @Override
-    public boolean isResponseInformationRequested() {
-        return isResponseInformationRequested;
-    }
+  @Override
+  public boolean isResponseInformationRequested() {
+    return isResponseInformationRequested;
+  }
 
-    @Override
-    public boolean isProblemInformationRequested() {
-        return isProblemInformationRequested;
-    }
+  @Override
+  public boolean isProblemInformationRequested() {
+    return isProblemInformationRequested;
+  }
 
-    @NotNull
-    @Override
-    public MqttConnectRestrictions getRestrictions() {
-        return restrictions;
-    }
+  @NotNull
+  @Override
+  public MqttConnectRestrictions getRestrictions() {
+    return restrictions;
+  }
 
-    @NotNull
-    @Override
-    public Optional<Mqtt5SimpleAuth> getSimpleAuth() {
-        return Optional.ofNullable(simpleAuth);
-    }
+  @NotNull
+  @Override
+  public Optional<Mqtt5SimpleAuth> getSimpleAuth() {
+    return Optional.ofNullable(simpleAuth);
+  }
 
-    @Nullable
-    public MqttSimpleAuth getRawSimpleAuth() {
-        return simpleAuth;
-    }
+  @Nullable
+  public MqttSimpleAuth getRawSimpleAuth() {
+    return simpleAuth;
+  }
 
-    @NotNull
-    @Override
-    public Optional<Mqtt5EnhancedAuthProvider> getEnhancedAuthProvider() {
-        return Optional.ofNullable(enhancedAuthProvider);
-    }
+  @NotNull
+  @Override
+  public Optional<Mqtt5EnhancedAuthProvider> getEnhancedAuthProvider() {
+    return Optional.ofNullable(enhancedAuthProvider);
+  }
 
-    @Nullable
-    public Mqtt5EnhancedAuthProvider getRawEnhancedAuthProvider() {
-        return enhancedAuthProvider;
-    }
+  @Nullable
+  public Mqtt5EnhancedAuthProvider getRawEnhancedAuthProvider() {
+    return enhancedAuthProvider;
+  }
 
-    @NotNull
-    @Override
-    public Optional<Mqtt5WillPublish> getWillPublish() {
-        return Optional.ofNullable(willPublish);
-    }
+  @NotNull
+  @Override
+  public Optional<Mqtt5WillPublish> getWillPublish() {
+    return Optional.ofNullable(willPublish);
+  }
 
-    @Nullable
-    public MqttWillPublish getRawWillPublish() {
-        return willPublish;
-    }
+  @Nullable
+  public MqttWillPublish getRawWillPublish() {
+    return willPublish;
+  }
 
-    @NotNull
-    @Override
-    protected MqttConnect getCodable() {
-        return this;
-    }
+  @NotNull
+  @Override
+  protected MqttConnect getCodable() {
+    return this;
+  }
 
-    public MqttConnectWrapper wrap(
-            @NotNull final MqttClientIdentifierImpl clientIdentifier, @Nullable final MqttEnhancedAuth enhancedAuth) {
+  public MqttConnectWrapper wrap(
+      @NotNull final MqttClientIdentifierImpl clientIdentifier,
+      @Nullable final MqttEnhancedAuth enhancedAuth) {
 
-        return new MqttConnectWrapper(this, clientIdentifier, enhancedAuth);
-    }
-
+    return new MqttConnectWrapper(this, clientIdentifier, enhancedAuth);
+  }
 }

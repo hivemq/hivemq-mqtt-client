@@ -21,13 +21,10 @@ import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @DoNotImplement
 public interface Mqtt5PubRecBuilder {
 
-    @NotNull
-    Mqtt5PubRecBuilder withUserProperties(@NotNull Mqtt5UserProperties userProperties);
-
+  @NotNull
+  Mqtt5PubRecBuilder withUserProperties(@NotNull Mqtt5UserProperties userProperties);
 }

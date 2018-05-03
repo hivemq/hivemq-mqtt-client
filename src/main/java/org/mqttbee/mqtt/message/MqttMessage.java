@@ -28,10 +28,7 @@ import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoder;
  */
 public interface MqttMessage extends Mqtt5Message {
 
-    /**
-     * @return the encoder for this MQTT message.
-     */
-    @NotNull
-    MqttMessageEncoder getEncoder();
-
+  /** @return the encoder for this MQTT message. */
+  @NotNull
+  MqttMessageEncoder getEncoder();
 }

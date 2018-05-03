@@ -17,15 +17,12 @@
 
 package org.mqttbee.api.mqtt.mqtt3;
 
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public interface Mqtt3ClientConnectionData {
 
-    int getKeepAlive();
+  int getKeepAlive();
 
-    int getReceiveMaximum();
+  int getReceiveMaximum();
 
-    boolean hasWillPublish();
-
+  boolean hasWillPublish();
 }

@@ -34,17 +34,16 @@ public class MqttMessageWrapperEncoderProvider< //
         W extends MqttMessageWrapper<W, M, P>, //
         M extends MqttWrappedMessage<M, W, P>, //
         P extends MqttMessageEncoderProvider<W>>
-        implements MqttMessageEncoderProvider<W>, MqttMessageEncoderApplier<W> {
+    implements MqttMessageEncoderProvider<W>, MqttMessageEncoderApplier<W> {
 
-    @Override
-    public MqttMessageEncoderApplier<W> get() {
-        return this;
-    }
+  @Override
+  public MqttMessageEncoderApplier<W> get() {
+    return this;
+  }
 
-    @NotNull
-    @Override
-    public MqttMessageEncoder apply(@NotNull final W message) {
-        return message.getWrapped().getEncoder().wrap(message);
-    }
-
+  @NotNull
+  @Override
+  public MqttMessageEncoder apply(@NotNull final W message) {
+    return message.getWrapped().getEncoder().wrap(message);
+  }
 }

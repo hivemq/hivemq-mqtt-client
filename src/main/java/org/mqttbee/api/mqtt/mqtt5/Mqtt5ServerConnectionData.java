@@ -20,26 +20,23 @@ package org.mqttbee.api.mqtt.mqtt5;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public interface Mqtt5ServerConnectionData {
 
-    int getReceiveMaximum();
+  int getReceiveMaximum();
 
-    int getTopicAliasMaximum();
+  int getTopicAliasMaximum();
 
-    int getMaximumPacketSize();
+  int getMaximumPacketSize();
 
-    @NotNull
-    MqttQoS getMaximumQoS();
+  @NotNull
+  MqttQoS getMaximumQoS();
 
-    boolean isRetainAvailable();
+  boolean isRetainAvailable();
 
-    boolean isWildcardSubscriptionAvailable();
+  boolean isWildcardSubscriptionAvailable();
 
-    boolean isSubscriptionIdentifierAvailable();
+  boolean isSubscriptionIdentifierAvailable();
 
-    boolean isSharedSubscriptionAvailable();
-
+  boolean isSharedSubscriptionAvailable();
 }

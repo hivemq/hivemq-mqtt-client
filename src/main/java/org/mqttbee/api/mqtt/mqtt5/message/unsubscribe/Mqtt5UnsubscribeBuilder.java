@@ -30,49 +30,47 @@ import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribe;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class Mqtt5UnsubscribeBuilder {
 
-    private final ImmutableList.Builder<MqttTopicFilterImpl> topicFiltersBuilder = ImmutableList.builder();
-    private MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
+  private final ImmutableList.Builder<MqttTopicFilterImpl> topicFiltersBuilder =
+      ImmutableList.builder();
+  private MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
 
-    Mqtt5UnsubscribeBuilder() {
+  Mqtt5UnsubscribeBuilder() {}
+
+  @NotNull
+  public Mqtt5UnsubscribeBuilder addTopicFilter(@NotNull final String topicFilter) {
+    topicFiltersBuilder.add(MqttBuilderUtil.topicFilter(topicFilter));
+    return this;
+  }
+
+  @NotNull
+  public Mqtt5UnsubscribeBuilder addTopicFilter(@NotNull final MqttTopicFilter topicFilter) {
+    topicFiltersBuilder.add(MqttBuilderUtil.topicFilter(topicFilter));
+    return this;
+  }
+
+  @NotNull
+  public Mqtt5UnsubscribeBuilder counter(@NotNull final Mqtt5Subscribe subscribe) {
+    final ImmutableList<? extends Mqtt5Subscription> subscriptions = subscribe.getSubscriptions();
+    for (final Mqtt5Subscription subscription : subscriptions) {
+      addTopicFilter(subscription.getTopicFilter());
     }
+    return this;
+  }
 
-    @NotNull
-    public Mqtt5UnsubscribeBuilder addTopicFilter(@NotNull final String topicFilter) {
-        topicFiltersBuilder.add(MqttBuilderUtil.topicFilter(topicFilter));
-        return this;
-    }
+  @NotNull
+  public Mqtt5UnsubscribeBuilder withUserProperties(
+      @NotNull final Mqtt5UserProperties userProperties) {
+    this.userProperties = MqttBuilderUtil.userProperties(userProperties);
+    return this;
+  }
 
-    @NotNull
-    public Mqtt5UnsubscribeBuilder addTopicFilter(@NotNull final MqttTopicFilter topicFilter) {
-        topicFiltersBuilder.add(MqttBuilderUtil.topicFilter(topicFilter));
-        return this;
-    }
-
-    @NotNull
-    public Mqtt5UnsubscribeBuilder counter(@NotNull final Mqtt5Subscribe subscribe) {
-        final ImmutableList<? extends Mqtt5Subscription> subscriptions = subscribe.getSubscriptions();
-        for (final Mqtt5Subscription subscription : subscriptions) {
-            addTopicFilter(subscription.getTopicFilter());
-        }
-        return this;
-    }
-
-    @NotNull
-    public Mqtt5UnsubscribeBuilder withUserProperties(@NotNull final Mqtt5UserProperties userProperties) {
-        this.userProperties = MqttBuilderUtil.userProperties(userProperties);
-        return this;
-    }
-
-    @NotNull
-    public Mqtt5Unsubscribe build() {
-        final ImmutableList<MqttTopicFilterImpl> topicFilters = topicFiltersBuilder.build();
-        Preconditions.checkState(!topicFilters.isEmpty());
-        return new MqttUnsubscribe(topicFilters, userProperties, Mqtt5UnsubscribeEncoder.PROVIDER);
-    }
-
+  @NotNull
+  public Mqtt5Unsubscribe build() {
+    final ImmutableList<MqttTopicFilterImpl> topicFilters = topicFiltersBuilder.build();
+    Preconditions.checkState(!topicFilters.isEmpty());
+    return new MqttUnsubscribe(topicFilters, userProperties, Mqtt5UnsubscribeEncoder.PROVIDER);
+  }
 }

@@ -23,139 +23,138 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.MultithreadEventLoopGroup;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.atomic.AtomicInteger;
+import javax.annotation.concurrent.ThreadSafe;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt.MqttClientExecutorConfigImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.concurrent.ThreadSafe;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.Executor;
-import java.util.concurrent.atomic.AtomicInteger;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @ThreadSafe
 public abstract class NettyBootstrap {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(NettyBootstrap.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(NettyBootstrap.class);
 
-    private MultithreadEventLoopGroup defaultEventLoopGroup;
-    private AtomicInteger defaultEventLoopGroupReferenceCount;
-    private Map<Executor, MultithreadEventLoopGroup> eventLoopGroups;
-    private Map<Executor, AtomicInteger> eventLoopGroupReferenceCounts;
+  private MultithreadEventLoopGroup defaultEventLoopGroup;
+  private AtomicInteger defaultEventLoopGroupReferenceCount;
+  private Map<Executor, MultithreadEventLoopGroup> eventLoopGroups;
+  private Map<Executor, AtomicInteger> eventLoopGroupReferenceCounts;
 
-    NettyBootstrap() {
+  NettyBootstrap() {}
+
+  @NotNull
+  public Bootstrap bootstrap(@NotNull final MqttClientExecutorConfigImpl executorConfig) {
+    return new Bootstrap()
+        .group(getEventLoopGroup(executorConfig))
+        .channel(getChannelClass())
+        .option(ChannelOption.SO_KEEPALIVE, true)
+        .option(ChannelOption.TCP_NODELAY, true)
+        .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
+  }
+
+  @NotNull
+  private synchronized MultithreadEventLoopGroup getEventLoopGroup(
+      @NotNull final MqttClientExecutorConfigImpl executorConfig) {
+
+    if (executorConfig.getRawNettyExecutor() == null) {
+      return getDefaultEventLoopGroup(executorConfig.getRawNettyThreads());
     }
+    return getExecutorEventLoopGroup(
+        executorConfig.getRawNettyExecutor(), executorConfig.getRawNettyThreads());
+  }
 
-    @NotNull
-    public Bootstrap bootstrap(@NotNull final MqttClientExecutorConfigImpl executorConfig) {
-        return new Bootstrap().group(getEventLoopGroup(executorConfig))
-                .channel(getChannelClass())
-                .option(ChannelOption.SO_KEEPALIVE, true)
-                .option(ChannelOption.TCP_NODELAY, true)
-                .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
+  @NotNull
+  private MultithreadEventLoopGroup getDefaultEventLoopGroup(final int numberOfNettyThreads) {
+    if (defaultEventLoopGroup == null) {
+      defaultEventLoopGroup = newDefaultEventLoopGroup(numberOfNettyThreads);
+      defaultEventLoopGroupReferenceCount = new AtomicInteger(1);
+    } else {
+      final int defaultThreadCount = defaultEventLoopGroup.executorCount();
+      if ((numberOfNettyThreads != MqttClientExecutorConfigImpl.DEFAULT_NETTY_THREADS)
+          && (defaultThreadCount != numberOfNettyThreads)) {
+        LOGGER.warn(
+            "Tried to use the default executor with a different amount of Netty threads. Using {} threads instead of {}",
+            defaultThreadCount,
+            numberOfNettyThreads);
+      }
+      defaultEventLoopGroupReferenceCount.incrementAndGet();
     }
+    return defaultEventLoopGroup;
+  }
 
-    @NotNull
-    private synchronized MultithreadEventLoopGroup getEventLoopGroup(
-            @NotNull final MqttClientExecutorConfigImpl executorConfig) {
+  @NotNull
+  private MultithreadEventLoopGroup getExecutorEventLoopGroup(
+      @Nullable final Executor executor, final int numberOfNettyThreads) {
 
-        if (executorConfig.getRawNettyExecutor() == null) {
-            return getDefaultEventLoopGroup(executorConfig.getRawNettyThreads());
-        }
-        return getExecutorEventLoopGroup(executorConfig.getRawNettyExecutor(), executorConfig.getRawNettyThreads());
+    if (eventLoopGroups == null) {
+      eventLoopGroups = new HashMap<>(4);
+      eventLoopGroupReferenceCounts = new HashMap<>(4);
     }
-
-    @NotNull
-    private MultithreadEventLoopGroup getDefaultEventLoopGroup(final int numberOfNettyThreads) {
-        if (defaultEventLoopGroup == null) {
-            defaultEventLoopGroup = newDefaultEventLoopGroup(numberOfNettyThreads);
-            defaultEventLoopGroupReferenceCount = new AtomicInteger(1);
-        } else {
-            final int defaultThreadCount = defaultEventLoopGroup.executorCount();
-            if ((numberOfNettyThreads != MqttClientExecutorConfigImpl.DEFAULT_NETTY_THREADS) &&
-                    (defaultThreadCount != numberOfNettyThreads)) {
-                LOGGER.warn(
-                        "Tried to use the default executor with a different amount of Netty threads. Using {} threads instead of {}",
-                        defaultThreadCount, numberOfNettyThreads);
-            }
-            defaultEventLoopGroupReferenceCount.incrementAndGet();
-        }
-        return defaultEventLoopGroup;
+    MultithreadEventLoopGroup eventLoopGroup = eventLoopGroups.get(executor);
+    if (eventLoopGroup == null) {
+      eventLoopGroup = newExecutorEventLoopGroup(executor, numberOfNettyThreads);
+      eventLoopGroups.put(executor, eventLoopGroup);
+      eventLoopGroupReferenceCounts.put(executor, new AtomicInteger(1));
+    } else {
+      final int threadCount = eventLoopGroup.executorCount();
+      if ((numberOfNettyThreads != MqttClientExecutorConfigImpl.DEFAULT_NETTY_THREADS)
+          && (threadCount != numberOfNettyThreads)) {
+        LOGGER.warn(
+            "Tried to use a different amount of Netty threads for the same executor. Using {} threads instead of {}",
+            threadCount,
+            numberOfNettyThreads);
+      }
+      eventLoopGroupReferenceCounts.get(executor).incrementAndGet();
     }
+    return eventLoopGroup;
+  }
 
-    @NotNull
-    private MultithreadEventLoopGroup getExecutorEventLoopGroup(
-            @Nullable final Executor executor, final int numberOfNettyThreads) {
+  @NotNull
+  abstract MultithreadEventLoopGroup newDefaultEventLoopGroup(final int numberOfNettyThreads);
 
-        if (eventLoopGroups == null) {
-            eventLoopGroups = new HashMap<>(4);
-            eventLoopGroupReferenceCounts = new HashMap<>(4);
-        }
-        MultithreadEventLoopGroup eventLoopGroup = eventLoopGroups.get(executor);
-        if (eventLoopGroup == null) {
-            eventLoopGroup = newExecutorEventLoopGroup(executor, numberOfNettyThreads);
-            eventLoopGroups.put(executor, eventLoopGroup);
-            eventLoopGroupReferenceCounts.put(executor, new AtomicInteger(1));
-        } else {
-            final int threadCount = eventLoopGroup.executorCount();
-            if ((numberOfNettyThreads != MqttClientExecutorConfigImpl.DEFAULT_NETTY_THREADS) &&
-                    (threadCount != numberOfNettyThreads)) {
-                LOGGER.warn(
-                        "Tried to use a different amount of Netty threads for the same executor. Using {} threads instead of {}",
-                        threadCount, numberOfNettyThreads);
-            }
-            eventLoopGroupReferenceCounts.get(executor).incrementAndGet();
-        }
-        return eventLoopGroup;
+  @NotNull
+  abstract MultithreadEventLoopGroup newExecutorEventLoopGroup(
+      @Nullable final Executor executor, final int numberOfNettyThreads);
+
+  @NotNull
+  abstract Class<? extends Channel> getChannelClass();
+
+  public synchronized void free(@NotNull final MqttClientExecutorConfigImpl executorConfig) {
+    if (executorConfig.getRawNettyExecutor() == null) {
+      freeDefaultEventLoopGroup();
+    } else {
+      freeExecutorEventLoopGroup(executorConfig.getRawNettyExecutor());
     }
+  }
 
-    @NotNull
-    abstract MultithreadEventLoopGroup newDefaultEventLoopGroup(final int numberOfNettyThreads);
-
-    @NotNull
-    abstract MultithreadEventLoopGroup newExecutorEventLoopGroup(
-            @Nullable final Executor executor, final int numberOfNettyThreads);
-
-    @NotNull
-    abstract Class<? extends Channel> getChannelClass();
-
-    public synchronized void free(@NotNull final MqttClientExecutorConfigImpl executorConfig) {
-        if (executorConfig.getRawNettyExecutor() == null) {
-            freeDefaultEventLoopGroup();
-        } else {
-            freeExecutorEventLoopGroup(executorConfig.getRawNettyExecutor());
-        }
+  private void freeDefaultEventLoopGroup() {
+    if (defaultEventLoopGroupReferenceCount.decrementAndGet() == 0) {
+      freeEventLoopGroup(defaultEventLoopGroup);
+      defaultEventLoopGroup = null;
+      defaultEventLoopGroupReferenceCount = null;
     }
+  }
 
-    private void freeDefaultEventLoopGroup() {
-        if (defaultEventLoopGroupReferenceCount.decrementAndGet() == 0) {
-            freeEventLoopGroup(defaultEventLoopGroup);
-            defaultEventLoopGroup = null;
-            defaultEventLoopGroupReferenceCount = null;
-        }
+  private void freeExecutorEventLoopGroup(@Nullable final Executor executor) {
+    final MultithreadEventLoopGroup eventLoopGroup = eventLoopGroups.get(executor);
+    if (eventLoopGroupReferenceCounts.get(executor).decrementAndGet() == 0) {
+      freeEventLoopGroup(eventLoopGroup);
+      eventLoopGroups.remove(executor);
+      eventLoopGroupReferenceCounts.remove(executor);
+      if (eventLoopGroups.size() == 0) {
+        eventLoopGroups = null;
+        eventLoopGroupReferenceCounts = null;
+      }
     }
+  }
 
-    private void freeExecutorEventLoopGroup(@Nullable final Executor executor) {
-        final MultithreadEventLoopGroup eventLoopGroup = eventLoopGroups.get(executor);
-        if (eventLoopGroupReferenceCounts.get(executor).decrementAndGet() == 0) {
-            freeEventLoopGroup(eventLoopGroup);
-            eventLoopGroups.remove(executor);
-            eventLoopGroupReferenceCounts.remove(executor);
-            if (eventLoopGroups.size() == 0) {
-                eventLoopGroups = null;
-                eventLoopGroupReferenceCounts = null;
-            }
-        }
-    }
-
-    private void freeEventLoopGroup(@NotNull final EventLoopGroup eventLoopGroup) {
-        NettyThreadLocals.clear(eventLoopGroup);
-        eventLoopGroup.shutdownGracefully();
-    }
-
+  private void freeEventLoopGroup(@NotNull final EventLoopGroup eventLoopGroup) {
+    NettyThreadLocals.clear(eventLoopGroup);
+    eventLoopGroup.shutdownGracefully();
+  }
 }

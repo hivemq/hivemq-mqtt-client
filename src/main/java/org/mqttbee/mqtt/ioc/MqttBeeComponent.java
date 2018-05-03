@@ -18,25 +18,21 @@
 package org.mqttbee.mqtt.ioc;
 
 import dagger.Component;
+import javax.inject.Singleton;
 import org.mqttbee.mqtt.handler.MqttChannelInitializerProvider;
 import org.mqttbee.mqtt.netty.NettyBootstrap;
 import org.mqttbee.mqtt.netty.NettyModule;
 
-import javax.inject.Singleton;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @Component(modules = {NettyModule.class})
 @Singleton
 public interface MqttBeeComponent {
 
-    MqttBeeComponent INSTANCE = DaggerMqttBeeComponent.create();
+  MqttBeeComponent INSTANCE = DaggerMqttBeeComponent.create();
 
-    NettyBootstrap nettyBootstrap();
+  NettyBootstrap nettyBootstrap();
 
-    MqttChannelInitializerProvider channelInitializerProvider();
+  MqttChannelInitializerProvider channelInitializerProvider();
 
-    ChannelComponent.Builder channelComponentBuilder();
-
+  ChannelComponent.Builder channelComponentBuilder();
 }

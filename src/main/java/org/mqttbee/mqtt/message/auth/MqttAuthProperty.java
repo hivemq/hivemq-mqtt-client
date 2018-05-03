@@ -26,9 +26,8 @@ import org.mqttbee.mqtt.message.MqttProperty;
  */
 public interface MqttAuthProperty {
 
-    int AUTHENTICATION_METHOD = MqttProperty.AUTHENTICATION_METHOD;
-    int AUTHENTICATION_DATA = MqttProperty.AUTHENTICATION_DATA;
-    int REASON_STRING = MqttProperty.REASON_STRING;
-    int USER_PROPERTY = MqttProperty.USER_PROPERTY;
-
+  int AUTHENTICATION_METHOD = MqttProperty.AUTHENTICATION_METHOD;
+  int AUTHENTICATION_DATA = MqttProperty.AUTHENTICATION_DATA;
+  int REASON_STRING = MqttProperty.REASON_STRING;
+  int USER_PROPERTY = MqttProperty.USER_PROPERTY;
 }

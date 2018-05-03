@@ -17,31 +17,27 @@
 
 package org.mqttbee.api.mqtt;
 
+import java.util.Optional;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
 
-import java.util.Optional;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public interface MqttClientData {
 
-    @NotNull
-    Optional<MqttClientIdentifier> getClientIdentifier();
+  @NotNull
+  Optional<MqttClientIdentifier> getClientIdentifier();
 
-    @NotNull
-    String getServerHost();
+  @NotNull
+  String getServerHost();
 
-    int getServerPort();
+  int getServerPort();
 
-    boolean usesSSL();
+  boolean usesSSL();
 
-    @NotNull
-    MqttClientExecutorConfig getExecutorConfig();
+  @NotNull
+  MqttClientExecutorConfig getExecutorConfig();
 
-    boolean isConnecting();
+  boolean isConnecting();
 
-    boolean isConnected();
-
+  boolean isConnected();
 }

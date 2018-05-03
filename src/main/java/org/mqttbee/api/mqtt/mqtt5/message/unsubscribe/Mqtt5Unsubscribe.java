@@ -33,27 +33,25 @@ import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 @DoNotImplement
 public interface Mqtt5Unsubscribe extends Mqtt5Message {
 
-    @NotNull
-    static Mqtt5UnsubscribeBuilder build() {
-        return new Mqtt5UnsubscribeBuilder();
-    }
+  @NotNull
+  static Mqtt5UnsubscribeBuilder build() {
+    return new Mqtt5UnsubscribeBuilder();
+  }
 
-    /**
-     * @return the Topic Filters of this UNSUBSCRIBE packet. The list contains at least one Topic Filter.
-     */
-    @NotNull
-    ImmutableList<? extends MqttTopicFilter> getTopicFilters();
+  /**
+   * @return the Topic Filters of this UNSUBSCRIBE packet. The list contains at least one Topic
+   *     Filter.
+   */
+  @NotNull
+  ImmutableList<? extends MqttTopicFilter> getTopicFilters();
 
-    /**
-     * @return the optional user properties of this UNSUBSCRIBE packet.
-     */
-    @NotNull
-    Mqtt5UserProperties getUserProperties();
+  /** @return the optional user properties of this UNSUBSCRIBE packet. */
+  @NotNull
+  Mqtt5UserProperties getUserProperties();
 
-    @NotNull
-    @Override
-    default Mqtt5MessageType getType() {
-        return Mqtt5MessageType.UNSUBSCRIBE;
-    }
-
+  @NotNull
+  @Override
+  default Mqtt5MessageType getType() {
+    return Mqtt5MessageType.UNSUBSCRIBE;
+  }
 }

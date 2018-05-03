@@ -34,37 +34,35 @@ import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
 import org.mqttbee.rx.FlowableWithSingle;
 
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public interface Mqtt5Client extends MqttClient {
 
-    @NotNull
-    Single<Mqtt5ConnAck> connect(@NotNull Mqtt5Connect connect);
+  @NotNull
+  Single<Mqtt5ConnAck> connect(@NotNull Mqtt5Connect connect);
 
-    @NotNull
-    FlowableWithSingle<Mqtt5SubscribeResult, Mqtt5SubAck, Mqtt5Publish> subscribe(@NotNull Mqtt5Subscribe subscribe);
+  @NotNull
+  FlowableWithSingle<Mqtt5SubscribeResult, Mqtt5SubAck, Mqtt5Publish> subscribe(
+      @NotNull Mqtt5Subscribe subscribe);
 
-    @NotNull
-    Flowable<Mqtt5Publish> remainingPublishes();
+  @NotNull
+  Flowable<Mqtt5Publish> remainingPublishes();
 
-    @NotNull
-    Flowable<Mqtt5Publish> allPublishes();
+  @NotNull
+  Flowable<Mqtt5Publish> allPublishes();
 
-    @NotNull
-    Single<Mqtt5UnsubAck> unsubscribe(@NotNull Mqtt5Unsubscribe unsubscribe);
+  @NotNull
+  Single<Mqtt5UnsubAck> unsubscribe(@NotNull Mqtt5Unsubscribe unsubscribe);
 
-    @NotNull
-    Flowable<Mqtt5PublishResult> publish(@NotNull Flowable<Mqtt5Publish> publishFlowable);
+  @NotNull
+  Flowable<Mqtt5PublishResult> publish(@NotNull Flowable<Mqtt5Publish> publishFlowable);
 
-    @NotNull
-    Completable reauth();
+  @NotNull
+  Completable reauth();
 
-    @NotNull
-    Completable disconnect(@NotNull Mqtt5Disconnect disconnect);
+  @NotNull
+  Completable disconnect(@NotNull Mqtt5Disconnect disconnect);
 
-    @NotNull
-    @Override
-    Mqtt5ClientData getClientData();
-
+  @NotNull
+  @Override
+  Mqtt5ClientData getClientData();
 }

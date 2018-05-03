@@ -37,44 +37,39 @@ public abstract class MqttWrappedMessage< //
         M extends MqttWrappedMessage<M, W, P>, //
         W extends MqttMessageWrapper<W, M, P>, //
         P extends MqttMessageEncoderProvider<W>> //
-        implements Mqtt5Message {
+    implements Mqtt5Message {
 
-    final MqttWrappedMessageEncoderProvider<M, W, P> encoderProvider;
-    private MqttWrappedMessageEncoderApplier<M, W> encoderApplier;
+  final MqttWrappedMessageEncoderProvider<M, W, P> encoderProvider;
+  private MqttWrappedMessageEncoderApplier<M, W> encoderApplier;
 
-    private final MqttUserPropertiesImpl userProperties;
+  private final MqttUserPropertiesImpl userProperties;
 
-    protected MqttWrappedMessage(
-            @NotNull final MqttUserPropertiesImpl userProperties,
-            @Nullable final MqttWrappedMessageEncoderProvider<M, W, P> encoderProvider) {
+  protected MqttWrappedMessage(
+      @NotNull final MqttUserPropertiesImpl userProperties,
+      @Nullable final MqttWrappedMessageEncoderProvider<M, W, P> encoderProvider) {
 
-        this.encoderProvider = encoderProvider;
-        this.userProperties = userProperties;
+    this.encoderProvider = encoderProvider;
+    this.userProperties = userProperties;
+  }
+
+  /** @return the encoder for this wrapped MQTT message. */
+  @NotNull
+  public MqttWrappedMessageEncoder<M, W> getEncoder() {
+    if (encoderApplier == null) {
+      if (encoderProvider == null) {
+        throw new UnsupportedOperationException();
+      }
+      encoderApplier = encoderProvider.get();
     }
+    return encoderApplier.apply(getCodable());
+  }
 
-    /**
-     * @return the encoder for this wrapped MQTT message.
-     */
-    @NotNull
-    public MqttWrappedMessageEncoder<M, W> getEncoder() {
-        if (encoderApplier == null) {
-            if (encoderProvider == null) {
-                throw new UnsupportedOperationException();
-            }
-            encoderApplier = encoderProvider.get();
-        }
-        return encoderApplier.apply(getCodable());
-    }
+  @NotNull
+  public MqttUserPropertiesImpl getUserProperties() {
+    return userProperties;
+  }
 
-    @NotNull
-    public MqttUserPropertiesImpl getUserProperties() {
-        return userProperties;
-    }
-
-    /**
-     * @return the codable MQTT message.
-     */
-    @NotNull
-    protected abstract M getCodable();
-
+  /** @return the codable MQTT message. */
+  @NotNull
+  protected abstract M getCodable();
 }

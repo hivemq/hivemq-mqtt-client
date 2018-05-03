@@ -25,46 +25,43 @@ import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5RetainHandling;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
 
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class Mqtt3SubscriptionView implements Mqtt3Subscription {
 
-    @NotNull
-    public static MqttSubscription wrapped(
-            @NotNull final MqttTopicFilterImpl topicFilter, @NotNull final MqttQoS qos) {
+  @NotNull
+  public static MqttSubscription wrapped(
+      @NotNull final MqttTopicFilterImpl topicFilter, @NotNull final MqttQoS qos) {
 
-        return new MqttSubscription(topicFilter, qos, false, Mqtt5RetainHandling.SEND, false);
-    }
+    return new MqttSubscription(topicFilter, qos, false, Mqtt5RetainHandling.SEND, false);
+  }
 
-    @NotNull
-    public static Mqtt3SubscriptionView create(
-            @NotNull final MqttTopicFilterImpl topicFilter, @NotNull final MqttQoS qos) {
+  @NotNull
+  public static Mqtt3SubscriptionView create(
+      @NotNull final MqttTopicFilterImpl topicFilter, @NotNull final MqttQoS qos) {
 
-        return new Mqtt3SubscriptionView(wrapped(topicFilter, qos));
-    }
+    return new Mqtt3SubscriptionView(wrapped(topicFilter, qos));
+  }
 
-    private final MqttSubscription wrapped;
+  private final MqttSubscription wrapped;
 
-    Mqtt3SubscriptionView(@NotNull final MqttSubscription wrapped) {
-        this.wrapped = wrapped;
-    }
+  Mqtt3SubscriptionView(@NotNull final MqttSubscription wrapped) {
+    this.wrapped = wrapped;
+  }
 
-    @NotNull
-    @Override
-    public MqttTopicFilter getTopicFilter() {
-        return wrapped.getTopicFilter();
-    }
+  @NotNull
+  @Override
+  public MqttTopicFilter getTopicFilter() {
+    return wrapped.getTopicFilter();
+  }
 
-    @NotNull
-    @Override
-    public MqttQoS getQoS() {
-        return wrapped.getQoS();
-    }
+  @NotNull
+  @Override
+  public MqttQoS getQoS() {
+    return wrapped.getQoS();
+  }
 
-    @NotNull
-    public MqttSubscription getWrapped() {
-        return wrapped;
-    }
-
+  @NotNull
+  public MqttSubscription getWrapped() {
+    return wrapped;
+  }
 }

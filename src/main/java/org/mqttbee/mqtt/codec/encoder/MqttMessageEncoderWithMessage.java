@@ -32,32 +32,31 @@ import org.mqttbee.mqtt.message.MqttMessage;
  * @author Silvio Giebl
  */
 public abstract class MqttMessageEncoderWithMessage<M extends MqttMessage>
-        implements MqttMessageEncoder, MqttMessageEncoderApplier<M> {
+    implements MqttMessageEncoder, MqttMessageEncoderApplier<M> {
 
-    protected M message;
+  protected M message;
 
-    @NotNull
-    @Override
-    public MqttMessageEncoder apply(@NotNull final M message) {
-        this.message = message;
-        return this;
+  @NotNull
+  @Override
+  public MqttMessageEncoder apply(@NotNull final M message) {
+    this.message = message;
+    return this;
+  }
+
+  @Override
+  public abstract void encode(@NotNull ByteBuf out, @NotNull Channel channel);
+
+  @NotNull
+  @Override
+  public ByteBuf allocateBuffer(@NotNull final Channel channel) {
+    final int maximumPacketSize = MqttServerConnectionData.getMaximumPacketSize(channel);
+    final int encodedLength = encodedLength(maximumPacketSize);
+    if (encodedLength < 0) {
+      throw new MqttMaximumPacketSizeExceededException(message, maximumPacketSize);
     }
+    return channel.alloc().ioBuffer(encodedLength, encodedLength);
+  }
 
-    @Override
-    public abstract void encode(@NotNull ByteBuf out, @NotNull Channel channel);
-
-    @NotNull
-    @Override
-    public ByteBuf allocateBuffer(@NotNull final Channel channel) {
-        final int maximumPacketSize = MqttServerConnectionData.getMaximumPacketSize(channel);
-        final int encodedLength = encodedLength(maximumPacketSize);
-        if (encodedLength < 0) {
-            throw new MqttMaximumPacketSizeExceededException(message, maximumPacketSize);
-        }
-        return channel.alloc().ioBuffer(encodedLength, encodedLength);
-    }
-
-    @Override
-    public abstract int encodedLength(final int maxPacketSize);
-
+  @Override
+  public abstract int encodedLength(final int maxPacketSize);
 }

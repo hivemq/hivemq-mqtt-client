@@ -17,6 +17,7 @@
 
 package org.mqttbee.api.mqtt.mqtt5.message.connect.connack;
 
+import java.util.Optional;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
@@ -26,8 +27,6 @@ import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5EnhancedAuth;
 
-import java.util.Optional;
-
 /**
  * MQTT 5 CONNACK packet.
  *
@@ -36,77 +35,67 @@ import java.util.Optional;
 @DoNotImplement
 public interface Mqtt5ConnAck extends Mqtt5Message {
 
-    /**
-     * @return the reason code of this CONNACK packet.
-     */
-    @NotNull
-    Mqtt5ConnAckReasonCode getReasonCode();
+  /** @return the reason code of this CONNACK packet. */
+  @NotNull
+  Mqtt5ConnAckReasonCode getReasonCode();
 
-    /**
-     * @return whether the server has a session present.
-     */
-    boolean isSessionPresent();
+  /** @return whether the server has a session present. */
+  boolean isSessionPresent();
 
-    /**
-     * @return the optional session expiry interval set from the server. If absent, the session expiry interval from the
-     * CONNECT packet is used.
-     */
-    @NotNull
-    Optional<Long> getSessionExpiryInterval();
+  /**
+   * @return the optional session expiry interval set from the server. If absent, the session expiry
+   *     interval from the CONNECT packet is used.
+   */
+  @NotNull
+  Optional<Long> getSessionExpiryInterval();
 
-    /**
-     * @return the optional keep alive set from the server. If absent, the keep alive from the CONNECT packet is used.
-     */
-    @NotNull
-    Optional<Integer> getServerKeepAlive();
+  /**
+   * @return the optional keep alive set from the server. If absent, the keep alive from the CONNECT
+   *     packet is used.
+   */
+  @NotNull
+  Optional<Integer> getServerKeepAlive();
 
-    /**
-     * @return the optional client identifier assigned by the server. If absent, the client identifier from the CONNECT
-     * packet is used.
-     */
-    @NotNull
-    Optional<MqttClientIdentifier> getAssignedClientIdentifier();
+  /**
+   * @return the optional client identifier assigned by the server. If absent, the client identifier
+   *     from the CONNECT packet is used.
+   */
+  @NotNull
+  Optional<MqttClientIdentifier> getAssignedClientIdentifier();
 
-    /**
-     * @return the optional enhanced authentication and/or authorization related data of this CONNACK packet.
-     */
-    @NotNull
-    Optional<Mqtt5EnhancedAuth> getEnhancedAuth();
+  /**
+   * @return the optional enhanced authentication and/or authorization related data of this CONNACK
+   *     packet.
+   */
+  @NotNull
+  Optional<Mqtt5EnhancedAuth> getEnhancedAuth();
 
-    /**
-     * @return the restrictions set from the server.
-     */
-    @NotNull
-    Mqtt5ConnAckRestrictions getRestrictions();
+  /** @return the restrictions set from the server. */
+  @NotNull
+  Mqtt5ConnAckRestrictions getRestrictions();
 
-    /**
-     * @return the optional response information of this CONNACK packet to retrieve a response topic from.
-     */
-    @NotNull
-    Optional<MqttUTF8String> getResponseInformation();
+  /**
+   * @return the optional response information of this CONNACK packet to retrieve a response topic
+   *     from.
+   */
+  @NotNull
+  Optional<MqttUTF8String> getResponseInformation();
 
-    /**
-     * @return the optional server reference.
-     */
-    @NotNull
-    Optional<MqttUTF8String> getServerReference();
+  /** @return the optional server reference. */
+  @NotNull
+  Optional<MqttUTF8String> getServerReference();
 
-    /**
-     * @return the optional reason string of this CONNACK packet.
-     */
-    @NotNull
-    Optional<MqttUTF8String> getReasonString();
+  /** @return the optional reason string of this CONNACK packet. */
+  @NotNull
+  Optional<MqttUTF8String> getReasonString();
 
-    /**
-     * @return the optional user properties of this CONNACK packet.
-     */
-    @NotNull
-    Mqtt5UserProperties getUserProperties();
+  /** @return the optional user properties of this CONNACK packet. */
+  @NotNull
+  Mqtt5UserProperties getUserProperties();
 
-    @NotNull
-    @Override
-    default Mqtt5MessageType getType() {
-        return Mqtt5MessageType.CONNACK;
-    }
-
+  @NotNull
+  @Override
+  default Mqtt5MessageType getType() {
+    return Mqtt5MessageType.CONNACK;
+  }
 }

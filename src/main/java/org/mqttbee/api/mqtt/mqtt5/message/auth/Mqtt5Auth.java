@@ -17,14 +17,13 @@
 
 package org.mqttbee.api.mqtt.mqtt5.message.auth;
 
+import java.util.Optional;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
-
-import java.util.Optional;
 
 /**
  * MQTT 5 AUTH packet.
@@ -34,28 +33,21 @@ import java.util.Optional;
 @DoNotImplement
 public interface Mqtt5Auth extends Mqtt5Message, Mqtt5EnhancedAuth {
 
-    /**
-     * @return the reason code of this AUTH packet.
-     */
-    @NotNull
-    Mqtt5AuthReasonCode getReasonCode();
+  /** @return the reason code of this AUTH packet. */
+  @NotNull
+  Mqtt5AuthReasonCode getReasonCode();
 
-    /**
-     * @return the optional reason string of this AUTH packet.
-     */
-    @NotNull
-    Optional<MqttUTF8String> getReasonString();
+  /** @return the optional reason string of this AUTH packet. */
+  @NotNull
+  Optional<MqttUTF8String> getReasonString();
 
-    /**
-     * @return the optional user properties of this AUTH packet.
-     */
-    @NotNull
-    Mqtt5UserProperties getUserProperties();
+  /** @return the optional user properties of this AUTH packet. */
+  @NotNull
+  Mqtt5UserProperties getUserProperties();
 
-    @NotNull
-    @Override
-    default Mqtt5MessageType getType() {
-        return Mqtt5MessageType.AUTH;
-    }
-
+  @NotNull
+  @Override
+  default Mqtt5MessageType getType() {
+    return Mqtt5MessageType.AUTH;
+  }
 }

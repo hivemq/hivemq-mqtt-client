@@ -17,12 +17,12 @@
 
 package org.mqttbee.annotations;
 
+import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.RetentionPolicy.CLASS;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
-
-import static java.lang.annotation.ElementType.*;
-import static java.lang.annotation.RetentionPolicy.CLASS;
 
 /**
  * Documents that parameters, fields, variables and method return types must not be null.
@@ -32,5 +32,4 @@ import static java.lang.annotation.RetentionPolicy.CLASS;
 @Documented
 @Retention(CLASS)
 @Target({METHOD, FIELD, PARAMETER, LOCAL_VARIABLE})
-public @interface NotNull {
-}
+public @interface NotNull {}

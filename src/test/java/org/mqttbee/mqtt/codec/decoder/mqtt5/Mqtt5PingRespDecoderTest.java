@@ -17,6 +17,8 @@
 
 package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -27,97 +29,94 @@ import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.ping.Mqtt5PingResp;
 import org.mqttbee.mqtt.netty.ChannelAttributes;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 class Mqtt5PingRespDecoderTest extends AbstractMqtt5DecoderTest {
 
-    Mqtt5PingRespDecoderTest() {
-        super(code -> {
-            if (code == Mqtt5MessageType.PINGRESP.getCode()) {
-                return createPingRespDecoder();
-            }
-            return null;
+  Mqtt5PingRespDecoderTest() {
+    super(
+        code -> {
+          if (code == Mqtt5MessageType.PINGRESP.getCode()) {
+            return createPingRespDecoder();
+          }
+          return null;
         });
-    }
+  }
 
-    @Test
-    void decode_valid() {
-        final ByteBuf byteBuf = channel.alloc().buffer();
-        // fixed header
-        //   type, flags
-        byteBuf.writeByte(0b1101_0000);
-        //   remaining length
-        byteBuf.writeByte(0);
+  @Test
+  void decode_valid() {
+    final ByteBuf byteBuf = channel.alloc().buffer();
+    // fixed header
+    //   type, flags
+    byteBuf.writeByte(0b1101_0000);
+    //   remaining length
+    byteBuf.writeByte(0);
 
-        channel.writeInbound(byteBuf);
-        final Mqtt5PingResp pingResp = channel.readInbound();
+    channel.writeInbound(byteBuf);
+    final Mqtt5PingResp pingResp = channel.readInbound();
 
-        assertNotNull(pingResp);
-    }
+    assertNotNull(pingResp);
+  }
 
-    @Test
-    void decode_not_enough_bytes() {
-        final ByteBuf byteBuf = channel.alloc().buffer();
-        // fixed header
-        //   type, flags
-        byteBuf.writeByte(0b1101_0000);
+  @Test
+  void decode_not_enough_bytes() {
+    final ByteBuf byteBuf = channel.alloc().buffer();
+    // fixed header
+    //   type, flags
+    byteBuf.writeByte(0b1101_0000);
 
-        channel.writeInbound(byteBuf);
-        final Mqtt5PingResp pingResp = channel.readInbound();
+    channel.writeInbound(byteBuf);
+    final Mqtt5PingResp pingResp = channel.readInbound();
 
-        assertNull(pingResp);
+    assertNull(pingResp);
 
-        final Mqtt5Disconnect disconnect = channel.readOutbound();
+    final Mqtt5Disconnect disconnect = channel.readOutbound();
 
-        assertNull(disconnect);
-    }
+    assertNull(disconnect);
+  }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"false", "true"})
-    void decode_wrong_flags(final boolean sendReasonString) {
-        ChannelAttributes.sendReasonString(sendReasonString, channel);
+  @ParameterizedTest
+  @ValueSource(strings = {"false", "true"})
+  void decode_wrong_flags(final boolean sendReasonString) {
+    ChannelAttributes.sendReasonString(sendReasonString, channel);
 
-        final ByteBuf byteBuf = channel.alloc().buffer();
-        // fixed header
-        //   type, flags
-        byteBuf.writeByte(0b1101_0100);
-        //   remaining length
-        byteBuf.writeByte(0);
+    final ByteBuf byteBuf = channel.alloc().buffer();
+    // fixed header
+    //   type, flags
+    byteBuf.writeByte(0b1101_0100);
+    //   remaining length
+    byteBuf.writeByte(0);
 
-        channel.writeInbound(byteBuf);
+    channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
-    }
+    testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
+  }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"false", "true"})
-    void decode_remaining_length_not_0(final boolean sendReasonString) {
-        ChannelAttributes.sendReasonString(sendReasonString, channel);
+  @ParameterizedTest
+  @ValueSource(strings = {"false", "true"})
+  void decode_remaining_length_not_0(final boolean sendReasonString) {
+    ChannelAttributes.sendReasonString(sendReasonString, channel);
 
-        final ByteBuf byteBuf = channel.alloc().buffer();
-        // fixed header
-        //   type, flags
-        byteBuf.writeByte(0b1101_0000);
-        //   remaining length
-        byteBuf.writeByte(1);
-        byteBuf.writeByte(0);
+    final ByteBuf byteBuf = channel.alloc().buffer();
+    // fixed header
+    //   type, flags
+    byteBuf.writeByte(0b1101_0000);
+    //   remaining length
+    byteBuf.writeByte(1);
+    byteBuf.writeByte(0);
 
-        channel.writeInbound(byteBuf);
+    channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
-    }
+    testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
+  }
 
-    private void testDisconnect(final Mqtt5DisconnectReasonCode reasonCode, final boolean sendReasonString) {
-        final Mqtt5PingResp pingResp = channel.readInbound();
-        assertNull(pingResp);
+  private void testDisconnect(
+      final Mqtt5DisconnectReasonCode reasonCode, final boolean sendReasonString) {
+    final Mqtt5PingResp pingResp = channel.readInbound();
+    assertNull(pingResp);
 
-        final Mqtt5Disconnect disconnect = channel.readOutbound();
-        assertNotNull(disconnect);
-        assertEquals(reasonCode, disconnect.getReasonCode());
-        assertEquals(sendReasonString, disconnect.getReasonString().isPresent());
-    }
-
+    final Mqtt5Disconnect disconnect = channel.readOutbound();
+    assertNotNull(disconnect);
+    assertEquals(reasonCode, disconnect.getReasonCode());
+    assertEquals(sendReasonString, disconnect.getReasonString().isPresent());
+  }
 }
