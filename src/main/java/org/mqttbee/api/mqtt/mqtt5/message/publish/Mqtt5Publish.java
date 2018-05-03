@@ -67,6 +67,12 @@ public interface Mqtt5Publish extends Mqtt5Message, Mqtt5SubscribeResult {
     Optional<ByteBuffer> getPayload();
 
     /**
+     * @return the payload of this PUBLISH packet as byte array. Empty byte array if the payload is null.
+     */
+    @NotNull
+    byte[] getPayloadAsBytes();
+
+    /**
      * @return the QoS of this PUBLISH packet.
      */
     @NotNull
