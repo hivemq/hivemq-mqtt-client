@@ -20,29 +20,26 @@ package org.mqttbee.mqtt.handler.publish;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
 
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class MqttPublishWithFlow {
 
-    private final MqttPublish publish;
-    private final MqttIncomingAckFlow incomingAckFlow;
+  private final MqttPublish publish;
+  private final MqttIncomingAckFlow incomingAckFlow;
 
-    public MqttPublishWithFlow(
-            @NotNull final MqttPublish publish, @NotNull final MqttIncomingAckFlow incomingAckFlow) {
+  public MqttPublishWithFlow(
+      @NotNull final MqttPublish publish, @NotNull final MqttIncomingAckFlow incomingAckFlow) {
 
-        this.publish = publish;
-        this.incomingAckFlow = incomingAckFlow;
-    }
+    this.publish = publish;
+    this.incomingAckFlow = incomingAckFlow;
+  }
 
-    @NotNull
-    public MqttPublish getPublish() {
-        return publish;
-    }
+  @NotNull
+  public MqttPublish getPublish() {
+    return publish;
+  }
 
-    @NotNull
-    public MqttIncomingAckFlow getIncomingAckFlow() {
-        return incomingAckFlow;
-    }
-
+  @NotNull
+  public MqttIncomingAckFlow getIncomingAckFlow() {
+    return incomingAckFlow;
+  }
 }

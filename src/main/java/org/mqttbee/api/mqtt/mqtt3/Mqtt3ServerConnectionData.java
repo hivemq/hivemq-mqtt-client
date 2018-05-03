@@ -17,11 +17,8 @@
 
 package org.mqttbee.api.mqtt.mqtt3;
 
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public interface Mqtt3ServerConnectionData {
 
-    int getReceiveMaximum();
-
+  int getReceiveMaximum();
 }

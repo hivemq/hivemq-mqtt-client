@@ -26,9 +26,8 @@ import org.mqttbee.mqtt.message.MqttProperty;
  */
 public interface MqttDisconnectProperty {
 
-    int SESSION_EXPIRY_INTERVAL = MqttProperty.SESSION_EXPIRY_INTERVAL;
-    int SERVER_REFERENCE = MqttProperty.SERVER_REFERENCE;
-    int REASON_STRING = MqttProperty.REASON_STRING;
-    int USER_PROPERTY = MqttProperty.USER_PROPERTY;
-
+  int SESSION_EXPIRY_INTERVAL = MqttProperty.SESSION_EXPIRY_INTERVAL;
+  int SERVER_REFERENCE = MqttProperty.SERVER_REFERENCE;
+  int REASON_STRING = MqttProperty.REASON_STRING;
+  int USER_PROPERTY = MqttProperty.USER_PROPERTY;
 }

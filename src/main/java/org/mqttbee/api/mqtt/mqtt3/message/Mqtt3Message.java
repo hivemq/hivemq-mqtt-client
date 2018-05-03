@@ -26,10 +26,7 @@ import org.mqttbee.annotations.NotNull;
  */
 public interface Mqtt3Message {
 
-    /**
-     * @return the type of this MQTT message.
-     */
-    @NotNull
-    Mqtt3MessageType getType();
-
+  /** @return the type of this MQTT message. */
+  @NotNull
+  Mqtt3MessageType getType();
 }

@@ -39,70 +39,70 @@ import org.mqttbee.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeView;
 import org.mqttbee.mqtt5.Mqtt5ClientImpl;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class Mqtt3ClientView implements Mqtt3Client {
 
-    private final Mqtt5ClientImpl wrapped;
+  private final Mqtt5ClientImpl wrapped;
 
-    public Mqtt3ClientView(@NotNull final Mqtt5ClientImpl wrapped) {
-        this.wrapped = wrapped;
-    }
+  public Mqtt3ClientView(@NotNull final Mqtt5ClientImpl wrapped) {
+    this.wrapped = wrapped;
+  }
 
-    @NotNull
-    @Override
-    public Single<Mqtt3ConnAck> connect(@NotNull final Mqtt3Connect connect) {
-        final Mqtt3ConnectView connectView =
-                MustNotBeImplementedUtil.checkNotImplemented(connect, Mqtt3ConnectView.class);
-        return wrapped.connect(connectView.getWrapped()).map(Mqtt3ConnAckView::create);
-    }
+  @NotNull
+  @Override
+  public Single<Mqtt3ConnAck> connect(@NotNull final Mqtt3Connect connect) {
+    final Mqtt3ConnectView connectView =
+        MustNotBeImplementedUtil.checkNotImplemented(connect, Mqtt3ConnectView.class);
+    return wrapped.connect(connectView.getWrapped()).map(Mqtt3ConnAckView::create);
+  }
 
-    @NotNull
-    @Override
-    public Flowable<Mqtt3Publish> subscribe(@NotNull final Mqtt3Subscribe subscribe) {
-        final Mqtt3SubscribeView subscribeView =
-                MustNotBeImplementedUtil.checkNotImplemented(subscribe, Mqtt3SubscribeView.class);
+  @NotNull
+  @Override
+  public Flowable<Mqtt3Publish> subscribe(@NotNull final Mqtt3Subscribe subscribe) {
+    final Mqtt3SubscribeView subscribeView =
+        MustNotBeImplementedUtil.checkNotImplemented(subscribe, Mqtt3SubscribeView.class);
 
-        return wrapped.subscribe(subscribeView.getWrapped()).map(Mqtt3PublishView::create);
-    }
+    return wrapped.subscribe(subscribeView.getWrapped()).map(Mqtt3PublishView::create);
+  }
 
-    @NotNull
-    @Override
-    public Flowable<Mqtt3Publish> remainingPublishes() {
-        return wrapped.remainingPublishes().map(Mqtt3PublishView::create);
-    }
+  @NotNull
+  @Override
+  public Flowable<Mqtt3Publish> remainingPublishes() {
+    return wrapped.remainingPublishes().map(Mqtt3PublishView::create);
+  }
 
-    @NotNull
-    @Override
-    public Flowable<Mqtt3Publish> allPublishes() {
-        return wrapped.allPublishes().map(Mqtt3PublishView::create);
-    }
+  @NotNull
+  @Override
+  public Flowable<Mqtt3Publish> allPublishes() {
+    return wrapped.allPublishes().map(Mqtt3PublishView::create);
+  }
 
-    @NotNull
-    @Override
-    public Completable unsubscribe(@NotNull final Mqtt3Unsubscribe unsubscribe) {
-        final Mqtt3UnsubscribeView unsubscribeView =
-                MustNotBeImplementedUtil.checkNotImplemented(unsubscribe, Mqtt3UnsubscribeView.class);
-        return wrapped.unsubscribe(unsubscribeView.getWrapped()).toCompletable();
-    }
+  @NotNull
+  @Override
+  public Completable unsubscribe(@NotNull final Mqtt3Unsubscribe unsubscribe) {
+    final Mqtt3UnsubscribeView unsubscribeView =
+        MustNotBeImplementedUtil.checkNotImplemented(unsubscribe, Mqtt3UnsubscribeView.class);
+    return wrapped.unsubscribe(unsubscribeView.getWrapped()).toCompletable();
+  }
 
-    @NotNull
-    @Override
-    public Flowable<Mqtt3PublishResult> publish(@NotNull final Flowable<Mqtt3Publish> publishFlowable) {
-        return wrapped.publish(publishFlowable.map(Mqtt3PublishView::wrapped)).map(Mqtt3PublishResultView::create);
-    }
+  @NotNull
+  @Override
+  public Flowable<Mqtt3PublishResult> publish(
+      @NotNull final Flowable<Mqtt3Publish> publishFlowable) {
+    return wrapped
+        .publish(publishFlowable.map(Mqtt3PublishView::wrapped))
+        .map(Mqtt3PublishResultView::create);
+  }
 
-    @NotNull
-    @Override
-    public Completable disconnect() {
-        return wrapped.disconnect(Mqtt3DisconnectView.wrapped());
-    }
+  @NotNull
+  @Override
+  public Completable disconnect() {
+    return wrapped.disconnect(Mqtt3DisconnectView.wrapped());
+  }
 
-    @NotNull
-    @Override
-    public Mqtt3ClientData getClientData() {
-        return new Mqtt3ClientDataView(wrapped.getClientData());
-    }
-
+  @NotNull
+  @Override
+  public Mqtt3ClientData getClientData() {
+    return new Mqtt3ClientDataView(wrapped.getClientData());
+  }
 }

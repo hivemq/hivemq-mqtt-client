@@ -28,43 +28,39 @@ import org.mqttbee.mqtt.message.MqttCommonReasonCode;
  * @author Silvio Giebl
  */
 public enum Mqtt5AuthReasonCode implements Mqtt5ReasonCode {
+  SUCCESS(MqttCommonReasonCode.SUCCESS),
+  CONTINUE_AUTHENTICATION(0x18),
+  REAUTHENTICATE(0x19);
 
-    SUCCESS(MqttCommonReasonCode.SUCCESS),
-    CONTINUE_AUTHENTICATION(0x18),
-    REAUTHENTICATE(0x19);
+  private final int code;
 
-    private final int code;
+  Mqtt5AuthReasonCode(final int code) {
+    this.code = code;
+  }
 
-    Mqtt5AuthReasonCode(final int code) {
-        this.code = code;
+  Mqtt5AuthReasonCode(@NotNull final MqttCommonReasonCode reasonCode) {
+    this(reasonCode.getCode());
+  }
+
+  /** @return the byte code of this AUTH Reason Code. */
+  public int getCode() {
+    return code;
+  }
+
+  /**
+   * Returns the AUTH Reason Code belonging to the given byte code.
+   *
+   * @param code the byte code.
+   * @return the AUTH Reason Code belonging to the given byte code or null if the byte code is not a
+   *     valid AUTH Reason Code code.
+   */
+  @Nullable
+  public static Mqtt5AuthReasonCode fromCode(final int code) {
+    for (final Mqtt5AuthReasonCode reasonCode : values()) {
+      if (reasonCode.code == code) {
+        return reasonCode;
+      }
     }
-
-    Mqtt5AuthReasonCode(@NotNull final MqttCommonReasonCode reasonCode) {
-        this(reasonCode.getCode());
-    }
-
-    /**
-     * @return the byte code of this AUTH Reason Code.
-     */
-    public int getCode() {
-        return code;
-    }
-
-    /**
-     * Returns the AUTH Reason Code belonging to the given byte code.
-     *
-     * @param code the byte code.
-     * @return the AUTH Reason Code belonging to the given byte code or null if the byte code is not a valid AUTH Reason
-     * Code code.
-     */
-    @Nullable
-    public static Mqtt5AuthReasonCode fromCode(final int code) {
-        for (final Mqtt5AuthReasonCode reasonCode : values()) {
-            if (reasonCode.code == code) {
-                return reasonCode;
-            }
-        }
-        return null;
-    }
-
+    return null;
+  }
 }

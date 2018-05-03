@@ -31,31 +31,30 @@ import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRel;
  */
 public class Mqtt3PubRelEncoder extends MqttMessageEncoderWithMessage<MqttPubRel> {
 
-    public static final MqttPubRelEncoderProvider PROVIDER =
-            new MqttPubRelEncoderProvider(Mqtt3PubRelEncoder::new, Mqtt3PubCompEncoder.PROVIDER);
+  public static final MqttPubRelEncoderProvider PROVIDER =
+      new MqttPubRelEncoderProvider(Mqtt3PubRelEncoder::new, Mqtt3PubCompEncoder.PROVIDER);
 
-    private static final int FIXED_HEADER = (Mqtt3MessageType.PUBREL.getCode() << 4) | 0b0010;
-    private static final int FIXED_HEADER_LENGTH = 2;
-    private static final int ENCODED_LENGTH = FIXED_HEADER_LENGTH + 2;
+  private static final int FIXED_HEADER = (Mqtt3MessageType.PUBREL.getCode() << 4) | 0b0010;
+  private static final int FIXED_HEADER_LENGTH = 2;
+  private static final int ENCODED_LENGTH = FIXED_HEADER_LENGTH + 2;
 
-    @Override
-    public int encodedLength(final int maxPacketSize) {
-        return ENCODED_LENGTH;
-    }
+  @Override
+  public int encodedLength(final int maxPacketSize) {
+    return ENCODED_LENGTH;
+  }
 
-    @Override
-    public void encode(@NotNull final ByteBuf out, @NotNull final Channel channel) {
-        encodeFixedHeader(out);
-        encodeVariableHeader(out);
-    }
+  @Override
+  public void encode(@NotNull final ByteBuf out, @NotNull final Channel channel) {
+    encodeFixedHeader(out);
+    encodeVariableHeader(out);
+  }
 
-    private void encodeFixedHeader(@NotNull final ByteBuf out) {
-        out.writeByte(FIXED_HEADER);
-        out.writeByte(FIXED_HEADER_LENGTH);
-    }
+  private void encodeFixedHeader(@NotNull final ByteBuf out) {
+    out.writeByte(FIXED_HEADER);
+    out.writeByte(FIXED_HEADER_LENGTH);
+  }
 
-    private void encodeVariableHeader(@NotNull final ByteBuf out) {
-        out.writeShort(message.getPacketIdentifier());
-    }
-
+  private void encodeVariableHeader(@NotNull final ByteBuf out) {
+    out.writeShort(message.getPacketIdentifier());
+  }
 }

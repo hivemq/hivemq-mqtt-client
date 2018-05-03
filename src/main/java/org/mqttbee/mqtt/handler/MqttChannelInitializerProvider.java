@@ -18,13 +18,12 @@
 package org.mqttbee.mqtt.handler;
 
 import io.reactivex.SingleEmitter;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
 /**
  * Provider for the channel initializer.
@@ -34,27 +33,26 @@ import javax.inject.Singleton;
 @Singleton
 public class MqttChannelInitializerProvider {
 
-    @Inject
-    MqttChannelInitializerProvider() {
+  @Inject
+  MqttChannelInitializerProvider() {}
+
+  /**
+   * Returns the appropriate channel initializer for the given data.
+   *
+   * @param connect the CONNECT message.
+   * @param connAckEmitter the emitter for the CONNACK message.
+   * @param clientData the data of the client.
+   * @return the appropriate channel initializer.
+   */
+  public MqttChannelInitializer get(
+      @NotNull final MqttConnect connect,
+      @NotNull final SingleEmitter<Mqtt5ConnAck> connAckEmitter,
+      @NotNull final MqttClientData clientData) {
+
+    if (clientData.usesSSL()) {
+      throw new UnsupportedOperationException(); // TODO
+    } else {
+      return new MqttChannelInitializer(connect, connAckEmitter, clientData);
     }
-
-    /**
-     * Returns the appropriate channel initializer for the given data.
-     *
-     * @param connect        the CONNECT message.
-     * @param connAckEmitter the emitter for the CONNACK message.
-     * @param clientData     the data of the client.
-     * @return the appropriate channel initializer.
-     */
-    public MqttChannelInitializer get(
-            @NotNull final MqttConnect connect, @NotNull final SingleEmitter<Mqtt5ConnAck> connAckEmitter,
-            @NotNull final MqttClientData clientData) {
-
-        if (clientData.usesSSL()) {
-            throw new UnsupportedOperationException(); // TODO
-        } else {
-            return new MqttChannelInitializer(connect, connAckEmitter, clientData);
-        }
-    }
-
+  }
 }

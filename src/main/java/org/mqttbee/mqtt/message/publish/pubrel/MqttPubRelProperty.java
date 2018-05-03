@@ -26,7 +26,6 @@ import org.mqttbee.mqtt.message.MqttProperty;
  */
 public interface MqttPubRelProperty {
 
-    int REASON_STRING = MqttProperty.REASON_STRING;
-    int USER_PROPERTY = MqttProperty.USER_PROPERTY;
-
+  int REASON_STRING = MqttProperty.REASON_STRING;
+  int USER_PROPERTY = MqttProperty.USER_PROPERTY;
 }

@@ -17,6 +17,12 @@
 
 package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
+import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.*;
+import static org.mqttbee.mqtt.message.disconnect.MqttDisconnect.DEFAULT_REASON_CODE;
+import static org.mqttbee.mqtt.message.disconnect.MqttDisconnect.SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
+import static org.mqttbee.mqtt.message.disconnect.MqttDisconnectProperty.SERVER_REFERENCE;
+import static org.mqttbee.mqtt.message.disconnect.MqttDisconnectProperty.SESSION_EXPIRY_INTERVAL;
+
 import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
@@ -25,43 +31,40 @@ import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageWithUserPropertiesEncode
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
 
-import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.*;
-import static org.mqttbee.mqtt.message.disconnect.MqttDisconnect.DEFAULT_REASON_CODE;
-import static org.mqttbee.mqtt.message.disconnect.MqttDisconnect.SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
-import static org.mqttbee.mqtt.message.disconnect.MqttDisconnectProperty.SERVER_REFERENCE;
-import static org.mqttbee.mqtt.message.disconnect.MqttDisconnectProperty.SESSION_EXPIRY_INTERVAL;
+/** @author Silvio Giebl */
+public class Mqtt5DisconnectEncoder
+    extends Mqtt5MessageWithOmissibleReasonCodeEncoder<
+        MqttDisconnect, Mqtt5DisconnectReasonCode, MqttMessageEncoderProvider<MqttDisconnect>> {
 
-/**
- * @author Silvio Giebl
- */
-public class Mqtt5DisconnectEncoder extends
-        Mqtt5MessageWithOmissibleReasonCodeEncoder<MqttDisconnect, Mqtt5DisconnectReasonCode, MqttMessageEncoderProvider<MqttDisconnect>> {
+  public static final MqttMessageEncoderProvider<MqttDisconnect> PROVIDER =
+      Mqtt5DisconnectEncoder::new;
 
-    public static final MqttMessageEncoderProvider<MqttDisconnect> PROVIDER = Mqtt5DisconnectEncoder::new;
+  private static final int FIXED_HEADER = Mqtt5MessageType.DISCONNECT.getCode() << 4;
 
-    private static final int FIXED_HEADER = Mqtt5MessageType.DISCONNECT.getCode() << 4;
+  @Override
+  protected int getFixedHeader() {
+    return FIXED_HEADER;
+  }
 
-    @Override
-    protected int getFixedHeader() {
-        return FIXED_HEADER;
-    }
+  @Override
+  protected Mqtt5DisconnectReasonCode getDefaultReasonCode() {
+    return DEFAULT_REASON_CODE;
+  }
 
-    @Override
-    protected Mqtt5DisconnectReasonCode getDefaultReasonCode() {
-        return DEFAULT_REASON_CODE;
-    }
+  @Override
+  int additionalPropertyLength() {
+    return intPropertyEncodedLength(
+            message.getRawSessionExpiryInterval(), SESSION_EXPIRY_INTERVAL_FROM_CONNECT)
+        + nullablePropertyEncodedLength(message.getRawServerReference());
+  }
 
-    @Override
-    int additionalPropertyLength() {
-        return intPropertyEncodedLength(message.getRawSessionExpiryInterval(), SESSION_EXPIRY_INTERVAL_FROM_CONNECT) +
-                nullablePropertyEncodedLength(message.getRawServerReference());
-    }
-
-    @Override
-    void encodeAdditionalProperties(@NotNull final ByteBuf out) {
-        encodeIntProperty(SESSION_EXPIRY_INTERVAL, message.getRawSessionExpiryInterval(),
-                SESSION_EXPIRY_INTERVAL_FROM_CONNECT, out);
-        encodeNullableProperty(SERVER_REFERENCE, message.getRawServerReference(), out);
-    }
-
+  @Override
+  void encodeAdditionalProperties(@NotNull final ByteBuf out) {
+    encodeIntProperty(
+        SESSION_EXPIRY_INTERVAL,
+        message.getRawSessionExpiryInterval(),
+        SESSION_EXPIRY_INTERVAL_FROM_CONNECT,
+        out);
+    encodeNullableProperty(SERVER_REFERENCE, message.getRawServerReference(), out);
+  }
 }

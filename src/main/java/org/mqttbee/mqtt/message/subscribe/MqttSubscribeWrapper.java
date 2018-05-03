@@ -17,38 +17,37 @@
 
 package org.mqttbee.mqtt.message.subscribe;
 
+import javax.annotation.concurrent.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
 import org.mqttbee.mqtt.message.MqttMessageWrapper.MqttMessageWrapperWithId;
 
-import javax.annotation.concurrent.Immutable;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @Immutable
-public class MqttSubscribeWrapper extends
-        MqttMessageWrapperWithId<MqttSubscribeWrapper, MqttSubscribe, MqttMessageEncoderProvider<MqttSubscribeWrapper>> {
+public class MqttSubscribeWrapper
+    extends MqttMessageWrapperWithId<
+        MqttSubscribeWrapper, MqttSubscribe, MqttMessageEncoderProvider<MqttSubscribeWrapper>> {
 
-    public static final int DEFAULT_NO_SUBSCRIPTION_IDENTIFIER = -1;
+  public static final int DEFAULT_NO_SUBSCRIPTION_IDENTIFIER = -1;
 
-    private final int subscriptionIdentifier;
+  private final int subscriptionIdentifier;
 
-    MqttSubscribeWrapper(
-            @NotNull final MqttSubscribe subscribe, final int packetIdentifier, final int subscriptionIdentifier) {
+  MqttSubscribeWrapper(
+      @NotNull final MqttSubscribe subscribe,
+      final int packetIdentifier,
+      final int subscriptionIdentifier) {
 
-        super(subscribe, packetIdentifier);
-        this.subscriptionIdentifier = subscriptionIdentifier;
-    }
+    super(subscribe, packetIdentifier);
+    this.subscriptionIdentifier = subscriptionIdentifier;
+  }
 
-    public int getSubscriptionIdentifier() {
-        return subscriptionIdentifier;
-    }
+  public int getSubscriptionIdentifier() {
+    return subscriptionIdentifier;
+  }
 
-    @NotNull
-    @Override
-    protected MqttSubscribeWrapper getCodable() {
-        return this;
-    }
-
+  @NotNull
+  @Override
+  protected MqttSubscribeWrapper getCodable() {
+    return this;
+  }
 }

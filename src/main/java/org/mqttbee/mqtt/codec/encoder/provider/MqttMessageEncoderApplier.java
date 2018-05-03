@@ -29,13 +29,12 @@ import org.mqttbee.mqtt.message.MqttMessage;
  */
 public interface MqttMessageEncoderApplier<M extends MqttMessage> {
 
-    /**
-     * Returns a encoder for a MQTT message that is applied to the given MQTT message.
-     *
-     * @param message the MQTT message.
-     * @return the encoder for the MQTT message encoder.
-     */
-    @NotNull
-    MqttMessageEncoder apply(@NotNull M message);
-
+  /**
+   * Returns a encoder for a MQTT message that is applied to the given MQTT message.
+   *
+   * @param message the MQTT message.
+   * @return the encoder for the MQTT message encoder.
+   */
+  @NotNull
+  MqttMessageEncoder apply(@NotNull M message);
 }

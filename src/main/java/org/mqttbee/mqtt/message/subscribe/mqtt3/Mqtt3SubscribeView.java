@@ -18,6 +18,7 @@
 package org.mqttbee.mqtt.message.subscribe.mqtt3;
 
 import com.google.common.collect.ImmutableList;
+import javax.annotation.concurrent.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscription;
@@ -26,53 +27,48 @@ import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
 
-import javax.annotation.concurrent.Immutable;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @Immutable
 public class Mqtt3SubscribeView implements Mqtt3Subscribe {
 
-    public static MqttSubscribe wrapped(
-            @NotNull final ImmutableList<MqttSubscription> subscriptions) {
+  public static MqttSubscribe wrapped(
+      @NotNull final ImmutableList<MqttSubscription> subscriptions) {
 
-        return new MqttSubscribe(subscriptions, MqttUserPropertiesImpl.NO_USER_PROPERTIES,
-                Mqtt3SubscribeEncoder.PROVIDER);
+    return new MqttSubscribe(
+        subscriptions, MqttUserPropertiesImpl.NO_USER_PROPERTIES, Mqtt3SubscribeEncoder.PROVIDER);
+  }
+
+  private static ImmutableList<Mqtt3SubscriptionView> wrapSubscriptions(
+      @NotNull final ImmutableList<MqttSubscription> subscriptions) {
+
+    final ImmutableList.Builder<Mqtt3SubscriptionView> builder =
+        ImmutableList.builderWithExpectedSize(subscriptions.size());
+    for (int i = 0; i < subscriptions.size(); i++) {
+      builder.add(new Mqtt3SubscriptionView(subscriptions.get(i)));
     }
+    return builder.build();
+  }
 
-    private static ImmutableList<Mqtt3SubscriptionView> wrapSubscriptions(
-            @NotNull final ImmutableList<MqttSubscription> subscriptions) {
+  public static Mqtt3SubscribeView create(
+      @NotNull final ImmutableList<MqttSubscription> subscriptions) {
 
-        final ImmutableList.Builder<Mqtt3SubscriptionView> builder =
-                ImmutableList.builderWithExpectedSize(subscriptions.size());
-        for (int i = 0; i < subscriptions.size(); i++) {
-            builder.add(new Mqtt3SubscriptionView(subscriptions.get(i)));
-        }
-        return builder.build();
-    }
+    return new Mqtt3SubscribeView((wrapped(subscriptions)));
+  }
 
-    public static Mqtt3SubscribeView create(
-            @NotNull final ImmutableList<MqttSubscription> subscriptions) {
+  private final MqttSubscribe wrapped;
 
-        return new Mqtt3SubscribeView((wrapped(subscriptions)));
-    }
+  private Mqtt3SubscribeView(@NotNull final MqttSubscribe wrapped) {
+    this.wrapped = wrapped;
+  }
 
-    private final MqttSubscribe wrapped;
+  @NotNull
+  @Override
+  public ImmutableList<? extends Mqtt3Subscription> getSubscriptions() {
+    return wrapSubscriptions(wrapped.getSubscriptions());
+  }
 
-    private Mqtt3SubscribeView(@NotNull final MqttSubscribe wrapped) {
-        this.wrapped = wrapped;
-    }
-
-    @NotNull
-    @Override
-    public ImmutableList<? extends Mqtt3Subscription> getSubscriptions() {
-        return wrapSubscriptions(wrapped.getSubscriptions());
-    }
-
-    @NotNull
-    public MqttSubscribe getWrapped() {
-        return wrapped;
-    }
-
+  @NotNull
+  public MqttSubscribe getWrapped() {
+    return wrapped;
+  }
 }

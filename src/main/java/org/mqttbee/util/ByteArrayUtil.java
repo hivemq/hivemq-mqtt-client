@@ -19,51 +19,51 @@ package org.mqttbee.util;
 
 import org.mqttbee.annotations.NotNull;
 
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class ByteArrayUtil {
 
-    private ByteArrayUtil() {
+  private ByteArrayUtil() {}
+
+  public static boolean equals(
+      @NotNull final byte[] array1,
+      final int start1,
+      final int end1,
+      @NotNull final byte[] array2,
+      final int start2,
+      final int end2) {
+
+    if (array1 == array2) {
+      return true;
     }
 
-    public static boolean equals(
-            @NotNull final byte[] array1, final int start1, final int end1, @NotNull final byte[] array2,
-            final int start2, final int end2) {
-
-        if (array1 == array2) {
-            return true;
-        }
-
-        final int length1 = end1 - start1;
-        final int length2 = end2 - start2;
-        if (length1 != length2) {
-            return false;
-        }
-
-        for (int i1 = start1, i2 = start2; i1 < end1; i1++, i2++) {
-            if (array1[i1] != array2[i2]) {
-                return false;
-            }
-        }
-        return true;
+    final int length1 = end1 - start1;
+    final int length2 = end2 - start2;
+    if (length1 != length2) {
+      return false;
     }
 
-    public static int hashCode(@NotNull final byte[] array, final int start, final int end) {
-        int result = 1;
-        for (int i = start; i < end; i++) {
-            result = 31 * result + array[i];
-        }
-        return result;
+    for (int i1 = start1, i2 = start2; i1 < end1; i1++, i2++) {
+      if (array1[i1] != array2[i2]) {
+        return false;
+      }
     }
+    return true;
+  }
 
-    public static int indexOf(@NotNull final byte[] array, final int start, final byte search) {
-        for (int i = start; i < array.length; i++) {
-            if (array[i] == search) {
-                return i;
-            }
-        }
-        return -1;
+  public static int hashCode(@NotNull final byte[] array, final int start, final int end) {
+    int result = 1;
+    for (int i = start; i < end; i++) {
+      result = 31 * result + array[i];
     }
+    return result;
+  }
 
+  public static int indexOf(@NotNull final byte[] array, final int start, final byte search) {
+    for (int i = start; i < array.length; i++) {
+      if (array[i] == search) {
+        return i;
+      }
+    }
+    return -1;
+  }
 }

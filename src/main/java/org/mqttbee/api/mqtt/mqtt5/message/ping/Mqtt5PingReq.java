@@ -30,10 +30,9 @@ import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 @DoNotImplement
 public interface Mqtt5PingReq extends Mqtt5Message {
 
-    @NotNull
-    @Override
-    default Mqtt5MessageType getType() {
-        return Mqtt5MessageType.PINGREQ;
-    }
-
+  @NotNull
+  @Override
+  default Mqtt5MessageType getType() {
+    return Mqtt5MessageType.PINGREQ;
+  }
 }

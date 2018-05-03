@@ -19,17 +19,14 @@ package org.mqttbee.api.mqtt;
 
 import org.mqttbee.annotations.NotNull;
 
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public interface MqttClient {
 
-    @NotNull
-    static MqttClientBuilder builder() {
-        return new MqttClientBuilder();
-    }
+  @NotNull
+  static MqttClientBuilder builder() {
+    return new MqttClientBuilder();
+  }
 
-    @NotNull
-    MqttClientData getClientData();
-
+  @NotNull
+  MqttClientData getClientData();
 }

@@ -52,7 +52,11 @@ but they should describe the changes clearly.
 
 ## Code style guidelines
 
-* Please import the code style settings found in the codeStyle folder. 
+* The project uses the Google code style guidelines
+	* The Gradle build will check for conformity, and fail if the code is not formatted correctly
+	* Use `./gradlew spotlessApply` to format your source code using the plugin
+	* If using IntelliJ for development, we strongly recommend installing the [google-java-format](https://plugins.jetbrains.com/plugin/8527-google-java-format)
+   plugin. See also the section on IntelliJ on [this page](https://github.com/google/google-java-format).
 * The project uses its own @NotNull and @Nullable annotations, 
 every non-primitive parameter should be annotated with one of them.
 * Optional will only be used in the public API.

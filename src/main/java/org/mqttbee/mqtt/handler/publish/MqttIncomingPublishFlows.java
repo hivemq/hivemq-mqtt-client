@@ -18,12 +18,15 @@
 package org.mqttbee.mqtt.handler.publish;
 
 import com.google.common.collect.ImmutableList;
+import javax.annotation.concurrent.NotThreadSafe;
+import javax.inject.Inject;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAckReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAckReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
+import org.mqttbee.mqtt.ioc.ChannelScope;
 import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribeWrapper;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
@@ -31,130 +34,129 @@ import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAck;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribeWrapper;
 import org.mqttbee.mqtt.message.unsubscribe.unsuback.MqttUnsubAck;
 import org.mqttbee.mqtt.message.unsubscribe.unsuback.mqtt3.Mqtt3UnsubAckView;
-import org.mqttbee.mqtt.ioc.ChannelScope;
 import org.mqttbee.util.collections.ScNodeList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.concurrent.NotThreadSafe;
-import javax.inject.Inject;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @ChannelScope
 @NotThreadSafe
 public class MqttIncomingPublishFlows {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MqttIncomingPublishFlows.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(MqttIncomingPublishFlows.class);
 
-    @NotNull
-    private final MqttSubscriptionFlows subscriptionFlows;
-    @NotNull
-    private final ScNodeList<MqttGlobalIncomingPublishFlow>[] globalFlows;
+  @NotNull private final MqttSubscriptionFlows subscriptionFlows;
+  @NotNull private final ScNodeList<MqttGlobalIncomingPublishFlow>[] globalFlows;
 
-    @Inject
-    @SuppressWarnings("unchecked")
-    MqttIncomingPublishFlows(@NotNull final MqttSubscriptionFlows subscriptionFlows) {
-        this.subscriptionFlows = subscriptionFlows;
-        globalFlows = new ScNodeList[MqttGlobalIncomingPublishFlow.TYPE_COUNT];
+  @Inject
+  @SuppressWarnings("unchecked")
+  MqttIncomingPublishFlows(@NotNull final MqttSubscriptionFlows subscriptionFlows) {
+    this.subscriptionFlows = subscriptionFlows;
+    globalFlows = new ScNodeList[MqttGlobalIncomingPublishFlow.TYPE_COUNT];
+  }
+
+  public void subscribe(
+      @NotNull final MqttSubscribeWrapper subscribe,
+      @NotNull final MqttSubAck subAck,
+      @NotNull final MqttSubscriptionFlow flow) {
+
+    final ImmutableList<MqttSubscription> subscriptions = subscribe.getWrapped().getSubscriptions();
+    final ImmutableList<Mqtt5SubAckReasonCode> reasonCodes = subAck.getReasonCodes();
+    for (int i = 0; i < subscriptions.size(); i++) {
+      if (!reasonCodes.get(i).isError()) {
+        subscribe(subscriptions.get(i).getTopicFilter(), flow);
+      }
     }
+  }
 
-    public void subscribe(
-            @NotNull final MqttSubscribeWrapper subscribe, @NotNull final MqttSubAck subAck,
-            @NotNull final MqttSubscriptionFlow flow) {
+  void subscribe(
+      @NotNull final MqttTopicFilterImpl topicFilter, @NotNull final MqttSubscriptionFlow flow) {
+    subscriptionFlows.subscribe(topicFilter, flow);
+  }
 
-        final ImmutableList<MqttSubscription> subscriptions = subscribe.getWrapped().getSubscriptions();
-        final ImmutableList<Mqtt5SubAckReasonCode> reasonCodes = subAck.getReasonCodes();
-        for (int i = 0; i < subscriptions.size(); i++) {
-            if (!reasonCodes.get(i).isError()) {
-                subscribe(subscriptions.get(i).getTopicFilter(), flow);
-            }
-        }
+  public void unsubscribe(
+      @NotNull final MqttUnsubscribeWrapper unsubscribe, @NotNull final MqttUnsubAck unsubAck) {
+    final ImmutableList<MqttTopicFilterImpl> topicFilters =
+        unsubscribe.getWrapped().getTopicFilters();
+    final ImmutableList<Mqtt5UnsubAckReasonCode> reasonCodes = unsubAck.getReasonCodes();
+    final boolean areAllSuccess = reasonCodes == Mqtt3UnsubAckView.REASON_CODES_ALL_SUCCESS;
+    for (int i = 0; i < topicFilters.size(); i++) {
+      if (areAllSuccess || !reasonCodes.get(i).isError()) {
+        unsubscribe(topicFilters.get(i));
+      }
     }
+  }
 
-    void subscribe(@NotNull final MqttTopicFilterImpl topicFilter, @NotNull final MqttSubscriptionFlow flow) {
-        subscriptionFlows.subscribe(topicFilter, flow);
+  void unsubscribe(@NotNull final MqttTopicFilterImpl topicFilter) {
+    subscriptionFlows.unsubscribe(topicFilter, null);
+  }
+
+  public void cancel(@NotNull final MqttSubscriptionFlow flow) {
+    subscriptionFlows.cancel(flow);
+  }
+
+  @NotNull
+  public ScNodeList<MqttIncomingPublishFlow> findMatching(
+      @NotNull final MqttPublishWrapper publish) {
+    final ScNodeList<MqttIncomingPublishFlow> matchingFlows = new ScNodeList<>();
+    findMatching(publish, matchingFlows);
+    return matchingFlows;
+  }
+
+  void findMatching(
+      @NotNull final MqttPublishWrapper publish,
+      final ScNodeList<MqttIncomingPublishFlow> matchingFlows) {
+
+    final MqttTopicImpl topic = publish.getWrapped().getTopic();
+    if (subscriptionFlows.findMatching(topic, matchingFlows)) {
+      addAndReference(
+          matchingFlows, globalFlows[MqttGlobalIncomingPublishFlow.TYPE_ALL_SUBSCRIPTIONS]);
     }
-
-    public void unsubscribe(@NotNull final MqttUnsubscribeWrapper unsubscribe, @NotNull final MqttUnsubAck unsubAck) {
-        final ImmutableList<MqttTopicFilterImpl> topicFilters = unsubscribe.getWrapped().getTopicFilters();
-        final ImmutableList<Mqtt5UnsubAckReasonCode> reasonCodes = unsubAck.getReasonCodes();
-        final boolean areAllSuccess = reasonCodes == Mqtt3UnsubAckView.REASON_CODES_ALL_SUCCESS;
-        for (int i = 0; i < topicFilters.size(); i++) {
-            if (areAllSuccess || !reasonCodes.get(i).isError()) {
-                unsubscribe(topicFilters.get(i));
-            }
-        }
+    addAndReference(matchingFlows, globalFlows[MqttGlobalIncomingPublishFlow.TYPE_ALL_PUBLISHES]);
+    if (matchingFlows.isEmpty()) {
+      addAndReference(
+          matchingFlows, globalFlows[MqttGlobalIncomingPublishFlow.TYPE_REMAINING_PUBLISHES]);
     }
-
-    void unsubscribe(@NotNull final MqttTopicFilterImpl topicFilter) {
-        subscriptionFlows.unsubscribe(topicFilter, null);
+    if (matchingFlows.isEmpty()) {
+      LOGGER.warn("No subscription flow registered for topic {}. PUBLISH will be ignored", topic);
     }
+  }
 
-    public void cancel(@NotNull final MqttSubscriptionFlow flow) {
-        subscriptionFlows.cancel(flow);
+  public void subscribeGlobal(@NotNull final MqttGlobalIncomingPublishFlow flow) {
+    final int type = flow.getType();
+    ScNodeList<MqttGlobalIncomingPublishFlow> globalFlow = globalFlows[type];
+    if (globalFlow == null) {
+      globalFlow = new ScNodeList<>();
+      globalFlows[type] = globalFlow;
     }
+    flow.setHandle(globalFlow.add(flow));
+  }
 
-    @NotNull
-    public ScNodeList<MqttIncomingPublishFlow> findMatching(@NotNull final MqttPublishWrapper publish) {
-        final ScNodeList<MqttIncomingPublishFlow> matchingFlows = new ScNodeList<>();
-        findMatching(publish, matchingFlows);
-        return matchingFlows;
+  public void cancelGlobal(@NotNull final MqttGlobalIncomingPublishFlow flow) {
+    flow.getHandle().remove();
+    final int type = flow.getType();
+    final ScNodeList<MqttGlobalIncomingPublishFlow> globalFlow = globalFlows[type];
+    if (globalFlow.isEmpty()) {
+      globalFlows[type] = null;
     }
+  }
 
-    void findMatching(
-            @NotNull final MqttPublishWrapper publish, final ScNodeList<MqttIncomingPublishFlow> matchingFlows) {
+  static void addAndReference(
+      @NotNull final ScNodeList<MqttIncomingPublishFlow> target,
+      @NotNull final MqttIncomingPublishFlow flow) {
 
-        final MqttTopicImpl topic = publish.getWrapped().getTopic();
-        if (subscriptionFlows.findMatching(topic, matchingFlows)) {
-            addAndReference(matchingFlows, globalFlows[MqttGlobalIncomingPublishFlow.TYPE_ALL_SUBSCRIPTIONS]);
-        }
-        addAndReference(matchingFlows, globalFlows[MqttGlobalIncomingPublishFlow.TYPE_ALL_PUBLISHES]);
-        if (matchingFlows.isEmpty()) {
-            addAndReference(matchingFlows, globalFlows[MqttGlobalIncomingPublishFlow.TYPE_REMAINING_PUBLISHES]);
-        }
-        if (matchingFlows.isEmpty()) {
-            LOGGER.warn("No subscription flow registered for topic {}. PUBLISH will be ignored", topic);
-        }
+    flow.reference();
+    target.add(flow);
+  }
+
+  private static void addAndReference(
+      @NotNull final ScNodeList<MqttIncomingPublishFlow> target,
+      @Nullable final ScNodeList<? extends MqttIncomingPublishFlow> source) {
+
+    if (source != null) {
+      for (final MqttIncomingPublishFlow flow : source) {
+        addAndReference(target, flow);
+      }
     }
-
-    public void subscribeGlobal(@NotNull final MqttGlobalIncomingPublishFlow flow) {
-        final int type = flow.getType();
-        ScNodeList<MqttGlobalIncomingPublishFlow> globalFlow = globalFlows[type];
-        if (globalFlow == null) {
-            globalFlow = new ScNodeList<>();
-            globalFlows[type] = globalFlow;
-        }
-        flow.setHandle(globalFlow.add(flow));
-    }
-
-    public void cancelGlobal(@NotNull final MqttGlobalIncomingPublishFlow flow) {
-        flow.getHandle().remove();
-        final int type = flow.getType();
-        final ScNodeList<MqttGlobalIncomingPublishFlow> globalFlow = globalFlows[type];
-        if (globalFlow.isEmpty()) {
-            globalFlows[type] = null;
-        }
-    }
-
-
-    static void addAndReference(
-            @NotNull final ScNodeList<MqttIncomingPublishFlow> target, @NotNull final MqttIncomingPublishFlow flow) {
-
-        flow.reference();
-        target.add(flow);
-    }
-
-    private static void addAndReference(
-            @NotNull final ScNodeList<MqttIncomingPublishFlow> target,
-            @Nullable final ScNodeList<? extends MqttIncomingPublishFlow> source) {
-
-        if (source != null) {
-            for (final MqttIncomingPublishFlow flow : source) {
-                addAndReference(target, flow);
-            }
-        }
-    }
-
+  }
 }

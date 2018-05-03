@@ -17,6 +17,10 @@
 
 package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
+import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.*;
+import static org.mqttbee.mqtt.message.auth.MqttAuthProperty.AUTHENTICATION_DATA;
+import static org.mqttbee.mqtt.message.auth.MqttAuthProperty.AUTHENTICATION_METHOD;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
@@ -28,61 +32,54 @@ import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider.Thread
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.auth.MqttAuth;
 
-import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.*;
-import static org.mqttbee.mqtt.message.auth.MqttAuthProperty.AUTHENTICATION_DATA;
-import static org.mqttbee.mqtt.message.auth.MqttAuthProperty.AUTHENTICATION_METHOD;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class Mqtt5AuthEncoder
-        extends Mqtt5MessageWithReasonStringEncoder<MqttAuth, MqttMessageEncoderProvider<MqttAuth>> {
+    extends Mqtt5MessageWithReasonStringEncoder<MqttAuth, MqttMessageEncoderProvider<MqttAuth>> {
 
-    public static final MqttMessageEncoderProvider<MqttAuth> PROVIDER =
-            new ThreadLocalMqttMessageEncoderProvider<>(Mqtt5AuthEncoder::new);
+  public static final MqttMessageEncoderProvider<MqttAuth> PROVIDER =
+      new ThreadLocalMqttMessageEncoderProvider<>(Mqtt5AuthEncoder::new);
 
-    private static final int FIXED_HEADER = Mqtt5MessageType.AUTH.getCode() << 4;
-    private static final int VARIABLE_HEADER_FIXED_LENGTH = 1; // reason code
+  private static final int FIXED_HEADER = Mqtt5MessageType.AUTH.getCode() << 4;
+  private static final int VARIABLE_HEADER_FIXED_LENGTH = 1; // reason code
 
-    @Override
-    int calculateRemainingLength() {
-        return VARIABLE_HEADER_FIXED_LENGTH;
-    }
+  @Override
+  int calculateRemainingLength() {
+    return VARIABLE_HEADER_FIXED_LENGTH;
+  }
 
-    @Override
-    int calculatePropertyLength() {
-        int propertyLength = 0;
+  @Override
+  int calculatePropertyLength() {
+    int propertyLength = 0;
 
-        propertyLength += propertyEncodedLength(message.getMethod());
-        propertyLength += nullablePropertyEncodedLength(message.getRawData());
-        propertyLength += omissiblePropertiesLength();
+    propertyLength += propertyEncodedLength(message.getMethod());
+    propertyLength += nullablePropertyEncodedLength(message.getRawData());
+    propertyLength += omissiblePropertiesLength();
 
-        return propertyLength;
-    }
+    return propertyLength;
+  }
 
-    @Override
-    public void encode(@NotNull final ByteBuf out, @NotNull final Channel channel) {
-        final int maximumPacketSize = MqttServerConnectionData.getMaximumPacketSize(channel);
+  @Override
+  public void encode(@NotNull final ByteBuf out, @NotNull final Channel channel) {
+    final int maximumPacketSize = MqttServerConnectionData.getMaximumPacketSize(channel);
 
-        encodeFixedHeader(out, maximumPacketSize);
-        encodeVariableHeader(out, maximumPacketSize);
-    }
+    encodeFixedHeader(out, maximumPacketSize);
+    encodeVariableHeader(out, maximumPacketSize);
+  }
 
-    private void encodeFixedHeader(@NotNull final ByteBuf out, final int maximumPacketSize) {
-        out.writeByte(FIXED_HEADER);
-        MqttVariableByteInteger.encode(remainingLength(maximumPacketSize), out);
-    }
+  private void encodeFixedHeader(@NotNull final ByteBuf out, final int maximumPacketSize) {
+    out.writeByte(FIXED_HEADER);
+    MqttVariableByteInteger.encode(remainingLength(maximumPacketSize), out);
+  }
 
-    private void encodeVariableHeader(@NotNull final ByteBuf out, final int maximumPacketSize) {
-        out.writeByte(message.getReasonCode().getCode());
-        encodeProperties(out, maximumPacketSize);
-    }
+  private void encodeVariableHeader(@NotNull final ByteBuf out, final int maximumPacketSize) {
+    out.writeByte(message.getReasonCode().getCode());
+    encodeProperties(out, maximumPacketSize);
+  }
 
-    private void encodeProperties(@NotNull final ByteBuf out, final int maximumPacketSize) {
-        MqttVariableByteInteger.encode(propertyLength(maximumPacketSize), out);
-        encodeProperty(AUTHENTICATION_METHOD, message.getMethod(), out);
-        encodeNullableProperty(AUTHENTICATION_DATA, message.getRawData(), out);
-        encodeOmissibleProperties(maximumPacketSize, out);
-    }
-
+  private void encodeProperties(@NotNull final ByteBuf out, final int maximumPacketSize) {
+    MqttVariableByteInteger.encode(propertyLength(maximumPacketSize), out);
+    encodeProperty(AUTHENTICATION_METHOD, message.getMethod(), out);
+    encodeNullableProperty(AUTHENTICATION_DATA, message.getRawData(), out);
+    encodeOmissibleProperties(maximumPacketSize, out);
+  }
 }

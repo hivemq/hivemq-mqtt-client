@@ -27,15 +27,14 @@ import org.mqttbee.annotations.NotNull;
  */
 public class MqttReAuthEvent {
 
-    private final CompletableEmitter reAuthEmitter;
+  private final CompletableEmitter reAuthEmitter;
 
-    public MqttReAuthEvent(@NotNull final CompletableEmitter reAuthEmitter) {
-        this.reAuthEmitter = reAuthEmitter;
-    }
+  public MqttReAuthEvent(@NotNull final CompletableEmitter reAuthEmitter) {
+    this.reAuthEmitter = reAuthEmitter;
+  }
 
-    @NotNull
-    public CompletableEmitter getReAuthEmitter() {
-        return reAuthEmitter;
-    }
-
+  @NotNull
+  public CompletableEmitter getReAuthEmitter() {
+    return reAuthEmitter;
+  }
 }

@@ -17,22 +17,18 @@
 
 package org.mqttbee.api.mqtt.mqtt5.message.auth;
 
+import java.nio.ByteBuffer;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 
-import java.nio.ByteBuffer;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @DoNotImplement
 public interface Mqtt5EnhancedAuthBuilder {
 
-    @NotNull
-    Mqtt5EnhancedAuthBuilder withData(@Nullable byte[] data);
+  @NotNull
+  Mqtt5EnhancedAuthBuilder withData(@Nullable byte[] data);
 
-    @NotNull
-    Mqtt5EnhancedAuthBuilder withData(@Nullable ByteBuffer data);
-
+  @NotNull
+  Mqtt5EnhancedAuthBuilder withData(@Nullable ByteBuffer data);
 }

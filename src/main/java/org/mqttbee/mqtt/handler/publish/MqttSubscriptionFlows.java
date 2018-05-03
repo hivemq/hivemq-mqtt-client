@@ -17,29 +17,27 @@
 
 package org.mqttbee.mqtt.handler.publish;
 
+import java.util.function.Consumer;
+import javax.annotation.concurrent.NotThreadSafe;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.util.collections.ScNodeList;
 
-import javax.annotation.concurrent.NotThreadSafe;
-import java.util.function.Consumer;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @NotThreadSafe
 public interface MqttSubscriptionFlows {
 
-    void subscribe(@NotNull final MqttTopicFilterImpl topicFilter, @NotNull MqttSubscriptionFlow flow);
+  void subscribe(
+      @NotNull final MqttTopicFilterImpl topicFilter, @NotNull MqttSubscriptionFlow flow);
 
-    void unsubscribe(
-            @NotNull final MqttTopicFilterImpl topicFilter,
-            @Nullable final Consumer<MqttSubscriptionFlow> unsubscribedCallback);
+  void unsubscribe(
+      @NotNull final MqttTopicFilterImpl topicFilter,
+      @Nullable final Consumer<MqttSubscriptionFlow> unsubscribedCallback);
 
-    void cancel(@NotNull MqttSubscriptionFlow flow);
+  void cancel(@NotNull MqttSubscriptionFlow flow);
 
-    boolean findMatching(@NotNull MqttTopicImpl topic, final ScNodeList<MqttIncomingPublishFlow> matchingFlows);
-
+  boolean findMatching(
+      @NotNull MqttTopicImpl topic, final ScNodeList<MqttIncomingPublishFlow> matchingFlows);
 }

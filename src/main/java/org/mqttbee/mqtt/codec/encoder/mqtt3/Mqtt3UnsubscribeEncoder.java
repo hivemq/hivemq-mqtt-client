@@ -30,50 +30,50 @@ import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribe;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribeWrapper;
 
-/**
- * @author Silvio Giebl
- */
-public class Mqtt3UnsubscribeEncoder extends Mqtt3WrappedMessageEncoder<MqttUnsubscribe, MqttUnsubscribeWrapper> {
+/** @author Silvio Giebl */
+public class Mqtt3UnsubscribeEncoder
+    extends Mqtt3WrappedMessageEncoder<MqttUnsubscribe, MqttUnsubscribeWrapper> {
 
-    public static final MqttWrappedMessageEncoderProvider<MqttUnsubscribe, MqttUnsubscribeWrapper, MqttMessageEncoderProvider<MqttUnsubscribeWrapper>>
-            PROVIDER = ThreadLocalMqttWrappedMessageEncoderProvider.create(Mqtt3UnsubscribeEncoder::new);
+  public static final MqttWrappedMessageEncoderProvider<
+          MqttUnsubscribe, MqttUnsubscribeWrapper,
+          MqttMessageEncoderProvider<MqttUnsubscribeWrapper>>
+      PROVIDER = ThreadLocalMqttWrappedMessageEncoderProvider.create(Mqtt3UnsubscribeEncoder::new);
 
-    private static final int FIXED_HEADER = (Mqtt3MessageType.UNSUBSCRIBE.getCode() << 4) | 0b0010;
-    private static final int VARIABLE_HEADER_FIXED_LENGTH = 2; // packet identifier
+  private static final int FIXED_HEADER = (Mqtt3MessageType.UNSUBSCRIBE.getCode() << 4) | 0b0010;
+  private static final int VARIABLE_HEADER_FIXED_LENGTH = 2; // packet identifier
 
-    @Override
-    int calculateRemainingLength() {
-        int remainingLength = VARIABLE_HEADER_FIXED_LENGTH;
+  @Override
+  int calculateRemainingLength() {
+    int remainingLength = VARIABLE_HEADER_FIXED_LENGTH;
 
-        final ImmutableList<MqttTopicFilterImpl> subscriptions = wrapped.getTopicFilters();
-        for (int i = 0; i < subscriptions.size(); i++) {
-            remainingLength += subscriptions.get(i).encodedLength();
-        }
-
-        return remainingLength;
+    final ImmutableList<MqttTopicFilterImpl> subscriptions = wrapped.getTopicFilters();
+    for (int i = 0; i < subscriptions.size(); i++) {
+      remainingLength += subscriptions.get(i).encodedLength();
     }
 
-    @Override
-    public void encode(@NotNull final ByteBuf out, @NotNull final Channel channel) {
-        encodeFixedHeader(out);
-        encodeVariableHeader(out);
-        encodePayload(out);
-    }
+    return remainingLength;
+  }
 
-    private void encodeFixedHeader(@NotNull final ByteBuf out) {
-        out.writeByte(FIXED_HEADER);
-        MqttVariableByteInteger.encode(remainingLength(), out);
-    }
+  @Override
+  public void encode(@NotNull final ByteBuf out, @NotNull final Channel channel) {
+    encodeFixedHeader(out);
+    encodeVariableHeader(out);
+    encodePayload(out);
+  }
 
-    private void encodeVariableHeader(@NotNull final ByteBuf out) {
-        out.writeShort(message.getPacketIdentifier());
-    }
+  private void encodeFixedHeader(@NotNull final ByteBuf out) {
+    out.writeByte(FIXED_HEADER);
+    MqttVariableByteInteger.encode(remainingLength(), out);
+  }
 
-    private void encodePayload(@NotNull final ByteBuf out) {
-        final ImmutableList<MqttTopicFilterImpl> subscriptions = wrapped.getTopicFilters();
-        for (int i = 0; i < subscriptions.size(); i++) {
-            subscriptions.get(i).to(out);
-        }
-    }
+  private void encodeVariableHeader(@NotNull final ByteBuf out) {
+    out.writeShort(message.getPacketIdentifier());
+  }
 
+  private void encodePayload(@NotNull final ByteBuf out) {
+    final ImmutableList<MqttTopicFilterImpl> subscriptions = wrapped.getTopicFilters();
+    for (int i = 0; i < subscriptions.size(); i++) {
+      subscriptions.get(i).to(out);
+    }
+  }
 }

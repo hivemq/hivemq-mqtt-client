@@ -5,6 +5,7 @@ plugins {
     id "net.ltgt.apt-idea" version "0.15"
     id "net.ltgt.apt-eclipse" version "0.15"
     id "com.github.hierynomus.license" version "0.14.0"
+    id "com.diffplug.gradle.spotless" version "3.10.0"
 }
 
 group 'org.mqtt-bee'
@@ -63,6 +64,12 @@ dependencies {
 
 license {
     header file('codestyle/Apache2_license_header.txt')
+}
+
+spotless {
+    java {
+        googleJavaFormat()
+    }
 }
 
 test {

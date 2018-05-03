@@ -17,35 +17,31 @@
 
 package org.mqttbee.api.mqtt.mqtt5;
 
+import java.util.Optional;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 
-import java.util.Optional;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public interface Mqtt5ClientConnectionData {
 
-    int getKeepAlive();
+  int getKeepAlive();
 
-    long getSessionExpiryInterval();
+  long getSessionExpiryInterval();
 
-    int getReceiveMaximum();
+  int getReceiveMaximum();
 
-    int getTopicAliasMaximum();
+  int getTopicAliasMaximum();
 
-    int getMaximumPacketSize();
+  int getMaximumPacketSize();
 
-    int getSubscriptionIdentifierMaximum();
+  int getSubscriptionIdentifierMaximum();
 
-    @NotNull
-    Optional<MqttUTF8String> getAuthMethod();
+  @NotNull
+  Optional<MqttUTF8String> getAuthMethod();
 
-    boolean hasWillPublish();
+  boolean hasWillPublish();
 
-    boolean isProblemInformationRequested();
+  boolean isProblemInformationRequested();
 
-    boolean isResponseInformationRequested();
-
+  boolean isResponseInformationRequested();
 }
