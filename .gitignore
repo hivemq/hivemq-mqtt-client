@@ -4,3 +4,5 @@
 .DS_Store
 mqtt-bee.iml
 .idea
+*.ipr
+*.iws
