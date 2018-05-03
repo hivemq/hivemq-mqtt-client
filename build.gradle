@@ -54,6 +54,7 @@ dependencies {
     testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junitJupiterVersion
     testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junitJupiterVersion
     testCompile group: 'nl.jqno.equalsverifier', name: 'equalsverifier', version: '2.4.1'
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '2.18.3'
 
     testRuntime group: 'org.junit.vintage', name: 'junit-vintage-engine', version: junitVintageVersion
     testRuntime group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junitJupiterVersion
