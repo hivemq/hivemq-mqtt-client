@@ -2,9 +2,9 @@ plugins {
     id 'java'
     id 'idea'
     id 'eclipse'
-    id "net.ltgt.apt-idea" version "0.15"
-    id "net.ltgt.apt-eclipse" version "0.15"
-    id "com.github.hierynomus.license" version "0.14.0"
+    id 'net.ltgt.apt-idea' version '0.15'
+    id 'net.ltgt.apt-eclipse' version '0.15'
+    id 'com.github.hierynomus.license' version '0.14.0'
 }
 
 group 'org.mqtt-bee'
@@ -33,7 +33,6 @@ project.ext {
     junitVintageVersion = '4.12.3'
     junitJupiterVersion = '5.0.3'
     junitPlatformVersion = '1.0.3'
-    intellijAnnotationsVersion = '12.0'
 }
 
 dependencies {
@@ -48,7 +47,6 @@ dependencies {
     annotationProcessor group: 'com.google.dagger', name: 'dagger-compiler', version: daggerVersion
 
     testCompile group: 'org.eclipse.paho', name: 'org.eclipse.paho.client.mqttv3', version: '1.2.0'
-    compileOnly  group: 'com.intellij', name: 'annotations', version: intellijAnnotationsVersion
 
     testCompile group: 'junit', name: 'junit', version: junit4Version
     testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junitJupiterVersion
@@ -63,29 +61,9 @@ dependencies {
 }
 
 license {
-    header file('codestyle/Apache2_license_header.txt')
+    header file('license-header.txt')
 }
 
 test {
     useJUnitPlatform()
-}
-
-testClasses {
-    doFirst {
-        mkdir('.idea/modules')
-    }
-}
-
-idea {
-    project {
-        configureAnnotationProcessing = true
-    }
-    module {
-        apt {
-            // whether generated sources dirs are added as generated sources root
-            addGeneratedSourcesDirs = true
-            // whether the annotationProcessor/apt and testAnnotationProcessor/testApt dependencies are added as module dependencies
-            addAptDependencies = true
-        }
-    }
 }
