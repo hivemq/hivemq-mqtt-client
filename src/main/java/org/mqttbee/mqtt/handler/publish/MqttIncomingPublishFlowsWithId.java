@@ -110,10 +110,9 @@ public class MqttIncomingPublishFlowsWithId extends MqttIncomingPublishFlows {
         }
     }
 
-    @NotNull
     @Override
-    public ScNodeList<MqttIncomingPublishFlow> findMatching(@NotNull final MqttPublishWrapper publish) {
-        final ScNodeList<MqttIncomingPublishFlow> matchingFlows = new ScNodeList<>();
+    void findMatching(
+        @NotNull final MqttPublishWrapper publish, @NotNull final ScNodeList<MqttIncomingPublishFlow> matchingFlows) {
 
         final ImmutableIntArray subscriptionIdentifiers = publish.getSubscriptionIdentifiers();
         if (!subscriptionIdentifiers.isEmpty()) {
@@ -125,10 +124,6 @@ public class MqttIncomingPublishFlowsWithId extends MqttIncomingPublishFlows {
                 }
             }
         }
-
         super.findMatching(publish, matchingFlows);
-
-        return matchingFlows;
     }
-
 }

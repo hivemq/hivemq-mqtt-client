@@ -37,11 +37,6 @@ import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
-import org.mqttbee.mqtt.message.connect.MqttConnect;
-import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
-import org.mqttbee.mqtt.message.publish.MqttPublish;
-import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
-import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribe;
 import org.mqttbee.mqtt.handler.auth.MqttReAuthEvent;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.handler.publish.MqttGlobalIncomingPublishFlow;
@@ -52,6 +47,11 @@ import org.mqttbee.mqtt.handler.subscribe.MqttSubscriptionHandler;
 import org.mqttbee.mqtt.handler.subscribe.MqttUnsubscribeWithFlow;
 import org.mqttbee.mqtt.ioc.ChannelComponent;
 import org.mqttbee.mqtt.ioc.MqttBeeComponent;
+import org.mqttbee.mqtt.message.connect.MqttConnect;
+import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
+import org.mqttbee.mqtt.message.publish.MqttPublish;
+import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
+import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribe;
 import org.mqttbee.rx.FlowableWithSingle;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 
@@ -133,15 +133,15 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
     @Override
     public Flowable<Mqtt5Publish> remainingPublishes() {
         return new MqttGlobalIncomingPublishFlowable(MqttGlobalIncomingPublishFlow.TYPE_REMAINING_PUBLISHES, clientData)
-                .cast(Mqtt5Publish.class)
-                .observeOn(clientData.getExecutorConfig().getRxJavaScheduler()); // TODO temp
+            .observeOn(clientData.getExecutorConfig().getRxJavaScheduler());
     }
 
     @NotNull
     @Override
     public Flowable<Mqtt5Publish> allPublishes() {
-        return new MqttGlobalIncomingPublishFlowable(MqttGlobalIncomingPublishFlow.TYPE_ALL_PUBLISHES, clientData).cast(
-                Mqtt5Publish.class).observeOn(clientData.getExecutorConfig().getRxJavaScheduler()); // TODO temp
+        return new MqttGlobalIncomingPublishFlowable(
+            MqttGlobalIncomingPublishFlow.TYPE_ALL_PUBLISHES, clientData).observeOn(
+            clientData.getExecutorConfig().getRxJavaScheduler()); // TODO all subscriptions?
     }
 
     @NotNull

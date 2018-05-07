@@ -26,6 +26,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5ReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
+import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
@@ -39,6 +40,7 @@ import org.mqttbee.mqtt.handler.subscribe.MqttUnsubscribeWithFlow.MqttUnsubscrib
 import org.mqttbee.mqtt.ioc.ChannelScope;
 import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAck;
 import org.mqttbee.mqtt.message.unsubscribe.unsuback.MqttUnsubAck;
+import org.mqttbee.rx.SingleFlow;
 import org.mqttbee.util.Ranges;
 import org.mqttbee.util.collections.IntMap;
 
@@ -122,10 +124,9 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
                 subscribeWithFlow.wrap(packetIdentifier, subscriptionIdentifiers.getId());
         subscribes.put(packetIdentifier, subscribeWrapperWithFlow);
         pending++;
-        final MqttSubscriptionFlow flow = subscribeWrapperWithFlow.getFlow();
         ctx.writeAndFlush(subscribeWrapperWithFlow.getSubscribe()).addListener(future -> {
             if (!future.isSuccess()) {
-                worker.schedule(() -> flow.onError(future.cause()));
+                worker.schedule(() -> subscribeWrapperWithFlow.getSubAckFlow().onError(future.cause()));
                 handleComplete(ctx, packetIdentifier);
             }
         });
@@ -158,10 +159,10 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
         final MqttUnsubscribeWrapperWithFlow unsubscribeWrapperWithFlow = unsubscribeWithFlow.wrap(packetIdentifier);
         unsubscribes.put(packetIdentifier, unsubscribeWrapperWithFlow);
         pending++;
-        final SingleEmitter<Mqtt5UnsubAck> flow = unsubscribeWithFlow.getFlow();
         ctx.writeAndFlush(unsubscribeWrapperWithFlow.getUnsubscribe()).addListener(future -> {
             if (!future.isSuccess()) {
-                worker.schedule(() -> flow.onError(future.cause())); // TODO different worker
+                worker.schedule(() -> unsubscribeWrapperWithFlow.getUnsubAckFlow().onError(future.cause()));
+                // TODO different worker
                 handleComplete(ctx, packetIdentifier);
             }
         });
@@ -190,12 +191,15 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
 
         // TODO validate reason code count
 
-        final MqttSubscriptionFlow flow = subscribeWrapperWithFlow.getFlow();
+        final SingleFlow<Mqtt5SubAck> flow = subscribeWrapperWithFlow.getSubAckFlow();
         if (allErrorCodes(subAck.getReasonCodes())) {
             worker.schedule(() -> flow.onError(new Mqtt5MessageException(subAck, "SUBACK contains only Error Codes")));
         } else {
-            worker.schedule(() -> flow.onNext(subAck));
-            subscriptionFlows.subscribe(subscribeWrapperWithFlow.getSubscribe(), subAck, flow);
+            worker.schedule(() -> flow.onSuccess(subAck));
+            final MqttSubscriptionFlow subscriptionFlow = subscribeWrapperWithFlow.getSubscriptionFlow();
+            if (subscriptionFlow != null) {
+                subscriptionFlows.subscribe(subscribeWrapperWithFlow.getSubscribe(), subAck, subscriptionFlow);
+            }
         }
 
         handleComplete(ctx, packetIdentifier);
@@ -213,7 +217,7 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
 
         // TODO validate reason code count
 
-        final SingleEmitter<Mqtt5UnsubAck> flow = unsubscribeWrapperWithFlow.getFlow();
+        final SingleEmitter<Mqtt5UnsubAck> flow = unsubscribeWrapperWithFlow.getUnsubAckFlow();
         if (allErrorCodes(unsubAck.getReasonCodes())) {
             worker.schedule(
                     () -> flow.onError(new Mqtt5MessageException(unsubAck, "UNSUBACK contains only Error Codes")));

@@ -18,7 +18,7 @@
 package org.mqttbee.mqtt.handler.publish;
 
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeResult;
+import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.util.collections.ScNodeList;
 import org.reactivestreams.Subscriber;
 
@@ -30,17 +30,25 @@ public class MqttGlobalIncomingPublishFlow extends MqttIncomingPublishFlow {
     public static final int TYPE_ALL_SUBSCRIPTIONS = 0;
     public static final int TYPE_ALL_PUBLISHES = 1;
     public static final int TYPE_REMAINING_PUBLISHES = 2;
-    public static final int TYPE_COUNT = 3;
+    static final int TYPE_COUNT = 3;
 
+    private final Subscriber<? super Mqtt5Publish> subscriber;
     private final int type;
     private ScNodeList.Handle<MqttGlobalIncomingPublishFlow> handle;
 
     MqttGlobalIncomingPublishFlow(
-            @NotNull final Subscriber<? super Mqtt5SubscribeResult> actual,
+        @NotNull final Subscriber<? super Mqtt5Publish> subscriber,
             @NotNull final MqttIncomingPublishService incomingPublishService, final int type) {
 
-        super(actual, incomingPublishService);
+        super(incomingPublishService);
+        this.subscriber = subscriber;
         this.type = type;
+    }
+
+    @NotNull
+    @Override
+    Subscriber<? super Mqtt5Publish> getSubscriber() {
+        return subscriber;
     }
 
     @Override
@@ -52,11 +60,11 @@ public class MqttGlobalIncomingPublishFlow extends MqttIncomingPublishFlow {
         return type;
     }
 
-    public void setHandle(@NotNull final ScNodeList.Handle<MqttGlobalIncomingPublishFlow> handle) {
+    void setHandle(@NotNull final ScNodeList.Handle<MqttGlobalIncomingPublishFlow> handle) {
         this.handle = handle;
     }
 
-    public ScNodeList.Handle<MqttGlobalIncomingPublishFlow> getHandle() {
+    ScNodeList.Handle<MqttGlobalIncomingPublishFlow> getHandle() {
         return handle;
     }
 
