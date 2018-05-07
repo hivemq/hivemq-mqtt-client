@@ -24,6 +24,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAckReasonCode
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAckReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
+import org.mqttbee.mqtt.ioc.ChannelScope;
 import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribeWrapper;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
@@ -31,10 +32,7 @@ import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAck;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribeWrapper;
 import org.mqttbee.mqtt.message.unsubscribe.unsuback.MqttUnsubAck;
 import org.mqttbee.mqtt.message.unsubscribe.unsuback.mqtt3.Mqtt3UnsubAckView;
-import org.mqttbee.mqtt.ioc.ChannelScope;
 import org.mqttbee.util.collections.ScNodeList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.inject.Inject;
@@ -45,8 +43,6 @@ import javax.inject.Inject;
 @ChannelScope
 @NotThreadSafe
 public class MqttIncomingPublishFlows {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(MqttIncomingPublishFlows.class);
 
     @NotNull
     private final MqttSubscriptionFlows subscriptionFlows;
@@ -104,7 +100,7 @@ public class MqttIncomingPublishFlows {
     }
 
     void findMatching(
-            @NotNull final MqttPublishWrapper publish, final ScNodeList<MqttIncomingPublishFlow> matchingFlows) {
+        @NotNull final MqttPublishWrapper publish, @NotNull final ScNodeList<MqttIncomingPublishFlow> matchingFlows) {
 
         final MqttTopicImpl topic = publish.getWrapped().getTopic();
         if (subscriptionFlows.findMatching(topic, matchingFlows)) {
@@ -113,9 +109,6 @@ public class MqttIncomingPublishFlows {
         addAndReference(matchingFlows, globalFlows[MqttGlobalIncomingPublishFlow.TYPE_ALL_PUBLISHES]);
         if (matchingFlows.isEmpty()) {
             addAndReference(matchingFlows, globalFlows[MqttGlobalIncomingPublishFlow.TYPE_REMAINING_PUBLISHES]);
-        }
-        if (matchingFlows.isEmpty()) {
-            LOGGER.warn("No subscription flow registered for topic {}. PUBLISH will be ignored", topic);
         }
     }
 

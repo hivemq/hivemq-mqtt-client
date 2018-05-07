@@ -20,7 +20,7 @@ package org.mqttbee.mqtt.handler.publish;
 import io.reactivex.Emitter;
 import io.reactivex.internal.util.BackpressureHelper;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeResult;
+import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
@@ -31,16 +31,15 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * @author Silvio Giebl
  */
-public abstract class MqttIncomingPublishFlow implements Emitter<Mqtt5SubscribeResult>, Subscription {
+public abstract class MqttIncomingPublishFlow implements Emitter<Mqtt5Publish>, Subscription {
 
-    private final Subscriber<? super Mqtt5SubscribeResult> actual;
     final MqttIncomingPublishService incomingPublishService;
 
-    private long requested;
+    long requested;
     private final AtomicLong newRequested = new AtomicLong();
     private final AtomicBoolean cancelled = new AtomicBoolean();
     private final AtomicBoolean unsubscribed = new AtomicBoolean();
-    private boolean done;
+    boolean done;
 
     private final AtomicInteger referenced = new AtomicInteger();
     private final AtomicBoolean blocking = new AtomicBoolean();
@@ -48,20 +47,19 @@ public abstract class MqttIncomingPublishFlow implements Emitter<Mqtt5SubscribeR
     private final Runnable requestRunnable = this::runRequest;
     private final AtomicBoolean scheduled = new AtomicBoolean();
 
-    MqttIncomingPublishFlow(
-            @NotNull final Subscriber<? super Mqtt5SubscribeResult> actual,
-            @NotNull final MqttIncomingPublishService incomingPublishService) {
-
-        this.actual = actual;
+    MqttIncomingPublishFlow(@NotNull final MqttIncomingPublishService incomingPublishService) {
         this.incomingPublishService = incomingPublishService;
     }
 
+    @NotNull
+    abstract Subscriber<? super Mqtt5Publish> getSubscriber();
+
     @Override
-    public void onNext(@NotNull final Mqtt5SubscribeResult result) {
+    public void onNext(@NotNull final Mqtt5Publish result) {
         if (done) {
             return;
         }
-        actual.onNext(result);
+        getSubscriber().onNext(result);
         if (requested != Long.MAX_VALUE) {
             requested--;
         }
@@ -73,7 +71,7 @@ public abstract class MqttIncomingPublishFlow implements Emitter<Mqtt5SubscribeR
             return;
         }
         done = true;
-        actual.onError(t);
+        getSubscriber().onError(t);
     }
 
     @Override
@@ -82,7 +80,7 @@ public abstract class MqttIncomingPublishFlow implements Emitter<Mqtt5SubscribeR
             return;
         }
         done = true;
-        actual.onComplete();
+        getSubscriber().onComplete();
     }
 
     @Override

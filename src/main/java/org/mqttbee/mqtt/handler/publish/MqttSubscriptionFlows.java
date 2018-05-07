@@ -40,6 +40,7 @@ public interface MqttSubscriptionFlows {
 
     void cancel(@NotNull MqttSubscriptionFlow flow);
 
-    boolean findMatching(@NotNull MqttTopicImpl topic, final ScNodeList<MqttIncomingPublishFlow> matchingFlows);
+    boolean findMatching(
+        @NotNull MqttTopicImpl topic, @NotNull final ScNodeList<MqttIncomingPublishFlow> matchingFlows);
 
 }

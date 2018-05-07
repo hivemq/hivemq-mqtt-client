@@ -18,9 +18,12 @@
 package org.mqttbee.mqtt.handler.subscribe;
 
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
+import org.mqttbee.mqtt.handler.publish.MqttSubscriptionFlow;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribeWrapper;
-import org.mqttbee.mqtt.handler.publish.MqttSubscriptionFlow;
+import org.mqttbee.rx.SingleFlow;
 
 /**
  * @author Silvio Giebl
@@ -28,39 +31,45 @@ import org.mqttbee.mqtt.handler.publish.MqttSubscriptionFlow;
 public class MqttSubscribeWithFlow {
 
     private final MqttSubscribe subscribe;
-    private final MqttSubscriptionFlow flow;
+    private final SingleFlow<Mqtt5SubAck> subAckFlow;
+    private final MqttSubscriptionFlow subscriptionFlow;
 
-    public MqttSubscribeWithFlow(@NotNull final MqttSubscribe subscribe, @NotNull final MqttSubscriptionFlow flow) {
+    public MqttSubscribeWithFlow(
+        @NotNull final MqttSubscribe subscribe, @NotNull final SingleFlow<Mqtt5SubAck> subAckFlow) {
+
         this.subscribe = subscribe;
-        this.flow = flow;
+        this.subAckFlow = subAckFlow;
+        this.subscriptionFlow = null;
     }
 
-    @NotNull
-    public MqttSubscribe getSubscribe() {
-        return subscribe;
-    }
+    public MqttSubscribeWithFlow(
+        @NotNull final MqttSubscribe subscribe, @NotNull final MqttSubscriptionFlow subscriptionFlow) {
 
-    @NotNull
-    public MqttSubscriptionFlow getFlow() {
-        return flow;
+        this.subscribe = subscribe;
+        this.subAckFlow = subscriptionFlow;
+        this.subscriptionFlow = subscriptionFlow;
     }
 
     @NotNull
     public MqttSubscribeWrapperWithFlow wrap(final int packetIdentifier, final int subscriptionIdentifier) {
-        return new MqttSubscribeWrapperWithFlow(subscribe.wrap(packetIdentifier, subscriptionIdentifier), flow);
+        return new MqttSubscribeWrapperWithFlow(
+            subscribe.wrap(packetIdentifier, subscriptionIdentifier), subAckFlow, subscriptionFlow);
     }
 
 
     public static class MqttSubscribeWrapperWithFlow {
 
         private final MqttSubscribeWrapper subscribe;
-        private final MqttSubscriptionFlow flow;
+        private final SingleFlow<Mqtt5SubAck> subAckFlow;
+        private final MqttSubscriptionFlow subscriptionFlow;
 
         private MqttSubscribeWrapperWithFlow(
-                @NotNull final MqttSubscribeWrapper subscribe, @NotNull final MqttSubscriptionFlow flow) {
+            @NotNull final MqttSubscribeWrapper subscribe, @NotNull final SingleFlow<Mqtt5SubAck> subAckFlow,
+            @Nullable final MqttSubscriptionFlow subscriptionFlow) {
 
             this.subscribe = subscribe;
-            this.flow = flow;
+            this.subAckFlow = subAckFlow;
+            this.subscriptionFlow = subscriptionFlow;
         }
 
         @NotNull
@@ -69,8 +78,13 @@ public class MqttSubscribeWithFlow {
         }
 
         @NotNull
-        public MqttSubscriptionFlow getFlow() {
-            return flow;
+        public SingleFlow<Mqtt5SubAck> getSubAckFlow() {
+            return subAckFlow;
+        }
+
+        @Nullable
+        public MqttSubscriptionFlow getSubscriptionFlow() {
+            return subscriptionFlow;
         }
 
     }
