@@ -32,7 +32,7 @@ public class MqttUnsubscribeWithFlow {
     private final SingleEmitter<Mqtt5UnsubAck> unsubAckFlow;
 
     public MqttUnsubscribeWithFlow(
-        @NotNull final MqttUnsubscribe unsubscribe, @NotNull final SingleEmitter<Mqtt5UnsubAck> unsubAckFlow) {
+            @NotNull final MqttUnsubscribe unsubscribe, @NotNull final SingleEmitter<Mqtt5UnsubAck> unsubAckFlow) {
 
         this.unsubscribe = unsubscribe;
         this.unsubAckFlow = unsubAckFlow;
@@ -50,8 +50,8 @@ public class MqttUnsubscribeWithFlow {
         private final SingleEmitter<Mqtt5UnsubAck> unsubAckFlow;
 
         private MqttUnsubscribeWrapperWithFlow(
-            @NotNull final MqttUnsubscribeWrapper unsubscribe,
-            @NotNull final SingleEmitter<Mqtt5UnsubAck> unsubAckFlow) {
+                @NotNull final MqttUnsubscribeWrapper unsubscribe,
+                @NotNull final SingleEmitter<Mqtt5UnsubAck> unsubAckFlow) {
 
             this.unsubscribe = unsubscribe;
             this.unsubAckFlow = unsubAckFlow;

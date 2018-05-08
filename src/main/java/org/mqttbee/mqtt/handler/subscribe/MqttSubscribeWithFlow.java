@@ -35,7 +35,7 @@ public class MqttSubscribeWithFlow {
     private final MqttSubscriptionFlow subscriptionFlow;
 
     public MqttSubscribeWithFlow(
-        @NotNull final MqttSubscribe subscribe, @NotNull final SingleFlow<Mqtt5SubAck> subAckFlow) {
+            @NotNull final MqttSubscribe subscribe, @NotNull final SingleFlow<Mqtt5SubAck> subAckFlow) {
 
         this.subscribe = subscribe;
         this.subAckFlow = subAckFlow;
@@ -43,7 +43,7 @@ public class MqttSubscribeWithFlow {
     }
 
     public MqttSubscribeWithFlow(
-        @NotNull final MqttSubscribe subscribe, @NotNull final MqttSubscriptionFlow subscriptionFlow) {
+            @NotNull final MqttSubscribe subscribe, @NotNull final MqttSubscriptionFlow subscriptionFlow) {
 
         this.subscribe = subscribe;
         this.subAckFlow = subscriptionFlow;
@@ -64,8 +64,8 @@ public class MqttSubscribeWithFlow {
         private final MqttSubscriptionFlow subscriptionFlow;
 
         private MqttSubscribeWrapperWithFlow(
-            @NotNull final MqttSubscribeWrapper subscribe, @NotNull final SingleFlow<Mqtt5SubAck> subAckFlow,
-            @Nullable final MqttSubscriptionFlow subscriptionFlow) {
+                @NotNull final MqttSubscribeWrapper subscribe, @NotNull final SingleFlow<Mqtt5SubAck> subAckFlow,
+                @Nullable final MqttSubscriptionFlow subscriptionFlow) {
 
             this.subscribe = subscribe;
             this.subAckFlow = subAckFlow;

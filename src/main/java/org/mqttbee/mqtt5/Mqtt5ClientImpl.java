@@ -133,15 +133,15 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
     @Override
     public Flowable<Mqtt5Publish> remainingPublishes() {
         return new MqttGlobalIncomingPublishFlowable(MqttGlobalIncomingPublishFlow.TYPE_REMAINING_PUBLISHES, clientData)
-            .observeOn(clientData.getExecutorConfig().getRxJavaScheduler());
+                .observeOn(clientData.getExecutorConfig().getRxJavaScheduler());
     }
 
     @NotNull
     @Override
     public Flowable<Mqtt5Publish> allPublishes() {
         return new MqttGlobalIncomingPublishFlowable(
-            MqttGlobalIncomingPublishFlow.TYPE_ALL_PUBLISHES, clientData).observeOn(
-            clientData.getExecutorConfig().getRxJavaScheduler()); // TODO all subscriptions?
+                MqttGlobalIncomingPublishFlow.TYPE_ALL_PUBLISHES, clientData).observeOn(
+                        clientData.getExecutorConfig().getRxJavaScheduler()); // TODO all subscriptions?
     }
 
     @NotNull

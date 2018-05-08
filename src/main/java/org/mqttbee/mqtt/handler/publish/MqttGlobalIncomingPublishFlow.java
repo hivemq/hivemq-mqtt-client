@@ -37,7 +37,7 @@ public class MqttGlobalIncomingPublishFlow extends MqttIncomingPublishFlow {
     private ScNodeList.Handle<MqttGlobalIncomingPublishFlow> handle;
 
     MqttGlobalIncomingPublishFlow(
-        @NotNull final Subscriber<? super Mqtt5Publish> subscriber,
+            @NotNull final Subscriber<? super Mqtt5Publish> subscriber,
             @NotNull final MqttIncomingPublishService incomingPublishService, final int type) {
 
         super(incomingPublishService);

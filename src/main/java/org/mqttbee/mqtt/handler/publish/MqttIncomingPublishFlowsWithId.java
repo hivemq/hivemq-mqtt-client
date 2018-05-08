@@ -112,7 +112,8 @@ public class MqttIncomingPublishFlowsWithId extends MqttIncomingPublishFlows {
 
     @Override
     void findMatching(
-        @NotNull final MqttPublishWrapper publish, @NotNull final ScNodeList<MqttIncomingPublishFlow> matchingFlows) {
+            @NotNull final MqttPublishWrapper publish,
+            @NotNull final ScNodeList<MqttIncomingPublishFlow> matchingFlows) {
 
         final ImmutableIntArray subscriptionIdentifiers = publish.getSubscriptionIdentifiers();
         if (!subscriptionIdentifiers.isEmpty()) {
