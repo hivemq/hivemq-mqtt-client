@@ -53,6 +53,7 @@ import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribe;
 import org.mqttbee.rx.FlowableWithSingle;
+import org.mqttbee.rx.FlowableWithSingleSplit;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 
 /**
@@ -117,7 +118,7 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
 
     @NotNull
     @Override
-    public FlowableWithSingle<Mqtt5SubscribeResult, Mqtt5SubAck, Mqtt5Publish> subscribe(
+    public FlowableWithSingle<Mqtt5SubAck, Mqtt5Publish> subscribe(
             @NotNull final Mqtt5Subscribe subscribe) {
 
         final MqttSubscribe mqttSubscribe =
@@ -126,7 +127,7 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
         final Flowable<Mqtt5SubscribeResult> subscriptionFlowable =
                 new MqttSubscriptionFlowable(mqttSubscribe, clientData).observeOn(
                         clientData.getExecutorConfig().getRxJavaScheduler());
-        return new FlowableWithSingle<>(subscriptionFlowable, Mqtt5SubAck.class, Mqtt5Publish.class);
+        return new FlowableWithSingleSplit<>(subscriptionFlowable, Mqtt5SubAck.class, Mqtt5Publish.class);
     }
 
     @NotNull
