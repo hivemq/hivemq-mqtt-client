@@ -28,7 +28,6 @@ import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
-import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeResult;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
@@ -43,7 +42,7 @@ public interface Mqtt5Client extends MqttClient {
     Single<Mqtt5ConnAck> connect(@NotNull Mqtt5Connect connect);
 
     @NotNull
-    FlowableWithSingle<Mqtt5SubscribeResult, Mqtt5SubAck, Mqtt5Publish> subscribe(@NotNull Mqtt5Subscribe subscribe);
+    FlowableWithSingle<Mqtt5SubAck, Mqtt5Publish> subscribe(@NotNull Mqtt5Subscribe subscribe);
 
     @NotNull
     Flowable<Mqtt5Publish> remainingPublishes();
