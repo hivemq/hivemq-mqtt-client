@@ -56,6 +56,11 @@ public class Mqtt3ClientDataView implements Mqtt3ClientData {
     }
 
     @Override
+    public String getServerPath() {
+        return wrapped.getServerPath();
+    }
+
+    @Override
     public boolean usesSSL() {
         return wrapped.usesSSL();
     }
@@ -74,6 +79,11 @@ public class Mqtt3ClientDataView implements Mqtt3ClientData {
     @Override
     public boolean isConnected() {
         return wrapped.isConnected();
+    }
+
+    @Override
+    public boolean usesWebSockets() {
+        return wrapped.usesWebSockets();
     }
 
     @NotNull

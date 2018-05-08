@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright 2018 The MQTT Bee project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,39 +12,19 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
+package org.mqttbee.mqtt.handler.websocket;
 
-package org.mqttbee.api.mqtt;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.MessageToMessageEncoder;
+import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
 
-import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
+import java.util.List;
 
-import java.util.Optional;
-
-/**
- * @author Silvio Giebl
- */
-public interface MqttClientData {
-
-    @NotNull
-    Optional<MqttClientIdentifier> getClientIdentifier();
-
-    @NotNull
-    String getServerHost();
-
-    int getServerPort();
-
-    String getServerPath();
-
-    boolean usesSSL();
-
-    @NotNull
-    MqttClientExecutorConfig getExecutorConfig();
-
-    boolean isConnecting();
-
-    boolean isConnected();
-
-    boolean usesWebSockets();
+public class WebSocketBinaryFrameEncoder extends MessageToMessageEncoder<ByteBuf> {
+    @Override
+    protected void encode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) {
+        out.add(new BinaryWebSocketFrame(msg.retain()));
+    }
 }

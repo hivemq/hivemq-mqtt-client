@@ -49,7 +49,9 @@ public class MqttClientData implements Mqtt5ClientData {
     private MqttClientIdentifierImpl clientIdentifier;
     private final String serverHost;
     private final int serverPort;
+    private final String serverPath;
     private final boolean usesSSL;
+    private final boolean usesWebSockets;
     private final AtomicBoolean connecting;
     private final AtomicBoolean connected;
     private final boolean followsRedirects;
@@ -59,9 +61,10 @@ public class MqttClientData implements Mqtt5ClientData {
     private MqttClientConnectionData clientConnectionData;
     private MqttServerConnectionData serverConnectionData;
 
+
     public MqttClientData(
             @NotNull final MqttVersion mqttVersion, @Nullable final MqttClientIdentifierImpl clientIdentifier,
-            @NotNull final String serverHost, final int serverPort, final boolean usesSSL,
+            @NotNull final String serverHost, final int serverPort, final String serverPath, final boolean usesSSL, final boolean usesWebSockets,
             final boolean followsRedirects, final boolean allowsServerReAuth,
             @NotNull final MqttClientExecutorConfigImpl executorConfig,
             @Nullable final MqttAdvancedClientData advancedClientData) {
@@ -70,7 +73,10 @@ public class MqttClientData implements Mqtt5ClientData {
         this.clientIdentifier = clientIdentifier;
         this.serverHost = serverHost;
         this.serverPort = serverPort;
+        // remove any leading slashes
+        this.serverPath = serverPath.replaceAll("^/+", "");
         this.usesSSL = usesSSL;
+        this.usesWebSockets = usesWebSockets;
         this.connecting = new AtomicBoolean();
         this.connected = new AtomicBoolean();
         this.followsRedirects = followsRedirects;
@@ -112,6 +118,12 @@ public class MqttClientData implements Mqtt5ClientData {
     }
 
     @Override
+    public String getServerPath() {
+        return serverPath;
+    }
+
+
+    @Override
     public boolean usesSSL() {
         return usesSSL;
     }
@@ -128,6 +140,11 @@ public class MqttClientData implements Mqtt5ClientData {
     @Override
     public boolean isConnected() {
         return connected.get();
+    }
+
+    @Override
+    public boolean usesWebSockets() {
+        return usesWebSockets;
     }
 
     public boolean setConnected(final boolean connected) {
