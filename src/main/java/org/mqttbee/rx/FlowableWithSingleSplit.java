@@ -17,6 +17,7 @@
 
 package org.mqttbee.rx;
 
+import com.google.common.base.Preconditions;
 import io.reactivex.Flowable;
 import io.reactivex.FlowableSubscriber;
 import io.reactivex.Scheduler;
@@ -97,7 +98,8 @@ public class FlowableWithSingleSplit<T, S, F> extends FlowableWithSingle<S, F> {
     @Override
     protected void subscribeActual(final Subscriber<? super F> s) {
         if (s instanceof ConditionalSubscriber) {
-            @SuppressWarnings("unchecked") final ConditionalSubscriber<? super F> cs = (ConditionalSubscriber<? super F>) s;
+            @SuppressWarnings("unchecked") final ConditionalSubscriber<? super F> cs =
+                    (ConditionalSubscriber<? super F>) s;
             source.subscribe(
                     new FlowableWithSingleConditionalSubscriber<>(singleCaster, flowableCaster, cs, singleConsumer));
         } else {
@@ -134,6 +136,8 @@ public class FlowableWithSingleSplit<T, S, F> extends FlowableWithSingle<S, F> {
     public <SM, FM> FlowableWithSingleSplit<T, SM, FM> mapBoth(
             @NotNull final Function<S, SM> singleMapper, @NotNull final Function<F, FM> flowableMapper) {
 
+        Preconditions.checkNotNull(singleMapper);
+        Preconditions.checkNotNull(flowableMapper);
         return new FlowableWithSingleSplit<>(
                 source, Caster.map(singleCaster, singleMapper), Caster.map(flowableCaster, flowableMapper), null);
     }
@@ -141,6 +145,7 @@ public class FlowableWithSingleSplit<T, S, F> extends FlowableWithSingle<S, F> {
     @NotNull
     @Override
     public FlowableWithSingleSplit<T, S, F> mapError(@NotNull final Function<Throwable, Throwable> mapper) {
+        Preconditions.checkNotNull(mapper);
         final Function<Throwable, Flowable<T>> resumeMapper = throwable -> Flowable.error(mapper.apply(throwable));
         return new FlowableWithSingleSplit<>(
                 source.onErrorResumeNext(resumeMapper), singleCaster, flowableCaster, singleConsumer);
@@ -149,6 +154,7 @@ public class FlowableWithSingleSplit<T, S, F> extends FlowableWithSingle<S, F> {
     @NotNull
     @Override
     public Flowable<F> doOnSingle(@NotNull final BiConsumer<S, Subscription> singleConsumer) {
+        Preconditions.checkNotNull(singleConsumer);
         return new FlowableWithSingleSplit<>(source, singleCaster, flowableCaster, singleConsumer);
     }
 
@@ -225,7 +231,7 @@ public class FlowableWithSingleSplit<T, S, F> extends FlowableWithSingle<S, F> {
             }
         }
 
-        abstract boolean tryOnNextActual(F f);
+        abstract boolean tryOnNextActual(@Nullable F f);
 
         @Override
         public void onComplete() {
@@ -331,7 +337,7 @@ public class FlowableWithSingleSplit<T, S, F> extends FlowableWithSingle<S, F> {
         }
 
         @Override
-        boolean tryOnNextActual(final F f) {
+        boolean tryOnNextActual(@Nullable final F f) {
             flowableSubscriber.onNext(f);
             return true;
         }
@@ -354,7 +360,7 @@ public class FlowableWithSingleSplit<T, S, F> extends FlowableWithSingle<S, F> {
         }
 
         @Override
-        boolean tryOnNextActual(final F f) {
+        boolean tryOnNextActual(@Nullable final F f) {
             return conditionalActual.tryOnNext(f);
         }
 
@@ -367,11 +373,13 @@ public class FlowableWithSingleSplit<T, S, F> extends FlowableWithSingle<S, F> {
         C cast(@NotNull final Object o) throws Exception;
 
 
+        @NotNull
         @SuppressWarnings("unchecked")
         static <C> Caster<C> of(@NotNull final Class<C> castedClass) {
             return o -> (castedClass.isInstance(o)) ? (C) o : null;
         }
 
+        @NotNull
         static <C, M> Caster<M> map(@NotNull final Caster<C> inner, @NotNull final Function<C, M> mapper) {
             return o -> {
                 final C c = inner.cast(o);

@@ -17,7 +17,7 @@
 
 package org.mqttbee.api.mqtt.mqtt5;
 
-import dagger.internal.Preconditions;
+import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.advanced.Mqtt5AdvancedClientData;
