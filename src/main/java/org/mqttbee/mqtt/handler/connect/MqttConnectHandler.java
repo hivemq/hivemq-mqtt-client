@@ -70,6 +70,7 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
     private final MqttConnect connect;
     private final SingleEmitter<Mqtt5ConnAck> connAckEmitter;
     private final MqttClientData clientData;
+    private boolean connectCalled = false;
 
     public MqttConnectHandler(
             @NotNull final MqttConnect connect, @NotNull final SingleEmitter<Mqtt5ConnAck> connAckEmitter,
@@ -82,9 +83,24 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
 
     @Override
     public void channelActive(final ChannelHandlerContext ctx) {
-        addClientData(ctx.channel());
-        writeConnect(ctx);
+        if (!connectCalled) {
+            connectCalled = true;
+
+            addClientData(ctx.channel());
+            writeConnect(ctx);
+        }
         ctx.fireChannelActive();
+    }
+
+    @Override
+    public void handlerAdded(ChannelHandlerContext ctx) {
+        super.handlerAdded(ctx);
+
+        if (!connectCalled && ctx.channel().isActive()) {
+            connectCalled = true;
+            addClientData(ctx.channel());
+            writeConnect(ctx);
+        }
     }
 
     /**
@@ -124,7 +140,7 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
                     scheduleTimeout();
                 }
 
-                ctx.pipeline().addFirst(MqttDecoder.NAME, ChannelComponent.get(ctx.channel()).decoder());
+                ctx.pipeline().addBefore(MqttEncoder.NAME, MqttDecoder.NAME, ChannelComponent.get(ctx.channel()).decoder());
             } else {
                 MqttDisconnectUtil.close(ctx.channel(), future.cause());
             }

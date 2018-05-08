@@ -33,17 +33,21 @@ public class Mqtt3ClientBuilder {
     private final MqttClientIdentifierImpl identifier;
     private final String serverHost;
     private final int serverPort;
+    private final String serverPath;
     private final boolean usesSSL;
     private final MqttClientExecutorConfigImpl executorConfig;
+    private final boolean usesWebSockets;
 
     public Mqtt3ClientBuilder(
             @NotNull final MqttClientIdentifierImpl identifier, @NotNull final String serverHost, final int serverPort,
-            final boolean usesSSL, @NotNull final MqttClientExecutorConfigImpl executorConfig) {
+            final String serverPath, final boolean usesSSL, @NotNull boolean usesWebSockets, @NotNull final MqttClientExecutorConfigImpl executorConfig) {
 
         this.identifier = identifier;
         this.serverHost = serverHost;
         this.serverPort = serverPort;
+        this.serverPath = serverPath;
         this.usesSSL = usesSSL;
+        this.usesWebSockets = usesWebSockets;
         this.executorConfig = executorConfig;
     }
 
@@ -53,8 +57,7 @@ public class Mqtt3ClientBuilder {
     }
 
     private MqttClientData buildClientData() {
-        return new MqttClientData(MqttVersion.MQTT_3_1_1, identifier, serverHost, serverPort, usesSSL, false, false,
+        return new MqttClientData(MqttVersion.MQTT_3_1_1, identifier, serverHost, serverPort, serverPath, usesSSL, usesWebSockets, false, false,
                 executorConfig, null);
     }
-
 }

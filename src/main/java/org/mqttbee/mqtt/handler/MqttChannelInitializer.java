@@ -41,7 +41,9 @@ public class MqttChannelInitializer extends ChannelInitializer<SocketChannel> {
 
     private final MqttConnect connect;
     private final SingleEmitter<Mqtt5ConnAck> connAckEmitter;
-    private final MqttClientData clientData;
+    final MqttClientData clientData;
+
+    private ChannelComponent channelComponent;
 
     MqttChannelInitializer(
             @NotNull final MqttConnect connect, @NotNull final SingleEmitter<Mqtt5ConnAck> connAckEmitter,
@@ -54,9 +56,15 @@ public class MqttChannelInitializer extends ChannelInitializer<SocketChannel> {
 
     @Override
     protected void initChannel(final SocketChannel channel) {
-        final ChannelComponent channelComponent = ChannelComponent.create(channel, clientData);
+        init(channel);
+        addMqttHandlers(channel.pipeline());
+    }
 
-        final ChannelPipeline pipeline = channel.pipeline();
+    void init(@NotNull final SocketChannel channel) {
+        channelComponent = ChannelComponent.create(channel, clientData);
+    }
+
+    void addMqttHandlers(@NotNull final ChannelPipeline pipeline) {
         pipeline.addLast(MqttEncoder.NAME, channelComponent.encoder());
 
         if (connect.getRawEnhancedAuthProvider() == null) {
@@ -67,6 +75,6 @@ public class MqttChannelInitializer extends ChannelInitializer<SocketChannel> {
 
         pipeline.addLast(MqttConnectHandler.NAME, new MqttConnectHandler(connect, connAckEmitter, clientData));
         pipeline.addLast(MqttDisconnectHandler.NAME, channelComponent.disconnectHandler());
-    }
 
+    }
 }

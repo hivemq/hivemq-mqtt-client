@@ -37,16 +37,19 @@ public class Mqtt5ClientBuilder {
     private final MqttClientIdentifierImpl identifier;
     private final String serverHost;
     private final int serverPort;
+    private final String serverPath;
     private final boolean usesSSL;
+    private final boolean usesWebSockets;
     private final MqttClientExecutorConfigImpl executorConfig;
 
     private boolean followsRedirects = false;
     private boolean allowsServerReAuth = false;
     private MqttAdvancedClientData advancedClientData;
 
+
     public Mqtt5ClientBuilder(
             @NotNull final MqttClientIdentifierImpl identifier, @NotNull final String serverHost, final int serverPort,
-            final boolean usesSSL, @NotNull final MqttClientExecutorConfigImpl executorConfig) {
+            final String serverPath, final boolean usesSSL, final boolean usesWebSockets, @NotNull final MqttClientExecutorConfigImpl executorConfig) {
 
         Preconditions.checkNotNull(identifier);
         Preconditions.checkNotNull(serverHost);
@@ -54,7 +57,9 @@ public class Mqtt5ClientBuilder {
         this.identifier = identifier;
         this.serverHost = serverHost;
         this.serverPort = serverPort;
+        this.serverPath = serverPath;
         this.usesSSL = usesSSL;
+        this.usesWebSockets = usesWebSockets;
         this.executorConfig = executorConfig;
     }
 
@@ -83,7 +88,7 @@ public class Mqtt5ClientBuilder {
     }
 
     private MqttClientData buildClientData() {
-        return new MqttClientData(MqttVersion.MQTT_5_0, identifier, serverHost, serverPort, usesSSL, followsRedirects,
+        return new MqttClientData(MqttVersion.MQTT_5_0, identifier, serverHost, serverPort, serverPath, usesSSL, usesWebSockets, followsRedirects,
                 allowsServerReAuth, executorConfig, advancedClientData);
     }
 
