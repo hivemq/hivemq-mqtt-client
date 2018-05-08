@@ -52,9 +52,10 @@ public class MqttChannelInitializerProvider {
 
         if (clientData.usesSSL()) {
             throw new UnsupportedOperationException(); // TODO
+        } else if (clientData.usesWebSockets()) {
+            return new MqttWebSocketsChannelInitializer(connect, connAckEmitter, clientData);
         } else {
             return new MqttChannelInitializer(connect, connAckEmitter, clientData);
         }
     }
-
 }

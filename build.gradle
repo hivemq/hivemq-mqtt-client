@@ -38,6 +38,7 @@ project.ext {
 dependencies {
     compile group: 'io.reactivex.rxjava2', name: 'rxjava', version: rxJavaVersion
     compile group: 'io.netty', name: 'netty-handler', version: nettyVersion
+    compile group: 'io.netty', name: 'netty-codec-http', version: nettyVersion
     compile group: 'io.netty', name: 'netty-transport-native-epoll', version: nettyVersion, classifier: 'linux-x86_64'
     compile group: 'com.google.guava', name: 'guava', version: guavaVersion
     compile group: 'ch.qos.logback', name: 'logback-classic', version: logbackVersion
