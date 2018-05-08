@@ -36,8 +36,8 @@ public class MqttSubscriptionFlow extends MqttIncomingPublishFlow implements Sin
     private int subscriptionIdentifier = MqttSubscribeWrapper.DEFAULT_NO_SUBSCRIPTION_IDENTIFIER;
 
     MqttSubscriptionFlow(
-        @NotNull final Subscriber<? super Mqtt5SubscribeResult> subscriber,
-        @NotNull final MqttIncomingPublishService incomingPublishService) {
+            @NotNull final Subscriber<? super Mqtt5SubscribeResult> subscriber,
+            @NotNull final MqttIncomingPublishService incomingPublishService) {
 
         super(incomingPublishService);
         this.subscriber = subscriber;

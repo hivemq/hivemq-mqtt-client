@@ -100,7 +100,8 @@ public class MqttIncomingPublishFlows {
     }
 
     void findMatching(
-        @NotNull final MqttPublishWrapper publish, @NotNull final ScNodeList<MqttIncomingPublishFlow> matchingFlows) {
+            @NotNull final MqttPublishWrapper publish,
+            @NotNull final ScNodeList<MqttIncomingPublishFlow> matchingFlows) {
 
         final MqttTopicImpl topic = publish.getWrapped().getTopic();
         if (subscriptionFlows.findMatching(topic, matchingFlows)) {
