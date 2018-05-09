@@ -20,6 +20,7 @@ package org.mqttbee.api.mqtt.mqtt5;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttClientData;
 import org.mqttbee.api.mqtt.mqtt5.advanced.Mqtt5AdvancedClientData;
+import org.mqttbee.api.mqtt.MqttClientSslData;
 
 import java.util.Optional;
 
@@ -40,5 +41,8 @@ public interface Mqtt5ClientData extends MqttClientData {
 
     @NotNull
     Optional<Mqtt5ServerConnectionData> getServerConnectionData();
+
+    @NotNull
+    Optional<MqttClientSslData> getSslData();
 
 }
