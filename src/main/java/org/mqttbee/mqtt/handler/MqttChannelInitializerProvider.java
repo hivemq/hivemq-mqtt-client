@@ -50,12 +50,6 @@ public class MqttChannelInitializerProvider {
             @NotNull final MqttConnect connect, @NotNull final SingleEmitter<Mqtt5ConnAck> connAckEmitter,
             @NotNull final MqttClientData clientData) {
 
-        if (clientData.usesSSL()) {
-            throw new UnsupportedOperationException(); // TODO
-        } else if (clientData.usesWebSockets()) {
-            return new MqttWebSocketsChannelInitializer(connect, connAckEmitter, clientData);
-        } else {
-            return new MqttChannelInitializer(connect, connAckEmitter, clientData);
-        }
+        return new MqttChannelInitializer(connect, connAckEmitter, clientData);
     }
 }

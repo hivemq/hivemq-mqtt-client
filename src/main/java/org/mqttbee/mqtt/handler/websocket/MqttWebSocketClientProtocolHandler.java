@@ -40,7 +40,7 @@ public class MqttWebSocketClientProtocolHandler extends WebSocketClientProtocolH
         ctx.fireUserEventTriggered(evt);
     }
 
-    public void onUserEventTriggered(Runnable action) {
+    public void onWebSocketHandshakeComplete(Runnable action) {
         this.action = action;
     }
 }
