@@ -22,6 +22,7 @@ import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt.MqttClientSslData;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientConnectionData;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientData;
@@ -196,6 +197,12 @@ public class MqttClientData implements Mqtt5ClientData {
     @Override
     public Optional<Mqtt5ServerConnectionData> getServerConnectionData() {
         return Optional.of(serverConnectionData);
+    }
+
+    @NotNull
+    @Override
+    public Optional<MqttClientSslData> getSslData() {
+        return null;
     }
 
     @Nullable

@@ -17,9 +17,9 @@
 
 package org.mqttbee.mqtt.handler;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
-import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.reactivex.SingleEmitter;
@@ -48,7 +48,7 @@ import static org.mqttbee.mqtt.datatypes.MqttVariableByteInteger.MAXIMUM_PACKET_
  *
  * @author Silvio Giebl
  */
-public class MqttChannelInitializer extends ChannelInitializer<SocketChannel> {
+public class MqttChannelInitializer extends ChannelInitializer<Channel> {
 
     private static final String HTTP_CODEC = "http-codec";
     private static final String HTTP_AGGREGATOR = "http-aggregator";
@@ -72,7 +72,7 @@ public class MqttChannelInitializer extends ChannelInitializer<SocketChannel> {
     }
 
     @Override
-    protected void initChannel(final SocketChannel channel) {
+    protected void initChannel(final Channel channel) {
         channelComponent = ChannelComponent.create(channel, clientData);
         if (clientData.usesWebSockets()) {
             initMqttOverWebSockets(channel.pipeline());
@@ -117,7 +117,7 @@ public class MqttChannelInitializer extends ChannelInitializer<SocketChannel> {
         }
     }
 
-    void init(@NotNull final SocketChannel channel) {
+    void init(@NotNull final Channel channel) {
         channelComponent = ChannelComponent.create(channel, clientData);
     }
 
