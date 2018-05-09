@@ -43,6 +43,7 @@ import org.mqttbee.mqtt.handler.publish.MqttGlobalIncomingPublishFlow;
 import org.mqttbee.mqtt.handler.publish.MqttGlobalIncomingPublishFlowable;
 import org.mqttbee.mqtt.handler.publish.MqttIncomingAckFlowable;
 import org.mqttbee.mqtt.handler.publish.MqttSubscriptionFlowable;
+import org.mqttbee.mqtt.handler.subscribe.MqttSubAckSingle;
 import org.mqttbee.mqtt.handler.subscribe.MqttSubscriptionHandler;
 import org.mqttbee.mqtt.handler.subscribe.MqttUnsubscribeWithFlow;
 import org.mqttbee.mqtt.ioc.ChannelComponent;
@@ -118,15 +119,20 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
 
     @NotNull
     @Override
-    public FlowableWithSingle<Mqtt5SubAck, Mqtt5Publish> subscribe(
-            @NotNull final Mqtt5Subscribe subscribe) {
-
+    public Single<Mqtt5SubAck> subscribe(@NotNull final Mqtt5Subscribe subscribe) {
         final MqttSubscribe mqttSubscribe =
                 MustNotBeImplementedUtil.checkNotImplemented(subscribe, MqttSubscribe.class);
 
+        return new MqttSubAckSingle(mqttSubscribe, clientData);
+    }
+
+    @NotNull
+    @Override
+    public FlowableWithSingle<Mqtt5SubAck, Mqtt5Publish> subscribeWithStream(@NotNull final Mqtt5Subscribe subscribe) {
+        final MqttSubscribe mqttSubscribe = MustNotBeImplementedUtil.checkNotImplemented(subscribe, MqttSubscribe.class);
+
         final Flowable<Mqtt5SubscribeResult> subscriptionFlowable =
-                new MqttSubscriptionFlowable(mqttSubscribe, clientData).observeOn(
-                        clientData.getExecutorConfig().getRxJavaScheduler());
+                new MqttSubscriptionFlowable(mqttSubscribe, clientData).observeOn(clientData.getExecutorConfig().getRxJavaScheduler());
         return new FlowableWithSingleSplit<>(subscriptionFlowable, Mqtt5SubAck.class, Mqtt5Publish.class);
     }
 
@@ -142,7 +148,7 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
     public Flowable<Mqtt5Publish> allPublishes() {
         return new MqttGlobalIncomingPublishFlowable(
                 MqttGlobalIncomingPublishFlow.TYPE_ALL_PUBLISHES, clientData).observeOn(
-                        clientData.getExecutorConfig().getRxJavaScheduler()); // TODO all subscriptions?
+                clientData.getExecutorConfig().getRxJavaScheduler()); // TODO all subscriptions?
     }
 
     @NotNull
