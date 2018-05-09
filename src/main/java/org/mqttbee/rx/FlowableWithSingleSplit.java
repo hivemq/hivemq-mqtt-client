@@ -59,8 +59,8 @@ import org.reactivestreams.Subscription;
 public class FlowableWithSingleSplit<T, S, F> extends FlowableWithSingle<S, F> {
 
     private final Flowable<T> source;
-    private final Caster<S> singleCaster;
-    private final Caster<F> flowableCaster;
+    private final Function<T, S> singleCaster;
+    private final Function<T, F> flowableCaster;
     private final BiConsumer<S, Subscription> singleConsumer;
 
     /**
@@ -74,7 +74,7 @@ public class FlowableWithSingleSplit<T, S, F> extends FlowableWithSingle<S, F> {
             @NotNull final Flowable<T> source, @NotNull final Class<S> singleClass,
             @NotNull final Class<F> flowableClass) {
 
-        this(source, Caster.of(singleClass), Caster.of(flowableClass), null);
+        this(source, caster(singleClass), caster(flowableClass), null);
     }
 
     /**
@@ -86,8 +86,8 @@ public class FlowableWithSingleSplit<T, S, F> extends FlowableWithSingle<S, F> {
      * @param singleConsumer the consumer of the single item.
      */
     private FlowableWithSingleSplit(
-            @NotNull final Flowable<T> source, @NotNull final Caster<S> singleCaster,
-            @NotNull final Caster<F> flowableCaster, @Nullable final BiConsumer<S, Subscription> singleConsumer) {
+            @NotNull final Flowable<T> source, @NotNull final Function<T, S> singleCaster,
+            @NotNull final Function<T, F> flowableCaster, @Nullable final BiConsumer<S, Subscription> singleConsumer) {
 
         this.source = source;
         this.singleCaster = singleCaster;
@@ -109,13 +109,13 @@ public class FlowableWithSingleSplit<T, S, F> extends FlowableWithSingle<S, F> {
 
     @NotNull
     @Override
-    public FlowableWithSingleSplit<T, S, F> observeOnWithSingle(@NotNull final Scheduler scheduler) {
+    public FlowableWithSingleSplit<T, S, F> observeOnBoth(@NotNull final Scheduler scheduler) {
         return new FlowableWithSingleSplit<>(source.observeOn(scheduler), singleCaster, flowableCaster, singleConsumer);
     }
 
     @NotNull
     @Override
-    public FlowableWithSingleSplit<T, S, F> observeOnWithSingle(
+    public FlowableWithSingleSplit<T, S, F> observeOnBoth(
             @NotNull final Scheduler scheduler, final boolean delayError) {
 
         return new FlowableWithSingleSplit<>(
@@ -124,7 +124,7 @@ public class FlowableWithSingleSplit<T, S, F> extends FlowableWithSingle<S, F> {
 
     @NotNull
     @Override
-    public FlowableWithSingleSplit<T, S, F> observeOnWithSingle(
+    public FlowableWithSingleSplit<T, S, F> observeOnBoth(
             @NotNull final Scheduler scheduler, final boolean delayError, final int bufferSize) {
 
         return new FlowableWithSingleSplit<>(
@@ -139,7 +139,7 @@ public class FlowableWithSingleSplit<T, S, F> extends FlowableWithSingle<S, F> {
         Preconditions.checkNotNull(singleMapper);
         Preconditions.checkNotNull(flowableMapper);
         return new FlowableWithSingleSplit<>(
-                source, Caster.map(singleCaster, singleMapper), Caster.map(flowableCaster, flowableMapper), null);
+                source, mapCaster(singleCaster, singleMapper), mapCaster(flowableCaster, flowableMapper), null);
     }
 
     @NotNull
@@ -162,8 +162,8 @@ public class FlowableWithSingleSplit<T, S, F> extends FlowableWithSingle<S, F> {
     private static abstract class FlowableWithSingleAbstractSubscriber<T, S, F>
             implements FlowableSubscriber<T>, ConditionalSubscriber<T>, QueueSubscription<F> {
 
-        private final Caster<S> singleCaster;
-        private final Caster<F> flowableCaster;
+        private final Function<T, S> singleCaster;
+        private final Function<T, F> flowableCaster;
         final Subscriber<? super F> flowableSubscriber;
         private BiConsumer<S, Subscription> singleConsumer;
 
@@ -173,7 +173,7 @@ public class FlowableWithSingleSplit<T, S, F> extends FlowableWithSingle<S, F> {
         private boolean done;
 
         private FlowableWithSingleAbstractSubscriber(
-                @NotNull final Caster<S> singleCaster, @NotNull final Caster<F> flowableCaster,
+                @NotNull final Function<T, S> singleCaster, @NotNull final Function<T, F> flowableCaster,
                 @NotNull final Subscriber<? super F> flowableSubscriber,
                 @Nullable final BiConsumer<S, Subscription> singleConsumer) {
 
@@ -211,11 +211,11 @@ public class FlowableWithSingleSplit<T, S, F> extends FlowableWithSingle<S, F> {
             }
 
             try {
-                final F f = flowableCaster.cast(t);
+                final F f = flowableCaster.apply(t);
                 if (f != null) {
                     return tryOnNextActual(f);
                 }
-                final S single = singleCaster.cast(t);
+                final S single = singleCaster.apply(t);
                 if (single != null) {
                     if (singleConsumer != null) {
                         singleConsumer.accept(single, subscription);
@@ -284,11 +284,11 @@ public class FlowableWithSingleSplit<T, S, F> extends FlowableWithSingle<S, F> {
                     return null;
                 }
 
-                final F f = flowableCaster.cast(t);
+                final F f = flowableCaster.apply(t);
                 if (f != null) {
                     return f;
                 }
-                final S single = singleCaster.cast(t);
+                final S single = singleCaster.apply(t);
                 if (single != null) {
                     if (singleConsumer != null) {
                         singleConsumer.accept(single, subscription);
@@ -329,7 +329,7 @@ public class FlowableWithSingleSplit<T, S, F> extends FlowableWithSingle<S, F> {
             extends FlowableWithSingleAbstractSubscriber<T, S, F> {
 
         private FlowableWithSingleSubscriber(
-                @NotNull final Caster<S> singleCaster, @NotNull final Caster<F> flowableCaster,
+                @NotNull final Function<T, S> singleCaster, @NotNull final Function<T, F> flowableCaster,
                 @NotNull final Subscriber<? super F> flowableSubscriber,
                 @Nullable final BiConsumer<S, Subscription> singleConsumer) {
 
@@ -351,7 +351,7 @@ public class FlowableWithSingleSplit<T, S, F> extends FlowableWithSingle<S, F> {
         private final ConditionalSubscriber<? super F> conditionalActual;
 
         private FlowableWithSingleConditionalSubscriber(
-                @NotNull final Caster<S> singleCaster, @NotNull final Caster<F> flowableCaster,
+                @NotNull final Function<T, S> singleCaster, @NotNull final Function<T, F> flowableCaster,
                 @NotNull final ConditionalSubscriber<? super F> flowableSubscriber,
                 @Nullable final BiConsumer<S, Subscription> singleConsumer) {
 
@@ -367,26 +367,20 @@ public class FlowableWithSingleSplit<T, S, F> extends FlowableWithSingle<S, F> {
     }
 
 
-    private interface Caster<C> {
+    @NotNull
+    @SuppressWarnings("unchecked")
+    private static <T, C> Function<T, C> caster(@NotNull final Class<C> castedClass) {
+        return o -> (castedClass.isInstance(o)) ? (C) o : null;
+    }
 
-        @Nullable
-        C cast(@NotNull final Object o) throws Exception;
+    @NotNull
+    private static <T, C, M> Function<T, M> mapCaster(
+            @NotNull final Function<T, C> inner, @NotNull final Function<C, M> mapper) {
 
-
-        @NotNull
-        @SuppressWarnings("unchecked")
-        static <C> Caster<C> of(@NotNull final Class<C> castedClass) {
-            return o -> (castedClass.isInstance(o)) ? (C) o : null;
-        }
-
-        @NotNull
-        static <C, M> Caster<M> map(@NotNull final Caster<C> inner, @NotNull final Function<C, M> mapper) {
-            return o -> {
-                final C c = inner.cast(o);
-                return (c == null) ? null : mapper.apply(c);
-            };
-        }
-
+        return o -> {
+            final C c = inner.apply(o);
+            return (c == null) ? null : mapper.apply(c);
+        };
     }
 
 }

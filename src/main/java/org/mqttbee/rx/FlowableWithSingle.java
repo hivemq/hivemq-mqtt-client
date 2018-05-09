@@ -47,7 +47,7 @@ public abstract class FlowableWithSingle<S, F> extends Flowable<F> {
     @NotNull
     @BackpressureSupport(BackpressureKind.FULL)
     @SchedulerSupport(SchedulerSupport.CUSTOM)
-    public abstract FlowableWithSingle<S, F> observeOnWithSingle(@NotNull final Scheduler scheduler);
+    public abstract FlowableWithSingle<S, F> observeOnBoth(@NotNull final Scheduler scheduler);
 
     /**
      * Modifies the upstream to perform its emissions and notifications including the single item on a specified
@@ -61,7 +61,7 @@ public abstract class FlowableWithSingle<S, F> extends Flowable<F> {
     @NotNull
     @BackpressureSupport(BackpressureKind.FULL)
     @SchedulerSupport(SchedulerSupport.CUSTOM)
-    public abstract FlowableWithSingle<S, F> observeOnWithSingle(
+    public abstract FlowableWithSingle<S, F> observeOnBoth(
             @NotNull final Scheduler scheduler, final boolean delayError);
 
     /**
@@ -77,7 +77,7 @@ public abstract class FlowableWithSingle<S, F> extends Flowable<F> {
     @NotNull
     @BackpressureSupport(BackpressureKind.FULL)
     @SchedulerSupport(SchedulerSupport.CUSTOM)
-    public abstract FlowableWithSingle<S, F> observeOnWithSingle(
+    public abstract FlowableWithSingle<S, F> observeOnBoth(
             @NotNull final Scheduler scheduler, final boolean delayError, final int bufferSize);
 
     /**
