@@ -40,7 +40,10 @@ public interface Mqtt3Client extends MqttClient {
     Single<Mqtt3ConnAck> connect(@NotNull Mqtt3Connect connect);
 
     @NotNull
-    FlowableWithSingle<Mqtt3SubAck, Mqtt3Publish> subscribe(@NotNull Mqtt3Subscribe subscribe);
+    Single<Mqtt3SubAck> subscribe(@NotNull Mqtt3Subscribe subscribe);
+
+    @NotNull
+    FlowableWithSingle<Mqtt3SubAck, Mqtt3Publish> subscribeWithStream(@NotNull Mqtt3Subscribe subscribe);
 
     @NotNull
     Flowable<Mqtt3Publish> remainingPublishes();

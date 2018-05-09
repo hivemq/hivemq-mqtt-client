@@ -42,7 +42,10 @@ public interface Mqtt5Client extends MqttClient {
     Single<Mqtt5ConnAck> connect(@NotNull Mqtt5Connect connect);
 
     @NotNull
-    FlowableWithSingle<Mqtt5SubAck, Mqtt5Publish> subscribe(@NotNull Mqtt5Subscribe subscribe);
+    Single<Mqtt5SubAck> subscribe(@NotNull Mqtt5Subscribe subscribe);
+
+    @NotNull
+    FlowableWithSingle<Mqtt5SubAck, Mqtt5Publish> subscribeWithStream(@NotNull Mqtt5Subscribe subscribe);
 
     @NotNull
     Flowable<Mqtt5Publish> remainingPublishes();

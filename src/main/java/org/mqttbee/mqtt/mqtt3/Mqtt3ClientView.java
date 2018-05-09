@@ -63,10 +63,19 @@ public class Mqtt3ClientView implements Mqtt3Client {
 
     @NotNull
     @Override
-    public FlowableWithSingle<Mqtt3SubAck, Mqtt3Publish> subscribe(@NotNull final Mqtt3Subscribe subscribe) {
+    public Single<Mqtt3SubAck> subscribe(@NotNull final Mqtt3Subscribe subscribe) {
         final Mqtt3SubscribeView subscribeView =
                 MustNotBeImplementedUtil.checkNotImplemented(subscribe, Mqtt3SubscribeView.class);
-        return wrapped.subscribe(subscribeView.getWrapped()).mapBoth(Mqtt3SubAckView::create, Mqtt3PublishView::create);
+        return wrapped.subscribe(subscribeView.getWrapped()).map(Mqtt3SubAckView::create);
+    }
+
+    @NotNull
+    @Override
+    public FlowableWithSingle<Mqtt3SubAck, Mqtt3Publish> subscribeWithStream(@NotNull final Mqtt3Subscribe subscribe) {
+        final Mqtt3SubscribeView subscribeView =
+                MustNotBeImplementedUtil.checkNotImplemented(subscribe, Mqtt3SubscribeView.class);
+        return wrapped.subscribeWithStream(subscribeView.getWrapped())
+                .mapBoth(Mqtt3SubAckView::create, Mqtt3PublishView::create);
     }
 
     @NotNull
