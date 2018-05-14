@@ -51,7 +51,7 @@ public class MqttSubscriptionFlow extends MqttIncomingPublishFlow implements Sin
     }
 
     @Override
-    public void onSuccess(final Mqtt5SubAck subAck) {
+    public void onSuccess(@NotNull final Mqtt5SubAck subAck) {
         if (done) {
             return;
         }

@@ -17,15 +17,15 @@
 
 package org.mqttbee.rx;
 
-import io.reactivex.annotations.NonNull;
+import org.mqttbee.annotations.NotNull;
 
 /**
  * @author Silvio Giebl
  */
 public interface SingleFlow<T> {
 
-    void onSuccess(@NonNull T t);
+    void onSuccess(@NotNull T t);
 
-    void onError(@NonNull Throwable t);
+    void onError(@NotNull Throwable t);
 
 }
