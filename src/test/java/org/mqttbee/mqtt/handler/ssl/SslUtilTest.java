@@ -208,7 +208,7 @@ public class SslUtilTest {
         }
 
         @Override
-        public int handshakeTimeout() {
+        public int handshakeTimeoutMs() {
             return 0;
         }
     }

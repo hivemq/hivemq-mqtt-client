@@ -51,7 +51,7 @@ class Mqtt3ClientExample {
     private static final String COMMAND = "command";
     private static final String SUBSCRIBE = "subscribe";
     private static final String PUBLISH = "publish";
-
+    //private boolean usesSsl = false;
     // create a client with a random UUID and connect to server
 
     // test server from hivemq
@@ -70,7 +70,14 @@ class Mqtt3ClientExample {
 
     // test server from mosquitto
     private final String server = "test.mosquitto.org";
-    private final int port = 8080;
+
+    // mosquitto websockets unencrypted
+    //private final int port = 8080;
+
+
+    // mosquitto websockets encrypted
+    private final int port = 8081;
+    private boolean usesSsl = true;
 
     private void subscribe(String topic, MqttQoS qos) {
 
@@ -162,6 +169,7 @@ class Mqtt3ClientExample {
                 .forServerHost(server)
                 .withServerPort(port)
                 .withServerPath("mqtt")
+                .usingSSL(usesSsl)
                 .usingWebSockets(isNotUsingMqttPort(port))
                 .usingMqtt3()
                 .reactive();
