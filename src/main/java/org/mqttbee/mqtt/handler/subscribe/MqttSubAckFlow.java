@@ -38,12 +38,12 @@ public class MqttSubAckFlow implements SingleFlow<Mqtt5SubAck>, Disposable {
     }
 
     @Override
-    public void onSuccess(final Mqtt5SubAck subAck) {
+    public void onSuccess(@NotNull final Mqtt5SubAck subAck) {
         observer.onSuccess(subAck);
     }
 
     @Override
-    public void onError(final Throwable t) {
+    public void onError(@NotNull final Throwable t) {
         observer.onError(t);
     }
 
