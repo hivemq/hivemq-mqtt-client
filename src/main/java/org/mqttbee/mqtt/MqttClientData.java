@@ -22,6 +22,7 @@ import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt.DefaultMqttClientSslData;
 import org.mqttbee.api.mqtt.MqttClientSslData;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientConnectionData;
@@ -31,6 +32,10 @@ import org.mqttbee.api.mqtt.mqtt5.advanced.Mqtt5AdvancedClientData;
 import org.mqttbee.mqtt.advanced.MqttAdvancedClientData;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 
+import java.security.InvalidAlgorithmParameterException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -202,7 +207,14 @@ public class MqttClientData implements Mqtt5ClientData {
     @NotNull
     @Override
     public Optional<MqttClientSslData> getSslData() {
-        return null;
+        MqttClientSslData sslData;
+        try {
+            sslData = new DefaultMqttClientSslData();
+            return Optional.of(sslData);
+        } catch (NoSuchAlgorithmException | UnrecoverableKeyException | KeyStoreException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
     }
 
     @Nullable

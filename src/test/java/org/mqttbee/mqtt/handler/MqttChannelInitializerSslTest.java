@@ -41,7 +41,7 @@ import static org.mockito.Mockito.when;
 /**
  * @author Christoph Schäbel
  */
-public class MqttSslChannelInitializerTest {
+public class MqttChannelInitializerSslTest {
 
     @Mock
     private MqttConnect mqtt5Connect;
@@ -63,22 +63,24 @@ public class MqttSslChannelInitializerTest {
 
     @Test(expected = IllegalStateException.class)
     public void test_initialize_no_ssldata_present() {
+        when(clientData.usesSSL()).thenReturn(true);
 
-        final MqttSslChannelInitializer mqtt5ChannelInitializer =
-                new MqttSslChannelInitializer(mqtt5Connect, connAckEmitter, clientData);
+        final MqttChannelInitializer mqttChannelInitializer =
+                new MqttChannelInitializer(mqtt5Connect, connAckEmitter, clientData);
 
-        mqtt5ChannelInitializer.initChannel(channel);
+        mqttChannelInitializer.initChannel(channel);
     }
 
     @Test
     public void test_initialize_default_ssldata() {
 
+        when(clientData.usesSSL()).thenReturn(true);
         when(clientData.getSslData()).thenReturn(Optional.of(mock(TestSslData.class)));
 
-        final MqttSslChannelInitializer mqtt5ChannelInitializer =
-                new MqttSslChannelInitializer(mqtt5Connect, connAckEmitter, clientData);
+        final MqttChannelInitializer mqttChannelInitializer =
+                new MqttChannelInitializer(mqtt5Connect, connAckEmitter, clientData);
 
-        mqtt5ChannelInitializer.initChannel(channel);
+        mqttChannelInitializer.initChannel(channel);
 
         assertNotNull(channel.pipeline().get(SslHandler.class));
     }
@@ -122,7 +124,7 @@ public class MqttSslChannelInitializerTest {
         }
 
         @Override
-        public int handshakeTimeout() {
+        public int handshakeTimeoutMs() {
             return handshakeTimeout;
         }
     }

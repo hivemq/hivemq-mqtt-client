@@ -72,7 +72,7 @@ public class SslUtil {
         final SSLEngine sslEngine = createSslEngine(channel, sslData);
         final SslHandler sslHandler = new SslHandler(sslEngine);
 
-        sslHandler.setHandshakeTimeoutMillis(sslData.handshakeTimeout());
+        sslHandler.setHandshakeTimeoutMillis(sslData.handshakeTimeoutMs());
         return sslHandler;
     }
 

@@ -17,6 +17,7 @@ package org.mqttbee.api.mqtt;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 /**
@@ -41,6 +42,6 @@ public interface MqttClientSslData {
     /**
      * @return SSL handshake timeout in milliseconds
      */
-    int handshakeTimeout();
+    int handshakeTimeoutMs();
 
 }
