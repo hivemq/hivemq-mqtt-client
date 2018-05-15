@@ -18,6 +18,7 @@
 package org.mqttbee.api.mqtt;
 
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3ClientBuilder;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientBuilder;
@@ -34,10 +35,9 @@ public class MqttClientBuilder {
     private MqttClientIdentifierImpl identifier = MqttClientIdentifierImpl.REQUEST_CLIENT_IDENTIFIER_FROM_SERVER;
     private String serverHost = "localhost";
     private int serverPort = 1883;
-    private String serverPath = "";
-    private boolean usesSSL;
-    private boolean usesWebSockets = false;
     private MqttClientExecutorConfigImpl executorConfig = MqttClientExecutorConfigImpl.DEFAULT;
+    private MqttWebsocketConfig mqttWebsocketConfig = null;
+    private MqttSslConfig mqttSslConfig = null;
 
     MqttClientBuilder() {
     }
@@ -55,7 +55,7 @@ public class MqttClientBuilder {
     }
 
     @NotNull
-    public MqttClientBuilder forServerHost(@NotNull final String host) {
+    public MqttClientBuilder withServerHost(@NotNull final String host) {
         this.serverHost = host;
         return this;
     }
@@ -67,20 +67,26 @@ public class MqttClientBuilder {
     }
 
     @NotNull
-    public MqttClientBuilder withServerPath(final String serverPath) {
-        this.serverPath = serverPath;
+    public MqttClientBuilder usingSsl() {
+        this.mqttSslConfig = new MqttSslConfig();
+        return this;
+    }
+    
+    @NotNull
+    public MqttClientBuilder usingSsl(@Nullable final MqttSslConfig mqttSslConfig) {
+        this.mqttSslConfig = mqttSslConfig;
         return this;
     }
 
     @NotNull
-    public MqttClientBuilder usingSSL(final boolean usesSSl) {
-        this.usesSSL = usesSSl;
+    public MqttClientBuilder usingWebSockets() {
+        this.mqttWebsocketConfig = new MqttWebsocketConfig();
         return this;
     }
 
     @NotNull
-    public MqttClientBuilder usingWebSockets(final boolean usesWebSockets) {
-        this.usesWebSockets = usesWebSockets;
+    public MqttClientBuilder usingWebSockets(@Nullable final MqttWebsocketConfig mqttWebsocketConfig) {
+        this.mqttWebsocketConfig = mqttWebsocketConfig;
         return this;
     }
 
@@ -93,12 +99,13 @@ public class MqttClientBuilder {
 
     @NotNull
     public Mqtt3ClientBuilder usingMqtt3() {
-        return new Mqtt3ClientBuilder(identifier, serverHost, serverPort, serverPath, usesSSL, usesWebSockets, executorConfig);
+        return new Mqtt3ClientBuilder(identifier, serverHost, serverPort, mqttSslConfig, mqttWebsocketConfig,
+                executorConfig);
     }
 
     @NotNull
     public Mqtt5ClientBuilder usingMqtt5() {
-        return new Mqtt5ClientBuilder(identifier, serverHost, serverPort, serverPath, usesSSL, usesWebSockets, executorConfig);
+        return new Mqtt5ClientBuilder(identifier, serverHost, serverPort, mqttSslConfig, mqttWebsocketConfig,
+                executorConfig);
     }
-
 }

@@ -63,7 +63,7 @@ public class MqttChannelInitializerSslTest {
 
     @Test(expected = IllegalStateException.class)
     public void test_initialize_no_ssldata_present() {
-        when(clientData.usesSSL()).thenReturn(true);
+        when(clientData.usesSsl()).thenReturn(true);
 
         final MqttChannelInitializer mqttChannelInitializer =
                 new MqttChannelInitializer(mqtt5Connect, connAckEmitter, clientData);
@@ -74,7 +74,7 @@ public class MqttChannelInitializerSslTest {
     @Test
     public void test_initialize_default_ssldata() {
 
-        when(clientData.usesSSL()).thenReturn(true);
+        when(clientData.usesSsl()).thenReturn(true);
         when(clientData.getSslData()).thenReturn(Optional.of(mock(TestSslData.class)));
 
         final MqttChannelInitializer mqttChannelInitializer =

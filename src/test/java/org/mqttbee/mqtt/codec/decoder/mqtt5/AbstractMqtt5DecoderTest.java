@@ -41,7 +41,7 @@ abstract class AbstractMqtt5DecoderTest extends AbstractMqttDecoderTest {
         super(decoders);
         clientData =
                 new MqttClientData(MqttVersion.MQTT_5_0, Objects.requireNonNull(MqttClientIdentifierImpl.from("test")),
-                        "localhost", 1883, "", false, false, false, false, MqttClientExecutorConfigImpl.DEFAULT, null);
+                        "localhost", 1883, null, null, false, false, MqttClientExecutorConfigImpl.DEFAULT, null);
     }
 
     @Override
