@@ -18,6 +18,9 @@
 package org.mqttbee.api.mqtt.mqtt3;
 
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt.MqttSslConfig;
+import org.mqttbee.api.mqtt.MqttWebsocketConfig;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.MqttClientExecutorConfigImpl;
 import org.mqttbee.mqtt.MqttVersion;
@@ -33,21 +36,20 @@ public class Mqtt3ClientBuilder {
     private final MqttClientIdentifierImpl identifier;
     private final String serverHost;
     private final int serverPort;
-    private final String serverPath;
-    private final boolean usesSSL;
+    private final MqttWebsocketConfig mqttWebsocketConfig;
+    private final MqttSslConfig mqttSslConfig;
     private final MqttClientExecutorConfigImpl executorConfig;
-    private final boolean usesWebSockets;
+
 
     public Mqtt3ClientBuilder(
             @NotNull final MqttClientIdentifierImpl identifier, @NotNull final String serverHost, final int serverPort,
-            final String serverPath, final boolean usesSSL, @NotNull boolean usesWebSockets, @NotNull final MqttClientExecutorConfigImpl executorConfig) {
-
+            @Nullable final MqttSslConfig mqttSslConfig, @Nullable final MqttWebsocketConfig mqttWebsocketConfig,
+            @NotNull final MqttClientExecutorConfigImpl executorConfig) {
         this.identifier = identifier;
         this.serverHost = serverHost;
         this.serverPort = serverPort;
-        this.serverPath = serverPath;
-        this.usesSSL = usesSSL;
-        this.usesWebSockets = usesWebSockets;
+        this.mqttWebsocketConfig = mqttWebsocketConfig;
+        this.mqttSslConfig = mqttSslConfig;
         this.executorConfig = executorConfig;
     }
 
@@ -57,7 +59,7 @@ public class Mqtt3ClientBuilder {
     }
 
     private MqttClientData buildClientData() {
-        return new MqttClientData(MqttVersion.MQTT_3_1_1, identifier, serverHost, serverPort, serverPath, usesSSL, usesWebSockets, false, false,
+        return new MqttClientData(MqttVersion.MQTT_3_1_1, identifier, serverHost, serverPort, mqttWebsocketConfig, mqttSslConfig, false, false,
                 executorConfig, null);
     }
 }

@@ -20,6 +20,8 @@ package org.mqttbee.api.mqtt.mqtt5;
 import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt.MqttSslConfig;
+import org.mqttbee.api.mqtt.MqttWebsocketConfig;
 import org.mqttbee.api.mqtt.mqtt5.advanced.Mqtt5AdvancedClientData;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.MqttClientExecutorConfigImpl;
@@ -37,19 +39,18 @@ public class Mqtt5ClientBuilder {
     private final MqttClientIdentifierImpl identifier;
     private final String serverHost;
     private final int serverPort;
-    private final String serverPath;
-    private final boolean usesSSL;
-    private final boolean usesWebSockets;
     private final MqttClientExecutorConfigImpl executorConfig;
+    private final MqttWebsocketConfig mqttWebsocketConfig;
+    private final MqttSslConfig mqttSslConfig;
 
     private boolean followsRedirects = false;
     private boolean allowsServerReAuth = false;
     private MqttAdvancedClientData advancedClientData;
 
-
     public Mqtt5ClientBuilder(
             @NotNull final MqttClientIdentifierImpl identifier, @NotNull final String serverHost, final int serverPort,
-            final String serverPath, final boolean usesSSL, final boolean usesWebSockets, @NotNull final MqttClientExecutorConfigImpl executorConfig) {
+            @Nullable final MqttSslConfig mqttSslConfig, @Nullable final MqttWebsocketConfig mqttWebsocketConfig,
+            @NotNull final MqttClientExecutorConfigImpl executorConfig) {
 
         Preconditions.checkNotNull(identifier);
         Preconditions.checkNotNull(serverHost);
@@ -57,9 +58,8 @@ public class Mqtt5ClientBuilder {
         this.identifier = identifier;
         this.serverHost = serverHost;
         this.serverPort = serverPort;
-        this.serverPath = serverPath;
-        this.usesSSL = usesSSL;
-        this.usesWebSockets = usesWebSockets;
+        this.mqttWebsocketConfig = mqttWebsocketConfig;
+        this.mqttSslConfig = mqttSslConfig;
         this.executorConfig = executorConfig;
     }
 
@@ -88,7 +88,7 @@ public class Mqtt5ClientBuilder {
     }
 
     private MqttClientData buildClientData() {
-        return new MqttClientData(MqttVersion.MQTT_5_0, identifier, serverHost, serverPort, serverPath, usesSSL, usesWebSockets, followsRedirects,
+        return new MqttClientData(MqttVersion.MQTT_5_0, identifier, serverHost, serverPort, mqttWebsocketConfig, mqttSslConfig, followsRedirects,
                 allowsServerReAuth, executorConfig, advancedClientData);
     }
 

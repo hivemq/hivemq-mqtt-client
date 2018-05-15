@@ -15,6 +15,9 @@
  */
 package org.mqttbee.api.mqtt;
 
+import org.mqttbee.annotations.NotNull;
+import org.mqttbee.annotations.Nullable;
+
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
 import java.security.*;
@@ -53,11 +56,12 @@ public class DefaultMqttClientSslData implements MqttClientSslData {
     private final TrustManagerFactory trustManagerFactory;
     private final List<String> protocols = Arrays.asList("TLSv1.2", "TLSv1.1");
 
-    public DefaultMqttClientSslData() throws NoSuchAlgorithmException, UnrecoverableKeyException, KeyStoreException {
+    public DefaultMqttClientSslData(@Nullable KeyStore keyStore, @NotNull String keyStorePass, @Nullable KeyStore trustStore) throws NoSuchAlgorithmException, UnrecoverableKeyException, KeyStoreException {
         keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-        keyManagerFactory.init(null, "".toCharArray());
+        keyManagerFactory.init(keyStore, keyStorePass.toCharArray());
         trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-        trustManagerFactory.init((KeyStore) null);
+        trustManagerFactory.init(trustStore);
+
     }
 
     @Override

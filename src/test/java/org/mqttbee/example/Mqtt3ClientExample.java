@@ -20,6 +20,7 @@ package org.mqttbee.example;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
+import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.MqttClient;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3Client;
@@ -32,7 +33,14 @@ import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscription;
 import org.mqttbee.util.ByteBufferUtil;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -43,7 +51,25 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author David Katz
  * <p>
  * A simple test app. Can be run via gradle:
- * ./gradlew -DmainClass=org.mqttbee.example.Mqtt3ClientExample execute -Dcommand=publish -Dtopic=xyz
+ * Publisher:
+ * ./gradlew -PmainClass=org.mqttbee.example.Mqtt3ClientExample \
+ * -Dcommand=publish \
+ * -Dtopic=a/b \
+ * -Dkeystore=src/test/resources/testkeys/mosquitto/mosquitto.org.client.jks \
+ * -Dkeystorepass=testkeystore \
+ * -Dtruststore=src/test/resources/testkeys/mosquitto/cacerts.jks \
+ * -Dtruststorepass=testcas \
+ * execute
+ *
+ *  Subscriber
+ * ./gradlew -PmainClass=org.mqttbee.example.Mqtt3ClientExample \
+ * -Dcommand=subscribe \
+ * -Dtopic=a/b \
+ * -Dkeystore=src/test/resources/testkeys/mosquitto/mosquitto.org.client.jks \
+ * -Dkeystorepass=testkeystore \
+ * -Dtruststore=src/test/resources/testkeys/mosquitto/cacerts.jks \
+ * -Dtruststorepass=testcas \
+ * execute
  */
 class Mqtt3ClientExample {
     private static final String TOPIC = "topic";
@@ -51,6 +77,11 @@ class Mqtt3ClientExample {
     private static final String COMMAND = "command";
     private static final String SUBSCRIBE = "subscribe";
     private static final String PUBLISH = "publish";
+    private static final String KEYSTORE_PATH = "keystore";
+    private static final String KEYSTORE_PASS = "keystorepass";
+    private static final String JKS = "JKS";
+    private static final String TRUSTSTORE_PATH = "truststore";
+    private static final String TRUSTSTORE_PASS = "truststorepass";
     //private boolean usesSsl = false;
     // create a client with a random UUID and connect to server
 
@@ -76,8 +107,17 @@ class Mqtt3ClientExample {
 
 
     // mosquitto websockets encrypted
-    private final int port = 8081;
+    private final int port = 8884;
     private boolean usesSsl = true;
+    private final KeyStore trustStore;
+    private final KeyStore keyStore;
+    private final String keyStorePassword;
+
+    private Mqtt3ClientExample(KeyStore trustStore, KeyStore keyStore, String keyStorePassword) {
+        this.trustStore = trustStore;
+        this.keyStore = keyStore;
+        this.keyStorePassword = keyStorePassword;
+    }
 
     private void subscribe(String topic, MqttQoS qos) {
 
@@ -116,7 +156,7 @@ class Mqtt3ClientExample {
     }
 
     private boolean isNotUsingMqttPort(int port) {
-        return !(port == 1883 || port == 8883);
+        return !(port == 1883 || port == 8883 || port == 8884);
     }
 
     private void publisher(final String topic, final MqttQoS qos) {
@@ -170,6 +210,9 @@ class Mqtt3ClientExample {
                 .withServerPort(port)
                 .withServerPath("mqtt")
                 .usingSSL(usesSsl)
+                .keyStore(keyStore)
+                .keyStorePassword(keyStorePassword)
+                .trustStore(trustStore)
                 .usingWebSockets(isNotUsingMqttPort(port))
                 .usingMqtt3()
                 .reactive();
@@ -179,14 +222,32 @@ class Mqtt3ClientExample {
         return System.getProperty(key) != null ? System.getProperty(key) : defaultValue;
     }
 
-    public static void main(String[] args) {
+    private static KeyStore loadKeyStore(@Nullable String keyStorePath, @Nullable String keyStorePass) throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
+        if (keyStorePath == null) {
+            return null;
+        }
 
+        KeyStore keyStore = KeyStore.getInstance(JKS);
+        InputStream readStream = new FileInputStream(keyStorePath);
+        char[] keystorePassChars = keyStorePass != null ? keyStorePass.toCharArray() : new char[0];
+        keyStore.load(readStream, keystorePassChars);
+        return keyStore;
+    }
 
-        Mqtt3ClientExample instance = new Mqtt3ClientExample();
-
+    public static void main(String[] args) throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
         String command = getProperty(COMMAND, SUBSCRIBE);
         String topic = getProperty(TOPIC, "a/b");
         MqttQoS qos = MqttQoS.fromCode(Integer.parseInt(getProperty(QOS, "1")));
+
+        String trustStorePath = getProperty(TRUSTSTORE_PATH, null);
+        String trustStorePass = getProperty(TRUSTSTORE_PASS, "");
+        String keyStorePath = getProperty(KEYSTORE_PATH, null);
+        String keyStorePass = getProperty(KEYSTORE_PASS, "");
+
+        Mqtt3ClientExample instance = new Mqtt3ClientExample(
+                loadKeyStore(trustStorePath, trustStorePass),
+                loadKeyStore(keyStorePath, keyStorePass),
+                keyStorePass);
 
         switch (command) {
             case SUBSCRIBE:

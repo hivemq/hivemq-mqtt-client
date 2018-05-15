@@ -12,42 +12,25 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
-
 package org.mqttbee.api.mqtt;
 
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
 
-import java.util.Optional;
+public class MqttWebsocketConfig {
+    private String serverPath;
 
-/**
- * @author Silvio Giebl
- */
-public interface MqttClientData {
+    public MqttWebsocketConfig() {
+    }
 
-    @NotNull
-    Optional<MqttClientIdentifier> getClientIdentifier();
-
-    @NotNull
-    String getServerHost();
-
-    int getServerPort();
-
-    String getServerPath();
-
-    boolean usesSsl();
+    public MqttWebsocketConfig withServerPath(@NotNull String serverPath) {
+        // remove any leading slashes
+        this.serverPath = serverPath.replaceAll("^/+", "");
+        return this;
+    }
 
     @NotNull
-    Optional<MqttClientSslData> getSslData();
-
-    @NotNull
-    MqttClientExecutorConfig getExecutorConfig();
-
-    boolean isConnecting();
-
-    boolean isConnected();
-
-    boolean usesWebSockets();
+    public String getServerPath() {
+        return serverPath;
+    }
 }

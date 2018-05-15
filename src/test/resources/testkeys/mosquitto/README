@@ -1,0 +1,31 @@
+This are test cryptographic artifacts to be used for internal testing purposes.
+They are not to be used for any other purposes.
+
+
+truststore: cacerts.jks
+server cert for test.mosquitto.org from http://test.mosquitto.org/ssl/mosquitto.org.crt
+password: testcas
+
+keystore: mosquitto.org.client.jks
+client cert signed by http://test.mosquitto.org/ssl/
+password: testkeystore
+
+
+to generate truststore:
+keytool -import -trustcacerts -alias mosquitto -file src/test/resources/testkeys/mosquitto/mosquitto.org.crt -keystore src/test/resources/testkeys/cacerts.jks
+
+to generate keystore:
+Given a private key and a cert signed by mosquitto:
+openssl pkcs12 -export -in src/test/resources/testkeys/mosquitto/mosquitto.org.client.crt \
+-inkey src/test/resources/testkeys/client.key \
+-out src/test/resources/testkeys/mosquitto/keystore.p12 \
+-name mosquitto.client.keystore \
+-CAfile src/test/resources/testkeys/mosquitto/mosquitto.org.crt \
+-caname mosquitto.org
+
+keytool -importkeystore -deststorepass testkeystore \
+-destkeystore src/test/resources/testkeys/mosquitto/mosquitto.org.client.jks \
+-srckeystore src/test/resources/testkeys/mosquitto/keystore.p12 \
+-srcstoretype PKCS12 \
+-srcstorepass testkeystore \
+-alias mosquitto.client.keystore
