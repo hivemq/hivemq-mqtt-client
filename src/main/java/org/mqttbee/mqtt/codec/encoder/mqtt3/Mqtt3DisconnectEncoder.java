@@ -18,12 +18,13 @@
 package org.mqttbee.mqtt.codec.encoder.mqtt3;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoder;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
+import org.mqttbee.mqtt.message.MqttMessage;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
 
 /**
@@ -38,20 +39,13 @@ public class Mqtt3DisconnectEncoder implements MqttMessageEncoder {
     private static final ByteBuf PACKET =
             Unpooled.directBuffer(ENCODED_LENGTH).writeByte(Mqtt3MessageType.DISCONNECT.getCode() << 4).writeByte(0);
 
-    @Override
-    public void encode(@NotNull final ByteBuf out, @NotNull final Channel channel) {
-        // no op
-    }
-
     @NotNull
     @Override
-    public ByteBuf allocateBuffer(@NotNull final Channel channel) {
-        return PACKET.retainedDuplicate();
-    }
+    public ByteBuf encode(
+            @NotNull final MqttMessage message, @NotNull final ByteBufAllocator allocator,
+            final int maximumPacketSize) {
 
-    @Override
-    public int encodedLength(final int maxPacketSize) {
-        return ENCODED_LENGTH;
+        return PACKET.retainedDuplicate();
     }
 
 }

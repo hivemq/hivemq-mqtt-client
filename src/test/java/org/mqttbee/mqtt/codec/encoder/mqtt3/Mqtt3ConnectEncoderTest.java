@@ -26,7 +26,6 @@ import org.mqttbee.mqtt.codec.encoder.AbstractMqtt5EncoderTest;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
-import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
 import org.mqttbee.mqtt.message.connect.MqttConnectWrapper;
 import org.mqttbee.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
@@ -36,7 +35,6 @@ import java.nio.ByteBuffer;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class Mqtt3ConnectEncoderTest extends AbstractMqtt5EncoderTest {
 
@@ -71,14 +69,6 @@ class Mqtt3ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         final MqttConnect connect = Mqtt3ConnectView.wrapped(60, true, null, null);
         final MqttConnectWrapper connectWrapper = connect.wrap(identifier, null);
         encode(EXAMPLE_CONNECT, connectWrapper);
-    }
-
-    @Test
-    void encodedLength_SUCESS() {
-        final MqttClientIdentifierImpl identifier = Objects.requireNonNull(MqttClientIdentifierImpl.from("TEST"));
-        final MqttConnect connect = Mqtt3ConnectView.wrapped(60, true, null, null);
-        final MqttConnectWrapper connectWrapper = connect.wrap(identifier, null);
-        assertEquals(18, connectWrapper.getEncoder().encodedLength(MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT));
     }
 
     @Test

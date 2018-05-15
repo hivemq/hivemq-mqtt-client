@@ -19,16 +19,16 @@ package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
 import com.google.common.primitives.ImmutableIntArray;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
+import io.netty.buffer.ByteBufAllocator;
+import io.netty.buffer.Unpooled;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
-import org.mqttbee.mqtt.MqttServerConnectionData;
 import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoder;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageWrapperEncoderApplier;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttPublishEncoderProvider;
+import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderApplier;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider;
-import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider.NewMqttWrappedMessageEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttBinaryData;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
@@ -46,9 +46,22 @@ import static org.mqttbee.mqtt.message.publish.MqttPublishWrapper.DEFAULT_NO_TOP
  */
 public class Mqtt5PublishEncoder extends Mqtt5WrappedMessageEncoder<MqttPublish, MqttPublishWrapper> {
 
+    private static Mqtt5PublishEncoder INSTANCE = new Mqtt5PublishEncoder();
     public static final MqttWrappedMessageEncoderProvider<MqttPublish, MqttPublishWrapper, MqttPublishEncoderProvider>
             PROVIDER =
-            new NewMqttWrappedMessageEncoderProvider<>(Mqtt5PublishEncoder::new, Mqtt5PublishWrapperEncoder.PROVIDER);
+            new MqttWrappedMessageEncoderProvider<MqttPublish, MqttPublishWrapper, MqttPublishEncoderProvider>() {
+                @NotNull
+                @Override
+                public MqttPublishEncoderProvider getWrapperEncoderProvider() {
+                    return Mqtt5PublishWrapperEncoder.PROVIDER;
+                }
+
+                @Override
+                public MqttWrappedMessageEncoderApplier<MqttPublish, MqttPublishWrapper> get() {
+                    return INSTANCE;
+                }
+            };
+//            new NewMqttWrappedMessageEncoderProvider<>(Mqtt5PublishEncoder::new, Mqtt5PublishWrapperEncoder.PROVIDER);
 
     @Override
     int calculateRemainingLengthWithoutProperties() {
@@ -96,13 +109,14 @@ public class Mqtt5PublishEncoder extends Mqtt5WrappedMessageEncoder<MqttPublish,
     @NotNull
     @Override
     public MqttMessageEncoder wrap(@NotNull final MqttPublishWrapper wrapper) {
-        return Mqtt5PublishWrapperEncoder.APPLIER.apply(wrapper, this);
+        return Mqtt5PublishWrapperEncoder.INSTANCE.apply(wrapper, this);
     }
 
 
     public static class Mqtt5PublishWrapperEncoder extends
             Mqtt5MessageWrapperEncoder<MqttPublishWrapper, MqttPublish, MqttPublishEncoderProvider, Mqtt5PublishEncoder> {
 
+        private static final Mqtt5PublishWrapperEncoder INSTANCE = new Mqtt5PublishWrapperEncoder();
         private static final MqttPublishEncoderProvider PROVIDER =
                 new MqttPublishEncoderProvider(Mqtt5PubAckEncoder.PROVIDER, Mqtt5PubRecEncoder.PROVIDER);
         private static final MqttMessageWrapperEncoderApplier<MqttPublishWrapper, MqttPublish, Mqtt5PublishEncoder>
@@ -111,7 +125,7 @@ public class Mqtt5PublishEncoder extends Mqtt5WrappedMessageEncoder<MqttPublish,
         private static final int FIXED_HEADER = Mqtt5MessageType.PUBLISH.getCode() << 4;
 
         @Override
-        int additionalRemainingLength() {
+        int additionalRemainingLength(@NotNull final MqttPublishWrapper message) {
             int additionalRemainingLength = 0;
 
             if ((message.getTopicAlias() != DEFAULT_NO_TOPIC_ALIAS) && !message.isNewTopicAlias()) {
@@ -123,7 +137,7 @@ public class Mqtt5PublishEncoder extends Mqtt5WrappedMessageEncoder<MqttPublish,
         }
 
         @Override
-        int additionalPropertyLength() {
+        int additionalPropertyLength(@NotNull final MqttPublishWrapper message) {
             int additionalPropertyLength = 0;
 
             additionalPropertyLength += shortPropertyEncodedLength(message.getTopicAlias(), DEFAULT_NO_TOPIC_ALIAS);
@@ -136,16 +150,35 @@ public class Mqtt5PublishEncoder extends Mqtt5WrappedMessageEncoder<MqttPublish,
             return additionalPropertyLength;
         }
 
+        @NotNull
         @Override
-        public void encode(@NotNull final ByteBuf out, @NotNull final Channel channel) {
-            final int maximumPacketSize = MqttServerConnectionData.getMaximumPacketSize(channel);
+        protected ByteBuf encode(
+                @NotNull final MqttPublishWrapper message, @NotNull final ByteBufAllocator allocator,
+                final int encodedLength, final int remainingLength, final int propertyLength,
+                final int omittedProperties) {
 
-            encodeFixedHeader(out, maximumPacketSize);
-            encodeVariableHeader(out, maximumPacketSize);
-            encodePayload(out);
+            final ByteBuffer payload = message.getWrapped().getRawPayload();
+            if ((payload != null) && payload.isDirect()) {
+                final int encodedLengthWithoutPayload = encodedLength - payload.remaining();
+                final ByteBuf out = allocator.ioBuffer(encodedLengthWithoutPayload, encodedLengthWithoutPayload);
+                encode(message, out, remainingLength, propertyLength, omittedProperties);
+                return Unpooled.unmodifiableBuffer(out, Unpooled.wrappedBuffer(payload));
+            }
+            return super.encode(message, allocator, encodedLength, remainingLength, propertyLength, omittedProperties);
         }
 
-        private void encodeFixedHeader(@NotNull final ByteBuf out, final int maximumPacketSize) {
+        @Override
+        protected void encode(
+                @NotNull final MqttPublishWrapper message, @NotNull final ByteBuf out, final int remainingLength,
+                final int propertyLength, final int omittedProperties) {
+
+            encodeFixedHeader(message, out, remainingLength);
+            encodeVariableHeader(message, out, propertyLength, omittedProperties);
+            encodePayload(message, out);
+        }
+
+        private void encodeFixedHeader(
+                @NotNull final MqttPublishWrapper message, @NotNull final ByteBuf out, final int remainingLength) {
             final MqttPublish publish = message.getWrapped();
 
             int flags = 0;
@@ -159,10 +192,13 @@ public class Mqtt5PublishEncoder extends Mqtt5WrappedMessageEncoder<MqttPublish,
 
             out.writeByte(FIXED_HEADER | flags);
 
-            MqttVariableByteInteger.encode(remainingLength(maximumPacketSize), out);
+            MqttVariableByteInteger.encode(remainingLength, out);
         }
 
-        private void encodeVariableHeader(@NotNull final ByteBuf out, final int maximumPacketSize) {
+        private void encodeVariableHeader(
+                @NotNull final MqttPublishWrapper message, @NotNull final ByteBuf out, final int propertyLength,
+                final int omittedProperties) {
+
             final MqttPublish publish = message.getWrapped();
 
             if ((message.getTopicAlias() == DEFAULT_NO_TOPIC_ALIAS) || (message.isNewTopicAlias())) {
@@ -175,15 +211,17 @@ public class Mqtt5PublishEncoder extends Mqtt5WrappedMessageEncoder<MqttPublish,
                 out.writeShort(message.getPacketIdentifier());
             }
 
-            encodeProperties(out, maximumPacketSize);
+            encodeProperties(message, out, propertyLength, omittedProperties);
         }
 
-        private void encodeProperties(@NotNull final ByteBuf out, final int maximumPacketSize) {
-            final int propertyLength = propertyLength(maximumPacketSize);
+        private void encodeProperties(
+                @NotNull final MqttPublishWrapper message, @NotNull final ByteBuf out, final int propertyLength,
+                final int omittedProperties) {
+
             MqttVariableByteInteger.encode(propertyLength, out);
 
             wrappedEncoder.encodeFixedProperties(out);
-            encodeOmissibleProperties(maximumPacketSize, out);
+            encodeOmissibleProperties(message, out, omittedProperties);
 
             encodeShortProperty(TOPIC_ALIAS, message.getTopicAlias(), DEFAULT_NO_TOPIC_ALIAS, out);
 
@@ -193,9 +231,9 @@ public class Mqtt5PublishEncoder extends Mqtt5WrappedMessageEncoder<MqttPublish,
             }
         }
 
-        private void encodePayload(@NotNull final ByteBuf out) {
+        private void encodePayload(@NotNull final MqttPublishWrapper message, @NotNull final ByteBuf out) {
             final ByteBuffer payload = message.getWrapped().getRawPayload();
-            if (payload != null) {
+            if ((payload != null) && !payload.isDirect()) {
                 out.writeBytes(payload.duplicate());
             }
         }

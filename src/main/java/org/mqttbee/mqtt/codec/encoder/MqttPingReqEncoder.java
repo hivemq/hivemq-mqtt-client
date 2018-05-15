@@ -18,10 +18,11 @@
 package org.mqttbee.mqtt.codec.encoder;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
+import org.mqttbee.mqtt.message.MqttMessage;
 
 /**
  * @author Silvio Giebl
@@ -34,20 +35,13 @@ public class MqttPingReqEncoder implements MqttMessageEncoder {
     private static final ByteBuf PACKET =
             Unpooled.directBuffer(ENCODED_LENGTH).writeByte(Mqtt5MessageType.PINGREQ.getCode() << 4).writeByte(0);
 
-    @Override
-    public int encodedLength(final int maxPacketSize) {
-        return ENCODED_LENGTH;
-    }
-
     @NotNull
     @Override
-    public ByteBuf allocateBuffer(@NotNull final Channel channel) {
-        return PACKET.retainedDuplicate();
-    }
+    public ByteBuf encode(
+            @NotNull final MqttMessage message, @NotNull final ByteBufAllocator allocator,
+            final int maximumPacketSize) {
 
-    @Override
-    public void encode(@NotNull final ByteBuf out, @NotNull final Channel channel) {
-        // no op
+        return PACKET.retainedDuplicate();
     }
 
 }

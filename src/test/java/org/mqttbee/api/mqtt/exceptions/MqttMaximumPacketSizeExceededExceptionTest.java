@@ -35,7 +35,7 @@ class MqttMaximumPacketSizeExceededExceptionTest {
                 new MqttAuth(
                         Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION,
                         requireNonNull(MqttUTF8StringImpl.from("test")), null, null,
-                        MqttUserPropertiesImpl.NO_USER_PROPERTIES, Mqtt5AuthEncoder.PROVIDER), 100);
+                        MqttUserPropertiesImpl.NO_USER_PROPERTIES, Mqtt5AuthEncoder.PROVIDER), 200, 100);
         exception.fillInStackTrace();
         assertEquals(0, exception.getStackTrace().length);
     }
