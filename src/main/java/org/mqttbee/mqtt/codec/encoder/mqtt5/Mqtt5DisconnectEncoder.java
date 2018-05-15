@@ -52,13 +52,13 @@ public class Mqtt5DisconnectEncoder extends
     }
 
     @Override
-    int additionalPropertyLength() {
+    int additionalPropertyLength(@NotNull final MqttDisconnect message) {
         return intPropertyEncodedLength(message.getRawSessionExpiryInterval(), SESSION_EXPIRY_INTERVAL_FROM_CONNECT) +
                 nullablePropertyEncodedLength(message.getRawServerReference());
     }
 
     @Override
-    void encodeAdditionalProperties(@NotNull final ByteBuf out) {
+    void encodeAdditionalProperties(@NotNull final MqttDisconnect message, @NotNull final ByteBuf out) {
         encodeIntProperty(SESSION_EXPIRY_INTERVAL, message.getRawSessionExpiryInterval(),
                 SESSION_EXPIRY_INTERVAL_FROM_CONNECT, out);
         encodeNullableProperty(SERVER_REFERENCE, message.getRawServerReference(), out);

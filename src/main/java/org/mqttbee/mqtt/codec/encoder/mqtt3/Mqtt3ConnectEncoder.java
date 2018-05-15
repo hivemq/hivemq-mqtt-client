@@ -18,7 +18,6 @@
 package org.mqttbee.mqtt.codec.encoder.mqtt3;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
@@ -47,7 +46,9 @@ public class Mqtt3ConnectEncoder extends Mqtt3WrappedMessageEncoder<MqttConnect,
     private static final byte PROTOCOL_VERSION = 4;
 
     @Override
-    int calculateRemainingLength() {
+    int calculateRemainingLength(@NotNull final MqttConnectWrapper message) {
+        final MqttConnect wrapped = message.getWrapped();
+
         int remainingLength = VARIABLE_HEADER_FIXED_LENGTH;
 
         remainingLength += message.getClientIdentifier().encodedLength();
@@ -68,18 +69,22 @@ public class Mqtt3ConnectEncoder extends Mqtt3WrappedMessageEncoder<MqttConnect,
     }
 
     @Override
-    public void encode(@NotNull final ByteBuf out, @NotNull final Channel channel) {
-        encodeFixedHeader(out);
-        encodeVariableHeader(out);
-        encodePayload(out);
+    public void encode(
+            @NotNull final MqttConnectWrapper message, @NotNull final ByteBuf out, final int remainingLength) {
+
+        encodeFixedHeader(out, remainingLength);
+        encodeVariableHeader(message, out);
+        encodePayload(message, out);
     }
 
-    private void encodeFixedHeader(@NotNull final ByteBuf out) {
+    private void encodeFixedHeader(@NotNull final ByteBuf out, final int remainingLength) {
         out.writeByte(FIXED_HEADER);
-        MqttVariableByteInteger.encode(remainingLength(), out);
+        MqttVariableByteInteger.encode(remainingLength, out);
     }
 
-    private void encodeVariableHeader(@NotNull final ByteBuf out) {
+    private void encodeVariableHeader(@NotNull final MqttConnectWrapper message, @NotNull final ByteBuf out) {
+        final MqttConnect wrapped = message.getWrapped();
+
         MqttUTF8StringImpl.PROTOCOL_NAME.to(out);
         out.writeByte(PROTOCOL_VERSION);
 
@@ -113,20 +118,20 @@ public class Mqtt3ConnectEncoder extends Mqtt3WrappedMessageEncoder<MqttConnect,
         out.writeShort(wrapped.getKeepAlive());
     }
 
-    private void encodePayload(@NotNull final ByteBuf out) {
+    private void encodePayload(@NotNull final MqttConnectWrapper message, @NotNull final ByteBuf out) {
         message.getClientIdentifier().to(out);
 
-        encodeWillPublish(out);
+        encodeWillPublish(message, out);
 
-        final MqttSimpleAuth simpleAuth = wrapped.getRawSimpleAuth();
+        final MqttSimpleAuth simpleAuth = message.getWrapped().getRawSimpleAuth();
         if (simpleAuth != null) {
             encodeNullable(simpleAuth.getRawUsername(), out);
             encodeNullable(simpleAuth.getRawPassword(), out);
         }
     }
 
-    private void encodeWillPublish(@NotNull final ByteBuf out) {
-        final MqttWillPublish willPublish = wrapped.getRawWillPublish();
+    private void encodeWillPublish(@NotNull final MqttConnectWrapper message, @NotNull final ByteBuf out) {
+        final MqttWillPublish willPublish = message.getWrapped().getRawWillPublish();
         if (willPublish != null) {
             willPublish.getTopic().to(out);
             encodeNullable(willPublish.getRawPayload(), out);

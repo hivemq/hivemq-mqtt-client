@@ -18,7 +18,6 @@
 package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.exceptions.MqttVariableByteIntegerExceededException;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
@@ -142,12 +141,12 @@ public class Mqtt5ConnectEncoder extends Mqtt5WrappedMessageEncoder<MqttConnect,
         private static final byte PROTOCOL_VERSION = 5;
 
         @Override
-        int additionalRemainingLength() {
+        int additionalRemainingLength(@NotNull final MqttConnectWrapper message) {
             return message.getClientIdentifier().encodedLength();
         }
 
         @Override
-        int additionalPropertyLength() {
+        int additionalPropertyLength(@NotNull final MqttConnectWrapper message) {
             int additionalPropertyLength = 0;
 
             final MqttEnhancedAuth enhancedAuth = message.getEnhancedAuth();
@@ -160,18 +159,24 @@ public class Mqtt5ConnectEncoder extends Mqtt5WrappedMessageEncoder<MqttConnect,
         }
 
         @Override
-        public void encode(@NotNull final ByteBuf out, @NotNull final Channel channel) {
-            encodeFixedHeader(out);
-            encodeVariableHeader(out);
-            encodePayload(out);
+        protected void encode(
+                @NotNull final MqttConnectWrapper message, @NotNull final ByteBuf out, final int remainingLength,
+                final int propertyLength, final int omittedProperties) {
+
+            encodeFixedHeader(out, remainingLength);
+            encodeVariableHeader(message, out, propertyLength, omittedProperties);
+            encodePayload(message, out);
         }
 
-        private void encodeFixedHeader(@NotNull final ByteBuf out) {
+        private void encodeFixedHeader(@NotNull final ByteBuf out, final int remainingLength) {
             out.writeByte(FIXED_HEADER);
-            MqttVariableByteInteger.encode(remainingLength(MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT), out);
+            MqttVariableByteInteger.encode(remainingLength, out);
         }
 
-        private void encodeVariableHeader(@NotNull final ByteBuf out) {
+        private void encodeVariableHeader(
+                @NotNull final MqttConnectWrapper message, @NotNull final ByteBuf out, final int propertyLength,
+                final int omittedProperties) {
+
             final MqttConnect connect = message.getWrapped();
 
             MqttUTF8StringImpl.PROTOCOL_NAME.to(out);
@@ -206,13 +211,16 @@ public class Mqtt5ConnectEncoder extends Mqtt5WrappedMessageEncoder<MqttConnect,
 
             out.writeShort(connect.getKeepAlive());
 
-            encodeProperties(out);
+            encodeProperties(message, out, propertyLength, omittedProperties);
         }
 
-        private void encodeProperties(@NotNull final ByteBuf out) {
+        private void encodeProperties(
+                @NotNull final MqttConnectWrapper message, @NotNull final ByteBuf out, final int propertyLength,
+                final int omittedProperties) {
+
             final MqttConnect connect = message.getWrapped();
 
-            MqttVariableByteInteger.encode(propertyLength(MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT), out);
+            MqttVariableByteInteger.encode(propertyLength, out);
 
             encodeIntProperty(
                     SESSION_EXPIRY_INTERVAL, connect.getSessionExpiryInterval(), DEFAULT_SESSION_EXPIRY_INTERVAL, out);
@@ -229,8 +237,7 @@ public class Mqtt5ConnectEncoder extends Mqtt5WrappedMessageEncoder<MqttConnect,
 
             final MqttConnectRestrictions restrictions = connect.getRestrictions();
             if (restrictions != MqttConnectRestrictions.DEFAULT) {
-                encodeShortProperty(
-                        RECEIVE_MAXIMUM, restrictions.getReceiveMaximum(),
+                encodeShortProperty(RECEIVE_MAXIMUM, restrictions.getReceiveMaximum(),
                         Mqtt5ConnectRestrictions.DEFAULT_RECEIVE_MAXIMUM, out);
                 encodeShortProperty(TOPIC_ALIAS_MAXIMUM, restrictions.getTopicAliasMaximum(),
                         Mqtt5ConnectRestrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM, out);
@@ -238,13 +245,13 @@ public class Mqtt5ConnectEncoder extends Mqtt5WrappedMessageEncoder<MqttConnect,
                         Mqtt5ConnectRestrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT, out);
             }
 
-            encodeOmissibleProperties(MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT, out);
+            encodeOmissibleProperties(message, out, omittedProperties);
         }
 
-        private void encodePayload(@NotNull final ByteBuf out) {
+        private void encodePayload(@NotNull final MqttConnectWrapper message, @NotNull final ByteBuf out) {
             message.getClientIdentifier().to(out);
 
-            encodeWillPublish(out);
+            encodeWillPublish(message, out);
 
             final MqttSimpleAuth simpleAuth = message.getWrapped().getRawSimpleAuth();
             if (simpleAuth != null) {
@@ -253,7 +260,7 @@ public class Mqtt5ConnectEncoder extends Mqtt5WrappedMessageEncoder<MqttConnect,
             }
         }
 
-        private void encodeWillPublish(@NotNull final ByteBuf out) {
+        private void encodeWillPublish(@NotNull final MqttConnectWrapper message, @NotNull final ByteBuf out) {
             final MqttConnect connect = message.getWrapped();
 
             final MqttWillPublish willPublish = connect.getRawWillPublish();

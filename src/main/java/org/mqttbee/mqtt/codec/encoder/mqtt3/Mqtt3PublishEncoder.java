@@ -18,7 +18,6 @@
 package org.mqttbee.mqtt.codec.encoder.mqtt3;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
@@ -44,7 +43,9 @@ public class Mqtt3PublishEncoder extends Mqtt3WrappedMessageEncoder<MqttPublish,
     private static final int FIXED_HEADER = Mqtt3MessageType.PUBLISH.getCode() << 4;
 
     @Override
-    int calculateRemainingLength() {
+    int calculateRemainingLength(@NotNull final MqttPublishWrapper message) {
+        final MqttPublish wrapped = message.getWrapped();
+
         int remainingLength = 0;
 
         remainingLength += wrapped.getTopic().encodedLength();
@@ -62,13 +63,19 @@ public class Mqtt3PublishEncoder extends Mqtt3WrappedMessageEncoder<MqttPublish,
     }
 
     @Override
-    public void encode(@NotNull final ByteBuf out, @NotNull final Channel channel) {
-        encodeFixedHeader(out);
-        encodeVariableHeader(out);
-        encodePayload(out);
+    public void encode(
+            @NotNull final MqttPublishWrapper message, @NotNull final ByteBuf out, final int remainingLength) {
+
+        encodeFixedHeader(message, out, remainingLength);
+        encodeVariableHeader(message, out);
+        encodePayload(message, out);
     }
 
-    private void encodeFixedHeader(@NotNull final ByteBuf out) {
+    private void encodeFixedHeader(
+            @NotNull final MqttPublishWrapper message, @NotNull final ByteBuf out, final int remainingLength) {
+
+        final MqttPublish wrapped = message.getWrapped();
+
         int flags = 0;
         if (message.isDup()) {
             flags |= 0b1000;
@@ -80,10 +87,12 @@ public class Mqtt3PublishEncoder extends Mqtt3WrappedMessageEncoder<MqttPublish,
 
         out.writeByte(FIXED_HEADER | flags);
 
-        MqttVariableByteInteger.encode(remainingLength(), out);
+        MqttVariableByteInteger.encode(remainingLength, out);
     }
 
-    private void encodeVariableHeader(@NotNull final ByteBuf out) {
+    private void encodeVariableHeader(@NotNull final MqttPublishWrapper message, @NotNull final ByteBuf out) {
+        final MqttPublish wrapped = message.getWrapped();
+
         wrapped.getTopic().to(out);
 
         if (wrapped.getQos() != MqttQoS.AT_MOST_ONCE) {
@@ -91,7 +100,9 @@ public class Mqtt3PublishEncoder extends Mqtt3WrappedMessageEncoder<MqttPublish,
         }
     }
 
-    private void encodePayload(@NotNull final ByteBuf out) {
+    private void encodePayload(@NotNull final MqttPublishWrapper message, @NotNull final ByteBuf out) {
+        final MqttPublish wrapped = message.getWrapped();
+
         final ByteBuffer payload = wrapped.getRawPayload();
         if (payload != null) {
             out.writeBytes(payload.duplicate());
