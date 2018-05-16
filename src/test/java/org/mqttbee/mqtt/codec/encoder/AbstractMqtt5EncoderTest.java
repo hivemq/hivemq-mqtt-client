@@ -21,6 +21,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.embedded.EmbeddedChannel;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.MqttClientExecutorConfigImpl;
@@ -38,12 +39,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class AbstractMqtt5EncoderTest {
 
+    private final MqttMessageEncoders messageEncoders;
     private final boolean connected;
     private final MqttClientData clientData;
 
     protected EmbeddedChannel channel;
 
-    protected AbstractMqtt5EncoderTest(final boolean connected) {
+    protected AbstractMqtt5EncoderTest(@NotNull final MqttMessageEncoders messageEncoders, final boolean connected) {
+        this.messageEncoders = messageEncoders;
         this.connected = connected;
         clientData =
                 new MqttClientData(MqttVersion.MQTT_5_0, Objects.requireNonNull(MqttClientIdentifierImpl.from("test")),
@@ -61,7 +64,7 @@ public class AbstractMqtt5EncoderTest {
     }
 
     private void createChannel() {
-        channel = new EmbeddedChannel(new MqttEncoder());
+        channel = new EmbeddedChannel(new MqttEncoder(messageEncoders));
         clientData.to(channel);
         if (connected) {
             createServerConnectionData(MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT);

@@ -18,7 +18,6 @@
 package org.mqttbee.mqtt.message.subscribe;
 
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
 import org.mqttbee.mqtt.message.MqttMessageWrapper.MqttMessageWrapperWithId;
 
 import javax.annotation.concurrent.Immutable;
@@ -27,8 +26,7 @@ import javax.annotation.concurrent.Immutable;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttSubscribeWrapper extends
-        MqttMessageWrapperWithId<MqttSubscribeWrapper, MqttSubscribe, MqttMessageEncoderProvider<MqttSubscribeWrapper>> {
+public class MqttSubscribeWrapper extends MqttMessageWrapperWithId<MqttSubscribe> {
 
     public static final int DEFAULT_NO_SUBSCRIPTION_IDENTIFIER = -1;
 
@@ -43,12 +41,6 @@ public class MqttSubscribeWrapper extends
 
     public int getSubscriptionIdentifier() {
         return subscriptionIdentifier;
-    }
-
-    @NotNull
-    @Override
-    protected MqttSubscribeWrapper getCodable() {
-        return this;
     }
 
 }

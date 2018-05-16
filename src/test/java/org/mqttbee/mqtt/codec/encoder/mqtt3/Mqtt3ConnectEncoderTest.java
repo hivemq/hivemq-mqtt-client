@@ -60,7 +60,7 @@ class Mqtt3ConnectEncoderTest extends AbstractMqtt5EncoderTest {
     };
 
     Mqtt3ConnectEncoderTest() {
-        super(false);
+        super(code -> new Mqtt3ConnectEncoder(), false);
     }
 
     @Test
@@ -89,15 +89,14 @@ class Mqtt3ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         will.setQos(qosWill);
         final org.eclipse.paho.client.mqttv3.internal.wire.MqttConnect pahoConnect =
                 new org.eclipse.paho.client.mqttv3.internal.wire.MqttConnect(clientId, 4, cleanSession, keepAlive,
-                        username,
-                        password == null ? "".toCharArray() : password.toCharArray(), will, willTopic);
+                        username, password == null ? "".toCharArray() : password.toCharArray(), will, willTopic);
 
         final byte[] expected = Bytes.concat(pahoConnect.getHeader(), pahoConnect.getPayload());
 
         final MqttWillPublish willMessage = new MqttWillPublish(Objects.requireNonNull(MqttTopicImpl.from(willTopic)),
-                        ByteBuffer.wrap(myLastWill.getBytes()), Objects.requireNonNull(MqttQoS.fromCode(qosWill)),
-                isRetained, MqttWillPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null,
-                        MqttUserPropertiesImpl.NO_USER_PROPERTIES, 0, Mqtt3PublishEncoder.PROVIDER);
+                ByteBuffer.wrap(myLastWill.getBytes()), Objects.requireNonNull(MqttQoS.fromCode(qosWill)), isRetained,
+                MqttWillPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null,
+                MqttUserPropertiesImpl.NO_USER_PROPERTIES, 0);
 
         final MqttConnect connect = Mqtt3ConnectView.wrapped(keepAlive, cleanSession, null, willMessage);
         final MqttConnectWrapper connectWrapper =

@@ -23,8 +23,6 @@ import org.mqttbee.api.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5SimpleAuth;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
-import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
-import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.MqttWrappedMessage;
@@ -39,9 +37,7 @@ import java.util.Optional;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttConnect
-        extends MqttWrappedMessage<MqttConnect, MqttConnectWrapper, MqttMessageEncoderProvider<MqttConnectWrapper>>
-        implements Mqtt5Connect {
+public class MqttConnect extends MqttWrappedMessage implements Mqtt5Connect {
 
     private final int keepAlive;
     private final boolean isCleanStart;
@@ -58,10 +54,9 @@ public class MqttConnect
             final boolean isResponseInformationRequested, final boolean isProblemInformationRequested,
             @NotNull final MqttConnectRestrictions restrictions, @Nullable final MqttSimpleAuth simpleAuth,
             @Nullable final Mqtt5EnhancedAuthProvider enhancedAuthProvider, @Nullable final MqttWillPublish willPublish,
-            @NotNull final MqttUserPropertiesImpl userProperties,
-            @NotNull final MqttWrappedMessageEncoderProvider<MqttConnect, MqttConnectWrapper, MqttMessageEncoderProvider<MqttConnectWrapper>> encoderProvider) {
+            @NotNull final MqttUserPropertiesImpl userProperties) {
 
-        super(userProperties, encoderProvider);
+        super(userProperties);
         this.keepAlive = keepAlive;
         this.isCleanStart = isCleanStart;
         this.sessionExpiryInterval = sessionExpiryInterval;
@@ -135,12 +130,6 @@ public class MqttConnect
     @Nullable
     public MqttWillPublish getRawWillPublish() {
         return willPublish;
-    }
-
-    @NotNull
-    @Override
-    protected MqttConnect getCodable() {
-        return this;
     }
 
     public MqttConnectWrapper wrap(

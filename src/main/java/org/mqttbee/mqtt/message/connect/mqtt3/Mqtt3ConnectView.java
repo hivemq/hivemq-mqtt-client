@@ -22,7 +22,6 @@ import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3Connect;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;
-import org.mqttbee.mqtt.codec.encoder.mqtt3.Mqtt3ConnectEncoder;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.auth.MqttSimpleAuth;
 import org.mqttbee.mqtt.message.auth.mqtt3.Mqtt3SimpleAuthView;
@@ -48,7 +47,7 @@ public class Mqtt3ConnectView implements Mqtt3Connect {
         return new MqttConnect(keepAlive, isCleanSession, isCleanSession ? 0 : MqttConnect.NO_SESSION_EXPIRY,
                 MqttConnect.DEFAULT_RESPONSE_INFORMATION_REQUESTED, MqttConnect.DEFAULT_PROBLEM_INFORMATION_REQUESTED,
                 MqttConnectRestrictions.DEFAULT, simpleAuth, null, willPublish,
-                MqttUserPropertiesImpl.NO_USER_PROPERTIES, Mqtt3ConnectEncoder.PROVIDER);
+                MqttUserPropertiesImpl.NO_USER_PROPERTIES);
     }
 
     @NotNull

@@ -24,10 +24,10 @@ import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeResult;
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
-import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
 import org.mqttbee.mqtt.handler.subscribe.MqttSubscribeWithFlow;
 import org.mqttbee.mqtt.handler.subscribe.MqttSubscriptionHandler;
 import org.mqttbee.mqtt.ioc.ChannelComponent;
+import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
 import org.reactivestreams.Subscriber;
 
 /**

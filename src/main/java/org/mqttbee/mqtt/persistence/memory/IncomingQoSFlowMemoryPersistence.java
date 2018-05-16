@@ -18,8 +18,8 @@
 package org.mqttbee.mqtt.persistence.memory;
 
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRec;
 import org.mqttbee.mqtt.ioc.ChannelScope;
+import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRec;
 import org.mqttbee.mqtt.persistence.IncomingQoSFlowPersistence;
 
 import javax.inject.Inject;

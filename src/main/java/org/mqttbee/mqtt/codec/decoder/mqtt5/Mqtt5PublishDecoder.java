@@ -31,7 +31,6 @@ import org.mqttbee.api.mqtt.mqtt5.message.publish.TopicAliasUsage;
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
-import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5PublishEncoder;
 import org.mqttbee.mqtt.datatypes.*;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
@@ -227,9 +226,8 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
         final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.build(userPropertiesBuilder);
 
         final MqttPublish publish =
-                new MqttPublish(topic, payload, qos, retain, messageExpiryInterval, payloadFormatIndicator,
-                        contentType, responseTopic, correlationData, topicAliasUsage, userProperties,
-                        Mqtt5PublishEncoder.PROVIDER);
+                new MqttPublish(topic, payload, qos, retain, messageExpiryInterval, payloadFormatIndicator, contentType,
+                        responseTopic, correlationData, topicAliasUsage, userProperties);
 
         final ImmutableIntArray subscriptionIdentifiers =
                 (subscriptionIdentifiersBuilder == null) ? DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS :

@@ -50,7 +50,7 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
             (1 << (VARIABLE_BYTE_INTEGER_VALUE_BITS * 4)) - 1;
 
     Mqtt5AuthEncoderTest() {
-        super(true);
+        super(code -> new Mqtt5AuthEncoder(), true);
     }
 
     @Test
@@ -95,8 +95,7 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
 
         final MqttUTF8StringImpl method = requireNonNull(MqttUTF8StringImpl.from("GS2-KRB5"));
         final MqttAuth auth =
-                new MqttAuth(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, method, data, reasonString, userProperties,
-                        Mqtt5AuthEncoder.PROVIDER);
+                new MqttAuth(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, method, data, reasonString, userProperties);
         encode(expected, auth);
     }
 
@@ -119,8 +118,7 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
         };
 
         final MqttUTF8StringImpl method = requireNonNull(MqttUTF8StringImpl.from("x"));
-        final MqttAuth auth = new MqttAuth(reasonCode, method, null, null, MqttUserPropertiesImpl.NO_USER_PROPERTIES,
-                Mqtt5AuthEncoder.PROVIDER);
+        final MqttAuth auth = new MqttAuth(reasonCode, method, null, null, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
         encode(expected, auth);
     }
 
@@ -146,7 +144,7 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
         final ByteBuffer data = ByteBuffer.wrap(new byte[]{1});
         final MqttUTF8StringImpl method = requireNonNull(MqttUTF8StringImpl.from("x"));
         final MqttAuth auth = new MqttAuth(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, method, data, null,
-                MqttUserPropertiesImpl.NO_USER_PROPERTIES, Mqtt5AuthEncoder.PROVIDER);
+                MqttUserPropertiesImpl.NO_USER_PROPERTIES);
         encode(expected, auth);
     }
 
@@ -156,7 +154,7 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
         final ByteBuffer data = ByteBuffer.wrap(new byte[65536]);
         final MqttUTF8StringImpl method = requireNonNull(MqttUTF8StringImpl.from("x"));
         final MqttAuth auth = new MqttAuth(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, method, data, null,
-                MqttUserPropertiesImpl.NO_USER_PROPERTIES, Mqtt5AuthEncoder.PROVIDER);
+                MqttUserPropertiesImpl.NO_USER_PROPERTIES);
         encodeNok(auth, EncoderException.class, "binary data size exceeded for authentication data");
     }
 
@@ -182,7 +180,7 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
         final MqttUTF8StringImpl reasonString = MqttUTF8StringImpl.from("reason");
         final MqttUTF8StringImpl method = requireNonNull(MqttUTF8StringImpl.from("x"));
         final MqttAuth auth = new MqttAuth(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, method, null, reasonString,
-                MqttUserPropertiesImpl.NO_USER_PROPERTIES, Mqtt5AuthEncoder.PROVIDER);
+                MqttUserPropertiesImpl.NO_USER_PROPERTIES);
         encode(expected, auth);
     }
 
@@ -208,7 +206,7 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
         final MqttUTF8StringImpl reasonString = MqttUTF8StringImpl.from("");
         final MqttUTF8StringImpl method = requireNonNull(MqttUTF8StringImpl.from("x"));
         final MqttAuth auth = new MqttAuth(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, method, null, reasonString,
-                MqttUserPropertiesImpl.NO_USER_PROPERTIES, Mqtt5AuthEncoder.PROVIDER);
+                MqttUserPropertiesImpl.NO_USER_PROPERTIES);
         encode(expected, auth);
     }
 
@@ -217,8 +215,7 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
 
         final MqttAuth auth = new MqttAuth(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, maxPacket.getMethod(), null,
-                maxPacket.getReasonStringTooLong(), maxPacket.getMaxPossibleUserProperties(),
-                Mqtt5AuthEncoder.PROVIDER);
+                maxPacket.getReasonStringTooLong(), maxPacket.getMaxPossibleUserProperties());
 
         encode(maxPacket.getWithOmittedReasonString(), auth);
     }
@@ -231,7 +228,7 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
 
         final MqttAuth auth =
                 new MqttAuth(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, maxPacket.getMethod(), null, null,
-                        tooManyUserProperties, Mqtt5AuthEncoder.PROVIDER);
+                        tooManyUserProperties);
 
         encode(maxPacket.getWithOmittedUserPropertiesAndReasonString(), auth);
     }

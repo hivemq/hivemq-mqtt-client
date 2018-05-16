@@ -27,7 +27,7 @@ import org.mqttbee.mqtt.message.MqttMessage;
  *
  * @author Silvio Giebl
  */
-public interface MqttMessageEncoder {
+public abstract class MqttMessageEncoder<M extends MqttMessage> {
 
     /**
      * Encodes the given MQTT message.
@@ -36,7 +36,16 @@ public interface MqttMessageEncoder {
      * @param maximumPacketSize the maximum packet size for the MQTT message.
      */
     @NotNull
-    ByteBuf encode(
-            @NotNull final MqttMessage message, @NotNull final ByteBufAllocator allocator, final int maximumPacketSize);
+    @SuppressWarnings("unchecked")
+    public ByteBuf castAndEncode(
+            @NotNull final MqttMessage message, @NotNull final ByteBufAllocator allocator,
+            final int maximumPacketSize) {
+
+        return encode((M) message, allocator, maximumPacketSize);
+    }
+
+    @NotNull
+    protected abstract ByteBuf encode(
+            @NotNull final M message, @NotNull final ByteBufAllocator allocator, final int maximumPacketSize);
 
 }

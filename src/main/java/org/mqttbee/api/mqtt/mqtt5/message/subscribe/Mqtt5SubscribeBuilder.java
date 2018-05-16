@@ -21,7 +21,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
-import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5SubscribeEncoder;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
@@ -55,7 +54,7 @@ public class Mqtt5SubscribeBuilder {
     public Mqtt5Subscribe build() {
         final ImmutableList<MqttSubscription> subscriptions = subscriptionBuilder.build();
         Preconditions.checkState(!subscriptions.isEmpty());
-        return new MqttSubscribe(subscriptions, userProperties, Mqtt5SubscribeEncoder.PROVIDER);
+        return new MqttSubscribe(subscriptions, userProperties);
     }
 
 }

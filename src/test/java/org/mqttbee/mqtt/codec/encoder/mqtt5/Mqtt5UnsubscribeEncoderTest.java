@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class Mqtt5UnsubscribeEncoderTest extends AbstractMqtt5EncoderTest {
 
     Mqtt5UnsubscribeEncoderTest() {
-        super(true);
+        super(code -> new Mqtt5UnsubscribeEncoder(), true);
     }
 
     @Test
@@ -137,8 +137,8 @@ class Mqtt5UnsubscribeEncoderTest extends AbstractMqtt5EncoderTest {
 
         final ImmutableList<MqttTopicFilterImpl> topicFilters =
                 ImmutableList.of(requireNonNull(MqttTopicFilterImpl.from("topic/#")));
-        final MqttUnsubscribe unsubscribe = new MqttUnsubscribe(topicFilters, MqttUserPropertiesImpl.NO_USER_PROPERTIES,
-                Mqtt5UnsubscribeEncoder.PROVIDER);
+        final MqttUnsubscribe unsubscribe =
+                new MqttUnsubscribe(topicFilters, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
 
         final int packetIdentifier = 1;
         final MqttUnsubscribeWrapper unsubscribeInternal = unsubscribe.wrap(packetIdentifier);
@@ -174,8 +174,7 @@ class Mqtt5UnsubscribeEncoderTest extends AbstractMqtt5EncoderTest {
     private void encodeUnsubscribe(
             final byte[] expected, final MqttUserPropertiesImpl userProperties,
             final ImmutableList<MqttTopicFilterImpl> topicFilters) {
-        final MqttUnsubscribe unsubscribe =
-                new MqttUnsubscribe(topicFilters, userProperties, Mqtt5UnsubscribeEncoder.PROVIDER);
+        final MqttUnsubscribe unsubscribe = new MqttUnsubscribe(topicFilters, userProperties);
         final int packetIdentifier = 0x01;
         final MqttUnsubscribeWrapper unsubscribeInternal = unsubscribe.wrap(packetIdentifier);
 

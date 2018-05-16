@@ -61,8 +61,7 @@ public class MqttPubRelBuilder implements Mqtt5PubRelBuilder {
     }
 
     public MqttPubRel build() {
-        return new MqttPubRel(pubRec.getPacketIdentifier(), reasonCode, reasonString, userProperties,
-                pubRec.getEncoderProvider().getPubRelEncoderProvider());
+        return new MqttPubRel(pubRec.getPacketIdentifier(), reasonCode, reasonString, userProperties);
     }
 
 }

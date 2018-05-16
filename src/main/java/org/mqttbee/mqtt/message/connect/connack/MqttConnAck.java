@@ -24,7 +24,6 @@ import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5EnhancedAuth;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckReasonCode;
-import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
@@ -37,9 +36,7 @@ import java.util.Optional;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttConnAck
-        extends MqttMessageWithReasonCode<MqttConnAck, Mqtt5ConnAckReasonCode, MqttMessageEncoderProvider<MqttConnAck>>
-        implements Mqtt5ConnAck {
+public class MqttConnAck extends MqttMessageWithReasonCode<Mqtt5ConnAckReasonCode> implements Mqtt5ConnAck {
 
     public static final long SESSION_EXPIRY_INTERVAL_FROM_CONNECT = -1;
     public static final int KEEP_ALIVE_FROM_CONNECT = -1;
@@ -63,7 +60,7 @@ public class MqttConnAck
             @Nullable final MqttUTF8StringImpl responseInformation, @Nullable final MqttUTF8StringImpl serverReference,
             @Nullable final MqttUTF8StringImpl reasonString, @NotNull final MqttUserPropertiesImpl userProperties) {
 
-        super(reasonCode, reasonString, userProperties, MqttMessageEncoderProvider.notCodable());
+        super(reasonCode, reasonString, userProperties);
         this.isSessionPresent = isSessionPresent;
         this.sessionExpiryInterval = sessionExpiryInterval;
         this.serverKeepAlive = serverKeepAlive;
@@ -138,12 +135,6 @@ public class MqttConnAck
     @Override
     public Optional<MqttUTF8String> getServerReference() {
         return Optional.ofNullable(serverReference);
-    }
-
-    @NotNull
-    @Override
-    protected MqttConnAck getCodable() {
-        return this;
     }
 
 }

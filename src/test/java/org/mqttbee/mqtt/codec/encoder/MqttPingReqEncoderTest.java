@@ -29,7 +29,7 @@ import static org.junit.Assert.assertArrayEquals;
 class MqttPingReqEncoderTest extends AbstractMqtt5EncoderTest {
 
     MqttPingReqEncoderTest() {
-        super(true);
+        super(code -> new MqttPingReqEncoder(), true);
     }
 
     @Test

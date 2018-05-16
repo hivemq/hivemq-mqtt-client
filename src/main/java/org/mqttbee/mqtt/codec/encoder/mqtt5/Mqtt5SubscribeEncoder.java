@@ -21,15 +21,14 @@ import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
-import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoder;
-import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
-import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageWrapperEncoderApplier;
-import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider;
-import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider.NewMqttWrappedMessageEncoderProvider;
+import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribeWrapper;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.encodeVariableByteIntegerProperty;
 import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.variableByteIntegerPropertyEncodedLength;
@@ -39,18 +38,23 @@ import static org.mqttbee.mqtt.message.subscribe.MqttSubscribeWrapper.DEFAULT_NO
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5SubscribeEncoder extends Mqtt5WrappedMessageEncoder<MqttSubscribe, MqttSubscribeWrapper> {
+@Singleton
+public class Mqtt5SubscribeEncoder extends Mqtt5MessageWithUserPropertiesEncoder<MqttSubscribeWrapper> {
 
-    public static final MqttWrappedMessageEncoderProvider<MqttSubscribe, MqttSubscribeWrapper, MqttMessageEncoderProvider<MqttSubscribeWrapper>>
-            PROVIDER = NewMqttWrappedMessageEncoderProvider.create(Mqtt5SubscribeEncoder::new);
-
+    private static final int FIXED_HEADER = (Mqtt5MessageType.SUBSCRIBE.getCode() << 4) | 0b0010;
     private static final int VARIABLE_HEADER_FIXED_LENGTH = 2; // packet identifier
 
+    @Inject
+    Mqtt5SubscribeEncoder() {
+    }
+
     @Override
-    int calculateRemainingLengthWithoutProperties() {
+    int calculateRemainingLength(@NotNull final MqttSubscribeWrapper message) {
+        final MqttSubscribe wrapped = message.getWrapped();
+
         int remainingLength = VARIABLE_HEADER_FIXED_LENGTH;
 
-        final ImmutableList<MqttSubscription> subscriptions = message.getSubscriptions();
+        final ImmutableList<MqttSubscription> subscriptions = wrapped.getSubscriptions();
         for (int i = 0; i < subscriptions.size(); i++) {
             remainingLength += subscriptions.get(i).getTopicFilter().encodedLength() + 1;
         }
@@ -59,85 +63,75 @@ public class Mqtt5SubscribeEncoder extends Mqtt5WrappedMessageEncoder<MqttSubscr
     }
 
     @Override
-    int calculatePropertyLength() {
-        return message.getUserProperties().encodedLength();
+    int calculatePropertyLength(@NotNull final MqttSubscribeWrapper message) {
+        final MqttSubscribe wrapped = message.getWrapped();
+
+        int propertyLength = 0;
+
+        propertyLength += wrapped.getUserProperties().encodedLength();
+        propertyLength += variableByteIntegerPropertyEncodedLength(message.getSubscriptionIdentifier(),
+                DEFAULT_NO_SUBSCRIPTION_IDENTIFIER);
+
+        return propertyLength;
     }
 
-    @NotNull
     @Override
-    public MqttMessageEncoder wrap(@NotNull final MqttSubscribeWrapper wrapper) {
-        return Mqtt5SubscribeWrapperEncoder.APPLIER.apply(wrapper, this);
+    protected void encode(
+            @NotNull final MqttSubscribeWrapper message, @NotNull final ByteBuf out, final int remainingLength,
+            final int propertyLength, final int omittedProperties) {
+
+        encodeFixedHeader(out, remainingLength);
+        encodeVariableHeader(message, out, propertyLength, omittedProperties);
+        encodePayload(message, out);
     }
 
+    private void encodeFixedHeader(@NotNull final ByteBuf out, final int remainingLength) {
+        out.writeByte(FIXED_HEADER);
+        MqttVariableByteInteger.encode(remainingLength, out);
+    }
 
-    public static class Mqtt5SubscribeWrapperEncoder extends
-            Mqtt5MessageWrapperEncoder<MqttSubscribeWrapper, MqttSubscribe, MqttMessageEncoderProvider<MqttSubscribeWrapper>, Mqtt5SubscribeEncoder> {
+    private void encodeVariableHeader(
+            @NotNull final MqttSubscribeWrapper message, @NotNull final ByteBuf out, final int propertyLength,
+            final int omittedProperties) {
 
-        private static final MqttMessageWrapperEncoderApplier<MqttSubscribeWrapper, MqttSubscribe, Mqtt5SubscribeEncoder>
-                APPLIER = new ThreadLocalMqttMessageWrapperEncoderApplier<>(Mqtt5SubscribeWrapperEncoder::new);
+        out.writeShort(message.getPacketIdentifier());
+        encodeProperties(message, out, propertyLength, omittedProperties);
+    }
 
-        private static final int FIXED_HEADER = (Mqtt5MessageType.SUBSCRIBE.getCode() << 4) | 0b0010;
+    private void encodeProperties(
+            @NotNull final MqttSubscribeWrapper message, @NotNull final ByteBuf out, final int propertyLength,
+            final int omittedProperties) {
 
-        @Override
-        int additionalPropertyLength(@NotNull final MqttSubscribeWrapper message) {
-            return variableByteIntegerPropertyEncodedLength(message.getSubscriptionIdentifier(),
-                    DEFAULT_NO_SUBSCRIPTION_IDENTIFIER);
-        }
+        MqttVariableByteInteger.encode(propertyLength, out);
+        encodeVariableByteIntegerProperty(SUBSCRIPTION_IDENTIFIER, message.getSubscriptionIdentifier(),
+                DEFAULT_NO_SUBSCRIPTION_IDENTIFIER, out);
+        encodeOmissibleProperties(message, out, omittedProperties);
+    }
 
-        @Override
-        protected void encode(
-                @NotNull final MqttSubscribeWrapper message, @NotNull final ByteBuf out, final int remainingLength,
-                final int propertyLength, final int omittedProperties) {
+    private void encodePayload(@NotNull final MqttSubscribeWrapper message, @NotNull final ByteBuf out) {
+        final ImmutableList<MqttSubscription> subscriptions = message.getWrapped().getSubscriptions();
+        for (int i = 0; i < subscriptions.size(); i++) {
+            final MqttSubscription subscription = subscriptions.get(i);
 
-            encodeFixedHeader(out, remainingLength);
-            encodeVariableHeader(message, out, propertyLength, omittedProperties);
-            encodePayload(message, out);
-        }
+            subscription.getTopicFilter().to(out);
 
-        private void encodeFixedHeader(@NotNull final ByteBuf out, final int remainingLength) {
-            out.writeByte(FIXED_HEADER);
-            MqttVariableByteInteger.encode(remainingLength, out);
-        }
-
-        private void encodeVariableHeader(
-                @NotNull final MqttSubscribeWrapper message, @NotNull final ByteBuf out, final int propertyLength,
-                final int omittedProperties) {
-
-            out.writeShort(message.getPacketIdentifier());
-            encodeProperties(message, out, propertyLength, omittedProperties);
-        }
-
-        private void encodeProperties(
-                @NotNull final MqttSubscribeWrapper message, @NotNull final ByteBuf out, final int propertyLength,
-                final int omittedProperties) {
-
-            MqttVariableByteInteger.encode(propertyLength, out);
-            encodeVariableByteIntegerProperty(SUBSCRIPTION_IDENTIFIER, message.getSubscriptionIdentifier(),
-                    DEFAULT_NO_SUBSCRIPTION_IDENTIFIER, out);
-            encodeOmissibleProperties(message, out, omittedProperties);
-        }
-
-        private void encodePayload(@NotNull final MqttSubscribeWrapper message, @NotNull final ByteBuf out) {
-            final ImmutableList<MqttSubscription> subscriptions = message.getWrapped().getSubscriptions();
-            for (int i = 0; i < subscriptions.size(); i++) {
-                final MqttSubscription subscription = subscriptions.get(i);
-
-                subscription.getTopicFilter().to(out);
-
-                int subscriptionOptions = 0;
-                subscriptionOptions |= subscription.getRetainHandling().getCode() << 4;
-                if (subscription.isRetainAsPublished()) {
-                    subscriptionOptions |= 0b0000_1000;
-                }
-                if (subscription.isNoLocal()) {
-                    subscriptionOptions |= 0b0000_0100;
-                }
-                subscriptionOptions |= subscription.getQoS().getCode();
-
-                out.writeByte(subscriptionOptions);
+            int subscriptionOptions = 0;
+            subscriptionOptions |= subscription.getRetainHandling().getCode() << 4;
+            if (subscription.isRetainAsPublished()) {
+                subscriptionOptions |= 0b0000_1000;
             }
-        }
+            if (subscription.isNoLocal()) {
+                subscriptionOptions |= 0b0000_0100;
+            }
+            subscriptionOptions |= subscription.getQoS().getCode();
 
+            out.writeByte(subscriptionOptions);
+        }
+    }
+
+    @Override
+    MqttUserPropertiesImpl getUserProperties(@NotNull final MqttSubscribeWrapper message) {
+        return message.getWrapped().getUserProperties();
     }
 
 }

@@ -23,8 +23,8 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.mqtt.message.connect.connack.MqttConnAck;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
+import org.mqttbee.mqtt.message.connect.connack.MqttConnAck;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

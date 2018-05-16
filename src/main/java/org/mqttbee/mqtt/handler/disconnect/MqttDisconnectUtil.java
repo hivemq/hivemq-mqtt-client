@@ -24,8 +24,8 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.exceptions.ChannelClosedException;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
 import org.mqttbee.mqtt.ioc.ChannelComponent;
+import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
 
 /**
  * Util for sending a DISCONNECT message or channel closing without sending a DISCONNECT message from the client side.

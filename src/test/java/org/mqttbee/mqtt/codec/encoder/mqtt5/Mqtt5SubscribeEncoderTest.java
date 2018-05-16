@@ -55,7 +55,7 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTe
     private static final int UTF8_LENGTH_ENCODED = 2;
 
     Mqtt5SubscribeEncoderTest() {
-        super(true);
+        super(code -> new Mqtt5SubscribeEncoder(), true);
     }
 
     @Test
@@ -91,8 +91,7 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTe
         final boolean isRetainAsPublished = true;
         final ImmutableList<MqttSubscription> subscriptions = ImmutableList.of(
                 new MqttSubscription(requireNonNull(topicFiler), qos, isNoLocal, retainHandling, isRetainAsPublished));
-        final MqttSubscribe subscribe =
-                new MqttSubscribe(subscriptions, userProperties, Mqtt5SubscribeEncoder.PROVIDER);
+        final MqttSubscribe subscribe = new MqttSubscribe(subscriptions, userProperties);
         encode(expected, subscribe, 1);
     }
 
@@ -129,8 +128,7 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTe
         final ImmutableList<MqttSubscription> subscriptions = ImmutableList.of(
                 new MqttSubscription(requireNonNull(topicFiler), qos, DEFAULT_NO_LOCAL, DEFAULT_RETAIN_HANDLING,
                         DEFAULT_RETAIN_AS_PUBLISHED));
-        final MqttSubscribe subscribe =
-                new MqttSubscribe(subscriptions, userProperties, Mqtt5SubscribeEncoder.PROVIDER);
+        final MqttSubscribe subscribe = new MqttSubscribe(subscriptions, userProperties);
         encode(expected, subscribe, 10);
     }
 
@@ -165,8 +163,7 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTe
         final ImmutableList<MqttSubscription> subscriptions = ImmutableList.of(
                 new MqttSubscription(requireNonNull(topicFiler), qos, DEFAULT_NO_LOCAL, DEFAULT_RETAIN_HANDLING,
                         DEFAULT_RETAIN_AS_PUBLISHED));
-        final MqttSubscribe subscribe =
-                new MqttSubscribe(subscriptions, userProperties, Mqtt5SubscribeEncoder.PROVIDER);
+        final MqttSubscribe subscribe = new MqttSubscribe(subscriptions, userProperties);
         encode(expected, subscribe, 10);
     }
 
@@ -196,8 +193,7 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTe
         final ImmutableList<MqttSubscription> subscriptions = ImmutableList.of(
                 new MqttSubscription(requireNonNull(topicFiler), qos, DEFAULT_NO_LOCAL, DEFAULT_RETAIN_HANDLING,
                         DEFAULT_RETAIN_AS_PUBLISHED));
-        final MqttSubscribe subscribe = new MqttSubscribe(subscriptions, MqttUserPropertiesImpl.NO_USER_PROPERTIES,
-                Mqtt5SubscribeEncoder.PROVIDER);
+        final MqttSubscribe subscribe = new MqttSubscribe(subscriptions, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
         encode(expected, subscribe, 10);
     }
 
@@ -230,8 +226,7 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTe
         final ImmutableList<MqttSubscription> subscriptions = ImmutableList.of(
                 new MqttSubscription(requireNonNull(topicFiler), qos, isNoLocal, retainHandling,
                         DEFAULT_RETAIN_AS_PUBLISHED));
-        final MqttSubscribe subscribe = new MqttSubscribe(subscriptions, MqttUserPropertiesImpl.NO_USER_PROPERTIES,
-                Mqtt5SubscribeEncoder.PROVIDER);
+        final MqttSubscribe subscribe = new MqttSubscribe(subscriptions, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
         encode(expected, subscribe, 10);
     }
 
@@ -263,8 +258,7 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTe
         final ImmutableList<MqttSubscription> subscriptions = ImmutableList.of(
                 new MqttSubscription(requireNonNull(topicFiler), qos, isNoLocal, retainHandling,
                         DEFAULT_RETAIN_AS_PUBLISHED));
-        final MqttSubscribe subscribe = new MqttSubscribe(subscriptions, MqttUserPropertiesImpl.NO_USER_PROPERTIES,
-                Mqtt5SubscribeEncoder.PROVIDER);
+        final MqttSubscribe subscribe = new MqttSubscribe(subscriptions, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
         encode(expected, subscribe, 10);
     }
 
@@ -294,8 +288,7 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTe
         final ImmutableList<MqttSubscription> subscriptions = ImmutableList.of(
                 new MqttSubscription(requireNonNull(topicFiler), qos, DEFAULT_NO_LOCAL, DEFAULT_RETAIN_HANDLING,
                         DEFAULT_RETAIN_AS_PUBLISHED));
-        final MqttSubscribe subscribe = new MqttSubscribe(subscriptions, MqttUserPropertiesImpl.NO_USER_PROPERTIES,
-                Mqtt5SubscribeEncoder.PROVIDER);
+        final MqttSubscribe subscribe = new MqttSubscribe(subscriptions, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
         final MqttSubscribeWrapper subscribeInternal = subscribe.wrap(10, 111);
 
         encodeInternal(expected, subscribeInternal);
@@ -327,8 +320,7 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTe
         final ImmutableList<MqttSubscription> subscriptions = ImmutableList.of(
                 new MqttSubscription(requireNonNull(topicFiler), qos, isNoLocal, DEFAULT_RETAIN_HANDLING,
                         DEFAULT_RETAIN_AS_PUBLISHED));
-        final MqttSubscribe subscribe =
-                new MqttSubscribe(subscriptions, maxPacket.getTooManyUserProperties(1), Mqtt5SubscribeEncoder.PROVIDER);
+        final MqttSubscribe subscribe = new MqttSubscribe(subscriptions, maxPacket.getTooManyUserProperties(1));
         encode(expected, subscribe, 10);
     }
 
@@ -367,8 +359,7 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTe
         final Iterable<MqttSubscription> subscriptions = Iterables.concat(maxSizeSubscriptions, leftoverSubscription);
 
         final MqttSubscribe subscribe =
-                new MqttSubscribe(ImmutableList.copyOf(subscriptions), MqttUserPropertiesImpl.NO_USER_PROPERTIES,
-                        Mqtt5SubscribeEncoder.PROVIDER);
+                new MqttSubscribe(ImmutableList.copyOf(subscriptions), MqttUserPropertiesImpl.NO_USER_PROPERTIES);
 
         final int packetIdentifier = 2;
         final MqttSubscribeWrapper subscribeInternal =

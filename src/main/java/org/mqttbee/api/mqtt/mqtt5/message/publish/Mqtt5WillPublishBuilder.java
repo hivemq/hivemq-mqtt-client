@@ -24,7 +24,6 @@ import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
-import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5PublishEncoder;
 import org.mqttbee.mqtt.message.publish.MqttWillPublish;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 import org.mqttbee.util.MustNotBeImplementedUtil;
@@ -170,8 +169,7 @@ public class Mqtt5WillPublishBuilder extends Mqtt5PublishBuilder {
     @Override
     public Mqtt5WillPublish build() {
         return new MqttWillPublish(topic, payload, qos, retain, messageExpiryInterval, payloadFormatIndicator,
-                contentType, responseTopic, correlationData, userProperties, delayInterval,
-                Mqtt5PublishEncoder.PROVIDER);
+                contentType, responseTopic, correlationData, userProperties, delayInterval);
     }
 
 }

@@ -19,7 +19,6 @@ package org.mqttbee.mqtt.message.publish;
 
 import com.google.common.primitives.ImmutableIntArray;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt.codec.encoder.provider.MqttPublishEncoderProvider;
 import org.mqttbee.mqtt.message.MqttMessageWrapper.MqttMessageWrapperWithId;
 
 import javax.annotation.concurrent.Immutable;
@@ -28,9 +27,7 @@ import javax.annotation.concurrent.Immutable;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttPublishWrapper
-        extends MqttMessageWrapperWithId<MqttPublishWrapper, MqttPublish, MqttPublishEncoderProvider>
-        implements MqttQoSMessage {
+public class MqttPublishWrapper extends MqttMessageWrapperWithId<MqttPublish> implements MqttQoSMessage {
 
     public static final int NO_PACKET_IDENTIFIER_QOS_0 = -1;
     public static final int DEFAULT_NO_TOPIC_ALIAS = -1;
@@ -68,12 +65,6 @@ public class MqttPublishWrapper
     @NotNull
     public ImmutableIntArray getSubscriptionIdentifiers() {
         return subscriptionIdentifiers;
-    }
-
-    @NotNull
-    @Override
-    protected MqttPublishWrapper getCodable() {
-        return this;
     }
 
 }

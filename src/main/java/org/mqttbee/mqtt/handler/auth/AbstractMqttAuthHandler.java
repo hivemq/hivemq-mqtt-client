@@ -31,10 +31,10 @@ import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
-import org.mqttbee.mqtt.message.auth.MqttAuth;
-import org.mqttbee.mqtt.message.auth.MqttAuthBuilder;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.handler.util.ChannelInboundHandlerWithTimeout;
+import org.mqttbee.mqtt.message.auth.MqttAuth;
+import org.mqttbee.mqtt.message.auth.MqttAuthBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -38,7 +38,7 @@ public class MustNotBeImplementedUtil {
      * @throws MustNotBeImplementedException if the object is not instance of the implementation type.
      */
     @NotNull
-    @SuppressWarnings("unchecked cast")
+    @SuppressWarnings("unchecked")
     public static <S, T extends S> T checkNotImplemented(@NotNull final S object, @NotNull final Class<T> type) {
         Preconditions.checkNotNull(object);
         if (type.isInstance(object)) {

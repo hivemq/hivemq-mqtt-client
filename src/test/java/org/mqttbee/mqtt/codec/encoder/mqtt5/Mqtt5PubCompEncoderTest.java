@@ -42,7 +42,7 @@ import static org.mqttbee.mqtt.datatypes.MqttVariableByteInteger.MAXIMUM_PACKET_
 class Mqtt5PubCompEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest {
 
     Mqtt5PubCompEncoderTest() {
-        super(true);
+        super(code -> new Mqtt5PubCompEncoder(), true);
     }
 
     @Test
@@ -62,8 +62,7 @@ class Mqtt5PubCompEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
 
         final MqttUTF8StringImpl reasonString = null;
         final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
-        final MqttPubComp pubComp =
-                new MqttPubComp(5, PACKET_IDENTIFIER_NOT_FOUND, reasonString, userProperties, Mqtt5PubCompEncoder.PROVIDER);
+        final MqttPubComp pubComp = new MqttPubComp(5, PACKET_IDENTIFIER_NOT_FOUND, reasonString, userProperties);
 
         encode(expected, pubComp);
     }
@@ -81,8 +80,7 @@ class Mqtt5PubCompEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
                 0, 5
         };
 
-        final MqttPubComp pubComp = new MqttPubComp(5, SUCCESS, null, MqttUserPropertiesImpl.NO_USER_PROPERTIES,
-                Mqtt5PubCompEncoder.PROVIDER);
+        final MqttPubComp pubComp = new MqttPubComp(5, SUCCESS, null, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
 
         encode(expected, pubComp);
     }
@@ -104,8 +102,8 @@ class Mqtt5PubCompEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
         };
 
         expected[4] = (byte) reasonCode.getCode();
-        final MqttPubComp pubComp = new MqttPubComp(0x0605, reasonCode, null, MqttUserPropertiesImpl.NO_USER_PROPERTIES,
-                Mqtt5PubCompEncoder.PROVIDER);
+        final MqttPubComp pubComp =
+                new MqttPubComp(0x0605, reasonCode, null, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
 
         encode(expected, pubComp);
     }
@@ -131,8 +129,7 @@ class Mqtt5PubCompEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
 
         final MqttUTF8StringImpl reasonString = MqttUTF8StringImpl.from("reason");
         final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
-        final MqttPubComp pubComp =
-                new MqttPubComp(9, PACKET_IDENTIFIER_NOT_FOUND, reasonString, userProperties, Mqtt5PubCompEncoder.PROVIDER);
+        final MqttPubComp pubComp = new MqttPubComp(9, PACKET_IDENTIFIER_NOT_FOUND, reasonString, userProperties);
 
         encode(expected, pubComp);
     }
@@ -157,7 +154,7 @@ class Mqtt5PubCompEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
         };
 
         final MqttUserPropertiesImpl userProperties = getUserProperties(1);
-        final MqttPubComp pubComp = new MqttPubComp(5, PACKET_IDENTIFIER_NOT_FOUND, null, userProperties, Mqtt5PubCompEncoder.PROVIDER);
+        final MqttPubComp pubComp = new MqttPubComp(5, PACKET_IDENTIFIER_NOT_FOUND, null, userProperties);
 
         encode(expected, pubComp);
     }
@@ -166,8 +163,7 @@ class Mqtt5PubCompEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
     void encode_maximumPacketSizeExceeded_throwsEncoderException() {
         createServerConnectionData(3);
 
-        final MqttPubComp pubComp = new MqttPubComp(1, SUCCESS, null, MqttUserPropertiesImpl.NO_USER_PROPERTIES,
-                Mqtt5PubCompEncoder.PROVIDER);
+        final MqttPubComp pubComp = new MqttPubComp(1, SUCCESS, null, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
 
         final Throwable exception = assertThrows(EncoderException.class, () -> channel.writeOutbound(pubComp));
         assertTrue(exception.getMessage().contains("packet size exceeded for AUTH"));
@@ -190,7 +186,7 @@ class Mqtt5PubCompEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
         createServerConnectionData(expected.length + 2);
 
         final MqttUserPropertiesImpl userProperties = getUserProperties(1);
-        final MqttPubComp pubComp = new MqttPubComp(5, PACKET_IDENTIFIER_NOT_FOUND, null, userProperties, Mqtt5PubCompEncoder.PROVIDER);
+        final MqttPubComp pubComp = new MqttPubComp(5, PACKET_IDENTIFIER_NOT_FOUND, null, userProperties);
 
         encode(expected, pubComp);
     }
@@ -216,8 +212,8 @@ class Mqtt5PubCompEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
         createServerConnectionData(expected.length + 2);
 
         final MqttUserPropertiesImpl userProperties = getUserProperties(1);
-        final MqttPubComp pubComp = new MqttPubComp(5, PACKET_IDENTIFIER_NOT_FOUND, MqttUTF8StringImpl.from("reason"), userProperties,
-                Mqtt5PubCompEncoder.PROVIDER);
+        final MqttPubComp pubComp =
+                new MqttPubComp(5, PACKET_IDENTIFIER_NOT_FOUND, MqttUTF8StringImpl.from("reason"), userProperties);
         encode(expected, pubComp);
     }
 
@@ -240,8 +236,7 @@ class Mqtt5PubCompEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
                 getUserProperties((VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE / userPropertyBytes) + 1);
 
 
-        final MqttPubComp pubComp = new MqttPubComp(5, PACKET_IDENTIFIER_NOT_FOUND, null, userProperties,
-                Mqtt5PubCompEncoder.PROVIDER);
+        final MqttPubComp pubComp = new MqttPubComp(5, PACKET_IDENTIFIER_NOT_FOUND, null, userProperties);
         encode(expected, pubComp);
     }
 
@@ -277,8 +272,7 @@ class Mqtt5PubCompEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
         // user properties
         userProperties.encode(expected);
 
-        final MqttPubComp pubComp = new MqttPubComp(5, PACKET_IDENTIFIER_NOT_FOUND, reasonString, userProperties,
-                Mqtt5PubCompEncoder.PROVIDER);
+        final MqttPubComp pubComp = new MqttPubComp(5, PACKET_IDENTIFIER_NOT_FOUND, reasonString, userProperties);
         encode(expected.array(), pubComp);
         expected.release();
     }

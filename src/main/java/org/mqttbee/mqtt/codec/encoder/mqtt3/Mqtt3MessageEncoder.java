@@ -21,7 +21,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.exceptions.MqttMaximumPacketSizeExceededException;
-import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoderWithMessage;
+import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoder;
 import org.mqttbee.mqtt.message.MqttMessage;
 
 import static org.mqttbee.mqtt.codec.encoder.MqttMessageEncoderUtil.encodedPacketLength;
@@ -29,26 +29,23 @@ import static org.mqttbee.mqtt.codec.encoder.MqttMessageEncoderUtil.encodedPacke
 /**
  * @author Silvio Giebl
  */
-public abstract class Mqtt3MessageEncoder<M extends MqttMessage> extends MqttMessageEncoderWithMessage<M> {
+abstract class Mqtt3MessageEncoder<M extends MqttMessage> extends MqttMessageEncoder<M> {
 
     @NotNull
     @Override
-    public ByteBuf encode(
-            @NotNull final MqttMessage message, @NotNull final ByteBufAllocator allocator,
-            final int maximumPacketSize) {
+    protected ByteBuf encode(
+            @NotNull final M message, @NotNull final ByteBufAllocator allocator, final int maximumPacketSize) {
 
-        final M msg = (M) message;
-
-        final int remainingLength = calculateRemainingLength(msg);
+        final int remainingLength = calculateRemainingLength(message);
         final int encodedLength = encodedPacketLength(remainingLength);
         if (encodedLength > maximumPacketSize) {
             throw new MqttMaximumPacketSizeExceededException(message, encodedLength, maximumPacketSize);
         }
-        return encode(msg, allocator, encodedLength, remainingLength);
+        return encode(message, allocator, encodedLength, remainingLength);
     }
 
     @NotNull
-    protected ByteBuf encode(
+    ByteBuf encode(
             @NotNull final M message, @NotNull final ByteBufAllocator allocator, final int encodedLength,
             final int remainingLength) {
 
@@ -62,23 +59,19 @@ public abstract class Mqtt3MessageEncoder<M extends MqttMessage> extends MqttMes
     abstract int calculateRemainingLength(@NotNull final M message);
 
 
-    public static abstract class Mqtt3MessageFixedSizeEncoder<M extends MqttMessage>
-            extends MqttMessageEncoderWithMessage<M> {
+    public static abstract class Mqtt3MessageFixedSizeEncoder<M extends MqttMessage> extends MqttMessageEncoder<M> {
 
         @NotNull
         @Override
-        public ByteBuf encode(
-                @NotNull final MqttMessage message, @NotNull final ByteBufAllocator allocator,
-                final int maximumPacketSize) {
-
-            final M msg = (M) message;
+        protected ByteBuf encode(
+                @NotNull final M message, @NotNull final ByteBufAllocator allocator, final int maximumPacketSize) {
 
             final int encodedLength = encodedLength();
             if (encodedLength > maximumPacketSize) {
                 throw new MqttMaximumPacketSizeExceededException(message, encodedLength, maximumPacketSize);
             }
             final ByteBuf out = allocator.ioBuffer(encodedLength, encodedLength);
-            encode(msg, out);
+            encode(message, out);
             return out;
         }
 

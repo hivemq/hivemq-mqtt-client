@@ -21,24 +21,26 @@ import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
-import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
-import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider;
-import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider.ThreadLocalMqttWrappedMessageEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribeWrapper;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 /**
  * @author Silvio Giebl
  */
-public class Mqtt3SubscribeEncoder extends Mqtt3WrappedMessageEncoder<MqttSubscribe, MqttSubscribeWrapper> {
-
-    public static final MqttWrappedMessageEncoderProvider<MqttSubscribe, MqttSubscribeWrapper, MqttMessageEncoderProvider<MqttSubscribeWrapper>>
-            PROVIDER = ThreadLocalMqttWrappedMessageEncoderProvider.create(Mqtt3SubscribeEncoder::new);
+@Singleton
+public class Mqtt3SubscribeEncoder extends Mqtt3MessageEncoder<MqttSubscribeWrapper> {
 
     private static final int FIXED_HEADER = (Mqtt3MessageType.SUBSCRIBE.getCode() << 4) | 0b0010;
     private static final int VARIABLE_HEADER_FIXED_LENGTH = 2; // packet identifier
+
+    @Inject
+    Mqtt3SubscribeEncoder() {
+    }
 
     @Override
     int calculateRemainingLength(@NotNull final MqttSubscribeWrapper message) {
@@ -58,6 +60,7 @@ public class Mqtt3SubscribeEncoder extends Mqtt3WrappedMessageEncoder<MqttSubscr
     @Override
     public void encode(
             @NotNull final MqttSubscribeWrapper message, @NotNull final ByteBuf out, final int remainingLength) {
+
         encodeFixedHeader(out, remainingLength);
         encodeVariableHeader(message, out);
         encodePayload(message, out);

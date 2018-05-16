@@ -22,7 +22,6 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
-import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5DisconnectEncoder;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
@@ -93,8 +92,7 @@ public class Mqtt5DisconnectBuilder {
     public Mqtt5Disconnect build() {
         final Mqtt5DisconnectReasonCode reasonCode =
                 withWillMessage ? DISCONNECT_WITH_WILL_MESSAGE : NORMAL_DISCONNECTION;
-        return new MqttDisconnect(reasonCode, sessionExpiryInterval, serverReference, reasonString, userProperties,
-                Mqtt5DisconnectEncoder.PROVIDER);
+        return new MqttDisconnect(reasonCode, sessionExpiryInterval, serverReference, reasonString, userProperties);
     }
 
 }

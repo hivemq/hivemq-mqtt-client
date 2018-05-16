@@ -24,7 +24,6 @@ import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscription;
-import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5UnsubscribeEncoder;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribe;
@@ -72,7 +71,7 @@ public class Mqtt5UnsubscribeBuilder {
     public Mqtt5Unsubscribe build() {
         final ImmutableList<MqttTopicFilterImpl> topicFilters = topicFiltersBuilder.build();
         Preconditions.checkState(!topicFilters.isEmpty());
-        return new MqttUnsubscribe(topicFilters, userProperties, Mqtt5UnsubscribeEncoder.PROVIDER);
+        return new MqttUnsubscribe(topicFilters, userProperties);
     }
 
 }

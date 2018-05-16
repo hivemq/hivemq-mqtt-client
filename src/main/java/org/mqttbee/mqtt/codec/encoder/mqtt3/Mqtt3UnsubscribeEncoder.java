@@ -21,24 +21,26 @@ import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
-import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
-import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider;
-import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider.ThreadLocalMqttWrappedMessageEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribe;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribeWrapper;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 /**
  * @author Silvio Giebl
  */
-public class Mqtt3UnsubscribeEncoder extends Mqtt3WrappedMessageEncoder<MqttUnsubscribe, MqttUnsubscribeWrapper> {
-
-    public static final MqttWrappedMessageEncoderProvider<MqttUnsubscribe, MqttUnsubscribeWrapper, MqttMessageEncoderProvider<MqttUnsubscribeWrapper>>
-            PROVIDER = ThreadLocalMqttWrappedMessageEncoderProvider.create(Mqtt3UnsubscribeEncoder::new);
+@Singleton
+public class Mqtt3UnsubscribeEncoder extends Mqtt3MessageEncoder<MqttUnsubscribeWrapper> {
 
     private static final int FIXED_HEADER = (Mqtt3MessageType.UNSUBSCRIBE.getCode() << 4) | 0b0010;
     private static final int VARIABLE_HEADER_FIXED_LENGTH = 2; // packet identifier
+
+    @Inject
+    Mqtt3UnsubscribeEncoder() {
+    }
 
     @Override
     int calculateRemainingLength(@NotNull final MqttUnsubscribeWrapper message) {
@@ -57,6 +59,7 @@ public class Mqtt3UnsubscribeEncoder extends Mqtt3WrappedMessageEncoder<MqttUnsu
     @Override
     public void encode(
             @NotNull final MqttUnsubscribeWrapper message, @NotNull final ByteBuf out, final int remainingLength) {
+
         encodeFixedHeader(out, remainingLength);
         encodeVariableHeader(message, out);
         encodePayload(message, out);
