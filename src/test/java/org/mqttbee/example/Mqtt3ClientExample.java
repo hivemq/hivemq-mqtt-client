@@ -20,8 +20,11 @@ package org.mqttbee.example;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
+import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.MqttClient;
+import org.mqttbee.api.mqtt.MqttSslConfig;
+import org.mqttbee.api.mqtt.MqttWebsocketConfig;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3Client;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3Connect;
@@ -53,6 +56,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  * A simple test app. Can be run via gradle:
  * Publisher:
  * ./gradlew -PmainClass=org.mqttbee.example.Mqtt3ClientExample \
+ * -Dserver=test.mosquitto.org \
+ * -Dport=8883 \
+ * -Dssl=true \
  * -Dcommand=publish \
  * -Dtopic=a/b \
  * -Dkeystore=src/test/resources/testkeys/mosquitto/mosquitto.org.client.jks \
@@ -63,6 +69,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  *  Subscriber
  * ./gradlew -PmainClass=org.mqttbee.example.Mqtt3ClientExample \
+ * -Dserver=test.mosquitto.org \
+ * -Dport=8883 \
+ * -Dssl=true \
  * -Dcommand=subscribe \
  * -Dtopic=a/b \
  * -Dkeystore=src/test/resources/testkeys/mosquitto/mosquitto.org.client.jks \
@@ -82,44 +91,36 @@ class Mqtt3ClientExample {
     private static final String JKS = "JKS";
     private static final String TRUSTSTORE_PATH = "truststore";
     private static final String TRUSTSTORE_PASS = "truststorepass";
-    //private boolean usesSsl = false;
-    // create a client with a random UUID and connect to server
+    private static final String SERVER = "server";
+    private static final String PORT = "port";
+    private static final String USES_SSL = "ssl";
+    private static final String COUNT = "count";
+    private static final String SERVER_PATH = "serverpath";
 
-    // test server from hivemq
-    //final String server = "broker.mqttdashboard.com";
-    //final int port = 1883;
-    //final int port = 8000;
-
-    // test server from hivemq
-    //final String server = "broker.hivemq.com";
-    //final String server = "52.57.95.16";
-    //final int port = 8000;
-
-    // local mosquitto on 8000
-    //final String server = "localhost";
-    //final int port = 8000;
-
-    // test server from mosquitto
-    private final String server = "test.mosquitto.org";
-
-    // mosquitto websockets unencrypted
-    //private final int port = 8080;
-
-
-    // mosquitto websockets encrypted
-    private final int port = 8884;
-    private boolean usesSsl = true;
     private final KeyStore trustStore;
     private final KeyStore keyStore;
     private final String keyStorePassword;
+    private final String server;
+    
+    private final int port;
+    private final boolean usesSsl;
+    private int receivedCount = 0;
+    private int publishedCount = 0;
+    private final String serverPath;
 
-    private Mqtt3ClientExample(KeyStore trustStore, KeyStore keyStore, String keyStorePassword) {
+
+    // create a client with a random UUID and connect to server
+    Mqtt3ClientExample(@NotNull String server, int port, boolean usesSsl, @Nullable KeyStore trustStore, @Nullable KeyStore keyStore, @Nullable String keyStorePassword, @Nullable String serverPath) {
+        this.server = server;
+        this.port = port;
+        this.usesSsl = usesSsl;
         this.trustStore = trustStore;
         this.keyStore = keyStore;
-        this.keyStorePassword = keyStorePassword;
+        this.keyStorePassword = keyStorePassword == null ? "": keyStorePassword;
+        this.serverPath = serverPath == null ? "mqtt" : serverPath;
     }
 
-    private void subscribe(String topic, MqttQoS qos) {
+    Flowable<Mqtt3Publish> subscribeTo(String topic, MqttQoS qos) {
 
 
         final Mqtt3Client client = getClient();
@@ -135,31 +136,31 @@ class Mqtt3ClientExample {
                 .addSubscription(
                         Mqtt3Subscription.builder().withTopicFilter(topic).withQoS(qos).build())
                 .build();
-        // define what to do with the publishes, that match the subscription, this does not subscribe yet
-        final Flowable<Mqtt3Publish> subscribeScenario = client.subscribe(subscribeMessage).doOnNext(publish -> {
+        // define what to do with the publishes that match the subscription. This does not subscribe until rxJava's subscribe is called
+        // NOTE: you can also subscribe without the stream, and then handle the incoming publishes on client.allPublishes()
+        Flowable<Mqtt3Publish> subscribeScenario = client.subscribeWithStream(subscribeMessage)
+                .doOnSingle((subAck, subscription) -> System.out.println("subscribed to " +  topic + ": return codes: " + subAck.getReturnCodes()))
+                .doOnNext(publish -> {
             final Optional<ByteBuffer> payload = publish.getPayload();
             if (payload.isPresent()) {
+                receivedCount++;
                 final String message = new String(ByteBufferUtil.getBytes(payload.get()));
-                System.out.println(
-                        "received message without payload '" + message + "' on topic '" + publish.getTopic() + "'");
+                System.out.println("received message with payload '" + message + "' on topic '" + publish.getTopic() +
+                        "' received count: " + receivedCount);
             } else {
                 System.out.println("received message without payload on topic '" + publish.getTopic() + "'");
             }
         });
 
         // now say we want to connect first and then subscribe, this does not connect and subscribe yet
-        final Flowable<Mqtt3Publish> connectAndSubscribeScenario =
-                connectScenario.toCompletable().andThen(subscribeScenario);
-
-        // now we want to execute our "scenario"
-        connectAndSubscribeScenario.blockingSubscribe();
+        return connectScenario.toCompletable().andThen(subscribeScenario);
     }
 
     private boolean isNotUsingMqttPort(int port) {
         return !(port == 1883 || port == 8883 || port == 8884);
     }
 
-    private void publisher(final String topic, final MqttQoS qos) {
+    Flowable<Mqtt3PublishResult> publish(final String topic, final MqttQoS qos, final int countToPublish) {
         final Mqtt3Client client = getClient();
 
         // create a CONNECT message with keep alive of 10 seconds
@@ -174,7 +175,7 @@ class Mqtt3ClientExample {
         final AtomicInteger counter = new AtomicInteger();
         // fake a stream of random messages, actually not random, but an incrementing counter ;-)
         final Flowable<Mqtt3Publish> publishFlowable = Flowable.generate(emitter -> {
-            if (counter.get() < 100) {
+            if (counter.get() < countToPublish) {
                 emitter.onNext(
                         publishMessageBuilder.withPayload(("test " + counter.getAndIncrement()).getBytes()).build());
             } else {
@@ -185,10 +186,10 @@ class Mqtt3ClientExample {
         // define what to publish and what to do when we published a message (e.g. PUBACK received), this does not publish yet
         final Flowable<Mqtt3PublishResult> publishScenario =
                 client.publish(publishFlowable).doOnNext(publishResult -> {
+                    publishedCount++;
                     final Optional<ByteBuffer> payload = publishResult.getPublish().getPayload();
-                    if (payload.isPresent()) {
-                        System.out.println("published " + new String(ByteBufferUtil.getBytes(payload.get())));
-                    }
+                    payload.ifPresent(byteBuffer -> System.out.println(
+                            "published " + new String(ByteBufferUtil.getBytes(byteBuffer))));
                 });
 
         // define what to do when we disconnect, this does not disconnect yet
@@ -196,24 +197,33 @@ class Mqtt3ClientExample {
                 client.disconnect().doOnComplete(() -> System.out.println("disconnected"));
 
         // now we want to connect, then publish and if we did not publish anything for 10 seconds disconnect
-        connectScenario.toCompletable()
+        return connectScenario.toCompletable()
                 .andThen(publishScenario)
                 .timeout(10, TimeUnit.SECONDS)
-                .onErrorResumeNext(disconnectScenario.toFlowable())
-                .blockingSubscribe();
+                .onErrorResumeNext(disconnectScenario.toFlowable());
     }
 
     private Mqtt3Client getClient() {
+        MqttSslConfig sslConfig = null;
+        MqttWebsocketConfig websocketsConfig = null;
+        if (usesSsl) {
+            sslConfig = new MqttSslConfig()
+                    .keyStore(keyStore)
+                    .keyStorePassword(keyStorePassword)
+                    .trustStore(trustStore);
+        }
+
+        if (isNotUsingMqttPort(port)) {
+            websocketsConfig = new MqttWebsocketConfig().withServerPath(serverPath);
+        }
+
+
         return MqttClient.builder()
                 .withIdentifier(UUID.randomUUID().toString())
-                .forServerHost(server)
+                .withServerHost(server)
                 .withServerPort(port)
-                .withServerPath("mqtt")
-                .usingSSL(usesSsl)
-                .keyStore(keyStore)
-                .keyStorePassword(keyStorePassword)
-                .trustStore(trustStore)
-                .usingWebSockets(isNotUsingMqttPort(port))
+                .usingSsl(sslConfig)
+                .usingWebSockets(websocketsConfig)
                 .usingMqtt3()
                 .reactive();
     }
@@ -222,7 +232,7 @@ class Mqtt3ClientExample {
         return System.getProperty(key) != null ? System.getProperty(key) : defaultValue;
     }
 
-    private static KeyStore loadKeyStore(@Nullable String keyStorePath, @Nullable String keyStorePass) throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
+    static KeyStore loadKeyStore(@Nullable String keyStorePath, @Nullable String keyStorePass) throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
         if (keyStorePath == null) {
             return null;
         }
@@ -236,26 +246,43 @@ class Mqtt3ClientExample {
 
     public static void main(String[] args) throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
         String command = getProperty(COMMAND, SUBSCRIBE);
+        int count = Integer.valueOf(getProperty(COUNT, "100"));
         String topic = getProperty(TOPIC, "a/b");
         MqttQoS qos = MqttQoS.fromCode(Integer.parseInt(getProperty(QOS, "1")));
 
+        String server = getProperty(SERVER, "test.mosquitto.org");
+        int port = Integer.valueOf(getProperty(PORT, "1883"));
+        boolean usesSsl = Boolean.valueOf(getProperty(USES_SSL, "false"));
         String trustStorePath = getProperty(TRUSTSTORE_PATH, null);
         String trustStorePass = getProperty(TRUSTSTORE_PASS, "");
         String keyStorePath = getProperty(KEYSTORE_PATH, null);
         String keyStorePass = getProperty(KEYSTORE_PASS, "");
+        String serverPath = getProperty(SERVER_PATH, "mqtt");
 
         Mqtt3ClientExample instance = new Mqtt3ClientExample(
+                server,
+                port,
+                usesSsl,
                 loadKeyStore(trustStorePath, trustStorePass),
                 loadKeyStore(keyStorePath, keyStorePass),
-                keyStorePass);
+                keyStorePass,
+                serverPath);
 
         switch (command) {
             case SUBSCRIBE:
-                instance.subscribe(topic, qos);
+                instance.subscribeTo(topic, qos).blockingSubscribe();
                 break;
             case PUBLISH:
-                instance.publisher(topic, qos);
+                instance.publish(topic, qos, count).blockingSubscribe();
                 break;
         }
+    }
+
+    int getReceivedCount() {
+        return receivedCount;
+    }
+
+    int getPublishedCount() {
+        return publishedCount;
     }
 }
