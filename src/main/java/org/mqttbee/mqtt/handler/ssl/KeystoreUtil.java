@@ -16,6 +16,7 @@
 package org.mqttbee.mqtt.handler.ssl;
 
 import dagger.internal.Preconditions;
+import org.mqttbee.annotations.NotNull;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLException;
@@ -36,13 +37,14 @@ public class KeystoreUtil {
 
     private static final String KEYSTORE_TYPE = "JKS";
 
+    @NotNull
     public static TrustManagerFactory trustManagerFromKeystore(
-            final File trustStoreFile, final String trustStorePassword) throws SSLException {
+            @NotNull final File trustStoreFile, @NotNull final String trustStorePassword) throws SSLException {
 
         Preconditions.checkNotNull(trustStoreFile, "Truststore must not be null");
         try (final FileInputStream fileInputStream = new FileInputStream(trustStoreFile)) {
             //load keystore from TLS config
-            final KeyStore keyStoreTrust = KeyStore.getInstance("JKS");
+            final KeyStore keyStoreTrust = KeyStore.getInstance(KEYSTORE_TYPE);
             keyStoreTrust.load(fileInputStream, trustStorePassword.toCharArray());
 
             //set up TrustManagerFactory
@@ -59,8 +61,9 @@ public class KeystoreUtil {
         }
     }
 
+    @NotNull
     public static KeyManagerFactory keyManagerFromKeystore(
-            final File keyStoreFile, final String keyStorePassword, final String privateKeyPassword)
+            @NotNull final File keyStoreFile, @NotNull final String keyStorePassword, @NotNull final String privateKeyPassword)
             throws SSLException {
 
         Preconditions.checkNotNull(keyStoreFile, "Keystore must not be null");
