@@ -21,10 +21,11 @@ import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageWithUserPropertiesEncoder.Mqtt5MessageWithReasonStringEncoder;
-import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
-import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider.ThreadLocalMqttMessageEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.auth.MqttAuth;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.*;
 import static org.mqttbee.mqtt.message.auth.MqttAuthProperty.AUTHENTICATION_DATA;
@@ -33,14 +34,15 @@ import static org.mqttbee.mqtt.message.auth.MqttAuthProperty.AUTHENTICATION_METH
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5AuthEncoder
-        extends Mqtt5MessageWithReasonStringEncoder<MqttAuth, MqttMessageEncoderProvider<MqttAuth>> {
-
-    public static final MqttMessageEncoderProvider<MqttAuth> PROVIDER =
-            new ThreadLocalMqttMessageEncoderProvider<>(Mqtt5AuthEncoder::new);
+@Singleton
+public class Mqtt5AuthEncoder extends Mqtt5MessageWithReasonStringEncoder<MqttAuth> {
 
     private static final int FIXED_HEADER = Mqtt5MessageType.AUTH.getCode() << 4;
     private static final int VARIABLE_HEADER_FIXED_LENGTH = 1; // reason code
+
+    @Inject
+    Mqtt5AuthEncoder() {
+    }
 
     @Override
     int calculateRemainingLength(@NotNull final MqttAuth message) {

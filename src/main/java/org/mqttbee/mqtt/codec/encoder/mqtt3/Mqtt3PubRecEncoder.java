@@ -21,21 +21,25 @@ import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.mqtt.codec.encoder.mqtt3.Mqtt3MessageEncoder.Mqtt3MessageFixedSizeEncoder;
-import org.mqttbee.mqtt.codec.encoder.provider.MqttPubRecEncoderProvider;
 import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRec;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  * @author Daniel Krüger
  * @author Silvio Giebl
  */
+@Singleton
 public class Mqtt3PubRecEncoder extends Mqtt3MessageFixedSizeEncoder<MqttPubRec> {
-
-    public static final MqttPubRecEncoderProvider PROVIDER =
-            new MqttPubRecEncoderProvider(Mqtt3PubRecEncoder::new, Mqtt3PubRelEncoder.PROVIDER);
 
     private static final int FIXED_HEADER = Mqtt3MessageType.PUBREC.getCode() << 4;
     private static final int REMAINING_LENGTH = 2;
     private static final int ENCODED_LENGTH = 2 + REMAINING_LENGTH;
+
+    @Inject
+    Mqtt3PubRecEncoder() {
+    }
 
     @Override
     int encodedLength() {

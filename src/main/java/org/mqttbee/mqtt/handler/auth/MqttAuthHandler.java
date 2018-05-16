@@ -31,16 +31,16 @@ import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
-import org.mqttbee.mqtt.message.auth.MqttAuth;
-import org.mqttbee.mqtt.message.auth.MqttEnhancedAuthBuilder;
-import org.mqttbee.mqtt.message.connect.MqttConnect;
-import org.mqttbee.mqtt.message.connect.MqttConnectWrapper;
-import org.mqttbee.mqtt.message.connect.connack.MqttConnAck;
 import org.mqttbee.mqtt.handler.disconnect.ChannelCloseEvent;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.handler.util.DefaultChannelOutboundHandler;
 import org.mqttbee.mqtt.ioc.ChannelComponent;
 import org.mqttbee.mqtt.ioc.ChannelScope;
+import org.mqttbee.mqtt.message.auth.MqttAuth;
+import org.mqttbee.mqtt.message.auth.MqttEnhancedAuthBuilder;
+import org.mqttbee.mqtt.message.connect.MqttConnect;
+import org.mqttbee.mqtt.message.connect.MqttConnectWrapper;
+import org.mqttbee.mqtt.message.connect.connack.MqttConnAck;
 
 import javax.inject.Inject;
 

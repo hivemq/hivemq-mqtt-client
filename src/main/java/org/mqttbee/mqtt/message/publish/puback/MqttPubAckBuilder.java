@@ -61,8 +61,7 @@ public class MqttPubAckBuilder implements Mqtt5PubAckBuilder {
     }
 
     public MqttPubAck build() {
-        return new MqttPubAck(publish.getPacketIdentifier(), reasonCode, reasonString, userProperties,
-                publish.getEncoderProvider().getPubAckEncoderProvider());
+        return new MqttPubAck(publish.getPacketIdentifier(), reasonCode, reasonString, userProperties);
     }
 
 }

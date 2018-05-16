@@ -20,8 +20,6 @@ package org.mqttbee.mqtt.message.unsubscribe;
 import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
-import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
-import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.MqttWrappedMessage;
@@ -32,18 +30,15 @@ import javax.annotation.concurrent.Immutable;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttUnsubscribe extends
-        MqttWrappedMessage<MqttUnsubscribe, MqttUnsubscribeWrapper, MqttMessageEncoderProvider<MqttUnsubscribeWrapper>>
-        implements Mqtt5Unsubscribe {
+public class MqttUnsubscribe extends MqttWrappedMessage implements Mqtt5Unsubscribe {
 
     private final ImmutableList<MqttTopicFilterImpl> topicFilters;
 
     public MqttUnsubscribe(
             @NotNull final ImmutableList<MqttTopicFilterImpl> topicFilters,
-            @NotNull final MqttUserPropertiesImpl userProperties,
-            @NotNull final MqttWrappedMessageEncoderProvider<MqttUnsubscribe, MqttUnsubscribeWrapper, MqttMessageEncoderProvider<MqttUnsubscribeWrapper>> encoderProvider) {
+            @NotNull final MqttUserPropertiesImpl userProperties) {
 
-        super(userProperties, encoderProvider);
+        super(userProperties);
         this.topicFilters = topicFilters;
     }
 
@@ -51,12 +46,6 @@ public class MqttUnsubscribe extends
     @Override
     public ImmutableList<MqttTopicFilterImpl> getTopicFilters() {
         return topicFilters;
-    }
-
-    @NotNull
-    @Override
-    protected MqttUnsubscribe getCodable() {
-        return this;
     }
 
     public MqttUnsubscribeWrapper wrap(final int packetIdentifier) {

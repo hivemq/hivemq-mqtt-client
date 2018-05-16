@@ -22,8 +22,7 @@ import io.netty.buffer.ByteBufAllocator;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.exceptions.MqttMaximumPacketSizeExceededException;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5ReasonCode;
-import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoderWithMessage;
-import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
+import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoder;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.MqttMessage;
@@ -42,31 +41,28 @@ import static org.mqttbee.mqtt.message.MqttProperty.REASON_STRING;
  *
  * @author Silvio Giebl
  */
-abstract class Mqtt5MessageWithUserPropertiesEncoder<M extends MqttMessage> extends MqttMessageEncoderWithMessage<M> {
+abstract class Mqtt5MessageWithUserPropertiesEncoder<M extends MqttMessage> extends MqttMessageEncoder<M> {
 
     @NotNull
     @Override
-    public ByteBuf encode(
-            @NotNull final MqttMessage message, @NotNull final ByteBufAllocator allocator,
-            final int maximumPacketSize) {
+    protected ByteBuf encode(
+            @NotNull final M message, @NotNull final ByteBufAllocator allocator, final int maximumPacketSize) {
 
-        final M msg = (M) message;
-
-        int propertyLength = calculatePropertyLength(msg);
-        final int remainingLengthWithoutProperties = calculateRemainingLength(msg);
-        int remainingLength = remainingLength(msg, remainingLengthWithoutProperties, propertyLength);
+        int propertyLength = calculatePropertyLength(message);
+        final int remainingLengthWithoutProperties = calculateRemainingLength(message);
+        int remainingLength = remainingLength(message, remainingLengthWithoutProperties, propertyLength);
         int encodedLength = encodedPacketLength(remainingLength);
         int omittedProperties = 0;
         while (encodedLength > maximumPacketSize) {
             omittedProperties++;
-            propertyLength = propertyLength(msg, propertyLength, omittedProperties);
+            propertyLength = propertyLength(message, propertyLength, omittedProperties);
             if (propertyLength < 0) {
                 throw new MqttMaximumPacketSizeExceededException(message, encodedLength, maximumPacketSize);
             }
-            remainingLength = remainingLength(msg, remainingLengthWithoutProperties, propertyLength);
+            remainingLength = remainingLength(message, remainingLengthWithoutProperties, propertyLength);
             encodedLength = encodedPacketLength(remainingLength);
         }
-        return encode(msg, allocator, encodedLength, remainingLength, propertyLength, omittedProperties);
+        return encode(message, allocator, encodedLength, remainingLength, propertyLength, omittedProperties);
     }
 
     @NotNull
@@ -149,11 +145,11 @@ abstract class Mqtt5MessageWithUserPropertiesEncoder<M extends MqttMessage> exte
     /**
      * Base class for encoders of MQTT messages with an omissible Reason String and omissible User Properties.
      */
-    static abstract class Mqtt5MessageWithReasonStringEncoder<T extends MqttMessageWithReasonString<T, P>, P extends MqttMessageEncoderProvider<T>>
-            extends Mqtt5MessageWithUserPropertiesEncoder<T> {
+    static abstract class Mqtt5MessageWithReasonStringEncoder<M extends MqttMessageWithReasonString>
+            extends Mqtt5MessageWithUserPropertiesEncoder<M> {
 
         @Override
-        int propertyLength(@NotNull final T message, final int propertyLength, final int omittedProperties) {
+        int propertyLength(@NotNull final M message, final int propertyLength, final int omittedProperties) {
             switch (omittedProperties) {
                 case 0:
                     return propertyLength;
@@ -167,13 +163,13 @@ abstract class Mqtt5MessageWithUserPropertiesEncoder<M extends MqttMessage> exte
         }
 
         @Override
-        final int omissiblePropertiesLength(@NotNull final T message) {
+        final int omissiblePropertiesLength(@NotNull final M message) {
             return reasonStringLength(message) + getUserProperties(message).encodedLength();
         }
 
         @Override
         void encodeOmissibleProperties(
-                @NotNull final T message, @NotNull final ByteBuf out, final int omittedProperties) {
+                @NotNull final M message, @NotNull final ByteBuf out, final int omittedProperties) {
 
             if (omittedProperties == 0) {
                 encodeNullableProperty(REASON_STRING, message.getRawReasonString(), out);
@@ -183,12 +179,12 @@ abstract class Mqtt5MessageWithUserPropertiesEncoder<M extends MqttMessage> exte
             }
         }
 
-        private int reasonStringLength(@NotNull final T message) {
+        private int reasonStringLength(@NotNull final M message) {
             return nullablePropertyEncodedLength(message.getRawReasonString());
         }
 
         @Override
-        MqttUserPropertiesImpl getUserProperties(@NotNull final T message) {
+        MqttUserPropertiesImpl getUserProperties(@NotNull final M message) {
             return message.getUserProperties();
         }
 
@@ -199,34 +195,34 @@ abstract class Mqtt5MessageWithUserPropertiesEncoder<M extends MqttMessage> exte
      * Base class for encoders of MQTT messages with an omissible Reason Code, an omissible Reason String and omissible
      * User Properties. The Reason Code is omitted if it is the default and the property length is 0.
      */
-    static abstract class Mqtt5MessageWithOmissibleReasonCodeEncoder<T extends MqttMessageWithReasonCode<T, R, P>, R extends Mqtt5ReasonCode, P extends MqttMessageEncoderProvider<T>>
-            extends Mqtt5MessageWithReasonStringEncoder<T, P> {
+    static abstract class Mqtt5MessageWithOmissibleReasonCodeEncoder<M extends MqttMessageWithReasonCode<R>, R extends Mqtt5ReasonCode>
+            extends Mqtt5MessageWithReasonStringEncoder<M> {
 
         abstract int getFixedHeader();
 
         abstract R getDefaultReasonCode();
 
         @Override
-        final int calculateRemainingLength(@NotNull final T message) {
+        final int calculateRemainingLength(@NotNull final M message) {
             return 1 + additionalRemainingLength(message); // reason code (1)
         }
 
-        int additionalRemainingLength(@NotNull final T message) {
+        int additionalRemainingLength(@NotNull final M message) {
             return 0;
         }
 
         @Override
-        final int calculatePropertyLength(@NotNull final T message) {
+        final int calculatePropertyLength(@NotNull final M message) {
             return omissiblePropertiesLength(message) + additionalPropertyLength(message);
         }
 
-        int additionalPropertyLength(@NotNull final T message) {
+        int additionalPropertyLength(@NotNull final M message) {
             return 0;
         }
 
         @Override
         protected void encode(
-                @NotNull final T message, @NotNull final ByteBuf out, final int remainingLength,
+                @NotNull final M message, @NotNull final ByteBuf out, final int remainingLength,
                 final int propertyLength, final int omittedProperties) {
 
             encodeFixedHeader(out, remainingLength);
@@ -239,7 +235,7 @@ abstract class Mqtt5MessageWithUserPropertiesEncoder<M extends MqttMessage> exte
         }
 
         private void encodeVariableHeader(
-                @NotNull final T message, @NotNull final ByteBuf out, final int propertyLength,
+                @NotNull final M message, @NotNull final ByteBuf out, final int propertyLength,
                 final int omittedProperties) {
 
             encodeAdditionalVariableHeader(message, out);
@@ -256,14 +252,14 @@ abstract class Mqtt5MessageWithUserPropertiesEncoder<M extends MqttMessage> exte
             }
         }
 
-        void encodeAdditionalVariableHeader(@NotNull final T message, @NotNull final ByteBuf out) {
+        void encodeAdditionalVariableHeader(@NotNull final M message, @NotNull final ByteBuf out) {
         }
 
-        void encodeAdditionalProperties(@NotNull final T message, @NotNull final ByteBuf out) {
+        void encodeAdditionalProperties(@NotNull final M message, @NotNull final ByteBuf out) {
         }
 
         @Override
-        final int encodedPropertyLengthWithHeader(@NotNull final T message, final int propertyLength) {
+        final int encodedPropertyLengthWithHeader(@NotNull final M message, final int propertyLength) {
             if (propertyLength == 0) {
                 return (message.getReasonCode() == getDefaultReasonCode()) ? -1 : 0;
             }
@@ -278,16 +274,16 @@ abstract class Mqtt5MessageWithUserPropertiesEncoder<M extends MqttMessage> exte
      * String and omissible User Properties. The Reason Code is omitted if it is the default and the property length is
      * 0.
      */
-    static abstract class Mqtt5MessageWithIdAndOmissibleReasonCodeEncoder<T extends MqttMessageWithIdAndReasonCode<T, R, P>, R extends Mqtt5ReasonCode, P extends MqttMessageEncoderProvider<T>>
-            extends Mqtt5MessageWithOmissibleReasonCodeEncoder<T, R, P> {
+    static abstract class Mqtt5MessageWithIdAndOmissibleReasonCodeEncoder<M extends MqttMessageWithIdAndReasonCode<R>, R extends Mqtt5ReasonCode>
+            extends Mqtt5MessageWithOmissibleReasonCodeEncoder<M, R> {
 
         @Override
-        int additionalRemainingLength(@NotNull final T message) {
+        int additionalRemainingLength(@NotNull final M message) {
             return 2; // packet identifier (2)
         }
 
         @Override
-        void encodeAdditionalVariableHeader(@NotNull final T message, @NotNull final ByteBuf out) {
+        void encodeAdditionalVariableHeader(@NotNull final M message, @NotNull final ByteBuf out) {
             out.writeShort(message.getPacketIdentifier());
         }
 

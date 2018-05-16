@@ -61,8 +61,7 @@ public class MqttPubRecBuilder implements Mqtt5PubRecBuilder {
     }
 
     public MqttPubRec build() {
-        return new MqttPubRec(publish.getPacketIdentifier(), reasonCode, reasonString, userProperties,
-                publish.getEncoderProvider().getPubRecEncoderProvider());
+        return new MqttPubRec(publish.getPacketIdentifier(), reasonCode, reasonString, userProperties);
     }
 
 }

@@ -21,26 +21,25 @@ import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
-import org.mqttbee.mqtt.codec.encoder.provider.MqttPublishEncoderProvider;
-import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider;
-import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider.ThreadLocalMqttWrappedMessageEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.nio.ByteBuffer;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt3PublishEncoder extends Mqtt3WrappedMessageEncoder<MqttPublish, MqttPublishWrapper> {
-
-    private static final MqttPublishEncoderProvider WRAPPER_PROVIDER =
-            new MqttPublishEncoderProvider(Mqtt3PubAckEncoder.PROVIDER, Mqtt3PubRecEncoder.PROVIDER);
-    public static final MqttWrappedMessageEncoderProvider<MqttPublish, MqttPublishWrapper, MqttPublishEncoderProvider>
-            PROVIDER = new ThreadLocalMqttWrappedMessageEncoderProvider<>(Mqtt3PublishEncoder::new, WRAPPER_PROVIDER);
+@Singleton
+public class Mqtt3PublishEncoder extends Mqtt3MessageEncoder<MqttPublishWrapper> {
 
     private static final int FIXED_HEADER = Mqtt3MessageType.PUBLISH.getCode() << 4;
+
+    @Inject
+    Mqtt3PublishEncoder() {
+    }
 
     @Override
     int calculateRemainingLength(@NotNull final MqttPublishWrapper message) {
@@ -101,9 +100,7 @@ public class Mqtt3PublishEncoder extends Mqtt3WrappedMessageEncoder<MqttPublish,
     }
 
     private void encodePayload(@NotNull final MqttPublishWrapper message, @NotNull final ByteBuf out) {
-        final MqttPublish wrapped = message.getWrapped();
-
-        final ByteBuffer payload = wrapped.getRawPayload();
+        final ByteBuffer payload = message.getWrapped().getRawPayload();
         if (payload != null) {
             out.writeBytes(payload.duplicate());
         }

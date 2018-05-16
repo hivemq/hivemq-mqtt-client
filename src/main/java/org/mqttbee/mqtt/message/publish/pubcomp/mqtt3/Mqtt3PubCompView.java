@@ -19,7 +19,6 @@ package org.mqttbee.mqtt.message.publish.pubcomp.mqtt3;
 
 import org.mqttbee.api.mqtt.mqtt3.message.publish.pubcomp.Mqtt3PubComp;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubCompReasonCode;
-import org.mqttbee.mqtt.codec.encoder.mqtt3.Mqtt3PubCompEncoder;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.publish.pubcomp.MqttPubComp;
 
@@ -35,7 +34,7 @@ public class Mqtt3PubCompView implements Mqtt3PubComp {
 
     public static MqttPubComp wrapped(final int packetIdentifier) {
         return new MqttPubComp(packetIdentifier, Mqtt5PubCompReasonCode.SUCCESS, null,
-                MqttUserPropertiesImpl.NO_USER_PROPERTIES, Mqtt3PubCompEncoder.PROVIDER);
+                MqttUserPropertiesImpl.NO_USER_PROPERTIES);
     }
 
     public static Mqtt3PubCompView create() {

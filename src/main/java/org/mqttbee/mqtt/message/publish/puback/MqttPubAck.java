@@ -21,7 +21,6 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.puback.Mqtt5PubAck;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.puback.Mqtt5PubAckReasonCode;
-import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.MqttMessageWithUserProperties.MqttMessageWithIdAndReasonCode;
@@ -33,8 +32,7 @@ import javax.annotation.concurrent.Immutable;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttPubAck extends
-        MqttMessageWithIdAndReasonCode<MqttPubAck, Mqtt5PubAckReasonCode, MqttMessageEncoderProvider<MqttPubAck>>
+public class MqttPubAck extends MqttMessageWithIdAndReasonCode<Mqtt5PubAckReasonCode>
         implements Mqtt5PubAck, MqttQoSMessage {
 
     @NotNull
@@ -42,16 +40,9 @@ public class MqttPubAck extends
 
     public MqttPubAck(
             final int packetIdentifier, @NotNull final Mqtt5PubAckReasonCode reasonCode,
-            @Nullable final MqttUTF8StringImpl reasonString, @NotNull final MqttUserPropertiesImpl userProperties,
-            @NotNull final MqttMessageEncoderProvider<MqttPubAck> encoderProvider) {
+            @Nullable final MqttUTF8StringImpl reasonString, @NotNull final MqttUserPropertiesImpl userProperties) {
 
-        super(packetIdentifier, reasonCode, reasonString, userProperties, encoderProvider);
-    }
-
-    @NotNull
-    @Override
-    protected MqttPubAck getCodable() {
-        return this;
+        super(packetIdentifier, reasonCode, reasonString, userProperties);
     }
 
 }

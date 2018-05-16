@@ -21,7 +21,6 @@ import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscription;
-import org.mqttbee.mqtt.codec.encoder.mqtt3.Mqtt3SubscribeEncoder;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
@@ -37,8 +36,7 @@ public class Mqtt3SubscribeView implements Mqtt3Subscribe {
     public static MqttSubscribe wrapped(
             @NotNull final ImmutableList<MqttSubscription> subscriptions) {
 
-        return new MqttSubscribe(subscriptions, MqttUserPropertiesImpl.NO_USER_PROPERTIES,
-                Mqtt3SubscribeEncoder.PROVIDER);
+        return new MqttSubscribe(subscriptions, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
     }
 
     private static ImmutableList<Mqtt3SubscriptionView> wrapSubscriptions(

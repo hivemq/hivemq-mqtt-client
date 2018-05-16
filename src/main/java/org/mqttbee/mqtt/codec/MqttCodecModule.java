@@ -15,21 +15,25 @@
  *
  */
 
-package org.mqttbee.mqtt.codec.decoder;
+package org.mqttbee.mqtt.codec;
 
 import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
 import org.mqttbee.mqtt.MqttClientData;
+import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoders;
 import org.mqttbee.mqtt.codec.decoder.mqtt3.Mqtt3ClientMessageDecoders;
 import org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5ClientMessageDecoders;
+import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoders;
+import org.mqttbee.mqtt.codec.encoder.mqtt3.Mqtt3ClientMessageEncoders;
+import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5ClientMessageEncoders;
 import org.mqttbee.mqtt.ioc.ChannelScope;
 
 /**
  * @author Silvio Giebl
  */
 @Module
-public class MqttDecoderModule {
+public class MqttCodecModule {
 
     @Provides
     @ChannelScope
@@ -42,6 +46,22 @@ public class MqttDecoderModule {
                 return mqtt5ClientMessageDecoders.get();
             case MQTT_3_1_1:
                 return mqtt3ClientMessageDecoders.get();
+            default:
+                throw new IllegalStateException();
+        }
+    }
+
+    @Provides
+    @ChannelScope
+    static MqttMessageEncoders provideMessageEncoders(
+            final MqttClientData clientData, final Lazy<Mqtt5ClientMessageEncoders> mqtt5ClientMessageEncoders,
+            final Lazy<Mqtt3ClientMessageEncoders> mqtt3ClientMessageEncoders) {
+
+        switch (clientData.getMqttVersion()) {
+            case MQTT_5_0:
+                return mqtt5ClientMessageEncoders.get();
+            case MQTT_3_1_1:
+                return mqtt3ClientMessageEncoders.get();
             default:
                 throw new IllegalStateException();
         }

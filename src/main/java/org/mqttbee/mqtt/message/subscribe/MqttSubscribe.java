@@ -20,8 +20,6 @@ package org.mqttbee.mqtt.message.subscribe;
 import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
-import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
-import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.MqttWrappedMessage;
 
@@ -31,18 +29,15 @@ import javax.annotation.concurrent.Immutable;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttSubscribe extends
-        MqttWrappedMessage<MqttSubscribe, MqttSubscribeWrapper, MqttMessageEncoderProvider<MqttSubscribeWrapper>>
-        implements Mqtt5Subscribe {
+public class MqttSubscribe extends MqttWrappedMessage implements Mqtt5Subscribe {
 
     private final ImmutableList<MqttSubscription> subscriptions;
 
     public MqttSubscribe(
             @NotNull final ImmutableList<MqttSubscription> subscriptions,
-            @NotNull final MqttUserPropertiesImpl userProperties,
-            @NotNull final MqttWrappedMessageEncoderProvider<MqttSubscribe, MqttSubscribeWrapper, MqttMessageEncoderProvider<MqttSubscribeWrapper>> encoderProvider) {
+            @NotNull final MqttUserPropertiesImpl userProperties) {
 
-        super(userProperties, encoderProvider);
+        super(userProperties);
         this.subscriptions = subscriptions;
     }
 
@@ -50,12 +45,6 @@ public class MqttSubscribe extends
     @Override
     public ImmutableList<MqttSubscription> getSubscriptions() {
         return subscriptions;
-    }
-
-    @NotNull
-    @Override
-    protected MqttSubscribe getCodable() {
-        return this;
     }
 
     public MqttSubscribeWrapper wrap(final int packetIdentifier, final int subscriptionIdentifier) {

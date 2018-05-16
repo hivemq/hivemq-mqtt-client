@@ -28,7 +28,7 @@ import static org.junit.Assert.assertArrayEquals;
 class Mqtt3PubCompEncoderTest extends AbstractMqtt5EncoderTest {
 
     Mqtt3PubCompEncoderTest() {
-        super(true);
+        super(code -> new Mqtt3PubCompEncoder(), true);
     }
 
     @Test

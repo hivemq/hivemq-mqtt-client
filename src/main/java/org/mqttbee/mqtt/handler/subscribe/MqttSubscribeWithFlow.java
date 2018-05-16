@@ -53,7 +53,7 @@ public class MqttSubscribeWithFlow {
     @NotNull
     public MqttSubscribeWrapperWithFlow wrap(final int packetIdentifier, final int subscriptionIdentifier) {
         return new MqttSubscribeWrapperWithFlow(
-            subscribe.wrap(packetIdentifier, subscriptionIdentifier), subAckFlow, subscriptionFlow);
+                subscribe.wrap(packetIdentifier, subscriptionIdentifier), subAckFlow, subscriptionFlow);
     }
 
 

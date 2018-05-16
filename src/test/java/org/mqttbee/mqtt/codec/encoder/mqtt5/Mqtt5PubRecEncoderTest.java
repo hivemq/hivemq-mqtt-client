@@ -37,7 +37,7 @@ import static org.mqttbee.mqtt.datatypes.MqttVariableByteInteger.MAXIMUM_PACKET_
 class Mqtt5PubRecEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest {
 
     Mqtt5PubRecEncoderTest() {
-        super(true);
+        super(code -> new Mqtt5PubRecEncoder(), true);
     }
 
     @Test
@@ -58,8 +58,7 @@ class Mqtt5PubRecEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
         final Mqtt5PubRecReasonCode reasonCode = Mqtt5PubRecReasonCode.TOPIC_NAME_INVALID;
         final MqttUTF8StringImpl reasonString = null;
         final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
-        final MqttPubRec pubRec =
-                new MqttPubRec(5, reasonCode, reasonString, userProperties, Mqtt5PubRecEncoder.PROVIDER);
+        final MqttPubRec pubRec = new MqttPubRec(5, reasonCode, reasonString, userProperties);
 
         encode(expected, pubRec);
     }
@@ -77,8 +76,7 @@ class Mqtt5PubRecEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
                 0, 5
         };
 
-        final MqttPubRec pubRec = new MqttPubRec(5, SUCCESS, null, MqttUserPropertiesImpl.NO_USER_PROPERTIES,
-                Mqtt5PubRecEncoder.PROVIDER);
+        final MqttPubRec pubRec = new MqttPubRec(5, SUCCESS, null, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
 
         encode(expected, pubRec);
     }
@@ -100,8 +98,7 @@ class Mqtt5PubRecEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
         };
 
         expected[4] = (byte) reasonCode.getCode();
-        final MqttPubRec pubRec = new MqttPubRec(0x0605, reasonCode, null, MqttUserPropertiesImpl.NO_USER_PROPERTIES,
-                Mqtt5PubRecEncoder.PROVIDER);
+        final MqttPubRec pubRec = new MqttPubRec(0x0605, reasonCode, null, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
 
         encode(expected, pubRec);
     }
@@ -128,8 +125,7 @@ class Mqtt5PubRecEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
         final Mqtt5PubRecReasonCode reasonCode = Mqtt5PubRecReasonCode.TOPIC_NAME_INVALID;
         final MqttUTF8StringImpl reasonString = MqttUTF8StringImpl.from("reason");
         final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
-        final MqttPubRec pubRec =
-                new MqttPubRec(9, reasonCode, reasonString, userProperties, Mqtt5PubRecEncoder.PROVIDER);
+        final MqttPubRec pubRec = new MqttPubRec(9, reasonCode, reasonString, userProperties);
 
         encode(expected, pubRec);
     }
@@ -155,7 +151,7 @@ class Mqtt5PubRecEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
 
         final Mqtt5PubRecReasonCode reasonCode = Mqtt5PubRecReasonCode.TOPIC_NAME_INVALID;
         final MqttUserPropertiesImpl userProperties = getUserProperties(1);
-        final MqttPubRec pubRec = new MqttPubRec(5, reasonCode, null, userProperties, Mqtt5PubRecEncoder.PROVIDER);
+        final MqttPubRec pubRec = new MqttPubRec(5, reasonCode, null, userProperties);
 
         encode(expected, pubRec);
     }
@@ -179,8 +175,7 @@ class Mqtt5PubRecEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
         final Mqtt5PubRecReasonCode reasonCode = Mqtt5PubRecReasonCode.TOPIC_NAME_INVALID;
         final MqttUTF8StringImpl reasonString = null;
         final MqttUserPropertiesImpl userProperties = getUserProperties(1);
-        final MqttPubRec pubRec =
-                new MqttPubRec(5, reasonCode, reasonString, userProperties, Mqtt5PubRecEncoder.PROVIDER);
+        final MqttPubRec pubRec = new MqttPubRec(5, reasonCode, reasonString, userProperties);
 
         encode(expected, pubRec);
     }
@@ -207,8 +202,7 @@ class Mqtt5PubRecEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
         final Mqtt5PubRecReasonCode reasonCode = Mqtt5PubRecReasonCode.TOPIC_NAME_INVALID;
         final MqttUserPropertiesImpl userProperties = getUserProperties(1);
         final MqttUTF8StringImpl reasonString = getPaddedUtf8String(1);
-        final MqttPubRec pubRec =
-                new MqttPubRec(5, reasonCode, reasonString, userProperties, Mqtt5PubRecEncoder.PROVIDER);
+        final MqttPubRec pubRec = new MqttPubRec(5, reasonCode, reasonString, userProperties);
 
         encode(expected, pubRec);
     }
@@ -232,7 +226,7 @@ class Mqtt5PubRecEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
         final MqttUserPropertiesImpl userProperties =
                 getUserProperties((VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE / userPropertyBytes) + 1);
 
-        final MqttPubRec pubRec = new MqttPubRec(5, reasonCode, null, userProperties, Mqtt5PubRecEncoder.PROVIDER);
+        final MqttPubRec pubRec = new MqttPubRec(5, reasonCode, null, userProperties);
 
         encode(expected, pubRec);
     }
@@ -269,8 +263,7 @@ class Mqtt5PubRecEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
         final Mqtt5PubRecReasonCode reasonCode = Mqtt5PubRecReasonCode.TOPIC_NAME_INVALID;
 
         final MqttUTF8StringImpl reasonString = maxPacket.getPaddedUtf8StringTooLong();
-        final MqttPubRec pubRec =
-                new MqttPubRec(5, reasonCode, reasonString, maxUserProperties, Mqtt5PubRecEncoder.PROVIDER);
+        final MqttPubRec pubRec = new MqttPubRec(5, reasonCode, reasonString, maxUserProperties);
 
         encode(expected.array(), pubRec);
         expected.release();

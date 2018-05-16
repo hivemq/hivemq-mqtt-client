@@ -22,8 +22,10 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageWithUserPropertiesEncoder.Mqtt5MessageWithOmissibleReasonCodeEncoder;
-import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.*;
 import static org.mqttbee.mqtt.message.disconnect.MqttDisconnect.DEFAULT_REASON_CODE;
@@ -34,12 +36,15 @@ import static org.mqttbee.mqtt.message.disconnect.MqttDisconnectProperty.SESSION
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5DisconnectEncoder extends
-        Mqtt5MessageWithOmissibleReasonCodeEncoder<MqttDisconnect, Mqtt5DisconnectReasonCode, MqttMessageEncoderProvider<MqttDisconnect>> {
-
-    public static final MqttMessageEncoderProvider<MqttDisconnect> PROVIDER = Mqtt5DisconnectEncoder::new;
+@Singleton
+public class Mqtt5DisconnectEncoder
+        extends Mqtt5MessageWithOmissibleReasonCodeEncoder<MqttDisconnect, Mqtt5DisconnectReasonCode> {
 
     private static final int FIXED_HEADER = Mqtt5MessageType.DISCONNECT.getCode() << 4;
+
+    @Inject
+    Mqtt5DisconnectEncoder() {
+    }
 
     @Override
     protected int getFixedHeader() {

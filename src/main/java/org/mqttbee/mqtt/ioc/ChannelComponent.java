@@ -23,8 +23,8 @@ import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.MqttClientData;
+import org.mqttbee.mqtt.codec.MqttCodecModule;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoder;
-import org.mqttbee.mqtt.codec.decoder.MqttDecoderModule;
 import org.mqttbee.mqtt.codec.encoder.MqttEncoder;
 import org.mqttbee.mqtt.handler.auth.MqttAuthHandler;
 import org.mqttbee.mqtt.handler.auth.MqttDisconnectOnAuthHandler;
@@ -39,7 +39,7 @@ import org.mqttbee.mqtt.persistence.MqttPersistenceModule;
 /**
  * @author Silvio Giebl
  */
-@Subcomponent(modules = {ChannelModule.class, MqttDecoderModule.class, MqttPersistenceModule.class})
+@Subcomponent(modules = {ChannelModule.class, MqttCodecModule.class, MqttPersistenceModule.class})
 @ChannelScope
 public interface ChannelComponent {
 

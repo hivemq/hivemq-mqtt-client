@@ -61,8 +61,7 @@ public class MqttPubCompBuilder implements Mqtt5PubCompBuilder {
     }
 
     public MqttPubComp build() {
-        return new MqttPubComp(pubRel.getPacketIdentifier(), reasonCode, reasonString, userProperties,
-                pubRel.getEncoderProvider().getPubCompEncoderProvider());
+        return new MqttPubComp(pubRel.getPacketIdentifier(), reasonCode, reasonString, userProperties);
     }
 
 }

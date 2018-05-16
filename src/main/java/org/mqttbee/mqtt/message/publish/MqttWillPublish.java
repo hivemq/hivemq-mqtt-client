@@ -23,8 +23,6 @@ import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.TopicAliasUsage;
-import org.mqttbee.mqtt.codec.encoder.provider.MqttPublishEncoderProvider;
-import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
@@ -46,11 +44,10 @@ public class MqttWillPublish extends MqttPublish implements Mqtt5WillPublish {
             @Nullable final Mqtt5PayloadFormatIndicator payloadFormatIndicator,
             @Nullable final MqttUTF8StringImpl contentType, @Nullable final MqttTopicImpl responseTopic,
             @Nullable final ByteBuffer correlationData, @NotNull final MqttUserPropertiesImpl userProperties,
-            final long delayInterval,
-            @NotNull final MqttWrappedMessageEncoderProvider<MqttPublish, MqttPublishWrapper, MqttPublishEncoderProvider> encoderProvider) {
+            final long delayInterval) {
 
         super(topic, payload, qos, isRetain, messageExpiryInterval, payloadFormatIndicator, contentType, responseTopic,
-                correlationData, TopicAliasUsage.MUST_NOT, userProperties, encoderProvider);
+                correlationData, TopicAliasUsage.MUST_NOT, userProperties);
         this.delayInterval = delayInterval;
     }
 

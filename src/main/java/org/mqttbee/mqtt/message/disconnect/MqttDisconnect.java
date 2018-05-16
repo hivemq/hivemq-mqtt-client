@@ -22,7 +22,6 @@ import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.MqttMessageWithUserProperties.MqttMessageWithReasonCode;
@@ -34,9 +33,7 @@ import java.util.Optional;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttDisconnect extends
-        MqttMessageWithReasonCode<MqttDisconnect, Mqtt5DisconnectReasonCode, MqttMessageEncoderProvider<MqttDisconnect>>
-        implements Mqtt5Disconnect {
+public class MqttDisconnect extends MqttMessageWithReasonCode<Mqtt5DisconnectReasonCode> implements Mqtt5Disconnect {
 
     @NotNull
     public static final Mqtt5DisconnectReasonCode DEFAULT_REASON_CODE = Mqtt5DisconnectReasonCode.NORMAL_DISCONNECTION;
@@ -48,10 +45,9 @@ public class MqttDisconnect extends
     public MqttDisconnect(
             @NotNull final Mqtt5DisconnectReasonCode reasonCode, final long sessionExpiryInterval,
             @Nullable final MqttUTF8StringImpl serverReference, @Nullable final MqttUTF8StringImpl reasonString,
-            @NotNull final MqttUserPropertiesImpl userProperties,
-            @NotNull final MqttMessageEncoderProvider<MqttDisconnect> encoderProvider) {
+            @NotNull final MqttUserPropertiesImpl userProperties) {
 
-        super(reasonCode, reasonString, userProperties, encoderProvider);
+        super(reasonCode, reasonString, userProperties);
         this.sessionExpiryInterval = sessionExpiryInterval;
         this.serverReference = serverReference;
     }
@@ -76,12 +72,6 @@ public class MqttDisconnect extends
     @Nullable
     public MqttUTF8StringImpl getRawServerReference() {
         return serverReference;
-    }
-
-    @NotNull
-    @Override
-    protected MqttDisconnect getCodable() {
-        return this;
     }
 
 }

@@ -18,7 +18,9 @@
 package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
 import com.google.common.collect.ImmutableList;
+import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.codec.encoder.AbstractMqtt5EncoderTest;
+import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoders;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
@@ -45,8 +47,10 @@ abstract class AbstractMqtt5EncoderWithUserPropertiesTest extends AbstractMqtt5E
 
     final private MqttUserPropertyImpl userProperty = new MqttUserPropertyImpl(user, property);
 
-    AbstractMqtt5EncoderWithUserPropertiesTest(final boolean connected) {
-        super(connected);
+    AbstractMqtt5EncoderWithUserPropertiesTest(
+            @NotNull final MqttMessageEncoders messageEncoders, final boolean connected) {
+
+        super(messageEncoders, connected);
     }
 
     MqttUserPropertiesImpl getUserProperties(final int totalCount) {

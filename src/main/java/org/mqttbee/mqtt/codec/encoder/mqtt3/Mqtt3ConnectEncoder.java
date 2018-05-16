@@ -20,9 +20,6 @@ package org.mqttbee.mqtt.codec.encoder.mqtt3;
 import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
-import org.mqttbee.mqtt.codec.encoder.provider.MqttMessageEncoderProvider;
-import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider;
-import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider.ThreadLocalMqttWrappedMessageEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.auth.MqttSimpleAuth;
@@ -30,20 +27,25 @@ import org.mqttbee.mqtt.message.connect.MqttConnect;
 import org.mqttbee.mqtt.message.connect.MqttConnectWrapper;
 import org.mqttbee.mqtt.message.publish.MqttWillPublish;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import static org.mqttbee.mqtt.codec.encoder.MqttMessageEncoderUtil.*;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt3ConnectEncoder extends Mqtt3WrappedMessageEncoder<MqttConnect, MqttConnectWrapper> {
-
-    public static final MqttWrappedMessageEncoderProvider<MqttConnect, MqttConnectWrapper, MqttMessageEncoderProvider<MqttConnectWrapper>>
-            PROVIDER = ThreadLocalMqttWrappedMessageEncoderProvider.create(Mqtt3ConnectEncoder::new);
+@Singleton
+public class Mqtt3ConnectEncoder extends Mqtt3MessageEncoder<MqttConnectWrapper> {
 
     private static final int FIXED_HEADER = Mqtt3MessageType.CONNECT.getCode() << 4;
     private static final int VARIABLE_HEADER_FIXED_LENGTH =
             6 /* protocol name */ + 1 /* protocol version */ + 1 /* connect flags */ + 2 /* keep alive */;
     private static final byte PROTOCOL_VERSION = 4;
+
+    @Inject
+    Mqtt3ConnectEncoder() {
+    }
 
     @Override
     int calculateRemainingLength(@NotNull final MqttConnectWrapper message) {

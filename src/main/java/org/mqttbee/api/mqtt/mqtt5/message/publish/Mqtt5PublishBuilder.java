@@ -24,7 +24,6 @@ import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
-import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5PublishEncoder;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
@@ -179,7 +178,7 @@ public class Mqtt5PublishBuilder {
         Preconditions.checkNotNull(topic);
         Preconditions.checkNotNull(qos);
         return new MqttPublish(topic, payload, qos, retain, messageExpiryInterval, payloadFormatIndicator, contentType,
-                responseTopic, correlationData, topicAliasUsage, userProperties, Mqtt5PublishEncoder.PROVIDER);
+                responseTopic, correlationData, topicAliasUsage, userProperties);
     }
 
 }

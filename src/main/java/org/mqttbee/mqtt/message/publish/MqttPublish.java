@@ -26,8 +26,6 @@ import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.TopicAliasUsage;
-import org.mqttbee.mqtt.codec.encoder.provider.MqttPublishEncoderProvider;
-import org.mqttbee.mqtt.codec.encoder.provider.MqttWrappedMessageEncoderProvider;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
@@ -42,8 +40,7 @@ import java.util.Optional;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttPublish extends MqttWrappedMessage<MqttPublish, MqttPublishWrapper, MqttPublishEncoderProvider>
-        implements Mqtt5Publish {
+public class MqttPublish extends MqttWrappedMessage implements Mqtt5Publish {
 
     public static final long MESSAGE_EXPIRY_INTERVAL_INFINITY = Long.MAX_VALUE;
 
@@ -64,10 +61,9 @@ public class MqttPublish extends MqttWrappedMessage<MqttPublish, MqttPublishWrap
             @Nullable final Mqtt5PayloadFormatIndicator payloadFormatIndicator,
             @Nullable final MqttUTF8StringImpl contentType, @Nullable final MqttTopicImpl responseTopic,
             @Nullable final ByteBuffer correlationData, @NotNull final TopicAliasUsage topicAliasUsage,
-            @NotNull final MqttUserPropertiesImpl userProperties,
-            @NotNull final MqttWrappedMessageEncoderProvider<MqttPublish, MqttPublishWrapper, MqttPublishEncoderProvider> encoderProvider) {
+            @NotNull final MqttUserPropertiesImpl userProperties) {
 
-        super(userProperties, encoderProvider);
+        super(userProperties);
         this.topic = topic;
         this.payload = payload;
         this.qos = qos;
@@ -176,12 +172,6 @@ public class MqttPublish extends MqttWrappedMessage<MqttPublish, MqttPublishWrap
     @Override
     public TopicAliasUsage getTopicAliasUsage() {
         return topicAliasUsage;
-    }
-
-    @NotNull
-    @Override
-    protected MqttPublish getCodable() {
-        return this;
     }
 
     public MqttPublishWrapper wrap(

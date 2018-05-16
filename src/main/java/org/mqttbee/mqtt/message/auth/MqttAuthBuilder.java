@@ -24,7 +24,6 @@ import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode;
-import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5AuthEncoder;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
@@ -88,7 +87,7 @@ public class MqttAuthBuilder implements Mqtt5AuthBuilder {
 
     @NotNull
     public MqttAuth build() {
-        return new MqttAuth(reasonCode, method, data, reasonString, userProperties, Mqtt5AuthEncoder.PROVIDER); // TODO
+        return new MqttAuth(reasonCode, method, data, reasonString, userProperties);
     }
 
 }
