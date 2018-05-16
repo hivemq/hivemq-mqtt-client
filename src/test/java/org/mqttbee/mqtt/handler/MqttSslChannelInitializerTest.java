@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
@@ -72,7 +73,7 @@ public class MqttSslChannelInitializerTest {
     @Test
     public void test_initialize_default_ssldata() {
 
-        when(clientData.getSslData()).thenReturn(Optional.of(new TestSslData(null, null, null, null, 0)));
+        when(clientData.getSslData()).thenReturn(Optional.of(mock(TestSslData.class)));
 
         final MqttSslChannelInitializer mqtt5ChannelInitializer =
                 new MqttSslChannelInitializer(mqtt5Connect, connAckEmitter, clientData);
@@ -122,7 +123,7 @@ public class MqttSslChannelInitializerTest {
 
         @Override
         public int handshakeTimeout() {
-            return 0;
+            return handshakeTimeout;
         }
     }
 

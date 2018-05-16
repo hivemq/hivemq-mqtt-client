@@ -45,7 +45,7 @@ public class SslUtil {
     }
 
     @NotNull
-    private static SslContext createSslContext(final MqttClientSslData sslData) throws SSLException {
+    private static SslContext createSslContext(@NotNull final MqttClientSslData sslData) throws SSLException {
 
         final SslContextBuilder sslContextBuilder = SslContextBuilder.forClient()
                 .sslProvider(SslProvider.JDK)
@@ -64,4 +64,16 @@ public class SslUtil {
 
         return sslContextBuilder.build();
     }
+
+    @NotNull
+    public static SslHandler createSslHandler(
+            @NotNull final Channel channel, @NotNull final MqttClientSslData sslData) throws SSLException {
+
+        final SSLEngine sslEngine = createSslEngine(channel, sslData);
+        final SslHandler sslHandler = new SslHandler(sslEngine);
+
+        sslHandler.setHandshakeTimeoutMillis(sslData.handshakeTimeout());
+        return sslHandler;
+    }
+
 }
