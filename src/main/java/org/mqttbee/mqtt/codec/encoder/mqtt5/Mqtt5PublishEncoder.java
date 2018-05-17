@@ -121,7 +121,9 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
             encode(message, out, remainingLength, propertyLength, omittedProperties);
             return Unpooled.unmodifiableBuffer(out, Unpooled.wrappedBuffer(payload));
         }
-        return super.encode(message, allocator, encodedLength, remainingLength, propertyLength, omittedProperties);
+        final ByteBuf out = allocator.ioBuffer(encodedLength, encodedLength);
+        encode(message, out, remainingLength, propertyLength, omittedProperties);
+        return out;
     }
 
     @Override
