@@ -30,8 +30,8 @@ import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
+import org.mqttbee.mqtt.message.subscribe.MqttStatefulSubscribe;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
-import org.mqttbee.mqtt.message.subscribe.MqttSubscribeWrapper;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
 
 import java.util.Arrays;
@@ -289,7 +289,7 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTe
                 new MqttSubscription(requireNonNull(topicFiler), qos, DEFAULT_NO_LOCAL, DEFAULT_RETAIN_HANDLING,
                         DEFAULT_RETAIN_AS_PUBLISHED));
         final MqttSubscribe subscribe = new MqttSubscribe(subscriptions, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
-        final MqttSubscribeWrapper subscribeInternal = subscribe.wrap(10, 111);
+        final MqttStatefulSubscribe subscribeInternal = subscribe.createStateful(10, 111);
 
         encodeInternal(expected, subscribeInternal);
     }
@@ -362,8 +362,8 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTe
                 new MqttSubscribe(ImmutableList.copyOf(subscriptions), MqttUserPropertiesImpl.NO_USER_PROPERTIES);
 
         final int packetIdentifier = 2;
-        final MqttSubscribeWrapper subscribeInternal =
-                subscribe.wrap(packetIdentifier, MqttSubscribeWrapper.DEFAULT_NO_SUBSCRIPTION_IDENTIFIER);
+        final MqttStatefulSubscribe subscribeInternal =
+                subscribe.createStateful(packetIdentifier, MqttStatefulSubscribe.DEFAULT_NO_SUBSCRIPTION_IDENTIFIER);
 
         final Throwable exception = assertThrows(MqttMaximumPacketSizeExceededException.class,
                 () -> channel.writeOutbound(subscribeInternal));
@@ -374,12 +374,12 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTe
     }
 
     private void encode(final byte[] expected, final MqttSubscribe subscribe, final int packetIdentifier) {
-        final MqttSubscribeWrapper subscribeInternal =
-                subscribe.wrap(packetIdentifier, MqttSubscribeWrapper.DEFAULT_NO_SUBSCRIPTION_IDENTIFIER);
+        final MqttStatefulSubscribe subscribeInternal =
+                subscribe.createStateful(packetIdentifier, MqttStatefulSubscribe.DEFAULT_NO_SUBSCRIPTION_IDENTIFIER);
         encodeInternal(expected, subscribeInternal);
     }
 
-    private void encodeInternal(final byte[] expected, final MqttSubscribeWrapper subscribeInternal) {
+    private void encodeInternal(final byte[] expected, final MqttStatefulSubscribe subscribeInternal) {
         encode(subscribeInternal, expected);
     }
 

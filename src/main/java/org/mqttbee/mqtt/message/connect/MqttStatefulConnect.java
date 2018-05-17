@@ -20,7 +20,7 @@ package org.mqttbee.mqtt.message.connect;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
-import org.mqttbee.mqtt.message.MqttMessageWrapper;
+import org.mqttbee.mqtt.message.MqttStatefulMessage;
 import org.mqttbee.mqtt.message.auth.MqttEnhancedAuth;
 
 import javax.annotation.concurrent.Immutable;
@@ -29,16 +29,16 @@ import javax.annotation.concurrent.Immutable;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttConnectWrapper extends MqttMessageWrapper<MqttConnect> {
+public class MqttStatefulConnect extends MqttStatefulMessage<MqttConnect> {
 
     private final MqttClientIdentifierImpl clientIdentifier;
     private final MqttEnhancedAuth enhancedAuth;
 
-    MqttConnectWrapper(
-            @NotNull final MqttConnect wrapped, @NotNull final MqttClientIdentifierImpl clientIdentifier,
+    MqttStatefulConnect(
+            @NotNull final MqttConnect connect, @NotNull final MqttClientIdentifierImpl clientIdentifier,
             @Nullable final MqttEnhancedAuth enhancedAuth) {
 
-        super(wrapped);
+        super(connect);
         this.clientIdentifier = clientIdentifier;
         this.enhancedAuth = enhancedAuth;
     }

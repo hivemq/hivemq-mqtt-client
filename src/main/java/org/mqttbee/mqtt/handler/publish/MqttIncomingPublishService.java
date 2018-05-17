@@ -23,7 +23,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.ioc.ChannelScope;
-import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
+import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
 import org.mqttbee.util.collections.ScNodeList;
 import org.mqttbee.util.collections.SpscIterableChunkedArrayQueue;
 import org.slf4j.Logger;
@@ -72,7 +72,7 @@ public class MqttIncomingPublishService {
         publishRunnable = this::runPublish;
     }
 
-    public boolean onPublish(@NotNull final MqttPublishWrapper publish) {
+    public boolean onPublish(@NotNull final MqttStatefulPublish publish) {
         if (!queue.canOffer()) {
             return false; // flow control error
         }
@@ -113,7 +113,7 @@ public class MqttIncomingPublishService {
                 if (flow.isCancelled()) {
                     flowIt.remove(); // no need to dereference as the flow will stay cancelled
                 } else if (requested > 0) {
-                    flow.onNext(entry.publish.getWrapped());
+                    flow.onNext(entry.publish.getStatelessMessage());
                     flowIt.remove();
                     if ((flow.dereference() == 0) && flow.isUnsubscribed()) {
                         flow.onComplete();
@@ -154,11 +154,11 @@ public class MqttIncomingPublishService {
 
     private static class QueueEntry {
 
-        private final MqttPublishWrapper publish;
+        private final MqttStatefulPublish publish;
         private final ScNodeList<MqttIncomingPublishFlow> flows;
 
         private QueueEntry(
-                @NotNull final MqttPublishWrapper publish, @NotNull final ScNodeList<MqttIncomingPublishFlow> flows) {
+                @NotNull final MqttStatefulPublish publish, @NotNull final ScNodeList<MqttIncomingPublishFlow> flows) {
 
             this.publish = publish;
             this.flows = flows;

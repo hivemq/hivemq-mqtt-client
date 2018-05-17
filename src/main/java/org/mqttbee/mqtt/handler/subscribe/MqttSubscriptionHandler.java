@@ -35,8 +35,8 @@ import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.handler.publish.MqttIncomingPublishFlows;
 import org.mqttbee.mqtt.handler.publish.MqttOutgoingQoSHandler;
 import org.mqttbee.mqtt.handler.publish.MqttSubscriptionFlow;
-import org.mqttbee.mqtt.handler.subscribe.MqttSubscribeWithFlow.MqttSubscribeWrapperWithFlow;
-import org.mqttbee.mqtt.handler.subscribe.MqttUnsubscribeWithFlow.MqttUnsubscribeWrapperWithFlow;
+import org.mqttbee.mqtt.handler.subscribe.MqttSubscribeWithFlow.MqttStatefulSubscribeWithFlow;
+import org.mqttbee.mqtt.handler.subscribe.MqttUnsubscribeWithFlow.MqttStatefulUnsubscribeWithFlow;
 import org.mqttbee.mqtt.ioc.ChannelScope;
 import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAck;
 import org.mqttbee.mqtt.message.unsubscribe.unsuback.MqttUnsubAck;
@@ -61,8 +61,8 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
     private final Scheduler.Worker worker;
     private final Ranges packetIdentifiers;
     private final Ranges subscriptionIdentifiers;
-    private final IntMap<MqttSubscribeWrapperWithFlow> subscribes;
-    private final IntMap<MqttUnsubscribeWrapperWithFlow> unsubscribes;
+    private final IntMap<MqttStatefulSubscribeWithFlow> subscribes;
+    private final IntMap<MqttStatefulUnsubscribeWithFlow> unsubscribes;
     private final LinkedList<Object> queued;
     private int pending;
 
@@ -120,13 +120,13 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
             @NotNull final ChannelHandlerContext ctx, @NotNull final MqttSubscribeWithFlow subscribeWithFlow,
             final int packetIdentifier) {
 
-        final MqttSubscribeWrapperWithFlow subscribeWrapperWithFlow =
-                subscribeWithFlow.wrap(packetIdentifier, subscriptionIdentifiers.getId());
-        subscribes.put(packetIdentifier, subscribeWrapperWithFlow);
+        final MqttStatefulSubscribeWithFlow statefulSubscribeWithFlow =
+                subscribeWithFlow.createStateful(packetIdentifier, subscriptionIdentifiers.getId());
+        subscribes.put(packetIdentifier, statefulSubscribeWithFlow);
         pending++;
-        ctx.writeAndFlush(subscribeWrapperWithFlow.getSubscribe()).addListener(future -> {
+        ctx.writeAndFlush(statefulSubscribeWithFlow.getSubscribe()).addListener(future -> {
             if (!future.isSuccess()) {
-                worker.schedule(() -> subscribeWrapperWithFlow.getSubAckFlow().onError(future.cause()));
+                worker.schedule(() -> statefulSubscribeWithFlow.getSubAckFlow().onError(future.cause()));
                 handleComplete(ctx, packetIdentifier);
             }
         });
@@ -156,12 +156,13 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
             @NotNull final ChannelHandlerContext ctx, @NotNull final MqttUnsubscribeWithFlow unsubscribeWithFlow,
             final int packetIdentifier) {
 
-        final MqttUnsubscribeWrapperWithFlow unsubscribeWrapperWithFlow = unsubscribeWithFlow.wrap(packetIdentifier);
-        unsubscribes.put(packetIdentifier, unsubscribeWrapperWithFlow);
+        final MqttStatefulUnsubscribeWithFlow statefulUnsubscribeWithFlow =
+                unsubscribeWithFlow.createStateful(packetIdentifier);
+        unsubscribes.put(packetIdentifier, statefulUnsubscribeWithFlow);
         pending++;
-        ctx.writeAndFlush(unsubscribeWrapperWithFlow.getUnsubscribe()).addListener(future -> {
+        ctx.writeAndFlush(statefulUnsubscribeWithFlow.getUnsubscribe()).addListener(future -> {
             if (!future.isSuccess()) {
-                worker.schedule(() -> unsubscribeWrapperWithFlow.getUnsubAckFlow().onError(future.cause()));
+                worker.schedule(() -> statefulUnsubscribeWithFlow.getUnsubAckFlow().onError(future.cause()));
                 // TODO different worker
                 handleComplete(ctx, packetIdentifier);
             }
@@ -181,9 +182,9 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
 
     private void handleSubAck(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttSubAck subAck) {
         final int packetIdentifier = subAck.getPacketIdentifier();
-        final MqttSubscribeWrapperWithFlow subscribeWrapperWithFlow = subscribes.remove(packetIdentifier);
+        final MqttStatefulSubscribeWithFlow statefulSubscribeWithFlow = subscribes.remove(packetIdentifier);
 
-        if (subscribeWrapperWithFlow == null) {
+        if (statefulSubscribeWithFlow == null) {
             MqttDisconnectUtil.disconnect(
                     ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "unknown packet identifier for SUBACK");
             return;
@@ -191,14 +192,14 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
 
         // TODO validate reason code count
 
-        final SingleFlow<Mqtt5SubAck> flow = subscribeWrapperWithFlow.getSubAckFlow();
+        final SingleFlow<Mqtt5SubAck> flow = statefulSubscribeWithFlow.getSubAckFlow();
         if (allErrorCodes(subAck.getReasonCodes())) {
             worker.schedule(() -> flow.onError(new Mqtt5MessageException(subAck, "SUBACK contains only Error Codes")));
         } else {
             worker.schedule(() -> flow.onSuccess(subAck));
-            final MqttSubscriptionFlow subscriptionFlow = subscribeWrapperWithFlow.getSubscriptionFlow();
+            final MqttSubscriptionFlow subscriptionFlow = statefulSubscribeWithFlow.getSubscriptionFlow();
             if (subscriptionFlow != null) {
-                subscriptionFlows.subscribe(subscribeWrapperWithFlow.getSubscribe(), subAck, subscriptionFlow);
+                subscriptionFlows.subscribe(statefulSubscribeWithFlow.getSubscribe(), subAck, subscriptionFlow);
             }
         }
 
@@ -207,9 +208,9 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
 
     private void handleUnsubAck(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttUnsubAck unsubAck) {
         final int packetIdentifier = unsubAck.getPacketIdentifier();
-        final MqttUnsubscribeWrapperWithFlow unsubscribeWrapperWithFlow = unsubscribes.remove(packetIdentifier);
+        final MqttStatefulUnsubscribeWithFlow statefulUnsubscribeWithFlow = unsubscribes.remove(packetIdentifier);
 
-        if (unsubscribeWrapperWithFlow == null) {
+        if (statefulUnsubscribeWithFlow == null) {
             MqttDisconnectUtil.disconnect(
                     ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "unknown packet identifier for UNSUBACK");
             return;
@@ -217,14 +218,14 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
 
         // TODO validate reason code count
 
-        final SingleEmitter<Mqtt5UnsubAck> flow = unsubscribeWrapperWithFlow.getUnsubAckFlow();
+        final SingleEmitter<Mqtt5UnsubAck> flow = statefulUnsubscribeWithFlow.getUnsubAckFlow();
         if (allErrorCodes(unsubAck.getReasonCodes())) {
             worker.schedule(
                     () -> flow.onError(new Mqtt5MessageException(unsubAck, "UNSUBACK contains only Error Codes")));
             // TODO different worker
         } else {
             worker.schedule(() -> flow.onSuccess(unsubAck)); // TODO different worker
-            subscriptionFlows.unsubscribe(unsubscribeWrapperWithFlow.getUnsubscribe(), unsubAck);
+            subscriptionFlows.unsubscribe(statefulUnsubscribeWithFlow.getUnsubscribe(), unsubAck);
         }
 
         handleComplete(ctx, packetIdentifier);

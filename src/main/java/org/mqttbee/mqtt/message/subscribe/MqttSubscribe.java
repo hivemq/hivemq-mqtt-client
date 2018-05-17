@@ -47,8 +47,8 @@ public class MqttSubscribe extends MqttMessageWithUserPropertiesImpl implements 
         return subscriptions;
     }
 
-    public MqttSubscribeWrapper wrap(final int packetIdentifier, final int subscriptionIdentifier) {
-        return new MqttSubscribeWrapper(this, packetIdentifier, subscriptionIdentifier);
+    public MqttStatefulSubscribe createStateful(final int packetIdentifier, final int subscriptionIdentifier) {
+        return new MqttStatefulSubscribe(this, packetIdentifier, subscriptionIdentifier);
     }
 
 }

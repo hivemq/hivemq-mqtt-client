@@ -22,7 +22,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 
-import static org.mqttbee.mqtt.message.publish.MqttPublishWrapper.NO_PACKET_IDENTIFIER_QOS_0;
+import static org.mqttbee.mqtt.message.publish.MqttStatefulPublish.NO_PACKET_IDENTIFIER_QOS_0;
 
 /**
  * Util for decoders for MQTT messages of different versions.

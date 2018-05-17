@@ -39,7 +39,7 @@ import org.mqttbee.mqtt.ioc.ChannelScope;
 import org.mqttbee.mqtt.message.auth.MqttAuth;
 import org.mqttbee.mqtt.message.auth.MqttEnhancedAuthBuilder;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
-import org.mqttbee.mqtt.message.connect.MqttConnectWrapper;
+import org.mqttbee.mqtt.message.connect.MqttStatefulConnect;
 import org.mqttbee.mqtt.message.connect.connack.MqttConnAck;
 
 import javax.inject.Inject;
@@ -103,9 +103,9 @@ public class MqttAuthHandler extends AbstractMqttAuthHandler implements DefaultC
 
         enhancedAuthProvider.onAuth(clientData, connect, enhancedAuthBuilder).whenCompleteAsync((aVoid, throwable) -> {
             if (enhancedAuthProviderAccepted(throwable)) {
-                final MqttConnectWrapper connectWrapper =
-                        connect.wrap(clientData.getRawClientIdentifier(), enhancedAuthBuilder.build());
-                ctx.writeAndFlush(connectWrapper, promise).addListener(this);
+                final MqttStatefulConnect statefulConnect =
+                        connect.createStateful(clientData.getRawClientIdentifier(), enhancedAuthBuilder.build());
+                ctx.writeAndFlush(statefulConnect, promise).addListener(this);
             } else {
                 MqttDisconnectUtil.close(ctx.channel(), throwable);
             }

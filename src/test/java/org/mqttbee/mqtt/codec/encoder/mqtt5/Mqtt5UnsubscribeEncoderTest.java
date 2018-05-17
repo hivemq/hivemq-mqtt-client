@@ -22,8 +22,8 @@ import org.junit.jupiter.api.Test;
 import org.mqttbee.api.mqtt.exceptions.MqttMaximumPacketSizeExceededException;
 import org.mqttbee.mqtt.codec.encoder.AbstractMqtt5EncoderTest;
 import org.mqttbee.mqtt.datatypes.*;
+import org.mqttbee.mqtt.message.unsubscribe.MqttStatefulUnsubscribe;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribe;
-import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribeWrapper;
 
 import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -141,7 +141,7 @@ class Mqtt5UnsubscribeEncoderTest extends AbstractMqtt5EncoderTest {
                 new MqttUnsubscribe(topicFilters, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
 
         final int packetIdentifier = 1;
-        final MqttUnsubscribeWrapper unsubscribeInternal = unsubscribe.wrap(packetIdentifier);
+        final MqttStatefulUnsubscribe unsubscribeInternal = unsubscribe.createStateful(packetIdentifier);
 
         final Throwable exception = assertThrows(MqttMaximumPacketSizeExceededException.class,
                 () -> channel.writeOutbound(unsubscribeInternal));
@@ -176,12 +176,12 @@ class Mqtt5UnsubscribeEncoderTest extends AbstractMqtt5EncoderTest {
             final ImmutableList<MqttTopicFilterImpl> topicFilters) {
         final MqttUnsubscribe unsubscribe = new MqttUnsubscribe(topicFilters, userProperties);
         final int packetIdentifier = 0x01;
-        final MqttUnsubscribeWrapper unsubscribeInternal = unsubscribe.wrap(packetIdentifier);
+        final MqttStatefulUnsubscribe unsubscribeInternal = unsubscribe.createStateful(packetIdentifier);
 
         encodeInternal(expected, unsubscribeInternal);
     }
 
-    private void encodeInternal(final byte[] expected, final MqttUnsubscribeWrapper unsubscribeInternal) {
+    private void encodeInternal(final byte[] expected, final MqttStatefulUnsubscribe unsubscribeInternal) {
         encode(unsubscribeInternal, expected);
     }
 

@@ -21,8 +21,8 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.ioc.ChannelScope;
-import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
 import org.mqttbee.mqtt.message.publish.MqttQoSMessage;
+import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
 import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRel;
 import org.mqttbee.mqtt.persistence.OutgoingQoSFlowPersistence;
 import org.mqttbee.util.collections.IntMap;
@@ -47,8 +47,8 @@ public class OutgoingQoSFlowMemoryPersistence implements OutgoingQoSFlowPersiste
 
     @NotNull
     @Override
-    public CompletableFuture<Void> store(@NotNull final MqttPublishWrapper publishWrapper) {
-        messages.put(publishWrapper.getPacketIdentifier(), publishWrapper);
+    public CompletableFuture<Void> store(@NotNull final MqttStatefulPublish publish) {
+        messages.put(publish.getPacketIdentifier(), publish);
         return CompletableFuture.completedFuture(null);
     }
 

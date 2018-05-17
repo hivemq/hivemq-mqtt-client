@@ -28,7 +28,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.mqtt.datatypes.*;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.publish.MqttPublishProperty;
-import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
+import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
 
 import java.nio.ByteBuffer;
 
@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish.DEFAULT_TOPIC_ALIAS_USAGE;
 import static org.mqttbee.api.mqtt.mqtt5.message.publish.TopicAliasUsage.*;
 import static org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl.NO_USER_PROPERTIES;
-import static org.mqttbee.mqtt.message.publish.MqttPublishWrapper.DEFAULT_NO_TOPIC_ALIAS;
+import static org.mqttbee.mqtt.message.publish.MqttStatefulPublish.DEFAULT_NO_TOPIC_ALIAS;
 
 /**
  * @author David Katz
@@ -629,8 +629,9 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
                         null, correlationData, HAS_NOT, NO_USER_PROPERTIES);
 
 
-        final MqttPublishWrapper publishInternal =
-                publish.wrap(-1, false, MqttPublishWrapper.DEFAULT_NO_TOPIC_ALIAS, false, ImmutableIntArray.of());
+        final MqttStatefulPublish publishInternal =
+                publish.createStateful(-1, false, MqttStatefulPublish.DEFAULT_NO_TOPIC_ALIAS, false,
+                        ImmutableIntArray.of());
 
         final Throwable exception = assertThrows(MqttMaximumPacketSizeExceededException.class,
                 () -> channel.writeOutbound(publishInternal));
@@ -720,20 +721,20 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
     private void encode(
             final byte[] expected, final MqttPublish publish, final int packetIdentifier, final boolean isDup,
             final ImmutableIntArray subscriptionIdentifiers) {
-        final MqttPublishWrapper publishInternal =
-                publish.wrap(packetIdentifier, isDup, DEFAULT_NO_TOPIC_ALIAS, false, subscriptionIdentifiers);
+        final MqttStatefulPublish publishInternal =
+                publish.createStateful(packetIdentifier, isDup, DEFAULT_NO_TOPIC_ALIAS, false, subscriptionIdentifiers);
         encodeInternal(expected, publishInternal);
     }
 
     private void encode(
             final byte[] expected, final MqttPublish publish, final int packetIdentifier, final boolean isDup,
             final int topicAlias, final boolean isNewTopicAlias, final ImmutableIntArray subscriptionIdentifiers) {
-        final MqttPublishWrapper publishInternal =
-                publish.wrap(packetIdentifier, isDup, topicAlias, isNewTopicAlias, subscriptionIdentifiers);
+        final MqttStatefulPublish publishInternal =
+                publish.createStateful(packetIdentifier, isDup, topicAlias, isNewTopicAlias, subscriptionIdentifiers);
         encodeInternal(expected, publishInternal);
     }
 
-    private void encodeInternal(final byte[] expected, final MqttPublishWrapper publishInternal) {
+    private void encodeInternal(final byte[] expected, final MqttStatefulPublish publishInternal) {
         encode(publishInternal, expected);
     }
 

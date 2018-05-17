@@ -132,10 +132,10 @@ public class MqttConnect extends MqttMessageWithUserPropertiesImpl implements Mq
         return willPublish;
     }
 
-    public MqttConnectWrapper wrap(
+    public MqttStatefulConnect createStateful(
             @NotNull final MqttClientIdentifierImpl clientIdentifier, @Nullable final MqttEnhancedAuth enhancedAuth) {
 
-        return new MqttConnectWrapper(this, clientIdentifier, enhancedAuth);
+        return new MqttStatefulConnect(this, clientIdentifier, enhancedAuth);
     }
 
 }

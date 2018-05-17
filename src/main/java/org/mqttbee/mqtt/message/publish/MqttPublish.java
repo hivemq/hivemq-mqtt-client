@@ -174,11 +174,11 @@ public class MqttPublish extends MqttMessageWithUserPropertiesImpl implements Mq
         return topicAliasUsage;
     }
 
-    public MqttPublishWrapper wrap(
+    public MqttStatefulPublish createStateful(
             final int packetIdentifier, final boolean isDup, final int topicAlias, final boolean isNewTopicAlias,
             @NotNull final ImmutableIntArray subscriptionIdentifiers) {
 
-        return new MqttPublishWrapper(
+        return new MqttStatefulPublish(
                 this, packetIdentifier, isDup, topicAlias, isNewTopicAlias, subscriptionIdentifiers);
     }
 
