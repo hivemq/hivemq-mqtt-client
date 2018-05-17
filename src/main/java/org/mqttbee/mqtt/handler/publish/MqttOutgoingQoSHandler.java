@@ -37,7 +37,7 @@ import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.publish.MqttPublishResult;
 import org.mqttbee.mqtt.message.publish.MqttPublishResult.MqttQoS1Result;
 import org.mqttbee.mqtt.message.publish.MqttPublishResult.MqttQoS2Result;
-import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
+import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
 import org.mqttbee.mqtt.message.publish.MqttTopicAliasMapping;
 import org.mqttbee.mqtt.message.publish.puback.MqttPubAck;
 import org.mqttbee.mqtt.message.publish.pubcomp.MqttPubComp;
@@ -51,7 +51,7 @@ import org.mqttbee.util.collections.IntMap;
 import javax.inject.Inject;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.mqttbee.mqtt.message.publish.MqttPublishWrapper.*;
+import static org.mqttbee.mqtt.message.publish.MqttStatefulPublish.*;
 
 /**
  * @author Silvio Giebl
@@ -121,9 +121,9 @@ public class MqttOutgoingQoSHandler extends ChannelInboundHandlerAdapter {
     private void handlePublishQoS0(
             @NotNull final ChannelHandlerContext ctx, @NotNull final MqttPublishWithFlow publishWithFlow) {
 
-        final MqttPublishWrapper publishWrapper =
+        final MqttStatefulPublish publish =
                 wrapPublish(ctx.channel(), publishWithFlow.getPublish(), NO_PACKET_IDENTIFIER_QOS_0, false);
-        ctx.write(publishWrapper)
+        ctx.write(publish)
                 .addListener(future -> publishWithFlow.getIncomingAckFlow()
                         .onNext(new MqttPublishResult(publishWithFlow.getPublish(), null)));
     }
@@ -138,12 +138,12 @@ public class MqttOutgoingQoSHandler extends ChannelInboundHandlerAdapter {
         }
 
         qos1Or2Publishes.put(packetIdentifier, publishWithFlow);
-        final MqttPublishWrapper publishWrapper =
+        final MqttStatefulPublish publish =
                 wrapPublish(ctx.channel(), publishWithFlow.getPublish(), packetIdentifier, false);
-        ctx.write(publishWrapper);
+        ctx.write(publish);
     }
 
-    private MqttPublishWrapper wrapPublish(
+    private MqttStatefulPublish wrapPublish(
             @NotNull final Channel channel, @NotNull final MqttPublish publish, final int packetIdentifier,
             final boolean isDup) {
 
@@ -163,7 +163,8 @@ public class MqttOutgoingQoSHandler extends ChannelInboundHandlerAdapter {
                 isNewTopicAlias = topicAlias != DEFAULT_NO_TOPIC_ALIAS;
             }
         }
-        return publish.wrap(packetIdentifier, isDup, topicAlias, isNewTopicAlias, DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
+        return publish.createStateful(
+                packetIdentifier, isDup, topicAlias, isNewTopicAlias, DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
     }
 
     @Override

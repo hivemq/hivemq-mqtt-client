@@ -33,7 +33,7 @@ import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.datatypes.*;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
-import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
+import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
 import org.mqttbee.mqtt.netty.ChannelAttributes;
 import org.mqttbee.util.ByteBufferUtil;
 
@@ -45,8 +45,8 @@ import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.*;
 import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.*;
 import static org.mqttbee.mqtt.message.publish.MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY;
 import static org.mqttbee.mqtt.message.publish.MqttPublishProperty.*;
-import static org.mqttbee.mqtt.message.publish.MqttPublishWrapper.DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS;
-import static org.mqttbee.mqtt.message.publish.MqttPublishWrapper.DEFAULT_NO_TOPIC_ALIAS;
+import static org.mqttbee.mqtt.message.publish.MqttStatefulPublish.DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS;
+import static org.mqttbee.mqtt.message.publish.MqttStatefulPublish.DEFAULT_NO_TOPIC_ALIAS;
 
 /**
  * @author Silvio Giebl
@@ -62,7 +62,7 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
 
     @Override
     @Nullable
-    public MqttPublishWrapper decode(
+    public MqttStatefulPublish decode(
             final int flags, @NotNull final ByteBuf in, @NotNull final MqttClientConnectionData clientConnectionData)
             throws MqttDecoderException {
 
@@ -233,7 +233,7 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
                 (subscriptionIdentifiersBuilder == null) ? DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS :
                         subscriptionIdentifiersBuilder.build();
 
-        return publish.wrap(packetIdentifier, dup, topicAlias, isNewTopicAlias, subscriptionIdentifiers);
+        return publish.createStateful(packetIdentifier, dup, topicAlias, isNewTopicAlias, subscriptionIdentifiers);
     }
 
 }

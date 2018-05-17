@@ -24,7 +24,7 @@ import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.auth.MqttSimpleAuth;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
-import org.mqttbee.mqtt.message.connect.MqttConnectWrapper;
+import org.mqttbee.mqtt.message.connect.MqttStatefulConnect;
 import org.mqttbee.mqtt.message.publish.MqttWillPublish;
 
 import javax.inject.Inject;
@@ -36,7 +36,7 @@ import static org.mqttbee.mqtt.codec.encoder.MqttMessageEncoderUtil.*;
  * @author Silvio Giebl
  */
 @Singleton
-public class Mqtt3ConnectEncoder extends Mqtt3MessageEncoder<MqttConnectWrapper> {
+public class Mqtt3ConnectEncoder extends Mqtt3MessageEncoder<MqttStatefulConnect> {
 
     private static final int FIXED_HEADER = Mqtt3MessageType.CONNECT.getCode() << 4;
     private static final int VARIABLE_HEADER_FIXED_LENGTH =
@@ -48,20 +48,20 @@ public class Mqtt3ConnectEncoder extends Mqtt3MessageEncoder<MqttConnectWrapper>
     }
 
     @Override
-    int remainingLength(@NotNull final MqttConnectWrapper message) {
-        final MqttConnect wrapped = message.getWrapped();
+    int remainingLength(@NotNull final MqttStatefulConnect message) {
+        final MqttConnect stateless = message.getStatelessMessage();
 
         int remainingLength = VARIABLE_HEADER_FIXED_LENGTH;
 
         remainingLength += message.getClientIdentifier().encodedLength();
 
-        final MqttSimpleAuth simpleAuth = wrapped.getRawSimpleAuth();
+        final MqttSimpleAuth simpleAuth = stateless.getRawSimpleAuth();
         if (simpleAuth != null) {
             remainingLength += nullableEncodedLength(simpleAuth.getRawUsername());
             remainingLength += nullableEncodedLength(simpleAuth.getRawPassword());
         }
 
-        final MqttWillPublish willPublish = wrapped.getRawWillPublish();
+        final MqttWillPublish willPublish = stateless.getRawWillPublish();
         if (willPublish != null) {
             remainingLength += willPublish.getTopic().encodedLength();
             remainingLength += encodedOrEmptyLength(willPublish.getRawPayload());
@@ -72,7 +72,7 @@ public class Mqtt3ConnectEncoder extends Mqtt3MessageEncoder<MqttConnectWrapper>
 
     @Override
     public void encode(
-            @NotNull final MqttConnectWrapper message, @NotNull final ByteBuf out, final int remainingLength) {
+            @NotNull final MqttStatefulConnect message, @NotNull final ByteBuf out, final int remainingLength) {
 
         encodeFixedHeader(out, remainingLength);
         encodeVariableHeader(message, out);
@@ -84,15 +84,15 @@ public class Mqtt3ConnectEncoder extends Mqtt3MessageEncoder<MqttConnectWrapper>
         MqttVariableByteInteger.encode(remainingLength, out);
     }
 
-    private void encodeVariableHeader(@NotNull final MqttConnectWrapper message, @NotNull final ByteBuf out) {
-        final MqttConnect wrapped = message.getWrapped();
+    private void encodeVariableHeader(@NotNull final MqttStatefulConnect message, @NotNull final ByteBuf out) {
+        final MqttConnect stateless = message.getStatelessMessage();
 
         MqttUTF8StringImpl.PROTOCOL_NAME.to(out);
         out.writeByte(PROTOCOL_VERSION);
 
         int connectFlags = 0;
 
-        final MqttSimpleAuth simpleAuth = wrapped.getRawSimpleAuth();
+        final MqttSimpleAuth simpleAuth = stateless.getRawSimpleAuth();
         if (simpleAuth != null) {
             if (simpleAuth.getRawUsername() != null) {
                 connectFlags |= 0b1000_0000;
@@ -102,7 +102,7 @@ public class Mqtt3ConnectEncoder extends Mqtt3MessageEncoder<MqttConnectWrapper>
             }
         }
 
-        final MqttWillPublish willPublish = wrapped.getRawWillPublish();
+        final MqttWillPublish willPublish = stateless.getRawWillPublish();
         if (willPublish != null) {
             connectFlags |= 0b0000_0100;
             connectFlags |= (willPublish.getQos().getCode() << 3);
@@ -111,29 +111,29 @@ public class Mqtt3ConnectEncoder extends Mqtt3MessageEncoder<MqttConnectWrapper>
             }
         }
 
-        if (wrapped.isCleanStart()) {
+        if (stateless.isCleanStart()) {
             connectFlags |= 0b0000_0010;
         }
 
         out.writeByte(connectFlags);
 
-        out.writeShort(wrapped.getKeepAlive());
+        out.writeShort(stateless.getKeepAlive());
     }
 
-    private void encodePayload(@NotNull final MqttConnectWrapper message, @NotNull final ByteBuf out) {
+    private void encodePayload(@NotNull final MqttStatefulConnect message, @NotNull final ByteBuf out) {
         message.getClientIdentifier().to(out);
 
         encodeWillPublish(message, out);
 
-        final MqttSimpleAuth simpleAuth = message.getWrapped().getRawSimpleAuth();
+        final MqttSimpleAuth simpleAuth = message.getStatelessMessage().getRawSimpleAuth();
         if (simpleAuth != null) {
             encodeNullable(simpleAuth.getRawUsername(), out);
             encodeNullable(simpleAuth.getRawPassword(), out);
         }
     }
 
-    private void encodeWillPublish(@NotNull final MqttConnectWrapper message, @NotNull final ByteBuf out) {
-        final MqttWillPublish willPublish = message.getWrapped().getRawWillPublish();
+    private void encodeWillPublish(@NotNull final MqttStatefulConnect message, @NotNull final ByteBuf out) {
+        final MqttWillPublish willPublish = message.getStatelessMessage().getRawWillPublish();
         if (willPublish != null) {
             willPublish.getTopic().to(out);
             encodeNullable(willPublish.getRawPayload(), out);

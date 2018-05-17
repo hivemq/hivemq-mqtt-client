@@ -28,7 +28,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.publish.TopicAliasUsage;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
-import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
+import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
 import org.mqttbee.mqtt.message.publish.MqttWillPublish;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 
@@ -52,11 +52,11 @@ public class Mqtt3PublishView implements Mqtt3Publish {
     }
 
     @NotNull
-    public static MqttPublishWrapper wrapped(
+    public static MqttStatefulPublish wrapped(
             @NotNull final MqttPublish publish, final int packetIdentifier, final boolean isDup) {
 
-        return publish.wrap(packetIdentifier, isDup, MqttPublishWrapper.DEFAULT_NO_TOPIC_ALIAS, false,
-                MqttPublishWrapper.DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
+        return publish.createStateful(packetIdentifier, isDup, MqttStatefulPublish.DEFAULT_NO_TOPIC_ALIAS, false,
+                MqttStatefulPublish.DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
     }
 
     @NotNull

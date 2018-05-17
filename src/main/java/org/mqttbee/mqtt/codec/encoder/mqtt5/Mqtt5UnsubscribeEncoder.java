@@ -23,7 +23,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
-import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribeWrapper;
+import org.mqttbee.mqtt.message.unsubscribe.MqttStatefulUnsubscribe;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -32,7 +32,7 @@ import javax.inject.Singleton;
  * @author Silvio Giebl
  */
 @Singleton
-public class Mqtt5UnsubscribeEncoder extends Mqtt5MessageWithUserPropertiesEncoder<MqttUnsubscribeWrapper> {
+public class Mqtt5UnsubscribeEncoder extends Mqtt5MessageWithUserPropertiesEncoder<MqttStatefulUnsubscribe> {
 
     private static final int FIXED_HEADER = (Mqtt5MessageType.UNSUBSCRIBE.getCode() << 4) | 0b0010;
     private static final int VARIABLE_HEADER_FIXED_LENGTH = 2; // packet identifier
@@ -42,10 +42,10 @@ public class Mqtt5UnsubscribeEncoder extends Mqtt5MessageWithUserPropertiesEncod
     }
 
     @Override
-    int remainingLengthWithoutProperties(@NotNull final MqttUnsubscribeWrapper message) {
+    int remainingLengthWithoutProperties(@NotNull final MqttStatefulUnsubscribe message) {
         int remainingLength = VARIABLE_HEADER_FIXED_LENGTH;
 
-        final ImmutableList<MqttTopicFilterImpl> topicFilters = message.getWrapped().getTopicFilters();
+        final ImmutableList<MqttTopicFilterImpl> topicFilters = message.getStatelessMessage().getTopicFilters();
         for (int i = 0; i < topicFilters.size(); i++) {
             remainingLength += topicFilters.get(i).encodedLength();
         }
@@ -54,13 +54,13 @@ public class Mqtt5UnsubscribeEncoder extends Mqtt5MessageWithUserPropertiesEncod
     }
 
     @Override
-    int propertyLength(@NotNull final MqttUnsubscribeWrapper message) {
-        return message.getWrapped().getUserProperties().encodedLength();
+    int propertyLength(@NotNull final MqttStatefulUnsubscribe message) {
+        return omissiblePropertyLength(message);
     }
 
     @Override
     protected void encode(
-            @NotNull final MqttUnsubscribeWrapper message, @NotNull final ByteBuf out, final int remainingLength,
+            @NotNull final MqttStatefulUnsubscribe message, @NotNull final ByteBuf out, final int remainingLength,
             final int propertyLength, final int omittedProperties) {
 
         encodeFixedHeader(out, remainingLength);
@@ -74,7 +74,7 @@ public class Mqtt5UnsubscribeEncoder extends Mqtt5MessageWithUserPropertiesEncod
     }
 
     private void encodeVariableHeader(
-            @NotNull final MqttUnsubscribeWrapper message, @NotNull final ByteBuf out, final int propertyLength,
+            @NotNull final MqttStatefulUnsubscribe message, @NotNull final ByteBuf out, final int propertyLength,
             final int omittedProperties) {
 
         out.writeShort(message.getPacketIdentifier());
@@ -82,15 +82,15 @@ public class Mqtt5UnsubscribeEncoder extends Mqtt5MessageWithUserPropertiesEncod
     }
 
     private void encodeProperties(
-            @NotNull final MqttUnsubscribeWrapper message, @NotNull final ByteBuf out, final int propertyLength,
+            @NotNull final MqttStatefulUnsubscribe message, @NotNull final ByteBuf out, final int propertyLength,
             final int omittedProperties) {
 
         MqttVariableByteInteger.encode(propertyLength, out);
         encodeOmissibleProperties(message, out, omittedProperties);
     }
 
-    private void encodePayload(@NotNull final MqttUnsubscribeWrapper message, @NotNull final ByteBuf out) {
-        final ImmutableList<MqttTopicFilterImpl> topicFilters = message.getWrapped().getTopicFilters();
+    private void encodePayload(@NotNull final MqttStatefulUnsubscribe message, @NotNull final ByteBuf out) {
+        final ImmutableList<MqttTopicFilterImpl> topicFilters = message.getStatelessMessage().getTopicFilters();
         for (int i = 0; i < topicFilters.size(); i++) {
             topicFilters.get(i).to(out);
         }

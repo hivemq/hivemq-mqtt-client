@@ -25,11 +25,11 @@ import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAckReas
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.ioc.ChannelScope;
-import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
-import org.mqttbee.mqtt.message.subscribe.MqttSubscribeWrapper;
+import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
+import org.mqttbee.mqtt.message.subscribe.MqttStatefulSubscribe;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
 import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAck;
-import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribeWrapper;
+import org.mqttbee.mqtt.message.unsubscribe.MqttStatefulUnsubscribe;
 import org.mqttbee.mqtt.message.unsubscribe.unsuback.MqttUnsubAck;
 import org.mqttbee.mqtt.message.unsubscribe.unsuback.mqtt3.Mqtt3UnsubAckView;
 import org.mqttbee.util.collections.ScNodeList;
@@ -57,10 +57,10 @@ public class MqttIncomingPublishFlows {
     }
 
     public void subscribe(
-            @NotNull final MqttSubscribeWrapper subscribe, @NotNull final MqttSubAck subAck,
+            @NotNull final MqttStatefulSubscribe subscribe, @NotNull final MqttSubAck subAck,
             @NotNull final MqttSubscriptionFlow flow) {
 
-        final ImmutableList<MqttSubscription> subscriptions = subscribe.getWrapped().getSubscriptions();
+        final ImmutableList<MqttSubscription> subscriptions = subscribe.getStatelessMessage().getSubscriptions();
         final ImmutableList<Mqtt5SubAckReasonCode> reasonCodes = subAck.getReasonCodes();
         for (int i = 0; i < subscriptions.size(); i++) {
             if (!reasonCodes.get(i).isError()) {
@@ -73,8 +73,8 @@ public class MqttIncomingPublishFlows {
         subscriptionFlows.subscribe(topicFilter, flow);
     }
 
-    public void unsubscribe(@NotNull final MqttUnsubscribeWrapper unsubscribe, @NotNull final MqttUnsubAck unsubAck) {
-        final ImmutableList<MqttTopicFilterImpl> topicFilters = unsubscribe.getWrapped().getTopicFilters();
+    public void unsubscribe(@NotNull final MqttStatefulUnsubscribe unsubscribe, @NotNull final MqttUnsubAck unsubAck) {
+        final ImmutableList<MqttTopicFilterImpl> topicFilters = unsubscribe.getStatelessMessage().getTopicFilters();
         final ImmutableList<Mqtt5UnsubAckReasonCode> reasonCodes = unsubAck.getReasonCodes();
         final boolean areAllSuccess = reasonCodes == Mqtt3UnsubAckView.REASON_CODES_ALL_SUCCESS;
         for (int i = 0; i < topicFilters.size(); i++) {
@@ -93,17 +93,17 @@ public class MqttIncomingPublishFlows {
     }
 
     @NotNull
-    public ScNodeList<MqttIncomingPublishFlow> findMatching(@NotNull final MqttPublishWrapper publish) {
+    public ScNodeList<MqttIncomingPublishFlow> findMatching(@NotNull final MqttStatefulPublish publish) {
         final ScNodeList<MqttIncomingPublishFlow> matchingFlows = new ScNodeList<>();
         findMatching(publish, matchingFlows);
         return matchingFlows;
     }
 
     void findMatching(
-            @NotNull final MqttPublishWrapper publish,
+            @NotNull final MqttStatefulPublish publish,
             @NotNull final ScNodeList<MqttIncomingPublishFlow> matchingFlows) {
 
-        final MqttTopicImpl topic = publish.getWrapped().getTopic();
+        final MqttTopicImpl topic = publish.getStatelessMessage().getTopic();
         if (subscriptionFlows.findMatching(topic, matchingFlows)) {
             addAndReference(matchingFlows, globalFlows[MqttGlobalIncomingPublishFlow.TYPE_ALL_SUBSCRIPTIONS]);
         }

@@ -27,7 +27,7 @@ import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
-import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
+import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
 import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishView;
 import org.mqttbee.mqtt.netty.ChannelAttributes;
 import org.mqttbee.util.ByteBufferUtil;
@@ -53,7 +53,7 @@ public class Mqtt3PublishDecoder implements MqttMessageDecoder {
 
     @Nullable
     @Override
-    public MqttPublishWrapper decode(
+    public MqttStatefulPublish decode(
             final int flags, @NotNull final ByteBuf in, @NotNull final MqttClientConnectionData clientConnectionData)
             throws MqttDecoderException {
 

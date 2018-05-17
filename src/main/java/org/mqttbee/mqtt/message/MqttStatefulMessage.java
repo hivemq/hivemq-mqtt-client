@@ -24,53 +24,53 @@ import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import static org.mqttbee.mqtt.message.MqttMessageWithUserProperties.MqttMessageWithUserPropertiesImpl;
 
 /**
- * Base class for wrappers around MQTT messages with additional state-specific data.
+ * Base class for MQTT messages with state-specific data.
  *
- * @param <M> the type of the wrapped MQTT message.
+ * @param <M> the type of the stateless MQTT message.
  * @author Silvio Giebl
  */
-public abstract class MqttMessageWrapper<M extends MqttMessageWithUserPropertiesImpl>
+public abstract class MqttStatefulMessage<M extends MqttMessageWithUserPropertiesImpl>
         implements MqttMessageWithUserProperties {
 
-    private final M wrapped;
+    private final M statelessMessage;
 
-    protected MqttMessageWrapper(@NotNull final M wrapped) {
-        this.wrapped = wrapped;
+    protected MqttStatefulMessage(@NotNull final M statelessMessage) {
+        this.statelessMessage = statelessMessage;
     }
 
     @NotNull
     @Override
     public Mqtt5MessageType getType() {
-        return wrapped.getType();
+        return statelessMessage.getType();
     }
 
     @NotNull
     @Override
     public MqttUserPropertiesImpl getUserProperties() {
-        return wrapped.getUserProperties();
+        return statelessMessage.getUserProperties();
     }
 
     /**
-     * @return the wrapped MQTT message.
+     * @return the stateless MQTT message.
      */
     @NotNull
-    public M getWrapped() {
-        return wrapped;
+    public M getStatelessMessage() {
+        return statelessMessage;
     }
 
 
     /**
-     * Base class for wrappers around MQTT messages with a packet identifier and additional state-specific data.
+     * Base class for MQTT messages with a packet identifier and other state-specific data.
      *
-     * @param <M> the type of the wrapped MQTT message.
+     * @param <M> the type of the stateless MQTT message.
      * @author Silvio Giebl
      */
-    public abstract static class MqttMessageWrapperWithId<M extends MqttMessageWithUserPropertiesImpl>
-            extends MqttMessageWrapper<M> {
+    public abstract static class MqttStatefulMessageWithId<M extends MqttMessageWithUserPropertiesImpl>
+            extends MqttStatefulMessage<M> {
 
         private final int packetIdentifier;
 
-        protected MqttMessageWrapperWithId(@NotNull final M wrapped, final int packetIdentifier) {
+        protected MqttStatefulMessageWithId(@NotNull final M wrapped, final int packetIdentifier) {
             super(wrapped);
             this.packetIdentifier = packetIdentifier;
         }

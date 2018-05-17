@@ -63,7 +63,7 @@ public class MqttDisconnectOnAuthHandler extends ChannelDuplexHandler {
             @NotNull final ChannelPromise promise) {
 
         final MqttClientData clientData = MqttClientData.from(ctx.channel());
-        ctx.writeAndFlush(connect.wrap(clientData.getRawClientIdentifier(), null), promise);
+        ctx.writeAndFlush(connect.createStateful(clientData.getRawClientIdentifier(), null), promise);
     }
 
     @Override

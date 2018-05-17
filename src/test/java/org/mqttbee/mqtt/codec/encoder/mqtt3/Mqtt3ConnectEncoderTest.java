@@ -27,7 +27,7 @@ import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
-import org.mqttbee.mqtt.message.connect.MqttConnectWrapper;
+import org.mqttbee.mqtt.message.connect.MqttStatefulConnect;
 import org.mqttbee.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
 import org.mqttbee.mqtt.message.publish.MqttWillPublish;
 
@@ -67,7 +67,7 @@ class Mqtt3ConnectEncoderTest extends AbstractMqtt5EncoderTest {
     void encode_SUCCESS() {
         final MqttClientIdentifierImpl identifier = Objects.requireNonNull(MqttClientIdentifierImpl.from("TEST"));
         final MqttConnect connect = Mqtt3ConnectView.wrapped(60, true, null, null);
-        final MqttConnectWrapper connectWrapper = connect.wrap(identifier, null);
+        final MqttStatefulConnect connectWrapper = connect.createStateful(identifier, null);
         encode(EXAMPLE_CONNECT, connectWrapper);
     }
 
@@ -99,8 +99,8 @@ class Mqtt3ConnectEncoderTest extends AbstractMqtt5EncoderTest {
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES, 0);
 
         final MqttConnect connect = Mqtt3ConnectView.wrapped(keepAlive, cleanSession, null, willMessage);
-        final MqttConnectWrapper connectWrapper =
-                connect.wrap(Objects.requireNonNull(MqttClientIdentifierImpl.from(clientId)), null);
+        final MqttStatefulConnect connectWrapper =
+                connect.createStateful(Objects.requireNonNull(MqttClientIdentifierImpl.from(clientId)), null);
 
         encode(expected, connectWrapper);
     }
@@ -117,7 +117,7 @@ class Mqtt3ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         assertArrayEquals(EXAMPLE_CONNECT, actual);
     }
 
-    private void encode(final byte[] expected, final MqttConnectWrapper connect) {
+    private void encode(final byte[] expected, final MqttStatefulConnect connect) {
         channel.writeOutbound(connect);
         final ByteBuf byteBuf = channel.readOutbound();
         final byte[] actual = new byte[byteBuf.readableBytes()];

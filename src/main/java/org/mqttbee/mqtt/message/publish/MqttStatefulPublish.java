@@ -19,7 +19,7 @@ package org.mqttbee.mqtt.message.publish;
 
 import com.google.common.primitives.ImmutableIntArray;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt.message.MqttMessageWrapper.MqttMessageWrapperWithId;
+import org.mqttbee.mqtt.message.MqttStatefulMessage.MqttStatefulMessageWithId;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -27,7 +27,7 @@ import javax.annotation.concurrent.Immutable;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttPublishWrapper extends MqttMessageWrapperWithId<MqttPublish> implements MqttQoSMessage {
+public class MqttStatefulPublish extends MqttStatefulMessageWithId<MqttPublish> implements MqttQoSMessage {
 
     public static final int NO_PACKET_IDENTIFIER_QOS_0 = -1;
     public static final int DEFAULT_NO_TOPIC_ALIAS = -1;
@@ -39,7 +39,7 @@ public class MqttPublishWrapper extends MqttMessageWrapperWithId<MqttPublish> im
     private final boolean isNewTopicAlias;
     private final ImmutableIntArray subscriptionIdentifiers;
 
-    MqttPublishWrapper(
+    MqttStatefulPublish(
             @NotNull final MqttPublish publish, final int packetIdentifier, final boolean isDup, final int topicAlias,
             final boolean isNewTopicAlias, @NotNull final ImmutableIntArray subscriptionIdentifiers) {
 

@@ -56,7 +56,7 @@ public class Mqtt3PublishResultView implements Mqtt3PublishResult {
     @Nullable
     @Override
     public Throwable getError() {
-        return wrapped.getError(); // TODO wrap Mqtt5MessageException
+        return wrapped.getError(); // TODO map Mqtt5MessageException
     }
 
 }

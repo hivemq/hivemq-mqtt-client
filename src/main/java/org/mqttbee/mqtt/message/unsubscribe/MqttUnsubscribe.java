@@ -48,8 +48,8 @@ public class MqttUnsubscribe extends MqttMessageWithUserPropertiesImpl implement
         return topicFilters;
     }
 
-    public MqttUnsubscribeWrapper wrap(final int packetIdentifier) {
-        return new MqttUnsubscribeWrapper(this, packetIdentifier);
+    public MqttStatefulUnsubscribe createStateful(final int packetIdentifier) {
+        return new MqttStatefulUnsubscribe(this, packetIdentifier);
     }
 
 }
