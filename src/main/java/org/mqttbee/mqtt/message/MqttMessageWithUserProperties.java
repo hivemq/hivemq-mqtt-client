@@ -40,7 +40,7 @@ public interface MqttMessageWithUserProperties extends MqttMessage {
 
         private final MqttUserPropertiesImpl userProperties;
 
-        MqttMessageWithUserPropertiesImpl(@NotNull final MqttUserPropertiesImpl userProperties) {
+        protected MqttMessageWithUserPropertiesImpl(@NotNull final MqttUserPropertiesImpl userProperties) {
             this.userProperties = userProperties;
         }
 

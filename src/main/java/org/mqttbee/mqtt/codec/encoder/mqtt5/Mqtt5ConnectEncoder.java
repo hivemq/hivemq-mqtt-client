@@ -161,6 +161,7 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttConnectWrapper> 
 
     private int propertyLength(
             @NotNull final MqttConnectWrapper message, final int propertyLength, final int omittedProperties) {
+
         switch (omittedProperties) {
             case 0:
                 return propertyLength;

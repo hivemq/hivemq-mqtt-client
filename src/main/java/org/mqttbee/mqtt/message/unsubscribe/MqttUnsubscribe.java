@@ -22,7 +22,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
-import org.mqttbee.mqtt.message.MqttWrappedMessage;
+import org.mqttbee.mqtt.message.MqttMessageWithUserProperties.MqttMessageWithUserPropertiesImpl;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -30,7 +30,7 @@ import javax.annotation.concurrent.Immutable;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttUnsubscribe extends MqttWrappedMessage implements Mqtt5Unsubscribe {
+public class MqttUnsubscribe extends MqttMessageWithUserPropertiesImpl implements Mqtt5Unsubscribe {
 
     private final ImmutableList<MqttTopicFilterImpl> topicFilters;
 

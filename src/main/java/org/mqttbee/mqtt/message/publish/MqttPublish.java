@@ -29,7 +29,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.publish.TopicAliasUsage;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
-import org.mqttbee.mqtt.message.MqttWrappedMessage;
+import org.mqttbee.mqtt.message.MqttMessageWithUserProperties.MqttMessageWithUserPropertiesImpl;
 import org.mqttbee.util.ByteBufferUtil;
 
 import javax.annotation.concurrent.Immutable;
@@ -40,7 +40,7 @@ import java.util.Optional;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttPublish extends MqttWrappedMessage implements Mqtt5Publish {
+public class MqttPublish extends MqttMessageWithUserPropertiesImpl implements Mqtt5Publish {
 
     public static final long MESSAGE_EXPIRY_INTERVAL_INFINITY = Long.MAX_VALUE;
 

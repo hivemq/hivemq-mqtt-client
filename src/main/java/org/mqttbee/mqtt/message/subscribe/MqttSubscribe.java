@@ -21,7 +21,7 @@ import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
-import org.mqttbee.mqtt.message.MqttWrappedMessage;
+import org.mqttbee.mqtt.message.MqttMessageWithUserProperties.MqttMessageWithUserPropertiesImpl;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -29,7 +29,7 @@ import javax.annotation.concurrent.Immutable;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttSubscribe extends MqttWrappedMessage implements Mqtt5Subscribe {
+public class MqttSubscribe extends MqttMessageWithUserPropertiesImpl implements Mqtt5Subscribe {
 
     private final ImmutableList<MqttSubscription> subscriptions;
 

@@ -25,7 +25,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
-import org.mqttbee.mqtt.message.MqttWrappedMessage;
+import org.mqttbee.mqtt.message.MqttMessageWithUserProperties.MqttMessageWithUserPropertiesImpl;
 import org.mqttbee.mqtt.message.auth.MqttEnhancedAuth;
 import org.mqttbee.mqtt.message.auth.MqttSimpleAuth;
 import org.mqttbee.mqtt.message.publish.MqttWillPublish;
@@ -37,7 +37,7 @@ import java.util.Optional;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttConnect extends MqttWrappedMessage implements Mqtt5Connect {
+public class MqttConnect extends MqttMessageWithUserPropertiesImpl implements Mqtt5Connect {
 
     private final int keepAlive;
     private final boolean isCleanStart;
