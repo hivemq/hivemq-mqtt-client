@@ -22,9 +22,7 @@ import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
-import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
-import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribe;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribeWrapper;
 
 import javax.inject.Inject;
@@ -44,12 +42,10 @@ public class Mqtt5UnsubscribeEncoder extends Mqtt5MessageWithUserPropertiesEncod
     }
 
     @Override
-    int calculateRemainingLength(@NotNull final MqttUnsubscribeWrapper message) {
-        final MqttUnsubscribe wrapped = message.getWrapped();
-
+    int remainingLengthWithoutProperties(@NotNull final MqttUnsubscribeWrapper message) {
         int remainingLength = VARIABLE_HEADER_FIXED_LENGTH;
 
-        final ImmutableList<MqttTopicFilterImpl> topicFilters = wrapped.getTopicFilters();
+        final ImmutableList<MqttTopicFilterImpl> topicFilters = message.getWrapped().getTopicFilters();
         for (int i = 0; i < topicFilters.size(); i++) {
             remainingLength += topicFilters.get(i).encodedLength();
         }
@@ -58,7 +54,7 @@ public class Mqtt5UnsubscribeEncoder extends Mqtt5MessageWithUserPropertiesEncod
     }
 
     @Override
-    int calculatePropertyLength(@NotNull final MqttUnsubscribeWrapper message) {
+    int propertyLength(@NotNull final MqttUnsubscribeWrapper message) {
         return message.getWrapped().getUserProperties().encodedLength();
     }
 
@@ -98,11 +94,6 @@ public class Mqtt5UnsubscribeEncoder extends Mqtt5MessageWithUserPropertiesEncod
         for (int i = 0; i < topicFilters.size(); i++) {
             topicFilters.get(i).to(out);
         }
-    }
-
-    @Override
-    MqttUserPropertiesImpl getUserProperties(@NotNull final MqttUnsubscribeWrapper message) {
-        return message.getWrapped().getUserProperties();
     }
 
 }

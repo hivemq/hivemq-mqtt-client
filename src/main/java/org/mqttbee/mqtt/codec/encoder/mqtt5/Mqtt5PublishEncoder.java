@@ -25,7 +25,6 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt.datatypes.MqttBinaryData;
-import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
@@ -52,9 +51,8 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
     }
 
     @Override
-    int calculateRemainingLength(@NotNull final MqttPublishWrapper message) {
+    int remainingLengthWithoutProperties(@NotNull final MqttPublishWrapper message) {
         final MqttPublish wrapped = message.getWrapped();
-
         int remainingLength = 0;
 
         if ((message.getTopicAlias() == DEFAULT_NO_TOPIC_ALIAS) || message.isNewTopicAlias()) {
@@ -76,12 +74,11 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
     }
 
     @Override
-    int calculatePropertyLength(@NotNull final MqttPublishWrapper message) {
+    int propertyLength(@NotNull final MqttPublishWrapper message) {
         final MqttPublish wrapped = message.getWrapped();
-
         int propertyLength = 0;
 
-        propertyLength += calculateFixedPropertyLength(wrapped);
+        propertyLength += fixedPropertyLength(wrapped);
 
         propertyLength += wrapped.getUserProperties().encodedLength();
 
@@ -95,7 +92,7 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
         return propertyLength;
     }
 
-    final int calculateFixedPropertyLength(@NotNull final MqttPublish wrapped) {
+    final int fixedPropertyLength(@NotNull final MqttPublish wrapped) {
         int propertyLength = 0;
 
         propertyLength +=
@@ -138,14 +135,15 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
 
     private void encodeFixedHeader(
             @NotNull final MqttPublishWrapper message, @NotNull final ByteBuf out, final int remainingLength) {
-        final MqttPublish publish = message.getWrapped();
+
+        final MqttPublish wrapped = message.getWrapped();
 
         int flags = 0;
         if (message.isDup()) {
             flags |= 0b1000;
         }
-        flags |= publish.getQos().getCode() << 1;
-        if (publish.isRetain()) {
+        flags |= wrapped.getQos().getCode() << 1;
+        if (wrapped.isRetain()) {
             flags |= 0b0001;
         }
 
@@ -158,15 +156,15 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
             @NotNull final MqttPublishWrapper message, @NotNull final ByteBuf out, final int propertyLength,
             final int omittedProperties) {
 
-        final MqttPublish publish = message.getWrapped();
+        final MqttPublish wrapped = message.getWrapped();
 
         if ((message.getTopicAlias() == DEFAULT_NO_TOPIC_ALIAS) || message.isNewTopicAlias()) {
-            publish.getTopic().to(out);
+            wrapped.getTopic().to(out);
         } else {
             MqttBinaryData.encodeEmpty(out);
         }
 
-        if (publish.getQos() != MqttQoS.AT_MOST_ONCE) {
+        if (wrapped.getQos() != MqttQoS.AT_MOST_ONCE) {
             out.writeShort(message.getPacketIdentifier());
         }
 
@@ -206,11 +204,6 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
         if ((payload != null) && !payload.isDirect()) {
             out.writeBytes(payload.duplicate());
         }
-    }
-
-    @Override
-    MqttUserPropertiesImpl getUserProperties(@NotNull final MqttPublishWrapper message) {
-        return message.getWrapped().getUserProperties();
     }
 
 }

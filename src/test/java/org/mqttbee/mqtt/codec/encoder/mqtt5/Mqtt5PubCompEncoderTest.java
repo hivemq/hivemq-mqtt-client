@@ -19,10 +19,10 @@ package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.handler.codec.EncoderException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.mqttbee.api.mqtt.exceptions.MqttMaximumPacketSizeExceededException;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubCompReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
@@ -165,7 +165,8 @@ class Mqtt5PubCompEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
 
         final MqttPubComp pubComp = new MqttPubComp(1, SUCCESS, null, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
 
-        final Throwable exception = assertThrows(EncoderException.class, () -> channel.writeOutbound(pubComp));
+        final Throwable exception =
+                assertThrows(MqttMaximumPacketSizeExceededException.class, () -> channel.writeOutbound(pubComp));
         assertTrue(exception.getMessage().contains("packet size exceeded for AUTH"));
     }
 
@@ -249,7 +250,9 @@ class Mqtt5PubCompEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
         final int reasonStringTooLong = (VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE % userPropertyBytes) + 1;
         final MqttUTF8StringImpl reasonString = getPaddedUtf8String(reasonStringTooLong);
 
-        final ByteBuf expected = Unpooled.buffer(MAXIMUM_PACKET_SIZE_LIMIT - maxPacket.getRemainingPropertyBytes(), MAXIMUM_PACKET_SIZE_LIMIT  - maxPacket.getRemainingPropertyBytes());
+        final ByteBuf expected = Unpooled.buffer(
+                MAXIMUM_PACKET_SIZE_LIMIT - maxPacket.getRemainingPropertyBytes(),
+                MAXIMUM_PACKET_SIZE_LIMIT - maxPacket.getRemainingPropertyBytes());
 
         // fixed header
         // type, reserved

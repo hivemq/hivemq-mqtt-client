@@ -19,12 +19,12 @@ package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
-import io.netty.handler.codec.EncoderException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
+import org.mqttbee.api.mqtt.exceptions.MqttMaximumPacketSizeExceededException;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5RetainHandling;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
@@ -365,9 +365,12 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTe
         final MqttSubscribeWrapper subscribeInternal =
                 subscribe.wrap(packetIdentifier, MqttSubscribeWrapper.DEFAULT_NO_SUBSCRIPTION_IDENTIFIER);
 
-        final Throwable exception =
-                assertThrows(EncoderException.class, () -> channel.writeOutbound(subscribeInternal));
-        assertTrue(exception.getMessage().contains("encoded length: 268435461, maximum: 268435460"));
+        final Throwable exception = assertThrows(MqttMaximumPacketSizeExceededException.class,
+                () -> channel.writeOutbound(subscribeInternal));
+        System.err.println(exception.getMessage());
+        assertTrue(exception.getMessage()
+                .contains(
+                        "packet size exceeded for SUBSCRIBE, minimal possible encoded length: 268435461, maximum: 268435460"));
     }
 
     private void encode(final byte[] expected, final MqttSubscribe subscribe, final int packetIdentifier) {

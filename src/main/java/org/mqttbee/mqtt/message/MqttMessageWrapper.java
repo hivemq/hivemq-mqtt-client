@@ -19,6 +19,7 @@ package org.mqttbee.mqtt.message;
 
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
+import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 
 /**
  * Base class for wrappers around MQTT messages with additional state-specific data.
@@ -26,7 +27,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
  * @param <M> the type of the wrapped MQTT message.
  * @author Silvio Giebl
  */
-public abstract class MqttMessageWrapper<M extends MqttWrappedMessage> implements MqttMessage {
+public abstract class MqttMessageWrapper<M extends MqttWrappedMessage> implements MqttMessageWithUserProperties {
 
     private final M wrapped;
 
@@ -38,6 +39,12 @@ public abstract class MqttMessageWrapper<M extends MqttWrappedMessage> implement
     @Override
     public Mqtt5MessageType getType() {
         return wrapped.getType();
+    }
+
+    @NotNull
+    @Override
+    public MqttUserPropertiesImpl getUserProperties() {
+        return wrapped.getUserProperties();
     }
 
     /**

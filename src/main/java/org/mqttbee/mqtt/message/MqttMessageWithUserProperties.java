@@ -27,27 +27,35 @@ import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 
 import java.util.Optional;
 
-/**
- * Base class for MQTT messages with optional User Properties.
- */
-public abstract class MqttMessageWithUserProperties implements MqttMessage {
-
-    private final MqttUserPropertiesImpl userProperties;
-
-    MqttMessageWithUserProperties(@NotNull final MqttUserPropertiesImpl userProperties) {
-        this.userProperties = userProperties;
-    }
+public interface MqttMessageWithUserProperties extends MqttMessage {
 
     @NotNull
-    public MqttUserPropertiesImpl getUserProperties() {
-        return userProperties;
+    MqttUserPropertiesImpl getUserProperties();
+
+
+    /**
+     * Base class for MQTT messages with optional User Properties.
+     */
+    abstract class MqttMessageWithUserPropertiesImpl implements MqttMessageWithUserProperties {
+
+        private final MqttUserPropertiesImpl userProperties;
+
+        MqttMessageWithUserPropertiesImpl(@NotNull final MqttUserPropertiesImpl userProperties) {
+            this.userProperties = userProperties;
+        }
+
+        @NotNull
+        public MqttUserPropertiesImpl getUserProperties() {
+            return userProperties;
+        }
+
     }
 
 
     /**
      * Base class for MQTT messages with an optional Reason String and optional User Properties.
      */
-    public abstract static class MqttMessageWithReasonString extends MqttMessageWithUserProperties {
+    abstract class MqttMessageWithReasonString extends MqttMessageWithUserPropertiesImpl {
 
         private final MqttUTF8StringImpl reasonString;
 
@@ -76,8 +84,7 @@ public abstract class MqttMessageWithUserProperties implements MqttMessage {
      *
      * @param <R> the type of the Reason Code.
      */
-    public abstract static class MqttMessageWithReasonCode<R extends Mqtt5ReasonCode>
-            extends MqttMessageWithReasonString {
+    abstract class MqttMessageWithReasonCode<R extends Mqtt5ReasonCode> extends MqttMessageWithReasonString {
 
         private final R reasonCode;
 
@@ -103,8 +110,7 @@ public abstract class MqttMessageWithUserProperties implements MqttMessage {
      *
      * @param <R> the type of the Reason Code.
      */
-    public abstract static class MqttMessageWithIdAndReasonCode<R extends Mqtt5ReasonCode>
-            extends MqttMessageWithReasonCode<R> {
+    abstract class MqttMessageWithIdAndReasonCode<R extends Mqtt5ReasonCode> extends MqttMessageWithReasonCode<R> {
 
         private final int packetIdentifier;
 
@@ -129,8 +135,7 @@ public abstract class MqttMessageWithUserProperties implements MqttMessage {
      *
      * @param <R> the type of the Reason Codes.
      */
-    public abstract static class MqttMessageWithIdAndReasonCodes<R extends Mqtt5ReasonCode>
-            extends MqttMessageWithReasonString {
+    abstract class MqttMessageWithIdAndReasonCodes<R extends Mqtt5ReasonCode> extends MqttMessageWithReasonString {
 
         private final int packetIdentifier;
         private final ImmutableList<R> reasonCodes;

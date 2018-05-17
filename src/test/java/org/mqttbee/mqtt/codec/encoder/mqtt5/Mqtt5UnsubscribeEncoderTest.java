@@ -18,8 +18,8 @@
 package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
 import com.google.common.collect.ImmutableList;
-import io.netty.handler.codec.EncoderException;
 import org.junit.jupiter.api.Test;
+import org.mqttbee.api.mqtt.exceptions.MqttMaximumPacketSizeExceededException;
 import org.mqttbee.mqtt.codec.encoder.AbstractMqtt5EncoderTest;
 import org.mqttbee.mqtt.datatypes.*;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribe;
@@ -143,8 +143,8 @@ class Mqtt5UnsubscribeEncoderTest extends AbstractMqtt5EncoderTest {
         final int packetIdentifier = 1;
         final MqttUnsubscribeWrapper unsubscribeInternal = unsubscribe.wrap(packetIdentifier);
 
-        final Throwable exception =
-                assertThrows(EncoderException.class, () -> channel.writeOutbound(unsubscribeInternal));
+        final Throwable exception = assertThrows(MqttMaximumPacketSizeExceededException.class,
+                () -> channel.writeOutbound(unsubscribeInternal));
         assertTrue(exception.getMessage().contains("packet size exceeded for UNSUBSCRIBE"));
     }
 

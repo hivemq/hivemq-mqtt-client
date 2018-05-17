@@ -21,9 +21,7 @@ import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
-import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
-import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribeWrapper;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
 
@@ -49,12 +47,10 @@ public class Mqtt5SubscribeEncoder extends Mqtt5MessageWithUserPropertiesEncoder
     }
 
     @Override
-    int calculateRemainingLength(@NotNull final MqttSubscribeWrapper message) {
-        final MqttSubscribe wrapped = message.getWrapped();
-
+    int remainingLengthWithoutProperties(@NotNull final MqttSubscribeWrapper message) {
         int remainingLength = VARIABLE_HEADER_FIXED_LENGTH;
 
-        final ImmutableList<MqttSubscription> subscriptions = wrapped.getSubscriptions();
+        final ImmutableList<MqttSubscription> subscriptions = message.getWrapped().getSubscriptions();
         for (int i = 0; i < subscriptions.size(); i++) {
             remainingLength += subscriptions.get(i).getTopicFilter().encodedLength() + 1;
         }
@@ -63,12 +59,10 @@ public class Mqtt5SubscribeEncoder extends Mqtt5MessageWithUserPropertiesEncoder
     }
 
     @Override
-    int calculatePropertyLength(@NotNull final MqttSubscribeWrapper message) {
-        final MqttSubscribe wrapped = message.getWrapped();
-
+    int propertyLength(@NotNull final MqttSubscribeWrapper message) {
         int propertyLength = 0;
 
-        propertyLength += wrapped.getUserProperties().encodedLength();
+        propertyLength += message.getWrapped().getUserProperties().encodedLength();
         propertyLength += variableByteIntegerPropertyEncodedLength(message.getSubscriptionIdentifier(),
                 DEFAULT_NO_SUBSCRIPTION_IDENTIFIER);
 
@@ -127,11 +121,6 @@ public class Mqtt5SubscribeEncoder extends Mqtt5MessageWithUserPropertiesEncoder
 
             out.writeByte(subscriptionOptions);
         }
-    }
-
-    @Override
-    MqttUserPropertiesImpl getUserProperties(@NotNull final MqttSubscribeWrapper message) {
-        return message.getWrapped().getUserProperties();
     }
 
 }
