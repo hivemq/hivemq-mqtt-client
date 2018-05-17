@@ -25,6 +25,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.exceptions.MqttBinaryDataExceededException;
+import org.mqttbee.api.mqtt.exceptions.MqttVariableByteIntegerExceededException;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientData;
 import org.mqttbee.api.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5Auth;
@@ -436,7 +437,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES);
         final MqttConnectWrapper connectWrapper = connect.wrap(clientIdentifier, null);
 
-        encodeNok(connectWrapper, EncoderException.class,
+        encodeNok(connectWrapper, MqttVariableByteIntegerExceededException.class,
                 "variable byte integer size exceeded for will properties length");
     }
 
