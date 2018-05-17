@@ -45,17 +45,17 @@ public class Mqtt5AuthEncoder extends Mqtt5MessageWithReasonStringEncoder<MqttAu
     }
 
     @Override
-    int calculateRemainingLength(@NotNull final MqttAuth message) {
+    int remainingLengthWithoutProperties(@NotNull final MqttAuth message) {
         return VARIABLE_HEADER_FIXED_LENGTH;
     }
 
     @Override
-    int calculatePropertyLength(@NotNull final MqttAuth message) {
+    int propertyLength(@NotNull final MqttAuth message) {
         int propertyLength = 0;
 
         propertyLength += propertyEncodedLength(message.getMethod());
         propertyLength += nullablePropertyEncodedLength(message.getRawData());
-        propertyLength += omissiblePropertiesLength(message);
+        propertyLength += omissiblePropertyLength(message);
 
         return propertyLength;
     }

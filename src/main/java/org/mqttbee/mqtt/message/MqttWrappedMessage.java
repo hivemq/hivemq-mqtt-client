@@ -18,23 +18,16 @@
 package org.mqttbee.mqtt.message;
 
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
+import org.mqttbee.mqtt.message.MqttMessageWithUserProperties.MqttMessageWithUserPropertiesImpl;
 
 /**
  * Base class for wrapped MQTT messages with User Properties.
  */
-public abstract class MqttWrappedMessage implements Mqtt5Message {
-
-    private final MqttUserPropertiesImpl userProperties;
+public abstract class MqttWrappedMessage extends MqttMessageWithUserPropertiesImpl {
 
     protected MqttWrappedMessage(@NotNull final MqttUserPropertiesImpl userProperties) {
-        this.userProperties = userProperties;
-    }
-
-    @NotNull
-    public MqttUserPropertiesImpl getUserProperties() {
-        return userProperties;
+        super(userProperties);
     }
 
 }
