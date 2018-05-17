@@ -42,7 +42,7 @@ public class Mqtt3PublishEncoder extends Mqtt3MessageEncoder<MqttPublishWrapper>
     }
 
     @Override
-    int calculateRemainingLength(@NotNull final MqttPublishWrapper message) {
+    int remainingLength(@NotNull final MqttPublishWrapper message) {
         final MqttPublish wrapped = message.getWrapped();
 
         int remainingLength = 0;

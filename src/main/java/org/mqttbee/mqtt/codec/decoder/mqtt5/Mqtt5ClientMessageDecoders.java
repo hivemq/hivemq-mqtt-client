@@ -27,7 +27,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
- * Collection of decoders of MQTT 5 messages a client can receive.
+ * Collection of decoders for MQTT 5 messages a client can receive.
  *
  * @author Silvio Giebl
  */

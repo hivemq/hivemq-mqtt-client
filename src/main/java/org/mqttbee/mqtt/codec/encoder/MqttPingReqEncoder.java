@@ -40,7 +40,7 @@ public class MqttPingReqEncoder extends MqttMessageEncoder<MqttPingReq> {
             Unpooled.directBuffer(ENCODED_LENGTH).writeByte(Mqtt5MessageType.PINGREQ.getCode() << 4).writeByte(0);
 
     @Inject
-    public MqttPingReqEncoder() {
+    MqttPingReqEncoder() {
     }
 
     @NotNull

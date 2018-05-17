@@ -33,7 +33,7 @@ public class MqttDecoderException extends Exception {
     private Mqtt5MessageType messageType;
 
     /**
-     * Creates a new Decoder exception with the given default reason code and message.
+     * Creates a new Decoder exception with the given Disconnect reason code and message.
      *
      * @param reasonCode the reason code of the decoder exception.
      * @param message    the description of the decoder exception.
@@ -44,7 +44,7 @@ public class MqttDecoderException extends Exception {
     }
 
     /**
-     * Creates a new Decoder exception with the default reason code {@link Mqtt5DisconnectReasonCode#MALFORMED_PACKET}.
+     * Creates a new Decoder exception with the Disconnect reason code {@link Mqtt5DisconnectReasonCode#MALFORMED_PACKET}.
      *
      * @param message the description of the decoder exception.
      */
@@ -62,7 +62,7 @@ public class MqttDecoderException extends Exception {
      *
      * @param messageType the MQTT message type which caused the decoder exception.
      */
-    public void setMessageType(@Nullable final Mqtt5MessageType messageType) {
+    void setMessageType(@Nullable final Mqtt5MessageType messageType) {
         this.messageType = messageType;
     }
 

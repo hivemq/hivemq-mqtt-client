@@ -43,7 +43,7 @@ public class Mqtt3SubscribeEncoder extends Mqtt3MessageEncoder<MqttSubscribeWrap
     }
 
     @Override
-    int calculateRemainingLength(@NotNull final MqttSubscribeWrapper message) {
+    int remainingLength(@NotNull final MqttSubscribeWrapper message) {
         final MqttSubscribe wrapped = message.getWrapped();
 
         int remainingLength = VARIABLE_HEADER_FIXED_LENGTH;

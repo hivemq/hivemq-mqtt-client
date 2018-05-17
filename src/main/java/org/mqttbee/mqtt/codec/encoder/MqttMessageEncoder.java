@@ -23,17 +23,20 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.message.MqttMessage;
 
 /**
- * Encoder for a MQTT message.
+ * Encoder for a MQTT message type.
  *
+ * @param <M> the type of the codable MQTT message.
  * @author Silvio Giebl
  */
 public abstract class MqttMessageEncoder<M extends MqttMessage> {
 
     /**
-     * Encodes the given MQTT message.
+     * Casts and encodes the given MQTT message.
      *
+     * @param message           the MQTT message to encode.
      * @param allocator         the allocator for allocating the byte buffer to encode to.
      * @param maximumPacketSize the maximum packet size for the MQTT message.
+     * @return the byte buffer the MQTT message is encoded to.
      */
     @NotNull
     @SuppressWarnings("unchecked")
@@ -44,6 +47,14 @@ public abstract class MqttMessageEncoder<M extends MqttMessage> {
         return encode((M) message, allocator, maximumPacketSize);
     }
 
+    /**
+     * Encodes the given MQTT message.
+     *
+     * @param message           the MQTT message to encode.
+     * @param allocator         the allocator for allocating the byte buffer to encode to.
+     * @param maximumPacketSize the maximum packet size for the MQTT message.
+     * @return the byte buffer the MQTT message is encoded to.
+     */
     @NotNull
     protected abstract ByteBuf encode(
             @NotNull final M message, @NotNull final ByteBufAllocator allocator, final int maximumPacketSize);

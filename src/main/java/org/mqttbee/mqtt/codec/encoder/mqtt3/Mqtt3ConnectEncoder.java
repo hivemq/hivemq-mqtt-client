@@ -48,7 +48,7 @@ public class Mqtt3ConnectEncoder extends Mqtt3MessageEncoder<MqttConnectWrapper>
     }
 
     @Override
-    int calculateRemainingLength(@NotNull final MqttConnectWrapper message) {
+    int remainingLength(@NotNull final MqttConnectWrapper message) {
         final MqttConnect wrapped = message.getWrapped();
 
         int remainingLength = VARIABLE_HEADER_FIXED_LENGTH;
