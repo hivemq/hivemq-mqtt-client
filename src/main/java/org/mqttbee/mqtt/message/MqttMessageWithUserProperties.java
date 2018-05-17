@@ -27,6 +27,9 @@ import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 
 import java.util.Optional;
 
+/**
+ * MQTT message with optional User Properties.
+ */
 public interface MqttMessageWithUserProperties extends MqttMessage {
 
     @NotNull
@@ -89,8 +92,7 @@ public interface MqttMessageWithUserProperties extends MqttMessage {
         private final R reasonCode;
 
         protected MqttMessageWithReasonCode(
-                @NotNull final R reasonCode, @Nullable final MqttUTF8StringImpl reasonString,
-                @NotNull final MqttUserPropertiesImpl userProperties) {
+                @NotNull final R reasonCode, @Nullable final MqttUTF8StringImpl reasonString, @NotNull final MqttUserPropertiesImpl userProperties) {
 
             super(reasonString, userProperties);
             this.reasonCode = reasonCode;
@@ -115,8 +117,7 @@ public interface MqttMessageWithUserProperties extends MqttMessage {
         private final int packetIdentifier;
 
         protected MqttMessageWithIdAndReasonCode(
-                final int packetIdentifier, @NotNull final R reasonCode,
-                @Nullable final MqttUTF8StringImpl reasonString, @NotNull final MqttUserPropertiesImpl userProperties) {
+                final int packetIdentifier, @NotNull final R reasonCode, @Nullable final MqttUTF8StringImpl reasonString, @NotNull final MqttUserPropertiesImpl userProperties) {
 
             super(reasonCode, reasonString, userProperties);
             this.packetIdentifier = packetIdentifier;
@@ -141,8 +142,7 @@ public interface MqttMessageWithUserProperties extends MqttMessage {
         private final ImmutableList<R> reasonCodes;
 
         protected MqttMessageWithIdAndReasonCodes(
-                final int packetIdentifier, @NotNull final ImmutableList<R> reasonCodes,
-                @Nullable final MqttUTF8StringImpl reasonString, @NotNull final MqttUserPropertiesImpl userProperties) {
+                final int packetIdentifier, @NotNull final ImmutableList<R> reasonCodes, @Nullable final MqttUTF8StringImpl reasonString, @NotNull final MqttUserPropertiesImpl userProperties) {
 
             super(reasonString, userProperties);
             this.packetIdentifier = packetIdentifier;

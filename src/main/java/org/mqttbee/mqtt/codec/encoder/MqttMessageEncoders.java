@@ -20,10 +20,19 @@ package org.mqttbee.mqtt.codec.encoder;
 import org.mqttbee.annotations.Nullable;
 
 /**
+ * Collection of encoders for MQTT messages which can be queried by the MQTT message type code.
+ *
  * @author Silvio Giebl
  */
 public interface MqttMessageEncoders {
 
+    /**
+     * Returns the corresponding encoder to the given MQTT message type code.
+     *
+     * @param code the MQTT message type code.
+     * @return the corresponding decoder to the MQTT message type code or null if there is no encoder for the MQTT
+     * message type code.
+     */
     @Nullable
     MqttMessageEncoder get(final int code);
 

@@ -20,7 +20,7 @@ package org.mqttbee.mqtt.codec.decoder.mqtt3;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
 
 /**
- * Util for decoders of MQTT 3 messages.
+ * Util for decoders for MQTT 3 messages.
  *
  * @author Silvio Giebl
  */

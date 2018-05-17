@@ -27,6 +27,9 @@ import org.mqttbee.mqtt.message.MqttMessage;
 import static org.mqttbee.mqtt.codec.encoder.MqttMessageEncoderUtil.encodedPacketLength;
 
 /**
+ * Base class of encoders for MQTT 3 messages.
+ *
+ * @param <M> the type of the MQTT message.
  * @author Silvio Giebl
  */
 abstract class Mqtt3MessageEncoder<M extends MqttMessage> extends MqttMessageEncoder<M> {
@@ -36,7 +39,7 @@ abstract class Mqtt3MessageEncoder<M extends MqttMessage> extends MqttMessageEnc
     protected ByteBuf encode(
             @NotNull final M message, @NotNull final ByteBufAllocator allocator, final int maximumPacketSize) {
 
-        final int remainingLength = calculateRemainingLength(message);
+        final int remainingLength = remainingLength(message);
         final int encodedLength = encodedPacketLength(remainingLength);
         if (encodedLength > maximumPacketSize) {
             throw new MqttMaximumPacketSizeExceededException(message, encodedLength, maximumPacketSize);
@@ -56,9 +59,14 @@ abstract class Mqtt3MessageEncoder<M extends MqttMessage> extends MqttMessageEnc
 
     abstract void encode(@NotNull final M message, @NotNull final ByteBuf out, final int remainingLength);
 
-    abstract int calculateRemainingLength(@NotNull final M message);
+    abstract int remainingLength(@NotNull final M message);
 
 
+    /**
+     * Base class of encoders for MQTT 3 messages with a fixed encoded size.
+     *
+     * @param <M> the type of the MQTT message.
+     */
     public static abstract class Mqtt3MessageFixedSizeEncoder<M extends MqttMessage> extends MqttMessageEncoder<M> {
 
         @NotNull

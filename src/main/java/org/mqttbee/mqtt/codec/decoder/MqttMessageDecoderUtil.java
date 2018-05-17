@@ -25,7 +25,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import static org.mqttbee.mqtt.message.publish.MqttPublishWrapper.NO_PACKET_IDENTIFIER_QOS_0;
 
 /**
- * Util for decoders of MQTT messages for different versions.
+ * Util for decoders for MQTT messages of different versions.
  *
  * @author Silvio Giebl
  */
