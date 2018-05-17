@@ -21,13 +21,16 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 
+import static org.mqttbee.mqtt.message.MqttMessageWithUserProperties.MqttMessageWithUserPropertiesImpl;
+
 /**
  * Base class for wrappers around MQTT messages with additional state-specific data.
  *
  * @param <M> the type of the wrapped MQTT message.
  * @author Silvio Giebl
  */
-public abstract class MqttMessageWrapper<M extends MqttWrappedMessage> implements MqttMessageWithUserProperties {
+public abstract class MqttMessageWrapper<M extends MqttMessageWithUserPropertiesImpl>
+        implements MqttMessageWithUserProperties {
 
     private final M wrapped;
 
@@ -62,7 +65,8 @@ public abstract class MqttMessageWrapper<M extends MqttWrappedMessage> implement
      * @param <M> the type of the wrapped MQTT message.
      * @author Silvio Giebl
      */
-    public abstract static class MqttMessageWrapperWithId<M extends MqttWrappedMessage> extends MqttMessageWrapper<M> {
+    public abstract static class MqttMessageWrapperWithId<M extends MqttMessageWithUserPropertiesImpl>
+            extends MqttMessageWrapper<M> {
 
         private final int packetIdentifier;
 
