@@ -35,7 +35,7 @@ import javax.inject.Inject;
 @ChannelScope
 public class MqttEncoder extends ChannelOutboundHandlerAdapter {
 
-    public static final String NAME = "encoder.mqtt5";
+    public static final String NAME = "encoder";
 
     private final MqttMessageEncoders encoders;
 
