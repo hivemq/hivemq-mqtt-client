@@ -47,7 +47,7 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
     private static final int FIXED_HEADER = Mqtt5MessageType.PUBLISH.getCode() << 4;
 
     @Inject
-    public Mqtt5PublishEncoder() {
+    Mqtt5PublishEncoder() {
     }
 
     @Override
