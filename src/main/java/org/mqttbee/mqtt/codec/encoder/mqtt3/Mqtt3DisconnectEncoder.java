@@ -44,7 +44,7 @@ public class Mqtt3DisconnectEncoder extends MqttMessageEncoder<MqttDisconnect> {
 
     @NotNull
     @Override
-    public ByteBuf encode(
+    protected ByteBuf encode(
             @NotNull final MqttDisconnect message, @NotNull final ByteBufAllocator allocator,
             final int maximumPacketSize) {
 

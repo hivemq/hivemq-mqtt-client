@@ -70,7 +70,7 @@ public class Mqtt5SubscribeEncoder extends Mqtt5MessageWithUserPropertiesEncoder
     }
 
     @Override
-    protected void encode(
+    void encode(
             @NotNull final MqttStatefulSubscribe message, @NotNull final ByteBuf out, final int remainingLength,
             final int propertyLength, final int omittedProperties) {
 

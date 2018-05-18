@@ -41,12 +41,12 @@ public class Mqtt5PubCompEncoder extends
     }
 
     @Override
-    protected int getFixedHeader() {
+    int getFixedHeader() {
         return FIXED_HEADER;
     }
 
     @Override
-    protected Mqtt5PubCompReasonCode getDefaultReasonCode() {
+    Mqtt5PubCompReasonCode getDefaultReasonCode() {
         return DEFAULT_REASON_CODE;
     }
 

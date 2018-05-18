@@ -41,12 +41,12 @@ public class Mqtt5PubRelEncoder
     }
 
     @Override
-    protected int getFixedHeader() {
+    int getFixedHeader() {
         return FIXED_HEADER;
     }
 
     @Override
-    protected Mqtt5PubRelReasonCode getDefaultReasonCode() {
+    Mqtt5PubRelReasonCode getDefaultReasonCode() {
         return DEFAULT_REASON_CODE;
     }
 

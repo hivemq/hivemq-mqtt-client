@@ -47,12 +47,12 @@ public class Mqtt5DisconnectEncoder
     }
 
     @Override
-    protected int getFixedHeader() {
+    int getFixedHeader() {
         return FIXED_HEADER;
     }
 
     @Override
-    protected Mqtt5DisconnectReasonCode getDefaultReasonCode() {
+    Mqtt5DisconnectReasonCode getDefaultReasonCode() {
         return DEFAULT_REASON_CODE;
     }
 

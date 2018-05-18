@@ -59,7 +59,7 @@ public class Mqtt5UnsubscribeEncoder extends Mqtt5MessageWithUserPropertiesEncod
     }
 
     @Override
-    protected void encode(
+    void encode(
             @NotNull final MqttStatefulUnsubscribe message, @NotNull final ByteBuf out, final int remainingLength,
             final int propertyLength, final int omittedProperties) {
 

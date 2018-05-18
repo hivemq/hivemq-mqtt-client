@@ -86,7 +86,7 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
     }
 
     @NotNull
-    ByteBuf encode(
+    private ByteBuf encode(
             @NotNull final MqttStatefulConnect message, @NotNull final ByteBufAllocator allocator,
             final int encodedLength, final int remainingLength, final int propertyLength, final int willPropertyLength,
             final int omittedProperties) {
@@ -191,7 +191,7 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
         return willPropertyLength;
     }
 
-    protected void encode(
+    private void encode(
             @NotNull final MqttStatefulConnect message, @NotNull final ByteBuf out, final int remainingLength,
             final int propertyLength, final int willPropertyLength, final int omittedProperties) {
 

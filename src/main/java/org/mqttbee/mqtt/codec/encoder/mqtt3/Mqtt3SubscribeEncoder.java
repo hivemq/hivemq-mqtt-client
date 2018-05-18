@@ -55,7 +55,7 @@ public class Mqtt3SubscribeEncoder extends Mqtt3MessageEncoder<MqttStatefulSubsc
     }
 
     @Override
-    public void encode(
+    void encode(
             @NotNull final MqttStatefulSubscribe message, @NotNull final ByteBuf out, final int remainingLength) {
 
         encodeFixedHeader(out, remainingLength);

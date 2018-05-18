@@ -54,7 +54,7 @@ public class Mqtt3UnsubscribeEncoder extends Mqtt3MessageEncoder<MqttStatefulUns
     }
 
     @Override
-    public void encode(
+    void encode(
             @NotNull final MqttStatefulUnsubscribe message, @NotNull final ByteBuf out, final int remainingLength) {
 
         encodeFixedHeader(out, remainingLength);
