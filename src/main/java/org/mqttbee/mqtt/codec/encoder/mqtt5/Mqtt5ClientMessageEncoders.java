@@ -38,23 +38,23 @@ public class Mqtt5ClientMessageEncoders implements MqttMessageEncoders {
 
     @Inject
     Mqtt5ClientMessageEncoders(
-            final Mqtt5ConnectEncoder connAckEncoder, final Mqtt5PublishEncoder publishEncoder,
+            final Mqtt5ConnectEncoder connectEncoder, final Mqtt5PublishEncoder publishEncoder,
             final Mqtt5PubAckEncoder pubAckEncoder, final Mqtt5PubRecEncoder pubRecEncoder,
             final Mqtt5PubRelEncoder pubRelEncoder, final Mqtt5PubCompEncoder pubCompEncoder,
-            final Mqtt5SubscribeEncoder subAckEncoder, final Mqtt5UnsubscribeEncoder unsubAckEncoder,
-            final MqttPingReqEncoder pingRespEncoder, final Mqtt5DisconnectEncoder disconnectEncoder,
+            final Mqtt5SubscribeEncoder subscribeEncoder, final Mqtt5UnsubscribeEncoder unsubscribeEncoder,
+            final MqttPingReqEncoder pingReqEncoder, final Mqtt5DisconnectEncoder disconnectEncoder,
             final Mqtt5AuthEncoder authEncoder) {
 
         encoders = new MqttMessageEncoder[Mqtt5MessageType.values().length];
-        encoders[Mqtt5MessageType.CONNACK.getCode()] = connAckEncoder;
+        encoders[Mqtt5MessageType.CONNECT.getCode()] = connectEncoder;
         encoders[Mqtt5MessageType.PUBLISH.getCode()] = publishEncoder;
         encoders[Mqtt5MessageType.PUBACK.getCode()] = pubAckEncoder;
         encoders[Mqtt5MessageType.PUBREC.getCode()] = pubRecEncoder;
         encoders[Mqtt5MessageType.PUBREL.getCode()] = pubRelEncoder;
         encoders[Mqtt5MessageType.PUBCOMP.getCode()] = pubCompEncoder;
-        encoders[Mqtt5MessageType.SUBACK.getCode()] = subAckEncoder;
-        encoders[Mqtt5MessageType.UNSUBACK.getCode()] = unsubAckEncoder;
-        encoders[Mqtt5MessageType.PINGRESP.getCode()] = pingRespEncoder;
+        encoders[Mqtt5MessageType.SUBSCRIBE.getCode()] = subscribeEncoder;
+        encoders[Mqtt5MessageType.UNSUBSCRIBE.getCode()] = unsubscribeEncoder;
+        encoders[Mqtt5MessageType.PINGREQ.getCode()] = pingReqEncoder;
         encoders[Mqtt5MessageType.DISCONNECT.getCode()] = disconnectEncoder;
         encoders[Mqtt5MessageType.AUTH.getCode()] = authEncoder;
     }
