@@ -36,22 +36,22 @@ public class Mqtt3ClientMessageEncoders implements MqttMessageEncoders {
 
     @Inject
     Mqtt3ClientMessageEncoders(
-            final Mqtt3ConnectEncoder connAckEncoder, final Mqtt3PublishEncoder publishEncoder,
+            final Mqtt3ConnectEncoder connectEncoder, final Mqtt3PublishEncoder publishEncoder,
             final Mqtt3PubAckEncoder pubAckEncoder, final Mqtt3PubRecEncoder pubRecEncoder,
             final Mqtt3PubRelEncoder pubRelEncoder, final Mqtt3PubCompEncoder pubCompEncoder,
-            final Mqtt3SubscribeEncoder subAckEncoder, final Mqtt3UnsubscribeEncoder unsubAckEncoder,
-            final MqttPingReqEncoder pingRespEncoder, final Mqtt3DisconnectEncoder disconnectEncoder) {
+            final Mqtt3SubscribeEncoder subscribeEncoder, final Mqtt3UnsubscribeEncoder unsubscribeEncoder,
+            final MqttPingReqEncoder pingReqEncoder, final Mqtt3DisconnectEncoder disconnectEncoder) {
 
         encoders = new MqttMessageEncoder[Mqtt3MessageType.values().length];
-        encoders[Mqtt3MessageType.CONNACK.getCode()] = connAckEncoder;
+        encoders[Mqtt3MessageType.CONNECT.getCode()] = connectEncoder;
         encoders[Mqtt3MessageType.PUBLISH.getCode()] = publishEncoder;
         encoders[Mqtt3MessageType.PUBACK.getCode()] = pubAckEncoder;
         encoders[Mqtt3MessageType.PUBREC.getCode()] = pubRecEncoder;
         encoders[Mqtt3MessageType.PUBREL.getCode()] = pubRelEncoder;
         encoders[Mqtt3MessageType.PUBCOMP.getCode()] = pubCompEncoder;
-        encoders[Mqtt3MessageType.SUBACK.getCode()] = subAckEncoder;
-        encoders[Mqtt3MessageType.UNSUBACK.getCode()] = unsubAckEncoder;
-        encoders[Mqtt3MessageType.PINGRESP.getCode()] = pingRespEncoder;
+        encoders[Mqtt3MessageType.SUBSCRIBE.getCode()] = subscribeEncoder;
+        encoders[Mqtt3MessageType.UNSUBSCRIBE.getCode()] = unsubscribeEncoder;
+        encoders[Mqtt3MessageType.PINGREQ.getCode()] = pingReqEncoder;
         encoders[Mqtt3MessageType.DISCONNECT.getCode()] = disconnectEncoder;
     }
 
