@@ -17,10 +17,8 @@
 
 package org.mqttbee.mqtt.codec.encoder.mqtt3;
 
-import io.netty.buffer.ByteBuf;
-import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
-import org.mqttbee.mqtt.codec.encoder.mqtt3.Mqtt3MessageEncoder.Mqtt3MessageFixedSizeEncoder;
+import org.mqttbee.mqtt.codec.encoder.mqtt3.Mqtt3MessageEncoder.Mqtt3MessageWithIdEncoder;
 import org.mqttbee.mqtt.message.publish.pubcomp.MqttPubComp;
 
 import javax.inject.Inject;
@@ -31,34 +29,17 @@ import javax.inject.Singleton;
  * @author Silvio Giebl
  */
 @Singleton
-public class Mqtt3PubCompEncoder extends Mqtt3MessageFixedSizeEncoder<MqttPubComp> {
+public class Mqtt3PubCompEncoder extends Mqtt3MessageWithIdEncoder<MqttPubComp> {
 
     private static final int FIXED_HEADER = Mqtt3MessageType.PUBCOMP.getCode() << 4;
-    private static final int REMAINING_LENGTH = 2;
-    private static final int ENCODED_LENGTH = 2 + REMAINING_LENGTH;
 
     @Inject
     Mqtt3PubCompEncoder() {
     }
 
     @Override
-    int encodedLength() {
-        return ENCODED_LENGTH;
-    }
-
-    @Override
-    public void encode(@NotNull final MqttPubComp message, @NotNull final ByteBuf out) {
-        encodeFixedHeader(out);
-        encodeVariableHeader(message, out);
-    }
-
-    private void encodeFixedHeader(@NotNull final ByteBuf out) {
-        out.writeByte(FIXED_HEADER);
-        out.writeByte(REMAINING_LENGTH);
-    }
-
-    private void encodeVariableHeader(@NotNull final MqttPubComp message, @NotNull final ByteBuf out) {
-        out.writeShort(message.getPacketIdentifier());
+    int getFixedHeader() {
+        return FIXED_HEADER;
     }
 
 }

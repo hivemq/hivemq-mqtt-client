@@ -23,6 +23,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.exceptions.MqttMaximumPacketSizeExceededException;
 import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoder;
 import org.mqttbee.mqtt.message.MqttMessage;
+import org.mqttbee.mqtt.message.MqttMessageWithUserProperties.MqttMessageWithIdAndReasonCode;
 
 import static org.mqttbee.mqtt.codec.encoder.MqttMessageEncoderUtil.encodedPacketLength;
 
@@ -63,29 +64,44 @@ abstract class Mqtt3MessageEncoder<M extends MqttMessage> extends MqttMessageEnc
 
 
     /**
-     * Base class of encoders for MQTT 3 messages with a fixed encoded size.
+     * Base class of encoders for MQTT 3 messages with only a Packet Identifier.
      *
      * @param <M> the type of the MQTT message.
      */
-    public static abstract class Mqtt3MessageFixedSizeEncoder<M extends MqttMessage> extends MqttMessageEncoder<M> {
+    static abstract class Mqtt3MessageWithIdEncoder<M extends MqttMessageWithIdAndReasonCode>
+            extends MqttMessageEncoder<M> {
+
+        private static final int REMAINING_LENGTH = 2;
+        private static final int ENCODED_LENGTH = 2 + REMAINING_LENGTH;
 
         @NotNull
         @Override
         protected ByteBuf encode(
                 @NotNull final M message, @NotNull final ByteBufAllocator allocator, final int maximumPacketSize) {
 
-            final int encodedLength = encodedLength();
-            if (encodedLength > maximumPacketSize) {
-                throw new MqttMaximumPacketSizeExceededException(message, encodedLength, maximumPacketSize);
+            if (ENCODED_LENGTH > maximumPacketSize) {
+                throw new MqttMaximumPacketSizeExceededException(message, ENCODED_LENGTH, maximumPacketSize);
             }
-            final ByteBuf out = allocator.ioBuffer(encodedLength, encodedLength);
+            final ByteBuf out = allocator.ioBuffer(ENCODED_LENGTH, ENCODED_LENGTH);
             encode(message, out);
             return out;
         }
 
-        abstract void encode(@NotNull final M message, @NotNull final ByteBuf out);
+        private void encode(@NotNull final M message, @NotNull final ByteBuf out) {
+            encodeFixedHeader(out);
+            encodeVariableHeader(message, out);
+        }
 
-        abstract int encodedLength();
+        private void encodeFixedHeader(@NotNull final ByteBuf out) {
+            out.writeByte(getFixedHeader());
+            out.writeByte(REMAINING_LENGTH);
+        }
+
+        private void encodeVariableHeader(@NotNull final M message, @NotNull final ByteBuf out) {
+            out.writeShort(message.getPacketIdentifier());
+        }
+
+        abstract int getFixedHeader();
 
     }
 
