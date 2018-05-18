@@ -109,7 +109,7 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
 
     @NotNull
     @Override
-    protected ByteBuf encode(
+    ByteBuf encode(
             @NotNull final MqttStatefulPublish message, @NotNull final ByteBufAllocator allocator,
             final int encodedLength, final int remainingLength, final int propertyLength, final int omittedProperties) {
 
@@ -126,7 +126,7 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
     }
 
     @Override
-    protected void encode(
+    void encode(
             @NotNull final MqttStatefulPublish message, @NotNull final ByteBuf out, final int remainingLength,
             final int propertyLength, final int omittedProperties) {
 

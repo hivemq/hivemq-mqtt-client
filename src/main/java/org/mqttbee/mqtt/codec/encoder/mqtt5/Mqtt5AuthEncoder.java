@@ -61,7 +61,7 @@ public class Mqtt5AuthEncoder extends Mqtt5MessageWithReasonStringEncoder<MqttAu
     }
 
     @Override
-    protected void encode(
+    void encode(
             @NotNull final MqttAuth message, @NotNull final ByteBuf out, final int remainingLength,
             final int propertyLength, final int omittedProperties) {
 

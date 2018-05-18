@@ -71,7 +71,7 @@ public class Mqtt3ConnectEncoder extends Mqtt3MessageEncoder<MqttStatefulConnect
     }
 
     @Override
-    public void encode(
+    void encode(
             @NotNull final MqttStatefulConnect message, @NotNull final ByteBuf out, final int remainingLength) {
 
         encodeFixedHeader(out, remainingLength);

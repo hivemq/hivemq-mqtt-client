@@ -62,7 +62,7 @@ public class Mqtt3PublishEncoder extends Mqtt3MessageEncoder<MqttStatefulPublish
     }
 
     @Override
-    public void encode(
+    void encode(
             @NotNull final MqttStatefulPublish message, @NotNull final ByteBuf out, final int remainingLength) {
 
         encodeFixedHeader(message, out, remainingLength);
