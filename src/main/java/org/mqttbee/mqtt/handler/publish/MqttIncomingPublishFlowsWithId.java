@@ -24,11 +24,11 @@ import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAckReasonCode
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
+import org.mqttbee.mqtt.ioc.ChannelScope;
 import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribeWrapper;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
 import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAck;
-import org.mqttbee.mqtt.ioc.ChannelScope;
 import org.mqttbee.util.collections.IntMap;
 import org.mqttbee.util.collections.ScNodeList;
 
@@ -59,7 +59,7 @@ public class MqttIncomingPublishFlowsWithId extends MqttIncomingPublishFlows {
         final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
         assert clientConnectionData != null;
 
-        flowsWithIdsMap = new IntMap<>(clientConnectionData.getSubscriptionIdentifierMaximum());
+        flowsWithIdsMap = new IntMap<>(1, clientConnectionData.getSubscriptionIdentifierMaximum());
         this.flowsWithIds = flowsWithIds;
         flowWithIdUnsubscribedCallback = this::unsubscribed;
     }

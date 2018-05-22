@@ -30,15 +30,15 @@ import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.MqttServerConnectionData;
-import org.mqttbee.mqtt.handler.publish.MqttOutgoingQoSHandler;
-import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAck;
-import org.mqttbee.mqtt.message.unsubscribe.unsuback.MqttUnsubAck;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.handler.publish.MqttIncomingPublishFlows;
+import org.mqttbee.mqtt.handler.publish.MqttOutgoingQoSHandler;
 import org.mqttbee.mqtt.handler.publish.MqttSubscriptionFlow;
 import org.mqttbee.mqtt.handler.subscribe.MqttSubscribeWithFlow.MqttSubscribeWrapperWithFlow;
 import org.mqttbee.mqtt.handler.subscribe.MqttUnsubscribeWithFlow.MqttUnsubscribeWrapperWithFlow;
 import org.mqttbee.mqtt.ioc.ChannelScope;
+import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAck;
+import org.mqttbee.mqtt.message.unsubscribe.unsuback.MqttUnsubAck;
 import org.mqttbee.util.Ranges;
 import org.mqttbee.util.collections.IntMap;
 
@@ -57,7 +57,6 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
 
     private final MqttIncomingPublishFlows subscriptionFlows;
     private final Scheduler.Worker worker;
-    private final int minPacketIdentifier;
     private final Ranges packetIdentifiers;
     private final Ranges subscriptionIdentifiers;
     private final IntMap<MqttSubscribeWrapperWithFlow> subscribes;
@@ -80,12 +79,13 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
         final MqttServerConnectionData serverConnectionData = clientData.getRawServerConnectionData();
         assert serverConnectionData != null;
 
-        minPacketIdentifier =
+        final int minPacketIdentifier =
                 MqttOutgoingQoSHandler.getPubReceiveMaximum(serverConnectionData.getReceiveMaximum()) + 1;
-        packetIdentifiers = new Ranges(minPacketIdentifier, minPacketIdentifier + MAX_SUB_PENDING - 1);
+        final int maxPacketIdentifier = minPacketIdentifier + MAX_SUB_PENDING - 1;
+        packetIdentifiers = new Ranges(minPacketIdentifier, maxPacketIdentifier);
         subscriptionIdentifiers = new Ranges(1, clientConnectionData.getSubscriptionIdentifierMaximum());
-        subscribes = new IntMap<>(MAX_SUB_PENDING);
-        unsubscribes = new IntMap<>(MAX_SUB_PENDING);
+        subscribes = new IntMap<>(minPacketIdentifier, maxPacketIdentifier);
+        unsubscribes = new IntMap<>(minPacketIdentifier, maxPacketIdentifier);
         queued = new LinkedList<>();
     }
 
@@ -120,7 +120,7 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
 
         final MqttSubscribeWrapperWithFlow subscribeWrapperWithFlow =
                 subscribeWithFlow.wrap(packetIdentifier, subscriptionIdentifiers.getId());
-        subscribes.put(packetIdentifier - minPacketIdentifier, subscribeWrapperWithFlow);
+        subscribes.put(packetIdentifier, subscribeWrapperWithFlow);
         pending++;
         final MqttSubscriptionFlow flow = subscribeWrapperWithFlow.getFlow();
         ctx.writeAndFlush(subscribeWrapperWithFlow.getSubscribe()).addListener(future -> {
@@ -156,7 +156,7 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
             final int packetIdentifier) {
 
         final MqttUnsubscribeWrapperWithFlow unsubscribeWrapperWithFlow = unsubscribeWithFlow.wrap(packetIdentifier);
-        unsubscribes.put(packetIdentifier - minPacketIdentifier, unsubscribeWrapperWithFlow);
+        unsubscribes.put(packetIdentifier, unsubscribeWrapperWithFlow);
         pending++;
         final SingleEmitter<Mqtt5UnsubAck> flow = unsubscribeWithFlow.getFlow();
         ctx.writeAndFlush(unsubscribeWrapperWithFlow.getUnsubscribe()).addListener(future -> {
@@ -180,8 +180,7 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
 
     private void handleSubAck(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttSubAck subAck) {
         final int packetIdentifier = subAck.getPacketIdentifier();
-        final MqttSubscribeWrapperWithFlow subscribeWrapperWithFlow =
-                subscribes.remove(packetIdentifier - minPacketIdentifier);
+        final MqttSubscribeWrapperWithFlow subscribeWrapperWithFlow = subscribes.remove(packetIdentifier);
 
         if (subscribeWrapperWithFlow == null) {
             MqttDisconnectUtil.disconnect(
@@ -204,8 +203,7 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
 
     private void handleUnsubAck(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttUnsubAck unsubAck) {
         final int packetIdentifier = unsubAck.getPacketIdentifier();
-        final MqttUnsubscribeWrapperWithFlow unsubscribeWrapperWithFlow =
-                unsubscribes.remove(packetIdentifier - minPacketIdentifier);
+        final MqttUnsubscribeWrapperWithFlow unsubscribeWrapperWithFlow = unsubscribes.remove(packetIdentifier);
 
         if (unsubscribeWrapperWithFlow == null) {
             MqttDisconnectUtil.disconnect(
