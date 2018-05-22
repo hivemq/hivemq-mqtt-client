@@ -21,7 +21,6 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
 import io.netty.channel.MultithreadEventLoopGroup;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
@@ -134,7 +133,7 @@ public abstract class NettyBootstrap {
 
     private void freeDefaultEventLoopGroup() {
         if (defaultEventLoopGroupReferenceCount.decrementAndGet() == 0) {
-            freeEventLoopGroup(defaultEventLoopGroup);
+            defaultEventLoopGroup.shutdownGracefully();
             defaultEventLoopGroup = null;
             defaultEventLoopGroupReferenceCount = null;
         }
@@ -143,7 +142,7 @@ public abstract class NettyBootstrap {
     private void freeExecutorEventLoopGroup(@Nullable final Executor executor) {
         final MultithreadEventLoopGroup eventLoopGroup = eventLoopGroups.get(executor);
         if (eventLoopGroupReferenceCounts.get(executor).decrementAndGet() == 0) {
-            freeEventLoopGroup(eventLoopGroup);
+            eventLoopGroup.shutdownGracefully();
             eventLoopGroups.remove(executor);
             eventLoopGroupReferenceCounts.remove(executor);
             if (eventLoopGroups.size() == 0) {
@@ -151,11 +150,6 @@ public abstract class NettyBootstrap {
                 eventLoopGroupReferenceCounts = null;
             }
         }
-    }
-
-    private void freeEventLoopGroup(@NotNull final EventLoopGroup eventLoopGroup) {
-        NettyThreadLocals.clear(eventLoopGroup);
-        eventLoopGroup.shutdownGracefully();
     }
 
 }
