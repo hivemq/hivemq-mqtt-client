@@ -26,13 +26,13 @@ import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5IncomingQoS2ControlProvider
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.advanced.MqttAdvancedClientData;
+import org.mqttbee.mqtt.ioc.ChannelScope;
 import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
 import org.mqttbee.mqtt.message.publish.puback.MqttPubAckBuilder;
 import org.mqttbee.mqtt.message.publish.pubcomp.MqttPubCompBuilder;
 import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRec;
 import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRecBuilder;
 import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRel;
-import org.mqttbee.mqtt.ioc.ChannelScope;
 import org.mqttbee.util.collections.IntMap;
 
 import javax.inject.Inject;
@@ -68,9 +68,9 @@ public class MqttIncomingQoSHandler extends ChannelInboundHandlerAdapter {
 
         this.incomingPublishServiceLazy = incomingPublishServiceLazy;
         final int receiveMaximum = clientConnectionData.getReceiveMaximum();
-        pubRecs = new IntMap<>(receiveMaximum);
-        pubRels = new IntMap<>(receiveMaximum);
-        pubComps = new IntMap<>(receiveMaximum);
+        pubRecs = new IntMap<>(1, receiveMaximum);
+        pubRels = new IntMap<>(1, receiveMaximum);
+        pubComps = new IntMap<>(1, receiveMaximum);
         ackQueue = new SpscChunkedArrayQueue<>(64, receiveMaximum);
     }
 
