@@ -33,7 +33,7 @@ public interface Mqtt5PingResp extends Mqtt5Message {
     @NotNull
     @Override
     default Mqtt5MessageType getType() {
-        return Mqtt5MessageType.AUTH;
+        return Mqtt5MessageType.PINGRESP;
     }
 
 }
