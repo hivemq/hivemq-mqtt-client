@@ -34,7 +34,9 @@ public class MqttClientBuilder {
     private MqttClientIdentifierImpl identifier = MqttClientIdentifierImpl.REQUEST_CLIENT_IDENTIFIER_FROM_SERVER;
     private String serverHost = "localhost";
     private int serverPort = 1883;
+    private String serverPath = "";
     private boolean usesSSL;
+    private boolean usesWebSockets = false;
     private MqttClientExecutorConfigImpl executorConfig = MqttClientExecutorConfigImpl.DEFAULT;
 
     MqttClientBuilder() {
@@ -59,14 +61,26 @@ public class MqttClientBuilder {
     }
 
     @NotNull
-    public MqttClientBuilder forServerPort(final int port) {
+    public MqttClientBuilder withServerPort(final int port) {
         this.serverPort = port;
+        return this;
+    }
+
+    @NotNull
+    public MqttClientBuilder withServerPath(final String serverPath) {
+        this.serverPath = serverPath;
         return this;
     }
 
     @NotNull
     public MqttClientBuilder usingSSL(final boolean usesSSl) {
         this.usesSSL = usesSSl;
+        return this;
+    }
+
+    @NotNull
+    public MqttClientBuilder usingWebSockets(final boolean usesWebSockets) {
+        this.usesWebSockets = usesWebSockets;
         return this;
     }
 
@@ -79,12 +93,12 @@ public class MqttClientBuilder {
 
     @NotNull
     public Mqtt3ClientBuilder usingMqtt3() {
-        return new Mqtt3ClientBuilder(identifier, serverHost, serverPort, usesSSL, executorConfig);
+        return new Mqtt3ClientBuilder(identifier, serverHost, serverPort, serverPath, usesSSL, usesWebSockets, executorConfig);
     }
 
     @NotNull
     public Mqtt5ClientBuilder usingMqtt5() {
-        return new Mqtt5ClientBuilder(identifier, serverHost, serverPort, usesSSL, executorConfig);
+        return new Mqtt5ClientBuilder(identifier, serverHost, serverPort, serverPath, usesSSL, usesWebSockets, executorConfig);
     }
 
 }
