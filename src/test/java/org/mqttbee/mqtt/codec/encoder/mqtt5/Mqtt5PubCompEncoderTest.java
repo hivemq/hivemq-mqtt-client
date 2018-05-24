@@ -167,7 +167,7 @@ class Mqtt5PubCompEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
 
         final Throwable exception =
                 assertThrows(MqttMaximumPacketSizeExceededException.class, () -> channel.writeOutbound(pubComp));
-        assertTrue(exception.getMessage().contains("packet size exceeded for AUTH"));
+        assertTrue(exception.getMessage().contains("packet size exceeded for PUBCOMP"));
     }
 
     @Test
