@@ -18,6 +18,8 @@
 package org.mqttbee.mqtt.codec.encoder.mqtt3;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
+import io.netty.buffer.Unpooled;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
@@ -61,6 +63,24 @@ public class Mqtt3PublishEncoder extends Mqtt3MessageEncoder<MqttStatefulPublish
         return remainingLength;
     }
 
+    @NotNull
+    @Override
+    ByteBuf encode(
+            @NotNull final MqttStatefulPublish message, @NotNull final ByteBufAllocator allocator,
+            final int encodedLength, final int remainingLength) {
+
+        final ByteBuffer payload = message.getStatelessMessage().getRawPayload();
+        if ((payload != null) && payload.isDirect()) {
+            final int encodedLengthWithoutPayload = encodedLength - payload.remaining();
+            final ByteBuf out = allocator.ioBuffer(encodedLengthWithoutPayload, encodedLengthWithoutPayload);
+            encode(message, out, remainingLength);
+            return Unpooled.unmodifiableBuffer(out, Unpooled.wrappedBuffer(payload));
+        }
+        final ByteBuf out = allocator.ioBuffer(encodedLength, encodedLength);
+        encode(message, out, remainingLength);
+        return out;
+    }
+
     @Override
     void encode(
             @NotNull final MqttStatefulPublish message, @NotNull final ByteBuf out, final int remainingLength) {
@@ -101,7 +121,7 @@ public class Mqtt3PublishEncoder extends Mqtt3MessageEncoder<MqttStatefulPublish
 
     private void encodePayload(@NotNull final MqttStatefulPublish message, @NotNull final ByteBuf out) {
         final ByteBuffer payload = message.getStatelessMessage().getRawPayload();
-        if (payload != null) {
+        if ((payload != null) && !payload.isDirect()) {
             out.writeBytes(payload.duplicate());
         }
     }
