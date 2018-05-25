@@ -22,10 +22,12 @@ import io.reactivex.Scheduler;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
-import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
 import org.mqttbee.mqtt.ioc.ChannelScope;
+import org.mqttbee.mqtt.message.publish.MqttPublishWrapper;
 import org.mqttbee.util.collections.ScNodeList;
 import org.mqttbee.util.collections.SpscIterableChunkedArrayQueue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -37,6 +39,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 @ChannelScope
 public class MqttIncomingPublishService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MqttIncomingPublishService.class);
 
     private final MqttIncomingQoSHandler incomingQoSHandler; // TODO temp
     private final MqttIncomingPublishFlows incomingPublishFlows;
@@ -73,6 +77,9 @@ public class MqttIncomingPublishService {
             return false; // flow control error
         }
         final ScNodeList<MqttIncomingPublishFlow> flows = incomingPublishFlows.findMatching(publish);
+        if (flows.isEmpty()) {
+            LOGGER.warn("No publish flow registered for {}.", publish);
+        }
         final QueueEntry entry = new QueueEntry(publish, flows);
         queue.offer(entry);
         if (scheduled.compareAndSet(false, true)) {
@@ -93,9 +100,13 @@ public class MqttIncomingPublishService {
     void eventLoop() {
         requestOnBlocking.set(false);
         boolean acknowledge = true;
-        for (final Iterator<QueueEntry> queueIt = queue.iterator(); queueIt.hasNext(); ) {
+
+        final Iterator<QueueEntry> queueIt = queue.iterator();
+        while (queueIt.hasNext()) {
             final QueueEntry entry = queueIt.next();
-            for (final Iterator<MqttIncomingPublishFlow> flowIt = entry.flows.iterator(); flowIt.hasNext(); ) {
+
+            final Iterator<MqttIncomingPublishFlow> flowIt = entry.flows.iterator();
+            while (flowIt.hasNext()) {
                 final MqttIncomingPublishFlow flow = flowIt.next();
 
                 final long requested = (acknowledge) ? flow.applyRequests() : flow.requested();
@@ -126,17 +137,17 @@ public class MqttIncomingPublishService {
     }
 
     @NotNull
-    public MqttIncomingPublishFlows getIncomingPublishFlows() {
+    MqttIncomingPublishFlows getIncomingPublishFlows() {
         return incomingPublishFlows;
     }
 
     @NotNull
-    public Scheduler.Worker getRxEventLoop() {
+    Scheduler.Worker getRxEventLoop() {
         return rxEventLoop;
     }
 
     @NotNull
-    public EventLoop getNettyEventLoop() {
+    EventLoop getNettyEventLoop() {
         return nettyEventLoop;
     }
 

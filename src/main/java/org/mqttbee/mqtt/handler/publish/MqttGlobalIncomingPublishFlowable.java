@@ -21,7 +21,7 @@ import io.reactivex.Flowable;
 import io.reactivex.internal.subscriptions.EmptySubscription;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
-import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeResult;
+import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.ioc.ChannelComponent;
@@ -30,7 +30,7 @@ import org.reactivestreams.Subscriber;
 /**
  * @author Silvio Giebl
  */
-public class MqttGlobalIncomingPublishFlowable extends Flowable<Mqtt5SubscribeResult> {
+public class MqttGlobalIncomingPublishFlowable extends Flowable<Mqtt5Publish> {
 
     private final int type;
     private final MqttClientData clientData;
@@ -41,7 +41,7 @@ public class MqttGlobalIncomingPublishFlowable extends Flowable<Mqtt5SubscribeRe
     }
 
     @Override
-    protected void subscribeActual(final Subscriber<? super Mqtt5SubscribeResult> s) {
+    protected void subscribeActual(final Subscriber<? super Mqtt5Publish> s) {
         final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData(); // TODO temp
         if (clientConnectionData == null) {
             EmptySubscription.error(new NotConnectedException(), s);

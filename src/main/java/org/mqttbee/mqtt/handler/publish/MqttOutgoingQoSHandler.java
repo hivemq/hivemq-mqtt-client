@@ -31,6 +31,8 @@ import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.MqttServerConnectionData;
 import org.mqttbee.mqtt.advanced.MqttAdvancedClientData;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
+import org.mqttbee.mqtt.handler.subscribe.MqttSubscriptionHandler;
+import org.mqttbee.mqtt.ioc.ChannelScope;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.publish.MqttPublishResult;
 import org.mqttbee.mqtt.message.publish.MqttPublishResult.MqttQoS1Result;
@@ -42,8 +44,6 @@ import org.mqttbee.mqtt.message.publish.pubcomp.MqttPubComp;
 import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRec;
 import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRel;
 import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRelBuilder;
-import org.mqttbee.mqtt.handler.subscribe.MqttSubscriptionHandler;
-import org.mqttbee.mqtt.ioc.ChannelScope;
 import org.mqttbee.util.Ranges;
 import org.mqttbee.util.UnsignedDataTypes;
 import org.mqttbee.util.collections.IntMap;
@@ -82,7 +82,7 @@ public class MqttOutgoingQoSHandler extends ChannelInboundHandlerAdapter {
         final int pubReceiveMaximum = getPubReceiveMaximum(serverConnectionData.getReceiveMaximum());
         publishQueue = new SpscChunkedArrayQueue<>(64, pubReceiveMaximum);
         packetIdentifiers = new Ranges(1, pubReceiveMaximum);
-        qos1Or2Publishes = new IntMap<>(pubReceiveMaximum);
+        qos1Or2Publishes = new IntMap<>(1, pubReceiveMaximum);
     }
 
     @Override

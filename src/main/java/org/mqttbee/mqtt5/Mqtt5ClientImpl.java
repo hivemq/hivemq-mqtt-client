@@ -37,22 +37,24 @@ import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
-import org.mqttbee.mqtt.message.connect.MqttConnect;
-import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
-import org.mqttbee.mqtt.message.publish.MqttPublish;
-import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
-import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribe;
 import org.mqttbee.mqtt.handler.auth.MqttReAuthEvent;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.handler.publish.MqttGlobalIncomingPublishFlow;
 import org.mqttbee.mqtt.handler.publish.MqttGlobalIncomingPublishFlowable;
 import org.mqttbee.mqtt.handler.publish.MqttIncomingAckFlowable;
 import org.mqttbee.mqtt.handler.publish.MqttSubscriptionFlowable;
+import org.mqttbee.mqtt.handler.subscribe.MqttSubAckSingle;
 import org.mqttbee.mqtt.handler.subscribe.MqttSubscriptionHandler;
 import org.mqttbee.mqtt.handler.subscribe.MqttUnsubscribeWithFlow;
 import org.mqttbee.mqtt.ioc.ChannelComponent;
 import org.mqttbee.mqtt.ioc.MqttBeeComponent;
+import org.mqttbee.mqtt.message.connect.MqttConnect;
+import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
+import org.mqttbee.mqtt.message.publish.MqttPublish;
+import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
+import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribe;
 import org.mqttbee.rx.FlowableWithSingle;
+import org.mqttbee.rx.FlowableWithSingleSplit;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 
 /**
@@ -117,31 +119,36 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
 
     @NotNull
     @Override
-    public FlowableWithSingle<Mqtt5SubscribeResult, Mqtt5SubAck, Mqtt5Publish> subscribe(
-            @NotNull final Mqtt5Subscribe subscribe) {
-
+    public Single<Mqtt5SubAck> subscribe(@NotNull final Mqtt5Subscribe subscribe) {
         final MqttSubscribe mqttSubscribe =
                 MustNotBeImplementedUtil.checkNotImplemented(subscribe, MqttSubscribe.class);
 
+        return new MqttSubAckSingle(mqttSubscribe, clientData);
+    }
+
+    @NotNull
+    @Override
+    public FlowableWithSingle<Mqtt5SubAck, Mqtt5Publish> subscribeWithStream(@NotNull final Mqtt5Subscribe subscribe) {
+        final MqttSubscribe mqttSubscribe = MustNotBeImplementedUtil.checkNotImplemented(subscribe, MqttSubscribe.class);
+
         final Flowable<Mqtt5SubscribeResult> subscriptionFlowable =
-                new MqttSubscriptionFlowable(mqttSubscribe, clientData).observeOn(
-                        clientData.getExecutorConfig().getRxJavaScheduler());
-        return new FlowableWithSingle<>(subscriptionFlowable, Mqtt5SubAck.class, Mqtt5Publish.class);
+                new MqttSubscriptionFlowable(mqttSubscribe, clientData).observeOn(clientData.getExecutorConfig().getRxJavaScheduler());
+        return new FlowableWithSingleSplit<>(subscriptionFlowable, Mqtt5SubAck.class, Mqtt5Publish.class);
     }
 
     @NotNull
     @Override
     public Flowable<Mqtt5Publish> remainingPublishes() {
         return new MqttGlobalIncomingPublishFlowable(MqttGlobalIncomingPublishFlow.TYPE_REMAINING_PUBLISHES, clientData)
-                .cast(Mqtt5Publish.class)
-                .observeOn(clientData.getExecutorConfig().getRxJavaScheduler()); // TODO temp
+                .observeOn(clientData.getExecutorConfig().getRxJavaScheduler());
     }
 
     @NotNull
     @Override
     public Flowable<Mqtt5Publish> allPublishes() {
-        return new MqttGlobalIncomingPublishFlowable(MqttGlobalIncomingPublishFlow.TYPE_ALL_PUBLISHES, clientData).cast(
-                Mqtt5Publish.class).observeOn(clientData.getExecutorConfig().getRxJavaScheduler()); // TODO temp
+        return new MqttGlobalIncomingPublishFlowable(
+                MqttGlobalIncomingPublishFlow.TYPE_ALL_PUBLISHES, clientData).observeOn(
+                clientData.getExecutorConfig().getRxJavaScheduler()); // TODO all subscriptions?
     }
 
     @NotNull
