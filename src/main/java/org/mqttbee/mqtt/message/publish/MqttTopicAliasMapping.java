@@ -18,11 +18,13 @@
 package org.mqttbee.mqtt.message.publish;
 
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.api.mqtt.datatypes.MqttTopic;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.TopicAliasUsage;
-import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 
 import java.util.HashMap;
 import java.util.Random;
+
+import static org.mqttbee.mqtt.message.publish.MqttPublishWrapper.DEFAULT_NO_TOPIC_ALIAS;
 
 /**
  * @author Silvio Giebl
@@ -31,40 +33,54 @@ public class MqttTopicAliasMapping {
 
     private static final Random random = new Random();
 
-    private final int size;
+    private final int topicAliasMaximum;
     private final HashMap<String, Integer> hashMap;
     private int nextTopicAlias;
 
-    public MqttTopicAliasMapping(final int size) {
-        this.size = size;
-        hashMap = new HashMap<>(size);
+    public MqttTopicAliasMapping(final int topicAliasMaximum) {
+        this.topicAliasMaximum = topicAliasMaximum;
+        hashMap = new HashMap<>(topicAliasMaximum);
         nextTopicAlias = 1;
     }
 
-    public int set(@NotNull final MqttTopicImpl topic, @NotNull final TopicAliasUsage topicAliasUsage) {
-        int topicAlias = MqttPublishWrapper.DEFAULT_NO_TOPIC_ALIAS;
-        if (topicAliasUsage != TopicAliasUsage.MUST_NOT) {
-            if (nextTopicAlias == size) {
-                if (topicAliasUsage == TopicAliasUsage.MAY_OVERWRITE) {
-                    topicAlias = random.nextInt(size) + 1;
-                    hashMap.put(topic.toString(), topicAlias);
-                }
-            } else {
-                topicAlias = nextTopicAlias;
-                hashMap.put(topic.toString(), topicAlias);
-                nextTopicAlias++;
-            }
+    public boolean createIfAbsent(@NotNull final MqttTopic topic, @NotNull final TopicAliasUsage topicAliasUsage) {
+        if (topicAliasUsage == TopicAliasUsage.MUST_NOT) {
+            return false;
         }
-        return topicAlias;
+
+        // we have run out of topic aliases and cannot overwrite
+        if (nextTopicAlias > topicAliasMaximum && topicAliasUsage != TopicAliasUsage.MAY_OVERWRITE) {
+            return false;
+        }
+
+        // look for an existing one
+        int topicAlias = get(topic);
+        if (topicAlias != DEFAULT_NO_TOPIC_ALIAS) {
+            return false;
+        }
+
+        // assign next available topic alias
+        if (nextTopicAlias <= topicAliasMaximum) {
+            topicAlias = nextTopicAlias;
+            nextTopicAlias++;
+        } else {
+            assert topicAliasUsage == TopicAliasUsage.MAY_OVERWRITE;
+            // used up all allowed topic aliases. Overwrite an existing one
+            topicAlias = random.nextInt(topicAliasMaximum) + 1;
+            // first remove the old mapping
+            hashMap.values().remove(topicAlias);
+        }
+        hashMap.put(topic.toString(), topicAlias);
+        return true;
     }
 
-    public int get(@NotNull final MqttTopicImpl topic) {
+    public int get(@NotNull final MqttTopic topic) {
         final Integer topicAlias = hashMap.get(topic.toString());
-        return (topicAlias == null) ? MqttPublishWrapper.DEFAULT_NO_TOPIC_ALIAS : topicAlias;
+        return (topicAlias == null) ? DEFAULT_NO_TOPIC_ALIAS : topicAlias;
     }
 
-    public int size() {
-        return size;
+    public int getTopicAliasMaximum() {
+        return topicAliasMaximum;
     }
 
 }

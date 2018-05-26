@@ -73,7 +73,7 @@ public class MqttServerConnectionData implements Mqtt5ServerConnectionData, Mqtt
 
     @Override
     public int getTopicAliasMaximum() {
-        return (topicAliasMapping == null) ? 0 : topicAliasMapping.size();
+        return (topicAliasMapping == null) ? 0 : topicAliasMapping.getTopicAliasMaximum();
     }
 
     @Nullable
