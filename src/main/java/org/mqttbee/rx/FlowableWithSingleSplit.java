@@ -19,7 +19,6 @@ package org.mqttbee.rx;
 
 import com.google.common.base.Preconditions;
 import io.reactivex.Flowable;
-import io.reactivex.FlowableSubscriber;
 import io.reactivex.Scheduler;
 import io.reactivex.annotations.BackpressureKind;
 import io.reactivex.annotations.BackpressureSupport;
@@ -28,8 +27,6 @@ import io.reactivex.exceptions.Exceptions;
 import io.reactivex.functions.BiConsumer;
 import io.reactivex.functions.Function;
 import io.reactivex.internal.fuseable.ConditionalSubscriber;
-import io.reactivex.internal.fuseable.QueueSubscription;
-import io.reactivex.plugins.RxJavaPlugins;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.reactivestreams.Subscriber;
@@ -159,38 +156,21 @@ public class FlowableWithSingleSplit<T, S, F> extends FlowableWithSingle<S, F> {
     }
 
 
-    private static abstract class FlowableWithSingleAbstractSubscriber<T, S, F>
-            implements FlowableSubscriber<T>, ConditionalSubscriber<T>, QueueSubscription<F> {
+    private static abstract class FlowableWithSingleAbstractSubscriber<T, S, F, U extends Subscriber<? super F>>
+            extends FuseableSubscriber<T, F, U> implements ConditionalSubscriber<T> {
 
         private final Function<T, S> singleCaster;
         private final Function<T, F> flowableCaster;
-        final Subscriber<? super F> flowableSubscriber;
         private BiConsumer<S, Subscription> singleConsumer;
-
-        private Subscription subscription;
-        private QueueSubscription<T> queueSubscription;
-        private int sourceMode;
-        private boolean done;
 
         private FlowableWithSingleAbstractSubscriber(
                 @NotNull final Function<T, S> singleCaster, @NotNull final Function<T, F> flowableCaster,
-                @NotNull final Subscriber<? super F> flowableSubscriber,
-                @Nullable final BiConsumer<S, Subscription> singleConsumer) {
+                @NotNull final U subscriber, @Nullable final BiConsumer<S, Subscription> singleConsumer) {
 
+            super(subscriber);
             this.singleCaster = singleCaster;
             this.flowableCaster = flowableCaster;
-            this.flowableSubscriber = flowableSubscriber;
             this.singleConsumer = singleConsumer;
-        }
-
-        @Override
-        public void onSubscribe(final Subscription s) {
-            this.subscription = s;
-            if (s instanceof QueueSubscription) {
-                @SuppressWarnings("unchecked") final QueueSubscription<T> qs = (QueueSubscription<T>) s;
-                this.queueSubscription = qs;
-            }
-            flowableSubscriber.onSubscribe(this);
         }
 
         @Override
@@ -234,49 +214,6 @@ public class FlowableWithSingleSplit<T, S, F> extends FlowableWithSingle<S, F> {
         abstract boolean tryOnNextActual(@Nullable F f);
 
         @Override
-        public void onComplete() {
-            if (done) {
-                return;
-            }
-            done = true;
-            flowableSubscriber.onComplete();
-        }
-
-        @Override
-        public void onError(final Throwable t) {
-            if (done) {
-                RxJavaPlugins.onError(t);
-                return;
-            }
-            done = true;
-            flowableSubscriber.onError(t);
-        }
-
-        @Override
-        public void request(final long n) {
-            subscription.request(n);
-        }
-
-        @Override
-        public void cancel() {
-            subscription.cancel();
-        }
-
-        @Override
-        public int requestFusion(final int mode) {
-            if (queueSubscription != null) {
-                if ((mode & BOUNDARY) == 0) {
-                    final int m = queueSubscription.requestFusion(mode);
-                    if (m != NONE) {
-                        sourceMode = m;
-                    }
-                    return m;
-                }
-            }
-            return NONE;
-        }
-
-        @Override
         public F poll() throws Exception {
             for (; ; ) {
                 final T t = queueSubscription.poll();
@@ -302,43 +239,23 @@ public class FlowableWithSingleSplit<T, S, F> extends FlowableWithSingle<S, F> {
             }
         }
 
-        @Override
-        public boolean isEmpty() {
-            return queueSubscription.isEmpty();
-        }
-
-        @Override
-        public void clear() {
-            queueSubscription.clear();
-        }
-
-        @Override
-        public boolean offer(final F value) {
-            throw new UnsupportedOperationException("Should not be called!");
-        }
-
-        @Override
-        public boolean offer(final F v1, final F v2) {
-            throw new UnsupportedOperationException("Should not be called!");
-        }
-
     }
 
 
     private static final class FlowableWithSingleSubscriber<T, S, F>
-            extends FlowableWithSingleAbstractSubscriber<T, S, F> {
+            extends FlowableWithSingleAbstractSubscriber<T, S, F, Subscriber<? super F>> {
 
         private FlowableWithSingleSubscriber(
                 @NotNull final Function<T, S> singleCaster, @NotNull final Function<T, F> flowableCaster,
-                @NotNull final Subscriber<? super F> flowableSubscriber,
+                @NotNull final Subscriber<? super F> subscriber,
                 @Nullable final BiConsumer<S, Subscription> singleConsumer) {
 
-            super(singleCaster, flowableCaster, flowableSubscriber, singleConsumer);
+            super(singleCaster, flowableCaster, subscriber, singleConsumer);
         }
 
         @Override
         boolean tryOnNextActual(@Nullable final F f) {
-            flowableSubscriber.onNext(f);
+            subscriber.onNext(f);
             return true;
         }
 
@@ -346,22 +263,19 @@ public class FlowableWithSingleSplit<T, S, F> extends FlowableWithSingle<S, F> {
 
 
     private static final class FlowableWithSingleConditionalSubscriber<T, S, F>
-            extends FlowableWithSingleAbstractSubscriber<T, S, F> {
-
-        private final ConditionalSubscriber<? super F> conditionalActual;
+            extends FlowableWithSingleAbstractSubscriber<T, S, F, ConditionalSubscriber<? super F>> {
 
         private FlowableWithSingleConditionalSubscriber(
                 @NotNull final Function<T, S> singleCaster, @NotNull final Function<T, F> flowableCaster,
-                @NotNull final ConditionalSubscriber<? super F> flowableSubscriber,
+                @NotNull final ConditionalSubscriber<? super F> subscriber,
                 @Nullable final BiConsumer<S, Subscription> singleConsumer) {
 
-            super(singleCaster, flowableCaster, flowableSubscriber, singleConsumer);
-            this.conditionalActual = flowableSubscriber;
+            super(singleCaster, flowableCaster, subscriber, singleConsumer);
         }
 
         @Override
         boolean tryOnNextActual(@Nullable final F f) {
-            return conditionalActual.tryOnNext(f);
+            return subscriber.tryOnNext(f);
         }
 
     }
