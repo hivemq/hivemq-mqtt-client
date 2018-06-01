@@ -48,8 +48,8 @@ public class Mqtt3ClientBuilder {
         this.identifier = identifier;
         this.serverHost = serverHost;
         this.serverPort = serverPort;
-        this.mqttWebsocketConfig = mqttWebsocketConfig;
         this.mqttSslConfig = mqttSslConfig;
+        this.mqttWebsocketConfig = mqttWebsocketConfig;
         this.executorConfig = executorConfig;
     }
 
@@ -59,7 +59,7 @@ public class Mqtt3ClientBuilder {
     }
 
     private MqttClientData buildClientData() {
-        return new MqttClientData(MqttVersion.MQTT_3_1_1, identifier, serverHost, serverPort, mqttWebsocketConfig, mqttSslConfig, false, false,
+        return new MqttClientData(MqttVersion.MQTT_3_1_1, identifier, serverHost, serverPort, mqttSslConfig, mqttWebsocketConfig, false, false,
                 executorConfig, null);
     }
 }

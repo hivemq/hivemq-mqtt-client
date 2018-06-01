@@ -69,8 +69,8 @@ public class MqttClientData implements Mqtt5ClientData {
     public MqttClientData(
             @NotNull final MqttVersion mqttVersion, @Nullable final MqttClientIdentifierImpl clientIdentifier,
             @NotNull final String serverHost, final int serverPort,
-            @Nullable final MqttWebsocketConfig mqttWebsocketConfig,
             @Nullable final MqttSslConfig mqttSslConfig,
+            @Nullable final MqttWebsocketConfig mqttWebsocketConfig,
             final boolean followsRedirects, final boolean allowsServerReAuth,
             @NotNull final MqttClientExecutorConfigImpl executorConfig,
             @Nullable final MqttAdvancedClientData advancedClientData) {
@@ -79,8 +79,8 @@ public class MqttClientData implements Mqtt5ClientData {
         this.clientIdentifier = clientIdentifier;
         this.serverHost = serverHost;
         this.serverPort = serverPort;
-        this.mqttWebsocketConfig = mqttWebsocketConfig;
         this.mqttSslConfig = mqttSslConfig;
+        this.mqttWebsocketConfig = mqttWebsocketConfig;
         this.connecting = new AtomicBoolean();
         this.connected = new AtomicBoolean();
         this.followsRedirects = followsRedirects;

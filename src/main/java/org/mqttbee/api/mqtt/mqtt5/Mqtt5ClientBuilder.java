@@ -58,8 +58,8 @@ public class Mqtt5ClientBuilder {
         this.identifier = identifier;
         this.serverHost = serverHost;
         this.serverPort = serverPort;
-        this.mqttWebsocketConfig = mqttWebsocketConfig;
         this.mqttSslConfig = mqttSslConfig;
+        this.mqttWebsocketConfig = mqttWebsocketConfig;
         this.executorConfig = executorConfig;
     }
 
@@ -88,8 +88,8 @@ public class Mqtt5ClientBuilder {
     }
 
     private MqttClientData buildClientData() {
-        return new MqttClientData(MqttVersion.MQTT_5_0, identifier, serverHost, serverPort, mqttWebsocketConfig, mqttSslConfig, followsRedirects,
-                allowsServerReAuth, executorConfig, advancedClientData);
+        return new MqttClientData(MqttVersion.MQTT_5_0, identifier, serverHost, serverPort, mqttSslConfig,
+                mqttWebsocketConfig, followsRedirects, allowsServerReAuth, executorConfig, advancedClientData);
     }
 
 }
