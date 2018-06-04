@@ -22,6 +22,7 @@ import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3ClientBuilder;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientBuilder;
+import org.mqttbee.mqtt.DefaultMqttClientSslConfig;
 import org.mqttbee.mqtt.MqttClientExecutorConfigImpl;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
