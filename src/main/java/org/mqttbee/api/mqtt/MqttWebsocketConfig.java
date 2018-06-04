@@ -17,6 +17,10 @@ package org.mqttbee.api.mqtt;
 
 import org.mqttbee.annotations.NotNull;
 
+
+/**
+ * @author David Katz
+ */
 public class MqttWebsocketConfig {
     private String serverPath;
 
