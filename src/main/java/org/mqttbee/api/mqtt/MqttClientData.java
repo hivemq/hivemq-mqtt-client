@@ -40,7 +40,7 @@ public interface MqttClientData {
     boolean usesSsl();
 
     @NotNull
-    Optional<MqttClientSslData> getSslData();
+    Optional<MqttClientSslConfig> getSslConfig();
 
     @NotNull
     MqttClientExecutorConfig getExecutorConfig();

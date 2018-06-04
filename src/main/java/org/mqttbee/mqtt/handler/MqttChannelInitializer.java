@@ -26,7 +26,7 @@ import io.netty.handler.ssl.SslHandler;
 import io.reactivex.SingleEmitter;
 import io.reactivex.exceptions.Exceptions;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt.MqttClientSslData;
+import org.mqttbee.api.mqtt.MqttClientSslConfig;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.codec.encoder.MqttEncoder;
@@ -133,9 +133,9 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
     private void initSsl(@NotNull final Channel channel) {
         try {
             //create a new SslHandler with the configured settings
-            MqttClientSslData sslData = clientData.getSslData()
-                    .orElseThrow(() -> new IllegalStateException("SSL used, but no sslData present"));
-            final SslHandler sslHandler = createSslHandler(channel, sslData);
+            MqttClientSslConfig sslConfig = clientData.getSslConfig()
+                    .orElseThrow(() -> new IllegalStateException("SSL used, but no sslConfig present"));
+            final SslHandler sslHandler = createSslHandler(channel, sslConfig);
             //add the handler as first handler to the pipeline
             channel.pipeline().addFirst(sslHandler);
 

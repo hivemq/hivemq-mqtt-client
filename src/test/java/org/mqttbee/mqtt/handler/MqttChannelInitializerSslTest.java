@@ -23,7 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mqttbee.api.mqtt.MqttClientSslData;
+import org.mqttbee.api.mqtt.MqttClientSslConfig;
 
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.mqtt.MqttClientData;
@@ -58,7 +58,7 @@ public class MqttChannelInitializerSslTest {
     public void before() {
         MockitoAnnotations.initMocks(this);
         channel = new EmbeddedChannel();
-        when(clientData.getSslData()).thenReturn(Optional.empty());
+        when(clientData.getSslConfig()).thenReturn(Optional.empty());
     }
 
     @Test(expected = IllegalStateException.class)
@@ -75,7 +75,7 @@ public class MqttChannelInitializerSslTest {
     public void test_initialize_default_ssldata() {
 
         when(clientData.usesSsl()).thenReturn(true);
-        when(clientData.getSslData()).thenReturn(Optional.of(mock(TestSslData.class)));
+        when(clientData.getSslConfig()).thenReturn(Optional.of(mock(TestSslConfig.class)));
 
         final MqttChannelInitializer mqttChannelInitializer =
                 new MqttChannelInitializer(mqtt5Connect, connAckEmitter, clientData);
@@ -85,7 +85,7 @@ public class MqttChannelInitializerSslTest {
         assertNotNull(channel.pipeline().get(SslHandler.class));
     }
 
-    private static class TestSslData implements MqttClientSslData {
+    private static class TestSslConfig implements MqttClientSslConfig {
 
         private final KeyManagerFactory keyManagerFactory;
         private final TrustManagerFactory trustManagerFactory;
@@ -93,7 +93,7 @@ public class MqttChannelInitializerSslTest {
         private final List<String> protocols;
         private final int handshakeTimeout;
 
-        private TestSslData(
+        private TestSslConfig(
                 final KeyManagerFactory keyManagerFactory, final TrustManagerFactory trustManagerFactory,
                 final List<String> cipherSuites, final List<String> protocols, final int handshakeTimeout) {
             this.keyManagerFactory = keyManagerFactory;

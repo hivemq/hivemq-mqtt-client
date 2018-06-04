@@ -22,8 +22,8 @@ import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt.DefaultMqttClientSslData;
-import org.mqttbee.api.mqtt.MqttClientSslData;
+import org.mqttbee.api.mqtt.DefaultMqttClientSslConfig;
+import org.mqttbee.api.mqtt.MqttClientSslConfig;
 import org.mqttbee.api.mqtt.MqttSslConfig;
 import org.mqttbee.api.mqtt.MqttWebsocketConfig;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
@@ -202,11 +202,11 @@ public class MqttClientData implements Mqtt5ClientData {
 
     @NotNull
     @Override
-    public Optional<MqttClientSslData> getSslData() {
-        MqttClientSslData sslData;
+    public Optional<MqttClientSslConfig> getSslConfig() {
+        MqttClientSslConfig sslConfig;
         try {
-            sslData = new DefaultMqttClientSslData(getKeyStore(), getKeyStorePassword(), getTrustStore());
-            return Optional.of(sslData);
+            sslConfig = new DefaultMqttClientSslConfig(getKeyStore(), getKeyStorePassword(), getTrustStore());
+            return Optional.of(sslConfig);
         } catch (NoSuchAlgorithmException | UnrecoverableKeyException | KeyStoreException e) {
             e.printStackTrace();
             return Optional.empty();

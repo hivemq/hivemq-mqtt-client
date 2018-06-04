@@ -19,7 +19,7 @@ import dagger.internal.Preconditions;
 import io.netty.channel.Channel;
 import io.netty.handler.ssl.*;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt.MqttClientSslData;
+import org.mqttbee.api.mqtt.MqttClientSslConfig;
 
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLException;
@@ -29,14 +29,14 @@ import javax.net.ssl.SSLException;
  */
 public class SslUtil {
 
-    public static SSLEngine createSslEngine(final Channel channel, final MqttClientSslData sslData)
+    public static SSLEngine createSslEngine(final Channel channel, final MqttClientSslConfig sslConfig)
             throws SSLException {
 
         Preconditions.checkNotNull(channel, "channel must not be null");
-        Preconditions.checkNotNull(sslData, "SslData must not be null");
+        Preconditions.checkNotNull(sslConfig, "SslData must not be null");
 
         //creates new SSLEngine from SslContext with the ByteBufAllocator from the channel
-        final SSLEngine sslEngine = createSslContext(sslData).newEngine(channel.alloc());
+        final SSLEngine sslEngine = createSslContext(sslConfig).newEngine(channel.alloc());
 
         //sets client mode
         sslEngine.setUseClientMode(true);
@@ -45,21 +45,21 @@ public class SslUtil {
     }
 
     @NotNull
-    private static SslContext createSslContext(@NotNull final MqttClientSslData sslData) throws SSLException {
+    private static SslContext createSslContext(@NotNull final MqttClientSslConfig sslConfig) throws SSLException {
 
         final SslContextBuilder sslContextBuilder = SslContextBuilder.forClient()
                 .sslProvider(SslProvider.JDK)
-                .trustManager(sslData.trustManagerFactory())
-                .keyManager(sslData.keyManagerFactory());
+                .trustManager(sslConfig.trustManagerFactory())
+                .keyManager(sslConfig.keyManagerFactory());
 
         //set chosen protocols if available, use defaults otherwise
-        if (sslData.protocols() != null && sslData.protocols().size() > 0) {
-            sslContextBuilder.protocols(sslData.protocols().toArray(new String[0]));
+        if (sslConfig.protocols() != null && sslConfig.protocols().size() > 0) {
+            sslContextBuilder.protocols(sslConfig.protocols().toArray(new String[0]));
         }
 
         //set chosen cipher suites if available, use defaults otherwise
-        if (sslData.cipherSuites() != null && sslData.cipherSuites().size() > 0) {
-            sslContextBuilder.ciphers(sslData.cipherSuites(), SupportedCipherSuiteFilter.INSTANCE);
+        if (sslConfig.cipherSuites() != null && sslConfig.cipherSuites().size() > 0) {
+            sslContextBuilder.ciphers(sslConfig.cipherSuites(), SupportedCipherSuiteFilter.INSTANCE);
         }
 
         return sslContextBuilder.build();
@@ -67,12 +67,12 @@ public class SslUtil {
 
     @NotNull
     public static SslHandler createSslHandler(
-            @NotNull final Channel channel, @NotNull final MqttClientSslData sslData) throws SSLException {
+            @NotNull final Channel channel, @NotNull final MqttClientSslConfig sslConfig) throws SSLException {
 
-        final SSLEngine sslEngine = createSslEngine(channel, sslData);
+        final SSLEngine sslEngine = createSslEngine(channel, sslConfig);
         final SslHandler sslHandler = new SslHandler(sslEngine);
 
-        sslHandler.setHandshakeTimeoutMillis(sslData.handshakeTimeoutMs());
+        sslHandler.setHandshakeTimeoutMillis(sslConfig.handshakeTimeoutMs());
         return sslHandler;
     }
 
