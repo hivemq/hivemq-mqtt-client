@@ -22,10 +22,7 @@ import io.reactivex.Flowable;
 import io.reactivex.Single;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt.MqttClient;
-import org.mqttbee.api.mqtt.MqttClientSslConfig;
-import org.mqttbee.api.mqtt.MqttClientSslConfigBuilder;
-import org.mqttbee.api.mqtt.MqttWebsocketConfig;
+import org.mqttbee.api.mqtt.*;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3Client;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3Connect;
@@ -221,7 +218,7 @@ class Mqtt3ClientExample {
         }
 
         if (isNotUsingMqttPort(port)) {
-            websocketsConfig = new MqttWebsocketConfig().withServerPath(serverPath);
+            websocketsConfig = new MqttWebsocketConfigImpl().withServerPath(serverPath);
         }
 
 

@@ -36,20 +36,20 @@ public class Mqtt3ClientBuilder {
     private final MqttClientIdentifierImpl identifier;
     private final String serverHost;
     private final int serverPort;
-    private final MqttWebsocketConfig mqttWebsocketConfig;
+    private final MqttWebsocketConfig websocketConfig;
     private final MqttClientSslConfig sslConfig;
     private final MqttClientExecutorConfigImpl executorConfig;
 
 
     public Mqtt3ClientBuilder(
             @NotNull final MqttClientIdentifierImpl identifier, @NotNull final String serverHost, final int serverPort,
-            @Nullable final MqttClientSslConfig sslConfig, @Nullable final MqttWebsocketConfig mqttWebsocketConfig,
+            @Nullable final MqttClientSslConfig sslConfig, @Nullable final MqttWebsocketConfig websocketConfig,
             @NotNull final MqttClientExecutorConfigImpl executorConfig) {
         this.identifier = identifier;
         this.serverHost = serverHost;
         this.serverPort = serverPort;
         this.sslConfig = sslConfig;
-        this.mqttWebsocketConfig = mqttWebsocketConfig;
+        this.websocketConfig = websocketConfig;
         this.executorConfig = executorConfig;
     }
 
@@ -60,6 +60,6 @@ public class Mqtt3ClientBuilder {
 
     private MqttClientData buildClientData() {
         return new MqttClientData(MqttVersion.MQTT_3_1_1, identifier, serverHost, serverPort, sslConfig,
-                mqttWebsocketConfig, false, false, executorConfig, null);
+                websocketConfig, false, false, executorConfig, null);
     }
 }

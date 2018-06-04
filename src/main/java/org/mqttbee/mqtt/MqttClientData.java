@@ -51,7 +51,7 @@ public class MqttClientData implements Mqtt5ClientData {
     private MqttClientIdentifierImpl clientIdentifier;
     private final String serverHost;
     private final int serverPort;
-    private final MqttWebsocketConfig mqttWebsocketConfig;
+    private final MqttWebsocketConfig websocketConfig;
     private final MqttClientSslConfig sslConfig;
     private final AtomicBoolean connecting;
     private final AtomicBoolean connected;
@@ -66,7 +66,7 @@ public class MqttClientData implements Mqtt5ClientData {
     public MqttClientData(
             @NotNull final MqttVersion mqttVersion, @Nullable final MqttClientIdentifierImpl clientIdentifier,
             @NotNull final String serverHost, final int serverPort, @Nullable final MqttClientSslConfig sslConfig,
-            @Nullable final MqttWebsocketConfig mqttWebsocketConfig, final boolean followsRedirects,
+            @Nullable final MqttWebsocketConfig websocketConfig, final boolean followsRedirects,
             final boolean allowsServerReAuth, @NotNull final MqttClientExecutorConfigImpl executorConfig,
             @Nullable final MqttAdvancedClientData advancedClientData) {
 
@@ -75,7 +75,7 @@ public class MqttClientData implements Mqtt5ClientData {
         this.serverHost = serverHost;
         this.serverPort = serverPort;
         this.sslConfig = sslConfig;
-        this.mqttWebsocketConfig = mqttWebsocketConfig;
+        this.websocketConfig = websocketConfig;
         this.connecting = new AtomicBoolean();
         this.connected = new AtomicBoolean();
         this.followsRedirects = followsRedirects;
@@ -118,7 +118,7 @@ public class MqttClientData implements Mqtt5ClientData {
 
     @Override
     public String getServerPath() {
-        return mqttWebsocketConfig != null ? mqttWebsocketConfig.getServerPath() : "";
+        return websocketConfig != null ? websocketConfig.getServerPath() : "";
     }
 
     @Override
@@ -142,7 +142,7 @@ public class MqttClientData implements Mqtt5ClientData {
 
     @Override
     public boolean usesWebSockets() {
-        return mqttWebsocketConfig != null;
+        return websocketConfig != null;
     }
 
     public boolean setConnected(final boolean connected) {
