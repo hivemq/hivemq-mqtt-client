@@ -49,17 +49,17 @@ public class SslUtil {
 
         final SslContextBuilder sslContextBuilder = SslContextBuilder.forClient()
                 .sslProvider(SslProvider.JDK)
-                .trustManager(sslConfig.trustManagerFactory())
-                .keyManager(sslConfig.keyManagerFactory());
+                .trustManager(sslConfig.getTrustManagerFactory())
+                .keyManager(sslConfig.getKeyManagerFactory());
 
         //set chosen protocols if available, use defaults otherwise
-        if (sslConfig.protocols() != null && sslConfig.protocols().size() > 0) {
-            sslContextBuilder.protocols(sslConfig.protocols().toArray(new String[0]));
+        if (sslConfig.getProtocols() != null && sslConfig.getProtocols().size() > 0) {
+            sslContextBuilder.protocols(sslConfig.getProtocols().toArray(new String[0]));
         }
 
         //set chosen cipher suites if available, use defaults otherwise
-        if (sslConfig.cipherSuites() != null && sslConfig.cipherSuites().size() > 0) {
-            sslContextBuilder.ciphers(sslConfig.cipherSuites(), SupportedCipherSuiteFilter.INSTANCE);
+        if (sslConfig.getCipherSuites() != null && sslConfig.getCipherSuites().size() > 0) {
+            sslContextBuilder.ciphers(sslConfig.getCipherSuites(), SupportedCipherSuiteFilter.INSTANCE);
         }
 
         return sslContextBuilder.build();
@@ -72,7 +72,7 @@ public class SslUtil {
         final SSLEngine sslEngine = createSslEngine(channel, sslConfig);
         final SslHandler sslHandler = new SslHandler(sslEngine);
 
-        sslHandler.setHandshakeTimeoutMillis(sslConfig.handshakeTimeoutMs());
+        sslHandler.setHandshakeTimeoutMillis(sslConfig.getHandshakeTimeoutMs());
         return sslHandler;
     }
 

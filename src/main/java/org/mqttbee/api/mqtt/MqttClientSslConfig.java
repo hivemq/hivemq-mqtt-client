@@ -32,23 +32,23 @@ public interface MqttClientSslConfig {
         return new MqttClientSslConfigBuilder();
     }
 
-    KeyManagerFactory keyManagerFactory();
+    KeyManagerFactory getKeyManagerFactory();
 
-    TrustManagerFactory trustManagerFactory();
+    TrustManagerFactory getTrustManagerFactory();
 
     /**
      * @return list of supported cipher suites
      */
-    List<String> cipherSuites();
+    List<String> getCipherSuites();
 
     /**
      * @return list of supported protocols
      */
-    List<String> protocols();
+    List<String> getProtocols();
 
     /**
      * @return SSL handshake timeout in milliseconds
      */
-    int handshakeTimeoutMs();
+    int getHandshakeTimeoutMs();
 
 }
