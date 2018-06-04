@@ -19,6 +19,9 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 
 import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
 
 public class MqttClientSslConfigBuilder {
 
@@ -57,6 +60,11 @@ public class MqttClientSslConfigBuilder {
     @Nullable
     public KeyStore getTrustStore() {
         return trustStore;
+    }
+
+    @NotNull
+    public MqttClientSslConfig build() throws UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
+        return new DefaultMqttClientSslConfig(keyStore, keyStorePassword, trustStore);
     }
 
 }

@@ -15,6 +15,8 @@
  */
 package org.mqttbee.api.mqtt;
 
+import org.mqttbee.annotations.NotNull;
+
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
 import java.security.NoSuchAlgorithmException;
@@ -24,6 +26,11 @@ import java.util.List;
  * @author Christoph Schäbel
  */
 public interface MqttClientSslConfig {
+
+    @NotNull
+    static MqttClientSslConfigBuilder builder() {
+        return new MqttClientSslConfigBuilder();
+    }
 
     KeyManagerFactory keyManagerFactory();
 
