@@ -23,7 +23,7 @@ import io.reactivex.Single;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.MqttClient;
-import org.mqttbee.api.mqtt.MqttSslConfig;
+import org.mqttbee.api.mqtt.MqttClientSslConfigBuilder;
 import org.mqttbee.api.mqtt.MqttWebsocketConfig;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3Client;
@@ -204,10 +204,10 @@ class Mqtt3ClientExample {
     }
 
     private Mqtt3Client getClient() {
-        MqttSslConfig sslConfig = null;
+        MqttClientSslConfigBuilder sslConfig = null;
         MqttWebsocketConfig websocketsConfig = null;
         if (usesSsl) {
-            sslConfig = new MqttSslConfig()
+            sslConfig = new MqttClientSslConfigBuilder()
                     .keyStore(keyStore)
                     .keyStorePassword(keyStorePassword)
                     .trustStore(trustStore);

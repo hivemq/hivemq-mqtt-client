@@ -20,7 +20,7 @@ package org.mqttbee.api.mqtt.mqtt5;
 import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt.MqttSslConfig;
+import org.mqttbee.api.mqtt.MqttClientSslConfigBuilder;
 import org.mqttbee.api.mqtt.MqttWebsocketConfig;
 import org.mqttbee.api.mqtt.mqtt5.advanced.Mqtt5AdvancedClientData;
 import org.mqttbee.mqtt.MqttClientData;
@@ -41,7 +41,7 @@ public class Mqtt5ClientBuilder {
     private final int serverPort;
     private final MqttClientExecutorConfigImpl executorConfig;
     private final MqttWebsocketConfig mqttWebsocketConfig;
-    private final MqttSslConfig mqttSslConfig;
+    private final MqttClientSslConfigBuilder mqttClientSslConfigBuilder;
 
     private boolean followsRedirects = false;
     private boolean allowsServerReAuth = false;
@@ -49,7 +49,7 @@ public class Mqtt5ClientBuilder {
 
     public Mqtt5ClientBuilder(
             @NotNull final MqttClientIdentifierImpl identifier, @NotNull final String serverHost, final int serverPort,
-            @Nullable final MqttSslConfig mqttSslConfig, @Nullable final MqttWebsocketConfig mqttWebsocketConfig,
+            @Nullable final MqttClientSslConfigBuilder mqttClientSslConfigBuilder, @Nullable final MqttWebsocketConfig mqttWebsocketConfig,
             @NotNull final MqttClientExecutorConfigImpl executorConfig) {
 
         Preconditions.checkNotNull(identifier);
@@ -58,7 +58,7 @@ public class Mqtt5ClientBuilder {
         this.identifier = identifier;
         this.serverHost = serverHost;
         this.serverPort = serverPort;
-        this.mqttSslConfig = mqttSslConfig;
+        this.mqttClientSslConfigBuilder = mqttClientSslConfigBuilder;
         this.mqttWebsocketConfig = mqttWebsocketConfig;
         this.executorConfig = executorConfig;
     }
@@ -88,7 +88,7 @@ public class Mqtt5ClientBuilder {
     }
 
     private MqttClientData buildClientData() {
-        return new MqttClientData(MqttVersion.MQTT_5_0, identifier, serverHost, serverPort, mqttSslConfig,
+        return new MqttClientData(MqttVersion.MQTT_5_0, identifier, serverHost, serverPort, mqttClientSslConfigBuilder,
                 mqttWebsocketConfig, followsRedirects, allowsServerReAuth, executorConfig, advancedClientData);
     }
 

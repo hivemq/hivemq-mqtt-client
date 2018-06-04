@@ -20,26 +20,26 @@ import org.mqttbee.annotations.Nullable;
 
 import java.security.KeyStore;
 
-public class MqttSslConfig {
+public class MqttClientSslConfigBuilder {
 
     private KeyStore keyStore = null;
     private String keyStorePassword = "";
     private KeyStore trustStore = null;
 
     @NotNull
-    public MqttSslConfig keyStore(@Nullable final KeyStore keyStore) {
+    public MqttClientSslConfigBuilder keyStore(@Nullable final KeyStore keyStore) {
         this.keyStore = keyStore;
         return this;
     }
 
     @NotNull
-    public MqttSslConfig keyStorePassword(@NotNull final String keyStorePassword) {
+    public MqttClientSslConfigBuilder keyStorePassword(@NotNull final String keyStorePassword) {
         this.keyStorePassword = keyStorePassword;
         return this;
     }
 
     @NotNull
-    public MqttSslConfig trustStore(@Nullable final KeyStore trustStore) {
+    public MqttClientSslConfigBuilder trustStore(@Nullable final KeyStore trustStore) {
         this.trustStore = trustStore;
         return this;
     }
