@@ -17,6 +17,7 @@ package org.mqttbee.api.mqtt;
 
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.mqtt.DefaultMqttClientSslConfig;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
