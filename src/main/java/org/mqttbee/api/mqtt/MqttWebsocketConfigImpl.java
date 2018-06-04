@@ -17,10 +17,25 @@ package org.mqttbee.api.mqtt;
 
 import org.mqttbee.annotations.NotNull;
 
+
 /**
- * @author Christian Hoff
+ * @author David Katz
  */
-public interface MqttWebsocketConfig {
+public class MqttWebsocketConfigImpl implements MqttWebsocketConfig {
+    private String serverPath;
+
+    public MqttWebsocketConfigImpl() {
+    }
+
+    public MqttWebsocketConfigImpl withServerPath(@NotNull String serverPath) {
+        // remove any leading slashes
+        this.serverPath = serverPath.replaceAll("^/+", "");
+        return this;
+    }
+
+    @Override
     @NotNull
-    String getServerPath();
+    public String getServerPath() {
+        return serverPath;
+    }
 }
