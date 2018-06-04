@@ -19,7 +19,7 @@ import com.google.common.collect.Lists;
 import io.netty.channel.embedded.EmbeddedChannel;
 import org.junit.Before;
 import org.junit.Test;
-import org.mqttbee.api.mqtt.MqttClientSslData;
+import org.mqttbee.api.mqtt.MqttClientSslConfig;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -47,9 +47,9 @@ public class SslUtilTest {
     public void test_createSslEngine_null_values() throws Exception {
 
         final TrustManagerFactory tmf = null;
-        final TestSslData sslData = new TestSslData(null, tmf, null, null, 0);
+        final TestSslConfig sslConfig = new TestSslConfig(null, tmf, null, null, 0);
 
-        final SSLEngine sslEngine = SslUtil.createSslEngine(embeddedChannel, sslData);
+        final SSLEngine sslEngine = SslUtil.createSslEngine(embeddedChannel, sslConfig);
 
         assertNotNull(sslEngine);
         assertTrue(sslEngine.getUseClientMode());
@@ -63,9 +63,9 @@ public class SslUtilTest {
         final TrustManagerFactory tmf = null;
 
         final List<String> cipherSuite = getFirstSupportedCipherSuite();
-        final TestSslData sslData = new TestSslData(null, tmf, cipherSuite, null, 0);
+        final TestSslConfig sslConfig = new TestSslConfig(null, tmf, cipherSuite, null, 0);
 
-        final SSLEngine sslEngine = SslUtil.createSslEngine(embeddedChannel, sslData);
+        final SSLEngine sslEngine = SslUtil.createSslEngine(embeddedChannel, sslConfig);
 
         assertNotNull(sslEngine);
 
@@ -81,9 +81,9 @@ public class SslUtilTest {
         final TrustManagerFactory tmf = null;
 
         final List<String> cipherSuites = getOtherSupportedCipherSuites();
-        final TestSslData sslData = new TestSslData(null, tmf, cipherSuites, null, 0);
+        final TestSslConfig sslConfig = new TestSslConfig(null, tmf, cipherSuites, null, 0);
 
-        final SSLEngine sslEngine = SslUtil.createSslEngine(embeddedChannel, sslData);
+        final SSLEngine sslEngine = SslUtil.createSslEngine(embeddedChannel, sslConfig);
 
         assertNotNull(sslEngine);
 
@@ -102,9 +102,9 @@ public class SslUtilTest {
         final TrustManagerFactory tmf = null;
 
         final List<String> protocol = Lists.newArrayList("TLSv1");
-        final TestSslData sslData = new TestSslData(null, tmf, null, protocol, 0);
+        final TestSslConfig sslConfig = new TestSslConfig(null, tmf, null, protocol, 0);
 
-        final SSLEngine sslEngine = SslUtil.createSslEngine(embeddedChannel, sslData);
+        final SSLEngine sslEngine = SslUtil.createSslEngine(embeddedChannel, sslConfig);
 
         assertNotNull(sslEngine);
 
@@ -120,9 +120,9 @@ public class SslUtilTest {
         final TrustManagerFactory tmf = null;
 
         final List<String> protocols = Lists.newArrayList("TLSv1.1", "TLSv1.2");
-        final TestSslData sslData = new TestSslData(null, tmf, null, protocols, 0);
+        final TestSslConfig sslConfig = new TestSslConfig(null, tmf, null, protocols, 0);
 
-        final SSLEngine sslEngine = SslUtil.createSslEngine(embeddedChannel, sslData);
+        final SSLEngine sslEngine = SslUtil.createSslEngine(embeddedChannel, sslConfig);
 
         assertNotNull(sslEngine);
 
@@ -169,7 +169,7 @@ public class SslUtilTest {
         return Arrays.asList(sslEngine.getEnabledProtocols());
     }
 
-    private static class TestSslData implements MqttClientSslData {
+    private static class TestSslConfig implements MqttClientSslConfig {
 
         private final KeyManagerFactory keyManagerFactory;
         private final TrustManagerFactory trustManagerFactory;
@@ -177,7 +177,7 @@ public class SslUtilTest {
         private final List<String> protocols;
         private final int handshakeTimeout;
 
-        private TestSslData(
+        private TestSslConfig(
                 final KeyManagerFactory keyManagerFactory, final TrustManagerFactory trustManagerFactory,
                 final List<String> cipherSuites, final List<String> protocols, final int handshakeTimeout) {
             this.keyManagerFactory = keyManagerFactory;

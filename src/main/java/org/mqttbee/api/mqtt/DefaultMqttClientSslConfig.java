@@ -25,14 +25,14 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- *  Default MqttClientSslData implementation:
+ *  Default MqttClientSslConfig implementation:
  *
  *  Handshake timeout set to 10 seconds and pre-selected
  *  list of allowed cipher suites
  *
  *  @author David Katz
  */
-public class DefaultMqttClientSslData implements MqttClientSslData {
+public class DefaultMqttClientSslConfig implements MqttClientSslConfig {
     private static final List<String> cipherSuites = Arrays.asList("TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305",
             "TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305",
             "TLS_ECDHE_ECDSA_WITH_CHACHA20_SHA",
@@ -56,7 +56,7 @@ public class DefaultMqttClientSslData implements MqttClientSslData {
     private final TrustManagerFactory trustManagerFactory;
     private final List<String> protocols = Arrays.asList("TLSv1.2", "TLSv1.1");
 
-    public DefaultMqttClientSslData(@Nullable KeyStore keyStore, @NotNull String keyStorePass, @Nullable KeyStore trustStore) throws NoSuchAlgorithmException, UnrecoverableKeyException, KeyStoreException {
+    public DefaultMqttClientSslConfig(@Nullable KeyStore keyStore, @NotNull String keyStorePass, @Nullable KeyStore trustStore) throws NoSuchAlgorithmException, UnrecoverableKeyException, KeyStoreException {
         keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
         keyManagerFactory.init(keyStore, keyStorePass.toCharArray());
         trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());

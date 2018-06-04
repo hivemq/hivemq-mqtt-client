@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * @author Christoph Schäbel
  */
-public interface MqttClientSslData {
+public interface MqttClientSslConfig {
 
     KeyManagerFactory keyManagerFactory();
 
