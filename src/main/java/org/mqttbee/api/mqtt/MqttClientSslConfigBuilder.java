@@ -50,21 +50,6 @@ public class MqttClientSslConfigBuilder {
         return this;
     }
 
-    @Nullable
-    public KeyStore getKeyStore() {
-        return keyStore;
-    }
-
-    @NotNull
-    public String getKeyStorePassword() {
-        return keyStorePassword;
-    }
-
-    @Nullable
-    public KeyStore getTrustStore() {
-        return trustStore;
-    }
-
     @NotNull
     public MqttClientSslConfig build() throws UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
         final KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
