@@ -23,6 +23,7 @@ import io.reactivex.Single;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.MqttClient;
+import org.mqttbee.api.mqtt.MqttClientSslConfig;
 import org.mqttbee.api.mqtt.MqttClientSslConfigBuilder;
 import org.mqttbee.api.mqtt.MqttWebsocketConfig;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
@@ -43,6 +44,7 @@ import java.nio.ByteBuffer;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.Optional;
 import java.util.UUID;
@@ -204,13 +206,18 @@ class Mqtt3ClientExample {
     }
 
     private Mqtt3Client getClient() {
-        MqttClientSslConfigBuilder sslConfig = null;
+        MqttClientSslConfig sslConfig = null;
         MqttWebsocketConfig websocketsConfig = null;
         if (usesSsl) {
-            sslConfig = new MqttClientSslConfigBuilder()
-                    .keyStore(keyStore)
-                    .keyStorePassword(keyStorePassword)
-                    .trustStore(trustStore);
+            try {
+                sslConfig = new MqttClientSslConfigBuilder()
+                        .keyStore(keyStore)
+                        .keyStorePassword(keyStorePassword)
+                        .trustStore(trustStore)
+                        .build();
+            } catch (UnrecoverableKeyException | NoSuchAlgorithmException | KeyStoreException e) {
+                throw new IllegalStateException("unable to create ssl config", e);
+            }
         }
 
         if (isNotUsingMqttPort(port)) {

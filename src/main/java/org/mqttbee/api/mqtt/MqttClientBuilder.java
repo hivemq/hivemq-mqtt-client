@@ -37,7 +37,7 @@ public class MqttClientBuilder {
     private int serverPort = 1883;
     private MqttClientExecutorConfigImpl executorConfig = MqttClientExecutorConfigImpl.DEFAULT;
     private MqttWebsocketConfig mqttWebsocketConfig = null;
-    private MqttClientSslConfigBuilder mqttClientSslConfigBuilder = null;
+    private MqttClientSslConfig sslConfig = null;
 
     MqttClientBuilder() {
     }
@@ -68,13 +68,13 @@ public class MqttClientBuilder {
 
     @NotNull
     public MqttClientBuilder usingSsl() {
-        this.mqttClientSslConfigBuilder = new MqttClientSslConfigBuilder();
+        this.sslConfig = new DefaultMqttClientSslConfig();
         return this;
     }
     
     @NotNull
-    public MqttClientBuilder usingSsl(@Nullable final MqttClientSslConfigBuilder mqttClientSslConfigBuilder) {
-        this.mqttClientSslConfigBuilder = mqttClientSslConfigBuilder;
+    public MqttClientBuilder usingSsl(@NotNull final MqttClientSslConfig sslConfig) {
+        this.sslConfig = sslConfig;
         return this;
     }
 
@@ -99,13 +99,13 @@ public class MqttClientBuilder {
 
     @NotNull
     public Mqtt3ClientBuilder usingMqtt3() {
-        return new Mqtt3ClientBuilder(identifier, serverHost, serverPort, mqttClientSslConfigBuilder, mqttWebsocketConfig,
+        return new Mqtt3ClientBuilder(identifier, serverHost, serverPort, sslConfig, mqttWebsocketConfig,
                 executorConfig);
     }
 
     @NotNull
     public Mqtt5ClientBuilder usingMqtt5() {
-        return new Mqtt5ClientBuilder(identifier, serverHost, serverPort, mqttClientSslConfigBuilder, mqttWebsocketConfig,
+        return new Mqtt5ClientBuilder(identifier, serverHost, serverPort, sslConfig, mqttWebsocketConfig,
                 executorConfig);
     }
 }

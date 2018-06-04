@@ -56,12 +56,13 @@ public class DefaultMqttClientSslConfig implements MqttClientSslConfig {
     private final TrustManagerFactory trustManagerFactory;
     private final List<String> protocols = Arrays.asList("TLSv1.2", "TLSv1.1");
 
-    public DefaultMqttClientSslConfig(@Nullable KeyStore keyStore, @NotNull String keyStorePass, @Nullable KeyStore trustStore) throws NoSuchAlgorithmException, UnrecoverableKeyException, KeyStoreException {
-        keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-        keyManagerFactory.init(keyStore, keyStorePass.toCharArray());
-        trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-        trustManagerFactory.init(trustStore);
+    public DefaultMqttClientSslConfig() {
+        this(null, null);
+    }
 
+    public DefaultMqttClientSslConfig(@Nullable KeyManagerFactory keyManagerFactory, @Nullable TrustManagerFactory trustManagerFactory) {
+        this.keyManagerFactory = keyManagerFactory;
+        this.trustManagerFactory = trustManagerFactory;
     }
 
     @Override
