@@ -22,9 +22,7 @@ import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt.DefaultMqttClientSslConfig;
 import org.mqttbee.api.mqtt.MqttClientSslConfig;
-import org.mqttbee.api.mqtt.MqttClientSslConfigBuilder;
 import org.mqttbee.api.mqtt.MqttWebsocketConfig;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientConnectionData;
@@ -34,7 +32,6 @@ import org.mqttbee.api.mqtt.mqtt5.advanced.Mqtt5AdvancedClientData;
 import org.mqttbee.mqtt.advanced.MqttAdvancedClientData;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 
-import java.security.*;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -55,7 +52,7 @@ public class MqttClientData implements Mqtt5ClientData {
     private final String serverHost;
     private final int serverPort;
     private final MqttWebsocketConfig mqttWebsocketConfig;
-    private final MqttClientSslConfigBuilder mqttClientSslConfigBuilder;
+    private final MqttClientSslConfig sslConfig;
     private final AtomicBoolean connecting;
     private final AtomicBoolean connected;
     private final boolean followsRedirects;
@@ -68,18 +65,16 @@ public class MqttClientData implements Mqtt5ClientData {
 
     public MqttClientData(
             @NotNull final MqttVersion mqttVersion, @Nullable final MqttClientIdentifierImpl clientIdentifier,
-            @NotNull final String serverHost, final int serverPort,
-            @Nullable final MqttClientSslConfigBuilder mqttClientSslConfigBuilder,
-            @Nullable final MqttWebsocketConfig mqttWebsocketConfig,
-            final boolean followsRedirects, final boolean allowsServerReAuth,
-            @NotNull final MqttClientExecutorConfigImpl executorConfig,
+            @NotNull final String serverHost, final int serverPort, @Nullable final MqttClientSslConfig sslConfig,
+            @Nullable final MqttWebsocketConfig mqttWebsocketConfig, final boolean followsRedirects,
+            final boolean allowsServerReAuth, @NotNull final MqttClientExecutorConfigImpl executorConfig,
             @Nullable final MqttAdvancedClientData advancedClientData) {
 
         this.mqttVersion = mqttVersion;
         this.clientIdentifier = clientIdentifier;
         this.serverHost = serverHost;
         this.serverPort = serverPort;
-        this.mqttClientSslConfigBuilder = mqttClientSslConfigBuilder;
+        this.sslConfig = sslConfig;
         this.mqttWebsocketConfig = mqttWebsocketConfig;
         this.connecting = new AtomicBoolean();
         this.connected = new AtomicBoolean();
@@ -122,12 +117,13 @@ public class MqttClientData implements Mqtt5ClientData {
     }
 
     @Override
-    public String getServerPath() { return mqttWebsocketConfig != null ? mqttWebsocketConfig.getServerPath() : "";
+    public String getServerPath() {
+        return mqttWebsocketConfig != null ? mqttWebsocketConfig.getServerPath() : "";
     }
 
     @Override
     public boolean usesSsl() {
-        return mqttClientSslConfigBuilder != null;
+        return sslConfig != null;
     }
 
     @Override
@@ -203,14 +199,7 @@ public class MqttClientData implements Mqtt5ClientData {
     @NotNull
     @Override
     public Optional<MqttClientSslConfig> getSslConfig() {
-        MqttClientSslConfig sslConfig;
-        try {
-            sslConfig = new DefaultMqttClientSslConfig(getKeyStore(), getKeyStorePassword(), getTrustStore());
-            return Optional.of(sslConfig);
-        } catch (NoSuchAlgorithmException | UnrecoverableKeyException | KeyStoreException e) {
-            e.printStackTrace();
-            return Optional.empty();
-        }
+        return Optional.ofNullable(sslConfig);
     }
 
     @Nullable
@@ -224,18 +213,5 @@ public class MqttClientData implements Mqtt5ClientData {
 
     public void to(@NotNull final Channel channel) {
         channel.attr(KEY).set(this);
-    }
-
-    private KeyStore getKeyStore() {
-        return mqttClientSslConfigBuilder != null ? mqttClientSslConfigBuilder.getKeyStore() : null;
-    }
-
-    @NotNull
-    private String getKeyStorePassword() {
-        return mqttClientSslConfigBuilder != null ? mqttClientSslConfigBuilder.getKeyStorePassword() : "";
-    }
-
-    private KeyStore getTrustStore() {
-        return mqttClientSslConfigBuilder != null ? mqttClientSslConfigBuilder.getTrustStore() : null;
     }
 }

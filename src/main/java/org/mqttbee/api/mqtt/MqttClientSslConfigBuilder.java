@@ -18,6 +18,8 @@ package org.mqttbee.api.mqtt;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.TrustManagerFactory;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -64,7 +66,11 @@ public class MqttClientSslConfigBuilder {
 
     @NotNull
     public MqttClientSslConfig build() throws UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
-        return new DefaultMqttClientSslConfig(keyStore, keyStorePassword, trustStore);
+        final KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+        keyManagerFactory.init(keyStore, keyStorePassword.toCharArray());
+        final TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+        trustManagerFactory.init(trustStore);
+        return new DefaultMqttClientSslConfig(keyManagerFactory, trustManagerFactory);
     }
 
 }
