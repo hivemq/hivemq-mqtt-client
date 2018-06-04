@@ -24,7 +24,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.DefaultMqttClientSslConfig;
 import org.mqttbee.api.mqtt.MqttClientSslConfig;
-import org.mqttbee.api.mqtt.MqttSslConfig;
+import org.mqttbee.api.mqtt.MqttClientSslConfigBuilder;
 import org.mqttbee.api.mqtt.MqttWebsocketConfig;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientConnectionData;
@@ -55,7 +55,7 @@ public class MqttClientData implements Mqtt5ClientData {
     private final String serverHost;
     private final int serverPort;
     private final MqttWebsocketConfig mqttWebsocketConfig;
-    private final MqttSslConfig mqttSslConfig;
+    private final MqttClientSslConfigBuilder mqttClientSslConfigBuilder;
     private final AtomicBoolean connecting;
     private final AtomicBoolean connected;
     private final boolean followsRedirects;
@@ -69,7 +69,7 @@ public class MqttClientData implements Mqtt5ClientData {
     public MqttClientData(
             @NotNull final MqttVersion mqttVersion, @Nullable final MqttClientIdentifierImpl clientIdentifier,
             @NotNull final String serverHost, final int serverPort,
-            @Nullable final MqttSslConfig mqttSslConfig,
+            @Nullable final MqttClientSslConfigBuilder mqttClientSslConfigBuilder,
             @Nullable final MqttWebsocketConfig mqttWebsocketConfig,
             final boolean followsRedirects, final boolean allowsServerReAuth,
             @NotNull final MqttClientExecutorConfigImpl executorConfig,
@@ -79,7 +79,7 @@ public class MqttClientData implements Mqtt5ClientData {
         this.clientIdentifier = clientIdentifier;
         this.serverHost = serverHost;
         this.serverPort = serverPort;
-        this.mqttSslConfig = mqttSslConfig;
+        this.mqttClientSslConfigBuilder = mqttClientSslConfigBuilder;
         this.mqttWebsocketConfig = mqttWebsocketConfig;
         this.connecting = new AtomicBoolean();
         this.connected = new AtomicBoolean();
@@ -127,7 +127,7 @@ public class MqttClientData implements Mqtt5ClientData {
 
     @Override
     public boolean usesSsl() {
-        return mqttSslConfig != null;
+        return mqttClientSslConfigBuilder != null;
     }
 
     @Override
@@ -227,15 +227,15 @@ public class MqttClientData implements Mqtt5ClientData {
     }
 
     private KeyStore getKeyStore() {
-        return mqttSslConfig != null ? mqttSslConfig.getKeyStore() : null;
+        return mqttClientSslConfigBuilder != null ? mqttClientSslConfigBuilder.getKeyStore() : null;
     }
 
     @NotNull
     private String getKeyStorePassword() {
-        return mqttSslConfig != null ? mqttSslConfig.getKeyStorePassword() : "";
+        return mqttClientSslConfigBuilder != null ? mqttClientSslConfigBuilder.getKeyStorePassword() : "";
     }
 
     private KeyStore getTrustStore() {
-        return mqttSslConfig != null ? mqttSslConfig.getTrustStore() : null;
+        return mqttClientSslConfigBuilder != null ? mqttClientSslConfigBuilder.getTrustStore() : null;
     }
 }
