@@ -188,27 +188,27 @@ public class SslUtilTest {
         }
 
         @Override
-        public KeyManagerFactory keyManagerFactory() {
+        public KeyManagerFactory getKeyManagerFactory() {
             return keyManagerFactory;
         }
 
         @Override
-        public TrustManagerFactory trustManagerFactory() {
+        public TrustManagerFactory getTrustManagerFactory() {
             return trustManagerFactory;
         }
 
         @Override
-        public List<String> cipherSuites() {
+        public List<String> getCipherSuites() {
             return cipherSuites;
         }
 
         @Override
-        public List<String> protocols() {
+        public List<String> getProtocols() {
             return protocols;
         }
 
         @Override
-        public int handshakeTimeoutMs() {
+        public int getHandshakeTimeoutMs() {
             return 0;
         }
     }
