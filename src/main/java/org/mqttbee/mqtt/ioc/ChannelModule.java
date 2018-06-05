@@ -60,13 +60,6 @@ public abstract class ChannelModule {
         return clientData.getExecutorConfig().getRxJavaScheduler().createWorker();
     }
 
-    @Provides
-    @ChannelScope
-    @Named("outgoingPublishFlows")
-    static Scheduler.Worker provideOutgoingPublishFlowsRxEventLoop(final MqttClientData clientData) {
-        return clientData.getExecutorConfig().getRxJavaScheduler().createWorker();
-    }
-
     @Binds
     abstract MqttSubscriptionFlows provideSubscriptionFlows(final MqttSubscriptionFlowTree tree);
 
