@@ -35,7 +35,8 @@ public interface MqttClientData {
 
     int getServerPort();
 
-    String getServerPath();
+    @NotNull
+    Optional<MqttWebsocketConfig> getWebsocketConfig();
 
     boolean usesSsl();
 

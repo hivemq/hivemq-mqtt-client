@@ -109,9 +109,11 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
 
     private void initMqttOverWebSockets(@NotNull final ChannelPipeline pipeline) {
         try {
+            final String path = "/" + ((clientData.getWebsocketConfig().isPresent()) ?
+                    clientData.getWebsocketConfig().get().getServerPath() : "");
             final URI serverUri =
-                    new URI(getWebsocketScheme(), null, clientData.getServerHost(), clientData.getServerPort(),
-                            "/" + clientData.getServerPath(), null, null);
+                    new URI(getWebsocketScheme(), null, clientData.getServerHost(), clientData.getServerPort(), path,
+                            null, null);
             final MqttWebSocketClientProtocolHandler wsProtocolHandler =
                     new MqttWebSocketClientProtocolHandler(serverUri);
 
