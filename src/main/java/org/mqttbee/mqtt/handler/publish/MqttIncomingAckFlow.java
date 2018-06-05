@@ -17,12 +17,13 @@
 
 package org.mqttbee.mqtt.handler.publish;
 
-import io.reactivex.Emitter;
 import io.reactivex.internal.util.BackpressureHelper;
-import org.jctools.queues.SpscChunkedArrayQueue;
+import io.reactivex.plugins.RxJavaPlugins;
+import org.mqttbee.annotations.CallByThread;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
-import org.mqttbee.util.UnsignedDataTypes;
+import org.mqttbee.mqtt.handler.publish.MqttPublishFlowableAckLink.LinkCancellable;
+import org.mqttbee.util.collections.ChunkedArrayQueue;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
@@ -33,117 +34,61 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * @author Silvio Giebl
  */
-public class MqttIncomingAckFlow implements Emitter<Mqtt5PublishResult>, Subscription, Runnable {
+public class MqttIncomingAckFlow implements Subscription, Runnable {
 
-    private static final int REQUEST_BATCH_LIMIT = 64;
-
-    @NotNull
-    private final Subscriber<? super Mqtt5PublishResult> actual;
-    @NotNull
+    private final Subscriber<? super Mqtt5PublishResult> subscriber;
     private final MqttOutgoingPublishService outgoingPublishService;
 
-    private final AtomicLong requested = new AtomicLong();
+    private long requestedNettyLocal;
+    private final AtomicLong newRequested = new AtomicLong();
     private final AtomicBoolean cancelled = new AtomicBoolean();
-    private volatile boolean done;
-    private Throwable error;
+    private volatile long acknowledged;
+    private long acknowledgedNettyLocal;
+    private boolean done;
+    private volatile long published;
+    private Throwable error; // synced over volatile published
+    private final AtomicBoolean doneEmitted = new AtomicBoolean();
 
-    private final SpscChunkedArrayQueue<Mqtt5PublishResult> queue;
     private final AtomicInteger wip = new AtomicInteger();
+    private final ChunkedArrayQueue<Mqtt5PublishResult> queue;
+    private volatile boolean queued;
+
+    private volatile LinkCancellable linkCancellable;
 
     MqttIncomingAckFlow(
-            @NotNull final Subscriber<? super Mqtt5PublishResult> actual,
+            @NotNull final Subscriber<? super Mqtt5PublishResult> subscriber,
             @NotNull final MqttOutgoingPublishService outgoingPublishService) {
 
-        this.actual = actual;
+        this.subscriber = subscriber;
         this.outgoingPublishService = outgoingPublishService;
-        queue = new SpscChunkedArrayQueue<>(64, UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE);
+        queue = new ChunkedArrayQueue<>(64);
     }
 
-    @Override
-    public void onNext(@NotNull final Mqtt5PublishResult result) {
-        if (done) {
-            return;
-        }
-        queue.offer(result);
-        trySchedule();
-    }
-
-    @Override
-    public void onError(@NotNull final Throwable t) {
-        if (done) {
-            return;
-        }
-        error = t;
-        done = true;
-        trySchedule();
-    }
-
-    @Override
-    public void onComplete() {
-        if (done) {
-            return;
-        }
-        done = true;
-        trySchedule();
-    }
-
-    @Override
-    public void request(final long n) {
-        BackpressureHelper.add(requested, n);
-        trySchedule();
-    }
-
-    @Override
-    public void cancel() {
-        if (cancelled.compareAndSet(false, true)) {
-            trySchedule();
-        }
-    }
-
-    private void trySchedule() {
-        if (wip.getAndIncrement() == 0) {
-            outgoingPublishService.getRxEventLoop().schedule(this);
-        }
-    }
-
-    @Override
-    public void run() {
-        int missed = 1;
-
-        final Subscriber<? super Mqtt5PublishResult> actual = this.actual;
-        final SpscChunkedArrayQueue<Mqtt5PublishResult> queue = this.queue;
+    @CallByThread("Netty EventLoop")
+    void onNext(@NotNull final Mqtt5PublishResult result) {
+        int missed = wip.incrementAndGet();
 
         long emitted = 0;
-
         while (true) {
-            long requested = this.requested.get();
-
-            while (emitted != requested) {
-                final boolean done = this.done;
-
-                final Mqtt5PublishResult result = queue.poll();
-
-                if (result == null) {
-                    if (checkTerminated(done, true)) {
-                        return;
+            final long requested = requested();
+            if (!queue.isEmpty()) {
+                while (emitted != requested) {
+                    final Mqtt5PublishResult queuedResult = queue.poll();
+                    if (queuedResult == null) {
+                        break;
                     }
-                    break;
-                }
-
-                actual.onNext(result);
-
-                emitted++;
-                if (emitted == REQUEST_BATCH_LIMIT) {
-                    if (requested != Long.MAX_VALUE) {
-                        requested = this.requested.addAndGet(-emitted);
-                    }
-                    outgoingPublishService.request(emitted);
-                    emitted = 0;
+                    subscriber.onNext(queuedResult);
+                    emitted++;
                 }
             }
-
-            if ((emitted == requested) && checkTerminated(done, queue.isEmpty())) {
-                return;
+            if (requested > emitted) {
+                subscriber.onNext(result);
+                emitted++;
+                queued = false;
+                break;
+            } else {
+                queue.offer(result);
+                queued = false;
             }
 
             final int wip = this.wip.get();
@@ -156,29 +101,123 @@ public class MqttIncomingAckFlow implements Emitter<Mqtt5PublishResult>, Subscri
                 missed = wip;
             }
         }
+        emitted(emitted);
+    }
+
+    @CallByThread("Netty EventLoop")
+    private long requested() {
+        if (requestedNettyLocal == Long.MAX_VALUE) {
+            return Long.MAX_VALUE;
+        }
+        return this.requestedNettyLocal += newRequested.getAndSet(0);
+    }
+
+    @CallByThread("Netty EventLoop")
+    private void emitted(final long emitted) {
         if (emitted > 0) {
-            if (requested.get() != Long.MAX_VALUE) {
-                requested.addAndGet(-emitted);
+            final long acknowledgedLocal = this.acknowledgedNettyLocal += emitted;
+            acknowledged = acknowledgedLocal;
+            if (acknowledgedLocal == published) {
+                if (doneEmitted.compareAndSet(false, true)) {
+                    if (error == null) {
+                        subscriber.onComplete();
+                    } else {
+                        subscriber.onError(error);
+                    }
+                    queued = false;
+                }
+                return;
             }
-            outgoingPublishService.request(emitted);
+            if (requestedNettyLocal != Long.MAX_VALUE) {
+                requestedNettyLocal -= emitted;
+                outgoingPublishService.request(emitted);
+            }
         }
     }
 
-    private boolean checkTerminated(final boolean done, final boolean empty) {
-        if (cancelled.get()) {
-            queue.clear();
-            return true;
+    void onComplete(final long published) {
+        if (done) {
+            return;
         }
-        if (done && empty) {
-            final Throwable e = error;
-            if (e != null) {
-                actual.onError(e);
-            } else {
-                actual.onComplete();
+        done = true;
+        this.published = published;
+        if ((acknowledged == published) && doneEmitted.compareAndSet(false, true)) {
+            subscriber.onComplete();
+            queued = false;
+        }
+    }
+
+    void onError(@NotNull final Throwable t, final long published) {
+        if (done) {
+            RxJavaPlugins.onError(t);
+            return;
+        }
+        done = true;
+        error = t;
+        this.published = published;
+        if ((acknowledged == published) && doneEmitted.compareAndSet(false, true)) {
+            subscriber.onError(t);
+            queued = false;
+        }
+    }
+
+    @Override
+    public void request(final long n) {
+        BackpressureHelper.add(newRequested, n);
+        if ((wip.getAndIncrement() == 0) && queued) {
+            outgoingPublishService.getNettyEventLoop().execute(this);
+        }
+    }
+
+    @CallByThread("Netty EventLoop")
+    @Override
+    public void run() {
+        int missed = wip.get();
+
+        long emitted = 0;
+        while (true) {
+            final long requested = requested();
+            while (emitted != requested) {
+                final Mqtt5PublishResult queuedResult = queue.poll();
+                if (queuedResult == null) {
+                    break;
+                }
+                subscriber.onNext(queuedResult);
+                emitted++;
             }
-            return true;
+            if (queue.isEmpty()) {
+                queued = false;
+                break;
+            }
+
+            final int wip = this.wip.get();
+            if (missed == wip) {
+                missed = this.wip.addAndGet(-missed);
+                if (missed == 0) {
+                    break;
+                }
+            } else {
+                missed = wip;
+            }
         }
-        return false;
+        emitted(emitted);
+    }
+
+    @Override
+    public void cancel() {
+        if (cancelled.compareAndSet(false, true)) {
+            final LinkCancellable linkCancellable = this.linkCancellable;
+            if (linkCancellable != null) {
+                linkCancellable.cancelLink();
+            }
+        }
+    }
+
+    void link(@NotNull final LinkCancellable linkCancellable) {
+        this.linkCancellable = linkCancellable;
+        if (cancelled.get()) {
+            linkCancellable.cancelLink();
+        }
     }
 
 }

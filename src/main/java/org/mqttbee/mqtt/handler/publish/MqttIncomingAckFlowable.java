@@ -57,7 +57,7 @@ public class MqttIncomingAckFlowable extends Flowable<Mqtt5PublishResult> {
 
             final MqttIncomingAckFlow incomingAckFlow = new MqttIncomingAckFlow(s, outgoingPublishService);
             s.onSubscribe(incomingAckFlow);
-            publishFlowables.add(publishFlowable.map(publish -> new MqttPublishWithFlow(publish, incomingAckFlow)));
+            publishFlowables.add(new MqttPublishFlowableAckLink(publishFlowable, incomingAckFlow));
         }
     }
 

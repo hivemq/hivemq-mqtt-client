@@ -17,17 +17,17 @@
 
 package org.mqttbee.mqtt.handler.publish;
 
+import io.netty.channel.EventLoop;
 import io.reactivex.Flowable;
 import io.reactivex.FlowableSubscriber;
-import io.reactivex.Scheduler;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.MqttServerConnectionData;
 import org.mqttbee.mqtt.ioc.ChannelScope;
 import org.reactivestreams.Subscription;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 /**
  * @author Silvio Giebl
@@ -36,7 +36,7 @@ import javax.inject.Named;
 public class MqttOutgoingPublishService implements FlowableSubscriber<MqttPublishWithFlow> {
 
     private final MqttOutgoingQoSHandler outgoingQoSHandler;
-    private final Scheduler.Worker rxEventLoop;
+    private final EventLoop nettyEventLoop;
 
     private Subscription subscription;
 
@@ -44,14 +44,16 @@ public class MqttOutgoingPublishService implements FlowableSubscriber<MqttPublis
 
     @Inject
     MqttOutgoingPublishService(
-        final MqttOutgoingQoSHandler outgoingQoSHandler, final MqttPublishFlowables publishFlowables,
-        @Named("outgoingPublish") final Scheduler.Worker rxEventLoop, final MqttClientData clientData) {
+            final MqttOutgoingQoSHandler outgoingQoSHandler, final MqttPublishFlowables publishFlowables,
+            final MqttClientData clientData) {
 
         final MqttServerConnectionData serverConnectionData = clientData.getRawServerConnectionData();
         assert serverConnectionData != null;
+        final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
+        assert clientConnectionData != null;
 
         this.outgoingQoSHandler = outgoingQoSHandler;
-        this.rxEventLoop = rxEventLoop;
+        nettyEventLoop = clientConnectionData.getChannel().eventLoop();
 
         receiveMaximum = MqttOutgoingQoSHandler.getPubReceiveMaximum(serverConnectionData.getReceiveMaximum());
 
@@ -71,7 +73,7 @@ public class MqttOutgoingPublishService implements FlowableSubscriber<MqttPublis
 
     @Override
     public void onError(final Throwable t) {
-        // TODO must not happen if operator onErrorComplete is added
+        // TODO does not happen as the flowable is global and never errors
     }
 
     @Override
@@ -79,13 +81,13 @@ public class MqttOutgoingPublishService implements FlowableSubscriber<MqttPublis
         // TODO does not happen as the flowable is global and never completed
     }
 
-    public void request(final long amount) {
+    void request(final long amount) {
         subscription.request(amount);
     }
 
     @NotNull
-    public Scheduler.Worker getRxEventLoop() {
-        return rxEventLoop;
+    EventLoop getNettyEventLoop() {
+        return nettyEventLoop;
     }
 
 }
