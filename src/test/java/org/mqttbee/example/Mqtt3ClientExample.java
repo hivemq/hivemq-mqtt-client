@@ -218,7 +218,7 @@ class Mqtt3ClientExample {
         }
 
         if (isNotUsingMqttPort(port)) {
-            websocketsConfig = new MqttWebsocketConfigImpl().withServerPath(serverPath);
+            websocketsConfig = MqttWebsocketConfig.builder().withServerPath(serverPath).build();
         }
 
 
