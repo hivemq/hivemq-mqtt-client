@@ -17,7 +17,7 @@ package org.mqttbee.api.mqtt;
 
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.mqtt.DefaultMqttClientSslConfig;
+import org.mqttbee.mqtt.MqttClientSslConfigImpl;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
@@ -56,7 +56,7 @@ public class MqttClientSslConfigBuilder {
         keyManagerFactory.init(keyStore, keyStorePassword.toCharArray());
         final TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
         trustManagerFactory.init(trustStore);
-        return new DefaultMqttClientSslConfig(keyManagerFactory, trustManagerFactory);
+        return new MqttClientSslConfigImpl(keyManagerFactory, trustManagerFactory);
     }
 
 }
