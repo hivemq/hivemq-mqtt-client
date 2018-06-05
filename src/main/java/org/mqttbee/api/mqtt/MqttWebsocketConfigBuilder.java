@@ -33,6 +33,7 @@ public class MqttWebsocketConfigBuilder {
         return this;
     }
 
+    @NotNull
     public MqttWebsocketConfig build() {
         return new MqttWebsocketConfigImpl(serverPath);
     }
