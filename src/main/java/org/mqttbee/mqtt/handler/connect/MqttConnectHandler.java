@@ -85,7 +85,6 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
     public void channelActive(final ChannelHandlerContext ctx) {
         if (!connectCalled) {
             connectCalled = true;
-
             addClientData(ctx.channel());
             writeConnect(ctx);
         }
