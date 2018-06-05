@@ -116,9 +116,10 @@ public class MqttClientData implements Mqtt5ClientData {
         return serverPort;
     }
 
+    @NotNull
     @Override
-    public String getServerPath() {
-        return websocketConfig != null ? websocketConfig.getServerPath() : "";
+    public Optional<MqttWebsocketConfig> getWebsocketConfig() {
+        return Optional.ofNullable(websocketConfig);
     }
 
     @Override
