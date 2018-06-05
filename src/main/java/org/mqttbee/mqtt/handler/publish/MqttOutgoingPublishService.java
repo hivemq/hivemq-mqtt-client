@@ -18,7 +18,6 @@
 package org.mqttbee.mqtt.handler.publish;
 
 import io.netty.channel.EventLoop;
-import io.reactivex.Flowable;
 import io.reactivex.FlowableSubscriber;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.MqttClientConnectionData;
@@ -26,6 +25,8 @@ import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.MqttServerConnectionData;
 import org.mqttbee.mqtt.ioc.ChannelScope;
 import org.reactivestreams.Subscription;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
@@ -34,6 +35,10 @@ import javax.inject.Inject;
  */
 @ChannelScope
 public class MqttOutgoingPublishService implements FlowableSubscriber<MqttPublishWithFlow> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MqttOutgoingPublishService.class);
+
+    private static final int MAX_CONCURRENT_PUBLISH_FLOWABLES = 64;
 
     private final MqttOutgoingQoSHandler outgoingQoSHandler;
     private final EventLoop nettyEventLoop;
@@ -57,7 +62,7 @@ public class MqttOutgoingPublishService implements FlowableSubscriber<MqttPublis
 
         receiveMaximum = MqttOutgoingQoSHandler.getPubReceiveMaximum(serverConnectionData.getReceiveMaximum());
 
-        Flowable.mergeDelayError(publishFlowables).subscribe(this);
+        publishFlowables.flatMap(f -> f, true, MAX_CONCURRENT_PUBLISH_FLOWABLES).subscribe(this);
     }
 
     @Override
@@ -72,13 +77,13 @@ public class MqttOutgoingPublishService implements FlowableSubscriber<MqttPublis
     }
 
     @Override
-    public void onError(final Throwable t) {
-        // TODO does not happen as the flowable is global and never errors
+    public void onComplete() {
+        LOGGER.error("MqttPublishFlowables is global and should never complete.");
     }
 
     @Override
-    public void onComplete() {
-        // TODO does not happen as the flowable is global and never completed
+    public void onError(final Throwable t) {
+        LOGGER.error("MqttPublishFlowables is global and should never error.");
     }
 
     void request(final long amount) {
