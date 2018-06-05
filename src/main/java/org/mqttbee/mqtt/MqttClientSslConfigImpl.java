@@ -32,6 +32,7 @@ import java.util.List;
  *  @author David Katz
  */
 public class MqttClientSslConfigImpl implements MqttClientSslConfig {
+    public static final MqttClientSslConfig DEFAULT = new MqttClientSslConfigImpl(null, null);
     private static final List<String> cipherSuites = Arrays.asList("TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305",
             "TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305",
             "TLS_ECDHE_ECDSA_WITH_CHACHA20_SHA",
@@ -54,10 +55,6 @@ public class MqttClientSslConfigImpl implements MqttClientSslConfig {
     private KeyManagerFactory keyManagerFactory;
     private final TrustManagerFactory trustManagerFactory;
     private final List<String> protocols = Arrays.asList("TLSv1.2", "TLSv1.1");
-
-    public MqttClientSslConfigImpl() {
-        this(null, null);
-    }
 
     public MqttClientSslConfigImpl(@Nullable KeyManagerFactory keyManagerFactory, @Nullable TrustManagerFactory trustManagerFactory) {
         this.keyManagerFactory = keyManagerFactory;

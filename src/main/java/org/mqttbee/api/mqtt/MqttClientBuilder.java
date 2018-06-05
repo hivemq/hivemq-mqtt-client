@@ -70,8 +70,7 @@ public class MqttClientBuilder {
 
     @NotNull
     public MqttClientBuilder usingSsl() {
-        this.sslConfig = new MqttClientSslConfigImpl();
-        return this;
+        return usingSsl(MqttClientSslConfigImpl.DEFAULT);
     }
     
     @NotNull
