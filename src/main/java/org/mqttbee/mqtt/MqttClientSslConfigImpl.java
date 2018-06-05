@@ -15,13 +15,11 @@
  */
 package org.mqttbee.mqtt;
 
-import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.MqttClientSslConfig;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
-import java.security.*;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,7 +31,7 @@ import java.util.List;
  *
  *  @author David Katz
  */
-public class DefaultMqttClientSslConfig implements MqttClientSslConfig {
+public class MqttClientSslConfigImpl implements MqttClientSslConfig {
     private static final List<String> cipherSuites = Arrays.asList("TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305",
             "TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305",
             "TLS_ECDHE_ECDSA_WITH_CHACHA20_SHA",
@@ -57,11 +55,11 @@ public class DefaultMqttClientSslConfig implements MqttClientSslConfig {
     private final TrustManagerFactory trustManagerFactory;
     private final List<String> protocols = Arrays.asList("TLSv1.2", "TLSv1.1");
 
-    public DefaultMqttClientSslConfig() {
+    public MqttClientSslConfigImpl() {
         this(null, null);
     }
 
-    public DefaultMqttClientSslConfig(@Nullable KeyManagerFactory keyManagerFactory, @Nullable TrustManagerFactory trustManagerFactory) {
+    public MqttClientSslConfigImpl(@Nullable KeyManagerFactory keyManagerFactory, @Nullable TrustManagerFactory trustManagerFactory) {
         this.keyManagerFactory = keyManagerFactory;
         this.trustManagerFactory = trustManagerFactory;
     }
