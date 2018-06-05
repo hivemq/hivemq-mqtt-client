@@ -103,8 +103,8 @@ class Mqtt3ClientExample {
     
     private final int port;
     private final boolean usesSsl;
-    private int receivedCount = 0;
-    private int publishedCount = 0;
+    private AtomicInteger receivedCount = new AtomicInteger();
+    private AtomicInteger publishedCount = new AtomicInteger();
     private final String serverPath;
 
 
@@ -142,7 +142,7 @@ class Mqtt3ClientExample {
                 .doOnNext(publish -> {
             final Optional<ByteBuffer> payload = publish.getPayload();
             if (payload.isPresent()) {
-                receivedCount++;
+                int receivedCount = this.receivedCount.incrementAndGet();
                 final String message = new String(ByteBufferUtil.getBytes(payload.get()));
                 System.out.println("received message with payload '" + message + "' on topic '" + publish.getTopic() +
                         "' received count: " + receivedCount);
@@ -183,13 +183,13 @@ class Mqtt3ClientExample {
         });
 
         // define what to publish and what to do when we published a message (e.g. PUBACK received), this does not publish yet
-        final Flowable<Mqtt3PublishResult> publishScenario =
-                client.publish(publishFlowable).doOnNext(publishResult -> {
-                    publishedCount++;
-                    final Optional<ByteBuffer> payload = publishResult.getPublish().getPayload();
-                    payload.ifPresent(byteBuffer -> System.out.println(
-                            "published " + new String(ByteBufferUtil.getBytes(byteBuffer))));
-                });
+        final Flowable<Mqtt3PublishResult> publishScenario = client.publish(publishFlowable).doOnNext(publishResult -> {
+            int publishedCount = this.publishedCount.incrementAndGet();
+            final Optional<ByteBuffer> payload = publishResult.getPublish().getPayload();
+            payload.ifPresent(byteBuffer -> System.out.println(
+                    "published " + new String(ByteBufferUtil.getBytes(byteBuffer)) + " published count: " +
+                            publishedCount));
+        });
 
         // define what to do when we disconnect, this does not disconnect yet
         final Completable disconnectScenario =
@@ -283,10 +283,10 @@ class Mqtt3ClientExample {
     }
 
     int getReceivedCount() {
-        return receivedCount;
+        return receivedCount.intValue();
     }
 
     int getPublishedCount() {
-        return publishedCount;
+        return publishedCount.intValue();
     }
 }
