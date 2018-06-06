@@ -116,15 +116,26 @@ public class MqttClientData implements Mqtt5ClientData {
         return serverPort;
     }
 
+    @Override
+    public boolean usesSsl() {
+        return sslConfig != null;
+    }
+
+    @NotNull
+    @Override
+    public Optional<MqttClientSslConfig> getSslConfig() {
+        return Optional.ofNullable(sslConfig);
+    }
+
+    @Override
+    public boolean usesWebSockets() {
+        return websocketConfig != null;
+    }
+
     @NotNull
     @Override
     public Optional<MqttWebsocketConfig> getWebsocketConfig() {
         return Optional.ofNullable(websocketConfig);
-    }
-
-    @Override
-    public boolean usesSsl() {
-        return sslConfig != null;
     }
 
     @Override
@@ -139,11 +150,6 @@ public class MqttClientData implements Mqtt5ClientData {
     @Override
     public boolean isConnected() {
         return connected.get();
-    }
-
-    @Override
-    public boolean usesWebSockets() {
-        return websocketConfig != null;
     }
 
     public boolean setConnected(final boolean connected) {
@@ -195,12 +201,6 @@ public class MqttClientData implements Mqtt5ClientData {
     @Override
     public Optional<Mqtt5ServerConnectionData> getServerConnectionData() {
         return Optional.of(serverConnectionData);
-    }
-
-    @NotNull
-    @Override
-    public Optional<MqttClientSslConfig> getSslConfig() {
-        return Optional.ofNullable(sslConfig);
     }
 
     @Nullable

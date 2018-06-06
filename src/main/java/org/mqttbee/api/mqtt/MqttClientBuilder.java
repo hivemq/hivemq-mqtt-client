@@ -18,12 +18,11 @@
 package org.mqttbee.api.mqtt;
 
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3ClientBuilder;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientBuilder;
-import org.mqttbee.mqtt.MqttClientSslConfigImpl;
 import org.mqttbee.mqtt.MqttClientExecutorConfigImpl;
+import org.mqttbee.mqtt.MqttClientSslConfigImpl;
 import org.mqttbee.mqtt.MqttWebsocketConfigImpl;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
@@ -85,7 +84,7 @@ public class MqttClientBuilder {
     }
 
     @NotNull
-    public MqttClientBuilder usingWebSockets(@Nullable final MqttWebsocketConfig websocketConfig) {
+    public MqttClientBuilder usingWebSockets(@NotNull final MqttWebsocketConfig websocketConfig) {
         this.websocketConfig = websocketConfig;
         return this;
     }
