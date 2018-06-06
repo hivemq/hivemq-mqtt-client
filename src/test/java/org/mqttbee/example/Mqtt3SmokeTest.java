@@ -27,8 +27,12 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * @author David Katz
+ * @author Christian Hoff
+ */
 class Mqtt3SmokeTest {
 
     private static final String KEYSTORE_PATH = "src/test/resources/testkeys/mosquitto/mosquitto.org.client.jks";
@@ -38,20 +42,35 @@ class Mqtt3SmokeTest {
     private final String server = "test.mosquitto.org";
     private final MqttQoS qos = MqttQoS.AT_LEAST_ONCE;
     private String topic;
-    private Mqtt3ClientExample subscribeInstance;
+    private final Mqtt3ClientExample subscribeInstance;
     private Mqtt3ClientExample publishInstance;
     private final int count = 100;
+    private boolean completed = false;
+
+    public Mqtt3SmokeTest() {
+        topic = UUID.randomUUID().toString();
+        subscribeInstance = new Mqtt3ClientExample(server, 1883, false, null, null, null, null);
+    }
 
     @BeforeEach
     void subscribe() {
-        topic = UUID.randomUUID().toString();
-        subscribeInstance = new Mqtt3ClientExample(server, 1883, false, null, null, null, null);
-        subscribeInstance.subscribeTo(topic, qos).subscribe();
+        subscribeInstance.subscribeTo(topic, qos, count).doOnComplete(() -> {
+            synchronized (subscribeInstance) {
+                completed = true;
+                subscribeInstance.notifyAll();
+            }
+        }).subscribe();
     }
 
     @AfterEach
-    void check() {
-        assertEquals(subscribeInstance.getReceivedCount(), publishInstance.getPublishedCount());
+    void check() throws InterruptedException {
+        synchronized (subscribeInstance) {
+            while (!completed) {
+                subscribeInstance.wait(1000);
+            }
+        }
+        assertEquals(count, publishInstance.getPublishedCount());
+        assertEquals(count, subscribeInstance.getReceivedCount());
     }
 
     @Test
