@@ -15,6 +15,7 @@
  */
 package org.mqttbee.mqtt;
 
+import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.MqttClientSslConfig;
 
@@ -61,21 +62,25 @@ public class MqttClientSslConfigImpl implements MqttClientSslConfig {
         this.trustManagerFactory = trustManagerFactory;
     }
 
+    @Nullable
     @Override
     public KeyManagerFactory getKeyManagerFactory() {
         return keyManagerFactory;
     }
 
+    @Nullable
     @Override
     public TrustManagerFactory getTrustManagerFactory() {
         return trustManagerFactory;
     }
 
+    @NotNull
     @Override
     public List<String> getCipherSuites() {
         return cipherSuites;
     }
 
+    @NotNull
     @Override
     public List<String> getProtocols() {
         return protocols;

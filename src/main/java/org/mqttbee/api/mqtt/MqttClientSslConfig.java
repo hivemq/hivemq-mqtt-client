@@ -16,10 +16,10 @@
 package org.mqttbee.api.mqtt;
 
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.annotations.Nullable;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 /**
@@ -32,18 +32,22 @@ public interface MqttClientSslConfig {
         return new MqttClientSslConfigBuilder();
     }
 
+    @Nullable
     KeyManagerFactory getKeyManagerFactory();
 
+    @Nullable
     TrustManagerFactory getTrustManagerFactory();
 
     /**
      * @return list of supported cipher suites
      */
+    @NotNull
     List<String> getCipherSuites();
 
     /**
      * @return list of supported protocols
      */
+    @NotNull
     List<String> getProtocols();
 
     /**
