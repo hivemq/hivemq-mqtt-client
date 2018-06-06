@@ -22,7 +22,10 @@ import io.reactivex.Flowable;
 import io.reactivex.Single;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt.*;
+import org.mqttbee.api.mqtt.MqttClient;
+import org.mqttbee.api.mqtt.MqttClientSslConfig;
+import org.mqttbee.api.mqtt.MqttClientSslConfigBuilder;
+import org.mqttbee.api.mqtt.MqttWebsocketConfig;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3Client;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3Connect;
@@ -51,6 +54,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * @author Silvio Giebl
  * @author David Katz
+ * @author Christian Hoff
  * <p>
  * A simple test app. Can be run via gradle:
  * Publisher:
@@ -119,9 +123,7 @@ class Mqtt3ClientExample {
         this.serverPath = serverPath == null ? "mqtt" : serverPath;
     }
 
-    Flowable<Mqtt3Publish> subscribeTo(String topic, MqttQoS qos) {
-
-
+    Flowable<Mqtt3Publish> subscribeTo(final String topic, final MqttQoS qos, final int countToPublish) {
         final Mqtt3Client client = getClient();
 
         // create a CONNECT message with keep alive of 10 seconds
@@ -151,8 +153,19 @@ class Mqtt3ClientExample {
             }
         });
 
+        // define what to do when we disconnect, this does not disconnect yet
+        final Completable disconnectScenario =
+                client.disconnect().doOnComplete(() -> System.out.println("disconnected subscriber"));
+
+
         // now say we want to connect first and then subscribe, this does not connect and subscribe yet
-        return connectScenario.toCompletable().andThen(subscribeScenario);
+        // only take the first countToPublish publications and then disconnect
+        return connectScenario
+                .toCompletable()
+                .andThen(subscribeScenario)
+                .take(countToPublish)
+                .ignoreElements()
+                .andThen(disconnectScenario.toFlowable());
     }
 
     private boolean isNotUsingMqttPort(int port) {
@@ -193,13 +206,17 @@ class Mqtt3ClientExample {
 
         // define what to do when we disconnect, this does not disconnect yet
         final Completable disconnectScenario =
-                client.disconnect().doOnComplete(() -> System.out.println("disconnected"));
+                client.disconnect().doOnComplete(() -> System.out.println("disconnected publisher"));
 
-        // now we want to connect, then publish and if we did not publish anything for 10 seconds disconnect
+        // now we want to connect, then publish and take the corresponding number of pubAcks and disconnect
+        // if we did not publish anything for 10 seconds also disconnect
         return connectScenario.toCompletable()
                 .andThen(publishScenario)
+                .take(countToPublish)
                 .timeout(10, TimeUnit.SECONDS)
-                .onErrorResumeNext(disconnectScenario.toFlowable());
+                .onErrorResumeNext(disconnectScenario.toFlowable())
+                .ignoreElements()
+                .andThen(disconnectScenario.toFlowable());
     }
 
     private Mqtt3Client getClient() {
@@ -274,10 +291,10 @@ class Mqtt3ClientExample {
 
         switch (command) {
             case SUBSCRIBE:
-                instance.subscribeTo(topic, qos).blockingSubscribe();
+                instance.subscribeTo(topic, qos, count).subscribe();
                 break;
             case PUBLISH:
-                instance.publish(topic, qos, count).blockingSubscribe();
+                instance.publish(topic, qos, count).subscribe();
                 break;
         }
     }
