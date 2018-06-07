@@ -25,11 +25,12 @@ import org.mqttbee.api.mqtt.MqttWebsocketConfig;
 public class MqttWebsocketConfigImpl implements MqttWebsocketConfig {
 
     public static final MqttWebsocketConfig DEFAULT = new MqttWebsocketConfigImpl("");
-    private final String serverPath;
 
     public static MqttWebsocketConfig create(@NotNull String serverPath) {
         return new MqttWebsocketConfigImpl(serverPath);
     }
+
+    private final String serverPath;
 
     public MqttWebsocketConfigImpl(@NotNull String serverPath) {
         // remove any leading slashes
