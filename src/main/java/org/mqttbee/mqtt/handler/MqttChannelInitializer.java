@@ -60,6 +60,8 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
     private static final String WEBSOCKETS_CLIENT = "websockets-client";
     private static final String WS_BINARYFRAME_CREATOR = "ws-binaryframe-creator";
     private static final String WS_BINARYFRAME_UNPACKER = "ws-binaryframe-unpacker";
+    private static final String WEBSOCKET_URI_SCHEME = "ws";
+    private static final String WEBSOCKET_TLS_URI_SCHEME = "wss";
 
     private final MqttConnect connect;
     private final SingleEmitter<Mqtt5ConnAck> connAckEmitter;
@@ -147,7 +149,7 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
     }
 
     private String getWebsocketScheme() {
-        return clientData.usesSsl() ? "wss" : "ws";
+        return clientData.usesSsl() ? WEBSOCKET_TLS_URI_SCHEME : WEBSOCKET_URI_SCHEME;
     }
 
 }
