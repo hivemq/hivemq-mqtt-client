@@ -29,9 +29,9 @@ import org.reactivestreams.Subscriber;
 /**
  * @author Silvio Giebl
  */
-public class MqttSubscriptionFlow extends MqttIncomingPublishFlow implements SingleFlow<Mqtt5SubAck> {
+public class MqttSubscriptionFlow extends MqttIncomingPublishFlow<Subscriber<? super Mqtt5SubscribeResult>>
+        implements SingleFlow<Mqtt5SubAck> {
 
-    private final Subscriber<? super Mqtt5SubscribeResult> subscriber;
     private final ScNodeList<MqttTopicFilterImpl> topicFilters;
     private int subscriptionIdentifier = MqttStatefulSubscribe.DEFAULT_NO_SUBSCRIPTION_IDENTIFIER;
 
@@ -39,15 +39,8 @@ public class MqttSubscriptionFlow extends MqttIncomingPublishFlow implements Sin
             @NotNull final Subscriber<? super Mqtt5SubscribeResult> subscriber,
             @NotNull final MqttIncomingPublishService incomingPublishService) {
 
-        super(incomingPublishService);
-        this.subscriber = subscriber;
+        super(incomingPublishService, subscriber);
         this.topicFilters = new ScNodeList<>();
-    }
-
-    @NotNull
-    @Override
-    Subscriber<? super Mqtt5SubscribeResult> getSubscriber() {
-        return subscriber;
     }
 
     @Override
