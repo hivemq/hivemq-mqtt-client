@@ -54,7 +54,7 @@ public class SslUtil {
 
         //set chosen protocols if available, use defaults otherwise
         if (sslConfig.getProtocols() != null && sslConfig.getProtocols().size() > 0) {
-            sslContextBuilder.protocols(sslConfig.getProtocols().toArray(new String[0]));
+            sslContextBuilder.protocols(sslConfig.getProtocols().toArray(new String[sslConfig.getProtocols().size()]));
         }
 
         //set chosen cipher suites if available, use defaults otherwise
