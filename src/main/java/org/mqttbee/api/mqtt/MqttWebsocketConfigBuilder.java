@@ -27,7 +27,7 @@ public class MqttWebsocketConfigBuilder {
 
 
     @NotNull
-    public MqttWebsocketConfigBuilder withServerPath(@NotNull final String serverPath) {
+    public MqttWebsocketConfigBuilder serverPath(@NotNull final String serverPath) {
         // remove any leading slashes
         this.serverPath = serverPath.replaceAll("^/+", "");
         return this;
