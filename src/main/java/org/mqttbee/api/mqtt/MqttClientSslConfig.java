@@ -26,6 +26,7 @@ import java.util.List;
  * @author Christoph Schäbel
  */
 public interface MqttClientSslConfig {
+    long DEFAULT_HANDSHAKE_TIMEOUT_MS = 10_000;
 
     @NotNull
     static MqttClientSslConfigBuilder builder() {
@@ -53,6 +54,6 @@ public interface MqttClientSslConfig {
     /**
      * @return SSL handshake timeout in milliseconds
      */
-    int getHandshakeTimeoutMs();
+    long getHandshakeTimeoutMs();
 
 }

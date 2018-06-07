@@ -24,7 +24,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mqttbee.api.mqtt.MqttClientSslConfig;
-
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
@@ -124,7 +123,7 @@ public class MqttChannelInitializerSslTest {
         }
 
         @Override
-        public int getHandshakeTimeoutMs() {
+        public long getHandshakeTimeoutMs() {
             return handshakeTimeout;
         }
     }
