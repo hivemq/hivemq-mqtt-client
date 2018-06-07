@@ -57,12 +57,6 @@ public class Mqtt3ClientDataView implements Mqtt3ClientData {
         return wrapped.getServerPort();
     }
 
-    @NotNull
-    @Override
-    public Optional<MqttWebsocketConfig> getWebsocketConfig() {
-        return wrapped.getWebsocketConfig();
-    }
-
     @Override
     public boolean usesSsl() {
         return wrapped.usesSsl();
@@ -72,6 +66,17 @@ public class Mqtt3ClientDataView implements Mqtt3ClientData {
     @Override
     public Optional<MqttClientSslConfig> getSslConfig() {
         return wrapped.getSslConfig();
+    }
+
+    @Override
+    public boolean usesWebSockets() {
+        return wrapped.usesWebSockets();
+    }
+
+    @NotNull
+    @Override
+    public Optional<MqttWebsocketConfig> getWebsocketConfig() {
+        return wrapped.getWebsocketConfig();
     }
 
     @NotNull
@@ -88,11 +93,6 @@ public class Mqtt3ClientDataView implements Mqtt3ClientData {
     @Override
     public boolean isConnected() {
         return wrapped.isConnected();
-    }
-
-    @Override
-    public boolean usesWebSockets() {
-        return wrapped.usesWebSockets();
     }
 
     @NotNull
