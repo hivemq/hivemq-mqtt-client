@@ -31,9 +31,11 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * @author Silvio Giebl
  */
-public abstract class MqttIncomingPublishFlow implements Emitter<Mqtt5Publish>, Subscription {
+public abstract class MqttIncomingPublishFlow<S extends Subscriber<? super Mqtt5Publish>>
+        implements Emitter<Mqtt5Publish>, Subscription {
 
     final MqttIncomingPublishService incomingPublishService;
+    final S subscriber;
 
     long requested;
     private final AtomicLong newRequested = new AtomicLong();
@@ -47,19 +49,19 @@ public abstract class MqttIncomingPublishFlow implements Emitter<Mqtt5Publish>, 
     private final Runnable requestRunnable = this::runRequest;
     private final AtomicBoolean scheduled = new AtomicBoolean();
 
-    MqttIncomingPublishFlow(@NotNull final MqttIncomingPublishService incomingPublishService) {
-        this.incomingPublishService = incomingPublishService;
-    }
+    MqttIncomingPublishFlow(
+            @NotNull final MqttIncomingPublishService incomingPublishService, @NotNull final S subscriber) {
 
-    @NotNull
-    abstract Subscriber<? super Mqtt5Publish> getSubscriber();
+        this.incomingPublishService = incomingPublishService;
+        this.subscriber = subscriber;
+    }
 
     @Override
     public void onNext(@NotNull final Mqtt5Publish result) {
         if (done) {
             return;
         }
-        getSubscriber().onNext(result);
+        subscriber.onNext(result);
         if (requested != Long.MAX_VALUE) {
             requested--;
         }
@@ -71,7 +73,7 @@ public abstract class MqttIncomingPublishFlow implements Emitter<Mqtt5Publish>, 
             return;
         }
         done = true;
-        getSubscriber().onError(t);
+        subscriber.onError(t);
     }
 
     @Override
@@ -80,7 +82,7 @@ public abstract class MqttIncomingPublishFlow implements Emitter<Mqtt5Publish>, 
             return;
         }
         done = true;
-        getSubscriber().onComplete();
+        subscriber.onComplete();
     }
 
     @Override

@@ -25,14 +25,13 @@ import org.reactivestreams.Subscriber;
 /**
  * @author Silvio Giebl
  */
-public class MqttGlobalIncomingPublishFlow extends MqttIncomingPublishFlow {
+public class MqttGlobalIncomingPublishFlow extends MqttIncomingPublishFlow<Subscriber<? super Mqtt5Publish>> {
 
     public static final int TYPE_ALL_SUBSCRIPTIONS = 0;
     public static final int TYPE_ALL_PUBLISHES = 1;
     public static final int TYPE_REMAINING_PUBLISHES = 2;
     static final int TYPE_COUNT = 3;
 
-    private final Subscriber<? super Mqtt5Publish> subscriber;
     private final int type;
     private ScNodeList.Handle<MqttGlobalIncomingPublishFlow> handle;
 
@@ -40,15 +39,8 @@ public class MqttGlobalIncomingPublishFlow extends MqttIncomingPublishFlow {
             @NotNull final Subscriber<? super Mqtt5Publish> subscriber,
             @NotNull final MqttIncomingPublishService incomingPublishService, final int type) {
 
-        super(incomingPublishService);
-        this.subscriber = subscriber;
+        super(incomingPublishService, subscriber);
         this.type = type;
-    }
-
-    @NotNull
-    @Override
-    Subscriber<? super Mqtt5Publish> getSubscriber() {
-        return subscriber;
     }
 
     @Override
