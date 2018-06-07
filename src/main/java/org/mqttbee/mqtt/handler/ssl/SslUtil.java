@@ -57,10 +57,7 @@ public class SslUtil {
             sslContextBuilder.protocols(sslConfig.getProtocols().toArray(new String[sslConfig.getProtocols().size()]));
         }
 
-        //set chosen cipher suites if available, use defaults otherwise
-        if (sslConfig.getCipherSuites() != null && sslConfig.getCipherSuites().size() > 0) {
-            sslContextBuilder.ciphers(sslConfig.getCipherSuites(), SupportedCipherSuiteFilter.INSTANCE);
-        }
+        sslContextBuilder.ciphers(sslConfig.getCipherSuites(), SupportedCipherSuiteFilter.INSTANCE);
 
         return sslContextBuilder.build();
     }

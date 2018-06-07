@@ -113,7 +113,7 @@ public class MqttChannelInitializerSslTest {
         }
 
         @Override
-        public List<String> getCipherSuites() {
+        public Iterable<String> getCipherSuites() {
             return cipherSuites;
         }
 
