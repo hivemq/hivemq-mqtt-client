@@ -53,13 +53,22 @@ public class MqttClientSslConfigImpl implements MqttClientSslConfig {
             "TLS_DHE_DSS_WITH_AES_256_GCM_SHA384",
             "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
             "TLS_DHE_DSS_WITH_AES_128_GCM_SHA256");
-    private KeyManagerFactory keyManagerFactory;
+    private final KeyManagerFactory keyManagerFactory;
     private final TrustManagerFactory trustManagerFactory;
     private final List<String> protocols = Arrays.asList("TLSv1.2", "TLSv1.1");
+    private final long handshakeTimeoutMs;
 
-    public MqttClientSslConfigImpl(@Nullable KeyManagerFactory keyManagerFactory, @Nullable TrustManagerFactory trustManagerFactory) {
+    public MqttClientSslConfigImpl(
+            @Nullable KeyManagerFactory keyManagerFactory, @Nullable TrustManagerFactory trustManagerFactory) {
+        this(keyManagerFactory, trustManagerFactory, DEFAULT_HANDSHAKE_TIMEOUT_MS);
+    }
+
+    public MqttClientSslConfigImpl(
+            @Nullable KeyManagerFactory keyManagerFactory, @Nullable TrustManagerFactory trustManagerFactory,
+            long handshakeTimeoutMs) {
         this.keyManagerFactory = keyManagerFactory;
         this.trustManagerFactory = trustManagerFactory;
+        this.handshakeTimeoutMs = handshakeTimeoutMs;
     }
 
     @Nullable
@@ -87,7 +96,7 @@ public class MqttClientSslConfigImpl implements MqttClientSslConfig {
     }
 
     @Override
-    public int getHandshakeTimeoutMs() {
-        return 10 * 1000;
+    public long getHandshakeTimeoutMs() {
+        return handshakeTimeoutMs;
     }
 }

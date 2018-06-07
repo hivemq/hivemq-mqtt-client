@@ -25,12 +25,14 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
+import java.util.concurrent.TimeUnit;
 
 public class MqttClientSslConfigBuilder {
 
     private KeyStore keyStore = null;
     private String keyStorePassword = "";
     private KeyStore trustStore = null;
+    private long handshakeTimeoutMs = MqttClientSslConfig.DEFAULT_HANDSHAKE_TIMEOUT_MS;
 
     @NotNull
     public MqttClientSslConfigBuilder keyStore(@Nullable final KeyStore keyStore) {
@@ -51,12 +53,18 @@ public class MqttClientSslConfigBuilder {
     }
 
     @NotNull
+    public MqttClientSslConfigBuilder handshakeTimeout(long timeout, TimeUnit timeUnit) {
+        this.handshakeTimeoutMs = TimeUnit.MILLISECONDS.convert(timeout, timeUnit);
+        return this;
+    }
+
+    @NotNull
     public MqttClientSslConfig build() throws UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
         final KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
         keyManagerFactory.init(keyStore, keyStorePassword.toCharArray());
         final TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
         trustManagerFactory.init(trustStore);
-        return new MqttClientSslConfigImpl(keyManagerFactory, trustManagerFactory);
+        return new MqttClientSslConfigImpl(keyManagerFactory, trustManagerFactory, handshakeTimeoutMs);
     }
 
 }
