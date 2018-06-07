@@ -15,6 +15,7 @@
  */
 package org.mqttbee.api.mqtt;
 
+import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt.MqttClientSslConfigImpl;
@@ -32,6 +33,7 @@ public class MqttClientSslConfigBuilder {
     private KeyStore keyStore = null;
     private String keyStorePassword = "";
     private KeyStore trustStore = null;
+    private Iterable<String> cipherSuites = null;
     private long handshakeTimeoutMs = MqttClientSslConfig.DEFAULT_HANDSHAKE_TIMEOUT_MS;
 
     @NotNull
@@ -52,6 +54,15 @@ public class MqttClientSslConfigBuilder {
         return this;
     }
 
+    /**
+     * @param cipherSuites if <code>null</code>, netty's default cipher suites will be used
+     */
+    @NotNull
+    public MqttClientSslConfigBuilder cipherSuites(@Nullable final Iterable<String> cipherSuites) {
+        this.cipherSuites = (cipherSuites == null) ? null : ImmutableList.copyOf(cipherSuites);
+        return this;
+    }
+
     @NotNull
     public MqttClientSslConfigBuilder handshakeTimeout(long timeout, TimeUnit timeUnit) {
         this.handshakeTimeoutMs = TimeUnit.MILLISECONDS.convert(timeout, timeUnit);
@@ -64,7 +75,7 @@ public class MqttClientSslConfigBuilder {
         keyManagerFactory.init(keyStore, keyStorePassword.toCharArray());
         final TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
         trustManagerFactory.init(trustStore);
-        return new MqttClientSslConfigImpl(keyManagerFactory, trustManagerFactory, handshakeTimeoutMs);
+        return new MqttClientSslConfigImpl(keyManagerFactory, trustManagerFactory, cipherSuites, handshakeTimeoutMs);
     }
 
 }

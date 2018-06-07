@@ -42,8 +42,8 @@ public interface MqttClientSslConfig {
     /**
      * @return list of supported cipher suites
      */
-    @NotNull
-    List<String> getCipherSuites();
+    @Nullable
+    Iterable<String> getCipherSuites();
 
     /**
      * @return list of supported protocols
