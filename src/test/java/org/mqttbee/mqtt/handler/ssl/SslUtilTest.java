@@ -16,7 +16,6 @@
 package org.mqttbee.mqtt.handler.ssl;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import io.netty.channel.embedded.EmbeddedChannel;
 import org.junit.Before;
 import org.junit.Test;
@@ -102,7 +101,7 @@ public class SslUtilTest {
 
         final TrustManagerFactory tmf = null;
 
-        final List<String> protocol = Lists.newArrayList("TLSv1");
+        final ImmutableList<String> protocol = ImmutableList.of("TLSv1");
         final TestSslConfig sslConfig = new TestSslConfig(null, tmf, null, protocol, 0);
 
         final SSLEngine sslEngine = SslUtil.createSslEngine(embeddedChannel, sslConfig);
@@ -120,7 +119,7 @@ public class SslUtilTest {
 
         final TrustManagerFactory tmf = null;
 
-        final List<String> protocols = Lists.newArrayList("TLSv1.1", "TLSv1.2");
+        final ImmutableList<String> protocols = ImmutableList.of("TLSv1.1", "TLSv1.2");
         final TestSslConfig sslConfig = new TestSslConfig(null, tmf, null, protocols, 0);
 
         final SSLEngine sslEngine = SslUtil.createSslEngine(embeddedChannel, sslConfig);
@@ -175,12 +174,12 @@ public class SslUtilTest {
         private final KeyManagerFactory keyManagerFactory;
         private final TrustManagerFactory trustManagerFactory;
         private final ImmutableList<String> cipherSuites;
-        private final List<String> protocols;
+        private final ImmutableList<String> protocols;
         private final int handshakeTimeout;
 
         private TestSslConfig(
                 final KeyManagerFactory keyManagerFactory, final TrustManagerFactory trustManagerFactory,
-                final ImmutableList<String> cipherSuites, final List<String> protocols, final int handshakeTimeout) {
+                final ImmutableList<String> cipherSuites, final ImmutableList<String> protocols, final int handshakeTimeout) {
             this.keyManagerFactory = keyManagerFactory;
             this.trustManagerFactory = trustManagerFactory;
             this.cipherSuites = cipherSuites;
@@ -204,7 +203,7 @@ public class SslUtilTest {
         }
 
         @Override
-        public List<String> getProtocols() {
+        public ImmutableList<String> getProtocols() {
             return protocols;
         }
 

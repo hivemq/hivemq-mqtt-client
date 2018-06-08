@@ -51,4 +51,24 @@ public class MqttClientSslConfigBuilderTest {
 
         assertNull(sslConfig.getCipherSuites());
     }
+
+    @Test
+    public void protocols_simple() throws UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
+        List<String> expectedProtocols = Arrays.asList("TLSv1.2", "TLSv1.1");
+
+        MqttClientSslConfig sslConfig = MqttClientSslConfig.builder()
+                .protocols(Lists.newArrayList("TLSv1.2", "TLSv1.1"))
+                .build();
+
+        assertThat(sslConfig.getProtocols(), is(expectedProtocols));
+    }
+
+    @Test
+    public void protocols_null() throws UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
+        MqttClientSslConfig sslConfig = MqttClientSslConfig.builder()
+                .protocols(null)
+                .build();
+
+        assertNull(sslConfig.getProtocols());
+    }
 }

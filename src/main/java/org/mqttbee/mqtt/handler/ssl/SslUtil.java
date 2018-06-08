@@ -52,10 +52,11 @@ public class SslUtil {
                 .trustManager(sslConfig.getTrustManagerFactory())
                 .keyManager(sslConfig.getKeyManagerFactory());
 
-        //set chosen protocols if available, use defaults otherwise
-        if (sslConfig.getProtocols() != null && sslConfig.getProtocols().size() > 0) {
-            sslContextBuilder.protocols(sslConfig.getProtocols().toArray(new String[sslConfig.getProtocols().size()]));
+        String[] protocols = null;
+        if (sslConfig.getProtocols() != null) {
+            protocols = sslConfig.getProtocols().toArray(new String[sslConfig.getProtocols().size()]);
         }
+        sslContextBuilder.protocols(protocols);
 
         sslContextBuilder.ciphers(sslConfig.getCipherSuites(), SupportedCipherSuiteFilter.INSTANCE);
 

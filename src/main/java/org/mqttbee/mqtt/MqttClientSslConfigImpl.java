@@ -16,14 +16,11 @@
 package org.mqttbee.mqtt;
 
 import com.google.common.collect.ImmutableList;
-import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.MqttClientSslConfig;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  *  Default MqttClientSslConfig implementation:
@@ -38,21 +35,22 @@ public class MqttClientSslConfigImpl implements MqttClientSslConfig {
     private final KeyManagerFactory keyManagerFactory;
     private final TrustManagerFactory trustManagerFactory;
     private final ImmutableList<String> cipherSuites;
-    private final List<String> protocols = Arrays.asList("TLSv1.2", "TLSv1.1");
+    private final ImmutableList<String> protocols;
     private final long handshakeTimeoutMs;
 
     public MqttClientSslConfigImpl(
             @Nullable KeyManagerFactory keyManagerFactory, @Nullable TrustManagerFactory trustManagerFactory) {
-        this(keyManagerFactory, trustManagerFactory, null, DEFAULT_HANDSHAKE_TIMEOUT_MS);
+        this(keyManagerFactory, trustManagerFactory, null, null, DEFAULT_HANDSHAKE_TIMEOUT_MS);
     }
 
     public MqttClientSslConfigImpl(
             @Nullable KeyManagerFactory keyManagerFactory, @Nullable TrustManagerFactory trustManagerFactory,
-            @Nullable ImmutableList<String> cipherSuites, long handshakeTimeoutMs) {
+            @Nullable ImmutableList<String> cipherSuites, @Nullable ImmutableList<String> protocols, long handshakeTimeoutMs) {
         this.keyManagerFactory = keyManagerFactory;
         this.trustManagerFactory = trustManagerFactory;
         this.cipherSuites = cipherSuites;
         this.handshakeTimeoutMs = handshakeTimeoutMs;
+        this.protocols = protocols;
     }
 
     @Nullable
@@ -73,9 +71,9 @@ public class MqttClientSslConfigImpl implements MqttClientSslConfig {
         return cipherSuites;
     }
 
-    @NotNull
+    @Nullable
     @Override
-    public List<String> getProtocols() {
+    public ImmutableList<String> getProtocols() {
         return protocols;
     }
 
