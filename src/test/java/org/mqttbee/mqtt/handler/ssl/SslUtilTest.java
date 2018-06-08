@@ -209,7 +209,7 @@ public class SslUtilTest {
 
         @Override
         public long getHandshakeTimeoutMs() {
-            return 0;
+            return handshakeTimeout;
         }
     }
 

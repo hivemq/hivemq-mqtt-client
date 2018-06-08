@@ -51,4 +51,5 @@ public interface MqttClientData {
     boolean isConnecting();
 
     boolean isConnected();
+
 }

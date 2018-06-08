@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2018 The MQTT Bee project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.mqttbee.mqtt.handler.websocket;
 
 import io.netty.buffer.ByteBuf;
@@ -22,9 +23,14 @@ import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
 
 import java.util.List;
 
+/**
+ * @author David Katz
+ */
 public class WebSocketBinaryFrameEncoder extends MessageToMessageEncoder<ByteBuf> {
+
     @Override
-    protected void encode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) {
+    protected void encode(final ChannelHandlerContext ctx, final ByteBuf msg, final List<Object> out) {
         out.add(new BinaryWebSocketFrame(msg.retain()));
     }
+
 }

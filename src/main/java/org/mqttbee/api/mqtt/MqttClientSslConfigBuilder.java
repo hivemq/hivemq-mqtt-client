@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.mqttbee.api.mqtt;
 
 import com.google.common.collect.ImmutableList;
@@ -67,14 +68,15 @@ public class MqttClientSslConfigBuilder {
     }
 
     @NotNull
-    public MqttClientSslConfigBuilder handshakeTimeout(long timeout, TimeUnit timeUnit) {
+    public MqttClientSslConfigBuilder handshakeTimeout(final long timeout, @NotNull final TimeUnit timeUnit) {
         this.handshakeTimeoutMs = TimeUnit.MILLISECONDS.convert(timeout, timeUnit);
         return this;
     }
 
     @NotNull
     public MqttClientSslConfig build() {
-        return new MqttClientSslConfigImpl(keyManagerFactory, trustManagerFactory, cipherSuites, protocols, handshakeTimeoutMs);
+        return new MqttClientSslConfigImpl(
+                keyManagerFactory, trustManagerFactory, cipherSuites, protocols, handshakeTimeoutMs);
     }
 
 }

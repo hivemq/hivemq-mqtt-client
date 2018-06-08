@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.mqttbee.mqtt;
 
 import com.google.common.collect.ImmutableList;
@@ -23,14 +24,12 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
 
 /**
- *  Default MqttClientSslConfig implementation:
- *
- *  Handshake timeout set to 10 seconds
- *
- *  @author David Katz
+ * @author David Katz
  */
 public class MqttClientSslConfigImpl implements MqttClientSslConfig {
-    public static final MqttClientSslConfig DEFAULT = new MqttClientSslConfigImpl(null, null);
+
+    public static final MqttClientSslConfigImpl DEFAULT =
+            new MqttClientSslConfigImpl(null, null, null, null, DEFAULT_HANDSHAKE_TIMEOUT_MS);
 
     private final KeyManagerFactory keyManagerFactory;
     private final TrustManagerFactory trustManagerFactory;
@@ -39,13 +38,10 @@ public class MqttClientSslConfigImpl implements MqttClientSslConfig {
     private final long handshakeTimeoutMs;
 
     public MqttClientSslConfigImpl(
-            @Nullable KeyManagerFactory keyManagerFactory, @Nullable TrustManagerFactory trustManagerFactory) {
-        this(keyManagerFactory, trustManagerFactory, null, null, DEFAULT_HANDSHAKE_TIMEOUT_MS);
-    }
+            @Nullable final KeyManagerFactory keyManagerFactory,
+            @Nullable final TrustManagerFactory trustManagerFactory, @Nullable final ImmutableList<String> cipherSuites,
+            @Nullable final ImmutableList<String> protocols, final long handshakeTimeoutMs) {
 
-    public MqttClientSslConfigImpl(
-            @Nullable KeyManagerFactory keyManagerFactory, @Nullable TrustManagerFactory trustManagerFactory,
-            @Nullable ImmutableList<String> cipherSuites, @Nullable ImmutableList<String> protocols, long handshakeTimeoutMs) {
         this.keyManagerFactory = keyManagerFactory;
         this.trustManagerFactory = trustManagerFactory;
         this.cipherSuites = cipherSuites;
@@ -81,4 +77,5 @@ public class MqttClientSslConfigImpl implements MqttClientSslConfig {
     public long getHandshakeTimeoutMs() {
         return handshakeTimeoutMs;
     }
+
 }

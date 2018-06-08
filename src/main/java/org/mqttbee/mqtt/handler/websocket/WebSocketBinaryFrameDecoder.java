@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.mqttbee.mqtt.handler.websocket;
 
 import io.netty.channel.ChannelHandlerContext;
@@ -22,13 +23,16 @@ import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 
 import java.util.List;
 
+/**
+ * @author David Katz
+ */
 public class WebSocketBinaryFrameDecoder extends MessageToMessageDecoder<WebSocketFrame> {
-    @Override
-    protected void decode(ChannelHandlerContext ctx, WebSocketFrame msg, List<Object> out) {
-        if (!(msg instanceof BinaryWebSocketFrame)) {
-            return;
-        }
 
-        out.add(msg.retain().content());
+    @Override
+    protected void decode(final ChannelHandlerContext ctx, final WebSocketFrame msg, final List<Object> out) {
+        if (msg instanceof BinaryWebSocketFrame) {
+            out.add(msg.retain().content());
+        }
     }
+
 }

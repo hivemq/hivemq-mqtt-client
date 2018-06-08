@@ -17,6 +17,7 @@
 
 package org.mqttbee.api.mqtt.mqtt3;
 
+import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.MqttClientSslConfig;
@@ -36,15 +37,19 @@ public class Mqtt3ClientBuilder {
     private final MqttClientIdentifierImpl identifier;
     private final String serverHost;
     private final int serverPort;
-    private final MqttWebsocketConfig websocketConfig;
     private final MqttClientSslConfig sslConfig;
+    private final MqttWebsocketConfig websocketConfig;
     private final MqttClientExecutorConfigImpl executorConfig;
-
 
     public Mqtt3ClientBuilder(
             @NotNull final MqttClientIdentifierImpl identifier, @NotNull final String serverHost, final int serverPort,
             @Nullable final MqttClientSslConfig sslConfig, @Nullable final MqttWebsocketConfig websocketConfig,
             @NotNull final MqttClientExecutorConfigImpl executorConfig) {
+
+        Preconditions.checkNotNull(identifier);
+        Preconditions.checkNotNull(serverHost);
+        Preconditions.checkNotNull(executorConfig);
+
         this.identifier = identifier;
         this.serverHost = serverHost;
         this.serverPort = serverPort;
@@ -62,4 +67,5 @@ public class Mqtt3ClientBuilder {
         return new MqttClientData(MqttVersion.MQTT_3_1_1, identifier, serverHost, serverPort, sslConfig,
                 websocketConfig, false, false, executorConfig, null);
     }
+
 }

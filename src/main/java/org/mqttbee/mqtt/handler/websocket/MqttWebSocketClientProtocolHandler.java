@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.mqttbee.mqtt.handler.websocket;
 
 import io.netty.channel.ChannelHandlerContext;
@@ -22,17 +23,22 @@ import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 
 import java.net.URI;
 
+/**
+ * @author David Katz
+ */
 public class MqttWebSocketClientProtocolHandler extends WebSocketClientProtocolHandler {
+
     // https://www.iana.org/assignments/websocket/websocket.xml#subprotocol-name
     private static final String MQTT_SUBPROTOCOL = "mqtt";
     private Runnable action;
 
-    public MqttWebSocketClientProtocolHandler(URI serverUri) {
-        super(serverUri, WebSocketVersion.V13, MQTT_SUBPROTOCOL, true, null, MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT);
+    public MqttWebSocketClientProtocolHandler(final URI serverUri) {
+        super(serverUri, WebSocketVersion.V13, MQTT_SUBPROTOCOL, true, null,
+                MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT);
     }
 
     @Override
-    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) {
+    public void userEventTriggered(final ChannelHandlerContext ctx, final Object evt) {
         if (ClientHandshakeStateEvent.HANDSHAKE_COMPLETE.equals(evt)) {
             // action allows other handlers to be added to the pipeline once the handshake is complete.
             action.run();
@@ -40,7 +46,8 @@ public class MqttWebSocketClientProtocolHandler extends WebSocketClientProtocolH
         ctx.fireUserEventTriggered(evt);
     }
 
-    public void onWebSocketHandshakeComplete(Runnable action) {
+    public void onWebSocketHandshakeComplete(final Runnable action) {
         this.action = action;
     }
+
 }

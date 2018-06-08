@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.mqttbee.mqtt.handler.ssl;
 
 import dagger.internal.Preconditions;
@@ -29,16 +30,15 @@ import javax.net.ssl.SSLException;
  */
 public class SslUtil {
 
-    public static SSLEngine createSslEngine(final Channel channel, final MqttClientSslConfig sslConfig)
+    @NotNull
+    static SSLEngine createSslEngine(@NotNull final Channel channel, @NotNull final MqttClientSslConfig sslConfig)
             throws SSLException {
 
         Preconditions.checkNotNull(channel, "channel must not be null");
         Preconditions.checkNotNull(sslConfig, "SslData must not be null");
 
-        //creates new SSLEngine from SslContext with the ByteBufAllocator from the channel
         final SSLEngine sslEngine = createSslContext(sslConfig).newEngine(channel.alloc());
 
-        //sets client mode
         sslEngine.setUseClientMode(true);
 
         return sslEngine;
@@ -46,7 +46,6 @@ public class SslUtil {
 
     @NotNull
     private static SslContext createSslContext(@NotNull final MqttClientSslConfig sslConfig) throws SSLException {
-
         final SslContextBuilder sslContextBuilder = SslContextBuilder.forClient()
                 .sslProvider(SslProvider.JDK)
                 .trustManager(sslConfig.getTrustManagerFactory())

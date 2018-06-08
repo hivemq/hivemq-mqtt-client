@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.mqttbee.api.mqtt;
 
 import com.google.common.collect.ImmutableList;
@@ -26,6 +27,7 @@ import javax.net.ssl.TrustManagerFactory;
  * @author Christoph Schäbel
  */
 public interface MqttClientSslConfig {
+
     long DEFAULT_HANDSHAKE_TIMEOUT_MS = 10_000;
 
     @NotNull
