@@ -35,19 +35,14 @@ import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3PublishBuilder;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3PublishResult;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscription;
+import org.mqttbee.api.util.KeyStoreUtil;
 import org.mqttbee.util.ByteBufferUtil;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
-import java.io.FileInputStream;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.ByteBuffer;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -68,6 +63,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * -Dtopic=a/b \
  * -Dkeystore=src/test/resources/testkeys/mosquitto/mosquitto.org.client.jks \
  * -Dkeystorepass=testkeystore \
+ * -Dprivatekeypass=testkeystore \
  * -Dtruststore=src/test/resources/testkeys/mosquitto/cacerts.jks \
  * -Dtruststorepass=testcas \
  * execute
@@ -81,6 +77,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * -Dtopic=a/b \
  * -Dkeystore=src/test/resources/testkeys/mosquitto/mosquitto.org.client.jks \
  * -Dkeystorepass=testkeystore \
+ * -Dprivatekeypass=testkeystore \
  * -Dtruststore=src/test/resources/testkeys/mosquitto/cacerts.jks \
  * -Dtruststorepass=testcas \
  * execute
@@ -93,6 +90,7 @@ class Mqtt3ClientExample {
     private static final String PUBLISH = "publish";
     private static final String KEYSTORE_PATH = "keystore";
     private static final String KEYSTORE_PASS = "keystorepass";
+    private static final String PRIVATE_KEY_PASS = "privatekeypass";
     private static final String JKS = "JKS";
     private static final String TRUSTSTORE_PATH = "truststore";
     private static final String TRUSTSTORE_PASS = "truststorepass";
@@ -250,41 +248,7 @@ class Mqtt3ClientExample {
         return System.getProperty(key) != null ? System.getProperty(key) : defaultValue;
     }
 
-    private static KeyStore loadKeyStore(@Nullable String keyStorePath, @NotNull char[] keyStorePass)
-            throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
-        if (keyStorePath == null) {
-            return null;
-        }
-
-        KeyStore keyStore = KeyStore.getInstance(JKS);
-        InputStream readStream = new FileInputStream(keyStorePath);
-        keyStore.load(readStream, keyStorePass);
-        return keyStore;
-    }
-
-    static KeyManagerFactory createKeyManagerFactory(@Nullable String keyStorePath, @Nullable String keyStorePass)
-            throws KeyStoreException, NoSuchAlgorithmException, UnrecoverableKeyException, IOException,
-            CertificateException {
-        char[] keystorePassChars = keyStorePass != null ? keyStorePass.toCharArray() : new char[0];
-        final KeyStore keyStore = loadKeyStore(keyStorePath, keystorePassChars);
-        final KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-        keyManagerFactory.init(keyStore, keystorePassChars);
-        return keyManagerFactory;
-    }
-
-    static TrustManagerFactory createTrustManagerFactory(@Nullable String keyStorePath, @Nullable String keyStorePass)
-            throws KeyStoreException, NoSuchAlgorithmException, IOException,
-            CertificateException {
-        char[] keystorePassChars = keyStorePass != null ? keyStorePass.toCharArray() : new char[0];
-        final KeyStore keyStore = loadKeyStore(keyStorePath, keystorePassChars);
-        final TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-        trustManagerFactory.init(keyStore);
-        return trustManagerFactory;
-    }
-
-    public static void main(String[] args)
-            throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException,
-            UnrecoverableKeyException {
+    public static void main(String[] args) throws IOException {
         String command = getProperty(COMMAND, SUBSCRIBE);
         int count = Integer.valueOf(getProperty(COUNT, "100"));
         String topic = getProperty(TOPIC, "a/b");
@@ -297,14 +261,15 @@ class Mqtt3ClientExample {
         String trustStorePass = getProperty(TRUSTSTORE_PASS, "");
         String keyStorePath = getProperty(KEYSTORE_PATH, null);
         String keyStorePass = getProperty(KEYSTORE_PASS, "");
+        String privateKeyPass = getProperty(PRIVATE_KEY_PASS, "");
         String serverPath = getProperty(SERVER_PATH, "mqtt");
 
         Mqtt3ClientExample instance = new Mqtt3ClientExample(
                 server,
                 port,
                 usesSsl,
-                createTrustManagerFactory(trustStorePath, trustStorePass),
-                createKeyManagerFactory(keyStorePath, keyStorePass),
+                KeyStoreUtil.trustManagerFromKeystore(new File(trustStorePath), trustStorePass),
+                KeyStoreUtil.keyManagerFromKeystore(new File(keyStorePath), keyStorePass, privateKeyPass),
                 serverPath);
 
         switch (command) {
