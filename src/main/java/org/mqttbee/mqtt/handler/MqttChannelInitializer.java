@@ -27,6 +27,7 @@ import io.reactivex.SingleEmitter;
 import io.reactivex.exceptions.Exceptions;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttClientSslConfig;
+import org.mqttbee.api.mqtt.MqttWebsocketConfig;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.codec.encoder.MqttEncoder;
@@ -81,11 +82,13 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
     @Override
     protected void initChannel(final Channel channel) {
         channelComponent = ChannelComponent.create(channel, clientData);
-        if (clientData.usesSsl()) {
-            initSsl(channel);
+        final MqttClientSslConfig sslConfig = clientData.getRawSslConfig();
+        if (sslConfig != null) {
+            initSsl(channel, sslConfig);
         }
-        if (clientData.usesWebSockets()) {
-            initMqttOverWebSockets(channel.pipeline());
+        final MqttWebsocketConfig websocketConfig = clientData.getRawWebsocketConfig();
+        if (websocketConfig != null) {
+            initMqttOverWebSockets(channel.pipeline(), websocketConfig);
         } else {
             initMqttHandlers(channel.pipeline());
         }
@@ -105,13 +108,13 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
 
     }
 
-    private void initMqttOverWebSockets(@NotNull final ChannelPipeline pipeline) {
+    private void initMqttOverWebSockets(
+            @NotNull final ChannelPipeline pipeline, @NotNull final MqttWebsocketConfig websocketConfig) {
+
         try {
-            final String path = "/" + ((clientData.getWebsocketConfig().isPresent()) ?
-                    clientData.getWebsocketConfig().get().getServerPath() : "");
-            final URI serverUri =
-                    new URI(getWebsocketScheme(), null, clientData.getServerHost(), clientData.getServerPort(), path,
-                            null, null);
+            final URI serverUri = new URI(clientData.usesSsl() ? WEBSOCKET_TLS_URI_SCHEME : WEBSOCKET_URI_SCHEME, null,
+                    clientData.getServerHost(), clientData.getServerPort(), "/" + websocketConfig.getServerPath(), null,
+                    null);
             final MqttWebSocketClientProtocolHandler wsProtocolHandler =
                     new MqttWebSocketClientProtocolHandler(serverUri);
 
@@ -130,22 +133,14 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
         }
     }
 
-    private void initSsl(@NotNull final Channel channel) {
+    private void initSsl(@NotNull final Channel channel, @NotNull final MqttClientSslConfig sslConfig) {
         try {
-            //create a new SslHandler with the configured settings
-            final MqttClientSslConfig sslConfig = clientData.getSslConfig()
-                    .orElseThrow(() -> new IllegalStateException("SSL used, but no sslConfig present"));
             final SslHandler sslHandler = createSslHandler(channel, sslConfig);
-            //add the handler as first handler to the pipeline
             channel.pipeline().addFirst(sslHandler);
 
         } catch (final SSLException e) {
             channel.pipeline().fireExceptionCaught(e);
         }
-    }
-
-    private String getWebsocketScheme() {
-        return clientData.usesSsl() ? WEBSOCKET_TLS_URI_SCHEME : WEBSOCKET_URI_SCHEME;
     }
 
 }

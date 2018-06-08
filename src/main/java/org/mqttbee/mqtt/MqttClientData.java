@@ -127,6 +127,11 @@ public class MqttClientData implements Mqtt5ClientData {
         return Optional.ofNullable(sslConfig);
     }
 
+    @Nullable
+    public MqttClientSslConfig getRawSslConfig() {
+        return sslConfig;
+    }
+
     @Override
     public boolean usesWebSockets() {
         return websocketConfig != null;
@@ -136,6 +141,11 @@ public class MqttClientData implements Mqtt5ClientData {
     @Override
     public Optional<MqttWebsocketConfig> getWebsocketConfig() {
         return Optional.ofNullable(websocketConfig);
+    }
+
+    @Nullable
+    public MqttWebsocketConfig getRawWebsocketConfig() {
+        return websocketConfig;
     }
 
     @Override

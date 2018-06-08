@@ -20,6 +20,7 @@ package org.mqttbee.api.mqtt.mqtt3;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
+import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttClient;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3Connect;
@@ -34,6 +35,7 @@ import org.mqttbee.rx.FlowableWithSingle;
 /**
  * @author Silvio Giebl
  */
+@DoNotImplement
 public interface Mqtt3Client extends MqttClient {
 
     @NotNull

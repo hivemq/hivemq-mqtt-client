@@ -17,11 +17,14 @@
 
 package org.mqttbee.api.mqtt.mqtt5.message;
 
+import org.mqttbee.annotations.DoNotImplement;
+
 /**
  * Reason Code according to the MQTT 5 specification.
  *
  * @author Silvio Giebl
  */
+@DoNotImplement
 public interface Mqtt5ReasonCode {
 
     /**

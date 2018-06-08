@@ -17,6 +17,7 @@
 
 package org.mqttbee.api.mqtt;
 
+import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
 
@@ -25,6 +26,7 @@ import java.util.Optional;
 /**
  * @author Silvio Giebl
  */
+@DoNotImplement
 public interface MqttClientData {
 
     @NotNull

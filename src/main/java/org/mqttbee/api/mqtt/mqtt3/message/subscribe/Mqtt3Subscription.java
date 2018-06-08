@@ -17,6 +17,7 @@
 
 package org.mqttbee.api.mqtt.mqtt3.message.subscribe;
 
+import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
@@ -26,6 +27,7 @@ import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
  *
  * @author Silvio Giebl
  */
+@DoNotImplement
 public interface Mqtt3Subscription {
 
     @NotNull

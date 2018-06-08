@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.mqttbee.mqtt.handler;
 
-import com.google.common.collect.ImmutableList;
 import io.netty.channel.Channel;
 import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.ssl.SslHandler;
@@ -29,8 +29,6 @@ import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
 
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.TrustManagerFactory;
 import java.util.Optional;
 
 import static org.junit.Assert.assertNotNull;
@@ -43,7 +41,7 @@ import static org.mockito.Mockito.when;
 public class MqttChannelInitializerSslTest {
 
     @Mock
-    private MqttConnect mqtt5Connect;
+    private MqttConnect mqttConnect;
 
     @Mock
     private SingleEmitter<Mqtt5ConnAck> connAckEmitter;
@@ -60,73 +58,20 @@ public class MqttChannelInitializerSslTest {
         when(clientData.getSslConfig()).thenReturn(Optional.empty());
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void test_initialize_no_ssldata_present() {
-        when(clientData.usesSsl()).thenReturn(true);
-
-        final MqttChannelInitializer mqttChannelInitializer =
-                new MqttChannelInitializer(mqtt5Connect, connAckEmitter, clientData);
-
-        mqttChannelInitializer.initChannel(channel);
-    }
-
     @Test
     public void test_initialize_default_ssldata() {
 
         when(clientData.usesSsl()).thenReturn(true);
-        when(clientData.getSslConfig()).thenReturn(Optional.of(mock(TestSslConfig.class)));
+        final MqttClientSslConfig sslConfig = mock(MqttClientSslConfig.class);
+        when(clientData.getSslConfig()).thenReturn(Optional.of(sslConfig));
+        when(clientData.getRawSslConfig()).thenReturn(sslConfig);
 
         final MqttChannelInitializer mqttChannelInitializer =
-                new MqttChannelInitializer(mqtt5Connect, connAckEmitter, clientData);
+                new MqttChannelInitializer(mqttConnect, connAckEmitter, clientData);
 
         mqttChannelInitializer.initChannel(channel);
 
         assertNotNull(channel.pipeline().get(SslHandler.class));
     }
-
-    private static class TestSslConfig implements MqttClientSslConfig {
-
-        private final KeyManagerFactory keyManagerFactory;
-        private final TrustManagerFactory trustManagerFactory;
-        private final ImmutableList<String> cipherSuites;
-        private final ImmutableList<String> protocols;
-        private final int handshakeTimeout;
-
-        private TestSslConfig(
-                final KeyManagerFactory keyManagerFactory, final TrustManagerFactory trustManagerFactory,
-                final ImmutableList<String> cipherSuites, final ImmutableList<String> protocols, final int handshakeTimeout) {
-            this.keyManagerFactory = keyManagerFactory;
-            this.trustManagerFactory = trustManagerFactory;
-            this.cipherSuites = cipherSuites;
-            this.protocols = protocols;
-            this.handshakeTimeout = handshakeTimeout;
-        }
-
-        @Override
-        public KeyManagerFactory getKeyManagerFactory() {
-            return keyManagerFactory;
-        }
-
-        @Override
-        public TrustManagerFactory getTrustManagerFactory() {
-            return trustManagerFactory;
-        }
-
-        @Override
-        public ImmutableList<String> getCipherSuites() {
-            return cipherSuites;
-        }
-
-        @Override
-        public ImmutableList<String> getProtocols() {
-            return protocols;
-        }
-
-        @Override
-        public long getHandshakeTimeoutMs() {
-            return handshakeTimeout;
-        }
-    }
-
 
 }
