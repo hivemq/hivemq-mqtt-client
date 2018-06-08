@@ -21,8 +21,8 @@ import org.junit.jupiter.api.Test;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 
 import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.TrustManagerFactory;
 import java.io.IOException;
-import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
@@ -83,9 +83,10 @@ class Mqtt3SmokeTest {
 
     @Test
     void mqttOverTls() throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
-        KeyStore trustStore = Mqtt3ClientExample.loadKeyStore(TRUSTSTORE_PATH, TRUSTSTORE_PASS);
+        TrustManagerFactory trustManagerFactory =
+                Mqtt3ClientExample.createTrustManagerFactory(TRUSTSTORE_PATH, TRUSTSTORE_PASS);
 
-        publishInstance = new Mqtt3ClientExample(server, 8883, true, trustStore, null, null);
+        publishInstance = new Mqtt3ClientExample(server, 8883, true, trustManagerFactory, null, null);
         publishInstance.publish(topic, qos, count).blockingSubscribe();
     }
 
@@ -93,10 +94,11 @@ class Mqtt3SmokeTest {
     void mqttOverTlsWithClientCert()
             throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException,
             UnrecoverableKeyException {
-        KeyStore trustStore = Mqtt3ClientExample.loadKeyStore(TRUSTSTORE_PATH, TRUSTSTORE_PASS);
+        TrustManagerFactory trustManagerFactory =
+                Mqtt3ClientExample.createTrustManagerFactory(TRUSTSTORE_PATH, TRUSTSTORE_PASS);
         KeyManagerFactory keyManagerFactory = Mqtt3ClientExample.createKeyManagerFactory(KEYSTORE_PATH, KEYSTORE_PASS);
 
-        publishInstance = new Mqtt3ClientExample(server, 8884, true, trustStore, keyManagerFactory, null);
+        publishInstance = new Mqtt3ClientExample(server, 8884, true, trustManagerFactory, keyManagerFactory, null);
         publishInstance.publish(topic, qos, count).blockingSubscribe();
     }
 
