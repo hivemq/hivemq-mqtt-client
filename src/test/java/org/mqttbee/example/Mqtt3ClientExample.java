@@ -45,7 +45,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -123,7 +123,9 @@ class Mqtt3ClientExample {
         this.serverPath = serverPath == null ? "mqtt" : serverPath;
     }
 
-    Flowable<Mqtt3Publish> subscribeTo(final String topic, final MqttQoS qos, final int countToPublish) {
+    Completable subscribeTo(
+            final String topic, final MqttQoS qos, final int countToPublish, final CountDownLatch subscribedLatch) {
+
         final Mqtt3Client client = getClient();
 
         // create a CONNECT message with keep alive of 10 seconds
@@ -138,10 +140,11 @@ class Mqtt3ClientExample {
                 .build();
         // define what to do with the publishes that match the subscription. This does not subscribe until rxJava's subscribe is called
         // NOTE: you can also subscribe without the stream, and then handle the incoming publishes on client.allPublishes()
-        final Flowable<Mqtt3Publish> subscribeScenario = client.subscribeWithStream(subscribeMessage)
-                .doOnSingle((subAck, subscription) -> System.out.println(
-                        "subscribed to " + topic + ": return codes: " + subAck.getReturnCodes()))
-                .doOnNext(publish -> {
+        final Flowable<Mqtt3Publish> subscribeScenario =
+                client.subscribeWithStream(subscribeMessage).doOnSingle((subAck, subscription) -> {
+                    subscribedLatch.countDown();
+                    System.out.println("subscribed to " + topic + ": return codes: " + subAck.getReturnCodes());
+                }).doOnNext(publish -> {
                     final Optional<ByteBuffer> payload = publish.getPayload();
                     if (payload.isPresent()) {
                         final int receivedCount = this.receivedCount.incrementAndGet();
@@ -158,21 +161,17 @@ class Mqtt3ClientExample {
         final Completable disconnectScenario =
                 client.disconnect().doOnComplete(() -> System.out.println("disconnected subscriber"));
 
-
         // now say we want to connect first and then subscribe, this does not connect and subscribe yet
         // only take the first countToPublish publications and then disconnect
         return connectScenario.toCompletable()
-                .andThen(subscribeScenario)
-                .take(countToPublish)
-                .ignoreElements()
-                .andThen(disconnectScenario.toFlowable());
+                .andThen(subscribeScenario).take(countToPublish).ignoreElements().andThen(disconnectScenario);
     }
 
     private boolean isNotUsingMqttPort(final int port) {
         return !(port == 1883 || port == 8883 || port == 8884);
     }
 
-    Flowable<Mqtt3PublishResult> publish(final String topic, final MqttQoS qos, final int countToPublish) {
+    Completable publish(final String topic, final MqttQoS qos, final int countToPublish) {
         final Mqtt3Client client = getClient();
 
         // create a CONNECT message with keep alive of 10 seconds
@@ -210,12 +209,7 @@ class Mqtt3ClientExample {
         // now we want to connect, then publish and take the corresponding number of pubAcks and disconnect
         // if we did not publish anything for 10 seconds also disconnect
         return connectScenario.toCompletable()
-                .andThen(publishScenario)
-                .take(countToPublish)
-                .timeout(10, TimeUnit.SECONDS)
-                .onErrorResumeNext(disconnectScenario.toFlowable())
-                .ignoreElements()
-                .andThen(disconnectScenario.toFlowable());
+                .andThen(publishScenario).take(countToPublish).ignoreElements().andThen(disconnectScenario);
     }
 
     private Mqtt3Client getClient() {
@@ -226,7 +220,9 @@ class Mqtt3ClientExample {
 
         if (usesSsl) {
             mqttClientBuilder.usingSsl(MqttClientSslConfig.builder()
-                    .keyManagerFactory(keyManagerFactory).trustManagerFactory(trustManagerFactory).build());
+                    .keyManagerFactory(keyManagerFactory)
+                    .trustManagerFactory(trustManagerFactory)
+                    .build());
         }
 
         if (isNotUsingMqttPort(port)) {
@@ -262,7 +258,7 @@ class Mqtt3ClientExample {
 
         switch (command) {
             case SUBSCRIBE:
-                instance.subscribeTo(topic, qos, count).subscribe();
+                instance.subscribeTo(topic, qos, count, new CountDownLatch(1)).subscribe();
                 break;
             case PUBLISH:
                 instance.publish(topic, qos, count).subscribe();

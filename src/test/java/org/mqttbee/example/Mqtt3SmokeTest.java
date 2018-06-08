@@ -59,9 +59,13 @@ class Mqtt3SmokeTest {
     }
 
     @BeforeEach
-    void subscribe() {
+    void subscribe() throws InterruptedException {
+        final CountDownLatch subscribedLatch = new CountDownLatch(1);
         receivedLatch = new CountDownLatch(1);
-        subscribeInstance.subscribeTo(topic, qos, count).doOnComplete(() -> receivedLatch.countDown()).subscribe();
+        subscribeInstance.subscribeTo(topic, qos, count, subscribedLatch)
+                .doOnComplete(() -> receivedLatch.countDown())
+                .subscribe();
+        assertTrue(subscribedLatch.await(10, TimeUnit.SECONDS));
     }
 
     @AfterEach
@@ -74,7 +78,7 @@ class Mqtt3SmokeTest {
     @Test
     void mqttOverTcp() {
         publishInstance = new Mqtt3ClientExample(server, 1883, false, null, null, null);
-        publishInstance.publish(topic, qos, count).blockingSubscribe();
+        publishInstance.publish(topic, qos, count).blockingAwait();
     }
 
     @Test
@@ -83,7 +87,7 @@ class Mqtt3SmokeTest {
                 new File(getClass().getClassLoader().getResource(TRUSTSTORE_PATH).toURI()), TRUSTSTORE_PASS);
 
         publishInstance = new Mqtt3ClientExample(server, 8883, true, trustManagerFactory, null, null);
-        publishInstance.publish(topic, qos, count).blockingSubscribe();
+        publishInstance.publish(topic, qos, count).blockingAwait();
     }
 
     @Test
@@ -95,19 +99,19 @@ class Mqtt3SmokeTest {
                 PRIVATE_KEY_PASS);
 
         publishInstance = new Mqtt3ClientExample(server, 8884, true, trustManagerFactory, keyManagerFactory, null);
-        publishInstance.publish(topic, qos, count).blockingSubscribe();
+        publishInstance.publish(topic, qos, count).blockingAwait();
     }
 
     @Test
     void mqttOverWebSockets() {
         publishInstance = new Mqtt3ClientExample(server, 8080, false, null, null, "mqtt");
-        publishInstance.publish(topic, qos, count).blockingSubscribe();
+        publishInstance.publish(topic, qos, count).blockingAwait();
     }
 
     @Test
     void mqttOverWebSocketsEncrypted() {
         publishInstance = new Mqtt3ClientExample(server, 8081, true, null, null, "mqtt");
-        publishInstance.publish(topic, qos, count).blockingSubscribe();
+        publishInstance.publish(topic, qos, count).blockingAwait();
     }
 
 }
