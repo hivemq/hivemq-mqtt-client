@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mqttbee.mqtt.handler.ssl;
+package org.mqttbee.api.util;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -30,20 +30,20 @@ import static org.junit.Assert.assertNotNull;
 /**
  * @author Christoph Schäbel
  */
-public class KeystoreUtilTest {
+public class KeyStoreUtilTest {
 
     private TestKeyStoreGenerator testKeyStoreGenerator;
 
 
     @Before
-    public void before() throws Exception {
+    public void before() {
         testKeyStoreGenerator = new TestKeyStoreGenerator();
     }
 
     @Test
     public void test_valid_kmf() throws Exception {
         final File store = testKeyStoreGenerator.generateKeyStore("fun", "JKS", "pw", "pk");
-        final KeyManagerFactory kmf = KeystoreUtil.keyManagerFromKeystore(store, "pw", "pk");
+        final KeyManagerFactory kmf = KeyStoreUtil.keyManagerFromKeystore(store, "pw", "pk");
         assertNotNull(kmf.getKeyManagers());
         assertEquals(1, kmf.getKeyManagers().length);
     }
@@ -52,25 +52,25 @@ public class KeystoreUtilTest {
     public void test_wrong_kmf_ks_path() throws Exception {
         final File store = testKeyStoreGenerator.generateKeyStore("fun", "JKS", "pw", "pk");
         final KeyManagerFactory kmf =
-                KeystoreUtil.keyManagerFromKeystore(new File(store.getAbsolutePath() + "wrong"), "pw", "pk");
+                KeyStoreUtil.keyManagerFromKeystore(new File(store.getAbsolutePath() + "wrong"), "pw", "pk");
     }
 
     @Test(expected = SSLException.class)
     public void test_wrong_kmf_ks_pw() throws Exception {
         final File store = testKeyStoreGenerator.generateKeyStore("fun", "JKS", "pw", "pk");
-        final KeyManagerFactory kmf = KeystoreUtil.keyManagerFromKeystore(store, "wrong", "pk");
+        final KeyManagerFactory kmf = KeyStoreUtil.keyManagerFromKeystore(store, "wrong", "pk");
     }
 
     @Test(expected = SSLException.class)
     public void test_wrong_kmf_key_pw() throws Exception {
         final File store = testKeyStoreGenerator.generateKeyStore("fun", "JKS", "pw", "pk");
-        final KeyManagerFactory kmf = KeystoreUtil.keyManagerFromKeystore(store, "pw", "wrong");
+        final KeyManagerFactory kmf = KeyStoreUtil.keyManagerFromKeystore(store, "pw", "wrong");
     }
 
     @Test
     public void test_valid_tmf() throws Exception {
         final File store = testKeyStoreGenerator.generateKeyStore("fun", "JKS", "pw", "pk");
-        final TrustManagerFactory tmf = KeystoreUtil.trustManagerFromKeystore(store, "pw");
+        final TrustManagerFactory tmf = KeyStoreUtil.trustManagerFromKeystore(store, "pw");
         assertNotNull(tmf.getTrustManagers());
         assertEquals(1, tmf.getTrustManagers().length);
     }
@@ -79,13 +79,13 @@ public class KeystoreUtilTest {
     public void test_wrong_tmf_ks_path() throws Exception {
         final File store = testKeyStoreGenerator.generateKeyStore("fun", "JKS", "pw", "pk");
         final TrustManagerFactory tmf =
-                KeystoreUtil.trustManagerFromKeystore(new File(store.getAbsolutePath() + "wrong"), "pw");
+                KeyStoreUtil.trustManagerFromKeystore(new File(store.getAbsolutePath() + "wrong"), "pw");
     }
 
     @Test(expected = SSLException.class)
     public void test_wrong_tmf_ks_pw() throws Exception {
         final File store = testKeyStoreGenerator.generateKeyStore("fun", "JKS", "pw", "pk");
-        final TrustManagerFactory tmf = KeystoreUtil.trustManagerFromKeystore(store, "wrong");
+        final TrustManagerFactory tmf = KeyStoreUtil.trustManagerFromKeystore(store, "wrong");
     }
 
 }
