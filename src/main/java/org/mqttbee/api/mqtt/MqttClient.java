@@ -17,11 +17,13 @@
 
 package org.mqttbee.api.mqtt;
 
+import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 
 /**
  * @author Silvio Giebl
  */
+@DoNotImplement
 public interface MqttClient {
 
     @NotNull

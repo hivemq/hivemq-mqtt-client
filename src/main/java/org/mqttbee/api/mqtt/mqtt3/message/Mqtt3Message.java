@@ -17,6 +17,7 @@
 
 package org.mqttbee.api.mqtt.mqtt3.message;
 
+import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 
 /**
@@ -24,6 +25,7 @@ import org.mqttbee.annotations.NotNull;
  *
  * @author Silvio Giebl
  */
+@DoNotImplement
 public interface Mqtt3Message {
 
     /**

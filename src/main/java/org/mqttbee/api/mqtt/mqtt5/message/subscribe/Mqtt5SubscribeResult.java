@@ -17,6 +17,7 @@
 
 package org.mqttbee.api.mqtt.mqtt5.message.subscribe;
 
+import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
 
 /**
@@ -24,5 +25,6 @@ import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
  *
  * @author Silvio Giebl
  */
+@DoNotImplement
 public interface Mqtt5SubscribeResult extends Mqtt5Message {
 }
