@@ -19,14 +19,12 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
+import org.mqttbee.api.util.KeyStoreUtil;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
+import java.io.File;
 import java.io.IOException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,6 +37,7 @@ class Mqtt3SmokeTest {
 
     private static final String KEYSTORE_PATH = "src/test/resources/testkeys/mosquitto/mosquitto.org.client.jks";
     private static final String KEYSTORE_PASS = "testkeystore";
+    private static final String PRIVATE_KEY_PASS = "testkeystore";
     private static final String TRUSTSTORE_PATH = "src/test/resources/testkeys/mosquitto/cacerts.jks";
     private static final String TRUSTSTORE_PASS = "testcas";
     private final String server = "test.mosquitto.org";
@@ -82,21 +81,20 @@ class Mqtt3SmokeTest {
     }
 
     @Test
-    void mqttOverTls() throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
+    void mqttOverTls() throws IOException {
         TrustManagerFactory trustManagerFactory =
-                Mqtt3ClientExample.createTrustManagerFactory(TRUSTSTORE_PATH, TRUSTSTORE_PASS);
+                KeyStoreUtil.trustManagerFromKeystore(new File(TRUSTSTORE_PATH), TRUSTSTORE_PASS);
 
         publishInstance = new Mqtt3ClientExample(server, 8883, true, trustManagerFactory, null, null);
         publishInstance.publish(topic, qos, count).blockingSubscribe();
     }
 
     @Test
-    void mqttOverTlsWithClientCert()
-            throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException,
-            UnrecoverableKeyException {
+    void mqttOverTlsWithClientCert() throws IOException {
         TrustManagerFactory trustManagerFactory =
-                Mqtt3ClientExample.createTrustManagerFactory(TRUSTSTORE_PATH, TRUSTSTORE_PASS);
-        KeyManagerFactory keyManagerFactory = Mqtt3ClientExample.createKeyManagerFactory(KEYSTORE_PATH, KEYSTORE_PASS);
+                KeyStoreUtil.trustManagerFromKeystore(new File(TRUSTSTORE_PATH), TRUSTSTORE_PASS);
+        KeyManagerFactory keyManagerFactory =
+                KeyStoreUtil.keyManagerFromKeystore(new File(KEYSTORE_PATH), KEYSTORE_PASS, PRIVATE_KEY_PASS);
 
         publishInstance = new Mqtt3ClientExample(server, 8884, true, trustManagerFactory, keyManagerFactory, null);
         publishInstance.publish(topic, qos, count).blockingSubscribe();
