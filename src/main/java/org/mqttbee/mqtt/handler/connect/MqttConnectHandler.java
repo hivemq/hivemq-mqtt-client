@@ -92,7 +92,7 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
     }
 
     @Override
-    public void handlerAdded(ChannelHandlerContext ctx) {
+    public void handlerAdded(final ChannelHandlerContext ctx) {
         super.handlerAdded(ctx);
 
         if (!connectCalled && ctx.channel().isActive()) {
@@ -139,7 +139,8 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
                     scheduleTimeout();
                 }
 
-                ctx.pipeline().addBefore(MqttEncoder.NAME, MqttDecoder.NAME, ChannelComponent.get(ctx.channel()).decoder());
+                ctx.pipeline()
+                        .addBefore(MqttEncoder.NAME, MqttDecoder.NAME, ChannelComponent.get(ctx.channel()).decoder());
             } else {
                 MqttDisconnectUtil.close(ctx.channel(), future.cause());
             }

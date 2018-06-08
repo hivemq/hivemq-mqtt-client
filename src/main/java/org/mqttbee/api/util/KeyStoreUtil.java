@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.mqttbee.api.util;
 
 import dagger.internal.Preconditions;
@@ -43,19 +44,17 @@ public class KeyStoreUtil {
 
         Preconditions.checkNotNull(trustStoreFile, "Truststore must not be null");
         try (final FileInputStream fileInputStream = new FileInputStream(trustStoreFile)) {
-            //load keystore from TLS config
             final KeyStore keyStoreTrust = KeyStore.getInstance(KEYSTORE_TYPE);
             keyStoreTrust.load(fileInputStream, trustStorePassword.toCharArray());
 
-            //set up TrustManagerFactory
             final TrustManagerFactory tmFactory =
                     TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
             tmFactory.init(keyStoreTrust);
             return tmFactory;
 
-        } catch (KeyStoreException | IOException e2) {
+        } catch (final KeyStoreException | IOException e2) {
             throw new SSLException("Not able to open or read TrustStore '" + trustStoreFile.getAbsolutePath(), e2);
-        } catch (NoSuchAlgorithmException | CertificateException e3) {
+        } catch (final NoSuchAlgorithmException | CertificateException e3) {
             throw new SSLException(
                     "Not able to read certificate from TrustStore '" + trustStoreFile.getAbsolutePath(), e3);
         }
@@ -63,16 +62,14 @@ public class KeyStoreUtil {
 
     @NotNull
     public static KeyManagerFactory keyManagerFromKeystore(
-            @NotNull final File keyStoreFile, @NotNull final String keyStorePassword, @NotNull final String privateKeyPassword)
-            throws SSLException {
+            @NotNull final File keyStoreFile, @NotNull final String keyStorePassword,
+            @NotNull final String privateKeyPassword) throws SSLException {
 
         Preconditions.checkNotNull(keyStoreFile, "Keystore must not be null");
         try (final FileInputStream fileInputStream = new FileInputStream(keyStoreFile)) {
-            //load keystore from TLS config
             final KeyStore keyStore = KeyStore.getInstance(KEYSTORE_TYPE);
             keyStore.load(fileInputStream, keyStorePassword.toCharArray());
 
-            //set up KeyManagerFactory with private-key-password from TLS config
             final KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
             kmf.init(keyStore, privateKeyPassword.toCharArray());
             return kmf;
@@ -81,10 +78,10 @@ public class KeyStoreUtil {
             throw new SSLException(
                     "Not able to recover key from KeyStore, please check your private-key-password and your keyStorePassword",
                     e1);
-        } catch (KeyStoreException | IOException e2) {
+        } catch (final KeyStoreException | IOException e2) {
             throw new SSLException("Not able to open or read KeyStore '" + keyStoreFile.getAbsolutePath(), e2);
 
-        } catch (NoSuchAlgorithmException | CertificateException e3) {
+        } catch (final NoSuchAlgorithmException | CertificateException e3) {
             throw new SSLException("Not able to read certificate from KeyStore '" + keyStoreFile.getAbsolutePath(), e3);
         }
     }

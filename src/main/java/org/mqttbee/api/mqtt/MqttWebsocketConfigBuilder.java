@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.mqttbee.api.mqtt;
 
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.MqttWebsocketConfigImpl;
 
-
 /**
  * @author Christian Hoff
  */
 public class MqttWebsocketConfigBuilder {
-    private String serverPath = "";
 
+    private String serverPath = "";
 
     @NotNull
     public MqttWebsocketConfigBuilder serverPath(@NotNull final String serverPath) {
@@ -37,4 +37,5 @@ public class MqttWebsocketConfigBuilder {
     public MqttWebsocketConfig build() {
         return new MqttWebsocketConfigImpl(serverPath);
     }
+
 }

@@ -13,22 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.mqttbee.mqtt;
 
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttWebsocketConfig;
-
 
 /**
  * @author David Katz
  */
 public class MqttWebsocketConfigImpl implements MqttWebsocketConfig {
 
-    public static final MqttWebsocketConfig DEFAULT = new MqttWebsocketConfigImpl("");
+    public static final MqttWebsocketConfigImpl DEFAULT = new MqttWebsocketConfigImpl("");
 
     private final String serverPath;
 
-    public MqttWebsocketConfigImpl(@NotNull String serverPath) {
+    public MqttWebsocketConfigImpl(@NotNull final String serverPath) {
         // remove any leading slashes
         this.serverPath = serverPath.replaceAll("^/+", "");
     }
@@ -38,4 +38,5 @@ public class MqttWebsocketConfigImpl implements MqttWebsocketConfig {
     public String getServerPath() {
         return serverPath;
     }
+
 }

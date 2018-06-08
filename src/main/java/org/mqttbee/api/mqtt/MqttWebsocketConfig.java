@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.mqttbee.api.mqtt;
 
 import org.mqttbee.annotations.NotNull;
@@ -28,10 +29,12 @@ public interface MqttWebsocketConfig {
         return new MqttWebsocketConfigBuilder();
     }
 
-    static MqttWebsocketConfig create(@NotNull String serverPath) {
+    @NotNull
+    static MqttWebsocketConfig create(@NotNull final String serverPath) {
         return new MqttWebsocketConfigImpl(serverPath);
     }
 
     @NotNull
     String getServerPath();
+
 }

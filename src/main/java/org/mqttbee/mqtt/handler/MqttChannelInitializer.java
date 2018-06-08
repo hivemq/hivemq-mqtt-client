@@ -84,10 +84,6 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
         if (clientData.usesSsl()) {
             initSsl(channel);
         }
-        init(channel);
-    }
-
-    private void init(@NotNull final Channel channel) {
         if (clientData.usesWebSockets()) {
             initMqttOverWebSockets(channel.pipeline());
         } else {
@@ -129,7 +125,7 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
             pipeline.addLast(HTTP_AGGREGATOR, new HttpObjectAggregator(MAXIMUM_PACKET_SIZE_LIMIT));
             pipeline.addLast(WEBSOCKETS_CLIENT, wsProtocolHandler);
 
-        } catch (URISyntaxException e) {
+        } catch (final URISyntaxException e) {
             Exceptions.propagate(e);
         }
     }
@@ -137,7 +133,7 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
     private void initSsl(@NotNull final Channel channel) {
         try {
             //create a new SslHandler with the configured settings
-            MqttClientSslConfig sslConfig = clientData.getSslConfig()
+            final MqttClientSslConfig sslConfig = clientData.getSslConfig()
                     .orElseThrow(() -> new IllegalStateException("SSL used, but no sslConfig present"));
             final SslHandler sslHandler = createSslHandler(channel, sslConfig);
             //add the handler as first handler to the pipeline
