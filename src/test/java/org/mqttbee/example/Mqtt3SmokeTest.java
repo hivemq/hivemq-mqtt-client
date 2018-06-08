@@ -20,10 +20,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 
+import javax.net.ssl.KeyManagerFactory;
 import java.io.IOException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.UUID;
 
@@ -49,7 +51,7 @@ class Mqtt3SmokeTest {
 
     public Mqtt3SmokeTest() {
         topic = UUID.randomUUID().toString();
-        subscribeInstance = new Mqtt3ClientExample(server, 1883, false, null, null, null, null);
+        subscribeInstance = new Mqtt3ClientExample(server, 1883, false, null, null, null);
     }
 
     @BeforeEach
@@ -75,7 +77,7 @@ class Mqtt3SmokeTest {
 
     @Test
     void mqttOverTcp() {
-        publishInstance = new Mqtt3ClientExample(server, 1883, false, null, null, null, null);
+        publishInstance = new Mqtt3ClientExample(server, 1883, false, null, null, null);
         publishInstance.publish(topic, qos, count).blockingSubscribe();
     }
 
@@ -83,28 +85,30 @@ class Mqtt3SmokeTest {
     void mqttOverTls() throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
         KeyStore trustStore = Mqtt3ClientExample.loadKeyStore(TRUSTSTORE_PATH, TRUSTSTORE_PASS);
 
-        publishInstance = new Mqtt3ClientExample(server, 8883, true, trustStore, null, null, null);
+        publishInstance = new Mqtt3ClientExample(server, 8883, true, trustStore, null, null);
         publishInstance.publish(topic, qos, count).blockingSubscribe();
     }
 
     @Test
-    void mqttOverTlsWithClientCert() throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
+    void mqttOverTlsWithClientCert()
+            throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException,
+            UnrecoverableKeyException {
         KeyStore trustStore = Mqtt3ClientExample.loadKeyStore(TRUSTSTORE_PATH, TRUSTSTORE_PASS);
-        KeyStore keyStore = Mqtt3ClientExample.loadKeyStore(KEYSTORE_PATH, KEYSTORE_PASS);
+        KeyManagerFactory keyManagerFactory = Mqtt3ClientExample.createKeyManagerFactory(KEYSTORE_PATH, KEYSTORE_PASS);
 
-        publishInstance = new Mqtt3ClientExample(server, 8884, true, trustStore, keyStore, KEYSTORE_PASS, null);
+        publishInstance = new Mqtt3ClientExample(server, 8884, true, trustStore, keyManagerFactory, null);
         publishInstance.publish(topic, qos, count).blockingSubscribe();
     }
 
     @Test
     void mqttOverWebSockets() {
-        publishInstance = new Mqtt3ClientExample(server, 8080, false, null, null, null, "mqtt");
+        publishInstance = new Mqtt3ClientExample(server, 8080, false, null, null, "mqtt");
         publishInstance.publish(topic, qos, count).blockingSubscribe();
     }
 
     @Test
     void mqttOverWebSocketsEncrypted() {
-        publishInstance = new Mqtt3ClientExample(server, 8081, true, null, null, null, "mqtt");
+        publishInstance = new Mqtt3ClientExample(server, 8081, true, null, null, "mqtt");
         publishInstance.publish(topic, qos, count).blockingSubscribe();
     }
 }

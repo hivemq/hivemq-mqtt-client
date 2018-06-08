@@ -25,28 +25,20 @@ import javax.net.ssl.TrustManagerFactory;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class MqttClientSslConfigBuilder {
 
-    private KeyStore keyStore = null;
-    private String keyStorePassword = "";
+    private KeyManagerFactory keyManagerFactory = null;
     private KeyStore trustStore = null;
     private ImmutableList<String> cipherSuites = null;
     private ImmutableList<String> protocols = null;
     private long handshakeTimeoutMs = MqttClientSslConfig.DEFAULT_HANDSHAKE_TIMEOUT_MS;
 
     @NotNull
-    public MqttClientSslConfigBuilder keyStore(@Nullable final KeyStore keyStore) {
-        this.keyStore = keyStore;
-        return this;
-    }
-
-    @NotNull
-    public MqttClientSslConfigBuilder keyStorePassword(@NotNull final String keyStorePassword) {
-        this.keyStorePassword = keyStorePassword;
+    public MqttClientSslConfigBuilder keyManagerFactory(@Nullable final KeyManagerFactory keyManagerFactory) {
+        this.keyManagerFactory = keyManagerFactory;
         return this;
     }
 
@@ -81,9 +73,7 @@ public class MqttClientSslConfigBuilder {
     }
 
     @NotNull
-    public MqttClientSslConfig build() throws UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
-        final KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-        keyManagerFactory.init(keyStore, keyStorePassword.toCharArray());
+    public MqttClientSslConfig build() throws NoSuchAlgorithmException, KeyStoreException {
         final TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
         trustManagerFactory.init(trustStore);
         return new MqttClientSslConfigImpl(keyManagerFactory, trustManagerFactory, cipherSuites, protocols, handshakeTimeoutMs);

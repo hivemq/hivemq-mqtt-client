@@ -37,6 +37,7 @@ import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscription;
 import org.mqttbee.util.ByteBufferUtil;
 
+import javax.net.ssl.KeyManagerFactory;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -101,8 +102,7 @@ class Mqtt3ClientExample {
     private static final String SERVER_PATH = "serverpath";
 
     private final KeyStore trustStore;
-    private final KeyStore keyStore;
-    private final String keyStorePassword;
+    private final KeyManagerFactory keyManagerFactory;
     private final String server;
     
     private final int port;
@@ -113,13 +113,14 @@ class Mqtt3ClientExample {
 
 
     // create a client with a random UUID and connect to server
-    Mqtt3ClientExample(@NotNull String server, int port, boolean usesSsl, @Nullable KeyStore trustStore, @Nullable KeyStore keyStore, @Nullable String keyStorePassword, @Nullable String serverPath) {
+    Mqtt3ClientExample(
+            @NotNull String server, int port, boolean usesSsl, @Nullable KeyStore trustStore,
+            @Nullable KeyManagerFactory keyManagerFactory, @Nullable String serverPath) {
         this.server = server;
         this.port = port;
         this.usesSsl = usesSsl;
         this.trustStore = trustStore;
-        this.keyStore = keyStore;
-        this.keyStorePassword = keyStorePassword == null ? "": keyStorePassword;
+        this.keyManagerFactory = keyManagerFactory;
         this.serverPath = serverPath == null ? "mqtt" : serverPath;
     }
 
@@ -225,11 +226,10 @@ class Mqtt3ClientExample {
         if (usesSsl) {
             try {
                 sslConfig = new MqttClientSslConfigBuilder()
-                        .keyStore(keyStore)
-                        .keyStorePassword(keyStorePassword)
+                        .keyManagerFactory(keyManagerFactory)
                         .trustStore(trustStore)
                         .build();
-            } catch (UnrecoverableKeyException | NoSuchAlgorithmException | KeyStoreException e) {
+            } catch (NoSuchAlgorithmException | KeyStoreException e) {
                 throw new IllegalStateException("unable to create ssl config", e);
             }
         }
@@ -253,7 +253,8 @@ class Mqtt3ClientExample {
         return System.getProperty(key) != null ? System.getProperty(key) : defaultValue;
     }
 
-    static KeyStore loadKeyStore(@Nullable String keyStorePath, @Nullable String keyStorePass) throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
+    static KeyStore loadKeyStore(@Nullable String keyStorePath, @Nullable String keyStorePass)
+            throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
         if (keyStorePath == null) {
             return null;
         }
@@ -265,7 +266,19 @@ class Mqtt3ClientExample {
         return keyStore;
     }
 
-    public static void main(String[] args) throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
+    static KeyManagerFactory createKeyManagerFactory(@Nullable String keyStorePath, @Nullable String keyStorePass)
+            throws KeyStoreException, NoSuchAlgorithmException, UnrecoverableKeyException, IOException,
+            CertificateException {
+        char[] keystorePassChars = keyStorePass != null ? keyStorePass.toCharArray() : new char[0];
+        final KeyStore keyStore = loadKeyStore(keyStorePath, keyStorePass);
+        final KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+        keyManagerFactory.init(keyStore, keystorePassChars);
+        return keyManagerFactory;
+    }
+
+    public static void main(String[] args)
+            throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException,
+            UnrecoverableKeyException {
         String command = getProperty(COMMAND, SUBSCRIBE);
         int count = Integer.valueOf(getProperty(COUNT, "100"));
         String topic = getProperty(TOPIC, "a/b");
@@ -285,9 +298,7 @@ class Mqtt3ClientExample {
                 port,
                 usesSsl,
                 loadKeyStore(trustStorePath, trustStorePass),
-                loadKeyStore(keyStorePath, keyStorePass),
-                keyStorePass,
-                serverPath);
+                createKeyManagerFactory(keyStorePath, keyStorePass), serverPath);
 
         switch (command) {
             case SUBSCRIBE:
