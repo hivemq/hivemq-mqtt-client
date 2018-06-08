@@ -38,6 +38,7 @@ import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscription;
 import org.mqttbee.util.ByteBufferUtil;
 
 import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.TrustManagerFactory;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -101,7 +102,7 @@ class Mqtt3ClientExample {
     private static final String COUNT = "count";
     private static final String SERVER_PATH = "serverpath";
 
-    private final KeyStore trustStore;
+    private final TrustManagerFactory trustManagerFactory;
     private final KeyManagerFactory keyManagerFactory;
     private final String server;
     
@@ -114,12 +115,12 @@ class Mqtt3ClientExample {
 
     // create a client with a random UUID and connect to server
     Mqtt3ClientExample(
-            @NotNull String server, int port, boolean usesSsl, @Nullable KeyStore trustStore,
+            @NotNull String server, int port, boolean usesSsl, @Nullable TrustManagerFactory trustManagerFactory,
             @Nullable KeyManagerFactory keyManagerFactory, @Nullable String serverPath) {
         this.server = server;
         this.port = port;
         this.usesSsl = usesSsl;
-        this.trustStore = trustStore;
+        this.trustManagerFactory = trustManagerFactory;
         this.keyManagerFactory = keyManagerFactory;
         this.serverPath = serverPath == null ? "mqtt" : serverPath;
     }
@@ -224,14 +225,10 @@ class Mqtt3ClientExample {
         MqttClientSslConfig sslConfig = null;
         MqttWebsocketConfig websocketsConfig = null;
         if (usesSsl) {
-            try {
-                sslConfig = new MqttClientSslConfigBuilder()
-                        .keyManagerFactory(keyManagerFactory)
-                        .trustStore(trustStore)
-                        .build();
-            } catch (NoSuchAlgorithmException | KeyStoreException e) {
-                throw new IllegalStateException("unable to create ssl config", e);
-            }
+            sslConfig = new MqttClientSslConfigBuilder()
+                    .keyManagerFactory(keyManagerFactory)
+                    .trustManagerFactory(trustManagerFactory)
+                    .build();
         }
 
         if (isNotUsingMqttPort(port)) {
@@ -253,7 +250,7 @@ class Mqtt3ClientExample {
         return System.getProperty(key) != null ? System.getProperty(key) : defaultValue;
     }
 
-    static KeyStore loadKeyStore(@Nullable String keyStorePath, @Nullable String keyStorePass)
+    private static KeyStore loadKeyStore(@Nullable String keyStorePath, @NotNull char[] keyStorePass)
             throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
         if (keyStorePath == null) {
             return null;
@@ -261,8 +258,7 @@ class Mqtt3ClientExample {
 
         KeyStore keyStore = KeyStore.getInstance(JKS);
         InputStream readStream = new FileInputStream(keyStorePath);
-        char[] keystorePassChars = keyStorePass != null ? keyStorePass.toCharArray() : new char[0];
-        keyStore.load(readStream, keystorePassChars);
+        keyStore.load(readStream, keyStorePass);
         return keyStore;
     }
 
@@ -270,10 +266,20 @@ class Mqtt3ClientExample {
             throws KeyStoreException, NoSuchAlgorithmException, UnrecoverableKeyException, IOException,
             CertificateException {
         char[] keystorePassChars = keyStorePass != null ? keyStorePass.toCharArray() : new char[0];
-        final KeyStore keyStore = loadKeyStore(keyStorePath, keyStorePass);
+        final KeyStore keyStore = loadKeyStore(keyStorePath, keystorePassChars);
         final KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
         keyManagerFactory.init(keyStore, keystorePassChars);
         return keyManagerFactory;
+    }
+
+    static TrustManagerFactory createTrustManagerFactory(@Nullable String keyStorePath, @Nullable String keyStorePass)
+            throws KeyStoreException, NoSuchAlgorithmException, IOException,
+            CertificateException {
+        char[] keystorePassChars = keyStorePass != null ? keyStorePass.toCharArray() : new char[0];
+        final KeyStore keyStore = loadKeyStore(keyStorePath, keystorePassChars);
+        final TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+        trustManagerFactory.init(keyStore);
+        return trustManagerFactory;
     }
 
     public static void main(String[] args)
@@ -297,8 +303,9 @@ class Mqtt3ClientExample {
                 server,
                 port,
                 usesSsl,
-                loadKeyStore(trustStorePath, trustStorePass),
-                createKeyManagerFactory(keyStorePath, keyStorePass), serverPath);
+                createTrustManagerFactory(trustStorePath, trustStorePass),
+                createKeyManagerFactory(keyStorePath, keyStorePass),
+                serverPath);
 
         switch (command) {
             case SUBSCRIBE:

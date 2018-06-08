@@ -22,16 +22,16 @@ import org.mqttbee.mqtt.MqttClientSslConfigImpl;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * @author Christian Hoff
+ */
 public class MqttClientSslConfigBuilder {
 
     private KeyManagerFactory keyManagerFactory = null;
-    private KeyStore trustStore = null;
+    private TrustManagerFactory trustManagerFactory = null;
     private ImmutableList<String> cipherSuites = null;
     private ImmutableList<String> protocols = null;
     private long handshakeTimeoutMs = MqttClientSslConfig.DEFAULT_HANDSHAKE_TIMEOUT_MS;
@@ -43,8 +43,8 @@ public class MqttClientSslConfigBuilder {
     }
 
     @NotNull
-    public MqttClientSslConfigBuilder trustStore(@Nullable final KeyStore trustStore) {
-        this.trustStore = trustStore;
+    public MqttClientSslConfigBuilder trustManagerFactory(@Nullable final TrustManagerFactory trustManagerFactory) {
+        this.trustManagerFactory = trustManagerFactory;
         return this;
     }
 
@@ -73,9 +73,7 @@ public class MqttClientSslConfigBuilder {
     }
 
     @NotNull
-    public MqttClientSslConfig build() throws NoSuchAlgorithmException, KeyStoreException {
-        final TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-        trustManagerFactory.init(trustStore);
+    public MqttClientSslConfig build() {
         return new MqttClientSslConfigImpl(keyManagerFactory, trustManagerFactory, cipherSuites, protocols, handshakeTimeoutMs);
     }
 
