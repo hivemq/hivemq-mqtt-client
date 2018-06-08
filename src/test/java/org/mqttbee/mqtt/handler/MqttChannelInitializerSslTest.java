@@ -15,6 +15,7 @@
  */
 package org.mqttbee.mqtt.handler;
 
+import com.google.common.collect.ImmutableList;
 import io.netty.channel.Channel;
 import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.ssl.SslHandler;
@@ -88,13 +89,13 @@ public class MqttChannelInitializerSslTest {
 
         private final KeyManagerFactory keyManagerFactory;
         private final TrustManagerFactory trustManagerFactory;
-        private final List<String> cipherSuites;
+        private final ImmutableList<String> cipherSuites;
         private final List<String> protocols;
         private final int handshakeTimeout;
 
         private TestSslConfig(
                 final KeyManagerFactory keyManagerFactory, final TrustManagerFactory trustManagerFactory,
-                final List<String> cipherSuites, final List<String> protocols, final int handshakeTimeout) {
+                final ImmutableList<String> cipherSuites, final List<String> protocols, final int handshakeTimeout) {
             this.keyManagerFactory = keyManagerFactory;
             this.trustManagerFactory = trustManagerFactory;
             this.cipherSuites = cipherSuites;
@@ -113,7 +114,7 @@ public class MqttChannelInitializerSslTest {
         }
 
         @Override
-        public Iterable<String> getCipherSuites() {
+        public ImmutableList<String> getCipherSuites() {
             return cipherSuites;
         }
 

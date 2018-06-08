@@ -15,6 +15,7 @@
  */
 package org.mqttbee.api.mqtt;
 
+import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 
@@ -43,7 +44,7 @@ public interface MqttClientSslConfig {
      * @return list of supported cipher suites
      */
     @Nullable
-    Iterable<String> getCipherSuites();
+    ImmutableList<String> getCipherSuites();
 
     /**
      * @return list of supported protocols

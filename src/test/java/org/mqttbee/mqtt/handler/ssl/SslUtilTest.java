@@ -15,6 +15,7 @@
  */
 package org.mqttbee.mqtt.handler.ssl;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import io.netty.channel.embedded.EmbeddedChannel;
 import org.junit.Before;
@@ -62,7 +63,7 @@ public class SslUtilTest {
 
         final TrustManagerFactory tmf = null;
 
-        final List<String> cipherSuite = getFirstSupportedCipherSuite();
+        final ImmutableList<String> cipherSuite = getFirstSupportedCipherSuite();
         final TestSslConfig sslConfig = new TestSslConfig(null, tmf, cipherSuite, null, 0);
 
         final SSLEngine sslEngine = SslUtil.createSslEngine(embeddedChannel, sslConfig);
@@ -80,7 +81,7 @@ public class SslUtilTest {
 
         final TrustManagerFactory tmf = null;
 
-        final List<String> cipherSuites = getOtherSupportedCipherSuites();
+        final ImmutableList<String> cipherSuites = getOtherSupportedCipherSuites();
         final TestSslConfig sslConfig = new TestSslConfig(null, tmf, cipherSuites, null, 0);
 
         final SSLEngine sslEngine = SslUtil.createSslEngine(embeddedChannel, sslConfig);
@@ -134,17 +135,17 @@ public class SslUtilTest {
     }
 
 
-    private List<String> getFirstSupportedCipherSuite() throws Exception {
+    private ImmutableList<String> getFirstSupportedCipherSuite() throws Exception {
 
         final List<String> supportedCipherSuites = getEnabledCipherSuites();
 
         final List<String> valueList = new ArrayList<>();
         valueList.add(supportedCipherSuites.get(0));
 
-        return valueList;
+        return ImmutableList.copyOf(valueList);
     }
 
-    private List<String> getOtherSupportedCipherSuites() throws Exception {
+    private ImmutableList<String> getOtherSupportedCipherSuites() throws Exception {
 
         final List<String> supportedCipherSuites = getEnabledCipherSuites();
 
@@ -152,7 +153,7 @@ public class SslUtilTest {
         valueList.add(supportedCipherSuites.get(1));
         valueList.add(supportedCipherSuites.get(2));
 
-        return valueList;
+        return ImmutableList.copyOf(valueList);
     }
 
     private List<String> getEnabledCipherSuites() throws Exception {
@@ -173,13 +174,13 @@ public class SslUtilTest {
 
         private final KeyManagerFactory keyManagerFactory;
         private final TrustManagerFactory trustManagerFactory;
-        private final List<String> cipherSuites;
+        private final ImmutableList<String> cipherSuites;
         private final List<String> protocols;
         private final int handshakeTimeout;
 
         private TestSslConfig(
                 final KeyManagerFactory keyManagerFactory, final TrustManagerFactory trustManagerFactory,
-                final List<String> cipherSuites, final List<String> protocols, final int handshakeTimeout) {
+                final ImmutableList<String> cipherSuites, final List<String> protocols, final int handshakeTimeout) {
             this.keyManagerFactory = keyManagerFactory;
             this.trustManagerFactory = trustManagerFactory;
             this.cipherSuites = cipherSuites;
@@ -198,7 +199,7 @@ public class SslUtilTest {
         }
 
         @Override
-        public Iterable<String> getCipherSuites() {
+        public ImmutableList<String> getCipherSuites() {
             return cipherSuites;
         }
 
