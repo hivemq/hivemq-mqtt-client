@@ -26,6 +26,7 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class MqttClientSslConfigBuilder {
@@ -33,7 +34,7 @@ public class MqttClientSslConfigBuilder {
     private KeyStore keyStore = null;
     private String keyStorePassword = "";
     private KeyStore trustStore = null;
-    private Iterable<String> cipherSuites = null;
+    private ImmutableList<String> cipherSuites = null;
     private long handshakeTimeoutMs = MqttClientSslConfig.DEFAULT_HANDSHAKE_TIMEOUT_MS;
 
     @NotNull
@@ -58,7 +59,7 @@ public class MqttClientSslConfigBuilder {
      * @param cipherSuites if <code>null</code>, netty's default cipher suites will be used
      */
     @NotNull
-    public MqttClientSslConfigBuilder cipherSuites(@Nullable final Iterable<String> cipherSuites) {
+    public MqttClientSslConfigBuilder cipherSuites(@Nullable final List<String> cipherSuites) {
         this.cipherSuites = (cipherSuites == null) ? null : ImmutableList.copyOf(cipherSuites);
         return this;
     }

@@ -15,6 +15,7 @@
  */
 package org.mqttbee.mqtt;
 
+import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.MqttClientSslConfig;
@@ -36,7 +37,7 @@ public class MqttClientSslConfigImpl implements MqttClientSslConfig {
 
     private final KeyManagerFactory keyManagerFactory;
     private final TrustManagerFactory trustManagerFactory;
-    private final Iterable<String> cipherSuites;
+    private final ImmutableList<String> cipherSuites;
     private final List<String> protocols = Arrays.asList("TLSv1.2", "TLSv1.1");
     private final long handshakeTimeoutMs;
 
@@ -47,7 +48,7 @@ public class MqttClientSslConfigImpl implements MqttClientSslConfig {
 
     public MqttClientSslConfigImpl(
             @Nullable KeyManagerFactory keyManagerFactory, @Nullable TrustManagerFactory trustManagerFactory,
-            @Nullable Iterable<String> cipherSuites, long handshakeTimeoutMs) {
+            @Nullable ImmutableList<String> cipherSuites, long handshakeTimeoutMs) {
         this.keyManagerFactory = keyManagerFactory;
         this.trustManagerFactory = trustManagerFactory;
         this.cipherSuites = cipherSuites;
@@ -68,7 +69,7 @@ public class MqttClientSslConfigImpl implements MqttClientSslConfig {
 
     @Nullable
     @Override
-    public Iterable<String> getCipherSuites() {
+    public ImmutableList<String> getCipherSuites() {
         return cipherSuites;
     }
 
