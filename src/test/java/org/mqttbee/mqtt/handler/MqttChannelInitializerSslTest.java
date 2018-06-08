@@ -31,7 +31,6 @@ import org.mqttbee.mqtt.message.connect.MqttConnect;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertNotNull;
@@ -90,12 +89,12 @@ public class MqttChannelInitializerSslTest {
         private final KeyManagerFactory keyManagerFactory;
         private final TrustManagerFactory trustManagerFactory;
         private final ImmutableList<String> cipherSuites;
-        private final List<String> protocols;
+        private final ImmutableList<String> protocols;
         private final int handshakeTimeout;
 
         private TestSslConfig(
                 final KeyManagerFactory keyManagerFactory, final TrustManagerFactory trustManagerFactory,
-                final ImmutableList<String> cipherSuites, final List<String> protocols, final int handshakeTimeout) {
+                final ImmutableList<String> cipherSuites, final ImmutableList<String> protocols, final int handshakeTimeout) {
             this.keyManagerFactory = keyManagerFactory;
             this.trustManagerFactory = trustManagerFactory;
             this.cipherSuites = cipherSuites;
@@ -119,7 +118,7 @@ public class MqttChannelInitializerSslTest {
         }
 
         @Override
-        public List<String> getProtocols() {
+        public ImmutableList<String> getProtocols() {
             return protocols;
         }
 

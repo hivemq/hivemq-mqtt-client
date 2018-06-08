@@ -21,7 +21,6 @@ import org.mqttbee.annotations.Nullable;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
-import java.util.List;
 
 /**
  * @author Christoph Schäbel
@@ -49,8 +48,8 @@ public interface MqttClientSslConfig {
     /**
      * @return list of supported protocols
      */
-    @NotNull
-    List<String> getProtocols();
+    @Nullable
+    ImmutableList<String> getProtocols();
 
     /**
      * @return SSL handshake timeout in milliseconds

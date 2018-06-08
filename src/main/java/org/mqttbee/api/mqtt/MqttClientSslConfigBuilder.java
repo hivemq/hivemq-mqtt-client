@@ -35,6 +35,7 @@ public class MqttClientSslConfigBuilder {
     private String keyStorePassword = "";
     private KeyStore trustStore = null;
     private ImmutableList<String> cipherSuites = null;
+    private ImmutableList<String> protocols = null;
     private long handshakeTimeoutMs = MqttClientSslConfig.DEFAULT_HANDSHAKE_TIMEOUT_MS;
 
     @NotNull
@@ -64,6 +65,15 @@ public class MqttClientSslConfigBuilder {
         return this;
     }
 
+    /**
+     * @param protocols if <code>null</code>, netty's default protocols will be used
+     */
+    @NotNull
+    public MqttClientSslConfigBuilder protocols(@Nullable final List<String> protocols) {
+        this.protocols = (protocols == null) ? null : ImmutableList.copyOf(protocols);
+        return this;
+    }
+
     @NotNull
     public MqttClientSslConfigBuilder handshakeTimeout(long timeout, TimeUnit timeUnit) {
         this.handshakeTimeoutMs = TimeUnit.MILLISECONDS.convert(timeout, timeUnit);
@@ -76,7 +86,7 @@ public class MqttClientSslConfigBuilder {
         keyManagerFactory.init(keyStore, keyStorePassword.toCharArray());
         final TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
         trustManagerFactory.init(trustStore);
-        return new MqttClientSslConfigImpl(keyManagerFactory, trustManagerFactory, cipherSuites, handshakeTimeoutMs);
+        return new MqttClientSslConfigImpl(keyManagerFactory, trustManagerFactory, cipherSuites, protocols, handshakeTimeoutMs);
     }
 
 }
