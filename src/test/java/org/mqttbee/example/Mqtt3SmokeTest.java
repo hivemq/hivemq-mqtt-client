@@ -66,7 +66,7 @@ class Mqtt3SmokeTest {
 
     @AfterEach
     void check() throws InterruptedException {
-        assertTrue(receivedLatch.await(1, TimeUnit.SECONDS));
+        assertTrue(receivedLatch.await(10, TimeUnit.SECONDS));
         assertEquals(count, publishInstance.getPublishedCount());
         assertEquals(count, subscribeInstance.getReceivedCount());
     }
