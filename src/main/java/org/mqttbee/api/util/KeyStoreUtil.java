@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mqttbee.mqtt.handler.ssl;
+package org.mqttbee.api.util;
 
 import dagger.internal.Preconditions;
 import org.mqttbee.annotations.NotNull;
@@ -33,7 +33,7 @@ import java.security.cert.CertificateException;
 /**
  * @author Christoph Schäbel
  */
-public class KeystoreUtil {
+public class KeyStoreUtil {
 
     private static final String KEYSTORE_TYPE = "JKS";
 
