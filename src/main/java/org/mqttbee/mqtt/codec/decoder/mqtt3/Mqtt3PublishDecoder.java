@@ -82,9 +82,9 @@ public class Mqtt3PublishDecoder implements MqttMessageDecoder {
             payload.position(0);
         }
 
-        final MqttPublish publish = Mqtt3PublishView.wrapped(topic, payload, qos, retain);
+        final MqttPublish publish = Mqtt3PublishView.delegate(topic, payload, qos, retain);
 
-        return Mqtt3PublishView.wrapped(publish, packetIdentifier, dup);
+        return Mqtt3PublishView.statefulDelegate(publish, packetIdentifier, dup);
     }
 
 }

@@ -46,8 +46,8 @@ public class Mqtt3PublishBuilder {
     Mqtt3PublishBuilder(@NotNull final Mqtt3Publish publish) {
         final Mqtt3PublishView publishView =
                 MustNotBeImplementedUtil.checkNotImplemented(publish, Mqtt3PublishView.class);
-        topic = publishView.getWrapped().getTopic();
-        payload = publishView.getWrapped().getRawPayload();
+        topic = publishView.getDelegate().getTopic();
+        payload = publishView.getDelegate().getRawPayload();
         qos = publishView.getQos();
         retain = publishView.isRetain();
     }
@@ -90,7 +90,9 @@ public class Mqtt3PublishBuilder {
 
     @NotNull
     public Mqtt3Publish build() {
-        return Mqtt3PublishView.create(topic, payload, qos, retain);
+        Preconditions.checkNotNull(topic);
+        Preconditions.checkNotNull(qos);
+        return Mqtt3PublishView.of(topic, payload, qos, retain);
     }
 
 }

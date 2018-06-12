@@ -23,10 +23,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.mqtt3.exceptions.Mqtt3MessageException;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3Connect;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
+import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscription;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;
@@ -68,7 +70,10 @@ class Mqtt3ClientViewExceptionsTest {
                 new Mqtt5MessageException(Mqtt5Connect.builder().build(), "reason from original exception");
         given(mqtt5Client.subscribe(any())).willReturn(Single.error(mqtt5MessageException));
 
-        final Mqtt3Subscribe subscribe = Mqtt3Subscribe.builder().build();
+        final Mqtt3Subscribe subscribe = Mqtt3Subscribe.builder()
+                .addSubscription(
+                        Mqtt3Subscription.builder().withTopicFilter("topic").withQoS(MqttQoS.AT_LEAST_ONCE).build())
+                .build();
         assertMqtt3Exception(() -> mqtt3Client.subscribe(subscribe).toCompletable().blockingAwait(),
                 mqtt5MessageException);
     }
@@ -81,7 +86,10 @@ class Mqtt3ClientViewExceptionsTest {
                 new FlowableWithSingleSplit<>(Flowable.error(mqtt5MessageException), Mqtt5SubAck.class,
                         Mqtt5Publish.class));
 
-        final Mqtt3Subscribe subscribe = Mqtt3Subscribe.builder().build();
+        final Mqtt3Subscribe subscribe = Mqtt3Subscribe.builder()
+                .addSubscription(
+                        Mqtt3Subscription.builder().withTopicFilter("topic").withQoS(MqttQoS.AT_LEAST_ONCE).build())
+                .build();
         assertMqtt3Exception(() -> mqtt3Client.subscribeWithStream(subscribe).blockingSubscribe(),
                 mqtt5MessageException);
     }
@@ -120,7 +128,8 @@ class Mqtt3ClientViewExceptionsTest {
                 new Mqtt5MessageException(Mqtt5Connect.builder().build(), "reason from original exception");
         given(mqtt5Client.publish(any())).willReturn(Flowable.error(mqtt5MessageException));
 
-        final Flowable<Mqtt3Publish> publish = Flowable.just(Mqtt3Publish.builder().build());
+        final Flowable<Mqtt3Publish> publish =
+                Flowable.just(Mqtt3Publish.builder().withTopic("topic").withQos(MqttQoS.AT_LEAST_ONCE).build());
         assertMqtt3Exception(() -> mqtt3Client.publish(publish).blockingSubscribe(), mqtt5MessageException);
     }
 

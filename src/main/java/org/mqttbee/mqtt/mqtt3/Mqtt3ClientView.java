@@ -80,9 +80,9 @@ public class Mqtt3ClientView implements Mqtt3Client {
     public Single<Mqtt3ConnAck> connect(@NotNull final Mqtt3Connect connect) {
         final Mqtt3ConnectView connectView =
                 MustNotBeImplementedUtil.checkNotImplemented(connect, Mqtt3ConnectView.class);
-        return wrapped.connect(connectView.getWrapped())
+        return wrapped.connect(connectView.getDelegate())
                 .onErrorResumeNext(EXCEPTION_MAPPER_SINGLE_CONNACK)
-                .map(Mqtt3ConnAckView::create);
+                .map(Mqtt3ConnAckView::of);
     }
 
     @NotNull
@@ -90,9 +90,9 @@ public class Mqtt3ClientView implements Mqtt3Client {
     public Single<Mqtt3SubAck> subscribe(@NotNull final Mqtt3Subscribe subscribe) {
         final Mqtt3SubscribeView subscribeView =
                 MustNotBeImplementedUtil.checkNotImplemented(subscribe, Mqtt3SubscribeView.class);
-        return wrapped.subscribe(subscribeView.getWrapped())
+        return wrapped.subscribe(subscribeView.getDelegate())
                 .onErrorResumeNext(EXCEPTION_MAPPER_SINGLE_SUBACK)
-                .map(Mqtt3SubAckView::create);
+                .map(Mqtt3SubAckView::of);
     }
 
     @NotNull
@@ -100,8 +100,9 @@ public class Mqtt3ClientView implements Mqtt3Client {
     public FlowableWithSingle<Mqtt3SubAck, Mqtt3Publish> subscribeWithStream(@NotNull final Mqtt3Subscribe subscribe) {
         final Mqtt3SubscribeView subscribeView =
                 MustNotBeImplementedUtil.checkNotImplemented(subscribe, Mqtt3SubscribeView.class);
-        return wrapped.subscribeWithStream(subscribeView.getWrapped()).mapError(Mqtt3ExceptionFactory.MAPPER)
-                .mapBoth(Mqtt3SubAckView::create, Mqtt3PublishView::create);
+        return wrapped.subscribeWithStream(subscribeView.getDelegate())
+                .mapError(Mqtt3ExceptionFactory.MAPPER)
+                .mapBoth(Mqtt3SubAckView::of, Mqtt3PublishView::of);
     }
 
     @NotNull
@@ -109,15 +110,13 @@ public class Mqtt3ClientView implements Mqtt3Client {
     public Flowable<Mqtt3Publish> remainingPublishes() {
         return wrapped.remainingPublishes()
                 .onErrorResumeNext(EXCEPTION_MAPPER_FLOWABLE_PUBLISH)
-                .map(Mqtt3PublishView::create);
+                .map(Mqtt3PublishView::of);
     }
 
     @NotNull
     @Override
     public Flowable<Mqtt3Publish> allPublishes() {
-        return wrapped.allPublishes()
-                .onErrorResumeNext(EXCEPTION_MAPPER_FLOWABLE_PUBLISH)
-                .map(Mqtt3PublishView::create);
+        return wrapped.allPublishes().onErrorResumeNext(EXCEPTION_MAPPER_FLOWABLE_PUBLISH).map(Mqtt3PublishView::of);
     }
 
     @NotNull
@@ -125,7 +124,7 @@ public class Mqtt3ClientView implements Mqtt3Client {
     public Completable unsubscribe(@NotNull final Mqtt3Unsubscribe unsubscribe) {
         final Mqtt3UnsubscribeView unsubscribeView =
                 MustNotBeImplementedUtil.checkNotImplemented(unsubscribe, Mqtt3UnsubscribeView.class);
-        return wrapped.unsubscribe(unsubscribeView.getWrapped())
+        return wrapped.unsubscribe(unsubscribeView.getDelegate())
                 .toCompletable()
                 .onErrorResumeNext(EXCEPTION_MAPPER_COMPLETABLE);
     }
@@ -133,15 +132,15 @@ public class Mqtt3ClientView implements Mqtt3Client {
     @NotNull
     @Override
     public Flowable<Mqtt3PublishResult> publish(@NotNull final Flowable<Mqtt3Publish> publishFlowable) {
-        return wrapped.publish(publishFlowable.map(Mqtt3PublishView::wrapped))
+        return wrapped.publish(publishFlowable.map(Mqtt3PublishView::delegate))
                 .onErrorResumeNext(EXCEPTION_MAPPER_FLOWABLE_PUBLISH_RESULT)
-                .map(Mqtt3PublishResultView::create);
+                .map(Mqtt3PublishResultView::of);
     }
 
     @NotNull
     @Override
     public Completable disconnect() {
-        return wrapped.disconnect(Mqtt3DisconnectView.wrapped()).onErrorResumeNext(EXCEPTION_MAPPER_COMPLETABLE);
+        return wrapped.disconnect(Mqtt3DisconnectView.delegate()).onErrorResumeNext(EXCEPTION_MAPPER_COMPLETABLE);
     }
 
     @NotNull

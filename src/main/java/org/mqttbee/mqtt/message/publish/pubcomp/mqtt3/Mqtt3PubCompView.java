@@ -17,6 +17,7 @@
 
 package org.mqttbee.mqtt.message.publish.pubcomp.mqtt3;
 
+import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.pubcomp.Mqtt3PubComp;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubCompReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
@@ -30,18 +31,17 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public class Mqtt3PubCompView implements Mqtt3PubComp {
 
-    public static Mqtt3PubCompView INSTANCE;
+    public static final Mqtt3PubCompView INSTANCE = new Mqtt3PubCompView();
 
-    public static MqttPubComp wrapped(final int packetIdentifier) {
+    @NotNull
+    public static MqttPubComp delegate(final int packetIdentifier) {
         return new MqttPubComp(packetIdentifier, Mqtt5PubCompReasonCode.SUCCESS, null,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES);
     }
 
-    public static Mqtt3PubCompView create() {
-        if (INSTANCE != null) {
-            return INSTANCE;
-        }
-        return INSTANCE = new Mqtt3PubCompView();
+    @NotNull
+    public static Mqtt3PubCompView of() {
+        return INSTANCE;
     }
 
     private Mqtt3PubCompView() {

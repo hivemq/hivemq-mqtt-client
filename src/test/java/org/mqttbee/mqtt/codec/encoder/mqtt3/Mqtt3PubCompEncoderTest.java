@@ -37,7 +37,7 @@ class Mqtt3PubCompEncoderTest extends AbstractMqtt5EncoderTest {
         final byte msb = (byte) (id >>> 8);
         final byte lsb = (byte) id;
         final byte[] expected = {0x70, 0x02, msb, lsb};
-        final MqttPubComp pubComp = Mqtt3PubCompView.wrapped(id);
+        final MqttPubComp pubComp = Mqtt3PubCompView.delegate(id);
         encode(expected, pubComp);
     }
 

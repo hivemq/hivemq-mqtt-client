@@ -66,7 +66,7 @@ class Mqtt3ConnectEncoderTest extends AbstractMqtt5EncoderTest {
     @Test
     void encode_SUCCESS() {
         final MqttClientIdentifierImpl identifier = Objects.requireNonNull(MqttClientIdentifierImpl.from("TEST"));
-        final MqttConnect connect = Mqtt3ConnectView.wrapped(60, true, null, null);
+        final MqttConnect connect = Mqtt3ConnectView.delegate(60, true, null, null);
         final MqttStatefulConnect connectWrapper = connect.createStateful(identifier, null);
         encode(EXAMPLE_CONNECT, connectWrapper);
     }
@@ -98,7 +98,7 @@ class Mqtt3ConnectEncoderTest extends AbstractMqtt5EncoderTest {
                 MqttWillPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES, 0);
 
-        final MqttConnect connect = Mqtt3ConnectView.wrapped(keepAlive, cleanSession, null, willMessage);
+        final MqttConnect connect = Mqtt3ConnectView.delegate(keepAlive, cleanSession, null, willMessage);
         final MqttStatefulConnect connectWrapper =
                 connect.createStateful(Objects.requireNonNull(MqttClientIdentifierImpl.from(clientId)), null);
 

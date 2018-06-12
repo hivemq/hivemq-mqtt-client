@@ -32,29 +32,36 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public class Mqtt3UnsubscribeView implements Mqtt3Unsubscribe {
 
-    public static MqttUnsubscribe wrapped(@NotNull final ImmutableList<MqttTopicFilterImpl> topicFilters) {
+    @NotNull
+    private static MqttUnsubscribe delegate(@NotNull final ImmutableList<MqttTopicFilterImpl> topicFilters) {
         return new MqttUnsubscribe(topicFilters, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
     }
 
-    public static Mqtt3UnsubscribeView create(@NotNull final ImmutableList<MqttTopicFilterImpl> topicFilters) {
-        return new Mqtt3UnsubscribeView((wrapped(topicFilters)));
+    @NotNull
+    public static Mqtt3UnsubscribeView of(@NotNull final ImmutableList<MqttTopicFilterImpl> topicFilters) {
+        return new Mqtt3UnsubscribeView(delegate(topicFilters));
     }
 
-    private final MqttUnsubscribe wrapped;
+    @NotNull
+    public static Mqtt3UnsubscribeView of(@NotNull final MqttUnsubscribe delegate) {
+        return new Mqtt3UnsubscribeView(delegate);
+    }
 
-    public Mqtt3UnsubscribeView(@NotNull final MqttUnsubscribe wrapped) {
-        this.wrapped = wrapped;
+    private final MqttUnsubscribe delegate;
+
+    private Mqtt3UnsubscribeView(@NotNull final MqttUnsubscribe delegate) {
+        this.delegate = delegate;
     }
 
     @NotNull
     @Override
     public ImmutableList<MqttTopicFilterImpl> getTopicFilters() {
-        return wrapped.getTopicFilters();
+        return delegate.getTopicFilters();
     }
 
     @NotNull
-    public MqttUnsubscribe getWrapped() {
-        return wrapped;
+    public MqttUnsubscribe getDelegate() {
+        return delegate;
     }
 
 }

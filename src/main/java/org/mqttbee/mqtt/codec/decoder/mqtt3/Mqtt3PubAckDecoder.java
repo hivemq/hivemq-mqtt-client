@@ -57,7 +57,7 @@ public class Mqtt3PubAckDecoder implements MqttMessageDecoder {
 
         final int packetIdentifier = in.readUnsignedShort();
 
-        return Mqtt3PubAckView.wrapped(packetIdentifier);
+        return Mqtt3PubAckView.delegate(packetIdentifier);
     }
 
 }

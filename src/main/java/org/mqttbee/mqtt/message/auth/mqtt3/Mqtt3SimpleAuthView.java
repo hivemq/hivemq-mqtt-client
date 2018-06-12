@@ -35,29 +35,34 @@ import java.util.Optional;
 public class Mqtt3SimpleAuthView implements Mqtt3SimpleAuth {
 
     @NotNull
-    public static MqttSimpleAuth wrapped(
+    private static MqttSimpleAuth delegate(
             @NotNull final MqttUTF8StringImpl username, @Nullable final ByteBuffer password) {
 
         return new MqttSimpleAuth(username, password);
     }
 
     @NotNull
-    public static Mqtt3SimpleAuthView create(
+    public static Mqtt3SimpleAuthView of(
             @NotNull final MqttUTF8StringImpl username, @Nullable final ByteBuffer password) {
 
-        return new Mqtt3SimpleAuthView(wrapped(username, password));
+        return new Mqtt3SimpleAuthView(delegate(username, password));
     }
 
-    private final MqttSimpleAuth wrapped;
+    @NotNull
+    public static Mqtt3SimpleAuthView of(@NotNull final MqttSimpleAuth delegate) {
+        return new Mqtt3SimpleAuthView(delegate);
+    }
 
-    public Mqtt3SimpleAuthView(@NotNull final MqttSimpleAuth wrapped) {
-        this.wrapped = wrapped;
+    private final MqttSimpleAuth delegate;
+
+    private Mqtt3SimpleAuthView(@NotNull final MqttSimpleAuth delegate) {
+        this.delegate = delegate;
     }
 
     @NotNull
     @Override
     public MqttUTF8String getUsername() {
-        final MqttUTF8StringImpl username = wrapped.getRawUsername();
+        final MqttUTF8StringImpl username = delegate.getRawUsername();
         if (username == null) {
             throw new IllegalStateException();
         }
@@ -67,12 +72,12 @@ public class Mqtt3SimpleAuthView implements Mqtt3SimpleAuth {
     @NotNull
     @Override
     public Optional<ByteBuffer> getPassword() {
-        return wrapped.getPassword();
+        return delegate.getPassword();
     }
 
     @NotNull
-    public MqttSimpleAuth getWrapped() {
-        return wrapped;
+    public MqttSimpleAuth getDelegate() {
+        return delegate;
     }
 
 }

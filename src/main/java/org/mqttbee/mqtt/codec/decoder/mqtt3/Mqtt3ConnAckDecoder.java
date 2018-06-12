@@ -74,7 +74,7 @@ public class Mqtt3ConnAckDecoder implements MqttMessageDecoder {
             throw new MqttDecoderException("session present must be 0 if return code is not SUCCESS");
         }
 
-        return Mqtt3ConnAckView.wrapped(returnCode, sessionPresent);
+        return Mqtt3ConnAckView.delegate(returnCode, sessionPresent);
     }
 
 }

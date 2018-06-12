@@ -23,6 +23,7 @@ import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3PublishResult;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
 import org.mqttbee.mqtt.message.publish.MqttPublishResult;
+import org.mqttbee.mqtt.mqtt3.exceptions.Mqtt3ExceptionFactory;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 
 /**
@@ -31,32 +32,33 @@ import org.mqttbee.util.MustNotBeImplementedUtil;
 public class Mqtt3PublishResultView implements Mqtt3PublishResult {
 
     @NotNull
-    public static Mqtt3PublishResultView create(@NotNull final Mqtt5PublishResult publishResult) {
+    public static Mqtt3PublishResultView of(@NotNull final Mqtt5PublishResult publishResult) {
         return new Mqtt3PublishResultView(
                 MustNotBeImplementedUtil.checkNotImplemented(publishResult, MqttPublishResult.class));
     }
 
-    private final MqttPublishResult wrapped;
+    private final MqttPublishResult delegate;
 
-    private Mqtt3PublishResultView(@NotNull final MqttPublishResult wrapped) {
-        this.wrapped = wrapped;
+    private Mqtt3PublishResultView(@NotNull final MqttPublishResult delegate) {
+        this.delegate = delegate;
     }
 
     @NotNull
     @Override
     public Mqtt3Publish getPublish() {
-        return new Mqtt3PublishView(wrapped.getPublish());
+        return Mqtt3PublishView.of(delegate.getPublish());
     }
 
     @Override
     public boolean isSuccess() {
-        return wrapped.isSuccess();
+        return delegate.isSuccess();
     }
 
     @Nullable
     @Override
     public Throwable getError() {
-        return wrapped.getError(); // TODO map Mqtt5MessageException
+        final Throwable error = delegate.getError();
+        return (error == null) ? null : Mqtt3ExceptionFactory.map(error);
     }
 
 }

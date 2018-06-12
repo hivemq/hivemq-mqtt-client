@@ -58,7 +58,7 @@ public class Mqtt3SubscriptionBuilder {
     public Mqtt3Subscription build() {
         Preconditions.checkNotNull(topicFilter);
         Preconditions.checkNotNull(qos);
-        return Mqtt3SubscriptionView.create(topicFilter, qos);
+        return Mqtt3SubscriptionView.of(topicFilter, qos);
     }
 
 }

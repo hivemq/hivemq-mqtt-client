@@ -73,7 +73,7 @@ public class Mqtt3SubAckDecoder implements MqttMessageDecoder {
             returnCodesBuilder.add(returnCode);
         }
 
-        return Mqtt3SubAckView.wrapped(packetIdentifier, returnCodesBuilder.build());
+        return Mqtt3SubAckView.delegate(packetIdentifier, returnCodesBuilder.build());
     }
 
 }
