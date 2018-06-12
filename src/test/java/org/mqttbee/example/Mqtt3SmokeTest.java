@@ -78,7 +78,7 @@ class Mqtt3SmokeTest {
     @Test
     void mqttOverTcp() {
         publishInstance = new Mqtt3ClientExample(server, 1883, false, null, null, null);
-        publishInstance.publish(topic, qos, count).blockingAwait();
+        assertTrue(publishInstance.publish(topic, qos, count).blockingAwait(10, TimeUnit.SECONDS));
     }
 
     @Test
@@ -87,7 +87,7 @@ class Mqtt3SmokeTest {
                 new File(getClass().getClassLoader().getResource(TRUSTSTORE_PATH).toURI()), TRUSTSTORE_PASS);
 
         publishInstance = new Mqtt3ClientExample(server, 8883, true, trustManagerFactory, null, null);
-        publishInstance.publish(topic, qos, count).blockingAwait();
+        assertTrue(publishInstance.publish(topic, qos, count).blockingAwait(10, TimeUnit.SECONDS));
     }
 
     @Test
@@ -99,19 +99,19 @@ class Mqtt3SmokeTest {
                 PRIVATE_KEY_PASS);
 
         publishInstance = new Mqtt3ClientExample(server, 8884, true, trustManagerFactory, keyManagerFactory, null);
-        publishInstance.publish(topic, qos, count).blockingAwait();
+        assertTrue(publishInstance.publish(topic, qos, count).blockingAwait(10, TimeUnit.SECONDS));
     }
 
     @Test
     void mqttOverWebSockets() {
         publishInstance = new Mqtt3ClientExample(server, 8080, false, null, null, "mqtt");
-        publishInstance.publish(topic, qos, count).blockingAwait();
+        assertTrue(publishInstance.publish(topic, qos, count).blockingAwait(10, TimeUnit.SECONDS));
     }
 
     @Test
     void mqttOverWebSocketsEncrypted() {
         publishInstance = new Mqtt3ClientExample(server, 8081, true, null, null, "mqtt");
-        publishInstance.publish(topic, qos, count).blockingAwait();
+        assertTrue(publishInstance.publish(topic, qos, count).blockingAwait(10, TimeUnit.SECONDS));
     }
 
 }
