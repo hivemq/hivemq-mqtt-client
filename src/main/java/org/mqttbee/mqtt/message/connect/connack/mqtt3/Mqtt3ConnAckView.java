@@ -101,7 +101,7 @@ public class Mqtt3ConnAckView implements Mqtt3ConnAck {
 
     private final MqttConnAck wrapped;
 
-    private Mqtt3ConnAckView(@NotNull final MqttConnAck wrapped) {
+    public Mqtt3ConnAckView(@NotNull final MqttConnAck wrapped) {
         this.wrapped = wrapped;
     }
 

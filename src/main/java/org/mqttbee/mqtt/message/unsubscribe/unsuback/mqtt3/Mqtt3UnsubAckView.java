@@ -34,7 +34,7 @@ public class Mqtt3UnsubAckView implements Mqtt3UnsubAck {
 
     public static final ImmutableList<Mqtt5UnsubAckReasonCode> REASON_CODES_ALL_SUCCESS = ImmutableList.of();
 
-    private static Mqtt3UnsubAckView INSTANCE;
+    public static Mqtt3UnsubAckView INSTANCE;
 
     @NotNull
     public static MqttUnsubAck wrapped(final int packetIdentifier) {

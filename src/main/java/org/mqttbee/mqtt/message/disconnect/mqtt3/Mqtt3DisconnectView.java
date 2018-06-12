@@ -32,7 +32,7 @@ import javax.annotation.concurrent.Immutable;
 public class Mqtt3DisconnectView implements Mqtt3Disconnect {
 
     private static MqttDisconnect WRAPPED;
-    private static Mqtt3DisconnectView INSTANCE;
+    public static Mqtt3DisconnectView INSTANCE;
 
     @NotNull
     public static MqttDisconnect wrapped() {

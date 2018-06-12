@@ -58,7 +58,7 @@ public class Mqtt3SubscribeView implements Mqtt3Subscribe {
 
     private final MqttSubscribe wrapped;
 
-    private Mqtt3SubscribeView(@NotNull final MqttSubscribe wrapped) {
+    public Mqtt3SubscribeView(@NotNull final MqttSubscribe wrapped) {
         this.wrapped = wrapped;
     }
 

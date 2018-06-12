@@ -13,21 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.mqttbee.mqtt.mqtt3.exceptions;
 
+import io.reactivex.functions.Function;
+import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.exceptions.Mqtt3MessageException;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 
 /**
  * @author David Katz
+ * @author Silvio Giebl
  */
 public class Mqtt3ExceptionFactory {
-    public static Throwable map(Throwable throwable) {
+
+    public static Function<Throwable, Throwable> MAPPER = Mqtt3ExceptionFactory::map;
+
+    public static Throwable map(@NotNull final Throwable throwable) {
         if (throwable instanceof Mqtt5MessageException) {
-            Mqtt5MessageException mqtt5Exception = (Mqtt5MessageException) throwable;
-            return new Mqtt3MessageException(mqtt5Exception);
-        } else {
-            return throwable;
+            return new Mqtt3MessageException((Mqtt5MessageException) throwable);
         }
+        return throwable;
     }
+
 }

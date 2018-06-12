@@ -17,7 +17,9 @@
 
 package org.mqttbee.mqtt.mqtt3;
 
-import io.reactivex.*;
+import io.reactivex.Completable;
+import io.reactivex.Flowable;
+import io.reactivex.Single;
 import io.reactivex.functions.Function;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3Client;
@@ -29,10 +31,10 @@ import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3PublishResult;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAck;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
-import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
+import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.mqtt.message.connect.connack.mqtt3.Mqtt3ConnAckView;
 import org.mqttbee.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
 import org.mqttbee.mqtt.message.disconnect.mqtt3.Mqtt3DisconnectView;
@@ -45,8 +47,6 @@ import org.mqttbee.mqtt.mqtt3.exceptions.Mqtt3ExceptionFactory;
 import org.mqttbee.mqtt5.Mqtt5ClientImpl;
 import org.mqttbee.rx.FlowableWithSingle;
 import org.mqttbee.util.MustNotBeImplementedUtil;
-import org.reactivestreams.Publisher;
-
 
 /**
  * @author Silvio Giebl
@@ -54,33 +54,22 @@ import org.reactivestreams.Publisher;
  */
 public class Mqtt3ClientView implements Mqtt3Client {
 
+    private static final Function<Throwable, Completable> EXCEPTION_MAPPER_COMPLETABLE =
+            e -> Completable.error(Mqtt3ExceptionFactory.map(e));
+
+    private static final Function<Throwable, Single<Mqtt5ConnAck>> EXCEPTION_MAPPER_SINGLE_CONNACK =
+            e -> Single.error(Mqtt3ExceptionFactory.map(e));
+
+    private static final Function<Throwable, Single<Mqtt5SubAck>> EXCEPTION_MAPPER_SINGLE_SUBACK =
+            e -> Single.error(Mqtt3ExceptionFactory.map(e));
+
+    private static final Function<Throwable, Flowable<Mqtt5Publish>> EXCEPTION_MAPPER_FLOWABLE_PUBLISH =
+            e -> Flowable.error(Mqtt3ExceptionFactory.map(e));
+
+    private static final Function<Throwable, Flowable<Mqtt5PublishResult>> EXCEPTION_MAPPER_FLOWABLE_PUBLISH_RESULT =
+            e -> Flowable.error(Mqtt3ExceptionFactory.map(e));
+
     private final Mqtt5ClientImpl wrapped;
-
-    private static final Function<? super Throwable, ? extends Single<? extends Mqtt5ConnAck>>
-        mapMqtt5toMqtt3ExceptionForConnect =
-        e -> e instanceof Mqtt5MessageException ? Single.error(Mqtt3ExceptionFactory.map(e)) : Single.error(e);
-
-    private final Function<? super Throwable, ? extends Publisher<? extends Mqtt5PublishResult>>
-        mapMqtt5toMqtt3ExceptionsForPublish =
-        e -> e instanceof Mqtt5MessageException ? Flowable.error(Mqtt3ExceptionFactory.map(e)) : Flowable.error(e);
-
-    private static final Function<? super Throwable, ? extends Publisher<? extends Mqtt5Publish>>
-        mapMqtt5toMqtt3ExceptionsForRemainingPublishes =
-        e -> e instanceof Mqtt5MessageException ? Flowable.error(Mqtt3ExceptionFactory.map(e)) : Flowable.error(e);
-
-    private static final Function<? super Throwable, ? extends CompletableSource>
-        mapMqtt5toMqtt3ExceptionsForDisconnect =
-        e -> e instanceof Mqtt5MessageException ? Completable.error(Mqtt3ExceptionFactory.map(e)) :
-            Completable.error(e);
-
-    private static final Function<? super Throwable, ? extends Publisher<? extends Mqtt5Publish>>
-        mapMqtt5toMqtt3ExceptionsForAllPublishes =
-        e -> e instanceof Mqtt5MessageException ? Flowable.error(Mqtt3ExceptionFactory.map(e)) : Flowable.error(e);
-
-    private static final Function<? super Throwable, ? extends CompletableSource>
-        mapMqtt5toMqtt3ExceptionsForUnsubscribe =
-        e -> e instanceof Mqtt5MessageException ? Completable.error(Mqtt3ExceptionFactory.map(e)) :
-            Completable.error(e);
 
     public Mqtt3ClientView(@NotNull final Mqtt5ClientImpl wrapped) {
         this.wrapped = wrapped;
@@ -90,10 +79,10 @@ public class Mqtt3ClientView implements Mqtt3Client {
     @Override
     public Single<Mqtt3ConnAck> connect(@NotNull final Mqtt3Connect connect) {
         final Mqtt3ConnectView connectView =
-            MustNotBeImplementedUtil.checkNotImplemented(connect, Mqtt3ConnectView.class);
+                MustNotBeImplementedUtil.checkNotImplemented(connect, Mqtt3ConnectView.class);
         return wrapped.connect(connectView.getWrapped())
-            .onErrorResumeNext(mapMqtt5toMqtt3ExceptionForConnect)
-            .map(Mqtt3ConnAckView::create);
+                .onErrorResumeNext(EXCEPTION_MAPPER_SINGLE_CONNACK)
+                .map(Mqtt3ConnAckView::create);
     }
 
     @NotNull
@@ -101,7 +90,9 @@ public class Mqtt3ClientView implements Mqtt3Client {
     public Single<Mqtt3SubAck> subscribe(@NotNull final Mqtt3Subscribe subscribe) {
         final Mqtt3SubscribeView subscribeView =
                 MustNotBeImplementedUtil.checkNotImplemented(subscribe, Mqtt3SubscribeView.class);
-        return wrapped.subscribe(subscribeView.getWrapped()).map(Mqtt3SubAckView::create);
+        return wrapped.subscribe(subscribeView.getWrapped())
+                .onErrorResumeNext(EXCEPTION_MAPPER_SINGLE_SUBACK)
+                .map(Mqtt3SubAckView::create);
     }
 
     @NotNull
@@ -109,7 +100,7 @@ public class Mqtt3ClientView implements Mqtt3Client {
     public FlowableWithSingle<Mqtt3SubAck, Mqtt3Publish> subscribeWithStream(@NotNull final Mqtt3Subscribe subscribe) {
         final Mqtt3SubscribeView subscribeView =
                 MustNotBeImplementedUtil.checkNotImplemented(subscribe, Mqtt3SubscribeView.class);
-        return wrapped.subscribeWithStream(subscribeView.getWrapped())
+        return wrapped.subscribeWithStream(subscribeView.getWrapped()).mapError(Mqtt3ExceptionFactory.MAPPER)
                 .mapBoth(Mqtt3SubAckView::create, Mqtt3PublishView::create);
     }
 
@@ -117,41 +108,40 @@ public class Mqtt3ClientView implements Mqtt3Client {
     @Override
     public Flowable<Mqtt3Publish> remainingPublishes() {
         return wrapped.remainingPublishes()
-            .onErrorResumeNext(mapMqtt5toMqtt3ExceptionsForRemainingPublishes)
-            .map(Mqtt3PublishView::create);
+                .onErrorResumeNext(EXCEPTION_MAPPER_FLOWABLE_PUBLISH)
+                .map(Mqtt3PublishView::create);
     }
 
     @NotNull
     @Override
     public Flowable<Mqtt3Publish> allPublishes() {
         return wrapped.allPublishes()
-            .onErrorResumeNext(mapMqtt5toMqtt3ExceptionsForAllPublishes)
-            .map(Mqtt3PublishView::create);
+                .onErrorResumeNext(EXCEPTION_MAPPER_FLOWABLE_PUBLISH)
+                .map(Mqtt3PublishView::create);
     }
 
     @NotNull
     @Override
     public Completable unsubscribe(@NotNull final Mqtt3Unsubscribe unsubscribe) {
         final Mqtt3UnsubscribeView unsubscribeView =
-            MustNotBeImplementedUtil.checkNotImplemented(unsubscribe, Mqtt3UnsubscribeView.class);
+                MustNotBeImplementedUtil.checkNotImplemented(unsubscribe, Mqtt3UnsubscribeView.class);
         return wrapped.unsubscribe(unsubscribeView.getWrapped())
-            .toCompletable()
-            .onErrorResumeNext(mapMqtt5toMqtt3ExceptionsForUnsubscribe);
+                .toCompletable()
+                .onErrorResumeNext(EXCEPTION_MAPPER_COMPLETABLE);
     }
 
     @NotNull
     @Override
     public Flowable<Mqtt3PublishResult> publish(@NotNull final Flowable<Mqtt3Publish> publishFlowable) {
         return wrapped.publish(publishFlowable.map(Mqtt3PublishView::wrapped))
-            .onErrorResumeNext(mapMqtt5toMqtt3ExceptionsForPublish)
-            .map(Mqtt3PublishResultView::create);
+                .onErrorResumeNext(EXCEPTION_MAPPER_FLOWABLE_PUBLISH_RESULT)
+                .map(Mqtt3PublishResultView::create);
     }
 
     @NotNull
     @Override
     public Completable disconnect() {
-        return wrapped.disconnect(Mqtt3DisconnectView.wrapped())
-            .onErrorResumeNext(mapMqtt5toMqtt3ExceptionsForDisconnect);
+        return wrapped.disconnect(Mqtt3DisconnectView.wrapped()).onErrorResumeNext(EXCEPTION_MAPPER_COMPLETABLE);
     }
 
     @NotNull
@@ -160,8 +150,4 @@ public class Mqtt3ClientView implements Mqtt3Client {
         return new Mqtt3ClientDataView(wrapped.getClientData());
     }
 
-    public <T> Function<Throwable, Observable<T>> mapException() {
-        return t -> t instanceof Mqtt5MessageException ? Observable.error(Mqtt3ExceptionFactory.map(t)) :
-            Observable.error(t);
-    }
 }

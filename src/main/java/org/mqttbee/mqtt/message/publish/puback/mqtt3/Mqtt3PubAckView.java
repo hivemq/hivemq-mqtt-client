@@ -30,7 +30,7 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public class Mqtt3PubAckView implements Mqtt3PubAck {
 
-    private static Mqtt3PubAckView INSTANCE;
+    public static Mqtt3PubAckView INSTANCE;
 
     public static MqttPubAck wrapped(final int packetIdentifier) {
         return new MqttPubAck(packetIdentifier, Mqtt5PubAckReasonCode.SUCCESS, null,

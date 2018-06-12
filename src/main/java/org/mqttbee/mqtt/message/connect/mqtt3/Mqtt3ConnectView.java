@@ -60,7 +60,7 @@ public class Mqtt3ConnectView implements Mqtt3Connect {
 
     private final MqttConnect wrapped;
 
-    private Mqtt3ConnectView(@NotNull final MqttConnect wrapped) {
+    public Mqtt3ConnectView(@NotNull final MqttConnect wrapped) {
         this.wrapped = wrapped;
     }
 
