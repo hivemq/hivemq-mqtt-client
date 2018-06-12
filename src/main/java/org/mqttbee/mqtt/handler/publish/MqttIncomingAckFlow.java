@@ -85,7 +85,6 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
                 subscriber.onNext(result);
                 emitted++;
                 queued = false;
-                break;
             } else {
                 queue.offer(result);
                 queued = false;
@@ -173,6 +172,9 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
     @Override
     public void run() {
         int missed = wip.get();
+        if (missed == 0) {
+            return;
+        }
 
         long emitted = 0;
         while (true) {
@@ -187,7 +189,6 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
             }
             if (queue.isEmpty()) {
                 queued = false;
-                break;
             }
 
             final int wip = this.wip.get();
