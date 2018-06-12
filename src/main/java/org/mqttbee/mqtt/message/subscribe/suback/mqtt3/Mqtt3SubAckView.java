@@ -115,7 +115,7 @@ public class Mqtt3SubAckView implements Mqtt3SubAck {
 
     private final MqttSubAck wrapped;
 
-    private Mqtt3SubAckView(@NotNull final MqttSubAck wrapped) {
+    public Mqtt3SubAckView(@NotNull final MqttSubAck wrapped) {
         this.wrapped = wrapped;
     }
 

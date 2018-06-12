@@ -42,7 +42,7 @@ public class Mqtt3UnsubscribeView implements Mqtt3Unsubscribe {
 
     private final MqttUnsubscribe wrapped;
 
-    private Mqtt3UnsubscribeView(@NotNull final MqttUnsubscribe wrapped) {
+    public Mqtt3UnsubscribeView(@NotNull final MqttUnsubscribe wrapped) {
         this.wrapped = wrapped;
     }
 
