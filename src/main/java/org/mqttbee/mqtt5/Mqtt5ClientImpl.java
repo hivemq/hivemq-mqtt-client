@@ -37,6 +37,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
+import org.mqttbee.mqtt.handler.MqttChannelInitializer;
 import org.mqttbee.mqtt.handler.auth.MqttReAuthEvent;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.handler.publish.MqttGlobalIncomingPublishFlow;
@@ -87,8 +88,7 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
             final Bootstrap bootstrap =
                     MqttBeeComponent.INSTANCE.nettyBootstrap().bootstrap(clientData.getExecutorConfig());
 
-            bootstrap.handler(MqttBeeComponent.INSTANCE.channelInitializerProvider()
-                    .get(mqttConnect, connAckEmitter, clientData));
+            bootstrap.handler(new MqttChannelInitializer(mqttConnect, connAckEmitter, clientData));
 
             bootstrap.connect(clientData.getServerHost(), clientData.getServerPort()).addListener(future -> {
                 if (!future.isSuccess()) {
@@ -129,10 +129,12 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
     @NotNull
     @Override
     public FlowableWithSingle<Mqtt5SubAck, Mqtt5Publish> subscribeWithStream(@NotNull final Mqtt5Subscribe subscribe) {
-        final MqttSubscribe mqttSubscribe = MustNotBeImplementedUtil.checkNotImplemented(subscribe, MqttSubscribe.class);
+        final MqttSubscribe mqttSubscribe =
+                MustNotBeImplementedUtil.checkNotImplemented(subscribe, MqttSubscribe.class);
 
         final Flowable<Mqtt5SubscribeResult> subscriptionFlowable =
-                new MqttSubscriptionFlowable(mqttSubscribe, clientData).observeOn(clientData.getExecutorConfig().getRxJavaScheduler());
+                new MqttSubscriptionFlowable(mqttSubscribe, clientData).observeOn(
+                        clientData.getExecutorConfig().getRxJavaScheduler());
         return new FlowableWithSingleSplit<>(subscriptionFlowable, Mqtt5SubAck.class, Mqtt5Publish.class);
     }
 

@@ -70,7 +70,7 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
 
     private ChannelComponent channelComponent;
 
-    MqttChannelInitializer(
+    public MqttChannelInitializer(
             @NotNull final MqttConnect connect, @NotNull final SingleEmitter<Mqtt5ConnAck> connAckEmitter,
             @NotNull final MqttClientData clientData) {
 
