@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2018 The MQTT Bee project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,30 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.mqttbee.mqtt.mqtt3;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
-import org.junit.Rule;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
+import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.exceptions.Mqtt3MessageException;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3Connect;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
-import org.mqttbee.api.mqtt.mqtt5.Mqtt5Client;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;
+import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
+import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.mqtt5.Mqtt5ClientImpl;
-import org.mqttbee.rx.FlowableWithSingle;
+import org.mqttbee.rx.FlowableWithSingleSplit;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 /**
@@ -53,77 +52,96 @@ class Mqtt3ClientViewExceptionsTest {
         mqtt3Client = new Mqtt3ClientView(mqtt5Client);
     }
 
-    @AfterEach
-    void tearDown() {
-    }
-
     @Test
     void connect() {
-        given(mqtt5Client.connect(any())).willAnswer(
-            invocation -> Single.error(new Mqtt5MessageException(Mqtt5Connect.builder().build(), "reason from original exception")));
+        final Mqtt5MessageException mqtt5MessageException =
+                new Mqtt5MessageException(Mqtt5Connect.builder().build(), "reason from original exception");
+        given(mqtt5Client.connect(any())).willReturn(Single.error(mqtt5MessageException));
 
-        Mqtt3Connect connect = Mqtt3Connect.builder().build();
-        assertMqtt3Exception(() -> mqtt3Client.connect(connect).blockingGet());
+        final Mqtt3Connect connect = Mqtt3Connect.builder().build();
+        assertMqtt3Exception(() -> mqtt3Client.connect(connect).toCompletable().blockingAwait(), mqtt5MessageException);
     }
 
     @Test
     void subscribe() {
-        given(mqtt5Client.subscribe(any())).willAnswer(
-            invocation -> Flowable.error(new Mqtt5MessageException(Mqtt5Connect.builder().build(), "reason from original exception")));
+        final Mqtt5MessageException mqtt5MessageException =
+                new Mqtt5MessageException(Mqtt5Connect.builder().build(), "reason from original exception");
+        given(mqtt5Client.subscribe(any())).willReturn(Single.error(mqtt5MessageException));
 
-        Mqtt3Subscribe subscribe = Mqtt3Subscribe.builder().build();
-        mqtt3Client.subscribe(subscribe).blockingSubscribe();
-        assertMqtt3Exception(() -> mqtt3Client.subscribe(subscribe).blockingSubscribe());
+        final Mqtt3Subscribe subscribe = Mqtt3Subscribe.builder().build();
+        assertMqtt3Exception(() -> mqtt3Client.subscribe(subscribe).toCompletable().blockingAwait(),
+                mqtt5MessageException);
+    }
+
+    @Test
+    void subscribeWithStream() {
+        final Mqtt5MessageException mqtt5MessageException =
+                new Mqtt5MessageException(Mqtt5Connect.builder().build(), "reason from original exception");
+        given(mqtt5Client.subscribeWithStream(any())).willReturn(
+                new FlowableWithSingleSplit<>(Flowable.error(mqtt5MessageException), Mqtt5SubAck.class,
+                        Mqtt5Publish.class));
+
+        final Mqtt3Subscribe subscribe = Mqtt3Subscribe.builder().build();
+        assertMqtt3Exception(() -> mqtt3Client.subscribeWithStream(subscribe).blockingSubscribe(),
+                mqtt5MessageException);
     }
 
     @Test
     void remainingPublishes() {
-        given(mqtt5Client.remainingPublishes()).willAnswer(
-            invocation -> Flowable.error(new Mqtt5MessageException(Mqtt5Connect.builder().build(), "reason from original exception")));
+        final Mqtt5MessageException mqtt5MessageException =
+                new Mqtt5MessageException(Mqtt5Connect.builder().build(), "reason from original exception");
+        given(mqtt5Client.remainingPublishes()).willReturn(Flowable.error(mqtt5MessageException));
 
-        assertMqtt3Exception(() -> mqtt3Client.remainingPublishes().blockingSubscribe());
+        assertMqtt3Exception(() -> mqtt3Client.remainingPublishes().blockingSubscribe(), mqtt5MessageException);
     }
 
     @Test
     void allPublishes() {
-        given(mqtt5Client.allPublishes()).willAnswer(
-            invocation -> Flowable.error(new Mqtt5MessageException(Mqtt5Connect.builder().build(), "reason from original exception")));
+        final Mqtt5MessageException mqtt5MessageException =
+                new Mqtt5MessageException(Mqtt5Connect.builder().build(), "reason from original exception");
+        given(mqtt5Client.allPublishes()).willReturn(Flowable.error(mqtt5MessageException));
 
-        assertMqtt3Exception(() -> mqtt3Client.allPublishes().blockingSubscribe());
-
+        assertMqtt3Exception(() -> mqtt3Client.allPublishes().blockingSubscribe(), mqtt5MessageException);
     }
 
     @Test
     void unsubscribe() {
-//        given(mqtt5Client.subscribe(any())).willAnswer(
-//            invocation -> Flowable.error(new Mqtt5MessageException(Mqtt5Connect.builder().build(), "reason from original exception")));
+        final Mqtt5MessageException mqtt5MessageException =
+                new Mqtt5MessageException(Mqtt5Connect.builder().build(), "reason from original exception");
+        given(mqtt5Client.unsubscribe(any())).willReturn(Single.error(mqtt5MessageException));
 
-        given(mqtt5Client.unsubscribe(any())).willAnswer(
-            invocation -> Single.error(new Mqtt5MessageException(Mqtt5Connect.builder().build(), "reason from original exception")));
-
-        Mqtt3Unsubscribe unsubscribe = Mqtt3Unsubscribe.builder().addTopicFilter("topic").build();
-        assertMqtt3Exception(() -> mqtt3Client.unsubscribe(unsubscribe).blockingAwait());
+        final Mqtt3Unsubscribe unsubscribe = Mqtt3Unsubscribe.builder().addTopicFilter("topic").build();
+        assertMqtt3Exception(() -> mqtt3Client.unsubscribe(unsubscribe).blockingAwait(), mqtt5MessageException);
     }
 
     @Test
     void publish() {
-        given(mqtt5Client.publish(any())).willAnswer(
-            invocation -> Flowable.error(new Mqtt5MessageException(Mqtt5Connect.builder().build(), "reason from original exception")));
+        final Mqtt5MessageException mqtt5MessageException =
+                new Mqtt5MessageException(Mqtt5Connect.builder().build(), "reason from original exception");
+        given(mqtt5Client.publish(any())).willReturn(Flowable.error(mqtt5MessageException));
 
-        Flowable<Mqtt3Publish> publish = Flowable.just(Mqtt3Publish.builder().build());
-        assertMqtt3Exception(() -> mqtt3Client.publish(publish).blockingSubscribe());
+        final Flowable<Mqtt3Publish> publish = Flowable.just(Mqtt3Publish.builder().build());
+        assertMqtt3Exception(() -> mqtt3Client.publish(publish).blockingSubscribe(), mqtt5MessageException);
     }
 
     @Test
     void disconnect() {
-        given(mqtt5Client.disconnect(any())).willAnswer(
-            invocation -> Completable.error(new Mqtt5MessageException(Mqtt5Connect.builder().build(), "reason from original exception")));
+        final Mqtt5MessageException mqtt5MessageException =
+                new Mqtt5MessageException(Mqtt5Connect.builder().build(), "reason from original exception");
+        given(mqtt5Client.disconnect(any())).willReturn(Completable.error(mqtt5MessageException));
 
-        assertMqtt3Exception(() -> mqtt3Client.disconnect().blockingAwait());
+        assertMqtt3Exception(() -> mqtt3Client.disconnect().blockingAwait(), mqtt5MessageException);
     }
 
-    void assertMqtt3Exception(Executable executable) {
-        RuntimeException runtimeException = assertThrows(RuntimeException.class, executable);
-        assertThat(runtimeException.getCause(), instanceOf(Mqtt3MessageException.class));
+    private void assertMqtt3Exception(
+            @NotNull final Executable executable, @NotNull final Mqtt5MessageException mqtt5MessageException) {
+
+        final RuntimeException runtimeException = assertThrows(RuntimeException.class, executable);
+        assertTrue(runtimeException.getCause() instanceof Mqtt3MessageException);
+        final Mqtt3MessageException mqtt3MessageException = (Mqtt3MessageException) runtimeException.getCause();
+        assertEquals(mqtt5MessageException.getMqttMessage().getType().getCode(),
+                mqtt3MessageException.getMqttMessage().getType().getCode());
+        assertEquals(mqtt5MessageException.getMessage(), mqtt3MessageException.getMessage());
     }
+
 }
