@@ -38,27 +38,27 @@ import static org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAckRet
 public class Mqtt3SubAckView implements Mqtt3SubAck {
 
     @NotNull
-    public static MqttSubAck wrapped(
+    public static MqttSubAck delegate(
             final int packetIdentifier, @NotNull final ImmutableList<Mqtt3SubAckReturnCode> returnCodes) {
 
         return new MqttSubAck(
-                packetIdentifier, wrappedReturnCodes(returnCodes), null, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
+                packetIdentifier, delegateReturnCodes(returnCodes), null, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
     }
 
     @NotNull
-    private static ImmutableList<Mqtt5SubAckReasonCode> wrappedReturnCodes(
+    private static ImmutableList<Mqtt5SubAckReasonCode> delegateReturnCodes(
             @NotNull final ImmutableList<Mqtt3SubAckReturnCode> returnCodes) {
 
         final ImmutableList.Builder<Mqtt5SubAckReasonCode> builder =
                 ImmutableList.builderWithExpectedSize(returnCodes.size());
         for (int i = 0; i < returnCodes.size(); i++) {
-            builder.add(wrappedReturnCode(returnCodes.get(i)));
+            builder.add(delegateReturnCode(returnCodes.get(i)));
         }
         return builder.build();
     }
 
     @NotNull
-    private static Mqtt5SubAckReasonCode wrappedReturnCode(@NotNull final Mqtt3SubAckReturnCode returnCode) {
+    private static Mqtt5SubAckReasonCode delegateReturnCode(@NotNull final Mqtt3SubAckReturnCode returnCode) {
         switch (returnCode) {
             case SUCCESS_MAXIMUM_QOS_0:
                 return Mqtt5SubAckReasonCode.GRANTED_QOS_0;
@@ -74,19 +74,19 @@ public class Mqtt3SubAckView implements Mqtt3SubAck {
     }
 
     @NotNull
-    private static ImmutableList<Mqtt3SubAckReturnCode> wrapReasonCodes(
+    private static ImmutableList<Mqtt3SubAckReturnCode> viewReasonCodes(
             @NotNull final ImmutableList<Mqtt5SubAckReasonCode> reasonCodes) {
 
         final ImmutableList.Builder<Mqtt3SubAckReturnCode> builder =
                 ImmutableList.builderWithExpectedSize(reasonCodes.size());
         for (int i = 0; i < reasonCodes.size(); i++) {
-            builder.add(wrapReasonCode(reasonCodes.get(i)));
+            builder.add(viewReasonCode(reasonCodes.get(i)));
         }
         return builder.build();
     }
 
     @NotNull
-    private static Mqtt3SubAckReturnCode wrapReasonCode(@NotNull final Mqtt5SubAckReasonCode reasonCode) {
+    private static Mqtt3SubAckReturnCode viewReasonCode(@NotNull final Mqtt5SubAckReasonCode reasonCode) {
         switch (reasonCode) {
             case GRANTED_QOS_0:
                 return SUCCESS_MAXIMUM_QOS_0;
@@ -102,32 +102,32 @@ public class Mqtt3SubAckView implements Mqtt3SubAck {
     }
 
     @NotNull
-    public static Mqtt3SubAckView create(
+    public static Mqtt3SubAckView of(
             final int packetIdentifier, @NotNull final ImmutableList<Mqtt3SubAckReturnCode> returnCodes) {
 
-        return new Mqtt3SubAckView(wrapped(packetIdentifier, returnCodes));
+        return new Mqtt3SubAckView(delegate(packetIdentifier, returnCodes));
     }
 
     @NotNull
-    public static Mqtt3SubAckView create(@NotNull final Mqtt5SubAck subAck) {
+    public static Mqtt3SubAckView of(@NotNull final Mqtt5SubAck subAck) {
         return new Mqtt3SubAckView(MustNotBeImplementedUtil.checkNotImplemented(subAck, MqttSubAck.class));
     }
 
-    private final MqttSubAck wrapped;
+    private final MqttSubAck delegate;
 
-    public Mqtt3SubAckView(@NotNull final MqttSubAck wrapped) {
-        this.wrapped = wrapped;
+    private Mqtt3SubAckView(@NotNull final MqttSubAck delegate) {
+        this.delegate = delegate;
     }
 
     @NotNull
     @Override
     public ImmutableList<Mqtt3SubAckReturnCode> getReturnCodes() {
-        return wrapReasonCodes(wrapped.getReasonCodes());
+        return viewReasonCodes(delegate.getReasonCodes());
     }
 
     @NotNull
-    public MqttSubAck getWrapped() {
-        return wrapped;
+    public MqttSubAck getDelegate() {
+        return delegate;
     }
 
 }

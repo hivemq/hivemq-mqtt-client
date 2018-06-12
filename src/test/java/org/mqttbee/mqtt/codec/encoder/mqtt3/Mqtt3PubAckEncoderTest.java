@@ -37,7 +37,7 @@ class Mqtt3PubAckEncoderTest extends AbstractMqtt5EncoderTest {
         final byte msb = (byte) (id >>> 8);
         final byte lsb = (byte) id;
         final byte[] expected = {0x40, 0x02, msb, lsb};
-        final MqttPubAck pubAck = Mqtt3PubAckView.wrapped(id);
+        final MqttPubAck pubAck = Mqtt3PubAckView.delegate(id);
         encode(expected, pubAck);
     }
 

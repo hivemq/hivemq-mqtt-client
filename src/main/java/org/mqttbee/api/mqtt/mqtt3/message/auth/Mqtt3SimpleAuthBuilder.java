@@ -65,7 +65,7 @@ public class Mqtt3SimpleAuthBuilder {
     @NotNull
     public Mqtt3SimpleAuth build() {
         Preconditions.checkState(username != null);
-        return Mqtt3SimpleAuthView.create(username, password);
+        return Mqtt3SimpleAuthView.of(username, password);
     }
 
 }

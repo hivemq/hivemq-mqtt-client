@@ -62,7 +62,7 @@ public class Mqtt3UnsubscribeBuilder {
     public Mqtt3Unsubscribe build() {
         final ImmutableList<MqttTopicFilterImpl> topicFilters = topicFiltersBuilder.build();
         Preconditions.checkState(!topicFilters.isEmpty());
-        return Mqtt3UnsubscribeView.create(topicFilters);
+        return Mqtt3UnsubscribeView.of(topicFilters);
     }
 
 }

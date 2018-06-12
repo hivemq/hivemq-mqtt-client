@@ -57,7 +57,7 @@ public class Mqtt3UnsubAckDecoder implements MqttMessageDecoder {
 
         final int packetIdentifier = in.readUnsignedShort();
 
-        return Mqtt3UnsubAckView.wrapped(packetIdentifier);
+        return Mqtt3UnsubAckView.delegate(packetIdentifier);
     }
 
 }

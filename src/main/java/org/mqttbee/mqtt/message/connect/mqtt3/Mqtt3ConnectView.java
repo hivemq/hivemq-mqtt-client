@@ -40,7 +40,7 @@ import java.util.Optional;
 public class Mqtt3ConnectView implements Mqtt3Connect {
 
     @NotNull
-    public static MqttConnect wrapped(
+    public static MqttConnect delegate(
             final int keepAlive, final boolean isCleanSession, @Nullable final MqttSimpleAuth simpleAuth,
             @Nullable final MqttWillPublish willPublish) {
 
@@ -51,46 +51,51 @@ public class Mqtt3ConnectView implements Mqtt3Connect {
     }
 
     @NotNull
-    public static Mqtt3ConnectView create(
+    public static Mqtt3ConnectView of(
             final int keepAlive, final boolean isCleanSession, @Nullable final MqttSimpleAuth simpleAuth,
             @Nullable final MqttWillPublish willPublish) {
 
-        return new Mqtt3ConnectView(wrapped(keepAlive, isCleanSession, simpleAuth, willPublish));
+        return new Mqtt3ConnectView(delegate(keepAlive, isCleanSession, simpleAuth, willPublish));
     }
 
-    private final MqttConnect wrapped;
+    @NotNull
+    public static Mqtt3ConnectView of(@NotNull final MqttConnect delegate) {
+        return new Mqtt3ConnectView(delegate);
+    }
 
-    public Mqtt3ConnectView(@NotNull final MqttConnect wrapped) {
-        this.wrapped = wrapped;
+    private final MqttConnect delegate;
+
+    private Mqtt3ConnectView(@NotNull final MqttConnect delegate) {
+        this.delegate = delegate;
     }
 
     @Override
     public int getKeepAlive() {
-        return wrapped.getKeepAlive();
+        return delegate.getKeepAlive();
     }
 
     @Override
     public boolean isCleanSession() {
-        return wrapped.isCleanStart();
+        return delegate.isCleanStart();
     }
 
     @NotNull
     @Override
     public Optional<Mqtt3SimpleAuth> getSimpleAuth() {
-        final MqttSimpleAuth simpleAuth = wrapped.getRawSimpleAuth();
-        return (simpleAuth == null) ? Optional.empty() : Optional.of(new Mqtt3SimpleAuthView(simpleAuth));
+        final MqttSimpleAuth simpleAuth = delegate.getRawSimpleAuth();
+        return (simpleAuth == null) ? Optional.empty() : Optional.of(Mqtt3SimpleAuthView.of(simpleAuth));
     }
 
     @NotNull
     @Override
     public Optional<Mqtt3Publish> getWillPublish() {
-        final MqttWillPublish willPublish = wrapped.getRawWillPublish();
-        return (willPublish == null) ? Optional.empty() : Optional.of(new Mqtt3PublishView(willPublish));
+        final MqttWillPublish willPublish = delegate.getRawWillPublish();
+        return (willPublish == null) ? Optional.empty() : Optional.of(Mqtt3PublishView.of(willPublish));
     }
 
     @NotNull
-    public MqttConnect getWrapped() {
-        return wrapped;
+    public MqttConnect getDelegate() {
+        return delegate;
     }
 
 }

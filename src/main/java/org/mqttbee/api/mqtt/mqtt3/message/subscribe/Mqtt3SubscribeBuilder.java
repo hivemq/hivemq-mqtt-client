@@ -17,6 +17,7 @@
 
 package org.mqttbee.api.mqtt.mqtt3.message.subscribe;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
@@ -38,13 +39,15 @@ public class Mqtt3SubscribeBuilder {
     public Mqtt3SubscribeBuilder addSubscription(@NotNull final Mqtt3Subscription subscription) {
         final Mqtt3SubscriptionView subscriptionView =
                 MustNotBeImplementedUtil.checkNotImplemented(subscription, Mqtt3SubscriptionView.class);
-        subscriptionBuilder.add(subscriptionView.getWrapped());
+        subscriptionBuilder.add(subscriptionView.getDelegate());
         return this;
     }
 
     @NotNull
     public Mqtt3Subscribe build() {
-        return Mqtt3SubscribeView.create(subscriptionBuilder.build());
+        final ImmutableList<MqttSubscription> subscriptions = subscriptionBuilder.build();
+        Preconditions.checkState(!subscriptions.isEmpty());
+        return Mqtt3SubscribeView.of(subscriptions);
     }
 
 }

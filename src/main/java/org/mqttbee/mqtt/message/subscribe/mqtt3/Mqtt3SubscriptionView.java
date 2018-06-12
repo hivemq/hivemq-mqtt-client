@@ -31,40 +31,42 @@ import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
 public class Mqtt3SubscriptionView implements Mqtt3Subscription {
 
     @NotNull
-    public static MqttSubscription wrapped(
+    private static MqttSubscription delegate(
             @NotNull final MqttTopicFilterImpl topicFilter, @NotNull final MqttQoS qos) {
-
         return new MqttSubscription(topicFilter, qos, false, Mqtt5RetainHandling.SEND, false);
     }
 
     @NotNull
-    public static Mqtt3SubscriptionView create(
-            @NotNull final MqttTopicFilterImpl topicFilter, @NotNull final MqttQoS qos) {
-
-        return new Mqtt3SubscriptionView(wrapped(topicFilter, qos));
+    public static Mqtt3SubscriptionView of(@NotNull final MqttTopicFilterImpl topicFilter, @NotNull final MqttQoS qos) {
+        return new Mqtt3SubscriptionView(delegate(topicFilter, qos));
     }
 
-    private final MqttSubscription wrapped;
+    @NotNull
+    static Mqtt3SubscriptionView of(@NotNull final MqttSubscription delegate) {
+        return new Mqtt3SubscriptionView(delegate);
+    }
 
-    Mqtt3SubscriptionView(@NotNull final MqttSubscription wrapped) {
-        this.wrapped = wrapped;
+    private final MqttSubscription delegate;
+
+    private Mqtt3SubscriptionView(@NotNull final MqttSubscription delegate) {
+        this.delegate = delegate;
     }
 
     @NotNull
     @Override
     public MqttTopicFilter getTopicFilter() {
-        return wrapped.getTopicFilter();
+        return delegate.getTopicFilter();
     }
 
     @NotNull
     @Override
     public MqttQoS getQoS() {
-        return wrapped.getQoS();
+        return delegate.getQoS();
     }
 
     @NotNull
-    public MqttSubscription getWrapped() {
-        return wrapped;
+    public MqttSubscription getDelegate() {
+        return delegate;
     }
 
 }

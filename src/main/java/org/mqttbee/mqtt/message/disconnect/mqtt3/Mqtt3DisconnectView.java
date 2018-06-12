@@ -31,33 +31,26 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public class Mqtt3DisconnectView implements Mqtt3Disconnect {
 
-    private static MqttDisconnect WRAPPED;
-    public static Mqtt3DisconnectView INSTANCE;
+    private static final MqttDisconnect DELEGATE = new MqttDisconnect(Mqtt5DisconnectReasonCode.NORMAL_DISCONNECTION,
+            MqttDisconnect.SESSION_EXPIRY_INTERVAL_FROM_CONNECT, null, null, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
+    private static final Mqtt3DisconnectView INSTANCE = new Mqtt3DisconnectView();
 
     @NotNull
-    public static MqttDisconnect wrapped() {
-        if (WRAPPED != null) {
-            return WRAPPED;
-        }
-        return WRAPPED = new MqttDisconnect(Mqtt5DisconnectReasonCode.NORMAL_DISCONNECTION,
-                MqttDisconnect.SESSION_EXPIRY_INTERVAL_FROM_CONNECT, null, null,
-                MqttUserPropertiesImpl.NO_USER_PROPERTIES);
+    public static MqttDisconnect delegate() {
+        return DELEGATE;
     }
 
     @NotNull
-    public static Mqtt3DisconnectView create() {
-        if (INSTANCE != null) {
-            return INSTANCE;
-        }
-        return INSTANCE = new Mqtt3DisconnectView();
+    public static Mqtt3DisconnectView of() {
+        return INSTANCE;
     }
 
     private Mqtt3DisconnectView() {
     }
 
     @NotNull
-    public MqttDisconnect getWrapped() {
-        return WRAPPED;
+    public MqttDisconnect getDelegate() {
+        return DELEGATE;
     }
 
 }

@@ -37,7 +37,7 @@ class Mqtt3PubRecEncoderTest extends AbstractMqtt5EncoderTest {
         final byte msb = (byte) (id >>> 8);
         final byte lsb = (byte) id;
         final byte[] expected = {0x50, 0x02, msb, lsb};
-        final MqttPubRec pubRec = Mqtt3PubRecView.wrapped(id);
+        final MqttPubRec pubRec = Mqtt3PubRecView.delegate(id);
         encode(expected, pubRec);
     }
 

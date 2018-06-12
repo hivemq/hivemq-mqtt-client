@@ -57,7 +57,7 @@ public class Mqtt3PubRelDecoder implements MqttMessageDecoder {
 
         final int packetIdentifier = in.readUnsignedShort();
 
-        return Mqtt3PubRelView.wrapped(packetIdentifier);
+        return Mqtt3PubRelView.delegate(packetIdentifier);
     }
 
 }

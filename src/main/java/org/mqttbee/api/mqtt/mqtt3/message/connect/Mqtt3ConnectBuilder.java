@@ -46,8 +46,8 @@ public class Mqtt3ConnectBuilder {
                 MustNotBeImplementedUtil.checkNotImplemented(connect, Mqtt3ConnectView.class);
         keepAlive = connectView.getKeepAlive();
         isCleanSession = connectView.isCleanSession();
-        simpleAuth = connectView.getWrapped().getRawSimpleAuth();
-        willPublish = connectView.getWrapped().getRawWillPublish();
+        simpleAuth = connectView.getDelegate().getRawSimpleAuth();
+        willPublish = connectView.getDelegate().getRawWillPublish();
     }
 
     @NotNull
@@ -66,7 +66,7 @@ public class Mqtt3ConnectBuilder {
     public Mqtt3ConnectBuilder withSimpleAuth(@Nullable final Mqtt3SimpleAuth simpleAuth) {
         final Mqtt3SimpleAuthView simpleAuthView =
                 MustNotBeImplementedUtil.checkNullOrNotImplemented(simpleAuth, Mqtt3SimpleAuthView.class);
-        this.simpleAuth = (simpleAuthView == null) ? null : simpleAuthView.getWrapped();
+        this.simpleAuth = (simpleAuthView == null) ? null : simpleAuthView.getDelegate();
         return this;
     }
 
@@ -74,13 +74,13 @@ public class Mqtt3ConnectBuilder {
     public Mqtt3ConnectBuilder withWillPublish(@Nullable final Mqtt3Publish willPublish) {
         final Mqtt3PublishView publishView =
                 MustNotBeImplementedUtil.checkNullOrNotImplemented(willPublish, Mqtt3PublishView.class);
-        this.willPublish = (publishView == null) ? null : publishView.getWrappedWill();
+        this.willPublish = (publishView == null) ? null : publishView.getWillDelegate();
         return this;
     }
 
     @NotNull
     public Mqtt3Connect build() {
-        return Mqtt3ConnectView.create(keepAlive, isCleanSession, simpleAuth, willPublish);
+        return Mqtt3ConnectView.of(keepAlive, isCleanSession, simpleAuth, willPublish);
     }
 
 }

@@ -59,33 +59,33 @@ public class Mqtt3MessageException extends Exception {
     @NotNull
     private static Mqtt3Message viewOf(@NotNull final Mqtt5Message mqtt5Message) {
         if (mqtt5Message instanceof MqttConnect) {
-            return new Mqtt3ConnectView((MqttConnect) mqtt5Message);
+            return Mqtt3ConnectView.of((MqttConnect) mqtt5Message);
         } else if (mqtt5Message instanceof MqttConnAck) {
-            return new Mqtt3ConnAckView((MqttConnAck) mqtt5Message);
+            return Mqtt3ConnAckView.of((MqttConnAck) mqtt5Message);
         } else if (mqtt5Message instanceof MqttPublish) {
-            return new Mqtt3PublishView((MqttPublish) mqtt5Message);
+            return Mqtt3PublishView.of((MqttPublish) mqtt5Message);
         } else if (mqtt5Message instanceof MqttPubAck) {
-            return Mqtt3PubAckView.INSTANCE;
+            return Mqtt3PubAckView.of();
         } else if (mqtt5Message instanceof MqttPubRec) {
-            return Mqtt3PubRecView.INSTANCE;
+            return Mqtt3PubRecView.of();
         } else if (mqtt5Message instanceof MqttPubRel) {
-            return Mqtt3PubRelView.INSTANCE;
+            return Mqtt3PubRelView.of();
         } else if (mqtt5Message instanceof MqttPubComp) {
-            return Mqtt3PubCompView.INSTANCE;
+            return Mqtt3PubCompView.of();
         } else if (mqtt5Message instanceof MqttSubscribe) {
-            return new Mqtt3SubscribeView((MqttSubscribe) mqtt5Message);
+            return Mqtt3SubscribeView.of((MqttSubscribe) mqtt5Message);
         } else if (mqtt5Message instanceof MqttSubAck) {
-            return new Mqtt3SubAckView((MqttSubAck) mqtt5Message);
+            return Mqtt3SubAckView.of((MqttSubAck) mqtt5Message);
         } else if (mqtt5Message instanceof MqttUnsubscribe) {
-            return new Mqtt3UnsubscribeView((MqttUnsubscribe) mqtt5Message);
+            return Mqtt3UnsubscribeView.of((MqttUnsubscribe) mqtt5Message);
         } else if (mqtt5Message instanceof MqttUnsubAck) {
-            return Mqtt3UnsubAckView.INSTANCE;
+            return Mqtt3UnsubAckView.of();
         } else if (mqtt5Message instanceof MqttPingReq) {
-            return Mqtt3PingReqView.INSTANCE;
+            return Mqtt3PingReqView.of();
         } else if (mqtt5Message instanceof MqttPingResp) {
-            return Mqtt3PingRespView.INSTANCE;
+            return Mqtt3PingRespView.of();
         } else if (mqtt5Message instanceof MqttDisconnect) {
-            return Mqtt3DisconnectView.INSTANCE;
+            return Mqtt3DisconnectView.of();
         }
         throw new IllegalStateException();
     }

@@ -17,6 +17,7 @@
 
 package org.mqttbee.mqtt.message.publish.pubrel.mqtt3;
 
+import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.pubrel.Mqtt3PubRel;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrel.Mqtt5PubRelReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
@@ -30,18 +31,17 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public class Mqtt3PubRelView implements Mqtt3PubRel {
 
-    public static Mqtt3PubRelView INSTANCE;
+    public static Mqtt3PubRelView INSTANCE = new Mqtt3PubRelView();
 
-    public static MqttPubRel wrapped(final int packetIdentifier) {
+    @NotNull
+    public static MqttPubRel delegate(final int packetIdentifier) {
         return new MqttPubRel(packetIdentifier, Mqtt5PubRelReasonCode.SUCCESS, null,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES);
     }
 
-    public static Mqtt3PubRelView create() {
-        if (INSTANCE != null) {
-            return INSTANCE;
-        }
-        return INSTANCE = new Mqtt3PubRelView();
+    @NotNull
+    public static Mqtt3PubRelView of() {
+        return INSTANCE;
     }
 
     private Mqtt3PubRelView() {
