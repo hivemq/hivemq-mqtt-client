@@ -87,7 +87,7 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
                 queued = false;
             } else {
                 queue.offer(result);
-                queued = false;
+                queued = true;
             }
 
             final int wip = this.wip.get();
