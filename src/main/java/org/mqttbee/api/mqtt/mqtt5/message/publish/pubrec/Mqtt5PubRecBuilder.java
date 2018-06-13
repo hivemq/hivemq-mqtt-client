@@ -28,6 +28,6 @@ import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 public interface Mqtt5PubRecBuilder {
 
     @NotNull
-    Mqtt5PubRecBuilder withUserProperties(@NotNull Mqtt5UserProperties userProperties);
+    Mqtt5PubRecBuilder userProperties(@NotNull Mqtt5UserProperties userProperties);
 
 }
