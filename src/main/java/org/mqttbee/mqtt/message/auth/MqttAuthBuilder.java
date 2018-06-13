@@ -52,35 +52,35 @@ public class MqttAuthBuilder implements Mqtt5AuthBuilder {
 
     @NotNull
     @Override
-    public MqttAuthBuilder withData(@Nullable final byte[] data) {
+    public MqttAuthBuilder data(@Nullable final byte[] data) {
         this.data = MqttBuilderUtil.binaryDataOrNull(data);
         return this;
     }
 
     @NotNull
     @Override
-    public MqttAuthBuilder withData(@Nullable final ByteBuffer data) {
+    public MqttAuthBuilder data(@Nullable final ByteBuffer data) {
         this.data = MqttBuilderUtil.binaryDataOrNull(data);
         return this;
     }
 
     @NotNull
     @Override
-    public MqttAuthBuilder withReasonString(@Nullable final String reasonString) {
+    public MqttAuthBuilder reasonString(@Nullable final String reasonString) {
         this.reasonString = MqttBuilderUtil.stringOrNull(reasonString);
         return this;
     }
 
     @NotNull
     @Override
-    public MqttAuthBuilder withReasonString(@Nullable final MqttUTF8String reasonString) {
+    public MqttAuthBuilder reasonString(@Nullable final MqttUTF8String reasonString) {
         this.reasonString = MqttBuilderUtil.stringOrNull(reasonString);
         return this;
     }
 
     @NotNull
     @Override
-    public MqttAuthBuilder withUserProperties(@NotNull final Mqtt5UserProperties userProperties) {
+    public MqttAuthBuilder userProperties(@NotNull final Mqtt5UserProperties userProperties) {
         this.userProperties = MqttBuilderUtil.userProperties(userProperties);
         return this;
     }

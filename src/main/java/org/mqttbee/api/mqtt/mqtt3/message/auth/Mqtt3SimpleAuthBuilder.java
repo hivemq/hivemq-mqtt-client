@@ -39,25 +39,25 @@ public class Mqtt3SimpleAuthBuilder {
     }
 
     @NotNull
-    public Mqtt3SimpleAuthBuilder withUsername(@NotNull final String username) {
+    public Mqtt3SimpleAuthBuilder username(@NotNull final String username) {
         this.username = MqttBuilderUtil.string(username);
         return this;
     }
 
     @NotNull
-    public Mqtt3SimpleAuthBuilder withUsername(@NotNull final MqttUTF8String username) {
+    public Mqtt3SimpleAuthBuilder username(@NotNull final MqttUTF8String username) {
         this.username = MqttBuilderUtil.string(username);
         return this;
     }
 
     @NotNull
-    public Mqtt3SimpleAuthBuilder withPassword(@Nullable final byte[] password) {
+    public Mqtt3SimpleAuthBuilder password(@Nullable final byte[] password) {
         this.password = MqttBuilderUtil.binaryDataOrNull(password);
         return this;
     }
 
     @NotNull
-    public Mqtt3SimpleAuthBuilder withPassword(@Nullable final ByteBuffer password) {
+    public Mqtt3SimpleAuthBuilder password(@Nullable final ByteBuffer password) {
         this.password = MqttBuilderUtil.binaryDataOrNull(password);
         return this;
     }
