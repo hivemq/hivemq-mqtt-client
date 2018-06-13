@@ -32,7 +32,7 @@ public class MqttTopicFilterBuilder {
     }
 
     @NotNull
-    public MqttTopicFilterBuilder sub(@NotNull final String subTopic) {
+    public MqttTopicFilterBuilder subTopic(@NotNull final String subTopic) {
         Preconditions.checkNotNull(subTopic);
         stringBuilder.append(MqttTopic.TOPIC_LEVEL_SEPARATOR).append(subTopic);
         return this;

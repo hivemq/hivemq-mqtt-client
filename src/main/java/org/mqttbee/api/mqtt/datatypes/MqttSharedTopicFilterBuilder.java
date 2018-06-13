@@ -33,8 +33,8 @@ public class MqttSharedTopicFilterBuilder extends MqttTopicFilterBuilder {
 
     @NotNull
     @Override
-    public MqttSharedTopicFilterBuilder sub(@NotNull final String subTopic) {
-        return (MqttSharedTopicFilterBuilder) super.sub(subTopic);
+    public MqttSharedTopicFilterBuilder subTopic(@NotNull final String subTopic) {
+        return (MqttSharedTopicFilterBuilder) super.subTopic(subTopic);
     }
 
     @NotNull
