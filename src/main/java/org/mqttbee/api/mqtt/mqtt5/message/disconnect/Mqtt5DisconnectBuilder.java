@@ -46,44 +46,44 @@ public class Mqtt5DisconnectBuilder {
     }
 
     @NotNull
-    public Mqtt5DisconnectBuilder withWillMessage(final boolean withWillMessage) {
+    public Mqtt5DisconnectBuilder willMessage(final boolean withWillMessage) {
         this.withWillMessage = withWillMessage;
         return this;
     }
 
     @NotNull
-    public Mqtt5DisconnectBuilder withSessionExpiryInterval(final long sessionExpiryInterval) {
+    public Mqtt5DisconnectBuilder sessionExpiryInterval(final long sessionExpiryInterval) {
         Preconditions.checkArgument(UnsignedDataTypes.isUnsignedInt(sessionExpiryInterval));
         this.sessionExpiryInterval = sessionExpiryInterval;
         return this;
     }
 
     @NotNull
-    public Mqtt5DisconnectBuilder withServerReference(@Nullable final String serverReference) {
+    public Mqtt5DisconnectBuilder serverReference(@Nullable final String serverReference) {
         this.serverReference = MqttBuilderUtil.stringOrNull(serverReference);
         return this;
     }
 
     @NotNull
-    public Mqtt5DisconnectBuilder withServerReference(@Nullable final MqttUTF8String serverReference) {
+    public Mqtt5DisconnectBuilder serverReference(@Nullable final MqttUTF8String serverReference) {
         this.serverReference = MqttBuilderUtil.stringOrNull(serverReference);
         return this;
     }
 
     @NotNull
-    public Mqtt5DisconnectBuilder withReasonString(@Nullable final String reasonString) {
+    public Mqtt5DisconnectBuilder reasonString(@Nullable final String reasonString) {
         this.reasonString = MqttBuilderUtil.stringOrNull(reasonString);
         return this;
     }
 
     @NotNull
-    public Mqtt5DisconnectBuilder withReasonString(@Nullable final MqttUTF8String reasonString) {
+    public Mqtt5DisconnectBuilder reasonString(@Nullable final MqttUTF8String reasonString) {
         this.reasonString = MqttBuilderUtil.stringOrNull(reasonString);
         return this;
     }
 
     @NotNull
-    public Mqtt5DisconnectBuilder withUserProperties(@NotNull final Mqtt5UserProperties userProperties) {
+    public Mqtt5DisconnectBuilder userProperties(@NotNull final Mqtt5UserProperties userProperties) {
         this.userProperties = MqttBuilderUtil.userProperties(userProperties);
         return this;
     }
