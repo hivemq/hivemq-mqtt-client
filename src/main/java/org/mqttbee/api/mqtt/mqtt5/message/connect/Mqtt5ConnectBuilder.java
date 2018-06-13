@@ -66,62 +66,62 @@ public class Mqtt5ConnectBuilder {
     }
 
     @NotNull
-    public Mqtt5ConnectBuilder withKeepAlive(final int keepAlive) {
+    public Mqtt5ConnectBuilder keepAlive(final int keepAlive) {
         Preconditions.checkArgument(UnsignedDataTypes.isUnsignedShort(keepAlive));
         this.keepAlive = keepAlive;
         return this;
     }
 
-    public Mqtt5ConnectBuilder withCleanStart(final boolean isCleanStart) {
+    public Mqtt5ConnectBuilder cleanStart(final boolean isCleanStart) {
         this.isCleanStart = isCleanStart;
         return this;
     }
 
     @NotNull
-    public Mqtt5ConnectBuilder withSessionExpiryInterval(final long sessionExpiryInterval) {
+    public Mqtt5ConnectBuilder sessionExpiryInterval(final long sessionExpiryInterval) {
         Preconditions.checkArgument(UnsignedDataTypes.isUnsignedInt(sessionExpiryInterval));
         this.sessionExpiryInterval = sessionExpiryInterval;
         return this;
     }
 
     @NotNull
-    public Mqtt5ConnectBuilder withResponseInformationRequested(final boolean isResponseInformationRequested) {
+    public Mqtt5ConnectBuilder responseInformationRequested(final boolean isResponseInformationRequested) {
         this.isResponseInformationRequested = isResponseInformationRequested;
         return this;
     }
 
     @NotNull
-    public Mqtt5ConnectBuilder withProblemInformationRequested(final boolean isProblemInformationRequested) {
+    public Mqtt5ConnectBuilder problemInformationRequested(final boolean isProblemInformationRequested) {
         this.isProblemInformationRequested = isProblemInformationRequested;
         return this;
     }
 
     @NotNull
-    public Mqtt5ConnectBuilder withRestrictions(@NotNull final Mqtt5ConnectRestrictions restrictions) {
+    public Mqtt5ConnectBuilder restrictions(@NotNull final Mqtt5ConnectRestrictions restrictions) {
         this.restrictions = MustNotBeImplementedUtil.checkNotImplemented(restrictions, MqttConnectRestrictions.class);
         return this;
     }
 
     @NotNull
-    public Mqtt5ConnectBuilder withSimpleAuth(@Nullable final Mqtt5SimpleAuth simpleAuth) {
+    public Mqtt5ConnectBuilder simpleAuth(@Nullable final Mqtt5SimpleAuth simpleAuth) {
         this.simpleAuth = MustNotBeImplementedUtil.checkNullOrNotImplemented(simpleAuth, MqttSimpleAuth.class);
         return this;
     }
 
     @NotNull
-    public Mqtt5ConnectBuilder withEnhancedAuth(@Nullable final Mqtt5EnhancedAuthProvider enhancedAuthProvider) {
+    public Mqtt5ConnectBuilder enhancedAuth(@Nullable final Mqtt5EnhancedAuthProvider enhancedAuthProvider) {
         this.enhancedAuthProvider = enhancedAuthProvider;
         return this;
     }
 
     @NotNull
-    public Mqtt5ConnectBuilder withWillPublish(@Nullable final Mqtt5WillPublish willPublish) {
+    public Mqtt5ConnectBuilder willPublish(@Nullable final Mqtt5WillPublish willPublish) {
         this.willPublish = MustNotBeImplementedUtil.checkNullOrNotImplemented(willPublish, MqttWillPublish.class);
         return this;
     }
 
     @NotNull
-    public Mqtt5ConnectBuilder withUserProperties(@NotNull final Mqtt5UserProperties userProperties) {
+    public Mqtt5ConnectBuilder userProperties(@NotNull final Mqtt5UserProperties userProperties) {
         this.userProperties = MqttBuilderUtil.userProperties(userProperties);
         return this;
     }

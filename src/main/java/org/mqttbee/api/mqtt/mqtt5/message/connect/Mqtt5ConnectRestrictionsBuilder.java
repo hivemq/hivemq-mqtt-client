@@ -35,21 +35,21 @@ public class Mqtt5ConnectRestrictionsBuilder {
     }
 
     @NotNull
-    public Mqtt5ConnectRestrictionsBuilder withReceiveMaximum(final int receiveMaximum) {
+    public Mqtt5ConnectRestrictionsBuilder receiveMaximum(final int receiveMaximum) {
         Preconditions.checkArgument(UnsignedDataTypes.isUnsignedShort(receiveMaximum));
         this.receiveMaximum = receiveMaximum;
         return this;
     }
 
     @NotNull
-    public Mqtt5ConnectRestrictionsBuilder withTopicAliasMaximum(final int topicAliasMaximum) {
+    public Mqtt5ConnectRestrictionsBuilder topicAliasMaximum(final int topicAliasMaximum) {
         Preconditions.checkArgument(UnsignedDataTypes.isUnsignedShort(topicAliasMaximum));
         this.topicAliasMaximum = topicAliasMaximum;
         return this;
     }
 
     @NotNull
-    public Mqtt5ConnectRestrictionsBuilder withMaximumPacketSize(final int maximumPacketSize) {
+    public Mqtt5ConnectRestrictionsBuilder maximumPacketSize(final int maximumPacketSize) {
         Preconditions.checkArgument(UnsignedDataTypes.isUnsignedInt(maximumPacketSize));
         this.maximumPacketSize = maximumPacketSize;
         return this;

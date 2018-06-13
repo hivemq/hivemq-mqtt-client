@@ -51,19 +51,19 @@ public class Mqtt3ConnectBuilder {
     }
 
     @NotNull
-    public Mqtt3ConnectBuilder withKeepAlive(final int keepAlive) {
+    public Mqtt3ConnectBuilder keepAlive(final int keepAlive) {
         this.keepAlive = keepAlive;
         return this;
     }
 
     @NotNull
-    public Mqtt3ConnectBuilder withCleanSession(final boolean isCleanSession) {
+    public Mqtt3ConnectBuilder cleanSession(final boolean isCleanSession) {
         this.isCleanSession = isCleanSession;
         return this;
     }
 
     @NotNull
-    public Mqtt3ConnectBuilder withSimpleAuth(@Nullable final Mqtt3SimpleAuth simpleAuth) {
+    public Mqtt3ConnectBuilder simpleAuth(@Nullable final Mqtt3SimpleAuth simpleAuth) {
         final Mqtt3SimpleAuthView simpleAuthView =
                 MustNotBeImplementedUtil.checkNullOrNotImplemented(simpleAuth, Mqtt3SimpleAuthView.class);
         this.simpleAuth = (simpleAuthView == null) ? null : simpleAuthView.getDelegate();
@@ -71,7 +71,7 @@ public class Mqtt3ConnectBuilder {
     }
 
     @NotNull
-    public Mqtt3ConnectBuilder withWillPublish(@Nullable final Mqtt3Publish willPublish) {
+    public Mqtt3ConnectBuilder willPublish(@Nullable final Mqtt3Publish willPublish) {
         final Mqtt3PublishView publishView =
                 MustNotBeImplementedUtil.checkNullOrNotImplemented(willPublish, Mqtt3PublishView.class);
         this.willPublish = (publishView == null) ? null : publishView.getWillDelegate();

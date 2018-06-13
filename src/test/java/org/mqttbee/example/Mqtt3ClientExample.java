@@ -129,7 +129,7 @@ class Mqtt3ClientExample {
         final Mqtt3Client client = getClient();
 
         // create a CONNECT message with keep alive of 10 seconds
-        final Mqtt3Connect connectMessage = Mqtt3Connect.builder().withKeepAlive(10).build();
+        final Mqtt3Connect connectMessage = Mqtt3Connect.builder().keepAlive(10).build();
         // define what to do on connect, this does not connect yet
         final Single<Mqtt3ConnAck> connectScenario =
                 client.connect(connectMessage).doOnSuccess(connAck -> System.out.println("connected subscriber"));
@@ -175,7 +175,7 @@ class Mqtt3ClientExample {
         final Mqtt3Client client = getClient();
 
         // create a CONNECT message with keep alive of 10 seconds
-        final Mqtt3Connect connectMessage = Mqtt3Connect.builder().withKeepAlive(10).build();
+        final Mqtt3Connect connectMessage = Mqtt3Connect.builder().keepAlive(10).build();
         // define what to do on connect, this does not connect yet
         final Single<Mqtt3ConnAck> connectScenario =
                 client.connect(connectMessage).doOnSuccess(connAck -> System.out.println("connected publisher"));
