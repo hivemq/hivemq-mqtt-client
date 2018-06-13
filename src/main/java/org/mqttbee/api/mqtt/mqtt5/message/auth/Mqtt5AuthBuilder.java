@@ -32,18 +32,18 @@ import java.nio.ByteBuffer;
 public interface Mqtt5AuthBuilder {
 
     @NotNull
-    Mqtt5AuthBuilder withData(@Nullable byte[] data);
+    Mqtt5AuthBuilder data(@Nullable byte[] data);
 
     @NotNull
-    Mqtt5AuthBuilder withData(@Nullable ByteBuffer data);
+    Mqtt5AuthBuilder data(@Nullable ByteBuffer data);
 
     @NotNull
-    Mqtt5AuthBuilder withReasonString(@Nullable String reasonString);
+    Mqtt5AuthBuilder reasonString(@Nullable String reasonString);
 
     @NotNull
-    Mqtt5AuthBuilder withReasonString(@Nullable MqttUTF8String reasonString);
+    Mqtt5AuthBuilder reasonString(@Nullable MqttUTF8String reasonString);
 
     @NotNull
-    Mqtt5AuthBuilder withUserProperties(@NotNull Mqtt5UserProperties userProperties);
+    Mqtt5AuthBuilder userProperties(@NotNull Mqtt5UserProperties userProperties);
 
 }
