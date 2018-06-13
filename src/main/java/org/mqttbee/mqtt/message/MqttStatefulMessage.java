@@ -70,8 +70,8 @@ public abstract class MqttStatefulMessage<M extends MqttMessageWithUserPropertie
 
         private final int packetIdentifier;
 
-        protected MqttStatefulMessageWithId(@NotNull final M wrapped, final int packetIdentifier) {
-            super(wrapped);
+        protected MqttStatefulMessageWithId(@NotNull final M statelessMessage, final int packetIdentifier) {
+            super(statelessMessage);
             this.packetIdentifier = packetIdentifier;
         }
 

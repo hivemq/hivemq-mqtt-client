@@ -34,77 +34,77 @@ import java.util.Optional;
  */
 public class Mqtt3ClientDataView implements Mqtt3ClientData {
 
-    private final MqttClientData wrapped;
+    private final MqttClientData delegate;
 
-    Mqtt3ClientDataView(@NotNull final MqttClientData wrapped) {
-        this.wrapped = wrapped;
+    Mqtt3ClientDataView(@NotNull final MqttClientData delegate) {
+        this.delegate = delegate;
     }
 
     @NotNull
     @Override
     public Optional<MqttClientIdentifier> getClientIdentifier() {
-        return wrapped.getClientIdentifier();
+        return delegate.getClientIdentifier();
     }
 
     @NotNull
     @Override
     public String getServerHost() {
-        return wrapped.getServerHost();
+        return delegate.getServerHost();
     }
 
     @Override
     public int getServerPort() {
-        return wrapped.getServerPort();
+        return delegate.getServerPort();
     }
 
     @Override
     public boolean usesSsl() {
-        return wrapped.usesSsl();
+        return delegate.usesSsl();
     }
 
     @NotNull
     @Override
     public Optional<MqttClientSslConfig> getSslConfig() {
-        return wrapped.getSslConfig();
+        return delegate.getSslConfig();
     }
 
     @Override
     public boolean usesWebSockets() {
-        return wrapped.usesWebSockets();
+        return delegate.usesWebSockets();
     }
 
     @NotNull
     @Override
     public Optional<MqttWebsocketConfig> getWebsocketConfig() {
-        return wrapped.getWebsocketConfig();
+        return delegate.getWebsocketConfig();
     }
 
     @NotNull
     @Override
     public MqttClientExecutorConfig getExecutorConfig() {
-        return wrapped.getExecutorConfig();
+        return delegate.getExecutorConfig();
     }
 
     @Override
     public boolean isConnecting() {
-        return wrapped.isConnecting();
+        return delegate.isConnecting();
     }
 
     @Override
     public boolean isConnected() {
-        return wrapped.isConnected();
+        return delegate.isConnected();
     }
 
     @NotNull
     @Override
     public Optional<Mqtt3ClientConnectionData> getClientConnectionData() {
-        return Optional.ofNullable(wrapped.getRawClientConnectionData());
+        return Optional.ofNullable(delegate.getRawClientConnectionData());
     }
 
     @NotNull
     @Override
     public Optional<Mqtt3ServerConnectionData> getServerConnectionData() {
-        return Optional.ofNullable(wrapped.getRawServerConnectionData());
+        return Optional.ofNullable(delegate.getRawServerConnectionData());
     }
 
 }
