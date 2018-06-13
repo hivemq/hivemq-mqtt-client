@@ -43,7 +43,7 @@ public class MqttPubAckBuilder implements Mqtt5PubAckBuilder {
 
     @NotNull
     @Override
-    public MqttPubAckBuilder withUserProperties(@NotNull final Mqtt5UserProperties userProperties) {
+    public MqttPubAckBuilder userProperties(@NotNull final Mqtt5UserProperties userProperties) {
         this.userProperties = MqttBuilderUtil.userProperties(userProperties);
         return this;
     }
