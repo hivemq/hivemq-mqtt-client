@@ -74,50 +74,50 @@ public class Mqtt5PublishBuilder {
     }
 
     @NotNull
-    public Mqtt5PublishBuilder withTopic(@NotNull final String topic) {
+    public Mqtt5PublishBuilder topic(@NotNull final String topic) {
         this.topic = MqttBuilderUtil.topic(topic);
         return this;
     }
 
     @NotNull
-    public Mqtt5PublishBuilder withTopic(@NotNull final MqttTopic topic) {
+    public Mqtt5PublishBuilder topic(@NotNull final MqttTopic topic) {
         this.topic = MqttBuilderUtil.topic(topic);
         return this;
     }
 
     @NotNull
-    public Mqtt5PublishBuilder withPayload(@Nullable final byte[] payload) {
+    public Mqtt5PublishBuilder payload(@Nullable final byte[] payload) {
         this.payload = (payload == null) ? null : ByteBufferUtil.wrap(payload);
         return this;
     }
 
     @NotNull
-    public Mqtt5PublishBuilder withPayload(@Nullable final ByteBuffer payload) {
+    public Mqtt5PublishBuilder payload(@Nullable final ByteBuffer payload) {
         this.payload = (payload == null) ? null : ByteBufferUtil.slice(payload);
         return this;
     }
 
     @NotNull
-    public Mqtt5PublishBuilder withQos(@NotNull final MqttQoS qos) {
+    public Mqtt5PublishBuilder qos(@NotNull final MqttQoS qos) {
         this.qos = Preconditions.checkNotNull(qos);
         return this;
     }
 
     @NotNull
-    public Mqtt5PublishBuilder withRetain(final boolean retain) {
+    public Mqtt5PublishBuilder retain(final boolean retain) {
         this.retain = retain;
         return this;
     }
 
     @NotNull
-    public Mqtt5PublishBuilder withMessageExpiryInterval(final long messageExpiryInterval) {
+    public Mqtt5PublishBuilder messageExpiryInterval(final long messageExpiryInterval) {
         Preconditions.checkArgument(UnsignedDataTypes.isUnsignedInt(messageExpiryInterval));
         this.messageExpiryInterval = messageExpiryInterval;
         return this;
     }
 
     @NotNull
-    public Mqtt5PublishBuilder withPayloadFormatIndicator(
+    public Mqtt5PublishBuilder payloadFormatIndicator(
             @Nullable final Mqtt5PayloadFormatIndicator payloadFormatIndicator) {
 
         this.payloadFormatIndicator = payloadFormatIndicator;
@@ -125,50 +125,50 @@ public class Mqtt5PublishBuilder {
     }
 
     @NotNull
-    public Mqtt5PublishBuilder withContentType(@Nullable final String contentType) {
+    public Mqtt5PublishBuilder contentType(@Nullable final String contentType) {
         this.contentType = MqttBuilderUtil.stringOrNull(contentType);
         return this;
     }
 
     @NotNull
-    public Mqtt5PublishBuilder withContentType(@Nullable final MqttUTF8String contentType) {
+    public Mqtt5PublishBuilder contentType(@Nullable final MqttUTF8String contentType) {
         this.contentType = MqttBuilderUtil.stringOrNull(contentType);
         return this;
     }
 
     @NotNull
-    public Mqtt5PublishBuilder withResponseTopic(@Nullable final String responseTopic) {
+    public Mqtt5PublishBuilder responseTopic(@Nullable final String responseTopic) {
         this.responseTopic = MqttBuilderUtil.topicOrNull(responseTopic);
         return this;
     }
 
     @NotNull
-    public Mqtt5PublishBuilder withResponseTopic(@Nullable final MqttTopic responseTopic) {
+    public Mqtt5PublishBuilder responseTopic(@Nullable final MqttTopic responseTopic) {
         this.responseTopic = MqttBuilderUtil.topicOrNull(responseTopic);
         return this;
     }
 
     @NotNull
-    public Mqtt5PublishBuilder withCorrelationData(@Nullable final byte[] correlationData) {
+    public Mqtt5PublishBuilder correlationData(@Nullable final byte[] correlationData) {
         this.correlationData = MqttBuilderUtil.binaryDataOrNull(correlationData);
         return this;
     }
 
     @NotNull
-    public Mqtt5PublishBuilder withCorrelationData(@Nullable final ByteBuffer correlationData) {
+    public Mqtt5PublishBuilder correlationData(@Nullable final ByteBuffer correlationData) {
         this.correlationData = MqttBuilderUtil.binaryDataOrNull(correlationData);
         return this;
     }
 
     @NotNull
-    public Mqtt5PublishBuilder withTopicAliasUsage(@NotNull final TopicAliasUsage topicAliasUsage) {
+    public Mqtt5PublishBuilder topicAliasUsage(@NotNull final TopicAliasUsage topicAliasUsage) {
         Preconditions.checkNotNull(topicAliasUsage);
         this.topicAliasUsage = topicAliasUsage;
         return this;
     }
 
     @NotNull
-    public Mqtt5PublishBuilder withUserProperties(@NotNull final Mqtt5UserProperties userProperties) {
+    public Mqtt5PublishBuilder userProperties(@NotNull final Mqtt5UserProperties userProperties) {
         this.userProperties = MqttBuilderUtil.userProperties(userProperties);
         return this;
     }

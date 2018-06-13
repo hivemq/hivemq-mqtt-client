@@ -53,108 +53,108 @@ public class Mqtt5WillPublishBuilder extends Mqtt5PublishBuilder {
 
     @NotNull
     @Override
-    public Mqtt5WillPublishBuilder withTopic(@NotNull final String topic) {
-        super.withTopic(topic);
+    public Mqtt5WillPublishBuilder topic(@NotNull final String topic) {
+        super.topic(topic);
         return this;
     }
 
     @NotNull
     @Override
-    public Mqtt5WillPublishBuilder withTopic(@NotNull final MqttTopic topic) {
-        super.withTopic(topic);
+    public Mqtt5WillPublishBuilder topic(@NotNull final MqttTopic topic) {
+        super.topic(topic);
         return this;
     }
 
     @NotNull
     @Override
-    public Mqtt5WillPublishBuilder withPayload(@Nullable final byte[] payload) {
+    public Mqtt5WillPublishBuilder payload(@Nullable final byte[] payload) {
         this.payload = MqttBuilderUtil.binaryDataOrNull(payload);
         return this;
     }
 
     @NotNull
     @Override
-    public Mqtt5WillPublishBuilder withPayload(@Nullable final ByteBuffer payload) {
+    public Mqtt5WillPublishBuilder payload(@Nullable final ByteBuffer payload) {
         this.payload = MqttBuilderUtil.binaryDataOrNull(payload);
         return this;
     }
 
     @NotNull
     @Override
-    public Mqtt5WillPublishBuilder withQos(@NotNull final MqttQoS qos) {
-        super.withQos(qos);
+    public Mqtt5WillPublishBuilder qos(@NotNull final MqttQoS qos) {
+        super.qos(qos);
         return this;
     }
 
     @NotNull
     @Override
-    public Mqtt5WillPublishBuilder withRetain(final boolean retain) {
-        super.withRetain(retain);
+    public Mqtt5WillPublishBuilder retain(final boolean retain) {
+        super.retain(retain);
         return this;
     }
 
     @NotNull
     @Override
-    public Mqtt5WillPublishBuilder withPayloadFormatIndicator(
+    public Mqtt5WillPublishBuilder payloadFormatIndicator(
             @Nullable final Mqtt5PayloadFormatIndicator payloadFormatIndicator) {
 
-        super.withPayloadFormatIndicator(payloadFormatIndicator);
+        super.payloadFormatIndicator(payloadFormatIndicator);
         return this;
     }
 
     @NotNull
     @Override
-    public Mqtt5WillPublishBuilder withContentType(@Nullable final String contentType) {
-        super.withContentType(contentType);
+    public Mqtt5WillPublishBuilder contentType(@Nullable final String contentType) {
+        super.contentType(contentType);
         return this;
     }
 
     @NotNull
     @Override
-    public Mqtt5WillPublishBuilder withContentType(@Nullable final MqttUTF8String contentType) {
-        super.withContentType(contentType);
+    public Mqtt5WillPublishBuilder contentType(@Nullable final MqttUTF8String contentType) {
+        super.contentType(contentType);
         return this;
     }
 
     @NotNull
     @Override
-    public Mqtt5WillPublishBuilder withResponseTopic(@Nullable final String responseTopic) {
-        super.withResponseTopic(responseTopic);
+    public Mqtt5WillPublishBuilder responseTopic(@Nullable final String responseTopic) {
+        super.responseTopic(responseTopic);
         return this;
     }
 
     @NotNull
     @Override
-    public Mqtt5WillPublishBuilder withResponseTopic(@Nullable final MqttTopic responseTopic) {
-        super.withResponseTopic(responseTopic);
+    public Mqtt5WillPublishBuilder responseTopic(@Nullable final MqttTopic responseTopic) {
+        super.responseTopic(responseTopic);
         return this;
     }
 
     @NotNull
     @Override
-    public Mqtt5WillPublishBuilder withCorrelationData(@Nullable final byte[] correlationData) {
-        super.withCorrelationData(correlationData);
+    public Mqtt5WillPublishBuilder correlationData(@Nullable final byte[] correlationData) {
+        super.correlationData(correlationData);
         return this;
     }
 
     @NotNull
     @Override
-    public Mqtt5WillPublishBuilder withCorrelationData(@Nullable final ByteBuffer correlationData) {
-        super.withCorrelationData(correlationData);
+    public Mqtt5WillPublishBuilder correlationData(@Nullable final ByteBuffer correlationData) {
+        super.correlationData(correlationData);
         return this;
     }
 
     @NotNull
     @Override
     @Deprecated
-    public Mqtt5WillPublishBuilder withTopicAliasUsage(@NotNull final TopicAliasUsage topicAliasUsage) {
+    public Mqtt5WillPublishBuilder topicAliasUsage(@NotNull final TopicAliasUsage topicAliasUsage) {
         throw new UnsupportedOperationException();
     }
 
     @NotNull
     @Override
-    public Mqtt5WillPublishBuilder withUserProperties(@NotNull final Mqtt5UserProperties userProperties) {
-        super.withUserProperties(userProperties);
+    public Mqtt5WillPublishBuilder userProperties(@NotNull final Mqtt5UserProperties userProperties) {
+        super.userProperties(userProperties);
         return this;
     }
 
