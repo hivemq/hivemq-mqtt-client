@@ -43,7 +43,7 @@ public class MqttPubCompBuilder implements Mqtt5PubCompBuilder {
 
     @NotNull
     @Override
-    public MqttPubCompBuilder withUserProperties(@NotNull final Mqtt5UserProperties userProperties) {
+    public MqttPubCompBuilder userProperties(@NotNull final Mqtt5UserProperties userProperties) {
         this.userProperties = MqttBuilderUtil.userProperties(userProperties);
         return this;
     }
