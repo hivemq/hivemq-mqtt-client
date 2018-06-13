@@ -31,7 +31,7 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public class Mqtt3PubRelView implements Mqtt3PubRel {
 
-    public static Mqtt3PubRelView INSTANCE = new Mqtt3PubRelView();
+    private static Mqtt3PubRelView INSTANCE = new Mqtt3PubRelView();
 
     @NotNull
     public static MqttPubRel delegate(final int packetIdentifier) {
