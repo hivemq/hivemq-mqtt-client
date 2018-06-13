@@ -53,11 +53,12 @@ public class MqttPublishFlowables extends Flowable<Flowable<MqttPublishWithFlow>
 
     public void add(@NotNull final Flowable<MqttPublishWithFlow> publishFlowable) {
         synchronized (this) {
-            if (requested.get() == 0) {
+            while (requested.get() == 0) {
                 try {
                     this.wait();
                 } catch (final InterruptedException e) {
                     LOGGER.error("thread interrupted while waiting to publish.", e);
+                    return;
                 }
             }
             subscriber.onNext(publishFlowable);
