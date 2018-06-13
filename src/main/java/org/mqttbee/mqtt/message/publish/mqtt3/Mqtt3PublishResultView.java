@@ -17,6 +17,7 @@
 
 package org.mqttbee.mqtt.message.publish.mqtt3;
 
+import io.reactivex.functions.Function;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;
@@ -32,7 +33,10 @@ import org.mqttbee.util.MustNotBeImplementedUtil;
 public class Mqtt3PublishResultView implements Mqtt3PublishResult {
 
     @NotNull
-    public static Mqtt3PublishResultView of(@NotNull final Mqtt5PublishResult publishResult) {
+    public static final Function<Mqtt5PublishResult, Mqtt3PublishResult> MAPPER = Mqtt3PublishResultView::of;
+
+    @NotNull
+    private static Mqtt3PublishResultView of(@NotNull final Mqtt5PublishResult publishResult) {
         return new Mqtt3PublishResultView(
                 MustNotBeImplementedUtil.checkNotImplemented(publishResult, MqttPublishResult.class));
     }

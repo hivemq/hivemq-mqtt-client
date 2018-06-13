@@ -17,6 +17,7 @@
 
 package org.mqttbee.mqtt.message.connect.connack.mqtt3;
 
+import io.reactivex.functions.Function;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAckReturnCode;
@@ -36,6 +37,9 @@ import static org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAckRet
  */
 @Immutable
 public class Mqtt3ConnAckView implements Mqtt3ConnAck {
+
+    @NotNull
+    public static final Function<Mqtt5ConnAck, Mqtt3ConnAck> MAPPER = Mqtt3ConnAckView::of;
 
     @NotNull
     public static MqttConnAck delegate(
@@ -95,7 +99,7 @@ public class Mqtt3ConnAckView implements Mqtt3ConnAck {
     }
 
     @NotNull
-    public static Mqtt3ConnAckView of(@NotNull final Mqtt5ConnAck connAck) {
+    private static Mqtt3ConnAckView of(@NotNull final Mqtt5ConnAck connAck) {
         return new Mqtt3ConnAckView(MustNotBeImplementedUtil.checkNotImplemented(connAck, MqttConnAck.class));
     }
 
