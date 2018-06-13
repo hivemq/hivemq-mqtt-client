@@ -17,6 +17,7 @@
 
 package org.mqttbee.mqtt.message.publish.mqtt3;
 
+import io.reactivex.functions.Function;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
@@ -43,6 +44,11 @@ import java.util.Optional;
 public class Mqtt3PublishView implements Mqtt3Publish {
 
     @NotNull
+    public static final Function<Mqtt3Publish, Mqtt5Publish> DELEGATE_MAPPER = Mqtt3PublishView::delegate;
+    @NotNull
+    public static final Function<Mqtt5Publish, Mqtt3Publish> MAPPER = Mqtt3PublishView::of;
+
+    @NotNull
     public static MqttPublish delegate(
             @NotNull final MqttTopicImpl topic, @Nullable final ByteBuffer payload, @NotNull final MqttQoS qos,
             final boolean isRetain) {
@@ -60,7 +66,7 @@ public class Mqtt3PublishView implements Mqtt3Publish {
     }
 
     @NotNull
-    public static MqttPublish delegate(@NotNull final Mqtt3Publish publish) {
+    private static MqttPublish delegate(@NotNull final Mqtt3Publish publish) {
         return MustNotBeImplementedUtil.checkNotImplemented(publish, Mqtt3PublishView.class).getDelegate();
     }
 
@@ -73,8 +79,13 @@ public class Mqtt3PublishView implements Mqtt3Publish {
     }
 
     @NotNull
-    public static Mqtt3PublishView of(@NotNull final Mqtt5Publish publish) {
+    private static Mqtt3PublishView of(@NotNull final Mqtt5Publish publish) {
         return new Mqtt3PublishView(MustNotBeImplementedUtil.checkNotImplemented(publish, MqttPublish.class));
+    }
+
+    @NotNull
+    public static Mqtt3PublishView of(@NotNull final MqttPublish publish) {
+        return new Mqtt3PublishView(publish);
     }
 
     private final MqttPublish delegate;

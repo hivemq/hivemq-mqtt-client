@@ -81,8 +81,7 @@ public class Mqtt3ClientView implements Mqtt3Client {
         final Mqtt3ConnectView connectView =
                 MustNotBeImplementedUtil.checkNotImplemented(connect, Mqtt3ConnectView.class);
         return delegate.connect(connectView.getDelegate())
-                .onErrorResumeNext(EXCEPTION_MAPPER_SINGLE_CONNACK)
-                .map(Mqtt3ConnAckView::of);
+                .onErrorResumeNext(EXCEPTION_MAPPER_SINGLE_CONNACK).map(Mqtt3ConnAckView.MAPPER);
     }
 
     @NotNull
@@ -91,8 +90,7 @@ public class Mqtt3ClientView implements Mqtt3Client {
         final Mqtt3SubscribeView subscribeView =
                 MustNotBeImplementedUtil.checkNotImplemented(subscribe, Mqtt3SubscribeView.class);
         return delegate.subscribe(subscribeView.getDelegate())
-                .onErrorResumeNext(EXCEPTION_MAPPER_SINGLE_SUBACK)
-                .map(Mqtt3SubAckView::of);
+                .onErrorResumeNext(EXCEPTION_MAPPER_SINGLE_SUBACK).map(Mqtt3SubAckView.MAPPER);
     }
 
     @NotNull
@@ -101,22 +99,22 @@ public class Mqtt3ClientView implements Mqtt3Client {
         final Mqtt3SubscribeView subscribeView =
                 MustNotBeImplementedUtil.checkNotImplemented(subscribe, Mqtt3SubscribeView.class);
         return delegate.subscribeWithStream(subscribeView.getDelegate())
-                .mapError(Mqtt3ExceptionFactory.MAPPER)
-                .mapBoth(Mqtt3SubAckView::of, Mqtt3PublishView::of);
+                .mapError(Mqtt3ExceptionFactory.MAPPER).mapBoth(Mqtt3SubAckView.MAPPER, Mqtt3PublishView.MAPPER);
     }
 
     @NotNull
     @Override
     public Flowable<Mqtt3Publish> remainingPublishes() {
         return delegate.remainingPublishes()
-                .onErrorResumeNext(EXCEPTION_MAPPER_FLOWABLE_PUBLISH)
-                .map(Mqtt3PublishView::of);
+                .onErrorResumeNext(EXCEPTION_MAPPER_FLOWABLE_PUBLISH).map(Mqtt3PublishView.MAPPER);
     }
 
     @NotNull
     @Override
     public Flowable<Mqtt3Publish> allPublishes() {
-        return delegate.allPublishes().onErrorResumeNext(EXCEPTION_MAPPER_FLOWABLE_PUBLISH).map(Mqtt3PublishView::of);
+        return delegate.allPublishes()
+                .onErrorResumeNext(EXCEPTION_MAPPER_FLOWABLE_PUBLISH)
+                .map(Mqtt3PublishView.MAPPER);
     }
 
     @NotNull
@@ -132,9 +130,8 @@ public class Mqtt3ClientView implements Mqtt3Client {
     @NotNull
     @Override
     public Flowable<Mqtt3PublishResult> publish(@NotNull final Flowable<Mqtt3Publish> publishFlowable) {
-        return delegate.publish(publishFlowable.map(Mqtt3PublishView::delegate))
-                .onErrorResumeNext(EXCEPTION_MAPPER_FLOWABLE_PUBLISH_RESULT)
-                .map(Mqtt3PublishResultView::of);
+        return delegate.publish(publishFlowable.map(Mqtt3PublishView.DELEGATE_MAPPER))
+                .onErrorResumeNext(EXCEPTION_MAPPER_FLOWABLE_PUBLISH_RESULT).map(Mqtt3PublishResultView.MAPPER);
     }
 
     @NotNull

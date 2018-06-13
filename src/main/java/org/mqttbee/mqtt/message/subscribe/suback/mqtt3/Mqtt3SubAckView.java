@@ -18,6 +18,7 @@
 package org.mqttbee.mqtt.message.subscribe.suback.mqtt3;
 
 import com.google.common.collect.ImmutableList;
+import io.reactivex.functions.Function;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAck;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAckReturnCode;
@@ -36,6 +37,9 @@ import static org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAckRet
  */
 @Immutable
 public class Mqtt3SubAckView implements Mqtt3SubAck {
+
+    @NotNull
+    public static final Function<Mqtt5SubAck, Mqtt3SubAck> MAPPER = Mqtt3SubAckView::of;
 
     @NotNull
     public static MqttSubAck delegate(
@@ -109,8 +113,13 @@ public class Mqtt3SubAckView implements Mqtt3SubAck {
     }
 
     @NotNull
-    public static Mqtt3SubAckView of(@NotNull final Mqtt5SubAck subAck) {
+    private static Mqtt3SubAckView of(@NotNull final Mqtt5SubAck subAck) {
         return new Mqtt3SubAckView(MustNotBeImplementedUtil.checkNotImplemented(subAck, MqttSubAck.class));
+    }
+
+    @NotNull
+    public static Mqtt3SubAckView of(@NotNull final MqttSubAck subAck) {
+        return new Mqtt3SubAckView(subAck);
     }
 
     private final MqttSubAck delegate;

@@ -28,7 +28,7 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public class Mqtt3PingRespView implements Mqtt3PingResp {
 
-    public static final Mqtt3PingRespView INSTANCE = new Mqtt3PingRespView();
+    private static final Mqtt3PingRespView INSTANCE = new Mqtt3PingRespView();
 
     @NotNull
     public static Mqtt3PingRespView of() {
