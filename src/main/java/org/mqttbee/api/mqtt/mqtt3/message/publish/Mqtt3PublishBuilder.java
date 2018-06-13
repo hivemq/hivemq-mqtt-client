@@ -53,37 +53,37 @@ public class Mqtt3PublishBuilder {
     }
 
     @NotNull
-    public Mqtt3PublishBuilder withTopic(@NotNull final String topic) {
+    public Mqtt3PublishBuilder topic(@NotNull final String topic) {
         this.topic = MqttBuilderUtil.topic(topic);
         return this;
     }
 
     @NotNull
-    public Mqtt3PublishBuilder withTopic(@NotNull final MqttTopic topic) {
+    public Mqtt3PublishBuilder topic(@NotNull final MqttTopic topic) {
         this.topic = MqttBuilderUtil.topic(topic);
         return this;
     }
 
     @NotNull
-    public Mqtt3PublishBuilder withPayload(@Nullable final byte[] payload) {
+    public Mqtt3PublishBuilder payload(@Nullable final byte[] payload) {
         this.payload = (payload == null) ? null : ByteBufferUtil.wrap(payload);
         return this;
     }
 
     @NotNull
-    public Mqtt3PublishBuilder withPayload(@Nullable final ByteBuffer payload) {
+    public Mqtt3PublishBuilder payload(@Nullable final ByteBuffer payload) {
         this.payload = (payload == null) ? null : ByteBufferUtil.slice(payload);
         return this;
     }
 
     @NotNull
-    public Mqtt3PublishBuilder withQos(@NotNull final MqttQoS qos) {
+    public Mqtt3PublishBuilder qos(@NotNull final MqttQoS qos) {
         this.qos = Preconditions.checkNotNull(qos);
         return this;
     }
 
     @NotNull
-    public Mqtt3PublishBuilder withRetain(final boolean retain) {
+    public Mqtt3PublishBuilder retain(final boolean retain) {
         this.retain = retain;
         return this;
     }

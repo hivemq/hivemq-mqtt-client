@@ -129,7 +129,7 @@ class Mqtt3ClientViewExceptionsTest {
         given(mqtt5Client.publish(any())).willReturn(Flowable.error(mqtt5MessageException));
 
         final Flowable<Mqtt3Publish> publish =
-                Flowable.just(Mqtt3Publish.builder().withTopic("topic").withQos(MqttQoS.AT_LEAST_ONCE).build());
+                Flowable.just(Mqtt3Publish.builder().topic("topic").qos(MqttQoS.AT_LEAST_ONCE).build());
         assertMqtt3Exception(() -> mqtt3Client.publish(publish).blockingSubscribe(), mqtt5MessageException);
     }
 
