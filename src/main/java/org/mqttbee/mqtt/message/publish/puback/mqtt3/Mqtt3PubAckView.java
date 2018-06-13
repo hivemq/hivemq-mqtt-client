@@ -31,7 +31,7 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public class Mqtt3PubAckView implements Mqtt3PubAck {
 
-    public static final Mqtt3PubAckView INSTANCE = new Mqtt3PubAckView();
+    private static final Mqtt3PubAckView INSTANCE = new Mqtt3PubAckView();
 
     @NotNull
     public static MqttPubAck delegate(final int packetIdentifier) {
