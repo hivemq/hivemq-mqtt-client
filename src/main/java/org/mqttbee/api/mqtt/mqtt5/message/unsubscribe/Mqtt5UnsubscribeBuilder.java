@@ -53,7 +53,7 @@ public class Mqtt5UnsubscribeBuilder {
     }
 
     @NotNull
-    public Mqtt5UnsubscribeBuilder counter(@NotNull final Mqtt5Subscribe subscribe) {
+    public Mqtt5UnsubscribeBuilder copyTopicFiltersFrom(@NotNull final Mqtt5Subscribe subscribe) {
         final ImmutableList<? extends Mqtt5Subscription> subscriptions = subscribe.getSubscriptions();
         for (final Mqtt5Subscription subscription : subscriptions) {
             addTopicFilter(subscription.getTopicFilter());
@@ -62,7 +62,7 @@ public class Mqtt5UnsubscribeBuilder {
     }
 
     @NotNull
-    public Mqtt5UnsubscribeBuilder withUserProperties(@NotNull final Mqtt5UserProperties userProperties) {
+    public Mqtt5UnsubscribeBuilder userProperties(@NotNull final Mqtt5UserProperties userProperties) {
         this.userProperties = MqttBuilderUtil.userProperties(userProperties);
         return this;
     }
