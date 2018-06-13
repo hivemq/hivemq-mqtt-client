@@ -35,7 +35,7 @@ public class Mqtt5AdvancedClientDataBuilder {
     private Mqtt5OutgoingQoS2ControlProvider outgoingQoS2ControlProvider;
 
     @NotNull
-    public Mqtt5AdvancedClientDataBuilder withIncomingQoS1ControlProvider(
+    public Mqtt5AdvancedClientDataBuilder incomingQoS1ControlProvider(
             @NotNull final Mqtt5IncomingQoS1ControlProvider incomingQoS1ControlProvider) {
 
         this.incomingQoS1ControlProvider = incomingQoS1ControlProvider;
@@ -43,7 +43,7 @@ public class Mqtt5AdvancedClientDataBuilder {
     }
 
     @NotNull
-    public Mqtt5AdvancedClientDataBuilder getOutgoingQoS1ControlProvider(
+    public Mqtt5AdvancedClientDataBuilder outgoingQoS1ControlProvider(
             @NotNull final Mqtt5OutgoingQoS1ControlProvider outgoingQoS1ControlProvider) {
 
         this.outgoingQoS1ControlProvider = outgoingQoS1ControlProvider;
@@ -51,7 +51,7 @@ public class Mqtt5AdvancedClientDataBuilder {
     }
 
     @NotNull
-    public Mqtt5AdvancedClientDataBuilder getIncomingQoS2ControlProvider(
+    public Mqtt5AdvancedClientDataBuilder incomingQoS2ControlProvider(
             @NotNull final Mqtt5IncomingQoS2ControlProvider incomingQoS2ControlProvider) {
 
         this.incomingQoS2ControlProvider = incomingQoS2ControlProvider;
@@ -59,7 +59,7 @@ public class Mqtt5AdvancedClientDataBuilder {
     }
 
     @NotNull
-    public Mqtt5AdvancedClientDataBuilder getOutgoingQoS2ControlProvider(
+    public Mqtt5AdvancedClientDataBuilder outgoingQoS2ControlProvider(
             @NotNull final Mqtt5OutgoingQoS2ControlProvider outgoingQoS2ControlProvider) {
 
         this.outgoingQoS2ControlProvider = outgoingQoS2ControlProvider;
