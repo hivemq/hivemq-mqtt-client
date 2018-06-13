@@ -122,7 +122,7 @@ public class MqttOutgoingQoSHandler extends ChannelInboundHandlerAdapter {
             @NotNull final ChannelHandlerContext ctx, @NotNull final MqttPublishWithFlow publishWithFlow) {
 
         final MqttStatefulPublish publish =
-                wrapPublish(ctx.channel(), publishWithFlow.getPublish(), NO_PACKET_IDENTIFIER_QOS_0, false);
+                createStatefulPublish(ctx.channel(), publishWithFlow.getPublish(), NO_PACKET_IDENTIFIER_QOS_0, false);
         ctx.write(publish)
                 .addListener(future -> publishWithFlow.getIncomingAckFlow()
                         .onNext(new MqttPublishResult(publishWithFlow.getPublish(), null)));
@@ -139,11 +139,11 @@ public class MqttOutgoingQoSHandler extends ChannelInboundHandlerAdapter {
 
         qos1Or2Publishes.put(packetIdentifier, publishWithFlow);
         final MqttStatefulPublish publish =
-                wrapPublish(ctx.channel(), publishWithFlow.getPublish(), packetIdentifier, false);
+                createStatefulPublish(ctx.channel(), publishWithFlow.getPublish(), packetIdentifier, false);
         ctx.write(publish);
     }
 
-    private MqttStatefulPublish wrapPublish(
+    private MqttStatefulPublish createStatefulPublish(
             @NotNull final Channel channel, @NotNull final MqttPublish publish, final int packetIdentifier,
             final boolean isDup) {
 
