@@ -20,8 +20,11 @@ package org.mqttbee.api.mqtt.mqtt5;
 import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt.MqttClientBuilder;
+import org.mqttbee.api.mqtt.MqttClientExecutorConfig;
 import org.mqttbee.api.mqtt.MqttClientSslConfig;
 import org.mqttbee.api.mqtt.MqttWebsocketConfig;
+import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
 import org.mqttbee.api.mqtt.mqtt5.advanced.Mqtt5AdvancedClientData;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.MqttClientExecutorConfigImpl;
@@ -34,7 +37,7 @@ import org.mqttbee.util.MustNotBeImplementedUtil;
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5ClientBuilder {
+public class Mqtt5ClientBuilder extends MqttClientBuilder {
 
     private final MqttClientIdentifierImpl identifier;
     private final String serverHost;
@@ -62,6 +65,69 @@ public class Mqtt5ClientBuilder {
         this.sslConfig = sslConfig;
         this.websocketConfig = websocketConfig;
         this.executorConfig = executorConfig;
+    }
+
+    @NotNull
+    @Override
+    public Mqtt5ClientBuilder identifier(@NotNull final String identifier) {
+        super.identifier(identifier);
+        return this;
+    }
+
+    @NotNull
+    @Override
+    public Mqtt5ClientBuilder identifier(@NotNull final MqttClientIdentifier identifier) {
+        super.identifier(identifier);
+        return this;
+    }
+
+    @NotNull
+    @Override
+    public Mqtt5ClientBuilder serverHost(@NotNull final String host) {
+        super.serverHost(host);
+        return this;
+    }
+
+    @NotNull
+    @Override
+    public Mqtt5ClientBuilder serverPort(final int port) {
+        super.serverPort(port);
+        return this;
+    }
+
+    @NotNull
+    @Override
+    public Mqtt5ClientBuilder useSsl() {
+        super.useSsl();
+        return this;
+    }
+
+    @NotNull
+    @Override
+    public Mqtt5ClientBuilder useSsl(@NotNull final MqttClientSslConfig sslConfig) {
+        super.useSsl(sslConfig);
+        return this;
+    }
+
+    @NotNull
+    @Override
+    public Mqtt5ClientBuilder useWebSockets() {
+        super.useWebSockets();
+        return this;
+    }
+
+    @NotNull
+    @Override
+    public Mqtt5ClientBuilder useWebSockets(@NotNull final MqttWebsocketConfig websocketConfig) {
+        super.useWebSockets(websocketConfig);
+        return this;
+    }
+
+    @NotNull
+    @Override
+    public Mqtt5ClientBuilder executorConfig(@NotNull final MqttClientExecutorConfig executorConfig) {
+        super.executorConfig(executorConfig);
+        return this;
     }
 
     @NotNull
