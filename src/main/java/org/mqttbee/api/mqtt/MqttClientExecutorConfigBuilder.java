@@ -34,21 +34,21 @@ public class MqttClientExecutorConfigBuilder {
     private Scheduler rxJavaScheduler = MqttClientExecutorConfigImpl.DEFAULT_RX_JAVA_SCHEDULER;
 
     @NotNull
-    public MqttClientExecutorConfigBuilder usingNettyExecutor(@NotNull final Executor nettyExecutor) {
+    public MqttClientExecutorConfigBuilder nettyExecutor(@NotNull final Executor nettyExecutor) {
         Preconditions.checkNotNull(nettyExecutor);
         this.nettyExecutor = nettyExecutor;
         return this;
     }
 
     @NotNull
-    public MqttClientExecutorConfigBuilder usingNettyThreads(final int nettyThreads) {
+    public MqttClientExecutorConfigBuilder nettyThreads(final int nettyThreads) {
         Preconditions.checkArgument(nettyThreads > 0);
         this.nettyThreads = nettyThreads;
         return this;
     }
 
     @NotNull
-    public MqttClientExecutorConfigBuilder usingRxJavaScheduler(@NotNull final Scheduler rxJavaScheduler) {
+    public MqttClientExecutorConfigBuilder rxJavaScheduler(@NotNull final Scheduler rxJavaScheduler) {
         Preconditions.checkNotNull(rxJavaScheduler);
         this.rxJavaScheduler = rxJavaScheduler;
         return this;
