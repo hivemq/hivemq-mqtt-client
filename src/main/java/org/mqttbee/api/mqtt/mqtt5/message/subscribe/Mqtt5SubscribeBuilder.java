@@ -45,7 +45,7 @@ public class Mqtt5SubscribeBuilder {
     }
 
     @NotNull
-    public Mqtt5SubscribeBuilder withUserProperties(@NotNull final Mqtt5UserProperties userProperties) {
+    public Mqtt5SubscribeBuilder userProperties(@NotNull final Mqtt5UserProperties userProperties) {
         this.userProperties = MqttBuilderUtil.userProperties(userProperties);
         return this;
     }
