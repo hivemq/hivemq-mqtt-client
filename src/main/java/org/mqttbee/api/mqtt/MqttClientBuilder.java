@@ -33,14 +33,14 @@ import org.mqttbee.util.MustNotBeImplementedUtil;
  */
 public class MqttClientBuilder {
 
-    private MqttClientIdentifierImpl identifier = MqttClientIdentifierImpl.REQUEST_CLIENT_IDENTIFIER_FROM_SERVER;
-    private String serverHost = "localhost";
-    private int serverPort = 1883;
-    private MqttClientSslConfig sslConfig = null;
-    private MqttWebsocketConfig websocketConfig = null;
-    private MqttClientExecutorConfigImpl executorConfig = MqttClientExecutorConfigImpl.DEFAULT;
+    protected MqttClientIdentifierImpl identifier = MqttClientIdentifierImpl.REQUEST_CLIENT_IDENTIFIER_FROM_SERVER;
+    protected String serverHost = "localhost";
+    protected int serverPort = 1883;
+    protected MqttClientSslConfig sslConfig = null;
+    protected MqttWebsocketConfig websocketConfig = null;
+    protected MqttClientExecutorConfigImpl executorConfig = MqttClientExecutorConfigImpl.DEFAULT;
 
-    MqttClientBuilder() {
+    protected MqttClientBuilder() {
     }
 
     @NotNull

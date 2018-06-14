@@ -20,8 +20,11 @@ package org.mqttbee.api.mqtt.mqtt3;
 import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt.MqttClientBuilder;
+import org.mqttbee.api.mqtt.MqttClientExecutorConfig;
 import org.mqttbee.api.mqtt.MqttClientSslConfig;
 import org.mqttbee.api.mqtt.MqttWebsocketConfig;
+import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.MqttClientExecutorConfigImpl;
 import org.mqttbee.mqtt.MqttVersion;
@@ -32,14 +35,7 @@ import org.mqttbee.mqtt5.Mqtt5ClientImpl;
 /**
  * @author Silvio Giebl
  */
-public class Mqtt3ClientBuilder {
-
-    private final MqttClientIdentifierImpl identifier;
-    private final String serverHost;
-    private final int serverPort;
-    private final MqttClientSslConfig sslConfig;
-    private final MqttWebsocketConfig websocketConfig;
-    private final MqttClientExecutorConfigImpl executorConfig;
+public class Mqtt3ClientBuilder extends MqttClientBuilder {
 
     public Mqtt3ClientBuilder(
             @NotNull final MqttClientIdentifierImpl identifier, @NotNull final String serverHost, final int serverPort,
@@ -56,6 +52,69 @@ public class Mqtt3ClientBuilder {
         this.sslConfig = sslConfig;
         this.websocketConfig = websocketConfig;
         this.executorConfig = executorConfig;
+    }
+
+    @NotNull
+    @Override
+    public Mqtt3ClientBuilder identifier(@NotNull final String identifier) {
+        super.identifier(identifier);
+        return this;
+    }
+
+    @NotNull
+    @Override
+    public Mqtt3ClientBuilder identifier(@NotNull final MqttClientIdentifier identifier) {
+        super.identifier(identifier);
+        return this;
+    }
+
+    @NotNull
+    @Override
+    public Mqtt3ClientBuilder serverHost(@NotNull final String host) {
+        super.serverHost(host);
+        return this;
+    }
+
+    @NotNull
+    @Override
+    public Mqtt3ClientBuilder serverPort(final int port) {
+        super.serverPort(port);
+        return this;
+    }
+
+    @NotNull
+    @Override
+    public Mqtt3ClientBuilder useSsl() {
+        super.useSsl();
+        return this;
+    }
+
+    @NotNull
+    @Override
+    public Mqtt3ClientBuilder useSsl(@NotNull final MqttClientSslConfig sslConfig) {
+        super.useSsl(sslConfig);
+        return this;
+    }
+
+    @NotNull
+    @Override
+    public Mqtt3ClientBuilder useWebSockets() {
+        super.useWebSockets();
+        return this;
+    }
+
+    @NotNull
+    @Override
+    public Mqtt3ClientBuilder useWebSockets(@NotNull final MqttWebsocketConfig websocketConfig) {
+        super.useWebSockets(websocketConfig);
+        return this;
+    }
+
+    @NotNull
+    @Override
+    public Mqtt3ClientBuilder executorConfig(@NotNull final MqttClientExecutorConfig executorConfig) {
+        super.executorConfig(executorConfig);
+        return this;
     }
 
     @NotNull
