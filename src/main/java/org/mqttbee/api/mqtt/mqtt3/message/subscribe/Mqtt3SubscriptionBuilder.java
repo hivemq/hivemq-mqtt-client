@@ -37,19 +37,19 @@ public class Mqtt3SubscriptionBuilder {
     }
 
     @NotNull
-    public Mqtt3SubscriptionBuilder withTopicFilter(@NotNull final String topicFilter) {
+    public Mqtt3SubscriptionBuilder topicFilter(@NotNull final String topicFilter) {
         this.topicFilter = MqttBuilderUtil.topicFilter(topicFilter);
         return this;
     }
 
     @NotNull
-    public Mqtt3SubscriptionBuilder withTopicFilter(@NotNull final MqttTopicFilter topicFilter) {
+    public Mqtt3SubscriptionBuilder topicFilter(@NotNull final MqttTopicFilter topicFilter) {
         this.topicFilter = MqttBuilderUtil.topicFilter(topicFilter);
         return this;
     }
 
     @NotNull
-    public Mqtt3SubscriptionBuilder withQoS(@NotNull final MqttQoS qos) {
+    public Mqtt3SubscriptionBuilder qos(@NotNull final MqttQoS qos) {
         this.qos = Preconditions.checkNotNull(qos);
         return this;
     }

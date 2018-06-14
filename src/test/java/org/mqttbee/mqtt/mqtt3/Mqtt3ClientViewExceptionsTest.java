@@ -72,7 +72,7 @@ class Mqtt3ClientViewExceptionsTest {
 
         final Mqtt3Subscribe subscribe = Mqtt3Subscribe.builder()
                 .addSubscription(
-                        Mqtt3Subscription.builder().withTopicFilter("topic").withQoS(MqttQoS.AT_LEAST_ONCE).build())
+                        Mqtt3Subscription.builder().topicFilter("topic").qos(MqttQoS.AT_LEAST_ONCE).build())
                 .build();
         assertMqtt3Exception(() -> mqtt3Client.subscribe(subscribe).toCompletable().blockingAwait(),
                 mqtt5MessageException);
@@ -88,7 +88,7 @@ class Mqtt3ClientViewExceptionsTest {
 
         final Mqtt3Subscribe subscribe = Mqtt3Subscribe.builder()
                 .addSubscription(
-                        Mqtt3Subscription.builder().withTopicFilter("topic").withQoS(MqttQoS.AT_LEAST_ONCE).build())
+                        Mqtt3Subscription.builder().topicFilter("topic").qos(MqttQoS.AT_LEAST_ONCE).build())
                 .build();
         assertMqtt3Exception(() -> mqtt3Client.subscribeWithStream(subscribe).blockingSubscribe(),
                 mqtt5MessageException);

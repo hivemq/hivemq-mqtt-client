@@ -136,7 +136,7 @@ class Mqtt3ClientExample {
 
         // create a SUBSCRIBE message for the topic with QoS
         final Mqtt3Subscribe subscribeMessage = Mqtt3Subscribe.builder()
-                .addSubscription(Mqtt3Subscription.builder().withTopicFilter(topic).withQoS(qos).build())
+                .addSubscription(Mqtt3Subscription.builder().topicFilter(topic).qos(qos).build())
                 .build();
         // define what to do with the publishes that match the subscription. This does not subscribe until rxJava's subscribe is called
         // NOTE: you can also subscribe without the stream, and then handle the incoming publishes on client.allPublishes()
