@@ -40,6 +40,7 @@ import org.mqttbee.mqtt.handler.subscribe.MqttUnsubscribeWithFlow.MqttStatefulUn
 import org.mqttbee.mqtt.ioc.ChannelScope;
 import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAck;
 import org.mqttbee.mqtt.message.unsubscribe.unsuback.MqttUnsubAck;
+import org.mqttbee.mqtt.message.unsubscribe.unsuback.mqtt3.Mqtt3UnsubAckView;
 import org.mqttbee.rx.SingleFlow;
 import org.mqttbee.util.Ranges;
 import org.mqttbee.util.collections.IntMap;
@@ -251,7 +252,7 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
                 return false;
             }
         }
-        return true;
+        return (reasonCodes != Mqtt3UnsubAckView.REASON_CODES_ALL_SUCCESS);
     }
 
 }
