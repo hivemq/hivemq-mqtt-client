@@ -65,26 +65,26 @@ public class Mqtt5ClientBuilder {
     }
 
     @NotNull
-    public Mqtt5ClientBuilder followingRedirects(final boolean followsRedirects) {
+    public Mqtt5ClientBuilder followsRedirects(final boolean followsRedirects) {
         this.followsRedirects = followsRedirects;
         return this;
     }
 
     @NotNull
-    public Mqtt5ClientBuilder allowingServerReAuth(final boolean allowsServerReAuth) {
+    public Mqtt5ClientBuilder allowsServerReAuth(final boolean allowsServerReAuth) {
         this.allowsServerReAuth = allowsServerReAuth;
         return this;
     }
 
     @NotNull
-    public Mqtt5ClientBuilder withAdvanced(@Nullable final Mqtt5AdvancedClientData advancedClientData) {
+    public Mqtt5ClientBuilder advancedClientData(@Nullable final Mqtt5AdvancedClientData advancedClientData) {
         this.advancedClientData =
                 MustNotBeImplementedUtil.checkNullOrNotImplemented(advancedClientData, MqttAdvancedClientData.class);
         return this;
     }
 
     @NotNull
-    public Mqtt5Client reactive() {
+    public Mqtt5Client buildReactive() {
         return new Mqtt5ClientImpl(buildClientData());
     }
 

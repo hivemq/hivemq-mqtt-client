@@ -59,7 +59,7 @@ public class Mqtt3ClientBuilder {
     }
 
     @NotNull
-    public Mqtt3Client reactive() {
+    public Mqtt3Client buildReactive() {
         return new Mqtt3ClientView(new Mqtt5ClientImpl(buildClientData()));
     }
 
