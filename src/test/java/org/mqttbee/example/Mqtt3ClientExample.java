@@ -214,22 +214,22 @@ class Mqtt3ClientExample {
 
     private Mqtt3Client getClient() {
         final MqttClientBuilder mqttClientBuilder = MqttClient.builder()
-                .withIdentifier(UUID.randomUUID().toString())
-                .withServerHost(server)
-                .withServerPort(port);
+                .identifier(UUID.randomUUID().toString())
+                .serverHost(server)
+                .serverPort(port);
 
         if (usesSsl) {
-            mqttClientBuilder.usingSsl(MqttClientSslConfig.builder()
+            mqttClientBuilder.useSsl(MqttClientSslConfig.builder()
                     .keyManagerFactory(keyManagerFactory)
                     .trustManagerFactory(trustManagerFactory)
                     .build());
         }
 
         if (isNotUsingMqttPort(port)) {
-            mqttClientBuilder.usingWebSockets(MqttWebsocketConfig.builder().serverPath(serverPath).build());
+            mqttClientBuilder.useWebSockets(MqttWebsocketConfig.builder().serverPath(serverPath).build());
         }
 
-        return mqttClientBuilder.usingMqtt3().reactive();
+        return mqttClientBuilder.useMqttVersion3().buildReactive();
     }
 
     private static String getProperty(final String key, final String defaultValue) {
