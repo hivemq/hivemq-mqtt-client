@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'idea'
     id 'eclipse'
+    id 'checkstyle'
     id 'net.ltgt.apt-idea' version '0.15'
     id 'net.ltgt.apt-eclipse' version '0.15'
     id 'com.github.hierynomus.license' version '0.14.0'
@@ -69,6 +70,10 @@ license {
 
 test {
     useJUnitPlatform()
+}
+
+checkstyle {
+    toolVersion = '8.10.1'
 }
 
 task execute(type:JavaExec) {
