@@ -17,7 +17,11 @@
 
 package org.mqttbee.rx;
 
+import io.reactivex.SingleObserver;
+import io.reactivex.disposables.Disposable;
 import org.mqttbee.annotations.NotNull;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author Silvio Giebl
@@ -27,5 +31,43 @@ public interface SingleFlow<T> {
     void onSuccess(@NotNull T t);
 
     void onError(@NotNull Throwable t);
+
+    boolean isCancelled();
+
+    class DefaultSingleFlow<T> implements SingleFlow<T>, Disposable {
+
+        private final SingleObserver<? super T> observer;
+        private final AtomicBoolean disposed = new AtomicBoolean();
+
+        public DefaultSingleFlow(@NotNull final SingleObserver<? super T> observer) {
+            this.observer = observer;
+        }
+
+        @Override
+        public void onSuccess(@NotNull final T t) {
+            observer.onSuccess(t);
+        }
+
+        @Override
+        public void onError(@NotNull final Throwable t) {
+            observer.onError(t);
+        }
+
+        @Override
+        public void dispose() {
+            disposed.set(true);
+        }
+
+        @Override
+        public boolean isDisposed() {
+            return disposed.get();
+        }
+
+        @Override
+        public boolean isCancelled() {
+            return isDisposed();
+        }
+
+    }
 
 }

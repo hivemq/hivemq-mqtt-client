@@ -45,9 +45,7 @@ import org.mqttbee.mqtt.handler.publish.MqttGlobalIncomingPublishFlowable;
 import org.mqttbee.mqtt.handler.publish.MqttIncomingAckFlowable;
 import org.mqttbee.mqtt.handler.publish.MqttSubscriptionFlowable;
 import org.mqttbee.mqtt.handler.subscribe.MqttSubAckSingle;
-import org.mqttbee.mqtt.handler.subscribe.MqttSubscriptionHandler;
-import org.mqttbee.mqtt.handler.subscribe.MqttUnsubscribeWithFlow;
-import org.mqttbee.mqtt.ioc.ChannelComponent;
+import org.mqttbee.mqtt.handler.subscribe.MqttUnsubAckSingle;
 import org.mqttbee.mqtt.ioc.MqttBeeComponent;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
@@ -160,16 +158,8 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
         final MqttUnsubscribe mqttUnsubscribe =
                 MustNotBeImplementedUtil.checkNotImplemented(unsubscribe, MqttUnsubscribe.class);
 
-        return Single.<Mqtt5UnsubAck>create(emitter -> {
-            final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
-            if (clientConnectionData == null) {
-                emitter.onError(new NotConnectedException());
-            } else {
-                final ChannelComponent channelComponent = ChannelComponent.get(clientConnectionData.getChannel());
-                final MqttSubscriptionHandler subscriptionHandler = channelComponent.subscriptionHandler();
-                subscriptionHandler.unsubscribe(new MqttUnsubscribeWithFlow(mqttUnsubscribe, emitter));
-            }
-        }).observeOn(clientData.getExecutorConfig().getRxJavaScheduler());
+        return new MqttUnsubAckSingle(mqttUnsubscribe, clientData).observeOn(
+                clientData.getExecutorConfig().getRxJavaScheduler());
     }
 
     @NotNull

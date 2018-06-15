@@ -17,53 +17,52 @@
 
 package org.mqttbee.mqtt.handler.subscribe;
 
-import io.reactivex.SingleEmitter;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
 import org.mqttbee.mqtt.message.unsubscribe.MqttStatefulUnsubscribe;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribe;
+import org.mqttbee.rx.SingleFlow;
 
 /**
  * @author Silvio Giebl
  */
-public class MqttUnsubscribeWithFlow {
+class MqttUnsubscribeWithFlow {
 
     private final MqttUnsubscribe unsubscribe;
-    private final SingleEmitter<Mqtt5UnsubAck> unsubAckFlow;
+    private final SingleFlow<Mqtt5UnsubAck> unsubAckFlow;
 
-    public MqttUnsubscribeWithFlow(
-            @NotNull final MqttUnsubscribe unsubscribe, @NotNull final SingleEmitter<Mqtt5UnsubAck> unsubAckFlow) {
+    MqttUnsubscribeWithFlow(
+            @NotNull final MqttUnsubscribe unsubscribe, @NotNull final SingleFlow<Mqtt5UnsubAck> unsubAckFlow) {
 
         this.unsubscribe = unsubscribe;
         this.unsubAckFlow = unsubAckFlow;
     }
 
     @NotNull
-    public MqttStatefulUnsubscribeWithFlow createStateful(final int packetIdentifier) {
+    MqttStatefulUnsubscribeWithFlow createStateful(final int packetIdentifier) {
         return new MqttStatefulUnsubscribeWithFlow(unsubscribe.createStateful(packetIdentifier), unsubAckFlow);
     }
 
-
-    public static class MqttStatefulUnsubscribeWithFlow {
+    static class MqttStatefulUnsubscribeWithFlow {
 
         private final MqttStatefulUnsubscribe unsubscribe;
-        private final SingleEmitter<Mqtt5UnsubAck> unsubAckFlow;
+        private final SingleFlow<Mqtt5UnsubAck> unsubAckFlow;
 
-        private MqttStatefulUnsubscribeWithFlow(
+        MqttStatefulUnsubscribeWithFlow(
                 @NotNull final MqttStatefulUnsubscribe unsubscribe,
-                @NotNull final SingleEmitter<Mqtt5UnsubAck> unsubAckFlow) {
+                @NotNull final SingleFlow<Mqtt5UnsubAck> unsubAckFlow) {
 
             this.unsubscribe = unsubscribe;
             this.unsubAckFlow = unsubAckFlow;
         }
 
         @NotNull
-        public MqttStatefulUnsubscribe getUnsubscribe() {
+        MqttStatefulUnsubscribe getUnsubscribe() {
             return unsubscribe;
         }
 
         @NotNull
-        public SingleEmitter<Mqtt5UnsubAck> getUnsubAckFlow() {
+        SingleFlow<Mqtt5UnsubAck> getUnsubAckFlow() {
             return unsubAckFlow;
         }
 
