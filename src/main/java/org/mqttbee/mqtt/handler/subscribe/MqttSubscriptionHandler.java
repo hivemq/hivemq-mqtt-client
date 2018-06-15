@@ -36,7 +36,9 @@ import org.mqttbee.mqtt.handler.publish.MqttSubscriptionFlow;
 import org.mqttbee.mqtt.handler.subscribe.MqttSubscribeWithFlow.MqttStatefulSubscribeWithFlow;
 import org.mqttbee.mqtt.handler.subscribe.MqttUnsubscribeWithFlow.MqttStatefulUnsubscribeWithFlow;
 import org.mqttbee.mqtt.ioc.ChannelScope;
+import org.mqttbee.mqtt.message.subscribe.MqttStatefulSubscribe;
 import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAck;
+import org.mqttbee.mqtt.message.unsubscribe.MqttStatefulUnsubscribe;
 import org.mqttbee.mqtt.message.unsubscribe.unsuback.MqttUnsubAck;
 import org.mqttbee.mqtt.message.unsubscribe.unsuback.mqtt3.Mqtt3UnsubAckView;
 import org.mqttbee.rx.SingleFlow;
@@ -54,10 +56,12 @@ import java.util.LinkedList;
 @ChannelScope
 public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MqttSubscriptionHandler.class);
-
     public static final String NAME = "subscription";
     public static final int MAX_SUB_PENDING = 10; // TODO configurable
+    private static final Logger LOGGER = LoggerFactory.getLogger(MqttSubscriptionHandler.class);
+    private static final int REASON_CODES_VALIDATED = 0;
+    private static final int REASON_CODES_COUNT_DOES_NOT_MATCH = -1;
+    private static final int REASON_CODES_ALL_ERRORS = -2;
 
     private final MqttIncomingPublishFlows subscriptionFlows;
     private final Ranges packetIdentifiers;
@@ -182,26 +186,39 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
 
         if (statefulSubscribeWithFlow == null) {
             MqttDisconnectUtil.disconnect(
-                    ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "unknown packet identifier for SUBACK");
+                    ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "Unknown packet identifier for SUBACK");
             return;
         }
 
-        // TODO validate reason code count
-
+        final MqttStatefulSubscribe subscribe = statefulSubscribeWithFlow.getSubscribe();
         final SingleFlow<Mqtt5SubAck> subAckFlow = statefulSubscribeWithFlow.getSubAckFlow();
-        if (allErrorCodes(subAck.getReasonCodes())) {
-            if (!subAckFlow.isCancelled()) {
-                subAckFlow.onError(new Mqtt5MessageException(subAck, "SUBACK contains only Error Codes"));
-            } else {
-                LOGGER.warn("SUBACK contains only Error Codes but the SubAckFlow has been cancelled.");
-            }
-        } else {
+        final int subscriptionCount = subscribe.getStatelessMessage().getSubscriptions().size();
+        final int reasonCodesValidation = validateReasonCodes(subscriptionCount, subAck.getReasonCodes());
+
+        if (reasonCodesValidation == REASON_CODES_VALIDATED) {
             if (!subAckFlow.isCancelled()) {
                 subAckFlow.onSuccess(subAck);
             }
             final MqttSubscriptionFlow subscriptionFlow = statefulSubscribeWithFlow.getSubscriptionFlow();
             if ((subscriptionFlow != null) && !subscriptionFlow.isCancelled()) {
-                subscriptionFlows.subscribe(statefulSubscribeWithFlow.getSubscribe(), subAck, subscriptionFlow);
+                subscriptionFlows.subscribe(subscribe, subAck, subscriptionFlow);
+            }
+        } else {
+            final String errorMessage;
+            switch (reasonCodesValidation) {
+                case REASON_CODES_COUNT_DOES_NOT_MATCH:
+                    errorMessage = "Count of Reason Codes in SUBACK does not match count of subscriptions in SUBSCRIBE";
+                    break;
+                case REASON_CODES_ALL_ERRORS:
+                    errorMessage = "SUBACK contains only Error Codes";
+                    break;
+                default:
+                    errorMessage = "Unknown error";
+            }
+            if (!subAckFlow.isCancelled()) {
+                subAckFlow.onError(new Mqtt5MessageException(subAck, errorMessage));
+            } else {
+                LOGGER.warn(errorMessage + " but the SubAckFlow has been cancelled");
             }
         }
 
@@ -214,24 +231,38 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
 
         if (statefulUnsubscribeWithFlow == null) {
             MqttDisconnectUtil.disconnect(
-                    ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "unknown packet identifier for UNSUBACK");
+                    ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "Unknown packet identifier for UNSUBACK");
             return;
         }
 
-        // TODO validate reason code count
-
+        final MqttStatefulUnsubscribe unsubscribe = statefulUnsubscribeWithFlow.getUnsubscribe();
         final SingleFlow<Mqtt5UnsubAck> unsubAckFlow = statefulUnsubscribeWithFlow.getUnsubAckFlow();
-        if (allErrorCodes(unsubAck.getReasonCodes())) {
-            if (!unsubAckFlow.isCancelled()) {
-                unsubAckFlow.onError(new Mqtt5MessageException(unsubAck, "UNSUBACK contains only Error Codes"));
-            } else {
-                LOGGER.warn("UNSUBACK contains only Error Codes but the UnsubAckFlow has been cancelled.");
-            }
-        } else {
+        final int topicFilterCount = unsubscribe.getStatelessMessage().getTopicFilters().size();
+        final int reasonCodesValidation = validateReasonCodes(topicFilterCount, unsubAck.getReasonCodes());
+
+        if (reasonCodesValidation == REASON_CODES_VALIDATED) {
             if (!unsubAckFlow.isCancelled()) {
                 unsubAckFlow.onSuccess(unsubAck);
             }
-            subscriptionFlows.unsubscribe(statefulUnsubscribeWithFlow.getUnsubscribe(), unsubAck);
+            subscriptionFlows.unsubscribe(unsubscribe, unsubAck);
+        } else {
+            final String errorMessage;
+            switch (reasonCodesValidation) {
+                case REASON_CODES_COUNT_DOES_NOT_MATCH:
+                    errorMessage =
+                            "Count of Reason Codes in UNSUBACK does not match count of Topic Filters in UNSUBSCRIBE";
+                    break;
+                case REASON_CODES_ALL_ERRORS:
+                    errorMessage = "UNSUBACK contains only Error Codes";
+                    break;
+                default:
+                    errorMessage = "Unknown error";
+            }
+            if (!unsubAckFlow.isCancelled()) {
+                unsubAckFlow.onError(new Mqtt5MessageException(unsubAck, errorMessage));
+            } else {
+                LOGGER.warn(errorMessage + " but the UnsubAckFlow has been cancelled");
+            }
         }
 
         handleComplete(ctx, packetIdentifier);
@@ -251,13 +282,21 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
-    private static boolean allErrorCodes(@NotNull final ImmutableList<? extends Mqtt5ReasonCode> reasonCodes) {
+    private static int validateReasonCodes(
+            final int count, @NotNull final ImmutableList<? extends Mqtt5ReasonCode> reasonCodes) {
+
+        if (reasonCodes == Mqtt3UnsubAckView.REASON_CODES_ALL_SUCCESS) {
+            return REASON_CODES_VALIDATED;
+        }
+        if (reasonCodes.size() != count) {
+            return REASON_CODES_COUNT_DOES_NOT_MATCH;
+        }
         for (final Mqtt5ReasonCode reasonCode : reasonCodes) {
             if (!reasonCode.isError()) {
-                return false;
+                return REASON_CODES_VALIDATED;
             }
         }
-        return (reasonCodes != Mqtt3UnsubAckView.REASON_CODES_ALL_SUCCESS);
+        return REASON_CODES_ALL_ERRORS;
     }
 
 }
