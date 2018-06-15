@@ -53,7 +53,7 @@ public class Mqtt5UnsubscribeBuilder {
     }
 
     @NotNull
-    public Mqtt5UnsubscribeBuilder copyTopicFiltersFrom(@NotNull final Mqtt5Subscribe subscribe) {
+    public Mqtt5UnsubscribeBuilder reverse(@NotNull final Mqtt5Subscribe subscribe) {
         final ImmutableList<? extends Mqtt5Subscription> subscriptions = subscribe.getSubscriptions();
         for (final Mqtt5Subscription subscription : subscriptions) {
             addTopicFilter(subscription.getTopicFilter());
