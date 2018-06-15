@@ -25,6 +25,7 @@ import org.mqttbee.api.mqtt.MqttClientExecutorConfig;
 import org.mqttbee.api.mqtt.MqttClientSslConfig;
 import org.mqttbee.api.mqtt.MqttWebsocketConfig;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
+import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientBuilder;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.MqttClientExecutorConfigImpl;
 import org.mqttbee.mqtt.MqttVersion;
@@ -115,6 +116,19 @@ public class Mqtt3ClientBuilder extends MqttClientBuilder {
     public Mqtt3ClientBuilder executorConfig(@NotNull final MqttClientExecutorConfig executorConfig) {
         super.executorConfig(executorConfig);
         return this;
+    }
+
+    @NotNull
+    @Override
+    public Mqtt3ClientBuilder useMqttVersion3() {
+        return this;
+    }
+
+    @NotNull
+    @Override
+    public Mqtt5ClientBuilder useMqttVersion5() {
+        throw new UnsupportedOperationException(
+                "Switching MQTT Version is not allowed. Please call useMqttVersion3/5 only once.");
     }
 
     @NotNull
