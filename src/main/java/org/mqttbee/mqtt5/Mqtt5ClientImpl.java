@@ -123,7 +123,8 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
         final MqttSubscribe mqttSubscribe =
                 MustNotBeImplementedUtil.checkNotImplemented(subscribe, MqttSubscribe.class);
 
-        return new MqttSubAckSingle(mqttSubscribe, clientData);
+        return new MqttSubAckSingle(mqttSubscribe, clientData).observeOn(
+                clientData.getExecutorConfig().getRxJavaScheduler());
     }
 
     @NotNull
