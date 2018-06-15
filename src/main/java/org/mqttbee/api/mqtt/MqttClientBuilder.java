@@ -79,12 +79,12 @@ public class MqttClientBuilder {
     }
 
     @NotNull
-    public MqttClientBuilder useWebSockets() {
-        return useWebSockets(MqttWebsocketConfigImpl.DEFAULT);
+    public MqttClientBuilder useWebSocket() {
+        return useWebSocket(MqttWebsocketConfigImpl.DEFAULT);
     }
 
     @NotNull
-    public MqttClientBuilder useWebSockets(@NotNull final MqttWebsocketConfig websocketConfig) {
+    public MqttClientBuilder useWebSocket(@NotNull final MqttWebsocketConfig websocketConfig) {
         this.websocketConfig = websocketConfig;
         return this;
     }

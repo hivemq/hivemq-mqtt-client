@@ -98,15 +98,15 @@ public class Mqtt3ClientBuilder extends MqttClientBuilder {
 
     @NotNull
     @Override
-    public Mqtt3ClientBuilder useWebSockets() {
-        super.useWebSockets();
+    public Mqtt3ClientBuilder useWebSocket() {
+        super.useWebSocket();
         return this;
     }
 
     @NotNull
     @Override
-    public Mqtt3ClientBuilder useWebSockets(@NotNull final MqttWebsocketConfig websocketConfig) {
-        super.useWebSockets(websocketConfig);
+    public Mqtt3ClientBuilder useWebSocket(@NotNull final MqttWebsocketConfig websocketConfig) {
+        super.useWebSocket(websocketConfig);
         return this;
     }
 

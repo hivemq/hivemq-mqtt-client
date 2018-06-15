@@ -111,15 +111,15 @@ public class Mqtt5ClientBuilder extends MqttClientBuilder {
 
     @NotNull
     @Override
-    public Mqtt5ClientBuilder useWebSockets() {
-        super.useWebSockets();
+    public Mqtt5ClientBuilder useWebSocket() {
+        super.useWebSocket();
         return this;
     }
 
     @NotNull
     @Override
-    public Mqtt5ClientBuilder useWebSockets(@NotNull final MqttWebsocketConfig websocketConfig) {
-        super.useWebSockets(websocketConfig);
+    public Mqtt5ClientBuilder useWebSocket(@NotNull final MqttWebsocketConfig websocketConfig) {
+        super.useWebSocket(websocketConfig);
         return this;
     }
 
