@@ -20,8 +20,6 @@ package org.mqttbee.mqtt.handler.subscribe;
 import com.google.common.collect.ImmutableList;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.reactivex.Scheduler;
-import io.reactivex.SingleEmitter;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5ReasonCode;
@@ -44,9 +42,10 @@ import org.mqttbee.mqtt.message.unsubscribe.unsuback.mqtt3.Mqtt3UnsubAckView;
 import org.mqttbee.rx.SingleFlow;
 import org.mqttbee.util.Ranges;
 import org.mqttbee.util.collections.IntMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import java.util.LinkedList;
 
 /**
@@ -55,11 +54,12 @@ import java.util.LinkedList;
 @ChannelScope
 public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(MqttSubscriptionHandler.class);
+
     public static final String NAME = "subscription";
     public static final int MAX_SUB_PENDING = 10; // TODO configurable
 
     private final MqttIncomingPublishFlows subscriptionFlows;
-    private final Scheduler.Worker worker;
     private final Ranges packetIdentifiers;
     private final Ranges subscriptionIdentifiers;
     private final IntMap<MqttStatefulSubscribeWithFlow> subscribes;
@@ -70,12 +70,8 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
     private ChannelHandlerContext ctx; // TODO temp
 
     @Inject
-    MqttSubscriptionHandler(
-            final MqttIncomingPublishFlows subscriptionFlows, @Named("incomingPublish") final Scheduler.Worker worker,
-            final MqttClientData clientData) {
-
+    MqttSubscriptionHandler(final MqttIncomingPublishFlows subscriptionFlows, final MqttClientData clientData) {
         this.subscriptionFlows = subscriptionFlows;
-        this.worker = worker;
 
         final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
         assert clientConnectionData != null;
@@ -127,7 +123,7 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
         pending++;
         ctx.writeAndFlush(statefulSubscribeWithFlow.getSubscribe()).addListener(future -> {
             if (!future.isSuccess()) {
-                worker.schedule(() -> statefulSubscribeWithFlow.getSubAckFlow().onError(future.cause()));
+                statefulSubscribeWithFlow.getSubAckFlow().onError(future.cause());
                 handleComplete(ctx, packetIdentifier);
             }
         });
@@ -163,8 +159,7 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
         pending++;
         ctx.writeAndFlush(statefulUnsubscribeWithFlow.getUnsubscribe()).addListener(future -> {
             if (!future.isSuccess()) {
-                worker.schedule(() -> statefulUnsubscribeWithFlow.getUnsubAckFlow().onError(future.cause()));
-                // TODO different worker
+                statefulUnsubscribeWithFlow.getUnsubAckFlow().onError(future.cause());
                 handleComplete(ctx, packetIdentifier);
             }
         });
@@ -193,13 +188,19 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
 
         // TODO validate reason code count
 
-        final SingleFlow<Mqtt5SubAck> flow = statefulSubscribeWithFlow.getSubAckFlow();
+        final SingleFlow<Mqtt5SubAck> subAckFlow = statefulSubscribeWithFlow.getSubAckFlow();
         if (allErrorCodes(subAck.getReasonCodes())) {
-            worker.schedule(() -> flow.onError(new Mqtt5MessageException(subAck, "SUBACK contains only Error Codes")));
+            if (!subAckFlow.isCancelled()) {
+                subAckFlow.onError(new Mqtt5MessageException(subAck, "SUBACK contains only Error Codes"));
+            } else {
+                LOGGER.warn("SUBACK contains only Error Codes but the SubAckFlow has been cancelled.");
+            }
         } else {
-            worker.schedule(() -> flow.onSuccess(subAck));
+            if (!subAckFlow.isCancelled()) {
+                subAckFlow.onSuccess(subAck);
+            }
             final MqttSubscriptionFlow subscriptionFlow = statefulSubscribeWithFlow.getSubscriptionFlow();
-            if (subscriptionFlow != null) {
+            if ((subscriptionFlow != null) && !subscriptionFlow.isCancelled()) {
                 subscriptionFlows.subscribe(statefulSubscribeWithFlow.getSubscribe(), subAck, subscriptionFlow);
             }
         }
@@ -219,13 +220,17 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
 
         // TODO validate reason code count
 
-        final SingleEmitter<Mqtt5UnsubAck> flow = statefulUnsubscribeWithFlow.getUnsubAckFlow();
+        final SingleFlow<Mqtt5UnsubAck> unsubAckFlow = statefulUnsubscribeWithFlow.getUnsubAckFlow();
         if (allErrorCodes(unsubAck.getReasonCodes())) {
-            worker.schedule(
-                    () -> flow.onError(new Mqtt5MessageException(unsubAck, "UNSUBACK contains only Error Codes")));
-            // TODO different worker
+            if (!unsubAckFlow.isCancelled()) {
+                unsubAckFlow.onError(new Mqtt5MessageException(unsubAck, "UNSUBACK contains only Error Codes"));
+            } else {
+                LOGGER.warn("UNSUBACK contains only Error Codes but the UnsubAckFlow has been cancelled.");
+            }
         } else {
-            worker.schedule(() -> flow.onSuccess(unsubAck)); // TODO different worker
+            if (!unsubAckFlow.isCancelled()) {
+                unsubAckFlow.onSuccess(unsubAck);
+            }
             subscriptionFlows.unsubscribe(statefulUnsubscribeWithFlow.getUnsubscribe(), unsubAck);
         }
 

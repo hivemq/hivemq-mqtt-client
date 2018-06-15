@@ -139,7 +139,7 @@ public abstract class MqttIncomingPublishFlow<S extends Subscriber<? super Mqtt5
 
     abstract void runRemoveOnCancel();
 
-    boolean isCancelled() {
+    public boolean isCancelled() {
         return cancelled.get();
     }
 

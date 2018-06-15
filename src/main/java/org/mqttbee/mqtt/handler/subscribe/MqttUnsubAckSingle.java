@@ -22,28 +22,28 @@ import io.reactivex.SingleObserver;
 import io.reactivex.internal.disposables.EmptyDisposable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
-import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
+import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.ioc.ChannelComponent;
-import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
+import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribe;
 import org.mqttbee.rx.SingleFlow.DefaultSingleFlow;
 
 /**
  * @author Silvio Giebl
  */
-public class MqttSubAckSingle extends Single<Mqtt5SubAck> {
+public class MqttUnsubAckSingle extends Single<Mqtt5UnsubAck> {
 
-    private final MqttSubscribe subscribe;
+    private final MqttUnsubscribe unsubscribe;
     private final MqttClientData clientData;
 
-    public MqttSubAckSingle(@NotNull final MqttSubscribe subscribe, @NotNull final MqttClientData clientData) {
-        this.subscribe = subscribe;
+    public MqttUnsubAckSingle(@NotNull final MqttUnsubscribe unsubscribe, @NotNull final MqttClientData clientData) {
+        this.unsubscribe = unsubscribe;
         this.clientData = clientData;
     }
 
     @Override
-    protected void subscribeActual(final SingleObserver<? super Mqtt5SubAck> observer) {
+    protected void subscribeActual(final SingleObserver<? super Mqtt5UnsubAck> observer) {
         final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
         if (clientConnectionData == null) {
             EmptyDisposable.error(new NotConnectedException(), observer);
@@ -51,9 +51,9 @@ public class MqttSubAckSingle extends Single<Mqtt5SubAck> {
             final ChannelComponent channelComponent = ChannelComponent.get(clientConnectionData.getChannel());
             final MqttSubscriptionHandler subscriptionHandler = channelComponent.subscriptionHandler();
 
-            final DefaultSingleFlow<Mqtt5SubAck> flow = new DefaultSingleFlow<>(observer);
+            final DefaultSingleFlow<Mqtt5UnsubAck> flow = new DefaultSingleFlow<>(observer);
             observer.onSubscribe(flow);
-            subscriptionHandler.subscribe(new MqttSubscribeWithFlow(subscribe, flow));
+            subscriptionHandler.unsubscribe(new MqttUnsubscribeWithFlow(unsubscribe, flow));
         }
     }
 

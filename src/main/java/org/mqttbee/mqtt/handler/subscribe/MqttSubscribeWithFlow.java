@@ -34,7 +34,7 @@ public class MqttSubscribeWithFlow {
     private final SingleFlow<Mqtt5SubAck> subAckFlow;
     private final MqttSubscriptionFlow subscriptionFlow;
 
-    public MqttSubscribeWithFlow(
+    MqttSubscribeWithFlow(
             @NotNull final MqttSubscribe subscribe, @NotNull final SingleFlow<Mqtt5SubAck> subAckFlow) {
 
         this.subscribe = subscribe;
@@ -51,19 +51,18 @@ public class MqttSubscribeWithFlow {
     }
 
     @NotNull
-    public MqttStatefulSubscribeWithFlow createStateful(final int packetIdentifier, final int subscriptionIdentifier) {
+    MqttStatefulSubscribeWithFlow createStateful(final int packetIdentifier, final int subscriptionIdentifier) {
         return new MqttStatefulSubscribeWithFlow(
                 subscribe.createStateful(packetIdentifier, subscriptionIdentifier), subAckFlow, subscriptionFlow);
     }
 
-
-    public static class MqttStatefulSubscribeWithFlow {
+    static class MqttStatefulSubscribeWithFlow {
 
         private final MqttStatefulSubscribe subscribe;
         private final SingleFlow<Mqtt5SubAck> subAckFlow;
         private final MqttSubscriptionFlow subscriptionFlow;
 
-        private MqttStatefulSubscribeWithFlow(
+        MqttStatefulSubscribeWithFlow(
                 @NotNull final MqttStatefulSubscribe subscribe, @NotNull final SingleFlow<Mqtt5SubAck> subAckFlow,
                 @Nullable final MqttSubscriptionFlow subscriptionFlow) {
 
@@ -73,17 +72,17 @@ public class MqttSubscribeWithFlow {
         }
 
         @NotNull
-        public MqttStatefulSubscribe getSubscribe() {
+        MqttStatefulSubscribe getSubscribe() {
             return subscribe;
         }
 
         @NotNull
-        public SingleFlow<Mqtt5SubAck> getSubAckFlow() {
+        SingleFlow<Mqtt5SubAck> getSubAckFlow() {
             return subAckFlow;
         }
 
         @Nullable
-        public MqttSubscriptionFlow getSubscriptionFlow() {
+        MqttSubscriptionFlow getSubscriptionFlow() {
             return subscriptionFlow;
         }
 
