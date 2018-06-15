@@ -46,8 +46,8 @@ public class Mqtt5ClientBuilder extends MqttClientBuilder {
     private final MqttWebsocketConfig websocketConfig;
     private final MqttClientExecutorConfigImpl executorConfig;
 
-    private boolean followsRedirects = false;
-    private boolean allowsServerReAuth = false;
+    private boolean followRedirects = false;
+    private boolean allowServerReAuth = false;
     private MqttAdvancedClientData advancedClientData;
 
     public Mqtt5ClientBuilder(
@@ -131,14 +131,14 @@ public class Mqtt5ClientBuilder extends MqttClientBuilder {
     }
 
     @NotNull
-    public Mqtt5ClientBuilder followsRedirects(final boolean followsRedirects) {
-        this.followsRedirects = followsRedirects;
+    public Mqtt5ClientBuilder followRedirects(final boolean followRedirects) {
+        this.followRedirects = followRedirects;
         return this;
     }
 
     @NotNull
-    public Mqtt5ClientBuilder allowsServerReAuth(final boolean allowsServerReAuth) {
-        this.allowsServerReAuth = allowsServerReAuth;
+    public Mqtt5ClientBuilder allowServerReAuth(final boolean allowServerReAuth) {
+        this.allowServerReAuth = allowServerReAuth;
         return this;
     }
 
@@ -156,7 +156,7 @@ public class Mqtt5ClientBuilder extends MqttClientBuilder {
 
     private MqttClientData buildClientData() {
         return new MqttClientData(MqttVersion.MQTT_5_0, identifier, serverHost, serverPort, sslConfig, websocketConfig,
-                followsRedirects, allowsServerReAuth, executorConfig, advancedClientData);
+                followRedirects, allowServerReAuth, executorConfig, advancedClientData);
     }
 
 }
