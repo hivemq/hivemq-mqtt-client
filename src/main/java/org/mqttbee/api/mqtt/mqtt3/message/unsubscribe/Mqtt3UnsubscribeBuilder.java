@@ -50,7 +50,7 @@ public class Mqtt3UnsubscribeBuilder {
     }
 
     @NotNull
-    public Mqtt3UnsubscribeBuilder copyTopicFiltersFrom(@NotNull final Mqtt3Subscribe subscribe) {
+    public Mqtt3UnsubscribeBuilder reverse(@NotNull final Mqtt3Subscribe subscribe) {
         final ImmutableList<? extends Mqtt3Subscription> subscriptions = subscribe.getSubscriptions();
         for (final Mqtt3Subscription subscription : subscriptions) {
             addTopicFilter(subscription.getTopicFilter());
