@@ -21,6 +21,7 @@ import io.netty.bootstrap.Bootstrap;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
+import io.reactivex.functions.Function;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.exceptions.AlreadyConnectedException;
 import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
@@ -60,6 +61,9 @@ import org.mqttbee.util.MustNotBeImplementedUtil;
  * @author Silvio Giebl
  */
 public class Mqtt5ClientImpl implements Mqtt5Client {
+
+    private static final Function<Mqtt5Publish, MqttPublish> PUBLISH_MAPPER =
+            publish -> MustNotBeImplementedUtil.checkNotImplemented(publish, MqttPublish.class);
 
     private final MqttClientData clientData;
 
@@ -165,10 +169,8 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
     @NotNull
     @Override
     public Flowable<Mqtt5PublishResult> publish(@NotNull final Flowable<Mqtt5Publish> publishFlowable) {
-        return new MqttIncomingAckFlowable(
-                publishFlowable.map(
-                        publish -> MustNotBeImplementedUtil.checkNotImplemented(publish, MqttPublish.class)),
-                clientData).observeOn(clientData.getExecutorConfig().getRxJavaScheduler());
+        return new MqttIncomingAckFlowable(publishFlowable.map(PUBLISH_MAPPER), clientData).observeOn(
+                clientData.getExecutorConfig().getRxJavaScheduler());
     }
 
     @NotNull
