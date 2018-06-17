@@ -15,36 +15,33 @@
  *
  */
 
-package org.mqttbee.api.mqtt.mqtt3.message.auth;
+package org.mqttbee.util;
 
-import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.annotations.Nullable;
 
-import java.nio.ByteBuffer;
-import java.util.Optional;
+import java.util.function.Function;
 
 /**
- * Simple authentication and/or authorization related data in the MQTT 3 CONNECT packet.
+ * @author Silvio Giebl
  */
-@DoNotImplement
-public interface Mqtt3SimpleAuth {
+public abstract class FluentBuilder<B, P> {
 
-    @NotNull
-    static Mqtt3SimpleAuthBuilder<Void> builder() {
-        return new Mqtt3SimpleAuthBuilder<>(null);
+    private final Function<B, P> parentConsumer;
+
+    protected FluentBuilder(@Nullable final Function<B, P> parentConsumer) {
+        this.parentConsumer = parentConsumer;
     }
 
-    /**
-     * @return the username.
-     */
     @NotNull
-    MqttUTF8String getUsername();
+    public P done() {
+        if (parentConsumer == null) {
+            throw new IllegalStateException("done must not be called on the root of a fluent builder");
+        }
+        return parentConsumer.apply(build());
+    }
 
-    /**
-     * @return the optional password.
-     */
     @NotNull
-    Optional<ByteBuffer> getPassword();
+    public abstract B build();
 
 }

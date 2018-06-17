@@ -20,23 +20,38 @@ package org.mqttbee.api.mqtt.mqtt3.message.subscribe;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
 import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeView;
 import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscriptionView;
+import org.mqttbee.util.FluentBuilder;
 import org.mqttbee.util.MustNotBeImplementedUtil;
+
+import java.util.function.Function;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt3SubscribeBuilder {
+public class Mqtt3SubscribeBuilder<P> extends FluentBuilder<Mqtt3Subscribe, P> {
 
-    private final ImmutableList.Builder<MqttSubscription> subscriptionBuilder = ImmutableList.builder();
+    private final ImmutableList.Builder<MqttSubscription> subscriptionBuilder;
 
-    Mqtt3SubscribeBuilder() {
+    public Mqtt3SubscribeBuilder(@Nullable final Function<Mqtt3Subscribe, P> parentConsumer) {
+        super(parentConsumer);
+        subscriptionBuilder = ImmutableList.builder();
+    }
+
+    Mqtt3SubscribeBuilder(@NotNull final Mqtt3Subscribe subscribe) {
+        super(null);
+        final Mqtt3SubscribeView subscribeView =
+                MustNotBeImplementedUtil.checkNotImplemented(subscribe, Mqtt3SubscribeView.class);
+        final ImmutableList<MqttSubscription> subscriptions = subscribeView.getDelegate().getSubscriptions();
+        subscriptionBuilder = ImmutableList.builderWithExpectedSize(subscriptions.size() + 1);
+        subscriptionBuilder.addAll(subscriptions);
     }
 
     @NotNull
-    public Mqtt3SubscribeBuilder addSubscription(@NotNull final Mqtt3Subscription subscription) {
+    public Mqtt3SubscribeBuilder<P> addSubscription(@NotNull final Mqtt3Subscription subscription) {
         final Mqtt3SubscriptionView subscriptionView =
                 MustNotBeImplementedUtil.checkNotImplemented(subscription, Mqtt3SubscriptionView.class);
         subscriptionBuilder.add(subscriptionView.getDelegate());
@@ -44,6 +59,12 @@ public class Mqtt3SubscribeBuilder {
     }
 
     @NotNull
+    public Mqtt3SubscriptionBuilder<Mqtt3SubscribeBuilder<P>> addSubscription() {
+        return new Mqtt3SubscriptionBuilder<>(this::addSubscription);
+    }
+
+    @NotNull
+    @Override
     public Mqtt3Subscribe build() {
         final ImmutableList<MqttSubscription> subscriptions = subscriptionBuilder.build();
         Preconditions.checkState(!subscriptions.isEmpty());

@@ -26,24 +26,28 @@ import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishView;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 import org.mqttbee.util.ByteBufferUtil;
+import org.mqttbee.util.FluentBuilder;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 
 import java.nio.ByteBuffer;
+import java.util.function.Function;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt3PublishBuilder {
+public class Mqtt3PublishBuilder<P> extends FluentBuilder<Mqtt3Publish, P> {
 
     private MqttTopicImpl topic;
     private ByteBuffer payload;
     private MqttQoS qos;
     private boolean retain;
 
-    Mqtt3PublishBuilder() {
+    public Mqtt3PublishBuilder(@Nullable final Function<Mqtt3Publish, P> parentConsumer) {
+        super(parentConsumer);
     }
 
     Mqtt3PublishBuilder(@NotNull final Mqtt3Publish publish) {
+        super(null);
         final Mqtt3PublishView publishView =
                 MustNotBeImplementedUtil.checkNotImplemented(publish, Mqtt3PublishView.class);
         topic = publishView.getDelegate().getTopic();
@@ -53,42 +57,43 @@ public class Mqtt3PublishBuilder {
     }
 
     @NotNull
-    public Mqtt3PublishBuilder topic(@NotNull final String topic) {
+    public Mqtt3PublishBuilder<P> topic(@NotNull final String topic) {
         this.topic = MqttBuilderUtil.topic(topic);
         return this;
     }
 
     @NotNull
-    public Mqtt3PublishBuilder topic(@NotNull final MqttTopic topic) {
+    public Mqtt3PublishBuilder<P> topic(@NotNull final MqttTopic topic) {
         this.topic = MqttBuilderUtil.topic(topic);
         return this;
     }
 
     @NotNull
-    public Mqtt3PublishBuilder payload(@Nullable final byte[] payload) {
+    public Mqtt3PublishBuilder<P> payload(@Nullable final byte[] payload) {
         this.payload = (payload == null) ? null : ByteBufferUtil.wrap(payload);
         return this;
     }
 
     @NotNull
-    public Mqtt3PublishBuilder payload(@Nullable final ByteBuffer payload) {
+    public Mqtt3PublishBuilder<P> payload(@Nullable final ByteBuffer payload) {
         this.payload = (payload == null) ? null : ByteBufferUtil.slice(payload);
         return this;
     }
 
     @NotNull
-    public Mqtt3PublishBuilder qos(@NotNull final MqttQoS qos) {
+    public Mqtt3PublishBuilder<P> qos(@NotNull final MqttQoS qos) {
         this.qos = Preconditions.checkNotNull(qos);
         return this;
     }
 
     @NotNull
-    public Mqtt3PublishBuilder retain(final boolean retain) {
+    public Mqtt3PublishBuilder<P> retain(final boolean retain) {
         this.retain = retain;
         return this;
     }
 
     @NotNull
+    @Override
     public Mqtt3Publish build() {
         Preconditions.checkNotNull(topic);
         Preconditions.checkNotNull(qos);

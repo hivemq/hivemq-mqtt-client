@@ -19,42 +19,48 @@ package org.mqttbee.api.mqtt.mqtt3.message.subscribe;
 
 import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscriptionView;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
+import org.mqttbee.util.FluentBuilder;
+
+import java.util.function.Function;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt3SubscriptionBuilder {
+public class Mqtt3SubscriptionBuilder<P> extends FluentBuilder<Mqtt3Subscription, P> {
 
     private MqttTopicFilterImpl topicFilter;
     private MqttQoS qos;
 
-    Mqtt3SubscriptionBuilder() {
+    public Mqtt3SubscriptionBuilder(@Nullable final Function<Mqtt3Subscription, P> parentConsumer) {
+        super(parentConsumer);
     }
 
     @NotNull
-    public Mqtt3SubscriptionBuilder topicFilter(@NotNull final String topicFilter) {
+    public Mqtt3SubscriptionBuilder<P> topicFilter(@NotNull final String topicFilter) {
         this.topicFilter = MqttBuilderUtil.topicFilter(topicFilter);
         return this;
     }
 
     @NotNull
-    public Mqtt3SubscriptionBuilder topicFilter(@NotNull final MqttTopicFilter topicFilter) {
+    public Mqtt3SubscriptionBuilder<P> topicFilter(@NotNull final MqttTopicFilter topicFilter) {
         this.topicFilter = MqttBuilderUtil.topicFilter(topicFilter);
         return this;
     }
 
     @NotNull
-    public Mqtt3SubscriptionBuilder qos(@NotNull final MqttQoS qos) {
+    public Mqtt3SubscriptionBuilder<P> qos(@NotNull final MqttQoS qos) {
         this.qos = Preconditions.checkNotNull(qos);
         return this;
     }
 
     @NotNull
+    @Override
     public Mqtt3Subscription build() {
         Preconditions.checkNotNull(topicFilter);
         Preconditions.checkNotNull(qos);

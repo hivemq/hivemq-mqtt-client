@@ -23,6 +23,8 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3Message;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 
+import java.util.function.Function;
+
 /**
  * MQTT 3 SUBSCRIBE packet.
  */
@@ -30,8 +32,13 @@ import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 public interface Mqtt3Subscribe extends Mqtt3Message {
 
     @NotNull
-    static Mqtt3SubscribeBuilder builder() {
-        return new Mqtt3SubscribeBuilder();
+    static Mqtt3SubscribeBuilder<Void> builder() {
+        return new Mqtt3SubscribeBuilder<>((Function<Mqtt3Subscribe, Void>) null);
+    }
+
+    @NotNull
+    static Mqtt3SubscribeBuilder<Void> extend(@NotNull final Mqtt3Subscribe subscribe) {
+        return new Mqtt3SubscribeBuilder<>(subscribe);
     }
 
     /**

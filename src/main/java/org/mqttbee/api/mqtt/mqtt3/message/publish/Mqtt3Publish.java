@@ -27,6 +27,7 @@ import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3SubscribeResult;
 
 import java.nio.ByteBuffer;
 import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * MQTT 3 PUBLISH packet.
@@ -35,13 +36,13 @@ import java.util.Optional;
 public interface Mqtt3Publish extends Mqtt3Message, Mqtt3SubscribeResult {
 
     @NotNull
-    static Mqtt3PublishBuilder builder() {
-        return new Mqtt3PublishBuilder();
+    static Mqtt3PublishBuilder<Void> builder() {
+        return new Mqtt3PublishBuilder<>((Function<Mqtt3Publish, Void>) null);
     }
 
     @NotNull
-    static Mqtt3PublishBuilder extend(@NotNull final Mqtt3Publish publish) {
-        return new Mqtt3PublishBuilder(publish);
+    static Mqtt3PublishBuilder<Void> extend(@NotNull final Mqtt3Publish publish) {
+        return new Mqtt3PublishBuilder<>(publish);
     }
 
     /**
@@ -78,6 +79,5 @@ public interface Mqtt3Publish extends Mqtt3Message, Mqtt3SubscribeResult {
     default Mqtt3MessageType getType() {
         return Mqtt3MessageType.PUBLISH;
     }
-
 
 }
