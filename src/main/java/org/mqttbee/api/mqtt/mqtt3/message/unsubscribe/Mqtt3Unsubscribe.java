@@ -24,6 +24,8 @@ import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3Message;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 
+import java.util.function.Function;
+
 /**
  * MQTT 3 UNSUBSCRIBE packet.
  */
@@ -31,8 +33,13 @@ import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 public interface Mqtt3Unsubscribe extends Mqtt3Message {
 
     @NotNull
-    static Mqtt3UnsubscribeBuilder builder() {
-        return new Mqtt3UnsubscribeBuilder();
+    static Mqtt3UnsubscribeBuilder<Void> builder() {
+        return new Mqtt3UnsubscribeBuilder<>((Function<Mqtt3Unsubscribe, Void>) null);
+    }
+
+    @NotNull
+    static Mqtt3UnsubscribeBuilder<Void> extend(@NotNull final Mqtt3Unsubscribe unsubscribe) {
+        return new Mqtt3UnsubscribeBuilder<>(unsubscribe);
     }
 
     /**

@@ -20,28 +20,34 @@ package org.mqttbee.api.mqtt.mqtt3.message.connect;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
+import org.mqttbee.api.mqtt.mqtt3.message.auth.Mqtt3SimpleAuthBuilder;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import org.mqttbee.mqtt.message.auth.MqttSimpleAuth;
 import org.mqttbee.mqtt.message.auth.mqtt3.Mqtt3SimpleAuthView;
 import org.mqttbee.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
 import org.mqttbee.mqtt.message.publish.MqttWillPublish;
 import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishView;
+import org.mqttbee.util.FluentBuilder;
 import org.mqttbee.util.MustNotBeImplementedUtil;
+
+import java.util.function.Function;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt3ConnectBuilder {
+public class Mqtt3ConnectBuilder<P> extends FluentBuilder<Mqtt3Connect, P> {
 
     private int keepAlive = Mqtt3Connect.DEFAULT_KEEP_ALIVE;
     private boolean isCleanSession = Mqtt3Connect.DEFAULT_CLEAN_SESSION;
     private MqttSimpleAuth simpleAuth;
     private MqttWillPublish willPublish;
 
-    Mqtt3ConnectBuilder() {
+    public Mqtt3ConnectBuilder(@Nullable final Function<Mqtt3Connect, P> parentConsumer) {
+        super(parentConsumer);
     }
 
     Mqtt3ConnectBuilder(@NotNull final Mqtt3Connect connect) {
+        super(null);
         final Mqtt3ConnectView connectView =
                 MustNotBeImplementedUtil.checkNotImplemented(connect, Mqtt3ConnectView.class);
         keepAlive = connectView.getKeepAlive();
@@ -51,19 +57,19 @@ public class Mqtt3ConnectBuilder {
     }
 
     @NotNull
-    public Mqtt3ConnectBuilder keepAlive(final int keepAlive) {
+    public Mqtt3ConnectBuilder<P> keepAlive(final int keepAlive) {
         this.keepAlive = keepAlive;
         return this;
     }
 
     @NotNull
-    public Mqtt3ConnectBuilder cleanSession(final boolean isCleanSession) {
+    public Mqtt3ConnectBuilder<P> cleanSession(final boolean isCleanSession) {
         this.isCleanSession = isCleanSession;
         return this;
     }
 
     @NotNull
-    public Mqtt3ConnectBuilder simpleAuth(@Nullable final Mqtt3SimpleAuth simpleAuth) {
+    public Mqtt3ConnectBuilder<P> simpleAuth(@Nullable final Mqtt3SimpleAuth simpleAuth) {
         final Mqtt3SimpleAuthView simpleAuthView =
                 MustNotBeImplementedUtil.checkNullOrNotImplemented(simpleAuth, Mqtt3SimpleAuthView.class);
         this.simpleAuth = (simpleAuthView == null) ? null : simpleAuthView.getDelegate();
@@ -71,7 +77,12 @@ public class Mqtt3ConnectBuilder {
     }
 
     @NotNull
-    public Mqtt3ConnectBuilder willPublish(@Nullable final Mqtt3Publish willPublish) {
+    public Mqtt3SimpleAuthBuilder<Mqtt3ConnectBuilder<P>> simpleAuth() {
+        return new Mqtt3SimpleAuthBuilder<>(this::simpleAuth);
+    }
+
+    @NotNull
+    public Mqtt3ConnectBuilder<P> willPublish(@Nullable final Mqtt3Publish willPublish) {
         final Mqtt3PublishView publishView =
                 MustNotBeImplementedUtil.checkNullOrNotImplemented(willPublish, Mqtt3PublishView.class);
         this.willPublish = (publishView == null) ? null : publishView.getWillDelegate();
@@ -79,6 +90,7 @@ public class Mqtt3ConnectBuilder {
     }
 
     @NotNull
+    @Override
     public Mqtt3Connect build() {
         return Mqtt3ConnectView.of(keepAlive, isCleanSession, simpleAuth, willPublish);
     }

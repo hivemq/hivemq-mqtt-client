@@ -24,45 +24,49 @@ import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.message.auth.mqtt3.Mqtt3SimpleAuthView;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
+import org.mqttbee.util.FluentBuilder;
 
 import java.nio.ByteBuffer;
+import java.util.function.Function;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt3SimpleAuthBuilder {
+public class Mqtt3SimpleAuthBuilder<P> extends FluentBuilder<Mqtt3SimpleAuth, P> {
 
     private MqttUTF8StringImpl username;
     private ByteBuffer password;
 
-    Mqtt3SimpleAuthBuilder() {
+    public Mqtt3SimpleAuthBuilder(@Nullable final Function<Mqtt3SimpleAuth, P> parentConsumer) {
+        super(parentConsumer);
     }
 
     @NotNull
-    public Mqtt3SimpleAuthBuilder username(@NotNull final String username) {
+    public Mqtt3SimpleAuthBuilder<P> username(@NotNull final String username) {
         this.username = MqttBuilderUtil.string(username);
         return this;
     }
 
     @NotNull
-    public Mqtt3SimpleAuthBuilder username(@NotNull final MqttUTF8String username) {
+    public Mqtt3SimpleAuthBuilder<P> username(@NotNull final MqttUTF8String username) {
         this.username = MqttBuilderUtil.string(username);
         return this;
     }
 
     @NotNull
-    public Mqtt3SimpleAuthBuilder password(@Nullable final byte[] password) {
+    public Mqtt3SimpleAuthBuilder<P> password(@Nullable final byte[] password) {
         this.password = MqttBuilderUtil.binaryDataOrNull(password);
         return this;
     }
 
     @NotNull
-    public Mqtt3SimpleAuthBuilder password(@Nullable final ByteBuffer password) {
+    public Mqtt3SimpleAuthBuilder<P> password(@Nullable final ByteBuffer password) {
         this.password = MqttBuilderUtil.binaryDataOrNull(password);
         return this;
     }
 
     @NotNull
+    @Override
     public Mqtt3SimpleAuth build() {
         Preconditions.checkState(username != null);
         return Mqtt3SimpleAuthView.of(username, password);

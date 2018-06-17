@@ -25,6 +25,7 @@ import org.mqttbee.api.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;
 
 import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * MQTT 3 CONNECT packet.
@@ -37,13 +38,13 @@ public interface Mqtt3Connect extends Mqtt3Message {
     boolean DEFAULT_CLEAN_SESSION = true;
 
     @NotNull
-    static Mqtt3ConnectBuilder builder() {
-        return new Mqtt3ConnectBuilder();
+    static Mqtt3ConnectBuilder<Void> builder() {
+        return new Mqtt3ConnectBuilder<>((Function<Mqtt3Connect, Void>) null);
     }
 
     @NotNull
-    static Mqtt3ConnectBuilder extend(@NotNull final Mqtt3Connect connect) {
-        return new Mqtt3ConnectBuilder(connect);
+    static Mqtt3ConnectBuilder<Void> extend(@NotNull final Mqtt3Connect connect) {
+        return new Mqtt3ConnectBuilder<>(connect);
     }
 
     /**
