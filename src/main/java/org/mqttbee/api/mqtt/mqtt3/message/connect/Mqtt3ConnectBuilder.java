@@ -22,6 +22,7 @@ import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
 import org.mqttbee.api.mqtt.mqtt3.message.auth.Mqtt3SimpleAuthBuilder;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;
+import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3PublishBuilder;
 import org.mqttbee.mqtt.message.auth.MqttSimpleAuth;
 import org.mqttbee.mqtt.message.auth.mqtt3.Mqtt3SimpleAuthView;
 import org.mqttbee.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
@@ -77,7 +78,7 @@ public class Mqtt3ConnectBuilder<P> extends FluentBuilder<Mqtt3Connect, P> {
     }
 
     @NotNull
-    public Mqtt3SimpleAuthBuilder<Mqtt3ConnectBuilder<P>> simpleAuth() {
+    public Mqtt3SimpleAuthBuilder<? extends Mqtt3ConnectBuilder<P>> simpleAuth() {
         return new Mqtt3SimpleAuthBuilder<>(this::simpleAuth);
     }
 
@@ -87,6 +88,11 @@ public class Mqtt3ConnectBuilder<P> extends FluentBuilder<Mqtt3Connect, P> {
                 MustNotBeImplementedUtil.checkNullOrNotImplemented(willPublish, Mqtt3PublishView.class);
         this.willPublish = (publishView == null) ? null : publishView.getWillDelegate();
         return this;
+    }
+
+    @NotNull
+    public Mqtt3PublishBuilder<? extends Mqtt3ConnectBuilder<P>> willPublish() {
+        return new Mqtt3PublishBuilder<>(this::willPublish);
     }
 
     @NotNull

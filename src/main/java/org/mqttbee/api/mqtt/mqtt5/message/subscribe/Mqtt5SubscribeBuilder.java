@@ -61,7 +61,7 @@ public class Mqtt5SubscribeBuilder<P> extends FluentBuilder<Mqtt5Subscribe, P> {
     }
 
     @NotNull
-    public Mqtt5SubscriptionBuilder<Mqtt5SubscribeBuilder<P>> addSubscription() {
+    public Mqtt5SubscriptionBuilder<? extends Mqtt5SubscribeBuilder<P>> addSubscription() {
         return new Mqtt5SubscriptionBuilder<>(this::addSubscription);
     }
 
