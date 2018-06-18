@@ -59,7 +59,7 @@ public class Mqtt3SubscribeBuilder<P> extends FluentBuilder<Mqtt3Subscribe, P> {
     }
 
     @NotNull
-    public Mqtt3SubscriptionBuilder<Mqtt3SubscribeBuilder<P>> addSubscription() {
+    public Mqtt3SubscriptionBuilder<? extends Mqtt3SubscribeBuilder<P>> addSubscription() {
         return new Mqtt3SubscriptionBuilder<>(this::addSubscription);
     }
 
