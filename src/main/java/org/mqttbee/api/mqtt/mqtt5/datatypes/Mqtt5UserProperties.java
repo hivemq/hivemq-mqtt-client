@@ -25,6 +25,8 @@ import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 
+import java.util.function.Function;
+
 /**
  * Collection of {@link Mqtt5UserProperty User Properties}.
  *
@@ -60,13 +62,13 @@ public interface Mqtt5UserProperties {
     }
 
     @NotNull
-    static Mqtt5UserPropertiesBuilder builder() {
-        return new Mqtt5UserPropertiesBuilder();
+    static Mqtt5UserPropertiesBuilder<Void> builder() {
+        return new Mqtt5UserPropertiesBuilder<>((Function<Mqtt5UserProperties, Void>) null);
     }
 
     @NotNull
-    static Mqtt5UserPropertiesBuilder extend(@NotNull final Mqtt5UserProperties userProperties) {
-        return new Mqtt5UserPropertiesBuilder(userProperties);
+    static Mqtt5UserPropertiesBuilder<Void> extend(@NotNull final Mqtt5UserProperties userProperties) {
+        return new Mqtt5UserPropertiesBuilder<>(userProperties);
     }
 
     /**

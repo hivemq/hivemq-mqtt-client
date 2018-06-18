@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
+import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
@@ -68,6 +69,11 @@ public class Mqtt5SubscribeBuilder<P> extends FluentBuilder<Mqtt5Subscribe, P> {
     public Mqtt5SubscribeBuilder<P> userProperties(@NotNull final Mqtt5UserProperties userProperties) {
         this.userProperties = MqttBuilderUtil.userProperties(userProperties);
         return this;
+    }
+
+    @NotNull
+    public Mqtt5UserPropertiesBuilder<? extends Mqtt5SubscribeBuilder<P>> userProperties() {
+        return new Mqtt5UserPropertiesBuilder<>(this::userProperties);
     }
 
     @NotNull

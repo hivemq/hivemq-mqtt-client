@@ -22,6 +22,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
+import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5SimpleAuth;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5SimpleAuthBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
@@ -147,6 +148,11 @@ public class Mqtt5ConnectBuilder<P> extends FluentBuilder<Mqtt5Connect, P> {
     public Mqtt5ConnectBuilder<P> userProperties(@NotNull final Mqtt5UserProperties userProperties) {
         this.userProperties = MqttBuilderUtil.userProperties(userProperties);
         return this;
+    }
+
+    @NotNull
+    public Mqtt5UserPropertiesBuilder<? extends Mqtt5ConnectBuilder<P>> userProperties() {
+        return new Mqtt5UserPropertiesBuilder<>(this::userProperties);
     }
 
     @NotNull
