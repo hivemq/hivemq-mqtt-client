@@ -24,6 +24,7 @@ import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
+import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 import org.mqttbee.mqtt.message.publish.MqttWillPublish;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 import org.mqttbee.util.MustNotBeImplementedUtil;
@@ -165,7 +166,13 @@ public class Mqtt5WillPublishBuilder<P> extends Mqtt5PublishBuilder<P> {
     }
 
     @NotNull
-    public Mqtt5WillPublishBuilder<P> withDelayInterval(final long delayInterval) {
+    @Override
+    public Mqtt5UserPropertiesBuilder<? extends Mqtt5WillPublishBuilder<P>> userProperties() {
+        return new Mqtt5UserPropertiesBuilder<>(this::userProperties);
+    }
+
+    @NotNull
+    public Mqtt5WillPublishBuilder<P> delayInterval(final long delayInterval) {
         Preconditions.checkArgument(UnsignedDataTypes.isUnsignedInt(delayInterval));
         this.delayInterval = delayInterval;
         return this;

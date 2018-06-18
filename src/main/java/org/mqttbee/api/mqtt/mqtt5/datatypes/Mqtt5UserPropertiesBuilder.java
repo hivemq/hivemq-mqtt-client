@@ -19,37 +19,55 @@ package org.mqttbee.api.mqtt.mqtt5.datatypes;
 
 import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
+import org.mqttbee.util.FluentBuilder;
 import org.mqttbee.util.MustNotBeImplementedUtil;
+
+import java.util.function.Function;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5UserPropertiesBuilder {
+public class Mqtt5UserPropertiesBuilder<P> extends FluentBuilder<Mqtt5UserProperties, P> {
 
-    private ImmutableList.Builder<MqttUserPropertyImpl> listBuilder;
+    private final ImmutableList.Builder<MqttUserPropertyImpl> listBuilder;
 
-    Mqtt5UserPropertiesBuilder() {
+    public Mqtt5UserPropertiesBuilder(@Nullable final Function<Mqtt5UserProperties, P> parentConsumer) {
+        super(parentConsumer);
+        listBuilder = ImmutableList.builder();
     }
 
     Mqtt5UserPropertiesBuilder(@NotNull final Mqtt5UserProperties userProperties) {
-        final MqttUserPropertiesImpl userPropertiesImpl = MqttBuilderUtil.userProperties(userProperties);
-        listBuilder = ImmutableList.builder();
-        listBuilder.addAll(userPropertiesImpl.asList());
+        super(null);
+        final ImmutableList<MqttUserPropertyImpl> list = MqttBuilderUtil.userProperties(userProperties).asList();
+        listBuilder = ImmutableList.builderWithExpectedSize(list.size() + 1);
+        listBuilder.addAll(list);
     }
 
     @NotNull
-    public Mqtt5UserPropertiesBuilder add(@NotNull final Mqtt5UserProperty userProperty) {
-        if (listBuilder == null) {
-            listBuilder = ImmutableList.builder();
-        }
+    public Mqtt5UserPropertiesBuilder<P> add(@NotNull final String name, @NotNull final String value) {
+        listBuilder.add(MqttBuilderUtil.userProperty(name, value));
+        return this;
+    }
+
+    @NotNull
+    public Mqtt5UserPropertiesBuilder<P> add(@NotNull final MqttUTF8String name, @NotNull final MqttUTF8String value) {
+        listBuilder.add(MqttBuilderUtil.userProperty(name, value));
+        return this;
+    }
+
+    @NotNull
+    public Mqtt5UserPropertiesBuilder<P> add(@NotNull final Mqtt5UserProperty userProperty) {
         listBuilder.add(MustNotBeImplementedUtil.checkNotImplemented(userProperty, MqttUserPropertyImpl.class));
         return this;
     }
 
     @NotNull
+    @Override
     public Mqtt5UserProperties build() {
         return MqttUserPropertiesImpl.build(listBuilder);
     }

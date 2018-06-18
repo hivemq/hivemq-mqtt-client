@@ -110,8 +110,8 @@ public class MqttBuilderUtil {
         final MqttSharedTopicFilterImpl sharedTopicFilter = MqttSharedTopicFilterImpl.from(shareName, topicFilter);
         if (sharedTopicFilter == null) {
             throw new IllegalArgumentException(
-                    "The string: [" + MqttSharedTopicFilter.SHARE_PREFIX + shareName + topicFilter +
-                            "] is not a valid Shared Topic Filter.");
+                    "The string: [" + MqttSharedTopicFilter.SHARE_PREFIX + shareName + MqttTopic.TOPIC_LEVEL_SEPARATOR +
+                            topicFilter + "] is not a valid Shared Topic Filter.");
         }
         return sharedTopicFilter;
     }
@@ -153,6 +153,18 @@ public class MqttBuilderUtil {
     @NotNull
     public static MqttUserPropertiesImpl userProperties(@NotNull final Mqtt5UserProperties userProperties) {
         return MustNotBeImplementedUtil.checkNotImplemented(userProperties, MqttUserPropertiesImpl.class);
+    }
+
+    @NotNull
+    public static MqttUserPropertyImpl userProperty(@NotNull final String name, @NotNull final String value) {
+        return MqttUserPropertyImpl.of(string(name), string(value));
+    }
+
+    @NotNull
+    public static MqttUserPropertyImpl userProperty(
+            @NotNull final MqttUTF8String name, @NotNull final MqttUTF8String value) {
+
+        return MqttUserPropertyImpl.of(string(name), string(value));
     }
 
 }

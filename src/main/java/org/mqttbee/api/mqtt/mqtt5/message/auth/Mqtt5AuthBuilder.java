@@ -22,6 +22,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
+import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 
 import java.nio.ByteBuffer;
 
@@ -45,5 +46,8 @@ public interface Mqtt5AuthBuilder {
 
     @NotNull
     Mqtt5AuthBuilder userProperties(@NotNull Mqtt5UserProperties userProperties);
+
+    @NotNull
+    Mqtt5UserPropertiesBuilder<? extends Mqtt5AuthBuilder> userProperties();
 
 }
