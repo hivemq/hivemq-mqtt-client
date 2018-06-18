@@ -19,43 +19,49 @@ package org.mqttbee.api.mqtt.mqtt5.message.connect;
 
 import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt.message.connect.MqttConnectRestrictions;
+import org.mqttbee.util.FluentBuilder;
 import org.mqttbee.util.UnsignedDataTypes;
+
+import java.util.function.Function;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5ConnectRestrictionsBuilder {
+public class Mqtt5ConnectRestrictionsBuilder<P> extends FluentBuilder<Mqtt5ConnectRestrictions, P> {
 
     private int receiveMaximum = Mqtt5ConnectRestrictions.DEFAULT_RECEIVE_MAXIMUM;
     private int topicAliasMaximum = Mqtt5ConnectRestrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM;
     private int maximumPacketSize = Mqtt5ConnectRestrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT;
 
-    Mqtt5ConnectRestrictionsBuilder() {
+    public Mqtt5ConnectRestrictionsBuilder(@Nullable final Function<Mqtt5ConnectRestrictions, P> parentConsumer) {
+        super(parentConsumer);
     }
 
     @NotNull
-    public Mqtt5ConnectRestrictionsBuilder receiveMaximum(final int receiveMaximum) {
+    public Mqtt5ConnectRestrictionsBuilder<P> receiveMaximum(final int receiveMaximum) {
         Preconditions.checkArgument(UnsignedDataTypes.isUnsignedShort(receiveMaximum));
         this.receiveMaximum = receiveMaximum;
         return this;
     }
 
     @NotNull
-    public Mqtt5ConnectRestrictionsBuilder topicAliasMaximum(final int topicAliasMaximum) {
+    public Mqtt5ConnectRestrictionsBuilder<P> topicAliasMaximum(final int topicAliasMaximum) {
         Preconditions.checkArgument(UnsignedDataTypes.isUnsignedShort(topicAliasMaximum));
         this.topicAliasMaximum = topicAliasMaximum;
         return this;
     }
 
     @NotNull
-    public Mqtt5ConnectRestrictionsBuilder maximumPacketSize(final int maximumPacketSize) {
+    public Mqtt5ConnectRestrictionsBuilder<P> maximumPacketSize(final int maximumPacketSize) {
         Preconditions.checkArgument(UnsignedDataTypes.isUnsignedInt(maximumPacketSize));
         this.maximumPacketSize = maximumPacketSize;
         return this;
     }
 
     @NotNull
+    @Override
     public Mqtt5ConnectRestrictions build() {
         return new MqttConnectRestrictions(receiveMaximum, topicAliasMaximum, maximumPacketSize);
     }

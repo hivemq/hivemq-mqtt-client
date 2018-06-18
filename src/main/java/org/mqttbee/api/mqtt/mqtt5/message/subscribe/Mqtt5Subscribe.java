@@ -24,6 +24,8 @@ import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 
+import java.util.function.Function;
+
 /**
  * MQTT 5 SUBSCRIBE packet.
  *
@@ -33,8 +35,13 @@ import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 public interface Mqtt5Subscribe extends Mqtt5Message {
 
     @NotNull
-    static Mqtt5SubscribeBuilder builder() {
-        return new Mqtt5SubscribeBuilder();
+    static Mqtt5SubscribeBuilder<Void> builder() {
+        return new Mqtt5SubscribeBuilder<>((Function<Mqtt5Subscribe, Void>) null);
+    }
+
+    @NotNull
+    static Mqtt5SubscribeBuilder<Void> extend(@NotNull final Mqtt5Subscribe subscribe) {
+        return new Mqtt5SubscribeBuilder<>(subscribe);
     }
 
     /**
@@ -54,6 +61,5 @@ public interface Mqtt5Subscribe extends Mqtt5Message {
     default Mqtt5MessageType getType() {
         return Mqtt5MessageType.SUBSCRIBE;
     }
-
 
 }

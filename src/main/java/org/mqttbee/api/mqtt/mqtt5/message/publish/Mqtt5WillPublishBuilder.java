@@ -30,21 +30,27 @@ import org.mqttbee.util.MustNotBeImplementedUtil;
 import org.mqttbee.util.UnsignedDataTypes;
 
 import java.nio.ByteBuffer;
+import java.util.function.Function;
 
 import static org.mqttbee.mqtt.message.publish.MqttWillPublish.DEFAULT_DELAY_INTERVAL;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5WillPublishBuilder extends Mqtt5PublishBuilder {
+public class Mqtt5WillPublishBuilder<P> extends Mqtt5PublishBuilder<P> {
+
+    private final Function<Mqtt5WillPublish, P> parentConsumer;
 
     private long delayInterval = DEFAULT_DELAY_INTERVAL;
 
-    Mqtt5WillPublishBuilder() {
+    public Mqtt5WillPublishBuilder(@Nullable final Function<Mqtt5WillPublish, P> parentConsumer) {
+        super((Function<Mqtt5Publish, P>) null);
+        this.parentConsumer = parentConsumer;
     }
 
     Mqtt5WillPublishBuilder(@NotNull final Mqtt5Publish publish) {
         super(publish);
+        parentConsumer = null;
         if (publish instanceof Mqtt5WillPublish) {
             delayInterval =
                     MustNotBeImplementedUtil.checkNotImplemented(publish, MqttWillPublish.class).getDelayInterval();
@@ -53,49 +59,49 @@ public class Mqtt5WillPublishBuilder extends Mqtt5PublishBuilder {
 
     @NotNull
     @Override
-    public Mqtt5WillPublishBuilder topic(@NotNull final String topic) {
+    public Mqtt5WillPublishBuilder<P> topic(@NotNull final String topic) {
         super.topic(topic);
         return this;
     }
 
     @NotNull
     @Override
-    public Mqtt5WillPublishBuilder topic(@NotNull final MqttTopic topic) {
+    public Mqtt5WillPublishBuilder<P> topic(@NotNull final MqttTopic topic) {
         super.topic(topic);
         return this;
     }
 
     @NotNull
     @Override
-    public Mqtt5WillPublishBuilder payload(@Nullable final byte[] payload) {
+    public Mqtt5WillPublishBuilder<P> payload(@Nullable final byte[] payload) {
         this.payload = MqttBuilderUtil.binaryDataOrNull(payload);
         return this;
     }
 
     @NotNull
     @Override
-    public Mqtt5WillPublishBuilder payload(@Nullable final ByteBuffer payload) {
+    public Mqtt5WillPublishBuilder<P> payload(@Nullable final ByteBuffer payload) {
         this.payload = MqttBuilderUtil.binaryDataOrNull(payload);
         return this;
     }
 
     @NotNull
     @Override
-    public Mqtt5WillPublishBuilder qos(@NotNull final MqttQoS qos) {
+    public Mqtt5WillPublishBuilder<P> qos(@NotNull final MqttQoS qos) {
         super.qos(qos);
         return this;
     }
 
     @NotNull
     @Override
-    public Mqtt5WillPublishBuilder retain(final boolean retain) {
+    public Mqtt5WillPublishBuilder<P> retain(final boolean retain) {
         super.retain(retain);
         return this;
     }
 
     @NotNull
     @Override
-    public Mqtt5WillPublishBuilder payloadFormatIndicator(
+    public Mqtt5WillPublishBuilder<P> payloadFormatIndicator(
             @Nullable final Mqtt5PayloadFormatIndicator payloadFormatIndicator) {
 
         super.payloadFormatIndicator(payloadFormatIndicator);
@@ -104,42 +110,42 @@ public class Mqtt5WillPublishBuilder extends Mqtt5PublishBuilder {
 
     @NotNull
     @Override
-    public Mqtt5WillPublishBuilder contentType(@Nullable final String contentType) {
+    public Mqtt5WillPublishBuilder<P> contentType(@Nullable final String contentType) {
         super.contentType(contentType);
         return this;
     }
 
     @NotNull
     @Override
-    public Mqtt5WillPublishBuilder contentType(@Nullable final MqttUTF8String contentType) {
+    public Mqtt5WillPublishBuilder<P> contentType(@Nullable final MqttUTF8String contentType) {
         super.contentType(contentType);
         return this;
     }
 
     @NotNull
     @Override
-    public Mqtt5WillPublishBuilder responseTopic(@Nullable final String responseTopic) {
+    public Mqtt5WillPublishBuilder<P> responseTopic(@Nullable final String responseTopic) {
         super.responseTopic(responseTopic);
         return this;
     }
 
     @NotNull
     @Override
-    public Mqtt5WillPublishBuilder responseTopic(@Nullable final MqttTopic responseTopic) {
+    public Mqtt5WillPublishBuilder<P> responseTopic(@Nullable final MqttTopic responseTopic) {
         super.responseTopic(responseTopic);
         return this;
     }
 
     @NotNull
     @Override
-    public Mqtt5WillPublishBuilder correlationData(@Nullable final byte[] correlationData) {
+    public Mqtt5WillPublishBuilder<P> correlationData(@Nullable final byte[] correlationData) {
         super.correlationData(correlationData);
         return this;
     }
 
     @NotNull
     @Override
-    public Mqtt5WillPublishBuilder correlationData(@Nullable final ByteBuffer correlationData) {
+    public Mqtt5WillPublishBuilder<P> correlationData(@Nullable final ByteBuffer correlationData) {
         super.correlationData(correlationData);
         return this;
     }
@@ -147,22 +153,28 @@ public class Mqtt5WillPublishBuilder extends Mqtt5PublishBuilder {
     @NotNull
     @Override
     @Deprecated
-    public Mqtt5WillPublishBuilder topicAliasUsage(@NotNull final TopicAliasUsage topicAliasUsage) {
+    public Mqtt5WillPublishBuilder<P> topicAliasUsage(@NotNull final TopicAliasUsage topicAliasUsage) {
         throw new UnsupportedOperationException();
     }
 
     @NotNull
     @Override
-    public Mqtt5WillPublishBuilder userProperties(@NotNull final Mqtt5UserProperties userProperties) {
+    public Mqtt5WillPublishBuilder<P> userProperties(@NotNull final Mqtt5UserProperties userProperties) {
         super.userProperties(userProperties);
         return this;
     }
 
     @NotNull
-    public Mqtt5WillPublishBuilder withDelayInterval(final long delayInterval) {
+    public Mqtt5WillPublishBuilder<P> withDelayInterval(final long delayInterval) {
         Preconditions.checkArgument(UnsignedDataTypes.isUnsignedInt(delayInterval));
         this.delayInterval = delayInterval;
         return this;
+    }
+
+    @NotNull
+    @Override
+    public P done() {
+        return done(build(), parentConsumer);
     }
 
     @NotNull

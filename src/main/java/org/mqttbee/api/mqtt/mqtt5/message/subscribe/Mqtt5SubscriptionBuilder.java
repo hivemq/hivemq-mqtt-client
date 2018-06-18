@@ -19,16 +19,20 @@ package org.mqttbee.api.mqtt.mqtt5.message.subscribe;
 
 import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
+import org.mqttbee.util.FluentBuilder;
+
+import java.util.function.Function;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5SubscriptionBuilder {
+public class Mqtt5SubscriptionBuilder<P> extends FluentBuilder<Mqtt5Subscription, P> {
 
     private MqttTopicFilterImpl topicFilter;
     private MqttQoS qos;
@@ -36,46 +40,48 @@ public class Mqtt5SubscriptionBuilder {
     private Mqtt5RetainHandling retainHandling = Mqtt5Subscription.DEFAULT_RETAIN_HANDLING;
     private boolean retainAsPublished = Mqtt5Subscription.DEFAULT_RETAIN_AS_PUBLISHED;
 
-    Mqtt5SubscriptionBuilder() {
+    public Mqtt5SubscriptionBuilder(@Nullable final Function<Mqtt5Subscription, P> parentConsumer) {
+        super(parentConsumer);
     }
 
     @NotNull
-    public Mqtt5SubscriptionBuilder topicFilter(@NotNull final String topicFilter) {
+    public Mqtt5SubscriptionBuilder<P> topicFilter(@NotNull final String topicFilter) {
         this.topicFilter = MqttBuilderUtil.topicFilter(topicFilter);
         return this;
     }
 
     @NotNull
-    public Mqtt5SubscriptionBuilder topicFilter(@NotNull final MqttTopicFilter topicFilter) {
+    public Mqtt5SubscriptionBuilder<P> topicFilter(@NotNull final MqttTopicFilter topicFilter) {
         this.topicFilter = MqttBuilderUtil.topicFilter(topicFilter);
         return this;
     }
 
     @NotNull
-    public Mqtt5SubscriptionBuilder qos(@NotNull final MqttQoS qos) {
+    public Mqtt5SubscriptionBuilder<P> qos(@NotNull final MqttQoS qos) {
         this.qos = Preconditions.checkNotNull(qos);
         return this;
     }
 
     @NotNull
-    public Mqtt5SubscriptionBuilder noLocal(final boolean noLocal) {
+    public Mqtt5SubscriptionBuilder<P> noLocal(final boolean noLocal) {
         this.noLocal = noLocal;
         return this;
     }
 
     @NotNull
-    public Mqtt5SubscriptionBuilder retainHandling(@NotNull final Mqtt5RetainHandling retainHandling) {
+    public Mqtt5SubscriptionBuilder<P> retainHandling(@NotNull final Mqtt5RetainHandling retainHandling) {
         this.retainHandling = Preconditions.checkNotNull(retainHandling);
         return this;
     }
 
     @NotNull
-    public Mqtt5SubscriptionBuilder retainAsPublished(final boolean retainAsPublished) {
+    public Mqtt5SubscriptionBuilder<P> retainAsPublished(final boolean retainAsPublished) {
         this.retainAsPublished = retainAsPublished;
         return this;
     }
 
     @NotNull
+    @Override
     public Mqtt5Subscription build() {
         Preconditions.checkNotNull(topicFilter);
         Preconditions.checkNotNull(qos);

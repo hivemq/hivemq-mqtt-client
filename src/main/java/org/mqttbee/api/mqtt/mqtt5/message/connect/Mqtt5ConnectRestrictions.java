@@ -42,8 +42,8 @@ public interface Mqtt5ConnectRestrictions {
     int DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT;
 
     @NotNull
-    static Mqtt5ConnectRestrictionsBuilder builder() {
-        return new Mqtt5ConnectRestrictionsBuilder();
+    static Mqtt5ConnectRestrictionsBuilder<Void> builder() {
+        return new Mqtt5ConnectRestrictionsBuilder<>(null);
     }
 
     /**

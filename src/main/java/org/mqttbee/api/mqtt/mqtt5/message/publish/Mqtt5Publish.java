@@ -29,6 +29,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeResult;
 
 import java.nio.ByteBuffer;
 import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * MQTT 5 PUBLISH packet.
@@ -45,13 +46,13 @@ public interface Mqtt5Publish extends Mqtt5Message, Mqtt5SubscribeResult {
     TopicAliasUsage DEFAULT_TOPIC_ALIAS_USAGE = TopicAliasUsage.MUST_NOT;
 
     @NotNull
-    static Mqtt5PublishBuilder builder() {
-        return new Mqtt5PublishBuilder();
+    static Mqtt5PublishBuilder<Void> builder() {
+        return new Mqtt5PublishBuilder<>((Function<Mqtt5Publish, Void>) null);
     }
 
     @NotNull
-    static Mqtt5PublishBuilder extend(@NotNull final Mqtt5Publish publish) {
-        return new Mqtt5PublishBuilder(publish);
+    static Mqtt5PublishBuilder<Void> extend(@NotNull final Mqtt5Publish publish) {
+        return new Mqtt5PublishBuilder<>(publish);
     }
 
     /**
