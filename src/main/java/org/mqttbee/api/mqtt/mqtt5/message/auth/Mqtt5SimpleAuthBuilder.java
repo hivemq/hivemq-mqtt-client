@@ -24,45 +24,49 @@ import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.message.auth.MqttSimpleAuth;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
+import org.mqttbee.util.FluentBuilder;
 
 import java.nio.ByteBuffer;
+import java.util.function.Function;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5SimpleAuthBuilder {
+public class Mqtt5SimpleAuthBuilder<P> extends FluentBuilder<Mqtt5SimpleAuth, P> {
 
     private MqttUTF8StringImpl username;
     private ByteBuffer password;
 
-    Mqtt5SimpleAuthBuilder() {
+    public Mqtt5SimpleAuthBuilder(@Nullable final Function<Mqtt5SimpleAuth, P> parentConsumer) {
+        super(parentConsumer);
     }
 
     @NotNull
-    public Mqtt5SimpleAuthBuilder username(@Nullable final String username) {
+    public Mqtt5SimpleAuthBuilder<P> username(@Nullable final String username) {
         this.username = MqttBuilderUtil.stringOrNull(username);
         return this;
     }
 
     @NotNull
-    public Mqtt5SimpleAuthBuilder username(@Nullable final MqttUTF8String username) {
+    public Mqtt5SimpleAuthBuilder<P> username(@Nullable final MqttUTF8String username) {
         this.username = MqttBuilderUtil.stringOrNull(username);
         return this;
     }
 
     @NotNull
-    public Mqtt5SimpleAuthBuilder password(@Nullable final byte[] password) {
+    public Mqtt5SimpleAuthBuilder<P> password(@Nullable final byte[] password) {
         this.password = MqttBuilderUtil.binaryDataOrNull(password);
         return this;
     }
 
     @NotNull
-    public Mqtt5SimpleAuthBuilder password(@Nullable final ByteBuffer password) {
+    public Mqtt5SimpleAuthBuilder<P> password(@Nullable final ByteBuffer password) {
         this.password = MqttBuilderUtil.binaryDataOrNull(password);
         return this;
     }
 
     @NotNull
+    @Override
     public Mqtt5SimpleAuth build() {
         Preconditions.checkState(username != null || password != null);
         return new MqttSimpleAuth(username, password);

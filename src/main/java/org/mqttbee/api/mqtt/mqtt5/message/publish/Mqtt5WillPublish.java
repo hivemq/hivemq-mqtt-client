@@ -20,6 +20,8 @@ package org.mqttbee.api.mqtt.mqtt5.message.publish;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 
+import java.util.function.Function;
+
 /**
  * MQTT 5 Will Publish which can be a part of the CONNECT packet.
  *
@@ -29,13 +31,13 @@ import org.mqttbee.annotations.NotNull;
 public interface Mqtt5WillPublish extends Mqtt5Publish {
 
     @NotNull
-    static Mqtt5WillPublishBuilder builder() {
-        return new Mqtt5WillPublishBuilder();
+    static Mqtt5WillPublishBuilder<Void> builder() {
+        return new Mqtt5WillPublishBuilder<>((Function<Mqtt5WillPublish, Void>) null);
     }
 
     @NotNull
-    static Mqtt5WillPublishBuilder extend(@NotNull final Mqtt5Publish publish) {
-        return new Mqtt5WillPublishBuilder(publish);
+    static Mqtt5WillPublishBuilder<Void> extend(@NotNull final Mqtt5Publish publish) {
+        return new Mqtt5WillPublishBuilder<>(publish);
     }
 
     /**

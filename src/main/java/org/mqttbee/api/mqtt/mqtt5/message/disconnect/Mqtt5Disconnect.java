@@ -35,8 +35,8 @@ import java.util.Optional;
 public interface Mqtt5Disconnect extends Mqtt5Message {
 
     @NotNull
-    static Mqtt5DisconnectBuilder builder() {
-        return new Mqtt5DisconnectBuilder();
+    static Mqtt5DisconnectBuilder<Void> builder() {
+        return new Mqtt5DisconnectBuilder<>(null);
     }
 
     /**

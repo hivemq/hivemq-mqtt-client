@@ -28,6 +28,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
 import org.mqttbee.util.UnsignedDataTypes;
 
 import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * MQTT 5 CONNECT packet.
@@ -46,13 +47,13 @@ public interface Mqtt5Connect extends Mqtt5Message {
     boolean DEFAULT_PROBLEM_INFORMATION_REQUESTED = true;
 
     @NotNull
-    static Mqtt5ConnectBuilder builder() {
-        return new Mqtt5ConnectBuilder();
+    static Mqtt5ConnectBuilder<Void> builder() {
+        return new Mqtt5ConnectBuilder<>((Function<Mqtt5Connect, Void>) null);
     }
 
     @NotNull
-    static Mqtt5ConnectBuilder extend(@NotNull final Mqtt5Connect connect) {
-        return new Mqtt5ConnectBuilder(connect);
+    static Mqtt5ConnectBuilder<Void> extend(@NotNull final Mqtt5Connect connect) {
+        return new Mqtt5ConnectBuilder<>(connect);
     }
 
     /**

@@ -31,8 +31,8 @@ import java.util.Optional;
 public interface Mqtt5SimpleAuth {
 
     @NotNull
-    static Mqtt5SimpleAuthBuilder builder() {
-        return new Mqtt5SimpleAuthBuilder();
+    static Mqtt5SimpleAuthBuilder<Void> builder() {
+        return new Mqtt5SimpleAuthBuilder<>(null);
     }
 
     /**

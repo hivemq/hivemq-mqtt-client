@@ -25,6 +25,8 @@ import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 
+import java.util.function.Function;
+
 /**
  * MQTT 5 UNSUBSCRIBE packet.
  *
@@ -34,8 +36,13 @@ import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 public interface Mqtt5Unsubscribe extends Mqtt5Message {
 
     @NotNull
-    static Mqtt5UnsubscribeBuilder build() {
-        return new Mqtt5UnsubscribeBuilder();
+    static Mqtt5UnsubscribeBuilder<Void> build() {
+        return new Mqtt5UnsubscribeBuilder<>((Function<Mqtt5Unsubscribe, Void>) null);
+    }
+
+    @NotNull
+    static Mqtt5UnsubscribeBuilder<Void> extend(@NotNull final Mqtt5Unsubscribe unsubscribe) {
+        return new Mqtt5UnsubscribeBuilder<>(unsubscribe);
     }
 
     /**
