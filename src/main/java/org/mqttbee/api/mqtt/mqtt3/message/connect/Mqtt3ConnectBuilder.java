@@ -43,7 +43,7 @@ public class Mqtt3ConnectBuilder<P> extends FluentBuilder<Mqtt3Connect, P> {
     private MqttSimpleAuth simpleAuth;
     private MqttWillPublish willPublish;
 
-    public Mqtt3ConnectBuilder(@Nullable final Function<Mqtt3Connect, P> parentConsumer) {
+    public Mqtt3ConnectBuilder(@Nullable final Function<? super Mqtt3Connect, P> parentConsumer) {
         super(parentConsumer);
     }
 

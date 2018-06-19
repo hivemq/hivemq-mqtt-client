@@ -40,7 +40,7 @@ public class Mqtt5SubscribeBuilder<P> extends FluentBuilder<Mqtt5Subscribe, P> {
     private final ImmutableList.Builder<MqttSubscription> subscriptionBuilder;
     private MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
 
-    public Mqtt5SubscribeBuilder(@Nullable final Function<Mqtt5Subscribe, P> parentConsumer) {
+    public Mqtt5SubscribeBuilder(@Nullable final Function<? super Mqtt5Subscribe, P> parentConsumer) {
         super(parentConsumer);
         subscriptionBuilder = ImmutableList.builder();
     }

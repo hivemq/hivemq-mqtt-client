@@ -22,6 +22,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
+import org.mqttbee.api.mqtt.datatypes.MqttTopicBuilder;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishView;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
@@ -42,7 +43,7 @@ public class Mqtt3PublishBuilder<P> extends FluentBuilder<Mqtt3Publish, P> {
     private MqttQoS qos;
     private boolean retain;
 
-    public Mqtt3PublishBuilder(@Nullable final Function<Mqtt3Publish, P> parentConsumer) {
+    public Mqtt3PublishBuilder(@Nullable final Function<? super Mqtt3Publish, P> parentConsumer) {
         super(parentConsumer);
     }
 
@@ -66,6 +67,11 @@ public class Mqtt3PublishBuilder<P> extends FluentBuilder<Mqtt3Publish, P> {
     public Mqtt3PublishBuilder<P> topic(@NotNull final MqttTopic topic) {
         this.topic = MqttBuilderUtil.topic(topic);
         return this;
+    }
+
+    @NotNull
+    public MqttTopicBuilder<? extends Mqtt3PublishBuilder<P>> topic() {
+        return new MqttTopicBuilder<>("", this::topic);
     }
 
     @NotNull

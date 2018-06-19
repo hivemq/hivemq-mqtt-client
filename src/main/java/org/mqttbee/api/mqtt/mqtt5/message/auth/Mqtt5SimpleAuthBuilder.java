@@ -37,7 +37,7 @@ public class Mqtt5SimpleAuthBuilder<P> extends FluentBuilder<Mqtt5SimpleAuth, P>
     private MqttUTF8StringImpl username;
     private ByteBuffer password;
 
-    public Mqtt5SimpleAuthBuilder(@Nullable final Function<Mqtt5SimpleAuth, P> parentConsumer) {
+    public Mqtt5SimpleAuthBuilder(@Nullable final Function<? super Mqtt5SimpleAuth, P> parentConsumer) {
         super(parentConsumer);
     }
 

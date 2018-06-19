@@ -22,6 +22,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
+import org.mqttbee.api.mqtt.datatypes.MqttTopicFilterBuilder;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
@@ -40,7 +41,7 @@ public class Mqtt5SubscriptionBuilder<P> extends FluentBuilder<Mqtt5Subscription
     private Mqtt5RetainHandling retainHandling = Mqtt5Subscription.DEFAULT_RETAIN_HANDLING;
     private boolean retainAsPublished = Mqtt5Subscription.DEFAULT_RETAIN_AS_PUBLISHED;
 
-    public Mqtt5SubscriptionBuilder(@Nullable final Function<Mqtt5Subscription, P> parentConsumer) {
+    public Mqtt5SubscriptionBuilder(@Nullable final Function<? super Mqtt5Subscription, P> parentConsumer) {
         super(parentConsumer);
     }
 
@@ -54,6 +55,11 @@ public class Mqtt5SubscriptionBuilder<P> extends FluentBuilder<Mqtt5Subscription
     public Mqtt5SubscriptionBuilder<P> topicFilter(@NotNull final MqttTopicFilter topicFilter) {
         this.topicFilter = MqttBuilderUtil.topicFilter(topicFilter);
         return this;
+    }
+
+    @NotNull
+    public MqttTopicFilterBuilder<? extends Mqtt5SubscriptionBuilder<P>> topicFilter() {
+        return new MqttTopicFilterBuilder<>("", this::topicFilter);
     }
 
     @NotNull

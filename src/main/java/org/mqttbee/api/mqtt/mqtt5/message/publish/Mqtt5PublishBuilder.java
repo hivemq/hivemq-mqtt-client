@@ -22,6 +22,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
+import org.mqttbee.api.mqtt.datatypes.MqttTopicBuilder;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
@@ -58,7 +59,7 @@ public class Mqtt5PublishBuilder<P> extends FluentBuilder<Mqtt5Publish, P> {
     private TopicAliasUsage topicAliasUsage = DEFAULT_TOPIC_ALIAS_USAGE;
     MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
 
-    public Mqtt5PublishBuilder(@Nullable final Function<Mqtt5Publish, P> parentConsumer) {
+    public Mqtt5PublishBuilder(@Nullable final Function<? super Mqtt5Publish, P> parentConsumer) {
         super(parentConsumer);
     }
 
@@ -88,6 +89,11 @@ public class Mqtt5PublishBuilder<P> extends FluentBuilder<Mqtt5Publish, P> {
     public Mqtt5PublishBuilder<P> topic(@NotNull final MqttTopic topic) {
         this.topic = MqttBuilderUtil.topic(topic);
         return this;
+    }
+
+    @NotNull
+    public MqttTopicBuilder<? extends Mqtt5PublishBuilder<P>> topic() {
+        return new MqttTopicBuilder<>("", this::topic);
     }
 
     @NotNull
@@ -151,6 +157,11 @@ public class Mqtt5PublishBuilder<P> extends FluentBuilder<Mqtt5Publish, P> {
     public Mqtt5PublishBuilder<P> responseTopic(@Nullable final MqttTopic responseTopic) {
         this.responseTopic = MqttBuilderUtil.topicOrNull(responseTopic);
         return this;
+    }
+
+    @NotNull
+    public MqttTopicBuilder<? extends Mqtt5PublishBuilder<P>> responseTopic() {
+        return new MqttTopicBuilder<>("", this::responseTopic);
     }
 
     @NotNull

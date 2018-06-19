@@ -46,7 +46,7 @@ public class Mqtt5DisconnectBuilder<P> extends FluentBuilder<Mqtt5Disconnect, P>
     private MqttUTF8StringImpl reasonString;
     private MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
 
-    public Mqtt5DisconnectBuilder(@Nullable final Function<Mqtt5Disconnect, P> parentConsumer) {
+    public Mqtt5DisconnectBuilder(@Nullable final Function<? super Mqtt5Disconnect, P> parentConsumer) {
         super(parentConsumer);
     }
 

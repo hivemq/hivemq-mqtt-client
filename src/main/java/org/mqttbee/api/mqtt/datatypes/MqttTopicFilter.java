@@ -55,18 +55,18 @@ public interface MqttTopicFilter extends MqttUTF8String {
     }
 
     @NotNull
-    static MqttTopicFilterBuilder builder(@NotNull final String topTopic) {
-        return new MqttTopicFilterBuilder(topTopic);
+    static MqttTopicFilterBuilder<Void> builder(@NotNull final String topTopic) {
+        return new MqttTopicFilterBuilder<>(topTopic, null);
     }
 
     @NotNull
-    static MqttTopicFilterBuilder extend(@NotNull final MqttTopicFilter topicFilter) {
-        return new MqttTopicFilterBuilder(topicFilter.toString());
+    static MqttTopicFilterBuilder<Void> extend(@NotNull final MqttTopicFilter topicFilter) {
+        return new MqttTopicFilterBuilder<>(topicFilter.toString(), null);
     }
 
     @NotNull
-    static MqttTopicFilterBuilder filter(@NotNull final MqttTopic topic) {
-        return new MqttTopicFilterBuilder(topic.toString());
+    static MqttTopicFilterBuilder<Void> filter(@NotNull final MqttTopic topic) {
+        return new MqttTopicFilterBuilder<>(topic.toString(), null);
     }
 
     /**

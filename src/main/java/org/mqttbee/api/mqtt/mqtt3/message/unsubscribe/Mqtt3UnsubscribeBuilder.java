@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
+import org.mqttbee.api.mqtt.datatypes.MqttTopicFilterBuilder;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscription;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
@@ -39,7 +40,7 @@ public class Mqtt3UnsubscribeBuilder<P> extends FluentBuilder<Mqtt3Unsubscribe, 
 
     private final ImmutableList.Builder<MqttTopicFilterImpl> topicFiltersBuilder;
 
-    public Mqtt3UnsubscribeBuilder(@Nullable final Function<Mqtt3Unsubscribe, P> parentConsumer) {
+    public Mqtt3UnsubscribeBuilder(@Nullable final Function<? super Mqtt3Unsubscribe, P> parentConsumer) {
         super(parentConsumer);
         topicFiltersBuilder = ImmutableList.builder();
     }
@@ -63,6 +64,11 @@ public class Mqtt3UnsubscribeBuilder<P> extends FluentBuilder<Mqtt3Unsubscribe, 
     public Mqtt3UnsubscribeBuilder<P> addTopicFilter(@NotNull final MqttTopicFilter topicFilter) {
         topicFiltersBuilder.add(MqttBuilderUtil.topicFilter(topicFilter));
         return this;
+    }
+
+    @NotNull
+    public MqttTopicFilterBuilder<? extends Mqtt3UnsubscribeBuilder<P>> addTopicFilter() {
+        return new MqttTopicFilterBuilder<>("", this::addTopicFilter);
     }
 
     @NotNull

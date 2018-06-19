@@ -35,9 +35,9 @@ public abstract class FluentBuilder<B, P> {
         return parentConsumer.apply(built);
     }
 
-    private final Function<B, P> parentConsumer;
+    protected final Function<? super B, P> parentConsumer;
 
-    protected FluentBuilder(@Nullable final Function<B, P> parentConsumer) {
+    protected FluentBuilder(@Nullable final Function<? super B, P> parentConsumer) {
         this.parentConsumer = parentConsumer;
     }
 

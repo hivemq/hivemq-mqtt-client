@@ -18,35 +18,53 @@
 package org.mqttbee.api.mqtt.datatypes;
 
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.annotations.Nullable;
+
+import java.util.function.Function;
 
 /**
  * @author Silvio Giebl
  */
-public class MqttSharedTopicFilterBuilder extends MqttTopicFilterBuilder {
+public class MqttSharedTopicFilterBuilder<P> extends MqttTopicFilterBuilder<P> {
+
+    private final Function<? super MqttSharedTopicFilter, P> parentConsumer;
 
     private final String shareName;
 
-    MqttSharedTopicFilterBuilder(@NotNull final String shareName, @NotNull final String base) {
-        super(base);
+    public MqttSharedTopicFilterBuilder(
+            @NotNull final String shareName, @NotNull final String base,
+            @Nullable final Function<? super MqttSharedTopicFilter, P> parentConsumer) {
+
+        super(base, null);
+        this.parentConsumer = parentConsumer;
         this.shareName = shareName;
     }
 
     @NotNull
     @Override
-    public MqttSharedTopicFilterBuilder subTopic(@NotNull final String subTopic) {
-        return (MqttSharedTopicFilterBuilder) super.subTopic(subTopic);
+    public MqttSharedTopicFilterBuilder<P> addLevel(@NotNull final String subTopic) {
+        super.addLevel(subTopic);
+        return this;
     }
 
     @NotNull
     @Override
-    public MqttSharedTopicFilterBuilder singleLevelWildcard() {
-        return (MqttSharedTopicFilterBuilder) super.singleLevelWildcard();
+    public MqttSharedTopicFilterBuilder<P> singleLevelWildcard() {
+        super.singleLevelWildcard();
+        return this;
     }
 
     @NotNull
     @Override
-    public MqttSharedTopicFilter multiLevelWildcard() {
-        return (MqttSharedTopicFilter) super.multiLevelWildcard();
+    public MqttSharedTopicFilter multiLevelWildcardAndBuild() {
+        super.multiLevelWildcardAndBuild();
+        return build();
+    }
+
+    @NotNull
+    @Override
+    public P done() {
+        return done(build(), parentConsumer);
     }
 
     @NotNull

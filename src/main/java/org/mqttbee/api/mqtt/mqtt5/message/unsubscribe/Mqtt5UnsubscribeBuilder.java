@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
+import org.mqttbee.api.mqtt.datatypes.MqttTopicFilterBuilder;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
@@ -43,7 +44,7 @@ public class Mqtt5UnsubscribeBuilder<P> extends FluentBuilder<Mqtt5Unsubscribe, 
     private final ImmutableList.Builder<MqttTopicFilterImpl> topicFiltersBuilder;
     private MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
 
-    public Mqtt5UnsubscribeBuilder(@Nullable final Function<Mqtt5Unsubscribe, P> parentConsumer) {
+    public Mqtt5UnsubscribeBuilder(@Nullable final Function<? super Mqtt5Unsubscribe, P> parentConsumer) {
         super(parentConsumer);
         topicFiltersBuilder = ImmutableList.builder();
     }
@@ -67,6 +68,11 @@ public class Mqtt5UnsubscribeBuilder<P> extends FluentBuilder<Mqtt5Unsubscribe, 
     public Mqtt5UnsubscribeBuilder<P> addTopicFilter(@NotNull final MqttTopicFilter topicFilter) {
         topicFiltersBuilder.add(MqttBuilderUtil.topicFilter(topicFilter));
         return this;
+    }
+
+    @NotNull
+    public MqttTopicFilterBuilder<? extends Mqtt5UnsubscribeBuilder<P>> addTopicFilter() {
+        return new MqttTopicFilterBuilder<>("", this::addTopicFilter);
     }
 
     @NotNull

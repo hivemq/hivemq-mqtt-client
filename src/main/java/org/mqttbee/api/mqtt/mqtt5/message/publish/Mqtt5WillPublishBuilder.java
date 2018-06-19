@@ -22,6 +22,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
+import org.mqttbee.api.mqtt.datatypes.MqttTopicBuilder;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
@@ -40,11 +41,11 @@ import static org.mqttbee.mqtt.message.publish.MqttWillPublish.DEFAULT_DELAY_INT
  */
 public class Mqtt5WillPublishBuilder<P> extends Mqtt5PublishBuilder<P> {
 
-    private final Function<Mqtt5WillPublish, P> parentConsumer;
+    private final Function<? super Mqtt5WillPublish, P> parentConsumer;
 
     private long delayInterval = DEFAULT_DELAY_INTERVAL;
 
-    public Mqtt5WillPublishBuilder(@Nullable final Function<Mqtt5WillPublish, P> parentConsumer) {
+    public Mqtt5WillPublishBuilder(@Nullable final Function<? super Mqtt5WillPublish, P> parentConsumer) {
         super((Function<Mqtt5Publish, P>) null);
         this.parentConsumer = parentConsumer;
     }
@@ -70,6 +71,12 @@ public class Mqtt5WillPublishBuilder<P> extends Mqtt5PublishBuilder<P> {
     public Mqtt5WillPublishBuilder<P> topic(@NotNull final MqttTopic topic) {
         super.topic(topic);
         return this;
+    }
+
+    @NotNull
+    @Override
+    public MqttTopicBuilder<? extends Mqtt5WillPublishBuilder<P>> topic() {
+        return new MqttTopicBuilder<>("", this::topic);
     }
 
     @NotNull
@@ -135,6 +142,12 @@ public class Mqtt5WillPublishBuilder<P> extends Mqtt5PublishBuilder<P> {
     public Mqtt5WillPublishBuilder<P> responseTopic(@Nullable final MqttTopic responseTopic) {
         super.responseTopic(responseTopic);
         return this;
+    }
+
+    @NotNull
+    @Override
+    public MqttTopicBuilder<? extends Mqtt5WillPublishBuilder<P>> responseTopic() {
+        return new MqttTopicBuilder<>("", this::responseTopic);
     }
 
     @NotNull
