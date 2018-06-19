@@ -17,6 +17,7 @@
 
 package org.mqttbee.api.mqtt;
 
+import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3ClientBuilder;
@@ -57,7 +58,7 @@ public class MqttClientBuilder {
 
     @NotNull
     public MqttClientBuilder serverHost(@NotNull final String host) {
-        this.serverHost = host;
+        this.serverHost = Preconditions.checkNotNull(host);
         return this;
     }
 
@@ -74,7 +75,7 @@ public class MqttClientBuilder {
 
     @NotNull
     public MqttClientBuilder useSsl(@NotNull final MqttClientSslConfig sslConfig) {
-        this.sslConfig = sslConfig;
+        this.sslConfig = Preconditions.checkNotNull(sslConfig);
         return this;
     }
 
@@ -85,7 +86,7 @@ public class MqttClientBuilder {
 
     @NotNull
     public MqttClientBuilder useWebSocket(@NotNull final MqttWebsocketConfig websocketConfig) {
-        this.websocketConfig = websocketConfig;
+        this.websocketConfig = Preconditions.checkNotNull(websocketConfig);
         return this;
     }
 
