@@ -36,7 +36,7 @@ public class Mqtt3SubscribeBuilder<P> extends FluentBuilder<Mqtt3Subscribe, P> {
 
     private final ImmutableList.Builder<MqttSubscription> subscriptionBuilder;
 
-    public Mqtt3SubscribeBuilder(@Nullable final Function<Mqtt3Subscribe, P> parentConsumer) {
+    public Mqtt3SubscribeBuilder(@Nullable final Function<? super Mqtt3Subscribe, P> parentConsumer) {
         super(parentConsumer);
         subscriptionBuilder = ImmutableList.builder();
     }

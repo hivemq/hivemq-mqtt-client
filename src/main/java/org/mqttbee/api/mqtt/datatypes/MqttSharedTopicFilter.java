@@ -54,25 +54,26 @@ public interface MqttSharedTopicFilter extends MqttTopicFilter {
     }
 
     @NotNull
-    static MqttSharedTopicFilterBuilder builder(@NotNull final String shareName, @NotNull final String topTopic) {
-        return new MqttSharedTopicFilterBuilder(shareName, topTopic);
+    static MqttSharedTopicFilterBuilder<Void> builder(@NotNull final String shareName, @NotNull final String topTopic) {
+        return new MqttSharedTopicFilterBuilder<>(shareName, topTopic, null);
     }
 
     @NotNull
-    static MqttSharedTopicFilterBuilder extend(@NotNull final MqttSharedTopicFilter sharedTopicFilter) {
-        return new MqttSharedTopicFilterBuilder(sharedTopicFilter.getShareName(), sharedTopicFilter.getTopicFilter());
+    static MqttSharedTopicFilterBuilder<Void> extend(@NotNull final MqttSharedTopicFilter sharedTopicFilter) {
+        return new MqttSharedTopicFilterBuilder<>(
+                sharedTopicFilter.getShareName(), sharedTopicFilter.getTopicFilter(), null);
     }
 
     @NotNull
-    static MqttSharedTopicFilterBuilder share(
+    static MqttSharedTopicFilterBuilder<Void> share(
             @NotNull final String shareName, @NotNull final MqttTopicFilter topicFilter) {
 
-        return new MqttSharedTopicFilterBuilder(shareName, topicFilter.toString());
+        return new MqttSharedTopicFilterBuilder<>(shareName, topicFilter.toString(), null);
     }
 
     @NotNull
-    static MqttSharedTopicFilterBuilder share(@NotNull final String shareName, @NotNull final MqttTopic topic) {
-        return new MqttSharedTopicFilterBuilder(shareName, topic.toString());
+    static MqttSharedTopicFilterBuilder<Void> share(@NotNull final String shareName, @NotNull final MqttTopic topic) {
+        return new MqttSharedTopicFilterBuilder<>(shareName, topic.toString(), null);
     }
 
     /**

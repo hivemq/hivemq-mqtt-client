@@ -54,7 +54,7 @@ public class Mqtt5ConnectBuilder<P> extends FluentBuilder<Mqtt5Connect, P> {
     private MqttWillPublish willPublish;
     private MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
 
-    public Mqtt5ConnectBuilder(@Nullable final Function<Mqtt5Connect, P> parentConsumer) {
+    public Mqtt5ConnectBuilder(@Nullable final Function<? super Mqtt5Connect, P> parentConsumer) {
         super(parentConsumer);
     }
 

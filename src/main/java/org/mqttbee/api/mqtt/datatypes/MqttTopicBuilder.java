@@ -19,33 +19,38 @@ package org.mqttbee.api.mqtt.datatypes;
 
 import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.annotations.Nullable;
+import org.mqttbee.util.FluentBuilder;
+
+import java.util.function.Function;
 
 /**
  * @author Silvio Giebl
  */
-public class MqttTopicBuilder {
+public class MqttTopicBuilder<P> extends FluentBuilder<MqttTopic, P> {
 
     private final StringBuilder stringBuilder;
 
-    MqttTopicBuilder(@NotNull final String base) {
-        stringBuilder = new StringBuilder(base);
+    public MqttTopicBuilder(@NotNull final String base, @Nullable final Function<? super MqttTopic, P> parentConsumer) {
+        super(parentConsumer);
+        this.stringBuilder = new StringBuilder(base);
     }
 
     @NotNull
-    public MqttTopicBuilder subTopic(@NotNull final String subTopic) {
+    public MqttTopicBuilder<P> addLevel(@NotNull final String subTopic) {
         Preconditions.checkNotNull(subTopic);
         stringBuilder.append(MqttTopic.TOPIC_LEVEL_SEPARATOR).append(subTopic);
         return this;
     }
 
     @NotNull
-    public MqttTopicFilterBuilder filter() {
-        return new MqttTopicFilterBuilder(stringBuilder.toString());
+    public MqttTopicFilterBuilder<Void> filter() {
+        return new MqttTopicFilterBuilder<>(stringBuilder.toString(), null);
     }
 
     @NotNull
-    public MqttSharedTopicFilterBuilder share(@NotNull final String shareName) {
-        return new MqttSharedTopicFilterBuilder(shareName, stringBuilder.toString());
+    public MqttSharedTopicFilterBuilder<Void> share(@NotNull final String shareName) {
+        return new MqttSharedTopicFilterBuilder<>(shareName, stringBuilder.toString(), null);
     }
 
     @NotNull

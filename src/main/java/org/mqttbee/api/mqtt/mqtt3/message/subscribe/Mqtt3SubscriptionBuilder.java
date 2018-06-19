@@ -22,6 +22,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
+import org.mqttbee.api.mqtt.datatypes.MqttTopicFilterBuilder;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscriptionView;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
@@ -37,7 +38,7 @@ public class Mqtt3SubscriptionBuilder<P> extends FluentBuilder<Mqtt3Subscription
     private MqttTopicFilterImpl topicFilter;
     private MqttQoS qos;
 
-    public Mqtt3SubscriptionBuilder(@Nullable final Function<Mqtt3Subscription, P> parentConsumer) {
+    public Mqtt3SubscriptionBuilder(@Nullable final Function<? super Mqtt3Subscription, P> parentConsumer) {
         super(parentConsumer);
     }
 
@@ -51,6 +52,11 @@ public class Mqtt3SubscriptionBuilder<P> extends FluentBuilder<Mqtt3Subscription
     public Mqtt3SubscriptionBuilder<P> topicFilter(@NotNull final MqttTopicFilter topicFilter) {
         this.topicFilter = MqttBuilderUtil.topicFilter(topicFilter);
         return this;
+    }
+
+    @NotNull
+    public MqttTopicFilterBuilder<? extends Mqtt3SubscriptionBuilder<P>> topicFilter() {
+        return new MqttTopicFilterBuilder<>("", this::topicFilter);
     }
 
     @NotNull

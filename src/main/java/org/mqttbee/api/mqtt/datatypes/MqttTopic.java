@@ -51,13 +51,13 @@ public interface MqttTopic extends MqttUTF8String {
     }
 
     @NotNull
-    static MqttTopicBuilder builder(@NotNull final String topTopic) {
-        return new MqttTopicBuilder(topTopic);
+    static MqttTopicBuilder<Void> builder(@NotNull final String topTopic) {
+        return new MqttTopicBuilder<>(topTopic, null);
     }
 
     @NotNull
-    static MqttTopicBuilder extend(@NotNull final MqttTopic topic) {
-        return new MqttTopicBuilder(topic.toString());
+    static MqttTopicBuilder<Void> extend(@NotNull final MqttTopic topic) {
+        return new MqttTopicBuilder<>(topic.toString(), null);
     }
 
     /**

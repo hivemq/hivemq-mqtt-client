@@ -35,7 +35,9 @@ public class Mqtt5ConnectRestrictionsBuilder<P> extends FluentBuilder<Mqtt5Conne
     private int topicAliasMaximum = Mqtt5ConnectRestrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM;
     private int maximumPacketSize = Mqtt5ConnectRestrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT;
 
-    public Mqtt5ConnectRestrictionsBuilder(@Nullable final Function<Mqtt5ConnectRestrictions, P> parentConsumer) {
+    public Mqtt5ConnectRestrictionsBuilder(
+            @Nullable final Function<? super Mqtt5ConnectRestrictions, P> parentConsumer) {
+
         super(parentConsumer);
     }
 
