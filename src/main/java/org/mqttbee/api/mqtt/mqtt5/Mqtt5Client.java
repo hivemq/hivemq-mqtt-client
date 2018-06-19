@@ -20,34 +20,51 @@ package org.mqttbee.api.mqtt.mqtt5;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
-import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttClient;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;
+import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5ConnectBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
+import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
+import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
+import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5UnsubscribeBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
 import org.mqttbee.rx.FlowableWithSingle;
 
 /**
  * @author Silvio Giebl
  */
-@DoNotImplement
 public interface Mqtt5Client extends MqttClient {
 
     @NotNull
     Single<Mqtt5ConnAck> connect(@NotNull Mqtt5Connect connect);
 
     @NotNull
+    default Mqtt5ConnectBuilder<Single<Mqtt5ConnAck>> connect() {
+        return new Mqtt5ConnectBuilder<>(this::connect);
+    }
+
+    @NotNull
     Single<Mqtt5SubAck> subscribe(@NotNull Mqtt5Subscribe subscribe);
 
     @NotNull
+    default Mqtt5SubscribeBuilder<Single<Mqtt5SubAck>> subscribe() {
+        return new Mqtt5SubscribeBuilder<>(this::subscribe);
+    }
+
+    @NotNull
     FlowableWithSingle<Mqtt5SubAck, Mqtt5Publish> subscribeWithStream(@NotNull Mqtt5Subscribe subscribe);
+
+    @NotNull
+    default Mqtt5SubscribeBuilder<FlowableWithSingle<Mqtt5SubAck, Mqtt5Publish>> subscribeWithStream() {
+        return new Mqtt5SubscribeBuilder<>(this::subscribeWithStream);
+    }
 
     @NotNull
     Flowable<Mqtt5Publish> remainingPublishes();
@@ -59,6 +76,11 @@ public interface Mqtt5Client extends MqttClient {
     Single<Mqtt5UnsubAck> unsubscribe(@NotNull Mqtt5Unsubscribe unsubscribe);
 
     @NotNull
+    default Mqtt5UnsubscribeBuilder<Single<Mqtt5UnsubAck>> unsubscribe() {
+        return new Mqtt5UnsubscribeBuilder<>(this::unsubscribe);
+    }
+
+    @NotNull
     Flowable<Mqtt5PublishResult> publish(@NotNull Flowable<Mqtt5Publish> publishFlowable);
 
     @NotNull
@@ -66,6 +88,11 @@ public interface Mqtt5Client extends MqttClient {
 
     @NotNull
     Completable disconnect(@NotNull Mqtt5Disconnect disconnect);
+
+    @NotNull
+    default Mqtt5DisconnectBuilder<Completable> disconnect() {
+        return new Mqtt5DisconnectBuilder<>(this::disconnect);
+    }
 
     @NotNull
     @Override
