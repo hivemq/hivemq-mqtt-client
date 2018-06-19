@@ -64,7 +64,7 @@ dependencies {
 }
 
 license {
-    header file('license-header.txt')
+    header file('license-header/license-header.txt')
 }
 
 test {
