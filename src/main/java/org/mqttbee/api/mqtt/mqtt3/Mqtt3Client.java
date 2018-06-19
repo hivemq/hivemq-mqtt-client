@@ -20,32 +20,48 @@ package org.mqttbee.api.mqtt.mqtt3;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
-import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttClient;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3Connect;
+import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3ConnectBuilder;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3PublishResult;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
+import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3SubscribeBuilder;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAck;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
+import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubscribeBuilder;
 import org.mqttbee.rx.FlowableWithSingle;
 
 /**
  * @author Silvio Giebl
  */
-@DoNotImplement
 public interface Mqtt3Client extends MqttClient {
 
     @NotNull
     Single<Mqtt3ConnAck> connect(@NotNull Mqtt3Connect connect);
 
     @NotNull
+    default Mqtt3ConnectBuilder<Single<Mqtt3ConnAck>> connect() {
+        return new Mqtt3ConnectBuilder<>(this::connect);
+    }
+
+    @NotNull
     Single<Mqtt3SubAck> subscribe(@NotNull Mqtt3Subscribe subscribe);
 
     @NotNull
+    default Mqtt3SubscribeBuilder<Single<Mqtt3SubAck>> subscribe() {
+        return new Mqtt3SubscribeBuilder<>(this::subscribe);
+    }
+
+    @NotNull
     FlowableWithSingle<Mqtt3SubAck, Mqtt3Publish> subscribeWithStream(@NotNull Mqtt3Subscribe subscribe);
+
+    @NotNull
+    default Mqtt3SubscribeBuilder<FlowableWithSingle<Mqtt3SubAck, Mqtt3Publish>> subscribeWithStream() {
+        return new Mqtt3SubscribeBuilder<>(this::subscribeWithStream);
+    }
 
     @NotNull
     Flowable<Mqtt3Publish> remainingPublishes();
@@ -55,6 +71,11 @@ public interface Mqtt3Client extends MqttClient {
 
     @NotNull
     Completable unsubscribe(@NotNull Mqtt3Unsubscribe unsubscribe);
+
+    @NotNull
+    default Mqtt3UnsubscribeBuilder<Completable> unsubscribe() {
+        return new Mqtt3UnsubscribeBuilder<>(this::unsubscribe);
+    }
 
     @NotNull
     Flowable<Mqtt3PublishResult> publish(@NotNull Flowable<Mqtt3Publish> publishFlowable);
