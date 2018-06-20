@@ -17,7 +17,6 @@
 package org.mqttbee.api.mqtt;
 
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt.MqttWebsocketConfigImpl;
 
 /**
  * @author Christian Hoff
@@ -25,13 +24,8 @@ import org.mqttbee.mqtt.MqttWebsocketConfigImpl;
 public interface MqttWebsocketConfig {
 
     @NotNull
-    static MqttWebsocketConfigBuilder builder() {
-        return new MqttWebsocketConfigBuilder();
-    }
-
-    @NotNull
-    static MqttWebsocketConfig create(@NotNull final String serverPath) {
-        return new MqttWebsocketConfigImpl(serverPath);
+    static MqttWebsocketConfigBuilder<Void> builder() {
+        return new MqttWebsocketConfigBuilder<>(null);
     }
 
     @NotNull

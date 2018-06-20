@@ -20,40 +20,51 @@ package org.mqttbee.api.mqtt;
 import com.google.common.base.Preconditions;
 import io.reactivex.Scheduler;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt.MqttClientExecutorConfigImpl;
+import org.mqttbee.util.FluentBuilder;
 
 import java.util.concurrent.Executor;
+import java.util.function.Function;
 
 /**
  * @author Silvio Giebl
  */
-public class MqttClientExecutorConfigBuilder {
+public class MqttClientExecutorConfigBuilder<P> extends FluentBuilder<MqttClientExecutorConfig, P> {
 
     private Executor nettyExecutor;
     private int nettyThreads = MqttClientExecutorConfigImpl.DEFAULT_NETTY_THREADS;
     private Scheduler rxJavaScheduler = MqttClientExecutorConfigImpl.DEFAULT_RX_JAVA_SCHEDULER;
 
+    public MqttClientExecutorConfigBuilder(
+            @Nullable final Function<? super MqttClientExecutorConfig, P> parentConsumer) {
+
+        super(parentConsumer);
+    }
+
     @NotNull
-    public MqttClientExecutorConfigBuilder nettyExecutor(@NotNull final Executor nettyExecutor) {
+    public MqttClientExecutorConfigBuilder<P> nettyExecutor(@NotNull final Executor nettyExecutor) {
         Preconditions.checkNotNull(nettyExecutor);
         this.nettyExecutor = nettyExecutor;
         return this;
     }
 
     @NotNull
-    public MqttClientExecutorConfigBuilder nettyThreads(final int nettyThreads) {
+    public MqttClientExecutorConfigBuilder<P> nettyThreads(final int nettyThreads) {
         Preconditions.checkArgument(nettyThreads > 0);
         this.nettyThreads = nettyThreads;
         return this;
     }
 
     @NotNull
-    public MqttClientExecutorConfigBuilder rxJavaScheduler(@NotNull final Scheduler rxJavaScheduler) {
+    public MqttClientExecutorConfigBuilder<P> rxJavaScheduler(@NotNull final Scheduler rxJavaScheduler) {
         Preconditions.checkNotNull(rxJavaScheduler);
         this.rxJavaScheduler = rxJavaScheduler;
         return this;
     }
 
+    @NotNull
+    @Override
     public MqttClientExecutorConfig build() {
         return new MqttClientExecutorConfigImpl(nettyExecutor, nettyThreads, rxJavaScheduler);
     }

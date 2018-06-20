@@ -69,7 +69,7 @@ public class MqttClientBuilder {
     }
 
     @NotNull
-    public MqttClientBuilder useSsl() {
+    public MqttClientBuilder useSslDefaults() {
         return useSsl(MqttClientSslConfigImpl.DEFAULT);
     }
 
@@ -80,7 +80,12 @@ public class MqttClientBuilder {
     }
 
     @NotNull
-    public MqttClientBuilder useWebSocket() {
+    public MqttClientSslConfigBuilder<? extends MqttClientBuilder> useSsl() {
+        return new MqttClientSslConfigBuilder<>(this::useSsl);
+    }
+
+    @NotNull
+    public MqttClientBuilder useWebSocketDefaults() {
         return useWebSocket(MqttWebsocketConfigImpl.DEFAULT);
     }
 
@@ -91,10 +96,20 @@ public class MqttClientBuilder {
     }
 
     @NotNull
+    public MqttWebsocketConfigBuilder<? extends MqttClientBuilder> useWebSocket() {
+        return new MqttWebsocketConfigBuilder<>(this::useWebSocket);
+    }
+
+    @NotNull
     public MqttClientBuilder executorConfig(@NotNull final MqttClientExecutorConfig executorConfig) {
         this.executorConfig =
                 MustNotBeImplementedUtil.checkNotImplemented(executorConfig, MqttClientExecutorConfigImpl.class);
         return this;
+    }
+
+    @NotNull
+    public MqttClientExecutorConfigBuilder<? extends MqttClientBuilder> executorConfig() {
+        return new MqttClientExecutorConfigBuilder<>(this::executorConfig);
     }
 
     @NotNull

@@ -31,8 +31,8 @@ import java.util.concurrent.Executor;
 public interface MqttClientExecutorConfig {
 
     @NotNull
-    static MqttClientExecutorConfigBuilder builder() {
-        return new MqttClientExecutorConfigBuilder();
+    static MqttClientExecutorConfigBuilder<Void> builder() {
+        return new MqttClientExecutorConfigBuilder<>(null);
     }
 
     @NotNull
