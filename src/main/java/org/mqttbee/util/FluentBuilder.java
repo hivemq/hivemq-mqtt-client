@@ -25,8 +25,8 @@ import java.util.function.Function;
 /**
  * Base class for builders that implement a fluent builder API.
  * <p>
- * A fluent builder knows its parent builder method that consumes the object the builder creates.
- * Calling {@link #done()} creates the builder's object and hands it over to its parent builder method.
+ * A fluent builder knows its parent builder method that consumes the object the builder creates. Calling {@link
+ * #done()} creates the builder's object and hands it over to its parent builder method.
  *
  * @param <B> the type of the object the builder creates when {@link #build()} is called
  * @param <P> the type of the parent builder
@@ -50,6 +50,7 @@ public abstract class FluentBuilder<B, P> {
 
     /**
      * Creates the builder's object and hands it over to its parent builder method.
+     * <p>
      * This method must not be called on the root of a fluent builder. Consider calling {@link #build()} instead.
      *
      * @return the parent builder.

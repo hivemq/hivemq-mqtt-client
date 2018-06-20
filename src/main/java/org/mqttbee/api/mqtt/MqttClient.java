@@ -21,6 +21,8 @@ import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 
 /**
+ * Common interface for MQTT clients.
+ *
  * @author Silvio Giebl
  */
 @DoNotImplement
@@ -31,6 +33,9 @@ public interface MqttClient {
         return new MqttClientBuilder();
     }
 
+    /**
+     * @return the client specific data.
+     */
     @NotNull
     MqttClientData getClientData();
 
