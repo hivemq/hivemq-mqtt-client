@@ -31,8 +31,8 @@ public interface MqttClientSslConfig {
     long DEFAULT_HANDSHAKE_TIMEOUT_MS = 10_000;
 
     @NotNull
-    static MqttClientSslConfigBuilder builder() {
-        return new MqttClientSslConfigBuilder();
+    static MqttClientSslConfigBuilder<Void> builder() {
+        return new MqttClientSslConfigBuilder<>(null);
     }
 
     @Nullable

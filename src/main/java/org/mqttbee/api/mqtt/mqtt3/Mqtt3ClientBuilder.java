@@ -20,10 +20,7 @@ package org.mqttbee.api.mqtt.mqtt3;
 import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt.MqttClientBuilder;
-import org.mqttbee.api.mqtt.MqttClientExecutorConfig;
-import org.mqttbee.api.mqtt.MqttClientSslConfig;
-import org.mqttbee.api.mqtt.MqttWebsocketConfig;
+import org.mqttbee.api.mqtt.*;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientBuilder;
 import org.mqttbee.mqtt.MqttClientData;
@@ -85,8 +82,8 @@ public class Mqtt3ClientBuilder extends MqttClientBuilder {
 
     @NotNull
     @Override
-    public Mqtt3ClientBuilder useSsl() {
-        super.useSsl();
+    public Mqtt3ClientBuilder useSslDefaults() {
+        super.useSslDefaults();
         return this;
     }
 
@@ -99,8 +96,14 @@ public class Mqtt3ClientBuilder extends MqttClientBuilder {
 
     @NotNull
     @Override
-    public Mqtt3ClientBuilder useWebSocket() {
-        super.useWebSocket();
+    public MqttClientSslConfigBuilder<? extends Mqtt3ClientBuilder> useSsl() {
+        return new MqttClientSslConfigBuilder<>(this::useSsl);
+    }
+
+    @NotNull
+    @Override
+    public Mqtt3ClientBuilder useWebSocketDefaults() {
+        super.useWebSocketDefaults();
         return this;
     }
 
@@ -113,9 +116,21 @@ public class Mqtt3ClientBuilder extends MqttClientBuilder {
 
     @NotNull
     @Override
+    public MqttWebsocketConfigBuilder<? extends Mqtt3ClientBuilder> useWebSocket() {
+        return new MqttWebsocketConfigBuilder<>(this::useWebSocket);
+    }
+
+    @NotNull
+    @Override
     public Mqtt3ClientBuilder executorConfig(@NotNull final MqttClientExecutorConfig executorConfig) {
         super.executorConfig(executorConfig);
         return this;
+    }
+
+    @NotNull
+    @Override
+    public MqttClientExecutorConfigBuilder<? extends Mqtt3ClientBuilder> executorConfig() {
+        return new MqttClientExecutorConfigBuilder<>(this::executorConfig);
     }
 
     @NotNull
