@@ -27,16 +27,21 @@ import java.util.function.Function;
  */
 public class MqttSharedTopicFilterBuilder<P> extends MqttTopicFilterBuilder<P> {
 
-    private final Function<? super MqttSharedTopicFilter, P> parentConsumer;
+    public static <P> MqttSharedTopicFilterBuilder<P> create(
+            @NotNull final String shareName, @NotNull final String base,
+            @Nullable final Function<? super MqttSharedTopicFilter, P> parentConsumer) {
+
+        return new MqttSharedTopicFilterBuilder<>(shareName, base, (parentConsumer == null) ? null :
+                topicFilter -> parentConsumer.apply((MqttSharedTopicFilter) topicFilter));
+    }
 
     private final String shareName;
 
     public MqttSharedTopicFilterBuilder(
             @NotNull final String shareName, @NotNull final String base,
-            @Nullable final Function<? super MqttSharedTopicFilter, P> parentConsumer) {
+            @Nullable final Function<? super MqttTopicFilter, P> parentConsumer) {
 
-        super(base, null);
-        this.parentConsumer = parentConsumer;
+        super(base, parentConsumer);
         this.shareName = shareName;
     }
 
@@ -59,12 +64,6 @@ public class MqttSharedTopicFilterBuilder<P> extends MqttTopicFilterBuilder<P> {
     public MqttSharedTopicFilter multiLevelWildcardAndBuild() {
         super.multiLevelWildcardAndBuild();
         return build();
-    }
-
-    @NotNull
-    @Override
-    public P done() {
-        return done(build(), parentConsumer);
     }
 
     @NotNull

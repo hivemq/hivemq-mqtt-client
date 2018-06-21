@@ -32,7 +32,7 @@ public interface Mqtt5WillPublish extends Mqtt5Publish {
 
     @NotNull
     static Mqtt5WillPublishBuilder<Void> builder() {
-        return new Mqtt5WillPublishBuilder<>((Function<Mqtt5WillPublish, Void>) null);
+        return new Mqtt5WillPublishBuilder<>((Function<Mqtt5Publish, Void>) null);
     }
 
     @NotNull
