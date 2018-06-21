@@ -151,9 +151,9 @@ public class Mqtt3ClientBuilder extends MqttClientBuilder {
         return new Mqtt3ClientView(new Mqtt5ClientImpl(buildClientData()));
     }
 
+    @NotNull
     private MqttClientData buildClientData() {
-        return new MqttClientData(MqttVersion.MQTT_3_1_1, identifier, serverHost, serverPort, sslConfig,
-                websocketConfig, false, false, executorConfig, null);
+        return new MqttClientData(MqttVersion.MQTT_3_1_1, identifier, serverHost, serverPort, sslConfig, websocketConfig, false, false, executorConfig, null);
     }
 
 }
