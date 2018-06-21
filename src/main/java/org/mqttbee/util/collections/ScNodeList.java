@@ -128,19 +128,16 @@ public class ScNodeList<E> implements ScListNode, Iterable<E> {
 
         @Override
         public boolean hasNext() {
-            current = next;
-            if (current == null) {
-                return false;
-            }
-            next = current.next;
-            return true;
+            return (next != null);
         }
 
         @Override
         public E next() {
+            current = next;
             if (current == null) {
                 throw new NoSuchElementException();
             }
+            next = current.next;
             return current.element;
         }
 
