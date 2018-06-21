@@ -73,7 +73,7 @@ public class MqttClientBuilder {
     }
 
     @NotNull
-    public MqttClientBuilder useSslDefaults() {
+    public MqttClientBuilder useSslWithDefaultConfig() {
         return useSsl(MqttClientSslConfigImpl.DEFAULT);
     }
 
@@ -96,7 +96,7 @@ public class MqttClientBuilder {
     }
 
     @NotNull
-    public MqttClientBuilder useWebSocketDefaults() {
+    public MqttClientBuilder useWebSocketWithDefaultConfig() {
         return useWebSocket(MqttWebsocketConfigImpl.DEFAULT);
     }
 
