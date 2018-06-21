@@ -37,13 +37,6 @@ import org.mqttbee.util.MustNotBeImplementedUtil;
  */
 public class Mqtt5ClientBuilder extends MqttClientBuilder {
 
-    private final MqttClientIdentifierImpl identifier;
-    private final String serverHost;
-    private final int serverPort;
-    private final MqttClientSslConfig sslConfig;
-    private final MqttWebsocketConfig websocketConfig;
-    private final MqttClientExecutorConfigImpl executorConfig;
-
     private boolean followRedirects = false;
     private boolean allowServerReAuth = false;
     private MqttAdvancedClientData advancedClientData;
@@ -183,6 +176,7 @@ public class Mqtt5ClientBuilder extends MqttClientBuilder {
         return new Mqtt5ClientImpl(buildClientData());
     }
 
+    @NotNull
     private MqttClientData buildClientData() {
         return new MqttClientData(MqttVersion.MQTT_5_0, identifier, serverHost, serverPort, sslConfig, websocketConfig,
                 followRedirects, allowServerReAuth, executorConfig, advancedClientData);
