@@ -119,14 +119,7 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
                 @NotNull final TopicTreeEntry entry) {
 
             this.parentLevel = parentLevel;
-            if (level == null) {
-                entries = new ScNodeList<>();
-                entries.add(entry);
-            } else {
-                next = new HashMap<>();
-                final ByteArray levelCopy = level.copy();
-                next.put(levelCopy, new TopicTreeNode(levelCopy, level.next(), entry));
-            }
+            subscribe(level, entry);
         }
 
         private void subscribe(@Nullable final MqttTopicLevel level, @NotNull final TopicTreeEntry entry) {
@@ -151,10 +144,13 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
                     node = next.get(level);
                 }
                 if (node == null) {
+                    final ByteArray levelCopy;
                     if (level.isSingleLevelWildcard()) {
                         hasSingleLevelSubscription = true;
+                        levelCopy = MqttTopicLevel.SINGLE_LEVEL_WILDCARD;
+                    } else {
+                        levelCopy = level.copy();
                     }
-                    final ByteArray levelCopy = level.copy();
                     next.put(levelCopy, new TopicTreeNode(levelCopy, level.next(), entry));
                 } else {
                     node.subscribe(level.next(), entry);
@@ -182,7 +178,7 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
                 final TopicTreeNode node = next.get(level);
                 if (node != null) {
                     if (node.unsubscribe(level.next(), unsubscribedCallback)) {
-                        if (node.parentLevel.equals(MqttTopicLevel.SINGLE_LEVEL_WILDCARD)) {
+                        if (node.parentLevel == MqttTopicLevel.SINGLE_LEVEL_WILDCARD) {
                             hasSingleLevelSubscription = false;
                         }
                         next.remove(node.parentLevel);
