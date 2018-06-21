@@ -28,6 +28,12 @@ import org.mqttbee.annotations.NotNull;
 @DoNotImplement
 public interface MqttClient {
 
+    String DEFAULT_SERVER_HOST = "localhost";
+    int DEFAULT_SERVER_PORT = 1883;
+    int DEFAULT_SERVER_PORT_SSL = 8883;
+    int DEFAULT_SERVER_PORT_WEBSOCKET = 80;
+    int DEFAULT_SERVER_PORT_WEBSOCKET_SSL = 443;
+
     @NotNull
     static MqttClientBuilder builder() {
         return new MqttClientBuilder();

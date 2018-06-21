@@ -29,14 +29,17 @@ import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 
+import static org.mqttbee.api.mqtt.MqttClient.*;
+
 /**
  * @author Silvio Giebl
  */
 public class MqttClientBuilder {
 
     protected MqttClientIdentifierImpl identifier = MqttClientIdentifierImpl.REQUEST_CLIENT_IDENTIFIER_FROM_SERVER;
-    protected String serverHost = "localhost";
-    protected int serverPort = 1883;
+    protected String serverHost = DEFAULT_SERVER_HOST;
+    protected int serverPort = DEFAULT_SERVER_PORT;
+    private boolean customServerPort = false;
     protected MqttClientSslConfig sslConfig = null;
     protected MqttWebsocketConfig websocketConfig = null;
     protected MqttClientExecutorConfigImpl executorConfig = MqttClientExecutorConfigImpl.DEFAULT;
@@ -65,6 +68,7 @@ public class MqttClientBuilder {
     @NotNull
     public MqttClientBuilder serverPort(final int port) {
         this.serverPort = port;
+        customServerPort = true;
         return this;
     }
 
@@ -75,6 +79,13 @@ public class MqttClientBuilder {
 
     @NotNull
     public MqttClientBuilder useSsl(@NotNull final MqttClientSslConfig sslConfig) {
+        if (!customServerPort) {
+            if (websocketConfig == null) {
+                serverPort = DEFAULT_SERVER_PORT_SSL;
+            } else {
+                serverPort = DEFAULT_SERVER_PORT_WEBSOCKET_SSL;
+            }
+        }
         this.sslConfig = Preconditions.checkNotNull(sslConfig);
         return this;
     }
@@ -91,6 +102,13 @@ public class MqttClientBuilder {
 
     @NotNull
     public MqttClientBuilder useWebSocket(@NotNull final MqttWebsocketConfig websocketConfig) {
+        if (!customServerPort) {
+            if (sslConfig == null) {
+                serverPort = DEFAULT_SERVER_PORT_WEBSOCKET;
+            } else {
+                serverPort = DEFAULT_SERVER_PORT_WEBSOCKET_SSL;
+            }
+        }
         this.websocketConfig = Preconditions.checkNotNull(websocketConfig);
         return this;
     }
