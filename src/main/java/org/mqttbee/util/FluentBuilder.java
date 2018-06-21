@@ -34,14 +34,6 @@ import java.util.function.Function;
  */
 public abstract class FluentBuilder<B, P> {
 
-    @NotNull
-    protected static <B, P> P done(@NotNull final B built, @Nullable final Function<B, P> parentConsumer) {
-        if (parentConsumer == null) {
-            throw new IllegalStateException("done must not be called on the root of a fluent builder");
-        }
-        return parentConsumer.apply(built);
-    }
-
     protected final Function<? super B, P> parentConsumer;
 
     protected FluentBuilder(@Nullable final Function<? super B, P> parentConsumer) {
@@ -57,7 +49,10 @@ public abstract class FluentBuilder<B, P> {
      */
     @NotNull
     public P done() {
-        return done(build(), parentConsumer);
+        if (parentConsumer == null) {
+            throw new IllegalStateException("done must not be called on the root of a fluent builder");
+        }
+        return parentConsumer.apply(build());
     }
 
     /**
