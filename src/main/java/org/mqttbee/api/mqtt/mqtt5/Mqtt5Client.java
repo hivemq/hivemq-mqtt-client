@@ -49,9 +49,9 @@ public interface Mqtt5Client extends MqttClient {
      * <p>
      * The returned {@link Single} represents the source of the ConnAck message corresponding to the given Connect
      * message. Calling this method does not connect yet. Connecting is performed lazy and asynchronous when subscribing
-     * (in terms of reactive-streams) to the returned {@link Single}.
+     * (in terms of Reactive Streams) to the returned {@link Single}.
      *
-     * @param connect the Connect message to connect with.
+     * @param connect the Connect message sent to the broker during connect.
      * @return the {@link Single} which
      *         <ul>
      *         <li>succeeds with the ConnAck message if it does not contain an Error Code (connected
@@ -85,16 +85,17 @@ public interface Mqtt5Client extends MqttClient {
      * <p>
      * The returned {@link Single} represents the source of the SubAck message corresponding to the given Subscribe
      * message. Calling this method does not subscribe yet. Subscribing is performed lazy and asynchronous when
-     * subscribing (in terms of reactive-streams) to the returned {@link Single}.
+     * subscribing (in terms of Reactive Streams) to the returned {@link Single}.
      * <p>
-     * For directly consuming the Publish messages matching the subscriptions of the Subscribe message, call {@link
-     * #subscribeWithStream(Mqtt5Subscribe)} instead.
+     * See {@link #allPublishes()} or {@link #remainingPublishes()} to consume the Publish messages. Alternatively, call
+     * {@link #subscribeWithStream(Mqtt5Subscribe)} to consume the Publish messages matching the subscriptions of the
+     * Subscribe message directly.
      *
-     * @param subscribe the Subscribe message to subscribe with.
+     * @param subscribe the Subscribe message sent to the broker during subscribe.
      * @return the {@link Single} which
      *         <ul>
-     *         <li>succeeds with the SubAck message if it contains at least one Reason Code that is not an Error
-     *         Code (subscribed to at least one subscription),</li>
+     *         <li>succeeds with the SubAck message if at least one subscription of the Subscribe message was
+     *         successful (the SubAck message contains at least one Reason Code that is not an Error Code),</li>
      *         <li>errors with an {@link org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException
      *         Mqtt5MessageException} wrapping the SubAck message if it only contains Error Codes or</li>
      *         <li>errors with a different exception if an error occurred before the Subscribe message was sent or
@@ -125,14 +126,15 @@ public interface Mqtt5Client extends MqttClient {
      * The returned {@link FlowableWithSingle} represents the source of the SubAck message corresponding to the given
      * Subscribe message and the source of the Publish messages matching the subscriptions of the Subscribe message.
      * Calling this method does not subscribe yet. Subscribing is performed lazy and asynchronous when subscribing (in
-     * terms of reactive-streams) to the returned {@link FlowableWithSingle}.
+     * terms of Reactive Streams) to the returned {@link FlowableWithSingle}.
      *
-     * @param subscribe the Subscribe message to subscribe with.
+     * @param subscribe the Subscribe message sent to the broker during subscribe.
      * @return the {@link FlowableWithSingle} which
      *         <ul>
-     *         <li>emits the SubAck message as the single and first element if it contains at least one Reason Code
-     *         that is not an Error Code (subscribed to at least one subscription) and then emits the Publish messages
-     *         matching the subscriptions of the Subscribe message,</li>
+     *         <li>emits the SubAck message as the single and first element if at least one subscription of the
+     *         Subscribe message was successful (the SubAck message contains at least one Reason Code that is not an
+     *         Error Code) and then emits the Publish messages matching the successful subscriptions of the Subscribe
+     *         message,</li>
      *         <li>completes when all subscriptions of the Subscribe message were unsubscribed,</li>
      *         <li>errors with an {@link org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException
      *         Mqtt5MessageException} wrapping the SubAck message if it only contains Error Codes or</li>
@@ -170,13 +172,14 @@ public interface Mqtt5Client extends MqttClient {
      * <p>
      * The returned {@link Single} represents the source of the UnsubAck message corresponding to the given Unsubscribe
      * message. Calling this method does not unsubscribe yet. Unsubscribing is performed lazy and asynchronous when
-     * subscribing (in terms of reactive-streams) to the returned {@link Single}.
+     * subscribing (in terms of Reactive Streams) to the returned {@link Single}.
      *
-     * @param unsubscribe the Unsubscribe message to unsubscribe with.
+     * @param unsubscribe the Unsubscribe message sent to the broker during unsubscribe.
      * @return the {@link Single} which
      *         <ul>
-     *         <li>succeeds with the UnsubAck message if it contains at least one Reason Code that is not an Error
-     *         Code (subscribed to at least one subscription),</li>
+     *         <li>succeeds with the UnsubAck message if at least one Topic Filter of the Unsubscribe message was
+     *         successfully unsubscribed (the UnsubAck message contains at least one Reason Code that is not an Error
+     *         Code)</li>
      *         <li>errors with an {@link org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException
      *         Mqtt5MessageException} wrapping the UnsubAck message if it only contains Error Codes or</li>
      *         <li>errors with a different exception if an error occurred before the Unsubscribe message was sent or
@@ -206,8 +209,8 @@ public interface Mqtt5Client extends MqttClient {
      * <p>
      * The returned {@link Flowable} represents the source of {@link Mqtt5PublishResult}s each corresponding to a
      * Publish message emitted by the given {@link Flowable}. Calling this method does not start publishing yet.
-     * Publishing is performed lazy and asynchronous. When subscribing (in terms of reactive-streams) to the returned
-     * {@link Flowable} the client subscribes (in terms of reactive-streams) to the given {@link Flowable}.
+     * Publishing is performed lazy and asynchronous. When subscribing (in terms of Reactive Streams) to the returned
+     * {@link Flowable} the client subscribes (in terms of Reactive Streams) to the given {@link Flowable}.
      *
      * @param publishFlowable the source of the Publish messages to publish.
      * @return the {@link Flowable} which
@@ -224,7 +227,7 @@ public interface Mqtt5Client extends MqttClient {
      * Creates a {@link Completable} for re-authenticating this client with the given Disconnect message.
      * <p>
      * Calling this method does not re-authenticate yet. Re-authenticating is performed lazy and asynchronous when
-     * subscribing (in terms of reactive-streams) to the returned {@link Completable}.
+     * subscribing (in terms of Reactive Streams) to the returned {@link Completable}.
      *
      * @return the {@link Completable} which
      *         <ul>
@@ -243,9 +246,9 @@ public interface Mqtt5Client extends MqttClient {
      * Creates a {@link Completable} for disconnecting this client with the given Disconnect message.
      * <p>
      * Calling this method does not disconnect yet. Disconnecting is performed lazy and asynchronous when subscribing
-     * (in terms of reactive-streams) to the returned {@link Completable}.
+     * (in terms of Reactive Streams) to the returned {@link Completable}.
      *
-     * @param disconnect the Disconnect message to unsubscribe with.
+     * @param disconnect the Disconnect message sent to the broker during disconnect.
      * @return the {@link Completable} which
      *         <ul>
      *         <li>completes when the client was successfully disconnected or</li>
