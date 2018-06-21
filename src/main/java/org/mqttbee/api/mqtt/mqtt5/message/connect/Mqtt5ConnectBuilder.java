@@ -141,7 +141,7 @@ public class Mqtt5ConnectBuilder<P> extends FluentBuilder<Mqtt5Connect, P> {
 
     @NotNull
     public Mqtt5WillPublishBuilder<? extends Mqtt5ConnectBuilder<P>> willPublish() {
-        return new Mqtt5WillPublishBuilder<>(this::willPublish);
+        return Mqtt5WillPublishBuilder.create(this::willPublish);
     }
 
     @NotNull

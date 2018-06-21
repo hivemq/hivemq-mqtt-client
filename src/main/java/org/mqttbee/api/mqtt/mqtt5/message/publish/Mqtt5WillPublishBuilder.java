@@ -41,18 +41,21 @@ import static org.mqttbee.mqtt.message.publish.MqttWillPublish.DEFAULT_DELAY_INT
  */
 public class Mqtt5WillPublishBuilder<P> extends Mqtt5PublishBuilder<P> {
 
-    private final Function<? super Mqtt5WillPublish, P> parentConsumer;
+    public static <P> Mqtt5WillPublishBuilder<P> create(
+            @Nullable final Function<? super Mqtt5WillPublish, P> parentConsumer) {
+
+        return new Mqtt5WillPublishBuilder<>(
+                (parentConsumer == null) ? null : publish -> parentConsumer.apply((Mqtt5WillPublish) publish));
+    }
 
     private long delayInterval = DEFAULT_DELAY_INTERVAL;
 
-    public Mqtt5WillPublishBuilder(@Nullable final Function<? super Mqtt5WillPublish, P> parentConsumer) {
-        super((Function<Mqtt5Publish, P>) null);
-        this.parentConsumer = parentConsumer;
+    public Mqtt5WillPublishBuilder(@Nullable final Function<? super Mqtt5Publish, P> parentConsumer) {
+        super(parentConsumer);
     }
 
     Mqtt5WillPublishBuilder(@NotNull final Mqtt5Publish publish) {
         super(publish);
-        parentConsumer = null;
         if (publish instanceof Mqtt5WillPublish) {
             delayInterval =
                     MustNotBeImplementedUtil.checkNotImplemented(publish, MqttWillPublish.class).getDelayInterval();
@@ -189,12 +192,6 @@ public class Mqtt5WillPublishBuilder<P> extends Mqtt5PublishBuilder<P> {
         Preconditions.checkArgument(UnsignedDataTypes.isUnsignedInt(delayInterval));
         this.delayInterval = delayInterval;
         return this;
-    }
-
-    @NotNull
-    @Override
-    public P done() {
-        return done(build(), parentConsumer);
     }
 
     @NotNull
