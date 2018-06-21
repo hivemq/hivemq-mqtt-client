@@ -88,8 +88,8 @@ public class Mqtt5ClientBuilder extends MqttClientBuilder {
 
     @NotNull
     @Override
-    public Mqtt5ClientBuilder useSslDefaults() {
-        super.useSslDefaults();
+    public Mqtt5ClientBuilder useSslWithDefaultConfig() {
+        super.useSslWithDefaultConfig();
         return this;
     }
 
@@ -108,8 +108,8 @@ public class Mqtt5ClientBuilder extends MqttClientBuilder {
 
     @NotNull
     @Override
-    public Mqtt5ClientBuilder useWebSocketDefaults() {
-        super.useWebSocketDefaults();
+    public Mqtt5ClientBuilder useWebSocketWithDefaultConfig() {
+        super.useWebSocketWithDefaultConfig();
         return this;
     }
 

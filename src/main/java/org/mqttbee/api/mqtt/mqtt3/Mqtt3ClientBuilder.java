@@ -82,8 +82,8 @@ public class Mqtt3ClientBuilder extends MqttClientBuilder {
 
     @NotNull
     @Override
-    public Mqtt3ClientBuilder useSslDefaults() {
-        super.useSslDefaults();
+    public Mqtt3ClientBuilder useSslWithDefaultConfig() {
+        super.useSslWithDefaultConfig();
         return this;
     }
 
@@ -102,8 +102,8 @@ public class Mqtt3ClientBuilder extends MqttClientBuilder {
 
     @NotNull
     @Override
-    public Mqtt3ClientBuilder useWebSocketDefaults() {
-        super.useWebSocketDefaults();
+    public Mqtt3ClientBuilder useWebSocketWithDefaultConfig() {
+        super.useWebSocketWithDefaultConfig();
         return this;
     }
 
@@ -153,7 +153,8 @@ public class Mqtt3ClientBuilder extends MqttClientBuilder {
 
     @NotNull
     private MqttClientData buildClientData() {
-        return new MqttClientData(MqttVersion.MQTT_3_1_1, identifier, serverHost, serverPort, sslConfig, websocketConfig, false, false, executorConfig, null);
+        return new MqttClientData(MqttVersion.MQTT_3_1_1, identifier, serverHost, serverPort, sslConfig,
+                websocketConfig, false, false, executorConfig, null);
     }
 
 }
