@@ -79,6 +79,7 @@ public class MqttTopicFilterBuilder<P> extends FluentBuilder<MqttTopicFilter, P>
     }
 
     @NotNull
+    @Override
     public MqttTopicFilter build() {
         return MqttTopicFilter.from(stringBuilder.toString());
     }
