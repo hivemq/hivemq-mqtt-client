@@ -41,7 +41,7 @@ import static org.mockito.Mockito.when;
  */
 abstract class MqttSubscriptionFlowsTest {
 
-    public static class CSVtoArray extends SimpleArgumentConverter {
+    public static class CsvToArray extends SimpleArgumentConverter {
 
         @Override
         protected Object convert(final Object source, final Class<?> targetType) throws ArgumentConversionException {
@@ -64,25 +64,16 @@ abstract class MqttSubscriptionFlowsTest {
 
     @ParameterizedTest
     @CsvSource({
-            "a,    a; +; a/#; +/#; #,                                       /a; b; a/b; a/+; +/a; +/+; a/b/#; /#; /",
-            "a/b,  a/b; a/+; +/b; +/+; a/b/#; a/+/#; +/b/#; +/+/#; a/#; #,  /a/b; a/c; c/b; a/b/c; +/a/b; a/+/b; a/b/+; a/b/c/#; +",
-            "/,    /; +/+; +/; /+; +/#; /#; #,                              //; a/b; a/; /a; +"
+            "a,    a; +; a/#; +/#; #                                     ",
+            "a/b,  a/b; a/+; +/b; +/+; a/b/#; a/+/#; +/b/#; +/+/#; a/#; #",
+            "/,    /; +/+; +/; /+; +/#; /#; #                            "
     })
-    void matching_and_non_matching(
-            final String topic, @ConvertWith(CSVtoArray.class) final String[] matchingTopicFilters,
-            @ConvertWith(CSVtoArray.class) final String[] notMatchingTopicFilters) {
-
+    void matching(final String topic, @ConvertWith(CsvToArray.class) final String[] matchingTopicFilters) {
         final MqttSubscriptionFlow[] matchingFlows = new MqttSubscriptionFlow[matchingTopicFilters.length];
         for (int i = 0; i < matchingTopicFilters.length; i++) {
             matchingFlows[i] = mockSubscriptionFlow(matchingTopicFilters[i]);
             flows.subscribe(
                     Objects.requireNonNull(MqttTopicFilterImpl.from(matchingTopicFilters[i])), matchingFlows[i]);
-        }
-        final MqttSubscriptionFlow[] notMatchingFlows = new MqttSubscriptionFlow[notMatchingTopicFilters.length];
-        for (int i = 0; i < notMatchingTopicFilters.length; i++) {
-            notMatchingFlows[i] = mockSubscriptionFlow(notMatchingTopicFilters[i]);
-            flows.subscribe(
-                    Objects.requireNonNull(MqttTopicFilterImpl.from(notMatchingTopicFilters[i])), notMatchingFlows[i]);
         }
 
         final ScNodeList<MqttIncomingPublishFlow> matching = new ScNodeList<>();
@@ -93,15 +84,18 @@ abstract class MqttSubscriptionFlowsTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"a, a, b", "a, a, a/b", "a/b, a/b, a/c"})
-    void matching_and_non_matching_unsubscribe(
-            final String topic, final String matchingTopicFilter, final String notMatchingTopicFilter) {
-
-        final MqttSubscriptionFlow flow1 = mockSubscriptionFlow(matchingTopicFilter);
-        final MqttSubscriptionFlow flow2 = mockSubscriptionFlow(notMatchingTopicFilter);
-        flows.subscribe(Objects.requireNonNull(MqttTopicFilterImpl.from(matchingTopicFilter)), flow1);
-        flows.subscribe(Objects.requireNonNull(MqttTopicFilterImpl.from(notMatchingTopicFilter)), flow2);
-        flows.unsubscribe(Objects.requireNonNull(MqttTopicFilterImpl.from(matchingTopicFilter)), null);
+    @CsvSource({
+            "a,    /a; b; a/b; a/+; +/a; +/+; a/b/#; /#; /               ",
+            "a/b,  /a/b; a/c; c/b; a/b/c; +/a/b; a/+/b; a/b/+; a/b/c/#; +",
+            "/,    //; a/b; a/; /a; +                                    "
+    })
+    void non_matching(final String topic, @ConvertWith(CsvToArray.class) final String[] notMatchingTopicFilters) {
+        final MqttSubscriptionFlow[] notMatchingFlows = new MqttSubscriptionFlow[notMatchingTopicFilters.length];
+        for (int i = 0; i < notMatchingTopicFilters.length; i++) {
+            notMatchingFlows[i] = mockSubscriptionFlow(notMatchingTopicFilters[i]);
+            flows.subscribe(
+                    Objects.requireNonNull(MqttTopicFilterImpl.from(notMatchingTopicFilters[i])), notMatchingFlows[i]);
+        }
 
         final ScNodeList<MqttIncomingPublishFlow> matching = new ScNodeList<>();
         flows.findMatching(Objects.requireNonNull(MqttTopicImpl.from(topic)), matching);
@@ -110,20 +104,77 @@ abstract class MqttSubscriptionFlowsTest {
     }
 
     @ParameterizedTest
+    @CsvSource({"a, a", "a, +", "a, #", "a/b, a/b", "a/b, a/+", "a/b, +/b", "a/b, +/+", "a/b, +/#", "a/b, #"})
+    void matching_unsubscribe(final String topic, final String matchingTopicFilter) {
+        final MqttSubscriptionFlow flow1 = mockSubscriptionFlow(matchingTopicFilter);
+        final MqttSubscriptionFlow flow2 = mockSubscriptionFlow(matchingTopicFilter);
+        flows.subscribe(Objects.requireNonNull(MqttTopicFilterImpl.from(matchingTopicFilter)), flow1);
+        flows.subscribe(Objects.requireNonNull(MqttTopicFilterImpl.from(matchingTopicFilter)), flow2);
+
+        final ScNodeList<MqttSubscriptionFlow> unsubscribed = new ScNodeList<>();
+        flows.unsubscribe(Objects.requireNonNull(MqttTopicFilterImpl.from(matchingTopicFilter)), unsubscribed::add);
+        final ScNodeList<MqttIncomingPublishFlow> matching = new ScNodeList<>();
+        flows.findMatching(Objects.requireNonNull(MqttTopicImpl.from(topic)), matching);
+
+        assertTrue(matching.isEmpty());
+        assertEquals(ImmutableSet.of(flow1, flow2), ImmutableSet.copyOf(unsubscribed));
+    }
+
+    @ParameterizedTest
     @CsvSource({"a, a, b", "a, a, a/b", "a/b, a/b, a/c"})
-    void matching_and_non_matching_cancel(
+    void non_matching_unsubscribe(
             final String topic, final String matchingTopicFilter, final String notMatchingTopicFilter) {
 
         final MqttSubscriptionFlow flow1 = mockSubscriptionFlow(matchingTopicFilter);
         final MqttSubscriptionFlow flow2 = mockSubscriptionFlow(notMatchingTopicFilter);
         flows.subscribe(Objects.requireNonNull(MqttTopicFilterImpl.from(matchingTopicFilter)), flow1);
         flows.subscribe(Objects.requireNonNull(MqttTopicFilterImpl.from(notMatchingTopicFilter)), flow2);
-        flows.cancel(flow1);
 
+        final ScNodeList<MqttSubscriptionFlow> unsubscribed = new ScNodeList<>();
+        flows.unsubscribe(Objects.requireNonNull(MqttTopicFilterImpl.from(notMatchingTopicFilter)), unsubscribed::add);
         final ScNodeList<MqttIncomingPublishFlow> matching = new ScNodeList<>();
         flows.findMatching(Objects.requireNonNull(MqttTopicImpl.from(topic)), matching);
 
+        assertFalse(matching.isEmpty());
+        assertEquals(ImmutableSet.of(flow1), ImmutableSet.copyOf(matching));
+        assertEquals(ImmutableSet.of(flow2), ImmutableSet.copyOf(unsubscribed));
+    }
+
+    @ParameterizedTest
+    @CsvSource({"a, a", "a, +", "a, #", "a/b, a/b", "a/b, a/+", "a/b, +/b", "a/b, +/+", "a/b, +/#", "a/b, #"})
+    void cancel(final String topic, final String matchingTopicFilter) {
+        final MqttSubscriptionFlow flow1 = mockSubscriptionFlow(matchingTopicFilter);
+        final MqttSubscriptionFlow flow2 = mockSubscriptionFlow(matchingTopicFilter);
+        flows.subscribe(Objects.requireNonNull(MqttTopicFilterImpl.from(matchingTopicFilter)), flow1);
+        flows.subscribe(Objects.requireNonNull(MqttTopicFilterImpl.from(matchingTopicFilter)), flow2);
+
+        flows.cancel(flow1);
+        ScNodeList<MqttIncomingPublishFlow> matching = new ScNodeList<>();
+        flows.findMatching(Objects.requireNonNull(MqttTopicImpl.from(topic)), matching);
+
+        assertFalse(matching.isEmpty());
+        assertEquals(ImmutableSet.of(flow2), ImmutableSet.copyOf(matching));
+
+        flows.cancel(flow2);
+        matching = new ScNodeList<>();
+        flows.findMatching(Objects.requireNonNull(MqttTopicImpl.from(topic)), matching);
+
         assertTrue(matching.isEmpty());
+    }
+
+    @ParameterizedTest
+    @CsvSource({"a, a", "a, +", "a, #", "a/b, a/b", "a/b, a/+", "a/b, +/b", "a/b, +/+", "a/b, +/#", "a/b, #"})
+    void cancel_not_present(final String topic, final String matchingTopicFilter) {
+        final MqttSubscriptionFlow flow1 = mockSubscriptionFlow(matchingTopicFilter);
+        final MqttSubscriptionFlow flow2 = mockSubscriptionFlow(matchingTopicFilter);
+        flows.subscribe(Objects.requireNonNull(MqttTopicFilterImpl.from(matchingTopicFilter)), flow1);
+
+        flows.cancel(flow2);
+        final ScNodeList<MqttIncomingPublishFlow> matching = new ScNodeList<>();
+        flows.findMatching(Objects.requireNonNull(MqttTopicImpl.from(topic)), matching);
+
+        assertFalse(matching.isEmpty());
+        assertEquals(ImmutableSet.of(flow1), ImmutableSet.copyOf(matching));
     }
 
     @NotNull
