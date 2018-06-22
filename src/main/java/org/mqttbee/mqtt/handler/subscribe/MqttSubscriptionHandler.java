@@ -59,9 +59,12 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
     public static final String NAME = "subscription";
     public static final int MAX_SUB_PENDING = 10; // TODO configurable
     private static final Logger LOGGER = LoggerFactory.getLogger(MqttSubscriptionHandler.class);
-    private static final int REASON_CODES_VALIDATED = 0;
-    private static final int REASON_CODES_COUNT_DOES_NOT_MATCH = -1;
-    private static final int REASON_CODES_ALL_ERRORS = -2;
+
+    private enum ReasonCodesState {
+        AT_LEAST_ONE_SUCCESSFUL,
+        COUNT_NOT_MATCHING,
+        ALL_ERRORS
+    }
 
     private final MqttIncomingPublishFlows subscriptionFlows;
     private final Ranges packetIdentifiers;
@@ -193,9 +196,9 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
         final MqttStatefulSubscribe subscribe = statefulSubscribeWithFlow.getSubscribe();
         final SingleFlow<Mqtt5SubAck> subAckFlow = statefulSubscribeWithFlow.getSubAckFlow();
         final int subscriptionCount = subscribe.getStatelessMessage().getSubscriptions().size();
-        final int reasonCodesValidation = validateReasonCodes(subscriptionCount, subAck.getReasonCodes());
+        final ReasonCodesState reasonCodesState = validateReasonCodes(subscriptionCount, subAck.getReasonCodes());
 
-        if (reasonCodesValidation == REASON_CODES_VALIDATED) {
+        if (reasonCodesState == ReasonCodesState.AT_LEAST_ONE_SUCCESSFUL) {
             if (!subAckFlow.isCancelled()) {
                 subAckFlow.onSuccess(subAck);
             }
@@ -205,11 +208,11 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
             }
         } else {
             final String errorMessage;
-            switch (reasonCodesValidation) {
-                case REASON_CODES_COUNT_DOES_NOT_MATCH:
+            switch (reasonCodesState) {
+                case COUNT_NOT_MATCHING:
                     errorMessage = "Count of Reason Codes in SUBACK does not match count of subscriptions in SUBSCRIBE";
                     break;
-                case REASON_CODES_ALL_ERRORS:
+                case ALL_ERRORS:
                     errorMessage = "SUBACK contains only Error Codes";
                     break;
                 default:
@@ -238,21 +241,21 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
         final MqttStatefulUnsubscribe unsubscribe = statefulUnsubscribeWithFlow.getUnsubscribe();
         final SingleFlow<Mqtt5UnsubAck> unsubAckFlow = statefulUnsubscribeWithFlow.getUnsubAckFlow();
         final int topicFilterCount = unsubscribe.getStatelessMessage().getTopicFilters().size();
-        final int reasonCodesValidation = validateReasonCodes(topicFilterCount, unsubAck.getReasonCodes());
+        final ReasonCodesState reasonCodesState = validateReasonCodes(topicFilterCount, unsubAck.getReasonCodes());
 
-        if (reasonCodesValidation == REASON_CODES_VALIDATED) {
+        if (reasonCodesState == ReasonCodesState.AT_LEAST_ONE_SUCCESSFUL) {
             if (!unsubAckFlow.isCancelled()) {
                 unsubAckFlow.onSuccess(unsubAck);
             }
             subscriptionFlows.unsubscribe(unsubscribe, unsubAck);
         } else {
             final String errorMessage;
-            switch (reasonCodesValidation) {
-                case REASON_CODES_COUNT_DOES_NOT_MATCH:
+            switch (reasonCodesState) {
+                case COUNT_NOT_MATCHING:
                     errorMessage =
                             "Count of Reason Codes in UNSUBACK does not match count of Topic Filters in UNSUBSCRIBE";
                     break;
-                case REASON_CODES_ALL_ERRORS:
+                case ALL_ERRORS:
                     errorMessage = "UNSUBACK contains only Error Codes";
                     break;
                 default:
@@ -282,21 +285,21 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
-    private static int validateReasonCodes(
+    private static ReasonCodesState validateReasonCodes(
             final int count, @NotNull final ImmutableList<? extends Mqtt5ReasonCode> reasonCodes) {
 
         if (reasonCodes == Mqtt3UnsubAckView.REASON_CODES_ALL_SUCCESS) {
-            return REASON_CODES_VALIDATED;
+            return ReasonCodesState.AT_LEAST_ONE_SUCCESSFUL;
         }
         if (reasonCodes.size() != count) {
-            return REASON_CODES_COUNT_DOES_NOT_MATCH;
+            return ReasonCodesState.COUNT_NOT_MATCHING;
         }
         for (final Mqtt5ReasonCode reasonCode : reasonCodes) {
             if (!reasonCode.isError()) {
-                return REASON_CODES_VALIDATED;
+                return ReasonCodesState.AT_LEAST_ONE_SUCCESSFUL;
             }
         }
-        return REASON_CODES_ALL_ERRORS;
+        return ReasonCodesState.ALL_ERRORS;
     }
 
 }
