@@ -62,7 +62,7 @@ public class MqttSharedTopicFilterBuilder<P> extends MqttTopicFilterBuilder<P> {
     @NotNull
     @Override
     public MqttSharedTopicFilter multiLevelWildcardAndBuild() {
-        super.multiLevelWildcardAndBuild();
+        multiLevelWildcard();
         return build();
     }
 
