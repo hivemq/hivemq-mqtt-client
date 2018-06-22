@@ -54,7 +54,7 @@ public class MqttTopicFilterBuilder<P> extends FluentBuilder<MqttTopicFilter, P>
         return this;
     }
 
-    private void multiLevelWildcard() {
+    void multiLevelWildcard() {
         if (stringBuilder.length() > 0) {
             stringBuilder.append(MqttTopic.TOPIC_LEVEL_SEPARATOR);
         }
