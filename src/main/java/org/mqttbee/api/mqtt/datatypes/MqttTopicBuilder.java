@@ -54,6 +54,7 @@ public class MqttTopicBuilder<P> extends FluentBuilder<MqttTopic, P> {
     }
 
     @NotNull
+    @Override
     public MqttTopic build() {
         return MqttTopic.from(stringBuilder.toString());
     }

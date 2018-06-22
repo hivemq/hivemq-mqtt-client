@@ -27,6 +27,7 @@ import java.util.function.Function;
  */
 public class MqttSharedTopicFilterBuilder<P> extends MqttTopicFilterBuilder<P> {
 
+    @NotNull
     public static <P> MqttSharedTopicFilterBuilder<P> create(
             @NotNull final String shareName, @NotNull final String base,
             @Nullable final Function<? super MqttSharedTopicFilter, P> parentConsumer) {
@@ -67,6 +68,7 @@ public class MqttSharedTopicFilterBuilder<P> extends MqttTopicFilterBuilder<P> {
     }
 
     @NotNull
+    @Override
     public MqttSharedTopicFilter build() {
         return MqttSharedTopicFilter.from(shareName, stringBuilder.toString());
     }

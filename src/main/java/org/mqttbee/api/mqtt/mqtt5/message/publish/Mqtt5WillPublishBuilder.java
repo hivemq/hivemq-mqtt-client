@@ -41,6 +41,7 @@ import static org.mqttbee.mqtt.message.publish.MqttWillPublish.DEFAULT_DELAY_INT
  */
 public class Mqtt5WillPublishBuilder<P> extends Mqtt5PublishBuilder<P> {
 
+    @NotNull
     public static <P> Mqtt5WillPublishBuilder<P> create(
             @Nullable final Function<? super Mqtt5WillPublish, P> parentConsumer) {
 
