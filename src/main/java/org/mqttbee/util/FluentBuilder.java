@@ -50,7 +50,8 @@ public abstract class FluentBuilder<B, P> {
     @NotNull
     public P done() {
         if (parentConsumer == null) {
-            throw new IllegalStateException("done must not be called on the root of a fluent builder");
+            throw new IllegalStateException(
+                    "done must not be called on the root of a fluent builder, consider calling build() instead");
         }
         return parentConsumer.apply(build());
     }
