@@ -59,7 +59,7 @@ public class MqttIncomingPublishFlowsWithId extends MqttIncomingPublishFlows {
         final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
         assert clientConnectionData != null;
 
-        flowsWithIdsMap = new IntMap<>(1, clientConnectionData.getSubscriptionIdentifierMaximum());
+        flowsWithIdsMap = IntMap.range(1, clientConnectionData.getSubscriptionIdentifierMaximum());
         this.flowsWithIds = flowsWithIds;
     }
 

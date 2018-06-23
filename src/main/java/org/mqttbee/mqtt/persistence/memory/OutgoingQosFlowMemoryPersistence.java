@@ -42,7 +42,7 @@ public class OutgoingQosFlowMemoryPersistence implements OutgoingQosFlowPersiste
     OutgoingQosFlowMemoryPersistence(final MqttClientData clientData) {
         final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
         assert clientConnectionData != null;
-        this.messages = new IntMap<>(1, clientConnectionData.getReceiveMaximum());
+        this.messages = IntMap.range(1, clientConnectionData.getReceiveMaximum());
     }
 
     @NotNull

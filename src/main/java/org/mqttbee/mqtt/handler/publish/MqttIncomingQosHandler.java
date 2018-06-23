@@ -63,9 +63,9 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter {
 
         this.incomingPublishServiceLazy = incomingPublishServiceLazy;
         final int receiveMaximum = clientConnectionData.getReceiveMaximum();
-        pubRecs = new IntMap<>(1, receiveMaximum);
-        pubRels = new IntMap<>(1, receiveMaximum);
-        pubComps = new IntMap<>(1, receiveMaximum);
+        pubRecs = IntMap.range(1, receiveMaximum);
+        pubRels = IntMap.range(1, receiveMaximum);
+        pubComps = IntMap.range(1, receiveMaximum);
     }
 
     @Override

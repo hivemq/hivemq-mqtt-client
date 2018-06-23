@@ -90,8 +90,8 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
         final int maxPacketIdentifier = minPacketIdentifier + MAX_SUB_PENDING - 1;
         packetIdentifiers = new Ranges(minPacketIdentifier, maxPacketIdentifier);
         subscriptionIdentifiers = new Ranges(1, clientConnectionData.getSubscriptionIdentifierMaximum());
-        subscribes = new IntMap<>(minPacketIdentifier, maxPacketIdentifier);
-        unsubscribes = new IntMap<>(minPacketIdentifier, maxPacketIdentifier);
+        subscribes = IntMap.range(minPacketIdentifier, maxPacketIdentifier);
+        unsubscribes = IntMap.range(minPacketIdentifier, maxPacketIdentifier);
         queued = new LinkedList<>();
     }
 
