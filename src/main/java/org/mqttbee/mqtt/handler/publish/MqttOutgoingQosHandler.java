@@ -83,7 +83,7 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter {
         final int pubReceiveMaximum = getPubReceiveMaximum(serverConnectionData.getReceiveMaximum());
         publishQueue = SpscArrayQueueUtil.create(pubReceiveMaximum, 64);
         packetIdentifiers = new Ranges(1, pubReceiveMaximum);
-        qos1Or2Publishes = new IntMap<>(1, pubReceiveMaximum);
+        qos1Or2Publishes = IntMap.range(1, pubReceiveMaximum);
     }
 
     @Override
