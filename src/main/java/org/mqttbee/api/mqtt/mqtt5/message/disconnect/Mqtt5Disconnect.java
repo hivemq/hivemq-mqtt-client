@@ -46,7 +46,7 @@ public interface Mqtt5Disconnect extends Mqtt5Message {
     Mqtt5DisconnectReasonCode getReasonCode();
 
     /**
-     * @return the optional expiry interval for the session, the client disconnects from with this DISCONNECT packet.
+     * @return the optional expiry interval for the session in seconds, the client disconnects from with this DISCONNECT packet.
      */
     @NotNull
     Optional<Long> getSessionExpiryInterval();

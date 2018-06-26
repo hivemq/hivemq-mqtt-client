@@ -30,6 +30,7 @@ import org.mqttbee.mqtt.util.MqttBuilderUtil;
 import org.mqttbee.util.FluentBuilder;
 import org.mqttbee.util.UnsignedDataTypes;
 
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 import static org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.DISCONNECT_WITH_WILL_MESSAGE;
@@ -41,7 +42,7 @@ import static org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReaso
 public class Mqtt5DisconnectBuilder<P> extends FluentBuilder<Mqtt5Disconnect, P> {
 
     private boolean withWillMessage = false;
-    private long sessionExpiryInterval = MqttDisconnect.SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
+    private long sessionExpiryIntervalSeconds = MqttDisconnect.SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
     private MqttUTF8StringImpl serverReference;
     private MqttUTF8StringImpl reasonString;
     private MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
@@ -57,9 +58,10 @@ public class Mqtt5DisconnectBuilder<P> extends FluentBuilder<Mqtt5Disconnect, P>
     }
 
     @NotNull
-    public Mqtt5DisconnectBuilder<P> sessionExpiryInterval(final long sessionExpiryInterval) {
-        Preconditions.checkArgument(UnsignedDataTypes.isUnsignedInt(sessionExpiryInterval));
-        this.sessionExpiryInterval = sessionExpiryInterval;
+    public Mqtt5DisconnectBuilder<P> sessionExpiryInterval(final long sessionExpiryInterval, @NotNull final  TimeUnit timeUnit) {
+        final long sessionExpiryIntervalSeconds = timeUnit.toSeconds(sessionExpiryInterval);
+        Preconditions.checkArgument(UnsignedDataTypes.isUnsignedInt(sessionExpiryIntervalSeconds));
+        this.sessionExpiryIntervalSeconds = sessionExpiryIntervalSeconds;
         return this;
     }
 
@@ -103,7 +105,7 @@ public class Mqtt5DisconnectBuilder<P> extends FluentBuilder<Mqtt5Disconnect, P>
     public Mqtt5Disconnect build() {
         final Mqtt5DisconnectReasonCode reasonCode =
                 withWillMessage ? DISCONNECT_WITH_WILL_MESSAGE : NORMAL_DISCONNECTION;
-        return new MqttDisconnect(reasonCode, sessionExpiryInterval, serverReference, reasonString, userProperties);
+        return new MqttDisconnect(reasonCode, sessionExpiryIntervalSeconds, serverReference, reasonString, userProperties);
     }
 
 }
