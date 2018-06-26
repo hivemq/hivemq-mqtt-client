@@ -22,6 +22,7 @@ import io.reactivex.Flowable;
 import io.reactivex.Single;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttClient;
+import org.mqttbee.api.mqtt.MqttGlobalPublishFlowType;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5ConnectBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
@@ -87,9 +88,9 @@ public interface Mqtt5Client extends MqttClient {
      * message. Calling this method does not subscribe yet. Subscribing is performed lazy and asynchronous when
      * subscribing (in terms of Reactive Streams) to the returned {@link Single}.
      * <p>
-     * See {@link #allPublishes()} or {@link #remainingPublishes()} to consume the Publish messages. Alternatively, call
-     * {@link #subscribeWithStream(Mqtt5Subscribe)} to consume the Publish messages matching the subscriptions of the
-     * Subscribe message directly.
+     * See {@link #publishes(MqttGlobalPublishFlowType)} to consume the Publish messages. Alternatively, call {@link
+     * #subscribeWithStream(Mqtt5Subscribe)} to consume the Publish messages matching the subscriptions of the Subscribe
+     * message directly.
      *
      * @param subscribe the Subscribe message sent to the broker during subscribe.
      * @return the {@link Single} which
@@ -161,11 +162,22 @@ public interface Mqtt5Client extends MqttClient {
         return new Mqtt5SubscribeBuilder<>(this::subscribeWithStream);
     }
 
+    /**
+     * Creates a {@link Flowable} for globally consuming the Publish messages received by this client.
+     * <p>
+     * The returned {@link Flowable} represents the source of the incoming Publish messages matching the given type.
+     * Calling this method does not start consuming yet. This is done lazy and asynchronous when subscribing (in terms
+     * of Reactive Streams) to the returned {@link Flowable}.
+     *
+     * @param type the type of the returned flow of Publish messages.
+     * @return the {@link Flowable} which
+     *         <ul>
+     *         <li>emits the incoming Publish messages matching the given type and</li>
+     *         <li>completes when this client is disconnected.</li>
+     *         </ul>
+     */
     @NotNull
-    Flowable<Mqtt5Publish> remainingPublishes();
-
-    @NotNull
-    Flowable<Mqtt5Publish> allPublishes();
+    Flowable<Mqtt5Publish> publishes(@NotNull MqttGlobalPublishFlowType type);
 
     /**
      * Creates a {@link Single} for unsubscribing this client with the given Unsubscribe message.
