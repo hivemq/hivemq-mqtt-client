@@ -85,7 +85,7 @@ public interface Mqtt5Publish extends Mqtt5Message, Mqtt5SubscribeResult {
     boolean isRetain();
 
     /**
-     * @return the optional message expiry interval of this PUBLISH packet.
+     * @return the optional message expiry interval in seconds of this PUBLISH packet.
      */
     @NotNull
     Optional<Long> getMessageExpiryInterval();

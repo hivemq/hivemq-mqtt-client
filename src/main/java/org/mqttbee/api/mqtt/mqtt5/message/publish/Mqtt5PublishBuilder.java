@@ -37,6 +37,7 @@ import org.mqttbee.util.MustNotBeImplementedUtil;
 import org.mqttbee.util.UnsignedDataTypes;
 
 import java.nio.ByteBuffer;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 import static org.mqttbee.mqtt.message.publish.MqttPublish.DEFAULT_TOPIC_ALIAS_USAGE;
@@ -51,7 +52,7 @@ public class Mqtt5PublishBuilder<P> extends FluentBuilder<Mqtt5Publish, P> {
     ByteBuffer payload;
     MqttQoS qos;
     boolean retain;
-    long messageExpiryInterval = MESSAGE_EXPIRY_INTERVAL_INFINITY;
+    long messageExpiryIntervalSeconds = MESSAGE_EXPIRY_INTERVAL_INFINITY;
     Mqtt5PayloadFormatIndicator payloadFormatIndicator;
     MqttUTF8StringImpl contentType;
     MqttTopicImpl responseTopic;
@@ -70,7 +71,7 @@ public class Mqtt5PublishBuilder<P> extends FluentBuilder<Mqtt5Publish, P> {
         payload = publishImpl.getRawPayload();
         qos = publishImpl.getQos();
         retain = publishImpl.isRetain();
-        messageExpiryInterval = publishImpl.getRawMessageExpiryInterval();
+        messageExpiryIntervalSeconds = publishImpl.getRawMessageExpiryInterval();
         payloadFormatIndicator = publishImpl.getRawPayloadFormatIndicator();
         contentType = publishImpl.getRawContentType();
         responseTopic = publishImpl.getRawResponseTopic();
@@ -121,9 +122,10 @@ public class Mqtt5PublishBuilder<P> extends FluentBuilder<Mqtt5Publish, P> {
     }
 
     @NotNull
-    public Mqtt5PublishBuilder<P> messageExpiryInterval(final long messageExpiryInterval) {
-        Preconditions.checkArgument(UnsignedDataTypes.isUnsignedInt(messageExpiryInterval));
-        this.messageExpiryInterval = messageExpiryInterval;
+    public Mqtt5PublishBuilder<P> messageExpiryInterval(final long messageExpiryInterval, @NotNull final TimeUnit timeUnit) {
+        final long messageExpiryIntervalSeconds = timeUnit.toSeconds(messageExpiryInterval);
+        Preconditions.checkArgument(UnsignedDataTypes.isUnsignedInt(messageExpiryIntervalSeconds));
+        this.messageExpiryIntervalSeconds = messageExpiryIntervalSeconds;
         return this;
     }
 
@@ -199,7 +201,7 @@ public class Mqtt5PublishBuilder<P> extends FluentBuilder<Mqtt5Publish, P> {
     public Mqtt5Publish build() {
         Preconditions.checkNotNull(topic);
         Preconditions.checkNotNull(qos);
-        return new MqttPublish(topic, payload, qos, retain, messageExpiryInterval, payloadFormatIndicator, contentType,
+        return new MqttPublish(topic, payload, qos, retain, messageExpiryIntervalSeconds, payloadFormatIndicator, contentType,
                 responseTopic, correlationData, topicAliasUsage, userProperties);
     }
 
