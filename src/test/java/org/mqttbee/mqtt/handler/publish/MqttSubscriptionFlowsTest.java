@@ -68,7 +68,8 @@ abstract class MqttSubscriptionFlowsTest {
             "a/b,  a/b; a/+; +/b; +/+; a/b/#; a/+/#; +/b/#; +/+/#; a/#; #",
             "/,    /; +/+; +/; /+; +/#; /#; #                            "
     })
-    void matching(final String topic, @ConvertWith(CsvToArray.class) final String[] matchingTopicFilters) {
+    void findMatching_subscribedAreMatching(
+            final String topic, @ConvertWith(CsvToArray.class) final String[] matchingTopicFilters) {
         final MqttSubscriptionFlow[] matchingFlows = new MqttSubscriptionFlow[matchingTopicFilters.length];
         for (int i = 0; i < matchingTopicFilters.length; i++) {
             matchingFlows[i] = mockSubscriptionFlow(matchingTopicFilters[i]);
@@ -89,7 +90,8 @@ abstract class MqttSubscriptionFlowsTest {
             "a/b,  /a/b; a/c; c/b; a/b/c; +/a/b; a/+/b; a/b/+; a/b/c/#; +",
             "/,    //; a/b; a/; /a; +                                    "
     })
-    void non_matching(final String topic, @ConvertWith(CsvToArray.class) final String[] notMatchingTopicFilters) {
+    void findMatching_subscribedAreNotMatching(
+            final String topic, @ConvertWith(CsvToArray.class) final String[] notMatchingTopicFilters) {
         final MqttSubscriptionFlow[] notMatchingFlows = new MqttSubscriptionFlow[notMatchingTopicFilters.length];
         for (int i = 0; i < notMatchingTopicFilters.length; i++) {
             notMatchingFlows[i] = mockSubscriptionFlow(notMatchingTopicFilters[i]);
@@ -105,7 +107,7 @@ abstract class MqttSubscriptionFlowsTest {
 
     @ParameterizedTest
     @CsvSource({"a, a", "a, +", "a, #", "a/b, a/b", "a/b, a/+", "a/b, +/b", "a/b, +/+", "a/b, +/#", "a/b, #"})
-    void matching_unsubscribe(final String topic, final String matchingTopicFilter) {
+    void unsubscribe_noLongerMatching(final String topic, final String matchingTopicFilter) {
         final MqttSubscriptionFlow flow1 = mockSubscriptionFlow(matchingTopicFilter);
         final MqttSubscriptionFlow flow2 = mockSubscriptionFlow(matchingTopicFilter);
         flows.subscribe(Objects.requireNonNull(MqttTopicFilterImpl.from(matchingTopicFilter)), flow1);
@@ -122,7 +124,7 @@ abstract class MqttSubscriptionFlowsTest {
 
     @ParameterizedTest
     @CsvSource({"a, a, b", "a, a, a/b", "a/b, a/b, a/c"})
-    void non_matching_unsubscribe(
+    void unsubscribeNonMatching_otherStillMatching(
             final String topic, final String matchingTopicFilter, final String notMatchingTopicFilter) {
 
         final MqttSubscriptionFlow flow1 = mockSubscriptionFlow(matchingTopicFilter);
@@ -164,7 +166,7 @@ abstract class MqttSubscriptionFlowsTest {
 
     @ParameterizedTest
     @CsvSource({"a, a", "a, +", "a, #", "a/b, a/b", "a/b, a/+", "a/b, +/b", "a/b, +/+", "a/b, +/#", "a/b, #"})
-    void cancel_not_present(final String topic, final String matchingTopicFilter) {
+    void cancel_notPresent(final String topic, final String matchingTopicFilter) {
         final MqttSubscriptionFlow flow1 = mockSubscriptionFlow(matchingTopicFilter);
         final MqttSubscriptionFlow flow2 = mockSubscriptionFlow(matchingTopicFilter);
         flows.subscribe(Objects.requireNonNull(MqttTopicFilterImpl.from(matchingTopicFilter)), flow1);
