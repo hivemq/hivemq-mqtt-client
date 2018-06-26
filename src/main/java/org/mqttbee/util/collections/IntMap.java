@@ -34,13 +34,13 @@ public interface IntMap<E> {
         final int capacityBits = 32 - Integer.numberOfLeadingZeros(capacity - 1);
         final IntMap<E> intMap;
         if (capacityBits < 7) {
-            intMap = new IntMapFirstLevel<>(capacity);
+            intMap = new IntMapArray<>(capacity);
         } else if (capacityBits < 15) {
-            intMap = IntMapSecondLevel.create(capacityBits);
+            intMap = new IntMapAllocator<E>(capacityBits, 2).alloc();
         } else if (capacityBits < 22) {
-            intMap = IntMapThirdLevel.create(capacityBits);
+            intMap = new IntMapAllocator<E>(capacityBits, 3).alloc();
         } else {
-            intMap = IntMapFourthLevel.create(capacityBits);
+            intMap = new IntMapAllocator<E>(capacityBits, 4).alloc();
         }
         return new IntMapCheck<>(intMap, minKey, maxKey);
     }
@@ -100,13 +100,13 @@ public interface IntMap<E> {
 
     }
 
-    class IntMapFirstLevel<E> implements IntMap<E> {
+    class IntMapArray<E> implements IntMap<E> {
 
         private final E[] values;
         private int size;
 
         @SuppressWarnings("unchecked")
-        IntMapFirstLevel(final int size) {
+        IntMapArray(final int size) {
             this.values = (E[]) new Object[size];
         }
 
@@ -139,21 +139,67 @@ public interface IntMap<E> {
         public int size() {
             return size;
         }
+
     }
 
-    abstract class IntMapLevel<E> implements IntMap<E> {
+    class IntMapAllocator<E> {
+
+        private final int shift;
+        private final int mask;
+        private final int indexCapacity;
+        private final IntMapAllocator<E> next;
+        private IntMap<E> free;
+
+        IntMapAllocator(final int capacityBits, final int split) {
+            if (split == 1) {
+                shift = -1;
+                mask = -1;
+                indexCapacity = 1 << capacityBits;
+                next = null;
+            } else {
+                final int indexBits = capacityBits / split;
+                shift = capacityBits - indexBits;
+                mask = (1 << shift) - 1;
+                indexCapacity = 1 << indexBits;
+                next = new IntMapAllocator<>(capacityBits - indexBits, split - 1);
+            }
+        }
+
+        @NotNull
+        IntMap<E> alloc() {
+            if (free != null) {
+                final IntMap<E> allocated = free;
+                free = null;
+                return allocated;
+            }
+            if (next == null) {
+                return new IntMapArray<>(indexCapacity);
+            }
+            return new IntMapLevel<>(shift, mask, indexCapacity, next);
+        }
+
+        void free(@NotNull final IntMap<E> intMap) {
+            free = intMap;
+        }
+
+    }
+
+    class IntMapLevel<E> implements IntMap<E> {
 
         private final int shift;
         private final int mask;
         private final IntMap<E>[] subLevels;
-        private IntMap<E> freeSubLevel;
+        private final IntMapAllocator<E> allocator;
         private int size;
 
         @SuppressWarnings("unchecked")
-        IntMapLevel(final int shift, final int mask, final int indexCapacity) {
+        IntMapLevel(
+                final int shift, final int mask, final int indexCapacity, @NotNull final IntMapAllocator<E> allocator) {
+
             this.shift = shift;
             this.mask = mask;
             subLevels = (IntMap<E>[]) new IntMap[indexCapacity];
+            this.allocator = allocator;
         }
 
         @Nullable
@@ -161,12 +207,7 @@ public interface IntMap<E> {
             final int index = key >> shift;
             IntMap<E> subLevel = subLevels[index];
             if (subLevel == null) {
-                if (freeSubLevel == null) {
-                    subLevel = newSubLevel();
-                } else {
-                    subLevel = freeSubLevel;
-                    freeSubLevel = null;
-                }
+                subLevel = allocator.alloc();
                 subLevels[index] = subLevel;
             }
             final E put = subLevel.put(key & mask, value);
@@ -196,7 +237,7 @@ public interface IntMap<E> {
             if (value != null) {
                 size--;
                 if (subLevel.size() == 0) {
-                    freeSubLevel = subLevel;
+                    allocator.free(subLevel);
                     subLevels[index] = null;
                 }
             }
@@ -208,141 +249,6 @@ public interface IntMap<E> {
             return size;
         }
 
-        abstract IntMap<E> newSubLevel();
-
-    }
-
-    class IntMapSecondLevel<E> extends IntMapLevel<E> {
-
-        @NotNull
-        static <E> IntMap<E> create(final int secondLevelCapacityBits) {
-            final int secondLevelIndexBits = secondLevelCapacityBits / 2;
-            final int secondLevelShift = secondLevelCapacityBits - secondLevelIndexBits;
-            final int secondLevelMask = (1 << secondLevelShift) - 1;
-            final int secondLevelIndexCapacity = 1 << secondLevelIndexBits;
-
-            final int firstLevelCapacityBits = secondLevelCapacityBits - secondLevelIndexBits;
-            final int firstLevelIndexCapacity = 1 << firstLevelCapacityBits;
-
-            return new IntMapSecondLevel<>(secondLevelShift, secondLevelMask, secondLevelIndexCapacity,
-                    firstLevelIndexCapacity);
-        }
-
-        private final int firstLevelIndexCapacity;
-
-        IntMapSecondLevel(final int shift, final int mask, final int indexCapacity, final int firstLevelIndexCapacity) {
-            super(shift, mask, indexCapacity);
-            this.firstLevelIndexCapacity = firstLevelIndexCapacity;
-        }
-
-        @Override
-        IntMap<E> newSubLevel() {
-            return new IntMapFirstLevel<>(firstLevelIndexCapacity);
-        }
-    }
-
-    class IntMapThirdLevel<E> extends IntMapLevel<E> {
-
-        @NotNull
-        static <E> IntMap<E> create(final int thirdLevelCapacityBits) {
-            final int thirdLevelIndexBits = thirdLevelCapacityBits / 3;
-            final int thirdLevelShift = thirdLevelCapacityBits - thirdLevelIndexBits;
-            final int thirdLevelMask = (1 << thirdLevelShift) - 1;
-            final int thirdLevelIndexCapacity = 1 << thirdLevelIndexBits;
-
-            final int secondLevelCapacityBits = thirdLevelCapacityBits - thirdLevelIndexBits;
-            final int secondLevelIndexBits = secondLevelCapacityBits / 2;
-            final int secondLevelShift = secondLevelCapacityBits - secondLevelIndexBits;
-            final int secondLevelMask = (1 << secondLevelShift) - 1;
-            final int secondLevelIndexCapacity = 1 << secondLevelIndexBits;
-
-            final int firstLevelCapacityBits = secondLevelCapacityBits - secondLevelIndexBits;
-            final int firstLevelIndexCapacity = 1 << firstLevelCapacityBits;
-
-            return new IntMapThirdLevel<>(thirdLevelShift, thirdLevelMask, thirdLevelIndexCapacity, secondLevelShift,
-                    secondLevelMask, secondLevelIndexCapacity, firstLevelIndexCapacity);
-        }
-
-        private final int secondLevelShift;
-        private final int secondLevelMask;
-        private final int secondLevelIndexCapacity;
-        private final int firstLevelIndexCapacity;
-
-        IntMapThirdLevel(
-                final int shift, final int mask, final int indexCapacity, final int secondLevelShift,
-                final int secondLevelMask, final int secondLevelIndexCapacity, final int firstLevelIndexCapacity) {
-
-            super(shift, mask, indexCapacity);
-            this.secondLevelShift = secondLevelShift;
-            this.secondLevelMask = secondLevelMask;
-            this.secondLevelIndexCapacity = secondLevelIndexCapacity;
-            this.firstLevelIndexCapacity = firstLevelIndexCapacity;
-        }
-
-        @Override
-        IntMap<E> newSubLevel() {
-            return new IntMapSecondLevel<>(
-                    secondLevelShift, secondLevelMask, secondLevelIndexCapacity, firstLevelIndexCapacity);
-        }
-    }
-
-    class IntMapFourthLevel<E> extends IntMapLevel<E> {
-
-        @NotNull
-        static <E> IntMap<E> create(final int fourthLevelCapacityBits) {
-            final int fourthLevelIndexBits = fourthLevelCapacityBits / 4;
-            final int fourthLevelShift = fourthLevelCapacityBits - fourthLevelIndexBits;
-            final int fourthLevelMask = (1 << fourthLevelShift) - 1;
-            final int fourthLevelIndexCapacity = 1 << fourthLevelIndexBits;
-
-            final int thirdLevelCapacityBits = fourthLevelCapacityBits - fourthLevelIndexBits;
-            final int thirdLevelIndexBits = thirdLevelCapacityBits / 3;
-            final int thirdLevelShift = thirdLevelCapacityBits - thirdLevelIndexBits;
-            final int thirdLevelMask = (1 << thirdLevelShift) - 1;
-            final int thirdLevelIndexCapacity = 1 << thirdLevelIndexBits;
-
-            final int secondLevelCapacityBits = thirdLevelCapacityBits - thirdLevelIndexBits;
-            final int secondLevelIndexBits = secondLevelCapacityBits / 2;
-            final int secondLevelShift = secondLevelCapacityBits - secondLevelIndexBits;
-            final int secondLevelMask = (1 << secondLevelShift) - 1;
-            final int secondLevelIndexCapacity = 1 << secondLevelIndexBits;
-
-            final int firstLevelCapacityBits = secondLevelCapacityBits - secondLevelIndexBits;
-            final int firstLevelIndexCapacity = 1 << firstLevelCapacityBits;
-
-            return new IntMapFourthLevel<>(fourthLevelShift, fourthLevelMask, fourthLevelIndexCapacity, thirdLevelShift,
-                    thirdLevelMask, thirdLevelIndexCapacity, secondLevelShift, secondLevelMask,
-                    secondLevelIndexCapacity, firstLevelIndexCapacity);
-        }
-
-        private final int thirdLevelShift;
-        private final int thirdLevelMask;
-        private final int thirdLevelIndexCapacity;
-        private final int secondLevelShift;
-        private final int secondLevelMask;
-        private final int secondLevelIndexCapacity;
-        private final int firstLevelIndexCapacity;
-
-        IntMapFourthLevel(
-                final int shift, final int mask, final int indexCapacity, final int thirdLevelShift,
-                final int thirdLevelMask, final int thirdLevelIndexCapacity, final int secondLevelShift,
-                final int secondLevelMask, final int secondLevelIndexCapacity, final int firstLevelIndexCapacity) {
-
-            super(shift, mask, indexCapacity);
-            this.thirdLevelShift = thirdLevelShift;
-            this.thirdLevelMask = thirdLevelMask;
-            this.thirdLevelIndexCapacity = thirdLevelIndexCapacity;
-            this.secondLevelShift = secondLevelShift;
-            this.secondLevelMask = secondLevelMask;
-            this.secondLevelIndexCapacity = secondLevelIndexCapacity;
-            this.firstLevelIndexCapacity = firstLevelIndexCapacity;
-        }
-
-        @Override
-        IntMap<E> newSubLevel() {
-            return new IntMapThirdLevel<>(thirdLevelShift, thirdLevelMask, thirdLevelIndexCapacity, secondLevelShift,
-                    secondLevelMask, secondLevelIndexCapacity, firstLevelIndexCapacity);
-        }
     }
 
 }

@@ -144,28 +144,25 @@ class IntMapTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"16, 4", "65536, 32", "65536, 32"})
-    void put_remove_sequential_big(final int size, final int chunk) {
-        for (int k = 0; k < 10_000; k++) {
-            final IntMap<String> map = IntMap.range(0, size - 1);
-//            final HashMap<Integer, String> map = new HashMap<>();
-            for (int i = 0; i < chunk * 2; i++) {
-                map.put(i, "test" + i);
+    @CsvSource({"16, 4", "65536, 32", "65536, 64"})
+    void put_remove_sequential(final int size, final int chunk) {
+        final IntMap<String> map = IntMap.range(0, size - 1);
+        for (int i = 0; i < chunk * 2; i++) {
+            map.put(i, "test" + i);
+        }
+        for (int i = 0; i < chunk; i++) {
+            assertEquals("test" + i, map.remove(i));
+        }
+        for (int i = chunk * 2; i < size; i += chunk) {
+            for (int j = 0; j < chunk; j++) {
+                map.put(i + j, "test" + (i + j));
             }
-            for (int i = 0; i < chunk; i++) {
-                assertEquals("test" + i, map.remove(i));
+            for (int j = -chunk; j < 0; j++) {
+                assertEquals("test" + (i + j), map.remove(i + j));
             }
-            for (int i = chunk * 2; i < size; i += chunk) {
-                for (int j = 0; j < chunk; j++) {
-                    map.put(i + j, "test" + (i + j));
-                }
-                for (int j = -chunk; j < 0; j++) {
-                    assertEquals("test" + (i + j), map.remove(i + j));
-                }
-            }
-            for (int i = size - chunk; i < size; i++) {
-                assertEquals("test" + i, map.remove(i));
-            }
+        }
+        for (int i = size - chunk; i < size; i++) {
+            assertEquals("test" + i, map.remove(i));
         }
     }
 
