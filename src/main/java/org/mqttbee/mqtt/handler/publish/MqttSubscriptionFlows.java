@@ -32,7 +32,7 @@ import java.util.function.Consumer;
 @NotThreadSafe
 public interface MqttSubscriptionFlows {
 
-    void subscribe(@NotNull final MqttTopicFilterImpl topicFilter, @NotNull MqttSubscriptionFlow flow);
+    void subscribe(@NotNull final MqttTopicFilterImpl topicFilter, @Nullable MqttSubscriptionFlow flow);
 
     void unsubscribe(
             @NotNull final MqttTopicFilterImpl topicFilter,

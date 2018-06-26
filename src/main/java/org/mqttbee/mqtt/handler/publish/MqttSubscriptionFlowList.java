@@ -46,12 +46,14 @@ public class MqttSubscriptionFlowList implements MqttSubscriptionFlows {
     }
 
     @Override
-    public void subscribe(@NotNull final MqttTopicFilterImpl topicFilter, @NotNull final MqttSubscriptionFlow flow) {
-        final ScNodeList<MqttTopicFilterImpl> topicFilters = flow.getTopicFilters();
-        if (topicFilters.isEmpty()) {
-            flows.add(flow);
+    public void subscribe(@NotNull final MqttTopicFilterImpl topicFilter, @Nullable final MqttSubscriptionFlow flow) {
+        if (flow != null) {
+            final ScNodeList<MqttTopicFilterImpl> topicFilters = flow.getTopicFilters();
+            if (topicFilters.isEmpty()) {
+                flows.add(flow);
+            }
+            topicFilters.add(topicFilter);
         }
-        topicFilters.add(topicFilter);
         subscribedTopicFilters.add(topicFilter);
     }
 

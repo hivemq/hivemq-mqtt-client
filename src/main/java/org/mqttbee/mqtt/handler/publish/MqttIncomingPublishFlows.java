@@ -58,7 +58,7 @@ public class MqttIncomingPublishFlows {
 
     public void subscribe(
             @NotNull final MqttStatefulSubscribe subscribe, @NotNull final MqttSubAck subAck,
-            @NotNull final MqttSubscriptionFlow flow) {
+            @Nullable final MqttSubscriptionFlow flow) {
 
         final ImmutableList<MqttSubscription> subscriptions = subscribe.getStatelessMessage().getSubscriptions();
         final ImmutableList<Mqtt5SubAckReasonCode> reasonCodes = subAck.getReasonCodes();
@@ -69,7 +69,7 @@ public class MqttIncomingPublishFlows {
         }
     }
 
-    void subscribe(@NotNull final MqttTopicFilterImpl topicFilter, @NotNull final MqttSubscriptionFlow flow) {
+    void subscribe(@NotNull final MqttTopicFilterImpl topicFilter, @Nullable final MqttSubscriptionFlow flow) {
         subscriptionFlows.subscribe(topicFilter, flow);
     }
 
@@ -104,7 +104,7 @@ public class MqttIncomingPublishFlows {
             @NotNull final ScNodeList<MqttIncomingPublishFlow> matchingFlows) {
 
         final MqttTopicImpl topic = publish.getStatelessMessage().getTopic();
-        if (subscriptionFlows.findMatching(topic, matchingFlows)) {
+        if (subscriptionFlows.findMatching(topic, matchingFlows) || !matchingFlows.isEmpty()) {
             addAndReference(matchingFlows, globalFlows[MqttGlobalIncomingPublishFlow.TYPE_ALL_SUBSCRIPTIONS]);
         }
         addAndReference(matchingFlows, globalFlows[MqttGlobalIncomingPublishFlow.TYPE_ALL_PUBLISHES]);
@@ -131,7 +131,6 @@ public class MqttIncomingPublishFlows {
             globalFlows[type] = null;
         }
     }
-
 
     static void addAndReference(
             @NotNull final ScNodeList<MqttIncomingPublishFlow> target, @NotNull final MqttIncomingPublishFlow flow) {
