@@ -46,9 +46,9 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
     }
 
     @Override
-    public void subscribe(@NotNull final MqttTopicFilterImpl topicFilter, @NotNull final MqttSubscriptionFlow flow) {
+    public void subscribe(@NotNull final MqttTopicFilterImpl topicFilter, @Nullable final MqttSubscriptionFlow flow) {
         final MqttTopicLevel level = MqttTopicLevel.root(topicFilter);
-        final TopicTreeEntry entry = new TopicTreeEntry(flow, topicFilter);
+        final TopicTreeEntry entry = (flow == null) ? null : new TopicTreeEntry(flow, topicFilter);
         if (rootNode == null) {
             rootNode = new TopicTreeNode(ROOT_LEVEL, level, entry);
         } else {
@@ -116,24 +116,28 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
 
         private TopicTreeNode(
                 @NotNull final ByteArray parentLevel, @Nullable final MqttTopicLevel level,
-                @NotNull final TopicTreeEntry entry) {
+                @Nullable final TopicTreeEntry entry) {
 
             this.parentLevel = parentLevel;
             subscribe(level, entry);
         }
 
-        private void subscribe(@Nullable final MqttTopicLevel level, @NotNull final TopicTreeEntry entry) {
+        private void subscribe(@Nullable final MqttTopicLevel level, @Nullable final TopicTreeEntry entry) {
             if (level == null) {
                 if (entries == null) {
                     entries = new ScNodeList<>();
                 }
-                entries.add(entry);
+                if (entry != null) {
+                    entries.add(entry);
+                }
                 hasSubscription = true;
             } else if (level.isMultiLevelWildcard()) {
                 if (multiLevelEntries == null) {
                     multiLevelEntries = new ScNodeList<>();
                 }
-                multiLevelEntries.add(entry);
+                if (entry != null) {
+                    multiLevelEntries.add(entry);
+                }
                 hasMultiLevelSubscription = true;
             } else {
                 final TopicTreeNode node;

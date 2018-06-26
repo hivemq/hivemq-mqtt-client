@@ -202,10 +202,11 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
             if (!subAckFlow.isCancelled()) {
                 subAckFlow.onSuccess(subAck);
             }
-            final MqttSubscriptionFlow subscriptionFlow = statefulSubscribeWithFlow.getSubscriptionFlow();
-            if ((subscriptionFlow != null) && !subscriptionFlow.isCancelled()) {
-                subscriptionFlows.subscribe(subscribe, subAck, subscriptionFlow);
+            MqttSubscriptionFlow subscriptionFlow = statefulSubscribeWithFlow.getSubscriptionFlow();
+            if ((subscriptionFlow != null) && subscriptionFlow.isCancelled()) {
+                subscriptionFlow = null;
             }
+            subscriptionFlows.subscribe(subscribe, subAck, subscriptionFlow);
         } else {
             final String errorMessage;
             switch (reasonCodesState) {
