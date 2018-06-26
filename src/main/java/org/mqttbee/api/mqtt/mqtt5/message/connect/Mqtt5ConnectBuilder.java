@@ -37,13 +37,14 @@ import org.mqttbee.util.FluentBuilder;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 import org.mqttbee.util.UnsignedDataTypes;
 
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 import static org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect.*;
 
 public class Mqtt5ConnectBuilder<P> extends FluentBuilder<Mqtt5Connect, P> {
 
-    private int keepAlive = DEFAULT_KEEP_ALIVE;
+    private int keepAliveSeconds = DEFAULT_KEEP_ALIVE;
     private boolean isCleanStart = DEFAULT_CLEAN_START;
     private long sessionExpiryInterval = DEFAULT_SESSION_EXPIRY_INTERVAL;
     private boolean isResponseInformationRequested = DEFAULT_RESPONSE_INFORMATION_REQUESTED;
@@ -61,7 +62,7 @@ public class Mqtt5ConnectBuilder<P> extends FluentBuilder<Mqtt5Connect, P> {
     Mqtt5ConnectBuilder(@NotNull final Mqtt5Connect connect) {
         super(null);
         final MqttConnect connectImpl = MustNotBeImplementedUtil.checkNotImplemented(connect, MqttConnect.class);
-        keepAlive = connectImpl.getKeepAlive();
+        keepAliveSeconds = connectImpl.getKeepAlive();
         isCleanStart = connectImpl.isCleanStart();
         sessionExpiryInterval = connectImpl.getSessionExpiryInterval();
         isResponseInformationRequested = connectImpl.isResponseInformationRequested();
@@ -74,9 +75,10 @@ public class Mqtt5ConnectBuilder<P> extends FluentBuilder<Mqtt5Connect, P> {
     }
 
     @NotNull
-    public Mqtt5ConnectBuilder<P> keepAlive(final int keepAlive) {
-        Preconditions.checkArgument(UnsignedDataTypes.isUnsignedShort(keepAlive));
-        this.keepAlive = keepAlive;
+    public Mqtt5ConnectBuilder<P> keepAlive(final int keepAlive, @NotNull final TimeUnit timeUnit) {
+        final long keepAliveSeconds = timeUnit.toSeconds(keepAlive);
+        Preconditions.checkArgument(UnsignedDataTypes.isUnsignedShort(keepAliveSeconds));
+        this.keepAliveSeconds = (int) keepAliveSeconds;
         return this;
     }
 
@@ -158,7 +160,7 @@ public class Mqtt5ConnectBuilder<P> extends FluentBuilder<Mqtt5Connect, P> {
     @NotNull
     @Override
     public Mqtt5Connect build() {
-        return new MqttConnect(keepAlive, isCleanStart, sessionExpiryInterval, isResponseInformationRequested,
+        return new MqttConnect(keepAliveSeconds, isCleanStart, sessionExpiryInterval, isResponseInformationRequested,
                 isProblemInformationRequested, restrictions, simpleAuth, enhancedAuthProvider, willPublish,
                 userProperties);
     }

@@ -48,7 +48,7 @@ public interface Mqtt3Connect extends Mqtt3Message {
     }
 
     /**
-     * @return the keep alive the client wants to use.
+     * @return the keep alive in seconds the client wants to use.
      */
     int getKeepAlive();
 
