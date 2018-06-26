@@ -22,7 +22,10 @@ import io.reactivex.Single;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.api.mqtt.MqttGlobalPublishFlowType;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.mqtt3.exceptions.Mqtt3MessageException;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3Connect;
@@ -94,22 +97,14 @@ class Mqtt3ClientViewExceptionsTest {
                 mqtt5MessageException);
     }
 
-    @Test
-    void remainingPublishes() {
+    @ParameterizedTest
+    @EnumSource(MqttGlobalPublishFlowType.class)
+    void publishes(final MqttGlobalPublishFlowType type) {
         final Mqtt5MessageException mqtt5MessageException =
                 new Mqtt5MessageException(Mqtt5Connect.builder().build(), "reason from original exception");
-        given(mqtt5Client.remainingPublishes()).willReturn(Flowable.error(mqtt5MessageException));
+        given(mqtt5Client.publishes(type)).willReturn(Flowable.error(mqtt5MessageException));
 
-        assertMqtt3Exception(() -> mqtt3Client.remainingPublishes().blockingSubscribe(), mqtt5MessageException);
-    }
-
-    @Test
-    void allPublishes() {
-        final Mqtt5MessageException mqtt5MessageException =
-                new Mqtt5MessageException(Mqtt5Connect.builder().build(), "reason from original exception");
-        given(mqtt5Client.allPublishes()).willReturn(Flowable.error(mqtt5MessageException));
-
-        assertMqtt3Exception(() -> mqtt3Client.allPublishes().blockingSubscribe(), mqtt5MessageException);
+        assertMqtt3Exception(() -> mqtt3Client.publishes(type).blockingSubscribe(), mqtt5MessageException);
     }
 
     @Test

@@ -20,6 +20,7 @@ package org.mqttbee.mqtt.handler.publish;
 import io.reactivex.Flowable;
 import io.reactivex.internal.subscriptions.EmptySubscription;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.api.mqtt.MqttGlobalPublishFlowType;
 import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.mqtt.MqttClientConnectionData;
@@ -32,10 +33,12 @@ import org.reactivestreams.Subscriber;
  */
 public class MqttGlobalIncomingPublishFlowable extends Flowable<Mqtt5Publish> {
 
-    private final int type;
+    private final MqttGlobalPublishFlowType type;
     private final MqttClientData clientData;
 
-    public MqttGlobalIncomingPublishFlowable(final int type, @NotNull final MqttClientData clientData) {
+    public MqttGlobalIncomingPublishFlowable(
+            @NotNull final MqttGlobalPublishFlowType type, @NotNull final MqttClientData clientData) {
+
         this.type = type;
         this.clientData = clientData;
     }

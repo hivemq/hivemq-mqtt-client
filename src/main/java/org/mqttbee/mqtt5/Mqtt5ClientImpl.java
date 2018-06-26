@@ -17,12 +17,14 @@
 
 package org.mqttbee.mqtt5;
 
+import com.google.common.base.Preconditions;
 import io.netty.bootstrap.Bootstrap;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 import io.reactivex.functions.Function;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.api.mqtt.MqttGlobalPublishFlowType;
 import org.mqttbee.api.mqtt.exceptions.AlreadyConnectedException;
 import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5Client;
@@ -41,7 +43,6 @@ import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.handler.MqttChannelInitializer;
 import org.mqttbee.mqtt.handler.auth.MqttReAuthEvent;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
-import org.mqttbee.mqtt.handler.publish.MqttGlobalIncomingPublishFlow;
 import org.mqttbee.mqtt.handler.publish.MqttGlobalIncomingPublishFlowable;
 import org.mqttbee.mqtt.handler.publish.MqttIncomingAckFlowable;
 import org.mqttbee.mqtt.handler.publish.MqttSubscriptionFlowable;
@@ -143,17 +144,11 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
 
     @NotNull
     @Override
-    public Flowable<Mqtt5Publish> remainingPublishes() {
-        return new MqttGlobalIncomingPublishFlowable(MqttGlobalIncomingPublishFlow.TYPE_REMAINING_PUBLISHES, clientData)
-                .observeOn(clientData.getExecutorConfig().getRxJavaScheduler());
-    }
+    public Flowable<Mqtt5Publish> publishes(@NotNull final MqttGlobalPublishFlowType type) {
+        Preconditions.checkNotNull(type);
 
-    @NotNull
-    @Override
-    public Flowable<Mqtt5Publish> allPublishes() {
-        return new MqttGlobalIncomingPublishFlowable(
-                MqttGlobalIncomingPublishFlow.TYPE_ALL_PUBLISHES, clientData).observeOn(
-                clientData.getExecutorConfig().getRxJavaScheduler()); // TODO all subscriptions?
+        return new MqttGlobalIncomingPublishFlowable(type, clientData).observeOn(
+                clientData.getExecutorConfig().getRxJavaScheduler());
     }
 
     @NotNull
@@ -162,8 +157,7 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
         final MqttUnsubscribe mqttUnsubscribe =
                 MustNotBeImplementedUtil.checkNotImplemented(unsubscribe, MqttUnsubscribe.class);
 
-        return new MqttUnsubAckSingle(mqttUnsubscribe, clientData).observeOn(
-                clientData.getExecutorConfig().getRxJavaScheduler());
+        return new MqttUnsubAckSingle(mqttUnsubscribe, clientData).observeOn(clientData.getExecutorConfig().getRxJavaScheduler());
     }
 
     @NotNull
