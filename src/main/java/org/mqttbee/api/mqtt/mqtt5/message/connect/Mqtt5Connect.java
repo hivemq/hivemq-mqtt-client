@@ -57,7 +57,7 @@ public interface Mqtt5Connect extends Mqtt5Message {
     }
 
     /**
-     * @return the keep alive the client wants to use.
+     * @return the keep alive in seconds the client wants to use.
      */
     int getKeepAlive();
 
