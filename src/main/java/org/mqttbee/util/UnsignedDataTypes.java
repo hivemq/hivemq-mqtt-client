@@ -25,10 +25,6 @@ public class UnsignedDataTypes {
     public static final int UNSIGNED_SHORT_MAX_VALUE = 0xFFFF;
     public static final long UNSIGNED_INT_MAX_VALUE = 0xFFFF_FFFFL;
 
-    public static boolean isUnsignedShort(final int value) {
-        return isUnsignedShort((long) value);
-    }
-
     public static boolean isUnsignedShort(final long value) {
         return (value >= 0) && (value <= UNSIGNED_SHORT_MAX_VALUE);
     }
