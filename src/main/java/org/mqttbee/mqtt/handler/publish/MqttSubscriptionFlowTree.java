@@ -250,11 +250,11 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
                 @NotNull final ScNodeList<MqttIncomingPublishFlow> matchingFlows) {
 
             if (level == null) {
-                addAndReference(matchingFlows, entries);
-                addAndReference(matchingFlows, multiLevelEntries);
+                add(matchingFlows, entries);
+                add(matchingFlows, multiLevelEntries);
                 return hasSubscription || hasMultiLevelSubscription;
             }
-            addAndReference(matchingFlows, multiLevelEntries);
+            add(matchingFlows, multiLevelEntries);
             boolean subscriptionFound = hasMultiLevelSubscription;
             if (next != null) {
                 if (hasSingleLevelSubscription) {
@@ -269,13 +269,12 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
             return subscriptionFound;
         }
 
-        private static void addAndReference(
+        private static void add(
                 @NotNull final ScNodeList<MqttIncomingPublishFlow> target,
                 @Nullable final ScNodeList<TopicTreeEntry> source) {
 
             if (source != null) {
                 for (final TopicTreeEntry entry : source) {
-                    entry.flow.reference();
                     target.add(entry.flow);
                 }
             }

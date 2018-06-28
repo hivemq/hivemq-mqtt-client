@@ -18,21 +18,20 @@
 package org.mqttbee.mqtt.handler.publish;
 
 import io.netty.channel.EventLoop;
-import io.reactivex.Scheduler;
+import org.mqttbee.annotations.CallByThread;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.ioc.ChannelScope;
+import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
+import org.mqttbee.util.collections.ChunkedArrayQueue;
 import org.mqttbee.util.collections.ScNodeList;
-import org.mqttbee.util.collections.SpscIterableChunkedArrayQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import java.util.Iterator;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author Silvio Giebl
@@ -44,94 +43,110 @@ public class MqttIncomingPublishService {
 
     private final MqttIncomingQoSHandler incomingQoSHandler; // TODO temp
     private final MqttIncomingPublishFlows incomingPublishFlows;
-    private final Scheduler.Worker rxEventLoop;
     private final EventLoop nettyEventLoop;
 
-    private final SpscIterableChunkedArrayQueue<QueueEntry> queue;
-    private final AtomicBoolean requestOnBlocking = new AtomicBoolean();
+    private final ChunkedArrayQueue<QueueEntry> queue;
+    private final int receiveMaximum;
 
-    private final Runnable publishRunnable;
-    private final AtomicBoolean scheduled = new AtomicBoolean();
+    private int referencedFlowCount;
+    private int runIndex;
+    private int blockingFlowCount;
 
     @Inject
     MqttIncomingPublishService(
-        final MqttIncomingQoSHandler incomingQoSHandler, final MqttIncomingPublishFlows incomingPublishFlows,
-        @Named("incomingPublish") final Scheduler.Worker rxEventLoop, final MqttClientData clientData) {
+            final MqttIncomingQoSHandler incomingQoSHandler, final MqttIncomingPublishFlows incomingPublishFlows,
+            final MqttClientData clientData) {
 
         final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
         assert clientConnectionData != null;
 
         this.incomingQoSHandler = incomingQoSHandler; // TODO temp
         this.incomingPublishFlows = incomingPublishFlows;
-        this.rxEventLoop = rxEventLoop;
         nettyEventLoop = clientConnectionData.getChannel().eventLoop();
 
-        final int receiveMaximum = clientConnectionData.getReceiveMaximum();
-        queue = new SpscIterableChunkedArrayQueue<>(receiveMaximum, 64);
-
-        publishRunnable = this::runPublish;
+        queue = new ChunkedArrayQueue<>(64);
+        receiveMaximum = clientConnectionData.getReceiveMaximum();
     }
 
-    public boolean onPublish(@NotNull final MqttStatefulPublish publish) {
-        if (!queue.canOffer()) {
+    @CallByThread("Netty EventLoop")
+    boolean onPublish(@NotNull final MqttStatefulPublish publish) {
+        if (queue.size() >= receiveMaximum) {
             return false; // flow control error
         }
         final ScNodeList<MqttIncomingPublishFlow> flows = incomingPublishFlows.findMatching(publish);
         if (flows.isEmpty()) {
             LOGGER.warn("No publish flow registered for {}.", publish);
         }
-        final QueueEntry entry = new QueueEntry(publish, flows);
-        queue.offer(entry);
-        if (scheduled.compareAndSet(false, true)) {
-            rxEventLoop.schedule(publishRunnable);
+
+        drain();
+        final boolean acknowledge = queue.isEmpty();
+        for (final MqttIncomingPublishFlow flow : flows) {
+            if (flow.reference() == 1) {
+                referencedFlowCount++;
+            }
         }
+        emit(publish.getStatelessMessage(), flows);
+        if (acknowledge && flows.isEmpty()) {
+            incomingQoSHandler.ack(publish);
+        } else {
+            queue.offer(new QueueEntry(publish, flows));
+        }
+
         return true;
     }
 
-    private void runPublish() {
-        scheduled.set(false);
-        eventLoop();
-    }
-
-    void requestOnBlocking() {
-        requestOnBlocking.set(true);
-    }
-
-    void eventLoop() {
-        requestOnBlocking.set(false);
+    @CallByThread("Netty EventLoop")
+    void drain() {
+        runIndex++;
+        blockingFlowCount = 0;
         boolean acknowledge = true;
 
         final Iterator<QueueEntry> queueIt = queue.iterator();
         while (queueIt.hasNext()) {
             final QueueEntry entry = queueIt.next();
-
-            final Iterator<MqttIncomingPublishFlow> flowIt = entry.flows.iterator();
-            while (flowIt.hasNext()) {
-                final MqttIncomingPublishFlow flow = flowIt.next();
-
-                final long requested = (acknowledge) ? flow.applyRequests() : flow.requested();
-                if (flow.isCancelled()) {
-                    flowIt.remove(); // no need to dereference as the flow will stay cancelled
-                } else if (requested > 0) {
-                    flow.onNext(entry.publish.getStatelessMessage());
-                    flowIt.remove();
-                    if ((flow.dereference() == 0) && flow.isUnsubscribed()) {
-                        flow.onComplete();
-                    }
+            final MqttStatefulPublish publish = entry.publish;
+            final ScNodeList<MqttIncomingPublishFlow> flows = entry.flows;
+            emit(publish.getStatelessMessage(), flows);
+            if (acknowledge && flows.isEmpty()) {
+                queueIt.remove();
+                incomingQoSHandler.ack(publish); // TODO temp
+            } else {
+                acknowledge = false;
+                if (blockingFlowCount == referencedFlowCount) {
+                    break;
                 }
             }
-            if (acknowledge) {
-                if (entry.flows.isEmpty()) {
-                    queueIt.remove();
-                    incomingQoSHandler.ack(entry.publish); // TODO temp
-                } else {
-                    acknowledge = false;
-                    for (final MqttIncomingPublishFlow flow : entry.flows) {
-                        flow.setBlocking();
+        }
+    }
+
+    @CallByThread("Netty EventLoop")
+    private void emit(@NotNull final MqttPublish publish, @NotNull final ScNodeList<MqttIncomingPublishFlow> flows) {
+        final Iterator<MqttIncomingPublishFlow> flowIt = flows.iterator();
+        while (flowIt.hasNext()) {
+            final MqttIncomingPublishFlow flow = flowIt.next();
+
+            if (flow.isCancelled()) {
+                flowIt.remove();
+                if (flow.dereference() == 0) {
+                    referencedFlowCount--;
+                }
+            } else {
+                final long requested = flow.requested(runIndex);
+                if (requested > 0) {
+                    flow.onNext(publish);
+                    flowIt.remove();
+                    if (flow.dereference() == 0) {
+                        referencedFlowCount--;
+                        if (flow.isUnsubscribed()) {
+                            flow.onComplete();
+                        }
+                    }
+                } else if (requested == 0) {
+                    blockingFlowCount++;
+                    if (blockingFlowCount == referencedFlowCount) {
+                        break;
                     }
                 }
-            } else if (requestOnBlocking.get()) {
-                break;
             }
         }
     }
@@ -142,15 +157,9 @@ public class MqttIncomingPublishService {
     }
 
     @NotNull
-    Scheduler.Worker getRxEventLoop() {
-        return rxEventLoop;
-    }
-
-    @NotNull
     EventLoop getNettyEventLoop() {
         return nettyEventLoop;
     }
-
 
     private static class QueueEntry {
 

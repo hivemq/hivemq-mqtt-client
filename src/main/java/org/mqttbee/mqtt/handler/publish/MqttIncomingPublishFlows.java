@@ -106,11 +106,11 @@ public class MqttIncomingPublishFlows {
 
         final MqttTopicImpl topic = publish.getStatelessMessage().getTopic();
         if (subscriptionFlows.findMatching(topic, matchingFlows) || !matchingFlows.isEmpty()) {
-            addAndReference(matchingFlows, globalFlows[MqttGlobalPublishFlowType.ALL_SUBSCRIPTIONS.ordinal()]);
+            add(matchingFlows, globalFlows[MqttGlobalPublishFlowType.ALL_SUBSCRIPTIONS.ordinal()]);
         }
-        addAndReference(matchingFlows, globalFlows[MqttGlobalPublishFlowType.ALL_PUBLISHES.ordinal()]);
+        add(matchingFlows, globalFlows[MqttGlobalPublishFlowType.ALL_PUBLISHES.ordinal()]);
         if (matchingFlows.isEmpty()) {
-            addAndReference(matchingFlows, globalFlows[MqttGlobalPublishFlowType.REMAINING_PUBLISHES.ordinal()]);
+            add(matchingFlows, globalFlows[MqttGlobalPublishFlowType.REMAINING_PUBLISHES.ordinal()]);
         }
     }
 
@@ -133,20 +133,13 @@ public class MqttIncomingPublishFlows {
         }
     }
 
-    static void addAndReference(
-            @NotNull final ScNodeList<MqttIncomingPublishFlow> target, @NotNull final MqttIncomingPublishFlow flow) {
-
-        flow.reference();
-        target.add(flow);
-    }
-
-    private static void addAndReference(
+    private static void add(
             @NotNull final ScNodeList<MqttIncomingPublishFlow> target,
             @Nullable final ScNodeList<? extends MqttIncomingPublishFlow> source) {
 
         if (source != null) {
             for (final MqttIncomingPublishFlow flow : source) {
-                addAndReference(target, flow);
+                target.add(flow);
             }
         }
     }
