@@ -41,8 +41,9 @@ public class MqttGlobalIncomingPublishFlow extends MqttIncomingPublishFlow<Subsc
     }
 
     @Override
-    void runRemoveOnCancel() {
+    void runCancel() {
         incomingPublishService.getIncomingPublishFlows().cancelGlobal(this);
+        super.runCancel();
     }
 
     @NotNull

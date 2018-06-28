@@ -55,8 +55,9 @@ public class MqttSubscriptionFlow extends MqttIncomingPublishFlow<Subscriber<? s
     }
 
     @Override
-    void runRemoveOnCancel() {
+    void runCancel() {
         incomingPublishService.getIncomingPublishFlows().cancel(this);
+        super.runCancel();
     }
 
     @NotNull

@@ -21,7 +21,6 @@ import dagger.Binds;
 import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
-import io.reactivex.Scheduler;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.handler.disconnect.Mqtt3Disconnecter;
 import org.mqttbee.mqtt.handler.disconnect.Mqtt5Disconnecter;
@@ -29,13 +28,11 @@ import org.mqttbee.mqtt.handler.disconnect.MqttDisconnecter;
 import org.mqttbee.mqtt.handler.publish.MqttSubscriptionFlowTree;
 import org.mqttbee.mqtt.handler.publish.MqttSubscriptionFlows;
 
-import javax.inject.Named;
-
 /**
  * @author Silvio Giebl
  */
 @Module
-public abstract class ChannelModule {
+abstract class ChannelModule {
 
     @Provides
     @ChannelScope
@@ -51,13 +48,6 @@ public abstract class ChannelModule {
             default:
                 throw new IllegalStateException();
         }
-    }
-
-    @Provides
-    @ChannelScope
-    @Named("incomingPublish")
-    static Scheduler.Worker provideIncomingPublishRxEventLoop(final MqttClientData clientData) {
-        return clientData.getExecutorConfig().getRxJavaScheduler().createWorker();
     }
 
     @Binds

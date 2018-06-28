@@ -98,7 +98,7 @@ public class MqttSubscriptionFlowList implements MqttSubscriptionFlows {
         for (final MqttSubscriptionFlow flow : flows) {
             for (final MqttTopicFilterImpl topicFilter : flow.getTopicFilters()) {
                 if (topicFilter.matches(topic)) {
-                    MqttIncomingPublishFlows.addAndReference(matchingFlows, flow);
+                    matchingFlows.add(flow);
                     break;
                 }
             }

@@ -19,6 +19,7 @@ package org.mqttbee.mqtt.handler.publish;
 
 import io.reactivex.Emitter;
 import io.reactivex.internal.util.BackpressureHelper;
+import org.mqttbee.annotations.CallByThread;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.reactivestreams.Subscriber;
@@ -34,20 +35,24 @@ import java.util.concurrent.atomic.AtomicLong;
 public abstract class MqttIncomingPublishFlow<S extends Subscriber<? super Mqtt5Publish>>
         implements Emitter<Mqtt5Publish>, Subscription {
 
+    private static final int STATE_NO_NEW_REQUESTS = 0;
+    private static final int STATE_NEW_REQUESTS = 1;
+    private static final int STATE_BLOCKED = 2;
+
     final MqttIncomingPublishService incomingPublishService;
     final S subscriber;
 
     long requested;
     private final AtomicLong newRequested = new AtomicLong();
     private final AtomicBoolean cancelled = new AtomicBoolean();
-    private final AtomicBoolean unsubscribed = new AtomicBoolean();
+    private boolean unsubscribed;
     boolean done;
 
-    private final AtomicInteger referenced = new AtomicInteger();
-    private final AtomicBoolean blocking = new AtomicBoolean();
-
+    private int referenced;
+    private long blockedIndex;
+    private boolean blocking;
+    private final AtomicInteger requestState = new AtomicInteger();
     private final Runnable requestRunnable = this::runRequest;
-    private final AtomicBoolean scheduled = new AtomicBoolean();
 
     MqttIncomingPublishFlow(
             @NotNull final MqttIncomingPublishService incomingPublishService, @NotNull final S subscriber) {
@@ -56,6 +61,7 @@ public abstract class MqttIncomingPublishFlow<S extends Subscriber<? super Mqtt5
         this.subscriber = subscriber;
     }
 
+    @CallByThread("Netty EventLoop")
     @Override
     public void onNext(@NotNull final Mqtt5Publish result) {
         if (done) {
@@ -67,6 +73,7 @@ public abstract class MqttIncomingPublishFlow<S extends Subscriber<? super Mqtt5
         }
     }
 
+    @CallByThread("Netty EventLoop")
     @Override
     public void onError(@NotNull final Throwable t) {
         if (done) {
@@ -76,6 +83,7 @@ public abstract class MqttIncomingPublishFlow<S extends Subscriber<? super Mqtt5
         subscriber.onError(t);
     }
 
+    @CallByThread("Netty EventLoop")
     @Override
     public void onComplete() {
         if (done) {
@@ -87,36 +95,47 @@ public abstract class MqttIncomingPublishFlow<S extends Subscriber<? super Mqtt5
 
     @Override
     public void request(final long n) {
-        if (!cancelled.get()) {
+        if (n > 0) {
             BackpressureHelper.add(newRequested, n);
-            schedule(requestRunnable);
-        }
-    }
-
-    private void runRequest() {
-        scheduled.set(false);
-        applyRequests();
-        if (referenced.get() > 0) {
-            incomingPublishService.eventLoop();
-        }
-    }
-
-    long requested() {
-        return requested;
-    }
-
-    long applyRequests() { // called sequentially with onNext
-        long requested = this.requested;
-        if (requested == Long.MAX_VALUE) {
-            return Long.MAX_VALUE;
-        }
-        final long newRequested = this.newRequested.getAndSet(0);
-        if (newRequested != 0) {
-            if (requested == 0) {
-                blocking.set(false);
+            if (requestState.getAndSet(STATE_NEW_REQUESTS) == STATE_BLOCKED) {
+                incomingPublishService.getNettyEventLoop().execute(requestRunnable);
             }
-            requested = BackpressureHelper.addCap(requested, newRequested);
-            this.requested = requested;
+        }
+    }
+
+    @CallByThread("Netty EventLoop")
+    private void runRequest() { // only executed if was blocking
+        if (referenced > 0) { // is blocking
+            incomingPublishService.drain();
+        }
+    }
+
+    @CallByThread("Netty EventLoop")
+    long requested(final long runIndex) {
+        if (requested <= 0) {
+            if (blocking && (blockedIndex != runIndex)) {
+                blocking = false; // unblock in a new run iteration
+            }
+            if (blocking) {
+                return -1;
+            } else {
+                for (; ; ) { // setting both requestState and newRequested is not atomic
+                    if (requestState.compareAndSet(STATE_NO_NEW_REQUESTS, STATE_BLOCKED)) {
+                        blockedIndex = runIndex;
+                        blocking = true;
+                        return 0;
+                    } else { // requestState = STATE_NEW_REQUESTS
+                        requestState.set(STATE_NO_NEW_REQUESTS);
+                        final long newRequested = this.newRequested.getAndSet(0);
+                        // If request was called concurrently we may have included the newRequested amount already but
+                        // requestState is afterwards set to STATE_NEW_REQUESTS although newRequested is reset to 0.
+                        // If request is not called until the next invocation of this method, newRequested may be 0.
+                        if (newRequested > 0) {
+                            return requested = BackpressureHelper.addCap(requested, newRequested);
+                        }
+                    }
+                }
+            }
         }
         return requested;
     }
@@ -124,62 +143,41 @@ public abstract class MqttIncomingPublishFlow<S extends Subscriber<? super Mqtt5
     @Override
     public void cancel() {
         if (cancelled.compareAndSet(false, true)) {
-            incomingPublishService.getNettyEventLoop().execute(this::runRemoveOnCancel);
-            schedule(this::runCancel);
+            incomingPublishService.getNettyEventLoop().execute(this::runCancel);
         }
     }
 
-    private void runCancel() {
-        scheduled.set(false);
-        // onComplete(); no onComplete on cancel
-        if (referenced.get() > 0) {
-            incomingPublishService.eventLoop();
+    @CallByThread("Netty EventLoop")
+    void runCancel() { // always executed if cancelled
+        if (referenced > 0) { // is blocking
+            incomingPublishService.drain();
         }
     }
-
-    abstract void runRemoveOnCancel();
 
     public boolean isCancelled() {
         return cancelled.get();
     }
 
+    @CallByThread("Netty EventLoop")
     void unsubscribe() {
-        unsubscribed.set(true);
-        schedule(this::runUnsubscribe);
-    }
-
-    private void runUnsubscribe() {
-        scheduled.set(false);
-        if (referenced.get() == 0) {
+        unsubscribed = true;
+        if (referenced == 0) {
             onComplete();
         } else {
-            incomingPublishService.eventLoop();
+            incomingPublishService.drain();
         }
     }
 
     boolean isUnsubscribed() {
-        return unsubscribed.get();
+        return unsubscribed;
     }
 
-    void reference() {
-        referenced.getAndIncrement();
+    int reference() {
+        return ++referenced;
     }
 
     int dereference() {
-        return referenced.decrementAndGet();
-    }
-
-    void setBlocking() {
-        blocking.set(true);
-    }
-
-    private void schedule(@NotNull final Runnable runnable) {
-        if (scheduled.compareAndSet(false, true)) {
-            if (blocking.get()) {
-                incomingPublishService.requestOnBlocking();
-            }
-            incomingPublishService.getRxEventLoop().schedule(runnable);
-        }
+        return --referenced;
     }
 
 }

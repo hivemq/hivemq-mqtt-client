@@ -21,9 +21,11 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 
 import javax.annotation.concurrent.NotThreadSafe;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 @NotThreadSafe
-public class ChunkedArrayQueue<E> {
+public class ChunkedArrayQueue<E> implements Iterable<E> {
 
     private final int chunkSize;
     private Chunk<E> producerChunk;
@@ -31,6 +33,7 @@ public class ChunkedArrayQueue<E> {
     private int producerIndex;
     private int consumerIndex;
     private int size;
+    private final ChunkedArrayQueueIterator iterator = new ChunkedArrayQueueIterator();
 
     public ChunkedArrayQueue(final int chunkSize) {
         this.chunkSize = chunkSize;
@@ -92,6 +95,13 @@ public class ChunkedArrayQueue<E> {
         return consumerChunk.values[consumerIndex];
     }
 
+    @NotNull
+    @Override
+    public Iterator<E> iterator() {
+        iterator.clear();
+        return iterator;
+    }
+
 
     private static class Chunk<E> {
 
@@ -102,6 +112,54 @@ public class ChunkedArrayQueue<E> {
         @SuppressWarnings("unchecked")
         Chunk(final int chunkSize) {
             values = (E[]) new Object[chunkSize];
+        }
+
+    }
+
+    private class ChunkedArrayQueueIterator implements Iterator<E> {
+
+        private Chunk<E> iteratorChunk;
+        private int iteratorIndex;
+        private int iterated;
+
+        void clear() {
+            iteratorChunk = consumerChunk;
+            iteratorIndex = consumerIndex;
+            iterated = 0;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return iterated < size;
+        }
+
+        @NotNull
+        @Override
+        public E next() {
+            final E e = iteratorChunk.values[iteratorIndex];
+            if (e == null) {
+                throw new NoSuchElementException();
+            }
+            if (iteratorIndex == iteratorChunk.jumpIndex) {
+                iteratorIndex = 0;
+                iteratorChunk = iteratorChunk.next;
+            } else {
+                iteratorIndex++;
+                if (iteratorIndex == chunkSize) {
+                    iteratorIndex = 0;
+                }
+            }
+            iterated++;
+            return e;
+        }
+
+        @Override
+        public void remove() {
+            if (iterated != 1) {
+                throw new IllegalStateException();
+            }
+            iterated = 0;
+            poll();
         }
 
     }
