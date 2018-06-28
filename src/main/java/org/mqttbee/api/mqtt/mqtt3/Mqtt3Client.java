@@ -160,7 +160,8 @@ public interface Mqtt3Client extends MqttClient {
     }
 
     /**
-     * Creates a {@link Flowable} for globally consuming the Publish messages received by this client.
+     * Creates a {@link Flowable} for globally consuming all Publish messages matching the given type received by this
+     * client.
      * <p>
      * The returned {@link Flowable} represents the source of the incoming Publish messages matching the given type.
      * Calling this method does not start consuming yet. This is done lazy and asynchronous when subscribing (in terms
