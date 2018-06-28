@@ -47,6 +47,7 @@ import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRelBuilder;
 import org.mqttbee.util.Ranges;
 import org.mqttbee.util.UnsignedDataTypes;
 import org.mqttbee.util.collections.IntMap;
+import org.mqttbee.util.collections.SpscChunkedArrayQueueUtil;
 
 import javax.inject.Inject;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -80,7 +81,7 @@ public class MqttOutgoingQoSHandler extends ChannelInboundHandlerAdapter {
         assert serverConnectionData != null;
 
         final int pubReceiveMaximum = getPubReceiveMaximum(serverConnectionData.getReceiveMaximum());
-        publishQueue = new SpscChunkedArrayQueue<>(64, pubReceiveMaximum);
+        publishQueue = SpscChunkedArrayQueueUtil.create(pubReceiveMaximum, 64);
         packetIdentifiers = new Ranges(1, pubReceiveMaximum);
         qos1Or2Publishes = new IntMap<>(1, pubReceiveMaximum);
     }
