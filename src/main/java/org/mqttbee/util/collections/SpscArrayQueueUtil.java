@@ -17,16 +17,22 @@
 
 package org.mqttbee.util.collections;
 
+import org.jctools.queues.SpscArrayQueue;
 import org.jctools.queues.SpscChunkedArrayQueue;
 import org.mqttbee.annotations.NotNull;
+
+import java.util.Queue;
 
 /**
  * @author Silvio Giebl
  */
-public class SpscChunkedArrayQueueUtil {
+public class SpscArrayQueueUtil {
 
     @NotNull
-    public static <E> SpscChunkedArrayQueue<E> create(int capacity, int chunkSize) {
+    public static <E> Queue<E> create(int capacity, int chunkSize) {
+        if (capacity <= chunkSize) {
+            return new SpscArrayQueue<>(capacity);
+        }
         capacity = Math.max(16, capacity);
         chunkSize = Math.min(chunkSize, capacity / 2);
         return new SpscChunkedArrayQueue<>(chunkSize, capacity);
