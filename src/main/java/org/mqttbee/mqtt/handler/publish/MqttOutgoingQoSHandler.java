@@ -20,7 +20,6 @@ package org.mqttbee.mqtt.handler.publish;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import org.jctools.queues.SpscChunkedArrayQueue;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ServerConnectionData;
@@ -47,9 +46,10 @@ import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRelBuilder;
 import org.mqttbee.util.Ranges;
 import org.mqttbee.util.UnsignedDataTypes;
 import org.mqttbee.util.collections.IntMap;
-import org.mqttbee.util.collections.SpscChunkedArrayQueueUtil;
+import org.mqttbee.util.collections.SpscArrayQueueUtil;
 
 import javax.inject.Inject;
+import java.util.Queue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.mqttbee.mqtt.message.publish.MqttStatefulPublish.*;
@@ -67,7 +67,7 @@ public class MqttOutgoingQoSHandler extends ChannelInboundHandlerAdapter {
         return Math.min(receiveMaximum, max);
     }
 
-    private final SpscChunkedArrayQueue<MqttPublishWithFlow> publishQueue;
+    private final Queue<MqttPublishWithFlow> publishQueue;
     private final Runnable publishRunnable = this::runPublish;
     private final AtomicInteger wip = new AtomicInteger();
     private final Ranges packetIdentifiers;
@@ -81,7 +81,7 @@ public class MqttOutgoingQoSHandler extends ChannelInboundHandlerAdapter {
         assert serverConnectionData != null;
 
         final int pubReceiveMaximum = getPubReceiveMaximum(serverConnectionData.getReceiveMaximum());
-        publishQueue = SpscChunkedArrayQueueUtil.create(pubReceiveMaximum, 64);
+        publishQueue = SpscArrayQueueUtil.create(pubReceiveMaximum, 64);
         packetIdentifiers = new Ranges(1, pubReceiveMaximum);
         qos1Or2Publishes = new IntMap<>(1, pubReceiveMaximum);
     }
@@ -101,7 +101,9 @@ public class MqttOutgoingQoSHandler extends ChannelInboundHandlerAdapter {
     private void runPublish() {
         final int working = Math.min(wip.get(), 64);
         for (int i = 0; i < working; i++) {
-            handlePublish(ctx, publishQueue.poll());
+            final MqttPublishWithFlow publishWithFlow = publishQueue.poll();
+            assert publishWithFlow != null; // ensured by wip
+            handlePublish(ctx, publishWithFlow);
         }
         ctx.flush();
         if (wip.addAndGet(-working) > 0) {
