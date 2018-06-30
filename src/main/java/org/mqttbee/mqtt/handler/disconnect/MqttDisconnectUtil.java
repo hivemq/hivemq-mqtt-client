@@ -69,7 +69,7 @@ public class MqttDisconnectUtil {
     }
 
     /**
-     * @see MqttDisconnecter#disconnect(Channel, Mqtt5DisconnectReasonCode, String).
+     * @see MqttDisconnecter#disconnect(Channel, Mqtt5DisconnectReasonCode, String)
      */
     public static void disconnect(
             @NotNull final Channel channel, final Mqtt5DisconnectReasonCode reasonCode,
@@ -79,7 +79,7 @@ public class MqttDisconnectUtil {
     }
 
     /**
-     * @see MqttDisconnecter#disconnect(Channel, Mqtt5DisconnectReasonCode, Throwable).
+     * @see MqttDisconnecter#disconnect(Channel,Mqtt5DisconnectReasonCode,Throwable)
      */
     public static void disconnect(
             @NotNull final Channel channel, final Mqtt5DisconnectReasonCode reasonCode,
