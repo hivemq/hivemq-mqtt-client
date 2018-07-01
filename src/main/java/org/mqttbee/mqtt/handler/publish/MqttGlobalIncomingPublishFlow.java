@@ -26,7 +26,7 @@ import org.reactivestreams.Subscriber;
 /**
  * @author Silvio Giebl
  */
-public class MqttGlobalIncomingPublishFlow extends MqttIncomingPublishFlow<Subscriber<? super Mqtt5Publish>> {
+class MqttGlobalIncomingPublishFlow extends MqttIncomingPublishFlow<Subscriber<? super Mqtt5Publish>> {
 
     private final MqttGlobalPublishFlowType type;
     private ScNodeList.Handle<MqttGlobalIncomingPublishFlow> handle;
@@ -47,7 +47,7 @@ public class MqttGlobalIncomingPublishFlow extends MqttIncomingPublishFlow<Subsc
     }
 
     @NotNull
-    public MqttGlobalPublishFlowType getType() {
+    MqttGlobalPublishFlowType getType() {
         return type;
     }
 

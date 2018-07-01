@@ -33,7 +33,7 @@ import javax.annotation.concurrent.Immutable;
 public class Mqtt3UnsubAckView implements Mqtt3UnsubAck {
 
     public static final ImmutableList<Mqtt5UnsubAckReasonCode> REASON_CODES_ALL_SUCCESS = ImmutableList.of();
-    public static final Mqtt3UnsubAckView INSTANCE = new Mqtt3UnsubAckView();
+    private static final Mqtt3UnsubAckView INSTANCE = new Mqtt3UnsubAckView();
 
     @NotNull
     public static MqttUnsubAck delegate(final int packetIdentifier) {

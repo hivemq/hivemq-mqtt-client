@@ -89,12 +89,12 @@ public class MqttIncomingPublishFlows {
         subscriptionFlows.unsubscribe(topicFilter, null);
     }
 
-    public void cancel(@NotNull final MqttSubscriptionFlow flow) {
+    void cancel(@NotNull final MqttSubscriptionFlow flow) {
         subscriptionFlows.cancel(flow);
     }
 
     @NotNull
-    public ScNodeList<MqttIncomingPublishFlow> findMatching(@NotNull final MqttStatefulPublish publish) {
+    ScNodeList<MqttIncomingPublishFlow> findMatching(@NotNull final MqttStatefulPublish publish) {
         final ScNodeList<MqttIncomingPublishFlow> matchingFlows = new ScNodeList<>();
         findMatching(publish, matchingFlows);
         return matchingFlows;
@@ -114,7 +114,7 @@ public class MqttIncomingPublishFlows {
         }
     }
 
-    public void subscribeGlobal(@NotNull final MqttGlobalIncomingPublishFlow flow) {
+    void subscribeGlobal(@NotNull final MqttGlobalIncomingPublishFlow flow) {
         final int type = flow.getType().ordinal();
         ScNodeList<MqttGlobalIncomingPublishFlow> globalFlow = globalFlows[type];
         if (globalFlow == null) {
@@ -124,7 +124,7 @@ public class MqttIncomingPublishFlows {
         flow.setHandle(globalFlow.add(flow));
     }
 
-    public void cancelGlobal(@NotNull final MqttGlobalIncomingPublishFlow flow) {
+    void cancelGlobal(@NotNull final MqttGlobalIncomingPublishFlow flow) {
         flow.getHandle().remove();
         final int type = flow.getType().ordinal();
         final ScNodeList<MqttGlobalIncomingPublishFlow> globalFlow = globalFlows[type];
