@@ -101,7 +101,7 @@ public class MqttIncomingPublishFlowsWithId extends MqttIncomingPublishFlows {
     }
 
     @Override
-    public void cancel(@NotNull final MqttSubscriptionFlow flow) {
+    void cancel(@NotNull final MqttSubscriptionFlow flow) {
         final int subscriptionIdentifier = flow.getSubscriptionIdentifier();
         if (subscriptionIdentifier != DEFAULT_NO_SUBSCRIPTION_IDENTIFIER) {
             flowsWithIdsMap.remove(subscriptionIdentifier);
