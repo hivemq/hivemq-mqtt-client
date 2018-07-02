@@ -33,7 +33,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author Silvio Giebl
  */
 public abstract class MqttIncomingPublishFlow<S extends Subscriber<? super Mqtt5Publish>>
-        implements Emitter<Mqtt5Publish>, Subscription {
+        implements Emitter<Mqtt5Publish>, Subscription, Runnable {
 
     private static final int STATE_NO_NEW_REQUESTS = 0;
     private static final int STATE_NEW_REQUESTS = 1;
@@ -52,7 +52,6 @@ public abstract class MqttIncomingPublishFlow<S extends Subscriber<? super Mqtt5
     private long blockedIndex;
     private boolean blocking;
     private final AtomicInteger requestState = new AtomicInteger();
-    private final Runnable requestRunnable = this::runRequest;
 
     MqttIncomingPublishFlow(
             @NotNull final MqttIncomingPublishService incomingPublishService, @NotNull final S subscriber) {
@@ -98,13 +97,13 @@ public abstract class MqttIncomingPublishFlow<S extends Subscriber<? super Mqtt5
         if (n > 0) {
             BackpressureHelper.add(newRequested, n);
             if (requestState.getAndSet(STATE_NEW_REQUESTS) == STATE_BLOCKED) {
-                incomingPublishService.getNettyEventLoop().execute(requestRunnable);
+                incomingPublishService.getNettyEventLoop().execute(this);
             }
         }
     }
 
     @CallByThread("Netty EventLoop")
-    private void runRequest() { // only executed if was blocking
+    public void run() { // only executed if was blocking
         if (referenced > 0) { // is blocking
             incomingPublishService.drain();
         }
