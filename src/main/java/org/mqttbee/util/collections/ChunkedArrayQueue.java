@@ -95,13 +95,17 @@ public class ChunkedArrayQueue<E> implements Iterable<E> {
         return consumerChunk.values[consumerIndex];
     }
 
+    public void clear() {
+        while (poll() != null) {
+        }
+    }
+
     @NotNull
     @Override
     public Iterator<E> iterator() {
         iterator.clear();
         return iterator;
     }
-
 
     private static class Chunk<E> {
 
