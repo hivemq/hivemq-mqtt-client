@@ -30,16 +30,16 @@ public class SpscArrayQueueUtil {
 
     @NotNull
     public static <E> Queue<E> create(int capacity, int chunkSize) {
-        chunkSize = nextPowerOf2(chunkSize);
+        chunkSize = roundToPowerOf2(chunkSize);
         chunkSize = Math.max(8, chunkSize);
         if (capacity <= chunkSize) {
             return new SpscArrayQueue<>(capacity);
         }
-        capacity = nextPowerOf2(capacity); // capacity is at least 9, so next power of two is at least 16
+        capacity = roundToPowerOf2(capacity); // capacity is at least 9, so next power of two is at least 16
         return new SpscChunkedArrayQueue<>(chunkSize, capacity);
     }
 
-    private static int nextPowerOf2(final int value) {
+    private static int roundToPowerOf2(final int value) {
         return 1 << 32 - Integer.numberOfLeadingZeros(value - 1);
     }
 
