@@ -70,7 +70,7 @@ public class MqttClientExecutorConfigImpl implements MqttClientExecutorConfig {
     }
 
     @NotNull
-    public Scheduler getRxJavaScheduler() {
+    public Scheduler getApiScheduler() {
         return rxJavaScheduler;
     }
 

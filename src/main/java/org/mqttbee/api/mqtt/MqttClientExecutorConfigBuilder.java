@@ -57,7 +57,7 @@ public class MqttClientExecutorConfigBuilder<P> extends FluentBuilder<MqttClient
     }
 
     @NotNull
-    public MqttClientExecutorConfigBuilder<P> rxJavaScheduler(@NotNull final Scheduler rxJavaScheduler) {
+    public MqttClientExecutorConfigBuilder<P> apiScheduler(@NotNull final Scheduler rxJavaScheduler) {
         Preconditions.checkNotNull(rxJavaScheduler);
         this.rxJavaScheduler = rxJavaScheduler;
         return this;
