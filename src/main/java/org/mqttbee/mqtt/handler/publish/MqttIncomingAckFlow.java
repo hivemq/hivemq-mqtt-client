@@ -36,6 +36,10 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class MqttIncomingAckFlow implements Subscription, Runnable {
 
+    private static final int STATE_NO_NEW_REQUESTS = 0;
+    private static final int STATE_NEW_REQUESTS = 1;
+    private static final int STATE_BLOCKED = 2;
+
     private final Subscriber<? super Mqtt5PublishResult> subscriber;
     private final MqttOutgoingPublishService outgoingPublishService;
 
@@ -44,14 +48,14 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
     private final AtomicBoolean cancelled = new AtomicBoolean();
     private volatile long acknowledged;
     private long acknowledgedNettyLocal;
+
     private boolean done;
     private volatile long published;
     private Throwable error; // synced over volatile published
     private final AtomicBoolean doneEmitted = new AtomicBoolean();
 
-    private final AtomicInteger wip = new AtomicInteger();
     private final ChunkedArrayQueue<Mqtt5PublishResult> queue;
-    private volatile boolean queued;
+    private final AtomicInteger requestState = new AtomicInteger();
 
     private volatile LinkCancellable linkCancellable;
 
@@ -66,49 +70,31 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
 
     @CallByThread("Netty EventLoop")
     void onNext(@NotNull final Mqtt5PublishResult result) {
-        int missed = wip.incrementAndGet();
-
         long emitted = 0;
-        while (true) {
-            final long requested = requested();
-            if (!queue.isEmpty()) {
-                while (emitted != requested) {
+        long requested = requested();
+        if (!queue.isEmpty()) {
+            outer:
+            while (emitted < requested) {
+                while (emitted < requested) {
                     final Mqtt5PublishResult queuedResult = queue.poll();
                     if (queuedResult == null) {
-                        break;
+                        break outer;
                     }
                     subscriber.onNext(queuedResult);
                     emitted++;
                 }
+                requested = addNewRequested();
             }
-            if (requested > emitted) {
-                subscriber.onNext(result);
-                emitted++;
-                queued = false;
-            } else {
-                queue.offer(result);
-                queued = true;
-            }
-
-            final int wip = this.wip.get();
-            if (missed == wip) {
-                missed = this.wip.addAndGet(-missed);
-                if (missed == 0) {
-                    break;
-                }
-            } else {
-                missed = wip;
-            }
+        }
+        if (emitted < requested) {
+            subscriber.onNext(result);
+            emitted++;
+        } else if (cancelled.get()) {
+            queue.clear();
+        } else {
+            queue.offer(result);
         }
         emitted(emitted);
-    }
-
-    @CallByThread("Netty EventLoop")
-    private long requested() {
-        if (requestedNettyLocal == Long.MAX_VALUE) {
-            return Long.MAX_VALUE;
-        }
-        return this.requestedNettyLocal += newRequested.getAndSet(0);
     }
 
     @CallByThread("Netty EventLoop")
@@ -123,7 +109,6 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
                     } else {
                         subscriber.onError(error);
                     }
-                    queued = false;
                 }
                 return;
             }
@@ -142,7 +127,6 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
         this.published = published;
         if ((acknowledged == published) && doneEmitted.compareAndSet(false, true)) {
             subscriber.onComplete();
-            queued = false;
         }
     }
 
@@ -156,52 +140,67 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
         this.published = published;
         if ((acknowledged == published) && doneEmitted.compareAndSet(false, true)) {
             subscriber.onError(t);
-            queued = false;
         }
     }
 
     @Override
     public void request(final long n) {
-        BackpressureHelper.add(newRequested, n);
-        if ((wip.getAndIncrement() == 0) && queued) {
-            outgoingPublishService.getNettyEventLoop().execute(this);
+        if (n > 0) {
+            BackpressureHelper.add(newRequested, n);
+            if (requestState.getAndSet(STATE_NEW_REQUESTS) == STATE_BLOCKED) {
+                outgoingPublishService.getNettyEventLoop().execute(this);
+            }
         }
     }
 
     @CallByThread("Netty EventLoop")
     @Override
     public void run() {
-        int missed = wip.get();
-        if (missed == 0) {
-            return;
-        }
-
         long emitted = 0;
-        while (true) {
-            final long requested = requested();
-            while (emitted != requested) {
+        long requested = requested();
+        outer:
+        while (emitted < requested) {
+            while (emitted < requested) {
                 final Mqtt5PublishResult queuedResult = queue.poll();
                 if (queuedResult == null) {
-                    break;
+                    break outer;
                 }
                 subscriber.onNext(queuedResult);
                 emitted++;
             }
-            if (queue.isEmpty()) {
-                queued = false;
+            if (cancelled.get()) {
+                queue.clear();
+                break;
             }
-
-            final int wip = this.wip.get();
-            if (missed == wip) {
-                missed = this.wip.addAndGet(-missed);
-                if (missed == 0) {
-                    break;
-                }
-            } else {
-                missed = wip;
-            }
+            requested = addNewRequested();
         }
         emitted(emitted);
+    }
+
+    @CallByThread("Netty EventLoop")
+    private long requested() {
+        if (requestedNettyLocal <= 0) {
+            return addNewRequested();
+        }
+        return requestedNettyLocal;
+    }
+
+    @CallByThread("Netty EventLoop")
+    private long addNewRequested() {
+        for (; ; ) { // setting both requestState and newRequested is not atomic
+            if (requestState.compareAndSet(STATE_NO_NEW_REQUESTS, STATE_BLOCKED)) {
+                return 0;
+            } else { // requestState = STATE_NEW_REQUESTS
+                requestState.set(STATE_NO_NEW_REQUESTS);
+                final long newRequested = this.newRequested.getAndSet(0);
+                // If request was called concurrently we may have included the newRequested amount already but
+                // requestState is afterwards set to STATE_NEW_REQUESTS although newRequested is reset to 0.
+                // If request is not called until the next invocation of this method, newRequested may be 0.
+                if (newRequested > 0) {
+                    return requestedNettyLocal = BackpressureHelper.addCap(requestedNettyLocal, newRequested);
+                }
+            }
+        }
     }
 
     @Override
