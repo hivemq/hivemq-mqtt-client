@@ -122,7 +122,9 @@ public class Mqtt5PublishBuilder<P> extends FluentBuilder<Mqtt5Publish, P> {
     }
 
     @NotNull
-    public Mqtt5PublishBuilder<P> messageExpiryInterval(final long messageExpiryInterval, @NotNull final TimeUnit timeUnit) {
+    public Mqtt5PublishBuilder<P> messageExpiryInterval(
+            final long messageExpiryInterval, @NotNull final TimeUnit timeUnit) {
+
         final long messageExpiryIntervalSeconds = timeUnit.toSeconds(messageExpiryInterval);
         Preconditions.checkArgument(UnsignedDataTypes.isUnsignedInt(messageExpiryIntervalSeconds));
         this.messageExpiryIntervalSeconds = messageExpiryIntervalSeconds;
@@ -201,8 +203,8 @@ public class Mqtt5PublishBuilder<P> extends FluentBuilder<Mqtt5Publish, P> {
     public Mqtt5Publish build() {
         Preconditions.checkNotNull(topic);
         Preconditions.checkNotNull(qos);
-        return new MqttPublish(topic, payload, qos, retain, messageExpiryIntervalSeconds, payloadFormatIndicator, contentType,
-                responseTopic, correlationData, topicAliasUsage, userProperties);
+        return new MqttPublish(topic, payload, qos, retain, messageExpiryIntervalSeconds, payloadFormatIndicator,
+                contentType, responseTopic, correlationData, topicAliasUsage, userProperties);
     }
 
 }

@@ -32,6 +32,7 @@ import org.mqttbee.util.MustNotBeImplementedUtil;
 import org.mqttbee.util.UnsignedDataTypes;
 
 import java.nio.ByteBuffer;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 import static org.mqttbee.mqtt.message.publish.MqttWillPublish.DEFAULT_DELAY_INTERVAL;
@@ -108,6 +109,15 @@ public class Mqtt5WillPublishBuilder<P> extends Mqtt5PublishBuilder<P> {
     @Override
     public Mqtt5WillPublishBuilder<P> retain(final boolean retain) {
         super.retain(retain);
+        return this;
+    }
+
+    @NotNull
+    @Override
+    public Mqtt5PublishBuilder<P> messageExpiryInterval(
+            final long messageExpiryInterval, @NotNull final TimeUnit timeUnit) {
+
+        super.messageExpiryInterval(messageExpiryInterval, timeUnit);
         return this;
     }
 

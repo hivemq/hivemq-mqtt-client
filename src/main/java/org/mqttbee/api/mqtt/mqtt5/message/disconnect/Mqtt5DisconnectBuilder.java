@@ -58,7 +58,9 @@ public class Mqtt5DisconnectBuilder<P> extends FluentBuilder<Mqtt5Disconnect, P>
     }
 
     @NotNull
-    public Mqtt5DisconnectBuilder<P> sessionExpiryInterval(final long sessionExpiryInterval, @NotNull final  TimeUnit timeUnit) {
+    public Mqtt5DisconnectBuilder<P> sessionExpiryInterval(
+            final long sessionExpiryInterval, @NotNull final TimeUnit timeUnit) {
+
         final long sessionExpiryIntervalSeconds = timeUnit.toSeconds(sessionExpiryInterval);
         Preconditions.checkArgument(UnsignedDataTypes.isUnsignedInt(sessionExpiryIntervalSeconds));
         this.sessionExpiryIntervalSeconds = sessionExpiryIntervalSeconds;
@@ -105,7 +107,8 @@ public class Mqtt5DisconnectBuilder<P> extends FluentBuilder<Mqtt5Disconnect, P>
     public Mqtt5Disconnect build() {
         final Mqtt5DisconnectReasonCode reasonCode =
                 withWillMessage ? DISCONNECT_WITH_WILL_MESSAGE : NORMAL_DISCONNECTION;
-        return new MqttDisconnect(reasonCode, sessionExpiryIntervalSeconds, serverReference, reasonString, userProperties);
+        return new MqttDisconnect(
+                reasonCode, sessionExpiryIntervalSeconds, serverReference, reasonString, userProperties);
     }
 
 }
