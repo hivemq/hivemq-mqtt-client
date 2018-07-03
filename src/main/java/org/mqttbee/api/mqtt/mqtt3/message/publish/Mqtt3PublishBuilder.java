@@ -20,7 +20,7 @@ package org.mqttbee.api.mqtt.mqtt3.message.publish;
 import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttQoS;
+import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicBuilder;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
@@ -40,7 +40,7 @@ public class Mqtt3PublishBuilder<P> extends FluentBuilder<Mqtt3Publish, P> {
 
     private MqttTopicImpl topic;
     private ByteBuffer payload;
-    private MqttQoS qos;
+    private MqttQos qos;
     private boolean retain;
 
     public Mqtt3PublishBuilder(@Nullable final Function<? super Mqtt3Publish, P> parentConsumer) {
@@ -87,7 +87,7 @@ public class Mqtt3PublishBuilder<P> extends FluentBuilder<Mqtt3Publish, P> {
     }
 
     @NotNull
-    public Mqtt3PublishBuilder<P> qos(@NotNull final MqttQoS qos) {
+    public Mqtt3PublishBuilder<P> qos(@NotNull final MqttQos qos) {
         this.qos = Preconditions.checkNotNull(qos);
         return this;
     }

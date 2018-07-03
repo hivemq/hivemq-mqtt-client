@@ -19,7 +19,7 @@ package org.mqttbee.example;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mqttbee.api.mqtt.datatypes.MqttQoS;
+import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.util.KeyStoreUtil;
 
 import javax.net.ssl.KeyManagerFactory;
@@ -46,7 +46,7 @@ class Mqtt3SmokeTest {
     private static final String TRUSTSTORE_PATH = "testkeys/mosquitto/cacerts.jks";
     private static final String TRUSTSTORE_PASS = "testcas";
     private final String server = "test.mosquitto.org";
-    private final MqttQoS qos = MqttQoS.AT_LEAST_ONCE;
+    private final MqttQos qos = MqttQos.AT_LEAST_ONCE;
     private final String topic;
     private final Mqtt3ClientExample subscribeInstance;
     private Mqtt3ClientExample publishInstance;

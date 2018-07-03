@@ -15,25 +15,13 @@
  *
  */
 
-package org.mqttbee.mqtt.persistence;
-
-import org.mqttbee.annotations.NotNull;
-import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRec;
-
-import java.util.concurrent.CompletableFuture;
+package org.mqttbee.mqtt.message.publish;
 
 /**
  * @author Silvio Giebl
  */
-public interface IncomingQoSFlowPersistence {
+public interface MqttQosMessage {
 
-    @NotNull
-    CompletableFuture<Void> store(@NotNull MqttPubRec pubRec);
-
-    @NotNull
-    CompletableFuture<MqttPubRec> get(int packetIdentifier);
-
-    @NotNull
-    CompletableFuture<Void> discard(int packetIdentifier);
+    int getPacketIdentifier();
 
 }

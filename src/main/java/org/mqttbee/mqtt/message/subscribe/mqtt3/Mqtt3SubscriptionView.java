@@ -18,7 +18,7 @@
 package org.mqttbee.mqtt.message.subscribe.mqtt3;
 
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt.datatypes.MqttQoS;
+import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscription;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5RetainHandling;
@@ -32,12 +32,12 @@ public class Mqtt3SubscriptionView implements Mqtt3Subscription {
 
     @NotNull
     private static MqttSubscription delegate(
-            @NotNull final MqttTopicFilterImpl topicFilter, @NotNull final MqttQoS qos) {
+            @NotNull final MqttTopicFilterImpl topicFilter, @NotNull final MqttQos qos) {
         return new MqttSubscription(topicFilter, qos, false, Mqtt5RetainHandling.SEND, false);
     }
 
     @NotNull
-    public static Mqtt3SubscriptionView of(@NotNull final MqttTopicFilterImpl topicFilter, @NotNull final MqttQoS qos) {
+    public static Mqtt3SubscriptionView of(@NotNull final MqttTopicFilterImpl topicFilter, @NotNull final MqttQos qos) {
         return new Mqtt3SubscriptionView(delegate(topicFilter, qos));
     }
 
@@ -60,8 +60,8 @@ public class Mqtt3SubscriptionView implements Mqtt3Subscription {
 
     @NotNull
     @Override
-    public MqttQoS getQoS() {
-        return delegate.getQoS();
+    public MqttQos getQos() {
+        return delegate.getQos();
     }
 
     @NotNull

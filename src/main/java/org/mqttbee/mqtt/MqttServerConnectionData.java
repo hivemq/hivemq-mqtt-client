@@ -20,7 +20,7 @@ package org.mqttbee.mqtt;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttQoS;
+import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3ServerConnectionData;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ServerConnectionData;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
@@ -46,7 +46,7 @@ public class MqttServerConnectionData implements Mqtt5ServerConnectionData, Mqtt
     private final int receiveMaximum;
     private final MqttTopicAliasMapping topicAliasMapping;
     private final int maximumPacketSize;
-    private final MqttQoS maximumQoS;
+    private final MqttQos maximumQos;
     private final boolean isRetainAvailable;
     private final boolean isWildcardSubscriptionAvailable;
     private final boolean isSubscriptionIdentifierAvailable;
@@ -54,12 +54,12 @@ public class MqttServerConnectionData implements Mqtt5ServerConnectionData, Mqtt
 
     public MqttServerConnectionData(
             final int receiveMaximum, final int topicAliasMaximum, final int maximumPacketSize,
-            final MqttQoS maximumQoS, final boolean isRetainAvailable, final boolean isWildcardSubscriptionAvailable,
+            final MqttQos maximumQos, final boolean isRetainAvailable, final boolean isWildcardSubscriptionAvailable,
             final boolean isSubscriptionIdentifierAvailable, final boolean isSharedSubscriptionAvailable) {
         this.receiveMaximum = receiveMaximum;
         this.maximumPacketSize = maximumPacketSize;
         this.topicAliasMapping = topicAliasMaximum == 0 ? null : new MqttTopicAliasMapping(topicAliasMaximum);
-        this.maximumQoS = maximumQoS;
+        this.maximumQos = maximumQos;
         this.isRetainAvailable = isRetainAvailable;
         this.isWildcardSubscriptionAvailable = isWildcardSubscriptionAvailable;
         this.isSubscriptionIdentifierAvailable = isSubscriptionIdentifierAvailable;
@@ -88,8 +88,8 @@ public class MqttServerConnectionData implements Mqtt5ServerConnectionData, Mqtt
 
     @NotNull
     @Override
-    public MqttQoS getMaximumQoS() {
-        return maximumQoS;
+    public MqttQos getMaximumQos() {
+        return maximumQos;
     }
 
     @Override

@@ -26,7 +26,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.publish.puback.Mqtt5PubAckBuilder;
  *
  * @author Silvio Giebl
  */
-public interface Mqtt5IncomingQoS1ControlProvider {
+public interface Mqtt5IncomingQos1ControlProvider {
 
     /**
      * Called when a server sent a PUBLISH message with QoS 1.

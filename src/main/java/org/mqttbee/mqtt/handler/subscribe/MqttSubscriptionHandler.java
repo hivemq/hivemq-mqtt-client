@@ -31,7 +31,7 @@ import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.MqttServerConnectionData;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.handler.publish.MqttIncomingPublishFlows;
-import org.mqttbee.mqtt.handler.publish.MqttOutgoingQoSHandler;
+import org.mqttbee.mqtt.handler.publish.MqttOutgoingQosHandler;
 import org.mqttbee.mqtt.handler.publish.MqttSubscriptionFlow;
 import org.mqttbee.mqtt.handler.subscribe.MqttSubscribeWithFlow.MqttStatefulSubscribeWithFlow;
 import org.mqttbee.mqtt.handler.subscribe.MqttUnsubscribeWithFlow.MqttStatefulUnsubscribeWithFlow;
@@ -86,7 +86,7 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
         assert serverConnectionData != null;
 
         final int minPacketIdentifier =
-                MqttOutgoingQoSHandler.getPubReceiveMaximum(serverConnectionData.getReceiveMaximum()) + 1;
+                MqttOutgoingQosHandler.getPubReceiveMaximum(serverConnectionData.getReceiveMaximum()) + 1;
         final int maxPacketIdentifier = minPacketIdentifier + MAX_SUB_PENDING - 1;
         packetIdentifiers = new Ranges(minPacketIdentifier, maxPacketIdentifier);
         subscriptionIdentifiers = new Ranges(1, clientConnectionData.getSubscriptionIdentifierMaximum());

@@ -26,7 +26,7 @@ import org.mqttbee.api.mqtt.MqttClient;
 import org.mqttbee.api.mqtt.MqttClientBuilder;
 import org.mqttbee.api.mqtt.MqttClientSslConfig;
 import org.mqttbee.api.mqtt.MqttWebsocketConfig;
-import org.mqttbee.api.mqtt.datatypes.MqttQoS;
+import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3Client;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3Connect;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck;
@@ -125,7 +125,7 @@ class Mqtt3ClientExample {
     }
 
     Completable subscribeTo(
-            final String topic, final MqttQoS qos, final int countToPublish, final CountDownLatch subscribedLatch) {
+            final String topic, final MqttQos qos, final int countToPublish, final CountDownLatch subscribedLatch) {
 
         final Mqtt3Client client = getClient();
 
@@ -172,7 +172,7 @@ class Mqtt3ClientExample {
         return !(port == 1883 || port == 8883 || port == 8884);
     }
 
-    Completable publish(final String topic, final MqttQoS qos, final int countToPublish) {
+    Completable publish(final String topic, final MqttQos qos, final int countToPublish) {
         final Mqtt3Client client = getClient();
 
         // create a CONNECT message with keep alive of 10 seconds
@@ -241,7 +241,7 @@ class Mqtt3ClientExample {
         final String command = getProperty(COMMAND, SUBSCRIBE);
         final int count = Integer.valueOf(getProperty(COUNT, "100"));
         final String topic = getProperty(TOPIC, "a/b");
-        final MqttQoS qos = MqttQoS.fromCode(Integer.parseInt(getProperty(QOS, "1")));
+        final MqttQos qos = MqttQos.fromCode(Integer.parseInt(getProperty(QOS, "1")));
 
         final String server = getProperty(SERVER, "test.mosquitto.org");
         final int port = Integer.valueOf(getProperty(PORT, "1883"));

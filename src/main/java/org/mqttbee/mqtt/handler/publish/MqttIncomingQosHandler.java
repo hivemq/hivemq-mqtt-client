@@ -21,8 +21,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.mqttbee.annotations.CallByThread;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5IncomingQoS1ControlProvider;
-import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5IncomingQoS2ControlProvider;
+import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5IncomingQos1ControlProvider;
+import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5IncomingQos2ControlProvider;
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.advanced.MqttAdvancedClientData;
@@ -42,7 +42,7 @@ import javax.inject.Provider;
  * @author Silvio Giebl
  */
 @ChannelScope
-public class MqttIncomingQoSHandler extends ChannelInboundHandlerAdapter {
+public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter {
 
     public static final String NAME = "qos.incoming";
 
@@ -55,7 +55,7 @@ public class MqttIncomingQoSHandler extends ChannelInboundHandlerAdapter {
     private ChannelHandlerContext ctx;
 
     @Inject
-    MqttIncomingQoSHandler(
+    MqttIncomingQosHandler(
             final Provider<MqttIncomingPublishService> incomingPublishServiceLazy, final MqttClientData clientData) {
 
         final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
@@ -87,13 +87,13 @@ public class MqttIncomingQoSHandler extends ChannelInboundHandlerAdapter {
     private void handlePublish(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttStatefulPublish publish) {
         switch (publish.getStatelessMessage().getQos()) {
             case AT_MOST_ONCE:
-                handlePublishQoS0(publish);
+                handlePublishQos0(publish);
                 break;
             case AT_LEAST_ONCE:
-                handlePublishQoS1(publish);
+                handlePublishQos1(publish);
                 break;
             case EXACTLY_ONCE:
-                handlePublishQoS2(ctx, publish);
+                handlePublishQos2(ctx, publish);
                 break;
         }
     }
@@ -105,33 +105,33 @@ public class MqttIncomingQoSHandler extends ChannelInboundHandlerAdapter {
         return incomingPublishService;
     }
 
-    private void handlePublishQoS0(@NotNull final MqttStatefulPublish publish) {
+    private void handlePublishQos0(@NotNull final MqttStatefulPublish publish) {
         getIncomingPublishService().onPublish(publish);
     }
 
-    private void handlePublishQoS1(@NotNull final MqttStatefulPublish publish) {
+    private void handlePublishQos1(@NotNull final MqttStatefulPublish publish) {
         getIncomingPublishService().onPublish(publish);
     }
 
-    private void handlePublishQoS2(
+    private void handlePublishQos2(
             @NotNull final ChannelHandlerContext ctx, @NotNull final MqttStatefulPublish publish) {
 
         final MqttPubRec pubRec = pubRecs.get(publish.getPacketIdentifier());
         if (pubRec == null) {
-            handleNewPublishQoS2(ctx, publish);
+            handleNewPublishQos2(ctx, publish);
         } else {
-            handleDupPublishQoS2(ctx, publish, pubRec);
+            handleDupPublishQos2(ctx, publish, pubRec);
         }
     }
 
-    private void handleNewPublishQoS2(
+    private void handleNewPublishQos2(
             @NotNull final ChannelHandlerContext ctx, @NotNull final MqttStatefulPublish publish) {
 
         final MqttPubRecBuilder pubRecBuilder = new MqttPubRecBuilder(publish);
 
         final MqttAdvancedClientData advanced = MqttClientData.from(ctx.channel()).getRawAdvancedClientData();
         if ((advanced != null)) {
-            final Mqtt5IncomingQoS2ControlProvider control = advanced.getIncomingQoS2ControlProvider();
+            final Mqtt5IncomingQos2ControlProvider control = advanced.getIncomingQos2ControlProvider();
             if (control != null) {
                 control.onPublish(publish.getStatelessMessage(), pubRecBuilder);
             }
@@ -143,7 +143,7 @@ public class MqttIncomingQoSHandler extends ChannelInboundHandlerAdapter {
         ctx.writeAndFlush(pubRec);
     }
 
-    private void handleDupPublishQoS2(
+    private void handleDupPublishQos2(
             @NotNull final ChannelHandlerContext ctx, @NotNull final MqttStatefulPublish publish,
             @NotNull final MqttPubRec pubRec) {
 
@@ -169,20 +169,20 @@ public class MqttIncomingQoSHandler extends ChannelInboundHandlerAdapter {
     void ack(@NotNull final MqttStatefulPublish publish) {
         switch (publish.getStatelessMessage().getQos()) {
             case AT_LEAST_ONCE:
-                ackQoS1(publish);
+                ackQos1(publish);
                 break;
             case EXACTLY_ONCE:
-                ackQoS2(publish);
+                ackQos2(publish);
                 break;
         }
     }
 
-    private void ackQoS1(@NotNull final MqttStatefulPublish publish) {
+    private void ackQos1(@NotNull final MqttStatefulPublish publish) {
         final MqttPubAckBuilder pubAckBuilder = new MqttPubAckBuilder(publish);
 
         final MqttAdvancedClientData advanced = MqttClientData.from(ctx.channel()).getRawAdvancedClientData();
         if ((advanced != null)) {
-            final Mqtt5IncomingQoS1ControlProvider control = advanced.getIncomingQoS1ControlProvider();
+            final Mqtt5IncomingQos1ControlProvider control = advanced.getIncomingQos1ControlProvider();
             if (control != null) {
                 control.onPublish(publish.getStatelessMessage(), pubAckBuilder);
             }
@@ -191,7 +191,7 @@ public class MqttIncomingQoSHandler extends ChannelInboundHandlerAdapter {
         ctx.writeAndFlush(pubAckBuilder.build());
     }
 
-    private void ackQoS2(@NotNull final MqttStatefulPublish publish) {
+    private void ackQos2(@NotNull final MqttStatefulPublish publish) {
         final int packetIdentifier = publish.getPacketIdentifier();
         final MqttPubRel pubRel = pubRels.remove(packetIdentifier);
         if (pubRel == null) {
@@ -206,7 +206,7 @@ public class MqttIncomingQoSHandler extends ChannelInboundHandlerAdapter {
 
         final MqttAdvancedClientData advanced = MqttClientData.from(ctx.channel()).getRawAdvancedClientData();
         if ((advanced != null)) {
-            final Mqtt5IncomingQoS2ControlProvider control = advanced.getIncomingQoS2ControlProvider();
+            final Mqtt5IncomingQos2ControlProvider control = advanced.getIncomingQos2ControlProvider();
             if (control != null) {
                 control.onPubRel(pubRel, pubCompBuilder);
             }

@@ -20,7 +20,7 @@ package org.mqttbee.api.mqtt.mqtt5.message.publish;
 import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttQoS;
+import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicBuilder;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
@@ -100,7 +100,7 @@ public class Mqtt5WillPublishBuilder<P> extends Mqtt5PublishBuilder<P> {
 
     @NotNull
     @Override
-    public Mqtt5WillPublishBuilder<P> qos(@NotNull final MqttQoS qos) {
+    public Mqtt5WillPublishBuilder<P> qos(@NotNull final MqttQos qos) {
         super.qos(qos);
         return this;
     }

@@ -28,7 +28,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrel.Mqtt5PubRel;
  *
  * @author Silvio Giebl
  */
-public interface Mqtt5IncomingQoS2ControlProvider {
+public interface Mqtt5IncomingQos2ControlProvider {
 
     /**
      * Called when a server sent a PUBLISH message with QoS 2.

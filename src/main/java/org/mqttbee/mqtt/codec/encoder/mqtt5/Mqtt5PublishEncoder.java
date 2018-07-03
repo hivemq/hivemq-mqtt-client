@@ -22,7 +22,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt.datatypes.MqttQoS;
+import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt.datatypes.MqttBinaryData;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
@@ -62,7 +62,7 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
             remainingLength = MqttBinaryData.EMPTY_LENGTH;
         }
 
-        if (stateless.getQos() != MqttQoS.AT_MOST_ONCE) {
+        if (stateless.getQos() != MqttQos.AT_MOST_ONCE) {
             remainingLength += 2;
         }
 
@@ -166,7 +166,7 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
             MqttBinaryData.encodeEmpty(out);
         }
 
-        if (stateless.getQos() != MqttQoS.AT_MOST_ONCE) {
+        if (stateless.getQos() != MqttQos.AT_MOST_ONCE) {
             out.writeShort(message.getPacketIdentifier());
         }
 

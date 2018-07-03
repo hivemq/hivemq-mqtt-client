@@ -20,7 +20,7 @@ package org.mqttbee.mqtt.message.publish;
 import com.google.common.primitives.ImmutableIntArray;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttQoS;
+import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
@@ -46,7 +46,7 @@ public class MqttPublish extends MqttMessageWithUserPropertiesImpl implements Mq
 
     private final MqttTopicImpl topic;
     private final ByteBuffer payload;
-    private final MqttQoS qos;
+    private final MqttQos qos;
     private final boolean isRetain;
     private final long messageExpiryInterval;
     private final Mqtt5PayloadFormatIndicator payloadFormatIndicator;
@@ -56,7 +56,7 @@ public class MqttPublish extends MqttMessageWithUserPropertiesImpl implements Mq
     private final TopicAliasUsage topicAliasUsage;
 
     public MqttPublish(
-            @NotNull final MqttTopicImpl topic, @Nullable final ByteBuffer payload, @NotNull final MqttQoS qos,
+            @NotNull final MqttTopicImpl topic, @Nullable final ByteBuffer payload, @NotNull final MqttQos qos,
             final boolean isRetain, final long messageExpiryInterval,
             @Nullable final Mqtt5PayloadFormatIndicator payloadFormatIndicator,
             @Nullable final MqttUTF8StringImpl contentType, @Nullable final MqttTopicImpl responseTopic,
@@ -104,7 +104,7 @@ public class MqttPublish extends MqttMessageWithUserPropertiesImpl implements Mq
 
     @NotNull
     @Override
-    public MqttQoS getQos() {
+    public MqttQos getQos() {
         return qos;
     }
 

@@ -24,7 +24,7 @@ import org.mqttbee.annotations.Nullable;
  *
  * @author Silvio Giebl
  */
-public enum MqttQoS {
+public enum MqttQos {
 
     /**
      * QoS for at most once delivery according to the capabilities of the underlying network.
@@ -53,8 +53,8 @@ public enum MqttQoS {
      * @return the QoS belonging to the given byte code or null if the byte code is not a valid QoS code.
      */
     @Nullable
-    public static MqttQoS fromCode(final int code) {
-        final MqttQoS[] values = values();
+    public static MqttQos fromCode(final int code) {
+        final MqttQos[] values = values();
         if (code < 0 || code >= values.length) {
             return null;
         }

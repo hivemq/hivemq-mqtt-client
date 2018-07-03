@@ -18,10 +18,10 @@
 package org.mqttbee.api.mqtt.mqtt5.advanced;
 
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5IncomingQoS1ControlProvider;
-import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5OutgoingQoS1ControlProvider;
-import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5IncomingQoS2ControlProvider;
-import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5OutgoingQoS2ControlProvider;
+import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5IncomingQos1ControlProvider;
+import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5OutgoingQos1ControlProvider;
+import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5IncomingQos2ControlProvider;
+import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5OutgoingQos2ControlProvider;
 import org.mqttbee.mqtt.advanced.MqttAdvancedClientData;
 
 /**
@@ -29,47 +29,47 @@ import org.mqttbee.mqtt.advanced.MqttAdvancedClientData;
  */
 public class Mqtt5AdvancedClientDataBuilder {
 
-    private Mqtt5IncomingQoS1ControlProvider incomingQoS1ControlProvider;
-    private Mqtt5OutgoingQoS1ControlProvider outgoingQoS1ControlProvider;
-    private Mqtt5IncomingQoS2ControlProvider incomingQoS2ControlProvider;
-    private Mqtt5OutgoingQoS2ControlProvider outgoingQoS2ControlProvider;
+    private Mqtt5IncomingQos1ControlProvider incomingQos1ControlProvider;
+    private Mqtt5OutgoingQos1ControlProvider outgoingQos1ControlProvider;
+    private Mqtt5IncomingQos2ControlProvider incomingQos2ControlProvider;
+    private Mqtt5OutgoingQos2ControlProvider outgoingQos2ControlProvider;
 
     @NotNull
-    public Mqtt5AdvancedClientDataBuilder incomingQoS1ControlProvider(
-            @NotNull final Mqtt5IncomingQoS1ControlProvider incomingQoS1ControlProvider) {
+    public Mqtt5AdvancedClientDataBuilder incomingQos1ControlProvider(
+            @NotNull final Mqtt5IncomingQos1ControlProvider incomingQos1ControlProvider) {
 
-        this.incomingQoS1ControlProvider = incomingQoS1ControlProvider;
+        this.incomingQos1ControlProvider = incomingQos1ControlProvider;
         return this;
     }
 
     @NotNull
-    public Mqtt5AdvancedClientDataBuilder outgoingQoS1ControlProvider(
-            @NotNull final Mqtt5OutgoingQoS1ControlProvider outgoingQoS1ControlProvider) {
+    public Mqtt5AdvancedClientDataBuilder outgoingQos1ControlProvider(
+            @NotNull final Mqtt5OutgoingQos1ControlProvider outgoingQos1ControlProvider) {
 
-        this.outgoingQoS1ControlProvider = outgoingQoS1ControlProvider;
+        this.outgoingQos1ControlProvider = outgoingQos1ControlProvider;
         return this;
     }
 
     @NotNull
-    public Mqtt5AdvancedClientDataBuilder incomingQoS2ControlProvider(
-            @NotNull final Mqtt5IncomingQoS2ControlProvider incomingQoS2ControlProvider) {
+    public Mqtt5AdvancedClientDataBuilder incomingQos2ControlProvider(
+            @NotNull final Mqtt5IncomingQos2ControlProvider incomingQos2ControlProvider) {
 
-        this.incomingQoS2ControlProvider = incomingQoS2ControlProvider;
+        this.incomingQos2ControlProvider = incomingQos2ControlProvider;
         return this;
     }
 
     @NotNull
-    public Mqtt5AdvancedClientDataBuilder outgoingQoS2ControlProvider(
-            @NotNull final Mqtt5OutgoingQoS2ControlProvider outgoingQoS2ControlProvider) {
+    public Mqtt5AdvancedClientDataBuilder outgoingQos2ControlProvider(
+            @NotNull final Mqtt5OutgoingQos2ControlProvider outgoingQos2ControlProvider) {
 
-        this.outgoingQoS2ControlProvider = outgoingQoS2ControlProvider;
+        this.outgoingQos2ControlProvider = outgoingQos2ControlProvider;
         return this;
     }
 
     @NotNull
     public Mqtt5AdvancedClientData builder() {
-        return new MqttAdvancedClientData(incomingQoS1ControlProvider, outgoingQoS1ControlProvider,
-                incomingQoS2ControlProvider, outgoingQoS2ControlProvider);
+        return new MqttAdvancedClientData(incomingQos1ControlProvider, outgoingQos1ControlProvider,
+                incomingQos2ControlProvider, outgoingQos2ControlProvider);
     }
 
 }

@@ -27,7 +27,7 @@ import javax.annotation.concurrent.Immutable;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttStatefulPublish extends MqttStatefulMessageWithId<MqttPublish> implements MqttQoSMessage {
+public class MqttStatefulPublish extends MqttStatefulMessageWithId<MqttPublish> implements MqttQosMessage {
 
     public static final int NO_PACKET_IDENTIFIER_QOS_0 = -1;
     public static final int DEFAULT_NO_TOPIC_ALIAS = -1;

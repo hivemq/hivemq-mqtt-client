@@ -41,7 +41,7 @@ public class MqttIncomingPublishService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MqttIncomingPublishService.class);
 
-    private final MqttIncomingQoSHandler incomingQoSHandler; // TODO temp
+    private final MqttIncomingQosHandler incomingQosHandler; // TODO temp
     private final MqttIncomingPublishFlows incomingPublishFlows;
     private final EventLoop nettyEventLoop;
 
@@ -54,13 +54,13 @@ public class MqttIncomingPublishService {
 
     @Inject
     MqttIncomingPublishService(
-            final MqttIncomingQoSHandler incomingQoSHandler, final MqttIncomingPublishFlows incomingPublishFlows,
+            final MqttIncomingQosHandler incomingQosHandler, final MqttIncomingPublishFlows incomingPublishFlows,
             final MqttClientData clientData) {
 
         final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
         assert clientConnectionData != null;
 
-        this.incomingQoSHandler = incomingQoSHandler; // TODO temp
+        this.incomingQosHandler = incomingQosHandler; // TODO temp
         this.incomingPublishFlows = incomingPublishFlows;
         nettyEventLoop = clientConnectionData.getChannel().eventLoop();
 
@@ -87,7 +87,7 @@ public class MqttIncomingPublishService {
         }
         emit(publish.getStatelessMessage(), flows);
         if (acknowledge && flows.isEmpty()) {
-            incomingQoSHandler.ack(publish);
+            incomingQosHandler.ack(publish);
         } else {
             queue.offer(new QueueEntry(publish, flows));
         }
@@ -109,7 +109,7 @@ public class MqttIncomingPublishService {
             emit(publish.getStatelessMessage(), flows);
             if (acknowledge && flows.isEmpty()) {
                 queueIt.remove();
-                incomingQoSHandler.ack(publish); // TODO temp
+                incomingQosHandler.ack(publish); // TODO temp
             } else {
                 acknowledge = false;
                 if (blockingFlowCount == referencedFlowCount) {
