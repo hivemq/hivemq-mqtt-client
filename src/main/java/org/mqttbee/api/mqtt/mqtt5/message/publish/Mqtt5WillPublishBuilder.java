@@ -114,7 +114,7 @@ public class Mqtt5WillPublishBuilder<P> extends Mqtt5PublishBuilder<P> {
 
     @NotNull
     @Override
-    public Mqtt5PublishBuilder<P> messageExpiryInterval(
+    public Mqtt5WillPublishBuilder<P> messageExpiryInterval(
             final long messageExpiryInterval, @NotNull final TimeUnit timeUnit) {
 
         super.messageExpiryInterval(messageExpiryInterval, timeUnit);
