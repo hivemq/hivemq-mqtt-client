@@ -89,7 +89,9 @@ public class Mqtt5ConnectBuilder<P> extends FluentBuilder<Mqtt5Connect, P> {
     }
 
     @NotNull
-    public Mqtt5ConnectBuilder<P> sessionExpiryInterval(final long sessionExpiryInterval, @NotNull final TimeUnit timeUnit) {
+    public Mqtt5ConnectBuilder<P> sessionExpiryInterval(
+            final long sessionExpiryInterval, @NotNull final TimeUnit timeUnit) {
+
         final long sessionExpiryIntervalSeconds = timeUnit.toSeconds(sessionExpiryInterval);
         Preconditions.checkArgument(UnsignedDataTypes.isUnsignedInt(sessionExpiryIntervalSeconds));
         this.sessionExpiryIntervalSeconds = sessionExpiryIntervalSeconds;
@@ -161,9 +163,9 @@ public class Mqtt5ConnectBuilder<P> extends FluentBuilder<Mqtt5Connect, P> {
     @NotNull
     @Override
     public Mqtt5Connect build() {
-        return new MqttConnect(keepAliveSeconds, isCleanStart, sessionExpiryIntervalSeconds, isResponseInformationRequested,
-                isProblemInformationRequested, restrictions, simpleAuth, enhancedAuthProvider, willPublish,
-                userProperties);
+        return new MqttConnect(keepAliveSeconds, isCleanStart, sessionExpiryIntervalSeconds,
+                isResponseInformationRequested, isProblemInformationRequested, restrictions, simpleAuth,
+                enhancedAuthProvider, willPublish, userProperties);
     }
 
 }
