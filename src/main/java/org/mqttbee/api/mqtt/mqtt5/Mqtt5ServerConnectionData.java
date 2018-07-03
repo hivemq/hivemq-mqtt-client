@@ -19,7 +19,7 @@ package org.mqttbee.api.mqtt.mqtt5;
 
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt.datatypes.MqttQoS;
+import org.mqttbee.api.mqtt.datatypes.MqttQos;
 
 /**
  * @author Silvio Giebl
@@ -34,7 +34,7 @@ public interface Mqtt5ServerConnectionData {
     int getMaximumPacketSize();
 
     @NotNull
-    MqttQoS getMaximumQoS();
+    MqttQos getMaximumQos();
 
     boolean isRetainAvailable();
 

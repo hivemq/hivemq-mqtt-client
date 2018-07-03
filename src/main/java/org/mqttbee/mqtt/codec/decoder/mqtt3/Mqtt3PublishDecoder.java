@@ -21,7 +21,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttQoS;
+import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
@@ -60,7 +60,7 @@ public class Mqtt3PublishDecoder implements MqttMessageDecoder {
         final Channel channel = clientConnectionData.getChannel();
 
         final boolean dup = (flags & 0b1000) != 0;
-        final MqttQoS qos = decodePublishQoS(flags, dup);
+        final MqttQos qos = decodePublishQos(flags, dup);
         final boolean retain = (flags & 0b0001) != 0;
 
         if (in.readableBytes() < MIN_REMAINING_LENGTH) {

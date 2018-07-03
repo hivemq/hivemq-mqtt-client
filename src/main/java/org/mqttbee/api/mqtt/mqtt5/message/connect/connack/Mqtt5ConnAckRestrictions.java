@@ -18,7 +18,7 @@
 package org.mqttbee.api.mqtt.mqtt5.message.connect.connack;
 
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.api.mqtt.datatypes.MqttQoS;
+import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.util.UnsignedDataTypes;
 
@@ -44,7 +44,7 @@ public interface Mqtt5ConnAckRestrictions {
     /**
      * The default maximum QoS the server accepts from the client.
      */
-    MqttQoS DEFAULT_MAXIMUM_QOS = MqttQoS.EXACTLY_ONCE;
+    MqttQos DEFAULT_MAXIMUM_QOS = MqttQos.EXACTLY_ONCE;
     /**
      * The default for whether the server accepts retained messages.
      */
@@ -83,7 +83,7 @@ public interface Mqtt5ConnAckRestrictions {
     /**
      * @return the maximum QoS the server accepts from the client. The default is {@link #DEFAULT_MAXIMUM_QOS}.
      */
-    MqttQoS getMaximumQoS();
+    MqttQos getMaximumQos();
 
     /**
      * @return whether the server accepts retained messages. The default is {@link #DEFAULT_RETAIN_AVAILABLE}.

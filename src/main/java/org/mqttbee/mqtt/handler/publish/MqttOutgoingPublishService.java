@@ -40,7 +40,7 @@ public class MqttOutgoingPublishService implements FlowableSubscriber<MqttPublis
 
     private static final int MAX_CONCURRENT_PUBLISH_FLOWABLES = 64;
 
-    private final MqttOutgoingQoSHandler outgoingQoSHandler;
+    private final MqttOutgoingQosHandler outgoingQosHandler;
     private final EventLoop nettyEventLoop;
 
     private Subscription subscription;
@@ -49,7 +49,7 @@ public class MqttOutgoingPublishService implements FlowableSubscriber<MqttPublis
 
     @Inject
     MqttOutgoingPublishService(
-            final MqttOutgoingQoSHandler outgoingQoSHandler, final MqttPublishFlowables publishFlowables,
+            final MqttOutgoingQosHandler outgoingQosHandler, final MqttPublishFlowables publishFlowables,
             final MqttClientData clientData) {
 
         final MqttServerConnectionData serverConnectionData = clientData.getRawServerConnectionData();
@@ -57,10 +57,10 @@ public class MqttOutgoingPublishService implements FlowableSubscriber<MqttPublis
         final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
         assert clientConnectionData != null;
 
-        this.outgoingQoSHandler = outgoingQoSHandler;
+        this.outgoingQosHandler = outgoingQosHandler;
         nettyEventLoop = clientConnectionData.getChannel().eventLoop();
 
-        receiveMaximum = MqttOutgoingQoSHandler.getPubReceiveMaximum(serverConnectionData.getReceiveMaximum());
+        receiveMaximum = MqttOutgoingQosHandler.getPubReceiveMaximum(serverConnectionData.getReceiveMaximum());
 
         publishFlowables.flatMap(f -> f, true, MAX_CONCURRENT_PUBLISH_FLOWABLES).subscribe(this);
     }
@@ -73,7 +73,7 @@ public class MqttOutgoingPublishService implements FlowableSubscriber<MqttPublis
 
     @Override
     public void onNext(final MqttPublishWithFlow publishWithFlow) {
-        outgoingQoSHandler.publish(publishWithFlow);
+        outgoingQosHandler.publish(publishWithFlow);
     }
 
     @Override

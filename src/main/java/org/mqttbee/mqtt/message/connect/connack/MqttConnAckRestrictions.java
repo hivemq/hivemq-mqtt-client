@@ -18,7 +18,7 @@
 package org.mqttbee.mqtt.message.connect.connack;
 
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt.datatypes.MqttQoS;
+import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions;
 
 import javax.annotation.concurrent.Immutable;
@@ -39,7 +39,7 @@ public class MqttConnAckRestrictions implements Mqtt5ConnAckRestrictions {
     private final int receiveMaximum;
     private final int topicAliasMaximum;
     private final int maximumPacketSize;
-    private final MqttQoS maximumQoS;
+    private final MqttQos maximumQos;
     private final boolean isRetainAvailable;
     private final boolean isWildcardSubscriptionAvailable;
     private final boolean isSubscriptionIdentifierAvailable;
@@ -47,13 +47,13 @@ public class MqttConnAckRestrictions implements Mqtt5ConnAckRestrictions {
 
     public MqttConnAckRestrictions(
             final int receiveMaximum, final int topicAliasMaximum, final int maximumPacketSize,
-            final MqttQoS maximumQoS, final boolean isRetainAvailable, final boolean isWildcardSubscriptionAvailable,
+            final MqttQos maximumQos, final boolean isRetainAvailable, final boolean isWildcardSubscriptionAvailable,
             final boolean isSubscriptionIdentifierAvailable, final boolean isSharedSubscriptionAvailable) {
 
         this.receiveMaximum = receiveMaximum;
         this.topicAliasMaximum = topicAliasMaximum;
         this.maximumPacketSize = maximumPacketSize;
-        this.maximumQoS = maximumQoS;
+        this.maximumQos = maximumQos;
         this.isRetainAvailable = isRetainAvailable;
         this.isWildcardSubscriptionAvailable = isWildcardSubscriptionAvailable;
         this.isSubscriptionIdentifierAvailable = isSubscriptionIdentifierAvailable;
@@ -76,8 +76,8 @@ public class MqttConnAckRestrictions implements Mqtt5ConnAckRestrictions {
     }
 
     @Override
-    public MqttQoS getMaximumQoS() {
-        return maximumQoS;
+    public MqttQos getMaximumQos() {
+        return maximumQos;
     }
 
     @Override

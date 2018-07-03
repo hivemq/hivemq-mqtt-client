@@ -15,25 +15,30 @@
  *
  */
 
-package org.mqttbee.api.mqtt.mqtt5.advanced.qos1;
+package org.mqttbee.mqtt.persistence;
 
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt.mqtt5.message.publish.puback.Mqtt5PubAck;
+import org.mqttbee.mqtt.message.publish.MqttQosMessage;
+import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
+import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRel;
+
+import java.util.concurrent.CompletableFuture;
 
 /**
- * Interface for providers for controlling the QoS 1 control flow for outgoing PUBLISH messages.
- *
  * @author Silvio Giebl
  */
-public interface Mqtt5OutgoingQoS1ControlProvider {
+public interface OutgoingQosFlowPersistence {
 
-    /**
-     * Called when a server sent a PUBACK message for a Publish with QoS 1.
-     * <p>
-     * This method must not block.
-     *
-     * @param pubAck the PUBACK message sent by the server.
-     */
-    void onPubAck(@NotNull Mqtt5PubAck pubAck);
+    @NotNull
+    CompletableFuture<Void> store(@NotNull MqttStatefulPublish publish);
+
+    @NotNull
+    CompletableFuture<Void> store(@NotNull MqttPubRel pubRel);
+
+    @NotNull
+    CompletableFuture<MqttQosMessage> get(int packetIdentifier);
+
+    @NotNull
+    CompletableFuture<Void> discard(int packetIdentifier);
 
 }

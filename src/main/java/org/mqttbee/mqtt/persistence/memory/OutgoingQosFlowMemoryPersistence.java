@@ -21,10 +21,10 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.ioc.ChannelScope;
-import org.mqttbee.mqtt.message.publish.MqttQoSMessage;
+import org.mqttbee.mqtt.message.publish.MqttQosMessage;
 import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
 import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRel;
-import org.mqttbee.mqtt.persistence.OutgoingQoSFlowPersistence;
+import org.mqttbee.mqtt.persistence.OutgoingQosFlowPersistence;
 import org.mqttbee.util.collections.IntMap;
 
 import javax.inject.Inject;
@@ -34,12 +34,12 @@ import java.util.concurrent.CompletableFuture;
  * @author Silvio Giebl
  */
 @ChannelScope
-public class OutgoingQoSFlowMemoryPersistence implements OutgoingQoSFlowPersistence {
+public class OutgoingQosFlowMemoryPersistence implements OutgoingQosFlowPersistence {
 
-    private final IntMap<MqttQoSMessage> messages;
+    private final IntMap<MqttQosMessage> messages;
 
     @Inject
-    OutgoingQoSFlowMemoryPersistence(final MqttClientData clientData) {
+    OutgoingQosFlowMemoryPersistence(final MqttClientData clientData) {
         final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
         assert clientConnectionData != null;
         this.messages = new IntMap<>(1, clientConnectionData.getReceiveMaximum());
@@ -61,7 +61,7 @@ public class OutgoingQoSFlowMemoryPersistence implements OutgoingQoSFlowPersiste
 
     @NotNull
     @Override
-    public CompletableFuture<MqttQoSMessage> get(final int packetIdentifier) {
+    public CompletableFuture<MqttQosMessage> get(final int packetIdentifier) {
         return CompletableFuture.completedFuture(messages.get(packetIdentifier));
     }
 

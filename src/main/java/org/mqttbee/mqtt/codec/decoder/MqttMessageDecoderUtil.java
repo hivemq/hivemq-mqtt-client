@@ -19,7 +19,7 @@ package org.mqttbee.mqtt.codec.decoder;
 
 import io.netty.buffer.ByteBuf;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt.datatypes.MqttQoS;
+import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 
 import static org.mqttbee.mqtt.message.publish.MqttStatefulPublish.NO_PACKET_IDENTIFIER_QOS_0;
@@ -62,21 +62,21 @@ public class MqttMessageDecoderUtil {
     }
 
     @NotNull
-    public static MqttQoS decodePublishQoS(final int flags, final boolean dup) throws MqttDecoderException {
-        final MqttQoS qos = MqttQoS.fromCode((flags & 0b0110) >> 1);
+    public static MqttQos decodePublishQos(final int flags, final boolean dup) throws MqttDecoderException {
+        final MqttQos qos = MqttQos.fromCode((flags & 0b0110) >> 1);
         if (qos == null) {
             throw new MqttDecoderException("wrong QoS");
         }
-        if ((qos == MqttQoS.AT_MOST_ONCE) && dup) {
+        if ((qos == MqttQos.AT_MOST_ONCE) && dup) {
             throw new MqttDecoderException(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "DUP flag must be 0 if QoS is 0");
         }
         return qos;
     }
 
-    public static int decodePublishPacketIdentifier(@NotNull final MqttQoS qos, @NotNull final ByteBuf in)
+    public static int decodePublishPacketIdentifier(@NotNull final MqttQos qos, @NotNull final ByteBuf in)
             throws MqttDecoderException {
 
-        if (qos == MqttQoS.AT_MOST_ONCE) {
+        if (qos == MqttQos.AT_MOST_ONCE) {
             return NO_PACKET_IDENTIFIER_QOS_0;
         }
         if (in.readableBytes() < 2) {

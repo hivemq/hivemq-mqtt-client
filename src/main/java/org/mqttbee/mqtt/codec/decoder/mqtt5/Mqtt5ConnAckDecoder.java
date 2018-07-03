@@ -22,7 +22,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttQoS;
+import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
@@ -98,8 +98,8 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
         boolean receiveMaximumPresent = false;
         int topicAliasMaximum = Mqtt5ConnAckRestrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM;
         boolean topicAliasMaximumPresent = false;
-        MqttQoS maximumQoS = Mqtt5ConnAckRestrictions.DEFAULT_MAXIMUM_QOS;
-        boolean maximumQoSPresent = false;
+        MqttQos maximumQos = Mqtt5ConnAckRestrictions.DEFAULT_MAXIMUM_QOS;
+        boolean maximumQosPresent = false;
         boolean retainAvailable = Mqtt5ConnAckRestrictions.DEFAULT_RETAIN_AVAILABLE;
         boolean retainAvailablePresent = false;
         int maximumPacketSize = Mqtt5ConnAckRestrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT;
@@ -166,13 +166,13 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
                     break;
 
                 case MAXIMUM_QOS:
-                    final short maximumQoSCode = unsignedByteOnlyOnce(maximumQoSPresent, "maximum QoS", in);
-                    if (maximumQoSCode != 0 && maximumQoSCode != 1) {
-                        throw new MqttDecoderException(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "wrong maximum QoS");
+                    final short maximumQosCode = unsignedByteOnlyOnce(maximumQosPresent, "maximum Qos", in);
+                    if (maximumQosCode != 0 && maximumQosCode != 1) {
+                        throw new MqttDecoderException(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "wrong maximum Qos");
                     }
-                    maximumQoS = MqttQoS.fromCode(maximumQoSCode);
-                    maximumQoSPresent = true;
-                    restrictionsPresent |= maximumQoS != Mqtt5ConnAckRestrictions.DEFAULT_MAXIMUM_QOS;
+                    maximumQos = MqttQos.fromCode(maximumQosCode);
+                    maximumQosPresent = true;
+                    restrictionsPresent |= maximumQos != Mqtt5ConnAckRestrictions.DEFAULT_MAXIMUM_QOS;
                     break;
 
                 case RETAIN_AVAILABLE:
@@ -257,7 +257,7 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
 
         MqttConnAckRestrictions restrictions = MqttConnAckRestrictions.DEFAULT;
         if (restrictionsPresent) {
-            restrictions = new MqttConnAckRestrictions(receiveMaximum, topicAliasMaximum, maximumPacketSize, maximumQoS,
+            restrictions = new MqttConnAckRestrictions(receiveMaximum, topicAliasMaximum, maximumPacketSize, maximumQos,
                             retainAvailable, wildCardSubscriptionAvailable, subscriptionIdentifierAvailable,
                             sharedSubscriptionAvailable);
         }

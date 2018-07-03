@@ -18,7 +18,7 @@
 package org.mqttbee.mqtt.message.publish;
 
 import org.junit.Test;
-import org.mqttbee.api.mqtt.datatypes.MqttQoS;
+import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 
@@ -36,7 +36,7 @@ import static org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl.NO_USER_PROPERTI
 public class MqttPublishTest {
 
     public static MqttPublish createPublishFromPayload(final ByteBuffer payload) {
-        return new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), payload, MqttQoS.AT_MOST_ONCE, false,
+        return new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), payload, MqttQos.AT_MOST_ONCE, false,
             MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UNSPECIFIED, null, null, null,
                 HAS_NOT, NO_USER_PROPERTIES);
     }

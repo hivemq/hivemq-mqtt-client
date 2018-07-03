@@ -117,7 +117,7 @@ public class Mqtt5SubscribeEncoder extends Mqtt5MessageWithUserPropertiesEncoder
             if (subscription.isNoLocal()) {
                 subscriptionOptions |= 0b0000_0100;
             }
-            subscriptionOptions |= subscription.getQoS().getCode();
+            subscriptionOptions |= subscription.getQos().getCode();
 
             out.writeByte(subscriptionOptions);
         }

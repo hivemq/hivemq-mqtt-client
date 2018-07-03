@@ -22,7 +22,7 @@ import io.netty.channel.embedded.EmbeddedChannel;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt.datatypes.MqttQoS;
+import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.MqttClientExecutorConfigImpl;
 import org.mqttbee.mqtt.MqttServerConnectionData;
@@ -74,7 +74,7 @@ public class AbstractMqtt5EncoderTest {
 
     protected void createServerConnectionData(final int maximumPacketSize) {
         clientData.setServerConnectionData(
-                new MqttServerConnectionData(10, 3, maximumPacketSize, MqttQoS.EXACTLY_ONCE, true, true, true, true));
+                new MqttServerConnectionData(10, 3, maximumPacketSize, MqttQos.EXACTLY_ONCE, true, true, true, true));
     }
 
     protected void encode(final Object message, final byte[] expected) {

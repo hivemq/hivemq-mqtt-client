@@ -26,7 +26,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttGlobalPublishFlowType;
-import org.mqttbee.api.mqtt.datatypes.MqttQoS;
+import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.mqtt3.exceptions.Mqtt3MessageException;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3Connect;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;
@@ -75,7 +75,7 @@ class Mqtt3ClientViewExceptionsTest {
 
         final Mqtt3Subscribe subscribe = Mqtt3Subscribe.builder()
                 .addSubscription(
-                        Mqtt3Subscription.builder().topicFilter("topic").qos(MqttQoS.AT_LEAST_ONCE).build())
+                        Mqtt3Subscription.builder().topicFilter("topic").qos(MqttQos.AT_LEAST_ONCE).build())
                 .build();
         assertMqtt3Exception(() -> mqtt3Client.subscribe(subscribe).toCompletable().blockingAwait(),
                 mqtt5MessageException);
@@ -91,7 +91,7 @@ class Mqtt3ClientViewExceptionsTest {
 
         final Mqtt3Subscribe subscribe = Mqtt3Subscribe.builder()
                 .addSubscription(
-                        Mqtt3Subscription.builder().topicFilter("topic").qos(MqttQoS.AT_LEAST_ONCE).build())
+                        Mqtt3Subscription.builder().topicFilter("topic").qos(MqttQos.AT_LEAST_ONCE).build())
                 .build();
         assertMqtt3Exception(() -> mqtt3Client.subscribeWithStream(subscribe).blockingSubscribe(),
                 mqtt5MessageException);
@@ -124,7 +124,7 @@ class Mqtt3ClientViewExceptionsTest {
         given(mqtt5Client.publish(any())).willReturn(Flowable.error(mqtt5MessageException));
 
         final Flowable<Mqtt3Publish> publish =
-                Flowable.just(Mqtt3Publish.builder().topic("topic").qos(MqttQoS.AT_LEAST_ONCE).build());
+                Flowable.just(Mqtt3Publish.builder().topic("topic").qos(MqttQos.AT_LEAST_ONCE).build());
         assertMqtt3Exception(() -> mqtt3Client.publish(publish).blockingSubscribe(), mqtt5MessageException);
     }
 

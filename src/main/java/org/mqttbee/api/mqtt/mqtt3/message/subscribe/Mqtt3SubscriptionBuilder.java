@@ -20,7 +20,7 @@ package org.mqttbee.api.mqtt.mqtt3.message.subscribe;
 import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttQoS;
+import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilterBuilder;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
@@ -36,7 +36,7 @@ import java.util.function.Function;
 public class Mqtt3SubscriptionBuilder<P> extends FluentBuilder<Mqtt3Subscription, P> {
 
     private MqttTopicFilterImpl topicFilter;
-    private MqttQoS qos;
+    private MqttQos qos;
 
     public Mqtt3SubscriptionBuilder(@Nullable final Function<? super Mqtt3Subscription, P> parentConsumer) {
         super(parentConsumer);
@@ -60,7 +60,7 @@ public class Mqtt3SubscriptionBuilder<P> extends FluentBuilder<Mqtt3Subscription
     }
 
     @NotNull
-    public Mqtt3SubscriptionBuilder<P> qos(@NotNull final MqttQoS qos) {
+    public Mqtt3SubscriptionBuilder<P> qos(@NotNull final MqttQos qos) {
         this.qos = Preconditions.checkNotNull(qos);
         return this;
     }

@@ -38,13 +38,13 @@ public interface Mqtt5PublishResult {
     Throwable getError();
 
 
-    interface Mqtt5QoS1Result extends Mqtt5PublishResult {
+    interface Mqtt5Qos1Result extends Mqtt5PublishResult {
         @NotNull
         Mqtt5PubAck getPubAck();
     }
 
 
-    interface Mqtt5QoS2Result extends Mqtt5PublishResult {
+    interface Mqtt5Qos2Result extends Mqtt5PublishResult {
         @NotNull
         Mqtt5PubComp getPubComp();
     }

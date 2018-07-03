@@ -19,7 +19,7 @@ package org.mqttbee.api.mqtt.mqtt3.message.subscribe;
 
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt.datatypes.MqttQoS;
+import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
 
 /**
@@ -45,6 +45,6 @@ public interface Mqtt3Subscription {
      * @return the QoS of this subscription.
      */
     @NotNull
-    MqttQoS getQoS();
+    MqttQos getQos();
 
 }

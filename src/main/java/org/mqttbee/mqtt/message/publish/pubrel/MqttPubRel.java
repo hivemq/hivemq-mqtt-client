@@ -24,7 +24,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrel.Mqtt5PubRelReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.MqttMessageWithUserProperties.MqttMessageWithIdAndReasonCode;
-import org.mqttbee.mqtt.message.publish.MqttQoSMessage;
+import org.mqttbee.mqtt.message.publish.MqttQosMessage;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -33,7 +33,7 @@ import javax.annotation.concurrent.Immutable;
  */
 @Immutable
 public class MqttPubRel extends MqttMessageWithIdAndReasonCode<Mqtt5PubRelReasonCode>
-        implements Mqtt5PubRel, MqttQoSMessage {
+        implements Mqtt5PubRel, MqttQosMessage {
 
     @NotNull
     public static final Mqtt5PubRelReasonCode DEFAULT_REASON_CODE = Mqtt5PubRelReasonCode.SUCCESS;

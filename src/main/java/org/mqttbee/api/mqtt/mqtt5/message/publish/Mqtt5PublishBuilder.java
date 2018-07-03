@@ -20,7 +20,7 @@ package org.mqttbee.api.mqtt.mqtt5.message.publish;
 import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttQoS;
+import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicBuilder;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
@@ -50,7 +50,7 @@ public class Mqtt5PublishBuilder<P> extends FluentBuilder<Mqtt5Publish, P> {
 
     MqttTopicImpl topic;
     ByteBuffer payload;
-    MqttQoS qos;
+    MqttQos qos;
     boolean retain;
     long messageExpiryIntervalSeconds = MESSAGE_EXPIRY_INTERVAL_INFINITY;
     Mqtt5PayloadFormatIndicator payloadFormatIndicator;
@@ -110,7 +110,7 @@ public class Mqtt5PublishBuilder<P> extends FluentBuilder<Mqtt5Publish, P> {
     }
 
     @NotNull
-    public Mqtt5PublishBuilder<P> qos(@NotNull final MqttQoS qos) {
+    public Mqtt5PublishBuilder<P> qos(@NotNull final MqttQos qos) {
         this.qos = Preconditions.checkNotNull(qos);
         return this;
     }

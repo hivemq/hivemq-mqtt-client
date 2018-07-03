@@ -21,7 +21,7 @@ import com.google.common.primitives.Bytes;
 import io.netty.buffer.ByteBuf;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.junit.jupiter.api.Test;
-import org.mqttbee.api.mqtt.datatypes.MqttQoS;
+import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.mqtt.codec.encoder.AbstractMqtt5EncoderTest;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
@@ -94,7 +94,7 @@ class Mqtt3ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         final byte[] expected = Bytes.concat(pahoConnect.getHeader(), pahoConnect.getPayload());
 
         final MqttWillPublish willMessage = new MqttWillPublish(Objects.requireNonNull(MqttTopicImpl.from(willTopic)),
-                ByteBuffer.wrap(myLastWill.getBytes()), Objects.requireNonNull(MqttQoS.fromCode(qosWill)), isRetained,
+                ByteBuffer.wrap(myLastWill.getBytes()), Objects.requireNonNull(MqttQos.fromCode(qosWill)), isRetained,
                 MqttWillPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES, 0);
 

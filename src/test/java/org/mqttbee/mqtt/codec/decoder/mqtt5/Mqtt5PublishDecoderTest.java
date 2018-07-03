@@ -22,7 +22,7 @@ import com.google.common.primitives.ImmutableIntArray;
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.Test;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt.datatypes.MqttQoS;
+import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
@@ -107,7 +107,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
         assertNotNull(publish);
 
         assertEquals("topic", publish.getTopic().toString());
-        assertEquals(MqttQoS.AT_LEAST_ONCE, publish.getQos());
+        assertEquals(MqttQos.AT_LEAST_ONCE, publish.getQos());
         assertEquals(true, publish.isRetain());
         assertTrue(publish.getMessageExpiryInterval().isPresent());
         assertEquals(10, (long) publish.getMessageExpiryInterval().get());
@@ -161,7 +161,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
         assertNotNull(publish);
 
         assertEquals("topic", publish.getTopic().toString());
-        assertEquals(MqttQoS.AT_MOST_ONCE, publish.getQos());
+        assertEquals(MqttQos.AT_MOST_ONCE, publish.getQos());
         assertEquals(true, publish.isRetain());
         assertFalse(publish.getMessageExpiryInterval().isPresent());
         assertTrue(publish.getPayloadFormatIndicator().isPresent());
@@ -221,7 +221,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
                 0x01, 0
         };
         final MqttPublish decodeQos0 = decode(encodedQos0);
-        assertEquals(MqttQoS.AT_MOST_ONCE, decodeQos0.getQos());
+        assertEquals(MqttQos.AT_MOST_ONCE, decodeQos0.getQos());
 
         final byte[] encodedQos1 = {
                 // fixed header
@@ -240,7 +240,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
                 0x01, 0
         };
         final MqttPublish decodeQos1 = decode(encodedQos1);
-        assertEquals(MqttQoS.AT_LEAST_ONCE, decodeQos1.getQos());
+        assertEquals(MqttQos.AT_LEAST_ONCE, decodeQos1.getQos());
 
         final byte[] encodedQos2 = {
                 // fixed header
@@ -259,7 +259,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
                 0x01, 0
         };
         final MqttPublish decodeQos2 = decode(encodedQos2);
-        assertEquals(MqttQoS.EXACTLY_ONCE, decodeQos2.getQos());
+        assertEquals(MqttQos.EXACTLY_ONCE, decodeQos2.getQos());
     }
 
     @Test

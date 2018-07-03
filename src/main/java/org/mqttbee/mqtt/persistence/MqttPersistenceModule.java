@@ -22,8 +22,8 @@ import dagger.Module;
 import dagger.Provides;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.ioc.ChannelScope;
-import org.mqttbee.mqtt.persistence.memory.IncomingQoSFlowMemoryPersistence;
-import org.mqttbee.mqtt.persistence.memory.OutgoingQoSFlowMemoryPersistence;
+import org.mqttbee.mqtt.persistence.memory.IncomingQosFlowMemoryPersistence;
+import org.mqttbee.mqtt.persistence.memory.OutgoingQosFlowMemoryPersistence;
 
 /**
  * @author Silvio Giebl
@@ -33,16 +33,16 @@ public class MqttPersistenceModule {
 
     @Provides
     @ChannelScope
-    static OutgoingQoSFlowPersistence provideOutgoingQoSFlowPersistence(
-            @NotNull final Lazy<OutgoingQoSFlowMemoryPersistence> memoryPersistence) {
+    static OutgoingQosFlowPersistence provideOutgoingQosFlowPersistence(
+            @NotNull final Lazy<OutgoingQosFlowMemoryPersistence> memoryPersistence) {
 
         return memoryPersistence.get(); // TODO file persistence
     }
 
     @Provides
     @ChannelScope
-    static IncomingQoSFlowPersistence provideIncomingQoSFlowPersistence(
-            @NotNull final Lazy<IncomingQoSFlowMemoryPersistence> memoryPersistence) {
+    static IncomingQosFlowPersistence provideIncomingQosFlowPersistence(
+            @NotNull final Lazy<IncomingQosFlowMemoryPersistence> memoryPersistence) {
 
         return memoryPersistence.get(); // TODO file persistence
     }

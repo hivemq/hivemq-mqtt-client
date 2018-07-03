@@ -20,7 +20,7 @@ package org.mqttbee.mqtt.message.publish.mqtt3;
 import io.reactivex.functions.Function;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttQoS;
+import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
@@ -50,7 +50,7 @@ public class Mqtt3PublishView implements Mqtt3Publish {
 
     @NotNull
     public static MqttPublish delegate(
-            @NotNull final MqttTopicImpl topic, @Nullable final ByteBuffer payload, @NotNull final MqttQoS qos,
+            @NotNull final MqttTopicImpl topic, @Nullable final ByteBuffer payload, @NotNull final MqttQos qos,
             final boolean isRetain) {
 
         return new MqttPublish(topic, payload, qos, isRetain, MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null,
@@ -72,7 +72,7 @@ public class Mqtt3PublishView implements Mqtt3Publish {
 
     @NotNull
     public static Mqtt3PublishView of(
-            @NotNull final MqttTopicImpl topic, @Nullable final ByteBuffer payload, @NotNull final MqttQoS qos,
+            @NotNull final MqttTopicImpl topic, @Nullable final ByteBuffer payload, @NotNull final MqttQos qos,
             final boolean isRetain) {
 
         return new Mqtt3PublishView(delegate(topic, payload, qos, isRetain));
@@ -114,7 +114,7 @@ public class Mqtt3PublishView implements Mqtt3Publish {
 
     @NotNull
     @Override
-    public MqttQoS getQos() {
+    public MqttQos getQos() {
         return delegate.getQos();
     }
 

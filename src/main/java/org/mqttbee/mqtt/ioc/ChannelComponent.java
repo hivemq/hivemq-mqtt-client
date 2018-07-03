@@ -78,9 +78,9 @@ public interface ChannelComponent {
 
     MqttSubscriptionHandler subscriptionHandler();
 
-    MqttIncomingQoSHandler incomingQoSHandler();
+    MqttIncomingQosHandler incomingQosHandler();
 
-    MqttOutgoingQoSHandler outgoingQoSHandler();
+    MqttOutgoingQosHandler outgoingQosHandler();
 
     MqttIncomingPublishService incomingPublishService();
 

@@ -56,12 +56,12 @@ public class MqttPublishResult implements Mqtt5PublishResult {
     }
 
 
-    public static class MqttQoS1Result extends MqttPublishResult implements Mqtt5QoS1Result {
+    public static class MqttQos1Result extends MqttPublishResult implements Mqtt5Qos1Result {
 
         @NotNull
         private final MqttPubAck pubAck;
 
-        public MqttQoS1Result(
+        public MqttQos1Result(
                 @NotNull final MqttPublish publish, @Nullable final Throwable error, @NotNull final MqttPubAck pubAck) {
 
             super(publish, error);
@@ -77,12 +77,12 @@ public class MqttPublishResult implements Mqtt5PublishResult {
     }
 
 
-    public static class MqttQoS2Result extends MqttPublishResult implements Mqtt5QoS2Result {
+    public static class MqttQos2Result extends MqttPublishResult implements Mqtt5Qos2Result {
 
         @NotNull
         private final MqttPubComp pubComp;
 
-        public MqttQoS2Result(
+        public MqttQos2Result(
                 @NotNull final MqttPublish publish, @Nullable final Throwable error,
                 @NotNull final MqttPubComp pubComp) {
 

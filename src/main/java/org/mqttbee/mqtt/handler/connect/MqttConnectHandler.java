@@ -35,8 +35,8 @@ import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt.handler.disconnect.ChannelCloseEvent;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.handler.ping.MqttPingHandler;
-import org.mqttbee.mqtt.handler.publish.MqttIncomingQoSHandler;
-import org.mqttbee.mqtt.handler.publish.MqttOutgoingQoSHandler;
+import org.mqttbee.mqtt.handler.publish.MqttIncomingQosHandler;
+import org.mqttbee.mqtt.handler.publish.MqttOutgoingQosHandler;
 import org.mqttbee.mqtt.handler.subscribe.MqttSubscriptionHandler;
 import org.mqttbee.mqtt.handler.util.ChannelInboundHandlerWithTimeout;
 import org.mqttbee.mqtt.ioc.ChannelComponent;
@@ -193,9 +193,9 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
                 pipeline.addAfter(
                         MqttPingHandler.NAME, MqttSubscriptionHandler.NAME, channelComponent.subscriptionHandler());
                 pipeline.addAfter(
-                        MqttPingHandler.NAME, MqttIncomingQoSHandler.NAME, channelComponent.incomingQoSHandler());
+                        MqttPingHandler.NAME, MqttIncomingQosHandler.NAME, channelComponent.incomingQosHandler());
                 pipeline.addAfter(
-                        MqttPingHandler.NAME, MqttOutgoingQoSHandler.NAME, channelComponent.outgoingQoSHandler());
+                        MqttPingHandler.NAME, MqttOutgoingQosHandler.NAME, channelComponent.outgoingQosHandler());
                 pipeline.addLast(MqttDisconnectOnConnAckHandler.NAME, channelComponent.disconnectOnConnAckHandler());
 
                 connAckEmitter.onSuccess(connAck);
@@ -288,7 +288,7 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
 
         clientData.setServerConnectionData(
                 new MqttServerConnectionData(restrictions.getReceiveMaximum(), restrictions.getTopicAliasMaximum(),
-                        restrictions.getMaximumPacketSize(), restrictions.getMaximumQoS(),
+                        restrictions.getMaximumPacketSize(), restrictions.getMaximumQos(),
                         restrictions.isRetainAvailable(), restrictions.isWildcardSubscriptionAvailable(),
                         restrictions.isSubscriptionIdentifierAvailable(),
                         restrictions.isSharedSubscriptionAvailable()));

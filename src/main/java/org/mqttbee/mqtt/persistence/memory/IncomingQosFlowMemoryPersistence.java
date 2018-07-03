@@ -20,7 +20,7 @@ package org.mqttbee.mqtt.persistence.memory;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.ioc.ChannelScope;
 import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRec;
-import org.mqttbee.mqtt.persistence.IncomingQoSFlowPersistence;
+import org.mqttbee.mqtt.persistence.IncomingQosFlowPersistence;
 
 import javax.inject.Inject;
 import java.util.HashMap;
@@ -31,12 +31,12 @@ import java.util.concurrent.CompletableFuture;
  * @author Silvio Giebl
  */
 @ChannelScope
-public class IncomingQoSFlowMemoryPersistence implements IncomingQoSFlowPersistence {
+public class IncomingQosFlowMemoryPersistence implements IncomingQosFlowPersistence {
 
     private final Map<Integer, MqttPubRec> messages;
 
     @Inject
-    IncomingQoSFlowMemoryPersistence() {
+    IncomingQosFlowMemoryPersistence() {
         messages = new HashMap<>();
     }
 
