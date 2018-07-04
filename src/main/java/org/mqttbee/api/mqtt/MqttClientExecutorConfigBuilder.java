@@ -34,7 +34,7 @@ public class MqttClientExecutorConfigBuilder<P> extends FluentBuilder<MqttClient
 
     private Executor nettyExecutor;
     private int nettyThreads = MqttClientExecutorConfigImpl.DEFAULT_NETTY_THREADS;
-    private Scheduler apiScheduler = MqttClientExecutorConfigImpl.DEFAULT_RX_JAVA_SCHEDULER;
+    private Scheduler applicationScheduler = MqttClientExecutorConfigImpl.DEFAULT_RX_JAVA_SCHEDULER;
 
     public MqttClientExecutorConfigBuilder(
             @Nullable final Function<? super MqttClientExecutorConfig, P> parentConsumer) {
@@ -57,16 +57,16 @@ public class MqttClientExecutorConfigBuilder<P> extends FluentBuilder<MqttClient
     }
 
     @NotNull
-    public MqttClientExecutorConfigBuilder<P> apiScheduler(@NotNull final Scheduler apiScheduler) {
-        Preconditions.checkNotNull(apiScheduler);
-        this.apiScheduler = apiScheduler;
+    public MqttClientExecutorConfigBuilder<P> applicationScheduler(@NotNull final Scheduler applicationScheduler) {
+        Preconditions.checkNotNull(applicationScheduler);
+        this.applicationScheduler = applicationScheduler;
         return this;
     }
 
     @NotNull
     @Override
     public MqttClientExecutorConfig build() {
-        return new MqttClientExecutorConfigImpl(nettyExecutor, nettyThreads, apiScheduler);
+        return new MqttClientExecutorConfigImpl(nettyExecutor, nettyThreads, applicationScheduler);
     }
 
 }

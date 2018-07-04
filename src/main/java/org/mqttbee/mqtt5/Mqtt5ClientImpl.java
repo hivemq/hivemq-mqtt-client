@@ -117,7 +117,7 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
                 clientData.setServerConnectionData(null);
                 clientData.setConnecting(false);
             }
-        }).observeOn(clientData.getExecutorConfig().getApiScheduler());
+        }).observeOn(clientData.getExecutorConfig().getApplicationScheduler());
     }
 
     @NotNull
@@ -127,7 +127,7 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
                 MustNotBeImplementedUtil.checkNotImplemented(subscribe, MqttSubscribe.class);
 
         return new MqttSubAckSingle(mqttSubscribe, clientData).observeOn(
-                clientData.getExecutorConfig().getApiScheduler());
+                clientData.getExecutorConfig().getApplicationScheduler());
     }
 
     @NotNull
@@ -138,7 +138,7 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
 
         final Flowable<Mqtt5SubscribeResult> subscriptionFlowable =
                 new MqttSubscriptionFlowable(mqttSubscribe, clientData).observeOn(
-                        clientData.getExecutorConfig().getApiScheduler());
+                        clientData.getExecutorConfig().getApplicationScheduler());
         return new FlowableWithSingleSplit<>(subscriptionFlowable, Mqtt5SubAck.class, Mqtt5Publish.class);
     }
 
@@ -148,7 +148,7 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
         Preconditions.checkNotNull(type);
 
         return new MqttGlobalIncomingPublishFlowable(type, clientData).observeOn(
-                clientData.getExecutorConfig().getApiScheduler());
+                clientData.getExecutorConfig().getApplicationScheduler());
     }
 
     @NotNull
@@ -158,14 +158,14 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
                 MustNotBeImplementedUtil.checkNotImplemented(unsubscribe, MqttUnsubscribe.class);
 
         return new MqttUnsubAckSingle(mqttUnsubscribe, clientData).observeOn(
-                clientData.getExecutorConfig().getApiScheduler());
+                clientData.getExecutorConfig().getApplicationScheduler());
     }
 
     @NotNull
     @Override
     public Flowable<Mqtt5PublishResult> publish(@NotNull final Flowable<Mqtt5Publish> publishFlowable) {
         return new MqttIncomingAckFlowable(publishFlowable.map(PUBLISH_MAPPER), clientData).observeOn(
-                clientData.getExecutorConfig().getApiScheduler());
+                clientData.getExecutorConfig().getApplicationScheduler());
     }
 
     @NotNull
@@ -178,7 +178,7 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
             } else {
                 emitter.onError(new NotConnectedException());
             }
-        }).observeOn(clientData.getExecutorConfig().getApiScheduler());
+        }).observeOn(clientData.getExecutorConfig().getApplicationScheduler());
     }
 
     @NotNull
@@ -200,7 +200,7 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
             } else {
                 emitter.onError(new NotConnectedException());
             }
-        }).observeOn(clientData.getExecutorConfig().getApiScheduler());
+        }).observeOn(clientData.getExecutorConfig().getApplicationScheduler());
     }
 
     @NotNull
