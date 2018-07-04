@@ -17,15 +17,13 @@
 
 package org.mqttbee.mqtt.codec.encoder;
 
+import static org.junit.Assert.assertArrayEquals;
+
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.Test;
 import org.mqttbee.mqtt.message.ping.MqttPingReq;
 
-import static org.junit.Assert.assertArrayEquals;
-
-/**
- * @author David Katz
- */
+/** @author David Katz */
 class MqttPingReqEncoderTest extends AbstractMqtt5EncoderTest {
 
     MqttPingReqEncoderTest() {
@@ -35,11 +33,11 @@ class MqttPingReqEncoderTest extends AbstractMqtt5EncoderTest {
     @Test
     void encode_pingreq() {
         final byte[] expected = {
-                // fixed header
-                //   type, reserved
-                (byte) 0b1100_0000,
-                //   remaining length
-                0
+            // fixed header
+            //   type, reserved
+            (byte) 0b1100_0000,
+            //   remaining length
+            0
         };
 
         final MqttPingReq pingReq = MqttPingReq.INSTANCE;
@@ -52,5 +50,4 @@ class MqttPingReqEncoderTest extends AbstractMqtt5EncoderTest {
 
         assertArrayEquals(expected, actual);
     }
-
 }

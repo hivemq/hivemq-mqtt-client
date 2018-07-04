@@ -23,8 +23,8 @@ import org.mqttbee.mqtt.util.MqttBuilderUtil;
 
 /**
  * MQTT Client Identifier according to the MQTT specification.
- * <p>
- * A Client Identifier has the same restrictions from {@link MqttUTF8String}.
+ *
+ * <p>A Client Identifier has the same restrictions from {@link MqttUTF8String}.
  *
  * @author Silvio Giebl
  */
@@ -44,13 +44,13 @@ public interface MqttClientIdentifier extends MqttUTF8String {
     }
 
     /**
-     * Checks whether this Client Identifier must be allowed by a MQTT broker according to the MQTT specification.
-     * <p>
-     * A Client Identifier must be allowed by a MQTT broker if it is between 1 and 23 characters long and only contains
-     * lower or uppercase alphabetical characters or numbers.
+     * Checks whether this Client Identifier must be allowed by a MQTT broker according to the MQTT
+     * specification.
+     *
+     * <p>A Client Identifier must be allowed by a MQTT broker if it is between 1 and 23 characters
+     * long and only contains lower or uppercase alphabetical characters or numbers.
      *
      * @return whether this Client Identifier must be allowed by a MQTT broker.
      */
     boolean mustBeAllowedByServer();
-
 }

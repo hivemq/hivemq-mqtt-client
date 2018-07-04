@@ -17,8 +17,16 @@
 
 package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
+import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.checkFixedHeaderFlags;
+import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.*;
+import static org.mqttbee.mqtt.message.disconnect.MqttDisconnect.DEFAULT_REASON_CODE;
+import static org.mqttbee.mqtt.message.disconnect.MqttDisconnect.SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
+import static org.mqttbee.mqtt.message.disconnect.MqttDisconnectProperty.*;
+
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
@@ -30,31 +38,21 @@ import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.checkFixedHeaderFlags;
-import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.*;
-import static org.mqttbee.mqtt.message.disconnect.MqttDisconnect.DEFAULT_REASON_CODE;
-import static org.mqttbee.mqtt.message.disconnect.MqttDisconnect.SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
-import static org.mqttbee.mqtt.message.disconnect.MqttDisconnectProperty.*;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @Singleton
 public class Mqtt5DisconnectDecoder implements MqttMessageDecoder {
 
     private static final int FLAGS = 0b0000;
 
     @Inject
-    Mqtt5DisconnectDecoder() {
-    }
+    Mqtt5DisconnectDecoder() {}
 
     @Override
     @Nullable
     public MqttDisconnect decode(
-            final int flags, @NotNull final ByteBuf in, @NotNull final MqttClientConnectionData clientConnectionData)
+            final int flags,
+            @NotNull final ByteBuf in,
+            @NotNull final MqttClientConnectionData clientConnectionData)
             throws MqttDecoderException {
 
         checkFixedHeaderFlags(FLAGS, flags);
@@ -79,7 +77,8 @@ public class Mqtt5DisconnectDecoder implements MqttMessageDecoder {
 
                     switch (propertyIdentifier) {
                         case SESSION_EXPIRY_INTERVAL:
-                            sessionExpiryInterval = decodeSessionExpiryInterval(sessionExpiryInterval, in);
+                            sessionExpiryInterval =
+                                    decodeSessionExpiryInterval(sessionExpiryInterval, in);
                             break;
 
                         case SERVER_REFERENCE:
@@ -101,9 +100,10 @@ public class Mqtt5DisconnectDecoder implements MqttMessageDecoder {
             }
         }
 
-        final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.build(userPropertiesBuilder);
+        final MqttUserPropertiesImpl userProperties =
+                MqttUserPropertiesImpl.build(userPropertiesBuilder);
 
-        return new MqttDisconnect(reasonCode, sessionExpiryInterval, serverReference, reasonString, userProperties);
+        return new MqttDisconnect(
+                reasonCode, sessionExpiryInterval, serverReference, reasonString, userProperties);
     }
-
 }

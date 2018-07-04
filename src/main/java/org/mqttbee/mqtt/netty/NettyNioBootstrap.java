@@ -20,22 +20,18 @@ package org.mqttbee.mqtt.netty;
 import io.netty.channel.MultithreadEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import java.util.concurrent.Executor;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import java.util.concurrent.Executor;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @Singleton
 class NettyNioBootstrap extends NettyBootstrap {
 
     @Inject
-    NettyNioBootstrap() {
-    }
+    NettyNioBootstrap() {}
 
     @NotNull
     @Override
@@ -55,5 +51,4 @@ class NettyNioBootstrap extends NettyBootstrap {
     Class<NioSocketChannel> getChannelClass() {
         return NioSocketChannel.class;
     }
-
 }

@@ -19,9 +19,7 @@ package org.mqttbee.api.mqtt.mqtt3;
 
 import org.mqttbee.annotations.DoNotImplement;
 
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @DoNotImplement
 public interface Mqtt3ClientConnectionData {
 
@@ -30,5 +28,4 @@ public interface Mqtt3ClientConnectionData {
     int getReceiveMaximum();
 
     boolean hasWillPublish();
-
 }

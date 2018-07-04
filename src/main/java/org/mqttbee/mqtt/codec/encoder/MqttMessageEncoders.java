@@ -30,10 +30,9 @@ public interface MqttMessageEncoders {
      * Returns the corresponding encoder to the given MQTT message type code.
      *
      * @param code the MQTT message type code.
-     * @return the corresponding decoder to the MQTT message type code or null if there is no encoder for the MQTT
-     * message type code.
+     * @return the corresponding decoder to the MQTT message type code or null if there is no
+     *     encoder for the MQTT message type code.
      */
     @Nullable
     MqttMessageEncoder get(final int code);
-
 }

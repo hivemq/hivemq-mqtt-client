@@ -17,17 +17,14 @@
 
 package org.mqttbee.api.mqtt.mqtt5.message.publish.puback;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.stream.Stream;
-
-import static org.junit.Assert.assertEquals;
-
-/**
- * @author Christian Hoff
- */
+/** @author Christian Hoff */
 class Mqtt5PubAckReasonCodeTest {
 
     @ParameterizedTest

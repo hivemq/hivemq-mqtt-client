@@ -17,9 +17,17 @@
 
 package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
+import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.checkFixedHeaderFlags;
+import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.remainingLengthTooShort;
+import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.*;
+import static org.mqttbee.mqtt.message.auth.MqttAuthProperty.*;
+
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
+import java.nio.ByteBuffer;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode;
@@ -32,18 +40,7 @@ import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.message.auth.MqttAuth;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import java.nio.ByteBuffer;
-
-import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.checkFixedHeaderFlags;
-import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.remainingLengthTooShort;
-import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.*;
-import static org.mqttbee.mqtt.message.auth.MqttAuthProperty.*;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @Singleton
 public class Mqtt5AuthDecoder implements MqttMessageDecoder {
 
@@ -51,13 +48,14 @@ public class Mqtt5AuthDecoder implements MqttMessageDecoder {
     private static final int MIN_REMAINING_LENGTH = 2; // reason code (1) + property length (min 1)
 
     @Inject
-    Mqtt5AuthDecoder() {
-    }
+    Mqtt5AuthDecoder() {}
 
     @Override
     @Nullable
     public MqttAuth decode(
-            final int flags, @NotNull final ByteBuf in, @NotNull final MqttClientConnectionData clientConnectionData)
+            final int flags,
+            @NotNull final ByteBuf in,
+            @NotNull final MqttClientConnectionData clientConnectionData)
             throws MqttDecoderException {
 
         final Channel channel = clientConnectionData.getChannel();
@@ -93,12 +91,14 @@ public class Mqtt5AuthDecoder implements MqttMessageDecoder {
                     break;
 
                 case REASON_STRING:
-                    reasonString = decodeReasonStringIfRequested(reasonString, clientConnectionData, in);
+                    reasonString =
+                            decodeReasonStringIfRequested(reasonString, clientConnectionData, in);
                     break;
 
                 case USER_PROPERTY:
                     userPropertiesBuilder =
-                            decodeUserPropertyIfRequested(userPropertiesBuilder, clientConnectionData, in);
+                            decodeUserPropertyIfRequested(
+                                    userPropertiesBuilder, clientConnectionData, in);
                     break;
 
                 default:
@@ -108,12 +108,13 @@ public class Mqtt5AuthDecoder implements MqttMessageDecoder {
 
         if (method == null) {
             throw new MqttDecoderException(
-                    Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "must not omit authentication method");
+                    Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+                    "must not omit authentication method");
         }
 
-        final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.build(userPropertiesBuilder);
+        final MqttUserPropertiesImpl userProperties =
+                MqttUserPropertiesImpl.build(userPropertiesBuilder);
 
         return new MqttAuth(reasonCode, method, data, reasonString, userProperties);
     }
-
 }

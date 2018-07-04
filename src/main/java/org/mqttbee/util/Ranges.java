@@ -17,13 +17,10 @@
 
 package org.mqttbee.util;
 
+import javax.annotation.concurrent.NotThreadSafe;
 import org.mqttbee.annotations.NotNull;
 
-import javax.annotation.concurrent.NotThreadSafe;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @NotThreadSafe
 public class Ranges {
 
@@ -44,7 +41,6 @@ public class Ranges {
     public void returnId(final int id) {
         rootRange = rootRange.returnId(id);
     }
-
 
     private static class Range {
 
@@ -101,7 +97,5 @@ public class Ranges {
             }
             return range;
         }
-
     }
-
 }

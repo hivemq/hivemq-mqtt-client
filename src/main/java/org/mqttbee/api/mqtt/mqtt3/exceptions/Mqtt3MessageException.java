@@ -101,5 +101,4 @@ public class Mqtt3MessageException extends Exception {
     public Mqtt3Message getMqttMessage() {
         return mqtt3Message;
     }
-
 }

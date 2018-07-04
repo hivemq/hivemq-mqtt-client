@@ -24,8 +24,8 @@ import org.mqttbee.mqtt.util.MqttBuilderUtil;
 
 /**
  * MQTT User Property according to the MQTT 5 specification.
- * <p>
- * A User Property consists of a name and value UTF-8 encoded String Pair.
+ *
+ * <p>A User Property consists of a name and value UTF-8 encoded String Pair.
  *
  * @author Silvio Giebl
  */
@@ -35,7 +35,7 @@ public interface Mqtt5UserProperty {
     /**
      * Creates an User Property of the given name and value.
      *
-     * @param name  the name of the User Property.
+     * @param name the name of the User Property.
      * @param value the value of the User Property.
      * @return the created User Property.
      */
@@ -47,25 +47,21 @@ public interface Mqtt5UserProperty {
     /**
      * Creates an User Property of the given name and value.
      *
-     * @param name  the name of the User Property.
+     * @param name the name of the User Property.
      * @param value the value of the User Property.
      * @return the created User Property.
      */
     @NotNull
-    static Mqtt5UserProperty of(@NotNull final MqttUTF8String name, @NotNull final MqttUTF8String value) {
+    static Mqtt5UserProperty of(
+            @NotNull final MqttUTF8String name, @NotNull final MqttUTF8String value) {
         return MqttBuilderUtil.userProperty(name, value);
     }
 
-    /**
-     * @return the name of this User Property.
-     */
+    /** @return the name of this User Property. */
     @NotNull
     MqttUTF8String getName();
 
-    /**
-     * @return the value of this User Property.
-     */
+    /** @return the value of this User Property. */
     @NotNull
     MqttUTF8String getValue();
-
 }

@@ -17,8 +17,17 @@
 
 package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
+import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.checkFixedHeaderFlags;
+import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.remainingLengthTooShort;
+import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.*;
+import static org.mqttbee.mqtt.message.publish.puback.MqttPubAck.DEFAULT_REASON_CODE;
+import static org.mqttbee.mqtt.message.publish.puback.MqttPubAckProperty.REASON_STRING;
+import static org.mqttbee.mqtt.message.publish.puback.MqttPubAckProperty.USER_PROPERTY;
+
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.puback.Mqtt5PubAckReasonCode;
@@ -30,19 +39,7 @@ import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.message.publish.puback.MqttPubAck;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.checkFixedHeaderFlags;
-import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.remainingLengthTooShort;
-import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.*;
-import static org.mqttbee.mqtt.message.publish.puback.MqttPubAck.DEFAULT_REASON_CODE;
-import static org.mqttbee.mqtt.message.publish.puback.MqttPubAckProperty.REASON_STRING;
-import static org.mqttbee.mqtt.message.publish.puback.MqttPubAckProperty.USER_PROPERTY;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @Singleton
 public class Mqtt5PubAckDecoder implements MqttMessageDecoder {
 
@@ -50,13 +47,14 @@ public class Mqtt5PubAckDecoder implements MqttMessageDecoder {
     private static final int MIN_REMAINING_LENGTH = 2;
 
     @Inject
-    Mqtt5PubAckDecoder() {
-    }
+    Mqtt5PubAckDecoder() {}
 
     @Override
     @Nullable
     public MqttPubAck decode(
-            final int flags, @NotNull final ByteBuf in, @NotNull final MqttClientConnectionData clientConnectionData)
+            final int flags,
+            @NotNull final ByteBuf in,
+            @NotNull final MqttClientConnectionData clientConnectionData)
             throws MqttDecoderException {
 
         checkFixedHeaderFlags(FLAGS, flags);
@@ -85,12 +83,15 @@ public class Mqtt5PubAckDecoder implements MqttMessageDecoder {
 
                     switch (propertyIdentifier) {
                         case REASON_STRING:
-                            reasonString = decodeReasonStringIfRequested(reasonString, clientConnectionData, in);
+                            reasonString =
+                                    decodeReasonStringIfRequested(
+                                            reasonString, clientConnectionData, in);
                             break;
 
                         case USER_PROPERTY:
                             userPropertiesBuilder =
-                                    decodeUserPropertyIfRequested(userPropertiesBuilder, clientConnectionData, in);
+                                    decodeUserPropertyIfRequested(
+                                            userPropertiesBuilder, clientConnectionData, in);
                             break;
 
                         default:
@@ -100,9 +101,9 @@ public class Mqtt5PubAckDecoder implements MqttMessageDecoder {
             }
         }
 
-        final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.build(userPropertiesBuilder);
+        final MqttUserPropertiesImpl userProperties =
+                MqttUserPropertiesImpl.build(userPropertiesBuilder);
 
         return new MqttPubAck(packetIdentifier, reasonCode, reasonString, userProperties);
     }
-
 }

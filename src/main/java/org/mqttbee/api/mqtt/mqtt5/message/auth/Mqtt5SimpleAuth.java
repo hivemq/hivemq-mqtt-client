@@ -17,16 +17,13 @@
 
 package org.mqttbee.api.mqtt.mqtt5.message.auth;
 
+import java.nio.ByteBuffer;
+import java.util.Optional;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 
-import java.nio.ByteBuffer;
-import java.util.Optional;
-
-/**
- * Simple authentication and/or authorization related data in the MQTT 5 CONNECT packet.
- */
+/** Simple authentication and/or authorization related data in the MQTT 5 CONNECT packet. */
 @DoNotImplement
 public interface Mqtt5SimpleAuth {
 
@@ -35,16 +32,11 @@ public interface Mqtt5SimpleAuth {
         return new Mqtt5SimpleAuthBuilder<>(null);
     }
 
-    /**
-     * @return the optional username.
-     */
+    /** @return the optional username. */
     @NotNull
     Optional<MqttUTF8String> getUsername();
 
-    /**
-     * @return the optional password.
-     */
+    /** @return the optional password. */
     @NotNull
     Optional<ByteBuffer> getPassword();
-
 }

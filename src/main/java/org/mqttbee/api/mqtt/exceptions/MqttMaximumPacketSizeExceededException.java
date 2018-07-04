@@ -22,8 +22,8 @@ import org.mqttbee.mqtt.message.MqttMessage;
 
 /**
  * Exception to indicate that the packet size exceeds the maximum packet size.
- * <p>
- * This exception does not have a stack trace.
+ *
+ * <p>This exception does not have a stack trace.
  *
  * @author Silvio Giebl
  */
@@ -32,13 +32,17 @@ public class MqttMaximumPacketSizeExceededException extends RuntimeException {
     public MqttMaximumPacketSizeExceededException(
             @NotNull final MqttMessage message, final int encodedLength, final int maxPacketSize) {
 
-        super("packet size exceeded for " + message.getType() + ", minimal possible encoded length: " + encodedLength +
-                ", maximum: " + maxPacketSize);
+        super(
+                "packet size exceeded for "
+                        + message.getType()
+                        + ", minimal possible encoded length: "
+                        + encodedLength
+                        + ", maximum: "
+                        + maxPacketSize);
     }
 
     @Override
     public synchronized Throwable fillInStackTrace() {
         return this;
     }
-
 }

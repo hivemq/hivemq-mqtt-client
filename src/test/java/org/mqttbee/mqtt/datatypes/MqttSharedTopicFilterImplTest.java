@@ -17,22 +17,19 @@
 
 package org.mqttbee.mqtt.datatypes;
 
+import static org.junit.Assert.*;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import java.nio.charset.Charset;
+import java.util.Collection;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import java.nio.charset.Charset;
-import java.util.Collection;
-
-import static org.junit.Assert.*;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @RunWith(Parameterized.class)
 public class MqttSharedTopicFilterImplTest {
 
@@ -97,7 +94,8 @@ public class MqttSharedTopicFilterImplTest {
         assertTrue(mqtt5TopicFilter.isShared());
         assertTrue(mqtt5TopicFilter instanceof MqttSharedTopicFilterImpl);
 
-        final MqttSharedTopicFilterImpl mqtt5SharedTopicFilter = (MqttSharedTopicFilterImpl) mqtt5TopicFilter;
+        final MqttSharedTopicFilterImpl mqtt5SharedTopicFilter =
+                (MqttSharedTopicFilterImpl) mqtt5TopicFilter;
         assertEquals(shareName, mqtt5SharedTopicFilter.getShareName());
         assertEquals(topicFilter, mqtt5SharedTopicFilter.getTopicFilter());
     }
@@ -159,8 +157,10 @@ public class MqttSharedTopicFilterImplTest {
         assertTrue(mqtt5TopicFilter2 instanceof MqttSharedTopicFilterImpl);
         assertNotEquals(mqtt5TopicFilter1.toString(), mqtt5TopicFilter2.toString());
 
-        final MqttSharedTopicFilterImpl mqtt5SharedTopicFilter1 = (MqttSharedTopicFilterImpl) mqtt5TopicFilter1;
-        final MqttSharedTopicFilterImpl mqtt5SharedTopicFilter2 = (MqttSharedTopicFilterImpl) mqtt5TopicFilter2;
+        final MqttSharedTopicFilterImpl mqtt5SharedTopicFilter1 =
+                (MqttSharedTopicFilterImpl) mqtt5TopicFilter1;
+        final MqttSharedTopicFilterImpl mqtt5SharedTopicFilter2 =
+                (MqttSharedTopicFilterImpl) mqtt5TopicFilter2;
         assertEquals(shareName, mqtt5SharedTopicFilter1.getShareName());
         assertEquals(shareName, mqtt5SharedTopicFilter2.getShareName());
         assertEquals(topicFilter1, mqtt5SharedTopicFilter1.getTopicFilter());
@@ -176,7 +176,8 @@ public class MqttSharedTopicFilterImplTest {
         assertTrue(mqtt5TopicFilter.isShared());
         assertTrue(mqtt5TopicFilter instanceof MqttSharedTopicFilterImpl);
 
-        final MqttSharedTopicFilterImpl mqtt5SharedTopicFilter = (MqttSharedTopicFilterImpl) mqtt5TopicFilter;
+        final MqttSharedTopicFilterImpl mqtt5SharedTopicFilter =
+                (MqttSharedTopicFilterImpl) mqtt5TopicFilter;
         assertEquals(shareName, mqtt5SharedTopicFilter.getShareName());
         assertEquals(topicFilter, mqtt5SharedTopicFilter.getTopicFilter());
     }
@@ -190,7 +191,8 @@ public class MqttSharedTopicFilterImplTest {
         assertTrue(mqtt5TopicFilter.isShared());
         assertTrue(mqtt5TopicFilter instanceof MqttSharedTopicFilterImpl);
 
-        final MqttSharedTopicFilterImpl mqtt5SharedTopicFilter = (MqttSharedTopicFilterImpl) mqtt5TopicFilter;
+        final MqttSharedTopicFilterImpl mqtt5SharedTopicFilter =
+                (MqttSharedTopicFilterImpl) mqtt5TopicFilter;
         assertEquals(shareName, mqtt5SharedTopicFilter.getShareName());
         assertEquals(topicFilter, mqtt5SharedTopicFilter.getTopicFilter());
     }
@@ -208,7 +210,8 @@ public class MqttSharedTopicFilterImplTest {
         assertEquals("", levels.get(0));
         assertEquals("", levels.get(1));
 
-        final MqttSharedTopicFilterImpl mqtt5SharedTopicFilter = (MqttSharedTopicFilterImpl) mqtt5TopicFilter;
+        final MqttSharedTopicFilterImpl mqtt5SharedTopicFilter =
+                (MqttSharedTopicFilterImpl) mqtt5TopicFilter;
         assertEquals(shareName, mqtt5SharedTopicFilter.getShareName());
         assertEquals(topicFilter, mqtt5SharedTopicFilter.getTopicFilter());
     }
@@ -222,7 +225,8 @@ public class MqttSharedTopicFilterImplTest {
         assertTrue(mqtt5TopicFilter.isShared());
         assertTrue(mqtt5TopicFilter instanceof MqttSharedTopicFilterImpl);
 
-        final MqttSharedTopicFilterImpl mqtt5SharedTopicFilter = (MqttSharedTopicFilterImpl) mqtt5TopicFilter;
+        final MqttSharedTopicFilterImpl mqtt5SharedTopicFilter =
+                (MqttSharedTopicFilterImpl) mqtt5TopicFilter;
         assertEquals(shareName, mqtt5SharedTopicFilter.getShareName());
         assertEquals(topicFilter, mqtt5SharedTopicFilter.getTopicFilter());
     }
@@ -236,7 +240,8 @@ public class MqttSharedTopicFilterImplTest {
         assertTrue(mqtt5TopicFilter.isShared());
         assertTrue(mqtt5TopicFilter instanceof MqttSharedTopicFilterImpl);
 
-        final MqttSharedTopicFilterImpl mqtt5SharedTopicFilter = (MqttSharedTopicFilterImpl) mqtt5TopicFilter;
+        final MqttSharedTopicFilterImpl mqtt5SharedTopicFilter =
+                (MqttSharedTopicFilterImpl) mqtt5TopicFilter;
         assertEquals(shareName, mqtt5SharedTopicFilter.getShareName());
         assertEquals(topicFilter, mqtt5SharedTopicFilter.getTopicFilter());
     }
@@ -250,7 +255,8 @@ public class MqttSharedTopicFilterImplTest {
     }
 
     @Test
-    public void test_shared_topic_filter_must_not_contain_multi_level_wildcard_after_non_separator() {
+    public void
+            test_shared_topic_filter_must_not_contain_multi_level_wildcard_after_non_separator() {
         final String shareName = "group";
         final String topicFilter = "abc/def/ghi#";
         final MqttTopicFilterImpl mqtt5TopicFilter = from(shareName, topicFilter);
@@ -266,7 +272,8 @@ public class MqttSharedTopicFilterImplTest {
         assertTrue(mqtt5TopicFilter.isShared());
         assertTrue(mqtt5TopicFilter instanceof MqttSharedTopicFilterImpl);
 
-        final MqttSharedTopicFilterImpl mqtt5SharedTopicFilter = (MqttSharedTopicFilterImpl) mqtt5TopicFilter;
+        final MqttSharedTopicFilterImpl mqtt5SharedTopicFilter =
+                (MqttSharedTopicFilterImpl) mqtt5TopicFilter;
         assertEquals(shareName, mqtt5SharedTopicFilter.getShareName());
         assertEquals(topicFilter, mqtt5SharedTopicFilter.getTopicFilter());
     }
@@ -280,7 +287,8 @@ public class MqttSharedTopicFilterImplTest {
         assertTrue(mqtt5TopicFilter.isShared());
         assertTrue(mqtt5TopicFilter instanceof MqttSharedTopicFilterImpl);
 
-        final MqttSharedTopicFilterImpl mqtt5SharedTopicFilter = (MqttSharedTopicFilterImpl) mqtt5TopicFilter;
+        final MqttSharedTopicFilterImpl mqtt5SharedTopicFilter =
+                (MqttSharedTopicFilterImpl) mqtt5TopicFilter;
         assertEquals(shareName, mqtt5SharedTopicFilter.getShareName());
         assertEquals(topicFilter, mqtt5SharedTopicFilter.getTopicFilter());
     }
@@ -294,7 +302,8 @@ public class MqttSharedTopicFilterImplTest {
         assertTrue(mqtt5TopicFilter.isShared());
         assertTrue(mqtt5TopicFilter instanceof MqttSharedTopicFilterImpl);
 
-        final MqttSharedTopicFilterImpl mqtt5SharedTopicFilter = (MqttSharedTopicFilterImpl) mqtt5TopicFilter;
+        final MqttSharedTopicFilterImpl mqtt5SharedTopicFilter =
+                (MqttSharedTopicFilterImpl) mqtt5TopicFilter;
         assertEquals(shareName, mqtt5SharedTopicFilter.getShareName());
         assertEquals(topicFilter, mqtt5SharedTopicFilter.getTopicFilter());
     }
@@ -308,7 +317,8 @@ public class MqttSharedTopicFilterImplTest {
     }
 
     @Test
-    public void test_shared_topic_filter_must_not_contain_single_level_wildcard_after_non_separator() {
+    public void
+            test_shared_topic_filter_must_not_contain_single_level_wildcard_after_non_separator() {
         final String shareName = "group";
         final String topicFilter = "abc+/def/ghi";
         final MqttTopicFilterImpl mqtt5TopicFilter = from(shareName, topicFilter);
@@ -316,7 +326,8 @@ public class MqttSharedTopicFilterImplTest {
     }
 
     @Test
-    public void test_shared_topic_filter_must_not_contain_single_level_wildcard_before_non_separator() {
+    public void
+            test_shared_topic_filter_must_not_contain_single_level_wildcard_before_non_separator() {
         final String shareName = "group";
         final String topicFilter = "abc/+def/ghi";
         final MqttTopicFilterImpl mqtt5TopicFilter = from(shareName, topicFilter);
@@ -324,7 +335,8 @@ public class MqttSharedTopicFilterImplTest {
     }
 
     @Test
-    public void test_shared_topic_filter_must_not_contain_single_level_before_multi_level_wildcard() {
+    public void
+            test_shared_topic_filter_must_not_contain_single_level_before_multi_level_wildcard() {
         final String shareName = "group";
         final String topicFilter = "abc/def/ghi/+#";
         final MqttTopicFilterImpl mqtt5TopicFilter = from(shareName, topicFilter);
@@ -340,7 +352,8 @@ public class MqttSharedTopicFilterImplTest {
         assertTrue(mqtt5TopicFilter.isShared());
         assertTrue(mqtt5TopicFilter instanceof MqttSharedTopicFilterImpl);
 
-        final MqttSharedTopicFilterImpl mqtt5SharedTopicFilter = (MqttSharedTopicFilterImpl) mqtt5TopicFilter;
+        final MqttSharedTopicFilterImpl mqtt5SharedTopicFilter =
+                (MqttSharedTopicFilterImpl) mqtt5TopicFilter;
         assertEquals(shareName, mqtt5SharedTopicFilter.getShareName());
         assertEquals(topicFilter, mqtt5SharedTopicFilter.getTopicFilter());
     }
@@ -390,5 +403,4 @@ public class MqttSharedTopicFilterImplTest {
             assertNull(mqtt5SharedTopicFilter);
         }
     }
-
 }

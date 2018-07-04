@@ -17,15 +17,12 @@
 package org.mqttbee.mqtt;
 
 import com.google.common.collect.ImmutableList;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.TrustManagerFactory;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.MqttClientSslConfig;
 
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.TrustManagerFactory;
-
-/**
- * @author David Katz
- */
+/** @author David Katz */
 public class MqttClientSslConfigImpl implements MqttClientSslConfig {
 
     public static final MqttClientSslConfigImpl DEFAULT =
@@ -39,8 +36,10 @@ public class MqttClientSslConfigImpl implements MqttClientSslConfig {
 
     public MqttClientSslConfigImpl(
             @Nullable final KeyManagerFactory keyManagerFactory,
-            @Nullable final TrustManagerFactory trustManagerFactory, @Nullable final ImmutableList<String> cipherSuites,
-            @Nullable final ImmutableList<String> protocols, final long handshakeTimeoutMs) {
+            @Nullable final TrustManagerFactory trustManagerFactory,
+            @Nullable final ImmutableList<String> cipherSuites,
+            @Nullable final ImmutableList<String> protocols,
+            final long handshakeTimeoutMs) {
 
         this.keyManagerFactory = keyManagerFactory;
         this.trustManagerFactory = trustManagerFactory;
@@ -77,5 +76,4 @@ public class MqttClientSslConfigImpl implements MqttClientSslConfig {
     public long getHandshakeTimeoutMs() {
         return handshakeTimeoutMs;
     }
-
 }

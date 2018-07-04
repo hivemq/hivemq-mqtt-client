@@ -17,6 +17,7 @@
 
 package org.mqttbee.mqtt.mqtt3;
 
+import java.util.Optional;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttClientExecutorConfig;
 import org.mqttbee.api.mqtt.MqttClientSslConfig;
@@ -27,11 +28,7 @@ import org.mqttbee.api.mqtt.mqtt3.Mqtt3ClientData;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3ServerConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
 
-import java.util.Optional;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class Mqtt3ClientDataView implements Mqtt3ClientData {
 
     private final MqttClientData delegate;
@@ -106,5 +103,4 @@ public class Mqtt3ClientDataView implements Mqtt3ClientData {
     public Optional<Mqtt3ServerConnectionData> getServerConnectionData() {
         return Optional.ofNullable(delegate.getRawServerConnectionData());
     }
-
 }

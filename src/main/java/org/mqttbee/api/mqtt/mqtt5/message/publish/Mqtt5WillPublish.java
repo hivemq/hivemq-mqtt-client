@@ -17,10 +17,9 @@
 
 package org.mqttbee.api.mqtt.mqtt5.message.publish;
 
+import java.util.function.Function;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
-
-import java.util.function.Function;
 
 /**
  * MQTT 5 Will Publish which can be a part of the CONNECT packet.
@@ -40,14 +39,9 @@ public interface Mqtt5WillPublish extends Mqtt5Publish {
         return new Mqtt5WillPublishBuilder<>(publish);
     }
 
-    /**
-     * The default delay of Will Publishes.
-     */
+    /** The default delay of Will Publishes. */
     long DEFAULT_DELAY_INTERVAL = 0;
 
-    /**
-     * @return the delay of this Will Publish. The default is {@link #DEFAULT_DELAY_INTERVAL}.
-     */
+    /** @return the delay of this Will Publish. The default is {@link #DEFAULT_DELAY_INTERVAL}. */
     long getDelayInterval();
-
 }

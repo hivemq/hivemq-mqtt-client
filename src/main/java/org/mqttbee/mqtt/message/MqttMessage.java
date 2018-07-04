@@ -24,5 +24,4 @@ import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
  *
  * @author Silvio Giebl
  */
-public interface MqttMessage extends Mqtt5Message {
-}
+public interface MqttMessage extends Mqtt5Message {}

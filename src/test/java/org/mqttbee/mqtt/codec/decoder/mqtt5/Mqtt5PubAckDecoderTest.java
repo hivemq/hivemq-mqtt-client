@@ -17,6 +17,8 @@
 
 package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.Test;
@@ -30,49 +32,184 @@ import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.message.publish.puback.MqttPubAck;
 import org.mqttbee.mqtt.netty.ChannelAttributes;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 class Mqtt5PubAckDecoderTest extends AbstractMqtt5DecoderTest {
 
     Mqtt5PubAckDecoderTest() {
-        super(code -> {
-            if (code == Mqtt5MessageType.PUBACK.getCode()) {
-                return new Mqtt5PubAckDecoder();
-            }
-            return null;
-        });
+        super(
+                code -> {
+                    if (code == Mqtt5MessageType.PUBACK.getCode()) {
+                        return new Mqtt5PubAckDecoder();
+                    }
+                    return null;
+                });
     }
 
     @Test
     void decode_big_packet() {
         final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                0b0100_0000,
-                //   remaining length (150)
-                (byte) (128 + 22), 1,
-                // variable header
-                //   packet identifier
-                0, 5,
-                //   reason code (success)
-                0x00,
-                //   properties (145)
-                (byte) (128 + 17), 1,
-                //     reason string
-                0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', 's',
-                //     user properties
-                0x26, 0, 5, 't', 'e', 's', 't', '0', 0, 5, 'v', 'a', 'l', 'u', 'e', //
-                0x26, 0, 5, 't', 'e', 's', 't', '1', 0, 5, 'v', 'a', 'l', 'u', 'e', //
-                0x26, 0, 5, 't', 'e', 's', 't', '2', 0, 5, 'v', 'a', 'l', 'u', 'e', //
-                0x26, 0, 5, 't', 'e', 's', 't', '3', 0, 5, 'v', 'a', 'l', 'u', 'e', //
-                0x26, 0, 5, 't', 'e', 's', 't', '4', 0, 5, 'v', 'a', 'l', 'u', 'e', //
-                0x26, 0, 5, 't', 'e', 's', 't', '5', 0, 5, 'v', 'a', 'l', 'u', 'e', //
-                0x26, 0, 5, 't', 'e', 's', 't', '6', 0, 5, 'v', 'a', 'l', 'u', 'e', //
-                0x26, 0, 5, 't', 'e', 's', 't', '7', 0, 5, 'v', 'a', 'l', 'u', 'e', //
-                0x26, 0, 5, 't', 'e', 's', 't', '8', 0, 5, 'v', 'a', 'l', 'u', 'e',
+            // fixed header
+            //   type, flags
+            0b0100_0000,
+            //   remaining length (150)
+            (byte) (128 + 22),
+            1,
+            // variable header
+            //   packet identifier
+            0,
+            5,
+            //   reason code (success)
+            0x00,
+            //   properties (145)
+            (byte) (128 + 17),
+            1,
+            //     reason string
+            0x1F,
+            0,
+            7,
+            's',
+            'u',
+            'c',
+            'c',
+            'e',
+            's',
+            's',
+            //     user properties
+            0x26,
+            0,
+            5,
+            't',
+            'e',
+            's',
+            't',
+            '0',
+            0,
+            5,
+            'v',
+            'a',
+            'l',
+            'u',
+            'e', //
+            0x26,
+            0,
+            5,
+            't',
+            'e',
+            's',
+            't',
+            '1',
+            0,
+            5,
+            'v',
+            'a',
+            'l',
+            'u',
+            'e', //
+            0x26,
+            0,
+            5,
+            't',
+            'e',
+            's',
+            't',
+            '2',
+            0,
+            5,
+            'v',
+            'a',
+            'l',
+            'u',
+            'e', //
+            0x26,
+            0,
+            5,
+            't',
+            'e',
+            's',
+            't',
+            '3',
+            0,
+            5,
+            'v',
+            'a',
+            'l',
+            'u',
+            'e', //
+            0x26,
+            0,
+            5,
+            't',
+            'e',
+            's',
+            't',
+            '4',
+            0,
+            5,
+            'v',
+            'a',
+            'l',
+            'u',
+            'e', //
+            0x26,
+            0,
+            5,
+            't',
+            'e',
+            's',
+            't',
+            '5',
+            0,
+            5,
+            'v',
+            'a',
+            'l',
+            'u',
+            'e', //
+            0x26,
+            0,
+            5,
+            't',
+            'e',
+            's',
+            't',
+            '6',
+            0,
+            5,
+            'v',
+            'a',
+            'l',
+            'u',
+            'e', //
+            0x26,
+            0,
+            5,
+            't',
+            'e',
+            's',
+            't',
+            '7',
+            0,
+            5,
+            'v',
+            'a',
+            'l',
+            'u',
+            'e', //
+            0x26,
+            0,
+            5,
+            't',
+            'e',
+            's',
+            't',
+            '8',
+            0,
+            5,
+            'v',
+            'a',
+            'l',
+            'u',
+            'e',
         };
 
         final ByteBuf byteBuf = channel.alloc().buffer();
@@ -87,7 +224,8 @@ class Mqtt5PubAckDecoderTest extends AbstractMqtt5DecoderTest {
         assertTrue(pubAck.getReasonString().isPresent());
         assertEquals("success", pubAck.getReasonString().get().toString());
 
-        final ImmutableList<MqttUserPropertyImpl> userProperties = pubAck.getUserProperties().asList();
+        final ImmutableList<MqttUserPropertyImpl> userProperties =
+                pubAck.getUserProperties().asList();
         assertEquals(9, userProperties.size());
         for (int i = 0; i < 9; i++) {
             assertEquals("test" + i, userProperties.get(i).getName().toString());
@@ -498,7 +636,9 @@ class Mqtt5PubAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(11);
         //     malformed reason string identifier
-        byteBuf.writeByte(128 + 0x1F).writeByte(0).writeBytes(new byte[]{0, 7, 's', 'u', 'c', 'c', 'e', 's', 's'});
+        byteBuf.writeByte(128 + 0x1F)
+                .writeByte(0)
+                .writeBytes(new byte[] {0, 7, 's', 'u', 'c', 'c', 'e', 's', 's'});
 
         channel.writeInbound(byteBuf);
 
@@ -524,8 +664,8 @@ class Mqtt5PubAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(20);
         //     reason string
-        byteBuf.writeBytes(new byte[]{0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', 's'});
-        byteBuf.writeBytes(new byte[]{0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', 's'});
+        byteBuf.writeBytes(new byte[] {0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', 's'});
+        byteBuf.writeBytes(new byte[] {0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', 's'});
 
         channel.writeInbound(byteBuf);
 
@@ -548,8 +688,10 @@ class Mqtt5PubAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(28);
         //     user properties
-        byteBuf.writeBytes(new byte[]{0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'});
-        byteBuf.writeBytes(new byte[]{0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'});
+        byteBuf.writeBytes(
+                new byte[] {0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'});
+        byteBuf.writeBytes(
+                new byte[] {0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'});
 
         channel.writeInbound(byteBuf);
         final MqttPubAck pubAck = channel.readInbound();
@@ -560,7 +702,8 @@ class Mqtt5PubAckDecoderTest extends AbstractMqtt5DecoderTest {
         assertEquals(Mqtt5PubAckReasonCode.SUCCESS, pubAck.getReasonCode());
         assertFalse(pubAck.getReasonString().isPresent());
 
-        final ImmutableList<MqttUserPropertyImpl> userProperties = pubAck.getUserProperties().asList();
+        final ImmutableList<MqttUserPropertyImpl> userProperties =
+                pubAck.getUserProperties().asList();
         assertEquals(2, userProperties.size());
         assertEquals("test", userProperties.get(0).getName().toString());
         assertEquals("value", userProperties.get(0).getValue().toString());
@@ -587,7 +730,7 @@ class Mqtt5PubAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(10);
         //     reason string
-        byteBuf.writeBytes(new byte[]{0x1F, 0, 6, 's', 'u', 'c', 'c', 'e', 's', 's'});
+        byteBuf.writeBytes(new byte[] {0x1F, 0, 6, 's', 'u', 'c', 'c', 'e', 's', 's'});
 
         channel.writeInbound(byteBuf);
 
@@ -613,7 +756,7 @@ class Mqtt5PubAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(10);
         //     reason string
-        byteBuf.writeBytes(new byte[]{0x1F, 0, 8, 's', 'u', 'c', 'c', 'e', 's', 's'});
+        byteBuf.writeBytes(new byte[] {0x1F, 0, 8, 's', 'u', 'c', 'c', 'e', 's', 's'});
         // padding, e.g. next message
         byteBuf.writeByte(0b0100_0000);
 
@@ -641,7 +784,7 @@ class Mqtt5PubAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(10);
         //     reason string
-        byteBuf.writeBytes(new byte[]{0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', '\0'});
+        byteBuf.writeBytes(new byte[] {0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', '\0'});
 
         channel.writeInbound(byteBuf);
 
@@ -667,7 +810,8 @@ class Mqtt5PubAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(14);
         //     user properties
-        byteBuf.writeBytes(new byte[]{0x26, 0, 3, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'});
+        byteBuf.writeBytes(
+                new byte[] {0x26, 0, 3, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'});
 
         channel.writeInbound(byteBuf);
 
@@ -693,7 +837,8 @@ class Mqtt5PubAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(14);
         //     user properties
-        byteBuf.writeBytes(new byte[]{0x26, 0, 5, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'});
+        byteBuf.writeBytes(
+                new byte[] {0x26, 0, 5, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'});
         // padding, e.g. next message
         byteBuf.writeByte(0b0100_0000);
 
@@ -721,7 +866,8 @@ class Mqtt5PubAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(14);
         //     user properties
-        byteBuf.writeBytes(new byte[]{0x26, 0, 4, 't', 'e', 's', '\0', 0, 5, 'v', 'a', 'l', 'u', 'e'});
+        byteBuf.writeBytes(
+                new byte[] {0x26, 0, 4, 't', 'e', 's', '\0', 0, 5, 'v', 'a', 'l', 'u', 'e'});
 
         channel.writeInbound(byteBuf);
 
@@ -747,7 +893,8 @@ class Mqtt5PubAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(14);
         //     user properties
-        byteBuf.writeBytes(new byte[]{0x26, 0, 4, 't', 'e', 's', 't', 0, 4, 'v', 'a', 'l', 'u', 'e'});
+        byteBuf.writeBytes(
+                new byte[] {0x26, 0, 4, 't', 'e', 's', 't', 0, 4, 'v', 'a', 'l', 'u', 'e'});
 
         channel.writeInbound(byteBuf);
 
@@ -773,7 +920,8 @@ class Mqtt5PubAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(14);
         //     user properties
-        byteBuf.writeBytes(new byte[]{0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e'});
+        byteBuf.writeBytes(
+                new byte[] {0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e'});
         // padding, e.g. next message
         byteBuf.writeByte(0b0100_0000);
 
@@ -801,14 +949,16 @@ class Mqtt5PubAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(14);
         //     user properties
-        byteBuf.writeBytes(new byte[]{0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', '\0'});
+        byteBuf.writeBytes(
+                new byte[] {0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', '\0'});
 
         channel.writeInbound(byteBuf);
 
         testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    private void testDisconnect(final Mqtt5DisconnectReasonCode reasonCode, final boolean sendReasonString) {
+    private void testDisconnect(
+            final Mqtt5DisconnectReasonCode reasonCode, final boolean sendReasonString) {
         final MqttPubAck pubAck = channel.readInbound();
         assertNull(pubAck);
 
@@ -820,12 +970,61 @@ class Mqtt5PubAckDecoderTest extends AbstractMqtt5DecoderTest {
 
     private static final int PROPERTIES_VALID_LENGTH = 54;
     private static final byte[] PROPERTIES_VALID = {
-            //     reason string
-            0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', 's',
-            //     user properties
-            0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e', //
-            0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e', '2', //
-            0x26, 0, 5, 't', 'e', 's', 't', '2', 0, 5, 'v', 'a', 'l', 'u', 'e'
+        //     reason string
+        0x1F,
+        0,
+        7,
+        's',
+        'u',
+        'c',
+        'c',
+        'e',
+        's',
+        's',
+        //     user properties
+        0x26,
+        0,
+        4,
+        't',
+        'e',
+        's',
+        't',
+        0,
+        5,
+        'v',
+        'a',
+        'l',
+        'u',
+        'e', //
+        0x26,
+        0,
+        4,
+        't',
+        'e',
+        's',
+        't',
+        0,
+        6,
+        'v',
+        'a',
+        'l',
+        'u',
+        'e',
+        '2', //
+        0x26,
+        0,
+        5,
+        't',
+        'e',
+        's',
+        't',
+        '2',
+        0,
+        5,
+        'v',
+        'a',
+        'l',
+        'u',
+        'e'
     };
-
 }

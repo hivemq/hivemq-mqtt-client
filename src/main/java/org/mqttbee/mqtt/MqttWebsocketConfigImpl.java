@@ -19,9 +19,7 @@ package org.mqttbee.mqtt;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttWebsocketConfig;
 
-/**
- * @author David Katz
- */
+/** @author David Katz */
 public class MqttWebsocketConfigImpl implements MqttWebsocketConfig {
 
     public static final MqttWebsocketConfigImpl DEFAULT = new MqttWebsocketConfigImpl("");
@@ -38,5 +36,4 @@ public class MqttWebsocketConfigImpl implements MqttWebsocketConfig {
     public String getServerPath() {
         return serverPath;
     }
-
 }

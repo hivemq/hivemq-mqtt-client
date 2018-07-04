@@ -19,13 +19,12 @@ package org.mqttbee.api.mqtt.mqtt5.datatypes;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import java.util.function.Function;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.util.MustNotBeImplementedUtil;
-
-import java.util.function.Function;
 
 /**
  * Collection of {@link Mqtt5UserProperty User Properties}.
@@ -35,9 +34,7 @@ import java.util.function.Function;
 @DoNotImplement
 public interface Mqtt5UserProperties {
 
-    /**
-     * @return the empty collection of User Properties.
-     */
+    /** @return the empty collection of User Properties. */
     @NotNull
     static Mqtt5UserProperties of() {
         return MqttUserPropertiesImpl.NO_USER_PROPERTIES;
@@ -56,7 +53,9 @@ public interface Mqtt5UserProperties {
         final ImmutableList.Builder<MqttUserPropertyImpl> builder =
                 ImmutableList.builderWithExpectedSize(userProperties.length);
         for (final Mqtt5UserProperty userProperty : userProperties) {
-            builder.add(MustNotBeImplementedUtil.checkNotImplemented(userProperty, MqttUserPropertyImpl.class));
+            builder.add(
+                    MustNotBeImplementedUtil.checkNotImplemented(
+                            userProperty, MqttUserPropertyImpl.class));
         }
         return MqttUserPropertiesImpl.of(builder.build());
     }
@@ -67,14 +66,12 @@ public interface Mqtt5UserProperties {
     }
 
     @NotNull
-    static Mqtt5UserPropertiesBuilder<Void> extend(@NotNull final Mqtt5UserProperties userProperties) {
+    static Mqtt5UserPropertiesBuilder<Void> extend(
+            @NotNull final Mqtt5UserProperties userProperties) {
         return new Mqtt5UserPropertiesBuilder<>(userProperties);
     }
 
-    /**
-     * @return the User Properties as an immutable list.
-     */
+    /** @return the User Properties as an immutable list. */
     @NotNull
     ImmutableList<? extends Mqtt5UserProperty> asList();
-
 }

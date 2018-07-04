@@ -28,16 +28,15 @@ import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.ioc.ChannelComponent;
 import org.reactivestreams.Subscriber;
 
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class MqttGlobalIncomingPublishFlowable extends Flowable<Mqtt5Publish> {
 
     private final MqttGlobalPublishFlowType type;
     private final MqttClientData clientData;
 
     public MqttGlobalIncomingPublishFlowable(
-            @NotNull final MqttGlobalPublishFlowType type, @NotNull final MqttClientData clientData) {
+            @NotNull final MqttGlobalPublishFlowType type,
+            @NotNull final MqttClientData clientData) {
 
         this.type = type;
         this.clientData = clientData;
@@ -45,19 +44,26 @@ public class MqttGlobalIncomingPublishFlowable extends Flowable<Mqtt5Publish> {
 
     @Override
     protected void subscribeActual(final Subscriber<? super Mqtt5Publish> s) {
-        final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData(); // TODO temp
+        final MqttClientConnectionData clientConnectionData =
+                clientData.getRawClientConnectionData(); // TODO temp
         if (clientConnectionData == null) {
             EmptySubscription.error(new NotConnectedException(), s);
         } else {
-            final ChannelComponent channelComponent = ChannelComponent.get(clientConnectionData.getChannel());
-            final MqttIncomingPublishService incomingPublishService = channelComponent.incomingPublishService();
+            final ChannelComponent channelComponent =
+                    ChannelComponent.get(clientConnectionData.getChannel());
+            final MqttIncomingPublishService incomingPublishService =
+                    channelComponent.incomingPublishService();
 
             final MqttGlobalIncomingPublishFlow flow =
                     new MqttGlobalIncomingPublishFlow(s, incomingPublishService, type);
-            incomingPublishService.getNettyEventLoop()
-                    .execute(() -> incomingPublishService.getIncomingPublishFlows().subscribeGlobal(flow));
+            incomingPublishService
+                    .getNettyEventLoop()
+                    .execute(
+                            () ->
+                                    incomingPublishService
+                                            .getIncomingPublishFlows()
+                                            .subscribeGlobal(flow));
             s.onSubscribe(flow);
         }
     }
-
 }

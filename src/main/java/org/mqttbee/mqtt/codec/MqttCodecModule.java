@@ -29,16 +29,15 @@ import org.mqttbee.mqtt.codec.encoder.mqtt3.Mqtt3ClientMessageEncoders;
 import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5ClientMessageEncoders;
 import org.mqttbee.mqtt.ioc.ChannelScope;
 
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @Module
 public class MqttCodecModule {
 
     @Provides
     @ChannelScope
     static MqttMessageDecoders provideMessageDecoders(
-            final MqttClientData clientData, final Lazy<Mqtt5ClientMessageDecoders> mqtt5ClientMessageDecoders,
+            final MqttClientData clientData,
+            final Lazy<Mqtt5ClientMessageDecoders> mqtt5ClientMessageDecoders,
             final Lazy<Mqtt3ClientMessageDecoders> mqtt3ClientMessageDecoders) {
 
         switch (clientData.getMqttVersion()) {
@@ -54,7 +53,8 @@ public class MqttCodecModule {
     @Provides
     @ChannelScope
     static MqttMessageEncoders provideMessageEncoders(
-            final MqttClientData clientData, final Lazy<Mqtt5ClientMessageEncoders> mqtt5ClientMessageEncoders,
+            final MqttClientData clientData,
+            final Lazy<Mqtt5ClientMessageEncoders> mqtt5ClientMessageEncoders,
             final Lazy<Mqtt3ClientMessageEncoders> mqtt3ClientMessageEncoders) {
 
         switch (clientData.getMqttVersion()) {
@@ -66,5 +66,4 @@ public class MqttCodecModule {
                 throw new IllegalStateException();
         }
     }
-
 }

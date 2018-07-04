@@ -21,11 +21,10 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
+import javax.inject.Inject;
 import org.mqttbee.mqtt.MqttServerConnectionData;
 import org.mqttbee.mqtt.ioc.ChannelScope;
 import org.mqttbee.mqtt.message.MqttMessage;
-
-import javax.inject.Inject;
 
 /**
  * Main encoder for MQTT messages which delegates to the individual {@link MqttMessageEncoder}s.
@@ -45,19 +44,22 @@ public class MqttEncoder extends ChannelOutboundHandlerAdapter {
     }
 
     @Override
-    public void write(final ChannelHandlerContext ctx, final Object msg, final ChannelPromise promise) {
+    public void write(
+            final ChannelHandlerContext ctx, final Object msg, final ChannelPromise promise) {
         if (msg instanceof MqttMessage) {
             final MqttMessage message = (MqttMessage) msg;
             final MqttMessageEncoder messageEncoder = encoders.get(message.getType().getCode());
             if (messageEncoder == null) {
                 throw new UnsupportedOperationException();
             }
-            final ByteBuf out = messageEncoder.castAndEncode(message, ctx.alloc(),
-                    MqttServerConnectionData.getMaximumPacketSize(ctx.channel()));
+            final ByteBuf out =
+                    messageEncoder.castAndEncode(
+                            message,
+                            ctx.alloc(),
+                            MqttServerConnectionData.getMaximumPacketSize(ctx.channel()));
             ctx.write(out, promise);
         } else {
             ctx.write(msg, promise);
         }
     }
-
 }

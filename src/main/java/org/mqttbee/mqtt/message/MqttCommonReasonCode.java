@@ -25,7 +25,6 @@ import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5ReasonCode;
  * @author Silvio Giebl
  */
 public enum MqttCommonReasonCode implements Mqtt5ReasonCode {
-
     SUCCESS(0x00),
     NO_MATCHING_SUBSCRIBERS(0x10),
     UNSPECIFIED_ERROR(0x80),
@@ -57,11 +56,8 @@ public enum MqttCommonReasonCode implements Mqtt5ReasonCode {
         this.code = code;
     }
 
-    /**
-     * @return the byte code of this Reason Code.
-     */
+    /** @return the byte code of this Reason Code. */
     public int getCode() {
         return code;
     }
-
 }

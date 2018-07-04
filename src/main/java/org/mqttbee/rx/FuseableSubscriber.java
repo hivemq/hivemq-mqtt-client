@@ -50,7 +50,8 @@ public abstract class FuseableSubscriber<U, D, S extends Subscriber<? super D>>
     public void onSubscribe(final Subscription s) {
         this.subscription = s;
         if (s instanceof QueueSubscription) {
-            @SuppressWarnings("unchecked") final QueueSubscription<U> qs = (QueueSubscription<U>) s;
+            @SuppressWarnings("unchecked")
+            final QueueSubscription<U> qs = (QueueSubscription<U>) s;
             this.queueSubscription = qs;
         }
         subscriber.onSubscribe(this);
@@ -118,5 +119,4 @@ public abstract class FuseableSubscriber<U, D, S extends Subscriber<? super D>>
     public final boolean offer(final D v1, final D v2) {
         throw new UnsupportedOperationException("Should not be called!");
     }
-
 }

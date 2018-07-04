@@ -40,20 +40,19 @@ public class MqttVariableByteInteger {
     public static final int FOUR_BYTES_MAX_VALUE = (1 << (VALUE_BITS * 4)) - 1;
     public static final int MAXIMUM_PACKET_SIZE_LIMIT = 1 + 4 + FOUR_BYTES_MAX_VALUE;
 
-    private MqttVariableByteInteger() {
-    }
+    private MqttVariableByteInteger() {}
 
     /**
      * Decodes a variable byte integer from the given byte buffer at the current reader index.
-     * <p>
-     * In case of a wrong encoding the reader index of the byte buffer will be in an undefined state after the method
-     * returns.
+     *
+     * <p>In case of a wrong encoding the reader index of the byte buffer will be in an undefined
+     * state after the method returns.
      *
      * @param byteBuf the buffer to decode from.
-     * @return the decoded integer value or {@link #NOT_ENOUGH_BYTES} if there are not enough
-     * bytes in the byte buffer or {@link #TOO_LARGE} if the encoded variable byte integer has
-     * more than 4 bytes or {@link #NOT_MINIMUM_BYTES} if the value is not encoded with a minimum
-     * number of bytes.
+     * @return the decoded integer value or {@link #NOT_ENOUGH_BYTES} if there are not enough bytes
+     *     in the byte buffer or {@link #TOO_LARGE} if the encoded variable byte integer has more
+     *     than 4 bytes or {@link #NOT_MINIMUM_BYTES} if the value is not encoded with a minimum
+     *     number of bytes.
      */
     public static int decode(@NotNull final ByteBuf byteBuf) {
         byte encodedByte;
@@ -81,11 +80,12 @@ public class MqttVariableByteInteger {
     }
 
     /**
-     * Encodes the given value as a variable byte integer to the given byte buffer at the current writer index.
-     * <p>
-     * This method does not check if the value is in range of a 4 byte variable byte integer.
+     * Encodes the given value as a variable byte integer to the given byte buffer at the current
+     * writer index.
      *
-     * @param value   the value to encode.
+     * <p>This method does not check if the value is in range of a 4 byte variable byte integer.
+     *
+     * @param value the value to encode.
      * @param byteBuf the byte buffer to encode to.
      */
     public static void encode(int value, @NotNull final ByteBuf byteBuf) {
@@ -111,8 +111,8 @@ public class MqttVariableByteInteger {
 
     /**
      * Calculates the byte count of the given value encoded as a variable byte integer.
-     * <p>
-     * This method does not check if the value is in range of a 4 byte variable byte integer.
+     *
+     * <p>This method does not check if the value is in range of a 4 byte variable byte integer.
      *
      * @param value the value to calculate the encoded length for.
      * @return the encoded length of the value.
@@ -130,5 +130,4 @@ public class MqttVariableByteInteger {
         }
         return length;
     }
-
 }

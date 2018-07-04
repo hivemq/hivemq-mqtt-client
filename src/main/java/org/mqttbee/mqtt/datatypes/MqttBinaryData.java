@@ -18,11 +18,10 @@
 package org.mqttbee.mqtt.datatypes;
 
 import io.netty.buffer.ByteBuf;
+import java.nio.ByteBuffer;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.util.ByteBufferUtil;
-
-import java.nio.ByteBuffer;
 
 /**
  * Utility for decoding, encoding and checking binary data.
@@ -34,8 +33,7 @@ public class MqttBinaryData {
     private static final int MAX_LENGTH = 65_535;
     public static final int EMPTY_LENGTH = 2;
 
-    private MqttBinaryData() {
-    }
+    private MqttBinaryData() {}
 
     /**
      * Decodes binary data from the given byte buffer at the current reader index.
@@ -61,7 +59,7 @@ public class MqttBinaryData {
      * Decodes binary data from the given byte buffer at the current reader index.
      *
      * @param byteBuf the byte buffer to decode from.
-     * @param direct  whether the created byte buffer should be direct.
+     * @param direct whether the created byte buffer should be direct.
      * @return the decoded binary data or null if there are not enough bytes in the byte buffer.
      */
     @Nullable
@@ -80,11 +78,12 @@ public class MqttBinaryData {
     }
 
     /**
-     * Encodes the given byte array as binary data to the given byte buffer at the current writer index.
-     * <p>
-     * This method does not check if the byte array can be encoded as binary data.
+     * Encodes the given byte array as binary data to the given byte buffer at the current writer
+     * index.
      *
-     * @param binary  the byte array to encode.
+     * <p>This method does not check if the byte array can be encoded as binary data.
+     *
+     * @param binary the byte array to encode.
      * @param byteBuf the byte buffer to encode to.
      */
     public static void encode(@NotNull final byte[] binary, @NotNull final ByteBuf byteBuf) {
@@ -93,14 +92,16 @@ public class MqttBinaryData {
     }
 
     /**
-     * Encodes the given byte buffer as binary data to the given byte buffer at the current writer index.
-     * <p>
-     * This method does not check if the byte buffer can be encoded as binary data.
+     * Encodes the given byte buffer as binary data to the given byte buffer at the current writer
+     * index.
+     *
+     * <p>This method does not check if the byte buffer can be encoded as binary data.
      *
      * @param byteBuffer the byte buffer to encode.
-     * @param byteBuf    the byte buffer to encode to.
+     * @param byteBuf the byte buffer to encode to.
      */
-    public static void encode(@NotNull final ByteBuffer byteBuffer, @NotNull final ByteBuf byteBuf) {
+    public static void encode(
+            @NotNull final ByteBuffer byteBuffer, @NotNull final ByteBuf byteBuf) {
         byteBuf.writeShort(byteBuffer.remaining());
         byteBuf.writeBytes(byteBuffer.duplicate());
     }
@@ -136,8 +137,8 @@ public class MqttBinaryData {
 
     /**
      * Calculates the byte count of the given byte array encoded as binary data.
-     * <p>
-     * This method does not check if the byte array can be encoded as binary data.
+     *
+     * <p>This method does not check if the byte array can be encoded as binary data.
      *
      * @param binary the byte array to calculate the encoded length for.
      * @return the encoded length of the byte array.
@@ -148,8 +149,8 @@ public class MqttBinaryData {
 
     /**
      * Calculates the byte count of the given byte buffer encoded as binary data.
-     * <p>
-     * This method does not check if the byte buffer can be encoded as binary data.
+     *
+     * <p>This method does not check if the byte buffer can be encoded as binary data.
      *
      * @param byteBuffer the byte buffer to calculate the encoded length for.
      * @return the encoded length of the byte buffer.
@@ -157,5 +158,4 @@ public class MqttBinaryData {
     public static int encodedLength(@NotNull final ByteBuffer byteBuffer) {
         return 2 + byteBuffer.remaining();
     }
-
 }

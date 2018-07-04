@@ -24,9 +24,7 @@ import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5OutgoingQoS1ControlProvider
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5IncomingQoS2ControlProvider;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5OutgoingQoS2ControlProvider;
 
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class MqttAdvancedClientData implements Mqtt5AdvancedClientData {
 
     private final Mqtt5IncomingQoS1ControlProvider incomingQoS1ControlProvider;
@@ -65,5 +63,4 @@ public class MqttAdvancedClientData implements Mqtt5AdvancedClientData {
     public Mqtt5OutgoingQoS2ControlProvider getOutgoingQoS2ControlProvider() {
         return outgoingQoS2ControlProvider;
     }
-
 }

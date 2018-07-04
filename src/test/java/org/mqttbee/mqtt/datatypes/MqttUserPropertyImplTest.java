@@ -17,19 +17,17 @@
 
 package org.mqttbee.mqtt.datatypes;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 import org.junit.Test;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class MqttUserPropertyImplTest {
 
     @Test
@@ -71,5 +69,4 @@ public class MqttUserPropertyImplTest {
                 .suppress(Warning.STRICT_INHERITANCE)
                 .verify();
     }
-
 }

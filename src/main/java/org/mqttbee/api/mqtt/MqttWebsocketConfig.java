@@ -18,9 +18,7 @@ package org.mqttbee.api.mqtt;
 
 import org.mqttbee.annotations.NotNull;
 
-/**
- * @author Christian Hoff
- */
+/** @author Christian Hoff */
 public interface MqttWebsocketConfig {
 
     @NotNull
@@ -30,5 +28,4 @@ public interface MqttWebsocketConfig {
 
     @NotNull
     String getServerPath();
-
 }

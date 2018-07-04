@@ -23,15 +23,11 @@ import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
 import org.mqttbee.mqtt.message.publish.puback.MqttPubAck;
 import org.mqttbee.mqtt.message.publish.pubcomp.MqttPubComp;
 
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class MqttPublishResult implements Mqtt5PublishResult {
 
-    @NotNull
-    private final MqttPublish publish;
-    @Nullable
-    private final Throwable error;
+    @NotNull private final MqttPublish publish;
+    @Nullable private final Throwable error;
 
     public MqttPublishResult(@NotNull final MqttPublish publish, @Nullable final Throwable error) {
         this.publish = publish;
@@ -55,14 +51,14 @@ public class MqttPublishResult implements Mqtt5PublishResult {
         return error;
     }
 
-
     public static class MqttQoS1Result extends MqttPublishResult implements Mqtt5QoS1Result {
 
-        @NotNull
-        private final MqttPubAck pubAck;
+        @NotNull private final MqttPubAck pubAck;
 
         public MqttQoS1Result(
-                @NotNull final MqttPublish publish, @Nullable final Throwable error, @NotNull final MqttPubAck pubAck) {
+                @NotNull final MqttPublish publish,
+                @Nullable final Throwable error,
+                @NotNull final MqttPubAck pubAck) {
 
             super(publish, error);
             this.pubAck = pubAck;
@@ -73,17 +69,15 @@ public class MqttPublishResult implements Mqtt5PublishResult {
         public MqttPubAck getPubAck() {
             return pubAck;
         }
-
     }
-
 
     public static class MqttQoS2Result extends MqttPublishResult implements Mqtt5QoS2Result {
 
-        @NotNull
-        private final MqttPubComp pubComp;
+        @NotNull private final MqttPubComp pubComp;
 
         public MqttQoS2Result(
-                @NotNull final MqttPublish publish, @Nullable final Throwable error,
+                @NotNull final MqttPublish publish,
+                @Nullable final Throwable error,
                 @NotNull final MqttPubComp pubComp) {
 
             super(publish, error);
@@ -95,7 +89,5 @@ public class MqttPublishResult implements Mqtt5PublishResult {
         public MqttPubComp getPubComp() {
             return pubComp;
         }
-
     }
-
 }

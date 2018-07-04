@@ -30,14 +30,15 @@ import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt.mqtt3.Mqtt3ClientView;
 import org.mqttbee.mqtt5.Mqtt5ClientImpl;
 
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class Mqtt3ClientBuilder extends MqttClientBuilder {
 
     public Mqtt3ClientBuilder(
-            @NotNull final MqttClientIdentifierImpl identifier, @NotNull final String serverHost, final int serverPort,
-            @Nullable final MqttClientSslConfig sslConfig, @Nullable final MqttWebsocketConfig websocketConfig,
+            @NotNull final MqttClientIdentifierImpl identifier,
+            @NotNull final String serverHost,
+            final int serverPort,
+            @Nullable final MqttClientSslConfig sslConfig,
+            @Nullable final MqttWebsocketConfig websocketConfig,
             @NotNull final MqttClientExecutorConfigImpl executorConfig) {
 
         Preconditions.checkNotNull(identifier);
@@ -122,7 +123,8 @@ public class Mqtt3ClientBuilder extends MqttClientBuilder {
 
     @NotNull
     @Override
-    public Mqtt3ClientBuilder executorConfig(@NotNull final MqttClientExecutorConfig executorConfig) {
+    public Mqtt3ClientBuilder executorConfig(
+            @NotNull final MqttClientExecutorConfig executorConfig) {
         super.executorConfig(executorConfig);
         return this;
     }
@@ -153,8 +155,16 @@ public class Mqtt3ClientBuilder extends MqttClientBuilder {
 
     @NotNull
     private MqttClientData buildClientData() {
-        return new MqttClientData(MqttVersion.MQTT_3_1_1, identifier, serverHost, serverPort, sslConfig,
-                websocketConfig, false, false, executorConfig, null);
+        return new MqttClientData(
+                MqttVersion.MQTT_3_1_1,
+                identifier,
+                serverHost,
+                serverPort,
+                sslConfig,
+                websocketConfig,
+                false,
+                false,
+                executorConfig,
+                null);
     }
-
 }

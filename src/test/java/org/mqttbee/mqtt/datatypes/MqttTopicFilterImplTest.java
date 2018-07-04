@@ -17,22 +17,19 @@
 
 package org.mqttbee.mqtt.datatypes;
 
+import static org.junit.Assert.*;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import java.nio.charset.Charset;
+import java.util.Collection;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import java.nio.charset.Charset;
-import java.util.Collection;
-
-import static org.junit.Assert.*;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @RunWith(Parameterized.class)
 public class MqttTopicFilterImplTest {
 
@@ -274,5 +271,4 @@ public class MqttTopicFilterImplTest {
         assertFalse(mqtt5TopicFilter.isShared());
         assertFalse(mqtt5TopicFilter instanceof MqttSharedTopicFilterImpl);
     }
-
 }

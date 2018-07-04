@@ -29,32 +29,33 @@ import org.mqttbee.mqtt.ioc.ChannelComponent;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
 import org.mqttbee.rx.SingleFlow.DefaultSingleFlow;
 
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class MqttSubAckSingle extends Single<Mqtt5SubAck> {
 
     private final MqttSubscribe subscribe;
     private final MqttClientData clientData;
 
-    public MqttSubAckSingle(@NotNull final MqttSubscribe subscribe, @NotNull final MqttClientData clientData) {
+    public MqttSubAckSingle(
+            @NotNull final MqttSubscribe subscribe, @NotNull final MqttClientData clientData) {
         this.subscribe = subscribe;
         this.clientData = clientData;
     }
 
     @Override
     protected void subscribeActual(final SingleObserver<? super Mqtt5SubAck> observer) {
-        final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
+        final MqttClientConnectionData clientConnectionData =
+                clientData.getRawClientConnectionData();
         if (clientConnectionData == null) {
             EmptyDisposable.error(new NotConnectedException(), observer);
         } else {
-            final ChannelComponent channelComponent = ChannelComponent.get(clientConnectionData.getChannel());
-            final MqttSubscriptionHandler subscriptionHandler = channelComponent.subscriptionHandler();
+            final ChannelComponent channelComponent =
+                    ChannelComponent.get(clientConnectionData.getChannel());
+            final MqttSubscriptionHandler subscriptionHandler =
+                    channelComponent.subscriptionHandler();
 
             final DefaultSingleFlow<Mqtt5SubAck> flow = new DefaultSingleFlow<>(observer);
             observer.onSubscribe(flow);
             subscriptionHandler.subscribe(new MqttSubscribeWithFlow(subscribe, flow));
         }
     }
-
 }

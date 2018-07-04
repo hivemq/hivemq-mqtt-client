@@ -17,6 +17,8 @@
 
 package org.mqttbee.mqtt.message.connect.connack;
 
+import java.util.Optional;
+import javax.annotation.concurrent.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
@@ -29,19 +31,14 @@ import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.MqttMessageWithUserProperties.MqttMessageWithReasonCode;
 
-import javax.annotation.concurrent.Immutable;
-import java.util.Optional;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @Immutable
-public class MqttConnAck extends MqttMessageWithReasonCode<Mqtt5ConnAckReasonCode> implements Mqtt5ConnAck {
+public class MqttConnAck extends MqttMessageWithReasonCode<Mqtt5ConnAckReasonCode>
+        implements Mqtt5ConnAck {
 
     public static final long SESSION_EXPIRY_INTERVAL_FROM_CONNECT = -1;
     public static final int KEEP_ALIVE_FROM_CONNECT = -1;
-    @Nullable
-    public static final MqttClientIdentifierImpl CLIENT_IDENTIFIER_FROM_CONNECT = null;
+    @Nullable public static final MqttClientIdentifierImpl CLIENT_IDENTIFIER_FROM_CONNECT = null;
 
     private final boolean isSessionPresent;
     private final long sessionExpiryInterval;
@@ -53,12 +50,17 @@ public class MqttConnAck extends MqttMessageWithReasonCode<Mqtt5ConnAckReasonCod
     private final MqttUTF8StringImpl serverReference;
 
     public MqttConnAck(
-            @NotNull final Mqtt5ConnAckReasonCode reasonCode, final boolean isSessionPresent,
-            final long sessionExpiryInterval, final int serverKeepAlive,
+            @NotNull final Mqtt5ConnAckReasonCode reasonCode,
+            final boolean isSessionPresent,
+            final long sessionExpiryInterval,
+            final int serverKeepAlive,
             @Nullable final MqttClientIdentifierImpl assignedClientIdentifier,
-            @Nullable final Mqtt5EnhancedAuth enhancedAuth, @NotNull final MqttConnAckRestrictions restrictions,
-            @Nullable final MqttUTF8StringImpl responseInformation, @Nullable final MqttUTF8StringImpl serverReference,
-            @Nullable final MqttUTF8StringImpl reasonString, @NotNull final MqttUserPropertiesImpl userProperties) {
+            @Nullable final Mqtt5EnhancedAuth enhancedAuth,
+            @NotNull final MqttConnAckRestrictions restrictions,
+            @Nullable final MqttUTF8StringImpl responseInformation,
+            @Nullable final MqttUTF8StringImpl serverReference,
+            @Nullable final MqttUTF8StringImpl reasonString,
+            @NotNull final MqttUserPropertiesImpl userProperties) {
 
         super(reasonCode, reasonString, userProperties);
         this.isSessionPresent = isSessionPresent;
@@ -79,8 +81,9 @@ public class MqttConnAck extends MqttMessageWithReasonCode<Mqtt5ConnAckReasonCod
     @NotNull
     @Override
     public Optional<Long> getSessionExpiryInterval() {
-        return (sessionExpiryInterval == SESSION_EXPIRY_INTERVAL_FROM_CONNECT) ? Optional.empty() :
-                Optional.of(sessionExpiryInterval);
+        return (sessionExpiryInterval == SESSION_EXPIRY_INTERVAL_FROM_CONNECT)
+                ? Optional.empty()
+                : Optional.of(sessionExpiryInterval);
     }
 
     public long getRawSessionExpiryInterval() {
@@ -90,7 +93,9 @@ public class MqttConnAck extends MqttMessageWithReasonCode<Mqtt5ConnAckReasonCod
     @NotNull
     @Override
     public Optional<Integer> getServerKeepAlive() {
-        return (serverKeepAlive == KEEP_ALIVE_FROM_CONNECT) ? Optional.empty() : Optional.of(serverKeepAlive);
+        return (serverKeepAlive == KEEP_ALIVE_FROM_CONNECT)
+                ? Optional.empty()
+                : Optional.of(serverKeepAlive);
     }
 
     public int getRawServerKeepAlive() {
@@ -136,5 +141,4 @@ public class MqttConnAck extends MqttMessageWithReasonCode<Mqtt5ConnAckReasonCod
     public Optional<MqttUTF8String> getServerReference() {
         return Optional.ofNullable(serverReference);
     }
-
 }

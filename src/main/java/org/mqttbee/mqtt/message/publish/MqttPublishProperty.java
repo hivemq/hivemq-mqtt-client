@@ -34,5 +34,4 @@ public interface MqttPublishProperty {
     int SUBSCRIPTION_IDENTIFIER = MqttProperty.SUBSCRIPTION_IDENTIFIER;
     int TOPIC_ALIAS = MqttProperty.TOPIC_ALIAS;
     int USER_PROPERTY = MqttProperty.USER_PROPERTY;
-
 }

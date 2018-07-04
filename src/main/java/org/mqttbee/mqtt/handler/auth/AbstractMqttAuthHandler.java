@@ -17,6 +17,8 @@
 
 package org.mqttbee.mqtt.handler.auth;
 
+import static org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION;
+
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import org.mqttbee.annotations.NotNull;
@@ -38,8 +40,6 @@ import org.mqttbee.mqtt.message.auth.MqttAuthBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION;
-
 /**
  * Base for enhanced auth handling according to the MQTT 5 specification.
  *
@@ -56,10 +56,13 @@ abstract class AbstractMqttAuthHandler extends ChannelInboundHandlerWithTimeout 
      * @return the enhanced auth provider.
      */
     @NotNull
-    static Mqtt5EnhancedAuthProvider getEnhancedAuthProvider(@NotNull final MqttClientData clientData) {
-        final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
+    static Mqtt5EnhancedAuthProvider getEnhancedAuthProvider(
+            @NotNull final MqttClientData clientData) {
+        final MqttClientConnectionData clientConnectionData =
+                clientData.getRawClientConnectionData();
         assert clientConnectionData != null;
-        final Mqtt5EnhancedAuthProvider enhancedAuthProvider = clientConnectionData.getEnhancedAuthProvider();
+        final Mqtt5EnhancedAuthProvider enhancedAuthProvider =
+                clientConnectionData.getEnhancedAuthProvider();
         assert enhancedAuthProvider != null;
         return enhancedAuthProvider;
     }
@@ -67,7 +70,7 @@ abstract class AbstractMqttAuthHandler extends ChannelInboundHandlerWithTimeout 
     /**
      * Utility method to get a builder for a new AUTH message.
      *
-     * @param reasonCode           the reason code for the AUTH message.
+     * @param reasonCode the reason code for the AUTH message.
      * @param enhancedAuthProvider the enhanced auth provider for the new AUTH message.
      * @return a builder for a new AUTH message.
      */
@@ -76,7 +79,8 @@ abstract class AbstractMqttAuthHandler extends ChannelInboundHandlerWithTimeout 
             @NotNull final Mqtt5AuthReasonCode reasonCode,
             @NotNull final Mqtt5EnhancedAuthProvider enhancedAuthProvider) {
 
-        return new MqttAuthBuilder(reasonCode, (MqttUTF8StringImpl) enhancedAuthProvider.getMethod());
+        return new MqttAuthBuilder(
+                reasonCode, (MqttUTF8StringImpl) enhancedAuthProvider.getMethod());
     }
 
     static boolean enhancedAuthProviderAccepted(@Nullable final Throwable throwable) {
@@ -87,7 +91,8 @@ abstract class AbstractMqttAuthHandler extends ChannelInboundHandlerWithTimeout 
         return true;
     }
 
-    static boolean enhancedAuthProviderAccepted(@Nullable final Boolean accepted, @Nullable final Throwable throwable) {
+    static boolean enhancedAuthProviderAccepted(
+            @Nullable final Boolean accepted, @Nullable final Throwable throwable) {
         if (throwable != null) {
             LOGGER.error("auth cancelled because of an unexpected exception", throwable);
             return false;
@@ -99,9 +104,10 @@ abstract class AbstractMqttAuthHandler extends ChannelInboundHandlerWithTimeout 
     }
 
     /**
-     * Handles an incoming AUTH message. Sends a DISCONNECT message if the AUTH message is not valid.
+     * Handles an incoming AUTH message. Sends a DISCONNECT message if the AUTH message is not
+     * valid.
      *
-     * @param ctx  the channel handler context.
+     * @param ctx the channel handler context.
      * @param auth the incoming AUTH message.
      */
     final void readAuth(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttAuth auth) {
@@ -127,21 +133,25 @@ abstract class AbstractMqttAuthHandler extends ChannelInboundHandlerWithTimeout 
 
     /**
      * Validates an incoming AUTH message.
-     * <p>
-     * If validation fails, disconnection and closing of the channel is already handled.
      *
-     * @param channel              the channel.
-     * @param auth                 the incoming AUTH message.
+     * <p>If validation fails, disconnection and closing of the channel is already handled.
+     *
+     * @param channel the channel.
+     * @param auth the incoming AUTH message.
      * @param enhancedAuthProvider the enhanced auth provider.
      * @return true if the AUTH message is valid, otherwise false.
      */
     private boolean validateAuth(
-            @NotNull final Channel channel, @NotNull final MqttAuth auth,
+            @NotNull final Channel channel,
+            @NotNull final MqttAuth auth,
             @NotNull final Mqtt5EnhancedAuthProvider enhancedAuthProvider) {
 
         if (!auth.getMethod().equals(enhancedAuthProvider.getMethod())) {
-            MqttDisconnectUtil.disconnect(channel, Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                    new Mqtt5MessageException(auth, "Auth method must be the same as in the CONNECT message"));
+            MqttDisconnectUtil.disconnect(
+                    channel,
+                    Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+                    new Mqtt5MessageException(
+                            auth, "Auth method must be the same as in the CONNECT message"));
             return false;
         }
         return true;
@@ -149,55 +159,72 @@ abstract class AbstractMqttAuthHandler extends ChannelInboundHandlerWithTimeout 
 
     /**
      * Handles an incoming AUTH message with the Reason Code CONTINUE AUTHENTICATION.
+     *
      * <ul>
-     * <li>Calls {@link Mqtt5EnhancedAuthProvider#onContinue(Mqtt5ClientData, Mqtt5Auth, Mqtt5AuthBuilder)}.</li>
-     * <li>Sends a new AUTH message if the enhanced auth provider accepted the incoming AUTH message.</li>
-     * <li>Otherwise sends a DISCONNECT message.</li>
+     *   <li>Calls {@link Mqtt5EnhancedAuthProvider#onContinue(Mqtt5ClientData, Mqtt5Auth,
+     *       Mqtt5AuthBuilder)}.
+     *   <li>Sends a new AUTH message if the enhanced auth provider accepted the incoming AUTH
+     *       message.
+     *   <li>Otherwise sends a DISCONNECT message.
      * </ul>
      *
-     * @param ctx                  the channel handler context.
-     * @param auth                 the received AUTH message.
-     * @param clientData           the data of the client.
+     * @param ctx the channel handler context.
+     * @param auth the received AUTH message.
+     * @param clientData the data of the client.
      * @param enhancedAuthProvider the enhanced auth provider.
      */
     private void readAuthContinue(
-            @NotNull final ChannelHandlerContext ctx, @NotNull final MqttAuth auth,
-            @NotNull final MqttClientData clientData, @NotNull final Mqtt5EnhancedAuthProvider enhancedAuthProvider) {
+            @NotNull final ChannelHandlerContext ctx,
+            @NotNull final MqttAuth auth,
+            @NotNull final MqttClientData clientData,
+            @NotNull final Mqtt5EnhancedAuthProvider enhancedAuthProvider) {
 
-        final MqttAuthBuilder authBuilder = getAuthBuilder(CONTINUE_AUTHENTICATION, enhancedAuthProvider);
+        final MqttAuthBuilder authBuilder =
+                getAuthBuilder(CONTINUE_AUTHENTICATION, enhancedAuthProvider);
 
-        enhancedAuthProvider.onContinue(clientData, auth, authBuilder).whenCompleteAsync((accepted, throwable) -> {
-            if (enhancedAuthProviderAccepted(accepted, throwable)) {
-                ctx.writeAndFlush(authBuilder.build()).addListener(this);
-            } else {
-                MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.NOT_AUTHORIZED,
-                        new Mqtt5MessageException(auth, "Server auth not accepted"));
-            }
-        }, ctx.executor());
+        enhancedAuthProvider
+                .onContinue(clientData, auth, authBuilder)
+                .whenCompleteAsync(
+                        (accepted, throwable) -> {
+                            if (enhancedAuthProviderAccepted(accepted, throwable)) {
+                                ctx.writeAndFlush(authBuilder.build()).addListener(this);
+                            } else {
+                                MqttDisconnectUtil.disconnect(
+                                        ctx.channel(),
+                                        Mqtt5DisconnectReasonCode.NOT_AUTHORIZED,
+                                        new Mqtt5MessageException(
+                                                auth, "Server auth not accepted"));
+                            }
+                        },
+                        ctx.executor());
     }
 
     /**
      * Disconnects on an incoming AUTH message with the Reason Code SUCCESS.
      *
-     * @param ctx                  the channel handler context.
-     * @param auth                 the incoming AUTH message.
-     * @param clientData           the data of the client.
+     * @param ctx the channel handler context.
+     * @param auth the incoming AUTH message.
+     * @param clientData the data of the client.
      * @param enhancedAuthProvider the enhanced auth provider.
      */
     abstract void readAuthSuccess(
-            @NotNull ChannelHandlerContext ctx, @NotNull MqttAuth auth, @NotNull MqttClientData clientData,
+            @NotNull ChannelHandlerContext ctx,
+            @NotNull MqttAuth auth,
+            @NotNull MqttClientData clientData,
             @NotNull Mqtt5EnhancedAuthProvider enhancedAuthProvider);
 
     /**
      * Disconnects on an incoming AUTH message with the Reason Code REAUTHENTICATE.
      *
-     * @param ctx                  the channel handler context.
-     * @param auth                 the incoming AUTH message.
-     * @param clientData           the data of the client.
+     * @param ctx the channel handler context.
+     * @param auth the incoming AUTH message.
+     * @param clientData the data of the client.
      * @param enhancedAuthProvider the enhanced auth provider.
      */
     abstract void readReAuth(
-            @NotNull ChannelHandlerContext ctx, @NotNull MqttAuth auth, @NotNull MqttClientData clientData,
+            @NotNull ChannelHandlerContext ctx,
+            @NotNull MqttAuth auth,
+            @NotNull MqttClientData clientData,
             @NotNull Mqtt5EnhancedAuthProvider enhancedAuthProvider);
 
     @Override
@@ -210,5 +237,4 @@ abstract class AbstractMqttAuthHandler extends ChannelInboundHandlerWithTimeout 
     protected final Mqtt5DisconnectReasonCode getTimeoutReasonCode() {
         return Mqtt5DisconnectReasonCode.NOT_AUTHORIZED;
     }
-
 }

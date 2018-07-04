@@ -17,6 +17,9 @@
 
 package org.mqttbee.api.mqtt.mqtt5.message.publish;
 
+import java.nio.ByteBuffer;
+import java.util.Optional;
+import java.util.function.Function;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
@@ -27,10 +30,6 @@ import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeResult;
 
-import java.nio.ByteBuffer;
-import java.util.Optional;
-import java.util.function.Function;
-
 /**
  * MQTT 5 PUBLISH packet.
  *
@@ -39,11 +38,8 @@ import java.util.function.Function;
 @DoNotImplement
 public interface Mqtt5Publish extends Mqtt5Message, Mqtt5SubscribeResult {
 
-    /**
-     * The default handling for using a topic alias.
-     */
-    @NotNull
-    TopicAliasUsage DEFAULT_TOPIC_ALIAS_USAGE = TopicAliasUsage.MUST_NOT;
+    /** The default handling for using a topic alias. */
+    @NotNull TopicAliasUsage DEFAULT_TOPIC_ALIAS_USAGE = TopicAliasUsage.MUST_NOT;
 
     @NotNull
     static Mqtt5PublishBuilder<Void> builder() {
@@ -55,74 +51,53 @@ public interface Mqtt5Publish extends Mqtt5Message, Mqtt5SubscribeResult {
         return new Mqtt5PublishBuilder<>(publish);
     }
 
-    /**
-     * @return the topic of this PUBLISH packet.
-     */
+    /** @return the topic of this PUBLISH packet. */
     @NotNull
     MqttTopic getTopic();
 
-    /**
-     * @return the optional payload of this PUBLISH packet.
-     */
+    /** @return the optional payload of this PUBLISH packet. */
     @NotNull
     Optional<ByteBuffer> getPayload();
 
     /**
-     * @return the payload of this PUBLISH packet as byte array. Empty byte array if the payload is null.
+     * @return the payload of this PUBLISH packet as byte array. Empty byte array if the payload is
+     *     null.
      */
     @NotNull
     byte[] getPayloadAsBytes();
 
-    /**
-     * @return the QoS of this PUBLISH packet.
-     */
+    /** @return the QoS of this PUBLISH packet. */
     @NotNull
     MqttQoS getQos();
 
-    /**
-     * @return whether this PUBLISH packet is a retained message.
-     */
+    /** @return whether this PUBLISH packet is a retained message. */
     boolean isRetain();
 
-    /**
-     * @return the optional message expiry interval in seconds of this PUBLISH packet.
-     */
+    /** @return the optional message expiry interval in seconds of this PUBLISH packet. */
     @NotNull
     Optional<Long> getMessageExpiryInterval();
 
-    /**
-     * @return the optional payload format indicator of this PUBLISH packet.
-     */
+    /** @return the optional payload format indicator of this PUBLISH packet. */
     @NotNull
     Optional<Mqtt5PayloadFormatIndicator> getPayloadFormatIndicator();
 
-    /**
-     * @return the optional content type of this PUBLISH packet.
-     */
+    /** @return the optional content type of this PUBLISH packet. */
     @NotNull
     Optional<MqttUTF8String> getContentType();
 
-    /**
-     * @return the optional response topic of this PUBLISH packet.
-     */
+    /** @return the optional response topic of this PUBLISH packet. */
     @NotNull
     Optional<MqttTopic> getResponseTopic();
 
-    /**
-     * @return the optional correlation data of this PUBLISH packet.
-     */
+    /** @return the optional correlation data of this PUBLISH packet. */
     @NotNull
     Optional<ByteBuffer> getCorrelationData();
 
-    /**
-     * @return the handling for using a topic alias.
-     */
+    /** @return the handling for using a topic alias. */
     @NotNull
     TopicAliasUsage getTopicAliasUsage();
 
-    /**
-     * @return the optional user properties of this PUBLISH packet.
-     */
+    /** @return the optional user properties of this PUBLISH packet. */
     @NotNull
     Mqtt5UserProperties getUserProperties();
 
@@ -131,5 +106,4 @@ public interface Mqtt5Publish extends Mqtt5Message, Mqtt5SubscribeResult {
     default Mqtt5MessageType getType() {
         return Mqtt5MessageType.PUBLISH;
     }
-
 }

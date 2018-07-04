@@ -17,6 +17,8 @@
 
 package org.mqttbee.api.mqtt;
 
+import static org.mqttbee.api.mqtt.MqttClient.*;
+
 import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
@@ -29,14 +31,11 @@ import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 
-import static org.mqttbee.api.mqtt.MqttClient.*;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class MqttClientBuilder {
 
-    protected MqttClientIdentifierImpl identifier = MqttClientIdentifierImpl.REQUEST_CLIENT_IDENTIFIER_FROM_SERVER;
+    protected MqttClientIdentifierImpl identifier =
+            MqttClientIdentifierImpl.REQUEST_CLIENT_IDENTIFIER_FROM_SERVER;
     protected String serverHost = DEFAULT_SERVER_HOST;
     protected int serverPort = DEFAULT_SERVER_PORT;
     private boolean customServerPort = false;
@@ -44,8 +43,7 @@ public class MqttClientBuilder {
     protected MqttWebsocketConfig websocketConfig = null;
     protected MqttClientExecutorConfigImpl executorConfig = MqttClientExecutorConfigImpl.DEFAULT;
 
-    protected MqttClientBuilder() {
-    }
+    protected MqttClientBuilder() {}
 
     @NotNull
     public MqttClientBuilder identifier(@NotNull final String identifier) {
@@ -119,9 +117,11 @@ public class MqttClientBuilder {
     }
 
     @NotNull
-    public MqttClientBuilder executorConfig(@NotNull final MqttClientExecutorConfig executorConfig) {
+    public MqttClientBuilder executorConfig(
+            @NotNull final MqttClientExecutorConfig executorConfig) {
         this.executorConfig =
-                MustNotBeImplementedUtil.checkNotImplemented(executorConfig, MqttClientExecutorConfigImpl.class);
+                MustNotBeImplementedUtil.checkNotImplemented(
+                        executorConfig, MqttClientExecutorConfigImpl.class);
         return this;
     }
 
@@ -132,12 +132,13 @@ public class MqttClientBuilder {
 
     @NotNull
     public Mqtt3ClientBuilder useMqttVersion3() {
-        return new Mqtt3ClientBuilder(identifier, serverHost, serverPort, sslConfig, websocketConfig, executorConfig);
+        return new Mqtt3ClientBuilder(
+                identifier, serverHost, serverPort, sslConfig, websocketConfig, executorConfig);
     }
 
     @NotNull
     public Mqtt5ClientBuilder useMqttVersion5() {
-        return new Mqtt5ClientBuilder(identifier, serverHost, serverPort, sslConfig, websocketConfig, executorConfig);
+        return new Mqtt5ClientBuilder(
+                identifier, serverHost, serverPort, sslConfig, websocketConfig, executorConfig);
     }
-
 }

@@ -17,6 +17,8 @@
 
 package org.mqttbee.mqtt.codec.encoder.mqtt3;
 
+import static org.mqttbee.mqtt.codec.encoder.MqttMessageEncoderUtil.encodedPacketLength;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import org.mqttbee.annotations.NotNull;
@@ -24,8 +26,6 @@ import org.mqttbee.api.mqtt.exceptions.MqttMaximumPacketSizeExceededException;
 import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoder;
 import org.mqttbee.mqtt.message.MqttMessage;
 import org.mqttbee.mqtt.message.MqttMessageWithUserProperties.MqttMessageWithIdAndReasonCode;
-
-import static org.mqttbee.mqtt.codec.encoder.MqttMessageEncoderUtil.encodedPacketLength;
 
 /**
  * Base class of encoders for MQTT 3 messages.
@@ -38,19 +38,24 @@ abstract class Mqtt3MessageEncoder<M extends MqttMessage> extends MqttMessageEnc
     @NotNull
     @Override
     protected ByteBuf encode(
-            @NotNull final M message, @NotNull final ByteBufAllocator allocator, final int maximumPacketSize) {
+            @NotNull final M message,
+            @NotNull final ByteBufAllocator allocator,
+            final int maximumPacketSize) {
 
         final int remainingLength = remainingLength(message);
         final int encodedLength = encodedPacketLength(remainingLength);
         if (encodedLength > maximumPacketSize) {
-            throw new MqttMaximumPacketSizeExceededException(message, encodedLength, maximumPacketSize);
+            throw new MqttMaximumPacketSizeExceededException(
+                    message, encodedLength, maximumPacketSize);
         }
         return encode(message, allocator, encodedLength, remainingLength);
     }
 
     @NotNull
     ByteBuf encode(
-            @NotNull final M message, @NotNull final ByteBufAllocator allocator, final int encodedLength,
+            @NotNull final M message,
+            @NotNull final ByteBufAllocator allocator,
+            final int encodedLength,
             final int remainingLength) {
 
         final ByteBuf out = allocator.ioBuffer(encodedLength, encodedLength);
@@ -58,17 +63,17 @@ abstract class Mqtt3MessageEncoder<M extends MqttMessage> extends MqttMessageEnc
         return out;
     }
 
-    abstract void encode(@NotNull final M message, @NotNull final ByteBuf out, final int remainingLength);
+    abstract void encode(
+            @NotNull final M message, @NotNull final ByteBuf out, final int remainingLength);
 
     abstract int remainingLength(@NotNull final M message);
-
 
     /**
      * Base class of encoders for MQTT 3 messages with only a Packet Identifier.
      *
      * @param <M> the type of the MQTT message.
      */
-    static abstract class Mqtt3MessageWithIdEncoder<M extends MqttMessageWithIdAndReasonCode>
+    abstract static class Mqtt3MessageWithIdEncoder<M extends MqttMessageWithIdAndReasonCode>
             extends MqttMessageEncoder<M> {
 
         private static final int REMAINING_LENGTH = 2;
@@ -77,10 +82,13 @@ abstract class Mqtt3MessageEncoder<M extends MqttMessage> extends MqttMessageEnc
         @NotNull
         @Override
         protected ByteBuf encode(
-                @NotNull final M message, @NotNull final ByteBufAllocator allocator, final int maximumPacketSize) {
+                @NotNull final M message,
+                @NotNull final ByteBufAllocator allocator,
+                final int maximumPacketSize) {
 
             if (ENCODED_LENGTH > maximumPacketSize) {
-                throw new MqttMaximumPacketSizeExceededException(message, ENCODED_LENGTH, maximumPacketSize);
+                throw new MqttMaximumPacketSizeExceededException(
+                        message, ENCODED_LENGTH, maximumPacketSize);
             }
             final ByteBuf out = allocator.ioBuffer(ENCODED_LENGTH, ENCODED_LENGTH);
             encode(message, out);
@@ -102,7 +110,5 @@ abstract class Mqtt3MessageEncoder<M extends MqttMessage> extends MqttMessageEnc
         }
 
         abstract int getFixedHeader();
-
     }
-
 }

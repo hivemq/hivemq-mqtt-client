@@ -18,14 +18,13 @@
 package org.mqttbee.api.mqtt.mqtt5.message.unsubscribe;
 
 import com.google.common.collect.ImmutableList;
+import java.util.function.Function;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
-
-import java.util.function.Function;
 
 /**
  * MQTT 5 UNSUBSCRIBE packet.
@@ -46,14 +45,13 @@ public interface Mqtt5Unsubscribe extends Mqtt5Message {
     }
 
     /**
-     * @return the Topic Filters of this UNSUBSCRIBE packet. The list contains at least one Topic Filter.
+     * @return the Topic Filters of this UNSUBSCRIBE packet. The list contains at least one Topic
+     *     Filter.
      */
     @NotNull
     ImmutableList<? extends MqttTopicFilter> getTopicFilters();
 
-    /**
-     * @return the optional user properties of this UNSUBSCRIBE packet.
-     */
+    /** @return the optional user properties of this UNSUBSCRIBE packet. */
     @NotNull
     Mqtt5UserProperties getUserProperties();
 
@@ -62,5 +60,4 @@ public interface Mqtt5Unsubscribe extends Mqtt5Message {
     default Mqtt5MessageType getType() {
         return Mqtt5MessageType.UNSUBSCRIBE;
     }
-
 }

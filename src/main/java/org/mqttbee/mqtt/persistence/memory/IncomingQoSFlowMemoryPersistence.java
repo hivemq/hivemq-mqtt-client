@@ -17,19 +17,16 @@
 
 package org.mqttbee.mqtt.persistence.memory;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import javax.inject.Inject;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.ioc.ChannelScope;
 import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRec;
 import org.mqttbee.mqtt.persistence.IncomingQoSFlowPersistence;
 
-import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @ChannelScope
 public class IncomingQoSFlowMemoryPersistence implements IncomingQoSFlowPersistence {
 
@@ -59,5 +56,4 @@ public class IncomingQoSFlowMemoryPersistence implements IncomingQoSFlowPersiste
         messages.remove(packetIdentifier);
         return CompletableFuture.completedFuture(null);
     }
-
 }

@@ -17,11 +17,21 @@
 
 package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
+import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.*;
+import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.*;
+import static org.mqttbee.mqtt.message.publish.MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY;
+import static org.mqttbee.mqtt.message.publish.MqttPublishProperty.*;
+import static org.mqttbee.mqtt.message.publish.MqttStatefulPublish.DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS;
+import static org.mqttbee.mqtt.message.publish.MqttStatefulPublish.DEFAULT_NO_TOPIC_ALIAS;
+
 import com.google.common.base.Utf8;
 import com.google.common.collect.ImmutableList;
 import com.google.common.primitives.ImmutableIntArray;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
+import java.nio.ByteBuffer;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
@@ -37,33 +47,22 @@ import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
 import org.mqttbee.mqtt.netty.ChannelAttributes;
 import org.mqttbee.util.ByteBufferUtil;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import java.nio.ByteBuffer;
-
-import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.*;
-import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.*;
-import static org.mqttbee.mqtt.message.publish.MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY;
-import static org.mqttbee.mqtt.message.publish.MqttPublishProperty.*;
-import static org.mqttbee.mqtt.message.publish.MqttStatefulPublish.DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS;
-import static org.mqttbee.mqtt.message.publish.MqttStatefulPublish.DEFAULT_NO_TOPIC_ALIAS;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @Singleton
 public class Mqtt5PublishDecoder implements MqttMessageDecoder {
 
-    private static final int MIN_REMAINING_LENGTH = 3; // topic name (min 2) + property length (min 1)
+    private static final int MIN_REMAINING_LENGTH =
+            3; // topic name (min 2) + property length (min 1)
 
     @Inject
-    Mqtt5PublishDecoder() {
-    }
+    Mqtt5PublishDecoder() {}
 
     @Override
     @Nullable
     public MqttStatefulPublish decode(
-            final int flags, @NotNull final ByteBuf in, @NotNull final MqttClientConnectionData clientConnectionData)
+            final int flags,
+            @NotNull final ByteBuf in,
+            @NotNull final MqttClientConnectionData clientConnectionData)
             throws MqttDecoderException {
 
         final Channel channel = clientConnectionData.getChannel();
@@ -110,16 +109,23 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
 
             switch (propertyIdentifier) {
                 case MESSAGE_EXPIRY_INTERVAL:
-                    messageExpiryInterval = unsignedIntOnlyOnce(messageExpiryInterval, MESSAGE_EXPIRY_INTERVAL_INFINITY,
-                            "message expiry interval", in);
+                    messageExpiryInterval =
+                            unsignedIntOnlyOnce(
+                                    messageExpiryInterval,
+                                    MESSAGE_EXPIRY_INTERVAL_INFINITY,
+                                    "message expiry interval",
+                                    in);
                     break;
 
                 case PAYLOAD_FORMAT_INDICATOR:
                     final short payloadFormatIndicatorByte =
-                            unsignedByteOnlyOnce(payloadFormatIndicator != null, "payload format indicator", in);
-                    payloadFormatIndicator = Mqtt5PayloadFormatIndicator.fromCode(payloadFormatIndicatorByte);
+                            unsignedByteOnlyOnce(
+                                    payloadFormatIndicator != null, "payload format indicator", in);
+                    payloadFormatIndicator =
+                            Mqtt5PayloadFormatIndicator.fromCode(payloadFormatIndicatorByte);
                     if (payloadFormatIndicator == null) {
-                        throw new MqttDecoderException("wrong payload format indicator: " + payloadFormatIndicatorByte);
+                        throw new MqttDecoderException(
+                                "wrong payload format indicator: " + payloadFormatIndicatorByte);
                     }
                     break;
 
@@ -134,13 +140,18 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
                     responseTopic = MqttTopicImpl.from(in);
                     if (responseTopic == null) {
                         throw new MqttDecoderException(
-                                Mqtt5DisconnectReasonCode.TOPIC_NAME_INVALID, "malformed response topic");
+                                Mqtt5DisconnectReasonCode.TOPIC_NAME_INVALID,
+                                "malformed response topic");
                     }
                     break;
 
                 case CORRELATION_DATA:
-                    correlationData = decodeBinaryDataOnlyOnce(correlationData, "correlation data", in,
-                            ChannelAttributes.useDirectBufferForCorrelationData(channel));
+                    correlationData =
+                            decodeBinaryDataOnlyOnce(
+                                    correlationData,
+                                    "correlation data",
+                                    in,
+                                    ChannelAttributes.useDirectBufferForCorrelationData(channel));
                     break;
 
                 case USER_PROPERTY:
@@ -148,10 +159,13 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
                     break;
 
                 case TOPIC_ALIAS:
-                    topicAlias = unsignedShortOnlyOnce(topicAlias, DEFAULT_NO_TOPIC_ALIAS, "topic alias", in);
+                    topicAlias =
+                            unsignedShortOnlyOnce(
+                                    topicAlias, DEFAULT_NO_TOPIC_ALIAS, "topic alias", in);
                     if (topicAlias == 0) {
                         throw new MqttDecoderException(
-                                Mqtt5DisconnectReasonCode.TOPIC_ALIAS_INVALID, "topic alias must not be 0");
+                                Mqtt5DisconnectReasonCode.TOPIC_ALIAS_INVALID,
+                                "topic alias must not be 0");
                     }
                     topicAliasUsage = TopicAliasUsage.HAS;
                     break;
@@ -193,7 +207,8 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
                 topic = topicAliasMapping[topicAlias - 1];
                 if (topic == null) {
                     throw new MqttDecoderException(
-                            Mqtt5DisconnectReasonCode.TOPIC_ALIAS_INVALID, "topic alias has no mapping");
+                            Mqtt5DisconnectReasonCode.TOPIC_ALIAS_INVALID,
+                            "topic alias has no mapping");
                 }
             } else {
                 topicAliasMapping[topicAlias - 1] = topic;
@@ -208,7 +223,9 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
         final int payloadLength = in.readableBytes();
         ByteBuffer payload = null;
         if (payloadLength > 0) {
-            payload = ByteBufferUtil.allocate(payloadLength, ChannelAttributes.useDirectBufferForPayload(channel));
+            payload =
+                    ByteBufferUtil.allocate(
+                            payloadLength, ChannelAttributes.useDirectBufferForPayload(channel));
             in.readBytes(payload);
             payload.position(0);
 
@@ -223,17 +240,29 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
             }
         }
 
-        final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.build(userPropertiesBuilder);
+        final MqttUserPropertiesImpl userProperties =
+                MqttUserPropertiesImpl.build(userPropertiesBuilder);
 
         final MqttPublish publish =
-                new MqttPublish(topic, payload, qos, retain, messageExpiryInterval, payloadFormatIndicator, contentType,
-                        responseTopic, correlationData, topicAliasUsage, userProperties);
+                new MqttPublish(
+                        topic,
+                        payload,
+                        qos,
+                        retain,
+                        messageExpiryInterval,
+                        payloadFormatIndicator,
+                        contentType,
+                        responseTopic,
+                        correlationData,
+                        topicAliasUsage,
+                        userProperties);
 
         final ImmutableIntArray subscriptionIdentifiers =
-                (subscriptionIdentifiersBuilder == null) ? DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS :
-                        subscriptionIdentifiersBuilder.build();
+                (subscriptionIdentifiersBuilder == null)
+                        ? DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS
+                        : subscriptionIdentifiersBuilder.build();
 
-        return publish.createStateful(packetIdentifier, dup, topicAlias, isNewTopicAlias, subscriptionIdentifiers);
+        return publish.createStateful(
+                packetIdentifier, dup, topicAlias, isNewTopicAlias, subscriptionIdentifiers);
     }
-
 }

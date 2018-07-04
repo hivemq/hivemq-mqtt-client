@@ -17,17 +17,15 @@
 
 package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
 import org.junit.jupiter.api.Test;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt.codec.decoder.AbstractMqttDecoderTest;
 import org.mqttbee.mqtt.codec.decoder.MqttPingRespDecoder;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 class Mqtt5ClientMessageDecodersTest {
 
     @Test
@@ -45,9 +43,18 @@ class Mqtt5ClientMessageDecodersTest {
         final Mqtt5AuthDecoder authDecoder = new Mqtt5AuthDecoder();
 
         final Mqtt5ClientMessageDecoders clientMessageDecoders =
-                new Mqtt5ClientMessageDecoders(connAckDecoder, publishDecoder, pubAckDecoder, pubRecDecoder,
-                        pubRelDecoder, pubCompDecoder, subAckDecoder, unsubAckDecoder, pingRespDecoder,
-                        disconnectDecoder, authDecoder);
+                new Mqtt5ClientMessageDecoders(
+                        connAckDecoder,
+                        publishDecoder,
+                        pubAckDecoder,
+                        pubRecDecoder,
+                        pubRelDecoder,
+                        pubCompDecoder,
+                        subAckDecoder,
+                        unsubAckDecoder,
+                        pingRespDecoder,
+                        disconnectDecoder,
+                        authDecoder);
 
         assertNull(clientMessageDecoders.get(-1));
         assertNull(clientMessageDecoders.get(Mqtt5MessageType.values().length));
@@ -68,5 +75,4 @@ class Mqtt5ClientMessageDecodersTest {
         assertSame(disconnectDecoder, clientMessageDecoders.get(14));
         assertSame(authDecoder, clientMessageDecoders.get(15));
     }
-
 }

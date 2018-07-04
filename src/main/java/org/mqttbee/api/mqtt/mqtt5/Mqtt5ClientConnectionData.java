@@ -17,15 +17,12 @@
 
 package org.mqttbee.api.mqtt.mqtt5;
 
+import java.util.Optional;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 
-import java.util.Optional;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @DoNotImplement
 public interface Mqtt5ClientConnectionData {
 
@@ -49,5 +46,4 @@ public interface Mqtt5ClientConnectionData {
     boolean isProblemInformationRequested();
 
     boolean isResponseInformationRequested();
-
 }

@@ -17,17 +17,14 @@
 
 package org.mqttbee.mqtt.message.connect;
 
+import javax.annotation.concurrent.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt.message.MqttStatefulMessage;
 import org.mqttbee.mqtt.message.auth.MqttEnhancedAuth;
 
-import javax.annotation.concurrent.Immutable;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @Immutable
 public class MqttStatefulConnect extends MqttStatefulMessage<MqttConnect> {
 
@@ -35,7 +32,8 @@ public class MqttStatefulConnect extends MqttStatefulMessage<MqttConnect> {
     private final MqttEnhancedAuth enhancedAuth;
 
     MqttStatefulConnect(
-            @NotNull final MqttConnect connect, @NotNull final MqttClientIdentifierImpl clientIdentifier,
+            @NotNull final MqttConnect connect,
+            @NotNull final MqttClientIdentifierImpl clientIdentifier,
             @Nullable final MqttEnhancedAuth enhancedAuth) {
 
         super(connect);
@@ -52,5 +50,4 @@ public class MqttStatefulConnect extends MqttStatefulMessage<MqttConnect> {
     public MqttEnhancedAuth getEnhancedAuth() {
         return enhancedAuth;
     }
-
 }

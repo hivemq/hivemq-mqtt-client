@@ -29,16 +29,15 @@ import org.mqttbee.mqtt.ioc.ChannelComponent;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.reactivestreams.Subscriber;
 
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class MqttIncomingAckFlowable extends Flowable<Mqtt5PublishResult> {
 
     private final Flowable<MqttPublish> publishFlowable;
     private final MqttClientData clientData;
 
     public MqttIncomingAckFlowable(
-            @NotNull final Flowable<MqttPublish> publishFlowable, @NotNull final MqttClientData clientData) {
+            @NotNull final Flowable<MqttPublish> publishFlowable,
+            @NotNull final MqttClientData clientData) {
 
         this.publishFlowable = publishFlowable;
         this.clientData = clientData;
@@ -46,19 +45,23 @@ public class MqttIncomingAckFlowable extends Flowable<Mqtt5PublishResult> {
 
     @Override
     protected void subscribeActual(final Subscriber<? super Mqtt5PublishResult> s) {
-        final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData(); // TODO temp
-        final MqttServerConnectionData serverConnectionData = clientData.getRawServerConnectionData(); // TODO temp
+        final MqttClientConnectionData clientConnectionData =
+                clientData.getRawClientConnectionData(); // TODO temp
+        final MqttServerConnectionData serverConnectionData =
+                clientData.getRawServerConnectionData(); // TODO temp
         if ((clientConnectionData == null) || (serverConnectionData == null)) {
             EmptySubscription.error(new NotConnectedException(), s);
         } else {
-            final ChannelComponent channelComponent = ChannelComponent.get(clientConnectionData.getChannel());
-            final MqttOutgoingPublishService outgoingPublishService = channelComponent.outgoingPublishService();
+            final ChannelComponent channelComponent =
+                    ChannelComponent.get(clientConnectionData.getChannel());
+            final MqttOutgoingPublishService outgoingPublishService =
+                    channelComponent.outgoingPublishService();
             final MqttPublishFlowables publishFlowables = channelComponent.publishFlowables();
 
-            final MqttIncomingAckFlow incomingAckFlow = new MqttIncomingAckFlow(s, outgoingPublishService);
+            final MqttIncomingAckFlow incomingAckFlow =
+                    new MqttIncomingAckFlow(s, outgoingPublishService);
             s.onSubscribe(incomingAckFlow);
             publishFlowables.add(new MqttPublishFlowableAckLink(publishFlowable, incomingAckFlow));
         }
     }
-
 }

@@ -29,32 +29,33 @@ import org.mqttbee.mqtt.ioc.ChannelComponent;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribe;
 import org.mqttbee.rx.SingleFlow.DefaultSingleFlow;
 
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class MqttUnsubAckSingle extends Single<Mqtt5UnsubAck> {
 
     private final MqttUnsubscribe unsubscribe;
     private final MqttClientData clientData;
 
-    public MqttUnsubAckSingle(@NotNull final MqttUnsubscribe unsubscribe, @NotNull final MqttClientData clientData) {
+    public MqttUnsubAckSingle(
+            @NotNull final MqttUnsubscribe unsubscribe, @NotNull final MqttClientData clientData) {
         this.unsubscribe = unsubscribe;
         this.clientData = clientData;
     }
 
     @Override
     protected void subscribeActual(final SingleObserver<? super Mqtt5UnsubAck> observer) {
-        final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
+        final MqttClientConnectionData clientConnectionData =
+                clientData.getRawClientConnectionData();
         if (clientConnectionData == null) {
             EmptyDisposable.error(new NotConnectedException(), observer);
         } else {
-            final ChannelComponent channelComponent = ChannelComponent.get(clientConnectionData.getChannel());
-            final MqttSubscriptionHandler subscriptionHandler = channelComponent.subscriptionHandler();
+            final ChannelComponent channelComponent =
+                    ChannelComponent.get(clientConnectionData.getChannel());
+            final MqttSubscriptionHandler subscriptionHandler =
+                    channelComponent.subscriptionHandler();
 
             final DefaultSingleFlow<Mqtt5UnsubAck> flow = new DefaultSingleFlow<>(observer);
             observer.onSubscribe(flow);
             subscriptionHandler.unsubscribe(new MqttUnsubscribeWithFlow(unsubscribe, flow));
         }
     }
-
 }

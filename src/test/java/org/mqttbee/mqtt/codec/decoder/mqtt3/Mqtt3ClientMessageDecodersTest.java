@@ -17,13 +17,13 @@
 
 package org.mqttbee.mqtt.codec.decoder.mqtt3;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
 import org.junit.jupiter.api.Test;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.mqtt.codec.decoder.AbstractMqttDecoderTest;
 import org.mqttbee.mqtt.codec.decoder.MqttPingRespDecoder;
-
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
 
 class Mqtt3ClientMessageDecodersTest {
 
@@ -40,8 +40,16 @@ class Mqtt3ClientMessageDecodersTest {
         final MqttPingRespDecoder pingRespDecoder = AbstractMqttDecoderTest.createPingRespDecoder();
 
         final Mqtt3ClientMessageDecoders clientMessageDecoders =
-                new Mqtt3ClientMessageDecoders(connAckDecoder, publishDecoder, pubAckDecoder, pubRecDecoder,
-                        pubRelDecoder, pubCompDecoder, subAckDecoder, unsubAckDecoder, pingRespDecoder);
+                new Mqtt3ClientMessageDecoders(
+                        connAckDecoder,
+                        publishDecoder,
+                        pubAckDecoder,
+                        pubRecDecoder,
+                        pubRelDecoder,
+                        pubCompDecoder,
+                        subAckDecoder,
+                        unsubAckDecoder,
+                        pingRespDecoder);
 
         assertNull(clientMessageDecoders.get(-1));
         assertNull(clientMessageDecoders.get(Mqtt3MessageType.values().length));
@@ -61,5 +69,4 @@ class Mqtt3ClientMessageDecodersTest {
         assertSame(pingRespDecoder, clientMessageDecoders.get(13));
         assertNull(clientMessageDecoders.get(14));
     }
-
 }

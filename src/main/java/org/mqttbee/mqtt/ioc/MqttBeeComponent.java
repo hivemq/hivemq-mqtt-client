@@ -18,14 +18,11 @@
 package org.mqttbee.mqtt.ioc;
 
 import dagger.Component;
+import javax.inject.Singleton;
 import org.mqttbee.mqtt.netty.NettyBootstrap;
 import org.mqttbee.mqtt.netty.NettyModule;
 
-import javax.inject.Singleton;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @Component(modules = {NettyModule.class})
 @Singleton
 public interface MqttBeeComponent {
@@ -35,5 +32,4 @@ public interface MqttBeeComponent {
     NettyBootstrap nettyBootstrap();
 
     ChannelComponent.Builder channelComponentBuilder();
-
 }

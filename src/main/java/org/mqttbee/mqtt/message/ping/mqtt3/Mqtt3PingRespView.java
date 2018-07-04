@@ -17,14 +17,11 @@
 
 package org.mqttbee.mqtt.message.ping.mqtt3;
 
+import javax.annotation.concurrent.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.ping.Mqtt3PingResp;
 
-import javax.annotation.concurrent.Immutable;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @Immutable
 public class Mqtt3PingRespView implements Mqtt3PingResp {
 
@@ -35,7 +32,5 @@ public class Mqtt3PingRespView implements Mqtt3PingResp {
         return INSTANCE;
     }
 
-    private Mqtt3PingRespView() {
-    }
-
+    private Mqtt3PingRespView() {}
 }

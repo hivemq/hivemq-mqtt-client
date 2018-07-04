@@ -17,8 +17,15 @@
 
 package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
+import static org.mqttbee.mqtt.codec.encoder.MqttMessageEncoderUtil.*;
+import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.*;
+import static org.mqttbee.mqtt.message.connect.MqttConnect.*;
+import static org.mqttbee.mqtt.message.connect.MqttConnectProperty.*;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.exceptions.MqttMaximumPacketSizeExceededException;
 import org.mqttbee.api.mqtt.exceptions.MqttVariableByteIntegerExceededException;
@@ -34,24 +41,17 @@ import org.mqttbee.mqtt.message.connect.MqttStatefulConnect;
 import org.mqttbee.mqtt.message.publish.MqttWillPublish;
 import org.mqttbee.mqtt.message.publish.MqttWillPublishProperty;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-import static org.mqttbee.mqtt.codec.encoder.MqttMessageEncoderUtil.*;
-import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.*;
-import static org.mqttbee.mqtt.message.connect.MqttConnect.*;
-import static org.mqttbee.mqtt.message.connect.MqttConnectProperty.*;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @Singleton
 public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect> {
 
     private static final int FIXED_HEADER = Mqtt5MessageType.CONNECT.getCode() << 4;
     private static final byte PROTOCOL_VERSION = 5;
     private static final int VARIABLE_HEADER_FIXED_LENGTH =
-            6 /* protocol name */ + 1 /* protocol version */ + 1 /* connect flags */ + 2 /* keep alive */;
+            6 /* protocol name */
+                    + 1 /* protocol version */
+                    + 1 /* connect flags */
+                    + 2 /* keep alive */;
 
     private final Mqtt5PublishEncoder publishEncoder;
 
@@ -63,44 +63,69 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
     @NotNull
     @Override
     protected ByteBuf encode(
-            @NotNull final MqttStatefulConnect message, @NotNull final ByteBufAllocator allocator,
+            @NotNull final MqttStatefulConnect message,
+            @NotNull final ByteBufAllocator allocator,
             final int maximumPacketSize) {
 
         int propertyLength = propertyLength(message);
         final int willPropertyLength = willPropertyLength(message);
         final int remainingLengthWithoutProperties = remainingLengthWithoutProperties(message);
-        int remainingLength = remainingLength(remainingLengthWithoutProperties, propertyLength, willPropertyLength);
+        int remainingLength =
+                remainingLength(
+                        remainingLengthWithoutProperties, propertyLength, willPropertyLength);
         int encodedLength = encodedPacketLength(remainingLength);
         int omittedProperties = 0;
         while (encodedLength > maximumPacketSize) {
             omittedProperties++;
             propertyLength = propertyLength(message, propertyLength, omittedProperties);
             if (propertyLength < 0) {
-                throw new MqttMaximumPacketSizeExceededException(message, encodedLength, maximumPacketSize);
+                throw new MqttMaximumPacketSizeExceededException(
+                        message, encodedLength, maximumPacketSize);
             }
-            remainingLength = remainingLength(remainingLengthWithoutProperties, propertyLength, willPropertyLength);
+            remainingLength =
+                    remainingLength(
+                            remainingLengthWithoutProperties, propertyLength, willPropertyLength);
             encodedLength = encodedPacketLength(remainingLength);
         }
-        return encode(message, allocator, encodedLength, remainingLength, propertyLength, willPropertyLength,
+        return encode(
+                message,
+                allocator,
+                encodedLength,
+                remainingLength,
+                propertyLength,
+                willPropertyLength,
                 omittedProperties);
     }
 
     @NotNull
     private ByteBuf encode(
-            @NotNull final MqttStatefulConnect message, @NotNull final ByteBufAllocator allocator,
-            final int encodedLength, final int remainingLength, final int propertyLength, final int willPropertyLength,
+            @NotNull final MqttStatefulConnect message,
+            @NotNull final ByteBufAllocator allocator,
+            final int encodedLength,
+            final int remainingLength,
+            final int propertyLength,
+            final int willPropertyLength,
             final int omittedProperties) {
 
         final ByteBuf out = allocator.ioBuffer(encodedLength, encodedLength);
-        encode(message, out, remainingLength, propertyLength, willPropertyLength, omittedProperties);
+        encode(
+                message,
+                out,
+                remainingLength,
+                propertyLength,
+                willPropertyLength,
+                omittedProperties);
         return out;
     }
 
     private int remainingLength(
-            final int remainingLengthWithoutProperties, final int propertyLength, final int willPropertyLength) {
+            final int remainingLengthWithoutProperties,
+            final int propertyLength,
+            final int willPropertyLength) {
 
-        return remainingLengthWithoutProperties + encodedLengthWithHeader(propertyLength) +
-                ((willPropertyLength == -1) ? 0 : encodedLengthWithHeader(willPropertyLength));
+        return remainingLengthWithoutProperties
+                + encodedLengthWithHeader(propertyLength)
+                + ((willPropertyLength == -1) ? 0 : encodedLengthWithHeader(willPropertyLength));
     }
 
     private int remainingLengthWithoutProperties(@NotNull final MqttStatefulConnect message) {
@@ -131,22 +156,31 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
         int propertyLength = 0;
 
         propertyLength +=
-                intPropertyEncodedLength(stateless.getSessionExpiryInterval(), DEFAULT_SESSION_EXPIRY_INTERVAL);
-        propertyLength += booleanPropertyEncodedLength(
-                stateless.isResponseInformationRequested(),
-                DEFAULT_RESPONSE_INFORMATION_REQUESTED);
-        propertyLength += booleanPropertyEncodedLength(
-                stateless.isProblemInformationRequested(),
-                DEFAULT_PROBLEM_INFORMATION_REQUESTED);
+                intPropertyEncodedLength(
+                        stateless.getSessionExpiryInterval(), DEFAULT_SESSION_EXPIRY_INTERVAL);
+        propertyLength +=
+                booleanPropertyEncodedLength(
+                        stateless.isResponseInformationRequested(),
+                        DEFAULT_RESPONSE_INFORMATION_REQUESTED);
+        propertyLength +=
+                booleanPropertyEncodedLength(
+                        stateless.isProblemInformationRequested(),
+                        DEFAULT_PROBLEM_INFORMATION_REQUESTED);
 
         final MqttConnectRestrictions restrictions = stateless.getRestrictions();
         if (restrictions != MqttConnectRestrictions.DEFAULT) {
-            propertyLength += shortPropertyEncodedLength(restrictions.getReceiveMaximum(),
-                    MqttConnectRestrictions.DEFAULT_RECEIVE_MAXIMUM);
-            propertyLength += shortPropertyEncodedLength(restrictions.getTopicAliasMaximum(),
-                    MqttConnectRestrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM);
-            propertyLength += intPropertyEncodedLength(restrictions.getMaximumPacketSize(),
-                    MqttConnectRestrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT);
+            propertyLength +=
+                    shortPropertyEncodedLength(
+                            restrictions.getReceiveMaximum(),
+                            MqttConnectRestrictions.DEFAULT_RECEIVE_MAXIMUM);
+            propertyLength +=
+                    shortPropertyEncodedLength(
+                            restrictions.getTopicAliasMaximum(),
+                            MqttConnectRestrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM);
+            propertyLength +=
+                    intPropertyEncodedLength(
+                            restrictions.getMaximumPacketSize(),
+                            MqttConnectRestrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT);
         }
 
         propertyLength += stateless.getUserProperties().encodedLength();
@@ -161,13 +195,16 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
     }
 
     private int propertyLength(
-            @NotNull final MqttStatefulConnect message, final int propertyLength, final int omittedProperties) {
+            @NotNull final MqttStatefulConnect message,
+            final int propertyLength,
+            final int omittedProperties) {
 
         switch (omittedProperties) {
             case 0:
                 return propertyLength;
             case 1:
-                return propertyLength - message.getStatelessMessage().getUserProperties().encodedLength();
+                return propertyLength
+                        - message.getStatelessMessage().getUserProperties().encodedLength();
             default:
                 return -1;
         }
@@ -182,7 +219,8 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
         int willPropertyLength = publishEncoder.fixedPropertyLength(willPublish);
         willPropertyLength += willPublish.getUserProperties().encodedLength();
         willPropertyLength +=
-                intPropertyEncodedLength(willPublish.getDelayInterval(), MqttWillPublish.DEFAULT_DELAY_INTERVAL);
+                intPropertyEncodedLength(
+                        willPublish.getDelayInterval(), MqttWillPublish.DEFAULT_DELAY_INTERVAL);
 
         if (!MqttVariableByteInteger.isInRange(willPropertyLength)) {
             throw new MqttVariableByteIntegerExceededException("will properties length"); // TODO
@@ -192,8 +230,12 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
     }
 
     private void encode(
-            @NotNull final MqttStatefulConnect message, @NotNull final ByteBuf out, final int remainingLength,
-            final int propertyLength, final int willPropertyLength, final int omittedProperties) {
+            @NotNull final MqttStatefulConnect message,
+            @NotNull final ByteBuf out,
+            final int remainingLength,
+            final int propertyLength,
+            final int willPropertyLength,
+            final int omittedProperties) {
 
         encodeFixedHeader(out, remainingLength);
         encodeVariableHeader(message, out, propertyLength, omittedProperties);
@@ -206,7 +248,9 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
     }
 
     private void encodeVariableHeader(
-            @NotNull final MqttStatefulConnect message, @NotNull final ByteBuf out, final int propertyLength,
+            @NotNull final MqttStatefulConnect message,
+            @NotNull final ByteBuf out,
+            final int propertyLength,
             final int omittedProperties) {
 
         final MqttConnect stateless = message.getStatelessMessage();
@@ -247,7 +291,9 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
     }
 
     private void encodeProperties(
-            @NotNull final MqttStatefulConnect message, @NotNull final ByteBuf out, final int propertyLength,
+            @NotNull final MqttStatefulConnect message,
+            @NotNull final ByteBuf out,
+            final int propertyLength,
             final int omittedProperties) {
 
         final MqttConnect stateless = message.getStatelessMessage();
@@ -255,11 +301,20 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
         MqttVariableByteInteger.encode(propertyLength, out);
 
         encodeIntProperty(
-                SESSION_EXPIRY_INTERVAL, stateless.getSessionExpiryInterval(), DEFAULT_SESSION_EXPIRY_INTERVAL, out);
-        encodeBooleanProperty(REQUEST_RESPONSE_INFORMATION, stateless.isResponseInformationRequested(),
-                DEFAULT_RESPONSE_INFORMATION_REQUESTED, out);
-        encodeBooleanProperty(REQUEST_PROBLEM_INFORMATION, stateless.isProblemInformationRequested(),
-                DEFAULT_PROBLEM_INFORMATION_REQUESTED, out);
+                SESSION_EXPIRY_INTERVAL,
+                stateless.getSessionExpiryInterval(),
+                DEFAULT_SESSION_EXPIRY_INTERVAL,
+                out);
+        encodeBooleanProperty(
+                REQUEST_RESPONSE_INFORMATION,
+                stateless.isResponseInformationRequested(),
+                DEFAULT_RESPONSE_INFORMATION_REQUESTED,
+                out);
+        encodeBooleanProperty(
+                REQUEST_PROBLEM_INFORMATION,
+                stateless.isProblemInformationRequested(),
+                DEFAULT_PROBLEM_INFORMATION_REQUESTED,
+                out);
 
         final MqttEnhancedAuth enhancedAuth = message.getEnhancedAuth();
         if (enhancedAuth != null) {
@@ -269,12 +324,21 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
 
         final MqttConnectRestrictions restrictions = stateless.getRestrictions();
         if (restrictions != MqttConnectRestrictions.DEFAULT) {
-            encodeShortProperty(RECEIVE_MAXIMUM, restrictions.getReceiveMaximum(),
-                    MqttConnectRestrictions.DEFAULT_RECEIVE_MAXIMUM, out);
-            encodeShortProperty(TOPIC_ALIAS_MAXIMUM, restrictions.getTopicAliasMaximum(),
-                    MqttConnectRestrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM, out);
-            encodeIntProperty(MAXIMUM_PACKET_SIZE, restrictions.getMaximumPacketSize(),
-                    MqttConnectRestrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT, out);
+            encodeShortProperty(
+                    RECEIVE_MAXIMUM,
+                    restrictions.getReceiveMaximum(),
+                    MqttConnectRestrictions.DEFAULT_RECEIVE_MAXIMUM,
+                    out);
+            encodeShortProperty(
+                    TOPIC_ALIAS_MAXIMUM,
+                    restrictions.getTopicAliasMaximum(),
+                    MqttConnectRestrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM,
+                    out);
+            encodeIntProperty(
+                    MAXIMUM_PACKET_SIZE,
+                    restrictions.getMaximumPacketSize(),
+                    MqttConnectRestrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT,
+                    out);
         }
 
         if (omittedProperties == 0) {
@@ -283,7 +347,9 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
     }
 
     private void encodePayload(
-            @NotNull final MqttStatefulConnect message, @NotNull final ByteBuf out, final int willPropertyLength) {
+            @NotNull final MqttStatefulConnect message,
+            @NotNull final ByteBuf out,
+            final int willPropertyLength) {
 
         final MqttConnect stateless = message.getStatelessMessage();
 
@@ -299,7 +365,9 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
     }
 
     private void encodeWillPublish(
-            @NotNull final MqttConnect message, @NotNull final ByteBuf out, final int willPropertyLength) {
+            @NotNull final MqttConnect message,
+            @NotNull final ByteBuf out,
+            final int willPropertyLength) {
 
         final MqttWillPublish willPublish = message.getRawWillPublish();
         if (willPublish != null) {
@@ -307,12 +375,14 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
 
             publishEncoder.encodeFixedProperties(willPublish, out);
             willPublish.getUserProperties().encode(out);
-            encodeIntProperty(MqttWillPublishProperty.WILL_DELAY_INTERVAL, willPublish.getDelayInterval(),
-                    MqttWillPublish.DEFAULT_DELAY_INTERVAL, out);
+            encodeIntProperty(
+                    MqttWillPublishProperty.WILL_DELAY_INTERVAL,
+                    willPublish.getDelayInterval(),
+                    MqttWillPublish.DEFAULT_DELAY_INTERVAL,
+                    out);
 
             willPublish.getTopic().to(out);
             encodeOrEmpty(willPublish.getRawPayload(), out);
         }
     }
-
 }

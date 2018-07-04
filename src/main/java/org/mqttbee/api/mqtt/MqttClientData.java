@@ -17,15 +17,12 @@
 
 package org.mqttbee.api.mqtt;
 
+import java.util.Optional;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
 
-import java.util.Optional;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @DoNotImplement
 public interface MqttClientData {
 
@@ -53,5 +50,4 @@ public interface MqttClientData {
     boolean isConnecting();
 
     boolean isConnected();
-
 }

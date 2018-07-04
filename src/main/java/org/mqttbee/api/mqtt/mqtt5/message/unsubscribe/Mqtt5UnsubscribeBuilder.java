@@ -19,6 +19,7 @@ package org.mqttbee.api.mqtt.mqtt5.message.unsubscribe;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import java.util.function.Function;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
@@ -34,17 +35,14 @@ import org.mqttbee.mqtt.util.MqttBuilderUtil;
 import org.mqttbee.util.FluentBuilder;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 
-import java.util.function.Function;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class Mqtt5UnsubscribeBuilder<P> extends FluentBuilder<Mqtt5Unsubscribe, P> {
 
     private final ImmutableList.Builder<MqttTopicFilterImpl> topicFiltersBuilder;
     private MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
 
-    public Mqtt5UnsubscribeBuilder(@Nullable final Function<? super Mqtt5Unsubscribe, P> parentConsumer) {
+    public Mqtt5UnsubscribeBuilder(
+            @Nullable final Function<? super Mqtt5Unsubscribe, P> parentConsumer) {
         super(parentConsumer);
         topicFiltersBuilder = ImmutableList.builder();
     }
@@ -77,7 +75,8 @@ public class Mqtt5UnsubscribeBuilder<P> extends FluentBuilder<Mqtt5Unsubscribe, 
 
     @NotNull
     public Mqtt5UnsubscribeBuilder<P> reverse(@NotNull final Mqtt5Subscribe subscribe) {
-        final ImmutableList<? extends Mqtt5Subscription> subscriptions = subscribe.getSubscriptions();
+        final ImmutableList<? extends Mqtt5Subscription> subscriptions =
+                subscribe.getSubscriptions();
         for (final Mqtt5Subscription subscription : subscriptions) {
             addTopicFilter(subscription.getTopicFilter());
         }
@@ -85,7 +84,8 @@ public class Mqtt5UnsubscribeBuilder<P> extends FluentBuilder<Mqtt5Unsubscribe, 
     }
 
     @NotNull
-    public Mqtt5UnsubscribeBuilder<P> userProperties(@NotNull final Mqtt5UserProperties userProperties) {
+    public Mqtt5UnsubscribeBuilder<P> userProperties(
+            @NotNull final Mqtt5UserProperties userProperties) {
         this.userProperties = MqttBuilderUtil.userProperties(userProperties);
         return this;
     }
@@ -102,5 +102,4 @@ public class Mqtt5UnsubscribeBuilder<P> extends FluentBuilder<Mqtt5Unsubscribe, 
         Preconditions.checkState(!topicFilters.isEmpty());
         return new MqttUnsubscribe(topicFilters, userProperties);
     }
-
 }

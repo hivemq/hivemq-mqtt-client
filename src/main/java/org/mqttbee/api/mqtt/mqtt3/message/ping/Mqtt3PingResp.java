@@ -22,9 +22,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3Message;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 
-/**
- * MQTT 3 PINGRESP packet.
- */
+/** MQTT 3 PINGRESP packet. */
 @DoNotImplement
 public interface Mqtt3PingResp extends Mqtt3Message {
 
@@ -33,5 +31,4 @@ public interface Mqtt3PingResp extends Mqtt3Message {
     default Mqtt3MessageType getType() {
         return Mqtt3MessageType.PINGRESP;
     }
-
 }

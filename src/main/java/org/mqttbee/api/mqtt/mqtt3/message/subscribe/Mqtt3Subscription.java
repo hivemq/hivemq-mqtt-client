@@ -35,16 +35,11 @@ public interface Mqtt3Subscription {
         return new Mqtt3SubscriptionBuilder<>(null);
     }
 
-    /**
-     * @return the Topic Filter of this subscription.
-     */
+    /** @return the Topic Filter of this subscription. */
     @NotNull
     MqttTopicFilter getTopicFilter();
 
-    /**
-     * @return the QoS of this subscription.
-     */
+    /** @return the QoS of this subscription. */
     @NotNull
     MqttQoS getQoS();
-
 }

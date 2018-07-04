@@ -17,14 +17,13 @@
 
 package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoders;
 import org.mqttbee.mqtt.codec.decoder.MqttPingRespDecoder;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
 /**
  * Collection of decoders for MQTT 5 messages a client can receive.
@@ -38,11 +37,16 @@ public class Mqtt5ClientMessageDecoders implements MqttMessageDecoders {
 
     @Inject
     Mqtt5ClientMessageDecoders(
-            final Mqtt5ConnAckDecoder connAckDecoder, final Mqtt5PublishDecoder publishDecoder,
-            final Mqtt5PubAckDecoder pubAckDecoder, final Mqtt5PubRecDecoder pubRecDecoder,
-            final Mqtt5PubRelDecoder pubRelDecoder, final Mqtt5PubCompDecoder pubCompDecoder,
-            final Mqtt5SubAckDecoder subAckDecoder, final Mqtt5UnsubAckDecoder unsubAckDecoder,
-            final MqttPingRespDecoder pingRespDecoder, final Mqtt5DisconnectDecoder disconnectDecoder,
+            final Mqtt5ConnAckDecoder connAckDecoder,
+            final Mqtt5PublishDecoder publishDecoder,
+            final Mqtt5PubAckDecoder pubAckDecoder,
+            final Mqtt5PubRecDecoder pubRecDecoder,
+            final Mqtt5PubRelDecoder pubRelDecoder,
+            final Mqtt5PubCompDecoder pubCompDecoder,
+            final Mqtt5SubAckDecoder subAckDecoder,
+            final Mqtt5UnsubAckDecoder unsubAckDecoder,
+            final MqttPingRespDecoder pingRespDecoder,
+            final Mqtt5DisconnectDecoder disconnectDecoder,
             final Mqtt5AuthDecoder authDecoder) {
 
         decoders = new MqttMessageDecoder[Mqtt5MessageType.values().length];
@@ -67,5 +71,4 @@ public class Mqtt5ClientMessageDecoders implements MqttMessageDecoders {
         }
         return decoders[code];
     }
-
 }

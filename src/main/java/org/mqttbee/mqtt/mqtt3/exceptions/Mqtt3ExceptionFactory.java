@@ -27,8 +27,7 @@ import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
  */
 public class Mqtt3ExceptionFactory {
 
-    @NotNull
-    public static Function<Throwable, Throwable> MAPPER = Mqtt3ExceptionFactory::map;
+    @NotNull public static Function<Throwable, Throwable> MAPPER = Mqtt3ExceptionFactory::map;
 
     @NotNull
     public static Throwable map(@NotNull final Throwable throwable) {
@@ -37,5 +36,4 @@ public class Mqtt3ExceptionFactory {
         }
         return throwable;
     }
-
 }

@@ -19,19 +19,17 @@ package org.mqttbee.mqtt.handler.ssl;
 import dagger.internal.Preconditions;
 import io.netty.channel.Channel;
 import io.netty.handler.ssl.*;
+import javax.net.ssl.SSLEngine;
+import javax.net.ssl.SSLException;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttClientSslConfig;
 
-import javax.net.ssl.SSLEngine;
-import javax.net.ssl.SSLException;
-
-/**
- * @author Christoph Schäbel
- */
+/** @author Christoph Schäbel */
 public class SslUtil {
 
     @NotNull
-    static SSLEngine createSslEngine(@NotNull final Channel channel, @NotNull final MqttClientSslConfig sslConfig)
+    static SSLEngine createSslEngine(
+            @NotNull final Channel channel, @NotNull final MqttClientSslConfig sslConfig)
             throws SSLException {
 
         Preconditions.checkNotNull(channel, "channel must not be null");
@@ -45,15 +43,18 @@ public class SslUtil {
     }
 
     @NotNull
-    private static SslContext createSslContext(@NotNull final MqttClientSslConfig sslConfig) throws SSLException {
-        final SslContextBuilder sslContextBuilder = SslContextBuilder.forClient()
-                .sslProvider(SslProvider.JDK)
-                .trustManager(sslConfig.getTrustManagerFactory())
-                .keyManager(sslConfig.getKeyManagerFactory());
+    private static SslContext createSslContext(@NotNull final MqttClientSslConfig sslConfig)
+            throws SSLException {
+        final SslContextBuilder sslContextBuilder =
+                SslContextBuilder.forClient()
+                        .sslProvider(SslProvider.JDK)
+                        .trustManager(sslConfig.getTrustManagerFactory())
+                        .keyManager(sslConfig.getKeyManagerFactory());
 
         String[] protocols = null;
         if (sslConfig.getProtocols() != null) {
-            protocols = sslConfig.getProtocols().toArray(new String[sslConfig.getProtocols().size()]);
+            protocols =
+                    sslConfig.getProtocols().toArray(new String[sslConfig.getProtocols().size()]);
         }
         sslContextBuilder.protocols(protocols);
 
@@ -64,7 +65,8 @@ public class SslUtil {
 
     @NotNull
     public static SslHandler createSslHandler(
-            @NotNull final Channel channel, @NotNull final MqttClientSslConfig sslConfig) throws SSLException {
+            @NotNull final Channel channel, @NotNull final MqttClientSslConfig sslConfig)
+            throws SSLException {
 
         final SSLEngine sslEngine = createSslEngine(channel, sslConfig);
         final SslHandler sslHandler = new SslHandler(sslEngine);
@@ -72,5 +74,4 @@ public class SslUtil {
         sslHandler.setHandshakeTimeoutMillis(sslConfig.getHandshakeTimeoutMs());
         return sslHandler;
     }
-
 }

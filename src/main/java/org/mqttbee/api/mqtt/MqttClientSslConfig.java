@@ -17,15 +17,12 @@
 package org.mqttbee.api.mqtt;
 
 import com.google.common.collect.ImmutableList;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.TrustManagerFactory;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.TrustManagerFactory;
-
-/**
- * @author Christoph Schäbel
- */
+/** @author Christoph Schäbel */
 public interface MqttClientSslConfig {
 
     long DEFAULT_HANDSHAKE_TIMEOUT_MS = 10_000;
@@ -41,21 +38,14 @@ public interface MqttClientSslConfig {
     @Nullable
     TrustManagerFactory getTrustManagerFactory();
 
-    /**
-     * @return list of supported cipher suites
-     */
+    /** @return list of supported cipher suites */
     @Nullable
     ImmutableList<String> getCipherSuites();
 
-    /**
-     * @return list of supported protocols
-     */
+    /** @return list of supported protocols */
     @Nullable
     ImmutableList<String> getProtocols();
 
-    /**
-     * @return SSL handshake timeout in milliseconds
-     */
+    /** @return SSL handshake timeout in milliseconds */
     long getHandshakeTimeoutMs();
-
 }

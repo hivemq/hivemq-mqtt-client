@@ -19,9 +19,7 @@ package org.mqttbee.util;
 
 import org.mqttbee.annotations.NotNull;
 
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class ByteArray {
 
     protected final byte[] array;
@@ -47,12 +45,12 @@ public class ByteArray {
             return false;
         }
         final ByteArray byteArray = (ByteArray) o;
-        return ByteArrayUtil.equals(array, start, end, byteArray.array, byteArray.start, byteArray.end);
+        return ByteArrayUtil.equals(
+                array, start, end, byteArray.array, byteArray.start, byteArray.end);
     }
 
     @Override
     public int hashCode() {
         return ByteArrayUtil.hashCode(array, start, end);
     }
-
 }

@@ -19,11 +19,8 @@ package org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback;
 
 import org.mqttbee.annotations.Nullable;
 
-/**
- * SUBACK Return Code according to the MQTT 3.1.1 specification.
- */
+/** SUBACK Return Code according to the MQTT 3.1.1 specification. */
 public enum Mqtt3SubAckReturnCode {
-
     SUCCESS_MAXIMUM_QOS_0(0),
     SUCCESS_MAXIMUM_QOS_1(1),
     SUCCESS_MAXIMUM_QOS_2(2),
@@ -54,5 +51,4 @@ public enum Mqtt3SubAckReturnCode {
                 return null;
         }
     }
-
 }

@@ -19,16 +19,15 @@ package org.mqttbee.mqtt.datatypes;
 
 import com.google.common.base.Utf8;
 import io.netty.buffer.ByteBuf;
-import org.mqttbee.annotations.NotNull;
-import org.mqttbee.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
-import org.mqttbee.api.mqtt.exceptions.MqttBinaryDataExceededException;
-
-import javax.annotation.concurrent.Immutable;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.regex.Pattern;
+import javax.annotation.concurrent.Immutable;
+import org.mqttbee.annotations.NotNull;
+import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.exceptions.MqttBinaryDataExceededException;
 
 /**
  * This class lazily en/decodes between UTF-8 and UTF-16 encoding, but performs validation upfront.
@@ -41,28 +40,45 @@ public class MqttUTF8StringImpl implements MqttUTF8String {
 
     private static final Charset CHARSET = Charset.forName("UTF-8");
     private static final Pattern SHOULD_NOT_CHARACTERS_PATTERN =
-            Pattern.compile("[\\u0001-\\u001F]|[\\u007F-\\u009F]" + // control characters
-                    "|[\\uFDD0-\\uFDEF]" +              // non characters
-                    "|\\uFFFE|\\uFFFF" +                //   U+FFFE|F
-                    "|\\uD83F\\uDFFE|\\uD83F\\uDFFF" +  //  U+1FFFE|F
-                    "|\\uD87F\\uDFFE|\\uD87F\\uDFFF" +  //  U+2FFFE|F
-                    "|\\uD8BF\\uDFFE|\\uD8BF\\uDFFF" +  //  U+3FFFE|F
-                    "|\\uD8FF\\uDFFE|\\uD8FF\\uDFFF" +  //  U+4FFFE|F
-                    "|\\uD93F\\uDFFE|\\uD93F\\uDFFF" +  //  U+5FFFE|F
-                    "|\\uD97F\\uDFFE|\\uD97F\\uDFFF" +  //  U+6FFFE|F
-                    "|\\uD9BF\\uDFFE|\\uD9BF\\uDFFF" +  //  U+7FFFE|F
-                    "|\\uD9FF\\uDFFE|\\uD9FF\\uDFFF" +  //  U+8FFFE|F
-                    "|\\uDA3F\\uDFFE|\\uDA3F\\uDFFF" +  //  U+9FFFE|F
-                    "|\\uDA7F\\uDFFE|\\uDA7F\\uDFFF" +  //  U+AFFFE|F
-                    "|\\uDABF\\uDFFE|\\uDABF\\uDFFF" +  //  U+BFFFE|F
-                    "|\\uDAFF\\uDFFE|\\uDAFF\\uDFFF" +  //  U+CFFFE|F
-                    "|\\uDB3F\\uDFFE|\\uDB3F\\uDFFF" +  //  U+DFFFE|F
-                    "|\\uDB7F\\uDFFE|\\uDB7F\\uDFFF" +  //  U+EFFFE|F
-                    "|\\uDBBF\\uDFFE|\\uDBBF\\uDFFF" +  //  U+FFFFE|F
-                    "|\\uDBFF\\uDFFE|\\uDBFF\\uDFFF");  // U+10FFFE|F
-    /**
-     * MQTT Protocol name as a UTF-8 encoded String.
-     */
+            Pattern.compile(
+                    "[\\u0001-\\u001F]|[\\u007F-\\u009F]"
+                            + // control characters
+                            "|[\\uFDD0-\\uFDEF]"
+                            + // non characters
+                            "|\\uFFFE|\\uFFFF"
+                            + //   U+FFFE|F
+                            "|\\uD83F\\uDFFE|\\uD83F\\uDFFF"
+                            + //  U+1FFFE|F
+                            "|\\uD87F\\uDFFE|\\uD87F\\uDFFF"
+                            + //  U+2FFFE|F
+                            "|\\uD8BF\\uDFFE|\\uD8BF\\uDFFF"
+                            + //  U+3FFFE|F
+                            "|\\uD8FF\\uDFFE|\\uD8FF\\uDFFF"
+                            + //  U+4FFFE|F
+                            "|\\uD93F\\uDFFE|\\uD93F\\uDFFF"
+                            + //  U+5FFFE|F
+                            "|\\uD97F\\uDFFE|\\uD97F\\uDFFF"
+                            + //  U+6FFFE|F
+                            "|\\uD9BF\\uDFFE|\\uD9BF\\uDFFF"
+                            + //  U+7FFFE|F
+                            "|\\uD9FF\\uDFFE|\\uD9FF\\uDFFF"
+                            + //  U+8FFFE|F
+                            "|\\uDA3F\\uDFFE|\\uDA3F\\uDFFF"
+                            + //  U+9FFFE|F
+                            "|\\uDA7F\\uDFFE|\\uDA7F\\uDFFF"
+                            + //  U+AFFFE|F
+                            "|\\uDABF\\uDFFE|\\uDABF\\uDFFF"
+                            + //  U+BFFFE|F
+                            "|\\uDAFF\\uDFFE|\\uDAFF\\uDFFF"
+                            + //  U+CFFFE|F
+                            "|\\uDB3F\\uDFFE|\\uDB3F\\uDFFF"
+                            + //  U+DFFFE|F
+                            "|\\uDB7F\\uDFFE|\\uDB7F\\uDFFF"
+                            + //  U+EFFFE|F
+                            "|\\uDBBF\\uDFFE|\\uDBBF\\uDFFF"
+                            + //  U+FFFFE|F
+                            "|\\uDBFF\\uDFFE|\\uDBFF\\uDFFF"); // U+10FFFE|F
+    /** MQTT Protocol name as a UTF-8 encoded String. */
     @NotNull
     public static final MqttUTF8StringImpl PROTOCOL_NAME = new MqttUTF8StringImpl(encode("MQTT"));
 
@@ -70,8 +86,8 @@ public class MqttUTF8StringImpl implements MqttUTF8String {
      * Validates and decodes a UTF-8 encoded String from the given byte array.
      *
      * @param binary the byte array with the UTF-8 encoded data to decode from.
-     * @return the created UTF-8 encoded String or null if the byte array does not contain a well-formed UTF-8 encoded
-     * String.
+     * @return the created UTF-8 encoded String or null if the byte array does not contain a
+     *     well-formed UTF-8 encoded String.
      */
     @Nullable
     public static MqttUTF8StringImpl from(@NotNull final byte[] binary) {
@@ -82,7 +98,8 @@ public class MqttUTF8StringImpl implements MqttUTF8String {
      * Validates and creates a UTF-8 encoded String from the given string.
      *
      * @param string the UTF-16 encoded Java string.
-     * @return the created UTF-8 encoded String or null if the string is not a valid UTF-8 encoded String.
+     * @return the created UTF-8 encoded String or null if the string is not a valid UTF-8 encoded
+     *     String.
      */
     @Nullable
     public static MqttUTF8StringImpl from(@NotNull final String string) {
@@ -90,14 +107,15 @@ public class MqttUTF8StringImpl implements MqttUTF8String {
     }
 
     /**
-     * Validates and decodes a UTF-8 encoded String from the given byte buffer at the current reader index.
-     * <p>
-     * In case of a wrong encoding the reader index of the byte buffer will be in an undefined state after the method
-     * returns.
+     * Validates and decodes a UTF-8 encoded String from the given byte buffer at the current reader
+     * index.
+     *
+     * <p>In case of a wrong encoding the reader index of the byte buffer will be in an undefined
+     * state after the method returns.
      *
      * @param byteBuf the byte buffer with the UTF-8 encoded data to decode from.
-     * @return the created UTF-8 encoded String or null if the byte buffer does not contain a well-formed UTF-8 encoded
-     * String.
+     * @return the created UTF-8 encoded String or null if the byte buffer does not contain a
+     *     well-formed UTF-8 encoded String.
      */
     @Nullable
     public static MqttUTF8StringImpl from(@NotNull final ByteBuf byteBuf) {
@@ -128,10 +146,10 @@ public class MqttUTF8StringImpl implements MqttUTF8String {
     }
 
     /**
-     * Checks whether the given UTF-8 encoded byte array contains characters a UTF-8 encoded String must not according
-     * to the MQTT 5 specification.
-     * <p>
-     * These characters are the null character U+0000 and UTF-16 surrogates.
+     * Checks whether the given UTF-8 encoded byte array contains characters a UTF-8 encoded String
+     * must not according to the MQTT 5 specification.
+     *
+     * <p>These characters are the null character U+0000 and UTF-16 surrogates.
      *
      * @param binary the UTF-8 encoded byte array.
      * @return whether the binary data contains characters a UTF-8 encoded String must not.
@@ -149,10 +167,10 @@ public class MqttUTF8StringImpl implements MqttUTF8String {
     }
 
     /**
-     * Checks whether the given UTF-16 encoded Java string contains characters a UTF-8 encoded String must not according
-     * to the MQTT 5 specification.
-     * <p>
-     * These characters are the null character U+0000 and UTF-16 surrogates.
+     * Checks whether the given UTF-16 encoded Java string contains characters a UTF-8 encoded
+     * String must not according to the MQTT 5 specification.
+     *
+     * <p>These characters are the null character U+0000 and UTF-16 surrogates.
      *
      * @param string the UTF-16 encoded Java string
      * @return whether the string contains characters a UTF-8 encoded String must not.
@@ -171,7 +189,6 @@ public class MqttUTF8StringImpl implements MqttUTF8String {
         }
         return highSurrogate;
     }
-
 
     private byte[] binary;
     private String string;
@@ -197,8 +214,8 @@ public class MqttUTF8StringImpl implements MqttUTF8String {
     }
 
     /**
-     * Returns the UTF-8 encoded representation as a byte array. Converts from the UTF-16 encoded representation if
-     * necessary.
+     * Returns the UTF-8 encoded representation as a byte array. Converts from the UTF-16 encoded
+     * representation if necessary.
      *
      * @return the UTF-8 encoded byte array.
      */
@@ -215,8 +232,8 @@ public class MqttUTF8StringImpl implements MqttUTF8String {
     }
 
     /**
-     * Returns the UTF-16 encoded representation as a Java string. Converts from the UTF-8 encoded representation if
-     * necessary.
+     * Returns the UTF-16 encoded representation as a Java string. Converts from the UTF-8 encoded
+     * representation if necessary.
      *
      * @return the UTF-16 encoded string.
      */
@@ -234,11 +251,13 @@ public class MqttUTF8StringImpl implements MqttUTF8String {
     }
 
     /**
-     * Encodes this UTF-8 encoded String to the given byte buffer at the current writer index according to the MQTT 5
-     * specification. Converts from the UTF-16 encoded to the UTF-8 encoded representation if necessary.
-     * <p>
-     * This method does not check if this UTF-8 encoded String can not be encoded due to byte count restrictions. This
-     * check is performed with the method {@link #encodedLength()} which is generally called before this method.
+     * Encodes this UTF-8 encoded String to the given byte buffer at the current writer index
+     * according to the MQTT 5 specification. Converts from the UTF-16 encoded to the UTF-8 encoded
+     * representation if necessary.
+     *
+     * <p>This method does not check if this UTF-8 encoded String can not be encoded due to byte
+     * count restrictions. This check is performed with the method {@link #encodedLength()} which is
+     * generally called before this method.
      *
      * @param byteBuf the byte buffer to encode to.
      */
@@ -250,8 +269,8 @@ public class MqttUTF8StringImpl implements MqttUTF8String {
      * Calculates the byte count of this UTF-8 encoded String according to the MQTT 5 specification.
      *
      * @return the encoded length of this UTF-8 encoded String.
-     * @throws MqttBinaryDataExceededException if this UTF-8 encoded String can not be encoded due to byte count
-     *                                         restrictions.
+     * @throws MqttBinaryDataExceededException if this UTF-8 encoded String can not be encoded due
+     *     to byte count restrictions.
      */
     public int encodedLength() {
         final byte[] binary = toBinary();
@@ -284,5 +303,4 @@ public class MqttUTF8StringImpl implements MqttUTF8String {
     public int hashCode() {
         return toString().hashCode();
     }
-
 }

@@ -21,8 +21,8 @@ import org.mqttbee.annotations.NotNull;
 
 /**
  * Exception to indicate that a byte array can not be encoded as binary data.
- * <p>
- * This exception does not have a stack trace.
+ *
+ * <p>This exception does not have a stack trace.
  *
  * @author Silvio Giebl
  */
@@ -41,5 +41,4 @@ public class MqttBinaryDataExceededException extends RuntimeException {
     public synchronized Throwable fillInStackTrace() {
         return this;
     }
-
 }

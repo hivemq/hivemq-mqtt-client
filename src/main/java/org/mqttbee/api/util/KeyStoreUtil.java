@@ -17,11 +17,6 @@
 package org.mqttbee.api.util;
 
 import dagger.internal.Preconditions;
-import org.mqttbee.annotations.NotNull;
-
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLException;
-import javax.net.ssl.TrustManagerFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -30,17 +25,20 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLException;
+import javax.net.ssl.TrustManagerFactory;
+import org.mqttbee.annotations.NotNull;
 
-/**
- * @author Christoph Schäbel
- */
+/** @author Christoph Schäbel */
 public class KeyStoreUtil {
 
     private static final String KEYSTORE_TYPE = "JKS";
 
     @NotNull
     public static TrustManagerFactory trustManagerFromKeystore(
-            @NotNull final File trustStoreFile, @NotNull final String trustStorePassword) throws SSLException {
+            @NotNull final File trustStoreFile, @NotNull final String trustStorePassword)
+            throws SSLException {
 
         Preconditions.checkNotNull(trustStoreFile, "Truststore must not be null");
         try (final FileInputStream fileInputStream = new FileInputStream(trustStoreFile)) {
@@ -53,24 +51,30 @@ public class KeyStoreUtil {
             return tmFactory;
 
         } catch (final KeyStoreException | IOException e2) {
-            throw new SSLException("Not able to open or read TrustStore '" + trustStoreFile.getAbsolutePath(), e2);
+            throw new SSLException(
+                    "Not able to open or read TrustStore '" + trustStoreFile.getAbsolutePath(), e2);
         } catch (final NoSuchAlgorithmException | CertificateException e3) {
             throw new SSLException(
-                    "Not able to read certificate from TrustStore '" + trustStoreFile.getAbsolutePath(), e3);
+                    "Not able to read certificate from TrustStore '"
+                            + trustStoreFile.getAbsolutePath(),
+                    e3);
         }
     }
 
     @NotNull
     public static KeyManagerFactory keyManagerFromKeystore(
-            @NotNull final File keyStoreFile, @NotNull final String keyStorePassword,
-            @NotNull final String privateKeyPassword) throws SSLException {
+            @NotNull final File keyStoreFile,
+            @NotNull final String keyStorePassword,
+            @NotNull final String privateKeyPassword)
+            throws SSLException {
 
         Preconditions.checkNotNull(keyStoreFile, "Keystore must not be null");
         try (final FileInputStream fileInputStream = new FileInputStream(keyStoreFile)) {
             final KeyStore keyStore = KeyStore.getInstance(KEYSTORE_TYPE);
             keyStore.load(fileInputStream, keyStorePassword.toCharArray());
 
-            final KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+            final KeyManagerFactory kmf =
+                    KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
             kmf.init(keyStore, privateKeyPassword.toCharArray());
             return kmf;
 
@@ -79,11 +83,13 @@ public class KeyStoreUtil {
                     "Not able to recover key from KeyStore, please check your private-key-password and your keyStorePassword",
                     e1);
         } catch (final KeyStoreException | IOException e2) {
-            throw new SSLException("Not able to open or read KeyStore '" + keyStoreFile.getAbsolutePath(), e2);
+            throw new SSLException(
+                    "Not able to open or read KeyStore '" + keyStoreFile.getAbsolutePath(), e2);
 
         } catch (final NoSuchAlgorithmException | CertificateException e3) {
-            throw new SSLException("Not able to read certificate from KeyStore '" + keyStoreFile.getAbsolutePath(), e3);
+            throw new SSLException(
+                    "Not able to read certificate from KeyStore '" + keyStoreFile.getAbsolutePath(),
+                    e3);
         }
     }
-
 }

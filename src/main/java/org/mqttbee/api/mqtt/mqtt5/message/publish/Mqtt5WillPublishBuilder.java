@@ -17,7 +17,12 @@
 
 package org.mqttbee.api.mqtt.mqtt5.message.publish;
 
+import static org.mqttbee.mqtt.message.publish.MqttWillPublish.DEFAULT_DELAY_INTERVAL;
+
 import com.google.common.base.Preconditions;
+import java.nio.ByteBuffer;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
@@ -31,15 +36,7 @@ import org.mqttbee.mqtt.util.MqttBuilderUtil;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 import org.mqttbee.util.UnsignedDataTypes;
 
-import java.nio.ByteBuffer;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
-
-import static org.mqttbee.mqtt.message.publish.MqttWillPublish.DEFAULT_DELAY_INTERVAL;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class Mqtt5WillPublishBuilder<P> extends Mqtt5PublishBuilder<P> {
 
     @NotNull
@@ -47,12 +44,15 @@ public class Mqtt5WillPublishBuilder<P> extends Mqtt5PublishBuilder<P> {
             @Nullable final Function<? super Mqtt5WillPublish, P> parentConsumer) {
 
         return new Mqtt5WillPublishBuilder<>(
-                (parentConsumer == null) ? null : publish -> parentConsumer.apply((Mqtt5WillPublish) publish));
+                (parentConsumer == null)
+                        ? null
+                        : publish -> parentConsumer.apply((Mqtt5WillPublish) publish));
     }
 
     private long delayInterval = DEFAULT_DELAY_INTERVAL;
 
-    public Mqtt5WillPublishBuilder(@Nullable final Function<? super Mqtt5Publish, P> parentConsumer) {
+    public Mqtt5WillPublishBuilder(
+            @Nullable final Function<? super Mqtt5Publish, P> parentConsumer) {
         super(parentConsumer);
     }
 
@@ -60,7 +60,8 @@ public class Mqtt5WillPublishBuilder<P> extends Mqtt5PublishBuilder<P> {
         super(publish);
         if (publish instanceof Mqtt5WillPublish) {
             delayInterval =
-                    MustNotBeImplementedUtil.checkNotImplemented(publish, MqttWillPublish.class).getDelayInterval();
+                    MustNotBeImplementedUtil.checkNotImplemented(publish, MqttWillPublish.class)
+                            .getDelayInterval();
         }
     }
 
@@ -181,13 +182,15 @@ public class Mqtt5WillPublishBuilder<P> extends Mqtt5PublishBuilder<P> {
     @NotNull
     @Override
     @Deprecated
-    public Mqtt5WillPublishBuilder<P> topicAliasUsage(@NotNull final TopicAliasUsage topicAliasUsage) {
+    public Mqtt5WillPublishBuilder<P> topicAliasUsage(
+            @NotNull final TopicAliasUsage topicAliasUsage) {
         throw new UnsupportedOperationException();
     }
 
     @NotNull
     @Override
-    public Mqtt5WillPublishBuilder<P> userProperties(@NotNull final Mqtt5UserProperties userProperties) {
+    public Mqtt5WillPublishBuilder<P> userProperties(
+            @NotNull final Mqtt5UserProperties userProperties) {
         super.userProperties(userProperties);
         return this;
     }
@@ -210,8 +213,17 @@ public class Mqtt5WillPublishBuilder<P> extends Mqtt5PublishBuilder<P> {
     public Mqtt5WillPublish build() {
         Preconditions.checkNotNull(topic);
         Preconditions.checkNotNull(qos);
-        return new MqttWillPublish(topic, payload, qos, retain, messageExpiryIntervalSeconds, payloadFormatIndicator,
-                contentType, responseTopic, correlationData, userProperties, delayInterval);
+        return new MqttWillPublish(
+                topic,
+                payload,
+                qos,
+                retain,
+                messageExpiryIntervalSeconds,
+                payloadFormatIndicator,
+                contentType,
+                responseTopic,
+                correlationData,
+                userProperties,
+                delayInterval);
     }
-
 }

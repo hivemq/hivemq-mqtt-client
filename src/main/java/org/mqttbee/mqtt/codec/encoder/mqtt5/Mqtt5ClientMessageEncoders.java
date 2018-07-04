@@ -17,14 +17,13 @@
 
 package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoder;
 import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoders;
 import org.mqttbee.mqtt.codec.encoder.MqttPingReqEncoder;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
 /**
  * Collection of encoders for MQTT 5 messages a client can send.
@@ -38,11 +37,16 @@ public class Mqtt5ClientMessageEncoders implements MqttMessageEncoders {
 
     @Inject
     Mqtt5ClientMessageEncoders(
-            final Mqtt5ConnectEncoder connectEncoder, final Mqtt5PublishEncoder publishEncoder,
-            final Mqtt5PubAckEncoder pubAckEncoder, final Mqtt5PubRecEncoder pubRecEncoder,
-            final Mqtt5PubRelEncoder pubRelEncoder, final Mqtt5PubCompEncoder pubCompEncoder,
-            final Mqtt5SubscribeEncoder subscribeEncoder, final Mqtt5UnsubscribeEncoder unsubscribeEncoder,
-            final MqttPingReqEncoder pingReqEncoder, final Mqtt5DisconnectEncoder disconnectEncoder,
+            final Mqtt5ConnectEncoder connectEncoder,
+            final Mqtt5PublishEncoder publishEncoder,
+            final Mqtt5PubAckEncoder pubAckEncoder,
+            final Mqtt5PubRecEncoder pubRecEncoder,
+            final Mqtt5PubRelEncoder pubRelEncoder,
+            final Mqtt5PubCompEncoder pubCompEncoder,
+            final Mqtt5SubscribeEncoder subscribeEncoder,
+            final Mqtt5UnsubscribeEncoder unsubscribeEncoder,
+            final MqttPingReqEncoder pingReqEncoder,
+            final Mqtt5DisconnectEncoder disconnectEncoder,
             final Mqtt5AuthEncoder authEncoder) {
 
         encoders = new MqttMessageEncoder[Mqtt5MessageType.values().length];
@@ -67,5 +71,4 @@ public class Mqtt5ClientMessageEncoders implements MqttMessageEncoders {
         }
         return encoders[code];
     }
-
 }

@@ -18,6 +18,8 @@
 package org.mqttbee.mqtt.handler.publish;
 
 import com.google.common.collect.ImmutableList;
+import javax.annotation.concurrent.NotThreadSafe;
+import javax.inject.Inject;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.MqttGlobalPublishFlowType;
@@ -35,20 +37,13 @@ import org.mqttbee.mqtt.message.unsubscribe.unsuback.MqttUnsubAck;
 import org.mqttbee.mqtt.message.unsubscribe.unsuback.mqtt3.Mqtt3UnsubAckView;
 import org.mqttbee.util.collections.ScNodeList;
 
-import javax.annotation.concurrent.NotThreadSafe;
-import javax.inject.Inject;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @ChannelScope
 @NotThreadSafe
 public class MqttIncomingPublishFlows {
 
-    @NotNull
-    private final MqttSubscriptionFlows subscriptionFlows;
-    @NotNull
-    private final ScNodeList<MqttGlobalIncomingPublishFlow>[] globalFlows;
+    @NotNull private final MqttSubscriptionFlows subscriptionFlows;
+    @NotNull private final ScNodeList<MqttGlobalIncomingPublishFlow>[] globalFlows;
 
     @Inject
     @SuppressWarnings("unchecked")
@@ -58,10 +53,12 @@ public class MqttIncomingPublishFlows {
     }
 
     public void subscribe(
-            @NotNull final MqttStatefulSubscribe subscribe, @NotNull final MqttSubAck subAck,
+            @NotNull final MqttStatefulSubscribe subscribe,
+            @NotNull final MqttSubAck subAck,
             @Nullable final MqttSubscriptionFlow flow) {
 
-        final ImmutableList<MqttSubscription> subscriptions = subscribe.getStatelessMessage().getSubscriptions();
+        final ImmutableList<MqttSubscription> subscriptions =
+                subscribe.getStatelessMessage().getSubscriptions();
         final ImmutableList<Mqtt5SubAckReasonCode> reasonCodes = subAck.getReasonCodes();
         for (int i = 0; i < subscriptions.size(); i++) {
             if (!reasonCodes.get(i).isError()) {
@@ -70,12 +67,17 @@ public class MqttIncomingPublishFlows {
         }
     }
 
-    void subscribe(@NotNull final MqttTopicFilterImpl topicFilter, @Nullable final MqttSubscriptionFlow flow) {
+    void subscribe(
+            @NotNull final MqttTopicFilterImpl topicFilter,
+            @Nullable final MqttSubscriptionFlow flow) {
         subscriptionFlows.subscribe(topicFilter, flow);
     }
 
-    public void unsubscribe(@NotNull final MqttStatefulUnsubscribe unsubscribe, @NotNull final MqttUnsubAck unsubAck) {
-        final ImmutableList<MqttTopicFilterImpl> topicFilters = unsubscribe.getStatelessMessage().getTopicFilters();
+    public void unsubscribe(
+            @NotNull final MqttStatefulUnsubscribe unsubscribe,
+            @NotNull final MqttUnsubAck unsubAck) {
+        final ImmutableList<MqttTopicFilterImpl> topicFilters =
+                unsubscribe.getStatelessMessage().getTopicFilters();
         final ImmutableList<Mqtt5UnsubAckReasonCode> reasonCodes = unsubAck.getReasonCodes();
         final boolean areAllSuccess = reasonCodes == Mqtt3UnsubAckView.REASON_CODES_ALL_SUCCESS;
         for (int i = 0; i < topicFilters.size(); i++) {
@@ -94,7 +96,8 @@ public class MqttIncomingPublishFlows {
     }
 
     @NotNull
-    public ScNodeList<MqttIncomingPublishFlow> findMatching(@NotNull final MqttStatefulPublish publish) {
+    public ScNodeList<MqttIncomingPublishFlow> findMatching(
+            @NotNull final MqttStatefulPublish publish) {
         final ScNodeList<MqttIncomingPublishFlow> matchingFlows = new ScNodeList<>();
         findMatching(publish, matchingFlows);
         return matchingFlows;
@@ -106,11 +109,16 @@ public class MqttIncomingPublishFlows {
 
         final MqttTopicImpl topic = publish.getStatelessMessage().getTopic();
         if (subscriptionFlows.findMatching(topic, matchingFlows) || !matchingFlows.isEmpty()) {
-            addAndReference(matchingFlows, globalFlows[MqttGlobalPublishFlowType.ALL_SUBSCRIPTIONS.ordinal()]);
+            addAndReference(
+                    matchingFlows,
+                    globalFlows[MqttGlobalPublishFlowType.ALL_SUBSCRIPTIONS.ordinal()]);
         }
-        addAndReference(matchingFlows, globalFlows[MqttGlobalPublishFlowType.ALL_PUBLISHES.ordinal()]);
+        addAndReference(
+                matchingFlows, globalFlows[MqttGlobalPublishFlowType.ALL_PUBLISHES.ordinal()]);
         if (matchingFlows.isEmpty()) {
-            addAndReference(matchingFlows, globalFlows[MqttGlobalPublishFlowType.REMAINING_PUBLISHES.ordinal()]);
+            addAndReference(
+                    matchingFlows,
+                    globalFlows[MqttGlobalPublishFlowType.REMAINING_PUBLISHES.ordinal()]);
         }
     }
 
@@ -134,7 +142,8 @@ public class MqttIncomingPublishFlows {
     }
 
     static void addAndReference(
-            @NotNull final ScNodeList<MqttIncomingPublishFlow> target, @NotNull final MqttIncomingPublishFlow flow) {
+            @NotNull final ScNodeList<MqttIncomingPublishFlow> target,
+            @NotNull final MqttIncomingPublishFlow flow) {
 
         flow.reference();
         target.add(flow);
@@ -150,5 +159,4 @@ public class MqttIncomingPublishFlows {
             }
         }
     }
-
 }

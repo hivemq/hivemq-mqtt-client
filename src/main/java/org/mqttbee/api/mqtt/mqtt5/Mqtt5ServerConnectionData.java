@@ -21,9 +21,7 @@ import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @DoNotImplement
 public interface Mqtt5ServerConnectionData {
 
@@ -43,5 +41,4 @@ public interface Mqtt5ServerConnectionData {
     boolean isSubscriptionIdentifierAvailable();
 
     boolean isSharedSubscriptionAvailable();
-
 }

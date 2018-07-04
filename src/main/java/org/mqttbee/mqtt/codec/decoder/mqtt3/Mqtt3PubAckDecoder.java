@@ -17,7 +17,12 @@
 
 package org.mqttbee.mqtt.codec.decoder.mqtt3;
 
+import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.checkFixedHeaderFlags;
+import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.checkRemainingLength;
+
 import io.netty.buffer.ByteBuf;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt.MqttClientConnectionData;
@@ -25,12 +30,6 @@ import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.message.publish.puback.MqttPubAck;
 import org.mqttbee.mqtt.message.publish.puback.mqtt3.Mqtt3PubAckView;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.checkFixedHeaderFlags;
-import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.checkRemainingLength;
 
 /**
  * @author Daniel Krüger
@@ -43,13 +42,14 @@ public class Mqtt3PubAckDecoder implements MqttMessageDecoder {
     private static final int REMAINING_LENGTH = 2;
 
     @Inject
-    Mqtt3PubAckDecoder() {
-    }
+    Mqtt3PubAckDecoder() {}
 
     @Nullable
     @Override
     public MqttPubAck decode(
-            final int flags, @NotNull final ByteBuf in, @NotNull final MqttClientConnectionData clientConnectionData)
+            final int flags,
+            @NotNull final ByteBuf in,
+            @NotNull final MqttClientConnectionData clientConnectionData)
             throws MqttDecoderException {
 
         checkFixedHeaderFlags(FLAGS, flags);
@@ -59,5 +59,4 @@ public class Mqtt3PubAckDecoder implements MqttMessageDecoder {
 
         return Mqtt3PubAckView.delegate(packetIdentifier);
     }
-
 }

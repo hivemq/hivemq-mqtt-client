@@ -17,7 +17,13 @@
 
 package org.mqttbee.api.mqtt.mqtt5.message.publish;
 
+import static org.mqttbee.mqtt.message.publish.MqttPublish.DEFAULT_TOPIC_ALIAS_USAGE;
+import static org.mqttbee.mqtt.message.publish.MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY;
+
 import com.google.common.base.Preconditions;
+import java.nio.ByteBuffer;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
@@ -36,16 +42,7 @@ import org.mqttbee.util.FluentBuilder;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 import org.mqttbee.util.UnsignedDataTypes;
 
-import java.nio.ByteBuffer;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
-
-import static org.mqttbee.mqtt.message.publish.MqttPublish.DEFAULT_TOPIC_ALIAS_USAGE;
-import static org.mqttbee.mqtt.message.publish.MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class Mqtt5PublishBuilder<P> extends FluentBuilder<Mqtt5Publish, P> {
 
     MqttTopicImpl topic;
@@ -66,7 +63,8 @@ public class Mqtt5PublishBuilder<P> extends FluentBuilder<Mqtt5Publish, P> {
 
     Mqtt5PublishBuilder(@NotNull final Mqtt5Publish publish) {
         super(null);
-        final MqttPublish publishImpl = MustNotBeImplementedUtil.checkNotImplemented(publish, MqttPublish.class);
+        final MqttPublish publishImpl =
+                MustNotBeImplementedUtil.checkNotImplemented(publish, MqttPublish.class);
         topic = publishImpl.getTopic();
         payload = publishImpl.getRawPayload();
         qos = publishImpl.getQos();
@@ -188,7 +186,8 @@ public class Mqtt5PublishBuilder<P> extends FluentBuilder<Mqtt5Publish, P> {
     }
 
     @NotNull
-    public Mqtt5PublishBuilder<P> userProperties(@NotNull final Mqtt5UserProperties userProperties) {
+    public Mqtt5PublishBuilder<P> userProperties(
+            @NotNull final Mqtt5UserProperties userProperties) {
         this.userProperties = MqttBuilderUtil.userProperties(userProperties);
         return this;
     }
@@ -203,8 +202,17 @@ public class Mqtt5PublishBuilder<P> extends FluentBuilder<Mqtt5Publish, P> {
     public Mqtt5Publish build() {
         Preconditions.checkNotNull(topic);
         Preconditions.checkNotNull(qos);
-        return new MqttPublish(topic, payload, qos, retain, messageExpiryIntervalSeconds, payloadFormatIndicator,
-                contentType, responseTopic, correlationData, topicAliasUsage, userProperties);
+        return new MqttPublish(
+                topic,
+                payload,
+                qos,
+                retain,
+                messageExpiryIntervalSeconds,
+                payloadFormatIndicator,
+                contentType,
+                responseTopic,
+                correlationData,
+                topicAliasUsage,
+                userProperties);
     }
-
 }

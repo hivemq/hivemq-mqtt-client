@@ -32,9 +32,7 @@ import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt5.Mqtt5ClientImpl;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class Mqtt5ClientBuilder extends MqttClientBuilder {
 
     private boolean followRedirects = false;
@@ -42,8 +40,11 @@ public class Mqtt5ClientBuilder extends MqttClientBuilder {
     private MqttAdvancedClientData advancedClientData;
 
     public Mqtt5ClientBuilder(
-            @NotNull final MqttClientIdentifierImpl identifier, @NotNull final String serverHost, final int serverPort,
-            @Nullable final MqttClientSslConfig sslConfig, @Nullable final MqttWebsocketConfig websocketConfig,
+            @NotNull final MqttClientIdentifierImpl identifier,
+            @NotNull final String serverHost,
+            final int serverPort,
+            @Nullable final MqttClientSslConfig sslConfig,
+            @Nullable final MqttWebsocketConfig websocketConfig,
             @NotNull final MqttClientExecutorConfigImpl executorConfig) {
 
         Preconditions.checkNotNull(identifier);
@@ -128,7 +129,8 @@ public class Mqtt5ClientBuilder extends MqttClientBuilder {
 
     @NotNull
     @Override
-    public Mqtt5ClientBuilder executorConfig(@NotNull final MqttClientExecutorConfig executorConfig) {
+    public Mqtt5ClientBuilder executorConfig(
+            @NotNull final MqttClientExecutorConfig executorConfig) {
         super.executorConfig(executorConfig);
         return this;
     }
@@ -165,9 +167,11 @@ public class Mqtt5ClientBuilder extends MqttClientBuilder {
     }
 
     @NotNull
-    public Mqtt5ClientBuilder advancedClientData(@Nullable final Mqtt5AdvancedClientData advancedClientData) {
+    public Mqtt5ClientBuilder advancedClientData(
+            @Nullable final Mqtt5AdvancedClientData advancedClientData) {
         this.advancedClientData =
-                MustNotBeImplementedUtil.checkNullOrNotImplemented(advancedClientData, MqttAdvancedClientData.class);
+                MustNotBeImplementedUtil.checkNullOrNotImplemented(
+                        advancedClientData, MqttAdvancedClientData.class);
         return this;
     }
 
@@ -178,8 +182,16 @@ public class Mqtt5ClientBuilder extends MqttClientBuilder {
 
     @NotNull
     private MqttClientData buildClientData() {
-        return new MqttClientData(MqttVersion.MQTT_5_0, identifier, serverHost, serverPort, sslConfig, websocketConfig,
-                followRedirects, allowServerReAuth, executorConfig, advancedClientData);
+        return new MqttClientData(
+                MqttVersion.MQTT_5_0,
+                identifier,
+                serverHost,
+                serverPort,
+                sslConfig,
+                websocketConfig,
+                followRedirects,
+                allowServerReAuth,
+                executorConfig,
+                advancedClientData);
     }
-
 }

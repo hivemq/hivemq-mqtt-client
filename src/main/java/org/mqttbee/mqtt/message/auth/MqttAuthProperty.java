@@ -30,5 +30,4 @@ public interface MqttAuthProperty {
     int AUTHENTICATION_DATA = MqttProperty.AUTHENTICATION_DATA;
     int REASON_STRING = MqttProperty.REASON_STRING;
     int USER_PROPERTY = MqttProperty.USER_PROPERTY;
-
 }

@@ -15,25 +15,22 @@
  */
 package org.mqttbee.mqtt.handler.ssl;
 
+import static org.junit.Assert.*;
+
 import com.google.common.collect.ImmutableList;
 import io.netty.channel.embedded.EmbeddedChannel;
-import org.junit.Before;
-import org.junit.Test;
-import org.mqttbee.api.mqtt.MqttClientSslConfig;
-
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.TrustManagerFactory;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import org.junit.Before;
+import org.junit.Test;
+import org.mqttbee.api.mqtt.MqttClientSslConfig;
 
-import static org.junit.Assert.*;
-
-/**
- * @author Christoph Schäbel
- */
+/** @author Christoph Schäbel */
 public class SslUtilTest {
 
     private EmbeddedChannel embeddedChannel;
@@ -133,7 +130,6 @@ public class SslUtilTest {
         assertEquals(protocols.get(1), enabledProtocols[1]);
     }
 
-
     private ImmutableList<String> getFirstSupportedCipherSuite() throws Exception {
 
         final List<String> supportedCipherSuites = getEnabledCipherSuites();
@@ -178,8 +174,11 @@ public class SslUtilTest {
         private final int handshakeTimeout;
 
         private TestSslConfig(
-                final KeyManagerFactory keyManagerFactory, final TrustManagerFactory trustManagerFactory,
-                final ImmutableList<String> cipherSuites, final ImmutableList<String> protocols, final int handshakeTimeout) {
+                final KeyManagerFactory keyManagerFactory,
+                final TrustManagerFactory trustManagerFactory,
+                final ImmutableList<String> cipherSuites,
+                final ImmutableList<String> protocols,
+                final int handshakeTimeout) {
             this.keyManagerFactory = keyManagerFactory;
             this.trustManagerFactory = trustManagerFactory;
             this.cipherSuites = cipherSuites;
@@ -212,5 +211,4 @@ public class SslUtilTest {
             return handshakeTimeout;
         }
     }
-
 }

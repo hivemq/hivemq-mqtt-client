@@ -16,21 +16,19 @@
 
 package org.mqttbee.api.mqtt;
 
+import java.util.function.Function;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt.MqttWebsocketConfigImpl;
 import org.mqttbee.util.FluentBuilder;
 
-import java.util.function.Function;
-
-/**
- * @author Christian Hoff
- */
+/** @author Christian Hoff */
 public class MqttWebsocketConfigBuilder<P> extends FluentBuilder<MqttWebsocketConfig, P> {
 
     private String serverPath = "";
 
-    public MqttWebsocketConfigBuilder(@Nullable final Function<? super MqttWebsocketConfig, P> parentConsumer) {
+    public MqttWebsocketConfigBuilder(
+            @Nullable final Function<? super MqttWebsocketConfig, P> parentConsumer) {
         super(parentConsumer);
     }
 
@@ -46,5 +44,4 @@ public class MqttWebsocketConfigBuilder<P> extends FluentBuilder<MqttWebsocketCo
     public MqttWebsocketConfig build() {
         return new MqttWebsocketConfigImpl(serverPath);
     }
-
 }

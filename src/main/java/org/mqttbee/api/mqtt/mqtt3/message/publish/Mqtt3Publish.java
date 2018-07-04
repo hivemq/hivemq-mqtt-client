@@ -17,6 +17,9 @@
 
 package org.mqttbee.api.mqtt.mqtt3.message.publish;
 
+import java.nio.ByteBuffer;
+import java.util.Optional;
+import java.util.function.Function;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
@@ -25,13 +28,7 @@ import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3Message;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3SubscribeResult;
 
-import java.nio.ByteBuffer;
-import java.util.Optional;
-import java.util.function.Function;
-
-/**
- * MQTT 3 PUBLISH packet.
- */
+/** MQTT 3 PUBLISH packet. */
 @DoNotImplement
 public interface Mqtt3Publish extends Mqtt3Message, Mqtt3SubscribeResult {
 
@@ -45,33 +42,26 @@ public interface Mqtt3Publish extends Mqtt3Message, Mqtt3SubscribeResult {
         return new Mqtt3PublishBuilder<>(publish);
     }
 
-    /**
-     * @return the topic of this PUBLISH packet.
-     */
+    /** @return the topic of this PUBLISH packet. */
     @NotNull
     MqttTopic getTopic();
 
-    /**
-     * @return the optional payload of this PUBLISH packet.
-     */
+    /** @return the optional payload of this PUBLISH packet. */
     @NotNull
     Optional<ByteBuffer> getPayload();
 
     /**
-     * @return the payload of this PUBLISH packet as byte array. Empty byte array if the payload is null.
+     * @return the payload of this PUBLISH packet as byte array. Empty byte array if the payload is
+     *     null.
      */
     @NotNull
     byte[] getPayloadAsBytes();
 
-    /**
-     * @return the QoS of this PUBLISH packet.
-     */
+    /** @return the QoS of this PUBLISH packet. */
     @NotNull
     MqttQoS getQos();
 
-    /**
-     * @return whether this PUBLISH packet is a retained message.
-     */
+    /** @return whether this PUBLISH packet is a retained message. */
     boolean isRetain();
 
     @NotNull
@@ -79,5 +69,4 @@ public interface Mqtt3Publish extends Mqtt3Message, Mqtt3SubscribeResult {
     default Mqtt3MessageType getType() {
         return Mqtt3MessageType.PUBLISH;
     }
-
 }

@@ -17,13 +17,11 @@
 
 package org.mqttbee.mqtt.message;
 
-import org.junit.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- * @author Silvio Giebl
- */
+import org.junit.Test;
+
+/** @author Silvio Giebl */
 public class MqttPropertyTest {
 
     @Test
@@ -56,5 +54,4 @@ public class MqttPropertyTest {
         assertEquals(0x29, MqttProperty.SUBSCRIPTION_IDENTIFIER_AVAILABLE);
         assertEquals(0x2A, MqttProperty.SHARED_SUBSCRIPTION_AVAILABLE);
     }
-
 }

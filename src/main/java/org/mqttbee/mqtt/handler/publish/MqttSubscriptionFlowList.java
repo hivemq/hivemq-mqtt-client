@@ -17,6 +17,11 @@
 
 package org.mqttbee.mqtt.handler.publish;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.function.Consumer;
+import javax.annotation.concurrent.NotThreadSafe;
+import javax.inject.Inject;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
@@ -24,15 +29,7 @@ import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.util.collections.ScNodeList;
 
-import javax.annotation.concurrent.NotThreadSafe;
-import javax.inject.Inject;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.function.Consumer;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @NotThreadSafe
 public class MqttSubscriptionFlowList implements MqttSubscriptionFlows {
 
@@ -46,7 +43,9 @@ public class MqttSubscriptionFlowList implements MqttSubscriptionFlows {
     }
 
     @Override
-    public void subscribe(@NotNull final MqttTopicFilterImpl topicFilter, @Nullable final MqttSubscriptionFlow flow) {
+    public void subscribe(
+            @NotNull final MqttTopicFilterImpl topicFilter,
+            @Nullable final MqttSubscriptionFlow flow) {
         if (flow != null) {
             final ScNodeList<MqttTopicFilterImpl> topicFilters = flow.getTopicFilters();
             if (topicFilters.isEmpty()) {
@@ -64,7 +63,8 @@ public class MqttSubscriptionFlowList implements MqttSubscriptionFlows {
 
         for (final MqttSubscriptionFlow flow : flows) {
             final ScNodeList<MqttTopicFilterImpl> flowTopicFilters = flow.getTopicFilters();
-            for (final Iterator<MqttTopicFilterImpl> iterator = flowTopicFilters.iterator(); iterator.hasNext(); ) {
+            for (final Iterator<MqttTopicFilterImpl> iterator = flowTopicFilters.iterator();
+                    iterator.hasNext(); ) {
                 final MqttTopicFilterImpl flowTopicFilter = iterator.next();
                 if (topicFilter.equals(flowTopicFilter)) {
                     iterator.remove();
@@ -82,7 +82,8 @@ public class MqttSubscriptionFlowList implements MqttSubscriptionFlows {
 
     @Override
     public void cancel(@NotNull final MqttSubscriptionFlow flow) {
-        for (final Iterator<MqttSubscriptionFlow> iterator = flows.iterator(); iterator.hasNext(); ) {
+        for (final Iterator<MqttSubscriptionFlow> iterator = flows.iterator();
+                iterator.hasNext(); ) {
             final MqttSubscriptionFlow listFlow = iterator.next();
             if (listFlow == flow) {
                 iterator.remove();
@@ -93,7 +94,8 @@ public class MqttSubscriptionFlowList implements MqttSubscriptionFlows {
 
     @Override
     public boolean findMatching(
-            @NotNull final MqttTopicImpl topic, @NotNull final ScNodeList<MqttIncomingPublishFlow> matchingFlows) {
+            @NotNull final MqttTopicImpl topic,
+            @NotNull final ScNodeList<MqttIncomingPublishFlow> matchingFlows) {
 
         for (final MqttSubscriptionFlow flow : flows) {
             for (final MqttTopicFilterImpl topicFilter : flow.getTopicFilters()) {
@@ -113,5 +115,4 @@ public class MqttSubscriptionFlowList implements MqttSubscriptionFlows {
         }
         return false;
     }
-
 }

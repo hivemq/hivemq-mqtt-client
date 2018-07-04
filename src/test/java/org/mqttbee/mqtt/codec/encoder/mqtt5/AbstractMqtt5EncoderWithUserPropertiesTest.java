@@ -17,7 +17,10 @@
 
 package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.collect.ImmutableList;
+import java.util.Arrays;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.codec.encoder.AbstractMqtt5EncoderTest;
 import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoders;
@@ -25,27 +28,23 @@ import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 
-import java.util.Arrays;
-
-import static java.util.Objects.requireNonNull;
-
-/**
- * @author David Katz
- */
+/** @author David Katz */
 abstract class AbstractMqtt5EncoderWithUserPropertiesTest extends AbstractMqtt5EncoderTest {
-    static final private int VARIABLE_BYTE_INTEGER_VALUE_BITS = 7;
-    static final int VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE = (1 << (VARIABLE_BYTE_INTEGER_VALUE_BITS * 4)) - 1;
+    private static final int VARIABLE_BYTE_INTEGER_VALUE_BITS = 7;
+    static final int VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE =
+            (1 << (VARIABLE_BYTE_INTEGER_VALUE_BITS * 4)) - 1;
 
     private ImmutableList.Builder<MqttUserPropertyImpl> userPropertiesBuilder;
     private final MqttUTF8StringImpl user = requireNonNull(MqttUTF8StringImpl.from("user"));
     private final MqttUTF8StringImpl property = requireNonNull(MqttUTF8StringImpl.from("property"));
-    final int userPropertyBytes = 1 // identifier
-            + 2 // key length
-            + 4 // bytes to encode "user"
-            + 2 // value length
-            + 8; // bytes to encode "property"
+    final int userPropertyBytes =
+            1 // identifier
+                    + 2 // key length
+                    + 4 // bytes to encode "user"
+                    + 2 // value length
+                    + 8; // bytes to encode "property"
 
-    final private MqttUserPropertyImpl userProperty = new MqttUserPropertyImpl(user, property);
+    private final MqttUserPropertyImpl userProperty = new MqttUserPropertyImpl(user, property);
 
     AbstractMqtt5EncoderWithUserPropertiesTest(
             @NotNull final MqttMessageEncoders messageEncoders, final boolean connected) {
@@ -74,11 +73,9 @@ abstract class AbstractMqtt5EncoderWithUserPropertiesTest extends AbstractMqtt5E
 
         int remainingPropertyBytes;
 
-
         MaximumPacketBuilder build() {
             // MQTT v5.0 Spec §3.4.1
             final int maxPropertyLength = getMaxPropertyLength();
-
 
             remainingPropertyBytes = maxPropertyLength % userPropertyBytes;
 

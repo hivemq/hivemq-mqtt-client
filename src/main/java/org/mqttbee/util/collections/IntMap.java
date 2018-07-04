@@ -17,14 +17,11 @@
 
 package org.mqttbee.util.collections;
 
+import javax.annotation.concurrent.NotThreadSafe;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 
-import javax.annotation.concurrent.NotThreadSafe;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @NotThreadSafe
 public class IntMap<E> {
 
@@ -107,7 +104,6 @@ public class IntMap<E> {
         return (key & chunkMask) >> chunkShift;
     }
 
-
     private static class Chunk {
 
         private final Object[] values;
@@ -147,7 +143,5 @@ public class IntMap<E> {
         private int index(final int key, final int hashMask) {
             return key & hashMask;
         }
-
     }
-
 }

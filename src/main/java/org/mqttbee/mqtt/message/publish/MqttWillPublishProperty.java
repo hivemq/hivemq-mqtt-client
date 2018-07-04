@@ -20,7 +20,8 @@ package org.mqttbee.mqtt.message.publish;
 import org.mqttbee.mqtt.message.MqttProperty;
 
 /**
- * All possible MQTT Will Publish properties and its byte code according to the MQTT 5 specification.
+ * All possible MQTT Will Publish properties and its byte code according to the MQTT 5
+ * specification.
  *
  * @author Silvio Giebl
  */
@@ -33,5 +34,4 @@ public interface MqttWillPublishProperty {
     int RESPONSE_TOPIC = MqttProperty.RESPONSE_TOPIC;
     int WILL_DELAY_INTERVAL = MqttProperty.WILL_DELAY_INTERVAL;
     int USER_PROPERTY = MqttProperty.USER_PROPERTY;
-
 }

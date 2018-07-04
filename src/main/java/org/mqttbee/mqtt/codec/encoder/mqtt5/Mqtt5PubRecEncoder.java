@@ -17,19 +17,16 @@
 
 package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
+import static org.mqttbee.mqtt.message.publish.pubrec.MqttPubRec.DEFAULT_REASON_CODE;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrec.Mqtt5PubRecReasonCode;
 import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageWithUserPropertiesEncoder.Mqtt5MessageWithIdAndOmissibleReasonCodeEncoder;
 import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRec;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-import static org.mqttbee.mqtt.message.publish.pubrec.MqttPubRec.DEFAULT_REASON_CODE;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @Singleton
 public class Mqtt5PubRecEncoder
         extends Mqtt5MessageWithIdAndOmissibleReasonCodeEncoder<MqttPubRec, Mqtt5PubRecReasonCode> {
@@ -37,8 +34,7 @@ public class Mqtt5PubRecEncoder
     private static final int FIXED_HEADER = Mqtt5MessageType.PUBREC.getCode() << 4;
 
     @Inject
-    Mqtt5PubRecEncoder() {
-    }
+    Mqtt5PubRecEncoder() {}
 
     @Override
     int getFixedHeader() {
@@ -49,5 +45,4 @@ public class Mqtt5PubRecEncoder
     Mqtt5PubRecReasonCode getDefaultReasonCode() {
         return DEFAULT_REASON_CODE;
     }
-
 }

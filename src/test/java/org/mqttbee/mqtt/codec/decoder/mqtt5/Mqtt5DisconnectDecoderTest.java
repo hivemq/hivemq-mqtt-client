@@ -17,6 +17,8 @@
 
 package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.Test;
@@ -29,51 +31,200 @@ import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
 import org.mqttbee.mqtt.netty.ChannelAttributes;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
 
     Mqtt5DisconnectDecoderTest() {
-        super(code -> {
-            if (code == Mqtt5MessageType.DISCONNECT.getCode()) {
-                return new Mqtt5DisconnectDecoder();
-            }
-            return null;
-        });
+        super(
+                code -> {
+                    if (code == Mqtt5MessageType.DISCONNECT.getCode()) {
+                        return new Mqtt5DisconnectDecoder();
+                    }
+                    return null;
+                });
     }
 
     @Test
     void decode_big_packet() {
         final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                (byte) 0b1110_0000,
-                //   remaining length (165)
-                (byte) (128 + 37), 1,
-                // variable header
-                //   reason code (normal disconnection)
-                0x00,
-                //   properties (162)
-                (byte) (128 + 34), 1,
-                //     session expiry interval
-                0x11, 0, 0, 0, 10,
-                //     reason string
-                0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', 's',
-                //     user properties
-                0x26, 0, 5, 't', 'e', 's', 't', '0', 0, 5, 'v', 'a', 'l', 'u', 'e', //
-                0x26, 0, 5, 't', 'e', 's', 't', '1', 0, 5, 'v', 'a', 'l', 'u', 'e', //
-                0x26, 0, 5, 't', 'e', 's', 't', '2', 0, 5, 'v', 'a', 'l', 'u', 'e', //
-                0x26, 0, 5, 't', 'e', 's', 't', '3', 0, 5, 'v', 'a', 'l', 'u', 'e', //
-                0x26, 0, 5, 't', 'e', 's', 't', '4', 0, 5, 'v', 'a', 'l', 'u', 'e', //
-                0x26, 0, 5, 't', 'e', 's', 't', '5', 0, 5, 'v', 'a', 'l', 'u', 'e', //
-                0x26, 0, 5, 't', 'e', 's', 't', '6', 0, 5, 'v', 'a', 'l', 'u', 'e', //
-                0x26, 0, 5, 't', 'e', 's', 't', '7', 0, 5, 'v', 'a', 'l', 'u', 'e', //
-                0x26, 0, 5, 't', 'e', 's', 't', '8', 0, 5, 'v', 'a', 'l', 'u', 'e',
-                //     server reference
-                0x1C, 0, 9, 'r', 'e', 'f', 'e', 'r', 'e', 'n', 'c', 'e'
+            // fixed header
+            //   type, flags
+            (byte) 0b1110_0000,
+            //   remaining length (165)
+            (byte) (128 + 37),
+            1,
+            // variable header
+            //   reason code (normal disconnection)
+            0x00,
+            //   properties (162)
+            (byte) (128 + 34),
+            1,
+            //     session expiry interval
+            0x11,
+            0,
+            0,
+            0,
+            10,
+            //     reason string
+            0x1F,
+            0,
+            7,
+            's',
+            'u',
+            'c',
+            'c',
+            'e',
+            's',
+            's',
+            //     user properties
+            0x26,
+            0,
+            5,
+            't',
+            'e',
+            's',
+            't',
+            '0',
+            0,
+            5,
+            'v',
+            'a',
+            'l',
+            'u',
+            'e', //
+            0x26,
+            0,
+            5,
+            't',
+            'e',
+            's',
+            't',
+            '1',
+            0,
+            5,
+            'v',
+            'a',
+            'l',
+            'u',
+            'e', //
+            0x26,
+            0,
+            5,
+            't',
+            'e',
+            's',
+            't',
+            '2',
+            0,
+            5,
+            'v',
+            'a',
+            'l',
+            'u',
+            'e', //
+            0x26,
+            0,
+            5,
+            't',
+            'e',
+            's',
+            't',
+            '3',
+            0,
+            5,
+            'v',
+            'a',
+            'l',
+            'u',
+            'e', //
+            0x26,
+            0,
+            5,
+            't',
+            'e',
+            's',
+            't',
+            '4',
+            0,
+            5,
+            'v',
+            'a',
+            'l',
+            'u',
+            'e', //
+            0x26,
+            0,
+            5,
+            't',
+            'e',
+            's',
+            't',
+            '5',
+            0,
+            5,
+            'v',
+            'a',
+            'l',
+            'u',
+            'e', //
+            0x26,
+            0,
+            5,
+            't',
+            'e',
+            's',
+            't',
+            '6',
+            0,
+            5,
+            'v',
+            'a',
+            'l',
+            'u',
+            'e', //
+            0x26,
+            0,
+            5,
+            't',
+            'e',
+            's',
+            't',
+            '7',
+            0,
+            5,
+            'v',
+            'a',
+            'l',
+            'u',
+            'e', //
+            0x26,
+            0,
+            5,
+            't',
+            'e',
+            's',
+            't',
+            '8',
+            0,
+            5,
+            'v',
+            'a',
+            'l',
+            'u',
+            'e',
+            //     server reference
+            0x1C,
+            0,
+            9,
+            'r',
+            'e',
+            'f',
+            'e',
+            'r',
+            'e',
+            'n',
+            'c',
+            'e'
         };
 
         final ByteBuf byteBuf = channel.alloc().buffer();
@@ -91,7 +242,8 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
         assertTrue(disconnect.getServerReference().isPresent());
         assertEquals("reference", disconnect.getServerReference().get().toString());
 
-        final ImmutableList<MqttUserPropertyImpl> userProperties = disconnect.getUserProperties().asList();
+        final ImmutableList<MqttUserPropertyImpl> userProperties =
+                disconnect.getUserProperties().asList();
         assertEquals(9, userProperties.size());
         for (int i = 0; i < 9; i++) {
             assertEquals("test" + i, userProperties.get(i).getName().toString());
@@ -137,7 +289,8 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
 
         assertNotNull(disconnect);
 
-        assertEquals(Mqtt5DisconnectReasonCode.DISCONNECT_WITH_WILL_MESSAGE, disconnect.getReasonCode());
+        assertEquals(
+                Mqtt5DisconnectReasonCode.DISCONNECT_WITH_WILL_MESSAGE, disconnect.getReasonCode());
         assertFalse(disconnect.getSessionExpiryInterval().isPresent());
         assertFalse(disconnect.getReasonString().isPresent());
         assertFalse(disconnect.getServerReference().isPresent());
@@ -451,7 +604,9 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(11);
         //     malformed reason string identifier
-        byteBuf.writeByte(128 + 0x1F).writeByte(0).writeBytes(new byte[]{0, 7, 's', 'u', 'c', 'c', 'e', 's', 's'});
+        byteBuf.writeByte(128 + 0x1F)
+                .writeByte(0)
+                .writeBytes(new byte[] {0, 7, 's', 'u', 'c', 'c', 'e', 's', 's'});
 
         channel.writeInbound(byteBuf);
 
@@ -475,8 +630,8 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(10);
         //     session expiry interval
-        byteBuf.writeBytes(new byte[]{0x11, 0, 0, 0, 10});
-        byteBuf.writeBytes(new byte[]{0x11, 0, 0, 0, 10});
+        byteBuf.writeBytes(new byte[] {0x11, 0, 0, 0, 10});
+        byteBuf.writeBytes(new byte[] {0x11, 0, 0, 0, 10});
 
         channel.writeInbound(byteBuf);
 
@@ -500,8 +655,8 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(24);
         //     server reference
-        byteBuf.writeBytes(new byte[]{0x1C, 0, 9, 'r', 'e', 'f', 'e', 'r', 'e', 'n', 'c', 'e'});
-        byteBuf.writeBytes(new byte[]{0x1C, 0, 9, 'r', 'e', 'f', 'e', 'r', 'e', 'n', 'c', 'e'});
+        byteBuf.writeBytes(new byte[] {0x1C, 0, 9, 'r', 'e', 'f', 'e', 'r', 'e', 'n', 'c', 'e'});
+        byteBuf.writeBytes(new byte[] {0x1C, 0, 9, 'r', 'e', 'f', 'e', 'r', 'e', 'n', 'c', 'e'});
 
         channel.writeInbound(byteBuf);
 
@@ -525,8 +680,8 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(20);
         //     reason string
-        byteBuf.writeBytes(new byte[]{0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', 's'});
-        byteBuf.writeBytes(new byte[]{0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', 's'});
+        byteBuf.writeBytes(new byte[] {0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', 's'});
+        byteBuf.writeBytes(new byte[] {0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', 's'});
 
         channel.writeInbound(byteBuf);
 
@@ -547,8 +702,10 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(28);
         //     user properties
-        byteBuf.writeBytes(new byte[]{0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'});
-        byteBuf.writeBytes(new byte[]{0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'});
+        byteBuf.writeBytes(
+                new byte[] {0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'});
+        byteBuf.writeBytes(
+                new byte[] {0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'});
 
         channel.writeInbound(byteBuf);
         final MqttDisconnect disconnect = channel.readInbound();
@@ -560,7 +717,8 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
         assertFalse(disconnect.getReasonString().isPresent());
         assertFalse(disconnect.getServerReference().isPresent());
 
-        final ImmutableList<MqttUserPropertyImpl> userProperties = disconnect.getUserProperties().asList();
+        final ImmutableList<MqttUserPropertyImpl> userProperties =
+                disconnect.getUserProperties().asList();
         assertEquals(2, userProperties.size());
         assertEquals("test", userProperties.get(0).getName().toString());
         assertEquals("value", userProperties.get(0).getValue().toString());
@@ -585,7 +743,7 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(12);
         //     server reference
-        byteBuf.writeBytes(new byte[]{0x1C, 0, 8, 'r', 'e', 'f', 'e', 'r', 'e', 'n', 'c', 'e'});
+        byteBuf.writeBytes(new byte[] {0x1C, 0, 8, 'r', 'e', 'f', 'e', 'r', 'e', 'n', 'c', 'e'});
 
         channel.writeInbound(byteBuf);
 
@@ -609,7 +767,7 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(12);
         //     server reference
-        byteBuf.writeBytes(new byte[]{0x1C, 0, 10, 'r', 'e', 'f', 'e', 'r', 'e', 'n', 'c', 'e'});
+        byteBuf.writeBytes(new byte[] {0x1C, 0, 10, 'r', 'e', 'f', 'e', 'r', 'e', 'n', 'c', 'e'});
         // padding, e.g. next message
         byteBuf.writeByte(0b1110_0000);
 
@@ -635,7 +793,7 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(12);
         //     server reference
-        byteBuf.writeBytes(new byte[]{0x1C, 0, 9, 'r', 'e', 'f', 'e', 'r', 'e', 'n', 'c', '\0'});
+        byteBuf.writeBytes(new byte[] {0x1C, 0, 9, 'r', 'e', 'f', 'e', 'r', 'e', 'n', 'c', '\0'});
 
         channel.writeInbound(byteBuf);
 
@@ -659,7 +817,7 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(10);
         //     reason string
-        byteBuf.writeBytes(new byte[]{0x1F, 0, 6, 's', 'u', 'c', 'c', 'e', 's', 's'});
+        byteBuf.writeBytes(new byte[] {0x1F, 0, 6, 's', 'u', 'c', 'c', 'e', 's', 's'});
 
         channel.writeInbound(byteBuf);
 
@@ -683,7 +841,7 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(10);
         //     reason string
-        byteBuf.writeBytes(new byte[]{0x1F, 0, 8, 's', 'u', 'c', 'c', 'e', 's', 's'});
+        byteBuf.writeBytes(new byte[] {0x1F, 0, 8, 's', 'u', 'c', 'c', 'e', 's', 's'});
         // padding, e.g. next message
         byteBuf.writeByte(0b1110_0000);
 
@@ -709,7 +867,7 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(10);
         //     reason string
-        byteBuf.writeBytes(new byte[]{0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', '\0'});
+        byteBuf.writeBytes(new byte[] {0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', '\0'});
 
         channel.writeInbound(byteBuf);
 
@@ -733,7 +891,8 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(14);
         //     user properties
-        byteBuf.writeBytes(new byte[]{0x26, 0, 3, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'});
+        byteBuf.writeBytes(
+                new byte[] {0x26, 0, 3, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'});
 
         channel.writeInbound(byteBuf);
 
@@ -757,7 +916,8 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(14);
         //     user properties
-        byteBuf.writeBytes(new byte[]{0x26, 0, 5, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'});
+        byteBuf.writeBytes(
+                new byte[] {0x26, 0, 5, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'});
         // padding, e.g. next message
         byteBuf.writeByte(0b1110_0000);
 
@@ -783,7 +943,8 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(14);
         //     user properties
-        byteBuf.writeBytes(new byte[]{0x26, 0, 4, 't', 'e', 's', '\0', 0, 5, 'v', 'a', 'l', 'u', 'e'});
+        byteBuf.writeBytes(
+                new byte[] {0x26, 0, 4, 't', 'e', 's', '\0', 0, 5, 'v', 'a', 'l', 'u', 'e'});
 
         channel.writeInbound(byteBuf);
 
@@ -807,7 +968,8 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(14);
         //     user properties
-        byteBuf.writeBytes(new byte[]{0x26, 0, 4, 't', 'e', 's', 't', 0, 4, 'v', 'a', 'l', 'u', 'e'});
+        byteBuf.writeBytes(
+                new byte[] {0x26, 0, 4, 't', 'e', 's', 't', 0, 4, 'v', 'a', 'l', 'u', 'e'});
 
         channel.writeInbound(byteBuf);
 
@@ -831,7 +993,8 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(14);
         //     user properties
-        byteBuf.writeBytes(new byte[]{0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e'});
+        byteBuf.writeBytes(
+                new byte[] {0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e'});
         // padding, e.g. next message
         byteBuf.writeByte(0b1110_0000);
 
@@ -857,14 +1020,16 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(14);
         //     user properties
-        byteBuf.writeBytes(new byte[]{0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', '\0'});
+        byteBuf.writeBytes(
+                new byte[] {0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', '\0'});
 
         channel.writeInbound(byteBuf);
 
         testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    private void testDisconnect(final Mqtt5DisconnectReasonCode reasonCode, final boolean sendReasonString) {
+    private void testDisconnect(
+            final Mqtt5DisconnectReasonCode reasonCode, final boolean sendReasonString) {
         final Mqtt5Disconnect disconnectIn = channel.readInbound();
         assertNull(disconnectIn);
 
@@ -876,16 +1041,80 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
 
     private final int PROPERTIES_VALID_LENGTH = 71;
     private final byte[] PROPERTIES_VALID = {
-            //     session expiry interval
-            0x11, 0, 0, 0, 10,
-            //     reason string
-            0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', 's',
-            //     user properties
-            0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e', //
-            0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e', '2', //
-            0x26, 0, 5, 't', 'e', 's', 't', '2', 0, 5, 'v', 'a', 'l', 'u', 'e',
-            //     server reference
-            0x1C, 0, 9, 'r', 'e', 'f', 'e', 'r', 'e', 'n', 'c', 'e'
+        //     session expiry interval
+        0x11,
+        0,
+        0,
+        0,
+        10,
+        //     reason string
+        0x1F,
+        0,
+        7,
+        's',
+        'u',
+        'c',
+        'c',
+        'e',
+        's',
+        's',
+        //     user properties
+        0x26,
+        0,
+        4,
+        't',
+        'e',
+        's',
+        't',
+        0,
+        5,
+        'v',
+        'a',
+        'l',
+        'u',
+        'e', //
+        0x26,
+        0,
+        4,
+        't',
+        'e',
+        's',
+        't',
+        0,
+        6,
+        'v',
+        'a',
+        'l',
+        'u',
+        'e',
+        '2', //
+        0x26,
+        0,
+        5,
+        't',
+        'e',
+        's',
+        't',
+        '2',
+        0,
+        5,
+        'v',
+        'a',
+        'l',
+        'u',
+        'e',
+        //     server reference
+        0x1C,
+        0,
+        9,
+        'r',
+        'e',
+        'f',
+        'e',
+        'r',
+        'e',
+        'n',
+        'c',
+        'e'
     };
-
 }

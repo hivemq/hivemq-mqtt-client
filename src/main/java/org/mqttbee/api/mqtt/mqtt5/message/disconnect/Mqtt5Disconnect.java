@@ -17,14 +17,13 @@
 
 package org.mqttbee.api.mqtt.mqtt5.message.disconnect;
 
+import java.util.Optional;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
-
-import java.util.Optional;
 
 /**
  * MQTT 5 DISCONNECT packet.
@@ -39,33 +38,29 @@ public interface Mqtt5Disconnect extends Mqtt5Message {
         return new Mqtt5DisconnectBuilder<>(null);
     }
 
-    /**
-     * @return the reason code of this DISCONNECT packet.
-     */
+    /** @return the reason code of this DISCONNECT packet. */
     @NotNull
     Mqtt5DisconnectReasonCode getReasonCode();
 
     /**
-     * @return the optional session expiry interval in seconds, the client disconnects from with this DISCONNECT packet.
+     * @return the optional session expiry interval in seconds, the client disconnects from with
+     *     this DISCONNECT packet.
      */
     @NotNull
     Optional<Long> getSessionExpiryInterval();
 
     /**
-     * @return the optional server reference, which can be used if the server sent this DISCONNECT packet.
+     * @return the optional server reference, which can be used if the server sent this DISCONNECT
+     *     packet.
      */
     @NotNull
     Optional<MqttUTF8String> getServerReference();
 
-    /**
-     * @return the optional reason string of this DISCONNECT packet.
-     */
+    /** @return the optional reason string of this DISCONNECT packet. */
     @NotNull
     Optional<MqttUTF8String> getReasonString();
 
-    /**
-     * @return the optional user properties of this DISCONNECT packet.
-     */
+    /** @return the optional user properties of this DISCONNECT packet. */
     @NotNull
     Mqtt5UserProperties getUserProperties();
 
@@ -74,5 +69,4 @@ public interface Mqtt5Disconnect extends Mqtt5Message {
     default Mqtt5MessageType getType() {
         return Mqtt5MessageType.DISCONNECT;
     }
-
 }

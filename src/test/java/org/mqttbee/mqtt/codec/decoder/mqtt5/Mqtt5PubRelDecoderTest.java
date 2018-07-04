@@ -17,6 +17,10 @@
 
 package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.MALFORMED_PACKET;
+import static org.mqttbee.api.mqtt.mqtt5.message.publish.pubrel.Mqtt5PubRelReasonCode.SUCCESS;
+
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.Test;
@@ -31,10 +35,6 @@ import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrel.Mqtt5PubRelReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRel;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.MALFORMED_PACKET;
-import static org.mqttbee.api.mqtt.mqtt5.message.publish.pubrel.Mqtt5PubRelReasonCode.SUCCESS;
-
 /**
  * @author Silvio Giebl
  * @author David Katz
@@ -42,34 +42,72 @@ import static org.mqttbee.api.mqtt.mqtt5.message.publish.pubrel.Mqtt5PubRelReaso
 class Mqtt5PubRelDecoderTest extends AbstractMqtt5DecoderTest {
 
     Mqtt5PubRelDecoderTest() {
-        super(code -> {
-            if (code == Mqtt5MessageType.PUBREL.getCode()) {
-                return new Mqtt5PubRelDecoder();
-            }
-            return null;
-        });
+        super(
+                code -> {
+                    if (code == Mqtt5MessageType.PUBREL.getCode()) {
+                        return new Mqtt5PubRelDecoder();
+                    }
+                    return null;
+                });
     }
 
     @Test
     void decode_allParameters() {
         final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                0b0110_0010,
-                //   remaining length
-                43,
-                // variable header
-                //   packet identifier
-                0, 5,
-                //   reason code (success)
-                0x00,
-                //   properties
-                39,
-                //     reason string
-                0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', 's',
-                //     user properties
-                0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e', //
-                0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e', '2',
+            // fixed header
+            //   type, flags
+            0b0110_0010,
+            //   remaining length
+            43,
+            // variable header
+            //   packet identifier
+            0,
+            5,
+            //   reason code (success)
+            0x00,
+            //   properties
+            39,
+            //     reason string
+            0x1F,
+            0,
+            7,
+            's',
+            'u',
+            'c',
+            'c',
+            'e',
+            's',
+            's',
+            //     user properties
+            0x26,
+            0,
+            4,
+            't',
+            'e',
+            's',
+            't',
+            0,
+            5,
+            'v',
+            'a',
+            'l',
+            'u',
+            'e', //
+            0x26,
+            0,
+            4,
+            't',
+            'e',
+            's',
+            't',
+            0,
+            6,
+            'v',
+            'a',
+            'l',
+            'u',
+            'e',
+            '2',
         };
 
         final MqttPubRel pubRel = decodeOk(encoded);
@@ -78,7 +116,8 @@ class Mqtt5PubRelDecoderTest extends AbstractMqtt5DecoderTest {
         assertTrue(pubRel.getReasonString().isPresent());
         assertEquals("success", pubRel.getReasonString().get().toString());
 
-        final ImmutableList<MqttUserPropertyImpl> userProperties = pubRel.getUserProperties().asList();
+        final ImmutableList<MqttUserPropertyImpl> userProperties =
+                pubRel.getUserProperties().asList();
         assertEquals(2, userProperties.size());
         assertEquals("test", userProperties.get(0).getName().toString());
         assertEquals("value", userProperties.get(0).getValue().toString());
@@ -89,14 +128,15 @@ class Mqtt5PubRelDecoderTest extends AbstractMqtt5DecoderTest {
     @Test
     void decode_reasonCodeAndPropertiesOmittedOnSuccess() {
         final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                0b0110_0010,
-                //   remaining length
-                2,
-                // variable header
-                //   packet identifier
-                0, 5
+            // fixed header
+            //   type, flags
+            0b0110_0010,
+            //   remaining length
+            2,
+            // variable header
+            //   packet identifier
+            0,
+            5
         };
 
         final MqttPubRel pubRel = decodeOk(encoded);
@@ -104,22 +144,25 @@ class Mqtt5PubRelDecoderTest extends AbstractMqtt5DecoderTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = Mqtt5PubRelReasonCode.class, mode = EnumSource.Mode.EXCLUDE, names = {"SUCCESS"})
+    @EnumSource(
+            value = Mqtt5PubRelReasonCode.class,
+            mode = EnumSource.Mode.EXCLUDE,
+            names = {"SUCCESS"})
     void decode_allReasonCodes(final Mqtt5PubRelReasonCode reasonCode) {
         final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                0b0110_0010,
-                //   remaining length
-                4,
-                // variable header
-                //   packet identifier
-                0, 5,
-                //   reason code placeholder
-                0x00,
-                //   properties length
-                0
-
+            // fixed header
+            //   type, flags
+            0b0110_0010,
+            //   remaining length
+            4,
+            // variable header
+            //   packet identifier
+            0,
+            5,
+            //   reason code placeholder
+            0x00,
+            //   properties length
+            0
         };
         encoded[4] = (byte) reasonCode.getCode();
         final MqttPubRel pubRel = decodeOk(encoded);
@@ -129,25 +172,54 @@ class Mqtt5PubRelDecoderTest extends AbstractMqtt5DecoderTest {
     @Test
     void decode_multipleUserProperties() {
         final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                0b0110_0010,
-                //   remaining length
-                33,
-                // variable header
-                //   packet identifier
-                0, 5,
-                // reason code
-                0x00,
-                //   properties
-                29,
-                // user properties
-                0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e', //
-                0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e', '2'
+            // fixed header
+            //   type, flags
+            0b0110_0010,
+            //   remaining length
+            33,
+            // variable header
+            //   packet identifier
+            0,
+            5,
+            // reason code
+            0x00,
+            //   properties
+            29,
+            // user properties
+            0x26,
+            0,
+            4,
+            't',
+            'e',
+            's',
+            't',
+            0,
+            5,
+            'v',
+            'a',
+            'l',
+            'u',
+            'e', //
+            0x26,
+            0,
+            4,
+            't',
+            'e',
+            's',
+            't',
+            0,
+            6,
+            'v',
+            'a',
+            'l',
+            'u',
+            'e',
+            '2'
         };
 
         final MqttPubRel pubRel = decodeOk(encoded);
-        final ImmutableList<MqttUserPropertyImpl> userProperties = pubRel.getUserProperties().asList();
+        final ImmutableList<MqttUserPropertyImpl> userProperties =
+                pubRel.getUserProperties().asList();
         assertEquals(2, userProperties.size());
         assertEquals("test", userProperties.get(0).getName().toString());
         assertEquals("value", userProperties.get(0).getValue().toString());
@@ -158,37 +230,64 @@ class Mqtt5PubRelDecoderTest extends AbstractMqtt5DecoderTest {
     @Test
     void decode_invalidFlags_returnsNull() {
         final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                0b0110_1010,
-                //   remaining length
-                2,
-                // variable header
-                //   packet identifier
-                0, 5
+            // fixed header
+            //   type, flags
+            0b0110_1010,
+            //   remaining length
+            2,
+            // variable header
+            //   packet identifier
+            0,
+            5
         };
         decodeNok(encoded, MALFORMED_PACKET);
     }
 
-
     @Test
     void decode_packetLengthLargerThanMaxPacketSize_returnsNull() {
         final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                0b0110_0010,
-                //   remaining length
-                32,
-                // variable header
-                //   packet identifier
-                0, 5,
-                // reason code
-                0x00,
-                //   properties
-                28,
-                // user properties
-                0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e', //
-                0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'
+            // fixed header
+            //   type, flags
+            0b0110_0010,
+            //   remaining length
+            32,
+            // variable header
+            //   packet identifier
+            0,
+            5,
+            // reason code
+            0x00,
+            //   properties
+            28,
+            // user properties
+            0x26,
+            0,
+            4,
+            't',
+            'e',
+            's',
+            't',
+            0,
+            5,
+            'v',
+            'a',
+            'l',
+            'u',
+            'e', //
+            0x26,
+            0,
+            4,
+            't',
+            'e',
+            's',
+            't',
+            0,
+            5,
+            'v',
+            'a',
+            'l',
+            'u',
+            'e'
         };
         createClientConnectionData(encoded.length - 1);
         decodeNok(encoded, Mqtt5DisconnectReasonCode.PACKET_TOO_LARGE);
@@ -197,11 +296,11 @@ class Mqtt5PubRelDecoderTest extends AbstractMqtt5DecoderTest {
     @Test
     void decode_packetTooSmall_returnsNull() {
         final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                0b0110_0010,
-                //   remaining length
-                0
+            // fixed header
+            //   type, flags
+            0b0110_0010,
+            //   remaining length
+            0
         };
         decodeNok(encoded, MALFORMED_PACKET);
     }
@@ -209,18 +308,19 @@ class Mqtt5PubRelDecoderTest extends AbstractMqtt5DecoderTest {
     @Test
     void decode_propertyLengthLessThanZero_returnsNull() {
         final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                0b0110_0010,
-                //   remaining length
-                4,
-                // variable header
-                //   packet identifier
-                0, 5,
-                // reason code
-                0x00,
-                //   properties
-                -1
+            // fixed header
+            //   type, flags
+            0b0110_0010,
+            //   remaining length
+            4,
+            // variable header
+            //   packet identifier
+            0,
+            5,
+            // reason code
+            0x00,
+            //   properties
+            -1
         };
         decodeNok(encoded, MALFORMED_PACKET);
     }
@@ -228,18 +328,19 @@ class Mqtt5PubRelDecoderTest extends AbstractMqtt5DecoderTest {
     @Test
     void decode_propertyLengthTooLarge_returnsNull() {
         final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                0b0110_0010,
-                //   remaining length
-                4,
-                // variable header
-                //   packet identifier
-                0, 5,
-                // reason code
-                0x00,
-                //   properties
-                10
+            // fixed header
+            //   type, flags
+            0b0110_0010,
+            //   remaining length
+            4,
+            // variable header
+            //   packet identifier
+            0,
+            5,
+            // reason code
+            0x00,
+            //   properties
+            10
         };
         decodeNok(encoded, MALFORMED_PACKET);
     }
@@ -247,20 +348,27 @@ class Mqtt5PubRelDecoderTest extends AbstractMqtt5DecoderTest {
     @Test
     void decode_negativePropertyIdentifier_returnsNull() {
         final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                0b0110_0010,
-                //   remaining length
-                11,
-                // variable header
-                //   packet identifier
-                0, 5,
-                // reason code
-                0x00,
-                //   properties
-                7,
-                // negative property id
-                (byte) -3, 0, 4, 't', 'e', 's', 't'
+            // fixed header
+            //   type, flags
+            0b0110_0010,
+            //   remaining length
+            11,
+            // variable header
+            //   packet identifier
+            0,
+            5,
+            // reason code
+            0x00,
+            //   properties
+            7,
+            // negative property id
+            (byte) -3,
+            0,
+            4,
+            't',
+            'e',
+            's',
+            't'
         };
         decodeNok(encoded, MALFORMED_PACKET);
     }
@@ -268,20 +376,27 @@ class Mqtt5PubRelDecoderTest extends AbstractMqtt5DecoderTest {
     @Test
     void decode_invalidPropertyIdentifier_returnsNull() {
         final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                0b0110_0010,
-                //   remaining length
-                11,
-                // variable header
-                //   packet identifier
-                0, 5,
-                // reason code
-                0x00,
-                //   properties
-                7,
-                // invalid property id
-                (byte) 0x03, 0, 4, 't', 'e', 's', 't'
+            // fixed header
+            //   type, flags
+            0b0110_0010,
+            //   remaining length
+            11,
+            // variable header
+            //   packet identifier
+            0,
+            5,
+            // reason code
+            0x00,
+            //   properties
+            7,
+            // invalid property id
+            (byte) 0x03,
+            0,
+            4,
+            't',
+            'e',
+            's',
+            't'
         };
         decodeNok(encoded, MALFORMED_PACKET);
     }
@@ -289,16 +404,17 @@ class Mqtt5PubRelDecoderTest extends AbstractMqtt5DecoderTest {
     @Test
     void decode_invalidReasonCode_returnsNull() {
         final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                0b0110_0010,
-                //   remaining length
-                3,
-                // variable header
-                //   packet identifier
-                0, 5,
-                //   reason code (success)
-                (byte) 0xFF
+            // fixed header
+            //   type, flags
+            0b0110_0010,
+            //   remaining length
+            3,
+            // variable header
+            //   packet identifier
+            0,
+            5,
+            //   reason code (success)
+            (byte) 0xFF
         };
         decodeNok(encoded, MALFORMED_PACKET);
     }
@@ -306,20 +422,27 @@ class Mqtt5PubRelDecoderTest extends AbstractMqtt5DecoderTest {
     @Test
     void decode_nullUserProperty_returnsNull() {
         final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                0b0110_0010,
-                //   remaining length
-                11,
-                // variable header
-                //   packet identifier
-                0, 5,
-                // reason code
-                0x00,
-                //   properties
-                7,
-                // user properties
-                0x26, 0, 1, '\u0000', 0, 1, 'x'
+            // fixed header
+            //   type, flags
+            0b0110_0010,
+            //   remaining length
+            11,
+            // variable header
+            //   packet identifier
+            0,
+            5,
+            // reason code
+            0x00,
+            //   properties
+            7,
+            // user properties
+            0x26,
+            0,
+            1,
+            '\u0000',
+            0,
+            1,
+            'x'
         };
         decodeNok(encoded, Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
     }
@@ -327,20 +450,24 @@ class Mqtt5PubRelDecoderTest extends AbstractMqtt5DecoderTest {
     @Test
     void decode_nullReasonString_returnsNull() {
         final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                0b0110_0010,
-                //   remaining length
-                8,
-                // variable header
-                //   packet identifier
-                0, 5,
-                //   reason code (success)
-                0x00,
-                //   properties
-                4,
-                //     reason string
-                0x1F, 0, 1, '\u0000'
+            // fixed header
+            //   type, flags
+            0b0110_0010,
+            //   remaining length
+            8,
+            // variable header
+            //   packet identifier
+            0,
+            5,
+            //   reason code (success)
+            0x00,
+            //   properties
+            4,
+            //     reason string
+            0x1F,
+            0,
+            1,
+            '\u0000'
         };
         decodeNok(encoded, MALFORMED_PACKET);
     }
@@ -371,5 +498,4 @@ class Mqtt5PubRelDecoderTest extends AbstractMqtt5DecoderTest {
 
         return channel.readInbound();
     }
-
 }

@@ -29,11 +29,10 @@ public interface Mqtt5OutgoingQoS1ControlProvider {
 
     /**
      * Called when a server sent a PUBACK message for a Publish with QoS 1.
-     * <p>
-     * This method must not block.
+     *
+     * <p>This method must not block.
      *
      * @param pubAck the PUBACK message sent by the server.
      */
     void onPubAck(@NotNull Mqtt5PubAck pubAck);
-
 }

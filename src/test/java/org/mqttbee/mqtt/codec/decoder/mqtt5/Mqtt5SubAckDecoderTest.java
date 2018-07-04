@@ -17,6 +17,9 @@
 
 package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.MALFORMED_PACKET;
+
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.Test;
@@ -31,9 +34,6 @@ import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAckReasonCode
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAck;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.MALFORMED_PACKET;
-
 /**
  * @author Silvio Giebl
  * @author David Katz
@@ -41,33 +41,57 @@ import static org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReaso
 class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
 
     Mqtt5SubAckDecoderTest() {
-        super(code -> {
-            if (code == Mqtt5MessageType.SUBACK.getCode()) {
-                return new Mqtt5SubAckDecoder();
-            }
-            return null;
-        });
+        super(
+                code -> {
+                    if (code == Mqtt5MessageType.SUBACK.getCode()) {
+                        return new Mqtt5SubAckDecoder();
+                    }
+                    return null;
+                });
     }
 
     @Test
     void encode_simple() {
         final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                (byte) 0b1001_0000,
-                //   remaining length
-                28,
-                // variable header
-                //   packet identifier
-                0, 3,
-                //   properties
-                24,
-                //     reason string
-                0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', 's',
-                //     user properties
-                0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e',
-                // payload
-                0x00
+            // fixed header
+            //   type, flags
+            (byte) 0b1001_0000,
+            //   remaining length
+            28,
+            // variable header
+            //   packet identifier
+            0,
+            3,
+            //   properties
+            24,
+            //     reason string
+            0x1F,
+            0,
+            7,
+            's',
+            'u',
+            'c',
+            'c',
+            'e',
+            's',
+            's',
+            //     user properties
+            0x26,
+            0,
+            4,
+            't',
+            'e',
+            's',
+            't',
+            0,
+            5,
+            'v',
+            'a',
+            'l',
+            'u',
+            'e',
+            // payload
+            0x00
         };
 
         final MqttSubAck subAck = decodeOk(encoded);
@@ -76,7 +100,8 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
         assertTrue(subAck.getReasonString().isPresent());
         assertEquals("success", subAck.getReasonString().get().toString());
 
-        final ImmutableList<MqttUserPropertyImpl> userProperties = subAck.getUserProperties().asList();
+        final ImmutableList<MqttUserPropertyImpl> userProperties =
+                subAck.getUserProperties().asList();
         assertEquals(1, userProperties.size());
         assertEquals("test", userProperties.get(0).getName().toString());
         assertEquals("value", userProperties.get(0).getValue().toString());
@@ -89,23 +114,60 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
     @Test
     void encode_multipleUserProperties() {
         final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                (byte) 0b1001_0000,
-                //   remaining length
-                43,
-                // variable header
-                //   packet identifier
-                0, 3,
-                //   properties
-                39,
-                //     reason string
-                0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', 's',
-                //     user properties
-                0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e', //
-                0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e', '2',
-                // payload
-                0x00
+            // fixed header
+            //   type, flags
+            (byte) 0b1001_0000,
+            //   remaining length
+            43,
+            // variable header
+            //   packet identifier
+            0,
+            3,
+            //   properties
+            39,
+            //     reason string
+            0x1F,
+            0,
+            7,
+            's',
+            'u',
+            'c',
+            'c',
+            'e',
+            's',
+            's',
+            //     user properties
+            0x26,
+            0,
+            4,
+            't',
+            'e',
+            's',
+            't',
+            0,
+            5,
+            'v',
+            'a',
+            'l',
+            'u',
+            'e', //
+            0x26,
+            0,
+            4,
+            't',
+            'e',
+            's',
+            't',
+            0,
+            6,
+            'v',
+            'a',
+            'l',
+            'u',
+            'e',
+            '2',
+            // payload
+            0x00
         };
 
         final MqttSubAck subAck = decodeOk(encoded);
@@ -113,7 +175,8 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
         assertTrue(subAck.getReasonString().isPresent());
         assertEquals("success", subAck.getReasonString().get().toString());
 
-        final ImmutableList<MqttUserPropertyImpl> userProperties = subAck.getUserProperties().asList();
+        final ImmutableList<MqttUserPropertyImpl> userProperties =
+                subAck.getUserProperties().asList();
         assertEquals(2, userProperties.size());
         assertEquals("test", userProperties.get(0).getName().toString());
         assertEquals("value", userProperties.get(0).getValue().toString());
@@ -128,20 +191,31 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
     @Test
     void encode_invalidUserProperty_returnsNull() {
         final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                (byte) 0b1001_0000,
-                //   remaining length
-                15,
-                // variable header
-                //   packet identifier
-                0, 3,
-                //   properties
-                11,
-                //     user properties
-                0x26, 0, 1, (byte) 'k', 0, 5, 'v', 'a', 'l', 'u', 'e',
-                // payload
-                0x00
+            // fixed header
+            //   type, flags
+            (byte) 0b1001_0000,
+            //   remaining length
+            15,
+            // variable header
+            //   packet identifier
+            0,
+            3,
+            //   properties
+            11,
+            //     user properties
+            0x26,
+            0,
+            1,
+            (byte) 'k',
+            0,
+            5,
+            'v',
+            'a',
+            'l',
+            'u',
+            'e',
+            // payload
+            0x00
         };
         decodeOk(encoded);
         encoded[8] = (byte) '\uFFFF';
@@ -151,20 +225,30 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
     @Test
     void encode_reasonString() {
         final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                (byte) 0b1001_0000,
-                //   remaining length
-                14,
-                // variable header
-                //   packet identifier
-                0, 3,
-                //   properties
-                10,
-                //     reason string
-                0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', 's',
-                // payload
-                0x00
+            // fixed header
+            //   type, flags
+            (byte) 0b1001_0000,
+            //   remaining length
+            14,
+            // variable header
+            //   packet identifier
+            0,
+            3,
+            //   properties
+            10,
+            //     reason string
+            0x1F,
+            0,
+            7,
+            's',
+            'u',
+            'c',
+            'c',
+            'e',
+            's',
+            's',
+            // payload
+            0x00
         };
 
         final MqttSubAck subAck = decodeOk(encoded);
@@ -175,20 +259,24 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
     @Test
     void encode_invalidReasonString_returnsNull() {
         final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                (byte) 0b1001_0000,
-                //   remaining length
-                7,
-                // variable header
-                //   packet identifier
-                0, 3,
-                //   properties
-                3,
-                //     reason string
-                0x1F, 0, 1, (byte) '\uFFFF',
-                // payload
-                0x00
+            // fixed header
+            //   type, flags
+            (byte) 0b1001_0000,
+            //   remaining length
+            7,
+            // variable header
+            //   packet identifier
+            0,
+            3,
+            //   properties
+            3,
+            //     reason string
+            0x1F,
+            0,
+            1,
+            (byte) '\uFFFF',
+            // payload
+            0x00
         };
         decodeNok(encoded, MALFORMED_PACKET);
     }
@@ -197,18 +285,19 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
     @EnumSource(Mqtt5SubAckReasonCode.class)
     void encode_eachReasonCode(final Mqtt5SubAckReasonCode reasonCode) {
         final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                (byte) 0b1001_0000,
-                //   remaining length
-                4,
-                // variable header
-                //   packet identifier
-                0, 3,
-                //   properties
-                0,
-                // payload
-                0x00
+            // fixed header
+            //   type, flags
+            (byte) 0b1001_0000,
+            //   remaining length
+            4,
+            // variable header
+            //   packet identifier
+            0,
+            3,
+            //   properties
+            0,
+            // payload
+            0x00
         };
 
         encoded[5] = (byte) reasonCode.getCode();
@@ -221,19 +310,30 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
     @Test
     void encode_multipleReasonCodes() {
         final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                (byte) 0b1001_0000,
-                //   remaining length
-                15,
-                // variable header
-                //   packet identifier
-                0, 3,
-                //   properties
-                0,
-                // payload
-                0x00, 0x02, 0x01, (byte) 0x80, (byte) 0x83, (byte) 0x87, (byte) 0x8F, (byte) 0x91, (byte) 0x97,
-                (byte) 0x9E, (byte) 0xA1, (byte) 0xA2
+            // fixed header
+            //   type, flags
+            (byte) 0b1001_0000,
+            //   remaining length
+            15,
+            // variable header
+            //   packet identifier
+            0,
+            3,
+            //   properties
+            0,
+            // payload
+            0x00,
+            0x02,
+            0x01,
+            (byte) 0x80,
+            (byte) 0x83,
+            (byte) 0x87,
+            (byte) 0x8F,
+            (byte) 0x91,
+            (byte) 0x97,
+            (byte) 0x9E,
+            (byte) 0xA1,
+            (byte) 0xA2
         };
 
         final MqttSubAck subAck = decodeOk(encoded);
@@ -249,23 +349,26 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
         assertEquals(Mqtt5SubAckReasonCode.PACKET_IDENTIFIER_IN_USE, reasonCodes.get(7));
         assertEquals(Mqtt5SubAckReasonCode.QUOTA_EXCEEDED, reasonCodes.get(8));
         assertEquals(Mqtt5SubAckReasonCode.SHARED_SUBSCRIPTION_NOT_SUPPORTED, reasonCodes.get(9));
-        assertEquals(Mqtt5SubAckReasonCode.SUBSCRIPTION_IDENTIFIERS_NOT_SUPPORTED, reasonCodes.get(10));
-        assertEquals(Mqtt5SubAckReasonCode.WILDCARD_SUBSCRIPTION_NOT_SUPPORTED, reasonCodes.get(11));
+        assertEquals(
+                Mqtt5SubAckReasonCode.SUBSCRIPTION_IDENTIFIERS_NOT_SUPPORTED, reasonCodes.get(10));
+        assertEquals(
+                Mqtt5SubAckReasonCode.WILDCARD_SUBSCRIPTION_NOT_SUPPORTED, reasonCodes.get(11));
     }
 
     @Test
     void encode_noReasonCode_returnsNull() {
         final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                (byte) 0b1001_0000,
-                //   remaining length
-                3,
-                // variable header
-                //   packet identifier
-                0, 3,
-                //   properties
-                0
+            // fixed header
+            //   type, flags
+            (byte) 0b1001_0000,
+            //   remaining length
+            3,
+            // variable header
+            //   packet identifier
+            0,
+            3,
+            //   properties
+            0
         };
         decodeNok(encoded, Mqtt5DisconnectReasonCode.PROTOCOL_ERROR);
     }
@@ -273,18 +376,19 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
     @Test
     void encode_invalidReasonCode_returnsNull() {
         final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                (byte) 0b1001_0000,
-                //   remaining length
-                4,
-                // variable header
-                //   packet identifier
-                0, 3,
-                //   properties
-                0,
-                // payload
-                0x00
+            // fixed header
+            //   type, flags
+            (byte) 0b1001_0000,
+            //   remaining length
+            4,
+            // variable header
+            //   packet identifier
+            0,
+            3,
+            //   properties
+            0,
+            // payload
+            0x00
         };
 
         final MqttSubAck subAck = decodeOk(encoded);
@@ -302,18 +406,19 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
     @Test
     void encode_invalidFlags_returnsNull() {
         final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                (byte) 0b1001_1000,
-                //   remaining length
-                4,
-                // variable header
-                //   packet identifier
-                0, 3,
-                //   properties
-                0,
-                // payload
-                0x00
+            // fixed header
+            //   type, flags
+            (byte) 0b1001_1000,
+            //   remaining length
+            4,
+            // variable header
+            //   packet identifier
+            0,
+            3,
+            //   properties
+            0,
+            // payload
+            0x00
         };
         decodeNok(encoded, MALFORMED_PACKET);
     }
@@ -321,14 +426,15 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
     @Test
     void encode_invalidRemainingLength_returnsNull() {
         final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                (byte) 0b1001_0000,
-                //   remaining length
-                2,
-                // variable header
-                //   packet identifier
-                0, 3
+            // fixed header
+            //   type, flags
+            (byte) 0b1001_0000,
+            //   remaining length
+            2,
+            // variable header
+            //   packet identifier
+            0,
+            3
         };
         decodeNok(encoded, MALFORMED_PACKET);
     }
@@ -336,16 +442,17 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
     @Test
     void encode_propertyLengthLessThanZero_returnsNull() {
         final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                (byte) 0b1001_0000,
-                //   remaining length
-                3,
-                // variable header
-                //   packet identifier
-                0, 3,
-                //   property length
-                -1
+            // fixed header
+            //   type, flags
+            (byte) 0b1001_0000,
+            //   remaining length
+            3,
+            // variable header
+            //   packet identifier
+            0,
+            3,
+            //   property length
+            -1
         };
         decodeNok(encoded, MALFORMED_PACKET);
     }
@@ -353,20 +460,30 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
     @Test
     void encode_invalidPropertyType_returnsNull() {
         final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                (byte) 0b1001_0000,
-                //   remaining length
-                14,
-                // variable header
-                //   packet identifier
-                0, 3,
-                //   properties
-                10,
-                //     reason string
-                0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', 's',
-                // payload
-                0x00
+            // fixed header
+            //   type, flags
+            (byte) 0b1001_0000,
+            //   remaining length
+            14,
+            // variable header
+            //   packet identifier
+            0,
+            3,
+            //   properties
+            10,
+            //     reason string
+            0x1F,
+            0,
+            7,
+            's',
+            'u',
+            'c',
+            'c',
+            'e',
+            's',
+            's',
+            // payload
+            0x00
         };
 
         decodeOk(encoded);
@@ -375,24 +492,33 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
         decodeNok(encoded, MALFORMED_PACKET);
     }
 
-
     @Test
     void encode_propertyLengthLongerThanEncoded_returnsNull() {
         final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                (byte) 0b1001_0000,
-                //   remaining length
-                14,
-                // variable header
-                //   packet identifier
-                0, 3,
-                //   properties
-                10,
-                //     reason string
-                0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', 's',
-                // payload
-                0x00
+            // fixed header
+            //   type, flags
+            (byte) 0b1001_0000,
+            //   remaining length
+            14,
+            // variable header
+            //   packet identifier
+            0,
+            3,
+            //   properties
+            10,
+            //     reason string
+            0x1F,
+            0,
+            7,
+            's',
+            'u',
+            'c',
+            'c',
+            'e',
+            's',
+            's',
+            // payload
+            0x00
         };
 
         decodeOk(encoded);
@@ -404,20 +530,30 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
     @Test
     void encode_propertyLengthTooShort_returnsNull() {
         final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                (byte) 0b1001_0000,
-                //   remaining length
-                14,
-                // variable header
-                //   packet identifier
-                0, 3,
-                //   properties
-                10,
-                //     reason string
-                0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', 's',
-                // payload
-                0x00
+            // fixed header
+            //   type, flags
+            (byte) 0b1001_0000,
+            //   remaining length
+            14,
+            // variable header
+            //   packet identifier
+            0,
+            3,
+            //   properties
+            10,
+            //     reason string
+            0x1F,
+            0,
+            7,
+            's',
+            'u',
+            'c',
+            'c',
+            'e',
+            's',
+            's',
+            // payload
+            0x00
         };
 
         decodeOk(encoded);
@@ -429,20 +565,30 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
     @Test
     void encode_propertyIdentifierLessThanZero_returnsNull() {
         final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                (byte) 0b1001_0000,
-                //   remaining length
-                14,
-                // variable header
-                //   packet identifier
-                0, 3,
-                //   properties
-                10,
-                //     reason string
-                (byte) 0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', 's',
-                // payload
-                0x00
+            // fixed header
+            //   type, flags
+            (byte) 0b1001_0000,
+            //   remaining length
+            14,
+            // variable header
+            //   packet identifier
+            0,
+            3,
+            //   properties
+            10,
+            //     reason string
+            (byte) 0x1F,
+            0,
+            7,
+            's',
+            'u',
+            'c',
+            'c',
+            'e',
+            's',
+            's',
+            // payload
+            0x00
         };
 
         decodeOk(encoded);
@@ -477,5 +623,4 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
 
         return channel.readInbound();
     }
-
 }

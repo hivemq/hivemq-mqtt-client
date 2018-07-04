@@ -20,17 +20,14 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageEncoder;
 import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
-
 import java.util.List;
 
-/**
- * @author David Katz
- */
+/** @author David Katz */
 public class WebSocketBinaryFrameEncoder extends MessageToMessageEncoder<ByteBuf> {
 
     @Override
-    protected void encode(final ChannelHandlerContext ctx, final ByteBuf msg, final List<Object> out) {
+    protected void encode(
+            final ChannelHandlerContext ctx, final ByteBuf msg, final List<Object> out) {
         out.add(new BinaryWebSocketFrame(msg.retain()));
     }
-
 }

@@ -18,6 +18,8 @@
 package org.mqttbee.api.mqtt.mqtt3.message.connect;
 
 import com.google.common.base.Preconditions;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
@@ -33,12 +35,7 @@ import org.mqttbee.util.FluentBuilder;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 import org.mqttbee.util.UnsignedDataTypes;
 
-import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class Mqtt3ConnectBuilder<P> extends FluentBuilder<Mqtt3Connect, P> {
 
     private int keepAliveSeconds = Mqtt3Connect.DEFAULT_KEEP_ALIVE;
@@ -77,7 +74,8 @@ public class Mqtt3ConnectBuilder<P> extends FluentBuilder<Mqtt3Connect, P> {
     @NotNull
     public Mqtt3ConnectBuilder<P> simpleAuth(@Nullable final Mqtt3SimpleAuth simpleAuth) {
         final Mqtt3SimpleAuthView simpleAuthView =
-                MustNotBeImplementedUtil.checkNullOrNotImplemented(simpleAuth, Mqtt3SimpleAuthView.class);
+                MustNotBeImplementedUtil.checkNullOrNotImplemented(
+                        simpleAuth, Mqtt3SimpleAuthView.class);
         this.simpleAuth = (simpleAuthView == null) ? null : simpleAuthView.getDelegate();
         return this;
     }
@@ -90,7 +88,8 @@ public class Mqtt3ConnectBuilder<P> extends FluentBuilder<Mqtt3Connect, P> {
     @NotNull
     public Mqtt3ConnectBuilder<P> willPublish(@Nullable final Mqtt3Publish willPublish) {
         final Mqtt3PublishView publishView =
-                MustNotBeImplementedUtil.checkNullOrNotImplemented(willPublish, Mqtt3PublishView.class);
+                MustNotBeImplementedUtil.checkNullOrNotImplemented(
+                        willPublish, Mqtt3PublishView.class);
         this.willPublish = (publishView == null) ? null : publishView.getWillDelegate();
         return this;
     }
@@ -105,5 +104,4 @@ public class Mqtt3ConnectBuilder<P> extends FluentBuilder<Mqtt3Connect, P> {
     public Mqtt3Connect build() {
         return Mqtt3ConnectView.of(keepAliveSeconds, isCleanSession, simpleAuth, willPublish);
     }
-
 }

@@ -17,26 +17,27 @@
 
 package org.mqttbee.util.collections;
 
-import org.mqttbee.annotations.NotNull;
-import org.mqttbee.annotations.Nullable;
-
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.AtomicReferenceArray;
+import org.mqttbee.annotations.NotNull;
+import org.mqttbee.annotations.Nullable;
 
 /**
  * Special queue for the following use case:
+ *
  * <ul>
- * <li>Single producer which calls {@link #offer(Object)} or {@link #canOffer()}.</li>
- * <li>Single consumer which calls {@link #poll()}, {@link #peek()} or iterates over all elements between consumer and
- * producer index without polling.</li>
+ *   <li>Single producer which calls {@link #offer(Object)} or {@link #canOffer()}.
+ *   <li>Single consumer which calls {@link #poll()}, {@link #peek()} or iterates over all elements
+ *       between consumer and producer index without polling.
  * </ul>
- * <p>
- * The queue grows in chunks to a specified maximum capacity.
- * <p>
- * The returned {@link Iterator} is always the same, as it must be used by a single consumer only.
- * Calling {@link Iterator#remove()} will poll the first element and so only works at the head.
+ *
+ * <p>The queue grows in chunks to a specified maximum capacity.
+ *
+ * <p>The returned {@link Iterator} is always the same, as it must be used by a single consumer
+ * only. Calling {@link Iterator#remove()} will poll the first element and so only works at the
+ * head.
  *
  * @param <E> the type of the elements.
  * @author Silvio Giebl
@@ -58,7 +59,7 @@ public class SpscIterableChunkedArrayQueue<E> implements Iterable<E> {
     /**
      * Creates a new queue which grows in chunks with the given size to the given maximum capacity.
      *
-     * @param capacity  the maximum capacity.
+     * @param capacity the maximum capacity.
      * @param chunkSize the size of a single chunk.
      */
     public SpscIterableChunkedArrayQueue(final int capacity, final int chunkSize) {
@@ -68,7 +69,8 @@ public class SpscIterableChunkedArrayQueue<E> implements Iterable<E> {
     }
 
     /**
-     * @return <code>true</code> if an element can be added, <code>false</code> if the maximum capacity is reached.
+     * @return <code>true</code> if an element can be added, <code>false</code> if the maximum
+     *     capacity is reached.
      */
     public boolean canOffer() {
         if (producerSize == capacity) {
@@ -80,9 +82,9 @@ public class SpscIterableChunkedArrayQueue<E> implements Iterable<E> {
 
     /**
      * Adds the given element to the tail of this queue.
-     * <p>
-     * This method does not check if the maximum capacity is exceeded. Use {@link #canOffer()} before to ensure this.
-     * This allows the data structure to be used in an unbounded manner.
+     *
+     * <p>This method does not check if the maximum capacity is exceeded. Use {@link #canOffer()}
+     * before to ensure this. This allows the data structure to be used in an unbounded manner.
      *
      * @param e the element to add.
      */
@@ -141,8 +143,8 @@ public class SpscIterableChunkedArrayQueue<E> implements Iterable<E> {
 
     /**
      * {@inheritDoc}
-     * <p>
-     * Returns always the same iterator, as it must be used by a single consumer only.
+     *
+     * <p>Returns always the same iterator, as it must be used by a single consumer only.
      *
      * @return {@inheritDoc}
      */
@@ -152,7 +154,6 @@ public class SpscIterableChunkedArrayQueue<E> implements Iterable<E> {
         iterator.clear();
         return iterator;
     }
-
 
     /**
      * Chunk which is an array and has a pointer to the next chunk.
@@ -166,13 +167,9 @@ public class SpscIterableChunkedArrayQueue<E> implements Iterable<E> {
         private Chunk(final int chunkSize) {
             super(chunkSize);
         }
-
     }
 
-
-    /**
-     * {@link Iterator} for a {@link SpscIterableChunkedArrayQueue}.
-     */
+    /** {@link Iterator} for a {@link SpscIterableChunkedArrayQueue}. */
     private class SpscChunkedArrayQueueIterator implements Iterator<E> {
 
         private Chunk<E> iteratorChunk;
@@ -202,8 +199,8 @@ public class SpscIterableChunkedArrayQueue<E> implements Iterable<E> {
 
         /**
          * {@inheritDoc}
-         * <p>
-         * Does not throw if no more elements exist but returns <code>null</code> instead.
+         *
+         * <p>Does not throw if no more elements exist but returns <code>null</code> instead.
          *
          * @return {@inheritDoc}
          */
@@ -230,7 +227,5 @@ public class SpscIterableChunkedArrayQueue<E> implements Iterable<E> {
             consumerChunk = iteratorChunk;
             consumerIndex = iteratorIndex;
         }
-
     }
-
 }

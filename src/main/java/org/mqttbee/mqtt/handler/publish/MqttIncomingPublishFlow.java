@@ -19,18 +19,15 @@ package org.mqttbee.mqtt.handler.publish;
 
 import io.reactivex.Emitter;
 import io.reactivex.internal.util.BackpressureHelper;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public abstract class MqttIncomingPublishFlow<S extends Subscriber<? super Mqtt5Publish>>
         implements Emitter<Mqtt5Publish>, Subscription {
 
@@ -50,7 +47,8 @@ public abstract class MqttIncomingPublishFlow<S extends Subscriber<? super Mqtt5
     private final AtomicBoolean scheduled = new AtomicBoolean();
 
     MqttIncomingPublishFlow(
-            @NotNull final MqttIncomingPublishService incomingPublishService, @NotNull final S subscriber) {
+            @NotNull final MqttIncomingPublishService incomingPublishService,
+            @NotNull final S subscriber) {
 
         this.incomingPublishService = incomingPublishService;
         this.subscriber = subscriber;
@@ -181,5 +179,4 @@ public abstract class MqttIncomingPublishFlow<S extends Subscriber<? super Mqtt5
             incomingPublishService.getRxEventLoop().schedule(runnable);
         }
     }
-
 }

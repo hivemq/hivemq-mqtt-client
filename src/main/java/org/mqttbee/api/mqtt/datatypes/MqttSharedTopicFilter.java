@@ -23,43 +23,46 @@ import org.mqttbee.mqtt.util.MqttBuilderUtil;
 
 /**
  * MQTT Shared Topic Filter according to the MQTT specification.
- * <p>
- * A Shared Topic Filter consists of the {@link #SHARE_PREFIX} a Share Name and a Topic Filter. The Share Name has the
- * restrictions from {@link MqttUTF8String}, must be at least 1 character long and mut not contain wildcards ({@link
- * MqttTopicFilter#MULTI_LEVEL_WILDCARD}, {@link MqttTopicFilter#SINGLE_LEVEL_WILDCARD}) and the {@link
- * MqttTopic#TOPIC_LEVEL_SEPARATOR}. The Topic Filter has the same restrictions from {@link MqttTopicFilter}.
+ *
+ * <p>A Shared Topic Filter consists of the {@link #SHARE_PREFIX} a Share Name and a Topic Filter.
+ * The Share Name has the restrictions from {@link MqttUTF8String}, must be at least 1 character
+ * long and mut not contain wildcards ({@link MqttTopicFilter#MULTI_LEVEL_WILDCARD}, {@link
+ * MqttTopicFilter#SINGLE_LEVEL_WILDCARD}) and the {@link MqttTopic#TOPIC_LEVEL_SEPARATOR}. The
+ * Topic Filter has the same restrictions from {@link MqttTopicFilter}.
  *
  * @author Silvio Giebl
  */
 @DoNotImplement
 public interface MqttSharedTopicFilter extends MqttTopicFilter {
 
-    /**
-     * The prefix of a Shared Topic Filter.
-     */
+    /** The prefix of a Shared Topic Filter. */
     String SHARE_PREFIX = "$share" + MqttTopic.TOPIC_LEVEL_SEPARATOR;
 
     /**
-     * Validates and creates a Shared Topic Filter from the given Share Name and the given Topic Filter.
+     * Validates and creates a Shared Topic Filter from the given Share Name and the given Topic
+     * Filter.
      *
-     * @param shareName   the Share Name.
+     * @param shareName the Share Name.
      * @param topicFilter the Topic Filter.
      * @return the created Shared Topic Filter.
-     * @throws IllegalArgumentException if the Share Name is not a valid Share Name or the Topic Filter is not a valid
-     *                                  Topic Filter.
+     * @throws IllegalArgumentException if the Share Name is not a valid Share Name or the Topic
+     *     Filter is not a valid Topic Filter.
      */
     @NotNull
-    static MqttSharedTopicFilter from(@NotNull final String shareName, @NotNull final String topicFilter) {
+    static MqttSharedTopicFilter from(
+            @NotNull final String shareName, @NotNull final String topicFilter) {
         return MqttBuilderUtil.sharedTopicFilter(shareName, topicFilter);
     }
 
     @NotNull
-    static MqttSharedTopicFilterBuilder<Void> builder(@NotNull final String shareName, @NotNull final String topTopic) {
+    static MqttSharedTopicFilterBuilder<Void> builder(
+            @NotNull final String shareName, @NotNull final String topTopic) {
         return new MqttSharedTopicFilterBuilder<>(shareName, topTopic, null);
     }
 
     @NotNull
-    static MqttSharedTopicFilterBuilder<Void> extend(@NotNull final MqttSharedTopicFilter sharedTopicFilter) {
+    static MqttSharedTopicFilterBuilder<Void> extend(
+            @NotNull final MqttSharedTopicFilter sharedTopicFilter) {
         return new MqttSharedTopicFilterBuilder<>(
                 sharedTopicFilter.getShareName(), sharedTopicFilter.getTopicFilter(), null);
     }
@@ -72,18 +75,14 @@ public interface MqttSharedTopicFilter extends MqttTopicFilter {
     }
 
     @NotNull
-    static MqttSharedTopicFilterBuilder<Void> share(@NotNull final String shareName, @NotNull final MqttTopic topic) {
+    static MqttSharedTopicFilterBuilder<Void> share(
+            @NotNull final String shareName, @NotNull final MqttTopic topic) {
         return new MqttSharedTopicFilterBuilder<>(shareName, topic.toString(), null);
     }
 
-    /**
-     * @return the Share Name of this Shared Topic Filter as a string.
-     */
+    /** @return the Share Name of this Shared Topic Filter as a string. */
     String getShareName();
 
-    /**
-     * @return the Topic Filter of this Shared Topic Filter as a string.
-     */
+    /** @return the Topic Filter of this Shared Topic Filter as a string. */
     String getTopicFilter();
-
 }

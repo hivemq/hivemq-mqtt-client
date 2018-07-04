@@ -17,7 +17,12 @@
 
 package org.mqttbee.mqtt.handler.publish;
 
+import static org.mqttbee.mqtt.message.subscribe.MqttStatefulSubscribe.DEFAULT_NO_SUBSCRIPTION_IDENTIFIER;
+
 import com.google.common.primitives.ImmutableIntArray;
+import java.util.function.Consumer;
+import javax.annotation.concurrent.NotThreadSafe;
+import javax.inject.Inject;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt.MqttClientConnectionData;
@@ -30,12 +35,6 @@ import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAck;
 import org.mqttbee.util.collections.IntMap;
 import org.mqttbee.util.collections.ScNodeList;
 
-import javax.annotation.concurrent.NotThreadSafe;
-import javax.inject.Inject;
-import java.util.function.Consumer;
-
-import static org.mqttbee.mqtt.message.subscribe.MqttStatefulSubscribe.DEFAULT_NO_SUBSCRIPTION_IDENTIFIER;
-
 /**
  * single threaded, in channel eventloop
  *
@@ -47,16 +46,19 @@ public class MqttIncomingPublishFlowsWithId extends MqttIncomingPublishFlows {
 
     private final IntMap<MqttSubscriptionFlow> flowsWithIdsMap;
     private final MqttSubscriptionFlows flowsWithIds;
-    private final Consumer<MqttSubscriptionFlow> flowWithIdUnsubscribedCallback = this::unsubscribed;
+    private final Consumer<MqttSubscriptionFlow> flowWithIdUnsubscribedCallback =
+            this::unsubscribed;
 
     @Inject
     MqttIncomingPublishFlowsWithId(
-            @NotNull final MqttClientData clientData, @NotNull final MqttSubscriptionFlows flowsWithoutIds,
+            @NotNull final MqttClientData clientData,
+            @NotNull final MqttSubscriptionFlows flowsWithoutIds,
             @NotNull final MqttSubscriptionFlows flowsWithIds) {
 
         super(flowsWithoutIds);
 
-        final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
+        final MqttClientConnectionData clientConnectionData =
+                clientData.getRawClientConnectionData();
         assert clientConnectionData != null;
 
         flowsWithIdsMap = new IntMap<>(1, clientConnectionData.getSubscriptionIdentifierMaximum());
@@ -65,7 +67,8 @@ public class MqttIncomingPublishFlowsWithId extends MqttIncomingPublishFlows {
 
     @Override
     public void subscribe(
-            @NotNull final MqttStatefulSubscribe subscribe, @NotNull final MqttSubAck subAck,
+            @NotNull final MqttStatefulSubscribe subscribe,
+            @NotNull final MqttSubAck subAck,
             @Nullable final MqttSubscriptionFlow flow) {
 
         if (flow != null) {
@@ -79,8 +82,11 @@ public class MqttIncomingPublishFlowsWithId extends MqttIncomingPublishFlows {
     }
 
     @Override
-    void subscribe(@NotNull final MqttTopicFilterImpl topicFilter, @Nullable final MqttSubscriptionFlow flow) {
-        if ((flow != null) && (flow.getSubscriptionIdentifier() != DEFAULT_NO_SUBSCRIPTION_IDENTIFIER)) {
+    void subscribe(
+            @NotNull final MqttTopicFilterImpl topicFilter,
+            @Nullable final MqttSubscriptionFlow flow) {
+        if ((flow != null)
+                && (flow.getSubscriptionIdentifier() != DEFAULT_NO_SUBSCRIPTION_IDENTIFIER)) {
             flowsWithIds.subscribe(topicFilter, flow);
         } else {
             super.subscribe(topicFilter, flow);
@@ -128,5 +134,4 @@ public class MqttIncomingPublishFlowsWithId extends MqttIncomingPublishFlows {
         }
         super.findMatching(publish, matchingFlows);
     }
-
 }

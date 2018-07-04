@@ -18,17 +18,14 @@
 package org.mqttbee.api.mqtt.mqtt3.message.unsubscribe;
 
 import com.google.common.collect.ImmutableList;
+import java.util.function.Function;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3Message;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 
-import java.util.function.Function;
-
-/**
- * MQTT 3 UNSUBSCRIBE packet.
- */
+/** MQTT 3 UNSUBSCRIBE packet. */
 @DoNotImplement
 public interface Mqtt3Unsubscribe extends Mqtt3Message {
 
@@ -43,7 +40,8 @@ public interface Mqtt3Unsubscribe extends Mqtt3Message {
     }
 
     /**
-     * @return the Topic Filters of this UNSUBSCRIBE packet. The list contains at least one Topic Filter.
+     * @return the Topic Filters of this UNSUBSCRIBE packet. The list contains at least one Topic
+     *     Filter.
      */
     @NotNull
     ImmutableList<? extends MqttTopicFilter> getTopicFilters();
@@ -53,5 +51,4 @@ public interface Mqtt3Unsubscribe extends Mqtt3Message {
     default Mqtt3MessageType getType() {
         return Mqtt3MessageType.UNSUBSCRIBE;
     }
-
 }

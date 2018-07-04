@@ -17,8 +17,12 @@
 
 package org.mqttbee.mqtt.codec.encoder.mqtt3;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 import com.google.common.primitives.Bytes;
 import io.netty.buffer.ByteBuf;
+import java.nio.ByteBuffer;
+import java.util.Objects;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.junit.jupiter.api.Test;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
@@ -31,32 +35,36 @@ import org.mqttbee.mqtt.message.connect.MqttStatefulConnect;
 import org.mqttbee.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
 import org.mqttbee.mqtt.message.publish.MqttWillPublish;
 
-import java.nio.ByteBuffer;
-import java.util.Objects;
-
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-
 class Mqtt3ConnectEncoderTest extends AbstractMqtt5EncoderTest {
 
     private static final byte[] EXAMPLE_CONNECT = {
-            // FIXED HEADER
-            // packet type and flags
-            0x10,
-            // remaining length (16 Bytes)
-            0x10,
-            // VARIABLE HEADER
-            // protocol name
-            0x00, //msb
-            0x04, //lsb
-            'M', 'Q', 'T', 'T',
-            //protocol level
-            0x04,
-            //connect flags (only clean session is set)
-            0b0000_0010,
-            //keep alive (60)
-            0x00, 0x3c,
-            //clientId
-            0x00, 0x04, 'T', 'E', 'S', 'T'
+        // FIXED HEADER
+        // packet type and flags
+        0x10,
+        // remaining length (16 Bytes)
+        0x10,
+        // VARIABLE HEADER
+        // protocol name
+        0x00, // msb
+        0x04, // lsb
+        'M',
+        'Q',
+        'T',
+        'T',
+        // protocol level
+        0x04,
+        // connect flags (only clean session is set)
+        0b0000_0010,
+        // keep alive (60)
+        0x00,
+        0x3c,
+        // clientId
+        0x00,
+        0x04,
+        'T',
+        'E',
+        'S',
+        'T'
     };
 
     Mqtt3ConnectEncoderTest() {
@@ -65,7 +73,8 @@ class Mqtt3ConnectEncoderTest extends AbstractMqtt5EncoderTest {
 
     @Test
     void encode_SUCCESS() {
-        final MqttClientIdentifierImpl identifier = Objects.requireNonNull(MqttClientIdentifierImpl.from("TEST"));
+        final MqttClientIdentifierImpl identifier =
+                Objects.requireNonNull(MqttClientIdentifierImpl.from("TEST"));
         final MqttConnect connect = Mqtt3ConnectView.delegate(60, true, null, null);
         final MqttStatefulConnect connectWrapper = connect.createStateful(identifier, null);
         encode(EXAMPLE_CONNECT, connectWrapper);
@@ -83,36 +92,52 @@ class Mqtt3ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         final boolean isRetained = false;
         final int qosWill = 1;
 
-        //PAHO
+        // PAHO
         final org.eclipse.paho.client.mqttv3.MqttMessage will =
                 new org.eclipse.paho.client.mqttv3.MqttMessage(myLastWill.getBytes());
         will.setQos(qosWill);
         final org.eclipse.paho.client.mqttv3.internal.wire.MqttConnect pahoConnect =
-                new org.eclipse.paho.client.mqttv3.internal.wire.MqttConnect(clientId, 4, cleanSession, keepAlive,
-                        username, password == null ? "".toCharArray() : password.toCharArray(), will, willTopic);
+                new org.eclipse.paho.client.mqttv3.internal.wire.MqttConnect(
+                        clientId,
+                        4,
+                        cleanSession,
+                        keepAlive,
+                        username,
+                        password == null ? "".toCharArray() : password.toCharArray(),
+                        will,
+                        willTopic);
 
         final byte[] expected = Bytes.concat(pahoConnect.getHeader(), pahoConnect.getPayload());
 
-        final MqttWillPublish willMessage = new MqttWillPublish(Objects.requireNonNull(MqttTopicImpl.from(willTopic)),
-                ByteBuffer.wrap(myLastWill.getBytes()), Objects.requireNonNull(MqttQoS.fromCode(qosWill)), isRetained,
-                MqttWillPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null,
-                MqttUserPropertiesImpl.NO_USER_PROPERTIES, 0);
+        final MqttWillPublish willMessage =
+                new MqttWillPublish(
+                        Objects.requireNonNull(MqttTopicImpl.from(willTopic)),
+                        ByteBuffer.wrap(myLastWill.getBytes()),
+                        Objects.requireNonNull(MqttQoS.fromCode(qosWill)),
+                        isRetained,
+                        MqttWillPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY,
+                        null,
+                        null,
+                        null,
+                        null,
+                        MqttUserPropertiesImpl.NO_USER_PROPERTIES,
+                        0);
 
-        final MqttConnect connect = Mqtt3ConnectView.delegate(keepAlive, cleanSession, null, willMessage);
+        final MqttConnect connect =
+                Mqtt3ConnectView.delegate(keepAlive, cleanSession, null, willMessage);
         final MqttStatefulConnect connectWrapper =
-                connect.createStateful(Objects.requireNonNull(MqttClientIdentifierImpl.from(clientId)), null);
+                connect.createStateful(
+                        Objects.requireNonNull(MqttClientIdentifierImpl.from(clientId)), null);
 
         encode(expected, connectWrapper);
     }
 
-    /**
-     * Pseudo test to assure we get the right bytes from paho methods
-     */
+    /** Pseudo test to assure we get the right bytes from paho methods */
     @Test
     void test_PAHO_GETPAYLOAD_METHOD() throws MqttException {
         final org.eclipse.paho.client.mqttv3.internal.wire.MqttConnect pahoConnect =
-                new org.eclipse.paho.client.mqttv3.internal.wire.MqttConnect("TEST", 4, true, 60, null, null, null,
-                        null);
+                new org.eclipse.paho.client.mqttv3.internal.wire.MqttConnect(
+                        "TEST", 4, true, 60, null, null, null, null);
         final byte[] actual = Bytes.concat(pahoConnect.getHeader(), pahoConnect.getPayload());
         assertArrayEquals(EXAMPLE_CONNECT, actual);
     }
@@ -125,5 +150,4 @@ class Mqtt3ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         byteBuf.release();
         assertArrayEquals(expected, actual);
     }
-
 }

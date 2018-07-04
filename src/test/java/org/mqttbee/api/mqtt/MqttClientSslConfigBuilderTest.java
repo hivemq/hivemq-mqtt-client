@@ -15,59 +15,58 @@
  */
 package org.mqttbee.api.mqtt;
 
-import com.google.common.collect.Lists;
-import org.junit.Test;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 
+import com.google.common.collect.Lists;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.util.Arrays;
 import java.util.List;
+import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-
-/**
- * @author Christian Hoff
- */
+/** @author Christian Hoff */
 public class MqttClientSslConfigBuilderTest {
     @Test
-    public void cipherSuites_simple() throws UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
+    public void cipherSuites_simple()
+            throws UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
         List<String> expectedCipherSuites = Arrays.asList("TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305");
 
-        MqttClientSslConfig sslConfig = MqttClientSslConfig.builder()
-                .cipherSuites(Lists.newArrayList("TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305"))
-                .build();
+        MqttClientSslConfig sslConfig =
+                MqttClientSslConfig.builder()
+                        .cipherSuites(Lists.newArrayList("TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305"))
+                        .build();
 
         assertThat(sslConfig.getCipherSuites(), is(expectedCipherSuites));
     }
 
     @Test
-    public void cipherSuites_null() throws UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
-        MqttClientSslConfig sslConfig = MqttClientSslConfig.builder()
-                .cipherSuites(null)
-                .build();
+    public void cipherSuites_null()
+            throws UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
+        MqttClientSslConfig sslConfig = MqttClientSslConfig.builder().cipherSuites(null).build();
 
         assertNull(sslConfig.getCipherSuites());
     }
 
     @Test
-    public void protocols_simple() throws UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
+    public void protocols_simple()
+            throws UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
         List<String> expectedProtocols = Arrays.asList("TLSv1.2", "TLSv1.1");
 
-        MqttClientSslConfig sslConfig = MqttClientSslConfig.builder()
-                .protocols(Lists.newArrayList("TLSv1.2", "TLSv1.1"))
-                .build();
+        MqttClientSslConfig sslConfig =
+                MqttClientSslConfig.builder()
+                        .protocols(Lists.newArrayList("TLSv1.2", "TLSv1.1"))
+                        .build();
 
         assertThat(sslConfig.getProtocols(), is(expectedProtocols));
     }
 
     @Test
-    public void protocols_null() throws UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
-        MqttClientSslConfig sslConfig = MqttClientSslConfig.builder()
-                .protocols(null)
-                .build();
+    public void protocols_null()
+            throws UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
+        MqttClientSslConfig sslConfig = MqttClientSslConfig.builder().protocols(null).build();
 
         assertNull(sslConfig.getProtocols());
     }

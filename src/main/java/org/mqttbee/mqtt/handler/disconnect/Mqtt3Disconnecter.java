@@ -18,15 +18,14 @@
 package org.mqttbee.mqtt.handler.disconnect;
 
 import io.netty.channel.Channel;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 /**
- * MQTT 3 disconnecter which just closes a channel without sending a DISCONNECT message from the client side. Fires
- * {@link ChannelCloseEvent}s.
+ * MQTT 3 disconnecter which just closes a channel without sending a DISCONNECT message from the
+ * client side. Fires {@link ChannelCloseEvent}s.
  *
  * @author Silvio Giebl
  */
@@ -34,12 +33,12 @@ import javax.inject.Singleton;
 public class Mqtt3Disconnecter implements MqttDisconnecter {
 
     @Inject
-    Mqtt3Disconnecter() {
-    }
+    Mqtt3Disconnecter() {}
 
     @Override
     public void disconnect(
-            @NotNull final Channel channel, final Mqtt5DisconnectReasonCode reasonCode,
+            @NotNull final Channel channel,
+            final Mqtt5DisconnectReasonCode reasonCode,
             @NotNull final String reasonString) {
 
         MqttDisconnectUtil.close(channel, reasonString);
@@ -47,10 +46,10 @@ public class Mqtt3Disconnecter implements MqttDisconnecter {
 
     @Override
     public void disconnect(
-            @NotNull final Channel channel, final Mqtt5DisconnectReasonCode reasonCode,
+            @NotNull final Channel channel,
+            final Mqtt5DisconnectReasonCode reasonCode,
             @NotNull final Throwable cause) {
 
         MqttDisconnectUtil.close(channel, cause);
     }
-
 }

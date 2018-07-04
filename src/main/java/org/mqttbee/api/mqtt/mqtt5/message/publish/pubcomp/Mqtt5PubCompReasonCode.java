@@ -28,7 +28,6 @@ import org.mqttbee.mqtt.message.MqttCommonReasonCode;
  * @author Silvio Giebl
  */
 public enum Mqtt5PubCompReasonCode implements Mqtt5ReasonCode {
-
     SUCCESS(MqttCommonReasonCode.SUCCESS),
     PACKET_IDENTIFIER_NOT_FOUND(MqttCommonReasonCode.PACKET_IDENTIFIER_NOT_FOUND);
 
@@ -42,9 +41,7 @@ public enum Mqtt5PubCompReasonCode implements Mqtt5ReasonCode {
         this(reasonCode.getCode());
     }
 
-    /**
-     * @return the byte code of this PUBCOMP Reason Code.
-     */
+    /** @return the byte code of this PUBCOMP Reason Code. */
     public int getCode() {
         return code;
     }
@@ -53,8 +50,8 @@ public enum Mqtt5PubCompReasonCode implements Mqtt5ReasonCode {
      * Returns the AUTH Reason Code belonging to the given byte code.
      *
      * @param code the byte code.
-     * @return the PUBCOMP Reason Code belonging to the given byte code or null if the byte code is not a valid PUBCOMP
-     * Reason Code code.
+     * @return the PUBCOMP Reason Code belonging to the given byte code or null if the byte code is
+     *     not a valid PUBCOMP Reason Code code.
      */
     @Nullable
     public static Mqtt5PubCompReasonCode fromCode(final int code) {
@@ -65,5 +62,4 @@ public enum Mqtt5PubCompReasonCode implements Mqtt5ReasonCode {
         }
         return null;
     }
-
 }

@@ -27,9 +27,7 @@ import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRel;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class MqttPubCompBuilder implements Mqtt5PubCompBuilder {
 
     private final MqttPubRel pubRel;
@@ -61,7 +59,7 @@ public class MqttPubCompBuilder implements Mqtt5PubCompBuilder {
     }
 
     public MqttPubComp build() {
-        return new MqttPubComp(pubRel.getPacketIdentifier(), reasonCode, reasonString, userProperties);
+        return new MqttPubComp(
+                pubRel.getPacketIdentifier(), reasonCode, reasonString, userProperties);
     }
-
 }

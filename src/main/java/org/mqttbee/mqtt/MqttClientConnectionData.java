@@ -18,6 +18,7 @@
 package org.mqttbee.mqtt;
 
 import io.netty.channel.Channel;
+import java.util.Optional;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
@@ -27,12 +28,9 @@ import org.mqttbee.api.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 
-import java.util.Optional;
-
-/**
- * @author Silvio Giebl
- */
-public class MqttClientConnectionData implements Mqtt5ClientConnectionData, Mqtt3ClientConnectionData {
+/** @author Silvio Giebl */
+public class MqttClientConnectionData
+        implements Mqtt5ClientConnectionData, Mqtt3ClientConnectionData {
 
     private int keepAlive;
     private long sessionExpiryInterval;
@@ -47,19 +45,26 @@ public class MqttClientConnectionData implements Mqtt5ClientConnectionData, Mqtt
     private final Channel channel;
 
     public MqttClientConnectionData(
-            final int keepAlive, final long sessionExpiryInterval, final int receiveMaximum,
-            final int topicAliasMaximum, final int maximumPacketSize,
-            @Nullable final Mqtt5EnhancedAuthProvider enhancedAuthProvider, final boolean hasWillPublish,
-            final boolean problemInformationRequested, final boolean responseInformationRequested,
+            final int keepAlive,
+            final long sessionExpiryInterval,
+            final int receiveMaximum,
+            final int topicAliasMaximum,
+            final int maximumPacketSize,
+            @Nullable final Mqtt5EnhancedAuthProvider enhancedAuthProvider,
+            final boolean hasWillPublish,
+            final boolean problemInformationRequested,
+            final boolean responseInformationRequested,
             @NotNull final Channel channel) {
 
         this.keepAlive = keepAlive;
         this.sessionExpiryInterval = sessionExpiryInterval;
         this.receiveMaximum = receiveMaximum;
-        this.topicAliasMapping = (topicAliasMaximum == 0) ? null : new MqttTopicImpl[topicAliasMaximum];
+        this.topicAliasMapping =
+                (topicAliasMaximum == 0) ? null : new MqttTopicImpl[topicAliasMaximum];
         this.maximumPacketSize = maximumPacketSize;
         this.subscriptionIdentifierMaximum =
-                MqttVariableByteInteger.FOUR_BYTES_MAX_VALUE; // TODO CONNECT + CONNACK user properties
+                MqttVariableByteInteger
+                        .FOUR_BYTES_MAX_VALUE; // TODO CONNECT + CONNACK user properties
         this.enhancedAuthProvider = enhancedAuthProvider;
         this.hasWillPublish = hasWillPublish;
         this.problemInformationRequested = problemInformationRequested;
@@ -113,7 +118,9 @@ public class MqttClientConnectionData implements Mqtt5ClientConnectionData, Mqtt
     @NotNull
     @Override
     public Optional<MqttUTF8String> getAuthMethod() {
-        return (enhancedAuthProvider == null) ? Optional.empty() : Optional.of(enhancedAuthProvider.getMethod());
+        return (enhancedAuthProvider == null)
+                ? Optional.empty()
+                : Optional.of(enhancedAuthProvider.getMethod());
     }
 
     @Nullable
@@ -139,5 +146,4 @@ public class MqttClientConnectionData implements Mqtt5ClientConnectionData, Mqtt
     public Channel getChannel() {
         return channel;
     }
-
 }

@@ -25,9 +25,7 @@ import org.mqttbee.mqtt.ioc.ChannelScope;
 import org.mqttbee.mqtt.persistence.memory.IncomingQoSFlowMemoryPersistence;
 import org.mqttbee.mqtt.persistence.memory.OutgoingQoSFlowMemoryPersistence;
 
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @Module
 public class MqttPersistenceModule {
 
@@ -46,5 +44,4 @@ public class MqttPersistenceModule {
 
         return memoryPersistence.get(); // TODO file persistence
     }
-
 }

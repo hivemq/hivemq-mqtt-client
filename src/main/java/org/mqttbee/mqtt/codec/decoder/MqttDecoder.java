@@ -20,6 +20,8 @@ package org.mqttbee.mqtt.codec.decoder;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
+import java.util.List;
+import javax.inject.Inject;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.MqttClientConnectionData;
@@ -29,12 +31,9 @@ import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.ioc.ChannelScope;
 import org.mqttbee.mqtt.message.MqttMessage;
 
-import javax.inject.Inject;
-import java.util.List;
-
 /**
- * Main decoder for MQTT messages which delegates to the individual {@link MqttMessageDecoder}s when the fixed header
- * has been read and validated.
+ * Main decoder for MQTT messages which delegates to the individual {@link MqttMessageDecoder}s when
+ * the fixed header has been read and validated.
  *
  * @author Silvio Giebl
  */
@@ -53,7 +52,8 @@ public class MqttDecoder extends ByteToMessageDecoder {
     }
 
     @Override
-    protected void decode(final ChannelHandlerContext ctx, final ByteBuf in, final List<Object> out) {
+    protected void decode(
+            final ChannelHandlerContext ctx, final ByteBuf in, final List<Object> out) {
         if (in.readableBytes() < MIN_FIXED_HEADER_LENGTH) {
             return;
         }
@@ -82,7 +82,8 @@ public class MqttDecoder extends ByteToMessageDecoder {
                     MqttClientData.from(ctx.channel()).getRawClientConnectionData();
             assert clientConnectionData != null;
             if (packetSize > clientConnectionData.getMaximumPacketSize()) {
-                throw new MqttDecoderException(Mqtt5DisconnectReasonCode.PACKET_TOO_LARGE,
+                throw new MqttDecoderException(
+                        Mqtt5DisconnectReasonCode.PACKET_TOO_LARGE,
                         "incoming packet exceeded maximum packet size");
             }
 
@@ -94,10 +95,12 @@ public class MqttDecoder extends ByteToMessageDecoder {
             final MqttMessageDecoder decoder = decoders.get(messageType);
             if (decoder == null) {
                 throw new MqttDecoderException(
-                        Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "must not receive this packet type");
+                        Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+                        "must not receive this packet type");
             }
 
-            final MqttMessage message = decoder.decode(flags, in.readSlice(remainingLength), clientConnectionData);
+            final MqttMessage message =
+                    decoder.decode(flags, in.readSlice(remainingLength), clientConnectionData);
 
             if (message != null) {
                 out.add(message);
@@ -109,5 +112,4 @@ public class MqttDecoder extends ByteToMessageDecoder {
             MqttDisconnectUtil.disconnect(ctx.channel(), e.getReasonCode(), e);
         }
     }
-
 }

@@ -17,13 +17,11 @@
 
 package org.mqttbee.api.mqtt.datatypes;
 
-import org.junit.Test;
-
 import static org.junit.Assert.*;
 
-/**
- * @author Silvio Giebl
- */
+import org.junit.Test;
+
+/** @author Silvio Giebl */
 public class MqttQoSTest {
 
     @Test
@@ -65,5 +63,4 @@ public class MqttQoSTest {
     public void test_fromCode_negative() {
         assertNull(MqttQoS.fromCode(-1));
     }
-
 }

@@ -17,23 +17,18 @@
 
 package org.mqttbee.util.collections;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import javax.annotation.concurrent.NotThreadSafe;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 
-import javax.annotation.concurrent.NotThreadSafe;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @NotThreadSafe
 public class ScNodeList<E> implements ScListNode, Iterable<E> {
 
-    @Nullable
-    private NextNode<E> head;
-    @NotNull
-    private final ScLinkedListIterator iterator = new ScLinkedListIterator();
+    @Nullable private NextNode<E> head;
+    @NotNull private final ScLinkedListIterator iterator = new ScLinkedListIterator();
 
     public Handle<E> add(@NotNull final E element) {
         return head = new NextNode<>(element, this, head);
@@ -64,16 +59,16 @@ public class ScNodeList<E> implements ScListNode, Iterable<E> {
         return iterator;
     }
 
-
     private static class NextNode<E> implements ScListNode, Handle<E> {
 
         private final E element;
-        @NotNull
-        private ScListNode prev;
-        @Nullable
-        private NextNode<E> next;
+        @NotNull private ScListNode prev;
+        @Nullable private NextNode<E> next;
 
-        NextNode(@NotNull final E element, @NotNull final ScListNode prev, @Nullable final NextNode<E> next) {
+        NextNode(
+                @NotNull final E element,
+                @NotNull final ScListNode prev,
+                @Nullable final NextNode<E> next) {
             this.element = element;
             this.prev = prev;
             this.next = next;
@@ -103,18 +98,14 @@ public class ScNodeList<E> implements ScListNode, Iterable<E> {
         public boolean remove() {
             return prev.removeNext();
         }
-
     }
-
 
     public interface Handle<E> {
 
         E getElement();
 
         boolean remove();
-
     }
-
 
     private class ScLinkedListIterator implements Iterator<E> {
 
@@ -145,7 +136,5 @@ public class ScNodeList<E> implements ScListNode, Iterable<E> {
         public void remove() {
             current.remove();
         }
-
     }
-
 }

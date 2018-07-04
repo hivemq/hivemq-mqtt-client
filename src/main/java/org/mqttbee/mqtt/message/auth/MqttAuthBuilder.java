@@ -18,6 +18,7 @@
 package org.mqttbee.mqtt.message.auth;
 
 import com.google.common.base.Preconditions;
+import java.nio.ByteBuffer;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
@@ -29,11 +30,7 @@ import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 
-import java.nio.ByteBuffer;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class MqttAuthBuilder implements Mqtt5AuthBuilder {
 
     private final MqttUTF8StringImpl method;
@@ -43,7 +40,8 @@ public class MqttAuthBuilder implements Mqtt5AuthBuilder {
     private MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
 
     public MqttAuthBuilder(
-            @NotNull final Mqtt5AuthReasonCode reasonCode, @NotNull final MqttUTF8StringImpl method) {
+            @NotNull final Mqtt5AuthReasonCode reasonCode,
+            @NotNull final MqttUTF8StringImpl method) {
 
         Preconditions.checkNotNull(reasonCode);
         Preconditions.checkNotNull(method);
@@ -96,5 +94,4 @@ public class MqttAuthBuilder implements Mqtt5AuthBuilder {
     public MqttAuth build() {
         return new MqttAuth(reasonCode, method, data, reasonString, userProperties);
     }
-
 }

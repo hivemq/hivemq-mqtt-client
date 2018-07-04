@@ -17,6 +17,7 @@
 
 package org.mqttbee.api.mqtt.mqtt5.message.auth;
 
+import java.nio.ByteBuffer;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
@@ -24,11 +25,7 @@ import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 
-import java.nio.ByteBuffer;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @DoNotImplement
 public interface Mqtt5AuthBuilder {
 
@@ -49,5 +46,4 @@ public interface Mqtt5AuthBuilder {
 
     @NotNull
     Mqtt5UserPropertiesBuilder<? extends Mqtt5AuthBuilder> userProperties();
-
 }

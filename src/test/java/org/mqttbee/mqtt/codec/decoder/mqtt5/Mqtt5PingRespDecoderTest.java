@@ -17,6 +17,8 @@
 
 package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -27,20 +29,17 @@ import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.ping.Mqtt5PingResp;
 import org.mqttbee.mqtt.netty.ChannelAttributes;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 class Mqtt5PingRespDecoderTest extends AbstractMqtt5DecoderTest {
 
     Mqtt5PingRespDecoderTest() {
-        super(code -> {
-            if (code == Mqtt5MessageType.PINGRESP.getCode()) {
-                return createPingRespDecoder();
-            }
-            return null;
-        });
+        super(
+                code -> {
+                    if (code == Mqtt5MessageType.PINGRESP.getCode()) {
+                        return createPingRespDecoder();
+                    }
+                    return null;
+                });
     }
 
     @Test
@@ -110,7 +109,8 @@ class Mqtt5PingRespDecoderTest extends AbstractMqtt5DecoderTest {
         testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    private void testDisconnect(final Mqtt5DisconnectReasonCode reasonCode, final boolean sendReasonString) {
+    private void testDisconnect(
+            final Mqtt5DisconnectReasonCode reasonCode, final boolean sendReasonString) {
         final Mqtt5PingResp pingResp = channel.readInbound();
         assertNull(pingResp);
 
@@ -119,5 +119,4 @@ class Mqtt5PingRespDecoderTest extends AbstractMqtt5DecoderTest {
         assertEquals(reasonCode, disconnect.getReasonCode());
         assertEquals(sendReasonString, disconnect.getReasonString().isPresent());
     }
-
 }

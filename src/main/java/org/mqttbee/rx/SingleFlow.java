@@ -19,13 +19,10 @@ package org.mqttbee.rx;
 
 import io.reactivex.SingleObserver;
 import io.reactivex.disposables.Disposable;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.mqttbee.annotations.NotNull;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public interface SingleFlow<T> {
 
     void onSuccess(@NotNull T t);
@@ -67,7 +64,5 @@ public interface SingleFlow<T> {
         public boolean isCancelled() {
             return isDisposed();
         }
-
     }
-
 }

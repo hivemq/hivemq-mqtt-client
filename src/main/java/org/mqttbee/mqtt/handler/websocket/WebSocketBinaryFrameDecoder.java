@@ -20,19 +20,16 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
 import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
-
 import java.util.List;
 
-/**
- * @author David Katz
- */
+/** @author David Katz */
 public class WebSocketBinaryFrameDecoder extends MessageToMessageDecoder<WebSocketFrame> {
 
     @Override
-    protected void decode(final ChannelHandlerContext ctx, final WebSocketFrame msg, final List<Object> out) {
+    protected void decode(
+            final ChannelHandlerContext ctx, final WebSocketFrame msg, final List<Object> out) {
         if (msg instanceof BinaryWebSocketFrame) {
             out.add(msg.retain().content());
         }
     }
-
 }

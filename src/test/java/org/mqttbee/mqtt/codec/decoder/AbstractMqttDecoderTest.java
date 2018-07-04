@@ -22,9 +22,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.mqttbee.annotations.NotNull;
 
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class AbstractMqttDecoderTest {
 
     private final MqttMessageDecoders decoders;
@@ -52,5 +50,4 @@ public class AbstractMqttDecoderTest {
     public static MqttPingRespDecoder createPingRespDecoder() {
         return new MqttPingRespDecoder();
     }
-
 }

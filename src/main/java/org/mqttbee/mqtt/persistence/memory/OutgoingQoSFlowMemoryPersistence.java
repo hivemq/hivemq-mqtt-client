@@ -17,6 +17,8 @@
 
 package org.mqttbee.mqtt.persistence.memory;
 
+import java.util.concurrent.CompletableFuture;
+import javax.inject.Inject;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
@@ -27,12 +29,7 @@ import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRel;
 import org.mqttbee.mqtt.persistence.OutgoingQoSFlowPersistence;
 import org.mqttbee.util.collections.IntMap;
 
-import javax.inject.Inject;
-import java.util.concurrent.CompletableFuture;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @ChannelScope
 public class OutgoingQoSFlowMemoryPersistence implements OutgoingQoSFlowPersistence {
 
@@ -40,7 +37,8 @@ public class OutgoingQoSFlowMemoryPersistence implements OutgoingQoSFlowPersiste
 
     @Inject
     OutgoingQoSFlowMemoryPersistence(final MqttClientData clientData) {
-        final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
+        final MqttClientConnectionData clientConnectionData =
+                clientData.getRawClientConnectionData();
         assert clientConnectionData != null;
         this.messages = new IntMap<>(1, clientConnectionData.getReceiveMaximum());
     }
@@ -71,5 +69,4 @@ public class OutgoingQoSFlowMemoryPersistence implements OutgoingQoSFlowPersiste
         messages.remove(packetIdentifier);
         return CompletableFuture.completedFuture(null);
     }
-
 }

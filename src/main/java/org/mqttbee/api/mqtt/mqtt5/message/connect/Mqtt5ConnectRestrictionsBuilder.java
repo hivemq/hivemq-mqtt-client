@@ -18,17 +18,14 @@
 package org.mqttbee.api.mqtt.mqtt5.message.connect;
 
 import com.google.common.base.Preconditions;
+import java.util.function.Function;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt.message.connect.MqttConnectRestrictions;
 import org.mqttbee.util.FluentBuilder;
 import org.mqttbee.util.UnsignedDataTypes;
 
-import java.util.function.Function;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class Mqtt5ConnectRestrictionsBuilder<P> extends FluentBuilder<Mqtt5ConnectRestrictions, P> {
 
     private int receiveMaximum = Mqtt5ConnectRestrictions.DEFAULT_RECEIVE_MAXIMUM;
@@ -67,5 +64,4 @@ public class Mqtt5ConnectRestrictionsBuilder<P> extends FluentBuilder<Mqtt5Conne
     public Mqtt5ConnectRestrictions build() {
         return new MqttConnectRestrictions(receiveMaximum, topicAliasMaximum, maximumPacketSize);
     }
-
 }

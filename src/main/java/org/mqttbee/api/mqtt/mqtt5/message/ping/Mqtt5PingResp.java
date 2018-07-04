@@ -35,5 +35,4 @@ public interface Mqtt5PingResp extends Mqtt5Message {
     default Mqtt5MessageType getType() {
         return Mqtt5MessageType.PINGRESP;
     }
-
 }

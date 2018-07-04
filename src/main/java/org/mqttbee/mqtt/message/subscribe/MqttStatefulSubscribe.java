@@ -17,14 +17,11 @@
 
 package org.mqttbee.mqtt.message.subscribe;
 
+import javax.annotation.concurrent.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.message.MqttStatefulMessage.MqttStatefulMessageWithId;
 
-import javax.annotation.concurrent.Immutable;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @Immutable
 public class MqttStatefulSubscribe extends MqttStatefulMessageWithId<MqttSubscribe> {
 
@@ -33,7 +30,9 @@ public class MqttStatefulSubscribe extends MqttStatefulMessageWithId<MqttSubscri
     private final int subscriptionIdentifier;
 
     MqttStatefulSubscribe(
-            @NotNull final MqttSubscribe subscribe, final int packetIdentifier, final int subscriptionIdentifier) {
+            @NotNull final MqttSubscribe subscribe,
+            final int packetIdentifier,
+            final int subscriptionIdentifier) {
 
         super(subscribe, packetIdentifier);
         this.subscriptionIdentifier = subscriptionIdentifier;
@@ -42,5 +41,4 @@ public class MqttStatefulSubscribe extends MqttStatefulMessageWithId<MqttSubscri
     public int getSubscriptionIdentifier() {
         return subscriptionIdentifier;
     }
-
 }

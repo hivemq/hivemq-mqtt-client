@@ -20,9 +20,7 @@ package org.mqttbee.api.mqtt.mqtt5.exceptions;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
 
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class Mqtt5MessageException extends Exception {
 
     private final Mqtt5Message mqtt5Message;
@@ -45,5 +43,4 @@ public class Mqtt5MessageException extends Exception {
     public Mqtt5Message getMqttMessage() {
         return mqtt5Message;
     }
-
 }

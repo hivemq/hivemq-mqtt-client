@@ -17,11 +17,8 @@
 
 package org.mqttbee.util.collections;
 
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 interface ScListNode {
 
     boolean removeNext();
-
 }

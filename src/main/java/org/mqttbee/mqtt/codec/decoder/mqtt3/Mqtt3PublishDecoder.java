@@ -17,8 +17,13 @@
 
 package org.mqttbee.mqtt.codec.decoder.mqtt3;
 
+import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.*;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
+import java.nio.ByteBuffer;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
@@ -32,12 +37,6 @@ import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishView;
 import org.mqttbee.mqtt.netty.ChannelAttributes;
 import org.mqttbee.util.ByteBufferUtil;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import java.nio.ByteBuffer;
-
-import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.*;
-
 /**
  * @author Daniel Krüger
  * @author Silvio Giebl
@@ -48,13 +47,14 @@ public class Mqtt3PublishDecoder implements MqttMessageDecoder {
     private static final int MIN_REMAINING_LENGTH = 2; // 2 for the packetIdentifier
 
     @Inject
-    Mqtt3PublishDecoder() {
-    }
+    Mqtt3PublishDecoder() {}
 
     @Nullable
     @Override
     public MqttStatefulPublish decode(
-            final int flags, @NotNull final ByteBuf in, @NotNull final MqttClientConnectionData clientConnectionData)
+            final int flags,
+            @NotNull final ByteBuf in,
+            @NotNull final MqttClientConnectionData clientConnectionData)
             throws MqttDecoderException {
 
         final Channel channel = clientConnectionData.getChannel();
@@ -77,7 +77,9 @@ public class Mqtt3PublishDecoder implements MqttMessageDecoder {
         final int payloadLength = in.readableBytes();
         ByteBuffer payload = null;
         if (payloadLength > 0) {
-            payload = ByteBufferUtil.allocate(payloadLength, ChannelAttributes.useDirectBufferForPayload(channel));
+            payload =
+                    ByteBufferUtil.allocate(
+                            payloadLength, ChannelAttributes.useDirectBufferForPayload(channel));
             in.readBytes(payload);
             payload.position(0);
         }
@@ -86,5 +88,4 @@ public class Mqtt3PublishDecoder implements MqttMessageDecoder {
 
         return Mqtt3PublishView.statefulDelegate(publish, packetIdentifier, dup);
     }
-
 }

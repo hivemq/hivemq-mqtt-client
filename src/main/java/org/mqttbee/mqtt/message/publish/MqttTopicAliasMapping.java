@@ -17,16 +17,13 @@
 
 package org.mqttbee.mqtt.message.publish;
 
+import java.util.HashMap;
+import java.util.Random;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.TopicAliasUsage;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 
-import java.util.HashMap;
-import java.util.Random;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class MqttTopicAliasMapping {
 
     private static final Random random = new Random();
@@ -41,7 +38,8 @@ public class MqttTopicAliasMapping {
         nextTopicAlias = 1;
     }
 
-    public int set(@NotNull final MqttTopicImpl topic, @NotNull final TopicAliasUsage topicAliasUsage) {
+    public int set(
+            @NotNull final MqttTopicImpl topic, @NotNull final TopicAliasUsage topicAliasUsage) {
         int topicAlias = MqttStatefulPublish.DEFAULT_NO_TOPIC_ALIAS;
         if (topicAliasUsage != TopicAliasUsage.MUST_NOT) {
             if (nextTopicAlias == size) {
@@ -66,5 +64,4 @@ public class MqttTopicAliasMapping {
     public int size() {
         return size;
     }
-
 }

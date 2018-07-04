@@ -17,6 +17,8 @@
 
 package org.mqttbee.mqtt.message.connect;
 
+import java.util.Optional;
+import javax.annotation.concurrent.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
@@ -30,12 +32,7 @@ import org.mqttbee.mqtt.message.auth.MqttEnhancedAuth;
 import org.mqttbee.mqtt.message.auth.MqttSimpleAuth;
 import org.mqttbee.mqtt.message.publish.MqttWillPublish;
 
-import javax.annotation.concurrent.Immutable;
-import java.util.Optional;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @Immutable
 public class MqttConnect extends MqttMessageWithUserPropertiesImpl implements Mqtt5Connect {
 
@@ -50,10 +47,15 @@ public class MqttConnect extends MqttMessageWithUserPropertiesImpl implements Mq
     private final MqttWillPublish willPublish;
 
     public MqttConnect(
-            final int keepAlive, final boolean isCleanStart, final long sessionExpiryInterval,
-            final boolean isResponseInformationRequested, final boolean isProblemInformationRequested,
-            @NotNull final MqttConnectRestrictions restrictions, @Nullable final MqttSimpleAuth simpleAuth,
-            @Nullable final Mqtt5EnhancedAuthProvider enhancedAuthProvider, @Nullable final MqttWillPublish willPublish,
+            final int keepAlive,
+            final boolean isCleanStart,
+            final long sessionExpiryInterval,
+            final boolean isResponseInformationRequested,
+            final boolean isProblemInformationRequested,
+            @NotNull final MqttConnectRestrictions restrictions,
+            @Nullable final MqttSimpleAuth simpleAuth,
+            @Nullable final Mqtt5EnhancedAuthProvider enhancedAuthProvider,
+            @Nullable final MqttWillPublish willPublish,
             @NotNull final MqttUserPropertiesImpl userProperties) {
 
         super(userProperties);
@@ -133,9 +135,9 @@ public class MqttConnect extends MqttMessageWithUserPropertiesImpl implements Mq
     }
 
     public MqttStatefulConnect createStateful(
-            @NotNull final MqttClientIdentifierImpl clientIdentifier, @Nullable final MqttEnhancedAuth enhancedAuth) {
+            @NotNull final MqttClientIdentifierImpl clientIdentifier,
+            @Nullable final MqttEnhancedAuth enhancedAuth) {
 
         return new MqttStatefulConnect(this, clientIdentifier, enhancedAuth);
     }
-
 }

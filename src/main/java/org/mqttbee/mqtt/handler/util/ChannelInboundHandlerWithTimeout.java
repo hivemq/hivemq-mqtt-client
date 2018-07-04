@@ -22,14 +22,14 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import io.netty.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 
-import java.util.concurrent.TimeUnit;
-
 /**
- * ChannelInboundHandler with timeout handling. Subclasses must not be {@link io.netty.channel.ChannelHandler.Sharable}.
+ * ChannelInboundHandler with timeout handling. Subclasses must not be {@link
+ * io.netty.channel.ChannelHandler.Sharable}.
  *
  * @author Silvio Giebl
  */
@@ -59,30 +59,27 @@ public abstract class ChannelInboundHandlerWithTimeout extends ChannelInboundHan
     }
 
     /**
-     * Invoked when a timeout happens. Sends a DISCONNECT message if the channel is still active and always closes the
-     * channel.
+     * Invoked when a timeout happens. Sends a DISCONNECT message if the channel is still active and
+     * always closes the channel.
      */
     @Override
     public void run() {
         if (!Thread.currentThread().isInterrupted()) {
             if (ctx.channel().isActive()) {
-                MqttDisconnectUtil.disconnect(ctx.channel(), getTimeoutReasonCode(), getTimeoutReasonString());
+                MqttDisconnectUtil.disconnect(
+                        ctx.channel(), getTimeoutReasonCode(), getTimeoutReasonString());
             } else {
                 MqttDisconnectUtil.close(ctx.channel(), getTimeoutReasonString());
             }
         }
     }
 
-    /**
-     * Schedules a timeout.
-     */
+    /** Schedules a timeout. */
     protected void scheduleTimeout() {
         timeoutFuture = ctx.executor().schedule(this, getTimeout(ctx), TimeUnit.SECONDS);
     }
 
-    /**
-     * Cancels a scheduled timeout.
-     */
+    /** Cancels a scheduled timeout. */
     protected void cancelTimeout() {
         if (timeoutFuture != null) {
             timeoutFuture.cancel(true);
@@ -99,16 +96,16 @@ public abstract class ChannelInboundHandlerWithTimeout extends ChannelInboundHan
     protected abstract long getTimeout(@NotNull ChannelHandlerContext ctx);
 
     /**
-     * @return the Reason Code that will be used in the DISCONNECT message if a timeout happens and the channel is still
-     * active.
+     * @return the Reason Code that will be used in the DISCONNECT message if a timeout happens and
+     *     the channel is still active.
      */
     @NotNull
     protected abstract Mqtt5DisconnectReasonCode getTimeoutReasonCode();
 
     /**
-     * @return the Reason String that will be used to notify the API and may also be sent with a DISCONNECT message.
+     * @return the Reason String that will be used to notify the API and may also be sent with a
+     *     DISCONNECT message.
      */
     @NotNull
     protected abstract String getTimeoutReasonString();
-
 }

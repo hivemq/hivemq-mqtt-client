@@ -21,15 +21,16 @@ import org.mqttbee.annotations.NotNull;
 
 /**
  * Exception to indicate that an integer can not be encoded as a variable byte integer.
- * <p>
- * This exception does not have a stack trace.
+ *
+ * <p>This exception does not have a stack trace.
  *
  * @author Silvio Giebl
  */
 public class MqttVariableByteIntegerExceededException extends RuntimeException {
 
     /**
-     * Creates a new MqttVariableByteIntegerExceededException with the name of the variable byte integer.
+     * Creates a new MqttVariableByteIntegerExceededException with the name of the variable byte
+     * integer.
      *
      * @param name the name of the variable byte integer.
      */
@@ -41,5 +42,4 @@ public class MqttVariableByteIntegerExceededException extends RuntimeException {
     public synchronized Throwable fillInStackTrace() {
         return this;
     }
-
 }

@@ -17,8 +17,11 @@
 
 package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
+import java.nio.ByteBuffer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -36,75 +39,187 @@ import org.mqttbee.mqtt.message.connect.connack.MqttConnAck;
 import org.mqttbee.mqtt.message.connect.connack.MqttConnAckRestrictions;
 import org.mqttbee.mqtt.netty.ChannelAttributes;
 
-import java.nio.ByteBuffer;
-
-import static org.junit.jupiter.api.Assertions.*;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
 
     Mqtt5ConnAckDecoderTest() {
-        super(code -> {
-            if (code == Mqtt5MessageType.CONNACK.getCode()) {
-                return new Mqtt5ConnAckDecoder();
-            }
-            return null;
-        });
+        super(
+                code -> {
+                    if (code == Mqtt5MessageType.CONNACK.getCode()) {
+                        return new Mqtt5ConnAckDecoder();
+                    }
+                    return null;
+                });
     }
 
     @Test
     void decode_big_packet() {
         final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                0b0010_0000,
-                //   remaining length (138)
-                (byte) (128 + 10), 1,
-                // variable header
-                //   connack flags
-                0b0000_0001,
-                //   reason code (success)
-                0x00,
-                //   properties (134)
-                (byte) (128 + 6), 1,
-                //     session expiry interval
-                0x11, 0, 0, 0, 10,
-                //     receive maximum
-                0x21, 0, 100,
-                //     maximum qos
-                0x24, 1,
-                //     retain available
-                0x25, 0,
-                //     maximum packet size
-                0x27, 0, 0, 0, 100,
-                //     assigned client identifier
-                0x12, 0, 4, 't', 'e', 's', 't',
-                //     topic alias maximum
-                0x22, 0, 5,
-                //     reason string
-                0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', 's',
-                //     user properties
-                0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e', //
-                0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e', '2', //
-                0x26, 0, 5, 't', 'e', 's', 't', '2', 0, 5, 'v', 'a', 'l', 'u', 'e', //
-                //     wildcard subscription available
-                0x28, 0,
-                //     subscription identifiers available
-                0x29, 1,
-                //     shared subscription available
-                0x2A, 0,
-                //     server keep alive
-                0x13, 0, 10,
-                //     response information
-                0x1A, 0, 8, 'r', 'e', 's', 'p', 'o', 'n', 's', 'e',
-                //     server reference
-                0x1C, 0, 6, 's', 'e', 'r', 'v', 'e', 'r',
-                //     auth method
-                0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5',
-                //     auth data
-                0x16, 0, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+            // fixed header
+            //   type, flags
+            0b0010_0000,
+            //   remaining length (138)
+            (byte) (128 + 10),
+            1,
+            // variable header
+            //   connack flags
+            0b0000_0001,
+            //   reason code (success)
+            0x00,
+            //   properties (134)
+            (byte) (128 + 6),
+            1,
+            //     session expiry interval
+            0x11,
+            0,
+            0,
+            0,
+            10,
+            //     receive maximum
+            0x21,
+            0,
+            100,
+            //     maximum qos
+            0x24,
+            1,
+            //     retain available
+            0x25,
+            0,
+            //     maximum packet size
+            0x27,
+            0,
+            0,
+            0,
+            100,
+            //     assigned client identifier
+            0x12,
+            0,
+            4,
+            't',
+            'e',
+            's',
+            't',
+            //     topic alias maximum
+            0x22,
+            0,
+            5,
+            //     reason string
+            0x1F,
+            0,
+            7,
+            's',
+            'u',
+            'c',
+            'c',
+            'e',
+            's',
+            's',
+            //     user properties
+            0x26,
+            0,
+            4,
+            't',
+            'e',
+            's',
+            't',
+            0,
+            5,
+            'v',
+            'a',
+            'l',
+            'u',
+            'e', //
+            0x26,
+            0,
+            4,
+            't',
+            'e',
+            's',
+            't',
+            0,
+            6,
+            'v',
+            'a',
+            'l',
+            'u',
+            'e',
+            '2', //
+            0x26,
+            0,
+            5,
+            't',
+            'e',
+            's',
+            't',
+            '2',
+            0,
+            5,
+            'v',
+            'a',
+            'l',
+            'u',
+            'e', //
+            //     wildcard subscription available
+            0x28,
+            0,
+            //     subscription identifiers available
+            0x29,
+            1,
+            //     shared subscription available
+            0x2A,
+            0,
+            //     server keep alive
+            0x13,
+            0,
+            10,
+            //     response information
+            0x1A,
+            0,
+            8,
+            'r',
+            'e',
+            's',
+            'p',
+            'o',
+            'n',
+            's',
+            'e',
+            //     server reference
+            0x1C,
+            0,
+            6,
+            's',
+            'e',
+            'r',
+            'v',
+            'e',
+            'r',
+            //     auth method
+            0x15,
+            0,
+            8,
+            'G',
+            'S',
+            '2',
+            '-',
+            'K',
+            'R',
+            'B',
+            '5',
+            //     auth data
+            0x16,
+            0,
+            10,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
         };
 
         final ByteBuf byteBuf = channel.alloc().buffer();
@@ -129,7 +244,8 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         assertTrue(connAck.getServerReference().isPresent());
         assertEquals("server", connAck.getServerReference().get().toString());
 
-        final ImmutableList<MqttUserPropertyImpl> userProperties = connAck.getUserProperties().asList();
+        final ImmutableList<MqttUserPropertyImpl> userProperties =
+                connAck.getUserProperties().asList();
         assertEquals(3, userProperties.size());
         assertEquals("test", userProperties.get(0).getName().toString());
         assertEquals("value", userProperties.get(0).getValue().toString());
@@ -152,7 +268,8 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         final Mqtt5EnhancedAuth auth = connAck.getEnhancedAuth().get();
         assertEquals("GS2-KRB5", auth.getMethod().toString());
         assertTrue(auth.getData().isPresent());
-        assertEquals(ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}), auth.getData().get());
+        assertEquals(
+                ByteBuffer.wrap(new byte[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}), auth.getData().get());
     }
 
     @Test
@@ -185,7 +302,8 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         assertFalse(connAck.getResponseInformation().isPresent());
         assertFalse(connAck.getServerReference().isPresent());
 
-        final ImmutableList<MqttUserPropertyImpl> userProperties = connAck.getUserProperties().asList();
+        final ImmutableList<MqttUserPropertyImpl> userProperties =
+                connAck.getUserProperties().asList();
         assertEquals(0, userProperties.size());
 
         assertEquals(MqttConnAckRestrictions.DEFAULT, connAck.getRestrictions());
@@ -443,18 +561,18 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
     @EnumSource(Mqtt5ConnAckReasonCode.class)
     void decode_reason_codes(final Mqtt5ConnAckReasonCode reasonCode) {
         final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                0b0010_0000,
-                //   remaining length
-                3,
-                // variable header
-                //   connack flags
-                0b0000_0000,
-                //   reason code placeholder
-                (byte) 0xFF,
-                //   properties
-                0
+            // fixed header
+            //   type, flags
+            0b0010_0000,
+            //   remaining length
+            3,
+            // variable header
+            //   connack flags
+            0b0000_0000,
+            //   reason code placeholder
+            (byte) 0xFF,
+            //   properties
+            0
         };
 
         encoded[3] = (byte) reasonCode.getCode();
@@ -465,7 +583,6 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
 
         assertNotNull(connAck);
         assertEquals(reasonCode, connAck.getReasonCode());
-
     }
 
     @ParameterizedTest
@@ -664,7 +781,7 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(3);
         //     receive maximum
-        byteBuf.writeBytes(new byte[]{0x21, 0, 0});
+        byteBuf.writeBytes(new byte[] {0x21, 0, 0});
 
         channel.writeInbound(byteBuf);
 
@@ -689,7 +806,7 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(2);
         //     receive maximum should be 2 bytes long
-        byteBuf.writeBytes(new byte[]{0x21, 0});
+        byteBuf.writeBytes(new byte[] {0x21, 0});
 
         channel.writeInbound(byteBuf);
 
@@ -715,7 +832,7 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(2);
         //     receive maximum
-        byteBuf.writeBytes(new byte[]{0x24, 2});
+        byteBuf.writeBytes(new byte[] {0x24, 2});
 
         channel.writeInbound(byteBuf);
 
@@ -741,7 +858,7 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(2);
         //     receive maximum
-        byteBuf.writeBytes(new byte[]{0x25, 2});
+        byteBuf.writeBytes(new byte[] {0x25, 2});
 
         channel.writeInbound(byteBuf);
 
@@ -767,7 +884,7 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(5);
         //     receive maximum
-        byteBuf.writeBytes(new byte[]{0x27, 0, 0, 0, 0});
+        byteBuf.writeBytes(new byte[] {0x27, 0, 0, 0, 0});
 
         channel.writeInbound(byteBuf);
 
@@ -792,7 +909,7 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(3);
         //     maximum packet size should be 4 bytes long
-        byteBuf.writeBytes(new byte[]{0x27, 0, 0});
+        byteBuf.writeBytes(new byte[] {0x27, 0, 0});
 
         channel.writeInbound(byteBuf);
 
@@ -818,7 +935,7 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(2);
         //     wildcard subscription available
-        byteBuf.writeBytes(new byte[]{0x28, 2});
+        byteBuf.writeBytes(new byte[] {0x28, 2});
 
         channel.writeInbound(byteBuf);
 
@@ -844,7 +961,7 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(2);
         //     subscription identifiers available
-        byteBuf.writeBytes(new byte[]{0x29, 2});
+        byteBuf.writeBytes(new byte[] {0x29, 2});
 
         channel.writeInbound(byteBuf);
 
@@ -870,7 +987,7 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(2);
         //     shared subscription available
-        byteBuf.writeBytes(new byte[]{0x2A, 2});
+        byteBuf.writeBytes(new byte[] {0x2A, 2});
 
         channel.writeInbound(byteBuf);
 
@@ -896,9 +1013,9 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(10);
         //     session expiry interval
-        byteBuf.writeBytes(new byte[]{0x11, 0, 0, 0, 10});
+        byteBuf.writeBytes(new byte[] {0x11, 0, 0, 0, 10});
         //     session expiry interval
-        byteBuf.writeBytes(new byte[]{0x11, 0, 0, 0, 10});
+        byteBuf.writeBytes(new byte[] {0x11, 0, 0, 0, 10});
 
         channel.writeInbound(byteBuf);
 
@@ -924,9 +1041,9 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(6);
         //     receive maximum
-        byteBuf.writeBytes(new byte[]{0x21, 0, 100});
+        byteBuf.writeBytes(new byte[] {0x21, 0, 100});
         //     receive maximum
-        byteBuf.writeBytes(new byte[]{0x21, 0, 100});
+        byteBuf.writeBytes(new byte[] {0x21, 0, 100});
 
         channel.writeInbound(byteBuf);
 
@@ -952,9 +1069,9 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(4);
         //     receive maximum
-        byteBuf.writeBytes(new byte[]{0x24, 1});
+        byteBuf.writeBytes(new byte[] {0x24, 1});
         //     receive maximum
-        byteBuf.writeBytes(new byte[]{0x24, 1});
+        byteBuf.writeBytes(new byte[] {0x24, 1});
 
         channel.writeInbound(byteBuf);
 
@@ -979,7 +1096,7 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(1);
         //     maximum qos should be 1 byte long
-        byteBuf.writeBytes(new byte[]{0x24});
+        byteBuf.writeBytes(new byte[] {0x24});
 
         channel.writeInbound(byteBuf);
 
@@ -1005,9 +1122,9 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(4);
         //     retain available
-        byteBuf.writeBytes(new byte[]{0x25, 0});
+        byteBuf.writeBytes(new byte[] {0x25, 0});
         //     retain available
-        byteBuf.writeBytes(new byte[]{0x25, 0});
+        byteBuf.writeBytes(new byte[] {0x25, 0});
 
         channel.writeInbound(byteBuf);
 
@@ -1033,9 +1150,9 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(10);
         //     maximum packet size
-        byteBuf.writeBytes(new byte[]{0x27, 0, 0, 0, 100});
+        byteBuf.writeBytes(new byte[] {0x27, 0, 0, 0, 100});
         //     maximum packet size
-        byteBuf.writeBytes(new byte[]{0x27, 0, 0, 0, 100});
+        byteBuf.writeBytes(new byte[] {0x27, 0, 0, 0, 100});
 
         channel.writeInbound(byteBuf);
 
@@ -1061,9 +1178,9 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(14);
         //     assigned client identifier
-        byteBuf.writeBytes(new byte[]{0x12, 0, 4, 't', 'e', 's', 't'});
+        byteBuf.writeBytes(new byte[] {0x12, 0, 4, 't', 'e', 's', 't'});
         //     assigned client identifier
-        byteBuf.writeBytes(new byte[]{0x12, 0, 4, 't', 'e', 's', 't'});
+        byteBuf.writeBytes(new byte[] {0x12, 0, 4, 't', 'e', 's', 't'});
 
         channel.writeInbound(byteBuf);
 
@@ -1089,9 +1206,9 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(6);
         //     topic alias maximum
-        byteBuf.writeBytes(new byte[]{0x22, 0, 5});
+        byteBuf.writeBytes(new byte[] {0x22, 0, 5});
         //     topic alias maximum
-        byteBuf.writeBytes(new byte[]{0x22, 0, 5});
+        byteBuf.writeBytes(new byte[] {0x22, 0, 5});
 
         channel.writeInbound(byteBuf);
 
@@ -1117,9 +1234,9 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(20);
         //     reason string
-        byteBuf.writeBytes(new byte[]{0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', 's'});
+        byteBuf.writeBytes(new byte[] {0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', 's'});
         //     reason string
-        byteBuf.writeBytes(new byte[]{0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', 's'});
+        byteBuf.writeBytes(new byte[] {0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', 's'});
 
         channel.writeInbound(byteBuf);
 
@@ -1145,9 +1262,9 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(4);
         //     wildcard subscription available
-        byteBuf.writeBytes(new byte[]{0x28, 0});
+        byteBuf.writeBytes(new byte[] {0x28, 0});
         //     wildcard subscription available
-        byteBuf.writeBytes(new byte[]{0x28, 0});
+        byteBuf.writeBytes(new byte[] {0x28, 0});
 
         channel.writeInbound(byteBuf);
 
@@ -1156,7 +1273,8 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"true", "false"})
-    void decode_must_not_multiple_subscription_identifiers_available(final boolean sendReasonString) {
+    void decode_must_not_multiple_subscription_identifiers_available(
+            final boolean sendReasonString) {
         ChannelAttributes.sendReasonString(sendReasonString, channel);
 
         final ByteBuf byteBuf = channel.alloc().buffer();
@@ -1173,9 +1291,9 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(4);
         //     subscription identifiers available
-        byteBuf.writeBytes(new byte[]{0x29, 1});
+        byteBuf.writeBytes(new byte[] {0x29, 1});
         //     subscription identifiers available
-        byteBuf.writeBytes(new byte[]{0x29, 1});
+        byteBuf.writeBytes(new byte[] {0x29, 1});
 
         channel.writeInbound(byteBuf);
 
@@ -1201,9 +1319,9 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(4);
         //     shared subscription available
-        byteBuf.writeBytes(new byte[]{0x2A, 0});
+        byteBuf.writeBytes(new byte[] {0x2A, 0});
         //     shared subscription available
-        byteBuf.writeBytes(new byte[]{0x2A, 0});
+        byteBuf.writeBytes(new byte[] {0x2A, 0});
 
         channel.writeInbound(byteBuf);
 
@@ -1229,9 +1347,9 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(6);
         //     server keep alive
-        byteBuf.writeBytes(new byte[]{0x13, 0, 10});
+        byteBuf.writeBytes(new byte[] {0x13, 0, 10});
         //     server keep alive
-        byteBuf.writeBytes(new byte[]{0x13, 0, 10});
+        byteBuf.writeBytes(new byte[] {0x13, 0, 10});
 
         channel.writeInbound(byteBuf);
 
@@ -1257,9 +1375,9 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(22);
         //     response information
-        byteBuf.writeBytes(new byte[]{0x1A, 0, 8, 'r', 'e', 's', 'p', 'o', 'n', 's', 'e'});
+        byteBuf.writeBytes(new byte[] {0x1A, 0, 8, 'r', 'e', 's', 'p', 'o', 'n', 's', 'e'});
         //     response information
-        byteBuf.writeBytes(new byte[]{0x1A, 0, 8, 'r', 'e', 's', 'p', 'o', 'n', 's', 'e'});
+        byteBuf.writeBytes(new byte[] {0x1A, 0, 8, 'r', 'e', 's', 'p', 'o', 'n', 's', 'e'});
 
         channel.writeInbound(byteBuf);
 
@@ -1285,9 +1403,9 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(18);
         //     server reference
-        byteBuf.writeBytes(new byte[]{0x1C, 0, 6, 's', 'e', 'r', 'v', 'e', 'r'});
+        byteBuf.writeBytes(new byte[] {0x1C, 0, 6, 's', 'e', 'r', 'v', 'e', 'r'});
         //     server reference
-        byteBuf.writeBytes(new byte[]{0x1C, 0, 6, 's', 'e', 'r', 'v', 'e', 'r'});
+        byteBuf.writeBytes(new byte[] {0x1C, 0, 6, 's', 'e', 'r', 'v', 'e', 'r'});
 
         channel.writeInbound(byteBuf);
 
@@ -1313,9 +1431,9 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(22);
         //     auth method
-        byteBuf.writeBytes(new byte[]{0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
+        byteBuf.writeBytes(new byte[] {0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
         //     auth method
-        byteBuf.writeBytes(new byte[]{0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
+        byteBuf.writeBytes(new byte[] {0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
 
         channel.writeInbound(byteBuf);
 
@@ -1341,9 +1459,9 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(26);
         //     auth data
-        byteBuf.writeBytes(new byte[]{0x16, 0, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
+        byteBuf.writeBytes(new byte[] {0x16, 0, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
         //     auth data
-        byteBuf.writeBytes(new byte[]{0x16, 0, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
+        byteBuf.writeBytes(new byte[] {0x16, 0, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
 
         channel.writeInbound(byteBuf);
 
@@ -1366,15 +1484,19 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(44);
         //     user properties
-        byteBuf.writeBytes(new byte[]{0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'});
-        byteBuf.writeBytes(new byte[]{0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e', '2'});
-        byteBuf.writeBytes(new byte[]{0x26, 0, 5, 't', 'e', 's', 't', '2', 0, 5, 'v', 'a', 'l', 'u', 'e'});
+        byteBuf.writeBytes(
+                new byte[] {0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'});
+        byteBuf.writeBytes(
+                new byte[] {0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e', '2'});
+        byteBuf.writeBytes(
+                new byte[] {0x26, 0, 5, 't', 'e', 's', 't', '2', 0, 5, 'v', 'a', 'l', 'u', 'e'});
 
         channel.writeInbound(byteBuf);
         final MqttConnAck connAck = channel.readInbound();
         assertNotNull(connAck);
 
-        final ImmutableList<MqttUserPropertyImpl> userProperties = connAck.getUserProperties().asList();
+        final ImmutableList<MqttUserPropertyImpl> userProperties =
+                connAck.getUserProperties().asList();
         assertEquals(3, userProperties.size());
         assertEquals("test", userProperties.get(0).getName().toString());
         assertEquals("value", userProperties.get(0).getValue().toString());
@@ -1403,7 +1525,7 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(10);
         //     reason string
-        byteBuf.writeBytes(new byte[]{0x1F, 0, 6, 's', 'u', 'c', 'c', 'e', 's', 's'});
+        byteBuf.writeBytes(new byte[] {0x1F, 0, 6, 's', 'u', 'c', 'c', 'e', 's', 's'});
 
         channel.writeInbound(byteBuf);
 
@@ -1429,7 +1551,7 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(10);
         //     reason string
-        byteBuf.writeBytes(new byte[]{0x1F, 0, 8, 's', 'u', 'c', 'c', 'e', 's', 's'});
+        byteBuf.writeBytes(new byte[] {0x1F, 0, 8, 's', 'u', 'c', 'c', 'e', 's', 's'});
         // padding, e.g. next message
         byteBuf.writeByte(0x00);
 
@@ -1457,7 +1579,7 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(10);
         //     reason string
-        byteBuf.writeBytes(new byte[]{0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', '\0'});
+        byteBuf.writeBytes(new byte[] {0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', '\0'});
 
         channel.writeInbound(byteBuf);
 
@@ -1483,7 +1605,7 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(7);
         //     assigned client identifier
-        byteBuf.writeBytes(new byte[]{0x12, 0, 3, 't', 'e', 's', 't'});
+        byteBuf.writeBytes(new byte[] {0x12, 0, 3, 't', 'e', 's', 't'});
 
         channel.writeInbound(byteBuf);
 
@@ -1509,7 +1631,7 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(7);
         //     assigned client identifier
-        byteBuf.writeBytes(new byte[]{0x12, 0, 5, 't', 'e', 's', 't'});
+        byteBuf.writeBytes(new byte[] {0x12, 0, 5, 't', 'e', 's', 't'});
         // padding, e.g. next message
         byteBuf.writeByte(0x00);
 
@@ -1537,7 +1659,7 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(7);
         //     assigned client identifier
-        byteBuf.writeBytes(new byte[]{0x12, 0, 4, 't', 'e', 's', '\0'});
+        byteBuf.writeBytes(new byte[] {0x12, 0, 4, 't', 'e', 's', '\0'});
 
         channel.writeInbound(byteBuf);
 
@@ -1563,7 +1685,7 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(11);
         //     response information
-        byteBuf.writeBytes(new byte[]{0x1A, 0, 7, 'r', 'e', 's', 'p', 'o', 'n', 's', 'e'});
+        byteBuf.writeBytes(new byte[] {0x1A, 0, 7, 'r', 'e', 's', 'p', 'o', 'n', 's', 'e'});
 
         channel.writeInbound(byteBuf);
 
@@ -1589,7 +1711,7 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(11);
         //     response information
-        byteBuf.writeBytes(new byte[]{0x1A, 0, 9, 'r', 'e', 's', 'p', 'o', 'n', 's', 'e'});
+        byteBuf.writeBytes(new byte[] {0x1A, 0, 9, 'r', 'e', 's', 'p', 'o', 'n', 's', 'e'});
         // padding, e.g. next message
         byteBuf.writeByte(0x00);
 
@@ -1617,7 +1739,7 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(11);
         //     response information
-        byteBuf.writeBytes(new byte[]{0x1A, 0, 8, 'r', 'e', 's', 'p', 'o', 'n', 's', '\0'});
+        byteBuf.writeBytes(new byte[] {0x1A, 0, 8, 'r', 'e', 's', 'p', 'o', 'n', 's', '\0'});
 
         channel.writeInbound(byteBuf);
 
@@ -1643,7 +1765,7 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(9);
         //     server reference
-        byteBuf.writeBytes(new byte[]{0x1C, 0, 5, 's', 'e', 'r', 'v', 'e', 'r'});
+        byteBuf.writeBytes(new byte[] {0x1C, 0, 5, 's', 'e', 'r', 'v', 'e', 'r'});
 
         channel.writeInbound(byteBuf);
 
@@ -1669,7 +1791,7 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(9);
         //     server reference
-        byteBuf.writeBytes(new byte[]{0x1C, 0, 7, 's', 'e', 'r', 'v', 'e', 'r'});
+        byteBuf.writeBytes(new byte[] {0x1C, 0, 7, 's', 'e', 'r', 'v', 'e', 'r'});
         // padding, e.g. next message
         byteBuf.writeByte(0x00);
 
@@ -1697,7 +1819,7 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(9);
         //     server reference
-        byteBuf.writeBytes(new byte[]{0x1C, 0, 6, 's', 'e', 'r', 'v', 'e', '\0'});
+        byteBuf.writeBytes(new byte[] {0x1C, 0, 6, 's', 'e', 'r', 'v', 'e', '\0'});
 
         channel.writeInbound(byteBuf);
 
@@ -1723,7 +1845,7 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(11);
         //     auth method
-        byteBuf.writeBytes(new byte[]{0x15, 0, 7, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
+        byteBuf.writeBytes(new byte[] {0x15, 0, 7, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
 
         channel.writeInbound(byteBuf);
 
@@ -1749,7 +1871,7 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(11);
         //     auth method
-        byteBuf.writeBytes(new byte[]{0x15, 0, 9, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
+        byteBuf.writeBytes(new byte[] {0x15, 0, 9, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
         // padding, e.g. next message
         byteBuf.writeByte(0x00);
 
@@ -1777,7 +1899,7 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(11);
         //     auth method
-        byteBuf.writeBytes(new byte[]{0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '\0'});
+        byteBuf.writeBytes(new byte[] {0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '\0'});
 
         channel.writeInbound(byteBuf);
 
@@ -1803,7 +1925,8 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(14);
         //     user properties
-        byteBuf.writeBytes(new byte[]{0x26, 0, 3, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'});
+        byteBuf.writeBytes(
+                new byte[] {0x26, 0, 3, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'});
 
         channel.writeInbound(byteBuf);
 
@@ -1829,7 +1952,8 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(14);
         //     user properties
-        byteBuf.writeBytes(new byte[]{0x26, 0, 5, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'});
+        byteBuf.writeBytes(
+                new byte[] {0x26, 0, 5, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'});
         // padding, e.g. next message
         byteBuf.writeByte(0x00);
 
@@ -1857,7 +1981,8 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(14);
         //     user properties
-        byteBuf.writeBytes(new byte[]{0x26, 0, 4, 't', 'e', 's', '\0', 0, 5, 'v', 'a', 'l', 'u', 'e'});
+        byteBuf.writeBytes(
+                new byte[] {0x26, 0, 4, 't', 'e', 's', '\0', 0, 5, 'v', 'a', 'l', 'u', 'e'});
 
         channel.writeInbound(byteBuf);
 
@@ -1883,7 +2008,8 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(14);
         //     user properties
-        byteBuf.writeBytes(new byte[]{0x26, 0, 4, 't', 'e', 's', 't', 0, 4, 'v', 'a', 'l', 'u', 'e'});
+        byteBuf.writeBytes(
+                new byte[] {0x26, 0, 4, 't', 'e', 's', 't', 0, 4, 'v', 'a', 'l', 'u', 'e'});
 
         channel.writeInbound(byteBuf);
 
@@ -1909,7 +2035,8 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(14);
         //     user properties
-        byteBuf.writeBytes(new byte[]{0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e'});
+        byteBuf.writeBytes(
+                new byte[] {0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e'});
         // padding, e.g. next message
         byteBuf.writeByte(0x00);
 
@@ -1937,7 +2064,8 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(14);
         //     user properties
-        byteBuf.writeBytes(new byte[]{0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', '\0'});
+        byteBuf.writeBytes(
+                new byte[] {0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', '\0'});
 
         channel.writeInbound(byteBuf);
 
@@ -1963,9 +2091,9 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(24);
         //     auth method
-        byteBuf.writeBytes(new byte[]{0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
+        byteBuf.writeBytes(new byte[] {0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
         //     auth data
-        byteBuf.writeBytes(new byte[]{0x16, 0, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
+        byteBuf.writeBytes(new byte[] {0x16, 0, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
 
         channel.writeInbound(byteBuf);
 
@@ -1991,9 +2119,9 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(24);
         //     auth method
-        byteBuf.writeBytes(new byte[]{0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
+        byteBuf.writeBytes(new byte[] {0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
         //     auth data
-        byteBuf.writeBytes(new byte[]{0x16, 0, 11, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
+        byteBuf.writeBytes(new byte[] {0x16, 0, 11, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
         // padding, e.g. next message
         byteBuf.writeByte(0x00);
 
@@ -2004,7 +2132,8 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"true", "false"})
-    void decode_must_not_include_authentication_data_without_method(final boolean sendReasonString) {
+    void decode_must_not_include_authentication_data_without_method(
+            final boolean sendReasonString) {
         ChannelAttributes.sendReasonString(sendReasonString, channel);
 
         final ByteBuf byteBuf = channel.alloc().buffer();
@@ -2021,7 +2150,7 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(13);
         //     auth data
-        byteBuf.writeBytes(new byte[]{0x16, 0, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
+        byteBuf.writeBytes(new byte[] {0x16, 0, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
         // padding, e.g. next message
         byteBuf.writeByte(0x00);
 
@@ -2059,7 +2188,8 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         assertEquals(true, connAck.getRestrictions().isSharedSubscriptionAvailable());
     }
 
-    private void testDisconnect(final Mqtt5DisconnectReasonCode reasonCode, final boolean sendReasonString) {
+    private void testDisconnect(
+            final Mqtt5DisconnectReasonCode reasonCode, final boolean sendReasonString) {
         final Mqtt5ConnAck connAck = channel.readInbound();
         assertNull(connAck);
 
@@ -2071,41 +2201,141 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
 
     private static final byte PROPERTIES_VALID_LENGTH = 119;
     private static final byte[] PROPERTIES_VALID = {
-            //     session expiry interval
-            0x11, 0, 0, 0, 10,
-            //     receive maximum
-            0x21, 0, 100,
-            //     maximum qos
-            0x24, 1,
-            //     retain available
-            0x25, 0,
-            //     maximum packet size
-            0x27, 0, 0, 0, 100,
-            //     assigned client identifier
-            0x12, 0, 4, 't', 'e', 's', 't',
-            //     topic alias maximum
-            0x22, 0, 5,
-            //     reason string
-            0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', 's',
-            //     user properties
-            0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e', //
-            0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e', '2',
-            //     wildcard subscription available
-            0x28, 0,
-            //     subscription identifiers available
-            0x29, 1,
-            //     shared subscription available
-            0x2A, 0,
-            //     server keep alive
-            0x13, 0, 10,
-            //     response information
-            0x1A, 0, 8, 'r', 'e', 's', 'p', 'o', 'n', 's', 'e',
-            //     server reference
-            0x1C, 0, 6, 's', 'e', 'r', 'v', 'e', 'r',
-            //     auth method
-            0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5',
-            //     auth data
-            0x16, 0, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+        //     session expiry interval
+        0x11,
+        0,
+        0,
+        0,
+        10,
+        //     receive maximum
+        0x21,
+        0,
+        100,
+        //     maximum qos
+        0x24,
+        1,
+        //     retain available
+        0x25,
+        0,
+        //     maximum packet size
+        0x27,
+        0,
+        0,
+        0,
+        100,
+        //     assigned client identifier
+        0x12,
+        0,
+        4,
+        't',
+        'e',
+        's',
+        't',
+        //     topic alias maximum
+        0x22,
+        0,
+        5,
+        //     reason string
+        0x1F,
+        0,
+        7,
+        's',
+        'u',
+        'c',
+        'c',
+        'e',
+        's',
+        's',
+        //     user properties
+        0x26,
+        0,
+        4,
+        't',
+        'e',
+        's',
+        't',
+        0,
+        5,
+        'v',
+        'a',
+        'l',
+        'u',
+        'e', //
+        0x26,
+        0,
+        4,
+        't',
+        'e',
+        's',
+        't',
+        0,
+        6,
+        'v',
+        'a',
+        'l',
+        'u',
+        'e',
+        '2',
+        //     wildcard subscription available
+        0x28,
+        0,
+        //     subscription identifiers available
+        0x29,
+        1,
+        //     shared subscription available
+        0x2A,
+        0,
+        //     server keep alive
+        0x13,
+        0,
+        10,
+        //     response information
+        0x1A,
+        0,
+        8,
+        'r',
+        'e',
+        's',
+        'p',
+        'o',
+        'n',
+        's',
+        'e',
+        //     server reference
+        0x1C,
+        0,
+        6,
+        's',
+        'e',
+        'r',
+        'v',
+        'e',
+        'r',
+        //     auth method
+        0x15,
+        0,
+        8,
+        'G',
+        'S',
+        '2',
+        '-',
+        'K',
+        'R',
+        'B',
+        '5',
+        //     auth data
+        0x16,
+        0,
+        10,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
     };
-
 }

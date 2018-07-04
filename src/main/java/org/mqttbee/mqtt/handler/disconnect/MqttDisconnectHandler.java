@@ -21,17 +21,16 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.exceptions.ChannelClosedException;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 /**
- * Fires {@link ChannelCloseEvent}s if a DISCONNECT message is received or the channel was closed by the server. Only
- * one {@link ChannelCloseEvent} will be fired.
+ * Fires {@link ChannelCloseEvent}s if a DISCONNECT message is received or the channel was closed by
+ * the server. Only one {@link ChannelCloseEvent} will be fired.
  *
  * @author Silvio Giebl
  */
@@ -42,8 +41,7 @@ public class MqttDisconnectHandler extends ChannelInboundHandlerAdapter {
     public static final String NAME = "disconnect";
 
     @Inject
-    MqttDisconnectHandler() {
-    }
+    MqttDisconnectHandler() {}
 
     @Override
     public void channelRead(final ChannelHandlerContext ctx, final Object msg) throws Exception {
@@ -58,13 +56,16 @@ public class MqttDisconnectHandler extends ChannelInboundHandlerAdapter {
             @NotNull final ChannelHandlerContext ctx, @NotNull final MqttDisconnect disconnect) {
 
         ctx.pipeline().remove(this);
-        closeFromServer(ctx.channel(), new Mqtt5MessageException(disconnect, "Server sent DISCONNECT"));
+        closeFromServer(
+                ctx.channel(), new Mqtt5MessageException(disconnect, "Server sent DISCONNECT"));
     }
 
     @Override
     public void channelInactive(final ChannelHandlerContext ctx) {
         ctx.pipeline().remove(this);
-        closeFromServer(ctx.channel(), new ChannelClosedException("Server closed channel without DISCONNECT"));
+        closeFromServer(
+                ctx.channel(),
+                new ChannelClosedException("Server closed channel without DISCONNECT"));
         ctx.fireChannelInactive();
     }
 
@@ -76,9 +77,9 @@ public class MqttDisconnectHandler extends ChannelInboundHandlerAdapter {
         ctx.fireUserEventTriggered(evt);
     }
 
-    private static void closeFromServer(@NotNull final Channel channel, @NotNull final Throwable cause) {
+    private static void closeFromServer(
+            @NotNull final Channel channel, @NotNull final Throwable cause) {
         MqttDisconnectUtil.fireChannelCloseEvent(channel, cause, true);
         channel.close();
     }
-
 }

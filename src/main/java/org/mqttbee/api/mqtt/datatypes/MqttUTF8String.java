@@ -17,18 +17,17 @@
 
 package org.mqttbee.api.mqtt.datatypes;
 
+import java.nio.ByteBuffer;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 
-import java.nio.ByteBuffer;
-
 /**
  * UTF-8 encoded String according to the MQTT specification.
- * <p>
- * A UTF-8 encoded String must not contain the null character U+0000 and UTF-16 surrogates.
- * <p>
- * A UTF-8 encoded String should not contain control characters and non-characters.
+ *
+ * <p>A UTF-8 encoded String must not contain the null character U+0000 and UTF-16 surrogates.
+ *
+ * <p>A UTF-8 encoded String should not contain control characters and non-characters.
  *
  * @author Silvio Giebl
  */
@@ -48,10 +47,10 @@ public interface MqttUTF8String {
     }
 
     /**
-     * Checks whether this UTF-8 encoded String contains characters that it should not according to the MQTT
-     * specification.
-     * <p>
-     * These characters are control characters and non-characters.
+     * Checks whether this UTF-8 encoded String contains characters that it should not according to
+     * the MQTT specification.
+     *
+     * <p>These characters are control characters and non-characters.
      *
      * @return whether this UTF-8 encoded String contains characters that it should not.
      */
@@ -64,5 +63,4 @@ public interface MqttUTF8String {
      */
     @NotNull
     ByteBuffer toByteBuffer();
-
 }

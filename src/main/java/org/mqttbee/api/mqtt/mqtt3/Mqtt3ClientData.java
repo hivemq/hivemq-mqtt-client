@@ -17,15 +17,12 @@
 
 package org.mqttbee.api.mqtt.mqtt3;
 
+import java.util.Optional;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttClientData;
 
-import java.util.Optional;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @DoNotImplement
 public interface Mqtt3ClientData extends MqttClientData {
 
@@ -34,5 +31,4 @@ public interface Mqtt3ClientData extends MqttClientData {
 
     @NotNull
     Optional<Mqtt3ServerConnectionData> getServerConnectionData();
-
 }

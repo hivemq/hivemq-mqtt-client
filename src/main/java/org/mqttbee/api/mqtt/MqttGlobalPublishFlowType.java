@@ -18,38 +18,38 @@
 package org.mqttbee.api.mqtt;
 
 /**
- * Type for a global asynchronous stream (flow) of Publish messages. Global means not filtering on the subscriptions of
- * a Subscribe message.
+ * Type for a global asynchronous stream (flow) of Publish messages. Global means not filtering on
+ * the subscriptions of a Subscribe message.
  *
  * @author Silvio Giebl
  */
 public enum MqttGlobalPublishFlowType {
 
-    /**
-     * Type for a global flow emitting all incoming Publish messages.
-     */
+    /** Type for a global flow emitting all incoming Publish messages. */
     ALL_PUBLISHES,
 
     /**
-     * Type for a global flow emitting all incoming Publish messages which match existing subscriptions.
+     * Type for a global flow emitting all incoming Publish messages which match existing
+     * subscriptions.
      */
     ALL_SUBSCRIPTIONS,
 
     /**
-     * Type for a global flow emitting all incoming Publish messages that are not emitted in per subscription or global
-     * {@link #ALL_SUBSCRIPTIONS} flows.
-     * <p>
-     * Example (pseudo-code):
+     * Type for a global flow emitting all incoming Publish messages that are not emitted in per
+     * subscription or global {@link #ALL_SUBSCRIPTIONS} flows.
+     *
+     * <p>Example (pseudo-code):
+     *
      * <ul>
-     * <li><code>stream1 = client.subscribeWithStream("a/#")</code></li>
-     * <li><code>client.subscribe("b/#")</code></li>
-     * <li><code>stream2 = client.publishes(REMAINING_PUBLISHES)</code></li>
-     * <li>=> incoming Publish messages with topic <code>"a/b"</code> will be emitted only in
-     * <code>stream1</code>.</li>
-     * <li>=> incoming Publish messages with topic <code>"b/c"</code> or <code>"c/d"</code> will be emitted in
-     * <code>stream2</code> as there is no other stream registered for the topic.</li>
+     *   <li><code>stream1 = client.subscribeWithStream("a/#")</code>
+     *   <li><code>client.subscribe("b/#")</code>
+     *   <li><code>stream2 = client.publishes(REMAINING_PUBLISHES)</code>
+     *   <li>=> incoming Publish messages with topic <code>"a/b"</code> will be emitted only in
+     *       <code>stream1</code>.
+     *   <li>=> incoming Publish messages with topic <code>"b/c"</code> or <code>"c/d"</code> will
+     *       be emitted in <code>stream2</code> as there is no other stream registered for the
+     *       topic.
      * </ul>
      */
     REMAINING_PUBLISHES
-
 }

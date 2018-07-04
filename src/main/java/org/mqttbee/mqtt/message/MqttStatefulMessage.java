@@ -17,11 +17,11 @@
 
 package org.mqttbee.mqtt.message;
 
+import static org.mqttbee.mqtt.message.MqttMessageWithUserProperties.MqttMessageWithUserPropertiesImpl;
+
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
-
-import static org.mqttbee.mqtt.message.MqttMessageWithUserProperties.MqttMessageWithUserPropertiesImpl;
 
 /**
  * Base class for MQTT messages with state-specific data.
@@ -50,14 +50,11 @@ public abstract class MqttStatefulMessage<M extends MqttMessageWithUserPropertie
         return statelessMessage.getUserProperties();
     }
 
-    /**
-     * @return the stateless MQTT message.
-     */
+    /** @return the stateless MQTT message. */
     @NotNull
     public M getStatelessMessage() {
         return statelessMessage;
     }
-
 
     /**
      * Base class for MQTT messages with a packet identifier and other state-specific data.
@@ -65,12 +62,14 @@ public abstract class MqttStatefulMessage<M extends MqttMessageWithUserPropertie
      * @param <M> the type of the stateless MQTT message.
      * @author Silvio Giebl
      */
-    public abstract static class MqttStatefulMessageWithId<M extends MqttMessageWithUserPropertiesImpl>
+    public abstract static class MqttStatefulMessageWithId<
+                    M extends MqttMessageWithUserPropertiesImpl>
             extends MqttStatefulMessage<M> {
 
         private final int packetIdentifier;
 
-        protected MqttStatefulMessageWithId(@NotNull final M statelessMessage, final int packetIdentifier) {
+        protected MqttStatefulMessageWithId(
+                @NotNull final M statelessMessage, final int packetIdentifier) {
             super(statelessMessage);
             this.packetIdentifier = packetIdentifier;
         }
@@ -78,7 +77,5 @@ public abstract class MqttStatefulMessage<M extends MqttMessageWithUserPropertie
         public int getPacketIdentifier() {
             return packetIdentifier;
         }
-
     }
-
 }

@@ -30,9 +30,10 @@ import org.mqttbee.mqtt.message.ping.MqttPingResp;
 
 /**
  * MQTT Keep Alive Handling.
+ *
  * <ul>
- * <li>Sends a PINGREQ message when no write has been performed for the Keep Alive interval.</li>
- * <li>Disconnects or closes the channel if the PINGRESP message is not received in the timeout.</li>
+ *   <li>Sends a PINGREQ message when no write has been performed for the Keep Alive interval.
+ *   <li>Disconnects or closes the channel if the PINGRESP message is not received in the timeout.
  * </ul>
  *
  * @author Silvio Giebl
@@ -53,7 +54,8 @@ public class MqttPingHandler extends ChannelInboundHandlerWithTimeout {
     @Override
     public void handlerAdded(final ChannelHandlerContext ctx) {
         super.handlerAdded(ctx);
-        ctx.pipeline().addBefore(NAME, IDLE_STATE_HANDLER_NAME, new IdleStateHandler(0, keepAlive, 0));
+        ctx.pipeline()
+                .addBefore(NAME, IDLE_STATE_HANDLER_NAME, new IdleStateHandler(0, keepAlive, 0));
     }
 
     @Override
@@ -67,7 +69,8 @@ public class MqttPingHandler extends ChannelInboundHandlerWithTimeout {
 
     @Override
     public void userEventTriggered(final ChannelHandlerContext ctx, final Object evt) {
-        if ((evt instanceof IdleStateEvent) && ((IdleStateEvent) evt).state() == IdleState.WRITER_IDLE) {
+        if ((evt instanceof IdleStateEvent)
+                && ((IdleStateEvent) evt).state() == IdleState.WRITER_IDLE) {
             ctx.writeAndFlush(MqttPingReq.INSTANCE).addListener(this);
         } else {
             ctx.fireUserEventTriggered(evt);
@@ -90,5 +93,4 @@ public class MqttPingHandler extends ChannelInboundHandlerWithTimeout {
     protected String getTimeoutReasonString() {
         return "Timeout while waiting for PINGRESP";
     }
-
 }

@@ -17,23 +17,20 @@
 
 package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
+import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.*;
+import static org.mqttbee.mqtt.message.auth.MqttAuthProperty.AUTHENTICATION_DATA;
+import static org.mqttbee.mqtt.message.auth.MqttAuthProperty.AUTHENTICATION_METHOD;
+
 import io.netty.buffer.ByteBuf;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageWithUserPropertiesEncoder.Mqtt5MessageWithReasonStringEncoder;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.auth.MqttAuth;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.*;
-import static org.mqttbee.mqtt.message.auth.MqttAuthProperty.AUTHENTICATION_DATA;
-import static org.mqttbee.mqtt.message.auth.MqttAuthProperty.AUTHENTICATION_METHOD;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @Singleton
 public class Mqtt5AuthEncoder extends Mqtt5MessageWithReasonStringEncoder<MqttAuth> {
 
@@ -41,8 +38,7 @@ public class Mqtt5AuthEncoder extends Mqtt5MessageWithReasonStringEncoder<MqttAu
     private static final int VARIABLE_HEADER_FIXED_LENGTH = 1; // reason code
 
     @Inject
-    Mqtt5AuthEncoder() {
-    }
+    Mqtt5AuthEncoder() {}
 
     @Override
     int remainingLengthWithoutProperties(@NotNull final MqttAuth message) {
@@ -62,8 +58,11 @@ public class Mqtt5AuthEncoder extends Mqtt5MessageWithReasonStringEncoder<MqttAu
 
     @Override
     void encode(
-            @NotNull final MqttAuth message, @NotNull final ByteBuf out, final int remainingLength,
-            final int propertyLength, final int omittedProperties) {
+            @NotNull final MqttAuth message,
+            @NotNull final ByteBuf out,
+            final int remainingLength,
+            final int propertyLength,
+            final int omittedProperties) {
 
         encodeFixedHeader(out, remainingLength);
         encodeVariableHeader(message, out, propertyLength, omittedProperties);
@@ -75,7 +74,9 @@ public class Mqtt5AuthEncoder extends Mqtt5MessageWithReasonStringEncoder<MqttAu
     }
 
     private void encodeVariableHeader(
-            @NotNull final MqttAuth message, @NotNull final ByteBuf out, final int propertyLength,
+            @NotNull final MqttAuth message,
+            @NotNull final ByteBuf out,
+            final int propertyLength,
             final int omittedProperties) {
 
         out.writeByte(message.getReasonCode().getCode());
@@ -83,7 +84,9 @@ public class Mqtt5AuthEncoder extends Mqtt5MessageWithReasonStringEncoder<MqttAu
     }
 
     private void encodeProperties(
-            @NotNull final MqttAuth message, @NotNull final ByteBuf out, final int propertyLength,
+            @NotNull final MqttAuth message,
+            @NotNull final ByteBuf out,
+            final int propertyLength,
             final int omittedProperties) {
 
         MqttVariableByteInteger.encode(propertyLength, out);
@@ -91,5 +94,4 @@ public class Mqtt5AuthEncoder extends Mqtt5MessageWithReasonStringEncoder<MqttAu
         encodeNullableProperty(AUTHENTICATION_DATA, message.getRawData(), out);
         encodeOmissibleProperties(message, out, omittedProperties);
     }
-
 }

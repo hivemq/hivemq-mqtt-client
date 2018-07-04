@@ -17,12 +17,11 @@
 
 package org.mqttbee.mqtt.codec.encoder.mqtt3;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.mqtt.codec.encoder.mqtt3.Mqtt3MessageEncoder.Mqtt3MessageWithIdEncoder;
 import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRec;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
 /**
  * @author Daniel Krüger
@@ -34,12 +33,10 @@ public class Mqtt3PubRecEncoder extends Mqtt3MessageWithIdEncoder<MqttPubRec> {
     private static final int FIXED_HEADER = Mqtt3MessageType.PUBREC.getCode() << 4;
 
     @Inject
-    Mqtt3PubRecEncoder() {
-    }
+    Mqtt3PubRecEncoder() {}
 
     @Override
     int getFixedHeader() {
         return FIXED_HEADER;
     }
-
 }

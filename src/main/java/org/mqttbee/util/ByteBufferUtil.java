@@ -17,15 +17,12 @@
 
 package org.mqttbee.util;
 
+import java.nio.ByteBuffer;
+import java.util.Optional;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 
-import java.nio.ByteBuffer;
-import java.util.Optional;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class ByteBufferUtil {
 
     @NotNull
@@ -59,5 +56,4 @@ public class ByteBufferUtil {
         byteBuffer.get(binary).position(0);
         return binary;
     }
-
 }

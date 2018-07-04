@@ -39,10 +39,7 @@ public interface MqttClient {
         return new MqttClientBuilder();
     }
 
-    /**
-     * @return the client specific data.
-     */
+    /** @return the client specific data. */
     @NotNull
     MqttClientData getClientData();
-
 }

@@ -18,6 +18,9 @@
 package org.mqttbee.mqtt.message.publish.mqtt3;
 
 import io.reactivex.functions.Function;
+import java.nio.ByteBuffer;
+import java.util.Optional;
+import javax.annotation.concurrent.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
@@ -33,46 +36,60 @@ import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
 import org.mqttbee.mqtt.message.publish.MqttWillPublish;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 
-import javax.annotation.concurrent.Immutable;
-import java.nio.ByteBuffer;
-import java.util.Optional;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @Immutable
 public class Mqtt3PublishView implements Mqtt3Publish {
 
     @NotNull
-    public static final Function<Mqtt3Publish, Mqtt5Publish> DELEGATE_MAPPER = Mqtt3PublishView::delegate;
-    @NotNull
-    public static final Function<Mqtt5Publish, Mqtt3Publish> MAPPER = Mqtt3PublishView::of;
+    public static final Function<Mqtt3Publish, Mqtt5Publish> DELEGATE_MAPPER =
+            Mqtt3PublishView::delegate;
+
+    @NotNull public static final Function<Mqtt5Publish, Mqtt3Publish> MAPPER = Mqtt3PublishView::of;
 
     @NotNull
     public static MqttPublish delegate(
-            @NotNull final MqttTopicImpl topic, @Nullable final ByteBuffer payload, @NotNull final MqttQoS qos,
+            @NotNull final MqttTopicImpl topic,
+            @Nullable final ByteBuffer payload,
+            @NotNull final MqttQoS qos,
             final boolean isRetain) {
 
-        return new MqttPublish(topic, payload, qos, isRetain, MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null,
-                null, null, TopicAliasUsage.MUST_NOT, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
+        return new MqttPublish(
+                topic,
+                payload,
+                qos,
+                isRetain,
+                MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY,
+                null,
+                null,
+                null,
+                null,
+                TopicAliasUsage.MUST_NOT,
+                MqttUserPropertiesImpl.NO_USER_PROPERTIES);
     }
 
     @NotNull
     public static MqttStatefulPublish statefulDelegate(
             @NotNull final MqttPublish publish, final int packetIdentifier, final boolean isDup) {
 
-        return publish.createStateful(packetIdentifier, isDup, MqttStatefulPublish.DEFAULT_NO_TOPIC_ALIAS, false,
+        return publish.createStateful(
+                packetIdentifier,
+                isDup,
+                MqttStatefulPublish.DEFAULT_NO_TOPIC_ALIAS,
+                false,
                 MqttStatefulPublish.DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
     }
 
     @NotNull
     private static MqttPublish delegate(@NotNull final Mqtt3Publish publish) {
-        return MustNotBeImplementedUtil.checkNotImplemented(publish, Mqtt3PublishView.class).getDelegate();
+        return MustNotBeImplementedUtil.checkNotImplemented(publish, Mqtt3PublishView.class)
+                .getDelegate();
     }
 
     @NotNull
     public static Mqtt3PublishView of(
-            @NotNull final MqttTopicImpl topic, @Nullable final ByteBuffer payload, @NotNull final MqttQoS qos,
+            @NotNull final MqttTopicImpl topic,
+            @Nullable final ByteBuffer payload,
+            @NotNull final MqttQoS qos,
             final boolean isRetain) {
 
         return new Mqtt3PublishView(delegate(topic, payload, qos, isRetain));
@@ -80,7 +97,8 @@ public class Mqtt3PublishView implements Mqtt3Publish {
 
     @NotNull
     private static Mqtt3PublishView of(@NotNull final Mqtt5Publish publish) {
-        return new Mqtt3PublishView(MustNotBeImplementedUtil.checkNotImplemented(publish, MqttPublish.class));
+        return new Mqtt3PublishView(
+                MustNotBeImplementedUtil.checkNotImplemented(publish, MqttPublish.class));
     }
 
     @NotNull
@@ -135,5 +153,4 @@ public class Mqtt3PublishView implements Mqtt3Publish {
         }
         return (MqttWillPublish) Mqtt5WillPublish.extend(delegate).build();
     }
-
 }

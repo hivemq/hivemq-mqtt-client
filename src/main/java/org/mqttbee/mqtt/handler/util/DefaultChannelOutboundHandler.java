@@ -20,25 +20,29 @@ package org.mqttbee.mqtt.handler.util;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandler;
 import io.netty.channel.ChannelPromise;
-
 import java.net.SocketAddress;
 
 /**
- * Default interface to make it easier to extend a subclass of {@link io.netty.channel.ChannelInboundHandlerAdapter}
- * and also implement {@link ChannelOutboundHandler}.
+ * Default interface to make it easier to extend a subclass of {@link
+ * io.netty.channel.ChannelInboundHandlerAdapter} and also implement {@link ChannelOutboundHandler}.
  *
  * @author Silvio Giebl
  */
 public interface DefaultChannelOutboundHandler extends ChannelOutboundHandler {
 
     @Override
-    default void bind(final ChannelHandlerContext ctx, final SocketAddress localAddress, final ChannelPromise promise) {
+    default void bind(
+            final ChannelHandlerContext ctx,
+            final SocketAddress localAddress,
+            final ChannelPromise promise) {
         ctx.bind(localAddress, promise);
     }
 
     @Override
     default void connect(
-            final ChannelHandlerContext ctx, final SocketAddress remoteAddress, final SocketAddress localAddress,
+            final ChannelHandlerContext ctx,
+            final SocketAddress remoteAddress,
+            final SocketAddress localAddress,
             final ChannelPromise promise) {
         ctx.connect(remoteAddress, localAddress, promise);
     }
@@ -64,7 +68,8 @@ public interface DefaultChannelOutboundHandler extends ChannelOutboundHandler {
     }
 
     @Override
-    default void write(final ChannelHandlerContext ctx, final Object msg, final ChannelPromise promise) {
+    default void write(
+            final ChannelHandlerContext ctx, final Object msg, final ChannelPromise promise) {
         ctx.write(msg, promise);
     }
 
@@ -72,5 +77,4 @@ public interface DefaultChannelOutboundHandler extends ChannelOutboundHandler {
     default void flush(final ChannelHandlerContext ctx) {
         ctx.flush();
     }
-
 }

@@ -28,7 +28,6 @@ import org.mqttbee.mqtt.message.MqttCommonReasonCode;
  * @author Silvio Giebl
  */
 public enum Mqtt5AuthReasonCode implements Mqtt5ReasonCode {
-
     SUCCESS(MqttCommonReasonCode.SUCCESS),
     CONTINUE_AUTHENTICATION(0x18),
     REAUTHENTICATE(0x19);
@@ -43,9 +42,7 @@ public enum Mqtt5AuthReasonCode implements Mqtt5ReasonCode {
         this(reasonCode.getCode());
     }
 
-    /**
-     * @return the byte code of this AUTH Reason Code.
-     */
+    /** @return the byte code of this AUTH Reason Code. */
     public int getCode() {
         return code;
     }
@@ -54,8 +51,8 @@ public enum Mqtt5AuthReasonCode implements Mqtt5ReasonCode {
      * Returns the AUTH Reason Code belonging to the given byte code.
      *
      * @param code the byte code.
-     * @return the AUTH Reason Code belonging to the given byte code or null if the byte code is not a valid AUTH Reason
-     * Code code.
+     * @return the AUTH Reason Code belonging to the given byte code or null if the byte code is not
+     *     a valid AUTH Reason Code code.
      */
     @Nullable
     public static Mqtt5AuthReasonCode fromCode(final int code) {
@@ -66,5 +63,4 @@ public enum Mqtt5AuthReasonCode implements Mqtt5ReasonCode {
         }
         return null;
     }
-
 }

@@ -25,13 +25,10 @@ import org.mqttbee.annotations.Nullable;
  * @author Silvio Giebl
  */
 public enum Mqtt5PayloadFormatIndicator {
-
     UNSPECIFIED,
     UTF_8;
 
-    /**
-     * @return the byte code of this Payload Format Indicator.
-     */
+    /** @return the byte code of this Payload Format Indicator. */
     public int getCode() {
         return ordinal();
     }
@@ -40,8 +37,8 @@ public enum Mqtt5PayloadFormatIndicator {
      * Returns the Payload Format Indicator belonging to the given byte code.
      *
      * @param code the byte code.
-     * @return the Payload Format Indicator belonging to the byte code or null if the byte code is not a valid Payload
-     * Format Indicator.
+     * @return the Payload Format Indicator belonging to the byte code or null if the byte code is
+     *     not a valid Payload Format Indicator.
      */
     @Nullable
     public static Mqtt5PayloadFormatIndicator fromCode(final int code) {
@@ -51,5 +48,4 @@ public enum Mqtt5PayloadFormatIndicator {
         }
         return values[code];
     }
-
 }

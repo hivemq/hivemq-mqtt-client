@@ -16,10 +16,15 @@
 
 package org.mqttbee.mqtt.handler;
 
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import io.netty.channel.Channel;
 import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.ssl.SslHandler;
 import io.reactivex.SingleEmitter;
+import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -30,25 +35,14 @@ import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.MqttVersion;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
 
-import java.util.Optional;
-
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-/**
- * @author Christoph Schäbel
- */
+/** @author Christoph Schäbel */
 public class MqttChannelInitializerSslTest {
 
-    @Mock
-    private MqttConnect mqttConnect;
+    @Mock private MqttConnect mqttConnect;
 
-    @Mock
-    private SingleEmitter<Mqtt5ConnAck> connAckEmitter;
+    @Mock private SingleEmitter<Mqtt5ConnAck> connAckEmitter;
 
-    @Mock
-    private MqttClientData clientData;
+    @Mock private MqttClientData clientData;
 
     private Channel channel;
 
@@ -74,5 +68,4 @@ public class MqttChannelInitializerSslTest {
 
         assertNotNull(channel.pipeline().get(SslHandler.class));
     }
-
 }

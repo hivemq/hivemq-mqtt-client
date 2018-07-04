@@ -19,13 +19,12 @@ package org.mqttbee.mqtt.datatypes;
 
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
+import javax.annotation.concurrent.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.exceptions.MqttBinaryDataExceededException;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.mqtt.message.MqttProperty;
-
-import javax.annotation.concurrent.Immutable;
 
 /**
  * @author Silvio Giebl
@@ -34,38 +33,45 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public class MqttUserPropertiesImpl implements Mqtt5UserProperties {
 
-    /**
-     * Empty collection of User Properties.
-     */
-    public static final MqttUserPropertiesImpl NO_USER_PROPERTIES = new MqttUserPropertiesImpl(ImmutableList.of());
+    /** Empty collection of User Properties. */
+    public static final MqttUserPropertiesImpl NO_USER_PROPERTIES =
+            new MqttUserPropertiesImpl(ImmutableList.of());
 
     /**
      * Creates a collection of User Properties from the given immutable list of User Properties.
      *
      * @param userProperties the immutable list of User Properties.
-     * @return the created collection of User Properties or {@link #NO_USER_PROPERTIES} if the list is empty.
+     * @return the created collection of User Properties or {@link #NO_USER_PROPERTIES} if the list
+     *     is empty.
      */
     @NotNull
-    public static MqttUserPropertiesImpl of(@NotNull final ImmutableList<MqttUserPropertyImpl> userProperties) {
-        return userProperties.isEmpty() ? NO_USER_PROPERTIES : new MqttUserPropertiesImpl(userProperties);
+    public static MqttUserPropertiesImpl of(
+            @NotNull final ImmutableList<MqttUserPropertyImpl> userProperties) {
+        return userProperties.isEmpty()
+                ? NO_USER_PROPERTIES
+                : new MqttUserPropertiesImpl(userProperties);
     }
 
     /**
      * Builds a collection of User Properties from the given builder.
      *
      * @param userPropertiesBuilder the builder for the User Properties.
-     * @return the built collection of User Properties or {@link #NO_USER_PROPERTIES} if the builder is null.
+     * @return the built collection of User Properties or {@link #NO_USER_PROPERTIES} if the builder
+     *     is null.
      */
     @NotNull
     public static MqttUserPropertiesImpl build(
             @Nullable final ImmutableList.Builder<MqttUserPropertyImpl> userPropertiesBuilder) {
-        return (userPropertiesBuilder == null) ? NO_USER_PROPERTIES : of(userPropertiesBuilder.build());
+        return (userPropertiesBuilder == null)
+                ? NO_USER_PROPERTIES
+                : of(userPropertiesBuilder.build());
     }
 
     private final ImmutableList<MqttUserPropertyImpl> userProperties;
     private int encodedLength = -1;
 
-    private MqttUserPropertiesImpl(@NotNull final ImmutableList<MqttUserPropertyImpl> userProperties) {
+    private MqttUserPropertiesImpl(
+            @NotNull final ImmutableList<MqttUserPropertyImpl> userProperties) {
         this.userProperties = userProperties;
     }
 
@@ -76,10 +82,12 @@ public class MqttUserPropertiesImpl implements Mqtt5UserProperties {
     }
 
     /**
-     * Encodes this collection of User Properties to the given byte buffer at the current writer index.
-     * <p>
-     * This method does not check if name and value can not be encoded due to byte count restrictions. This check is
-     * performed with the method {@link #encodedLength()} which is generally called before this method.
+     * Encodes this collection of User Properties to the given byte buffer at the current writer
+     * index.
+     *
+     * <p>This method does not check if name and value can not be encoded due to byte count
+     * restrictions. This check is performed with the method {@link #encodedLength()} which is
+     * generally called before this method.
      *
      * @param out the byte buffer to encode to.
      */
@@ -95,10 +103,12 @@ public class MqttUserPropertiesImpl implements Mqtt5UserProperties {
     }
 
     /**
-     * Calculates the byte count of this collection of User Properties according to the MQTT 5 specification.
+     * Calculates the byte count of this collection of User Properties according to the MQTT 5
+     * specification.
      *
      * @return the encoded length of this collection of User Properties.
-     * @throws MqttBinaryDataExceededException if name and/or value can not be encoded due to byte count restrictions.
+     * @throws MqttBinaryDataExceededException if name and/or value can not be encoded due to byte
+     *     count restrictions.
      */
     public int encodedLength() {
         if (encodedLength == -1) {
@@ -112,7 +122,10 @@ public class MqttUserPropertiesImpl implements Mqtt5UserProperties {
         if (!userProperties.isEmpty()) {
             for (int i = 0; i < userProperties.size(); i++) {
                 final MqttUserPropertyImpl userProperty = userProperties.get(i);
-                encodedLength += 1 + userProperty.getName().encodedLength() + userProperty.getValue().encodedLength();
+                encodedLength +=
+                        1
+                                + userProperty.getName().encodedLength()
+                                + userProperty.getValue().encodedLength();
             }
         }
         return encodedLength;
@@ -134,5 +147,4 @@ public class MqttUserPropertiesImpl implements Mqtt5UserProperties {
     public int hashCode() {
         return userProperties.hashCode();
     }
-
 }

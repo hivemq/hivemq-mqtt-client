@@ -37,5 +37,4 @@ public class MqttReAuthEvent {
     public CompletableEmitter getReAuthEmitter() {
         return reAuthEmitter;
     }
-
 }

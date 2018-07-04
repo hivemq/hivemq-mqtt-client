@@ -15,6 +15,15 @@
  */
 package org.mqttbee.util;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.math.BigInteger;
+import java.security.*;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
+import java.util.Date;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
@@ -28,19 +37,7 @@ import org.bouncycastle.operator.DefaultDigestAlgorithmIdentifierFinder;
 import org.bouncycastle.operator.DefaultSignatureAlgorithmIdentifierFinder;
 import org.bouncycastle.operator.bc.BcRSAContentSignerBuilder;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.math.BigInteger;
-import java.security.*;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
-import java.util.Date;
-
-/**
- * @author Christoph Schäbel
- */
+/** @author Christoph Schäbel */
 public class TestKeyStoreGenerator {
 
     private static final String KEY_ALIAS = "mqttbeekey";
@@ -50,8 +47,11 @@ public class TestKeyStoreGenerator {
     }
 
     public File generateKeyStore(
-            final String name, final String keystoreType, final String keyStorePassword,
-            final String privateKeyPassword) throws Exception {
+            final String name,
+            final String keystoreType,
+            final String keyStorePassword,
+            final String privateKeyPassword)
+            throws Exception {
 
         final KeyStore ks = KeyStore.getInstance(keystoreType);
         ks.load(null);
@@ -61,7 +61,11 @@ public class TestKeyStoreGenerator {
 
         final X509Certificate[] certificateChain = {certificate};
 
-        ks.setKeyEntry(KEY_ALIAS, keyPair.getPrivate(), privateKeyPassword.toCharArray(), certificateChain);
+        ks.setKeyEntry(
+                KEY_ALIAS,
+                keyPair.getPrivate(),
+                privateKeyPassword.toCharArray(),
+                certificateChain);
 
         final File keyStoreFile = File.createTempFile(name, null);
         keyStoreFile.deleteOnExit();
@@ -72,16 +76,20 @@ public class TestKeyStoreGenerator {
         return keyStoreFile;
     }
 
-    private X509Certificate generateX509Certificate(final KeyPair keyPair, final String name) throws Exception {
+    private X509Certificate generateX509Certificate(final KeyPair keyPair, final String name)
+            throws Exception {
 
-        //At least 1 attribute is required
+        // At least 1 attribute is required
         final X500Name x500Name = new X500Name("CN=" + name);
 
-        final X509v3CertificateBuilder builder = new X509v3CertificateBuilder(
-
-                x500Name, BigInteger.valueOf(new SecureRandom().nextLong()),
-                new Date(System.currentTimeMillis() - 10000), new Date(System.currentTimeMillis() + 24L * 3600 * 1000),
-                x500Name, SubjectPublicKeyInfo.getInstance(keyPair.getPublic().getEncoded()));
+        final X509v3CertificateBuilder builder =
+                new X509v3CertificateBuilder(
+                        x500Name,
+                        BigInteger.valueOf(new SecureRandom().nextLong()),
+                        new Date(System.currentTimeMillis() - 10000),
+                        new Date(System.currentTimeMillis() + 24L * 3600 * 1000),
+                        x500Name,
+                        SubjectPublicKeyInfo.getInstance(keyPair.getPublic().getEncoded()));
 
         final X509CertificateHolder holder = builder.build(createContentSigner(keyPair));
         final org.bouncycastle.asn1.x509.Certificate certificate = holder.toASN1Structure();
@@ -109,7 +117,7 @@ public class TestKeyStoreGenerator {
         final byte[] encoded = keyPair.getPrivate().getEncoded();
         final AsymmetricKeyParameter privateKey = PrivateKeyFactory.createKey(encoded);
 
-        return new BcRSAContentSignerBuilder(signatureAlgorithmId, digestAlgorithmId).build(privateKey);
+        return new BcRSAContentSignerBuilder(signatureAlgorithmId, digestAlgorithmId)
+                .build(privateKey);
     }
-
 }

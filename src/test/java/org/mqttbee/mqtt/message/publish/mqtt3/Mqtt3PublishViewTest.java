@@ -17,25 +17,23 @@
 
 package org.mqttbee.mqtt.message.publish.mqtt3;
 
-import org.junit.Test;
-import org.mqttbee.mqtt.message.publish.MqttPublish;
-import org.mqttbee.mqtt.message.publish.MqttPublishTest;
-
-import java.nio.ByteBuffer;
-
 import static org.junit.Assert.assertArrayEquals;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
-/**
- * @author Christian Hoff
- */
+import java.nio.ByteBuffer;
+import org.junit.Test;
+import org.mqttbee.mqtt.message.publish.MqttPublish;
+import org.mqttbee.mqtt.message.publish.MqttPublishTest;
+
+/** @author Christian Hoff */
 public class Mqtt3PublishViewTest {
 
     @Test
     public void getPayloadAsBytes_delegatesToWrappedMqttPublish() {
         byte[] expectedPayload = {1, 2, 3, 4, 5};
-        final MqttPublish spyPublish = spy(MqttPublishTest.createPublishFromPayload(ByteBuffer.wrap(expectedPayload)));
+        final MqttPublish spyPublish =
+                spy(MqttPublishTest.createPublishFromPayload(ByteBuffer.wrap(expectedPayload)));
         assertArrayEquals(expectedPayload, spyPublish.getPayloadAsBytes());
         verify(spyPublish).getPayloadAsBytes();
     }

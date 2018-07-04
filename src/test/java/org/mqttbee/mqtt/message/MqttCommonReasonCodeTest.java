@@ -17,13 +17,11 @@
 
 package org.mqttbee.mqtt.message;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- * @author Silvio Giebl
- */
+import org.junit.jupiter.api.Test;
+
+/** @author Silvio Giebl */
 class MqttCommonReasonCodeTest {
 
     @Test
@@ -145,5 +143,4 @@ class MqttCommonReasonCodeTest {
     void test_getCode_wildcardSubscriptionNotSupported() {
         assertEquals(0xA2, MqttCommonReasonCode.WILDCARD_SUBSCRIPTION_NOT_SUPPORTED.getCode());
     }
-
 }

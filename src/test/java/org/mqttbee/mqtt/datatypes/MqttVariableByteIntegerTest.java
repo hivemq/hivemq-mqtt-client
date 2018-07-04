@@ -17,15 +17,13 @@
 
 package org.mqttbee.mqtt.datatypes;
 
+import static org.junit.Assert.*;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class MqttVariableByteIntegerTest {
 
     @Test
@@ -59,7 +57,8 @@ public class MqttVariableByteIntegerTest {
             for (int j = 0; j < 127; j++) {
                 for (int k = 1; k < 127; k++) {
                     byteBuf.writeByte(128 + i).writeByte(128 + j).writeByte(k);
-                    assertEquals(i + j * 128 + k * 128 * 128, MqttVariableByteInteger.decode(byteBuf));
+                    assertEquals(
+                            i + j * 128 + k * 128 * 128, MqttVariableByteInteger.decode(byteBuf));
                     byteBuf.clear();
                 }
             }
@@ -74,7 +73,10 @@ public class MqttVariableByteIntegerTest {
             for (int j = 0; j < 127; j++) {
                 for (int k = 0; k < 127; k++) {
                     for (int l = 1; l < 127; l++) {
-                        byteBuf.writeByte(128 + i).writeByte(128 + j).writeByte(128 + k).writeByte(l);
+                        byteBuf.writeByte(128 + i)
+                                .writeByte(128 + j)
+                                .writeByte(128 + k)
+                                .writeByte(l);
                         assertEquals(
                                 i + j * 128 + k * 128 * 128 + l * 128 * 128 * 128,
                                 MqttVariableByteInteger.decode(byteBuf));
@@ -90,7 +92,8 @@ public class MqttVariableByteIntegerTest {
     public void test_decodeVariableByteInteger_not_enough_bytes() {
         final ByteBuf byteBuf = Unpooled.buffer();
         byteBuf.writeByte(0x80);
-        assertEquals(MqttVariableByteInteger.NOT_ENOUGH_BYTES, MqttVariableByteInteger.decode(byteBuf));
+        assertEquals(
+                MqttVariableByteInteger.NOT_ENOUGH_BYTES, MqttVariableByteInteger.decode(byteBuf));
         byteBuf.release();
     }
 
@@ -106,7 +109,8 @@ public class MqttVariableByteIntegerTest {
     public void test_decodeVariableByteInteger_not_minimum_byte() {
         final ByteBuf byteBuf = Unpooled.buffer();
         byteBuf.writeByte(0xFF).writeByte(0x00);
-        assertEquals(MqttVariableByteInteger.NOT_MINIMUM_BYTES, MqttVariableByteInteger.decode(byteBuf));
+        assertEquals(
+                MqttVariableByteInteger.NOT_MINIMUM_BYTES, MqttVariableByteInteger.decode(byteBuf));
         byteBuf.release();
     }
 
@@ -162,7 +166,8 @@ public class MqttVariableByteIntegerTest {
             for (int j = 0; j < 127; j++) {
                 for (int k = 0; k < 127; k++) {
                     for (int l = 1; l < 127; l++) {
-                        MqttVariableByteInteger.encode(i + j * 128 + k * 128 * 128 + l * 128 * 128 * 128, byteBuf);
+                        MqttVariableByteInteger.encode(
+                                i + j * 128 + k * 128 * 128 + l * 128 * 128 * 128, byteBuf);
                         assertEquals(128 + i, byteBuf.readUnsignedByte());
                         assertEquals(128 + j, byteBuf.readUnsignedByte());
                         assertEquals(128 + k, byteBuf.readUnsignedByte());
@@ -200,5 +205,4 @@ public class MqttVariableByteIntegerTest {
             assertEquals(4, MqttVariableByteInteger.encodedLength(i));
         }
     }
-
 }

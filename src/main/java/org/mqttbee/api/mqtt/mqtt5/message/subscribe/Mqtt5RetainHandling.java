@@ -25,14 +25,11 @@ import org.mqttbee.annotations.Nullable;
  * @author Silvio Giebl
  */
 public enum Mqtt5RetainHandling {
-
     SEND,
     SEND_IF_SUBSCRIPTION_DOES_NOT_EXIST,
     DO_NOT_SEND;
 
-    /**
-     * @return the byte code of this Retain Handling.
-     */
+    /** @return the byte code of this Retain Handling. */
     public int getCode() {
         return ordinal();
     }
@@ -41,7 +38,8 @@ public enum Mqtt5RetainHandling {
      * Returns the Retain Handling belonging to the given byte code.
      *
      * @param code the byte code.
-     * @return the Retain Handling belonging to the byte code or null if the byte code is not a valid Retain Handling.
+     * @return the Retain Handling belonging to the byte code or null if the byte code is not a
+     *     valid Retain Handling.
      */
     @Nullable
     public static Mqtt5RetainHandling fromCode(final int code) {
@@ -51,5 +49,4 @@ public enum Mqtt5RetainHandling {
         }
         return values[code];
     }
-
 }

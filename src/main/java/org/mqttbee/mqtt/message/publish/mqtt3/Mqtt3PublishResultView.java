@@ -27,18 +27,18 @@ import org.mqttbee.mqtt.message.publish.MqttPublishResult;
 import org.mqttbee.mqtt.mqtt3.exceptions.Mqtt3ExceptionFactory;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class Mqtt3PublishResultView implements Mqtt3PublishResult {
 
     @NotNull
-    public static final Function<Mqtt5PublishResult, Mqtt3PublishResult> MAPPER = Mqtt3PublishResultView::of;
+    public static final Function<Mqtt5PublishResult, Mqtt3PublishResult> MAPPER =
+            Mqtt3PublishResultView::of;
 
     @NotNull
     private static Mqtt3PublishResultView of(@NotNull final Mqtt5PublishResult publishResult) {
         return new Mqtt3PublishResultView(
-                MustNotBeImplementedUtil.checkNotImplemented(publishResult, MqttPublishResult.class));
+                MustNotBeImplementedUtil.checkNotImplemented(
+                        publishResult, MqttPublishResult.class));
     }
 
     private final MqttPublishResult delegate;
@@ -64,5 +64,4 @@ public class Mqtt3PublishResultView implements Mqtt3PublishResult {
         final Throwable error = delegate.getError();
         return (error == null) ? null : Mqtt3ExceptionFactory.map(error);
     }
-
 }

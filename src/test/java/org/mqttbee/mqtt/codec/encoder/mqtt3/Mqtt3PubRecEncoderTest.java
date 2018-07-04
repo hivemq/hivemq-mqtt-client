@@ -17,13 +17,13 @@
 
 package org.mqttbee.mqtt.codec.encoder.mqtt3;
 
+import static org.junit.Assert.assertArrayEquals;
+
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.Test;
 import org.mqttbee.mqtt.codec.encoder.AbstractMqtt5EncoderTest;
 import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRec;
 import org.mqttbee.mqtt.message.publish.pubrec.mqtt3.Mqtt3PubRecView;
-
-import static org.junit.Assert.assertArrayEquals;
 
 class Mqtt3PubRecEncoderTest extends AbstractMqtt5EncoderTest {
 
@@ -42,8 +42,7 @@ class Mqtt3PubRecEncoderTest extends AbstractMqtt5EncoderTest {
     }
 
     @Test
-    void encodedRemainingLength() {
-    }
+    void encodedRemainingLength() {}
 
     private void encode(final byte[] expected, final MqttPubRec pubRec) {
         channel.writeOutbound(pubRec);
@@ -53,5 +52,4 @@ class Mqtt3PubRecEncoderTest extends AbstractMqtt5EncoderTest {
         byteBuf.release();
         assertArrayEquals(expected, actual);
     }
-
 }

@@ -19,6 +19,7 @@ package org.mqttbee.api.mqtt.mqtt3.message.unsubscribe;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import java.util.function.Function;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
@@ -31,16 +32,13 @@ import org.mqttbee.mqtt.util.MqttBuilderUtil;
 import org.mqttbee.util.FluentBuilder;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 
-import java.util.function.Function;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class Mqtt3UnsubscribeBuilder<P> extends FluentBuilder<Mqtt3Unsubscribe, P> {
 
     private final ImmutableList.Builder<MqttTopicFilterImpl> topicFiltersBuilder;
 
-    public Mqtt3UnsubscribeBuilder(@Nullable final Function<? super Mqtt3Unsubscribe, P> parentConsumer) {
+    public Mqtt3UnsubscribeBuilder(
+            @Nullable final Function<? super Mqtt3Unsubscribe, P> parentConsumer) {
         super(parentConsumer);
         topicFiltersBuilder = ImmutableList.builder();
     }
@@ -48,8 +46,10 @@ public class Mqtt3UnsubscribeBuilder<P> extends FluentBuilder<Mqtt3Unsubscribe, 
     Mqtt3UnsubscribeBuilder(@NotNull final Mqtt3Unsubscribe unsubscribe) {
         super(null);
         final Mqtt3UnsubscribeView unsubscribeView =
-                MustNotBeImplementedUtil.checkNotImplemented(unsubscribe, Mqtt3UnsubscribeView.class);
-        final ImmutableList<MqttTopicFilterImpl> topicFilters = unsubscribeView.getDelegate().getTopicFilters();
+                MustNotBeImplementedUtil.checkNotImplemented(
+                        unsubscribe, Mqtt3UnsubscribeView.class);
+        final ImmutableList<MqttTopicFilterImpl> topicFilters =
+                unsubscribeView.getDelegate().getTopicFilters();
         topicFiltersBuilder = ImmutableList.builderWithExpectedSize(topicFilters.size() + 1);
         topicFiltersBuilder.addAll(topicFilters);
     }
@@ -73,7 +73,8 @@ public class Mqtt3UnsubscribeBuilder<P> extends FluentBuilder<Mqtt3Unsubscribe, 
 
     @NotNull
     public Mqtt3UnsubscribeBuilder<P> reverse(@NotNull final Mqtt3Subscribe subscribe) {
-        final ImmutableList<? extends Mqtt3Subscription> subscriptions = subscribe.getSubscriptions();
+        final ImmutableList<? extends Mqtt3Subscription> subscriptions =
+                subscribe.getSubscriptions();
         for (final Mqtt3Subscription subscription : subscriptions) {
             addTopicFilter(subscription.getTopicFilter());
         }
@@ -87,5 +88,4 @@ public class Mqtt3UnsubscribeBuilder<P> extends FluentBuilder<Mqtt3Unsubscribe, 
         Preconditions.checkState(!topicFilters.isEmpty());
         return Mqtt3UnsubscribeView.of(topicFilters);
     }
-
 }

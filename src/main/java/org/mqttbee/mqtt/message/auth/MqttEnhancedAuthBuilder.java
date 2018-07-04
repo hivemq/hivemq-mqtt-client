@@ -18,17 +18,14 @@
 package org.mqttbee.mqtt.message.auth;
 
 import com.google.common.base.Preconditions;
+import java.nio.ByteBuffer;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5EnhancedAuthBuilder;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 
-import java.nio.ByteBuffer;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class MqttEnhancedAuthBuilder implements Mqtt5EnhancedAuthBuilder {
 
     private final MqttUTF8StringImpl method;
@@ -57,5 +54,4 @@ public class MqttEnhancedAuthBuilder implements Mqtt5EnhancedAuthBuilder {
     public MqttEnhancedAuth build() {
         return new MqttEnhancedAuth(method, data);
     }
-
 }

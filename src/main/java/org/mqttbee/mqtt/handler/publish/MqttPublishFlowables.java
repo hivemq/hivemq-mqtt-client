@@ -19,6 +19,8 @@ package org.mqttbee.mqtt.handler.publish;
 
 import io.reactivex.Flowable;
 import io.reactivex.internal.util.BackpressureHelper;
+import java.util.concurrent.atomic.AtomicLong;
+import javax.inject.Inject;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.ioc.ChannelScope;
 import org.reactivestreams.Subscriber;
@@ -26,14 +28,10 @@ import org.reactivestreams.Subscription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import java.util.concurrent.atomic.AtomicLong;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @ChannelScope
-public class MqttPublishFlowables extends Flowable<Flowable<MqttPublishWithFlow>> implements Subscription {
+public class MqttPublishFlowables extends Flowable<Flowable<MqttPublishWithFlow>>
+        implements Subscription {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MqttPublishFlowables.class);
 
@@ -41,8 +39,7 @@ public class MqttPublishFlowables extends Flowable<Flowable<MqttPublishWithFlow>
     private final AtomicLong requested = new AtomicLong();
 
     @Inject
-    MqttPublishFlowables() {
-    }
+    MqttPublishFlowables() {}
 
     @Override
     protected void subscribeActual(final Subscriber<? super Flowable<MqttPublishWithFlow>> s) {
@@ -79,5 +76,4 @@ public class MqttPublishFlowables extends Flowable<Flowable<MqttPublishWithFlow>
     public void cancel() {
         LOGGER.error("MqttPublishFlowables is global and should never be cancelled.");
     }
-
 }

@@ -17,13 +17,10 @@
 
 package org.mqttbee.mqtt.handler.publish;
 
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 class MqttSubscriptionFlowTreeTest extends MqttSubscriptionFlowsTest {
 
     MqttSubscriptionFlowTreeTest() {
         super(MqttSubscriptionFlowTree::new);
     }
-
 }

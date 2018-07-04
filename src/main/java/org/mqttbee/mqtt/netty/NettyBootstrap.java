@@ -22,21 +22,18 @@ import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.MultithreadEventLoopGroup;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.atomic.AtomicInteger;
+import javax.annotation.concurrent.ThreadSafe;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt.MqttClientExecutorConfigImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.concurrent.ThreadSafe;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.Executor;
-import java.util.concurrent.atomic.AtomicInteger;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @ThreadSafe
 public abstract class NettyBootstrap {
 
@@ -47,12 +44,12 @@ public abstract class NettyBootstrap {
     private Map<Executor, MultithreadEventLoopGroup> eventLoopGroups;
     private Map<Executor, AtomicInteger> eventLoopGroupReferenceCounts;
 
-    NettyBootstrap() {
-    }
+    NettyBootstrap() {}
 
     @NotNull
     public Bootstrap bootstrap(@NotNull final MqttClientExecutorConfigImpl executorConfig) {
-        return new Bootstrap().group(getEventLoopGroup(executorConfig))
+        return new Bootstrap()
+                .group(getEventLoopGroup(executorConfig))
                 .channel(getChannelClass())
                 .option(ChannelOption.SO_KEEPALIVE, true)
                 .option(ChannelOption.TCP_NODELAY, true)
@@ -66,7 +63,8 @@ public abstract class NettyBootstrap {
         if (executorConfig.getRawNettyExecutor() == null) {
             return getDefaultEventLoopGroup(executorConfig.getRawNettyThreads());
         }
-        return getExecutorEventLoopGroup(executorConfig.getRawNettyExecutor(), executorConfig.getRawNettyThreads());
+        return getExecutorEventLoopGroup(
+                executorConfig.getRawNettyExecutor(), executorConfig.getRawNettyThreads());
     }
 
     @NotNull
@@ -76,11 +74,12 @@ public abstract class NettyBootstrap {
             defaultEventLoopGroupReferenceCount = new AtomicInteger(1);
         } else {
             final int defaultThreadCount = defaultEventLoopGroup.executorCount();
-            if ((numberOfNettyThreads != MqttClientExecutorConfigImpl.DEFAULT_NETTY_THREADS) &&
-                    (defaultThreadCount != numberOfNettyThreads)) {
+            if ((numberOfNettyThreads != MqttClientExecutorConfigImpl.DEFAULT_NETTY_THREADS)
+                    && (defaultThreadCount != numberOfNettyThreads)) {
                 LOGGER.warn(
                         "Tried to use the default executor with a different amount of Netty threads. Using {} threads instead of {}",
-                        defaultThreadCount, numberOfNettyThreads);
+                        defaultThreadCount,
+                        numberOfNettyThreads);
             }
             defaultEventLoopGroupReferenceCount.incrementAndGet();
         }
@@ -102,11 +101,12 @@ public abstract class NettyBootstrap {
             eventLoopGroupReferenceCounts.put(executor, new AtomicInteger(1));
         } else {
             final int threadCount = eventLoopGroup.executorCount();
-            if ((numberOfNettyThreads != MqttClientExecutorConfigImpl.DEFAULT_NETTY_THREADS) &&
-                    (threadCount != numberOfNettyThreads)) {
+            if ((numberOfNettyThreads != MqttClientExecutorConfigImpl.DEFAULT_NETTY_THREADS)
+                    && (threadCount != numberOfNettyThreads)) {
                 LOGGER.warn(
                         "Tried to use a different amount of Netty threads for the same executor. Using {} threads instead of {}",
-                        threadCount, numberOfNettyThreads);
+                        threadCount,
+                        numberOfNettyThreads);
             }
             eventLoopGroupReferenceCounts.get(executor).incrementAndGet();
         }
@@ -151,5 +151,4 @@ public abstract class NettyBootstrap {
             }
         }
     }
-
 }

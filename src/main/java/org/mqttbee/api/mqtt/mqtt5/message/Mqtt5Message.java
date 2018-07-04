@@ -28,10 +28,7 @@ import org.mqttbee.annotations.NotNull;
 @DoNotImplement
 public interface Mqtt5Message {
 
-    /**
-     * @return the type of this MQTT message.
-     */
+    /** @return the type of this MQTT message. */
     @NotNull
     Mqtt5MessageType getType();
-
 }

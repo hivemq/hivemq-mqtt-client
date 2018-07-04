@@ -17,15 +17,13 @@
 
 package org.mqttbee.util.collections;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 class IntMapTest {
 
     @Test
@@ -153,5 +151,4 @@ class IntMapTest {
             assertEquals("test" + i, map.remove(i));
         }
     }
-
 }

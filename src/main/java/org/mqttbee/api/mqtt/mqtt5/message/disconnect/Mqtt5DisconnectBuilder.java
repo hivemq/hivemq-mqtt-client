@@ -17,7 +17,12 @@
 
 package org.mqttbee.api.mqtt.mqtt5.message.disconnect;
 
+import static org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.DISCONNECT_WITH_WILL_MESSAGE;
+import static org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.NORMAL_DISCONNECTION;
+
 import com.google.common.base.Preconditions;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
@@ -30,15 +35,7 @@ import org.mqttbee.mqtt.util.MqttBuilderUtil;
 import org.mqttbee.util.FluentBuilder;
 import org.mqttbee.util.UnsignedDataTypes;
 
-import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
-
-import static org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.DISCONNECT_WITH_WILL_MESSAGE;
-import static org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.NORMAL_DISCONNECTION;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class Mqtt5DisconnectBuilder<P> extends FluentBuilder<Mqtt5Disconnect, P> {
 
     private boolean withWillMessage = false;
@@ -47,7 +44,8 @@ public class Mqtt5DisconnectBuilder<P> extends FluentBuilder<Mqtt5Disconnect, P>
     private MqttUTF8StringImpl reasonString;
     private MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
 
-    public Mqtt5DisconnectBuilder(@Nullable final Function<? super Mqtt5Disconnect, P> parentConsumer) {
+    public Mqtt5DisconnectBuilder(
+            @Nullable final Function<? super Mqtt5Disconnect, P> parentConsumer) {
         super(parentConsumer);
     }
 
@@ -74,7 +72,8 @@ public class Mqtt5DisconnectBuilder<P> extends FluentBuilder<Mqtt5Disconnect, P>
     }
 
     @NotNull
-    public Mqtt5DisconnectBuilder<P> serverReference(@Nullable final MqttUTF8String serverReference) {
+    public Mqtt5DisconnectBuilder<P> serverReference(
+            @Nullable final MqttUTF8String serverReference) {
         this.serverReference = MqttBuilderUtil.stringOrNull(serverReference);
         return this;
     }
@@ -92,7 +91,8 @@ public class Mqtt5DisconnectBuilder<P> extends FluentBuilder<Mqtt5Disconnect, P>
     }
 
     @NotNull
-    public Mqtt5DisconnectBuilder<P> userProperties(@NotNull final Mqtt5UserProperties userProperties) {
+    public Mqtt5DisconnectBuilder<P> userProperties(
+            @NotNull final Mqtt5UserProperties userProperties) {
         this.userProperties = MqttBuilderUtil.userProperties(userProperties);
         return this;
     }
@@ -108,7 +108,10 @@ public class Mqtt5DisconnectBuilder<P> extends FluentBuilder<Mqtt5Disconnect, P>
         final Mqtt5DisconnectReasonCode reasonCode =
                 withWillMessage ? DISCONNECT_WITH_WILL_MESSAGE : NORMAL_DISCONNECTION;
         return new MqttDisconnect(
-                reasonCode, sessionExpiryIntervalSeconds, serverReference, reasonString, userProperties);
+                reasonCode,
+                sessionExpiryIntervalSeconds,
+                serverReference,
+                reasonString,
+                userProperties);
     }
-
 }

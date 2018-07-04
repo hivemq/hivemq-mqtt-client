@@ -26,22 +26,14 @@ import org.mqttbee.annotations.Nullable;
  */
 public enum MqttQoS {
 
-    /**
-     * QoS for at most once delivery according to the capabilities of the underlying network.
-     */
+    /** QoS for at most once delivery according to the capabilities of the underlying network. */
     AT_MOST_ONCE,
-    /**
-     * QoS for ensuring at least once delivery.
-     */
+    /** QoS for ensuring at least once delivery. */
     AT_LEAST_ONCE,
-    /**
-     * QoS for ensuring exactly once delivery.
-     */
+    /** QoS for ensuring exactly once delivery. */
     EXACTLY_ONCE;
 
-    /**
-     * @return the byte code of this QoS.
-     */
+    /** @return the byte code of this QoS. */
     public int getCode() {
         return ordinal();
     }
@@ -50,7 +42,8 @@ public enum MqttQoS {
      * Returns the QoS belonging to the given byte code.
      *
      * @param code the byte code.
-     * @return the QoS belonging to the given byte code or null if the byte code is not a valid QoS code.
+     * @return the QoS belonging to the given byte code or null if the byte code is not a valid QoS
+     *     code.
      */
     @Nullable
     public static MqttQoS fromCode(final int code) {
@@ -60,5 +53,4 @@ public enum MqttQoS {
         }
         return values[code];
     }
-
 }

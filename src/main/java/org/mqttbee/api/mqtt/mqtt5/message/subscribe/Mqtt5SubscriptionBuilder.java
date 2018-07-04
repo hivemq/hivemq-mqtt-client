@@ -18,6 +18,7 @@
 package org.mqttbee.api.mqtt.mqtt5.message.subscribe;
 
 import com.google.common.base.Preconditions;
+import java.util.function.Function;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
@@ -28,11 +29,7 @@ import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 import org.mqttbee.util.FluentBuilder;
 
-import java.util.function.Function;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class Mqtt5SubscriptionBuilder<P> extends FluentBuilder<Mqtt5Subscription, P> {
 
     private MqttTopicFilterImpl topicFilter;
@@ -41,7 +38,8 @@ public class Mqtt5SubscriptionBuilder<P> extends FluentBuilder<Mqtt5Subscription
     private Mqtt5RetainHandling retainHandling = Mqtt5Subscription.DEFAULT_RETAIN_HANDLING;
     private boolean retainAsPublished = Mqtt5Subscription.DEFAULT_RETAIN_AS_PUBLISHED;
 
-    public Mqtt5SubscriptionBuilder(@Nullable final Function<? super Mqtt5Subscription, P> parentConsumer) {
+    public Mqtt5SubscriptionBuilder(
+            @Nullable final Function<? super Mqtt5Subscription, P> parentConsumer) {
         super(parentConsumer);
     }
 
@@ -75,7 +73,8 @@ public class Mqtt5SubscriptionBuilder<P> extends FluentBuilder<Mqtt5Subscription
     }
 
     @NotNull
-    public Mqtt5SubscriptionBuilder<P> retainHandling(@NotNull final Mqtt5RetainHandling retainHandling) {
+    public Mqtt5SubscriptionBuilder<P> retainHandling(
+            @NotNull final Mqtt5RetainHandling retainHandling) {
         this.retainHandling = Preconditions.checkNotNull(retainHandling);
         return this;
     }
@@ -94,5 +93,4 @@ public class Mqtt5SubscriptionBuilder<P> extends FluentBuilder<Mqtt5Subscription
         Preconditions.checkArgument(!(topicFilter.isShared() && noLocal));
         return new MqttSubscription(topicFilter, qos, noLocal, retainHandling, retainAsPublished);
     }
-
 }

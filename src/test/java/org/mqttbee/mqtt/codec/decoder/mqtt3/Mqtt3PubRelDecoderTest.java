@@ -17,6 +17,8 @@
 
 package org.mqttbee.mqtt.codec.decoder.mqtt3;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.google.common.primitives.Bytes;
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -27,27 +29,25 @@ import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoders;
 import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRel;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class Mqtt3PubRelDecoderTest extends AbstractMqtt3DecoderTest {
 
     private static final byte[] WELLFORMED_PUBREL_BEGIN = {
-            //   type, flags
-            0b0110_0010,
-            //remaining length
-            0b0000_0010
+        //   type, flags
+        0b0110_0010,
+        // remaining length
+        0b0000_0010
     };
     private static final byte[] MALFORMED_PUBREL_BEGIN_WRONG_FLAGS = {
-            //   type, flags
-            0b0110_0100,
-            //remaining length
-            0b0000_0010
+        //   type, flags
+        0b0110_0100,
+        // remaining length
+        0b0000_0010
     };
     private static final byte[] MALFORMED_PUBREL_BEGIN_TOO_LONG_LENGTH = {
-            //   type, flags
-            0b0110_0100,
-            //remaining length
-            0b0000_0011
+        //   type, flags
+        0b0110_0100,
+        // remaining length
+        0b0000_0011
     };
     private static final byte[] ENDING_TOO_LONG_MALFORMED = {0x01};
     private static final byte[] MAX_PACKET_ID = {(byte) 0b1111_1111, (byte) 0b1111_1111};
@@ -61,7 +61,9 @@ class Mqtt3PubRelDecoderTest extends AbstractMqtt3DecoderTest {
     @ValueSource(strings = {"true", "false"})
     void decode_SUCESS(final boolean useMaxPacketId) {
 
-        final byte[] encoded = Bytes.concat(WELLFORMED_PUBREL_BEGIN, useMaxPacketId ? MAX_PACKET_ID : MIN_PACKET_ID);
+        final byte[] encoded =
+                Bytes.concat(
+                        WELLFORMED_PUBREL_BEGIN, useMaxPacketId ? MAX_PACKET_ID : MIN_PACKET_ID);
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
@@ -80,7 +82,10 @@ class Mqtt3PubRelDecoderTest extends AbstractMqtt3DecoderTest {
                 break;
             case 2:
                 encoded =
-                        Bytes.concat(MALFORMED_PUBREL_BEGIN_TOO_LONG_LENGTH, MIN_PACKET_ID, ENDING_TOO_LONG_MALFORMED);
+                        Bytes.concat(
+                                MALFORMED_PUBREL_BEGIN_TOO_LONG_LENGTH,
+                                MIN_PACKET_ID,
+                                ENDING_TOO_LONG_MALFORMED);
                 break;
             default:
                 throw new Exception();
@@ -104,5 +109,4 @@ class Mqtt3PubRelDecoderTest extends AbstractMqtt3DecoderTest {
             return null;
         }
     }
-
 }

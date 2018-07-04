@@ -17,6 +17,8 @@
 
 package org.mqttbee.api.mqtt.mqtt5.message.connect;
 
+import java.util.Optional;
+import java.util.function.Function;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
@@ -26,9 +28,6 @@ import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5SimpleAuth;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
 import org.mqttbee.util.UnsignedDataTypes;
-
-import java.util.Optional;
-import java.util.function.Function;
 
 /**
  * MQTT 5 CONNECT packet.
@@ -56,61 +55,54 @@ public interface Mqtt5Connect extends Mqtt5Message {
         return new Mqtt5ConnectBuilder<>(connect);
     }
 
-    /**
-     * @return the keep alive in seconds the client wants to use.
-     */
+    /** @return the keep alive in seconds the client wants to use. */
     int getKeepAlive();
 
-    /**
-     * @return whether the client has no session present or wants to clear a present session.
-     */
+    /** @return whether the client has no session present or wants to clear a present session. */
     boolean isCleanStart();
 
     /**
      * @return the session expiry interval in seconds the client wants to use. The default is {@link
-     * #DEFAULT_SESSION_EXPIRY_INTERVAL}. If it is {@link #NO_SESSION_EXPIRY} the session does not expire.
+     *     #DEFAULT_SESSION_EXPIRY_INTERVAL}. If it is {@link #NO_SESSION_EXPIRY} the session does
+     *     not expire.
      */
     long getSessionExpiryInterval();
 
     /**
-     * @return whether the client requests response information from the server. The default is {@link
-     * #DEFAULT_RESPONSE_INFORMATION_REQUESTED}.
+     * @return whether the client requests response information from the server. The default is
+     *     {@link #DEFAULT_RESPONSE_INFORMATION_REQUESTED}.
      */
     boolean isResponseInformationRequested();
 
     /**
-     * @return whether the client requests problem information from the server. The default is {@link
-     * #DEFAULT_PROBLEM_INFORMATION_REQUESTED}.
+     * @return whether the client requests problem information from the server. The default is
+     *     {@link #DEFAULT_PROBLEM_INFORMATION_REQUESTED}.
      */
     boolean isProblemInformationRequested();
 
-    /**
-     * @return the restrictions set from the client.
-     */
+    /** @return the restrictions set from the client. */
     @NotNull
     Mqtt5ConnectRestrictions getRestrictions();
 
     /**
-     * @return the optional simple authentication and/or authorization related data of this CONNECT packet.
+     * @return the optional simple authentication and/or authorization related data of this CONNECT
+     *     packet.
      */
     @NotNull
     Optional<Mqtt5SimpleAuth> getSimpleAuth();
 
     /**
-     * @return the optional enhanced authentication and/or authorization provider of this CONNECT packet.
+     * @return the optional enhanced authentication and/or authorization provider of this CONNECT
+     *     packet.
      */
     @NotNull
     Optional<Mqtt5EnhancedAuthProvider> getEnhancedAuthProvider();
 
-    /**
-     * @return the optional Will Publish of this CONNECT packet.
-     */
+    /** @return the optional Will Publish of this CONNECT packet. */
     @NotNull
     Optional<Mqtt5WillPublish> getWillPublish();
 
-    /**
-     * @return the optional user properties of this CONNECT packet.
-     */
+    /** @return the optional user properties of this CONNECT packet. */
     @NotNull
     Mqtt5UserProperties getUserProperties();
 
@@ -119,5 +111,4 @@ public interface Mqtt5Connect extends Mqtt5Message {
     default Mqtt5MessageType getType() {
         return Mqtt5MessageType.CONNECT;
     }
-
 }

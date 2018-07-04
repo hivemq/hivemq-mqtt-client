@@ -17,29 +17,32 @@
 
 package org.mqttbee.api.mqtt.datatypes;
 
+import java.util.function.Function;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 
-import java.util.function.Function;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class MqttSharedTopicFilterBuilder<P> extends MqttTopicFilterBuilder<P> {
 
     @NotNull
     public static <P> MqttSharedTopicFilterBuilder<P> create(
-            @NotNull final String shareName, @NotNull final String base,
+            @NotNull final String shareName,
+            @NotNull final String base,
             @Nullable final Function<? super MqttSharedTopicFilter, P> parentConsumer) {
 
-        return new MqttSharedTopicFilterBuilder<>(shareName, base, (parentConsumer == null) ? null :
-                topicFilter -> parentConsumer.apply((MqttSharedTopicFilter) topicFilter));
+        return new MqttSharedTopicFilterBuilder<>(
+                shareName,
+                base,
+                (parentConsumer == null)
+                        ? null
+                        : topicFilter -> parentConsumer.apply((MqttSharedTopicFilter) topicFilter));
     }
 
     private final String shareName;
 
     public MqttSharedTopicFilterBuilder(
-            @NotNull final String shareName, @NotNull final String base,
+            @NotNull final String shareName,
+            @NotNull final String base,
             @Nullable final Function<? super MqttTopicFilter, P> parentConsumer) {
 
         super(base, parentConsumer);
@@ -72,5 +75,4 @@ public class MqttSharedTopicFilterBuilder<P> extends MqttTopicFilterBuilder<P> {
     public MqttSharedTopicFilter build() {
         return MqttSharedTopicFilter.from(shareName, stringBuilder.toString());
     }
-
 }

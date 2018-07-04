@@ -26,10 +26,9 @@ import org.mqttbee.rx.SingleFlow;
 import org.mqttbee.util.collections.ScNodeList;
 import org.reactivestreams.Subscriber;
 
-/**
- * @author Silvio Giebl
- */
-public class MqttSubscriptionFlow extends MqttIncomingPublishFlow<Subscriber<? super Mqtt5SubscribeResult>>
+/** @author Silvio Giebl */
+public class MqttSubscriptionFlow
+        extends MqttIncomingPublishFlow<Subscriber<? super Mqtt5SubscribeResult>>
         implements SingleFlow<Mqtt5SubAck> {
 
     private final ScNodeList<MqttTopicFilterImpl> topicFilters;
@@ -71,5 +70,4 @@ public class MqttSubscriptionFlow extends MqttIncomingPublishFlow<Subscriber<? s
     void setSubscriptionIdentifier(final int subscriptionIdentifier) {
         this.subscriptionIdentifier = subscriptionIdentifier;
     }
-
 }

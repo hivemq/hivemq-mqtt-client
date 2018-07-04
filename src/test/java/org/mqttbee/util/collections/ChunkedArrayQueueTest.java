@@ -17,15 +17,13 @@
 
 package org.mqttbee.util.collections;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 class ChunkedArrayQueueTest {
 
     @Test
@@ -70,5 +68,4 @@ class ChunkedArrayQueueTest {
         assertEquals(0, queue.size());
         assertTrue(queue.isEmpty());
     }
-
 }

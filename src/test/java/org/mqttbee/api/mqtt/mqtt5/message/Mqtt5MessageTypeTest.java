@@ -17,15 +17,13 @@
 
 package org.mqttbee.api.mqtt.mqtt5.message;
 
-import org.junit.Test;
-
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- * @author Silvio Giebl
- */
+import org.junit.Test;
+
+/** @author Silvio Giebl */
 public class Mqtt5MessageTypeTest {
 
     @Test
@@ -192,5 +190,4 @@ public class Mqtt5MessageTypeTest {
     public void test_fromCode_negative() {
         assertNull(Mqtt5MessageType.fromCode(-1));
     }
-
 }

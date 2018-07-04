@@ -23,16 +23,15 @@ import org.mqttbee.mqtt.message.unsubscribe.MqttStatefulUnsubscribe;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribe;
 import org.mqttbee.rx.SingleFlow;
 
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 class MqttUnsubscribeWithFlow {
 
     private final MqttUnsubscribe unsubscribe;
     private final SingleFlow<Mqtt5UnsubAck> unsubAckFlow;
 
     MqttUnsubscribeWithFlow(
-            @NotNull final MqttUnsubscribe unsubscribe, @NotNull final SingleFlow<Mqtt5UnsubAck> unsubAckFlow) {
+            @NotNull final MqttUnsubscribe unsubscribe,
+            @NotNull final SingleFlow<Mqtt5UnsubAck> unsubAckFlow) {
 
         this.unsubscribe = unsubscribe;
         this.unsubAckFlow = unsubAckFlow;
@@ -40,7 +39,8 @@ class MqttUnsubscribeWithFlow {
 
     @NotNull
     MqttStatefulUnsubscribeWithFlow createStateful(final int packetIdentifier) {
-        return new MqttStatefulUnsubscribeWithFlow(unsubscribe.createStateful(packetIdentifier), unsubAckFlow);
+        return new MqttStatefulUnsubscribeWithFlow(
+                unsubscribe.createStateful(packetIdentifier), unsubAckFlow);
     }
 
     static class MqttStatefulUnsubscribeWithFlow {
@@ -65,7 +65,5 @@ class MqttUnsubscribeWithFlow {
         SingleFlow<Mqtt5UnsubAck> getUnsubAckFlow() {
             return unsubAckFlow;
         }
-
     }
-
 }

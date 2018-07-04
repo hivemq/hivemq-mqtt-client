@@ -21,9 +21,7 @@ import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @DoNotImplement
 public interface Mqtt3PublishResult {
 
@@ -34,5 +32,4 @@ public interface Mqtt3PublishResult {
 
     @Nullable
     Throwable getError();
-
 }

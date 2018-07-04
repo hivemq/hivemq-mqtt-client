@@ -18,6 +18,8 @@
 package org.mqttbee.api.mqtt.mqtt3.message.publish;
 
 import com.google.common.base.Preconditions;
+import java.nio.ByteBuffer;
+import java.util.function.Function;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
@@ -30,12 +32,7 @@ import org.mqttbee.util.ByteBufferUtil;
 import org.mqttbee.util.FluentBuilder;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 
-import java.nio.ByteBuffer;
-import java.util.function.Function;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class Mqtt3PublishBuilder<P> extends FluentBuilder<Mqtt3Publish, P> {
 
     private MqttTopicImpl topic;
@@ -105,5 +102,4 @@ public class Mqtt3PublishBuilder<P> extends FluentBuilder<Mqtt3Publish, P> {
         Preconditions.checkNotNull(qos);
         return Mqtt3PublishView.of(topic, payload, qos, retain);
     }
-
 }

@@ -19,6 +19,7 @@ package org.mqttbee.mqtt.handler.publish;
 
 import io.netty.channel.EventLoop;
 import io.reactivex.FlowableSubscriber;
+import javax.inject.Inject;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
@@ -28,11 +29,7 @@ import org.reactivestreams.Subscription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @ChannelScope
 public class MqttOutgoingPublishService implements FlowableSubscriber<MqttPublishWithFlow> {
 
@@ -49,18 +46,23 @@ public class MqttOutgoingPublishService implements FlowableSubscriber<MqttPublis
 
     @Inject
     MqttOutgoingPublishService(
-            final MqttOutgoingQoSHandler outgoingQoSHandler, final MqttPublishFlowables publishFlowables,
+            final MqttOutgoingQoSHandler outgoingQoSHandler,
+            final MqttPublishFlowables publishFlowables,
             final MqttClientData clientData) {
 
-        final MqttServerConnectionData serverConnectionData = clientData.getRawServerConnectionData();
+        final MqttServerConnectionData serverConnectionData =
+                clientData.getRawServerConnectionData();
         assert serverConnectionData != null;
-        final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
+        final MqttClientConnectionData clientConnectionData =
+                clientData.getRawClientConnectionData();
         assert clientConnectionData != null;
 
         this.outgoingQoSHandler = outgoingQoSHandler;
         nettyEventLoop = clientConnectionData.getChannel().eventLoop();
 
-        receiveMaximum = MqttOutgoingQoSHandler.getPubReceiveMaximum(serverConnectionData.getReceiveMaximum());
+        receiveMaximum =
+                MqttOutgoingQoSHandler.getPubReceiveMaximum(
+                        serverConnectionData.getReceiveMaximum());
 
         publishFlowables.flatMap(f -> f, true, MAX_CONCURRENT_PUBLISH_FLOWABLES).subscribe(this);
     }
@@ -94,5 +96,4 @@ public class MqttOutgoingPublishService implements FlowableSubscriber<MqttPublis
     EventLoop getNettyEventLoop() {
         return nettyEventLoop;
     }
-
 }

@@ -30,5 +30,4 @@ public interface MqttDisconnectProperty {
     int SERVER_REFERENCE = MqttProperty.SERVER_REFERENCE;
     int REASON_STRING = MqttProperty.REASON_STRING;
     int USER_PROPERTY = MqttProperty.USER_PROPERTY;
-
 }

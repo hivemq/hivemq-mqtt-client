@@ -17,9 +17,15 @@
 
 package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
+import static java.util.Objects.requireNonNull;
+import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
+import static org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.*;
+import static org.mqttbee.mqtt.message.disconnect.MqttDisconnect.SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
+
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -30,16 +36,7 @@ import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
 
-import java.util.Arrays;
-
-import static java.util.Objects.requireNonNull;
-import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
-import static org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.*;
-import static org.mqttbee.mqtt.message.disconnect.MqttDisconnect.SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
-
-/**
- * @author David Katz
- */
+/** @author David Katz */
 class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest {
 
     Mqtt5DisconnectEncoderTest() {
@@ -49,26 +46,72 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesT
     @Test
     void encode_allProperties() {
         final byte[] expected = {
-                // fixed header
-                //   type, flags
-                (byte) 0b1110_0000,
-                // remaining length
-                54,
-                // variable header
-                //   reason code Malformed Packet
-                (byte) 0x81,
-                //  Properties
-                52,
-                //    Session Expiry Interval
-                0x11, 0, 0, 0, 1,
-                //    Server Reference
-                0x1C, 0, 6, 's', 'e', 'r', 'v', 'e', 'r',
-                //    Reason String
-                0x1F, 0, 6, 'r', 'e', 'a', 's', 'o', 'n',
-                // User Properties
-                0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e', //
-                0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e', '2'
-
+            // fixed header
+            //   type, flags
+            (byte) 0b1110_0000,
+            // remaining length
+            54,
+            // variable header
+            //   reason code Malformed Packet
+            (byte) 0x81,
+            //  Properties
+            52,
+            //    Session Expiry Interval
+            0x11,
+            0,
+            0,
+            0,
+            1,
+            //    Server Reference
+            0x1C,
+            0,
+            6,
+            's',
+            'e',
+            'r',
+            'v',
+            'e',
+            'r',
+            //    Reason String
+            0x1F,
+            0,
+            6,
+            'r',
+            'e',
+            'a',
+            's',
+            'o',
+            'n',
+            // User Properties
+            0x26,
+            0,
+            4,
+            't',
+            'e',
+            's',
+            't',
+            0,
+            5,
+            'v',
+            'a',
+            'l',
+            'u',
+            'e', //
+            0x26,
+            0,
+            4,
+            't',
+            'e',
+            's',
+            't',
+            0,
+            6,
+            'v',
+            'a',
+            'l',
+            'u',
+            'e',
+            '2'
         };
         final MqttUTF8StringImpl reasonString = MqttUTF8StringImpl.from("reason");
         final MqttUTF8StringImpl serverReference = MqttUTF8StringImpl.from("server");
@@ -82,7 +125,11 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesT
                 MqttUserPropertiesImpl.of(ImmutableList.of(userProperty1, userProperty2));
 
         final MqttDisconnect disconnect =
-                new MqttDisconnect(MALFORMED_PACKET, sessionExpiryInterval, serverReference, reasonString,
+                new MqttDisconnect(
+                        MALFORMED_PACKET,
+                        sessionExpiryInterval,
+                        serverReference,
+                        reasonString,
                         userProperties);
 
         encode(expected, disconnect);
@@ -91,39 +138,50 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesT
     @Test
     void encode_reasonCode() {
         final byte[] expected = {
-                // fixed header
-                //   type, flags
-                (byte) 0b1110_0000,
-                // remaining length
-                1,
-                // variable header
-                //   reason code Malformed Packet
-                (byte) 0x81
+            // fixed header
+            //   type, flags
+            (byte) 0b1110_0000,
+            // remaining length
+            1,
+            // variable header
+            //   reason code Malformed Packet
+            (byte) 0x81
         };
 
         final MqttDisconnect disconnect =
-                new MqttDisconnect(MALFORMED_PACKET, SESSION_EXPIRY_INTERVAL_FROM_CONNECT, null, null,
+                new MqttDisconnect(
+                        MALFORMED_PACKET,
+                        SESSION_EXPIRY_INTERVAL_FROM_CONNECT,
+                        null,
+                        null,
                         MqttUserPropertiesImpl.NO_USER_PROPERTIES);
         encode(expected, disconnect);
     }
 
     @ParameterizedTest
-    @EnumSource(value = Mqtt5DisconnectReasonCode.class, mode = EXCLUDE, names = "NORMAL_DISCONNECTION")
+    @EnumSource(
+            value = Mqtt5DisconnectReasonCode.class,
+            mode = EXCLUDE,
+            names = "NORMAL_DISCONNECTION")
     void encode_allReasonCodes(final Mqtt5DisconnectReasonCode reasonCode) {
         final byte[] expected = {
-                // fixed header
-                //   type, flags
-                (byte) 0b1110_0000,
-                // remaining length
-                1,
-                // variable header
-                //   reason code placeholder
-                (byte) 0xFF
+            // fixed header
+            //   type, flags
+            (byte) 0b1110_0000,
+            // remaining length
+            1,
+            // variable header
+            //   reason code placeholder
+            (byte) 0xFF
         };
 
         expected[2] = (byte) reasonCode.getCode();
         final MqttDisconnect disconnect =
-                new MqttDisconnect(reasonCode, SESSION_EXPIRY_INTERVAL_FROM_CONNECT, null, null,
+                new MqttDisconnect(
+                        reasonCode,
+                        SESSION_EXPIRY_INTERVAL_FROM_CONNECT,
+                        null,
+                        null,
                         MqttUserPropertiesImpl.NO_USER_PROPERTIES);
         encode(expected, disconnect);
     }
@@ -131,15 +189,19 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesT
     @Test
     void encode_noReasonCodeIfNormalWithoutProperties() {
         final byte[] expected = {
-                // fixed header
-                //   type, flags
-                (byte) 0b1110_0000,
-                // remaining length
-                0
+            // fixed header
+            //   type, flags
+            (byte) 0b1110_0000,
+            // remaining length
+            0
         };
 
         final MqttDisconnect disconnect =
-                new MqttDisconnect(NORMAL_DISCONNECTION, SESSION_EXPIRY_INTERVAL_FROM_CONNECT, null, null,
+                new MqttDisconnect(
+                        NORMAL_DISCONNECTION,
+                        SESSION_EXPIRY_INTERVAL_FROM_CONNECT,
+                        null,
+                        null,
                         MqttUserPropertiesImpl.NO_USER_PROPERTIES);
         encode(expected, disconnect);
     }
@@ -147,51 +209,70 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesT
     @Test
     void encode_reasonString() {
         final byte[] expected = {
-                // fixed header
-                //   type, flags
-                (byte) 0b1110_0000,
-                // remaining length
-                11,
-                // variable header
-                //   reason code Malformed Packet
-                (byte) 0x81,
-                //  Properties
-                9,
-                //    Reason String
-                0x1F, 0, 6, 'r', 'e', 'a', 's', 'o', 'n'
-
-
+            // fixed header
+            //   type, flags
+            (byte) 0b1110_0000,
+            // remaining length
+            11,
+            // variable header
+            //   reason code Malformed Packet
+            (byte) 0x81,
+            //  Properties
+            9,
+            //    Reason String
+            0x1F,
+            0,
+            6,
+            'r',
+            'e',
+            'a',
+            's',
+            'o',
+            'n'
         };
         final MqttUTF8StringImpl reasonString = MqttUTF8StringImpl.from("reason");
         final MqttDisconnect disconnect =
-                new MqttDisconnect(MALFORMED_PACKET, SESSION_EXPIRY_INTERVAL_FROM_CONNECT, null, reasonString,
+                new MqttDisconnect(
+                        MALFORMED_PACKET,
+                        SESSION_EXPIRY_INTERVAL_FROM_CONNECT,
+                        null,
+                        reasonString,
                         MqttUserPropertiesImpl.NO_USER_PROPERTIES);
 
         encode(expected, disconnect);
     }
 
-
     @Test
     void encode_serverReference() {
         final byte[] expected = {
-                // fixed header
-                //   type, flags
-                (byte) 0b1110_0000,
-                // remaining length
-                11,
-                // variable header
-                //   reason code Malformed Packet
-                (byte) 0x81,
-                //  Properties
-                9,
-                //    Server Reference
-                0x1C, 0, 6, 's', 'e', 'r', 'v', 'e', 'r',
-
-
+            // fixed header
+            //   type, flags
+            (byte) 0b1110_0000,
+            // remaining length
+            11,
+            // variable header
+            //   reason code Malformed Packet
+            (byte) 0x81,
+            //  Properties
+            9,
+            //    Server Reference
+            0x1C,
+            0,
+            6,
+            's',
+            'e',
+            'r',
+            'v',
+            'e',
+            'r',
         };
         final MqttUTF8StringImpl serverReference = MqttUTF8StringImpl.from("server");
         final MqttDisconnect disconnect =
-                new MqttDisconnect(MALFORMED_PACKET, SESSION_EXPIRY_INTERVAL_FROM_CONNECT, serverReference, null,
+                new MqttDisconnect(
+                        MALFORMED_PACKET,
+                        SESSION_EXPIRY_INTERVAL_FROM_CONNECT,
+                        serverReference,
+                        null,
                         MqttUserPropertiesImpl.NO_USER_PROPERTIES);
 
         encode(expected, disconnect);
@@ -200,24 +281,32 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesT
     @Test
     void encode_sessionExpiryInterval() {
         final byte[] expected = {
-                // fixed header
-                //   type, flags
-                (byte) 0b1110_0000,
-                // remaining length
-                7,
-                // variable header
-                //   reason code Malformed Packet
-                (byte) 0x81,
-                //  Properties
-                5,
-                //    Session Expiry Interval 123456789 as hex
-                0x11, 0x07, 0x5B, (byte) 0xCD, 0x15
-
+            // fixed header
+            //   type, flags
+            (byte) 0b1110_0000,
+            // remaining length
+            7,
+            // variable header
+            //   reason code Malformed Packet
+            (byte) 0x81,
+            //  Properties
+            5,
+            //    Session Expiry Interval 123456789 as hex
+            0x11,
+            0x07,
+            0x5B,
+            (byte) 0xCD,
+            0x15
         };
 
         final long sessionExpiryInterval = 123456789;
-        final MqttDisconnect disconnect = new MqttDisconnect(MALFORMED_PACKET, sessionExpiryInterval, null, null,
-                MqttUserPropertiesImpl.NO_USER_PROPERTIES);
+        final MqttDisconnect disconnect =
+                new MqttDisconnect(
+                        MALFORMED_PACKET,
+                        sessionExpiryInterval,
+                        null,
+                        null,
+                        MqttUserPropertiesImpl.NO_USER_PROPERTIES);
 
         encode(expected, disconnect);
     }
@@ -226,15 +315,19 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesT
     void encode_maximumPacketSizeExceededOnSuccess_omitUserProperties() {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
         final byte[] expected = {
-                // fixed header
-                //   type, flags
-                (byte) 0b1110_0000,
-                // remaining length
-                0
+            // fixed header
+            //   type, flags
+            (byte) 0b1110_0000,
+            // remaining length
+            0
         };
 
         final MqttDisconnect disconnect =
-                new MqttDisconnect(NORMAL_DISCONNECTION, SESSION_EXPIRY_INTERVAL_FROM_CONNECT, null, null,
+                new MqttDisconnect(
+                        NORMAL_DISCONNECTION,
+                        SESSION_EXPIRY_INTERVAL_FROM_CONNECT,
+                        null,
+                        null,
                         getUserProperties(maxPacket.getMaxUserPropertiesCount() + 1));
 
         encode(expected, disconnect);
@@ -243,8 +336,10 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesT
     @Test
     void encode_maximumPacketSizeExceeded_omitReasonString() {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
-        final MqttUserPropertiesImpl maxUserProperties = getUserProperties(maxPacket.getMaxUserPropertiesCount());
-        final MqttUTF8StringImpl reasonString = getPaddedUtf8String(maxPacket.getRemainingPropertyBytes() + 1);
+        final MqttUserPropertiesImpl maxUserProperties =
+                getUserProperties(maxPacket.getMaxUserPropertiesCount());
+        final MqttUTF8StringImpl reasonString =
+                getPaddedUtf8String(maxPacket.getRemainingPropertyBytes() + 1);
 
         final ByteBuf expected = Unpooled.buffer(5 + 268435445, 5 + 268435445);
 
@@ -267,7 +362,11 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesT
         maxUserProperties.encode(expected);
 
         final MqttDisconnect disconnect =
-                new MqttDisconnect(PROTOCOL_ERROR, SESSION_EXPIRY_INTERVAL_FROM_CONNECT, null, reasonString,
+                new MqttDisconnect(
+                        PROTOCOL_ERROR,
+                        SESSION_EXPIRY_INTERVAL_FROM_CONNECT,
+                        null,
+                        reasonString,
                         maxUserProperties);
 
         encode(expected.array(), disconnect);
@@ -278,15 +377,20 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesT
     void encode_maximumPacketSizeExceeded_omitUserProperties() {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
         final byte[] expected = {
-                // fixed header
-                //   type, flags
-                (byte) 0b1110_0000,
-                // remaining length
-                1, (byte) 0x82
+            // fixed header
+            //   type, flags
+            (byte) 0b1110_0000,
+            // remaining length
+            1,
+            (byte) 0x82
         };
 
         final MqttDisconnect disconnect =
-                new MqttDisconnect(PROTOCOL_ERROR, SESSION_EXPIRY_INTERVAL_FROM_CONNECT, null, null,
+                new MqttDisconnect(
+                        PROTOCOL_ERROR,
+                        SESSION_EXPIRY_INTERVAL_FROM_CONNECT,
+                        null,
+                        null,
                         getUserProperties(maxPacket.getMaxUserPropertiesCount() + 1));
 
         encode(expected, disconnect);
@@ -295,16 +399,22 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesT
     @Test
     void encode_propertyLengthExceededOnSuccess_omitUserProperties() {
         final byte[] expected = {
-                // fixed header
-                //   type, flags
-                (byte) 0b1110_0000,
-                // remaining length
-                0
+            // fixed header
+            //   type, flags
+            (byte) 0b1110_0000,
+            // remaining length
+            0
         };
 
         final MqttDisconnect disconnect =
-                new MqttDisconnect(NORMAL_DISCONNECTION, SESSION_EXPIRY_INTERVAL_FROM_CONNECT, null, null,
-                        getUserProperties((VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE / userPropertyBytes) + 1));
+                new MqttDisconnect(
+                        NORMAL_DISCONNECTION,
+                        SESSION_EXPIRY_INTERVAL_FROM_CONNECT,
+                        null,
+                        null,
+                        getUserProperties(
+                                (VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE / userPropertyBytes)
+                                        + 1));
 
         encode(expected, disconnect);
     }
@@ -312,28 +422,38 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesT
     @Test
     void encode_propertyLengthExceeded_omitUserProperties() {
         final byte[] expected = {
-                // fixed header
-                //   type, flags
-                (byte) 0b1110_0000,
-                // remaining length
-                1, (byte) 0x81
+            // fixed header
+            //   type, flags
+            (byte) 0b1110_0000,
+            // remaining length
+            1,
+            (byte) 0x81
         };
 
         final MqttDisconnect disconnect =
-                new MqttDisconnect(MALFORMED_PACKET, SESSION_EXPIRY_INTERVAL_FROM_CONNECT, null, null,
-                        getUserProperties((VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE / userPropertyBytes) + 1));
+                new MqttDisconnect(
+                        MALFORMED_PACKET,
+                        SESSION_EXPIRY_INTERVAL_FROM_CONNECT,
+                        null,
+                        null,
+                        getUserProperties(
+                                (VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE / userPropertyBytes)
+                                        + 1));
 
         encode(expected, disconnect);
     }
 
     @Test
     void encode_propertyLengthExceeded_omitReasonString() {
-        final int maxUserPropertiesCount = VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE / userPropertyBytes;
+        final int maxUserPropertiesCount =
+                VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE / userPropertyBytes;
         final MqttUserPropertiesImpl maxUserProperties = getUserProperties(maxUserPropertiesCount);
-        final int maxReasonStringLength = VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE % userPropertyBytes;
+        final int maxReasonStringLength =
+                VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE % userPropertyBytes;
         final char[] reasonStringBytes = new char[maxReasonStringLength];
         Arrays.fill(reasonStringBytes, 'r');
-        final MqttUTF8StringImpl reasonString = MqttUTF8StringImpl.from(new String(reasonStringBytes));
+        final MqttUTF8StringImpl reasonString =
+                MqttUTF8StringImpl.from(new String(reasonStringBytes));
 
         final ByteBuf expected = Unpooled.buffer(5 + 268435445, 5 + 268435445);
 
@@ -356,7 +476,11 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesT
         maxUserProperties.encode(expected);
 
         final MqttDisconnect disconnect =
-                new MqttDisconnect(MALFORMED_PACKET, SESSION_EXPIRY_INTERVAL_FROM_CONNECT, null, reasonString,
+                new MqttDisconnect(
+                        MALFORMED_PACKET,
+                        SESSION_EXPIRY_INTERVAL_FROM_CONNECT,
+                        null,
+                        reasonString,
                         maxUserProperties);
 
         encode(expected.array(), disconnect);
@@ -369,10 +493,11 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesT
 
     @Override
     int getMaxPropertyLength() {
-        return MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT - 1  // type, reserved
-                - 4  // remaining length
-                - 1  // reason code
-                - 4  // properties length
+        return MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT
+                - 1 // type, reserved
+                - 4 // remaining length
+                - 1 // reason code
+                - 4 // properties length
                 - 3; // minimum reason string 'r'
     }
 }

@@ -17,13 +17,10 @@
 
 package org.mqttbee.api.mqtt.exceptions;
 
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class AlreadyConnectedException extends Exception {
 
     public AlreadyConnectedException(final boolean connecting) {
         super("MQTT client is already " + (connecting ? "connecting" : "connected"));
     }
-
 }

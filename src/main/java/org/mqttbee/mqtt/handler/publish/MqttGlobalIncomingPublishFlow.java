@@ -23,10 +23,9 @@ import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.util.collections.ScNodeList;
 import org.reactivestreams.Subscriber;
 
-/**
- * @author Silvio Giebl
- */
-public class MqttGlobalIncomingPublishFlow extends MqttIncomingPublishFlow<Subscriber<? super Mqtt5Publish>> {
+/** @author Silvio Giebl */
+public class MqttGlobalIncomingPublishFlow
+        extends MqttIncomingPublishFlow<Subscriber<? super Mqtt5Publish>> {
 
     private final MqttGlobalPublishFlowType type;
     private ScNodeList.Handle<MqttGlobalIncomingPublishFlow> handle;
@@ -57,5 +56,4 @@ public class MqttGlobalIncomingPublishFlow extends MqttIncomingPublishFlow<Subsc
     ScNodeList.Handle<MqttGlobalIncomingPublishFlow> getHandle() {
         return handle;
     }
-
 }

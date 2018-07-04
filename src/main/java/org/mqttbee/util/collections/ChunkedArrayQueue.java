@@ -17,10 +17,9 @@
 
 package org.mqttbee.util.collections;
 
+import javax.annotation.concurrent.NotThreadSafe;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-
-import javax.annotation.concurrent.NotThreadSafe;
 
 @NotThreadSafe
 public class ChunkedArrayQueue<E> {
@@ -48,8 +47,9 @@ public class ChunkedArrayQueue<E> {
     public void offer(@NotNull final E e) {
         Chunk<E> producerChunk = this.producerChunk;
         int producerIndex = this.producerIndex;
-        if ((producerIndex == chunkSize) ||
-                ((producerChunk == consumerChunk) && (producerChunk.values[producerIndex] != null))) {
+        if ((producerIndex == chunkSize)
+                || ((producerChunk == consumerChunk)
+                        && (producerChunk.values[producerIndex] != null))) {
             if (size >= chunkSize) {
                 final Chunk<E> chunk = new Chunk<>(chunkSize);
                 producerChunk.jumpIndex = producerIndex - 1;
@@ -92,7 +92,6 @@ public class ChunkedArrayQueue<E> {
         return consumerChunk.values[consumerIndex];
     }
 
-
     private static class Chunk<E> {
 
         final E[] values;
@@ -103,7 +102,5 @@ public class ChunkedArrayQueue<E> {
         Chunk(final int chunkSize) {
             values = (E[]) new Object[chunkSize];
         }
-
     }
-
 }

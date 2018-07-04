@@ -35,5 +35,4 @@ public interface MqttConnectProperty {
     int TOPIC_ALIAS_MAXIMUM = MqttProperty.TOPIC_ALIAS_MAXIMUM;
     int USER_PROPERTY = MqttProperty.USER_PROPERTY;
     int MAXIMUM_PACKET_SIZE = MqttProperty.MAXIMUM_PACKET_SIZE;
-
 }

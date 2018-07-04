@@ -17,8 +17,11 @@
 
 package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
+import java.nio.ByteBuffer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -31,48 +34,167 @@ import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.message.auth.MqttAuth;
 import org.mqttbee.mqtt.netty.ChannelAttributes;
 
-import java.nio.ByteBuffer;
-
-import static org.junit.jupiter.api.Assertions.*;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
 
     Mqtt5AuthDecoderTest() {
-        super(code -> {
-            if (code == Mqtt5MessageType.AUTH.getCode()) {
-                return new Mqtt5AuthDecoder();
-            }
-            return null;
-        });
+        super(
+                code -> {
+                    if (code == Mqtt5MessageType.AUTH.getCode()) {
+                        return new Mqtt5AuthDecoder();
+                    }
+                    return null;
+                });
     }
 
     @Test
     void decode_big_packet() {
         final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                (byte) 0b1111_0000,
-                //   remaining length (132)
-                (byte) (128 + 4), 1,
-                // variable header
-                //   reason code (continue)
-                0x18,
-                //   properties (129)
-                (byte) (128 + 1), 1,
-                //     auth method
-                0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5',
-                //     auth data
-                0x16, 0, 60, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9,
-                10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-                //     reason string
-                0x1F, 0, 8, 'c', 'o', 'n', 't', 'i', 'n', 'u', 'e',
-                //     user properties
-                0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e', //
-                0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e', '2', //
-                0x26, 0, 5, 't', 'e', 's', 't', '2', 0, 5, 'v', 'a', 'l', 'u', 'e',
+            // fixed header
+            //   type, flags
+            (byte) 0b1111_0000,
+            //   remaining length (132)
+            (byte) (128 + 4),
+            1,
+            // variable header
+            //   reason code (continue)
+            0x18,
+            //   properties (129)
+            (byte) (128 + 1),
+            1,
+            //     auth method
+            0x15,
+            0,
+            8,
+            'G',
+            'S',
+            '2',
+            '-',
+            'K',
+            'R',
+            'B',
+            '5',
+            //     auth data
+            0x16,
+            0,
+            60,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            //     reason string
+            0x1F,
+            0,
+            8,
+            'c',
+            'o',
+            'n',
+            't',
+            'i',
+            'n',
+            'u',
+            'e',
+            //     user properties
+            0x26,
+            0,
+            4,
+            't',
+            'e',
+            's',
+            't',
+            0,
+            5,
+            'v',
+            'a',
+            'l',
+            'u',
+            'e', //
+            0x26,
+            0,
+            4,
+            't',
+            'e',
+            's',
+            't',
+            0,
+            6,
+            'v',
+            'a',
+            'l',
+            'u',
+            'e',
+            '2', //
+            0x26,
+            0,
+            5,
+            't',
+            'e',
+            's',
+            't',
+            '2',
+            0,
+            5,
+            'v',
+            'a',
+            'l',
+            'u',
+            'e',
         };
 
         final ByteBuf byteBuf = channel.alloc().buffer();
@@ -85,14 +207,19 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
         assertEquals(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, auth.getReasonCode());
         assertEquals("GS2-KRB5", auth.getMethod().toString());
         assertTrue(auth.getData().isPresent());
-        assertEquals(ByteBuffer.wrap(new byte[]{
-                1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4,
-                5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
-        }), auth.getData().get());
+        assertEquals(
+                ByteBuffer.wrap(
+                        new byte[] {
+                            1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3,
+                            4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6,
+                            7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+                        }),
+                auth.getData().get());
         assertTrue(auth.getReasonString().isPresent());
         assertEquals("continue", auth.getReasonString().get().toString());
 
-        final ImmutableList<MqttUserPropertyImpl> userProperties = auth.getUserProperties().asList();
+        final ImmutableList<MqttUserPropertyImpl> userProperties =
+                auth.getUserProperties().asList();
         assertEquals(3, userProperties.size());
         assertEquals("test", userProperties.get(0).getName().toString());
         assertEquals("value", userProperties.get(0).getValue().toString());
@@ -105,18 +232,28 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
     @Test
     void decode_minimum_packet() {
         final byte[] encoded = {
-                // fixed header
-                //   type, flags
-                (byte) 0b1111_0000,
-                //   remaining length
-                13,
-                // variable header
-                //   reason code (continue)
-                0x18,
-                //   properties
-                11,
-                //     auth method
-                0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'
+            // fixed header
+            //   type, flags
+            (byte) 0b1111_0000,
+            //   remaining length
+            13,
+            // variable header
+            //   reason code (continue)
+            0x18,
+            //   properties
+            11,
+            //     auth method
+            0x15,
+            0,
+            8,
+            'G',
+            'S',
+            '2',
+            '-',
+            'K',
+            'R',
+            'B',
+            '5'
         };
 
         final ByteBuf byteBuf = channel.alloc().buffer();
@@ -131,7 +268,8 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
         assertFalse(auth.getData().isPresent());
         assertFalse(auth.getReasonString().isPresent());
 
-        final ImmutableList<MqttUserPropertyImpl> userProperties = auth.getUserProperties().asList();
+        final ImmutableList<MqttUserPropertyImpl> userProperties =
+                auth.getUserProperties().asList();
         assertEquals(0, userProperties.size());
     }
 
@@ -170,7 +308,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(11);
         //     auth method
-        byteBuf.writeBytes(new byte[]{0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B'});
+        byteBuf.writeBytes(new byte[] {0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B'});
 
         channel.writeInbound(byteBuf);
         final Mqtt5Auth auth = channel.readInbound();
@@ -218,7 +356,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(11);
         //     auth method
-        byteBuf.writeBytes(new byte[]{0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
+        byteBuf.writeBytes(new byte[] {0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
 
         channel.writeInbound(byteBuf);
 
@@ -242,7 +380,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(11);
         //     auth method
-        byteBuf.writeBytes(new byte[]{0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
+        byteBuf.writeBytes(new byte[] {0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
 
         channel.writeInbound(byteBuf);
 
@@ -266,7 +404,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(11);
         //     auth method
-        byteBuf.writeBytes(new byte[]{0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
+        byteBuf.writeBytes(new byte[] {0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
         // padding, e.g. next message
         byteBuf.writeByte(0b1111_0000);
 
@@ -292,7 +430,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(11);
         //     auth method
-        byteBuf.writeBytes(new byte[]{0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
+        byteBuf.writeBytes(new byte[] {0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
 
         channel.writeInbound(byteBuf);
 
@@ -316,7 +454,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(11);
         //     auth method
-        byteBuf.writeBytes(new byte[]{0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
+        byteBuf.writeBytes(new byte[] {0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
 
         channel.writeInbound(byteBuf);
 
@@ -340,7 +478,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(11);
         //     auth method
-        byteBuf.writeBytes(new byte[]{0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
+        byteBuf.writeBytes(new byte[] {0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
 
         channel.writeInbound(byteBuf);
 
@@ -364,7 +502,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(10);
         //     auth method
-        byteBuf.writeBytes(new byte[]{0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
+        byteBuf.writeBytes(new byte[] {0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
 
         channel.writeInbound(byteBuf);
 
@@ -388,7 +526,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(12);
         //     auth method
-        byteBuf.writeBytes(new byte[]{0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
+        byteBuf.writeBytes(new byte[] {0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
         // padding, e.g. next message
         byteBuf.writeByte(0b1111_0000);
 
@@ -414,7 +552,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(128 + 11).writeByte(0);
         //     auth method
-        byteBuf.writeBytes(new byte[]{0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
+        byteBuf.writeBytes(new byte[] {0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
 
         channel.writeInbound(byteBuf);
 
@@ -438,7 +576,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(0xFF).writeByte(0xFF).writeByte(0xFF).writeByte(0xFF);
         //     auth method
-        byteBuf.writeBytes(new byte[]{0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
+        byteBuf.writeBytes(new byte[] {0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
 
         channel.writeInbound(byteBuf);
 
@@ -462,7 +600,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(13);
         //     auth method
-        byteBuf.writeBytes(new byte[]{0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
+        byteBuf.writeBytes(new byte[] {0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
         //     wrong property
         byteBuf.writeByte(127).writeByte(0);
 
@@ -488,7 +626,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(15);
         //     auth method
-        byteBuf.writeBytes(new byte[]{0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
+        byteBuf.writeBytes(new byte[] {0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
         //     malformed auth data identifier
         byteBuf.writeByte(128 + 0x16).writeByte(0).writeByte(0).writeByte(0);
 
@@ -536,8 +674,8 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(22);
         //     auth method
-        byteBuf.writeBytes(new byte[]{0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
-        byteBuf.writeBytes(new byte[]{0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
+        byteBuf.writeBytes(new byte[] {0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
+        byteBuf.writeBytes(new byte[] {0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
 
         channel.writeInbound(byteBuf);
 
@@ -561,10 +699,10 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(37);
         //     auth method
-        byteBuf.writeBytes(new byte[]{0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
+        byteBuf.writeBytes(new byte[] {0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
         //     auth data
-        byteBuf.writeBytes(new byte[]{0x16, 0, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
-        byteBuf.writeBytes(new byte[]{0x16, 0, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
+        byteBuf.writeBytes(new byte[] {0x16, 0, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
+        byteBuf.writeBytes(new byte[] {0x16, 0, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
 
         channel.writeInbound(byteBuf);
 
@@ -588,10 +726,10 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(33);
         //     auth method
-        byteBuf.writeBytes(new byte[]{0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
+        byteBuf.writeBytes(new byte[] {0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
         //     reason string
-        byteBuf.writeBytes(new byte[]{0x1F, 0, 8, 'c', 'o', 'n', 't', 'i', 'n', 'u', 'e'});
-        byteBuf.writeBytes(new byte[]{0x1F, 0, 8, 'c', 'o', 'n', 't', 'i', 'n', 'u', 'e'});
+        byteBuf.writeBytes(new byte[] {0x1F, 0, 8, 'c', 'o', 'n', 't', 'i', 'n', 'u', 'e'});
+        byteBuf.writeBytes(new byte[] {0x1F, 0, 8, 'c', 'o', 'n', 't', 'i', 'n', 'u', 'e'});
 
         channel.writeInbound(byteBuf);
 
@@ -612,17 +750,21 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(55);
         //     auth method
-        byteBuf.writeBytes(new byte[]{0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
+        byteBuf.writeBytes(new byte[] {0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
         //     user properties
-        byteBuf.writeBytes(new byte[]{0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'});
-        byteBuf.writeBytes(new byte[]{0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e', '2'});
-        byteBuf.writeBytes(new byte[]{0x26, 0, 5, 't', 'e', 's', 't', '2', 0, 5, 'v', 'a', 'l', 'u', 'e'});
+        byteBuf.writeBytes(
+                new byte[] {0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'});
+        byteBuf.writeBytes(
+                new byte[] {0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e', '2'});
+        byteBuf.writeBytes(
+                new byte[] {0x26, 0, 5, 't', 'e', 's', 't', '2', 0, 5, 'v', 'a', 'l', 'u', 'e'});
 
         channel.writeInbound(byteBuf);
         final MqttAuth auth = channel.readInbound();
         assertNotNull(auth);
 
-        final ImmutableList<MqttUserPropertyImpl> userProperties = auth.getUserProperties().asList();
+        final ImmutableList<MqttUserPropertyImpl> userProperties =
+                auth.getUserProperties().asList();
         assertEquals(3, userProperties.size());
         assertEquals("test", userProperties.get(0).getName().toString());
         assertEquals("value", userProperties.get(0).getValue().toString());
@@ -649,7 +791,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(11);
         //     auth method
-        byteBuf.writeBytes(new byte[]{0x15, 0, 7, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
+        byteBuf.writeBytes(new byte[] {0x15, 0, 7, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
 
         channel.writeInbound(byteBuf);
 
@@ -673,7 +815,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(11);
         //     auth method
-        byteBuf.writeBytes(new byte[]{0x15, 0, 9, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
+        byteBuf.writeBytes(new byte[] {0x15, 0, 9, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
         // padding, e.g. next message
         byteBuf.writeByte(0b1111_0000);
 
@@ -699,7 +841,7 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(11);
         //     auth method
-        byteBuf.writeBytes(new byte[]{0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '\0'});
+        byteBuf.writeBytes(new byte[] {0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '\0'});
 
         channel.writeInbound(byteBuf);
 
@@ -723,9 +865,9 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(24);
         //     auth method
-        byteBuf.writeBytes(new byte[]{0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
+        byteBuf.writeBytes(new byte[] {0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
         //     auth method
-        byteBuf.writeBytes(new byte[]{0x16, 0, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
+        byteBuf.writeBytes(new byte[] {0x16, 0, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
 
         channel.writeInbound(byteBuf);
 
@@ -749,9 +891,9 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(24);
         //     auth method
-        byteBuf.writeBytes(new byte[]{0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
+        byteBuf.writeBytes(new byte[] {0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
         //     auth method
-        byteBuf.writeBytes(new byte[]{0x16, 0, 11, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
+        byteBuf.writeBytes(new byte[] {0x16, 0, 11, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
         // padding, e.g. next message
         byteBuf.writeByte(0b1111_0000);
 
@@ -777,9 +919,9 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(22);
         //     auth method
-        byteBuf.writeBytes(new byte[]{0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
+        byteBuf.writeBytes(new byte[] {0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
         //     reason string
-        byteBuf.writeBytes(new byte[]{0x1F, 0, 7, 'c', 'o', 'n', 't', 'i', 'n', 'u', 'e'});
+        byteBuf.writeBytes(new byte[] {0x1F, 0, 7, 'c', 'o', 'n', 't', 'i', 'n', 'u', 'e'});
 
         channel.writeInbound(byteBuf);
 
@@ -803,9 +945,9 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(22);
         //     auth method
-        byteBuf.writeBytes(new byte[]{0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
+        byteBuf.writeBytes(new byte[] {0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
         //     reason string
-        byteBuf.writeBytes(new byte[]{0x1F, 0, 9, 'c', 'o', 'n', 't', 'i', 'n', 'u', 'e'});
+        byteBuf.writeBytes(new byte[] {0x1F, 0, 9, 'c', 'o', 'n', 't', 'i', 'n', 'u', 'e'});
         // padding, e.g. next message
         byteBuf.writeByte(0b1111_0000);
 
@@ -831,9 +973,9 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(22);
         //     auth method
-        byteBuf.writeBytes(new byte[]{0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
+        byteBuf.writeBytes(new byte[] {0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
         //     reason string
-        byteBuf.writeBytes(new byte[]{0x1F, 0, 8, 'c', 'o', 'n', 't', 'i', 'n', 'u', '\0'});
+        byteBuf.writeBytes(new byte[] {0x1F, 0, 8, 'c', 'o', 'n', 't', 'i', 'n', 'u', '\0'});
 
         channel.writeInbound(byteBuf);
 
@@ -857,9 +999,10 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(25);
         //     auth method
-        byteBuf.writeBytes(new byte[]{0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
+        byteBuf.writeBytes(new byte[] {0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
         //     user properties
-        byteBuf.writeBytes(new byte[]{0x26, 0, 3, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'});
+        byteBuf.writeBytes(
+                new byte[] {0x26, 0, 3, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'});
 
         channel.writeInbound(byteBuf);
 
@@ -883,9 +1026,10 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(25);
         //     auth method
-        byteBuf.writeBytes(new byte[]{0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
+        byteBuf.writeBytes(new byte[] {0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
         //     user properties
-        byteBuf.writeBytes(new byte[]{0x26, 0, 5, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'});
+        byteBuf.writeBytes(
+                new byte[] {0x26, 0, 5, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e'});
         // padding, e.g. next message
         byteBuf.writeByte(0b1111_0000);
 
@@ -911,9 +1055,10 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(25);
         //     auth method
-        byteBuf.writeBytes(new byte[]{0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
+        byteBuf.writeBytes(new byte[] {0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
         //     user properties
-        byteBuf.writeBytes(new byte[]{0x26, 0, 4, 't', 'e', 's', '\0', 0, 5, 'v', 'a', 'l', 'u', 'e'});
+        byteBuf.writeBytes(
+                new byte[] {0x26, 0, 4, 't', 'e', 's', '\0', 0, 5, 'v', 'a', 'l', 'u', 'e'});
 
         channel.writeInbound(byteBuf);
 
@@ -937,9 +1082,10 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(25);
         //     auth method
-        byteBuf.writeBytes(new byte[]{0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
+        byteBuf.writeBytes(new byte[] {0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
         //     user properties
-        byteBuf.writeBytes(new byte[]{0x26, 0, 4, 't', 'e', 's', 't', 0, 4, 'v', 'a', 'l', 'u', 'e'});
+        byteBuf.writeBytes(
+                new byte[] {0x26, 0, 4, 't', 'e', 's', 't', 0, 4, 'v', 'a', 'l', 'u', 'e'});
 
         channel.writeInbound(byteBuf);
 
@@ -963,9 +1109,10 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(25);
         //     auth method
-        byteBuf.writeBytes(new byte[]{0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
+        byteBuf.writeBytes(new byte[] {0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
         //     user properties
-        byteBuf.writeBytes(new byte[]{0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e'});
+        byteBuf.writeBytes(
+                new byte[] {0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e'});
         // padding, e.g. next message
         byteBuf.writeByte(0b1111_0000);
 
@@ -991,16 +1138,18 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
         //   properties
         byteBuf.writeByte(25);
         //     auth method
-        byteBuf.writeBytes(new byte[]{0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
+        byteBuf.writeBytes(new byte[] {0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5'});
         //     user properties
-        byteBuf.writeBytes(new byte[]{0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', '\0'});
+        byteBuf.writeBytes(
+                new byte[] {0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', '\0'});
 
         channel.writeInbound(byteBuf);
 
         testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    private void testDisconnect(final Mqtt5DisconnectReasonCode reasonCode, final boolean sendReasonString) {
+    private void testDisconnect(
+            final Mqtt5DisconnectReasonCode reasonCode, final boolean sendReasonString) {
         final Mqtt5Auth auth = channel.readInbound();
         assertNull(auth);
 
@@ -1009,5 +1158,4 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
         assertEquals(reasonCode, disconnect.getReasonCode());
         assertEquals(sendReasonString, disconnect.getReasonString().isPresent());
     }
-
 }

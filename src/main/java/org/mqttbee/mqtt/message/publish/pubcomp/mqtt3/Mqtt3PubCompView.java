@@ -17,17 +17,14 @@
 
 package org.mqttbee.mqtt.message.publish.pubcomp.mqtt3;
 
+import javax.annotation.concurrent.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.pubcomp.Mqtt3PubComp;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubCompReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.publish.pubcomp.MqttPubComp;
 
-import javax.annotation.concurrent.Immutable;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @Immutable
 public class Mqtt3PubCompView implements Mqtt3PubComp {
 
@@ -35,7 +32,10 @@ public class Mqtt3PubCompView implements Mqtt3PubComp {
 
     @NotNull
     public static MqttPubComp delegate(final int packetIdentifier) {
-        return new MqttPubComp(packetIdentifier, Mqtt5PubCompReasonCode.SUCCESS, null,
+        return new MqttPubComp(
+                packetIdentifier,
+                Mqtt5PubCompReasonCode.SUCCESS,
+                null,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES);
     }
 
@@ -44,7 +44,5 @@ public class Mqtt3PubCompView implements Mqtt3PubComp {
         return INSTANCE;
     }
 
-    private Mqtt3PubCompView() {
-    }
-
+    private Mqtt3PubCompView() {}
 }

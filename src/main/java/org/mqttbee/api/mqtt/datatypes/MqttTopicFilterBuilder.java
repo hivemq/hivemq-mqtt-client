@@ -18,21 +18,19 @@
 package org.mqttbee.api.mqtt.datatypes;
 
 import com.google.common.base.Preconditions;
+import java.util.function.Function;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.util.FluentBuilder;
 
-import java.util.function.Function;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class MqttTopicFilterBuilder<P> extends FluentBuilder<MqttTopicFilter, P> {
 
     final StringBuilder stringBuilder;
 
     public MqttTopicFilterBuilder(
-            @NotNull final String base, @Nullable final Function<? super MqttTopicFilter, P> parentConsumer) {
+            @NotNull final String base,
+            @Nullable final Function<? super MqttTopicFilter, P> parentConsumer) {
 
         super(parentConsumer);
         stringBuilder = new StringBuilder(base);
@@ -75,7 +73,8 @@ public class MqttTopicFilterBuilder<P> extends FluentBuilder<MqttTopicFilter, P>
 
     @NotNull
     public MqttSharedTopicFilterBuilder<P> share(@NotNull final String shareName) {
-        return new MqttSharedTopicFilterBuilder<>(shareName, stringBuilder.toString(), parentConsumer);
+        return new MqttSharedTopicFilterBuilder<>(
+                shareName, stringBuilder.toString(), parentConsumer);
     }
 
     @NotNull
@@ -83,5 +82,4 @@ public class MqttTopicFilterBuilder<P> extends FluentBuilder<MqttTopicFilter, P>
     public MqttTopicFilter build() {
         return MqttTopicFilter.from(stringBuilder.toString());
     }
-
 }

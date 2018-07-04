@@ -17,6 +17,11 @@
 
 package org.mqttbee.mqtt.handler.publish;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.function.Consumer;
+import javax.annotation.concurrent.NotThreadSafe;
+import javax.inject.Inject;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
@@ -25,15 +30,7 @@ import org.mqttbee.mqtt.datatypes.MqttTopicLevel;
 import org.mqttbee.util.ByteArray;
 import org.mqttbee.util.collections.ScNodeList;
 
-import javax.annotation.concurrent.NotThreadSafe;
-import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.function.Consumer;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @NotThreadSafe
 public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
 
@@ -42,11 +39,12 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
     private TopicTreeNode rootNode;
 
     @Inject
-    MqttSubscriptionFlowTree() {
-    }
+    MqttSubscriptionFlowTree() {}
 
     @Override
-    public void subscribe(@NotNull final MqttTopicFilterImpl topicFilter, @Nullable final MqttSubscriptionFlow flow) {
+    public void subscribe(
+            @NotNull final MqttTopicFilterImpl topicFilter,
+            @Nullable final MqttSubscriptionFlow flow) {
         final MqttTopicLevel level = MqttTopicLevel.root(topicFilter);
         final TopicTreeEntry entry = (flow == null) ? null : new TopicTreeEntry(flow, topicFilter);
         if (rootNode == null) {
@@ -79,11 +77,12 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
 
     @Override
     public boolean findMatching(
-            @NotNull final MqttTopicImpl topic, @NotNull final ScNodeList<MqttIncomingPublishFlow> matchingFlows) {
+            @NotNull final MqttTopicImpl topic,
+            @NotNull final ScNodeList<MqttIncomingPublishFlow> matchingFlows) {
 
-        return (rootNode != null) && rootNode.findMatching(MqttTopicLevel.root(topic), matchingFlows);
+        return (rootNode != null)
+                && rootNode.findMatching(MqttTopicLevel.root(topic), matchingFlows);
     }
-
 
     private static class TopicTreeEntry {
 
@@ -91,38 +90,35 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
         private final ScNodeList.Handle<MqttTopicFilterImpl> handle;
 
         private TopicTreeEntry(
-                @NotNull final MqttSubscriptionFlow flow, @NotNull final MqttTopicFilterImpl topicFilter) {
+                @NotNull final MqttSubscriptionFlow flow,
+                @NotNull final MqttTopicFilterImpl topicFilter) {
 
             this.flow = flow;
             this.handle = flow.getTopicFilters().add(topicFilter);
         }
-
     }
-
 
     private static class TopicTreeNode {
 
-        @NotNull
-        private final ByteArray parentLevel;
-        @Nullable
-        private HashMap<ByteArray, TopicTreeNode> next;
-        @Nullable
-        private ScNodeList<TopicTreeEntry> entries;
-        @Nullable
-        private ScNodeList<TopicTreeEntry> multiLevelEntries;
+        @NotNull private final ByteArray parentLevel;
+        @Nullable private HashMap<ByteArray, TopicTreeNode> next;
+        @Nullable private ScNodeList<TopicTreeEntry> entries;
+        @Nullable private ScNodeList<TopicTreeEntry> multiLevelEntries;
         private boolean hasSubscription;
         private boolean hasSingleLevelSubscription;
         private boolean hasMultiLevelSubscription;
 
         private TopicTreeNode(
-                @NotNull final ByteArray parentLevel, @Nullable final MqttTopicLevel level,
+                @NotNull final ByteArray parentLevel,
+                @Nullable final MqttTopicLevel level,
                 @Nullable final TopicTreeEntry entry) {
 
             this.parentLevel = parentLevel;
             subscribe(level, entry);
         }
 
-        private void subscribe(@Nullable final MqttTopicLevel level, @Nullable final TopicTreeEntry entry) {
+        private void subscribe(
+                @Nullable final MqttTopicLevel level, @Nullable final TopicTreeEntry entry) {
             if (level == null) {
                 if (entries == null) {
                     entries = new ScNodeList<>();
@@ -213,7 +209,8 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
             }
         }
 
-        private void cancel(@Nullable final MqttTopicLevel level, @NotNull final MqttSubscriptionFlow flow) {
+        private void cancel(
+                @Nullable final MqttTopicLevel level, @NotNull final MqttSubscriptionFlow flow) {
             if (level == null) {
                 if (cancel(entries, flow)) {
                     entries = null;
@@ -231,10 +228,12 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
         }
 
         private static boolean cancel(
-                @Nullable final ScNodeList<TopicTreeEntry> entries, @NotNull final MqttSubscriptionFlow flow) {
+                @Nullable final ScNodeList<TopicTreeEntry> entries,
+                @NotNull final MqttSubscriptionFlow flow) {
 
             if (entries != null) {
-                for (final Iterator<TopicTreeEntry> iterator = entries.iterator(); iterator.hasNext(); ) {
+                for (final Iterator<TopicTreeEntry> iterator = entries.iterator();
+                        iterator.hasNext(); ) {
                     final TopicTreeEntry entry = iterator.next();
                     if (entry.flow == flow) {
                         iterator.remove();
@@ -258,8 +257,10 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
             boolean subscriptionFound = hasMultiLevelSubscription;
             if (next != null) {
                 if (hasSingleLevelSubscription) {
-                    final TopicTreeNode singleLevelNode = next.get(MqttTopicLevel.SINGLE_LEVEL_WILDCARD);
-                    subscriptionFound |= singleLevelNode.findMatching(level.fork().next(), matchingFlows);
+                    final TopicTreeNode singleLevelNode =
+                            next.get(MqttTopicLevel.SINGLE_LEVEL_WILDCARD);
+                    subscriptionFound |=
+                            singleLevelNode.findMatching(level.fork().next(), matchingFlows);
                 }
                 final TopicTreeNode node = next.get(level);
                 if (node != null) {
@@ -280,7 +281,5 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
                 }
             }
         }
-
     }
-
 }

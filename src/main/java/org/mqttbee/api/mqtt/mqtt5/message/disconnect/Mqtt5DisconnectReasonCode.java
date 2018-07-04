@@ -28,7 +28,6 @@ import org.mqttbee.mqtt.message.MqttCommonReasonCode;
  * @author Silvio Giebl
  */
 public enum Mqtt5DisconnectReasonCode implements Mqtt5ReasonCode {
-
     NORMAL_DISCONNECTION(0x00),
     DISCONNECT_WITH_WILL_MESSAGE(0x04),
     UNSPECIFIED_ERROR(MqttCommonReasonCode.UNSPECIFIED_ERROR),
@@ -57,7 +56,8 @@ public enum Mqtt5DisconnectReasonCode implements Mqtt5ReasonCode {
     SHARED_SUBSCRIPTION_NOT_SUPPORTED(MqttCommonReasonCode.SHARED_SUBSCRIPTION_NOT_SUPPORTED),
     CONNECTION_RATE_EXCEEDED(MqttCommonReasonCode.CONNECTION_RATE_EXCEEDED),
     MAXIMUM_CONNECT_TIME(0xA0),
-    SUBSCRIPTION_IDENTIFIERS_NOT_SUPPORTED(MqttCommonReasonCode.SUBSCRIPTION_IDENTIFIERS_NOT_SUPPORTED),
+    SUBSCRIPTION_IDENTIFIERS_NOT_SUPPORTED(
+            MqttCommonReasonCode.SUBSCRIPTION_IDENTIFIERS_NOT_SUPPORTED),
     WILDCARD_SUBSCRIPTION_NOT_SUPPORTED(MqttCommonReasonCode.WILDCARD_SUBSCRIPTION_NOT_SUPPORTED);
 
     private final int code;
@@ -70,13 +70,10 @@ public enum Mqtt5DisconnectReasonCode implements Mqtt5ReasonCode {
         this(reasonCode.getCode());
     }
 
-    /**
-     * @return the byte code of this DISCONNECT Reason Code.
-     */
+    /** @return the byte code of this DISCONNECT Reason Code. */
     public int getCode() {
         return code;
     }
-
 
     private static final int ERROR_CODE_MIN = UNSPECIFIED_ERROR.code;
     private static final int ERROR_CODE_MAX = WILDCARD_SUBSCRIPTION_NOT_SUPPORTED.code;
@@ -95,8 +92,8 @@ public enum Mqtt5DisconnectReasonCode implements Mqtt5ReasonCode {
      * Returns the DISCONNECT Reason Code belonging to the given byte code.
      *
      * @param code the byte code.
-     * @return the DISCONNECT Reason Code belonging to the given byte code or null if the byte code is not a valid
-     * DISCONNECT Reason Code code.
+     * @return the DISCONNECT Reason Code belonging to the given byte code or null if the byte code
+     *     is not a valid DISCONNECT Reason Code code.
      */
     @Nullable
     public static Mqtt5DisconnectReasonCode fromCode(final int code) {
@@ -111,5 +108,4 @@ public enum Mqtt5DisconnectReasonCode implements Mqtt5ReasonCode {
         }
         return ERROR_CODE_LOOKUP[code - ERROR_CODE_MIN];
     }
-
 }

@@ -16,23 +16,22 @@
 
 package org.mqttbee.example;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mqttbee.api.mqtt.datatypes.MqttQoS;
-import org.mqttbee.api.util.KeyStoreUtil;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.TrustManagerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.TrustManagerFactory;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mqttbee.api.mqtt.datatypes.MqttQoS;
+import org.mqttbee.api.util.KeyStoreUtil;
 
 /**
  * @author David Katz
@@ -62,7 +61,8 @@ class Mqtt3SmokeTest {
     void subscribe() throws InterruptedException {
         final CountDownLatch subscribedLatch = new CountDownLatch(1);
         receivedLatch = new CountDownLatch(1);
-        subscribeInstance.subscribeTo(topic, qos, count, subscribedLatch)
+        subscribeInstance
+                .subscribeTo(topic, qos, count, subscribedLatch)
                 .doOnComplete(() -> receivedLatch.countDown())
                 .subscribe();
         assertTrue(subscribedLatch.await(10, TimeUnit.SECONDS));
@@ -83,22 +83,31 @@ class Mqtt3SmokeTest {
 
     @Test
     void mqttOverTls() throws IOException, URISyntaxException {
-        final TrustManagerFactory trustManagerFactory = KeyStoreUtil.trustManagerFromKeystore(
-                new File(getClass().getClassLoader().getResource(TRUSTSTORE_PATH).toURI()), TRUSTSTORE_PASS);
+        final TrustManagerFactory trustManagerFactory =
+                KeyStoreUtil.trustManagerFromKeystore(
+                        new File(getClass().getClassLoader().getResource(TRUSTSTORE_PATH).toURI()),
+                        TRUSTSTORE_PASS);
 
-        publishInstance = new Mqtt3ClientExample(server, 8883, true, trustManagerFactory, null, null);
+        publishInstance =
+                new Mqtt3ClientExample(server, 8883, true, trustManagerFactory, null, null);
         assertTrue(publishInstance.publish(topic, qos, count).blockingAwait(10, TimeUnit.SECONDS));
     }
 
     @Test
     void mqttOverTlsWithClientCert() throws IOException, URISyntaxException {
-        final TrustManagerFactory trustManagerFactory = KeyStoreUtil.trustManagerFromKeystore(
-                new File(getClass().getClassLoader().getResource(TRUSTSTORE_PATH).toURI()), TRUSTSTORE_PASS);
-        final KeyManagerFactory keyManagerFactory = KeyStoreUtil.keyManagerFromKeystore(
-                new File(getClass().getClassLoader().getResource(KEYSTORE_PATH).toURI()), KEYSTORE_PASS,
-                PRIVATE_KEY_PASS);
+        final TrustManagerFactory trustManagerFactory =
+                KeyStoreUtil.trustManagerFromKeystore(
+                        new File(getClass().getClassLoader().getResource(TRUSTSTORE_PATH).toURI()),
+                        TRUSTSTORE_PASS);
+        final KeyManagerFactory keyManagerFactory =
+                KeyStoreUtil.keyManagerFromKeystore(
+                        new File(getClass().getClassLoader().getResource(KEYSTORE_PATH).toURI()),
+                        KEYSTORE_PASS,
+                        PRIVATE_KEY_PASS);
 
-        publishInstance = new Mqtt3ClientExample(server, 8884, true, trustManagerFactory, keyManagerFactory, null);
+        publishInstance =
+                new Mqtt3ClientExample(
+                        server, 8884, true, trustManagerFactory, keyManagerFactory, null);
         assertTrue(publishInstance.publish(topic, qos, count).blockingAwait(10, TimeUnit.SECONDS));
     }
 
@@ -113,5 +122,4 @@ class Mqtt3SmokeTest {
         publishInstance = new Mqtt3ClientExample(server, 8081, true, null, null, "mqtt");
         assertTrue(publishInstance.publish(topic, qos, count).blockingAwait(10, TimeUnit.SECONDS));
     }
-
 }

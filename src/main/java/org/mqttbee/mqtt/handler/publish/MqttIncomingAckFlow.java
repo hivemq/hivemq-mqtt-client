@@ -19,6 +19,9 @@ package org.mqttbee.mqtt.handler.publish;
 
 import io.reactivex.internal.util.BackpressureHelper;
 import io.reactivex.plugins.RxJavaPlugins;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import org.mqttbee.annotations.CallByThread;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
@@ -27,13 +30,7 @@ import org.mqttbee.util.collections.ChunkedArrayQueue;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class MqttIncomingAckFlow implements Subscription, Runnable {
 
     private final Subscriber<? super Mqtt5PublishResult> subscriber;
@@ -220,5 +217,4 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
             linkCancellable.cancelLink();
         }
     }
-
 }

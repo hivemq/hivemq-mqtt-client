@@ -33,15 +33,16 @@ public abstract class MqttMessageEncoder<M extends MqttMessage> {
     /**
      * Casts and encodes the given MQTT message.
      *
-     * @param message           the MQTT message to encode.
-     * @param allocator         the allocator for allocating the byte buffer to encode to.
+     * @param message the MQTT message to encode.
+     * @param allocator the allocator for allocating the byte buffer to encode to.
      * @param maximumPacketSize the maximum packet size for the MQTT message.
      * @return the byte buffer the MQTT message is encoded to.
      */
     @NotNull
     @SuppressWarnings("unchecked")
     public ByteBuf castAndEncode(
-            @NotNull final MqttMessage message, @NotNull final ByteBufAllocator allocator,
+            @NotNull final MqttMessage message,
+            @NotNull final ByteBufAllocator allocator,
             final int maximumPacketSize) {
 
         return encode((M) message, allocator, maximumPacketSize);
@@ -50,13 +51,14 @@ public abstract class MqttMessageEncoder<M extends MqttMessage> {
     /**
      * Encodes the given MQTT message.
      *
-     * @param message           the MQTT message to encode.
-     * @param allocator         the allocator for allocating the byte buffer to encode to.
+     * @param message the MQTT message to encode.
+     * @param allocator the allocator for allocating the byte buffer to encode to.
      * @param maximumPacketSize the maximum packet size for the MQTT message.
      * @return the byte buffer the MQTT message is encoded to.
      */
     @NotNull
     protected abstract ByteBuf encode(
-            @NotNull final M message, @NotNull final ByteBufAllocator allocator, final int maximumPacketSize);
-
+            @NotNull final M message,
+            @NotNull final ByteBufAllocator allocator,
+            final int maximumPacketSize);
 }

@@ -22,6 +22,7 @@ import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
 import io.reactivex.Scheduler;
+import javax.inject.Named;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.handler.disconnect.Mqtt3Disconnecter;
 import org.mqttbee.mqtt.handler.disconnect.Mqtt5Disconnecter;
@@ -29,18 +30,15 @@ import org.mqttbee.mqtt.handler.disconnect.MqttDisconnecter;
 import org.mqttbee.mqtt.handler.publish.MqttSubscriptionFlowTree;
 import org.mqttbee.mqtt.handler.publish.MqttSubscriptionFlows;
 
-import javax.inject.Named;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @Module
 public abstract class ChannelModule {
 
     @Provides
     @ChannelScope
     static MqttDisconnecter provideDisconnecter(
-            final MqttClientData clientData, final Lazy<Mqtt5Disconnecter> mqtt5Disconnecter,
+            final MqttClientData clientData,
+            final Lazy<Mqtt5Disconnecter> mqtt5Disconnecter,
             final Lazy<Mqtt3Disconnecter> mqtt3Disconnecter) {
 
         switch (clientData.getMqttVersion()) {
@@ -62,5 +60,4 @@ public abstract class ChannelModule {
 
     @Binds
     abstract MqttSubscriptionFlows provideSubscriptionFlows(final MqttSubscriptionFlowTree tree);
-
 }

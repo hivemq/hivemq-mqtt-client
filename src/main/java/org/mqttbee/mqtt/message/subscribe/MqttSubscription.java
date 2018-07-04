@@ -17,17 +17,14 @@
 
 package org.mqttbee.mqtt.message.subscribe;
 
+import javax.annotation.concurrent.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5RetainHandling;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscription;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 
-import javax.annotation.concurrent.Immutable;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @Immutable
 public class MqttSubscription implements Mqtt5Subscription {
 
@@ -38,8 +35,11 @@ public class MqttSubscription implements Mqtt5Subscription {
     private final boolean isRetainAsPublished;
 
     public MqttSubscription(
-            @NotNull final MqttTopicFilterImpl topicFilter, @NotNull final MqttQoS qos, final boolean isNoLocal,
-            @NotNull final Mqtt5RetainHandling retainHandling, final boolean isRetainAsPublished) {
+            @NotNull final MqttTopicFilterImpl topicFilter,
+            @NotNull final MqttQoS qos,
+            final boolean isNoLocal,
+            @NotNull final Mqtt5RetainHandling retainHandling,
+            final boolean isRetainAsPublished) {
 
         this.topicFilter = topicFilter;
         this.qos = qos;
@@ -75,5 +75,4 @@ public class MqttSubscription implements Mqtt5Subscription {
     public boolean isRetainAsPublished() {
         return isRetainAsPublished;
     }
-
 }

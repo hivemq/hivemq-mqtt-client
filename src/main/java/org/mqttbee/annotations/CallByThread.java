@@ -17,12 +17,12 @@
 
 package org.mqttbee.annotations;
 
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.CLASS;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
-
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.RetentionPolicy.CLASS;
 
 /**
  * Documents that a method should only be called by the specified thread.
@@ -35,5 +35,4 @@ import static java.lang.annotation.RetentionPolicy.CLASS;
 public @interface CallByThread {
 
     String value();
-
 }

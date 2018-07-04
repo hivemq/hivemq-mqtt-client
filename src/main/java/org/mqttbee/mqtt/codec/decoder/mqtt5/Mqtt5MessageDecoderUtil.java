@@ -17,9 +17,14 @@
 
 package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
+import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.malformedUTF8String;
+import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.remainingLengthTooShort;
+import static org.mqttbee.mqtt.message.connect.connack.MqttConnAck.SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
+
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
+import java.nio.ByteBuffer;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
@@ -31,12 +36,6 @@ import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.netty.ChannelAttributes;
 
-import java.nio.ByteBuffer;
-
-import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.malformedUTF8String;
-import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.remainingLengthTooShort;
-import static org.mqttbee.mqtt.message.connect.connack.MqttConnAck.SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
-
 /**
  * Util for decoders for MQTT 5 messages.
  *
@@ -44,8 +43,7 @@ import static org.mqttbee.mqtt.message.connect.connack.MqttConnAck.SESSION_EXPIR
  */
 class Mqtt5MessageDecoderUtil {
 
-    private Mqtt5MessageDecoderUtil() {
-    }
+    private Mqtt5MessageDecoderUtil() {}
 
     @NotNull
     static MqttDecoderException wrongReasonCode() {
@@ -65,7 +63,8 @@ class Mqtt5MessageDecoderUtil {
     @NotNull
     static MqttDecoderException moreThanOnce(@NotNull final String name) {
         return new MqttDecoderException(
-                Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, name + " must not be included more than once");
+                Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+                name + " must not be included more than once");
     }
 
     @NotNull
@@ -74,7 +73,8 @@ class Mqtt5MessageDecoderUtil {
                 Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "must contain at least one reason code");
     }
 
-    static void checkPropertyLengthNoPayload(@NotNull final ByteBuf in) throws MqttDecoderException {
+    static void checkPropertyLengthNoPayload(@NotNull final ByteBuf in)
+            throws MqttDecoderException {
         final int propertyLength = MqttVariableByteInteger.decode(in);
         if (propertyLength < 0) {
             throw malformedPropertyLength();
@@ -107,7 +107,8 @@ class Mqtt5MessageDecoderUtil {
         return propertyIdentifier;
     }
 
-    static boolean booleanOnlyOnce(final boolean present, @NotNull final String name, @NotNull final ByteBuf in)
+    static boolean booleanOnlyOnce(
+            final boolean present, @NotNull final String name, @NotNull final ByteBuf in)
             throws MqttDecoderException {
 
         if (present) {
@@ -123,11 +124,13 @@ class Mqtt5MessageDecoderUtil {
         if (value == 1) {
             return true;
         }
-        throw new MqttDecoderException(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "malformed boolean for " + name);
+        throw new MqttDecoderException(
+                Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "malformed boolean for " + name);
     }
 
     static short unsignedByteOnlyOnce(
-            final boolean present, @NotNull final String name, @NotNull final ByteBuf in) throws MqttDecoderException {
+            final boolean present, @NotNull final String name, @NotNull final ByteBuf in)
+            throws MqttDecoderException {
 
         if (present) {
             throw moreThanOnce(name);
@@ -139,7 +142,8 @@ class Mqtt5MessageDecoderUtil {
     }
 
     static int unsignedShortOnlyOnce(
-            final boolean present, @NotNull final String name, @NotNull final ByteBuf in) throws MqttDecoderException {
+            final boolean present, @NotNull final String name, @NotNull final ByteBuf in)
+            throws MqttDecoderException {
 
         if (present) {
             throw moreThanOnce(name);
@@ -151,14 +155,18 @@ class Mqtt5MessageDecoderUtil {
     }
 
     static int unsignedShortOnlyOnce(
-            final int current, final int notPresent, @NotNull final String name, @NotNull final ByteBuf in)
+            final int current,
+            final int notPresent,
+            @NotNull final String name,
+            @NotNull final ByteBuf in)
             throws MqttDecoderException {
 
         return unsignedShortOnlyOnce(current != notPresent, name, in);
     }
 
     static long unsignedIntOnlyOnce(
-            final boolean present, @NotNull final String name, @NotNull final ByteBuf in) throws MqttDecoderException {
+            final boolean present, @NotNull final String name, @NotNull final ByteBuf in)
+            throws MqttDecoderException {
 
         if (present) {
             throw moreThanOnce(name);
@@ -170,7 +178,10 @@ class Mqtt5MessageDecoderUtil {
     }
 
     static long unsignedIntOnlyOnce(
-            final long current, final long notPresent, @NotNull final String name, @NotNull final ByteBuf in)
+            final long current,
+            final long notPresent,
+            @NotNull final String name,
+            @NotNull final ByteBuf in)
             throws MqttDecoderException {
 
         return unsignedIntOnlyOnce(current != notPresent, name, in);
@@ -178,8 +189,11 @@ class Mqtt5MessageDecoderUtil {
 
     @NotNull
     static ByteBuffer decodeBinaryDataOnlyOnce(
-            @Nullable final ByteBuffer current, @NotNull final String name, @NotNull final ByteBuf in,
-            final boolean direct) throws MqttDecoderException {
+            @Nullable final ByteBuffer current,
+            @NotNull final String name,
+            @NotNull final ByteBuf in,
+            final boolean direct)
+            throws MqttDecoderException {
 
         if (current != null) {
             throw moreThanOnce(name);
@@ -193,7 +207,9 @@ class Mqtt5MessageDecoderUtil {
 
     @NotNull
     static MqttUTF8StringImpl decodeUTF8StringOnlyOnce(
-            @Nullable final MqttUTF8StringImpl current, @NotNull final String name, @NotNull final ByteBuf in)
+            @Nullable final MqttUTF8StringImpl current,
+            @NotNull final String name,
+            @NotNull final ByteBuf in)
             throws MqttDecoderException {
 
         if (current != null) {
@@ -208,14 +224,16 @@ class Mqtt5MessageDecoderUtil {
 
     @NotNull
     static MqttUTF8StringImpl decodeReasonString(
-            @Nullable final MqttUTF8StringImpl current, @NotNull final ByteBuf in) throws MqttDecoderException {
+            @Nullable final MqttUTF8StringImpl current, @NotNull final ByteBuf in)
+            throws MqttDecoderException {
 
         return decodeUTF8StringOnlyOnce(current, "reason string", in);
     }
 
     @NotNull
     static ImmutableList.Builder<MqttUserPropertyImpl> decodeUserProperty(
-            @Nullable ImmutableList.Builder<MqttUserPropertyImpl> userPropertiesBuilder, @NotNull final ByteBuf in)
+            @Nullable ImmutableList.Builder<MqttUserPropertyImpl> userPropertiesBuilder,
+            @NotNull final ByteBuf in)
             throws MqttDecoderException {
 
         final MqttUserPropertyImpl userProperty = MqttUserPropertyImpl.decode(in);
@@ -229,14 +247,17 @@ class Mqtt5MessageDecoderUtil {
         return userPropertiesBuilder;
     }
 
-    private static MqttDecoderException checkProblemInformationRequested(@NotNull final String name) {
-        return new MqttDecoderException(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+    private static MqttDecoderException checkProblemInformationRequested(
+            @NotNull final String name) {
+        return new MqttDecoderException(
+                Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
                 name + " must not be included if problem information is not requested");
     }
 
     @NotNull
     static MqttUTF8StringImpl decodeReasonStringIfRequested(
-            @Nullable final MqttUTF8StringImpl current, @NotNull final MqttClientConnectionData clientConnectionData,
+            @Nullable final MqttUTF8StringImpl current,
+            @NotNull final MqttClientConnectionData clientConnectionData,
             @NotNull final ByteBuf in)
             throws MqttDecoderException {
 
@@ -249,10 +270,12 @@ class Mqtt5MessageDecoderUtil {
     @NotNull
     static ImmutableList.Builder<MqttUserPropertyImpl> decodeUserPropertyIfRequested(
             @Nullable final ImmutableList.Builder<MqttUserPropertyImpl> userPropertiesBuilder,
-            @NotNull final MqttClientConnectionData clientConnectionData, @NotNull final ByteBuf in)
+            @NotNull final MqttClientConnectionData clientConnectionData,
+            @NotNull final ByteBuf in)
             throws MqttDecoderException {
 
-        if ((userPropertiesBuilder == null) && !clientConnectionData.isProblemInformationRequested()) {
+        if ((userPropertiesBuilder == null)
+                && !clientConnectionData.isProblemInformationRequested()) {
             throw checkProblemInformationRequested("user property");
         }
         return decodeUserProperty(userPropertiesBuilder, in);
@@ -260,28 +283,34 @@ class Mqtt5MessageDecoderUtil {
 
     @NotNull
     static MqttUTF8StringImpl decodeAuthMethod(
-            @Nullable final MqttUTF8StringImpl current, @NotNull final ByteBuf in) throws MqttDecoderException {
+            @Nullable final MqttUTF8StringImpl current, @NotNull final ByteBuf in)
+            throws MqttDecoderException {
 
         return decodeUTF8StringOnlyOnce(current, "auth method", in);
     }
 
     @NotNull
     static ByteBuffer decodeAuthData(
-            @Nullable final ByteBuffer current, @NotNull final ByteBuf in, @NotNull final Channel channel)
+            @Nullable final ByteBuffer current,
+            @NotNull final ByteBuf in,
+            @NotNull final Channel channel)
             throws MqttDecoderException {
 
-        return decodeBinaryDataOnlyOnce(current, "auth data", in, ChannelAttributes.useDirectBufferForAuth(channel));
+        return decodeBinaryDataOnlyOnce(
+                current, "auth data", in, ChannelAttributes.useDirectBufferForAuth(channel));
     }
 
     @NotNull
     static MqttUTF8StringImpl decodeServerReference(
-            @Nullable final MqttUTF8StringImpl current, @NotNull final ByteBuf in) throws MqttDecoderException {
+            @Nullable final MqttUTF8StringImpl current, @NotNull final ByteBuf in)
+            throws MqttDecoderException {
 
         return decodeUTF8StringOnlyOnce(current, "server reference", in);
     }
 
-    static long decodeSessionExpiryInterval(final long current, @NotNull final ByteBuf in) throws MqttDecoderException {
-        return unsignedIntOnlyOnce(current, SESSION_EXPIRY_INTERVAL_FROM_CONNECT, "session expiry interval", in);
+    static long decodeSessionExpiryInterval(final long current, @NotNull final ByteBuf in)
+            throws MqttDecoderException {
+        return unsignedIntOnlyOnce(
+                current, SESSION_EXPIRY_INTERVAL_FROM_CONNECT, "session expiry interval", in);
     }
-
 }

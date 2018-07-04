@@ -17,18 +17,16 @@
 
 package org.mqttbee.mqtt.datatypes;
 
+import static java.util.Objects.requireNonNull;
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.junit.jupiter.api.Test;
 import org.mqttbee.mqtt.message.MqttProperty;
 
-import static java.util.Objects.requireNonNull;
-import static org.junit.jupiter.api.Assertions.*;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 class MqttUserPropertiesImplTest {
 
     @Test
@@ -36,7 +34,8 @@ class MqttUserPropertiesImplTest {
         final MqttUTF8StringImpl name = requireNonNull(MqttUTF8StringImpl.from("name"));
         final MqttUTF8StringImpl value = requireNonNull(MqttUTF8StringImpl.from("value"));
         final MqttUserPropertyImpl userProperty = new MqttUserPropertyImpl(name, value);
-        final ImmutableList<MqttUserPropertyImpl> userPropertiesList = ImmutableList.of(userProperty);
+        final ImmutableList<MqttUserPropertyImpl> userPropertiesList =
+                ImmutableList.of(userProperty);
         final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.of(userPropertiesList);
         assertSame(userPropertiesList, userProperties.asList());
     }
@@ -64,8 +63,33 @@ class MqttUserPropertiesImplTest {
     @Test
     void test_encode() {
         final byte[] expected = {
-                MqttProperty.USER_PROPERTY, 0, 4, 'n', 'a', 'm', 'e', 0, 5, 'v', 'a', 'l', 'u', 'e',
-                MqttProperty.USER_PROPERTY, 0, 4, 'n', 'a', 'm', 'e', 0, 4, 't', 'e', 's', 't'
+            MqttProperty.USER_PROPERTY,
+            0,
+            4,
+            'n',
+            'a',
+            'm',
+            'e',
+            0,
+            5,
+            'v',
+            'a',
+            'l',
+            'u',
+            'e',
+            MqttProperty.USER_PROPERTY,
+            0,
+            4,
+            'n',
+            'a',
+            'm',
+            'e',
+            0,
+            4,
+            't',
+            'e',
+            's',
+            't'
         };
         final MqttUTF8StringImpl name = requireNonNull(MqttUTF8StringImpl.from("name"));
         final MqttUTF8StringImpl value = requireNonNull(MqttUTF8StringImpl.from("value"));
@@ -96,5 +120,4 @@ class MqttUserPropertiesImplTest {
 
         assertEquals(27, userProperties.encodedLength());
     }
-
 }

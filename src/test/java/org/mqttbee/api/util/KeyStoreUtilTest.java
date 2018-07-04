@@ -15,25 +15,21 @@
  */
 package org.mqttbee.api.util;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.io.File;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLException;
+import javax.net.ssl.TrustManagerFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.mqttbee.util.TestKeyStoreGenerator;
 
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLException;
-import javax.net.ssl.TrustManagerFactory;
-import java.io.File;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-/**
- * @author Christoph Schäbel
- */
+/** @author Christoph Schäbel */
 public class KeyStoreUtilTest {
 
     private TestKeyStoreGenerator testKeyStoreGenerator;
-
 
     @Before
     public void before() {
@@ -52,7 +48,8 @@ public class KeyStoreUtilTest {
     public void test_wrong_kmf_ks_path() throws Exception {
         final File store = testKeyStoreGenerator.generateKeyStore("fun", "JKS", "pw", "pk");
         final KeyManagerFactory kmf =
-                KeyStoreUtil.keyManagerFromKeystore(new File(store.getAbsolutePath() + "wrong"), "pw", "pk");
+                KeyStoreUtil.keyManagerFromKeystore(
+                        new File(store.getAbsolutePath() + "wrong"), "pw", "pk");
     }
 
     @Test(expected = SSLException.class)
@@ -79,7 +76,8 @@ public class KeyStoreUtilTest {
     public void test_wrong_tmf_ks_path() throws Exception {
         final File store = testKeyStoreGenerator.generateKeyStore("fun", "JKS", "pw", "pk");
         final TrustManagerFactory tmf =
-                KeyStoreUtil.trustManagerFromKeystore(new File(store.getAbsolutePath() + "wrong"), "pw");
+                KeyStoreUtil.trustManagerFromKeystore(
+                        new File(store.getAbsolutePath() + "wrong"), "pw");
     }
 
     @Test(expected = SSLException.class)
@@ -87,5 +85,4 @@ public class KeyStoreUtilTest {
         final File store = testKeyStoreGenerator.generateKeyStore("fun", "JKS", "pw", "pk");
         final TrustManagerFactory tmf = KeyStoreUtil.trustManagerFromKeystore(store, "wrong");
     }
-
 }

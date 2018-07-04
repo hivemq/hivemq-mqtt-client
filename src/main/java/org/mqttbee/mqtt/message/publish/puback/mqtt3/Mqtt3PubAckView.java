@@ -17,17 +17,14 @@
 
 package org.mqttbee.mqtt.message.publish.puback.mqtt3;
 
+import javax.annotation.concurrent.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.puback.Mqtt3PubAck;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.puback.Mqtt5PubAckReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.publish.puback.MqttPubAck;
 
-import javax.annotation.concurrent.Immutable;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @Immutable
 public class Mqtt3PubAckView implements Mqtt3PubAck {
 
@@ -35,7 +32,10 @@ public class Mqtt3PubAckView implements Mqtt3PubAck {
 
     @NotNull
     public static MqttPubAck delegate(final int packetIdentifier) {
-        return new MqttPubAck(packetIdentifier, Mqtt5PubAckReasonCode.SUCCESS, null,
+        return new MqttPubAck(
+                packetIdentifier,
+                Mqtt5PubAckReasonCode.SUCCESS,
+                null,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES);
     }
 
@@ -44,7 +44,5 @@ public class Mqtt3PubAckView implements Mqtt3PubAck {
         return INSTANCE;
     }
 
-    private Mqtt3PubAckView() {
-    }
-
+    private Mqtt3PubAckView() {}
 }

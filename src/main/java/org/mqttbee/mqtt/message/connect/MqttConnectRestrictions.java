@@ -17,20 +17,19 @@
 
 package org.mqttbee.mqtt.message.connect;
 
+import javax.annotation.concurrent.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions;
 
-import javax.annotation.concurrent.Immutable;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @Immutable
 public class MqttConnectRestrictions implements Mqtt5ConnectRestrictions {
 
     @NotNull
     public static final MqttConnectRestrictions DEFAULT =
-            new MqttConnectRestrictions(DEFAULT_RECEIVE_MAXIMUM, DEFAULT_TOPIC_ALIAS_MAXIMUM,
+            new MqttConnectRestrictions(
+                    DEFAULT_RECEIVE_MAXIMUM,
+                    DEFAULT_TOPIC_ALIAS_MAXIMUM,
                     DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT);
 
     private final int receiveMaximum;
@@ -59,5 +58,4 @@ public class MqttConnectRestrictions implements Mqtt5ConnectRestrictions {
     public int getMaximumPacketSize() {
         return maximumPacketSize;
     }
-
 }

@@ -18,20 +18,19 @@
 package org.mqttbee.api.mqtt.datatypes;
 
 import com.google.common.base.Preconditions;
+import java.util.function.Function;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.util.FluentBuilder;
 
-import java.util.function.Function;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class MqttTopicBuilder<P> extends FluentBuilder<MqttTopic, P> {
 
     private final StringBuilder stringBuilder;
 
-    public MqttTopicBuilder(@NotNull final String base, @Nullable final Function<? super MqttTopic, P> parentConsumer) {
+    public MqttTopicBuilder(
+            @NotNull final String base,
+            @Nullable final Function<? super MqttTopic, P> parentConsumer) {
         super(parentConsumer);
         this.stringBuilder = new StringBuilder(base);
     }
@@ -58,5 +57,4 @@ public class MqttTopicBuilder<P> extends FluentBuilder<MqttTopic, P> {
     public MqttTopic build() {
         return MqttTopic.from(stringBuilder.toString());
     }
-
 }

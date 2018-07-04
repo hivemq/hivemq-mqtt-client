@@ -17,6 +17,9 @@
 
 package org.mqttbee.mqtt.message.auth.mqtt3;
 
+import java.nio.ByteBuffer;
+import java.util.Optional;
+import javax.annotation.concurrent.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
@@ -24,13 +27,7 @@ import org.mqttbee.api.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.message.auth.MqttSimpleAuth;
 
-import javax.annotation.concurrent.Immutable;
-import java.nio.ByteBuffer;
-import java.util.Optional;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @Immutable
 public class Mqtt3SimpleAuthView implements Mqtt3SimpleAuth {
 
@@ -79,5 +76,4 @@ public class Mqtt3SimpleAuthView implements Mqtt3SimpleAuth {
     public MqttSimpleAuth getDelegate() {
         return delegate;
     }
-
 }

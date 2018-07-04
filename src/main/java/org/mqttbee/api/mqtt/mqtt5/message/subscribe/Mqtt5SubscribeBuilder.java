@@ -19,6 +19,7 @@ package org.mqttbee.api.mqtt.mqtt5.message.subscribe;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import java.util.function.Function;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
@@ -30,17 +31,14 @@ import org.mqttbee.mqtt.util.MqttBuilderUtil;
 import org.mqttbee.util.FluentBuilder;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 
-import java.util.function.Function;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class Mqtt5SubscribeBuilder<P> extends FluentBuilder<Mqtt5Subscribe, P> {
 
     private final ImmutableList.Builder<MqttSubscription> subscriptionBuilder;
     private MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
 
-    public Mqtt5SubscribeBuilder(@Nullable final Function<? super Mqtt5Subscribe, P> parentConsumer) {
+    public Mqtt5SubscribeBuilder(
+            @Nullable final Function<? super Mqtt5Subscribe, P> parentConsumer) {
         super(parentConsumer);
         subscriptionBuilder = ImmutableList.builder();
     }
@@ -56,7 +54,8 @@ public class Mqtt5SubscribeBuilder<P> extends FluentBuilder<Mqtt5Subscribe, P> {
 
     @NotNull
     public Mqtt5SubscribeBuilder<P> addSubscription(@NotNull final Mqtt5Subscription subscription) {
-        subscriptionBuilder.add(MustNotBeImplementedUtil.checkNotImplemented(subscription, MqttSubscription.class));
+        subscriptionBuilder.add(
+                MustNotBeImplementedUtil.checkNotImplemented(subscription, MqttSubscription.class));
         return this;
     }
 
@@ -66,7 +65,8 @@ public class Mqtt5SubscribeBuilder<P> extends FluentBuilder<Mqtt5Subscribe, P> {
     }
 
     @NotNull
-    public Mqtt5SubscribeBuilder<P> userProperties(@NotNull final Mqtt5UserProperties userProperties) {
+    public Mqtt5SubscribeBuilder<P> userProperties(
+            @NotNull final Mqtt5UserProperties userProperties) {
         this.userProperties = MqttBuilderUtil.userProperties(userProperties);
         return this;
     }
@@ -83,5 +83,4 @@ public class Mqtt5SubscribeBuilder<P> extends FluentBuilder<Mqtt5Subscribe, P> {
         Preconditions.checkState(!subscriptions.isEmpty());
         return new MqttSubscribe(subscriptions, userProperties);
     }
-
 }

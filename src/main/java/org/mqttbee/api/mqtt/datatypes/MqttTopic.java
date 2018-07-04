@@ -24,18 +24,17 @@ import org.mqttbee.mqtt.util.MqttBuilderUtil;
 
 /**
  * MQTT Topic Name according to the MQTT specification.
- * <p>
- * A Topic Name has the restrictions from {@link MqttUTF8String}, must be at least 1 character long and mut not contain
- * wildcards ({@link MqttTopicFilter#MULTI_LEVEL_WILDCARD}, {@link MqttTopicFilter#SINGLE_LEVEL_WILDCARD}).
+ *
+ * <p>A Topic Name has the restrictions from {@link MqttUTF8String}, must be at least 1 character
+ * long and mut not contain wildcards ({@link MqttTopicFilter#MULTI_LEVEL_WILDCARD}, {@link
+ * MqttTopicFilter#SINGLE_LEVEL_WILDCARD}).
  *
  * @author Silvio Giebl
  */
 @DoNotImplement
 public interface MqttTopic extends MqttUTF8String {
 
-    /**
-     * The topic level separator character.
-     */
+    /** The topic level separator character. */
     char TOPIC_LEVEL_SEPARATOR = '/';
 
     /**
@@ -60,10 +59,7 @@ public interface MqttTopic extends MqttUTF8String {
         return new MqttTopicBuilder<>(topic.toString(), null);
     }
 
-    /**
-     * @return the levels of this Topic Name.
-     */
+    /** @return the levels of this Topic Name. */
     @NotNull
     ImmutableList<String> getLevels();
-
 }

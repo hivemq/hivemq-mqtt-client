@@ -26,11 +26,9 @@ import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
  */
 class Mqtt3MessageDecoderUtil {
 
-    private Mqtt3MessageDecoderUtil() {
-    }
+    private Mqtt3MessageDecoderUtil() {}
 
     static MqttDecoderException wrongReturnCode() {
         return new MqttDecoderException("wrong return code");
     }
-
 }

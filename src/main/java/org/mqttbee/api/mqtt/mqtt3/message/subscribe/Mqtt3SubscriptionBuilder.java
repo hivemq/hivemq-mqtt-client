@@ -18,6 +18,7 @@
 package org.mqttbee.api.mqtt.mqtt3.message.subscribe;
 
 import com.google.common.base.Preconditions;
+import java.util.function.Function;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
@@ -28,17 +29,14 @@ import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscriptionView;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 import org.mqttbee.util.FluentBuilder;
 
-import java.util.function.Function;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class Mqtt3SubscriptionBuilder<P> extends FluentBuilder<Mqtt3Subscription, P> {
 
     private MqttTopicFilterImpl topicFilter;
     private MqttQoS qos;
 
-    public Mqtt3SubscriptionBuilder(@Nullable final Function<? super Mqtt3Subscription, P> parentConsumer) {
+    public Mqtt3SubscriptionBuilder(
+            @Nullable final Function<? super Mqtt3Subscription, P> parentConsumer) {
         super(parentConsumer);
     }
 
@@ -72,5 +70,4 @@ public class Mqtt3SubscriptionBuilder<P> extends FluentBuilder<Mqtt3Subscription
         Preconditions.checkNotNull(qos);
         return Mqtt3SubscriptionView.of(topicFilter, qos);
     }
-
 }

@@ -19,17 +19,18 @@ package org.mqttbee.util;
 
 import org.mqttbee.annotations.NotNull;
 
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class ByteArrayUtil {
 
-    private ByteArrayUtil() {
-    }
+    private ByteArrayUtil() {}
 
     public static boolean equals(
-            @NotNull final byte[] array1, final int start1, final int end1, @NotNull final byte[] array2,
-            final int start2, final int end2) {
+            @NotNull final byte[] array1,
+            final int start1,
+            final int end1,
+            @NotNull final byte[] array2,
+            final int start2,
+            final int end2) {
 
         if (array1 == array2) {
             return true;
@@ -65,5 +66,4 @@ public class ByteArrayUtil {
         }
         return -1;
     }
-
 }

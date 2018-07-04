@@ -64,11 +64,12 @@ public class Mqtt3ClientView implements Mqtt3Client {
     private static final Function<Throwable, Single<Mqtt5SubAck>> EXCEPTION_MAPPER_SINGLE_SUBACK =
             e -> Single.error(Mqtt3ExceptionFactory.map(e));
 
-    private static final Function<Throwable, Flowable<Mqtt5Publish>> EXCEPTION_MAPPER_FLOWABLE_PUBLISH =
-            e -> Flowable.error(Mqtt3ExceptionFactory.map(e));
+    private static final Function<Throwable, Flowable<Mqtt5Publish>>
+            EXCEPTION_MAPPER_FLOWABLE_PUBLISH = e -> Flowable.error(Mqtt3ExceptionFactory.map(e));
 
-    private static final Function<Throwable, Flowable<Mqtt5PublishResult>> EXCEPTION_MAPPER_FLOWABLE_PUBLISH_RESULT =
-            e -> Flowable.error(Mqtt3ExceptionFactory.map(e));
+    private static final Function<Throwable, Flowable<Mqtt5PublishResult>>
+            EXCEPTION_MAPPER_FLOWABLE_PUBLISH_RESULT =
+                    e -> Flowable.error(Mqtt3ExceptionFactory.map(e));
 
     private final Mqtt5ClientImpl delegate;
 
@@ -98,7 +99,8 @@ public class Mqtt3ClientView implements Mqtt3Client {
 
     @NotNull
     @Override
-    public FlowableWithSingle<Mqtt3SubAck, Mqtt3Publish> subscribeWithStream(@NotNull final Mqtt3Subscribe subscribe) {
+    public FlowableWithSingle<Mqtt3SubAck, Mqtt3Publish> subscribeWithStream(
+            @NotNull final Mqtt3Subscribe subscribe) {
         final Mqtt3SubscribeView subscribeView =
                 MustNotBeImplementedUtil.checkNotImplemented(subscribe, Mqtt3SubscribeView.class);
         return delegate.subscribeWithStream(subscribeView.getDelegate())
@@ -118,7 +120,8 @@ public class Mqtt3ClientView implements Mqtt3Client {
     @Override
     public Completable unsubscribe(@NotNull final Mqtt3Unsubscribe unsubscribe) {
         final Mqtt3UnsubscribeView unsubscribeView =
-                MustNotBeImplementedUtil.checkNotImplemented(unsubscribe, Mqtt3UnsubscribeView.class);
+                MustNotBeImplementedUtil.checkNotImplemented(
+                        unsubscribe, Mqtt3UnsubscribeView.class);
         return delegate.unsubscribe(unsubscribeView.getDelegate())
                 .toCompletable()
                 .onErrorResumeNext(EXCEPTION_MAPPER_COMPLETABLE);
@@ -126,7 +129,8 @@ public class Mqtt3ClientView implements Mqtt3Client {
 
     @NotNull
     @Override
-    public Flowable<Mqtt3PublishResult> publish(@NotNull final Flowable<Mqtt3Publish> publishFlowable) {
+    public Flowable<Mqtt3PublishResult> publish(
+            @NotNull final Flowable<Mqtt3Publish> publishFlowable) {
         return delegate.publish(publishFlowable.map(Mqtt3PublishView.DELEGATE_MAPPER))
                 .onErrorResumeNext(EXCEPTION_MAPPER_FLOWABLE_PUBLISH_RESULT)
                 .map(Mqtt3PublishResultView.MAPPER);
@@ -135,7 +139,8 @@ public class Mqtt3ClientView implements Mqtt3Client {
     @NotNull
     @Override
     public Completable disconnect() {
-        return delegate.disconnect(Mqtt3DisconnectView.delegate()).onErrorResumeNext(EXCEPTION_MAPPER_COMPLETABLE);
+        return delegate.disconnect(Mqtt3DisconnectView.delegate())
+                .onErrorResumeNext(EXCEPTION_MAPPER_COMPLETABLE);
     }
 
     @NotNull
@@ -143,5 +148,4 @@ public class Mqtt3ClientView implements Mqtt3Client {
     public Mqtt3ClientData getClientData() {
         return new Mqtt3ClientDataView(delegate.getClientData());
     }
-
 }

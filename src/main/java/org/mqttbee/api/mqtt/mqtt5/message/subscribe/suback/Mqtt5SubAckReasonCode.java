@@ -28,7 +28,6 @@ import org.mqttbee.mqtt.message.MqttCommonReasonCode;
  * @author Silvio Giebl
  */
 public enum Mqtt5SubAckReasonCode implements Mqtt5ReasonCode {
-
     GRANTED_QOS_0(0x00),
     GRANTED_QOS_1(0x01),
     GRANTED_QOS_2(0x02),
@@ -39,7 +38,8 @@ public enum Mqtt5SubAckReasonCode implements Mqtt5ReasonCode {
     PACKET_IDENTIFIER_IN_USE(MqttCommonReasonCode.PACKET_IDENTIFIER_IN_USE),
     QUOTA_EXCEEDED(MqttCommonReasonCode.QUOTA_EXCEEDED),
     SHARED_SUBSCRIPTION_NOT_SUPPORTED(MqttCommonReasonCode.SHARED_SUBSCRIPTION_NOT_SUPPORTED),
-    SUBSCRIPTION_IDENTIFIERS_NOT_SUPPORTED(MqttCommonReasonCode.SUBSCRIPTION_IDENTIFIERS_NOT_SUPPORTED),
+    SUBSCRIPTION_IDENTIFIERS_NOT_SUPPORTED(
+            MqttCommonReasonCode.SUBSCRIPTION_IDENTIFIERS_NOT_SUPPORTED),
     WILDCARD_SUBSCRIPTION_NOT_SUPPORTED(MqttCommonReasonCode.WILDCARD_SUBSCRIPTION_NOT_SUPPORTED);
 
     private final int code;
@@ -52,9 +52,7 @@ public enum Mqtt5SubAckReasonCode implements Mqtt5ReasonCode {
         this(reasonCode.getCode());
     }
 
-    /**
-     * @return the byte code of this SUBACK Reason Code.
-     */
+    /** @return the byte code of this SUBACK Reason Code. */
     public int getCode() {
         return code;
     }
@@ -63,8 +61,8 @@ public enum Mqtt5SubAckReasonCode implements Mqtt5ReasonCode {
      * Returns the SUBACK Reason Code belonging to the given byte code.
      *
      * @param code the byte code.
-     * @return the SUBACK Reason Code belonging to the given byte code or null if the byte code is not a valid SUBACK
-     * Reason Code code.
+     * @return the SUBACK Reason Code belonging to the given byte code or null if the byte code is
+     *     not a valid SUBACK Reason Code code.
      */
     @Nullable
     public static Mqtt5SubAckReasonCode fromCode(final int code) {
@@ -75,5 +73,4 @@ public enum Mqtt5SubAckReasonCode implements Mqtt5ReasonCode {
         }
         return null;
     }
-
 }

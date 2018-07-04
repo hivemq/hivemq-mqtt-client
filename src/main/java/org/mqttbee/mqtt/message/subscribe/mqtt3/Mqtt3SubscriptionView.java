@@ -25,9 +25,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5RetainHandling;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
 
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class Mqtt3SubscriptionView implements Mqtt3Subscription {
 
     @NotNull
@@ -37,7 +35,8 @@ public class Mqtt3SubscriptionView implements Mqtt3Subscription {
     }
 
     @NotNull
-    public static Mqtt3SubscriptionView of(@NotNull final MqttTopicFilterImpl topicFilter, @NotNull final MqttQoS qos) {
+    public static Mqtt3SubscriptionView of(
+            @NotNull final MqttTopicFilterImpl topicFilter, @NotNull final MqttQoS qos) {
         return new Mqtt3SubscriptionView(delegate(topicFilter, qos));
     }
 
@@ -68,5 +67,4 @@ public class Mqtt3SubscriptionView implements Mqtt3Subscription {
     public MqttSubscription getDelegate() {
         return delegate;
     }
-
 }

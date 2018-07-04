@@ -17,16 +17,13 @@
 
 package org.mqttbee.mqtt.persistence;
 
+import java.util.concurrent.CompletableFuture;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.message.publish.MqttQoSMessage;
 import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
 import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRel;
 
-import java.util.concurrent.CompletableFuture;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public interface OutgoingQoSFlowPersistence {
 
     @NotNull
@@ -40,5 +37,4 @@ public interface OutgoingQoSFlowPersistence {
 
     @NotNull
     CompletableFuture<Void> discard(int packetIdentifier);
-
 }

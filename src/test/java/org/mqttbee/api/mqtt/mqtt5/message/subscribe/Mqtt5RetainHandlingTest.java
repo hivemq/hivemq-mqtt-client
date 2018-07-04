@@ -17,14 +17,12 @@
 
 package org.mqttbee.api.mqtt.mqtt5.message.subscribe;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-/**
- * @author David Katz
- */
+import org.junit.jupiter.api.Test;
+
+/** @author David Katz */
 class Mqtt5RetainHandlingTest {
 
     @Test
@@ -36,7 +34,9 @@ class Mqtt5RetainHandlingTest {
     @Test
     void test_getCode_sendIfSubscriptionDoesNotExist() {
         assertEquals(0x01, Mqtt5RetainHandling.SEND_IF_SUBSCRIPTION_DOES_NOT_EXIST.getCode());
-        assertEquals(Mqtt5RetainHandling.SEND_IF_SUBSCRIPTION_DOES_NOT_EXIST, Mqtt5RetainHandling.fromCode(0x01));
+        assertEquals(
+                Mqtt5RetainHandling.SEND_IF_SUBSCRIPTION_DOES_NOT_EXIST,
+                Mqtt5RetainHandling.fromCode(0x01));
     }
 
     @Test

@@ -17,6 +17,9 @@
 
 package org.mqttbee.mqtt.message.auth;
 
+import java.nio.ByteBuffer;
+import java.util.Optional;
+import javax.annotation.concurrent.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5Auth;
@@ -26,13 +29,7 @@ import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.MqttMessageWithUserProperties.MqttMessageWithReasonCode;
 import org.mqttbee.util.ByteBufferUtil;
 
-import javax.annotation.concurrent.Immutable;
-import java.nio.ByteBuffer;
-import java.util.Optional;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @Immutable
 public class MqttAuth extends MqttMessageWithReasonCode<Mqtt5AuthReasonCode> implements Mqtt5Auth {
 
@@ -40,8 +37,10 @@ public class MqttAuth extends MqttMessageWithReasonCode<Mqtt5AuthReasonCode> imp
     private final ByteBuffer data;
 
     public MqttAuth(
-            @NotNull final Mqtt5AuthReasonCode reasonCode, @NotNull final MqttUTF8StringImpl method,
-            @Nullable final ByteBuffer data, @Nullable final MqttUTF8StringImpl reasonString,
+            @NotNull final Mqtt5AuthReasonCode reasonCode,
+            @NotNull final MqttUTF8StringImpl method,
+            @Nullable final ByteBuffer data,
+            @Nullable final MqttUTF8StringImpl reasonString,
             @NotNull final MqttUserPropertiesImpl userProperties) {
 
         super(reasonCode, reasonString, userProperties);
@@ -65,5 +64,4 @@ public class MqttAuth extends MqttMessageWithReasonCode<Mqtt5AuthReasonCode> imp
     public ByteBuffer getRawData() {
         return data;
     }
-
 }

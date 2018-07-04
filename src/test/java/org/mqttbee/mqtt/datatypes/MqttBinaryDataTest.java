@@ -17,17 +17,14 @@
 
 package org.mqttbee.mqtt.datatypes;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import org.junit.Test;
-
-import java.util.Random;
-
 import static org.junit.Assert.*;
 
-/**
- * @author Silvio Giebl
- */
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import java.util.Random;
+import org.junit.Test;
+
+/** @author Silvio Giebl */
 public class MqttBinaryDataTest {
 
     private final Random random = new Random();
@@ -110,5 +107,4 @@ public class MqttBinaryDataTest {
         random.nextBytes(binary);
         assertEquals(2 + binary.length, MqttBinaryData.encodedLength(binary));
     }
-
 }

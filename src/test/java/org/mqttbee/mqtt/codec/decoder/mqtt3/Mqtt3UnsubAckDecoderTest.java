@@ -17,6 +17,8 @@
 
 package org.mqttbee.mqtt.codec.decoder.mqtt3;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.google.common.primitives.Bytes;
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -27,27 +29,25 @@ import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoders;
 import org.mqttbee.mqtt.message.unsubscribe.unsuback.MqttUnsubAck;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class Mqtt3UnsubAckDecoderTest extends AbstractMqtt3DecoderTest {
 
     private static final byte[] WELLFORMED_UNSUBACK_BEGIN = {
-            //   type, flags
-            (byte) 0b1011_0000,
-            //remaining length
-            0b0000_0010
+        //   type, flags
+        (byte) 0b1011_0000,
+        // remaining length
+        0b0000_0010
     };
     private static final byte[] MALFORMED_UNSUBACK_BEGIN_WRONG_FLAGS = {
-            //   type, flags
-            (byte) 0b1011_0100,
-            //remaining length
-            0b0000_0010
+        //   type, flags
+        (byte) 0b1011_0100,
+        // remaining length
+        0b0000_0010
     };
     private static final byte[] MALFORMED_UNSUBACK_BEGIN_TOO_LONG_LENGTH = {
-            //   type, flags
-            (byte) 0b1011_0000,
-            //remaining length
-            0b0000_0011
+        //   type, flags
+        (byte) 0b1011_0000,
+        // remaining length
+        0b0000_0011
     };
 
     private static final byte[] ENDING_TOO_LONG_MALFORMED = {0x01};
@@ -62,7 +62,9 @@ class Mqtt3UnsubAckDecoderTest extends AbstractMqtt3DecoderTest {
     @ParameterizedTest
     @ValueSource(strings = {"true", "false"})
     void decode_SUCESS(final boolean useMaxPacketId) {
-        final byte[] encoded = Bytes.concat(WELLFORMED_UNSUBACK_BEGIN, useMaxPacketId ? MAX_PACKET_ID : MIN_PACKET_ID);
+        final byte[] encoded =
+                Bytes.concat(
+                        WELLFORMED_UNSUBACK_BEGIN, useMaxPacketId ? MAX_PACKET_ID : MIN_PACKET_ID);
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);
@@ -80,8 +82,11 @@ class Mqtt3UnsubAckDecoderTest extends AbstractMqtt3DecoderTest {
                 encoded = Bytes.concat(MALFORMED_UNSUBACK_BEGIN_WRONG_FLAGS, MAX_PACKET_ID);
                 break;
             case 2:
-                encoded = Bytes.concat(MALFORMED_UNSUBACK_BEGIN_TOO_LONG_LENGTH, MIN_PACKET_ID,
-                        ENDING_TOO_LONG_MALFORMED);
+                encoded =
+                        Bytes.concat(
+                                MALFORMED_UNSUBACK_BEGIN_TOO_LONG_LENGTH,
+                                MIN_PACKET_ID,
+                                ENDING_TOO_LONG_MALFORMED);
                 break;
             default:
                 throw new Exception();
@@ -105,5 +110,4 @@ class Mqtt3UnsubAckDecoderTest extends AbstractMqtt3DecoderTest {
             return null;
         }
     }
-
 }

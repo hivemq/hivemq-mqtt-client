@@ -28,5 +28,4 @@ public interface MqttUnsubAckProperty {
 
     int REASON_STRING = MqttProperty.REASON_STRING;
     int USER_PROPERTY = MqttProperty.USER_PROPERTY;
-
 }

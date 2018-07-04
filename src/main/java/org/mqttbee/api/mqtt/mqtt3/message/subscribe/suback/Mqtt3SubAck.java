@@ -24,15 +24,13 @@ import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3Message;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3SubscribeResult;
 
-/**
- * MQTT 3 SUBACK packet.
- */
+/** MQTT 3 SUBACK packet. */
 @DoNotImplement
 public interface Mqtt3SubAck extends Mqtt3Message, Mqtt3SubscribeResult {
 
     /**
-     * @return the Return Codes of this SUBACK packet, each belonging to a subscription in the corresponding SUBSCRIBE
-     * packet in the same order.
+     * @return the Return Codes of this SUBACK packet, each belonging to a subscription in the
+     *     corresponding SUBSCRIBE packet in the same order.
      */
     @NotNull
     ImmutableList<Mqtt3SubAckReturnCode> getReturnCodes();
@@ -42,6 +40,4 @@ public interface Mqtt3SubAck extends Mqtt3Message, Mqtt3SubscribeResult {
     default Mqtt3MessageType getType() {
         return Mqtt3MessageType.SUBACK;
     }
-
-
 }

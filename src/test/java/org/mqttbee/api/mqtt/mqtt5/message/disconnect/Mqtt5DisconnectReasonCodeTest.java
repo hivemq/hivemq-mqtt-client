@@ -17,16 +17,14 @@
 
 package org.mqttbee.api.mqtt.mqtt5.message.disconnect;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
-/**
- * @author David Katz
- */
+/** @author David Katz */
 class Mqtt5DisconnectReasonCodeTest {
 
     @Test
@@ -171,7 +169,8 @@ class Mqtt5DisconnectReasonCodeTest {
 
     @Test
     void test_getCode_subscriptionIdentifiersNotSupported() {
-        assertEquals(0xA1, Mqtt5DisconnectReasonCode.SUBSCRIPTION_IDENTIFIERS_NOT_SUPPORTED.getCode());
+        assertEquals(
+                0xA1, Mqtt5DisconnectReasonCode.SUBSCRIPTION_IDENTIFIERS_NOT_SUPPORTED.getCode());
     }
 
     @Test
@@ -192,6 +191,4 @@ class Mqtt5DisconnectReasonCodeTest {
         assertNull(Mqtt5DisconnectReasonCode.fromCode(0x03));
         assertNull(Mqtt5DisconnectReasonCode.fromCode(0xFF));
     }
-
-
 }

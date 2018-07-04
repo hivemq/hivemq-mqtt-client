@@ -17,6 +17,7 @@
 
 package org.mqttbee.mqtt.datatypes;
 
+import java.util.Arrays;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
@@ -24,15 +25,11 @@ import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
 import org.mqttbee.util.ByteArray;
 import org.mqttbee.util.ByteArrayUtil;
 
-import java.util.Arrays;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class MqttTopicLevel extends ByteArray {
 
     public static final MqttTopicLevel SINGLE_LEVEL_WILDCARD =
-            new MqttTopicLevel(new byte[]{MqttTopicFilter.SINGLE_LEVEL_WILDCARD}, 0, 1);
+            new MqttTopicLevel(new byte[] {MqttTopicFilter.SINGLE_LEVEL_WILDCARD}, 0, 1);
 
     @NotNull
     public static MqttTopicLevel root(@NotNull final MqttTopicImpl topic) {
@@ -50,7 +47,8 @@ public class MqttTopicLevel extends ByteArray {
     }
 
     private static int nextEnd(final byte[] array, final int start) {
-        final int nextSeparator = ByteArrayUtil.indexOf(array, start, (byte) MqttTopic.TOPIC_LEVEL_SEPARATOR);
+        final int nextSeparator =
+                ByteArrayUtil.indexOf(array, start, (byte) MqttTopic.TOPIC_LEVEL_SEPARATOR);
         return (nextSeparator == -1) ? array.length : nextSeparator;
     }
 
@@ -86,5 +84,4 @@ public class MqttTopicLevel extends ByteArray {
     public boolean isMultiLevelWildcard() {
         return (length() == 1) && (array[start] == MqttTopicFilter.MULTI_LEVEL_WILDCARD);
     }
-
 }

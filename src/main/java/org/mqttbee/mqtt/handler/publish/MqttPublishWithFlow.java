@@ -20,16 +20,15 @@ package org.mqttbee.mqtt.handler.publish;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
 
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class MqttPublishWithFlow {
 
     private final MqttPublish publish;
     private final MqttIncomingAckFlow incomingAckFlow;
 
     public MqttPublishWithFlow(
-            @NotNull final MqttPublish publish, @NotNull final MqttIncomingAckFlow incomingAckFlow) {
+            @NotNull final MqttPublish publish,
+            @NotNull final MqttIncomingAckFlow incomingAckFlow) {
 
         this.publish = publish;
         this.incomingAckFlow = incomingAckFlow;
@@ -44,5 +43,4 @@ public class MqttPublishWithFlow {
     public MqttIncomingAckFlow getIncomingAckFlow() {
         return incomingAckFlow;
     }
-
 }

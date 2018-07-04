@@ -18,6 +18,9 @@
 package org.mqttbee.mqtt.message.publish;
 
 import com.google.common.primitives.ImmutableIntArray;
+import java.nio.ByteBuffer;
+import java.util.Optional;
+import javax.annotation.concurrent.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQoS;
@@ -32,13 +35,7 @@ import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.MqttMessageWithUserProperties.MqttMessageWithUserPropertiesImpl;
 import org.mqttbee.util.ByteBufferUtil;
 
-import javax.annotation.concurrent.Immutable;
-import java.nio.ByteBuffer;
-import java.util.Optional;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @Immutable
 public class MqttPublish extends MqttMessageWithUserPropertiesImpl implements Mqtt5Publish {
 
@@ -56,11 +53,16 @@ public class MqttPublish extends MqttMessageWithUserPropertiesImpl implements Mq
     private final TopicAliasUsage topicAliasUsage;
 
     public MqttPublish(
-            @NotNull final MqttTopicImpl topic, @Nullable final ByteBuffer payload, @NotNull final MqttQoS qos,
-            final boolean isRetain, final long messageExpiryInterval,
+            @NotNull final MqttTopicImpl topic,
+            @Nullable final ByteBuffer payload,
+            @NotNull final MqttQoS qos,
+            final boolean isRetain,
+            final long messageExpiryInterval,
             @Nullable final Mqtt5PayloadFormatIndicator payloadFormatIndicator,
-            @Nullable final MqttUTF8StringImpl contentType, @Nullable final MqttTopicImpl responseTopic,
-            @Nullable final ByteBuffer correlationData, @NotNull final TopicAliasUsage topicAliasUsage,
+            @Nullable final MqttUTF8StringImpl contentType,
+            @Nullable final MqttTopicImpl responseTopic,
+            @Nullable final ByteBuffer correlationData,
+            @NotNull final TopicAliasUsage topicAliasUsage,
             @NotNull final MqttUserPropertiesImpl userProperties) {
 
         super(userProperties);
@@ -116,8 +118,9 @@ public class MqttPublish extends MqttMessageWithUserPropertiesImpl implements Mq
     @NotNull
     @Override
     public Optional<Long> getMessageExpiryInterval() {
-        return (messageExpiryInterval == MESSAGE_EXPIRY_INTERVAL_INFINITY) ? Optional.empty() :
-                Optional.of(messageExpiryInterval);
+        return (messageExpiryInterval == MESSAGE_EXPIRY_INTERVAL_INFINITY)
+                ? Optional.empty()
+                : Optional.of(messageExpiryInterval);
     }
 
     public long getRawMessageExpiryInterval() {
@@ -175,11 +178,18 @@ public class MqttPublish extends MqttMessageWithUserPropertiesImpl implements Mq
     }
 
     public MqttStatefulPublish createStateful(
-            final int packetIdentifier, final boolean isDup, final int topicAlias, final boolean isNewTopicAlias,
+            final int packetIdentifier,
+            final boolean isDup,
+            final int topicAlias,
+            final boolean isNewTopicAlias,
             @NotNull final ImmutableIntArray subscriptionIdentifiers) {
 
         return new MqttStatefulPublish(
-                this, packetIdentifier, isDup, topicAlias, isNewTopicAlias, subscriptionIdentifiers);
+                this,
+                packetIdentifier,
+                isDup,
+                topicAlias,
+                isNewTopicAlias,
+                subscriptionIdentifiers);
     }
-
 }

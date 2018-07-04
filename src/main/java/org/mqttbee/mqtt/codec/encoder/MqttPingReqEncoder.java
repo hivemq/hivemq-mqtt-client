@@ -20,16 +20,13 @@ package org.mqttbee.mqtt.codec.encoder;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt.message.ping.MqttPingReq;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @Singleton
 public class MqttPingReqEncoder extends MqttMessageEncoder<MqttPingReq> {
 
@@ -37,19 +34,20 @@ public class MqttPingReqEncoder extends MqttMessageEncoder<MqttPingReq> {
 
     private static final int ENCODED_LENGTH = 2;
     private static final ByteBuf PACKET =
-            Unpooled.directBuffer(ENCODED_LENGTH).writeByte(Mqtt5MessageType.PINGREQ.getCode() << 4).writeByte(0);
+            Unpooled.directBuffer(ENCODED_LENGTH)
+                    .writeByte(Mqtt5MessageType.PINGREQ.getCode() << 4)
+                    .writeByte(0);
 
     @Inject
-    MqttPingReqEncoder() {
-    }
+    MqttPingReqEncoder() {}
 
     @NotNull
     @Override
     protected ByteBuf encode(
-            @NotNull final MqttPingReq message, @NotNull final ByteBufAllocator allocator,
+            @NotNull final MqttPingReq message,
+            @NotNull final ByteBufAllocator allocator,
             final int maximumPacketSize) {
 
         return PACKET.retainedDuplicate();
     }
-
 }

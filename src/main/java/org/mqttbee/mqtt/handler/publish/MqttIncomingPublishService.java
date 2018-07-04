@@ -19,6 +19,10 @@ package org.mqttbee.mqtt.handler.publish;
 
 import io.netty.channel.EventLoop;
 import io.reactivex.Scheduler;
+import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicBoolean;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
@@ -29,14 +33,7 @@ import org.mqttbee.util.collections.SpscIterableChunkedArrayQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.Iterator;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @ChannelScope
 public class MqttIncomingPublishService {
 
@@ -55,10 +52,13 @@ public class MqttIncomingPublishService {
 
     @Inject
     MqttIncomingPublishService(
-        final MqttIncomingQoSHandler incomingQoSHandler, final MqttIncomingPublishFlows incomingPublishFlows,
-        @Named("incomingPublish") final Scheduler.Worker rxEventLoop, final MqttClientData clientData) {
+            final MqttIncomingQoSHandler incomingQoSHandler,
+            final MqttIncomingPublishFlows incomingPublishFlows,
+            @Named("incomingPublish") final Scheduler.Worker rxEventLoop,
+            final MqttClientData clientData) {
 
-        final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
+        final MqttClientConnectionData clientConnectionData =
+                clientData.getRawClientConnectionData();
         assert clientConnectionData != null;
 
         this.incomingQoSHandler = incomingQoSHandler; // TODO temp
@@ -76,7 +76,8 @@ public class MqttIncomingPublishService {
         if (!queue.canOffer()) {
             return false; // flow control error
         }
-        final ScNodeList<MqttIncomingPublishFlow> flows = incomingPublishFlows.findMatching(publish);
+        final ScNodeList<MqttIncomingPublishFlow> flows =
+                incomingPublishFlows.findMatching(publish);
         if (flows.isEmpty()) {
             LOGGER.warn("No publish flow registered for {}.", publish);
         }
@@ -151,19 +152,17 @@ public class MqttIncomingPublishService {
         return nettyEventLoop;
     }
 
-
     private static class QueueEntry {
 
         private final MqttStatefulPublish publish;
         private final ScNodeList<MqttIncomingPublishFlow> flows;
 
         private QueueEntry(
-                @NotNull final MqttStatefulPublish publish, @NotNull final ScNodeList<MqttIncomingPublishFlow> flows) {
+                @NotNull final MqttStatefulPublish publish,
+                @NotNull final ScNodeList<MqttIncomingPublishFlow> flows) {
 
             this.publish = publish;
             this.flows = flows;
         }
-
     }
-
 }

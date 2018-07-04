@@ -19,17 +19,14 @@ package org.mqttbee.api.mqtt;
 
 import com.google.common.base.Preconditions;
 import io.reactivex.Scheduler;
+import java.util.concurrent.Executor;
+import java.util.function.Function;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt.MqttClientExecutorConfigImpl;
 import org.mqttbee.util.FluentBuilder;
 
-import java.util.concurrent.Executor;
-import java.util.function.Function;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class MqttClientExecutorConfigBuilder<P> extends FluentBuilder<MqttClientExecutorConfig, P> {
 
     private Executor nettyExecutor;
@@ -57,7 +54,8 @@ public class MqttClientExecutorConfigBuilder<P> extends FluentBuilder<MqttClient
     }
 
     @NotNull
-    public MqttClientExecutorConfigBuilder<P> rxJavaScheduler(@NotNull final Scheduler rxJavaScheduler) {
+    public MqttClientExecutorConfigBuilder<P> rxJavaScheduler(
+            @NotNull final Scheduler rxJavaScheduler) {
         Preconditions.checkNotNull(rxJavaScheduler);
         this.rxJavaScheduler = rxJavaScheduler;
         return this;
@@ -68,5 +66,4 @@ public class MqttClientExecutorConfigBuilder<P> extends FluentBuilder<MqttClient
     public MqttClientExecutorConfig build() {
         return new MqttClientExecutorConfigImpl(nettyExecutor, nettyThreads, rxJavaScheduler);
     }
-
 }

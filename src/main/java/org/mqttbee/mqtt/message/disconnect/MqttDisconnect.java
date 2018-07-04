@@ -17,6 +17,8 @@
 
 package org.mqttbee.mqtt.message.disconnect;
 
+import java.util.Optional;
+import javax.annotation.concurrent.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
@@ -26,25 +28,25 @@ import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.MqttMessageWithUserProperties.MqttMessageWithReasonCode;
 
-import javax.annotation.concurrent.Immutable;
-import java.util.Optional;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @Immutable
-public class MqttDisconnect extends MqttMessageWithReasonCode<Mqtt5DisconnectReasonCode> implements Mqtt5Disconnect {
+public class MqttDisconnect extends MqttMessageWithReasonCode<Mqtt5DisconnectReasonCode>
+        implements Mqtt5Disconnect {
 
     @NotNull
-    public static final Mqtt5DisconnectReasonCode DEFAULT_REASON_CODE = Mqtt5DisconnectReasonCode.NORMAL_DISCONNECTION;
+    public static final Mqtt5DisconnectReasonCode DEFAULT_REASON_CODE =
+            Mqtt5DisconnectReasonCode.NORMAL_DISCONNECTION;
+
     public static final long SESSION_EXPIRY_INTERVAL_FROM_CONNECT = -1;
 
     private final long sessionExpiryInterval;
     private final MqttUTF8StringImpl serverReference;
 
     public MqttDisconnect(
-            @NotNull final Mqtt5DisconnectReasonCode reasonCode, final long sessionExpiryInterval,
-            @Nullable final MqttUTF8StringImpl serverReference, @Nullable final MqttUTF8StringImpl reasonString,
+            @NotNull final Mqtt5DisconnectReasonCode reasonCode,
+            final long sessionExpiryInterval,
+            @Nullable final MqttUTF8StringImpl serverReference,
+            @Nullable final MqttUTF8StringImpl reasonString,
             @NotNull final MqttUserPropertiesImpl userProperties) {
 
         super(reasonCode, reasonString, userProperties);
@@ -55,8 +57,9 @@ public class MqttDisconnect extends MqttMessageWithReasonCode<Mqtt5DisconnectRea
     @NotNull
     @Override
     public Optional<Long> getSessionExpiryInterval() {
-        return (sessionExpiryInterval == SESSION_EXPIRY_INTERVAL_FROM_CONNECT) ? Optional.empty() :
-                Optional.of(sessionExpiryInterval);
+        return (sessionExpiryInterval == SESSION_EXPIRY_INTERVAL_FROM_CONNECT)
+                ? Optional.empty()
+                : Optional.of(sessionExpiryInterval);
     }
 
     public long getRawSessionExpiryInterval() {
@@ -73,5 +76,4 @@ public class MqttDisconnect extends MqttMessageWithReasonCode<Mqtt5DisconnectRea
     public MqttUTF8StringImpl getRawServerReference() {
         return serverReference;
     }
-
 }

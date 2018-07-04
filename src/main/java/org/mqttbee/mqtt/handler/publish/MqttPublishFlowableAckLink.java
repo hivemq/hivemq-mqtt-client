@@ -20,23 +20,21 @@ package org.mqttbee.mqtt.handler.publish;
 import io.reactivex.Flowable;
 import io.reactivex.internal.fuseable.ConditionalSubscriber;
 import io.reactivex.plugins.RxJavaPlugins;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.rx.FuseableSubscriber;
 import org.reactivestreams.Subscriber;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
 
     private final Flowable<MqttPublish> source;
     private final MqttIncomingAckFlow ackFlow;
 
     MqttPublishFlowableAckLink(
-            @NotNull final Flowable<MqttPublish> source, @NotNull final MqttIncomingAckFlow ackFlow) {
+            @NotNull final Flowable<MqttPublish> source,
+            @NotNull final MqttIncomingAckFlow ackFlow) {
 
         this.source = source;
         this.ackFlow = ackFlow;
@@ -44,9 +42,11 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
 
     @Override
     protected void subscribeActual(final Subscriber<? super MqttPublishWithFlow> s) {
-        final AbstractAckLinkSubscriber<? extends Subscriber<? super MqttPublishWithFlow>> ackLinkSubscriber;
+        final AbstractAckLinkSubscriber<? extends Subscriber<? super MqttPublishWithFlow>>
+                ackLinkSubscriber;
         if (s instanceof ConditionalSubscriber) {
-            @SuppressWarnings("unchecked") final ConditionalSubscriber<? super MqttPublishWithFlow> cs =
+            @SuppressWarnings("unchecked")
+            final ConditionalSubscriber<? super MqttPublishWithFlow> cs =
                     (ConditionalSubscriber<? super MqttPublishWithFlow>) s;
             ackLinkSubscriber = new AckLinkConditionalSubscriber(cs, ackFlow);
         } else {
@@ -56,16 +56,15 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
         ackFlow.link(ackLinkSubscriber);
     }
 
-
     interface LinkCancellable {
 
         void cancelLink();
-
     }
 
-
-    static abstract class AbstractAckLinkSubscriber<S extends Subscriber<? super MqttPublishWithFlow>>
-            extends FuseableSubscriber<MqttPublish, MqttPublishWithFlow, S> implements LinkCancellable {
+    abstract static class AbstractAckLinkSubscriber<
+                    S extends Subscriber<? super MqttPublishWithFlow>>
+            extends FuseableSubscriber<MqttPublish, MqttPublishWithFlow, S>
+            implements LinkCancellable {
 
         static final int STATE_NONE = 0;
         static final int STATE_EMITTING = 1;
@@ -75,7 +74,8 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
         private final AtomicInteger state = new AtomicInteger();
         long published;
 
-        AbstractAckLinkSubscriber(@NotNull final S subscriber, @NotNull final MqttIncomingAckFlow ackFlow) {
+        AbstractAckLinkSubscriber(
+                @NotNull final S subscriber, @NotNull final MqttIncomingAckFlow ackFlow) {
             super(subscriber);
             this.ackFlow = ackFlow;
         }
@@ -132,11 +132,10 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
                 subscriber.onComplete();
             }
         }
-
     }
 
-
-    private static class AckLinkSubscriber extends AbstractAckLinkSubscriber<Subscriber<? super MqttPublishWithFlow>> {
+    private static class AckLinkSubscriber
+            extends AbstractAckLinkSubscriber<Subscriber<? super MqttPublishWithFlow>> {
 
         AckLinkSubscriber(
                 @NotNull final Subscriber<? super MqttPublishWithFlow> subscriber,
@@ -157,9 +156,7 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
                 stopEmitting();
             }
         }
-
     }
-
 
     private static class AckLinkConditionalSubscriber
             extends AbstractAckLinkSubscriber<ConditionalSubscriber<? super MqttPublishWithFlow>>
@@ -186,7 +183,8 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
                 if (sourceMode == ASYNC) {
                     consumed = subscriber.tryOnNext(null);
                 } else {
-                    if (consumed = subscriber.tryOnNext(new MqttPublishWithFlow(publish, ackFlow))) {
+                    if (consumed =
+                            subscriber.tryOnNext(new MqttPublishWithFlow(publish, ackFlow))) {
                         published++;
                     }
                 }
@@ -195,7 +193,5 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
             }
             return true;
         }
-
     }
-
 }

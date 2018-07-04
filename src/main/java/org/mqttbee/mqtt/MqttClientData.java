@@ -20,6 +20,8 @@ package org.mqttbee.mqtt;
 import com.google.common.base.Preconditions;
 import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.MqttClientSslConfig;
@@ -32,12 +34,7 @@ import org.mqttbee.api.mqtt.mqtt5.advanced.Mqtt5AdvancedClientData;
 import org.mqttbee.mqtt.advanced.MqttAdvancedClientData;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class MqttClientData implements Mqtt5ClientData {
 
     private static final AttributeKey<MqttClientData> KEY = AttributeKey.valueOf("client.data");
@@ -62,12 +59,16 @@ public class MqttClientData implements Mqtt5ClientData {
     private MqttClientConnectionData clientConnectionData;
     private MqttServerConnectionData serverConnectionData;
 
-
     public MqttClientData(
-            @NotNull final MqttVersion mqttVersion, @Nullable final MqttClientIdentifierImpl clientIdentifier,
-            @NotNull final String serverHost, final int serverPort, @Nullable final MqttClientSslConfig sslConfig,
-            @Nullable final MqttWebsocketConfig websocketConfig, final boolean followsRedirects,
-            final boolean allowsServerReAuth, @NotNull final MqttClientExecutorConfigImpl executorConfig,
+            @NotNull final MqttVersion mqttVersion,
+            @Nullable final MqttClientIdentifierImpl clientIdentifier,
+            @NotNull final String serverHost,
+            final int serverPort,
+            @Nullable final MqttClientSslConfig sslConfig,
+            @Nullable final MqttWebsocketConfig websocketConfig,
+            final boolean followsRedirects,
+            final boolean allowsServerReAuth,
+            @NotNull final MqttClientExecutorConfigImpl executorConfig,
             @Nullable final MqttAdvancedClientData advancedClientData) {
 
         this.mqttVersion = mqttVersion;
@@ -92,8 +93,9 @@ public class MqttClientData implements Mqtt5ClientData {
     @NotNull
     @Override
     public Optional<MqttClientIdentifier> getClientIdentifier() {
-        return (clientIdentifier == MqttClientIdentifierImpl.REQUEST_CLIENT_IDENTIFIER_FROM_SERVER) ? Optional.empty() :
-                Optional.of(clientIdentifier);
+        return (clientIdentifier == MqttClientIdentifierImpl.REQUEST_CLIENT_IDENTIFIER_FROM_SERVER)
+                ? Optional.empty()
+                : Optional.of(clientIdentifier);
     }
 
     @NotNull
@@ -203,7 +205,8 @@ public class MqttClientData implements Mqtt5ClientData {
         return clientConnectionData;
     }
 
-    public void setClientConnectionData(@Nullable final MqttClientConnectionData clientConnectionData) {
+    public void setClientConnectionData(
+            @Nullable final MqttClientConnectionData clientConnectionData) {
         this.clientConnectionData = clientConnectionData;
     }
 
@@ -218,7 +221,8 @@ public class MqttClientData implements Mqtt5ClientData {
         return serverConnectionData;
     }
 
-    public void setServerConnectionData(@Nullable final MqttServerConnectionData serverConnectionData) {
+    public void setServerConnectionData(
+            @Nullable final MqttServerConnectionData serverConnectionData) {
         this.serverConnectionData = serverConnectionData;
     }
 

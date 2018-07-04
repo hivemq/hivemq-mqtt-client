@@ -17,21 +17,18 @@
 
 package org.mqttbee.mqtt.datatypes;
 
+import static org.junit.Assert.*;
+
 import com.google.common.collect.ImmutableSet;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import java.nio.charset.Charset;
+import java.util.Collection;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import java.nio.charset.Charset;
-import java.util.Collection;
-
-import static org.junit.Assert.*;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @RunWith(Parameterized.class)
 public class MqttClientIdentifierImplTest {
 
@@ -52,7 +49,8 @@ public class MqttClientIdentifierImplTest {
             final byte[] binary = string.getBytes(Charset.forName("UTF-8"));
             byteBuf.writeShort(binary.length);
             byteBuf.writeBytes(binary);
-            final MqttClientIdentifierImpl mqtt5ClientIdentifier = MqttClientIdentifierImpl.from(byteBuf);
+            final MqttClientIdentifierImpl mqtt5ClientIdentifier =
+                    MqttClientIdentifierImpl.from(byteBuf);
             byteBuf.release();
             return mqtt5ClientIdentifier;
         } else {
@@ -99,5 +97,4 @@ public class MqttClientIdentifierImplTest {
         assertNotNull(mqtt5ClientIdentifier);
         assertFalse(mqtt5ClientIdentifier.mustBeAllowedByServer());
     }
-
 }

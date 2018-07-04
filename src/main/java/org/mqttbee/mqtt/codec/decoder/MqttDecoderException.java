@@ -36,15 +36,17 @@ public class MqttDecoderException extends Exception {
      * Creates a new Decoder exception with the given Disconnect reason code and message.
      *
      * @param reasonCode the reason code of the decoder exception.
-     * @param message    the description of the decoder exception.
+     * @param message the description of the decoder exception.
      */
-    public MqttDecoderException(@NotNull final Mqtt5DisconnectReasonCode reasonCode, @NotNull final String message) {
+    public MqttDecoderException(
+            @NotNull final Mqtt5DisconnectReasonCode reasonCode, @NotNull final String message) {
         super(message);
         this.reasonCode = reasonCode;
     }
 
     /**
-     * Creates a new Decoder exception with the Disconnect reason code {@link Mqtt5DisconnectReasonCode#MALFORMED_PACKET}.
+     * Creates a new Decoder exception with the Disconnect reason code {@link
+     * Mqtt5DisconnectReasonCode#MALFORMED_PACKET}.
      *
      * @param message the description of the decoder exception.
      */
@@ -66,9 +68,7 @@ public class MqttDecoderException extends Exception {
         this.messageType = messageType;
     }
 
-    /**
-     * @return the reason code of the decoder exception.
-     */
+    /** @return the reason code of the decoder exception. */
     @NotNull
     public Mqtt5DisconnectReasonCode getReasonCode() {
         return reasonCode;
@@ -76,7 +76,9 @@ public class MqttDecoderException extends Exception {
 
     @Override
     public String getMessage() {
-        return "Decoder exception for " + ((messageType == null) ? "UNKNOWN" : messageType) + ": " + super.getMessage();
+        return "Decoder exception for "
+                + ((messageType == null) ? "UNKNOWN" : messageType)
+                + ": "
+                + super.getMessage();
     }
-
 }

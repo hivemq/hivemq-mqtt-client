@@ -17,28 +17,25 @@
 
 package org.mqttbee.mqtt.datatypes;
 
+import static org.junit.Assert.*;
+
 import com.google.common.base.Charsets;
 import com.google.common.base.Utf8;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import java.nio.charset.Charset;
+import java.util.Arrays;
 import org.junit.Test;
 import org.mqttbee.api.mqtt.exceptions.MqttBinaryDataExceededException;
 
-import java.nio.charset.Charset;
-import java.util.Arrays;
-
-import static org.junit.Assert.*;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class MqttUTF8StringImplTest {
 
     @Test
     public void must_not_null_character() {
         assertNull(MqttUTF8StringImpl.from("abc\0def"));
 
-        assertNull(MqttUTF8StringImpl.from(new byte[]{'a', 'b', 'c', '\0', 'd', 'e', 'f'}));
+        assertNull(MqttUTF8StringImpl.from(new byte[] {'a', 'b', 'c', '\0', 'd', 'e', 'f'}));
     }
 
     @Test
@@ -49,8 +46,11 @@ public class MqttUTF8StringImplTest {
 
         for (int b = 0xA0; b <= 0xBF; b++) {
             for (int b2 = 0; b2 < 0xFF; b2++) {
-                assertNull(MqttUTF8StringImpl.from(
-                        new byte[]{'a', 'b', 'c', (byte) 0xED, (byte) b, (byte) b2, 'd', 'e', 'f'}));
+                assertNull(
+                        MqttUTF8StringImpl.from(
+                                new byte[] {
+                                    'a', 'b', 'c', (byte) 0xED, (byte) b, (byte) b2, 'd', 'e', 'f'
+                                }));
             }
         }
     }
@@ -63,7 +63,7 @@ public class MqttUTF8StringImplTest {
             assertTrue(string.containsShouldNotCharacters());
 
             final MqttUTF8StringImpl binary =
-                    MqttUTF8StringImpl.from(new byte[]{'a', 'b', 'c', (byte) c, 'd', 'e', 'f'});
+                    MqttUTF8StringImpl.from(new byte[] {'a', 'b', 'c', (byte) c, 'd', 'e', 'f'});
             assertNotNull(binary);
             assertTrue(binary.containsShouldNotCharacters());
         }
@@ -74,13 +74,15 @@ public class MqttUTF8StringImplTest {
         }
 
         {
-            final MqttUTF8StringImpl binary = MqttUTF8StringImpl.from(new byte[]{'a', 'b', 'c', 0x7F, 'd', 'e', 'f'});
+            final MqttUTF8StringImpl binary =
+                    MqttUTF8StringImpl.from(new byte[] {'a', 'b', 'c', 0x7F, 'd', 'e', 'f'});
             assertNotNull(binary);
             assertTrue(binary.containsShouldNotCharacters());
         }
         for (int b = 0x80; b <= 0x9F; b++) {
             final MqttUTF8StringImpl binary =
-                    MqttUTF8StringImpl.from(new byte[]{'a', 'b', 'c', (byte) 0xC2, (byte) b, 'd', 'e', 'f'});
+                    MqttUTF8StringImpl.from(
+                            new byte[] {'a', 'b', 'c', (byte) 0xC2, (byte) b, 'd', 'e', 'f'});
             assertNotNull(binary);
             assertTrue(binary.containsShouldNotCharacters());
         }
@@ -91,7 +93,8 @@ public class MqttUTF8StringImplTest {
         for (int c = 0xFFFE; c <= 0x10_FFFE; c += 0x1_0000) {
             for (int i = 0; i < 2; i++) {
                 final String nonCharacterString = String.valueOf(Character.toChars(c + i));
-                final MqttUTF8StringImpl string = MqttUTF8StringImpl.from("abc" + nonCharacterString + "def");
+                final MqttUTF8StringImpl string =
+                        MqttUTF8StringImpl.from("abc" + nonCharacterString + "def");
                 assertNotNull(string);
                 assertTrue(string.containsShouldNotCharacters());
 
@@ -117,7 +120,8 @@ public class MqttUTF8StringImplTest {
         assertNotNull(string);
         assertFalse(string.containsShouldNotCharacters());
 
-        final MqttUTF8StringImpl binary = MqttUTF8StringImpl.from(new byte[]{'a', 'b', 'c', 'd', 'e', 'f'});
+        final MqttUTF8StringImpl binary =
+                MqttUTF8StringImpl.from(new byte[] {'a', 'b', 'c', 'd', 'e', 'f'});
         assertNotNull(binary);
         assertFalse(binary.containsShouldNotCharacters());
     }
@@ -128,7 +132,8 @@ public class MqttUTF8StringImplTest {
         assertNotNull(string);
         assertTrue(string.toString().contains("\uFEFF"));
 
-        final byte[] binary = new byte[]{'a', 'b', 'c', (byte) 0xEF, (byte) 0xBB, (byte) 0xBF, 'd', 'e', 'f'};
+        final byte[] binary =
+                new byte[] {'a', 'b', 'c', (byte) 0xEF, (byte) 0xBB, (byte) 0xBF, 'd', 'e', 'f'};
         final MqttUTF8StringImpl binaryString = MqttUTF8StringImpl.from(binary);
         assertNotNull(binaryString);
         assertArrayEquals(binaryString.toBinary(), binary);
@@ -181,7 +186,7 @@ public class MqttUTF8StringImplTest {
         assertNotNull(string);
         assertEquals(2 + Utf8.encodedLength("abcdef"), string.encodedLength());
 
-        final byte[] binary = new byte[]{'a', 'b', 'c', 'd', 'e', 'f'};
+        final byte[] binary = new byte[] {'a', 'b', 'c', 'd', 'e', 'f'};
         final MqttUTF8StringImpl binaryString = MqttUTF8StringImpl.from(binary);
         assertNotNull(binaryString);
         assertEquals(2 + binary.length, binaryString.encodedLength());
@@ -200,27 +205,36 @@ public class MqttUTF8StringImplTest {
     @SuppressWarnings("all")
     public void equals() {
         assertTrue(MqttUTF8StringImpl.from("test").equals(MqttUTF8StringImpl.from("test")));
-        assertTrue(MqttUTF8StringImpl.from("test").equals(MqttUTF8StringImpl.from(new byte[]{'t', 'e', 's', 't'})));
-        assertTrue(MqttUTF8StringImpl.from(new byte[]{'t', 'e', 's', 't'}).equals(MqttUTF8StringImpl.from("test")));
-        assertTrue(MqttUTF8StringImpl.from(new byte[]{'t', 'e', 's', 't'})
-                .equals(MqttUTF8StringImpl.from(new byte[]{'t', 'e', 's', 't'})));
+        assertTrue(
+                MqttUTF8StringImpl.from("test")
+                        .equals(MqttUTF8StringImpl.from(new byte[] {'t', 'e', 's', 't'})));
+        assertTrue(
+                MqttUTF8StringImpl.from(new byte[] {'t', 'e', 's', 't'})
+                        .equals(MqttUTF8StringImpl.from("test")));
+        assertTrue(
+                MqttUTF8StringImpl.from(new byte[] {'t', 'e', 's', 't'})
+                        .equals(MqttUTF8StringImpl.from(new byte[] {'t', 'e', 's', 't'})));
 
         assertFalse(MqttUTF8StringImpl.from("test").equals(MqttUTF8StringImpl.from("test2")));
         assertFalse(
-                MqttUTF8StringImpl.from("test").equals(MqttUTF8StringImpl.from(new byte[]{'t', 'e', 's', 't', '2'})));
-        assertFalse(MqttUTF8StringImpl.from(new byte[]{'t', 'e', 's', 't'}).equals(MqttUTF8StringImpl.from("test2")));
-        assertFalse(MqttUTF8StringImpl.from(new byte[]{'t', 'e', 's', 't'})
-                .equals(MqttUTF8StringImpl.from(new byte[]{'t', 'e', 's', 't', '2'})));
+                MqttUTF8StringImpl.from("test")
+                        .equals(MqttUTF8StringImpl.from(new byte[] {'t', 'e', 's', 't', '2'})));
+        assertFalse(
+                MqttUTF8StringImpl.from(new byte[] {'t', 'e', 's', 't'})
+                        .equals(MqttUTF8StringImpl.from("test2")));
+        assertFalse(
+                MqttUTF8StringImpl.from(new byte[] {'t', 'e', 's', 't'})
+                        .equals(MqttUTF8StringImpl.from(new byte[] {'t', 'e', 's', 't', '2'})));
 
         assertFalse(MqttUTF8StringImpl.from("test").equals(null));
-        assertFalse(MqttUTF8StringImpl.from(new byte[]{'t', 'e', 's', 't'}).equals(null));
+        assertFalse(MqttUTF8StringImpl.from(new byte[] {'t', 'e', 's', 't'}).equals(null));
     }
 
     @Test
     @SuppressWarnings("all")
     public void equals_same() {
         final MqttUTF8StringImpl string = MqttUTF8StringImpl.from("test");
-        final MqttUTF8StringImpl binary = MqttUTF8StringImpl.from(new byte[]{'t', 'e', 's', 't'});
+        final MqttUTF8StringImpl binary = MqttUTF8StringImpl.from(new byte[] {'t', 'e', 's', 't'});
 
         assertTrue(string.equals(string));
         assertTrue(binary.equals(binary));
@@ -233,21 +247,22 @@ public class MqttUTF8StringImplTest {
         stringAndBinary.toBinary();
 
         assertTrue(stringAndBinary.equals(MqttUTF8StringImpl.from("test")));
-        assertTrue(stringAndBinary.equals(MqttUTF8StringImpl.from(new byte[]{'t', 'e', 's', 't'})));
+        assertTrue(
+                stringAndBinary.equals(MqttUTF8StringImpl.from(new byte[] {'t', 'e', 's', 't'})));
 
         assertTrue(MqttUTF8StringImpl.from("test").equals(stringAndBinary));
-        assertTrue(MqttUTF8StringImpl.from(new byte[]{'t', 'e', 's', 't'}).equals(stringAndBinary));
+        assertTrue(
+                MqttUTF8StringImpl.from(new byte[] {'t', 'e', 's', 't'}).equals(stringAndBinary));
     }
 
     @Test
     public void hashCode_same_as_string() {
         final MqttUTF8StringImpl string = MqttUTF8StringImpl.from("test");
-        final MqttUTF8StringImpl binary = MqttUTF8StringImpl.from(new byte[]{'t', 'e', 's', 't'});
+        final MqttUTF8StringImpl binary = MqttUTF8StringImpl.from(new byte[] {'t', 'e', 's', 't'});
         assertNotNull(string);
         assertNotNull(binary);
 
         assertEquals("test".hashCode(), string.hashCode());
         assertEquals("test".hashCode(), binary.hashCode());
     }
-
 }

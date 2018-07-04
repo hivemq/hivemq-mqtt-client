@@ -17,8 +17,11 @@
 
 package org.mqttbee.mqtt.codec.encoder;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.embedded.EmbeddedChannel;
+import java.util.Objects;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.mqttbee.annotations.NotNull;
@@ -30,13 +33,7 @@ import org.mqttbee.mqtt.MqttVersion;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 
-import java.util.Objects;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class AbstractMqtt5EncoderTest {
 
     private final MqttMessageEncoders messageEncoders;
@@ -45,13 +42,22 @@ public class AbstractMqtt5EncoderTest {
 
     protected EmbeddedChannel channel;
 
-    protected AbstractMqtt5EncoderTest(@NotNull final MqttMessageEncoders messageEncoders, final boolean connected) {
+    protected AbstractMqtt5EncoderTest(
+            @NotNull final MqttMessageEncoders messageEncoders, final boolean connected) {
         this.messageEncoders = messageEncoders;
         this.connected = connected;
         clientData =
-                new MqttClientData(MqttVersion.MQTT_5_0, Objects.requireNonNull(MqttClientIdentifierImpl.from("test")),
-                        "localhost", 1883, null, null, false,
-                        false, MqttClientExecutorConfigImpl.DEFAULT, null);
+                new MqttClientData(
+                        MqttVersion.MQTT_5_0,
+                        Objects.requireNonNull(MqttClientIdentifierImpl.from("test")),
+                        "localhost",
+                        1883,
+                        null,
+                        null,
+                        false,
+                        false,
+                        MqttClientExecutorConfigImpl.DEFAULT,
+                        null);
     }
 
     @BeforeEach
@@ -74,7 +80,8 @@ public class AbstractMqtt5EncoderTest {
 
     protected void createServerConnectionData(final int maximumPacketSize) {
         clientData.setServerConnectionData(
-                new MqttServerConnectionData(10, 3, maximumPacketSize, MqttQoS.EXACTLY_ONCE, true, true, true, true));
+                new MqttServerConnectionData(
+                        10, 3, maximumPacketSize, MqttQoS.EXACTLY_ONCE, true, true, true, true));
     }
 
     protected void encode(final Object message, final byte[] expected) {
@@ -85,11 +92,13 @@ public class AbstractMqtt5EncoderTest {
             assertEquals(expected.length, actual.readableBytes());
             for (int i = 0; i < expected.length; i++) {
                 final int index = i;
-                assertEquals(expected[i], actual.readByte(), () -> ("ByteBuf differed at index " + index));
+                assertEquals(
+                        expected[i],
+                        actual.readByte(),
+                        () -> ("ByteBuf differed at index " + index));
             }
         } finally {
             actual.release();
         }
     }
-
 }

@@ -17,20 +17,17 @@
 package org.mqttbee.api.mqtt;
 
 import com.google.common.collect.ImmutableList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.TrustManagerFactory;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt.MqttClientSslConfigImpl;
 import org.mqttbee.util.FluentBuilder;
 
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.TrustManagerFactory;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
-
-/**
- * @author Christian Hoff
- */
+/** @author Christian Hoff */
 public class MqttClientSslConfigBuilder<P> extends FluentBuilder<MqttClientSslConfig, P> {
 
     private KeyManagerFactory keyManagerFactory = null;
@@ -39,34 +36,33 @@ public class MqttClientSslConfigBuilder<P> extends FluentBuilder<MqttClientSslCo
     private ImmutableList<String> protocols = null;
     private long handshakeTimeoutMs = MqttClientSslConfig.DEFAULT_HANDSHAKE_TIMEOUT_MS;
 
-    public MqttClientSslConfigBuilder(@Nullable final Function<? super MqttClientSslConfig, P> parentConsumer) {
+    public MqttClientSslConfigBuilder(
+            @Nullable final Function<? super MqttClientSslConfig, P> parentConsumer) {
         super(parentConsumer);
     }
 
     @NotNull
-    public MqttClientSslConfigBuilder<P> keyManagerFactory(@Nullable final KeyManagerFactory keyManagerFactory) {
+    public MqttClientSslConfigBuilder<P> keyManagerFactory(
+            @Nullable final KeyManagerFactory keyManagerFactory) {
         this.keyManagerFactory = keyManagerFactory;
         return this;
     }
 
     @NotNull
-    public MqttClientSslConfigBuilder<P> trustManagerFactory(@Nullable final TrustManagerFactory trustManagerFactory) {
+    public MqttClientSslConfigBuilder<P> trustManagerFactory(
+            @Nullable final TrustManagerFactory trustManagerFactory) {
         this.trustManagerFactory = trustManagerFactory;
         return this;
     }
 
-    /**
-     * @param cipherSuites if <code>null</code>, netty's default cipher suites will be used
-     */
+    /** @param cipherSuites if <code>null</code>, netty's default cipher suites will be used */
     @NotNull
     public MqttClientSslConfigBuilder<P> cipherSuites(@Nullable final List<String> cipherSuites) {
         this.cipherSuites = (cipherSuites == null) ? null : ImmutableList.copyOf(cipherSuites);
         return this;
     }
 
-    /**
-     * @param protocols if <code>null</code>, netty's default protocols will be used
-     */
+    /** @param protocols if <code>null</code>, netty's default protocols will be used */
     @NotNull
     public MqttClientSslConfigBuilder<P> protocols(@Nullable final List<String> protocols) {
         this.protocols = (protocols == null) ? null : ImmutableList.copyOf(protocols);
@@ -74,7 +70,8 @@ public class MqttClientSslConfigBuilder<P> extends FluentBuilder<MqttClientSslCo
     }
 
     @NotNull
-    public MqttClientSslConfigBuilder<P> handshakeTimeout(final long timeout, @NotNull final TimeUnit timeUnit) {
+    public MqttClientSslConfigBuilder<P> handshakeTimeout(
+            final long timeout, @NotNull final TimeUnit timeUnit) {
         this.handshakeTimeoutMs = TimeUnit.MILLISECONDS.convert(timeout, timeUnit);
         return this;
     }
@@ -83,7 +80,10 @@ public class MqttClientSslConfigBuilder<P> extends FluentBuilder<MqttClientSslCo
     @Override
     public MqttClientSslConfig build() {
         return new MqttClientSslConfigImpl(
-                keyManagerFactory, trustManagerFactory, cipherSuites, protocols, handshakeTimeoutMs);
+                keyManagerFactory,
+                trustManagerFactory,
+                cipherSuites,
+                protocols,
+                handshakeTimeoutMs);
     }
-
 }

@@ -18,27 +18,26 @@
 package org.mqttbee.mqtt.message.unsubscribe.mqtt3;
 
 import com.google.common.collect.ImmutableList;
+import javax.annotation.concurrent.Immutable;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribe;
 
-import javax.annotation.concurrent.Immutable;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @Immutable
 public class Mqtt3UnsubscribeView implements Mqtt3Unsubscribe {
 
     @NotNull
-    private static MqttUnsubscribe delegate(@NotNull final ImmutableList<MqttTopicFilterImpl> topicFilters) {
+    private static MqttUnsubscribe delegate(
+            @NotNull final ImmutableList<MqttTopicFilterImpl> topicFilters) {
         return new MqttUnsubscribe(topicFilters, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
     }
 
     @NotNull
-    public static Mqtt3UnsubscribeView of(@NotNull final ImmutableList<MqttTopicFilterImpl> topicFilters) {
+    public static Mqtt3UnsubscribeView of(
+            @NotNull final ImmutableList<MqttTopicFilterImpl> topicFilters) {
         return new Mqtt3UnsubscribeView(delegate(topicFilters));
     }
 
@@ -63,5 +62,4 @@ public class Mqtt3UnsubscribeView implements Mqtt3Unsubscribe {
     public MqttUnsubscribe getDelegate() {
         return delegate;
     }
-
 }

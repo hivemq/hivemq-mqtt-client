@@ -17,15 +17,12 @@
 
 package org.mqttbee.util.collections;
 
+import java.util.Queue;
 import org.jctools.queues.SpscArrayQueue;
 import org.jctools.queues.SpscChunkedArrayQueue;
 import org.mqttbee.annotations.NotNull;
 
-import java.util.Queue;
-
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 public class SpscArrayQueueUtil {
 
     @NotNull
@@ -35,12 +32,13 @@ public class SpscArrayQueueUtil {
         if (capacity <= chunkSize) {
             return new SpscArrayQueue<>(capacity);
         }
-        capacity = roundToPowerOf2(capacity); // capacity is at least 9, so next power of two is at least 16
+        capacity =
+                roundToPowerOf2(
+                        capacity); // capacity is at least 9, so next power of two is at least 16
         return new SpscChunkedArrayQueue<>(chunkSize, capacity);
     }
 
     private static int roundToPowerOf2(final int value) {
         return 1 << 32 - Integer.numberOfLeadingZeros(value - 1);
     }
-
 }

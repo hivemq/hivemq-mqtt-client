@@ -33,14 +33,15 @@ public interface MqttMessageDecoder {
     /**
      * Decodes a MQTT message from the given byte buffer.
      *
-     * @param flags                the flags of the fixed header.
-     * @param in                   the byte buffer which contains the encoded MQTT message without the fixed header.
-     * @param clientConnectionData the connection data of the client the MQTT message is decoded from.
+     * @param flags the flags of the fixed header.
+     * @param in the byte buffer which contains the encoded MQTT message without the fixed header.
+     * @param clientConnectionData the connection data of the client the MQTT message is decoded
+     *     from.
      * @return the decoded MQTT message or null if there are not enough bytes in the byte buffer.
      * @throws MqttDecoderException if the byte buffer did not contain a valid encoded MQTT message.
      */
     @Nullable
-    MqttMessage decode(int flags, @NotNull ByteBuf in, @NotNull MqttClientConnectionData clientConnectionData)
+    MqttMessage decode(
+            int flags, @NotNull ByteBuf in, @NotNull MqttClientConnectionData clientConnectionData)
             throws MqttDecoderException;
-
 }

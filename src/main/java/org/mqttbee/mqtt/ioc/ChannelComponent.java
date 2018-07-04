@@ -36,9 +36,7 @@ import org.mqttbee.mqtt.handler.publish.*;
 import org.mqttbee.mqtt.handler.subscribe.MqttSubscriptionHandler;
 import org.mqttbee.mqtt.persistence.MqttPersistenceModule;
 
-/**
- * @author Silvio Giebl
- */
+/** @author Silvio Giebl */
 @Subcomponent(modules = {ChannelModule.class, MqttCodecModule.class, MqttPersistenceModule.class})
 @ChannelScope
 public interface ChannelComponent {
@@ -46,7 +44,8 @@ public interface ChannelComponent {
     AttributeKey<ChannelComponent> KEY = AttributeKey.valueOf("channel.component");
 
     @NotNull
-    static ChannelComponent create(@NotNull final Channel channel, @NotNull final MqttClientData clientData) {
+    static ChannelComponent create(
+            @NotNull final Channel channel, @NotNull final MqttClientData clientData) {
         final ChannelComponent channelComponent =
                 MqttBeeComponent.INSTANCE.channelComponentBuilder().clientData(clientData).build();
         channel.attr(KEY).set(channelComponent);
@@ -88,7 +87,6 @@ public interface ChannelComponent {
 
     MqttPublishFlowables publishFlowables();
 
-
     @Subcomponent.Builder
     interface Builder {
 
@@ -96,7 +94,5 @@ public interface ChannelComponent {
         Builder clientData(MqttClientData clientData);
 
         ChannelComponent build();
-
     }
-
 }
