@@ -49,15 +49,32 @@ public class MqttPubRecBuilder implements Mqtt5PubRecBuilder {
     }
 
     @NotNull
-    public MqttPubRecBuilder withReasonCode(@NotNull final Mqtt5PubRecReasonCode reasonCode) {
+    public MqttPubRecBuilder reasonCode(@NotNull final Mqtt5PubRecReasonCode reasonCode) {
         this.reasonCode = reasonCode;
         return this;
     }
 
     @NotNull
-    public MqttPubRecBuilder withReasonString(@Nullable final MqttUTF8StringImpl reasonString) {
+    public MqttPubRecBuilder reasonString(@Nullable final MqttUTF8StringImpl reasonString) {
         this.reasonString = reasonString;
         return this;
+    }
+
+    @NotNull
+    @Override
+    public Mqtt5PubRecReasonCode getReasonCode() {
+        return reasonCode;
+    }
+
+    @NotNull
+    @Override
+    public MqttUTF8StringImpl getReasonString() {
+        return reasonString;
+    }
+
+    @NotNull
+    public MqttStatefulPublish getPublish() {
+        return publish;
     }
 
     public MqttPubRec build() {

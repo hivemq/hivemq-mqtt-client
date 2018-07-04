@@ -49,15 +49,32 @@ public class MqttPubAckBuilder implements Mqtt5PubAckBuilder {
     }
 
     @NotNull
-    public MqttPubAckBuilder withReasonCode(@NotNull final Mqtt5PubAckReasonCode reasonCode) {
+    public MqttPubAckBuilder reasonCode(@NotNull final Mqtt5PubAckReasonCode reasonCode) {
         this.reasonCode = reasonCode;
         return this;
     }
 
     @NotNull
-    public MqttPubAckBuilder withReasonString(@Nullable final MqttUTF8StringImpl reasonString) {
+    public MqttPubAckBuilder reasonString(@Nullable final MqttUTF8StringImpl reasonString) {
         this.reasonString = reasonString;
         return this;
+    }
+
+    @NotNull
+    @Override
+    public MqttUTF8StringImpl getReasonString() {
+        return reasonString;
+    }
+
+    @NotNull
+    @Override
+    public Mqtt5PubAckReasonCode getReasonCode() {
+        return reasonCode;
+    }
+
+    @NotNull
+    public MqttStatefulPublish getPublish() {
+        return publish;
     }
 
     public MqttPubAck build() {

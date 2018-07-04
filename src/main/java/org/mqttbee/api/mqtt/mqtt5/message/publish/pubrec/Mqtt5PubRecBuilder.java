@@ -19,7 +19,9 @@ package org.mqttbee.api.mqtt.mqtt5.message.publish.pubrec;
 
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
+import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 
 /**
  * @author Silvio Giebl
@@ -29,5 +31,16 @@ public interface Mqtt5PubRecBuilder {
 
     @NotNull
     Mqtt5PubRecBuilder userProperties(@NotNull Mqtt5UserProperties userProperties);
+
+    @NotNull
+    default Mqtt5UserPropertiesBuilder<Mqtt5PubRecBuilder> userProperties() {
+        return new Mqtt5UserPropertiesBuilder<>(this::userProperties);
+    }
+
+    @NotNull
+    Mqtt5PubRecReasonCode getReasonCode();
+
+    @NotNull
+    MqttUTF8String getReasonString();
 
 }
