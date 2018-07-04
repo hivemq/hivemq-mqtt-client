@@ -71,7 +71,7 @@ license {
 
 spotless {
     java {
-        googleJavaFormat()
+        googleJavaFormat("1.6").aosp()
     }
 }
 
