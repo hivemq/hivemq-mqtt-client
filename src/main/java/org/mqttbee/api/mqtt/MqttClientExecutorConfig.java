@@ -42,6 +42,6 @@ public interface MqttClientExecutorConfig {
     Optional<Integer> getUserDefinedNettyThreads();
 
     @NotNull
-    Scheduler getApiScheduler();
+    Scheduler getApplicationScheduler();
 
 }
