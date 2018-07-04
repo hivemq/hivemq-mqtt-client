@@ -38,14 +38,14 @@ public class MqttClientExecutorConfigImpl implements MqttClientExecutorConfig {
 
     private final Executor nettyExecutor;
     private final int nettyThreads;
-    private final Scheduler rxJavaScheduler;
+    private final Scheduler apiScheduler;
 
     public MqttClientExecutorConfigImpl(
-            @Nullable final Executor nettyExecutor, final int nettyThreads, @NotNull final Scheduler rxJavaScheduler) {
+            @Nullable final Executor nettyExecutor, final int nettyThreads, @NotNull final Scheduler apiScheduler) {
 
         this.nettyExecutor = nettyExecutor;
         this.nettyThreads = nettyThreads;
-        this.rxJavaScheduler = rxJavaScheduler;
+        this.apiScheduler = apiScheduler;
     }
 
     @NotNull
@@ -71,7 +71,7 @@ public class MqttClientExecutorConfigImpl implements MqttClientExecutorConfig {
 
     @NotNull
     public Scheduler getApiScheduler() {
-        return rxJavaScheduler;
+        return apiScheduler;
     }
 
 }
