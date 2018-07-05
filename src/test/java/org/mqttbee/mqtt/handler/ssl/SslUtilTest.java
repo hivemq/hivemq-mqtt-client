@@ -15,7 +15,9 @@
  */
 package org.mqttbee.mqtt.handler.ssl;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import com.google.common.collect.ImmutableList;
 import io.netty.channel.embedded.EmbeddedChannel;

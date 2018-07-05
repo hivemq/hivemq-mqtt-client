@@ -19,8 +19,18 @@ package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
 import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.checkFixedHeaderFlags;
 import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.remainingLengthTooShort;
-import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.*;
-import static org.mqttbee.mqtt.message.auth.MqttAuthProperty.*;
+import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.checkPropertyLengthNoPayload;
+import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.decodeAuthData;
+import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.decodeAuthMethod;
+import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.decodePropertyIdentifier;
+import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.decodeReasonStringIfRequested;
+import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.decodeUserPropertyIfRequested;
+import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.wrongProperty;
+import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.wrongReasonCode;
+import static org.mqttbee.mqtt.message.auth.MqttAuthProperty.AUTHENTICATION_DATA;
+import static org.mqttbee.mqtt.message.auth.MqttAuthProperty.AUTHENTICATION_METHOD;
+import static org.mqttbee.mqtt.message.auth.MqttAuthProperty.REASON_STRING;
+import static org.mqttbee.mqtt.message.auth.MqttAuthProperty.USER_PROPERTY;
 
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;

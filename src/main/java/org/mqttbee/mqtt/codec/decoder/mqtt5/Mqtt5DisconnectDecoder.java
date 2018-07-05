@@ -18,10 +18,20 @@
 package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
 import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.checkFixedHeaderFlags;
-import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.*;
+import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.checkPropertyLengthNoPayload;
+import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.decodePropertyIdentifier;
+import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.decodeReasonString;
+import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.decodeServerReference;
+import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.decodeSessionExpiryInterval;
+import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.decodeUserProperty;
+import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.wrongProperty;
+import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.wrongReasonCode;
 import static org.mqttbee.mqtt.message.disconnect.MqttDisconnect.DEFAULT_REASON_CODE;
 import static org.mqttbee.mqtt.message.disconnect.MqttDisconnect.SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
-import static org.mqttbee.mqtt.message.disconnect.MqttDisconnectProperty.*;
+import static org.mqttbee.mqtt.message.disconnect.MqttDisconnectProperty.REASON_STRING;
+import static org.mqttbee.mqtt.message.disconnect.MqttDisconnectProperty.SERVER_REFERENCE;
+import static org.mqttbee.mqtt.message.disconnect.MqttDisconnectProperty.SESSION_EXPIRY_INTERVAL;
+import static org.mqttbee.mqtt.message.disconnect.MqttDisconnectProperty.USER_PROPERTY;
 
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;

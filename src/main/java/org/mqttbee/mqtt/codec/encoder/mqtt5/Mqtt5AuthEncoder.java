@@ -17,7 +17,10 @@
 
 package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
-import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.*;
+import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.encodeNullableProperty;
+import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.encodeProperty;
+import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.nullablePropertyEncodedLength;
+import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.propertyEncodedLength;
 import static org.mqttbee.mqtt.message.auth.MqttAuthProperty.AUTHENTICATION_DATA;
 import static org.mqttbee.mqtt.message.auth.MqttAuthProperty.AUTHENTICATION_METHOD;
 

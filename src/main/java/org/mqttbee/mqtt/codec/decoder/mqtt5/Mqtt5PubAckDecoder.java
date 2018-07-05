@@ -19,7 +19,12 @@ package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
 import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.checkFixedHeaderFlags;
 import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.remainingLengthTooShort;
-import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.*;
+import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.checkPropertyLengthNoPayload;
+import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.decodePropertyIdentifier;
+import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.decodeReasonStringIfRequested;
+import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.decodeUserPropertyIfRequested;
+import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.wrongProperty;
+import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.wrongReasonCode;
 import static org.mqttbee.mqtt.message.publish.puback.MqttPubAck.DEFAULT_REASON_CODE;
 import static org.mqttbee.mqtt.message.publish.puback.MqttPubAckProperty.REASON_STRING;
 import static org.mqttbee.mqtt.message.publish.puback.MqttPubAckProperty.USER_PROPERTY;

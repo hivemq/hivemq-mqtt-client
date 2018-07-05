@@ -17,7 +17,9 @@
 
 package org.mqttbee.rx;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import io.reactivex.Flowable;

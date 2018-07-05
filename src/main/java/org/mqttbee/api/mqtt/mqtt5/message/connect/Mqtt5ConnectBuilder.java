@@ -17,7 +17,11 @@
 
 package org.mqttbee.api.mqtt.mqtt5.message.connect;
 
-import static org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect.*;
+import static org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect.DEFAULT_CLEAN_START;
+import static org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect.DEFAULT_KEEP_ALIVE;
+import static org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect.DEFAULT_PROBLEM_INFORMATION_REQUESTED;
+import static org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect.DEFAULT_RESPONSE_INFORMATION_REQUESTED;
+import static org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect.DEFAULT_SESSION_EXPIRY_INTERVAL;
 
 import com.google.common.base.Preconditions;
 import java.util.concurrent.TimeUnit;

@@ -17,7 +17,12 @@
 
 package org.mqttbee.mqtt.message.connect.connack.mqtt3;
 
-import static org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAckReturnCode.*;
+import static org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAckReturnCode.BAD_USER_NAME_OR_PASSWORD;
+import static org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAckReturnCode.IDENTIFIER_REJECTED;
+import static org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAckReturnCode.NOT_AUTHORIZED;
+import static org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAckReturnCode.SERVER_UNAVAILABLE;
+import static org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAckReturnCode.SUCCESS;
+import static org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAckReturnCode.UNSUPPORTED_PROTOCOL_VERSION;
 
 import io.reactivex.functions.Function;
 import javax.annotation.concurrent.Immutable;

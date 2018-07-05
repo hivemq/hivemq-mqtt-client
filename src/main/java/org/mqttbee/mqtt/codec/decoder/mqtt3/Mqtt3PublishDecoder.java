@@ -17,7 +17,10 @@
 
 package org.mqttbee.mqtt.codec.decoder.mqtt3;
 
-import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.*;
+import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.decodePublishPacketIdentifier;
+import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.decodePublishQoS;
+import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.malformedTopic;
+import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.remainingLengthTooShort;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;

@@ -17,7 +17,10 @@
 
 package org.mqttbee.mqtt.message.unsubscribe.unsuback;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl.NO_USER_PROPERTIES;
 
 import com.google.common.collect.ImmutableList;

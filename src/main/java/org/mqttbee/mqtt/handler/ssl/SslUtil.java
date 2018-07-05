@@ -18,7 +18,11 @@ package org.mqttbee.mqtt.handler.ssl;
 
 import dagger.internal.Preconditions;
 import io.netty.channel.Channel;
-import io.netty.handler.ssl.*;
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.SslHandler;
+import io.netty.handler.ssl.SslProvider;
+import io.netty.handler.ssl.SupportedCipherSuiteFilter;
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLException;
 import org.mqttbee.annotations.NotNull;

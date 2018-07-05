@@ -17,7 +17,9 @@
 
 package org.mqttbee.mqtt.datatypes;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import com.google.common.collect.ImmutableSet;
 import io.netty.buffer.ByteBuf;

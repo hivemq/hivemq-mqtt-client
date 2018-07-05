@@ -17,7 +17,9 @@
 
 package org.mqttbee.mqtt.codec.encoder.mqtt3;
 
-import static org.mqttbee.mqtt.codec.encoder.MqttMessageEncoderUtil.*;
+import static org.mqttbee.mqtt.codec.encoder.MqttMessageEncoderUtil.encodeNullable;
+import static org.mqttbee.mqtt.codec.encoder.MqttMessageEncoderUtil.encodedOrEmptyLength;
+import static org.mqttbee.mqtt.codec.encoder.MqttMessageEncoderUtil.nullableEncodedLength;
 
 import io.netty.buffer.ByteBuf;
 import javax.inject.Inject;

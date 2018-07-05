@@ -17,10 +17,33 @@
 
 package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
-import static org.mqttbee.mqtt.codec.encoder.MqttMessageEncoderUtil.*;
-import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.*;
-import static org.mqttbee.mqtt.message.connect.MqttConnect.*;
-import static org.mqttbee.mqtt.message.connect.MqttConnectProperty.*;
+import static org.mqttbee.mqtt.codec.encoder.MqttMessageEncoderUtil.encodeNullable;
+import static org.mqttbee.mqtt.codec.encoder.MqttMessageEncoderUtil.encodeOrEmpty;
+import static org.mqttbee.mqtt.codec.encoder.MqttMessageEncoderUtil.encodedLengthWithHeader;
+import static org.mqttbee.mqtt.codec.encoder.MqttMessageEncoderUtil.encodedOrEmptyLength;
+import static org.mqttbee.mqtt.codec.encoder.MqttMessageEncoderUtil.encodedPacketLength;
+import static org.mqttbee.mqtt.codec.encoder.MqttMessageEncoderUtil.nullableEncodedLength;
+import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.booleanPropertyEncodedLength;
+import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.encodeBooleanProperty;
+import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.encodeIntProperty;
+import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.encodeNullableProperty;
+import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.encodeProperty;
+import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.encodeShortProperty;
+import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.intPropertyEncodedLength;
+import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.nullablePropertyEncodedLength;
+import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.propertyEncodedLength;
+import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.shortPropertyEncodedLength;
+import static org.mqttbee.mqtt.message.connect.MqttConnect.DEFAULT_PROBLEM_INFORMATION_REQUESTED;
+import static org.mqttbee.mqtt.message.connect.MqttConnect.DEFAULT_RESPONSE_INFORMATION_REQUESTED;
+import static org.mqttbee.mqtt.message.connect.MqttConnect.DEFAULT_SESSION_EXPIRY_INTERVAL;
+import static org.mqttbee.mqtt.message.connect.MqttConnectProperty.AUTHENTICATION_DATA;
+import static org.mqttbee.mqtt.message.connect.MqttConnectProperty.AUTHENTICATION_METHOD;
+import static org.mqttbee.mqtt.message.connect.MqttConnectProperty.MAXIMUM_PACKET_SIZE;
+import static org.mqttbee.mqtt.message.connect.MqttConnectProperty.RECEIVE_MAXIMUM;
+import static org.mqttbee.mqtt.message.connect.MqttConnectProperty.REQUEST_PROBLEM_INFORMATION;
+import static org.mqttbee.mqtt.message.connect.MqttConnectProperty.REQUEST_RESPONSE_INFORMATION;
+import static org.mqttbee.mqtt.message.connect.MqttConnectProperty.SESSION_EXPIRY_INTERVAL;
+import static org.mqttbee.mqtt.message.connect.MqttConnectProperty.TOPIC_ALIAS_MAXIMUM;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;

@@ -25,7 +25,11 @@ import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.Test;
 import org.mqttbee.api.mqtt.exceptions.MqttMaximumPacketSizeExceededException;
 import org.mqttbee.mqtt.codec.encoder.AbstractMqtt5EncoderTest;
-import org.mqttbee.mqtt.datatypes.*;
+import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
+import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
+import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
+import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
+import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.unsubscribe.MqttStatefulUnsubscribe;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribe;
 

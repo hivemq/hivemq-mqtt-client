@@ -18,7 +18,9 @@
 package org.mqttbee.mqtt.datatypes;
 
 import static java.util.Objects.requireNonNull;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;

@@ -17,9 +17,22 @@
 
 package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
-import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.*;
+import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.encodeIntProperty;
+import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.encodeNullableProperty;
+import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.encodeShortProperty;
+import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.encodeVariableByteIntegerProperty;
+import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.intPropertyEncodedLength;
+import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.nullablePropertyEncodedLength;
+import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.shortPropertyEncodedLength;
+import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.variableByteIntegerPropertyEncodedLength;
 import static org.mqttbee.mqtt.message.publish.MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY;
-import static org.mqttbee.mqtt.message.publish.MqttPublishProperty.*;
+import static org.mqttbee.mqtt.message.publish.MqttPublishProperty.CONTENT_TYPE;
+import static org.mqttbee.mqtt.message.publish.MqttPublishProperty.CORRELATION_DATA;
+import static org.mqttbee.mqtt.message.publish.MqttPublishProperty.MESSAGE_EXPIRY_INTERVAL;
+import static org.mqttbee.mqtt.message.publish.MqttPublishProperty.PAYLOAD_FORMAT_INDICATOR;
+import static org.mqttbee.mqtt.message.publish.MqttPublishProperty.RESPONSE_TOPIC;
+import static org.mqttbee.mqtt.message.publish.MqttPublishProperty.SUBSCRIPTION_IDENTIFIER;
+import static org.mqttbee.mqtt.message.publish.MqttPublishProperty.TOPIC_ALIAS;
 import static org.mqttbee.mqtt.message.publish.MqttStatefulPublish.DEFAULT_NO_TOPIC_ALIAS;
 
 import com.google.common.primitives.ImmutableIntArray;

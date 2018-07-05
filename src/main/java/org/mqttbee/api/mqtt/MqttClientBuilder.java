@@ -17,7 +17,11 @@
 
 package org.mqttbee.api.mqtt;
 
-import static org.mqttbee.api.mqtt.MqttClient.*;
+import static org.mqttbee.api.mqtt.MqttClient.DEFAULT_SERVER_HOST;
+import static org.mqttbee.api.mqtt.MqttClient.DEFAULT_SERVER_PORT;
+import static org.mqttbee.api.mqtt.MqttClient.DEFAULT_SERVER_PORT_SSL;
+import static org.mqttbee.api.mqtt.MqttClient.DEFAULT_SERVER_PORT_WEBSOCKET;
+import static org.mqttbee.api.mqtt.MqttClient.DEFAULT_SERVER_PORT_WEBSOCKET_SSL;
 
 import com.google.common.base.Preconditions;
 import org.mqttbee.annotations.NotNull;

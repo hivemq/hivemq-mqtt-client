@@ -17,10 +17,30 @@
 
 package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
-import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.*;
-import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.*;
+import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.decodePublishPacketIdentifier;
+import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.decodePublishQoS;
+import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.malformedTopic;
+import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.remainingLengthTooShort;
+import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.decodeBinaryDataOnlyOnce;
+import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.decodePropertyIdentifier;
+import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.decodePropertyLength;
+import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.decodeUTF8StringOnlyOnce;
+import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.decodeUserProperty;
+import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.malformedPropertyLength;
+import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.moreThanOnce;
+import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.unsignedByteOnlyOnce;
+import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.unsignedIntOnlyOnce;
+import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.unsignedShortOnlyOnce;
+import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.wrongProperty;
 import static org.mqttbee.mqtt.message.publish.MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY;
-import static org.mqttbee.mqtt.message.publish.MqttPublishProperty.*;
+import static org.mqttbee.mqtt.message.publish.MqttPublishProperty.CONTENT_TYPE;
+import static org.mqttbee.mqtt.message.publish.MqttPublishProperty.CORRELATION_DATA;
+import static org.mqttbee.mqtt.message.publish.MqttPublishProperty.MESSAGE_EXPIRY_INTERVAL;
+import static org.mqttbee.mqtt.message.publish.MqttPublishProperty.PAYLOAD_FORMAT_INDICATOR;
+import static org.mqttbee.mqtt.message.publish.MqttPublishProperty.RESPONSE_TOPIC;
+import static org.mqttbee.mqtt.message.publish.MqttPublishProperty.SUBSCRIPTION_IDENTIFIER;
+import static org.mqttbee.mqtt.message.publish.MqttPublishProperty.TOPIC_ALIAS;
+import static org.mqttbee.mqtt.message.publish.MqttPublishProperty.USER_PROPERTY;
 import static org.mqttbee.mqtt.message.publish.MqttStatefulPublish.DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS;
 import static org.mqttbee.mqtt.message.publish.MqttStatefulPublish.DEFAULT_NO_TOPIC_ALIAS;
 
@@ -41,7 +61,12 @@ import org.mqttbee.api.mqtt.mqtt5.message.publish.TopicAliasUsage;
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
-import org.mqttbee.mqtt.datatypes.*;
+import org.mqttbee.mqtt.datatypes.MqttBinaryData;
+import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
+import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
+import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
+import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
+import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
 import org.mqttbee.mqtt.netty.ChannelAttributes;

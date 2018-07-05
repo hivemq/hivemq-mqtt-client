@@ -17,7 +17,9 @@
 
 package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.Test;

@@ -19,7 +19,9 @@ package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
 import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
-import static org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.*;
+import static org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.MALFORMED_PACKET;
+import static org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.NORMAL_DISCONNECTION;
+import static org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.PROTOCOL_ERROR;
 import static org.mqttbee.mqtt.message.disconnect.MqttDisconnect.SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
 
 import com.google.common.collect.ImmutableList;

@@ -17,7 +17,9 @@
 
 package org.mqttbee.mqtt.handler.publish;
 
-import static org.mqttbee.mqtt.message.publish.MqttStatefulPublish.*;
+import static org.mqttbee.mqtt.message.publish.MqttStatefulPublish.DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS;
+import static org.mqttbee.mqtt.message.publish.MqttStatefulPublish.DEFAULT_NO_TOPIC_ALIAS;
+import static org.mqttbee.mqtt.message.publish.MqttStatefulPublish.NO_PACKET_IDENTIFIER_QOS_0;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;

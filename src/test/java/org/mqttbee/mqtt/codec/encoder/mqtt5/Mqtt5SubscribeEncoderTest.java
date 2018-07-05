@@ -20,7 +20,9 @@ package org.mqttbee.mqtt.codec.encoder.mqtt5;
 import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscription.*;
+import static org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscription.DEFAULT_NO_LOCAL;
+import static org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscription.DEFAULT_RETAIN_AS_PUBLISHED;
+import static org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscription.DEFAULT_RETAIN_HANDLING;
 import static org.mqttbee.mqtt.datatypes.MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT;
 
 import com.google.common.collect.ImmutableList;

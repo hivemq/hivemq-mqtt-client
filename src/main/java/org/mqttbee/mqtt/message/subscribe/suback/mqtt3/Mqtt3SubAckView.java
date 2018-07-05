@@ -17,7 +17,10 @@
 
 package org.mqttbee.mqtt.message.subscribe.suback.mqtt3;
 
-import static org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAckReturnCode.*;
+import static org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAckReturnCode.FAILURE;
+import static org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAckReturnCode.SUCCESS_MAXIMUM_QOS_0;
+import static org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAckReturnCode.SUCCESS_MAXIMUM_QOS_1;
+import static org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAckReturnCode.SUCCESS_MAXIMUM_QOS_2;
 
 import com.google.common.collect.ImmutableList;
 import io.reactivex.functions.Function;
