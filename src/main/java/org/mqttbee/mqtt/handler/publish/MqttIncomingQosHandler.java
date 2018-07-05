@@ -23,12 +23,19 @@ import org.mqttbee.annotations.CallByThread;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5IncomingQos1ControlProvider;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5IncomingQos2ControlProvider;
+import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
+import org.mqttbee.api.mqtt.mqtt5.message.publish.puback.Mqtt5PubAckReasonCode;
+import org.mqttbee.api.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubCompReasonCode;
+import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrec.Mqtt5PubRecReasonCode;
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.advanced.MqttAdvancedClientData;
+import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.ioc.ChannelScope;
 import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
+import org.mqttbee.mqtt.message.publish.puback.MqttPubAck;
 import org.mqttbee.mqtt.message.publish.puback.MqttPubAckBuilder;
+import org.mqttbee.mqtt.message.publish.pubcomp.MqttPubComp;
 import org.mqttbee.mqtt.message.publish.pubcomp.MqttPubCompBuilder;
 import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRec;
 import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRecBuilder;
@@ -46,11 +53,10 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter {
 
     public static final String NAME = "qos.incoming";
 
+    private final MqttClientData clientData;
     private MqttIncomingPublishService incomingPublishService;
     private final Provider<MqttIncomingPublishService> incomingPublishServiceLazy; // TODO temp
-    private final IntMap<MqttPubRec> pubRecs;
-    private final IntMap<MqttPubRel> pubRels;
-    private final IntMap<Boolean> pubComps;
+    private final IntMap<Object> messages; // contains PubAck.class, PubRec.class, a PubRel object or PubComp.class
 
     private ChannelHandlerContext ctx;
 
@@ -61,11 +67,9 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter {
         final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
         assert clientConnectionData != null;
 
+        this.clientData = clientData;
         this.incomingPublishServiceLazy = incomingPublishServiceLazy;
-        final int receiveMaximum = clientConnectionData.getReceiveMaximum();
-        pubRecs = IntMap.range(1, receiveMaximum);
-        pubRels = IntMap.range(1, receiveMaximum);
-        pubComps = IntMap.range(1, receiveMaximum);
+        messages = IntMap.range(1, clientConnectionData.getReceiveMaximum());
     }
 
     @Override
@@ -90,7 +94,7 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter {
                 handlePublishQos0(publish);
                 break;
             case AT_LEAST_ONCE:
-                handlePublishQos1(publish);
+                handlePublishQos1(ctx, publish);
                 break;
             case EXACTLY_ONCE:
                 handlePublishQos2(ctx, publish);
@@ -106,62 +110,64 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter {
     }
 
     private void handlePublishQos0(@NotNull final MqttStatefulPublish publish) {
-        getIncomingPublishService().onPublish(publish);
+        getIncomingPublishService().onPublish(publish); // TODO own for Qos 0
     }
 
-    private void handlePublishQos1(@NotNull final MqttStatefulPublish publish) {
-        getIncomingPublishService().onPublish(publish);
+    private void handlePublishQos1(
+            @NotNull final ChannelHandlerContext ctx, @NotNull final MqttStatefulPublish publish) {
+
+        final Object previousMessage = messages.put(publish.getPacketIdentifier(), MqttPubAck.class);
+        if (previousMessage == null) { // new message
+            emitOrQueuePublishQos1Or2(ctx, publish);
+        } else if (previousMessage == MqttPubAck.class) { // resent message (MQTT 3)
+            if (!publish.isDup()) {
+                disconnectDupFlagNotSet();
+            }
+        } else { // packet id in use
+            ackQos1(ctx, new MqttPubAckBuilder(publish).reasonCode(Mqtt5PubAckReasonCode.PACKET_IDENTIFIER_IN_USE));
+        }
     }
 
     private void handlePublishQos2(
             @NotNull final ChannelHandlerContext ctx, @NotNull final MqttStatefulPublish publish) {
 
-        final MqttPubRec pubRec = pubRecs.get(publish.getPacketIdentifier());
-        if (pubRec == null) {
-            handleNewPublishQos2(ctx, publish);
-        } else {
-            handleDupPublishQos2(ctx, publish, pubRec);
+        final Object previousMessage = messages.put(publish.getPacketIdentifier(), MqttPubRec.class);
+        if (previousMessage == null) { // new message
+            if (emitOrQueuePublishQos1Or2(ctx, publish)) {
+                ctx.writeAndFlush(buildPubRec(new MqttPubRecBuilder(publish)));
+            }
+        } else if (previousMessage == MqttPubRec.class) { // resent message
+            if (!publish.isDup()) {
+                disconnectDupFlagNotSet();
+            }
+        } else { // packet id in use
+            ctx.writeAndFlush(buildPubRec(
+                    new MqttPubRecBuilder(publish).reasonCode(Mqtt5PubRecReasonCode.PACKET_IDENTIFIER_IN_USE)));
         }
     }
 
-    private void handleNewPublishQos2(
+    private boolean emitOrQueuePublishQos1Or2(
             @NotNull final ChannelHandlerContext ctx, @NotNull final MqttStatefulPublish publish) {
 
-        final MqttPubRecBuilder pubRecBuilder = new MqttPubRecBuilder(publish);
-
-        final MqttAdvancedClientData advanced = MqttClientData.from(ctx.channel()).getRawAdvancedClientData();
-        if ((advanced != null)) {
-            final Mqtt5IncomingQos2ControlProvider control = advanced.getIncomingQos2ControlProvider();
-            if (control != null) {
-                control.onPublish(publish.getStatelessMessage(), pubRecBuilder);
-            }
+        if (getIncomingPublishService().onPublish(publish)) {
+            return true;
         }
-
-        final MqttPubRec pubRec = pubRecBuilder.build();
-        pubRecs.put(pubRec.getPacketIdentifier(), pubRec);
-        getIncomingPublishService().onPublish(publish);
-        ctx.writeAndFlush(pubRec);
+        MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.RECEIVE_MAXIMUM_EXCEEDED,
+                "Received more QoS 1 and 2 Publish messages than allowed by Receive Maximum");
+        return false;
     }
 
-    private void handleDupPublishQos2(
-            @NotNull final ChannelHandlerContext ctx, @NotNull final MqttStatefulPublish publish,
-            @NotNull final MqttPubRec pubRec) {
-
-        if (!publish.isDup()) {
-            // TODO
-            return;
-        }
-        ctx.writeAndFlush(pubRec);
+    private void disconnectDupFlagNotSet() {
+        MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+                "Duplicate flag must be set for resent message");
     }
 
     private void handlePubRel(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttPubRel pubRel) {
-        final int packetIdentifier = pubRel.getPacketIdentifier();
-        pubRecs.remove(packetIdentifier);
-        if (pubComps.remove(packetIdentifier) == null) {
-            pubRels.put(packetIdentifier, pubRel);
-        } else {
-            writePubComp(ctx, pubRel);
-            ctx.flush();
+        final Object previousMessage = messages.put(pubRel.getPacketIdentifier(), pubRel);
+        if (previousMessage == MqttPubComp.class) { // already emitted
+            ackQos2(ctx, new MqttPubCompBuilder(pubRel));
+        } else if (previousMessage != MqttPubRec.class) { // null: may be resent, PubAck: packet id in use
+            ackQos2(ctx, new MqttPubCompBuilder(pubRel).reasonCode(Mqtt5PubCompReasonCode.PACKET_IDENTIFIER_NOT_FOUND));
         }
     }
 
@@ -169,50 +175,61 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter {
     void ack(@NotNull final MqttStatefulPublish publish) {
         switch (publish.getStatelessMessage().getQos()) {
             case AT_LEAST_ONCE:
-                ackQos1(publish);
+                ackQos1(ctx, new MqttPubAckBuilder(publish));
                 break;
             case EXACTLY_ONCE:
-                ackQos2(publish);
+                final Object previousMessage = messages.put(publish.getPacketIdentifier(), MqttPubComp.class);
+                if (previousMessage instanceof MqttPubRel) { // PubRel already received
+                    ackQos2(ctx, new MqttPubCompBuilder((MqttPubRel) previousMessage));
+                }
                 break;
         }
     }
 
-    private void ackQos1(@NotNull final MqttStatefulPublish publish) {
-        final MqttPubAckBuilder pubAckBuilder = new MqttPubAckBuilder(publish);
+    private void ackQos1(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttPubAckBuilder pubAckBuilder) {
+        messages.remove(pubAckBuilder.getPublish().getPacketIdentifier());
+        ctx.writeAndFlush(buildPubAck(pubAckBuilder));
+    }
 
-        final MqttAdvancedClientData advanced = MqttClientData.from(ctx.channel()).getRawAdvancedClientData();
-        if ((advanced != null)) {
+    private void ackQos2(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttPubCompBuilder pubCompBuilder) {
+        messages.remove(pubCompBuilder.getPubRel().getPacketIdentifier());
+        ctx.writeAndFlush(buildPubComp(pubCompBuilder));
+    }
+
+    @NotNull
+    private MqttPubAck buildPubAck(@NotNull final MqttPubAckBuilder pubAckBuilder) {
+        final MqttAdvancedClientData advanced = clientData.getRawAdvancedClientData();
+        if (advanced != null) {
             final Mqtt5IncomingQos1ControlProvider control = advanced.getIncomingQos1ControlProvider();
             if (control != null) {
-                control.onPublish(publish.getStatelessMessage(), pubAckBuilder);
+                control.onPublish(pubAckBuilder.getPublish().getStatelessMessage(), pubAckBuilder);
             }
         }
-
-        ctx.writeAndFlush(pubAckBuilder.build());
+        return pubAckBuilder.build();
     }
 
-    private void ackQos2(@NotNull final MqttStatefulPublish publish) {
-        final int packetIdentifier = publish.getPacketIdentifier();
-        final MqttPubRel pubRel = pubRels.remove(packetIdentifier);
-        if (pubRel == null) {
-            pubComps.put(packetIdentifier, Boolean.TRUE);
-        } else {
-            writePubComp(ctx, pubRel);
-        }
-    }
-
-    private void writePubComp(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttPubRel pubRel) {
-        final MqttPubCompBuilder pubCompBuilder = new MqttPubCompBuilder(pubRel);
-
-        final MqttAdvancedClientData advanced = MqttClientData.from(ctx.channel()).getRawAdvancedClientData();
-        if ((advanced != null)) {
+    @NotNull
+    private MqttPubRec buildPubRec(@NotNull final MqttPubRecBuilder pubRecBuilder) {
+        final MqttAdvancedClientData advanced = clientData.getRawAdvancedClientData();
+        if (advanced != null) {
             final Mqtt5IncomingQos2ControlProvider control = advanced.getIncomingQos2ControlProvider();
             if (control != null) {
-                control.onPubRel(pubRel, pubCompBuilder);
+                control.onPublish(pubRecBuilder.getPublish().getStatelessMessage(), pubRecBuilder);
             }
         }
+        return pubRecBuilder.build();
+    }
 
-        ctx.writeAndFlush(pubCompBuilder.build());
+    @NotNull
+    private MqttPubComp buildPubComp(@NotNull final MqttPubCompBuilder pubCompBuilder) {
+        final MqttAdvancedClientData advanced = clientData.getRawAdvancedClientData();
+        if (advanced != null) {
+            final Mqtt5IncomingQos2ControlProvider control = advanced.getIncomingQos2ControlProvider();
+            if (control != null) {
+                control.onPubRel(pubCompBuilder.getPubRel(), pubCompBuilder);
+            }
+        }
+        return pubCompBuilder.build();
     }
 
 }
