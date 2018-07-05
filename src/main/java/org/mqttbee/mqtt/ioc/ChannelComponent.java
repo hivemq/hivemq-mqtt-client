@@ -28,7 +28,6 @@ import org.mqttbee.mqtt.codec.decoder.MqttDecoder;
 import org.mqttbee.mqtt.codec.encoder.MqttEncoder;
 import org.mqttbee.mqtt.handler.auth.MqttAuthHandler;
 import org.mqttbee.mqtt.handler.auth.MqttDisconnectOnAuthHandler;
-import org.mqttbee.mqtt.handler.auth.MqttReAuthHandler;
 import org.mqttbee.mqtt.handler.connect.MqttDisconnectOnConnAckHandler;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectHandler;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnecter;
@@ -70,8 +69,6 @@ public interface ChannelComponent {
 
     MqttAuthHandler authHandler();
 
-    MqttReAuthHandler reAuthHandler();
-
     MqttDisconnectOnAuthHandler disconnectOnAuthHandler();
 
     MqttDisconnectHandler disconnectHandler();
@@ -87,7 +84,6 @@ public interface ChannelComponent {
     MqttOutgoingPublishService outgoingPublishService();
 
     MqttPublishFlowables publishFlowables();
-
 
     @Subcomponent.Builder
     interface Builder {
