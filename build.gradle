@@ -80,7 +80,8 @@ test {
 }
 
 checkstyle {
-    toolVersion = '8.10.1'
+    toolVersion = '8.11'
+    configFile = rootProject.file("config/checkstyle/checkstyle.xml")
 }
 
 task execute(type:JavaExec) {
