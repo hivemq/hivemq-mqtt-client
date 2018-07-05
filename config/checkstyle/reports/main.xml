@@ -1,0 +1,758 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="8.11">
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/annotations/CallByThread.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/annotations/DoNotImplement.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/annotations/NotNull.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/annotations/Nullable.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/MqttClient.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/MqttClientBuilder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/MqttClientData.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/MqttClientExecutorConfig.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/MqttClientExecutorConfigBuilder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/MqttClientSslConfig.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/MqttClientSslConfigBuilder.java">
+<error line="58" severity="warning" message="Single-line Javadoc comment should be multi-line." source="com.puppycrawl.tools.checkstyle.checks.javadoc.SingleLineJavadocCheck"/>
+<error line="65" severity="warning" message="Single-line Javadoc comment should be multi-line." source="com.puppycrawl.tools.checkstyle.checks.javadoc.SingleLineJavadocCheck"/>
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/MqttGlobalPublishFlowType.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/MqttWebsocketConfig.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/MqttWebsocketConfigBuilder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/datatypes/MqttClientIdentifier.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/datatypes/MqttQoS.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/datatypes/MqttSharedTopicFilter.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/datatypes/MqttSharedTopicFilterBuilder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/datatypes/MqttTopic.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/datatypes/MqttTopicBuilder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/datatypes/MqttTopicFilter.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/datatypes/MqttTopicFilterBuilder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/datatypes/MqttUTF8String.java">
+<error line="35" severity="warning" message="Abbreviation in name &apos;MqttUTF8String&apos; must contain no more than &apos;2&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/exceptions/AlreadyConnectedException.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/exceptions/ChannelClosedException.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/exceptions/MqttBinaryDataExceededException.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/exceptions/MqttMaximumPacketSizeExceededException.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/exceptions/MqttVariableByteIntegerExceededException.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/exceptions/NotConnectedException.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/exceptions/PacketIdentifiersExceededException.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt3/Mqtt3Client.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt3/Mqtt3ClientBuilder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt3/Mqtt3ClientConnectionData.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt3/Mqtt3ClientData.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt3/Mqtt3ServerConnectionData.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt3/exceptions/Mqtt3MessageException.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt3/message/Mqtt3Message.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt3/message/Mqtt3MessageType.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt3/message/auth/Mqtt3SimpleAuth.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt3/message/auth/Mqtt3SimpleAuthBuilder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt3/message/connect/Mqtt3Connect.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt3/message/connect/Mqtt3ConnectBuilder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt3/message/connect/connack/Mqtt3ConnAck.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt3/message/connect/connack/Mqtt3ConnAckReturnCode.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt3/message/disconnect/Mqtt3Disconnect.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt3/message/ping/Mqtt3PingReq.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt3/message/ping/Mqtt3PingResp.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt3/message/publish/Mqtt3Publish.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt3/message/publish/Mqtt3PublishBuilder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt3/message/publish/Mqtt3PublishResult.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt3/message/publish/puback/Mqtt3PubAck.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt3/message/publish/pubcomp/Mqtt3PubComp.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt3/message/publish/pubrec/Mqtt3PubRec.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt3/message/publish/pubrel/Mqtt3PubRel.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt3/message/subscribe/Mqtt3Subscribe.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt3/message/subscribe/Mqtt3SubscribeBuilder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt3/message/subscribe/Mqtt3SubscribeResult.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt3/message/subscribe/Mqtt3Subscription.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt3/message/subscribe/Mqtt3SubscriptionBuilder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt3/message/subscribe/suback/Mqtt3SubAck.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt3/message/subscribe/suback/Mqtt3SubAckReturnCode.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt3/message/unsubscribe/Mqtt3Unsubscribe.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt3/message/unsubscribe/Mqtt3UnsubscribeBuilder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt3/message/unsubscribe/unsuback/Mqtt3UnsubAck.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/Mqtt5Client.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/Mqtt5ClientBuilder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/Mqtt5ClientConnectionData.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/Mqtt5ClientData.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/Mqtt5ServerConnectionData.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/advanced/Mqtt5AdvancedClientData.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/advanced/Mqtt5AdvancedClientDataBuilder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/advanced/qos1/Mqtt5IncomingQoS1ControlProvider.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/advanced/qos1/Mqtt5OutgoingQoS1ControlProvider.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/advanced/qos2/Mqtt5IncomingQoS2ControlProvider.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/advanced/qos2/Mqtt5OutgoingQoS2ControlProvider.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/auth/Mqtt5EnhancedAuthProvider.java">
+<error line="111" column="60" severity="warning" message="Lambda parameter name &apos;aVoid&apos; must match pattern &apos;^[a-z]([a-z0-9][a-zA-Z0-9]*)?$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.LambdaParameterNameCheck"/>
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/datatypes/Mqtt5UserProperties.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/datatypes/Mqtt5UserPropertiesBuilder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/datatypes/Mqtt5UserProperty.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/exceptions/Mqtt5MessageException.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/Mqtt5Message.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/Mqtt5MessageType.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/Mqtt5ReasonCode.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/auth/Mqtt5Auth.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/auth/Mqtt5AuthBuilder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/auth/Mqtt5AuthReasonCode.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/auth/Mqtt5EnhancedAuth.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/auth/Mqtt5EnhancedAuthBuilder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/auth/Mqtt5SimpleAuth.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/auth/Mqtt5SimpleAuthBuilder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/connect/Mqtt5Connect.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/connect/Mqtt5ConnectBuilder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/connect/Mqtt5ConnectRestrictions.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/connect/Mqtt5ConnectRestrictionsBuilder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/connect/connack/Mqtt5ConnAck.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/connect/connack/Mqtt5ConnAckReasonCode.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/connect/connack/Mqtt5ConnAckRestrictions.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/disconnect/Mqtt5Disconnect.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/disconnect/Mqtt5DisconnectBuilder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/disconnect/Mqtt5DisconnectReasonCode.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/ping/Mqtt5PingReq.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/ping/Mqtt5PingResp.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/publish/Mqtt5PayloadFormatIndicator.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/publish/Mqtt5Publish.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/publish/Mqtt5PublishBuilder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/publish/Mqtt5PublishResult.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/publish/Mqtt5WillPublish.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/publish/Mqtt5WillPublishBuilder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/publish/TopicAliasUsage.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/publish/puback/Mqtt5PubAck.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/publish/puback/Mqtt5PubAckBuilder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/publish/puback/Mqtt5PubAckReasonCode.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/publish/pubcomp/Mqtt5PubComp.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/publish/pubcomp/Mqtt5PubCompBuilder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/publish/pubcomp/Mqtt5PubCompReasonCode.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/publish/pubrec/Mqtt5PubRec.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/publish/pubrec/Mqtt5PubRecBuilder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/publish/pubrec/Mqtt5PubRecReasonCode.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/publish/pubrel/Mqtt5PubRel.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/publish/pubrel/Mqtt5PubRelBuilder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/publish/pubrel/Mqtt5PubRelReasonCode.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/subscribe/Mqtt5RetainHandling.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/subscribe/Mqtt5Subscribe.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/subscribe/Mqtt5SubscribeBuilder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/subscribe/Mqtt5SubscribeResult.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/subscribe/Mqtt5Subscription.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/subscribe/Mqtt5SubscriptionBuilder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/subscribe/suback/Mqtt5SubAck.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/subscribe/suback/Mqtt5SubAckReasonCode.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/unsubscribe/Mqtt5Unsubscribe.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/unsubscribe/Mqtt5UnsubscribeBuilder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/unsubscribe/unsuback/Mqtt5UnsubAck.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/mqtt/mqtt5/message/unsubscribe/unsuback/Mqtt5UnsubAckReasonCode.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/api/util/KeyStoreUtil.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/MqttClientConnectionData.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/MqttClientData.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/MqttClientExecutorConfigImpl.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/MqttClientSslConfigImpl.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/MqttServerConnectionData.java">
+<error line="87" severity="warning" message="Overload methods should not be split. Previous overloaded method located at line &apos;41&apos;." source="com.puppycrawl.tools.checkstyle.checks.coding.OverloadMethodsDeclarationOrderCheck"/>
+<error line="92" severity="warning" message="Overload methods should not be split. Previous overloaded method located at line &apos;33&apos;." source="com.puppycrawl.tools.checkstyle.checks.coding.OverloadMethodsDeclarationOrderCheck"/>
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/MqttVersion.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/MqttWebsocketConfigImpl.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/advanced/MqttAdvancedClientData.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/MqttCodecModule.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/decoder/MqttDecoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/decoder/MqttDecoderException.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/decoder/MqttMessageDecoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/decoder/MqttMessageDecoderUtil.java">
+<error line="58" severity="warning" message="Abbreviation in name &apos;malformedUTF8String&apos; must contain no more than &apos;2&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/decoder/MqttMessageDecoders.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/decoder/MqttPingRespDecoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/decoder/mqtt3/Mqtt3ClientMessageDecoders.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/decoder/mqtt3/Mqtt3ConnAckDecoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/decoder/mqtt3/Mqtt3MessageDecoderUtil.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/decoder/mqtt3/Mqtt3PubAckDecoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/decoder/mqtt3/Mqtt3PubCompDecoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/decoder/mqtt3/Mqtt3PubRecDecoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/decoder/mqtt3/Mqtt3PubRelDecoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/decoder/mqtt3/Mqtt3PublishDecoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/decoder/mqtt3/Mqtt3SubAckDecoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/decoder/mqtt3/Mqtt3UnsubAckDecoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/decoder/mqtt5/Mqtt5AuthDecoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/decoder/mqtt5/Mqtt5ClientMessageDecoders.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/decoder/mqtt5/Mqtt5ConnAckDecoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/decoder/mqtt5/Mqtt5DisconnectDecoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/decoder/mqtt5/Mqtt5MessageDecoderUtil.java">
+<error line="209" severity="warning" message="Abbreviation in name &apos;decodeUTF8StringOnlyOnce&apos; must contain no more than &apos;2&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/decoder/mqtt5/Mqtt5PubAckDecoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/decoder/mqtt5/Mqtt5PubCompDecoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/decoder/mqtt5/Mqtt5PubRecDecoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/decoder/mqtt5/Mqtt5PubRelDecoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/decoder/mqtt5/Mqtt5PublishDecoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/decoder/mqtt5/Mqtt5SubAckDecoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/decoder/mqtt5/Mqtt5UnsubAckDecoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/encoder/MqttEncoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/encoder/MqttMessageEncoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/encoder/MqttMessageEncoderUtil.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/encoder/MqttMessageEncoders.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/encoder/MqttPingReqEncoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/encoder/mqtt3/Mqtt3ClientMessageEncoders.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/encoder/mqtt3/Mqtt3ConnectEncoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/encoder/mqtt3/Mqtt3DisconnectEncoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/encoder/mqtt3/Mqtt3MessageEncoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/encoder/mqtt3/Mqtt3PubAckEncoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/encoder/mqtt3/Mqtt3PubCompEncoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/encoder/mqtt3/Mqtt3PubRecEncoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/encoder/mqtt3/Mqtt3PubRelEncoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/encoder/mqtt3/Mqtt3PublishEncoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/encoder/mqtt3/Mqtt3SubscribeEncoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/encoder/mqtt3/Mqtt3UnsubscribeEncoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/encoder/mqtt5/Mqtt5AuthEncoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/encoder/mqtt5/Mqtt5ClientMessageEncoders.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/encoder/mqtt5/Mqtt5ConnectEncoder.java">
+<error line="255" severity="warning" message="Overload methods should not be split. Previous overloaded method located at line &apos;123&apos;." source="com.puppycrawl.tools.checkstyle.checks.coding.OverloadMethodsDeclarationOrderCheck"/>
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/encoder/mqtt5/Mqtt5DisconnectEncoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/encoder/mqtt5/Mqtt5MessageEncoderUtil.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/encoder/mqtt5/Mqtt5MessageWithUserPropertiesEncoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/encoder/mqtt5/Mqtt5PubAckEncoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/encoder/mqtt5/Mqtt5PubCompEncoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/encoder/mqtt5/Mqtt5PubRecEncoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/encoder/mqtt5/Mqtt5PubRelEncoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/encoder/mqtt5/Mqtt5PublishEncoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/encoder/mqtt5/Mqtt5SubscribeEncoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/codec/encoder/mqtt5/Mqtt5UnsubscribeEncoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/datatypes/MqttBinaryData.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/datatypes/MqttClientIdentifierImpl.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/datatypes/MqttSharedTopicFilterImpl.java">
+<error line="216" severity="warning" message="Overload methods should not be split. Previous overloaded method located at line &apos;65&apos;." source="com.puppycrawl.tools.checkstyle.checks.coding.OverloadMethodsDeclarationOrderCheck"/>
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/datatypes/MqttTopicFilterImpl.java">
+<error line="121" severity="warning" message="switch without &quot;default&quot; clause." source="com.puppycrawl.tools.checkstyle.checks.coding.MissingSwitchDefaultCheck"/>
+<error line="178" severity="warning" message="switch without &quot;default&quot; clause." source="com.puppycrawl.tools.checkstyle.checks.coding.MissingSwitchDefaultCheck"/>
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/datatypes/MqttTopicImpl.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/datatypes/MqttTopicLevel.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/datatypes/MqttUTF8StringImpl.java">
+<error line="39" severity="warning" message="Abbreviation in name &apos;MqttUTF8StringImpl&apos; must contain no more than &apos;2&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/datatypes/MqttUserPropertiesImpl.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/datatypes/MqttUserPropertyImpl.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/datatypes/MqttVariableByteInteger.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/MqttChannelInitializer.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/auth/AbstractMqttAuthHandler.java">
+<error line="120" severity="warning" message="switch without &quot;default&quot; clause." source="com.puppycrawl.tools.checkstyle.checks.coding.MissingSwitchDefaultCheck"/>
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/auth/MqttAuthHandler.java">
+<error line="67" severity="warning" message="Empty line should be followed by &lt;p&gt; tag on the next line." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocParagraphCheck"/>
+<error line="111" column="26" severity="warning" message="Lambda parameter name &apos;aVoid&apos; must match pattern &apos;^[a-z]([a-z0-9][a-zA-Z0-9]*)?$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.LambdaParameterNameCheck"/>
+<error line="111" column="26" severity="warning" message="Parameter name &apos;aVoid&apos; must match pattern &apos;^[a-z]([a-z0-9][a-zA-Z0-9]*)?$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.ParameterNameCheck"/>
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/auth/MqttDisconnectOnAuthHandler.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/auth/MqttReAuthEvent.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/auth/MqttReAuthHandler.java">
+<error line="60" severity="warning" message="Empty line should be followed by &lt;p&gt; tag on the next line." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocParagraphCheck"/>
+<error line="99" column="26" severity="warning" message="Lambda parameter name &apos;aVoid&apos; must match pattern &apos;^[a-z]([a-z0-9][a-zA-Z0-9]*)?$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.LambdaParameterNameCheck"/>
+<error line="99" column="26" severity="warning" message="Parameter name &apos;aVoid&apos; must match pattern &apos;^[a-z]([a-z0-9][a-zA-Z0-9]*)?$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.ParameterNameCheck"/>
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/connect/MqttConnectHandler.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/connect/MqttDisconnectOnConnAckHandler.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/disconnect/ChannelCloseEvent.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/disconnect/Mqtt3Disconnecter.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/disconnect/Mqtt5Disconnecter.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/disconnect/MqttDisconnectHandler.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/disconnect/MqttDisconnectUtil.java">
+<error line="73" severity="warning" message="Javadoc comment at column 78 has parse error. Details: mismatched input &apos;.&apos; expecting &lt;EOF&gt; while parsing JAVADOC" source="com.puppycrawl.tools.checkstyle.checks.javadoc.NonEmptyAtclauseDescriptionCheck"/>
+<error line="82" severity="warning" message="Javadoc comment at column 81 has parse error. Details: mismatched input &apos;.&apos; expecting &lt;EOF&gt; while parsing JAVADOC" source="com.puppycrawl.tools.checkstyle.checks.javadoc.NonEmptyAtclauseDescriptionCheck"/>
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/disconnect/MqttDisconnecter.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/ping/MqttPingHandler.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/publish/MqttGlobalIncomingPublishFlow.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/publish/MqttGlobalIncomingPublishFlowable.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/publish/MqttIncomingAckFlow.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/publish/MqttIncomingAckFlowable.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/publish/MqttIncomingPublishFlow.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/publish/MqttIncomingPublishFlows.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/publish/MqttIncomingPublishFlowsWithId.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/publish/MqttIncomingPublishService.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/publish/MqttIncomingQoSHandler.java">
+<error line="94" severity="warning" message="switch without &quot;default&quot; clause." source="com.puppycrawl.tools.checkstyle.checks.coding.MissingSwitchDefaultCheck"/>
+<error line="190" severity="warning" message="switch without &quot;default&quot; clause." source="com.puppycrawl.tools.checkstyle.checks.coding.MissingSwitchDefaultCheck"/>
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/publish/MqttOutgoingPublishService.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/publish/MqttOutgoingQoSHandler.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/publish/MqttPublishFlowableAckLink.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/publish/MqttPublishFlowables.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/publish/MqttPublishWithFlow.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/publish/MqttSubscriptionFlow.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/publish/MqttSubscriptionFlowList.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/publish/MqttSubscriptionFlowTree.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/publish/MqttSubscriptionFlowable.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/publish/MqttSubscriptionFlows.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/ssl/SslUtil.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/subscribe/MqttSubAckSingle.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/subscribe/MqttSubscribeWithFlow.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/subscribe/MqttSubscriptionHandler.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/subscribe/MqttUnsubAckSingle.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/subscribe/MqttUnsubscribeWithFlow.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/util/ChannelInboundHandlerWithTimeout.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/util/DefaultChannelOutboundHandler.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/websocket/MqttWebSocketClientProtocolHandler.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/websocket/WebSocketBinaryFrameDecoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/handler/websocket/WebSocketBinaryFrameEncoder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/ioc/ChannelComponent.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/ioc/ChannelModule.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/ioc/ChannelScope.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/ioc/MqttBeeComponent.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/MqttCommonReasonCode.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/MqttMessage.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/MqttMessageWithUserProperties.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/MqttProperty.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/MqttStatefulMessage.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/auth/MqttAuth.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/auth/MqttAuthBuilder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/auth/MqttAuthProperty.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/auth/MqttEnhancedAuth.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/auth/MqttEnhancedAuthBuilder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/auth/MqttSimpleAuth.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/auth/mqtt3/Mqtt3SimpleAuthView.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/connect/MqttConnect.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/connect/MqttConnectProperty.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/connect/MqttConnectRestrictions.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/connect/MqttStatefulConnect.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/connect/connack/MqttConnAck.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/connect/connack/MqttConnAckProperty.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/connect/connack/MqttConnAckRestrictions.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/connect/connack/mqtt3/Mqtt3ConnAckView.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/connect/mqtt3/Mqtt3ConnectView.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/disconnect/MqttDisconnect.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/disconnect/MqttDisconnectProperty.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/disconnect/mqtt3/Mqtt3DisconnectView.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/ping/MqttPingReq.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/ping/MqttPingResp.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/ping/mqtt3/Mqtt3PingReqView.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/ping/mqtt3/Mqtt3PingRespView.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/publish/MqttPublish.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/publish/MqttPublishProperty.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/publish/MqttPublishResult.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/publish/MqttQoSMessage.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/publish/MqttStatefulPublish.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/publish/MqttTopicAliasMapping.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/publish/MqttWillPublish.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/publish/MqttWillPublishProperty.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/publish/mqtt3/Mqtt3PublishResultView.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/publish/mqtt3/Mqtt3PublishView.java">
+<error line="82" severity="warning" message="Overload methods should not be split. Previous overloaded method located at line &apos;49&apos;." source="com.puppycrawl.tools.checkstyle.checks.coding.OverloadMethodsDeclarationOrderCheck"/>
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/publish/puback/MqttPubAck.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/publish/puback/MqttPubAckBuilder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/publish/puback/MqttPubAckProperty.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/publish/puback/mqtt3/Mqtt3PubAckView.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/publish/pubcomp/MqttPubComp.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/publish/pubcomp/MqttPubCompBuilder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/publish/pubcomp/MqttPubCompProperty.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/publish/pubcomp/mqtt3/Mqtt3PubCompView.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/publish/pubrec/MqttPubRec.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/publish/pubrec/MqttPubRecBuilder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/publish/pubrec/MqttPubRecProperty.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/publish/pubrec/mqtt3/Mqtt3PubRecView.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/publish/pubrel/MqttPubRel.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/publish/pubrel/MqttPubRelBuilder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/publish/pubrel/MqttPubRelProperty.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/publish/pubrel/mqtt3/Mqtt3PubRelView.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/subscribe/MqttStatefulSubscribe.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/subscribe/MqttSubscribe.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/subscribe/MqttSubscribeProperty.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/subscribe/MqttSubscription.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/subscribe/mqtt3/Mqtt3SubscribeView.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/subscribe/mqtt3/Mqtt3SubscriptionView.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/subscribe/suback/MqttSubAck.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/subscribe/suback/MqttSubAckProperty.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/subscribe/suback/mqtt3/Mqtt3SubAckView.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/unsubscribe/MqttStatefulUnsubscribe.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/unsubscribe/MqttUnsubscribe.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/unsubscribe/MqttUnsubscribeProperty.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/unsubscribe/mqtt3/Mqtt3UnsubscribeView.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/unsubscribe/unsuback/MqttUnsubAck.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/unsubscribe/unsuback/MqttUnsubAckProperty.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/message/unsubscribe/unsuback/mqtt3/Mqtt3UnsubAckView.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/mqtt3/Mqtt3ClientDataView.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/mqtt3/Mqtt3ClientView.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/mqtt3/exceptions/Mqtt3ExceptionFactory.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/netty/ChannelAttributes.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/netty/NettyBootstrap.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/netty/NettyEpollBootstrap.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/netty/NettyModule.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/netty/NettyNioBootstrap.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/persistence/IncomingQoSFlowPersistence.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/persistence/MqttPersistenceModule.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/persistence/OutgoingQoSFlowPersistence.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/persistence/memory/IncomingQoSFlowMemoryPersistence.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/persistence/memory/OutgoingQoSFlowMemoryPersistence.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt/util/MqttBuilderUtil.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/mqtt5/Mqtt5ClientImpl.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/rx/FlowableWithSingle.java">
+<error line="99" column="22" severity="warning" message="Method type name &apos;SM&apos; must match pattern &apos;(^[A-Z][0-9]?)$|([A-Z][a-zA-Z0-9]*[T]$)&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MethodTypeParameterNameCheck"/>
+<error line="99" column="26" severity="warning" message="Method type name &apos;FM&apos; must match pattern &apos;(^[A-Z][0-9]?)$|([A-Z][a-zA-Z0-9]*[T]$)&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MethodTypeParameterNameCheck"/>
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/rx/FlowableWithSingleSplit.java">
+<error line="148" column="13" severity="warning" message="Method type name &apos;SM&apos; must match pattern &apos;(^[A-Z][0-9]?)$|([A-Z][a-zA-Z0-9]*[T]$)&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MethodTypeParameterNameCheck"/>
+<error line="148" column="17" severity="warning" message="Method type name &apos;FM&apos; must match pattern &apos;(^[A-Z][0-9]?)$|([A-Z][a-zA-Z0-9]*[T]$)&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MethodTypeParameterNameCheck"/>
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/rx/FuseableSubscriber.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/rx/SingleFlow.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/util/ByteArray.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/util/ByteArrayUtil.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/util/ByteBufferUtil.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/util/FluentBuilder.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/util/MustNotBeImplementedException.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/util/MustNotBeImplementedUtil.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/util/Ranges.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/util/UnsignedDataTypes.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/util/collections/ChunkedArrayQueue.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/util/collections/IntMap.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/util/collections/ScListNode.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/util/collections/ScNodeList.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/util/collections/SpscArrayQueueUtil.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/main/java/org/mqttbee/util/collections/SpscIterableChunkedArrayQueue.java">
+<error line="172" severity="warning" message="Single-line Javadoc comment should be multi-line." source="com.puppycrawl.tools.checkstyle.checks.javadoc.SingleLineJavadocCheck"/>
+<error line="216" severity="warning" message="Javadoc comment at column 20 has parse error. Details: no viable alternative at input &apos;{&apos; while parsing JAVADOC_TAG" source="com.puppycrawl.tools.checkstyle.checks.javadoc.NonEmptyAtclauseDescriptionCheck"/>
+</file>
+</checkstyle>

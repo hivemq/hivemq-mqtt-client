@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="8.11">
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/api/mqtt/MqttClientSslConfigBuilderTest.java">
+<error line="16" severity="warning" message="&apos;package&apos; should be separated from previous statement." source="com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"/>
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/api/mqtt/datatypes/MqttQoSTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/api/mqtt/exceptions/MqttMaximumPacketSizeExceededExceptionTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/api/mqtt/mqtt5/message/Mqtt5MessageTypeTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/api/mqtt/mqtt5/message/disconnect/Mqtt5DisconnectReasonCodeTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/api/mqtt/mqtt5/message/publish/puback/Mqtt5PubAckReasonCodeTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/api/mqtt/mqtt5/message/subscribe/Mqtt5RetainHandlingTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/api/util/KeyStoreUtilTest.java">
+<error line="16" severity="warning" message="&apos;package&apos; should be separated from previous statement." source="com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"/>
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/example/Mqtt3ClientExample.java">
+<error line="55" severity="warning" message="&lt;p&gt; tag should be preceded with an empty line." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocParagraphCheck"/>
+<error line="62" severity="warning" message="&lt;p&gt; tag should be preceded with an empty line." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocParagraphCheck"/>
+<error line="315" severity="warning" message="switch without &quot;default&quot; clause." source="com.puppycrawl.tools.checkstyle.checks.coding.MissingSwitchDefaultCheck"/>
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/example/Mqtt3SmokeTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/decoder/AbstractMqttDecoderTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/decoder/mqtt3/AbstractMqtt3DecoderTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/decoder/mqtt3/Mqtt3ClientMessageDecodersTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/decoder/mqtt3/Mqtt3ConnAckDecoderTest.java">
+<error line="74" severity="warning" message="Abbreviation in name &apos;decode_SUCCESS&apos; must contain no more than &apos;2&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+<error line="93" severity="warning" message="Abbreviation in name &apos;decode_WRONG_PROTOCOL&apos; must contain no more than &apos;2&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+<error line="116" severity="warning" message="Abbreviation in name &apos;decode_SERVER_IDENTFIER_REJECTED&apos; must contain no more than &apos;2&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+<error line="139" severity="warning" message="Abbreviation in name &apos;decode_SERVER_UNAVAILABLE&apos; must contain no more than &apos;2&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+<error line="161" severity="warning" message="Abbreviation in name &apos;decode_SERVER_BAD_USERNAME_OR_PASSWORD&apos; must contain no more than &apos;2&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+<error line="183" severity="warning" message="Abbreviation in name &apos;decode_NOT_AUTHORIZED&apos; must contain no more than &apos;2&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+<error line="205" severity="warning" message="Abbreviation in name &apos;decode_BAD_RETURNCODE&apos; must contain no more than &apos;2&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+<error line="220" severity="warning" message="Abbreviation in name &apos;decode_ERROR_CASES&apos; must contain no more than &apos;2&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/decoder/mqtt3/Mqtt3PubAckDecoderTest.java">
+<error line="66" severity="warning" message="Abbreviation in name &apos;decode_SUCESS&apos; must contain no more than &apos;2&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+<error line="80" severity="warning" message="Abbreviation in name &apos;decode_ERROR_MAlFORMED_FLAGS&apos; must contain no more than &apos;2&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+<error line="91" severity="warning" message="Abbreviation in name &apos;decode_ERROR_TOO_LONG&apos; must contain no more than &apos;2&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/decoder/mqtt3/Mqtt3PubCompDecoderTest.java">
+<error line="66" severity="warning" message="Abbreviation in name &apos;decode_SUCESS&apos; must contain no more than &apos;2&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+<error line="80" severity="warning" message="Abbreviation in name &apos;decode_ERROR_CASES&apos; must contain no more than &apos;2&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/decoder/mqtt3/Mqtt3PubRecDecoderTest.java">
+<error line="66" severity="warning" message="Abbreviation in name &apos;decode_SUCESS&apos; must contain no more than &apos;2&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+<error line="80" severity="warning" message="Abbreviation in name &apos;decode_ERROR_CASES&apos; must contain no more than &apos;2&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/decoder/mqtt3/Mqtt3PubRelDecoderTest.java">
+<error line="65" severity="warning" message="Abbreviation in name &apos;decode_SUCESS&apos; must contain no more than &apos;2&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+<error line="80" severity="warning" message="Abbreviation in name &apos;decode_ERROR_CASES&apos; must contain no more than &apos;2&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/decoder/mqtt3/Mqtt3PublishDecoderTest.java">
+<error line="116" severity="warning" message="Abbreviation in name &apos;decode_SUCCESS&apos; must contain no more than &apos;2&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+<error line="157" severity="warning" message="Abbreviation in name &apos;decode_SUCCESS_NO_PAYLOAD&apos; must contain no more than &apos;2&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+<error line="195" severity="warning" message="Abbreviation in name &apos;decode_SUCESS_TOO_MUCH_BYTES&apos; must contain no more than &apos;2&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+<error line="226" severity="warning" message="Abbreviation in name &apos;decode_INVALID_TOPIC&apos; must contain no more than &apos;2&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+<error line="255" severity="warning" message="Abbreviation in name &apos;decode_INVALID_QOS&apos; must contain no more than &apos;2&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/decoder/mqtt3/Mqtt3SubAckDecoderTest.java">
+<error line="73" severity="warning" message="Abbreviation in name &apos;decode_SUCESS&apos; must contain no more than &apos;2&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+<error line="100" severity="warning" message="Abbreviation in name &apos;decode_ERROR_CASES&apos; must contain no more than &apos;2&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/decoder/mqtt3/Mqtt3UnsubAckDecoderTest.java">
+<error line="67" severity="warning" message="Abbreviation in name &apos;decode_SUCESS&apos; must contain no more than &apos;2&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+<error line="81" severity="warning" message="Abbreviation in name &apos;decode_ERROR_CASES&apos; must contain no more than &apos;2&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/decoder/mqtt5/AbstractMqtt5DecoderTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/decoder/mqtt5/Mqtt5AuthDecoderTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/decoder/mqtt5/Mqtt5ClientMessageDecodersTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/decoder/mqtt5/Mqtt5ConnAckDecoderTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/decoder/mqtt5/Mqtt5DisconnectDecoderTest.java">
+<error line="1046" severity="warning" message="Abbreviation in name &apos;PROPERTIES_VALID_LENGTH&apos; must contain no more than &apos;2&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+<error line="1046" column="23" severity="warning" message="Member name &apos;PROPERTIES_VALID_LENGTH&apos; must match pattern &apos;^[a-z][a-z0-9][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MemberNameCheck"/>
+<error line="1047" severity="warning" message="Abbreviation in name &apos;PROPERTIES_VALID&apos; must contain no more than &apos;2&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+<error line="1047" column="26" severity="warning" message="Member name &apos;PROPERTIES_VALID&apos; must match pattern &apos;^[a-z][a-z0-9][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MemberNameCheck"/>
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/decoder/mqtt5/Mqtt5MessageDecoderUtilTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/decoder/mqtt5/Mqtt5PingRespDecoderTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/decoder/mqtt5/Mqtt5PubAckDecoderTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/decoder/mqtt5/Mqtt5PubCompDecoderTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/decoder/mqtt5/Mqtt5PubRecDecoderTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/decoder/mqtt5/Mqtt5PubRelDecoderTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/decoder/mqtt5/Mqtt5PublishDecoderTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/decoder/mqtt5/Mqtt5SubAckDecoderTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/decoder/mqtt5/Mqtt5UnsubAckDecoderTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/encoder/AbstractMqtt5EncoderTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/encoder/MqttPingReqEncoderTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/encoder/mqtt3/Mqtt3ConnectEncoderTest.java">
+<error line="75" severity="warning" message="Abbreviation in name &apos;encode_SUCCESS&apos; must contain no more than &apos;2&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+<error line="84" severity="warning" message="Abbreviation in name &apos;test_SUCCESS_WITH_WILL_WITH_PAHO&apos; must contain no more than &apos;2&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+<error line="137" severity="warning" message="Abbreviation in name &apos;test_PAHO_GETPAYLOAD_METHOD&apos; must contain no more than &apos;2&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/encoder/mqtt3/Mqtt3PubAckEncoderTest.java">
+<error line="47" severity="warning" message="Overload methods should not be split. Previous overloaded method located at line &apos;34&apos;." source="com.puppycrawl.tools.checkstyle.checks.coding.OverloadMethodsDeclarationOrderCheck"/>
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/encoder/mqtt3/Mqtt3PubCompEncoderTest.java">
+<error line="47" severity="warning" message="Overload methods should not be split. Previous overloaded method located at line &apos;34&apos;." source="com.puppycrawl.tools.checkstyle.checks.coding.OverloadMethodsDeclarationOrderCheck"/>
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/encoder/mqtt3/Mqtt3PubRecEncoderTest.java">
+<error line="47" severity="warning" message="Overload methods should not be split. Previous overloaded method located at line &apos;34&apos;." source="com.puppycrawl.tools.checkstyle.checks.coding.OverloadMethodsDeclarationOrderCheck"/>
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/encoder/mqtt3/Mqtt3PubRelEncoderTest.java">
+<error line="47" severity="warning" message="Overload methods should not be split. Previous overloaded method located at line &apos;34&apos;." source="com.puppycrawl.tools.checkstyle.checks.coding.OverloadMethodsDeclarationOrderCheck"/>
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/encoder/mqtt5/AbstractMqtt5EncoderWithUserPropertiesTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/encoder/mqtt5/Mqtt5AuthEncoderTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/encoder/mqtt5/Mqtt5ConnectEncoderTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/encoder/mqtt5/Mqtt5DisconnectEncoderTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/encoder/mqtt5/Mqtt5PubAckEncoderTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/encoder/mqtt5/Mqtt5PubCompEncoderTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/encoder/mqtt5/Mqtt5PubRecEncoderTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/encoder/mqtt5/Mqtt5PubRelEncoderTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/encoder/mqtt5/Mqtt5PublishEncoderTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/encoder/mqtt5/Mqtt5SubscribeEncoderTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/codec/encoder/mqtt5/Mqtt5UnsubscribeEncoderTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/datatypes/MqttBinaryDataTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/datatypes/MqttClientIdentifierImplTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/datatypes/MqttSharedTopicFilterImplTest.java">
+<error line="56" severity="warning" message="switch without &quot;default&quot; clause." source="com.puppycrawl.tools.checkstyle.checks.coding.MissingSwitchDefaultCheck"/>
+<error line="75" severity="warning" message="switch without &quot;default&quot; clause." source="com.puppycrawl.tools.checkstyle.checks.coding.MissingSwitchDefaultCheck"/>
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/datatypes/MqttTopicFilterImplTest.java">
+<error line="272" column="17" severity="warning" message="Method name &apos;test_not_shared_just_$share&apos; must match pattern &apos;^[a-z][a-z0-9][a-zA-Z0-9_]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck"/>
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/datatypes/MqttTopicImplTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/datatypes/MqttUTF8StringImplTest.java">
+<error line="37" severity="warning" message="Abbreviation in name &apos;MqttUTF8StringImplTest&apos; must contain no more than &apos;2&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+<error line="48" severity="warning" message="Unicode escape(s) usage should be avoided." source="com.puppycrawl.tools.checkstyle.checks.AvoidEscapedUnicodeCharactersCheck"/>
+<error line="154" severity="warning" message="Abbreviation in name &apos;mqtt5UTF8String&apos; must contain no more than &apos;2&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+<error line="166" severity="warning" message="Abbreviation in name &apos;mqtt5UTF8String&apos; must contain no more than &apos;2&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+<error line="180" severity="warning" message="Unicode escape(s) usage should be avoided." source="com.puppycrawl.tools.checkstyle.checks.AvoidEscapedUnicodeCharactersCheck"/>
+<error line="182" severity="warning" message="Abbreviation in name &apos;mqtt5UTF8String&apos; must contain no more than &apos;2&apos; consecutive capital letters." source="com.puppycrawl.tools.checkstyle.checks.naming.AbbreviationAsWordInNameCheck"/>
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/datatypes/MqttUserPropertiesImplTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/datatypes/MqttUserPropertyImplTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/datatypes/MqttVariableByteIntegerTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/handler/MqttChannelInitializerSslTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/handler/publish/MqttSubscriptionFlowListTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/handler/publish/MqttSubscriptionFlowTreeTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/handler/publish/MqttSubscriptionFlowsTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/handler/ssl/SslUtilTest.java">
+<error line="16" severity="warning" message="&apos;package&apos; should be separated from previous statement." source="com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"/>
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/message/MqttCommonReasonCodeTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/message/MqttPropertyTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/message/publish/MqttPublishTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/message/publish/mqtt3/Mqtt3PublishViewTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/message/unsubscribe/unsuback/MqttUnsubAckTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/mqtt/mqtt3/Mqtt3ClientViewExceptionsTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/rx/FlowableWithSingleSplitTest.java">
+<error line="235" column="30" severity="warning" message="Lambda parameter name &apos;aDouble&apos; must match pattern &apos;^[a-z]([a-z0-9][a-zA-Z0-9]*)?$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.LambdaParameterNameCheck"/>
+<error line="235" column="30" severity="warning" message="Parameter name &apos;aDouble&apos; must match pattern &apos;^[a-z]([a-z0-9][a-zA-Z0-9]*)?$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.ParameterNameCheck"/>
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/util/TestKeyStoreGenerator.java">
+<error line="16" severity="warning" message="&apos;package&apos; should be separated from previous statement." source="com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"/>
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/util/collections/ChunkedArrayQueueTest.java">
+</file>
+<file name="/Users/christian.hoff/dev/IdeaProjects/mqtt-bee/src/test/java/org/mqttbee/util/collections/IntMapTest.java">
+</file>
+</checkstyle>
