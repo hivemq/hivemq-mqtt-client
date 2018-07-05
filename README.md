@@ -59,6 +59,14 @@ but they should describe the changes clearly.
 * The project uses its own @NotNull and @Nullable annotations, 
 every non-primitive parameter should be annotated with one of them.
 * Optional will only be used in the public API.
+* The project uses [checkstyle](http://checkstyle.sourceforge.net/index.html) to enforce the
+  [AOSP conding standard](https://source.android.com/setup/contribute/code-style).
+  * The Gradle build is configured to use the [Checkstyle Plugin](https://docs.gradle.org/current/userguide/checkstyle_plugin.html)
+    to check for conformity. The [checkstyle config](config/checkstyle/checkstyle.xml) is located in
+    `config/checkstyle/checkstyle.xml` and is derived from the [Google Checks config](https://github.com/checkstyle/checkstyle/blob/master/src/main/resources/google_checks.xml)
+    provided by the checkstyle project. 
+  * Use `./gradlew checkstyleMain checkstyleTest` to generate a checkstyle report and fix reported
+    errors and warnings.
 
 ### Developing with IntelliJ IDEA
 
@@ -69,4 +77,9 @@ every non-primitive parameter should be annotated with one of them.
 * To use the correct import ordering, use the [IntelliJ Java AOSP Style file](config/intellij/intellij-java-aosp-style.xml)
   provided by the project in the `config/intellij/` directory. Import the style file into
   `IntelliJ Preferences > Editor > Code Style`.
+* Use the [CheckStyle-IDEA plugin](https://plugins.jetbrains.com/plugin/1065-checkstyle-idea) to
+  ensure compliance to our coding standard.
+  * Make sure to install a version of the plugin that is compatible with the checkstyle version in
+    `build.gradle`.
+  * Import the checkstyle setting into `IntelliJ Preferences > Other Settings > Checkstyle`.
   
