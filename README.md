@@ -52,8 +52,21 @@ but they should describe the changes clearly.
 
 ## Code style guidelines
 
-* Please import the code style settings found in the codeStyle folder. 
+* The project follows the [AOSP Java Code Style](https://source.android.com/setup/contribute/code-style).
+  * The Gradle build is configured to use the [Spotless](https://github.com/diffplug/spotless/tree/master/plugin-gradle)
+    Gradle plugin to check for conformity, and fail if the code is not formatted correctly.
+  * Use `./gradlew spotlessApply` to format your source code using the plugin.
 * The project uses its own @NotNull and @Nullable annotations, 
 every non-primitive parameter should be annotated with one of them.
 * Optional will only be used in the public API.
 
+### Developing with IntelliJ IDEA
+
+* If using IntelliJ for development, we strongly recommend installing the [google-java-format](https://plugins.jetbrains.com/plugin/8527-google-java-format)
+  plugin. Make sure to install a version of the plugin that uses version 1.6 of the
+  google-java-format tool.
+  * See also the [usage instructions of google-java-format in IntelliJ](https://github.com/google/google-java-format#intellij).
+* To use the correct import ordering, use the [IntelliJ Java AOSP Style file](config/intellij/intellij-java-aosp-style.xml)
+  provided by the project in the `config/intellij/` directory. Import the style file into
+  `IntelliJ Preferences > Editor > Code Style`.
+  
