@@ -36,6 +36,7 @@ import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
 import org.mqttbee.mqtt.netty.ChannelAttributes;
 import org.mqttbee.util.ByteBufferUtil;
+import org.mqttbee.util.collections.IntMap;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -183,20 +184,20 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
 
         boolean isNewTopicAlias = false;
         if (topicAlias != DEFAULT_NO_TOPIC_ALIAS) {
-            final MqttTopicImpl[] topicAliasMapping = clientConnectionData.getTopicAliasMapping();
-            if ((topicAliasMapping == null) || (topicAlias > topicAliasMapping.length)) {
+            final IntMap<MqttTopicImpl> topicAliasMapping = clientConnectionData.getTopicAliasMapping();
+            if ((topicAliasMapping == null) || (topicAlias > clientConnectionData.getTopicAliasMaximum())) {
                 throw new MqttDecoderException(
                         Mqtt5DisconnectReasonCode.TOPIC_ALIAS_INVALID,
                         "topic alias must not exceed topic alias maximum");
             }
             if (topic == null) {
-                topic = topicAliasMapping[topicAlias - 1];
+                topic = topicAliasMapping.get(topicAlias);
                 if (topic == null) {
                     throw new MqttDecoderException(
                             Mqtt5DisconnectReasonCode.TOPIC_ALIAS_INVALID, "topic alias has no mapping");
                 }
             } else {
-                topicAliasMapping[topicAlias - 1] = topic;
+                topicAliasMapping.put(topicAlias, topic);
                 isNewTopicAlias = true;
             }
         } else if (topic == null) {
