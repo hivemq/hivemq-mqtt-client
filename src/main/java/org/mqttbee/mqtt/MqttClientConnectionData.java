@@ -26,6 +26,7 @@ import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientConnectionData;
 import org.mqttbee.api.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
+import org.mqttbee.util.collections.IntMap;
 
 import java.util.Optional;
 
@@ -37,7 +38,8 @@ public class MqttClientConnectionData implements Mqtt5ClientConnectionData, Mqtt
     private int keepAlive;
     private long sessionExpiryInterval;
     private final int receiveMaximum;
-    private final MqttTopicImpl[] topicAliasMapping;
+    private final int topicAliasMaximum;
+    private final IntMap<MqttTopicImpl> topicAliasMapping;
     private final int maximumPacketSize;
     private final int subscriptionIdentifierMaximum;
     private final Mqtt5EnhancedAuthProvider enhancedAuthProvider;
@@ -56,7 +58,8 @@ public class MqttClientConnectionData implements Mqtt5ClientConnectionData, Mqtt
         this.keepAlive = keepAlive;
         this.sessionExpiryInterval = sessionExpiryInterval;
         this.receiveMaximum = receiveMaximum;
-        this.topicAliasMapping = (topicAliasMaximum == 0) ? null : new MqttTopicImpl[topicAliasMaximum];
+        this.topicAliasMaximum = topicAliasMaximum;
+        this.topicAliasMapping = (topicAliasMaximum == 0) ? null : IntMap.range(1, topicAliasMaximum);
         this.maximumPacketSize = maximumPacketSize;
         this.subscriptionIdentifierMaximum =
                 MqttVariableByteInteger.FOUR_BYTES_MAX_VALUE; // TODO CONNECT + CONNACK user properties
@@ -92,11 +95,11 @@ public class MqttClientConnectionData implements Mqtt5ClientConnectionData, Mqtt
 
     @Override
     public int getTopicAliasMaximum() {
-        return (topicAliasMapping == null) ? 0 : topicAliasMapping.length;
+        return topicAliasMaximum;
     }
 
     @Nullable
-    public MqttTopicImpl[] getTopicAliasMapping() {
+    public IntMap<MqttTopicImpl> getTopicAliasMapping() {
         return topicAliasMapping;
     }
 
