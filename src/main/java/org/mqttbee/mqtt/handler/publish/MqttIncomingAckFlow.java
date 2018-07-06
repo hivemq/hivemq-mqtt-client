@@ -110,7 +110,6 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
                         subscriber.onError(error);
                     }
                 }
-                return;
             }
             if (requestedNettyLocal != Long.MAX_VALUE) {
                 requestedNettyLocal -= emitted;
