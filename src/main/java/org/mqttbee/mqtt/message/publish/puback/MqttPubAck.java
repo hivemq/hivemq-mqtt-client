@@ -19,6 +19,7 @@ package org.mqttbee.mqtt.message.publish.puback;
 
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.puback.Mqtt5PubAck;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.puback.Mqtt5PubAckReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
@@ -43,6 +44,12 @@ public class MqttPubAck extends MqttMessageWithIdAndReasonCode<Mqtt5PubAckReason
             @Nullable final MqttUTF8StringImpl reasonString, @NotNull final MqttUserPropertiesImpl userProperties) {
 
         super(packetIdentifier, reasonCode, reasonString, userProperties);
+    }
+
+    @NotNull
+    @Override
+    public MqttQos getQos() {
+        return MqttQos.AT_LEAST_ONCE;
     }
 
 }

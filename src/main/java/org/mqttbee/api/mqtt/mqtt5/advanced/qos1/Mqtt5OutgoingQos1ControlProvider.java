@@ -18,6 +18,8 @@
 package org.mqttbee.api.mqtt.mqtt5.advanced.qos1;
 
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientData;
+import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.puback.Mqtt5PubAck;
 
 /**
@@ -32,8 +34,10 @@ public interface Mqtt5OutgoingQos1ControlProvider {
      * <p>
      * This method must not block.
      *
-     * @param pubAck the PUBACK message sent by the server.
+     * @param clientData the data of the client.
+     * @param publish    the PUBLISH message with QoS 1 sent by the client.
+     * @param pubAck     the PUBACK message sent by the server.
      */
-    void onPubAck(@NotNull Mqtt5PubAck pubAck);
+    void onPubAck(@NotNull Mqtt5ClientData clientData, @NotNull Mqtt5Publish publish, @NotNull Mqtt5PubAck pubAck);
 
 }

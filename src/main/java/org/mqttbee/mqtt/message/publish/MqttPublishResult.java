@@ -22,6 +22,7 @@ import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
 import org.mqttbee.mqtt.message.publish.puback.MqttPubAck;
 import org.mqttbee.mqtt.message.publish.pubcomp.MqttPubComp;
+import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRel;
 
 /**
  * @author Silvio Giebl
@@ -80,14 +81,23 @@ public class MqttPublishResult implements Mqtt5PublishResult {
     public static class MqttQos2Result extends MqttPublishResult implements Mqtt5Qos2Result {
 
         @NotNull
+        private final MqttPubRel pubRel;
+        @NotNull
         private final MqttPubComp pubComp;
 
         public MqttQos2Result(
-                @NotNull final MqttPublish publish, @Nullable final Throwable error,
+                @NotNull final MqttPublish publish, @Nullable final Throwable error, @NotNull final MqttPubRel pubRel,
                 @NotNull final MqttPubComp pubComp) {
 
             super(publish, error);
+            this.pubRel = pubRel;
             this.pubComp = pubComp;
+        }
+
+        @NotNull
+        @Override
+        public MqttPubRel getPubRel() {
+            return pubRel;
         }
 
         @NotNull

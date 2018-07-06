@@ -37,12 +37,6 @@ public class MqttServerConnectionData implements Mqtt5ServerConnectionData, Mqtt
                 serverConnectionData.getMaximumPacketSize();
     }
 
-    @Nullable
-    public static MqttTopicAliasMapping getTopicAliasMapping(@NotNull final Channel channel) {
-        final MqttServerConnectionData serverConnectionData = MqttClientData.from(channel).getRawServerConnectionData();
-        return (serverConnectionData == null) ? null : serverConnectionData.getTopicAliasMapping();
-    }
-
     private final int receiveMaximum;
     private final MqttTopicAliasMapping topicAliasMapping;
     private final int maximumPacketSize;

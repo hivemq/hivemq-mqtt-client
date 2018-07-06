@@ -18,17 +18,20 @@
 package org.mqttbee.mqtt.handler.publish;
 
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.annotations.Nullable;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
+import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRel;
 
 /**
  * @author Silvio Giebl
  */
-public class MqttPublishWithFlow {
+class MqttPublishWithFlow {
 
     private final MqttPublish publish;
     private final MqttIncomingAckFlow incomingAckFlow;
+    private MqttPubRel pubRel;
 
-    public MqttPublishWithFlow(
+    MqttPublishWithFlow(
             @NotNull final MqttPublish publish, @NotNull final MqttIncomingAckFlow incomingAckFlow) {
 
         this.publish = publish;
@@ -36,13 +39,22 @@ public class MqttPublishWithFlow {
     }
 
     @NotNull
-    public MqttPublish getPublish() {
+    MqttPublish getPublish() {
         return publish;
     }
 
     @NotNull
-    public MqttIncomingAckFlow getIncomingAckFlow() {
+    MqttIncomingAckFlow getIncomingAckFlow() {
         return incomingAckFlow;
+    }
+
+    void setPubRel(@NotNull final MqttPubRel pubRel) {
+        this.pubRel = pubRel;
+    }
+
+    @Nullable
+    MqttPubRel getPubRel() {
+        return pubRel;
     }
 
 }
