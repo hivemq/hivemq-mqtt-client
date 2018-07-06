@@ -19,6 +19,7 @@ package org.mqttbee.mqtt.message.publish.pubrec;
 
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
+import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrec.Mqtt5PubRec;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrec.Mqtt5PubRecReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
@@ -43,6 +44,12 @@ public class MqttPubRec extends MqttMessageWithIdAndReasonCode<Mqtt5PubRecReason
             @Nullable final MqttUTF8StringImpl reasonString, @NotNull final MqttUserPropertiesImpl userProperties) {
 
         super(packetIdentifier, reasonCode, reasonString, userProperties);
+    }
+
+    @NotNull
+    @Override
+    public MqttQos getQos() {
+        return MqttQos.EXACTLY_ONCE;
     }
 
 }

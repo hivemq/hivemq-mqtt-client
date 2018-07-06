@@ -17,11 +17,18 @@
 
 package org.mqttbee.mqtt.message.publish;
 
+import org.mqttbee.annotations.NotNull;
+import org.mqttbee.api.mqtt.datatypes.MqttQos;
+import org.mqttbee.mqtt.message.MqttMessage;
+
 /**
  * @author Silvio Giebl
  */
-public interface MqttQosMessage {
+public interface MqttQosMessage extends MqttMessage {
 
     int getPacketIdentifier();
+
+    @NotNull
+    MqttQos getQos();
 
 }
