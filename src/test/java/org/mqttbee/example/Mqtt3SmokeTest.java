@@ -18,6 +18,7 @@ package org.mqttbee.example;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.util.KeyStoreUtil;
@@ -76,12 +77,14 @@ class Mqtt3SmokeTest {
     }
 
     @Test
+    @Disabled("test.mosquitto.org down")
     void mqttOverTcp() {
         publishInstance = new Mqtt3ClientExample(server, 1883, false, null, null, null);
         assertTrue(publishInstance.publish(topic, qos, count).blockingAwait(10, TimeUnit.SECONDS));
     }
 
     @Test
+    @Disabled("test.mosquitto.org down")
     void mqttOverTls() throws IOException, URISyntaxException {
         final TrustManagerFactory trustManagerFactory = KeyStoreUtil.trustManagerFromKeystore(
                 new File(getClass().getClassLoader().getResource(TRUSTSTORE_PATH).toURI()), TRUSTSTORE_PASS);
@@ -91,6 +94,7 @@ class Mqtt3SmokeTest {
     }
 
     @Test
+    @Disabled("test.mosquitto.org down")
     void mqttOverTlsWithClientCert() throws IOException, URISyntaxException {
         final TrustManagerFactory trustManagerFactory = KeyStoreUtil.trustManagerFromKeystore(
                 new File(getClass().getClassLoader().getResource(TRUSTSTORE_PATH).toURI()), TRUSTSTORE_PASS);
@@ -103,12 +107,14 @@ class Mqtt3SmokeTest {
     }
 
     @Test
+    @Disabled("test.mosquitto.org down")
     void mqttOverWebSockets() {
         publishInstance = new Mqtt3ClientExample(server, 8080, false, null, null, "mqtt");
         assertTrue(publishInstance.publish(topic, qos, count).blockingAwait(10, TimeUnit.SECONDS));
     }
 
     @Test
+    @Disabled("test.mosquitto.org down")
     void mqttOverWebSocketsEncrypted() {
         publishInstance = new Mqtt3ClientExample(server, 8081, true, null, null, "mqtt");
         assertTrue(publishInstance.publish(topic, qos, count).blockingAwait(10, TimeUnit.SECONDS));
