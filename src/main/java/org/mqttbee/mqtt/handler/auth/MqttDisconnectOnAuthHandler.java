@@ -17,17 +17,14 @@
 
 package org.mqttbee.mqtt.handler.auth;
 
-import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelPromise;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.message.auth.MqttAuth;
-import org.mqttbee.mqtt.message.connect.MqttConnect;
 import org.mqttbee.mqtt.message.connect.connack.MqttConnAck;
 
 import javax.inject.Inject;
@@ -41,29 +38,12 @@ import javax.inject.Singleton;
  */
 @ChannelHandler.Sharable
 @Singleton
-public class MqttDisconnectOnAuthHandler extends ChannelDuplexHandler {
+public class MqttDisconnectOnAuthHandler extends ChannelInboundHandlerAdapter {
 
     public static final String NAME = "disconnect.on.auth";
 
     @Inject
     MqttDisconnectOnAuthHandler() {
-    }
-
-    @Override
-    public void write(final ChannelHandlerContext ctx, final Object msg, final ChannelPromise promise) {
-        if (msg instanceof MqttConnect) {
-            writeConnect(ctx, (MqttConnect) msg, promise);
-        } else {
-            ctx.write(msg, promise);
-        }
-    }
-
-    private void writeConnect(
-            @NotNull final ChannelHandlerContext ctx, @NotNull final MqttConnect connect,
-            @NotNull final ChannelPromise promise) {
-
-        final MqttClientData clientData = MqttClientData.from(ctx.channel());
-        ctx.writeAndFlush(connect.createStateful(clientData.getRawClientIdentifier(), null), promise);
     }
 
     @Override

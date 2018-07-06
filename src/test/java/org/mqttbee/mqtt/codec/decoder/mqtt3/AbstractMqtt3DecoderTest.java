@@ -28,7 +28,6 @@ import org.mqttbee.mqtt.codec.decoder.AbstractMqttDecoderTest;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoders;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
-import org.mqttbee.mqtt.ioc.ChannelComponent;
 
 import java.util.Objects;
 
@@ -42,15 +41,13 @@ abstract class AbstractMqtt3DecoderTest extends AbstractMqttDecoderTest {
     AbstractMqtt3DecoderTest(@NotNull final MqttMessageDecoders decoders) {
         super(decoders);
         clientData = new MqttClientData(MqttVersion.MQTT_3_1_1,
-                Objects.requireNonNull(MqttClientIdentifierImpl.from("test")), "localhost", 1883, null, null, false, false,
-                MqttClientExecutorConfigImpl.DEFAULT, null);
+                Objects.requireNonNull(MqttClientIdentifierImpl.from("test")), "localhost", 1883, null, null, false,
+                false, MqttClientExecutorConfigImpl.DEFAULT, null);
     }
 
     @Override
     protected void createChannel() {
-        super.createChannel();
-        clientData.to(channel);
-        ChannelComponent.create(channel, clientData);
+        createChannel(clientData);
         clientData.setClientConnectionData(new MqttClientConnectionData(10, Mqtt5Connect.NO_SESSION_EXPIRY,
                 Mqtt5ConnectRestrictions.DEFAULT_RECEIVE_MAXIMUM, 0, MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT,
                 null, false, false, false, channel));

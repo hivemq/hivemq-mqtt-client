@@ -17,25 +17,17 @@
 
 package org.mqttbee.mqtt;
 
-import io.netty.channel.Channel;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3ServerConnectionData;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ServerConnectionData;
-import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.publish.MqttTopicAliasMapping;
 
 /**
  * @author Silvio Giebl
  */
 public class MqttServerConnectionData implements Mqtt5ServerConnectionData, Mqtt3ServerConnectionData {
-
-    public static int getMaximumPacketSize(@NotNull final Channel channel) {
-        final MqttServerConnectionData serverConnectionData = MqttClientData.from(channel).getRawServerConnectionData();
-        return (serverConnectionData == null) ? MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT :
-                serverConnectionData.getMaximumPacketSize();
-    }
 
     private final int receiveMaximum;
     private final MqttTopicAliasMapping topicAliasMapping;

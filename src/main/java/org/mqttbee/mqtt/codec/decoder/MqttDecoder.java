@@ -42,13 +42,14 @@ import java.util.List;
 public class MqttDecoder extends ByteToMessageDecoder {
 
     public static final String NAME = "decoder";
-
     private static final int MIN_FIXED_HEADER_LENGTH = 2;
 
+    private final MqttClientData clientData;
     private final MqttMessageDecoders decoders;
 
     @Inject
-    MqttDecoder(final MqttMessageDecoders decoders) {
+    MqttDecoder(final MqttClientData clientData, final MqttMessageDecoders decoders) {
+        this.clientData = clientData;
         this.decoders = decoders;
     }
 
@@ -78,8 +79,7 @@ public class MqttDecoder extends ByteToMessageDecoder {
             final int fixedHeaderLength = in.readerIndex() - readerIndexBeforeFixedHeader;
             final int packetSize = fixedHeaderLength + remainingLength;
 
-            final MqttClientConnectionData clientConnectionData =
-                    MqttClientData.from(ctx.channel()).getRawClientConnectionData();
+            final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
             assert clientConnectionData != null;
             if (packetSize > clientConnectionData.getMaximumPacketSize()) {
                 throw new MqttDecoderException(Mqtt5DisconnectReasonCode.PACKET_TOO_LARGE,

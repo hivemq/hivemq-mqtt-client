@@ -50,8 +50,7 @@ public class AbstractMqtt5EncoderTest {
         this.connected = connected;
         clientData =
                 new MqttClientData(MqttVersion.MQTT_5_0, Objects.requireNonNull(MqttClientIdentifierImpl.from("test")),
-                        "localhost", 1883, null, null, false,
-                        false, MqttClientExecutorConfigImpl.DEFAULT, null);
+                        "localhost", 1883, null, null, false, false, MqttClientExecutorConfigImpl.DEFAULT, null);
     }
 
     @BeforeEach
@@ -65,8 +64,7 @@ public class AbstractMqtt5EncoderTest {
     }
 
     private void createChannel() {
-        channel = new EmbeddedChannel(new MqttEncoder(messageEncoders));
-        clientData.to(channel);
+        channel = new EmbeddedChannel(new MqttEncoder(clientData, messageEncoders));
         if (connected) {
             createServerConnectionData(MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT);
         }
