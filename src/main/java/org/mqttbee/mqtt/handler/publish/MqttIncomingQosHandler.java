@@ -24,9 +24,7 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5IncomingQos1ControlProvider;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5IncomingQos2ControlProvider;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.api.mqtt.mqtt5.message.publish.puback.Mqtt5PubAckReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubCompReasonCode;
-import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrec.Mqtt5PubRecReasonCode;
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.advanced.MqttAdvancedClientData;
@@ -56,7 +54,7 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter {
     private final MqttClientData clientData;
     private MqttIncomingPublishService incomingPublishService;
     private final Provider<MqttIncomingPublishService> incomingPublishServiceLazy; // TODO temp
-    private final IntMap<Object> messages; // contains PubAck.class, PubRec.class, a PubRel object or PubComp.class
+    private final IntMap<Object> messages; // contains PubAck.class, PubRec.class, PubComp.class or a PubRel object
 
     private ChannelHandlerContext ctx;
 
@@ -118,13 +116,20 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter {
 
         final Object previousMessage = messages.put(publish.getPacketIdentifier(), MqttPubAck.class);
         if (previousMessage == null) { // new message
-            emitOrQueuePublishQos1Or2(ctx, publish);
-        } else if (previousMessage == MqttPubAck.class) { // resent message (MQTT 3)
-            if (!publish.isDup()) {
-                disconnectDupFlagNotSet();
+            if (!getIncomingPublishService().onPublish(publish)) {
+                disconnectReceiveMaximumExceeded(ctx);
             }
-        } else { // packet id in use
-            ackQos1(ctx, new MqttPubAckBuilder(publish).reasonCode(Mqtt5PubAckReasonCode.PACKET_IDENTIFIER_IN_USE));
+        } else if (previousMessage == MqttPubAck.class) { // resent message
+            if (!publish.isDup()) {
+                disconnectDupFlagNotSet(ctx);
+            }
+        } else if ((previousMessage == MqttPubRec.class) || (previousMessage == MqttPubComp.class)) { //packet id in use
+            //ackQos1(ctx, new MqttPubAckBuilder(publish).reasonCode(Mqtt5PubAckReasonCode.PACKET_IDENTIFIER_IN_USE));
+            MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+                    "Packet Identifier in use: QoS 1 Publish must not be received with the same Id as a QoS 2 Publish");
+        } else { // PubRel: packet id in use
+            MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+                    "Packet Identifier in use: QoS 1 Publish must not be received with the same Id as a PubRel");
         }
     }
 
@@ -133,31 +138,32 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter {
 
         final Object previousMessage = messages.put(publish.getPacketIdentifier(), MqttPubRec.class);
         if (previousMessage == null) { // new message
-            if (emitOrQueuePublishQos1Or2(ctx, publish)) {
+            if (getIncomingPublishService().onPublish(publish)) {
                 ctx.writeAndFlush(buildPubRec(new MqttPubRecBuilder(publish)));
+            } else {
+                disconnectReceiveMaximumExceeded(ctx);
             }
-        } else if (previousMessage == MqttPubRec.class) { // resent message
+        } else if ((previousMessage == MqttPubRec.class) || (previousMessage == MqttPubComp.class)) { // resent message
             if (!publish.isDup()) {
-                disconnectDupFlagNotSet();
+                disconnectDupFlagNotSet(ctx);
             }
-        } else { // packet id in use
-            ctx.writeAndFlush(buildPubRec(
-                    new MqttPubRecBuilder(publish).reasonCode(Mqtt5PubRecReasonCode.PACKET_IDENTIFIER_IN_USE)));
+        } else if (previousMessage == MqttPubAck.class) { // packet id in use
+            //ctx.writeAndFlush(buildPubRec(
+            //        new MqttPubRecBuilder(publish).reasonCode(Mqtt5PubRecReasonCode.PACKET_IDENTIFIER_IN_USE)));
+            MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+                    "Packet Identifier in use: QoS 2 Publish must not be received with the same Id as a QoS 1 Publish");
+        } else { // PubRel: packet id in use
+            MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+                    "Packet Identifier in use: QoS 2 Publish must not be resent after a PubRel is sent");
         }
     }
 
-    private boolean emitOrQueuePublishQos1Or2(
-            @NotNull final ChannelHandlerContext ctx, @NotNull final MqttStatefulPublish publish) {
-
-        if (getIncomingPublishService().onPublish(publish)) {
-            return true;
-        }
+    private static void disconnectReceiveMaximumExceeded(@NotNull final ChannelHandlerContext ctx) {
         MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.RECEIVE_MAXIMUM_EXCEEDED,
-                "Received more QoS 1 and 2 Publish messages than allowed by Receive Maximum");
-        return false;
+                "Received more QoS 1 and 2 Publishes than allowed by Receive Maximum");
     }
 
-    private void disconnectDupFlagNotSet() {
+    private static void disconnectDupFlagNotSet(@NotNull final ChannelHandlerContext ctx) {
         MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
                 "Duplicate flag must be set for resent message");
     }
@@ -166,9 +172,12 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter {
         final Object previousMessage = messages.put(pubRel.getPacketIdentifier(), pubRel);
         if (previousMessage == MqttPubComp.class) { // already emitted
             ackQos2(ctx, new MqttPubCompBuilder(pubRel));
-        } else if (previousMessage != MqttPubRec.class) { // null: may be resent, PubAck: packet id in use
+        } else if (previousMessage == null) { // may be resent
             ackQos2(ctx, new MqttPubCompBuilder(pubRel).reasonCode(Mqtt5PubCompReasonCode.PACKET_IDENTIFIER_NOT_FOUND));
-        }
+        } else if (previousMessage == MqttPubAck.class) { // packet id in use
+            MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+                    "PubRel must not be received with the same Packet Identifier as a QoS 1 Publish");
+        } // PubRec: normal case, PubRel: resent
     }
 
     @CallByThread("Netty EventLoop")
@@ -202,7 +211,7 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter {
         if (advanced != null) {
             final Mqtt5IncomingQos1ControlProvider control = advanced.getIncomingQos1ControlProvider();
             if (control != null) {
-                control.onPublish(pubAckBuilder.getPublish().getStatelessMessage(), pubAckBuilder);
+                control.onPublish(clientData, pubAckBuilder.getPublish().getStatelessMessage(), pubAckBuilder);
             }
         }
         return pubAckBuilder.build();
@@ -214,7 +223,7 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter {
         if (advanced != null) {
             final Mqtt5IncomingQos2ControlProvider control = advanced.getIncomingQos2ControlProvider();
             if (control != null) {
-                control.onPublish(pubRecBuilder.getPublish().getStatelessMessage(), pubRecBuilder);
+                control.onPublish(clientData, pubRecBuilder.getPublish().getStatelessMessage(), pubRecBuilder);
             }
         }
         return pubRecBuilder.build();
@@ -226,7 +235,7 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter {
         if (advanced != null) {
             final Mqtt5IncomingQos2ControlProvider control = advanced.getIncomingQos2ControlProvider();
             if (control != null) {
-                control.onPubRel(pubCompBuilder.getPubRel(), pubCompBuilder);
+                control.onPubRel(clientData, pubCompBuilder.getPubRel(), pubCompBuilder);
             }
         }
         return pubCompBuilder.build();
