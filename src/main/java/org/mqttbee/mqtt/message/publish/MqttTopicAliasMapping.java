@@ -21,32 +21,35 @@ import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.TopicAliasUsage;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 
+import javax.annotation.concurrent.NotThreadSafe;
 import java.util.HashMap;
 import java.util.Random;
 
 /**
  * @author Silvio Giebl
  */
+@NotThreadSafe
 public class MqttTopicAliasMapping {
 
     private static final Random random = new Random();
 
-    private final int size;
+    private final int topicAliasMaximum;
     private final HashMap<String, Integer> hashMap;
     private int nextTopicAlias;
 
-    public MqttTopicAliasMapping(final int size) {
-        this.size = size;
-        hashMap = new HashMap<>(size);
+    public MqttTopicAliasMapping(final int topicAliasMaximum) {
+        this.topicAliasMaximum = topicAliasMaximum;
+        hashMap = new HashMap<>(topicAliasMaximum);
         nextTopicAlias = 1;
     }
 
     public int set(@NotNull final MqttTopicImpl topic, @NotNull final TopicAliasUsage topicAliasUsage) {
         int topicAlias = MqttStatefulPublish.DEFAULT_NO_TOPIC_ALIAS;
         if (topicAliasUsage != TopicAliasUsage.MUST_NOT) {
-            if (nextTopicAlias == size) {
+            if (nextTopicAlias > topicAliasMaximum) {
                 if (topicAliasUsage == TopicAliasUsage.MAY_OVERWRITE) {
-                    topicAlias = random.nextInt(size) + 1;
+                    topicAlias = random.nextInt(topicAliasMaximum) + 1;
+                    hashMap.values().remove(topicAlias);
                     hashMap.put(topic.toString(), topicAlias);
                 }
             } else {
@@ -63,8 +66,8 @@ public class MqttTopicAliasMapping {
         return (topicAlias == null) ? MqttStatefulPublish.DEFAULT_NO_TOPIC_ALIAS : topicAlias;
     }
 
-    public int size() {
-        return size;
+    public int getTopicAliasMaximum() {
+        return topicAliasMaximum;
     }
 
 }

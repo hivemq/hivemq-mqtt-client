@@ -56,9 +56,10 @@ public class MqttServerConnectionData implements Mqtt5ServerConnectionData, Mqtt
             final int receiveMaximum, final int topicAliasMaximum, final int maximumPacketSize,
             final MqttQos maximumQos, final boolean isRetainAvailable, final boolean isWildcardSubscriptionAvailable,
             final boolean isSubscriptionIdentifierAvailable, final boolean isSharedSubscriptionAvailable) {
+
         this.receiveMaximum = receiveMaximum;
         this.maximumPacketSize = maximumPacketSize;
-        this.topicAliasMapping = topicAliasMaximum == 0 ? null : new MqttTopicAliasMapping(topicAliasMaximum);
+        this.topicAliasMapping = (topicAliasMaximum == 0) ? null : new MqttTopicAliasMapping(topicAliasMaximum);
         this.maximumQos = maximumQos;
         this.isRetainAvailable = isRetainAvailable;
         this.isWildcardSubscriptionAvailable = isWildcardSubscriptionAvailable;
@@ -73,7 +74,7 @@ public class MqttServerConnectionData implements Mqtt5ServerConnectionData, Mqtt
 
     @Override
     public int getTopicAliasMaximum() {
-        return (topicAliasMapping == null) ? 0 : topicAliasMapping.size();
+        return (topicAliasMapping == null) ? 0 : topicAliasMapping.getTopicAliasMaximum();
     }
 
     @Nullable

@@ -40,6 +40,7 @@ import java.nio.ByteBuffer;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
+import static org.mqttbee.api.mqtt.mqtt5.message.publish.TopicAliasUsage.*;
 import static org.mqttbee.mqtt.message.publish.MqttPublish.DEFAULT_TOPIC_ALIAS_USAGE;
 import static org.mqttbee.mqtt.message.publish.MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY;
 
@@ -182,7 +183,8 @@ public class Mqtt5PublishBuilder<P> extends FluentBuilder<Mqtt5Publish, P> {
 
     @NotNull
     public Mqtt5PublishBuilder<P> topicAliasUsage(@NotNull final TopicAliasUsage topicAliasUsage) {
-        Preconditions.checkNotNull(topicAliasUsage);
+        Preconditions.checkArgument(
+                topicAliasUsage == MUST_NOT || topicAliasUsage == MAY || topicAliasUsage == MAY_OVERWRITE);
         this.topicAliasUsage = topicAliasUsage;
         return this;
     }
