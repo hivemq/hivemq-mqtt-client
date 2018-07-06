@@ -41,6 +41,7 @@ import org.mqttbee.mqtt.handler.subscribe.MqttSubscriptionHandler;
 import org.mqttbee.mqtt.handler.util.ChannelInboundHandlerWithTimeout;
 import org.mqttbee.mqtt.ioc.ChannelComponent;
 import org.mqttbee.mqtt.ioc.ChannelScope;
+import org.mqttbee.mqtt.message.MqttMessage;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
 import org.mqttbee.mqtt.message.connect.MqttConnectRestrictions;
 import org.mqttbee.mqtt.message.connect.connack.MqttConnAck;
@@ -62,9 +63,8 @@ import org.slf4j.LoggerFactory;
 @ChannelScope
 public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MqttConnectHandler.class);
-
     public static final String NAME = "connect";
+    private static final Logger LOGGER = LoggerFactory.getLogger(MqttConnectHandler.class);
     private static final int CONNACK_TIMEOUT = 60; // TODO configurable
 
     private final MqttConnect connect;
@@ -85,7 +85,6 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
     public void channelActive(final ChannelHandlerContext ctx) {
         if (!connectCalled) {
             connectCalled = true;
-            addClientData(ctx.channel());
             writeConnect(ctx);
         }
         ctx.fireChannelActive();
@@ -97,27 +96,8 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
 
         if (!connectCalled && ctx.channel().isActive()) {
             connectCalled = true;
-            addClientData(ctx.channel());
             writeConnect(ctx);
         }
-    }
-
-    /**
-     * Adds the {@link MqttClientData} and the {@link MqttClientConnectionData} to the channel.
-     *
-     * @param channel the channel to add the client data to.
-     */
-    private void addClientData(@NotNull final Channel channel) {
-        final MqttConnectRestrictions restrictions = connect.getRestrictions();
-
-        clientData.setClientConnectionData(
-                new MqttClientConnectionData(connect.getKeepAlive(), connect.getSessionExpiryInterval(),
-                        restrictions.getReceiveMaximum(), restrictions.getTopicAliasMaximum(),
-                        restrictions.getMaximumPacketSize(), connect.getRawEnhancedAuthProvider(),
-                        connect.getRawWillPublish() != null, connect.isProblemInformationRequested(),
-                        connect.isResponseInformationRequested(), channel));
-
-        clientData.to(channel);
     }
 
     /**
@@ -131,20 +111,40 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
      * @param ctx the channel handler context.
      */
     private void writeConnect(@NotNull final ChannelHandlerContext ctx) {
-        ctx.writeAndFlush(connect).addListener(future -> {
+        addClientData(ctx.channel());
+
+        final boolean noEnhancedAuth = connect.getRawEnhancedAuthProvider() == null;
+        final MqttMessage message =
+                noEnhancedAuth ? connect.createStateful(clientData.getRawClientIdentifier(), null) : connect;
+
+        ctx.writeAndFlush(message).addListener(future -> {
             if (future.isSuccess()) {
-                final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
-                assert clientConnectionData != null;
-                if (clientConnectionData.getEnhancedAuthProvider() == null) {
+                if (noEnhancedAuth) {
                     scheduleTimeout();
                 }
-
                 ctx.pipeline()
                         .addBefore(MqttEncoder.NAME, MqttDecoder.NAME, ChannelComponent.get(ctx.channel()).decoder());
             } else {
                 MqttDisconnectUtil.close(ctx.channel(), future.cause());
             }
         });
+    }
+
+    /**
+     * Adds the {@link MqttClientData} and the {@link MqttClientConnectionData} to the channel.
+     *
+     * @param channel the channel to add the client data to.
+     */
+    private void addClientData(@NotNull final Channel channel) {
+        final MqttConnectRestrictions restrictions = connect.getRestrictions();
+        final MqttClientConnectionData clientConnectionData =
+                new MqttClientConnectionData(connect.getKeepAlive(), connect.getSessionExpiryInterval(),
+                        restrictions.getReceiveMaximum(), restrictions.getTopicAliasMaximum(),
+                        restrictions.getMaximumPacketSize(), connect.getRawEnhancedAuthProvider(),
+                        connect.getRawWillPublish() != null, connect.isProblemInformationRequested(),
+                        connect.isResponseInformationRequested(), channel);
+
+        clientData.setClientConnectionData(clientConnectionData);
     }
 
     @Override

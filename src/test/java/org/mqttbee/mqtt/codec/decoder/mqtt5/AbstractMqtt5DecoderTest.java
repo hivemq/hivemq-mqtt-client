@@ -26,7 +26,6 @@ import org.mqttbee.mqtt.MqttVersion;
 import org.mqttbee.mqtt.codec.decoder.AbstractMqttDecoderTest;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoders;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
-import org.mqttbee.mqtt.ioc.ChannelComponent;
 
 import java.util.Objects;
 
@@ -46,9 +45,7 @@ abstract class AbstractMqtt5DecoderTest extends AbstractMqttDecoderTest {
 
     @Override
     protected void createChannel() {
-        super.createChannel();
-        clientData.to(channel);
-        ChannelComponent.create(channel, clientData);
+        createChannel(clientData);
         createClientConnectionData(Mqtt5ConnectRestrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT);
     }
 

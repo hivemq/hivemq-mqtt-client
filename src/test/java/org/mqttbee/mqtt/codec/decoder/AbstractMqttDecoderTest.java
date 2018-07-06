@@ -21,11 +21,13 @@ import io.netty.channel.embedded.EmbeddedChannel;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.mqttbee.annotations.NotNull;
+import org.mqttbee.mqtt.MqttClientData;
+import org.mqttbee.mqtt.ioc.ChannelComponent;
 
 /**
  * @author Silvio Giebl
  */
-public class AbstractMqttDecoderTest {
+public abstract class AbstractMqttDecoderTest {
 
     private final MqttMessageDecoders decoders;
 
@@ -45,8 +47,11 @@ public class AbstractMqttDecoderTest {
         channel.close();
     }
 
-    protected void createChannel() {
-        channel = new EmbeddedChannel(new MqttDecoder(decoders));
+    protected abstract void createChannel();
+
+    protected void createChannel(@NotNull final MqttClientData clientData) {
+        channel = new EmbeddedChannel(new MqttDecoder(clientData, decoders));
+        ChannelComponent.create(channel, clientData);
     }
 
     public static MqttPingRespDecoder createPingRespDecoder() {

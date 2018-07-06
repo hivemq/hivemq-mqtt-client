@@ -21,7 +21,9 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
+import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.MqttServerConnectionData;
+import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.ioc.ChannelScope;
 import org.mqttbee.mqtt.message.MqttMessage;
 
@@ -37,10 +39,12 @@ public class MqttEncoder extends ChannelOutboundHandlerAdapter {
 
     public static final String NAME = "encoder";
 
+    private final MqttClientData clientData;
     private final MqttMessageEncoders encoders;
 
     @Inject
-    MqttEncoder(final MqttMessageEncoders encoders) {
+    MqttEncoder(final MqttClientData clientData, final MqttMessageEncoders encoders) {
+        this.clientData = clientData;
         this.encoders = encoders;
     }
 
@@ -52,8 +56,12 @@ public class MqttEncoder extends ChannelOutboundHandlerAdapter {
             if (messageEncoder == null) {
                 throw new UnsupportedOperationException();
             }
-            final ByteBuf out = messageEncoder.castAndEncode(message, ctx.alloc(),
-                    MqttServerConnectionData.getMaximumPacketSize(ctx.channel()));
+
+            final MqttServerConnectionData serverConnectionData = clientData.getRawServerConnectionData();
+            final int maximumPacketSize =
+                    (serverConnectionData == null) ? MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT :
+                            serverConnectionData.getMaximumPacketSize();
+            final ByteBuf out = messageEncoder.castAndEncode(message, ctx.alloc(), maximumPacketSize);
             ctx.write(out, promise);
         } else {
             ctx.write(msg, promise);

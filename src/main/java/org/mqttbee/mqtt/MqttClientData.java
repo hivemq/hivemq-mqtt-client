@@ -17,9 +17,6 @@
 
 package org.mqttbee.mqtt;
 
-import com.google.common.base.Preconditions;
-import io.netty.channel.Channel;
-import io.netty.util.AttributeKey;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.MqttClientSslConfig;
@@ -40,13 +37,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class MqttClientData implements Mqtt5ClientData {
 
-    private static final AttributeKey<MqttClientData> KEY = AttributeKey.valueOf("client.data");
-
-    @NotNull
-    public static MqttClientData from(@NotNull final Channel channel) {
-        return Preconditions.checkNotNull(channel.attr(KEY).get(), "Channel client data must not be null.");
-    }
-
     private final MqttVersion mqttVersion;
     private MqttClientIdentifierImpl clientIdentifier;
     private final String serverHost;
@@ -61,7 +51,6 @@ public class MqttClientData implements Mqtt5ClientData {
     private final MqttAdvancedClientData advancedClientData;
     private MqttClientConnectionData clientConnectionData;
     private MqttServerConnectionData serverConnectionData;
-
 
     public MqttClientData(
             @NotNull final MqttVersion mqttVersion, @Nullable final MqttClientIdentifierImpl clientIdentifier,
@@ -222,7 +211,4 @@ public class MqttClientData implements Mqtt5ClientData {
         this.serverConnectionData = serverConnectionData;
     }
 
-    public void to(@NotNull final Channel channel) {
-        channel.attr(KEY).set(this);
-    }
 }
