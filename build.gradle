@@ -67,6 +67,9 @@ dependencies {
 
 license {
     header file('license-header/license-header.txt')
+    mapping {
+        java = 'SLASHSTAR_STYLE'
+    }
 }
 
 spotless {
