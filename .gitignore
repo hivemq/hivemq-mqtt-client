@@ -4,3 +4,4 @@
 .DS_Store
 mqtt-bee.iml
 .idea
+bintray.gradle

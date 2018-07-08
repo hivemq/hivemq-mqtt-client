@@ -1,0 +1,69 @@
+/*
+You can create a local file named .bintray, which will be ignored by git, wherein you can store your bintray
+credentials in the following format and they'll automatically be picked up by this script:
+
+ext {
+    bintray_username = '<username>'
+    bintray_apiKey = '<api key>'
+}
+*/
+if (file('bintray.gradle').exists()) {
+    apply from: 'bintray.gradle'
+}
+
+publishing {
+    /*
+    repositories {
+        maven {
+            url "url here"
+            credentials {
+                username 'username'
+                password 'password'
+            }
+            name "repo name"
+        }
+    }
+    */
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifact sourceJar
+            artifact packageJavadoc
+        }
+    }
+}
+
+javadoc {
+    source = sourceSets.main.allJava
+    classpath = configurations.compileClasspath
+}
+
+task packageJavadoc(type: Jar) {
+    from javadoc
+    classifier = 'javadoc'
+}
+
+task sourceJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allJava
+}
+
+bintray {
+	user = bintray_username
+	key = bintray_apiKey
+	publications = ['mavenJava']
+
+	pkg {
+		repo = 'mqtt-bee'
+		name = 'mqtt-bee'
+		userOrg = 'mqtt-bee'
+		licenses = ['Apache-2.0']
+		vcsUrl = 'https://github.com/mqtt-bee/mqtt-bee'
+		version {
+			name = '1.0.0'
+			desc = '1.0.0'
+			released  = new Date()
+		}
+	}
+
+}

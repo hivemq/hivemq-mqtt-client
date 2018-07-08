@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'maven-publish'
+    id 'com.jfrog.bintray' version '1.8.3'
     id 'idea'
     id 'eclipse'
     id 'net.ltgt.apt-idea' version '0.15'
@@ -10,6 +11,8 @@ plugins {
 
 group 'org.mqtt-bee'
 version '1.0-SNAPSHOT'
+
+apply from: 'publishing.gradle'
 
 sourceCompatibility = 1.8
 
@@ -79,41 +82,3 @@ task execute(type:JavaExec) {
     main = project.hasProperty("mainClass") ? project.getProperty("mainClass") : ""
     systemProperties = System.properties
 }
-
-publishing {
-    /*
-    repositories {
-        maven {
-            url "url here"
-            credentials {
-                username 'username'
-                password 'password'
-            }
-            name "repo name"
-        }
-    }
-    */
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-            artifact sourceJar
-            artifact packageJavadoc
-        }
-    }
-}
-
-javadoc {
-    source = sourceSets.main.allJava
-    classpath = configurations.compileClasspath
-}
-
-task packageJavadoc(type: Jar) {
-    from javadoc
-    classifier = 'javadoc'
-}
-
-task sourceJar(type: Jar) {
-    classifier = 'sources'
-    from sourceSets.main.allJava
-}
-
