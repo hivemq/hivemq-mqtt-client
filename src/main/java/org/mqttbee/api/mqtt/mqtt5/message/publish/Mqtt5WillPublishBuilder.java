@@ -50,7 +50,7 @@ public class Mqtt5WillPublishBuilder<P> extends Mqtt5PublishBuilder<P> {
                 (parentConsumer == null) ? null : publish -> parentConsumer.apply((Mqtt5WillPublish) publish));
     }
 
-    private long delayInterval = DEFAULT_DELAY_INTERVAL;
+    private long delayIntervalSeconds = DEFAULT_DELAY_INTERVAL;
 
     public Mqtt5WillPublishBuilder(@Nullable final Function<? super Mqtt5Publish, P> parentConsumer) {
         super(parentConsumer);
@@ -59,7 +59,7 @@ public class Mqtt5WillPublishBuilder<P> extends Mqtt5PublishBuilder<P> {
     Mqtt5WillPublishBuilder(@NotNull final Mqtt5Publish publish) {
         super(publish);
         if (publish instanceof Mqtt5WillPublish) {
-            delayInterval =
+            delayIntervalSeconds =
                     MustNotBeImplementedUtil.checkNotImplemented(publish, MqttWillPublish.class).getDelayInterval();
         }
     }
@@ -199,9 +199,10 @@ public class Mqtt5WillPublishBuilder<P> extends Mqtt5PublishBuilder<P> {
     }
 
     @NotNull
-    public Mqtt5WillPublishBuilder<P> delayInterval(final long delayInterval) {
-        Preconditions.checkArgument(UnsignedDataTypes.isUnsignedInt(delayInterval));
-        this.delayInterval = delayInterval;
+    public Mqtt5WillPublishBuilder<P> delayInterval(final long delayInterval, @NotNull final TimeUnit timeUnit) {
+        final long delayIntervalSeconds = timeUnit.toSeconds(delayInterval);
+        Preconditions.checkArgument(UnsignedDataTypes.isUnsignedInt(delayIntervalSeconds));
+        this.delayIntervalSeconds = delayIntervalSeconds;
         return this;
     }
 
@@ -211,7 +212,7 @@ public class Mqtt5WillPublishBuilder<P> extends Mqtt5PublishBuilder<P> {
         Preconditions.checkNotNull(topic);
         Preconditions.checkNotNull(qos);
         return new MqttWillPublish(topic, payload, qos, retain, messageExpiryIntervalSeconds, payloadFormatIndicator,
-                contentType, responseTopic, correlationData, userProperties, delayInterval);
+                contentType, responseTopic, correlationData, userProperties, delayIntervalSeconds);
     }
 
 }
