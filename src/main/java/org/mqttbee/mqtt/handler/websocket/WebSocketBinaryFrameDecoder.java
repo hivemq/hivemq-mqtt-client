@@ -16,17 +16,29 @@
 
 package org.mqttbee.mqtt.handler.websocket;
 
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
 import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.List;
 
 /**
  * @author David Katz
+ * @author Silvio Giebl
  */
+@ChannelHandler.Sharable
+@Singleton
 public class WebSocketBinaryFrameDecoder extends MessageToMessageDecoder<WebSocketFrame> {
+
+    public static final String NAME = "ws.decoder";
+
+    @Inject
+    WebSocketBinaryFrameDecoder() {
+    }
 
     @Override
     protected void decode(final ChannelHandlerContext ctx, final WebSocketFrame msg, final List<Object> out) {
