@@ -127,7 +127,9 @@ public class Mqtt5PublishBuilder<P> extends FluentBuilder<Mqtt5Publish, P> {
             final long messageExpiryInterval, @NotNull final TimeUnit timeUnit) {
 
         final long messageExpiryIntervalSeconds = timeUnit.toSeconds(messageExpiryInterval);
-        Preconditions.checkArgument(UnsignedDataTypes.isUnsignedInt(messageExpiryIntervalSeconds));
+        Preconditions.checkArgument(UnsignedDataTypes.isUnsignedInt(messageExpiryIntervalSeconds),
+                "The value of session expiry interval converted in seconds must not exceed the value range of unsigned int. Found: %s which is bigger than %s (max unsigned int).",
+                messageExpiryIntervalSeconds, UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE);
         this.messageExpiryIntervalSeconds = messageExpiryIntervalSeconds;
         return this;
     }

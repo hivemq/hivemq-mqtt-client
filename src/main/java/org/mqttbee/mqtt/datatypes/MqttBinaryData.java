@@ -31,7 +31,7 @@ import java.nio.ByteBuffer;
  */
 public class MqttBinaryData {
 
-    private static final int MAX_LENGTH = 65_535;
+    public static final int MAX_LENGTH = 65_535;
     public static final int EMPTY_LENGTH = 2;
 
     private MqttBinaryData() {

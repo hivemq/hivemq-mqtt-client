@@ -62,7 +62,10 @@ public class Mqtt5DisconnectBuilder<P> extends FluentBuilder<Mqtt5Disconnect, P>
             final long sessionExpiryInterval, @NotNull final TimeUnit timeUnit) {
 
         final long sessionExpiryIntervalSeconds = timeUnit.toSeconds(sessionExpiryInterval);
-        Preconditions.checkArgument(UnsignedDataTypes.isUnsignedInt(sessionExpiryIntervalSeconds));
+        Preconditions.checkArgument(UnsignedDataTypes.isUnsignedInt(sessionExpiryIntervalSeconds),
+                "The value of session expiry interval converted in seconds must not exceed the value range of unsigned int. Found: %s which is bigger than %s (max unsigned int).",
+                sessionExpiryInterval, UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE);
+
         this.sessionExpiryIntervalSeconds = sessionExpiryIntervalSeconds;
         return this;
     }

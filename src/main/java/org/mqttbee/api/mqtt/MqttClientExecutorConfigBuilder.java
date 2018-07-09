@@ -51,7 +51,8 @@ public class MqttClientExecutorConfigBuilder<P> extends FluentBuilder<MqttClient
 
     @NotNull
     public MqttClientExecutorConfigBuilder<P> nettyThreads(final int nettyThreads) {
-        Preconditions.checkArgument(nettyThreads > 0);
+        Preconditions.checkArgument(nettyThreads > 0, "Number of Netty threads must be bigger than 0. Found: %s.",
+                nettyThreads);
         this.nettyThreads = nettyThreads;
         return this;
     }

@@ -137,7 +137,9 @@ public class MqttBuilderUtil {
         if (binary == null) {
             return null;
         }
-        Preconditions.checkArgument(MqttBinaryData.isInRange(binary));
+        Preconditions.checkArgument(MqttBinaryData.isInRange(binary),
+                "Cannot encode given byte array as binary data. Byte array to long. Found: %s bytes. Maximum length is %s.",
+                binary.length, MqttBinaryData.MAX_LENGTH);
         return ByteBufferUtil.wrap(binary);
     }
 
@@ -146,7 +148,10 @@ public class MqttBuilderUtil {
         if (binary == null) {
             return null;
         }
-        Preconditions.checkArgument(MqttBinaryData.isInRange(binary));
+        Preconditions.checkArgument(MqttBinaryData.isInRange(binary),
+                "Cannot encode given byte buffer as binary data. Too many remaining bytes in byte buffer. Found: %s bytes. Maximum length is %s.",
+                binary.remaining(), MqttBinaryData.MAX_LENGTH);
+
         return ByteBufferUtil.slice(binary);
     }
 
