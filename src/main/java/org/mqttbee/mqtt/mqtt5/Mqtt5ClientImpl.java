@@ -15,7 +15,7 @@
  *
  */
 
-package org.mqttbee.mqtt5;
+package org.mqttbee.mqtt.mqtt5;
 
 import com.google.common.base.Preconditions;
 import io.netty.bootstrap.Bootstrap;
