@@ -33,6 +33,8 @@ import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectHandler;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnecter;
 import org.mqttbee.mqtt.handler.publish.*;
 import org.mqttbee.mqtt.handler.subscribe.MqttSubscriptionHandler;
+import org.mqttbee.mqtt.handler.websocket.WebSocketBinaryFrameDecoder;
+import org.mqttbee.mqtt.handler.websocket.WebSocketBinaryFrameEncoder;
 import org.mqttbee.mqtt.persistence.MqttPersistenceModule;
 
 /**
@@ -84,6 +86,10 @@ public interface ChannelComponent {
     MqttOutgoingPublishService outgoingPublishService();
 
     MqttPublishFlowables publishFlowables();
+
+    WebSocketBinaryFrameDecoder webSocketBinaryFrameDecoder();
+
+    WebSocketBinaryFrameEncoder webSocketBinaryFrameEncoder();
 
     @Subcomponent.Builder
     interface Builder {

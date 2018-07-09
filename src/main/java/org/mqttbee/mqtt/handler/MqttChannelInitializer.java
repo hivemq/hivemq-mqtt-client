@@ -31,10 +31,12 @@ import org.mqttbee.api.mqtt.MqttWebsocketConfig;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.codec.encoder.MqttEncoder;
+import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.handler.auth.MqttAuthHandler;
 import org.mqttbee.mqtt.handler.auth.MqttDisconnectOnAuthHandler;
 import org.mqttbee.mqtt.handler.connect.MqttConnectHandler;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectHandler;
+import org.mqttbee.mqtt.handler.ssl.SslUtil;
 import org.mqttbee.mqtt.handler.websocket.MqttWebSocketClientProtocolHandler;
 import org.mqttbee.mqtt.handler.websocket.WebSocketBinaryFrameDecoder;
 import org.mqttbee.mqtt.handler.websocket.WebSocketBinaryFrameEncoder;
@@ -42,11 +44,7 @@ import org.mqttbee.mqtt.ioc.ChannelComponent;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
 
 import javax.net.ssl.SSLException;
-import java.net.URI;
 import java.net.URISyntaxException;
-
-import static org.mqttbee.mqtt.datatypes.MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT;
-import static org.mqttbee.mqtt.handler.ssl.SslUtil.createSslHandler;
 
 /**
  * Default channel initializer.
@@ -56,13 +54,8 @@ import static org.mqttbee.mqtt.handler.ssl.SslUtil.createSslHandler;
  */
 public class MqttChannelInitializer extends ChannelInitializer<Channel> {
 
-    private static final String HTTP_CODEC = "http-codec";
-    private static final String HTTP_AGGREGATOR = "http-aggregator";
-    private static final String WEBSOCKETS_CLIENT = "websockets-client";
-    private static final String WS_BINARYFRAME_CREATOR = "ws-binaryframe-creator";
-    private static final String WS_BINARYFRAME_UNPACKER = "ws-binaryframe-unpacker";
-    private static final String WEBSOCKET_URI_SCHEME = "ws";
-    private static final String WEBSOCKET_TLS_URI_SCHEME = "wss";
+    private static final String HTTP_CODEC_NAME = "http.codec";
+    private static final String HTTP_AGGREGATOR_NAME = "http.aggregator";
 
     private final MqttConnect connect;
     private final SingleEmitter<Mqtt5ConnAck> connAckEmitter;
@@ -94,7 +87,7 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
         }
     }
 
-    private void initMqttHandlers(@NotNull final ChannelPipeline pipeline) {
+    public void initMqttHandlers(@NotNull final ChannelPipeline pipeline) {
         pipeline.addLast(MqttEncoder.NAME, channelComponent.encoder());
 
         if (connect.getRawEnhancedAuthProvider() == null) {
@@ -112,21 +105,15 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
             @NotNull final ChannelPipeline pipeline, @NotNull final MqttWebsocketConfig websocketConfig) {
 
         try {
-            final URI serverUri = new URI(clientData.usesSsl() ? WEBSOCKET_TLS_URI_SCHEME : WEBSOCKET_URI_SCHEME, null,
-                    clientData.getServerHost(), clientData.getServerPort(), "/" + websocketConfig.getServerPath(), null,
-                    null);
             final MqttWebSocketClientProtocolHandler wsProtocolHandler =
-                    new MqttWebSocketClientProtocolHandler(serverUri);
+                    new MqttWebSocketClientProtocolHandler(clientData, websocketConfig, this);
 
-            wsProtocolHandler.onWebSocketHandshakeComplete(() -> {
-                pipeline.addLast(WS_BINARYFRAME_CREATOR, new WebSocketBinaryFrameEncoder());
-                pipeline.addLast(WS_BINARYFRAME_UNPACKER, new WebSocketBinaryFrameDecoder());
-                this.initMqttHandlers(pipeline);
-            });
-
-            pipeline.addLast(HTTP_CODEC, new HttpClientCodec());
-            pipeline.addLast(HTTP_AGGREGATOR, new HttpObjectAggregator(MAXIMUM_PACKET_SIZE_LIMIT));
-            pipeline.addLast(WEBSOCKETS_CLIENT, wsProtocolHandler);
+            pipeline.addLast(HTTP_CODEC_NAME, new HttpClientCodec());
+            pipeline.addLast(
+                    HTTP_AGGREGATOR_NAME, new HttpObjectAggregator(MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT));
+            pipeline.addLast(MqttWebSocketClientProtocolHandler.NAME, wsProtocolHandler);
+            pipeline.addLast(WebSocketBinaryFrameEncoder.NAME, channelComponent.webSocketBinaryFrameEncoder());
+            pipeline.addLast(WebSocketBinaryFrameDecoder.NAME, channelComponent.webSocketBinaryFrameDecoder());
 
         } catch (final URISyntaxException e) {
             Exceptions.propagate(e);
@@ -135,7 +122,7 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
 
     private void initSsl(@NotNull final Channel channel, @NotNull final MqttClientSslConfig sslConfig) {
         try {
-            final SslHandler sslHandler = createSslHandler(channel, sslConfig);
+            final SslHandler sslHandler = SslUtil.createSslHandler(channel, sslConfig);
             channel.pipeline().addFirst(sslHandler);
 
         } catch (final SSLException e) {
