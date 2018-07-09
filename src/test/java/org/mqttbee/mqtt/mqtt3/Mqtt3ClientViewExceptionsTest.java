@@ -37,7 +37,7 @@ import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
-import org.mqttbee.mqtt5.Mqtt5ClientImpl;
+import org.mqttbee.mqtt.mqtt5.Mqtt5ClientImpl;
 import org.mqttbee.rx.FlowableWithSingleSplit;
 
 import static org.junit.jupiter.api.Assertions.*;

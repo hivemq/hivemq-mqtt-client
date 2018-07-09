@@ -29,7 +29,7 @@ import org.mqttbee.mqtt.MqttClientExecutorConfigImpl;
 import org.mqttbee.mqtt.MqttVersion;
 import org.mqttbee.mqtt.advanced.MqttAdvancedClientData;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
-import org.mqttbee.mqtt5.Mqtt5ClientImpl;
+import org.mqttbee.mqtt.mqtt5.Mqtt5ClientImpl;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 
 /**

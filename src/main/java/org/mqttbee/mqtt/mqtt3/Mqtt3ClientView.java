@@ -45,7 +45,7 @@ import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeView;
 import org.mqttbee.mqtt.message.subscribe.suback.mqtt3.Mqtt3SubAckView;
 import org.mqttbee.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeView;
 import org.mqttbee.mqtt.mqtt3.exceptions.Mqtt3ExceptionFactory;
-import org.mqttbee.mqtt5.Mqtt5ClientImpl;
+import org.mqttbee.mqtt.mqtt5.Mqtt5ClientImpl;
 import org.mqttbee.rx.FlowableWithSingle;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 
