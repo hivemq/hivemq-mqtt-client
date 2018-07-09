@@ -91,7 +91,9 @@ public class Mqtt5SubscriptionBuilder<P> extends FluentBuilder<Mqtt5Subscription
     public Mqtt5Subscription build() {
         Preconditions.checkNotNull(topicFilter);
         Preconditions.checkNotNull(qos);
-        Preconditions.checkArgument(!(topicFilter.isShared() && noLocal));
+        Preconditions.checkArgument(
+                !(topicFilter.isShared() && noLocal),
+                "It is a Protocol Error to set no local to true on a Shared Subscription.");
         return new MqttSubscription(topicFilter, qos, noLocal, retainHandling, retainAsPublished);
     }
 

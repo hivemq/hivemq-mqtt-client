@@ -63,7 +63,9 @@ public class Mqtt3ConnectBuilder<P> extends FluentBuilder<Mqtt3Connect, P> {
     @NotNull
     public Mqtt3ConnectBuilder<P> keepAlive(final int keepAlive, @NotNull final TimeUnit timeUnit) {
         final long keepAliveSeconds = timeUnit.toSeconds(keepAlive);
-        Preconditions.checkArgument(UnsignedDataTypes.isUnsignedShort(keepAliveSeconds));
+        Preconditions.checkArgument(UnsignedDataTypes.isUnsignedShort(keepAliveSeconds),
+                "The value of keep alive converted in seconds must not exceed the value range of unsigned short. Found: %s which is bigger than %s (max unsigned short).",
+                keepAliveSeconds, UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE);
         this.keepAliveSeconds = (int) keepAliveSeconds;
         return this;
     }

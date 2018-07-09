@@ -77,7 +77,9 @@ public class Mqtt5ConnectBuilder<P> extends FluentBuilder<Mqtt5Connect, P> {
     @NotNull
     public Mqtt5ConnectBuilder<P> keepAlive(final int keepAlive, @NotNull final TimeUnit timeUnit) {
         final long keepAliveSeconds = timeUnit.toSeconds(keepAlive);
-        Preconditions.checkArgument(UnsignedDataTypes.isUnsignedShort(keepAliveSeconds));
+        Preconditions.checkArgument(UnsignedDataTypes.isUnsignedShort(keepAliveSeconds),
+                "The value of keep alive converted in seconds must not exceed the value range of unsigned short. Found: %s which is bigger than %s (max unsigned short).",
+                keepAliveSeconds, UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE);
         this.keepAliveSeconds = (int) keepAliveSeconds;
         return this;
     }
@@ -93,7 +95,10 @@ public class Mqtt5ConnectBuilder<P> extends FluentBuilder<Mqtt5Connect, P> {
             final long sessionExpiryInterval, @NotNull final TimeUnit timeUnit) {
 
         final long sessionExpiryIntervalSeconds = timeUnit.toSeconds(sessionExpiryInterval);
-        Preconditions.checkArgument(UnsignedDataTypes.isUnsignedInt(sessionExpiryIntervalSeconds));
+        Preconditions.checkArgument(UnsignedDataTypes.isUnsignedInt(sessionExpiryIntervalSeconds),
+                "The value of session expiry interval converted in seconds must not exceed the value range of unsigned int. Found: %s which is bigger than %s (max unsigned int).",
+                keepAliveSeconds, UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE);
+
         this.sessionExpiryIntervalSeconds = sessionExpiryIntervalSeconds;
         return this;
     }
