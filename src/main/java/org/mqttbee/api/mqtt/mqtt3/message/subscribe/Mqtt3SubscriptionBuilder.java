@@ -61,15 +61,15 @@ public class Mqtt3SubscriptionBuilder<P> extends FluentBuilder<Mqtt3Subscription
 
     @NotNull
     public Mqtt3SubscriptionBuilder<P> qos(@NotNull final MqttQos qos) {
-        this.qos = Preconditions.checkNotNull(qos);
+        this.qos = Preconditions.checkNotNull(qos, "QoS must not be null.");
         return this;
     }
 
     @NotNull
     @Override
     public Mqtt3Subscription build() {
-        Preconditions.checkNotNull(topicFilter);
-        Preconditions.checkNotNull(qos);
+        Preconditions.checkNotNull(topicFilter, "Topic filter must not be null.");
+        Preconditions.checkNotNull(qos, "QoS must not be null.");
         return Mqtt3SubscriptionView.of(topicFilter, qos);
     }
 

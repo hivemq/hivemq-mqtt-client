@@ -88,7 +88,7 @@ public class Mqtt3PublishBuilder<P> extends FluentBuilder<Mqtt3Publish, P> {
 
     @NotNull
     public Mqtt3PublishBuilder<P> qos(@NotNull final MqttQos qos) {
-        this.qos = Preconditions.checkNotNull(qos);
+        this.qos = Preconditions.checkNotNull(qos, "QoS must not be null.");
         return this;
     }
 
@@ -101,8 +101,8 @@ public class Mqtt3PublishBuilder<P> extends FluentBuilder<Mqtt3Publish, P> {
     @NotNull
     @Override
     public Mqtt3Publish build() {
-        Preconditions.checkNotNull(topic);
-        Preconditions.checkNotNull(qos);
+        Preconditions.checkNotNull(topic, "Topic must not be null.");
+        Preconditions.checkNotNull(qos, "QoS must not be null.");
         return Mqtt3PublishView.of(topic, payload, qos, retain);
     }
 

@@ -44,7 +44,7 @@ public class MqttClientData implements Mqtt5ClientData {
 
     @NotNull
     public static MqttClientData from(@NotNull final Channel channel) {
-        return Preconditions.checkNotNull(channel.attr(KEY).get());
+        return Preconditions.checkNotNull(channel.attr(KEY).get(), "Channel client data must not be null.");
     }
 
     private final MqttVersion mqttVersion;

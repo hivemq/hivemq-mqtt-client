@@ -42,7 +42,7 @@ public class KeyStoreUtil {
     public static TrustManagerFactory trustManagerFromKeystore(
             @NotNull final File trustStoreFile, @NotNull final String trustStorePassword) throws SSLException {
 
-        Preconditions.checkNotNull(trustStoreFile, "Truststore must not be null");
+        Preconditions.checkNotNull(trustStoreFile, "Truststore file must not be null.");
         try (final FileInputStream fileInputStream = new FileInputStream(trustStoreFile)) {
             final KeyStore keyStoreTrust = KeyStore.getInstance(KEYSTORE_TYPE);
             keyStoreTrust.load(fileInputStream, trustStorePassword.toCharArray());
@@ -65,7 +65,7 @@ public class KeyStoreUtil {
             @NotNull final File keyStoreFile, @NotNull final String keyStorePassword,
             @NotNull final String privateKeyPassword) throws SSLException {
 
-        Preconditions.checkNotNull(keyStoreFile, "Keystore must not be null");
+        Preconditions.checkNotNull(keyStoreFile, "Keystore file must not be null.");
         try (final FileInputStream fileInputStream = new FileInputStream(keyStoreFile)) {
             final KeyStore keyStore = KeyStore.getInstance(KEYSTORE_TYPE);
             keyStore.load(fileInputStream, keyStorePassword.toCharArray());

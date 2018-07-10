@@ -145,7 +145,7 @@ public class Mqtt5ClientImpl implements Mqtt5Client {
     @NotNull
     @Override
     public Flowable<Mqtt5Publish> publishes(@NotNull final MqttGlobalPublishFlowType type) {
-        Preconditions.checkNotNull(type);
+        Preconditions.checkNotNull(type, "Global publish flow type must not be null.");
 
         return new MqttGlobalIncomingPublishFlowable(type, clientData).observeOn(
                 clientData.getExecutorConfig().getApplicationScheduler());

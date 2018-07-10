@@ -112,7 +112,7 @@ public class Mqtt5PublishBuilder<P> extends FluentBuilder<Mqtt5Publish, P> {
 
     @NotNull
     public Mqtt5PublishBuilder<P> qos(@NotNull final MqttQos qos) {
-        this.qos = Preconditions.checkNotNull(qos);
+        this.qos = Preconditions.checkNotNull(qos, "QoS must not be null.");
         return this;
     }
 
@@ -205,8 +205,8 @@ public class Mqtt5PublishBuilder<P> extends FluentBuilder<Mqtt5Publish, P> {
     @NotNull
     @Override
     public Mqtt5Publish build() {
-        Preconditions.checkNotNull(topic);
-        Preconditions.checkNotNull(qos);
+        Preconditions.checkNotNull(topic, "Topic must not be null.");
+        Preconditions.checkNotNull(qos, "QoS must not be null.");
         return new MqttPublish(topic, payload, qos, retain, messageExpiryIntervalSeconds, payloadFormatIndicator,
                 contentType, responseTopic, correlationData, topicAliasUsage, userProperties);
     }

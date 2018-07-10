@@ -51,7 +51,7 @@ public interface Mqtt5UserProperties {
      */
     @NotNull
     static Mqtt5UserProperties of(@NotNull final Mqtt5UserProperty... userProperties) {
-        Preconditions.checkNotNull(userProperties);
+        Preconditions.checkNotNull(userProperties, "User properties must not be null.");
 
         final ImmutableList.Builder<MqttUserPropertyImpl> builder =
                 ImmutableList.builderWithExpectedSize(userProperties.length);

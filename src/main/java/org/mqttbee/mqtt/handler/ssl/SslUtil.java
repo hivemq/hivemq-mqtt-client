@@ -34,8 +34,8 @@ public class SslUtil {
     static SSLEngine createSslEngine(@NotNull final Channel channel, @NotNull final MqttClientSslConfig sslConfig)
             throws SSLException {
 
-        Preconditions.checkNotNull(channel, "channel must not be null");
-        Preconditions.checkNotNull(sslConfig, "SslData must not be null");
+        Preconditions.checkNotNull(channel, "Channel must not be null.");
+        Preconditions.checkNotNull(sslConfig, "SSL config must not be null.");
 
         final SSLEngine sslEngine = createSslContext(sslConfig).newEngine(channel.alloc());
 

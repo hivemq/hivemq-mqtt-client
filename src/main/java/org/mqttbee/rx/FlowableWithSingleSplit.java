@@ -133,8 +133,8 @@ public class FlowableWithSingleSplit<T, S, F> extends FlowableWithSingle<S, F> {
     public <SM, FM> FlowableWithSingleSplit<T, SM, FM> mapBoth(
             @NotNull final Function<S, SM> singleMapper, @NotNull final Function<F, FM> flowableMapper) {
 
-        Preconditions.checkNotNull(singleMapper);
-        Preconditions.checkNotNull(flowableMapper);
+        Preconditions.checkNotNull(singleMapper, "Single mapper must not be null.");
+        Preconditions.checkNotNull(flowableMapper, "Flowable mapper must not be null.");
         return new FlowableWithSingleSplit<>(
                 source, mapCaster(singleCaster, singleMapper), mapCaster(flowableCaster, flowableMapper), null);
     }
@@ -142,7 +142,7 @@ public class FlowableWithSingleSplit<T, S, F> extends FlowableWithSingle<S, F> {
     @NotNull
     @Override
     public FlowableWithSingleSplit<T, S, F> mapError(@NotNull final Function<Throwable, Throwable> mapper) {
-        Preconditions.checkNotNull(mapper);
+        Preconditions.checkNotNull(mapper, "Mapper must not be null.");
         final Function<Throwable, Flowable<T>> resumeMapper = throwable -> Flowable.error(mapper.apply(throwable));
         return new FlowableWithSingleSplit<>(
                 source.onErrorResumeNext(resumeMapper), singleCaster, flowableCaster, singleConsumer);
@@ -151,7 +151,7 @@ public class FlowableWithSingleSplit<T, S, F> extends FlowableWithSingle<S, F> {
     @NotNull
     @Override
     public Flowable<F> doOnSingle(@NotNull final BiConsumer<S, Subscription> singleConsumer) {
-        Preconditions.checkNotNull(singleConsumer);
+        Preconditions.checkNotNull(singleConsumer, "Single consumer must not be null.");
         return new FlowableWithSingleSplit<>(source, singleCaster, flowableCaster, singleConsumer);
     }
 

@@ -44,7 +44,7 @@ public class MqttClientExecutorConfigBuilder<P> extends FluentBuilder<MqttClient
 
     @NotNull
     public MqttClientExecutorConfigBuilder<P> nettyExecutor(@NotNull final Executor nettyExecutor) {
-        Preconditions.checkNotNull(nettyExecutor);
+        Preconditions.checkNotNull(nettyExecutor, "Netty executor must not be null.");
         this.nettyExecutor = nettyExecutor;
         return this;
     }
@@ -59,7 +59,7 @@ public class MqttClientExecutorConfigBuilder<P> extends FluentBuilder<MqttClient
 
     @NotNull
     public MqttClientExecutorConfigBuilder<P> applicationScheduler(@NotNull final Scheduler applicationScheduler) {
-        Preconditions.checkNotNull(applicationScheduler);
+        Preconditions.checkNotNull(applicationScheduler, "Application scheduler must not be null.");
         this.applicationScheduler = applicationScheduler;
         return this;
     }
