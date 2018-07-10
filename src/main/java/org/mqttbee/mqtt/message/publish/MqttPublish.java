@@ -170,7 +170,7 @@ public class MqttPublish extends MqttMessageWithUserPropertiesImpl implements Mq
 
     @NotNull
     @Override
-    public TopicAliasUsage getTopicAliasUsage() {
+    public TopicAliasUsage usesTopicAlias() {
         return topicAliasUsage;
     }
 

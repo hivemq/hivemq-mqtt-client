@@ -181,7 +181,7 @@ public class Mqtt5WillPublishBuilder<P> extends Mqtt5PublishBuilder<P> {
     @NotNull
     @Override
     @Deprecated
-    public Mqtt5WillPublishBuilder<P> topicAliasUsage(@NotNull final TopicAliasUsage topicAliasUsage) {
+    public Mqtt5WillPublishBuilder<P> useTopicAlias(@NotNull final TopicAliasUsage topicAliasUsage) {
         throw new UnsupportedOperationException();
     }
 

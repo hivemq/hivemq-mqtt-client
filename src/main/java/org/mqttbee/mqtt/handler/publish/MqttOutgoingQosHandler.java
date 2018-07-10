@@ -162,7 +162,7 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter {
             if (topicAlias != DEFAULT_NO_TOPIC_ALIAS) {
                 isNewTopicAlias = false;
             } else {
-                topicAlias = topicAliasMapping.set(topic, publish.getTopicAliasUsage());
+                topicAlias = topicAliasMapping.set(topic, publish.usesTopicAlias());
                 isNewTopicAlias = topicAlias != DEFAULT_NO_TOPIC_ALIAS;
             }
         }
