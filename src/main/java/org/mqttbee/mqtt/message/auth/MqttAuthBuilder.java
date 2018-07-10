@@ -45,8 +45,8 @@ public class MqttAuthBuilder implements Mqtt5AuthBuilder {
     public MqttAuthBuilder(
             @NotNull final Mqtt5AuthReasonCode reasonCode, @NotNull final MqttUTF8StringImpl method) {
 
-        Preconditions.checkNotNull(reasonCode);
-        Preconditions.checkNotNull(method);
+        Preconditions.checkNotNull(reasonCode, "Reason code must not be null.");
+        Preconditions.checkNotNull(method, "Method must not be null.");
         this.reasonCode = reasonCode;
         this.method = method;
     }

@@ -64,7 +64,7 @@ public class Mqtt5SubscriptionBuilder<P> extends FluentBuilder<Mqtt5Subscription
 
     @NotNull
     public Mqtt5SubscriptionBuilder<P> qos(@NotNull final MqttQos qos) {
-        this.qos = Preconditions.checkNotNull(qos);
+        this.qos = Preconditions.checkNotNull(qos, "QoS must not be null.");
         return this;
     }
 
@@ -76,7 +76,7 @@ public class Mqtt5SubscriptionBuilder<P> extends FluentBuilder<Mqtt5Subscription
 
     @NotNull
     public Mqtt5SubscriptionBuilder<P> retainHandling(@NotNull final Mqtt5RetainHandling retainHandling) {
-        this.retainHandling = Preconditions.checkNotNull(retainHandling);
+        this.retainHandling = Preconditions.checkNotNull(retainHandling, "Retain handling must not be null.");
         return this;
     }
 
@@ -89,8 +89,8 @@ public class Mqtt5SubscriptionBuilder<P> extends FluentBuilder<Mqtt5Subscription
     @NotNull
     @Override
     public Mqtt5Subscription build() {
-        Preconditions.checkNotNull(topicFilter);
-        Preconditions.checkNotNull(qos);
+        Preconditions.checkNotNull(topicFilter, "Topic filter must not be null.");
+        Preconditions.checkNotNull(qos, "QoS must not be null.");
         Preconditions.checkArgument(
                 !(topicFilter.isShared() && noLocal),
                 "It is a Protocol Error to set no local to true on a Shared Subscription.");

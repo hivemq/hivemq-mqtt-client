@@ -61,7 +61,7 @@ public class MqttClientBuilder {
 
     @NotNull
     public MqttClientBuilder serverHost(@NotNull final String host) {
-        this.serverHost = Preconditions.checkNotNull(host);
+        this.serverHost = Preconditions.checkNotNull(host, "Server host must not be null.");
         return this;
     }
 
@@ -86,7 +86,7 @@ public class MqttClientBuilder {
                 serverPort = DEFAULT_SERVER_PORT_WEBSOCKET_SSL;
             }
         }
-        this.sslConfig = Preconditions.checkNotNull(sslConfig);
+        this.sslConfig = Preconditions.checkNotNull(sslConfig, "SSL config must not be null.");
         return this;
     }
 
@@ -109,7 +109,7 @@ public class MqttClientBuilder {
                 serverPort = DEFAULT_SERVER_PORT_WEBSOCKET_SSL;
             }
         }
-        this.websocketConfig = Preconditions.checkNotNull(websocketConfig);
+        this.websocketConfig = Preconditions.checkNotNull(websocketConfig, "WebSocket config must not be null.");
         return this;
     }
 

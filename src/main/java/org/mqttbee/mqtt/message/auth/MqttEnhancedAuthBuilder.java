@@ -35,7 +35,7 @@ public class MqttEnhancedAuthBuilder implements Mqtt5EnhancedAuthBuilder {
     private ByteBuffer data;
 
     public MqttEnhancedAuthBuilder(@NotNull final MqttUTF8StringImpl method) {
-        Preconditions.checkNotNull(method);
+        Preconditions.checkNotNull(method, "Method must not be null.");
         this.method = method;
     }
 

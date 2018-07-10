@@ -40,9 +40,9 @@ public class Mqtt3ClientBuilder extends MqttClientBuilder {
             @Nullable final MqttClientSslConfig sslConfig, @Nullable final MqttWebsocketConfig websocketConfig,
             @NotNull final MqttClientExecutorConfigImpl executorConfig) {
 
-        Preconditions.checkNotNull(identifier);
-        Preconditions.checkNotNull(serverHost);
-        Preconditions.checkNotNull(executorConfig);
+        Preconditions.checkNotNull(identifier, "Identifier must not be null.");
+        Preconditions.checkNotNull(serverHost, "Server host must not be null.");
+        Preconditions.checkNotNull(executorConfig, "Executor config must not be null.");
 
         this.identifier = identifier;
         this.serverHost = serverHost;

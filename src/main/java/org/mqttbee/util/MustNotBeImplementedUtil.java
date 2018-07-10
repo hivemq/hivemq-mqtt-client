@@ -40,7 +40,7 @@ public class MustNotBeImplementedUtil {
     @NotNull
     @SuppressWarnings("unchecked")
     public static <S, T extends S> T checkNotImplemented(@NotNull final S object, @NotNull final Class<T> type) {
-        Preconditions.checkNotNull(object);
+        Preconditions.checkNotNull(object, "Object must not be null.");
         if (type.isInstance(object)) {
             return (T) object;
         }

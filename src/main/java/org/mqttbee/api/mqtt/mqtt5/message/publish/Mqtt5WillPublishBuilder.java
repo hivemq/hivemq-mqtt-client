@@ -212,8 +212,8 @@ public class Mqtt5WillPublishBuilder<P> extends Mqtt5PublishBuilder<P> {
     @NotNull
     @Override
     public Mqtt5WillPublish build() {
-        Preconditions.checkNotNull(topic);
-        Preconditions.checkNotNull(qos);
+        Preconditions.checkNotNull(topic, "Topic must not be null.");
+        Preconditions.checkNotNull(qos, "QoS must not be null.");
         return new MqttWillPublish(topic, payload, qos, retain, messageExpiryIntervalSeconds, payloadFormatIndicator,
                 contentType, responseTopic, correlationData, userProperties, delayIntervalSeconds);
     }

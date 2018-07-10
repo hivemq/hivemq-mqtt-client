@@ -38,7 +38,7 @@ public class MqttTopicBuilder<P> extends FluentBuilder<MqttTopic, P> {
 
     @NotNull
     public MqttTopicBuilder<P> addLevel(@NotNull final String subTopic) {
-        Preconditions.checkNotNull(subTopic);
+        Preconditions.checkNotNull(subTopic, "Subtopic must not be null.");
         stringBuilder.append(MqttTopic.TOPIC_LEVEL_SEPARATOR).append(subTopic);
         return this;
     }
