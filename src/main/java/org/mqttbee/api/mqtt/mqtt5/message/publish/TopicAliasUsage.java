@@ -21,29 +21,27 @@ package org.mqttbee.api.mqtt.mqtt5.message.publish;
  * The handling for using a topic alias.
  *
  * @author Silvio Giebl
+ * @author Christian Hoff
  */
 public enum TopicAliasUsage {
 
     /**
-     * Indicates that an outgoing PUBLISH packet must not use a topic alias.
+     * Indicates that a PUBLISH packet (incoming or outgoing) uses a topic alias. In case of an outgoing PUBLISH packet
+     * and if all topic aliases are in use, it will override an existing topic alias.
+     *
+     * @see org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions#getTopicAliasMaximum()
      */
-    MUST_NOT,
+    YES,
     /**
-     * Indicates that an outgoing PUBLISH packet may use a topic alias.
+     * Indicates that a PUBLISH packet (incoming or outgoing) does not use a topic alias.
      */
-    MAY,
+    NO,
     /**
-     * Indicates that an outgoing PUBLISH packet may use a topic alias and also may overwrite an existing topic alias
-     * mapping.
+     * Indicates that an outgoing PUBLISH packet will use a topic alias, if there are some unused topic aliases
+     * available.
+     *
+     * @see org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions#getTopicAliasMaximum()
      */
-    MAY_OVERWRITE,
-    /**
-     * Indicates that an incoming PUBLISH packet does not have a topic alias.
-     */
-    HAS_NOT,
-    /**
-     * Indicates that an incoming PUBLISH packet has a topic alias.
-     */
-    HAS
+    IF_AVAILABLE
 
 }

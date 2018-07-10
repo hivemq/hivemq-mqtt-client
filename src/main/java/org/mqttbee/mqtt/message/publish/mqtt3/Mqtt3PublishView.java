@@ -54,7 +54,7 @@ public class Mqtt3PublishView implements Mqtt3Publish {
             final boolean isRetain) {
 
         return new MqttPublish(topic, payload, qos, isRetain, MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null,
-                null, null, TopicAliasUsage.MUST_NOT, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
+                null, null, TopicAliasUsage.NO, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
     }
 
     @NotNull

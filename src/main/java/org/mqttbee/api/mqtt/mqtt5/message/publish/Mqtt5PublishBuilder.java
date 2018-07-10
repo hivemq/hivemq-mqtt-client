@@ -185,8 +185,7 @@ public class Mqtt5PublishBuilder<P> extends FluentBuilder<Mqtt5Publish, P> {
 
     @NotNull
     public Mqtt5PublishBuilder<P> topicAliasUsage(@NotNull final TopicAliasUsage topicAliasUsage) {
-        Preconditions.checkArgument(
-                topicAliasUsage == MUST_NOT || topicAliasUsage == MAY || topicAliasUsage == MAY_OVERWRITE);
+        Preconditions.checkArgument(topicAliasUsage == NO || topicAliasUsage == IF_AVAILABLE || topicAliasUsage == YES);
         this.topicAliasUsage = topicAliasUsage;
         return this;
     }
