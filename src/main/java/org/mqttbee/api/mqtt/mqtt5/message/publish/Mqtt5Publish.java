@@ -118,7 +118,7 @@ public interface Mqtt5Publish extends Mqtt5Message, Mqtt5SubscribeResult {
      * @return the handling for using a topic alias.
      */
     @NotNull
-    TopicAliasUsage getTopicAliasUsage();
+    TopicAliasUsage usesTopicAlias();
 
     /**
      * @return the optional user properties of this PUBLISH packet.
