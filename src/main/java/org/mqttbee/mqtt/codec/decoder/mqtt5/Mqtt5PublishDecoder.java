@@ -100,7 +100,7 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
         ByteBuffer correlationData = null;
         ImmutableList.Builder<MqttUserPropertyImpl> userPropertiesBuilder = null;
         int topicAlias = DEFAULT_NO_TOPIC_ALIAS;
-        TopicAliasUsage topicAliasUsage = TopicAliasUsage.HAS_NOT;
+        TopicAliasUsage topicAliasUsage = TopicAliasUsage.NO;
         ImmutableIntArray.Builder subscriptionIdentifiersBuilder = null;
 
         final int propertiesStartIndex = in.readerIndex();
@@ -154,7 +154,7 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
                         throw new MqttDecoderException(
                                 Mqtt5DisconnectReasonCode.TOPIC_ALIAS_INVALID, "topic alias must not be 0");
                     }
-                    topicAliasUsage = TopicAliasUsage.HAS;
+                    topicAliasUsage = TopicAliasUsage.YES;
                     break;
 
                 case SUBSCRIPTION_IDENTIFIER:

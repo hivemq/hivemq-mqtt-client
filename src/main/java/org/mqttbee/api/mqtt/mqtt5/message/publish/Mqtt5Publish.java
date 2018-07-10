@@ -43,7 +43,7 @@ public interface Mqtt5Publish extends Mqtt5Message, Mqtt5SubscribeResult {
      * The default handling for using a topic alias.
      */
     @NotNull
-    TopicAliasUsage DEFAULT_TOPIC_ALIAS_USAGE = TopicAliasUsage.MUST_NOT;
+    TopicAliasUsage DEFAULT_TOPIC_ALIAS_USAGE = TopicAliasUsage.NO;
 
     @NotNull
     static Mqtt5PublishBuilder<Void> builder() {

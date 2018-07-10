@@ -25,8 +25,11 @@ import javax.annotation.concurrent.NotThreadSafe;
 import java.util.HashMap;
 import java.util.Random;
 
+import static org.mqttbee.api.mqtt.mqtt5.message.publish.TopicAliasUsage.*;
+
 /**
  * @author Silvio Giebl
+ * @author Christian Hoff
  */
 @NotThreadSafe
 public class MqttTopicAliasMapping {
@@ -45,20 +48,26 @@ public class MqttTopicAliasMapping {
 
     public int set(@NotNull final MqttTopicImpl topic, @NotNull final TopicAliasUsage topicAliasUsage) {
         int topicAlias = MqttStatefulPublish.DEFAULT_NO_TOPIC_ALIAS;
-        if (topicAliasUsage != TopicAliasUsage.MUST_NOT) {
-            if (nextTopicAlias > topicAliasMaximum) {
-                if (topicAliasUsage == TopicAliasUsage.MAY_OVERWRITE) {
-                    topicAlias = random.nextInt(topicAliasMaximum) + 1;
-                    hashMap.values().remove(topicAlias);
-                    hashMap.put(topic.toString(), topicAlias);
-                }
-            } else {
+        if (unusedTopicAliasAvailable()) {
+            if (topicAliasUsage == YES || topicAliasUsage == IF_AVAILABLE) {
+                // use next free topic alias
                 topicAlias = nextTopicAlias;
                 hashMap.put(topic.toString(), topicAlias);
                 nextTopicAlias++;
             }
+        } else {
+            if (topicAliasUsage == YES) {
+                // override existing topic alias
+                topicAlias = random.nextInt(topicAliasMaximum) + 1;
+                hashMap.values().remove(topicAlias);
+                hashMap.put(topic.toString(), topicAlias);
+            }
         }
         return topicAlias;
+    }
+
+    private boolean unusedTopicAliasAvailable() {
+        return nextTopicAlias <= topicAliasMaximum;
     }
 
     public int get(@NotNull final MqttTopicImpl topic) {

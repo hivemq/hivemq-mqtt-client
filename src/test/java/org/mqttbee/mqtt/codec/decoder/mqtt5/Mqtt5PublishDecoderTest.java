@@ -119,7 +119,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
         assertEquals("response", publish.getResponseTopic().get().toString());
         assertTrue(publish.getCorrelationData().isPresent());
         assertEquals(ByteBuffer.wrap(new byte[]{5, 4, 3, 2, 1}), publish.getCorrelationData().get());
-        assertEquals(TopicAliasUsage.HAS, publish.getTopicAliasUsage());
+        assertEquals(TopicAliasUsage.YES, publish.getTopicAliasUsage());
 
         final ImmutableList<MqttUserPropertyImpl> userProperties = publish.getUserProperties().asList();
         assertEquals(1, userProperties.size());
@@ -166,7 +166,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
         assertFalse(publish.getMessageExpiryInterval().isPresent());
         assertTrue(publish.getPayloadFormatIndicator().isPresent());
         assertEquals(Mqtt5PayloadFormatIndicator.UNSPECIFIED, publish.getPayloadFormatIndicator().get());
-        assertEquals(TopicAliasUsage.HAS_NOT, publish.getTopicAliasUsage());
+        assertEquals(TopicAliasUsage.NO, publish.getTopicAliasUsage());
 
         assertTrue(publish.getPayload().isPresent());
         assertEquals(ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}), publish.getPayload().get());
