@@ -11,6 +11,25 @@ if (file('bintray.gradle').exists()) {
     apply from: 'bintray.gradle'
 }
 
+/*
+Alternatively, if you don't want to use the bintray.gradle file, you can specify the bintray username
+and apiKey via environment variables, e.g. via shell script:
+
+#!/bin/sh
+export bintray_username="<username>"
+export bintray_apiKey="<api key>"
+
+then either source that script in your shell or call gradle from the script.
+
+Setting the bintray variables via environment variables lends itself
+well to CI systems where you are able to specify environment variables securely via the CI config.
+*/
+['bintray_username', 'bintray_apiKey'].each { propName ->
+    if (!project.hasProperty(propName)) {
+        project.ext.setProperty(propName, "${System.getenv()[propName]}")
+    }
+}
+
 publishing {
     /*
     repositories {
