@@ -123,13 +123,10 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter {
             if (!publish.isDup()) {
                 disconnectDupFlagNotSet(ctx);
             }
-        } else if ((previousMessage == MqttPubRec.class) || (previousMessage == MqttPubComp.class)) { //packet id in use
-            //ackQos1(ctx, new MqttPubAckBuilder(publish).reasonCode(Mqtt5PubAckReasonCode.PACKET_IDENTIFIER_IN_USE));
+        } else {
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                    "Packet Identifier in use: QoS 1 Publish must not be received with the same Id as a QoS 2 Publish");
-        } else { // PubRel: packet id in use
-            MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                    "Packet Identifier in use: QoS 1 Publish must not be received with the same Id as a PubRel");
+                    "Packet Identifier in use: QoS 1 Publish must not be received with the same Id as a " +
+                            (previousMessage instanceof MqttPubRel ? "PubRel" : "QoS 2 Publish"));
         }
     }
 
@@ -147,14 +144,10 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter {
             if (!publish.isDup()) {
                 disconnectDupFlagNotSet(ctx);
             }
-        } else if (previousMessage == MqttPubAck.class) { // packet id in use
-            //ctx.writeAndFlush(buildPubRec(
-            //        new MqttPubRecBuilder(publish).reasonCode(Mqtt5PubRecReasonCode.PACKET_IDENTIFIER_IN_USE)));
+        } else { // packet id in use
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                    "Packet Identifier in use: QoS 2 Publish must not be received with the same Id as a QoS 1 Publish");
-        } else { // PubRel: packet id in use
-            MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                    "Packet Identifier in use: QoS 2 Publish must not be resent after a PubRel is sent");
+                    "Packet Identifier in use: QoS 2 Publish must not be received with the same Id as a " +
+                            (previousMessage instanceof MqttPubRel ? "PubRel" : "QoS 1 Publish"));
         }
     }
 
