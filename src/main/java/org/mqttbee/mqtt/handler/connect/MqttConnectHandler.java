@@ -123,7 +123,7 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
                     scheduleTimeout();
                 }
                 ctx.pipeline()
-                        .addBefore(MqttEncoder.NAME, MqttDecoder.NAME, ChannelComponent.get(ctx.channel()).decoder());
+                        .addAfter(MqttEncoder.NAME, MqttDecoder.NAME, ChannelComponent.get(ctx.channel()).decoder());
             } else {
                 MqttDisconnectUtil.close(ctx.channel(), future.cause());
             }
@@ -182,7 +182,7 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
                 final ChannelComponent channelComponent = ChannelComponent.get(channel);
 
                 pipeline.remove(this);
-                String beforeHandlerName = MqttEncoder.NAME;
+                String beforeHandlerName = MqttDecoder.NAME;
 
                 final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
                 assert clientConnectionData != null;
