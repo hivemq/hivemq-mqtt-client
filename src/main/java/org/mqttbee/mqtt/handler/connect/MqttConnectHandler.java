@@ -182,20 +182,22 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
                 final ChannelComponent channelComponent = ChannelComponent.get(channel);
 
                 pipeline.remove(this);
+                String beforeHandlerName = MqttEncoder.NAME;
 
                 final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
                 assert clientConnectionData != null;
                 final int keepAlive = clientConnectionData.getKeepAlive();
                 if (keepAlive > 0) {
-                    pipeline.addAfter(MqttEncoder.NAME, MqttPingHandler.NAME, new MqttPingHandler(keepAlive));
+                    pipeline.addAfter(beforeHandlerName, MqttPingHandler.NAME, new MqttPingHandler(keepAlive));
+                    beforeHandlerName = MqttPingHandler.NAME;
                 }
 
                 pipeline.addAfter(
-                        MqttPingHandler.NAME, MqttSubscriptionHandler.NAME, channelComponent.subscriptionHandler());
+                        beforeHandlerName, MqttSubscriptionHandler.NAME, channelComponent.subscriptionHandler());
                 pipeline.addAfter(
-                        MqttPingHandler.NAME, MqttIncomingQosHandler.NAME, channelComponent.incomingQosHandler());
+                        beforeHandlerName, MqttIncomingQosHandler.NAME, channelComponent.incomingQosHandler());
                 pipeline.addAfter(
-                        MqttPingHandler.NAME, MqttOutgoingQosHandler.NAME, channelComponent.outgoingQosHandler());
+                        beforeHandlerName, MqttOutgoingQosHandler.NAME, channelComponent.outgoingQosHandler());
                 pipeline.addLast(MqttDisconnectOnConnAckHandler.NAME, channelComponent.disconnectOnConnAckHandler());
 
                 connAckEmitter.onSuccess(connAck);
