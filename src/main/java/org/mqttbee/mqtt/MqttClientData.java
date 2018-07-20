@@ -41,7 +41,7 @@ public class MqttClientData implements Mqtt5ClientData {
     private MqttClientIdentifierImpl clientIdentifier;
     private final String serverHost;
     private final int serverPort;
-    private final MqttWebSocketConfig websocketConfig;
+    private final MqttWebSocketConfig webSocketConfig;
     private final MqttClientSslConfig sslConfig;
     private final AtomicBoolean connecting;
     private final AtomicBoolean connected;
@@ -55,7 +55,7 @@ public class MqttClientData implements Mqtt5ClientData {
     public MqttClientData(
             @NotNull final MqttVersion mqttVersion, @Nullable final MqttClientIdentifierImpl clientIdentifier,
             @NotNull final String serverHost, final int serverPort, @Nullable final MqttClientSslConfig sslConfig,
-            @Nullable final MqttWebSocketConfig websocketConfig, final boolean followsRedirects,
+            @Nullable final MqttWebSocketConfig webSocketConfig, final boolean followsRedirects,
             final boolean allowsServerReAuth, @NotNull final MqttClientExecutorConfigImpl executorConfig,
             @Nullable final MqttAdvancedClientData advancedClientData) {
 
@@ -64,7 +64,7 @@ public class MqttClientData implements Mqtt5ClientData {
         this.serverHost = serverHost;
         this.serverPort = serverPort;
         this.sslConfig = sslConfig;
-        this.websocketConfig = websocketConfig;
+        this.webSocketConfig = webSocketConfig;
         this.connecting = new AtomicBoolean();
         this.connected = new AtomicBoolean();
         this.followsRedirects = followsRedirects;
@@ -123,18 +123,18 @@ public class MqttClientData implements Mqtt5ClientData {
 
     @Override
     public boolean usesWebSockets() {
-        return websocketConfig != null;
+        return webSocketConfig != null;
     }
 
     @NotNull
     @Override
     public Optional<MqttWebSocketConfig> getWebSocketConfig() {
-        return Optional.ofNullable(websocketConfig);
+        return Optional.ofNullable(webSocketConfig);
     }
 
     @Nullable
     public MqttWebSocketConfig getRawWebSocketConfig() {
-        return websocketConfig;
+        return webSocketConfig;
     }
 
     @Override

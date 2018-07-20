@@ -79,9 +79,9 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
         if (sslConfig != null) {
             initSsl(channel, sslConfig);
         }
-        final MqttWebSocketConfig websocketConfig = clientData.getRawWebSocketConfig();
-        if (websocketConfig != null) {
-            initMqttOverWebSockets(channel.pipeline(), websocketConfig);
+        final MqttWebSocketConfig webSocketConfig = clientData.getRawWebSocketConfig();
+        if (webSocketConfig != null) {
+            initMqttOverWebSockets(channel.pipeline(), webSocketConfig);
         } else {
             initMqttHandlers(channel.pipeline());
         }
@@ -102,11 +102,11 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
     }
 
     private void initMqttOverWebSockets(
-            @NotNull final ChannelPipeline pipeline, @NotNull final MqttWebSocketConfig websocketConfig) {
+            @NotNull final ChannelPipeline pipeline, @NotNull final MqttWebSocketConfig webSocketConfig) {
 
         try {
             final MqttWebSocketClientProtocolHandler wsProtocolHandler =
-                    new MqttWebSocketClientProtocolHandler(clientData, websocketConfig, this);
+                    new MqttWebSocketClientProtocolHandler(clientData, webSocketConfig, this);
 
             pipeline.addLast(HTTP_CODEC_NAME, new HttpClientCodec());
             pipeline.addLast(

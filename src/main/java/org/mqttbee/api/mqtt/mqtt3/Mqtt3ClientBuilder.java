@@ -37,7 +37,7 @@ public class Mqtt3ClientBuilder extends MqttClientBuilder {
 
     public Mqtt3ClientBuilder(
             @NotNull final MqttClientIdentifierImpl identifier, @NotNull final String serverHost, final int serverPort,
-            @Nullable final MqttClientSslConfig sslConfig, @Nullable final MqttWebSocketConfig websocketConfig,
+            @Nullable final MqttClientSslConfig sslConfig, @Nullable final MqttWebSocketConfig webSocketConfig,
             @NotNull final MqttClientExecutorConfigImpl executorConfig) {
 
         Preconditions.checkNotNull(identifier, "Identifier must not be null.");
@@ -48,7 +48,7 @@ public class Mqtt3ClientBuilder extends MqttClientBuilder {
         this.serverHost = serverHost;
         this.serverPort = serverPort;
         this.sslConfig = sslConfig;
-        this.websocketConfig = websocketConfig;
+        this.webSocketConfig = webSocketConfig;
         this.executorConfig = executorConfig;
     }
 
@@ -109,8 +109,8 @@ public class Mqtt3ClientBuilder extends MqttClientBuilder {
 
     @NotNull
     @Override
-    public Mqtt3ClientBuilder useWebSocket(@NotNull final MqttWebSocketConfig websocketConfig) {
-        super.useWebSocket(websocketConfig);
+    public Mqtt3ClientBuilder useWebSocket(@NotNull final MqttWebSocketConfig webSocketConfig) {
+        super.useWebSocket(webSocketConfig);
         return this;
     }
 
@@ -154,7 +154,7 @@ public class Mqtt3ClientBuilder extends MqttClientBuilder {
     @NotNull
     private MqttClientData buildClientData() {
         return new MqttClientData(MqttVersion.MQTT_3_1_1, identifier, serverHost, serverPort, sslConfig,
-                websocketConfig, false, false, executorConfig, null);
+                webSocketConfig, false, false, executorConfig, null);
     }
 
 }
