@@ -26,16 +26,16 @@ import java.util.function.Function;
 /**
  * @author Christian Hoff
  */
-public class MqttWebsocketConfigBuilder<P> extends FluentBuilder<MqttWebSocketConfig, P> {
+public class MqttWebSocketConfigBuilder<P> extends FluentBuilder<MqttWebSocketConfig, P> {
 
     private String serverPath = "";
 
-    public MqttWebsocketConfigBuilder(@Nullable final Function<? super MqttWebSocketConfig, P> parentConsumer) {
+    public MqttWebSocketConfigBuilder(@Nullable final Function<? super MqttWebSocketConfig, P> parentConsumer) {
         super(parentConsumer);
     }
 
     @NotNull
-    public MqttWebsocketConfigBuilder<P> serverPath(@NotNull final String serverPath) {
+    public MqttWebSocketConfigBuilder<P> serverPath(@NotNull final String serverPath) {
         // remove any leading slashes
         this.serverPath = serverPath.replaceAll("^/+", "");
         return this;

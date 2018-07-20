@@ -24,8 +24,8 @@ import org.mqttbee.annotations.NotNull;
 public interface MqttWebSocketConfig {
 
     @NotNull
-    static MqttWebsocketConfigBuilder<Void> builder() {
-        return new MqttWebsocketConfigBuilder<>(null);
+    static MqttWebSocketConfigBuilder<Void> builder() {
+        return new MqttWebSocketConfigBuilder<>(null);
     }
 
     @NotNull

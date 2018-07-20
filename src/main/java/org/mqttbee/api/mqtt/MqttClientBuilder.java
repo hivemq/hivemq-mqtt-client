@@ -114,8 +114,8 @@ public class MqttClientBuilder {
     }
 
     @NotNull
-    public MqttWebsocketConfigBuilder<? extends MqttClientBuilder> useWebSocket() {
-        return new MqttWebsocketConfigBuilder<>(this::useWebSocket);
+    public MqttWebSocketConfigBuilder<? extends MqttClientBuilder> useWebSocket() {
+        return new MqttWebSocketConfigBuilder<>(this::useWebSocket);
     }
 
     @NotNull

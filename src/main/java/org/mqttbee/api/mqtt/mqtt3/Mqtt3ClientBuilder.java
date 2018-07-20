@@ -116,8 +116,8 @@ public class Mqtt3ClientBuilder extends MqttClientBuilder {
 
     @NotNull
     @Override
-    public MqttWebsocketConfigBuilder<? extends Mqtt3ClientBuilder> useWebSocket() {
-        return new MqttWebsocketConfigBuilder<>(this::useWebSocket);
+    public MqttWebSocketConfigBuilder<? extends Mqtt3ClientBuilder> useWebSocket() {
+        return new MqttWebSocketConfigBuilder<>(this::useWebSocket);
     }
 
     @NotNull
