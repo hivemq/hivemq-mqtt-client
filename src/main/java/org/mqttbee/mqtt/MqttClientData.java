@@ -133,7 +133,7 @@ public class MqttClientData implements Mqtt5ClientData {
     }
 
     @Nullable
-    public MqttWebSocketConfig getRawWebsocketConfig() {
+    public MqttWebSocketConfig getRawWebSocketConfig() {
         return websocketConfig;
     }
 
