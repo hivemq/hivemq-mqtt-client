@@ -128,7 +128,7 @@ public class MqttClientData implements Mqtt5ClientData {
 
     @NotNull
     @Override
-    public Optional<MqttWebSocketConfig> getWebsocketConfig() {
+    public Optional<MqttWebSocketConfig> getWebSocketConfig() {
         return Optional.ofNullable(websocketConfig);
     }
 
