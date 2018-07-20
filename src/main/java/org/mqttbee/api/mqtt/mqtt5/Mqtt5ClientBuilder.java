@@ -43,7 +43,7 @@ public class Mqtt5ClientBuilder extends MqttClientBuilder {
 
     public Mqtt5ClientBuilder(
             @NotNull final MqttClientIdentifierImpl identifier, @NotNull final String serverHost, final int serverPort,
-            @Nullable final MqttClientSslConfig sslConfig, @Nullable final MqttWebSocketConfig websocketConfig,
+            @Nullable final MqttClientSslConfig sslConfig, @Nullable final MqttWebSocketConfig webSocketConfig,
             @NotNull final MqttClientExecutorConfigImpl executorConfig) {
 
         Preconditions.checkNotNull(identifier, "Identifier must not be null.");
@@ -54,7 +54,7 @@ public class Mqtt5ClientBuilder extends MqttClientBuilder {
         this.serverHost = serverHost;
         this.serverPort = serverPort;
         this.sslConfig = sslConfig;
-        this.websocketConfig = websocketConfig;
+        this.webSocketConfig = webSocketConfig;
         this.executorConfig = executorConfig;
     }
 
@@ -115,8 +115,8 @@ public class Mqtt5ClientBuilder extends MqttClientBuilder {
 
     @NotNull
     @Override
-    public Mqtt5ClientBuilder useWebSocket(@NotNull final MqttWebSocketConfig websocketConfig) {
-        super.useWebSocket(websocketConfig);
+    public Mqtt5ClientBuilder useWebSocket(@NotNull final MqttWebSocketConfig webSocketConfig) {
+        super.useWebSocket(webSocketConfig);
         return this;
     }
 
@@ -178,7 +178,7 @@ public class Mqtt5ClientBuilder extends MqttClientBuilder {
 
     @NotNull
     private MqttClientData buildClientData() {
-        return new MqttClientData(MqttVersion.MQTT_5_0, identifier, serverHost, serverPort, sslConfig, websocketConfig,
+        return new MqttClientData(MqttVersion.MQTT_5_0, identifier, serverHost, serverPort, sslConfig, webSocketConfig,
                 followRedirects, allowServerReAuth, executorConfig, advancedClientData);
     }
 

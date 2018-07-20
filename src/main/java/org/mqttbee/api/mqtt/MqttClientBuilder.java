@@ -41,7 +41,7 @@ public class MqttClientBuilder {
     protected int serverPort = DEFAULT_SERVER_PORT;
     private boolean customServerPort = false;
     protected MqttClientSslConfig sslConfig = null;
-    protected MqttWebSocketConfig websocketConfig = null;
+    protected MqttWebSocketConfig webSocketConfig = null;
     protected MqttClientExecutorConfigImpl executorConfig = MqttClientExecutorConfigImpl.DEFAULT;
 
     protected MqttClientBuilder() {
@@ -80,7 +80,7 @@ public class MqttClientBuilder {
     @NotNull
     public MqttClientBuilder useSsl(@NotNull final MqttClientSslConfig sslConfig) {
         if (!customServerPort) {
-            if (websocketConfig == null) {
+            if (webSocketConfig == null) {
                 serverPort = DEFAULT_SERVER_PORT_SSL;
             } else {
                 serverPort = DEFAULT_SERVER_PORT_WEBSOCKET_SSL;
@@ -101,7 +101,7 @@ public class MqttClientBuilder {
     }
 
     @NotNull
-    public MqttClientBuilder useWebSocket(@NotNull final MqttWebSocketConfig websocketConfig) {
+    public MqttClientBuilder useWebSocket(@NotNull final MqttWebSocketConfig webSocketConfig) {
         if (!customServerPort) {
             if (sslConfig == null) {
                 serverPort = DEFAULT_SERVER_PORT_WEBSOCKET;
@@ -109,7 +109,7 @@ public class MqttClientBuilder {
                 serverPort = DEFAULT_SERVER_PORT_WEBSOCKET_SSL;
             }
         }
-        this.websocketConfig = Preconditions.checkNotNull(websocketConfig, "WebSocket config must not be null.");
+        this.webSocketConfig = Preconditions.checkNotNull(webSocketConfig, "WebSocket config must not be null.");
         return this;
     }
 
@@ -132,12 +132,12 @@ public class MqttClientBuilder {
 
     @NotNull
     public Mqtt3ClientBuilder useMqttVersion3() {
-        return new Mqtt3ClientBuilder(identifier, serverHost, serverPort, sslConfig, websocketConfig, executorConfig);
+        return new Mqtt3ClientBuilder(identifier, serverHost, serverPort, sslConfig, webSocketConfig, executorConfig);
     }
 
     @NotNull
     public Mqtt5ClientBuilder useMqttVersion5() {
-        return new Mqtt5ClientBuilder(identifier, serverHost, serverPort, sslConfig, websocketConfig, executorConfig);
+        return new Mqtt5ClientBuilder(identifier, serverHost, serverPort, sslConfig, webSocketConfig, executorConfig);
     }
 
 }

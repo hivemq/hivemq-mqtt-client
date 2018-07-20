@@ -43,21 +43,21 @@ public class MqttWebSocketClientProtocolHandler extends WebSocketClientProtocolH
     private static final String MQTT_SUBPROTOCOL = "mqtt";
 
     private static URI createURI(
-            @NotNull final MqttClientData clientData, @NotNull final MqttWebSocketConfig websocketConfig)
+            @NotNull final MqttClientData clientData, @NotNull final MqttWebSocketConfig webSocketConfig)
             throws URISyntaxException {
 
         return new URI(clientData.usesSsl() ? WEBSOCKET_TLS_URI_SCHEME : WEBSOCKET_URI_SCHEME, null,
-                clientData.getServerHost(), clientData.getServerPort(), "/" + websocketConfig.getServerPath(), null,
+                clientData.getServerHost(), clientData.getServerPort(), "/" + webSocketConfig.getServerPath(), null,
                 null);
     }
 
     private final MqttChannelInitializer channelInitializer;
 
     public MqttWebSocketClientProtocolHandler(
-            @NotNull final MqttClientData clientData, @NotNull final MqttWebSocketConfig websocketConfig,
+            @NotNull final MqttClientData clientData, @NotNull final MqttWebSocketConfig webSocketConfig,
             @NotNull final MqttChannelInitializer channelInitializer) throws URISyntaxException {
 
-        super(createURI(clientData, websocketConfig), WebSocketVersion.V13, MQTT_SUBPROTOCOL, true, null,
+        super(createURI(clientData, webSocketConfig), WebSocketVersion.V13, MQTT_SUBPROTOCOL, true, null,
                 MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT);
         this.channelInitializer = channelInitializer;
     }
