@@ -22,13 +22,13 @@ import org.mqttbee.api.mqtt.MqttWebSocketConfig;
 /**
  * @author David Katz
  */
-public class MqttWebsocketConfigImpl implements MqttWebSocketConfig {
+public class MqttWebSocketConfigImpl implements MqttWebSocketConfig {
 
-    public static final MqttWebsocketConfigImpl DEFAULT = new MqttWebsocketConfigImpl("");
+    public static final MqttWebSocketConfigImpl DEFAULT = new MqttWebSocketConfigImpl("");
 
     private final String serverPath;
 
-    public MqttWebsocketConfigImpl(@NotNull final String serverPath) {
+    public MqttWebSocketConfigImpl(@NotNull final String serverPath) {
         // remove any leading slashes
         this.serverPath = serverPath.replaceAll("^/+", "");
     }
