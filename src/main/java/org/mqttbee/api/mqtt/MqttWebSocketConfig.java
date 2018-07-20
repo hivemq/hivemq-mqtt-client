@@ -21,7 +21,7 @@ import org.mqttbee.annotations.NotNull;
 /**
  * @author Christian Hoff
  */
-public interface MqttWebsocketConfig {
+public interface MqttWebSocketConfig {
 
     @NotNull
     static MqttWebsocketConfigBuilder<Void> builder() {

@@ -45,7 +45,7 @@ public interface MqttClientData {
     boolean usesWebSockets();
 
     @NotNull
-    Optional<MqttWebsocketConfig> getWebsocketConfig();
+    Optional<MqttWebSocketConfig> getWebsocketConfig();
 
     @NotNull
     MqttClientExecutorConfig getExecutorConfig();

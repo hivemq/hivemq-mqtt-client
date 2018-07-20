@@ -20,7 +20,7 @@ package org.mqttbee.mqtt.mqtt3;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttClientExecutorConfig;
 import org.mqttbee.api.mqtt.MqttClientSslConfig;
-import org.mqttbee.api.mqtt.MqttWebsocketConfig;
+import org.mqttbee.api.mqtt.MqttWebSocketConfig;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3ClientConnectionData;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3ClientData;
@@ -75,7 +75,7 @@ public class Mqtt3ClientDataView implements Mqtt3ClientData {
 
     @NotNull
     @Override
-    public Optional<MqttWebsocketConfig> getWebsocketConfig() {
+    public Optional<MqttWebSocketConfig> getWebsocketConfig() {
         return delegate.getWebsocketConfig();
     }
 

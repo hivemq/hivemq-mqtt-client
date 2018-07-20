@@ -27,7 +27,7 @@ import io.reactivex.SingleEmitter;
 import io.reactivex.exceptions.Exceptions;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttClientSslConfig;
-import org.mqttbee.api.mqtt.MqttWebsocketConfig;
+import org.mqttbee.api.mqtt.MqttWebSocketConfig;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.codec.encoder.MqttEncoder;
@@ -79,7 +79,7 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
         if (sslConfig != null) {
             initSsl(channel, sslConfig);
         }
-        final MqttWebsocketConfig websocketConfig = clientData.getRawWebsocketConfig();
+        final MqttWebSocketConfig websocketConfig = clientData.getRawWebsocketConfig();
         if (websocketConfig != null) {
             initMqttOverWebSockets(channel.pipeline(), websocketConfig);
         } else {
@@ -102,7 +102,7 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
     }
 
     private void initMqttOverWebSockets(
-            @NotNull final ChannelPipeline pipeline, @NotNull final MqttWebsocketConfig websocketConfig) {
+            @NotNull final ChannelPipeline pipeline, @NotNull final MqttWebSocketConfig websocketConfig) {
 
         try {
             final MqttWebSocketClientProtocolHandler wsProtocolHandler =

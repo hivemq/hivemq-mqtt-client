@@ -41,7 +41,7 @@ public class MqttClientBuilder {
     protected int serverPort = DEFAULT_SERVER_PORT;
     private boolean customServerPort = false;
     protected MqttClientSslConfig sslConfig = null;
-    protected MqttWebsocketConfig websocketConfig = null;
+    protected MqttWebSocketConfig websocketConfig = null;
     protected MqttClientExecutorConfigImpl executorConfig = MqttClientExecutorConfigImpl.DEFAULT;
 
     protected MqttClientBuilder() {
@@ -101,7 +101,7 @@ public class MqttClientBuilder {
     }
 
     @NotNull
-    public MqttClientBuilder useWebSocket(@NotNull final MqttWebsocketConfig websocketConfig) {
+    public MqttClientBuilder useWebSocket(@NotNull final MqttWebSocketConfig websocketConfig) {
         if (!customServerPort) {
             if (sslConfig == null) {
                 serverPort = DEFAULT_SERVER_PORT_WEBSOCKET;

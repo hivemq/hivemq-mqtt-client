@@ -26,11 +26,11 @@ import java.util.function.Function;
 /**
  * @author Christian Hoff
  */
-public class MqttWebsocketConfigBuilder<P> extends FluentBuilder<MqttWebsocketConfig, P> {
+public class MqttWebsocketConfigBuilder<P> extends FluentBuilder<MqttWebSocketConfig, P> {
 
     private String serverPath = "";
 
-    public MqttWebsocketConfigBuilder(@Nullable final Function<? super MqttWebsocketConfig, P> parentConsumer) {
+    public MqttWebsocketConfigBuilder(@Nullable final Function<? super MqttWebSocketConfig, P> parentConsumer) {
         super(parentConsumer);
     }
 
@@ -43,7 +43,7 @@ public class MqttWebsocketConfigBuilder<P> extends FluentBuilder<MqttWebsocketCo
 
     @NotNull
     @Override
-    public MqttWebsocketConfig build() {
+    public MqttWebSocketConfig build() {
         return new MqttWebsocketConfigImpl(serverPath);
     }
 
