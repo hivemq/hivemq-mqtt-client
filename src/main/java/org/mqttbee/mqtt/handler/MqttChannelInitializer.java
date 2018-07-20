@@ -79,7 +79,7 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
         if (sslConfig != null) {
             initSsl(channel, sslConfig);
         }
-        final MqttWebSocketConfig websocketConfig = clientData.getRawWebsocketConfig();
+        final MqttWebSocketConfig websocketConfig = clientData.getRawWebSocketConfig();
         if (websocketConfig != null) {
             initMqttOverWebSockets(channel.pipeline(), websocketConfig);
         } else {
