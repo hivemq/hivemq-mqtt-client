@@ -75,8 +75,8 @@ public class Mqtt3ClientDataView implements Mqtt3ClientData {
 
     @NotNull
     @Override
-    public Optional<MqttWebSocketConfig> getWebsocketConfig() {
-        return delegate.getWebsocketConfig();
+    public Optional<MqttWebSocketConfig> getWebSocketConfig() {
+        return delegate.getWebSocketConfig();
     }
 
     @NotNull
