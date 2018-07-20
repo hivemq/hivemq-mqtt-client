@@ -36,7 +36,7 @@ import java.util.function.Function;
 public interface Mqtt5Unsubscribe extends Mqtt5Message {
 
     @NotNull
-    static Mqtt5UnsubscribeBuilder<Void> build() {
+    static Mqtt5UnsubscribeBuilder<Void> builder() {
         return new Mqtt5UnsubscribeBuilder<>((Function<Mqtt5Unsubscribe, Void>) null);
     }
 
