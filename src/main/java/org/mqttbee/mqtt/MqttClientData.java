@@ -20,7 +20,7 @@ package org.mqttbee.mqtt;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.MqttClientSslConfig;
-import org.mqttbee.api.mqtt.MqttWebsocketConfig;
+import org.mqttbee.api.mqtt.MqttWebSocketConfig;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientConnectionData;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientData;
@@ -41,7 +41,7 @@ public class MqttClientData implements Mqtt5ClientData {
     private MqttClientIdentifierImpl clientIdentifier;
     private final String serverHost;
     private final int serverPort;
-    private final MqttWebsocketConfig websocketConfig;
+    private final MqttWebSocketConfig websocketConfig;
     private final MqttClientSslConfig sslConfig;
     private final AtomicBoolean connecting;
     private final AtomicBoolean connected;
@@ -55,7 +55,7 @@ public class MqttClientData implements Mqtt5ClientData {
     public MqttClientData(
             @NotNull final MqttVersion mqttVersion, @Nullable final MqttClientIdentifierImpl clientIdentifier,
             @NotNull final String serverHost, final int serverPort, @Nullable final MqttClientSslConfig sslConfig,
-            @Nullable final MqttWebsocketConfig websocketConfig, final boolean followsRedirects,
+            @Nullable final MqttWebSocketConfig websocketConfig, final boolean followsRedirects,
             final boolean allowsServerReAuth, @NotNull final MqttClientExecutorConfigImpl executorConfig,
             @Nullable final MqttAdvancedClientData advancedClientData) {
 
@@ -128,12 +128,12 @@ public class MqttClientData implements Mqtt5ClientData {
 
     @NotNull
     @Override
-    public Optional<MqttWebsocketConfig> getWebsocketConfig() {
+    public Optional<MqttWebSocketConfig> getWebsocketConfig() {
         return Optional.ofNullable(websocketConfig);
     }
 
     @Nullable
-    public MqttWebsocketConfig getRawWebsocketConfig() {
+    public MqttWebSocketConfig getRawWebsocketConfig() {
         return websocketConfig;
     }
 

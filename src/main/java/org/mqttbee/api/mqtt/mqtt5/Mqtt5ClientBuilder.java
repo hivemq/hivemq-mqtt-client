@@ -43,7 +43,7 @@ public class Mqtt5ClientBuilder extends MqttClientBuilder {
 
     public Mqtt5ClientBuilder(
             @NotNull final MqttClientIdentifierImpl identifier, @NotNull final String serverHost, final int serverPort,
-            @Nullable final MqttClientSslConfig sslConfig, @Nullable final MqttWebsocketConfig websocketConfig,
+            @Nullable final MqttClientSslConfig sslConfig, @Nullable final MqttWebSocketConfig websocketConfig,
             @NotNull final MqttClientExecutorConfigImpl executorConfig) {
 
         Preconditions.checkNotNull(identifier, "Identifier must not be null.");
@@ -115,7 +115,7 @@ public class Mqtt5ClientBuilder extends MqttClientBuilder {
 
     @NotNull
     @Override
-    public Mqtt5ClientBuilder useWebSocket(@NotNull final MqttWebsocketConfig websocketConfig) {
+    public Mqtt5ClientBuilder useWebSocket(@NotNull final MqttWebSocketConfig websocketConfig) {
         super.useWebSocket(websocketConfig);
         return this;
     }

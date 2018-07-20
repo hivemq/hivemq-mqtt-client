@@ -17,12 +17,12 @@
 package org.mqttbee.mqtt;
 
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt.MqttWebsocketConfig;
+import org.mqttbee.api.mqtt.MqttWebSocketConfig;
 
 /**
  * @author David Katz
  */
-public class MqttWebsocketConfigImpl implements MqttWebsocketConfig {
+public class MqttWebsocketConfigImpl implements MqttWebSocketConfig {
 
     public static final MqttWebsocketConfigImpl DEFAULT = new MqttWebsocketConfigImpl("");
 

@@ -25,7 +25,7 @@ import org.mqttbee.annotations.Nullable;
 import org.mqttbee.api.mqtt.MqttClient;
 import org.mqttbee.api.mqtt.MqttClientBuilder;
 import org.mqttbee.api.mqtt.MqttClientSslConfig;
-import org.mqttbee.api.mqtt.MqttWebsocketConfig;
+import org.mqttbee.api.mqtt.MqttWebSocketConfig;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3Client;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3Connect;
@@ -227,7 +227,7 @@ class Mqtt3ClientExample {
         }
 
         if (isNotUsingMqttPort(port)) {
-            mqttClientBuilder.useWebSocket(MqttWebsocketConfig.builder().serverPath(serverPath).build());
+            mqttClientBuilder.useWebSocket(MqttWebSocketConfig.builder().serverPath(serverPath).build());
         }
 
         return mqttClientBuilder.useMqttVersion3().buildReactive();

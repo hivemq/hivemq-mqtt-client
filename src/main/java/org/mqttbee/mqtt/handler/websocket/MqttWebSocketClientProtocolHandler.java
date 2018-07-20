@@ -20,7 +20,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.websocketx.WebSocketClientProtocolHandler;
 import io.netty.handler.codec.http.websocketx.WebSocketVersion;
 import org.mqttbee.annotations.NotNull;
-import org.mqttbee.api.mqtt.MqttWebsocketConfig;
+import org.mqttbee.api.mqtt.MqttWebSocketConfig;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.handler.MqttChannelInitializer;
@@ -43,7 +43,7 @@ public class MqttWebSocketClientProtocolHandler extends WebSocketClientProtocolH
     private static final String MQTT_SUBPROTOCOL = "mqtt";
 
     private static URI createURI(
-            @NotNull final MqttClientData clientData, @NotNull final MqttWebsocketConfig websocketConfig)
+            @NotNull final MqttClientData clientData, @NotNull final MqttWebSocketConfig websocketConfig)
             throws URISyntaxException {
 
         return new URI(clientData.usesSsl() ? WEBSOCKET_TLS_URI_SCHEME : WEBSOCKET_URI_SCHEME, null,
@@ -54,7 +54,7 @@ public class MqttWebSocketClientProtocolHandler extends WebSocketClientProtocolH
     private final MqttChannelInitializer channelInitializer;
 
     public MqttWebSocketClientProtocolHandler(
-            @NotNull final MqttClientData clientData, @NotNull final MqttWebsocketConfig websocketConfig,
+            @NotNull final MqttClientData clientData, @NotNull final MqttWebSocketConfig websocketConfig,
             @NotNull final MqttChannelInitializer channelInitializer) throws URISyntaxException {
 
         super(createURI(clientData, websocketConfig), WebSocketVersion.V13, MQTT_SUBPROTOCOL, true, null,
