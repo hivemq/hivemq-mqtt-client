@@ -18,7 +18,7 @@ package org.mqttbee.api.mqtt;
 
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.annotations.Nullable;
-import org.mqttbee.mqtt.MqttWebsocketConfigImpl;
+import org.mqttbee.mqtt.MqttWebSocketConfigImpl;
 import org.mqttbee.util.FluentBuilder;
 
 import java.util.function.Function;
@@ -44,7 +44,7 @@ public class MqttWebSocketConfigBuilder<P> extends FluentBuilder<MqttWebSocketCo
     @NotNull
     @Override
     public MqttWebSocketConfig build() {
-        return new MqttWebsocketConfigImpl(serverPath);
+        return new MqttWebSocketConfigImpl(serverPath);
     }
 
 }
