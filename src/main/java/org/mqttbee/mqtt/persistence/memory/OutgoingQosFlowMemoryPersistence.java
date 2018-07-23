@@ -20,7 +20,7 @@ package org.mqttbee.mqtt.persistence.memory;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
-import org.mqttbee.mqtt.ioc.ChannelScope;
+import org.mqttbee.mqtt.ioc.ClientScope;
 import org.mqttbee.mqtt.message.publish.MqttQosMessage;
 import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
 import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRel;
@@ -33,7 +33,7 @@ import java.util.concurrent.CompletableFuture;
 /**
  * @author Silvio Giebl
  */
-@ChannelScope
+@ClientScope
 public class OutgoingQosFlowMemoryPersistence implements OutgoingQosFlowPersistence {
 
     private final IntMap<MqttQosMessage> messages;

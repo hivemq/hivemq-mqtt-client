@@ -22,19 +22,25 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.mqtt.MqttClientData;
-import org.mqttbee.mqtt.ioc.ChannelComponent;
+import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectHandler;
 
 /**
  * @author Silvio Giebl
  */
 public abstract class AbstractMqttDecoderTest {
 
+    protected final MqttClientData clientData;
     private final MqttMessageDecoders decoders;
-
+    protected final MqttDisconnectHandler disconnectHandler;
     protected EmbeddedChannel channel;
 
-    public AbstractMqttDecoderTest(@NotNull final MqttMessageDecoders decoders) {
+    public AbstractMqttDecoderTest(
+            @NotNull final MqttClientData clientData, @NotNull final MqttMessageDecoders decoders,
+            @NotNull final MqttDisconnectHandler disconnectHandler) {
+
+        this.clientData = clientData;
         this.decoders = decoders;
+        this.disconnectHandler = disconnectHandler;
     }
 
     @BeforeEach
@@ -47,11 +53,8 @@ public abstract class AbstractMqttDecoderTest {
         channel.close();
     }
 
-    protected abstract void createChannel();
-
-    protected void createChannel(@NotNull final MqttClientData clientData) {
-        channel = new EmbeddedChannel(new MqttDecoder(clientData, decoders));
-        ChannelComponent.create(channel, clientData);
+    protected void createChannel() {
+        channel = new EmbeddedChannel(new MqttDecoder(clientData, decoders), disconnectHandler);
     }
 
     public static MqttPingRespDecoder createPingRespDecoder() {

@@ -18,13 +18,7 @@
 package org.mqttbee.mqtt.ioc;
 
 import dagger.Binds;
-import dagger.Lazy;
 import dagger.Module;
-import dagger.Provides;
-import org.mqttbee.mqtt.MqttClientData;
-import org.mqttbee.mqtt.handler.disconnect.Mqtt3Disconnecter;
-import org.mqttbee.mqtt.handler.disconnect.Mqtt5Disconnecter;
-import org.mqttbee.mqtt.handler.disconnect.MqttDisconnecter;
 import org.mqttbee.mqtt.handler.publish.MqttSubscriptionFlowTree;
 import org.mqttbee.mqtt.handler.publish.MqttSubscriptionFlows;
 
@@ -32,23 +26,7 @@ import org.mqttbee.mqtt.handler.publish.MqttSubscriptionFlows;
  * @author Silvio Giebl
  */
 @Module
-abstract class ChannelModule {
-
-    @Provides
-    @ChannelScope
-    static MqttDisconnecter provideDisconnecter(
-            final MqttClientData clientData, final Lazy<Mqtt5Disconnecter> mqtt5Disconnecter,
-            final Lazy<Mqtt3Disconnecter> mqtt3Disconnecter) {
-
-        switch (clientData.getMqttVersion()) {
-            case MQTT_5_0:
-                return mqtt5Disconnecter.get();
-            case MQTT_3_1_1:
-                return mqtt3Disconnecter.get();
-            default:
-                throw new IllegalStateException();
-        }
-    }
+abstract class ClientModule {
 
     @Binds
     abstract MqttSubscriptionFlows provideSubscriptionFlows(final MqttSubscriptionFlowTree tree);

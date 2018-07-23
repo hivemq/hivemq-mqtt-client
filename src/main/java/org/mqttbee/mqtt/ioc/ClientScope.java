@@ -17,23 +17,17 @@
 
 package org.mqttbee.mqtt.ioc;
 
-import dagger.Component;
-import org.mqttbee.mqtt.netty.NettyBootstrap;
-import org.mqttbee.mqtt.netty.NettyModule;
+import javax.inject.Scope;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
 
-import javax.inject.Singleton;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * @author Silvio Giebl
  */
-@Component(modules = {NettyModule.class})
-@Singleton
-public interface MqttBeeComponent {
-
-    MqttBeeComponent INSTANCE = DaggerMqttBeeComponent.create();
-
-    ClientComponent.Builder clientComponentBuilder();
-
-    NettyBootstrap nettyBootstrap(); // TODO remove
-
+@Scope
+@Documented
+@Retention(RUNTIME)
+public @interface ClientScope {
 }

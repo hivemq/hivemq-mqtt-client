@@ -18,7 +18,7 @@
 package org.mqttbee.mqtt.persistence.memory;
 
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.mqtt.ioc.ChannelScope;
+import org.mqttbee.mqtt.ioc.ClientScope;
 import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRec;
 import org.mqttbee.mqtt.persistence.IncomingQosFlowPersistence;
 
@@ -30,7 +30,7 @@ import java.util.concurrent.CompletableFuture;
 /**
  * @author Silvio Giebl
  */
-@ChannelScope
+@ClientScope
 public class IncomingQosFlowMemoryPersistence implements IncomingQosFlowPersistence {
 
     private final Map<Integer, MqttPubRec> messages;

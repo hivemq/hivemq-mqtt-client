@@ -28,6 +28,8 @@ import org.mqttbee.api.mqtt.mqtt5.Mqtt5ServerConnectionData;
 import org.mqttbee.api.mqtt.mqtt5.advanced.Mqtt5AdvancedClientData;
 import org.mqttbee.mqtt.advanced.MqttAdvancedClientData;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
+import org.mqttbee.mqtt.ioc.ClientComponent;
+import org.mqttbee.mqtt.ioc.MqttBeeComponent;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -49,6 +51,9 @@ public class MqttClientData implements Mqtt5ClientData {
     private final boolean allowsServerReAuth;
     private final MqttClientExecutorConfigImpl executorConfig;
     private final MqttAdvancedClientData advancedClientData;
+
+    private final ClientComponent clientComponent;
+
     private MqttClientConnectionData clientConnectionData;
     private MqttServerConnectionData serverConnectionData;
 
@@ -71,6 +76,8 @@ public class MqttClientData implements Mqtt5ClientData {
         this.allowsServerReAuth = allowsServerReAuth;
         this.executorConfig = executorConfig;
         this.advancedClientData = advancedClientData;
+
+        clientComponent = MqttBeeComponent.INSTANCE.clientComponentBuilder().clientData(this).build();
     }
 
     @NotNull
@@ -179,6 +186,11 @@ public class MqttClientData implements Mqtt5ClientData {
     @Nullable
     public MqttAdvancedClientData getRawAdvancedClientData() {
         return advancedClientData;
+    }
+
+    @NotNull
+    public ClientComponent getClientComponent() {
+        return clientComponent;
     }
 
     @NotNull

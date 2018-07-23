@@ -25,7 +25,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.MqttServerConnectionData;
-import org.mqttbee.mqtt.ioc.ChannelComponent;
+import org.mqttbee.mqtt.ioc.ClientComponent;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.reactivestreams.Subscriber;
 
@@ -51,9 +51,9 @@ public class MqttIncomingAckFlowable extends Flowable<Mqtt5PublishResult> {
         if ((clientConnectionData == null) || (serverConnectionData == null)) {
             EmptySubscription.error(new NotConnectedException(), s);
         } else {
-            final ChannelComponent channelComponent = ChannelComponent.get(clientConnectionData.getChannel());
-            final MqttOutgoingPublishService outgoingPublishService = channelComponent.outgoingPublishService();
-            final MqttPublishFlowables publishFlowables = channelComponent.publishFlowables();
+            final ClientComponent clientComponent = clientData.getClientComponent();
+            final MqttOutgoingPublishService outgoingPublishService = clientComponent.outgoingPublishService();
+            final MqttPublishFlowables publishFlowables = clientComponent.publishFlowables();
 
             final MqttIncomingAckFlow incomingAckFlow = new MqttIncomingAckFlow(s, outgoingPublishService);
             s.onSubscribe(incomingAckFlow);

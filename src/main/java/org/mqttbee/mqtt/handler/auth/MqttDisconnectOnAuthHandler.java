@@ -40,8 +40,6 @@ import javax.inject.Singleton;
 @Singleton
 public class MqttDisconnectOnAuthHandler extends ChannelInboundHandlerAdapter {
 
-    public static final String NAME = "disconnect.on.auth";
-
     @Inject
     MqttDisconnectOnAuthHandler() {
     }

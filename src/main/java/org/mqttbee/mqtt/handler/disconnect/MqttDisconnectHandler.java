@@ -17,31 +17,30 @@
 
 package org.mqttbee.mqtt.handler.disconnect;
 
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.*;
+import io.reactivex.CompletableEmitter;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.exceptions.ChannelClosedException;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
- * Fires {@link ChannelCloseEvent}s if a DISCONNECT message is received or the channel was closed by the server. Only
- * one {@link ChannelCloseEvent} will be fired.
+ * If the server initiated the closing of the channel (a Disconnect message is received or the channel is closed without
+ * a Disconnect message), this handler fires a {@link ChannelCloseEvent}.
+ * <p>
+ * If the client initiated the closing of the channel (a {@link ChannelCloseEvent} was fired), the handler sends a
+ * Disconnect message or closes the channel without a Disconnect message.
  *
  * @author Silvio Giebl
  */
 @ChannelHandler.Sharable
 @Singleton
-public class MqttDisconnectHandler extends ChannelInboundHandlerAdapter {
+public abstract class MqttDisconnectHandler extends ChannelInboundHandlerAdapter {
 
     public static final String NAME = "disconnect";
 
-    @Inject
     MqttDisconnectHandler() {
     }
 
@@ -54,9 +53,7 @@ public class MqttDisconnectHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
-    private void readDisconnect(
-            @NotNull final ChannelHandlerContext ctx, @NotNull final MqttDisconnect disconnect) {
-
+    private void readDisconnect(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttDisconnect disconnect) {
         ctx.pipeline().remove(this);
         closeFromServer(ctx.channel(), new Mqtt5MessageException(disconnect, "Server sent DISCONNECT"));
     }
@@ -68,17 +65,47 @@ public class MqttDisconnectHandler extends ChannelInboundHandlerAdapter {
         ctx.fireChannelInactive();
     }
 
+    private static void closeFromServer(@NotNull final Channel channel, @NotNull final Throwable cause) {
+        MqttDisconnectUtil.fireChannelCloseEvent(channel, new ChannelCloseEvent(cause, false, null));
+        channel.close();
+    }
+
     @Override
     public void userEventTriggered(final ChannelHandlerContext ctx, final Object evt) {
         if (evt instanceof ChannelCloseEvent) {
-            ctx.pipeline().remove(this);
+            handleChannelCloseEvent(ctx, (ChannelCloseEvent) evt);
         }
         ctx.fireUserEventTriggered(evt);
     }
 
-    private static void closeFromServer(@NotNull final Channel channel, @NotNull final Throwable cause) {
-        MqttDisconnectUtil.fireChannelCloseEvent(channel, cause, true);
-        channel.close();
+    private void handleChannelCloseEvent(
+            @NotNull final ChannelHandlerContext ctx, @NotNull final ChannelCloseEvent channelCloseEvent) {
+
+        ctx.pipeline().remove(this);
+        if (channelCloseEvent.fromClient()) {
+            final MqttDisconnect disconnect = channelCloseEvent.getDisconnect();
+            if (disconnect != null) {
+                final CompletableEmitter completableEmitter = channelCloseEvent.getCompletableEmitter();
+                if (completableEmitter != null) {
+                    ctx.writeAndFlush(disconnect).addListener((ChannelFuture future) -> {
+                        future.channel().close();
+                        if (future.isSuccess()) {
+                            completableEmitter.onComplete();
+                        } else {
+                            completableEmitter.onError(future.cause());
+                        }
+                    });
+                } else if (sendDisconnectOnError()) {
+                    ctx.writeAndFlush(disconnect).addListener(ChannelFutureListener.CLOSE);
+                } else {
+                    ctx.channel().close();
+                }
+            } else {
+                ctx.channel().close();
+            }
+        }
     }
+
+    abstract boolean sendDisconnectOnError();
 
 }

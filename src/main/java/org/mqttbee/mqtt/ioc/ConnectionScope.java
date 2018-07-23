@@ -29,5 +29,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Scope
 @Documented
 @Retention(RUNTIME)
-public @interface ChannelScope {
+public @interface ConnectionScope {
+
 }

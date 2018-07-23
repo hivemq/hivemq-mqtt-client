@@ -30,8 +30,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
- * Sends a DISCONNECT message if a CONNACK message is received. This handler is added after the first CONNACK
- * message is received, so it disconnects on further CONNACK messages.
+ * Sends a DISCONNECT message if a CONNACK message is received. This handler is added after the first CONNACK message is
+ * received, so it disconnects on further CONNACK messages.
  *
  * @author Silvio Giebl
  */
