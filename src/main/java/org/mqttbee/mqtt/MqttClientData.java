@@ -32,7 +32,7 @@ import org.mqttbee.mqtt.ioc.ClientComponent;
 import org.mqttbee.mqtt.ioc.MqttBeeComponent;
 
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author Silvio Giebl
@@ -43,10 +43,8 @@ public class MqttClientData implements Mqtt5ClientData {
     private MqttClientIdentifierImpl clientIdentifier;
     private final String serverHost;
     private final int serverPort;
-    private final MqttWebSocketConfigImpl webSocketConfig;
     private final MqttClientSslConfigImpl sslConfig;
-    private final AtomicBoolean connecting;
-    private final AtomicBoolean connected;
+    private final MqttWebSocketConfigImpl webSocketConfig;
     private final boolean followsRedirects;
     private final boolean allowsServerReAuth;
     private final MqttClientExecutorConfigImpl executorConfig;
@@ -54,6 +52,8 @@ public class MqttClientData implements Mqtt5ClientData {
 
     private final ClientComponent clientComponent;
 
+    private final AtomicReference<MqttClientConnectionState> connectionState =
+            new AtomicReference<>(MqttClientConnectionState.DISCONNECTED);
     private MqttClientConnectionData clientConnectionData;
     private MqttServerConnectionData serverConnectionData;
 
@@ -70,8 +70,6 @@ public class MqttClientData implements Mqtt5ClientData {
         this.serverPort = serverPort;
         this.sslConfig = sslConfig;
         this.webSocketConfig = webSocketConfig;
-        this.connecting = new AtomicBoolean();
-        this.connected = new AtomicBoolean();
         this.followsRedirects = followsRedirects;
         this.allowsServerReAuth = allowsServerReAuth;
         this.executorConfig = executorConfig;
@@ -129,7 +127,7 @@ public class MqttClientData implements Mqtt5ClientData {
     }
 
     @Override
-    public boolean usesWebSockets() {
+    public boolean usesWebSocket() {
         return webSocketConfig != null;
     }
 
@@ -142,24 +140,6 @@ public class MqttClientData implements Mqtt5ClientData {
     @Nullable
     public MqttWebSocketConfigImpl getRawWebSocketConfig() {
         return webSocketConfig;
-    }
-
-    @Override
-    public boolean isConnecting() {
-        return connecting.get();
-    }
-
-    public boolean setConnecting(final boolean connecting) {
-        return this.connecting.compareAndSet(!connecting, connecting);
-    }
-
-    @Override
-    public boolean isConnected() {
-        return connected.get();
-    }
-
-    public boolean setConnected(final boolean connected) {
-        return this.connected.compareAndSet(!connected, connected);
     }
 
     @Override
@@ -191,6 +171,17 @@ public class MqttClientData implements Mqtt5ClientData {
     @NotNull
     public ClientComponent getClientComponent() {
         return clientComponent;
+    }
+
+    @NotNull
+    @Override
+    public MqttClientConnectionState getConnectionState() {
+        return connectionState.get();
+    }
+
+    @NotNull
+    public AtomicReference<MqttClientConnectionState> getRawConnectionState() {
+        return connectionState;
     }
 
     @NotNull
