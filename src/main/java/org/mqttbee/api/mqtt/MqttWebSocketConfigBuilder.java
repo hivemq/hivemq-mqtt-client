@@ -29,6 +29,7 @@ import java.util.function.Function;
 public class MqttWebSocketConfigBuilder<P> extends FluentBuilder<MqttWebSocketConfig, P> {
 
     private String serverPath = MqttWebSocketConfigImpl.DEFAULT_SERVER_PATH;
+    private String subprotocol = MqttWebSocketConfigImpl.DEFAULT_MQTT_SUBPROTOCOL;
 
     public MqttWebSocketConfigBuilder(@Nullable final Function<? super MqttWebSocketConfig, P> parentConsumer) {
         super(parentConsumer);
@@ -42,9 +43,15 @@ public class MqttWebSocketConfigBuilder<P> extends FluentBuilder<MqttWebSocketCo
     }
 
     @NotNull
+    public MqttWebSocketConfigBuilder<P> subprotocol(@NotNull final String subprotocol) {
+        this.subprotocol = subprotocol;
+        return this;
+    }
+
+    @NotNull
     @Override
     public MqttWebSocketConfig build() {
-        return new MqttWebSocketConfigImpl(serverPath);
+        return new MqttWebSocketConfigImpl(serverPath, subprotocol);
     }
 
 }

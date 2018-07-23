@@ -39,8 +39,6 @@ public class MqttWebSocketClientProtocolHandler extends WebSocketClientProtocolH
     public static final String NAME = "ws.mqtt";
     private static final String WEBSOCKET_URI_SCHEME = "ws";
     private static final String WEBSOCKET_TLS_URI_SCHEME = "wss";
-    // https://www.iana.org/assignments/websocket/websocket.xml#subprotocol-name
-    private static final String MQTT_SUBPROTOCOL = "mqtt";
 
     private static URI createURI(
             @NotNull final MqttClientData clientData, @NotNull final MqttWebSocketConfig webSocketConfig)
@@ -57,8 +55,8 @@ public class MqttWebSocketClientProtocolHandler extends WebSocketClientProtocolH
             @NotNull final MqttClientData clientData, @NotNull final MqttWebSocketConfig webSocketConfig,
             @NotNull final MqttChannelInitializer channelInitializer) throws URISyntaxException {
 
-        super(createURI(clientData, webSocketConfig), WebSocketVersion.V13, MQTT_SUBPROTOCOL, true, null,
-                MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT);
+        super(createURI(clientData, webSocketConfig), WebSocketVersion.V13, webSocketConfig.getSubprotocol(), true,
+                null, MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT);
         this.channelInitializer = channelInitializer;
     }
 

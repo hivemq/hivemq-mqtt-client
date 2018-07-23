@@ -31,4 +31,6 @@ public interface MqttWebSocketConfig {
     @NotNull
     String getServerPath();
 
+    @NotNull
+    String getSubprotocol();
 }
