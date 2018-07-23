@@ -28,7 +28,7 @@ import java.util.function.Function;
  */
 public class MqttWebSocketConfigBuilder<P> extends FluentBuilder<MqttWebSocketConfig, P> {
 
-    private String serverPath = "";
+    private String serverPath = MqttWebSocketConfigImpl.DEFAULT_SERVER_PATH;
 
     public MqttWebSocketConfigBuilder(@Nullable final Function<? super MqttWebSocketConfig, P> parentConsumer) {
         super(parentConsumer);
