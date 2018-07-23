@@ -21,23 +21,35 @@ import org.mqttbee.api.mqtt.MqttWebSocketConfig;
 
 /**
  * @author David Katz
+ * @author Christian Hoff
  */
 public class MqttWebSocketConfigImpl implements MqttWebSocketConfig {
     public static final String DEFAULT_SERVER_PATH = "";
+    // https://www.iana.org/assignments/websocket/websocket.xml#subprotocol-name
+    public static final String DEFAULT_MQTT_SUBPROTOCOL = "mqtt";
 
-    public static final MqttWebSocketConfigImpl DEFAULT = new MqttWebSocketConfigImpl(DEFAULT_SERVER_PATH);
+    public static final MqttWebSocketConfigImpl DEFAULT =
+            new MqttWebSocketConfigImpl(DEFAULT_SERVER_PATH, DEFAULT_MQTT_SUBPROTOCOL);
 
     private final String serverPath;
+    private final String subprotocol;
 
-    public MqttWebSocketConfigImpl(@NotNull final String serverPath) {
+    public MqttWebSocketConfigImpl(@NotNull final String serverPath, @NotNull final String subprotocol) {
         // remove any leading slashes
         this.serverPath = serverPath.replaceAll("^/+", "");
+        this.subprotocol = subprotocol;
     }
 
     @Override
     @NotNull
     public String getServerPath() {
         return serverPath;
+    }
+
+    @Override
+    @NotNull
+    public String getSubprotocol() {
+        return subprotocol;
     }
 
 }
