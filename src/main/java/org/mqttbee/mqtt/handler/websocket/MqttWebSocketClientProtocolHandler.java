@@ -24,7 +24,7 @@ import org.mqttbee.api.mqtt.MqttWebSocketConfig;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.handler.MqttChannelInitializer;
-import org.mqttbee.mqtt.ioc.ChannelScope;
+import org.mqttbee.mqtt.ioc.ConnectionScope;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -33,13 +33,14 @@ import java.net.URISyntaxException;
  * @author David Katz
  * @author Silvio Giebl
  */
-@ChannelScope
+@ConnectionScope
 public class MqttWebSocketClientProtocolHandler extends WebSocketClientProtocolHandler {
 
     public static final String NAME = "ws.mqtt";
     private static final String WEBSOCKET_URI_SCHEME = "ws";
     private static final String WEBSOCKET_TLS_URI_SCHEME = "wss";
 
+    @NotNull
     private static URI createURI(
             @NotNull final MqttClientData clientData, @NotNull final MqttWebSocketConfig webSocketConfig)
             throws URISyntaxException {
@@ -62,7 +63,7 @@ public class MqttWebSocketClientProtocolHandler extends WebSocketClientProtocolH
 
     @Override
     public void userEventTriggered(final ChannelHandlerContext ctx, final Object evt) {
-        if (ClientHandshakeStateEvent.HANDSHAKE_COMPLETE.equals(evt)) {
+        if (evt == ClientHandshakeStateEvent.HANDSHAKE_COMPLETE) {
             channelInitializer.initMqttHandlers(ctx.pipeline());
         }
         ctx.fireUserEventTriggered(evt);

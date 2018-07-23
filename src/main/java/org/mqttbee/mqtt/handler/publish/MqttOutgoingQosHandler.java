@@ -34,7 +34,7 @@ import org.mqttbee.mqtt.advanced.MqttAdvancedClientData;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.handler.subscribe.MqttSubscriptionHandler;
-import org.mqttbee.mqtt.ioc.ChannelScope;
+import org.mqttbee.mqtt.ioc.ClientScope;
 import org.mqttbee.mqtt.message.publish.*;
 import org.mqttbee.mqtt.message.publish.MqttPublishResult.MqttQos1Result;
 import org.mqttbee.mqtt.message.publish.MqttPublishResult.MqttQos2Result;
@@ -59,7 +59,7 @@ import static org.mqttbee.mqtt.message.publish.MqttStatefulPublish.*;
 /**
  * @author Silvio Giebl
  */
-@ChannelScope
+@ClientScope
 public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter {
 
     public static final String NAME = "qos.outgoing";

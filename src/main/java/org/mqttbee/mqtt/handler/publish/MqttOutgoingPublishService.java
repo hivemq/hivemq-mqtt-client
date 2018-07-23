@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.MqttServerConnectionData;
-import org.mqttbee.mqtt.ioc.ChannelScope;
+import org.mqttbee.mqtt.ioc.ClientScope;
 import org.reactivestreams.Subscription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +33,7 @@ import javax.inject.Inject;
 /**
  * @author Silvio Giebl
  */
-@ChannelScope
+@ClientScope
 public class MqttOutgoingPublishService implements FlowableSubscriber<MqttPublishWithFlow> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MqttOutgoingPublishService.class);

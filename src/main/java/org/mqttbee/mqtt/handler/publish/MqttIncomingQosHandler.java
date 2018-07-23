@@ -29,7 +29,7 @@ import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.advanced.MqttAdvancedClientData;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
-import org.mqttbee.mqtt.ioc.ChannelScope;
+import org.mqttbee.mqtt.ioc.ClientScope;
 import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
 import org.mqttbee.mqtt.message.publish.puback.MqttPubAck;
 import org.mqttbee.mqtt.message.publish.puback.MqttPubAckBuilder;
@@ -46,7 +46,7 @@ import javax.inject.Provider;
 /**
  * @author Silvio Giebl
  */
-@ChannelScope
+@ClientScope
 public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter {
 
     public static final String NAME = "qos.incoming";

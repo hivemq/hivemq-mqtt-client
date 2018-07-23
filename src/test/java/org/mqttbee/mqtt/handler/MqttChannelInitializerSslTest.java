@@ -16,7 +16,9 @@
 
 package org.mqttbee.mqtt.handler;
 
+import dagger.Lazy;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.ssl.SslHandler;
 import io.reactivex.SingleEmitter;
@@ -28,7 +30,11 @@ import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.MqttClientSslConfigImpl;
 import org.mqttbee.mqtt.MqttVersion;
-import org.mqttbee.mqtt.message.connect.MqttConnect;
+import org.mqttbee.mqtt.codec.encoder.MqttEncoder;
+import org.mqttbee.mqtt.handler.connect.MqttConnectHandler;
+import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectHandler;
+import org.mqttbee.mqtt.handler.websocket.WebSocketBinaryFrameDecoder;
+import org.mqttbee.mqtt.handler.websocket.WebSocketBinaryFrameEncoder;
 
 import java.util.Optional;
 
@@ -43,13 +49,21 @@ import static org.mockito.Mockito.when;
 public class MqttChannelInitializerSslTest {
 
     @Mock
-    private MqttConnect mqttConnect;
-
+    private MqttClientData clientData;
     @Mock
     private SingleEmitter<Mqtt5ConnAck> connAckEmitter;
-
     @Mock
-    private MqttClientData clientData;
+    private MqttEncoder encoder;
+    @Mock
+    private MqttConnectHandler connectHandler;
+    @Mock
+    private MqttDisconnectHandler disconnectHandler;
+    @Mock
+    private ChannelHandler authHandler;
+    @Mock
+    private Lazy<WebSocketBinaryFrameEncoder> webSocketBinaryFrameEncoder;
+    @Mock
+    private Lazy<WebSocketBinaryFrameDecoder> webSocketBinaryFrameDecoder;
 
     private Channel channel;
 
@@ -61,7 +75,7 @@ public class MqttChannelInitializerSslTest {
     }
 
     @Test
-    public void test_initialize_default_ssldata() {
+    public void test_initialize_default_ssldata() throws Exception {
         when(clientData.getMqttVersion()).thenReturn(MqttVersion.MQTT_5_0);
         when(clientData.usesSsl()).thenReturn(true);
         final MqttClientSslConfigImpl sslConfig = mock(MqttClientSslConfigImpl.class);
@@ -69,7 +83,8 @@ public class MqttChannelInitializerSslTest {
         when(clientData.getRawSslConfig()).thenReturn(sslConfig);
 
         final MqttChannelInitializer mqttChannelInitializer =
-                new MqttChannelInitializer(mqttConnect, connAckEmitter, clientData);
+                new MqttChannelInitializer(clientData, connAckEmitter, encoder, connectHandler, disconnectHandler,
+                        authHandler, webSocketBinaryFrameEncoder, webSocketBinaryFrameDecoder);
 
         mqttChannelInitializer.initChannel(channel);
 

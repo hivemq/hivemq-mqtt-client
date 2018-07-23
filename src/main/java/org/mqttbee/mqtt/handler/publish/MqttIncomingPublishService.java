@@ -22,7 +22,7 @@ import org.mqttbee.annotations.CallByThread;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
-import org.mqttbee.mqtt.ioc.ChannelScope;
+import org.mqttbee.mqtt.ioc.ClientScope;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
 import org.mqttbee.util.collections.ChunkedArrayQueue;
@@ -36,7 +36,7 @@ import java.util.Iterator;
 /**
  * @author Silvio Giebl
  */
-@ChannelScope
+@ClientScope
 public class MqttIncomingPublishService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MqttIncomingPublishService.class);

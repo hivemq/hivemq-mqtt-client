@@ -17,10 +17,7 @@
 
 package org.mqttbee.mqtt.netty;
 
-import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelOption;
 import io.netty.channel.MultithreadEventLoopGroup;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.concurrent.ThreadSafe;
+import javax.inject.Singleton;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executor;
@@ -37,6 +35,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * @author Silvio Giebl
  */
+@Singleton
 @ThreadSafe
 public abstract class NettyBootstrap {
 
@@ -51,16 +50,7 @@ public abstract class NettyBootstrap {
     }
 
     @NotNull
-    public Bootstrap bootstrap(@NotNull final MqttClientExecutorConfigImpl executorConfig) {
-        return new Bootstrap().group(getEventLoopGroup(executorConfig))
-                .channel(getChannelClass())
-                .option(ChannelOption.SO_KEEPALIVE, true)
-                .option(ChannelOption.TCP_NODELAY, true)
-                .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
-    }
-
-    @NotNull
-    private synchronized MultithreadEventLoopGroup getEventLoopGroup(
+    public synchronized MultithreadEventLoopGroup getEventLoopGroup(
             @NotNull final MqttClientExecutorConfigImpl executorConfig) {
 
         if (executorConfig.getRawNettyExecutor() == null) {
@@ -121,7 +111,7 @@ public abstract class NettyBootstrap {
             @Nullable final Executor executor, final int numberOfNettyThreads);
 
     @NotNull
-    abstract Class<? extends Channel> getChannelClass();
+    public abstract Class<? extends Channel> getChannelClass();
 
     public synchronized void free(@NotNull final MqttClientExecutorConfigImpl executorConfig) {
         if (executorConfig.getRawNettyExecutor() == null) {

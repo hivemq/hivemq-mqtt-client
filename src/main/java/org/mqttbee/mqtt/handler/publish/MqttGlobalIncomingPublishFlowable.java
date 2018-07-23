@@ -25,7 +25,7 @@ import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
-import org.mqttbee.mqtt.ioc.ChannelComponent;
+import org.mqttbee.mqtt.ioc.ClientComponent;
 import org.reactivestreams.Subscriber;
 
 /**
@@ -49,8 +49,8 @@ public class MqttGlobalIncomingPublishFlowable extends Flowable<Mqtt5Publish> {
         if (clientConnectionData == null) {
             EmptySubscription.error(new NotConnectedException(), s);
         } else {
-            final ChannelComponent channelComponent = ChannelComponent.get(clientConnectionData.getChannel());
-            final MqttIncomingPublishService incomingPublishService = channelComponent.incomingPublishService();
+            final ClientComponent clientComponent = clientData.getClientComponent();
+            final MqttIncomingPublishService incomingPublishService = clientComponent.incomingPublishService();
 
             final MqttGlobalIncomingPublishFlow flow =
                     new MqttGlobalIncomingPublishFlow(s, incomingPublishService, filter);

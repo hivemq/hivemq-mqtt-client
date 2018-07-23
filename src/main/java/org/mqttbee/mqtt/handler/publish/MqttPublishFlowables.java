@@ -20,7 +20,7 @@ package org.mqttbee.mqtt.handler.publish;
 import io.reactivex.Flowable;
 import io.reactivex.internal.util.BackpressureHelper;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.mqtt.ioc.ChannelScope;
+import org.mqttbee.mqtt.ioc.ClientScope;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 import org.slf4j.Logger;
@@ -32,7 +32,7 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * @author Silvio Giebl
  */
-@ChannelScope
+@ClientScope
 public class MqttPublishFlowables extends Flowable<Flowable<MqttPublishWithFlow>> implements Subscription {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MqttPublishFlowables.class);

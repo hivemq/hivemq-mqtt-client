@@ -35,7 +35,7 @@ import org.mqttbee.mqtt.handler.publish.MqttOutgoingQosHandler;
 import org.mqttbee.mqtt.handler.publish.MqttSubscriptionFlow;
 import org.mqttbee.mqtt.handler.subscribe.MqttSubscribeWithFlow.MqttStatefulSubscribeWithFlow;
 import org.mqttbee.mqtt.handler.subscribe.MqttUnsubscribeWithFlow.MqttStatefulUnsubscribeWithFlow;
-import org.mqttbee.mqtt.ioc.ChannelScope;
+import org.mqttbee.mqtt.ioc.ClientScope;
 import org.mqttbee.mqtt.message.subscribe.MqttStatefulSubscribe;
 import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAck;
 import org.mqttbee.mqtt.message.unsubscribe.MqttStatefulUnsubscribe;
@@ -53,7 +53,7 @@ import java.util.LinkedList;
 /**
  * @author Silvio Giebl
  */
-@ChannelScope
+@ClientScope
 public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
 
     public static final String NAME = "subscription";
@@ -188,8 +188,8 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
         final MqttStatefulSubscribeWithFlow statefulSubscribeWithFlow = subscribes.remove(packetIdentifier);
 
         if (statefulSubscribeWithFlow == null) {
-            MqttDisconnectUtil.disconnect(
-                    ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "Unknown packet identifier for SUBACK");
+            MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+                    "Unknown packet identifier for SUBACK");
             return;
         }
 

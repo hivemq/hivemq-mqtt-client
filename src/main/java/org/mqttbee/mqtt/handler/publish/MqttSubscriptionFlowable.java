@@ -26,7 +26,7 @@ import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.handler.subscribe.MqttSubscribeWithFlow;
 import org.mqttbee.mqtt.handler.subscribe.MqttSubscriptionHandler;
-import org.mqttbee.mqtt.ioc.ChannelComponent;
+import org.mqttbee.mqtt.ioc.ClientComponent;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
 import org.reactivestreams.Subscriber;
 
@@ -49,9 +49,9 @@ public class MqttSubscriptionFlowable extends Flowable<Mqtt5SubscribeResult> {
         if (clientConnectionData == null) {
             EmptySubscription.error(new NotConnectedException(), s);
         } else {
-            final ChannelComponent channelComponent = ChannelComponent.get(clientConnectionData.getChannel());
-            final MqttIncomingPublishService incomingPublishService = channelComponent.incomingPublishService();
-            final MqttSubscriptionHandler subscriptionHandler = channelComponent.subscriptionHandler();
+            final ClientComponent clientComponent = clientData.getClientComponent();
+            final MqttIncomingPublishService incomingPublishService = clientComponent.incomingPublishService();
+            final MqttSubscriptionHandler subscriptionHandler = clientComponent.subscriptionHandler();
 
             final MqttSubscriptionFlow flow = new MqttSubscriptionFlow(s, incomingPublishService);
             s.onSubscribe(flow);

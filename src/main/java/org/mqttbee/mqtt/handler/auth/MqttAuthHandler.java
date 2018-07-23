@@ -33,7 +33,7 @@ import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.handler.disconnect.ChannelCloseEvent;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.handler.util.DefaultChannelOutboundHandler;
-import org.mqttbee.mqtt.ioc.ChannelScope;
+import org.mqttbee.mqtt.ioc.ConnectionScope;
 import org.mqttbee.mqtt.message.auth.MqttAuth;
 import org.mqttbee.mqtt.message.auth.MqttEnhancedAuthBuilder;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
@@ -49,7 +49,7 @@ import javax.inject.Inject;
  *
  * @author Silvio Giebl
  */
-@ChannelScope
+@ConnectionScope
 public class MqttAuthHandler extends AbstractMqttAuthHandler implements DefaultChannelOutboundHandler {
 
     public static final String NAME = "auth";

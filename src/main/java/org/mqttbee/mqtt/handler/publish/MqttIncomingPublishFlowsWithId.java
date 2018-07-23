@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
-import org.mqttbee.mqtt.ioc.ChannelScope;
+import org.mqttbee.mqtt.ioc.ClientScope;
 import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
 import org.mqttbee.mqtt.message.subscribe.MqttStatefulSubscribe;
 import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAck;
@@ -41,7 +41,7 @@ import static org.mqttbee.mqtt.message.subscribe.MqttStatefulSubscribe.DEFAULT_N
  *
  * @author Silvio Giebl
  */
-@ChannelScope
+@ClientScope
 @NotThreadSafe
 public class MqttIncomingPublishFlowsWithId extends MqttIncomingPublishFlows {
 

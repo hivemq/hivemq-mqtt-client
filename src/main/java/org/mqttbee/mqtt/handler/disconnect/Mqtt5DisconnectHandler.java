@@ -15,25 +15,27 @@
  *
  */
 
-package org.mqttbee.mqtt.ioc;
+package org.mqttbee.mqtt.handler.disconnect;
 
-import dagger.Component;
-import org.mqttbee.mqtt.netty.NettyBootstrap;
-import org.mqttbee.mqtt.netty.NettyModule;
+import io.netty.channel.ChannelHandler;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
  * @author Silvio Giebl
  */
-@Component(modules = {NettyModule.class})
+@ChannelHandler.Sharable
 @Singleton
-public interface MqttBeeComponent {
+public class Mqtt5DisconnectHandler extends MqttDisconnectHandler {
 
-    MqttBeeComponent INSTANCE = DaggerMqttBeeComponent.create();
+    @Inject
+    public Mqtt5DisconnectHandler() {
+    }
 
-    ClientComponent.Builder clientComponentBuilder();
-
-    NettyBootstrap nettyBootstrap(); // TODO remove
+    @Override
+    boolean sendDisconnectOnError() {
+        return true;
+    }
 
 }

@@ -23,6 +23,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.concurrent.ThreadSafe;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.concurrent.Executor;
@@ -31,6 +32,7 @@ import java.util.concurrent.Executor;
  * @author Silvio Giebl
  */
 @Singleton
+@ThreadSafe
 class NettyNioBootstrap extends NettyBootstrap {
 
     @Inject
@@ -52,7 +54,7 @@ class NettyNioBootstrap extends NettyBootstrap {
 
     @NotNull
     @Override
-    Class<NioSocketChannel> getChannelClass() {
+    public Class<NioSocketChannel> getChannelClass() {
         return NioSocketChannel.class;
     }
 

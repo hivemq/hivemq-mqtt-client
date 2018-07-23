@@ -38,7 +38,6 @@ import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeResult;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
-import org.mqttbee.mqtt.handler.MqttChannelInitializer;
 import org.mqttbee.mqtt.handler.auth.MqttReAuthEvent;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.handler.publish.MqttGlobalIncomingPublishFlowable;
@@ -88,10 +87,12 @@ public class MqttRxClient implements Mqtt5RxClient {
                 return;
             }
 
-            final Bootstrap bootstrap =
-                    MqttBeeComponent.INSTANCE.nettyBootstrap().bootstrap(clientData.getExecutorConfig());
-
-            bootstrap.handler(new MqttChannelInitializer(mqttConnect, connAckEmitter, clientData));
+            final Bootstrap bootstrap = clientData.getClientComponent()
+                    .connectionComponentBuilder()
+                    .connect(mqttConnect)
+                    .connAckEmitter(connAckEmitter)
+                    .build()
+                    .bootstrap();
 
             bootstrap.connect(clientData.getServerHost(), clientData.getServerPort()).addListener(future -> {
                 if (!future.isSuccess()) {
@@ -212,13 +213,7 @@ public class MqttRxClient implements Mqtt5RxClient {
         return Completable.create(emitter -> {
             final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
             if (clientConnectionData != null) {
-                MqttDisconnectUtil.disconnect(clientConnectionData.getChannel(), mqttDisconnect).addListener(future -> {
-                    if (future.isSuccess()) {
-                        emitter.onComplete();
-                    } else {
-                        emitter.onError(future.cause());
-                    }
-                });
+                MqttDisconnectUtil.disconnect(clientConnectionData.getChannel(), mqttDisconnect, emitter);
             } else {
                 emitter.onError(new NotConnectedException());
             }

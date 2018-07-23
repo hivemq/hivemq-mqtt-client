@@ -17,6 +17,7 @@
 
 package org.mqttbee.mqtt.handler.connect;
 
+import dagger.Lazy;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
@@ -39,8 +40,7 @@ import org.mqttbee.mqtt.handler.publish.MqttIncomingQosHandler;
 import org.mqttbee.mqtt.handler.publish.MqttOutgoingQosHandler;
 import org.mqttbee.mqtt.handler.subscribe.MqttSubscriptionHandler;
 import org.mqttbee.mqtt.handler.util.ChannelInboundHandlerWithTimeout;
-import org.mqttbee.mqtt.ioc.ChannelComponent;
-import org.mqttbee.mqtt.ioc.ChannelScope;
+import org.mqttbee.mqtt.ioc.ConnectionScope;
 import org.mqttbee.mqtt.message.MqttMessage;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
 import org.mqttbee.mqtt.message.connect.MqttConnectRestrictions;
@@ -48,6 +48,8 @@ import org.mqttbee.mqtt.message.connect.connack.MqttConnAck;
 import org.mqttbee.mqtt.message.connect.connack.MqttConnAckRestrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
 
 /**
  * Handles the connection to a MQTT Server.
@@ -60,7 +62,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Silvio Giebl
  */
-@ChannelScope
+@ConnectionScope
 public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
 
     public static final String NAME = "connect";
@@ -70,15 +72,32 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
     private final MqttConnect connect;
     private final SingleEmitter<Mqtt5ConnAck> connAckEmitter;
     private final MqttClientData clientData;
+
+    private final MqttDecoder decoder;
+    private final Lazy<MqttSubscriptionHandler> subscriptionHandler;
+    private final Lazy<MqttIncomingQosHandler> incomingQosHandler;
+    private final Lazy<MqttOutgoingQosHandler> outgoingQosHandler;
+    private final Lazy<MqttDisconnectOnConnAckHandler> disconnectOnConnAckHandler;
+
     private boolean connectCalled = false;
 
-    public MqttConnectHandler(
-            @NotNull final MqttConnect connect, @NotNull final SingleEmitter<Mqtt5ConnAck> connAckEmitter,
-            @NotNull final MqttClientData clientData) {
+    @Inject
+    MqttConnectHandler(
+            final MqttConnect connect, final SingleEmitter<Mqtt5ConnAck> connAckEmitter,
+            final MqttClientData clientData, final MqttDecoder decoder,
+            final Lazy<MqttSubscriptionHandler> subscriptionHandler,
+            final Lazy<MqttIncomingQosHandler> incomingQosHandler,
+            final Lazy<MqttOutgoingQosHandler> outgoingQosHandler,
+            final Lazy<MqttDisconnectOnConnAckHandler> disconnectOnConnAckHandler) {
 
         this.connect = connect;
         this.connAckEmitter = connAckEmitter;
         this.clientData = clientData;
+        this.decoder = decoder;
+        this.subscriptionHandler = subscriptionHandler;
+        this.incomingQosHandler = incomingQosHandler;
+        this.outgoingQosHandler = outgoingQosHandler;
+        this.disconnectOnConnAckHandler = disconnectOnConnAckHandler;
     }
 
     @Override
@@ -122,8 +141,7 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
                 if (noEnhancedAuth) {
                     scheduleTimeout();
                 }
-                ctx.pipeline()
-                        .addAfter(MqttEncoder.NAME, MqttDecoder.NAME, ChannelComponent.get(ctx.channel()).decoder());
+                ctx.pipeline().addAfter(MqttEncoder.NAME, MqttDecoder.NAME, decoder);
             } else {
                 MqttDisconnectUtil.close(ctx.channel(), future.cause());
             }
@@ -179,7 +197,6 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
                 addServerData(connAck);
 
                 final ChannelPipeline pipeline = channel.pipeline();
-                final ChannelComponent channelComponent = ChannelComponent.get(channel);
 
                 pipeline.remove(this);
                 String beforeHandlerName = MqttDecoder.NAME;
@@ -192,13 +209,10 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
                     beforeHandlerName = MqttPingHandler.NAME;
                 }
 
-                pipeline.addAfter(
-                        beforeHandlerName, MqttSubscriptionHandler.NAME, channelComponent.subscriptionHandler());
-                pipeline.addAfter(
-                        beforeHandlerName, MqttIncomingQosHandler.NAME, channelComponent.incomingQosHandler());
-                pipeline.addAfter(
-                        beforeHandlerName, MqttOutgoingQosHandler.NAME, channelComponent.outgoingQosHandler());
-                pipeline.addLast(MqttDisconnectOnConnAckHandler.NAME, channelComponent.disconnectOnConnAckHandler());
+                pipeline.addAfter(beforeHandlerName, MqttSubscriptionHandler.NAME, subscriptionHandler.get());
+                pipeline.addAfter(beforeHandlerName, MqttIncomingQosHandler.NAME, incomingQosHandler.get());
+                pipeline.addAfter(beforeHandlerName, MqttOutgoingQosHandler.NAME, outgoingQosHandler.get());
+                pipeline.addLast(MqttDisconnectOnConnAckHandler.NAME, disconnectOnConnAckHandler.get());
 
                 connAckEmitter.onSuccess(connAck);
             }

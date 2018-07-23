@@ -21,7 +21,7 @@ import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.mqtt.ioc.ChannelScope;
+import org.mqttbee.mqtt.ioc.ClientScope;
 import org.mqttbee.mqtt.persistence.memory.IncomingQosFlowMemoryPersistence;
 import org.mqttbee.mqtt.persistence.memory.OutgoingQosFlowMemoryPersistence;
 
@@ -32,7 +32,7 @@ import org.mqttbee.mqtt.persistence.memory.OutgoingQosFlowMemoryPersistence;
 public class MqttPersistenceModule {
 
     @Provides
-    @ChannelScope
+    @ClientScope
     static OutgoingQosFlowPersistence provideOutgoingQosFlowPersistence(
             @NotNull final Lazy<OutgoingQosFlowMemoryPersistence> memoryPersistence) {
 
@@ -40,7 +40,7 @@ public class MqttPersistenceModule {
     }
 
     @Provides
-    @ChannelScope
+    @ClientScope
     static IncomingQosFlowPersistence provideIncomingQosFlowPersistence(
             @NotNull final Lazy<IncomingQosFlowMemoryPersistence> memoryPersistence) {
 
