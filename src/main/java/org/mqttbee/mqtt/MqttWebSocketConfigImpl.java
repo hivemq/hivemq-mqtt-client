@@ -23,8 +23,9 @@ import org.mqttbee.api.mqtt.MqttWebSocketConfig;
  * @author David Katz
  */
 public class MqttWebSocketConfigImpl implements MqttWebSocketConfig {
+    public static final String DEFAULT_SERVER_PATH = "";
 
-    public static final MqttWebSocketConfigImpl DEFAULT = new MqttWebSocketConfigImpl("");
+    public static final MqttWebSocketConfigImpl DEFAULT = new MqttWebSocketConfigImpl(DEFAULT_SERVER_PATH);
 
     private final String serverPath;
 
