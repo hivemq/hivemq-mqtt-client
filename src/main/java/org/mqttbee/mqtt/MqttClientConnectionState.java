@@ -15,15 +15,16 @@
  *
  */
 
-package org.mqttbee.api.mqtt.exceptions;
+package org.mqttbee.mqtt;
 
 /**
  * @author Silvio Giebl
  */
-public class AlreadyConnectedException extends Exception {
+public enum MqttClientConnectionState {
 
-    public AlreadyConnectedException() {
-        super("MQTT client is already connecting or connected");
-    }
+    DISCONNECTED,
+    CONNECTING,
+    CONNECTED,
+    RECONNECTING
 
 }

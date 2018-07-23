@@ -25,6 +25,7 @@ import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3ClientConnectionData;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3ClientData;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3ServerConnectionData;
+import org.mqttbee.mqtt.MqttClientConnectionState;
 import org.mqttbee.mqtt.MqttClientData;
 
 import java.util.Optional;
@@ -69,8 +70,8 @@ public class Mqtt3ClientDataView implements Mqtt3ClientData {
     }
 
     @Override
-    public boolean usesWebSockets() {
-        return delegate.usesWebSockets();
+    public boolean usesWebSocket() {
+        return delegate.usesWebSocket();
     }
 
     @NotNull
@@ -86,13 +87,8 @@ public class Mqtt3ClientDataView implements Mqtt3ClientData {
     }
 
     @Override
-    public boolean isConnecting() {
-        return delegate.isConnecting();
-    }
-
-    @Override
-    public boolean isConnected() {
-        return delegate.isConnected();
+    public MqttClientConnectionState getConnectionState() {
+        return delegate.getConnectionState();
     }
 
     @NotNull

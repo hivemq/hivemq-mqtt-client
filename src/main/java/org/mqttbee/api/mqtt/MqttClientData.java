@@ -20,6 +20,7 @@ package org.mqttbee.api.mqtt;
 import org.mqttbee.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
+import org.mqttbee.mqtt.MqttClientConnectionState;
 
 import java.util.Optional;
 
@@ -42,7 +43,7 @@ public interface MqttClientData {
     @NotNull
     Optional<MqttClientSslConfig> getSslConfig();
 
-    boolean usesWebSockets();
+    boolean usesWebSocket();
 
     @NotNull
     Optional<MqttWebSocketConfig> getWebSocketConfig();
@@ -50,8 +51,6 @@ public interface MqttClientData {
     @NotNull
     MqttClientExecutorConfig getExecutorConfig();
 
-    boolean isConnecting();
-
-    boolean isConnected();
+    MqttClientConnectionState getConnectionState();
 
 }
