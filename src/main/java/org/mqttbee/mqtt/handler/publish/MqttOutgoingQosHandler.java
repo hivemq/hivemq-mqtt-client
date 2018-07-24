@@ -19,11 +19,13 @@ package org.mqttbee.mqtt.handler.publish;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
+import org.jctools.queues.SpscChunkedArrayQueue;
 import org.mqttbee.annotations.CallByThread;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
-import org.mqttbee.api.mqtt.mqtt5.Mqtt5ServerConnectionData;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5OutgoingQos1ControlProvider;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5OutgoingQos2ControlProvider;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
@@ -45,8 +47,9 @@ import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRel;
 import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRelBuilder;
 import org.mqttbee.util.Ranges;
 import org.mqttbee.util.UnsignedDataTypes;
+import org.mqttbee.util.collections.ChunkedArrayQueue;
+import org.mqttbee.util.collections.ChunkedIntArrayQueue;
 import org.mqttbee.util.collections.IntMap;
-import org.mqttbee.util.collections.SpscArrayQueueUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +63,8 @@ import static org.mqttbee.mqtt.message.publish.MqttStatefulPublish.*;
  * @author Silvio Giebl
  */
 @ClientScope
-public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter {
+public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
+        implements Runnable, GenericFutureListener<Future<? super Void>> {
 
     public static final String NAME = "qos.outgoing";
     private static final Logger LOGGER = LoggerFactory.getLogger(MqttOutgoingQosHandler.class);
@@ -71,24 +75,29 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter {
     }
 
     private final MqttClientData clientData;
-    private final Queue<MqttPublishWithFlow> publishQueue;
-    private final Runnable publishRunnable = this::runPublish;
+    private final MqttTopicAliasMapping topicAliasMapping;
+
     private final AtomicInteger wip = new AtomicInteger();
+    private final Queue<MqttPublishWithFlow> publishQueue = new SpscChunkedArrayQueue<>(32, 1 << 30);
+    private final ChunkedArrayQueue<MqttPublishWithFlow> qos0PublishQueue = new ChunkedArrayQueue<>(32);
+    private final ChunkedIntArrayQueue qos1Or2PublishQueue = new ChunkedIntArrayQueue(32);
+
     private final Ranges packetIdentifiers;
-    private final IntMap<MqttPublishWithFlow> qos1Or2Publishes;
+    private final IntMap<MqttPublishWithFlow> qos1Or2PublishMap;
 
     private ChannelHandlerContext ctx; // TODO temp
 
     @Inject
     MqttOutgoingQosHandler(final MqttClientData clientData) {
-        final Mqtt5ServerConnectionData serverConnectionData = clientData.getRawServerConnectionData();
+        final MqttServerConnectionData serverConnectionData = clientData.getRawServerConnectionData();
         assert serverConnectionData != null;
 
         this.clientData = clientData;
+        topicAliasMapping = serverConnectionData.getTopicAliasMapping();
+
         final int pubReceiveMaximum = getPubReceiveMaximum(serverConnectionData.getReceiveMaximum());
-        publishQueue = SpscArrayQueueUtil.create(pubReceiveMaximum, 64);
         packetIdentifiers = new Ranges(1, pubReceiveMaximum);
-        qos1Or2Publishes = IntMap.range(1, pubReceiveMaximum);
+        qos1Or2PublishMap = IntMap.range(1, pubReceiveMaximum);
     }
 
     @Override
@@ -99,12 +108,12 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter {
     void publish(@NotNull final MqttPublishWithFlow publishWithFlow) {
         publishQueue.offer(publishWithFlow);
         if (wip.getAndIncrement() == 0) {
-            ctx.executor().execute(publishRunnable);
+            ctx.executor().execute(this);
         }
     }
 
     @CallByThread("Netty EventLoop")
-    private void runPublish() {
+    public void run() {
         final int working = Math.min(wip.get(), 64);
         for (int i = 0; i < working; i++) {
             final MqttPublishWithFlow publishWithFlow = publishQueue.poll();
@@ -113,46 +122,46 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter {
         }
         ctx.flush();
         if (wip.addAndGet(-working) > 0) {
-            ctx.executor().execute(publishRunnable);
+            ctx.executor().execute(this);
         }
     }
 
     private void handlePublish(@NotNull final MqttPublishWithFlow publishWithFlow) {
         if (publishWithFlow.getPublish().getQos() == MqttQos.AT_MOST_ONCE) {
-            handlePublishQos0(publishWithFlow);
+            handleQos0Publish(publishWithFlow);
         } else {
-            handlePublishQos1Or2(publishWithFlow);
+            handleQos1Or2Publish(publishWithFlow);
         }
     }
 
-    private void handlePublishQos0(@NotNull final MqttPublishWithFlow publishWithFlow) {
-        final MqttStatefulPublish publish =
-                createStatefulPublish(publishWithFlow.getPublish(), NO_PACKET_IDENTIFIER_QOS_0, false);
-        ctx.write(publish)
-                .addListener(future -> publishWithFlow.getIncomingAckFlow()
-                        .onNext(new MqttPublishResult(publishWithFlow.getPublish(), future.cause())));
+    private void handleQos0Publish(@NotNull final MqttPublishWithFlow publishWithFlow) {
+        qos0PublishQueue.offer(publishWithFlow);
+        ctx.write(addState(publishWithFlow.getPublish(), NO_PACKET_IDENTIFIER_QOS_0, false)).addListener(this);
     }
 
-    private void handlePublishQos1Or2(@NotNull final MqttPublishWithFlow publishWithFlow) {
+    @Override
+    public void operationComplete(final Future<? super Void> future) {
+        final MqttPublishWithFlow publishWithFlow = qos0PublishQueue.poll();
+        assert publishWithFlow != null; // ensured by wip
+        publishWithFlow.getIncomingAckFlow()
+                .onNext(new MqttPublishResult(publishWithFlow.getPublish(), future.cause()));
+    }
+
+    private void handleQos1Or2Publish(@NotNull final MqttPublishWithFlow publishWithFlow) {
         final int packetIdentifier = packetIdentifiers.getId();
         if (packetIdentifier < 0) {
             LOGGER.error("No Packet Identifier available for QoS 1 or 2 Publish message");
             return;
         }
-
-        qos1Or2Publishes.put(packetIdentifier, publishWithFlow);
-        final MqttStatefulPublish publish =
-                createStatefulPublish(publishWithFlow.getPublish(), packetIdentifier, false);
-        ctx.write(publish);
+        qos1Or2PublishMap.put(packetIdentifier, publishWithFlow);
+        qos1Or2PublishQueue.offer(packetIdentifier);
+        ctx.write(addState(publishWithFlow.getPublish(), packetIdentifier, false));
     }
 
     @NotNull
-    private MqttStatefulPublish createStatefulPublish(
+    private MqttStatefulPublish addState(
             @NotNull final MqttPublish publish, final int packetIdentifier, final boolean isDup) {
 
-        final MqttServerConnectionData serverConnectionData = clientData.getRawServerConnectionData();
-        assert serverConnectionData != null; // TODO
-        final MqttTopicAliasMapping topicAliasMapping = serverConnectionData.getTopicAliasMapping();
         int topicAlias;
         final boolean isNewTopicAlias;
         if (topicAliasMapping == null) {
@@ -186,7 +195,7 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter {
     }
 
     private void handlePubAck(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttPubAck pubAck) {
-        final MqttPublishWithFlow publishWithFlow = checkAndRemovePublishWithFlow(ctx, pubAck);
+        final MqttPublishWithFlow publishWithFlow = checkAndRemoveQos1Or2PublishWithFlow(ctx, pubAck);
         if (publishWithFlow == null) {
             return;
         }
@@ -212,7 +221,7 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter {
     }
 
     private void handlePubRecError(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttPubRec pubRec) {
-        final MqttPublishWithFlow publishWithFlow = checkAndRemovePublishWithFlow(ctx, pubRec);
+        final MqttPublishWithFlow publishWithFlow = checkAndRemoveQos1Or2PublishWithFlow(ctx, pubRec);
         if (publishWithFlow == null) {
             return;
         }
@@ -232,7 +241,7 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter {
     }
 
     private void handlePubRecSuccess(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttPubRec pubRec) {
-        final MqttPublishWithFlow publishWithFlow = checkAndGetPublishWithFlow(ctx, pubRec);
+        final MqttPublishWithFlow publishWithFlow = checkAndGetQos1Or2PublishWithFlow(ctx, pubRec);
         if (publishWithFlow == null) {
             return;
         }
@@ -252,7 +261,7 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter {
     }
 
     private void handlePubComp(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttPubComp pubComp) {
-        final MqttPublishWithFlow publishWithFlow = checkAndRemovePublishWithFlow(ctx, pubComp);
+        final MqttPublishWithFlow publishWithFlow = checkAndRemoveQos1Or2PublishWithFlow(ctx, pubComp);
         if (publishWithFlow == null) {
             return;
         }
@@ -272,31 +281,33 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Nullable
-    private MqttPublishWithFlow checkAndGetPublishWithFlow(
+    private MqttPublishWithFlow checkAndGetQos1Or2PublishWithFlow(
             @NotNull final ChannelHandlerContext ctx, @NotNull final MqttQosMessage qosMessage) {
 
-        return checkPublishWithFlow(ctx, qos1Or2Publishes.get(qosMessage.getPacketIdentifier()), qosMessage);
+        return checkQos1Or2PublishWithFlow(ctx, qos1Or2PublishMap.get(qosMessage.getPacketIdentifier()), qosMessage);
     }
 
     @Nullable
-    private MqttPublishWithFlow checkAndRemovePublishWithFlow(
+    private MqttPublishWithFlow checkAndRemoveQos1Or2PublishWithFlow(
             @NotNull final ChannelHandlerContext ctx, @NotNull final MqttQosMessage qosMessage) {
 
         final int packetIdentifier = qosMessage.getPacketIdentifier();
-        final MqttPublishWithFlow publishWithFlow = qos1Or2Publishes.remove(packetIdentifier);
-        final MqttPublishWithFlow checkedPublishWithFlow = checkPublishWithFlow(ctx, publishWithFlow, qosMessage);
+        final MqttPublishWithFlow publishWithFlow = qos1Or2PublishMap.remove(packetIdentifier);
+        final MqttPublishWithFlow checkedPublishWithFlow =
+                checkQos1Or2PublishWithFlow(ctx, publishWithFlow, qosMessage);
         if (checkedPublishWithFlow == null) {
             if (publishWithFlow != null) {
-                qos1Or2Publishes.put(packetIdentifier, publishWithFlow);
+                qos1Or2PublishMap.put(packetIdentifier, publishWithFlow);
             }
         } else {
+            qos1Or2PublishQueue.removeFirst(packetIdentifier);
             packetIdentifiers.returnId(packetIdentifier);
         }
         return checkedPublishWithFlow;
     }
 
     @Nullable
-    private static MqttPublishWithFlow checkPublishWithFlow(
+    private static MqttPublishWithFlow checkQos1Or2PublishWithFlow(
             @NotNull final ChannelHandlerContext ctx, @Nullable final MqttPublishWithFlow publishWithFlow,
             @NotNull final MqttQosMessage qosMessage) {
 

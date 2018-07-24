@@ -64,7 +64,7 @@ public class MqttIncomingPublishService {
         this.incomingPublishFlows = incomingPublishFlows;
         nettyEventLoop = clientConnectionData.getChannel().eventLoop();
 
-        queue = new ChunkedArrayQueue<>(64);
+        queue = new ChunkedArrayQueue<>(32);
         receiveMaximum = clientConnectionData.getReceiveMaximum();
     }
 
