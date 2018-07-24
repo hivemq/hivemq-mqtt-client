@@ -150,7 +150,7 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
     private void handleQos1Or2Publish(@NotNull final MqttPublishWithFlow publishWithFlow) {
         final int packetIdentifier = packetIdentifiers.getId();
         if (packetIdentifier < 0) {
-            LOGGER.error("No Packet Identifier available for QoS 1 or 2 Publish message");
+            LOGGER.error("No Packet Identifier available for QoS 1 or 2 PUBLISH. This must not happen and is a bug.");
             return;
         }
         qos1Or2PublishMap.put(packetIdentifier, publishWithFlow);
@@ -319,7 +319,7 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
         final MqttPublish publish = publishWithFlow.getPublish();
         if (publish.getQos() != qosMessage.getQos()) {
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                    qosMessage.getType() + " must not be received for a Publish with a QoS other than " +
+                    qosMessage.getType() + " must not be received for a PUBLISH with a QoS other than " +
                             qosMessage.getQos().getCode());
             return null;
         }
