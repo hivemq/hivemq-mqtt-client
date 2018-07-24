@@ -25,7 +25,8 @@ import javax.annotation.concurrent.NotThreadSafe;
 import java.util.HashMap;
 import java.util.Random;
 
-import static org.mqttbee.api.mqtt.mqtt5.message.publish.TopicAliasUsage.*;
+import static org.mqttbee.api.mqtt.mqtt5.message.publish.TopicAliasUsage.IF_AVAILABLE;
+import static org.mqttbee.api.mqtt.mqtt5.message.publish.TopicAliasUsage.YES;
 
 /**
  * @author Silvio Giebl
@@ -36,28 +37,26 @@ public class MqttTopicAliasMapping {
 
     private static final Random random = new Random();
 
-    private final int topicAliasMaximum;
+    private int topicAliasMaximum;
     private final HashMap<String, Integer> hashMap;
     private int nextTopicAlias;
 
     public MqttTopicAliasMapping(final int topicAliasMaximum) {
         this.topicAliasMaximum = topicAliasMaximum;
-        hashMap = new HashMap<>(topicAliasMaximum);
+        hashMap = new HashMap<>();
         nextTopicAlias = 1;
     }
 
     public int set(@NotNull final MqttTopicImpl topic, @NotNull final TopicAliasUsage topicAliasUsage) {
         int topicAlias = MqttStatefulPublish.DEFAULT_NO_TOPIC_ALIAS;
-        if (unusedTopicAliasAvailable()) {
-            if (topicAliasUsage == YES || topicAliasUsage == IF_AVAILABLE) {
-                // use next free topic alias
+        if (nextTopicAlias <= topicAliasMaximum) { // unused topic alias available
+            if (topicAliasUsage == YES || topicAliasUsage == IF_AVAILABLE) { // use next free topic alias
                 topicAlias = nextTopicAlias;
                 hashMap.put(topic.toString(), topicAlias);
                 nextTopicAlias++;
             }
         } else {
-            if (topicAliasUsage == YES) {
-                // override existing topic alias
+            if (topicAliasUsage == YES) { // override existing topic alias
                 topicAlias = random.nextInt(topicAliasMaximum) + 1;
                 hashMap.values().remove(topicAlias);
                 hashMap.put(topic.toString(), topicAlias);
@@ -66,13 +65,15 @@ public class MqttTopicAliasMapping {
         return topicAlias;
     }
 
-    private boolean unusedTopicAliasAvailable() {
-        return nextTopicAlias <= topicAliasMaximum;
-    }
-
     public int get(@NotNull final MqttTopicImpl topic) {
         final Integer topicAlias = hashMap.get(topic.toString());
         return (topicAlias == null) ? MqttStatefulPublish.DEFAULT_NO_TOPIC_ALIAS : topicAlias;
+    }
+
+    public void reset(final int topicAliasMaximum) {
+        this.topicAliasMaximum = topicAliasMaximum;
+        hashMap.clear();
+        nextTopicAlias = 1;
     }
 
     public int getTopicAliasMaximum() {
