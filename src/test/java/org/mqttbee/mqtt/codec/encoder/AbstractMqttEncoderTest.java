@@ -24,20 +24,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.mqttbee.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.mqtt.MqttClientData;
-import org.mqttbee.mqtt.MqttClientExecutorConfigImpl;
 import org.mqttbee.mqtt.MqttServerConnectionData;
-import org.mqttbee.mqtt.MqttVersion;
-import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
-
-import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Silvio Giebl
  */
-public class AbstractMqtt5EncoderTest {
+public abstract class AbstractMqttEncoderTest {
 
     private final MqttMessageEncoders messageEncoders;
     private final boolean connected;
@@ -45,12 +40,14 @@ public class AbstractMqtt5EncoderTest {
 
     protected EmbeddedChannel channel;
 
-    protected AbstractMqtt5EncoderTest(@NotNull final MqttMessageEncoders messageEncoders, final boolean connected) {
+    protected AbstractMqttEncoderTest(
+            @NotNull final MqttMessageEncoders messageEncoders,
+            final boolean connected,
+            final MqttClientData clientData
+    ) {
         this.messageEncoders = messageEncoders;
         this.connected = connected;
-        clientData =
-                new MqttClientData(MqttVersion.MQTT_5_0, Objects.requireNonNull(MqttClientIdentifierImpl.from("test")),
-                        "localhost", 1883, null, null, false, false, MqttClientExecutorConfigImpl.DEFAULT, null);
+        this.clientData = clientData;
     }
 
     @BeforeEach

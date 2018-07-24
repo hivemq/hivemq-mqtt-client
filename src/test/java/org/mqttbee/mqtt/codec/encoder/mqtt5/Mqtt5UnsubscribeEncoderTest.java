@@ -20,7 +20,6 @@ package org.mqttbee.mqtt.codec.encoder.mqtt5;
 import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.Test;
 import org.mqttbee.api.mqtt.exceptions.MqttMaximumPacketSizeExceededException;
-import org.mqttbee.mqtt.codec.encoder.AbstractMqtt5EncoderTest;
 import org.mqttbee.mqtt.datatypes.*;
 import org.mqttbee.mqtt.message.unsubscribe.MqttStatefulUnsubscribe;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribe;
