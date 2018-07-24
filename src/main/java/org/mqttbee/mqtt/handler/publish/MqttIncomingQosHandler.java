@@ -125,8 +125,8 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter {
             }
         } else {
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                    "Packet Identifier in use: QoS 1 Publish must not be received with the same Id as a " +
-                            (previousMessage instanceof MqttPubRel ? "PubRel" : "QoS 2 Publish"));
+                    "Packet Identifier in use: QoS 1 PUBLISH must not be received with the same Id as a " +
+                            (previousMessage instanceof MqttPubRel ? "PUBREL" : "QoS 2 PUBLISH"));
         }
     }
 
@@ -146,14 +146,14 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter {
             }
         } else { // packet id in use
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                    "Packet Identifier in use: QoS 2 Publish must not be received with the same Id as a " +
-                            (previousMessage instanceof MqttPubRel ? "PubRel" : "QoS 1 Publish"));
+                    "Packet Identifier in use: QoS 2 PUBLISH must not be received with the same Id as a " +
+                            (previousMessage instanceof MqttPubRel ? "PUBREL" : "QoS 1 PUBLISH"));
         }
     }
 
     private static void disconnectReceiveMaximumExceeded(@NotNull final ChannelHandlerContext ctx) {
         MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.RECEIVE_MAXIMUM_EXCEEDED,
-                "Received more QoS 1 and 2 Publishes than allowed by Receive Maximum");
+                "Received more QoS 1 and 2 PUBLISHes than allowed by Receive Maximum");
     }
 
     private static void disconnectDupFlagNotSet(@NotNull final ChannelHandlerContext ctx) {
@@ -169,7 +169,7 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter {
             ackQos2(ctx, new MqttPubCompBuilder(pubRel).reasonCode(Mqtt5PubCompReasonCode.PACKET_IDENTIFIER_NOT_FOUND));
         } else if (previousMessage == MqttPubAck.class) { // packet id in use
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                    "PubRel must not be received with the same Packet Identifier as a QoS 1 Publish");
+                    "PUBREL must not be received with the same Packet Identifier as a QoS 1 Publish");
         } // PubRec: normal case, PubRel: resent
     }
 

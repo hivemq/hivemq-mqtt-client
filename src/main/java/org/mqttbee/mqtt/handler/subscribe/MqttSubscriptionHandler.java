@@ -71,7 +71,7 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
     private final Ranges subscriptionIdentifiers;
     private final IntMap<MqttStatefulSubscribeWithFlow> subscribes;
     private final IntMap<MqttStatefulUnsubscribeWithFlow> unsubscribes;
-    private final LinkedList<Object> queued;
+    private final LinkedList<Object> queued; // contains a MqttSubscribeWithFlow or a MqttUnsubscribeWithFlow object
     private int pending;
 
     private ChannelHandlerContext ctx; // TODO temp
@@ -114,7 +114,7 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
 
         final int packetIdentifier = packetIdentifiers.getId();
         if (packetIdentifier == -1) {
-            // TODO must not happen
+            LOGGER.error("No Packet Identifier available for SUBSCRIBE. This must not happen and is a bug.");
             return;
         }
         writeSubscribe(ctx, subscribeWithFlow, packetIdentifier);
@@ -150,7 +150,7 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter {
 
         final int packetIdentifier = packetIdentifiers.getId();
         if (packetIdentifier == -1) {
-            // TODO must not happen
+            LOGGER.error("No Packet Identifier available for UNSUBSCRIBE. This must not happen and is a bug.");
             return;
         }
         writeUnsubscribe(ctx, unsubscribeWithFlow, packetIdentifier);
