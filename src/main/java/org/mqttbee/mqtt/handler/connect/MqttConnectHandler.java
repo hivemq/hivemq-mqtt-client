@@ -77,7 +77,7 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
     private final Lazy<MqttSubscriptionHandler> subscriptionHandler;
     private final Lazy<MqttIncomingQosHandler> incomingQosHandler;
     private final Lazy<MqttOutgoingQosHandler> outgoingQosHandler;
-    private final Lazy<MqttDisconnectOnConnAckHandler> disconnectOnConnAckHandler;
+    private final MqttDisconnectOnConnAckHandler disconnectOnConnAckHandler;
 
     private boolean connectCalled = false;
 
@@ -88,7 +88,7 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
             final Lazy<MqttSubscriptionHandler> subscriptionHandler,
             final Lazy<MqttIncomingQosHandler> incomingQosHandler,
             final Lazy<MqttOutgoingQosHandler> outgoingQosHandler,
-            final Lazy<MqttDisconnectOnConnAckHandler> disconnectOnConnAckHandler) {
+            final MqttDisconnectOnConnAckHandler disconnectOnConnAckHandler) {
 
         this.connect = connect;
         this.connAckEmitter = connAckEmitter;
@@ -212,7 +212,7 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
                 pipeline.addAfter(beforeHandlerName, MqttSubscriptionHandler.NAME, subscriptionHandler.get());
                 pipeline.addAfter(beforeHandlerName, MqttIncomingQosHandler.NAME, incomingQosHandler.get());
                 pipeline.addAfter(beforeHandlerName, MqttOutgoingQosHandler.NAME, outgoingQosHandler.get());
-                pipeline.addLast(MqttDisconnectOnConnAckHandler.NAME, disconnectOnConnAckHandler.get());
+                pipeline.addLast(MqttDisconnectOnConnAckHandler.NAME, disconnectOnConnAckHandler);
 
                 connAckEmitter.onSuccess(connAck);
             }
