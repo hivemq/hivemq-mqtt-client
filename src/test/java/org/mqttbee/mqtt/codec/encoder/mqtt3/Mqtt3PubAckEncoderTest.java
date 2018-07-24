@@ -17,41 +17,25 @@
 
 package org.mqttbee.mqtt.codec.encoder.mqtt3;
 
-import io.netty.buffer.ByteBuf;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.junit.jupiter.api.Test;
-import org.mqttbee.mqtt.codec.encoder.AbstractMqtt5EncoderTest;
 import org.mqttbee.mqtt.message.publish.puback.MqttPubAck;
 import org.mqttbee.mqtt.message.publish.puback.mqtt3.Mqtt3PubAckView;
 
 import static org.junit.Assert.assertArrayEquals;
 
-class Mqtt3PubAckEncoderTest extends AbstractMqtt5EncoderTest {
+class Mqtt3PubAckEncoderTest extends AbstractMqtt3EncoderTest {
 
     Mqtt3PubAckEncoderTest() {
         super(code -> new Mqtt3PubAckEncoder(), true);
     }
 
     @Test
-    void encode() {
-        final int id = 1;
-        final byte msb = (byte) (id >>> 8);
-        final byte lsb = (byte) id;
-        final byte[] expected = {0x40, 0x02, msb, lsb};
-        final MqttPubAck pubAck = Mqtt3PubAckView.delegate(id);
-        encode(expected, pubAck);
+    public void matchesPaho() throws MqttException {
+        final int id = 42;
+        org.eclipse.paho.client.mqttv3.internal.wire.MqttPubAck pahoMessage
+                = new org.eclipse.paho.client.mqttv3.internal.wire.MqttPubAck(id);
+        final MqttPubAck beeMessage = Mqtt3PubAckView.delegate(id);
+        assertArrayEquals(bytesOf(pahoMessage), bytesOf(beeMessage));
     }
-
-    @Test
-    void encodedRemainingLength() {
-    }
-
-    private void encode(final byte[] expected, final MqttPubAck pubAck) {
-        channel.writeOutbound(pubAck);
-        final ByteBuf byteBuf = channel.readOutbound();
-        final byte[] actual = new byte[byteBuf.readableBytes()];
-        byteBuf.readBytes(actual);
-        byteBuf.release();
-        assertArrayEquals(expected, actual);
-    }
-
 }

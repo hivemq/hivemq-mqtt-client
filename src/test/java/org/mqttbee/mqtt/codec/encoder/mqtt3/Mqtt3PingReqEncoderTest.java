@@ -19,23 +19,23 @@ package org.mqttbee.mqtt.codec.encoder.mqtt3;
 
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.junit.jupiter.api.Test;
-import org.mqttbee.mqtt.message.publish.pubcomp.MqttPubComp;
-import org.mqttbee.mqtt.message.publish.pubcomp.mqtt3.Mqtt3PubCompView;
+import org.mqttbee.mqtt.codec.encoder.MqttPingReqEncoder;
+import org.mqttbee.mqtt.message.ping.MqttPingReq;
 
 import static org.junit.Assert.assertArrayEquals;
 
-class Mqtt3PubCompEncoderTest extends AbstractMqtt3EncoderTest {
+class Mqtt3PingReqEncoderTest extends AbstractMqtt3EncoderTest {
 
-    Mqtt3PubCompEncoderTest() {
-        super(code -> new Mqtt3PubCompEncoder(), true);
+    Mqtt3PingReqEncoderTest() {
+        super(code -> MqttPingReqEncoder.INSTANCE, true);
     }
 
     @Test
-    void matchesPaho() throws MqttException {
-        final int id = 42;
-        final org.eclipse.paho.client.mqttv3.internal.wire.MqttPubComp pahoMessage =
-                new org.eclipse.paho.client.mqttv3.internal.wire.MqttPubComp(id);
-        final MqttPubComp beeMessage = Mqtt3PubCompView.delegate(id);
-        assertArrayEquals(bytesOf(pahoMessage), bytesOf(beeMessage));
+    void encode() throws MqttException {
+        final MqttPingReq beePing = MqttPingReq.INSTANCE;
+        final org.eclipse.paho.client.mqttv3.internal.wire.MqttPingReq pahoPing =
+                new org.eclipse.paho.client.mqttv3.internal.wire.MqttPingReq();
+
+        assertArrayEquals(bytesOf(pahoPing), bytesOf(beePing));
     }
 }

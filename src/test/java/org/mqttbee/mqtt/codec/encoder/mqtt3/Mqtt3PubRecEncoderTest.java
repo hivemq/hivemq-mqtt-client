@@ -17,41 +17,31 @@
 
 package org.mqttbee.mqtt.codec.encoder.mqtt3;
 
-import io.netty.buffer.ByteBuf;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.internal.wire.MqttPublish;
 import org.junit.jupiter.api.Test;
-import org.mqttbee.mqtt.codec.encoder.AbstractMqtt5EncoderTest;
 import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRec;
 import org.mqttbee.mqtt.message.publish.pubrec.mqtt3.Mqtt3PubRecView;
 
 import static org.junit.Assert.assertArrayEquals;
 
-class Mqtt3PubRecEncoderTest extends AbstractMqtt5EncoderTest {
+class Mqtt3PubRecEncoderTest extends AbstractMqtt3EncoderTest {
 
     Mqtt3PubRecEncoderTest() {
         super(code -> new Mqtt3PubRecEncoder(), true);
     }
 
     @Test
-    void encode() {
-        final int id = 1;
-        final byte msb = (byte) (id >>> 8);
-        final byte lsb = (byte) id;
-        final byte[] expected = {0x50, 0x02, msb, lsb};
-        final MqttPubRec pubRec = Mqtt3PubRecView.delegate(id);
-        encode(expected, pubRec);
-    }
+    void matchesPaho() throws MqttException {
+        final int msgId = 42;
 
-    @Test
-    void encodedRemainingLength() {
-    }
+        final MqttPublish pahoPublish = new MqttPublish("some/topic/name", new MqttMessage(new byte[]{0}));
+        pahoPublish.setMessageId(msgId);
+        final org.eclipse.paho.client.mqttv3.internal.wire.MqttPubRec pahoMessage =
+                new org.eclipse.paho.client.mqttv3.internal.wire.MqttPubRec(pahoPublish);
 
-    private void encode(final byte[] expected, final MqttPubRec pubRec) {
-        channel.writeOutbound(pubRec);
-        final ByteBuf byteBuf = channel.readOutbound();
-        final byte[] actual = new byte[byteBuf.readableBytes()];
-        byteBuf.readBytes(actual);
-        byteBuf.release();
-        assertArrayEquals(expected, actual);
+        final MqttPubRec beeMessage = Mqtt3PubRecView.delegate(msgId);
+        assertArrayEquals(bytesOf(pahoMessage), bytesOf(beeMessage));
     }
-
 }
