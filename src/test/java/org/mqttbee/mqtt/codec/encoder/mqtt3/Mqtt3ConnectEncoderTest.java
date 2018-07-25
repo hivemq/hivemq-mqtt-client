@@ -25,12 +25,12 @@ import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
-import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.auth.MqttSimpleAuth;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
 import org.mqttbee.mqtt.message.connect.MqttStatefulConnect;
 import org.mqttbee.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
 import org.mqttbee.mqtt.message.publish.MqttWillPublish;
+import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishView;
 
 import java.nio.ByteBuffer;
 
@@ -68,19 +68,12 @@ class Mqtt3ConnectEncoderTest extends AbstractMqtt3EncoderTest {
                 ByteBuffer.wrap(password.getBytes(UTF8))
         );
         final MqttClientIdentifierImpl identifier = MqttClientIdentifierImpl.from(clientId);
-        final MqttWillPublish beeWill = !hasWill ? null : new MqttWillPublish(
+        final MqttWillPublish beeWill = hasWill ? Mqtt3PublishView.of(
                 MqttTopicImpl.from(willTopic),
                 ByteBuffer.wrap(willMessage.getBytes()),
                 MqttQos.fromCode(willQos),
-                willRetained,
-                MqttWillPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, // Not in MQTT 3.1.1
-                null, // Not in MQTT 3.1.1
-                null, // Not in MQTT 3.1.1
-                null, // Not in MQTT 3.1.1
-                null, // Not in MQTT 3.1.1
-                MqttUserPropertiesImpl.NO_USER_PROPERTIES, // Not in MQTT 3.1.1
-                0 // Not in MQTT 3.1.1
-        );
+                willRetained
+        ).getWillDelegate() : null;
         final MqttConnect beeConnect = Mqtt3ConnectView.delegate(keepAliveInterval, cleanSession, auth, beeWill);
         final MqttStatefulConnect connectWrapper = beeConnect.createStateful(identifier, null);
 
