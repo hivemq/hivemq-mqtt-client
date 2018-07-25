@@ -15,11 +15,11 @@
  *
  */
 
-package org.mqttbee.mqtt.codec.encoder;
+package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.Test;
-import org.mqttbee.mqtt.codec.encoder.mqtt5.AbstractMqtt5EncoderTest;
+import org.mqttbee.mqtt.codec.encoder.MqttPingReqEncoder;
 import org.mqttbee.mqtt.message.ping.MqttPingReq;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -27,10 +27,9 @@ import static org.junit.Assert.assertArrayEquals;
 /**
  * @author David Katz
  */
-class MqttPingReqEncoderTest extends AbstractMqtt5EncoderTest {
-// TODO does this want to exist for both mqtt3 and mqtt5?
-    MqttPingReqEncoderTest() {
-        super(code -> new MqttPingReqEncoder(), true);
+class Mqtt5PingReqEncoderTest extends AbstractMqtt5EncoderTest {
+    Mqtt5PingReqEncoderTest() {
+        super(code -> MqttPingReqEncoder.INSTANCE, true);
     }
 
     @Test
