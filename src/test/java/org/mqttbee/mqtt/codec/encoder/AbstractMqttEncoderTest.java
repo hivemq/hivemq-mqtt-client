@@ -43,7 +43,7 @@ public abstract class AbstractMqttEncoderTest {
     protected AbstractMqttEncoderTest(
             @NotNull final MqttMessageEncoders messageEncoders,
             final boolean connected,
-            final MqttClientData clientData
+            @NotNull final MqttClientData clientData
     ) {
         this.messageEncoders = messageEncoders;
         this.connected = connected;
