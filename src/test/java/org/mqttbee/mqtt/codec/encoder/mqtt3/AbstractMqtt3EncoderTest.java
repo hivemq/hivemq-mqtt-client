@@ -63,15 +63,15 @@ public abstract class AbstractMqtt3EncoderTest extends AbstractMqttEncoderTest {
         );
     }
 
-    protected void encode(final byte[] expected, final MqttMessage object) {
+    protected void encode(@NotNull final byte[] expected, @NotNull final MqttMessage object) {
         assertArrayEquals(expected, bytesOf(object));
     }
 
-    protected byte[] bytesOf(final MqttWireMessage message) throws MqttException {
+    protected byte[] bytesOf(@NotNull final MqttWireMessage message) throws MqttException {
         return Bytes.concat(message.getHeader(), message.getPayload());
     }
 
-    protected byte[] bytesOf(final MqttMessage object) {
+    protected byte[] bytesOf(@NotNull final MqttMessage object) {
         channel.writeOutbound(object);
         final ByteBuf byteBuf = channel.readOutbound();
         final byte[] actual = new byte[byteBuf.readableBytes()];
