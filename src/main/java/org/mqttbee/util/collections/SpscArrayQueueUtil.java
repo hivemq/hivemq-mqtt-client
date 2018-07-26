@@ -20,6 +20,7 @@ package org.mqttbee.util.collections;
 import org.jctools.queues.SpscArrayQueue;
 import org.jctools.queues.SpscChunkedArrayQueue;
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.util.Pow2Util;
 
 import java.util.Queue;
 
@@ -30,17 +31,13 @@ public class SpscArrayQueueUtil {
 
     @NotNull
     public static <E> Queue<E> create(int capacity, int chunkSize) {
-        chunkSize = roundToPowerOf2(chunkSize);
+        chunkSize = Pow2Util.roundToPowerOf2(chunkSize);
         chunkSize = Math.max(8, chunkSize);
         if (capacity <= chunkSize) {
             return new SpscArrayQueue<>(capacity);
         }
-        capacity = roundToPowerOf2(capacity); // capacity is at least 9, so next power of two is at least 16
+        capacity = Pow2Util.roundToPowerOf2(capacity); // capacity is at least 9, so next power of two is at least 16
         return new SpscChunkedArrayQueue<>(chunkSize, capacity);
-    }
-
-    private static int roundToPowerOf2(final int value) {
-        return 1 << 32 - Integer.numberOfLeadingZeros(value - 1);
     }
 
 }

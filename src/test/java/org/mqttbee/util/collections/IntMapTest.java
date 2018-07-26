@@ -22,6 +22,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -87,60 +89,60 @@ class IntMapTest {
     @ValueSource(ints = {8, 12, 1 << 10, 1 << 16, 1 << 28})
     void put_boundaries(final int size) {
         final IntMap<String> map = IntMap.range(0, size);
-        assertThrows(IllegalArgumentException.class, () -> map.put(-1, "test-1"));
+        assertThrows(IndexOutOfBoundsException.class, () -> map.put(-1, "test-1"));
         map.put(0, "test0");
         map.put(size, "test" + size);
-        assertThrows(IllegalArgumentException.class, () -> map.put(size + 1, "test" + (size + 1)));
+        assertThrows(IndexOutOfBoundsException.class, () -> map.put(size + 1, "test" + (size + 1)));
     }
 
     @ParameterizedTest
     @ValueSource(ints = {8, 12, 1 << 10, 1 << 16, 1 << 28})
     void put_boundaries_minKey(final int size) {
         final IntMap<String> map = IntMap.range(3, 3 + size);
-        assertThrows(IllegalArgumentException.class, () -> map.put(2, "test2"));
+        assertThrows(IndexOutOfBoundsException.class, () -> map.put(2, "test2"));
         map.put(3, "test3");
         map.put(3 + size, "test" + (3 + size));
-        assertThrows(IllegalArgumentException.class, () -> map.put(3 + size + 1, "test" + (3 + size + 1)));
+        assertThrows(IndexOutOfBoundsException.class, () -> map.put(3 + size + 1, "test" + (3 + size + 1)));
     }
 
     @ParameterizedTest
     @ValueSource(ints = {8, 12, 1 << 10, 1 << 16, 1 << 28})
     void get_boundaries(final int size) {
         final IntMap<String> map = IntMap.range(0, size);
-        assertThrows(IllegalArgumentException.class, () -> map.get(-1));
+        assertThrows(IndexOutOfBoundsException.class, () -> map.get(-1));
         map.get(0);
         map.get(size);
-        assertThrows(IllegalArgumentException.class, () -> map.get(size + 1));
+        assertThrows(IndexOutOfBoundsException.class, () -> map.get(size + 1));
     }
 
     @ParameterizedTest
     @ValueSource(ints = {8, 12, 1 << 10, 1 << 16, 1 << 28})
     void get_boundaries_minKey(final int size) {
         final IntMap<String> map = IntMap.range(3, 3 + size);
-        assertThrows(IllegalArgumentException.class, () -> map.get(2));
+        assertThrows(IndexOutOfBoundsException.class, () -> map.get(2));
         map.get(3);
         map.get(3 + size);
-        assertThrows(IllegalArgumentException.class, () -> map.get(3 + size + 1));
+        assertThrows(IndexOutOfBoundsException.class, () -> map.get(3 + size + 1));
     }
 
     @ParameterizedTest
     @ValueSource(ints = {8, 12, 1 << 10, 1 << 16, 1 << 28})
     void remove_boundaries(final int size) {
         final IntMap<String> map = IntMap.range(0, size);
-        assertThrows(IllegalArgumentException.class, () -> map.remove(-1));
+        assertThrows(IndexOutOfBoundsException.class, () -> map.remove(-1));
         map.remove(0);
         map.remove(size);
-        assertThrows(IllegalArgumentException.class, () -> map.remove(size + 1));
+        assertThrows(IndexOutOfBoundsException.class, () -> map.remove(size + 1));
     }
 
     @ParameterizedTest
     @ValueSource(ints = {8, 12, 1 << 10, 1 << 16, 1 << 28})
     void remove_boundaries_minKey(final int size) {
         final IntMap<String> map = IntMap.range(3, 3 + size);
-        assertThrows(IllegalArgumentException.class, () -> map.remove(2));
+        assertThrows(IndexOutOfBoundsException.class, () -> map.remove(2));
         map.remove(3);
         map.remove(3 + size);
-        assertThrows(IllegalArgumentException.class, () -> map.remove(3 + size + 1));
+        assertThrows(IndexOutOfBoundsException.class, () -> map.remove(3 + size + 1));
     }
 
     @ParameterizedTest
@@ -163,6 +165,57 @@ class IntMapTest {
         }
         for (int i = size - chunk; i < size; i++) {
             assertEquals("test" + i, map.remove(i));
+        }
+    }
+
+    @Test
+    void size() {
+        final IntMap<String> map = IntMap.range(0, 256);
+        final int[] keys = {0, 1, 3, 10, 100, 101, 102, 256};
+        for (final int key : keys) {
+            map.put(key, "test" + key);
+        }
+        assertEquals(keys.length, map.size());
+    }
+
+    @CsvSource({"0, 10", "1, 10", "5, 1000"})
+    @ParameterizedTest
+    void getMinKey_getMaxKey(final int minKey, final int maxKey) {
+        final IntMap<String> map = IntMap.range(minKey, maxKey);
+        assertEquals(minKey, map.getMinKey());
+        assertEquals(maxKey, map.getMaxKey());
+    }
+
+    @CsvSource({"false", "true"})
+    @ParameterizedTest
+    void visitor(final boolean cancel) {
+        final IntMap<String> map = IntMap.range(0, 256);
+        final int[] keys = {0, 1, 3, 10, 100, 101, 102, 256};
+        for (final int key : keys) {
+            map.put(key, "test" + key);
+        }
+        final AtomicInteger i = new AtomicInteger();
+        map.accept((key, value) -> {
+            final int k = keys[i.getAndIncrement()];
+            assertEquals(k, key);
+            assertEquals("test" + k, value);
+            return (!cancel) || (k != 100);
+        });
+        assertEquals(cancel ? 5 : 8, i.get());
+    }
+
+    @ValueSource(ints = {11, 255, 256, 257, 1000})
+    @ParameterizedTest
+    void resize(final int newMaxKey) {
+        final IntMap<String> map = IntMap.range(10, 256);
+        for (int i = map.getMinKey(); i < map.getMaxKey(); i++) {
+            map.put(i, "test" + i);
+        }
+        final IntMap<String> newMap = IntMap.resize(map, newMaxKey);
+        assertEquals(10, newMap.getMinKey());
+        assertEquals(newMaxKey, newMap.getMaxKey());
+        for (int i = newMap.getMinKey(); i < Math.min(map.getMaxKey(), newMap.getMaxKey()); i++) {
+            assertEquals("test" + i, newMap.get(i));
         }
     }
 
