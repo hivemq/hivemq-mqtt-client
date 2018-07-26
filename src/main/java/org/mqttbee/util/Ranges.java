@@ -29,10 +29,6 @@ public class Ranges {
 
     private Range rootRange;
 
-    public Ranges(final int maxId) {
-        rootRange = new Range(0, maxId + 1);
-    }
-
     public Ranges(final int minId, final int maxId) {
         rootRange = new Range(minId, maxId + 1);
     }
@@ -45,6 +41,30 @@ public class Ranges {
         rootRange = rootRange.returnId(id);
     }
 
+    public int resize(final int maxId) {
+        Range range = rootRange;
+        while (range.end <= maxId) {
+            final Range next = range.next;
+            if (next == null) {
+                range.end = maxId + 1;
+                return 0;
+            }
+            range = next;
+        }
+        int count = range.start - (maxId + 1);
+        if (count < 0) {
+            count = 0;
+        }
+        while (range.next != null) {
+            final Range next = range.next;
+            count += next.start - range.end;
+            range = next;
+        }
+        if (count == 0) {
+            range.end = maxId + 1;
+        }
+        return count;
+    }
 
     private static class Range {
 
@@ -52,18 +72,18 @@ public class Ranges {
         private int end;
         private Range next;
 
-        private Range(final int start, final int end) {
+        Range(final int start, final int end) {
             this.start = start;
             this.end = end;
         }
 
-        private Range(final int start, final int end, @NotNull final Range next) {
+        Range(final int start, final int end, @NotNull final Range next) {
             this.start = start;
             this.end = end;
             this.next = next;
         }
 
-        private int getId() {
+        int getId() {
             if (start == end) {
                 return -1;
             }
@@ -78,26 +98,27 @@ public class Ranges {
         }
 
         @NotNull
-        private Range returnId(final int id) {
+        Range returnId(final int id) {
             Range range = this;
-            if (id == start - 1) {
-                start--;
-            } else if (id == end) {
-                end++;
-                if ((next != null) && (end == next.start)) {
-                    end = next.end;
-                    next = next.next;
-                }
-            } else if (id < start - 1) {
+            if (id < start - 1) {
                 range = new Range(id, id + 1, this);
-            } else if (next != null) {
-                next = next.returnId(id);
+            } else if (id == start - 1) {
+                start--;
+            } else if (id < end) {
+                throw new IllegalStateException("The id was already returned. This must not happen and is a bug.");
+            } else if (id == end) {
+                if (next == null) {
+                    throw new IllegalStateException("The id is greater than maxId. This must not happen and is a bug.");
+                }
+                end++;
                 if (end == next.start) {
                     end = next.end;
                     next = next.next;
                 }
+            } else if (next != null) {
+                next = next.returnId(id);
             } else {
-                next = new Range(id, id + 1);
+                throw new IllegalStateException("The id is greater than maxId. This must not happen and is a bug.");
             }
             return range;
         }
