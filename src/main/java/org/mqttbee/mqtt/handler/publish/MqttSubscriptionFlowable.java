@@ -22,7 +22,7 @@ import io.reactivex.internal.subscriptions.EmptySubscription;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeResult;
-import org.mqttbee.mqtt.MqttClientConnectionData;
+import org.mqttbee.mqtt.MqttClientConnectionState;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.handler.subscribe.MqttSubscribeWithFlow;
 import org.mqttbee.mqtt.handler.subscribe.MqttSubscriptionHandler;
@@ -45,8 +45,7 @@ public class MqttSubscriptionFlowable extends Flowable<Mqtt5SubscribeResult> {
 
     @Override
     protected void subscribeActual(final Subscriber<? super Mqtt5SubscribeResult> s) {
-        final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData(); // TODO temp
-        if (clientConnectionData == null) {
+        if (clientData.getConnectionState() == MqttClientConnectionState.DISCONNECTED) {
             EmptySubscription.error(new NotConnectedException(), s);
         } else {
             final ClientComponent clientComponent = clientData.getClientComponent();
