@@ -19,6 +19,7 @@ package org.mqttbee.util.collections;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mqttbee.util.Pow2Util;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
@@ -26,12 +27,46 @@ import javax.annotation.concurrent.NotThreadSafe;
  * @author Silvio Giebl
  */
 @NotThreadSafe
-public interface IntMap<E> {
+public abstract class IntMap<E> {
 
     @NotNull
-    static <E> IntMap<E> range(final int minKey, final int maxKey) {
+    public static <E> IntMap<E> range(final int minKey, final int maxKey) {
         final int capacity = maxKey - minKey + 1;
-        final int capacityBits = 32 - Integer.numberOfLeadingZeros(capacity - 1);
+        final int capacityBits = Pow2Util.roundToPowerOf2Bits(capacity);
+        return create(capacity, capacityBits, minKey, maxKey);
+    }
+
+    @NotNull
+    public static <E> IntMap<E> resize(@NotNull final IntMap<E> oldMap, final int newMaxKey) {
+        final int oldMaxKey = oldMap.getMaxKey();
+        if (oldMaxKey == newMaxKey) {
+            return oldMap;
+        }
+        final int minKey = oldMap.getMinKey();
+        final int newCapacity = newMaxKey - minKey + 1;
+        final int newCapacityBits = Pow2Util.roundToPowerOf2Bits(newCapacity);
+        if ((newCapacityBits >= 7) && (oldMap instanceof IntMapCheck)) {
+            final int oldCapacity = oldMaxKey - minKey + 1;
+            final int oldCapacityBits = Pow2Util.roundToPowerOf2Bits(oldCapacity);
+            if (oldCapacityBits == newCapacityBits) {
+                return new IntMapCheck<>(((IntMapCheck<E>) oldMap).delegate, minKey, newMaxKey);
+            }
+        }
+        final IntMap<E> newMap = create(newCapacity, newCapacityBits, minKey, newMaxKey);
+        oldMap.accept((key, value) -> {
+            if (key > newMaxKey) {
+                return false;
+            }
+            newMap.put(key, value);
+            return true;
+        });
+        return newMap;
+    }
+
+    @NotNull
+    private static <E> IntMap<E> create(
+            final int capacity, final int capacityBits, final int minKey, final int maxKey) {
+
         final IntMap<E> intMap;
         if (capacityBits < 7) {
             intMap = new IntMapArray<>(capacity);
@@ -46,17 +81,32 @@ public interface IntMap<E> {
     }
 
     @Nullable
-    E put(final int key, @NotNull final E value);
+    public abstract E put(final int key, @NotNull final E value);
 
     @Nullable
-    E get(final int key);
+    public abstract E get(final int key);
 
     @Nullable
-    E remove(final int key);
+    public abstract E remove(final int key);
 
-    int size();
+    public abstract int size();
 
-    class IntMapCheck<E> implements IntMap<E> {
+    public abstract int getMinKey();
+
+    public abstract int getMaxKey();
+
+    public void accept(@NotNull final IntMapVisitor<E> visitor) {
+        accept(visitor, 0);
+    }
+
+    abstract boolean accept(@NotNull IntMapVisitor<E> visitor, int baseIndex);
+
+    public interface IntMapVisitor<E> {
+
+        boolean visit(final int key, @NotNull final E value);
+    }
+
+    public static class IntMapCheck<E> extends IntMap<E> {
 
         private final IntMap<E> delegate;
         private final int minKey;
@@ -91,16 +141,30 @@ public interface IntMap<E> {
             return delegate.size();
         }
 
+        @Override
+        public int getMinKey() {
+            return minKey;
+        }
+
+        @Override
+        public int getMaxKey() {
+            return maxKey;
+        }
+
+        @Override
+        public boolean accept(@NotNull final IntMapVisitor<E> visitor, final int baseIndex) {
+            return delegate.accept(visitor, minKey);
+        }
+
         private int checkKey(final int key) {
             if (key > maxKey || key < minKey) {
-                throw new IllegalArgumentException();
+                throw new IndexOutOfBoundsException();
             }
             return key - minKey;
         }
-
     }
 
-    class IntMapArray<E> implements IntMap<E> {
+    public static class IntMapArray<E> extends IntMap<E> {
 
         private final E[] values;
         private int size;
@@ -140,9 +204,36 @@ public interface IntMap<E> {
             return size;
         }
 
+        @Override
+        public int getMinKey() {
+            return 0;
+        }
+
+        @Override
+        public int getMaxKey() {
+            return values.length - 1;
+        }
+
+        @Override
+        public boolean accept(@NotNull final IntMapVisitor<E> visitor, final int baseIndex) {
+            int emitted = 0;
+            for (int index = 0; index < values.length; index++) {
+                final E value = values[index];
+                if (value != null) {
+                    if (!visitor.visit(baseIndex + index, value)) {
+                        return false;
+                    }
+                    emitted++;
+                    if (emitted == size) {
+                        break;
+                    }
+                }
+            }
+            return true;
+        }
     }
 
-    class IntMapAllocator<E> {
+    private static class IntMapAllocator<E> {
 
         private final int shift;
         private final int mask;
@@ -184,7 +275,7 @@ public interface IntMap<E> {
 
     }
 
-    class IntMapLevel<E> implements IntMap<E> {
+    public static class IntMapLevel<E> extends IntMap<E> {
 
         private final int shift;
         private final int mask;
@@ -249,6 +340,33 @@ public interface IntMap<E> {
             return size;
         }
 
+        @Override
+        public int getMinKey() {
+            return 0;
+        }
+
+        @Override
+        public int getMaxKey() {
+            return (subLevels.length - 1) << shift;
+        }
+
+        @Override
+        public boolean accept(@NotNull final IntMapVisitor<E> visitor, int baseIndex) {
+            int emitted = 0;
+            for (final IntMap<E> subLevel : subLevels) {
+                if (subLevel != null) {
+                    if (!subLevel.accept(visitor, baseIndex)) {
+                        return false;
+                    }
+                    emitted += subLevel.size();
+                    if (emitted == size) {
+                        break;
+                    }
+                }
+                baseIndex += mask + 1;
+            }
+            return true;
+        }
     }
 
 }
