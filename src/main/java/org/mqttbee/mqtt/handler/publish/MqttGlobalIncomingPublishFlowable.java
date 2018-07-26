@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttGlobalPublishFilter;
 import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
-import org.mqttbee.mqtt.MqttClientConnectionData;
+import org.mqttbee.mqtt.MqttClientConnectionState;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.ioc.ClientComponent;
 import org.reactivestreams.Subscriber;
@@ -45,8 +45,7 @@ public class MqttGlobalIncomingPublishFlowable extends Flowable<Mqtt5Publish> {
 
     @Override
     protected void subscribeActual(final @NotNull Subscriber<? super Mqtt5Publish> s) {
-        final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData(); // TODO temp
-        if (clientConnectionData == null) {
+        if (clientData.getConnectionState() == MqttClientConnectionState.DISCONNECTED) {
             EmptySubscription.error(new NotConnectedException(), s);
         } else {
             final ClientComponent clientComponent = clientData.getClientComponent();
