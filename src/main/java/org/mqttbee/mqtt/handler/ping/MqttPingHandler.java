@@ -75,7 +75,7 @@ public class MqttPingHandler extends ChannelInboundHandlerWithTimeout {
     }
 
     @Override
-    protected long getTimeout(@NotNull final ChannelHandlerContext ctx) {
+    protected long getTimeout() {
         return PING_RESP_TIMEOUT;
     }
 

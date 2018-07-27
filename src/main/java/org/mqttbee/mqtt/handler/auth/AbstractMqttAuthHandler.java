@@ -171,7 +171,7 @@ abstract class AbstractMqttAuthHandler extends ChannelInboundHandlerWithTimeout 
     abstract void readReAuth(@NotNull ChannelHandlerContext ctx, @NotNull MqttAuth auth);
 
     @Override
-    protected final long getTimeout(@NotNull final ChannelHandlerContext ctx) {
+    protected final long getTimeout() {
         return enhancedAuthProvider.getTimeout();
     }
 
