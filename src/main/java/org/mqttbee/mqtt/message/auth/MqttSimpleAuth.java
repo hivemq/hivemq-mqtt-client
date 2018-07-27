@@ -19,9 +19,9 @@ package org.mqttbee.mqtt.message.auth;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5SimpleAuth;
-import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
+import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.util.ByteBufferUtil;
 
 import javax.annotation.concurrent.Immutable;
@@ -34,20 +34,20 @@ import java.util.Optional;
 @Immutable
 public class MqttSimpleAuth implements Mqtt5SimpleAuth {
 
-    private final @Nullable MqttUTF8StringImpl username;
+    private final @Nullable MqttUtf8StringImpl username;
     private final @Nullable ByteBuffer password;
 
-    public MqttSimpleAuth(final @Nullable MqttUTF8StringImpl username, final @Nullable ByteBuffer password) {
+    public MqttSimpleAuth(final @Nullable MqttUtf8StringImpl username, final @Nullable ByteBuffer password) {
         this.username = username;
         this.password = password;
     }
 
     @Override
-    public @NotNull Optional<MqttUTF8String> getUsername() {
+    public @NotNull Optional<MqttUtf8String> getUsername() {
         return Optional.ofNullable(username);
     }
 
-    public @Nullable MqttUTF8StringImpl getRawUsername() {
+    public @Nullable MqttUtf8StringImpl getRawUsername() {
         return username;
     }
 

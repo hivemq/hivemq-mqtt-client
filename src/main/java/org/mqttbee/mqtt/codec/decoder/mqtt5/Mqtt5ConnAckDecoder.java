@@ -87,7 +87,7 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
         MqttClientIdentifierImpl assignedClientIdentifier = null;
         int serverKeepAlive = KEEP_ALIVE_FROM_CONNECT;
 
-        MqttUTF8StringImpl authMethod = null;
+        MqttUtf8StringImpl authMethod = null;
         ByteBuffer authData = null;
 
         int receiveMaximum = DEFAULT_RECEIVE_MAXIMUM;
@@ -107,9 +107,9 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
         boolean sharedSubscriptionAvailable = DEFAULT_SHARED_SUBSCRIPTION_AVAILABLE;
         boolean sharedSubscriptionAvailablePresent = false;
 
-        MqttUTF8StringImpl responseInformation = null;
-        MqttUTF8StringImpl serverReference = null;
-        MqttUTF8StringImpl reasonString = null;
+        MqttUtf8StringImpl responseInformation = null;
+        MqttUtf8StringImpl serverReference = null;
+        MqttUtf8StringImpl reasonString = null;
         ImmutableList.Builder<MqttUserPropertyImpl> userPropertiesBuilder = null;
 
         boolean restrictionsPresent = false;

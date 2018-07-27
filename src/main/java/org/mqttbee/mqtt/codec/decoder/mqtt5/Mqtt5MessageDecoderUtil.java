@@ -25,8 +25,8 @@ import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoderContext;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
 import org.mqttbee.mqtt.datatypes.MqttBinaryData;
-import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
+import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 
 import java.nio.ByteBuffer;
@@ -183,22 +183,22 @@ class Mqtt5MessageDecoderUtil {
         return decoded;
     }
 
-    static @NotNull MqttUTF8StringImpl decodeUTF8StringOnlyOnce(
-            final @Nullable MqttUTF8StringImpl current, final @NotNull String name, final @NotNull ByteBuf in)
+    static @NotNull MqttUtf8StringImpl decodeUTF8StringOnlyOnce(
+            final @Nullable MqttUtf8StringImpl current, final @NotNull String name, final @NotNull ByteBuf in)
             throws MqttDecoderException {
 
         if (current != null) {
             throw moreThanOnce(name);
         }
-        final MqttUTF8StringImpl decoded = MqttUTF8StringImpl.from(in);
+        final MqttUtf8StringImpl decoded = MqttUtf8StringImpl.from(in);
         if (decoded == null) {
             throw malformedUTF8String(name);
         }
         return decoded;
     }
 
-    static @NotNull MqttUTF8StringImpl decodeReasonString(
-            final @Nullable MqttUTF8StringImpl current, final @NotNull ByteBuf in) throws MqttDecoderException {
+    static @NotNull MqttUtf8StringImpl decodeReasonString(
+            final @Nullable MqttUtf8StringImpl current, final @NotNull ByteBuf in) throws MqttDecoderException {
 
         return decodeUTF8StringOnlyOnce(current, "reason string", in);
     }
@@ -227,8 +227,8 @@ class Mqtt5MessageDecoderUtil {
         }
     }
 
-    static @NotNull MqttUTF8StringImpl decodeReasonStringIfRequested(
-            final @Nullable MqttUTF8StringImpl current, final @NotNull ByteBuf in,
+    static @NotNull MqttUtf8StringImpl decodeReasonStringIfRequested(
+            final @Nullable MqttUtf8StringImpl current, final @NotNull ByteBuf in,
             final @NotNull MqttDecoderContext context) throws MqttDecoderException {
 
         checkProblemInformationRequested("reason string", context);
@@ -243,8 +243,8 @@ class Mqtt5MessageDecoderUtil {
         return decodeUserProperty(userPropertiesBuilder, in);
     }
 
-    static @NotNull MqttUTF8StringImpl decodeAuthMethod(
-            final @Nullable MqttUTF8StringImpl current, final @NotNull ByteBuf in) throws MqttDecoderException {
+    static @NotNull MqttUtf8StringImpl decodeAuthMethod(
+            final @Nullable MqttUtf8StringImpl current, final @NotNull ByteBuf in) throws MqttDecoderException {
 
         return decodeUTF8StringOnlyOnce(current, "auth method", in);
     }
@@ -256,8 +256,8 @@ class Mqtt5MessageDecoderUtil {
         return decodeBinaryDataOnlyOnce(current, "auth data", in, context.useDirectBufferAuth());
     }
 
-    static @NotNull MqttUTF8StringImpl decodeServerReference(
-            final @Nullable MqttUTF8StringImpl current, final @NotNull ByteBuf in) throws MqttDecoderException {
+    static @NotNull MqttUtf8StringImpl decodeServerReference(
+            final @Nullable MqttUtf8StringImpl current, final @NotNull ByteBuf in) throws MqttDecoderException {
 
         return decodeUTF8StringOnlyOnce(current, "server reference", in);
     }

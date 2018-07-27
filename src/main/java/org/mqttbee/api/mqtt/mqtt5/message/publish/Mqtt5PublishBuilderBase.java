@@ -23,7 +23,7 @@ import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicBuilder;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 
@@ -57,7 +57,7 @@ public interface Mqtt5PublishBuilderBase<B extends Mqtt5PublishBuilderBase<B, C>
 
     @NotNull B contentType(@Nullable String contentType);
 
-    @NotNull B contentType(@Nullable MqttUTF8String contentType);
+    @NotNull B contentType(@Nullable MqttUtf8String contentType);
 
     @NotNull B responseTopic(@Nullable String responseTopic);
 
@@ -101,7 +101,7 @@ public interface Mqtt5PublishBuilderBase<B extends Mqtt5PublishBuilderBase<B, C>
         @NotNull C contentType(@Nullable String contentType);
 
         @Override
-        @NotNull C contentType(@Nullable MqttUTF8String contentType);
+        @NotNull C contentType(@Nullable MqttUtf8String contentType);
 
         @Override
         @NotNull C responseTopic(@Nullable String responseTopic);

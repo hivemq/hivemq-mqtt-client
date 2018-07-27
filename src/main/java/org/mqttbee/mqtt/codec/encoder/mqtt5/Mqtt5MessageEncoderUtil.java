@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.mqtt.datatypes.MqttBinaryData;
-import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
+import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 
 import java.nio.ByteBuffer;
@@ -37,11 +37,11 @@ class Mqtt5MessageEncoderUtil {
     private Mqtt5MessageEncoderUtil() {
     }
 
-    static int propertyEncodedLength(@NotNull final MqttUTF8StringImpl string) {
+    static int propertyEncodedLength(@NotNull final MqttUtf8StringImpl string) {
         return 1 + string.encodedLength();
     }
 
-    static int nullablePropertyEncodedLength(@Nullable final MqttUTF8StringImpl string) {
+    static int nullablePropertyEncodedLength(@Nullable final MqttUtf8StringImpl string) {
         return (string == null) ? 0 : propertyEncodedLength(string);
     }
 
@@ -74,14 +74,14 @@ class Mqtt5MessageEncoderUtil {
     }
 
     static void encodeProperty(
-            final int propertyIdentifier, @NotNull final MqttUTF8StringImpl string, @NotNull final ByteBuf out) {
+            final int propertyIdentifier, @NotNull final MqttUtf8StringImpl string, @NotNull final ByteBuf out) {
 
         out.writeByte(propertyIdentifier);
         string.to(out);
     }
 
     static void encodeNullableProperty(
-            final int propertyIdentifier, @Nullable final MqttUTF8StringImpl string, @NotNull final ByteBuf out) {
+            final int propertyIdentifier, @Nullable final MqttUtf8StringImpl string, @NotNull final ByteBuf out) {
 
         if (string != null) {
             encodeProperty(propertyIdentifier, string, out);

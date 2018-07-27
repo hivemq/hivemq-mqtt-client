@@ -54,41 +54,41 @@ public class MqttChecks {
 
     private MqttChecks() {}
 
-    private static @NotNull MqttUTF8StringImpl string(
+    private static @NotNull MqttUtf8StringImpl string(
             final @NotNull String string, final @NotNull String name) {
 
-        final MqttUTF8StringImpl from = MqttUTF8StringImpl.from(string);
+        final MqttUtf8StringImpl from = MqttUtf8StringImpl.from(string);
         if (from == null) {
             throw new IllegalArgumentException(name + " [" + string + "] is not a valid UTF-8 encoded String.");
         }
         return from;
     }
 
-    public static @NotNull MqttUTF8StringImpl stringNotNull(final @Nullable String string, final @NotNull String name) {
+    public static @NotNull MqttUtf8StringImpl stringNotNull(final @Nullable String string, final @NotNull String name) {
         return string(Checks.notNull(string, name), name);
     }
 
-    public static @NotNull MqttUTF8StringImpl stringNotNull(
-            final @Nullable MqttUTF8String string, final @NotNull String name) {
+    public static @NotNull MqttUtf8StringImpl stringNotNull(
+            final @Nullable MqttUtf8String string, final @NotNull String name) {
 
-        return Checks.notImplemented(string, MqttUTF8StringImpl.class, name);
+        return Checks.notImplemented(string, MqttUtf8StringImpl.class, name);
     }
 
-    public static @Nullable MqttUTF8StringImpl stringOrNull(final @Nullable String string, final @NotNull String name) {
+    public static @Nullable MqttUtf8StringImpl stringOrNull(final @Nullable String string, final @NotNull String name) {
         return (string == null) ? null : string(string, name);
     }
 
-    public static @Nullable MqttUTF8StringImpl stringOrNull(
-            final @Nullable MqttUTF8String string, final @NotNull String name) {
+    public static @Nullable MqttUtf8StringImpl stringOrNull(
+            final @Nullable MqttUtf8String string, final @NotNull String name) {
 
-        return Checks.notImplementedOrNull(string, MqttUTF8StringImpl.class, name);
+        return Checks.notImplementedOrNull(string, MqttUtf8StringImpl.class, name);
     }
 
-    public static @Nullable MqttUTF8StringImpl reasonString(final @Nullable String reasonString) {
+    public static @Nullable MqttUtf8StringImpl reasonString(final @Nullable String reasonString) {
         return stringOrNull(reasonString, "Reason string");
     }
 
-    public static @Nullable MqttUTF8StringImpl reasonString(final @Nullable MqttUTF8String reasonString) {
+    public static @Nullable MqttUtf8StringImpl reasonString(final @Nullable MqttUtf8String reasonString) {
         return stringOrNull(reasonString, "Reason string");
     }
 
@@ -207,7 +207,7 @@ public class MqttChecks {
     }
 
     public static @NotNull MqttUserPropertyImpl userProperty(
-            final @Nullable MqttUTF8String name, final @Nullable MqttUTF8String value) {
+            final @Nullable MqttUtf8String name, final @Nullable MqttUtf8String value) {
 
         return MqttUserPropertyImpl.of(
                 stringNotNull(name, "User property name"), stringNotNull(value, "User property value"));

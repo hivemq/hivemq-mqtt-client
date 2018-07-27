@@ -20,7 +20,7 @@ package org.mqttbee.api.mqtt.mqtt5.message.auth;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 
@@ -40,7 +40,7 @@ public interface Mqtt5AuthBuilder extends Mqtt5EnhancedAuthBuilder {
 
     @NotNull Mqtt5AuthBuilder reasonString(@Nullable String reasonString);
 
-    @NotNull Mqtt5AuthBuilder reasonString(@Nullable MqttUTF8String reasonString);
+    @NotNull Mqtt5AuthBuilder reasonString(@Nullable MqttUtf8String reasonString);
 
     @NotNull Mqtt5AuthBuilder userProperties(@NotNull Mqtt5UserProperties userProperties);
 

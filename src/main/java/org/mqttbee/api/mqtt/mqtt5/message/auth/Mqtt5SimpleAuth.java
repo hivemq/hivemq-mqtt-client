@@ -19,7 +19,7 @@ package org.mqttbee.api.mqtt.mqtt5.message.auth;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.mqtt.message.auth.MqttSimpleAuthBuilder;
 
 import java.nio.ByteBuffer;
@@ -38,7 +38,7 @@ public interface Mqtt5SimpleAuth {
     /**
      * @return the optional username.
      */
-    @NotNull Optional<MqttUTF8String> getUsername();
+    @NotNull Optional<MqttUtf8String> getUsername();
 
     /**
      * @return the optional password.

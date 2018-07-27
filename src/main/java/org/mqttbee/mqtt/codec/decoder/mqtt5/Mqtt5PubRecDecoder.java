@@ -24,9 +24,9 @@ import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrec.Mqtt5PubRecReasonCode;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoderContext;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
-import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
+import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRec;
 
 import javax.inject.Inject;
@@ -66,7 +66,7 @@ public class Mqtt5PubRecDecoder implements MqttMessageDecoder {
         final int packetIdentifier = in.readUnsignedShort();
 
         Mqtt5PubRecReasonCode reasonCode = DEFAULT_REASON_CODE;
-        MqttUTF8StringImpl reasonString = null;
+        MqttUtf8StringImpl reasonString = null;
         ImmutableList.Builder<MqttUserPropertyImpl> userPropertiesBuilder = null;
 
         if (in.isReadable()) {

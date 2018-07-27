@@ -20,7 +20,7 @@ package org.mqttbee.mqtt.message.auth;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5EnhancedAuthBuilder;
-import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
+import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.util.MqttChecks;
 import org.mqttbee.util.Checks;
 
@@ -31,10 +31,10 @@ import java.nio.ByteBuffer;
  */
 public class MqttEnhancedAuthBuilder implements Mqtt5EnhancedAuthBuilder {
 
-    private final @NotNull MqttUTF8StringImpl method;
+    private final @NotNull MqttUtf8StringImpl method;
     private @Nullable ByteBuffer data;
 
-    public MqttEnhancedAuthBuilder(final @NotNull MqttUTF8StringImpl method) {
+    public MqttEnhancedAuthBuilder(final @NotNull MqttUtf8StringImpl method) {
         Checks.notNull(method, "Method");
         this.method = method;
     }

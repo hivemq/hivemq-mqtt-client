@@ -19,7 +19,7 @@ package org.mqttbee.api.mqtt.mqtt5.datatypes;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
 
 /**
  * @author Silvio Giebl
@@ -29,7 +29,7 @@ public interface Mqtt5UserPropertiesBuilderBase<B extends Mqtt5UserPropertiesBui
 
     @NotNull B add(@NotNull String name, @NotNull String value);
 
-    @NotNull B add(@NotNull MqttUTF8String name, @NotNull MqttUTF8String value);
+    @NotNull B add(@NotNull MqttUtf8String name, @NotNull MqttUtf8String value);
 
     @NotNull B add(@NotNull Mqtt5UserProperty userProperty);
 }

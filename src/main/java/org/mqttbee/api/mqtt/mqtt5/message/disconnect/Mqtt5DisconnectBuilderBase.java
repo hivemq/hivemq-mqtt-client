@@ -20,7 +20,7 @@ package org.mqttbee.api.mqtt.mqtt5.message.disconnect;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 
@@ -38,11 +38,11 @@ public interface Mqtt5DisconnectBuilderBase<B extends Mqtt5DisconnectBuilderBase
 
     @NotNull B serverReference(@Nullable String serverReference);
 
-    @NotNull B serverReference(@Nullable MqttUTF8String serverReference);
+    @NotNull B serverReference(@Nullable MqttUtf8String serverReference);
 
     @NotNull B reasonString(@Nullable String reasonString);
 
-    @NotNull B reasonString(@Nullable MqttUTF8String reasonString);
+    @NotNull B reasonString(@Nullable MqttUtf8String reasonString);
 
     @NotNull B userProperties(@NotNull Mqtt5UserProperties userProperties);
 

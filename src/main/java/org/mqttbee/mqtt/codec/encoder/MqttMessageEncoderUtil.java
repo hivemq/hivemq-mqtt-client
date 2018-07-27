@@ -21,7 +21,7 @@ import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.mqtt.datatypes.MqttBinaryData;
-import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
+import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 
 import java.nio.ByteBuffer;
@@ -56,7 +56,7 @@ public class MqttMessageEncoderUtil {
         return MqttVariableByteInteger.encodedLength(encodedLength) + encodedLength;
     }
 
-    public static int nullableEncodedLength(@Nullable final MqttUTF8StringImpl string) {
+    public static int nullableEncodedLength(@Nullable final MqttUtf8StringImpl string) {
         return (string == null) ? 0 : string.encodedLength();
     }
 
@@ -68,7 +68,7 @@ public class MqttMessageEncoderUtil {
         return (byteBuffer == null) ? MqttBinaryData.EMPTY_LENGTH : MqttBinaryData.encodedLength(byteBuffer);
     }
 
-    public static void encodeNullable(@Nullable final MqttUTF8StringImpl string, @NotNull final ByteBuf out) {
+    public static void encodeNullable(@Nullable final MqttUtf8StringImpl string, @NotNull final ByteBuf out) {
         if (string != null) {
             string.to(out);
         }

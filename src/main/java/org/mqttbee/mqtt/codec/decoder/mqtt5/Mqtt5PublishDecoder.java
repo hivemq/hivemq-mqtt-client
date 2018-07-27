@@ -89,7 +89,7 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
 
         long messageExpiryInterval = NO_MESSAGE_EXPIRY;
         Mqtt5PayloadFormatIndicator payloadFormatIndicator = null;
-        MqttUTF8StringImpl contentType = null;
+        MqttUtf8StringImpl contentType = null;
         MqttTopicImpl responseTopic = null;
         ByteBuffer correlationData = null;
         ImmutableList.Builder<MqttUserPropertyImpl> userPropertiesBuilder = null;

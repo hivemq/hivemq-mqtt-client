@@ -19,13 +19,13 @@ package org.mqttbee.mqtt.message.publish.pubrec;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrec.Mqtt5PubRecBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrec.Mqtt5PubRecReasonCode;
-import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImplBuilder;
+import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
 import org.mqttbee.mqtt.util.MqttChecks;
 import org.mqttbee.util.Checks;
@@ -37,7 +37,7 @@ public class MqttPubRecBuilder implements Mqtt5PubRecBuilder {
 
     private final @NotNull MqttStatefulPublish publish;
     private @NotNull Mqtt5PubRecReasonCode reasonCode = MqttPubRec.DEFAULT_REASON_CODE;
-    private @Nullable MqttUTF8StringImpl reasonString;
+    private @Nullable MqttUtf8StringImpl reasonString;
     private @NotNull MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
 
     public MqttPubRecBuilder(final @NotNull MqttStatefulPublish publish) {
@@ -57,7 +57,7 @@ public class MqttPubRecBuilder implements Mqtt5PubRecBuilder {
     }
 
     @Override
-    public @NotNull MqttPubRecBuilder reasonString(final @Nullable MqttUTF8String reasonString) {
+    public @NotNull MqttPubRecBuilder reasonString(final @Nullable MqttUtf8String reasonString) {
         this.reasonString = MqttChecks.reasonString(reasonString);
         return this;
     }

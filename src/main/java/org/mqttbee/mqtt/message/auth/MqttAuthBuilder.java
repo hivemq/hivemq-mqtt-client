@@ -19,13 +19,13 @@ package org.mqttbee.mqtt.message.auth;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode;
-import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImplBuilder;
+import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.util.MqttChecks;
 import org.mqttbee.util.Checks;
 
@@ -36,13 +36,13 @@ import java.nio.ByteBuffer;
  */
 public class MqttAuthBuilder implements Mqtt5AuthBuilder {
 
-    private final @NotNull MqttUTF8StringImpl method;
+    private final @NotNull MqttUtf8StringImpl method;
     private @Nullable ByteBuffer data;
     private final @NotNull Mqtt5AuthReasonCode reasonCode;
-    private @Nullable MqttUTF8StringImpl reasonString;
+    private @Nullable MqttUtf8StringImpl reasonString;
     private @NotNull MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
 
-    public MqttAuthBuilder(final @NotNull Mqtt5AuthReasonCode reasonCode, final @NotNull MqttUTF8StringImpl method) {
+    public MqttAuthBuilder(final @NotNull Mqtt5AuthReasonCode reasonCode, final @NotNull MqttUtf8StringImpl method) {
         Checks.notNull(reasonCode, "Reason code");
         Checks.notNull(method, "Method");
         this.reasonCode = reasonCode;
@@ -68,7 +68,7 @@ public class MqttAuthBuilder implements Mqtt5AuthBuilder {
     }
 
     @Override
-    public @NotNull MqttAuthBuilder reasonString(final @Nullable MqttUTF8String reasonString) {
+    public @NotNull MqttAuthBuilder reasonString(final @Nullable MqttUtf8String reasonString) {
         this.reasonString = MqttChecks.reasonString(reasonString);
         return this;
     }

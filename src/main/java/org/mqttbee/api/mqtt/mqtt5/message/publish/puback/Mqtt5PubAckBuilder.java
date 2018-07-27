@@ -20,7 +20,7 @@ package org.mqttbee.api.mqtt.mqtt5.message.publish.puback;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 
@@ -34,7 +34,7 @@ public interface Mqtt5PubAckBuilder {
 
     @NotNull Mqtt5PubAckBuilder reasonString(@Nullable String reasonString);
 
-    @NotNull Mqtt5PubAckBuilder reasonString(@Nullable MqttUTF8String reasonString);
+    @NotNull Mqtt5PubAckBuilder reasonString(@Nullable MqttUtf8String reasonString);
 
     @NotNull Mqtt5PubAckBuilder userProperties(@NotNull Mqtt5UserProperties userProperties);
 

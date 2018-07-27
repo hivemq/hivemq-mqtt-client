@@ -22,13 +22,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.TopicAliasUsage;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
-import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
+import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.message.MqttMessageWithUserProperties;
 import org.mqttbee.util.ByteBufferUtil;
 
@@ -54,7 +54,7 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
     private final boolean isRetain;
     private final long messageExpiryInterval;
     private final @Nullable Mqtt5PayloadFormatIndicator payloadFormatIndicator;
-    private final @Nullable MqttUTF8StringImpl contentType;
+    private final @Nullable MqttUtf8StringImpl contentType;
     private final @Nullable MqttTopicImpl responseTopic;
     private final @Nullable ByteBuffer correlationData;
     private final @NotNull TopicAliasUsage topicAliasUsage;
@@ -63,7 +63,7 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
             final @NotNull MqttTopicImpl topic, final @Nullable ByteBuffer payload, final @NotNull MqttQos qos,
             final boolean isRetain, final long messageExpiryInterval,
             final @Nullable Mqtt5PayloadFormatIndicator payloadFormatIndicator,
-            final @Nullable MqttUTF8StringImpl contentType, final @Nullable MqttTopicImpl responseTopic,
+            final @Nullable MqttUtf8StringImpl contentType, final @Nullable MqttTopicImpl responseTopic,
             final @Nullable ByteBuffer correlationData, final @NotNull TopicAliasUsage topicAliasUsage,
             final @NotNull MqttUserPropertiesImpl userProperties) {
 
@@ -132,11 +132,11 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
     }
 
     @Override
-    public @NotNull Optional<MqttUTF8String> getContentType() {
+    public @NotNull Optional<MqttUtf8String> getContentType() {
         return Optional.ofNullable(contentType);
     }
 
-    public @Nullable MqttUTF8StringImpl getRawContentType() {
+    public @Nullable MqttUtf8StringImpl getRawContentType() {
         return contentType;
     }
 

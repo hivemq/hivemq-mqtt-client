@@ -26,8 +26,8 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrel.Mqtt5PubRelReasonCode;
 import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoders;
-import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
+import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRel;
 
@@ -62,7 +62,7 @@ class Mqtt5PubRelEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
         };
 
         final Mqtt5PubRelReasonCode reasonCode = Mqtt5PubRelReasonCode.PACKET_IDENTIFIER_NOT_FOUND;
-        final MqttUTF8StringImpl reasonString = null;
+        final MqttUtf8StringImpl reasonString = null;
         final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
         final MqttPubRel pubRel = new MqttPubRel(5, reasonCode, reasonString, userProperties);
 
@@ -129,7 +129,7 @@ class Mqtt5PubRelEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
         };
 
         final Mqtt5PubRelReasonCode reasonCode = Mqtt5PubRelReasonCode.PACKET_IDENTIFIER_NOT_FOUND;
-        final MqttUTF8StringImpl reasonString = MqttUTF8StringImpl.from("reason");
+        final MqttUtf8StringImpl reasonString = MqttUtf8StringImpl.from("reason");
         final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
         final MqttPubRel pubRel = new MqttPubRel(9, reasonCode, reasonString, userProperties);
 
@@ -179,7 +179,7 @@ class Mqtt5PubRelEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
 
         createServerConnectionData(expected.length + 2);
         final Mqtt5PubRelReasonCode reasonCode = Mqtt5PubRelReasonCode.PACKET_IDENTIFIER_NOT_FOUND;
-        final MqttUTF8StringImpl reasonString = null;
+        final MqttUtf8StringImpl reasonString = null;
         final MqttUserPropertiesImpl userProperties = getUserProperties(1);
         final MqttPubRel pubRel = new MqttPubRel(5, reasonCode, reasonString, userProperties);
 
@@ -229,7 +229,7 @@ class Mqtt5PubRelEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
 
         createServerConnectionData(expected.length + 2);
         final Mqtt5PubRelReasonCode reasonCode = Mqtt5PubRelReasonCode.PACKET_IDENTIFIER_NOT_FOUND;
-        final MqttUTF8StringImpl reasonString = null;
+        final MqttUtf8StringImpl reasonString = null;
         final MqttUserPropertiesImpl userProperties =
                 getUserProperties((VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE / userPropertyBytes) + 1);
 
@@ -268,7 +268,7 @@ class Mqtt5PubRelEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
         maxUserProperties.encode(expected);
 
         final Mqtt5PubRelReasonCode reasonCode = Mqtt5PubRelReasonCode.PACKET_IDENTIFIER_NOT_FOUND;
-        final MqttUTF8StringImpl reasonString = maxPacket.getPaddedUtf8StringTooLong();
+        final MqttUtf8StringImpl reasonString = maxPacket.getPaddedUtf8StringTooLong();
         final MqttPubRel pubRel = new MqttPubRel(5, reasonCode, reasonString, maxUserProperties);
         encode(expected.array(), pubRel);
         expected.release();
