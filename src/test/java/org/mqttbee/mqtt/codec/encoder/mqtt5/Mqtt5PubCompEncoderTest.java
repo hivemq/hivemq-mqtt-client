@@ -24,8 +24,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.mqttbee.api.mqtt.exceptions.MqttMaximumPacketSizeExceededException;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubCompReasonCode;
-import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
+import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.publish.pubcomp.MqttPubComp;
 
@@ -60,7 +60,7 @@ class Mqtt5PubCompEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
                 (byte) 0x92
         };
 
-        final MqttUTF8StringImpl reasonString = null;
+        final MqttUtf8StringImpl reasonString = null;
         final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
         final MqttPubComp pubComp = new MqttPubComp(5, PACKET_IDENTIFIER_NOT_FOUND, reasonString, userProperties);
 
@@ -127,7 +127,7 @@ class Mqtt5PubCompEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
                 0x1F, 0, 6, 'r', 'e', 'a', 's', 'o', 'n'
         };
 
-        final MqttUTF8StringImpl reasonString = MqttUTF8StringImpl.from("reason");
+        final MqttUtf8StringImpl reasonString = MqttUtf8StringImpl.from("reason");
         final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
         final MqttPubComp pubComp = new MqttPubComp(9, PACKET_IDENTIFIER_NOT_FOUND, reasonString, userProperties);
 
@@ -214,7 +214,7 @@ class Mqtt5PubCompEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
 
         final MqttUserPropertiesImpl userProperties = getUserProperties(1);
         final MqttPubComp pubComp =
-                new MqttPubComp(5, PACKET_IDENTIFIER_NOT_FOUND, MqttUTF8StringImpl.from("reason"), userProperties);
+                new MqttPubComp(5, PACKET_IDENTIFIER_NOT_FOUND, MqttUtf8StringImpl.from("reason"), userProperties);
         encode(expected, pubComp);
     }
 
@@ -248,7 +248,7 @@ class Mqtt5PubCompEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
         final MqttUserPropertiesImpl userProperties =
                 getUserProperties((VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE / userPropertyBytes));
         final int reasonStringTooLong = (VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE % userPropertyBytes) + 1;
-        final MqttUTF8StringImpl reasonString = getPaddedUtf8String(reasonStringTooLong);
+        final MqttUtf8StringImpl reasonString = getPaddedUtf8String(reasonStringTooLong);
 
         final ByteBuf expected = Unpooled.buffer(
                 MAXIMUM_PACKET_SIZE_LIMIT - maxPacket.getRemainingPropertyBytes(),

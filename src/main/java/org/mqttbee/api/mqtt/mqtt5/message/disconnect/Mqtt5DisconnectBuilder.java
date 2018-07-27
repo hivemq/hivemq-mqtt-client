@@ -20,11 +20,11 @@ package org.mqttbee.api.mqtt.mqtt5.message.disconnect;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
-import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
+import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 import org.mqttbee.util.FluentBuilder;
@@ -43,8 +43,8 @@ public class Mqtt5DisconnectBuilder<P> extends FluentBuilder<Mqtt5Disconnect, P>
 
     private boolean withWillMessage = false;
     private long sessionExpiryIntervalSeconds = MqttDisconnect.SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
-    private MqttUTF8StringImpl serverReference;
-    private MqttUTF8StringImpl reasonString;
+    private MqttUtf8StringImpl serverReference;
+    private MqttUtf8StringImpl reasonString;
     private MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
 
     public Mqtt5DisconnectBuilder(@Nullable final Function<? super Mqtt5Disconnect, P> parentConsumer) {
@@ -77,7 +77,7 @@ public class Mqtt5DisconnectBuilder<P> extends FluentBuilder<Mqtt5Disconnect, P>
     }
 
     @NotNull
-    public Mqtt5DisconnectBuilder<P> serverReference(@Nullable final MqttUTF8String serverReference) {
+    public Mqtt5DisconnectBuilder<P> serverReference(@Nullable final MqttUtf8String serverReference) {
         this.serverReference = MqttBuilderUtil.stringOrNull(serverReference);
         return this;
     }
@@ -89,7 +89,7 @@ public class Mqtt5DisconnectBuilder<P> extends FluentBuilder<Mqtt5Disconnect, P>
     }
 
     @NotNull
-    public Mqtt5DisconnectBuilder<P> reasonString(@Nullable final MqttUTF8String reasonString) {
+    public Mqtt5DisconnectBuilder<P> reasonString(@Nullable final MqttUtf8String reasonString) {
         this.reasonString = MqttBuilderUtil.stringOrNull(reasonString);
         return this;
     }

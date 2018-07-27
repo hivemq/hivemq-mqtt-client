@@ -19,7 +19,7 @@ package org.mqttbee.api.mqtt.mqtt5;
 
 import org.mqttbee.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
 
 import java.util.Optional;
 
@@ -42,7 +42,7 @@ public interface Mqtt5ClientConnectionData {
     int getSubscriptionIdentifierMaximum();
 
     @NotNull
-    Optional<MqttUTF8String> getAuthMethod();
+    Optional<MqttUtf8String> getAuthMethod();
 
     boolean hasWillPublish();
 

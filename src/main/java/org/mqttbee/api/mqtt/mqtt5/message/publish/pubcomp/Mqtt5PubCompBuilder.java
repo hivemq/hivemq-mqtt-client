@@ -19,7 +19,7 @@ package org.mqttbee.api.mqtt.mqtt5.message.publish.pubcomp;
 
 import org.mqttbee.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 
@@ -41,6 +41,6 @@ public interface Mqtt5PubCompBuilder {
     Mqtt5PubCompReasonCode getReasonCode();
 
     @NotNull
-    MqttUTF8String getReasonString();
+    MqttUtf8String getReasonString();
 
 }

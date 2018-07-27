@@ -20,7 +20,7 @@ package org.mqttbee.mqtt;
 import io.netty.channel.Channel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3ClientConnectionData;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientConnectionData;
 import org.mqttbee.api.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
@@ -115,7 +115,7 @@ public class MqttClientConnectionData implements Mqtt5ClientConnectionData, Mqtt
 
     @NotNull
     @Override
-    public Optional<MqttUTF8String> getAuthMethod() {
+    public Optional<MqttUtf8String> getAuthMethod() {
         return (enhancedAuthProvider == null) ? Optional.empty() : Optional.of(enhancedAuthProvider.getMethod());
     }
 

@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicBuilder;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 import org.mqttbee.mqtt.message.publish.MqttWillPublish;
@@ -139,7 +139,7 @@ public class Mqtt5WillPublishBuilder<P> extends Mqtt5PublishBuilder<P> {
 
     @NotNull
     @Override
-    public Mqtt5WillPublishBuilder<P> contentType(@Nullable final MqttUTF8String contentType) {
+    public Mqtt5WillPublishBuilder<P> contentType(@Nullable final MqttUtf8String contentType) {
         super.contentType(contentType);
         return this;
     }

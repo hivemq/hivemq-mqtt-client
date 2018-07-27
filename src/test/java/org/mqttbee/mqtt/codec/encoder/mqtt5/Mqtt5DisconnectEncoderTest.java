@@ -24,9 +24,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
+import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
 
@@ -70,12 +70,12 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesT
                 0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e', '2'
 
         };
-        final MqttUTF8StringImpl reasonString = MqttUTF8StringImpl.from("reason");
-        final MqttUTF8StringImpl serverReference = MqttUTF8StringImpl.from("server");
+        final MqttUtf8StringImpl reasonString = MqttUtf8StringImpl.from("reason");
+        final MqttUtf8StringImpl serverReference = MqttUtf8StringImpl.from("server");
         final long sessionExpiryInterval = 1;
-        final MqttUTF8StringImpl test = requireNonNull(MqttUTF8StringImpl.from("test"));
-        final MqttUTF8StringImpl value = requireNonNull(MqttUTF8StringImpl.from("value"));
-        final MqttUTF8StringImpl value2 = requireNonNull(MqttUTF8StringImpl.from("value2"));
+        final MqttUtf8StringImpl test = requireNonNull(MqttUtf8StringImpl.from("test"));
+        final MqttUtf8StringImpl value = requireNonNull(MqttUtf8StringImpl.from("value"));
+        final MqttUtf8StringImpl value2 = requireNonNull(MqttUtf8StringImpl.from("value2"));
         final MqttUserPropertyImpl userProperty1 = new MqttUserPropertyImpl(test, value);
         final MqttUserPropertyImpl userProperty2 = new MqttUserPropertyImpl(test, value2);
         final MqttUserPropertiesImpl userProperties =
@@ -162,7 +162,7 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesT
 
 
         };
-        final MqttUTF8StringImpl reasonString = MqttUTF8StringImpl.from("reason");
+        final MqttUtf8StringImpl reasonString = MqttUtf8StringImpl.from("reason");
         final MqttDisconnect disconnect =
                 new MqttDisconnect(MALFORMED_PACKET, SESSION_EXPIRY_INTERVAL_FROM_CONNECT, null, reasonString,
                         MqttUserPropertiesImpl.NO_USER_PROPERTIES);
@@ -189,7 +189,7 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesT
 
 
         };
-        final MqttUTF8StringImpl serverReference = MqttUTF8StringImpl.from("server");
+        final MqttUtf8StringImpl serverReference = MqttUtf8StringImpl.from("server");
         final MqttDisconnect disconnect =
                 new MqttDisconnect(MALFORMED_PACKET, SESSION_EXPIRY_INTERVAL_FROM_CONNECT, serverReference, null,
                         MqttUserPropertiesImpl.NO_USER_PROPERTIES);
@@ -244,7 +244,7 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesT
     void encode_maximumPacketSizeExceeded_omitReasonString() {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
         final MqttUserPropertiesImpl maxUserProperties = getUserProperties(maxPacket.getMaxUserPropertiesCount());
-        final MqttUTF8StringImpl reasonString = getPaddedUtf8String(maxPacket.getRemainingPropertyBytes() + 1);
+        final MqttUtf8StringImpl reasonString = getPaddedUtf8String(maxPacket.getRemainingPropertyBytes() + 1);
 
         final ByteBuf expected = Unpooled.buffer(5 + 268435445, 5 + 268435445);
 
@@ -333,7 +333,7 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesT
         final int maxReasonStringLength = VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE % userPropertyBytes;
         final char[] reasonStringBytes = new char[maxReasonStringLength];
         Arrays.fill(reasonStringBytes, 'r');
-        final MqttUTF8StringImpl reasonString = MqttUTF8StringImpl.from(new String(reasonStringBytes));
+        final MqttUtf8StringImpl reasonString = MqttUtf8StringImpl.from(new String(reasonStringBytes));
 
         final ByteBuf expected = Unpooled.buffer(5 + 268435445, 5 + 268435445);
 

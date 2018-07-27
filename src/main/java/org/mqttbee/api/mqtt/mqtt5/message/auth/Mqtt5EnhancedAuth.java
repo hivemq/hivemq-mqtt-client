@@ -19,7 +19,7 @@ package org.mqttbee.api.mqtt.mqtt5.message.auth;
 
 import org.mqttbee.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
 
 import java.nio.ByteBuffer;
 import java.util.Optional;
@@ -36,7 +36,7 @@ public interface Mqtt5EnhancedAuth {
      * @return the authentication/authorization method.
      */
     @NotNull
-    MqttUTF8String getMethod();
+    MqttUtf8String getMethod();
 
     /**
      * @return the optional authentication/authorization data.

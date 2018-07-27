@@ -29,7 +29,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.MqttClientData;
-import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
+import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.handler.disconnect.ChannelCloseEvent;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.handler.util.DefaultChannelOutboundHandler;
@@ -98,7 +98,7 @@ public class MqttAuthHandler extends AbstractMqttAuthHandler implements DefaultC
         enhancedAuthProvider = connect.getRawEnhancedAuthProvider();
         assert enhancedAuthProvider != null;
         final MqttEnhancedAuthBuilder enhancedAuthBuilder =
-                new MqttEnhancedAuthBuilder((MqttUTF8StringImpl) enhancedAuthProvider.getMethod());
+                new MqttEnhancedAuthBuilder((MqttUtf8StringImpl) enhancedAuthProvider.getMethod());
 
         enhancedAuthProvider.onAuth(clientData, connect, enhancedAuthBuilder).whenCompleteAsync((aVoid, throwable) -> {
             if (enhancedAuthProviderAccepted(throwable)) {

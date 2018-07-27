@@ -25,9 +25,9 @@ import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAckReasonCode
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
-import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
+import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAck;
 
 import javax.inject.Inject;
@@ -68,7 +68,7 @@ public class Mqtt5SubAckDecoder implements MqttMessageDecoder {
 
         final int propertyLength = decodePropertyLength(in);
 
-        MqttUTF8StringImpl reasonString = null;
+        MqttUtf8StringImpl reasonString = null;
         ImmutableList.Builder<MqttUserPropertyImpl> userPropertiesBuilder = null;
 
         final int propertiesStartIndex = in.readerIndex();

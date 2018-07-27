@@ -28,10 +28,10 @@ import javax.annotation.concurrent.Immutable;
 /**
  * @author Silvio Giebl
  * @see MqttTopic
- * @see MqttUTF8StringImpl
+ * @see MqttUtf8StringImpl
  */
 @Immutable
-public class MqttTopicImpl extends MqttUTF8StringImpl implements MqttTopic {
+public class MqttTopicImpl extends MqttUtf8StringImpl implements MqttTopic {
 
     /**
      * Validates and decodes a Topic Name from the given byte array.
@@ -78,11 +78,11 @@ public class MqttTopicImpl extends MqttUTF8StringImpl implements MqttTopic {
      *
      * @param binary the UTF-8 encoded byte array.
      * @return whether the byte array contains characters a Topic Name must not contain.
-     * @see MqttUTF8StringImpl#containsMustNotCharacters(byte[])
+     * @see MqttUtf8StringImpl#containsMustNotCharacters(byte[])
      * @see #containsWildcardCharacters(byte[])
      */
     static boolean containsMustNotCharacters(@NotNull final byte[] binary) {
-        return MqttUTF8StringImpl.containsMustNotCharacters(binary) || containsWildcardCharacters(binary);
+        return MqttUtf8StringImpl.containsMustNotCharacters(binary) || containsWildcardCharacters(binary);
     }
 
     /**
@@ -93,11 +93,11 @@ public class MqttTopicImpl extends MqttUTF8StringImpl implements MqttTopic {
      *
      * @param string the UTF-16 encoded Java string.
      * @return whether the string contains characters a Topic Name must not contain.
-     * @see MqttUTF8StringImpl#containsMustNotCharacters(String)
+     * @see MqttUtf8StringImpl#containsMustNotCharacters(String)
      * @see #containsWildcardCharacters(String)
      */
     static boolean containsMustNotCharacters(@NotNull final String string) {
-        return MqttUTF8StringImpl.containsMustNotCharacters(string) || containsWildcardCharacters(string);
+        return MqttUtf8StringImpl.containsMustNotCharacters(string) || containsWildcardCharacters(string);
     }
 
     /**

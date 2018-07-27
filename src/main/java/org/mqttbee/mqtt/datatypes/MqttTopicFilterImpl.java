@@ -30,10 +30,10 @@ import javax.annotation.concurrent.Immutable;
 /**
  * @author Silvio Giebl
  * @see MqttTopicFilter
- * @see MqttUTF8StringImpl
+ * @see MqttUtf8StringImpl
  */
 @Immutable
-public class MqttTopicFilterImpl extends MqttUTF8StringImpl implements MqttTopicFilter {
+public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopicFilter {
 
     static final int WILDCARD_CHECK_FAILURE = -1;
     private static final int WILDCARD_FLAG_MULTI_LEVEL = 1;

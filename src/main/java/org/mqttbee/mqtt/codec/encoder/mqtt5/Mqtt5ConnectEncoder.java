@@ -24,7 +24,7 @@ import org.mqttbee.api.mqtt.exceptions.MqttMaximumPacketSizeExceededException;
 import org.mqttbee.api.mqtt.exceptions.MqttVariableByteIntegerExceededException;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoder;
-import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
+import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.auth.MqttEnhancedAuth;
 import org.mqttbee.mqtt.message.auth.MqttSimpleAuth;
@@ -211,7 +211,7 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
 
         final MqttConnect stateless = message.getStatelessMessage();
 
-        MqttUTF8StringImpl.PROTOCOL_NAME.to(out);
+        MqttUtf8StringImpl.PROTOCOL_NAME.to(out);
         out.writeByte(PROTOCOL_VERSION);
 
         int connectFlags = 0;

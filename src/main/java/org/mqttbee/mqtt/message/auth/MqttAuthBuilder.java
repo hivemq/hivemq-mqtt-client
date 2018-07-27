@@ -20,13 +20,13 @@ package org.mqttbee.mqtt.message.auth;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode;
-import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
+import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 
 import java.nio.ByteBuffer;
@@ -36,14 +36,14 @@ import java.nio.ByteBuffer;
  */
 public class MqttAuthBuilder implements Mqtt5AuthBuilder {
 
-    private final MqttUTF8StringImpl method;
+    private final MqttUtf8StringImpl method;
     private ByteBuffer data;
     private final Mqtt5AuthReasonCode reasonCode;
-    private MqttUTF8StringImpl reasonString;
+    private MqttUtf8StringImpl reasonString;
     private MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
 
     public MqttAuthBuilder(
-            @NotNull final Mqtt5AuthReasonCode reasonCode, @NotNull final MqttUTF8StringImpl method) {
+            @NotNull final Mqtt5AuthReasonCode reasonCode, @NotNull final MqttUtf8StringImpl method) {
 
         Preconditions.checkNotNull(reasonCode, "Reason code must not be null.");
         Preconditions.checkNotNull(method, "Method must not be null.");
@@ -74,7 +74,7 @@ public class MqttAuthBuilder implements Mqtt5AuthBuilder {
 
     @NotNull
     @Override
-    public MqttAuthBuilder reasonString(@Nullable final MqttUTF8String reasonString) {
+    public MqttAuthBuilder reasonString(@Nullable final MqttUtf8String reasonString) {
         this.reasonString = MqttBuilderUtil.stringOrNull(reasonString);
         return this;
     }

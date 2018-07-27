@@ -23,12 +23,12 @@ import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicBuilder;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
-import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
+import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 import org.mqttbee.util.ByteBufferUtil;
@@ -54,7 +54,7 @@ public class Mqtt5PublishBuilder<P> extends FluentBuilder<Mqtt5Publish, P> {
     boolean retain;
     long messageExpiryIntervalSeconds = MESSAGE_EXPIRY_INTERVAL_INFINITY;
     Mqtt5PayloadFormatIndicator payloadFormatIndicator;
-    MqttUTF8StringImpl contentType;
+    MqttUtf8StringImpl contentType;
     MqttTopicImpl responseTopic;
     ByteBuffer correlationData;
     private TopicAliasUsage topicAliasUsage = DEFAULT_TOPIC_ALIAS_USAGE;
@@ -148,7 +148,7 @@ public class Mqtt5PublishBuilder<P> extends FluentBuilder<Mqtt5Publish, P> {
     }
 
     @NotNull
-    public Mqtt5PublishBuilder<P> contentType(@Nullable final MqttUTF8String contentType) {
+    public Mqtt5PublishBuilder<P> contentType(@Nullable final MqttUtf8String contentType) {
         this.contentType = MqttBuilderUtil.stringOrNull(contentType);
         return this;
     }

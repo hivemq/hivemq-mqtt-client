@@ -20,13 +20,13 @@ package org.mqttbee.mqtt.message.connect.connack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5EnhancedAuth;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
-import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
+import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.message.MqttMessageWithUserProperties.MqttMessageWithReasonCode;
 
 import javax.annotation.concurrent.Immutable;
@@ -49,16 +49,16 @@ public class MqttConnAck extends MqttMessageWithReasonCode<Mqtt5ConnAckReasonCod
     private final MqttClientIdentifierImpl assignedClientIdentifier;
     private final Mqtt5EnhancedAuth enhancedAuth;
     private final MqttConnAckRestrictions restrictions;
-    private final MqttUTF8StringImpl responseInformation;
-    private final MqttUTF8StringImpl serverReference;
+    private final MqttUtf8StringImpl responseInformation;
+    private final MqttUtf8StringImpl serverReference;
 
     public MqttConnAck(
             @NotNull final Mqtt5ConnAckReasonCode reasonCode, final boolean isSessionPresent,
             final long sessionExpiryInterval, final int serverKeepAlive,
             @Nullable final MqttClientIdentifierImpl assignedClientIdentifier,
             @Nullable final Mqtt5EnhancedAuth enhancedAuth, @NotNull final MqttConnAckRestrictions restrictions,
-            @Nullable final MqttUTF8StringImpl responseInformation, @Nullable final MqttUTF8StringImpl serverReference,
-            @Nullable final MqttUTF8StringImpl reasonString, @NotNull final MqttUserPropertiesImpl userProperties) {
+            @Nullable final MqttUtf8StringImpl responseInformation, @Nullable final MqttUtf8StringImpl serverReference,
+            @Nullable final MqttUtf8StringImpl reasonString, @NotNull final MqttUserPropertiesImpl userProperties) {
 
         super(reasonCode, reasonString, userProperties);
         this.isSessionPresent = isSessionPresent;
@@ -127,13 +127,13 @@ public class MqttConnAck extends MqttMessageWithReasonCode<Mqtt5ConnAckReasonCod
 
     @NotNull
     @Override
-    public Optional<MqttUTF8String> getResponseInformation() {
+    public Optional<MqttUtf8String> getResponseInformation() {
         return Optional.ofNullable(responseInformation);
     }
 
     @NotNull
     @Override
-    public Optional<MqttUTF8String> getServerReference() {
+    public Optional<MqttUtf8String> getServerReference() {
         return Optional.ofNullable(serverReference);
     }
 

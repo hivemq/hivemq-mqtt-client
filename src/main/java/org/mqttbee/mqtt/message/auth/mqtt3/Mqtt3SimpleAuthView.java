@@ -19,9 +19,9 @@ package org.mqttbee.mqtt.message.auth.mqtt3;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.api.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
-import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
+import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.message.auth.MqttSimpleAuth;
 
 import javax.annotation.concurrent.Immutable;
@@ -36,14 +36,14 @@ public class Mqtt3SimpleAuthView implements Mqtt3SimpleAuth {
 
     @NotNull
     private static MqttSimpleAuth delegate(
-            @NotNull final MqttUTF8StringImpl username, @Nullable final ByteBuffer password) {
+            @NotNull final MqttUtf8StringImpl username, @Nullable final ByteBuffer password) {
 
         return new MqttSimpleAuth(username, password);
     }
 
     @NotNull
     public static Mqtt3SimpleAuthView of(
-            @NotNull final MqttUTF8StringImpl username, @Nullable final ByteBuffer password) {
+            @NotNull final MqttUtf8StringImpl username, @Nullable final ByteBuffer password) {
 
         return new Mqtt3SimpleAuthView(delegate(username, password));
     }
@@ -61,8 +61,8 @@ public class Mqtt3SimpleAuthView implements Mqtt3SimpleAuth {
 
     @NotNull
     @Override
-    public MqttUTF8String getUsername() {
-        final MqttUTF8StringImpl username = delegate.getRawUsername();
+    public MqttUtf8String getUsername() {
+        final MqttUtf8StringImpl username = delegate.getRawUsername();
         if (username == null) {
             throw new IllegalStateException();
         }

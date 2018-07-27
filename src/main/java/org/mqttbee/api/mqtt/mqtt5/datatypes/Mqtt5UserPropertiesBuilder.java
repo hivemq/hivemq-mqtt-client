@@ -20,7 +20,7 @@ package org.mqttbee.api.mqtt.mqtt5.datatypes;
 import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
@@ -55,7 +55,7 @@ public class Mqtt5UserPropertiesBuilder<P> extends FluentBuilder<Mqtt5UserProper
     }
 
     @NotNull
-    public Mqtt5UserPropertiesBuilder<P> add(@NotNull final MqttUTF8String name, @NotNull final MqttUTF8String value) {
+    public Mqtt5UserPropertiesBuilder<P> add(@NotNull final MqttUtf8String name, @NotNull final MqttUtf8String value) {
         listBuilder.add(MqttBuilderUtil.userProperty(name, value));
         return this;
     }

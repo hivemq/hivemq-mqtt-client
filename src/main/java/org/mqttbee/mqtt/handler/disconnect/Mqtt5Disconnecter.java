@@ -22,8 +22,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
+import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
 import org.mqttbee.mqtt.netty.ChannelAttributes;
 
@@ -67,9 +67,9 @@ public class Mqtt5Disconnecter implements MqttDisconnecter {
             @NotNull final Channel channel, final Mqtt5DisconnectReasonCode reasonCode,
             @Nullable final String reasonString) {
 
-        MqttUTF8StringImpl mqttReasonString = null;
+        MqttUtf8StringImpl mqttReasonString = null;
         if ((reasonString != null) && ChannelAttributes.sendReasonString(channel)) {
-            mqttReasonString = MqttUTF8StringImpl.from(reasonString);
+            mqttReasonString = MqttUtf8StringImpl.from(reasonString);
         }
 
         return new MqttDisconnect(reasonCode, MqttDisconnect.SESSION_EXPIRY_INTERVAL_FROM_CONNECT, null,

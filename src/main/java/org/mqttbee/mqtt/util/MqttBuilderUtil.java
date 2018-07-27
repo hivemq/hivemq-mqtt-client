@@ -34,9 +34,9 @@ import java.nio.ByteBuffer;
 public class MqttBuilderUtil {
 
     @NotNull
-    public static MqttUTF8StringImpl string(@NotNull final String string) {
+    public static MqttUtf8StringImpl string(@NotNull final String string) {
         Preconditions.checkNotNull(string, "String must not be null.");
-        final MqttUTF8StringImpl from = MqttUTF8StringImpl.from(string);
+        final MqttUtf8StringImpl from = MqttUtf8StringImpl.from(string);
         if (from == null) {
             throw new IllegalArgumentException("The string: [" + string + "] is not a valid UTF-8 encoded String.");
         }
@@ -44,19 +44,19 @@ public class MqttBuilderUtil {
     }
 
     @NotNull
-    public static MqttUTF8StringImpl string(@NotNull final MqttUTF8String string) {
+    public static MqttUtf8StringImpl string(@NotNull final MqttUtf8String string) {
         Preconditions.checkNotNull(string, "String must not be null.");
-        return MustNotBeImplementedUtil.checkNotImplemented(string, MqttUTF8StringImpl.class);
+        return MustNotBeImplementedUtil.checkNotImplemented(string, MqttUtf8StringImpl.class);
     }
 
     @Nullable
-    public static MqttUTF8StringImpl stringOrNull(@Nullable final String string) {
+    public static MqttUtf8StringImpl stringOrNull(@Nullable final String string) {
         return (string == null) ? null : string(string);
     }
 
     @Nullable
-    public static MqttUTF8StringImpl stringOrNull(@Nullable final MqttUTF8String string) {
-        return MustNotBeImplementedUtil.checkNullOrNotImplemented(string, MqttUTF8StringImpl.class);
+    public static MqttUtf8StringImpl stringOrNull(@Nullable final MqttUtf8String string) {
+        return MustNotBeImplementedUtil.checkNullOrNotImplemented(string, MqttUtf8StringImpl.class);
     }
 
     @NotNull
@@ -167,7 +167,7 @@ public class MqttBuilderUtil {
 
     @NotNull
     public static MqttUserPropertyImpl userProperty(
-            @NotNull final MqttUTF8String name, @NotNull final MqttUTF8String value) {
+            @NotNull final MqttUtf8String name, @NotNull final MqttUtf8String value) {
 
         return MqttUserPropertyImpl.of(string(name), string(value));
     }

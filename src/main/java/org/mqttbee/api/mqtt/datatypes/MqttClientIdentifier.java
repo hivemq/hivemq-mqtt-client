@@ -24,12 +24,12 @@ import org.mqttbee.mqtt.util.MqttBuilderUtil;
 /**
  * MQTT Client Identifier according to the MQTT specification.
  * <p>
- * A Client Identifier has the same restrictions from {@link MqttUTF8String}.
+ * A Client Identifier has the same restrictions from {@link MqttUtf8String}.
  *
  * @author Silvio Giebl
  */
 @DoNotImplement
-public interface MqttClientIdentifier extends MqttUTF8String {
+public interface MqttClientIdentifier extends MqttUtf8String {
 
     /**
      * Validates and creates a Client Identifier from the given string.

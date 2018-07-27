@@ -21,7 +21,7 @@ import org.mqttbee.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
@@ -100,7 +100,7 @@ public interface Mqtt5Publish extends Mqtt5Message, Mqtt5SubscribeResult {
      * @return the optional content type of this PUBLISH packet.
      */
     @NotNull
-    Optional<MqttUTF8String> getContentType();
+    Optional<MqttUtf8String> getContentType();
 
     /**
      * @return the optional response topic of this PUBLISH packet.

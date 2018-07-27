@@ -20,8 +20,8 @@ package org.mqttbee.api.mqtt.mqtt5.message.auth;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
-import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
+import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
+import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.message.auth.MqttSimpleAuth;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 import org.mqttbee.util.FluentBuilder;
@@ -34,7 +34,7 @@ import java.util.function.Function;
  */
 public class Mqtt5SimpleAuthBuilder<P> extends FluentBuilder<Mqtt5SimpleAuth, P> {
 
-    private MqttUTF8StringImpl username;
+    private MqttUtf8StringImpl username;
     private ByteBuffer password;
 
     public Mqtt5SimpleAuthBuilder(@Nullable final Function<? super Mqtt5SimpleAuth, P> parentConsumer) {
@@ -48,7 +48,7 @@ public class Mqtt5SimpleAuthBuilder<P> extends FluentBuilder<Mqtt5SimpleAuth, P>
     }
 
     @NotNull
-    public Mqtt5SimpleAuthBuilder<P> username(@Nullable final MqttUTF8String username) {
+    public Mqtt5SimpleAuthBuilder<P> username(@Nullable final MqttUtf8String username) {
         this.username = MqttBuilderUtil.stringOrNull(username);
         return this;
     }

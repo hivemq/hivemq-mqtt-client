@@ -28,7 +28,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.MqttClientData;
-import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
+import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.handler.util.ChannelInboundHandlerWithTimeout;
 import org.mqttbee.mqtt.message.auth.MqttAuth;
@@ -59,7 +59,7 @@ abstract class AbstractMqttAuthHandler extends ChannelInboundHandlerWithTimeout 
             @NotNull final Mqtt5AuthReasonCode reasonCode,
             @NotNull final Mqtt5EnhancedAuthProvider enhancedAuthProvider) {
 
-        return new MqttAuthBuilder(reasonCode, (MqttUTF8StringImpl) enhancedAuthProvider.getMethod());
+        return new MqttAuthBuilder(reasonCode, (MqttUtf8StringImpl) enhancedAuthProvider.getMethod());
     }
 
     static boolean enhancedAuthProviderAccepted(@Nullable final Throwable throwable) {

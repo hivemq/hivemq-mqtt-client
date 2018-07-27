@@ -24,7 +24,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperty;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
@@ -81,7 +81,7 @@ class Mqtt5UnsubAckDecoderTest extends AbstractMqtt5DecoderTest {
 
         //0x0102 = 258
         assertEquals(258, unsubAck.getPacketIdentifier());
-        final Optional<MqttUTF8String> reasonString = unsubAck.getReasonString();
+        final Optional<MqttUtf8String> reasonString = unsubAck.getReasonString();
         assertTrue(reasonString.isPresent());
         assertEquals("reason", reasonString.get().toString());
 
@@ -276,7 +276,7 @@ class Mqtt5UnsubAckDecoderTest extends AbstractMqtt5DecoderTest {
         final MqttUnsubAck unsubAck = decodeOk(encoded);
 
         assertEquals(2, unsubAck.getPacketIdentifier());
-        final Optional<MqttUTF8String> reasonString = unsubAck.getReasonString();
+        final Optional<MqttUtf8String> reasonString = unsubAck.getReasonString();
         assertTrue(reasonString.isPresent());
         assertEquals("reason", reasonString.get().toString());
 
@@ -362,7 +362,7 @@ class Mqtt5UnsubAckDecoderTest extends AbstractMqtt5DecoderTest {
 
         // 0x0808 = 2056
         assertEquals(2056, unsubAck.getPacketIdentifier());
-        final Optional<MqttUTF8String> reasonString = unsubAck.getReasonString();
+        final Optional<MqttUtf8String> reasonString = unsubAck.getReasonString();
         assertTrue(reasonString.isPresent());
         assertEquals("reason", reasonString.get().toString());
 
@@ -494,7 +494,7 @@ class Mqtt5UnsubAckDecoderTest extends AbstractMqtt5DecoderTest {
         };
 
         final Mqtt5UnsubAck unsuback = decodeOk(encoded);
-        final Optional<MqttUTF8String> reasonString = unsuback.getReasonString();
+        final Optional<MqttUtf8String> reasonString = unsuback.getReasonString();
         assertTrue(reasonString.isPresent());
         assertEquals("reason", reasonString.get().toString());
     }

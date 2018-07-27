@@ -25,7 +25,7 @@ import org.mqttbee.mqtt.util.MqttBuilderUtil;
  * MQTT Shared Topic Filter according to the MQTT specification.
  * <p>
  * A Shared Topic Filter consists of the {@link #SHARE_PREFIX} a Share Name and a Topic Filter. The Share Name has the
- * restrictions from {@link MqttUTF8String}, must be at least 1 character long and mut not contain wildcards ({@link
+ * restrictions from {@link MqttUtf8String}, must be at least 1 character long and mut not contain wildcards ({@link
  * MqttTopicFilter#MULTI_LEVEL_WILDCARD}, {@link MqttTopicFilter#SINGLE_LEVEL_WILDCARD}) and the {@link
  * MqttTopic#TOPIC_LEVEL_SEPARATOR}. The Topic Filter has the same restrictions from {@link MqttTopicFilter}.
  *

@@ -24,7 +24,7 @@ import org.junit.jupiter.params.provider.CsvFileSource;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
-import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
+import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.message.auth.MqttSimpleAuth;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
 import org.mqttbee.mqtt.message.connect.MqttStatefulConnect;
@@ -64,7 +64,7 @@ class Mqtt3ConnectEncoderTest extends AbstractMqtt3EncoderTest {
                 && willRetained != null;
 
         final MqttSimpleAuth auth = !hasAuth ? null : new MqttSimpleAuth(
-                MqttUTF8StringImpl.from(userName),
+                MqttUtf8StringImpl.from(userName),
                 ByteBuffer.wrap(password.getBytes(UTF8))
         );
         final MqttClientIdentifierImpl identifier = MqttClientIdentifierImpl.from(clientId);

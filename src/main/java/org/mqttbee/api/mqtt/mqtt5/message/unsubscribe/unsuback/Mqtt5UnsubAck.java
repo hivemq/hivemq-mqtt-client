@@ -20,7 +20,7 @@ package org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback;
 import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
@@ -46,7 +46,7 @@ public interface Mqtt5UnsubAck extends Mqtt5Message {
      * @return the optional reason string of this UNSUBACK packet.
      */
     @NotNull
-    Optional<MqttUTF8String> getReasonString();
+    Optional<MqttUtf8String> getReasonString();
 
     /**
      * @return the optional user properties of this UNSUBACK packet.

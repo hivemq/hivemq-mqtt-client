@@ -18,7 +18,7 @@
 package org.mqttbee.api.mqtt.mqtt5.auth;
 
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientData;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5Auth;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthBuilder;
@@ -49,7 +49,7 @@ public interface Mqtt5EnhancedAuthProvider {
      * @return the method of this enhanced auth provider. This method must always return the same string.
      */
     @NotNull
-    MqttUTF8String getMethod();
+    MqttUtf8String getMethod();
 
     /**
      * @return the maximum time interval in seconds between messages of the enhanced auth handshake (CONNECT, AUTH,

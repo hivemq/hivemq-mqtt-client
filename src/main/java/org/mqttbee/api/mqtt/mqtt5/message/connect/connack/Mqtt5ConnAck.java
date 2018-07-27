@@ -20,7 +20,7 @@ package org.mqttbee.api.mqtt.mqtt5.message.connect.connack;
 import org.mqttbee.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
@@ -83,19 +83,19 @@ public interface Mqtt5ConnAck extends Mqtt5Message {
      * @return the optional response information of this CONNACK packet to retrieve a response topic from.
      */
     @NotNull
-    Optional<MqttUTF8String> getResponseInformation();
+    Optional<MqttUtf8String> getResponseInformation();
 
     /**
      * @return the optional server reference.
      */
     @NotNull
-    Optional<MqttUTF8String> getServerReference();
+    Optional<MqttUtf8String> getServerReference();
 
     /**
      * @return the optional reason string of this CONNACK packet.
      */
     @NotNull
-    Optional<MqttUTF8String> getReasonString();
+    Optional<MqttUtf8String> getReasonString();
 
     /**
      * @return the optional user properties of this CONNACK packet.

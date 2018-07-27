@@ -21,7 +21,7 @@ import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5EnhancedAuthBuilder;
-import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
+import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 
 import java.nio.ByteBuffer;
@@ -31,10 +31,10 @@ import java.nio.ByteBuffer;
  */
 public class MqttEnhancedAuthBuilder implements Mqtt5EnhancedAuthBuilder {
 
-    private final MqttUTF8StringImpl method;
+    private final MqttUtf8StringImpl method;
     private ByteBuffer data;
 
-    public MqttEnhancedAuthBuilder(@NotNull final MqttUTF8StringImpl method) {
+    public MqttEnhancedAuthBuilder(@NotNull final MqttUtf8StringImpl method) {
         Preconditions.checkNotNull(method, "Method must not be null.");
         this.method = method;
     }

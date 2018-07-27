@@ -20,7 +20,7 @@ package org.mqttbee.mqtt.codec.encoder.mqtt3;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
-import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
+import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.auth.MqttSimpleAuth;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
@@ -87,7 +87,7 @@ public class Mqtt3ConnectEncoder extends Mqtt3MessageEncoder<MqttStatefulConnect
     private void encodeVariableHeader(@NotNull final MqttStatefulConnect message, @NotNull final ByteBuf out) {
         final MqttConnect stateless = message.getStatelessMessage();
 
-        MqttUTF8StringImpl.PROTOCOL_NAME.to(out);
+        MqttUtf8StringImpl.PROTOCOL_NAME.to(out);
         out.writeByte(PROTOCOL_VERSION);
 
         int connectFlags = 0;

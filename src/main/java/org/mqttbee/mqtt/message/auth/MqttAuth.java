@@ -21,8 +21,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5Auth;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode;
-import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
+import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.message.MqttMessageWithUserProperties.MqttMessageWithReasonCode;
 import org.mqttbee.util.ByteBufferUtil;
 
@@ -36,12 +36,12 @@ import java.util.Optional;
 @Immutable
 public class MqttAuth extends MqttMessageWithReasonCode<Mqtt5AuthReasonCode> implements Mqtt5Auth {
 
-    private final MqttUTF8StringImpl method;
+    private final MqttUtf8StringImpl method;
     private final ByteBuffer data;
 
     public MqttAuth(
-            @NotNull final Mqtt5AuthReasonCode reasonCode, @NotNull final MqttUTF8StringImpl method,
-            @Nullable final ByteBuffer data, @Nullable final MqttUTF8StringImpl reasonString,
+            @NotNull final Mqtt5AuthReasonCode reasonCode, @NotNull final MqttUtf8StringImpl method,
+            @Nullable final ByteBuffer data, @Nullable final MqttUtf8StringImpl reasonString,
             @NotNull final MqttUserPropertiesImpl userProperties) {
 
         super(reasonCode, reasonString, userProperties);
@@ -51,7 +51,7 @@ public class MqttAuth extends MqttMessageWithReasonCode<Mqtt5AuthReasonCode> imp
 
     @NotNull
     @Override
-    public MqttUTF8StringImpl getMethod() {
+    public MqttUtf8StringImpl getMethod() {
         return method;
     }
 
