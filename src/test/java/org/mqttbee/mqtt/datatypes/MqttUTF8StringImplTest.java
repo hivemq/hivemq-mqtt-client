@@ -22,7 +22,6 @@ import com.google.common.base.Utf8;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.junit.Test;
-import org.mqttbee.api.mqtt.exceptions.MqttBinaryDataExceededException;
 
 import java.nio.charset.Charset;
 import java.util.Arrays;
@@ -187,13 +186,12 @@ public class MqttUTF8StringImplTest {
         assertEquals(2 + binary.length, binaryString.encodedLength());
     }
 
-    @Test(expected = MqttBinaryDataExceededException.class)
+    @Test
     public void encodedLength_too_long() {
         final byte[] binary = new byte[65_535 + 1];
         Arrays.fill(binary, (byte) 1);
         final MqttUTF8StringImpl binaryString = MqttUTF8StringImpl.from(binary);
-        assertNotNull(binaryString);
-        binaryString.encodedLength();
+        assertNull(binaryString);
     }
 
     @Test

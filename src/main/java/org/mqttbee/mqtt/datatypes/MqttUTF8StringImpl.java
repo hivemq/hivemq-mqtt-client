@@ -69,6 +69,8 @@ public class MqttUTF8StringImpl implements MqttUTF8String {
 
     /**
      * Validates and decodes a UTF-8 encoded String from the given byte array.
+     * <p>
+     * Note: the given byte array must not be longer than {@link MqttBinaryData#MAX_LENGTH}.
      *
      * @param binary the byte array with the UTF-8 encoded data to decode from.
      * @return the created UTF-8 encoded String or null if the byte array does not contain a well-formed UTF-8 encoded
@@ -76,18 +78,32 @@ public class MqttUTF8StringImpl implements MqttUTF8String {
      */
     @Nullable
     public static MqttUTF8StringImpl from(@NotNull final byte[] binary) {
-        return containsMustNotCharacters(binary) ? null : new MqttUTF8StringImpl(binary);
+        return (binary.length > MqttBinaryData.MAX_LENGTH || containsMustNotCharacters(binary)) ? null :
+                new MqttUTF8StringImpl(binary);
     }
 
     /**
      * Validates and creates a UTF-8 encoded String from the given string.
+     * <p>
+     * Note: the given string encoded in UTF-8 must not be longer than {@link MqttBinaryData#MAX_LENGTH}.
      *
      * @param string the UTF-16 encoded Java string.
      * @return the created UTF-8 encoded String or null if the string is not a valid UTF-8 encoded String.
      */
     @Nullable
     public static MqttUTF8StringImpl from(@NotNull final String string) {
-        return containsMustNotCharacters(string) ? null : new MqttUTF8StringImpl(string);
+        // fast fail for encoded string too long
+        if (string.length() * 2 > MqttBinaryData.MAX_LENGTH) {
+            return null;
+        }
+        if (containsMustNotCharacters(string)) {
+            return null;
+        }
+        // have a closer look at the exact length of encoded string
+        if (Utf8.encodedLength(string) > MqttBinaryData.MAX_LENGTH) {
+            return null;
+        }
+        return new MqttUTF8StringImpl(string);
     }
 
     /**
@@ -95,6 +111,9 @@ public class MqttUTF8StringImpl implements MqttUTF8String {
      * <p>
      * In case of a wrong encoding the reader index of the byte buffer will be in an undefined state after the method
      * returns.
+     * <p>
+     * Note: the first two bytes are interpreted as the length of the binary data to read. Thus the length is limited to
+     * {@link MqttBinaryData#MAX_LENGTH}.
      *
      * @param byteBuf the byte buffer with the UTF-8 encoded data to decode from.
      * @return the created UTF-8 encoded String or null if the byte buffer does not contain a well-formed UTF-8 encoded
@@ -256,9 +275,6 @@ public class MqttUTF8StringImpl implements MqttUTF8String {
      */
     public int encodedLength() {
         final byte[] binary = toBinary();
-        if (!MqttBinaryData.isInRange(binary)) {
-            throw new MqttBinaryDataExceededException("UTF-8 encoded String"); // TODO
-        }
         return MqttBinaryData.encodedLength(binary);
     }
 
