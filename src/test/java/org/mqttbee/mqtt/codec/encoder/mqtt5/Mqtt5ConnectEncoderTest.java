@@ -24,7 +24,6 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
-import org.mqttbee.api.mqtt.exceptions.MqttBinaryDataExceededException;
 import org.mqttbee.api.mqtt.exceptions.MqttVariableByteIntegerExceededException;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientConfig;
 import org.mqttbee.api.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
@@ -248,22 +247,6 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         final MqttStatefulConnect connectWrapper = connect.createStateful(clientIdentifier, null);
 
         encode(expected, connectWrapper);
-    }
-
-    @Test
-    void encode_usernameTooLong() {
-        final MqttClientIdentifierImpl clientIdentifier = requireNonNull(MqttClientIdentifierImpl.from("test"));
-        final char[] chars = new char[65536];
-        Arrays.fill(chars, 'a');
-        final MqttUTF8StringImpl username = MqttUTF8StringImpl.from(new String(chars));
-        final MqttSimpleAuth simpleAuth = new MqttSimpleAuth(username, null);
-
-        final MqttConnect connect = new MqttConnect(0, false, 0, false, true, DEFAULT, simpleAuth, null, null,
-                MqttUserPropertiesImpl.NO_USER_PROPERTIES);
-        final MqttStatefulConnect connectWrapper = connect.createStateful(clientIdentifier, null);
-
-        encodeNok(connectWrapper, MqttBinaryDataExceededException.class,
-                "binary data size exceeded for UTF-8 encoded String");
     }
 
     @Test
