@@ -25,9 +25,9 @@ import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoderContext;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
-import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
+import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.message.auth.MqttAuth;
 
 import javax.inject.Inject;
@@ -70,9 +70,9 @@ public class Mqtt5AuthDecoder implements MqttMessageDecoder {
 
         checkPropertyLengthNoPayload(in);
 
-        MqttUTF8StringImpl method = null;
+        MqttUtf8StringImpl method = null;
         ByteBuffer data = null;
-        MqttUTF8StringImpl reasonString = null;
+        MqttUtf8StringImpl reasonString = null;
         ImmutableList.Builder<MqttUserPropertyImpl> userPropertiesBuilder = null;
 
         while (in.isReadable()) {

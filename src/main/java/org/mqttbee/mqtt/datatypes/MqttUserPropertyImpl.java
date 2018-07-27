@@ -39,7 +39,7 @@ public class MqttUserPropertyImpl implements Mqtt5UserProperty {
      * @return the created User Property.
      */
     public static MqttUserPropertyImpl of(
-            @NotNull final MqttUTF8StringImpl name, @NotNull final MqttUTF8StringImpl value) {
+            @NotNull final MqttUtf8StringImpl name, @NotNull final MqttUtf8StringImpl value) {
 
         return new MqttUserPropertyImpl(name, value);
     }
@@ -52,34 +52,34 @@ public class MqttUserPropertyImpl implements Mqtt5UserProperty {
      */
     @Nullable
     public static MqttUserPropertyImpl decode(@NotNull final ByteBuf in) {
-        final MqttUTF8StringImpl name = MqttUTF8StringImpl.from(in);
+        final MqttUtf8StringImpl name = MqttUtf8StringImpl.from(in);
         if (name == null) {
             return null;
         }
-        final MqttUTF8StringImpl value = MqttUTF8StringImpl.from(in);
+        final MqttUtf8StringImpl value = MqttUtf8StringImpl.from(in);
         if (value == null) {
             return null;
         }
         return new MqttUserPropertyImpl(name, value);
     }
 
-    private final MqttUTF8StringImpl name;
-    private final MqttUTF8StringImpl value;
+    private final MqttUtf8StringImpl name;
+    private final MqttUtf8StringImpl value;
 
-    public MqttUserPropertyImpl(@NotNull final MqttUTF8StringImpl name, @NotNull final MqttUTF8StringImpl value) {
+    public MqttUserPropertyImpl(@NotNull final MqttUtf8StringImpl name, @NotNull final MqttUtf8StringImpl value) {
         this.name = name;
         this.value = value;
     }
 
     @NotNull
     @Override
-    public MqttUTF8StringImpl getName() {
+    public MqttUtf8StringImpl getName() {
         return name;
     }
 
     @NotNull
     @Override
-    public MqttUTF8StringImpl getValue() {
+    public MqttUtf8StringImpl getValue() {
         return value;
     }
 

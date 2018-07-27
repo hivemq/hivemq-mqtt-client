@@ -19,14 +19,14 @@ package org.mqttbee.mqtt.message.disconnect;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImplBuilder;
+import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
 import org.mqttbee.mqtt.util.MqttChecks;
 import org.mqttbee.util.Checks;
@@ -40,8 +40,8 @@ public abstract class MqttDisconnectBuilder<B extends MqttDisconnectBuilder<B>> 
 
     private @NotNull Mqtt5DisconnectReasonCode reasonCode = MqttDisconnect.DEFAULT_REASON_CODE;
     private long sessionExpiryInterval = MqttDisconnect.SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
-    private @Nullable MqttUTF8StringImpl serverReference;
-    private @Nullable MqttUTF8StringImpl reasonString;
+    private @Nullable MqttUtf8StringImpl serverReference;
+    private @Nullable MqttUtf8StringImpl reasonString;
     private @NotNull MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
 
     MqttDisconnectBuilder() {}
@@ -77,7 +77,7 @@ public abstract class MqttDisconnectBuilder<B extends MqttDisconnectBuilder<B>> 
         return self();
     }
 
-    public @NotNull B serverReference(final @Nullable MqttUTF8String serverReference) {
+    public @NotNull B serverReference(final @Nullable MqttUtf8String serverReference) {
         this.serverReference = MqttChecks.stringOrNull(serverReference, "Server reference");
         return self();
     }
@@ -87,7 +87,7 @@ public abstract class MqttDisconnectBuilder<B extends MqttDisconnectBuilder<B>> 
         return self();
     }
 
-    public @NotNull B reasonString(final @Nullable MqttUTF8String reasonString) {
+    public @NotNull B reasonString(final @Nullable MqttUtf8String reasonString) {
         this.reasonString = MqttChecks.reasonString(reasonString);
         return self();
     }

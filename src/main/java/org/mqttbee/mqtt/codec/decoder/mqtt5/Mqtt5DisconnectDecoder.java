@@ -24,9 +24,9 @@ import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoderContext;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
-import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
+import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
 
 import javax.inject.Inject;
@@ -59,8 +59,8 @@ public class Mqtt5DisconnectDecoder implements MqttMessageDecoder {
 
         Mqtt5DisconnectReasonCode reasonCode = DEFAULT_REASON_CODE;
         long sessionExpiryInterval = SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
-        MqttUTF8StringImpl serverReference = null;
-        MqttUTF8StringImpl reasonString = null;
+        MqttUtf8StringImpl serverReference = null;
+        MqttUtf8StringImpl reasonString = null;
         ImmutableList.Builder<MqttUserPropertyImpl> userPropertiesBuilder = null;
 
         if (in.isReadable()) {

@@ -61,8 +61,8 @@ class Mqtt5UnsubscribeEncoderTest extends AbstractMqtt5EncoderTest {
                 0, 7, 't', 'o', 'p', 'i', 'c', '/', '#'
         };
 
-        final MqttUTF8StringImpl user = requireNonNull(MqttUTF8StringImpl.from("user"));
-        final MqttUTF8StringImpl property = requireNonNull(MqttUTF8StringImpl.from("property"));
+        final MqttUtf8StringImpl user = requireNonNull(MqttUtf8StringImpl.from("user"));
+        final MqttUtf8StringImpl property = requireNonNull(MqttUtf8StringImpl.from("property"));
         final MqttUserPropertiesImpl userProperties =
                 MqttUserPropertiesImpl.of(ImmutableList.of(new MqttUserPropertyImpl(user, property)));
 
@@ -92,8 +92,8 @@ class Mqtt5UnsubscribeEncoderTest extends AbstractMqtt5EncoderTest {
                 0, 5, 't', 'o', 'p', 'i', 'c'
         };
 
-        final MqttUTF8StringImpl user = requireNonNull(MqttUTF8StringImpl.from("user"));
-        final MqttUTF8StringImpl property = requireNonNull(MqttUTF8StringImpl.from("property"));
+        final MqttUtf8StringImpl user = requireNonNull(MqttUtf8StringImpl.from("user"));
+        final MqttUtf8StringImpl property = requireNonNull(MqttUtf8StringImpl.from("property"));
         final MqttUserPropertyImpl mqtt5UserProperty = new MqttUserPropertyImpl(user, property);
         final MqttUserPropertiesImpl userProperties =
                 MqttUserPropertiesImpl.of(ImmutableList.of(mqtt5UserProperty, mqtt5UserProperty, mqtt5UserProperty));
@@ -122,8 +122,8 @@ class Mqtt5UnsubscribeEncoderTest extends AbstractMqtt5EncoderTest {
 
         createServerConnectionData(expected.length + 2);
 
-        final MqttUTF8StringImpl user = requireNonNull(MqttUTF8StringImpl.from("user"));
-        final MqttUTF8StringImpl property = requireNonNull(MqttUTF8StringImpl.from("property"));
+        final MqttUtf8StringImpl user = requireNonNull(MqttUtf8StringImpl.from("user"));
+        final MqttUtf8StringImpl property = requireNonNull(MqttUtf8StringImpl.from("property"));
         final MqttUserPropertiesImpl userProperties =
                 MqttUserPropertiesImpl.of(ImmutableList.of(new MqttUserPropertyImpl(user, property)));
 
@@ -194,8 +194,8 @@ class Mqtt5UnsubscribeEncoderTest extends AbstractMqtt5EncoderTest {
         private static final String TOPIC = "topic";
         private StringBuilder reasonStringBuilder;
         private ImmutableList.Builder<MqttUserPropertyImpl> userPropertiesBuilder;
-        final MqttUTF8StringImpl user = requireNonNull(MqttUTF8StringImpl.from("user"));
-        final MqttUTF8StringImpl property = requireNonNull(MqttUTF8StringImpl.from("property"));
+        final MqttUtf8StringImpl user = requireNonNull(MqttUtf8StringImpl.from("user"));
+        final MqttUtf8StringImpl property = requireNonNull(MqttUtf8StringImpl.from("property"));
 
         MaximumPacketBuilder build() {
             final int maxPropertyLength = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT - 1  // type, reserved

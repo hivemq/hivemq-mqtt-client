@@ -89,15 +89,15 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
         };
 
         final MqttUserPropertyImpl userProperty =
-                new MqttUserPropertyImpl(requireNonNull(MqttUTF8StringImpl.from("test1")),
-                        requireNonNull(MqttUTF8StringImpl.from("value")));
+                new MqttUserPropertyImpl(requireNonNull(MqttUtf8StringImpl.from("test1")),
+                        requireNonNull(MqttUtf8StringImpl.from("value")));
         final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.of(
                 ImmutableList.of(userProperty, userProperty, userProperty, userProperty, userProperty, userProperty));
 
         final MqttPublish publish =
                 new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5}),
                         MqttQos.AT_MOST_ONCE, false, 10, Mqtt5PayloadFormatIndicator.UNSPECIFIED,
-                        requireNonNull(MqttUTF8StringImpl.from("myContentType")),
+                        requireNonNull(MqttUtf8StringImpl.from("myContentType")),
                         requireNonNull(MqttTopicImpl.from("responseTopic")), ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5}),
                         TopicAliasUsage.NO, userProperties);
 
@@ -311,7 +311,7 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
         final MqttPublish publish =
                 new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), null, MqttQos.AT_LEAST_ONCE, false,
                         MqttPublish.NO_MESSAGE_EXPIRY, Mqtt5PayloadFormatIndicator.UTF_8,
-                        MqttUTF8StringImpl.from("myContentType"), null, null, TopicAliasUsage.NO, NO_USER_PROPERTIES);
+                        MqttUtf8StringImpl.from("myContentType"), null, null, TopicAliasUsage.NO, NO_USER_PROPERTIES);
         encode(expected, publish, 15, false, DEFAULT_NO_TOPIC_ALIAS, true, ImmutableIntArray.of());
     }
 

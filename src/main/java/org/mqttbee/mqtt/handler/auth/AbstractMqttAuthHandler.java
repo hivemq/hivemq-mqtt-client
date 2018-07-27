@@ -27,7 +27,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5Auth;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.MqttClientConfig;
-import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
+import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.handler.util.MqttTimeoutInboundHandler;
 import org.mqttbee.mqtt.message.auth.MqttAuth;
@@ -223,8 +223,8 @@ abstract class AbstractMqttAuthHandler extends MqttTimeoutInboundHandler impleme
         }
     }
 
-    @NotNull MqttUTF8StringImpl getMethod() {
-        return Checks.notImplemented(authProvider.getMethod(), MqttUTF8StringImpl.class, "Auth method");
+    @NotNull MqttUtf8StringImpl getMethod() {
+        return Checks.notImplemented(authProvider.getMethod(), MqttUtf8StringImpl.class, "Auth method");
     }
 
     @Override

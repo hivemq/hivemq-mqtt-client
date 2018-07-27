@@ -27,9 +27,9 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.puback.Mqtt5PubAckReasonCode;
 import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoders;
-import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
+import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.publish.puback.MqttPubAck;
 
@@ -72,9 +72,9 @@ class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
                 0x26, 0, 4, 'u', 's', 'e', 'r', 0, 8, 'p', 'r', 'o', 'p', 'e', 'r', 't', 'y'
         };
 
-        final MqttUTF8StringImpl user = requireNonNull(MqttUTF8StringImpl.from("user"));
-        final MqttUTF8StringImpl property = requireNonNull(MqttUTF8StringImpl.from("property"));
-        final MqttUTF8StringImpl reasonString = MqttUTF8StringImpl.from("reason");
+        final MqttUtf8StringImpl user = requireNonNull(MqttUtf8StringImpl.from("user"));
+        final MqttUtf8StringImpl property = requireNonNull(MqttUtf8StringImpl.from("property"));
+        final MqttUtf8StringImpl reasonString = MqttUtf8StringImpl.from("reason");
         final MqttUserPropertiesImpl userProperties =
                 MqttUserPropertiesImpl.of(ImmutableList.of(new MqttUserPropertyImpl(user, property)));
 
@@ -143,7 +143,7 @@ class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
         };
         createServerConnectionData(expected.length + 2);
 
-        final MqttUTF8StringImpl reasonString = MqttUTF8StringImpl.from("reason");
+        final MqttUtf8StringImpl reasonString = MqttUtf8StringImpl.from("reason");
         final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
 
         final MqttPubAck pubAck =
@@ -192,7 +192,7 @@ class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
         };
         createServerConnectionData(expected.length + 2);
 
-        final MqttUTF8StringImpl reasonString = MqttUTF8StringImpl.from("reason");
+        final MqttUtf8StringImpl reasonString = MqttUtf8StringImpl.from("reason");
         final MqttUserPropertiesImpl userProperties = getUserProperties(1);
 
         final MqttPubAck pubAck =
@@ -242,7 +242,7 @@ class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
                 0x26, 0, 4, 'u', 's', 'e', 'r', 0, 8, 'p', 'r', 'o', 'p', 'e', 'r', 't', 'y'
         };
 
-        final MqttUTF8StringImpl reasonString = MqttUTF8StringImpl.from("reason");
+        final MqttUtf8StringImpl reasonString = MqttUtf8StringImpl.from("reason");
         final MqttUserPropertiesImpl userProperties = getUserProperties(1);
 
         final MqttPubAck pubAck = new MqttPubAck(1, Mqtt5PubAckReasonCode.SUCCESS, reasonString, userProperties);
@@ -275,7 +275,7 @@ class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
         // reason string
         final int reasonStringLength = remainingBytes - 3;
         expected.writeByte(0x1F);
-        final MqttUTF8StringImpl reasonString = getPaddedUtf8String(reasonStringLength);
+        final MqttUtf8StringImpl reasonString = getPaddedUtf8String(reasonStringLength);
         reasonString.to(expected);
 
         final MqttUserPropertiesImpl maxPossibleUserProperties = maxPacket.getMaxPossibleUserProperties();
@@ -338,7 +338,7 @@ class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
         // user properties
         maxUserProperties.encode(expected);
 
-        final MqttUTF8StringImpl reasonString = getPaddedUtf8String(maxPacket.getRemainingPropertyBytes() + 10);
+        final MqttUtf8StringImpl reasonString = getPaddedUtf8String(maxPacket.getRemainingPropertyBytes() + 10);
         final MqttPubAck pubAck = new MqttPubAck(1, Mqtt5PubAckReasonCode.SUCCESS, reasonString,
                 maxPacket.getMaxPossibleUserProperties());
 
@@ -353,7 +353,7 @@ class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
         final MqttUserPropertiesImpl userProperties =
                 getUserProperties((VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE / userPropertyBytes));
         final int reasonStringTooLong = (VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE % userPropertyBytes) + 1;
-        final MqttUTF8StringImpl reasonString = getPaddedUtf8String(reasonStringTooLong);
+        final MqttUtf8StringImpl reasonString = getPaddedUtf8String(reasonStringTooLong);
 
         final ByteBuf expected = Unpooled.buffer(MAXIMUM_PACKET_SIZE_LIMIT - maxPacket.getRemainingPropertyBytes(),
                 MAXIMUM_PACKET_SIZE_LIMIT - maxPacket.getRemainingPropertyBytes());
@@ -447,7 +447,7 @@ class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
                 0x26, 0, 4, 'u', 's', 'e', 'r', 0, 8, 'p', 'r', 'o', 'p', 'e', 'r', 't', 'y'
         };
 
-        final MqttUTF8StringImpl reasonString = MqttUTF8StringImpl.from("reason");
+        final MqttUtf8StringImpl reasonString = MqttUtf8StringImpl.from("reason");
         final MqttUserPropertiesImpl userProperties = getUserProperties(1);
 
         final MqttPubAck pubAck = new MqttPubAck(1, reasonCode, reasonString, userProperties);

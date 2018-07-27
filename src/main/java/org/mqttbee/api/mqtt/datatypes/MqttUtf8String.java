@@ -33,7 +33,7 @@ import java.nio.ByteBuffer;
  * @author Silvio Giebl
  */
 @DoNotImplement
-public interface MqttUTF8String {
+public interface MqttUtf8String {
 
     /**
      * Validates and creates a UTF-8 encoded String from the given string.
@@ -42,7 +42,7 @@ public interface MqttUTF8String {
      * @return the created UTF-8 encoded String.
      * @throws IllegalArgumentException if the string is not a valid UTF-8 encoded String.
      */
-    static @NotNull MqttUTF8String from(final @NotNull String string) {
+    static @NotNull MqttUtf8String from(final @NotNull String string) {
         return MqttChecks.stringNotNull(string, "String");
     }
 

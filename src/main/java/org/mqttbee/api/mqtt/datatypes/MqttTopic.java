@@ -26,13 +26,13 @@ import org.mqttbee.mqtt.util.MqttChecks;
 /**
  * MQTT Topic Name according to the MQTT specification.
  * <p>
- * A Topic Name has the restrictions from {@link MqttUTF8String}, must be at least 1 character long and mut not contain
+ * A Topic Name has the restrictions from {@link MqttUtf8String}, must be at least 1 character long and mut not contain
  * wildcards ({@link MqttTopicFilter#MULTI_LEVEL_WILDCARD}, {@link MqttTopicFilter#SINGLE_LEVEL_WILDCARD}).
  *
  * @author Silvio Giebl
  */
 @DoNotImplement
-public interface MqttTopic extends MqttUTF8String {
+public interface MqttTopic extends MqttUtf8String {
 
     /**
      * The topic level separator character.

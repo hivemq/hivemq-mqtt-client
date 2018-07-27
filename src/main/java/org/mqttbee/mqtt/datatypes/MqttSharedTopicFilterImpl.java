@@ -27,7 +27,7 @@ import javax.annotation.concurrent.Immutable;
 /**
  * @author Silvio Giebl
  * @see MqttSharedTopicFilter
- * @see MqttUTF8StringImpl
+ * @see MqttUtf8StringImpl
  */
 @Immutable
 public class MqttSharedTopicFilterImpl extends MqttTopicFilterImpl implements MqttSharedTopicFilter {

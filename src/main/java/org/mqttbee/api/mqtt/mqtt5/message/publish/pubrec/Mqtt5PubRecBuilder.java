@@ -20,7 +20,7 @@ package org.mqttbee.api.mqtt.mqtt5.message.publish.pubrec;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 
@@ -34,7 +34,7 @@ public interface Mqtt5PubRecBuilder {
 
     @NotNull Mqtt5PubRecBuilder reasonString(@Nullable String reasonString);
 
-    @NotNull Mqtt5PubRecBuilder reasonString(@Nullable MqttUTF8String reasonString);
+    @NotNull Mqtt5PubRecBuilder reasonString(@Nullable MqttUtf8String reasonString);
 
     @NotNull Mqtt5PubRecBuilder userProperties(@NotNull Mqtt5UserProperties userProperties);
 

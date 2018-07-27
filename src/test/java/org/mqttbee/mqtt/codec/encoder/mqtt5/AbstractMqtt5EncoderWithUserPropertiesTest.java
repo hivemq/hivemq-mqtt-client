@@ -20,9 +20,9 @@ package org.mqttbee.mqtt.codec.encoder.mqtt5;
 import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoders;
-import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
+import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 
 import java.util.Arrays;
 
@@ -36,8 +36,8 @@ abstract class AbstractMqtt5EncoderWithUserPropertiesTest extends AbstractMqtt5E
     static final int VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE = (1 << (VARIABLE_BYTE_INTEGER_VALUE_BITS * 4)) - 1;
 
     private ImmutableList.Builder<MqttUserPropertyImpl> userPropertiesBuilder;
-    private final MqttUTF8StringImpl user = requireNonNull(MqttUTF8StringImpl.from("user"));
-    private final MqttUTF8StringImpl property = requireNonNull(MqttUTF8StringImpl.from("property"));
+    private final MqttUtf8StringImpl user = requireNonNull(MqttUtf8StringImpl.from("user"));
+    private final MqttUtf8StringImpl property = requireNonNull(MqttUtf8StringImpl.from("property"));
     final int userPropertyBytes = 1 // identifier
             + 2 // key length
             + 4 // bytes to encode "user"
@@ -64,10 +64,10 @@ abstract class AbstractMqtt5EncoderWithUserPropertiesTest extends AbstractMqtt5E
 
     abstract int getMaxPropertyLength();
 
-    MqttUTF8StringImpl getPaddedUtf8String(final int length) {
+    MqttUtf8StringImpl getPaddedUtf8String(final int length) {
         final char[] reasonString = new char[length];
         Arrays.fill(reasonString, 'r');
-        return MqttUTF8StringImpl.from(new String(reasonString));
+        return MqttUtf8StringImpl.from(new String(reasonString));
     }
 
     class MaximumPacketBuilder {
@@ -112,7 +112,7 @@ abstract class AbstractMqtt5EncoderWithUserPropertiesTest extends AbstractMqtt5E
             return remainingPropertyBytes;
         }
 
-        MqttUTF8StringImpl getPaddedUtf8StringTooLong() {
+        MqttUtf8StringImpl getPaddedUtf8StringTooLong() {
             return getPaddedUtf8String(getRemainingPropertyBytes() - 2 + 1);
         }
     }

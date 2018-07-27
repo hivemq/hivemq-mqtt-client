@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.*;
 import org.mqttbee.mqtt.datatypes.*;
@@ -43,7 +43,7 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
     boolean retain;
     long messageExpiryInterval = MqttPublish.NO_MESSAGE_EXPIRY;
     @Nullable Mqtt5PayloadFormatIndicator payloadFormatIndicator;
-    @Nullable MqttUTF8StringImpl contentType;
+    @Nullable MqttUtf8StringImpl contentType;
     @Nullable MqttTopicImpl responseTopic;
     @Nullable ByteBuffer correlationData;
     @NotNull MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
@@ -110,7 +110,7 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
         return self();
     }
 
-    public @NotNull B contentType(final @Nullable MqttUTF8String contentType) {
+    public @NotNull B contentType(final @Nullable MqttUtf8String contentType) {
         this.contentType = MqttChecks.stringOrNull(contentType, "Content type");
         return self();
     }

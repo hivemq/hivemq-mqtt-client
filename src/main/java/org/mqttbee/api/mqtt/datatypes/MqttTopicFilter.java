@@ -26,13 +26,13 @@ import org.mqttbee.mqtt.util.MqttChecks;
 /**
  * MQTT Topic Filter according to the MQTT specification.
  * <p>
- * A Topic Filter has the restrictions from {@link MqttUTF8String}, must be at least one character long, may contain one
+ * A Topic Filter has the restrictions from {@link MqttUtf8String}, must be at least one character long, may contain one
  * {@link #MULTI_LEVEL_WILDCARD} at the end and may contain multiple {@link #SINGLE_LEVEL_WILDCARD}s.
  *
  * @author Silvio Giebl
  */
 @DoNotImplement
-public interface MqttTopicFilter extends MqttUTF8String {
+public interface MqttTopicFilter extends MqttUtf8String {
 
     /**
      * The multi-level wildcard character.

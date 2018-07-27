@@ -24,8 +24,8 @@ import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.TopicAliasUsage;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
-import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
+import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 
 import javax.annotation.concurrent.Immutable;
 import java.nio.ByteBuffer;
@@ -42,7 +42,7 @@ public class MqttWillPublish extends MqttPublish implements Mqtt5WillPublish {
             final @NotNull MqttTopicImpl topic, final @Nullable ByteBuffer payload, final @NotNull MqttQos qos,
             final boolean isRetain, final long messageExpiryInterval,
             final @Nullable Mqtt5PayloadFormatIndicator payloadFormatIndicator,
-            final @Nullable MqttUTF8StringImpl contentType, final @Nullable MqttTopicImpl responseTopic,
+            final @Nullable MqttUtf8StringImpl contentType, final @Nullable MqttTopicImpl responseTopic,
             final @Nullable ByteBuffer correlationData, final @NotNull MqttUserPropertiesImpl userProperties,
             final long delayInterval) {
 

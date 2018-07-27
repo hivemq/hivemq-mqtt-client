@@ -20,10 +20,10 @@ package org.mqttbee.mqtt.message;
 import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5ReasonCode;
-import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
+import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 
 import java.util.Optional;
 
@@ -48,20 +48,20 @@ public abstract class MqttMessageWithUserProperties implements MqttMessage.WithU
      */
     public abstract static class WithReason extends MqttMessageWithUserProperties {
 
-        private final @Nullable MqttUTF8StringImpl reasonString;
+        private final @Nullable MqttUtf8StringImpl reasonString;
 
         WithReason(
-                final @Nullable MqttUTF8StringImpl reasonString, final @NotNull MqttUserPropertiesImpl userProperties) {
+                final @Nullable MqttUtf8StringImpl reasonString, final @NotNull MqttUserPropertiesImpl userProperties) {
 
             super(userProperties);
             this.reasonString = reasonString;
         }
 
-        public @NotNull Optional<MqttUTF8String> getReasonString() {
+        public @NotNull Optional<MqttUtf8String> getReasonString() {
             return Optional.ofNullable(reasonString);
         }
 
-        public @Nullable MqttUTF8StringImpl getRawReasonString() {
+        public @Nullable MqttUtf8StringImpl getRawReasonString() {
             return reasonString;
         }
 
@@ -75,7 +75,7 @@ public abstract class MqttMessageWithUserProperties implements MqttMessage.WithU
             private final @NotNull R reasonCode;
 
             protected WithCode(
-                    final @NotNull R reasonCode, final @Nullable MqttUTF8StringImpl reasonString,
+                    final @NotNull R reasonCode, final @Nullable MqttUtf8StringImpl reasonString,
                     final @NotNull MqttUserPropertiesImpl userProperties) {
 
                 super(reasonString, userProperties);
@@ -99,7 +99,7 @@ public abstract class MqttMessageWithUserProperties implements MqttMessage.WithU
 
                 protected WithId(
                         final int packetIdentifier, final @NotNull R reasonCode,
-                        final @Nullable MqttUTF8StringImpl reasonString,
+                        final @Nullable MqttUtf8StringImpl reasonString,
                         final @NotNull MqttUserPropertiesImpl userProperties) {
 
                     super(reasonCode, reasonString, userProperties);
@@ -127,7 +127,7 @@ public abstract class MqttMessageWithUserProperties implements MqttMessage.WithU
 
             protected WithCodesAndId(
                     final int packetIdentifier, final @NotNull ImmutableList<R> reasonCodes,
-                    final @Nullable MqttUTF8StringImpl reasonString,
+                    final @Nullable MqttUtf8StringImpl reasonString,
                     final @NotNull MqttUserPropertiesImpl userProperties) {
 
                 super(reasonString, userProperties);

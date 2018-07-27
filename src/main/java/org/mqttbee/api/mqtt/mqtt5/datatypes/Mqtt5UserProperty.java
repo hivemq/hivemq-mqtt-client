@@ -19,7 +19,7 @@ package org.mqttbee.api.mqtt.mqtt5.datatypes;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.mqtt.util.MqttChecks;
 
 /**
@@ -50,17 +50,17 @@ public interface Mqtt5UserProperty {
      * @param value the value of the User Property.
      * @return the created User Property.
      */
-    static @NotNull Mqtt5UserProperty of(final @NotNull MqttUTF8String name, final @NotNull MqttUTF8String value) {
+    static @NotNull Mqtt5UserProperty of(final @NotNull MqttUtf8String name, final @NotNull MqttUtf8String value) {
         return MqttChecks.userProperty(name, value);
     }
 
     /**
      * @return the name of this User Property.
      */
-    @NotNull MqttUTF8String getName();
+    @NotNull MqttUtf8String getName();
 
     /**
      * @return the value of this User Property.
      */
-    @NotNull MqttUTF8String getValue();
+    @NotNull MqttUtf8String getValue();
 }

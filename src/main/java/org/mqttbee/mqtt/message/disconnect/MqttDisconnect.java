@@ -19,11 +19,11 @@ package org.mqttbee.mqtt.message.disconnect;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
+import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.message.MqttMessageWithUserProperties;
 
 import javax.annotation.concurrent.Immutable;
@@ -43,11 +43,11 @@ public class MqttDisconnect extends MqttMessageWithUserProperties.WithReason.Wit
                     MqttUserPropertiesImpl.NO_USER_PROPERTIES);
 
     private final long sessionExpiryInterval;
-    private final @Nullable MqttUTF8StringImpl serverReference;
+    private final @Nullable MqttUtf8StringImpl serverReference;
 
     public MqttDisconnect(
             final @NotNull Mqtt5DisconnectReasonCode reasonCode, final long sessionExpiryInterval,
-            final @Nullable MqttUTF8StringImpl serverReference, final @Nullable MqttUTF8StringImpl reasonString,
+            final @Nullable MqttUtf8StringImpl serverReference, final @Nullable MqttUtf8StringImpl reasonString,
             final @NotNull MqttUserPropertiesImpl userProperties) {
 
         super(reasonCode, reasonString, userProperties);
@@ -66,11 +66,11 @@ public class MqttDisconnect extends MqttMessageWithUserProperties.WithReason.Wit
     }
 
     @Override
-    public @NotNull Optional<MqttUTF8String> getServerReference() {
+    public @NotNull Optional<MqttUtf8String> getServerReference() {
         return Optional.ofNullable(serverReference);
     }
 
-    public @Nullable MqttUTF8StringImpl getRawServerReference() {
+    public @Nullable MqttUtf8StringImpl getRawServerReference() {
         return serverReference;
     }
 }

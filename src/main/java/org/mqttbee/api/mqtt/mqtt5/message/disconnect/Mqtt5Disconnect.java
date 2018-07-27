@@ -19,7 +19,7 @@ package org.mqttbee.api.mqtt.mqtt5.message.disconnect;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
@@ -60,12 +60,12 @@ public interface Mqtt5Disconnect extends Mqtt5Message {
     /**
      * @return the optional server reference, which can be used if the server sent this DISCONNECT packet.
      */
-    @NotNull Optional<MqttUTF8String> getServerReference();
+    @NotNull Optional<MqttUtf8String> getServerReference();
 
     /**
      * @return the optional reason string of this DISCONNECT packet.
      */
-    @NotNull Optional<MqttUTF8String> getReasonString();
+    @NotNull Optional<MqttUtf8String> getReasonString();
 
     /**
      * @return the optional user properties of this DISCONNECT packet.

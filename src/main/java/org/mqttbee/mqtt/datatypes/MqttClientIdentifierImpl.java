@@ -28,10 +28,10 @@ import java.util.regex.Pattern;
 /**
  * @author Silvio Giebl
  * @see MqttClientIdentifier
- * @see MqttUTF8StringImpl
+ * @see MqttUtf8StringImpl
  */
 @Immutable
-public class MqttClientIdentifierImpl extends MqttUTF8StringImpl implements MqttClientIdentifier {
+public class MqttClientIdentifierImpl extends MqttUtf8StringImpl implements MqttClientIdentifier {
 
     /**
      * Placeholder for a Client Identifier to indicate that the MQTT broker should assign the Client Identifier.

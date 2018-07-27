@@ -19,9 +19,9 @@ package org.mqttbee.mqtt.message.auth.mqtt3;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.api.mqtt.mqtt3.message.auth.Mqtt3SimpleAuthBuilder;
-import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
+import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.util.MqttChecks;
 
 import java.nio.ByteBuffer;
@@ -32,7 +32,7 @@ import java.util.function.Function;
  */
 public abstract class Mqtt3SimpleAuthViewBuilder<B extends Mqtt3SimpleAuthViewBuilder<B>> {
 
-    private @Nullable MqttUTF8StringImpl username;
+    private @Nullable MqttUtf8StringImpl username;
     private @Nullable ByteBuffer password;
 
     abstract @NotNull B self();
@@ -42,7 +42,7 @@ public abstract class Mqtt3SimpleAuthViewBuilder<B extends Mqtt3SimpleAuthViewBu
         return self();
     }
 
-    public @NotNull B username(final @Nullable MqttUTF8String username) {
+    public @NotNull B username(final @Nullable MqttUtf8String username) {
         this.username = MqttChecks.stringNotNull(username, "Username");
         return self();
     }
