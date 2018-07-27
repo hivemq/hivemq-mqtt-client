@@ -19,6 +19,7 @@ package org.mqttbee.mqtt.handler.connect;
 
 import dagger.Lazy;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.reactivex.SingleEmitter;
@@ -132,20 +133,23 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
     private void writeConnect(@NotNull final ChannelHandlerContext ctx) {
         addClientData(ctx.channel());
 
-        final boolean noEnhancedAuth = connect.getRawEnhancedAuthProvider() == null;
-        final MqttMessage message =
-                noEnhancedAuth ? connect.createStateful(clientData.getRawClientIdentifier(), null) : connect;
+        final MqttMessage message = (connect.getRawEnhancedAuthProvider() == null) ?
+                connect.createStateful(clientData.getRawClientIdentifier(), null) : connect;
 
-        ctx.writeAndFlush(message).addListener(future -> {
-            if (future.isSuccess()) {
-                if (noEnhancedAuth) {
-                    scheduleTimeout();
-                }
-                ctx.pipeline().addAfter(MqttEncoder.NAME, MqttDecoder.NAME, decoder);
-            } else {
-                MqttDisconnectUtil.close(ctx.channel(), future.cause());
+        ctx.writeAndFlush(message).addListener(this);
+    }
+
+    @Override
+    public void operationComplete(final ChannelFuture future) {
+        final Channel channel = future.channel();
+        if (future.isSuccess()) {
+            if (connect.getRawEnhancedAuthProvider() == null) {
+                scheduleTimeout(channel);
             }
-        });
+            channel.pipeline().addAfter(MqttEncoder.NAME, MqttDecoder.NAME, decoder);
+        } else {
+            MqttDisconnectUtil.close(channel, future.cause());
+        }
     }
 
     /**
@@ -319,7 +323,7 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
     }
 
     @Override
-    protected long getTimeout(@NotNull final ChannelHandlerContext ctx) {
+    protected long getTimeout() {
         return CONNACK_TIMEOUT;
     }
 

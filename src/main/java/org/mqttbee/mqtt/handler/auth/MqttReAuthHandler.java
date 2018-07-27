@@ -93,7 +93,7 @@ public class MqttReAuthHandler extends AbstractMqttAuthHandler {
         enhancedAuthProvider.onReAuth(clientData, authBuilder).whenCompleteAsync((aVoid, throwable) -> {
             if (enhancedAuthProviderAccepted(throwable)) {
                 done = false;
-                ctx.writeAndFlush(authBuilder.build());
+                ctx.writeAndFlush(authBuilder.build()).addListener(this);
             } else {
                 enhancedAuthProvider.onReAuthError(clientData, throwable);
                 reAuthEmitter.onError(throwable);
@@ -156,7 +156,7 @@ public class MqttReAuthHandler extends AbstractMqttAuthHandler {
             enhancedAuthProvider.onServerReAuth(clientData, auth, authBuilder)
                     .whenCompleteAsync((accepted, throwable) -> {
                         if (enhancedAuthProviderAccepted(accepted, throwable)) {
-                            ctx.writeAndFlush(authBuilder.build());
+                            ctx.writeAndFlush(authBuilder.build()).addListener(this);
                         } else {
                             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.NOT_AUTHORIZED,
                                     new Mqtt5MessageException(auth, "Server reauth not accepted"));
