@@ -26,7 +26,7 @@ import org.mqttbee.mqtt.ioc.ClientScope;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
 import org.mqttbee.util.collections.ChunkedArrayQueue;
-import org.mqttbee.util.collections.ScNodeList;
+import org.mqttbee.util.collections.HandleList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,7 +73,7 @@ public class MqttIncomingPublishService {
         if (queue.size() >= receiveMaximum) {
             return false; // flow control error
         }
-        final ScNodeList<MqttIncomingPublishFlow> flows = incomingPublishFlows.findMatching(publish);
+        final HandleList<MqttIncomingPublishFlow> flows = incomingPublishFlows.findMatching(publish);
         if (flows.isEmpty()) {
             LOGGER.warn("No publish flow registered for {}.", publish);
         }
@@ -105,7 +105,7 @@ public class MqttIncomingPublishService {
         while (queueIt.hasNext()) {
             final QueueEntry entry = queueIt.next();
             final MqttStatefulPublish publish = entry.publish;
-            final ScNodeList<MqttIncomingPublishFlow> flows = entry.flows;
+            final HandleList<MqttIncomingPublishFlow> flows = entry.flows;
             emit(publish.getStatelessMessage(), flows);
             if (acknowledge && flows.isEmpty()) {
                 queueIt.remove();
@@ -120,7 +120,7 @@ public class MqttIncomingPublishService {
     }
 
     @CallByThread("Netty EventLoop")
-    private void emit(@NotNull final MqttPublish publish, @NotNull final ScNodeList<MqttIncomingPublishFlow> flows) {
+    private void emit(@NotNull final MqttPublish publish, @NotNull final HandleList<MqttIncomingPublishFlow> flows) {
         final Iterator<MqttIncomingPublishFlow> flowIt = flows.iterator();
         while (flowIt.hasNext()) {
             final MqttIncomingPublishFlow flow = flowIt.next();
@@ -164,10 +164,10 @@ public class MqttIncomingPublishService {
     private static class QueueEntry {
 
         private final MqttStatefulPublish publish;
-        private final ScNodeList<MqttIncomingPublishFlow> flows;
+        private final HandleList<MqttIncomingPublishFlow> flows;
 
         private QueueEntry(
-                @NotNull final MqttStatefulPublish publish, @NotNull final ScNodeList<MqttIncomingPublishFlow> flows) {
+                @NotNull final MqttStatefulPublish publish, @NotNull final HandleList<MqttIncomingPublishFlow> flows) {
 
             this.publish = publish;
             this.flows = flows;

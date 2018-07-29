@@ -27,7 +27,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
-import org.mqttbee.util.collections.ScNodeList;
+import org.mqttbee.util.collections.HandleList;
 
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -77,7 +77,7 @@ abstract class MqttSubscriptionFlowsTest {
                     Objects.requireNonNull(MqttTopicFilterImpl.from(matchingTopicFilters[i])), matchingFlows[i]);
         }
 
-        final ScNodeList<MqttIncomingPublishFlow> matching = new ScNodeList<>();
+        final HandleList<MqttIncomingPublishFlow> matching = new HandleList<>();
         flows.findMatching(Objects.requireNonNull(MqttTopicImpl.from(topic)), matching);
 
         assertFalse(matching.isEmpty());
@@ -99,7 +99,7 @@ abstract class MqttSubscriptionFlowsTest {
                     Objects.requireNonNull(MqttTopicFilterImpl.from(notMatchingTopicFilters[i])), notMatchingFlows[i]);
         }
 
-        final ScNodeList<MqttIncomingPublishFlow> matching = new ScNodeList<>();
+        final HandleList<MqttIncomingPublishFlow> matching = new HandleList<>();
         flows.findMatching(Objects.requireNonNull(MqttTopicImpl.from(topic)), matching);
 
         assertTrue(matching.isEmpty());
@@ -113,9 +113,9 @@ abstract class MqttSubscriptionFlowsTest {
         flows.subscribe(Objects.requireNonNull(MqttTopicFilterImpl.from(matchingTopicFilter)), flow1);
         flows.subscribe(Objects.requireNonNull(MqttTopicFilterImpl.from(matchingTopicFilter)), flow2);
 
-        final ScNodeList<MqttSubscriptionFlow> unsubscribed = new ScNodeList<>();
+        final HandleList<MqttSubscriptionFlow> unsubscribed = new HandleList<>();
         flows.unsubscribe(Objects.requireNonNull(MqttTopicFilterImpl.from(matchingTopicFilter)), unsubscribed::add);
-        final ScNodeList<MqttIncomingPublishFlow> matching = new ScNodeList<>();
+        final HandleList<MqttIncomingPublishFlow> matching = new HandleList<>();
         flows.findMatching(Objects.requireNonNull(MqttTopicImpl.from(topic)), matching);
 
         assertTrue(matching.isEmpty());
@@ -132,9 +132,9 @@ abstract class MqttSubscriptionFlowsTest {
         flows.subscribe(Objects.requireNonNull(MqttTopicFilterImpl.from(matchingTopicFilter)), flow1);
         flows.subscribe(Objects.requireNonNull(MqttTopicFilterImpl.from(notMatchingTopicFilter)), flow2);
 
-        final ScNodeList<MqttSubscriptionFlow> unsubscribed = new ScNodeList<>();
+        final HandleList<MqttSubscriptionFlow> unsubscribed = new HandleList<>();
         flows.unsubscribe(Objects.requireNonNull(MqttTopicFilterImpl.from(notMatchingTopicFilter)), unsubscribed::add);
-        final ScNodeList<MqttIncomingPublishFlow> matching = new ScNodeList<>();
+        final HandleList<MqttIncomingPublishFlow> matching = new HandleList<>();
         flows.findMatching(Objects.requireNonNull(MqttTopicImpl.from(topic)), matching);
 
         assertFalse(matching.isEmpty());
@@ -151,14 +151,14 @@ abstract class MqttSubscriptionFlowsTest {
         flows.subscribe(Objects.requireNonNull(MqttTopicFilterImpl.from(matchingTopicFilter)), flow2);
 
         flows.cancel(flow1);
-        ScNodeList<MqttIncomingPublishFlow> matching = new ScNodeList<>();
+        HandleList<MqttIncomingPublishFlow> matching = new HandleList<>();
         flows.findMatching(Objects.requireNonNull(MqttTopicImpl.from(topic)), matching);
 
         assertFalse(matching.isEmpty());
         assertEquals(ImmutableSet.of(flow2), ImmutableSet.copyOf(matching));
 
         flows.cancel(flow2);
-        matching = new ScNodeList<>();
+        matching = new HandleList<>();
         flows.findMatching(Objects.requireNonNull(MqttTopicImpl.from(topic)), matching);
 
         assertTrue(matching.isEmpty());
@@ -172,7 +172,7 @@ abstract class MqttSubscriptionFlowsTest {
         flows.subscribe(Objects.requireNonNull(MqttTopicFilterImpl.from(matchingTopicFilter)), flow1);
 
         flows.cancel(flow2);
-        final ScNodeList<MqttIncomingPublishFlow> matching = new ScNodeList<>();
+        final HandleList<MqttIncomingPublishFlow> matching = new HandleList<>();
         flows.findMatching(Objects.requireNonNull(MqttTopicImpl.from(topic)), matching);
 
         assertFalse(matching.isEmpty());
@@ -182,7 +182,7 @@ abstract class MqttSubscriptionFlowsTest {
     @NotNull
     private MqttSubscriptionFlow mockSubscriptionFlow(final String name) {
         final MqttSubscriptionFlow flow = mock(MqttSubscriptionFlow.class);
-        when(flow.getTopicFilters()).thenReturn(new ScNodeList<>());
+        when(flow.getTopicFilters()).thenReturn(new HandleList<>());
         when(flow.toString()).thenReturn(name);
         return flow;
     }

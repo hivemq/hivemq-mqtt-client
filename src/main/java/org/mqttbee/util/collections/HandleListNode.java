@@ -17,11 +17,14 @@
 
 package org.mqttbee.util.collections;
 
+import org.mqttbee.annotations.Nullable;
+
 /**
  * @author Silvio Giebl
  */
-interface ScListNode {
+abstract class HandleListNode<E> {
 
-    boolean removeNext();
+    @Nullable
+    HandleList.Handle<E> next;
 
 }

@@ -27,8 +27,8 @@ import org.mqttbee.mqtt.ioc.ClientScope;
 import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
 import org.mqttbee.mqtt.message.subscribe.MqttStatefulSubscribe;
 import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAck;
+import org.mqttbee.util.collections.HandleList;
 import org.mqttbee.util.collections.IntMap;
-import org.mqttbee.util.collections.ScNodeList;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.inject.Inject;
@@ -114,7 +114,7 @@ public class MqttIncomingPublishFlowsWithId extends MqttIncomingPublishFlows {
     @Override
     void findMatching(
             @NotNull final MqttStatefulPublish publish,
-            @NotNull final ScNodeList<MqttIncomingPublishFlow> matchingFlows) {
+            @NotNull final HandleList<MqttIncomingPublishFlow> matchingFlows) {
 
         final ImmutableIntArray subscriptionIdentifiers = publish.getSubscriptionIdentifiers();
         if (!subscriptionIdentifiers.isEmpty()) {

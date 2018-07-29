@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
-import org.mqttbee.util.collections.ScNodeList;
+import org.mqttbee.util.collections.HandleList;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import java.util.function.Consumer;
@@ -41,6 +41,6 @@ public interface MqttSubscriptionFlows {
     void cancel(@NotNull MqttSubscriptionFlow flow);
 
     boolean findMatching(
-            @NotNull MqttTopicImpl topic, @NotNull final ScNodeList<MqttIncomingPublishFlow> matchingFlows);
+            @NotNull MqttTopicImpl topic, @NotNull final HandleList<MqttIncomingPublishFlow> matchingFlows);
 
 }

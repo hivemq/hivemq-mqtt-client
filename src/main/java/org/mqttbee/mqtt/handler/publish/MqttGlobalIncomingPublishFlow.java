@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.MqttGlobalPublishFilter;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
-import org.mqttbee.util.collections.ScNodeList;
+import org.mqttbee.util.collections.HandleList;
 import org.reactivestreams.Subscriber;
 
 /**
@@ -30,7 +30,7 @@ import org.reactivestreams.Subscriber;
 class MqttGlobalIncomingPublishFlow extends MqttIncomingPublishFlow<Subscriber<? super Mqtt5Publish>> {
 
     private final @NotNull MqttGlobalPublishFilter filter;
-    private @Nullable ScNodeList.Handle<MqttGlobalIncomingPublishFlow> handle;
+    private @Nullable HandleList.Handle<MqttGlobalIncomingPublishFlow> handle;
 
     MqttGlobalIncomingPublishFlow(
             final @NotNull Subscriber<? super Mqtt5Publish> subscriber,
@@ -51,11 +51,11 @@ class MqttGlobalIncomingPublishFlow extends MqttIncomingPublishFlow<Subscriber<?
         return filter;
     }
 
-    void setHandle(final @NotNull ScNodeList.Handle<MqttGlobalIncomingPublishFlow> handle) {
+    void setHandle(final @NotNull HandleList.Handle<MqttGlobalIncomingPublishFlow> handle) {
         this.handle = handle;
     }
 
-    @Nullable ScNodeList.Handle<MqttGlobalIncomingPublishFlow> getHandle() {
+    @Nullable HandleList.Handle<MqttGlobalIncomingPublishFlow> getHandle() {
         return handle;
     }
 

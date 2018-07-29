@@ -23,7 +23,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.message.subscribe.MqttStatefulSubscribe;
 import org.mqttbee.rx.SingleFlow;
-import org.mqttbee.util.collections.ScNodeList;
+import org.mqttbee.util.collections.HandleList;
 import org.reactivestreams.Subscriber;
 
 /**
@@ -32,7 +32,7 @@ import org.reactivestreams.Subscriber;
 public class MqttSubscriptionFlow extends MqttIncomingPublishFlow<Subscriber<? super Mqtt5SubscribeResult>>
         implements SingleFlow<Mqtt5SubAck> {
 
-    private final ScNodeList<MqttTopicFilterImpl> topicFilters;
+    private final HandleList<MqttTopicFilterImpl> topicFilters;
     private int subscriptionIdentifier = MqttStatefulSubscribe.DEFAULT_NO_SUBSCRIPTION_IDENTIFIER;
 
     MqttSubscriptionFlow(
@@ -40,7 +40,7 @@ public class MqttSubscriptionFlow extends MqttIncomingPublishFlow<Subscriber<? s
             @NotNull final MqttIncomingPublishService incomingPublishService) {
 
         super(incomingPublishService, subscriber);
-        this.topicFilters = new ScNodeList<>();
+        this.topicFilters = new HandleList<>();
     }
 
     @Override
@@ -61,7 +61,7 @@ public class MqttSubscriptionFlow extends MqttIncomingPublishFlow<Subscriber<? s
     }
 
     @NotNull
-    ScNodeList<MqttTopicFilterImpl> getTopicFilters() {
+    HandleList<MqttTopicFilterImpl> getTopicFilters() {
         return topicFilters;
     }
 
