@@ -17,7 +17,7 @@
 
 package org.mqttbee.api.mqtt.exceptions;
 
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.mqtt.message.MqttMessage;
 
 /**

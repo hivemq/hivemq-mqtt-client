@@ -17,7 +17,7 @@
 package org.mqttbee.api.util;
 
 import dagger.internal.Preconditions;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLException;

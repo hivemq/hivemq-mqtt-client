@@ -17,7 +17,7 @@
 
 package org.mqttbee.mqtt.message.ping.mqtt3;
 
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.ping.Mqtt3PingResp;
 
 import javax.annotation.concurrent.Immutable;

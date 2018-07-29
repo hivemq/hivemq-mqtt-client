@@ -17,8 +17,8 @@
 
 package org.mqttbee.mqtt;
 
-import org.mqttbee.annotations.NotNull;
-import org.mqttbee.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3ServerConnectionData;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ServerConnectionData;

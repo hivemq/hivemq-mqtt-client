@@ -18,7 +18,7 @@
 package org.mqttbee.api.mqtt;
 
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
 
 import java.util.Optional;

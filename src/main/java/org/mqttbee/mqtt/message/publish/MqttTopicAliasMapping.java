@@ -17,7 +17,7 @@
 
 package org.mqttbee.mqtt.message.publish;
 
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.TopicAliasUsage;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 

@@ -17,7 +17,7 @@
 
 package org.mqttbee.mqtt.message.unsubscribe;
 
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.mqtt.message.MqttStatefulMessage.MqttStatefulMessageWithId;
 
 import javax.annotation.concurrent.Immutable;

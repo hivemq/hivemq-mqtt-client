@@ -19,7 +19,7 @@ package org.mqttbee.mqtt.handler.ssl;
 import dagger.internal.Preconditions;
 import io.netty.channel.Channel;
 import io.netty.handler.ssl.*;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttClientSslConfig;
 
 import javax.net.ssl.SSLEngine;

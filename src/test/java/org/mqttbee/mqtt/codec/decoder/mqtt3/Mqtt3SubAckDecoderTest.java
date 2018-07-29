@@ -21,7 +21,7 @@ import com.google.common.primitives.Bytes;
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mqttbee.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAckReasonCode;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;

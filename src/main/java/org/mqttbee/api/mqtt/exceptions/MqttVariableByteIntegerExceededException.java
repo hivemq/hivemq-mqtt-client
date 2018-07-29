@@ -17,7 +17,7 @@
 
 package org.mqttbee.api.mqtt.exceptions;
 
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Exception to indicate that an integer can not be encoded as a variable byte integer.

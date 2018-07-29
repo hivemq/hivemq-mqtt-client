@@ -19,7 +19,7 @@ package org.mqttbee.api.mqtt;
 
 import io.reactivex.Scheduler;
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 import java.util.concurrent.Executor;

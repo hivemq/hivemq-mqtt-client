@@ -17,7 +17,7 @@
 
 package org.mqttbee.api.mqtt.datatypes;
 
-import org.mqttbee.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * MQTT Quality of Service according to the MQTT 5 specification.

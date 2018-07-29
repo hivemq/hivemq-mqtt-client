@@ -18,7 +18,7 @@
 package org.mqttbee.mqtt.codec.decoder;
 
 import io.netty.buffer.ByteBuf;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 

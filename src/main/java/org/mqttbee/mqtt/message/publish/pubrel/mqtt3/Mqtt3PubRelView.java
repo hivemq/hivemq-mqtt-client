@@ -17,7 +17,7 @@
 
 package org.mqttbee.mqtt.message.publish.pubrel.mqtt3;
 
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.pubrel.Mqtt3PubRel;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrel.Mqtt5PubRelReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;

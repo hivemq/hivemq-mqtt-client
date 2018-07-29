@@ -18,7 +18,7 @@
 package org.mqttbee.api.mqtt.mqtt3.message;
 
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * MQTT message according to the MQTT 3 specification.

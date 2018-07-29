@@ -18,7 +18,7 @@
 package org.mqttbee.util;
 
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Exception that is thrown if a object implements an interface annotated with {@link DoNotImplement} is passed to the

@@ -16,7 +16,7 @@
 
 package org.mqttbee.api.mqtt;
 
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Christian Hoff

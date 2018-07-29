@@ -17,8 +17,8 @@
 
 package org.mqttbee.mqtt.message.connect;
 
-import org.mqttbee.annotations.NotNull;
-import org.mqttbee.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt.message.MqttStatefulMessage;
 import org.mqttbee.mqtt.message.auth.MqttEnhancedAuth;

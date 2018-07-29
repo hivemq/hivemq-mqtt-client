@@ -17,8 +17,8 @@
 package org.mqttbee.api.mqtt;
 
 import com.google.common.collect.ImmutableList;
-import org.mqttbee.annotations.NotNull;
-import org.mqttbee.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mqttbee.mqtt.MqttClientSslConfigImpl;
 import org.mqttbee.util.FluentBuilder;
 

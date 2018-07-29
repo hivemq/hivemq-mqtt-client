@@ -18,8 +18,8 @@
 package org.mqttbee.mqtt.datatypes;
 
 import com.google.common.collect.ImmutableList;
-import org.mqttbee.annotations.NotNull;
-import org.mqttbee.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttSharedTopicFilter;
 
 import javax.annotation.concurrent.Immutable;

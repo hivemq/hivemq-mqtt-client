@@ -18,7 +18,7 @@
 package org.mqttbee.mqtt.message.subscribe.mqtt3;
 
 import com.google.common.collect.ImmutableList;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscription;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;

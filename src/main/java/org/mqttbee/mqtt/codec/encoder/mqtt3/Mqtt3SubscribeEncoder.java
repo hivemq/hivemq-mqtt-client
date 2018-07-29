@@ -19,7 +19,7 @@ package org.mqttbee.mqtt.codec.encoder.mqtt3;
 
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.subscribe.MqttStatefulSubscribe;

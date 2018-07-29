@@ -20,7 +20,7 @@ package org.mqttbee.mqtt.persistence;
 import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.mqtt.ioc.ChannelScope;
 import org.mqttbee.mqtt.persistence.memory.IncomingQosFlowMemoryPersistence;
 import org.mqttbee.mqtt.persistence.memory.OutgoingQosFlowMemoryPersistence;

@@ -18,7 +18,7 @@
 package org.mqttbee.mqtt.datatypes;
 
 import io.netty.buffer.ByteBuf;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Utility for decoding, encoding and checking variable byte integers.
