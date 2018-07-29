@@ -28,33 +28,18 @@ import java.util.NoSuchElementException;
  * @author Silvio Giebl
  */
 @NotThreadSafe
-public class ScNodeList<E> implements ScListNode, Iterable<E> {
+public class HandleList<E> extends HandleListNode<E> implements Iterable<E> {
 
-    @Nullable
-    private NextNode<E> head;
     @NotNull
     private final ScLinkedListIterator iterator = new ScLinkedListIterator();
 
+    @NotNull
     public Handle<E> add(@NotNull final E element) {
-        return head = new NextNode<>(element, this, head);
+        return next = new Handle<>(element, this, next);
     }
 
     public boolean isEmpty() {
-        return head == null;
-    }
-
-    @Override
-    public boolean removeNext() {
-        if (head == null) {
-            return true;
-        }
-        final NextNode<E> next = head.next;
-        head = next;
-        if (next == null) {
-            return true;
-        }
-        next.prev = this;
-        return false;
+        return next == null;
     }
 
     @NotNull
@@ -64,16 +49,13 @@ public class ScNodeList<E> implements ScListNode, Iterable<E> {
         return iterator;
     }
 
+    public static class Handle<E> extends HandleListNode<E> {
 
-    private static class NextNode<E> implements ScListNode, Handle<E> {
-
-        private final E element;
+        final E element;
         @NotNull
-        private ScListNode prev;
-        @Nullable
-        private NextNode<E> next;
+        HandleListNode prev;
 
-        NextNode(@NotNull final E element, @NotNull final ScListNode prev, @Nullable final NextNode<E> next) {
+        Handle(@NotNull final E element, @NotNull final HandleListNode prev, @Nullable final Handle<E> next) {
             this.element = element;
             this.prev = prev;
             this.next = next;
@@ -82,48 +64,29 @@ public class ScNodeList<E> implements ScListNode, Iterable<E> {
             }
         }
 
-        @Override
-        public boolean removeNext() {
-            if (next != null) {
-                final NextNode<E> next = this.next.next;
-                this.next = next;
-                if (next != null) {
-                    next.prev = this;
-                }
-            }
-            return false;
-        }
-
-        @Override
+        @NotNull
         public E getElement() {
             return element;
         }
 
-        @Override
-        public boolean remove() {
-            return prev.removeNext();
+        public void remove() {
+            final Handle<E> next = this.next;
+            prev.next = next;
+            if (next != null) {
+                next.prev = prev;
+            }
         }
 
     }
 
-
-    public interface Handle<E> {
-
-        E getElement();
-
-        boolean remove();
-
-    }
-
-
     private class ScLinkedListIterator implements Iterator<E> {
 
-        private NextNode<E> current;
-        private NextNode<E> next;
+        private Handle<E> current;
+        private Handle<E> next;
 
         private void clear() {
             current = null;
-            next = head;
+            next = HandleList.this.next;
         }
 
         @Override
@@ -133,7 +96,8 @@ public class ScNodeList<E> implements ScListNode, Iterable<E> {
 
         @Override
         public E next() {
-            current = next;
+            final Handle<E> current = this.next;
+            this.current = current;
             if (current == null) {
                 throw new NoSuchElementException();
             }

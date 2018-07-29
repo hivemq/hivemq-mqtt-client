@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
-import org.mqttbee.util.collections.ScNodeList;
+import org.mqttbee.util.collections.HandleList;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.inject.Inject;
@@ -36,19 +36,19 @@ import java.util.function.Consumer;
 @NotThreadSafe
 public class MqttSubscriptionFlowList implements MqttSubscriptionFlows {
 
-    private final ScNodeList<MqttSubscriptionFlow> flows;
+    private final HandleList<MqttSubscriptionFlow> flows;
     private final HashSet<MqttTopicFilter> subscribedTopicFilters;
 
     @Inject
     MqttSubscriptionFlowList() {
-        flows = new ScNodeList<>();
+        flows = new HandleList<>();
         subscribedTopicFilters = new HashSet<>();
     }
 
     @Override
     public void subscribe(@NotNull final MqttTopicFilterImpl topicFilter, @Nullable final MqttSubscriptionFlow flow) {
         if (flow != null) {
-            final ScNodeList<MqttTopicFilterImpl> topicFilters = flow.getTopicFilters();
+            final HandleList<MqttTopicFilterImpl> topicFilters = flow.getTopicFilters();
             if (topicFilters.isEmpty()) {
                 flows.add(flow);
             }
@@ -63,7 +63,7 @@ public class MqttSubscriptionFlowList implements MqttSubscriptionFlows {
             @Nullable final Consumer<MqttSubscriptionFlow> unsubscribedCallback) {
 
         for (final MqttSubscriptionFlow flow : flows) {
-            final ScNodeList<MqttTopicFilterImpl> flowTopicFilters = flow.getTopicFilters();
+            final HandleList<MqttTopicFilterImpl> flowTopicFilters = flow.getTopicFilters();
             for (final Iterator<MqttTopicFilterImpl> iterator = flowTopicFilters.iterator(); iterator.hasNext(); ) {
                 final MqttTopicFilterImpl flowTopicFilter = iterator.next();
                 if (topicFilter.equals(flowTopicFilter)) {
@@ -93,7 +93,7 @@ public class MqttSubscriptionFlowList implements MqttSubscriptionFlows {
 
     @Override
     public boolean findMatching(
-            @NotNull final MqttTopicImpl topic, @NotNull final ScNodeList<MqttIncomingPublishFlow> matchingFlows) {
+            @NotNull final MqttTopicImpl topic, @NotNull final HandleList<MqttIncomingPublishFlow> matchingFlows) {
 
         for (final MqttSubscriptionFlow flow : flows) {
             for (final MqttTopicFilterImpl topicFilter : flow.getTopicFilters()) {

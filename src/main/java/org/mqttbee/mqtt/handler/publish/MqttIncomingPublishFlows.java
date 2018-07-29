@@ -33,7 +33,7 @@ import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAck;
 import org.mqttbee.mqtt.message.unsubscribe.MqttStatefulUnsubscribe;
 import org.mqttbee.mqtt.message.unsubscribe.unsuback.MqttUnsubAck;
 import org.mqttbee.mqtt.message.unsubscribe.unsuback.mqtt3.Mqtt3UnsubAckView;
-import org.mqttbee.util.collections.ScNodeList;
+import org.mqttbee.util.collections.HandleList;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.inject.Inject;
@@ -48,13 +48,13 @@ public class MqttIncomingPublishFlows {
     @NotNull
     private final MqttSubscriptionFlows subscriptionFlows;
     @NotNull
-    private final ScNodeList<MqttGlobalIncomingPublishFlow>[] globalFlows;
+    private final HandleList<MqttGlobalIncomingPublishFlow>[] globalFlows;
 
     @Inject
     @SuppressWarnings("unchecked")
     MqttIncomingPublishFlows(@NotNull final MqttSubscriptionFlows subscriptionFlows) {
         this.subscriptionFlows = subscriptionFlows;
-        globalFlows = new ScNodeList[MqttGlobalPublishFilter.values().length];
+        globalFlows = new HandleList[MqttGlobalPublishFilter.values().length];
     }
 
     public void subscribe(
@@ -94,15 +94,15 @@ public class MqttIncomingPublishFlows {
     }
 
     @NotNull
-    ScNodeList<MqttIncomingPublishFlow> findMatching(@NotNull final MqttStatefulPublish publish) {
-        final ScNodeList<MqttIncomingPublishFlow> matchingFlows = new ScNodeList<>();
+    HandleList<MqttIncomingPublishFlow> findMatching(@NotNull final MqttStatefulPublish publish) {
+        final HandleList<MqttIncomingPublishFlow> matchingFlows = new HandleList<>();
         findMatching(publish, matchingFlows);
         return matchingFlows;
     }
 
     void findMatching(
             @NotNull final MqttStatefulPublish publish,
-            @NotNull final ScNodeList<MqttIncomingPublishFlow> matchingFlows) {
+            @NotNull final HandleList<MqttIncomingPublishFlow> matchingFlows) {
 
         final MqttTopicImpl topic = publish.getStatelessMessage().getTopic();
         if (subscriptionFlows.findMatching(topic, matchingFlows) || !matchingFlows.isEmpty()) {
@@ -116,9 +116,9 @@ public class MqttIncomingPublishFlows {
 
     void subscribeGlobal(@NotNull final MqttGlobalIncomingPublishFlow flow) {
         final int filter = flow.getFilter().ordinal();
-        ScNodeList<MqttGlobalIncomingPublishFlow> globalFlow = globalFlows[filter];
+        HandleList<MqttGlobalIncomingPublishFlow> globalFlow = globalFlows[filter];
         if (globalFlow == null) {
-            globalFlow = new ScNodeList<>();
+            globalFlow = new HandleList<>();
             globalFlows[filter] = globalFlow;
         }
         flow.setHandle(globalFlow.add(flow));
@@ -127,15 +127,15 @@ public class MqttIncomingPublishFlows {
     void cancelGlobal(@NotNull final MqttGlobalIncomingPublishFlow flow) {
         flow.getHandle().remove();
         final int filter = flow.getFilter().ordinal();
-        final ScNodeList<MqttGlobalIncomingPublishFlow> globalFlow = globalFlows[filter];
+        final HandleList<MqttGlobalIncomingPublishFlow> globalFlow = globalFlows[filter];
         if (globalFlow.isEmpty()) {
             globalFlows[filter] = null;
         }
     }
 
     private static void add(
-            @NotNull final ScNodeList<MqttIncomingPublishFlow> target,
-            @Nullable final ScNodeList<? extends MqttIncomingPublishFlow> source) {
+            @NotNull final HandleList<MqttIncomingPublishFlow> target,
+            @Nullable final HandleList<? extends MqttIncomingPublishFlow> source) {
 
         if (source != null) {
             for (final MqttIncomingPublishFlow flow : source) {
