@@ -17,7 +17,7 @@
 
 package org.mqttbee.api.mqtt.mqtt5.auth;
 
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientData;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5Auth;

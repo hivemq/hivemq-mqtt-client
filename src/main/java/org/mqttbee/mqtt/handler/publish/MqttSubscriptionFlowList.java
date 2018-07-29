@@ -17,8 +17,8 @@
 
 package org.mqttbee.mqtt.handler.publish;
 
-import org.mqttbee.annotations.NotNull;
-import org.mqttbee.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;

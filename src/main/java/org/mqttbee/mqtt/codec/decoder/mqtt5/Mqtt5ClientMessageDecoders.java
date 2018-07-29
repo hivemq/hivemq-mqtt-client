@@ -17,7 +17,7 @@
 
 package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
-import org.mqttbee.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoders;

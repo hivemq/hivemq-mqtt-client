@@ -19,8 +19,8 @@ package org.mqttbee.mqtt.datatypes;
 
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
-import org.mqttbee.annotations.NotNull;
-import org.mqttbee.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.exceptions.MqttBinaryDataExceededException;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.mqtt.message.MqttProperty;

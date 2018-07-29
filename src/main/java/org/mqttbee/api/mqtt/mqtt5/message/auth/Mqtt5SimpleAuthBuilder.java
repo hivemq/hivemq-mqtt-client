@@ -18,8 +18,8 @@
 package org.mqttbee.api.mqtt.mqtt5.message.auth;
 
 import com.google.common.base.Preconditions;
-import org.mqttbee.annotations.NotNull;
-import org.mqttbee.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.message.auth.MqttSimpleAuth;

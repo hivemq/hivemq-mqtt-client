@@ -18,7 +18,7 @@
 package org.mqttbee.mqtt.codec.encoder.mqtt3;
 
 import io.netty.buffer.ByteBuf;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;

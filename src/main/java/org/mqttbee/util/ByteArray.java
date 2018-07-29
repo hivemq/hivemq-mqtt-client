@@ -17,7 +17,7 @@
 
 package org.mqttbee.util;
 
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Silvio Giebl

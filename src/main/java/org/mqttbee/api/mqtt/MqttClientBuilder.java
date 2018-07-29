@@ -18,7 +18,7 @@
 package org.mqttbee.api.mqtt;
 
 import com.google.common.base.Preconditions;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3ClientBuilder;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientBuilder;

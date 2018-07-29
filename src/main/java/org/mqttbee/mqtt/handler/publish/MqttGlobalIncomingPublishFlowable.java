@@ -19,7 +19,7 @@ package org.mqttbee.mqtt.handler.publish;
 
 import io.reactivex.Flowable;
 import io.reactivex.internal.subscriptions.EmptySubscription;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttGlobalPublishFlowType;
 import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;

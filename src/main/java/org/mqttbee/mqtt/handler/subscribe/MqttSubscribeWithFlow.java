@@ -17,8 +17,8 @@
 
 package org.mqttbee.mqtt.handler.subscribe;
 
-import org.mqttbee.annotations.NotNull;
-import org.mqttbee.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.mqtt.handler.publish.MqttSubscriptionFlow;
 import org.mqttbee.mqtt.message.subscribe.MqttStatefulSubscribe;

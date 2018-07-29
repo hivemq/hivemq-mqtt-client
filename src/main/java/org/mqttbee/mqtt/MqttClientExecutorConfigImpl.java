@@ -19,8 +19,8 @@ package org.mqttbee.mqtt;
 
 import io.reactivex.Scheduler;
 import io.reactivex.schedulers.Schedulers;
-import org.mqttbee.annotations.NotNull;
-import org.mqttbee.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.MqttClientExecutorConfig;
 
 import java.util.Optional;

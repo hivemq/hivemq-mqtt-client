@@ -17,7 +17,7 @@
 
 package org.mqttbee.api.mqtt.exceptions;
 
-import org.mqttbee.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Silvio Giebl

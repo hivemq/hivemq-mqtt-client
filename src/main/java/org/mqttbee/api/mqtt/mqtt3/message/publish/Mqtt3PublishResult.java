@@ -18,8 +18,8 @@
 package org.mqttbee.api.mqtt.mqtt3.message.publish;
 
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.annotations.NotNull;
-import org.mqttbee.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Silvio Giebl

@@ -19,8 +19,8 @@ package org.mqttbee.mqtt.codec.decoder.mqtt3;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
-import org.mqttbee.annotations.NotNull;
-import org.mqttbee.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;

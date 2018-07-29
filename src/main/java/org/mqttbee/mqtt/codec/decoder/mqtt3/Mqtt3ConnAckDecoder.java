@@ -18,8 +18,8 @@
 package org.mqttbee.mqtt.codec.decoder.mqtt3;
 
 import io.netty.buffer.ByteBuf;
-import org.mqttbee.annotations.NotNull;
-import org.mqttbee.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAckReturnCode;
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;

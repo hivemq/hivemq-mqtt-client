@@ -20,7 +20,7 @@ package org.mqttbee.mqtt.handler.publish;
 import io.reactivex.Flowable;
 import io.reactivex.internal.fuseable.ConditionalSubscriber;
 import io.reactivex.plugins.RxJavaPlugins;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.rx.FuseableSubscriber;
 import org.reactivestreams.Subscriber;

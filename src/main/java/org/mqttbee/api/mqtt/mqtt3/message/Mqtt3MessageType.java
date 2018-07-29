@@ -17,7 +17,7 @@
 
 package org.mqttbee.api.mqtt.mqtt3.message;
 
-import org.mqttbee.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * MQTT message type according to the MQTT 3 specification.

@@ -18,7 +18,7 @@
 package org.mqttbee.mqtt.message.publish;
 
 import com.google.common.primitives.ImmutableIntArray;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.mqtt.message.MqttStatefulMessage.MqttStatefulMessageWithId;
 

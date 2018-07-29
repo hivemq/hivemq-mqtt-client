@@ -20,7 +20,7 @@ package org.mqttbee.mqtt.handler.publish;
 import io.reactivex.internal.util.BackpressureHelper;
 import io.reactivex.plugins.RxJavaPlugins;
 import org.mqttbee.annotations.CallByThread;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
 import org.mqttbee.mqtt.handler.publish.MqttPublishFlowableAckLink.LinkCancellable;
 import org.mqttbee.util.collections.ChunkedArrayQueue;

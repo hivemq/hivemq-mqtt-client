@@ -18,8 +18,8 @@
 package org.mqttbee.mqtt.message.publish;
 
 import com.google.common.primitives.ImmutableIntArray;
-import org.mqttbee.annotations.NotNull;
-import org.mqttbee.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;

@@ -17,7 +17,7 @@
 
 package org.mqttbee.mqtt.message.publish;
 
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.mqtt.message.MqttMessage;
 

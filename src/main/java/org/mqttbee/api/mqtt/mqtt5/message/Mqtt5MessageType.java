@@ -17,7 +17,7 @@
 
 package org.mqttbee.api.mqtt.mqtt5.message;
 
-import org.mqttbee.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * MQTT message type according to the MQTT 5 specification.

@@ -19,7 +19,7 @@ package org.mqttbee.mqtt.message.subscribe.suback.mqtt3;
 
 import com.google.common.collect.ImmutableList;
 import io.reactivex.functions.Function;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAck;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAckReturnCode;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;

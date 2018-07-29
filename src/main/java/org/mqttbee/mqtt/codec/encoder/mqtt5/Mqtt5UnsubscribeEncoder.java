@@ -19,7 +19,7 @@ package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;

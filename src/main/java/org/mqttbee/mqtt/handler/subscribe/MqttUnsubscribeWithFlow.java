@@ -17,7 +17,7 @@
 
 package org.mqttbee.mqtt.handler.subscribe;
 
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
 import org.mqttbee.mqtt.message.unsubscribe.MqttStatefulUnsubscribe;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribe;

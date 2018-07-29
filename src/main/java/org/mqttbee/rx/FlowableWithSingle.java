@@ -24,7 +24,7 @@ import io.reactivex.annotations.BackpressureSupport;
 import io.reactivex.annotations.SchedulerSupport;
 import io.reactivex.functions.BiConsumer;
 import io.reactivex.functions.Function;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Subscription;
 
 /**

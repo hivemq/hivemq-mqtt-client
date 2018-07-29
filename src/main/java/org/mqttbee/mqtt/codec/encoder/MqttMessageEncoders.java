@@ -17,7 +17,7 @@
 
 package org.mqttbee.mqtt.codec.encoder;
 
-import org.mqttbee.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Collection of encoders for MQTT messages which can be queried by the MQTT message type code.

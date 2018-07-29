@@ -17,7 +17,7 @@
 
 package org.mqttbee.mqtt.message.connect;
 
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions;
 
 import javax.annotation.concurrent.Immutable;

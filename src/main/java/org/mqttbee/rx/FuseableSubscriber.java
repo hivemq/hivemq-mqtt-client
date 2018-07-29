@@ -20,7 +20,7 @@ package org.mqttbee.rx;
 import io.reactivex.FlowableSubscriber;
 import io.reactivex.internal.fuseable.QueueSubscription;
 import io.reactivex.plugins.RxJavaPlugins;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 

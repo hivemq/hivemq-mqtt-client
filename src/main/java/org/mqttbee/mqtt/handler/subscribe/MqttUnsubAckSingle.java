@@ -20,7 +20,7 @@ package org.mqttbee.mqtt.handler.subscribe;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.internal.disposables.EmptyDisposable;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
 import org.mqttbee.mqtt.MqttClientConnectionData;

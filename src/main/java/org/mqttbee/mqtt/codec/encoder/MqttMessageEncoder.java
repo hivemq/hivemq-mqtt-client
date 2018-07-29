@@ -19,7 +19,7 @@ package org.mqttbee.mqtt.codec.encoder;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.mqtt.message.MqttMessage;
 
 /**

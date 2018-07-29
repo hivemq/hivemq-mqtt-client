@@ -18,8 +18,8 @@
 package org.mqttbee.mqtt;
 
 import io.netty.channel.Channel;
-import org.mqttbee.annotations.NotNull;
-import org.mqttbee.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3ClientConnectionData;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientConnectionData;

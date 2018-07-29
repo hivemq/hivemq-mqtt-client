@@ -18,8 +18,8 @@
 package org.mqttbee.api.mqtt.mqtt3.message.connect;
 
 import com.google.common.base.Preconditions;
-import org.mqttbee.annotations.NotNull;
-import org.mqttbee.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
 import org.mqttbee.api.mqtt.mqtt3.message.auth.Mqtt3SimpleAuthBuilder;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;

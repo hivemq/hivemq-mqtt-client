@@ -18,8 +18,8 @@
 package org.mqttbee.mqtt.message.publish.mqtt3;
 
 import io.reactivex.functions.Function;
-import org.mqttbee.annotations.NotNull;
-import org.mqttbee.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;

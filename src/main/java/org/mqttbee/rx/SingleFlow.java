@@ -19,7 +19,7 @@ package org.mqttbee.rx;
 
 import io.reactivex.SingleObserver;
 import io.reactivex.disposables.Disposable;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
