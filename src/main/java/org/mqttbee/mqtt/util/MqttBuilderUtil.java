@@ -36,11 +36,7 @@ public class MqttBuilderUtil {
     @NotNull
     public static MqttUtf8StringImpl string(@NotNull final String string) {
         Preconditions.checkNotNull(string, "String must not be null.");
-        final MqttUtf8StringImpl from = MqttUtf8StringImpl.from(string);
-        if (from == null) {
-            throw new IllegalArgumentException("The string: [" + string + "] is not a valid UTF-8 encoded String.");
-        }
-        return from;
+        return MqttUtf8StringImpl.from(string);
     }
 
     @NotNull
