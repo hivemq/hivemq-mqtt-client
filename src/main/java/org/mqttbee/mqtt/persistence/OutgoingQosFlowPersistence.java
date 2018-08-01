@@ -17,7 +17,7 @@
 
 package org.mqttbee.mqtt.persistence;
 
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.mqtt.message.publish.MqttQosMessage;
 import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
 import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRel;

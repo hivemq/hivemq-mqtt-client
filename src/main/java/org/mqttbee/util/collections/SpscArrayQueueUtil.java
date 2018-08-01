@@ -19,7 +19,7 @@ package org.mqttbee.util.collections;
 
 import org.jctools.queues.SpscArrayQueue;
 import org.jctools.queues.SpscChunkedArrayQueue;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Queue;
 

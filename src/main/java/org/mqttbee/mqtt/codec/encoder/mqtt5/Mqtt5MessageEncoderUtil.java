@@ -18,8 +18,8 @@
 package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
 import io.netty.buffer.ByteBuf;
-import org.mqttbee.annotations.NotNull;
-import org.mqttbee.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.mqtt.datatypes.MqttBinaryData;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;

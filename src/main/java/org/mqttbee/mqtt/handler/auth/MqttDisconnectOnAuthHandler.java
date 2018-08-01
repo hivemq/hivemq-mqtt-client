@@ -20,7 +20,7 @@ package org.mqttbee.mqtt.handler.auth;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;

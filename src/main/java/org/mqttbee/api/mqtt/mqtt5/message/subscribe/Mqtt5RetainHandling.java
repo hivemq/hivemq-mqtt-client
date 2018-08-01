@@ -17,7 +17,7 @@
 
 package org.mqttbee.api.mqtt.mqtt5.message.subscribe;
 
-import org.mqttbee.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Retain Handling according to the MQTT 5 specification.

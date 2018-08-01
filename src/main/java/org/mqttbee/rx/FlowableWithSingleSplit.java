@@ -27,8 +27,8 @@ import io.reactivex.exceptions.Exceptions;
 import io.reactivex.functions.BiConsumer;
 import io.reactivex.functions.Function;
 import io.reactivex.internal.fuseable.ConditionalSubscriber;
-import org.mqttbee.annotations.NotNull;
-import org.mqttbee.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 

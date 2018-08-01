@@ -19,7 +19,7 @@ package org.mqttbee.mqtt.handler.websocket;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.websocketx.WebSocketClientProtocolHandler;
 import io.netty.handler.codec.http.websocketx.WebSocketVersion;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttWebSocketConfig;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;

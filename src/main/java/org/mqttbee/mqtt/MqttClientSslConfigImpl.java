@@ -17,7 +17,7 @@
 package org.mqttbee.mqtt;
 
 import com.google.common.collect.ImmutableList;
-import org.mqttbee.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.MqttClientSslConfig;
 
 import javax.net.ssl.KeyManagerFactory;

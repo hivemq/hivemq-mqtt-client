@@ -17,8 +17,8 @@
 
 package org.mqttbee.mqtt.message.connect;
 
-import org.mqttbee.annotations.NotNull;
-import org.mqttbee.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5SimpleAuth;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;

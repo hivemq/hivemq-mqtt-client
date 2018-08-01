@@ -21,7 +21,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.primitives.ImmutableIntArray;
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.Test;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;

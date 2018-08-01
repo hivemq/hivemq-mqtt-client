@@ -17,7 +17,7 @@
 
 package org.mqttbee.mqtt.persistence.memory;
 
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.ioc.ChannelScope;

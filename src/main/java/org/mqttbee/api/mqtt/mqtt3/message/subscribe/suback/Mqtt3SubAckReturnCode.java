@@ -17,7 +17,7 @@
 
 package org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback;
 
-import org.mqttbee.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * SUBACK Return Code according to the MQTT 3.1.1 specification.

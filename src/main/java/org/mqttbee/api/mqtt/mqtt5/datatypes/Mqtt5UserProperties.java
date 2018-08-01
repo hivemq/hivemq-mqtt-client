@@ -20,7 +20,7 @@ package org.mqttbee.api.mqtt.mqtt5.datatypes;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.util.MustNotBeImplementedUtil;

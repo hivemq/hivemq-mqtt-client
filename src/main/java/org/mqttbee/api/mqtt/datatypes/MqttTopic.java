@@ -19,7 +19,7 @@ package org.mqttbee.api.mqtt.datatypes;
 
 import com.google.common.collect.ImmutableList;
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 
 /**

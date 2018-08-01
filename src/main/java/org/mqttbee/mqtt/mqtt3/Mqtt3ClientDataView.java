@@ -17,7 +17,7 @@
 
 package org.mqttbee.mqtt.mqtt3;
 
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttClientExecutorConfig;
 import org.mqttbee.api.mqtt.MqttClientSslConfig;
 import org.mqttbee.api.mqtt.MqttWebSocketConfig;

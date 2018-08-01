@@ -24,7 +24,7 @@ import org.junit.jupiter.params.converter.ArgumentConversionException;
 import org.junit.jupiter.params.converter.ConvertWith;
 import org.junit.jupiter.params.converter.SimpleArgumentConverter;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.util.collections.ScNodeList;

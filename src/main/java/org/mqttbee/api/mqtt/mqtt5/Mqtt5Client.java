@@ -20,7 +20,7 @@ package org.mqttbee.api.mqtt.mqtt5;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttClient;
 import org.mqttbee.api.mqtt.MqttGlobalPublishFlowType;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;

@@ -17,7 +17,7 @@
 
 package org.mqttbee.mqtt.handler.disconnect;
 
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
 

@@ -17,7 +17,7 @@
 
 package org.mqttbee.api.mqtt.mqtt3.message.connect.connack;
 
-import org.mqttbee.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * CONNACK Return Code according to the MQTT 3.1.1 specification.

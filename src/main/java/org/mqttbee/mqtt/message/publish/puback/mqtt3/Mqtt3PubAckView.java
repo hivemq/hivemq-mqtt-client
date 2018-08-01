@@ -17,7 +17,7 @@
 
 package org.mqttbee.mqtt.message.publish.puback.mqtt3;
 
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.puback.Mqtt3PubAck;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.puback.Mqtt5PubAckReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;

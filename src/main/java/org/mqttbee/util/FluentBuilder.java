@@ -17,8 +17,8 @@
 
 package org.mqttbee.util;
 
-import org.mqttbee.annotations.NotNull;
-import org.mqttbee.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
 

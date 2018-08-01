@@ -17,7 +17,7 @@
 
 package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions;
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;

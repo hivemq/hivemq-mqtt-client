@@ -19,7 +19,7 @@ package org.mqttbee.mqtt.handler.publish;
 
 import io.reactivex.Flowable;
 import io.reactivex.internal.util.BackpressureHelper;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.mqtt.ioc.ChannelScope;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;

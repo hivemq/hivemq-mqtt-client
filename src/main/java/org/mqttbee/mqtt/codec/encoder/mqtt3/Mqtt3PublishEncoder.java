@@ -20,7 +20,7 @@ package org.mqttbee.mqtt.codec.encoder.mqtt3;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;

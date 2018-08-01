@@ -33,6 +33,7 @@ project.ext {
     junitVintageVersion = '4.12.3'
     junitJupiterVersion = '5.0.3'
     junitPlatformVersion = '1.0.3'
+    jetbrainsAnnotationsVersion = '16.0.2'
 }
 
 dependencies {
@@ -43,6 +44,7 @@ dependencies {
     compile group: 'com.google.guava', name: 'guava', version: guavaVersion
     compile group: 'ch.qos.logback', name: 'logback-classic', version: logbackVersion
     compile group: 'org.jctools', name: 'jctools-core', version: jcToolsVersion
+    compile group: 'org.jetbrains', name: 'annotations', version: jetbrainsAnnotationsVersion
 
     implementation group: 'com.google.dagger', name: 'dagger', version: daggerVersion
     annotationProcessor group: 'com.google.dagger', name: 'dagger-compiler', version: daggerVersion

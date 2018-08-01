@@ -20,7 +20,7 @@ package org.mqttbee.mqtt.handler.publish;
 import io.reactivex.Emitter;
 import io.reactivex.internal.util.BackpressureHelper;
 import org.mqttbee.annotations.CallByThread;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;

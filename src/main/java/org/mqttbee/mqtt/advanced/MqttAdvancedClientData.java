@@ -17,7 +17,7 @@
 
 package org.mqttbee.mqtt.advanced;
 
-import org.mqttbee.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.advanced.Mqtt5AdvancedClientData;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5IncomingQos1ControlProvider;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5OutgoingQos1ControlProvider;

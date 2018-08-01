@@ -17,7 +17,7 @@
 package org.mqttbee.mqtt.mqtt3.exceptions;
 
 import io.reactivex.functions.Function;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.exceptions.Mqtt3MessageException;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 

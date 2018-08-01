@@ -21,7 +21,7 @@ import com.google.common.collect.ImmutableList;
 import io.netty.handler.codec.EncoderException;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.exceptions.MqttBinaryDataExceededException;

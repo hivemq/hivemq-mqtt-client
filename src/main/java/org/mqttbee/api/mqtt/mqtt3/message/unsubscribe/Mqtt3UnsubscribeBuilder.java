@@ -19,8 +19,8 @@ package org.mqttbee.api.mqtt.mqtt3.message.unsubscribe;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import org.mqttbee.annotations.NotNull;
-import org.mqttbee.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilterBuilder;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;

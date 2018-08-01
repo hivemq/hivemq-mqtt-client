@@ -18,7 +18,7 @@
 package org.mqttbee.mqtt.message.connect.connack.mqtt3;
 
 import io.reactivex.functions.Function;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAckReturnCode;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;

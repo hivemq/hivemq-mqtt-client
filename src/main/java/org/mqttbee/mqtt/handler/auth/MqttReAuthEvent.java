@@ -18,7 +18,7 @@
 package org.mqttbee.mqtt.handler.auth;
 
 import io.reactivex.CompletableEmitter;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Event that is fired when the user triggers reauth.

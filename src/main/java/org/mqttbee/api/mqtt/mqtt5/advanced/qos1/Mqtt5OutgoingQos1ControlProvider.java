@@ -17,7 +17,7 @@
 
 package org.mqttbee.api.mqtt.mqtt5.advanced.qos1;
 
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientData;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.puback.Mqtt5PubAck;

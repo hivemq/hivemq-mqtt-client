@@ -21,7 +21,7 @@ import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 import io.reactivex.functions.Function;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttGlobalPublishFlowType;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3Client;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3ClientData;

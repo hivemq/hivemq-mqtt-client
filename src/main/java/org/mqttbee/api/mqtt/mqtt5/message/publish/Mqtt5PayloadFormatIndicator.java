@@ -17,7 +17,7 @@
 
 package org.mqttbee.api.mqtt.mqtt5.message.publish;
 
-import org.mqttbee.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Payload Format Indicator according to the MQTT 5 specification.

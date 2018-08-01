@@ -18,7 +18,7 @@
 package org.mqttbee.api.mqtt.mqtt5.message.publish;
 
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
 

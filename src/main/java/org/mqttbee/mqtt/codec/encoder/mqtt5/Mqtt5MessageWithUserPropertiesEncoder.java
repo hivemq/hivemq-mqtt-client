@@ -19,7 +19,7 @@ package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.exceptions.MqttMaximumPacketSizeExceededException;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5ReasonCode;
 import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoder;

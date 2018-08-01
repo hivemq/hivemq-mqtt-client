@@ -16,7 +16,7 @@
 
 package org.mqttbee.mqtt;
 
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttWebSocketConfig;
 
 /**

@@ -17,8 +17,8 @@
 
 package org.mqttbee.util.collections;
 
-import org.mqttbee.annotations.NotNull;
-import org.mqttbee.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicLong;

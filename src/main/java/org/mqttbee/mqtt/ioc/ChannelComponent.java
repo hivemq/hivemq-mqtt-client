@@ -21,7 +21,7 @@ import dagger.BindsInstance;
 import dagger.Subcomponent;
 import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.codec.MqttCodecModule;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoder;

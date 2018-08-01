@@ -19,7 +19,7 @@ package org.mqttbee.mqtt.netty;
 
 import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Silvio Giebl

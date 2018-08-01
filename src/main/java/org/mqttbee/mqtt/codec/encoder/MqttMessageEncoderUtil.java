@@ -18,8 +18,8 @@
 package org.mqttbee.mqtt.codec.encoder;
 
 import io.netty.buffer.ByteBuf;
-import org.mqttbee.annotations.NotNull;
-import org.mqttbee.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mqttbee.mqtt.datatypes.MqttBinaryData;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;

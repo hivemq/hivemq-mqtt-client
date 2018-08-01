@@ -17,7 +17,7 @@
 
 package org.mqttbee.api.mqtt.mqtt3.exceptions;
 
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3Message;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;

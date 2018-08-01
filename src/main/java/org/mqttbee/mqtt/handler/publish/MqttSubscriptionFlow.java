@@ -17,7 +17,7 @@
 
 package org.mqttbee.mqtt.handler.publish;
 
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeResult;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
