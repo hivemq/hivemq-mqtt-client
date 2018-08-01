@@ -114,11 +114,9 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
 
         @Override
         public void cancelLink() {
-            if (state.getAndSet(STATE_DONE) == STATE_NONE) {
-                if (sourceMode != SYNC) {
-                    subscription.cancel();
-                    subscriber.onComplete();
-                }
+            if (state.getAndSet(STATE_DONE) == STATE_NONE && sourceMode != SYNC) {
+                subscription.cancel();
+                subscriber.onComplete();
             }
         }
 

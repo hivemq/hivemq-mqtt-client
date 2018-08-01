@@ -213,14 +213,12 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
             in.readBytes(payload);
             payload.position(0);
 
-            if (payloadFormatIndicator == Mqtt5PayloadFormatIndicator.UTF_8) {
-                if (ChannelAttributes.validatePayloadFormat(channel)) {
-                    if (!Utf8.isWellFormed(ByteBufferUtil.getBytes(payload))) {
-                        throw new MqttDecoderException(
-                                Mqtt5DisconnectReasonCode.PAYLOAD_FORMAT_INVALID,
-                                "payload is not valid UTF-8");
-                    }
-                }
+            if (payloadFormatIndicator == Mqtt5PayloadFormatIndicator.UTF_8 &&
+                    ChannelAttributes.validatePayloadFormat(channel) &&
+                    !Utf8.isWellFormed(ByteBufferUtil.getBytes(payload))) {
+                throw new MqttDecoderException(
+                        Mqtt5DisconnectReasonCode.PAYLOAD_FORMAT_INVALID,
+                        "payload is not valid UTF-8");
             }
         }
 

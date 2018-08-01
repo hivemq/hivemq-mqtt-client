@@ -61,10 +61,8 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
             @NotNull final MqttTopicFilterImpl topicFilter,
             @Nullable final Consumer<MqttSubscriptionFlow> unsubscribedCallback) {
 
-        if (rootNode != null) {
-            if (rootNode.unsubscribe(MqttTopicLevel.root(topicFilter), unsubscribedCallback)) {
-                rootNode = null;
-            }
+        if (rootNode != null && rootNode.unsubscribe(MqttTopicLevel.root(topicFilter), unsubscribedCallback)) {
+            rootNode = null;
         }
     }
 
@@ -180,16 +178,14 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
             }
             if (next != null) {
                 final TopicTreeNode node = next.get(level);
-                if (node != null) {
-                    if (node.unsubscribe(level.next(), unsubscribedCallback)) {
-                        if (node.parentLevel == MqttTopicLevel.SINGLE_LEVEL_WILDCARD) {
-                            hasSingleLevelSubscription = false;
-                        }
-                        next.remove(node.parentLevel);
-                        if (next.isEmpty()) {
-                            next = null;
-                            return (entries == null) && (multiLevelEntries == null);
-                        }
+                if (node != null && node.unsubscribe(level.next(), unsubscribedCallback)) {
+                    if (node.parentLevel == MqttTopicLevel.SINGLE_LEVEL_WILDCARD) {
+                        hasSingleLevelSubscription = false;
+                    }
+                    next.remove(node.parentLevel);
+                    if (next.isEmpty()) {
+                        next = null;
+                        return (entries == null) && (multiLevelEntries == null);
                     }
                 }
             }
