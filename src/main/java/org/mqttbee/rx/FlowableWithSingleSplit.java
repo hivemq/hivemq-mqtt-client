@@ -196,11 +196,9 @@ public class FlowableWithSingleSplit<T, S, F> extends FlowableWithSingle<S, F> {
                     return tryOnNextActual(f);
                 }
                 final S single = singleCaster.apply(t);
-                if (single != null) {
-                    if (singleConsumer != null) {
-                        singleConsumer.accept(single, subscription);
-                        singleConsumer = null;
-                    }
+                if (single != null && singleConsumer != null) {
+                    singleConsumer.accept(single, subscription);
+                    singleConsumer = null;
                 }
                 return false;
             } catch (final Throwable e) {
@@ -226,11 +224,9 @@ public class FlowableWithSingleSplit<T, S, F> extends FlowableWithSingle<S, F> {
                     return f;
                 }
                 final S single = singleCaster.apply(t);
-                if (single != null) {
-                    if (singleConsumer != null) {
-                        singleConsumer.accept(single, subscription);
-                        singleConsumer = null;
-                    }
+                if (single != null && singleConsumer != null) {
+                    singleConsumer.accept(single, subscription);
+                    singleConsumer = null;
                 }
 
                 if (sourceMode == ASYNC) {
