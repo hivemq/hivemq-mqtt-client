@@ -78,7 +78,7 @@ public class MqttUtf8StringImpl implements MqttUtf8String {
      */
     @Nullable
     public static MqttUtf8StringImpl from(@NotNull final byte[] binary) {
-        return (binary.length > MqttBinaryData.MAX_LENGTH || containsMustNotCharacters(binary)) ? null :
+        return (!MqttBinaryData.isInRange(binary) || containsMustNotCharacters(binary)) ? null :
                 new MqttUtf8StringImpl(binary);
     }
 
@@ -97,27 +97,10 @@ public class MqttUtf8StringImpl implements MqttUtf8String {
      */
     @NotNull
     public static MqttUtf8StringImpl from(@NotNull final String string) {
-        // Perform a quick check on string length, since calculating the exact number of bytes used in UTF-8 encoding
-        // might be an expensive operation.
-        // Note: Java strings are represented in UTF-16 (fixed-width 16-bit chars for code points U+0000 to U+FFFF).
-        //       Supplementary characters (code points greater than U+FFFF) are represented as a pair of char values
-        //       from the high-surrogate and low-surrogate ranges, hence their representation needs 4 bytes.
-        //       The UTF-8 representation uses a variable number of 1 to 3 bytes to represent code points from U+0000 to
-        //       U+FFFF. Representation of supplementary characters in UTF-8 also needs 4 bytes.
-        //       String.length() returns the number of 16-bit char values.
-        //       Hence, string.length() * 3 is an upper bound of the number of bytes needed to represent a Java string
-        //       (UTF-16) in UTF-8.
-        if (string.length() * 3 > MqttBinaryData.MAX_LENGTH) {
-            // have a closer look at the exact length of encoded string
-            int utf8Length = Utf8.encodedLength(string);
-            Preconditions.checkArgument(utf8Length <= MqttBinaryData.MAX_LENGTH,
-                    "String encoded in UTF-8 must not be longer than %s bytes. Actual string length encoded in UTF-8 is %s.",
-                    MqttBinaryData.MAX_LENGTH, utf8Length);
-        }
+        checkUtf8EncodedLength(string);
         Preconditions.checkArgument(
                 !MqttUtf8StringImpl.containsMustNotCharacters(string),
                 "String must not contain the null character U+0000 and UTF-16 surrogates, as these are forbidden according to the MQTT 5 Specification.");
-
 
         return new MqttUtf8StringImpl(string);
     }
@@ -208,6 +191,32 @@ public class MqttUtf8StringImpl implements MqttUtf8String {
         return highSurrogate;
     }
 
+    /**
+     * Checks if the given UTF-16 Java string encoded in UTF-8 fits into {@link MqttBinaryData}.
+     *
+     * @param string the UTF-16 encoded Java string.
+     * @throws IllegalArgumentException if the given string encoded in UTF-8 is longer than {@link
+     *                                  MqttBinaryData#MAX_LENGTH}.
+     */
+    static void checkUtf8EncodedLength(@NotNull final String string) {
+        // Perform a quick check on string length, since calculating the exact number of bytes used in UTF-8 encoding
+        // might be an expensive operation.
+        // Note: Java strings are represented in UTF-16 (fixed-width 16-bit chars for code points U+0000 to U+FFFF).
+        //       Supplementary characters (code points greater than U+FFFF) are represented as a pair of char values
+        //       from the high-surrogate and low-surrogate ranges, hence their representation needs 4 bytes.
+        //       The UTF-8 representation uses a variable number of 1 to 3 bytes to represent code points from U+0000 to
+        //       U+FFFF. Representation of supplementary characters in UTF-8 also needs 4 bytes.
+        //       String.length() returns the number of 16-bit char values.
+        //       Hence, string.length() * 3 is an upper bound of the number of bytes needed to represent a Java string
+        //       (UTF-16) in UTF-8.
+        if (string.length() * 3 > MqttBinaryData.MAX_LENGTH) {
+            // have a closer look at the exact length of encoded string
+            int utf8Length = Utf8.encodedLength(string);
+            Preconditions.checkArgument(utf8Length <= MqttBinaryData.MAX_LENGTH,
+                    "String encoded in UTF-8 must not be longer than %s bytes. Actual string length encoded in UTF-8 is %s.",
+                    MqttBinaryData.MAX_LENGTH, utf8Length);
+        }
+    }
 
     private byte[] binary;
     private String string;
