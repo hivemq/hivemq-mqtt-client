@@ -1,5 +1,25 @@
 language: java
 
-jdk:
-  - oraclejdk8
-  - oraclejdk9
+install: true
+
+before_install:
+  - chmod +x gradlew
+
+stages:
+  - name: build
+  - name: snapshot
+    if: branch = develop
+  - name: release
+    if: branch = master
+
+jobs:
+  include:
+    - stage: build
+      jdk: oraclejdk8
+      script: ./gradlew build
+    - jdk: oraclejdk9
+      script: ./gradlew build
+    - stage: snapshot
+      script: ./gradlew artifactoryPublish -x test -Dsnapshot=true
+    - stage: release
+      script: ./gradlew bintrayUpload -x test
