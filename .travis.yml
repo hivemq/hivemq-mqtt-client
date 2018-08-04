@@ -7,9 +7,9 @@ jdk:
 stages:
   - test
   - name: snapshot
-    if: branch = develop
+    if: branch = develop && type != pull_request
   - name: release
-    if: branch = master
+    if: branch = master && type != pull_request
 
 jobs:
   include:
