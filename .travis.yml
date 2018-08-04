@@ -5,8 +5,12 @@ install: true
 before_install:
   - chmod +x gradlew
 
+jdk:
+  - oraclejdk8
+  - oraclejdk9
+
 stages:
-  - name: build
+  - test
   - name: snapshot
     if: branch = develop
   - name: release
@@ -14,11 +18,6 @@ stages:
 
 jobs:
   include:
-    - stage: build
-      jdk: oraclejdk8
-      script: ./gradlew build
-    - jdk: oraclejdk9
-      script: ./gradlew build
     - stage: snapshot
       script: ./gradlew artifactoryPublish -x test -Dsnapshot=true
     - stage: release
