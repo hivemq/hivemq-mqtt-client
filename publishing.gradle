@@ -29,8 +29,8 @@ snapshots) you have to define the environment variables in the following way (ut
 escape the values):
 
 name:  bintray_credentials
-value: dummy; if ( test "$TRAVIS_BRANCH" = "master" || test "$TRAVIS_BRANCH" = "develop" ); then
-       export bintray_username=...; export bintray_apiKey=...; fi
+value: dummy; if ( ( test "$TRAVIS_BRANCH" = "master" || test "$TRAVIS_BRANCH" = "develop" ) &&
+       "$TRAVIS_EVENT_TYPE" != "pull_request" ); then export bintray_username=...; export bintray_apiKey=...; fi
 */
 ['bintray_username', 'bintray_apiKey'].each { propName ->
     if (!project.hasProperty(propName)) {
