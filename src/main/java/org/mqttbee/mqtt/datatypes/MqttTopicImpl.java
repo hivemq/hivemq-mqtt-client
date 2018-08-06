@@ -93,11 +93,13 @@ public class MqttTopicImpl extends MqttUtf8StringImpl implements MqttTopic {
      *
      * @param string the UTF-16 encoded Java string.
      * @return whether the string contains characters a Topic Name must not contain.
-     * @see MqttUtf8StringImpl#containsMustNotCharacters(String)
+     * @throws IllegalArgumentException if the given string contains forbidden characters.
+     * @see MqttUtf8StringImpl#checkForbiddenCharacters(String)
      * @see #containsWildcardCharacters(String)
      */
     static boolean containsMustNotCharacters(@NotNull final String string) {
-        return MqttUtf8StringImpl.containsMustNotCharacters(string) || containsWildcardCharacters(string);
+        checkForbiddenCharacters(string);
+        return containsWildcardCharacters(string);
     }
 
     /**

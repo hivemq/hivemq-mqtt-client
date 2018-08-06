@@ -99,9 +99,7 @@ public class MqttUtf8StringImpl implements MqttUtf8String {
     @NotNull
     public static MqttUtf8StringImpl from(@NotNull final String string) {
         checkUtf8EncodedLength(string);
-        Preconditions.checkArgument(
-                !MqttUtf8StringImpl.containsMustNotCharacters(string),
-                "String must not contain the null character U+0000 and UTF-16 surrogates, as these are forbidden according to the MQTT 5 Specification.");
+        checkForbiddenCharacters(string);
 
         return new MqttUtf8StringImpl(string);
     }
@@ -169,27 +167,34 @@ public class MqttUtf8StringImpl implements MqttUtf8String {
     }
 
     /**
-     * Checks whether the given UTF-16 encoded Java string contains characters a UTF-8 encoded String must not according
-     * to the MQTT 5 specification.
-     * <p>
-     * These characters are the null character U+0000 and UTF-16 surrogates.
+     * Checks whether the given UTF-16 encoded Java string contains the null character U+0000 or unmatched UTF-16
+     * surrogates (U+D800 to U+DFFF), as these are forbidden in the UTF-8 encoded string according to the MQTT 5
+     * specification.
      *
-     * @param string the UTF-16 encoded Java string
-     * @return whether the string contains characters a UTF-8 encoded String must not.
+     * @param string the UTF-16 encoded Java string.
+     * @throws IllegalArgumentException if the given string contains forbidden characters.
      */
-    static boolean containsMustNotCharacters(@NotNull final String string) {
-        boolean highSurrogate = false;
-        for (int i = 0; i < string.length(); i++) {
+    static void checkForbiddenCharacters(@NotNull final String string) {
+        boolean previousCharIsHighSurrogate = false;
+        int unmatchedSurrogateIndex = -1;
+        for (int i = 0; (unmatchedSurrogateIndex < 0) && (i < string.length()); i++) {
             final char c = string.charAt(i);
             if (c == 0) {
-                return true;
+                throw new IllegalArgumentException("Found null character at index: " + i +
+                        ". String must not contain the null character U+0000, as it is forbidden according to the MQTT 5 Specification.");
             }
-            if (highSurrogate == !Character.isLowSurrogate(c)) {
-                return true;
+            if (previousCharIsHighSurrogate != Character.isLowSurrogate(c)) {
+                unmatchedSurrogateIndex = i;
             }
-            highSurrogate = Character.isHighSurrogate(c);
+            previousCharIsHighSurrogate = Character.isHighSurrogate(c);
         }
-        return highSurrogate;
+        if ((unmatchedSurrogateIndex < 0) && previousCharIsHighSurrogate) {
+            unmatchedSurrogateIndex = string.length() - 1;
+        }
+        if (unmatchedSurrogateIndex >= 0) {
+            throw new IllegalArgumentException(
+                    "Found unmatched UTF-16 surrogate at index: " + unmatchedSurrogateIndex + ".");
+        }
     }
 
     /**
