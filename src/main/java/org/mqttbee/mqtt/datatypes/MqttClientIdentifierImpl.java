@@ -59,11 +59,14 @@ public class MqttClientIdentifierImpl extends MqttUtf8StringImpl implements Mqtt
      * Validates and creates a Client Identifier from the given string.
      *
      * @param string the Client Identifier as a UTF-16 encoded Java string.
-     * @return the created Client Identifier or null if the given string is not a valid Client Identifier.
+     * @return the created Client Identifier.
+     * @throws IllegalArgumentException if the given string contains forbidden characters.
      */
     @Nullable
     public static MqttClientIdentifierImpl from(@NotNull final String string) {
-        return containsMustNotCharacters(string) ? null : new MqttClientIdentifierImpl(string);
+        checkForbiddenCharacters(string);
+
+        return new MqttClientIdentifierImpl(string);
     }
 
     /**
