@@ -45,6 +45,8 @@ public class MqttClientIdentifierImpl extends MqttUtf8StringImpl implements Mqtt
 
     /**
      * Validates and decodes a Client Identifier from the given byte array.
+     * <p>
+     * Note: the given byte array must not be longer than {@link MqttBinaryData#MAX_LENGTH}.
      *
      * @param binary the byte array with the UTF-8 encoded data to decode from.
      * @return the created Client Identifier or null if the byte array does not contain a well-formed encoded Client
@@ -52,7 +54,8 @@ public class MqttClientIdentifierImpl extends MqttUtf8StringImpl implements Mqtt
      */
     @Nullable
     public static MqttClientIdentifierImpl from(@NotNull final byte[] binary) {
-        return containsMustNotCharacters(binary) ? null : new MqttClientIdentifierImpl(binary);
+        return (!MqttBinaryData.isInRange(binary) || containsMustNotCharacters(binary)) ? null :
+                new MqttClientIdentifierImpl(binary);
     }
 
     /**
