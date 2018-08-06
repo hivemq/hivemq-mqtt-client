@@ -41,7 +41,8 @@ public class MqttTopicImpl extends MqttUtf8StringImpl implements MqttTopic {
      */
     @Nullable
     public static MqttTopicImpl from(@NotNull final byte[] binary) {
-        return (binary.length == 0) || containsMustNotCharacters(binary) ? null : new MqttTopicImpl(binary);
+        return (binary.length == 0) || !MqttBinaryData.isInRange(binary) || containsMustNotCharacters(binary) ? null :
+                new MqttTopicImpl(binary);
     }
 
     /**

@@ -51,7 +51,7 @@ public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopic
      */
     @Nullable
     public static MqttTopicFilterImpl from(@NotNull final byte[] binary) {
-        if ((binary.length == 0) || containsMustNotCharacters(binary)) {
+        if ((binary.length == 0) || !MqttBinaryData.isInRange(binary) || containsMustNotCharacters(binary)) {
             return null;
         }
         if (MqttSharedTopicFilterImpl.isShared(binary)) {
