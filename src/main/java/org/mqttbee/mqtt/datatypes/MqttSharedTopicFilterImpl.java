@@ -108,7 +108,7 @@ public class MqttSharedTopicFilterImpl extends MqttTopicFilterImpl implements Mq
      */
     @Nullable
     static MqttSharedTopicFilterImpl fromInternal(@NotNull final String string) {
-        // no isShared and containsMustNotCharacters, already checked in TopicFilter
+        // no isShared and checkForbiddenCharacters, already checked in TopicFilter
         int shareNameEnd = SHARE_PREFIX_LENGTH;
         while (shareNameEnd < string.length()) {
             final char c = string.charAt(shareNameEnd);
@@ -155,11 +155,13 @@ public class MqttSharedTopicFilterImpl extends MqttTopicFilterImpl implements Mq
      *
      * @param string the UTF-16 encoded Java string.
      * @return whether the string is a valid Share Name.
+     * @throws IllegalArgumentException if the given string contains forbidden characters.
      */
     private static boolean validateShareName(@NotNull final String string) {
-        if ((string.length() == 0) || containsMustNotCharacters(string)) {
+        if ((string.length() == 0)) {
             return false;
         }
+        checkForbiddenCharacters(string);
         for (int i = 0; i < string.length(); i++) {
             final char c = string.charAt(i);
             if ((c == MULTI_LEVEL_WILDCARD) || (c == SINGLE_LEVEL_WILDCARD) ||

@@ -69,12 +69,14 @@ public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopic
      *
      * @param string the UTF-16 encoded Java string.
      * @return the created Topic Filter or null if the string is not a valid Topic Filter.
+     * @throws IllegalArgumentException if the given string contains forbidden characters.
      */
     @Nullable
     public static MqttTopicFilterImpl from(@NotNull final String string) {
-        if ((string.length() == 0) || containsMustNotCharacters(string)) {
+        if (string.length() == 0) {
             return null;
         }
+        checkForbiddenCharacters(string);
         if (MqttSharedTopicFilterImpl.isShared(string)) {
             return MqttSharedTopicFilterImpl.fromInternal(string);
         }
