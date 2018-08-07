@@ -17,6 +17,7 @@
 
 package org.mqttbee.mqtt.datatypes;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
@@ -49,11 +50,15 @@ public class MqttTopicImpl extends MqttUtf8StringImpl implements MqttTopic {
      * Validates and creates a Topic Name from the given string.
      *
      * @param string the UTF-16 encoded Java string.
-     * @return the created Topic Name or null if the string is not a valid Topic Name.
+     * @return the created Topic Name.
+     * @throws IllegalArgumentException if the given string is not a valid Topic Name.
      */
-    @Nullable
+    @NotNull
     public static MqttTopicImpl from(@NotNull final String string) {
-        return (string.length() == 0) || containsMustNotCharacters(string) ? null : new MqttTopicImpl(string);
+        Preconditions.checkArgument(!string.isEmpty(), "String must not be empty.");
+        checkForbiddenCharacters(string);
+
+        return new MqttTopicImpl(string);
     }
 
     /**
@@ -93,14 +98,13 @@ public class MqttTopicImpl extends MqttUtf8StringImpl implements MqttTopic {
      * These characters are the characters a UTF-8 encoded String must not contain and wildcard characters.
      *
      * @param string the UTF-16 encoded Java string.
-     * @return whether the string contains characters a Topic Name must not contain.
      * @throws IllegalArgumentException if the given string contains forbidden characters.
      * @see MqttUtf8StringImpl#checkForbiddenCharacters(String)
-     * @see #containsWildcardCharacters(String)
+     * @see #checkWildcardCharacters(String)
      */
-    static boolean containsMustNotCharacters(@NotNull final String string) {
-        checkForbiddenCharacters(string);
-        return containsWildcardCharacters(string);
+    static void checkForbiddenCharacters(@NotNull final String string) {
+        MqttUtf8StringImpl.checkForbiddenCharacters(string);
+        checkWildcardCharacters(string);
     }
 
     /**
@@ -122,11 +126,19 @@ public class MqttTopicImpl extends MqttUtf8StringImpl implements MqttTopic {
      * Checks whether the given UTF-16 encoded Java string contains wildcard characters.
      *
      * @param string the UTF-16 encoded Java string.
-     * @return whether the string contains wildcard characters.
+     * @throws IllegalArgumentException if the given string contains wildcard characters.
      */
-    private static boolean containsWildcardCharacters(@NotNull final String string) {
-        return (string.indexOf(MqttTopicFilterImpl.MULTI_LEVEL_WILDCARD) != -1) ||
-                (string.indexOf(MqttTopicFilterImpl.SINGLE_LEVEL_WILDCARD) != -1);
+    private static void checkWildcardCharacters(@NotNull final String string) {
+        Preconditions.checkArgument(!string.contains(String.valueOf(MqttTopicFilterImpl.MULTI_LEVEL_WILDCARD)),
+                String.format(
+                        "Found multi level wildcard at index: %d. String must not contain the multi level wildcard character '%c'.",
+                        string.indexOf(MqttTopicFilterImpl.MULTI_LEVEL_WILDCARD),
+                        MqttTopicFilterImpl.MULTI_LEVEL_WILDCARD));
+        Preconditions.checkArgument(!string.contains(String.valueOf(MqttTopicFilterImpl.SINGLE_LEVEL_WILDCARD)),
+                String.format(
+                        "Found single level wildcard at index: %d. String must not contain the single level wildcard character '%c'.",
+                        string.indexOf(MqttTopicFilterImpl.SINGLE_LEVEL_WILDCARD),
+                        MqttTopicFilterImpl.SINGLE_LEVEL_WILDCARD));
     }
 
     /**
