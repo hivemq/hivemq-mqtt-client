@@ -18,85 +18,128 @@
 package org.mqttbee.mqtt.datatypes;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.hamcrest.CoreMatchers;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.nio.charset.Charset;
-import java.util.Collection;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.*;
 
 /**
  * @author Silvio Giebl
+ * @author Christian Hoff
  */
-@RunWith(Parameterized.class)
 public class MqttTopicFilterImplTest {
 
-    @Parameterized.Parameters
-    public static Collection<Boolean> parameters() {
-        return ImmutableSet.of(false, true);
-    }
+    /**
+     * Extension of Function&lt;T, R&gt; used to make test results more readable.
+     */
+    static class NamedFunction<T, R> implements Function<T, R> {
+        private final String name;
+        private final Function<T, R> function;
 
-    private final boolean isFromByteBuf;
+        NamedFunction(final String name, final Function<T, R> function) {
+            this.name = name;
+            this.function = function;
+        }
 
-    public MqttTopicFilterImplTest(final boolean isFromByteBuf) {
-        this.isFromByteBuf = isFromByteBuf;
-    }
+        @Override
+        public R apply(T t) {
+            return function.apply(t);
+        }
 
-    private MqttTopicFilterImpl from(final String string) {
-        if (isFromByteBuf) {
-            final ByteBuf byteBuf = Unpooled.buffer();
-            final byte[] binary = string.getBytes(Charset.forName("UTF-8"));
-            byteBuf.writeShort(binary.length);
-            byteBuf.writeBytes(binary);
-            final MqttTopicFilterImpl mqtt5TopicFilter = MqttTopicFilterImpl.from(byteBuf);
-            byteBuf.release();
-            return mqtt5TopicFilter;
-        } else {
-            return MqttTopicFilterImpl.from(string);
+        @Override
+        public String toString() {
+            return name;
         }
     }
 
+    private static NamedFunction[] topicFilterFactoryMethods = {
+            new NamedFunction<String, MqttTopicFilterImpl>("ByteBuf", MqttTopicFilterImplTest::createFromByteBuf),
+            new NamedFunction<String, MqttTopicFilterImpl>("String", MqttTopicFilterImpl::from)
+    };
+
+    private static MqttTopicFilterImpl createFromByteBuf(final String string) {
+        final ByteBuf byteBuf = Unpooled.buffer();
+        final byte[] binary = string.getBytes(Charset.forName("UTF-8"));
+        byteBuf.writeShort(binary.length);
+        byteBuf.writeBytes(binary);
+        final MqttTopicFilterImpl mqtt5TopicFilter = MqttTopicFilterImpl.from(byteBuf);
+        byteBuf.release();
+        return mqtt5TopicFilter;
+    }
+
     @Test
-    public void test_must_not_be_zero_length() {
+    public void from_emptyByteBuf_returnsNull() {
         final String string = "";
-        final MqttTopicFilterImpl mqtt5TopicFilter = from(string);
+        final MqttTopicFilterImpl mqtt5TopicFilter = createFromByteBuf(string);
         assertNull(mqtt5TopicFilter);
     }
 
     @Test
-    public void test_must_be_case_sensitive() {
+    public void from_emptyString_throws() {
+        final IllegalArgumentException exception =
+                Assertions.assertThrows(IllegalArgumentException.class, () -> MqttTopicFilterImpl.from(""));
+        assertTrue("IllegalArgumentException must give hint that string must not be empty.",
+                exception.getMessage().contains("must not be empty"));
+    }
+
+    private static Stream topicFilterFactoryMethodProvider() {
+        return Stream.of(topicFilterFactoryMethods);
+    }
+
+    @ParameterizedTest
+    @MethodSource("topicFilterFactoryMethodProvider")
+    public void from_mustBeCaseSensitive(final Function<String, MqttTopicFilterImpl> topicFilterFactoryMethod) {
         final String string1 = "abc";
         final String string2 = "ABC";
-        final MqttTopicFilterImpl mqtt5TopicFilter1 = from(string1);
-        final MqttTopicFilterImpl mqtt5TopicFilter2 = from(string2);
+        final MqttTopicFilterImpl mqtt5TopicFilter1 = topicFilterFactoryMethod.apply(string1);
+        final MqttTopicFilterImpl mqtt5TopicFilter2 = topicFilterFactoryMethod.apply(string2);
         assertNotNull(mqtt5TopicFilter1);
         assertNotNull(mqtt5TopicFilter2);
         assertNotEquals(mqtt5TopicFilter1.toString(), mqtt5TopicFilter2.toString());
     }
 
-    @Test
-    public void test_can_contain_space() {
-        final String string = "ab c/def";
-        final MqttTopicFilterImpl mqtt5TopicFilter = from(string);
+    private static List<Arguments> validTopicFilterProvider() {
+        final List<Arguments> testSpecs = new LinkedList<>();
+        for (final NamedFunction method : topicFilterFactoryMethods) {
+            testSpecs.add(Arguments.of(method, "containing space", "ab c/def"));
+            testSpecs.add(Arguments.of(method, "containing single space only", " "));
+            testSpecs.add(Arguments.of(method, "containing multi level wildcard at end", "abc/def/ghi/#"));
+            testSpecs.add(Arguments.of(method, "containing multi level wildcard only", "#"));
+            testSpecs.add(Arguments.of(method, "containing single level wildcard", "abc/+/def/ghi"));
+            testSpecs.add(Arguments.of(method, "containing single level wildcard only", "+"));
+            testSpecs.add(Arguments.of(method, "containing single and multi level wildcards", "abc/+/def/+/ghi/#"));
+            testSpecs.add(Arguments.of(method, "containing multiple single level wildcards", "+/abc/+/def/+/+/ghi/+"));
+        }
+        return testSpecs;
+    }
+
+    @ParameterizedTest
+    @MethodSource("validTopicFilterProvider")
+    public void from(
+            final Function<String, MqttTopicFilterImpl> topicFilterFactoryMethod,
+            @SuppressWarnings("unused") final String testDescription, final String topicFilterString) {
+        final MqttTopicFilterImpl mqtt5TopicFilter = topicFilterFactoryMethod.apply(topicFilterString);
         assertNotNull(mqtt5TopicFilter);
     }
 
-    @Test
-    public void test_can_be_only_space() {
-        final String string = " ";
-        final MqttTopicFilterImpl mqtt5TopicFilter = from(string);
-        assertNotNull(mqtt5TopicFilter);
-    }
-
-    @Test
-    public void test_can_be_only_topic_level_separator() {
+    @ParameterizedTest
+    @MethodSource("topicFilterFactoryMethodProvider")
+    public void from_topicLevelSeparatorOnly(final Function<String, MqttTopicFilterImpl> topicFilterFactoryMethod) {
         final String string = "/";
-        final MqttTopicFilterImpl mqtt5TopicFilter = from(string);
+        final MqttTopicFilterImpl mqtt5TopicFilter = topicFilterFactoryMethod.apply(string);
         assertNotNull(mqtt5TopicFilter);
         final ImmutableList<String> levels = mqtt5TopicFilter.getLevels();
         assertEquals(2, levels.size());
@@ -104,175 +147,97 @@ public class MqttTopicFilterImplTest {
         assertEquals("", levels.get(1));
     }
 
-    @Test
-    public void test_can_contain_multi_level_wildcard() {
-        final String string = "abc/def/ghi/#";
-        final MqttTopicFilterImpl mqtt5TopicFilter = from(string);
-        assertNotNull(mqtt5TopicFilter);
+    private static Stream misplacedWildcardsTopicFilterProvider() {
+        return Stream.of(Arguments.of("multilevel wildcard not at end", "abc/def/ghi/#/"),
+                Arguments.of("multilevel wildcard after non separator", "abc/def/ghi#"),
+                Arguments.of("multiple single level wildcards one level", "abc/++/def/ghi"),
+                Arguments.of("single level wildcard after non separator", "abc+/def/ghi"),
+                Arguments.of("single level wildcard before non separator", "abc/+def/ghi"),
+                Arguments.of("single level before multi level wildcard", "abc/def/ghi/+#"));
     }
 
-    @Test
-    public void test_can_be_only_multi_level_wildcard() {
-        final String string = "#";
-        final MqttTopicFilterImpl mqtt5TopicFilter = from(string);
-        assertNotNull(mqtt5TopicFilter);
-    }
-
-    @Test
-    public void test_must_not_contain_multi_level_wildcard_not_at_end() {
-        final String string = "abc/def/ghi/#/";
-        final MqttTopicFilterImpl mqtt5TopicFilter = from(string);
+    @ParameterizedTest
+    @MethodSource("misplacedWildcardsTopicFilterProvider")
+    public void from_byteBufWithMisplacedWildcards_returnsNull(
+            @SuppressWarnings("unused") final String testDescription, final String topicFilterString) {
+        final MqttTopicFilterImpl mqtt5TopicFilter = createFromByteBuf(topicFilterString);
         assertNull(mqtt5TopicFilter);
     }
 
-    @Test
-    public void test_must_not_contain_multi_level_wildcard_after_non_separator() {
-        final String string = "abc/def/ghi#";
-        final MqttTopicFilterImpl mqtt5TopicFilter = from(string);
-        assertNull(mqtt5TopicFilter);
+    @ParameterizedTest
+    @MethodSource("misplacedWildcardsTopicFilterProvider")
+    public void from_stringWithMisplacedWildcards_throws(
+            @SuppressWarnings("unused") final String testDescription, final String topicFilterString) {
+        final IllegalArgumentException exception = Assertions.assertThrows(
+                IllegalArgumentException.class,
+                () -> MqttTopicFilterImpl.from(topicFilterString));
+        assertTrue("IllegalArgumentException must give hint that string contains misplaced wildcard characters.",
+                exception.getMessage().contains("misplaced wildcard characters"));
     }
 
-    @Test
-    public void test_can_contain_single_level_wildcard() {
-        final String string = "abc/+/def/ghi";
-        final MqttTopicFilterImpl mqtt5TopicFilter = from(string);
-        assertNotNull(mqtt5TopicFilter);
-    }
-
-    @Test
-    public void test_can_be_only_single_level_wildcard() {
-        final String string = "+";
-        final MqttTopicFilterImpl mqtt5TopicFilter = from(string);
-        assertNotNull(mqtt5TopicFilter);
-    }
-
-    @Test
-    public void test_can_contain_multiple_single_level_wildcards() {
-        final String string = "+/abc/+/def/+/+/ghi/+";
-        final MqttTopicFilterImpl mqtt5TopicFilter = from(string);
-        assertNotNull(mqtt5TopicFilter);
-    }
-
-    @Test
-    public void test_must_not_contain_double_single_level_wildcard() {
-        final String string = "abc/++/def/ghi";
-        final MqttTopicFilterImpl mqtt5TopicFilter = from(string);
-        assertNull(mqtt5TopicFilter);
-    }
-
-    @Test
-    public void test_must_not_contain_single_level_wildcard_after_non_separator() {
-        final String string = "abc+/def/ghi";
-        final MqttTopicFilterImpl mqtt5TopicFilter = from(string);
-        assertNull(mqtt5TopicFilter);
-    }
-
-    @Test
-    public void test_must_not_contain_single_level_wildcard_before_non_separator() {
-        final String string = "abc/+def/ghi";
-        final MqttTopicFilterImpl mqtt5TopicFilter = from(string);
-        assertNull(mqtt5TopicFilter);
-    }
-
-    @Test
-    public void test_must_not_contain_single_level_before_multi_level_wildcard() {
-        final String string = "abc/def/ghi/+#";
-        final MqttTopicFilterImpl mqtt5TopicFilter = from(string);
-        assertNull(mqtt5TopicFilter);
-    }
-
-    @Test
-    public void test_can_contain_both_wildcards() {
-        final String string = "abc/+/def/+/ghi/#";
-        final MqttTopicFilterImpl mqtt5TopicFilter = from(string);
-        assertNotNull(mqtt5TopicFilter);
-    }
-
-    @Test
-    public void test_getLevels() {
+    @ParameterizedTest
+    @MethodSource("topicFilterFactoryMethodProvider")
+    public void getLevels_simple(final Function<String, MqttTopicFilterImpl> topicFilterFactoryMethod) {
         final String string = "abc/def/ghi";
-        final MqttTopicFilterImpl mqtt5TopicFilter = from(string);
+        final MqttTopicFilterImpl mqtt5TopicFilter = topicFilterFactoryMethod.apply(string);
         assertNotNull(mqtt5TopicFilter);
         final ImmutableList<String> levels = mqtt5TopicFilter.getLevels();
-        assertEquals(3, levels.size());
-        assertEquals("abc", levels.get(0));
-        assertEquals("def", levels.get(1));
-        assertEquals("ghi", levels.get(2));
+        assertThat(levels, CoreMatchers.is(Arrays.asList("abc", "def", "ghi")));
     }
 
-    @Test
-    public void test_getLevels_empty_levels() {
+    @ParameterizedTest
+    @MethodSource("topicFilterFactoryMethodProvider")
+    public void getLevels_emptyLevels(final Function<String, MqttTopicFilterImpl> topicFilterFactoryMethod) {
         final String string = "/abc//def///ghi/";
-        final MqttTopicFilterImpl mqtt5TopicFilter = from(string);
+        final MqttTopicFilterImpl mqtt5TopicFilter = topicFilterFactoryMethod.apply(string);
         assertNotNull(mqtt5TopicFilter);
         final ImmutableList<String> levels = mqtt5TopicFilter.getLevels();
-        assertEquals(8, levels.size());
-        assertEquals("", levels.get(0));
-        assertEquals("abc", levels.get(1));
-        assertEquals("", levels.get(2));
-        assertEquals("def", levels.get(3));
-        assertEquals("", levels.get(4));
-        assertEquals("", levels.get(5));
-        assertEquals("ghi", levels.get(6));
-        assertEquals("", levels.get(7));
+        assertThat(levels, CoreMatchers.is(Arrays.asList("", "abc", "", "def", "", "", "ghi", "")));
     }
 
-    @Test
-    public void test_containsWildcards_false() {
-        final String string = "abc/def/ghi";
-        final MqttTopicFilterImpl mqtt5TopicFilter = from(string);
+    private static List<Arguments> wildcardTopicFilterProvider() {
+        final List<Arguments> testSpecs = new LinkedList<>();
+        for (NamedFunction method : topicFilterFactoryMethods) {
+            testSpecs.add(Arguments.of(method, "contains no wildcards", "abc/def/ghi", false, false, false));
+            testSpecs.add(Arguments.of(method, "contains multi level wildcard", "abc/def/ghi/#", true, true, false));
+            testSpecs.add(Arguments.of(method, "contains single level wildcard", "abc/+/def/ghi", true, false, true));
+            testSpecs.add(
+                    Arguments.of(method, "contains multi and single level wildcard", "abc/+/def/ghi/#", true, true,
+                            true));
+        }
+        return testSpecs;
+    }
+
+    @ParameterizedTest
+    @MethodSource("wildcardTopicFilterProvider")
+    public void containsWildcards(
+            final Function<String, MqttTopicFilterImpl> topicFilterFactoryMethod,
+            @SuppressWarnings("unused") final String testDescription, final String topicFilterString,
+            boolean containsWildcards, boolean containsMultiLevelWildcard, boolean containsSingleLevelWildcard) {
+        final MqttTopicFilterImpl mqtt5TopicFilter = topicFilterFactoryMethod.apply(topicFilterString);
         assertNotNull(mqtt5TopicFilter);
-        assertFalse(mqtt5TopicFilter.containsWildcards());
-        assertFalse(mqtt5TopicFilter.containsMultiLevelWildcard());
-        assertFalse(mqtt5TopicFilter.containsSingleLevelWildcard());
+        assertEquals(containsWildcards, mqtt5TopicFilter.containsWildcards());
+        assertEquals(containsMultiLevelWildcard, mqtt5TopicFilter.containsMultiLevelWildcard());
+        assertEquals(containsSingleLevelWildcard, mqtt5TopicFilter.containsSingleLevelWildcard());
     }
 
-    @Test
-    public void test_containsWildcards_multi_level() {
-        final String string = "abc/def/ghi/#";
-        final MqttTopicFilterImpl mqtt5TopicFilter = from(string);
-        assertNotNull(mqtt5TopicFilter);
-        assertTrue(mqtt5TopicFilter.containsWildcards());
-        assertTrue(mqtt5TopicFilter.containsMultiLevelWildcard());
-        assertFalse(mqtt5TopicFilter.containsSingleLevelWildcard());
+    private static List<Arguments> invalidSharedTopicFilterProvider() {
+        final List<Arguments> testSpecs = new LinkedList<>();
+        for (NamedFunction method : topicFilterFactoryMethods) {
+            testSpecs.add(Arguments.of(method, "$shared is valid topic prefix", "$shared/group/abc/def"));
+            testSpecs.add(Arguments.of(method, "just $share does not define a shared topic", "$share"));
+        }
+        return testSpecs;
     }
 
-    @Test
-    public void test_containsWildcards_single_level() {
-        final String string = "abc/+/def/ghi";
-        final MqttTopicFilterImpl mqtt5TopicFilter = from(string);
-        assertNotNull(mqtt5TopicFilter);
-        assertTrue(mqtt5TopicFilter.containsWildcards());
-        assertFalse(mqtt5TopicFilter.containsMultiLevelWildcard());
-        assertTrue(mqtt5TopicFilter.containsSingleLevelWildcard());
-    }
-
-    @Test
-    public void test_containsWildcards_both() {
-        final String string = "abc/+/def/ghi/#";
-        final MqttTopicFilterImpl mqtt5TopicFilter = from(string);
-        assertNotNull(mqtt5TopicFilter);
-        assertTrue(mqtt5TopicFilter.containsWildcards());
-        assertTrue(mqtt5TopicFilter.containsMultiLevelWildcard());
-        assertTrue(mqtt5TopicFilter.containsSingleLevelWildcard());
-    }
-
-    @Test
-    public void test_not_shared_just_prefix() {
-        final String string = "$shared/group/abc/def";
-        final MqttTopicFilterImpl mqtt5TopicFilter = from(string);
+    @ParameterizedTest
+    @MethodSource("invalidSharedTopicFilterProvider")
+    public void isShared_false(
+            final Function<String, MqttTopicFilterImpl> topicFilterFactoryMethod,
+            @SuppressWarnings("unused") final String testDescription, final String topicFilterString) {
+        final MqttTopicFilterImpl mqtt5TopicFilter = topicFilterFactoryMethod.apply(topicFilterString);
         assertNotNull(mqtt5TopicFilter);
         assertFalse(mqtt5TopicFilter.isShared());
         assertFalse(mqtt5TopicFilter instanceof MqttSharedTopicFilterImpl);
     }
-
-    @Test
-    public void test_not_shared_just_$share() {
-        final String string = "$share";
-        final MqttTopicFilterImpl mqtt5TopicFilter = from(string);
-        assertNotNull(mqtt5TopicFilter);
-        assertFalse(mqtt5TopicFilter.isShared());
-        assertFalse(mqtt5TopicFilter instanceof MqttSharedTopicFilterImpl);
-    }
-
 }
