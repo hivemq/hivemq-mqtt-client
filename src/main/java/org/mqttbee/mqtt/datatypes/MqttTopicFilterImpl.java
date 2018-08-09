@@ -17,6 +17,7 @@
 
 package org.mqttbee.mqtt.datatypes;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
@@ -68,22 +69,21 @@ public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopic
      * Validates and creates a Topic Filter from the given string.
      *
      * @param string the UTF-16 encoded Java string.
-     * @return the created Topic Filter or null if the string is not a valid Topic Filter.
-     * @throws IllegalArgumentException if the given string contains forbidden characters.
+     * @return the created Topic Filter.
+     * @throws IllegalArgumentException if the given string contains forbidden characters or misplaced wildcard
+     *                                  characters.
      */
-    @Nullable
+    @NotNull
     public static MqttTopicFilterImpl from(@NotNull final String string) {
-        if (string.length() == 0) {
-            return null;
-        }
+        Preconditions.checkArgument(!string.isEmpty(), "String must not be empty.");
         checkForbiddenCharacters(string);
         if (MqttSharedTopicFilterImpl.isShared(string)) {
             return MqttSharedTopicFilterImpl.fromInternal(string);
         }
         final int wildcardFlags = validateWildcards(string, 0);
-        if (wildcardFlags == WILDCARD_CHECK_FAILURE) {
-            return null;
-        }
+        Preconditions.checkArgument(
+                wildcardFlags != WILDCARD_CHECK_FAILURE,
+                "String is not a valid Topic Filter due to misplaced wildcard characters.");
         return new MqttTopicFilterImpl(string, wildcardFlags);
     }
 
