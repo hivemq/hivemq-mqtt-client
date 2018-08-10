@@ -17,6 +17,7 @@
 
 package org.mqttbee.mqtt.datatypes;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -105,8 +106,10 @@ public class MqttSharedTopicFilterImpl extends MqttTopicFilterImpl implements Mq
      *
      * @param string the UTF-16 encoded Java string staring with {@link #SHARE_PREFIX}.
      * @return the created Shared Topic Filter or null if the string is not a valid Shared Topic Filter.
+     * @throws IllegalArgumentException if the given string contains forbidden characters or misplaced wildcard
+     *                                  characters or the Share Name or Topic Filter parts are empty.
      */
-    @Nullable
+    @NotNull
     static MqttSharedTopicFilterImpl fromInternal(@NotNull final String string) {
         // no isShared and checkForbiddenCharacters, already checked in TopicFilter
         int shareNameEnd = SHARE_PREFIX_LENGTH;
@@ -115,18 +118,22 @@ public class MqttSharedTopicFilterImpl extends MqttTopicFilterImpl implements Mq
             if (c == MqttTopicImpl.TOPIC_LEVEL_SEPARATOR) {
                 break;
             }
-            if ((c == MULTI_LEVEL_WILDCARD) || (c == SINGLE_LEVEL_WILDCARD)) {
-                return null;
-            }
+            Preconditions.checkArgument(c != MULTI_LEVEL_WILDCARD,
+                    String.format("Share Name must not contain multi level wildcard '%s'. Found at index: %d.",
+                            MULTI_LEVEL_WILDCARD, shareNameEnd));
+            Preconditions.checkArgument(c != SINGLE_LEVEL_WILDCARD,
+                    String.format("Share Name must not contain single level wildcard '%s'. Found at index: %d.",
+                            SINGLE_LEVEL_WILDCARD, shareNameEnd));
             shareNameEnd++;
         }
-        if ((shareNameEnd == SHARE_PREFIX_LENGTH) || (shareNameEnd >= string.length() - 1)) {
-            return null;
-        }
+        Preconditions.checkArgument(shareNameEnd > SHARE_PREFIX_LENGTH, "Share Name must not be empty.");
+        Preconditions.checkArgument(
+                shareNameEnd < string.length() - 1,
+                "Topic Filter must not be empty. Share Name must be followed by a valid Topic Filter.");
         final int wildcardFlags = validateWildcards(string, shareNameEnd + 1);
-        if (wildcardFlags == WILDCARD_CHECK_FAILURE) {
-            return null;
-        }
+        Preconditions.checkArgument(
+                wildcardFlags != WILDCARD_CHECK_FAILURE,
+                "String is not a valid Topic Filter due to misplaced wildcard characters.");
         return new MqttSharedTopicFilterImpl(string, shareNameEnd, wildcardFlags);
     }
 
@@ -135,41 +142,42 @@ public class MqttSharedTopicFilterImpl extends MqttTopicFilterImpl implements Mq
      *
      * @param shareName   the Share Name.
      * @param topicFilter the Topic Filter.
-     * @return the created Shared Topic Filter or null if the Share Name is not a valid Share Name or the Topic Filter
-     * is not a valid Topic Filter.
+     * @return the created Shared Topic Filter.
+     * @throws IllegalArgumentException if the given Topic Filter contains forbidden characters or misplaced wildcard
+     *                                  characters or the Share Name is not a valid Share Name.
      */
-    @Nullable
+    @NotNull
     public static MqttSharedTopicFilterImpl from(@NotNull final String shareName, @NotNull final String topicFilter) {
-        if ((topicFilter.length() == 0) || !validateShareName(shareName)) {
-            return null;
-        }
+        Preconditions.checkArgument(!topicFilter.isEmpty(), "Topic Filter must not be empty.");
+        checkShareName(shareName);
         final int wildcardFlags = validateWildcards(topicFilter, 0);
-        if (wildcardFlags == WILDCARD_CHECK_FAILURE) {
-            return null;
-        }
+        Preconditions.checkArgument(
+                wildcardFlags != WILDCARD_CHECK_FAILURE,
+                "String is not a valid Topic Filter due to misplaced wildcard characters.");
         return new MqttSharedTopicFilterImpl(shareName, topicFilter, wildcardFlags);
     }
 
     /**
-     * Validates if the given UTF-16 encoded Java string is a valid Share Name.
+     * Checks if the given UTF-16 encoded Java string is a valid Share Name.
      *
-     * @param string the UTF-16 encoded Java string.
-     * @return whether the string is a valid Share Name.
-     * @throws IllegalArgumentException if the given string contains forbidden characters.
+     * @param shareName the UTF-16 encoded Java string.
+     * @throws IllegalArgumentException if the given string is empty or contains forbidden characters.
      */
-    private static boolean validateShareName(@NotNull final String string) {
-        if ((string.length() == 0)) {
-            return false;
+    private static void checkShareName(@NotNull final String shareName) {
+        Preconditions.checkArgument(!shareName.isEmpty(), "Share Name must not be empty.");
+        checkForbiddenCharacters(shareName);
+        for (int i = 0; i < shareName.length(); i++) {
+            final char c = shareName.charAt(i);
+            Preconditions.checkArgument(c != MULTI_LEVEL_WILDCARD,
+                    String.format("Share Name must not contain multi level wildcard '%s'. Found at index: %d.",
+                            MULTI_LEVEL_WILDCARD, i));
+            Preconditions.checkArgument(c != SINGLE_LEVEL_WILDCARD,
+                    String.format("Share Name must not contain single level wildcard '%s'. Found at index: %d.",
+                            SINGLE_LEVEL_WILDCARD, i));
+            Preconditions.checkArgument(c != MqttTopicImpl.TOPIC_LEVEL_SEPARATOR,
+                    String.format("Share Name must not contain topic level separator '%s'. Found at index: %d.",
+                            MqttTopicImpl.TOPIC_LEVEL_SEPARATOR, i));
         }
-        checkForbiddenCharacters(string);
-        for (int i = 0; i < string.length(); i++) {
-            final char c = string.charAt(i);
-            if ((c == MULTI_LEVEL_WILDCARD) || (c == SINGLE_LEVEL_WILDCARD) ||
-                    (c == MqttTopicImpl.TOPIC_LEVEL_SEPARATOR)) {
-                return false;
-            }
-        }
-        return true;
     }
 
 
