@@ -19,13 +19,12 @@ package org.mqttbee.mqtt.handler.publish;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import org.mqttbee.annotations.CallByThread;
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.annotations.CallByThread;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5IncomingQos1ControlProvider;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5IncomingQos2ControlProvider;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubCompReasonCode;
-import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.advanced.MqttAdvancedClientData;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
@@ -38,6 +37,7 @@ import org.mqttbee.mqtt.message.publish.pubcomp.MqttPubCompBuilder;
 import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRec;
 import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRecBuilder;
 import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRel;
+import org.mqttbee.util.UnsignedDataTypes;
 import org.mqttbee.util.collections.IntMap;
 
 import javax.inject.Inject;
@@ -60,14 +60,11 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter {
 
     @Inject
     MqttIncomingQosHandler(
-            final Provider<MqttIncomingPublishService> incomingPublishServiceLazy, final MqttClientData clientData) {
-
-        final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
-        assert clientConnectionData != null;
+            final MqttClientData clientData, final Provider<MqttIncomingPublishService> incomingPublishServiceLazy) {
 
         this.clientData = clientData;
         this.incomingPublishServiceLazy = incomingPublishServiceLazy;
-        messages = IntMap.range(1, clientConnectionData.getReceiveMaximum());
+        messages = IntMap.range(1, UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE);
     }
 
     @Override
