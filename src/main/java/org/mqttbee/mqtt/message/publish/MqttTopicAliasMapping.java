@@ -37,7 +37,7 @@ public class MqttTopicAliasMapping {
 
     private static final Random random = new Random();
 
-    private int topicAliasMaximum;
+    private final int topicAliasMaximum;
     private final HashMap<String, Integer> hashMap;
     private int nextTopicAlias;
 
@@ -68,12 +68,6 @@ public class MqttTopicAliasMapping {
     public int get(@NotNull final MqttTopicImpl topic) {
         final Integer topicAlias = hashMap.get(topic.toString());
         return (topicAlias == null) ? MqttStatefulPublish.DEFAULT_NO_TOPIC_ALIAS : topicAlias;
-    }
-
-    public void reset(final int topicAliasMaximum) {
-        this.topicAliasMaximum = topicAliasMaximum;
-        hashMap.clear();
-        nextTopicAlias = 1;
     }
 
     public int getTopicAliasMaximum() {
