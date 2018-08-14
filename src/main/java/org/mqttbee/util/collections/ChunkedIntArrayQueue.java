@@ -17,7 +17,7 @@
 
 package org.mqttbee.util.collections;
 
-import org.mqttbee.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.concurrent.NotThreadSafe;
 

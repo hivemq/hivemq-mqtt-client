@@ -17,7 +17,7 @@
 
 package org.mqttbee.util.collections;
 
-import org.mqttbee.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Silvio Giebl
