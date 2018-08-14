@@ -97,7 +97,7 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
         }
         final MqttWebSocketConfig webSocketConfig = clientData.getRawWebSocketConfig();
         if (webSocketConfig != null) {
-            initMqttOverWebSockets(channel.pipeline(), webSocketConfig);
+            initMqttOverWebSocket(channel.pipeline(), webSocketConfig);
         } else {
             initMqttHandlers(channel.pipeline());
         }
@@ -110,7 +110,7 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
         pipeline.addLast(MqttDisconnectHandler.NAME, disconnectHandler);
     }
 
-    private void initMqttOverWebSockets(
+    private void initMqttOverWebSocket(
             @NotNull final ChannelPipeline pipeline, @NotNull final MqttWebSocketConfig webSocketConfig)
             throws URISyntaxException {
 
