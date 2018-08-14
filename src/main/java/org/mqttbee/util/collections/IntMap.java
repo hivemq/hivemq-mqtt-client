@@ -29,6 +29,10 @@ import javax.annotation.concurrent.NotThreadSafe;
 @NotThreadSafe
 public abstract class IntMap<E> {
 
+    private static final int ONE_LEVEL_CAPACITY_BITS = 7;
+    private static final int TWO_LEVEL_CAPACITY_BITS = 12;
+    private static final int THREE_LEVEL_CAPACITY_BITS = 18;
+
     @NotNull
     public static <E> IntMap<E> range(final int minKey, final int maxKey) {
         final int capacity = maxKey - minKey + 1;
@@ -45,7 +49,7 @@ public abstract class IntMap<E> {
         final int minKey = oldMap.getMinKey();
         final int newCapacity = newMaxKey - minKey + 1;
         final int newCapacityBits = Pow2Util.roundToPowerOf2Bits(newCapacity);
-        if ((newCapacityBits >= 7) && (oldMap instanceof IntMapCheck)) {
+        if ((newCapacityBits > ONE_LEVEL_CAPACITY_BITS) && (oldMap instanceof IntMapCheck)) {
             final int oldCapacity = oldMaxKey - minKey + 1;
             final int oldCapacityBits = Pow2Util.roundToPowerOf2Bits(oldCapacity);
             if (oldCapacityBits == newCapacityBits) {
@@ -68,11 +72,11 @@ public abstract class IntMap<E> {
             final int capacity, final int capacityBits, final int minKey, final int maxKey) {
 
         final IntMap<E> intMap;
-        if (capacityBits < 7) {
+        if (capacityBits <= ONE_LEVEL_CAPACITY_BITS) {
             intMap = new IntMapArray<>(capacity);
-        } else if (capacityBits < 15) {
+        } else if (capacityBits <= TWO_LEVEL_CAPACITY_BITS) {
             intMap = new IntMapAllocator<E>(capacityBits, 2).alloc();
-        } else if (capacityBits < 22) {
+        } else if (capacityBits <= THREE_LEVEL_CAPACITY_BITS) {
             intMap = new IntMapAllocator<E>(capacityBits, 3).alloc();
         } else {
             intMap = new IntMapAllocator<E>(capacityBits, 4).alloc();
