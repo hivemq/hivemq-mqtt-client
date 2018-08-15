@@ -48,7 +48,7 @@ abstract class ConnectionModule {
             final MqttChannelInitializer channelInitializer) {
 
         return new Bootstrap().group(nettyBootstrap.getEventLoopGroup(clientData.getExecutorConfig()))
-                .channel(nettyBootstrap.getChannelClass())
+                .channelFactory(nettyBootstrap.getChannelFactory())
                 .option(ChannelOption.SO_KEEPALIVE, true)
                 .option(ChannelOption.TCP_NODELAY, true)
                 .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)

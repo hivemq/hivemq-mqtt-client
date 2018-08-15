@@ -17,6 +17,7 @@
 
 package org.mqttbee.mqtt.netty;
 
+import io.netty.channel.ChannelFactory;
 import io.netty.channel.MultithreadEventLoopGroup;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollSocketChannel;
@@ -54,8 +55,8 @@ class NettyEpollBootstrap extends NettyBootstrap {
 
     @NotNull
     @Override
-    public Class<EpollSocketChannel> getChannelClass() {
-        return EpollSocketChannel.class;
+    public ChannelFactory<EpollSocketChannel> getChannelFactory() {
+        return EpollSocketChannel::new;
     }
 
 }

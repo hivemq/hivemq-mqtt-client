@@ -18,6 +18,7 @@
 package org.mqttbee.mqtt.netty;
 
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFactory;
 import io.netty.channel.MultithreadEventLoopGroup;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -111,7 +112,7 @@ public abstract class NettyBootstrap {
             @Nullable final Executor executor, final int numberOfNettyThreads);
 
     @NotNull
-    public abstract Class<? extends Channel> getChannelClass();
+    public abstract ChannelFactory<? extends Channel> getChannelFactory();
 
     public synchronized void free(@NotNull final MqttClientExecutorConfigImpl executorConfig) {
         if (executorConfig.getRawNettyExecutor() == null) {
