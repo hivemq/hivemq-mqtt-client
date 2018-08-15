@@ -54,8 +54,8 @@ public class MqttClientData implements Mqtt5ClientData {
 
     private final AtomicReference<MqttClientConnectionState> connectionState =
             new AtomicReference<>(MqttClientConnectionState.DISCONNECTED);
-    private MqttClientConnectionData clientConnectionData;
-    private MqttServerConnectionData serverConnectionData;
+    private volatile MqttClientConnectionData clientConnectionData;
+    private volatile MqttServerConnectionData serverConnectionData;
 
     public MqttClientData(
             @NotNull final MqttVersion mqttVersion, @Nullable final MqttClientIdentifierImpl clientIdentifier,
