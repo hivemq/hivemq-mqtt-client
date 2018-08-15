@@ -186,6 +186,20 @@ class IntMapTest {
         assertEquals(maxKey, map.getMaxKey());
     }
 
+    @ParameterizedTest
+    @ValueSource(ints = {16, 256})
+    void clear(final int size) {
+        final IntMap<String> map = IntMap.range(0, size);
+        for (int i = 0; i < size; i += 3) {
+            map.put(i, "test" + i);
+        }
+        map.clear();
+        assertEquals(0, map.size());
+        for (int i = 0; i < size; i += 3) {
+            assertNull(map.get(i));
+        }
+    }
+
     @CsvSource({"false", "true"})
     @ParameterizedTest
     void visitor(final boolean cancel) {

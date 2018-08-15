@@ -99,6 +99,8 @@ public abstract class IntMap<E> {
 
     public abstract int getMaxKey();
 
+    public abstract void clear();
+
     public void accept(@NotNull final IntMapVisitor<E> visitor) {
         accept(visitor, 0);
     }
@@ -156,7 +158,17 @@ public abstract class IntMap<E> {
         }
 
         @Override
-        public boolean accept(@NotNull final IntMapVisitor<E> visitor, final int baseIndex) {
+        public void clear() {
+            delegate.clear();
+        }
+
+        @Override
+        public void accept(@NotNull final IntMapVisitor<E> visitor) {
+            delegate.accept(visitor, minKey);
+        }
+
+        @Override
+        boolean accept(@NotNull final IntMapVisitor<E> visitor, final int baseIndex) {
             return delegate.accept(visitor, minKey);
         }
 
@@ -219,7 +231,23 @@ public abstract class IntMap<E> {
         }
 
         @Override
-        public boolean accept(@NotNull final IntMapVisitor<E> visitor, final int baseIndex) {
+        public void clear() {
+            int emitted = 0;
+            for (int index = 0; index < values.length; index++) {
+                final E value = values[index];
+                if (value != null) {
+                    values[index] = null;
+                    emitted++;
+                    if (emitted == size) {
+                        break;
+                    }
+                }
+            }
+            size = 0;
+        }
+
+        @Override
+        boolean accept(@NotNull final IntMapVisitor<E> visitor, final int baseIndex) {
             int emitted = 0;
             for (int index = 0; index < values.length; index++) {
                 final E value = values[index];
@@ -355,7 +383,24 @@ public abstract class IntMap<E> {
         }
 
         @Override
-        public boolean accept(@NotNull final IntMapVisitor<E> visitor, int baseIndex) {
+        public void clear() {
+            int cleared = 0;
+            for (int i = 0; i < subLevels.length; i++) {
+                final IntMap<E> subLevel = subLevels[i];
+                if (subLevel != null) {
+                    cleared += subLevel.size();
+                    subLevel.clear();
+                    subLevels[i] = null;
+                    if (cleared == size) {
+                        break;
+                    }
+                }
+            }
+            size = 0;
+        }
+
+        @Override
+        boolean accept(@NotNull final IntMapVisitor<E> visitor, int baseIndex) {
             int emitted = 0;
             for (final IntMap<E> subLevel : subLevels) {
                 if (subLevel != null) {
