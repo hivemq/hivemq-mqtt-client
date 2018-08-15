@@ -18,9 +18,9 @@
 package org.mqttbee.mqtt.codec.decoder;
 
 import io.netty.channel.embedded.EmbeddedChannel;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.jetbrains.annotations.NotNull;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectHandler;
 
@@ -31,16 +31,13 @@ public abstract class AbstractMqttDecoderTest {
 
     protected final MqttClientData clientData;
     private final MqttMessageDecoders decoders;
-    protected final MqttDisconnectHandler disconnectHandler;
     protected EmbeddedChannel channel;
 
     public AbstractMqttDecoderTest(
-            @NotNull final MqttClientData clientData, @NotNull final MqttMessageDecoders decoders,
-            @NotNull final MqttDisconnectHandler disconnectHandler) {
+            @NotNull final MqttClientData clientData, @NotNull final MqttMessageDecoders decoders) {
 
         this.clientData = clientData;
         this.decoders = decoders;
-        this.disconnectHandler = disconnectHandler;
     }
 
     @BeforeEach
@@ -54,7 +51,7 @@ public abstract class AbstractMqttDecoderTest {
     }
 
     protected void createChannel() {
-        channel = new EmbeddedChannel(new MqttDecoder(clientData, decoders), disconnectHandler);
+        channel = new EmbeddedChannel(new MqttDecoder(clientData, decoders), new MqttDisconnectHandler(clientData));
     }
 
     public static MqttPingRespDecoder createPingRespDecoder() {
