@@ -17,6 +17,7 @@
 
 package org.mqttbee.mqtt.netty;
 
+import io.netty.channel.ChannelFactory;
 import io.netty.channel.MultithreadEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -54,8 +55,8 @@ class NettyNioBootstrap extends NettyBootstrap {
 
     @NotNull
     @Override
-    public Class<NioSocketChannel> getChannelClass() {
-        return NioSocketChannel.class;
+    public ChannelFactory<NioSocketChannel> getChannelFactory() {
+        return NioSocketChannel::new;
     }
 
 }
