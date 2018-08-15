@@ -29,6 +29,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.MqttClientConnectionData;
+import org.mqttbee.mqtt.MqttClientConnectionState;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.MqttServerConnectionData;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoder;
@@ -218,6 +219,7 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
                 pipeline.addAfter(beforeHandlerName, MqttOutgoingQosHandler.NAME, outgoingQosHandler.get());
                 pipeline.addLast(MqttDisconnectOnConnAckHandler.NAME, disconnectOnConnAckHandler);
 
+                clientData.getRawConnectionState().set(MqttClientConnectionState.CONNECTED);
                 connAckEmitter.onSuccess(connAck);
             }
         }

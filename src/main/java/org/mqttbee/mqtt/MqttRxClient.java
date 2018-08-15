@@ -45,7 +45,6 @@ import org.mqttbee.mqtt.handler.publish.MqttIncomingAckFlowable;
 import org.mqttbee.mqtt.handler.publish.MqttSubscriptionFlowable;
 import org.mqttbee.mqtt.handler.subscribe.MqttSubAckSingle;
 import org.mqttbee.mqtt.handler.subscribe.MqttUnsubAckSingle;
-import org.mqttbee.mqtt.ioc.MqttBeeComponent;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
@@ -95,24 +94,6 @@ public class MqttRxClient implements Mqtt5RxClient {
                     connAckEmitter.onError(future.cause());
                 }
             });
-        }).doOnSuccess(connAck -> {
-            clientData.getRawConnectionState().set(MqttClientConnectionState.CONNECTED);
-
-            final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
-            assert clientConnectionData != null;
-            clientConnectionData.getChannel().closeFuture().addListener(future -> {
-                MqttBeeComponent.INSTANCE.nettyBootstrap().free(clientData.getExecutorConfig());
-                clientData.setClientConnectionData(null);
-                clientData.setServerConnectionData(null);
-                clientData.getRawConnectionState().set(MqttClientConnectionState.DISCONNECTED);
-            });
-        }).doOnError(throwable -> {
-            if (!(throwable instanceof AlreadyConnectedException)) {
-                MqttBeeComponent.INSTANCE.nettyBootstrap().free(clientData.getExecutorConfig());
-                clientData.setClientConnectionData(null);
-                clientData.setServerConnectionData(null);
-                clientData.getRawConnectionState().set(MqttClientConnectionState.DISCONNECTED);
-            }
         });
     }
 

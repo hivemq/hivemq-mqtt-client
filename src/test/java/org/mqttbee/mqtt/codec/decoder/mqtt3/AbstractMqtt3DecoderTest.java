@@ -28,7 +28,6 @@ import org.mqttbee.mqtt.codec.decoder.AbstractMqttDecoderTest;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoders;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
-import org.mqttbee.mqtt.handler.disconnect.Mqtt3DisconnectHandler;
 
 import java.util.Objects;
 
@@ -44,7 +43,7 @@ abstract class AbstractMqtt3DecoderTest extends AbstractMqttDecoderTest {
     }
 
     AbstractMqtt3DecoderTest(@NotNull final MqttMessageDecoders decoders) {
-        super(createClientData(), decoders, new Mqtt3DisconnectHandler());
+        super(createClientData(), decoders);
     }
 
     @Override

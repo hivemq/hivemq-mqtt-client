@@ -26,7 +26,6 @@ import org.mqttbee.mqtt.MqttVersion;
 import org.mqttbee.mqtt.codec.decoder.AbstractMqttDecoderTest;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoders;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
-import org.mqttbee.mqtt.handler.disconnect.Mqtt5DisconnectHandler;
 
 import java.util.Objects;
 
@@ -41,8 +40,8 @@ abstract class AbstractMqtt5DecoderTest extends AbstractMqttDecoderTest {
                 "localhost", 1883, null, null, false, false, MqttClientExecutorConfigImpl.DEFAULT, null);
     }
 
-    public AbstractMqtt5DecoderTest(@NotNull final MqttMessageDecoders decoders) {
-        super(createClientData(), decoders, new Mqtt5DisconnectHandler());
+    AbstractMqtt5DecoderTest(@NotNull final MqttMessageDecoders decoders) {
+        super(createClientData(), decoders);
     }
 
     @Override

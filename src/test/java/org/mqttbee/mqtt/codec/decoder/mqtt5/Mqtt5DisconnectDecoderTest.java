@@ -28,6 +28,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoders;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
+import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectHandler;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
 import org.mqttbee.mqtt.netty.ChannelAttributes;
 
@@ -852,7 +853,7 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
     }
 
     private MqttDisconnect testOk(final ByteBuf byteBuf) {
-        channel.pipeline().remove(disconnectHandler);
+        channel.pipeline().remove(MqttDisconnectHandler.class);
         channel.writeInbound(byteBuf);
         final MqttDisconnect disconnect = channel.readInbound();
         assertNotNull(disconnect);

@@ -28,9 +28,6 @@ import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.handler.MqttChannelInitializer;
 import org.mqttbee.mqtt.handler.auth.MqttAuthHandler;
 import org.mqttbee.mqtt.handler.auth.MqttDisconnectOnAuthHandler;
-import org.mqttbee.mqtt.handler.disconnect.Mqtt3DisconnectHandler;
-import org.mqttbee.mqtt.handler.disconnect.Mqtt5DisconnectHandler;
-import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectHandler;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
 import org.mqttbee.mqtt.netty.NettyBootstrap;
 
@@ -53,22 +50,6 @@ abstract class ConnectionModule {
                 .option(ChannelOption.TCP_NODELAY, true)
                 .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
                 .handler(channelInitializer);
-    }
-
-    @Provides
-    @ConnectionScope
-    static MqttDisconnectHandler provideDisconnectHandler(
-            final MqttClientData clientData, final Lazy<Mqtt5DisconnectHandler> mqtt5DisconnectHandlerLazy,
-            final Lazy<Mqtt3DisconnectHandler> mqtt3DisconnectHandlerLazy) {
-
-        switch (clientData.getMqttVersion()) {
-            case MQTT_5_0:
-                return mqtt5DisconnectHandlerLazy.get();
-            case MQTT_3_1_1:
-                return mqtt3DisconnectHandlerLazy.get();
-            default:
-                throw new IllegalStateException();
-        }
     }
 
     @Provides
