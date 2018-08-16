@@ -18,7 +18,7 @@
 package org.mqttbee.mqtt.ioc;
 
 import dagger.Component;
-import org.mqttbee.mqtt.netty.NettyBootstrap;
+import org.mqttbee.mqtt.netty.NettyEventLoopProvider;
 import org.mqttbee.mqtt.netty.NettyModule;
 
 import javax.inject.Singleton;
@@ -34,6 +34,6 @@ public interface MqttBeeComponent {
 
     ClientComponent.Builder clientComponentBuilder();
 
-    NettyBootstrap nettyBootstrap(); // TODO remove
+    NettyEventLoopProvider nettyEventLoopProvider();
 
 }

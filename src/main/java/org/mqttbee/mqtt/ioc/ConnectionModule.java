@@ -29,7 +29,7 @@ import org.mqttbee.mqtt.handler.MqttChannelInitializer;
 import org.mqttbee.mqtt.handler.auth.MqttAuthHandler;
 import org.mqttbee.mqtt.handler.auth.MqttDisconnectOnAuthHandler;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
-import org.mqttbee.mqtt.netty.NettyBootstrap;
+import org.mqttbee.mqtt.netty.NettyEventLoopProvider;
 
 import javax.inject.Named;
 
@@ -41,11 +41,11 @@ abstract class ConnectionModule {
 
     @Provides
     static Bootstrap provideBootstrap(
-            final MqttClientData clientData, final NettyBootstrap nettyBootstrap,
+            final MqttClientData clientData, final NettyEventLoopProvider nettyEventLoopProvider,
             final MqttChannelInitializer channelInitializer) {
 
-        return new Bootstrap().group(nettyBootstrap.getEventLoopGroup(clientData.getExecutorConfig()))
-                .channelFactory(nettyBootstrap.getChannelFactory())
+        return new Bootstrap().group(nettyEventLoopProvider.getEventLoopGroup(clientData.getExecutorConfig()))
+                .channelFactory(nettyEventLoopProvider.getChannelFactory())
                 .option(ChannelOption.SO_KEEPALIVE, true)
                 .option(ChannelOption.TCP_NODELAY, true)
                 .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)

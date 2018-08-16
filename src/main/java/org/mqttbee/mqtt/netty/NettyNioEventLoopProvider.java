@@ -34,10 +34,10 @@ import java.util.concurrent.Executor;
  */
 @Singleton
 @ThreadSafe
-class NettyNioBootstrap extends NettyBootstrap {
+class NettyNioEventLoopProvider extends NettyEventLoopProvider {
 
     @Inject
-    NettyNioBootstrap() {
+    NettyNioEventLoopProvider() {
     }
 
     @NotNull
