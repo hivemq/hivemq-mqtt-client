@@ -69,4 +69,8 @@ public class MqttDisconnectOnAuthHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
+    @Override
+    public boolean isSharable() {
+        return true;
+    }
 }

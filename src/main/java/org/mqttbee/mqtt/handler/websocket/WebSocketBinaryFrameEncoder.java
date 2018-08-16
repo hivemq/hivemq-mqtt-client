@@ -45,4 +45,8 @@ public class WebSocketBinaryFrameEncoder extends MessageToMessageEncoder<ByteBuf
         out.add(new BinaryWebSocketFrame(msg.retain()));
     }
 
+    @Override
+    public boolean isSharable() {
+        return true;
+    }
 }

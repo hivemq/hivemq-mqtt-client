@@ -69,4 +69,8 @@ public class MqttWebSocketClientProtocolHandler extends WebSocketClientProtocolH
         ctx.fireUserEventTriggered(evt);
     }
 
+    @Override
+    public boolean isSharable() {
+        return false;
+    }
 }

@@ -128,4 +128,8 @@ public class MqttDisconnectHandler extends ChannelInboundHandlerAdapter {
         clientData.getRawConnectionState().set(MqttClientConnectionState.DISCONNECTED);
     }
 
+    @Override
+    public boolean isSharable() {
+        return false;
+    }
 }
