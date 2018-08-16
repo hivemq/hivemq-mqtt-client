@@ -50,6 +50,10 @@ public class MqttSubscribeWithFlow {
         this.subscriptionFlow = subscriptionFlow;
     }
 
+    @NotNull SingleFlow<Mqtt5SubAck> getSubAckFlow() {
+        return subAckFlow;
+    }
+
     @NotNull
     MqttStatefulSubscribeWithFlow createStateful(final int packetIdentifier, final int subscriptionIdentifier) {
         return new MqttStatefulSubscribeWithFlow(
