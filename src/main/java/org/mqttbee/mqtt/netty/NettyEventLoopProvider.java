@@ -38,16 +38,16 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @Singleton
 @ThreadSafe
-public abstract class NettyBootstrap {
+public abstract class NettyEventLoopProvider {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(NettyBootstrap.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(NettyEventLoopProvider.class);
 
     private MultithreadEventLoopGroup defaultEventLoopGroup;
     private AtomicInteger defaultEventLoopGroupReferenceCount;
     private Map<Executor, MultithreadEventLoopGroup> eventLoopGroups;
     private Map<Executor, AtomicInteger> eventLoopGroupReferenceCounts;
 
-    NettyBootstrap() {
+    NettyEventLoopProvider() {
     }
 
     @NotNull

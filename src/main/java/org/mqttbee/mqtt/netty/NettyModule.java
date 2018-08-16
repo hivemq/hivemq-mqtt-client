@@ -32,8 +32,9 @@ public class NettyModule {
 
     @Provides
     @Singleton
-    static NettyBootstrap provideNettyBootstrap(
-            final Lazy<NettyNioBootstrap> nioBootstrapLazy, final Lazy<NettyEpollBootstrap> epollBootstrapLazy) {
+    static NettyEventLoopProvider provideNettyEventLoopProvider(
+            final Lazy<NettyNioEventLoopProvider> nioBootstrapLazy,
+            final Lazy<NettyEpollEventLoopProvider> epollBootstrapLazy) {
 
         if (Epoll.isAvailable()) {
             return epollBootstrapLazy.get();
