@@ -19,8 +19,8 @@ package org.mqttbee.mqtt.handler.publish;
 
 import io.reactivex.internal.util.BackpressureHelper;
 import io.reactivex.plugins.RxJavaPlugins;
-import org.mqttbee.annotations.CallByThread;
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.annotations.CallByThread;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
 import org.mqttbee.mqtt.handler.publish.MqttPublishFlowableAckLink.LinkCancellable;
 import org.mqttbee.util.collections.ChunkedArrayQueue;
@@ -41,7 +41,7 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
     private static final int STATE_BLOCKED = 2;
 
     private final Subscriber<? super Mqtt5PublishResult> subscriber;
-    private final MqttOutgoingPublishService outgoingPublishService;
+    private final MqttOutgoingQosHandler outgoingQosHandler;
 
     private long requestedNettyLocal;
     private final AtomicLong newRequested = new AtomicLong();
@@ -61,11 +61,11 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
 
     MqttIncomingAckFlow(
             @NotNull final Subscriber<? super Mqtt5PublishResult> subscriber,
-            @NotNull final MqttOutgoingPublishService outgoingPublishService) {
+            @NotNull final MqttOutgoingQosHandler outgoingQosHandler) {
 
         this.subscriber = subscriber;
-        this.outgoingPublishService = outgoingPublishService;
-        queue = new ChunkedArrayQueue<>(64);
+        this.outgoingQosHandler = outgoingQosHandler;
+        queue = new ChunkedArrayQueue<>(32);
     }
 
     @CallByThread("Netty EventLoop")
@@ -111,7 +111,7 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
             }
             if (requestedNettyLocal != Long.MAX_VALUE) {
                 requestedNettyLocal -= emitted;
-                outgoingPublishService.request(emitted);
+                outgoingQosHandler.request(emitted);
             }
         }
     }
@@ -145,7 +145,7 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
         if (n > 0) {
             BackpressureHelper.add(newRequested, n);
             if (requestState.getAndSet(STATE_NEW_REQUESTS) == STATE_BLOCKED) {
-                outgoingPublishService.getNettyEventLoop().execute(this);
+                outgoingQosHandler.getNettyEventLoop().execute(this);
             }
         }
     }

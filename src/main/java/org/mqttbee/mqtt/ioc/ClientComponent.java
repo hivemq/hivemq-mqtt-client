@@ -22,7 +22,7 @@ import dagger.Subcomponent;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.codec.MqttCodecModule;
 import org.mqttbee.mqtt.handler.publish.MqttIncomingPublishService;
-import org.mqttbee.mqtt.handler.publish.MqttOutgoingPublishService;
+import org.mqttbee.mqtt.handler.publish.MqttOutgoingQosHandler;
 import org.mqttbee.mqtt.handler.publish.MqttPublishFlowables;
 import org.mqttbee.mqtt.handler.subscribe.MqttSubscriptionHandler;
 
@@ -39,7 +39,7 @@ public interface ClientComponent {
 
     MqttIncomingPublishService incomingPublishService();
 
-    MqttOutgoingPublishService outgoingPublishService();
+    MqttOutgoingQosHandler outgoingQosHandler();
 
     MqttPublishFlowables publishFlowables();
 

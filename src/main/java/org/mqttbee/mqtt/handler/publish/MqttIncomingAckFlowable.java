@@ -49,10 +49,10 @@ public class MqttIncomingAckFlowable extends Flowable<Mqtt5PublishResult> {
             EmptySubscription.error(new NotConnectedException(), s);
         } else {
             final ClientComponent clientComponent = clientData.getClientComponent();
-            final MqttOutgoingPublishService outgoingPublishService = clientComponent.outgoingPublishService();
+            final MqttOutgoingQosHandler outgoingQosHandler = clientComponent.outgoingQosHandler();
             final MqttPublishFlowables publishFlowables = clientComponent.publishFlowables();
 
-            final MqttIncomingAckFlow incomingAckFlow = new MqttIncomingAckFlow(s, outgoingPublishService);
+            final MqttIncomingAckFlow incomingAckFlow = new MqttIncomingAckFlow(s, outgoingQosHandler);
             s.onSubscribe(incomingAckFlow);
             publishFlowables.add(new MqttPublishFlowableAckLink(publishFlowable, incomingAckFlow));
         }
