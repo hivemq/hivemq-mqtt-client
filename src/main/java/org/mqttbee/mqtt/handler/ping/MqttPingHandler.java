@@ -24,7 +24,7 @@ import io.netty.handler.timeout.IdleStateHandler;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.handler.util.ChannelInboundHandlerWithTimeout;
-import org.mqttbee.mqtt.ioc.ClientScope;
+import org.mqttbee.mqtt.ioc.ConnectionScope;
 import org.mqttbee.mqtt.message.ping.MqttPingReq;
 import org.mqttbee.mqtt.message.ping.MqttPingResp;
 
@@ -37,7 +37,7 @@ import org.mqttbee.mqtt.message.ping.MqttPingResp;
  *
  * @author Silvio Giebl
  */
-@ClientScope
+@ConnectionScope
 public class MqttPingHandler extends ChannelInboundHandlerWithTimeout {
 
     public static final String NAME = "ping";
