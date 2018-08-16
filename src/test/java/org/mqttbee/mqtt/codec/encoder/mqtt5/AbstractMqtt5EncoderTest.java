@@ -14,6 +14,7 @@
  * limitations under the License.
  *
  */
+
 package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
 import org.jetbrains.annotations.NotNull;
@@ -26,26 +27,15 @@ import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 
 import java.util.Objects;
 
-public class AbstractMqtt5EncoderTest extends AbstractMqttEncoderTest {
-    protected AbstractMqtt5EncoderTest(
-            @NotNull final MqttMessageEncoders messageEncoders,
-            final boolean connected
-    ) {
+class AbstractMqtt5EncoderTest extends AbstractMqttEncoderTest {
+
+    AbstractMqtt5EncoderTest(
+            @NotNull final MqttMessageEncoders messageEncoders, final boolean connected) {
         super(messageEncoders, connected, createClientData());
     }
 
     private static MqttClientData createClientData() {
-        return new MqttClientData(
-                MqttVersion.MQTT_5_0,
-                Objects.requireNonNull(MqttClientIdentifierImpl.from("test")),
-                "localhost",
-                1883,
-                null,
-                null,
-                false,
-                false,
-                MqttClientExecutorConfigImpl.DEFAULT,
-                null
-        );
+        return new MqttClientData(MqttVersion.MQTT_5_0, Objects.requireNonNull(MqttClientIdentifierImpl.from("test")),
+                "localhost", 1883, null, null, false, false, MqttClientExecutorConfigImpl.getDefault(), null);
     }
 }

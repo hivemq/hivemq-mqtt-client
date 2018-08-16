@@ -17,14 +17,12 @@
 
 package org.mqttbee.mqtt;
 
+import io.netty.channel.MultithreadEventLoopGroup;
 import io.reactivex.Scheduler;
-import io.reactivex.schedulers.Schedulers;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.MqttClientExecutorConfig;
-
-import java.util.Optional;
-import java.util.concurrent.Executor;
+import org.mqttbee.mqtt.ioc.MqttBeeComponent;
 
 /**
  * @author Silvio Giebl
@@ -32,42 +30,34 @@ import java.util.concurrent.Executor;
 public class MqttClientExecutorConfigImpl implements MqttClientExecutorConfig {
 
     public static final int DEFAULT_NETTY_THREADS = 0;
-    public static final Scheduler DEFAULT_RX_JAVA_SCHEDULER = Schedulers.computation();
-    public static final MqttClientExecutorConfigImpl DEFAULT =
-            new MqttClientExecutorConfigImpl(null, DEFAULT_NETTY_THREADS, DEFAULT_RX_JAVA_SCHEDULER);
 
-    private final Executor nettyExecutor;
-    private final int nettyThreads;
+    @NotNull
+    public static MqttClientExecutorConfigImpl orDefault(@Nullable final MqttClientExecutorConfigImpl executorConfig) {
+        return (executorConfig == null) ? MqttClientExecutorConfigImpl.getDefault() : executorConfig;
+    }
+
+    @NotNull
+    public static MqttClientExecutorConfigImpl getDefault() {
+        return new MqttClientExecutorConfigImpl(
+                MqttBeeComponent.INSTANCE.nettyEventLoopProvider().getEventLoopGroup(null, DEFAULT_NETTY_THREADS),
+                DEFAULT_APPLICATION_SCHEDULER);
+    }
+
+    private final MultithreadEventLoopGroup nettyEventLoopGroup;
     private final Scheduler applicationScheduler;
 
     public MqttClientExecutorConfigImpl(
-            @Nullable final Executor nettyExecutor, final int nettyThreads,
+            @NotNull final MultithreadEventLoopGroup nettyEventLoopGroup,
             @NotNull final Scheduler applicationScheduler) {
 
-        this.nettyExecutor = nettyExecutor;
-        this.nettyThreads = nettyThreads;
+        this.nettyEventLoopGroup = nettyEventLoopGroup;
         this.applicationScheduler = applicationScheduler;
     }
 
     @NotNull
     @Override
-    public Optional<Executor> getUserDefinedNettyExecutor() {
-        return Optional.ofNullable(nettyExecutor);
-    }
-
-    @Nullable
-    public Executor getRawNettyExecutor() {
-        return nettyExecutor;
-    }
-
-    @NotNull
-    @Override
-    public Optional<Integer> getUserDefinedNettyThreads() {
-        return (nettyThreads == DEFAULT_NETTY_THREADS) ? Optional.empty() : Optional.of(nettyThreads);
-    }
-
-    public int getRawNettyThreads() {
-        return nettyThreads;
+    public MultithreadEventLoopGroup getNettyEventLoopGroup() {
+        return nettyEventLoopGroup;
     }
 
     @NotNull

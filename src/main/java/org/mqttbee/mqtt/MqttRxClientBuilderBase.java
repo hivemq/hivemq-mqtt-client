@@ -43,7 +43,7 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
     private boolean customServerPort = false;
     protected @Nullable MqttClientSslConfigImpl sslConfig;
     protected @Nullable MqttWebSocketConfigImpl webSocketConfig;
-    protected @NotNull MqttClientExecutorConfigImpl executorConfig = MqttClientExecutorConfigImpl.DEFAULT;
+    protected @Nullable MqttClientExecutorConfigImpl executorConfig;
 
     protected MqttRxClientBuilderBase() {}
 

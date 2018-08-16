@@ -17,6 +17,7 @@
 
 package org.mqttbee.mqtt;
 
+import io.netty.channel.EventLoop;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.MqttClientSslConfig;
@@ -48,6 +49,7 @@ public class MqttClientData implements Mqtt5ClientData {
     private final boolean followsRedirects;
     private final boolean allowsServerReAuth;
     private final MqttClientExecutorConfigImpl executorConfig;
+    private final EventLoop eventLoop;
     private final MqttAdvancedClientData advancedClientData;
 
     private final ClientComponent clientComponent;
@@ -73,6 +75,7 @@ public class MqttClientData implements Mqtt5ClientData {
         this.followsRedirects = followsRedirects;
         this.allowsServerReAuth = allowsServerReAuth;
         this.executorConfig = executorConfig;
+        this.eventLoop = executorConfig.getNettyEventLoopGroup().next();
         this.advancedClientData = advancedClientData;
 
         clientComponent = MqttBeeComponent.INSTANCE.clientComponentBuilder().clientData(this).build();
@@ -156,6 +159,11 @@ public class MqttClientData implements Mqtt5ClientData {
     @Override
     public MqttClientExecutorConfigImpl getExecutorConfig() {
         return executorConfig;
+    }
+
+    @NotNull
+    public EventLoop getEventLoop() {
+        return eventLoop;
     }
 
     @NotNull
