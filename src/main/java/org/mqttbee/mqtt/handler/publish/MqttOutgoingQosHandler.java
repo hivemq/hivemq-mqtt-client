@@ -17,14 +17,16 @@
 
 package org.mqttbee.mqtt.handler.publish;
 
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
+import io.netty.util.concurrent.EventExecutor;
+import io.reactivex.FlowableSubscriber;
 import org.jctools.queues.SpscChunkedArrayQueue;
-import org.mqttbee.annotations.CallByThread;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mqttbee.annotations.CallByThread;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5OutgoingQos1ControlProvider;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5OutgoingQos2ControlProvider;
@@ -50,11 +52,11 @@ import org.mqttbee.util.UnsignedDataTypes;
 import org.mqttbee.util.collections.ChunkedArrayQueue;
 import org.mqttbee.util.collections.ChunkedIntArrayQueue;
 import org.mqttbee.util.collections.IntMap;
+import org.reactivestreams.Subscription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import java.util.Queue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.mqttbee.mqtt.message.publish.MqttStatefulPublish.*;
@@ -64,64 +66,116 @@ import static org.mqttbee.mqtt.message.publish.MqttStatefulPublish.*;
  */
 @ClientScope
 public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
-        implements Runnable, GenericFutureListener<Future<? super Void>> {
+        implements FlowableSubscriber<MqttPublishWithFlow>, Runnable, ChannelFutureListener {
 
     public static final String NAME = "qos.outgoing";
+    private static final int MAX_CONCURRENT_PUBLISH_FLOWABLES = 64; // TODO configurable
     private static final Logger LOGGER = LoggerFactory.getLogger(MqttOutgoingQosHandler.class);
 
-    public static int getPubReceiveMaximum(final int receiveMaximum) {
-        final int max = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE - MqttSubscriptionHandler.MAX_SUB_PENDING;
-        return Math.min(receiveMaximum, max);
-    }
-
     private final MqttClientData clientData;
-    private final MqttTopicAliasMapping topicAliasMapping;
 
-    private final AtomicInteger wip = new AtomicInteger();
-    private final Queue<MqttPublishWithFlow> publishQueue = new SpscChunkedArrayQueue<>(32, 1 << 30);
+    private final SpscChunkedArrayQueue<MqttPublishWithFlow> publishQueue = new SpscChunkedArrayQueue<>(32, 1 << 30);
+    private final AtomicInteger queuedCounter = new AtomicInteger();
     private final ChunkedArrayQueue<MqttPublishWithFlow> qos0PublishQueue = new ChunkedArrayQueue<>(32);
     private final ChunkedIntArrayQueue qos1Or2PublishQueue = new ChunkedIntArrayQueue(32);
 
-    private final Ranges packetIdentifiers;
-    private final IntMap<MqttPublishWithFlow> qos1Or2PublishMap;
+    private ChannelHandlerContext ctx;
+    private volatile ChannelHandlerContext ctxVolatile; // TODO inject EventLoop/get from clientData
+    private int sendMaximum;
+    private Ranges packetIdentifiers;
+    private IntMap<MqttPublishWithFlow> qos1Or2PublishMap;
+    private MqttTopicAliasMapping topicAliasMapping;
+    private int shrinkIds;
+    private int shrinkRequests;
 
-    private ChannelHandlerContext ctx; // TODO temp
+    private Subscription subscription;
 
     @Inject
-    MqttOutgoingQosHandler(final MqttClientData clientData) {
-        final MqttServerConnectionData serverConnectionData = clientData.getRawServerConnectionData();
-        assert serverConnectionData != null;
-
+    MqttOutgoingQosHandler(final MqttClientData clientData, final MqttPublishFlowables publishFlowables) {
         this.clientData = clientData;
-        topicAliasMapping = serverConnectionData.getTopicAliasMapping();
-
-        final int pubReceiveMaximum = getPubReceiveMaximum(serverConnectionData.getReceiveMaximum());
-        packetIdentifiers = new Ranges(1, pubReceiveMaximum);
-        qos1Or2PublishMap = IntMap.range(1, pubReceiveMaximum);
+        publishFlowables.flatMap(f -> f, true, MAX_CONCURRENT_PUBLISH_FLOWABLES).subscribe(this);
     }
 
     @Override
     public void handlerAdded(final ChannelHandlerContext ctx) {
         this.ctx = ctx;
+        ctxVolatile = ctx;
+
+        final MqttServerConnectionData serverConnectionData = clientData.getRawServerConnectionData();
+        assert serverConnectionData != null;
+
+        final int oldSendMaximum = sendMaximum;
+        final int newSendMaximum = Math.min(
+                serverConnectionData.getReceiveMaximum(),
+                UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE - MqttSubscriptionHandler.MAX_SUB_PENDING);
+        sendMaximum = newSendMaximum;
+        if (oldSendMaximum == 0) {
+            packetIdentifiers = new Ranges(1, newSendMaximum);
+            qos1Or2PublishMap = IntMap.range(1, newSendMaximum);
+            subscription.request(newSendMaximum);
+        } else {
+            resize();
+            final int newRequests = newSendMaximum - oldSendMaximum - shrinkRequests;
+            if (newRequests > 0) {
+                subscription.request(newRequests);
+                shrinkRequests = 0;
+            } else {
+                shrinkRequests = -newRequests;
+            }
+//            resend(); // TODO
+        }
+        topicAliasMapping = serverConnectionData.getTopicAliasMapping();
     }
 
-    void publish(@NotNull final MqttPublishWithFlow publishWithFlow) {
+    private void resize() {
+        shrinkIds = packetIdentifiers.resize(sendMaximum);
+        if (shrinkIds == 0) {
+            qos1Or2PublishMap = IntMap.resize(qos1Or2PublishMap, sendMaximum);
+        }
+    }
+
+    @Override
+    public void onSubscribe(final Subscription subscription) {
+        this.subscription = subscription;
+    }
+
+    @Override
+    public void onNext(final MqttPublishWithFlow publishWithFlow) {
         publishQueue.offer(publishWithFlow);
-        if (wip.getAndIncrement() == 0) {
-            ctx.executor().execute(this);
+        if (queuedCounter.getAndIncrement() == 0) {
+            getNettyEventLoop().execute(this);
+        }
+    }
+
+    @Override
+    public void onComplete() {
+        LOGGER.error("MqttPublishFlowables is global and must never complete. This must not happen and is a bug.");
+    }
+
+    @Override
+    public void onError(final Throwable t) {
+        LOGGER.error("MqttPublishFlowables is global and must never error. This must not happen and is a bug.");
+    }
+
+    @CallByThread("Netty EventLoop")
+    void request(final long amount) {
+        if (shrinkRequests == 0) {
+            subscription.request(amount);
+        } else {
+            shrinkRequests--;
         }
     }
 
     @CallByThread("Netty EventLoop")
     public void run() {
-        final int working = Math.min(wip.get(), 64);
+        final int working = Math.min(queuedCounter.get(), 64);
         for (int i = 0; i < working; i++) {
             final MqttPublishWithFlow publishWithFlow = publishQueue.poll();
             assert publishWithFlow != null; // ensured by wip
             handlePublish(publishWithFlow);
         }
         ctx.flush();
-        if (wip.addAndGet(-working) > 0) {
+        if (queuedCounter.addAndGet(-working) > 0) {
             ctx.executor().execute(this);
         }
     }
@@ -140,9 +194,9 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
     }
 
     @Override
-    public void operationComplete(final Future<? super Void> future) {
+    public void operationComplete(final ChannelFuture future) {
         final MqttPublishWithFlow publishWithFlow = qos0PublishQueue.poll();
-        assert publishWithFlow != null; // ensured by wip
+        assert publishWithFlow != null; // ensured by handleQos0Publish
         publishWithFlow.getIncomingAckFlow()
                 .onNext(new MqttPublishResult(publishWithFlow.getPublish(), future.cause()));
     }
@@ -155,7 +209,7 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
         }
         qos1Or2PublishMap.put(packetIdentifier, publishWithFlow);
         qos1Or2PublishQueue.offer(packetIdentifier);
-        ctx.write(addState(publishWithFlow.getPublish(), packetIdentifier, false));
+        ctx.write(addState(publishWithFlow.getPublish(), packetIdentifier, false), ctx.voidPromise());
     }
 
     @NotNull
@@ -302,6 +356,11 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
         } else {
             qos1Or2PublishQueue.removeFirst(packetIdentifier);
             packetIdentifiers.returnId(packetIdentifier);
+            if (packetIdentifier > sendMaximum) {
+                if (--shrinkIds == 0) {
+                    resize();
+                }
+            }
         }
         return checkedPublishWithFlow;
     }
@@ -324,6 +383,10 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
             return null;
         }
         return publishWithFlow;
+    }
+
+    @NotNull EventExecutor getNettyEventLoop() {
+        return ctxVolatile.executor();
     }
 
 }
