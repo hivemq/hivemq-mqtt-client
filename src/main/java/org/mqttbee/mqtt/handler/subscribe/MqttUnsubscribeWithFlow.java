@@ -38,6 +38,10 @@ class MqttUnsubscribeWithFlow {
         this.unsubAckFlow = unsubAckFlow;
     }
 
+    @NotNull SingleFlow<Mqtt5UnsubAck> getUnsubAckFlow() {
+        return unsubAckFlow;
+    }
+
     @NotNull
     MqttStatefulUnsubscribeWithFlow createStateful(final int packetIdentifier) {
         return new MqttStatefulUnsubscribeWithFlow(unsubscribe.createStateful(packetIdentifier), unsubAckFlow);
