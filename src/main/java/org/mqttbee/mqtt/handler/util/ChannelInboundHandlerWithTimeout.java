@@ -19,8 +19,8 @@ package org.mqttbee.mqtt.handler.util;
 
 import io.netty.channel.*;
 import io.netty.util.concurrent.ScheduledFuture;
-import org.mqttbee.annotations.CallByThread;
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.annotations.CallByThread;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 
@@ -112,4 +112,8 @@ public abstract class ChannelInboundHandlerWithTimeout extends ChannelInboundHan
     @NotNull
     protected abstract String getTimeoutReasonString();
 
+    @Override
+    public final boolean isSharable() {
+        return false;
+    }
 }

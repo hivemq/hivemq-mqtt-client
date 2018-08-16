@@ -59,4 +59,8 @@ public class MqttDisconnectOnConnAckHandler extends ChannelInboundHandlerAdapter
                 new Mqtt5MessageException(connAck, "Must not receive second CONNACK"));
     }
 
+    @Override
+    public boolean isSharable() {
+        return true;
+    }
 }

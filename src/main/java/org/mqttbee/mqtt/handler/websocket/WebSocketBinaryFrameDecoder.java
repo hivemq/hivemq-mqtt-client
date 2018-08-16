@@ -47,4 +47,8 @@ public class WebSocketBinaryFrameDecoder extends MessageToMessageDecoder<WebSock
         }
     }
 
+    @Override
+    public boolean isSharable() {
+        return true;
+    }
 }
