@@ -80,7 +80,6 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
     private final ChunkedIntArrayQueue qos1Or2PublishQueue = new ChunkedIntArrayQueue(32);
 
     private ChannelHandlerContext ctx;
-    private volatile ChannelHandlerContext ctxVolatile; // TODO inject EventLoop/get from clientData
     private int sendMaximum;
     private Ranges packetIdentifiers;
     private IntMap<MqttPublishWithFlow> qos1Or2PublishMap;
@@ -99,7 +98,6 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
     @Override
     public void handlerAdded(final ChannelHandlerContext ctx) {
         this.ctx = ctx;
-        ctxVolatile = ctx;
 
         final MqttServerConnectionData serverConnectionData = clientData.getRawServerConnectionData();
         assert serverConnectionData != null;
@@ -143,7 +141,7 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
     public void onNext(final MqttPublishWithFlow publishWithFlow) {
         publishQueue.offer(publishWithFlow);
         if (queuedCounter.getAndIncrement() == 0) {
-            getNettyEventLoop().execute(this);
+            clientData.getEventLoop().execute(this);
         }
     }
 
@@ -386,7 +384,11 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
     }
 
     @NotNull EventExecutor getNettyEventLoop() {
-        return ctxVolatile.executor();
+        return clientData.getEventLoop();
     }
 
+    @Override
+    public boolean isSharable() {
+        return clientData.getEventLoop().inEventLoop() && (ctx == null);
+    }
 }

@@ -231,4 +231,8 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter {
         return pubCompBuilder.build();
     }
 
+    @Override
+    public boolean isSharable() {
+        return clientData.getEventLoop().inEventLoop() && (ctx == null);
+    }
 }

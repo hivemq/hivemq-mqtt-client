@@ -69,6 +69,7 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter implem
         ALL_ERRORS
     }
 
+    private final MqttClientData clientData;
     private final MqttIncomingPublishFlows subscriptionFlows;
 
     private final SpscLinkedQueue<Object> queued = new SpscLinkedQueue<>(); // contains Mqtt(Un)SubscribeWithFlow
@@ -78,10 +79,10 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter implem
     private final Ranges subscriptionIdentifiers;
 
     private ChannelHandlerContext ctx;
-    private volatile ChannelHandlerContext ctxVolatile; // TODO inject EventLoop/get from clientData
 
     @Inject
-    MqttSubscriptionHandler(final MqttIncomingPublishFlows subscriptionFlows, final MqttClientData clientData) {
+    MqttSubscriptionHandler(final MqttClientData clientData, final MqttIncomingPublishFlows subscriptionFlows) {
+        this.clientData = clientData;
         this.subscriptionFlows = subscriptionFlows;
 
         final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
@@ -97,7 +98,6 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter implem
     @Override
     public void handlerAdded(final ChannelHandlerContext ctx) {
         this.ctx = ctx;
-        ctxVolatile = ctx;
     }
 
     public void subscribe(@NotNull final MqttSubscribeWithFlow subscribeWithFlow) {
@@ -112,7 +112,7 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter implem
 
     private void trySchedule() {
         if (queuedCounter.getAndIncrement() == 0) {
-            ctxVolatile.executor().execute(this);
+            clientData.getEventLoop().execute(this);
         }
     }
 
@@ -356,4 +356,8 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter implem
         return ReasonCodesState.ALL_ERRORS;
     }
 
+    @Override
+    public boolean isSharable() {
+        return clientData.getEventLoop().inEventLoop() && (ctx == null);
+    }
 }

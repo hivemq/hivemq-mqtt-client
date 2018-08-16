@@ -36,27 +36,22 @@ import java.util.concurrent.Executor;
 @ThreadSafe
 class NettyEpollEventLoopProvider extends NettyEventLoopProvider {
 
+    private static final ChannelFactory<EpollSocketChannel> CHANNEL_FACTORY = EpollSocketChannel::new;
+
     @Inject
     NettyEpollEventLoopProvider() {
     }
 
     @NotNull
     @Override
-    MultithreadEventLoopGroup newDefaultEventLoopGroup(final int numberOfNettyThreads) {
-        return new EpollEventLoopGroup(numberOfNettyThreads);
-    }
-
-    @NotNull
-    @Override
-    MultithreadEventLoopGroup newExecutorEventLoopGroup(
-            @Nullable final Executor executor, final int numberOfNettyThreads) {
-        return new EpollEventLoopGroup(numberOfNettyThreads, executor);
+    MultithreadEventLoopGroup newEventLoopGroup(@Nullable final Executor executor, final int threadCount) {
+        return new EpollEventLoopGroup(threadCount, executor);
     }
 
     @NotNull
     @Override
     public ChannelFactory<EpollSocketChannel> getChannelFactory() {
-        return EpollSocketChannel::new;
+        return CHANNEL_FACTORY;
     }
 
 }

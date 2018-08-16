@@ -44,7 +44,7 @@ abstract class ConnectionModule {
             final MqttClientData clientData, final NettyEventLoopProvider nettyEventLoopProvider,
             final MqttChannelInitializer channelInitializer) {
 
-        return new Bootstrap().group(nettyEventLoopProvider.getEventLoopGroup(clientData.getExecutorConfig()))
+        return new Bootstrap().group(clientData.getEventLoop())
                 .channelFactory(nettyEventLoopProvider.getChannelFactory())
                 .option(ChannelOption.SO_KEEPALIVE, true)
                 .option(ChannelOption.TCP_NODELAY, true)

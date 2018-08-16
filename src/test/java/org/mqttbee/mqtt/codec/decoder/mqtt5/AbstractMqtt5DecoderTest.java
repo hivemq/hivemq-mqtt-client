@@ -37,7 +37,7 @@ abstract class AbstractMqtt5DecoderTest extends AbstractMqttDecoderTest {
     @NotNull
     private static MqttClientData createClientData() {
         return new MqttClientData(MqttVersion.MQTT_5_0, Objects.requireNonNull(MqttClientIdentifierImpl.from("test")),
-                "localhost", 1883, null, null, false, false, MqttClientExecutorConfigImpl.DEFAULT, null);
+                "localhost", 1883, null, null, false, false, MqttClientExecutorConfigImpl.getDefault(), null);
     }
 
     AbstractMqtt5DecoderTest(@NotNull final MqttMessageDecoders decoders) {

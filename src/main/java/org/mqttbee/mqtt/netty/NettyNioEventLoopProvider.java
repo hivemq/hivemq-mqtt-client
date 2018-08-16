@@ -36,27 +36,22 @@ import java.util.concurrent.Executor;
 @ThreadSafe
 class NettyNioEventLoopProvider extends NettyEventLoopProvider {
 
+    private static final ChannelFactory<NioSocketChannel> CHANNEL_FACTORY = NioSocketChannel::new;
+
     @Inject
     NettyNioEventLoopProvider() {
     }
 
     @NotNull
     @Override
-    MultithreadEventLoopGroup newDefaultEventLoopGroup(final int numberOfNettyThreads) {
-        return new NioEventLoopGroup(numberOfNettyThreads);
-    }
-
-    @NotNull
-    @Override
-    MultithreadEventLoopGroup newExecutorEventLoopGroup(
-            @Nullable final Executor executor, final int numberOfNettyThreads) {
-        return new NioEventLoopGroup(numberOfNettyThreads, executor);
+    MultithreadEventLoopGroup newEventLoopGroup(@Nullable final Executor executor, final int threadCount) {
+        return new NioEventLoopGroup(threadCount, executor);
     }
 
     @NotNull
     @Override
     public ChannelFactory<NioSocketChannel> getChannelFactory() {
-        return NioSocketChannel::new;
+        return CHANNEL_FACTORY;
     }
 
 }
