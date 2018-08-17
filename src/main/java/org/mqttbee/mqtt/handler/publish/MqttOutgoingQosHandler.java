@@ -73,6 +73,7 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
     private static final Logger LOGGER = LoggerFactory.getLogger(MqttOutgoingQosHandler.class);
 
     private final MqttClientData clientData;
+    private final MqttPublishFlowables publishFlowables;
 
     private final SpscChunkedArrayQueue<MqttPublishWithFlow> publishQueue = new SpscChunkedArrayQueue<>(32, 1 << 30);
     private final AtomicInteger queuedCounter = new AtomicInteger();
@@ -92,7 +93,7 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
     @Inject
     MqttOutgoingQosHandler(final MqttClientData clientData, final MqttPublishFlowables publishFlowables) {
         this.clientData = clientData;
-        publishFlowables.flatMap(f -> f, true, MAX_CONCURRENT_PUBLISH_FLOWABLES).subscribe(this);
+        this.publishFlowables = publishFlowables;
     }
 
     @Override
@@ -108,6 +109,7 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
                 UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE - MqttSubscriptionHandler.MAX_SUB_PENDING);
         sendMaximum = newSendMaximum;
         if (oldSendMaximum == 0) {
+            publishFlowables.flatMap(f -> f, true, MAX_CONCURRENT_PUBLISH_FLOWABLES).subscribe(this);
             packetIdentifiers = new Ranges(1, newSendMaximum);
             qos1Or2PublishMap = IntMap.range(1, newSendMaximum);
             subscription.request(newSendMaximum);
@@ -385,6 +387,10 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
 
     @NotNull EventExecutor getNettyEventLoop() {
         return clientData.getEventLoop();
+    }
+
+    @NotNull MqttPublishFlowables getPublishFlowables() {
+        return publishFlowables;
     }
 
     @Override
