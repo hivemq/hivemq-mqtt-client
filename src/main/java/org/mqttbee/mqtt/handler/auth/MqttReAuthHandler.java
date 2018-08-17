@@ -30,7 +30,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.handler.disconnect.ChannelCloseEvent;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
-import org.mqttbee.mqtt.ioc.ClientScope;
+import org.mqttbee.mqtt.ioc.ConnectionScope;
 import org.mqttbee.mqtt.message.auth.MqttAuth;
 import org.mqttbee.mqtt.message.auth.MqttAuthBuilder;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
@@ -43,7 +43,7 @@ import static org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode.REAUTH
  *
  * @author Silvio Giebl
  */
-@ClientScope
+@ConnectionScope
 public class MqttReAuthHandler extends AbstractMqttAuthHandler {
 
     public static final String NAME = "reauth";

@@ -24,7 +24,7 @@ import io.netty.channel.ChannelPromise;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.MqttServerConnectionData;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
-import org.mqttbee.mqtt.ioc.ClientScope;
+import org.mqttbee.mqtt.ioc.ConnectionScope;
 import org.mqttbee.mqtt.message.MqttMessage;
 
 import javax.inject.Inject;
@@ -34,7 +34,7 @@ import javax.inject.Inject;
  *
  * @author Silvio Giebl
  */
-@ClientScope
+@ConnectionScope
 public class MqttEncoder extends ChannelOutboundHandlerAdapter {
 
     public static final String NAME = "encoder";

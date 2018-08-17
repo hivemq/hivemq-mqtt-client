@@ -27,7 +27,7 @@ import org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5ClientMessageDecoders;
 import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoders;
 import org.mqttbee.mqtt.codec.encoder.mqtt3.Mqtt3ClientMessageEncoders;
 import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5ClientMessageEncoders;
-import org.mqttbee.mqtt.ioc.ClientScope;
+import org.mqttbee.mqtt.ioc.ConnectionScope;
 
 /**
  * @author Silvio Giebl
@@ -36,7 +36,7 @@ import org.mqttbee.mqtt.ioc.ClientScope;
 public class MqttCodecModule {
 
     @Provides
-    @ClientScope
+    @ConnectionScope
     static MqttMessageDecoders provideMessageDecoders(
             final MqttClientData clientData, final Lazy<Mqtt5ClientMessageDecoders> mqtt5ClientMessageDecoders,
             final Lazy<Mqtt3ClientMessageDecoders> mqtt3ClientMessageDecoders) {
@@ -52,7 +52,7 @@ public class MqttCodecModule {
     }
 
     @Provides
-    @ClientScope
+    @ConnectionScope
     static MqttMessageEncoders provideMessageEncoders(
             final MqttClientData clientData, final Lazy<Mqtt5ClientMessageEncoders> mqtt5ClientMessageEncoders,
             final Lazy<Mqtt3ClientMessageEncoders> mqtt3ClientMessageEncoders) {

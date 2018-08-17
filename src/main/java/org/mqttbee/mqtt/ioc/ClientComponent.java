@@ -20,7 +20,6 @@ package org.mqttbee.mqtt.ioc;
 import dagger.BindsInstance;
 import dagger.Subcomponent;
 import org.mqttbee.mqtt.MqttClientData;
-import org.mqttbee.mqtt.codec.MqttCodecModule;
 import org.mqttbee.mqtt.handler.publish.MqttIncomingPublishService;
 import org.mqttbee.mqtt.handler.publish.MqttOutgoingQosHandler;
 import org.mqttbee.mqtt.handler.subscribe.MqttSubscriptionHandler;
@@ -30,7 +29,7 @@ import org.mqttbee.mqtt.handler.subscribe.MqttSubscriptionHandler;
  *
  * @author Silvio Giebl
  */
-@Subcomponent(modules = {ClientModule.class, MqttCodecModule.class})
+@Subcomponent(modules = {ClientModule.class})
 @ClientScope
 public interface ClientComponent {
 
