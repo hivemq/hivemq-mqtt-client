@@ -24,10 +24,19 @@ import java.lang.annotation.Retention;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
+ * Scope for the lifetime of a single client object.
+ * <p>
+ * {@code |<-------------------- Singleton -------------------->|}
+ * <p>
+ * {@code ___|<----- ClientScope for client 1 ----->|____________}
+ * <p>
+ * {@code _____________|<- ClientScope for client 2 ->|__________}
+ *
  * @author Silvio Giebl
  */
 @Scope
 @Documented
 @Retention(RUNTIME)
 public @interface ClientScope {
+
 }

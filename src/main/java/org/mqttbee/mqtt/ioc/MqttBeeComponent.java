@@ -24,6 +24,8 @@ import org.mqttbee.mqtt.netty.NettyModule;
 import javax.inject.Singleton;
 
 /**
+ * Singleton component for all clients. It exists the whole application lifetime.
+ *
  * @author Silvio Giebl
  */
 @Component(modules = {NettyModule.class})
