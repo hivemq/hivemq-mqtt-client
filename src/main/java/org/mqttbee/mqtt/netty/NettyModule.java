@@ -33,13 +33,13 @@ public abstract class NettyModule {
     @Provides
     @Singleton
     static NettyEventLoopProvider provideNettyEventLoopProvider(
-            final Lazy<NettyNioEventLoopProvider> nioBootstrapLazy,
-            final Lazy<NettyEpollEventLoopProvider> epollBootstrapLazy) {
+            final Lazy<NettyNioEventLoopProvider> nioEventLoopProviderLazy,
+            final Lazy<NettyEpollEventLoopProvider> epollEventLoopProviderLazy) {
 
         if (Epoll.isAvailable()) {
-            return epollBootstrapLazy.get();
+            return epollEventLoopProviderLazy.get();
         } else {
-            return nioBootstrapLazy.get();
+            return nioEventLoopProviderLazy.get();
         }
     }
 

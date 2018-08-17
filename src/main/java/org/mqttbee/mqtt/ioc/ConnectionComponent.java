@@ -22,6 +22,7 @@ import dagger.Subcomponent;
 import io.netty.bootstrap.Bootstrap;
 import io.reactivex.SingleEmitter;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
+import org.mqttbee.mqtt.codec.MqttCodecModule;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
 
 /**
@@ -29,7 +30,7 @@ import org.mqttbee.mqtt.message.connect.MqttConnect;
  *
  * @author Silvio Giebl
  */
-@Subcomponent(modules = {ConnectionModule.class})
+@Subcomponent(modules = {ConnectionModule.class, MqttCodecModule.class})
 @ConnectionScope
 public interface ConnectionComponent {
 

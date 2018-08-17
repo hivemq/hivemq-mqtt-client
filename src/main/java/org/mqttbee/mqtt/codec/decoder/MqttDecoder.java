@@ -26,7 +26,7 @@ import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
-import org.mqttbee.mqtt.ioc.ClientScope;
+import org.mqttbee.mqtt.ioc.ConnectionScope;
 import org.mqttbee.mqtt.message.MqttMessage;
 
 import javax.inject.Inject;
@@ -38,7 +38,7 @@ import java.util.List;
  *
  * @author Silvio Giebl
  */
-@ClientScope
+@ConnectionScope
 public class MqttDecoder extends ByteToMessageDecoder {
 
     public static final String NAME = "decoder";
