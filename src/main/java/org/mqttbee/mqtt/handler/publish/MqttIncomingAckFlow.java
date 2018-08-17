@@ -111,8 +111,8 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
             }
             if (requestedNettyLocal != Long.MAX_VALUE) {
                 requestedNettyLocal -= emitted;
-                outgoingQosHandler.request(emitted);
             }
+            outgoingQosHandler.request(emitted);
         }
     }
 
