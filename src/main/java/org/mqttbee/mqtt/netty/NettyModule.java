@@ -28,7 +28,7 @@ import javax.inject.Singleton;
  * @author Silvio Giebl
  */
 @Module
-public class NettyModule {
+public abstract class NettyModule {
 
     @Provides
     @Singleton

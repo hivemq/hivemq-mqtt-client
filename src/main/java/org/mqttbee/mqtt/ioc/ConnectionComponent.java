@@ -25,6 +25,8 @@ import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
 
 /**
+ * Component for a single client connection. A new one is created for each new client connection (also for reconnects).
+ *
  * @author Silvio Giebl
  */
 @Subcomponent(modules = {ConnectionModule.class})
@@ -37,10 +39,10 @@ public interface ConnectionComponent {
     interface Builder {
 
         @BindsInstance
-        ConnectionComponent.Builder connect(MqttConnect connect);
+        Builder connect(MqttConnect connect);
 
         @BindsInstance
-        ConnectionComponent.Builder connAckEmitter(SingleEmitter<Mqtt5ConnAck> connAckEmitter);
+        Builder connAckEmitter(SingleEmitter<Mqtt5ConnAck> connAckEmitter);
 
         ConnectionComponent build();
 

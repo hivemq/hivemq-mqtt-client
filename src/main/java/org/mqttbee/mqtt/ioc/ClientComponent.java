@@ -26,6 +26,8 @@ import org.mqttbee.mqtt.handler.publish.MqttOutgoingQosHandler;
 import org.mqttbee.mqtt.handler.subscribe.MqttSubscriptionHandler;
 
 /**
+ * Component for a single client. A new one is created for each client and exists as long as the client object exists.
+ *
  * @author Silvio Giebl
  */
 @Subcomponent(modules = {ClientModule.class, MqttCodecModule.class})
