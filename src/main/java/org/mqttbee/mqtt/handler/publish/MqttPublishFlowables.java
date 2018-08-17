@@ -77,7 +77,7 @@ public class MqttPublishFlowables extends Flowable<Flowable<MqttPublishWithFlow>
 
     @Override
     public void cancel() {
-        LOGGER.error("MqttPublishFlowables is global and should never be cancelled.");
+        subscriber = null;
     }
 
 }

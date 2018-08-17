@@ -54,7 +54,7 @@ public class MqttSubscriptionFlowable extends Flowable<Mqtt5SubscribeResult> {
 
             final MqttSubscriptionFlow flow = new MqttSubscriptionFlow(s, incomingPublishService);
             s.onSubscribe(flow);
-            subscriptionHandler.subscribe(new MqttSubscribeWithFlow(subscribe, flow)); // TODO temp
+            subscriptionHandler.subscribe(new MqttSubscribeWithFlow(subscribe, flow));
         }
     }
 
