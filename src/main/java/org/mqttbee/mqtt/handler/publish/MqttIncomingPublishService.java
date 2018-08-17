@@ -18,8 +18,8 @@
 package org.mqttbee.mqtt.handler.publish;
 
 import io.netty.channel.EventLoop;
-import org.mqttbee.annotations.CallByThread;
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.annotations.CallByThread;
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.ioc.ClientScope;
@@ -41,11 +41,12 @@ public class MqttIncomingPublishService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MqttIncomingPublishService.class);
 
+    private final MqttClientData clientData;
     private final MqttIncomingQosHandler incomingQosHandler; // TODO temp
     private final MqttIncomingPublishFlows incomingPublishFlows;
-    private final EventLoop nettyEventLoop;
 
     private final ChunkedArrayQueue<QueueEntry> queue;
+
     private final int receiveMaximum;
 
     private int referencedFlowCount;
@@ -54,17 +55,17 @@ public class MqttIncomingPublishService {
 
     @Inject
     MqttIncomingPublishService(
-            final MqttIncomingQosHandler incomingQosHandler, final MqttIncomingPublishFlows incomingPublishFlows,
-            final MqttClientData clientData) {
+            final MqttClientData clientData, final MqttIncomingQosHandler incomingQosHandler,
+            final MqttIncomingPublishFlows incomingPublishFlows) {
+
+        this.clientData = clientData;
+        this.incomingQosHandler = incomingQosHandler; // TODO temp
+        this.incomingPublishFlows = incomingPublishFlows;
+
+        queue = new ChunkedArrayQueue<>(32);
 
         final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
         assert clientConnectionData != null;
-
-        this.incomingQosHandler = incomingQosHandler; // TODO temp
-        this.incomingPublishFlows = incomingPublishFlows;
-        nettyEventLoop = clientConnectionData.getChannel().eventLoop();
-
-        queue = new ChunkedArrayQueue<>(32);
         receiveMaximum = clientConnectionData.getReceiveMaximum();
     }
 
@@ -158,7 +159,7 @@ public class MqttIncomingPublishService {
 
     @NotNull
     EventLoop getNettyEventLoop() {
-        return nettyEventLoop;
+        return clientData.getEventLoop();
     }
 
     private static class QueueEntry {
