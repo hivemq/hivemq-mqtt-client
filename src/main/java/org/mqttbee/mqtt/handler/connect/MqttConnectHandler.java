@@ -67,30 +67,30 @@ import javax.inject.Inject;
 @ConnectionScope
 public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
 
-    public static final String NAME = "connect";
-    private static final Logger LOGGER = LoggerFactory.getLogger(MqttConnectHandler.class);
+    public static final @NotNull String NAME = "connect";
+    private static final @NotNull Logger LOGGER = LoggerFactory.getLogger(MqttConnectHandler.class);
     private static final int CONNACK_TIMEOUT = 60; // TODO configurable
 
-    private final MqttConnect connect;
-    private final SingleEmitter<Mqtt5ConnAck> connAckEmitter;
-    private final MqttClientData clientData;
+    private final @NotNull MqttConnect connect;
+    private final @NotNull SingleEmitter<Mqtt5ConnAck> connAckEmitter;
+    private final @NotNull MqttClientData clientData;
 
-    private final MqttDecoder decoder;
-    private final Lazy<MqttSubscriptionHandler> subscriptionHandler;
-    private final Lazy<MqttIncomingQosHandler> incomingQosHandler;
-    private final Lazy<MqttOutgoingQosHandler> outgoingQosHandler;
-    private final MqttDisconnectOnConnAckHandler disconnectOnConnAckHandler;
+    private final @NotNull MqttDecoder decoder;
+    private final @NotNull Lazy<MqttSubscriptionHandler> subscriptionHandler;
+    private final @NotNull Lazy<MqttIncomingQosHandler> incomingQosHandler;
+    private final @NotNull MqttOutgoingQosHandler outgoingQosHandler;
+    private final @NotNull MqttDisconnectOnConnAckHandler disconnectOnConnAckHandler;
 
     private boolean connectCalled = false;
 
     @Inject
     MqttConnectHandler(
-            final MqttConnect connect, final SingleEmitter<Mqtt5ConnAck> connAckEmitter,
-            final MqttClientData clientData, final MqttDecoder decoder,
-            final Lazy<MqttSubscriptionHandler> subscriptionHandler,
-            final Lazy<MqttIncomingQosHandler> incomingQosHandler,
-            final Lazy<MqttOutgoingQosHandler> outgoingQosHandler,
-            final MqttDisconnectOnConnAckHandler disconnectOnConnAckHandler) {
+            final @NotNull MqttConnect connect, final @NotNull SingleEmitter<Mqtt5ConnAck> connAckEmitter,
+            final @NotNull MqttClientData clientData, final @NotNull MqttDecoder decoder,
+            final @NotNull Lazy<MqttSubscriptionHandler> subscriptionHandler,
+            final @NotNull Lazy<MqttIncomingQosHandler> incomingQosHandler,
+            final @NotNull MqttOutgoingQosHandler outgoingQosHandler,
+            final @NotNull MqttDisconnectOnConnAckHandler disconnectOnConnAckHandler) {
 
         this.connect = connect;
         this.connAckEmitter = connAckEmitter;
@@ -103,7 +103,7 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
     }
 
     @Override
-    public void channelActive(final ChannelHandlerContext ctx) {
+    public void channelActive(@NotNull final ChannelHandlerContext ctx) {
         if (!connectCalled) {
             connectCalled = true;
             writeConnect(ctx);
@@ -112,7 +112,7 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
     }
 
     @Override
-    public void handlerAdded(final ChannelHandlerContext ctx) {
+    public void handlerAdded(@NotNull final ChannelHandlerContext ctx) {
         super.handlerAdded(ctx);
 
         if (!connectCalled && ctx.channel().isActive()) {
@@ -141,7 +141,7 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
     }
 
     @Override
-    public void operationComplete(final ChannelFuture future) {
+    public void operationComplete(@NotNull final ChannelFuture future) {
         final Channel channel = future.channel();
         if (future.isSuccess()) {
             if (connect.getRawEnhancedAuthProvider() == null) {
@@ -171,7 +171,7 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
     }
 
     @Override
-    public void channelRead(final ChannelHandlerContext ctx, final Object msg) {
+    public void channelRead(@NotNull final ChannelHandlerContext ctx, @NotNull final Object msg) {
         cancelTimeout();
 
         if (msg instanceof MqttConnAck) {
@@ -216,7 +216,7 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
 
                 pipeline.addAfter(beforeHandlerName, MqttSubscriptionHandler.NAME, subscriptionHandler.get());
                 pipeline.addAfter(beforeHandlerName, MqttIncomingQosHandler.NAME, incomingQosHandler.get());
-                pipeline.addAfter(beforeHandlerName, MqttOutgoingQosHandler.NAME, outgoingQosHandler.get());
+                pipeline.addAfter(beforeHandlerName, MqttOutgoingQosHandler.NAME, outgoingQosHandler);
                 pipeline.addLast(MqttDisconnectOnConnAckHandler.NAME, disconnectOnConnAckHandler);
 
                 clientData.getRawConnectionState().set(MqttClientConnectionState.CONNECTED);
@@ -317,7 +317,7 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
     }
 
     @Override
-    public void userEventTriggered(final ChannelHandlerContext ctx, final Object evt) {
+    public void userEventTriggered(@NotNull final ChannelHandlerContext ctx, @NotNull final Object evt) {
         if (evt instanceof ChannelCloseEvent) {
             connAckEmitter.onError(((ChannelCloseEvent) evt).getCause());
         }
