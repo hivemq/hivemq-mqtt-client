@@ -22,16 +22,15 @@ import dagger.Module;
 import dagger.Provides;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
-import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelOption;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.handler.MqttChannelInitializer;
 import org.mqttbee.mqtt.handler.auth.MqttAuthHandler;
+import org.mqttbee.mqtt.handler.auth.MqttConnectAuthHandler;
 import org.mqttbee.mqtt.handler.auth.MqttDisconnectOnAuthHandler;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
 import org.mqttbee.mqtt.netty.NettyEventLoopProvider;
-
-import javax.inject.Named;
 
 /**
  * @author Silvio Giebl
@@ -40,9 +39,9 @@ import javax.inject.Named;
 abstract class ConnectionModule {
 
     @Provides
-    static Bootstrap provideBootstrap(
-            final MqttClientData clientData, final NettyEventLoopProvider nettyEventLoopProvider,
-            final MqttChannelInitializer channelInitializer) {
+    static @NotNull Bootstrap provideBootstrap(
+            final @NotNull MqttClientData clientData, final @NotNull NettyEventLoopProvider nettyEventLoopProvider,
+            final @NotNull MqttChannelInitializer channelInitializer) {
 
         return new Bootstrap().group(clientData.getEventLoop())
                 .channelFactory(nettyEventLoopProvider.getChannelFactory())
@@ -54,13 +53,12 @@ abstract class ConnectionModule {
 
     @Provides
     @ConnectionScope
-    @Named("Auth")
-    static ChannelHandler provideAuthHandler(
-            final MqttConnect connect, final Lazy<MqttAuthHandler> authHandlerLazy,
-            final Lazy<MqttDisconnectOnAuthHandler> disconnectOnAuthHandlerLazy) {
+    static @NotNull MqttAuthHandler provideAuthHandler(
+            final @NotNull MqttConnect connect, final @NotNull Lazy<MqttConnectAuthHandler> connectAuthHandlerLazy,
+            final @NotNull Lazy<MqttDisconnectOnAuthHandler> disconnectOnAuthHandlerLazy) {
 
         return (connect.getRawEnhancedAuthProvider() == null) ? disconnectOnAuthHandlerLazy.get() :
-                authHandlerLazy.get();
+                connectAuthHandlerLazy.get();
     }
 
 }

@@ -38,14 +38,14 @@ import javax.inject.Singleton;
  */
 @ChannelHandler.Sharable
 @Singleton
-public class MqttDisconnectOnAuthHandler extends ChannelInboundHandlerAdapter {
+public class MqttDisconnectOnAuthHandler extends ChannelInboundHandlerAdapter implements MqttAuthHandler {
 
     @Inject
     MqttDisconnectOnAuthHandler() {
     }
 
     @Override
-    public void channelRead(final ChannelHandlerContext ctx, final Object msg) {
+    public void channelRead(final @NotNull ChannelHandlerContext ctx, final @NotNull Object msg) {
         if (msg instanceof MqttAuth) {
             readAuth(ctx, (MqttAuth) msg);
         } else if (msg instanceof MqttConnAck) {
@@ -55,12 +55,12 @@ public class MqttDisconnectOnAuthHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
-    private void readAuth(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttAuth auth) {
+    private void readAuth(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttAuth auth) {
         MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
                 new Mqtt5MessageException(auth, "Server must not send AUTH"));
     }
 
-    private void readConnAck(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttConnAck connAck) {
+    private void readConnAck(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttConnAck connAck) {
         if (connAck.getRawEnhancedAuth() != null) {
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
                     new Mqtt5MessageException(connAck, "Server must not include auth in CONNACK"));

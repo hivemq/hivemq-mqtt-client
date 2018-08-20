@@ -18,7 +18,10 @@
 package org.mqttbee.mqtt.handler;
 
 import dagger.Lazy;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.reactivex.SingleEmitter;
@@ -40,7 +43,6 @@ import org.mqttbee.mqtt.handler.websocket.WebSocketBinaryFrameEncoder;
 import org.mqttbee.mqtt.ioc.ConnectionScope;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.net.ssl.SSLException;
 import java.net.URISyntaxException;
 
@@ -58,27 +60,27 @@ import java.net.URISyntaxException;
 @ConnectionScope
 public class MqttChannelInitializer extends ChannelInitializer<Channel> {
 
-    private static final String HTTP_CODEC_NAME = "http.codec";
-    private static final String HTTP_AGGREGATOR_NAME = "http.aggregator";
+    private static final @NotNull String HTTP_CODEC_NAME = "http.codec";
+    private static final @NotNull String HTTP_AGGREGATOR_NAME = "http.aggregator";
 
-    private final MqttClientData clientData;
-    private final SingleEmitter<Mqtt5ConnAck> connAckEmitter;
+    private final @NotNull MqttClientData clientData;
+    private final @NotNull SingleEmitter<Mqtt5ConnAck> connAckEmitter;
 
-    private final MqttEncoder encoder;
-    private final MqttConnectHandler connectHandler;
-    private final MqttDisconnectHandler disconnectHandler;
-    private final ChannelHandler authHandler;
+    private final @NotNull MqttEncoder encoder;
+    private final @NotNull MqttConnectHandler connectHandler;
+    private final @NotNull MqttDisconnectHandler disconnectHandler;
+    private final @NotNull MqttAuthHandler authHandler;
 
-    private final Lazy<WebSocketBinaryFrameEncoder> webSocketBinaryFrameEncoder;
-    private final Lazy<WebSocketBinaryFrameDecoder> webSocketBinaryFrameDecoder;
+    private final @NotNull Lazy<WebSocketBinaryFrameEncoder> webSocketBinaryFrameEncoder;
+    private final @NotNull Lazy<WebSocketBinaryFrameDecoder> webSocketBinaryFrameDecoder;
 
     @Inject
     MqttChannelInitializer(
-            final MqttClientData clientData, final SingleEmitter<Mqtt5ConnAck> connAckEmitter,
-            final MqttEncoder encoder, final MqttConnectHandler connectHandler,
-            final MqttDisconnectHandler disconnectHandler, @Named("Auth") final ChannelHandler authHandler,
-            final Lazy<WebSocketBinaryFrameEncoder> webSocketBinaryFrameEncoder,
-            final Lazy<WebSocketBinaryFrameDecoder> webSocketBinaryFrameDecoder) {
+            final @NotNull MqttClientData clientData, final @NotNull SingleEmitter<Mqtt5ConnAck> connAckEmitter,
+            final @NotNull MqttEncoder encoder, final @NotNull MqttConnectHandler connectHandler,
+            final @NotNull MqttDisconnectHandler disconnectHandler, final @NotNull MqttAuthHandler authHandler,
+            final @NotNull Lazy<WebSocketBinaryFrameEncoder> webSocketBinaryFrameEncoder,
+            final @NotNull Lazy<WebSocketBinaryFrameDecoder> webSocketBinaryFrameDecoder) {
 
         this.clientData = clientData;
         this.connAckEmitter = connAckEmitter;
@@ -91,7 +93,7 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
     }
 
     @Override
-    protected void initChannel(final Channel channel) throws Exception {
+    protected void initChannel(final @NotNull Channel channel) throws Exception {
         final MqttClientSslConfigImpl sslConfig = clientData.getRawSslConfig();
         if (sslConfig != null) {
             initSsl(channel, sslConfig);
@@ -104,7 +106,7 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
         }
     }
 
-    public void initMqttHandlers(@NotNull final ChannelPipeline pipeline) {
+    public void initMqttHandlers(final @NotNull ChannelPipeline pipeline) {
         pipeline.addLast(MqttEncoder.NAME, encoder);
         pipeline.addLast(MqttAuthHandler.NAME, authHandler);
         pipeline.addLast(MqttConnectHandler.NAME, connectHandler);
@@ -112,7 +114,7 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
     }
 
     private void initMqttOverWebSocket(
-            @NotNull final ChannelPipeline pipeline, @NotNull final MqttWebSocketConfig webSocketConfig)
+            final @NotNull ChannelPipeline pipeline, final @NotNull MqttWebSocketConfig webSocketConfig)
             throws URISyntaxException {
 
         final MqttWebSocketClientProtocolHandler mqttWebSocketClientProtocolHandler =
@@ -126,14 +128,14 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
         pipeline.addLast(WebSocketBinaryFrameDecoder.NAME, webSocketBinaryFrameDecoder.get());
     }
 
-    private void initSsl(@NotNull final Channel channel, @NotNull final MqttClientSslConfigImpl sslConfig)
+    private void initSsl(final @NotNull Channel channel, final @NotNull MqttClientSslConfigImpl sslConfig)
             throws SSLException {
 
         channel.pipeline().addFirst(SslUtil.createSslHandler(channel, sslConfig));
     }
 
     @Override
-    public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) {
+    public void exceptionCaught(final @NotNull ChannelHandlerContext ctx, final @NotNull Throwable cause) {
         clientData.getRawConnectionState().set(MqttClientConnectionState.DISCONNECTED);
         connAckEmitter.onError(cause);
         ctx.close();

@@ -38,7 +38,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeResult;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
-import org.mqttbee.mqtt.handler.auth.MqttReAuthEvent;
+import org.mqttbee.mqtt.handler.auth.MqttReAuthCompletable;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.handler.publish.MqttGlobalIncomingPublishFlowable;
 import org.mqttbee.mqtt.handler.publish.MqttIncomingAckFlowable;
@@ -168,14 +168,7 @@ public class MqttRxClient implements Mqtt5RxClient {
     }
 
     @NotNull Completable reauthUnsafe() {
-        return Completable.create(emitter -> {
-            final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
-            if (clientConnectionData != null) {
-                clientConnectionData.getChannel().pipeline().fireUserEventTriggered(new MqttReAuthEvent(emitter));
-            } else {
-                emitter.onError(new NotConnectedException());
-            }
-        });
+        return new MqttReAuthCompletable(clientData);
     }
 
     @Override

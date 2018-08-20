@@ -18,7 +18,6 @@ package org.mqttbee.mqtt.handler;
 
 import dagger.Lazy;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandler;
 import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.ssl.SslHandler;
 import io.reactivex.SingleEmitter;
@@ -31,6 +30,7 @@ import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.MqttClientSslConfigImpl;
 import org.mqttbee.mqtt.MqttVersion;
 import org.mqttbee.mqtt.codec.encoder.MqttEncoder;
+import org.mqttbee.mqtt.handler.auth.MqttAuthHandler;
 import org.mqttbee.mqtt.handler.connect.MqttConnectHandler;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectHandler;
 import org.mqttbee.mqtt.handler.websocket.WebSocketBinaryFrameDecoder;
@@ -59,7 +59,7 @@ public class MqttChannelInitializerSslTest {
     @Mock
     private MqttDisconnectHandler disconnectHandler;
     @Mock
-    private ChannelHandler authHandler;
+    private MqttAuthHandler authHandler;
     @Mock
     private Lazy<WebSocketBinaryFrameEncoder> webSocketBinaryFrameEncoder;
     @Mock

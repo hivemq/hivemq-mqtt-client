@@ -317,11 +317,9 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
     }
 
     @Override
-    public void userEventTriggered(@NotNull final ChannelHandlerContext ctx, @NotNull final Object evt) {
-        if (evt instanceof ChannelCloseEvent) {
-            connAckEmitter.onError(((ChannelCloseEvent) evt).getCause());
-        }
-        ctx.fireUserEventTriggered(evt);
+    protected void handleChannelCloseEvent(final @NotNull ChannelCloseEvent channelCloseEvent) {
+        super.handleChannelCloseEvent(channelCloseEvent);
+        connAckEmitter.onError(channelCloseEvent.getCause());
     }
 
     @Override
