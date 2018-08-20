@@ -21,8 +21,6 @@ import io.reactivex.SingleObserver;
 import io.reactivex.disposables.Disposable;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 /**
  * @author Silvio Giebl
  */
@@ -36,31 +34,31 @@ public interface SingleFlow<T> {
 
     class DefaultSingleFlow<T> implements SingleFlow<T>, Disposable {
 
-        private final SingleObserver<? super T> observer;
-        private final AtomicBoolean disposed = new AtomicBoolean();
+        private final @NotNull SingleObserver<? super T> observer;
+        private volatile boolean disposed;
 
-        public DefaultSingleFlow(@NotNull final SingleObserver<? super T> observer) {
+        public DefaultSingleFlow(final @NotNull SingleObserver<? super T> observer) {
             this.observer = observer;
         }
 
         @Override
-        public void onSuccess(@NotNull final T t) {
+        public void onSuccess(final @NotNull T t) {
             observer.onSuccess(t);
         }
 
         @Override
-        public void onError(@NotNull final Throwable t) {
+        public void onError(final @NotNull Throwable t) {
             observer.onError(t);
         }
 
         @Override
         public void dispose() {
-            disposed.set(true);
+            disposed = true;
         }
 
         @Override
         public boolean isDisposed() {
-            return disposed.get();
+            return disposed;
         }
 
         @Override

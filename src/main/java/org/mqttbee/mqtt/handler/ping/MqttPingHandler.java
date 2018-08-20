@@ -40,8 +40,8 @@ import org.mqttbee.mqtt.message.ping.MqttPingResp;
 @ConnectionScope
 public class MqttPingHandler extends ChannelInboundHandlerWithTimeout {
 
-    public static final String NAME = "ping";
-    private static final String IDLE_STATE_HANDLER_NAME = "ping.idle";
+    public static final @NotNull String NAME = "ping";
+    private static final @NotNull String IDLE_STATE_HANDLER_NAME = "ping.idle";
     private static final int PING_RESP_TIMEOUT = 60; // TODO configurable
 
     private final int keepAlive;
@@ -51,13 +51,13 @@ public class MqttPingHandler extends ChannelInboundHandlerWithTimeout {
     }
 
     @Override
-    public void handlerAdded(final ChannelHandlerContext ctx) {
+    public void handlerAdded(final @NotNull ChannelHandlerContext ctx) {
         super.handlerAdded(ctx);
         ctx.pipeline().addBefore(NAME, IDLE_STATE_HANDLER_NAME, new IdleStateHandler(0, keepAlive, 0));
     }
 
     @Override
-    public void channelRead(final ChannelHandlerContext ctx, final Object msg) {
+    public void channelRead(final @NotNull ChannelHandlerContext ctx, final @NotNull Object msg) {
         if (msg instanceof MqttPingResp) {
             cancelTimeout();
         } else {
@@ -66,12 +66,12 @@ public class MqttPingHandler extends ChannelInboundHandlerWithTimeout {
     }
 
     @Override
-    public void userEventTriggered(final ChannelHandlerContext ctx, final Object evt) {
+    public void userEventTriggered(final @NotNull ChannelHandlerContext ctx, final @NotNull Object evt) {
         if ((evt instanceof IdleStateEvent) && ((IdleStateEvent) evt).state() == IdleState.WRITER_IDLE) {
             ctx.writeAndFlush(MqttPingReq.INSTANCE).addListener(this);
-        } else {
-            ctx.fireUserEventTriggered(evt);
+            return;
         }
+        super.userEventTriggered(ctx, evt);
     }
 
     @Override
@@ -79,15 +79,13 @@ public class MqttPingHandler extends ChannelInboundHandlerWithTimeout {
         return PING_RESP_TIMEOUT;
     }
 
-    @NotNull
     @Override
-    protected Mqtt5DisconnectReasonCode getTimeoutReasonCode() {
+    protected @NotNull Mqtt5DisconnectReasonCode getTimeoutReasonCode() {
         return Mqtt5DisconnectReasonCode.KEEP_ALIVE_TIMEOUT;
     }
 
-    @NotNull
     @Override
-    protected String getTimeoutReasonString() {
+    protected @NotNull String getTimeoutReasonString() {
         return "Timeout while waiting for PINGRESP";
     }
 
