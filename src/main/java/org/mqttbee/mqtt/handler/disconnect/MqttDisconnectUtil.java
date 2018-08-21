@@ -18,7 +18,6 @@
 package org.mqttbee.mqtt.handler.disconnect;
 
 import io.netty.channel.Channel;
-import io.reactivex.CompletableEmitter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.exceptions.ChannelClosedException;
@@ -43,8 +42,8 @@ public class MqttDisconnectUtil {
      * @param channel the channel to close.
      * @param cause   the cause why the channel is closed.
      */
-    public static void close(@NotNull final Channel channel, @NotNull final Throwable cause) {
-        fireChannelCloseEvent(channel, cause);
+    public static void close(final @NotNull Channel channel, final @NotNull Throwable cause) {
+        fireChannelCloseEvent(channel, cause, true);
     }
 
     /**
@@ -53,23 +52,8 @@ public class MqttDisconnectUtil {
      * @param channel the channel to close.
      * @param reason  the reason why the channel is closed.
      */
-    public static void close(@NotNull final Channel channel, @NotNull final String reason) {
-        fireChannelCloseEvent(channel, new ChannelClosedException(reason));
-    }
-
-    /**
-     * Disconnects the client through the API.
-     *
-     * @param channel            the channel to close.
-     * @param disconnect         the DISCONNECT message to send.
-     * @param completableEmitter the emitter to indicate success or error.
-     */
-    public static void disconnect(
-            @NotNull final Channel channel, @NotNull final MqttDisconnect disconnect,
-            @NotNull final CompletableEmitter completableEmitter) {
-
-        final Throwable cause = new Mqtt5MessageException(disconnect, "DISCONNECT through API");
-        fireChannelCloseEvent(channel, new ChannelCloseEvent(cause, true, completableEmitter));
+    public static void close(final @NotNull Channel channel, final @NotNull String reason) {
+        fireChannelCloseEvent(channel, new ChannelClosedException(reason), true);
     }
 
     /**
@@ -80,11 +64,11 @@ public class MqttDisconnectUtil {
      * @param reasonString the reason string why the channel is closed.
      */
     public static void disconnect(
-            @NotNull final Channel channel, @NotNull final Mqtt5DisconnectReasonCode reasonCode,
-            @NotNull final String reasonString) {
+            final @NotNull Channel channel, final @NotNull Mqtt5DisconnectReasonCode reasonCode,
+            final @NotNull String reasonString) {
 
         final MqttDisconnect disconnect = createDisconnect(channel, reasonCode, reasonString);
-        fireChannelCloseEvent(channel, new Mqtt5MessageException(disconnect, reasonString));
+        fireChannelCloseEvent(channel, new Mqtt5MessageException(disconnect, reasonString), true);
     }
 
     /**
@@ -95,28 +79,23 @@ public class MqttDisconnectUtil {
      * @param cause      the cause why the channel is closed.
      */
     public static void disconnect(
-            @NotNull final Channel channel, @NotNull final Mqtt5DisconnectReasonCode reasonCode,
-            @NotNull final Throwable cause) {
+            final @NotNull Channel channel, final @NotNull Mqtt5DisconnectReasonCode reasonCode,
+            final @NotNull Throwable cause) {
 
         final MqttDisconnect disconnect = createDisconnect(channel, reasonCode, cause.getMessage());
-        fireChannelCloseEvent(channel, new Mqtt5MessageException(disconnect, cause));
-    }
-
-    private static void fireChannelCloseEvent(@NotNull final Channel channel, @NotNull final Throwable cause) {
-        fireChannelCloseEvent(channel, new ChannelCloseEvent(cause, true, null));
+        fireChannelCloseEvent(channel, new Mqtt5MessageException(disconnect, cause), true);
     }
 
     static void fireChannelCloseEvent(
-            @NotNull final Channel channel, @NotNull final ChannelCloseEvent channelCloseEvent) {
+            final @NotNull Channel channel, final @NotNull Throwable cause, final boolean fromClient) {
 
         channel.config().setAutoRead(false);
-        channel.pipeline().fireUserEventTriggered(channelCloseEvent);
+        channel.pipeline().fireUserEventTriggered(new ChannelCloseEvent(cause, fromClient));
     }
 
-    @NotNull
-    private static MqttDisconnect createDisconnect(
-            @NotNull final Channel channel, final Mqtt5DisconnectReasonCode reasonCode,
-            @Nullable final String reasonString) {
+    private static @NotNull MqttDisconnect createDisconnect(
+            final @NotNull Channel channel, final @NotNull Mqtt5DisconnectReasonCode reasonCode,
+            final @Nullable String reasonString) {
 
         MqttUTF8StringImpl mqttReasonString = null;
         if ((reasonString != null) && ChannelAttributes.sendReasonString(channel)) {

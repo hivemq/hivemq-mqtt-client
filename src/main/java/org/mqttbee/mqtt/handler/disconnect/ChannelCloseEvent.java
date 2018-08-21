@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt.handler.disconnect;
 
-import io.reactivex.CompletableEmitter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
@@ -39,24 +38,18 @@ import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
  */
 public class ChannelCloseEvent {
 
-    private final Throwable cause;
+    private final @NotNull Throwable cause;
     private final boolean fromClient;
-    private final CompletableEmitter completableEmitter;
 
-    ChannelCloseEvent(
-            @NotNull final Throwable cause, final boolean fromClient,
-            @Nullable final CompletableEmitter completableEmitter) {
-
+    ChannelCloseEvent(final @NotNull Throwable cause, final boolean fromClient) {
         this.cause = cause;
         this.fromClient = fromClient;
-        this.completableEmitter = completableEmitter;
     }
 
     /**
      * @return the cause for closing of the channel.
      */
-    @NotNull
-    public Throwable getCause() {
+    public @NotNull Throwable getCause() {
         return cause;
     }
 
@@ -70,8 +63,7 @@ public class ChannelCloseEvent {
     /**
      * @return the DISCONNECT message which was sent or received, otherwise null.
      */
-    @Nullable
-    MqttDisconnect getDisconnect() {
+    @Nullable MqttDisconnect getDisconnect() {
         if (cause instanceof Mqtt5MessageException) {
             final Mqtt5Message mqttMessage = ((Mqtt5MessageException) cause).getMqttMessage();
             if (mqttMessage instanceof MqttDisconnect) {
@@ -79,15 +71,6 @@ public class ChannelCloseEvent {
             }
         }
         return null;
-    }
-
-    /**
-     * @return the emitter to indicate success or error (only possible if {@link #fromClient()} = true, {@link
-     *         #getDisconnect()} != null).
-     */
-    @Nullable
-    CompletableEmitter getCompletableEmitter() {
-        return completableEmitter;
     }
 
 }
