@@ -24,7 +24,6 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.codec.http.HttpObjectAggregator;
-import io.reactivex.SingleEmitter;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttWebSocketConfig;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
@@ -41,6 +40,7 @@ import org.mqttbee.mqtt.handler.websocket.MqttWebSocketClientProtocolHandler;
 import org.mqttbee.mqtt.handler.websocket.WebSocketBinaryFrameDecoder;
 import org.mqttbee.mqtt.handler.websocket.WebSocketBinaryFrameEncoder;
 import org.mqttbee.mqtt.ioc.ConnectionScope;
+import org.mqttbee.rx.SingleFlow;
 
 import javax.inject.Inject;
 import javax.net.ssl.SSLException;
@@ -64,7 +64,7 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
     private static final @NotNull String HTTP_AGGREGATOR_NAME = "http.aggregator";
 
     private final @NotNull MqttClientData clientData;
-    private final @NotNull SingleEmitter<Mqtt5ConnAck> connAckEmitter;
+    private final @NotNull SingleFlow<Mqtt5ConnAck> connAckFlow;
 
     private final @NotNull MqttEncoder encoder;
     private final @NotNull MqttConnectHandler connectHandler;
@@ -76,14 +76,14 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
 
     @Inject
     MqttChannelInitializer(
-            final @NotNull MqttClientData clientData, final @NotNull SingleEmitter<Mqtt5ConnAck> connAckEmitter,
+            final @NotNull MqttClientData clientData, final @NotNull SingleFlow<Mqtt5ConnAck> connAckFlow,
             final @NotNull MqttEncoder encoder, final @NotNull MqttConnectHandler connectHandler,
             final @NotNull MqttDisconnectHandler disconnectHandler, final @NotNull MqttAuthHandler authHandler,
             final @NotNull Lazy<WebSocketBinaryFrameEncoder> webSocketBinaryFrameEncoder,
             final @NotNull Lazy<WebSocketBinaryFrameDecoder> webSocketBinaryFrameDecoder) {
 
         this.clientData = clientData;
-        this.connAckEmitter = connAckEmitter;
+        this.connAckFlow = connAckFlow;
         this.encoder = encoder;
         this.connectHandler = connectHandler;
         this.disconnectHandler = disconnectHandler;
@@ -137,7 +137,7 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
     @Override
     public void exceptionCaught(final @NotNull ChannelHandlerContext ctx, final @NotNull Throwable cause) {
         clientData.getRawConnectionState().set(MqttClientConnectionState.DISCONNECTED);
-        connAckEmitter.onError(cause);
+        connAckFlow.onError(cause);
         ctx.close();
     }
 

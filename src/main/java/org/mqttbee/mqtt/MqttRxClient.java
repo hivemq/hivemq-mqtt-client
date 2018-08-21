@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt;
 
-import io.netty.bootstrap.Bootstrap;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
@@ -25,7 +24,6 @@ import io.reactivex.functions.Function;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.MqttGlobalPublishFilter;
-import org.mqttbee.api.mqtt.exceptions.AlreadyConnectedException;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5RxClient;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
@@ -38,6 +36,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
 import org.mqttbee.mqtt.handler.auth.MqttReAuthCompletable;
+import org.mqttbee.mqtt.handler.connect.MqttConnAckSingle;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectCompletable;
 import org.mqttbee.mqtt.handler.publish.MqttGlobalIncomingPublishFlowable;
 import org.mqttbee.mqtt.handler.publish.MqttIncomingAckFlowable;
@@ -74,26 +73,7 @@ public class MqttRxClient implements Mqtt5RxClient {
     @NotNull Single<Mqtt5ConnAck> connectUnsafe(final @Nullable Mqtt5Connect connect) {
         final MqttConnect mqttConnect = MqttChecks.connect(connect);
 
-        return Single.<Mqtt5ConnAck>create(connAckEmitter -> {
-            if (!clientData.getRawConnectionState()
-                    .compareAndSet(MqttClientConnectionState.DISCONNECTED, MqttClientConnectionState.CONNECTING)) {
-                connAckEmitter.onError(new AlreadyConnectedException());
-                return;
-            }
-
-            final Bootstrap bootstrap = clientData.getClientComponent()
-                    .connectionComponentBuilder()
-                    .connect(mqttConnect)
-                    .connAckEmitter(connAckEmitter)
-                    .build()
-                    .bootstrap();
-
-            bootstrap.connect(clientData.getServerHost(), clientData.getServerPort()).addListener(future -> {
-                if (!future.isSuccess()) {
-                    connAckEmitter.onError(future.cause());
-                }
-            });
-        });
+        return new MqttConnAckSingle(clientData, mqttConnect);
     }
 
     @Override

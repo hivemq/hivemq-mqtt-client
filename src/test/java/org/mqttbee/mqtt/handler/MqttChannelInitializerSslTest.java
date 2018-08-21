@@ -20,7 +20,6 @@ import dagger.Lazy;
 import io.netty.channel.Channel;
 import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.ssl.SslHandler;
-import io.reactivex.SingleEmitter;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -35,6 +34,7 @@ import org.mqttbee.mqtt.handler.connect.MqttConnectHandler;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectHandler;
 import org.mqttbee.mqtt.handler.websocket.WebSocketBinaryFrameDecoder;
 import org.mqttbee.mqtt.handler.websocket.WebSocketBinaryFrameEncoder;
+import org.mqttbee.rx.SingleFlow;
 
 import java.util.Optional;
 
@@ -51,7 +51,7 @@ public class MqttChannelInitializerSslTest {
     @Mock
     private MqttClientData clientData;
     @Mock
-    private SingleEmitter<Mqtt5ConnAck> connAckEmitter;
+    private SingleFlow<Mqtt5ConnAck> connAckFlow;
     @Mock
     private MqttEncoder encoder;
     @Mock
@@ -83,7 +83,7 @@ public class MqttChannelInitializerSslTest {
         when(clientData.getRawSslConfig()).thenReturn(sslConfig);
 
         final MqttChannelInitializer mqttChannelInitializer =
-                new MqttChannelInitializer(clientData, connAckEmitter, encoder, connectHandler, disconnectHandler,
+                new MqttChannelInitializer(clientData, connAckFlow, encoder, connectHandler, disconnectHandler,
                         authHandler, webSocketBinaryFrameEncoder, webSocketBinaryFrameDecoder);
 
         mqttChannelInitializer.initChannel(channel);

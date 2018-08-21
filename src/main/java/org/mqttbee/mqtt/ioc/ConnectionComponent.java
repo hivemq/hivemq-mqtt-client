@@ -20,10 +20,11 @@ package org.mqttbee.mqtt.ioc;
 import dagger.BindsInstance;
 import dagger.Subcomponent;
 import io.netty.bootstrap.Bootstrap;
-import io.reactivex.SingleEmitter;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.mqtt.codec.MqttCodecModule;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
+import org.mqttbee.rx.SingleFlow;
 
 /**
  * Component for a single client connection. A new one is created for each new client connection (also for reconnects).
@@ -34,18 +35,18 @@ import org.mqttbee.mqtt.message.connect.MqttConnect;
 @ConnectionScope
 public interface ConnectionComponent {
 
-    Bootstrap bootstrap();
+    @NotNull Bootstrap bootstrap();
 
     @Subcomponent.Builder
     interface Builder {
 
         @BindsInstance
-        Builder connect(MqttConnect connect);
+        @NotNull Builder connect(@NotNull MqttConnect connect);
 
         @BindsInstance
-        Builder connAckEmitter(SingleEmitter<Mqtt5ConnAck> connAckEmitter);
+        @NotNull Builder connAckFlow(@NotNull SingleFlow<Mqtt5ConnAck> connAckFlow);
 
-        ConnectionComponent build();
+        @NotNull ConnectionComponent build();
 
     }
 
