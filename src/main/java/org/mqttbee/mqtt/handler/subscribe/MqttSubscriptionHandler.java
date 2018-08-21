@@ -30,8 +30,9 @@ import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5ReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
-import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
+import org.mqttbee.mqtt.MqttServerConnectionData;
+import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.handler.disconnect.ChannelCloseEvent;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.handler.publish.MqttIncomingPublishFlows;
@@ -80,6 +81,7 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter implem
     private final @NotNull Ranges subscriptionIdentifiers;
 
     private @Nullable ChannelHandlerContext ctx;
+    private boolean subscriptionIdentifiersAvailable;
 
     @Inject
     MqttSubscriptionHandler(
@@ -88,19 +90,21 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter implem
         this.clientData = clientData;
         this.subscriptionFlows = subscriptionFlows;
 
-        final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
-        assert clientConnectionData != null;
-
         final int maxPacketIdentifier = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE;
         final int minPacketIdentifier = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE - MAX_SUB_PENDING + 1;
         pending = IntMap.range(minPacketIdentifier, maxPacketIdentifier);
         packetIdentifiers = new Ranges(minPacketIdentifier, maxPacketIdentifier);
-        subscriptionIdentifiers = new Ranges(1, clientConnectionData.getSubscriptionIdentifierMaximum());
+        subscriptionIdentifiers = new Ranges(1, MqttVariableByteInteger.FOUR_BYTES_MAX_VALUE);
     }
 
     @Override
     public void handlerAdded(final @NotNull ChannelHandlerContext ctx) {
         this.ctx = ctx;
+
+        final MqttServerConnectionData serverConnectionData = clientData.getRawServerConnectionData();
+        assert serverConnectionData != null;
+
+        subscriptionIdentifiersAvailable = serverConnectionData.areSubscriptionIdentifiersAvailable();
     }
 
     public void subscribe(final @NotNull MqttSubscribeWithFlow subscribeWithFlow) {
@@ -165,8 +169,10 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter implem
             final @NotNull ChannelHandlerContext ctx, final @NotNull MqttSubscribeWithFlow subscribeWithFlow,
             final int packetIdentifier) {
 
+        final int subscriptionIdentifier = (subscriptionIdentifiersAvailable) ? subscriptionIdentifiers.getId() :
+                MqttStatefulSubscribe.DEFAULT_NO_SUBSCRIPTION_IDENTIFIER;
         final MqttStatefulSubscribeWithFlow statefulSubscribeWithFlow =
-                subscribeWithFlow.createStateful(packetIdentifier, subscriptionIdentifiers.getId());
+                subscribeWithFlow.createStateful(packetIdentifier, subscriptionIdentifier);
         pending.put(packetIdentifier, statefulSubscribeWithFlow);
         ctx.writeAndFlush(statefulSubscribeWithFlow.getSubscribe(), ctx.voidPromise());
     }

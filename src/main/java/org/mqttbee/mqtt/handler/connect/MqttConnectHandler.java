@@ -76,7 +76,7 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
     private final @NotNull MqttClientData clientData;
 
     private final @NotNull MqttDecoder decoder;
-    private final @NotNull Lazy<MqttSubscriptionHandler> subscriptionHandler;
+    private final @NotNull MqttSubscriptionHandler subscriptionHandler;
     private final @NotNull Lazy<MqttIncomingQosHandler> incomingQosHandler;
     private final @NotNull MqttOutgoingQosHandler outgoingQosHandler;
     private final @NotNull MqttDisconnectOnConnAckHandler disconnectOnConnAckHandler;
@@ -87,7 +87,7 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
     MqttConnectHandler(
             final @NotNull MqttConnect connect, final @NotNull SingleFlow<Mqtt5ConnAck> connAckFlow,
             final @NotNull MqttClientData clientData, final @NotNull MqttDecoder decoder,
-            final @NotNull Lazy<MqttSubscriptionHandler> subscriptionHandler,
+            final @NotNull MqttSubscriptionHandler subscriptionHandler,
             final @NotNull Lazy<MqttIncomingQosHandler> incomingQosHandler,
             final @NotNull MqttOutgoingQosHandler outgoingQosHandler,
             final @NotNull MqttDisconnectOnConnAckHandler disconnectOnConnAckHandler) {
@@ -162,8 +162,8 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
         final MqttConnectRestrictions restrictions = connect.getRestrictions();
         final MqttClientConnectionData clientConnectionData =
                 new MqttClientConnectionData(connect.getKeepAlive(), connect.getSessionExpiryInterval(),
-                        restrictions.getReceiveMaximum(), restrictions.getTopicAliasMaximum(),
-                        restrictions.getMaximumPacketSize(), connect.getRawEnhancedAuthProvider(),
+                        restrictions.getReceiveMaximum(), restrictions.getMaximumPacketSize(),
+                        restrictions.getTopicAliasMaximum(), connect.getRawEnhancedAuthProvider(),
                         connect.getRawWillPublish() != null, connect.isProblemInformationRequested(),
                         connect.isResponseInformationRequested(), channel);
 
@@ -214,7 +214,7 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
                     beforeHandlerName = MqttPingHandler.NAME;
                 }
 
-                pipeline.addAfter(beforeHandlerName, MqttSubscriptionHandler.NAME, subscriptionHandler.get());
+                pipeline.addAfter(beforeHandlerName, MqttSubscriptionHandler.NAME, subscriptionHandler);
                 pipeline.addAfter(beforeHandlerName, MqttIncomingQosHandler.NAME, incomingQosHandler.get());
                 pipeline.addAfter(beforeHandlerName, MqttOutgoingQosHandler.NAME, outgoingQosHandler);
                 pipeline.addLast(MqttDisconnectOnConnAckHandler.NAME, disconnectOnConnAckHandler);
@@ -309,11 +309,11 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
         final MqttConnAckRestrictions restrictions = connAck.getRestrictions();
 
         clientData.setServerConnectionData(
-                new MqttServerConnectionData(restrictions.getReceiveMaximum(), restrictions.getTopicAliasMaximum(),
-                        restrictions.getMaximumPacketSize(), restrictions.getMaximumQos(),
+                new MqttServerConnectionData(restrictions.getReceiveMaximum(), restrictions.getMaximumPacketSize(),
+                        restrictions.getTopicAliasMaximum(), restrictions.getMaximumQos(),
                         restrictions.isRetainAvailable(), restrictions.isWildcardSubscriptionAvailable(),
-                        restrictions.isSubscriptionIdentifierAvailable(),
-                        restrictions.isSharedSubscriptionAvailable()));
+                        restrictions.isSharedSubscriptionAvailable(),
+                        restrictions.areSubscriptionIdentifiersAvailable()));
     }
 
     @Override

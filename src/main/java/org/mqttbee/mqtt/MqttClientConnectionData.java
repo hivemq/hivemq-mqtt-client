@@ -25,7 +25,6 @@ import org.mqttbee.api.mqtt.mqtt3.Mqtt3ClientConnectionData;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientConnectionData;
 import org.mqttbee.api.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
-import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.util.collections.IntMap;
 
 import java.util.Optional;
@@ -38,31 +37,28 @@ public class MqttClientConnectionData implements Mqtt5ClientConnectionData, Mqtt
     private int keepAlive;
     private long sessionExpiryInterval;
     private final int receiveMaximum;
-    private final int topicAliasMaximum;
-    private final IntMap<MqttTopicImpl> topicAliasMapping;
     private final int maximumPacketSize;
-    private final int subscriptionIdentifierMaximum;
-    private final Mqtt5EnhancedAuthProvider enhancedAuthProvider;
+    private final int topicAliasMaximum;
+    private final @Nullable IntMap<MqttTopicImpl> topicAliasMapping;
+    private final @Nullable Mqtt5EnhancedAuthProvider enhancedAuthProvider;
     private final boolean hasWillPublish;
     private final boolean problemInformationRequested;
     private final boolean responseInformationRequested;
-    private final Channel channel;
+    private final @NotNull Channel channel;
 
     public MqttClientConnectionData(
             final int keepAlive, final long sessionExpiryInterval, final int receiveMaximum,
-            final int topicAliasMaximum, final int maximumPacketSize,
-            @Nullable final Mqtt5EnhancedAuthProvider enhancedAuthProvider, final boolean hasWillPublish,
+            final int maximumPacketSize, final int topicAliasMaximum,
+            final @Nullable Mqtt5EnhancedAuthProvider enhancedAuthProvider, final boolean hasWillPublish,
             final boolean problemInformationRequested, final boolean responseInformationRequested,
-            @NotNull final Channel channel) {
+            final @NotNull Channel channel) {
 
         this.keepAlive = keepAlive;
         this.sessionExpiryInterval = sessionExpiryInterval;
         this.receiveMaximum = receiveMaximum;
+        this.maximumPacketSize = maximumPacketSize;
         this.topicAliasMaximum = topicAliasMaximum;
         this.topicAliasMapping = (topicAliasMaximum == 0) ? null : IntMap.range(1, topicAliasMaximum);
-        this.maximumPacketSize = maximumPacketSize;
-        this.subscriptionIdentifierMaximum =
-                MqttVariableByteInteger.FOUR_BYTES_MAX_VALUE; // TODO CONNECT + CONNACK user properties
         this.enhancedAuthProvider = enhancedAuthProvider;
         this.hasWillPublish = hasWillPublish;
         this.problemInformationRequested = problemInformationRequested;
@@ -94,6 +90,11 @@ public class MqttClientConnectionData implements Mqtt5ClientConnectionData, Mqtt
     }
 
     @Override
+    public int getMaximumPacketSize() {
+        return maximumPacketSize;
+    }
+
+    @Override
     public int getTopicAliasMaximum() {
         return topicAliasMaximum;
     }
@@ -104,23 +105,11 @@ public class MqttClientConnectionData implements Mqtt5ClientConnectionData, Mqtt
     }
 
     @Override
-    public int getSubscriptionIdentifierMaximum() {
-        return subscriptionIdentifierMaximum;
-    }
-
-    @Override
-    public int getMaximumPacketSize() {
-        return maximumPacketSize;
-    }
-
-    @NotNull
-    @Override
-    public Optional<MqttUTF8String> getAuthMethod() {
+    public @NotNull Optional<MqttUTF8String> getAuthMethod() {
         return (enhancedAuthProvider == null) ? Optional.empty() : Optional.of(enhancedAuthProvider.getMethod());
     }
 
-    @Nullable
-    public Mqtt5EnhancedAuthProvider getEnhancedAuthProvider() {
+    public @Nullable Mqtt5EnhancedAuthProvider getEnhancedAuthProvider() {
         return enhancedAuthProvider;
     }
 
@@ -139,7 +128,7 @@ public class MqttClientConnectionData implements Mqtt5ClientConnectionData, Mqtt
         return responseInformationRequested;
     }
 
-    public Channel getChannel() {
+    public @NotNull Channel getChannel() {
         return channel;
     }
 
