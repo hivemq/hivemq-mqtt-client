@@ -17,8 +17,8 @@
 
 package org.mqttbee.api.mqtt.mqtt5;
 
-import org.mqttbee.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 
 /**
@@ -29,19 +29,18 @@ public interface Mqtt5ServerConnectionData {
 
     int getReceiveMaximum();
 
-    int getTopicAliasMaximum();
-
     int getMaximumPacketSize();
 
-    @NotNull
-    MqttQos getMaximumQos();
+    int getTopicAliasMaximum();
+
+    @NotNull MqttQos getMaximumQos();
 
     boolean isRetainAvailable();
 
     boolean isWildcardSubscriptionAvailable();
 
-    boolean isSubscriptionIdentifierAvailable();
-
     boolean isSharedSubscriptionAvailable();
+
+    boolean areSubscriptionIdentifiersAvailable();
 
 }

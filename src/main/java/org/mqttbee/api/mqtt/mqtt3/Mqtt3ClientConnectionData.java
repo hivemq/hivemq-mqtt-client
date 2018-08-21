@@ -27,8 +27,6 @@ public interface Mqtt3ClientConnectionData {
 
     int getKeepAlive();
 
-    int getReceiveMaximum();
-
     boolean hasWillPublish();
 
 }

@@ -20,18 +20,16 @@ package org.mqttbee.mqtt.handler.publish;
 import com.google.common.primitives.ImmutableIntArray;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.mqtt.MqttClientConnectionData;
-import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.ioc.ClientScope;
 import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
 import org.mqttbee.mqtt.message.subscribe.MqttStatefulSubscribe;
 import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAck;
 import org.mqttbee.util.collections.HandleList;
-import org.mqttbee.util.collections.IntMap;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.inject.Inject;
+import java.util.HashMap;
 import java.util.function.Consumer;
 
 import static org.mqttbee.mqtt.message.subscribe.MqttStatefulSubscribe.DEFAULT_NO_SUBSCRIPTION_IDENTIFIER;
@@ -45,21 +43,15 @@ import static org.mqttbee.mqtt.message.subscribe.MqttStatefulSubscribe.DEFAULT_N
 @NotThreadSafe
 public class MqttIncomingPublishFlowsWithId extends MqttIncomingPublishFlows {
 
-    private final IntMap<MqttSubscriptionFlow> flowsWithIdsMap;
-    private final MqttSubscriptionFlows flowsWithIds;
-    private final Consumer<MqttSubscriptionFlow> flowWithIdUnsubscribedCallback = this::unsubscribed;
+    private final @NotNull HashMap<Integer, MqttSubscriptionFlow> flowsWithIdsMap = new HashMap<>();
+    private final @NotNull MqttSubscriptionFlows flowsWithIds;
+    private final @NotNull Consumer<MqttSubscriptionFlow> flowWithIdUnsubscribedCallback = this::unsubscribed;
 
     @Inject
     MqttIncomingPublishFlowsWithId(
-            @NotNull final MqttClientData clientData, @NotNull final MqttSubscriptionFlows flowsWithoutIds,
-            @NotNull final MqttSubscriptionFlows flowsWithIds) {
+            final @NotNull MqttSubscriptionFlows flowsWithoutIds, final @NotNull MqttSubscriptionFlows flowsWithIds) {
 
         super(flowsWithoutIds);
-
-        final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
-        assert clientConnectionData != null;
-
-        flowsWithIdsMap = IntMap.range(1, clientConnectionData.getSubscriptionIdentifierMaximum());
         this.flowsWithIds = flowsWithIds;
     }
 

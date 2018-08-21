@@ -53,7 +53,7 @@ public class MqttPropertyTest {
         assertEquals(0x26, MqttProperty.USER_PROPERTY);
         assertEquals(0x27, MqttProperty.MAXIMUM_PACKET_SIZE);
         assertEquals(0x28, MqttProperty.WILDCARD_SUBSCRIPTION_AVAILABLE);
-        assertEquals(0x29, MqttProperty.SUBSCRIPTION_IDENTIFIER_AVAILABLE);
+        assertEquals(0x29, MqttProperty.SUBSCRIPTION_IDENTIFIERS_AVAILABLE);
         assertEquals(0x2A, MqttProperty.SHARED_SUBSCRIPTION_AVAILABLE);
     }
 

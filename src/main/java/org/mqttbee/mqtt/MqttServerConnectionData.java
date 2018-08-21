@@ -30,27 +30,28 @@ import org.mqttbee.mqtt.message.publish.MqttTopicAliasMapping;
 public class MqttServerConnectionData implements Mqtt5ServerConnectionData, Mqtt3ServerConnectionData {
 
     private final int receiveMaximum;
-    private final MqttTopicAliasMapping topicAliasMapping;
     private final int maximumPacketSize;
-    private final MqttQos maximumQos;
-    private final boolean isRetainAvailable;
-    private final boolean isWildcardSubscriptionAvailable;
-    private final boolean isSubscriptionIdentifierAvailable;
-    private final boolean isSharedSubscriptionAvailable;
+    private final @Nullable MqttTopicAliasMapping topicAliasMapping;
+    private final @NotNull MqttQos maximumQos;
+    private final boolean retainAvailable;
+    private final boolean wildcardSubscriptionAvailable;
+    private final boolean sharedSubscriptionAvailable;
+    private final boolean subscriptionIdentifiersAvailable;
 
     public MqttServerConnectionData(
-            final int receiveMaximum, final int topicAliasMaximum, final int maximumPacketSize,
-            final MqttQos maximumQos, final boolean isRetainAvailable, final boolean isWildcardSubscriptionAvailable,
-            final boolean isSubscriptionIdentifierAvailable, final boolean isSharedSubscriptionAvailable) {
+            final int receiveMaximum, final int maximumPacketSize, final int topicAliasMaximum,
+            final @NotNull MqttQos maximumQos, final boolean retainAvailable,
+            final boolean wildcardSubscriptionAvailable, final boolean sharedSubscriptionAvailable,
+            final boolean subscriptionIdentifiersAvailable) {
 
         this.receiveMaximum = receiveMaximum;
         this.maximumPacketSize = maximumPacketSize;
         this.topicAliasMapping = (topicAliasMaximum == 0) ? null : new MqttTopicAliasMapping(topicAliasMaximum);
         this.maximumQos = maximumQos;
-        this.isRetainAvailable = isRetainAvailable;
-        this.isWildcardSubscriptionAvailable = isWildcardSubscriptionAvailable;
-        this.isSubscriptionIdentifierAvailable = isSubscriptionIdentifierAvailable;
-        this.isSharedSubscriptionAvailable = isSharedSubscriptionAvailable;
+        this.retainAvailable = retainAvailable;
+        this.wildcardSubscriptionAvailable = wildcardSubscriptionAvailable;
+        this.sharedSubscriptionAvailable = sharedSubscriptionAvailable;
+        this.subscriptionIdentifiersAvailable = subscriptionIdentifiersAvailable;
     }
 
     @Override
@@ -59,44 +60,42 @@ public class MqttServerConnectionData implements Mqtt5ServerConnectionData, Mqtt
     }
 
     @Override
-    public int getTopicAliasMaximum() {
-        return (topicAliasMapping == null) ? 0 : topicAliasMapping.getTopicAliasMaximum();
-    }
-
-    @Nullable
-    public MqttTopicAliasMapping getTopicAliasMapping() {
-        return topicAliasMapping;
-    }
-
-    @Override
     public int getMaximumPacketSize() {
         return maximumPacketSize;
     }
 
-    @NotNull
     @Override
-    public MqttQos getMaximumQos() {
+    public int getTopicAliasMaximum() {
+        return (topicAliasMapping == null) ? 0 : topicAliasMapping.getTopicAliasMaximum();
+    }
+
+    public @Nullable MqttTopicAliasMapping getTopicAliasMapping() {
+        return topicAliasMapping;
+    }
+
+    @Override
+    public @NotNull MqttQos getMaximumQos() {
         return maximumQos;
     }
 
     @Override
     public boolean isRetainAvailable() {
-        return isRetainAvailable;
+        return retainAvailable;
     }
 
     @Override
     public boolean isWildcardSubscriptionAvailable() {
-        return isWildcardSubscriptionAvailable;
-    }
-
-    @Override
-    public boolean isSubscriptionIdentifierAvailable() {
-        return isSubscriptionIdentifierAvailable;
+        return wildcardSubscriptionAvailable;
     }
 
     @Override
     public boolean isSharedSubscriptionAvailable() {
-        return isSharedSubscriptionAvailable;
+        return sharedSubscriptionAvailable;
+    }
+
+    @Override
+    public boolean areSubscriptionIdentifiersAvailable() {
+        return subscriptionIdentifiersAvailable;
     }
 
 }

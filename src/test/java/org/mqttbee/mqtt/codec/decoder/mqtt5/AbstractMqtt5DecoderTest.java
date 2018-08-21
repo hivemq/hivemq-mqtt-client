@@ -52,8 +52,8 @@ abstract class AbstractMqtt5DecoderTest extends AbstractMqttDecoderTest {
 
     void createClientConnectionData(final int maximumPacketSize) {
         clientData.setClientConnectionData(
-                new MqttClientConnectionData(10, 10, Mqtt5ConnectRestrictions.DEFAULT_RECEIVE_MAXIMUM, 3,
-                        maximumPacketSize, null, false, true, true, channel));
+                new MqttClientConnectionData(10, 10, Mqtt5ConnectRestrictions.DEFAULT_RECEIVE_MAXIMUM,
+                        maximumPacketSize, 3, null, false, true, true, channel));
     }
 
 }

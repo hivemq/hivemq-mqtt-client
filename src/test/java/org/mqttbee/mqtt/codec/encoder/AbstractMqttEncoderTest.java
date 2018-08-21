@@ -69,7 +69,7 @@ public abstract class AbstractMqttEncoderTest {
 
     protected void createServerConnectionData(final int maximumPacketSize) {
         clientData.setServerConnectionData(
-                new MqttServerConnectionData(10, 3, maximumPacketSize, MqttQos.EXACTLY_ONCE, true, true, true, true));
+                new MqttServerConnectionData(10, maximumPacketSize, 3, MqttQos.EXACTLY_ONCE, true, true, true, true));
     }
 
     protected void encode(final @NotNull Object message, final @NotNull byte[] expected) {

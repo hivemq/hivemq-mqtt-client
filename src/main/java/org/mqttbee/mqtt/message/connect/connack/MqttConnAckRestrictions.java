@@ -29,35 +29,35 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public class MqttConnAckRestrictions implements Mqtt5ConnAckRestrictions {
 
-    @NotNull
-    public static final MqttConnAckRestrictions DEFAULT =
-            new MqttConnAckRestrictions(DEFAULT_RECEIVE_MAXIMUM, DEFAULT_TOPIC_ALIAS_MAXIMUM,
-                    DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT, DEFAULT_MAXIMUM_QOS, DEFAULT_RETAIN_AVAILABLE,
-                    DEFAULT_WILDCARD_SUBSCRIPTION_AVAILABLE, DEFAULT_SUBSCRIPTION_IDENTIFIER_AVAILABLE,
-                    DEFAULT_SHARED_SUBSCRIPTION_AVAILABLE);
+    public static final @NotNull MqttConnAckRestrictions DEFAULT =
+            new MqttConnAckRestrictions(DEFAULT_RECEIVE_MAXIMUM, DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT,
+                    DEFAULT_TOPIC_ALIAS_MAXIMUM, DEFAULT_MAXIMUM_QOS, DEFAULT_RETAIN_AVAILABLE,
+                    DEFAULT_WILDCARD_SUBSCRIPTION_AVAILABLE, DEFAULT_SHARED_SUBSCRIPTION_AVAILABLE,
+                    DEFAULT_SUBSCRIPTION_IDENTIFIERS_AVAILABLE);
 
     private final int receiveMaximum;
-    private final int topicAliasMaximum;
     private final int maximumPacketSize;
-    private final MqttQos maximumQos;
-    private final boolean isRetainAvailable;
-    private final boolean isWildcardSubscriptionAvailable;
-    private final boolean isSubscriptionIdentifierAvailable;
-    private final boolean isSharedSubscriptionAvailable;
+    private final int topicAliasMaximum;
+    private final @NotNull MqttQos maximumQos;
+    private final boolean retainAvailable;
+    private final boolean wildcardSubscriptionAvailable;
+    private final boolean sharedSubscriptionAvailable;
+    private final boolean subscriptionIdentifiersAvailable;
 
     public MqttConnAckRestrictions(
-            final int receiveMaximum, final int topicAliasMaximum, final int maximumPacketSize,
-            final MqttQos maximumQos, final boolean isRetainAvailable, final boolean isWildcardSubscriptionAvailable,
-            final boolean isSubscriptionIdentifierAvailable, final boolean isSharedSubscriptionAvailable) {
+            final int receiveMaximum, final int maximumPacketSize, final int topicAliasMaximum,
+            final @NotNull MqttQos maximumQos, final boolean retainAvailable,
+            final boolean wildcardSubscriptionAvailable, final boolean sharedSubscriptionAvailable,
+            final boolean subscriptionIdentifiersAvailable) {
 
         this.receiveMaximum = receiveMaximum;
-        this.topicAliasMaximum = topicAliasMaximum;
         this.maximumPacketSize = maximumPacketSize;
+        this.topicAliasMaximum = topicAliasMaximum;
         this.maximumQos = maximumQos;
-        this.isRetainAvailable = isRetainAvailable;
-        this.isWildcardSubscriptionAvailable = isWildcardSubscriptionAvailable;
-        this.isSubscriptionIdentifierAvailable = isSubscriptionIdentifierAvailable;
-        this.isSharedSubscriptionAvailable = isSharedSubscriptionAvailable;
+        this.retainAvailable = retainAvailable;
+        this.wildcardSubscriptionAvailable = wildcardSubscriptionAvailable;
+        this.sharedSubscriptionAvailable = sharedSubscriptionAvailable;
+        this.subscriptionIdentifiersAvailable = subscriptionIdentifiersAvailable;
     }
 
     @Override
@@ -66,38 +66,38 @@ public class MqttConnAckRestrictions implements Mqtt5ConnAckRestrictions {
     }
 
     @Override
-    public int getTopicAliasMaximum() {
-        return topicAliasMaximum;
-    }
-
-    @Override
     public int getMaximumPacketSize() {
         return maximumPacketSize;
     }
 
     @Override
-    public MqttQos getMaximumQos() {
+    public int getTopicAliasMaximum() {
+        return topicAliasMaximum;
+    }
+
+    @Override
+    public @NotNull MqttQos getMaximumQos() {
         return maximumQos;
     }
 
     @Override
     public boolean isRetainAvailable() {
-        return isRetainAvailable;
+        return retainAvailable;
     }
 
     @Override
     public boolean isWildcardSubscriptionAvailable() {
-        return isWildcardSubscriptionAvailable;
-    }
-
-    @Override
-    public boolean isSubscriptionIdentifierAvailable() {
-        return isSubscriptionIdentifierAvailable;
+        return wildcardSubscriptionAvailable;
     }
 
     @Override
     public boolean isSharedSubscriptionAvailable() {
-        return isSharedSubscriptionAvailable;
+        return sharedSubscriptionAvailable;
+    }
+
+    @Override
+    public boolean areSubscriptionIdentifiersAvailable() {
+        return subscriptionIdentifiersAvailable;
     }
 
 }

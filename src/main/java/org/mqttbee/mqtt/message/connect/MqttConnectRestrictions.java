@@ -30,19 +30,17 @@ public class MqttConnectRestrictions implements Mqtt5ConnectRestrictions {
 
     @NotNull
     public static final MqttConnectRestrictions DEFAULT =
-            new MqttConnectRestrictions(DEFAULT_RECEIVE_MAXIMUM, DEFAULT_TOPIC_ALIAS_MAXIMUM,
-                    DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT);
+            new MqttConnectRestrictions(DEFAULT_RECEIVE_MAXIMUM, DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT,
+                    DEFAULT_TOPIC_ALIAS_MAXIMUM);
 
     private final int receiveMaximum;
-    private final int topicAliasMaximum;
     private final int maximumPacketSize;
+    private final int topicAliasMaximum;
 
-    public MqttConnectRestrictions(
-            final int receiveMaximum, final int topicAliasMaximum, final int maximumPacketSize) {
-
+    public MqttConnectRestrictions(final int receiveMaximum, final int maximumPacketSize, final int topicAliasMaximum) {
         this.receiveMaximum = receiveMaximum;
-        this.topicAliasMaximum = topicAliasMaximum;
         this.maximumPacketSize = maximumPacketSize;
+        this.topicAliasMaximum = topicAliasMaximum;
     }
 
     @Override
@@ -51,13 +49,13 @@ public class MqttConnectRestrictions implements Mqtt5ConnectRestrictions {
     }
 
     @Override
-    public int getTopicAliasMaximum() {
-        return topicAliasMaximum;
+    public int getMaximumPacketSize() {
+        return maximumPacketSize;
     }
 
     @Override
-    public int getMaximumPacketSize() {
-        return maximumPacketSize;
+    public int getTopicAliasMaximum() {
+        return topicAliasMaximum;
     }
 
 }

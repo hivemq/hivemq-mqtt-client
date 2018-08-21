@@ -50,7 +50,7 @@ abstract class AbstractMqtt3DecoderTest extends AbstractMqttDecoderTest {
     protected void createChannel() {
         super.createChannel();
         clientData.setClientConnectionData(new MqttClientConnectionData(10, Mqtt5Connect.NO_SESSION_EXPIRY,
-                Mqtt5ConnectRestrictions.DEFAULT_RECEIVE_MAXIMUM, 0, MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT,
+                Mqtt5ConnectRestrictions.DEFAULT_RECEIVE_MAXIMUM, MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT, 0,
                 null, false, false, false, channel));
     }
 
