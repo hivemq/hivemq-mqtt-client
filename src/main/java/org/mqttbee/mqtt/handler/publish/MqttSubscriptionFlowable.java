@@ -35,24 +35,24 @@ import org.reactivestreams.Subscriber;
  */
 public class MqttSubscriptionFlowable extends Flowable<Mqtt5SubscribeResult> {
 
-    private final MqttSubscribe subscribe;
-    private final MqttClientData clientData;
+    private final @NotNull MqttSubscribe subscribe;
+    private final @NotNull MqttClientData clientData;
 
-    public MqttSubscriptionFlowable(@NotNull final MqttSubscribe subscribe, @NotNull final MqttClientData clientData) {
+    public MqttSubscriptionFlowable(final @NotNull MqttSubscribe subscribe, final @NotNull MqttClientData clientData) {
         this.subscribe = subscribe;
         this.clientData = clientData;
     }
 
     @Override
-    protected void subscribeActual(final Subscriber<? super Mqtt5SubscribeResult> s) {
+    protected void subscribeActual(final @NotNull Subscriber<? super Mqtt5SubscribeResult> s) {
         if (clientData.getConnectionState() == MqttClientConnectionState.DISCONNECTED) {
             EmptySubscription.error(new NotConnectedException(), s);
         } else {
             final ClientComponent clientComponent = clientData.getClientComponent();
-            final MqttIncomingPublishService incomingPublishService = clientComponent.incomingPublishService();
+            final MqttIncomingQosHandler incomingQosHandler = clientComponent.incomingQosHandler();
             final MqttSubscriptionHandler subscriptionHandler = clientComponent.subscriptionHandler();
 
-            final MqttSubscriptionFlow flow = new MqttSubscriptionFlow(s, incomingPublishService);
+            final MqttSubscriptionFlow flow = new MqttSubscriptionFlow(s, incomingQosHandler);
             s.onSubscribe(flow);
             subscriptionHandler.subscribe(new MqttSubscribeWithFlow(subscribe, flow));
         }

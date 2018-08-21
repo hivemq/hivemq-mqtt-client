@@ -19,8 +19,8 @@ package org.mqttbee.mqtt.handler.publish;
 
 import io.reactivex.Emitter;
 import io.reactivex.internal.util.BackpressureHelper;
-import org.mqttbee.annotations.CallByThread;
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.annotations.CallByThread;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
@@ -39,30 +39,28 @@ public abstract class MqttIncomingPublishFlow<S extends Subscriber<? super Mqtt5
     private static final int STATE_NEW_REQUESTS = 1;
     private static final int STATE_BLOCKED = 2;
 
-    final MqttIncomingPublishService incomingPublishService;
-    final S subscriber;
+    final @NotNull S subscriber;
+    final @NotNull MqttIncomingQosHandler incomingQosHandler;
 
     long requested;
-    private final AtomicLong newRequested = new AtomicLong();
-    private final AtomicBoolean cancelled = new AtomicBoolean();
+    private final @NotNull AtomicLong newRequested = new AtomicLong();
+    private final @NotNull AtomicBoolean cancelled = new AtomicBoolean();
     private boolean unsubscribed;
     boolean done;
 
     private int referenced;
     private long blockedIndex;
     private boolean blocking;
-    private final AtomicInteger requestState = new AtomicInteger();
+    private final @NotNull AtomicInteger requestState = new AtomicInteger();
 
-    MqttIncomingPublishFlow(
-            @NotNull final MqttIncomingPublishService incomingPublishService, @NotNull final S subscriber) {
-
-        this.incomingPublishService = incomingPublishService;
+    MqttIncomingPublishFlow(final @NotNull S subscriber, final @NotNull MqttIncomingQosHandler incomingQosHandler) {
         this.subscriber = subscriber;
+        this.incomingQosHandler = incomingQosHandler;
     }
 
     @CallByThread("Netty EventLoop")
     @Override
-    public void onNext(@NotNull final Mqtt5Publish result) {
+    public void onNext(final @NotNull Mqtt5Publish result) {
         if (done) {
             return;
         }
@@ -74,7 +72,7 @@ public abstract class MqttIncomingPublishFlow<S extends Subscriber<? super Mqtt5
 
     @CallByThread("Netty EventLoop")
     @Override
-    public void onError(@NotNull final Throwable t) {
+    public void onError(final @NotNull Throwable t) {
         if (done) {
             return;
         }
@@ -97,7 +95,7 @@ public abstract class MqttIncomingPublishFlow<S extends Subscriber<? super Mqtt5
         if (n > 0) {
             BackpressureHelper.add(newRequested, n);
             if (requestState.getAndSet(STATE_NEW_REQUESTS) == STATE_BLOCKED) {
-                incomingPublishService.getNettyEventLoop().execute(this);
+                incomingQosHandler.getEventLoop().execute(this);
             }
         }
     }
@@ -105,7 +103,7 @@ public abstract class MqttIncomingPublishFlow<S extends Subscriber<? super Mqtt5
     @CallByThread("Netty EventLoop")
     public void run() { // only executed if was blocking
         if (referenced > 0) { // is blocking
-            incomingPublishService.drain();
+            incomingQosHandler.getIncomingPublishService().drain();
         }
     }
 
@@ -142,14 +140,14 @@ public abstract class MqttIncomingPublishFlow<S extends Subscriber<? super Mqtt5
     @Override
     public void cancel() {
         if (cancelled.compareAndSet(false, true)) {
-            incomingPublishService.getNettyEventLoop().execute(this::runCancel);
+            incomingQosHandler.getEventLoop().execute(this::runCancel);
         }
     }
 
     @CallByThread("Netty EventLoop")
     void runCancel() { // always executed if cancelled
         if (referenced > 0) { // is blocking
-            incomingPublishService.drain();
+            incomingQosHandler.getIncomingPublishService().drain();
         }
     }
 
@@ -163,7 +161,7 @@ public abstract class MqttIncomingPublishFlow<S extends Subscriber<? super Mqtt5
         if (referenced == 0) {
             onComplete();
         } else {
-            incomingPublishService.drain();
+            incomingQosHandler.getIncomingPublishService().drain();
         }
     }
 

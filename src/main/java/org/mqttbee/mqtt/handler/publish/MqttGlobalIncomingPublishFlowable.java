@@ -49,13 +49,12 @@ public class MqttGlobalIncomingPublishFlowable extends Flowable<Mqtt5Publish> {
             EmptySubscription.error(new NotConnectedException(), s);
         } else {
             final ClientComponent clientComponent = clientData.getClientComponent();
-            final MqttIncomingPublishService incomingPublishService = clientComponent.incomingPublishService();
-            final MqttIncomingPublishFlows incomingPublishFlows = incomingPublishService.getIncomingPublishFlows();
+            final MqttIncomingQosHandler incomingQosHandler = clientComponent.incomingQosHandler();
+            final MqttIncomingPublishFlows incomingPublishFlows = incomingQosHandler.getIncomingPublishFlows();
 
-            final MqttGlobalIncomingPublishFlow flow =
-                    new MqttGlobalIncomingPublishFlow(s, incomingPublishService, filter);
+            final MqttGlobalIncomingPublishFlow flow = new MqttGlobalIncomingPublishFlow(s, incomingQosHandler, filter);
             s.onSubscribe(flow);
-            incomingPublishService.getNettyEventLoop().execute(() -> incomingPublishFlows.subscribeGlobal(flow));
+            clientData.getEventLoop().execute(() -> incomingPublishFlows.subscribeGlobal(flow));
         }
     }
 

@@ -45,21 +45,19 @@ import javax.inject.Inject;
 @NotThreadSafe
 public class MqttIncomingPublishFlows {
 
-    @NotNull
-    private final MqttSubscriptionFlows subscriptionFlows;
-    @NotNull
-    private final HandleList<MqttGlobalIncomingPublishFlow>[] globalFlows;
+    private final @NotNull MqttSubscriptionFlows subscriptionFlows;
+    private final @Nullable HandleList<MqttGlobalIncomingPublishFlow> @NotNull [] globalFlows;
 
     @Inject
     @SuppressWarnings("unchecked")
-    MqttIncomingPublishFlows(@NotNull final MqttSubscriptionFlows subscriptionFlows) {
+    MqttIncomingPublishFlows(final @NotNull MqttSubscriptionFlows subscriptionFlows) {
         this.subscriptionFlows = subscriptionFlows;
         globalFlows = new HandleList[MqttGlobalPublishFilter.values().length];
     }
 
     public void subscribe(
-            @NotNull final MqttStatefulSubscribe subscribe, @NotNull final MqttSubAck subAck,
-            @Nullable final MqttSubscriptionFlow flow) {
+            final @NotNull MqttStatefulSubscribe subscribe, final @NotNull MqttSubAck subAck,
+            final @Nullable MqttSubscriptionFlow flow) {
 
         final ImmutableList<MqttSubscription> subscriptions = subscribe.getStatelessMessage().getSubscriptions();
         final ImmutableList<Mqtt5SubAckReasonCode> reasonCodes = subAck.getReasonCodes();
@@ -70,11 +68,11 @@ public class MqttIncomingPublishFlows {
         }
     }
 
-    void subscribe(@NotNull final MqttTopicFilterImpl topicFilter, @Nullable final MqttSubscriptionFlow flow) {
+    void subscribe(final @NotNull MqttTopicFilterImpl topicFilter, final @Nullable MqttSubscriptionFlow flow) {
         subscriptionFlows.subscribe(topicFilter, flow);
     }
 
-    public void unsubscribe(@NotNull final MqttStatefulUnsubscribe unsubscribe, @NotNull final MqttUnsubAck unsubAck) {
+    public void unsubscribe(final @NotNull MqttStatefulUnsubscribe unsubscribe, final @NotNull MqttUnsubAck unsubAck) {
         final ImmutableList<MqttTopicFilterImpl> topicFilters = unsubscribe.getStatelessMessage().getTopicFilters();
         final ImmutableList<Mqtt5UnsubAckReasonCode> reasonCodes = unsubAck.getReasonCodes();
         final boolean areAllSuccess = reasonCodes == Mqtt3UnsubAckView.REASON_CODES_ALL_SUCCESS;
@@ -85,24 +83,23 @@ public class MqttIncomingPublishFlows {
         }
     }
 
-    void unsubscribe(@NotNull final MqttTopicFilterImpl topicFilter) {
+    void unsubscribe(final @NotNull MqttTopicFilterImpl topicFilter) {
         subscriptionFlows.unsubscribe(topicFilter, null);
     }
 
-    void cancel(@NotNull final MqttSubscriptionFlow flow) {
+    void cancel(final @NotNull MqttSubscriptionFlow flow) {
         subscriptionFlows.cancel(flow);
     }
 
-    @NotNull
-    HandleList<MqttIncomingPublishFlow> findMatching(@NotNull final MqttStatefulPublish publish) {
+    @NotNull HandleList<MqttIncomingPublishFlow> findMatching(final @NotNull MqttStatefulPublish publish) {
         final HandleList<MqttIncomingPublishFlow> matchingFlows = new HandleList<>();
         findMatching(publish, matchingFlows);
         return matchingFlows;
     }
 
     void findMatching(
-            @NotNull final MqttStatefulPublish publish,
-            @NotNull final HandleList<MqttIncomingPublishFlow> matchingFlows) {
+            final @NotNull MqttStatefulPublish publish,
+            final @NotNull HandleList<MqttIncomingPublishFlow> matchingFlows) {
 
         final MqttTopicImpl topic = publish.getStatelessMessage().getTopic();
         if (subscriptionFlows.findMatching(topic, matchingFlows) || !matchingFlows.isEmpty()) {
@@ -114,7 +111,7 @@ public class MqttIncomingPublishFlows {
         }
     }
 
-    void subscribeGlobal(@NotNull final MqttGlobalIncomingPublishFlow flow) {
+    void subscribeGlobal(final @NotNull MqttGlobalIncomingPublishFlow flow) {
         final int filter = flow.getFilter().ordinal();
         HandleList<MqttGlobalIncomingPublishFlow> globalFlow = globalFlows[filter];
         if (globalFlow == null) {
@@ -124,18 +121,21 @@ public class MqttIncomingPublishFlows {
         flow.setHandle(globalFlow.add(flow));
     }
 
-    void cancelGlobal(@NotNull final MqttGlobalIncomingPublishFlow flow) {
-        flow.getHandle().remove();
+    void cancelGlobal(final @NotNull MqttGlobalIncomingPublishFlow flow) {
+        final HandleList.Handle<MqttGlobalIncomingPublishFlow> handle = flow.getHandle();
+        assert handle != null;
+        handle.remove();
         final int filter = flow.getFilter().ordinal();
         final HandleList<MqttGlobalIncomingPublishFlow> globalFlow = globalFlows[filter];
+        assert globalFlow != null;
         if (globalFlow.isEmpty()) {
             globalFlows[filter] = null;
         }
     }
 
     private static void add(
-            @NotNull final HandleList<MqttIncomingPublishFlow> target,
-            @Nullable final HandleList<? extends MqttIncomingPublishFlow> source) {
+            final @NotNull HandleList<MqttIncomingPublishFlow> target,
+            final @Nullable HandleList<? extends MqttIncomingPublishFlow> source) {
 
         if (source != null) {
             for (final MqttIncomingPublishFlow flow : source) {

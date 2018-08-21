@@ -19,8 +19,9 @@ package org.mqttbee.mqtt.ioc;
 
 import dagger.BindsInstance;
 import dagger.Subcomponent;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.mqtt.MqttClientData;
-import org.mqttbee.mqtt.handler.publish.MqttIncomingPublishService;
+import org.mqttbee.mqtt.handler.publish.MqttIncomingQosHandler;
 import org.mqttbee.mqtt.handler.publish.MqttOutgoingQosHandler;
 import org.mqttbee.mqtt.handler.subscribe.MqttSubscriptionHandler;
 
@@ -33,21 +34,21 @@ import org.mqttbee.mqtt.handler.subscribe.MqttSubscriptionHandler;
 @ClientScope
 public interface ClientComponent {
 
-    ConnectionComponent.Builder connectionComponentBuilder();
+    @NotNull ConnectionComponent.Builder connectionComponentBuilder();
 
-    MqttSubscriptionHandler subscriptionHandler();
+    @NotNull MqttSubscriptionHandler subscriptionHandler();
 
-    MqttIncomingPublishService incomingPublishService();
+    @NotNull MqttIncomingQosHandler incomingQosHandler();
 
-    MqttOutgoingQosHandler outgoingQosHandler();
+    @NotNull MqttOutgoingQosHandler outgoingQosHandler();
 
     @Subcomponent.Builder
     interface Builder {
 
         @BindsInstance
-        Builder clientData(MqttClientData clientData);
+        @NotNull Builder clientData(@NotNull MqttClientData clientData);
 
-        ClientComponent build();
+        @NotNull ClientComponent build();
 
     }
 

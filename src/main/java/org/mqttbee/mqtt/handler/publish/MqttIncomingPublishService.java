@@ -17,11 +17,8 @@
 
 package org.mqttbee.mqtt.handler.publish;
 
-import io.netty.channel.EventLoop;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.CallByThread;
-import org.mqttbee.mqtt.MqttClientConnectionData;
-import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.ioc.ClientScope;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
@@ -30,51 +27,35 @@ import org.mqttbee.util.collections.HandleList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
 import java.util.Iterator;
 
 /**
  * @author Silvio Giebl
  */
 @ClientScope
-public class MqttIncomingPublishService {
+class MqttIncomingPublishService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MqttIncomingPublishService.class);
+    private static final @NotNull Logger LOGGER = LoggerFactory.getLogger(MqttIncomingPublishService.class);
 
-    private final MqttClientData clientData;
-    private final MqttIncomingQosHandler incomingQosHandler; // TODO temp
-    private final MqttIncomingPublishFlows incomingPublishFlows;
+    private final @NotNull MqttIncomingQosHandler incomingQosHandler;
 
-    private final ChunkedArrayQueue<QueueEntry> queue;
-
-    private final int receiveMaximum;
+    private final @NotNull ChunkedArrayQueue<QueueEntry> queue = new ChunkedArrayQueue<>(32);
 
     private int referencedFlowCount;
     private int runIndex;
     private int blockingFlowCount;
 
-    @Inject
-    MqttIncomingPublishService(
-            final MqttClientData clientData, final MqttIncomingQosHandler incomingQosHandler,
-            final MqttIncomingPublishFlows incomingPublishFlows) {
-
-        this.clientData = clientData;
-        this.incomingQosHandler = incomingQosHandler; // TODO temp
-        this.incomingPublishFlows = incomingPublishFlows;
-
-        queue = new ChunkedArrayQueue<>(32);
-
-        final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
-        assert clientConnectionData != null;
-        receiveMaximum = clientConnectionData.getReceiveMaximum();
+    MqttIncomingPublishService(final @NotNull MqttIncomingQosHandler incomingQosHandler) {
+        this.incomingQosHandler = incomingQosHandler;
     }
 
     @CallByThread("Netty EventLoop")
-    boolean onPublish(@NotNull final MqttStatefulPublish publish) {
-        if (queue.size() >= receiveMaximum) {
+    boolean onPublish(final @NotNull MqttStatefulPublish publish) {
+        if (queue.size() >= incomingQosHandler.getReceiveMaximum()) {
             return false; // flow control error
         }
-        final HandleList<MqttIncomingPublishFlow> flows = incomingPublishFlows.findMatching(publish);
+        final HandleList<MqttIncomingPublishFlow> flows =
+                incomingQosHandler.getIncomingPublishFlows().findMatching(publish);
         if (flows.isEmpty()) {
             LOGGER.warn("No publish flow registered for {}.", publish);
         }
@@ -109,8 +90,8 @@ public class MqttIncomingPublishService {
             final HandleList<MqttIncomingPublishFlow> flows = entry.flows;
             emit(publish.getStatelessMessage(), flows);
             if (acknowledge && flows.isEmpty()) {
-                queueIt.remove();
-                incomingQosHandler.ack(publish); // TODO temp
+                queueIt.remove(); // TODO mark instead of remove
+                incomingQosHandler.ack(publish);
             } else {
                 acknowledge = false;
                 if (blockingFlowCount == referencedFlowCount) {
@@ -121,7 +102,7 @@ public class MqttIncomingPublishService {
     }
 
     @CallByThread("Netty EventLoop")
-    private void emit(@NotNull final MqttPublish publish, @NotNull final HandleList<MqttIncomingPublishFlow> flows) {
+    private void emit(final @NotNull MqttPublish publish, final @NotNull HandleList<MqttIncomingPublishFlow> flows) {
         final Iterator<MqttIncomingPublishFlow> flowIt = flows.iterator();
         while (flowIt.hasNext()) {
             final MqttIncomingPublishFlow flow = flowIt.next();
@@ -152,23 +133,13 @@ public class MqttIncomingPublishService {
         }
     }
 
-    @NotNull
-    MqttIncomingPublishFlows getIncomingPublishFlows() {
-        return incomingPublishFlows;
-    }
-
-    @NotNull
-    EventLoop getNettyEventLoop() {
-        return clientData.getEventLoop();
-    }
-
     private static class QueueEntry {
 
-        private final MqttStatefulPublish publish;
-        private final HandleList<MqttIncomingPublishFlow> flows;
+        private final @NotNull MqttStatefulPublish publish;
+        private final @NotNull HandleList<MqttIncomingPublishFlow> flows;
 
         private QueueEntry(
-                @NotNull final MqttStatefulPublish publish, @NotNull final HandleList<MqttIncomingPublishFlow> flows) {
+                final @NotNull MqttStatefulPublish publish, final @NotNull HandleList<MqttIncomingPublishFlow> flows) {
 
             this.publish = publish;
             this.flows = flows;

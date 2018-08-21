@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt.handler.connect;
 
-import dagger.Lazy;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
@@ -77,7 +76,7 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
 
     private final @NotNull MqttDecoder decoder;
     private final @NotNull MqttSubscriptionHandler subscriptionHandler;
-    private final @NotNull Lazy<MqttIncomingQosHandler> incomingQosHandler;
+    private final @NotNull MqttIncomingQosHandler incomingQosHandler;
     private final @NotNull MqttOutgoingQosHandler outgoingQosHandler;
     private final @NotNull MqttDisconnectOnConnAckHandler disconnectOnConnAckHandler;
 
@@ -88,7 +87,7 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
             final @NotNull MqttConnect connect, final @NotNull SingleFlow<Mqtt5ConnAck> connAckFlow,
             final @NotNull MqttClientData clientData, final @NotNull MqttDecoder decoder,
             final @NotNull MqttSubscriptionHandler subscriptionHandler,
-            final @NotNull Lazy<MqttIncomingQosHandler> incomingQosHandler,
+            final @NotNull MqttIncomingQosHandler incomingQosHandler,
             final @NotNull MqttOutgoingQosHandler outgoingQosHandler,
             final @NotNull MqttDisconnectOnConnAckHandler disconnectOnConnAckHandler) {
 
@@ -215,7 +214,7 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
                 }
 
                 pipeline.addAfter(beforeHandlerName, MqttSubscriptionHandler.NAME, subscriptionHandler);
-                pipeline.addAfter(beforeHandlerName, MqttIncomingQosHandler.NAME, incomingQosHandler.get());
+                pipeline.addAfter(beforeHandlerName, MqttIncomingQosHandler.NAME, incomingQosHandler);
                 pipeline.addAfter(beforeHandlerName, MqttOutgoingQosHandler.NAME, outgoingQosHandler);
                 pipeline.addLast(MqttDisconnectOnConnAckHandler.NAME, disconnectOnConnAckHandler);
 
