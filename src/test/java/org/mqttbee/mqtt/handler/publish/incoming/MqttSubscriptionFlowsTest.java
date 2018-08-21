@@ -15,16 +15,16 @@
  *
  */
 
-package org.mqttbee.mqtt.handler.publish;
+package org.mqttbee.mqtt.handler.publish.incoming;
 
 import com.google.common.collect.ImmutableSet;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.converter.ArgumentConversionException;
 import org.junit.jupiter.params.converter.ConvertWith;
 import org.junit.jupiter.params.converter.SimpleArgumentConverter;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.jetbrains.annotations.NotNull;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.util.collections.HandleList;
@@ -44,13 +44,15 @@ abstract class MqttSubscriptionFlowsTest {
     public static class CsvToArray extends SimpleArgumentConverter {
 
         @Override
-        protected Object convert(final Object source, final Class<?> targetType) throws ArgumentConversionException {
+        protected @NotNull Object convert(final @NotNull Object source, final @NotNull Class<?> targetType)
+                throws ArgumentConversionException {
             final String s = (String) source;
             return s.split("\\s*;\\s*");
         }
     }
 
-    private final Supplier<MqttSubscriptionFlows> flowsSupplier;
+    private final @NotNull Supplier<MqttSubscriptionFlows> flowsSupplier;
+    @SuppressWarnings("NullabilityAnnotations")
     private MqttSubscriptionFlows flows;
 
     MqttSubscriptionFlowsTest(@NotNull final Supplier<MqttSubscriptionFlows> flowsSupplier) {
@@ -69,7 +71,8 @@ abstract class MqttSubscriptionFlowsTest {
             "/,    /; +/+; +/; /+; +/#; /#; #                            "
     })
     void subscribe_matchingTopicFilters_doMatch(
-            final String topic, @ConvertWith(CsvToArray.class) final String[] matchingTopicFilters) {
+            final @NotNull String topic, @ConvertWith(CsvToArray.class) final @NotNull String[] matchingTopicFilters) {
+
         final MqttSubscriptionFlow[] matchingFlows = new MqttSubscriptionFlow[matchingTopicFilters.length];
         for (int i = 0; i < matchingTopicFilters.length; i++) {
             matchingFlows[i] = mockSubscriptionFlow(matchingTopicFilters[i]);
@@ -91,7 +94,9 @@ abstract class MqttSubscriptionFlowsTest {
             "/,    //; a/b; a/; /a; +                                    "
     })
     void subscribe_nonMatchingTopicFilters_doNotMatch(
-            final String topic, @ConvertWith(CsvToArray.class) final String[] notMatchingTopicFilters) {
+            final @NotNull String topic,
+            @ConvertWith(CsvToArray.class) final @NotNull String[] notMatchingTopicFilters) {
+
         final MqttSubscriptionFlow[] notMatchingFlows = new MqttSubscriptionFlow[notMatchingTopicFilters.length];
         for (int i = 0; i < notMatchingTopicFilters.length; i++) {
             notMatchingFlows[i] = mockSubscriptionFlow(notMatchingTopicFilters[i]);
@@ -107,7 +112,9 @@ abstract class MqttSubscriptionFlowsTest {
 
     @ParameterizedTest
     @CsvSource({"a, a", "a, +", "a, #", "a/b, a/b", "a/b, a/+", "a/b, +/b", "a/b, +/+", "a/b, +/#", "a/b, #"})
-    void unsubscribe_matchingTopicFilters_doNoLongerMatch(final String topic, final String matchingTopicFilter) {
+    void unsubscribe_matchingTopicFilters_doNoLongerMatch(
+            final @NotNull String topic, final @NotNull String matchingTopicFilter) {
+
         final MqttSubscriptionFlow flow1 = mockSubscriptionFlow(matchingTopicFilter);
         final MqttSubscriptionFlow flow2 = mockSubscriptionFlow(matchingTopicFilter);
         flows.subscribe(Objects.requireNonNull(MqttTopicFilterImpl.from(matchingTopicFilter)), flow1);
@@ -125,7 +132,8 @@ abstract class MqttSubscriptionFlowsTest {
     @ParameterizedTest
     @CsvSource({"a, a, b", "a, a, a/b", "a/b, a/b, a/c"})
     void unsubscribe_nonMatchingTopicFilters_othersStillMatch(
-            final String topic, final String matchingTopicFilter, final String notMatchingTopicFilter) {
+            final @NotNull String topic, final @NotNull String matchingTopicFilter,
+            final @NotNull String notMatchingTopicFilter) {
 
         final MqttSubscriptionFlow flow1 = mockSubscriptionFlow(matchingTopicFilter);
         final MqttSubscriptionFlow flow2 = mockSubscriptionFlow(notMatchingTopicFilter);
@@ -144,7 +152,7 @@ abstract class MqttSubscriptionFlowsTest {
 
     @ParameterizedTest
     @CsvSource({"a, a", "a, +", "a, #", "a/b, a/b", "a/b, a/+", "a/b, +/b", "a/b, +/+", "a/b, +/#", "a/b, #"})
-    void cancel_doNoLongerMatch(final String topic, final String matchingTopicFilter) {
+    void cancel_doNoLongerMatch(final @NotNull String topic, final @NotNull String matchingTopicFilter) {
         final MqttSubscriptionFlow flow1 = mockSubscriptionFlow(matchingTopicFilter);
         final MqttSubscriptionFlow flow2 = mockSubscriptionFlow(matchingTopicFilter);
         flows.subscribe(Objects.requireNonNull(MqttTopicFilterImpl.from(matchingTopicFilter)), flow1);
@@ -166,7 +174,7 @@ abstract class MqttSubscriptionFlowsTest {
 
     @ParameterizedTest
     @CsvSource({"a, a", "a, +", "a, #", "a/b, a/b", "a/b, a/+", "a/b, +/b", "a/b, +/+", "a/b, +/#", "a/b, #"})
-    void cancel_notPresentFlows_areIgnored(final String topic, final String matchingTopicFilter) {
+    void cancel_notPresentFlows_areIgnored(final @NotNull String topic, final @NotNull String matchingTopicFilter) {
         final MqttSubscriptionFlow flow1 = mockSubscriptionFlow(matchingTopicFilter);
         final MqttSubscriptionFlow flow2 = mockSubscriptionFlow(matchingTopicFilter);
         flows.subscribe(Objects.requireNonNull(MqttTopicFilterImpl.from(matchingTopicFilter)), flow1);
@@ -180,7 +188,7 @@ abstract class MqttSubscriptionFlowsTest {
     }
 
     @NotNull
-    private MqttSubscriptionFlow mockSubscriptionFlow(final String name) {
+    private MqttSubscriptionFlow mockSubscriptionFlow(final @NotNull String name) {
         final MqttSubscriptionFlow flow = mock(MqttSubscriptionFlow.class);
         when(flow.getTopicFilters()).thenReturn(new HandleList<>());
         when(flow.toString()).thenReturn(name);

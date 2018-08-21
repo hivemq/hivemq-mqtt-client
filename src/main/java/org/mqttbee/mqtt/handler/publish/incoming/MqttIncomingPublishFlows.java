@@ -15,7 +15,7 @@
  *
  */
 
-package org.mqttbee.mqtt.handler.publish;
+package org.mqttbee.mqtt.handler.publish.incoming;
 
 import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;

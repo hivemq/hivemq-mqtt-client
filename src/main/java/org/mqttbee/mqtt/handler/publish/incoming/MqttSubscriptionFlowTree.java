@@ -15,7 +15,7 @@
  *
  */
 
-package org.mqttbee.mqtt.handler.publish;
+package org.mqttbee.mqtt.handler.publish.incoming;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -37,16 +37,16 @@ import java.util.function.Consumer;
 @NotThreadSafe
 public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
 
-    private static final ByteArray ROOT_LEVEL = new ByteArray(new byte[0], 0, 0);
+    private static final @NotNull ByteArray ROOT_LEVEL = new ByteArray(new byte[0], 0, 0);
 
-    private TopicTreeNode rootNode;
+    private @Nullable TopicTreeNode rootNode;
 
     @Inject
     MqttSubscriptionFlowTree() {
     }
 
     @Override
-    public void subscribe(@NotNull final MqttTopicFilterImpl topicFilter, @Nullable final MqttSubscriptionFlow flow) {
+    public void subscribe(final @NotNull MqttTopicFilterImpl topicFilter, final @Nullable MqttSubscriptionFlow flow) {
         final MqttTopicLevel level = MqttTopicLevel.root(topicFilter);
         final TopicTreeEntry entry = (flow == null) ? null : new TopicTreeEntry(flow, topicFilter);
         if (rootNode == null) {
@@ -58,8 +58,8 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
 
     @Override
     public void unsubscribe(
-            @NotNull final MqttTopicFilterImpl topicFilter,
-            @Nullable final Consumer<MqttSubscriptionFlow> unsubscribedCallback) {
+            final @NotNull MqttTopicFilterImpl topicFilter,
+            final @Nullable Consumer<MqttSubscriptionFlow> unsubscribedCallback) {
 
         if (rootNode != null && rootNode.unsubscribe(MqttTopicLevel.root(topicFilter), unsubscribedCallback)) {
             rootNode = null;
@@ -67,7 +67,7 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
     }
 
     @Override
-    public void cancel(@NotNull final MqttSubscriptionFlow flow) {
+    public void cancel(final @NotNull MqttSubscriptionFlow flow) {
         if (rootNode != null) {
             for (final MqttTopicFilterImpl topicFilter : flow.getTopicFilters()) {
                 rootNode.cancel(MqttTopicLevel.root(topicFilter), flow);
@@ -77,48 +77,42 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
 
     @Override
     public boolean findMatching(
-            @NotNull final MqttTopicImpl topic, @NotNull final HandleList<MqttIncomingPublishFlow> matchingFlows) {
+            final @NotNull MqttTopicImpl topic, final @NotNull HandleList<MqttIncomingPublishFlow> matchingFlows) {
 
         return (rootNode != null) && rootNode.findMatching(MqttTopicLevel.root(topic), matchingFlows);
     }
 
-
     private static class TopicTreeEntry {
 
-        final MqttSubscriptionFlow flow;
-        final HandleList.Handle<MqttTopicFilterImpl> handle;
+        final @NotNull MqttSubscriptionFlow flow;
+        final @NotNull HandleList.Handle<MqttTopicFilterImpl> handle;
 
-        TopicTreeEntry(@NotNull final MqttSubscriptionFlow flow, @NotNull final MqttTopicFilterImpl topicFilter) {
+        TopicTreeEntry(final @NotNull MqttSubscriptionFlow flow, final @NotNull MqttTopicFilterImpl topicFilter) {
             this.flow = flow;
             this.handle = flow.getTopicFilters().add(topicFilter);
         }
 
     }
 
-
     private static class TopicTreeNode {
 
-        @NotNull
-        private final ByteArray parentLevel;
-        @Nullable
-        private HashMap<ByteArray, TopicTreeNode> next;
-        @Nullable
-        private HandleList<TopicTreeEntry> entries;
-        @Nullable
-        private HandleList<TopicTreeEntry> multiLevelEntries;
+        private final @NotNull ByteArray parentLevel;
+        private @Nullable HashMap<ByteArray, TopicTreeNode> next;
+        private @Nullable HandleList<TopicTreeEntry> entries;
+        private @Nullable HandleList<TopicTreeEntry> multiLevelEntries;
         private boolean hasSubscription;
         private boolean hasSingleLevelSubscription;
         private boolean hasMultiLevelSubscription;
 
         private TopicTreeNode(
-                @NotNull final ByteArray parentLevel, @Nullable final MqttTopicLevel level,
-                @Nullable final TopicTreeEntry entry) {
+                final @NotNull ByteArray parentLevel, final @Nullable MqttTopicLevel level,
+                final @Nullable TopicTreeEntry entry) {
 
             this.parentLevel = parentLevel;
             subscribe(level, entry);
         }
 
-        private void subscribe(@Nullable final MqttTopicLevel level, @Nullable final TopicTreeEntry entry) {
+        private void subscribe(final @Nullable MqttTopicLevel level, final @Nullable TopicTreeEntry entry) {
             if (level == null) {
                 if (entries == null) {
                     entries = new HandleList<>();
@@ -159,8 +153,8 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
         }
 
         private boolean unsubscribe(
-                @Nullable final MqttTopicLevel level,
-                @Nullable final Consumer<MqttSubscriptionFlow> unsubscribedCallback) {
+                final @Nullable MqttTopicLevel level,
+                final @Nullable Consumer<MqttSubscriptionFlow> unsubscribedCallback) {
 
             if (level == null) {
                 unsubscribe(entries, unsubscribedCallback);
@@ -191,8 +185,8 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
         }
 
         private static void unsubscribe(
-                @Nullable final HandleList<TopicTreeEntry> entries,
-                @Nullable final Consumer<MqttSubscriptionFlow> unsubscribedCallback) {
+                final @Nullable HandleList<TopicTreeEntry> entries,
+                final @Nullable Consumer<MqttSubscriptionFlow> unsubscribedCallback) {
 
             if (entries != null) {
                 for (final TopicTreeEntry entry : entries) {
@@ -208,7 +202,7 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
             }
         }
 
-        private void cancel(@Nullable final MqttTopicLevel level, @NotNull final MqttSubscriptionFlow flow) {
+        private void cancel(final @Nullable MqttTopicLevel level, final @NotNull MqttSubscriptionFlow flow) {
             if (level == null) {
                 if (cancel(entries, flow)) {
                     entries = null;
@@ -226,7 +220,7 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
         }
 
         private static boolean cancel(
-                @Nullable final HandleList<TopicTreeEntry> entries, @NotNull final MqttSubscriptionFlow flow) {
+                final @Nullable HandleList<TopicTreeEntry> entries, final @NotNull MqttSubscriptionFlow flow) {
 
             if (entries != null) {
                 for (final Iterator<TopicTreeEntry> iterator = entries.iterator(); iterator.hasNext(); ) {
@@ -241,8 +235,8 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
         }
 
         private boolean findMatching(
-                @Nullable final MqttTopicLevel level,
-                @NotNull final HandleList<MqttIncomingPublishFlow> matchingFlows) {
+                final @Nullable MqttTopicLevel level,
+                final @NotNull HandleList<MqttIncomingPublishFlow> matchingFlows) {
 
             if (level == null) {
                 add(matchingFlows, entries);
@@ -265,8 +259,8 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
         }
 
         private static void add(
-                @NotNull final HandleList<MqttIncomingPublishFlow> target,
-                @Nullable final HandleList<TopicTreeEntry> source) {
+                final @NotNull HandleList<MqttIncomingPublishFlow> target,
+                final @Nullable HandleList<TopicTreeEntry> source) {
 
             if (source != null) {
                 for (final TopicTreeEntry entry : source) {
