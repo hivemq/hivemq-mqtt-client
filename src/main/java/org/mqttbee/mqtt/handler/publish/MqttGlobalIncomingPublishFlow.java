@@ -34,16 +34,15 @@ class MqttGlobalIncomingPublishFlow extends MqttIncomingPublishFlow<Subscriber<?
 
     MqttGlobalIncomingPublishFlow(
             final @NotNull Subscriber<? super Mqtt5Publish> subscriber,
-            final @NotNull MqttIncomingPublishService incomingPublishService,
-            final @NotNull MqttGlobalPublishFilter filter) {
+            final @NotNull MqttIncomingQosHandler incomingQosHandler, final @NotNull MqttGlobalPublishFilter filter) {
 
-        super(incomingPublishService, subscriber);
+        super(subscriber, incomingQosHandler);
         this.filter = filter;
     }
 
     @Override
     void runCancel() {
-        incomingPublishService.getIncomingPublishFlows().cancelGlobal(this);
+        incomingQosHandler.getIncomingPublishFlows().cancelGlobal(this);
         super.runCancel();
     }
 

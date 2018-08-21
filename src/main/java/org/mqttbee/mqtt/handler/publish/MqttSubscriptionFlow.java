@@ -32,19 +32,19 @@ import org.reactivestreams.Subscriber;
 public class MqttSubscriptionFlow extends MqttIncomingPublishFlow<Subscriber<? super Mqtt5SubscribeResult>>
         implements SingleFlow<Mqtt5SubAck> {
 
-    private final HandleList<MqttTopicFilterImpl> topicFilters;
+    private final @NotNull HandleList<MqttTopicFilterImpl> topicFilters;
     private int subscriptionIdentifier = MqttStatefulSubscribe.DEFAULT_NO_SUBSCRIPTION_IDENTIFIER;
 
     MqttSubscriptionFlow(
-            @NotNull final Subscriber<? super Mqtt5SubscribeResult> subscriber,
-            @NotNull final MqttIncomingPublishService incomingPublishService) {
+            final @NotNull Subscriber<? super Mqtt5SubscribeResult> subscriber,
+            final @NotNull MqttIncomingQosHandler incomingQosHandler) {
 
-        super(incomingPublishService, subscriber);
+        super(subscriber, incomingQosHandler);
         this.topicFilters = new HandleList<>();
     }
 
     @Override
-    public void onSuccess(@NotNull final Mqtt5SubAck subAck) {
+    public void onSuccess(final @NotNull Mqtt5SubAck subAck) {
         if (done) {
             return;
         }
@@ -56,12 +56,11 @@ public class MqttSubscriptionFlow extends MqttIncomingPublishFlow<Subscriber<? s
 
     @Override
     void runCancel() {
-        incomingPublishService.getIncomingPublishFlows().cancel(this);
+        incomingQosHandler.getIncomingPublishFlows().cancel(this);
         super.runCancel();
     }
 
-    @NotNull
-    HandleList<MqttTopicFilterImpl> getTopicFilters() {
+    @NotNull HandleList<MqttTopicFilterImpl> getTopicFilters() {
         return topicFilters;
     }
 
