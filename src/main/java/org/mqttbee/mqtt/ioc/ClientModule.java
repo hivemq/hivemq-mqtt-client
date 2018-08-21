@@ -19,8 +19,9 @@ package org.mqttbee.mqtt.ioc;
 
 import dagger.Binds;
 import dagger.Module;
-import org.mqttbee.mqtt.handler.publish.MqttSubscriptionFlowTree;
-import org.mqttbee.mqtt.handler.publish.MqttSubscriptionFlows;
+import org.jetbrains.annotations.NotNull;
+import org.mqttbee.mqtt.handler.publish.incoming.MqttSubscriptionFlowTree;
+import org.mqttbee.mqtt.handler.publish.incoming.MqttSubscriptionFlows;
 
 /**
  * @author Silvio Giebl
@@ -29,6 +30,6 @@ import org.mqttbee.mqtt.handler.publish.MqttSubscriptionFlows;
 abstract class ClientModule {
 
     @Binds
-    abstract MqttSubscriptionFlows provideSubscriptionFlows(final MqttSubscriptionFlowTree tree);
+    abstract @NotNull MqttSubscriptionFlows provideSubscriptionFlows(final @NotNull MqttSubscriptionFlowTree tree);
 
 }

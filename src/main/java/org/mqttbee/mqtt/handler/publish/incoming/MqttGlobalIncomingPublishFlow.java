@@ -15,7 +15,7 @@
  *
  */
 
-package org.mqttbee.mqtt.handler.publish;
+package org.mqttbee.mqtt.handler.publish.incoming;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

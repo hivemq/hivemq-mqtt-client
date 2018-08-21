@@ -15,7 +15,7 @@
  *
  */
 
-package org.mqttbee.mqtt.handler.publish;
+package org.mqttbee.mqtt.handler.publish.incoming;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -32,15 +32,13 @@ import java.util.function.Consumer;
 @NotThreadSafe
 public interface MqttSubscriptionFlows {
 
-    void subscribe(@NotNull final MqttTopicFilterImpl topicFilter, @Nullable MqttSubscriptionFlow flow);
+    void subscribe(@NotNull MqttTopicFilterImpl topicFilter, @Nullable MqttSubscriptionFlow flow);
 
     void unsubscribe(
-            @NotNull final MqttTopicFilterImpl topicFilter,
-            @Nullable final Consumer<MqttSubscriptionFlow> unsubscribedCallback);
+            @NotNull MqttTopicFilterImpl topicFilter, @Nullable Consumer<MqttSubscriptionFlow> unsubscribedCallback);
 
     void cancel(@NotNull MqttSubscriptionFlow flow);
 
-    boolean findMatching(
-            @NotNull MqttTopicImpl topic, @NotNull final HandleList<MqttIncomingPublishFlow> matchingFlows);
+    boolean findMatching(@NotNull MqttTopicImpl topic, @NotNull HandleList<MqttIncomingPublishFlow> matchingFlows);
 
 }

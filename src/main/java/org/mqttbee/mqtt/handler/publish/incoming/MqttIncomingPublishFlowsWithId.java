@@ -15,7 +15,7 @@
  *
  */
 
-package org.mqttbee.mqtt.handler.publish;
+package org.mqttbee.mqtt.handler.publish.incoming;
 
 import com.google.common.primitives.ImmutableIntArray;
 import org.jetbrains.annotations.NotNull;
@@ -57,8 +57,8 @@ public class MqttIncomingPublishFlowsWithId extends MqttIncomingPublishFlows {
 
     @Override
     public void subscribe(
-            @NotNull final MqttStatefulSubscribe subscribe, @NotNull final MqttSubAck subAck,
-            @Nullable final MqttSubscriptionFlow flow) {
+            final @NotNull MqttStatefulSubscribe subscribe, final @NotNull MqttSubAck subAck,
+            final @Nullable MqttSubscriptionFlow flow) {
 
         if (flow != null) {
             final int subscriptionIdentifier = subscribe.getSubscriptionIdentifier();
@@ -71,7 +71,7 @@ public class MqttIncomingPublishFlowsWithId extends MqttIncomingPublishFlows {
     }
 
     @Override
-    void subscribe(@NotNull final MqttTopicFilterImpl topicFilter, @Nullable final MqttSubscriptionFlow flow) {
+    void subscribe(final @NotNull MqttTopicFilterImpl topicFilter, final @Nullable MqttSubscriptionFlow flow) {
         if ((flow != null) && (flow.getSubscriptionIdentifier() != DEFAULT_NO_SUBSCRIPTION_IDENTIFIER)) {
             flowsWithIds.subscribe(topicFilter, flow);
         } else {
@@ -80,12 +80,12 @@ public class MqttIncomingPublishFlowsWithId extends MqttIncomingPublishFlows {
     }
 
     @Override
-    void unsubscribe(@NotNull final MqttTopicFilterImpl topicFilter) {
+    void unsubscribe(final @NotNull MqttTopicFilterImpl topicFilter) {
         flowsWithIds.unsubscribe(topicFilter, flowWithIdUnsubscribedCallback);
         super.unsubscribe(topicFilter);
     }
 
-    private void unsubscribed(@NotNull final MqttSubscriptionFlow flow) {
+    private void unsubscribed(final @NotNull MqttSubscriptionFlow flow) {
         final int subscriptionIdentifier = flow.getSubscriptionIdentifier();
         if (subscriptionIdentifier != DEFAULT_NO_SUBSCRIPTION_IDENTIFIER) {
             flowsWithIdsMap.remove(subscriptionIdentifier);
@@ -93,7 +93,7 @@ public class MqttIncomingPublishFlowsWithId extends MqttIncomingPublishFlows {
     }
 
     @Override
-    void cancel(@NotNull final MqttSubscriptionFlow flow) {
+    void cancel(final @NotNull MqttSubscriptionFlow flow) {
         final int subscriptionIdentifier = flow.getSubscriptionIdentifier();
         if (subscriptionIdentifier != DEFAULT_NO_SUBSCRIPTION_IDENTIFIER) {
             flowsWithIdsMap.remove(subscriptionIdentifier);
@@ -105,8 +105,8 @@ public class MqttIncomingPublishFlowsWithId extends MqttIncomingPublishFlows {
 
     @Override
     void findMatching(
-            @NotNull final MqttStatefulPublish publish,
-            @NotNull final HandleList<MqttIncomingPublishFlow> matchingFlows) {
+            final @NotNull MqttStatefulPublish publish,
+            final @NotNull HandleList<MqttIncomingPublishFlow> matchingFlows) {
 
         final ImmutableIntArray subscriptionIdentifiers = publish.getSubscriptionIdentifiers();
         if (!subscriptionIdentifiers.isEmpty()) {
