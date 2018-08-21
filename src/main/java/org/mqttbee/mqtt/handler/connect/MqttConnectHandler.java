@@ -22,7 +22,6 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
-import io.reactivex.SingleEmitter;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
@@ -48,6 +47,7 @@ import org.mqttbee.mqtt.message.connect.MqttConnect;
 import org.mqttbee.mqtt.message.connect.MqttConnectRestrictions;
 import org.mqttbee.mqtt.message.connect.connack.MqttConnAck;
 import org.mqttbee.mqtt.message.connect.connack.MqttConnAckRestrictions;
+import org.mqttbee.rx.SingleFlow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,7 +72,7 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
     private static final int CONNACK_TIMEOUT = 60; // TODO configurable
 
     private final @NotNull MqttConnect connect;
-    private final @NotNull SingleEmitter<Mqtt5ConnAck> connAckEmitter;
+    private final @NotNull SingleFlow<Mqtt5ConnAck> connAckFlow;
     private final @NotNull MqttClientData clientData;
 
     private final @NotNull MqttDecoder decoder;
@@ -85,7 +85,7 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
 
     @Inject
     MqttConnectHandler(
-            final @NotNull MqttConnect connect, final @NotNull SingleEmitter<Mqtt5ConnAck> connAckEmitter,
+            final @NotNull MqttConnect connect, final @NotNull SingleFlow<Mqtt5ConnAck> connAckFlow,
             final @NotNull MqttClientData clientData, final @NotNull MqttDecoder decoder,
             final @NotNull Lazy<MqttSubscriptionHandler> subscriptionHandler,
             final @NotNull Lazy<MqttIncomingQosHandler> incomingQosHandler,
@@ -93,7 +93,7 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
             final @NotNull MqttDisconnectOnConnAckHandler disconnectOnConnAckHandler) {
 
         this.connect = connect;
-        this.connAckEmitter = connAckEmitter;
+        this.connAckFlow = connAckFlow;
         this.clientData = clientData;
         this.decoder = decoder;
         this.subscriptionHandler = subscriptionHandler;
@@ -220,7 +220,7 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
                 pipeline.addLast(MqttDisconnectOnConnAckHandler.NAME, disconnectOnConnAckHandler);
 
                 clientData.getRawConnectionState().set(MqttClientConnectionState.CONNECTED);
-                connAckEmitter.onSuccess(connAck);
+                connAckFlow.onSuccess(connAck);
             }
         }
     }
@@ -319,7 +319,7 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
     @Override
     protected void handleChannelCloseEvent(final @NotNull ChannelCloseEvent channelCloseEvent) {
         super.handleChannelCloseEvent(channelCloseEvent);
-        connAckEmitter.onError(channelCloseEvent.getCause());
+        connAckFlow.onError(channelCloseEvent.getCause());
     }
 
     @Override
