@@ -26,7 +26,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.MqttGlobalPublishFilter;
 import org.mqttbee.api.mqtt.exceptions.AlreadyConnectedException;
-import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5RxClient;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
@@ -39,7 +38,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
 import org.mqttbee.mqtt.handler.auth.MqttReAuthCompletable;
-import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
+import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectCompletable;
 import org.mqttbee.mqtt.handler.publish.MqttGlobalIncomingPublishFlowable;
 import org.mqttbee.mqtt.handler.publish.MqttIncomingAckFlowable;
 import org.mqttbee.mqtt.handler.publish.MqttSubscriptionFlowable;
@@ -179,14 +178,7 @@ public class MqttRxClient implements Mqtt5RxClient {
     @NotNull Completable disconnectUnsafe(final @Nullable Mqtt5Disconnect disconnect) {
         final MqttDisconnect mqttDisconnect = MqttChecks.disconnect(disconnect);
 
-        return Completable.create(emitter -> {
-            final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
-            if (clientConnectionData != null) {
-                MqttDisconnectUtil.disconnect(clientConnectionData.getChannel(), mqttDisconnect, emitter);
-            } else {
-                emitter.onError(new NotConnectedException());
-            }
-        });
+        return new MqttDisconnectCompletable(clientData, mqttDisconnect);
     }
 
     @Override

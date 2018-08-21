@@ -17,18 +17,25 @@
 
 package org.mqttbee.mqtt.handler.disconnect;
 
-import io.netty.channel.*;
-import io.reactivex.CompletableEmitter;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.exceptions.ChannelClosedException;
+import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.mqtt.MqttClientConnectionState;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.MqttVersion;
 import org.mqttbee.mqtt.ioc.ConnectionScope;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
+import org.mqttbee.rx.CompletableFlow;
 
 import javax.inject.Inject;
+
+import static org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil.fireChannelCloseEvent;
 
 /**
  * If the server initiated the closing of the channel (a Disconnect message is received or the channel is closed without
@@ -42,9 +49,10 @@ import javax.inject.Inject;
 @ConnectionScope
 public class MqttDisconnectHandler extends ChannelInboundHandlerAdapter {
 
-    public static final String NAME = "disconnect";
+    public static final @NotNull String NAME = "disconnect";
 
-    private final MqttClientData clientData;
+    private final @NotNull MqttClientData clientData;
+    private @Nullable ChannelHandlerContext ctx;
 
     @Inject
     public MqttDisconnectHandler(@NotNull final MqttClientData clientData) {
@@ -52,7 +60,12 @@ public class MqttDisconnectHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-    public void channelRead(final ChannelHandlerContext ctx, final Object msg) throws Exception {
+    public void handlerAdded(final @NotNull ChannelHandlerContext ctx) {
+        this.ctx = ctx;
+    }
+
+    @Override
+    public void channelRead(final @NotNull ChannelHandlerContext ctx, final @NotNull Object msg) throws Exception {
         if (msg instanceof MqttDisconnect) {
             readDisconnect(ctx, (MqttDisconnect) msg);
         } else {
@@ -60,26 +73,46 @@ public class MqttDisconnectHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
-    private void readDisconnect(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttDisconnect disconnect) {
-        ctx.pipeline().remove(this);
-        closeFromServer(ctx.channel(), new Mqtt5MessageException(disconnect, "Server sent DISCONNECT"));
+    private void readDisconnect(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttDisconnect disconnect) {
+        closeFromServer(ctx, new Mqtt5MessageException(disconnect, "Server sent DISCONNECT"));
     }
 
     @Override
-    public void channelInactive(final ChannelHandlerContext ctx) {
+    public void channelInactive(final @NotNull ChannelHandlerContext ctx) {
         ctx.fireChannelInactive();
-        ctx.pipeline().remove(this);
-        closeFromServer(ctx.channel(), new ChannelClosedException("Server closed channel without DISCONNECT"));
+        closeFromServer(ctx, new ChannelClosedException("Server closed channel without DISCONNECT"));
     }
 
-    private void closeFromServer(@NotNull final Channel channel, @NotNull final Throwable cause) {
-        setStateDisconnected();
-        MqttDisconnectUtil.fireChannelCloseEvent(channel, new ChannelCloseEvent(cause, false, null));
-        channel.close();
+    private void closeFromServer(final @NotNull ChannelHandlerContext ctx, final @NotNull Throwable cause) {
+        setStateDisconnected(ctx);
+        fireChannelCloseEvent(ctx.channel(), cause, false);
+        ctx.channel().close();
+    }
+
+    public void disconnect(final @NotNull MqttDisconnect disconnect, final @NotNull CompletableFlow flow) {
+        clientData.getEventLoop().execute(() -> writeDisconnect(disconnect, flow));
+    }
+
+    private void writeDisconnect(final @NotNull MqttDisconnect disconnect, final @NotNull CompletableFlow flow) {
+        final ChannelHandlerContext ctx = this.ctx;
+        if (ctx == null) {
+            flow.onError(new NotConnectedException());
+            return;
+        }
+        setStateDisconnected(ctx);
+        fireChannelCloseEvent(ctx.channel(), new Mqtt5MessageException(disconnect, "Client sent DISCONNECT"), true);
+        ctx.writeAndFlush(disconnect).addListener((ChannelFuture future) -> {
+            future.channel().close();
+            if (future.isSuccess()) {
+                flow.onComplete();
+            } else {
+                flow.onError(future.cause());
+            }
+        });
     }
 
     @Override
-    public void userEventTriggered(final ChannelHandlerContext ctx, final Object evt) {
+    public void userEventTriggered(final @NotNull ChannelHandlerContext ctx, final @NotNull Object evt) {
         ctx.fireUserEventTriggered(evt);
         if (evt instanceof ChannelCloseEvent) {
             handleChannelCloseEvent(ctx, (ChannelCloseEvent) evt);
@@ -87,41 +120,27 @@ public class MqttDisconnectHandler extends ChannelInboundHandlerAdapter {
     }
 
     private void handleChannelCloseEvent(
-            @NotNull final ChannelHandlerContext ctx, @NotNull final ChannelCloseEvent channelCloseEvent) {
+            final @NotNull ChannelHandlerContext ctx, final @NotNull ChannelCloseEvent channelCloseEvent) {
 
-        ctx.pipeline().remove(this);
+        setStateDisconnected(ctx);
         if (channelCloseEvent.fromClient()) {
-            closeFromClient(ctx, channelCloseEvent);
-        }
-    }
-
-    private void closeFromClient(
-            @NotNull final ChannelHandlerContext ctx, @NotNull final ChannelCloseEvent channelCloseEvent) {
-
-        setStateDisconnected();
-        final MqttDisconnect disconnect = channelCloseEvent.getDisconnect();
-        if (disconnect != null) {
-            final CompletableEmitter completableEmitter = channelCloseEvent.getCompletableEmitter();
-            if (completableEmitter != null) {
-                ctx.writeAndFlush(disconnect).addListener((ChannelFuture future) -> {
-                    future.channel().close();
-                    if (future.isSuccess()) {
-                        completableEmitter.onComplete();
-                    } else {
-                        completableEmitter.onError(future.cause());
-                    }
-                });
-            } else if (clientData.getMqttVersion() == MqttVersion.MQTT_5_0) {
-                ctx.writeAndFlush(disconnect).addListener(ChannelFutureListener.CLOSE);
+            final MqttDisconnect disconnect = channelCloseEvent.getDisconnect();
+            if (disconnect != null) {
+                if (clientData.getMqttVersion() == MqttVersion.MQTT_5_0) {
+                    ctx.writeAndFlush(disconnect).addListener(ChannelFutureListener.CLOSE);
+                } else {
+                    ctx.channel().close();
+                }
             } else {
                 ctx.channel().close();
             }
-        } else {
-            ctx.channel().close();
         }
     }
 
-    private void setStateDisconnected() {
+    private void setStateDisconnected(final @NotNull ChannelHandlerContext ctx) {
+        ctx.pipeline().remove(this);
+        this.ctx = null;
+
 //        MqttBeeComponent.INSTANCE.nettyBootstrap().free(clientData.getExecutorConfig()); // TODO
         clientData.setClientConnectionData(null);
         clientData.setServerConnectionData(null);
