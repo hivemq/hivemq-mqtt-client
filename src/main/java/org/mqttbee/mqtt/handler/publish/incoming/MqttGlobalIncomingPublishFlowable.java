@@ -18,12 +18,9 @@
 package org.mqttbee.mqtt.handler.publish.incoming;
 
 import io.reactivex.Flowable;
-import io.reactivex.internal.subscriptions.EmptySubscription;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttGlobalPublishFilter;
-import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
-import org.mqttbee.mqtt.MqttClientConnectionState;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.ioc.ClientComponent;
 import org.reactivestreams.Subscriber;
@@ -45,17 +42,13 @@ public class MqttGlobalIncomingPublishFlowable extends Flowable<Mqtt5Publish> {
 
     @Override
     protected void subscribeActual(final @NotNull Subscriber<? super Mqtt5Publish> s) {
-        if (clientData.getConnectionState() == MqttClientConnectionState.DISCONNECTED) {
-            EmptySubscription.error(new NotConnectedException(), s);
-        } else {
-            final ClientComponent clientComponent = clientData.getClientComponent();
-            final MqttIncomingQosHandler incomingQosHandler = clientComponent.incomingQosHandler();
-            final MqttIncomingPublishFlows incomingPublishFlows = incomingQosHandler.getIncomingPublishFlows();
+        final ClientComponent clientComponent = clientData.getClientComponent();
+        final MqttIncomingQosHandler incomingQosHandler = clientComponent.incomingQosHandler();
+        final MqttIncomingPublishFlows incomingPublishFlows = incomingQosHandler.getIncomingPublishFlows();
 
-            final MqttGlobalIncomingPublishFlow flow = new MqttGlobalIncomingPublishFlow(s, incomingQosHandler, filter);
-            s.onSubscribe(flow);
-            clientData.getEventLoop().execute(() -> incomingPublishFlows.subscribeGlobal(flow));
-        }
+        final MqttGlobalIncomingPublishFlow flow = new MqttGlobalIncomingPublishFlow(s, incomingQosHandler, filter);
+        s.onSubscribe(flow);
+        clientData.getEventLoop().execute(() -> incomingPublishFlows.subscribeGlobal(flow));
     }
 
 }
