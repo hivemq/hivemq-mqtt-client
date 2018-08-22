@@ -21,8 +21,8 @@ import dagger.BindsInstance;
 import dagger.Subcomponent;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.mqtt.MqttClientData;
-import org.mqttbee.mqtt.handler.publish.MqttOutgoingQosHandler;
 import org.mqttbee.mqtt.handler.publish.incoming.MqttIncomingQosHandler;
+import org.mqttbee.mqtt.handler.publish.outgoing.MqttOutgoingQosHandler;
 import org.mqttbee.mqtt.handler.subscribe.MqttSubscriptionHandler;
 
 /**

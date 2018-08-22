@@ -15,11 +15,12 @@
  *
  */
 
-package org.mqttbee.mqtt.handler.publish;
+package org.mqttbee.mqtt.handler.publish.outgoing;
 
 import io.reactivex.Flowable;
 import io.reactivex.internal.util.BackpressureHelper;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mqttbee.mqtt.ioc.ClientScope;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
@@ -35,23 +36,23 @@ import java.util.concurrent.atomic.AtomicLong;
 @ClientScope
 public class MqttPublishFlowables extends Flowable<Flowable<MqttPublishWithFlow>> implements Subscription {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MqttPublishFlowables.class);
+    private static final @NotNull Logger LOGGER = LoggerFactory.getLogger(MqttPublishFlowables.class);
 
-    private Subscriber<? super Flowable<MqttPublishWithFlow>> subscriber;
-    private final AtomicLong requested = new AtomicLong();
+    private @Nullable Subscriber<? super Flowable<MqttPublishWithFlow>> subscriber;
+    private final @NotNull AtomicLong requested = new AtomicLong();
 
     @Inject
     MqttPublishFlowables() {
     }
 
     @Override
-    protected void subscribeActual(final Subscriber<? super Flowable<MqttPublishWithFlow>> s) {
+    protected void subscribeActual(final @NotNull Subscriber<? super Flowable<MqttPublishWithFlow>> s) {
         assert subscriber == null;
         subscriber = s;
         s.onSubscribe(this);
     }
 
-    public void add(@NotNull final Flowable<MqttPublishWithFlow> publishFlowable) {
+    public void add(final @NotNull Flowable<MqttPublishWithFlow> publishFlowable) {
         synchronized (this) {
             while (requested.get() == 0) {
                 try {
@@ -61,6 +62,7 @@ public class MqttPublishFlowables extends Flowable<Flowable<MqttPublishWithFlow>
                     return;
                 }
             }
+            assert subscriber != null;
             subscriber.onNext(publishFlowable);
         }
     }

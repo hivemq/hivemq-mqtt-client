@@ -15,7 +15,7 @@
  *
  */
 
-package org.mqttbee.mqtt.handler.publish;
+package org.mqttbee.mqtt.handler.publish.outgoing;
 
 import io.reactivex.Flowable;
 import io.reactivex.internal.subscriptions.EmptySubscription;
@@ -33,18 +33,18 @@ import org.reactivestreams.Subscriber;
  */
 public class MqttIncomingAckFlowable extends Flowable<Mqtt5PublishResult> {
 
-    private final Flowable<MqttPublish> publishFlowable;
-    private final MqttClientData clientData;
+    private final @NotNull Flowable<MqttPublish> publishFlowable;
+    private final @NotNull MqttClientData clientData;
 
     public MqttIncomingAckFlowable(
-            @NotNull final Flowable<MqttPublish> publishFlowable, @NotNull final MqttClientData clientData) {
+            final @NotNull Flowable<MqttPublish> publishFlowable, final @NotNull MqttClientData clientData) {
 
         this.publishFlowable = publishFlowable;
         this.clientData = clientData;
     }
 
     @Override
-    protected void subscribeActual(final Subscriber<? super Mqtt5PublishResult> s) {
+    protected void subscribeActual(final @NotNull Subscriber<? super Mqtt5PublishResult> s) {
         if (clientData.getConnectionState() == MqttClientConnectionState.DISCONNECTED) {
             EmptySubscription.error(new NotConnectedException(), s);
         } else {

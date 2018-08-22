@@ -15,7 +15,7 @@
  *
  */
 
-package org.mqttbee.mqtt.handler.publish;
+package org.mqttbee.mqtt.handler.publish.outgoing;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,24 +27,20 @@ import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRel;
  */
 class MqttPublishWithFlow {
 
-    private final MqttPublish publish;
-    private final MqttIncomingAckFlow incomingAckFlow;
-    private MqttPubRel pubRel;
+    private final @NotNull MqttPublish publish;
+    private final @NotNull MqttIncomingAckFlow incomingAckFlow;
+    private @Nullable MqttPubRel pubRel;
 
-    MqttPublishWithFlow(
-            @NotNull final MqttPublish publish, @NotNull final MqttIncomingAckFlow incomingAckFlow) {
-
+    MqttPublishWithFlow(final @NotNull MqttPublish publish, final @NotNull MqttIncomingAckFlow incomingAckFlow) {
         this.publish = publish;
         this.incomingAckFlow = incomingAckFlow;
     }
 
-    @NotNull
-    MqttPublish getPublish() {
+    @NotNull MqttPublish getPublish() {
         return publish;
     }
 
-    @NotNull
-    MqttIncomingAckFlow getIncomingAckFlow() {
+    @NotNull MqttIncomingAckFlow getIncomingAckFlow() {
         return incomingAckFlow;
     }
 
@@ -52,8 +48,7 @@ class MqttPublishWithFlow {
         this.pubRel = pubRel;
     }
 
-    @Nullable
-    MqttPubRel getPubRel() {
+    @Nullable MqttPubRel getPubRel() {
         return pubRel;
     }
 
