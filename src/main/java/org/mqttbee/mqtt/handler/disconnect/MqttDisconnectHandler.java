@@ -34,6 +34,7 @@ import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
 import org.mqttbee.rx.CompletableFlow;
 
 import javax.inject.Inject;
+import java.io.IOException;
 
 import static org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil.fireChannelCloseEvent;
 
@@ -81,6 +82,15 @@ public class MqttDisconnectHandler extends ChannelInboundHandlerAdapter {
     public void channelInactive(final @NotNull ChannelHandlerContext ctx) {
         ctx.fireChannelInactive();
         closeFromServer(ctx, new ChannelClosedException("Server closed channel without DISCONNECT"));
+    }
+
+    @Override
+    public void exceptionCaught(final @NotNull ChannelHandlerContext ctx, final @NotNull Throwable cause) {
+        if (cause instanceof IOException) {
+            closeFromServer(ctx, new ChannelClosedException(cause));
+        } else {
+            ctx.fireExceptionCaught(cause);
+        }
     }
 
     private void closeFromServer(final @NotNull ChannelHandlerContext ctx, final @NotNull Throwable cause) {

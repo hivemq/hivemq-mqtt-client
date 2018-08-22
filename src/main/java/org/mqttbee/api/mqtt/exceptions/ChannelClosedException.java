@@ -17,15 +17,18 @@
 
 package org.mqttbee.api.mqtt.exceptions;
 
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Silvio Giebl
  */
 public class ChannelClosedException extends Exception {
 
-    public ChannelClosedException(@Nullable final String message) {
+    public ChannelClosedException(@NotNull final String message) {
         super(message);
     }
 
+    public ChannelClosedException(@NotNull final Throwable cause) {
+        super(cause);
+    }
 }
