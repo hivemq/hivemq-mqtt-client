@@ -42,7 +42,6 @@ public class MqttPingHandler extends ChannelInboundHandlerWithTimeout {
 
     public static final @NotNull String NAME = "ping";
     private static final @NotNull String IDLE_STATE_HANDLER_NAME = "ping.idle";
-    private static final int PING_RESP_TIMEOUT = 60; // TODO configurable
 
     private final int keepAlive;
 
@@ -76,7 +75,7 @@ public class MqttPingHandler extends ChannelInboundHandlerWithTimeout {
 
     @Override
     protected long getTimeout() {
-        return PING_RESP_TIMEOUT;
+        return keepAlive;
     }
 
     @Override
