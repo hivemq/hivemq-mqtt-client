@@ -15,14 +15,15 @@
  *
  */
 
-package org.mqttbee.mqtt.handler.publish;
+package org.mqttbee.mqtt.handler.publish.outgoing;
 
 import io.reactivex.internal.util.BackpressureHelper;
 import io.reactivex.plugins.RxJavaPlugins;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.CallByThread;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
-import org.mqttbee.mqtt.handler.publish.MqttPublishFlowableAckLink.LinkCancellable;
+import org.mqttbee.mqtt.handler.publish.outgoing.MqttPublishFlowableAckLink.LinkCancellable;
 import org.mqttbee.util.collections.ChunkedArrayQueue;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
@@ -40,36 +41,35 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
     private static final int STATE_NEW_REQUESTS = 1;
     private static final int STATE_BLOCKED = 2;
 
-    private final Subscriber<? super Mqtt5PublishResult> subscriber;
-    private final MqttOutgoingQosHandler outgoingQosHandler;
+    private final @NotNull Subscriber<? super Mqtt5PublishResult> subscriber;
+    private final @NotNull MqttOutgoingQosHandler outgoingQosHandler;
 
     private long requestedNettyLocal;
-    private final AtomicLong newRequested = new AtomicLong();
-    private final AtomicBoolean cancelled = new AtomicBoolean();
+    private final @NotNull AtomicLong newRequested = new AtomicLong();
+    private final @NotNull AtomicBoolean cancelled = new AtomicBoolean();
     private volatile long acknowledged;
     private long acknowledgedNettyLocal;
 
     private boolean done;
     private volatile long published;
-    private Throwable error; // synced over volatile published
-    private final AtomicBoolean doneEmitted = new AtomicBoolean();
+    private @Nullable Throwable error; // synced over volatile published
+    private final @NotNull AtomicBoolean doneEmitted = new AtomicBoolean();
 
-    private final ChunkedArrayQueue<Mqtt5PublishResult> queue;
-    private final AtomicInteger requestState = new AtomicInteger();
+    private final @NotNull ChunkedArrayQueue<Mqtt5PublishResult> queue = new ChunkedArrayQueue<>(32);
+    private final @NotNull AtomicInteger requestState = new AtomicInteger();
 
-    private volatile LinkCancellable linkCancellable;
+    private volatile @Nullable LinkCancellable linkCancellable;
 
     MqttIncomingAckFlow(
-            @NotNull final Subscriber<? super Mqtt5PublishResult> subscriber,
-            @NotNull final MqttOutgoingQosHandler outgoingQosHandler) {
+            final @NotNull Subscriber<? super Mqtt5PublishResult> subscriber,
+            final @NotNull MqttOutgoingQosHandler outgoingQosHandler) {
 
         this.subscriber = subscriber;
         this.outgoingQosHandler = outgoingQosHandler;
-        queue = new ChunkedArrayQueue<>(32);
     }
 
     @CallByThread("Netty EventLoop")
-    void onNext(@NotNull final Mqtt5PublishResult result) {
+    void onNext(final @NotNull Mqtt5PublishResult result) {
         long emitted = 0;
         long requested = requested();
         if (!queue.isEmpty()) {
@@ -127,7 +127,7 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
         }
     }
 
-    void onError(@NotNull final Throwable t, final long published) {
+    void onError(final @NotNull Throwable t, final long published) {
         if (done) {
             RxJavaPlugins.onError(t);
             return;
