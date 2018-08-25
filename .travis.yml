@@ -3,3 +3,19 @@ language: java
 jdk:
   - oraclejdk8
   - oraclejdk9
+
+stages:
+  - test
+  - name: snapshot
+    if: branch = develop && type != pull_request
+  - name: release
+    if: branch = master && type != pull_request
+
+jobs:
+  include:
+    - stage: snapshot
+      install: true
+      script: ./gradlew artifactoryPublish -x test -Dsnapshot=true
+    - stage: release
+      install: true
+      script: ./gradlew bintrayUpload -x test

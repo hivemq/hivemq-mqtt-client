@@ -37,8 +37,8 @@ import java.util.concurrent.CompletableFuture;
  * <p>
  * The enhanced auth has two life cycles:
  * <ul>
- * <li>Auth during connection: onAuth -> (onContinue)* -> (onAuthSuccess | onAuthRejected | onAuthError)</li>
- * <li>Reauth: (onReAuth | onServerReAuth) -> (onContinue)* -> (onReAuthSuccess | onReAuthRejected | onReAuthError)</li>
+ * <li>Auth during connection: onAuth -&gt; (onContinue)* -&gt; (onAuthSuccess | onAuthRejected | onAuthError)</li>
+ * <li>Reauth: (onReAuth | onServerReAuth) -&gt; (onContinue)* -&gt; (onReAuthSuccess | onReAuthRejected | onReAuthError)</li>
  * </ul>
  *
  * @author Silvio Giebl

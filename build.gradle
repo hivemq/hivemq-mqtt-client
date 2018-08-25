@@ -1,5 +1,8 @@
 plugins {
     id 'java'
+    id 'maven-publish'
+    id 'com.jfrog.bintray' version '1.8.4'
+    id 'com.jfrog.artifactory' version '4.7.5'
     id 'idea'
     id 'eclipse'
     id 'net.ltgt.apt-idea' version '0.15'
@@ -8,8 +11,23 @@ plugins {
     id 'pmd'
 }
 
-group 'org.mqtt-bee'
-version '1.0-SNAPSHOT'
+group 'org.mqttbee'
+version '1.0.0' + (Boolean.valueOf(System.getProperty("snapshot")) ? "-SNAPSHOT" : "")
+description 'MQTT Bee is a MQTT 5.0 and MQTT 3.1.1 compatible and feature-rich high-performance Java client library ' +
+        'with different API flavours and backpressure support'
+
+ext {
+    readableName = 'MQTT Bee'
+    url = 'http://mqtt-bee.org'
+    githubOrg = 'mqtt-bee'
+    githubRepo = 'mqtt-bee'
+    githubUrl = 'https://github.com/' + githubOrg + '/' + githubRepo
+    licenseShortName = 'Apache-2.0'
+    licenseReadableName = 'The Apache License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+}
+
+apply from: 'publishing.gradle'
 
 sourceCompatibility = 1.8
 
@@ -23,18 +41,19 @@ repositories {
     jcenter()
 }
 
-project.ext {
+ext {
     rxJavaVersion = '2.1.12'
     nettyVersion = '4.1.22.Final'
     daggerVersion = '2.15'
     guavaVersion = '24.1-jre'
-    logbackVersion = '1.2.3'
     jcToolsVersion = '2.1.1'
+    slf4jVersion = '1.7.25'
+    jetbrainsAnnotationsVersion = '16.0.2'
+
     junit4Version = '4.12'
     junitVintageVersion = '4.12.3'
     junitJupiterVersion = '5.0.3'
     junitPlatformVersion = '1.0.3'
-    jetbrainsAnnotationsVersion = '16.0.2'
 }
 
 dependencies {
@@ -43,8 +62,8 @@ dependencies {
     compile group: 'io.netty', name: 'netty-codec-http', version: nettyVersion
     compile group: 'io.netty', name: 'netty-transport-native-epoll', version: nettyVersion, classifier: 'linux-x86_64'
     compile group: 'com.google.guava', name: 'guava', version: guavaVersion
-    compile group: 'ch.qos.logback', name: 'logback-classic', version: logbackVersion
     compile group: 'org.jctools', name: 'jctools-core', version: jcToolsVersion
+    compile group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion
     compile group: 'org.jetbrains', name: 'annotations', version: jetbrainsAnnotationsVersion
 
     implementation group: 'com.google.dagger', name: 'dagger', version: daggerVersion
@@ -79,4 +98,3 @@ task execute(type:JavaExec) {
     main = project.hasProperty("mainClass") ? project.getProperty("mainClass") : ""
     systemProperties = System.properties
 }
-

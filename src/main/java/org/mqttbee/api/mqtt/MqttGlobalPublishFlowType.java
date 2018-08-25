@@ -44,9 +44,9 @@ public enum MqttGlobalPublishFlowType {
      * <li><code>stream1 = client.subscribeWithStream("a/#")</code></li>
      * <li><code>client.subscribe("b/#")</code></li>
      * <li><code>stream2 = client.publishes(REMAINING_PUBLISHES)</code></li>
-     * <li>=> incoming Publish messages with topic <code>"a/b"</code> will be emitted only in
+     * <li>=&gt; incoming Publish messages with topic <code>"a/b"</code> will be emitted only in
      * <code>stream1</code>.</li>
-     * <li>=> incoming Publish messages with topic <code>"b/c"</code> or <code>"c/d"</code> will be emitted in
+     * <li>=&gt; incoming Publish messages with topic <code>"b/c"</code> or <code>"c/d"</code> will be emitted in
      * <code>stream2</code> as there is no other stream registered for the topic.</li>
      * </ul>
      */
