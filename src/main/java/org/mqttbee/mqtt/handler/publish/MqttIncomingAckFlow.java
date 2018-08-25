@@ -102,7 +102,7 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
         if (emitted > 0) {
             final long acknowledgedLocal = this.acknowledgedNettyLocal += emitted;
             acknowledged = acknowledgedLocal;
-            if (acknowledgedLocal == published && doneEmitted.compareAndSet(false, true)) {
+            if ((acknowledgedLocal == published) && doneEmitted.compareAndSet(false, true)) {
                 if (error == null) {
                     subscriber.onComplete();
                 } else {

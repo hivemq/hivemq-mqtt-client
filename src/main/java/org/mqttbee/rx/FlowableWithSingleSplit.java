@@ -196,7 +196,7 @@ public class FlowableWithSingleSplit<T, S, F> extends FlowableWithSingle<S, F> {
                     return tryOnNextActual(f);
                 }
                 final S single = singleCaster.apply(t);
-                if (single != null && singleConsumer != null) {
+                if ((single != null) && (singleConsumer != null)) {
                     singleConsumer.accept(single, subscription);
                     singleConsumer = null;
                 }
@@ -224,7 +224,7 @@ public class FlowableWithSingleSplit<T, S, F> extends FlowableWithSingle<S, F> {
                     return f;
                 }
                 final S single = singleCaster.apply(t);
-                if (single != null && singleConsumer != null) {
+                if ((single != null) && (singleConsumer != null)) {
                     singleConsumer.accept(single, subscription);
                     singleConsumer = null;
                 }

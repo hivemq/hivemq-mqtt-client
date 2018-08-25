@@ -213,7 +213,7 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
             in.readBytes(payload);
             payload.position(0);
 
-            if (payloadFormatIndicator == Mqtt5PayloadFormatIndicator.UTF_8 &&
+            if ((payloadFormatIndicator == Mqtt5PayloadFormatIndicator.UTF_8) &&
                     ChannelAttributes.validatePayloadFormat(channel) &&
                     !Utf8.isWellFormed(ByteBufferUtil.getBytes(payload))) {
                 throw new MqttDecoderException(
