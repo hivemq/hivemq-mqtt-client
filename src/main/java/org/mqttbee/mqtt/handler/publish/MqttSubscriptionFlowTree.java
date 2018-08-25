@@ -178,7 +178,7 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
             }
             if (next != null) {
                 final TopicTreeNode node = next.get(level);
-                if (node != null && node.unsubscribe(level.next(), unsubscribedCallback)) {
+                if ((node != null) && node.unsubscribe(level.next(), unsubscribedCallback)) {
                     if (node.parentLevel == MqttTopicLevel.SINGLE_LEVEL_WILDCARD) {
                         hasSingleLevelSubscription = false;
                     }

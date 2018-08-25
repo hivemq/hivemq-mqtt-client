@@ -87,7 +87,7 @@ public abstract class FuseableSubscriber<U, D, S extends Subscriber<? super D>>
 
     @Override
     public int requestFusion(final int mode) {
-        if (queueSubscription != null && (mode & BOUNDARY) == 0) {
+        if ((queueSubscription != null) && (mode & BOUNDARY) == 0) {
             final int m = queueSubscription.requestFusion(mode);
             if (m != NONE) {
                 sourceMode = m;
