@@ -40,31 +40,30 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class MqttClientData implements Mqtt5ClientData {
 
-    private final MqttVersion mqttVersion;
-    private MqttClientIdentifierImpl clientIdentifier;
-    private final String serverHost;
+    private final @NotNull MqttVersion mqttVersion;
+    private volatile @NotNull MqttClientIdentifierImpl clientIdentifier;
+    private final @NotNull String serverHost;
     private final int serverPort;
-    private final MqttClientSslConfigImpl sslConfig;
-    private final MqttWebSocketConfigImpl webSocketConfig;
+    private final @Nullable MqttClientSslConfigImpl sslConfig;
+    private final @Nullable MqttWebSocketConfigImpl webSocketConfig;
     private final boolean followsRedirects;
     private final boolean allowsServerReAuth;
-    private final MqttClientExecutorConfigImpl executorConfig;
-    private final EventLoop eventLoop;
-    private final MqttAdvancedClientData advancedClientData;
+    private final @NotNull MqttClientExecutorConfigImpl executorConfig;
+    private final @NotNull EventLoop eventLoop;
+    private final @Nullable MqttAdvancedClientData advancedClientData;
 
-    private final ClientComponent clientComponent;
+    private final @NotNull ClientComponent clientComponent;
 
-    private final AtomicReference<MqttClientConnectionState> connectionState =
-            new AtomicReference<>(MqttClientConnectionState.DISCONNECTED);
-    private volatile MqttClientConnectionData clientConnectionData;
-    private volatile MqttServerConnectionData serverConnectionData;
+    private final @NotNull AtomicReference<@NotNull MqttClientConnectionState> connectionState;
+    private volatile @Nullable MqttClientConnectionData clientConnectionData;
+    private volatile @Nullable MqttServerConnectionData serverConnectionData;
 
     public MqttClientData(
-            @NotNull final MqttVersion mqttVersion, @Nullable final MqttClientIdentifierImpl clientIdentifier,
-            @NotNull final String serverHost, final int serverPort, @Nullable final MqttClientSslConfigImpl sslConfig,
-            @Nullable final MqttWebSocketConfigImpl webSocketConfig, final boolean followsRedirects,
-            final boolean allowsServerReAuth, @NotNull final MqttClientExecutorConfigImpl executorConfig,
-            @Nullable final MqttAdvancedClientData advancedClientData) {
+            final @NotNull MqttVersion mqttVersion, final @NotNull MqttClientIdentifierImpl clientIdentifier,
+            final @NotNull String serverHost, final int serverPort, final @Nullable MqttClientSslConfigImpl sslConfig,
+            final @Nullable MqttWebSocketConfigImpl webSocketConfig, final boolean followsRedirects,
+            final boolean allowsServerReAuth, final @NotNull MqttClientExecutorConfigImpl executorConfig,
+            final @Nullable MqttAdvancedClientData advancedClientData) {
 
         this.mqttVersion = mqttVersion;
         this.clientIdentifier = clientIdentifier;
@@ -79,32 +78,30 @@ public class MqttClientData implements Mqtt5ClientData {
         this.advancedClientData = advancedClientData;
 
         clientComponent = MqttBeeComponent.INSTANCE.clientComponentBuilder().clientData(this).build();
+
+        connectionState = new AtomicReference<>(MqttClientConnectionState.DISCONNECTED);
     }
 
-    @NotNull
-    public MqttVersion getMqttVersion() {
+    public @NotNull MqttVersion getMqttVersion() {
         return mqttVersion;
     }
 
-    @NotNull
     @Override
-    public Optional<MqttClientIdentifier> getClientIdentifier() {
+    public @NotNull Optional<MqttClientIdentifier> getClientIdentifier() {
         return (clientIdentifier == MqttClientIdentifierImpl.REQUEST_CLIENT_IDENTIFIER_FROM_SERVER) ? Optional.empty() :
                 Optional.of(clientIdentifier);
     }
 
-    @NotNull
-    public MqttClientIdentifierImpl getRawClientIdentifier() {
+    public @NotNull MqttClientIdentifierImpl getRawClientIdentifier() {
         return clientIdentifier;
     }
 
-    public void setClientIdentifier(@NotNull final MqttClientIdentifierImpl clientIdentifier) {
+    public void setClientIdentifier(final @NotNull MqttClientIdentifierImpl clientIdentifier) {
         this.clientIdentifier = clientIdentifier;
     }
 
-    @NotNull
     @Override
-    public String getServerHost() {
+    public @NotNull String getServerHost() {
         return serverHost;
     }
 
@@ -118,14 +115,12 @@ public class MqttClientData implements Mqtt5ClientData {
         return sslConfig != null;
     }
 
-    @NotNull
     @Override
-    public Optional<MqttClientSslConfig> getSslConfig() {
+    public @NotNull Optional<MqttClientSslConfig> getSslConfig() {
         return Optional.ofNullable(sslConfig);
     }
 
-    @Nullable
-    public MqttClientSslConfigImpl getRawSslConfig() {
+    public @Nullable MqttClientSslConfigImpl getRawSslConfig() {
         return sslConfig;
     }
 
@@ -134,14 +129,12 @@ public class MqttClientData implements Mqtt5ClientData {
         return webSocketConfig != null;
     }
 
-    @NotNull
     @Override
-    public Optional<MqttWebSocketConfig> getWebSocketConfig() {
+    public @NotNull Optional<MqttWebSocketConfig> getWebSocketConfig() {
         return Optional.ofNullable(webSocketConfig);
     }
 
-    @Nullable
-    public MqttWebSocketConfigImpl getRawWebSocketConfig() {
+    public @Nullable MqttWebSocketConfigImpl getRawWebSocketConfig() {
         return webSocketConfig;
     }
 
@@ -155,70 +148,59 @@ public class MqttClientData implements Mqtt5ClientData {
         return allowsServerReAuth;
     }
 
-    @NotNull
     @Override
-    public MqttClientExecutorConfigImpl getExecutorConfig() {
+    public @NotNull MqttClientExecutorConfigImpl getExecutorConfig() {
         return executorConfig;
     }
 
-    @NotNull
-    public EventLoop getEventLoop() {
+    public @NotNull EventLoop getEventLoop() {
         return eventLoop;
     }
 
-    @NotNull
-    public Optional<Mqtt5AdvancedClientData> getAdvancedClientData() {
+    public @NotNull Optional<Mqtt5AdvancedClientData> getAdvancedClientData() {
         return Optional.ofNullable(advancedClientData);
     }
 
-    @Nullable
-    public MqttAdvancedClientData getRawAdvancedClientData() {
+    public @Nullable MqttAdvancedClientData getRawAdvancedClientData() {
         return advancedClientData;
     }
 
-    @NotNull
-    public ClientComponent getClientComponent() {
+    public @NotNull ClientComponent getClientComponent() {
         return clientComponent;
     }
 
-    @NotNull
     @Override
-    public MqttClientConnectionState getConnectionState() {
+    public @NotNull MqttClientConnectionState getConnectionState() {
         return connectionState.get();
     }
 
-    @NotNull
-    public AtomicReference<MqttClientConnectionState> getRawConnectionState() {
+    public @NotNull AtomicReference<@NotNull MqttClientConnectionState> getRawConnectionState() {
         return connectionState;
     }
 
-    @NotNull
     @Override
-    public Optional<Mqtt5ClientConnectionData> getClientConnectionData() {
-        return Optional.of(clientConnectionData);
+    public @NotNull Optional<Mqtt5ClientConnectionData> getClientConnectionData() {
+        return Optional.ofNullable(clientConnectionData);
     }
 
-    @Nullable
-    public MqttClientConnectionData getRawClientConnectionData() {
+    public @Nullable MqttClientConnectionData getRawClientConnectionData() {
         return clientConnectionData;
     }
 
-    public void setClientConnectionData(@Nullable final MqttClientConnectionData clientConnectionData) {
+    public void setClientConnectionData(final @Nullable MqttClientConnectionData clientConnectionData) {
         this.clientConnectionData = clientConnectionData;
     }
 
-    @NotNull
     @Override
-    public Optional<Mqtt5ServerConnectionData> getServerConnectionData() {
-        return Optional.of(serverConnectionData);
+    public @NotNull Optional<Mqtt5ServerConnectionData> getServerConnectionData() {
+        return Optional.ofNullable(serverConnectionData);
     }
 
-    @Nullable
-    public MqttServerConnectionData getRawServerConnectionData() {
+    public @Nullable MqttServerConnectionData getRawServerConnectionData() {
         return serverConnectionData;
     }
 
-    public void setServerConnectionData(@Nullable final MqttServerConnectionData serverConnectionData) {
+    public void setServerConnectionData(final @Nullable MqttServerConnectionData serverConnectionData) {
         this.serverConnectionData = serverConnectionData;
     }
 

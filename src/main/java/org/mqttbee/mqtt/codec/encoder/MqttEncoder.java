@@ -21,6 +21,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.MqttServerConnectionData;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
@@ -37,35 +38,46 @@ import javax.inject.Inject;
 @ConnectionScope
 public class MqttEncoder extends ChannelOutboundHandlerAdapter {
 
-    public static final String NAME = "encoder";
+    public static final @NotNull String NAME = "encoder";
 
-    private final MqttClientData clientData;
-    private final MqttMessageEncoders encoders;
+    private final @NotNull MqttClientData clientData;
+    private final @NotNull MqttMessageEncoders encoders;
+
+    private int maximumPacketSize;
 
     @Inject
-    MqttEncoder(final MqttClientData clientData, final MqttMessageEncoders encoders) {
+    MqttEncoder(final @NotNull MqttClientData clientData, final @NotNull MqttMessageEncoders encoders) {
         this.clientData = clientData;
         this.encoders = encoders;
     }
 
     @Override
-    public void write(final ChannelHandlerContext ctx, final Object msg, final ChannelPromise promise) {
+    public void write(
+            final @NotNull ChannelHandlerContext ctx, final @NotNull Object msg,
+            final @NotNull ChannelPromise promise) {
+
         if (msg instanceof MqttMessage) {
             final MqttMessage message = (MqttMessage) msg;
             final MqttMessageEncoder messageEncoder = encoders.get(message.getType().getCode());
             if (messageEncoder == null) {
                 throw new UnsupportedOperationException();
             }
-
-            final MqttServerConnectionData serverConnectionData = clientData.getRawServerConnectionData();
-            final int maximumPacketSize =
-                    (serverConnectionData == null) ? MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT :
-                            serverConnectionData.getMaximumPacketSize();
-            final ByteBuf out = messageEncoder.castAndEncode(message, ctx.alloc(), maximumPacketSize);
+            final ByteBuf out = messageEncoder.castAndEncode(message, ctx.alloc(), getMaximumPacketSize());
             ctx.write(out, promise);
         } else {
             ctx.write(msg, promise);
         }
     }
 
+    private int getMaximumPacketSize() {
+        final int maximumPacketSize = this.maximumPacketSize;
+        if (maximumPacketSize != 0) {
+            return maximumPacketSize;
+        }
+        final MqttServerConnectionData serverConnectionData = clientData.getRawServerConnectionData();
+        if (serverConnectionData == null) {
+            return MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT;
+        }
+        return this.maximumPacketSize = serverConnectionData.getMaximumPacketSize();
+    }
 }

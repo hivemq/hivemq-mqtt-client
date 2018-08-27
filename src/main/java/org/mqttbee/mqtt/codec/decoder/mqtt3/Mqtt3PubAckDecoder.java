@@ -20,11 +20,12 @@ package org.mqttbee.mqtt.codec.decoder.mqtt3;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
+import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.message.publish.puback.MqttPubAck;
 import org.mqttbee.mqtt.message.publish.puback.mqtt3.Mqtt3PubAckView;
+import org.mqttbee.util.collections.IntMap;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -46,11 +47,10 @@ public class Mqtt3PubAckDecoder implements MqttMessageDecoder {
     Mqtt3PubAckDecoder() {
     }
 
-    @Nullable
     @Override
-    public MqttPubAck decode(
-            final int flags, @NotNull final ByteBuf in, @NotNull final MqttClientConnectionData clientConnectionData)
-            throws MqttDecoderException {
+    public @NotNull MqttPubAck decode(
+            final int flags, final @NotNull ByteBuf in, final int decoderFlags,
+            final @Nullable IntMap<MqttTopicImpl> topicAliasMapping) throws MqttDecoderException {
 
         checkFixedHeaderFlags(FLAGS, flags);
         checkRemainingLength(REMAINING_LENGTH, in.readableBytes());

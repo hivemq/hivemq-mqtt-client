@@ -19,8 +19,10 @@ package org.mqttbee.mqtt.codec.decoder;
 
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.mqtt.MqttClientConnectionData;
+import org.jetbrains.annotations.Nullable;
+import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.message.ping.MqttPingResp;
+import org.mqttbee.util.collections.IntMap;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -43,9 +45,9 @@ public class MqttPingRespDecoder implements MqttMessageDecoder {
     }
 
     @Override
-    public MqttPingResp decode(
-            final int flags, @NotNull final ByteBuf in, @NotNull final MqttClientConnectionData clientConnectionData)
-            throws MqttDecoderException {
+    public @NotNull MqttPingResp decode(
+            final int flags, final @NotNull ByteBuf in, final int decoderFlags,
+            final @Nullable IntMap<MqttTopicImpl> topicAliasMapping) throws MqttDecoderException {
 
         checkFixedHeaderFlags(FLAGS, flags);
         checkRemainingLength(REMAINING_LENGTH, in.readableBytes());

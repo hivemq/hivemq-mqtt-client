@@ -29,8 +29,8 @@ import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
  */
 public class MqttDecoderException extends Exception {
 
-    private final Mqtt5DisconnectReasonCode reasonCode;
-    private Mqtt5MessageType messageType;
+    private final @NotNull Mqtt5DisconnectReasonCode reasonCode;
+    private @Nullable Mqtt5MessageType messageType;
 
     /**
      * Creates a new Decoder exception with the given Disconnect reason code and message.
@@ -53,7 +53,7 @@ public class MqttDecoderException extends Exception {
     }
 
     @Override
-    public synchronized Throwable fillInStackTrace() {
+    public synchronized @NotNull Throwable fillInStackTrace() {
         return this;
     }
 
@@ -75,7 +75,7 @@ public class MqttDecoderException extends Exception {
     }
 
     @Override
-    public String getMessage() {
+    public @NotNull String getMessage() {
         return "Decoder exception for " + ((messageType == null) ? "UNKNOWN" : messageType) + ": " + super.getMessage();
     }
 

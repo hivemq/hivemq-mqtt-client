@@ -46,7 +46,7 @@ public class MqttReAuthCompletable extends Completable {
             EmptyDisposable.error(new NotConnectedException(), s);
             return;
         }
-        if (clientConnectionData.getEnhancedAuthProvider() == null) {
+        if (clientConnectionData.getRawEnhancedAuthProvider() == null) {
             EmptyDisposable.error(new UnsupportedOperationException(
                     "Reauth is not available if enhanced auth was not used during connect"), s);
             return;

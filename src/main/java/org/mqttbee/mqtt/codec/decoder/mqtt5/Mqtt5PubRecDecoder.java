@@ -22,13 +22,14 @@ import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrec.Mqtt5PubRecReasonCode;
-import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
+import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRec;
+import org.mqttbee.util.collections.IntMap;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -54,10 +55,9 @@ public class Mqtt5PubRecDecoder implements MqttMessageDecoder {
     }
 
     @Override
-    @Nullable
-    public MqttPubRec decode(
-            final int flags, @NotNull final ByteBuf in, @NotNull final MqttClientConnectionData clientConnectionData)
-            throws MqttDecoderException {
+    public @NotNull MqttPubRec decode(
+            final int flags, final @NotNull ByteBuf in, final int decoderFlags,
+            final @Nullable IntMap<MqttTopicImpl> topicAliasMapping) throws MqttDecoderException {
 
         checkFixedHeaderFlags(FLAGS, flags);
 
@@ -85,12 +85,12 @@ public class Mqtt5PubRecDecoder implements MqttMessageDecoder {
 
                     switch (propertyIdentifier) {
                         case REASON_STRING:
-                            reasonString = decodeReasonStringIfRequested(reasonString, clientConnectionData, in);
+                            reasonString = decodeReasonStringIfRequested(reasonString, in, decoderFlags);
                             break;
 
                         case USER_PROPERTY:
                             userPropertiesBuilder =
-                                    decodeUserPropertyIfRequested(userPropertiesBuilder, clientConnectionData, in);
+                                    decodeUserPropertyIfRequested(userPropertiesBuilder, in, decoderFlags);
                             break;
 
                         default:

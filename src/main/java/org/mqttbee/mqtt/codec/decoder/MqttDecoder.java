@@ -20,14 +20,17 @@ package org.mqttbee.mqtt.codec.decoder;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
+import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.ioc.ConnectionScope;
-import org.mqttbee.mqtt.message.MqttMessage;
+import org.mqttbee.util.collections.IntMap;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -41,20 +44,41 @@ import java.util.List;
 @ConnectionScope
 public class MqttDecoder extends ByteToMessageDecoder {
 
-    public static final String NAME = "decoder";
+    public static final @NotNull String NAME = "decoder";
     private static final int MIN_FIXED_HEADER_LENGTH = 2;
 
-    private final MqttClientData clientData;
-    private final MqttMessageDecoders decoders;
+    private final @NotNull MqttClientData clientData;
+    private final @NotNull MqttMessageDecoders decoders;
+
+    private int maximumPacketSize;
+    int decoderFlags; // TODO make private when all decoder flags can be set via api
+    private @Nullable IntMap<MqttTopicImpl> topicAliasMapping;
 
     @Inject
-    MqttDecoder(final MqttClientData clientData, final MqttMessageDecoders decoders) {
+    MqttDecoder(final @NotNull MqttClientData clientData, final @NotNull MqttMessageDecoders decoders) {
         this.clientData = clientData;
         this.decoders = decoders;
     }
 
     @Override
-    protected void decode(final ChannelHandlerContext ctx, final ByteBuf in, final List<Object> out) {
+    public void handlerAdded(final @NotNull ChannelHandlerContext ctx) {
+        final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
+        assert clientConnectionData != null;
+
+        maximumPacketSize = clientConnectionData.getMaximumPacketSize();
+        if (clientConnectionData.isProblemInformationRequested()) {
+            decoderFlags = MqttDecoderFlag.PROBLEM_INFORMATION_REQUESTED.set(decoderFlags);
+        }
+        if (clientConnectionData.isResponseInformationRequested()) {
+            decoderFlags = MqttDecoderFlag.RESPONSE_INFORMATION_REQUESTED.set(decoderFlags);
+        }
+        topicAliasMapping = clientConnectionData.getTopicAliasMapping();
+    }
+
+    @Override
+    protected void decode(
+            final @NotNull ChannelHandlerContext ctx, final @NotNull ByteBuf in, final @NotNull List<Object> out) {
+
         if (in.readableBytes() < MIN_FIXED_HEADER_LENGTH) {
             return;
         }
@@ -72,16 +96,13 @@ public class MqttDecoder extends ByteToMessageDecoder {
             }
 
             if (remainingLength < MqttVariableByteInteger.NOT_ENOUGH_BYTES) {
-                throw new MqttDecoderException(
-                        Mqtt5DisconnectReasonCode.MALFORMED_PACKET, "malformed remaining length");
+                throw new MqttDecoderException("malformed remaining length");
             }
 
             final int fixedHeaderLength = in.readerIndex() - readerIndexBeforeFixedHeader;
             final int packetSize = fixedHeaderLength + remainingLength;
 
-            final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
-            assert clientConnectionData != null;
-            if (packetSize > clientConnectionData.getMaximumPacketSize()) {
+            if (packetSize > maximumPacketSize) {
                 throw new MqttDecoderException(Mqtt5DisconnectReasonCode.PACKET_TOO_LARGE,
                         "incoming packet exceeded maximum packet size");
             }
@@ -97,11 +118,7 @@ public class MqttDecoder extends ByteToMessageDecoder {
                         Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "must not receive this packet type");
             }
 
-            final MqttMessage message = decoder.decode(flags, in.readSlice(remainingLength), clientConnectionData);
-
-            if (message != null) {
-                out.add(message);
-            }
+            out.add(decoder.decode(flags, in.readSlice(remainingLength), decoderFlags, topicAliasMapping));
 
         } catch (final MqttDecoderException e) {
             in.clear();

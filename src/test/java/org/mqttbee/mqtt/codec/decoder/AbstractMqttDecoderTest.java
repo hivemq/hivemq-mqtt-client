@@ -29,12 +29,16 @@ import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectHandler;
  */
 public abstract class AbstractMqttDecoderTest {
 
-    protected final MqttClientData clientData;
-    private final MqttMessageDecoders decoders;
+    protected final @NotNull MqttClientData clientData;
+    private final @NotNull MqttMessageDecoders decoders;
+
+    @SuppressWarnings("NullabilityAnnotations")
     protected EmbeddedChannel channel;
+    @SuppressWarnings("NullabilityAnnotations")
+    private MqttDecoder decoder;
 
     public AbstractMqttDecoderTest(
-            @NotNull final MqttClientData clientData, @NotNull final MqttMessageDecoders decoders) {
+            final @NotNull MqttClientData clientData, final @NotNull MqttMessageDecoders decoders) {
 
         this.clientData = clientData;
         this.decoders = decoders;
@@ -51,10 +55,21 @@ public abstract class AbstractMqttDecoderTest {
     }
 
     protected void createChannel() {
-        channel = new EmbeddedChannel(new MqttDecoder(clientData, decoders), new MqttDisconnectHandler(clientData));
+        channel = new EmbeddedChannel();
+        initChannel();
     }
 
-    public static MqttPingRespDecoder createPingRespDecoder() {
+    protected void initChannel() {
+        channel.pipeline()
+                .addLast(decoder = new MqttDecoder(clientData, decoders))
+                .addLast(new MqttDisconnectHandler(clientData));
+    }
+
+    protected void setFlag(final @NotNull MqttDecoderFlag decoderFlag) {
+        decoder.decoderFlags = decoderFlag.set(decoder.decoderFlags);
+    }
+
+    public static @NotNull MqttPingRespDecoder createPingRespDecoder() {
         return new MqttPingRespDecoder();
     }
 

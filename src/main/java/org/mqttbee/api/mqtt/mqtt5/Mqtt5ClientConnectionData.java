@@ -19,7 +19,7 @@ package org.mqttbee.api.mqtt.mqtt5;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.api.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
 
 import java.util.Optional;
 
@@ -39,7 +39,7 @@ public interface Mqtt5ClientConnectionData {
 
     int getTopicAliasMaximum();
 
-    @NotNull Optional<MqttUTF8String> getAuthMethod();
+    @NotNull Optional<Mqtt5EnhancedAuthProvider> getEnhancedAuthProvider();
 
     boolean hasWillPublish();
 
