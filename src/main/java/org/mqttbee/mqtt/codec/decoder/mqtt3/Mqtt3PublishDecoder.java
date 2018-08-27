@@ -18,19 +18,18 @@
 package org.mqttbee.mqtt.codec.decoder.mqtt3;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
-import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
+import org.mqttbee.mqtt.codec.decoder.MqttDecoderFlag;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
 import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishView;
-import org.mqttbee.mqtt.netty.ChannelAttributes;
 import org.mqttbee.util.ByteBufferUtil;
+import org.mqttbee.util.collections.IntMap;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -51,13 +50,10 @@ public class Mqtt3PublishDecoder implements MqttMessageDecoder {
     Mqtt3PublishDecoder() {
     }
 
-    @Nullable
     @Override
-    public MqttStatefulPublish decode(
-            final int flags, @NotNull final ByteBuf in, @NotNull final MqttClientConnectionData clientConnectionData)
-            throws MqttDecoderException {
-
-        final Channel channel = clientConnectionData.getChannel();
+    public @NotNull MqttStatefulPublish decode(
+            final int flags, final @NotNull ByteBuf in, final int decoderFlags,
+            final @Nullable IntMap<MqttTopicImpl> topicAliasMapping) throws MqttDecoderException {
 
         final boolean dup = (flags & 0b1000) != 0;
         final MqttQos qos = decodePublishQos(flags, dup);
@@ -77,7 +73,7 @@ public class Mqtt3PublishDecoder implements MqttMessageDecoder {
         final int payloadLength = in.readableBytes();
         ByteBuffer payload = null;
         if (payloadLength > 0) {
-            payload = ByteBufferUtil.allocate(payloadLength, ChannelAttributes.useDirectBufferForPayload(channel));
+            payload = ByteBufferUtil.allocate(payloadLength, MqttDecoderFlag.DIRECT_BUFFER_PAYLOAD.isSet(decoderFlags));
             in.readBytes(payload);
             payload.position(0);
         }

@@ -20,7 +20,6 @@ package org.mqttbee.mqtt;
 import io.netty.channel.Channel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3ClientConnectionData;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientConnectionData;
 import org.mqttbee.api.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
@@ -34,11 +33,10 @@ import java.util.Optional;
  */
 public class MqttClientConnectionData implements Mqtt5ClientConnectionData, Mqtt3ClientConnectionData {
 
-    private int keepAlive;
-    private long sessionExpiryInterval;
+    private volatile int keepAlive;
+    private volatile long sessionExpiryInterval;
     private final int receiveMaximum;
     private final int maximumPacketSize;
-    private final int topicAliasMaximum;
     private final @Nullable IntMap<MqttTopicImpl> topicAliasMapping;
     private final @Nullable Mqtt5EnhancedAuthProvider enhancedAuthProvider;
     private final boolean hasWillPublish;
@@ -57,7 +55,6 @@ public class MqttClientConnectionData implements Mqtt5ClientConnectionData, Mqtt
         this.sessionExpiryInterval = sessionExpiryInterval;
         this.receiveMaximum = receiveMaximum;
         this.maximumPacketSize = maximumPacketSize;
-        this.topicAliasMaximum = topicAliasMaximum;
         this.topicAliasMapping = (topicAliasMaximum == 0) ? null : IntMap.range(1, topicAliasMaximum);
         this.enhancedAuthProvider = enhancedAuthProvider;
         this.hasWillPublish = hasWillPublish;
@@ -96,20 +93,19 @@ public class MqttClientConnectionData implements Mqtt5ClientConnectionData, Mqtt
 
     @Override
     public int getTopicAliasMaximum() {
-        return topicAliasMaximum;
+        return (topicAliasMapping == null) ? 0 : topicAliasMapping.getMaxKey();
     }
 
-    @Nullable
-    public IntMap<MqttTopicImpl> getTopicAliasMapping() {
+    public @Nullable IntMap<MqttTopicImpl> getTopicAliasMapping() {
         return topicAliasMapping;
     }
 
     @Override
-    public @NotNull Optional<MqttUTF8String> getAuthMethod() {
-        return (enhancedAuthProvider == null) ? Optional.empty() : Optional.of(enhancedAuthProvider.getMethod());
+    public @NotNull Optional<Mqtt5EnhancedAuthProvider> getEnhancedAuthProvider() {
+        return Optional.ofNullable(enhancedAuthProvider);
     }
 
-    public @Nullable Mqtt5EnhancedAuthProvider getEnhancedAuthProvider() {
+    public @Nullable Mqtt5EnhancedAuthProvider getRawEnhancedAuthProvider() {
         return enhancedAuthProvider;
     }
 

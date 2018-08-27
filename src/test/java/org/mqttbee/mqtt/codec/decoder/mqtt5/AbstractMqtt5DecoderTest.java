@@ -34,26 +34,28 @@ import java.util.Objects;
  */
 abstract class AbstractMqtt5DecoderTest extends AbstractMqttDecoderTest {
 
-    @NotNull
-    private static MqttClientData createClientData() {
+    private static @NotNull MqttClientData createClientData() {
         return new MqttClientData(MqttVersion.MQTT_5_0, Objects.requireNonNull(MqttClientIdentifierImpl.from("test")),
                 "localhost", 1883, null, null, false, false, MqttClientExecutorConfigImpl.getDefault(), null);
     }
 
-    AbstractMqtt5DecoderTest(@NotNull final MqttMessageDecoders decoders) {
+    private int maximumPacketSize = Mqtt5ConnectRestrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT;
+
+    AbstractMqtt5DecoderTest(final @NotNull MqttMessageDecoders decoders) {
         super(createClientData(), decoders);
     }
 
     @Override
-    protected void createChannel() {
-        super.createChannel();
-        createClientConnectionData(Mqtt5ConnectRestrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT);
-    }
-
-    void createClientConnectionData(final int maximumPacketSize) {
+    protected void initChannel() {
         clientData.setClientConnectionData(
                 new MqttClientConnectionData(10, 10, Mqtt5ConnectRestrictions.DEFAULT_RECEIVE_MAXIMUM,
                         maximumPacketSize, 3, null, false, true, true, channel));
+        super.initChannel();
+    }
+
+    void setMaximumPacketSize(final int maximumPacketSize) {
+        this.maximumPacketSize = maximumPacketSize;
+        createChannel();
     }
 
 }

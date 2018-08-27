@@ -19,18 +19,18 @@ package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
+import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.message.auth.MqttAuth;
+import org.mqttbee.util.collections.IntMap;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -55,12 +55,9 @@ public class Mqtt5AuthDecoder implements MqttMessageDecoder {
     }
 
     @Override
-    @Nullable
-    public MqttAuth decode(
-            final int flags, @NotNull final ByteBuf in, @NotNull final MqttClientConnectionData clientConnectionData)
-            throws MqttDecoderException {
-
-        final Channel channel = clientConnectionData.getChannel();
+    public @NotNull MqttAuth decode(
+            final int flags, final @NotNull ByteBuf in, final int decoderFlags,
+            final @Nullable IntMap<MqttTopicImpl> topicAliasMapping) throws MqttDecoderException {
 
         checkFixedHeaderFlags(FLAGS, flags);
 
@@ -89,16 +86,15 @@ public class Mqtt5AuthDecoder implements MqttMessageDecoder {
                     break;
 
                 case AUTHENTICATION_DATA:
-                    data = decodeAuthData(data, in, channel);
+                    data = decodeAuthData(data, in, decoderFlags);
                     break;
 
                 case REASON_STRING:
-                    reasonString = decodeReasonStringIfRequested(reasonString, clientConnectionData, in);
+                    reasonString = decodeReasonStringIfRequested(reasonString, in, decoderFlags);
                     break;
 
                 case USER_PROPERTY:
-                    userPropertiesBuilder =
-                            decodeUserPropertyIfRequested(userPropertiesBuilder, clientConnectionData, in);
+                    userPropertiesBuilder = decodeUserPropertyIfRequested(userPropertiesBuilder, in, decoderFlags);
                     break;
 
                 default:

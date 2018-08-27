@@ -21,20 +21,18 @@ import com.google.common.base.Utf8;
 import com.google.common.collect.ImmutableList;
 import com.google.common.primitives.ImmutableIntArray;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.TopicAliasUsage;
-import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
+import org.mqttbee.mqtt.codec.decoder.MqttDecoderFlag;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.datatypes.*;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
-import org.mqttbee.mqtt.netty.ChannelAttributes;
 import org.mqttbee.util.ByteBufferUtil;
 import org.mqttbee.util.collections.IntMap;
 
@@ -62,12 +60,9 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
     }
 
     @Override
-    @Nullable
-    public MqttStatefulPublish decode(
-            final int flags, @NotNull final ByteBuf in, @NotNull final MqttClientConnectionData clientConnectionData)
-            throws MqttDecoderException {
-
-        final Channel channel = clientConnectionData.getChannel();
+    public @NotNull MqttStatefulPublish decode(
+            final int flags, final @NotNull ByteBuf in, final int decoderFlags,
+            final @Nullable IntMap<MqttTopicImpl> topicAliasMapping) throws MqttDecoderException {
 
         final boolean dup = (flags & 0b1000) != 0;
         final MqttQos qos = decodePublishQos(flags, dup);
@@ -141,7 +136,7 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
 
                 case CORRELATION_DATA:
                     correlationData = decodeBinaryDataOnlyOnce(correlationData, "correlation data", in,
-                            ChannelAttributes.useDirectBufferForCorrelationData(channel));
+                            MqttDecoderFlag.DIRECT_BUFFER_CORRELATION_DATA.isSet(decoderFlags));
                     break;
 
                 case USER_PROPERTY:
@@ -184,8 +179,7 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
 
         boolean isNewTopicAlias = false;
         if (topicAlias != DEFAULT_NO_TOPIC_ALIAS) {
-            final IntMap<MqttTopicImpl> topicAliasMapping = clientConnectionData.getTopicAliasMapping();
-            if ((topicAliasMapping == null) || (topicAlias > clientConnectionData.getTopicAliasMaximum())) {
+            if ((topicAliasMapping == null) || (topicAlias > topicAliasMapping.getMaxKey())) {
                 throw new MqttDecoderException(
                         Mqtt5DisconnectReasonCode.TOPIC_ALIAS_INVALID,
                         "topic alias must not exceed topic alias maximum");
@@ -209,15 +203,14 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
         final int payloadLength = in.readableBytes();
         ByteBuffer payload = null;
         if (payloadLength > 0) {
-            payload = ByteBufferUtil.allocate(payloadLength, ChannelAttributes.useDirectBufferForPayload(channel));
+            payload = ByteBufferUtil.allocate(payloadLength, MqttDecoderFlag.DIRECT_BUFFER_PAYLOAD.isSet(decoderFlags));
             in.readBytes(payload);
             payload.position(0);
 
             if ((payloadFormatIndicator == Mqtt5PayloadFormatIndicator.UTF_8) &&
-                    ChannelAttributes.validatePayloadFormat(channel) &&
+                    MqttDecoderFlag.VALIDATE_PAYLOAD_FORMAT.isSet(decoderFlags) &&
                     !Utf8.isWellFormed(ByteBufferUtil.getBytes(payload))) {
-                throw new MqttDecoderException(
-                        Mqtt5DisconnectReasonCode.PAYLOAD_FORMAT_INVALID,
+                throw new MqttDecoderException(Mqtt5DisconnectReasonCode.PAYLOAD_FORMAT_INVALID,
                         "payload is not valid UTF-8");
             }
         }

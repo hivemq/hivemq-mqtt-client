@@ -135,12 +135,8 @@ public class MqttDisconnectHandler extends ChannelInboundHandlerAdapter {
         setStateDisconnected(ctx);
         if (channelCloseEvent.fromClient()) {
             final MqttDisconnect disconnect = channelCloseEvent.getDisconnect();
-            if (disconnect != null) {
-                if (clientData.getMqttVersion() == MqttVersion.MQTT_5_0) {
-                    ctx.writeAndFlush(disconnect).addListener(ChannelFutureListener.CLOSE);
-                } else {
-                    ctx.channel().close();
-                }
+            if ((disconnect != null) && (clientData.getMqttVersion() == MqttVersion.MQTT_5_0)) {
+                ctx.writeAndFlush(disconnect).addListener(ChannelFutureListener.CLOSE);
             } else {
                 ctx.channel().close();
             }

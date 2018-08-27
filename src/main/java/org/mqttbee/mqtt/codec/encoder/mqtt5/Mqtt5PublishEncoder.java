@@ -76,13 +76,10 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
 
     @Override
     int propertyLength(@NotNull final MqttStatefulPublish message) {
-        final MqttPublish stateless = message.getStatelessMessage();
-
         int propertyLength = 0;
 
-        propertyLength += fixedPropertyLength(stateless);
-
-        propertyLength += stateless.getUserProperties().encodedLength();
+        propertyLength += fixedPropertyLength(message.getStatelessMessage());
+        propertyLength += omissiblePropertyLength(message);
 
         propertyLength += shortPropertyEncodedLength(message.getTopicAlias(), DEFAULT_NO_TOPIC_ALIAS);
 

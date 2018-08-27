@@ -36,22 +36,21 @@ import java.util.Objects;
  */
 abstract class AbstractMqtt3DecoderTest extends AbstractMqttDecoderTest {
 
-    @NotNull
-    private static MqttClientData createClientData() {
+    private static @NotNull MqttClientData createClientData() {
         return new MqttClientData(MqttVersion.MQTT_3_1_1, Objects.requireNonNull(MqttClientIdentifierImpl.from("test")),
                 "localhost", 1883, null, null, false, false, MqttClientExecutorConfigImpl.getDefault(), null);
     }
 
-    AbstractMqtt3DecoderTest(@NotNull final MqttMessageDecoders decoders) {
+    AbstractMqtt3DecoderTest(final @NotNull MqttMessageDecoders decoders) {
         super(createClientData(), decoders);
     }
 
     @Override
-    protected void createChannel() {
-        super.createChannel();
+    protected void initChannel() {
         clientData.setClientConnectionData(new MqttClientConnectionData(10, Mqtt5Connect.NO_SESSION_EXPIRY,
                 Mqtt5ConnectRestrictions.DEFAULT_RECEIVE_MAXIMUM, MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT, 0,
                 null, false, false, false, channel));
+        super.initChannel();
     }
 
 }

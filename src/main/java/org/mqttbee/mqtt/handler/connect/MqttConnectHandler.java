@@ -197,7 +197,7 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
                     channel, new Mqtt5MessageException(connAck, "Connection failed with CONNACK with Error Code"));
         } else {
             if (validateConnack(connAck, channel)) {
-                updateClientData(connAck);
+                final MqttClientConnectionData clientConnectionData = updateClientData(connAck);
                 addServerData(connAck);
 
                 final ChannelPipeline pipeline = channel.pipeline();
@@ -205,8 +205,6 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
                 pipeline.remove(this);
                 String beforeHandlerName = MqttDecoder.NAME;
 
-                final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
-                assert clientConnectionData != null;
                 final int keepAlive = clientConnectionData.getKeepAlive();
                 if (keepAlive > 0) {
                     pipeline.addAfter(beforeHandlerName, MqttPingHandler.NAME, new MqttPingHandler(keepAlive));
@@ -279,7 +277,7 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
      *
      * @param connAck the CONNACK message.
      */
-    private void updateClientData(@NotNull final MqttConnAck connAck) {
+    private @NotNull MqttClientConnectionData updateClientData(@NotNull final MqttConnAck connAck) {
         final MqttClientIdentifierImpl assignedClientIdentifier = connAck.getRawAssignedClientIdentifier();
         if (assignedClientIdentifier != null) {
             clientData.setClientIdentifier(assignedClientIdentifier);
@@ -297,6 +295,8 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
         if (sessionExpiryInterval != MqttConnAck.SESSION_EXPIRY_INTERVAL_FROM_CONNECT) {
             clientConnectionData.setSessionExpiryInterval(sessionExpiryInterval);
         }
+
+        return clientConnectionData;
     }
 
     /**

@@ -15,23 +15,28 @@
  *
  */
 
-package org.mqttbee.mqtt.codec.decoder.mqtt3;
-
-import org.jetbrains.annotations.NotNull;
-import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
+package org.mqttbee.mqtt.codec.decoder;
 
 /**
- * Util for decoders for MQTT 3 messages.
- *
  * @author Silvio Giebl
  */
-class Mqtt3MessageDecoderUtil {
+public enum MqttDecoderFlag {
 
-    private Mqtt3MessageDecoderUtil() {
+    PROBLEM_INFORMATION_REQUESTED,
+    RESPONSE_INFORMATION_REQUESTED,
+    VALIDATE_PAYLOAD_FORMAT,
+    DIRECT_BUFFER_PAYLOAD,
+    DIRECT_BUFFER_AUTH,
+    DIRECT_BUFFER_CORRELATION_DATA;
+
+    private final int flag = 1 << ordinal();
+
+    public boolean isSet(final int decoderFlags) {
+        return (decoderFlags & flag) != 0;
     }
 
-    static @NotNull MqttDecoderException wrongReturnCode() {
-        return new MqttDecoderException("wrong return code");
+    public int set(final int decoderFlags) {
+        return decoderFlags | flag;
     }
 
 }
