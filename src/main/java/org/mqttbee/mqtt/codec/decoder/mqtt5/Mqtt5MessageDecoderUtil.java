@@ -107,7 +107,7 @@ class Mqtt5MessageDecoderUtil {
             throw moreThanOnce(name);
         }
         if (in.readableBytes() < 1) {
-            throw new MqttDecoderException("malformed properties length");
+            throw malformedPropertyLength();
         }
         final byte value = in.readByte();
         if (value == 0) {
@@ -126,7 +126,7 @@ class Mqtt5MessageDecoderUtil {
             throw moreThanOnce(name);
         }
         if (in.readableBytes() < 1) {
-            throw new MqttDecoderException("malformed properties length");
+            throw malformedPropertyLength();
         }
         return in.readUnsignedByte();
     }
@@ -138,7 +138,7 @@ class Mqtt5MessageDecoderUtil {
             throw moreThanOnce(name);
         }
         if (in.readableBytes() < 2) {
-            throw new MqttDecoderException("malformed properties length");
+            throw malformedPropertyLength();
         }
         return in.readUnsignedShort();
     }
@@ -157,7 +157,7 @@ class Mqtt5MessageDecoderUtil {
             throw moreThanOnce(name);
         }
         if (in.readableBytes() < 4) {
-            throw new MqttDecoderException("malformed properties length");
+            throw malformedPropertyLength();
         }
         return in.readUnsignedInt();
     }
