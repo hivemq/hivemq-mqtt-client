@@ -327,7 +327,7 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter implem
     }
 
     private void clear(final @NotNull Throwable cause) {
-        pending.accept((packetIdentifier, subscribeOrUnsubscribe) -> {
+        pending.forEach((packetIdentifier, subscribeOrUnsubscribe) -> {
             if (subscribeOrUnsubscribe instanceof MqttStatefulSubscribeWithFlow) {
                 ((MqttStatefulSubscribeWithFlow) subscribeOrUnsubscribe).getSubAckFlow().onError(cause);
             } else {
@@ -344,6 +344,7 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter implem
                 if (queuedCounter.addAndGet(-polled) == 0) {
                     break;
                 } else {
+                    polled = 0;
                     continue;
                 }
             }

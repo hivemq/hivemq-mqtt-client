@@ -33,15 +33,13 @@ public abstract class IntMap<E> {
     private static final int TWO_LEVEL_CAPACITY_BITS = 12;
     private static final int THREE_LEVEL_CAPACITY_BITS = 18;
 
-    @NotNull
-    public static <E> IntMap<E> range(final int minKey, final int maxKey) {
+    public static @NotNull <E> IntMap<E> range(final int minKey, final int maxKey) {
         final int capacity = maxKey - minKey + 1;
         final int capacityBits = Pow2Util.roundToPowerOf2Bits(capacity);
         return create(capacity, capacityBits, minKey, maxKey);
     }
 
-    @NotNull
-    public static <E> IntMap<E> resize(@NotNull final IntMap<E> oldMap, final int newMaxKey) {
+    public static @NotNull <E> IntMap<E> resize(final @NotNull IntMap<E> oldMap, final int newMaxKey) {
         final int oldMaxKey = oldMap.getMaxKey();
         if (oldMaxKey == newMaxKey) {
             return oldMap;
@@ -57,7 +55,7 @@ public abstract class IntMap<E> {
             }
         }
         final IntMap<E> newMap = create(newCapacity, newCapacityBits, minKey, newMaxKey);
-        oldMap.accept((key, value) -> {
+        oldMap.forEach((key, value) -> {
             if (key > newMaxKey) {
                 return false;
             }
@@ -67,8 +65,7 @@ public abstract class IntMap<E> {
         return newMap;
     }
 
-    @NotNull
-    private static <E> IntMap<E> create(
+    private static @NotNull <E> IntMap<E> create(
             final int capacity, final int capacityBits, final int minKey, final int maxKey) {
 
         final IntMap<E> intMap;
@@ -84,14 +81,11 @@ public abstract class IntMap<E> {
         return new IntMapCheck<>(intMap, minKey, maxKey);
     }
 
-    @Nullable
-    public abstract E put(final int key, @NotNull final E value);
+    public abstract @Nullable E put(int key, @NotNull E value);
 
-    @Nullable
-    public abstract E get(final int key);
+    public abstract @Nullable E get(int key);
 
-    @Nullable
-    public abstract E remove(final int key);
+    public abstract @Nullable E remove(int key);
 
     public abstract int size();
 
@@ -101,20 +95,20 @@ public abstract class IntMap<E> {
 
     public abstract void clear();
 
-    public void accept(@NotNull final IntMapVisitor<E> visitor) {
-        accept(visitor, 0);
+    public void forEach(final @NotNull IntMapConsumer<E> consumer) {
+        forEach(consumer, 0);
     }
 
-    abstract boolean accept(@NotNull IntMapVisitor<E> visitor, int baseIndex);
+    abstract boolean forEach(@NotNull IntMapConsumer<E> consumer, int baseIndex);
 
-    public interface IntMapVisitor<E> {
+    public interface IntMapConsumer<E> {
 
-        boolean visit(final int key, @NotNull final E value);
+        boolean accept(int key, @NotNull E value);
     }
 
     public static class IntMapCheck<E> extends IntMap<E> {
 
-        private final IntMap<E> delegate;
+        private final @NotNull IntMap<E> delegate;
         private final int minKey;
         private final int maxKey;
 
@@ -124,21 +118,18 @@ public abstract class IntMap<E> {
             this.maxKey = maxKey;
         }
 
-        @Nullable
         @Override
-        public E put(final int key, @NotNull final E value) {
+        public @Nullable E put(final int key, final @NotNull E value) {
             return delegate.put(checkKey(key), value);
         }
 
-        @Nullable
         @Override
-        public E get(final int key) {
+        public @Nullable E get(final int key) {
             return delegate.get(checkKey(key));
         }
 
-        @Nullable
         @Override
-        public E remove(final int key) {
+        public @Nullable E remove(final int key) {
             return delegate.remove(checkKey(key));
         }
 
@@ -163,13 +154,13 @@ public abstract class IntMap<E> {
         }
 
         @Override
-        public void accept(@NotNull final IntMapVisitor<E> visitor) {
-            delegate.accept(visitor, minKey);
+        public void forEach(final @NotNull IntMapConsumer<E> consumer) {
+            delegate.forEach(consumer, minKey);
         }
 
         @Override
-        boolean accept(@NotNull final IntMapVisitor<E> visitor, final int baseIndex) {
-            return delegate.accept(visitor, minKey);
+        boolean forEach(final @NotNull IntMapConsumer<E> consumer, final int baseIndex) {
+            return delegate.forEach(consumer, minKey);
         }
 
         private int checkKey(final int key) {
@@ -182,7 +173,7 @@ public abstract class IntMap<E> {
 
     public static class IntMapArray<E> extends IntMap<E> {
 
-        private final E[] values;
+        private final @Nullable E @NotNull [] values;
         private int size;
 
         @SuppressWarnings("unchecked")
@@ -190,8 +181,7 @@ public abstract class IntMap<E> {
             this.values = (E[]) new Object[size];
         }
 
-        @Nullable
-        public E put(final int key, @NotNull final E value) {
+        public @Nullable E put(final int key, final @NotNull E value) {
             final E previousValue = values[key];
             values[key] = value;
             if (previousValue == null) {
@@ -200,13 +190,11 @@ public abstract class IntMap<E> {
             return previousValue;
         }
 
-        @Nullable
-        public E get(final int key) {
+        public @Nullable E get(final int key) {
             return values[key];
         }
 
-        @Nullable
-        public E remove(final int key) {
+        public @Nullable E remove(final int key) {
             final E previousValue = values[key];
             values[key] = null;
             if (previousValue != null) {
@@ -247,12 +235,12 @@ public abstract class IntMap<E> {
         }
 
         @Override
-        boolean accept(@NotNull final IntMapVisitor<E> visitor, final int baseIndex) {
+        boolean forEach(final @NotNull IntMapConsumer<E> consumer, final int baseIndex) {
             int emitted = 0;
             for (int index = 0; index < values.length; index++) {
                 final E value = values[index];
                 if (value != null) {
-                    if (!visitor.visit(baseIndex + index, value)) {
+                    if (!consumer.accept(baseIndex + index, value)) {
                         return false;
                     }
                     emitted++;
@@ -270,8 +258,8 @@ public abstract class IntMap<E> {
         private final int shift;
         private final int mask;
         private final int indexCapacity;
-        private final IntMapAllocator<E> next;
-        private IntMap<E> free;
+        private final @Nullable IntMapAllocator<E> next;
+        private @Nullable IntMap<E> free;
 
         IntMapAllocator(final int capacityBits, final int split) {
             if (split == 1) {
@@ -288,8 +276,7 @@ public abstract class IntMap<E> {
             }
         }
 
-        @NotNull
-        IntMap<E> alloc() {
+        @NotNull IntMap<E> alloc() {
             if (free != null) {
                 final IntMap<E> allocated = free;
                 free = null;
@@ -301,7 +288,7 @@ public abstract class IntMap<E> {
             return new IntMapLevel<>(shift, mask, indexCapacity, next);
         }
 
-        void free(@NotNull final IntMap<E> intMap) {
+        void free(final @NotNull IntMap<E> intMap) {
             free = intMap;
         }
 
@@ -311,13 +298,13 @@ public abstract class IntMap<E> {
 
         private final int shift;
         private final int mask;
-        private final IntMap<E>[] subLevels;
-        private final IntMapAllocator<E> allocator;
+        private final @Nullable IntMap<E> @NotNull [] subLevels;
+        private final @NotNull IntMapAllocator<E> allocator;
         private int size;
 
         @SuppressWarnings("unchecked")
         IntMapLevel(
-                final int shift, final int mask, final int indexCapacity, @NotNull final IntMapAllocator<E> allocator) {
+                final int shift, final int mask, final int indexCapacity, final @NotNull IntMapAllocator<E> allocator) {
 
             this.shift = shift;
             this.mask = mask;
@@ -325,8 +312,7 @@ public abstract class IntMap<E> {
             this.allocator = allocator;
         }
 
-        @Nullable
-        public E put(final int key, @NotNull final E value) {
+        public @Nullable E put(final int key, final @NotNull E value) {
             final int index = key >> shift;
             IntMap<E> subLevel = subLevels[index];
             if (subLevel == null) {
@@ -340,8 +326,7 @@ public abstract class IntMap<E> {
             return put;
         }
 
-        @Nullable
-        public E get(final int key) {
+        public @Nullable E get(final int key) {
             final IntMap<E> subLevel = subLevels[key >> shift];
             if (subLevel == null) {
                 return null;
@@ -349,8 +334,7 @@ public abstract class IntMap<E> {
             return subLevel.get(key & mask);
         }
 
-        @Nullable
-        public E remove(final int key) {
+        public @Nullable E remove(final int key) {
             final int index = key >> shift;
             final IntMap<E> subLevel = subLevels[index];
             if (subLevel == null) {
@@ -400,11 +384,11 @@ public abstract class IntMap<E> {
         }
 
         @Override
-        boolean accept(@NotNull final IntMapVisitor<E> visitor, int baseIndex) {
+        boolean forEach(final @NotNull IntMapConsumer<E> consumer, int baseIndex) {
             int emitted = 0;
             for (final IntMap<E> subLevel : subLevels) {
                 if (subLevel != null) {
-                    if (!subLevel.accept(visitor, baseIndex)) {
+                    if (!subLevel.forEach(consumer, baseIndex)) {
                         return false;
                     }
                     emitted += subLevel.size();
