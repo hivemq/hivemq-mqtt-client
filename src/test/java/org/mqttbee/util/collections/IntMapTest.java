@@ -202,14 +202,14 @@ class IntMapTest {
 
     @CsvSource({"false", "true"})
     @ParameterizedTest
-    void visitor(final boolean cancel) {
+    void forEach(final boolean cancel) {
         final IntMap<String> map = IntMap.range(0, 256);
         final int[] keys = {0, 1, 3, 10, 100, 101, 102, 256};
         for (final int key : keys) {
             map.put(key, "test" + key);
         }
         final AtomicInteger i = new AtomicInteger();
-        map.accept((key, value) -> {
+        map.forEach((key, value) -> {
             final int k = keys[i.getAndIncrement()];
             assertEquals(k, key);
             assertEquals("test" + k, value);
