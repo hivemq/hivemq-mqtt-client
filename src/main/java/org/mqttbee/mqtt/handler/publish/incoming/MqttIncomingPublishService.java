@@ -90,7 +90,7 @@ class MqttIncomingPublishService {
             final HandleList<MqttIncomingPublishFlow> flows = entry.flows;
             emit(publish.getStatelessMessage(), flows);
             if (acknowledge && flows.isEmpty()) {
-                queueIt.remove(); // TODO mark instead of remove
+                queueIt.remove();
                 incomingQosHandler.ack(publish);
             } else {
                 acknowledge = false;
