@@ -111,7 +111,7 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter impleme
     }
 
     private void readPublishQos0(final @NotNull MqttStatefulPublish publish) {
-        incomingPublishService.onPublish(publish); // TODO own queue for QoS 0
+        incomingPublishService.onPublish(publish, receiveMaximum); // TODO own queue for QoS 0
     }
 
     private void readPublishQos1(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttStatefulPublish publish) {
@@ -149,7 +149,7 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter impleme
     private void readNewPublishQos1Or2(
             final @NotNull ChannelHandlerContext ctx, final @NotNull MqttStatefulPublish publish) {
 
-        if (!incomingPublishService.onPublish(publish)) {
+        if (!incomingPublishService.onPublish(publish, receiveMaximum)) {
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.RECEIVE_MAXIMUM_EXCEEDED,
                     "Received more QoS 1 and/or 2 PUBLISHes than allowed by Receive Maximum");
         }
@@ -279,10 +279,6 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter impleme
 
     @NotNull MqttIncomingPublishService getIncomingPublishService() {
         return incomingPublishService;
-    }
-
-    public int getReceiveMaximum() {
-        return receiveMaximum;
     }
 
     @Override

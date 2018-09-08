@@ -50,8 +50,8 @@ class MqttIncomingPublishService {
     }
 
     @CallByThread("Netty EventLoop")
-    boolean onPublish(final @NotNull MqttStatefulPublish publish) {
-        if (queue.size() >= incomingQosHandler.getReceiveMaximum()) {
+    boolean onPublish(final @NotNull MqttStatefulPublish publish, final int receiveMaximum) {
+        if (queue.size() >= receiveMaximum) {
             return false; // flow control error
         }
         final HandleList<MqttIncomingPublishFlow> flows =
