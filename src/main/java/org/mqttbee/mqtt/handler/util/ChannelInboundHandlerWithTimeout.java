@@ -81,8 +81,13 @@ public abstract class ChannelInboundHandlerWithTimeout extends ChannelInboundHan
      */
     @CallByThread("Netty EventLoop")
     protected void scheduleTimeout(@NotNull final Channel channel) {
-        cancelTimeout();
-        timeoutFuture = channel.eventLoop().schedule(this, getTimeout(), TimeUnit.SECONDS);
+        if (timeoutFuture != null) {
+            timeoutFuture.cancel(false);
+            timeoutFuture = null;
+            run();
+        } else {
+            timeoutFuture = channel.eventLoop().schedule(this, getTimeout(), TimeUnit.SECONDS);
+        }
     }
 
     /**
