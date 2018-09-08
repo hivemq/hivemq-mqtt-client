@@ -17,16 +17,21 @@
 
 package org.mqttbee.mqtt.handler.ping;
 
+import io.netty.channel.ChannelDuplexHandler;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.timeout.IdleState;
-import io.netty.handler.timeout.IdleStateEvent;
-import io.netty.handler.timeout.IdleStateHandler;
+import io.netty.util.concurrent.ScheduledFuture;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.mqtt.handler.util.ChannelInboundHandlerWithTimeout;
+import org.mqttbee.mqtt.handler.disconnect.ChannelCloseEvent;
+import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.ioc.ConnectionScope;
 import org.mqttbee.mqtt.message.ping.MqttPingReq;
 import org.mqttbee.mqtt.message.ping.MqttPingResp;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * MQTT Keep Alive Handling.
@@ -38,54 +43,103 @@ import org.mqttbee.mqtt.message.ping.MqttPingResp;
  * @author Silvio Giebl
  */
 @ConnectionScope
-public class MqttPingHandler extends ChannelInboundHandlerWithTimeout {
+public class MqttPingHandler extends ChannelDuplexHandler implements Runnable, ChannelFutureListener {
 
     public static final @NotNull String NAME = "ping";
-    private static final @NotNull String IDLE_STATE_HANDLER_NAME = "ping.idle";
+    private static final boolean PINGRESP_REQUIRED = false;
 
-    private final int keepAlive;
+    private final long keepAliveNanos;
+    private long lastFlushTimeNanos;
+    private boolean pingReqWritten;
+    private boolean pingReqFlushed;
+    private boolean messageRead;
+    private @Nullable ChannelHandlerContext ctx;
+    private @Nullable ScheduledFuture<?> timeoutFuture;
 
     public MqttPingHandler(final int keepAlive) {
-        this.keepAlive = keepAlive;
+        keepAliveNanos = TimeUnit.SECONDS.toNanos(keepAlive) - TimeUnit.MILLISECONDS.toNanos(100);
     }
 
     @Override
     public void handlerAdded(final @NotNull ChannelHandlerContext ctx) {
-        super.handlerAdded(ctx);
-        ctx.pipeline().addBefore(NAME, IDLE_STATE_HANDLER_NAME, new IdleStateHandler(0, keepAlive, 0));
+        this.ctx = ctx;
+        schedule(ctx, keepAliveNanos);
+    }
+
+    @Override
+    public void flush(final @NotNull ChannelHandlerContext ctx) {
+        lastFlushTimeNanos = System.nanoTime();
+        ctx.flush();
     }
 
     @Override
     public void channelRead(final @NotNull ChannelHandlerContext ctx, final @NotNull Object msg) {
         if (msg instanceof MqttPingResp) {
-            cancelTimeout();
+            messageRead = true;
         } else {
+            messageRead = !PINGRESP_REQUIRED;
             ctx.fireChannelRead(msg);
+        }
+    }
+
+    private void schedule(final @NotNull ChannelHandlerContext ctx, final long delayNanos) {
+        timeoutFuture = ctx.executor().schedule(this, delayNanos, TimeUnit.NANOSECONDS);
+    }
+
+    @Override
+    public void run() {
+        if (ctx == null) {
+            return;
+        }
+        if (pingReqWritten) {
+            if (!pingReqFlushed) {
+                MqttDisconnectUtil.close(ctx.channel(), "Timeout while writing PINGREQ");
+                return;
+            }
+            if (!messageRead) {
+                final String reason = "Timeout while waiting for PINGRESP";
+                if (ctx.channel().isActive()) {
+                    MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.KEEP_ALIVE_TIMEOUT, reason);
+                } else {
+                    MqttDisconnectUtil.close(ctx.channel(), reason);
+                }
+                return;
+            }
+        }
+        pingReqFlushed = false;
+        messageRead = false;
+        final long nextDelayNanos = keepAliveNanos - (System.nanoTime() - lastFlushTimeNanos);
+        if (nextDelayNanos > 1_000) {
+            pingReqWritten = false;
+            schedule(ctx, nextDelayNanos);
+        } else {
+            pingReqWritten = true;
+            schedule(ctx, keepAliveNanos);
+            ctx.writeAndFlush(MqttPingReq.INSTANCE).addListener(this);
+        }
+    }
+
+    @Override
+    public void operationComplete(final @NotNull ChannelFuture future) {
+        if (future.isSuccess()) {
+            pingReqFlushed = true;
         }
     }
 
     @Override
     public void userEventTriggered(final @NotNull ChannelHandlerContext ctx, final @NotNull Object evt) {
-        if ((evt instanceof IdleStateEvent) && ((IdleStateEvent) evt).state() == IdleState.WRITER_IDLE) {
-            ctx.writeAndFlush(MqttPingReq.INSTANCE).addListener(this);
-            return;
+        if (evt instanceof ChannelCloseEvent) {
+            handleChannelCloseEvent();
         }
-        super.userEventTriggered(ctx, evt);
+        ctx.fireUserEventTriggered(evt);
     }
 
-    @Override
-    protected long getTimeout() {
-        return keepAlive;
-    }
-
-    @Override
-    protected @NotNull Mqtt5DisconnectReasonCode getTimeoutReasonCode() {
-        return Mqtt5DisconnectReasonCode.KEEP_ALIVE_TIMEOUT;
-    }
-
-    @Override
-    protected @NotNull String getTimeoutReasonString() {
-        return "Timeout while waiting for PINGRESP";
+    private void handleChannelCloseEvent() {
+        ctx = null;
+        if (timeoutFuture != null) {
+            timeoutFuture.cancel(false);
+            timeoutFuture = null;
+        }
     }
 
 }
