@@ -187,7 +187,7 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
         for (int i = 0; i < working; i++) {
             final MqttPublishWithFlow publishWithFlow = publishQueue.poll();
             assert publishWithFlow != null; // ensured by wip
-            handlePublish(publishWithFlow);
+            writePublish(publishWithFlow);
         }
         ctx.flush();
         if (queuedCounter.addAndGet(-working) > 0) {
@@ -195,15 +195,15 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
         }
     }
 
-    private void handlePublish(final @NotNull MqttPublishWithFlow publishWithFlow) {
+    private void writePublish(final @NotNull MqttPublishWithFlow publishWithFlow) {
         if (publishWithFlow.getPublish().getQos() == MqttQos.AT_MOST_ONCE) {
-            handleQos0Publish(publishWithFlow);
+            writeQos0Publish(publishWithFlow);
         } else {
-            handleQos1Or2Publish(publishWithFlow);
+            writeQos1Or2Publish(publishWithFlow);
         }
     }
 
-    private void handleQos0Publish(final @NotNull MqttPublishWithFlow publishWithFlow) {
+    private void writeQos0Publish(final @NotNull MqttPublishWithFlow publishWithFlow) {
         assert ctx != null;
 
         qos0PublishQueue.offer(publishWithFlow);
@@ -213,12 +213,12 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
     @Override
     public void operationComplete(final @NotNull ChannelFuture future) {
         final MqttPublishWithFlow publishWithFlow = qos0PublishQueue.poll();
-        assert publishWithFlow != null; // ensured by handleQos0Publish
+        assert publishWithFlow != null; // ensured by writeQos0Publish
         publishWithFlow.getIncomingAckFlow()
                 .onNext(new MqttPublishResult(publishWithFlow.getPublish(), future.cause()));
     }
 
-    private void handleQos1Or2Publish(final @NotNull MqttPublishWithFlow publishWithFlow) {
+    private void writeQos1Or2Publish(final @NotNull MqttPublishWithFlow publishWithFlow) {
         assert ctx != null;
         assert packetIdentifiers != null;
         assert qos1Or2Map != null;
