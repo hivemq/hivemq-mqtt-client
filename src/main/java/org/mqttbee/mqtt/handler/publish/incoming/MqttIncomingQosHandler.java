@@ -21,8 +21,8 @@ import io.netty.channel.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.CallByThread;
-import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5IncomingQos1ControlProvider;
-import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5IncomingQos2ControlProvider;
+import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5IncomingQos1Interceptor;
+import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5IncomingQos2Interceptor;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubCompReasonCode;
 import org.mqttbee.mqtt.MqttClientConnectionData;
@@ -245,9 +245,9 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter impleme
     private @NotNull MqttPubAck buildPubAck(final @NotNull MqttPubAckBuilder pubAckBuilder) {
         final MqttAdvancedClientData advanced = clientData.getRawAdvancedClientData();
         if (advanced != null) {
-            final Mqtt5IncomingQos1ControlProvider control = advanced.getIncomingQos1ControlProvider();
-            if (control != null) {
-                control.onPublish(clientData, pubAckBuilder.getPublish().getStatelessMessage(), pubAckBuilder);
+            final Mqtt5IncomingQos1Interceptor interceptor = advanced.getIncomingQos1Interceptor();
+            if (interceptor != null) {
+                interceptor.onPublish(clientData, pubAckBuilder.getPublish().getStatelessMessage(), pubAckBuilder);
             }
         }
         return pubAckBuilder.build();
@@ -256,9 +256,9 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter impleme
     private @NotNull MqttPubRec buildPubRec(final @NotNull MqttPubRecBuilder pubRecBuilder) {
         final MqttAdvancedClientData advanced = clientData.getRawAdvancedClientData();
         if (advanced != null) {
-            final Mqtt5IncomingQos2ControlProvider control = advanced.getIncomingQos2ControlProvider();
-            if (control != null) {
-                control.onPublish(clientData, pubRecBuilder.getPublish().getStatelessMessage(), pubRecBuilder);
+            final Mqtt5IncomingQos2Interceptor interceptor = advanced.getIncomingQos2Interceptor();
+            if (interceptor != null) {
+                interceptor.onPublish(clientData, pubRecBuilder.getPublish().getStatelessMessage(), pubRecBuilder);
             }
         }
         return pubRecBuilder.build();
@@ -267,9 +267,9 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter impleme
     private @NotNull MqttPubComp buildPubComp(final @NotNull MqttPubCompBuilder pubCompBuilder) {
         final MqttAdvancedClientData advanced = clientData.getRawAdvancedClientData();
         if (advanced != null) {
-            final Mqtt5IncomingQos2ControlProvider control = advanced.getIncomingQos2ControlProvider();
-            if (control != null) {
-                control.onPubRel(clientData, pubCompBuilder.getPubRel(), pubCompBuilder);
+            final Mqtt5IncomingQos2Interceptor interceptor = advanced.getIncomingQos2Interceptor();
+            if (interceptor != null) {
+                interceptor.onPubRel(clientData, pubCompBuilder.getPubRel(), pubCompBuilder);
             }
         }
         return pubCompBuilder.build();

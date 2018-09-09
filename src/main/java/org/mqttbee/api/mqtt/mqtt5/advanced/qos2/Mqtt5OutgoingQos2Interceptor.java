@@ -26,11 +26,11 @@ import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrel.Mqtt5PubRel;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrel.Mqtt5PubRelBuilder;
 
 /**
- * Interface for providers for controlling the QoS 2 control flow of outgoing PUBLISH messages.
+ * Interface for interceptors of the QoS 2 control flow of outgoing PUBLISH messages.
  *
  * @author Silvio Giebl
  */
-public interface Mqtt5OutgoingQos2ControlProvider {
+public interface Mqtt5OutgoingQos2Interceptor {
 
     /**
      * Called when a server sent a PUBREC message for a PUBLISH with QoS 2.

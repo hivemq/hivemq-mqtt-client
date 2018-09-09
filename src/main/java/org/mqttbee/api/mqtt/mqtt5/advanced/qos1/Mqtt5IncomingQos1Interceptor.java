@@ -23,11 +23,11 @@ import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.puback.Mqtt5PubAckBuilder;
 
 /**
- * Interface for providers for controlling the QoS 1 control flow for incoming PUBLISH messages.
+ * Interface for interceptors of the QoS 1 control flow for incoming PUBLISH messages.
  *
  * @author Silvio Giebl
  */
-public interface Mqtt5IncomingQos1ControlProvider {
+public interface Mqtt5IncomingQos1Interceptor {
 
     /**
      * Called when a server sent a PUBLISH message with QoS 1.

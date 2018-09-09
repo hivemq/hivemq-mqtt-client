@@ -20,10 +20,10 @@ package org.mqttbee.mqtt.advanced;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.advanced.Mqtt5AdvancedClientDataBuilder;
-import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5IncomingQos1ControlProvider;
-import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5OutgoingQos1ControlProvider;
-import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5IncomingQos2ControlProvider;
-import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5OutgoingQos2ControlProvider;
+import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5IncomingQos1Interceptor;
+import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5OutgoingQos1Interceptor;
+import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5IncomingQos2Interceptor;
+import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5OutgoingQos2Interceptor;
 
 import java.util.function.Function;
 
@@ -32,44 +32,44 @@ import java.util.function.Function;
  */
 public abstract class MqttAdvancedClientDataBuilder<B extends MqttAdvancedClientDataBuilder<B>> {
 
-    private @Nullable Mqtt5IncomingQos1ControlProvider incomingQos1ControlProvider;
-    private @Nullable Mqtt5OutgoingQos1ControlProvider outgoingQos1ControlProvider;
-    private @Nullable Mqtt5IncomingQos2ControlProvider incomingQos2ControlProvider;
-    private @Nullable Mqtt5OutgoingQos2ControlProvider outgoingQos2ControlProvider;
+    private @Nullable Mqtt5IncomingQos1Interceptor incomingQos1Interceptor;
+    private @Nullable Mqtt5OutgoingQos1Interceptor outgoingQos1Interceptor;
+    private @Nullable Mqtt5IncomingQos2Interceptor incomingQos2Interceptor;
+    private @Nullable Mqtt5OutgoingQos2Interceptor outgoingQos2Interceptor;
 
     abstract @NotNull B self();
 
-    public @NotNull B incomingQos1ControlProvider(
-            final @Nullable Mqtt5IncomingQos1ControlProvider incomingQos1ControlProvider) {
+    public @NotNull B incomingQos1Interceptor(
+            final @Nullable Mqtt5IncomingQos1Interceptor incomingQos1Interceptor) {
 
-        this.incomingQos1ControlProvider = incomingQos1ControlProvider;
+        this.incomingQos1Interceptor = incomingQos1Interceptor;
         return self();
     }
 
-    public @NotNull B outgoingQos1ControlProvider(
-            final @Nullable Mqtt5OutgoingQos1ControlProvider outgoingQos1ControlProvider) {
+    public @NotNull B outgoingQos1Interceptor(
+            final @Nullable Mqtt5OutgoingQos1Interceptor outgoingQos1Interceptor) {
 
-        this.outgoingQos1ControlProvider = outgoingQos1ControlProvider;
+        this.outgoingQos1Interceptor = outgoingQos1Interceptor;
         return self();
     }
 
-    public @NotNull B incomingQos2ControlProvider(
-            final @Nullable Mqtt5IncomingQos2ControlProvider incomingQos2ControlProvider) {
+    public @NotNull B incomingQos2Interceptor(
+            final @Nullable Mqtt5IncomingQos2Interceptor incomingQos2Interceptor) {
 
-        this.incomingQos2ControlProvider = incomingQos2ControlProvider;
+        this.incomingQos2Interceptor = incomingQos2Interceptor;
         return self();
     }
 
-    public @NotNull B outgoingQos2ControlProvider(
-            final @Nullable Mqtt5OutgoingQos2ControlProvider outgoingQos2ControlProvider) {
+    public @NotNull B outgoingQos2Interceptor(
+            final @Nullable Mqtt5OutgoingQos2Interceptor outgoingQos2Interceptor) {
 
-        this.outgoingQos2ControlProvider = outgoingQos2ControlProvider;
+        this.outgoingQos2Interceptor = outgoingQos2Interceptor;
         return self();
     }
 
     public @NotNull MqttAdvancedClientData build() {
-        return new MqttAdvancedClientData(incomingQos1ControlProvider, outgoingQos1ControlProvider,
-                incomingQos2ControlProvider, outgoingQos2ControlProvider);
+        return new MqttAdvancedClientData(incomingQos1Interceptor, outgoingQos1Interceptor, incomingQos2Interceptor,
+                outgoingQos2Interceptor);
     }
 
     public static class Default extends MqttAdvancedClientDataBuilder<Default>

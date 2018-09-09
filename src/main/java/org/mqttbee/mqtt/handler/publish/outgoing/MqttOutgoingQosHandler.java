@@ -24,8 +24,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.CallByThread;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
-import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5OutgoingQos1ControlProvider;
-import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5OutgoingQos2ControlProvider;
+import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5OutgoingQos1Interceptor;
+import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5OutgoingQos2Interceptor;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.MqttClientData;
@@ -397,9 +397,9 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
     private void onPubAck(final @NotNull MqttPublish publish, final @NotNull MqttPubAck pubAck) {
         final MqttAdvancedClientData advanced = clientData.getRawAdvancedClientData();
         if (advanced != null) {
-            final Mqtt5OutgoingQos1ControlProvider control = advanced.getOutgoingQos1ControlProvider();
-            if (control != null) {
-                control.onPubAck(clientData, publish, pubAck);
+            final Mqtt5OutgoingQos1Interceptor interceptor = advanced.getOutgoingQos1Interceptor();
+            if (interceptor != null) {
+                interceptor.onPubAck(clientData, publish, pubAck);
             }
         }
     }
@@ -407,9 +407,9 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
     private void onPubRecError(final @NotNull MqttPublish publish, final @NotNull MqttPubRec pubRec) {
         final MqttAdvancedClientData advanced = clientData.getRawAdvancedClientData();
         if (advanced != null) {
-            final Mqtt5OutgoingQos2ControlProvider control = advanced.getOutgoingQos2ControlProvider();
-            if (control != null) {
-                control.onPubRecError(clientData, publish, pubRec);
+            final Mqtt5OutgoingQos2Interceptor interceptor = advanced.getOutgoingQos2Interceptor();
+            if (interceptor != null) {
+                interceptor.onPubRecError(clientData, publish, pubRec);
             }
         }
     }
@@ -418,9 +418,9 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
         final MqttPubRelBuilder pubRelBuilder = new MqttPubRelBuilder(pubRec);
         final MqttAdvancedClientData advanced = clientData.getRawAdvancedClientData();
         if (advanced != null) {
-            final Mqtt5OutgoingQos2ControlProvider control = advanced.getOutgoingQos2ControlProvider();
-            if (control != null) {
-                control.onPubRec(clientData, publish, pubRec, pubRelBuilder);
+            final Mqtt5OutgoingQos2Interceptor interceptor = advanced.getOutgoingQos2Interceptor();
+            if (interceptor != null) {
+                interceptor.onPubRec(clientData, publish, pubRec, pubRelBuilder);
             }
         }
         return pubRelBuilder.build();
@@ -429,9 +429,9 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
     private void onPubComp(final @NotNull MqttPubRel pubRel, final @NotNull MqttPubComp pubComp) {
         final MqttAdvancedClientData advanced = clientData.getRawAdvancedClientData();
         if (advanced != null) {
-            final Mqtt5OutgoingQos2ControlProvider control = advanced.getOutgoingQos2ControlProvider();
-            if (control != null) {
-                control.onPubComp(clientData, pubRel, pubComp);
+            final Mqtt5OutgoingQos2Interceptor interceptor = advanced.getOutgoingQos2Interceptor();
+            if (interceptor != null) {
+                interceptor.onPubComp(clientData, pubRel, pubComp);
             }
         }
     }
