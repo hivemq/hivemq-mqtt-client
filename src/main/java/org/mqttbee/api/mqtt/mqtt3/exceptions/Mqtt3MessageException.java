@@ -21,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3Message;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
@@ -31,7 +32,10 @@ public class Mqtt3MessageException extends RuntimeException {
 
     @SuppressWarnings("unchecked")
     public static <M extends Mqtt3Message> void when(
-            @NotNull final Throwable throwable, @NotNull final Class<M> type, @NotNull final Consumer<M> consumer) {
+            final @Nullable Throwable throwable, final @NotNull Class<M> type, final @NotNull Consumer<M> consumer) {
+
+        Objects.requireNonNull(type, "Type must not be null");
+        Objects.requireNonNull(consumer, "Consumer must not be null");
 
         if (throwable instanceof Mqtt3MessageException) {
             final Mqtt3MessageException messageException = (Mqtt3MessageException) throwable;

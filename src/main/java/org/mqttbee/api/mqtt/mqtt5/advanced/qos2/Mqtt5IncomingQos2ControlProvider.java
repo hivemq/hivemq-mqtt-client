@@ -38,11 +38,11 @@ public interface Mqtt5IncomingQos2ControlProvider {
      *
      * @param clientData    the data of the client.
      * @param publish       the Publish message with QoS 2 sent by the server.
-     * @param pubAckBuilder the builder for the outgoing PUBREC message.
+     * @param pubRecBuilder the builder for the outgoing PUBREC message.
      */
     void onPublish(
             @NotNull Mqtt5ClientData clientData, @NotNull Mqtt5Publish publish,
-            @NotNull Mqtt5PubRecBuilder pubAckBuilder);
+            @NotNull Mqtt5PubRecBuilder pubRecBuilder);
 
     /**
      * Called when a server sent a PUBREL message for a PUBLISH with QoS 2.

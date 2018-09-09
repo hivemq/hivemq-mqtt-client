@@ -18,27 +18,34 @@
 package org.mqttbee.mqtt.handler.publish.outgoing;
 
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.mqtt.message.publish.MqttPublish;
+import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRel;
+
+import java.util.function.BooleanSupplier;
 
 /**
  * @author Silvio Giebl
  */
-class MqttPublishWithFlow {
+class MqttPubRelWithFlow implements BooleanSupplier {
 
-    private final @NotNull MqttPublish publish;
+    private final @NotNull MqttPubRel pubRel;
     private final @NotNull MqttIncomingAckFlow incomingAckFlow;
+    private int state;
 
-    MqttPublishWithFlow(final @NotNull MqttPublish publish, final @NotNull MqttIncomingAckFlow incomingAckFlow) {
-        this.publish = publish;
+    MqttPubRelWithFlow(final @NotNull MqttPubRel pubRel, final @NotNull MqttIncomingAckFlow incomingAckFlow) {
+        this.pubRel = pubRel;
         this.incomingAckFlow = incomingAckFlow;
     }
 
-    @NotNull MqttPublish getPublish() {
-        return publish;
+    @NotNull MqttPubRel getPubRel() {
+        return pubRel;
     }
 
     @NotNull MqttIncomingAckFlow getIncomingAckFlow() {
         return incomingAckFlow;
     }
 
+    @Override
+    public boolean getAsBoolean() {
+        return ++state == 2;
+    }
 }

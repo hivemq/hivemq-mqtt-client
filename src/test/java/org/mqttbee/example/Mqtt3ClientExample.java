@@ -49,21 +49,27 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
+ * A simple test app. Can be run via gradle:
+ * <p>
+ * Publisher:
+ * <p>
+ * ./gradlew -PmainClass=org.mqttbee.example.Mqtt3ClientExample \ -Dserver=test.mosquitto.org \ -Dport=8883 \ -Dssl=true
+ * \ -Dcommand=publish \ -Dtopic=a/b \ -Dkeystore=src/test/resources/testkeys/mosquitto/mosquitto.org.client.jks \
+ * -Dkeystorepass=testkeystore \ -Dprivatekeypass=testkeystore \ -Dtruststore=src/test/resources/testkeys/mosquitto/cacerts.jks
+ * \ -Dtruststorepass=testcas \ execute
+ * <p>
+ * Subscriber:
+ * <p>
+ * ./gradlew -PmainClass=org.mqttbee.example.Mqtt3ClientExample \ -Dserver=test.mosquitto.org \ -Dport=8883 \ -Dssl=true
+ * \ -Dcommand=subscribe \ -Dtopic=a/b \ -Dkeystore=src/test/resources/testkeys/mosquitto/mosquitto.org.client.jks \
+ * -Dkeystorepass=testkeystore \ -Dprivatekeypass=testkeystore \ -Dtruststore=src/test/resources/testkeys/mosquitto/cacerts.jks
+ * \ -Dtruststorepass=testcas \ execute
+ *
  * @author Silvio Giebl
  * @author David Katz
  * @author Christian Hoff
- *         <p>
- *         A simple test app. Can be run via gradle: Publisher: ./gradlew -PmainClass=org.mqttbee.example.Mqtt3ClientExample
- *         \ -Dserver=test.mosquitto.org \ -Dport=8883 \ -Dssl=true \ -Dcommand=publish \ -Dtopic=a/b \
- *         -Dkeystore=src/test/resources/testkeys/mosquitto/mosquitto.org.client.jks \ -Dkeystorepass=testkeystore \
- *         -Dprivatekeypass=testkeystore \ -Dtruststore=src/test/resources/testkeys/mosquitto/cacerts.jks \
- *         -Dtruststorepass=testcas \ execute
- *         <p>
- *         Subscriber ./gradlew -PmainClass=org.mqttbee.example.Mqtt3ClientExample \ -Dserver=test.mosquitto.org \
- *         -Dport=8883 \ -Dssl=true \ -Dcommand=subscribe \ -Dtopic=a/b \ -Dkeystore=src/test/resources/testkeys/mosquitto/mosquitto.org.client.jks
- *         \ -Dkeystorepass=testkeystore \ -Dprivatekeypass=testkeystore \ -Dtruststore=src/test/resources/testkeys/mosquitto/cacerts.jks
- *         \ -Dtruststorepass=testcas \ execute
  */
+@SuppressWarnings("NullabilityAnnotations")
 class Mqtt3ClientExample {
 
     private static final String TOPIC = "topic";
@@ -190,11 +196,7 @@ class Mqtt3ClientExample {
 
         // now we want to connect, then publish and take the corresponding number of pubAcks and disconnect
         // if we did not publish anything for 10 seconds also disconnect
-        return connectScenario.toCompletable()
-                .andThen(publishScenario)
-                .take(countToPublish)
-                .ignoreElements()
-                .andThen(disconnectScenario);
+        return connectScenario.toCompletable().andThen(publishScenario).ignoreElements().andThen(disconnectScenario);
     }
 
     private Mqtt3RxClient getClient() {

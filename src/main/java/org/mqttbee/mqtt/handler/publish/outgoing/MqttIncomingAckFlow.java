@@ -22,8 +22,8 @@ import io.reactivex.plugins.RxJavaPlugins;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.CallByThread;
-import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
 import org.mqttbee.mqtt.handler.publish.outgoing.MqttPublishFlowableAckLink.LinkCancellable;
+import org.mqttbee.mqtt.message.publish.MqttPublishResult;
 import org.mqttbee.util.collections.ChunkedArrayQueue;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
@@ -41,7 +41,7 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
     private static final int STATE_NEW_REQUESTS = 1;
     private static final int STATE_BLOCKED = 2;
 
-    private final @NotNull Subscriber<? super Mqtt5PublishResult> subscriber;
+    private final @NotNull Subscriber<? super MqttPublishResult> subscriber;
     private final @NotNull MqttOutgoingQosHandler outgoingQosHandler;
 
     private long requestedNettyLocal;
@@ -55,13 +55,13 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
     private @Nullable Throwable error; // synced over volatile published
     private final @NotNull AtomicBoolean doneEmitted = new AtomicBoolean();
 
-    private final @NotNull ChunkedArrayQueue<Mqtt5PublishResult> queue = new ChunkedArrayQueue<>(32);
+    private final @NotNull ChunkedArrayQueue<MqttPublishResult> queue = new ChunkedArrayQueue<>(32);
     private final @NotNull AtomicInteger requestState = new AtomicInteger();
 
     private volatile @Nullable LinkCancellable linkCancellable;
 
     MqttIncomingAckFlow(
-            final @NotNull Subscriber<? super Mqtt5PublishResult> subscriber,
+            final @NotNull Subscriber<? super MqttPublishResult> subscriber,
             final @NotNull MqttOutgoingQosHandler outgoingQosHandler) {
 
         this.subscriber = subscriber;
@@ -69,18 +69,22 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
     }
 
     @CallByThread("Netty EventLoop")
-    void onNext(final @NotNull Mqtt5PublishResult result) {
+    void onNext(final @NotNull MqttPublishResult result) {
         long emitted = 0;
+        long acknowledged = 0;
         long requested = requested();
         if (!queue.isEmpty()) {
             outer:
             while (emitted < requested) {
                 while (emitted < requested) {
-                    final Mqtt5PublishResult queuedResult = queue.poll();
+                    final MqttPublishResult queuedResult = queue.poll();
                     if (queuedResult == null) {
                         break outer;
                     }
                     subscriber.onNext(queuedResult);
+                    if (queuedResult.acknowledged()) {
+                        acknowledged++;
+                    }
                     emitted++;
                 }
                 requested = addNewRequested();
@@ -88,6 +92,9 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
         }
         if (emitted < requested) {
             subscriber.onNext(result);
+            if (result.acknowledged()) {
+                acknowledged++;
+            }
             emitted++;
         } else if (cancelled.get()) {
             queue.clear();
@@ -95,13 +102,21 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
             queue.offer(result);
         }
         emitted(emitted);
+        acknowledged(acknowledged);
     }
 
     @CallByThread("Netty EventLoop")
     private void emitted(final long emitted) {
-        if (emitted > 0) {
-            final long acknowledgedLocal = this.acknowledgedNettyLocal += emitted;
-            acknowledged = acknowledgedLocal;
+        if (requestedNettyLocal != Long.MAX_VALUE) {
+            requestedNettyLocal -= emitted;
+        }
+    }
+
+    @CallByThread("Netty EventLoop")
+    void acknowledged(final long acknowledged) {
+        if (acknowledged > 0) {
+            final long acknowledgedLocal = this.acknowledgedNettyLocal += acknowledged;
+            this.acknowledged = acknowledgedLocal;
             if ((acknowledgedLocal == published) && doneEmitted.compareAndSet(false, true)) {
                 if (error == null) {
                     subscriber.onComplete();
@@ -109,10 +124,7 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
                     subscriber.onError(error);
                 }
             }
-            if (requestedNettyLocal != Long.MAX_VALUE) {
-                requestedNettyLocal -= emitted;
-            }
-            outgoingQosHandler.request(emitted);
+            outgoingQosHandler.request(acknowledged);
         }
     }
 
@@ -145,7 +157,7 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
         if (n > 0) {
             BackpressureHelper.add(newRequested, n);
             if (requestState.getAndSet(STATE_NEW_REQUESTS) == STATE_BLOCKED) {
-                outgoingQosHandler.getNettyEventLoop().execute(this);
+                outgoingQosHandler.getEventLoop().execute(this);
             }
         }
     }
@@ -154,15 +166,19 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
     @Override
     public void run() {
         long emitted = 0;
+        long acknowledged = 0;
         long requested = requested();
         outer:
         while (emitted < requested) {
             while (emitted < requested) {
-                final Mqtt5PublishResult queuedResult = queue.poll();
+                final MqttPublishResult queuedResult = queue.poll();
                 if (queuedResult == null) {
                     break outer;
                 }
                 subscriber.onNext(queuedResult);
+                if (queuedResult.acknowledged()) {
+                    acknowledged++;
+                }
                 emitted++;
             }
             if (cancelled.get()) {
@@ -172,6 +188,7 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
             requested = addNewRequested();
         }
         emitted(emitted);
+        acknowledged(acknowledged);
     }
 
     @CallByThread("Netty EventLoop")
@@ -210,7 +227,7 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
         }
     }
 
-    void link(@NotNull final LinkCancellable linkCancellable) {
+    void link(final @NotNull LinkCancellable linkCancellable) {
         this.linkCancellable = linkCancellable;
         if (cancelled.get()) {
             linkCancellable.cancelLink();
