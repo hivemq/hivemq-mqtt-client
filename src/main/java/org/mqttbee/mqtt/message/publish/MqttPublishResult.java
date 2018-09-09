@@ -75,24 +75,34 @@ public class MqttPublishResult implements Mqtt5PublishResult {
     public static class MqttQos2Result extends MqttPublishResult implements Mqtt5Qos2Result {
 
         private final @NotNull MqttPubRec pubRec;
-        private final @Nullable BooleanSupplier acknowledgedCallback;
 
         public MqttQos2Result(
-                final @NotNull MqttPublish publish, final @Nullable Throwable error, final @NotNull MqttPubRec pubRec,
-                final @Nullable BooleanSupplier acknowledgedCallback) {
+                final @NotNull MqttPublish publish, final @Nullable Throwable error, final @NotNull MqttPubRec pubRec) {
 
             super(publish, error);
             this.pubRec = pubRec;
-            this.acknowledgedCallback = acknowledgedCallback;
         }
 
         @Override
         public @NotNull MqttPubRec getPubRec() {
             return pubRec;
         }
+    }
+
+    public static class MqttQos2IntermediateResult extends MqttQos2Result {
+
+        private final @NotNull BooleanSupplier acknowledgedCallback;
+
+        public MqttQos2IntermediateResult(
+                final @NotNull MqttPublish publish, final @Nullable Throwable error, final @NotNull MqttPubRec pubRec,
+                final @NotNull BooleanSupplier acknowledgedCallback) {
+
+            super(publish, error, pubRec);
+            this.acknowledgedCallback = acknowledgedCallback;
+        }
 
         public boolean acknowledged() {
-            return (acknowledgedCallback == null) || acknowledgedCallback.getAsBoolean();
+            return acknowledgedCallback.getAsBoolean();
         }
     }
 
@@ -105,7 +115,7 @@ public class MqttPublishResult implements Mqtt5PublishResult {
                 final @NotNull MqttPublish publish, final @Nullable Throwable error, final @NotNull MqttPubRec pubRec,
                 final @NotNull MqttPubRel pubRel, final @NotNull MqttPubComp pubComp) {
 
-            super(publish, error, pubRec, null);
+            super(publish, error, pubRec);
             this.pubRel = pubRel;
             this.pubComp = pubComp;
         }

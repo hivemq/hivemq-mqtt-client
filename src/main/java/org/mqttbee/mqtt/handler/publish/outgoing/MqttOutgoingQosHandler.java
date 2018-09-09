@@ -38,6 +38,7 @@ import org.mqttbee.mqtt.ioc.ClientScope;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.publish.MqttPublishResult;
 import org.mqttbee.mqtt.message.publish.MqttPublishResult.MqttQos1Result;
+import org.mqttbee.mqtt.message.publish.MqttPublishResult.MqttQos2IntermediateResult;
 import org.mqttbee.mqtt.message.publish.MqttPublishResult.MqttQos2Result;
 import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
 import org.mqttbee.mqtt.message.publish.MqttTopicAliasMapping;
@@ -330,7 +331,7 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
             onPubRecError(publish, pubRec);
 
             final Throwable t = new Mqtt5MessageException(pubRec, "PUBREC contained an Error Code");
-            incomingAckFlow.onNext(new MqttQos2Result(publish, t, pubRec, null));
+            incomingAckFlow.onNext(new MqttQos2Result(publish, t, pubRec));
 
         } else {
             final MqttPubRel pubRel = buildPubRel(publish, pubRec);
@@ -338,7 +339,7 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
             final MqttPubRelWithFlow pubRelWithFlow = new MqttPubRelWithFlow(pubRel, incomingAckFlow);
             qos1Or2Map.put(packetIdentifier, pubRelWithFlow);
 
-            incomingAckFlow.onNext(new MqttQos2Result(publish, null, pubRec, pubRelWithFlow));
+            incomingAckFlow.onNext(new MqttQos2IntermediateResult(publish, null, pubRec, pubRelWithFlow));
 
             ctx.writeAndFlush(pubRel, ctx.voidPromise());
         }
