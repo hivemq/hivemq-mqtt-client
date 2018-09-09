@@ -17,12 +17,16 @@
 
 package org.mqttbee.api.mqtt.mqtt5.message.publish;
 
-import org.mqttbee.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.puback.Mqtt5PubAck;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubComp;
+import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrec.Mqtt5PubRec;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrel.Mqtt5PubRel;
+
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 /**
  * @author Silvio Giebl
@@ -30,27 +34,55 @@ import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrel.Mqtt5PubRel;
 @DoNotImplement
 public interface Mqtt5PublishResult {
 
-    @NotNull
-    Mqtt5Publish getPublish();
+    @SuppressWarnings("unchecked")
+    static <T extends Mqtt5PublishResult> void when(
+            final @NotNull Mqtt5PublishResult publishResult, final @NotNull Class<T> type,
+            final @NotNull Consumer<T> consumer) {
 
-    boolean isSuccess();
+        Objects.requireNonNull(publishResult, "Publish result must not be null");
+        Objects.requireNonNull(type, "Type must not be null");
+        Objects.requireNonNull(consumer, "Consumer must not be null");
 
-    @Nullable
-    Throwable getError();
+        if (type.isInstance(publishResult)) {
+            consumer.accept((T) publishResult);
+        }
+    }
+
+    @NotNull Mqtt5Publish getPublish();
+
+    @NotNull Optional<Throwable> getError();
 
     interface Mqtt5Qos1Result extends Mqtt5PublishResult {
 
-        @NotNull
-        Mqtt5PubAck getPubAck();
+        static void when(
+                final @NotNull Mqtt5PublishResult publishResult, final @NotNull Consumer<Mqtt5Qos1Result> consumer) {
+            Mqtt5PublishResult.when(publishResult, Mqtt5Qos1Result.class, consumer);
+        }
+
+        @NotNull Mqtt5PubAck getPubAck();
     }
 
     interface Mqtt5Qos2Result extends Mqtt5PublishResult {
 
-        @NotNull
-        Mqtt5PubRel getPubRel();
+        static void when(
+                final @NotNull Mqtt5PublishResult publishResult, final @NotNull Consumer<Mqtt5Qos2Result> consumer) {
+            Mqtt5PublishResult.when(publishResult, Mqtt5Qos2Result.class, consumer);
+        }
 
-        @NotNull
-        Mqtt5PubComp getPubComp();
+        @NotNull Mqtt5PubRec getPubRec();
+    }
+
+    interface Mqtt5Qos2CompleteResult extends Mqtt5Qos2Result {
+
+        static void when(
+                final @NotNull Mqtt5PublishResult publishResult,
+                final @NotNull Consumer<Mqtt5Qos2CompleteResult> consumer) {
+            Mqtt5PublishResult.when(publishResult, Mqtt5Qos2CompleteResult.class, consumer);
+        }
+
+        @NotNull Mqtt5PubRel getPubRel();
+
+        @NotNull Mqtt5PubComp getPubComp();
     }
 
 }

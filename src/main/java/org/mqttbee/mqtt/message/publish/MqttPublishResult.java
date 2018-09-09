@@ -22,90 +22,103 @@ import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
 import org.mqttbee.mqtt.message.publish.puback.MqttPubAck;
 import org.mqttbee.mqtt.message.publish.pubcomp.MqttPubComp;
+import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRec;
 import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRel;
+
+import java.util.Optional;
+import java.util.function.BooleanSupplier;
 
 /**
  * @author Silvio Giebl
  */
 public class MqttPublishResult implements Mqtt5PublishResult {
 
-    @NotNull
-    private final MqttPublish publish;
-    @Nullable
-    private final Throwable error;
+    private final @NotNull MqttPublish publish;
+    private final @Nullable Throwable error;
 
-    public MqttPublishResult(@NotNull final MqttPublish publish, @Nullable final Throwable error) {
+    public MqttPublishResult(final @NotNull MqttPublish publish, final @Nullable Throwable error) {
         this.publish = publish;
         this.error = error;
     }
 
-    @NotNull
     @Override
-    public MqttPublish getPublish() {
+    public @NotNull MqttPublish getPublish() {
         return publish;
     }
 
     @Override
-    public boolean isSuccess() {
-        return error == null;
+    public @NotNull Optional<Throwable> getError() {
+        return Optional.ofNullable(error);
     }
 
-    @Nullable
-    @Override
-    public Throwable getError() {
-        return error;
+    public boolean acknowledged() {
+        return true;
     }
-
 
     public static class MqttQos1Result extends MqttPublishResult implements Mqtt5Qos1Result {
 
-        @NotNull
-        private final MqttPubAck pubAck;
+        private final @NotNull MqttPubAck pubAck;
 
         public MqttQos1Result(
-                @NotNull final MqttPublish publish, @Nullable final Throwable error, @NotNull final MqttPubAck pubAck) {
+                final @NotNull MqttPublish publish, final @Nullable Throwable error, final @NotNull MqttPubAck pubAck) {
 
             super(publish, error);
             this.pubAck = pubAck;
         }
 
-        @NotNull
         @Override
-        public MqttPubAck getPubAck() {
+        public @NotNull MqttPubAck getPubAck() {
             return pubAck;
         }
-
     }
-
 
     public static class MqttQos2Result extends MqttPublishResult implements Mqtt5Qos2Result {
 
-        @NotNull
-        private final MqttPubRel pubRel;
-        @NotNull
-        private final MqttPubComp pubComp;
+        private final @NotNull MqttPubRec pubRec;
+        private final @Nullable BooleanSupplier acknowledgedCallback;
 
         public MqttQos2Result(
-                @NotNull final MqttPublish publish, @Nullable final Throwable error, @NotNull final MqttPubRel pubRel,
-                @NotNull final MqttPubComp pubComp) {
+                final @NotNull MqttPublish publish, final @Nullable Throwable error, final @NotNull MqttPubRec pubRec,
+                final @Nullable BooleanSupplier acknowledgedCallback) {
 
             super(publish, error);
+            this.pubRec = pubRec;
+            this.acknowledgedCallback = acknowledgedCallback;
+        }
+
+        @Override
+        public @NotNull MqttPubRec getPubRec() {
+            return pubRec;
+        }
+
+        public boolean acknowledged() {
+            return (acknowledgedCallback == null) || acknowledgedCallback.getAsBoolean();
+        }
+    }
+
+    public static class MqttQos2CompleteResult extends MqttQos2Result implements Mqtt5Qos2CompleteResult {
+
+        private final @NotNull MqttPubRel pubRel;
+        private final @NotNull MqttPubComp pubComp;
+
+        public MqttQos2CompleteResult(
+                final @NotNull MqttPublish publish, final @Nullable Throwable error, final @NotNull MqttPubRec pubRec,
+                final @NotNull MqttPubRel pubRel, final @NotNull MqttPubComp pubComp) {
+
+            super(publish, error, pubRec, null);
             this.pubRel = pubRel;
             this.pubComp = pubComp;
         }
 
-        @NotNull
         @Override
-        public MqttPubRel getPubRel() {
+        public @NotNull MqttPubRel getPubRel() {
             return pubRel;
         }
 
-        @NotNull
         @Override
-        public MqttPubComp getPubComp() {
+        public @NotNull MqttPubComp getPubComp() {
             return pubComp;
         }
-
     }
 
 }

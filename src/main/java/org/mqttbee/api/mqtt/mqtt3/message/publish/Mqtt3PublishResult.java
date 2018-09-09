@@ -17,9 +17,10 @@
 
 package org.mqttbee.api.mqtt.mqtt3.message.publish;
 
-import org.mqttbee.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.mqttbee.annotations.DoNotImplement;
+
+import java.util.Optional;
 
 /**
  * @author Silvio Giebl
@@ -27,12 +28,8 @@ import org.jetbrains.annotations.Nullable;
 @DoNotImplement
 public interface Mqtt3PublishResult {
 
-    @NotNull
-    Mqtt3Publish getPublish();
+    @NotNull Mqtt3Publish getPublish();
 
-    boolean isSuccess();
-
-    @Nullable
-    Throwable getError();
+    @NotNull Optional<Throwable> getError();
 
 }

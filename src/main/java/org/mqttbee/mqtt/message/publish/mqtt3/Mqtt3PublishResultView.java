@@ -19,12 +19,13 @@ package org.mqttbee.mqtt.message.publish.mqtt3;
 
 import io.reactivex.functions.Function;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3PublishResult;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
 import org.mqttbee.mqtt.message.publish.MqttPublishResult;
 import org.mqttbee.mqtt.mqtt3.exceptions.Mqtt3ExceptionFactory;
+
+import java.util.Optional;
 
 /**
  * @author Silvio Giebl
@@ -49,13 +50,7 @@ public class Mqtt3PublishResultView implements Mqtt3PublishResult {
     }
 
     @Override
-    public boolean isSuccess() {
-        return delegate.isSuccess();
-    }
-
-    @Override
-    public @Nullable Throwable getError() {
-        final Throwable error = delegate.getError();
-        return (error == null) ? null : Mqtt3ExceptionFactory.map(error);
+    public @NotNull Optional<Throwable> getError() {
+        return delegate.getError().map(Mqtt3ExceptionFactory.MAPPER_JAVA);
     }
 }

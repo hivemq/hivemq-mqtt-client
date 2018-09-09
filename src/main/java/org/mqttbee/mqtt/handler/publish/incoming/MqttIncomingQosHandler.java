@@ -119,12 +119,13 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter impleme
         if (previousMessage == null) { // new message
             readNewPublishQos1Or2(ctx, publish);
         } else if (previousMessage == AT_LEAST_ONCE) { // resent message
-            checkDupFlagSet(ctx, publish);
+            checkDupFlagSet(ctx, publish, previousMessage);
         } else if (previousMessage instanceof MqttPubAck) { // resent message and already acknowledged
-            checkDupFlagSet(ctx, publish);
-            writePubAck(ctx, (MqttPubAck) previousMessage);
+            if (checkDupFlagSet(ctx, publish, previousMessage)) {
+                writePubAck(ctx, (MqttPubAck) previousMessage);
+            }
         } else { // MqttQos.EXACTLY_ONCE or MqttPubRec
-            messages.put(publish.getPacketIdentifier(), previousMessage);
+            messages.put(publish.getPacketIdentifier(), previousMessage); // revert
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
                     "QoS 1 PUBLISH must not be received with the same packet identifier as a QoS 2 PUBLISH");
         }
@@ -135,12 +136,13 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter impleme
         if (previousMessage == null) { // new message
             readNewPublishQos1Or2(ctx, publish);
         } else if (previousMessage == EXACTLY_ONCE) { // resent message
-            checkDupFlagSet(ctx, publish);
+            checkDupFlagSet(ctx, publish, previousMessage);
         } else if (previousMessage instanceof MqttPubRec) { // resent message and already acknowledged
-            checkDupFlagSet(ctx, publish);
-            writePubRec(ctx, (MqttPubRec) previousMessage);
+            if (checkDupFlagSet(ctx, publish, previousMessage)) {
+                writePubRec(ctx, (MqttPubRec) previousMessage);
+            }
         } else { // MqttQos.AT_LEAST_ONCE or MqttPubAck
-            messages.put(publish.getPacketIdentifier(), previousMessage);
+            messages.put(publish.getPacketIdentifier(), previousMessage); // revert
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
                     "QoS 2 PUBLISH must not be received with the same packet identifier as a QoS 1 PUBLISH");
         }
@@ -155,13 +157,17 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter impleme
         }
     }
 
-    private static void checkDupFlagSet(
-            final @NotNull ChannelHandlerContext ctx, final @NotNull MqttStatefulPublish publish) {
+    private boolean checkDupFlagSet(
+            final @NotNull ChannelHandlerContext ctx, final @NotNull MqttStatefulPublish publish,
+            final @NotNull Object previousMessage) {
 
         if (!publish.isDup()) {
+            messages.put(publish.getPacketIdentifier(), previousMessage); // revert
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
                     "DUP flag must be set for a resent QoS " + publish.getQos().getCode() + " PUBLISH");
+            return false;
         }
+        return true;
     }
 
     @CallByThread("Netty EventLoop")
@@ -209,11 +215,11 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter impleme
                     ctx, buildPubComp(new MqttPubCompBuilder(pubRel).reasonCode(
                             Mqtt5PubCompReasonCode.PACKET_IDENTIFIER_NOT_FOUND)));
         } else if (previousMessage == EXACTLY_ONCE) { // PubRec not sent yet
-            messages.put(pubRel.getPacketIdentifier(), previousMessage);
+            messages.put(pubRel.getPacketIdentifier(), previousMessage); // revert
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
                     "PUBREL must not be received with the same packet identifier as a QoS 2 PUBLISH when no PUBREC has been sent yet");
         } else { // MqttQos.AT_LEAST_ONCE or MqttPubAck
-            messages.put(pubRel.getPacketIdentifier(), previousMessage);
+            messages.put(pubRel.getPacketIdentifier(), previousMessage); // revert
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
                     "PUBREL must not be received with the same packet identifier as a QoS 1 PUBLISH");
         }

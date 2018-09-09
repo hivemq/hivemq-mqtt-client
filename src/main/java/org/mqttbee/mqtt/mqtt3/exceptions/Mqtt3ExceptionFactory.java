@@ -58,6 +58,7 @@ import org.mqttbee.mqtt.message.unsubscribe.unsuback.mqtt3.Mqtt3UnsubAckView;
 public class Mqtt3ExceptionFactory {
 
     public static @NotNull Function<Throwable, Throwable> MAPPER = Mqtt3ExceptionFactory::map;
+    public static @NotNull java.util.function.Function<Throwable, Throwable> MAPPER_JAVA = Mqtt3ExceptionFactory::map;
 
     public static @NotNull Throwable map(final @NotNull Throwable throwable) {
         if (throwable instanceof Mqtt5MessageException) {

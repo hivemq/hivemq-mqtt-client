@@ -22,6 +22,7 @@ import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientData;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubComp;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrec.Mqtt5PubRec;
+import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrel.Mqtt5PubRel;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrel.Mqtt5PubRelBuilder;
 
 /**
@@ -42,7 +43,7 @@ public interface Mqtt5OutgoingQos2ControlProvider {
      * @param pubRelBuilder the builder for the outgoing PUBREL message.
      */
     void onPubRec(
-            @NotNull Mqtt5ClientData clientData, @NotNull final Mqtt5Publish publish, @NotNull Mqtt5PubRec pubRec,
+            @NotNull Mqtt5ClientData clientData, @NotNull Mqtt5Publish publish, @NotNull Mqtt5PubRec pubRec,
             @NotNull Mqtt5PubRelBuilder pubRelBuilder);
 
     /**
@@ -62,9 +63,9 @@ public interface Mqtt5OutgoingQos2ControlProvider {
      * This method must not block.
      *
      * @param clientData the data of the client.
-     * @param publish    the PUBLISH message with QoS 2 sent by the client.
+     * @param pubRel     the PUBREL message sent by the client.
      * @param pubComp    the PUBCOMP message sent by the server.
      */
-    void onPubComp(@NotNull Mqtt5ClientData clientData, @NotNull Mqtt5Publish publish, @NotNull Mqtt5PubComp pubComp);
+    void onPubComp(@NotNull Mqtt5ClientData clientData, @NotNull Mqtt5PubRel pubRel, @NotNull Mqtt5PubComp pubComp);
 
 }
