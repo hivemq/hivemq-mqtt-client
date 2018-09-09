@@ -24,7 +24,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.ScheduledFuture;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.handler.disconnect.ChannelCloseEvent;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.ioc.ConnectionScope;
@@ -97,12 +96,7 @@ public class MqttPingHandler extends ChannelDuplexHandler implements Runnable, C
                 return;
             }
             if (!messageRead) {
-                final String reason = "Timeout while waiting for PINGRESP";
-                if (ctx.channel().isActive()) {
-                    MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.KEEP_ALIVE_TIMEOUT, reason);
-                } else {
-                    MqttDisconnectUtil.close(ctx.channel(), reason);
-                }
+                MqttDisconnectUtil.close(ctx.channel(), "Timeout while waiting for PINGRESP");
                 return;
             }
         }
