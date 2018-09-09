@@ -19,51 +19,47 @@ package org.mqttbee.mqtt.advanced;
 
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.advanced.Mqtt5AdvancedClientData;
-import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5IncomingQos1ControlProvider;
-import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5OutgoingQos1ControlProvider;
-import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5IncomingQos2ControlProvider;
-import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5OutgoingQos2ControlProvider;
+import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5IncomingQos1Interceptor;
+import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5OutgoingQos1Interceptor;
+import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5IncomingQos2Interceptor;
+import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5OutgoingQos2Interceptor;
 
 /**
  * @author Silvio Giebl
  */
 public class MqttAdvancedClientData implements Mqtt5AdvancedClientData {
 
-    private final Mqtt5IncomingQos1ControlProvider incomingQos1ControlProvider;
-    private final Mqtt5OutgoingQos1ControlProvider outgoingQos1ControlProvider;
-    private final Mqtt5IncomingQos2ControlProvider incomingQos2ControlProvider;
-    private final Mqtt5OutgoingQos2ControlProvider outgoingQos2ControlProvider;
+    private final @Nullable Mqtt5IncomingQos1Interceptor incomingQos1Interceptor;
+    private final @Nullable Mqtt5OutgoingQos1Interceptor outgoingQos1Interceptor;
+    private final @Nullable Mqtt5IncomingQos2Interceptor incomingQos2Interceptor;
+    private final @Nullable Mqtt5OutgoingQos2Interceptor outgoingQos2Interceptor;
 
     public MqttAdvancedClientData(
-            @Nullable final Mqtt5IncomingQos1ControlProvider incomingQos1ControlProvider,
-            @Nullable final Mqtt5OutgoingQos1ControlProvider outgoingQos1ControlProvider,
-            @Nullable final Mqtt5IncomingQos2ControlProvider incomingQos2ControlProvider,
-            @Nullable final Mqtt5OutgoingQos2ControlProvider outgoingQos2ControlProvider) {
+            final @Nullable Mqtt5IncomingQos1Interceptor incomingQos1Interceptor,
+            final @Nullable Mqtt5OutgoingQos1Interceptor outgoingQos1Interceptor,
+            final @Nullable Mqtt5IncomingQos2Interceptor incomingQos2Interceptor,
+            final @Nullable Mqtt5OutgoingQos2Interceptor outgoingQos2Interceptor) {
 
-        this.incomingQos1ControlProvider = incomingQos1ControlProvider;
-        this.outgoingQos1ControlProvider = outgoingQos1ControlProvider;
-        this.incomingQos2ControlProvider = incomingQos2ControlProvider;
-        this.outgoingQos2ControlProvider = outgoingQos2ControlProvider;
+        this.incomingQos1Interceptor = incomingQos1Interceptor;
+        this.outgoingQos1Interceptor = outgoingQos1Interceptor;
+        this.incomingQos2Interceptor = incomingQos2Interceptor;
+        this.outgoingQos2Interceptor = outgoingQos2Interceptor;
     }
 
-    @Nullable
-    public Mqtt5IncomingQos1ControlProvider getIncomingQos1ControlProvider() {
-        return incomingQos1ControlProvider;
+    public @Nullable Mqtt5IncomingQos1Interceptor getIncomingQos1Interceptor() {
+        return incomingQos1Interceptor;
     }
 
-    @Nullable
-    public Mqtt5OutgoingQos1ControlProvider getOutgoingQos1ControlProvider() {
-        return outgoingQos1ControlProvider;
+    public @Nullable Mqtt5OutgoingQos1Interceptor getOutgoingQos1Interceptor() {
+        return outgoingQos1Interceptor;
     }
 
-    @Nullable
-    public Mqtt5IncomingQos2ControlProvider getIncomingQos2ControlProvider() {
-        return incomingQos2ControlProvider;
+    public @Nullable Mqtt5IncomingQos2Interceptor getIncomingQos2Interceptor() {
+        return incomingQos2Interceptor;
     }
 
-    @Nullable
-    public Mqtt5OutgoingQos2ControlProvider getOutgoingQos2ControlProvider() {
-        return outgoingQos2ControlProvider;
+    public @Nullable Mqtt5OutgoingQos2Interceptor getOutgoingQos2Interceptor() {
+        return outgoingQos2Interceptor;
     }
 
 }

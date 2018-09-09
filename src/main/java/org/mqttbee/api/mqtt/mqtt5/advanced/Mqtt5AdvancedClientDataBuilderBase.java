@@ -20,10 +20,10 @@ package org.mqttbee.api.mqtt.mqtt5.advanced;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5IncomingQos1ControlProvider;
-import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5OutgoingQos1ControlProvider;
-import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5IncomingQos2ControlProvider;
-import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5OutgoingQos2ControlProvider;
+import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5IncomingQos1Interceptor;
+import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5OutgoingQos1Interceptor;
+import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5IncomingQos2Interceptor;
+import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5OutgoingQos2Interceptor;
 
 /**
  * @author Silvio Giebl
@@ -31,11 +31,11 @@ import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5OutgoingQos2ControlProvider
 @DoNotImplement
 public interface Mqtt5AdvancedClientDataBuilderBase<B extends Mqtt5AdvancedClientDataBuilderBase<B>> {
 
-    @NotNull B incomingQos1ControlProvider(@Nullable Mqtt5IncomingQos1ControlProvider incomingQos1ControlProvider);
+    @NotNull B incomingQos1Interceptor(@Nullable Mqtt5IncomingQos1Interceptor incomingQos1Interceptor);
 
-    @NotNull B outgoingQos1ControlProvider(@Nullable Mqtt5OutgoingQos1ControlProvider outgoingQos1ControlProvider);
+    @NotNull B outgoingQos1Interceptor(@Nullable Mqtt5OutgoingQos1Interceptor outgoingQos1Interceptor);
 
-    @NotNull B incomingQos2ControlProvider(@Nullable Mqtt5IncomingQos2ControlProvider incomingQos2ControlProvider);
+    @NotNull B incomingQos2Interceptor(@Nullable Mqtt5IncomingQos2Interceptor incomingQos2Interceptor);
 
-    @NotNull B outgoingQos2ControlProvider(@Nullable Mqtt5OutgoingQos2ControlProvider outgoingQos2ControlProvider);
+    @NotNull B outgoingQos2Interceptor(@Nullable Mqtt5OutgoingQos2Interceptor outgoingQos2Interceptor);
 }
