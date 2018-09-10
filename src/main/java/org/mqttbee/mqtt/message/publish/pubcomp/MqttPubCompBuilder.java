@@ -19,6 +19,7 @@ package org.mqttbee.mqtt.message.publish.pubcomp;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubCompBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubCompReasonCode;
@@ -32,52 +33,42 @@ import org.mqttbee.mqtt.util.MqttBuilderUtil;
  */
 public class MqttPubCompBuilder implements Mqtt5PubCompBuilder {
 
-    private final MqttPubRel pubRel;
-    private Mqtt5PubCompReasonCode reasonCode = MqttPubComp.DEFAULT_REASON_CODE;
-    private MqttUTF8StringImpl reasonString;
-    private MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
+    private final @NotNull MqttPubRel pubRel;
+    private @NotNull Mqtt5PubCompReasonCode reasonCode = MqttPubComp.DEFAULT_REASON_CODE;
+    private @Nullable MqttUTF8StringImpl reasonString;
+    private @NotNull MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
 
     public MqttPubCompBuilder(@NotNull final MqttPubRel pubRel) {
         this.pubRel = pubRel;
     }
 
-    @NotNull
-    @Override
-    public MqttPubCompBuilder userProperties(@NotNull final Mqtt5UserProperties userProperties) {
-        this.userProperties = MqttBuilderUtil.userProperties(userProperties);
-        return this;
-    }
-
-    @NotNull
-    public MqttPubCompBuilder reasonCode(@NotNull final Mqtt5PubCompReasonCode reasonCode) {
+    public @NotNull MqttPubCompBuilder reasonCode(final @NotNull Mqtt5PubCompReasonCode reasonCode) {
         this.reasonCode = reasonCode;
         return this;
     }
 
-    @NotNull
-    public MqttPubCompBuilder reasonString(@Nullable final MqttUTF8StringImpl reasonString) {
-        this.reasonString = reasonString;
+    @Override
+    public @NotNull MqttPubCompBuilder reasonString(final @Nullable MqttUTF8String reasonString) {
+        this.reasonString = MqttBuilderUtil.stringOrNull(reasonString);
         return this;
     }
 
-    @NotNull
     @Override
-    public Mqtt5PubCompReasonCode getReasonCode() {
+    public @NotNull MqttPubCompBuilder userProperties(final @NotNull Mqtt5UserProperties userProperties) {
+        this.userProperties = MqttBuilderUtil.userProperties(userProperties);
+        return this;
+    }
+
+    @Override
+    public @NotNull Mqtt5PubCompReasonCode getReasonCode() {
         return reasonCode;
     }
 
-    @NotNull
-    @Override
-    public MqttUTF8StringImpl getReasonString() {
-        return reasonString;
-    }
-
-    @NotNull
-    public MqttPubRel getPubRel() {
+    public @NotNull MqttPubRel getPubRel() {
         return pubRel;
     }
 
-    public MqttPubComp build() {
+    public @NotNull MqttPubComp build() {
         return new MqttPubComp(pubRel.getPacketIdentifier(), reasonCode, reasonString, userProperties);
     }
 
