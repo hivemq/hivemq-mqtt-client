@@ -30,18 +30,16 @@ import org.mqttbee.mqtt.util.MqttBuilderUtil;
 import org.mqttbee.util.FluentBuilder;
 import org.mqttbee.util.UnsignedDataTypes;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
-
-import static org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.DISCONNECT_WITH_WILL_MESSAGE;
-import static org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.NORMAL_DISCONNECTION;
 
 /**
  * @author Silvio Giebl
  */
 public class Mqtt5DisconnectBuilder<P> extends FluentBuilder<Mqtt5Disconnect, P> {
 
-    private boolean withWillMessage = false;
+    private @NotNull Mqtt5DisconnectReasonCode reasonCode = MqttDisconnect.DEFAULT_REASON_CODE;
     private long sessionExpiryIntervalSeconds = MqttDisconnect.SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
     private @Nullable MqttUTF8StringImpl serverReference;
     private @Nullable MqttUTF8StringImpl reasonString;
@@ -51,8 +49,8 @@ public class Mqtt5DisconnectBuilder<P> extends FluentBuilder<Mqtt5Disconnect, P>
         super(parentConsumer);
     }
 
-    public @NotNull Mqtt5DisconnectBuilder<P> willMessage(final boolean withWillMessage) {
-        this.withWillMessage = withWillMessage;
+    public @NotNull Mqtt5DisconnectBuilder<P> reasonCode(final @NotNull Mqtt5DisconnectReasonCode reasonCode) {
+        this.reasonCode = Objects.requireNonNull(reasonCode, "Reason Code must not be null");
         return this;
     }
 
@@ -99,8 +97,6 @@ public class Mqtt5DisconnectBuilder<P> extends FluentBuilder<Mqtt5Disconnect, P>
 
     @Override
     public @NotNull Mqtt5Disconnect build() {
-        final Mqtt5DisconnectReasonCode reasonCode =
-                withWillMessage ? DISCONNECT_WITH_WILL_MESSAGE : NORMAL_DISCONNECTION;
         return new MqttDisconnect(
                 reasonCode, sessionExpiryIntervalSeconds, serverReference, reasonString, userProperties);
     }
