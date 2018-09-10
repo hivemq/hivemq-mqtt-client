@@ -67,4 +67,14 @@ public enum Mqtt5AuthReasonCode implements Mqtt5ReasonCode {
         }
         return null;
     }
+
+    @Override
+    public boolean canBeSentByServer() {
+        return this != REAUTHENTICATE;
+    }
+
+    @Override
+    public boolean canBeSentByClient() {
+        return this != SUCCESS;
+    }
 }

@@ -22,6 +22,8 @@ import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5ReasonCode;
 import org.mqttbee.mqtt.message.MqttCommonReasonCode;
 
+import java.util.EnumSet;
+
 /**
  * MQTT Reason Codes that can be used in DISCONNECT packets according to the MQTT 5 specification.
  *
@@ -108,5 +110,31 @@ public enum Mqtt5DisconnectReasonCode implements Mqtt5ReasonCode {
             return null;
         }
         return ERROR_CODE_LOOKUP[code - ERROR_CODE_MIN];
+    }
+
+    private static final @NotNull EnumSet<Mqtt5DisconnectReasonCode> BY_CLIENT =
+            EnumSet.of(NORMAL_DISCONNECTION, DISCONNECT_WITH_WILL_MESSAGE, UNSPECIFIED_ERROR, PROTOCOL_ERROR,
+                    IMPLEMENTATION_SPECIFIC_ERROR, TOPIC_FILTER_INVALID, TOPIC_NAME_INVALID, RECEIVE_MAXIMUM_EXCEEDED,
+                    TOPIC_ALIAS_INVALID, PACKET_TOO_LARGE, MESSAGE_RATE_TOO_HIGH, QUOTA_EXCEEDED,
+                    ADMINISTRATIVE_ACTION);
+    private static final @NotNull EnumSet<Mqtt5DisconnectReasonCode> BY_USER = EnumSet.copyOf(BY_CLIENT);
+
+    static {
+        BY_USER.removeAll(EnumSet.of(PROTOCOL_ERROR, RECEIVE_MAXIMUM_EXCEEDED, TOPIC_ALIAS_INVALID, PACKET_TOO_LARGE));
+    }
+
+    @Override
+    public boolean canBeSentByServer() {
+        return this != DISCONNECT_WITH_WILL_MESSAGE;
+    }
+
+    @Override
+    public boolean canBeSentByClient() {
+        return BY_CLIENT.contains(this);
+    }
+
+    @Override
+    public boolean canBeSetByUser() {
+        return BY_USER.contains(this);
     }
 }

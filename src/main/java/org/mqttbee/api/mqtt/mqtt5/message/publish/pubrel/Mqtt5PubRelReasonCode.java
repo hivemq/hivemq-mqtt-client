@@ -64,4 +64,9 @@ public enum Mqtt5PubRelReasonCode implements Mqtt5ReasonCode {
         }
         return null;
     }
+
+    @Override
+    public boolean canBeSentByClient() {
+        return true;
+    }
 }

@@ -38,4 +38,25 @@ public interface Mqtt5ReasonCode {
     default boolean isError() {
         return getCode() >= 0x80;
     }
+
+    /**
+     * @return whether this Reason Code can be sent by the server according to the MQTT 5 specification.
+     */
+    default boolean canBeSentByServer() {
+        return true;
+    }
+
+    /**
+     * @return whether this Reason Code can be sent by the client according to the MQTT 5 specification.
+     */
+    default boolean canBeSentByClient() {
+        return false;
+    }
+
+    /**
+     * @return whether this Reason Code can be set by the user.
+     */
+    default boolean canBeSetByUser() {
+        return false;
+    }
 }
