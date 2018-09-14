@@ -27,16 +27,6 @@ public enum MqttDecoderFlag {
     VALIDATE_PAYLOAD_FORMAT,
     DIRECT_BUFFER_PAYLOAD,
     DIRECT_BUFFER_AUTH,
-    DIRECT_BUFFER_CORRELATION_DATA;
-
-    private final int flag = 1 << ordinal();
-
-    public boolean isSet(final int decoderFlags) {
-        return (decoderFlags & flag) != 0;
-    }
-
-    public int set(final int decoderFlags) {
-        return decoderFlags | flag;
-    }
+    DIRECT_BUFFER_CORRELATION_DATA
 
 }

@@ -34,6 +34,7 @@ import org.mqttbee.util.collections.IntMap;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.nio.ByteBuffer;
+import java.util.EnumSet;
 
 import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.*;
 
@@ -52,7 +53,7 @@ public class Mqtt3PublishDecoder implements MqttMessageDecoder {
 
     @Override
     public @NotNull MqttStatefulPublish decode(
-            final int flags, final @NotNull ByteBuf in, final int decoderFlags,
+            final int flags, final @NotNull ByteBuf in, final @NotNull EnumSet<MqttDecoderFlag> decoderFlags,
             final @Nullable IntMap<MqttTopicImpl> topicAliasMapping) throws MqttDecoderException {
 
         final boolean dup = (flags & 0b1000) != 0;
@@ -73,7 +74,8 @@ public class Mqtt3PublishDecoder implements MqttMessageDecoder {
         final int payloadLength = in.readableBytes();
         ByteBuffer payload = null;
         if (payloadLength > 0) {
-            payload = ByteBufferUtil.allocate(payloadLength, MqttDecoderFlag.DIRECT_BUFFER_PAYLOAD.isSet(decoderFlags));
+            payload = ByteBufferUtil.allocate(payloadLength,
+                    decoderFlags.contains(MqttDecoderFlag.DIRECT_BUFFER_PAYLOAD));
             in.readBytes(payload);
             payload.position(0);
         }

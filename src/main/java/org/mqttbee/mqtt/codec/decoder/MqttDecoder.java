@@ -33,6 +33,7 @@ import org.mqttbee.mqtt.ioc.ConnectionScope;
 import org.mqttbee.util.collections.IntMap;
 
 import javax.inject.Inject;
+import java.util.EnumSet;
 import java.util.List;
 
 /**
@@ -51,7 +52,8 @@ public class MqttDecoder extends ByteToMessageDecoder {
     private final @NotNull MqttMessageDecoders decoders;
 
     private int maximumPacketSize;
-    int decoderFlags; // TODO make private when all decoder flags can be set via api
+    final @NotNull EnumSet<MqttDecoderFlag> decoderFlags = EnumSet.noneOf(MqttDecoderFlag.class);
+    // TODO make private when all decoder flags can be set via api
     private @Nullable IntMap<MqttTopicImpl> topicAliasMapping;
 
     @Inject
@@ -67,10 +69,10 @@ public class MqttDecoder extends ByteToMessageDecoder {
 
         maximumPacketSize = clientConnectionData.getMaximumPacketSize();
         if (clientConnectionData.isProblemInformationRequested()) {
-            decoderFlags = MqttDecoderFlag.PROBLEM_INFORMATION_REQUESTED.set(decoderFlags);
+            decoderFlags.add(MqttDecoderFlag.PROBLEM_INFORMATION_REQUESTED);
         }
         if (clientConnectionData.isResponseInformationRequested()) {
-            decoderFlags = MqttDecoderFlag.RESPONSE_INFORMATION_REQUESTED.set(decoderFlags);
+            decoderFlags.add(MqttDecoderFlag.RESPONSE_INFORMATION_REQUESTED);
         }
         topicAliasMapping = clientConnectionData.getTopicAliasMapping();
     }
@@ -90,12 +92,11 @@ public class MqttDecoder extends ByteToMessageDecoder {
         final int remainingLength = MqttVariableByteInteger.decode(in);
 
         try {
-            if (remainingLength == MqttVariableByteInteger.NOT_ENOUGH_BYTES) {
-                in.readerIndex(readerIndexBeforeFixedHeader);
-                return;
-            }
-
-            if (remainingLength < MqttVariableByteInteger.NOT_ENOUGH_BYTES) {
+            if (remainingLength < 0) {
+                if (remainingLength == MqttVariableByteInteger.NOT_ENOUGH_BYTES) {
+                    in.readerIndex(readerIndexBeforeFixedHeader);
+                    return;
+                }
                 throw new MqttDecoderException("malformed remaining length");
             }
 

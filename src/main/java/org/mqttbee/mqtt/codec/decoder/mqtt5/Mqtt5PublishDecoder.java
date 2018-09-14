@@ -39,6 +39,7 @@ import org.mqttbee.util.collections.IntMap;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.nio.ByteBuffer;
+import java.util.EnumSet;
 
 import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.*;
 import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.*;
@@ -61,7 +62,7 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
 
     @Override
     public @NotNull MqttStatefulPublish decode(
-            final int flags, final @NotNull ByteBuf in, final int decoderFlags,
+            final int flags, final @NotNull ByteBuf in, final @NotNull EnumSet<MqttDecoderFlag> decoderFlags,
             final @Nullable IntMap<MqttTopicImpl> topicAliasMapping) throws MqttDecoderException {
 
         final boolean dup = (flags & 0b1000) != 0;
@@ -136,7 +137,7 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
 
                 case CORRELATION_DATA:
                     correlationData = decodeBinaryDataOnlyOnce(correlationData, "correlation data", in,
-                            MqttDecoderFlag.DIRECT_BUFFER_CORRELATION_DATA.isSet(decoderFlags));
+                            decoderFlags.contains(MqttDecoderFlag.DIRECT_BUFFER_CORRELATION_DATA));
                     break;
 
                 case USER_PROPERTY:
@@ -203,12 +204,13 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
         final int payloadLength = in.readableBytes();
         ByteBuffer payload = null;
         if (payloadLength > 0) {
-            payload = ByteBufferUtil.allocate(payloadLength, MqttDecoderFlag.DIRECT_BUFFER_PAYLOAD.isSet(decoderFlags));
+            payload = ByteBufferUtil.allocate(payloadLength,
+                    decoderFlags.contains(MqttDecoderFlag.DIRECT_BUFFER_PAYLOAD));
             in.readBytes(payload);
             payload.position(0);
 
             if ((payloadFormatIndicator == Mqtt5PayloadFormatIndicator.UTF_8) &&
-                    MqttDecoderFlag.VALIDATE_PAYLOAD_FORMAT.isSet(decoderFlags) &&
+                    decoderFlags.contains(MqttDecoderFlag.VALIDATE_PAYLOAD_FORMAT) &&
                     !Utf8.isWellFormed(ByteBufferUtil.getBytes(payload))) {
                 throw new MqttDecoderException(Mqtt5DisconnectReasonCode.PAYLOAD_FORMAT_INVALID,
                         "payload is not valid UTF-8");

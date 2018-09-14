@@ -37,6 +37,7 @@ import org.mqttbee.util.collections.IntMap;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.nio.ByteBuffer;
+import java.util.EnumSet;
 
 import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.*;
 import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.*;
@@ -58,7 +59,7 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
 
     @Override
     public @NotNull MqttConnAck decode(
-            final int flags, final @NotNull ByteBuf in, final int decoderFlags,
+            final int flags, final @NotNull ByteBuf in, final @NotNull EnumSet<MqttDecoderFlag> decoderFlags,
             final @Nullable IntMap<MqttTopicImpl> topicAliasMapping) throws MqttDecoderException {
 
         checkFixedHeaderFlags(FLAGS, flags);
@@ -218,7 +219,7 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
                     break;
 
                 case RESPONSE_INFORMATION:
-                    if (!MqttDecoderFlag.RESPONSE_INFORMATION_REQUESTED.isSet(decoderFlags)) { // TODO
+                    if (!decoderFlags.contains(MqttDecoderFlag.RESPONSE_INFORMATION_REQUESTED)) { // TODO
                         throw new MqttDecoderException(
                                 Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
                                 "response information must not be included if it was not requested");

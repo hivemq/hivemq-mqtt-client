@@ -66,7 +66,7 @@ public abstract class AbstractMqttDecoderTest {
     }
 
     protected void setFlag(final @NotNull MqttDecoderFlag decoderFlag) {
-        decoder.decoderFlags = decoderFlag.set(decoder.decoderFlags);
+        decoder.decoderFlags.add(decoderFlag);
     }
 
     public static @NotNull MqttPingRespDecoder createPingRespDecoder() {
