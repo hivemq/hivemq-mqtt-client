@@ -46,23 +46,19 @@ public class MqttMessageDecoderUtil {
         }
     }
 
-    @NotNull
-    public static MqttDecoderException remainingLengthTooShort() {
+    public static @NotNull MqttDecoderException remainingLengthTooShort() {
         return new MqttDecoderException("remaining length too short");
     }
 
-    @NotNull
-    public static MqttDecoderException malformedUTF8String(@NotNull final String name) {
+    public static @NotNull MqttDecoderException malformedUTF8String(final @NotNull String name) {
         return new MqttDecoderException("malformed UTF-8 string for" + name);
     }
 
-    @NotNull
-    public static MqttDecoderException malformedTopic() {
+    public static @NotNull MqttDecoderException malformedTopic() {
         return new MqttDecoderException(Mqtt5DisconnectReasonCode.TOPIC_NAME_INVALID, "malformed topic");
     }
 
-    @NotNull
-    public static MqttQos decodePublishQos(final int flags, final boolean dup) throws MqttDecoderException {
+    public static @NotNull MqttQos decodePublishQos(final int flags, final boolean dup) throws MqttDecoderException {
         final MqttQos qos = MqttQos.fromCode((flags & 0b0110) >> 1);
         if (qos == null) {
             throw new MqttDecoderException("wrong QoS");
@@ -73,7 +69,7 @@ public class MqttMessageDecoderUtil {
         return qos;
     }
 
-    public static int decodePublishPacketIdentifier(@NotNull final MqttQos qos, @NotNull final ByteBuf in)
+    public static int decodePublishPacketIdentifier(final @NotNull MqttQos qos, final @NotNull ByteBuf in)
             throws MqttDecoderException {
 
         if (qos == MqttQos.AT_MOST_ONCE) {

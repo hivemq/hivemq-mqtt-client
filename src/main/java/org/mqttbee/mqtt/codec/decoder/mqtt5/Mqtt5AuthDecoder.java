@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
+import org.mqttbee.mqtt.codec.decoder.MqttDecoderFlag;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
@@ -35,6 +36,7 @@ import org.mqttbee.util.collections.IntMap;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.nio.ByteBuffer;
+import java.util.EnumSet;
 
 import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.checkFixedHeaderFlags;
 import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.remainingLengthTooShort;
@@ -56,7 +58,7 @@ public class Mqtt5AuthDecoder implements MqttMessageDecoder {
 
     @Override
     public @NotNull MqttAuth decode(
-            final int flags, final @NotNull ByteBuf in, final int decoderFlags,
+            final int flags, final @NotNull ByteBuf in, final @NotNull EnumSet<MqttDecoderFlag> decoderFlags,
             final @Nullable IntMap<MqttTopicImpl> topicAliasMapping) throws MqttDecoderException {
 
         checkFixedHeaderFlags(FLAGS, flags);

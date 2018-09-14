@@ -26,6 +26,7 @@ import org.mqttbee.util.collections.IntMap;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.EnumSet;
 
 import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.checkFixedHeaderFlags;
 import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.checkRemainingLength;
@@ -46,7 +47,7 @@ public class MqttPingRespDecoder implements MqttMessageDecoder {
 
     @Override
     public @NotNull MqttPingResp decode(
-            final int flags, final @NotNull ByteBuf in, final int decoderFlags,
+            final int flags, final @NotNull ByteBuf in, final @NotNull EnumSet<MqttDecoderFlag> decoderFlags,
             final @Nullable IntMap<MqttTopicImpl> topicAliasMapping) throws MqttDecoderException {
 
         checkFixedHeaderFlags(FLAGS, flags);

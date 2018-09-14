@@ -24,6 +24,8 @@ import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.message.MqttMessage;
 import org.mqttbee.util.collections.IntMap;
 
+import java.util.EnumSet;
+
 /**
  * Decoder for a MQTT message type.
  *
@@ -42,7 +44,7 @@ public interface MqttMessageDecoder {
      * @throws MqttDecoderException if the byte buffer did not contain a valid encoded MQTT message.
      */
     @NotNull MqttMessage decode(
-            int flags, @NotNull ByteBuf in, int decoderFlags, @Nullable IntMap<MqttTopicImpl> topicAliasMapping)
-            throws MqttDecoderException;
+            int flags, @NotNull ByteBuf in, @NotNull EnumSet<MqttDecoderFlag> decoderFlags,
+            @Nullable IntMap<MqttTopicImpl> topicAliasMapping) throws MqttDecoderException;
 
 }

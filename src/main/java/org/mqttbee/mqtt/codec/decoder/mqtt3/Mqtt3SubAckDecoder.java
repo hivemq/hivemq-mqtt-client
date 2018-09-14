@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAckReturnCode;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
+import org.mqttbee.mqtt.codec.decoder.MqttDecoderFlag;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAck;
@@ -31,6 +32,7 @@ import org.mqttbee.util.collections.IntMap;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.EnumSet;
 
 import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.checkFixedHeaderFlags;
 import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.remainingLengthTooShort;
@@ -52,7 +54,7 @@ public class Mqtt3SubAckDecoder implements MqttMessageDecoder {
 
     @Override
     public @NotNull MqttSubAck decode(
-            final int flags, final @NotNull ByteBuf in, final int decoderFlags,
+            final int flags, final @NotNull ByteBuf in, final @NotNull EnumSet<MqttDecoderFlag> decoderFlags,
             final @Nullable IntMap<MqttTopicImpl> topicAliasMapping) throws MqttDecoderException {
 
         checkFixedHeaderFlags(FLAGS, flags);
