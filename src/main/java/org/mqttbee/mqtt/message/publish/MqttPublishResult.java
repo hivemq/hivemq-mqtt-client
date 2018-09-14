@@ -94,10 +94,10 @@ public class MqttPublishResult implements Mqtt5PublishResult {
         private final @NotNull BooleanSupplier acknowledgedCallback;
 
         public MqttQos2IntermediateResult(
-                final @NotNull MqttPublish publish, final @Nullable Throwable error, final @NotNull MqttPubRec pubRec,
+                final @NotNull MqttPublish publish, final @NotNull MqttPubRec pubRec,
                 final @NotNull BooleanSupplier acknowledgedCallback) {
 
-            super(publish, error, pubRec);
+            super(publish, null, pubRec);
             this.acknowledgedCallback = acknowledgedCallback;
         }
 
@@ -112,10 +112,10 @@ public class MqttPublishResult implements Mqtt5PublishResult {
         private final @NotNull MqttPubComp pubComp;
 
         public MqttQos2CompleteResult(
-                final @NotNull MqttPublish publish, final @Nullable Throwable error, final @NotNull MqttPubRec pubRec,
-                final @NotNull MqttPubRel pubRel, final @NotNull MqttPubComp pubComp) {
+                final @NotNull MqttPublish publish, final @NotNull MqttPubRec pubRec, final @NotNull MqttPubRel pubRel,
+                final @NotNull MqttPubComp pubComp) {
 
-            super(publish, error, pubRec);
+            super(publish, null, pubRec);
             this.pubRel = pubRel;
             this.pubComp = pubComp;
         }

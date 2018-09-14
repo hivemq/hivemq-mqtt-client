@@ -18,6 +18,8 @@
 package org.mqttbee.mqtt.handler.publish.outgoing;
 
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.mqtt.message.publish.MqttPublish;
+import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRec;
 import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRel;
 
 import java.util.function.BooleanSupplier;
@@ -25,11 +27,10 @@ import java.util.function.BooleanSupplier;
 /**
  * @author Silvio Giebl
  */
-class MqttPubRelWithFlow implements BooleanSupplier {
+class MqttPubRelWithFlow {
 
     private final @NotNull MqttPubRel pubRel;
     private final @NotNull MqttIncomingAckFlow incomingAckFlow;
-    private int state;
 
     MqttPubRelWithFlow(final @NotNull MqttPubRel pubRel, final @NotNull MqttIncomingAckFlow incomingAckFlow) {
         this.pubRel = pubRel;
@@ -44,8 +45,42 @@ class MqttPubRelWithFlow implements BooleanSupplier {
         return incomingAckFlow;
     }
 
-    @Override
-    public boolean getAsBoolean() {
-        return ++state == 2;
+    static class MqttQos2IntermediateWithFlow extends MqttPubRelWithFlow implements BooleanSupplier {
+
+        private int state;
+
+        MqttQos2IntermediateWithFlow(
+                final @NotNull MqttPubRel pubRel, final @NotNull MqttIncomingAckFlow incomingAckFlow) {
+
+            super(pubRel, incomingAckFlow);
+        }
+
+        @Override
+        public boolean getAsBoolean() {
+            return ++state == 2;
+        }
+    }
+
+    static class MqttQos2CompleteWithFlow extends MqttPubRelWithFlow {
+
+        private final @NotNull MqttPublish publish;
+        private final @NotNull MqttPubRec pubRec;
+
+        MqttQos2CompleteWithFlow(
+                final @NotNull MqttPublish publish, final @NotNull MqttPubRec pubRec, final @NotNull MqttPubRel pubRel,
+                final @NotNull MqttIncomingAckFlow incomingAckFlow) {
+
+            super(pubRel, incomingAckFlow);
+            this.publish = publish;
+            this.pubRec = pubRec;
+        }
+
+        @NotNull MqttPublish getPublish() {
+            return publish;
+        }
+
+        @NotNull MqttPubRec getPubRec() {
+            return pubRec;
+        }
     }
 }
