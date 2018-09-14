@@ -45,7 +45,7 @@ import java.util.concurrent.TimeUnit;
 public class MqttPingHandler extends ChannelDuplexHandler implements Runnable, ChannelFutureListener {
 
     public static final @NotNull String NAME = "ping";
-    private static final boolean PINGRESP_REQUIRED = false;
+    private static final boolean PINGRESP_REQUIRED = false; // TODO configurable
 
     private final long keepAliveNanos;
     private long lastFlushTimeNanos;
