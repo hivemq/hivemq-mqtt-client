@@ -19,12 +19,7 @@ package org.mqttbee.mqtt.codec.decoder;
 
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.message.MqttMessage;
-import org.mqttbee.util.collections.IntMap;
-
-import java.util.EnumSet;
 
 /**
  * Decoder for a MQTT message type.
@@ -36,15 +31,13 @@ public interface MqttMessageDecoder {
     /**
      * Decodes a MQTT message from the given byte buffer.
      *
-     * @param flags             the flags of the fixed header.
-     * @param in                the byte buffer which contains the encoded MQTT message without the fixed header.
-     * @param decoderFlags      the decoder flags defined by {@link MqttDecoderFlag}.
-     * @param topicAliasMapping the topic alias mapping for decoding topics from topic aliases.
+     * @param flags   the flags of the fixed header.
+     * @param in      the byte buffer which contains the encoded MQTT message without the fixed header.
+     * @param context the decoder context.
      * @return the decoded MQTT message or null if there are not enough bytes in the byte buffer.
      * @throws MqttDecoderException if the byte buffer did not contain a valid encoded MQTT message.
      */
-    @NotNull MqttMessage decode(
-            int flags, @NotNull ByteBuf in, @NotNull EnumSet<MqttDecoderFlag> decoderFlags,
-            @Nullable IntMap<MqttTopicImpl> topicAliasMapping) throws MqttDecoderException;
+    @NotNull MqttMessage decode(int flags, @NotNull ByteBuf in, @NotNull MqttDecoderContext context)
+            throws MqttDecoderException;
 
 }

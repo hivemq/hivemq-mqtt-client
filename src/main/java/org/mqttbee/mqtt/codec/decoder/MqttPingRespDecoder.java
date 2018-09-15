@@ -19,14 +19,10 @@ package org.mqttbee.mqtt.codec.decoder;
 
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.message.ping.MqttPingResp;
-import org.mqttbee.util.collections.IntMap;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.EnumSet;
 
 import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.checkFixedHeaderFlags;
 import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.checkRemainingLength;
@@ -47,8 +43,8 @@ public class MqttPingRespDecoder implements MqttMessageDecoder {
 
     @Override
     public @NotNull MqttPingResp decode(
-            final int flags, final @NotNull ByteBuf in, final @NotNull EnumSet<MqttDecoderFlag> decoderFlags,
-            final @Nullable IntMap<MqttTopicImpl> topicAliasMapping) throws MqttDecoderException {
+            final int flags, final @NotNull ByteBuf in, final @NotNull MqttDecoderContext context)
+            throws MqttDecoderException {
 
         checkFixedHeaderFlags(FLAGS, flags);
         checkRemainingLength(REMAINING_LENGTH, in.readableBytes());

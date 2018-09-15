@@ -19,18 +19,14 @@ package org.mqttbee.mqtt.codec.decoder.mqtt3;
 
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.mqttbee.mqtt.codec.decoder.MqttDecoderContext;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
-import org.mqttbee.mqtt.codec.decoder.MqttDecoderFlag;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
-import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRel;
 import org.mqttbee.mqtt.message.publish.pubrel.mqtt3.Mqtt3PubRelView;
-import org.mqttbee.util.collections.IntMap;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.EnumSet;
 
 import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.checkFixedHeaderFlags;
 import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.checkRemainingLength;
@@ -51,8 +47,8 @@ public class Mqtt3PubRelDecoder implements MqttMessageDecoder {
 
     @Override
     public @NotNull MqttPubRel decode(
-            final int flags, final @NotNull ByteBuf in, final @NotNull EnumSet<MqttDecoderFlag> decoderFlags,
-            final @Nullable IntMap<MqttTopicImpl> topicAliasMapping) throws MqttDecoderException {
+            final int flags, final @NotNull ByteBuf in, final @NotNull MqttDecoderContext context)
+            throws MqttDecoderException {
 
         checkFixedHeaderFlags(FLAGS, flags);
         checkRemainingLength(REMAINING_LENGTH, in.readableBytes());

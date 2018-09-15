@@ -19,22 +19,19 @@ package org.mqttbee.mqtt.codec.decoder.mqtt3;
 
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
+import org.mqttbee.mqtt.codec.decoder.MqttDecoderContext;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
-import org.mqttbee.mqtt.codec.decoder.MqttDecoderFlag;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
 import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishView;
 import org.mqttbee.util.ByteBufferUtil;
-import org.mqttbee.util.collections.IntMap;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.nio.ByteBuffer;
-import java.util.EnumSet;
 
 import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.*;
 
@@ -53,8 +50,8 @@ public class Mqtt3PublishDecoder implements MqttMessageDecoder {
 
     @Override
     public @NotNull MqttStatefulPublish decode(
-            final int flags, final @NotNull ByteBuf in, final @NotNull EnumSet<MqttDecoderFlag> decoderFlags,
-            final @Nullable IntMap<MqttTopicImpl> topicAliasMapping) throws MqttDecoderException {
+            final int flags, final @NotNull ByteBuf in, final @NotNull MqttDecoderContext context)
+            throws MqttDecoderException {
 
         final boolean dup = (flags & 0b1000) != 0;
         final MqttQos qos = decodePublishQos(flags, dup);
@@ -74,8 +71,7 @@ public class Mqtt3PublishDecoder implements MqttMessageDecoder {
         final int payloadLength = in.readableBytes();
         ByteBuffer payload = null;
         if (payloadLength > 0) {
-            payload = ByteBufferUtil.allocate(payloadLength,
-                    decoderFlags.contains(MqttDecoderFlag.DIRECT_BUFFER_PAYLOAD));
+            payload = ByteBufferUtil.allocate(payloadLength, context.useDirectBufferPayload());
             in.readBytes(payload);
             payload.position(0);
         }
