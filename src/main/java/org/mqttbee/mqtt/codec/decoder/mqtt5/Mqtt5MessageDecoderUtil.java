@@ -22,15 +22,14 @@ import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
+import org.mqttbee.mqtt.codec.decoder.MqttDecoderContext;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
-import org.mqttbee.mqtt.codec.decoder.MqttDecoderFlag;
 import org.mqttbee.mqtt.datatypes.MqttBinaryData;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 
 import java.nio.ByteBuffer;
-import java.util.EnumSet;
 
 import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.malformedUTF8String;
 import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.remainingLengthTooShort;
@@ -220,10 +219,9 @@ class Mqtt5MessageDecoderUtil {
     }
 
     private static void checkProblemInformationRequested(
-            final @NotNull String name, final @NotNull EnumSet<MqttDecoderFlag> decoderFlags)
-            throws MqttDecoderException {
+            final @NotNull String name, final @NotNull MqttDecoderContext context) throws MqttDecoderException {
 
-        if (!decoderFlags.contains(MqttDecoderFlag.PROBLEM_INFORMATION_REQUESTED)) {
+        if (!context.isProblemInformationRequested()) {
             throw new MqttDecoderException(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
                     name + " must not be included if problem information is not requested");
         }
@@ -231,18 +229,17 @@ class Mqtt5MessageDecoderUtil {
 
     static @NotNull MqttUTF8StringImpl decodeReasonStringIfRequested(
             final @Nullable MqttUTF8StringImpl current, final @NotNull ByteBuf in,
-            final @NotNull EnumSet<MqttDecoderFlag> decoderFlags) throws MqttDecoderException {
+            final @NotNull MqttDecoderContext context) throws MqttDecoderException {
 
-        checkProblemInformationRequested("reason string", decoderFlags);
+        checkProblemInformationRequested("reason string", context);
         return decodeReasonString(current, in);
     }
 
     static @NotNull ImmutableList.Builder<MqttUserPropertyImpl> decodeUserPropertyIfRequested(
             final @Nullable ImmutableList.Builder<MqttUserPropertyImpl> userPropertiesBuilder,
-            final @NotNull ByteBuf in, final @NotNull EnumSet<MqttDecoderFlag> decoderFlags)
-            throws MqttDecoderException {
+            final @NotNull ByteBuf in, final @NotNull MqttDecoderContext context) throws MqttDecoderException {
 
-        checkProblemInformationRequested("user property", decoderFlags);
+        checkProblemInformationRequested("user property", context);
         return decodeUserProperty(userPropertiesBuilder, in);
     }
 
@@ -253,11 +250,10 @@ class Mqtt5MessageDecoderUtil {
     }
 
     static @NotNull ByteBuffer decodeAuthData(
-            final @Nullable ByteBuffer current, final @NotNull ByteBuf in,
-            final @NotNull EnumSet<MqttDecoderFlag> decoderFlags) throws MqttDecoderException {
+            final @Nullable ByteBuffer current, final @NotNull ByteBuf in, final @NotNull MqttDecoderContext context)
+            throws MqttDecoderException {
 
-        return decodeBinaryDataOnlyOnce(
-                current, "auth data", in, decoderFlags.contains(MqttDecoderFlag.DIRECT_BUFFER_AUTH));
+        return decodeBinaryDataOnlyOnce(current, "auth data", in, context.useDirectBufferAuth());
     }
 
     static @NotNull MqttUTF8StringImpl decodeServerReference(

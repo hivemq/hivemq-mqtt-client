@@ -20,24 +20,21 @@ package org.mqttbee.mqtt.codec.decoder.mqtt5;
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
+import org.mqttbee.mqtt.codec.decoder.MqttDecoderContext;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
-import org.mqttbee.mqtt.codec.decoder.MqttDecoderFlag;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.datatypes.*;
 import org.mqttbee.mqtt.message.auth.MqttEnhancedAuth;
 import org.mqttbee.mqtt.message.connect.connack.MqttConnAck;
 import org.mqttbee.mqtt.message.connect.connack.MqttConnAckRestrictions;
-import org.mqttbee.util.collections.IntMap;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.nio.ByteBuffer;
-import java.util.EnumSet;
 
 import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.*;
 import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.*;
@@ -59,8 +56,8 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
 
     @Override
     public @NotNull MqttConnAck decode(
-            final int flags, final @NotNull ByteBuf in, final @NotNull EnumSet<MqttDecoderFlag> decoderFlags,
-            final @Nullable IntMap<MqttTopicImpl> topicAliasMapping) throws MqttDecoderException {
+            final int flags, final @NotNull ByteBuf in, final @NotNull MqttDecoderContext context)
+            throws MqttDecoderException {
 
         checkFixedHeaderFlags(FLAGS, flags);
 
@@ -144,7 +141,7 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
                     break;
 
                 case AUTHENTICATION_DATA:
-                    authData = decodeAuthData(authData, in, decoderFlags);
+                    authData = decodeAuthData(authData, in, context);
                     break;
 
                 case RECEIVE_MAXIMUM:
@@ -219,7 +216,7 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
                     break;
 
                 case RESPONSE_INFORMATION:
-                    if (!decoderFlags.contains(MqttDecoderFlag.RESPONSE_INFORMATION_REQUESTED)) { // TODO
+                    if (!context.isResponseInformationRequested()) { // TODO
                         throw new MqttDecoderException(
                                 Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
                                 "response information must not be included if it was not requested");

@@ -20,21 +20,17 @@ package org.mqttbee.mqtt.codec.decoder.mqtt5;
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrec.Mqtt5PubRecReasonCode;
+import org.mqttbee.mqtt.codec.decoder.MqttDecoderContext;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
-import org.mqttbee.mqtt.codec.decoder.MqttDecoderFlag;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
-import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRec;
-import org.mqttbee.util.collections.IntMap;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.EnumSet;
 
 import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.checkFixedHeaderFlags;
 import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.remainingLengthTooShort;
@@ -58,8 +54,8 @@ public class Mqtt5PubRecDecoder implements MqttMessageDecoder {
 
     @Override
     public @NotNull MqttPubRec decode(
-            final int flags, final @NotNull ByteBuf in, final @NotNull EnumSet<MqttDecoderFlag> decoderFlags,
-            final @Nullable IntMap<MqttTopicImpl> topicAliasMapping) throws MqttDecoderException {
+            final int flags, final @NotNull ByteBuf in, final @NotNull MqttDecoderContext context)
+            throws MqttDecoderException {
 
         checkFixedHeaderFlags(FLAGS, flags);
 
@@ -87,12 +83,11 @@ public class Mqtt5PubRecDecoder implements MqttMessageDecoder {
 
                     switch (propertyIdentifier) {
                         case REASON_STRING:
-                            reasonString = decodeReasonStringIfRequested(reasonString, in, decoderFlags);
+                            reasonString = decodeReasonStringIfRequested(reasonString, in, context);
                             break;
 
                         case USER_PROPERTY:
-                            userPropertiesBuilder =
-                                    decodeUserPropertyIfRequested(userPropertiesBuilder, in, decoderFlags);
+                            userPropertiesBuilder = decodeUserPropertyIfRequested(userPropertiesBuilder, in, context);
                             break;
 
                         default:

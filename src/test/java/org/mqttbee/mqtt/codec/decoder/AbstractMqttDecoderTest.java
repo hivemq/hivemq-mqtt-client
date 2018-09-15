@@ -65,8 +65,12 @@ public abstract class AbstractMqttDecoderTest {
                 .addLast(new MqttDisconnectHandler(clientData));
     }
 
-    protected void setFlag(final @NotNull MqttDecoderFlag decoderFlag) {
-        decoder.decoderFlags.add(decoderFlag);
+    protected void validatePayloadFormat() {
+        assert decoder.context != null;
+        decoder.context = new MqttDecoderContext(decoder.context.getMaximumPacketSize(),
+                decoder.context.isProblemInformationRequested(), decoder.context.isResponseInformationRequested(), true,
+                decoder.context.useDirectBufferPayload(), decoder.context.useDirectBufferAuth(),
+                decoder.context.useDirectBufferCorrelationData(), decoder.context.getTopicAliasMapping());
     }
 
     public static @NotNull MqttPingRespDecoder createPingRespDecoder() {

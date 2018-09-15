@@ -26,14 +26,11 @@ import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientData;
-import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.ioc.ConnectionScope;
-import org.mqttbee.util.collections.IntMap;
 
 import javax.inject.Inject;
-import java.util.EnumSet;
 import java.util.List;
 
 /**
@@ -51,10 +48,7 @@ public class MqttDecoder extends ByteToMessageDecoder {
     private final @NotNull MqttClientData clientData;
     private final @NotNull MqttMessageDecoders decoders;
 
-    private int maximumPacketSize;
-    final @NotNull EnumSet<MqttDecoderFlag> decoderFlags = EnumSet.noneOf(MqttDecoderFlag.class);
-    // TODO make private when all decoder flags can be set via api
-    private @Nullable IntMap<MqttTopicImpl> topicAliasMapping;
+    @Nullable MqttDecoderContext context; // TODO make private when all decoder flags can be set via api
 
     @Inject
     MqttDecoder(final @NotNull MqttClientData clientData, final @NotNull MqttMessageDecoders decoders) {
@@ -67,19 +61,17 @@ public class MqttDecoder extends ByteToMessageDecoder {
         final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
         assert clientConnectionData != null;
 
-        maximumPacketSize = clientConnectionData.getMaximumPacketSize();
-        if (clientConnectionData.isProblemInformationRequested()) {
-            decoderFlags.add(MqttDecoderFlag.PROBLEM_INFORMATION_REQUESTED);
-        }
-        if (clientConnectionData.isResponseInformationRequested()) {
-            decoderFlags.add(MqttDecoderFlag.RESPONSE_INFORMATION_REQUESTED);
-        }
-        topicAliasMapping = clientConnectionData.getTopicAliasMapping();
+        context = new MqttDecoderContext(clientConnectionData.getMaximumPacketSize(),
+                clientConnectionData.isProblemInformationRequested(),
+                clientConnectionData.isResponseInformationRequested(), false, false, false, false,
+                clientConnectionData.getTopicAliasMapping());
     }
 
     @Override
     protected void decode(
             final @NotNull ChannelHandlerContext ctx, final @NotNull ByteBuf in, final @NotNull List<Object> out) {
+
+        assert context != null;
 
         if (in.readableBytes() < MIN_FIXED_HEADER_LENGTH) {
             return;
@@ -100,15 +92,17 @@ public class MqttDecoder extends ByteToMessageDecoder {
                 throw new MqttDecoderException("malformed remaining length");
             }
 
-            final int fixedHeaderLength = in.readerIndex() - readerIndexBeforeFixedHeader;
+            final int readerIndexAfterFixedHeader = in.readerIndex();
+            final int fixedHeaderLength = readerIndexAfterFixedHeader - readerIndexBeforeFixedHeader;
             final int packetSize = fixedHeaderLength + remainingLength;
 
-            if (packetSize > maximumPacketSize) {
+            if (packetSize > context.getMaximumPacketSize()) {
                 throw new MqttDecoderException(Mqtt5DisconnectReasonCode.PACKET_TOO_LARGE,
                         "incoming packet exceeded maximum packet size");
             }
 
-            if (in.readableBytes() < remainingLength) {
+            final int writerIndex = in.writerIndex();
+            if (writerIndex < readerIndexAfterFixedHeader + remainingLength) {
                 in.readerIndex(readerIndexBeforeFixedHeader);
                 return;
             }
@@ -119,7 +113,9 @@ public class MqttDecoder extends ByteToMessageDecoder {
                         Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "must not receive this packet type");
             }
 
-            out.add(decoder.decode(flags, in.readSlice(remainingLength), decoderFlags, topicAliasMapping));
+            in.writerIndex(readerIndexAfterFixedHeader + remainingLength);
+            out.add(decoder.decode(flags, in, context));
+            in.writerIndex(writerIndex);
 
         } catch (final MqttDecoderException e) {
             in.clear();
