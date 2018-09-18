@@ -28,7 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author Silvio Giebl
@@ -39,7 +38,7 @@ public class MqttPublishFlowables extends Flowable<Flowable<MqttPublishWithFlow>
     private static final @NotNull Logger LOGGER = LoggerFactory.getLogger(MqttPublishFlowables.class);
 
     private @Nullable Subscriber<? super Flowable<MqttPublishWithFlow>> subscriber;
-    private final @NotNull AtomicLong requested = new AtomicLong();
+    private long requested;
 
     @Inject
     MqttPublishFlowables() {
@@ -54,7 +53,7 @@ public class MqttPublishFlowables extends Flowable<Flowable<MqttPublishWithFlow>
 
     public void add(final @NotNull Flowable<MqttPublishWithFlow> publishFlowable) {
         synchronized (this) {
-            while (requested.get() == 0) {
+            while (requested == 0) {
                 try {
                     this.wait();
                 } catch (final InterruptedException e) {
@@ -64,14 +63,15 @@ public class MqttPublishFlowables extends Flowable<Flowable<MqttPublishWithFlow>
             }
             assert subscriber != null;
             subscriber.onNext(publishFlowable);
+            requested--;
         }
     }
 
     @Override
     public void request(final long n) {
-        BackpressureHelper.add(requested, n);
-        if (requested.get() == n) {
-            synchronized (this) {
+        synchronized (this) {
+            requested = BackpressureHelper.addCap(requested, n);
+            if (requested == n) {
                 this.notifyAll();
             }
         }
