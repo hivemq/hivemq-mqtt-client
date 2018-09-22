@@ -116,13 +116,13 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         assertTrue(connAck.isSessionPresent());
         assertEquals(Mqtt5ConnAckReasonCode.SUCCESS, connAck.getReasonCode());
         assertTrue(connAck.getSessionExpiryInterval().isPresent());
-        assertEquals(10, (long) connAck.getSessionExpiryInterval().get());
+        assertEquals(10, connAck.getSessionExpiryInterval().getAsLong());
         assertTrue(connAck.getAssignedClientIdentifier().isPresent());
         assertEquals("test", connAck.getAssignedClientIdentifier().get().toString());
         assertTrue(connAck.getReasonString().isPresent());
         assertEquals("success", connAck.getReasonString().get().toString());
         assertTrue(connAck.getServerKeepAlive().isPresent());
-        assertEquals(10, (long) connAck.getServerKeepAlive().get());
+        assertEquals(10, connAck.getServerKeepAlive().getAsInt());
         assertTrue(connAck.getResponseInformation().isPresent());
         assertEquals("response", connAck.getResponseInformation().get().toString());
         assertTrue(connAck.getServerReference().isPresent());

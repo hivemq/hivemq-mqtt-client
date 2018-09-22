@@ -35,6 +35,7 @@ import org.mqttbee.util.ByteBufferUtil;
 import javax.annotation.concurrent.Immutable;
 import java.nio.ByteBuffer;
 import java.util.Optional;
+import java.util.OptionalLong;
 
 /**
  * @author Silvio Giebl
@@ -109,8 +110,9 @@ public class MqttPublish extends MqttMessageWithUserPropertiesImpl implements Mq
     }
 
     @Override
-    public @NotNull Optional<Long> getMessageExpiryInterval() {
-        return (messageExpiryInterval == NO_MESSAGE_EXPIRY) ? Optional.empty() : Optional.of(messageExpiryInterval);
+    public @NotNull OptionalLong getMessageExpiryInterval() {
+        return (messageExpiryInterval == NO_MESSAGE_EXPIRY) ? OptionalLong.empty() :
+                OptionalLong.of(messageExpiryInterval);
     }
 
     public long getRawMessageExpiryInterval() {

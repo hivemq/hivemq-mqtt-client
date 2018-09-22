@@ -26,6 +26,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnectBuilder;
 
 import java.util.Optional;
+import java.util.OptionalLong;
 
 /**
  * MQTT 5 DISCONNECT packet.
@@ -54,7 +55,7 @@ public interface Mqtt5Disconnect extends Mqtt5Message {
      * @return the optional session expiry interval in seconds, the client disconnects from with this DISCONNECT
      *         packet.
      */
-    @NotNull Optional<Long> getSessionExpiryInterval();
+    @NotNull OptionalLong getSessionExpiryInterval();
 
     /**
      * @return the optional server reference, which can be used if the server sent this DISCONNECT packet.

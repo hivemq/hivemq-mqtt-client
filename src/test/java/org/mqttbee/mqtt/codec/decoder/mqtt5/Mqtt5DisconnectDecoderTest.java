@@ -82,7 +82,7 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
 
         assertEquals(Mqtt5DisconnectReasonCode.NORMAL_DISCONNECTION, disconnect.getReasonCode());
         assertTrue(disconnect.getSessionExpiryInterval().isPresent());
-        assertEquals(10, (long) disconnect.getSessionExpiryInterval().get());
+        assertEquals(10, disconnect.getSessionExpiryInterval().getAsLong());
         assertTrue(disconnect.getReasonString().isPresent());
         assertEquals("success", disconnect.getReasonString().get().toString());
         assertTrue(disconnect.getServerReference().isPresent());
@@ -852,7 +852,7 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
         testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    private MqttDisconnect testOk(final ByteBuf byteBuf) {
+    private @NotNull MqttDisconnect testOk(final @NotNull ByteBuf byteBuf) {
         channel.pipeline().remove(MqttDisconnectHandler.class);
         channel.writeInbound(byteBuf);
         final MqttDisconnect disconnect = channel.readInbound();

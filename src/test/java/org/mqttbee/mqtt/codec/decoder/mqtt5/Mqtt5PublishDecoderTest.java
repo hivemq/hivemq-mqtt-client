@@ -107,7 +107,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
         assertEquals(MqttQos.AT_LEAST_ONCE, publish.getQos());
         assertEquals(true, publish.isRetain());
         assertTrue(publish.getMessageExpiryInterval().isPresent());
-        assertEquals(10, (long) publish.getMessageExpiryInterval().get());
+        assertEquals(10, publish.getMessageExpiryInterval().getAsLong());
         assertTrue(publish.getPayloadFormatIndicator().isPresent());
         assertEquals(Mqtt5PayloadFormatIndicator.UNSPECIFIED, publish.getPayloadFormatIndicator().get());
         assertTrue(publish.getContentType().isPresent());
@@ -334,7 +334,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
         };
         final MqttPublish publish = decode(encoded);
         assertTrue(publish.getMessageExpiryInterval().isPresent());
-        assertEquals(10, (long) publish.getMessageExpiryInterval().get());
+        assertEquals(10, publish.getMessageExpiryInterval().getAsLong());
     }
 
     @Test
