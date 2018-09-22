@@ -30,6 +30,7 @@ import org.mqttbee.mqtt.message.publish.MqttPublishBuilder;
 
 import java.nio.ByteBuffer;
 import java.util.Optional;
+import java.util.OptionalLong;
 
 /**
  * MQTT 5 PUBLISH packet.
@@ -50,7 +51,7 @@ public interface Mqtt5Publish extends Mqtt5Message, Mqtt5SubscribeResult {
         return new MqttPublishBuilder.Default();
     }
 
-    static @NotNull Mqtt5PublishBuilder.Complete extend(@NotNull final Mqtt5Publish publish) {
+    static @NotNull Mqtt5PublishBuilder.Complete extend(final @NotNull Mqtt5Publish publish) {
         return new MqttPublishBuilder.Default(publish);
     }
 
@@ -82,7 +83,7 @@ public interface Mqtt5Publish extends Mqtt5Message, Mqtt5SubscribeResult {
     /**
      * @return the optional message expiry interval in seconds of this PUBLISH packet.
      */
-    @NotNull Optional<Long> getMessageExpiryInterval();
+    @NotNull OptionalLong getMessageExpiryInterval();
 
     /**
      * @return the optional payload format indicator of this PUBLISH packet.

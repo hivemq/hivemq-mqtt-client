@@ -22,7 +22,6 @@ import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckReasonCode;
-import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoderContext;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
@@ -36,9 +35,11 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.nio.ByteBuffer;
 
+import static org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions.*;
 import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.*;
 import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.*;
-import static org.mqttbee.mqtt.message.connect.connack.MqttConnAck.*;
+import static org.mqttbee.mqtt.message.connect.connack.MqttConnAck.KEEP_ALIVE_FROM_CONNECT;
+import static org.mqttbee.mqtt.message.connect.connack.MqttConnAck.SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
 import static org.mqttbee.mqtt.message.connect.connack.MqttConnAckProperty.*;
 
 /**
@@ -83,27 +84,27 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
         checkPropertyLengthNoPayload(in);
 
         long sessionExpiryInterval = SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
-        MqttClientIdentifierImpl assignedClientIdentifier = CLIENT_IDENTIFIER_FROM_CONNECT;
+        MqttClientIdentifierImpl assignedClientIdentifier = null;
         int serverKeepAlive = KEEP_ALIVE_FROM_CONNECT;
 
         MqttUTF8StringImpl authMethod = null;
         ByteBuffer authData = null;
 
-        int receiveMaximum = Mqtt5ConnAckRestrictions.DEFAULT_RECEIVE_MAXIMUM;
+        int receiveMaximum = DEFAULT_RECEIVE_MAXIMUM;
         boolean receiveMaximumPresent = false;
-        int topicAliasMaximum = Mqtt5ConnAckRestrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM;
+        int topicAliasMaximum = DEFAULT_TOPIC_ALIAS_MAXIMUM;
         boolean topicAliasMaximumPresent = false;
-        MqttQos maximumQos = Mqtt5ConnAckRestrictions.DEFAULT_MAXIMUM_QOS;
+        MqttQos maximumQos = DEFAULT_MAXIMUM_QOS;
         boolean maximumQosPresent = false;
-        boolean retainAvailable = Mqtt5ConnAckRestrictions.DEFAULT_RETAIN_AVAILABLE;
+        boolean retainAvailable = DEFAULT_RETAIN_AVAILABLE;
         boolean retainAvailablePresent = false;
-        int maximumPacketSize = Mqtt5ConnAckRestrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT;
+        int maximumPacketSize = DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT;
         boolean maximumPacketSizePresent = false;
-        boolean wildCardSubscriptionAvailable = Mqtt5ConnAckRestrictions.DEFAULT_WILDCARD_SUBSCRIPTION_AVAILABLE;
+        boolean wildCardSubscriptionAvailable = DEFAULT_WILDCARD_SUBSCRIPTION_AVAILABLE;
         boolean wildCardSubscriptionAvailablePresent = false;
-        boolean subscriptionIdentifiersAvailable = Mqtt5ConnAckRestrictions.DEFAULT_SUBSCRIPTION_IDENTIFIERS_AVAILABLE;
+        boolean subscriptionIdentifiersAvailable = DEFAULT_SUBSCRIPTION_IDENTIFIERS_AVAILABLE;
         boolean subscriptionIdentifiersAvailablePresent = false;
-        boolean sharedSubscriptionAvailable = Mqtt5ConnAckRestrictions.DEFAULT_SHARED_SUBSCRIPTION_AVAILABLE;
+        boolean sharedSubscriptionAvailable = DEFAULT_SHARED_SUBSCRIPTION_AVAILABLE;
         boolean sharedSubscriptionAvailablePresent = false;
 
         MqttUTF8StringImpl responseInformation = null;
@@ -122,7 +123,7 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
                     break;
 
                 case ASSIGNED_CLIENT_IDENTIFIER:
-                    if (assignedClientIdentifier != CLIENT_IDENTIFIER_FROM_CONNECT) {
+                    if (assignedClientIdentifier != null) {
                         throw moreThanOnce("client identifier");
                     }
                     assignedClientIdentifier = MqttClientIdentifierImpl.from(in);
@@ -151,13 +152,13 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
                                 Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "receive maximum must not be 0");
                     }
                     receiveMaximumPresent = true;
-                    restrictionsPresent |= receiveMaximum != Mqtt5ConnAckRestrictions.DEFAULT_RECEIVE_MAXIMUM;
+                    restrictionsPresent |= receiveMaximum != DEFAULT_RECEIVE_MAXIMUM;
                     break;
 
                 case TOPIC_ALIAS_MAXIMUM:
                     topicAliasMaximum = unsignedShortOnlyOnce(topicAliasMaximumPresent, "receive maximum", in);
                     topicAliasMaximumPresent = true;
-                    restrictionsPresent |= topicAliasMaximum != Mqtt5ConnAckRestrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM;
+                    restrictionsPresent |= topicAliasMaximum != DEFAULT_TOPIC_ALIAS_MAXIMUM;
                     break;
 
                 case MAXIMUM_QOS:
@@ -167,13 +168,13 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
                     }
                     maximumQos = MqttQos.fromCode(maximumQosCode);
                     maximumQosPresent = true;
-                    restrictionsPresent |= maximumQos != Mqtt5ConnAckRestrictions.DEFAULT_MAXIMUM_QOS;
+                    restrictionsPresent |= maximumQos != DEFAULT_MAXIMUM_QOS;
                     break;
 
                 case RETAIN_AVAILABLE:
                     retainAvailable = booleanOnlyOnce(retainAvailablePresent, "retain available", in);
                     retainAvailablePresent = true;
-                    restrictionsPresent |= retainAvailable != Mqtt5ConnAckRestrictions.DEFAULT_RETAIN_AVAILABLE;
+                    restrictionsPresent |= retainAvailable != DEFAULT_RETAIN_AVAILABLE;
                     break;
 
                 case MAXIMUM_PACKET_SIZE:
@@ -195,24 +196,22 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
                             booleanOnlyOnce(wildCardSubscriptionAvailablePresent, "wildcard subscription available",
                                     in);
                     wildCardSubscriptionAvailablePresent = true;
-                    restrictionsPresent |= wildCardSubscriptionAvailable !=
-                            Mqtt5ConnAckRestrictions.DEFAULT_WILDCARD_SUBSCRIPTION_AVAILABLE;
+                    restrictionsPresent |= wildCardSubscriptionAvailable != DEFAULT_WILDCARD_SUBSCRIPTION_AVAILABLE;
                     break;
 
                 case SUBSCRIPTION_IDENTIFIERS_AVAILABLE:
                     subscriptionIdentifiersAvailable = booleanOnlyOnce(subscriptionIdentifiersAvailablePresent,
                             "subscription identifier available", in);
                     subscriptionIdentifiersAvailablePresent = true;
-                    restrictionsPresent |= subscriptionIdentifiersAvailable !=
-                            Mqtt5ConnAckRestrictions.DEFAULT_SUBSCRIPTION_IDENTIFIERS_AVAILABLE;
+                    restrictionsPresent |=
+                            subscriptionIdentifiersAvailable != DEFAULT_SUBSCRIPTION_IDENTIFIERS_AVAILABLE;
                     break;
 
                 case SHARED_SUBSCRIPTION_AVAILABLE:
                     sharedSubscriptionAvailable =
                             booleanOnlyOnce(sharedSubscriptionAvailablePresent, "shared subscription available", in);
                     sharedSubscriptionAvailablePresent = true;
-                    restrictionsPresent |= sharedSubscriptionAvailable !=
-                            Mqtt5ConnAckRestrictions.DEFAULT_SHARED_SUBSCRIPTION_AVAILABLE;
+                    restrictionsPresent |= sharedSubscriptionAvailable != DEFAULT_SHARED_SUBSCRIPTION_AVAILABLE;
                     break;
 
                 case RESPONSE_INFORMATION:

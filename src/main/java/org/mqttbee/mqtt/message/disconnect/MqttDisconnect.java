@@ -28,6 +28,7 @@ import org.mqttbee.mqtt.message.MqttMessageWithUserProperties.MqttMessageWithRea
 
 import javax.annotation.concurrent.Immutable;
 import java.util.Optional;
+import java.util.OptionalLong;
 
 /**
  * @author Silvio Giebl
@@ -54,9 +55,9 @@ public class MqttDisconnect extends MqttMessageWithReasonCode<Mqtt5DisconnectRea
     }
 
     @Override
-    public @NotNull Optional<Long> getSessionExpiryInterval() {
-        return (sessionExpiryInterval == SESSION_EXPIRY_INTERVAL_FROM_CONNECT) ? Optional.empty() :
-                Optional.of(sessionExpiryInterval);
+    public @NotNull OptionalLong getSessionExpiryInterval() {
+        return (sessionExpiryInterval == SESSION_EXPIRY_INTERVAL_FROM_CONNECT) ? OptionalLong.empty() :
+                OptionalLong.of(sessionExpiryInterval);
     }
 
     public long getRawSessionExpiryInterval() {

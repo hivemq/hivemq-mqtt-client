@@ -43,9 +43,8 @@ public class Mqtt3ConnAckView implements Mqtt3ConnAck {
             final @NotNull Mqtt3ConnAckReturnCode returnCode, final boolean isSessionPresent) {
 
         return new MqttConnAck(delegateReasonCode(returnCode), isSessionPresent,
-                MqttConnAck.SESSION_EXPIRY_INTERVAL_FROM_CONNECT, MqttConnAck.KEEP_ALIVE_FROM_CONNECT,
-                MqttConnAck.CLIENT_IDENTIFIER_FROM_CONNECT, null, MqttConnAckRestrictions.DEFAULT, null, null, null,
-                MqttUserPropertiesImpl.NO_USER_PROPERTIES);
+                MqttConnAck.SESSION_EXPIRY_INTERVAL_FROM_CONNECT, MqttConnAck.KEEP_ALIVE_FROM_CONNECT, null, null,
+                MqttConnAckRestrictions.DEFAULT, null, null, null, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
     }
 
     private static @NotNull Mqtt5ConnAckReasonCode delegateReasonCode(
