@@ -62,6 +62,7 @@ public class MqttPingHandler extends ChannelDuplexHandler implements Runnable, C
     @Override
     public void handlerAdded(final @NotNull ChannelHandlerContext ctx) {
         this.ctx = ctx;
+        lastFlushTimeNanos = System.nanoTime();
         schedule(ctx, keepAliveNanos);
     }
 
