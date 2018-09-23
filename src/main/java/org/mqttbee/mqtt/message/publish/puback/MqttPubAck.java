@@ -19,13 +19,11 @@ package org.mqttbee.mqtt.message.publish.puback;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.puback.Mqtt5PubAck;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.puback.Mqtt5PubAckReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.MqttMessageWithUserProperties.MqttMessageWithIdAndReasonCode;
-import org.mqttbee.mqtt.message.publish.MqttQosMessage;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -33,23 +31,15 @@ import javax.annotation.concurrent.Immutable;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttPubAck extends MqttMessageWithIdAndReasonCode<Mqtt5PubAckReasonCode>
-        implements Mqtt5PubAck, MqttQosMessage {
+public class MqttPubAck extends MqttMessageWithIdAndReasonCode<Mqtt5PubAckReasonCode> implements Mqtt5PubAck {
 
-    @NotNull
-    public static final Mqtt5PubAckReasonCode DEFAULT_REASON_CODE = Mqtt5PubAckReasonCode.SUCCESS;
+    public static final @NotNull Mqtt5PubAckReasonCode DEFAULT_REASON_CODE = Mqtt5PubAckReasonCode.SUCCESS;
 
     public MqttPubAck(
-            final int packetIdentifier, @NotNull final Mqtt5PubAckReasonCode reasonCode,
-            @Nullable final MqttUTF8StringImpl reasonString, @NotNull final MqttUserPropertiesImpl userProperties) {
+            final int packetIdentifier, final @NotNull Mqtt5PubAckReasonCode reasonCode,
+            final @Nullable MqttUTF8StringImpl reasonString, final @NotNull MqttUserPropertiesImpl userProperties) {
 
         super(packetIdentifier, reasonCode, reasonString, userProperties);
-    }
-
-    @NotNull
-    @Override
-    public MqttQos getQos() {
-        return MqttQos.AT_LEAST_ONCE;
     }
 
 }

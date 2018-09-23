@@ -19,7 +19,6 @@ package org.mqttbee.mqtt.message.publish;
 
 import com.google.common.primitives.ImmutableIntArray;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.mqtt.message.MqttStatefulMessage.MqttStatefulMessageWithId;
 
 import javax.annotation.concurrent.Immutable;
@@ -28,21 +27,20 @@ import javax.annotation.concurrent.Immutable;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttStatefulPublish extends MqttStatefulMessageWithId<MqttPublish> implements MqttQosMessage {
+public class MqttStatefulPublish extends MqttStatefulMessageWithId<MqttPublish> {
 
     public static final int NO_PACKET_IDENTIFIER_QOS_0 = -1;
     public static final int DEFAULT_NO_TOPIC_ALIAS = -1;
-    @NotNull
-    public static final ImmutableIntArray DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS = ImmutableIntArray.of();
+    public static final @NotNull ImmutableIntArray DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS = ImmutableIntArray.of();
 
     private final boolean isDup;
     private final int topicAlias;
     private final boolean isNewTopicAlias;
-    private final ImmutableIntArray subscriptionIdentifiers;
+    private final @NotNull ImmutableIntArray subscriptionIdentifiers;
 
     MqttStatefulPublish(
-            @NotNull final MqttPublish publish, final int packetIdentifier, final boolean isDup, final int topicAlias,
-            final boolean isNewTopicAlias, @NotNull final ImmutableIntArray subscriptionIdentifiers) {
+            final @NotNull MqttPublish publish, final int packetIdentifier, final boolean isDup, final int topicAlias,
+            final boolean isNewTopicAlias, final @NotNull ImmutableIntArray subscriptionIdentifiers) {
 
         super(publish, packetIdentifier);
         this.isDup = isDup;
@@ -63,15 +61,8 @@ public class MqttStatefulPublish extends MqttStatefulMessageWithId<MqttPublish> 
         return isNewTopicAlias;
     }
 
-    @NotNull
-    public ImmutableIntArray getSubscriptionIdentifiers() {
+    public @NotNull ImmutableIntArray getSubscriptionIdentifiers() {
         return subscriptionIdentifiers;
-    }
-
-    @NotNull
-    @Override
-    public MqttQos getQos() {
-        return getStatelessMessage().getQos();
     }
 
 }
