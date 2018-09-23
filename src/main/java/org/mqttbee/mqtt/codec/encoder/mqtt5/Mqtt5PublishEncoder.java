@@ -52,7 +52,7 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
 
     @Override
     int remainingLengthWithoutProperties(@NotNull final MqttStatefulPublish message) {
-        final MqttPublish stateless = message.getStatelessMessage();
+        final MqttPublish stateless = message.stateless();
 
         int remainingLength = 0;
 
@@ -78,7 +78,7 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
     int propertyLength(@NotNull final MqttStatefulPublish message) {
         int propertyLength = 0;
 
-        propertyLength += fixedPropertyLength(message.getStatelessMessage());
+        propertyLength += fixedPropertyLength(message.stateless());
         propertyLength += omissiblePropertyLength(message);
 
         propertyLength += shortPropertyEncodedLength(message.getTopicAlias(), DEFAULT_NO_TOPIC_ALIAS);
@@ -109,7 +109,7 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
             @NotNull final MqttStatefulPublish message, @NotNull final ByteBufAllocator allocator,
             final int encodedLength, final int remainingLength, final int propertyLength, final int omittedProperties) {
 
-        final ByteBuffer payload = message.getStatelessMessage().getRawPayload();
+        final ByteBuffer payload = message.stateless().getRawPayload();
         if ((payload != null) && payload.isDirect()) {
             final int encodedLengthWithoutPayload = encodedLength - payload.remaining();
             final ByteBuf out = allocator.ioBuffer(encodedLengthWithoutPayload, encodedLengthWithoutPayload);
@@ -134,7 +134,7 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
     private void encodeFixedHeader(
             @NotNull final MqttStatefulPublish message, @NotNull final ByteBuf out, final int remainingLength) {
 
-        final MqttPublish stateless = message.getStatelessMessage();
+        final MqttPublish stateless = message.stateless();
 
         int flags = 0;
         if (message.isDup()) {
@@ -154,7 +154,7 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
             @NotNull final MqttStatefulPublish message, @NotNull final ByteBuf out, final int propertyLength,
             final int omittedProperties) {
 
-        final MqttPublish stateless = message.getStatelessMessage();
+        final MqttPublish stateless = message.stateless();
 
         if ((message.getTopicAlias() == DEFAULT_NO_TOPIC_ALIAS) || message.isNewTopicAlias()) {
             stateless.getTopic().to(out);
@@ -175,7 +175,7 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
 
         MqttVariableByteInteger.encode(propertyLength, out);
 
-        encodeFixedProperties(message.getStatelessMessage(), out);
+        encodeFixedProperties(message.stateless(), out);
         encodeOmissibleProperties(message, out, omittedProperties);
 
         encodeShortProperty(TOPIC_ALIAS, message.getTopicAlias(), DEFAULT_NO_TOPIC_ALIAS, out);
@@ -197,7 +197,7 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
     }
 
     private void encodePayload(@NotNull final MqttStatefulPublish message, @NotNull final ByteBuf out) {
-        final ByteBuffer payload = message.getStatelessMessage().getRawPayload();
+        final ByteBuffer payload = message.stateless().getRawPayload();
         if ((payload != null) && !payload.isDirect()) {
             out.writeBytes(payload.duplicate());
         }

@@ -45,7 +45,7 @@ public class Mqtt3PublishEncoder extends Mqtt3MessageEncoder<MqttStatefulPublish
 
     @Override
     int remainingLength(@NotNull final MqttStatefulPublish message) {
-        final MqttPublish stateless = message.getStatelessMessage();
+        final MqttPublish stateless = message.stateless();
 
         int remainingLength = 0;
 
@@ -69,7 +69,7 @@ public class Mqtt3PublishEncoder extends Mqtt3MessageEncoder<MqttStatefulPublish
             @NotNull final MqttStatefulPublish message, @NotNull final ByteBufAllocator allocator,
             final int encodedLength, final int remainingLength) {
 
-        final ByteBuffer payload = message.getStatelessMessage().getRawPayload();
+        final ByteBuffer payload = message.stateless().getRawPayload();
         if ((payload != null) && payload.isDirect()) {
             final int encodedLengthWithoutPayload = encodedLength - payload.remaining();
             final ByteBuf out = allocator.ioBuffer(encodedLengthWithoutPayload, encodedLengthWithoutPayload);
@@ -93,7 +93,7 @@ public class Mqtt3PublishEncoder extends Mqtt3MessageEncoder<MqttStatefulPublish
     private void encodeFixedHeader(
             @NotNull final MqttStatefulPublish message, @NotNull final ByteBuf out, final int remainingLength) {
 
-        final MqttPublish stateless = message.getStatelessMessage();
+        final MqttPublish stateless = message.stateless();
 
         int flags = 0;
         if (message.isDup()) {
@@ -110,7 +110,7 @@ public class Mqtt3PublishEncoder extends Mqtt3MessageEncoder<MqttStatefulPublish
     }
 
     private void encodeVariableHeader(@NotNull final MqttStatefulPublish message, @NotNull final ByteBuf out) {
-        final MqttPublish stateless = message.getStatelessMessage();
+        final MqttPublish stateless = message.stateless();
 
         stateless.getTopic().to(out);
 
@@ -120,7 +120,7 @@ public class Mqtt3PublishEncoder extends Mqtt3MessageEncoder<MqttStatefulPublish
     }
 
     private void encodePayload(@NotNull final MqttStatefulPublish message, @NotNull final ByteBuf out) {
-        final ByteBuffer payload = message.getStatelessMessage().getRawPayload();
+        final ByteBuffer payload = message.stateless().getRawPayload();
         if ((payload != null) && !payload.isDirect()) {
             out.writeBytes(payload.duplicate());
         }

@@ -67,7 +67,7 @@ class MqttIncomingPublishService {
                 referencedFlowCount++;
             }
         }
-        emit(publish.getStatelessMessage(), flows);
+        emit(publish.stateless(), flows);
         if (acknowledge && flows.isEmpty()) {
             incomingQosHandler.ack(publish);
         } else {
@@ -88,7 +88,7 @@ class MqttIncomingPublishService {
             final QueueEntry entry = queueIt.next();
             final MqttStatefulPublish publish = entry.publish;
             final HandleList<MqttIncomingPublishFlow> flows = entry.flows;
-            emit(publish.getStatelessMessage(), flows);
+            emit(publish.stateless(), flows);
             if (acknowledge && flows.isEmpty()) {
                 queueIt.remove();
                 incomingQosHandler.ack(publish);

@@ -104,12 +104,11 @@ class Mqtt3PublishDecoderTest extends AbstractMqtt3DecoderTest {
         channel.writeInbound(byteBuf);
         final MqttStatefulPublish publishInternal = channel.readInbound();
         assertNotNull(publishInternal);
-        assertEquals(topic, publishInternal.getStatelessMessage().getTopic().toString());
-        assertTrue(publishInternal.getStatelessMessage().getPayload().isPresent());
-        assertArrayEquals(
-                payload.getBytes(), ByteBufferUtil.getBytes(publishInternal.getStatelessMessage().getPayload().get()));
+        assertEquals(topic, publishInternal.stateless().getTopic().toString());
+        assertTrue(publishInternal.stateless().getPayload().isPresent());
+        assertArrayEquals(payload.getBytes(), ByteBufferUtil.getBytes(publishInternal.stateless().getPayload().get()));
         assertEquals(isDup, publishInternal.isDup());
-        assertEquals(qos, publishInternal.getStatelessMessage().getQos().getCode());
+        assertEquals(qos, publishInternal.stateless().getQos().getCode());
         if (qos == 0) {
             assertEquals(MqttStatefulPublish.NO_PACKET_IDENTIFIER_QOS_0, publishInternal.getPacketIdentifier());
         } else {
@@ -133,10 +132,10 @@ class Mqtt3PublishDecoderTest extends AbstractMqtt3DecoderTest {
         channel.writeInbound(byteBuf);
         final MqttStatefulPublish publishInternal = channel.readInbound();
         assertNotNull(publishInternal);
-        assertEquals(topic, publishInternal.getStatelessMessage().getTopic().toString());
-        assertFalse(publishInternal.getStatelessMessage().getPayload().isPresent());
+        assertEquals(topic, publishInternal.stateless().getTopic().toString());
+        assertFalse(publishInternal.stateless().getPayload().isPresent());
         assertEquals(isDup, publishInternal.isDup());
-        assertEquals(qos, publishInternal.getStatelessMessage().getQos().getCode());
+        assertEquals(qos, publishInternal.stateless().getQos().getCode());
         if (qos == 0) {
             assertEquals(MqttStatefulPublish.NO_PACKET_IDENTIFIER_QOS_0, publishInternal.getPacketIdentifier());
         } else {
@@ -161,11 +160,10 @@ class Mqtt3PublishDecoderTest extends AbstractMqtt3DecoderTest {
         channel.writeInbound(byteBuf);
         final MqttStatefulPublish publishInternal = channel.readInbound();
         assertNotNull(publishInternal);
-        assertTrue(publishInternal.getStatelessMessage().getPayload().isPresent());
-        assertArrayEquals(
-                payload.getBytes(), ByteBufferUtil.getBytes(publishInternal.getStatelessMessage().getPayload().get()));
+        assertTrue(publishInternal.stateless().getPayload().isPresent());
+        assertArrayEquals(payload.getBytes(), ByteBufferUtil.getBytes(publishInternal.stateless().getPayload().get()));
         assertEquals(isDup, publishInternal.isDup());
-        assertEquals(qos, publishInternal.getStatelessMessage().getQos().getCode());
+        assertEquals(qos, publishInternal.stateless().getQos().getCode());
         if (qos == 0) {
             assertEquals(MqttStatefulPublish.NO_PACKET_IDENTIFIER_QOS_0, publishInternal.getPacketIdentifier());
         } else {
