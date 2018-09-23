@@ -37,6 +37,9 @@ import java.nio.ByteBuffer;
 import java.util.Optional;
 import java.util.OptionalLong;
 
+import static org.mqttbee.mqtt.message.publish.MqttStatefulPublish.DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS;
+import static org.mqttbee.mqtt.message.publish.MqttStatefulPublish.DEFAULT_NO_TOPIC_ALIAS;
+
 /**
  * @author Silvio Giebl
  */
@@ -166,5 +169,26 @@ public class MqttPublish extends MqttMessageWithUserPropertiesImpl implements Mq
 
         return new MqttStatefulPublish(
                 this, packetIdentifier, isDup, topicAlias, isNewTopicAlias, subscriptionIdentifiers);
+    }
+
+    public @NotNull MqttStatefulPublish createStateful(
+            final int packetIdentifier, final boolean isDup, final @Nullable MqttTopicAliasMapping topicAliasMapping) {
+
+        int topicAlias;
+        final boolean isNewTopicAlias;
+        if (topicAliasMapping == null) {
+            topicAlias = DEFAULT_NO_TOPIC_ALIAS;
+            isNewTopicAlias = false;
+        } else {
+            topicAlias = topicAliasMapping.get(topic);
+            if (topicAlias != DEFAULT_NO_TOPIC_ALIAS) {
+                isNewTopicAlias = false;
+            } else {
+                topicAlias = topicAliasMapping.set(topic, topicAliasUsage);
+                isNewTopicAlias = topicAlias != DEFAULT_NO_TOPIC_ALIAS;
+            }
+        }
+        return createStateful(
+                packetIdentifier, isDup, topicAlias, isNewTopicAlias, DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
     }
 }
