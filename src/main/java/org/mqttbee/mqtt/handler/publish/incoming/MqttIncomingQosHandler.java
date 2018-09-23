@@ -164,7 +164,8 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter impleme
         if (!publish.isDup()) {
             messages.put(publish.getPacketIdentifier(), previousMessage); // revert
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                    "DUP flag must be set for a resent QoS " + publish.getQos().getCode() + " PUBLISH");
+                    "DUP flag must be set for a resent QoS " + publish.getStatelessMessage().getQos().getCode() +
+                            " PUBLISH");
             return false;
         }
         return true;
@@ -172,10 +173,10 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter impleme
 
     @CallByThread("Netty EventLoop")
     void ack(final @NotNull MqttStatefulPublish publish) {
-        if (publish.getQos() == AT_MOST_ONCE) { // TODO remove if own queue for QoS 0
+        if (publish.getStatelessMessage().getQos() == AT_MOST_ONCE) { // TODO remove if own queue for QoS 0
             return;
         }
-        if (publish.getQos() == AT_LEAST_ONCE) {
+        if (publish.getStatelessMessage().getQos() == AT_LEAST_ONCE) {
             final MqttPubAck pubAck = buildPubAck(new MqttPubAckBuilder(publish));
             messages.put(publish.getPacketIdentifier(), pubAck);
             if (ctx != null) {
