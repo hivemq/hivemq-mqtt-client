@@ -51,7 +51,7 @@ public class MqttMessageDecoderUtil {
     }
 
     public static @NotNull MqttDecoderException malformedUTF8String(final @NotNull String name) {
-        return new MqttDecoderException("malformed UTF-8 string for" + name);
+        return new MqttDecoderException("malformed UTF-8 string for " + name);
     }
 
     public static @NotNull MqttDecoderException malformedTopic() {

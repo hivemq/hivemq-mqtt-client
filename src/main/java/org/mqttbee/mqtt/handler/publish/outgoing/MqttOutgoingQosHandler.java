@@ -31,7 +31,6 @@ import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.MqttServerConnectionData;
 import org.mqttbee.mqtt.advanced.MqttAdvancedClientData;
-import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.handler.publish.outgoing.MqttPubRelWithFlow.MqttQos2CompleteWithFlow;
 import org.mqttbee.mqtt.handler.publish.outgoing.MqttPubRelWithFlow.MqttQos2IntermediateWithFlow;
@@ -43,7 +42,6 @@ import org.mqttbee.mqtt.message.publish.MqttPublishResult.MqttQos1Result;
 import org.mqttbee.mqtt.message.publish.MqttPublishResult.MqttQos2CompleteResult;
 import org.mqttbee.mqtt.message.publish.MqttPublishResult.MqttQos2IntermediateResult;
 import org.mqttbee.mqtt.message.publish.MqttPublishResult.MqttQos2Result;
-import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
 import org.mqttbee.mqtt.message.publish.MqttTopicAliasMapping;
 import org.mqttbee.mqtt.message.publish.puback.MqttPubAck;
 import org.mqttbee.mqtt.message.publish.pubcomp.MqttPubComp;
@@ -62,7 +60,7 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.mqttbee.mqtt.message.publish.MqttStatefulPublish.*;
+import static org.mqttbee.mqtt.message.publish.MqttStatefulPublish.NO_PACKET_IDENTIFIER_QOS_0;
 
 /**
  * @author Silvio Giebl
@@ -211,7 +209,8 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
         assert ctx != null;
 
         qos0PublishQueue.offer(publishWithFlow);
-        ctx.write(addState(publishWithFlow.getPublish(), NO_PACKET_IDENTIFIER_QOS_0, false)).addListener(this);
+        ctx.write(publishWithFlow.getPublish().createStateful(NO_PACKET_IDENTIFIER_QOS_0, false, topicAliasMapping))
+                .addListener(this);
     }
 
     @Override
@@ -234,29 +233,9 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
         }
         qos1Or2Map.put(packetIdentifier, publishWithFlow);
         qos1Or2PublishQueue.offer(packetIdentifier);
-        ctx.write(addState(publishWithFlow.getPublish(), packetIdentifier, false), ctx.voidPromise());
-    }
-
-    private @NotNull MqttStatefulPublish addState(
-            final @NotNull MqttPublish publish, final int packetIdentifier, final boolean isDup) {
-
-        int topicAlias;
-        final boolean isNewTopicAlias;
-        if (topicAliasMapping == null) {
-            topicAlias = DEFAULT_NO_TOPIC_ALIAS;
-            isNewTopicAlias = false;
-        } else {
-            final MqttTopicImpl topic = publish.getTopic();
-            topicAlias = topicAliasMapping.get(topic);
-            if (topicAlias != DEFAULT_NO_TOPIC_ALIAS) {
-                isNewTopicAlias = false;
-            } else {
-                topicAlias = topicAliasMapping.set(topic, publish.usesTopicAlias());
-                isNewTopicAlias = topicAlias != DEFAULT_NO_TOPIC_ALIAS;
-            }
-        }
-        return publish.createStateful(
-                packetIdentifier, isDup, topicAlias, isNewTopicAlias, DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
+        ctx.write(
+                publishWithFlow.getPublish().createStateful(packetIdentifier, false, topicAliasMapping),
+                ctx.voidPromise());
     }
 
     @Override
