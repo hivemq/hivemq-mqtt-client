@@ -45,7 +45,7 @@ public class Mqtt3SubscribeEncoder extends Mqtt3MessageEncoder<MqttStatefulSubsc
     int remainingLength(@NotNull final MqttStatefulSubscribe message) {
         int remainingLength = VARIABLE_HEADER_FIXED_LENGTH;
 
-        final ImmutableList<MqttSubscription> subscriptions = message.getStatelessMessage().getSubscriptions();
+        final ImmutableList<MqttSubscription> subscriptions = message.stateless().getSubscriptions();
         for (int i = 0; i < subscriptions.size(); i++) {
             final MqttSubscription subscription = subscriptions.get(i);
             remainingLength += subscription.getTopicFilter().encodedLength() + 1; // QoS
@@ -73,7 +73,7 @@ public class Mqtt3SubscribeEncoder extends Mqtt3MessageEncoder<MqttStatefulSubsc
     }
 
     private void encodePayload(@NotNull final MqttStatefulSubscribe message, @NotNull final ByteBuf out) {
-        final ImmutableList<MqttSubscription> subscriptions = message.getStatelessMessage().getSubscriptions();
+        final ImmutableList<MqttSubscription> subscriptions = message.stateless().getSubscriptions();
         for (int i = 0; i < subscriptions.size(); i++) {
             final MqttSubscription subscription = subscriptions.get(i);
             subscription.getTopicFilter().to(out);

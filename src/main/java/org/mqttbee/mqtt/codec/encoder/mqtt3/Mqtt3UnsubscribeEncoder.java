@@ -45,7 +45,7 @@ public class Mqtt3UnsubscribeEncoder extends Mqtt3MessageEncoder<MqttStatefulUns
     int remainingLength(@NotNull final MqttStatefulUnsubscribe message) {
         int remainingLength = VARIABLE_HEADER_FIXED_LENGTH;
 
-        final ImmutableList<MqttTopicFilterImpl> subscriptions = message.getStatelessMessage().getTopicFilters();
+        final ImmutableList<MqttTopicFilterImpl> subscriptions = message.stateless().getTopicFilters();
         for (int i = 0; i < subscriptions.size(); i++) {
             remainingLength += subscriptions.get(i).encodedLength();
         }
@@ -72,7 +72,7 @@ public class Mqtt3UnsubscribeEncoder extends Mqtt3MessageEncoder<MqttStatefulUns
     }
 
     private void encodePayload(@NotNull final MqttStatefulUnsubscribe message, @NotNull final ByteBuf out) {
-        final ImmutableList<MqttTopicFilterImpl> subscriptions = message.getStatelessMessage().getTopicFilters();
+        final ImmutableList<MqttTopicFilterImpl> subscriptions = message.stateless().getTopicFilters();
         for (int i = 0; i < subscriptions.size(); i++) {
             subscriptions.get(i).to(out);
         }

@@ -45,7 +45,7 @@ public class Mqtt5UnsubscribeEncoder extends Mqtt5MessageWithUserPropertiesEncod
     int remainingLengthWithoutProperties(@NotNull final MqttStatefulUnsubscribe message) {
         int remainingLength = VARIABLE_HEADER_FIXED_LENGTH;
 
-        final ImmutableList<MqttTopicFilterImpl> topicFilters = message.getStatelessMessage().getTopicFilters();
+        final ImmutableList<MqttTopicFilterImpl> topicFilters = message.stateless().getTopicFilters();
         for (int i = 0; i < topicFilters.size(); i++) {
             remainingLength += topicFilters.get(i).encodedLength();
         }
@@ -90,7 +90,7 @@ public class Mqtt5UnsubscribeEncoder extends Mqtt5MessageWithUserPropertiesEncod
     }
 
     private void encodePayload(@NotNull final MqttStatefulUnsubscribe message, @NotNull final ByteBuf out) {
-        final ImmutableList<MqttTopicFilterImpl> topicFilters = message.getStatelessMessage().getTopicFilters();
+        final ImmutableList<MqttTopicFilterImpl> topicFilters = message.stateless().getTopicFilters();
         for (int i = 0; i < topicFilters.size(); i++) {
             topicFilters.get(i).to(out);
         }

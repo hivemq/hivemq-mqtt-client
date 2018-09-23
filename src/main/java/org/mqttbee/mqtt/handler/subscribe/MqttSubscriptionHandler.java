@@ -211,7 +211,7 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter implem
                 (MqttStatefulSubscribeWithFlow) subscribeOrUnsubscribe;
         final MqttStatefulSubscribe subscribe = statefulSubscribeWithFlow.getSubscribe();
         final SingleFlow<Mqtt5SubAck> subAckFlow = statefulSubscribeWithFlow.getSubAckFlow();
-        final int subscriptionCount = subscribe.getStatelessMessage().getSubscriptions().size();
+        final int subscriptionCount = subscribe.stateless().getSubscriptions().size();
         final ReasonCodesState reasonCodesState = validateReasonCodes(subscriptionCount, subAck.getReasonCodes());
 
         if (reasonCodesState == ReasonCodesState.AT_LEAST_ONE_SUCCESSFUL) {
@@ -265,7 +265,7 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter implem
                 (MqttStatefulUnsubscribeWithFlow) subscribeOrUnsubscribe;
         final MqttStatefulUnsubscribe unsubscribe = statefulUnsubscribeWithFlow.getUnsubscribe();
         final SingleFlow<Mqtt5UnsubAck> unsubAckFlow = statefulUnsubscribeWithFlow.getUnsubAckFlow();
-        final int topicFilterCount = unsubscribe.getStatelessMessage().getTopicFilters().size();
+        final int topicFilterCount = unsubscribe.stateless().getTopicFilters().size();
         final ReasonCodesState reasonCodesState = validateReasonCodes(topicFilterCount, unsubAck.getReasonCodes());
 
         if (reasonCodesState == ReasonCodesState.AT_LEAST_ONE_SUCCESSFUL) {

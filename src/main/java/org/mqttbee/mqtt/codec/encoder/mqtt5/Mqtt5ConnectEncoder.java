@@ -53,10 +53,10 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
     private static final int VARIABLE_HEADER_FIXED_LENGTH =
             6 /* protocol name */ + 1 /* protocol version */ + 1 /* connect flags */ + 2 /* keep alive */;
 
-    private final Mqtt5PublishEncoder publishEncoder;
+    private final @NotNull Mqtt5PublishEncoder publishEncoder;
 
     @Inject
-    Mqtt5ConnectEncoder(final Mqtt5PublishEncoder publishEncoder) {
+    Mqtt5ConnectEncoder(final @NotNull Mqtt5PublishEncoder publishEncoder) {
         this.publishEncoder = publishEncoder;
     }
 
@@ -104,7 +104,7 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
     }
 
     private int remainingLengthWithoutProperties(@NotNull final MqttStatefulConnect message) {
-        final MqttConnect stateless = message.getStatelessMessage();
+        final MqttConnect stateless = message.stateless();
 
         int remainingLength = VARIABLE_HEADER_FIXED_LENGTH;
 
@@ -126,7 +126,7 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
     }
 
     private int propertyLength(@NotNull final MqttStatefulConnect message) {
-        final MqttConnect stateless = message.getStatelessMessage();
+        final MqttConnect stateless = message.stateless();
 
         int propertyLength = 0;
 
@@ -149,7 +149,7 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
                     MqttConnectRestrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT);
         }
 
-        propertyLength += stateless.getUserProperties().encodedLength();
+        propertyLength += message.getUserProperties().encodedLength();
 
         final MqttEnhancedAuth enhancedAuth = message.getEnhancedAuth();
         if (enhancedAuth != null) {
@@ -167,14 +167,14 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
             case 0:
                 return propertyLength;
             case 1:
-                return propertyLength - message.getStatelessMessage().getUserProperties().encodedLength();
+                return propertyLength - message.getUserProperties().encodedLength();
             default:
                 return -1;
         }
     }
 
     private int willPropertyLength(@NotNull final MqttStatefulConnect message) {
-        final MqttWillPublish willPublish = message.getStatelessMessage().getRawWillPublish();
+        final MqttWillPublish willPublish = message.stateless().getRawWillPublish();
         if (willPublish == null) {
             return -1;
         }
@@ -209,7 +209,7 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
             @NotNull final MqttStatefulConnect message, @NotNull final ByteBuf out, final int propertyLength,
             final int omittedProperties) {
 
-        final MqttConnect stateless = message.getStatelessMessage();
+        final MqttConnect stateless = message.stateless();
 
         MqttUTF8StringImpl.PROTOCOL_NAME.to(out);
         out.writeByte(PROTOCOL_VERSION);
@@ -250,7 +250,7 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
             @NotNull final MqttStatefulConnect message, @NotNull final ByteBuf out, final int propertyLength,
             final int omittedProperties) {
 
-        final MqttConnect stateless = message.getStatelessMessage();
+        final MqttConnect stateless = message.stateless();
 
         MqttVariableByteInteger.encode(propertyLength, out);
 
@@ -278,14 +278,14 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
         }
 
         if (omittedProperties == 0) {
-            stateless.getUserProperties().encode(out);
+            message.getUserProperties().encode(out);
         }
     }
 
     private void encodePayload(
             @NotNull final MqttStatefulConnect message, @NotNull final ByteBuf out, final int willPropertyLength) {
 
-        final MqttConnect stateless = message.getStatelessMessage();
+        final MqttConnect stateless = message.stateless();
 
         message.getClientIdentifier().to(out);
 

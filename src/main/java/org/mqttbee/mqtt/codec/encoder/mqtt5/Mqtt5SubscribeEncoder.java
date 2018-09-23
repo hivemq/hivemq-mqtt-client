@@ -50,7 +50,7 @@ public class Mqtt5SubscribeEncoder extends Mqtt5MessageWithUserPropertiesEncoder
     int remainingLengthWithoutProperties(@NotNull final MqttStatefulSubscribe message) {
         int remainingLength = VARIABLE_HEADER_FIXED_LENGTH;
 
-        final ImmutableList<MqttSubscription> subscriptions = message.getStatelessMessage().getSubscriptions();
+        final ImmutableList<MqttSubscription> subscriptions = message.stateless().getSubscriptions();
         for (int i = 0; i < subscriptions.size(); i++) {
             remainingLength += subscriptions.get(i).getTopicFilter().encodedLength() + 1;
         }
@@ -103,7 +103,7 @@ public class Mqtt5SubscribeEncoder extends Mqtt5MessageWithUserPropertiesEncoder
     }
 
     private void encodePayload(@NotNull final MqttStatefulSubscribe message, @NotNull final ByteBuf out) {
-        final ImmutableList<MqttSubscription> subscriptions = message.getStatelessMessage().getSubscriptions();
+        final ImmutableList<MqttSubscription> subscriptions = message.stateless().getSubscriptions();
         for (int i = 0; i < subscriptions.size(); i++) {
             final MqttSubscription subscription = subscriptions.get(i);
 

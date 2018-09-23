@@ -59,7 +59,7 @@ public class MqttIncomingPublishFlows {
             final @NotNull MqttStatefulSubscribe subscribe, final @NotNull MqttSubAck subAck,
             final @Nullable MqttSubscriptionFlow flow) {
 
-        final ImmutableList<MqttSubscription> subscriptions = subscribe.getStatelessMessage().getSubscriptions();
+        final ImmutableList<MqttSubscription> subscriptions = subscribe.stateless().getSubscriptions();
         final ImmutableList<Mqtt5SubAckReasonCode> reasonCodes = subAck.getReasonCodes();
         for (int i = 0; i < subscriptions.size(); i++) {
             if (!reasonCodes.get(i).isError()) {
@@ -73,7 +73,7 @@ public class MqttIncomingPublishFlows {
     }
 
     public void unsubscribe(final @NotNull MqttStatefulUnsubscribe unsubscribe, final @NotNull MqttUnsubAck unsubAck) {
-        final ImmutableList<MqttTopicFilterImpl> topicFilters = unsubscribe.getStatelessMessage().getTopicFilters();
+        final ImmutableList<MqttTopicFilterImpl> topicFilters = unsubscribe.stateless().getTopicFilters();
         final ImmutableList<Mqtt5UnsubAckReasonCode> reasonCodes = unsubAck.getReasonCodes();
         final boolean areAllSuccess = reasonCodes == Mqtt3UnsubAckView.REASON_CODES_ALL_SUCCESS;
         for (int i = 0; i < topicFilters.size(); i++) {
@@ -101,7 +101,7 @@ public class MqttIncomingPublishFlows {
             final @NotNull MqttStatefulPublish publish,
             final @NotNull HandleList<MqttIncomingPublishFlow> matchingFlows) {
 
-        final MqttTopicImpl topic = publish.getStatelessMessage().getTopic();
+        final MqttTopicImpl topic = publish.stateless().getTopic();
         if (subscriptionFlows.findMatching(topic, matchingFlows) || !matchingFlows.isEmpty()) {
             add(matchingFlows, globalFlows[MqttGlobalPublishFilter.ALL_SUBSCRIPTIONS.ordinal()]);
         }

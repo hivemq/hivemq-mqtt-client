@@ -97,7 +97,7 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter impleme
     }
 
     private void readPublish(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttStatefulPublish publish) {
-        switch (publish.getStatelessMessage().getQos()) {
+        switch (publish.stateless().getQos()) {
             case AT_MOST_ONCE:
                 readPublishQos0(publish);
                 break;
@@ -164,8 +164,7 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter impleme
         if (!publish.isDup()) {
             messages.put(publish.getPacketIdentifier(), previousMessage); // revert
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                    "DUP flag must be set for a resent QoS " + publish.getStatelessMessage().getQos().getCode() +
-                            " PUBLISH");
+                    "DUP flag must be set for a resent QoS " + publish.stateless().getQos().getCode() + " PUBLISH");
             return false;
         }
         return true;
@@ -173,10 +172,10 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter impleme
 
     @CallByThread("Netty EventLoop")
     void ack(final @NotNull MqttStatefulPublish publish) {
-        if (publish.getStatelessMessage().getQos() == AT_MOST_ONCE) { // TODO remove if own queue for QoS 0
+        if (publish.stateless().getQos() == AT_MOST_ONCE) { // TODO remove if own queue for QoS 0
             return;
         }
-        if (publish.getStatelessMessage().getQos() == AT_LEAST_ONCE) {
+        if (publish.stateless().getQos() == AT_LEAST_ONCE) {
             final MqttPubAck pubAck = buildPubAck(new MqttPubAckBuilder(publish));
             messages.put(publish.getPacketIdentifier(), pubAck);
             if (ctx != null) {
@@ -248,7 +247,7 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter impleme
         if (advanced != null) {
             final Mqtt5IncomingQos1Interceptor interceptor = advanced.getIncomingQos1Interceptor();
             if (interceptor != null) {
-                interceptor.onPublish(clientData, pubAckBuilder.getPublish().getStatelessMessage(), pubAckBuilder);
+                interceptor.onPublish(clientData, pubAckBuilder.getPublish().stateless(), pubAckBuilder);
             }
         }
         return pubAckBuilder.build();
@@ -259,7 +258,7 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter impleme
         if (advanced != null) {
             final Mqtt5IncomingQos2Interceptor interceptor = advanced.getIncomingQos2Interceptor();
             if (interceptor != null) {
-                interceptor.onPublish(clientData, pubRecBuilder.getPublish().getStatelessMessage(), pubRecBuilder);
+                interceptor.onPublish(clientData, pubRecBuilder.getPublish().stateless(), pubRecBuilder);
             }
         }
         return pubRecBuilder.build();
