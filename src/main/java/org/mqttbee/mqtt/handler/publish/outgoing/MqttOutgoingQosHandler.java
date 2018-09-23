@@ -77,11 +77,10 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
     private final @NotNull MqttClientData clientData;
     private final @NotNull MqttPublishFlowables publishFlowables;
 
-    private final @NotNull SpscChunkedArrayQueue<MqttPublishWithFlow> publishQueue =
-            new SpscChunkedArrayQueue<>(32, 1 << 30);
+    private final @NotNull SpscChunkedArrayQueue<MqttPublishWithFlow> queue = new SpscChunkedArrayQueue<>(32, 1 << 30);
     private final @NotNull AtomicInteger queuedCounter = new AtomicInteger();
-    private final @NotNull ChunkedArrayQueue<MqttPublishWithFlow> qos0PublishQueue = new ChunkedArrayQueue<>(32);
-    private final @NotNull ChunkedIntArrayQueue qos1Or2PublishQueue = new ChunkedIntArrayQueue(32);
+    private final @NotNull ChunkedArrayQueue<MqttPublishWithFlow> qos0Queue = new ChunkedArrayQueue<>(32);
+    private final @NotNull ChunkedIntArrayQueue qos1Or2Queue = new ChunkedIntArrayQueue(32);
 
     private @Nullable ChannelHandlerContext ctx;
     private int sendMaximum;
@@ -153,7 +152,7 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
 
     @Override
     public void onNext(final @NotNull MqttPublishWithFlow publishWithFlow) {
-        publishQueue.offer(publishWithFlow);
+        queue.offer(publishWithFlow);
         if (queuedCounter.getAndIncrement() == 0) {
             clientData.getEventLoop().execute(this);
         }
@@ -187,8 +186,8 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
         }
         final int working = Math.min(queuedCounter.get(), 64);
         for (int i = 0; i < working; i++) {
-            final MqttPublishWithFlow publishWithFlow = publishQueue.poll();
-            assert publishWithFlow != null; // ensured by wip
+            final MqttPublishWithFlow publishWithFlow = queue.poll();
+            assert publishWithFlow != null; // ensured by queuedCounter
             writePublish(publishWithFlow);
         }
         ctx.flush();
@@ -208,14 +207,14 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
     private void writeQos0Publish(final @NotNull MqttPublishWithFlow publishWithFlow) {
         assert ctx != null;
 
-        qos0PublishQueue.offer(publishWithFlow);
+        qos0Queue.offer(publishWithFlow);
         ctx.write(publishWithFlow.getPublish().createStateful(NO_PACKET_IDENTIFIER_QOS_0, false, topicAliasMapping))
                 .addListener(this);
     }
 
     @Override
     public void operationComplete(final @NotNull ChannelFuture future) {
-        final MqttPublishWithFlow publishWithFlow = qos0PublishQueue.poll();
+        final MqttPublishWithFlow publishWithFlow = qos0Queue.poll();
         assert publishWithFlow != null; // ensured by writeQos0Publish
         publishWithFlow.getIncomingAckFlow()
                 .onNext(new MqttPublishResult(publishWithFlow.getPublish(), future.cause()));
@@ -232,7 +231,7 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
             return;
         }
         qos1Or2Map.put(packetIdentifier, publishWithFlow);
-        qos1Or2PublishQueue.offer(packetIdentifier);
+        qos1Or2Queue.offer(packetIdentifier);
         ctx.write(
                 publishWithFlow.getPublish().createStateful(packetIdentifier, false, topicAliasMapping),
                 ctx.voidPromise());
@@ -253,6 +252,7 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
 
     private void readPubAck(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttPubAck pubAck) {
         assert qos1Or2Map != null;
+
         final int packetIdentifier = pubAck.getPacketIdentifier();
         final Object removed = qos1Or2Map.remove(packetIdentifier);
 
@@ -284,6 +284,7 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
 
     private void readPubRec(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttPubRec pubRec) {
         assert qos1Or2Map != null;
+
         final int packetIdentifier = pubRec.getPacketIdentifier();
         final Object got = qos1Or2Map.get(packetIdentifier);
 
@@ -330,6 +331,7 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
 
     private void readPubComp(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttPubComp pubComp) {
         assert qos1Or2Map != null;
+
         final int packetIdentifier = pubComp.getPacketIdentifier();
         final Object removed = qos1Or2Map.remove(packetIdentifier);
 
@@ -369,7 +371,7 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
     private void removed(final int packetIdentifier) {
         assert packetIdentifiers != null;
 
-        qos1Or2PublishQueue.removeFirst(packetIdentifier);
+        qos1Or2Queue.removeFirst(packetIdentifier);
         packetIdentifiers.returnId(packetIdentifier);
         if (packetIdentifier > sendMaximum) {
             if (--shrinkIds == 0) {
