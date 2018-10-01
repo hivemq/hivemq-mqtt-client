@@ -119,9 +119,7 @@ class MqttIncomingPublishService {
                     flowIt.remove();
                     if (flow.dereference() == 0) {
                         referencedFlowCount--;
-                        if (flow.isUnsubscribed()) {
-                            flow.onComplete();
-                        }
+                        flow.checkDone();
                     }
                 } else if (requested == 0) {
                     blockingFlowCount++;

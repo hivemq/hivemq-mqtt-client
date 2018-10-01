@@ -26,6 +26,7 @@ import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5IncomingQos2Interceptor;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubCompReasonCode;
 import org.mqttbee.mqtt.MqttClientConnectionData;
+import org.mqttbee.mqtt.MqttClientConnectionState;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.advanced.MqttAdvancedClientData;
 import org.mqttbee.mqtt.handler.disconnect.ChannelCloseEvent;
@@ -57,8 +58,8 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter impleme
 
     private final @NotNull MqttClientData clientData;
     private final @NotNull MqttIncomingPublishFlows incomingPublishFlows;
-
     private final @NotNull MqttIncomingPublishService incomingPublishService;
+
     private final @NotNull IntMap<Object> messages = IntMap.range(1, UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE);
     // contains AT_LEAST_ONCE, EXACTLY_ONCE, MqttPubAck or MqttPubRec
     private final @NotNull ChunkedIntArrayQueue pubAckQueue = new ChunkedIntArrayQueue(16);
@@ -232,14 +233,18 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter impleme
     @Override
     public void userEventTriggered(final @NotNull ChannelHandlerContext ctx, final @NotNull Object evt) {
         if (evt instanceof ChannelCloseEvent) {
-            handleChannelCloseEvent();
+            handleChannelCloseEvent((ChannelCloseEvent) evt);
         }
         ctx.fireUserEventTriggered(evt);
     }
 
-    private void handleChannelCloseEvent() {
+    private void handleChannelCloseEvent(final @NotNull ChannelCloseEvent evt) {
         ctx = null;
         pubAckQueue.clear();
+
+        if (clientData.getConnectionState() == MqttClientConnectionState.DISCONNECTED) {
+            incomingPublishFlows.clear(evt.getCause());
+        }
     }
 
     private @NotNull MqttPubAck buildPubAck(final @NotNull MqttPubAckBuilder pubAckBuilder) {

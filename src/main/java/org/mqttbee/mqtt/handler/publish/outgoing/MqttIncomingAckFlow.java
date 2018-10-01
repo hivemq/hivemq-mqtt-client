@@ -50,8 +50,8 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
     private volatile long acknowledged;
     private long acknowledgedNettyLocal;
 
-    private boolean done;
-    private volatile long published;
+    private final @NotNull AtomicLong published = new AtomicLong();
+    private @Nullable Throwable linkError; // synced over volatile published
     private @Nullable Throwable error; // synced over volatile published
     private final @NotNull AtomicBoolean doneEmitted = new AtomicBoolean();
 
@@ -117,11 +117,13 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
         if (acknowledged > 0) {
             final long acknowledgedLocal = this.acknowledgedNettyLocal += acknowledged;
             this.acknowledged = acknowledgedLocal;
-            if ((acknowledgedLocal == published) && doneEmitted.compareAndSet(false, true)) {
-                if (error == null) {
-                    subscriber.onComplete();
-                } else {
+            if ((acknowledgedLocal == published.get()) && doneEmitted.compareAndSet(false, true)) {
+                if (error != null) {
                     subscriber.onError(error);
+                } else if (linkError != null) {
+                    subscriber.onError(linkError);
+                } else {
+                    subscriber.onComplete();
                 }
             }
             outgoingQosHandler.request(acknowledged);
@@ -129,24 +131,32 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
     }
 
     void onComplete(final long published) {
-        if (done) {
+        if (!this.published.compareAndSet(0, published)) {
             return;
         }
-        done = true;
-        this.published = published;
         if ((acknowledged == published) && doneEmitted.compareAndSet(false, true)) {
             subscriber.onComplete();
         }
     }
 
     void onError(final @NotNull Throwable t, final long published) {
-        if (done) {
+        linkError = t;
+        if (!this.published.compareAndSet(0, published)) {
             RxJavaPlugins.onError(t);
             return;
         }
-        done = true;
+        if ((acknowledged == published) && doneEmitted.compareAndSet(false, true)) {
+            subscriber.onError(t);
+        }
+    }
+
+    @CallByThread("Netty EventLoop")
+    void onError(final @NotNull Throwable t) {
+        cancel();
+        final long acknowledged = acknowledgedNettyLocal;
+        final long published = acknowledged + queue.size();
         error = t;
-        this.published = published;
+        this.published.set(published);
         if ((acknowledged == published) && doneEmitted.compareAndSet(false, true)) {
             subscriber.onError(t);
         }

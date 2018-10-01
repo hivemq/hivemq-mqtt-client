@@ -133,6 +133,17 @@ public class MqttIncomingPublishFlows {
         }
     }
 
+    void clear(final @NotNull Throwable cause) {
+        subscriptionFlows.clear(cause);
+        for (final HandleList<MqttGlobalIncomingPublishFlow> globalFlow : globalFlows) {
+            if (globalFlow != null) {
+                for (final MqttGlobalIncomingPublishFlow flow : globalFlow) {
+                    flow.onError(cause);
+                }
+            }
+        }
+    }
+
     private static void add(
             final @NotNull HandleList<MqttIncomingPublishFlow> target,
             final @Nullable HandleList<? extends MqttIncomingPublishFlow> source) {
@@ -143,5 +154,4 @@ public class MqttIncomingPublishFlows {
             }
         }
     }
-
 }
