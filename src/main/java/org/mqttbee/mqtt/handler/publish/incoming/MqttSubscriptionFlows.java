@@ -41,4 +41,5 @@ public interface MqttSubscriptionFlows {
 
     boolean findMatching(@NotNull MqttTopicImpl topic, @NotNull HandleList<MqttIncomingPublishFlow> matchingFlows);
 
+    void clear(@NotNull Throwable cause);
 }

@@ -30,6 +30,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5ReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
+import org.mqttbee.mqtt.MqttClientConnectionState;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.MqttServerConnectionData;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
@@ -322,6 +323,10 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter implem
     }
 
     private void clear(final @NotNull Throwable cause) {
+        if (clientData.getConnectionState() != MqttClientConnectionState.DISCONNECTED) {
+            return;
+        }
+
         pending.forEach((packetIdentifier, subscribeOrUnsubscribe) -> {
             if (subscribeOrUnsubscribe instanceof MqttStatefulSubscribeWithFlow) {
                 ((MqttStatefulSubscribeWithFlow) subscribeOrUnsubscribe).getSubAckFlow().onError(cause);

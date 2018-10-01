@@ -71,7 +71,7 @@ public class MqttSubscriptionFlowList implements MqttSubscriptionFlows {
                 }
             }
             if (flowTopicFilters.isEmpty()) {
-                flow.unsubscribe();
+                flow.onComplete();
                 if (unsubscribedCallback != null) {
                     unsubscribedCallback.accept(flow);
                 }
@@ -114,4 +114,12 @@ public class MqttSubscriptionFlowList implements MqttSubscriptionFlows {
         return false;
     }
 
+    @Override
+    public void clear(final @NotNull Throwable cause) {
+        for (final Iterator<MqttSubscriptionFlow> iterator = flows.iterator(); iterator.hasNext(); ) {
+            iterator.next().onError(cause);
+            iterator.remove();
+        }
+        subscribedTopicFilters.clear();
+    }
 }

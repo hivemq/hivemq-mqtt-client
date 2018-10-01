@@ -24,13 +24,16 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.CallByThread;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
+import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5OutgoingQos1Interceptor;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5OutgoingQos2Interceptor;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
+import org.mqttbee.mqtt.MqttClientConnectionState;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.MqttServerConnectionData;
 import org.mqttbee.mqtt.advanced.MqttAdvancedClientData;
+import org.mqttbee.mqtt.handler.disconnect.ChannelCloseEvent;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.handler.publish.outgoing.MqttPubRelWithFlow.MqttQos2CompleteWithFlow;
 import org.mqttbee.mqtt.handler.publish.outgoing.MqttPubRelWithFlow.MqttQos2IntermediateWithFlow;
@@ -182,6 +185,7 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
     @CallByThread("Netty EventLoop")
     public void run() {
         if (ctx == null) {
+            clear(new NotConnectedException());
             return;
         }
         final int working = Math.min(queuedCounter.get(), 64);
@@ -377,6 +381,60 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
             if (--shrinkIds == 0) {
                 resize();
             }
+        }
+    }
+
+    @Override
+    public void userEventTriggered(final @NotNull ChannelHandlerContext ctx, final @NotNull Object evt) {
+        if (evt instanceof ChannelCloseEvent) {
+            handleChannelCloseEvent((ChannelCloseEvent) evt);
+        }
+        ctx.fireUserEventTriggered(evt);
+    }
+
+    private void handleChannelCloseEvent(final @NotNull ChannelCloseEvent channelCloseEvent) {
+        ctx = null;
+        clear(channelCloseEvent.getCause());
+    }
+
+    private void clear(final @NotNull Throwable cause) {
+        if (clientData.getConnectionState() != MqttClientConnectionState.DISCONNECTED) {
+            return;
+        }
+
+        MqttPublishWithFlow qos0WithFlow;
+        while ((qos0WithFlow = qos0Queue.poll()) != null) {
+            qos0WithFlow.getIncomingAckFlow().onError(cause);
+        }
+
+        int qos1Or2PacketId;
+        while ((qos1Or2PacketId = qos1Or2Queue.poll(-1)) != -1) {
+            assert packetIdentifiers != null;
+            assert qos1Or2Map != null;
+
+            packetIdentifiers.returnId(qos1Or2PacketId);
+            final Object removed = qos1Or2Map.remove(qos1Or2PacketId);
+
+            if (removed instanceof MqttPublishWithFlow) {
+                ((MqttPublishWithFlow) removed).getIncomingAckFlow().onError(cause);
+            } else if (removed instanceof MqttQos2CompleteWithFlow) {
+                ((MqttQos2CompleteWithFlow) removed).getIncomingAckFlow().onError(cause);
+            }
+        }
+
+        int polled = 0;
+        while (true) {
+            final MqttPublishWithFlow publishWithFlow = queue.poll();
+            if (publishWithFlow == null) {
+                if (queuedCounter.addAndGet(-polled) == 0) {
+                    break;
+                } else {
+                    polled = 0;
+                    continue;
+                }
+            }
+            publishWithFlow.getIncomingAckFlow().onError(cause);
+            polled++;
         }
     }
 

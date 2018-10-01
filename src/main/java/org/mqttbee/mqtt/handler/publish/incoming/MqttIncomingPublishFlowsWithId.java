@@ -121,4 +121,10 @@ public class MqttIncomingPublishFlowsWithId extends MqttIncomingPublishFlows {
         super.findMatching(publish, matchingFlows);
     }
 
+    @Override
+    public void clear(final @NotNull Throwable cause) {
+        flowsWithIdsMap.clear();
+        flowsWithIds.clear(cause);
+        super.clear(cause);
+    }
 }

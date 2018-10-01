@@ -19,7 +19,9 @@ package org.mqttbee.mqtt.handler.publish.incoming;
 
 import io.reactivex.Emitter;
 import io.reactivex.internal.util.BackpressureHelper;
+import io.reactivex.plugins.RxJavaPlugins;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.CallByThread;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.reactivestreams.Subscriber;
@@ -45,8 +47,8 @@ public abstract class MqttIncomingPublishFlow<S extends Subscriber<? super Mqtt5
     long requested;
     private final @NotNull AtomicLong newRequested = new AtomicLong();
     private final @NotNull AtomicBoolean cancelled = new AtomicBoolean();
-    private boolean unsubscribed;
     boolean done;
+    private @Nullable Throwable error;
 
     private int referenced;
     private long blockedIndex;
@@ -61,23 +63,10 @@ public abstract class MqttIncomingPublishFlow<S extends Subscriber<? super Mqtt5
     @CallByThread("Netty EventLoop")
     @Override
     public void onNext(final @NotNull Mqtt5Publish result) {
-        if (done) {
-            return;
-        }
         subscriber.onNext(result);
         if (requested != Long.MAX_VALUE) {
             requested--;
         }
-    }
-
-    @CallByThread("Netty EventLoop")
-    @Override
-    public void onError(final @NotNull Throwable t) {
-        if (done) {
-            return;
-        }
-        done = true;
-        subscriber.onError(t);
     }
 
     @CallByThread("Netty EventLoop")
@@ -87,7 +76,38 @@ public abstract class MqttIncomingPublishFlow<S extends Subscriber<? super Mqtt5
             return;
         }
         done = true;
-        subscriber.onComplete();
+        if (referenced == 0) {
+            subscriber.onComplete();
+        } else {
+            incomingQosHandler.getIncomingPublishService().drain();
+        }
+    }
+
+    @CallByThread("Netty EventLoop")
+    @Override
+    public void onError(final @NotNull Throwable t) {
+        if (done) {
+            RxJavaPlugins.onError(t);
+            return;
+        }
+        error = t;
+        done = true;
+        if (referenced == 0) {
+            subscriber.onError(t);
+        } else {
+            incomingQosHandler.getIncomingPublishService().drain();
+        }
+    }
+
+    @CallByThread("Netty EventLoop")
+    void checkDone() {
+        if (done) {
+            if (error != null) {
+                subscriber.onError(error);
+            } else {
+                subscriber.onComplete();
+            }
+        }
     }
 
     @Override
@@ -101,6 +121,7 @@ public abstract class MqttIncomingPublishFlow<S extends Subscriber<? super Mqtt5
     }
 
     @CallByThread("Netty EventLoop")
+    @Override
     public void run() { // only executed if was blocking
         if (referenced > 0) { // is blocking
             incomingQosHandler.getIncomingPublishService().drain();
@@ -156,23 +177,11 @@ public abstract class MqttIncomingPublishFlow<S extends Subscriber<? super Mqtt5
     }
 
     @CallByThread("Netty EventLoop")
-    void unsubscribe() {
-        unsubscribed = true;
-        if (referenced == 0) {
-            onComplete();
-        } else {
-            incomingQosHandler.getIncomingPublishService().drain();
-        }
-    }
-
-    boolean isUnsubscribed() {
-        return unsubscribed;
-    }
-
     int reference() {
         return ++referenced;
     }
 
+    @CallByThread("Netty EventLoop")
     int dereference() {
         return --referenced;
     }
