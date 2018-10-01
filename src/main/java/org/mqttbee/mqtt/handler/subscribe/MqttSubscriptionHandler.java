@@ -20,7 +20,7 @@ package org.mqttbee.mqtt.handler.subscribe;
 import com.google.common.collect.ImmutableList;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import org.jctools.queues.SpscLinkedQueue;
+import org.jctools.queues.MpscLinkedQueue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.CallByThread;
@@ -69,9 +69,10 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter implem
     private final @NotNull MqttClientData clientData;
     private final @NotNull MqttIncomingPublishFlows subscriptionFlows;
 
-    private final @NotNull SpscLinkedQueue<Object> queued = new SpscLinkedQueue<>(); // Mqtt(Un)SubscribeWithFlow
+    private final @NotNull MpscLinkedQueue<Object> queued = MpscLinkedQueue.newMpscLinkedQueue();
+    // contains Mqtt(Un)SubscribeWithFlow
     private final @NotNull AtomicInteger queuedCounter = new AtomicInteger();
-    private final @NotNull IntMap<Object> pending; // MqttStateful(Un)SubscribeWithFlow
+    private final @NotNull IntMap<Object> pending; // contains MqttStateful(Un)SubscribeWithFlow
     private final @NotNull Ranges packetIdentifiers;
     private final @NotNull Ranges subscriptionIdentifiers;
 

@@ -19,7 +19,7 @@ package org.mqttbee.mqtt.handler.publish.outgoing;
 
 import io.netty.channel.*;
 import io.reactivex.FlowableSubscriber;
-import org.jctools.queues.SpscChunkedArrayQueue;
+import org.jctools.queues.SpscUnboundedArrayQueue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.CallByThread;
@@ -80,7 +80,7 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
     private final @NotNull MqttClientData clientData;
     private final @NotNull MqttPublishFlowables publishFlowables;
 
-    private final @NotNull SpscChunkedArrayQueue<MqttPublishWithFlow> queue = new SpscChunkedArrayQueue<>(32, 1 << 30);
+    private final @NotNull SpscUnboundedArrayQueue<MqttPublishWithFlow> queue = new SpscUnboundedArrayQueue<>(32);
     private final @NotNull AtomicInteger queuedCounter = new AtomicInteger();
     private final @NotNull ChunkedArrayQueue<MqttPublishWithFlow> qos0Queue = new ChunkedArrayQueue<>(32);
     private final @NotNull ChunkedIntArrayQueue qos1Or2Queue = new ChunkedIntArrayQueue(32);
