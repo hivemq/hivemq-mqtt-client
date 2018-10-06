@@ -43,7 +43,7 @@ import org.mqttbee.rx.FlowableWithSingle;
  *
  * @author Silvio Giebl
  */
-public interface Mqtt5Client extends MqttClient {
+public interface Mqtt5ReactiveClient extends MqttClient {
 
     /**
      * Creates a {@link Single} for connecting this client with the given Connect message.
@@ -63,8 +63,7 @@ public interface Mqtt5Client extends MqttClient {
      *         a ConnAck message was received.</li>
      *         </ul>
      */
-    @NotNull
-    Single<Mqtt5ConnAck> connect(@NotNull Mqtt5Connect connect);
+    @NotNull Single<Mqtt5ConnAck> connect(@NotNull Mqtt5Connect connect);
 
     /**
      * Creates a {@link Mqtt5ConnectBuilder} for connecting this client with the Connect message built from the returned
@@ -76,8 +75,7 @@ public interface Mqtt5Client extends MqttClient {
      * @return the builder for the Connect message.
      * @see #connect(Mqtt5Connect)
      */
-    @NotNull
-    default Mqtt5ConnectBuilder<Single<Mqtt5ConnAck>> connect() {
+    default @NotNull Mqtt5ConnectBuilder<Single<Mqtt5ConnAck>> connect() {
         return new Mqtt5ConnectBuilder<>(this::connect);
     }
 
@@ -103,8 +101,7 @@ public interface Mqtt5Client extends MqttClient {
      *         before a SubAck message was received.</li>
      *         </ul>
      */
-    @NotNull
-    Single<Mqtt5SubAck> subscribe(@NotNull Mqtt5Subscribe subscribe);
+    @NotNull Single<Mqtt5SubAck> subscribe(@NotNull Mqtt5Subscribe subscribe);
 
     /**
      * Creates a {@link Mqtt5SubscribeBuilder} for subscribing this client with the Subscribe message built from the
@@ -116,8 +113,7 @@ public interface Mqtt5Client extends MqttClient {
      * @return the builder for the Subscribe message.
      * @see #subscribe(Mqtt5Subscribe)
      */
-    @NotNull
-    default Mqtt5SubscribeBuilder<Single<Mqtt5SubAck>> subscribe() {
+    default @NotNull Mqtt5SubscribeBuilder<Single<Mqtt5SubAck>> subscribe() {
         return new Mqtt5SubscribeBuilder<>(this::subscribe);
     }
 
@@ -144,8 +140,7 @@ public interface Mqtt5Client extends MqttClient {
      *         messages were unsubscribed.</li>
      *         </ul>
      */
-    @NotNull
-    FlowableWithSingle<Mqtt5SubAck, Mqtt5Publish> subscribeWithStream(@NotNull Mqtt5Subscribe subscribe);
+    @NotNull FlowableWithSingle<Mqtt5SubAck, Mqtt5Publish> subscribeWithStream(@NotNull Mqtt5Subscribe subscribe);
 
     /**
      * Creates a {@link Mqtt5SubscribeBuilder} for subscribing this client with the Subscribe message built from the
@@ -157,8 +152,7 @@ public interface Mqtt5Client extends MqttClient {
      * @return the builder for the Subscribe message.
      * @see #subscribeWithStream(Mqtt5Subscribe)
      */
-    @NotNull
-    default Mqtt5SubscribeBuilder<FlowableWithSingle<Mqtt5SubAck, Mqtt5Publish>> subscribeWithStream() {
+    default @NotNull Mqtt5SubscribeBuilder<FlowableWithSingle<Mqtt5SubAck, Mqtt5Publish>> subscribeWithStream() {
         return new Mqtt5SubscribeBuilder<>(this::subscribeWithStream);
     }
 
@@ -177,8 +171,7 @@ public interface Mqtt5Client extends MqttClient {
      *         <li>completes when this client is disconnected.</li>
      *         </ul>
      */
-    @NotNull
-    Flowable<Mqtt5Publish> publishes(@NotNull MqttGlobalPublishFlowType type);
+    @NotNull Flowable<Mqtt5Publish> publishes(@NotNull MqttGlobalPublishFlowType type);
 
     /**
      * Creates a {@link Single} for unsubscribing this client with the given Unsubscribe message.
@@ -199,8 +192,7 @@ public interface Mqtt5Client extends MqttClient {
      *         before a UnsubAck message was received.</li>
      *         </ul>
      */
-    @NotNull
-    Single<Mqtt5UnsubAck> unsubscribe(@NotNull Mqtt5Unsubscribe unsubscribe);
+    @NotNull Single<Mqtt5UnsubAck> unsubscribe(@NotNull Mqtt5Unsubscribe unsubscribe);
 
     /**
      * Creates a {@link Mqtt5UnsubscribeBuilder} for unsubscribing this client with the Unsubscribe message built from
@@ -212,8 +204,7 @@ public interface Mqtt5Client extends MqttClient {
      * @return the builder for the Unsubscribe message.
      * @see #unsubscribe(Mqtt5Unsubscribe)
      */
-    @NotNull
-    default Mqtt5UnsubscribeBuilder<Single<Mqtt5UnsubAck>> unsubscribe() {
+    default @NotNull Mqtt5UnsubscribeBuilder<Single<Mqtt5UnsubAck>> unsubscribe() {
         return new Mqtt5UnsubscribeBuilder<>(this::unsubscribe);
     }
 
@@ -233,8 +224,7 @@ public interface Mqtt5Client extends MqttClient {
      *         <li>errors with the same exception when the given {@link Flowable} errors.</li>
      *         </ul>
      */
-    @NotNull
-    Flowable<Mqtt5PublishResult> publish(@NotNull Flowable<Mqtt5Publish> publishFlowable);
+    @NotNull Flowable<Mqtt5PublishResult> publish(@NotNull Flowable<Mqtt5Publish> publishFlowable);
 
     /**
      * Creates a {@link Completable} for re-authenticating this client with the given Disconnect message.
@@ -252,8 +242,7 @@ public interface Mqtt5Client extends MqttClient {
      *         before the last Auth message was received.</li>
      *         </ul>
      */
-    @NotNull
-    Completable reauth();
+    @NotNull Completable reauth();
 
     /**
      * Creates a {@link Completable} for disconnecting this client with the given Disconnect message.
@@ -268,8 +257,7 @@ public interface Mqtt5Client extends MqttClient {
      *         <li>errors if not disconnected successfully.</li>
      *         </ul>
      */
-    @NotNull
-    Completable disconnect(@NotNull Mqtt5Disconnect disconnect);
+    @NotNull Completable disconnect(@NotNull Mqtt5Disconnect disconnect);
 
     /**
      * Creates a {@link Mqtt5DisconnectBuilder} for disconnecting this MQTT 5 client with the Disconnect message built
@@ -281,13 +269,11 @@ public interface Mqtt5Client extends MqttClient {
      * @return the builder for the Disconnect message.
      * @see #disconnect(Mqtt5Disconnect)
      */
-    @NotNull
-    default Mqtt5DisconnectBuilder<Completable> disconnect() {
+    default @NotNull Mqtt5DisconnectBuilder<Completable> disconnect() {
         return new Mqtt5DisconnectBuilder<>(this::disconnect);
     }
 
-    @NotNull
     @Override
-    Mqtt5ClientData getClientData();
+    @NotNull Mqtt5ClientData getClientData();
 
 }
