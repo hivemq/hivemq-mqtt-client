@@ -21,7 +21,6 @@ import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.MqttClient;
 import org.mqttbee.api.mqtt.MqttGlobalPublishFlowType;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5ConnectBuilder;
@@ -43,7 +42,7 @@ import org.mqttbee.rx.FlowableWithSingle;
  *
  * @author Silvio Giebl
  */
-public interface Mqtt5ReactiveClient extends MqttClient {
+public interface Mqtt5ReactiveClient extends Mqtt5Client {
 
     /**
      * Creates a {@link Single} for connecting this client with the given Connect message.
@@ -272,8 +271,5 @@ public interface Mqtt5ReactiveClient extends MqttClient {
     default @NotNull Mqtt5DisconnectBuilder<Completable> disconnect() {
         return new Mqtt5DisconnectBuilder<>(this::disconnect);
     }
-
-    @Override
-    @NotNull Mqtt5ClientData getClientData();
 
 }
