@@ -16,7 +16,6 @@
 
 package org.mqttbee.api.util;
 
-import dagger.internal.Preconditions;
 import org.jetbrains.annotations.NotNull;
 
 import javax.net.ssl.KeyManagerFactory;
@@ -30,19 +29,19 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.util.Objects;
 
 /**
  * @author Christoph Schäbel
  */
 public class KeyStoreUtil {
 
-    private static final String KEYSTORE_TYPE = "JKS";
+    private static final @NotNull String KEYSTORE_TYPE = "JKS";
 
-    @NotNull
-    public static TrustManagerFactory trustManagerFromKeystore(
-            @NotNull final File trustStoreFile, @NotNull final String trustStorePassword) throws SSLException {
+    public static @NotNull TrustManagerFactory trustManagerFromKeystore(
+            final @NotNull File trustStoreFile, final @NotNull String trustStorePassword) throws SSLException {
 
-        Preconditions.checkNotNull(trustStoreFile, "Truststore file must not be null.");
+        Objects.requireNonNull(trustStoreFile, "Truststore file must not be null.");
         try (final FileInputStream fileInputStream = new FileInputStream(trustStoreFile)) {
             final KeyStore keyStoreTrust = KeyStore.getInstance(KEYSTORE_TYPE);
             keyStoreTrust.load(fileInputStream, trustStorePassword.toCharArray());
@@ -60,12 +59,11 @@ public class KeyStoreUtil {
         }
     }
 
-    @NotNull
-    public static KeyManagerFactory keyManagerFromKeystore(
-            @NotNull final File keyStoreFile, @NotNull final String keyStorePassword,
-            @NotNull final String privateKeyPassword) throws SSLException {
+    public static @NotNull KeyManagerFactory keyManagerFromKeystore(
+            final @NotNull File keyStoreFile, final @NotNull String keyStorePassword,
+            final @NotNull String privateKeyPassword) throws SSLException {
 
-        Preconditions.checkNotNull(keyStoreFile, "Keystore file must not be null.");
+        Objects.requireNonNull(keyStoreFile, "Keystore file must not be null.");
         try (final FileInputStream fileInputStream = new FileInputStream(keyStoreFile)) {
             final KeyStore keyStore = KeyStore.getInstance(KEYSTORE_TYPE);
             keyStore.load(fileInputStream, keyStorePassword.toCharArray());

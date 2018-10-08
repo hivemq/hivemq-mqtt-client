@@ -16,7 +16,6 @@
 
 package org.mqttbee.mqtt.handler.ssl;
 
-import dagger.internal.Preconditions;
 import io.netty.channel.Channel;
 import io.netty.handler.ssl.*;
 import org.jetbrains.annotations.NotNull;
@@ -24,18 +23,18 @@ import org.mqttbee.api.mqtt.MqttClientSslConfig;
 
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLException;
+import java.util.Objects;
 
 /**
  * @author Christoph Schäbel
  */
 public class SslUtil {
 
-    @NotNull
-    static SSLEngine createSslEngine(@NotNull final Channel channel, @NotNull final MqttClientSslConfig sslConfig)
-            throws SSLException {
+    static @NotNull SSLEngine createSslEngine(
+            final @NotNull Channel channel, final @NotNull MqttClientSslConfig sslConfig) throws SSLException {
 
-        Preconditions.checkNotNull(channel, "Channel must not be null.");
-        Preconditions.checkNotNull(sslConfig, "SSL config must not be null.");
+        Objects.requireNonNull(channel, "Channel must not be null.");
+        Objects.requireNonNull(sslConfig, "SSL config must not be null.");
 
         final SSLEngine sslEngine = createSslContext(sslConfig).newEngine(channel.alloc());
 
@@ -44,8 +43,9 @@ public class SslUtil {
         return sslEngine;
     }
 
-    @NotNull
-    private static SslContext createSslContext(@NotNull final MqttClientSslConfig sslConfig) throws SSLException {
+    private static @NotNull SslContext createSslContext(final @NotNull MqttClientSslConfig sslConfig)
+            throws SSLException {
+
         final SslContextBuilder sslContextBuilder = SslContextBuilder.forClient()
                 .sslProvider(SslProvider.JDK)
                 .trustManager(sslConfig.getTrustManagerFactory())
@@ -62,9 +62,8 @@ public class SslUtil {
         return sslContextBuilder.build();
     }
 
-    @NotNull
-    public static SslHandler createSslHandler(
-            @NotNull final Channel channel, @NotNull final MqttClientSslConfig sslConfig) throws SSLException {
+    public static @NotNull SslHandler createSslHandler(
+            final @NotNull Channel channel, final @NotNull MqttClientSslConfig sslConfig) throws SSLException {
 
         final SSLEngine sslEngine = createSslEngine(channel, sslConfig);
         final SslHandler sslHandler = new SslHandler(sslEngine);
