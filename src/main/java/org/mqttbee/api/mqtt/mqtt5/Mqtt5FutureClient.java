@@ -1,0 +1,156 @@
+/*
+ * Copyright 2018 The MQTT Bee project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+package org.mqttbee.api.mqtt.mqtt5;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.mqttbee.api.mqtt.MqttGlobalPublishFlowType;
+import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
+import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
+import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;
+import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5ConnectBuilder;
+import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
+import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
+import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectBuilder;
+import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
+import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PublishBuilder;
+import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
+import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
+import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeBuilder;
+import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscription;
+import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscriptionBuilder;
+import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
+import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
+import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5UnsubscribeBuilder;
+import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
+import org.mqttbee.util.FluentBuilder;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
+import java.util.function.Function;
+
+/**
+ * @author Silvio Giebl
+ */
+public interface Mqtt5FutureClient extends Mqtt5Client {
+
+    @NotNull CompletableFuture<@NotNull Mqtt5ConnAck> connect(@NotNull Mqtt5Connect connect);
+
+    default @NotNull Mqtt5ConnectBuilder<CompletableFuture<Mqtt5ConnAck>> connect() {
+        return new Mqtt5ConnectBuilder<>(this::connect);
+    }
+
+    @NotNull CompletableFuture<@NotNull Mqtt5SubAck> subscribe(@NotNull Mqtt5Subscribe subscribe);
+
+    @NotNull CompletableFuture<@NotNull Mqtt5SubAck> subscribe(
+            @NotNull Mqtt5Subscribe subscribe, @NotNull Consumer<@NotNull Mqtt5Publish> callback);
+
+    default @NotNull Mqtt5SubscribeAndCallbackBuilder<CompletableFuture<Mqtt5SubAck>> subscribe() {
+        return new Mqtt5SubscribeAndCallbackBuilder<>(
+                subscribeAndCallback -> (subscribeAndCallback.getCallback() == null) ?
+                        subscribe(subscribeAndCallback.getSubscribe()) :
+                        subscribe(subscribeAndCallback.getSubscribe(), subscribeAndCallback.getCallback()));
+    }
+
+    void publishes(@NotNull MqttGlobalPublishFlowType type, @NotNull Consumer<@NotNull Mqtt5Publish> callback);
+
+    @NotNull CompletableFuture<@NotNull Mqtt5UnsubAck> unsubscribe(@NotNull Mqtt5Unsubscribe unsubscribe);
+
+    default @NotNull Mqtt5UnsubscribeBuilder<CompletableFuture<Mqtt5UnsubAck>> unsubscribe() {
+        return new Mqtt5UnsubscribeBuilder<>(this::unsubscribe);
+    }
+
+    @NotNull CompletableFuture<@NotNull Mqtt5PublishResult> publish(@NotNull Mqtt5Publish publish);
+
+    default @NotNull Mqtt5PublishBuilder<CompletableFuture<Mqtt5PublishResult>> publish() {
+        return new Mqtt5PublishBuilder<>(this::publish);
+    }
+
+    @NotNull CompletableFuture<Boolean> reauth();
+
+    @NotNull CompletableFuture<Void> disconnect(@NotNull Mqtt5Disconnect disconnect);
+
+    default @NotNull Mqtt5DisconnectBuilder<CompletableFuture<Void>> disconnect() {
+        return new Mqtt5DisconnectBuilder<>(this::disconnect);
+    }
+
+    class Mqtt5SubscribeAndCallback {
+
+        private final @NotNull Mqtt5Subscribe subscribe;
+        private final @Nullable Consumer<Mqtt5Publish> callback;
+
+        Mqtt5SubscribeAndCallback(
+                final @NotNull Mqtt5Subscribe subscribe, final @Nullable Consumer<Mqtt5Publish> callback) {
+
+            this.subscribe = subscribe;
+            this.callback = callback;
+        }
+
+        public @NotNull Mqtt5Subscribe getSubscribe() {
+            return subscribe;
+        }
+
+        public @Nullable Consumer<Mqtt5Publish> getCallback() {
+            return callback;
+        }
+    }
+
+    class Mqtt5SubscribeAndCallbackBuilder<P> extends FluentBuilder<Mqtt5SubscribeAndCallback, P> {
+
+        private final @NotNull Mqtt5SubscribeBuilder<Void> subscribeBuilder = Mqtt5Subscribe.builder();
+        private @Nullable Consumer<Mqtt5Publish> callback;
+
+        Mqtt5SubscribeAndCallbackBuilder(
+                final @Nullable Function<? super Mqtt5SubscribeAndCallback, P> parentConsumer) {
+
+            super(parentConsumer);
+        }
+
+        public @NotNull Mqtt5SubscribeAndCallbackBuilder<P> addSubscription(
+                final @NotNull Mqtt5Subscription subscription) {
+
+            subscribeBuilder.addSubscription(subscription);
+            return this;
+        }
+
+        public @NotNull Mqtt5SubscriptionBuilder<? extends Mqtt5SubscribeAndCallbackBuilder<P>> addSubscription() {
+            return new Mqtt5SubscriptionBuilder<>(this::addSubscription);
+        }
+
+        public @NotNull Mqtt5SubscribeAndCallbackBuilder<P> userProperties(
+                final @NotNull Mqtt5UserProperties userProperties) {
+
+            subscribeBuilder.userProperties(userProperties);
+            return this;
+        }
+
+        public @NotNull Mqtt5UserPropertiesBuilder<? extends Mqtt5SubscribeAndCallbackBuilder<P>> userProperties() {
+            return new Mqtt5UserPropertiesBuilder<>(this::userProperties);
+        }
+
+        public @NotNull Mqtt5SubscribeAndCallbackBuilder<P> callback(final @Nullable Consumer<Mqtt5Publish> callback) {
+            this.callback = callback;
+            return this;
+        }
+
+        @Override
+        public @NotNull Mqtt5SubscribeAndCallback build() {
+            return new Mqtt5SubscribeAndCallback(subscribeBuilder.build(), callback);
+        }
+    }
+}
