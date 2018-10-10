@@ -55,7 +55,6 @@ import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribe;
 import org.mqttbee.rx.FlowableWithSingle;
-import org.mqttbee.rx.FlowableWithSingleSplit;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 
 /**
@@ -63,10 +62,10 @@ import org.mqttbee.util.MustNotBeImplementedUtil;
  */
 public class Mqtt5ClientImpl implements Mqtt5ReactiveClient {
 
-    private static final Function<Mqtt5Publish, MqttPublish> PUBLISH_MAPPER =
+    private static final @NotNull Function<Mqtt5Publish, MqttPublish> PUBLISH_MAPPER =
             publish -> MustNotBeImplementedUtil.checkNotImplemented(publish, MqttPublish.class);
 
-    private final MqttClientData clientData;
+    private final @NotNull MqttClientData clientData;
 
     public Mqtt5ClientImpl(@NotNull final MqttClientData clientData) {
         this.clientData = clientData;
@@ -132,14 +131,14 @@ public class Mqtt5ClientImpl implements Mqtt5ReactiveClient {
 
     @NotNull
     @Override
-    public FlowableWithSingle<Mqtt5SubAck, Mqtt5Publish> subscribeWithStream(@NotNull final Mqtt5Subscribe subscribe) {
+    public FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeWithStream(@NotNull final Mqtt5Subscribe subscribe) {
         final MqttSubscribe mqttSubscribe =
                 MustNotBeImplementedUtil.checkNotImplemented(subscribe, MqttSubscribe.class);
 
         final Flowable<Mqtt5SubscribeResult> subscriptionFlowable =
                 new MqttSubscriptionFlowable(mqttSubscribe, clientData).observeOn(
                         clientData.getExecutorConfig().getApplicationScheduler());
-        return new FlowableWithSingleSplit<>(subscriptionFlowable, Mqtt5SubAck.class, Mqtt5Publish.class);
+        return FlowableWithSingle.split(subscriptionFlowable, Mqtt5Publish.class, Mqtt5SubAck.class);
     }
 
     @NotNull
