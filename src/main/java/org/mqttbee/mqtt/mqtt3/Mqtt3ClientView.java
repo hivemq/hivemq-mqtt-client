@@ -55,22 +55,23 @@ import org.mqttbee.util.MustNotBeImplementedUtil;
  */
 public class Mqtt3ClientView implements Mqtt3Client {
 
-    private static final Function<Throwable, Completable> EXCEPTION_MAPPER_COMPLETABLE =
+    private static final @NotNull Function<Throwable, Completable> EXCEPTION_MAPPER_COMPLETABLE =
             e -> Completable.error(Mqtt3ExceptionFactory.map(e));
 
-    private static final Function<Throwable, Single<Mqtt5ConnAck>> EXCEPTION_MAPPER_SINGLE_CONNACK =
+    private static final @NotNull Function<Throwable, Single<Mqtt5ConnAck>> EXCEPTION_MAPPER_SINGLE_CONNACK =
             e -> Single.error(Mqtt3ExceptionFactory.map(e));
 
-    private static final Function<Throwable, Single<Mqtt5SubAck>> EXCEPTION_MAPPER_SINGLE_SUBACK =
+    private static final @NotNull Function<Throwable, Single<Mqtt5SubAck>> EXCEPTION_MAPPER_SINGLE_SUBACK =
             e -> Single.error(Mqtt3ExceptionFactory.map(e));
 
-    private static final Function<Throwable, Flowable<Mqtt5Publish>> EXCEPTION_MAPPER_FLOWABLE_PUBLISH =
+    private static final @NotNull Function<Throwable, Flowable<Mqtt5Publish>> EXCEPTION_MAPPER_FLOWABLE_PUBLISH =
             e -> Flowable.error(Mqtt3ExceptionFactory.map(e));
 
-    private static final Function<Throwable, Flowable<Mqtt5PublishResult>> EXCEPTION_MAPPER_FLOWABLE_PUBLISH_RESULT =
+    private static final @NotNull Function<Throwable, Flowable<Mqtt5PublishResult>>
+            EXCEPTION_MAPPER_FLOWABLE_PUBLISH_RESULT =
             e -> Flowable.error(Mqtt3ExceptionFactory.map(e));
 
-    private final Mqtt5ClientImpl delegate;
+    private final @NotNull Mqtt5ClientImpl delegate;
 
     public Mqtt3ClientView(@NotNull final Mqtt5ClientImpl delegate) {
         this.delegate = delegate;
@@ -98,12 +99,11 @@ public class Mqtt3ClientView implements Mqtt3Client {
 
     @NotNull
     @Override
-    public FlowableWithSingle<Mqtt3SubAck, Mqtt3Publish> subscribeWithStream(@NotNull final Mqtt3Subscribe subscribe) {
+    public FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribeWithStream(@NotNull final Mqtt3Subscribe subscribe) {
         final Mqtt3SubscribeView subscribeView =
                 MustNotBeImplementedUtil.checkNotImplemented(subscribe, Mqtt3SubscribeView.class);
         return delegate.subscribeWithStream(subscribeView.getDelegate())
-                .mapError(Mqtt3ExceptionFactory.MAPPER)
-                .mapBoth(Mqtt3SubAckView.MAPPER, Mqtt3PublishView.MAPPER);
+                .mapError(Mqtt3ExceptionFactory.MAPPER).mapBoth(Mqtt3PublishView.MAPPER, Mqtt3SubAckView.MAPPER);
     }
 
     @NotNull

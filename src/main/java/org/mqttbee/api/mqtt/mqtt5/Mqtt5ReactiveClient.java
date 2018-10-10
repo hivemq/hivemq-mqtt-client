@@ -139,7 +139,7 @@ public interface Mqtt5ReactiveClient extends Mqtt5Client {
      *         messages were unsubscribed.</li>
      *         </ul>
      */
-    @NotNull FlowableWithSingle<Mqtt5SubAck, Mqtt5Publish> subscribeWithStream(@NotNull Mqtt5Subscribe subscribe);
+    @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeWithStream(@NotNull Mqtt5Subscribe subscribe);
 
     /**
      * Creates a {@link Mqtt5SubscribeBuilder} for subscribing this client with the Subscribe message built from the
@@ -151,7 +151,7 @@ public interface Mqtt5ReactiveClient extends Mqtt5Client {
      * @return the builder for the Subscribe message.
      * @see #subscribeWithStream(Mqtt5Subscribe)
      */
-    default @NotNull Mqtt5SubscribeBuilder<FlowableWithSingle<Mqtt5SubAck, Mqtt5Publish>> subscribeWithStream() {
+    default @NotNull Mqtt5SubscribeBuilder<FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck>> subscribeWithStream() {
         return new Mqtt5SubscribeBuilder<>(this::subscribeWithStream);
     }
 

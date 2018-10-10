@@ -60,8 +60,7 @@ public interface Mqtt3Client extends MqttClient {
      *         a ConnAck message was received.</li>
      *         </ul>
      */
-    @NotNull
-    Single<Mqtt3ConnAck> connect(@NotNull Mqtt3Connect connect);
+    @NotNull Single<Mqtt3ConnAck> connect(@NotNull Mqtt3Connect connect);
 
     /**
      * Creates a {@link Mqtt3ConnectBuilder} for connecting this client with the Connect message built from the returned
@@ -73,8 +72,7 @@ public interface Mqtt3Client extends MqttClient {
      * @return the builder for the Connect message.
      * @see #connect(Mqtt3Connect)
      */
-    @NotNull
-    default Mqtt3ConnectBuilder<Single<Mqtt3ConnAck>> connect() {
+    default @NotNull Mqtt3ConnectBuilder<Single<Mqtt3ConnAck>> connect() {
         return new Mqtt3ConnectBuilder<>(this::connect);
     }
 
@@ -100,8 +98,7 @@ public interface Mqtt3Client extends MqttClient {
      *         before a SubAck message was received.</li>
      *         </ul>
      */
-    @NotNull
-    Single<Mqtt3SubAck> subscribe(@NotNull Mqtt3Subscribe subscribe);
+    @NotNull Single<Mqtt3SubAck> subscribe(@NotNull Mqtt3Subscribe subscribe);
 
     /**
      * Creates a {@link Mqtt3SubscribeBuilder} for subscribing this client with the Subscribe message built from the
@@ -113,8 +110,7 @@ public interface Mqtt3Client extends MqttClient {
      * @return the builder for the Subscribe message.
      * @see #subscribe(Mqtt3Subscribe)
      */
-    @NotNull
-    default Mqtt3SubscribeBuilder<Single<Mqtt3SubAck>> subscribe() {
+    default @NotNull Mqtt3SubscribeBuilder<Single<Mqtt3SubAck>> subscribe() {
         return new Mqtt3SubscribeBuilder<>(this::subscribe);
     }
 
@@ -141,8 +137,7 @@ public interface Mqtt3Client extends MqttClient {
      *         messages were unsubscribed.</li>
      *         </ul>
      */
-    @NotNull
-    FlowableWithSingle<Mqtt3SubAck, Mqtt3Publish> subscribeWithStream(@NotNull Mqtt3Subscribe subscribe);
+    @NotNull FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribeWithStream(@NotNull Mqtt3Subscribe subscribe);
 
     /**
      * Creates a {@link Mqtt3SubscribeBuilder} for subscribing this client with the Subscribe message built from the
@@ -154,8 +149,7 @@ public interface Mqtt3Client extends MqttClient {
      * @return the builder for the Subscribe message.
      * @see #subscribeWithStream(Mqtt3Subscribe)
      */
-    @NotNull
-    default Mqtt3SubscribeBuilder<FlowableWithSingle<Mqtt3SubAck, Mqtt3Publish>> subscribeWithStream() {
+    default @NotNull Mqtt3SubscribeBuilder<FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck>> subscribeWithStream() {
         return new Mqtt3SubscribeBuilder<>(this::subscribeWithStream);
     }
 
@@ -174,8 +168,7 @@ public interface Mqtt3Client extends MqttClient {
      *         <li>completes when this client is disconnected.</li>
      *         </ul>
      */
-    @NotNull
-    Flowable<Mqtt3Publish> publishes(@NotNull MqttGlobalPublishFlowType type);
+    @NotNull Flowable<Mqtt3Publish> publishes(@NotNull MqttGlobalPublishFlowType type);
 
     /**
      * Creates a {@link Single} for unsubscribing this client with the given Unsubscribe message.
@@ -196,8 +189,7 @@ public interface Mqtt3Client extends MqttClient {
      *         before a UnsubAck message was received.</li>
      *         </ul>
      */
-    @NotNull
-    Completable unsubscribe(@NotNull Mqtt3Unsubscribe unsubscribe);
+    @NotNull Completable unsubscribe(@NotNull Mqtt3Unsubscribe unsubscribe);
 
     /**
      * Creates a {@link Mqtt3UnsubscribeBuilder} for unsubscribing this client with the Unsubscribe message built from
@@ -209,8 +201,7 @@ public interface Mqtt3Client extends MqttClient {
      * @return the builder for the Unsubscribe message.
      * @see #unsubscribe(Mqtt3Unsubscribe)
      */
-    @NotNull
-    default Mqtt3UnsubscribeBuilder<Completable> unsubscribe() {
+    default @NotNull Mqtt3UnsubscribeBuilder<Completable> unsubscribe() {
         return new Mqtt3UnsubscribeBuilder<>(this::unsubscribe);
     }
 
@@ -230,8 +221,7 @@ public interface Mqtt3Client extends MqttClient {
      *         <li>errors with the same exception when the given {@link Flowable} errors.</li>
      *         </ul>
      */
-    @NotNull
-    Flowable<Mqtt3PublishResult> publish(@NotNull Flowable<Mqtt3Publish> publishFlowable);
+    @NotNull Flowable<Mqtt3PublishResult> publish(@NotNull Flowable<Mqtt3Publish> publishFlowable);
 
     /**
      * Creates a {@link Completable} for disconnecting this client.
@@ -245,11 +235,9 @@ public interface Mqtt3Client extends MqttClient {
      *         <li>errors if not disconnected successfully.</li>
      *         </ul>
      */
-    @NotNull
-    Completable disconnect();
+    @NotNull Completable disconnect();
 
-    @NotNull
     @Override
-    Mqtt3ClientData getClientData();
+    @NotNull Mqtt3ClientData getClientData();
 
 }

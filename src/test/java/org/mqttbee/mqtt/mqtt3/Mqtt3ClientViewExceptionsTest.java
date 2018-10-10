@@ -19,12 +19,12 @@ package org.mqttbee.mqtt.mqtt3;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttGlobalPublishFlowType;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.mqtt3.exceptions.Mqtt3MessageException;
@@ -38,7 +38,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.mqtt.mqtt5.Mqtt5ClientImpl;
-import org.mqttbee.rx.FlowableWithSingleSplit;
+import org.mqttbee.rx.FlowableWithSingle;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
@@ -46,6 +46,7 @@ import static org.mockito.BDDMockito.*;
 /**
  * @author David Katz
  */
+@SuppressWarnings("NullabilityAnnotations")
 class Mqtt3ClientViewExceptionsTest {
 
     private Mqtt5ClientImpl mqtt5Client;
@@ -74,8 +75,7 @@ class Mqtt3ClientViewExceptionsTest {
         given(mqtt5Client.subscribe(any())).willReturn(Single.error(mqtt5MessageException));
 
         final Mqtt3Subscribe subscribe = Mqtt3Subscribe.builder()
-                .addSubscription(
-                        Mqtt3Subscription.builder().topicFilter("topic").qos(MqttQos.AT_LEAST_ONCE).build())
+                .addSubscription(Mqtt3Subscription.builder().topicFilter("topic").qos(MqttQos.AT_LEAST_ONCE).build())
                 .build();
         assertMqtt3Exception(() -> mqtt3Client.subscribe(subscribe).toCompletable().blockingAwait(),
                 mqtt5MessageException);
@@ -86,12 +86,10 @@ class Mqtt3ClientViewExceptionsTest {
         final Mqtt5MessageException mqtt5MessageException =
                 new Mqtt5MessageException(Mqtt5Connect.builder().build(), "reason from original exception");
         given(mqtt5Client.subscribeWithStream(any())).willReturn(
-                new FlowableWithSingleSplit<>(Flowable.error(mqtt5MessageException), Mqtt5SubAck.class,
-                        Mqtt5Publish.class));
+                FlowableWithSingle.split(Flowable.error(mqtt5MessageException), Mqtt5Publish.class, Mqtt5SubAck.class));
 
         final Mqtt3Subscribe subscribe = Mqtt3Subscribe.builder()
-                .addSubscription(
-                        Mqtt3Subscription.builder().topicFilter("topic").qos(MqttQos.AT_LEAST_ONCE).build())
+                .addSubscription(Mqtt3Subscription.builder().topicFilter("topic").qos(MqttQos.AT_LEAST_ONCE).build())
                 .build();
         assertMqtt3Exception(() -> mqtt3Client.subscribeWithStream(subscribe).blockingSubscribe(),
                 mqtt5MessageException);
@@ -99,7 +97,7 @@ class Mqtt3ClientViewExceptionsTest {
 
     @ParameterizedTest
     @EnumSource(MqttGlobalPublishFlowType.class)
-    void publishes(final MqttGlobalPublishFlowType type) {
+    void publishes(final @NotNull MqttGlobalPublishFlowType type) {
         final Mqtt5MessageException mqtt5MessageException =
                 new Mqtt5MessageException(Mqtt5Connect.builder().build(), "reason from original exception");
         given(mqtt5Client.publishes(type)).willReturn(Flowable.error(mqtt5MessageException));
