@@ -139,22 +139,20 @@ public class RxJavaFutureConverter {
 
     private static final int INITIAL = 0;
     private static final int SUBSCRIBED_OR_COMPLETE = 1;
-    private static final int SUBSCRIBED_AND_COMPLETE = 2;
-    private static final int CANCELLED = 3;
+    private static final int SUBSCRIBED_AND_COMPLETE_OR_CANCELLED = 2;
 
     private static boolean checkComplete(final @NotNull AtomicInteger done) {
         return !done.compareAndSet(INITIAL, SUBSCRIBED_OR_COMPLETE) &&
-                done.compareAndSet(SUBSCRIBED_OR_COMPLETE, SUBSCRIBED_AND_COMPLETE);
+                done.compareAndSet(SUBSCRIBED_OR_COMPLETE, SUBSCRIBED_AND_COMPLETE_OR_CANCELLED);
     }
 
-    private static void cancel(final @NotNull AtomicInteger done, final @NotNull CompletableFuture<?> future) {
-        if (done.compareAndSet(INITIAL, CANCELLED) || done.compareAndSet(SUBSCRIBED_OR_COMPLETE, CANCELLED)) {
-            future.cancel(false);
-        }
+    private static void dispose(final @NotNull AtomicInteger done, final @NotNull CompletableFuture<?> future) {
+        done.set(SUBSCRIBED_AND_COMPLETE_OR_CANCELLED);
+        future.cancel(false);
     }
 
-    private static boolean isCancelled(final @NotNull AtomicInteger done) {
-        return done.get() == CANCELLED;
+    private static boolean isDisposed(final @NotNull AtomicInteger done) {
+        return done.get() == SUBSCRIBED_AND_COMPLETE_OR_CANCELLED;
     }
 
     static class FutureCompletable extends Completable implements Disposable, BiConsumer<Object, Throwable> {
@@ -180,12 +178,12 @@ public class RxJavaFutureConverter {
 
         @Override
         public void dispose() {
-            cancel(done, future);
+            RxJavaFutureConverter.dispose(done, future);
         }
 
         @Override
         public boolean isDisposed() {
-            return isCancelled(done);
+            return RxJavaFutureConverter.isDisposed(done);
         }
 
         @Override
@@ -231,12 +229,12 @@ public class RxJavaFutureConverter {
 
         @Override
         public void dispose() {
-            cancel(done, future);
+            RxJavaFutureConverter.dispose(done, future);
         }
 
         @Override
         public boolean isDisposed() {
-            return isCancelled(done);
+            return RxJavaFutureConverter.isDisposed(done);
         }
 
         @Override
@@ -303,12 +301,12 @@ public class RxJavaFutureConverter {
 
         @Override
         public void dispose() {
-            cancel(done, future);
+            RxJavaFutureConverter.dispose(done, future);
         }
 
         @Override
         public boolean isDisposed() {
-            return isCancelled(done);
+            return RxJavaFutureConverter.isDisposed(done);
         }
 
         @Override
