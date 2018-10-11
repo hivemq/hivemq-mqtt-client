@@ -17,11 +17,11 @@
 
 package org.mqttbee.rx;
 
-import io.reactivex.Completable;
-import io.reactivex.Maybe;
-import io.reactivex.Single;
+import io.reactivex.*;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
@@ -113,6 +113,43 @@ class RxJavaFutureConverterTest {
         assertTrue(future.cancel(false));
 
         emitLatch.countDown();
+        assertTrue(completedLatch.await(100, TimeUnit.MILLISECONDS));
+        assertTrue(future.isDone());
+        assertThrows(CancellationException.class, future::get);
+    }
+
+    @Test
+    void toFuture_completable_cancel_before_onSubscribe() throws InterruptedException {
+        final CountDownLatch subscribeLatch = new CountDownLatch(1);
+        final CountDownLatch cancelLatch = new CountDownLatch(1);
+        final CountDownLatch completedLatch = new CountDownLatch(1);
+        final Completable completable = new Completable() {
+            @Override
+            protected void subscribeActual(final @NotNull CompletableObserver observer) {
+                subscribeLatch.countDown();
+                final Thread thread = new Thread(() -> {
+                    try {
+                        assertTrue(cancelLatch.await(100, TimeUnit.MILLISECONDS));
+                    } catch (final InterruptedException e) {
+                        fail(e);
+                    }
+                    final Disposable disposable = new TestDisposable();
+                    observer.onSubscribe(disposable);
+                    assertTrue(disposable.isDisposed());
+                    completedLatch.countDown();
+                });
+                thread.setUncaughtExceptionHandler((t, e) -> e.printStackTrace());
+                thread.start();
+            }
+        };
+
+        final CompletableFuture<Void> future = RxJavaFutureConverter.toFuture(completable);
+        assertFalse(future.isDone());
+
+        assertTrue(subscribeLatch.await(100, TimeUnit.MILLISECONDS));
+        assertTrue(future.cancel(false));
+        cancelLatch.countDown();
+
         assertTrue(completedLatch.await(100, TimeUnit.MILLISECONDS));
         assertTrue(future.isDone());
         assertThrows(CancellationException.class, future::get);
@@ -214,6 +251,43 @@ class RxJavaFutureConverterTest {
         future.cancel(false);
 
         emitLatch.countDown();
+        assertTrue(completedLatch.await(100, TimeUnit.MILLISECONDS));
+        assertTrue(future.isDone());
+        assertThrows(CancellationException.class, future::get);
+    }
+
+    @Test
+    void toFuture_maybe_cancel_before_onSubscribe() throws InterruptedException {
+        final CountDownLatch subscribeLatch = new CountDownLatch(1);
+        final CountDownLatch cancelLatch = new CountDownLatch(1);
+        final CountDownLatch completedLatch = new CountDownLatch(1);
+        final Maybe<String> maybe = new Maybe<String>() {
+            @Override
+            protected void subscribeActual(final @NotNull MaybeObserver<? super String> observer) {
+                subscribeLatch.countDown();
+                final Thread thread = new Thread(() -> {
+                    try {
+                        assertTrue(cancelLatch.await(100, TimeUnit.MILLISECONDS));
+                    } catch (final InterruptedException e) {
+                        fail(e);
+                    }
+                    final Disposable disposable = new TestDisposable();
+                    observer.onSubscribe(disposable);
+                    assertTrue(disposable.isDisposed());
+                    completedLatch.countDown();
+                });
+                thread.setUncaughtExceptionHandler((t, e) -> e.printStackTrace());
+                thread.start();
+            }
+        };
+
+        final CompletableFuture<Optional<String>> future = RxJavaFutureConverter.toFuture(maybe);
+        assertFalse(future.isDone());
+
+        assertTrue(subscribeLatch.await(100, TimeUnit.MILLISECONDS));
+        assertTrue(future.cancel(false));
+        cancelLatch.countDown();
+
         assertTrue(completedLatch.await(100, TimeUnit.MILLISECONDS));
         assertTrue(future.isDone());
         assertThrows(CancellationException.class, future::get);
@@ -325,17 +399,60 @@ class RxJavaFutureConverterTest {
         assertThrows(CancellationException.class, future::get);
     }
 
+    @Test
+    void toFuture_single_cancel_before_onSubscribe() throws InterruptedException {
+        final CountDownLatch subscribeLatch = new CountDownLatch(1);
+        final CountDownLatch cancelLatch = new CountDownLatch(1);
+        final CountDownLatch completedLatch = new CountDownLatch(1);
+        final Single<String> single = new Single<String>() {
+            @Override
+            protected void subscribeActual(final @NotNull SingleObserver<? super String> observer) {
+                subscribeLatch.countDown();
+                final Thread thread = new Thread(() -> {
+                    try {
+                        assertTrue(cancelLatch.await(100, TimeUnit.MILLISECONDS));
+                    } catch (final InterruptedException e) {
+                        fail(e);
+                    }
+                    final Disposable disposable = new TestDisposable();
+                    observer.onSubscribe(disposable);
+                    assertTrue(disposable.isDisposed());
+                    completedLatch.countDown();
+                });
+                thread.setUncaughtExceptionHandler((t, e) -> e.printStackTrace());
+                thread.start();
+            }
+        };
+
+        final CompletableFuture<String> future = RxJavaFutureConverter.toFuture(single);
+        assertFalse(future.isDone());
+
+        assertTrue(subscribeLatch.await(100, TimeUnit.MILLISECONDS));
+        assertTrue(future.cancel(false));
+        cancelLatch.countDown();
+
+        assertTrue(completedLatch.await(100, TimeUnit.MILLISECONDS));
+        assertTrue(future.isDone());
+        assertThrows(CancellationException.class, future::get);
+    }
+
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     void toCompletable_immediate() {
         final Completable completable = RxJavaFutureConverter.toCompletable(CompletableFuture.completedFuture("test"));
 
         final AtomicInteger counter = new AtomicInteger();
-        completable.subscribe(counter::incrementAndGet);
+        completable.subscribe(new TestCompletableObserver() {
+            @Override
+            public void onComplete() {
+                assertNotNull(disposable);
+                assertTrue(disposable.isDisposed());
+                counter.incrementAndGet();
+            }
+        });
         assertEquals(1, counter.get());
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     void toCompletable_immediate_error() {
         final CompletableFuture<String> future = new CompletableFuture<>();
@@ -343,40 +460,59 @@ class RxJavaFutureConverterTest {
         final Completable completable = RxJavaFutureConverter.toCompletable(future);
 
         final AtomicInteger counter = new AtomicInteger();
-        completable.subscribe(() -> {
-        }, throwable -> {
-            assertEquals("test", throwable.getMessage());
-            counter.incrementAndGet();
+        completable.subscribe(new TestCompletableObserver() {
+            @Override
+            public void onError(final @NotNull Throwable e) {
+                assertNotNull(disposable);
+                assertTrue(disposable.isDisposed());
+                assertEquals("test", e.getMessage());
+                counter.incrementAndGet();
+            }
         });
         assertEquals(1, counter.get());
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     void toCompletable() {
         final CompletableFuture<String> future = new CompletableFuture<>();
         final Completable completable = RxJavaFutureConverter.toCompletable(future);
 
         final AtomicInteger counter = new AtomicInteger();
-        completable.subscribe(counter::incrementAndGet);
+        final TestCompletableObserver observer = new TestCompletableObserver() {
+            @Override
+            public void onComplete() {
+                assertNotNull(disposable);
+                assertTrue(disposable.isDisposed());
+                counter.incrementAndGet();
+            }
+        };
+        completable.subscribe(observer);
+        assertNotNull(observer.disposable);
+        assertFalse(observer.disposable.isDisposed());
         assertEquals(0, counter.get());
 
         future.complete("test");
         assertEquals(1, counter.get());
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     void toCompletable_error() {
         final CompletableFuture<String> future = new CompletableFuture<>();
         final Completable completable = RxJavaFutureConverter.toCompletable(future);
 
         final AtomicInteger counter = new AtomicInteger();
-        completable.subscribe(() -> {
-        }, throwable -> {
-            assertEquals("test", throwable.getMessage());
-            counter.incrementAndGet();
-        });
+        final TestCompletableObserver observer = new TestCompletableObserver() {
+            @Override
+            public void onError(final @NotNull Throwable e) {
+                assertNotNull(disposable);
+                assertTrue(disposable.isDisposed());
+                assertEquals("test", e.getMessage());
+                counter.incrementAndGet();
+            }
+        };
+        completable.subscribe(observer);
+        assertNotNull(observer.disposable);
+        assertFalse(observer.disposable.isDisposed());
         assertEquals(0, counter.get());
 
         future.completeExceptionally(new Exception("test"));
@@ -389,56 +525,75 @@ class RxJavaFutureConverterTest {
         final Completable completable = RxJavaFutureConverter.toCompletable(future);
 
         final AtomicInteger counter = new AtomicInteger();
-        final Disposable disposable = completable.subscribe(counter::incrementAndGet);
+        final TestCompletableObserver observer = new TestCompletableObserver() {
+            @Override
+            public void onComplete() {
+                counter.incrementAndGet();
+            }
+        };
+        completable.subscribe(observer);
+        assertNotNull(observer.disposable);
+        assertFalse(observer.disposable.isDisposed());
         assertEquals(0, counter.get());
 
-        disposable.dispose();
+        observer.disposable.dispose();
+        assertTrue(observer.disposable.isDisposed());
         assertTrue(future.isCancelled());
         future.complete("test");
         assertEquals(0, counter.get());
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     void toMaybe_immediate() {
         final Maybe<String> maybe =
                 RxJavaFutureConverter.toMaybe(CompletableFuture.completedFuture(Optional.of("test")));
 
         final AtomicInteger counter = new AtomicInteger();
-        maybe.subscribe(s -> {
-            assertEquals("test", s);
-            counter.incrementAndGet();
+        maybe.subscribe(new TestMaybeObserver<String>() {
+            @Override
+            public void onSuccess(final @NotNull String s) {
+                assertNotNull(disposable);
+                assertTrue(disposable.isDisposed());
+                assertEquals("test", s);
+                counter.incrementAndGet();
+            }
         });
         assertEquals(1, counter.get());
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     void toMaybe_immediate_empty() {
         final Maybe<String> maybe = RxJavaFutureConverter.toMaybe(CompletableFuture.completedFuture(Optional.empty()));
 
         final AtomicInteger counter = new AtomicInteger();
-        maybe.subscribe(s -> {
-        }, throwable -> {
-        }, counter::incrementAndGet);
+        maybe.subscribe(new TestMaybeObserver<String>() {
+            @Override
+            public void onComplete() {
+                assertNotNull(disposable);
+                assertTrue(disposable.isDisposed());
+                counter.incrementAndGet();
+            }
+        });
         assertEquals(1, counter.get());
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     void toMaybe_immediate_null() {
         final Maybe<String> maybe = RxJavaFutureConverter.toMaybe(CompletableFuture.completedFuture(null));
 
         final AtomicInteger counter = new AtomicInteger();
-        maybe.subscribe(s -> {
-        }, throwable -> {
-            assertTrue(throwable instanceof NullPointerException);
-            counter.incrementAndGet();
+        maybe.subscribe(new TestMaybeObserver<String>() {
+            @Override
+            public void onError(final @NotNull Throwable e) {
+                assertNotNull(disposable);
+                assertTrue(disposable.isDisposed());
+                assertTrue(e instanceof NullPointerException);
+                counter.incrementAndGet();
+            }
         });
         assertEquals(1, counter.get());
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     void toMaybe_immediate_error() {
         final CompletableFuture<Optional<String>> future = new CompletableFuture<>();
@@ -446,77 +601,107 @@ class RxJavaFutureConverterTest {
         final Maybe<String> maybe = RxJavaFutureConverter.toMaybe(future);
 
         final AtomicInteger counter = new AtomicInteger();
-        maybe.subscribe(s -> {
-        }, throwable -> {
-            assertEquals("test", throwable.getMessage());
-            counter.incrementAndGet();
+        maybe.subscribe(new TestMaybeObserver<String>() {
+            @Override
+            public void onError(final @NotNull Throwable e) {
+                assertNotNull(disposable);
+                assertTrue(disposable.isDisposed());
+                assertEquals("test", e.getMessage());
+                counter.incrementAndGet();
+            }
         });
         assertEquals(1, counter.get());
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     void toMaybe() {
         final CompletableFuture<Optional<String>> future = new CompletableFuture<>();
         final Maybe<String> maybe = RxJavaFutureConverter.toMaybe(future);
 
         final AtomicInteger counter = new AtomicInteger();
-        maybe.subscribe(s -> {
-            assertEquals("test", s);
-            counter.incrementAndGet();
-        });
+        final TestMaybeObserver<String> observer = new TestMaybeObserver<String>() {
+            @Override
+            public void onSuccess(final @NotNull String s) {
+                assertNotNull(disposable);
+                assertTrue(disposable.isDisposed());
+                assertEquals("test", s);
+                counter.incrementAndGet();
+            }
+        };
+        maybe.subscribe(observer);
+        assertNotNull(observer.disposable);
+        assertFalse(observer.disposable.isDisposed());
         assertEquals(0, counter.get());
 
         future.complete(Optional.of("test"));
         assertEquals(1, counter.get());
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     void toMaybe_empty() {
         final CompletableFuture<Optional<String>> future = new CompletableFuture<>();
         final Maybe<String> maybe = RxJavaFutureConverter.toMaybe(future);
 
         final AtomicInteger counter = new AtomicInteger();
-        maybe.subscribe(s -> {
-        }, throwable -> {
-        }, counter::incrementAndGet);
+        final TestMaybeObserver<String> observer = new TestMaybeObserver<String>() {
+            @Override
+            public void onComplete() {
+                assertNotNull(disposable);
+                assertTrue(disposable.isDisposed());
+                counter.incrementAndGet();
+            }
+        };
+        maybe.subscribe(observer);
+        assertNotNull(observer.disposable);
+        assertFalse(observer.disposable.isDisposed());
         assertEquals(0, counter.get());
 
         future.complete(Optional.empty());
         assertEquals(1, counter.get());
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     void toMaybe_null() {
         final CompletableFuture<Optional<String>> future = new CompletableFuture<>();
         final Maybe<String> maybe = RxJavaFutureConverter.toMaybe(future);
 
         final AtomicInteger counter = new AtomicInteger();
-        maybe.subscribe(s -> {
-        }, throwable -> {
-            assertTrue(throwable instanceof NullPointerException);
-            counter.incrementAndGet();
-        });
+        final TestMaybeObserver<String> observer = new TestMaybeObserver<String>() {
+            @Override
+            public void onError(final @NotNull Throwable e) {
+                assertNotNull(disposable);
+                assertTrue(disposable.isDisposed());
+                assertTrue(e instanceof NullPointerException);
+                counter.incrementAndGet();
+            }
+        };
+        maybe.subscribe(observer);
+        assertNotNull(observer.disposable);
+        assertFalse(observer.disposable.isDisposed());
         assertEquals(0, counter.get());
 
         future.complete(null);
         assertEquals(1, counter.get());
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     void toMaybe_error() {
         final CompletableFuture<Optional<String>> future = new CompletableFuture<>();
         final Maybe<String> maybe = RxJavaFutureConverter.toMaybe(future);
 
         final AtomicInteger counter = new AtomicInteger();
-        maybe.subscribe(s -> {
-        }, throwable -> {
-            assertEquals("test", throwable.getMessage());
-            counter.incrementAndGet();
-        });
+        final TestMaybeObserver<String> observer = new TestMaybeObserver<String>() {
+            @Override
+            public void onError(final @NotNull Throwable e) {
+                assertNotNull(disposable);
+                assertTrue(disposable.isDisposed());
+                assertEquals("test", e.getMessage());
+                counter.incrementAndGet();
+            }
+        };
+        maybe.subscribe(observer);
+        assertNotNull(observer.disposable);
+        assertFalse(observer.disposable.isDisposed());
         assertEquals(0, counter.get());
 
         future.completeExceptionally(new Exception("test"));
@@ -529,29 +714,42 @@ class RxJavaFutureConverterTest {
         final Maybe<String> completable = RxJavaFutureConverter.toMaybe(future);
 
         final AtomicInteger counter = new AtomicInteger();
-        final Disposable disposable = completable.subscribe(s -> counter.incrementAndGet());
+        final TestMaybeObserver<String> observer = new TestMaybeObserver<String>() {
+            @Override
+            public void onSuccess(final @NotNull String s) {
+                assertNotNull(disposable);
+                assertTrue(disposable.isDisposed());
+                counter.incrementAndGet();
+            }
+        };
+        completable.subscribe(observer);
+        assertNotNull(observer.disposable);
+        assertFalse(observer.disposable.isDisposed());
         assertEquals(0, counter.get());
 
-        disposable.dispose();
+        observer.disposable.dispose();
         assertTrue(future.isCancelled());
         future.complete(Optional.of("test"));
         assertEquals(0, counter.get());
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     void toSingle_immediate() {
         final Single<String> single = RxJavaFutureConverter.toSingle(CompletableFuture.completedFuture("test"));
 
         final AtomicInteger counter = new AtomicInteger();
-        single.subscribe(s -> {
-            assertEquals("test", s);
-            counter.incrementAndGet();
+        single.subscribe(new TestSingleObserver<String>() {
+            @Override
+            public void onSuccess(final @NotNull String s) {
+                assertNotNull(disposable);
+                assertTrue(disposable.isDisposed());
+                assertEquals("test", s);
+                counter.incrementAndGet();
+            }
         });
         assertEquals(1, counter.get());
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     void toSingle_immediate_error() {
         final CompletableFuture<String> future = new CompletableFuture<>();
@@ -559,43 +757,60 @@ class RxJavaFutureConverterTest {
         final Single<String> single = RxJavaFutureConverter.toSingle(future);
 
         final AtomicInteger counter = new AtomicInteger();
-        single.subscribe(s -> {
-        }, throwable -> {
-            assertEquals("test", throwable.getMessage());
-            counter.incrementAndGet();
+        single.subscribe(new TestSingleObserver<String>() {
+            @Override
+            public void onError(final @NotNull Throwable e) {
+                assertNotNull(disposable);
+                assertTrue(disposable.isDisposed());
+                assertEquals("test", e.getMessage());
+                counter.incrementAndGet();
+            }
         });
         assertEquals(1, counter.get());
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     void toSingle() {
         final CompletableFuture<String> future = new CompletableFuture<>();
         final Single<String> single = RxJavaFutureConverter.toSingle(future);
 
         final AtomicInteger counter = new AtomicInteger();
-        single.subscribe(s -> {
-            assertEquals("test", s);
-            counter.incrementAndGet();
-        });
+        final TestSingleObserver<String> observer = new TestSingleObserver<String>() {
+            @Override
+            public void onSuccess(final @NotNull String s) {
+                assertNotNull(disposable);
+                assertTrue(disposable.isDisposed());
+                assertEquals("test", s);
+                counter.incrementAndGet();
+            }
+        };
+        single.subscribe(observer);
+        assertNotNull(observer.disposable);
+        assertFalse(observer.disposable.isDisposed());
         assertEquals(0, counter.get());
 
         future.complete("test");
         assertEquals(1, counter.get());
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     void toSingle_error() {
         final CompletableFuture<String> future = new CompletableFuture<>();
         final Single<String> single = RxJavaFutureConverter.toSingle(future);
 
         final AtomicInteger counter = new AtomicInteger();
-        single.subscribe(s -> {
-        }, throwable -> {
-            assertEquals("test", throwable.getMessage());
-            counter.incrementAndGet();
-        });
+        final TestSingleObserver<String> observer = new TestSingleObserver<String>() {
+            @Override
+            public void onError(final @NotNull Throwable e) {
+                assertNotNull(disposable);
+                assertTrue(disposable.isDisposed());
+                assertEquals("test", e.getMessage());
+                counter.incrementAndGet();
+            }
+        };
+        single.subscribe(observer);
+        assertNotNull(observer.disposable);
+        assertFalse(observer.disposable.isDisposed());
         assertEquals(0, counter.get());
 
         future.completeExceptionally(new Exception("test"));
@@ -608,13 +823,87 @@ class RxJavaFutureConverterTest {
         final Single<String> single = RxJavaFutureConverter.toSingle(future);
 
         final AtomicInteger counter = new AtomicInteger();
-        final Disposable disposable = single.subscribe(s -> counter.incrementAndGet());
+        final TestSingleObserver<String> observer = new TestSingleObserver<String>() {
+            @Override
+            public void onSuccess(final @NotNull String s) {
+                counter.incrementAndGet();
+            }
+        };
+        single.subscribe(observer);
+        assertNotNull(observer.disposable);
+        assertFalse(observer.disposable.isDisposed());
         assertEquals(0, counter.get());
 
-        disposable.dispose();
+        observer.disposable.dispose();
         assertTrue(future.isCancelled());
         future.complete("test");
         assertEquals(0, counter.get());
+    }
+
+    private static class TestDisposable implements Disposable {
+
+        private volatile boolean disposed;
+
+        @Override
+        public void dispose() {
+            disposed = true;
+        }
+
+        @Override
+        public boolean isDisposed() {
+            return disposed;
+        }
+    }
+
+    private static abstract class TestCompletableObserver implements CompletableObserver {
+
+        @Nullable Disposable disposable;
+
+        @Override
+        public void onSubscribe(final @NotNull Disposable d) {
+            disposable = d;
+        }
+
+        @Override
+        public void onComplete() {}
+
+        @Override
+        public void onError(final @NotNull Throwable e) {}
+    }
+
+    private static abstract class TestMaybeObserver<T> implements MaybeObserver<T> {
+
+        @Nullable Disposable disposable;
+
+        @Override
+        public void onSubscribe(final @NotNull Disposable d) {
+            disposable = d;
+        }
+
+        @Override
+        public void onSuccess(final @NotNull T t) {}
+
+        @Override
+        public void onComplete() {}
+
+        @Override
+        public void onError(final @NotNull Throwable e) {}
+    }
+
+    private static abstract class TestSingleObserver<T> implements SingleObserver<T> {
+
+        @Nullable Disposable disposable;
+
+        @Override
+        public void onSubscribe(final @NotNull Disposable d) {
+            disposable = d;
+        }
+
+        @Override
+        public void onSuccess(final @NotNull T t) {}
+
+        @Override
+        public void onError(final @NotNull Throwable e) {}
     }
 
 }
