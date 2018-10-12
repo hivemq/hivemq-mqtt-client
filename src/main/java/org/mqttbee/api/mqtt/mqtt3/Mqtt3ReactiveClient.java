@@ -21,7 +21,6 @@ import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.MqttClient;
 import org.mqttbee.api.mqtt.MqttGlobalPublishFlowType;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3Connect;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3ConnectBuilder;
@@ -40,7 +39,7 @@ import org.mqttbee.rx.FlowableWithSingle;
  *
  * @author Silvio Giebl
  */
-public interface Mqtt3ReactiveClient extends MqttClient {
+public interface Mqtt3ReactiveClient extends Mqtt3Client {
 
     /**
      * Creates a {@link Single} for connecting this client with the given Connect message.
@@ -236,8 +235,5 @@ public interface Mqtt3ReactiveClient extends MqttClient {
      *         </ul>
      */
     @NotNull Completable disconnect();
-
-    @Override
-    @NotNull Mqtt3ClientData getClientData();
 
 }
