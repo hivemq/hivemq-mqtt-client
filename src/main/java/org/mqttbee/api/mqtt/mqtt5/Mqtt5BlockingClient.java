@@ -53,9 +53,10 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
         return new Mqtt5SubscribeBuilder<>(this::subscribe);
     }
 
-    @NotNull Mqtt5Publish receive();
+    @NotNull Mqtt5Publish receive() throws InterruptedException;
 
-    @NotNull Optional<Mqtt5Publish> receive(final long timeout, final @NotNull TimeUnit timeUnit);
+    @NotNull Optional<Mqtt5Publish> receive(final long timeout, final @NotNull TimeUnit timeUnit)
+            throws InterruptedException;
 
     @NotNull Mqtt5UnsubAck unsubscribe(@NotNull Mqtt5Unsubscribe unsubscribe);
 
