@@ -18,7 +18,8 @@
 package org.mqttbee.mqtt.handler.publish;
 
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.MqttGlobalPublishFlowType;
+import org.jetbrains.annotations.Nullable;
+import org.mqttbee.api.mqtt.MqttGlobalPublishFilter;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.util.collections.ScNodeList;
 import org.reactivestreams.Subscriber;
@@ -28,16 +29,16 @@ import org.reactivestreams.Subscriber;
  */
 class MqttGlobalIncomingPublishFlow extends MqttIncomingPublishFlow<Subscriber<? super Mqtt5Publish>> {
 
-    private final MqttGlobalPublishFlowType type;
-    private ScNodeList.Handle<MqttGlobalIncomingPublishFlow> handle;
+    private final @NotNull MqttGlobalPublishFilter filter;
+    private @Nullable ScNodeList.Handle<MqttGlobalIncomingPublishFlow> handle;
 
     MqttGlobalIncomingPublishFlow(
-            @NotNull final Subscriber<? super Mqtt5Publish> subscriber,
-            @NotNull final MqttIncomingPublishService incomingPublishService,
-            @NotNull final MqttGlobalPublishFlowType type) {
+            final @NotNull Subscriber<? super Mqtt5Publish> subscriber,
+            final @NotNull MqttIncomingPublishService incomingPublishService,
+            final @NotNull MqttGlobalPublishFilter filter) {
 
         super(incomingPublishService, subscriber);
-        this.type = type;
+        this.filter = filter;
     }
 
     @Override
@@ -46,16 +47,15 @@ class MqttGlobalIncomingPublishFlow extends MqttIncomingPublishFlow<Subscriber<?
         super.runCancel();
     }
 
-    @NotNull
-    MqttGlobalPublishFlowType getType() {
-        return type;
+    @NotNull MqttGlobalPublishFilter getFilter() {
+        return filter;
     }
 
-    void setHandle(@NotNull final ScNodeList.Handle<MqttGlobalIncomingPublishFlow> handle) {
+    void setHandle(final @NotNull ScNodeList.Handle<MqttGlobalIncomingPublishFlow> handle) {
         this.handle = handle;
     }
 
-    ScNodeList.Handle<MqttGlobalIncomingPublishFlow> getHandle() {
+    @Nullable ScNodeList.Handle<MqttGlobalIncomingPublishFlow> getHandle() {
         return handle;
     }
 

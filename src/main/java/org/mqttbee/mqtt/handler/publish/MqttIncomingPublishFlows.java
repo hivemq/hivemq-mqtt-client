@@ -20,7 +20,7 @@ package org.mqttbee.mqtt.handler.publish;
 import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.MqttGlobalPublishFlowType;
+import org.mqttbee.api.mqtt.MqttGlobalPublishFilter;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAckReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAckReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
@@ -54,7 +54,7 @@ public class MqttIncomingPublishFlows {
     @SuppressWarnings("unchecked")
     MqttIncomingPublishFlows(@NotNull final MqttSubscriptionFlows subscriptionFlows) {
         this.subscriptionFlows = subscriptionFlows;
-        globalFlows = new ScNodeList[MqttGlobalPublishFlowType.values().length];
+        globalFlows = new ScNodeList[MqttGlobalPublishFilter.values().length];
     }
 
     public void subscribe(
@@ -106,30 +106,30 @@ public class MqttIncomingPublishFlows {
 
         final MqttTopicImpl topic = publish.getStatelessMessage().getTopic();
         if (subscriptionFlows.findMatching(topic, matchingFlows) || !matchingFlows.isEmpty()) {
-            add(matchingFlows, globalFlows[MqttGlobalPublishFlowType.ALL_SUBSCRIPTIONS.ordinal()]);
+            add(matchingFlows, globalFlows[MqttGlobalPublishFilter.ALL_SUBSCRIPTIONS.ordinal()]);
         }
-        add(matchingFlows, globalFlows[MqttGlobalPublishFlowType.ALL_PUBLISHES.ordinal()]);
+        add(matchingFlows, globalFlows[MqttGlobalPublishFilter.ALL_PUBLISHES.ordinal()]);
         if (matchingFlows.isEmpty()) {
-            add(matchingFlows, globalFlows[MqttGlobalPublishFlowType.REMAINING_PUBLISHES.ordinal()]);
+            add(matchingFlows, globalFlows[MqttGlobalPublishFilter.REMAINING_PUBLISHES.ordinal()]);
         }
     }
 
     void subscribeGlobal(@NotNull final MqttGlobalIncomingPublishFlow flow) {
-        final int type = flow.getType().ordinal();
-        ScNodeList<MqttGlobalIncomingPublishFlow> globalFlow = globalFlows[type];
+        final int filter = flow.getFilter().ordinal();
+        ScNodeList<MqttGlobalIncomingPublishFlow> globalFlow = globalFlows[filter];
         if (globalFlow == null) {
             globalFlow = new ScNodeList<>();
-            globalFlows[type] = globalFlow;
+            globalFlows[filter] = globalFlow;
         }
         flow.setHandle(globalFlow.add(flow));
     }
 
     void cancelGlobal(@NotNull final MqttGlobalIncomingPublishFlow flow) {
         flow.getHandle().remove();
-        final int type = flow.getType().ordinal();
-        final ScNodeList<MqttGlobalIncomingPublishFlow> globalFlow = globalFlows[type];
+        final int filter = flow.getFilter().ordinal();
+        final ScNodeList<MqttGlobalIncomingPublishFlow> globalFlow = globalFlows[filter];
         if (globalFlow.isEmpty()) {
-            globalFlows[type] = null;
+            globalFlows[filter] = null;
         }
     }
 

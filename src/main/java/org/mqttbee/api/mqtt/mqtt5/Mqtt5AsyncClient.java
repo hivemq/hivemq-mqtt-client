@@ -19,7 +19,7 @@ package org.mqttbee.api.mqtt.mqtt5;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.MqttGlobalPublishFlowType;
+import org.mqttbee.api.mqtt.MqttGlobalPublishFilter;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;
@@ -80,10 +80,10 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
         });
     }
 
-    void publishes(@NotNull MqttGlobalPublishFlowType type, @NotNull Consumer<@NotNull Mqtt5Publish> callback);
+    void publishes(@NotNull MqttGlobalPublishFilter filter, @NotNull Consumer<@NotNull Mqtt5Publish> callback);
 
     void publishes(
-            @NotNull MqttGlobalPublishFlowType type, @NotNull Consumer<@NotNull Mqtt5Publish> callback,
+            @NotNull MqttGlobalPublishFilter filter, @NotNull Consumer<@NotNull Mqtt5Publish> callback,
             @NotNull Executor executor);
 
     @NotNull CompletableFuture<@NotNull Mqtt5UnsubAck> unsubscribe(@NotNull Mqtt5Unsubscribe unsubscribe);
