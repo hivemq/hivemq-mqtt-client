@@ -27,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttGlobalPublishFlowType;
 import org.mqttbee.api.mqtt.exceptions.AlreadyConnectedException;
 import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
-import org.mqttbee.api.mqtt.mqtt5.Mqtt5ReactiveClient;
+import org.mqttbee.api.mqtt.mqtt5.Mqtt5RxClient;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
@@ -60,7 +60,7 @@ import org.mqttbee.util.MustNotBeImplementedUtil;
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5ClientImpl implements Mqtt5ReactiveClient {
+public class Mqtt5ClientImpl implements Mqtt5RxClient {
 
     private static final @NotNull Function<Mqtt5Publish, MqttPublish> PUBLISH_MAPPER =
             publish -> MustNotBeImplementedUtil.checkNotImplemented(publish, MqttPublish.class);
