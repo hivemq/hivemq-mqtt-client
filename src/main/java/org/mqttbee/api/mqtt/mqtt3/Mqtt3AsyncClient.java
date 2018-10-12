@@ -19,7 +19,7 @@ package org.mqttbee.api.mqtt.mqtt3;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.MqttGlobalPublishFlowType;
+import org.mqttbee.api.mqtt.MqttGlobalPublishFilter;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3Connect;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3ConnectBuilder;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck;
@@ -76,10 +76,10 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
         });
     }
 
-    void publishes(@NotNull MqttGlobalPublishFlowType type, @NotNull Consumer<@NotNull Mqtt3Publish> callback);
+    void publishes(@NotNull MqttGlobalPublishFilter filter, @NotNull Consumer<@NotNull Mqtt3Publish> callback);
 
     void publishes(
-            @NotNull MqttGlobalPublishFlowType type, @NotNull Consumer<@NotNull Mqtt3Publish> callback,
+            @NotNull MqttGlobalPublishFilter filter, @NotNull Consumer<@NotNull Mqtt3Publish> callback,
             @NotNull Executor executor);
 
     @NotNull CompletableFuture<@NotNull Mqtt3UnsubAck> unsubscribe(@NotNull Mqtt3Unsubscribe unsubscribe);

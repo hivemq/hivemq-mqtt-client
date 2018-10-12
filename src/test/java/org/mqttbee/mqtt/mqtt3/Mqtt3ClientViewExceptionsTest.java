@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.mqttbee.api.mqtt.MqttGlobalPublishFlowType;
+import org.mqttbee.api.mqtt.MqttGlobalPublishFilter;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.mqtt3.exceptions.Mqtt3MessageException;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3Connect;
@@ -96,13 +96,13 @@ class Mqtt3ClientViewExceptionsTest {
     }
 
     @ParameterizedTest
-    @EnumSource(MqttGlobalPublishFlowType.class)
-    void publishes(final @NotNull MqttGlobalPublishFlowType type) {
+    @EnumSource(MqttGlobalPublishFilter.class)
+    void publishes(final @NotNull MqttGlobalPublishFilter filter) {
         final Mqtt5MessageException mqtt5MessageException =
                 new Mqtt5MessageException(Mqtt5Connect.builder().build(), "reason from original exception");
-        given(mqtt5Client.publishes(type)).willReturn(Flowable.error(mqtt5MessageException));
+        given(mqtt5Client.publishes(filter)).willReturn(Flowable.error(mqtt5MessageException));
 
-        assertMqtt3Exception(() -> mqtt3Client.publishes(type).blockingSubscribe(), mqtt5MessageException);
+        assertMqtt3Exception(() -> mqtt3Client.publishes(filter).blockingSubscribe(), mqtt5MessageException);
     }
 
     @Test

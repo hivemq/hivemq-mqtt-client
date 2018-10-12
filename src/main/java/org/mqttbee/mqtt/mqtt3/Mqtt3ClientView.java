@@ -22,7 +22,7 @@ import io.reactivex.Flowable;
 import io.reactivex.Single;
 import io.reactivex.functions.Function;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.MqttGlobalPublishFlowType;
+import org.mqttbee.api.mqtt.MqttGlobalPublishFilter;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3AsyncClient;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3BlockingClient;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3ClientData;
@@ -110,8 +110,8 @@ public class Mqtt3ClientView implements Mqtt3RxClient {
 
     @NotNull
     @Override
-    public Flowable<Mqtt3Publish> publishes(@NotNull final MqttGlobalPublishFlowType type) {
-        return delegate.publishes(type)
+    public Flowable<Mqtt3Publish> publishes(@NotNull final MqttGlobalPublishFilter filter) {
+        return delegate.publishes(filter)
                 .onErrorResumeNext(EXCEPTION_MAPPER_FLOWABLE_PUBLISH)
                 .map(Mqtt3PublishView.MAPPER);
     }

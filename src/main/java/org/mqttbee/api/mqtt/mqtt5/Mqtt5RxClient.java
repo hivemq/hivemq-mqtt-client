@@ -21,7 +21,7 @@ import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.MqttGlobalPublishFlowType;
+import org.mqttbee.api.mqtt.MqttGlobalPublishFilter;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5ConnectBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
@@ -85,7 +85,7 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * message. Calling this method does not subscribe yet. Subscribing is performed lazy and asynchronous when
      * subscribing (in terms of Reactive Streams) to the returned {@link Single}.
      * <p>
-     * See {@link #publishes(MqttGlobalPublishFlowType)} to consume the Publish messages. Alternatively, call {@link
+     * See {@link #publishes(MqttGlobalPublishFilter)} to consume the Publish messages. Alternatively, call {@link
      * #subscribeWithStream(Mqtt5Subscribe)} to consume the Publish messages matching the subscriptions of the Subscribe
      * message directly.
      *
@@ -163,14 +163,14 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * Calling this method does not start consuming yet. This is done lazy and asynchronous when subscribing (in terms
      * of Reactive Streams) to the returned {@link Flowable}.
      *
-     * @param type the type of the returned flow of Publish messages.
+     * @param filter the filter of the returned flow of Publish messages.
      * @return the {@link Flowable} which
      *         <ul>
-     *         <li>emits the incoming Publish messages matching the given type and</li>
+     *         <li>emits the incoming Publish messages matching the given filter and</li>
      *         <li>completes when this client is disconnected.</li>
      *         </ul>
      */
-    @NotNull Flowable<Mqtt5Publish> publishes(@NotNull MqttGlobalPublishFlowType type);
+    @NotNull Flowable<Mqtt5Publish> publishes(@NotNull MqttGlobalPublishFilter filter);
 
     /**
      * Creates a {@link Single} for unsubscribing this client with the given Unsubscribe message.

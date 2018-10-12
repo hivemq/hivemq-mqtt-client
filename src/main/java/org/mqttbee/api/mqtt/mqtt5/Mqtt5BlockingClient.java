@@ -18,7 +18,7 @@
 package org.mqttbee.api.mqtt.mqtt5;
 
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.MqttGlobalPublishFlowType;
+import org.mqttbee.api.mqtt.MqttGlobalPublishFilter;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5ConnectBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
@@ -54,7 +54,7 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
         return new Mqtt5SubscribeBuilder<>(this::subscribe);
     }
 
-    @NotNull Mqtt5Publishes publishes(@NotNull MqttGlobalPublishFlowType type);
+    @NotNull Mqtt5Publishes publishes(@NotNull MqttGlobalPublishFilter filter);
 
     @NotNull Mqtt5UnsubAck unsubscribe(@NotNull Mqtt5Unsubscribe unsubscribe);
 

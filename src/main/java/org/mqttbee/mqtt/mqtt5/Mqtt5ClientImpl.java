@@ -24,7 +24,7 @@ import io.reactivex.Flowable;
 import io.reactivex.Single;
 import io.reactivex.functions.Function;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.MqttGlobalPublishFlowType;
+import org.mqttbee.api.mqtt.MqttGlobalPublishFilter;
 import org.mqttbee.api.mqtt.exceptions.AlreadyConnectedException;
 import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5AsyncClient;
@@ -145,10 +145,10 @@ public class Mqtt5ClientImpl implements Mqtt5RxClient {
 
     @NotNull
     @Override
-    public Flowable<Mqtt5Publish> publishes(@NotNull final MqttGlobalPublishFlowType type) {
-        Preconditions.checkNotNull(type, "Global publish flow type must not be null.");
+    public Flowable<Mqtt5Publish> publishes(@NotNull final MqttGlobalPublishFilter filter) {
+        Preconditions.checkNotNull(filter, "Global publish filter must not be null.");
 
-        return new MqttGlobalIncomingPublishFlowable(type, clientData).observeOn(
+        return new MqttGlobalIncomingPublishFlowable(filter, clientData).observeOn(
                 clientData.getExecutorConfig().getApplicationScheduler());
     }
 
