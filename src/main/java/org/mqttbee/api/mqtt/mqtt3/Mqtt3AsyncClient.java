@@ -44,7 +44,7 @@ import java.util.function.Function;
 /**
  * @author Silvio Giebl
  */
-public interface Mqtt3FutureClient extends Mqtt3Client {
+public interface Mqtt3AsyncClient extends Mqtt3Client {
 
     @NotNull CompletableFuture<@NotNull Mqtt3ConnAck> connect(@NotNull Mqtt3Connect connect);
 
@@ -61,8 +61,8 @@ public interface Mqtt3FutureClient extends Mqtt3Client {
             @NotNull Mqtt3Subscribe subscribe, @NotNull Consumer<@NotNull Mqtt3Publish> callback,
             @NotNull Executor executor);
 
-    default @NotNull Mqtt3FutureClient.Mqtt3SubscribeAndCallbackBuilder<CompletableFuture<Mqtt3SubAck>> subscribe() {
-        return new Mqtt3FutureClient.Mqtt3SubscribeAndCallbackBuilder<>(subscribeAndCallback -> {
+    default @NotNull Mqtt3SubscribeAndCallbackBuilder<CompletableFuture<Mqtt3SubAck>> subscribe() {
+        return new Mqtt3SubscribeAndCallbackBuilder<>(subscribeAndCallback -> {
             final Mqtt3Subscribe subscribe = subscribeAndCallback.getSubscribe();
             final Consumer<Mqtt3Publish> callback = subscribeAndCallback.getCallback();
             if (callback == null) {

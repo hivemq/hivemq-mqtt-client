@@ -48,7 +48,7 @@ import java.util.function.Function;
 /**
  * @author Silvio Giebl
  */
-public interface Mqtt5FutureClient extends Mqtt5Client {
+public interface Mqtt5AsyncClient extends Mqtt5Client {
 
     @NotNull CompletableFuture<@NotNull Mqtt5ConnAck> connect(@NotNull Mqtt5Connect connect);
 

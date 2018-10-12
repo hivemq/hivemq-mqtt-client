@@ -15,34 +15,31 @@
  *
  */
 
-package org.mqttbee.api.mqtt.mqtt5;
+package org.mqttbee.api.mqtt.mqtt3;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttGlobalPublishFlowType;
-import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;
-import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5ConnectBuilder;
-import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
-import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
-import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectBuilder;
-import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
-import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
-import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
-import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeBuilder;
-import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
-import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
-import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5UnsubscribeBuilder;
-import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
+import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3Connect;
+import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3ConnectBuilder;
+import org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck;
+import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;
+import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3PublishResult;
+import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
+import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3SubscribeBuilder;
+import org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAck;
+import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
+import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubscribeBuilder;
 import org.mqttbee.rx.FlowableWithSingle;
 
 /**
- * MQTT 5 client with a reactive API.
+ * MQTT 3 client with a reactive API.
  *
  * @author Silvio Giebl
  */
-public interface Mqtt5ReactiveClient extends Mqtt5Client {
+public interface Mqtt3RxClient extends Mqtt3Client {
 
     /**
      * Creates a {@link Single} for connecting this client with the given Connect message.
@@ -56,26 +53,26 @@ public interface Mqtt5ReactiveClient extends Mqtt5Client {
      *         <ul>
      *         <li>succeeds with the ConnAck message if it does not contain an Error Code (connected
      *         successfully),</li>
-     *         <li>errors with an {@link org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException
-     *         Mqtt5MessageException} wrapping the ConnAck message if it contains an Error Code or</li>
+     *         <li>errors with an {@link org.mqttbee.api.mqtt.mqtt3.exceptions.Mqtt3MessageException
+     *         Mqtt3MessageException} wrapping the ConnAck message if it contains an Error Code or</li>
      *         <li>errors with a different exception if an error occurred before the Connect message was sent or before
      *         a ConnAck message was received.</li>
      *         </ul>
      */
-    @NotNull Single<Mqtt5ConnAck> connect(@NotNull Mqtt5Connect connect);
+    @NotNull Single<Mqtt3ConnAck> connect(@NotNull Mqtt3Connect connect);
 
     /**
-     * Creates a {@link Mqtt5ConnectBuilder} for connecting this client with the Connect message built from the returned
+     * Creates a {@link Mqtt3ConnectBuilder} for connecting this client with the Connect message built from the returned
      * builder.
      * <p>
-     * Calling {@link Mqtt5ConnectBuilder#done()} has the same effect as calling {@link #connect(Mqtt5Connect)} with the
-     * result of {@link Mqtt5ConnectBuilder#build()}.
+     * Calling {@link Mqtt3ConnectBuilder#done()} has the same effect as calling {@link #connect(Mqtt3Connect)} with the
+     * result of {@link Mqtt3ConnectBuilder#build()}.
      *
      * @return the builder for the Connect message.
-     * @see #connect(Mqtt5Connect)
+     * @see #connect(Mqtt3Connect)
      */
-    default @NotNull Mqtt5ConnectBuilder<Single<Mqtt5ConnAck>> connect() {
-        return new Mqtt5ConnectBuilder<>(this::connect);
+    default @NotNull Mqtt3ConnectBuilder<Single<Mqtt3ConnAck>> connect() {
+        return new Mqtt3ConnectBuilder<>(this::connect);
     }
 
     /**
@@ -86,7 +83,7 @@ public interface Mqtt5ReactiveClient extends Mqtt5Client {
      * subscribing (in terms of Reactive Streams) to the returned {@link Single}.
      * <p>
      * See {@link #publishes(MqttGlobalPublishFlowType)} to consume the Publish messages. Alternatively, call {@link
-     * #subscribeWithStream(Mqtt5Subscribe)} to consume the Publish messages matching the subscriptions of the Subscribe
+     * #subscribeWithStream(Mqtt3Subscribe)} to consume the Publish messages matching the subscriptions of the Subscribe
      * message directly.
      *
      * @param subscribe the Subscribe message sent to the broker during subscribe.
@@ -94,26 +91,26 @@ public interface Mqtt5ReactiveClient extends Mqtt5Client {
      *         <ul>
      *         <li>succeeds with the SubAck message if at least one subscription of the Subscribe message was
      *         successful (the SubAck message contains at least one Reason Code that is not an Error Code),</li>
-     *         <li>errors with an {@link org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException
-     *         Mqtt5MessageException} wrapping the SubAck message if it only contains Error Codes or</li>
+     *         <li>errors with an {@link org.mqttbee.api.mqtt.mqtt3.exceptions.Mqtt3MessageException
+     *         Mqtt3MessageException} wrapping the SubAck message if it only contains Error Codes or</li>
      *         <li>errors with a different exception if an error occurred before the Subscribe message was sent or
      *         before a SubAck message was received.</li>
      *         </ul>
      */
-    @NotNull Single<Mqtt5SubAck> subscribe(@NotNull Mqtt5Subscribe subscribe);
+    @NotNull Single<Mqtt3SubAck> subscribe(@NotNull Mqtt3Subscribe subscribe);
 
     /**
-     * Creates a {@link Mqtt5SubscribeBuilder} for subscribing this client with the Subscribe message built from the
+     * Creates a {@link Mqtt3SubscribeBuilder} for subscribing this client with the Subscribe message built from the
      * returned builder.
      * <p>
-     * Calling {@link Mqtt5SubscribeBuilder#done()} has the same effect as calling {@link #subscribe(Mqtt5Subscribe)}
-     * with the result of {@link Mqtt5SubscribeBuilder#build()}.
+     * Calling {@link Mqtt3SubscribeBuilder#done()} has the same effect as calling {@link #subscribe(Mqtt3Subscribe)}
+     * with the result of {@link Mqtt3SubscribeBuilder#build()}.
      *
      * @return the builder for the Subscribe message.
-     * @see #subscribe(Mqtt5Subscribe)
+     * @see #subscribe(Mqtt3Subscribe)
      */
-    default @NotNull Mqtt5SubscribeBuilder<Single<Mqtt5SubAck>> subscribe() {
-        return new Mqtt5SubscribeBuilder<>(this::subscribe);
+    default @NotNull Mqtt3SubscribeBuilder<Single<Mqtt3SubAck>> subscribe() {
+        return new Mqtt3SubscribeBuilder<>(this::subscribe);
     }
 
     /**
@@ -132,27 +129,27 @@ public interface Mqtt5ReactiveClient extends Mqtt5Client {
      *         Error Code) and then emits the Publish messages matching the successful subscriptions of the Subscribe
      *         message,</li>
      *         <li>completes when all subscriptions of the Subscribe message were unsubscribed,</li>
-     *         <li>errors with an {@link org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException
-     *         Mqtt5MessageException} wrapping the SubAck message if it only contains Error Codes or</li>
+     *         <li>errors with an {@link org.mqttbee.api.mqtt.mqtt3.exceptions.Mqtt3MessageException
+     *         Mqtt3MessageException} wrapping the SubAck message if it only contains Error Codes or</li>
      *         <li>errors with a different exception if an error occurred before the Subscribe message was sent,
      *         before a SubAck message was received or when a error occurs before all subscriptions or the Subscribe
      *         messages were unsubscribed.</li>
      *         </ul>
      */
-    @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeWithStream(@NotNull Mqtt5Subscribe subscribe);
+    @NotNull FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribeWithStream(@NotNull Mqtt3Subscribe subscribe);
 
     /**
-     * Creates a {@link Mqtt5SubscribeBuilder} for subscribing this client with the Subscribe message built from the
+     * Creates a {@link Mqtt3SubscribeBuilder} for subscribing this client with the Subscribe message built from the
      * returned builder.
      * <p>
-     * Calling {@link Mqtt5SubscribeBuilder#done()} has the same effect as calling {@link
-     * #subscribeWithStream(Mqtt5Subscribe)} with the result of {@link Mqtt5SubscribeBuilder#build()}.
+     * Calling {@link Mqtt3SubscribeBuilder#done()} has the same effect as calling {@link
+     * #subscribeWithStream(Mqtt3Subscribe)} with the result of {@link Mqtt3SubscribeBuilder#build()}.
      *
      * @return the builder for the Subscribe message.
-     * @see #subscribeWithStream(Mqtt5Subscribe)
+     * @see #subscribeWithStream(Mqtt3Subscribe)
      */
-    default @NotNull Mqtt5SubscribeBuilder<FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck>> subscribeWithStream() {
-        return new Mqtt5SubscribeBuilder<>(this::subscribeWithStream);
+    default @NotNull Mqtt3SubscribeBuilder<FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck>> subscribeWithStream() {
+        return new Mqtt3SubscribeBuilder<>(this::subscribeWithStream);
     }
 
     /**
@@ -170,7 +167,7 @@ public interface Mqtt5ReactiveClient extends Mqtt5Client {
      *         <li>completes when this client is disconnected.</li>
      *         </ul>
      */
-    @NotNull Flowable<Mqtt5Publish> publishes(@NotNull MqttGlobalPublishFlowType type);
+    @NotNull Flowable<Mqtt3Publish> publishes(@NotNull MqttGlobalPublishFlowType type);
 
     /**
      * Creates a {@link Single} for unsubscribing this client with the given Unsubscribe message.
@@ -185,32 +182,32 @@ public interface Mqtt5ReactiveClient extends Mqtt5Client {
      *         <li>succeeds with the UnsubAck message if at least one Topic Filter of the Unsubscribe message was
      *         successfully unsubscribed (the UnsubAck message contains at least one Reason Code that is not an Error
      *         Code)</li>
-     *         <li>errors with an {@link org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException
-     *         Mqtt5MessageException} wrapping the UnsubAck message if it only contains Error Codes or</li>
+     *         <li>errors with an {@link org.mqttbee.api.mqtt.mqtt3.exceptions.Mqtt3MessageException
+     *         Mqtt3MessageException} wrapping the UnsubAck message if it only contains Error Codes or</li>
      *         <li>errors with a different exception if an error occurred before the Unsubscribe message was sent or
      *         before a UnsubAck message was received.</li>
      *         </ul>
      */
-    @NotNull Single<Mqtt5UnsubAck> unsubscribe(@NotNull Mqtt5Unsubscribe unsubscribe);
+    @NotNull Completable unsubscribe(@NotNull Mqtt3Unsubscribe unsubscribe);
 
     /**
-     * Creates a {@link Mqtt5UnsubscribeBuilder} for unsubscribing this client with the Unsubscribe message built from
+     * Creates a {@link Mqtt3UnsubscribeBuilder} for unsubscribing this client with the Unsubscribe message built from
      * the returned builder.
      * <p>
-     * Calling {@link Mqtt5UnsubscribeBuilder#done()} has the same effect as calling {@link
-     * #unsubscribe(Mqtt5Unsubscribe)} with the result of {@link Mqtt5UnsubscribeBuilder#build()}.
+     * Calling {@link Mqtt3UnsubscribeBuilder#done()} has the same effect as calling {@link
+     * #unsubscribe(Mqtt3Unsubscribe)} with the result of {@link Mqtt3UnsubscribeBuilder#build()}.
      *
      * @return the builder for the Unsubscribe message.
-     * @see #unsubscribe(Mqtt5Unsubscribe)
+     * @see #unsubscribe(Mqtt3Unsubscribe)
      */
-    default @NotNull Mqtt5UnsubscribeBuilder<Single<Mqtt5UnsubAck>> unsubscribe() {
-        return new Mqtt5UnsubscribeBuilder<>(this::unsubscribe);
+    default @NotNull Mqtt3UnsubscribeBuilder<Completable> unsubscribe() {
+        return new Mqtt3UnsubscribeBuilder<>(this::unsubscribe);
     }
 
     /**
      * Creates a {@link Flowable} for publishing the Publish messages emitted by the given {@link Flowable}.
      * <p>
-     * The returned {@link Flowable} represents the source of {@link Mqtt5PublishResult}s each corresponding to a
+     * The returned {@link Flowable} represents the source of {@link Mqtt3PublishResult}s each corresponding to a
      * Publish message emitted by the given {@link Flowable}. Calling this method does not start publishing yet.
      * Publishing is performed lazy and asynchronous. When subscribing (in terms of Reactive Streams) to the returned
      * {@link Flowable} the client subscribes (in terms of Reactive Streams) to the given {@link Flowable}.
@@ -218,58 +215,25 @@ public interface Mqtt5ReactiveClient extends Mqtt5Client {
      * @param publishFlowable the source of the Publish messages to publish.
      * @return the {@link Flowable} which
      *         <ul>
-     *         <li>emits {@link Mqtt5PublishResult}s each corresponding to a Publish message,</li>
+     *         <li>emits {@link Mqtt3PublishResult}s each corresponding to a Publish message,</li>
      *         <li>completes when the given {@link Flowable} completes or</li>
      *         <li>errors with the same exception when the given {@link Flowable} errors.</li>
      *         </ul>
      */
-    @NotNull Flowable<Mqtt5PublishResult> publish(@NotNull Flowable<Mqtt5Publish> publishFlowable);
+    @NotNull Flowable<Mqtt3PublishResult> publish(@NotNull Flowable<Mqtt3Publish> publishFlowable);
 
     /**
-     * Creates a {@link Completable} for re-authenticating this client with the given Disconnect message.
-     * <p>
-     * Calling this method does not re-authenticate yet. Re-authenticating is performed lazy and asynchronous when
-     * subscribing (in terms of Reactive Streams) to the returned {@link Completable}.
-     *
-     * @return the {@link Completable} which
-     *         <ul>
-     *         <li>completes when the client was successfully re-authenticated,</li>
-     *         <li>errors with an {@link org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException
-     *         Mqtt5MessageException} wrapping the Auth message with the Error Code if not re-authenticated successfully
-     *         or</li>
-     *         <li>errors with a different exception if an error occurred before the first Auth message was sent or
-     *         before the last Auth message was received.</li>
-     *         </ul>
-     */
-    @NotNull Completable reauth();
-
-    /**
-     * Creates a {@link Completable} for disconnecting this client with the given Disconnect message.
+     * Creates a {@link Completable} for disconnecting this client.
      * <p>
      * Calling this method does not disconnect yet. Disconnecting is performed lazy and asynchronous when subscribing
      * (in terms of Reactive Streams) to the returned {@link Completable}.
      *
-     * @param disconnect the Disconnect message sent to the broker during disconnect.
      * @return the {@link Completable} which
      *         <ul>
      *         <li>completes when the client was successfully disconnected or</li>
      *         <li>errors if not disconnected successfully.</li>
      *         </ul>
      */
-    @NotNull Completable disconnect(@NotNull Mqtt5Disconnect disconnect);
-
-    /**
-     * Creates a {@link Mqtt5DisconnectBuilder} for disconnecting this MQTT 5 client with the Disconnect message built
-     * from the returned builder.
-     * <p>
-     * Calling {@link Mqtt5DisconnectBuilder#done()} has the same effect as calling {@link #disconnect(Mqtt5Disconnect)}
-     * with the result of {@link Mqtt5DisconnectBuilder#build()}.
-     *
-     * @return the builder for the Disconnect message.
-     * @see #disconnect(Mqtt5Disconnect)
-     */
-    default @NotNull Mqtt5DisconnectBuilder<Completable> disconnect() {
-        return new Mqtt5DisconnectBuilder<>(this::disconnect);
-    }
+    @NotNull Completable disconnect();
 
 }

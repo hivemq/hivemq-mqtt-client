@@ -172,7 +172,7 @@ public class Mqtt5ClientBuilder extends MqttClientBuilder {
     }
 
     @NotNull
-    public Mqtt5ReactiveClient buildReactive() {
+    public Mqtt5RxClient buildRx() {
         return new Mqtt5ClientImpl(buildClientData());
     }
 

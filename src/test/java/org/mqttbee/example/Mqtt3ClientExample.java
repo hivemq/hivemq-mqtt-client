@@ -27,7 +27,7 @@ import org.mqttbee.api.mqtt.MqttClientBuilder;
 import org.mqttbee.api.mqtt.MqttClientSslConfig;
 import org.mqttbee.api.mqtt.MqttWebSocketConfig;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
-import org.mqttbee.api.mqtt.mqtt3.Mqtt3ReactiveClient;
+import org.mqttbee.api.mqtt.mqtt3.Mqtt3RxClient;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3Connect;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;
@@ -127,7 +127,7 @@ class Mqtt3ClientExample {
     Completable subscribeTo(
             final String topic, final MqttQos qos, final int countToPublish, final CountDownLatch subscribedLatch) {
 
-        final Mqtt3ReactiveClient client = getClient();
+        final Mqtt3RxClient client = getClient();
 
         // create a CONNECT message with keep alive of 10 seconds
         final Mqtt3Connect connectMessage = Mqtt3Connect.builder().keepAlive(10, TimeUnit.SECONDS).build();
@@ -173,7 +173,7 @@ class Mqtt3ClientExample {
     }
 
     Completable publish(final String topic, final MqttQos qos, final int countToPublish) {
-        final Mqtt3ReactiveClient client = getClient();
+        final Mqtt3RxClient client = getClient();
 
         // create a CONNECT message with keep alive of 10 seconds
         final Mqtt3Connect connectMessage = Mqtt3Connect.builder().keepAlive(10, TimeUnit.SECONDS).build();
@@ -213,7 +213,7 @@ class Mqtt3ClientExample {
                 .andThen(publishScenario).take(countToPublish).ignoreElements().andThen(disconnectScenario);
     }
 
-    private Mqtt3ReactiveClient getClient() {
+    private Mqtt3RxClient getClient() {
         final MqttClientBuilder mqttClientBuilder = MqttClient.builder()
                 .identifier(UUID.randomUUID().toString())
                 .serverHost(server)
@@ -230,7 +230,7 @@ class Mqtt3ClientExample {
             mqttClientBuilder.useWebSocket(MqttWebSocketConfig.builder().serverPath(serverPath).build());
         }
 
-        return mqttClientBuilder.useMqttVersion3().buildReactive();
+        return mqttClientBuilder.useMqttVersion3().buildRx();
     }
 
     private static String getProperty(final String key, final String defaultValue) {
