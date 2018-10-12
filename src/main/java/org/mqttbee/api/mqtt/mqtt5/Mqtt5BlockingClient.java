@@ -18,6 +18,7 @@
 package org.mqttbee.api.mqtt.mqtt5;
 
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.api.mqtt.MqttGlobalPublishFlowType;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5ConnectBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
@@ -53,10 +54,7 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
         return new Mqtt5SubscribeBuilder<>(this::subscribe);
     }
 
-    @NotNull Mqtt5Publish receive() throws InterruptedException;
-
-    @NotNull Optional<Mqtt5Publish> receive(final long timeout, final @NotNull TimeUnit timeUnit)
-            throws InterruptedException;
+    @NotNull Mqtt5Publishes publishes(@NotNull MqttGlobalPublishFlowType type);
 
     @NotNull Mqtt5UnsubAck unsubscribe(@NotNull Mqtt5Unsubscribe unsubscribe);
 
@@ -81,4 +79,13 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
         });
     }
 
+    interface Mqtt5Publishes {
+
+        @NotNull Mqtt5Publish receive() throws InterruptedException;
+
+        @NotNull Optional<Mqtt5Publish> receive(final long timeout, final @NotNull TimeUnit timeUnit)
+                throws InterruptedException;
+
+        void cancel();
+    }
 }
