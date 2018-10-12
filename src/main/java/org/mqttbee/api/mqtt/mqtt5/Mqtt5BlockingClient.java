@@ -33,6 +33,9 @@ import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5UnsubscribeBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
 
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+
 /**
  * @author Silvio Giebl
  */
@@ -52,6 +55,8 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
 
     @NotNull Mqtt5Publish receive();
 
+    @NotNull Optional<Mqtt5Publish> receive(final long timeout, final @NotNull TimeUnit timeUnit);
+
     @NotNull Mqtt5UnsubAck unsubscribe(@NotNull Mqtt5Unsubscribe unsubscribe);
 
     default @NotNull Mqtt5UnsubscribeBuilder<Mqtt5UnsubAck> unsubscribe() {
@@ -64,7 +69,7 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
         return new Mqtt5PublishBuilder<>(this::publish);
     }
 
-    boolean reauth();
+    void reauth();
 
     void disconnect(@NotNull Mqtt5Disconnect disconnect);
 
