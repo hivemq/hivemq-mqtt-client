@@ -28,4 +28,10 @@ public interface Mqtt3Client extends MqttClient {
     @Override
     @NotNull Mqtt3ClientData getClientData();
 
+    @NotNull Mqtt3RxClient toRx();
+
+    @NotNull Mqtt3AsyncClient toAsync();
+
+    @NotNull Mqtt3BlockingClient toBlocking();
+
 }

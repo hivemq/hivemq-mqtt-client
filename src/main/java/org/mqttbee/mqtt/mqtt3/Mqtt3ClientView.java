@@ -23,6 +23,8 @@ import io.reactivex.Single;
 import io.reactivex.functions.Function;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttGlobalPublishFlowType;
+import org.mqttbee.api.mqtt.mqtt3.Mqtt3AsyncClient;
+import org.mqttbee.api.mqtt.mqtt3.Mqtt3BlockingClient;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3ClientData;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3RxClient;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3Connect;
@@ -144,4 +146,18 @@ public class Mqtt3ClientView implements Mqtt3RxClient {
         return new Mqtt3ClientDataView(delegate.getClientData());
     }
 
+    @Override
+    public @NotNull Mqtt3RxClient toRx() {
+        return this;
+    }
+
+    @Override
+    public @NotNull Mqtt3AsyncClient toAsync() {
+        throw new UnsupportedOperationException("not implemented yet");
+    }
+
+    @Override
+    public @NotNull Mqtt3BlockingClient toBlocking() {
+        throw new UnsupportedOperationException("not implemented yet");
+    }
 }
