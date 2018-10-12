@@ -23,8 +23,8 @@ import io.reactivex.Single;
 import io.reactivex.functions.Function;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttGlobalPublishFlowType;
-import org.mqttbee.api.mqtt.mqtt3.Mqtt3Client;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3ClientData;
+import org.mqttbee.api.mqtt.mqtt3.Mqtt3ReactiveClient;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3Connect;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;
@@ -53,7 +53,7 @@ import org.mqttbee.util.MustNotBeImplementedUtil;
  * @author Silvio Giebl
  * @author David Katz
  */
-public class Mqtt3ClientView implements Mqtt3Client {
+public class Mqtt3ClientView implements Mqtt3ReactiveClient {
 
     private static final @NotNull Function<Throwable, Completable> EXCEPTION_MAPPER_COMPLETABLE =
             e -> Completable.error(Mqtt3ExceptionFactory.map(e));

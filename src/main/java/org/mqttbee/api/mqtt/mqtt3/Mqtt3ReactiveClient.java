@@ -40,7 +40,7 @@ import org.mqttbee.rx.FlowableWithSingle;
  *
  * @author Silvio Giebl
  */
-public interface Mqtt3Client extends MqttClient {
+public interface Mqtt3ReactiveClient extends MqttClient {
 
     /**
      * Creates a {@link Single} for connecting this client with the given Connect message.
