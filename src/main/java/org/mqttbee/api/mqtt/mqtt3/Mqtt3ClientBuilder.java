@@ -147,7 +147,7 @@ public class Mqtt3ClientBuilder extends MqttClientBuilder {
     }
 
     @NotNull
-    public Mqtt3Client buildReactive() {
+    public Mqtt3ReactiveClient buildReactive() {
         return new Mqtt3ClientView(new Mqtt5ClientImpl(buildClientData()));
     }
 
