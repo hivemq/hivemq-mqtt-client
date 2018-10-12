@@ -18,6 +18,7 @@
 package org.mqttbee.api.mqtt.mqtt3;
 
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.api.mqtt.MqttGlobalPublishFlowType;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3Connect;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3ConnectBuilder;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck;
@@ -51,10 +52,7 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
         return new Mqtt3SubscribeBuilder<>(this::subscribe);
     }
 
-    @NotNull Mqtt3Publish receive() throws InterruptedException;
-
-    @NotNull Optional<Mqtt3Publish> receive(final long timeout, final @NotNull TimeUnit timeUnit)
-            throws InterruptedException;
+    @NotNull Mqtt3Publishes publishes(@NotNull MqttGlobalPublishFlowType type);
 
     @NotNull Mqtt3UnsubAck unsubscribe(@NotNull Mqtt3Unsubscribe unsubscribe);
 
@@ -69,4 +67,14 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
     }
 
     void disconnect();
+
+    interface Mqtt3Publishes {
+
+        @NotNull Mqtt3Publish receive() throws InterruptedException;
+
+        @NotNull Optional<Mqtt3Publish> receive(final long timeout, final @NotNull TimeUnit timeUnit)
+                throws InterruptedException;
+
+        void cancel();
+    }
 }
