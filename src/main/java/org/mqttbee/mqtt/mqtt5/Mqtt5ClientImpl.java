@@ -27,6 +27,8 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttGlobalPublishFlowType;
 import org.mqttbee.api.mqtt.exceptions.AlreadyConnectedException;
 import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
+import org.mqttbee.api.mqtt.mqtt5.Mqtt5AsyncClient;
+import org.mqttbee.api.mqtt.mqtt5.Mqtt5BlockingClient;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5RxClient;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
@@ -208,4 +210,18 @@ public class Mqtt5ClientImpl implements Mqtt5RxClient {
         return clientData;
     }
 
+    @Override
+    public @NotNull Mqtt5RxClient toRx() {
+        return this;
+    }
+
+    @Override
+    public @NotNull Mqtt5AsyncClient toAsync() {
+        throw new UnsupportedOperationException("not implemented yet");
+    }
+
+    @Override
+    public @NotNull Mqtt5BlockingClient toBlocking() {
+        throw new UnsupportedOperationException("not implemented yet");
+    }
 }

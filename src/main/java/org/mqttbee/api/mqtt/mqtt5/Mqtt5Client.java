@@ -28,4 +28,10 @@ public interface Mqtt5Client extends MqttClient {
     @Override
     @NotNull Mqtt5ClientData getClientData();
 
+    @NotNull Mqtt5RxClient toRx();
+
+    @NotNull Mqtt5AsyncClient toAsync();
+
+    @NotNull Mqtt5BlockingClient toBlocking();
+
 }
