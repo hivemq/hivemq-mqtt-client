@@ -146,9 +146,16 @@ public class Mqtt3ClientBuilder extends MqttClientBuilder {
                 "Switching MQTT Version is not allowed. Please call useMqttVersion3/5 only once.");
     }
 
-    @NotNull
-    public Mqtt3RxClient buildRx() {
+    public @NotNull Mqtt3RxClient buildRx() {
         return new Mqtt3ClientView(new Mqtt5ClientImpl(buildClientData()));
+    }
+
+    public @NotNull Mqtt3AsyncClient buildAsync() {
+        throw new UnsupportedOperationException("not implemented yet");
+    }
+
+    public @NotNull Mqtt3BlockingClient buildBlocking() {
+        throw new UnsupportedOperationException("not implemented yet");
     }
 
     @NotNull

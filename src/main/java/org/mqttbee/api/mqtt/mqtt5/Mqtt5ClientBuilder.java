@@ -171,9 +171,16 @@ public class Mqtt5ClientBuilder extends MqttClientBuilder {
         return this;
     }
 
-    @NotNull
-    public Mqtt5RxClient buildRx() {
+    public @NotNull Mqtt5RxClient buildRx() {
         return new Mqtt5ClientImpl(buildClientData());
+    }
+
+    public @NotNull Mqtt5AsyncClient buildAsync() {
+        throw new UnsupportedOperationException("not implemented yet");
+    }
+
+    public @NotNull Mqtt5BlockingClient buildBlocking() {
+        throw new UnsupportedOperationException("not implemented yet");
     }
 
     @NotNull
