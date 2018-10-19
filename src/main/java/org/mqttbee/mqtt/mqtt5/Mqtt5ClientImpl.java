@@ -211,11 +211,6 @@ public class Mqtt5ClientImpl implements Mqtt5RxClient {
     }
 
     @Override
-    public @NotNull Mqtt5RxClient toRx() {
-        return this;
-    }
-
-    @Override
     public @NotNull Mqtt5AsyncClient toAsync() {
         throw new UnsupportedOperationException("not implemented yet");
     }

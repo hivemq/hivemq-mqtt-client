@@ -106,6 +106,11 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
         return new Mqtt5DisconnectBuilder<>(this::disconnect);
     }
 
+    @Override
+    default @NotNull Mqtt5AsyncClient toAsync() {
+        return this;
+    }
+
     class Mqtt5SubscribeAndCallback {
 
         private final @NotNull Mqtt5Subscribe subscribe;

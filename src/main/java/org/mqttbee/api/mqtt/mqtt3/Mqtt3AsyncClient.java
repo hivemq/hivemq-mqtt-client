@@ -96,6 +96,11 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
 
     @NotNull CompletableFuture<Void> disconnect();
 
+    @Override
+    default @NotNull Mqtt3AsyncClient toAsync() {
+        return this;
+    }
+
     class Mqtt3SubscribeAndCallback {
 
         private final @NotNull Mqtt3Subscribe subscribe;
