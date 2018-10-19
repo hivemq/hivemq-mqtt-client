@@ -236,4 +236,8 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      */
     @NotNull Completable disconnect();
 
+    @Override
+    default @NotNull Mqtt3RxClient toRx() {
+        return this;
+    }
 }

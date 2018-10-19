@@ -79,6 +79,11 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
         });
     }
 
+    @Override
+    default @NotNull Mqtt5BlockingClient toBlocking() {
+        return this;
+    }
+
     interface Mqtt5Publishes {
 
         @NotNull Mqtt5Publish receive() throws InterruptedException;

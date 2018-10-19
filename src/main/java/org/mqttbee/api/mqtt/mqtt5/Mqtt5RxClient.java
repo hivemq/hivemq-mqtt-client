@@ -272,4 +272,8 @@ public interface Mqtt5RxClient extends Mqtt5Client {
         return new Mqtt5DisconnectBuilder<>(this::disconnect);
     }
 
+    @Override
+    default @NotNull Mqtt5RxClient toRx() {
+        return this;
+    }
 }

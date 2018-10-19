@@ -68,6 +68,11 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
 
     void disconnect();
 
+    @Override
+    default @NotNull Mqtt3BlockingClient toBlocking() {
+        return this;
+    }
+
     interface Mqtt3Publishes {
 
         @NotNull Mqtt3Publish receive() throws InterruptedException;

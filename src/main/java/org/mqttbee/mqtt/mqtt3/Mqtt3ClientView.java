@@ -147,11 +147,6 @@ public class Mqtt3ClientView implements Mqtt3RxClient {
     }
 
     @Override
-    public @NotNull Mqtt3RxClient toRx() {
-        return this;
-    }
-
-    @Override
     public @NotNull Mqtt3AsyncClient toAsync() {
         throw new UnsupportedOperationException("not implemented yet");
     }
