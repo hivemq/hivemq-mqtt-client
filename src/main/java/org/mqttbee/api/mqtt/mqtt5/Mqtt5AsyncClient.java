@@ -20,6 +20,9 @@ package org.mqttbee.api.mqtt.mqtt5;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.MqttGlobalPublishFilter;
+import org.mqttbee.api.mqtt.datatypes.MqttQos;
+import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
+import org.mqttbee.api.mqtt.datatypes.MqttTopicFilterBuilder;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;
@@ -30,10 +33,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PublishBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
-import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
-import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeBuilder;
-import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscription;
-import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscriptionBuilder;
+import org.mqttbee.api.mqtt.mqtt5.message.subscribe.*;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5UnsubscribeBuilder;
@@ -149,6 +149,42 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
                 final @Nullable Function<? super Mqtt5SubscribeAndCallback, P> parentConsumer) {
 
             super(parentConsumer);
+        }
+
+        public @NotNull Mqtt5SubscribeAndCallbackBuilder<P> topicFilter(final @NotNull String topicFilter) {
+            subscribeBuilder.topicFilter(topicFilter);
+            return this;
+        }
+
+        public @NotNull Mqtt5SubscribeAndCallbackBuilder<P> topicFilter(final @NotNull MqttTopicFilter topicFilter) {
+            subscribeBuilder.topicFilter(topicFilter);
+            return this;
+        }
+
+        public @NotNull MqttTopicFilterBuilder<? extends Mqtt5SubscribeAndCallbackBuilder<P>> topicFilter() {
+            return new MqttTopicFilterBuilder<>("", this::topicFilter);
+        }
+
+        public @NotNull Mqtt5SubscribeAndCallbackBuilder<P> qos(final @NotNull MqttQos qos) {
+            subscribeBuilder.qos(qos);
+            return this;
+        }
+
+        public @NotNull Mqtt5SubscribeAndCallbackBuilder<P> noLocal(final boolean noLocal) {
+            subscribeBuilder.noLocal(noLocal);
+            return this;
+        }
+
+        public @NotNull Mqtt5SubscribeAndCallbackBuilder<P> retainHandling(
+                final @NotNull Mqtt5RetainHandling retainHandling) {
+
+            subscribeBuilder.retainHandling(retainHandling);
+            return this;
+        }
+
+        public @NotNull Mqtt5SubscribeAndCallbackBuilder<P> retainAsPublished(final boolean retainAsPublished) {
+            subscribeBuilder.retainAsPublished(retainAsPublished);
+            return this;
         }
 
         public @NotNull Mqtt5SubscribeAndCallbackBuilder<P> addSubscription(
