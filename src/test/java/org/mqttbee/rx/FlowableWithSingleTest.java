@@ -580,7 +580,7 @@ class FlowableWithSingleTest {
         final AtomicInteger onNextCounter = new AtomicInteger();
         final AtomicInteger onErrorCounter = new AtomicInteger();
         final AtomicInteger onCompleteCounter = new AtomicInteger();
-        final CountDownLatch latch = new CountDownLatch((args >= 3) ? 1 : 0);
+        final CountDownLatch latch = new CountDownLatch((args >= 2) ? 1 : 0);
         final CompletableFuture<StringBuilder> future =
                 subscribeSingleFuture(args, flowableWithSingle, onNextCounter, onErrorCounter, onCompleteCounter,
                         latch);
