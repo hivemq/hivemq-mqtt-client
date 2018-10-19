@@ -35,62 +35,53 @@ import java.util.function.Function;
  */
 public class Mqtt5SubscriptionBuilder<P> extends FluentBuilder<Mqtt5Subscription, P> {
 
-    private MqttTopicFilterImpl topicFilter;
-    private MqttQos qos;
+    private @Nullable MqttTopicFilterImpl topicFilter;
+    private @NotNull MqttQos qos = Mqtt5Subscription.DEFAULT_QOS;
     private boolean noLocal = Mqtt5Subscription.DEFAULT_NO_LOCAL;
-    private Mqtt5RetainHandling retainHandling = Mqtt5Subscription.DEFAULT_RETAIN_HANDLING;
+    private @NotNull Mqtt5RetainHandling retainHandling = Mqtt5Subscription.DEFAULT_RETAIN_HANDLING;
     private boolean retainAsPublished = Mqtt5Subscription.DEFAULT_RETAIN_AS_PUBLISHED;
 
-    public Mqtt5SubscriptionBuilder(@Nullable final Function<? super Mqtt5Subscription, P> parentConsumer) {
+    public Mqtt5SubscriptionBuilder(final @Nullable Function<? super Mqtt5Subscription, P> parentConsumer) {
         super(parentConsumer);
     }
 
-    @NotNull
-    public Mqtt5SubscriptionBuilder<P> topicFilter(@NotNull final String topicFilter) {
+    public @NotNull Mqtt5SubscriptionBuilder<P> topicFilter(final @NotNull String topicFilter) {
         this.topicFilter = MqttBuilderUtil.topicFilter(topicFilter);
         return this;
     }
 
-    @NotNull
-    public Mqtt5SubscriptionBuilder<P> topicFilter(@NotNull final MqttTopicFilter topicFilter) {
+    public @NotNull Mqtt5SubscriptionBuilder<P> topicFilter(final @NotNull MqttTopicFilter topicFilter) {
         this.topicFilter = MqttBuilderUtil.topicFilter(topicFilter);
         return this;
     }
 
-    @NotNull
-    public MqttTopicFilterBuilder<? extends Mqtt5SubscriptionBuilder<P>> topicFilter() {
+    public @NotNull MqttTopicFilterBuilder<? extends Mqtt5SubscriptionBuilder<P>> topicFilter() {
         return new MqttTopicFilterBuilder<>("", this::topicFilter);
     }
 
-    @NotNull
-    public Mqtt5SubscriptionBuilder<P> qos(@NotNull final MqttQos qos) {
+    public @NotNull Mqtt5SubscriptionBuilder<P> qos(final @NotNull MqttQos qos) {
         this.qos = Preconditions.checkNotNull(qos, "QoS must not be null.");
         return this;
     }
 
-    @NotNull
-    public Mqtt5SubscriptionBuilder<P> noLocal(final boolean noLocal) {
+    public @NotNull Mqtt5SubscriptionBuilder<P> noLocal(final boolean noLocal) {
         this.noLocal = noLocal;
         return this;
     }
 
-    @NotNull
-    public Mqtt5SubscriptionBuilder<P> retainHandling(@NotNull final Mqtt5RetainHandling retainHandling) {
+    public @NotNull Mqtt5SubscriptionBuilder<P> retainHandling(final @NotNull Mqtt5RetainHandling retainHandling) {
         this.retainHandling = Preconditions.checkNotNull(retainHandling, "Retain handling must not be null.");
         return this;
     }
 
-    @NotNull
-    public Mqtt5SubscriptionBuilder<P> retainAsPublished(final boolean retainAsPublished) {
+    public @NotNull Mqtt5SubscriptionBuilder<P> retainAsPublished(final boolean retainAsPublished) {
         this.retainAsPublished = retainAsPublished;
         return this;
     }
 
-    @NotNull
     @Override
-    public Mqtt5Subscription build() {
+    public @NotNull Mqtt5Subscription build() {
         Preconditions.checkNotNull(topicFilter, "Topic filter must not be null.");
-        Preconditions.checkNotNull(qos, "QoS must not be null.");
         Preconditions.checkArgument(
                 !(topicFilter.isShared() && noLocal),
                 "It is a Protocol Error to set no local to true on a Shared Subscription.");

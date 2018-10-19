@@ -17,8 +17,8 @@
 
 package org.mqttbee.api.mqtt.mqtt5.message.publish;
 
-import org.mqttbee.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
@@ -39,45 +39,40 @@ import java.util.function.Function;
 @DoNotImplement
 public interface Mqtt5Publish extends Mqtt5Message, Mqtt5SubscribeResult {
 
+    @NotNull MqttQos DEFAULT_QOS = MqttQos.AT_MOST_ONCE;
+
     /**
      * The default handling for using a topic alias.
      */
-    @NotNull
-    TopicAliasUsage DEFAULT_TOPIC_ALIAS_USAGE = TopicAliasUsage.NO;
+    @NotNull TopicAliasUsage DEFAULT_TOPIC_ALIAS_USAGE = TopicAliasUsage.NO;
 
-    @NotNull
-    static Mqtt5PublishBuilder<Void> builder() {
+    static @NotNull Mqtt5PublishBuilder<Void> builder() {
         return new Mqtt5PublishBuilder<>((Function<Mqtt5Publish, Void>) null);
     }
 
-    @NotNull
-    static Mqtt5PublishBuilder<Void> extend(@NotNull final Mqtt5Publish publish) {
+    static @NotNull Mqtt5PublishBuilder<Void> extend(@NotNull final Mqtt5Publish publish) {
         return new Mqtt5PublishBuilder<>(publish);
     }
 
     /**
      * @return the topic of this PUBLISH packet.
      */
-    @NotNull
-    MqttTopic getTopic();
+    @NotNull MqttTopic getTopic();
 
     /**
      * @return the optional payload of this PUBLISH packet.
      */
-    @NotNull
-    Optional<ByteBuffer> getPayload();
+    @NotNull Optional<ByteBuffer> getPayload();
 
     /**
      * @return the payload of this PUBLISH packet as byte array. Empty byte array if the payload is null.
      */
-    @NotNull
-    byte[] getPayloadAsBytes();
+    @NotNull byte[] getPayloadAsBytes();
 
     /**
      * @return the QoS of this PUBLISH packet.
      */
-    @NotNull
-    MqttQos getQos();
+    @NotNull MqttQos getQos();
 
     /**
      * @return whether this PUBLISH packet is a retained message.
@@ -87,48 +82,40 @@ public interface Mqtt5Publish extends Mqtt5Message, Mqtt5SubscribeResult {
     /**
      * @return the optional message expiry interval in seconds of this PUBLISH packet.
      */
-    @NotNull
-    Optional<Long> getMessageExpiryInterval();
+    @NotNull Optional<Long> getMessageExpiryInterval();
 
     /**
      * @return the optional payload format indicator of this PUBLISH packet.
      */
-    @NotNull
-    Optional<Mqtt5PayloadFormatIndicator> getPayloadFormatIndicator();
+    @NotNull Optional<Mqtt5PayloadFormatIndicator> getPayloadFormatIndicator();
 
     /**
      * @return the optional content type of this PUBLISH packet.
      */
-    @NotNull
-    Optional<MqttUTF8String> getContentType();
+    @NotNull Optional<MqttUTF8String> getContentType();
 
     /**
      * @return the optional response topic of this PUBLISH packet.
      */
-    @NotNull
-    Optional<MqttTopic> getResponseTopic();
+    @NotNull Optional<MqttTopic> getResponseTopic();
 
     /**
      * @return the optional correlation data of this PUBLISH packet.
      */
-    @NotNull
-    Optional<ByteBuffer> getCorrelationData();
+    @NotNull Optional<ByteBuffer> getCorrelationData();
 
     /**
      * @return the handling for using a topic alias.
      */
-    @NotNull
-    TopicAliasUsage usesTopicAlias();
+    @NotNull TopicAliasUsage usesTopicAlias();
 
     /**
      * @return the optional user properties of this PUBLISH packet.
      */
-    @NotNull
-    Mqtt5UserProperties getUserProperties();
+    @NotNull Mqtt5UserProperties getUserProperties();
 
-    @NotNull
     @Override
-    default Mqtt5MessageType getType() {
+    default @NotNull Mqtt5MessageType getType() {
         return Mqtt5MessageType.PUBLISH;
     }
 

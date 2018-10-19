@@ -17,8 +17,8 @@
 
 package org.mqttbee.api.mqtt.mqtt3.message.publish;
 
-import org.mqttbee.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3Message;
@@ -35,48 +35,43 @@ import java.util.function.Function;
 @DoNotImplement
 public interface Mqtt3Publish extends Mqtt3Message, Mqtt3SubscribeResult {
 
-    @NotNull
-    static Mqtt3PublishBuilder<Void> builder() {
+    @NotNull MqttQos DEFAULT_QOS = MqttQos.AT_MOST_ONCE;
+
+    static @NotNull Mqtt3PublishBuilder<Void> builder() {
         return new Mqtt3PublishBuilder<>((Function<Mqtt3Publish, Void>) null);
     }
 
-    @NotNull
-    static Mqtt3PublishBuilder<Void> extend(@NotNull final Mqtt3Publish publish) {
+    static @NotNull Mqtt3PublishBuilder<Void> extend(@NotNull final Mqtt3Publish publish) {
         return new Mqtt3PublishBuilder<>(publish);
     }
 
     /**
      * @return the topic of this PUBLISH packet.
      */
-    @NotNull
-    MqttTopic getTopic();
+    @NotNull MqttTopic getTopic();
 
     /**
      * @return the optional payload of this PUBLISH packet.
      */
-    @NotNull
-    Optional<ByteBuffer> getPayload();
+    @NotNull Optional<ByteBuffer> getPayload();
 
     /**
      * @return the payload of this PUBLISH packet as byte array. Empty byte array if the payload is null.
      */
-    @NotNull
-    byte[] getPayloadAsBytes();
+    @NotNull byte[] getPayloadAsBytes();
 
     /**
      * @return the QoS of this PUBLISH packet.
      */
-    @NotNull
-    MqttQos getQos();
+    @NotNull MqttQos getQos();
 
     /**
      * @return whether this PUBLISH packet is a retained message.
      */
     boolean isRetain();
 
-    @NotNull
     @Override
-    default Mqtt3MessageType getType() {
+    default @NotNull Mqtt3MessageType getType() {
         return Mqtt3MessageType.PUBLISH;
     }
 
