@@ -20,6 +20,9 @@ package org.mqttbee.api.mqtt.mqtt3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.MqttGlobalPublishFilter;
+import org.mqttbee.api.mqtt.datatypes.MqttQos;
+import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
+import org.mqttbee.api.mqtt.datatypes.MqttTopicFilterBuilder;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3Connect;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3ConnectBuilder;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck;
@@ -139,6 +142,25 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
                 final @Nullable Function<? super Mqtt3SubscribeAndCallback, P> parentConsumer) {
 
             super(parentConsumer);
+        }
+
+        public @NotNull Mqtt3SubscribeAndCallbackBuilder<P> topicFilter(final @NotNull String topicFilter) {
+            subscribeBuilder.topicFilter(topicFilter);
+            return this;
+        }
+
+        public @NotNull Mqtt3SubscribeAndCallbackBuilder<P> topicFilter(final @NotNull MqttTopicFilter topicFilter) {
+            subscribeBuilder.topicFilter(topicFilter);
+            return this;
+        }
+
+        public @NotNull MqttTopicFilterBuilder<? extends Mqtt3SubscribeAndCallbackBuilder<P>> topicFilter() {
+            return new MqttTopicFilterBuilder<>("", this::topicFilter);
+        }
+
+        public @NotNull Mqtt3SubscribeAndCallbackBuilder<P> qos(final @NotNull MqttQos qos) {
+            subscribeBuilder.qos(qos);
+            return this;
         }
 
         public @NotNull Mqtt3SubscribeAndCallbackBuilder<P> addSubscription(
