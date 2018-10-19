@@ -21,6 +21,9 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mqttbee.api.mqtt.datatypes.MqttQos;
+import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
+import org.mqttbee.api.mqtt.datatypes.MqttTopicFilterBuilder;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
 import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeView;
 import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscriptionView;
@@ -34,14 +37,15 @@ import java.util.function.Function;
  */
 public class Mqtt3SubscribeBuilder<P> extends FluentBuilder<Mqtt3Subscribe, P> {
 
-    private final ImmutableList.Builder<MqttSubscription> subscriptionBuilder;
+    private final @NotNull ImmutableList.Builder<MqttSubscription> subscriptionBuilder;
+    private @Nullable Mqtt3SubscriptionBuilder<Void> firstSubscriptionBuilder;
 
     public Mqtt3SubscribeBuilder(@Nullable final Function<? super Mqtt3Subscribe, P> parentConsumer) {
         super(parentConsumer);
         subscriptionBuilder = ImmutableList.builder();
     }
 
-    Mqtt3SubscribeBuilder(@NotNull final Mqtt3Subscribe subscribe) {
+    Mqtt3SubscribeBuilder(final @NotNull Mqtt3Subscribe subscribe) {
         super(null);
         final Mqtt3SubscribeView subscribeView =
                 MustNotBeImplementedUtil.checkNotImplemented(subscribe, Mqtt3SubscribeView.class);
@@ -50,22 +54,48 @@ public class Mqtt3SubscribeBuilder<P> extends FluentBuilder<Mqtt3Subscribe, P> {
         subscriptionBuilder.addAll(subscriptions);
     }
 
-    @NotNull
-    public Mqtt3SubscribeBuilder<P> addSubscription(@NotNull final Mqtt3Subscription subscription) {
+    private @NotNull Mqtt3SubscriptionBuilder<Void> getFirstSubscriptionBuilder() {
+        if (firstSubscriptionBuilder == null) {
+            firstSubscriptionBuilder = Mqtt3Subscription.builder();
+        }
+        return firstSubscriptionBuilder;
+    }
+
+    public @NotNull Mqtt3SubscribeBuilder<P> topicFilter(final @NotNull String topicFilter) {
+        getFirstSubscriptionBuilder().topicFilter(topicFilter);
+        return this;
+    }
+
+    public @NotNull Mqtt3SubscribeBuilder<P> topicFilter(final @NotNull MqttTopicFilter topicFilter) {
+        getFirstSubscriptionBuilder().topicFilter(topicFilter);
+        return this;
+    }
+
+    public @NotNull MqttTopicFilterBuilder<? extends Mqtt3SubscribeBuilder<P>> topicFilter() {
+        return new MqttTopicFilterBuilder<>("", this::topicFilter);
+    }
+
+    public @NotNull Mqtt3SubscribeBuilder<P> qos(final @NotNull MqttQos qos) {
+        getFirstSubscriptionBuilder().qos(qos);
+        return this;
+    }
+
+    public @NotNull Mqtt3SubscribeBuilder<P> addSubscription(final @NotNull Mqtt3Subscription subscription) {
         final Mqtt3SubscriptionView subscriptionView =
                 MustNotBeImplementedUtil.checkNotImplemented(subscription, Mqtt3SubscriptionView.class);
         subscriptionBuilder.add(subscriptionView.getDelegate());
         return this;
     }
 
-    @NotNull
-    public Mqtt3SubscriptionBuilder<? extends Mqtt3SubscribeBuilder<P>> addSubscription() {
+    public @NotNull Mqtt3SubscriptionBuilder<? extends Mqtt3SubscribeBuilder<P>> addSubscription() {
         return new Mqtt3SubscriptionBuilder<>(this::addSubscription);
     }
 
-    @NotNull
     @Override
-    public Mqtt3Subscribe build() {
+    public @NotNull Mqtt3Subscribe build() {
+        if (firstSubscriptionBuilder != null) {
+            addSubscription(firstSubscriptionBuilder.build()); // TODO add as first subscription #192
+        }
         final ImmutableList<MqttSubscription> subscriptions = subscriptionBuilder.build();
         Preconditions.checkState(!subscriptions.isEmpty());
         return Mqtt3SubscribeView.of(subscriptions);

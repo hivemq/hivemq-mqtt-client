@@ -21,6 +21,9 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mqttbee.api.mqtt.datatypes.MqttQos;
+import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
+import org.mqttbee.api.mqtt.datatypes.MqttTopicFilterBuilder;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
@@ -37,15 +40,16 @@ import java.util.function.Function;
  */
 public class Mqtt5SubscribeBuilder<P> extends FluentBuilder<Mqtt5Subscribe, P> {
 
-    private final ImmutableList.Builder<MqttSubscription> subscriptionBuilder;
-    private MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
+    private final @NotNull ImmutableList.Builder<MqttSubscription> subscriptionBuilder;
+    private @NotNull MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
+    private @Nullable Mqtt5SubscriptionBuilder<Void> firstSubscriptionBuilder;
 
-    public Mqtt5SubscribeBuilder(@Nullable final Function<? super Mqtt5Subscribe, P> parentConsumer) {
+    public Mqtt5SubscribeBuilder(final @Nullable Function<? super Mqtt5Subscribe, P> parentConsumer) {
         super(parentConsumer);
         subscriptionBuilder = ImmutableList.builder();
     }
 
-    Mqtt5SubscribeBuilder(@NotNull final Mqtt5Subscribe subscribe) {
+    Mqtt5SubscribeBuilder(final @NotNull Mqtt5Subscribe subscribe) {
         super(null);
         final MqttSubscribe subscribeImpl =
                 MustNotBeImplementedUtil.checkNotImplemented(subscribe, MqttSubscribe.class);
@@ -54,31 +58,70 @@ public class Mqtt5SubscribeBuilder<P> extends FluentBuilder<Mqtt5Subscribe, P> {
         subscriptionBuilder.addAll(subscriptions);
     }
 
-    @NotNull
-    public Mqtt5SubscribeBuilder<P> addSubscription(@NotNull final Mqtt5Subscription subscription) {
+    private @NotNull Mqtt5SubscriptionBuilder<Void> getFirstSubscriptionBuilder() {
+        if (firstSubscriptionBuilder == null) {
+            firstSubscriptionBuilder = Mqtt5Subscription.builder();
+        }
+        return firstSubscriptionBuilder;
+    }
+
+    public @NotNull Mqtt5SubscribeBuilder<P> topicFilter(final @NotNull String topicFilter) {
+        getFirstSubscriptionBuilder().topicFilter(topicFilter);
+        return this;
+    }
+
+    public @NotNull Mqtt5SubscribeBuilder<P> topicFilter(final @NotNull MqttTopicFilter topicFilter) {
+        getFirstSubscriptionBuilder().topicFilter(topicFilter);
+        return this;
+    }
+
+    public @NotNull MqttTopicFilterBuilder<? extends Mqtt5SubscribeBuilder<P>> topicFilter() {
+        return new MqttTopicFilterBuilder<>("", this::topicFilter);
+    }
+
+    public @NotNull Mqtt5SubscribeBuilder<P> qos(final @NotNull MqttQos qos) {
+        getFirstSubscriptionBuilder().qos(qos);
+        return this;
+    }
+
+    public @NotNull Mqtt5SubscribeBuilder<P> noLocal(final boolean noLocal) {
+        getFirstSubscriptionBuilder().noLocal(noLocal);
+        return this;
+    }
+
+    public @NotNull Mqtt5SubscribeBuilder<P> retainHandling(final @NotNull Mqtt5RetainHandling retainHandling) {
+        getFirstSubscriptionBuilder().retainHandling(retainHandling);
+        return this;
+    }
+
+    public @NotNull Mqtt5SubscribeBuilder<P> retainAsPublished(final boolean retainAsPublished) {
+        getFirstSubscriptionBuilder().retainAsPublished(retainAsPublished);
+        return this;
+    }
+
+    public @NotNull Mqtt5SubscribeBuilder<P> addSubscription(final @NotNull Mqtt5Subscription subscription) {
         subscriptionBuilder.add(MustNotBeImplementedUtil.checkNotImplemented(subscription, MqttSubscription.class));
         return this;
     }
 
-    @NotNull
-    public Mqtt5SubscriptionBuilder<? extends Mqtt5SubscribeBuilder<P>> addSubscription() {
+    public @NotNull Mqtt5SubscriptionBuilder<? extends Mqtt5SubscribeBuilder<P>> addSubscription() {
         return new Mqtt5SubscriptionBuilder<>(this::addSubscription);
     }
 
-    @NotNull
-    public Mqtt5SubscribeBuilder<P> userProperties(@NotNull final Mqtt5UserProperties userProperties) {
+    public @NotNull Mqtt5SubscribeBuilder<P> userProperties(final @NotNull Mqtt5UserProperties userProperties) {
         this.userProperties = MqttBuilderUtil.userProperties(userProperties);
         return this;
     }
 
-    @NotNull
-    public Mqtt5UserPropertiesBuilder<? extends Mqtt5SubscribeBuilder<P>> userProperties() {
+    public @NotNull Mqtt5UserPropertiesBuilder<? extends Mqtt5SubscribeBuilder<P>> userProperties() {
         return new Mqtt5UserPropertiesBuilder<>(this::userProperties);
     }
 
-    @NotNull
     @Override
-    public Mqtt5Subscribe build() {
+    public @NotNull Mqtt5Subscribe build() {
+        if (firstSubscriptionBuilder != null) {
+            addSubscription(firstSubscriptionBuilder.build()); // TODO add as first subscription #192
+        }
         final ImmutableList<MqttSubscription> subscriptions = subscriptionBuilder.build();
         Preconditions.checkState(!subscriptions.isEmpty());
         return new MqttSubscribe(subscriptions, userProperties);
