@@ -92,13 +92,16 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
         return this;
     }
 
-    interface Mqtt5Publishes {
+    interface Mqtt5Publishes extends AutoCloseable {
 
         @NotNull Mqtt5Publish receive() throws InterruptedException;
 
         @NotNull Optional<Mqtt5Publish> receive(final long timeout, final @NotNull TimeUnit timeUnit)
                 throws InterruptedException;
 
-        void cancel();
+        boolean hasPending();
+
+        @Override
+        void close();
     }
 }
