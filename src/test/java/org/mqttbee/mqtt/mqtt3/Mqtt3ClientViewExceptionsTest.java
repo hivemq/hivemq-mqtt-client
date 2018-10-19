@@ -85,13 +85,14 @@ class Mqtt3ClientViewExceptionsTest {
     void subscribeWithStream() {
         final Mqtt5MessageException mqtt5MessageException =
                 new Mqtt5MessageException(Mqtt5Connect.builder().build(), "reason from original exception");
-        given(mqtt5Client.subscribeWithStream(any())).willReturn(
+        given(mqtt5Client.subscribeStream(any())).willReturn(
                 FlowableWithSingle.split(Flowable.error(mqtt5MessageException), Mqtt5Publish.class, Mqtt5SubAck.class));
 
         final Mqtt3Subscribe subscribe = Mqtt3Subscribe.builder()
                 .addSubscription(Mqtt3Subscription.builder().topicFilter("topic").qos(MqttQos.AT_LEAST_ONCE).build())
                 .build();
-        assertMqtt3Exception(() -> mqtt3Client.subscribeWithStream(subscribe).blockingSubscribe(),
+        assertMqtt3Exception(
+                () -> mqtt3Client.subscribeStream(subscribe).blockingSubscribe(),
                 mqtt5MessageException);
     }
 

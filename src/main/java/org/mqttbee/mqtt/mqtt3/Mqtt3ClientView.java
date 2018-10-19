@@ -70,8 +70,7 @@ public class Mqtt3ClientView implements Mqtt3RxClient {
             e -> Flowable.error(Mqtt3ExceptionFactory.map(e));
 
     private static final @NotNull Function<Throwable, Flowable<Mqtt5PublishResult>>
-            EXCEPTION_MAPPER_FLOWABLE_PUBLISH_RESULT =
-            e -> Flowable.error(Mqtt3ExceptionFactory.map(e));
+            EXCEPTION_MAPPER_FLOWABLE_PUBLISH_RESULT = e -> Flowable.error(Mqtt3ExceptionFactory.map(e));
 
     private final @NotNull Mqtt5ClientImpl delegate;
 
@@ -101,11 +100,12 @@ public class Mqtt3ClientView implements Mqtt3RxClient {
 
     @NotNull
     @Override
-    public FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribeWithStream(@NotNull final Mqtt3Subscribe subscribe) {
+    public FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribeStream(@NotNull final Mqtt3Subscribe subscribe) {
         final Mqtt3SubscribeView subscribeView =
                 MustNotBeImplementedUtil.checkNotImplemented(subscribe, Mqtt3SubscribeView.class);
-        return delegate.subscribeWithStream(subscribeView.getDelegate())
-                .mapError(Mqtt3ExceptionFactory.MAPPER).mapBoth(Mqtt3PublishView.MAPPER, Mqtt3SubAckView.MAPPER);
+        return delegate.subscribeStream(subscribeView.getDelegate())
+                .mapError(Mqtt3ExceptionFactory.MAPPER)
+                .mapBoth(Mqtt3PublishView.MAPPER, Mqtt3SubAckView.MAPPER);
     }
 
     @NotNull

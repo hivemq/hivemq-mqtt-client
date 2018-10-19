@@ -133,7 +133,7 @@ public class Mqtt5ClientImpl implements Mqtt5RxClient {
 
     @NotNull
     @Override
-    public FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeWithStream(@NotNull final Mqtt5Subscribe subscribe) {
+    public FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeStream(@NotNull final Mqtt5Subscribe subscribe) {
         final MqttSubscribe mqttSubscribe =
                 MustNotBeImplementedUtil.checkNotImplemented(subscribe, MqttSubscribe.class);
 

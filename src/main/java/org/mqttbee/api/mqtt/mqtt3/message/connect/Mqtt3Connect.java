@@ -17,8 +17,8 @@
 
 package org.mqttbee.api.mqtt.mqtt3.message.connect;
 
-import org.mqttbee.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3Message;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.api.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
@@ -33,17 +33,16 @@ import java.util.function.Function;
 @DoNotImplement
 public interface Mqtt3Connect extends Mqtt3Message {
 
+    @NotNull Mqtt3Connect DEFAULT = builder().build();
     int NO_KEEP_ALIVE = 0;
     int DEFAULT_KEEP_ALIVE = 60;
     boolean DEFAULT_CLEAN_SESSION = true;
 
-    @NotNull
-    static Mqtt3ConnectBuilder<Void> builder() {
+    static @NotNull Mqtt3ConnectBuilder<Void> builder() {
         return new Mqtt3ConnectBuilder<>((Function<Mqtt3Connect, Void>) null);
     }
 
-    @NotNull
-    static Mqtt3ConnectBuilder<Void> extend(@NotNull final Mqtt3Connect connect) {
+    static @NotNull Mqtt3ConnectBuilder<Void> extend(final @NotNull Mqtt3Connect connect) {
         return new Mqtt3ConnectBuilder<>(connect);
     }
 
@@ -54,25 +53,22 @@ public interface Mqtt3Connect extends Mqtt3Message {
 
     /**
      * @return whether the client wants a clean session which lasts for the lifetime of the session. A present session
-     * is cleared.
+     *         is cleared.
      */
     boolean isCleanSession();
 
     /**
      * @return the optional simple authentication and/or authorization related data of this CONNECT packet.
      */
-    @NotNull
-    Optional<Mqtt3SimpleAuth> getSimpleAuth();
+    @NotNull Optional<Mqtt3SimpleAuth> getSimpleAuth();
 
     /**
      * @return the optional Will Publish of this CONNECT packet.
      */
-    @NotNull
-    Optional<Mqtt3Publish> getWillPublish();
+    @NotNull Optional<Mqtt3Publish> getWillPublish();
 
-    @NotNull
     @Override
-    default Mqtt3MessageType getType() {
+    default @NotNull Mqtt3MessageType getType() {
         return Mqtt3MessageType.CONNECT;
     }
 

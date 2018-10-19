@@ -42,15 +42,19 @@ import java.util.concurrent.TimeUnit;
  */
 public interface Mqtt5BlockingClient extends Mqtt5Client {
 
+    default @NotNull Mqtt5ConnAck connect() {
+        return connect(Mqtt5Connect.DEFAULT);
+    }
+
     @NotNull Mqtt5ConnAck connect(@NotNull Mqtt5Connect connect);
 
-    default @NotNull Mqtt5ConnectBuilder<Mqtt5ConnAck> connect() {
+    default @NotNull Mqtt5ConnectBuilder<Mqtt5ConnAck> connectWith() {
         return new Mqtt5ConnectBuilder<>(this::connect);
     }
 
     @NotNull Mqtt5SubAck subscribe(@NotNull Mqtt5Subscribe subscribe);
 
-    default @NotNull Mqtt5SubscribeBuilder<Mqtt5SubAck> subscribe() {
+    default @NotNull Mqtt5SubscribeBuilder<Mqtt5SubAck> subscribeWith() {
         return new Mqtt5SubscribeBuilder<>(this::subscribe);
     }
 
@@ -58,21 +62,25 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
 
     @NotNull Mqtt5UnsubAck unsubscribe(@NotNull Mqtt5Unsubscribe unsubscribe);
 
-    default @NotNull Mqtt5UnsubscribeBuilder<Mqtt5UnsubAck> unsubscribe() {
+    default @NotNull Mqtt5UnsubscribeBuilder<Mqtt5UnsubAck> unsubscribeWith() {
         return new Mqtt5UnsubscribeBuilder<>(this::unsubscribe);
     }
 
     @NotNull Mqtt5PublishResult publish(@NotNull Mqtt5Publish publish);
 
-    default @NotNull Mqtt5PublishBuilder<Mqtt5PublishResult> publish() {
+    default @NotNull Mqtt5PublishBuilder<Mqtt5PublishResult> publishWith() {
         return new Mqtt5PublishBuilder<>(this::publish);
     }
 
     void reauth();
 
+    default void disconnect() {
+        disconnect(Mqtt5Disconnect.DEFAULT);
+    }
+
     void disconnect(@NotNull Mqtt5Disconnect disconnect);
 
-    default @NotNull Mqtt5DisconnectBuilder<Void> disconnect() {
+    default @NotNull Mqtt5DisconnectBuilder<Void> disconnectWith() {
         return new Mqtt5DisconnectBuilder<>(disconnect -> {
             disconnect(disconnect);
             return null;

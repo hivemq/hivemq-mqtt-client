@@ -17,8 +17,8 @@
 
 package org.mqttbee.api.mqtt.mqtt5.message.disconnect;
 
-import org.mqttbee.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
@@ -34,44 +34,40 @@ import java.util.Optional;
 @DoNotImplement
 public interface Mqtt5Disconnect extends Mqtt5Message {
 
-    @NotNull
-    static Mqtt5DisconnectBuilder<Void> builder() {
+    @NotNull Mqtt5Disconnect DEFAULT = builder().build();
+
+    static @NotNull Mqtt5DisconnectBuilder<Void> builder() {
         return new Mqtt5DisconnectBuilder<>(null);
     }
 
     /**
      * @return the reason code of this DISCONNECT packet.
      */
-    @NotNull
-    Mqtt5DisconnectReasonCode getReasonCode();
+    @NotNull Mqtt5DisconnectReasonCode getReasonCode();
 
     /**
-     * @return the optional session expiry interval in seconds, the client disconnects from with this DISCONNECT packet.
+     * @return the optional session expiry interval in seconds, the client disconnects from with this DISCONNECT
+     *         packet.
      */
-    @NotNull
-    Optional<Long> getSessionExpiryInterval();
+    @NotNull Optional<Long> getSessionExpiryInterval();
 
     /**
      * @return the optional server reference, which can be used if the server sent this DISCONNECT packet.
      */
-    @NotNull
-    Optional<MqttUTF8String> getServerReference();
+    @NotNull Optional<MqttUTF8String> getServerReference();
 
     /**
      * @return the optional reason string of this DISCONNECT packet.
      */
-    @NotNull
-    Optional<MqttUTF8String> getReasonString();
+    @NotNull Optional<MqttUTF8String> getReasonString();
 
     /**
      * @return the optional user properties of this DISCONNECT packet.
      */
-    @NotNull
-    Mqtt5UserProperties getUserProperties();
+    @NotNull Mqtt5UserProperties getUserProperties();
 
-    @NotNull
     @Override
-    default Mqtt5MessageType getType() {
+    default @NotNull Mqtt5MessageType getType() {
         return Mqtt5MessageType.DISCONNECT;
     }
 
