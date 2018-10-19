@@ -48,23 +48,23 @@ import static org.mqttbee.mqtt.message.publish.MqttPublish.MESSAGE_EXPIRY_INTERV
  */
 public class Mqtt5PublishBuilder<P> extends FluentBuilder<Mqtt5Publish, P> {
 
-    MqttTopicImpl topic;
-    ByteBuffer payload;
-    MqttQos qos;
+    @Nullable MqttTopicImpl topic;
+    @Nullable ByteBuffer payload;
+    @NotNull MqttQos qos = Mqtt5Publish.DEFAULT_QOS;
     boolean retain;
     long messageExpiryIntervalSeconds = MESSAGE_EXPIRY_INTERVAL_INFINITY;
-    Mqtt5PayloadFormatIndicator payloadFormatIndicator;
-    MqttUTF8StringImpl contentType;
-    MqttTopicImpl responseTopic;
-    ByteBuffer correlationData;
-    private TopicAliasUsage topicAliasUsage = DEFAULT_TOPIC_ALIAS_USAGE;
-    MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
+    @Nullable Mqtt5PayloadFormatIndicator payloadFormatIndicator;
+    @Nullable MqttUTF8StringImpl contentType;
+    @Nullable MqttTopicImpl responseTopic;
+    @Nullable ByteBuffer correlationData;
+    private @NotNull TopicAliasUsage topicAliasUsage = DEFAULT_TOPIC_ALIAS_USAGE;
+    @NotNull MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
 
-    public Mqtt5PublishBuilder(@Nullable final Function<? super Mqtt5Publish, P> parentConsumer) {
+    public Mqtt5PublishBuilder(final @Nullable Function<? super Mqtt5Publish, P> parentConsumer) {
         super(parentConsumer);
     }
 
-    Mqtt5PublishBuilder(@NotNull final Mqtt5Publish publish) {
+    Mqtt5PublishBuilder(final @NotNull Mqtt5Publish publish) {
         super(null);
         final MqttPublish publishImpl = MustNotBeImplementedUtil.checkNotImplemented(publish, MqttPublish.class);
         topic = publishImpl.getTopic();
@@ -80,50 +80,42 @@ public class Mqtt5PublishBuilder<P> extends FluentBuilder<Mqtt5Publish, P> {
         userProperties = publishImpl.getUserProperties();
     }
 
-    @NotNull
-    public Mqtt5PublishBuilder<P> topic(@NotNull final String topic) {
+    public @NotNull Mqtt5PublishBuilder<P> topic(final @NotNull String topic) {
         this.topic = MqttBuilderUtil.topic(topic);
         return this;
     }
 
-    @NotNull
-    public Mqtt5PublishBuilder<P> topic(@NotNull final MqttTopic topic) {
+    public @NotNull Mqtt5PublishBuilder<P> topic(final @NotNull MqttTopic topic) {
         this.topic = MqttBuilderUtil.topic(topic);
         return this;
     }
 
-    @NotNull
-    public MqttTopicBuilder<? extends Mqtt5PublishBuilder<P>> topic() {
+    public @NotNull MqttTopicBuilder<? extends Mqtt5PublishBuilder<P>> topic() {
         return new MqttTopicBuilder<>("", this::topic);
     }
 
-    @NotNull
-    public Mqtt5PublishBuilder<P> payload(@Nullable final byte[] payload) {
+    public @NotNull Mqtt5PublishBuilder<P> payload(final @Nullable byte[] payload) {
         this.payload = (payload == null) ? null : ByteBufferUtil.wrap(payload);
         return this;
     }
 
-    @NotNull
-    public Mqtt5PublishBuilder<P> payload(@Nullable final ByteBuffer payload) {
+    public @NotNull Mqtt5PublishBuilder<P> payload(final @Nullable ByteBuffer payload) {
         this.payload = (payload == null) ? null : ByteBufferUtil.slice(payload);
         return this;
     }
 
-    @NotNull
-    public Mqtt5PublishBuilder<P> qos(@NotNull final MqttQos qos) {
+    public @NotNull Mqtt5PublishBuilder<P> qos(final @NotNull MqttQos qos) {
         this.qos = Preconditions.checkNotNull(qos, "QoS must not be null.");
         return this;
     }
 
-    @NotNull
-    public Mqtt5PublishBuilder<P> retain(final boolean retain) {
+    public @NotNull Mqtt5PublishBuilder<P> retain(final boolean retain) {
         this.retain = retain;
         return this;
     }
 
-    @NotNull
-    public Mqtt5PublishBuilder<P> messageExpiryInterval(
-            final long messageExpiryInterval, @NotNull final TimeUnit timeUnit) {
+    public @NotNull Mqtt5PublishBuilder<P> messageExpiryInterval(
+            final long messageExpiryInterval, final @NotNull TimeUnit timeUnit) {
 
         final long messageExpiryIntervalSeconds = timeUnit.toSeconds(messageExpiryInterval);
         Preconditions.checkArgument(UnsignedDataTypes.isUnsignedInt(messageExpiryIntervalSeconds),
@@ -133,77 +125,64 @@ public class Mqtt5PublishBuilder<P> extends FluentBuilder<Mqtt5Publish, P> {
         return this;
     }
 
-    @NotNull
-    public Mqtt5PublishBuilder<P> payloadFormatIndicator(
-            @Nullable final Mqtt5PayloadFormatIndicator payloadFormatIndicator) {
+    public @NotNull Mqtt5PublishBuilder<P> payloadFormatIndicator(
+            final @Nullable Mqtt5PayloadFormatIndicator payloadFormatIndicator) {
 
         this.payloadFormatIndicator = payloadFormatIndicator;
         return this;
     }
 
-    @NotNull
-    public Mqtt5PublishBuilder<P> contentType(@Nullable final String contentType) {
+    public @NotNull Mqtt5PublishBuilder<P> contentType(final @Nullable String contentType) {
         this.contentType = MqttBuilderUtil.stringOrNull(contentType);
         return this;
     }
 
-    @NotNull
-    public Mqtt5PublishBuilder<P> contentType(@Nullable final MqttUTF8String contentType) {
+    public @NotNull Mqtt5PublishBuilder<P> contentType(final @Nullable MqttUTF8String contentType) {
         this.contentType = MqttBuilderUtil.stringOrNull(contentType);
         return this;
     }
 
-    @NotNull
-    public Mqtt5PublishBuilder<P> responseTopic(@Nullable final String responseTopic) {
+    public @NotNull Mqtt5PublishBuilder<P> responseTopic(final @Nullable String responseTopic) {
         this.responseTopic = MqttBuilderUtil.topicOrNull(responseTopic);
         return this;
     }
 
-    @NotNull
-    public Mqtt5PublishBuilder<P> responseTopic(@Nullable final MqttTopic responseTopic) {
+    public @NotNull Mqtt5PublishBuilder<P> responseTopic(final @Nullable MqttTopic responseTopic) {
         this.responseTopic = MqttBuilderUtil.topicOrNull(responseTopic);
         return this;
     }
 
-    @NotNull
-    public MqttTopicBuilder<? extends Mqtt5PublishBuilder<P>> responseTopic() {
+    public @NotNull MqttTopicBuilder<? extends Mqtt5PublishBuilder<P>> responseTopic() {
         return new MqttTopicBuilder<>("", this::responseTopic);
     }
 
-    @NotNull
-    public Mqtt5PublishBuilder<P> correlationData(@Nullable final byte[] correlationData) {
+    public @NotNull Mqtt5PublishBuilder<P> correlationData(final @Nullable byte[] correlationData) {
         this.correlationData = MqttBuilderUtil.binaryDataOrNull(correlationData);
         return this;
     }
 
-    @NotNull
-    public Mqtt5PublishBuilder<P> correlationData(@Nullable final ByteBuffer correlationData) {
+    public @NotNull Mqtt5PublishBuilder<P> correlationData(final @Nullable ByteBuffer correlationData) {
         this.correlationData = MqttBuilderUtil.binaryDataOrNull(correlationData);
         return this;
     }
 
-    @NotNull
-    public Mqtt5PublishBuilder<P> useTopicAlias(@NotNull final TopicAliasUsage topicAliasUsage) {
+    public @NotNull Mqtt5PublishBuilder<P> useTopicAlias(final @NotNull TopicAliasUsage topicAliasUsage) {
         this.topicAliasUsage = topicAliasUsage;
         return this;
     }
 
-    @NotNull
-    public Mqtt5PublishBuilder<P> userProperties(@NotNull final Mqtt5UserProperties userProperties) {
+    public @NotNull Mqtt5PublishBuilder<P> userProperties(final @NotNull Mqtt5UserProperties userProperties) {
         this.userProperties = MqttBuilderUtil.userProperties(userProperties);
         return this;
     }
 
-    @NotNull
-    public Mqtt5UserPropertiesBuilder<? extends Mqtt5PublishBuilder<P>> userProperties() {
+    public @NotNull Mqtt5UserPropertiesBuilder<? extends Mqtt5PublishBuilder<P>> userProperties() {
         return new Mqtt5UserPropertiesBuilder<>(this::userProperties);
     }
 
-    @NotNull
     @Override
-    public Mqtt5Publish build() {
+    public @NotNull Mqtt5Publish build() {
         Preconditions.checkNotNull(topic, "Topic must not be null.");
-        Preconditions.checkNotNull(qos, "QoS must not be null.");
         return new MqttPublish(topic, payload, qos, retain, messageExpiryIntervalSeconds, payloadFormatIndicator,
                 contentType, responseTopic, correlationData, topicAliasUsage, userProperties);
     }

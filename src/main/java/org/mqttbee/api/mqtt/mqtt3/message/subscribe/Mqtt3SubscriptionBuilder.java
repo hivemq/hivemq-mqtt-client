@@ -35,41 +35,35 @@ import java.util.function.Function;
  */
 public class Mqtt3SubscriptionBuilder<P> extends FluentBuilder<Mqtt3Subscription, P> {
 
-    private MqttTopicFilterImpl topicFilter;
-    private MqttQos qos;
+    private @Nullable MqttTopicFilterImpl topicFilter;
+    private @NotNull MqttQos qos = Mqtt3Subscription.DEFAULT_QOS;
 
-    public Mqtt3SubscriptionBuilder(@Nullable final Function<? super Mqtt3Subscription, P> parentConsumer) {
+    public Mqtt3SubscriptionBuilder(final @Nullable Function<? super Mqtt3Subscription, P> parentConsumer) {
         super(parentConsumer);
     }
 
-    @NotNull
-    public Mqtt3SubscriptionBuilder<P> topicFilter(@NotNull final String topicFilter) {
+    public @NotNull Mqtt3SubscriptionBuilder<P> topicFilter(final @NotNull String topicFilter) {
         this.topicFilter = MqttBuilderUtil.topicFilter(topicFilter);
         return this;
     }
 
-    @NotNull
-    public Mqtt3SubscriptionBuilder<P> topicFilter(@NotNull final MqttTopicFilter topicFilter) {
+    public @NotNull Mqtt3SubscriptionBuilder<P> topicFilter(final @NotNull MqttTopicFilter topicFilter) {
         this.topicFilter = MqttBuilderUtil.topicFilter(topicFilter);
         return this;
     }
 
-    @NotNull
-    public MqttTopicFilterBuilder<? extends Mqtt3SubscriptionBuilder<P>> topicFilter() {
+    public @NotNull MqttTopicFilterBuilder<? extends Mqtt3SubscriptionBuilder<P>> topicFilter() {
         return new MqttTopicFilterBuilder<>("", this::topicFilter);
     }
 
-    @NotNull
-    public Mqtt3SubscriptionBuilder<P> qos(@NotNull final MqttQos qos) {
+    public @NotNull Mqtt3SubscriptionBuilder<P> qos(final @NotNull MqttQos qos) {
         this.qos = Preconditions.checkNotNull(qos, "QoS must not be null.");
         return this;
     }
 
-    @NotNull
     @Override
-    public Mqtt3Subscription build() {
+    public @NotNull Mqtt3Subscription build() {
         Preconditions.checkNotNull(topicFilter, "Topic filter must not be null.");
-        Preconditions.checkNotNull(qos, "QoS must not be null.");
         return Mqtt3SubscriptionView.of(topicFilter, qos);
     }
 

@@ -17,8 +17,8 @@
 
 package org.mqttbee.api.mqtt.mqtt3.message.subscribe;
 
-import org.mqttbee.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
 
@@ -30,21 +30,20 @@ import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
 @DoNotImplement
 public interface Mqtt3Subscription {
 
-    @NotNull
-    static Mqtt3SubscriptionBuilder<Void> builder() {
+    @NotNull MqttQos DEFAULT_QOS = MqttQos.EXACTLY_ONCE;
+
+    static @NotNull Mqtt3SubscriptionBuilder<Void> builder() {
         return new Mqtt3SubscriptionBuilder<>(null);
     }
 
     /**
      * @return the Topic Filter of this subscription.
      */
-    @NotNull
-    MqttTopicFilter getTopicFilter();
+    @NotNull MqttTopicFilter getTopicFilter();
 
     /**
      * @return the QoS of this subscription.
      */
-    @NotNull
-    MqttQos getQos();
+    @NotNull MqttQos getQos();
 
 }
