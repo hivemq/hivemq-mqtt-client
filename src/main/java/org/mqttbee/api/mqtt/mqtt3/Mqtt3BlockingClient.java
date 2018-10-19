@@ -77,13 +77,16 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
         return this;
     }
 
-    interface Mqtt3Publishes {
+    interface Mqtt3Publishes extends AutoCloseable {
 
         @NotNull Mqtt3Publish receive() throws InterruptedException;
 
         @NotNull Optional<Mqtt3Publish> receive(final long timeout, final @NotNull TimeUnit timeUnit)
                 throws InterruptedException;
 
-        void cancel();
+        boolean hasPending();
+
+        @Override
+        void close();
     }
 }
