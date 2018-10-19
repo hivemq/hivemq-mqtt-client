@@ -38,14 +38,15 @@ import java.util.function.Function;
  */
 public class Mqtt3UnsubscribeBuilder<P> extends FluentBuilder<Mqtt3Unsubscribe, P> {
 
-    private final ImmutableList.Builder<MqttTopicFilterImpl> topicFiltersBuilder;
+    private final @NotNull ImmutableList.Builder<MqttTopicFilterImpl> topicFiltersBuilder;
+    private @Nullable MqttTopicFilterImpl firstTopicFilter;
 
-    public Mqtt3UnsubscribeBuilder(@Nullable final Function<? super Mqtt3Unsubscribe, P> parentConsumer) {
+    public Mqtt3UnsubscribeBuilder(final @Nullable Function<? super Mqtt3Unsubscribe, P> parentConsumer) {
         super(parentConsumer);
         topicFiltersBuilder = ImmutableList.builder();
     }
 
-    Mqtt3UnsubscribeBuilder(@NotNull final Mqtt3Unsubscribe unsubscribe) {
+    Mqtt3UnsubscribeBuilder(final @NotNull Mqtt3Unsubscribe unsubscribe) {
         super(null);
         final Mqtt3UnsubscribeView unsubscribeView =
                 MustNotBeImplementedUtil.checkNotImplemented(unsubscribe, Mqtt3UnsubscribeView.class);
@@ -54,25 +55,35 @@ public class Mqtt3UnsubscribeBuilder<P> extends FluentBuilder<Mqtt3Unsubscribe, 
         topicFiltersBuilder.addAll(topicFilters);
     }
 
-    @NotNull
-    public Mqtt3UnsubscribeBuilder<P> addTopicFilter(@NotNull final String topicFilter) {
+    public @NotNull Mqtt3UnsubscribeBuilder<P> topicFilter(final @NotNull String topicFilter) {
+        firstTopicFilter = MqttBuilderUtil.topicFilter(topicFilter);
+        return this;
+    }
+
+    public @NotNull Mqtt3UnsubscribeBuilder<P> topicFilter(final @NotNull MqttTopicFilter topicFilter) {
+        firstTopicFilter = MqttBuilderUtil.topicFilter(topicFilter);
+        return this;
+    }
+
+    public @NotNull MqttTopicFilterBuilder<? extends Mqtt3UnsubscribeBuilder<P>> topicFilter() {
+        return new MqttTopicFilterBuilder<>("", this::topicFilter);
+    }
+
+    public @NotNull Mqtt3UnsubscribeBuilder<P> addTopicFilter(final @NotNull String topicFilter) {
         topicFiltersBuilder.add(MqttBuilderUtil.topicFilter(topicFilter));
         return this;
     }
 
-    @NotNull
-    public Mqtt3UnsubscribeBuilder<P> addTopicFilter(@NotNull final MqttTopicFilter topicFilter) {
+    public @NotNull Mqtt3UnsubscribeBuilder<P> addTopicFilter(final @NotNull MqttTopicFilter topicFilter) {
         topicFiltersBuilder.add(MqttBuilderUtil.topicFilter(topicFilter));
         return this;
     }
 
-    @NotNull
-    public MqttTopicFilterBuilder<? extends Mqtt3UnsubscribeBuilder<P>> addTopicFilter() {
+    public @NotNull MqttTopicFilterBuilder<? extends Mqtt3UnsubscribeBuilder<P>> addTopicFilter() {
         return new MqttTopicFilterBuilder<>("", this::addTopicFilter);
     }
 
-    @NotNull
-    public Mqtt3UnsubscribeBuilder<P> reverse(@NotNull final Mqtt3Subscribe subscribe) {
+    public @NotNull Mqtt3UnsubscribeBuilder<P> reverse(final @NotNull Mqtt3Subscribe subscribe) {
         final ImmutableList<? extends Mqtt3Subscription> subscriptions = subscribe.getSubscriptions();
         for (final Mqtt3Subscription subscription : subscriptions) {
             addTopicFilter(subscription.getTopicFilter());
@@ -80,9 +91,11 @@ public class Mqtt3UnsubscribeBuilder<P> extends FluentBuilder<Mqtt3Unsubscribe, 
         return this;
     }
 
-    @NotNull
     @Override
-    public Mqtt3Unsubscribe build() {
+    public @NotNull Mqtt3Unsubscribe build() {
+        if (firstTopicFilter != null) {
+            addTopicFilter(firstTopicFilter); // TODO add as first subscription #192
+        }
         final ImmutableList<MqttTopicFilterImpl> topicFilters = topicFiltersBuilder.build();
         Preconditions.checkState(!topicFilters.isEmpty());
         return Mqtt3UnsubscribeView.of(topicFilters);
