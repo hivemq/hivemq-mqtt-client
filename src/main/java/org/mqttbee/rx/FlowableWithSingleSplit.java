@@ -32,11 +32,12 @@ import org.mqttbee.rx.reactivestreams.WithSingleSubscriber;
 import org.reactivestreams.Subscriber;
 
 /**
- * A {@link Flowable} operator which splits an upstream {@link Flowable} of type {@link T} into a single item of type
- * {@link S} and a flow of items of type {@link F}.
+ * A {@link Flowable} operator which splits an upstream {@link Flowable} of type <code>T</code> into a flow of items of
+ * type <code>F</code> and a single item of type <code>S</code>.
  * <p>
- * Only a single item of type S will be emitted. Any further items of type S emitted from the upstream are ignored.
- * Items emitted from the upstream which are instances of T but neither of S nor F are ignored.
+ * Only a single item of type <code>S</code> will be emitted. Any further items of type <code>S</code> emitted from the
+ * upstream are ignored. Items emitted from the upstream which are instances of <code>T</code> but neither of
+ * <code>F</code> nor <code>S</code> are ignored.
  * <dl>
  * <dt><b>Backpressure:</b></dt>
  * <dd>The operator doesn't interfere with backpressure which is determined by the source {@code Publisher}'s
@@ -46,8 +47,8 @@ import org.reactivestreams.Subscriber;
  * </dl>
  *
  * @param <T> the type of the upstream, which is a supertype of S and F on creation.
- * @param <S> the type of the single item.
  * @param <F> the type of the flow of items.
+ * @param <S> the type of the single item.
  * @author Silvio Giebl
  */
 @BackpressureSupport(BackpressureKind.PASS_THROUGH)
@@ -63,7 +64,7 @@ public class FlowableWithSingleSplit<T, F, S> extends FlowableWithSingle<F, S> {
      * Creates a new {@link FlowableWithSingleSplit} transforming the given upstream source.
      *
      * @param source        the upstream source to transform.
-     * @param flowableClass the class of the type of the flow of item.
+     * @param flowableClass the class of the type of the flow of items.
      * @param singleClass   the class of the single item type.
      */
     FlowableWithSingleSplit(
@@ -73,14 +74,6 @@ public class FlowableWithSingleSplit<T, F, S> extends FlowableWithSingle<F, S> {
         this(source, caster(flowableClass), caster(singleClass), null);
     }
 
-    /**
-     * Creates a new {@link FlowableWithSingleSplit} transforming the given upstream source.
-     *
-     * @param source         the upstream source to transform.
-     * @param flowableCaster the caster for the flow items.
-     * @param singleCaster   the caster for the single item.
-     * @param singleConsumer the consumer of the single item.
-     */
     private FlowableWithSingleSplit(
             final @NotNull Flowable<T> source, final @NotNull Function<T, F> flowableCaster,
             final @NotNull Function<T, S> singleCaster, final @Nullable Consumer<S> singleConsumer) {
@@ -158,7 +151,6 @@ public class FlowableWithSingleSplit<T, F, S> extends FlowableWithSingle<F, S> {
                 combineConsumer(singleConsumer, subscriber::onSingle)).subscribe(subscriber);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     protected void subscribeActual(final @NotNull Subscriber<? super F> s) {
         source.filter(new CasterPredicate<>(flowableCaster, singleCaster, singleConsumer))
