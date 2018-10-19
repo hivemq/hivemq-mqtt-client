@@ -50,9 +50,13 @@ import java.util.function.Function;
  */
 public interface Mqtt5AsyncClient extends Mqtt5Client {
 
+    default @NotNull CompletableFuture<@NotNull Mqtt5ConnAck> connect() {
+        return connect(Mqtt5Connect.DEFAULT);
+    }
+
     @NotNull CompletableFuture<@NotNull Mqtt5ConnAck> connect(@NotNull Mqtt5Connect connect);
 
-    default @NotNull Mqtt5ConnectBuilder<CompletableFuture<Mqtt5ConnAck>> connect() {
+    default @NotNull Mqtt5ConnectBuilder<CompletableFuture<Mqtt5ConnAck>> connectWith() {
         return new Mqtt5ConnectBuilder<>(this::connect);
     }
 
@@ -65,7 +69,7 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
             @NotNull Mqtt5Subscribe subscribe, @NotNull Consumer<@NotNull Mqtt5Publish> callback,
             @NotNull Executor executor);
 
-    default @NotNull Mqtt5SubscribeAndCallbackBuilder<CompletableFuture<Mqtt5SubAck>> subscribe() {
+    default @NotNull Mqtt5SubscribeAndCallbackBuilder<CompletableFuture<Mqtt5SubAck>> subscribeWith() {
         return new Mqtt5SubscribeAndCallbackBuilder<>(subscribeAndCallback -> {
             final Mqtt5Subscribe subscribe = subscribeAndCallback.getSubscribe();
             final Consumer<Mqtt5Publish> callback = subscribeAndCallback.getCallback();
@@ -88,21 +92,25 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
 
     @NotNull CompletableFuture<@NotNull Mqtt5UnsubAck> unsubscribe(@NotNull Mqtt5Unsubscribe unsubscribe);
 
-    default @NotNull Mqtt5UnsubscribeBuilder<CompletableFuture<Mqtt5UnsubAck>> unsubscribe() {
+    default @NotNull Mqtt5UnsubscribeBuilder<CompletableFuture<Mqtt5UnsubAck>> unsubscribeWith() {
         return new Mqtt5UnsubscribeBuilder<>(this::unsubscribe);
     }
 
     @NotNull CompletableFuture<@NotNull Mqtt5PublishResult> publish(@NotNull Mqtt5Publish publish);
 
-    default @NotNull Mqtt5PublishBuilder<CompletableFuture<Mqtt5PublishResult>> publish() {
+    default @NotNull Mqtt5PublishBuilder<CompletableFuture<Mqtt5PublishResult>> publishWith() {
         return new Mqtt5PublishBuilder<>(this::publish);
     }
 
     @NotNull CompletableFuture<Void> reauth();
 
+    default @NotNull CompletableFuture<Void> disconnect() {
+        return disconnect(Mqtt5Disconnect.DEFAULT);
+    }
+
     @NotNull CompletableFuture<Void> disconnect(@NotNull Mqtt5Disconnect disconnect);
 
-    default @NotNull Mqtt5DisconnectBuilder<CompletableFuture<Void>> disconnect() {
+    default @NotNull Mqtt5DisconnectBuilder<CompletableFuture<Void>> disconnectWith() {
         return new Mqtt5DisconnectBuilder<>(this::disconnect);
     }
 

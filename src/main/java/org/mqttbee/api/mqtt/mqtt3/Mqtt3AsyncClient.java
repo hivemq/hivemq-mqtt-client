@@ -49,9 +49,13 @@ import java.util.function.Function;
  */
 public interface Mqtt3AsyncClient extends Mqtt3Client {
 
+    default @NotNull CompletableFuture<@NotNull Mqtt3ConnAck> connect() {
+        return connect(Mqtt3Connect.DEFAULT);
+    }
+
     @NotNull CompletableFuture<@NotNull Mqtt3ConnAck> connect(@NotNull Mqtt3Connect connect);
 
-    default @NotNull Mqtt3ConnectBuilder<CompletableFuture<Mqtt3ConnAck>> connect() {
+    default @NotNull Mqtt3ConnectBuilder<CompletableFuture<Mqtt3ConnAck>> connectWith() {
         return new Mqtt3ConnectBuilder<>(this::connect);
     }
 
@@ -64,7 +68,7 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
             @NotNull Mqtt3Subscribe subscribe, @NotNull Consumer<@NotNull Mqtt3Publish> callback,
             @NotNull Executor executor);
 
-    default @NotNull Mqtt3SubscribeAndCallbackBuilder<CompletableFuture<Mqtt3SubAck>> subscribe() {
+    default @NotNull Mqtt3SubscribeAndCallbackBuilder<CompletableFuture<Mqtt3SubAck>> subscribeWith() {
         return new Mqtt3SubscribeAndCallbackBuilder<>(subscribeAndCallback -> {
             final Mqtt3Subscribe subscribe = subscribeAndCallback.getSubscribe();
             final Consumer<Mqtt3Publish> callback = subscribeAndCallback.getCallback();
@@ -87,13 +91,13 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
 
     @NotNull CompletableFuture<@NotNull Mqtt3UnsubAck> unsubscribe(@NotNull Mqtt3Unsubscribe unsubscribe);
 
-    default @NotNull Mqtt3UnsubscribeBuilder<CompletableFuture<Mqtt3UnsubAck>> unsubscribe() {
+    default @NotNull Mqtt3UnsubscribeBuilder<CompletableFuture<Mqtt3UnsubAck>> unsubscribeWith() {
         return new Mqtt3UnsubscribeBuilder<>(this::unsubscribe);
     }
 
     @NotNull CompletableFuture<@NotNull Mqtt3PublishResult> publish(@NotNull Mqtt3Publish publish);
 
-    default @NotNull Mqtt3PublishBuilder<CompletableFuture<Mqtt3PublishResult>> publish() {
+    default @NotNull Mqtt3PublishBuilder<CompletableFuture<Mqtt3PublishResult>> publishWith() {
         return new Mqtt3PublishBuilder<>(this::publish);
     }
 

@@ -40,15 +40,19 @@ import java.util.concurrent.TimeUnit;
  */
 public interface Mqtt3BlockingClient extends Mqtt3Client {
 
+    default @NotNull Mqtt3ConnAck connect() {
+        return connect(Mqtt3Connect.DEFAULT);
+    }
+
     @NotNull Mqtt3ConnAck connect(@NotNull Mqtt3Connect connect);
 
-    default @NotNull Mqtt3ConnectBuilder<Mqtt3ConnAck> connect() {
+    default @NotNull Mqtt3ConnectBuilder<Mqtt3ConnAck> connectWith() {
         return new Mqtt3ConnectBuilder<>(this::connect);
     }
 
     @NotNull Mqtt3SubAck subscribe(@NotNull Mqtt3Subscribe subscribe);
 
-    default @NotNull Mqtt3SubscribeBuilder<Mqtt3SubAck> subscribe() {
+    default @NotNull Mqtt3SubscribeBuilder<Mqtt3SubAck> subscribeWith() {
         return new Mqtt3SubscribeBuilder<>(this::subscribe);
     }
 
@@ -56,13 +60,13 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
 
     @NotNull Mqtt3UnsubAck unsubscribe(@NotNull Mqtt3Unsubscribe unsubscribe);
 
-    default @NotNull Mqtt3UnsubscribeBuilder<Mqtt3UnsubAck> unsubscribe() {
+    default @NotNull Mqtt3UnsubscribeBuilder<Mqtt3UnsubAck> unsubscribeWith() {
         return new Mqtt3UnsubscribeBuilder<>(this::unsubscribe);
     }
 
     @NotNull Mqtt3PublishResult publish(@NotNull Mqtt3Publish publish);
 
-    default @NotNull Mqtt3PublishBuilder<Mqtt3PublishResult> publish() {
+    default @NotNull Mqtt3PublishBuilder<Mqtt3PublishResult> publishWith() {
         return new Mqtt3PublishBuilder<>(this::publish);
     }
 

@@ -41,6 +41,10 @@ import org.mqttbee.rx.FlowableWithSingle;
  */
 public interface Mqtt3RxClient extends Mqtt3Client {
 
+    default @NotNull Single<Mqtt3ConnAck> connect() {
+        return connect(Mqtt3Connect.DEFAULT);
+    }
+
     /**
      * Creates a {@link Single} for connecting this client with the given Connect message.
      * <p>
@@ -71,7 +75,7 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      * @return the builder for the Connect message.
      * @see #connect(Mqtt3Connect)
      */
-    default @NotNull Mqtt3ConnectBuilder<Single<Mqtt3ConnAck>> connect() {
+    default @NotNull Mqtt3ConnectBuilder<Single<Mqtt3ConnAck>> connectWith() {
         return new Mqtt3ConnectBuilder<>(this::connect);
     }
 
@@ -83,7 +87,7 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      * subscribing (in terms of Reactive Streams) to the returned {@link Single}.
      * <p>
      * See {@link #publishes(MqttGlobalPublishFilter)} to consume the Publish messages. Alternatively, call {@link
-     * #subscribeWithStream(Mqtt3Subscribe)} to consume the Publish messages matching the subscriptions of the Subscribe
+     * #subscribeStream(Mqtt3Subscribe)} to consume the Publish messages matching the subscriptions of the Subscribe
      * message directly.
      *
      * @param subscribe the Subscribe message sent to the broker during subscribe.
@@ -109,7 +113,7 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      * @return the builder for the Subscribe message.
      * @see #subscribe(Mqtt3Subscribe)
      */
-    default @NotNull Mqtt3SubscribeBuilder<Single<Mqtt3SubAck>> subscribe() {
+    default @NotNull Mqtt3SubscribeBuilder<Single<Mqtt3SubAck>> subscribeWith() {
         return new Mqtt3SubscribeBuilder<>(this::subscribe);
     }
 
@@ -136,20 +140,20 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      *         messages were unsubscribed.</li>
      *         </ul>
      */
-    @NotNull FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribeWithStream(@NotNull Mqtt3Subscribe subscribe);
+    @NotNull FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribeStream(@NotNull Mqtt3Subscribe subscribe);
 
     /**
      * Creates a {@link Mqtt3SubscribeBuilder} for subscribing this client with the Subscribe message built from the
      * returned builder.
      * <p>
      * Calling {@link Mqtt3SubscribeBuilder#done()} has the same effect as calling {@link
-     * #subscribeWithStream(Mqtt3Subscribe)} with the result of {@link Mqtt3SubscribeBuilder#build()}.
+     * #subscribeStream(Mqtt3Subscribe)} with the result of {@link Mqtt3SubscribeBuilder#build()}.
      *
      * @return the builder for the Subscribe message.
-     * @see #subscribeWithStream(Mqtt3Subscribe)
+     * @see #subscribeStream(Mqtt3Subscribe)
      */
-    default @NotNull Mqtt3SubscribeBuilder<FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck>> subscribeWithStream() {
-        return new Mqtt3SubscribeBuilder<>(this::subscribeWithStream);
+    default @NotNull Mqtt3SubscribeBuilder<FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck>> subscribeStreamWith() {
+        return new Mqtt3SubscribeBuilder<>(this::subscribeStream);
     }
 
     /**
@@ -200,7 +204,7 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      * @return the builder for the Unsubscribe message.
      * @see #unsubscribe(Mqtt3Unsubscribe)
      */
-    default @NotNull Mqtt3UnsubscribeBuilder<Completable> unsubscribe() {
+    default @NotNull Mqtt3UnsubscribeBuilder<Completable> unsubscribeWith() {
         return new Mqtt3UnsubscribeBuilder<>(this::unsubscribe);
     }
 

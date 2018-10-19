@@ -21,7 +21,9 @@ import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.api.mqtt.MqttClient;
 import org.mqttbee.api.mqtt.MqttGlobalPublishFilter;
+import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5ConnectBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
@@ -37,12 +39,18 @@ import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5UnsubscribeBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
 import org.mqttbee.rx.FlowableWithSingle;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * MQTT 5 client with a reactive API.
  *
  * @author Silvio Giebl
  */
 public interface Mqtt5RxClient extends Mqtt5Client {
+
+    default @NotNull Single<Mqtt5ConnAck> connect() {
+        return connect(Mqtt5Connect.DEFAULT);
+    }
 
     /**
      * Creates a {@link Single} for connecting this client with the given Connect message.
@@ -74,7 +82,7 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * @return the builder for the Connect message.
      * @see #connect(Mqtt5Connect)
      */
-    default @NotNull Mqtt5ConnectBuilder<Single<Mqtt5ConnAck>> connect() {
+    default @NotNull Mqtt5ConnectBuilder<Single<Mqtt5ConnAck>> connectWith() {
         return new Mqtt5ConnectBuilder<>(this::connect);
     }
 
@@ -86,7 +94,7 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * subscribing (in terms of Reactive Streams) to the returned {@link Single}.
      * <p>
      * See {@link #publishes(MqttGlobalPublishFilter)} to consume the Publish messages. Alternatively, call {@link
-     * #subscribeWithStream(Mqtt5Subscribe)} to consume the Publish messages matching the subscriptions of the Subscribe
+     * #subscribeStream(Mqtt5Subscribe)} to consume the Publish messages matching the subscriptions of the Subscribe
      * message directly.
      *
      * @param subscribe the Subscribe message sent to the broker during subscribe.
@@ -112,7 +120,7 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * @return the builder for the Subscribe message.
      * @see #subscribe(Mqtt5Subscribe)
      */
-    default @NotNull Mqtt5SubscribeBuilder<Single<Mqtt5SubAck>> subscribe() {
+    default @NotNull Mqtt5SubscribeBuilder<Single<Mqtt5SubAck>> subscribeWith() {
         return new Mqtt5SubscribeBuilder<>(this::subscribe);
     }
 
@@ -139,20 +147,20 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      *         messages were unsubscribed.</li>
      *         </ul>
      */
-    @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeWithStream(@NotNull Mqtt5Subscribe subscribe);
+    @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeStream(@NotNull Mqtt5Subscribe subscribe);
 
     /**
      * Creates a {@link Mqtt5SubscribeBuilder} for subscribing this client with the Subscribe message built from the
      * returned builder.
      * <p>
      * Calling {@link Mqtt5SubscribeBuilder#done()} has the same effect as calling {@link
-     * #subscribeWithStream(Mqtt5Subscribe)} with the result of {@link Mqtt5SubscribeBuilder#build()}.
+     * #subscribeStream(Mqtt5Subscribe)} with the result of {@link Mqtt5SubscribeBuilder#build()}.
      *
      * @return the builder for the Subscribe message.
-     * @see #subscribeWithStream(Mqtt5Subscribe)
+     * @see #subscribeStream(Mqtt5Subscribe)
      */
-    default @NotNull Mqtt5SubscribeBuilder<FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck>> subscribeWithStream() {
-        return new Mqtt5SubscribeBuilder<>(this::subscribeWithStream);
+    default @NotNull Mqtt5SubscribeBuilder<FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck>> subscribeStreamWith() {
+        return new Mqtt5SubscribeBuilder<>(this::subscribeStream);
     }
 
     /**
@@ -203,7 +211,7 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * @return the builder for the Unsubscribe message.
      * @see #unsubscribe(Mqtt5Unsubscribe)
      */
-    default @NotNull Mqtt5UnsubscribeBuilder<Single<Mqtt5UnsubAck>> unsubscribe() {
+    default @NotNull Mqtt5UnsubscribeBuilder<Single<Mqtt5UnsubAck>> unsubscribeWith() {
         return new Mqtt5UnsubscribeBuilder<>(this::unsubscribe);
     }
 
@@ -243,6 +251,10 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      */
     @NotNull Completable reauth();
 
+    default @NotNull Completable disconnect() {
+        return disconnect(Mqtt5Disconnect.DEFAULT);
+    }
+
     /**
      * Creates a {@link Completable} for disconnecting this client with the given Disconnect message.
      * <p>
@@ -268,7 +280,7 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * @return the builder for the Disconnect message.
      * @see #disconnect(Mqtt5Disconnect)
      */
-    default @NotNull Mqtt5DisconnectBuilder<Completable> disconnect() {
+    default @NotNull Mqtt5DisconnectBuilder<Completable> disconnectWith() {
         return new Mqtt5DisconnectBuilder<>(this::disconnect);
     }
 
