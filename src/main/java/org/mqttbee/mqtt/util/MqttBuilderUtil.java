@@ -22,7 +22,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.*;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
+import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
 import org.mqttbee.mqtt.datatypes.*;
+import org.mqttbee.mqtt.message.publish.MqttPublish;
+import org.mqttbee.mqtt.message.publish.MqttWillPublish;
 import org.mqttbee.util.ByteBufferUtil;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 
@@ -170,6 +173,16 @@ public class MqttBuilderUtil {
             @NotNull final MqttUTF8String name, @NotNull final MqttUTF8String value) {
 
         return MqttUserPropertyImpl.of(string(name), string(value));
+    }
+
+    public static @Nullable MqttWillPublish willPublish(final @Nullable MqttPublish publish) {
+        if (publish == null) {
+            return null;
+        }
+        if (publish instanceof MqttWillPublish) {
+            return (MqttWillPublish) publish;
+        }
+        return (MqttWillPublish) Mqtt5WillPublish.extend(publish).build();
     }
 
 }

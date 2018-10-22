@@ -24,8 +24,6 @@ import org.junit.jupiter.api.Test;
 import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRec;
 import org.mqttbee.mqtt.message.publish.pubrec.mqtt3.Mqtt3PubRecView;
 
-import static org.junit.Assert.assertArrayEquals;
-
 class Mqtt3PubRecEncoderTest extends AbstractMqtt3EncoderTest {
 
     Mqtt3PubRecEncoderTest() {
@@ -34,14 +32,13 @@ class Mqtt3PubRecEncoderTest extends AbstractMqtt3EncoderTest {
 
     @Test
     void matchesPaho() throws MqttException {
-        final int msgId = 42;
-
+        final int id = 42;
+        final MqttPubRec beeMessage = Mqtt3PubRecView.delegate(id);
         final MqttPublish pahoPublish = new MqttPublish("some/topic/name", new MqttMessage(new byte[]{0}));
-        pahoPublish.setMessageId(msgId);
+        pahoPublish.setMessageId(id);
         final org.eclipse.paho.client.mqttv3.internal.wire.MqttPubRec pahoMessage =
                 new org.eclipse.paho.client.mqttv3.internal.wire.MqttPubRec(pahoPublish);
 
-        final MqttPubRec beeMessage = Mqtt3PubRecView.delegate(msgId);
-        assertArrayEquals(bytesOf(pahoMessage), bytesOf(beeMessage));
+        encode(beeMessage, bytesOf(pahoMessage));
     }
 }

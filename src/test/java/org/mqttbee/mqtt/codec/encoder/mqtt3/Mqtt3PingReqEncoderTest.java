@@ -22,8 +22,6 @@ import org.junit.jupiter.api.Test;
 import org.mqttbee.mqtt.codec.encoder.MqttPingReqEncoder;
 import org.mqttbee.mqtt.message.ping.MqttPingReq;
 
-import static org.junit.Assert.assertArrayEquals;
-
 class Mqtt3PingReqEncoderTest extends AbstractMqtt3EncoderTest {
 
     Mqtt3PingReqEncoderTest() {
@@ -36,6 +34,6 @@ class Mqtt3PingReqEncoderTest extends AbstractMqtt3EncoderTest {
         final org.eclipse.paho.client.mqttv3.internal.wire.MqttPingReq pahoPing =
                 new org.eclipse.paho.client.mqttv3.internal.wire.MqttPingReq();
 
-        assertArrayEquals(bytesOf(pahoPing), bytesOf(beePing));
+        encode(beePing, bytesOf(pahoPing));
     }
 }

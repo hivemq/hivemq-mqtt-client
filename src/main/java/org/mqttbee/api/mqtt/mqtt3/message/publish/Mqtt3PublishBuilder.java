@@ -38,10 +38,10 @@ import java.util.function.Function;
  */
 public class Mqtt3PublishBuilder<P> extends FluentBuilder<Mqtt3Publish, P> {
 
-    private @Nullable MqttTopicImpl topic;
-    private @Nullable ByteBuffer payload;
-    private @NotNull MqttQos qos = Mqtt3Publish.DEFAULT_QOS;
-    private boolean retain;
+    @Nullable MqttTopicImpl topic;
+    @Nullable ByteBuffer payload;
+    @NotNull MqttQos qos = Mqtt3Publish.DEFAULT_QOS;
+    boolean retain;
 
     public Mqtt3PublishBuilder(final @Nullable Function<? super Mqtt3Publish, P> parentConsumer) {
         super(parentConsumer);
