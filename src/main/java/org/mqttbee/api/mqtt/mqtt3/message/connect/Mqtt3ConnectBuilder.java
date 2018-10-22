@@ -23,12 +23,13 @@ import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
 import org.mqttbee.api.mqtt.mqtt3.message.auth.Mqtt3SimpleAuthBuilder;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;
-import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3PublishBuilder;
+import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3WillPublishBuilder;
 import org.mqttbee.mqtt.message.auth.MqttSimpleAuth;
 import org.mqttbee.mqtt.message.auth.mqtt3.Mqtt3SimpleAuthView;
 import org.mqttbee.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
 import org.mqttbee.mqtt.message.publish.MqttWillPublish;
 import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishView;
+import org.mqttbee.mqtt.util.MqttBuilderUtil;
 import org.mqttbee.util.FluentBuilder;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 import org.mqttbee.util.UnsignedDataTypes;
@@ -75,9 +76,8 @@ public class Mqtt3ConnectBuilder<P> extends FluentBuilder<Mqtt3Connect, P> {
     }
 
     public @NotNull Mqtt3ConnectBuilder<P> simpleAuth(final @Nullable Mqtt3SimpleAuth simpleAuth) {
-        final Mqtt3SimpleAuthView simpleAuthView =
-                MustNotBeImplementedUtil.checkNullOrNotImplemented(simpleAuth, Mqtt3SimpleAuthView.class);
-        this.simpleAuth = (simpleAuthView == null) ? null : simpleAuthView.getDelegate();
+        this.simpleAuth = (simpleAuth == null) ? null :
+                MustNotBeImplementedUtil.checkNotImplemented(simpleAuth, Mqtt3SimpleAuthView.class).getDelegate();
         return this;
     }
 
@@ -86,14 +86,13 @@ public class Mqtt3ConnectBuilder<P> extends FluentBuilder<Mqtt3Connect, P> {
     }
 
     public @NotNull Mqtt3ConnectBuilder<P> willPublish(final @Nullable Mqtt3Publish willPublish) {
-        final Mqtt3PublishView publishView =
-                MustNotBeImplementedUtil.checkNullOrNotImplemented(willPublish, Mqtt3PublishView.class);
-        this.willPublish = (publishView == null) ? null : publishView.getWillDelegate();
+        this.willPublish = (willPublish == null) ? null : MqttBuilderUtil.willPublish(
+                MustNotBeImplementedUtil.checkNotImplemented(willPublish, Mqtt3PublishView.class).getDelegate());
         return this;
     }
 
-    public @NotNull Mqtt3PublishBuilder<? extends Mqtt3ConnectBuilder<P>> willPublish() {
-        return new Mqtt3PublishBuilder<>(this::willPublish);
+    public @NotNull Mqtt3WillPublishBuilder<? extends Mqtt3ConnectBuilder<P>> willPublish() {
+        return new Mqtt3WillPublishBuilder<>(this::willPublish);
     }
 
     @Override

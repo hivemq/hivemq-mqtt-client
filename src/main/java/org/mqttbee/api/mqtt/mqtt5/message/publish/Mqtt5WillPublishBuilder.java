@@ -58,8 +58,9 @@ public class Mqtt5WillPublishBuilder<P> extends Mqtt5PublishBuilder<P> {
     Mqtt5WillPublishBuilder(final @NotNull Mqtt5Publish publish) {
         super(publish);
         if (publish instanceof Mqtt5WillPublish) {
-            delayIntervalSeconds =
-                    MustNotBeImplementedUtil.checkNotImplemented(publish, MqttWillPublish.class).getDelayInterval();
+            delayIntervalSeconds = MustNotBeImplementedUtil.checkNotImplemented(publish, MqttWillPublish.class).getDelayInterval();
+        } else {
+            payload(payload);
         }
     }
 
@@ -180,6 +181,7 @@ public class Mqtt5WillPublishBuilder<P> extends Mqtt5PublishBuilder<P> {
 
     public @NotNull Mqtt5WillPublishBuilder<P> delayInterval(
             final long delayInterval, final @NotNull TimeUnit timeUnit) {
+
         final long delayIntervalSeconds = timeUnit.toSeconds(delayInterval);
         Preconditions.checkArgument(UnsignedDataTypes.isUnsignedInt(delayIntervalSeconds),
                 "The value of delay interval converted in seconds must not exceed the value range of unsigned int. Found: %s which is bigger than %s (max unsigned int).",

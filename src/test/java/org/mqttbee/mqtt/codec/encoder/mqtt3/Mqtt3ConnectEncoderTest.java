@@ -19,23 +19,23 @@ package org.mqttbee.mqtt.codec.encoder.mqtt3;
 
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
-import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
-import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
-import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
-import org.mqttbee.mqtt.message.auth.MqttSimpleAuth;
+import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3Connect;
+import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3ConnectBuilder;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
 import org.mqttbee.mqtt.message.connect.MqttStatefulConnect;
 import org.mqttbee.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
-import org.mqttbee.mqtt.message.publish.MqttWillPublish;
-import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishView;
+import org.mqttbee.mqtt.util.MqttBuilderUtil;
 
-import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import static org.eclipse.paho.client.mqttv3.MqttConnectOptions.MQTT_VERSION_3_1_1;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.platform.commons.util.StringUtils.isNotBlank;
 
 class Mqtt3ConnectEncoderTest extends AbstractMqtt3EncoderTest {
@@ -46,54 +46,53 @@ class Mqtt3ConnectEncoderTest extends AbstractMqtt3EncoderTest {
 
     @CsvFileSource(resources = "/testParams/mqtt3/Connect.csv")
     @ParameterizedTest(name = "Connect(\"{0}\", {1}, {2}, \"{3}\", \"{4}\", \"{5}\", \"{6}\")")
-    public void matchesPaho(
-            final String clientId,
-            final boolean cleanSession,
-            final int keepAliveInterval,
-            final String userName,
-            final String password,
-            final String willMessage,
-            final String willTopic,
-            final Integer willQos,
-            final Boolean willRetained
-    ) throws MqttException {
+    void matchesPaho(
+            final @NotNull String clientId, final boolean cleanSession, final int keepAliveInterval,
+            final @Nullable String userName, final @Nullable String password, final @Nullable String willMessage,
+            final @Nullable String willTopic, final @Nullable Integer willQos, final @Nullable Boolean willRetained)
+            throws MqttException {
+
         final boolean hasAuth = isNotBlank(userName) && isNotBlank(password);
-        final boolean hasWill = isNotBlank(willMessage)
-                && isNotBlank(willTopic)
-                && willQos != null
-                && willRetained != null;
+        final boolean hasWill =
+                isNotBlank(willMessage) && isNotBlank(willTopic) && (willQos != null) && (willRetained != null);
 
-        final MqttSimpleAuth auth = !hasAuth ? null : new MqttSimpleAuth(
-                MqttUTF8StringImpl.from(userName),
-                ByteBuffer.wrap(password.getBytes(UTF8))
-        );
-        final MqttClientIdentifierImpl identifier = MqttClientIdentifierImpl.from(clientId);
-        final MqttWillPublish beeWill = hasWill ? Mqtt3PublishView.of(
-                MqttTopicImpl.from(willTopic),
-                ByteBuffer.wrap(willMessage.getBytes()),
-                MqttQos.fromCode(willQos),
-                willRetained
-        ).getWillDelegate() : null;
-        final MqttConnect beeConnect = Mqtt3ConnectView.delegate(keepAliveInterval, cleanSession, auth, beeWill);
-        final MqttStatefulConnect connectWrapper = beeConnect.createStateful(identifier, null);
+        Mqtt3ConnectBuilder<Void> connectBuilder =
+                Mqtt3Connect.builder().cleanSession(cleanSession).keepAlive(keepAliveInterval, TimeUnit.SECONDS);
+        if (hasAuth) {
+            connectBuilder = connectBuilder.simpleAuth()
+                    .username(userName)
+                    .password(password.getBytes(StandardCharsets.UTF_8))
+                    .applySimpleAuth();
+        }
+        if (hasWill) {
+            connectBuilder = connectBuilder.willPublish()
+                    .topic(willTopic)
+                    .qos(Objects.requireNonNull(MqttQos.fromCode(willQos)))
+                    .payload(willMessage.getBytes(StandardCharsets.UTF_8))
+                    .retain(willRetained)
+                    .applyPublish();
+        }
 
-        org.eclipse.paho.client.mqttv3.internal.wire.MqttConnect pahoConnect =
+        final MqttConnect beeConnect = ((Mqtt3ConnectView) connectBuilder.build()).getDelegate();
+        final MqttStatefulConnect statefulConnect =
+                beeConnect.createStateful(MqttBuilderUtil.clientIdentifier(clientId), null);
+
+        final org.eclipse.paho.client.mqttv3.internal.wire.MqttConnect pahoConnect =
                 new org.eclipse.paho.client.mqttv3.internal.wire.MqttConnect(
-                        clientId,
+                        clientId, //
                         MQTT_VERSION_3_1_1, // MQTT bee only supports 3.1.1, so constant for PAHO
-                        cleanSession,
-                        keepAliveInterval,
-                        !hasAuth ? null : userName,
-                        !hasAuth ? null : password.toCharArray(),
-                        !hasWill ? null : new MqttMessage(willMessage.getBytes(UTF8)) {
+                        cleanSession, //
+                        keepAliveInterval, //
+                        !hasAuth ? null : userName, //
+                        !hasAuth ? null : password.toCharArray(), //
+                        !hasWill ? null : new MqttMessage(willMessage.getBytes(StandardCharsets.UTF_8)) {
                             {
                                 setQos(willQos);
                                 setRetained(willRetained);
                             }
-                        },
-                        !hasWill ? null : willTopic
-                );
+                        }, //
+                        !hasWill ? null : willTopic);
 
-        assertArrayEquals(bytesOf(pahoConnect), bytesOf(connectWrapper));
+        encode(statefulConnect, bytesOf(pahoConnect));
     }
 }

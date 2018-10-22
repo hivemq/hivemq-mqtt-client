@@ -43,78 +43,76 @@ import java.util.Optional;
 @Immutable
 public class Mqtt3PublishView implements Mqtt3Publish {
 
-    @NotNull
-    public static final Function<Mqtt3Publish, Mqtt5Publish> DELEGATE_MAPPER = Mqtt3PublishView::delegate;
-    @NotNull
-    public static final Function<Mqtt5Publish, Mqtt3Publish> MAPPER = Mqtt3PublishView::of;
+    public static final @NotNull Function<Mqtt3Publish, Mqtt5Publish> DELEGATE_MAPPER = Mqtt3PublishView::delegate;
+    public static final @NotNull Function<Mqtt5Publish, Mqtt3Publish> MAPPER = Mqtt3PublishView::of;
 
-    @NotNull
-    public static MqttPublish delegate(
-            @NotNull final MqttTopicImpl topic, @Nullable final ByteBuffer payload, @NotNull final MqttQos qos,
+    public static @NotNull MqttPublish delegate(
+            final @NotNull MqttTopicImpl topic, final @Nullable ByteBuffer payload, final @NotNull MqttQos qos,
             final boolean isRetain) {
 
         return new MqttPublish(topic, payload, qos, isRetain, MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null,
                 null, null, TopicAliasUsage.NO, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
     }
 
-    @NotNull
-    public static MqttStatefulPublish statefulDelegate(
-            @NotNull final MqttPublish publish, final int packetIdentifier, final boolean isDup) {
+    public static @NotNull MqttStatefulPublish statefulDelegate(
+            final @NotNull MqttPublish publish, final int packetIdentifier, final boolean isDup) {
 
         return publish.createStateful(packetIdentifier, isDup, MqttStatefulPublish.DEFAULT_NO_TOPIC_ALIAS, false,
                 MqttStatefulPublish.DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
     }
 
-    @NotNull
-    private static MqttPublish delegate(@NotNull final Mqtt3Publish publish) {
+    private static @NotNull MqttPublish delegate(final @NotNull Mqtt3Publish publish) {
         return MustNotBeImplementedUtil.checkNotImplemented(publish, Mqtt3PublishView.class).getDelegate();
     }
 
-    @NotNull
-    public static Mqtt3PublishView of(
-            @NotNull final MqttTopicImpl topic, @Nullable final ByteBuffer payload, @NotNull final MqttQos qos,
+    public static @NotNull Mqtt3PublishView of(
+            final @NotNull MqttTopicImpl topic, final @Nullable ByteBuffer payload, final @NotNull MqttQos qos,
             final boolean isRetain) {
 
         return new Mqtt3PublishView(delegate(topic, payload, qos, isRetain));
     }
 
-    @NotNull
-    private static Mqtt3PublishView of(@NotNull final Mqtt5Publish publish) {
+    public static @NotNull Mqtt3PublishView willOf(
+            final @NotNull MqttTopicImpl topic, final @Nullable ByteBuffer payload, final @NotNull MqttQos qos,
+            final boolean isRetain) {
+
+        return new Mqtt3PublishView(
+                new MqttWillPublish(topic, payload, qos, isRetain, MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, null,
+                        null, null, null, MqttUserPropertiesImpl.NO_USER_PROPERTIES,
+                        Mqtt5WillPublish.DEFAULT_DELAY_INTERVAL));
+    }
+
+    private static @NotNull Mqtt3PublishView of(final @NotNull Mqtt5Publish publish) {
         return new Mqtt3PublishView(MustNotBeImplementedUtil.checkNotImplemented(publish, MqttPublish.class));
     }
 
-    @NotNull
-    public static Mqtt3PublishView of(@NotNull final MqttPublish publish) {
+    public static @NotNull Mqtt3PublishView of(final @NotNull MqttPublish publish) {
         return new Mqtt3PublishView(publish);
     }
 
-    private final MqttPublish delegate;
+    private final @NotNull MqttPublish delegate;
 
-    private Mqtt3PublishView(@NotNull final MqttPublish delegate) {
+    private Mqtt3PublishView(final @NotNull MqttPublish delegate) {
         this.delegate = delegate;
     }
 
-    @NotNull
     @Override
-    public MqttTopic getTopic() {
+    public @NotNull MqttTopic getTopic() {
         return delegate.getTopic();
     }
 
-    @NotNull
     @Override
-    public Optional<ByteBuffer> getPayload() {
+    public @NotNull Optional<ByteBuffer> getPayload() {
         return delegate.getPayload();
     }
 
-    @NotNull
     @Override
-    public byte[] getPayloadAsBytes() {
+    public @NotNull byte[] getPayloadAsBytes() {
         return delegate.getPayloadAsBytes();
     }
 
-    @NotNull
     @Override
-    public MqttQos getQos() {
+    public @NotNull MqttQos getQos() {
         return delegate.getQos();
     }
 
@@ -123,17 +121,7 @@ public class Mqtt3PublishView implements Mqtt3Publish {
         return delegate.isRetain();
     }
 
-    @NotNull
-    public MqttPublish getDelegate() {
+    public @NotNull MqttPublish getDelegate() {
         return delegate;
     }
-
-    @NotNull
-    public MqttWillPublish getWillDelegate() {
-        if (delegate instanceof MqttWillPublish) {
-            return (MqttWillPublish) delegate;
-        }
-        return (MqttWillPublish) Mqtt5WillPublish.extend(delegate).build();
-    }
-
 }

@@ -137,13 +137,9 @@ public class Mqtt5ConnectBuilder<P> extends FluentBuilder<Mqtt5Connect, P> {
         return this;
     }
 
-    public @NotNull Mqtt5ConnectBuilder<P> willPublish(final @Nullable Mqtt5Publish publish) {
-        if (publish instanceof Mqtt5WillPublish) {
-            return willPublish((Mqtt5WillPublish) publish);
-        }
-        final MqttPublish mqttPublish = MustNotBeImplementedUtil.checkNullOrNotImplemented(publish, MqttPublish.class);
-        this.willPublish =
-                (mqttPublish == null) ? null : ((MqttWillPublish) Mqtt5WillPublish.extend(mqttPublish).build());
+    public @NotNull Mqtt5ConnectBuilder<P> willPublish(final @Nullable Mqtt5Publish willPublish) {
+        this.willPublish = MqttBuilderUtil.willPublish(
+                MustNotBeImplementedUtil.checkNullOrNotImplemented(willPublish, MqttPublish.class));
         return this;
     }
 

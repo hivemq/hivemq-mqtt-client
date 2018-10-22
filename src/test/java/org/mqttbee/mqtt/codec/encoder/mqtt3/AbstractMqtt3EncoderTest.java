@@ -14,10 +14,10 @@
  * limitations under the License.
  *
  */
+
 package org.mqttbee.mqtt.codec.encoder.mqtt3;
 
 import com.google.common.primitives.Bytes;
-import io.netty.buffer.ByteBuf;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.internal.wire.MqttWireMessage;
 import org.jetbrains.annotations.NotNull;
@@ -27,56 +27,24 @@ import org.mqttbee.mqtt.MqttVersion;
 import org.mqttbee.mqtt.codec.encoder.AbstractMqttEncoderTest;
 import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoders;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
-import org.mqttbee.mqtt.message.MqttMessage;
 
-import java.nio.charset.Charset;
 import java.util.Objects;
-
-import static org.junit.Assert.assertArrayEquals;
 
 /**
  * @author Alex Stockinger
  */
-public abstract class AbstractMqtt3EncoderTest extends AbstractMqttEncoderTest {
+abstract class AbstractMqtt3EncoderTest extends AbstractMqttEncoderTest {
 
-    protected static final Charset UTF8 = Charset.forName("UTF-8");
-
-    protected AbstractMqtt3EncoderTest(
-            @NotNull final MqttMessageEncoders messageEncoders,
-            final boolean connected
-    ) {
+    AbstractMqtt3EncoderTest(final @NotNull MqttMessageEncoders messageEncoders, final boolean connected) {
         super(messageEncoders, connected, createClientData());
     }
 
     private static MqttClientData createClientData() {
-        return new MqttClientData(
-                MqttVersion.MQTT_3_1_1,
-                Objects.requireNonNull(MqttClientIdentifierImpl.from("test")),
-                "localhost",
-                1883,
-                null,
-                null,
-                false,
-                false,
-                MqttClientExecutorConfigImpl.DEFAULT,
-                null
-        );
+        return new MqttClientData(MqttVersion.MQTT_3_1_1, Objects.requireNonNull(MqttClientIdentifierImpl.from("test")),
+                "localhost", 1883, null, null, false, false, MqttClientExecutorConfigImpl.DEFAULT, null);
     }
 
-    protected void encode(@NotNull final byte[] expected, @NotNull final MqttMessage object) {
-        assertArrayEquals(expected, bytesOf(object));
-    }
-
-    protected byte[] bytesOf(@NotNull final MqttWireMessage message) throws MqttException {
+    static @NotNull byte[] bytesOf(final @NotNull MqttWireMessage message) throws MqttException {
         return Bytes.concat(message.getHeader(), message.getPayload());
-    }
-
-    protected byte[] bytesOf(@NotNull final MqttMessage object) {
-        channel.writeOutbound(object);
-        final ByteBuf byteBuf = channel.readOutbound();
-        final byte[] actual = new byte[byteBuf.readableBytes()];
-        byteBuf.readBytes(actual);
-        byteBuf.release();
-        return actual;
     }
 }
