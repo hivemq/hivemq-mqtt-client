@@ -196,4 +196,8 @@ public class Mqtt5WillPublishBuilder<P> extends Mqtt5PublishBuilder<P> {
                 contentType, responseTopic, correlationData, userProperties, delayIntervalSeconds);
     }
 
+    public @NotNull P applyWillPublish() {
+        return apply();
+    }
+
 }

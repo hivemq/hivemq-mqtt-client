@@ -234,5 +234,9 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
             }
             return new Mqtt5SubscribeAndCallback(subscribeBuilder.build(), callback, executor);
         }
+
+        public @NotNull P applySubscribe() {
+            return apply();
+        }
     }
 }

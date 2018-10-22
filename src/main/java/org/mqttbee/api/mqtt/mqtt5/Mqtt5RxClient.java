@@ -21,9 +21,7 @@ import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.MqttClient;
 import org.mqttbee.api.mqtt.MqttGlobalPublishFilter;
-import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5ConnectBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
@@ -38,8 +36,6 @@ import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5UnsubscribeBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
 import org.mqttbee.rx.FlowableWithSingle;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * MQTT 5 client with a reactive API.
@@ -76,8 +72,8 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * Creates a {@link Mqtt5ConnectBuilder} for connecting this client with the Connect message built from the returned
      * builder.
      * <p>
-     * Calling {@link Mqtt5ConnectBuilder#done()} has the same effect as calling {@link #connect(Mqtt5Connect)} with the
-     * result of {@link Mqtt5ConnectBuilder#build()}.
+     * Calling {@link Mqtt5ConnectBuilder#applyConnect()}  has the same effect as calling {@link #connect(Mqtt5Connect)}
+     * with the result of {@link Mqtt5ConnectBuilder#build()}.
      *
      * @return the builder for the Connect message.
      * @see #connect(Mqtt5Connect)
@@ -114,8 +110,8 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * Creates a {@link Mqtt5SubscribeBuilder} for subscribing this client with the Subscribe message built from the
      * returned builder.
      * <p>
-     * Calling {@link Mqtt5SubscribeBuilder#done()} has the same effect as calling {@link #subscribe(Mqtt5Subscribe)}
-     * with the result of {@link Mqtt5SubscribeBuilder#build()}.
+     * Calling {@link Mqtt5SubscribeBuilder#applySubscribe()}  has the same effect as calling {@link
+     * #subscribe(Mqtt5Subscribe)} with the result of {@link Mqtt5SubscribeBuilder#build()}.
      *
      * @return the builder for the Subscribe message.
      * @see #subscribe(Mqtt5Subscribe)
@@ -153,7 +149,7 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * Creates a {@link Mqtt5SubscribeBuilder} for subscribing this client with the Subscribe message built from the
      * returned builder.
      * <p>
-     * Calling {@link Mqtt5SubscribeBuilder#done()} has the same effect as calling {@link
+     * Calling {@link Mqtt5SubscribeBuilder#applySubscribe()}  has the same effect as calling {@link
      * #subscribeStream(Mqtt5Subscribe)} with the result of {@link Mqtt5SubscribeBuilder#build()}.
      *
      * @return the builder for the Subscribe message.
@@ -205,7 +201,7 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * Creates a {@link Mqtt5UnsubscribeBuilder} for unsubscribing this client with the Unsubscribe message built from
      * the returned builder.
      * <p>
-     * Calling {@link Mqtt5UnsubscribeBuilder#done()} has the same effect as calling {@link
+     * Calling {@link Mqtt5UnsubscribeBuilder#applyUnsubscribe()}  has the same effect as calling {@link
      * #unsubscribe(Mqtt5Unsubscribe)} with the result of {@link Mqtt5UnsubscribeBuilder#build()}.
      *
      * @return the builder for the Unsubscribe message.
@@ -274,8 +270,8 @@ public interface Mqtt5RxClient extends Mqtt5Client {
      * Creates a {@link Mqtt5DisconnectBuilder} for disconnecting this MQTT 5 client with the Disconnect message built
      * from the returned builder.
      * <p>
-     * Calling {@link Mqtt5DisconnectBuilder#done()} has the same effect as calling {@link #disconnect(Mqtt5Disconnect)}
-     * with the result of {@link Mqtt5DisconnectBuilder#build()}.
+     * Calling {@link Mqtt5DisconnectBuilder#applyDisconnect()}  has the same effect as calling {@link
+     * #disconnect(Mqtt5Disconnect)} with the result of {@link Mqtt5DisconnectBuilder#build()}.
      *
      * @return the builder for the Disconnect message.
      * @see #disconnect(Mqtt5Disconnect)

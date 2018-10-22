@@ -67,4 +67,8 @@ public class Mqtt3SubscriptionBuilder<P> extends FluentBuilder<Mqtt3Subscription
         return Mqtt3SubscriptionView.of(topicFilter, qos);
     }
 
+    public @NotNull P applySubscription() {
+        return apply();
+    }
+
 }

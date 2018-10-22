@@ -34,42 +34,41 @@ import java.util.function.Function;
  */
 public class Mqtt5SimpleAuthBuilder<P> extends FluentBuilder<Mqtt5SimpleAuth, P> {
 
-    private MqttUTF8StringImpl username;
-    private ByteBuffer password;
+    private @Nullable MqttUTF8StringImpl username;
+    private @Nullable ByteBuffer password;
 
-    public Mqtt5SimpleAuthBuilder(@Nullable final Function<? super Mqtt5SimpleAuth, P> parentConsumer) {
+    public Mqtt5SimpleAuthBuilder(final @Nullable Function<? super Mqtt5SimpleAuth, P> parentConsumer) {
         super(parentConsumer);
     }
 
-    @NotNull
-    public Mqtt5SimpleAuthBuilder<P> username(@Nullable final String username) {
+    public @NotNull Mqtt5SimpleAuthBuilder<P> username(final @Nullable String username) {
         this.username = MqttBuilderUtil.stringOrNull(username);
         return this;
     }
 
-    @NotNull
-    public Mqtt5SimpleAuthBuilder<P> username(@Nullable final MqttUTF8String username) {
+    public @NotNull Mqtt5SimpleAuthBuilder<P> username(final @Nullable MqttUTF8String username) {
         this.username = MqttBuilderUtil.stringOrNull(username);
         return this;
     }
 
-    @NotNull
-    public Mqtt5SimpleAuthBuilder<P> password(@Nullable final byte[] password) {
+    public @NotNull Mqtt5SimpleAuthBuilder<P> password(final @Nullable byte[] password) {
         this.password = MqttBuilderUtil.binaryDataOrNull(password);
         return this;
     }
 
-    @NotNull
-    public Mqtt5SimpleAuthBuilder<P> password(@Nullable final ByteBuffer password) {
+    public @NotNull Mqtt5SimpleAuthBuilder<P> password(final @Nullable ByteBuffer password) {
         this.password = MqttBuilderUtil.binaryDataOrNull(password);
         return this;
     }
 
-    @NotNull
     @Override
-    public Mqtt5SimpleAuth build() {
+    public @NotNull Mqtt5SimpleAuth build() {
         Preconditions.checkState(username != null || password != null);
         return new MqttSimpleAuth(username, password);
+    }
+
+    public @NotNull P applySimpleAuth() {
+        return apply();
     }
 
 }

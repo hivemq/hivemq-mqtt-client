@@ -29,24 +29,22 @@ import java.util.function.Function;
  */
 public class MqttTopicFilterBuilder<P> extends FluentBuilder<MqttTopicFilter, P> {
 
-    final StringBuilder stringBuilder;
+    final @NotNull StringBuilder stringBuilder;
 
     public MqttTopicFilterBuilder(
-            @NotNull final String base, @Nullable final Function<? super MqttTopicFilter, P> parentConsumer) {
+            final @NotNull String base, final @Nullable Function<? super MqttTopicFilter, P> parentConsumer) {
 
         super(parentConsumer);
         stringBuilder = new StringBuilder(base);
     }
 
-    @NotNull
-    public MqttTopicFilterBuilder<P> addLevel(@NotNull final String subTopic) {
+    public @NotNull MqttTopicFilterBuilder<P> addLevel(final @NotNull String subTopic) {
         Preconditions.checkNotNull(subTopic, "Subtopic must not be null.");
         stringBuilder.append(MqttTopic.TOPIC_LEVEL_SEPARATOR).append(subTopic);
         return this;
     }
 
-    @NotNull
-    public MqttTopicFilterBuilder<P> singleLevelWildcard() {
+    public @NotNull MqttTopicFilterBuilder<P> singleLevelWildcard() {
         if (stringBuilder.length() > 0) {
             stringBuilder.append(MqttTopic.TOPIC_LEVEL_SEPARATOR);
         }
@@ -61,27 +59,27 @@ public class MqttTopicFilterBuilder<P> extends FluentBuilder<MqttTopicFilter, P>
         stringBuilder.append(MqttTopicFilter.MULTI_LEVEL_WILDCARD);
     }
 
-    @NotNull
-    public MqttTopicFilter multiLevelWildcardAndBuild() {
+    public @NotNull MqttTopicFilter multiLevelWildcardAndBuild() {
         multiLevelWildcard();
         return build();
     }
 
-    @NotNull
-    public P multiLevelWildcardAndDone() {
+    public @NotNull P multiLevelWildcardAndApply() {
         multiLevelWildcard();
-        return done();
+        return apply();
     }
 
-    @NotNull
-    public MqttSharedTopicFilterBuilder<P> share(@NotNull final String shareName) {
+    public @NotNull MqttSharedTopicFilterBuilder<P> share(final @NotNull String shareName) {
         return new MqttSharedTopicFilterBuilder<>(shareName, stringBuilder.toString(), parentConsumer);
     }
 
-    @NotNull
     @Override
-    public MqttTopicFilter build() {
+    public @NotNull MqttTopicFilter build() {
         return MqttTopicFilter.from(stringBuilder.toString());
+    }
+
+    public @NotNull P applyTopicFilter() {
+        return apply();
     }
 
 }

@@ -19,6 +19,7 @@ package org.mqttbee.api.mqtt;
 
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3ClientBuilder;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientBuilder;
@@ -36,49 +37,44 @@ import static org.mqttbee.api.mqtt.MqttClient.*;
  */
 public class MqttClientBuilder {
 
-    protected MqttClientIdentifierImpl identifier = MqttClientIdentifierImpl.REQUEST_CLIENT_IDENTIFIER_FROM_SERVER;
-    protected String serverHost = DEFAULT_SERVER_HOST;
+    protected @NotNull MqttClientIdentifierImpl identifier =
+            MqttClientIdentifierImpl.REQUEST_CLIENT_IDENTIFIER_FROM_SERVER;
+    protected @NotNull String serverHost = DEFAULT_SERVER_HOST;
     protected int serverPort = DEFAULT_SERVER_PORT;
     private boolean customServerPort = false;
-    protected MqttClientSslConfig sslConfig = null;
-    protected MqttWebSocketConfig webSocketConfig = null;
-    protected MqttClientExecutorConfigImpl executorConfig = MqttClientExecutorConfigImpl.DEFAULT;
+    protected @Nullable MqttClientSslConfig sslConfig;
+    protected @Nullable MqttWebSocketConfig webSocketConfig;
+    protected @NotNull MqttClientExecutorConfigImpl executorConfig = MqttClientExecutorConfigImpl.DEFAULT;
 
     protected MqttClientBuilder() {
     }
 
-    @NotNull
-    public MqttClientBuilder identifier(@NotNull final String identifier) {
+    public @NotNull MqttClientBuilder identifier(@NotNull final String identifier) {
         this.identifier = MqttBuilderUtil.clientIdentifier(identifier);
         return this;
     }
 
-    @NotNull
-    public MqttClientBuilder identifier(@NotNull final MqttClientIdentifier identifier) {
+    public @NotNull MqttClientBuilder identifier(@NotNull final MqttClientIdentifier identifier) {
         this.identifier = MqttBuilderUtil.clientIdentifier(identifier);
         return this;
     }
 
-    @NotNull
-    public MqttClientBuilder serverHost(@NotNull final String host) {
+    public @NotNull MqttClientBuilder serverHost(@NotNull final String host) {
         this.serverHost = Preconditions.checkNotNull(host, "Server host must not be null.");
         return this;
     }
 
-    @NotNull
-    public MqttClientBuilder serverPort(final int port) {
+    public @NotNull MqttClientBuilder serverPort(final int port) {
         this.serverPort = port;
         customServerPort = true;
         return this;
     }
 
-    @NotNull
-    public MqttClientBuilder useSslWithDefaultConfig() {
+    public @NotNull MqttClientBuilder useSslWithDefaultConfig() {
         return useSsl(MqttClientSslConfigImpl.DEFAULT);
     }
 
-    @NotNull
-    public MqttClientBuilder useSsl(@NotNull final MqttClientSslConfig sslConfig) {
+    public @NotNull MqttClientBuilder useSsl(@NotNull final MqttClientSslConfig sslConfig) {
         if (!customServerPort) {
             if (webSocketConfig == null) {
                 serverPort = DEFAULT_SERVER_PORT_SSL;
@@ -90,18 +86,15 @@ public class MqttClientBuilder {
         return this;
     }
 
-    @NotNull
-    public MqttClientSslConfigBuilder<? extends MqttClientBuilder> useSsl() {
+    public @NotNull MqttClientSslConfigBuilder<? extends MqttClientBuilder> useSsl() {
         return new MqttClientSslConfigBuilder<>(this::useSsl);
     }
 
-    @NotNull
-    public MqttClientBuilder useWebSocketWithDefaultConfig() {
+    public @NotNull MqttClientBuilder useWebSocketWithDefaultConfig() {
         return useWebSocket(MqttWebSocketConfigImpl.DEFAULT);
     }
 
-    @NotNull
-    public MqttClientBuilder useWebSocket(@NotNull final MqttWebSocketConfig webSocketConfig) {
+    public @NotNull MqttClientBuilder useWebSocket(@NotNull final MqttWebSocketConfig webSocketConfig) {
         if (!customServerPort) {
             if (sslConfig == null) {
                 serverPort = DEFAULT_SERVER_PORT_WEBSOCKET;
@@ -113,30 +106,25 @@ public class MqttClientBuilder {
         return this;
     }
 
-    @NotNull
-    public MqttWebSocketConfigBuilder<? extends MqttClientBuilder> useWebSocket() {
+    public @NotNull MqttWebSocketConfigBuilder<? extends MqttClientBuilder> useWebSocket() {
         return new MqttWebSocketConfigBuilder<>(this::useWebSocket);
     }
 
-    @NotNull
-    public MqttClientBuilder executorConfig(@NotNull final MqttClientExecutorConfig executorConfig) {
+    public @NotNull MqttClientBuilder executorConfig(@NotNull final MqttClientExecutorConfig executorConfig) {
         this.executorConfig =
                 MustNotBeImplementedUtil.checkNotImplemented(executorConfig, MqttClientExecutorConfigImpl.class);
         return this;
     }
 
-    @NotNull
-    public MqttClientExecutorConfigBuilder<? extends MqttClientBuilder> executorConfig() {
+    public @NotNull MqttClientExecutorConfigBuilder<? extends MqttClientBuilder> executorConfig() {
         return new MqttClientExecutorConfigBuilder<>(this::executorConfig);
     }
 
-    @NotNull
-    public Mqtt3ClientBuilder useMqttVersion3() {
+    public @NotNull Mqtt3ClientBuilder useMqttVersion3() {
         return new Mqtt3ClientBuilder(identifier, serverHost, serverPort, sslConfig, webSocketConfig, executorConfig);
     }
 
-    @NotNull
-    public Mqtt5ClientBuilder useMqttVersion5() {
+    public @NotNull Mqtt5ClientBuilder useMqttVersion5() {
         return new Mqtt5ClientBuilder(identifier, serverHost, serverPort, sslConfig, webSocketConfig, executorConfig);
     }
 

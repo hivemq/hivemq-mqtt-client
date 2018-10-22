@@ -43,14 +43,14 @@ public class Mqtt3ConnectBuilder<P> extends FluentBuilder<Mqtt3Connect, P> {
 
     private int keepAliveSeconds = Mqtt3Connect.DEFAULT_KEEP_ALIVE;
     private boolean isCleanSession = Mqtt3Connect.DEFAULT_CLEAN_SESSION;
-    private MqttSimpleAuth simpleAuth;
-    private MqttWillPublish willPublish;
+    private @Nullable MqttSimpleAuth simpleAuth;
+    private @Nullable MqttWillPublish willPublish;
 
-    public Mqtt3ConnectBuilder(@Nullable final Function<? super Mqtt3Connect, P> parentConsumer) {
+    public Mqtt3ConnectBuilder(final @Nullable Function<? super Mqtt3Connect, P> parentConsumer) {
         super(parentConsumer);
     }
 
-    Mqtt3ConnectBuilder(@NotNull final Mqtt3Connect connect) {
+    Mqtt3ConnectBuilder(final @NotNull Mqtt3Connect connect) {
         super(null);
         final Mqtt3ConnectView connectView =
                 MustNotBeImplementedUtil.checkNotImplemented(connect, Mqtt3ConnectView.class);
@@ -60,8 +60,7 @@ public class Mqtt3ConnectBuilder<P> extends FluentBuilder<Mqtt3Connect, P> {
         willPublish = connectView.getDelegate().getRawWillPublish();
     }
 
-    @NotNull
-    public Mqtt3ConnectBuilder<P> keepAlive(final int keepAlive, @NotNull final TimeUnit timeUnit) {
+    public @NotNull Mqtt3ConnectBuilder<P> keepAlive(final int keepAlive, final @NotNull TimeUnit timeUnit) {
         final long keepAliveSeconds = timeUnit.toSeconds(keepAlive);
         Preconditions.checkArgument(UnsignedDataTypes.isUnsignedShort(keepAliveSeconds),
                 "The value of keep alive converted in seconds must not exceed the value range of unsigned short. Found: %s which is bigger than %s (max unsigned short).",
@@ -70,42 +69,40 @@ public class Mqtt3ConnectBuilder<P> extends FluentBuilder<Mqtt3Connect, P> {
         return this;
     }
 
-    @NotNull
-    public Mqtt3ConnectBuilder<P> cleanSession(final boolean isCleanSession) {
+    public @NotNull Mqtt3ConnectBuilder<P> cleanSession(final boolean isCleanSession) {
         this.isCleanSession = isCleanSession;
         return this;
     }
 
-    @NotNull
-    public Mqtt3ConnectBuilder<P> simpleAuth(@Nullable final Mqtt3SimpleAuth simpleAuth) {
+    public @NotNull Mqtt3ConnectBuilder<P> simpleAuth(final @Nullable Mqtt3SimpleAuth simpleAuth) {
         final Mqtt3SimpleAuthView simpleAuthView =
                 MustNotBeImplementedUtil.checkNullOrNotImplemented(simpleAuth, Mqtt3SimpleAuthView.class);
         this.simpleAuth = (simpleAuthView == null) ? null : simpleAuthView.getDelegate();
         return this;
     }
 
-    @NotNull
-    public Mqtt3SimpleAuthBuilder<? extends Mqtt3ConnectBuilder<P>> simpleAuth() {
+    public @NotNull Mqtt3SimpleAuthBuilder<? extends Mqtt3ConnectBuilder<P>> simpleAuth() {
         return new Mqtt3SimpleAuthBuilder<>(this::simpleAuth);
     }
 
-    @NotNull
-    public Mqtt3ConnectBuilder<P> willPublish(@Nullable final Mqtt3Publish willPublish) {
+    public @NotNull Mqtt3ConnectBuilder<P> willPublish(final @Nullable Mqtt3Publish willPublish) {
         final Mqtt3PublishView publishView =
                 MustNotBeImplementedUtil.checkNullOrNotImplemented(willPublish, Mqtt3PublishView.class);
         this.willPublish = (publishView == null) ? null : publishView.getWillDelegate();
         return this;
     }
 
-    @NotNull
-    public Mqtt3PublishBuilder<? extends Mqtt3ConnectBuilder<P>> willPublish() {
+    public @NotNull Mqtt3PublishBuilder<? extends Mqtt3ConnectBuilder<P>> willPublish() {
         return new Mqtt3PublishBuilder<>(this::willPublish);
     }
 
-    @NotNull
     @Override
-    public Mqtt3Connect build() {
+    public @NotNull Mqtt3Connect build() {
         return Mqtt3ConnectView.of(keepAliveSeconds, isCleanSession, simpleAuth, willPublish);
+    }
+
+    public @NotNull P applyConnect() {
+        return apply();
     }
 
 }
