@@ -33,24 +33,26 @@ import java.util.function.Function;
  */
 public class MqttClientSslConfigBuilder<P> extends FluentBuilder<MqttClientSslConfig, P> {
 
-    private KeyManagerFactory keyManagerFactory = null;
-    private TrustManagerFactory trustManagerFactory = null;
-    private ImmutableList<String> cipherSuites = null;
-    private ImmutableList<String> protocols = null;
+    private @Nullable KeyManagerFactory keyManagerFactory;
+    private @Nullable TrustManagerFactory trustManagerFactory;
+    private @Nullable ImmutableList<String> cipherSuites;
+    private @Nullable ImmutableList<String> protocols;
     private long handshakeTimeoutMs = MqttClientSslConfig.DEFAULT_HANDSHAKE_TIMEOUT_MS;
 
-    public MqttClientSslConfigBuilder(@Nullable final Function<? super MqttClientSslConfig, P> parentConsumer) {
+    public MqttClientSslConfigBuilder(final @Nullable Function<? super MqttClientSslConfig, P> parentConsumer) {
         super(parentConsumer);
     }
 
-    @NotNull
-    public MqttClientSslConfigBuilder<P> keyManagerFactory(@Nullable final KeyManagerFactory keyManagerFactory) {
+    public @NotNull MqttClientSslConfigBuilder<P> keyManagerFactory(
+            final @Nullable KeyManagerFactory keyManagerFactory) {
+
         this.keyManagerFactory = keyManagerFactory;
         return this;
     }
 
-    @NotNull
-    public MqttClientSslConfigBuilder<P> trustManagerFactory(@Nullable final TrustManagerFactory trustManagerFactory) {
+    public @NotNull MqttClientSslConfigBuilder<P> trustManagerFactory(
+            final @Nullable TrustManagerFactory trustManagerFactory) {
+
         this.trustManagerFactory = trustManagerFactory;
         return this;
     }
@@ -58,8 +60,7 @@ public class MqttClientSslConfigBuilder<P> extends FluentBuilder<MqttClientSslCo
     /**
      * @param cipherSuites if <code>null</code>, netty's default cipher suites will be used
      */
-    @NotNull
-    public MqttClientSslConfigBuilder<P> cipherSuites(@Nullable final List<String> cipherSuites) {
+    public @NotNull MqttClientSslConfigBuilder<P> cipherSuites(final @Nullable List<String> cipherSuites) {
         this.cipherSuites = (cipherSuites == null) ? null : ImmutableList.copyOf(cipherSuites);
         return this;
     }
@@ -67,23 +68,26 @@ public class MqttClientSslConfigBuilder<P> extends FluentBuilder<MqttClientSslCo
     /**
      * @param protocols if <code>null</code>, netty's default protocols will be used
      */
-    @NotNull
-    public MqttClientSslConfigBuilder<P> protocols(@Nullable final List<String> protocols) {
+    public @NotNull MqttClientSslConfigBuilder<P> protocols(final @Nullable List<String> protocols) {
         this.protocols = (protocols == null) ? null : ImmutableList.copyOf(protocols);
         return this;
     }
 
-    @NotNull
-    public MqttClientSslConfigBuilder<P> handshakeTimeout(final long timeout, @NotNull final TimeUnit timeUnit) {
+    public @NotNull MqttClientSslConfigBuilder<P> handshakeTimeout(
+            final long timeout, final @NotNull TimeUnit timeUnit) {
+
         this.handshakeTimeoutMs = TimeUnit.MILLISECONDS.convert(timeout, timeUnit);
         return this;
     }
 
-    @NotNull
     @Override
-    public MqttClientSslConfig build() {
+    public @NotNull MqttClientSslConfig build() {
         return new MqttClientSslConfigImpl(
                 keyManagerFactory, trustManagerFactory, cipherSuites, protocols, handshakeTimeoutMs);
+    }
+
+    public @NotNull P applySslConfig() {
+        return apply();
     }
 
 }

@@ -127,4 +127,8 @@ public class Mqtt5SubscribeBuilder<P> extends FluentBuilder<Mqtt5Subscribe, P> {
         return new MqttSubscribe(subscriptions, userProperties);
     }
 
+    public @NotNull P applySubscribe() {
+        return apply();
+    }
+
 }

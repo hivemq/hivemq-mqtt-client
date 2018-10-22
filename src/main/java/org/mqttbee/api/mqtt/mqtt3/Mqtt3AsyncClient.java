@@ -195,5 +195,9 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
             }
             return new Mqtt3SubscribeAndCallback(subscribeBuilder.build(), callback, executor);
         }
+
+        public @NotNull P applySubscribe() {
+            return apply();
+        }
     }
 }

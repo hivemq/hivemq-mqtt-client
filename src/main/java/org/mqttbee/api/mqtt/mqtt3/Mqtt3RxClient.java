@@ -69,8 +69,8 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      * Creates a {@link Mqtt3ConnectBuilder} for connecting this client with the Connect message built from the returned
      * builder.
      * <p>
-     * Calling {@link Mqtt3ConnectBuilder#done()} has the same effect as calling {@link #connect(Mqtt3Connect)} with the
-     * result of {@link Mqtt3ConnectBuilder#build()}.
+     * Calling {@link Mqtt3ConnectBuilder#applyConnect()} has the same effect as calling {@link #connect(Mqtt3Connect)}
+     * with the result of {@link Mqtt3ConnectBuilder#build()}.
      *
      * @return the builder for the Connect message.
      * @see #connect(Mqtt3Connect)
@@ -107,8 +107,8 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      * Creates a {@link Mqtt3SubscribeBuilder} for subscribing this client with the Subscribe message built from the
      * returned builder.
      * <p>
-     * Calling {@link Mqtt3SubscribeBuilder#done()} has the same effect as calling {@link #subscribe(Mqtt3Subscribe)}
-     * with the result of {@link Mqtt3SubscribeBuilder#build()}.
+     * Calling {@link Mqtt3SubscribeBuilder#applySubscribe()} has the same effect as calling {@link
+     * #subscribe(Mqtt3Subscribe)} with the result of {@link Mqtt3SubscribeBuilder#build()}.
      *
      * @return the builder for the Subscribe message.
      * @see #subscribe(Mqtt3Subscribe)
@@ -146,7 +146,7 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      * Creates a {@link Mqtt3SubscribeBuilder} for subscribing this client with the Subscribe message built from the
      * returned builder.
      * <p>
-     * Calling {@link Mqtt3SubscribeBuilder#done()} has the same effect as calling {@link
+     * Calling {@link Mqtt3SubscribeBuilder#applySubscribe()}  has the same effect as calling {@link
      * #subscribeStream(Mqtt3Subscribe)} with the result of {@link Mqtt3SubscribeBuilder#build()}.
      *
      * @return the builder for the Subscribe message.
@@ -198,7 +198,7 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      * Creates a {@link Mqtt3UnsubscribeBuilder} for unsubscribing this client with the Unsubscribe message built from
      * the returned builder.
      * <p>
-     * Calling {@link Mqtt3UnsubscribeBuilder#done()} has the same effect as calling {@link
+     * Calling {@link Mqtt3UnsubscribeBuilder#applyUnsubscribe()}  has the same effect as calling {@link
      * #unsubscribe(Mqtt3Unsubscribe)} with the result of {@link Mqtt3UnsubscribeBuilder#build()}.
      *
      * @return the builder for the Unsubscribe message.

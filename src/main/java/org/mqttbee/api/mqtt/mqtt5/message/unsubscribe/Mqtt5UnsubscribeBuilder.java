@@ -114,4 +114,8 @@ public class Mqtt5UnsubscribeBuilder<P> extends FluentBuilder<Mqtt5Unsubscribe, 
         return new MqttUnsubscribe(topicFilters, userProperties);
     }
 
+    public @NotNull P applyUnsubscribe() {
+        return apply();
+    }
+
 }

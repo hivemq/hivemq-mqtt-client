@@ -34,42 +34,41 @@ import java.util.function.Function;
  */
 public class Mqtt3SimpleAuthBuilder<P> extends FluentBuilder<Mqtt3SimpleAuth, P> {
 
-    private MqttUTF8StringImpl username;
-    private ByteBuffer password;
+    private @Nullable MqttUTF8StringImpl username;
+    private @Nullable ByteBuffer password;
 
-    public Mqtt3SimpleAuthBuilder(@Nullable final Function<? super Mqtt3SimpleAuth, P> parentConsumer) {
+    public Mqtt3SimpleAuthBuilder(final @Nullable Function<? super Mqtt3SimpleAuth, P> parentConsumer) {
         super(parentConsumer);
     }
 
-    @NotNull
-    public Mqtt3SimpleAuthBuilder<P> username(@NotNull final String username) {
+    public @NotNull Mqtt3SimpleAuthBuilder<P> username(final @NotNull String username) {
         this.username = MqttBuilderUtil.string(username);
         return this;
     }
 
-    @NotNull
-    public Mqtt3SimpleAuthBuilder<P> username(@NotNull final MqttUTF8String username) {
+    public @NotNull Mqtt3SimpleAuthBuilder<P> username(final @NotNull MqttUTF8String username) {
         this.username = MqttBuilderUtil.string(username);
         return this;
     }
 
-    @NotNull
-    public Mqtt3SimpleAuthBuilder<P> password(@Nullable final byte[] password) {
+    public @NotNull Mqtt3SimpleAuthBuilder<P> password(final @Nullable byte[] password) {
         this.password = MqttBuilderUtil.binaryDataOrNull(password);
         return this;
     }
 
-    @NotNull
-    public Mqtt3SimpleAuthBuilder<P> password(@Nullable final ByteBuffer password) {
+    public @NotNull Mqtt3SimpleAuthBuilder<P> password(final @Nullable ByteBuffer password) {
         this.password = MqttBuilderUtil.binaryDataOrNull(password);
         return this;
     }
 
-    @NotNull
     @Override
-    public Mqtt3SimpleAuth build() {
+    public @NotNull Mqtt3SimpleAuth build() {
         Preconditions.checkState(username != null);
         return Mqtt3SimpleAuthView.of(username, password);
+    }
+
+    public @NotNull P applySimpleAuth() {
+        return apply();
     }
 
 }

@@ -97,4 +97,8 @@ public class Mqtt3PublishBuilder<P> extends FluentBuilder<Mqtt3Publish, P> {
         return Mqtt3PublishView.of(topic, payload, qos, retain);
     }
 
+    public @NotNull P applyPublish() {
+        return apply();
+    }
+
 }

@@ -101,4 +101,8 @@ public class Mqtt3SubscribeBuilder<P> extends FluentBuilder<Mqtt3Subscribe, P> {
         return Mqtt3SubscribeView.of(subscriptions);
     }
 
+    public @NotNull P applySubscribe() {
+        return apply();
+    }
+
 }

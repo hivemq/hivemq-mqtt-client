@@ -29,34 +29,34 @@ import java.util.function.Function;
  */
 public class MqttTopicBuilder<P> extends FluentBuilder<MqttTopic, P> {
 
-    private final StringBuilder stringBuilder;
+    private final @NotNull StringBuilder stringBuilder;
 
-    public MqttTopicBuilder(@NotNull final String base, @Nullable final Function<? super MqttTopic, P> parentConsumer) {
+    public MqttTopicBuilder(final @NotNull String base, final @Nullable Function<? super MqttTopic, P> parentConsumer) {
         super(parentConsumer);
         this.stringBuilder = new StringBuilder(base);
     }
 
-    @NotNull
-    public MqttTopicBuilder<P> addLevel(@NotNull final String subTopic) {
+    public @NotNull MqttTopicBuilder<P> addLevel(final @NotNull String subTopic) {
         Preconditions.checkNotNull(subTopic, "Subtopic must not be null.");
         stringBuilder.append(MqttTopic.TOPIC_LEVEL_SEPARATOR).append(subTopic);
         return this;
     }
 
-    @NotNull
-    public MqttTopicFilterBuilder<Void> filter() {
+    public @NotNull MqttTopicFilterBuilder<Void> filter() {
         return new MqttTopicFilterBuilder<>(stringBuilder.toString(), null);
     }
 
-    @NotNull
-    public MqttSharedTopicFilterBuilder<Void> share(@NotNull final String shareName) {
+    public @NotNull MqttSharedTopicFilterBuilder<Void> share(final @NotNull String shareName) {
         return new MqttSharedTopicFilterBuilder<>(shareName, stringBuilder.toString(), null);
     }
 
-    @NotNull
     @Override
-    public MqttTopic build() {
+    public @NotNull MqttTopic build() {
         return MqttTopic.from(stringBuilder.toString());
+    }
+
+    public @NotNull P applyTopic() {
+        return apply();
     }
 
 }

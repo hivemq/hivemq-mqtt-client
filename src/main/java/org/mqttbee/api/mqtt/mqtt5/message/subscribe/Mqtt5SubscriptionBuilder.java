@@ -88,4 +88,8 @@ public class Mqtt5SubscriptionBuilder<P> extends FluentBuilder<Mqtt5Subscription
         return new MqttSubscription(topicFilter, qos, noLocal, retainHandling, retainAsPublished);
     }
 
+    public @NotNull P applySubscription() {
+        return apply();
+    }
+
 }

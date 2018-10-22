@@ -187,4 +187,8 @@ public class Mqtt5PublishBuilder<P> extends FluentBuilder<Mqtt5Publish, P> {
                 contentType, responseTopic, correlationData, topicAliasUsage, userProperties);
     }
 
+    public @NotNull P applyPublish() {
+        return apply();
+    }
+
 }

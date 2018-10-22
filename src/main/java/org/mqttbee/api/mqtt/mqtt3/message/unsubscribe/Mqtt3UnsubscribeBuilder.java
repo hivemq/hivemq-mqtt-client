@@ -101,4 +101,8 @@ public class Mqtt3UnsubscribeBuilder<P> extends FluentBuilder<Mqtt3Unsubscribe, 
         return Mqtt3UnsubscribeView.of(topicFilters);
     }
 
+    public @NotNull P applyUnsubscribe() {
+        return apply();
+    }
+
 }
