@@ -25,42 +25,36 @@ import java.util.function.Function;
 /**
  * @author Silvio Giebl
  */
-public class MqttSharedTopicFilterBuilder<P> extends MqttTopicFilterBuilder<P> {
+public class MqttSharedTopicFilterBuilder<P>
+        extends AbstractMqttTopicFilterBuilder<MqttSharedTopicFilterBuilder<P>, MqttSharedTopicFilter, P> {
 
-    public static <P> @NotNull MqttSharedTopicFilterBuilder<P> create(
-            final @NotNull String shareName, final @NotNull String base,
-            final @Nullable Function<? super MqttSharedTopicFilter, P> parentConsumer) {
-
-        return new MqttSharedTopicFilterBuilder<>(shareName, base, (parentConsumer == null) ? null :
-                topicFilter -> parentConsumer.apply((MqttSharedTopicFilter) topicFilter));
-    }
-
-    private final @NotNull String shareName;
+    private @NotNull String shareName;
 
     public MqttSharedTopicFilterBuilder(
+            final @NotNull String shareName,
+            final @Nullable Function<? super MqttSharedTopicFilter, P> parentConsumer) {
+
+        super(parentConsumer);
+        this.shareName = shareName;
+    }
+
+    MqttSharedTopicFilterBuilder(
             final @NotNull String shareName, final @NotNull String base,
-            final @Nullable Function<? super MqttTopicFilter, P> parentConsumer) {
+            final @Nullable Function<? super MqttSharedTopicFilter, P> parentConsumer) {
 
         super(base, parentConsumer);
         this.shareName = shareName;
     }
 
     @Override
-    public @NotNull MqttSharedTopicFilterBuilder<P> addLevel(final @NotNull String subTopic) {
-        super.addLevel(subTopic);
+    @NotNull MqttSharedTopicFilterBuilder<P> self() {
         return this;
     }
 
     @Override
-    public @NotNull MqttSharedTopicFilterBuilder<P> singleLevelWildcard() {
-        super.singleLevelWildcard();
+    @NotNull MqttSharedTopicFilterBuilder<P> share(final @NotNull String shareName) {
+        this.shareName = shareName;
         return this;
-    }
-
-    @Override
-    public @NotNull MqttSharedTopicFilter multiLevelWildcardAndBuild() {
-        multiLevelWildcard();
-        return build();
     }
 
     @Override
@@ -71,5 +65,4 @@ public class MqttSharedTopicFilterBuilder<P> extends MqttTopicFilterBuilder<P> {
     public @NotNull P applySharedTopicFilter() {
         return apply();
     }
-
 }

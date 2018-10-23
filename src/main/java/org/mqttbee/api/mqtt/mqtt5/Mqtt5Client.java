@@ -25,6 +25,10 @@ import org.mqttbee.api.mqtt.MqttClient;
  */
 public interface Mqtt5Client extends MqttClient {
 
+    static @NotNull Mqtt5ClientBuilder builder() {
+        return new Mqtt5ClientBuilder();
+    }
+
     @Override
     @NotNull Mqtt5ClientData getClientData();
 
@@ -33,5 +37,4 @@ public interface Mqtt5Client extends MqttClient {
     @NotNull Mqtt5AsyncClient toAsync();
 
     @NotNull Mqtt5BlockingClient toBlocking();
-
 }

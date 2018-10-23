@@ -117,7 +117,7 @@ public class Mqtt5ConnectBuilder<P> extends FluentBuilder<Mqtt5Connect, P> {
         return this;
     }
 
-    public @NotNull Mqtt5ConnectRestrictionsBuilder<? extends Mqtt5ConnectBuilder<P>> restrictions() {
+    public @NotNull Mqtt5ConnectRestrictionsBuilder<Mqtt5ConnectBuilder<P>> restrictions() {
         return new Mqtt5ConnectRestrictionsBuilder<>(this::restrictions);
     }
 
@@ -126,7 +126,7 @@ public class Mqtt5ConnectBuilder<P> extends FluentBuilder<Mqtt5Connect, P> {
         return this;
     }
 
-    public @NotNull Mqtt5SimpleAuthBuilder<? extends Mqtt5ConnectBuilder<P>> simpleAuth() {
+    public @NotNull Mqtt5SimpleAuthBuilder<Mqtt5ConnectBuilder<P>> simpleAuth() {
         return new Mqtt5SimpleAuthBuilder<>(this::simpleAuth);
     }
 
@@ -148,8 +148,8 @@ public class Mqtt5ConnectBuilder<P> extends FluentBuilder<Mqtt5Connect, P> {
         return this;
     }
 
-    public @NotNull Mqtt5WillPublishBuilder<? extends Mqtt5ConnectBuilder<P>> willPublish() {
-        return Mqtt5WillPublishBuilder.create(this::willPublish);
+    public @NotNull Mqtt5WillPublishBuilder<Mqtt5ConnectBuilder<P>> willPublish() {
+        return new Mqtt5WillPublishBuilder<>(this::willPublish);
     }
 
     public @NotNull Mqtt5ConnectBuilder<P> userProperties(final @NotNull Mqtt5UserProperties userProperties) {
@@ -157,7 +157,7 @@ public class Mqtt5ConnectBuilder<P> extends FluentBuilder<Mqtt5Connect, P> {
         return this;
     }
 
-    public @NotNull Mqtt5UserPropertiesBuilder<? extends Mqtt5ConnectBuilder<P>> userProperties() {
+    public @NotNull Mqtt5UserPropertiesBuilder<Mqtt5ConnectBuilder<P>> userProperties() {
         return new Mqtt5UserPropertiesBuilder<>(this::userProperties);
     }
 
@@ -171,5 +171,4 @@ public class Mqtt5ConnectBuilder<P> extends FluentBuilder<Mqtt5Connect, P> {
     public @NotNull P applyConnect() {
         return apply();
     }
-
 }

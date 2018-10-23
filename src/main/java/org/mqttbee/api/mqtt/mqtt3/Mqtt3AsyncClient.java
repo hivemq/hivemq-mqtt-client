@@ -158,8 +158,8 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
             return this;
         }
 
-        public @NotNull MqttTopicFilterBuilder<? extends Mqtt3SubscribeAndCallbackBuilder<P>> topicFilter() {
-            return new MqttTopicFilterBuilder<>("", this::topicFilter);
+        public @NotNull MqttTopicFilterBuilder<Mqtt3SubscribeAndCallbackBuilder<P>> topicFilter() {
+            return new MqttTopicFilterBuilder<>(this::topicFilter);
         }
 
         public @NotNull Mqtt3SubscribeAndCallbackBuilder<P> qos(final @NotNull MqttQos qos) {
@@ -174,7 +174,7 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
             return this;
         }
 
-        public @NotNull Mqtt3SubscriptionBuilder<? extends Mqtt3SubscribeAndCallbackBuilder<P>> addSubscription() {
+        public @NotNull Mqtt3SubscriptionBuilder<Mqtt3SubscribeAndCallbackBuilder<P>> addSubscription() {
             return new Mqtt3SubscriptionBuilder<>(this::addSubscription);
         }
 

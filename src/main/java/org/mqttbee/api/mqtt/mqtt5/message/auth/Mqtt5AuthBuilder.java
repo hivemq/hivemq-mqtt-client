@@ -17,9 +17,9 @@
 
 package org.mqttbee.api.mqtt.mqtt5.message.auth;
 
-import org.mqttbee.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
@@ -32,22 +32,17 @@ import java.nio.ByteBuffer;
 @DoNotImplement
 public interface Mqtt5AuthBuilder {
 
-    @NotNull
-    Mqtt5AuthBuilder data(@Nullable byte[] data);
+    @NotNull Mqtt5AuthBuilder data(@Nullable byte[] data);
 
-    @NotNull
-    Mqtt5AuthBuilder data(@Nullable ByteBuffer data);
+    @NotNull Mqtt5AuthBuilder data(@Nullable ByteBuffer data);
 
-    @NotNull
-    Mqtt5AuthBuilder reasonString(@Nullable String reasonString);
+    @NotNull Mqtt5AuthBuilder reasonString(@Nullable String reasonString);
 
-    @NotNull
-    Mqtt5AuthBuilder reasonString(@Nullable MqttUTF8String reasonString);
+    @NotNull Mqtt5AuthBuilder reasonString(@Nullable MqttUTF8String reasonString);
 
-    @NotNull
-    Mqtt5AuthBuilder userProperties(@NotNull Mqtt5UserProperties userProperties);
+    @NotNull Mqtt5AuthBuilder userProperties(@NotNull Mqtt5UserProperties userProperties);
 
-    @NotNull
-    Mqtt5UserPropertiesBuilder<? extends Mqtt5AuthBuilder> userProperties();
-
+    default @NotNull Mqtt5UserPropertiesBuilder<Mqtt5AuthBuilder> userProperties() {
+        return new Mqtt5UserPropertiesBuilder<>(this::userProperties);
+    }
 }

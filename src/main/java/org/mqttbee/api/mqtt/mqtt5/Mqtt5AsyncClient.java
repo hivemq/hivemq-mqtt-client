@@ -169,8 +169,8 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
             return this;
         }
 
-        public @NotNull MqttTopicFilterBuilder<? extends Mqtt5SubscribeAndCallbackBuilder<P>> topicFilter() {
-            return new MqttTopicFilterBuilder<>("", this::topicFilter);
+        public @NotNull MqttTopicFilterBuilder<Mqtt5SubscribeAndCallbackBuilder<P>> topicFilter() {
+            return new MqttTopicFilterBuilder<>(this::topicFilter);
         }
 
         public @NotNull Mqtt5SubscribeAndCallbackBuilder<P> qos(final @NotNull MqttQos qos) {
@@ -202,7 +202,7 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
             return this;
         }
 
-        public @NotNull Mqtt5SubscriptionBuilder<? extends Mqtt5SubscribeAndCallbackBuilder<P>> addSubscription() {
+        public @NotNull Mqtt5SubscriptionBuilder<Mqtt5SubscribeAndCallbackBuilder<P>> addSubscription() {
             return new Mqtt5SubscriptionBuilder<>(this::addSubscription);
         }
 
@@ -213,7 +213,7 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
             return this;
         }
 
-        public @NotNull Mqtt5UserPropertiesBuilder<? extends Mqtt5SubscribeAndCallbackBuilder<P>> userProperties() {
+        public @NotNull Mqtt5UserPropertiesBuilder<Mqtt5SubscribeAndCallbackBuilder<P>> userProperties() {
             return new Mqtt5UserPropertiesBuilder<>(this::userProperties);
         }
 

@@ -26,7 +26,6 @@ import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
 import org.mqttbee.mqtt.datatypes.*;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.publish.MqttWillPublish;
-import org.mqttbee.util.ByteBufferUtil;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 
 import java.nio.ByteBuffer;
@@ -36,8 +35,7 @@ import java.nio.ByteBuffer;
  */
 public class MqttBuilderUtil {
 
-    @NotNull
-    public static MqttUTF8StringImpl string(@NotNull final String string) {
+    public static @NotNull MqttUTF8StringImpl string(final @NotNull String string) {
         Preconditions.checkNotNull(string, "String must not be null.");
         final MqttUTF8StringImpl from = MqttUTF8StringImpl.from(string);
         if (from == null) {
@@ -46,24 +44,20 @@ public class MqttBuilderUtil {
         return from;
     }
 
-    @NotNull
-    public static MqttUTF8StringImpl string(@NotNull final MqttUTF8String string) {
+    public static @NotNull MqttUTF8StringImpl string(final @NotNull MqttUTF8String string) {
         Preconditions.checkNotNull(string, "String must not be null.");
         return MustNotBeImplementedUtil.checkNotImplemented(string, MqttUTF8StringImpl.class);
     }
 
-    @Nullable
-    public static MqttUTF8StringImpl stringOrNull(@Nullable final String string) {
+    public static @Nullable MqttUTF8StringImpl stringOrNull(final @Nullable String string) {
         return (string == null) ? null : string(string);
     }
 
-    @Nullable
-    public static MqttUTF8StringImpl stringOrNull(@Nullable final MqttUTF8String string) {
+    public static @Nullable MqttUTF8StringImpl stringOrNull(final @Nullable MqttUTF8String string) {
         return MustNotBeImplementedUtil.checkNullOrNotImplemented(string, MqttUTF8StringImpl.class);
     }
 
-    @NotNull
-    public static MqttTopicImpl topic(@NotNull final String string) {
+    public static @NotNull MqttTopicImpl topic(final @NotNull String string) {
         Preconditions.checkNotNull(string, "String must not be null.");
         final MqttTopicImpl from = MqttTopicImpl.from(string);
         if (from == null) {
@@ -72,24 +66,20 @@ public class MqttBuilderUtil {
         return from;
     }
 
-    @NotNull
-    public static MqttTopicImpl topic(@NotNull final MqttTopic topic) {
+    public static @NotNull MqttTopicImpl topic(final @NotNull MqttTopic topic) {
         Preconditions.checkNotNull(topic, "Topic must not be null.");
         return MustNotBeImplementedUtil.checkNotImplemented(topic, MqttTopicImpl.class);
     }
 
-    @Nullable
-    public static MqttTopicImpl topicOrNull(@Nullable final String string) {
+    public static @Nullable MqttTopicImpl topicOrNull(final @Nullable String string) {
         return (string == null) ? null : topic(string);
     }
 
-    @Nullable
-    public static MqttTopicImpl topicOrNull(@Nullable final MqttTopic topic) {
+    public static @Nullable MqttTopicImpl topicOrNull(final @Nullable MqttTopic topic) {
         return MustNotBeImplementedUtil.checkNullOrNotImplemented(topic, MqttTopicImpl.class);
     }
 
-    @NotNull
-    public static MqttTopicFilterImpl topicFilter(@NotNull final String string) {
+    public static @NotNull MqttTopicFilterImpl topicFilter(final @NotNull String string) {
         Preconditions.checkNotNull(string, "String must not be null.");
         final MqttTopicFilterImpl from = MqttTopicFilterImpl.from(string);
         if (from == null) {
@@ -98,15 +88,13 @@ public class MqttBuilderUtil {
         return from;
     }
 
-    @NotNull
-    public static MqttTopicFilterImpl topicFilter(@NotNull final MqttTopicFilter topicFilter) {
+    public static @NotNull MqttTopicFilterImpl topicFilter(final @NotNull MqttTopicFilter topicFilter) {
         Preconditions.checkNotNull(topicFilter, "Topic filter must not be null.");
         return MustNotBeImplementedUtil.checkNotImplemented(topicFilter, MqttTopicFilterImpl.class);
     }
 
-    @NotNull
-    public static MqttSharedTopicFilterImpl sharedTopicFilter(
-            @NotNull final String shareName, @NotNull final String topicFilter) {
+    public static @NotNull MqttSharedTopicFilterImpl sharedTopicFilter(
+            final @NotNull String shareName, final @NotNull String topicFilter) {
 
         Preconditions.checkNotNull(shareName, "Share name must not be null.");
         Preconditions.checkNotNull(topicFilter, "Topic filter must not be null.");
@@ -119,8 +107,7 @@ public class MqttBuilderUtil {
         return sharedTopicFilter;
     }
 
-    @NotNull
-    public static MqttClientIdentifierImpl clientIdentifier(@NotNull final String string) {
+    public static @NotNull MqttClientIdentifierImpl clientIdentifier(final @NotNull String string) {
         Preconditions.checkNotNull(string, "String must not be null.");
         final MqttClientIdentifierImpl from = MqttClientIdentifierImpl.from(string);
         if (from == null) {
@@ -129,25 +116,24 @@ public class MqttBuilderUtil {
         return from;
     }
 
-    @NotNull
-    public static MqttClientIdentifierImpl clientIdentifier(@NotNull final MqttClientIdentifier clientIdentifier) {
+    public static @NotNull MqttClientIdentifierImpl clientIdentifier(
+            final @NotNull MqttClientIdentifier clientIdentifier) {
+
         Preconditions.checkNotNull(clientIdentifier, "Client identifier must not be null.");
         return MustNotBeImplementedUtil.checkNotImplemented(clientIdentifier, MqttClientIdentifierImpl.class);
     }
 
-    @Nullable
-    public static ByteBuffer binaryDataOrNull(@Nullable final byte[] binary) {
+    public static @Nullable ByteBuffer binaryDataOrNull(final @Nullable byte[] binary) {
         if (binary == null) {
             return null;
         }
         Preconditions.checkArgument(MqttBinaryData.isInRange(binary),
                 "Cannot encode given byte array as binary data. Byte array to long. Found: %s bytes. Maximum length is %s.",
                 binary.length, MqttBinaryData.MAX_LENGTH);
-        return ByteBufferUtil.wrap(binary);
+        return ByteBuffer.wrap(binary);
     }
 
-    @Nullable
-    public static ByteBuffer binaryDataOrNull(@Nullable final ByteBuffer binary) {
+    public static @Nullable ByteBuffer binaryDataOrNull(final @Nullable ByteBuffer binary) {
         if (binary == null) {
             return null;
         }
@@ -155,22 +141,19 @@ public class MqttBuilderUtil {
                 "Cannot encode given byte buffer as binary data. Too many remaining bytes in byte buffer. Found: %s bytes. Maximum length is %s.",
                 binary.remaining(), MqttBinaryData.MAX_LENGTH);
 
-        return ByteBufferUtil.slice(binary);
+        return binary.slice();
     }
 
-    @NotNull
-    public static MqttUserPropertiesImpl userProperties(@NotNull final Mqtt5UserProperties userProperties) {
+    public static @NotNull MqttUserPropertiesImpl userProperties(final @NotNull Mqtt5UserProperties userProperties) {
         return MustNotBeImplementedUtil.checkNotImplemented(userProperties, MqttUserPropertiesImpl.class);
     }
 
-    @NotNull
-    public static MqttUserPropertyImpl userProperty(@NotNull final String name, @NotNull final String value) {
+    public static @NotNull MqttUserPropertyImpl userProperty(final @NotNull String name, final @NotNull String value) {
         return MqttUserPropertyImpl.of(string(name), string(value));
     }
 
-    @NotNull
-    public static MqttUserPropertyImpl userProperty(
-            @NotNull final MqttUTF8String name, @NotNull final MqttUTF8String value) {
+    public static @NotNull MqttUserPropertyImpl userProperty(
+            final @NotNull MqttUTF8String name, final @NotNull MqttUTF8String value) {
 
         return MqttUserPropertyImpl.of(string(name), string(value));
     }

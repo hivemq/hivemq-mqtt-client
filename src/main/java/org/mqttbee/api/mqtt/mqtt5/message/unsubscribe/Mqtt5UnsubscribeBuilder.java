@@ -69,8 +69,8 @@ public class Mqtt5UnsubscribeBuilder<P> extends FluentBuilder<Mqtt5Unsubscribe, 
         return this;
     }
 
-    public @NotNull MqttTopicFilterBuilder<? extends Mqtt5UnsubscribeBuilder<P>> topicFilter() {
-        return new MqttTopicFilterBuilder<>("", this::topicFilter);
+    public @NotNull MqttTopicFilterBuilder<Mqtt5UnsubscribeBuilder<P>> topicFilter() {
+        return new MqttTopicFilterBuilder<>(this::topicFilter);
     }
 
     public @NotNull Mqtt5UnsubscribeBuilder<P> addTopicFilter(final @NotNull String topicFilter) {
@@ -83,8 +83,8 @@ public class Mqtt5UnsubscribeBuilder<P> extends FluentBuilder<Mqtt5Unsubscribe, 
         return this;
     }
 
-    public @NotNull MqttTopicFilterBuilder<? extends Mqtt5UnsubscribeBuilder<P>> addTopicFilter() {
-        return new MqttTopicFilterBuilder<>("", this::addTopicFilter);
+    public @NotNull MqttTopicFilterBuilder<Mqtt5UnsubscribeBuilder<P>> addTopicFilter() {
+        return new MqttTopicFilterBuilder<>(this::addTopicFilter);
     }
 
     public @NotNull Mqtt5UnsubscribeBuilder<P> reverse(final @NotNull Mqtt5Subscribe subscribe) {
@@ -100,7 +100,7 @@ public class Mqtt5UnsubscribeBuilder<P> extends FluentBuilder<Mqtt5Unsubscribe, 
         return this;
     }
 
-    public @NotNull Mqtt5UserPropertiesBuilder<? extends Mqtt5UnsubscribeBuilder<P>> userProperties() {
+    public @NotNull Mqtt5UserPropertiesBuilder<Mqtt5UnsubscribeBuilder<P>> userProperties() {
         return new Mqtt5UserPropertiesBuilder<>(this::userProperties);
     }
 
@@ -117,5 +117,4 @@ public class Mqtt5UnsubscribeBuilder<P> extends FluentBuilder<Mqtt5Unsubscribe, 
     public @NotNull P applyUnsubscribe() {
         return apply();
     }
-
 }

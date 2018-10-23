@@ -18,15 +18,15 @@
 package org.mqttbee.api.mqtt.datatypes;
 
 import com.google.common.collect.ImmutableList;
-import org.mqttbee.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 
 /**
  * MQTT Topic Filter according to the MQTT specification.
  * <p>
- * A Topic Filter has the restrictions from {@link MqttUTF8String}, must be at least one character long, may contain
- * one {@link #MULTI_LEVEL_WILDCARD} at the end and may contain multiple {@link #SINGLE_LEVEL_WILDCARD}s.
+ * A Topic Filter has the restrictions from {@link MqttUTF8String}, must be at least one character long, may contain one
+ * {@link #MULTI_LEVEL_WILDCARD} at the end and may contain multiple {@link #SINGLE_LEVEL_WILDCARD}s.
  *
  * @author Silvio Giebl
  */
@@ -49,31 +49,30 @@ public interface MqttTopicFilter extends MqttUTF8String {
      * @return the created Topic Filter.
      * @throws IllegalArgumentException if the string is not a valid Topic Filter.
      */
-    @NotNull
-    static MqttTopicFilter from(@NotNull final String string) {
+    static @NotNull MqttTopicFilter from(final @NotNull String string) {
         return MqttBuilderUtil.topicFilter(string);
     }
 
-    @NotNull
-    static MqttTopicFilterBuilder<Void> builder(@NotNull final String topTopic) {
+    static @NotNull MqttTopicFilterBuilder<Void> builder() {
+        return new MqttTopicFilterBuilder<>(null);
+    }
+
+    static @NotNull MqttTopicFilterBuilder<Void> builder(final @NotNull String topTopic) {
         return new MqttTopicFilterBuilder<>(topTopic, null);
     }
 
-    @NotNull
-    static MqttTopicFilterBuilder<Void> extend(@NotNull final MqttTopicFilter topicFilter) {
+    static @NotNull MqttTopicFilterBuilder<Void> extend(final @NotNull MqttTopicFilter topicFilter) {
         return new MqttTopicFilterBuilder<>(topicFilter.toString(), null);
     }
 
-    @NotNull
-    static MqttTopicFilterBuilder<Void> filter(@NotNull final MqttTopic topic) {
+    static @NotNull MqttTopicFilterBuilder<Void> filter(final @NotNull MqttTopic topic) {
         return new MqttTopicFilterBuilder<>(topic.toString(), null);
     }
 
     /**
      * @return the levels of this Topic Filter.
      */
-    @NotNull
-    ImmutableList<String> getLevels();
+    @NotNull ImmutableList<String> getLevels();
 
     /**
      * @return whether this Topic Filter contains wildcards.
@@ -110,5 +109,4 @@ public interface MqttTopicFilter extends MqttUTF8String {
      * @return true if this Topic Filter matches the given Topic Filter, otherwise false.
      */
     boolean matches(@NotNull MqttTopicFilter topicFilter);
-
 }
