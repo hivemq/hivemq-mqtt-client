@@ -17,58 +17,33 @@
 
 package org.mqttbee.api.mqtt.datatypes;
 
-import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.util.FluentBuilder;
 
 import java.util.function.Function;
 
 /**
  * @author Silvio Giebl
  */
-public class MqttTopicFilterBuilder<P> extends FluentBuilder<MqttTopicFilter, P> {
+public class MqttTopicFilterBuilder<P>
+        extends AbstractMqttTopicFilterBuilder<MqttTopicFilterBuilder<P>, MqttTopicFilter, P> {
 
-    final @NotNull StringBuilder stringBuilder;
+    public MqttTopicFilterBuilder(final @Nullable Function<? super MqttTopicFilter, P> parentConsumer) {
+        super(parentConsumer);
+    }
 
-    public MqttTopicFilterBuilder(
+    MqttTopicFilterBuilder(
             final @NotNull String base, final @Nullable Function<? super MqttTopicFilter, P> parentConsumer) {
 
-        super(parentConsumer);
-        stringBuilder = new StringBuilder(base);
+        super(base, parentConsumer);
     }
 
-    public @NotNull MqttTopicFilterBuilder<P> addLevel(final @NotNull String subTopic) {
-        Preconditions.checkNotNull(subTopic, "Subtopic must not be null.");
-        stringBuilder.append(MqttTopic.TOPIC_LEVEL_SEPARATOR).append(subTopic);
+    @Override
+    @NotNull MqttTopicFilterBuilder<P> self() {
         return this;
     }
 
-    public @NotNull MqttTopicFilterBuilder<P> singleLevelWildcard() {
-        if (stringBuilder.length() > 0) {
-            stringBuilder.append(MqttTopic.TOPIC_LEVEL_SEPARATOR);
-        }
-        stringBuilder.append(MqttTopicFilter.SINGLE_LEVEL_WILDCARD);
-        return this;
-    }
-
-    void multiLevelWildcard() {
-        if (stringBuilder.length() > 0) {
-            stringBuilder.append(MqttTopic.TOPIC_LEVEL_SEPARATOR);
-        }
-        stringBuilder.append(MqttTopicFilter.MULTI_LEVEL_WILDCARD);
-    }
-
-    public @NotNull MqttTopicFilter multiLevelWildcardAndBuild() {
-        multiLevelWildcard();
-        return build();
-    }
-
-    public @NotNull P multiLevelWildcardAndApply() {
-        multiLevelWildcard();
-        return apply();
-    }
-
+    @Override
     public @NotNull MqttSharedTopicFilterBuilder<P> share(final @NotNull String shareName) {
         return new MqttSharedTopicFilterBuilder<>(shareName, stringBuilder.toString(), parentConsumer);
     }
@@ -81,5 +56,4 @@ public class MqttTopicFilterBuilder<P> extends FluentBuilder<MqttTopicFilter, P>
     public @NotNull P applyTopicFilter() {
         return apply();
     }
-
 }

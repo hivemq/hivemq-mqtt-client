@@ -75,8 +75,8 @@ public class Mqtt5SubscribeBuilder<P> extends FluentBuilder<Mqtt5Subscribe, P> {
         return this;
     }
 
-    public @NotNull MqttTopicFilterBuilder<? extends Mqtt5SubscribeBuilder<P>> topicFilter() {
-        return new MqttTopicFilterBuilder<>("", this::topicFilter);
+    public @NotNull MqttTopicFilterBuilder<Mqtt5SubscribeBuilder<P>> topicFilter() {
+        return new MqttTopicFilterBuilder<>(this::topicFilter);
     }
 
     public @NotNull Mqtt5SubscribeBuilder<P> qos(final @NotNull MqttQos qos) {
@@ -104,7 +104,7 @@ public class Mqtt5SubscribeBuilder<P> extends FluentBuilder<Mqtt5Subscribe, P> {
         return this;
     }
 
-    public @NotNull Mqtt5SubscriptionBuilder<? extends Mqtt5SubscribeBuilder<P>> addSubscription() {
+    public @NotNull Mqtt5SubscriptionBuilder<Mqtt5SubscribeBuilder<P>> addSubscription() {
         return new Mqtt5SubscriptionBuilder<>(this::addSubscription);
     }
 
@@ -113,7 +113,7 @@ public class Mqtt5SubscribeBuilder<P> extends FluentBuilder<Mqtt5Subscribe, P> {
         return this;
     }
 
-    public @NotNull Mqtt5UserPropertiesBuilder<? extends Mqtt5SubscribeBuilder<P>> userProperties() {
+    public @NotNull Mqtt5UserPropertiesBuilder<Mqtt5SubscribeBuilder<P>> userProperties() {
         return new Mqtt5UserPropertiesBuilder<>(this::userProperties);
     }
 
@@ -130,5 +130,4 @@ public class Mqtt5SubscribeBuilder<P> extends FluentBuilder<Mqtt5Subscribe, P> {
     public @NotNull P applySubscribe() {
         return apply();
     }
-
 }

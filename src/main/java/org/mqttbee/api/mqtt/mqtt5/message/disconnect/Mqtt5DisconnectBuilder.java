@@ -93,7 +93,7 @@ public class Mqtt5DisconnectBuilder<P> extends FluentBuilder<Mqtt5Disconnect, P>
         return this;
     }
 
-    public @NotNull Mqtt5UserPropertiesBuilder<? extends Mqtt5DisconnectBuilder<P>> userProperties() {
+    public @NotNull Mqtt5UserPropertiesBuilder<Mqtt5DisconnectBuilder<P>> userProperties() {
         return new Mqtt5UserPropertiesBuilder<>(this::userProperties);
     }
 
@@ -108,5 +108,4 @@ public class Mqtt5DisconnectBuilder<P> extends FluentBuilder<Mqtt5Disconnect, P>
     public @NotNull P applyDisconnect() {
         return apply();
     }
-
 }

@@ -17,8 +17,8 @@
 
 package org.mqttbee.api.mqtt.datatypes;
 
-import org.mqttbee.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 
 /**
@@ -37,7 +37,7 @@ public interface MqttSharedTopicFilter extends MqttTopicFilter {
     /**
      * The prefix of a Shared Topic Filter.
      */
-    String SHARE_PREFIX = "$share" + MqttTopic.TOPIC_LEVEL_SEPARATOR;
+    @NotNull String SHARE_PREFIX = "$share" + MqttTopic.TOPIC_LEVEL_SEPARATOR;
 
     /**
      * Validates and creates a Shared Topic Filter from the given Share Name and the given Topic Filter.
@@ -48,42 +48,44 @@ public interface MqttSharedTopicFilter extends MqttTopicFilter {
      * @throws IllegalArgumentException if the Share Name is not a valid Share Name or the Topic Filter is not a valid
      *                                  Topic Filter.
      */
-    @NotNull
-    static MqttSharedTopicFilter from(@NotNull final String shareName, @NotNull final String topicFilter) {
+    static @NotNull MqttSharedTopicFilter from(final @NotNull String shareName, final @NotNull String topicFilter) {
         return MqttBuilderUtil.sharedTopicFilter(shareName, topicFilter);
     }
 
-    @NotNull
-    static MqttSharedTopicFilterBuilder<Void> builder(@NotNull final String shareName, @NotNull final String topTopic) {
+    static @NotNull MqttSharedTopicFilterBuilder<Void> builder(final @NotNull String shareName) {
+        return new MqttSharedTopicFilterBuilder<>(shareName, null);
+    }
+
+    static @NotNull MqttSharedTopicFilterBuilder<Void> builder(
+            final @NotNull String shareName, final @NotNull String topTopic) {
+
         return new MqttSharedTopicFilterBuilder<>(shareName, topTopic, null);
     }
 
-    @NotNull
-    static MqttSharedTopicFilterBuilder<Void> extend(@NotNull final MqttSharedTopicFilter sharedTopicFilter) {
+    static @NotNull MqttSharedTopicFilterBuilder<Void> extend(final @NotNull MqttSharedTopicFilter sharedTopicFilter) {
         return new MqttSharedTopicFilterBuilder<>(
                 sharedTopicFilter.getShareName(), sharedTopicFilter.getTopicFilter(), null);
     }
 
-    @NotNull
-    static MqttSharedTopicFilterBuilder<Void> share(
-            @NotNull final String shareName, @NotNull final MqttTopicFilter topicFilter) {
+    static @NotNull MqttSharedTopicFilterBuilder<Void> share(
+            final @NotNull String shareName, final @NotNull MqttTopicFilter topicFilter) {
 
         return new MqttSharedTopicFilterBuilder<>(shareName, topicFilter.toString(), null);
     }
 
-    @NotNull
-    static MqttSharedTopicFilterBuilder<Void> share(@NotNull final String shareName, @NotNull final MqttTopic topic) {
+    static @NotNull MqttSharedTopicFilterBuilder<Void> share(
+            final @NotNull String shareName, final @NotNull MqttTopic topic) {
+
         return new MqttSharedTopicFilterBuilder<>(shareName, topic.toString(), null);
     }
 
     /**
      * @return the Share Name of this Shared Topic Filter as a string.
      */
-    String getShareName();
+    @NotNull String getShareName();
 
     /**
      * @return the Topic Filter of this Shared Topic Filter as a string.
      */
-    String getTopicFilter();
-
+    @NotNull String getTopicFilter();
 }

@@ -69,8 +69,7 @@ class Mqtt3ConnectEncoderTest extends AbstractMqtt3EncoderTest {
                     .topic(willTopic)
                     .qos(Objects.requireNonNull(MqttQos.fromCode(willQos)))
                     .payload(willMessage.getBytes(StandardCharsets.UTF_8))
-                    .retain(willRetained)
-                    .applyPublish();
+                    .retain(willRetained).applyWillPublish();
         }
 
         final MqttConnect beeConnect = ((Mqtt3ConnectView) connectBuilder.build()).getDelegate();

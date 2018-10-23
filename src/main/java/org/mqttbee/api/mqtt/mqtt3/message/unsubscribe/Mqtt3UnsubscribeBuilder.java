@@ -65,8 +65,8 @@ public class Mqtt3UnsubscribeBuilder<P> extends FluentBuilder<Mqtt3Unsubscribe, 
         return this;
     }
 
-    public @NotNull MqttTopicFilterBuilder<? extends Mqtt3UnsubscribeBuilder<P>> topicFilter() {
-        return new MqttTopicFilterBuilder<>("", this::topicFilter);
+    public @NotNull MqttTopicFilterBuilder<Mqtt3UnsubscribeBuilder<P>> topicFilter() {
+        return new MqttTopicFilterBuilder<>(this::topicFilter);
     }
 
     public @NotNull Mqtt3UnsubscribeBuilder<P> addTopicFilter(final @NotNull String topicFilter) {
@@ -79,8 +79,8 @@ public class Mqtt3UnsubscribeBuilder<P> extends FluentBuilder<Mqtt3Unsubscribe, 
         return this;
     }
 
-    public @NotNull MqttTopicFilterBuilder<? extends Mqtt3UnsubscribeBuilder<P>> addTopicFilter() {
-        return new MqttTopicFilterBuilder<>("", this::addTopicFilter);
+    public @NotNull MqttTopicFilterBuilder<Mqtt3UnsubscribeBuilder<P>> addTopicFilter() {
+        return new MqttTopicFilterBuilder<>(this::addTopicFilter);
     }
 
     public @NotNull Mqtt3UnsubscribeBuilder<P> reverse(final @NotNull Mqtt3Subscribe subscribe) {
@@ -104,5 +104,4 @@ public class Mqtt3UnsubscribeBuilder<P> extends FluentBuilder<Mqtt3Unsubscribe, 
     public @NotNull P applyUnsubscribe() {
         return apply();
     }
-
 }

@@ -55,8 +55,8 @@ public class Mqtt5SubscriptionBuilder<P> extends FluentBuilder<Mqtt5Subscription
         return this;
     }
 
-    public @NotNull MqttTopicFilterBuilder<? extends Mqtt5SubscriptionBuilder<P>> topicFilter() {
-        return new MqttTopicFilterBuilder<>("", this::topicFilter);
+    public @NotNull MqttTopicFilterBuilder<Mqtt5SubscriptionBuilder<P>> topicFilter() {
+        return new MqttTopicFilterBuilder<>(this::topicFilter);
     }
 
     public @NotNull Mqtt5SubscriptionBuilder<P> qos(final @NotNull MqttQos qos) {
@@ -91,5 +91,4 @@ public class Mqtt5SubscriptionBuilder<P> extends FluentBuilder<Mqtt5Subscription
     public @NotNull P applySubscription() {
         return apply();
     }
-
 }

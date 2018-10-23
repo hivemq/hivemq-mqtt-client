@@ -81,7 +81,7 @@ public class Mqtt3ConnectBuilder<P> extends FluentBuilder<Mqtt3Connect, P> {
         return this;
     }
 
-    public @NotNull Mqtt3SimpleAuthBuilder<? extends Mqtt3ConnectBuilder<P>> simpleAuth() {
+    public @NotNull Mqtt3SimpleAuthBuilder<Mqtt3ConnectBuilder<P>> simpleAuth() {
         return new Mqtt3SimpleAuthBuilder<>(this::simpleAuth);
     }
 
@@ -91,7 +91,7 @@ public class Mqtt3ConnectBuilder<P> extends FluentBuilder<Mqtt3Connect, P> {
         return this;
     }
 
-    public @NotNull Mqtt3WillPublishBuilder<? extends Mqtt3ConnectBuilder<P>> willPublish() {
+    public @NotNull Mqtt3WillPublishBuilder<Mqtt3ConnectBuilder<P>> willPublish() {
         return new Mqtt3WillPublishBuilder<>(this::willPublish);
     }
 
@@ -103,5 +103,4 @@ public class Mqtt3ConnectBuilder<P> extends FluentBuilder<Mqtt3Connect, P> {
     public @NotNull P applyConnect() {
         return apply();
     }
-
 }

@@ -52,8 +52,8 @@ public class Mqtt3SubscriptionBuilder<P> extends FluentBuilder<Mqtt3Subscription
         return this;
     }
 
-    public @NotNull MqttTopicFilterBuilder<? extends Mqtt3SubscriptionBuilder<P>> topicFilter() {
-        return new MqttTopicFilterBuilder<>("", this::topicFilter);
+    public @NotNull MqttTopicFilterBuilder<Mqtt3SubscriptionBuilder<P>> topicFilter() {
+        return new MqttTopicFilterBuilder<>(this::topicFilter);
     }
 
     public @NotNull Mqtt3SubscriptionBuilder<P> qos(final @NotNull MqttQos qos) {
@@ -70,5 +70,4 @@ public class Mqtt3SubscriptionBuilder<P> extends FluentBuilder<Mqtt3Subscription
     public @NotNull P applySubscription() {
         return apply();
     }
-
 }

@@ -17,8 +17,8 @@
 
 package org.mqttbee.api.mqtt;
 
-import org.mqttbee.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.annotations.DoNotImplement;
 
 /**
  * Common interface for MQTT clients.
@@ -28,21 +28,18 @@ import org.jetbrains.annotations.NotNull;
 @DoNotImplement
 public interface MqttClient {
 
-    String DEFAULT_SERVER_HOST = "localhost";
+    @NotNull String DEFAULT_SERVER_HOST = "localhost";
     int DEFAULT_SERVER_PORT = 1883;
     int DEFAULT_SERVER_PORT_SSL = 8883;
     int DEFAULT_SERVER_PORT_WEBSOCKET = 80;
     int DEFAULT_SERVER_PORT_WEBSOCKET_SSL = 443;
 
-    @NotNull
-    static MqttClientBuilder builder() {
+    static @NotNull MqttClientBuilder builder() {
         return new MqttClientBuilder();
     }
 
     /**
      * @return the client specific data.
      */
-    @NotNull
-    MqttClientData getClientData();
-
+    @NotNull MqttClientData getClientData();
 }

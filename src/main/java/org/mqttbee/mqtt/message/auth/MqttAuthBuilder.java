@@ -22,7 +22,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
-import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
@@ -36,65 +35,50 @@ import java.nio.ByteBuffer;
  */
 public class MqttAuthBuilder implements Mqtt5AuthBuilder {
 
-    private final MqttUTF8StringImpl method;
-    private ByteBuffer data;
-    private final Mqtt5AuthReasonCode reasonCode;
-    private MqttUTF8StringImpl reasonString;
-    private MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
+    private final @NotNull MqttUTF8StringImpl method;
+    private @Nullable ByteBuffer data;
+    private final @NotNull Mqtt5AuthReasonCode reasonCode;
+    private @Nullable MqttUTF8StringImpl reasonString;
+    private @NotNull MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
 
-    public MqttAuthBuilder(
-            @NotNull final Mqtt5AuthReasonCode reasonCode, @NotNull final MqttUTF8StringImpl method) {
-
+    public MqttAuthBuilder(final @NotNull Mqtt5AuthReasonCode reasonCode, final @NotNull MqttUTF8StringImpl method) {
         Preconditions.checkNotNull(reasonCode, "Reason code must not be null.");
         Preconditions.checkNotNull(method, "Method must not be null.");
         this.reasonCode = reasonCode;
         this.method = method;
     }
 
-    @NotNull
     @Override
-    public MqttAuthBuilder data(@Nullable final byte[] data) {
+    public @NotNull MqttAuthBuilder data(final @Nullable byte[] data) {
         this.data = MqttBuilderUtil.binaryDataOrNull(data);
         return this;
     }
 
-    @NotNull
     @Override
-    public MqttAuthBuilder data(@Nullable final ByteBuffer data) {
+    public @NotNull MqttAuthBuilder data(final @Nullable ByteBuffer data) {
         this.data = MqttBuilderUtil.binaryDataOrNull(data);
         return this;
     }
 
-    @NotNull
     @Override
-    public MqttAuthBuilder reasonString(@Nullable final String reasonString) {
+    public @NotNull MqttAuthBuilder reasonString(final @Nullable String reasonString) {
         this.reasonString = MqttBuilderUtil.stringOrNull(reasonString);
         return this;
     }
 
-    @NotNull
     @Override
-    public MqttAuthBuilder reasonString(@Nullable final MqttUTF8String reasonString) {
+    public @NotNull MqttAuthBuilder reasonString(final @Nullable MqttUTF8String reasonString) {
         this.reasonString = MqttBuilderUtil.stringOrNull(reasonString);
         return this;
     }
 
-    @NotNull
     @Override
-    public MqttAuthBuilder userProperties(@NotNull final Mqtt5UserProperties userProperties) {
+    public @NotNull MqttAuthBuilder userProperties(final @NotNull Mqtt5UserProperties userProperties) {
         this.userProperties = MqttBuilderUtil.userProperties(userProperties);
         return this;
     }
 
-    @NotNull
-    @Override
-    public Mqtt5UserPropertiesBuilder<? extends MqttAuthBuilder> userProperties() {
-        return new Mqtt5UserPropertiesBuilder<>(this::userProperties);
-    }
-
-    @NotNull
-    public MqttAuth build() {
+    public @NotNull MqttAuth build() {
         return new MqttAuth(reasonCode, method, data, reasonString, userProperties);
     }
-
 }
