@@ -20,9 +20,9 @@ package org.mqttbee.api.mqtt.mqtt3;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.AbstractMqttClientBuilder;
 import org.mqttbee.mqtt.MqttClientData;
+import org.mqttbee.mqtt.MqttRxClient;
 import org.mqttbee.mqtt.MqttVersion;
-import org.mqttbee.mqtt.mqtt3.Mqtt3ClientView;
-import org.mqttbee.mqtt.mqtt5.Mqtt5ClientImpl;
+import org.mqttbee.mqtt.mqtt3.Mqtt3RxClientView;
 
 /**
  * @author Silvio Giebl
@@ -37,7 +37,7 @@ public class Mqtt3ClientBuilder extends AbstractMqttClientBuilder<Mqtt3ClientBui
     }
 
     public @NotNull Mqtt3RxClient buildRx() {
-        return new Mqtt3ClientView(new Mqtt5ClientImpl(buildClientData()));
+        return new Mqtt3RxClientView(new MqttRxClient(buildClientData()));
     }
 
     public @NotNull Mqtt3AsyncClient buildAsync() {

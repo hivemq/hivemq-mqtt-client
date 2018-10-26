@@ -38,6 +38,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
+import org.mqttbee.mqtt.MqttRxClient;
 import org.mqttbee.mqtt.message.connect.connack.mqtt3.Mqtt3ConnAckView;
 import org.mqttbee.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
 import org.mqttbee.mqtt.message.disconnect.mqtt3.Mqtt3DisconnectView;
@@ -47,7 +48,6 @@ import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeView;
 import org.mqttbee.mqtt.message.subscribe.suback.mqtt3.Mqtt3SubAckView;
 import org.mqttbee.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeView;
 import org.mqttbee.mqtt.mqtt3.exceptions.Mqtt3ExceptionFactory;
-import org.mqttbee.mqtt.mqtt5.Mqtt5ClientImpl;
 import org.mqttbee.rx.FlowableWithSingle;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 
@@ -55,7 +55,7 @@ import org.mqttbee.util.MustNotBeImplementedUtil;
  * @author Silvio Giebl
  * @author David Katz
  */
-public class Mqtt3ClientView implements Mqtt3RxClient {
+public class Mqtt3RxClientView implements Mqtt3RxClient {
 
     private static final @NotNull Function<Throwable, Completable> EXCEPTION_MAPPER_COMPLETABLE =
             e -> Completable.error(Mqtt3ExceptionFactory.map(e));
@@ -72,9 +72,9 @@ public class Mqtt3ClientView implements Mqtt3RxClient {
     private static final @NotNull Function<Throwable, Flowable<Mqtt5PublishResult>>
             EXCEPTION_MAPPER_FLOWABLE_PUBLISH_RESULT = e -> Flowable.error(Mqtt3ExceptionFactory.map(e));
 
-    private final @NotNull Mqtt5ClientImpl delegate;
+    private final @NotNull MqttRxClient delegate;
 
-    public Mqtt3ClientView(@NotNull final Mqtt5ClientImpl delegate) {
+    public Mqtt3RxClientView(@NotNull final MqttRxClient delegate) {
         this.delegate = delegate;
     }
 
