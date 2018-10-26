@@ -295,6 +295,51 @@ class FlowableWithSingleTest {
     }
 
     @Test
+    void mapBoth_multiple() {
+        final Flowable<? extends CharSequence> flowable =
+                Flowable.fromArray(new StringBuilder("single"), "next0", "next1", "next2");
+        final FlowableWithSingle<String, StringBuilder> flowableWithSingle =
+                FlowableWithSingle.split(flowable, String.class, StringBuilder.class);
+
+        final ExecutorService executorService =
+                Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setNameFormat("test_thread").build());
+
+        final AtomicInteger nextCounter = new AtomicInteger();
+        final AtomicInteger singleCounter = new AtomicInteger();
+        flowableWithSingle //
+                .mapBoth(s -> {
+                    nextCounter.incrementAndGet();
+                    assertNotEquals("test_thread", Thread.currentThread().getName());
+                    return s + "-1";
+                }, stringBuilder -> {
+                    assertEquals(1, singleCounter.incrementAndGet());
+                    assertNotEquals("test_thread", Thread.currentThread().getName());
+                    return stringBuilder.append("-1");
+                }).mapBoth(s -> {
+            nextCounter.incrementAndGet();
+            assertNotEquals("test_thread", Thread.currentThread().getName());
+            return s + "-2";
+        }, stringBuilder -> {
+            assertEquals(2, singleCounter.incrementAndGet());
+            assertNotEquals("test_thread", Thread.currentThread().getName());
+            return stringBuilder.append("-2");
+        }).observeOnBoth(Schedulers.from(executorService)).mapBoth(s -> {
+            nextCounter.incrementAndGet();
+            assertEquals("test_thread", Thread.currentThread().getName());
+            return s + "-3";
+        }, stringBuilder -> {
+            assertEquals(3, singleCounter.incrementAndGet());
+            assertEquals("test_thread", Thread.currentThread().getName());
+            return stringBuilder.append("-3");
+        }).blockingSubscribe();
+
+        assertEquals(9, nextCounter.get());
+        assertEquals(3, singleCounter.get());
+
+        executorService.shutdown();
+    }
+
+    @Test
     void subscribeBoth() throws InterruptedException {
         final Flowable<? extends CharSequence> flowable =
                 Flowable.fromArray(new StringBuilder("single"), "next0", "next1", "next2");
