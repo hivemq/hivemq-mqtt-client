@@ -17,6 +17,7 @@
 
 package org.mqttbee.rx;
 
+import com.google.common.base.Preconditions;
 import io.reactivex.Flowable;
 import io.reactivex.Scheduler;
 import io.reactivex.annotations.BackpressureKind;
@@ -25,9 +26,11 @@ import io.reactivex.annotations.SchedulerSupport;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.rx.reactivestreams.PublisherWithSingle;
+import org.mqttbee.rx.reactivestreams.WithSingleSubscriber;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
@@ -42,10 +45,23 @@ import java.util.concurrent.atomic.AtomicReference;
  * @param <S> the type of the single item.
  * @author Silvio Giebl
  */
-public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements PublisherWithSingle<F, S> {
+public class FlowableWithSingle<F, S> extends Flowable<F> implements PublisherWithSingle<F, S> {
+
+    private static final @NotNull Predicate<Object> FLOWABLE_FILTER = o -> !(o instanceof SingleElement);
 
     /**
      * Splits the given source into a flow of items of type <code>F</code> and a single item of type <code>S</code>.
+     * <p>
+     * Only a single item of type <code>S</code> will be emitted. Any further items of type <code>S</code> emitted from
+     * the upstream are ignored. Items emitted from the upstream which are instances of <code>T</code> but neither of
+     * <code>F</code> nor <code>S</code> are ignored.
+     * <dl>
+     * <dt><b>Backpressure:</b></dt>
+     * <dd>The operator doesn't interfere with backpressure which is determined by the source {@code Publisher}'s
+     * backpressure behavior.</dd>
+     * <dt><b>Scheduler:</b></dt>
+     * <dd>The operator does not operate by default on a particular {@link Scheduler}.</dd>
+     * </dl>
      *
      * @param source        the {@link Flowable} of a supertype to split.
      * @param flowableClass the class of the type of the flow of item.
@@ -62,7 +78,20 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
         if (flowableClass.isAssignableFrom(singleClass) || singleClass.isAssignableFrom(flowableClass)) {
             throw new IllegalArgumentException("Flowable and single class must not be assignable to each other");
         }
-        return new FlowableWithSingleSplit<>(source, flowableClass, singleClass);
+        return new FlowableWithSingle<>(source, flowableClass, singleClass);
+    }
+
+    private final @NotNull Flowable<?> source;
+
+    private FlowableWithSingle(
+            final @NotNull Flowable<?> source, final @NotNull Class<F> flowableClass,
+            final @NotNull Class<S> singleClass) {
+
+        this.source = FlowableMapFilter.mapFilter(source, new FlowableWithSingleter<>(flowableClass, singleClass));
+    }
+
+    private FlowableWithSingle(final @NotNull Flowable<?> source) {
+        this.source = source;
     }
 
     /**
@@ -75,7 +104,9 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
      */
     @BackpressureSupport(BackpressureKind.FULL)
     @SchedulerSupport(SchedulerSupport.CUSTOM)
-    public abstract @NotNull FlowableWithSingle<F, S> observeOnBoth(@NotNull Scheduler scheduler);
+    public @NotNull FlowableWithSingle<F, S> observeOnBoth(final @NotNull Scheduler scheduler) {
+        return new FlowableWithSingle<>(source.observeOn(scheduler));
+    }
 
     /**
      * Modifies the upstream to perform its emissions and notifications including the single item on a specified
@@ -88,7 +119,11 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
      */
     @BackpressureSupport(BackpressureKind.FULL)
     @SchedulerSupport(SchedulerSupport.CUSTOM)
-    public abstract @NotNull FlowableWithSingle<F, S> observeOnBoth(@NotNull Scheduler scheduler, boolean delayError);
+    public @NotNull FlowableWithSingle<F, S> observeOnBoth(
+            final @NotNull Scheduler scheduler, final boolean delayError) {
+
+        return new FlowableWithSingle<>(source.observeOn(scheduler, delayError));
+    }
 
     /**
      * Modifies the upstream to perform its emissions and notifications including the single item on a specified
@@ -102,8 +137,11 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
      */
     @BackpressureSupport(BackpressureKind.FULL)
     @SchedulerSupport(SchedulerSupport.CUSTOM)
-    public abstract @NotNull FlowableWithSingle<F, S> observeOnBoth(
-            @NotNull Scheduler scheduler, boolean delayError, int bufferSize);
+    public @NotNull FlowableWithSingle<F, S> observeOnBoth(
+            final @NotNull Scheduler scheduler, final boolean delayError, final int bufferSize) {
+
+        return new FlowableWithSingle<>(source.observeOn(scheduler, delayError, bufferSize));
+    }
 
     /**
      * Modifies the upstream so that it applies a specified function to the single item of type <code>S</code> mapping
@@ -115,7 +153,12 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
      */
     @BackpressureSupport(BackpressureKind.PASS_THROUGH)
     @SchedulerSupport(SchedulerSupport.NONE)
-    public abstract <SM> @NotNull FlowableWithSingle<F, SM> mapSingle(@NotNull Function<S, SM> singleMapper);
+    public <SM> @NotNull FlowableWithSingle<F, SM> mapSingle(
+            final @NotNull Function<? super S, ? extends SM> singleMapper) {
+
+        Preconditions.checkNotNull(singleMapper, "Single mapper must not be null.");
+        return new FlowableWithSingle<>(source.map(new FlowableWithSingle.MapperSingle<>(singleMapper)));
+    }
 
     /**
      * Modifies the upstream so that it applies a specified function to the flow of items of type <code>F</code> mapping
@@ -130,8 +173,14 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
      */
     @BackpressureSupport(BackpressureKind.PASS_THROUGH)
     @SchedulerSupport(SchedulerSupport.NONE)
-    public abstract <FM, SM> @NotNull FlowableWithSingle<FM, SM> mapBoth(
-            @NotNull Function<F, FM> flowableMapper, @NotNull Function<S, SM> singleMapper);
+    public <FM, SM> @NotNull FlowableWithSingle<FM, SM> mapBoth(
+            final @NotNull Function<? super F, ? extends FM> flowableMapper,
+            final @NotNull Function<? super S, ? extends SM> singleMapper) {
+
+        Preconditions.checkNotNull(singleMapper, "Single mapper must not be null.");
+        Preconditions.checkNotNull(flowableMapper, "Flowable mapper must not be null.");
+        return new FlowableWithSingle<>(source.map(new FlowableWithSingle.MapperBoth<>(flowableMapper, singleMapper)));
+    }
 
     /**
      * Modifies the upstream so that it applies a specified function to an error which can map it to a different error.
@@ -141,7 +190,14 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
      */
     @BackpressureSupport(BackpressureKind.PASS_THROUGH)
     @SchedulerSupport(SchedulerSupport.NONE)
-    public abstract @NotNull FlowableWithSingle<F, S> mapError(@NotNull Function<Throwable, Throwable> mapper);
+    public @NotNull FlowableWithSingle<F, S> mapError(
+            final @NotNull Function<? super Throwable, ? extends Throwable> mapper) {
+
+        Preconditions.checkNotNull(mapper, "Mapper must not be null.");
+        final Function<Throwable, Flowable<?>> resumeMapper = throwable -> Flowable.error(mapper.apply(throwable));
+        @SuppressWarnings("unchecked") final Flowable<Object> source = (Flowable<Object>) this.source;
+        return new FlowableWithSingle<>(source.onErrorResumeNext(resumeMapper));
+    }
 
     /**
      * Modifies the upstream so that it calls a consumer on emission of the single item of type <code>S</code>.
@@ -151,7 +207,23 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
      */
     @BackpressureSupport(BackpressureKind.PASS_THROUGH)
     @SchedulerSupport(SchedulerSupport.NONE)
-    public abstract @NotNull FlowableWithSingle<F, S> doOnSingle(@NotNull Consumer<S> singleConsumer);
+    public @NotNull FlowableWithSingle<F, S> doOnSingle(final @NotNull Consumer<? super S> singleConsumer) {
+        Preconditions.checkNotNull(singleConsumer, "Single consumer must not be null.");
+        return new FlowableWithSingle<>(source.map(new FlowableWithSingle.ConsumerSingle<>(singleConsumer)));
+    }
+
+    @Override
+    @BackpressureSupport(BackpressureKind.SPECIAL)
+    @SchedulerSupport(SchedulerSupport.NONE)
+    public void subscribeBoth(final @NotNull WithSingleSubscriber<? super F, ? super S> subscriber) {
+        doOnSingle(subscriber::onSingle).subscribe(subscriber);
+    }
+
+    @Override
+    protected void subscribeActual(final @NotNull Subscriber<? super F> s) {
+        @SuppressWarnings("unchecked") final Flowable<F> flowable = (Flowable<F>) source.filter(FLOWABLE_FILTER);
+        flowable.subscribe(s);
+    }
 
     /**
      * Does {@link #subscribe()} to this Flowable and returns a future for the single item.
@@ -281,6 +353,106 @@ public abstract class FlowableWithSingle<F, S> extends Flowable<F> implements Pu
         final CompletableFuture<S> future = singleFutureSubscriber.getFutureBeforeSubscribe();
         singleFutureSubscriber.subscribe(subscriber);
         return future;
+    }
+
+    private static class SingleElement {
+
+        final @NotNull Object element;
+
+        SingleElement(final @NotNull Object element) {
+            this.element = element;
+        }
+    }
+
+    private static class FlowableWithSingleter<F, S> implements Function<Object, Object> {
+
+        private final @NotNull Class<F> flowableClass;
+        private @Nullable Class<S> singleClass;
+
+        private FlowableWithSingleter(final @NotNull Class<F> flowableClass, final @NotNull Class<S> singleClass) {
+            this.flowableClass = flowableClass;
+            this.singleClass = singleClass;
+        }
+
+        @Override
+        public @Nullable Object apply(final @NotNull Object o) {
+            if (flowableClass.isInstance(o)) {
+                return o;
+            }
+            if ((singleClass != null) && singleClass.isInstance(o)) {
+                singleClass = null;
+                return new SingleElement(o);
+            }
+            return null;
+        }
+    }
+
+    private static class ConsumerSingle<S> implements Function<Object, Object> {
+
+        private @Nullable Consumer<S> singleConsumer;
+
+        private ConsumerSingle(final @NotNull Consumer<S> singleConsumer) {
+            this.singleConsumer = singleConsumer;
+        }
+
+        @Override
+        public @NotNull Object apply(final @NotNull Object o) throws Exception {
+            if (o instanceof SingleElement) {
+                if (singleConsumer == null) {
+                    throw new IllegalStateException("Single element must only be omitted at most once");
+                }
+                @SuppressWarnings("unchecked") final S s = (S) ((SingleElement) o).element;
+                singleConsumer.accept(s);
+                singleConsumer = null;
+            }
+            return o;
+        }
+    }
+
+    private static class MapperSingle<S> implements Function<Object, Object> {
+
+        private @Nullable Function<S, ?> singleMapper;
+
+        private MapperSingle(final @NotNull Function<S, ?> singleMapper) {
+            this.singleMapper = singleMapper;
+        }
+
+        @Override
+        public @NotNull Object apply(final @NotNull Object o) throws Exception {
+            if (o instanceof SingleElement) {
+                return mapSingle((SingleElement) o);
+            }
+            return o;
+        }
+
+        @NotNull SingleElement mapSingle(final @NotNull SingleElement singleElement) throws Exception {
+            if (singleMapper == null) {
+                throw new IllegalStateException("Single element must only be omitted at most once");
+            }
+            @SuppressWarnings("unchecked") final S s = (S) singleElement.element;
+            final SingleElement mappedSingleElement = new SingleElement(singleMapper.apply(s));
+            singleMapper = null;
+            return mappedSingleElement;
+        }
+    }
+
+    private static class MapperBoth<F, S> extends MapperSingle<S> {
+
+        private final @NotNull Function<F, ?> flowableMapper;
+
+        private MapperBoth(final @NotNull Function<F, ?> flowableMapper, final @NotNull Function<S, ?> singleMapper) {
+            super(singleMapper);
+            this.flowableMapper = flowableMapper;
+        }
+
+        @Override
+        public @NotNull Object apply(final @NotNull Object o) throws Exception {
+            if (o instanceof SingleElement) {
+                return mapSingle((SingleElement) o);
+            }
+            @SuppressWarnings("unchecked") final F f = (F) o;
+            return flowableMapper.apply(f);
+        }
     }
 
     private static class SingleFutureSubscriber<F, S> extends Flowable<F>
