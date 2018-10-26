@@ -22,9 +22,9 @@ import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.AbstractMqttClientBuilder;
 import org.mqttbee.api.mqtt.mqtt5.advanced.Mqtt5AdvancedClientData;
 import org.mqttbee.mqtt.MqttClientData;
+import org.mqttbee.mqtt.MqttRxClient;
 import org.mqttbee.mqtt.MqttVersion;
 import org.mqttbee.mqtt.advanced.MqttAdvancedClientData;
-import org.mqttbee.mqtt.mqtt5.Mqtt5ClientImpl;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 
 /**
@@ -60,7 +60,7 @@ public class Mqtt5ClientBuilder extends AbstractMqttClientBuilder<Mqtt5ClientBui
     }
 
     public @NotNull Mqtt5RxClient buildRx() {
-        return new Mqtt5ClientImpl(buildClientData());
+        return new MqttRxClient(buildClientData());
     }
 
     public @NotNull Mqtt5AsyncClient buildAsync() {

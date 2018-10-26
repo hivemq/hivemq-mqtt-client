@@ -15,7 +15,7 @@
  *
  */
 
-package org.mqttbee.mqtt.mqtt5;
+package org.mqttbee.mqtt;
 
 import com.google.common.base.Preconditions;
 import io.netty.bootstrap.Bootstrap;
@@ -40,8 +40,6 @@ import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeResult;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
-import org.mqttbee.mqtt.MqttClientConnectionData;
-import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.handler.MqttChannelInitializer;
 import org.mqttbee.mqtt.handler.auth.MqttReAuthEvent;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
@@ -62,14 +60,14 @@ import org.mqttbee.util.MustNotBeImplementedUtil;
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5ClientImpl implements Mqtt5RxClient {
+public class MqttRxClient implements Mqtt5RxClient {
 
     private static final @NotNull Function<Mqtt5Publish, MqttPublish> PUBLISH_MAPPER =
             publish -> MustNotBeImplementedUtil.checkNotImplemented(publish, MqttPublish.class);
 
     private final @NotNull MqttClientData clientData;
 
-    public Mqtt5ClientImpl(@NotNull final MqttClientData clientData) {
+    public MqttRxClient(@NotNull final MqttClientData clientData) {
         this.clientData = clientData;
     }
 

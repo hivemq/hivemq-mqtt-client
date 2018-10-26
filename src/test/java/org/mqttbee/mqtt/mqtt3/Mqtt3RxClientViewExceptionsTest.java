@@ -37,7 +37,7 @@ import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
-import org.mqttbee.mqtt.mqtt5.Mqtt5ClientImpl;
+import org.mqttbee.mqtt.MqttRxClient;
 import org.mqttbee.rx.FlowableWithSingle;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -47,15 +47,15 @@ import static org.mockito.BDDMockito.*;
  * @author David Katz
  */
 @SuppressWarnings("NullabilityAnnotations")
-class Mqtt3ClientViewExceptionsTest {
+class Mqtt3RxClientViewExceptionsTest {
 
-    private Mqtt5ClientImpl mqtt5Client;
-    private Mqtt3ClientView mqtt3Client;
+    private MqttRxClient mqtt5Client;
+    private Mqtt3RxClientView mqtt3Client;
 
     @BeforeEach
     void setUp() {
-        mqtt5Client = mock(Mqtt5ClientImpl.class);
-        mqtt3Client = new Mqtt3ClientView(mqtt5Client);
+        mqtt5Client = mock(MqttRxClient.class);
+        mqtt3Client = new Mqtt3RxClientView(mqtt5Client);
     }
 
     @Test
