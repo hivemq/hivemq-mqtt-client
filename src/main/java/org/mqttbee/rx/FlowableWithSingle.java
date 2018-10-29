@@ -82,16 +82,22 @@ public class FlowableWithSingle<F, S> extends Flowable<F> implements PublisherWi
     }
 
     private final @NotNull Flowable<?> source;
+    private final @Nullable Consumer<? super S> singleConsumer;
 
     private FlowableWithSingle(
             final @NotNull Flowable<?> source, final @NotNull Class<F> flowableClass,
             final @NotNull Class<S> singleClass) {
 
-        this.source = FlowableMapFilter.mapFilter(source, new FlowableWithSingleter<>(flowableClass, singleClass));
+        this(FlowableMapFilter.mapFilter(source, new FlowableWithSingleSplitter<>(flowableClass, singleClass)), null);
     }
 
     private FlowableWithSingle(final @NotNull Flowable<?> source) {
+        this(source, null);
+    }
+
+    private FlowableWithSingle(final @NotNull Flowable<?> source, final @Nullable Consumer<? super S> singleConsumer) {
         this.source = source;
+        this.singleConsumer = singleConsumer;
     }
 
     /**
@@ -105,7 +111,7 @@ public class FlowableWithSingle<F, S> extends Flowable<F> implements PublisherWi
     @BackpressureSupport(BackpressureKind.FULL)
     @SchedulerSupport(SchedulerSupport.CUSTOM)
     public @NotNull FlowableWithSingle<F, S> observeOnBoth(final @NotNull Scheduler scheduler) {
-        return new FlowableWithSingle<>(source.observeOn(scheduler));
+        return new FlowableWithSingle<>(applySingleConsumer().observeOn(scheduler));
     }
 
     /**
@@ -122,7 +128,7 @@ public class FlowableWithSingle<F, S> extends Flowable<F> implements PublisherWi
     public @NotNull FlowableWithSingle<F, S> observeOnBoth(
             final @NotNull Scheduler scheduler, final boolean delayError) {
 
-        return new FlowableWithSingle<>(source.observeOn(scheduler, delayError));
+        return new FlowableWithSingle<>(applySingleConsumer().observeOn(scheduler, delayError));
     }
 
     /**
@@ -140,7 +146,7 @@ public class FlowableWithSingle<F, S> extends Flowable<F> implements PublisherWi
     public @NotNull FlowableWithSingle<F, S> observeOnBoth(
             final @NotNull Scheduler scheduler, final boolean delayError, final int bufferSize) {
 
-        return new FlowableWithSingle<>(source.observeOn(scheduler, delayError, bufferSize));
+        return new FlowableWithSingle<>(applySingleConsumer().observeOn(scheduler, delayError, bufferSize));
     }
 
     /**
@@ -157,7 +163,7 @@ public class FlowableWithSingle<F, S> extends Flowable<F> implements PublisherWi
             final @NotNull Function<? super S, ? extends SM> singleMapper) {
 
         Preconditions.checkNotNull(singleMapper, "Single mapper must not be null.");
-        return new FlowableWithSingle<>(source.map(new FlowableWithSingle.MapperSingle<>(singleMapper)));
+        return new FlowableWithSingle<>(applySingleConsumer().map(new MapperSingle<>(singleMapper)));
     }
 
     /**
@@ -179,7 +185,7 @@ public class FlowableWithSingle<F, S> extends Flowable<F> implements PublisherWi
 
         Preconditions.checkNotNull(singleMapper, "Single mapper must not be null.");
         Preconditions.checkNotNull(flowableMapper, "Flowable mapper must not be null.");
-        return new FlowableWithSingle<>(source.map(new FlowableWithSingle.MapperBoth<>(flowableMapper, singleMapper)));
+        return new FlowableWithSingle<>(applySingleConsumer().map(new MapperBoth<>(flowableMapper, singleMapper)));
     }
 
     /**
@@ -195,7 +201,7 @@ public class FlowableWithSingle<F, S> extends Flowable<F> implements PublisherWi
 
         Preconditions.checkNotNull(mapper, "Mapper must not be null.");
         final Function<Throwable, Flowable<?>> resumeMapper = throwable -> Flowable.error(mapper.apply(throwable));
-        @SuppressWarnings("unchecked") final Flowable<Object> source = (Flowable<Object>) this.source;
+        @SuppressWarnings("unchecked") final Flowable<Object> source = (Flowable<Object>) applySingleConsumer();
         return new FlowableWithSingle<>(source.onErrorResumeNext(resumeMapper));
     }
 
@@ -209,7 +215,11 @@ public class FlowableWithSingle<F, S> extends Flowable<F> implements PublisherWi
     @SchedulerSupport(SchedulerSupport.NONE)
     public @NotNull FlowableWithSingle<F, S> doOnSingle(final @NotNull Consumer<? super S> singleConsumer) {
         Preconditions.checkNotNull(singleConsumer, "Single consumer must not be null.");
-        return new FlowableWithSingle<>(source.map(new FlowableWithSingle.ConsumerSingle<>(singleConsumer)));
+        return new FlowableWithSingle<>(applySingleConsumer(), singleConsumer);
+    }
+
+    private @NotNull Flowable<?> applySingleConsumer() {
+        return (singleConsumer == null) ? source : source.map(new ConsumerSingle<>(singleConsumer));
     }
 
     @Override
@@ -221,7 +231,8 @@ public class FlowableWithSingle<F, S> extends Flowable<F> implements PublisherWi
 
     @Override
     protected void subscribeActual(final @NotNull Subscriber<? super F> s) {
-        @SuppressWarnings("unchecked") final Flowable<F> flowable = (Flowable<F>) source.filter(FLOWABLE_FILTER);
+        @SuppressWarnings("unchecked") final Flowable<F> flowable = (Flowable<F>) source.filter(
+                (singleConsumer == null) ? FLOWABLE_FILTER : new ConsumerSingle<>(singleConsumer));
         flowable.subscribe(s);
     }
 
@@ -364,12 +375,12 @@ public class FlowableWithSingle<F, S> extends Flowable<F> implements PublisherWi
         }
     }
 
-    private static class FlowableWithSingleter<F, S> implements Function<Object, Object> {
+    private static class FlowableWithSingleSplitter<F, S> implements Function<Object, Object> {
 
         private final @NotNull Class<F> flowableClass;
         private @Nullable Class<S> singleClass;
 
-        private FlowableWithSingleter(final @NotNull Class<F> flowableClass, final @NotNull Class<S> singleClass) {
+        private FlowableWithSingleSplitter(final @NotNull Class<F> flowableClass, final @NotNull Class<S> singleClass) {
             this.flowableClass = flowableClass;
             this.singleClass = singleClass;
         }
@@ -387,7 +398,7 @@ public class FlowableWithSingle<F, S> extends Flowable<F> implements PublisherWi
         }
     }
 
-    private static class ConsumerSingle<S> implements Function<Object, Object> {
+    private static class ConsumerSingle<S> implements Function<Object, Object>, Predicate<Object> {
 
         private @Nullable Consumer<S> singleConsumer;
 
@@ -398,14 +409,27 @@ public class FlowableWithSingle<F, S> extends Flowable<F> implements PublisherWi
         @Override
         public @NotNull Object apply(final @NotNull Object o) throws Exception {
             if (o instanceof SingleElement) {
-                if (singleConsumer == null) {
-                    throw new IllegalStateException("Single element must only be omitted at most once");
-                }
-                @SuppressWarnings("unchecked") final S s = (S) ((SingleElement) o).element;
-                singleConsumer.accept(s);
-                singleConsumer = null;
+                consumeSingle((SingleElement) o);
             }
             return o;
+        }
+
+        @Override
+        public boolean test(final @NotNull Object o) throws Exception {
+            if (o instanceof SingleElement) {
+                consumeSingle((SingleElement) o);
+                return false;
+            }
+            return true;
+        }
+
+        private void consumeSingle(final @NotNull SingleElement singleElement) throws Exception {
+            if (singleConsumer == null) {
+                throw new IllegalStateException("Single element must only be emitted at most once");
+            }
+            @SuppressWarnings("unchecked") final S s = (S) singleElement.element;
+            singleConsumer.accept(s);
+            singleConsumer = null;
         }
     }
 
@@ -427,7 +451,7 @@ public class FlowableWithSingle<F, S> extends Flowable<F> implements PublisherWi
 
         @NotNull SingleElement mapSingle(final @NotNull SingleElement singleElement) throws Exception {
             if (singleMapper == null) {
-                throw new IllegalStateException("Single element must only be omitted at most once");
+                throw new IllegalStateException("Single element must only be emitted at most once");
             }
             @SuppressWarnings("unchecked") final S s = (S) singleElement.element;
             final SingleElement mappedSingleElement = new SingleElement(singleMapper.apply(s));
