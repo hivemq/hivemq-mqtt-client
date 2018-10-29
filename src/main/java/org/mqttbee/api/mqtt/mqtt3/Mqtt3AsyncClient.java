@@ -190,7 +190,7 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
         @Override
         public @NotNull Mqtt3SubscribeAndCallback build() {
             if ((callback == null) && (executor != null)) {
-                throw new IllegalStateException("Executor must not be given if callback is null");
+                throw new IllegalStateException("Executor must not be given if callback is null.");
             }
             return new Mqtt3SubscribeAndCallback(subscribeBuilder.build(), callback, executor);
         }

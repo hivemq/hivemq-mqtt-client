@@ -294,7 +294,8 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
 
         private @Nullable Mqtt5Publish receiveNowUnsafe() {
             if (queuedPublish != null) {
-                queuedPublish = null;
+                final Mqtt5Publish queuedPublish = this.queuedPublish;
+                this.queuedPublish = null;
                 request();
                 return queuedPublish;
             }
