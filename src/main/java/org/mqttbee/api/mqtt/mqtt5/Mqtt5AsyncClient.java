@@ -230,7 +230,7 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
         @Override
         public @NotNull Mqtt5SubscribeAndCallback build() {
             if ((callback == null) && (executor != null)) {
-                throw new IllegalStateException("Executor must not be given if callback is null");
+                throw new IllegalStateException("Executor must not be given if callback is null.");
             }
             return new Mqtt5SubscribeAndCallback(subscribeBuilder.build(), callback, executor);
         }
