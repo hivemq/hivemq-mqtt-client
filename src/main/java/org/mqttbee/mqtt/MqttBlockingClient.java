@@ -176,17 +176,7 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
                         return;
                     }
                 }
-            }
-            synchronized (this) {
-                final boolean retry;
-                synchronized (entries) {
-                    retry = !entries.isEmpty();
-                }
-                if (retry) {
-                    onNext(publish);
-                } else {
-                    queuedPublish = publish;
-                }
+                queuedPublish = publish;
             }
         }
 
@@ -212,12 +202,16 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
         @Override
         public @NotNull Mqtt5Publish receive() throws InterruptedException {
             final Entry entry;
-            synchronized (this) {
+            synchronized (entries) {
+                if (cancelled) {
+                    throw new CancellationException();
+                }
                 final Mqtt5Publish publish = receiveNowUnsafe();
                 if (publish != null) {
                     return publish;
                 }
-                entry = addEntry();
+                entry = new Entry();
+                entries.offer(entry);
             }
 
             InterruptedException interruptedException = null;
@@ -252,12 +246,16 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
             Objects.requireNonNull(timeUnit, "Time unit must not be null.");
 
             final Entry entry;
-            synchronized (this) {
+            synchronized (entries) {
+                if (cancelled) {
+                    throw new CancellationException();
+                }
                 final Mqtt5Publish publish = receiveNowUnsafe();
                 if (publish != null) {
                     return Optional.of(publish);
                 }
-                entry = addEntry();
+                entry = new Entry();
+                entries.offer(entry);
             }
 
             InterruptedException interruptedException = null;
@@ -285,7 +283,10 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
         @Override
         public @NotNull Optional<Mqtt5Publish> receiveNow() {
             final Mqtt5Publish publish;
-            synchronized (this) {
+            synchronized (entries) {
+                if (cancelled) {
+                    throw new CancellationException();
+                }
                 publish = receiveNowUnsafe();
             }
             return Optional.ofNullable(publish);
@@ -298,17 +299,6 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
                 return queuedPublish;
             }
             return null;
-        }
-
-        private @NotNull Entry addEntry() {
-            synchronized (entries) {
-                if (cancelled) {
-                    throw new CancellationException();
-                }
-                final Entry entry = new Entry();
-                entries.offer(entry);
-                return entry;
-            }
         }
 
         @Override
