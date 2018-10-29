@@ -91,7 +91,7 @@ abstract class AbstractMqtt5PublishBuilder<S extends AbstractMqtt5PublishBuilder
     }
 
     public @NotNull MqttTopicBuilder<S> topic() {
-        return new MqttTopicBuilder<>("", this::topic);
+        return new MqttTopicBuilder<>(this::topic);
     }
 
     public @NotNull S payload(final @Nullable byte[] payload) {
@@ -149,7 +149,7 @@ abstract class AbstractMqtt5PublishBuilder<S extends AbstractMqtt5PublishBuilder
     }
 
     public @NotNull MqttTopicBuilder<S> responseTopic() {
-        return new MqttTopicBuilder<>("", this::responseTopic);
+        return new MqttTopicBuilder<>(this::responseTopic);
     }
 
     public @NotNull S correlationData(final @Nullable byte[] correlationData) {
