@@ -30,9 +30,9 @@ import java.util.function.BiConsumer;
 /**
  * @author Silvio Giebl
  */
-public class RxJavaFutureConverter {
+public class RxFutureConverter {
 
-    private RxJavaFutureConverter() {
+    private RxFutureConverter() {
     }
 
     public static @NotNull CompletableFuture<Void> toFuture(final @NotNull Completable completable) {
@@ -47,7 +47,7 @@ public class RxJavaFutureConverter {
         return new RxJavaSingleFuture<>(single);
     }
 
-    static class RxJavaFuture<T> extends CompletableFuture<T> {
+    private static class RxJavaFuture<T> extends CompletableFuture<T> {
 
         volatile @Nullable Disposable disposable;
         volatile boolean cancelled;
@@ -76,7 +76,7 @@ public class RxJavaFutureConverter {
         }
     }
 
-    static class RxJavaCompletableFuture extends RxJavaFuture<Void> implements CompletableObserver {
+    private static class RxJavaCompletableFuture extends RxJavaFuture<Void> implements CompletableObserver {
 
         RxJavaCompletableFuture(final @NotNull Completable completable) {
             completable.subscribe(this);
@@ -90,7 +90,7 @@ public class RxJavaFutureConverter {
         }
     }
 
-    static class RxJavaMaybeFuture<T> extends RxJavaFuture<Optional<T>> implements MaybeObserver<T> {
+    private static class RxJavaMaybeFuture<T> extends RxJavaFuture<Optional<T>> implements MaybeObserver<T> {
 
         RxJavaMaybeFuture(final @NotNull Maybe<T> maybe) {
             maybe.subscribe(this);
@@ -111,7 +111,7 @@ public class RxJavaFutureConverter {
         }
     }
 
-    static class RxJavaSingleFuture<T> extends RxJavaFuture<T> implements SingleObserver<T> {
+    private static class RxJavaSingleFuture<T> extends RxJavaFuture<T> implements SingleObserver<T> {
 
         RxJavaSingleFuture(final @NotNull Single<T> single) {
             single.subscribe(this);
@@ -155,7 +155,7 @@ public class RxJavaFutureConverter {
         return done.get() == SUBSCRIBED_AND_COMPLETE_OR_CANCELLED;
     }
 
-    static class FutureCompletable extends Completable implements Disposable, BiConsumer<Object, Throwable> {
+    private static class FutureCompletable extends Completable implements Disposable, BiConsumer<Object, Throwable> {
 
         private final @NotNull CompletableFuture<?> future;
         private volatile @Nullable CompletableObserver observer;
@@ -178,12 +178,12 @@ public class RxJavaFutureConverter {
 
         @Override
         public void dispose() {
-            RxJavaFutureConverter.dispose(done, future);
+            RxFutureConverter.dispose(done, future);
         }
 
         @Override
         public boolean isDisposed() {
-            return RxJavaFutureConverter.isDisposed(done);
+            return RxFutureConverter.isDisposed(done);
         }
 
         @Override
@@ -205,7 +205,7 @@ public class RxJavaFutureConverter {
         }
     }
 
-    static class FutureMaybe<T> extends Maybe<T> implements Disposable, BiConsumer<Optional<T>, Throwable> {
+    private static class FutureMaybe<T> extends Maybe<T> implements Disposable, BiConsumer<Optional<T>, Throwable> {
 
         private final @NotNull CompletableFuture<Optional<T>> future;
         private volatile @Nullable MaybeObserver<? super T> observer;
@@ -229,12 +229,12 @@ public class RxJavaFutureConverter {
 
         @Override
         public void dispose() {
-            RxJavaFutureConverter.dispose(done, future);
+            RxFutureConverter.dispose(done, future);
         }
 
         @Override
         public boolean isDisposed() {
-            return RxJavaFutureConverter.isDisposed(done);
+            return RxFutureConverter.isDisposed(done);
         }
 
         @Override
@@ -277,7 +277,7 @@ public class RxJavaFutureConverter {
         }
     }
 
-    static class FutureSingle<T> extends Single<T> implements Disposable, BiConsumer<T, Throwable> {
+    private static class FutureSingle<T> extends Single<T> implements Disposable, BiConsumer<T, Throwable> {
 
         private final @NotNull CompletableFuture<T> future;
         private volatile @Nullable SingleObserver<? super T> observer;
@@ -301,12 +301,12 @@ public class RxJavaFutureConverter {
 
         @Override
         public void dispose() {
-            RxJavaFutureConverter.dispose(done, future);
+            RxFutureConverter.dispose(done, future);
         }
 
         @Override
         public boolean isDisposed() {
-            return RxJavaFutureConverter.isDisposed(done);
+            return RxFutureConverter.isDisposed(done);
         }
 
         @Override
@@ -331,5 +331,4 @@ public class RxJavaFutureConverter {
             }
         }
     }
-
 }
