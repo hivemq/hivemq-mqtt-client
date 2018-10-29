@@ -28,14 +28,11 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public class Mqtt3PingReqView implements Mqtt3PingReq {
 
-    private static final Mqtt3PingReqView INSTANCE = new Mqtt3PingReqView();
+    private static final @NotNull Mqtt3PingReqView INSTANCE = new Mqtt3PingReqView();
 
-    @NotNull
-    public static Mqtt3PingReqView of() {
+    public static @NotNull Mqtt3PingReqView of() {
         return INSTANCE;
     }
 
-    private Mqtt3PingReqView() {
-    }
-
+    private Mqtt3PingReqView() {}
 }

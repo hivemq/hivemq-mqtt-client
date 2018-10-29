@@ -24,6 +24,7 @@ import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscription;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
+import org.mqttbee.util.MustNotBeImplementedUtil;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -33,30 +34,30 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public class Mqtt3SubscribeView implements Mqtt3Subscribe {
 
-    @NotNull
-    private static MqttSubscribe delegate(@NotNull final ImmutableList<MqttSubscription> subscriptions) {
+    private static @NotNull MqttSubscribe delegate(final @NotNull ImmutableList<MqttSubscription> subscriptions) {
         return new MqttSubscribe(subscriptions, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
     }
 
-    @NotNull
-    public static Mqtt3SubscribeView of(@NotNull final ImmutableList<MqttSubscription> subscriptions) {
+    public static @NotNull MqttSubscribe delegate(final @NotNull Mqtt3Subscribe subscribe) {
+        return MustNotBeImplementedUtil.checkNotImplemented(subscribe, Mqtt3SubscribeView.class).getDelegate();
+    }
+
+    public static @NotNull Mqtt3SubscribeView of(final @NotNull ImmutableList<MqttSubscription> subscriptions) {
         return new Mqtt3SubscribeView(delegate(subscriptions));
     }
 
-    @NotNull
-    public static Mqtt3SubscribeView of(@NotNull final MqttSubscribe delegate) {
+    public static @NotNull Mqtt3SubscribeView of(final @NotNull MqttSubscribe delegate) {
         return new Mqtt3SubscribeView(delegate);
     }
 
-    private final MqttSubscribe delegate;
+    private final @NotNull MqttSubscribe delegate;
 
-    private Mqtt3SubscribeView(@NotNull final MqttSubscribe delegate) {
+    private Mqtt3SubscribeView(final @NotNull MqttSubscribe delegate) {
         this.delegate = delegate;
     }
 
-    @NotNull
     @Override
-    public ImmutableList<? extends Mqtt3Subscription> getSubscriptions() {
+    public @NotNull ImmutableList<? extends Mqtt3Subscription> getSubscriptions() {
         final ImmutableList<MqttSubscription> subscriptions = delegate.getSubscriptions();
         final ImmutableList.Builder<Mqtt3SubscriptionView> builder =
                 ImmutableList.builderWithExpectedSize(subscriptions.size());
@@ -66,9 +67,7 @@ public class Mqtt3SubscribeView implements Mqtt3Subscribe {
         return builder.build();
     }
 
-    @NotNull
-    public MqttSubscribe getDelegate() {
+    public @NotNull MqttSubscribe getDelegate() {
         return delegate;
     }
-
 }

@@ -30,7 +30,6 @@ import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3SubscribeBuilder;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAck;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubscribeBuilder;
-import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.unsuback.Mqtt3UnsubAck;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -58,10 +57,13 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
 
     @NotNull Mqtt3Publishes publishes(@NotNull MqttGlobalPublishFilter filter);
 
-    @NotNull Mqtt3UnsubAck unsubscribe(@NotNull Mqtt3Unsubscribe unsubscribe);
+    void unsubscribe(@NotNull Mqtt3Unsubscribe unsubscribe);
 
-    default @NotNull Mqtt3UnsubscribeBuilder<Mqtt3UnsubAck> unsubscribeWith() {
-        return new Mqtt3UnsubscribeBuilder<>(this::unsubscribe);
+    default @NotNull Mqtt3UnsubscribeBuilder<Void> unsubscribeWith() {
+        return new Mqtt3UnsubscribeBuilder<>(unsubscribe -> {
+            unsubscribe(unsubscribe);
+            return null;
+        });
     }
 
     @NotNull Mqtt3PublishResult publish(@NotNull Mqtt3Publish publish);
@@ -84,7 +86,7 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
         @NotNull Optional<Mqtt3Publish> receive(final long timeout, final @NotNull TimeUnit timeUnit)
                 throws InterruptedException;
 
-        boolean hasPending();
+        @NotNull Optional<Mqtt3Publish> receiveNow();
 
         @Override
         void close();

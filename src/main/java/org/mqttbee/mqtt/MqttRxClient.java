@@ -27,8 +27,6 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttGlobalPublishFilter;
 import org.mqttbee.api.mqtt.exceptions.AlreadyConnectedException;
 import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
-import org.mqttbee.api.mqtt.mqtt5.Mqtt5AsyncClient;
-import org.mqttbee.api.mqtt.mqtt5.Mqtt5BlockingClient;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5RxClient;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
@@ -67,13 +65,16 @@ public class MqttRxClient implements Mqtt5RxClient {
 
     private final @NotNull MqttClientData clientData;
 
-    public MqttRxClient(@NotNull final MqttClientData clientData) {
+    public MqttRxClient(final @NotNull MqttClientData clientData) {
         this.clientData = clientData;
     }
 
-    @NotNull
     @Override
-    public Single<Mqtt5ConnAck> connect(@NotNull final Mqtt5Connect connect) {
+    public @NotNull Single<Mqtt5ConnAck> connect(final @NotNull Mqtt5Connect connect) {
+        return connectUnsafe(connect).observeOn(clientData.getExecutorConfig().getApplicationScheduler());
+    }
+
+    @NotNull Single<Mqtt5ConnAck> connectUnsafe(final @NotNull Mqtt5Connect connect) {
         final MqttConnect mqttConnect = MustNotBeImplementedUtil.checkNotImplemented(connect, MqttConnect.class);
 
         return Single.<Mqtt5ConnAck>create(connAckEmitter -> {
@@ -116,60 +117,81 @@ public class MqttRxClient implements Mqtt5RxClient {
                 clientData.setServerConnectionData(null);
                 clientData.setConnecting(false);
             }
-        }).observeOn(clientData.getExecutorConfig().getApplicationScheduler());
+        });
     }
 
-    @NotNull
     @Override
-    public Single<Mqtt5SubAck> subscribe(@NotNull final Mqtt5Subscribe subscribe) {
+    public @NotNull Single<Mqtt5SubAck> subscribe(final @NotNull Mqtt5Subscribe subscribe) {
+        return subscribeUnsafe(subscribe).observeOn(clientData.getExecutorConfig().getApplicationScheduler());
+    }
+
+    @NotNull Single<Mqtt5SubAck> subscribeUnsafe(final @NotNull Mqtt5Subscribe subscribe) {
         final MqttSubscribe mqttSubscribe =
                 MustNotBeImplementedUtil.checkNotImplemented(subscribe, MqttSubscribe.class);
 
-        return new MqttSubAckSingle(mqttSubscribe, clientData).observeOn(
-                clientData.getExecutorConfig().getApplicationScheduler());
+        return new MqttSubAckSingle(mqttSubscribe, clientData);
     }
 
-    @NotNull
     @Override
-    public FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeStream(@NotNull final Mqtt5Subscribe subscribe) {
+    public @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeStream(
+            final @NotNull Mqtt5Subscribe subscribe) {
+
+        return subscribeStreamUnsafe(subscribe).observeOnBoth(clientData.getExecutorConfig().getApplicationScheduler());
+    }
+
+    @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeStreamUnsafe(
+            final @NotNull Mqtt5Subscribe subscribe) {
+
         final MqttSubscribe mqttSubscribe =
                 MustNotBeImplementedUtil.checkNotImplemented(subscribe, MqttSubscribe.class);
 
         final Flowable<Mqtt5SubscribeResult> subscriptionFlowable =
-                new MqttSubscriptionFlowable(mqttSubscribe, clientData).observeOn(
-                        clientData.getExecutorConfig().getApplicationScheduler());
+                new MqttSubscriptionFlowable(mqttSubscribe, clientData);
         return FlowableWithSingle.split(subscriptionFlowable, Mqtt5Publish.class, Mqtt5SubAck.class);
     }
 
-    @NotNull
     @Override
-    public Flowable<Mqtt5Publish> publishes(@NotNull final MqttGlobalPublishFilter filter) {
-        Preconditions.checkNotNull(filter, "Global publish filter must not be null.");
-
-        return new MqttGlobalIncomingPublishFlowable(filter, clientData).observeOn(
-                clientData.getExecutorConfig().getApplicationScheduler());
+    public @NotNull Flowable<Mqtt5Publish> publishes(final @NotNull MqttGlobalPublishFilter filter) {
+        return publishesUnsafe(filter).observeOn(clientData.getExecutorConfig().getApplicationScheduler());
     }
 
-    @NotNull
+    @NotNull Flowable<Mqtt5Publish> publishesUnsafe(final @NotNull MqttGlobalPublishFilter filter) {
+        Preconditions.checkNotNull(filter, "Global publish filter must not be null.");
+
+        return new MqttGlobalIncomingPublishFlowable(filter, clientData);
+    }
+
     @Override
-    public Single<Mqtt5UnsubAck> unsubscribe(@NotNull final Mqtt5Unsubscribe unsubscribe) {
+    public @NotNull Single<Mqtt5UnsubAck> unsubscribe(final @NotNull Mqtt5Unsubscribe unsubscribe) {
+        return unsubscribeUnsafe(unsubscribe).observeOn(clientData.getExecutorConfig().getApplicationScheduler());
+    }
+
+    @NotNull Single<Mqtt5UnsubAck> unsubscribeUnsafe(final @NotNull Mqtt5Unsubscribe unsubscribe) {
         final MqttUnsubscribe mqttUnsubscribe =
                 MustNotBeImplementedUtil.checkNotImplemented(unsubscribe, MqttUnsubscribe.class);
 
-        return new MqttUnsubAckSingle(mqttUnsubscribe, clientData).observeOn(
-                clientData.getExecutorConfig().getApplicationScheduler());
+        return new MqttUnsubAckSingle(mqttUnsubscribe, clientData);
     }
 
-    @NotNull
     @Override
-    public Flowable<Mqtt5PublishResult> publish(@NotNull final Flowable<Mqtt5Publish> publishFlowable) {
-        return new MqttIncomingAckFlowable(publishFlowable.map(PUBLISH_MAPPER), clientData).observeOn(
-                clientData.getExecutorConfig().getApplicationScheduler());
+    public @NotNull Flowable<Mqtt5PublishResult> publish(final @NotNull Flowable<Mqtt5Publish> publishFlowable) {
+        return publishHalfSafe(publishFlowable.subscribeOn(clientData.getExecutorConfig().getApplicationScheduler()));
     }
 
-    @NotNull
+    @NotNull Flowable<Mqtt5PublishResult> publishHalfSafe(final @NotNull Flowable<Mqtt5Publish> publishFlowable) {
+        return publishUnsafe(publishFlowable).observeOn(clientData.getExecutorConfig().getApplicationScheduler());
+    }
+
+    @NotNull Flowable<Mqtt5PublishResult> publishUnsafe(final @NotNull Flowable<Mqtt5Publish> publishFlowable) {
+        return new MqttIncomingAckFlowable(publishFlowable.map(PUBLISH_MAPPER), clientData);
+    }
+
     @Override
-    public Completable reauth() {
+    public @NotNull Completable reauth() {
+        return reauthUnsafe().observeOn(clientData.getExecutorConfig().getApplicationScheduler());
+    }
+
+    @NotNull Completable reauthUnsafe() {
         return Completable.create(emitter -> {
             final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
             if (clientConnectionData != null) {
@@ -177,12 +199,15 @@ public class MqttRxClient implements Mqtt5RxClient {
             } else {
                 emitter.onError(new NotConnectedException());
             }
-        }).observeOn(clientData.getExecutorConfig().getApplicationScheduler());
+        });
     }
 
-    @NotNull
     @Override
-    public Completable disconnect(@NotNull final Mqtt5Disconnect disconnect) {
+    public @NotNull Completable disconnect(final @NotNull Mqtt5Disconnect disconnect) {
+        return disconnectUnsafe(disconnect).observeOn(clientData.getExecutorConfig().getApplicationScheduler());
+    }
+
+    @NotNull Completable disconnectUnsafe(final @NotNull Mqtt5Disconnect disconnect) {
         final MqttDisconnect mqttDisconnect =
                 MustNotBeImplementedUtil.checkNotImplemented(disconnect, MqttDisconnect.class);
 
@@ -199,22 +224,21 @@ public class MqttRxClient implements Mqtt5RxClient {
             } else {
                 emitter.onError(new NotConnectedException());
             }
-        }).observeOn(clientData.getExecutorConfig().getApplicationScheduler());
+        });
     }
 
-    @NotNull
     @Override
-    public MqttClientData getClientData() {
+    public @NotNull MqttClientData getClientData() {
         return clientData;
     }
 
     @Override
-    public @NotNull Mqtt5AsyncClient toAsync() {
-        throw new UnsupportedOperationException("not implemented yet");
+    public @NotNull MqttAsyncClient toAsync() {
+        return new MqttAsyncClient(this);
     }
 
     @Override
-    public @NotNull Mqtt5BlockingClient toBlocking() {
-        throw new UnsupportedOperationException("not implemented yet");
+    public @NotNull MqttBlockingClient toBlocking() {
+        return new MqttBlockingClient(this);
     }
 }

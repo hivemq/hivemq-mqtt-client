@@ -39,10 +39,9 @@ import java.util.Optional;
 @Immutable
 public class Mqtt3ConnectView implements Mqtt3Connect {
 
-    @NotNull
-    public static MqttConnect delegate(
-            final int keepAlive, final boolean isCleanSession, @Nullable final MqttSimpleAuth simpleAuth,
-            @Nullable final MqttWillPublish willPublish) {
+    public static @NotNull MqttConnect delegate(
+            final int keepAlive, final boolean isCleanSession, final @Nullable MqttSimpleAuth simpleAuth,
+            final @Nullable MqttWillPublish willPublish) {
 
         return new MqttConnect(keepAlive, isCleanSession, isCleanSession ? 0 : MqttConnect.NO_SESSION_EXPIRY,
                 MqttConnect.DEFAULT_RESPONSE_INFORMATION_REQUESTED, MqttConnect.DEFAULT_PROBLEM_INFORMATION_REQUESTED,
@@ -50,22 +49,24 @@ public class Mqtt3ConnectView implements Mqtt3Connect {
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES);
     }
 
-    @NotNull
-    public static Mqtt3ConnectView of(
-            final int keepAlive, final boolean isCleanSession, @Nullable final MqttSimpleAuth simpleAuth,
-            @Nullable final MqttWillPublish willPublish) {
+    public static @NotNull MqttConnect delegate(final @NotNull Mqtt3Connect connect) {
+        return ((Mqtt3ConnectView) connect).getDelegate();
+    }
+
+    public static @NotNull Mqtt3ConnectView of(
+            final int keepAlive, final boolean isCleanSession, final @Nullable MqttSimpleAuth simpleAuth,
+            final @Nullable MqttWillPublish willPublish) {
 
         return new Mqtt3ConnectView(delegate(keepAlive, isCleanSession, simpleAuth, willPublish));
     }
 
-    @NotNull
-    public static Mqtt3ConnectView of(@NotNull final MqttConnect delegate) {
+    public static @NotNull Mqtt3ConnectView of(final @NotNull MqttConnect delegate) {
         return new Mqtt3ConnectView(delegate);
     }
 
-    private final MqttConnect delegate;
+    private final @NotNull MqttConnect delegate;
 
-    private Mqtt3ConnectView(@NotNull final MqttConnect delegate) {
+    private Mqtt3ConnectView(final @NotNull MqttConnect delegate) {
         this.delegate = delegate;
     }
 
@@ -79,22 +80,19 @@ public class Mqtt3ConnectView implements Mqtt3Connect {
         return delegate.isCleanStart();
     }
 
-    @NotNull
     @Override
-    public Optional<Mqtt3SimpleAuth> getSimpleAuth() {
+    public @NotNull Optional<Mqtt3SimpleAuth> getSimpleAuth() {
         final MqttSimpleAuth simpleAuth = delegate.getRawSimpleAuth();
         return (simpleAuth == null) ? Optional.empty() : Optional.of(Mqtt3SimpleAuthView.of(simpleAuth));
     }
 
-    @NotNull
     @Override
-    public Optional<Mqtt3Publish> getWillPublish() {
+    public @NotNull Optional<Mqtt3Publish> getWillPublish() {
         final MqttWillPublish willPublish = delegate.getRawWillPublish();
         return (willPublish == null) ? Optional.empty() : Optional.of(Mqtt3PublishView.of(willPublish));
     }
 
-    @NotNull
-    public MqttConnect getDelegate() {
+    public @NotNull MqttConnect getDelegate() {
         return delegate;
     }
 

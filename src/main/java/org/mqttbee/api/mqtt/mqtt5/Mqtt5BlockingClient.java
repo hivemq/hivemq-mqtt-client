@@ -99,7 +99,7 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
         @NotNull Optional<Mqtt5Publish> receive(final long timeout, final @NotNull TimeUnit timeUnit)
                 throws InterruptedException;
 
-        boolean hasPending();
+        @NotNull Optional<Mqtt5Publish> receiveNow();
 
         @Override
         void close();

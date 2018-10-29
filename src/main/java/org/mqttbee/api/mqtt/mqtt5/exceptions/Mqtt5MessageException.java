@@ -23,27 +23,21 @@ import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5MessageException extends Exception {
+public class Mqtt5MessageException extends RuntimeException {
 
-    private final Mqtt5Message mqtt5Message;
+    private final @NotNull Mqtt5Message mqtt5Message;
 
-    public Mqtt5MessageException(
-            @NotNull final Mqtt5Message mqtt5Message, @NotNull final String message) {
-
+    public Mqtt5MessageException(final @NotNull Mqtt5Message mqtt5Message, final @NotNull String message) {
         super(message);
         this.mqtt5Message = mqtt5Message;
     }
 
-    public Mqtt5MessageException(
-            @NotNull final Mqtt5Message mqtt5Message, @NotNull final Throwable cause) {
-
+    public Mqtt5MessageException(final @NotNull Mqtt5Message mqtt5Message, final @NotNull Throwable cause) {
         super(cause.getMessage(), cause);
         this.mqtt5Message = mqtt5Message;
     }
 
-    @NotNull
-    public Mqtt5Message getMqttMessage() {
+    public @NotNull Mqtt5Message getMqttMessage() {
         return mqtt5Message;
     }
-
 }
