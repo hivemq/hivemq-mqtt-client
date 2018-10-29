@@ -18,8 +18,8 @@
 package org.mqttbee.api.mqtt.datatypes;
 
 import com.google.common.collect.ImmutableList;
-import org.mqttbee.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 
 /**
@@ -45,25 +45,25 @@ public interface MqttTopic extends MqttUTF8String {
      * @return the created Topic Name.
      * @throws IllegalArgumentException if the string is not a valid Topic Name.
      */
-    @NotNull
-    static MqttTopic from(@NotNull final String string) {
+    static @NotNull MqttTopic from(final @NotNull String string) {
         return MqttBuilderUtil.topic(string);
     }
 
-    @NotNull
-    static MqttTopicBuilder<Void> builder(@NotNull final String topTopic) {
+    static @NotNull MqttTopicBuilder<Void> builder() {
+        return new MqttTopicBuilder<>(null);
+    }
+
+    static @NotNull MqttTopicBuilder<Void> builder(final @NotNull String topTopic) {
         return new MqttTopicBuilder<>(topTopic, null);
     }
 
-    @NotNull
-    static MqttTopicBuilder<Void> extend(@NotNull final MqttTopic topic) {
+    static @NotNull MqttTopicBuilder<Void> extend(final @NotNull MqttTopic topic) {
         return new MqttTopicBuilder<>(topic.toString(), null);
     }
 
     /**
      * @return the levels of this Topic Name.
      */
-    @NotNull
-    ImmutableList<String> getLevels();
+    @NotNull ImmutableList<String> getLevels();
 
 }

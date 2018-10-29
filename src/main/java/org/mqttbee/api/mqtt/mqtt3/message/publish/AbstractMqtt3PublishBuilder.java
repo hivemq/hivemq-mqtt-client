@@ -71,7 +71,7 @@ abstract class AbstractMqtt3PublishBuilder<S extends AbstractMqtt3PublishBuilder
     }
 
     public @NotNull MqttTopicBuilder<S> topic() {
-        return new MqttTopicBuilder<>("", this::topic);
+        return new MqttTopicBuilder<>(this::topic);
     }
 
     public @NotNull S payload(final @Nullable byte[] payload) {

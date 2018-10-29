@@ -31,7 +31,12 @@ public class MqttTopicBuilder<P> extends FluentBuilder<MqttTopic, P> {
 
     private final @NotNull StringBuilder stringBuilder;
 
-    public MqttTopicBuilder(final @NotNull String base, final @Nullable Function<? super MqttTopic, P> parentConsumer) {
+    public MqttTopicBuilder(final @Nullable Function<? super MqttTopic, P> parentConsumer) {
+        super(parentConsumer);
+        this.stringBuilder = new StringBuilder();
+    }
+
+    MqttTopicBuilder(final @NotNull String base, final @Nullable Function<? super MqttTopic, P> parentConsumer) {
         super(parentConsumer);
         this.stringBuilder = new StringBuilder(base);
     }
