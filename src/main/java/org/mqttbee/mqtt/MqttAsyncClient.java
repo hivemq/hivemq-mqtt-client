@@ -32,7 +32,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
-import org.mqttbee.rx.RxJavaFutureConverter;
+import org.mqttbee.rx.RxFutureConverter;
 import org.reactivestreams.Subscription;
 
 import java.util.Objects;
@@ -60,12 +60,12 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
 
     @Override
     public @NotNull CompletableFuture<@NotNull Mqtt5ConnAck> connect(final @NotNull Mqtt5Connect connect) {
-        return RxJavaFutureConverter.toFuture(delegate.connect(connect));
+        return RxFutureConverter.toFuture(delegate.connect(connect));
     }
 
     @Override
     public @NotNull CompletableFuture<@NotNull Mqtt5SubAck> subscribe(final @NotNull Mqtt5Subscribe subscribe) {
-        return RxJavaFutureConverter.toFuture(delegate.subscribe(subscribe));
+        return RxFutureConverter.toFuture(delegate.subscribe(subscribe));
     }
 
     @Override
@@ -117,23 +117,23 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
 
     @Override
     public @NotNull CompletableFuture<@NotNull Mqtt5UnsubAck> unsubscribe(final @NotNull Mqtt5Unsubscribe unsubscribe) {
-        return RxJavaFutureConverter.toFuture(delegate.unsubscribe(unsubscribe)).thenApply(UNSUBACK_HANDLER);
+        return RxFutureConverter.toFuture(delegate.unsubscribe(unsubscribe)).thenApply(UNSUBACK_HANDLER);
     }
 
     @Override
     public @NotNull CompletableFuture<@NotNull Mqtt5PublishResult> publish(final @NotNull Mqtt5Publish publish) {
-        return RxJavaFutureConverter.toFuture(delegate.publishHalfSafe(Flowable.just(publish)).singleOrError())
+        return RxFutureConverter.toFuture(delegate.publishHalfSafe(Flowable.just(publish)).singleOrError())
                 .thenApply(PUBLISH_HANDLER);
     }
 
     @Override
     public @NotNull CompletableFuture<Void> reauth() {
-        return RxJavaFutureConverter.toFuture(delegate.reauth());
+        return RxFutureConverter.toFuture(delegate.reauth());
     }
 
     @Override
     public @NotNull CompletableFuture<Void> disconnect(final @NotNull Mqtt5Disconnect disconnect) {
-        return RxJavaFutureConverter.toFuture(delegate.disconnect(disconnect));
+        return RxFutureConverter.toFuture(delegate.disconnect(disconnect));
     }
 
     @Override

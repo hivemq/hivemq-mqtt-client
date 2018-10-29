@@ -33,17 +33,17 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * @author Silvio Giebl
  */
-class RxJavaFutureConverterTest {
+class RxFutureConverterTest {
 
     @Test
     void toFuture_completable_immediate() {
-        final CompletableFuture<Void> future = RxJavaFutureConverter.toFuture(Completable.complete());
+        final CompletableFuture<Void> future = RxFutureConverter.toFuture(Completable.complete());
         assertTrue(future.isDone());
     }
 
     @Test
     void toFuture_completable_immediate_error() {
-        final CompletableFuture<Void> future = RxJavaFutureConverter.toFuture(Completable.error(new Exception("test")));
+        final CompletableFuture<Void> future = RxFutureConverter.toFuture(Completable.error(new Exception("test")));
         assertTrue(future.isDone());
         assertTrue(future.isCompletedExceptionally());
         final ExecutionException exception = assertThrows(ExecutionException.class, future::get);
@@ -60,7 +60,7 @@ class RxJavaFutureConverterTest {
             completedLatch.countDown();
         }).subscribeOn(Schedulers.single());
 
-        final CompletableFuture<Void> future = RxJavaFutureConverter.toFuture(completable);
+        final CompletableFuture<Void> future = RxFutureConverter.toFuture(completable);
         assertFalse(future.isDone());
 
         emitLatch.countDown();
@@ -78,7 +78,7 @@ class RxJavaFutureConverterTest {
             completedLatch.countDown();
         }).subscribeOn(Schedulers.single());
 
-        final CompletableFuture<Void> future = RxJavaFutureConverter.toFuture(completable);
+        final CompletableFuture<Void> future = RxFutureConverter.toFuture(completable);
         assertFalse(future.isDone());
 
         emitLatch.countDown();
@@ -106,7 +106,7 @@ class RxJavaFutureConverterTest {
             }
         }).subscribeOn(Schedulers.single());
 
-        final CompletableFuture<Void> future = RxJavaFutureConverter.toFuture(completable);
+        final CompletableFuture<Void> future = RxFutureConverter.toFuture(completable);
         assertFalse(future.isDone());
 
         assertTrue(subscribeLatch.await(100, TimeUnit.MILLISECONDS));
@@ -143,7 +143,7 @@ class RxJavaFutureConverterTest {
             }
         };
 
-        final CompletableFuture<Void> future = RxJavaFutureConverter.toFuture(completable);
+        final CompletableFuture<Void> future = RxFutureConverter.toFuture(completable);
         assertFalse(future.isDone());
 
         assertTrue(subscribeLatch.await(100, TimeUnit.MILLISECONDS));
@@ -157,7 +157,7 @@ class RxJavaFutureConverterTest {
 
     @Test
     void toFuture_maybe_immediate() throws ExecutionException, InterruptedException {
-        final CompletableFuture<Optional<String>> future = RxJavaFutureConverter.toFuture(Maybe.just("maybe"));
+        final CompletableFuture<Optional<String>> future = RxFutureConverter.toFuture(Maybe.just("maybe"));
         assertTrue(future.isDone());
         final Optional<String> optional = future.get();
         assertNotNull(optional);
@@ -167,7 +167,7 @@ class RxJavaFutureConverterTest {
 
     @Test
     void toFuture_maybe_immediate_empty() throws ExecutionException, InterruptedException {
-        final CompletableFuture<Optional<String>> future = RxJavaFutureConverter.toFuture(Maybe.empty());
+        final CompletableFuture<Optional<String>> future = RxFutureConverter.toFuture(Maybe.empty());
         assertTrue(future.isDone());
         final Optional<String> optional = future.get();
         assertNotNull(optional);
@@ -177,7 +177,7 @@ class RxJavaFutureConverterTest {
     @Test
     void toFuture_maybe_immediate_error() {
         final CompletableFuture<Optional<String>> future =
-                RxJavaFutureConverter.toFuture(Maybe.error(new Exception("test")));
+                RxFutureConverter.toFuture(Maybe.error(new Exception("test")));
         assertTrue(future.isDone());
         assertTrue(future.isCompletedExceptionally());
         final ExecutionException exception = assertThrows(ExecutionException.class, future::get);
@@ -194,7 +194,7 @@ class RxJavaFutureConverterTest {
             completedLatch.countDown();
         }).subscribeOn(Schedulers.single());
 
-        final CompletableFuture<Optional<String>> future = RxJavaFutureConverter.toFuture(maybe);
+        final CompletableFuture<Optional<String>> future = RxFutureConverter.toFuture(maybe);
         assertFalse(future.isDone());
 
         emitLatch.countDown();
@@ -216,7 +216,7 @@ class RxJavaFutureConverterTest {
             completedLatch.countDown();
         }).subscribeOn(Schedulers.single());
 
-        final CompletableFuture<Optional<String>> future = RxJavaFutureConverter.toFuture(maybe);
+        final CompletableFuture<Optional<String>> future = RxFutureConverter.toFuture(maybe);
         assertFalse(future.isDone());
 
         emitLatch.countDown();
@@ -244,7 +244,7 @@ class RxJavaFutureConverterTest {
             }
         }).subscribeOn(Schedulers.single());
 
-        final CompletableFuture<Optional<String>> future = RxJavaFutureConverter.toFuture(completable);
+        final CompletableFuture<Optional<String>> future = RxFutureConverter.toFuture(completable);
         assertFalse(future.isDone());
 
         assertTrue(subscribeLatch.await(100, TimeUnit.MILLISECONDS));
@@ -281,7 +281,7 @@ class RxJavaFutureConverterTest {
             }
         };
 
-        final CompletableFuture<Optional<String>> future = RxJavaFutureConverter.toFuture(maybe);
+        final CompletableFuture<Optional<String>> future = RxFutureConverter.toFuture(maybe);
         assertFalse(future.isDone());
 
         assertTrue(subscribeLatch.await(100, TimeUnit.MILLISECONDS));
@@ -303,7 +303,7 @@ class RxJavaFutureConverterTest {
             completedLatch.countDown();
         }).subscribeOn(Schedulers.single());
 
-        final CompletableFuture<Optional<String>> future = RxJavaFutureConverter.toFuture(maybe);
+        final CompletableFuture<Optional<String>> future = RxFutureConverter.toFuture(maybe);
         assertFalse(future.isDone());
 
         emitLatch.countDown();
@@ -316,14 +316,14 @@ class RxJavaFutureConverterTest {
 
     @Test
     void toFuture_single_immediate() throws ExecutionException, InterruptedException {
-        final CompletableFuture<String> future = RxJavaFutureConverter.toFuture(Single.just("single"));
+        final CompletableFuture<String> future = RxFutureConverter.toFuture(Single.just("single"));
         assertTrue(future.isDone());
         assertEquals("single", future.get());
     }
 
     @Test
     void toFuture_single_immediate_error() {
-        final CompletableFuture<String> future = RxJavaFutureConverter.toFuture(Single.error(new Exception("test")));
+        final CompletableFuture<String> future = RxFutureConverter.toFuture(Single.error(new Exception("test")));
         assertTrue(future.isDone());
         assertTrue(future.isCompletedExceptionally());
         final ExecutionException exception = assertThrows(ExecutionException.class, future::get);
@@ -340,7 +340,7 @@ class RxJavaFutureConverterTest {
             completedLatch.countDown();
         }).subscribeOn(Schedulers.single());
 
-        final CompletableFuture<String> future = RxJavaFutureConverter.toFuture(single);
+        final CompletableFuture<String> future = RxFutureConverter.toFuture(single);
         assertFalse(future.isDone());
 
         emitLatch.countDown();
@@ -359,7 +359,7 @@ class RxJavaFutureConverterTest {
             completedLatch.countDown();
         }).subscribeOn(Schedulers.single());
 
-        final CompletableFuture<String> future = RxJavaFutureConverter.toFuture(single);
+        final CompletableFuture<String> future = RxFutureConverter.toFuture(single);
         assertFalse(future.isDone());
 
         emitLatch.countDown();
@@ -387,7 +387,7 @@ class RxJavaFutureConverterTest {
             }
         }).subscribeOn(Schedulers.single());
 
-        final CompletableFuture<String> future = RxJavaFutureConverter.toFuture(completable);
+        final CompletableFuture<String> future = RxFutureConverter.toFuture(completable);
         assertFalse(future.isDone());
 
         assertTrue(subscribeLatch.await(100, TimeUnit.MILLISECONDS));
@@ -424,7 +424,7 @@ class RxJavaFutureConverterTest {
             }
         };
 
-        final CompletableFuture<String> future = RxJavaFutureConverter.toFuture(single);
+        final CompletableFuture<String> future = RxFutureConverter.toFuture(single);
         assertFalse(future.isDone());
 
         assertTrue(subscribeLatch.await(100, TimeUnit.MILLISECONDS));
@@ -439,7 +439,7 @@ class RxJavaFutureConverterTest {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     void toCompletable_immediate() {
-        final Completable completable = RxJavaFutureConverter.toCompletable(CompletableFuture.completedFuture("test"));
+        final Completable completable = RxFutureConverter.toCompletable(CompletableFuture.completedFuture("test"));
 
         final AtomicInteger counter = new AtomicInteger();
         completable.subscribe(new TestCompletableObserver() {
@@ -457,7 +457,7 @@ class RxJavaFutureConverterTest {
     void toCompletable_immediate_error() {
         final CompletableFuture<String> future = new CompletableFuture<>();
         future.completeExceptionally(new Exception("test"));
-        final Completable completable = RxJavaFutureConverter.toCompletable(future);
+        final Completable completable = RxFutureConverter.toCompletable(future);
 
         final AtomicInteger counter = new AtomicInteger();
         completable.subscribe(new TestCompletableObserver() {
@@ -475,7 +475,7 @@ class RxJavaFutureConverterTest {
     @Test
     void toCompletable() {
         final CompletableFuture<String> future = new CompletableFuture<>();
-        final Completable completable = RxJavaFutureConverter.toCompletable(future);
+        final Completable completable = RxFutureConverter.toCompletable(future);
 
         final AtomicInteger counter = new AtomicInteger();
         final TestCompletableObserver observer = new TestCompletableObserver() {
@@ -498,7 +498,7 @@ class RxJavaFutureConverterTest {
     @Test
     void toCompletable_error() {
         final CompletableFuture<String> future = new CompletableFuture<>();
-        final Completable completable = RxJavaFutureConverter.toCompletable(future);
+        final Completable completable = RxFutureConverter.toCompletable(future);
 
         final AtomicInteger counter = new AtomicInteger();
         final TestCompletableObserver observer = new TestCompletableObserver() {
@@ -522,7 +522,7 @@ class RxJavaFutureConverterTest {
     @Test
     void toCompletable_dispose() {
         final CompletableFuture<String> future = new CompletableFuture<>();
-        final Completable completable = RxJavaFutureConverter.toCompletable(future);
+        final Completable completable = RxFutureConverter.toCompletable(future);
 
         final AtomicInteger counter = new AtomicInteger();
         final TestCompletableObserver observer = new TestCompletableObserver() {
@@ -545,8 +545,7 @@ class RxJavaFutureConverterTest {
 
     @Test
     void toMaybe_immediate() {
-        final Maybe<String> maybe =
-                RxJavaFutureConverter.toMaybe(CompletableFuture.completedFuture(Optional.of("test")));
+        final Maybe<String> maybe = RxFutureConverter.toMaybe(CompletableFuture.completedFuture(Optional.of("test")));
 
         final AtomicInteger counter = new AtomicInteger();
         maybe.subscribe(new TestMaybeObserver<String>() {
@@ -563,7 +562,7 @@ class RxJavaFutureConverterTest {
 
     @Test
     void toMaybe_immediate_empty() {
-        final Maybe<String> maybe = RxJavaFutureConverter.toMaybe(CompletableFuture.completedFuture(Optional.empty()));
+        final Maybe<String> maybe = RxFutureConverter.toMaybe(CompletableFuture.completedFuture(Optional.empty()));
 
         final AtomicInteger counter = new AtomicInteger();
         maybe.subscribe(new TestMaybeObserver<String>() {
@@ -579,7 +578,7 @@ class RxJavaFutureConverterTest {
 
     @Test
     void toMaybe_immediate_null() {
-        final Maybe<String> maybe = RxJavaFutureConverter.toMaybe(CompletableFuture.completedFuture(null));
+        final Maybe<String> maybe = RxFutureConverter.toMaybe(CompletableFuture.completedFuture(null));
 
         final AtomicInteger counter = new AtomicInteger();
         maybe.subscribe(new TestMaybeObserver<String>() {
@@ -598,7 +597,7 @@ class RxJavaFutureConverterTest {
     void toMaybe_immediate_error() {
         final CompletableFuture<Optional<String>> future = new CompletableFuture<>();
         future.completeExceptionally(new Exception("test"));
-        final Maybe<String> maybe = RxJavaFutureConverter.toMaybe(future);
+        final Maybe<String> maybe = RxFutureConverter.toMaybe(future);
 
         final AtomicInteger counter = new AtomicInteger();
         maybe.subscribe(new TestMaybeObserver<String>() {
@@ -616,7 +615,7 @@ class RxJavaFutureConverterTest {
     @Test
     void toMaybe() {
         final CompletableFuture<Optional<String>> future = new CompletableFuture<>();
-        final Maybe<String> maybe = RxJavaFutureConverter.toMaybe(future);
+        final Maybe<String> maybe = RxFutureConverter.toMaybe(future);
 
         final AtomicInteger counter = new AtomicInteger();
         final TestMaybeObserver<String> observer = new TestMaybeObserver<String>() {
@@ -640,7 +639,7 @@ class RxJavaFutureConverterTest {
     @Test
     void toMaybe_empty() {
         final CompletableFuture<Optional<String>> future = new CompletableFuture<>();
-        final Maybe<String> maybe = RxJavaFutureConverter.toMaybe(future);
+        final Maybe<String> maybe = RxFutureConverter.toMaybe(future);
 
         final AtomicInteger counter = new AtomicInteger();
         final TestMaybeObserver<String> observer = new TestMaybeObserver<String>() {
@@ -663,7 +662,7 @@ class RxJavaFutureConverterTest {
     @Test
     void toMaybe_null() {
         final CompletableFuture<Optional<String>> future = new CompletableFuture<>();
-        final Maybe<String> maybe = RxJavaFutureConverter.toMaybe(future);
+        final Maybe<String> maybe = RxFutureConverter.toMaybe(future);
 
         final AtomicInteger counter = new AtomicInteger();
         final TestMaybeObserver<String> observer = new TestMaybeObserver<String>() {
@@ -687,7 +686,7 @@ class RxJavaFutureConverterTest {
     @Test
     void toMaybe_error() {
         final CompletableFuture<Optional<String>> future = new CompletableFuture<>();
-        final Maybe<String> maybe = RxJavaFutureConverter.toMaybe(future);
+        final Maybe<String> maybe = RxFutureConverter.toMaybe(future);
 
         final AtomicInteger counter = new AtomicInteger();
         final TestMaybeObserver<String> observer = new TestMaybeObserver<String>() {
@@ -711,7 +710,7 @@ class RxJavaFutureConverterTest {
     @Test
     void toMaybe_dispose() {
         final CompletableFuture<Optional<String>> future = new CompletableFuture<>();
-        final Maybe<String> completable = RxJavaFutureConverter.toMaybe(future);
+        final Maybe<String> completable = RxFutureConverter.toMaybe(future);
 
         final AtomicInteger counter = new AtomicInteger();
         final TestMaybeObserver<String> observer = new TestMaybeObserver<String>() {
@@ -735,7 +734,7 @@ class RxJavaFutureConverterTest {
 
     @Test
     void toSingle_immediate() {
-        final Single<String> single = RxJavaFutureConverter.toSingle(CompletableFuture.completedFuture("test"));
+        final Single<String> single = RxFutureConverter.toSingle(CompletableFuture.completedFuture("test"));
 
         final AtomicInteger counter = new AtomicInteger();
         single.subscribe(new TestSingleObserver<String>() {
@@ -754,7 +753,7 @@ class RxJavaFutureConverterTest {
     void toSingle_immediate_error() {
         final CompletableFuture<String> future = new CompletableFuture<>();
         future.completeExceptionally(new Exception("test"));
-        final Single<String> single = RxJavaFutureConverter.toSingle(future);
+        final Single<String> single = RxFutureConverter.toSingle(future);
 
         final AtomicInteger counter = new AtomicInteger();
         single.subscribe(new TestSingleObserver<String>() {
@@ -772,7 +771,7 @@ class RxJavaFutureConverterTest {
     @Test
     void toSingle() {
         final CompletableFuture<String> future = new CompletableFuture<>();
-        final Single<String> single = RxJavaFutureConverter.toSingle(future);
+        final Single<String> single = RxFutureConverter.toSingle(future);
 
         final AtomicInteger counter = new AtomicInteger();
         final TestSingleObserver<String> observer = new TestSingleObserver<String>() {
@@ -796,7 +795,7 @@ class RxJavaFutureConverterTest {
     @Test
     void toSingle_error() {
         final CompletableFuture<String> future = new CompletableFuture<>();
-        final Single<String> single = RxJavaFutureConverter.toSingle(future);
+        final Single<String> single = RxFutureConverter.toSingle(future);
 
         final AtomicInteger counter = new AtomicInteger();
         final TestSingleObserver<String> observer = new TestSingleObserver<String>() {
@@ -820,7 +819,7 @@ class RxJavaFutureConverterTest {
     @Test
     void toSingle_dispose() {
         final CompletableFuture<String> future = new CompletableFuture<>();
-        final Single<String> single = RxJavaFutureConverter.toSingle(future);
+        final Single<String> single = RxFutureConverter.toSingle(future);
 
         final AtomicInteger counter = new AtomicInteger();
         final TestSingleObserver<String> observer = new TestSingleObserver<String>() {
@@ -905,5 +904,4 @@ class RxJavaFutureConverterTest {
         @Override
         public void onError(final @NotNull Throwable e) {}
     }
-
 }
