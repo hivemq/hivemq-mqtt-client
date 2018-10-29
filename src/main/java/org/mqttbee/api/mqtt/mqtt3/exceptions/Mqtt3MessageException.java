@@ -54,10 +54,9 @@ import org.mqttbee.mqtt.message.unsubscribe.unsuback.mqtt3.Mqtt3UnsubAckView;
  * @author David Katz
  * @author Silvio Giebl
  */
-public class Mqtt3MessageException extends Exception {
+public class Mqtt3MessageException extends RuntimeException {
 
-    @NotNull
-    private static Mqtt3Message viewOf(@NotNull final Mqtt5Message mqtt5Message) {
+    private static @NotNull Mqtt3Message viewOf(final @NotNull Mqtt5Message mqtt5Message) {
         if (mqtt5Message instanceof MqttConnect) {
             return Mqtt3ConnectView.of((MqttConnect) mqtt5Message);
         } else if (mqtt5Message instanceof MqttConnAck) {
@@ -90,16 +89,14 @@ public class Mqtt3MessageException extends Exception {
         throw new IllegalStateException();
     }
 
-    private final Mqtt3Message mqtt3Message;
+    private final @NotNull Mqtt3Message mqtt3Message;
 
-    public Mqtt3MessageException(@NotNull final Mqtt5MessageException mqtt5MessageException) {
+    public Mqtt3MessageException(final @NotNull Mqtt5MessageException mqtt5MessageException) {
         super(mqtt5MessageException.getMessage(), mqtt5MessageException.getCause());
         this.mqtt3Message = viewOf(mqtt5MessageException.getMqttMessage());
     }
 
-    @NotNull
-    public Mqtt3Message getMqttMessage() {
+    public @NotNull Mqtt3Message getMqttMessage() {
         return mqtt3Message;
     }
-
 }

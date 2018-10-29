@@ -27,15 +27,17 @@ import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
  */
 public class Mqtt3ExceptionFactory {
 
-    @NotNull
-    public static Function<Throwable, Throwable> MAPPER = Mqtt3ExceptionFactory::map;
+    public static @NotNull Function<Throwable, Throwable> MAPPER = Mqtt3ExceptionFactory::map;
 
-    @NotNull
-    public static Throwable map(@NotNull final Throwable throwable) {
+    public static @NotNull Throwable map(final @NotNull Throwable throwable) {
         if (throwable instanceof Mqtt5MessageException) {
-            return new Mqtt3MessageException((Mqtt5MessageException) throwable);
+            return map((Mqtt5MessageException) throwable);
         }
         return throwable;
+    }
+
+    public static @NotNull Mqtt3MessageException map(final @NotNull Mqtt5MessageException mqtt5MessageException) {
+        return new Mqtt3MessageException(mqtt5MessageException);
     }
 
 }

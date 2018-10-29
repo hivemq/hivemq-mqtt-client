@@ -19,9 +19,9 @@ package org.mqttbee.api.mqtt.mqtt3;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.AbstractMqttClientBuilder;
-import org.mqttbee.mqtt.MqttClientData;
-import org.mqttbee.mqtt.MqttRxClient;
-import org.mqttbee.mqtt.MqttVersion;
+import org.mqttbee.mqtt.*;
+import org.mqttbee.mqtt.mqtt3.Mqtt3AsyncClientView;
+import org.mqttbee.mqtt.mqtt3.Mqtt3BlockingClientView;
 import org.mqttbee.mqtt.mqtt3.Mqtt3RxClientView;
 
 /**
@@ -36,16 +36,32 @@ public class Mqtt3ClientBuilder extends AbstractMqttClientBuilder<Mqtt3ClientBui
         return this;
     }
 
+    public @NotNull Mqtt3Client build() {
+        return buildRx();
+    }
+
     public @NotNull Mqtt3RxClient buildRx() {
-        return new Mqtt3RxClientView(new MqttRxClient(buildClientData()));
+        return new Mqtt3RxClientView(buildRxDelegate());
     }
 
     public @NotNull Mqtt3AsyncClient buildAsync() {
-        throw new UnsupportedOperationException("not implemented yet");
+        return new Mqtt3AsyncClientView(buildAsyncDelegate());
     }
 
     public @NotNull Mqtt3BlockingClient buildBlocking() {
-        throw new UnsupportedOperationException("not implemented yet");
+        return new Mqtt3BlockingClientView(buildBlockingDelegate());
+    }
+
+    private @NotNull MqttRxClient buildRxDelegate() {
+        return new MqttRxClient(buildClientData());
+    }
+
+    private @NotNull MqttAsyncClient buildAsyncDelegate() {
+        return buildRxDelegate().toAsync();
+    }
+
+    private @NotNull MqttBlockingClient buildBlockingDelegate() {
+        return buildRxDelegate().toBlocking();
     }
 
     private @NotNull MqttClientData buildClientData() {

@@ -36,7 +36,6 @@ import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3SubscriptionBuilder;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAck;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubscribeBuilder;
-import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.unsuback.Mqtt3UnsubAck;
 import org.mqttbee.util.FluentBuilder;
 
 import java.util.concurrent.CompletableFuture;
@@ -89,9 +88,9 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
             @NotNull MqttGlobalPublishFilter filter, @NotNull Consumer<@NotNull Mqtt3Publish> callback,
             @NotNull Executor executor);
 
-    @NotNull CompletableFuture<@NotNull Mqtt3UnsubAck> unsubscribe(@NotNull Mqtt3Unsubscribe unsubscribe);
+    @NotNull CompletableFuture<Void> unsubscribe(@NotNull Mqtt3Unsubscribe unsubscribe);
 
-    default @NotNull Mqtt3UnsubscribeBuilder<CompletableFuture<Mqtt3UnsubAck>> unsubscribeWith() {
+    default @NotNull Mqtt3UnsubscribeBuilder<CompletableFuture<Void>> unsubscribeWith() {
         return new Mqtt3UnsubscribeBuilder<>(this::unsubscribe);
     }
 

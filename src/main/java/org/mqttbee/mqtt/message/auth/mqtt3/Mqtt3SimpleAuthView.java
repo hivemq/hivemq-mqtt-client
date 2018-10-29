@@ -34,34 +34,30 @@ import java.util.Optional;
 @Immutable
 public class Mqtt3SimpleAuthView implements Mqtt3SimpleAuth {
 
-    @NotNull
-    private static MqttSimpleAuth delegate(
-            @NotNull final MqttUTF8StringImpl username, @Nullable final ByteBuffer password) {
+    private static @NotNull MqttSimpleAuth delegate(
+            final @NotNull MqttUTF8StringImpl username, final @Nullable ByteBuffer password) {
 
         return new MqttSimpleAuth(username, password);
     }
 
-    @NotNull
-    public static Mqtt3SimpleAuthView of(
-            @NotNull final MqttUTF8StringImpl username, @Nullable final ByteBuffer password) {
+    public static @NotNull Mqtt3SimpleAuthView of(
+            final @NotNull MqttUTF8StringImpl username, final @Nullable ByteBuffer password) {
 
         return new Mqtt3SimpleAuthView(delegate(username, password));
     }
 
-    @NotNull
-    public static Mqtt3SimpleAuthView of(@NotNull final MqttSimpleAuth delegate) {
+    public static @NotNull Mqtt3SimpleAuthView of(final @NotNull MqttSimpleAuth delegate) {
         return new Mqtt3SimpleAuthView(delegate);
     }
 
-    private final MqttSimpleAuth delegate;
+    private final @NotNull MqttSimpleAuth delegate;
 
-    private Mqtt3SimpleAuthView(@NotNull final MqttSimpleAuth delegate) {
+    private Mqtt3SimpleAuthView(final @NotNull MqttSimpleAuth delegate) {
         this.delegate = delegate;
     }
 
-    @NotNull
     @Override
-    public MqttUTF8String getUsername() {
+    public @NotNull MqttUTF8String getUsername() {
         final MqttUTF8StringImpl username = delegate.getRawUsername();
         if (username == null) {
             throw new IllegalStateException();
@@ -69,15 +65,12 @@ public class Mqtt3SimpleAuthView implements Mqtt3SimpleAuth {
         return username;
     }
 
-    @NotNull
     @Override
-    public Optional<ByteBuffer> getPassword() {
+    public @NotNull Optional<ByteBuffer> getPassword() {
         return delegate.getPassword();
     }
 
-    @NotNull
-    public MqttSimpleAuth getDelegate() {
+    public @NotNull MqttSimpleAuth getDelegate() {
         return delegate;
     }
-
 }

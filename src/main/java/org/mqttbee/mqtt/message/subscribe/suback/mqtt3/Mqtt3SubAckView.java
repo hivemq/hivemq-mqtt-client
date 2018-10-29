@@ -38,20 +38,19 @@ import static org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAckRet
 @Immutable
 public class Mqtt3SubAckView implements Mqtt3SubAck {
 
-    @NotNull
-    public static final Function<Mqtt5SubAck, Mqtt3SubAck> MAPPER = Mqtt3SubAckView::of;
+    public static final @NotNull Function<Mqtt5SubAck, Mqtt3SubAck> MAPPER = Mqtt3SubAckView::of;
+    public static final @NotNull java.util.function.Function<Mqtt5SubAck, Mqtt3SubAck> JAVA_MAPPER =
+            Mqtt3SubAckView::of;
 
-    @NotNull
-    public static MqttSubAck delegate(
-            final int packetIdentifier, @NotNull final ImmutableList<Mqtt3SubAckReturnCode> returnCodes) {
+    public static @NotNull MqttSubAck delegate(
+            final int packetIdentifier, final @NotNull ImmutableList<Mqtt3SubAckReturnCode> returnCodes) {
 
         return new MqttSubAck(
                 packetIdentifier, delegateReturnCodes(returnCodes), null, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
     }
 
-    @NotNull
-    private static ImmutableList<Mqtt5SubAckReasonCode> delegateReturnCodes(
-            @NotNull final ImmutableList<Mqtt3SubAckReturnCode> returnCodes) {
+    private static @NotNull ImmutableList<Mqtt5SubAckReasonCode> delegateReturnCodes(
+            final @NotNull ImmutableList<Mqtt3SubAckReturnCode> returnCodes) {
 
         final ImmutableList.Builder<Mqtt5SubAckReasonCode> builder =
                 ImmutableList.builderWithExpectedSize(returnCodes.size());
@@ -61,8 +60,7 @@ public class Mqtt3SubAckView implements Mqtt3SubAck {
         return builder.build();
     }
 
-    @NotNull
-    private static Mqtt5SubAckReasonCode delegateReturnCode(@NotNull final Mqtt3SubAckReturnCode returnCode) {
+    private static @NotNull Mqtt5SubAckReasonCode delegateReturnCode(final @NotNull Mqtt3SubAckReturnCode returnCode) {
         switch (returnCode) {
             case SUCCESS_MAXIMUM_QOS_0:
                 return Mqtt5SubAckReasonCode.GRANTED_QOS_0;
@@ -77,9 +75,8 @@ public class Mqtt3SubAckView implements Mqtt3SubAck {
         }
     }
 
-    @NotNull
-    private static ImmutableList<Mqtt3SubAckReturnCode> viewReasonCodes(
-            @NotNull final ImmutableList<Mqtt5SubAckReasonCode> reasonCodes) {
+    private static @NotNull ImmutableList<Mqtt3SubAckReturnCode> viewReasonCodes(
+            final @NotNull ImmutableList<Mqtt5SubAckReasonCode> reasonCodes) {
 
         final ImmutableList.Builder<Mqtt3SubAckReturnCode> builder =
                 ImmutableList.builderWithExpectedSize(reasonCodes.size());
@@ -89,8 +86,7 @@ public class Mqtt3SubAckView implements Mqtt3SubAck {
         return builder.build();
     }
 
-    @NotNull
-    private static Mqtt3SubAckReturnCode viewReasonCode(@NotNull final Mqtt5SubAckReasonCode reasonCode) {
+    private static @NotNull Mqtt3SubAckReturnCode viewReasonCode(final @NotNull Mqtt5SubAckReasonCode reasonCode) {
         switch (reasonCode) {
             case GRANTED_QOS_0:
                 return SUCCESS_MAXIMUM_QOS_0;
@@ -105,38 +101,32 @@ public class Mqtt3SubAckView implements Mqtt3SubAck {
         }
     }
 
-    @NotNull
-    public static Mqtt3SubAckView of(
-            final int packetIdentifier, @NotNull final ImmutableList<Mqtt3SubAckReturnCode> returnCodes) {
+    public static @NotNull Mqtt3SubAckView of(
+            final int packetIdentifier, final @NotNull ImmutableList<Mqtt3SubAckReturnCode> returnCodes) {
 
         return new Mqtt3SubAckView(delegate(packetIdentifier, returnCodes));
     }
 
-    @NotNull
-    private static Mqtt3SubAckView of(@NotNull final Mqtt5SubAck subAck) {
+    public static @NotNull Mqtt3SubAckView of(final @NotNull Mqtt5SubAck subAck) {
         return new Mqtt3SubAckView(MustNotBeImplementedUtil.checkNotImplemented(subAck, MqttSubAck.class));
     }
 
-    @NotNull
-    public static Mqtt3SubAckView of(@NotNull final MqttSubAck subAck) {
+    public static @NotNull Mqtt3SubAckView of(final @NotNull MqttSubAck subAck) {
         return new Mqtt3SubAckView(subAck);
     }
 
-    private final MqttSubAck delegate;
+    private final @NotNull MqttSubAck delegate;
 
-    private Mqtt3SubAckView(@NotNull final MqttSubAck delegate) {
+    private Mqtt3SubAckView(final @NotNull MqttSubAck delegate) {
         this.delegate = delegate;
     }
 
-    @NotNull
     @Override
-    public ImmutableList<Mqtt3SubAckReturnCode> getReturnCodes() {
+    public @NotNull ImmutableList<Mqtt3SubAckReturnCode> getReturnCodes() {
         return viewReasonCodes(delegate.getReasonCodes());
     }
 
-    @NotNull
-    public MqttSubAck getDelegate() {
+    public @NotNull MqttSubAck getDelegate() {
         return delegate;
     }
-
 }

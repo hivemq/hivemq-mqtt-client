@@ -25,31 +25,26 @@ import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3PublishResult;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
 import org.mqttbee.mqtt.message.publish.MqttPublishResult;
 import org.mqttbee.mqtt.mqtt3.exceptions.Mqtt3ExceptionFactory;
-import org.mqttbee.util.MustNotBeImplementedUtil;
 
 /**
  * @author Silvio Giebl
  */
 public class Mqtt3PublishResultView implements Mqtt3PublishResult {
 
-    @NotNull
-    public static final Function<Mqtt5PublishResult, Mqtt3PublishResult> MAPPER = Mqtt3PublishResultView::of;
+    public static final @NotNull Function<Mqtt5PublishResult, Mqtt3PublishResult> MAPPER = Mqtt3PublishResultView::of;
 
-    @NotNull
-    private static Mqtt3PublishResultView of(@NotNull final Mqtt5PublishResult publishResult) {
-        return new Mqtt3PublishResultView(
-                MustNotBeImplementedUtil.checkNotImplemented(publishResult, MqttPublishResult.class));
+    public static @NotNull Mqtt3PublishResultView of(final @NotNull Mqtt5PublishResult publishResult) {
+        return new Mqtt3PublishResultView((MqttPublishResult) publishResult);
     }
 
-    private final MqttPublishResult delegate;
+    private final @NotNull MqttPublishResult delegate;
 
-    private Mqtt3PublishResultView(@NotNull final MqttPublishResult delegate) {
+    private Mqtt3PublishResultView(final @NotNull MqttPublishResult delegate) {
         this.delegate = delegate;
     }
 
-    @NotNull
     @Override
-    public Mqtt3Publish getPublish() {
+    public @NotNull Mqtt3Publish getPublish() {
         return Mqtt3PublishView.of(delegate.getPublish());
     }
 
@@ -58,11 +53,9 @@ public class Mqtt3PublishResultView implements Mqtt3PublishResult {
         return delegate.isSuccess();
     }
 
-    @Nullable
     @Override
-    public Throwable getError() {
+    public @Nullable Throwable getError() {
         final Throwable error = delegate.getError();
         return (error == null) ? null : Mqtt3ExceptionFactory.map(error);
     }
-
 }

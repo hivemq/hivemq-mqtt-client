@@ -31,20 +31,16 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public class Mqtt3PubRelView implements Mqtt3PubRel {
 
-    private static Mqtt3PubRelView INSTANCE = new Mqtt3PubRelView();
+    private static final @NotNull Mqtt3PubRelView INSTANCE = new Mqtt3PubRelView();
 
-    @NotNull
-    public static MqttPubRel delegate(final int packetIdentifier) {
+    public static @NotNull MqttPubRel delegate(final int packetIdentifier) {
         return new MqttPubRel(packetIdentifier, Mqtt5PubRelReasonCode.SUCCESS, null,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES);
     }
 
-    @NotNull
-    public static Mqtt3PubRelView of() {
+    public static @NotNull Mqtt3PubRelView of() {
         return INSTANCE;
     }
 
-    private Mqtt3PubRelView() {
-    }
-
+    private Mqtt3PubRelView() {}
 }

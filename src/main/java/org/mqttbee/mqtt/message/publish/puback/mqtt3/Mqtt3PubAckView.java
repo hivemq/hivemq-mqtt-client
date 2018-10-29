@@ -31,20 +31,16 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public class Mqtt3PubAckView implements Mqtt3PubAck {
 
-    private static final Mqtt3PubAckView INSTANCE = new Mqtt3PubAckView();
+    private static final @NotNull Mqtt3PubAckView INSTANCE = new Mqtt3PubAckView();
 
-    @NotNull
-    public static MqttPubAck delegate(final int packetIdentifier) {
+    public static @NotNull MqttPubAck delegate(final int packetIdentifier) {
         return new MqttPubAck(packetIdentifier, Mqtt5PubAckReasonCode.SUCCESS, null,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES);
     }
 
-    @NotNull
-    public static Mqtt3PubAckView of() {
+    public static @NotNull Mqtt3PubAckView of() {
         return INSTANCE;
     }
 
-    private Mqtt3PubAckView() {
-    }
-
+    private Mqtt3PubAckView() {}
 }

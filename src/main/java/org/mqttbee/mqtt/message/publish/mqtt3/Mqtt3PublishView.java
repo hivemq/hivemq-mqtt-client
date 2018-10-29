@@ -45,6 +45,8 @@ public class Mqtt3PublishView implements Mqtt3Publish {
 
     public static final @NotNull Function<Mqtt3Publish, Mqtt5Publish> DELEGATE_MAPPER = Mqtt3PublishView::delegate;
     public static final @NotNull Function<Mqtt5Publish, Mqtt3Publish> MAPPER = Mqtt3PublishView::of;
+    public static final @NotNull java.util.function.Function<Mqtt5Publish, Mqtt3Publish> JAVA_MAPPER =
+            Mqtt3PublishView::of;
 
     public static @NotNull MqttPublish delegate(
             final @NotNull MqttTopicImpl topic, final @Nullable ByteBuffer payload, final @NotNull MqttQos qos,
@@ -61,7 +63,7 @@ public class Mqtt3PublishView implements Mqtt3Publish {
                 MqttStatefulPublish.DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
     }
 
-    private static @NotNull MqttPublish delegate(final @NotNull Mqtt3Publish publish) {
+    public static @NotNull MqttPublish delegate(final @NotNull Mqtt3Publish publish) {
         return MustNotBeImplementedUtil.checkNotImplemented(publish, Mqtt3PublishView.class).getDelegate();
     }
 
@@ -82,8 +84,8 @@ public class Mqtt3PublishView implements Mqtt3Publish {
                         Mqtt5WillPublish.DEFAULT_DELAY_INTERVAL));
     }
 
-    private static @NotNull Mqtt3PublishView of(final @NotNull Mqtt5Publish publish) {
-        return new Mqtt3PublishView(MustNotBeImplementedUtil.checkNotImplemented(publish, MqttPublish.class));
+    public static @NotNull Mqtt3PublishView of(final @NotNull Mqtt5Publish publish) {
+        return new Mqtt3PublishView((MqttPublish) publish);
     }
 
     public static @NotNull Mqtt3PublishView of(final @NotNull MqttPublish publish) {

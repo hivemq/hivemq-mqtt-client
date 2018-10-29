@@ -23,6 +23,7 @@ import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribe;
+import org.mqttbee.util.MustNotBeImplementedUtil;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -32,36 +33,34 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public class Mqtt3UnsubscribeView implements Mqtt3Unsubscribe {
 
-    @NotNull
-    private static MqttUnsubscribe delegate(@NotNull final ImmutableList<MqttTopicFilterImpl> topicFilters) {
+    private static @NotNull MqttUnsubscribe delegate(final @NotNull ImmutableList<MqttTopicFilterImpl> topicFilters) {
         return new MqttUnsubscribe(topicFilters, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
     }
 
-    @NotNull
-    public static Mqtt3UnsubscribeView of(@NotNull final ImmutableList<MqttTopicFilterImpl> topicFilters) {
+    public static @NotNull MqttUnsubscribe delegate(final @NotNull Mqtt3Unsubscribe unsubscribe) {
+        return MustNotBeImplementedUtil.checkNotImplemented(unsubscribe, Mqtt3UnsubscribeView.class).getDelegate();
+    }
+
+    public static @NotNull Mqtt3UnsubscribeView of(final @NotNull ImmutableList<MqttTopicFilterImpl> topicFilters) {
         return new Mqtt3UnsubscribeView(delegate(topicFilters));
     }
 
-    @NotNull
-    public static Mqtt3UnsubscribeView of(@NotNull final MqttUnsubscribe delegate) {
+    public static @NotNull Mqtt3UnsubscribeView of(final @NotNull MqttUnsubscribe delegate) {
         return new Mqtt3UnsubscribeView(delegate);
     }
 
-    private final MqttUnsubscribe delegate;
+    private final @NotNull MqttUnsubscribe delegate;
 
-    private Mqtt3UnsubscribeView(@NotNull final MqttUnsubscribe delegate) {
+    private Mqtt3UnsubscribeView(final @NotNull MqttUnsubscribe delegate) {
         this.delegate = delegate;
     }
 
-    @NotNull
     @Override
-    public ImmutableList<MqttTopicFilterImpl> getTopicFilters() {
+    public @NotNull ImmutableList<MqttTopicFilterImpl> getTopicFilters() {
         return delegate.getTopicFilters();
     }
 
-    @NotNull
-    public MqttUnsubscribe getDelegate() {
+    public @NotNull MqttUnsubscribe getDelegate() {
         return delegate;
     }
-
 }

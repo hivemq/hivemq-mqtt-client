@@ -26,7 +26,6 @@ import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckReasonCode
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.connect.connack.MqttConnAck;
 import org.mqttbee.mqtt.message.connect.connack.MqttConnAckRestrictions;
-import org.mqttbee.util.MustNotBeImplementedUtil;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -38,12 +37,10 @@ import static org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAckRet
 @Immutable
 public class Mqtt3ConnAckView implements Mqtt3ConnAck {
 
-    @NotNull
-    public static final Function<Mqtt5ConnAck, Mqtt3ConnAck> MAPPER = Mqtt3ConnAckView::of;
+    public static final @NotNull Function<Mqtt5ConnAck, Mqtt3ConnAck> MAPPER = Mqtt3ConnAckView::of;
 
-    @NotNull
-    public static MqttConnAck delegate(
-            @NotNull final Mqtt3ConnAckReturnCode returnCode, final boolean isSessionPresent) {
+    public static @NotNull MqttConnAck delegate(
+            final @NotNull Mqtt3ConnAckReturnCode returnCode, final boolean isSessionPresent) {
 
         return new MqttConnAck(delegateReasonCode(returnCode), isSessionPresent,
                 MqttConnAck.SESSION_EXPIRY_INTERVAL_FROM_CONNECT, MqttConnAck.KEEP_ALIVE_FROM_CONNECT,
@@ -51,8 +48,9 @@ public class Mqtt3ConnAckView implements Mqtt3ConnAck {
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES);
     }
 
-    @NotNull
-    private static Mqtt5ConnAckReasonCode delegateReasonCode(@NotNull final Mqtt3ConnAckReturnCode returnCode) {
+    private static @NotNull Mqtt5ConnAckReasonCode delegateReasonCode(
+            final @NotNull Mqtt3ConnAckReturnCode returnCode) {
+
         switch (returnCode) {
             case SUCCESS:
                 return Mqtt5ConnAckReasonCode.SUCCESS;
@@ -71,8 +69,7 @@ public class Mqtt3ConnAckView implements Mqtt3ConnAck {
         }
     }
 
-    @NotNull
-    private static Mqtt3ConnAckReturnCode viewReasonCode(@NotNull final Mqtt5ConnAckReasonCode reasonCode) {
+    private static @NotNull Mqtt3ConnAckReturnCode viewReasonCode(final @NotNull Mqtt5ConnAckReasonCode reasonCode) {
         switch (reasonCode) {
             case SUCCESS:
                 return SUCCESS;
@@ -91,32 +88,28 @@ public class Mqtt3ConnAckView implements Mqtt3ConnAck {
         }
     }
 
-    @NotNull
-    public static Mqtt3ConnAckView of(
-            @NotNull final Mqtt3ConnAckReturnCode returnCode, final boolean isSessionPresent) {
+    public static @NotNull Mqtt3ConnAckView of(
+            final @NotNull Mqtt3ConnAckReturnCode returnCode, final boolean isSessionPresent) {
 
         return new Mqtt3ConnAckView(delegate(returnCode, isSessionPresent));
     }
 
-    @NotNull
-    private static Mqtt3ConnAckView of(@NotNull final Mqtt5ConnAck connAck) {
-        return new Mqtt3ConnAckView(MustNotBeImplementedUtil.checkNotImplemented(connAck, MqttConnAck.class));
+    public static @NotNull Mqtt3ConnAckView of(final @NotNull Mqtt5ConnAck connAck) {
+        return new Mqtt3ConnAckView((MqttConnAck) connAck);
     }
 
-    @NotNull
-    public static Mqtt3ConnAckView of(@NotNull final MqttConnAck connAck) {
+    public static @NotNull Mqtt3ConnAckView of(final @NotNull MqttConnAck connAck) {
         return new Mqtt3ConnAckView(connAck);
     }
 
-    private final MqttConnAck delegate;
+    private final @NotNull MqttConnAck delegate;
 
-    private Mqtt3ConnAckView(@NotNull final MqttConnAck delegate) {
+    private Mqtt3ConnAckView(final @NotNull MqttConnAck delegate) {
         this.delegate = delegate;
     }
 
-    @NotNull
     @Override
-    public Mqtt3ConnAckReturnCode getReturnCode() {
+    public @NotNull Mqtt3ConnAckReturnCode getReturnCode() {
         return viewReasonCode(delegate.getReasonCode());
     }
 
@@ -125,9 +118,7 @@ public class Mqtt3ConnAckView implements Mqtt3ConnAck {
         return delegate.isSessionPresent();
     }
 
-    @NotNull
-    public MqttConnAck getDelegate() {
+    public @NotNull MqttConnAck getDelegate() {
         return delegate;
     }
-
 }
