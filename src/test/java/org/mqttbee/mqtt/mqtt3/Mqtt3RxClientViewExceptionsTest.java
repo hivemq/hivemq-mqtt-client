@@ -37,6 +37,7 @@ import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
+import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.MqttRxClient;
 import org.mqttbee.rx.FlowableWithSingle;
 
@@ -55,6 +56,7 @@ class Mqtt3RxClientViewExceptionsTest {
     @BeforeEach
     void setUp() {
         mqtt5Client = mock(MqttRxClient.class);
+        when(mqtt5Client.getClientData()).thenReturn(mock(MqttClientData.class));
         mqtt3Client = new Mqtt3RxClientView(mqtt5Client);
     }
 
@@ -91,9 +93,7 @@ class Mqtt3RxClientViewExceptionsTest {
         final Mqtt3Subscribe subscribe = Mqtt3Subscribe.builder()
                 .addSubscription(Mqtt3Subscription.builder().topicFilter("topic").qos(MqttQos.AT_LEAST_ONCE).build())
                 .build();
-        assertMqtt3Exception(
-                () -> mqtt3Client.subscribeStream(subscribe).blockingSubscribe(),
-                mqtt5MessageException);
+        assertMqtt3Exception(() -> mqtt3Client.subscribeStream(subscribe).blockingSubscribe(), mqtt5MessageException);
     }
 
     @ParameterizedTest
@@ -140,8 +140,8 @@ class Mqtt3RxClientViewExceptionsTest {
             @NotNull final Executable executable, @NotNull final Mqtt5MessageException mqtt5MessageException) {
 
         final RuntimeException runtimeException = assertThrows(RuntimeException.class, executable);
-        assertTrue(runtimeException.getCause() instanceof Mqtt3MessageException);
-        final Mqtt3MessageException mqtt3MessageException = (Mqtt3MessageException) runtimeException.getCause();
+        assertTrue(runtimeException instanceof Mqtt3MessageException);
+        final Mqtt3MessageException mqtt3MessageException = (Mqtt3MessageException) runtimeException;
         assertEquals(mqtt5MessageException.getMqttMessage().getType().getCode(),
                 mqtt3MessageException.getMqttMessage().getType().getCode());
         assertEquals(mqtt5MessageException.getMessage(), mqtt3MessageException.getMessage());
