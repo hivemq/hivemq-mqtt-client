@@ -46,29 +46,120 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
+ * Asynchronous API of a {@link Mqtt5Client} based on futures and callbacks.
+ *
  * @author Silvio Giebl
  */
 public interface Mqtt5AsyncClient extends Mqtt5Client {
 
+    /**
+     * Connects this client with the default Connect message.
+     *
+     * @return see {@link #connect(Mqtt5Connect)}.
+     * @see #connect(Mqtt5Connect)
+     */
     default @NotNull CompletableFuture<@NotNull Mqtt5ConnAck> connect() {
         return connect(Mqtt5Connect.DEFAULT);
     }
 
+    /**
+     * Connects this client with the given Connect message.
+     *
+     * @param connect the Connect message sent to the broker.
+     * @return a {@link CompletableFuture} which
+     *         <ul>
+     *         <li>completes normally with the ConnAck message if it does not contain an Error Code (connected
+     *         successfully),</li>
+     *         <li>completes exceptionally with a {@link org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException
+     *         Mqtt5MessageException} wrapping the ConnAck message if it contains an Error Code or</li>
+     *         <li>completes exceptionally with a different exception if an error occurred before the Connect message
+     *         was sent or before the ConnAck message was received.</li>
+     *         </ul>
+     */
     @NotNull CompletableFuture<@NotNull Mqtt5ConnAck> connect(@NotNull Mqtt5Connect connect);
 
+    /**
+     * Fluent counterpart of {@link #connect(Mqtt5Connect)}.
+     * <p>
+     * Calling {@link Mqtt5ConnectBuilder#applyConnect()} on the returned builder has the same effect as calling {@link
+     * #connect(Mqtt5Connect)} with the result of {@link Mqtt5ConnectBuilder#build()}.
+     *
+     * @return the fluent builder for the Connect message.
+     * @see #connect(Mqtt5Connect)
+     */
     default @NotNull Mqtt5ConnectBuilder<CompletableFuture<Mqtt5ConnAck>> connectWith() {
         return new Mqtt5ConnectBuilder<>(this::connect);
     }
 
+    /**
+     * Subscribes this client with the given Subscribe message.
+     * <p>
+     * See {@link #publishes(MqttGlobalPublishFilter, Consumer)} or {@link #publishes(MqttGlobalPublishFilter, Consumer,
+     * Executor)} to consume the incoming Publish messages. Alternatively, call {@link #subscribe(Mqtt5Subscribe,
+     * Consumer)} or {@link #subscribe(Mqtt5Subscribe, Consumer, Executor)} to consume the incoming Publish messages
+     * matching the subscriptions of the Subscribe message directly.
+     *
+     * @param subscribe the Subscribe messages sent to the broker.
+     * @return a {@link CompletableFuture} which
+     *         <ul>
+     *         <li>completes normally with the SubAck message if all subscriptions of the Subscribe message were
+     *         successful (the SubAck message contains no Error Codes),</li>
+     *         <li>completes exceptionally with a {@link org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException
+     *         Mqtt5MessageException} wrapping the SubAck message if it contains at least one Error Code or</li>
+     *         <li>completes exceptionally with a different exception if an error occurred before the Subscribe message
+     *         was sent or before a SubAck message was received.</li>
+     *         </ul>
+     */
     @NotNull CompletableFuture<@NotNull Mqtt5SubAck> subscribe(@NotNull Mqtt5Subscribe subscribe);
 
+    /**
+     * Subscribes this client with the given Subscribe message and consumes the the incoming Publish messages matching
+     * the subscriptions of the Subscribe message with a callback.
+     *
+     * @param subscribe the Subscribe messages sent to the broker.
+     * @param callback  the callback for consuming the incoming Publish messages matching the subscriptions of the
+     *                  Subscribe message.
+     * @return see {@link #subscribe(Mqtt5Subscribe)}.
+     * @see #subscribe(Mqtt5Subscribe, Consumer, Executor)
+     */
     @NotNull CompletableFuture<@NotNull Mqtt5SubAck> subscribe(
             @NotNull Mqtt5Subscribe subscribe, @NotNull Consumer<@NotNull Mqtt5Publish> callback);
 
+    /**
+     * Subscribes this client with the given Subscribe message and consumes the the incoming Publish messages matching
+     * the subscriptions of the Subscribe message with a callback.
+     * <p>
+     * The future is completed and the callback is executed on the given executor.
+     *
+     * @param subscribe the Subscribe messages sent to the broker.
+     * @param callback  the callback for consuming the incoming Publish messages matching the subscriptions of the
+     *                  Subscribe message.
+     * @param executor  the executor where the future is completed and the callback is executed on.
+     * @return see {@link #subscribe(Mqtt5Subscribe)}.
+     * @see #subscribe(Mqtt5Subscribe, Consumer)
+     */
     @NotNull CompletableFuture<@NotNull Mqtt5SubAck> subscribe(
             @NotNull Mqtt5Subscribe subscribe, @NotNull Consumer<@NotNull Mqtt5Publish> callback,
             @NotNull Executor executor);
 
+    /**
+     * Fluent counterpart of {@link #subscribe(Mqtt5Subscribe)}, {@link #subscribe(Mqtt5Subscribe, Consumer)} and {@link
+     * #subscribe(Mqtt5Subscribe, Consumer, Executor)}.
+     * <p>
+     * Calling {@link Mqtt5SubscribeAndCallbackBuilder#applySubscribe()} on the returned builder has the same effect as
+     * calling one of the following methods with the result of {@link Mqtt5SubscribeAndCallbackBuilder#build()}:
+     * <ul>
+     * <li>{@link #subscribe(Mqtt5Subscribe)} if no callback has been supplied to the builder</li>
+     * <li>{@link #subscribe(Mqtt5Subscribe, Consumer)} if only a callback has been supplied to the builder</li>
+     * <li>{@link #subscribe(Mqtt5Subscribe, Consumer, Executor)} if a callback and an executor has been supplied to
+     * the builder</li>
+     * </ul>
+     *
+     * @return the fluent builder for the Subscribe message.
+     * @see #subscribe(Mqtt5Subscribe)
+     * @see #subscribe(Mqtt5Subscribe, Consumer)
+     * @see #subscribe(Mqtt5Subscribe, Consumer, Executor)
+     */
     default @NotNull Mqtt5SubscribeAndCallbackBuilder<CompletableFuture<Mqtt5SubAck>> subscribeWith() {
         return new Mqtt5SubscribeAndCallbackBuilder<>(subscribeAndCallback -> {
             final Mqtt5Subscribe subscribe = subscribeAndCallback.getSubscribe();
@@ -84,32 +175,132 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
         });
     }
 
+    /**
+     * Globally consumes all incoming Publish messages matching the given filter.
+     *
+     * @param filter   the filter with which all incoming Publish messages are filtered.
+     * @param callback the callback for all incoming Publish messages matching the given filter.
+     * @see #publishes(MqttGlobalPublishFilter, Consumer, Executor)
+     */
     void publishes(@NotNull MqttGlobalPublishFilter filter, @NotNull Consumer<@NotNull Mqtt5Publish> callback);
 
+    /**
+     * Globally consumes all incoming Publish messages matching the given filter.
+     *
+     * @param filter   the filter with which all incoming Publish messages are filtered.
+     * @param callback the callback for all incoming Publish messages matching the given filter.
+     * @param executor the executor where the callback is executed on.
+     * @see #publishes(MqttGlobalPublishFilter, Consumer)
+     */
     void publishes(
             @NotNull MqttGlobalPublishFilter filter, @NotNull Consumer<@NotNull Mqtt5Publish> callback,
             @NotNull Executor executor);
 
+    /**
+     * Unsubscribes this client with the given Unsubscribe message.
+     *
+     * @param unsubscribe the Unsubscribe message sent to the broker.
+     * @return a {@link CompletableFuture} which
+     *         <ul>
+     *         <li>completes normally with the UnsubAck message if all Topic Filters of the Unsubscribe message were
+     *         successfully unsubscribed (the UnsubAck message contains no Error Codes),</li>
+     *         <li>completes exceptionally with a {@link org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException
+     *         Mqtt5MessageException} wrapping the UnsubAck message if it contains at least one Error Code or</li>
+     *         <li>completes exceptionally with a different exception if an error occurred before the Unsubscribe
+     *         message was sent or before a UnsubAck message was received.</li>
+     *         </ul>
+     */
     @NotNull CompletableFuture<@NotNull Mqtt5UnsubAck> unsubscribe(@NotNull Mqtt5Unsubscribe unsubscribe);
 
+    /**
+     * Fluent counterpart of {@link #unsubscribe(Mqtt5Unsubscribe)}.
+     * <p>
+     * Calling {@link Mqtt5UnsubscribeBuilder#applyUnsubscribe()} on the returned builder has the same effect as calling
+     * {@link #unsubscribe(Mqtt5Unsubscribe)} with the result of {@link Mqtt5UnsubscribeBuilder#build()}.
+     *
+     * @return the fluent builder for the Unsubscribe message.
+     * @see #unsubscribe(Mqtt5Unsubscribe)
+     */
     default @NotNull Mqtt5UnsubscribeBuilder<CompletableFuture<Mqtt5UnsubAck>> unsubscribeWith() {
         return new Mqtt5UnsubscribeBuilder<>(this::unsubscribe);
     }
 
+    /**
+     * Publishes the given Publish message.
+     *
+     * @param publish the Publish message sent to the broker.
+     * @return a {@link CompletableFuture} which
+     *         <ul>
+     *         <li>completes normally with the {@link Mqtt5PublishResult} if the Publish message was successfully
+     *         published (no acknowledgement message contains an Error Code, {@link Mqtt5PublishResult#getError()} will
+     *         always be absent),</li>
+     *         <li>completes exceptionally with a {@link org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException
+     *         Mqtt5MessageException} wrapping the acknowledgement message if it contains an Error Code or</li>
+     *         <li>completes exceptionally with a different exception if an error occurred before the Publish
+     *         message was sent or before an acknowledgement message was received.</li>
+     *         </ul>
+     */
     @NotNull CompletableFuture<@NotNull Mqtt5PublishResult> publish(@NotNull Mqtt5Publish publish);
 
+    /**
+     * Fluent counterpart of {@link #publish(Mqtt5Publish)}.
+     * <p>
+     * Calling {@link Mqtt5PublishBuilder#applyPublish()} on the returned builder has the same effect as calling {@link
+     * #publish(Mqtt5Publish)} with the result of {@link Mqtt5PublishBuilder#build()}.
+     *
+     * @return the fluent builder for the Unsubscribe message.
+     * @see #publish(Mqtt5Publish)
+     */
     default @NotNull Mqtt5PublishBuilder<CompletableFuture<Mqtt5PublishResult>> publishWith() {
         return new Mqtt5PublishBuilder<>(this::publish);
     }
 
+    /**
+     * Re-authenticates this client.
+     *
+     * @return a {@link CompletableFuture} which
+     *         <ul>
+     *         <li>completes normally when the client was successfully re-authenticated,</li>
+     *         <li>errors with a {@link org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException
+     *         Mqtt5MessageException} wrapping the Auth message with the Error Code if not re-authenticated successfully
+     *         or</li>
+     *         <li>errors with a different exception if an error occurred before the first Auth message was sent or
+     *         before the last Auth message was received.</li>
+     *         </ul>
+     */
     @NotNull CompletableFuture<Void> reauth();
 
+    /**
+     * Disconnects this client with the default Disconnect message.
+     *
+     * @return see {@link #disconnect(Mqtt5Disconnect)}.
+     * @see #disconnect(Mqtt5Disconnect)
+     */
     default @NotNull CompletableFuture<Void> disconnect() {
         return disconnect(Mqtt5Disconnect.DEFAULT);
     }
 
+    /**
+     * Disconnects this client with the given Disconnect message.
+     *
+     * @param disconnect the Disconnect message sent to the broker.
+     * @return the {@link CompletableFuture} which
+     *         <ul>
+     *         <li>completes when the client was successfully disconnected or</li>
+     *         <li>errors if not disconnected gracefully.</li>
+     *         </ul>
+     */
     @NotNull CompletableFuture<Void> disconnect(@NotNull Mqtt5Disconnect disconnect);
 
+    /**
+     * Fluent counterpart of {@link #disconnect(Mqtt5Disconnect)}.
+     * <p>
+     * Calling {@link Mqtt5DisconnectBuilder#applyDisconnect()} on the returned builder has the same effect as calling
+     * {@link #disconnect(Mqtt5Disconnect)} with the result of {@link Mqtt5DisconnectBuilder#build()}.
+     *
+     * @return the fluent builder for the Unsubscribe message.
+     * @see #disconnect(Mqtt5Disconnect)
+     */
     default @NotNull Mqtt5DisconnectBuilder<CompletableFuture<Void>> disconnectWith() {
         return new Mqtt5DisconnectBuilder<>(this::disconnect);
     }

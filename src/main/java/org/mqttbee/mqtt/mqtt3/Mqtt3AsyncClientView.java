@@ -26,7 +26,6 @@ import org.mqttbee.api.mqtt.mqtt3.Mqtt3RxClient;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3Connect;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;
-import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3PublishResult;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAck;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
@@ -39,7 +38,6 @@ import org.mqttbee.mqtt.MqttAsyncClient;
 import org.mqttbee.mqtt.message.connect.connack.mqtt3.Mqtt3ConnAckView;
 import org.mqttbee.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
 import org.mqttbee.mqtt.message.disconnect.mqtt3.Mqtt3DisconnectView;
-import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishResultView;
 import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishView;
 import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeView;
 import org.mqttbee.mqtt.message.subscribe.suback.mqtt3.Mqtt3SubAckView;
@@ -83,12 +81,12 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
                 return null;
             };
 
-    private static final @NotNull BiFunction<Mqtt5PublishResult, Throwable, Mqtt3PublishResult> PUBLISH_RESULT_MAPPER =
+    private static final @NotNull BiFunction<Mqtt5PublishResult, Throwable, Mqtt3Publish> PUBLISH_RESULT_MAPPER =
             (publishResult, throwable) -> {
                 if (throwable != null) {
                     throw new CompletionException(Mqtt3ExceptionFactory.map(throwable));
                 }
-                return Mqtt3PublishResultView.of(publishResult);
+                return Mqtt3PublishView.of(publishResult.getPublish());
             };
 
     private static final @NotNull Function<Throwable, Void> DISCONNECT_MAPPER = throwable -> {
@@ -164,7 +162,7 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
     }
 
     @Override
-    public @NotNull CompletableFuture<@NotNull Mqtt3PublishResult> publish(final @NotNull Mqtt3Publish publish) {
+    public @NotNull CompletableFuture<@NotNull Mqtt3Publish> publish(final @NotNull Mqtt3Publish publish) {
         return delegate.publish(Mqtt3PublishView.delegate(publish)).handle(PUBLISH_RESULT_MAPPER);
     }
 

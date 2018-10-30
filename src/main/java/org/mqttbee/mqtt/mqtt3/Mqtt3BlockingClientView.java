@@ -26,7 +26,6 @@ import org.mqttbee.api.mqtt.mqtt3.Mqtt3RxClient;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3Connect;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;
-import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3PublishResult;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAck;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
@@ -36,7 +35,6 @@ import org.mqttbee.mqtt.MqttBlockingClient;
 import org.mqttbee.mqtt.message.connect.connack.mqtt3.Mqtt3ConnAckView;
 import org.mqttbee.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
 import org.mqttbee.mqtt.message.disconnect.mqtt3.Mqtt3DisconnectView;
-import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishResultView;
 import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishView;
 import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeView;
 import org.mqttbee.mqtt.message.subscribe.suback.mqtt3.Mqtt3SubAckView;
@@ -93,9 +91,9 @@ public class Mqtt3BlockingClientView implements Mqtt3BlockingClient {
     }
 
     @Override
-    public @NotNull Mqtt3PublishResult publish(final @NotNull Mqtt3Publish publish) {
+    public void publish(final @NotNull Mqtt3Publish publish) {
         try {
-            return Mqtt3PublishResultView.of(delegate.publish(Mqtt3PublishView.delegate(publish)));
+            delegate.publish(Mqtt3PublishView.delegate(publish));
         } catch (final Mqtt5MessageException e) {
             throw Mqtt3ExceptionFactory.map(e);
         }

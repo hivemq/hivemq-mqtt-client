@@ -21,6 +21,8 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttClient;
 
 /**
+ * MQTT client according to the MQTT 3.1.1 specification.
+ *
  * @author Silvio Giebl
  */
 public interface Mqtt3Client extends MqttClient {
@@ -32,9 +34,30 @@ public interface Mqtt3Client extends MqttClient {
     @Override
     @NotNull Mqtt3ClientData getClientData();
 
+    /**
+     * Turns the API of this client into a reactive API.
+     * <p>
+     * The reactive API can be used simultaneously with the other APIs.
+     *
+     * @return a reactive API for this client.
+     */
     @NotNull Mqtt3RxClient toRx();
 
+    /**
+     * Turns the API of this client into a asynchronous API based on futures and callbacks.
+     * <p>
+     * The asynchronous API can be used simultaneously with the other APIs.
+     *
+     * @return a asynchronous API for this client.
+     */
     @NotNull Mqtt3AsyncClient toAsync();
 
+    /**
+     * Turns the API of this client into a blocking API.
+     * <p>
+     * The blocking API can be used simultaneously with the other APIs.
+     *
+     * @return a blocking API for this client.
+     */
     @NotNull Mqtt3BlockingClient toBlocking();
 }
