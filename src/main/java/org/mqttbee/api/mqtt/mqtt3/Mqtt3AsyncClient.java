@@ -19,28 +19,24 @@ package org.mqttbee.api.mqtt.mqtt3;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.api.mqtt.MqttGlobalPublishFilter;
-import org.mqttbee.api.mqtt.datatypes.MqttQos;
-import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
-import org.mqttbee.api.mqtt.datatypes.MqttTopicFilterBuilder;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3Connect;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3ConnectBuilder;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3PublishBuilder;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
-import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3SubscribeBuilder;
-import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscription;
-import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3SubscriptionBuilder;
+import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3SubscribeBuilderBase;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAck;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubscribeBuilder;
-import org.mqttbee.util.FluentBuilder;
+import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishBuilderImpl;
+import org.mqttbee.mqtt.mqtt3.Mqtt3AsyncClientView;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 /**
  * Asynchronous API of a {@link Mqtt3Client} based on futures and callbacks.
@@ -143,12 +139,12 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * Fluent counterpart of {@link #subscribe(Mqtt3Subscribe)}, {@link #subscribe(Mqtt3Subscribe, Consumer)} and {@link
      * #subscribe(Mqtt3Subscribe, Consumer, Executor)}.
      * <p>
-     * Calling {@link Mqtt3SubscribeAndCallbackBuilder#applySubscribe()} on the returned builder has the same effect as
-     * calling one of the following methods with the result of {@link Mqtt3SubscribeAndCallbackBuilder#build()}:
+     * Calling {@link Mqtt3SubscribeAndCallbackBuilder.Complete#send()} on the returned builder has the same effect as
+     * calling one of the following methods:
      * <ul>
      * <li>{@link #subscribe(Mqtt3Subscribe)} if no callback has been supplied to the builder</li>
      * <li>{@link #subscribe(Mqtt3Subscribe, Consumer)} if only a callback has been supplied to the builder</li>
-     * <li>{@link #subscribe(Mqtt3Subscribe, Consumer, Executor)} if a callback and an executor has been supplied to
+     * <li>{@link #subscribe(Mqtt3Subscribe, Consumer, Executor)} if a callback and an executor have been supplied to
      * the builder</li>
      * </ul>
      *
@@ -158,7 +154,7 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * @see #subscribe(Mqtt3Subscribe, Consumer, Executor)
      */
     default @NotNull Mqtt3SubscribeAndCallbackBuilder<CompletableFuture<Mqtt3SubAck>> subscribeWith() {
-        return new Mqtt3SubscribeAndCallbackBuilder<>(subscribeAndCallback -> {
+        return new Mqtt3AsyncClientView.Mqtt3SubscribeAndCallbackBuilderImpl<>(subscribeAndCallback -> {
             final Mqtt3Subscribe subscribe = subscribeAndCallback.getSubscribe();
             final Consumer<Mqtt3Publish> callback = subscribeAndCallback.getCallback();
             if (callback == null) {
@@ -236,14 +232,14 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
     /**
      * Fluent counterpart of {@link #publish(Mqtt3Publish)}.
      * <p>
-     * Calling {@link Mqtt3PublishBuilder#applyPublish()} on the returned builder has the same effect as calling {@link
-     * #publish(Mqtt3Publish)} with the result of {@link Mqtt3PublishBuilder#build()}.
+     * Calling {@link Mqtt3PublishBuilder.Send.Complete#send()} on the returned builder has the same effect as calling
+     * {@link #publish(Mqtt3Publish)} with the result of {@link Mqtt3PublishBuilder.Complete#build()}.
      *
      * @return the fluent builder for the Unsubscribe message.
      * @see #publish(Mqtt3Publish)
      */
-    default @NotNull Mqtt3PublishBuilder<CompletableFuture<Mqtt3Publish>> publishWith() {
-        return new Mqtt3PublishBuilder<>(this::publish);
+    default @NotNull Mqtt3PublishBuilder.Send<CompletableFuture<Mqtt3Publish>> publishWith() {
+        return new Mqtt3PublishBuilderImpl.SendImpl<>(this::publish);
     }
 
     /**
@@ -262,96 +258,58 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
         return this;
     }
 
-    class Mqtt3SubscribeAndCallback {
+    // @formatter:off
+    @DoNotImplement
+    interface Mqtt3SubscribeAndCallbackBuilder<P> extends
+            Mqtt3SubscribeBuilderBase<
+                Mqtt3SubscribeAndCallbackBuilder.Complete<P>> {
+    // @formatter:on
 
-        private final @NotNull Mqtt3Subscribe subscribe;
-        private final @Nullable Consumer<Mqtt3Publish> callback;
-        private final @Nullable Executor executor;
-
-        Mqtt3SubscribeAndCallback(
-                final @NotNull Mqtt3Subscribe subscribe, final @Nullable Consumer<Mqtt3Publish> callback,
-                final @Nullable Executor executor) {
-
-            this.subscribe = subscribe;
-            this.callback = callback;
-            this.executor = executor;
+        // @formatter:off
+        @DoNotImplement
+        interface Complete<P> extends
+                Mqtt3SubscribeAndCallbackBuilder<P>,
+                CallbackBuilder<P>,
+                Mqtt3SubscribeBuilderBase.Complete<
+                    Mqtt3SubscribeAndCallbackBuilder.Complete<P>> {
+        // @formatter:on
         }
 
-        public @NotNull Mqtt3Subscribe getSubscribe() {
-            return subscribe;
-        }
+        // @formatter:off
+        @DoNotImplement
+        interface Start<P> extends
+                Mqtt3SubscribeAndCallbackBuilder<P>,
+                Mqtt3SubscribeBuilderBase.Start<
+                    Mqtt3SubscribeAndCallbackBuilder.Complete<P>,
+                    Mqtt3SubscribeAndCallbackBuilder.Start<P>,
+                    Mqtt3SubscribeAndCallbackBuilder.Start.Complete<P>> {
+        // @formatter:on
 
-        public @Nullable Consumer<Mqtt3Publish> getCallback() {
-            return callback;
-        }
-
-        public @Nullable Executor getExecutor() {
-            return executor;
+            // @formatter:off
+            @DoNotImplement
+            interface Complete<P> extends
+                    Mqtt3SubscribeAndCallbackBuilder.Start<P>,
+                    Mqtt3SubscribeAndCallbackBuilder.Complete<P>,
+                    Mqtt3SubscribeBuilderBase.Start.Complete<
+                        Mqtt3SubscribeAndCallbackBuilder.Complete<P>,
+                        Mqtt3SubscribeAndCallbackBuilder.Start<P>,
+                        Mqtt3SubscribeAndCallbackBuilder.Start.Complete<P>> {
+            // @formatter:on
+            }
         }
     }
 
-    class Mqtt3SubscribeAndCallbackBuilder<P> extends FluentBuilder<Mqtt3SubscribeAndCallback, P> {
+    @DoNotImplement
+    interface CallbackBuilder<P> {
 
-        private final @NotNull Mqtt3SubscribeBuilder<Void> subscribeBuilder = Mqtt3Subscribe.builder();
-        private @Nullable Consumer<Mqtt3Publish> callback;
-        private @Nullable Executor executor;
+        @NotNull Ex<P> callback(@Nullable Consumer<Mqtt3Publish> callback);
 
-        Mqtt3SubscribeAndCallbackBuilder(
-                final @Nullable Function<? super Mqtt3SubscribeAndCallback, P> parentConsumer) {
+        @NotNull P send();
 
-            super(parentConsumer);
-        }
+        @DoNotImplement
+        interface Ex<P> extends CallbackBuilder<P> {
 
-        public @NotNull Mqtt3SubscribeAndCallbackBuilder<P> topicFilter(final @NotNull String topicFilter) {
-            subscribeBuilder.topicFilter(topicFilter);
-            return this;
-        }
-
-        public @NotNull Mqtt3SubscribeAndCallbackBuilder<P> topicFilter(final @NotNull MqttTopicFilter topicFilter) {
-            subscribeBuilder.topicFilter(topicFilter);
-            return this;
-        }
-
-        public @NotNull MqttTopicFilterBuilder<Mqtt3SubscribeAndCallbackBuilder<P>> topicFilter() {
-            return new MqttTopicFilterBuilder<>(this::topicFilter);
-        }
-
-        public @NotNull Mqtt3SubscribeAndCallbackBuilder<P> qos(final @NotNull MqttQos qos) {
-            subscribeBuilder.qos(qos);
-            return this;
-        }
-
-        public @NotNull Mqtt3SubscribeAndCallbackBuilder<P> addSubscription(
-                final @NotNull Mqtt3Subscription subscription) {
-
-            subscribeBuilder.addSubscription(subscription);
-            return this;
-        }
-
-        public @NotNull Mqtt3SubscriptionBuilder<Mqtt3SubscribeAndCallbackBuilder<P>> addSubscription() {
-            return new Mqtt3SubscriptionBuilder<>(this::addSubscription);
-        }
-
-        public @NotNull Mqtt3SubscribeAndCallbackBuilder<P> callback(final @Nullable Consumer<Mqtt3Publish> callback) {
-            this.callback = callback;
-            return this;
-        }
-
-        public @NotNull Mqtt3SubscribeAndCallbackBuilder<P> executor(final @Nullable Executor executor) {
-            this.executor = executor;
-            return this;
-        }
-
-        @Override
-        public @NotNull Mqtt3SubscribeAndCallback build() {
-            if ((callback == null) && (executor != null)) {
-                throw new IllegalStateException("Executor must not be given if callback is null.");
-            }
-            return new Mqtt3SubscribeAndCallback(subscribeBuilder.build(), callback, executor);
-        }
-
-        public @NotNull P applySubscribe() {
-            return apply();
+            @NotNull Ex<P> executor(@Nullable Executor executor);
         }
     }
 }

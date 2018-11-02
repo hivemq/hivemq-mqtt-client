@@ -32,6 +32,7 @@ import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3SubscribeBuilder;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAck;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubscribeBuilder;
+import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeBuilderImpl;
 import org.mqttbee.rx.FlowableWithSingle;
 
 /**
@@ -111,14 +112,15 @@ public interface Mqtt3RxClient extends Mqtt3Client {
     /**
      * Fluent counterpart of {@link #subscribe(Mqtt3Subscribe)}.
      * <p>
-     * Calling {@link Mqtt3SubscribeBuilder#applySubscribe()} on the returned builder has the same effect as calling
-     * {@link #subscribe(Mqtt3Subscribe)} with the result of {@link Mqtt3SubscribeBuilder#build()}.
+     * Calling {@link Mqtt3SubscribeBuilder.Nested.Complete#applySubscribe()} on the returned builder has the same
+     * effect as calling {@link #subscribe(Mqtt3Subscribe)} with the result of {@link
+     * Mqtt3SubscribeBuilder.Complete#build()}.
      *
      * @return the fluent builder for the Subscribe message.
      * @see #subscribe(Mqtt3Subscribe)
      */
-    default @NotNull Mqtt3SubscribeBuilder<Single<Mqtt3SubAck>> subscribeWith() {
-        return new Mqtt3SubscribeBuilder<>(this::subscribe);
+    default @NotNull Mqtt3SubscribeBuilder.Nested.Start<Single<Mqtt3SubAck>> subscribeWith() {
+        return new Mqtt3SubscribeBuilderImpl.NestedImpl<>(this::subscribe);
     }
 
     /**
@@ -149,14 +151,15 @@ public interface Mqtt3RxClient extends Mqtt3Client {
     /**
      * Fluent counterpart of {@link #subscribeStream(Mqtt3Subscribe)}.
      * <p>
-     * Calling {@link Mqtt3SubscribeBuilder#applySubscribe()} on the returned builder has the same effect as calling
-     * {@link #subscribeStream(Mqtt3Subscribe)} with the result of {@link Mqtt3SubscribeBuilder#build()}.
+     * Calling {@link Mqtt3SubscribeBuilder.Nested.Complete#applySubscribe()} on the returned builder has the same
+     * effect as calling {@link #subscribeStream(Mqtt3Subscribe)} with the result of {@link
+     * Mqtt3SubscribeBuilder.Complete#build()}.
      *
      * @return the fluent builder for the Subscribe message.
      * @see #subscribeStream(Mqtt3Subscribe)
      */
-    default @NotNull Mqtt3SubscribeBuilder<FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck>> subscribeStreamWith() {
-        return new Mqtt3SubscribeBuilder<>(this::subscribeStream);
+    default @NotNull Mqtt3SubscribeBuilder.Nested.Start<FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck>> subscribeStreamWith() {
+        return new Mqtt3SubscribeBuilderImpl.NestedImpl<>(this::subscribeStream);
     }
 
     /**

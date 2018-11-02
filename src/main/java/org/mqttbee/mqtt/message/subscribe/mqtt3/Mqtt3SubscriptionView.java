@@ -24,48 +24,48 @@ import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscription;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5RetainHandling;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
+import org.mqttbee.util.MustNotBeImplementedUtil;
 
 /**
  * @author Silvio Giebl
  */
 public class Mqtt3SubscriptionView implements Mqtt3Subscription {
 
-    @NotNull
-    private static MqttSubscription delegate(
-            @NotNull final MqttTopicFilterImpl topicFilter, @NotNull final MqttQos qos) {
+    private static @NotNull MqttSubscription delegate(
+            final @NotNull MqttTopicFilterImpl topicFilter, final @NotNull MqttQos qos) {
         return new MqttSubscription(topicFilter, qos, false, Mqtt5RetainHandling.SEND, false);
     }
 
-    @NotNull
-    public static Mqtt3SubscriptionView of(@NotNull final MqttTopicFilterImpl topicFilter, @NotNull final MqttQos qos) {
+    public static @NotNull MqttSubscription delegate(final @NotNull Mqtt3Subscription subscribe) {
+        return MustNotBeImplementedUtil.checkNotImplemented(subscribe, Mqtt3SubscriptionView.class).getDelegate();
+    }
+
+    public static @NotNull Mqtt3SubscriptionView of(
+            final @NotNull MqttTopicFilterImpl topicFilter, final @NotNull MqttQos qos) {
         return new Mqtt3SubscriptionView(delegate(topicFilter, qos));
     }
 
-    @NotNull
-    static Mqtt3SubscriptionView of(@NotNull final MqttSubscription delegate) {
+    static @NotNull Mqtt3SubscriptionView of(final @NotNull MqttSubscription delegate) {
         return new Mqtt3SubscriptionView(delegate);
     }
 
-    private final MqttSubscription delegate;
+    private final @NotNull MqttSubscription delegate;
 
-    private Mqtt3SubscriptionView(@NotNull final MqttSubscription delegate) {
+    private Mqtt3SubscriptionView(final @NotNull MqttSubscription delegate) {
         this.delegate = delegate;
     }
 
-    @NotNull
     @Override
-    public MqttTopicFilter getTopicFilter() {
+    public @NotNull MqttTopicFilter getTopicFilter() {
         return delegate.getTopicFilter();
     }
 
-    @NotNull
     @Override
-    public MqttQos getQos() {
+    public @NotNull MqttQos getQos() {
         return delegate.getQos();
     }
 
-    @NotNull
-    public MqttSubscription getDelegate() {
+    public @NotNull MqttSubscription getDelegate() {
         return delegate;
     }
 

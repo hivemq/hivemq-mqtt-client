@@ -17,91 +17,134 @@
 
 package org.mqttbee.api.mqtt.mqtt3.message.subscribe;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttQos;
-import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
-import org.mqttbee.api.mqtt.datatypes.MqttTopicFilterBuilder;
-import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
-import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeView;
-import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscriptionView;
-import org.mqttbee.util.FluentBuilder;
-import org.mqttbee.util.MustNotBeImplementedUtil;
-
-import java.util.function.Function;
+import org.mqttbee.annotations.DoNotImplement;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt3SubscribeBuilder<P> extends FluentBuilder<Mqtt3Subscribe, P> {
+// @formatter:off
+@DoNotImplement
+public interface Mqtt3SubscribeBuilder extends
+        Mqtt3SubscribeBuilderBase<
+                Mqtt3SubscribeBuilder.Complete> {
+// @formatter:on
 
-    private final @NotNull ImmutableList.Builder<MqttSubscription> subscriptionBuilder;
-    private @Nullable Mqtt3SubscriptionBuilder<Void> firstSubscriptionBuilder;
+    // @formatter:off
+    @DoNotImplement
+    interface Complete extends
+            Mqtt3SubscribeBuilder,
+            Mqtt3SubscribeBuilderBase.Complete<
+                Mqtt3SubscribeBuilder.Complete> {
+    // @formatter:on
 
-    public Mqtt3SubscribeBuilder(@Nullable final Function<? super Mqtt3Subscribe, P> parentConsumer) {
-        super(parentConsumer);
-        subscriptionBuilder = ImmutableList.builder();
+        @NotNull Mqtt3Subscribe build();
     }
 
-    Mqtt3SubscribeBuilder(final @NotNull Mqtt3Subscribe subscribe) {
-        super(null);
-        final Mqtt3SubscribeView subscribeView =
-                MustNotBeImplementedUtil.checkNotImplemented(subscribe, Mqtt3SubscribeView.class);
-        final ImmutableList<MqttSubscription> subscriptions = subscribeView.getDelegate().getSubscriptions();
-        subscriptionBuilder = ImmutableList.builderWithExpectedSize(subscriptions.size() + 1);
-        subscriptionBuilder.addAll(subscriptions);
-    }
+    // @formatter:off
+    @DoNotImplement
+    interface Start extends
+            Mqtt3SubscribeBuilder,
+            Mqtt3SubscribeBuilderBase.Start<
+                Mqtt3SubscribeBuilder.Complete,
+                Mqtt3SubscribeBuilder.Start,
+                Mqtt3SubscribeBuilder.Start.Complete> {
+    // @formatter:on
 
-    private @NotNull Mqtt3SubscriptionBuilder<Void> getFirstSubscriptionBuilder() {
-        if (firstSubscriptionBuilder == null) {
-            firstSubscriptionBuilder = Mqtt3Subscription.builder();
+        // @formatter:off
+        @DoNotImplement
+        interface Complete extends
+                Mqtt3SubscribeBuilder.Start,
+                Mqtt3SubscribeBuilder.Complete,
+                Mqtt3SubscribeBuilderBase.Start.Complete<
+                    Mqtt3SubscribeBuilder.Complete,
+                    Mqtt3SubscribeBuilder.Start,
+                    Mqtt3SubscribeBuilder.Start.Complete> {
+        // @formatter:on
         }
-        return firstSubscriptionBuilder;
     }
 
-    public @NotNull Mqtt3SubscribeBuilder<P> topicFilter(final @NotNull String topicFilter) {
-        getFirstSubscriptionBuilder().topicFilter(topicFilter);
-        return this;
-    }
+    // @formatter:off
+    @DoNotImplement
+    interface Nested<P> extends
+            Mqtt3SubscribeBuilderBase<
+                    Nested.Complete<P>> {
+    // @formatter:on
 
-    public @NotNull Mqtt3SubscribeBuilder<P> topicFilter(final @NotNull MqttTopicFilter topicFilter) {
-        getFirstSubscriptionBuilder().topicFilter(topicFilter);
-        return this;
-    }
+        // @formatter:off
+        @DoNotImplement
+        interface Complete<P> extends
+                Nested<P>,
+                Mqtt3SubscribeBuilderBase.Complete<
+                    Nested.Complete<P>> {
+        // @formatter:on
 
-    public @NotNull MqttTopicFilterBuilder<Mqtt3SubscribeBuilder<P>> topicFilter() {
-        return new MqttTopicFilterBuilder<>(this::topicFilter);
-    }
-
-    public @NotNull Mqtt3SubscribeBuilder<P> qos(final @NotNull MqttQos qos) {
-        getFirstSubscriptionBuilder().qos(qos);
-        return this;
-    }
-
-    public @NotNull Mqtt3SubscribeBuilder<P> addSubscription(final @NotNull Mqtt3Subscription subscription) {
-        final Mqtt3SubscriptionView subscriptionView =
-                MustNotBeImplementedUtil.checkNotImplemented(subscription, Mqtt3SubscriptionView.class);
-        subscriptionBuilder.add(subscriptionView.getDelegate());
-        return this;
-    }
-
-    public @NotNull Mqtt3SubscriptionBuilder<Mqtt3SubscribeBuilder<P>> addSubscription() {
-        return new Mqtt3SubscriptionBuilder<>(this::addSubscription);
-    }
-
-    @Override
-    public @NotNull Mqtt3Subscribe build() {
-        if (firstSubscriptionBuilder != null) {
-            addSubscription(firstSubscriptionBuilder.build()); // TODO add as first subscription #192
+            @NotNull P applySubscribe();
         }
-        final ImmutableList<MqttSubscription> subscriptions = subscriptionBuilder.build();
-        Preconditions.checkState(!subscriptions.isEmpty());
-        return Mqtt3SubscribeView.of(subscriptions);
+
+        // @formatter:off
+        @DoNotImplement
+        interface Start<P> extends
+                Nested<P>,
+                Mqtt3SubscribeBuilderBase.Start<
+                    Nested.Complete<P>,
+                    Nested.Start<P>,
+                    Nested.Start.Complete<P>> {
+        // @formatter:on
+
+            // @formatter:off
+            @DoNotImplement
+            interface Complete<P> extends
+                    Nested.Start<P>,
+                    Nested.Complete<P>,
+                    Mqtt3SubscribeBuilderBase.Start.Complete<
+                        Nested.Complete<P>,
+                        Nested.Start<P>,
+                        Nested.Start.Complete<P>> {
+            // @formatter:on
+            }
+        }
     }
 
-    public @NotNull P applySubscribe() {
-        return apply();
+    // @formatter:off
+    @DoNotImplement
+    interface Send<P> extends
+            Mqtt3SubscribeBuilderBase<
+                Send.Complete<P>> {
+    // @formatter:on
+
+        // @formatter:off
+        @DoNotImplement
+        interface Complete<P> extends
+                Send<P>,
+                Mqtt3SubscribeBuilderBase.Complete<
+                    Send.Complete<P>> {
+        // @formatter:on
+
+            @NotNull P send();
+        }
+
+        // @formatter:off
+        @DoNotImplement
+        interface Start<P> extends
+                Send<P>,
+                Mqtt3SubscribeBuilderBase.Start<
+                    Send.Complete<P>,
+                    Send.Start<P>,
+                    Send.Start.Complete<P>> {
+        // @formatter:on
+
+            // @formatter:off
+            @DoNotImplement
+            interface Complete<P> extends
+                    Send.Start<P>,
+                    Send.Complete<P>,
+                    Mqtt3SubscribeBuilderBase.Start.Complete<
+                        Send.Complete<P>,
+                        Send.Start<P>,
+                        Send.Start.Complete<P>> {
+            // @formatter:on
+            }
+        }
     }
 }
