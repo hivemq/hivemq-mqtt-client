@@ -33,6 +33,7 @@ import org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAck;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubscribeBuilder;
 import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeBuilderImpl;
+import org.mqttbee.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeBuilderImpl;
 import org.mqttbee.rx.FlowableWithSingle;
 
 /**
@@ -198,14 +199,15 @@ public interface Mqtt3RxClient extends Mqtt3Client {
     /**
      * Fluent counterpart of {@link #unsubscribe(Mqtt3Unsubscribe)}.
      * <p>
-     * Calling {@link Mqtt3UnsubscribeBuilder#applyUnsubscribe()} on the returned builder has the same effect as calling
-     * {@link #unsubscribe(Mqtt3Unsubscribe)} with the result of {@link Mqtt3UnsubscribeBuilder#build()}.
+     * Calling {@link Mqtt3UnsubscribeBuilder.Nested.Complete#applyUnsubscribe()} on the returned builder has the same
+     * effect as calling {@link #unsubscribe(Mqtt3Unsubscribe)} with the result of {@link
+     * Mqtt3UnsubscribeBuilder.Complete#build()}.
      *
      * @return the fluent builder for the Unsubscribe message.
      * @see #unsubscribe(Mqtt3Unsubscribe)
      */
-    default @NotNull Mqtt3UnsubscribeBuilder<Completable> unsubscribeWith() {
-        return new Mqtt3UnsubscribeBuilder<>(this::unsubscribe);
+    default @NotNull Mqtt3UnsubscribeBuilder.Nested.Start<Completable> unsubscribeWith() {
+        return new Mqtt3UnsubscribeBuilderImpl.NestedImpl<>(this::unsubscribe);
     }
 
     /**

@@ -41,8 +41,6 @@ public interface Mqtt3SubscriptionBuilderBase<
         return new MqttTopicFilterBuilder<>(this::topicFilter);
     }
 
-    @NotNull B qos(final @NotNull MqttQos qos);
-
     // @formatter:off
     @DoNotImplement
     interface Complete<
@@ -51,7 +49,6 @@ public interface Mqtt3SubscriptionBuilderBase<
             extends Mqtt3SubscriptionBuilderBase<B, C> {
     // @formatter:on
 
-        @Override
         @NotNull C qos(final @NotNull MqttQos qos);
     }
 }

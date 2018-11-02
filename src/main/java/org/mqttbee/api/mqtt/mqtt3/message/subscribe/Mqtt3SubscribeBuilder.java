@@ -27,6 +27,7 @@ import org.mqttbee.annotations.DoNotImplement;
 @DoNotImplement
 public interface Mqtt3SubscribeBuilder extends
         Mqtt3SubscribeBuilderBase<
+                Mqtt3SubscribeBuilder,
                 Mqtt3SubscribeBuilder.Complete> {
 // @formatter:on
 
@@ -35,6 +36,7 @@ public interface Mqtt3SubscribeBuilder extends
     interface Complete extends
             Mqtt3SubscribeBuilder,
             Mqtt3SubscribeBuilderBase.Complete<
+                Mqtt3SubscribeBuilder,
                 Mqtt3SubscribeBuilder.Complete> {
     // @formatter:on
 
@@ -46,6 +48,7 @@ public interface Mqtt3SubscribeBuilder extends
     interface Start extends
             Mqtt3SubscribeBuilder,
             Mqtt3SubscribeBuilderBase.Start<
+                Mqtt3SubscribeBuilder,
                 Mqtt3SubscribeBuilder.Complete,
                 Mqtt3SubscribeBuilder.Start,
                 Mqtt3SubscribeBuilder.Start.Complete> {
@@ -57,6 +60,7 @@ public interface Mqtt3SubscribeBuilder extends
                 Mqtt3SubscribeBuilder.Start,
                 Mqtt3SubscribeBuilder.Complete,
                 Mqtt3SubscribeBuilderBase.Start.Complete<
+                    Mqtt3SubscribeBuilder,
                     Mqtt3SubscribeBuilder.Complete,
                     Mqtt3SubscribeBuilder.Start,
                     Mqtt3SubscribeBuilder.Start.Complete> {
@@ -68,6 +72,7 @@ public interface Mqtt3SubscribeBuilder extends
     @DoNotImplement
     interface Nested<P> extends
             Mqtt3SubscribeBuilderBase<
+                    Nested<P>,
                     Nested.Complete<P>> {
     // @formatter:on
 
@@ -76,6 +81,7 @@ public interface Mqtt3SubscribeBuilder extends
         interface Complete<P> extends
                 Nested<P>,
                 Mqtt3SubscribeBuilderBase.Complete<
+                    Nested<P>,
                     Nested.Complete<P>> {
         // @formatter:on
 
@@ -87,6 +93,7 @@ public interface Mqtt3SubscribeBuilder extends
         interface Start<P> extends
                 Nested<P>,
                 Mqtt3SubscribeBuilderBase.Start<
+                    Nested<P>,
                     Nested.Complete<P>,
                     Nested.Start<P>,
                     Nested.Start.Complete<P>> {
@@ -98,6 +105,7 @@ public interface Mqtt3SubscribeBuilder extends
                     Nested.Start<P>,
                     Nested.Complete<P>,
                     Mqtt3SubscribeBuilderBase.Start.Complete<
+                        Nested<P>,
                         Nested.Complete<P>,
                         Nested.Start<P>,
                         Nested.Start.Complete<P>> {
@@ -110,6 +118,7 @@ public interface Mqtt3SubscribeBuilder extends
     @DoNotImplement
     interface Send<P> extends
             Mqtt3SubscribeBuilderBase<
+                Send<P>,
                 Send.Complete<P>> {
     // @formatter:on
 
@@ -118,6 +127,7 @@ public interface Mqtt3SubscribeBuilder extends
         interface Complete<P> extends
                 Send<P>,
                 Mqtt3SubscribeBuilderBase.Complete<
+                    Send<P>,
                     Send.Complete<P>> {
         // @formatter:on
 
@@ -129,6 +139,7 @@ public interface Mqtt3SubscribeBuilder extends
         interface Start<P> extends
                 Send<P>,
                 Mqtt3SubscribeBuilderBase.Start<
+                    Send<P>,
                     Send.Complete<P>,
                     Send.Start<P>,
                     Send.Start.Complete<P>> {
@@ -140,6 +151,7 @@ public interface Mqtt3SubscribeBuilder extends
                     Send.Start<P>,
                     Send.Complete<P>,
                     Mqtt3SubscribeBuilderBase.Start.Complete<
+                        Send<P>,
                         Send.Complete<P>,
                         Send.Start<P>,
                         Send.Start.Complete<P>> {

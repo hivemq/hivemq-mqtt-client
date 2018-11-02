@@ -32,6 +32,7 @@ import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubscribeBuilder;
 import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishBuilderImpl;
 import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeBuilderImpl;
+import org.mqttbee.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeBuilderImpl;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -119,14 +120,14 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
     /**
      * Fluent counterpart of {@link #unsubscribe(Mqtt3Unsubscribe)}.
      * <p>
-     * Calling {@link Mqtt3UnsubscribeBuilder#applyUnsubscribe()} on the returned builder has the same effect as calling
-     * {@link #unsubscribe(Mqtt3Unsubscribe)} with the result of {@link Mqtt3UnsubscribeBuilder#build()}.
+     * Calling {@link Mqtt3UnsubscribeBuilder.Send.Complete#send()} on the returned builder has the same effect as
+     * calling {@link #unsubscribe(Mqtt3Unsubscribe)} with the result of {@link Mqtt3UnsubscribeBuilder.Complete#build()}.
      *
      * @return the fluent builder for the Unsubscribe message.
      * @see #unsubscribe(Mqtt3Unsubscribe)
      */
-    default @NotNull Mqtt3UnsubscribeBuilder<Void> unsubscribeWith() {
-        return new Mqtt3UnsubscribeBuilder<>(unsubscribe -> {
+    default @NotNull Mqtt3UnsubscribeBuilder.Send.Start<Void> unsubscribeWith() {
+        return new Mqtt3UnsubscribeBuilderImpl.SendImpl<>(unsubscribe -> {
             unsubscribe(unsubscribe);
             return null;
         });

@@ -22,7 +22,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
-import org.mqttbee.api.mqtt.mqtt3.message.subscribe.*;
+import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
+import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3SubscribeBuilder;
+import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3SubscribeBuilderBase;
+import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscription;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
 
@@ -33,13 +36,14 @@ import java.util.function.Function;
  */
 // @formatter:off
 public abstract class Mqtt3SubscribeBuilderImpl<
-            C extends Mqtt3SubscribeBuilderBase.Complete<C>,
-            S extends Mqtt3SubscribeBuilderBase.Start<C, S, SC>,
+            B extends Mqtt3SubscribeBuilderBase<B, C>,
+            C extends B,
+            S extends Mqtt3SubscribeBuilderBase.Start<B, C, S, SC>,
             SC extends S>
-        implements Mqtt3SubscribeBuilderBase<C>,
-                   Mqtt3SubscribeBuilderBase.Complete<C>,
-                   Mqtt3SubscribeBuilderBase.Start<C, S, SC>,
-                   Mqtt3SubscribeBuilderBase.Start.Complete<C, S, SC> {
+        implements Mqtt3SubscribeBuilderBase<B, C>,
+                   Mqtt3SubscribeBuilderBase.Complete<B, C>,
+                   Mqtt3SubscribeBuilderBase.Start<B, C, S, SC>,
+                   Mqtt3SubscribeBuilderBase.Start.Complete<B, C, S, SC> {
 // @formatter:on
 
     private final @NotNull ImmutableList.Builder<MqttSubscription> subscriptionsBuilder;
@@ -67,7 +71,7 @@ public abstract class Mqtt3SubscribeBuilderImpl<
         return self();
     }
 
-    private @NotNull Mqtt3SubscriptionBuilder getFirstSubscriptionBuilder() {
+    private @NotNull Mqtt3SubscriptionBuilderImpl.Impl getFirstSubscriptionBuilder() {
         if (firstSubscriptionBuilder == null) {
             firstSubscriptionBuilder = new Mqtt3SubscriptionBuilderImpl.Impl();
         }
@@ -111,6 +115,7 @@ public abstract class Mqtt3SubscribeBuilderImpl<
     // @formatter:off
     public static class Impl
             extends Mqtt3SubscribeBuilderImpl<
+                        Mqtt3SubscribeBuilder,
                         Mqtt3SubscribeBuilder.Complete,
                         Mqtt3SubscribeBuilder.Start,
                         Mqtt3SubscribeBuilder.Start.Complete>
@@ -140,6 +145,7 @@ public abstract class Mqtt3SubscribeBuilderImpl<
     // @formatter:off
     public static class NestedImpl<P>
             extends Mqtt3SubscribeBuilderImpl<
+                        Mqtt3SubscribeBuilder.Nested<P>,
                         Mqtt3SubscribeBuilder.Nested.Complete<P>,
                         Mqtt3SubscribeBuilder.Nested.Start<P>,
                         Mqtt3SubscribeBuilder.Nested.Start.Complete<P>>
@@ -174,6 +180,7 @@ public abstract class Mqtt3SubscribeBuilderImpl<
     // @formatter:off
     public static class SendImpl<P>
             extends Mqtt3SubscribeBuilderImpl<
+                        Mqtt3SubscribeBuilder.Send<P>,
                         Mqtt3SubscribeBuilder.Send.Complete<P>,
                         Mqtt3SubscribeBuilder.Send.Start<P>,
                         Mqtt3SubscribeBuilder.Send.Start.Complete<P>>

@@ -148,13 +148,6 @@ public abstract class Mqtt3PublishBuilderImpl<
             this.parentConsumer = parentConsumer;
         }
 
-        public NestedImpl(
-                final @NotNull Mqtt3Publish publish, final @NotNull Function<? super Mqtt3Publish, P> parentConsumer) {
-
-            super(publish);
-            this.parentConsumer = parentConsumer;
-        }
-
         @Override
         protected @NotNull Mqtt3PublishBuilder.Nested.Complete<P> self() {
             return this;

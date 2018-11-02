@@ -219,6 +219,7 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
     // @formatter:off
     public static class Mqtt3SubscribeAndCallbackBuilderImpl<P>
             extends Mqtt3SubscribeBuilderImpl<
+                        Mqtt3SubscribeAndCallbackBuilder<P>,
                         Mqtt3SubscribeAndCallbackBuilder.Complete<P>,
                         Mqtt3SubscribeAndCallbackBuilder.Start<P>,
                         Mqtt3SubscribeAndCallbackBuilder.Start.Complete<P>>
@@ -251,14 +252,14 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
         }
 
         @Override
-        public CallbackBuilder.@NotNull Ex<P> callback(final @Nullable Consumer<Mqtt3Publish> callback) {
-            this.callback = callback;
+        public CallbackBuilder.@NotNull Ex<P> callback(final @NotNull Consumer<Mqtt3Publish> callback) {
+            this.callback = Objects.requireNonNull(callback, "Callback must not be null.");
             return this;
         }
 
         @Override
-        public CallbackBuilder.@NotNull Ex<P> executor(final @Nullable Executor executor) {
-            this.executor = executor;
+        public CallbackBuilder.@NotNull Ex<P> executor(final @NotNull Executor executor) {
+            this.executor = Objects.requireNonNull(executor, "Executor must not be null.");
             return this;
         }
 
