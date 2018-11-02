@@ -32,6 +32,7 @@ import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3SubscribeBuilder;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAck;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubscribeBuilder;
+import org.mqttbee.mqtt.message.connect.mqtt3.Mqtt3ConnectBuilderImpl;
 import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeBuilderImpl;
 import org.mqttbee.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeBuilderImpl;
 import org.mqttbee.rx.FlowableWithSingle;
@@ -76,14 +77,14 @@ public interface Mqtt3RxClient extends Mqtt3Client {
     /**
      * Fluent counterpart of {@link #connect(Mqtt3Connect)}.
      * <p>
-     * Calling {@link Mqtt3ConnectBuilder#applyConnect()} on the returned builder has the same effect as calling {@link
-     * #connect(Mqtt3Connect)} with the result of {@link Mqtt3ConnectBuilder#build()}.
+     * Calling {@link Mqtt3ConnectBuilder.Nested#applyConnect()} on the returned builder has the same effect as calling
+     * {@link #connect(Mqtt3Connect)} with the result of {@link Mqtt3ConnectBuilder#build()}.
      *
      * @return the fluent builder for the Connect message.
      * @see #connect(Mqtt3Connect)
      */
-    default @NotNull Mqtt3ConnectBuilder<Single<Mqtt3ConnAck>> connectWith() {
-        return new Mqtt3ConnectBuilder<>(this::connect);
+    default @NotNull Mqtt3ConnectBuilder.Nested<Single<Mqtt3ConnAck>> connectWith() {
+        return new Mqtt3ConnectBuilderImpl.NestedImpl<>(this::connect);
     }
 
     /**

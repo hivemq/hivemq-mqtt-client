@@ -68,5 +68,4 @@ public interface Mqtt3UnsubscribeBuilderBase<
             return new MqttTopicFilterBuilder<>(this::topicFilter);
         }
     }
-
 }

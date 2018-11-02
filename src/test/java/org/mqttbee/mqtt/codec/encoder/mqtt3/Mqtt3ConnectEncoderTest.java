@@ -56,7 +56,7 @@ class Mqtt3ConnectEncoderTest extends AbstractMqtt3EncoderTest {
         final boolean hasWill =
                 isNotBlank(willMessage) && isNotBlank(willTopic) && (willQos != null) && (willRetained != null);
 
-        Mqtt3ConnectBuilder<Void> connectBuilder =
+        Mqtt3ConnectBuilder connectBuilder =
                 Mqtt3Connect.builder().cleanSession(cleanSession).keepAlive(keepAliveInterval, TimeUnit.SECONDS);
         if (hasAuth) {
             connectBuilder = connectBuilder.simpleAuth()
@@ -68,8 +68,7 @@ class Mqtt3ConnectEncoderTest extends AbstractMqtt3EncoderTest {
             connectBuilder = connectBuilder.willPublish()
                     .topic(willTopic)
                     .qos(Objects.requireNonNull(MqttQos.fromCode(willQos)))
-                    .payload(willMessage.getBytes(StandardCharsets.UTF_8))
-                    .retain(willRetained).applyWillPublish();
+                    .payload(willMessage.getBytes(StandardCharsets.UTF_8)).retain(willRetained).applyWillPublish();
         }
 
         final MqttConnect beeConnect = ((Mqtt3ConnectView) connectBuilder.build()).getDelegate();
