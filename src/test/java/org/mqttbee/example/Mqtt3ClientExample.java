@@ -165,7 +165,7 @@ class Mqtt3ClientExample {
                 client.connect(connectMessage).doOnSuccess(connAck -> System.out.println("connected publisher"));
 
         // create a stub publish and a counter
-        final Mqtt3PublishBuilder<Void> publishMessageBuilder = Mqtt3Publish.builder().topic(topic).qos(qos);
+        final Mqtt3PublishBuilder.Complete publishMessageBuilder = Mqtt3Publish.builder().topic(topic).qos(qos);
         final AtomicInteger counter = new AtomicInteger();
         // fake a stream of random messages, actually not random, but an incrementing counter ;-)
         final Flowable<Mqtt3Publish> publishFlowable = Flowable.generate(emitter -> {

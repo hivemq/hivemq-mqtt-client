@@ -28,6 +28,7 @@ import org.mqttbee.mqtt.message.auth.MqttSimpleAuth;
 import org.mqttbee.mqtt.message.auth.mqtt3.Mqtt3SimpleAuthView;
 import org.mqttbee.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
 import org.mqttbee.mqtt.message.publish.MqttWillPublish;
+import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishBuilderImpl;
 import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishView;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 import org.mqttbee.util.FluentBuilder;
@@ -91,8 +92,8 @@ public class Mqtt3ConnectBuilder<P> extends FluentBuilder<Mqtt3Connect, P> {
         return this;
     }
 
-    public @NotNull Mqtt3WillPublishBuilder<Mqtt3ConnectBuilder<P>> willPublish() {
-        return new Mqtt3WillPublishBuilder<>(this::willPublish);
+    public @NotNull Mqtt3WillPublishBuilder.Nested<Mqtt3ConnectBuilder<P>> willPublish() {
+        return new Mqtt3PublishBuilderImpl.WillNestedImpl<>(this::willPublish);
     }
 
     @Override

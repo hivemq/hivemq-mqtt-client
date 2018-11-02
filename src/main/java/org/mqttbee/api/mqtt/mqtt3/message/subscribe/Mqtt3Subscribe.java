@@ -18,12 +18,11 @@
 package org.mqttbee.api.mqtt.mqtt3.message.subscribe;
 
 import com.google.common.collect.ImmutableList;
-import org.mqttbee.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3Message;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
-
-import java.util.function.Function;
+import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeBuilderImpl;
 
 /**
  * MQTT 3 SUBSCRIBE packet.
@@ -31,25 +30,21 @@ import java.util.function.Function;
 @DoNotImplement
 public interface Mqtt3Subscribe extends Mqtt3Message {
 
-    @NotNull
-    static Mqtt3SubscribeBuilder<Void> builder() {
-        return new Mqtt3SubscribeBuilder<>((Function<Mqtt3Subscribe, Void>) null);
+    static @NotNull Mqtt3SubscribeBuilder.Start builder() {
+        return new Mqtt3SubscribeBuilderImpl.Impl();
     }
 
-    @NotNull
-    static Mqtt3SubscribeBuilder<Void> extend(@NotNull final Mqtt3Subscribe subscribe) {
-        return new Mqtt3SubscribeBuilder<>(subscribe);
+    static @NotNull Mqtt3SubscribeBuilder.Complete extend(final @NotNull Mqtt3Subscribe subscribe) {
+        return new Mqtt3SubscribeBuilderImpl.Impl(subscribe);
     }
 
     /**
      * @return the {@link Mqtt3Subscription}s of this SUBSCRIBE packet. The list contains at least one subscription.
      */
-    @NotNull
-    ImmutableList<? extends Mqtt3Subscription> getSubscriptions();
+    @NotNull ImmutableList<? extends Mqtt3Subscription> getSubscriptions();
 
-    @NotNull
     @Override
-    default Mqtt3MessageType getType() {
+    default @NotNull Mqtt3MessageType getType() {
         return Mqtt3MessageType.SUBSCRIBE;
     }
 

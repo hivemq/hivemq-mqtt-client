@@ -18,6 +18,7 @@
 package org.mqttbee.mqtt.mqtt3;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.MqttGlobalPublishFilter;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3AsyncClient;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3BlockingClient;
@@ -39,6 +40,7 @@ import org.mqttbee.mqtt.message.connect.connack.mqtt3.Mqtt3ConnAckView;
 import org.mqttbee.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
 import org.mqttbee.mqtt.message.disconnect.mqtt3.Mqtt3DisconnectView;
 import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishView;
+import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeBuilderImpl;
 import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeView;
 import org.mqttbee.mqtt.message.subscribe.suback.mqtt3.Mqtt3SubAckView;
 import org.mqttbee.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeView;
@@ -184,5 +186,92 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
     @Override
     public @NotNull Mqtt3BlockingClient toBlocking() {
         return new Mqtt3BlockingClientView(delegate.toBlocking());
+    }
+
+    public static class Mqtt3SubscribeAndCallback {
+
+        private final @NotNull Mqtt3Subscribe subscribe;
+        private final @Nullable Consumer<Mqtt3Publish> callback;
+        private final @Nullable Executor executor;
+
+        Mqtt3SubscribeAndCallback(
+                final @NotNull Mqtt3Subscribe subscribe, final @Nullable Consumer<Mqtt3Publish> callback,
+                final @Nullable Executor executor) {
+
+            this.subscribe = subscribe;
+            this.callback = callback;
+            this.executor = executor;
+        }
+
+        public @NotNull Mqtt3Subscribe getSubscribe() {
+            return subscribe;
+        }
+
+        public @Nullable Consumer<Mqtt3Publish> getCallback() {
+            return callback;
+        }
+
+        public @Nullable Executor getExecutor() {
+            return executor;
+        }
+    }
+
+    // @formatter:off
+    public static class Mqtt3SubscribeAndCallbackBuilderImpl<P>
+            extends Mqtt3SubscribeBuilderImpl<
+                        Mqtt3SubscribeAndCallbackBuilder.Complete<P>,
+                        Mqtt3SubscribeAndCallbackBuilder.Start<P>,
+                        Mqtt3SubscribeAndCallbackBuilder.Start.Complete<P>>
+            implements Mqtt3SubscribeAndCallbackBuilder<P>,
+                       Mqtt3SubscribeAndCallbackBuilder.Complete<P>,
+                       Mqtt3SubscribeAndCallbackBuilder.Start<P>,
+                       Mqtt3SubscribeAndCallbackBuilder.Start.Complete<P>,
+                       CallbackBuilder<P>,
+                       CallbackBuilder.Ex<P> {
+    // @formatter:on
+
+        private final @NotNull Function<? super Mqtt3SubscribeAndCallback, P> parentConsumer;
+        private @Nullable Consumer<Mqtt3Publish> callback;
+        private @Nullable Executor executor;
+
+        public Mqtt3SubscribeAndCallbackBuilderImpl(
+                final @NotNull Function<? super Mqtt3SubscribeAndCallback, P> parentConsumer) {
+
+            this.parentConsumer = parentConsumer;
+        }
+
+        @Override
+        protected @NotNull Mqtt3SubscribeAndCallbackBuilder.Complete<P> self() {
+            return this;
+        }
+
+        @Override
+        protected @NotNull Mqtt3SubscribeAndCallbackBuilder.Start.Complete<P> self2() {
+            return this;
+        }
+
+        @Override
+        public CallbackBuilder.@NotNull Ex<P> callback(final @Nullable Consumer<Mqtt3Publish> callback) {
+            this.callback = callback;
+            return this;
+        }
+
+        @Override
+        public CallbackBuilder.@NotNull Ex<P> executor(final @Nullable Executor executor) {
+            this.executor = executor;
+            return this;
+        }
+
+        private @NotNull Mqtt3SubscribeAndCallback buildWithCallback() {
+            if ((callback == null) && (executor != null)) {
+                throw new IllegalStateException("Executor must not be given if callback is null.");
+            }
+            return new Mqtt3SubscribeAndCallback(build(), callback, executor);
+        }
+
+        @Override
+        public @NotNull P send() {
+            return parentConsumer.apply(buildWithCallback());
+        }
     }
 }

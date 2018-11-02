@@ -60,6 +60,6 @@ public abstract class FluentBuilder<B, P> {
      *
      * @return the created object.
      */
-    public abstract @NotNull B build();
+    protected abstract @NotNull B build();
 
 }

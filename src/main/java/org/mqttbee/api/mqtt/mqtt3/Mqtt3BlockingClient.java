@@ -30,6 +30,8 @@ import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3SubscribeBuilder;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAck;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubscribeBuilder;
+import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishBuilderImpl;
+import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeBuilderImpl;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -88,14 +90,14 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
     /**
      * Fluent counterpart of {@link #subscribe(Mqtt3Subscribe)}.
      * <p>
-     * Calling {@link Mqtt3SubscribeBuilder#applySubscribe()} on the returned builder has the same effect as calling
-     * {@link #subscribe(Mqtt3Subscribe)} with the result of {@link Mqtt3SubscribeBuilder#build()}.
+     * Calling {@link Mqtt3SubscribeBuilder.Send.Complete#send()} on the returned builder has the same effect as calling
+     * {@link #subscribe(Mqtt3Subscribe)} with the result of {@link Mqtt3SubscribeBuilder.Complete#build()}.
      *
      * @return the fluent builder for the Subscribe message.
      * @see #subscribe(Mqtt3Subscribe)
      */
-    default @NotNull Mqtt3SubscribeBuilder<Mqtt3SubAck> subscribeWith() {
-        return new Mqtt3SubscribeBuilder<>(this::subscribe);
+    default @NotNull Mqtt3SubscribeBuilder.Send.Start<Mqtt3SubAck> subscribeWith() {
+        return new Mqtt3SubscribeBuilderImpl.SendImpl<>(this::subscribe);
     }
 
     /**
@@ -140,14 +142,14 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
     /**
      * Fluent counterpart of {@link #publish(Mqtt3Publish)}.
      * <p>
-     * Calling {@link Mqtt3PublishBuilder#applyPublish()} on the returned builder has the same effect as calling {@link
-     * #publish(Mqtt3Publish)} with the result of {@link Mqtt3PublishBuilder#build()}.
+     * Calling {@link Mqtt3PublishBuilder.Send.Complete#send()} on the returned builder has the same effect as calling
+     * {@link #publish(Mqtt3Publish)} with the result of {@link Mqtt3PublishBuilder.Complete#build()}.
      *
      * @return the fluent builder for the Unsubscribe message.
      * @see #publish(Mqtt3Publish)
      */
-    default @NotNull Mqtt3PublishBuilder<Void> publishWith() {
-        return new Mqtt3PublishBuilder<>(publish -> {
+    default @NotNull Mqtt3PublishBuilder.Send<Void> publishWith() {
+        return new Mqtt3PublishBuilderImpl.SendImpl<>(publish -> {
             publish(publish);
             return null;
         });

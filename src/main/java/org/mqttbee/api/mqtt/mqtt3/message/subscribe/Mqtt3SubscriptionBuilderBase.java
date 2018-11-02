@@ -21,30 +21,37 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
-import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscriptionBuilderImpl;
+import org.mqttbee.api.mqtt.datatypes.MqttTopicFilterBuilder;
 
 /**
- * Subscription in the MQTT 3 SUBSCRIBE packet.
- *
  * @author Silvio Giebl
  */
+// @formatter:off
 @DoNotImplement
-public interface Mqtt3Subscription {
+public interface Mqtt3SubscriptionBuilderBase<
+            B extends Mqtt3SubscriptionBuilderBase<B, C>,
+            C extends B> {
+// @formatter:on
 
-    @NotNull MqttQos DEFAULT_QOS = MqttQos.EXACTLY_ONCE;
+    @NotNull C topicFilter(final @NotNull String topicFilter);
 
-    static @NotNull Mqtt3SubscriptionBuilder builder() {
-        return new Mqtt3SubscriptionBuilderImpl.Impl();
+    @NotNull C topicFilter(final @NotNull MqttTopicFilter topicFilter);
+
+    default @NotNull MqttTopicFilterBuilder<? extends C> topicFilter() {
+        return new MqttTopicFilterBuilder<>(this::topicFilter);
     }
 
-    /**
-     * @return the Topic Filter of this subscription.
-     */
-    @NotNull MqttTopicFilter getTopicFilter();
+    @NotNull B qos(final @NotNull MqttQos qos);
 
-    /**
-     * @return the QoS of this subscription.
-     */
-    @NotNull MqttQos getQos();
+    // @formatter:off
+    @DoNotImplement
+    interface Complete<
+                B extends Mqtt3SubscriptionBuilderBase<B, C>,
+                C extends B>
+            extends Mqtt3SubscriptionBuilderBase<B, C> {
+    // @formatter:on
 
+        @Override
+        @NotNull C qos(final @NotNull MqttQos qos);
+    }
 }
