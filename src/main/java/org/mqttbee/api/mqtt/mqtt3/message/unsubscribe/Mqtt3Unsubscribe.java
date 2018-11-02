@@ -18,13 +18,12 @@
 package org.mqttbee.api.mqtt.mqtt3.message.unsubscribe;
 
 import com.google.common.collect.ImmutableList;
-import org.mqttbee.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3Message;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
-
-import java.util.function.Function;
+import org.mqttbee.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeBuilderImpl;
 
 /**
  * MQTT 3 UNSUBSCRIBE packet.
@@ -32,25 +31,21 @@ import java.util.function.Function;
 @DoNotImplement
 public interface Mqtt3Unsubscribe extends Mqtt3Message {
 
-    @NotNull
-    static Mqtt3UnsubscribeBuilder<Void> builder() {
-        return new Mqtt3UnsubscribeBuilder<>((Function<Mqtt3Unsubscribe, Void>) null);
+    static @NotNull Mqtt3UnsubscribeBuilder.Start builder() {
+        return new Mqtt3UnsubscribeBuilderImpl.Impl();
     }
 
-    @NotNull
-    static Mqtt3UnsubscribeBuilder<Void> extend(@NotNull final Mqtt3Unsubscribe unsubscribe) {
-        return new Mqtt3UnsubscribeBuilder<>(unsubscribe);
+    static @NotNull Mqtt3UnsubscribeBuilder.Complete extend(final @NotNull Mqtt3Unsubscribe unsubscribe) {
+        return new Mqtt3UnsubscribeBuilderImpl.Impl(unsubscribe);
     }
 
     /**
      * @return the Topic Filters of this UNSUBSCRIBE packet. The list contains at least one Topic Filter.
      */
-    @NotNull
-    ImmutableList<? extends MqttTopicFilter> getTopicFilters();
+    @NotNull ImmutableList<? extends MqttTopicFilter> getTopicFilters();
 
-    @NotNull
     @Override
-    default Mqtt3MessageType getType() {
+    default @NotNull Mqtt3MessageType getType() {
         return Mqtt3MessageType.UNSUBSCRIBE;
     }
 

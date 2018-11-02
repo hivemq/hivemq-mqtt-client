@@ -18,7 +18,6 @@
 package org.mqttbee.api.mqtt.mqtt3;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.api.mqtt.MqttGlobalPublishFilter;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3Connect;
@@ -32,6 +31,7 @@ import org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAck;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubscribeBuilder;
 import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishBuilderImpl;
+import org.mqttbee.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeBuilderImpl;
 import org.mqttbee.mqtt.mqtt3.Mqtt3AsyncClientView;
 
 import java.util.concurrent.CompletableFuture;
@@ -153,7 +153,7 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * @see #subscribe(Mqtt3Subscribe, Consumer)
      * @see #subscribe(Mqtt3Subscribe, Consumer, Executor)
      */
-    default @NotNull Mqtt3SubscribeAndCallbackBuilder<CompletableFuture<Mqtt3SubAck>> subscribeWith() {
+    default @NotNull Mqtt3SubscribeAndCallbackBuilder.Start<CompletableFuture<Mqtt3SubAck>> subscribeWith() {
         return new Mqtt3AsyncClientView.Mqtt3SubscribeAndCallbackBuilderImpl<>(subscribeAndCallback -> {
             final Mqtt3Subscribe subscribe = subscribeAndCallback.getSubscribe();
             final Consumer<Mqtt3Publish> callback = subscribeAndCallback.getCallback();
@@ -205,14 +205,14 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
     /**
      * Fluent counterpart of {@link #unsubscribe(Mqtt3Unsubscribe)}.
      * <p>
-     * Calling {@link Mqtt3UnsubscribeBuilder#applyUnsubscribe()} on the returned builder has the same effect as calling
-     * {@link #unsubscribe(Mqtt3Unsubscribe)} with the result of {@link Mqtt3UnsubscribeBuilder#build()}.
+     * Calling {@link Mqtt3UnsubscribeBuilder.Send.Complete#send()} on the returned builder has the same effect as
+     * calling {@link #unsubscribe(Mqtt3Unsubscribe)} with the result of {@link Mqtt3UnsubscribeBuilder.Complete#build()}.
      *
      * @return the fluent builder for the Unsubscribe message.
      * @see #unsubscribe(Mqtt3Unsubscribe)
      */
-    default @NotNull Mqtt3UnsubscribeBuilder<CompletableFuture<Void>> unsubscribeWith() {
-        return new Mqtt3UnsubscribeBuilder<>(this::unsubscribe);
+    default @NotNull Mqtt3UnsubscribeBuilder.Send.Start<CompletableFuture<Void>> unsubscribeWith() {
+        return new Mqtt3UnsubscribeBuilderImpl.SendImpl<>(this::unsubscribe);
     }
 
     /**
@@ -262,6 +262,7 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
     @DoNotImplement
     interface Mqtt3SubscribeAndCallbackBuilder<P> extends
             Mqtt3SubscribeBuilderBase<
+                Mqtt3SubscribeAndCallbackBuilder<P>,
                 Mqtt3SubscribeAndCallbackBuilder.Complete<P>> {
     // @formatter:on
 
@@ -271,6 +272,7 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
                 Mqtt3SubscribeAndCallbackBuilder<P>,
                 CallbackBuilder<P>,
                 Mqtt3SubscribeBuilderBase.Complete<
+                    Mqtt3SubscribeAndCallbackBuilder<P>,
                     Mqtt3SubscribeAndCallbackBuilder.Complete<P>> {
         // @formatter:on
         }
@@ -280,6 +282,7 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
         interface Start<P> extends
                 Mqtt3SubscribeAndCallbackBuilder<P>,
                 Mqtt3SubscribeBuilderBase.Start<
+                    Mqtt3SubscribeAndCallbackBuilder<P>,
                     Mqtt3SubscribeAndCallbackBuilder.Complete<P>,
                     Mqtt3SubscribeAndCallbackBuilder.Start<P>,
                     Mqtt3SubscribeAndCallbackBuilder.Start.Complete<P>> {
@@ -291,6 +294,7 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
                     Mqtt3SubscribeAndCallbackBuilder.Start<P>,
                     Mqtt3SubscribeAndCallbackBuilder.Complete<P>,
                     Mqtt3SubscribeBuilderBase.Start.Complete<
+                        Mqtt3SubscribeAndCallbackBuilder<P>,
                         Mqtt3SubscribeAndCallbackBuilder.Complete<P>,
                         Mqtt3SubscribeAndCallbackBuilder.Start<P>,
                         Mqtt3SubscribeAndCallbackBuilder.Start.Complete<P>> {
@@ -302,14 +306,14 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
     @DoNotImplement
     interface CallbackBuilder<P> {
 
-        @NotNull Ex<P> callback(@Nullable Consumer<Mqtt3Publish> callback);
+        @NotNull Ex<P> callback(@NotNull Consumer<Mqtt3Publish> callback);
 
         @NotNull P send();
 
         @DoNotImplement
         interface Ex<P> extends CallbackBuilder<P> {
 
-            @NotNull Ex<P> executor(@Nullable Executor executor);
+            @NotNull Ex<P> executor(@NotNull Executor executor);
         }
     }
 }

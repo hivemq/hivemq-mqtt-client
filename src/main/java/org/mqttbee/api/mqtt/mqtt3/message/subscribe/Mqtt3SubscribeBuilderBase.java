@@ -26,7 +26,9 @@ import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscriptionBuilderImpl;
  */
 // @formatter:off
 @DoNotImplement
-public interface Mqtt3SubscribeBuilderBase<C extends Mqtt3SubscribeBuilderBase.Complete<C>> {
+public interface Mqtt3SubscribeBuilderBase<
+            B extends Mqtt3SubscribeBuilderBase<B, C>,
+            C extends B> {
 // @formatter:on
 
     @NotNull C addSubscription(@NotNull Mqtt3Subscription subscription);
@@ -37,29 +39,33 @@ public interface Mqtt3SubscribeBuilderBase<C extends Mqtt3SubscribeBuilderBase.C
 
     // @formatter:off
     @DoNotImplement
-    interface Complete<C extends Mqtt3SubscribeBuilderBase.Complete<C>>
-            extends Mqtt3SubscribeBuilderBase<C> {
+    interface Complete<
+                B extends Mqtt3SubscribeBuilderBase<B, C>,
+                C extends B>
+            extends Mqtt3SubscribeBuilderBase<B, C> {
     // @formatter:on
     }
 
     // @formatter:off
     @DoNotImplement
     interface Start<
-                C extends Complete<C>,
-                S extends Start<C, S, SC>,
+                B extends Mqtt3SubscribeBuilderBase<B, C>,
+                C extends B,
+                S extends Mqtt3SubscribeBuilderBase.Start<B, C, S, SC>,
                 SC extends S>
-            extends Mqtt3SubscribeBuilderBase<C>,
+            extends Mqtt3SubscribeBuilderBase<B, C>,
                     Mqtt3SubscriptionBuilderBase<S, SC> {
     // @formatter:on
 
         // @formatter:off
         @DoNotImplement
         interface Complete<
-                    C extends Mqtt3SubscribeBuilderBase.Complete<C>,
-                    S extends Start<C, S, SC>,
+                    B extends Mqtt3SubscribeBuilderBase<B, C>,
+                    C extends B,
+                    S extends Mqtt3SubscribeBuilderBase.Start<B, C, S, SC>,
                     SC extends S>
-                extends Mqtt3SubscribeBuilderBase.Start<C, S, SC>,
-                        Mqtt3SubscribeBuilderBase.Complete<C>,
+                extends Mqtt3SubscribeBuilderBase.Start<B, C, S, SC>,
+                        Mqtt3SubscribeBuilderBase.Complete<B, C>,
                         Mqtt3SubscriptionBuilderBase.Complete<S, SC> {
         // @formatter:on
         }
