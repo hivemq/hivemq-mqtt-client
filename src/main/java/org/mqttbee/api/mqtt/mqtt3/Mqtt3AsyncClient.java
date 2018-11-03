@@ -280,27 +280,37 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
 
         // @formatter:off
         @DoNotImplement
-        interface Start<P> extends
-                Mqtt3SubscribeAndCallbackBuilder<P>,
-                Mqtt3SubscribeBuilderBase.Start<
-                    Mqtt3SubscribeAndCallbackBuilder<P>,
-                    Mqtt3SubscribeAndCallbackBuilder.Complete<P>,
-                    Mqtt3SubscribeAndCallbackBuilder.Start<P>,
-                    Mqtt3SubscribeAndCallbackBuilder.Start.Complete<P>> {
+        interface First<P> extends
+                Mqtt3SubscribeBuilderBase.First<
+                    Mqtt3SubscribeAndCallbackBuilder.First<P>,
+                    Mqtt3SubscribeAndCallbackBuilder.First.Complete<P>> {
         // @formatter:on
 
             // @formatter:off
             @DoNotImplement
             interface Complete<P> extends
-                    Mqtt3SubscribeAndCallbackBuilder.Start<P>,
+                    Mqtt3SubscribeAndCallbackBuilder.First<P>,
                     Mqtt3SubscribeAndCallbackBuilder.Complete<P>,
-                    Mqtt3SubscribeBuilderBase.Start.Complete<
+                    Mqtt3SubscribeBuilderBase.First.Complete<
                         Mqtt3SubscribeAndCallbackBuilder<P>,
                         Mqtt3SubscribeAndCallbackBuilder.Complete<P>,
-                        Mqtt3SubscribeAndCallbackBuilder.Start<P>,
-                        Mqtt3SubscribeAndCallbackBuilder.Start.Complete<P>> {
+                        Mqtt3SubscribeAndCallbackBuilder.First<P>,
+                        Mqtt3SubscribeAndCallbackBuilder.First.Complete<P>> {
             // @formatter:on
             }
+        }
+
+        // @formatter:off
+        @DoNotImplement
+        interface Start<P> extends
+                Mqtt3SubscribeAndCallbackBuilder<P>,
+                Mqtt3SubscribeAndCallbackBuilder.First<P>,
+                Mqtt3SubscribeBuilderBase.Start<
+                    Mqtt3SubscribeAndCallbackBuilder<P>,
+                    Mqtt3SubscribeAndCallbackBuilder.Complete<P>,
+                    Mqtt3SubscribeAndCallbackBuilder.First<P>,
+                    Mqtt3SubscribeAndCallbackBuilder.First.Complete<P>> {
+        // @formatter:on
         }
     }
 

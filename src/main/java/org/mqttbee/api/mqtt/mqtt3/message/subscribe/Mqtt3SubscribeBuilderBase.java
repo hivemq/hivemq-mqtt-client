@@ -48,13 +48,10 @@ public interface Mqtt3SubscribeBuilderBase<
 
     // @formatter:off
     @DoNotImplement
-    interface Start<
-                B extends Mqtt3SubscribeBuilderBase<B, C>,
-                C extends B,
-                S extends Mqtt3SubscribeBuilderBase.Start<B, C, S, SC>,
-                SC extends S>
-            extends Mqtt3SubscribeBuilderBase<B, C>,
-                    Mqtt3SubscriptionBuilderBase<S, SC> {
+    interface First<
+                F extends Mqtt3SubscribeBuilderBase.First<F, FC>,
+                FC extends F>
+            extends Mqtt3SubscriptionBuilderBase<F, FC> {
     // @formatter:on
 
         // @formatter:off
@@ -62,12 +59,24 @@ public interface Mqtt3SubscribeBuilderBase<
         interface Complete<
                     B extends Mqtt3SubscribeBuilderBase<B, C>,
                     C extends B,
-                    S extends Mqtt3SubscribeBuilderBase.Start<B, C, S, SC>,
-                    SC extends S>
-                extends Mqtt3SubscribeBuilderBase.Start<B, C, S, SC>,
+                    F extends Mqtt3SubscribeBuilderBase.First<F, FC>,
+                    FC extends F>
+                extends Mqtt3SubscribeBuilderBase.First<F, FC>,
                         Mqtt3SubscribeBuilderBase.Complete<B, C>,
-                        Mqtt3SubscriptionBuilderBase.Complete<S, SC> {
+                        Mqtt3SubscriptionBuilderBase.Complete<F, FC> {
         // @formatter:on
         }
+    }
+
+    // @formatter:off
+    @DoNotImplement
+    interface Start<
+                B extends Mqtt3SubscribeBuilderBase<B, C>,
+                C extends B,
+                F extends Mqtt3SubscribeBuilderBase.First<F, FC>,
+                FC extends F>
+            extends Mqtt3SubscribeBuilderBase<B, C>,
+                    Mqtt3SubscribeBuilderBase.First<F, FC> {
+    // @formatter:on
     }
 }

@@ -38,12 +38,13 @@ import java.util.function.Function;
 public abstract class Mqtt3SubscribeBuilderImpl<
             B extends Mqtt3SubscribeBuilderBase<B, C>,
             C extends B,
-            S extends Mqtt3SubscribeBuilderBase.Start<B, C, S, SC>,
-            SC extends S>
+            F extends Mqtt3SubscribeBuilderBase.First<F, FC>,
+            FC extends F>
         implements Mqtt3SubscribeBuilderBase<B, C>,
                    Mqtt3SubscribeBuilderBase.Complete<B, C>,
-                   Mqtt3SubscribeBuilderBase.Start<B, C, S, SC>,
-                   Mqtt3SubscribeBuilderBase.Start.Complete<B, C, S, SC> {
+                   Mqtt3SubscribeBuilderBase.First<F, FC>,
+                   Mqtt3SubscribeBuilderBase.First.Complete<B, C, F, FC>,
+                   Mqtt3SubscribeBuilderBase.Start<B, C, F, FC> {
 // @formatter:on
 
     private final @NotNull ImmutableList.Builder<MqttSubscription> subscriptionsBuilder;
@@ -62,7 +63,7 @@ public abstract class Mqtt3SubscribeBuilderImpl<
 
     protected abstract @NotNull C self();
 
-    protected abstract @NotNull SC self2();
+    protected abstract @NotNull FC self2();
 
     @Override
     public @NotNull C addSubscription(final @NotNull Mqtt3Subscription subscription) {
@@ -86,19 +87,19 @@ public abstract class Mqtt3SubscribeBuilderImpl<
     }
 
     @Override
-    public @NotNull SC topicFilter(final @NotNull String topicFilter) {
+    public @NotNull FC topicFilter(final @NotNull String topicFilter) {
         getFirstSubscriptionBuilder().topicFilter(topicFilter);
         return self2();
     }
 
     @Override
-    public @NotNull SC topicFilter(final @NotNull MqttTopicFilter topicFilter) {
+    public @NotNull FC topicFilter(final @NotNull MqttTopicFilter topicFilter) {
         getFirstSubscriptionBuilder().topicFilter(topicFilter);
         return self2();
     }
 
     @Override
-    public @NotNull SC qos(final @NotNull MqttQos qos) {
+    public @NotNull FC qos(final @NotNull MqttQos qos) {
         getFirstSubscriptionBuilder().qos(qos);
         return self2();
     }
@@ -117,12 +118,13 @@ public abstract class Mqtt3SubscribeBuilderImpl<
             extends Mqtt3SubscribeBuilderImpl<
                         Mqtt3SubscribeBuilder,
                         Mqtt3SubscribeBuilder.Complete,
-                        Mqtt3SubscribeBuilder.Start,
-                        Mqtt3SubscribeBuilder.Start.Complete>
+                        Mqtt3SubscribeBuilder.First,
+                        Mqtt3SubscribeBuilder.First.Complete>
             implements Mqtt3SubscribeBuilder,
                        Mqtt3SubscribeBuilder.Complete,
-                       Mqtt3SubscribeBuilder.Start,
-                       Mqtt3SubscribeBuilder.Start.Complete {
+                       Mqtt3SubscribeBuilder.First,
+                       Mqtt3SubscribeBuilder.First.Complete,
+                       Mqtt3SubscribeBuilder.Start {
     // @formatter:on
 
         public Impl() {}
@@ -137,7 +139,7 @@ public abstract class Mqtt3SubscribeBuilderImpl<
         }
 
         @Override
-        protected @NotNull Mqtt3SubscribeBuilder.Start.Complete self2() {
+        protected @NotNull Mqtt3SubscribeBuilder.First.Complete self2() {
             return this;
         }
     }
@@ -147,12 +149,13 @@ public abstract class Mqtt3SubscribeBuilderImpl<
             extends Mqtt3SubscribeBuilderImpl<
                         Mqtt3SubscribeBuilder.Nested<P>,
                         Mqtt3SubscribeBuilder.Nested.Complete<P>,
-                        Mqtt3SubscribeBuilder.Nested.Start<P>,
-                        Mqtt3SubscribeBuilder.Nested.Start.Complete<P>>
+                        Mqtt3SubscribeBuilder.Nested.First<P>,
+                        Mqtt3SubscribeBuilder.Nested.First.Complete<P>>
             implements Mqtt3SubscribeBuilder.Nested<P>,
                        Mqtt3SubscribeBuilder.Nested.Complete<P>,
-                       Mqtt3SubscribeBuilder.Nested.Start<P>,
-                       Mqtt3SubscribeBuilder.Nested.Start.Complete<P> {
+                       Mqtt3SubscribeBuilder.Nested.First<P>,
+                       Mqtt3SubscribeBuilder.Nested.First.Complete<P>,
+                       Mqtt3SubscribeBuilder.Nested.Start<P> {
     // @formatter:on
 
         private final @NotNull Function<? super Mqtt3Subscribe, P> parentConsumer;
@@ -167,7 +170,7 @@ public abstract class Mqtt3SubscribeBuilderImpl<
         }
 
         @Override
-        protected @NotNull Mqtt3SubscribeBuilder.Nested.Start.Complete<P> self2() {
+        protected @NotNull Mqtt3SubscribeBuilder.Nested.First.Complete<P> self2() {
             return this;
         }
 
@@ -182,12 +185,13 @@ public abstract class Mqtt3SubscribeBuilderImpl<
             extends Mqtt3SubscribeBuilderImpl<
                         Mqtt3SubscribeBuilder.Send<P>,
                         Mqtt3SubscribeBuilder.Send.Complete<P>,
-                        Mqtt3SubscribeBuilder.Send.Start<P>,
-                        Mqtt3SubscribeBuilder.Send.Start.Complete<P>>
+                        Mqtt3SubscribeBuilder.Send.First<P>,
+                        Mqtt3SubscribeBuilder.Send.First.Complete<P>>
             implements Mqtt3SubscribeBuilder.Send<P>,
                        Mqtt3SubscribeBuilder.Send.Complete<P>,
-                       Mqtt3SubscribeBuilder.Send.Start<P>,
-                       Mqtt3SubscribeBuilder.Send.Start.Complete<P> {
+                       Mqtt3SubscribeBuilder.Send.First<P>,
+                       Mqtt3SubscribeBuilder.Send.First.Complete<P>,
+                       Mqtt3SubscribeBuilder.Send.Start<P> {
     // @formatter:on
 
         private final @NotNull Function<? super Mqtt3Subscribe, P> parentConsumer;
@@ -202,7 +206,7 @@ public abstract class Mqtt3SubscribeBuilderImpl<
         }
 
         @Override
-        protected @NotNull Mqtt3SubscribeBuilder.Send.Start.Complete<P> self2() {
+        protected @NotNull Mqtt3SubscribeBuilder.Send.First.Complete<P> self2() {
             return this;
         }
 
