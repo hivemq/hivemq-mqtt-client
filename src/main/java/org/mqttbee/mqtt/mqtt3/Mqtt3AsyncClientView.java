@@ -221,12 +221,13 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
             extends Mqtt3SubscribeBuilderImpl<
                         Mqtt3SubscribeAndCallbackBuilder<P>,
                         Mqtt3SubscribeAndCallbackBuilder.Complete<P>,
-                        Mqtt3SubscribeAndCallbackBuilder.Start<P>,
-                        Mqtt3SubscribeAndCallbackBuilder.Start.Complete<P>>
+                        Mqtt3SubscribeAndCallbackBuilder.First<P>,
+                        Mqtt3SubscribeAndCallbackBuilder.First.Complete<P>>
             implements Mqtt3SubscribeAndCallbackBuilder<P>,
                        Mqtt3SubscribeAndCallbackBuilder.Complete<P>,
+                       Mqtt3SubscribeAndCallbackBuilder.First<P>,
+                       Mqtt3SubscribeAndCallbackBuilder.First.Complete<P>,
                        Mqtt3SubscribeAndCallbackBuilder.Start<P>,
-                       Mqtt3SubscribeAndCallbackBuilder.Start.Complete<P>,
                        CallbackBuilder<P>,
                        CallbackBuilder.Ex<P> {
     // @formatter:on
@@ -247,7 +248,7 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
         }
 
         @Override
-        protected @NotNull Mqtt3SubscribeAndCallbackBuilder.Start.Complete<P> self2() {
+        protected @NotNull Mqtt3SubscribeAndCallbackBuilder.First.Complete<P> self2() {
             return this;
         }
 
