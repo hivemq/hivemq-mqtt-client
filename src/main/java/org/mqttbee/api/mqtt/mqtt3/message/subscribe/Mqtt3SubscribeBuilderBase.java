@@ -19,7 +19,7 @@ package org.mqttbee.api.mqtt.mqtt3.message.subscribe;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscriptionBuilderImpl;
+import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscriptionViewBuilder;
 
 /**
  * @author Silvio Giebl
@@ -34,7 +34,7 @@ public interface Mqtt3SubscribeBuilderBase<
     @NotNull C addSubscription(@NotNull Mqtt3Subscription subscription);
 
     default @NotNull Mqtt3SubscriptionBuilder.Nested<? extends C> addSubscription() {
-        return new Mqtt3SubscriptionBuilderImpl.NestedImpl<>(this::addSubscription);
+        return new Mqtt3SubscriptionViewBuilder.Nested<>(this::addSubscription);
     }
 
     // @formatter:off
@@ -53,19 +53,6 @@ public interface Mqtt3SubscribeBuilderBase<
                 FC extends F>
             extends Mqtt3SubscriptionBuilderBase<F, FC> {
     // @formatter:on
-
-        // @formatter:off
-        @DoNotImplement
-        interface Complete<
-                    B extends Mqtt3SubscribeBuilderBase<B, C>,
-                    C extends B,
-                    F extends Mqtt3SubscribeBuilderBase.First<F, FC>,
-                    FC extends F>
-                extends Mqtt3SubscribeBuilderBase.First<F, FC>,
-                        Mqtt3SubscribeBuilderBase.Complete<B, C>,
-                        Mqtt3SubscriptionBuilderBase.Complete<F, FC> {
-        // @formatter:on
-        }
     }
 
     // @formatter:off
@@ -78,5 +65,18 @@ public interface Mqtt3SubscribeBuilderBase<
             extends Mqtt3SubscribeBuilderBase<B, C>,
                     Mqtt3SubscribeBuilderBase.First<F, FC> {
     // @formatter:on
+
+        // @formatter:off
+        @DoNotImplement
+        interface Complete<
+                    B extends Mqtt3SubscribeBuilderBase<B, C>,
+                    C extends B,
+                    F extends Mqtt3SubscribeBuilderBase.First<F, FC>,
+                    FC extends F>
+                extends Mqtt3SubscribeBuilderBase.Start<B, C, F, FC>,
+                        Mqtt3SubscribeBuilderBase.Complete<B, C>,
+                        Mqtt3SubscriptionBuilderBase.Complete<F, FC> {
+        // @formatter:on
+        }
     }
 }

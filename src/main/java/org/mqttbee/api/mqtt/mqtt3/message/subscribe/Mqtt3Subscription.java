@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
-import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscriptionBuilderImpl;
+import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscriptionViewBuilder;
 
 /**
  * Subscription in the MQTT 3 SUBSCRIBE packet.
@@ -34,7 +34,7 @@ public interface Mqtt3Subscription {
     @NotNull MqttQos DEFAULT_QOS = MqttQos.EXACTLY_ONCE;
 
     static @NotNull Mqtt3SubscriptionBuilder builder() {
-        return new Mqtt3SubscriptionBuilderImpl.Impl();
+        return new Mqtt3SubscriptionViewBuilder.Default();
     }
 
     /**

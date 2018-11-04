@@ -20,9 +20,7 @@ package org.mqttbee.mqtt.message.auth.mqtt3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
-import org.mqttbee.api.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
 import org.mqttbee.api.mqtt.mqtt3.message.auth.Mqtt3SimpleAuthBuilder;
-import org.mqttbee.api.mqtt.mqtt3.message.auth.Mqtt3SimpleAuthBuilderBase;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 
@@ -32,42 +30,34 @@ import java.util.function.Function;
 /**
  * @author Silvio Giebl
  */
-// @formatter:off
-public abstract class Mqtt3SimpleAuthBuilderImpl<B extends Mqtt3SimpleAuthBuilderBase<B, C>, C extends B>
-        implements Mqtt3SimpleAuthBuilderBase<B, C>,
-                   Mqtt3SimpleAuthBuilderBase.Complete<B, C> {
-// @formatter:on
+public abstract class Mqtt3SimpleAuthViewBuilder<B extends Mqtt3SimpleAuthViewBuilder<B>> {
 
     private @Nullable MqttUTF8StringImpl username;
     private @Nullable ByteBuffer password;
 
-    abstract @NotNull C self();
+    abstract @NotNull B self();
 
-    @Override
-    public @NotNull C username(final @NotNull String username) {
+    public @NotNull B username(final @NotNull String username) {
         this.username = MqttBuilderUtil.string(username);
         return self();
     }
 
-    @Override
-    public @NotNull C username(final @NotNull MqttUTF8String username) {
+    public @NotNull B username(final @NotNull MqttUTF8String username) {
         this.username = MqttBuilderUtil.string(username);
         return self();
     }
 
-    @Override
-    public @NotNull C password(final @Nullable byte[] password) {
+    public @NotNull B password(final @Nullable byte[] password) {
         this.password = MqttBuilderUtil.binaryDataOrNull(password);
         return self();
     }
 
-    @Override
-    public @NotNull C password(final @Nullable ByteBuffer password) {
+    public @NotNull B password(final @Nullable ByteBuffer password) {
         this.password = MqttBuilderUtil.binaryDataOrNull(password);
         return self();
     }
 
-    public @NotNull Mqtt3SimpleAuth build() {
+    public @NotNull Mqtt3SimpleAuthView build() {
         if (username == null) {
             throw new IllegalStateException("Username must be given.");
         }
@@ -75,34 +65,33 @@ public abstract class Mqtt3SimpleAuthBuilderImpl<B extends Mqtt3SimpleAuthBuilde
     }
 
     // @formatter:off
-    public static class Impl
-            extends Mqtt3SimpleAuthBuilderImpl<Mqtt3SimpleAuthBuilder, Mqtt3SimpleAuthBuilder.Complete>
-            implements Mqtt3SimpleAuthBuilder, Mqtt3SimpleAuthBuilder.Complete {
+    public static class Default
+            extends Mqtt3SimpleAuthViewBuilder<Default>
+            implements Mqtt3SimpleAuthBuilder,
+                       Mqtt3SimpleAuthBuilder.Complete {
     // @formatter:on
 
         @Override
-        @NotNull Mqtt3SimpleAuthBuilder.Complete self() {
+        @NotNull Default self() {
             return this;
         }
     }
 
     // @formatter:off
-    public static class NestedImpl<P>
-            extends Mqtt3SimpleAuthBuilderImpl<
-                        Mqtt3SimpleAuthBuilder.Nested<P>,
-                        Mqtt3SimpleAuthBuilder.Nested.Complete<P>>
+    public static class Nested<P>
+            extends Mqtt3SimpleAuthViewBuilder<Nested<P>>
             implements Mqtt3SimpleAuthBuilder.Nested<P>,
                        Mqtt3SimpleAuthBuilder.Nested.Complete<P> {
     // @formatter:on
 
-        private final @NotNull Function<? super Mqtt3SimpleAuth, P> parentConsumer;
+        private final @NotNull Function<? super Mqtt3SimpleAuthView, P> parentConsumer;
 
-        public NestedImpl(final @NotNull Function<? super Mqtt3SimpleAuth, P> parentConsumer) {
+        public Nested(final @NotNull Function<? super Mqtt3SimpleAuthView, P> parentConsumer) {
             this.parentConsumer = parentConsumer;
         }
 
         @Override
-        @NotNull Mqtt3SimpleAuthBuilder.Nested.Complete<P> self() {
+        @NotNull Nested<P> self() {
             return this;
         }
 

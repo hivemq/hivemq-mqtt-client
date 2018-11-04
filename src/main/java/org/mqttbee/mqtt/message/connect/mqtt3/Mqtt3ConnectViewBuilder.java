@@ -23,7 +23,6 @@ import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3Connect;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3ConnectBuilder;
-import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3ConnectBuilderBase;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import org.mqttbee.mqtt.message.auth.MqttSimpleAuth;
 import org.mqttbee.mqtt.message.auth.mqtt3.Mqtt3SimpleAuthView;
@@ -39,17 +38,16 @@ import java.util.function.Function;
 /**
  * @author Silvio Giebl
  */
-public abstract class Mqtt3ConnectBuilderImpl<B extends Mqtt3ConnectBuilderBase<B>>
-        implements Mqtt3ConnectBuilderBase<B> {
+public abstract class Mqtt3ConnectViewBuilder<B extends Mqtt3ConnectViewBuilder<B>> {
 
     private int keepAliveSeconds = Mqtt3Connect.DEFAULT_KEEP_ALIVE;
     private boolean isCleanSession = Mqtt3Connect.DEFAULT_CLEAN_SESSION;
     private @Nullable MqttSimpleAuth simpleAuth;
     private @Nullable MqttWillPublish willPublish;
 
-    Mqtt3ConnectBuilderImpl() {}
+    Mqtt3ConnectViewBuilder() {}
 
-    Mqtt3ConnectBuilderImpl(final @NotNull Mqtt3Connect connect) {
+    Mqtt3ConnectViewBuilder(final @NotNull Mqtt3Connect connect) {
         final Mqtt3ConnectView connectView =
                 MustNotBeImplementedUtil.checkNotImplemented(connect, Mqtt3ConnectView.class);
         keepAliveSeconds = connectView.getKeepAlive();
@@ -60,7 +58,6 @@ public abstract class Mqtt3ConnectBuilderImpl<B extends Mqtt3ConnectBuilderBase<
 
     abstract @NotNull B self();
 
-    @Override
     public @NotNull B keepAlive(final int keepAlive, final @NotNull TimeUnit timeUnit) {
         final long keepAliveSeconds = timeUnit.toSeconds(keepAlive);
         Preconditions.checkArgument(UnsignedDataTypes.isUnsignedShort(keepAliveSeconds),
@@ -70,81 +67,74 @@ public abstract class Mqtt3ConnectBuilderImpl<B extends Mqtt3ConnectBuilderBase<
         return self();
     }
 
-    @Override
     public @NotNull B cleanSession(final boolean isCleanSession) {
         this.isCleanSession = isCleanSession;
         return self();
     }
 
-    @Override
     public @NotNull B simpleAuth(final @Nullable Mqtt3SimpleAuth simpleAuth) {
         this.simpleAuth = (simpleAuth == null) ? null : Mqtt3SimpleAuthView.delegate(simpleAuth);
         return self();
     }
 
-    @Override
     public @NotNull B willPublish(final @Nullable Mqtt3Publish willPublish) {
         this.willPublish =
                 (willPublish == null) ? null : MqttBuilderUtil.willPublish(Mqtt3PublishView.delegate(willPublish));
         return self();
     }
 
-    public @NotNull Mqtt3Connect build() {
+    public @NotNull Mqtt3ConnectView build() {
         return Mqtt3ConnectView.of(keepAliveSeconds, isCleanSession, simpleAuth, willPublish);
     }
 
-    public static class Impl extends Mqtt3ConnectBuilderImpl<Mqtt3ConnectBuilder> implements Mqtt3ConnectBuilder {
+    public static class Default extends Mqtt3ConnectViewBuilder<Default> implements Mqtt3ConnectBuilder {
 
-        public Impl() { }
+        public Default() { }
 
-        public Impl(final @NotNull Mqtt3Connect connect) {
+        public Default(final @NotNull Mqtt3Connect connect) {
             super(connect);
         }
 
         @Override
-        @NotNull Mqtt3ConnectBuilder self() {
+        @NotNull Default self() {
             return this;
         }
     }
 
-    public static class NestedImpl<P> extends Mqtt3ConnectBuilderImpl<Mqtt3ConnectBuilder.Nested<P>>
-            implements Mqtt3ConnectBuilder.Nested<P> {
+    public static class Nested<P> extends Mqtt3ConnectViewBuilder<Nested<P>> implements Mqtt3ConnectBuilder.Nested<P> {
 
-        private final @NotNull Function<? super Mqtt3Connect, P> parentConsumer;
+        private final @NotNull Function<? super Mqtt3ConnectView, P> parentConsumer;
 
-        public NestedImpl(final @NotNull Function<? super Mqtt3Connect, P> parentConsumer) {
+        public Nested(final @NotNull Function<? super Mqtt3ConnectView, P> parentConsumer) {
             this.parentConsumer = parentConsumer;
         }
 
         @Override
-        @NotNull Mqtt3ConnectBuilder.Nested<P> self() {
+        @NotNull Nested<P> self() {
             return this;
         }
 
-        @NotNull
         @Override
-        public P applyConnect() {
+        public @NotNull P applyConnect() {
             return parentConsumer.apply(build());
         }
     }
 
-    public static class SendImpl<P> extends Mqtt3ConnectBuilderImpl<Mqtt3ConnectBuilder.Send<P>>
-            implements Mqtt3ConnectBuilder.Send<P> {
+    public static class Send<P> extends Mqtt3ConnectViewBuilder<Send<P>> implements Mqtt3ConnectBuilder.Send<P> {
 
-        private final @NotNull Function<? super Mqtt3Connect, P> parentConsumer;
+        private final @NotNull Function<? super Mqtt3ConnectView, P> parentConsumer;
 
-        public SendImpl(final @NotNull Function<? super Mqtt3Connect, P> parentConsumer) {
+        public Send(final @NotNull Function<? super Mqtt3ConnectView, P> parentConsumer) {
             this.parentConsumer = parentConsumer;
         }
 
         @Override
-        @NotNull Mqtt3ConnectBuilder.Send<P> self() {
+        @NotNull Send<P> self() {
             return this;
         }
 
-        @NotNull
         @Override
-        public P send() {
+        public @NotNull P send() {
             return parentConsumer.apply(build());
         }
     }
