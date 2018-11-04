@@ -17,58 +17,50 @@
 
 package org.mqttbee.api.mqtt.mqtt3.message.auth;
 
-import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
-import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
-import org.mqttbee.mqtt.message.auth.mqtt3.Mqtt3SimpleAuthView;
-import org.mqttbee.mqtt.util.MqttBuilderUtil;
-import org.mqttbee.util.FluentBuilder;
-
-import java.nio.ByteBuffer;
-import java.util.function.Function;
+import org.mqttbee.annotations.DoNotImplement;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt3SimpleAuthBuilder<P> extends FluentBuilder<Mqtt3SimpleAuth, P> {
+// @formatter:off
+@DoNotImplement
+public interface Mqtt3SimpleAuthBuilder extends
+        Mqtt3SimpleAuthBuilderBase<
+            Mqtt3SimpleAuthBuilder,
+            Mqtt3SimpleAuthBuilder.Complete> {
+// @formatter:on
 
-    private @Nullable MqttUTF8StringImpl username;
-    private @Nullable ByteBuffer password;
+    // @formatter:off
+    @DoNotImplement
+    interface Complete extends
+            Mqtt3SimpleAuthBuilder,
+            Mqtt3SimpleAuthBuilderBase.Complete<
+                Mqtt3SimpleAuthBuilder,
+                Mqtt3SimpleAuthBuilder.Complete> {
+    // @formatter:on
 
-    public Mqtt3SimpleAuthBuilder(final @Nullable Function<? super Mqtt3SimpleAuth, P> parentConsumer) {
-        super(parentConsumer);
+        @NotNull Mqtt3SimpleAuth build();
     }
 
-    public @NotNull Mqtt3SimpleAuthBuilder<P> username(final @NotNull String username) {
-        this.username = MqttBuilderUtil.string(username);
-        return this;
-    }
+    // @formatter:off
+    @DoNotImplement
+    interface Nested<P> extends
+            Mqtt3SimpleAuthBuilderBase<
+                Nested<P>,
+                Nested.Complete<P>> {
+    // @formatter:on
 
-    public @NotNull Mqtt3SimpleAuthBuilder<P> username(final @NotNull MqttUTF8String username) {
-        this.username = MqttBuilderUtil.string(username);
-        return this;
-    }
+        // @formatter:off
+        @DoNotImplement
+        interface Complete<P> extends
+                Nested<P>,
+                Mqtt3SimpleAuthBuilderBase.Complete<
+                    Nested<P>,
+                    Nested.Complete<P>> {
+        // @formatter:on
 
-    public @NotNull Mqtt3SimpleAuthBuilder<P> password(final @Nullable byte[] password) {
-        this.password = MqttBuilderUtil.binaryDataOrNull(password);
-        return this;
+            @NotNull P applySimpleAuth();
+        }
     }
-
-    public @NotNull Mqtt3SimpleAuthBuilder<P> password(final @Nullable ByteBuffer password) {
-        this.password = MqttBuilderUtil.binaryDataOrNull(password);
-        return this;
-    }
-
-    @Override
-    public @NotNull Mqtt3SimpleAuth build() {
-        Preconditions.checkState(username != null);
-        return Mqtt3SimpleAuthView.of(username, password);
-    }
-
-    public @NotNull P applySimpleAuth() {
-        return apply();
-    }
-
 }
