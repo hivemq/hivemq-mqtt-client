@@ -18,30 +18,34 @@
 package org.mqttbee.api.mqtt.mqtt3.message.auth;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
-import org.mqttbee.mqtt.message.auth.mqtt3.Mqtt3SimpleAuthBuilderImpl;
 
 import java.nio.ByteBuffer;
-import java.util.Optional;
 
 /**
- * Simple authentication and/or authorization related data in the MQTT 3 CONNECT packet.
+ * @author Silvio Giebl
  */
 @DoNotImplement
-public interface Mqtt3SimpleAuth {
+public interface Mqtt3SimpleAuthBuilderBase<B extends Mqtt3SimpleAuthBuilderBase<B, C>, C extends B> {
 
-    static @NotNull Mqtt3SimpleAuthBuilder builder() {
-        return new Mqtt3SimpleAuthBuilderImpl.Impl();
+    @NotNull C username(@NotNull String username);
+
+    @NotNull C username(@NotNull MqttUTF8String username);
+
+    @NotNull B password(@Nullable byte[] password);
+
+    @NotNull B password(@Nullable ByteBuffer password);
+
+    @DoNotImplement
+    interface Complete<B extends Mqtt3SimpleAuthBuilderBase<B, C>, C extends B>
+            extends Mqtt3SimpleAuthBuilderBase<B, C> {
+
+        @Override
+        @NotNull C password(@Nullable byte[] password);
+
+        @Override
+        @NotNull C password(@Nullable ByteBuffer password);
     }
-
-    /**
-     * @return the username.
-     */
-    @NotNull MqttUTF8String getUsername();
-
-    /**
-     * @return the optional password.
-     */
-    @NotNull Optional<ByteBuffer> getPassword();
 }
