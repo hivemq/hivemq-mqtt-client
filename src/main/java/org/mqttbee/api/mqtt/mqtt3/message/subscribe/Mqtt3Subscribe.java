@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3Message;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
-import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeBuilderImpl;
+import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeViewBuilder;
 
 /**
  * MQTT 3 SUBSCRIBE packet.
@@ -31,11 +31,11 @@ import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeBuilderImpl;
 public interface Mqtt3Subscribe extends Mqtt3Message {
 
     static @NotNull Mqtt3SubscribeBuilder.Start builder() {
-        return new Mqtt3SubscribeBuilderImpl.Impl();
+        return new Mqtt3SubscribeViewBuilder.Default();
     }
 
     static @NotNull Mqtt3SubscribeBuilder.Complete extend(final @NotNull Mqtt3Subscribe subscribe) {
-        return new Mqtt3SubscribeBuilderImpl.Impl(subscribe);
+        return new Mqtt3SubscribeViewBuilder.Default(subscribe);
     }
 
     /**

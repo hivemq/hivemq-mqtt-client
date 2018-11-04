@@ -24,7 +24,7 @@ import org.mqttbee.api.mqtt.datatypes.MqttTopic;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3Message;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3SubscribeResult;
-import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishBuilderImpl;
+import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishViewBuilder;
 
 import java.nio.ByteBuffer;
 import java.util.Optional;
@@ -38,11 +38,11 @@ public interface Mqtt3Publish extends Mqtt3Message, Mqtt3SubscribeResult {
     @NotNull MqttQos DEFAULT_QOS = MqttQos.AT_MOST_ONCE;
 
     static @NotNull Mqtt3PublishBuilder builder() {
-        return new Mqtt3PublishBuilderImpl.Impl();
+        return new Mqtt3PublishViewBuilder.Default();
     }
 
     static @NotNull Mqtt3PublishBuilder.Complete extend(@NotNull final Mqtt3Publish publish) {
-        return new Mqtt3PublishBuilderImpl.Impl(publish);
+        return new Mqtt3PublishViewBuilder.Default(publish);
     }
 
     /**

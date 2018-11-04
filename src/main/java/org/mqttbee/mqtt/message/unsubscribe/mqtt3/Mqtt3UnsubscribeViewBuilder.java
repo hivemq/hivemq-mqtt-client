@@ -24,7 +24,6 @@ import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscription;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubscribeBuilder;
-import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubscribeBuilderBase;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 import org.mqttbee.util.MustNotBeImplementedUtil;
@@ -34,22 +33,15 @@ import java.util.function.Function;
 /**
  * @author Silvio Giebl
  */
-// @formatter:off
-public abstract class Mqtt3UnsubscribeBuilderImpl<
-            B extends Mqtt3UnsubscribeBuilderBase<B, C>,
-            C extends B>
-        implements Mqtt3UnsubscribeBuilderBase<B, C>,
-                   Mqtt3UnsubscribeBuilderBase.Complete<B, C>,
-                   Mqtt3UnsubscribeBuilderBase.Start<B, C> {
-// @formatter:on
+public abstract class Mqtt3UnsubscribeViewBuilder<B extends Mqtt3UnsubscribeViewBuilder<B>> {
 
     private final @NotNull ImmutableList.Builder<MqttTopicFilterImpl> topicFiltersBuilder;
 
-    Mqtt3UnsubscribeBuilderImpl() {
+    Mqtt3UnsubscribeViewBuilder() {
         topicFiltersBuilder = ImmutableList.builder();
     }
 
-    Mqtt3UnsubscribeBuilderImpl(final @NotNull Mqtt3Unsubscribe unsubscribe) {
+    Mqtt3UnsubscribeViewBuilder(final @NotNull Mqtt3Unsubscribe unsubscribe) {
         final Mqtt3UnsubscribeView unsubscribeView =
                 MustNotBeImplementedUtil.checkNotImplemented(unsubscribe, Mqtt3UnsubscribeView.class);
         final ImmutableList<MqttTopicFilterImpl> topicFilters = unsubscribeView.getDelegate().getTopicFilters();
@@ -57,22 +49,19 @@ public abstract class Mqtt3UnsubscribeBuilderImpl<
         topicFiltersBuilder.addAll(topicFilters);
     }
 
-    abstract @NotNull C self();
+    abstract @NotNull B self();
 
-    @Override
-    public @NotNull C addTopicFilter(final @NotNull String topicFilter) {
+    public @NotNull B addTopicFilter(final @NotNull String topicFilter) {
         topicFiltersBuilder.add(MqttBuilderUtil.topicFilter(topicFilter));
         return self();
     }
 
-    @Override
-    public @NotNull C addTopicFilter(final @NotNull MqttTopicFilter topicFilter) {
+    public @NotNull B addTopicFilter(final @NotNull MqttTopicFilter topicFilter) {
         topicFiltersBuilder.add(MqttBuilderUtil.topicFilter(topicFilter));
         return self();
     }
 
-    @Override
-    public @NotNull C reverse(final @NotNull Mqtt3Subscribe subscribe) {
+    public @NotNull B reverse(final @NotNull Mqtt3Subscribe subscribe) {
         final ImmutableList<? extends Mqtt3Subscription> subscriptions = subscribe.getSubscriptions();
         for (final Mqtt3Subscription subscription : subscriptions) {
             addTopicFilter(subscription.getTopicFilter());
@@ -80,17 +69,15 @@ public abstract class Mqtt3UnsubscribeBuilderImpl<
         return self();
     }
 
-    @Override
-    public @NotNull C topicFilter(final @NotNull String topicFilter) {
+    public @NotNull B topicFilter(final @NotNull String topicFilter) {
         return addTopicFilter(topicFilter);
     }
 
-    @Override
-    public @NotNull C topicFilter(final @NotNull MqttTopicFilter topicFilter) {
+    public @NotNull B topicFilter(final @NotNull MqttTopicFilter topicFilter) {
         return addTopicFilter(topicFilter);
     }
 
-    public @NotNull Mqtt3Unsubscribe build() {
+    public @NotNull Mqtt3UnsubscribeView build() {
         final ImmutableList<MqttTopicFilterImpl> topicFilters = topicFiltersBuilder.build();
         if (topicFilters.isEmpty()) {
             throw new IllegalStateException("At least one topic filter must be added.");
@@ -99,45 +86,41 @@ public abstract class Mqtt3UnsubscribeBuilderImpl<
     }
 
     // @formatter:off
-    public static class Impl
-            extends Mqtt3UnsubscribeBuilderImpl<
-                        Mqtt3UnsubscribeBuilder,
-                        Mqtt3UnsubscribeBuilder.Complete>
+    public static class Default
+            extends Mqtt3UnsubscribeViewBuilder<Default>
             implements Mqtt3UnsubscribeBuilder,
                        Mqtt3UnsubscribeBuilder.Complete,
                        Mqtt3UnsubscribeBuilder.Start {
     // @formatter:on
 
-        public Impl() {}
+        public Default() {}
 
-        public Impl(final @NotNull Mqtt3Unsubscribe unsubscribe) {
+        public Default(final @NotNull Mqtt3Unsubscribe unsubscribe) {
             super(unsubscribe);
         }
 
         @Override
-        @NotNull Impl self() {
+        @NotNull Default self() {
             return this;
         }
     }
 
     // @formatter:off
-    public static class NestedImpl<P>
-            extends Mqtt3UnsubscribeBuilderImpl<
-                        Mqtt3UnsubscribeBuilder.Nested<P>,
-                        Mqtt3UnsubscribeBuilder.Nested.Complete<P>>
+    public static class Nested<P>
+            extends Mqtt3UnsubscribeViewBuilder<Nested<P>>
             implements Mqtt3UnsubscribeBuilder.Nested<P>,
                        Mqtt3UnsubscribeBuilder.Nested.Complete<P>,
                        Mqtt3UnsubscribeBuilder.Nested.Start<P> {
     // @formatter:on
 
-        private final @NotNull Function<? super Mqtt3Unsubscribe, P> parentConsumer;
+        private final @NotNull Function<? super Mqtt3UnsubscribeView, P> parentConsumer;
 
-        public NestedImpl(final @NotNull Function<? super Mqtt3Unsubscribe, P> parentConsumer) {
+        public Nested(final @NotNull Function<? super Mqtt3UnsubscribeView, P> parentConsumer) {
             this.parentConsumer = parentConsumer;
         }
 
         @Override
-        @NotNull Mqtt3UnsubscribeBuilder.Nested.Complete<P> self() {
+        @NotNull Nested<P> self() {
             return this;
         }
 
@@ -148,23 +131,21 @@ public abstract class Mqtt3UnsubscribeBuilderImpl<
     }
 
     // @formatter:off
-    public static class SendImpl<P>
-            extends Mqtt3UnsubscribeBuilderImpl<
-                        Mqtt3UnsubscribeBuilder.Send<P>,
-                        Mqtt3UnsubscribeBuilder.Send.Complete<P>>
+    public static class Send<P>
+            extends Mqtt3UnsubscribeViewBuilder<Send<P>>
             implements Mqtt3UnsubscribeBuilder.Send<P>,
                        Mqtt3UnsubscribeBuilder.Send.Complete<P>,
                        Mqtt3UnsubscribeBuilder.Send.Start<P> {
     // @formatter:on
 
-        private final @NotNull Function<? super Mqtt3Unsubscribe, P> parentConsumer;
+        private final @NotNull Function<? super Mqtt3UnsubscribeView, P> parentConsumer;
 
-        public SendImpl(final @NotNull Function<? super Mqtt3Unsubscribe, P> parentConsumer) {
+        public Send(final @NotNull Function<? super Mqtt3UnsubscribeView, P> parentConsumer) {
             this.parentConsumer = parentConsumer;
         }
 
         @Override
-        @NotNull Mqtt3UnsubscribeBuilder.Send.Complete<P> self() {
+        @NotNull Send<P> self() {
             return this;
         }
 

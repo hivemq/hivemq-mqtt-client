@@ -23,7 +23,7 @@ import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3Message;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
-import org.mqttbee.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeBuilderImpl;
+import org.mqttbee.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeViewBuilder;
 
 /**
  * MQTT 3 UNSUBSCRIBE packet.
@@ -32,11 +32,11 @@ import org.mqttbee.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeBuilderImpl;
 public interface Mqtt3Unsubscribe extends Mqtt3Message {
 
     static @NotNull Mqtt3UnsubscribeBuilder.Start builder() {
-        return new Mqtt3UnsubscribeBuilderImpl.Impl();
+        return new Mqtt3UnsubscribeViewBuilder.Default();
     }
 
     static @NotNull Mqtt3UnsubscribeBuilder.Complete extend(final @NotNull Mqtt3Unsubscribe unsubscribe) {
-        return new Mqtt3UnsubscribeBuilderImpl.Impl(unsubscribe);
+        return new Mqtt3UnsubscribeViewBuilder.Default(unsubscribe);
     }
 
     /**

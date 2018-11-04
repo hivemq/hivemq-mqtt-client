@@ -20,7 +20,7 @@ package org.mqttbee.api.mqtt.mqtt3.message.auth;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
-import org.mqttbee.mqtt.message.auth.mqtt3.Mqtt3SimpleAuthBuilderImpl;
+import org.mqttbee.mqtt.message.auth.mqtt3.Mqtt3SimpleAuthViewBuilder;
 
 import java.nio.ByteBuffer;
 import java.util.Optional;
@@ -32,7 +32,7 @@ import java.util.Optional;
 public interface Mqtt3SimpleAuth {
 
     static @NotNull Mqtt3SimpleAuthBuilder builder() {
-        return new Mqtt3SimpleAuthBuilderImpl.Impl();
+        return new Mqtt3SimpleAuthViewBuilder.Default();
     }
 
     /**

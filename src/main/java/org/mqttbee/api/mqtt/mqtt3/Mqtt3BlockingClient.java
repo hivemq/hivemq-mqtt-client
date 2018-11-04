@@ -30,10 +30,10 @@ import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3SubscribeBuilder;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAck;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubscribeBuilder;
-import org.mqttbee.mqtt.message.connect.mqtt3.Mqtt3ConnectBuilderImpl;
-import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishBuilderImpl;
-import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeBuilderImpl;
-import org.mqttbee.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeBuilderImpl;
+import org.mqttbee.mqtt.message.connect.mqtt3.Mqtt3ConnectViewBuilder;
+import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishViewBuilder;
+import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeViewBuilder;
+import org.mqttbee.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeViewBuilder;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -74,7 +74,7 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
      * @see #connect(Mqtt3Connect)
      */
     default @NotNull Mqtt3ConnectBuilder.Send<Mqtt3ConnAck> connectWith() {
-        return new Mqtt3ConnectBuilderImpl.SendImpl<>(this::connect);
+        return new Mqtt3ConnectViewBuilder.Send<>(this::connect);
     }
 
     /**
@@ -99,7 +99,7 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
      * @see #subscribe(Mqtt3Subscribe)
      */
     default @NotNull Mqtt3SubscribeBuilder.Send.Start<Mqtt3SubAck> subscribeWith() {
-        return new Mqtt3SubscribeBuilderImpl.SendImpl<>(this::subscribe);
+        return new Mqtt3SubscribeViewBuilder.Send<>(this::subscribe);
     }
 
     /**
@@ -128,7 +128,7 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
      * @see #unsubscribe(Mqtt3Unsubscribe)
      */
     default @NotNull Mqtt3UnsubscribeBuilder.Send.Start<Void> unsubscribeWith() {
-        return new Mqtt3UnsubscribeBuilderImpl.SendImpl<>(unsubscribe -> {
+        return new Mqtt3UnsubscribeViewBuilder.Send<>(unsubscribe -> {
             unsubscribe(unsubscribe);
             return null;
         });
@@ -151,7 +151,7 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
      * @see #publish(Mqtt3Publish)
      */
     default @NotNull Mqtt3PublishBuilder.Send<Void> publishWith() {
-        return new Mqtt3PublishBuilderImpl.SendImpl<>(publish -> {
+        return new Mqtt3PublishViewBuilder.Send<>(publish -> {
             publish(publish);
             return null;
         });

@@ -24,7 +24,6 @@ import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscription;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3SubscriptionBuilder;
-import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3SubscriptionBuilderBase;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 
@@ -33,74 +32,61 @@ import java.util.function.Function;
 /**
  * @author Silvio Giebl
  */
-// @formatter:off
-public abstract class Mqtt3SubscriptionBuilderImpl<
-            B extends Mqtt3SubscriptionBuilderBase<B, C>,
-            C extends B>
-        implements Mqtt3SubscriptionBuilderBase<B, C>,
-                   Mqtt3SubscriptionBuilderBase.Complete<B, C> {
-// @formatter:on
+public abstract class Mqtt3SubscriptionViewBuilder<B extends Mqtt3SubscriptionViewBuilder<B>> {
 
     private @Nullable MqttTopicFilterImpl topicFilter;
     private @NotNull MqttQos qos = Mqtt3Subscription.DEFAULT_QOS;
 
-    abstract @NotNull C self();
+    abstract @NotNull B self();
 
-    @Override
-    public @NotNull C topicFilter(final @NotNull String topicFilter) {
+    public @NotNull B topicFilter(final @NotNull String topicFilter) {
         this.topicFilter = MqttBuilderUtil.topicFilter(topicFilter);
         return self();
     }
 
-    @Override
-    public @NotNull C topicFilter(final @NotNull MqttTopicFilter topicFilter) {
+    public @NotNull B topicFilter(final @NotNull MqttTopicFilter topicFilter) {
         this.topicFilter = MqttBuilderUtil.topicFilter(topicFilter);
         return self();
     }
 
-    @Override
-    public @NotNull C qos(final @NotNull MqttQos qos) {
+    public @NotNull B qos(final @NotNull MqttQos qos) {
         this.qos = Preconditions.checkNotNull(qos, "QoS must not be null.");
         return self();
     }
 
-    public @NotNull Mqtt3Subscription build() {
+    public @NotNull Mqtt3SubscriptionView build() {
         Preconditions.checkNotNull(topicFilter, "Topic filter must not be null.");
         return Mqtt3SubscriptionView.of(topicFilter, qos);
     }
 
     // @formatter:off
-    public static class Impl
-            extends Mqtt3SubscriptionBuilderImpl<
-                        Mqtt3SubscriptionBuilder,
-                        Mqtt3SubscriptionBuilder.Complete>
+    public static class Default
+            extends Mqtt3SubscriptionViewBuilder<Default>
             implements Mqtt3SubscriptionBuilder,
                        Mqtt3SubscriptionBuilder.Complete {
     // @formatter:on
 
         @Override
-        @NotNull Mqtt3SubscriptionBuilder.Complete self() {
+        @NotNull Default self() {
             return this;
         }
     }
 
     // @formatter:off
-    public static class NestedImpl<P>
-            extends Mqtt3SubscriptionBuilderImpl<
-                        Mqtt3SubscriptionBuilder.Nested<P>,
-                        Mqtt3SubscriptionBuilder.Nested.Complete<P>>
+    public static class Nested<P>
+            extends Mqtt3SubscriptionViewBuilder<Nested<P>>
             implements Mqtt3SubscriptionBuilder.Nested<P>,
                        Mqtt3SubscriptionBuilder.Nested.Complete<P> {
     // @formatter:on
 
         private final @NotNull Function<? super Mqtt3Subscription, P> parentConsumer;
 
-        public NestedImpl(final @NotNull Function<? super Mqtt3Subscription, P> parentConsumer) {
+        public Nested(final @NotNull Function<? super Mqtt3Subscription, P> parentConsumer) {
             this.parentConsumer = parentConsumer;
         }
 
         @Override
-        @NotNull Mqtt3SubscriptionBuilder.Nested.Complete<P> self() {
+        @NotNull Nested<P> self() {
             return this;
         }
 

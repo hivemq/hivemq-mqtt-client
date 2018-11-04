@@ -32,9 +32,9 @@ import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3SubscribeBuilder;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAck;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubscribeBuilder;
-import org.mqttbee.mqtt.message.connect.mqtt3.Mqtt3ConnectBuilderImpl;
-import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeBuilderImpl;
-import org.mqttbee.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeBuilderImpl;
+import org.mqttbee.mqtt.message.connect.mqtt3.Mqtt3ConnectViewBuilder;
+import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeViewBuilder;
+import org.mqttbee.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeViewBuilder;
 import org.mqttbee.rx.FlowableWithSingle;
 
 /**
@@ -84,7 +84,7 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      * @see #connect(Mqtt3Connect)
      */
     default @NotNull Mqtt3ConnectBuilder.Nested<Single<Mqtt3ConnAck>> connectWith() {
-        return new Mqtt3ConnectBuilderImpl.NestedImpl<>(this::connect);
+        return new Mqtt3ConnectViewBuilder.Nested<>(this::connect);
     }
 
     /**
@@ -122,7 +122,7 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      * @see #subscribe(Mqtt3Subscribe)
      */
     default @NotNull Mqtt3SubscribeBuilder.Nested.Start<Single<Mqtt3SubAck>> subscribeWith() {
-        return new Mqtt3SubscribeBuilderImpl.NestedImpl<>(this::subscribe);
+        return new Mqtt3SubscribeViewBuilder.Nested<>(this::subscribe);
     }
 
     /**
@@ -161,7 +161,7 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      * @see #subscribeStream(Mqtt3Subscribe)
      */
     default @NotNull Mqtt3SubscribeBuilder.Nested.Start<FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck>> subscribeStreamWith() {
-        return new Mqtt3SubscribeBuilderImpl.NestedImpl<>(this::subscribeStream);
+        return new Mqtt3SubscribeViewBuilder.Nested<>(this::subscribeStream);
     }
 
     /**
@@ -208,7 +208,7 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      * @see #unsubscribe(Mqtt3Unsubscribe)
      */
     default @NotNull Mqtt3UnsubscribeBuilder.Nested.Start<Completable> unsubscribeWith() {
-        return new Mqtt3UnsubscribeBuilderImpl.NestedImpl<>(this::unsubscribe);
+        return new Mqtt3UnsubscribeViewBuilder.Nested<>(this::unsubscribe);
     }
 
     /**

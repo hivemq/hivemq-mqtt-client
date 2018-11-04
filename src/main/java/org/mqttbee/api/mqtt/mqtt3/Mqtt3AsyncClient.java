@@ -30,9 +30,9 @@ import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3SubscribeBuilderBase;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAck;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubscribeBuilder;
-import org.mqttbee.mqtt.message.connect.mqtt3.Mqtt3ConnectBuilderImpl;
-import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishBuilderImpl;
-import org.mqttbee.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeBuilderImpl;
+import org.mqttbee.mqtt.message.connect.mqtt3.Mqtt3ConnectViewBuilder;
+import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishViewBuilder;
+import org.mqttbee.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeViewBuilder;
 import org.mqttbee.mqtt.mqtt3.Mqtt3AsyncClientView;
 
 import java.util.concurrent.CompletableFuture;
@@ -82,7 +82,7 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * @see #connect(Mqtt3Connect)
      */
     default @NotNull Mqtt3ConnectBuilder.Send<CompletableFuture<Mqtt3ConnAck>> connectWith() {
-        return new Mqtt3ConnectBuilderImpl.SendImpl<>(this::connect);
+        return new Mqtt3ConnectViewBuilder.Send<>(this::connect);
     }
 
     /**
@@ -154,19 +154,8 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * @see #subscribe(Mqtt3Subscribe, Consumer)
      * @see #subscribe(Mqtt3Subscribe, Consumer, Executor)
      */
-    default @NotNull Mqtt3SubscribeAndCallbackBuilder.Start<CompletableFuture<Mqtt3SubAck>> subscribeWith() {
-        return new Mqtt3AsyncClientView.Mqtt3SubscribeAndCallbackBuilderImpl<>(subscribeAndCallback -> {
-            final Mqtt3Subscribe subscribe = subscribeAndCallback.getSubscribe();
-            final Consumer<Mqtt3Publish> callback = subscribeAndCallback.getCallback();
-            if (callback == null) {
-                return subscribe(subscribe);
-            }
-            final Executor executor = subscribeAndCallback.getExecutor();
-            if (executor == null) {
-                return subscribe(subscribe, callback);
-            }
-            return subscribe(subscribe, callback, executor);
-        });
+    default @NotNull Mqtt3SubscribeAndCallbackBuilder.Start subscribeWith() {
+        return new Mqtt3AsyncClientView.Mqtt3SubscribeViewAndCallbackBuilder(this);
     }
 
     /**
@@ -213,7 +202,7 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * @see #unsubscribe(Mqtt3Unsubscribe)
      */
     default @NotNull Mqtt3UnsubscribeBuilder.Send.Start<CompletableFuture<Void>> unsubscribeWith() {
-        return new Mqtt3UnsubscribeBuilderImpl.SendImpl<>(this::unsubscribe);
+        return new Mqtt3UnsubscribeViewBuilder.Send<>(this::unsubscribe);
     }
 
     /**
@@ -240,7 +229,7 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      * @see #publish(Mqtt3Publish)
      */
     default @NotNull Mqtt3PublishBuilder.Send<CompletableFuture<Mqtt3Publish>> publishWith() {
-        return new Mqtt3PublishBuilderImpl.SendImpl<>(this::publish);
+        return new Mqtt3PublishViewBuilder.Send<>(this::publish);
     }
 
     /**
@@ -261,70 +250,70 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
 
     // @formatter:off
     @DoNotImplement
-    interface Mqtt3SubscribeAndCallbackBuilder<P> extends
+    interface Mqtt3SubscribeAndCallbackBuilder extends
             Mqtt3SubscribeBuilderBase<
-                Mqtt3SubscribeAndCallbackBuilder<P>,
-                Mqtt3SubscribeAndCallbackBuilder.Complete<P>> {
+                Mqtt3SubscribeAndCallbackBuilder,
+                Mqtt3SubscribeAndCallbackBuilder.Complete> {
     // @formatter:on
 
         // @formatter:off
         @DoNotImplement
-        interface Complete<P> extends
-                Mqtt3SubscribeAndCallbackBuilder<P>,
-                CallbackBuilder<P>,
+        interface Complete extends
+                Mqtt3SubscribeAndCallbackBuilder,
+                Mqtt3SubscribeAndCallbackBuilder.Call,
                 Mqtt3SubscribeBuilderBase.Complete<
-                    Mqtt3SubscribeAndCallbackBuilder<P>,
-                    Mqtt3SubscribeAndCallbackBuilder.Complete<P>> {
+                    Mqtt3SubscribeAndCallbackBuilder,
+                    Mqtt3SubscribeAndCallbackBuilder.Complete> {
         // @formatter:on
         }
 
         // @formatter:off
         @DoNotImplement
-        interface First<P> extends
+        interface First extends
                 Mqtt3SubscribeBuilderBase.First<
-                    Mqtt3SubscribeAndCallbackBuilder.First<P>,
-                    Mqtt3SubscribeAndCallbackBuilder.First.Complete<P>> {
+                    Mqtt3SubscribeAndCallbackBuilder.First,
+                    Mqtt3SubscribeAndCallbackBuilder.Start.Complete> {
+        // @formatter:on
+        }
+
+        // @formatter:off
+        @DoNotImplement
+        interface Start extends
+                Mqtt3SubscribeAndCallbackBuilder,
+                Mqtt3SubscribeAndCallbackBuilder.First,
+                Mqtt3SubscribeBuilderBase.Start<
+                    Mqtt3SubscribeAndCallbackBuilder,
+                    Mqtt3SubscribeAndCallbackBuilder.Complete,
+                    Mqtt3SubscribeAndCallbackBuilder.First,
+                    Mqtt3SubscribeAndCallbackBuilder.Start.Complete> {
         // @formatter:on
 
             // @formatter:off
             @DoNotImplement
-            interface Complete<P> extends
-                    Mqtt3SubscribeAndCallbackBuilder.First<P>,
-                    Mqtt3SubscribeAndCallbackBuilder.Complete<P>,
-                    Mqtt3SubscribeBuilderBase.First.Complete<
-                        Mqtt3SubscribeAndCallbackBuilder<P>,
-                        Mqtt3SubscribeAndCallbackBuilder.Complete<P>,
-                        Mqtt3SubscribeAndCallbackBuilder.First<P>,
-                        Mqtt3SubscribeAndCallbackBuilder.First.Complete<P>> {
+            interface Complete extends
+                    Mqtt3SubscribeAndCallbackBuilder.Start,
+                    Mqtt3SubscribeAndCallbackBuilder.Complete,
+                    Mqtt3SubscribeBuilderBase.Start.Complete<
+                        Mqtt3SubscribeAndCallbackBuilder,
+                        Mqtt3SubscribeAndCallbackBuilder.Complete,
+                        Mqtt3SubscribeAndCallbackBuilder.First,
+                        Mqtt3SubscribeAndCallbackBuilder.Start.Complete> {
             // @formatter:on
             }
         }
 
-        // @formatter:off
         @DoNotImplement
-        interface Start<P> extends
-                Mqtt3SubscribeAndCallbackBuilder<P>,
-                Mqtt3SubscribeAndCallbackBuilder.First<P>,
-                Mqtt3SubscribeBuilderBase.Start<
-                    Mqtt3SubscribeAndCallbackBuilder<P>,
-                    Mqtt3SubscribeAndCallbackBuilder.Complete<P>,
-                    Mqtt3SubscribeAndCallbackBuilder.First<P>,
-                    Mqtt3SubscribeAndCallbackBuilder.First.Complete<P>> {
-        // @formatter:on
-        }
-    }
+        interface Call {
 
-    @DoNotImplement
-    interface CallbackBuilder<P> {
+            @NotNull Ex callback(@NotNull Consumer<Mqtt3Publish> callback);
 
-        @NotNull Ex<P> callback(@NotNull Consumer<Mqtt3Publish> callback);
+            @NotNull CompletableFuture<Mqtt3SubAck> send();
 
-        @NotNull P send();
+            @DoNotImplement
+            interface Ex extends Call {
 
-        @DoNotImplement
-        interface Ex<P> extends CallbackBuilder<P> {
-
-            @NotNull Ex<P> executor(@NotNull Executor executor);
+                @NotNull Ex executor(@NotNull Executor executor);
+            }
         }
     }
 }

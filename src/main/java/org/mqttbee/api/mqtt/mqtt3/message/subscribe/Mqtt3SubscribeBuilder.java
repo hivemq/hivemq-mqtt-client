@@ -48,21 +48,8 @@ public interface Mqtt3SubscribeBuilder extends
     interface First extends
             Mqtt3SubscribeBuilderBase.First<
                 Mqtt3SubscribeBuilder.First,
-                Mqtt3SubscribeBuilder.First.Complete> {
+                Mqtt3SubscribeBuilder.Start.Complete> {
     // @formatter:on
-
-        // @formatter:off
-        @DoNotImplement
-        interface Complete extends
-                Mqtt3SubscribeBuilder.First,
-                Mqtt3SubscribeBuilder.Complete,
-                Mqtt3SubscribeBuilderBase.First.Complete<
-                    Mqtt3SubscribeBuilder,
-                    Mqtt3SubscribeBuilder.Complete,
-                    Mqtt3SubscribeBuilder.First,
-                    Mqtt3SubscribeBuilder.First.Complete> {
-        // @formatter:on
-        }
     }
 
     // @formatter:off
@@ -74,8 +61,21 @@ public interface Mqtt3SubscribeBuilder extends
                 Mqtt3SubscribeBuilder,
                 Mqtt3SubscribeBuilder.Complete,
                 Mqtt3SubscribeBuilder.First,
-                Mqtt3SubscribeBuilder.First.Complete> {
+                Mqtt3SubscribeBuilder.Start.Complete> {
     // @formatter:on
+
+        // @formatter:off
+        @DoNotImplement
+        interface Complete extends
+                Mqtt3SubscribeBuilder.Start,
+                Mqtt3SubscribeBuilder.Complete,
+                Mqtt3SubscribeBuilderBase.Start.Complete<
+                    Mqtt3SubscribeBuilder,
+                    Mqtt3SubscribeBuilder.Complete,
+                    Mqtt3SubscribeBuilder.First,
+                    Mqtt3SubscribeBuilder.Start.Complete> {
+        // @formatter:on
+        }
     }
 
     // @formatter:off
@@ -103,21 +103,8 @@ public interface Mqtt3SubscribeBuilder extends
         interface First<P> extends
                 Mqtt3SubscribeBuilderBase.First<
                     Nested.First<P>,
-                    Nested.First.Complete<P>> {
+                    Nested.Start.Complete<P>> {
         // @formatter:on
-
-            // @formatter:off
-            @DoNotImplement
-            interface Complete<P> extends
-                    Nested.First<P>,
-                    Nested.Complete<P>,
-                    Mqtt3SubscribeBuilderBase.First.Complete<
-                        Nested<P>,
-                        Nested.Complete<P>,
-                        Nested.First<P>,
-                        Nested.First.Complete<P>> {
-            // @formatter:on
-            }
         }
 
         // @formatter:off
@@ -129,8 +116,21 @@ public interface Mqtt3SubscribeBuilder extends
                     Nested<P>,
                     Nested.Complete<P>,
                     Nested.First<P>,
-                    Nested.First.Complete<P>> {
+                    Nested.Start.Complete<P>> {
         // @formatter:on
+
+            // @formatter:off
+            @DoNotImplement
+            interface Complete<P> extends
+                    Nested.Start<P>,
+                    Nested.Complete<P>,
+                    Mqtt3SubscribeBuilderBase.Start.Complete<
+                        Nested<P>,
+                        Nested.Complete<P>,
+                        Nested.First<P>,
+                        Nested.Start.Complete<P>> {
+            // @formatter:on
+            }
         }
     }
 
@@ -159,21 +159,8 @@ public interface Mqtt3SubscribeBuilder extends
         interface First<P> extends
                 Mqtt3SubscribeBuilderBase.First<
                     Send.First<P>,
-                    Send.First.Complete<P>> {
+                    Send.Start.Complete<P>> {
         // @formatter:on
-
-            // @formatter:off
-            @DoNotImplement
-            interface Complete<P> extends
-                    Send.First<P>,
-                    Send.Complete<P>,
-                    Mqtt3SubscribeBuilderBase.First.Complete<
-                        Send<P>,
-                        Send.Complete<P>,
-                        Send.First<P>,
-                        Send.First.Complete<P>> {
-            // @formatter:on
-            }
         }
 
         // @formatter:off
@@ -185,8 +172,21 @@ public interface Mqtt3SubscribeBuilder extends
                     Send<P>,
                     Send.Complete<P>,
                     Send.First<P>,
-                    Send.First.Complete<P>> {
+                    Send.Start.Complete<P>> {
         // @formatter:on
+
+            // @formatter:off
+            @DoNotImplement
+            interface Complete<P> extends
+                    Send.Start<P>,
+                    Send.Complete<P>,
+                    Mqtt3SubscribeBuilderBase.Start.Complete<
+                        Send<P>,
+                        Send.Complete<P>,
+                        Send.First<P>,
+                        Send.Start.Complete<P>> {
+            // @formatter:on
+            }
         }
     }
 }
