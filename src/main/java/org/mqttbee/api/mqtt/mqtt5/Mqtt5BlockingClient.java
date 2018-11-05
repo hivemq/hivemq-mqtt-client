@@ -34,6 +34,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5UnsubscribeBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
+import org.mqttbee.mqtt.message.publish.MqttPublishBuilder;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribeBuilder;
 
 import java.util.Optional;
@@ -148,14 +149,14 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
     /**
      * Fluent counterpart of {@link #publish(Mqtt5Publish)}.
      * <p>
-     * Calling {@link Mqtt5PublishBuilder#applyPublish()} on the returned builder has the same effect as calling {@link
-     * #publish(Mqtt5Publish)} with the result of {@link Mqtt5PublishBuilder#build()}.
+     * Calling {@link Mqtt5PublishBuilder.Send.Complete#send()} on the returned builder has the same effect as calling
+     * {@link #publish(Mqtt5Publish)} with the result of {@link Mqtt5PublishBuilder.Complete#build()}.
      *
      * @return the fluent builder for the Unsubscribe message.
      * @see #publish(Mqtt5Publish)
      */
-    default @NotNull Mqtt5PublishBuilder<Mqtt5PublishResult> publishWith() {
-        return new Mqtt5PublishBuilder<>(this::publish);
+    default @NotNull Mqtt5PublishBuilder.Send<Mqtt5PublishResult> publishWith() {
+        return new MqttPublishBuilder.Send<>(this::publish);
     }
 
     /**

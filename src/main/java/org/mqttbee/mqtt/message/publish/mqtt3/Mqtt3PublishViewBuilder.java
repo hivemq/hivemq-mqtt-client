@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt.message.publish.mqtt3;
 
-import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
@@ -32,6 +31,7 @@ import org.mqttbee.util.ByteBufferUtil;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 
 import java.nio.ByteBuffer;
+import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -82,7 +82,7 @@ public abstract class Mqtt3PublishViewBuilder<B extends Mqtt3PublishViewBuilder<
     }
 
     public @NotNull B qos(final @NotNull MqttQos qos) {
-        this.qos = Preconditions.checkNotNull(qos, "QoS must not be null.");
+        this.qos = Objects.requireNonNull(qos, "QoS must not be null.");
         return self();
     }
 
@@ -100,7 +100,7 @@ public abstract class Mqtt3PublishViewBuilder<B extends Mqtt3PublishViewBuilder<
         }
 
         public @NotNull Mqtt3PublishView build() {
-            Preconditions.checkNotNull(topic, "Topic must not be null.");
+            Objects.requireNonNull(topic, "Topic must be given.");
             return Mqtt3PublishView.of(topic, payload, qos, retain);
         }
     }
@@ -176,7 +176,7 @@ public abstract class Mqtt3PublishViewBuilder<B extends Mqtt3PublishViewBuilder<
         }
 
         public @NotNull Mqtt3PublishView build() {
-            Preconditions.checkNotNull(topic, "Topic must not be null.");
+            Objects.requireNonNull(topic, "Topic must be given.");
             return Mqtt3PublishView.willOf(topic, payload, qos, retain);
         }
     }

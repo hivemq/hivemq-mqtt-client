@@ -26,10 +26,10 @@ import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeResult;
+import org.mqttbee.mqtt.message.publish.MqttPublishBuilder;
 
 import java.nio.ByteBuffer;
 import java.util.Optional;
-import java.util.function.Function;
 
 /**
  * MQTT 5 PUBLISH packet.
@@ -46,12 +46,12 @@ public interface Mqtt5Publish extends Mqtt5Message, Mqtt5SubscribeResult {
      */
     @NotNull TopicAliasUsage DEFAULT_TOPIC_ALIAS_USAGE = TopicAliasUsage.NO;
 
-    static @NotNull Mqtt5PublishBuilder<Void> builder() {
-        return new Mqtt5PublishBuilder<>((Function<Mqtt5Publish, Void>) null);
+    static @NotNull Mqtt5PublishBuilder builder() {
+        return new MqttPublishBuilder.Default();
     }
 
-    static @NotNull Mqtt5PublishBuilder<Void> extend(@NotNull final Mqtt5Publish publish) {
-        return new Mqtt5PublishBuilder<>(publish);
+    static @NotNull Mqtt5PublishBuilder.Complete extend(@NotNull final Mqtt5Publish publish) {
+        return new MqttPublishBuilder.Default(publish);
     }
 
     /**
