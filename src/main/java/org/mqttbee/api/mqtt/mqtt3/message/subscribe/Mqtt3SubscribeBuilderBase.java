@@ -19,7 +19,6 @@ package org.mqttbee.api.mqtt.mqtt3.message.subscribe;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscriptionViewBuilder;
 
 /**
  * @author Silvio Giebl
@@ -33,9 +32,7 @@ public interface Mqtt3SubscribeBuilderBase<
 
     @NotNull C addSubscription(@NotNull Mqtt3Subscription subscription);
 
-    default @NotNull Mqtt3SubscriptionBuilder.Nested<? extends C> addSubscription() {
-        return new Mqtt3SubscriptionViewBuilder.Nested<>(this::addSubscription);
-    }
+    @NotNull Mqtt3SubscriptionBuilder.Nested<? extends C> addSubscription();
 
     // @formatter:off
     @DoNotImplement

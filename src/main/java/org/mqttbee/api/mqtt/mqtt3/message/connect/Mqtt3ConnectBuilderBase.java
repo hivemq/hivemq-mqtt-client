@@ -24,8 +24,6 @@ import org.mqttbee.api.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
 import org.mqttbee.api.mqtt.mqtt3.message.auth.Mqtt3SimpleAuthBuilder;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3WillPublishBuilder;
-import org.mqttbee.mqtt.message.auth.mqtt3.Mqtt3SimpleAuthViewBuilder;
-import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishViewBuilder;
 
 import java.util.concurrent.TimeUnit;
 
@@ -41,13 +39,9 @@ public interface Mqtt3ConnectBuilderBase<B extends Mqtt3ConnectBuilderBase<B>> {
 
     @NotNull B simpleAuth(final @Nullable Mqtt3SimpleAuth simpleAuth);
 
-    default @NotNull Mqtt3SimpleAuthBuilder.Nested<? extends B> simpleAuth() {
-        return new Mqtt3SimpleAuthViewBuilder.Nested<>(this::simpleAuth);
-    }
+    @NotNull Mqtt3SimpleAuthBuilder.Nested<? extends B> simpleAuth();
 
     @NotNull B willPublish(final @Nullable Mqtt3Publish willPublish);
 
-    default @NotNull Mqtt3WillPublishBuilder.Nested<? extends B> willPublish() {
-        return new Mqtt3PublishViewBuilder.WillNested<>(this::willPublish);
-    }
+    @NotNull Mqtt3WillPublishBuilder.Nested<? extends B> willPublish();
 }

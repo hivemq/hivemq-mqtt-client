@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
+import org.mqttbee.api.mqtt.datatypes.MqttTopicBuilder;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3PublishBuilder;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3WillPublishBuilder;
@@ -64,6 +65,10 @@ public abstract class Mqtt3PublishViewBuilder<B extends Mqtt3PublishViewBuilder<
     public @NotNull B topic(final @NotNull MqttTopic topic) {
         this.topic = MqttBuilderUtil.topic(topic);
         return self();
+    }
+
+    public @NotNull MqttTopicBuilder<B> topic() {
+        return new MqttTopicBuilder<>(this::topic);
     }
 
     public @NotNull B payload(final @Nullable byte[] payload) {

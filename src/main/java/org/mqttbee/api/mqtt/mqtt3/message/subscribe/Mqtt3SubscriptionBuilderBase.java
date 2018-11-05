@@ -37,9 +37,7 @@ public interface Mqtt3SubscriptionBuilderBase<
 
     @NotNull C topicFilter(final @NotNull MqttTopicFilter topicFilter);
 
-    default @NotNull MqttTopicFilterBuilder<? extends C> topicFilter() {
-        return new MqttTopicFilterBuilder<>(this::topicFilter);
-    }
+    @NotNull MqttTopicFilterBuilder<? extends C> topicFilter();
 
     @NotNull B qos(final @NotNull MqttQos qos);
 

@@ -37,9 +37,7 @@ public interface Mqtt3UnsubscribeBuilderBase<
 
     @NotNull C addTopicFilter(final @NotNull MqttTopicFilter topicFilter);
 
-    default @NotNull MqttTopicFilterBuilder<? extends C> addTopicFilter() {
-        return new MqttTopicFilterBuilder<>(this::addTopicFilter);
-    }
+    @NotNull MqttTopicFilterBuilder<? extends C> addTopicFilter();
 
     @NotNull C reverse(final @NotNull Mqtt3Subscribe subscribe);
 
@@ -64,8 +62,6 @@ public interface Mqtt3UnsubscribeBuilderBase<
 
         @NotNull C topicFilter(final @NotNull MqttTopicFilter topicFilter);
 
-        default @NotNull MqttTopicFilterBuilder<? extends C> topicFilter() {
-            return new MqttTopicFilterBuilder<>(this::topicFilter);
-        }
+        @NotNull MqttTopicFilterBuilder<? extends C> topicFilter();
     }
 }
