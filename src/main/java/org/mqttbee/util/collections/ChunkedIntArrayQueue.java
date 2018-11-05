@@ -18,6 +18,7 @@
 package org.mqttbee.util.collections;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
@@ -28,8 +29,8 @@ import javax.annotation.concurrent.NotThreadSafe;
 public class ChunkedIntArrayQueue {
 
     private final int chunkSize;
-    private IntChunk producerChunk;
-    private IntChunk consumerChunk;
+    private @NotNull IntChunk producerChunk;
+    private @NotNull IntChunk consumerChunk;
     private int producerIndex;
     private int consumerIndex;
     private int size;
@@ -51,15 +52,13 @@ public class ChunkedIntArrayQueue {
         IntChunk producerChunk = this.producerChunk;
         final int producerIndex = this.producerIndex;
         final int newProducerIndex = (producerIndex == chunkSize) ? 0 : producerIndex;
-        if (size > 0) {
-            if (((producerIndex == chunkSize) && (producerChunk != consumerChunk)) ||
-                    ((producerChunk == consumerChunk) && (newProducerIndex == consumerIndex))) {
-                final IntChunk chunk = new IntChunk(chunkSize);
-                producerChunk.jumpIndex = producerIndex - 1;
-                producerChunk.next = chunk;
-                producerChunk = chunk;
-                this.producerChunk = chunk;
-            }
+        if ((size > 0) && (((producerIndex == chunkSize) && (producerChunk != consumerChunk)) ||
+                ((producerChunk == consumerChunk) && (newProducerIndex == consumerIndex)))) {
+            final IntChunk chunk = new IntChunk(chunkSize);
+            producerChunk.jumpIndex = producerIndex - 1;
+            producerChunk.next = chunk;
+            producerChunk = chunk;
+            this.producerChunk = chunk;
         }
         producerChunk.values[newProducerIndex] = value;
         this.producerIndex = newProducerIndex + 1;
@@ -75,6 +74,7 @@ public class ChunkedIntArrayQueue {
         final int value = consumerChunk.values[consumerIndex];
         size--;
         if (consumerIndex == consumerChunk.jumpIndex) {
+            assert consumerChunk.next != null;
             consumerIndex = 0;
             this.consumerChunk = consumerChunk.next;
         } else {
@@ -106,6 +106,7 @@ public class ChunkedIntArrayQueue {
                 return true;
             }
             if (index == chunk.jumpIndex) {
+                assert chunk.next != null;
                 index = 0;
                 chunk = chunk.next;
             } else {
@@ -124,6 +125,7 @@ public class ChunkedIntArrayQueue {
         int lastValue = currentChunk.values[currentIndex];
         while ((currentChunk != chunk) || (currentIndex != index)) {
             if (currentIndex == currentChunk.jumpIndex) {
+                assert currentChunk.next != null;
                 currentIndex = 0;
                 currentChunk = currentChunk.next;
             } else {
@@ -141,9 +143,9 @@ public class ChunkedIntArrayQueue {
 
     private static class IntChunk {
 
-        final int[] values;
+        final @NotNull int[] values;
         int jumpIndex = -1;
-        IntChunk next;
+        @Nullable IntChunk next;
 
         IntChunk(final int chunkSize) {
             values = new int[chunkSize];
