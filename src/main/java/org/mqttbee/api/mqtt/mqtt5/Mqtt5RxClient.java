@@ -35,6 +35,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5UnsubscribeBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
+import org.mqttbee.mqtt.message.subscribe.MqttSubscribeBuilder;
 import org.mqttbee.rx.FlowableWithSingle;
 
 /**
@@ -114,14 +115,15 @@ public interface Mqtt5RxClient extends Mqtt5Client {
     /**
      * Fluent counterpart of {@link #subscribe(Mqtt5Subscribe)}.
      * <p>
-     * Calling {@link Mqtt5SubscribeBuilder#applySubscribe()} on the returned builder has the same effect as calling
-     * {@link #subscribe(Mqtt5Subscribe)} with the result of {@link Mqtt5SubscribeBuilder#build()}.
+     * Calling {@link Mqtt5SubscribeBuilder.Nested.Complete#applySubscribe()} on the returned builder has the same
+     * effect as calling {@link #subscribe(Mqtt5Subscribe)} with the result of {@link
+     * Mqtt5SubscribeBuilder.Complete#build()}.
      *
      * @return the fluent builder for the Subscribe message.
      * @see #subscribe(Mqtt5Subscribe)
      */
-    default @NotNull Mqtt5SubscribeBuilder<Single<Mqtt5SubAck>> subscribeWith() {
-        return new Mqtt5SubscribeBuilder<>(this::subscribe);
+    default @NotNull Mqtt5SubscribeBuilder.Nested.Start<Single<Mqtt5SubAck>> subscribeWith() {
+        return new MqttSubscribeBuilder.Nested<>(this::subscribe);
     }
 
     /**
@@ -152,14 +154,15 @@ public interface Mqtt5RxClient extends Mqtt5Client {
     /**
      * Fluent counterpart of {@link #subscribeStream(Mqtt5Subscribe)}.
      * <p>
-     * Calling {@link Mqtt5SubscribeBuilder#applySubscribe()} on the returned builder has the same effect as calling
-     * {@link #subscribeStream(Mqtt5Subscribe)} with the result of {@link Mqtt5SubscribeBuilder#build()}.
+     * Calling {@link Mqtt5SubscribeBuilder.Nested.Complete#applySubscribe()} on the returned builder has the same
+     * effect as calling {@link #subscribeStream(Mqtt5Subscribe)} with the result of {@link
+     * Mqtt5SubscribeBuilder.Complete#build()}.
      *
      * @return the fluent builder for the Subscribe message.
      * @see #subscribeStream(Mqtt5Subscribe)
      */
-    default @NotNull Mqtt5SubscribeBuilder<FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck>> subscribeStreamWith() {
-        return new Mqtt5SubscribeBuilder<>(this::subscribeStream);
+    default @NotNull Mqtt5SubscribeBuilder.Nested.Start<FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck>> subscribeStreamWith() {
+        return new MqttSubscribeBuilder.Nested<>(this::subscribeStream);
     }
 
     /**
