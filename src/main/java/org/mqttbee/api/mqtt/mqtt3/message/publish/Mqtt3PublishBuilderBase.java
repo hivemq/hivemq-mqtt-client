@@ -40,9 +40,7 @@ public interface Mqtt3PublishBuilderBase<
 
     @NotNull C topic(final @NotNull MqttTopic topic);
 
-    default @NotNull MqttTopicBuilder<? extends C> topic() {
-        return new MqttTopicBuilder<>(this::topic);
-    }
+    @NotNull MqttTopicBuilder<? extends C> topic();
 
     @NotNull B payload(final @Nullable byte[] payload);
 

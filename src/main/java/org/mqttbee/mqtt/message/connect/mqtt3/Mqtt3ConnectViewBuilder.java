@@ -26,8 +26,10 @@ import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3ConnectBuilder;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import org.mqttbee.mqtt.message.auth.MqttSimpleAuth;
 import org.mqttbee.mqtt.message.auth.mqtt3.Mqtt3SimpleAuthView;
+import org.mqttbee.mqtt.message.auth.mqtt3.Mqtt3SimpleAuthViewBuilder;
 import org.mqttbee.mqtt.message.publish.MqttWillPublish;
 import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishView;
+import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishViewBuilder;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 import org.mqttbee.util.UnsignedDataTypes;
@@ -77,10 +79,18 @@ public abstract class Mqtt3ConnectViewBuilder<B extends Mqtt3ConnectViewBuilder<
         return self();
     }
 
+    public @NotNull Mqtt3SimpleAuthViewBuilder.Nested<B> simpleAuth() {
+        return new Mqtt3SimpleAuthViewBuilder.Nested<>(this::simpleAuth);
+    }
+
     public @NotNull B willPublish(final @Nullable Mqtt3Publish willPublish) {
         this.willPublish =
                 (willPublish == null) ? null : MqttBuilderUtil.willPublish(Mqtt3PublishView.delegate(willPublish));
         return self();
+    }
+
+    public @NotNull Mqtt3PublishViewBuilder.WillNested<B> willPublish() {
+        return new Mqtt3PublishViewBuilder.WillNested<>(this::willPublish);
     }
 
     public @NotNull Mqtt3ConnectView build() {

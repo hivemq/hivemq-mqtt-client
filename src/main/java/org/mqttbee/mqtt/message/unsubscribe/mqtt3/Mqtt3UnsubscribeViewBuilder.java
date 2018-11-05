@@ -20,6 +20,7 @@ package org.mqttbee.mqtt.message.unsubscribe.mqtt3;
 import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
+import org.mqttbee.api.mqtt.datatypes.MqttTopicFilterBuilder;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscription;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
@@ -61,6 +62,10 @@ public abstract class Mqtt3UnsubscribeViewBuilder<B extends Mqtt3UnsubscribeView
         return self();
     }
 
+    public @NotNull MqttTopicFilterBuilder<B> addTopicFilter() {
+        return new MqttTopicFilterBuilder<>(this::addTopicFilter);
+    }
+
     public @NotNull B reverse(final @NotNull Mqtt3Subscribe subscribe) {
         final ImmutableList<? extends Mqtt3Subscription> subscriptions = subscribe.getSubscriptions();
         for (final Mqtt3Subscription subscription : subscriptions) {
@@ -75,6 +80,10 @@ public abstract class Mqtt3UnsubscribeViewBuilder<B extends Mqtt3UnsubscribeView
 
     public @NotNull B topicFilter(final @NotNull MqttTopicFilter topicFilter) {
         return addTopicFilter(topicFilter);
+    }
+
+    public @NotNull MqttTopicFilterBuilder<B> topicFilter() {
+        return new MqttTopicFilterBuilder<>(this::topicFilter);
     }
 
     public @NotNull Mqtt3UnsubscribeView build() {
