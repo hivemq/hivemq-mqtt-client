@@ -69,12 +69,13 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
     }
 
     static @NotNull Mqtt5PublishResult handlePublish(final @NotNull Mqtt5PublishResult publishResult) {
-        final Throwable error = publishResult.getError();
-        if (error != null) {
-            if (error instanceof RuntimeException) {
-                throw (RuntimeException) error;
+        final Optional<Throwable> error = publishResult.getError();
+        if (error.isPresent()) {
+            final Throwable throwable = error.get();
+            if (throwable instanceof RuntimeException) {
+                throw (RuntimeException) throwable;
             }
-            throw new RuntimeException(error);
+            throw new RuntimeException(throwable);
         }
         return publishResult;
     }

@@ -377,10 +377,8 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
 
         qos1Or2Queue.removeFirst(packetIdentifier);
         packetIdentifiers.returnId(packetIdentifier);
-        if (packetIdentifier > sendMaximum) {
-            if (--shrinkIds == 0) {
-                resize();
-            }
+        if ((packetIdentifier > sendMaximum) && (--shrinkIds == 0)) {
+            resize();
         }
     }
 
