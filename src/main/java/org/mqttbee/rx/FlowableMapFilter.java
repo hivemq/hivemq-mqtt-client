@@ -37,7 +37,7 @@ import org.reactivestreams.Subscriber;
  * <dd>The operator doesn't interfere with backpressure which is determined by the source {@code Publisher}'s
  * backpressure behavior.</dd>
  * <dt><b>Scheduler:</b></dt>
- * <dd>The operator does not operate by default on a particular {@link io.reactivex.Scheduler, Scheduler}.</dd>
+ * <dd>The operator does not operate by default on a particular {@link io.reactivex.Scheduler Scheduler}.</dd>
  * </dl>
  *
  * @author Silvio Giebl

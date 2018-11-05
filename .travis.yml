@@ -11,6 +11,8 @@ stages:
   - name: release
     if: branch = master && type != pull_request
 
+script: ./gradlew check javadoc
+
 jobs:
   include:
     - stage: snapshot
