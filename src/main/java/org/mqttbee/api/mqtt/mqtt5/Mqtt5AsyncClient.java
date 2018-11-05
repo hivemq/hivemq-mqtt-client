@@ -18,13 +18,8 @@
 package org.mqttbee.api.mqtt.mqtt5;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.api.mqtt.MqttGlobalPublishFilter;
-import org.mqttbee.api.mqtt.datatypes.MqttQos;
-import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
-import org.mqttbee.api.mqtt.datatypes.MqttTopicFilterBuilder;
-import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
-import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5ConnectBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
@@ -33,17 +28,17 @@ import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PublishBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
-import org.mqttbee.api.mqtt.mqtt5.message.subscribe.*;
+import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
+import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeBuilderBase;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5UnsubscribeBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
-import org.mqttbee.util.FluentBuilder;
+import org.mqttbee.mqtt.MqttAsyncClient;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 /**
  * Asynchronous API of a {@link Mqtt5Client} based on futures and callbacks.
@@ -146,8 +141,8 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
      * Fluent counterpart of {@link #subscribe(Mqtt5Subscribe)}, {@link #subscribe(Mqtt5Subscribe, Consumer)} and {@link
      * #subscribe(Mqtt5Subscribe, Consumer, Executor)}.
      * <p>
-     * Calling {@link Mqtt5SubscribeAndCallbackBuilder#applySubscribe()} on the returned builder has the same effect as
-     * calling one of the following methods with the result of {@link Mqtt5SubscribeAndCallbackBuilder#build()}:
+     * Calling {@link Mqtt5SubscribeAndCallbackBuilder.Complete#send()} on the returned builder has the same effect as
+     * calling one of the following methods:
      * <ul>
      * <li>{@link #subscribe(Mqtt5Subscribe)} if no callback has been supplied to the builder</li>
      * <li>{@link #subscribe(Mqtt5Subscribe, Consumer)} if only a callback has been supplied to the builder</li>
@@ -160,19 +155,8 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
      * @see #subscribe(Mqtt5Subscribe, Consumer)
      * @see #subscribe(Mqtt5Subscribe, Consumer, Executor)
      */
-    default @NotNull Mqtt5SubscribeAndCallbackBuilder<CompletableFuture<Mqtt5SubAck>> subscribeWith() {
-        return new Mqtt5SubscribeAndCallbackBuilder<>(subscribeAndCallback -> {
-            final Mqtt5Subscribe subscribe = subscribeAndCallback.getSubscribe();
-            final Consumer<Mqtt5Publish> callback = subscribeAndCallback.getCallback();
-            if (callback == null) {
-                return subscribe(subscribe);
-            }
-            final Executor executor = subscribeAndCallback.getExecutor();
-            if (executor == null) {
-                return subscribe(subscribe, callback);
-            }
-            return subscribe(subscribe, callback, executor);
-        });
+    default @NotNull Mqtt5SubscribeAndCallbackBuilder.Start subscribeWith() {
+        return new MqttAsyncClient.MqttSubscribeAndCallbackBuilder(this);
     }
 
     /**
@@ -310,124 +294,75 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
         return this;
     }
 
-    class Mqtt5SubscribeAndCallback {
+    // @formatter:off
+    @DoNotImplement
+    interface Mqtt5SubscribeAndCallbackBuilder extends
+            Mqtt5SubscribeBuilderBase<
+                Mqtt5SubscribeAndCallbackBuilder,
+                Mqtt5SubscribeAndCallbackBuilder.Complete> {
+    // @formatter:on
 
-        private final @NotNull Mqtt5Subscribe subscribe;
-        private final @Nullable Consumer<Mqtt5Publish> callback;
-        private final @Nullable Executor executor;
-
-        Mqtt5SubscribeAndCallback(
-                final @NotNull Mqtt5Subscribe subscribe, final @Nullable Consumer<Mqtt5Publish> callback,
-                final @Nullable Executor executor) {
-
-            this.subscribe = subscribe;
-            this.callback = callback;
-            this.executor = executor;
+        // @formatter:off
+        @DoNotImplement
+        interface Complete extends
+                Mqtt5SubscribeAndCallbackBuilder,
+                Mqtt5SubscribeAndCallbackBuilder.Call,
+                Mqtt5SubscribeBuilderBase.Complete<
+                    Mqtt5SubscribeAndCallbackBuilder,
+                    Mqtt5SubscribeAndCallbackBuilder.Complete> {
+        // @formatter:on
         }
 
-        public @NotNull Mqtt5Subscribe getSubscribe() {
-            return subscribe;
+        // @formatter:off
+        @DoNotImplement
+        interface First extends
+                Mqtt5SubscribeBuilderBase.First<
+                    Mqtt5SubscribeAndCallbackBuilder.First,
+                    Mqtt5SubscribeAndCallbackBuilder.Start.Complete> {
+        // @formatter:on
         }
 
-        public @Nullable Consumer<Mqtt5Publish> getCallback() {
-            return callback;
-        }
+        // @formatter:off
+        @DoNotImplement
+        interface Start extends
+                Mqtt5SubscribeAndCallbackBuilder,
+                Mqtt5SubscribeAndCallbackBuilder.First,
+                Mqtt5SubscribeBuilderBase.Start<
+                    Mqtt5SubscribeAndCallbackBuilder,
+                    Mqtt5SubscribeAndCallbackBuilder.Complete,
+                    Mqtt5SubscribeAndCallbackBuilder.Start,
+                    Mqtt5SubscribeAndCallbackBuilder.First,
+                    Mqtt5SubscribeAndCallbackBuilder.Start.Complete> {
+        // @formatter:on
 
-        public @Nullable Executor getExecutor() {
-            return executor;
-        }
-    }
-
-    class Mqtt5SubscribeAndCallbackBuilder<P> extends FluentBuilder<Mqtt5SubscribeAndCallback, P> {
-
-        private final @NotNull Mqtt5SubscribeBuilder<Void> subscribeBuilder = Mqtt5Subscribe.builder();
-        private @Nullable Consumer<Mqtt5Publish> callback;
-        private @Nullable Executor executor;
-
-        Mqtt5SubscribeAndCallbackBuilder(
-                final @Nullable Function<? super Mqtt5SubscribeAndCallback, P> parentConsumer) {
-
-            super(parentConsumer);
-        }
-
-        public @NotNull Mqtt5SubscribeAndCallbackBuilder<P> topicFilter(final @NotNull String topicFilter) {
-            subscribeBuilder.topicFilter(topicFilter);
-            return this;
-        }
-
-        public @NotNull Mqtt5SubscribeAndCallbackBuilder<P> topicFilter(final @NotNull MqttTopicFilter topicFilter) {
-            subscribeBuilder.topicFilter(topicFilter);
-            return this;
-        }
-
-        public @NotNull MqttTopicFilterBuilder<Mqtt5SubscribeAndCallbackBuilder<P>> topicFilter() {
-            return new MqttTopicFilterBuilder<>(this::topicFilter);
-        }
-
-        public @NotNull Mqtt5SubscribeAndCallbackBuilder<P> qos(final @NotNull MqttQos qos) {
-            subscribeBuilder.qos(qos);
-            return this;
-        }
-
-        public @NotNull Mqtt5SubscribeAndCallbackBuilder<P> noLocal(final boolean noLocal) {
-            subscribeBuilder.noLocal(noLocal);
-            return this;
-        }
-
-        public @NotNull Mqtt5SubscribeAndCallbackBuilder<P> retainHandling(
-                final @NotNull Mqtt5RetainHandling retainHandling) {
-
-            subscribeBuilder.retainHandling(retainHandling);
-            return this;
-        }
-
-        public @NotNull Mqtt5SubscribeAndCallbackBuilder<P> retainAsPublished(final boolean retainAsPublished) {
-            subscribeBuilder.retainAsPublished(retainAsPublished);
-            return this;
-        }
-
-        public @NotNull Mqtt5SubscribeAndCallbackBuilder<P> addSubscription(
-                final @NotNull Mqtt5Subscription subscription) {
-
-            subscribeBuilder.addSubscription(subscription);
-            return this;
-        }
-
-        public @NotNull Mqtt5SubscriptionBuilder<Mqtt5SubscribeAndCallbackBuilder<P>> addSubscription() {
-            return new Mqtt5SubscriptionBuilder<>(this::addSubscription);
-        }
-
-        public @NotNull Mqtt5SubscribeAndCallbackBuilder<P> userProperties(
-                final @NotNull Mqtt5UserProperties userProperties) {
-
-            subscribeBuilder.userProperties(userProperties);
-            return this;
-        }
-
-        public @NotNull Mqtt5UserPropertiesBuilder<Mqtt5SubscribeAndCallbackBuilder<P>> userProperties() {
-            return new Mqtt5UserPropertiesBuilder<>(this::userProperties);
-        }
-
-        public @NotNull Mqtt5SubscribeAndCallbackBuilder<P> callback(final @Nullable Consumer<Mqtt5Publish> callback) {
-            this.callback = callback;
-            return this;
-        }
-
-        public @NotNull Mqtt5SubscribeAndCallbackBuilder<P> executor(final @Nullable Executor executor) {
-            this.executor = executor;
-            return this;
-        }
-
-        @Override
-        public @NotNull Mqtt5SubscribeAndCallback build() {
-            if ((callback == null) && (executor != null)) {
-                throw new IllegalStateException("Executor must not be given if callback is null.");
+            // @formatter:off
+            @DoNotImplement
+            interface Complete extends
+                    Mqtt5SubscribeAndCallbackBuilder.Start,
+                    Mqtt5SubscribeAndCallbackBuilder.Complete,
+                    Mqtt5SubscribeBuilderBase.Start.Complete<
+                        Mqtt5SubscribeAndCallbackBuilder,
+                        Mqtt5SubscribeAndCallbackBuilder.Complete,
+                        Mqtt5SubscribeAndCallbackBuilder.Start,
+                        Mqtt5SubscribeAndCallbackBuilder.Start.Complete,
+                        Mqtt5SubscribeAndCallbackBuilder.First,
+                        Mqtt5SubscribeAndCallbackBuilder.Start.Complete> {
+            // @formatter:on
             }
-            return new Mqtt5SubscribeAndCallback(subscribeBuilder.build(), callback, executor);
         }
 
-        public @NotNull P applySubscribe() {
-            return apply();
+        @DoNotImplement
+        interface Call {
+
+            @NotNull Ex callback(@NotNull Consumer<Mqtt5Publish> callback);
+
+            @NotNull CompletableFuture<Mqtt5SubAck> send();
+
+            @DoNotImplement
+            interface Ex extends Call {
+
+                @NotNull Ex executor(@NotNull Executor executor);
+            }
         }
     }
 }

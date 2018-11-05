@@ -34,6 +34,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5UnsubscribeBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
+import org.mqttbee.mqtt.message.subscribe.MqttSubscribeBuilder;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -92,14 +93,14 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
     /**
      * Fluent counterpart of {@link #subscribe(Mqtt5Subscribe)}.
      * <p>
-     * Calling {@link Mqtt5SubscribeBuilder#applySubscribe()} on the returned builder has the same effect as calling
-     * {@link #subscribe(Mqtt5Subscribe)} with the result of {@link Mqtt5SubscribeBuilder#build()}.
+     * Calling {@link Mqtt5SubscribeBuilder.Send.Complete#send()} on the returned builder has the same effect as calling
+     * {@link #subscribe(Mqtt5Subscribe)} with the result of {@link Mqtt5SubscribeBuilder.Complete#build()}.
      *
      * @return the fluent builder for the Subscribe message.
      * @see #subscribe(Mqtt5Subscribe)
      */
-    default @NotNull Mqtt5SubscribeBuilder<Mqtt5SubAck> subscribeWith() {
-        return new Mqtt5SubscribeBuilder<>(this::subscribe);
+    default @NotNull Mqtt5SubscribeBuilder.Send.Start<Mqtt5SubAck> subscribeWith() {
+        return new MqttSubscribeBuilder.Send<>(this::subscribe);
     }
 
     /**

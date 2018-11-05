@@ -17,78 +17,50 @@
 
 package org.mqttbee.api.mqtt.mqtt5.message.subscribe;
 
-import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttQos;
-import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
-import org.mqttbee.api.mqtt.datatypes.MqttTopicFilterBuilder;
-import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
-import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
-import org.mqttbee.mqtt.util.MqttBuilderUtil;
-import org.mqttbee.util.FluentBuilder;
-
-import java.util.function.Function;
+import org.mqttbee.annotations.DoNotImplement;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5SubscriptionBuilder<P> extends FluentBuilder<Mqtt5Subscription, P> {
+// @formatter:off
+@DoNotImplement
+public interface Mqtt5SubscriptionBuilder extends
+        Mqtt5SubscriptionBuilderBase<
+            Mqtt5SubscriptionBuilder,
+            Mqtt5SubscriptionBuilder.Complete> {
+// @formatter:on
 
-    private @Nullable MqttTopicFilterImpl topicFilter;
-    private @NotNull MqttQos qos = Mqtt5Subscription.DEFAULT_QOS;
-    private boolean noLocal = Mqtt5Subscription.DEFAULT_NO_LOCAL;
-    private @NotNull Mqtt5RetainHandling retainHandling = Mqtt5Subscription.DEFAULT_RETAIN_HANDLING;
-    private boolean retainAsPublished = Mqtt5Subscription.DEFAULT_RETAIN_AS_PUBLISHED;
+    // @formatter:off
+    @DoNotImplement
+    interface Complete extends
+            Mqtt5SubscriptionBuilder,
+            Mqtt5SubscriptionBuilderBase.Complete<
+                Mqtt5SubscriptionBuilder,
+                Mqtt5SubscriptionBuilder.Complete> {
+    // @formatter:on
 
-    public Mqtt5SubscriptionBuilder(final @Nullable Function<? super Mqtt5Subscription, P> parentConsumer) {
-        super(parentConsumer);
+        @NotNull Mqtt5Subscription build();
     }
 
-    public @NotNull Mqtt5SubscriptionBuilder<P> topicFilter(final @NotNull String topicFilter) {
-        this.topicFilter = MqttBuilderUtil.topicFilter(topicFilter);
-        return this;
-    }
+    // @formatter:off
+    @DoNotImplement
+    interface Nested<P> extends
+            Mqtt5SubscriptionBuilderBase<
+                Nested<P>,
+                Nested.Complete<P>> {
+    // @formatter:on
 
-    public @NotNull Mqtt5SubscriptionBuilder<P> topicFilter(final @NotNull MqttTopicFilter topicFilter) {
-        this.topicFilter = MqttBuilderUtil.topicFilter(topicFilter);
-        return this;
-    }
+        // @formatter:off
+        @DoNotImplement
+        interface Complete<P> extends
+                Nested<P>,
+                Mqtt5SubscriptionBuilderBase.Complete<
+                    Nested<P>,
+                    Nested.Complete<P>> {
+        // @formatter:on
 
-    public @NotNull MqttTopicFilterBuilder<Mqtt5SubscriptionBuilder<P>> topicFilter() {
-        return new MqttTopicFilterBuilder<>(this::topicFilter);
-    }
-
-    public @NotNull Mqtt5SubscriptionBuilder<P> qos(final @NotNull MqttQos qos) {
-        this.qos = Preconditions.checkNotNull(qos, "QoS must not be null.");
-        return this;
-    }
-
-    public @NotNull Mqtt5SubscriptionBuilder<P> noLocal(final boolean noLocal) {
-        this.noLocal = noLocal;
-        return this;
-    }
-
-    public @NotNull Mqtt5SubscriptionBuilder<P> retainHandling(final @NotNull Mqtt5RetainHandling retainHandling) {
-        this.retainHandling = Preconditions.checkNotNull(retainHandling, "Retain handling must not be null.");
-        return this;
-    }
-
-    public @NotNull Mqtt5SubscriptionBuilder<P> retainAsPublished(final boolean retainAsPublished) {
-        this.retainAsPublished = retainAsPublished;
-        return this;
-    }
-
-    @Override
-    public @NotNull Mqtt5Subscription build() {
-        Preconditions.checkNotNull(topicFilter, "Topic filter must not be null.");
-        Preconditions.checkArgument(
-                !(topicFilter.isShared() && noLocal),
-                "It is a Protocol Error to set no local to true on a Shared Subscription.");
-        return new MqttSubscription(topicFilter, qos, noLocal, retainHandling, retainAsPublished);
-    }
-
-    public @NotNull P applySubscription() {
-        return apply();
+            @NotNull P applySubscription();
+        }
     }
 }

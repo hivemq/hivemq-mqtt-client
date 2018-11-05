@@ -21,6 +21,7 @@ import io.reactivex.Flowable;
 import io.reactivex.FlowableSubscriber;
 import io.reactivex.schedulers.Schedulers;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.MqttGlobalPublishFilter;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5AsyncClient;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;
@@ -32,6 +33,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
+import org.mqttbee.mqtt.message.subscribe.MqttSubscribeBuilder;
 import org.mqttbee.rx.RxFutureConverter;
 import org.reactivestreams.Subscription;
 
@@ -174,5 +176,56 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
 
         @Override
         public void onError(final @NotNull Throwable t) {}
+    }
+
+    // @formatter:off
+    public static class MqttSubscribeAndCallbackBuilder
+            extends MqttSubscribeBuilder<MqttSubscribeAndCallbackBuilder>
+            implements Mqtt5SubscribeAndCallbackBuilder.Complete,
+                       Mqtt5SubscribeAndCallbackBuilder.Start.Complete,
+                       Mqtt5SubscribeAndCallbackBuilder.Call.Ex {
+    // @formatter:on
+
+        private final @NotNull Mqtt5AsyncClient client;
+        private @Nullable Consumer<Mqtt5Publish> callback;
+        private @Nullable Executor executor;
+
+        public MqttSubscribeAndCallbackBuilder(final @NotNull Mqtt5AsyncClient client) {
+            this.client = client;
+        }
+
+        @Override
+        protected @NotNull MqttSubscribeAndCallbackBuilder self() {
+            return this;
+        }
+
+        @Override
+        public Mqtt5SubscribeAndCallbackBuilder.Call.@NotNull Ex callback(
+                final @NotNull Consumer<Mqtt5Publish> callback) {
+
+            this.callback = Objects.requireNonNull(callback, "Callback must not be null.");
+            return this;
+        }
+
+        @Override
+        public Mqtt5SubscribeAndCallbackBuilder.Call.@NotNull Ex executor(final @NotNull Executor executor) {
+            this.executor = Objects.requireNonNull(executor, "Executor must not be null.");
+            return this;
+        }
+
+        @Override
+        public @NotNull CompletableFuture<Mqtt5SubAck> send() {
+            final Mqtt5Subscribe subscribe = build();
+            if (callback == null) {
+                if (executor != null) {
+                    throw new IllegalStateException("Executor must not be given if callback is null.");
+                }
+                return client.subscribe(subscribe);
+            }
+            if (executor == null) {
+                return client.subscribe(subscribe, callback);
+            }
+            return client.subscribe(subscribe, callback, executor);
+        }
     }
 }

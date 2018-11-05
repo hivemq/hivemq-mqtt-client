@@ -21,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
+import org.mqttbee.mqtt.message.subscribe.MqttSubscriptionBuilder;
 
 /**
  * Subscription in the MQTT 5 SUBSCRIBE packet.
@@ -45,8 +46,8 @@ public interface Mqtt5Subscription {
      */
     boolean DEFAULT_RETAIN_AS_PUBLISHED = false;
 
-    static @NotNull Mqtt5SubscriptionBuilder<Void> builder() {
-        return new Mqtt5SubscriptionBuilder<>(null);
+    static @NotNull Mqtt5SubscriptionBuilder builder() {
+        return new MqttSubscriptionBuilder.Default();
     }
 
     /**
