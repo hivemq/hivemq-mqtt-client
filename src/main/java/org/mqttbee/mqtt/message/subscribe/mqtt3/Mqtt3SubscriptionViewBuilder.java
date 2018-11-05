@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt.message.subscribe.mqtt3;
 
-import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
@@ -28,6 +27,7 @@ import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3SubscriptionBuilder;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 
+import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -55,12 +55,12 @@ public abstract class Mqtt3SubscriptionViewBuilder<B extends Mqtt3SubscriptionVi
     }
 
     public @NotNull B qos(final @NotNull MqttQos qos) {
-        this.qos = Preconditions.checkNotNull(qos, "QoS must not be null.");
+        this.qos = Objects.requireNonNull(qos, "QoS must not be null.");
         return self();
     }
 
     public @NotNull Mqtt3SubscriptionView build() {
-        Preconditions.checkNotNull(topicFilter, "Topic filter must not be null.");
+        Objects.requireNonNull(topicFilter, "Topic filter must be given.");
         return Mqtt3SubscriptionView.of(topicFilter, qos);
     }
 

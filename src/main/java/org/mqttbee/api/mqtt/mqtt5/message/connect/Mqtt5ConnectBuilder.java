@@ -33,6 +33,7 @@ import org.mqttbee.mqtt.message.auth.MqttSimpleAuth;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
 import org.mqttbee.mqtt.message.connect.MqttConnectRestrictions;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
+import org.mqttbee.mqtt.message.publish.MqttPublishBuilder;
 import org.mqttbee.mqtt.message.publish.MqttWillPublish;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 import org.mqttbee.util.FluentBuilder;
@@ -148,8 +149,8 @@ public class Mqtt5ConnectBuilder<P> extends FluentBuilder<Mqtt5Connect, P> {
         return this;
     }
 
-    public @NotNull Mqtt5WillPublishBuilder<Mqtt5ConnectBuilder<P>> willPublish() {
-        return new Mqtt5WillPublishBuilder<>(this::willPublish);
+    public @NotNull Mqtt5WillPublishBuilder.Nested<Mqtt5ConnectBuilder<P>> willPublish() {
+        return new MqttPublishBuilder.WillNested<>(this::willPublish);
     }
 
     public @NotNull Mqtt5ConnectBuilder<P> userProperties(final @NotNull Mqtt5UserProperties userProperties) {

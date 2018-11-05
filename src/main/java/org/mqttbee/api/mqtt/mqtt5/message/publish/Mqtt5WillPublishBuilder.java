@@ -17,79 +17,50 @@
 
 package org.mqttbee.api.mqtt.mqtt5.message.publish;
 
-import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.mqttbee.mqtt.message.publish.MqttWillPublish;
-import org.mqttbee.mqtt.util.MqttBuilderUtil;
-import org.mqttbee.util.MustNotBeImplementedUtil;
-import org.mqttbee.util.UnsignedDataTypes;
-
-import java.nio.ByteBuffer;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
-
-import static org.mqttbee.mqtt.message.publish.MqttWillPublish.DEFAULT_DELAY_INTERVAL;
+import org.mqttbee.annotations.DoNotImplement;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5WillPublishBuilder<P>
-        extends AbstractMqtt5PublishBuilder<Mqtt5WillPublishBuilder<P>, Mqtt5WillPublish, P> {
+// @formatter:off
+@DoNotImplement
+public interface Mqtt5WillPublishBuilder extends
+        Mqtt5PublishBuilderBase.WillBase<
+            Mqtt5WillPublishBuilder,
+            Mqtt5WillPublishBuilder.Complete> {
+// @formatter:off
 
-    private long delayIntervalSeconds = DEFAULT_DELAY_INTERVAL;
+    // @formatter:off
+    @DoNotImplement
+    interface Complete extends
+            Mqtt5WillPublishBuilder,
+            Mqtt5PublishBuilderBase.WillBase.Complete<
+                Mqtt5WillPublishBuilder,
+                Mqtt5WillPublishBuilder.Complete> {
+    // @formatter:off
 
-    public Mqtt5WillPublishBuilder(final @Nullable Function<? super Mqtt5WillPublish, P> parentConsumer) {
-        super(parentConsumer);
+        @NotNull Mqtt5WillPublish build();
     }
 
-    Mqtt5WillPublishBuilder(final @NotNull Mqtt5Publish publish) {
-        super(publish);
-        if (publish instanceof Mqtt5WillPublish) {
-            delayIntervalSeconds =
-                    MustNotBeImplementedUtil.checkNotImplemented(publish, MqttWillPublish.class).getDelayInterval();
-        } else {
-            payload(payload);
+    // @formatter:off
+    @DoNotImplement
+    interface Nested<P> extends
+            Mqtt5PublishBuilderBase.WillBase<
+                Nested<P>,
+                Nested.Complete<P>> {
+    // @formatter:off
+
+        // @formatter:off
+        @DoNotImplement
+        interface Complete<P> extends
+                Nested<P>,
+                Mqtt5PublishBuilderBase.WillBase.Complete<
+                    Nested<P>,
+                    Nested.Complete<P>> {
+        // @formatter:off
+
+            @NotNull P applyWillPublish();
         }
-    }
-
-    @Override
-    @NotNull Mqtt5WillPublishBuilder<P> self() {
-        return this;
-    }
-
-    @Override
-    public @NotNull Mqtt5WillPublishBuilder<P> payload(final @Nullable byte[] payload) {
-        this.payload = MqttBuilderUtil.binaryDataOrNull(payload);
-        return this;
-    }
-
-    @Override
-    public @NotNull Mqtt5WillPublishBuilder<P> payload(final @Nullable ByteBuffer payload) {
-        this.payload = MqttBuilderUtil.binaryDataOrNull(payload);
-        return this;
-    }
-
-    public @NotNull Mqtt5WillPublishBuilder<P> delayInterval(
-            final long delayInterval, final @NotNull TimeUnit timeUnit) {
-
-        final long delayIntervalSeconds = timeUnit.toSeconds(delayInterval);
-        Preconditions.checkArgument(UnsignedDataTypes.isUnsignedInt(delayIntervalSeconds),
-                "The value of delay interval converted in seconds must not exceed the value range of unsigned int. Found: %s which is bigger than %s (max unsigned int).",
-                delayIntervalSeconds, UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE);
-
-        this.delayIntervalSeconds = delayIntervalSeconds;
-        return this;
-    }
-
-    @Override
-    public @NotNull Mqtt5WillPublish build() {
-        Preconditions.checkNotNull(topic, "Topic must not be null.");
-        return new MqttWillPublish(topic, payload, qos, retain, messageExpiryIntervalSeconds, payloadFormatIndicator,
-                contentType, responseTopic, correlationData, userProperties, delayIntervalSeconds);
-    }
-
-    public @NotNull P applyWillPublish() {
-        return apply();
     }
 }
