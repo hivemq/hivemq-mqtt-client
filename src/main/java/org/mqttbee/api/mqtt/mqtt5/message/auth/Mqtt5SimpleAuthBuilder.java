@@ -17,58 +17,50 @@
 
 package org.mqttbee.api.mqtt.mqtt5.message.auth;
 
-import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
-import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
-import org.mqttbee.mqtt.message.auth.MqttSimpleAuth;
-import org.mqttbee.mqtt.util.MqttBuilderUtil;
-import org.mqttbee.util.FluentBuilder;
-
-import java.nio.ByteBuffer;
-import java.util.function.Function;
+import org.mqttbee.annotations.DoNotImplement;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5SimpleAuthBuilder<P> extends FluentBuilder<Mqtt5SimpleAuth, P> {
+// @formatter:off
+@DoNotImplement
+public interface Mqtt5SimpleAuthBuilder extends
+        Mqtt5SimpleAuthBuilderBase<
+            Mqtt5SimpleAuthBuilder,
+            Mqtt5SimpleAuthBuilder.Complete> {
+// @formatter:on
 
-    private @Nullable MqttUTF8StringImpl username;
-    private @Nullable ByteBuffer password;
+    // @formatter:off
+    @DoNotImplement
+    interface Complete extends
+            Mqtt5SimpleAuthBuilder,
+            Mqtt5SimpleAuthBuilderBase.Complete<
+                Mqtt5SimpleAuthBuilder,
+                Mqtt5SimpleAuthBuilder.Complete> {
+    // @formatter:on
 
-    public Mqtt5SimpleAuthBuilder(final @Nullable Function<? super Mqtt5SimpleAuth, P> parentConsumer) {
-        super(parentConsumer);
+        @NotNull Mqtt5SimpleAuth build();
     }
 
-    public @NotNull Mqtt5SimpleAuthBuilder<P> username(final @Nullable String username) {
-        this.username = MqttBuilderUtil.stringOrNull(username);
-        return this;
-    }
+    // @formatter:off
+    @DoNotImplement
+    interface Nested<P> extends
+            Mqtt5SimpleAuthBuilderBase<
+                Nested<P>,
+                Nested.Complete<P>> {
+    // @formatter:on
 
-    public @NotNull Mqtt5SimpleAuthBuilder<P> username(final @Nullable MqttUTF8String username) {
-        this.username = MqttBuilderUtil.stringOrNull(username);
-        return this;
-    }
+        // @formatter:off
+        @DoNotImplement
+        interface Complete<P> extends
+                Nested<P>,
+                Mqtt5SimpleAuthBuilderBase.Complete<
+                    Nested<P>,
+                    Nested.Complete<P>> {
+        // @formatter:on
 
-    public @NotNull Mqtt5SimpleAuthBuilder<P> password(final @Nullable byte[] password) {
-        this.password = MqttBuilderUtil.binaryDataOrNull(password);
-        return this;
+            @NotNull P applySimpleAuth();
+        }
     }
-
-    public @NotNull Mqtt5SimpleAuthBuilder<P> password(final @Nullable ByteBuffer password) {
-        this.password = MqttBuilderUtil.binaryDataOrNull(password);
-        return this;
-    }
-
-    @Override
-    public @NotNull Mqtt5SimpleAuth build() {
-        Preconditions.checkState(username != null || password != null);
-        return new MqttSimpleAuth(username, password);
-    }
-
-    public @NotNull P applySimpleAuth() {
-        return apply();
-    }
-
 }

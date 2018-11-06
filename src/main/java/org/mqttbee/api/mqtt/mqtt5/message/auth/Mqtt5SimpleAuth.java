@@ -17,9 +17,10 @@
 
 package org.mqttbee.api.mqtt.mqtt5.message.auth;
 
-import org.mqttbee.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
+import org.mqttbee.mqtt.message.auth.MqttSimpleAuthBuilder;
 
 import java.nio.ByteBuffer;
 import java.util.Optional;
@@ -30,21 +31,18 @@ import java.util.Optional;
 @DoNotImplement
 public interface Mqtt5SimpleAuth {
 
-    @NotNull
-    static Mqtt5SimpleAuthBuilder<Void> builder() {
-        return new Mqtt5SimpleAuthBuilder<>(null);
+    static @NotNull Mqtt5SimpleAuthBuilder builder() {
+        return new MqttSimpleAuthBuilder.Default();
     }
 
     /**
      * @return the optional username.
      */
-    @NotNull
-    Optional<MqttUTF8String> getUsername();
+    @NotNull Optional<MqttUTF8String> getUsername();
 
     /**
      * @return the optional password.
      */
-    @NotNull
-    Optional<ByteBuffer> getPassword();
+    @NotNull Optional<ByteBuffer> getPassword();
 
 }

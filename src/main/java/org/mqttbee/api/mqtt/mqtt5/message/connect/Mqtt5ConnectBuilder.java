@@ -30,6 +30,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5WillPublishBuilder;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.auth.MqttSimpleAuth;
+import org.mqttbee.mqtt.message.auth.MqttSimpleAuthBuilder;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
 import org.mqttbee.mqtt.message.connect.MqttConnectRestrictions;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
@@ -127,8 +128,8 @@ public class Mqtt5ConnectBuilder<P> extends FluentBuilder<Mqtt5Connect, P> {
         return this;
     }
 
-    public @NotNull Mqtt5SimpleAuthBuilder<Mqtt5ConnectBuilder<P>> simpleAuth() {
-        return new Mqtt5SimpleAuthBuilder<>(this::simpleAuth);
+    public @NotNull Mqtt5SimpleAuthBuilder.Nested<Mqtt5ConnectBuilder<P>> simpleAuth() {
+        return new MqttSimpleAuthBuilder.Nested<>(this::simpleAuth);
     }
 
     public @NotNull Mqtt5ConnectBuilder<P> enhancedAuth(
