@@ -24,14 +24,11 @@ import org.mqttbee.annotations.DoNotImplement;
  * @author Silvio Giebl
  */
 @DoNotImplement
-public interface Mqtt5ConnectRestrictionsBuilder
-        extends Mqtt5ConnectRestrictionsBuilderBase<Mqtt5ConnectRestrictionsBuilder> {
+public interface Mqtt5ConnectRestrictionsBuilderBase<B extends Mqtt5ConnectRestrictionsBuilderBase<B>> {
 
-    @NotNull Mqtt5ConnectRestrictions build();
+    @NotNull B receiveMaximum(int receiveMaximum);
 
-    @DoNotImplement
-    interface Nested<P> extends Mqtt5ConnectRestrictionsBuilderBase<Nested<P>> {
+    @NotNull B maximumPacketSize(int maximumPacketSize);
 
-        @NotNull P applyRestrictions();
-    }
+    @NotNull B topicAliasMaximum(int topicAliasMaximum);
 }
