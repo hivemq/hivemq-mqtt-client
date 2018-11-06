@@ -17,104 +17,104 @@
 
 package org.mqttbee.api.mqtt.mqtt5.message.unsubscribe;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
-import org.mqttbee.api.mqtt.datatypes.MqttTopicFilterBuilder;
-import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
-import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
-import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
-import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscription;
-import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
-import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
-import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribe;
-import org.mqttbee.mqtt.util.MqttBuilderUtil;
-import org.mqttbee.util.FluentBuilder;
-import org.mqttbee.util.MustNotBeImplementedUtil;
-
-import java.util.function.Function;
+import org.mqttbee.annotations.DoNotImplement;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5UnsubscribeBuilder<P> extends FluentBuilder<Mqtt5Unsubscribe, P> {
+// @formatter:off
+@DoNotImplement
+public interface Mqtt5UnsubscribeBuilder extends
+        Mqtt5UnsubscribeBuilderBase<
+            Mqtt5UnsubscribeBuilder,
+            Mqtt5UnsubscribeBuilder.Complete> {
+// @formatter:on
 
-    private final @NotNull ImmutableList.Builder<MqttTopicFilterImpl> topicFiltersBuilder;
-    private @NotNull MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
-    private @Nullable MqttTopicFilterImpl firstTopicFilter;
+    // @formatter:off
+    @DoNotImplement
+    interface Complete extends
+            Mqtt5UnsubscribeBuilder,
+            Mqtt5UnsubscribeBuilderBase.Complete<
+                Mqtt5UnsubscribeBuilder,
+                Mqtt5UnsubscribeBuilder.Complete> {
+    // @formatter:on
 
-    public Mqtt5UnsubscribeBuilder(final @Nullable Function<? super Mqtt5Unsubscribe, P> parentConsumer) {
-        super(parentConsumer);
-        topicFiltersBuilder = ImmutableList.builder();
+        @NotNull Mqtt5Unsubscribe build();
     }
 
-    Mqtt5UnsubscribeBuilder(final @NotNull Mqtt5Unsubscribe unsubscribe) {
-        super(null);
-        final MqttUnsubscribe unsubscribeImpl =
-                MustNotBeImplementedUtil.checkNotImplemented(unsubscribe, MqttUnsubscribe.class);
-        final ImmutableList<MqttTopicFilterImpl> topicFilters = unsubscribeImpl.getTopicFilters();
-        topicFiltersBuilder = ImmutableList.builderWithExpectedSize(topicFilters.size() + 1);
-        topicFiltersBuilder.addAll(topicFilters);
+    // @formatter:off
+    @DoNotImplement
+    interface Start extends
+            Mqtt5UnsubscribeBuilder,
+            Mqtt5UnsubscribeBuilderBase.Start<
+                Mqtt5UnsubscribeBuilder,
+                Mqtt5UnsubscribeBuilder.Complete,
+                Mqtt5UnsubscribeBuilder.Start> {
+    // @formatter:on
     }
 
-    public @NotNull Mqtt5UnsubscribeBuilder<P> topicFilter(final @NotNull String topicFilter) {
-        firstTopicFilter = MqttBuilderUtil.topicFilter(topicFilter);
-        return this;
-    }
+    // @formatter:off
+    @DoNotImplement
+    interface Nested<P> extends
+            Mqtt5UnsubscribeBuilderBase<
+                Nested<P>,
+                Nested.Complete<P>> {
+    // @formatter:on
 
-    public @NotNull Mqtt5UnsubscribeBuilder<P> topicFilter(final @NotNull MqttTopicFilter topicFilter) {
-        firstTopicFilter = MqttBuilderUtil.topicFilter(topicFilter);
-        return this;
-    }
+        // @formatter:off
+        @DoNotImplement
+        interface Complete<P> extends
+                Nested<P>,
+                Mqtt5UnsubscribeBuilderBase.Complete<
+                    Nested<P>,
+                    Nested.Complete<P>> {
+        // @formatter:on
 
-    public @NotNull MqttTopicFilterBuilder<Mqtt5UnsubscribeBuilder<P>> topicFilter() {
-        return new MqttTopicFilterBuilder<>(this::topicFilter);
-    }
-
-    public @NotNull Mqtt5UnsubscribeBuilder<P> addTopicFilter(final @NotNull String topicFilter) {
-        firstTopicFilter = MqttBuilderUtil.topicFilter(topicFilter);
-        return this;
-    }
-
-    public @NotNull Mqtt5UnsubscribeBuilder<P> addTopicFilter(final @NotNull MqttTopicFilter topicFilter) {
-        topicFiltersBuilder.add(MqttBuilderUtil.topicFilter(topicFilter));
-        return this;
-    }
-
-    public @NotNull MqttTopicFilterBuilder<Mqtt5UnsubscribeBuilder<P>> addTopicFilter() {
-        return new MqttTopicFilterBuilder<>(this::addTopicFilter);
-    }
-
-    public @NotNull Mqtt5UnsubscribeBuilder<P> reverse(final @NotNull Mqtt5Subscribe subscribe) {
-        final ImmutableList<? extends Mqtt5Subscription> subscriptions = subscribe.getSubscriptions();
-        for (final Mqtt5Subscription subscription : subscriptions) {
-            addTopicFilter(subscription.getTopicFilter());
+            @NotNull P applyUnsubscribe();
         }
-        return this;
-    }
 
-    public @NotNull Mqtt5UnsubscribeBuilder<P> userProperties(final @NotNull Mqtt5UserProperties userProperties) {
-        this.userProperties = MqttBuilderUtil.userProperties(userProperties);
-        return this;
-    }
-
-    public @NotNull Mqtt5UserPropertiesBuilder<Mqtt5UnsubscribeBuilder<P>> userProperties() {
-        return new Mqtt5UserPropertiesBuilder<>(this::userProperties);
-    }
-
-    @Override
-    public @NotNull Mqtt5Unsubscribe build() {
-        if (firstTopicFilter != null) {
-            addTopicFilter(firstTopicFilter); // TODO add as first subscription #192
+        // @formatter:off
+        @DoNotImplement
+        interface Start<P> extends
+                Nested<P>,
+                Mqtt5UnsubscribeBuilderBase.Start<
+                    Nested<P>,
+                    Nested.Complete<P>,
+                    Nested.Start<P>> {
+        // @formatter:on
         }
-        final ImmutableList<MqttTopicFilterImpl> topicFilters = topicFiltersBuilder.build();
-        Preconditions.checkState(!topicFilters.isEmpty());
-        return new MqttUnsubscribe(topicFilters, userProperties);
     }
 
-    public @NotNull P applyUnsubscribe() {
-        return apply();
+    // @formatter:off
+    @DoNotImplement
+    interface Send<P> extends
+            Mqtt5UnsubscribeBuilderBase<
+                Send<P>,
+                Send.Complete<P>> {
+    // @formatter:on
+
+        // @formatter:off
+        @DoNotImplement
+        interface Complete<P> extends
+                Send<P>,
+                Mqtt5UnsubscribeBuilderBase.Complete<
+                    Send<P>,
+                    Send.Complete<P>> {
+        // @formatter:on
+
+            @NotNull P send();
+        }
+
+        // @formatter:off
+        @DoNotImplement
+        interface Start<P> extends
+                Send<P>,
+                Mqtt5UnsubscribeBuilderBase.Start<
+                    Send<P>,
+                    Send.Complete<P>,
+                    Send.Start<P>> {
+        // @formatter:on
+        }
     }
 }

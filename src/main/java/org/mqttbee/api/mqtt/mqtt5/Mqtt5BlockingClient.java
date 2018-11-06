@@ -37,6 +37,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnectBuilder;
 import org.mqttbee.mqtt.message.publish.MqttPublishBuilder;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribeBuilder;
+import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribeBuilder;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -127,14 +128,14 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
     /**
      * Fluent counterpart of {@link #unsubscribe(Mqtt5Unsubscribe)}.
      * <p>
-     * Calling {@link Mqtt5UnsubscribeBuilder#applyUnsubscribe()} on the returned builder has the same effect as calling
-     * {@link #unsubscribe(Mqtt5Unsubscribe)} with the result of {@link Mqtt5UnsubscribeBuilder#build()}.
+     * Calling {@link Mqtt5UnsubscribeBuilder.Send.Complete#send()} on the returned builder has the same effect as
+     * calling {@link #unsubscribe(Mqtt5Unsubscribe)} with the result of {@link Mqtt5UnsubscribeBuilder.Complete#build()}.
      *
      * @return the fluent builder for the Unsubscribe message.
      * @see #unsubscribe(Mqtt5Unsubscribe)
      */
-    default @NotNull Mqtt5UnsubscribeBuilder<Mqtt5UnsubAck> unsubscribeWith() {
-        return new Mqtt5UnsubscribeBuilder<>(this::unsubscribe);
+    default @NotNull Mqtt5UnsubscribeBuilder.Send.Start<Mqtt5UnsubAck> unsubscribeWith() {
+        return new MqttUnsubscribeBuilder.Send<>(this::unsubscribe);
     }
 
     /**
