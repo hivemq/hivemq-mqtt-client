@@ -23,6 +23,7 @@ import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
+import org.mqttbee.mqtt.message.disconnect.MqttDisconnectBuilder;
 
 import java.util.Optional;
 
@@ -36,8 +37,8 @@ public interface Mqtt5Disconnect extends Mqtt5Message {
 
     @NotNull Mqtt5Disconnect DEFAULT = builder().build();
 
-    static @NotNull Mqtt5DisconnectBuilder<Void> builder() {
-        return new Mqtt5DisconnectBuilder<>(null);
+    static @NotNull Mqtt5DisconnectBuilder builder() {
+        return new MqttDisconnectBuilder.Default();
     }
 
     /**

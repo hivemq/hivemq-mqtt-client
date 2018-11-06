@@ -35,8 +35,6 @@ public abstract class MqttSimpleAuthBuilder<B extends MqttSimpleAuthBuilder<B>> 
     private @Nullable MqttUTF8StringImpl username;
     private @Nullable ByteBuffer password;
 
-    MqttSimpleAuthBuilder() {}
-
     abstract @NotNull B self();
 
     public @NotNull B username(final @Nullable String username) {
@@ -67,8 +65,6 @@ public abstract class MqttSimpleAuthBuilder<B extends MqttSimpleAuthBuilder<B>> 
     }
 
     public static class Default extends MqttSimpleAuthBuilder<Default> implements Mqtt5SimpleAuthBuilder.Complete {
-
-        public Default() {}
 
         @Override
         @NotNull Default self() {

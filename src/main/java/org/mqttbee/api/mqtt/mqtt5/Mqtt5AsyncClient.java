@@ -35,6 +35,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5UnsubscribeBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
 import org.mqttbee.mqtt.MqttAsyncClient;
+import org.mqttbee.mqtt.message.disconnect.MqttDisconnectBuilder;
 import org.mqttbee.mqtt.message.publish.MqttPublishBuilder;
 
 import java.util.concurrent.CompletableFuture;
@@ -280,14 +281,14 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
     /**
      * Fluent counterpart of {@link #disconnect(Mqtt5Disconnect)}.
      * <p>
-     * Calling {@link Mqtt5DisconnectBuilder#applyDisconnect()} on the returned builder has the same effect as calling
-     * {@link #disconnect(Mqtt5Disconnect)} with the result of {@link Mqtt5DisconnectBuilder#build()}.
+     * Calling {@link Mqtt5DisconnectBuilder.Send#send()} on the returned builder has the same effect as calling {@link
+     * #disconnect(Mqtt5Disconnect)} with the result of {@link Mqtt5DisconnectBuilder#build()}.
      *
      * @return the fluent builder for the Unsubscribe message.
      * @see #disconnect(Mqtt5Disconnect)
      */
-    default @NotNull Mqtt5DisconnectBuilder<CompletableFuture<Void>> disconnectWith() {
-        return new Mqtt5DisconnectBuilder<>(this::disconnect);
+    default @NotNull Mqtt5DisconnectBuilder.Send<CompletableFuture<Void>> disconnectWith() {
+        return new MqttDisconnectBuilder.Send<>(this::disconnect);
     }
 
     @Override
