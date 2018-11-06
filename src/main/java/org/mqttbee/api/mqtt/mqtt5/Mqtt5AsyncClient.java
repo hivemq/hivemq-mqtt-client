@@ -35,6 +35,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5UnsubscribeBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
 import org.mqttbee.mqtt.MqttAsyncClient;
+import org.mqttbee.mqtt.message.connect.MqttConnectBuilder;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnectBuilder;
 import org.mqttbee.mqtt.message.publish.MqttPublishBuilder;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribeBuilder;
@@ -79,14 +80,14 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
     /**
      * Fluent counterpart of {@link #connect(Mqtt5Connect)}.
      * <p>
-     * Calling {@link Mqtt5ConnectBuilder#applyConnect()} on the returned builder has the same effect as calling {@link
+     * Calling {@link Mqtt5ConnectBuilder.Send#send()} on the returned builder has the same effect as calling {@link
      * #connect(Mqtt5Connect)} with the result of {@link Mqtt5ConnectBuilder#build()}.
      *
      * @return the fluent builder for the Connect message.
      * @see #connect(Mqtt5Connect)
      */
-    default @NotNull Mqtt5ConnectBuilder<CompletableFuture<Mqtt5ConnAck>> connectWith() {
-        return new Mqtt5ConnectBuilder<>(this::connect);
+    default @NotNull Mqtt5ConnectBuilder.Send<CompletableFuture<Mqtt5ConnAck>> connectWith() {
+        return new MqttConnectBuilder.Send<>(this::connect);
     }
 
     /**

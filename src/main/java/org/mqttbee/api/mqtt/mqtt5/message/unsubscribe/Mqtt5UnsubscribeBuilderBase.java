@@ -35,13 +35,13 @@ public interface Mqtt5UnsubscribeBuilderBase<
             C extends B> {
 // @formatter:on
 
-    @NotNull C addTopicFilter(final @NotNull String topicFilter);
+    @NotNull C addTopicFilter(@NotNull String topicFilter);
 
-    @NotNull C addTopicFilter(final @NotNull MqttTopicFilter topicFilter);
+    @NotNull C addTopicFilter(@NotNull MqttTopicFilter topicFilter);
 
     @NotNull MqttTopicFilterBuilder<? extends C> addTopicFilter();
 
-    @NotNull C reverse(final @NotNull Mqtt5Subscribe subscribe);
+    @NotNull C reverse(@NotNull Mqtt5Subscribe subscribe);
 
     @NotNull B userProperties(@NotNull Mqtt5UserProperties userProperties);
 
@@ -69,9 +69,9 @@ public interface Mqtt5UnsubscribeBuilderBase<
             extends Mqtt5UnsubscribeBuilderBase<B, C> {
     // @formatter:on
 
-        @NotNull C topicFilter(final @NotNull String topicFilter);
+        @NotNull C topicFilter(@NotNull String topicFilter);
 
-        @NotNull C topicFilter(final @NotNull MqttTopicFilter topicFilter);
+        @NotNull C topicFilter(@NotNull MqttTopicFilter topicFilter);
 
         @NotNull MqttTopicFilterBuilder<? extends C> topicFilter();
 

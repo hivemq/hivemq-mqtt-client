@@ -35,6 +35,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5UnsubscribeBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
+import org.mqttbee.mqtt.message.connect.MqttConnectBuilder;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnectBuilder;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribeBuilder;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribeBuilder;
@@ -80,14 +81,14 @@ public interface Mqtt5RxClient extends Mqtt5Client {
     /**
      * Fluent counterpart of {@link #connect(Mqtt5Connect)}.
      * <p>
-     * Calling {@link Mqtt5ConnectBuilder#applyConnect()} on the returned builder has the same effect as calling {@link
-     * #connect(Mqtt5Connect)} with the result of {@link Mqtt5ConnectBuilder#build()}.
+     * Calling {@link Mqtt5ConnectBuilder.Nested#applyConnect()} on the returned builder has the same effect as calling
+     * {@link #connect(Mqtt5Connect)} with the result of {@link Mqtt5ConnectBuilder#build()}.
      *
      * @return the fluent builder for the Connect message.
      * @see #connect(Mqtt5Connect)
      */
-    default @NotNull Mqtt5ConnectBuilder<Single<Mqtt5ConnAck>> connectWith() {
-        return new Mqtt5ConnectBuilder<>(this::connect);
+    default @NotNull Mqtt5ConnectBuilder.Nested<Single<Mqtt5ConnAck>> connectWith() {
+        return new MqttConnectBuilder.Nested<>(this::connect);
     }
 
     /**

@@ -25,10 +25,10 @@ import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5SimpleAuth;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
+import org.mqttbee.mqtt.message.connect.MqttConnectBuilder;
 import org.mqttbee.util.UnsignedDataTypes;
 
 import java.util.Optional;
-import java.util.function.Function;
 
 /**
  * MQTT 5 CONNECT packet.
@@ -47,12 +47,12 @@ public interface Mqtt5Connect extends Mqtt5Message {
     boolean DEFAULT_RESPONSE_INFORMATION_REQUESTED = false;
     boolean DEFAULT_PROBLEM_INFORMATION_REQUESTED = true;
 
-    static @NotNull Mqtt5ConnectBuilder<Void> builder() {
-        return new Mqtt5ConnectBuilder<>((Function<Mqtt5Connect, Void>) null);
+    static @NotNull Mqtt5ConnectBuilder builder() {
+        return new MqttConnectBuilder.Default();
     }
 
-    static @NotNull Mqtt5ConnectBuilder<Void> extend(final @NotNull Mqtt5Connect connect) {
-        return new Mqtt5ConnectBuilder<>(connect);
+    static @NotNull Mqtt5ConnectBuilder extend(final @NotNull Mqtt5Connect connect) {
+        return new MqttConnectBuilder.Default(connect);
     }
 
     /**
