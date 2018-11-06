@@ -35,6 +35,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5UnsubscribeBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
+import org.mqttbee.mqtt.message.disconnect.MqttDisconnectBuilder;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribeBuilder;
 import org.mqttbee.rx.FlowableWithSingle;
 
@@ -279,14 +280,14 @@ public interface Mqtt5RxClient extends Mqtt5Client {
     /**
      * Fluent counterpart of {@link #disconnect(Mqtt5Disconnect)}.
      * <p>
-     * Calling {@link Mqtt5DisconnectBuilder#applyDisconnect()} on the returned builder has the same effect as calling
-     * {@link #disconnect(Mqtt5Disconnect)} with the result of {@link Mqtt5DisconnectBuilder#build()}.
+     * Calling {@link Mqtt5DisconnectBuilder.Nested#applyDisconnect()} on the returned builder has the same effect as
+     * calling {@link #disconnect(Mqtt5Disconnect)} with the result of {@link Mqtt5DisconnectBuilder#build()}.
      *
      * @return the builder for the Disconnect message.
      * @see #disconnect(Mqtt5Disconnect)
      */
-    default @NotNull Mqtt5DisconnectBuilder<Completable> disconnectWith() {
-        return new Mqtt5DisconnectBuilder<>(this::disconnect);
+    default @NotNull Mqtt5DisconnectBuilder.Nested<Completable> disconnectWith() {
+        return new MqttDisconnectBuilder.Nested<>(this::disconnect);
     }
 
     @Override

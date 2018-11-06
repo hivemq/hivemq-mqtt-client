@@ -34,6 +34,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5UnsubscribeBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
+import org.mqttbee.mqtt.message.disconnect.MqttDisconnectBuilder;
 import org.mqttbee.mqtt.message.publish.MqttPublishBuilder;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribeBuilder;
 
@@ -186,14 +187,14 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
     /**
      * Fluent counterpart of {@link #disconnect(Mqtt5Disconnect)}.
      * <p>
-     * Calling {@link Mqtt5DisconnectBuilder#applyDisconnect()} on the returned builder has the same effect as calling
-     * {@link #disconnect(Mqtt5Disconnect)} with the result of {@link Mqtt5DisconnectBuilder#build()}.
+     * Calling {@link Mqtt5DisconnectBuilder.Send#send()} on the returned builder has the same effect as calling {@link
+     * #disconnect(Mqtt5Disconnect)} with the result of {@link Mqtt5DisconnectBuilder#build()}.
      *
      * @return the fluent builder for the Unsubscribe message.
      * @see #disconnect(Mqtt5Disconnect)
      */
-    default @NotNull Mqtt5DisconnectBuilder<Void> disconnectWith() {
-        return new Mqtt5DisconnectBuilder<>(disconnect -> {
+    default @NotNull Mqtt5DisconnectBuilder.Send<Void> disconnectWith() {
+        return new MqttDisconnectBuilder.Send<>(disconnect -> {
             disconnect(disconnect);
             return null;
         });
