@@ -21,8 +21,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
-import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
-import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 
 import java.nio.ByteBuffer;
 
@@ -30,21 +28,16 @@ import java.nio.ByteBuffer;
  * @author Silvio Giebl
  */
 @DoNotImplement
-public interface Mqtt5AuthBuilder extends Mqtt5EnhancedAuthBuilder {
+public interface Mqtt5SimpleAuthBuilderBase<B extends Mqtt5SimpleAuthBuilderBase<B, C>, C extends B> {
 
-    @Override
-    @NotNull Mqtt5AuthBuilder data(@Nullable byte[] data);
+    @NotNull C username(@Nullable String username);
 
-    @Override
-    @NotNull Mqtt5AuthBuilder data(@Nullable ByteBuffer data);
+    @NotNull C username(@Nullable MqttUTF8String username);
 
-    @NotNull Mqtt5AuthBuilder reasonString(@Nullable String reasonString);
+    @NotNull C password(@Nullable byte[] password);
 
-    @NotNull Mqtt5AuthBuilder reasonString(@Nullable MqttUTF8String reasonString);
+    @NotNull C password(@Nullable ByteBuffer password);
 
-    @NotNull Mqtt5AuthBuilder userProperties(@NotNull Mqtt5UserProperties userProperties);
-
-    default @NotNull Mqtt5UserPropertiesBuilder<Mqtt5AuthBuilder> userProperties() {
-        return new Mqtt5UserPropertiesBuilder<>(this::userProperties);
-    }
+    @DoNotImplement
+    interface Complete<B extends Mqtt5SimpleAuthBuilderBase<B, C>, C extends B> {}
 }
