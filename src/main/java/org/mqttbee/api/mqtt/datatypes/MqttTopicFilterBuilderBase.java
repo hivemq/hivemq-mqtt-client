@@ -32,13 +32,13 @@ public interface MqttTopicFilterBuilderBase<
             S> {
 // @formatter:on
 
-    @NotNull C addLevel(final @NotNull String topicLevel);
+    @NotNull C addLevel(@NotNull String topicLevel);
 
     @NotNull C singleLevelWildcard();
 
     @NotNull E multiLevelWildcard();
 
-    @NotNull S share(final @NotNull String shareName);
+    @NotNull S share(@NotNull String shareName);
 
     // @formatter:off
     @DoNotImplement
@@ -51,7 +51,7 @@ public interface MqttTopicFilterBuilderBase<
             extends MqttTopicFilterBuilderBase<B, C, E, S>, End {
     // @formatter:on
 
-        @NotNull SC share(final @NotNull String shareName);
+        @NotNull SC share(@NotNull String shareName);
     }
 
     @DoNotImplement

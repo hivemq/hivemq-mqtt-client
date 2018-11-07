@@ -33,15 +33,15 @@ import java.util.concurrent.TimeUnit;
 @DoNotImplement
 public interface Mqtt3ConnectBuilderBase<B extends Mqtt3ConnectBuilderBase<B>> {
 
-    @NotNull B keepAlive(final int keepAlive, final @NotNull TimeUnit timeUnit);
+    @NotNull B keepAlive(int keepAlive, @NotNull TimeUnit timeUnit);
 
-    @NotNull B cleanSession(final boolean isCleanSession);
+    @NotNull B cleanSession(boolean isCleanSession);
 
-    @NotNull B simpleAuth(final @Nullable Mqtt3SimpleAuth simpleAuth);
+    @NotNull B simpleAuth(@Nullable Mqtt3SimpleAuth simpleAuth);
 
     @NotNull Mqtt3SimpleAuthBuilder.Nested<? extends B> simpleAuth();
 
-    @NotNull B willPublish(final @Nullable Mqtt3Publish willPublish);
+    @NotNull B willPublish(@Nullable Mqtt3Publish willPublish);
 
     @NotNull Mqtt3WillPublishBuilder.Nested<? extends B> willPublish();
 }

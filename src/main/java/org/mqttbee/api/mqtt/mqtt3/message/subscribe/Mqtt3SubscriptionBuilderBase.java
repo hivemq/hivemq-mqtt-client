@@ -33,13 +33,13 @@ public interface Mqtt3SubscriptionBuilderBase<
             C extends B> {
 // @formatter:on
 
-    @NotNull C topicFilter(final @NotNull String topicFilter);
+    @NotNull C topicFilter(@NotNull String topicFilter);
 
-    @NotNull C topicFilter(final @NotNull MqttTopicFilter topicFilter);
+    @NotNull C topicFilter(@NotNull MqttTopicFilter topicFilter);
 
     @NotNull MqttTopicFilterBuilder.Nested<? extends C> topicFilter();
 
-    @NotNull B qos(final @NotNull MqttQos qos);
+    @NotNull B qos(@NotNull MqttQos qos);
 
     // @formatter:off
     @DoNotImplement
@@ -50,6 +50,6 @@ public interface Mqtt3SubscriptionBuilderBase<
     // @formatter:on
 
         @Override
-        @NotNull C qos(final @NotNull MqttQos qos);
+        @NotNull C qos(@NotNull MqttQos qos);
     }
 }

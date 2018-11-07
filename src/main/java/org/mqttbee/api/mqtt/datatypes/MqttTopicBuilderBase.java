@@ -26,7 +26,7 @@ import org.mqttbee.annotations.DoNotImplement;
 @DoNotImplement
 public interface MqttTopicBuilderBase<B extends MqttTopicBuilderBase, C extends B> {
 
-    @NotNull C addLevel(final @NotNull String topicLevel);
+    @NotNull C addLevel(@NotNull String topicLevel);
 
     @DoNotImplement
     interface Complete<B extends MqttTopicBuilderBase, C extends B> extends MqttTopicBuilderBase<B, C> {}
