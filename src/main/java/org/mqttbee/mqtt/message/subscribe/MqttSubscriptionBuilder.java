@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt.message.subscribe;
 
-import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
@@ -28,8 +27,8 @@ import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscriptionBuilder;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImplBuilder;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
+import org.mqttbee.util.Checks;
 
-import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -60,7 +59,7 @@ public abstract class MqttSubscriptionBuilder<B extends MqttSubscriptionBuilder<
     }
 
     public @NotNull B qos(final @NotNull MqttQos qos) {
-        this.qos = Preconditions.checkNotNull(qos, "QoS must not be null.");
+        this.qos = Checks.notNull(qos, "QoS");
         return self();
     }
 
@@ -70,7 +69,7 @@ public abstract class MqttSubscriptionBuilder<B extends MqttSubscriptionBuilder<
     }
 
     public @NotNull B retainHandling(final @NotNull Mqtt5RetainHandling retainHandling) {
-        this.retainHandling = Preconditions.checkNotNull(retainHandling, "Retain handling must not be null.");
+        this.retainHandling = Checks.notNull(retainHandling, "Retain handling");
         return self();
     }
 
@@ -80,7 +79,7 @@ public abstract class MqttSubscriptionBuilder<B extends MqttSubscriptionBuilder<
     }
 
     public @NotNull MqttSubscription build() {
-        Objects.requireNonNull(topicFilter, "Topic filter must not be null.");
+        Checks.notNull(topicFilter, "Topic filter");
         if (topicFilter.isShared() && noLocal) {
             throw new IllegalStateException("It is a Protocol Error to set no local to true on a Shared Subscription.");
         }

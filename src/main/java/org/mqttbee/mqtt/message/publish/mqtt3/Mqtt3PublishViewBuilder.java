@@ -28,10 +28,10 @@ import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.datatypes.MqttTopicImplBuilder;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 import org.mqttbee.util.ByteBufferUtil;
+import org.mqttbee.util.Checks;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 
 import java.nio.ByteBuffer;
-import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -82,7 +82,7 @@ public abstract class Mqtt3PublishViewBuilder<B extends Mqtt3PublishViewBuilder<
     }
 
     public @NotNull B qos(final @NotNull MqttQos qos) {
-        this.qos = Objects.requireNonNull(qos, "QoS must not be null.");
+        this.qos = Checks.notNull(qos, "QoS");
         return self();
     }
 
@@ -100,7 +100,7 @@ public abstract class Mqtt3PublishViewBuilder<B extends Mqtt3PublishViewBuilder<
         }
 
         public @NotNull Mqtt3PublishView build() {
-            Objects.requireNonNull(topic, "Topic must be given.");
+            Checks.notNull(topic, "Topic");
             return Mqtt3PublishView.of(topic, payload, qos, retain);
         }
     }
@@ -166,7 +166,7 @@ public abstract class Mqtt3PublishViewBuilder<B extends Mqtt3PublishViewBuilder<
         }
 
         public @NotNull Mqtt3PublishView build() {
-            Objects.requireNonNull(topic, "Topic must be given.");
+            Checks.notNull(topic, "Topic");
             return Mqtt3PublishView.willOf(topic, payload, qos, retain);
         }
     }

@@ -23,7 +23,6 @@ import org.mqttbee.api.mqtt.MqttClientSslConfig;
 
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLException;
-import java.util.Objects;
 
 /**
  * @author Christoph Schäbel
@@ -32,9 +31,6 @@ public class SslUtil {
 
     static @NotNull SSLEngine createSslEngine(
             final @NotNull Channel channel, final @NotNull MqttClientSslConfig sslConfig) throws SSLException {
-
-        Objects.requireNonNull(channel, "Channel must not be null.");
-        Objects.requireNonNull(sslConfig, "SSL config must not be null.");
 
         final SSLEngine sslEngine = createSslContext(sslConfig).newEngine(channel.alloc());
 

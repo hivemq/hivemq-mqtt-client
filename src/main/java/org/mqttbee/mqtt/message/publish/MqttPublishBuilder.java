@@ -32,11 +32,11 @@ import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 import org.mqttbee.util.ByteBufferUtil;
+import org.mqttbee.util.Checks;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 import org.mqttbee.util.UnsignedDataTypes;
 
 import java.nio.ByteBuffer;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
@@ -93,7 +93,7 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
     }
 
     public @NotNull B qos(final @NotNull MqttQos qos) {
-        this.qos = Objects.requireNonNull(qos, "QoS must not be null.");
+        this.qos = Checks.notNull(qos, "QoS");
         return self();
     }
 
@@ -181,12 +181,12 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
         }
 
         public @NotNull B useTopicAlias(final @NotNull TopicAliasUsage topicAliasUsage) {
-            this.topicAliasUsage = Objects.requireNonNull(topicAliasUsage, "Topic alias usage must not be null.");
+            this.topicAliasUsage = Checks.notNull(topicAliasUsage, "Topic alias usage");
             return self();
         }
 
         public @NotNull MqttPublish build() {
-            Objects.requireNonNull(topic, "Topic must be given.");
+            Checks.notNull(topic, "Topic");
             return new MqttPublish(topic, payload, qos, retain, messageExpiryIntervalSeconds, payloadFormatIndicator,
                     contentType, responseTopic, correlationData, topicAliasUsage, userProperties);
         }
@@ -281,7 +281,7 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
         }
 
         public @NotNull MqttWillPublish build() {
-            Preconditions.checkNotNull(topic, "Topic must be given.");
+            Checks.notNull(topic, "Topic");
             return new MqttWillPublish(topic, payload, qos, retain, messageExpiryIntervalSeconds,
                     payloadFormatIndicator, contentType, responseTopic, correlationData, userProperties, delayInterval);
         }

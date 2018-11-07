@@ -26,8 +26,8 @@ import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3SubscriptionBuilder;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImplBuilder;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
+import org.mqttbee.util.Checks;
 
-import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -55,12 +55,12 @@ public abstract class Mqtt3SubscriptionViewBuilder<B extends Mqtt3SubscriptionVi
     }
 
     public @NotNull B qos(final @NotNull MqttQos qos) {
-        this.qos = Objects.requireNonNull(qos, "QoS must not be null.");
+        this.qos = Checks.notNull(qos, "QoS");
         return self();
     }
 
     public @NotNull Mqtt3SubscriptionView build() {
-        Objects.requireNonNull(topicFilter, "Topic filter must be given.");
+        Checks.notNull(topicFilter, "Topic filter");
         return Mqtt3SubscriptionView.of(topicFilter, qos);
     }
 

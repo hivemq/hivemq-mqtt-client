@@ -17,6 +17,7 @@
 package org.mqttbee.api.util;
 
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.util.Checks;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLException;
@@ -29,7 +30,6 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
-import java.util.Objects;
 
 /**
  * @author Christoph Schäbel
@@ -41,7 +41,7 @@ public class KeyStoreUtil {
     public static @NotNull TrustManagerFactory trustManagerFromKeystore(
             final @NotNull File trustStoreFile, final @NotNull String trustStorePassword) throws SSLException {
 
-        Objects.requireNonNull(trustStoreFile, "Truststore file must not be null.");
+        Checks.notNull(trustStoreFile, "Truststore file");
         try (final FileInputStream fileInputStream = new FileInputStream(trustStoreFile)) {
             final KeyStore keyStoreTrust = KeyStore.getInstance(KEYSTORE_TYPE);
             keyStoreTrust.load(fileInputStream, trustStorePassword.toCharArray());
@@ -63,7 +63,7 @@ public class KeyStoreUtil {
             final @NotNull File keyStoreFile, final @NotNull String keyStorePassword,
             final @NotNull String privateKeyPassword) throws SSLException {
 
-        Objects.requireNonNull(keyStoreFile, "Keystore file must not be null.");
+        Checks.notNull(keyStoreFile, "Keystore file");
         try (final FileInputStream fileInputStream = new FileInputStream(keyStoreFile)) {
             final KeyStore keyStore = KeyStore.getInstance(KEYSTORE_TYPE);
             keyStore.load(fileInputStream, keyStorePassword.toCharArray());

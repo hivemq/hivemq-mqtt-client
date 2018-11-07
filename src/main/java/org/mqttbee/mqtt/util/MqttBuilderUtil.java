@@ -26,6 +26,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
 import org.mqttbee.mqtt.datatypes.*;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.publish.MqttWillPublish;
+import org.mqttbee.util.Checks;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 
 import java.nio.ByteBuffer;
@@ -36,7 +37,7 @@ import java.nio.ByteBuffer;
 public class MqttBuilderUtil {
 
     public static @NotNull MqttUTF8StringImpl string(final @NotNull String string) {
-        Preconditions.checkNotNull(string, "String must not be null.");
+        Checks.notNull(string, "String");
         final MqttUTF8StringImpl from = MqttUTF8StringImpl.from(string);
         if (from == null) {
             throw new IllegalArgumentException("The string: [" + string + "] is not a valid UTF-8 encoded String.");
@@ -45,7 +46,7 @@ public class MqttBuilderUtil {
     }
 
     public static @NotNull MqttUTF8StringImpl string(final @NotNull MqttUTF8String string) {
-        Preconditions.checkNotNull(string, "String must not be null.");
+        Checks.notNull(string, "String");
         return MustNotBeImplementedUtil.checkNotImplemented(string, MqttUTF8StringImpl.class);
     }
 
@@ -58,7 +59,7 @@ public class MqttBuilderUtil {
     }
 
     public static @NotNull MqttTopicImpl topic(final @NotNull String string) {
-        Preconditions.checkNotNull(string, "String must not be null.");
+        Checks.notNull(string, "String");
         final MqttTopicImpl from = MqttTopicImpl.from(string);
         if (from == null) {
             throw new IllegalArgumentException("The string: [" + string + "] is not a valid Topic Name.");
@@ -67,7 +68,7 @@ public class MqttBuilderUtil {
     }
 
     public static @NotNull MqttTopicImpl topic(final @NotNull MqttTopic topic) {
-        Preconditions.checkNotNull(topic, "Topic must not be null.");
+        Checks.notNull(topic, "Topic");
         return MustNotBeImplementedUtil.checkNotImplemented(topic, MqttTopicImpl.class);
     }
 
@@ -80,7 +81,7 @@ public class MqttBuilderUtil {
     }
 
     public static @NotNull MqttTopicFilterImpl topicFilter(final @NotNull String string) {
-        Preconditions.checkNotNull(string, "String must not be null.");
+        Checks.notNull(string, "String");
         final MqttTopicFilterImpl from = MqttTopicFilterImpl.from(string);
         if (from == null) {
             throw new IllegalArgumentException("The string: [" + string + "] is not a valid Topic Filter.");
@@ -89,15 +90,15 @@ public class MqttBuilderUtil {
     }
 
     public static @NotNull MqttTopicFilterImpl topicFilter(final @NotNull MqttTopicFilter topicFilter) {
-        Preconditions.checkNotNull(topicFilter, "Topic filter must not be null.");
+        Checks.notNull(topicFilter, "Topic filter");
         return MustNotBeImplementedUtil.checkNotImplemented(topicFilter, MqttTopicFilterImpl.class);
     }
 
     public static @NotNull MqttSharedTopicFilterImpl sharedTopicFilter(
             final @NotNull String shareName, final @NotNull String topicFilter) {
 
-        Preconditions.checkNotNull(shareName, "Share name must not be null.");
-        Preconditions.checkNotNull(topicFilter, "Topic filter must not be null.");
+        Checks.notNull(shareName, "Share name");
+        Checks.notNull(topicFilter, "Topic filter");
         final MqttSharedTopicFilterImpl sharedTopicFilter = MqttSharedTopicFilterImpl.from(shareName, topicFilter);
         if (sharedTopicFilter == null) {
             throw new IllegalArgumentException(
@@ -108,7 +109,7 @@ public class MqttBuilderUtil {
     }
 
     public static @NotNull MqttClientIdentifierImpl clientIdentifier(final @NotNull String string) {
-        Preconditions.checkNotNull(string, "String must not be null.");
+        Checks.notNull(string, "String");
         final MqttClientIdentifierImpl from = MqttClientIdentifierImpl.from(string);
         if (from == null) {
             throw new IllegalArgumentException("The string: [" + string + "] is not a valid Client Identifier.");
@@ -119,7 +120,7 @@ public class MqttBuilderUtil {
     public static @NotNull MqttClientIdentifierImpl clientIdentifier(
             final @NotNull MqttClientIdentifier clientIdentifier) {
 
-        Preconditions.checkNotNull(clientIdentifier, "Client identifier must not be null.");
+        Checks.notNull(clientIdentifier, "Client identifier");
         return MustNotBeImplementedUtil.checkNotImplemented(clientIdentifier, MqttClientIdentifierImpl.class);
     }
 

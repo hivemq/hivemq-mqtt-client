@@ -35,10 +35,10 @@ import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
+import org.mqttbee.util.Checks;
 import org.reactivestreams.Subscription;
 
 import java.util.LinkedList;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CountDownLatch;
@@ -243,7 +243,7 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
             if (timeout < 0) {
                 throw new IllegalArgumentException("Timeout must be greater than 0.");
             }
-            Objects.requireNonNull(timeUnit, "Time unit must not be null.");
+            Checks.notNull(timeUnit, "Time unit");
 
             final Entry entry;
             synchronized (entries) {

@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt;
 
-import com.google.common.base.Preconditions;
 import io.netty.bootstrap.Bootstrap;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
@@ -53,6 +52,7 @@ import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribe;
 import org.mqttbee.rx.FlowableWithSingle;
+import org.mqttbee.util.Checks;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 
 /**
@@ -156,7 +156,7 @@ public class MqttRxClient implements Mqtt5RxClient {
     }
 
     @NotNull Flowable<Mqtt5Publish> publishesUnsafe(final @NotNull MqttGlobalPublishFilter filter) {
-        Preconditions.checkNotNull(filter, "Global publish filter must not be null.");
+        Checks.notNull(filter, "Global publish filter");
 
         return new MqttGlobalIncomingPublishFlowable(filter, clientData);
     }

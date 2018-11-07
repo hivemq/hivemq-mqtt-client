@@ -45,8 +45,8 @@ import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeViewBuilder;
 import org.mqttbee.mqtt.message.subscribe.suback.mqtt3.Mqtt3SubAckView;
 import org.mqttbee.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeView;
 import org.mqttbee.mqtt.mqtt3.exceptions.Mqtt3ExceptionFactory;
+import org.mqttbee.util.Checks;
 
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.Executor;
@@ -121,7 +121,7 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
     public @NotNull CompletableFuture<@NotNull Mqtt3SubAck> subscribe(
             final @NotNull Mqtt3Subscribe subscribe, final @NotNull Consumer<@NotNull Mqtt3Publish> callback) {
 
-        Objects.requireNonNull(callback, "Callback must not be null.");
+        Checks.notNull(callback, "Callback");
 
         return delegate.subscribe(Mqtt3SubscribeView.delegate(subscribe), callbackView(callback)).handle(SUBACK_MAPPER);
     }
@@ -131,8 +131,8 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
             final @NotNull Mqtt3Subscribe subscribe, final @NotNull Consumer<@NotNull Mqtt3Publish> callback,
             final @NotNull Executor executor) {
 
-        Objects.requireNonNull(callback, "Callback must not be null.");
-        Objects.requireNonNull(executor, "Executor must not be null.");
+        Checks.notNull(callback, "Callback");
+        Checks.notNull(executor, "Executor");
 
         return delegate.subscribe(Mqtt3SubscribeView.delegate(subscribe), callbackView(callback), executor)
                 .handle(SUBACK_MAPPER);
@@ -142,7 +142,7 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
     public void publishes(
             final @NotNull MqttGlobalPublishFilter filter, final @NotNull Consumer<@NotNull Mqtt3Publish> callback) {
 
-        Objects.requireNonNull(callback, "Callback must not be null.");
+        Checks.notNull(callback, "Callback");
 
         delegate.publishes(filter, callbackView(callback));
     }
@@ -152,8 +152,8 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
             final @NotNull MqttGlobalPublishFilter filter, final @NotNull Consumer<@NotNull Mqtt3Publish> callback,
             final @NotNull Executor executor) {
 
-        Objects.requireNonNull(callback, "Callback must not be null.");
-        Objects.requireNonNull(executor, "Executor must not be null.");
+        Checks.notNull(callback, "Callback");
+        Checks.notNull(executor, "Executor");
 
         delegate.publishes(filter, callbackView(callback), executor);
     }
@@ -213,13 +213,13 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
         public @NotNull Mqtt3SubscribeViewAndCallbackBuilder callback(
                 final @NotNull Consumer<Mqtt3Publish> callback) {
 
-            this.callback = Objects.requireNonNull(callback, "Callback must not be null.");
+            this.callback = Checks.notNull(callback, "Callback");
             return this;
         }
 
         @Override
         public @NotNull Mqtt3SubscribeViewAndCallbackBuilder executor(final @NotNull Executor executor) {
-            this.executor = Objects.requireNonNull(executor, "Executor must not be null.");
+            this.executor = Checks.notNull(executor, "Executor");
             return this;
         }
 
