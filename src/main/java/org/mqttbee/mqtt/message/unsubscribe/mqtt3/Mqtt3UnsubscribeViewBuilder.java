@@ -94,13 +94,8 @@ public abstract class Mqtt3UnsubscribeViewBuilder<B extends Mqtt3UnsubscribeView
         return Mqtt3UnsubscribeView.of(topicFilters);
     }
 
-    // @formatter:off
-    public static class Default
-            extends Mqtt3UnsubscribeViewBuilder<Default>
-            implements Mqtt3UnsubscribeBuilder,
-                       Mqtt3UnsubscribeBuilder.Complete,
-                       Mqtt3UnsubscribeBuilder.Start {
-    // @formatter:on
+    public static class Default extends Mqtt3UnsubscribeViewBuilder<Default>
+            implements Mqtt3UnsubscribeBuilder.Complete, Mqtt3UnsubscribeBuilder.Start {
 
         public Default() {}
 
@@ -114,13 +109,8 @@ public abstract class Mqtt3UnsubscribeViewBuilder<B extends Mqtt3UnsubscribeView
         }
     }
 
-    // @formatter:off
-    public static class Nested<P>
-            extends Mqtt3UnsubscribeViewBuilder<Nested<P>>
-            implements Mqtt3UnsubscribeBuilder.Nested<P>,
-                       Mqtt3UnsubscribeBuilder.Nested.Complete<P>,
-                       Mqtt3UnsubscribeBuilder.Nested.Start<P> {
-    // @formatter:on
+    public static class Nested<P> extends Mqtt3UnsubscribeViewBuilder<Nested<P>>
+            implements Mqtt3UnsubscribeBuilder.Nested.Complete<P>, Mqtt3UnsubscribeBuilder.Nested.Start<P> {
 
         private final @NotNull Function<? super Mqtt3UnsubscribeView, P> parentConsumer;
 
@@ -139,13 +129,8 @@ public abstract class Mqtt3UnsubscribeViewBuilder<B extends Mqtt3UnsubscribeView
         }
     }
 
-    // @formatter:off
-    public static class Send<P>
-            extends Mqtt3UnsubscribeViewBuilder<Send<P>>
-            implements Mqtt3UnsubscribeBuilder.Send<P>,
-                       Mqtt3UnsubscribeBuilder.Send.Complete<P>,
-                       Mqtt3UnsubscribeBuilder.Send.Start<P> {
-    // @formatter:on
+    public static class Send<P> extends Mqtt3UnsubscribeViewBuilder<Send<P>>
+            implements Mqtt3UnsubscribeBuilder.Send.Complete<P>, Mqtt3UnsubscribeBuilder.Send.Start<P> {
 
         private final @NotNull Function<? super Mqtt3UnsubscribeView, P> parentConsumer;
 

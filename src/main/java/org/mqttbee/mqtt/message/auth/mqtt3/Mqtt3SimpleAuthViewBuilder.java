@@ -64,12 +64,7 @@ public abstract class Mqtt3SimpleAuthViewBuilder<B extends Mqtt3SimpleAuthViewBu
         return Mqtt3SimpleAuthView.of(username, password);
     }
 
-    // @formatter:off
-    public static class Default
-            extends Mqtt3SimpleAuthViewBuilder<Default>
-            implements Mqtt3SimpleAuthBuilder,
-                       Mqtt3SimpleAuthBuilder.Complete {
-    // @formatter:on
+    public static class Default extends Mqtt3SimpleAuthViewBuilder<Default> implements Mqtt3SimpleAuthBuilder.Complete {
 
         @Override
         @NotNull Default self() {
@@ -77,12 +72,8 @@ public abstract class Mqtt3SimpleAuthViewBuilder<B extends Mqtt3SimpleAuthViewBu
         }
     }
 
-    // @formatter:off
-    public static class Nested<P>
-            extends Mqtt3SimpleAuthViewBuilder<Nested<P>>
-            implements Mqtt3SimpleAuthBuilder.Nested<P>,
-                       Mqtt3SimpleAuthBuilder.Nested.Complete<P> {
-    // @formatter:on
+    public static class Nested<P> extends Mqtt3SimpleAuthViewBuilder<Nested<P>>
+            implements Mqtt3SimpleAuthBuilder.Nested.Complete<P> {
 
         private final @NotNull Function<? super Mqtt3SimpleAuthView, P> parentConsumer;
 

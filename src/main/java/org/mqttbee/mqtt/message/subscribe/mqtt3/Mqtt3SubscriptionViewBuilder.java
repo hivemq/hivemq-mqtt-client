@@ -64,12 +64,8 @@ public abstract class Mqtt3SubscriptionViewBuilder<B extends Mqtt3SubscriptionVi
         return Mqtt3SubscriptionView.of(topicFilter, qos);
     }
 
-    // @formatter:off
-    public static class Default
-            extends Mqtt3SubscriptionViewBuilder<Default>
-            implements Mqtt3SubscriptionBuilder,
-                       Mqtt3SubscriptionBuilder.Complete {
-    // @formatter:on
+    public static class Default extends Mqtt3SubscriptionViewBuilder<Default>
+            implements Mqtt3SubscriptionBuilder.Complete {
 
         @Override
         @NotNull Default self() {
@@ -77,12 +73,8 @@ public abstract class Mqtt3SubscriptionViewBuilder<B extends Mqtt3SubscriptionVi
         }
     }
 
-    // @formatter:off
-    public static class Nested<P>
-            extends Mqtt3SubscriptionViewBuilder<Nested<P>>
-            implements Mqtt3SubscriptionBuilder.Nested<P>,
-                       Mqtt3SubscriptionBuilder.Nested.Complete<P> {
-    // @formatter:on
+    public static class Nested<P> extends Mqtt3SubscriptionViewBuilder<Nested<P>>
+            implements Mqtt3SubscriptionBuilder.Nested.Complete<P> {
 
         private final @NotNull Function<? super Mqtt3Subscription, P> parentConsumer;
 

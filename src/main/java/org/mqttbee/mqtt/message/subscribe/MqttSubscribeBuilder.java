@@ -134,12 +134,7 @@ public abstract class MqttSubscribeBuilder<B extends MqttSubscribeBuilder<B>> {
         return new MqttSubscribe(subscriptions, userProperties);
     }
 
-    // @formatter:off
-    public static class Default
-            extends MqttSubscribeBuilder<Default>
-            implements Mqtt5SubscribeBuilder.Complete,
-                       Mqtt5SubscribeBuilder.Start.Complete {
-    // @formatter:on
+    public static class Default extends MqttSubscribeBuilder<Default> implements Mqtt5SubscribeBuilder.Start.Complete {
 
         public Default() {}
 
@@ -153,12 +148,8 @@ public abstract class MqttSubscribeBuilder<B extends MqttSubscribeBuilder<B>> {
         }
     }
 
-    // @formatter:off
-    public static class Nested<P>
-            extends MqttSubscribeBuilder<Nested<P>>
-            implements Mqtt5SubscribeBuilder.Nested.Complete<P>,
-                       Mqtt5SubscribeBuilder.Nested.Start.Complete<P> {
-    // @formatter:on
+    public static class Nested<P> extends MqttSubscribeBuilder<Nested<P>>
+            implements Mqtt5SubscribeBuilder.Nested.Start.Complete<P> {
 
         private final @NotNull Function<? super MqttSubscribe, P> parentConsumer;
 
@@ -177,12 +168,8 @@ public abstract class MqttSubscribeBuilder<B extends MqttSubscribeBuilder<B>> {
         }
     }
 
-    // @formatter:off
-    public static class Send<P>
-            extends MqttSubscribeBuilder<Send<P>>
-            implements Mqtt5SubscribeBuilder.Send.Complete<P>,
-                       Mqtt5SubscribeBuilder.Send.Start.Complete<P> {
-    // @formatter:on
+    public static class Send<P> extends MqttSubscribeBuilder<Send<P>>
+            implements Mqtt5SubscribeBuilder.Send.Start.Complete<P> {
 
         private final @NotNull Function<? super MqttSubscribe, P> parentConsumer;
 

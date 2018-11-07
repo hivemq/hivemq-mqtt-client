@@ -104,12 +104,8 @@ public abstract class Mqtt3SubscribeViewBuilder<B extends Mqtt3SubscribeViewBuil
         return Mqtt3SubscribeView.of(subscriptions);
     }
 
-    // @formatter:off
-    public static class Default
-            extends Mqtt3SubscribeViewBuilder<Default>
-            implements Mqtt3SubscribeBuilder.Complete,
-                       Mqtt3SubscribeBuilder.Start.Complete {
-    // @formatter:on
+    public static class Default extends Mqtt3SubscribeViewBuilder<Default>
+            implements Mqtt3SubscribeBuilder.Start.Complete {
 
         public Default() {}
 
@@ -123,12 +119,8 @@ public abstract class Mqtt3SubscribeViewBuilder<B extends Mqtt3SubscribeViewBuil
         }
     }
 
-    // @formatter:off
-    public static class Nested<P>
-            extends Mqtt3SubscribeViewBuilder<Nested<P>>
-            implements Mqtt3SubscribeBuilder.Nested.Complete<P>,
-                       Mqtt3SubscribeBuilder.Nested.Start.Complete<P> {
-    // @formatter:on
+    public static class Nested<P> extends Mqtt3SubscribeViewBuilder<Nested<P>>
+            implements Mqtt3SubscribeBuilder.Nested.Start.Complete<P> {
 
         private final @NotNull Function<? super Mqtt3Subscribe, P> parentConsumer;
 
@@ -147,12 +139,8 @@ public abstract class Mqtt3SubscribeViewBuilder<B extends Mqtt3SubscribeViewBuil
         }
     }
 
-    // @formatter:off
-    public static class Send<P>
-            extends Mqtt3SubscribeViewBuilder<Send<P>>
-            implements Mqtt3SubscribeBuilder.Send.Complete<P>,
-                       Mqtt3SubscribeBuilder.Send.Start.Complete<P> {
-    // @formatter:on
+    public static class Send<P> extends Mqtt3SubscribeViewBuilder<Send<P>>
+            implements Mqtt3SubscribeBuilder.Send.Start.Complete<P> {
 
         private final @NotNull Function<? super Mqtt3Subscribe, P> parentConsumer;
 
