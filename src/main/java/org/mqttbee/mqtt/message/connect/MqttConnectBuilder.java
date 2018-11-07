@@ -24,14 +24,11 @@ import org.mqttbee.api.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5SimpleAuth;
-import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5SimpleAuthBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5ConnectBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions;
-import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictionsBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
-import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5WillPublishBuilder;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.auth.MqttSimpleAuth;
 import org.mqttbee.mqtt.message.auth.MqttSimpleAuthBuilder;
@@ -119,7 +116,7 @@ public abstract class MqttConnectBuilder<B extends MqttConnectBuilder<B>> {
         return self();
     }
 
-    public @NotNull Mqtt5ConnectRestrictionsBuilder.Nested<B> restrictions() {
+    public @NotNull MqttConnectRestrictionsBuilder.Nested<B> restrictions() {
         return new MqttConnectRestrictionsBuilder.Nested<>(this::restrictions);
     }
 
@@ -128,7 +125,7 @@ public abstract class MqttConnectBuilder<B extends MqttConnectBuilder<B>> {
         return self();
     }
 
-    public @NotNull Mqtt5SimpleAuthBuilder.Nested<B> simpleAuth() {
+    public @NotNull MqttSimpleAuthBuilder.Nested<B> simpleAuth() {
         return new MqttSimpleAuthBuilder.Nested<>(this::simpleAuth);
     }
 
@@ -148,7 +145,7 @@ public abstract class MqttConnectBuilder<B extends MqttConnectBuilder<B>> {
         return self();
     }
 
-    public @NotNull Mqtt5WillPublishBuilder.Nested<B> willPublish() {
+    public @NotNull MqttPublishBuilder.WillNested<B> willPublish() {
         return new MqttPublishBuilder.WillNested<>(this::willPublish);
     }
 

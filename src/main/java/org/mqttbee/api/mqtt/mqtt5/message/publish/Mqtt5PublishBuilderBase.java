@@ -40,7 +40,7 @@ public interface Mqtt5PublishBuilderBase<B extends Mqtt5PublishBuilderBase<B, C>
 
     @NotNull C topic(@NotNull MqttTopic topic);
 
-    @NotNull MqttTopicBuilder<? extends C> topic();
+    @NotNull MqttTopicBuilder.Nested<? extends C> topic();
 
     @NotNull B payload(@Nullable byte[] payload);
 
@@ -62,7 +62,7 @@ public interface Mqtt5PublishBuilderBase<B extends Mqtt5PublishBuilderBase<B, C>
 
     @NotNull B responseTopic(@Nullable MqttTopic responseTopic);
 
-    @NotNull MqttTopicBuilder<? extends B> responseTopic();
+    @NotNull MqttTopicBuilder.Nested<? extends B> responseTopic();
 
     @NotNull B correlationData(@Nullable byte[] correlationData);
 
@@ -106,7 +106,7 @@ public interface Mqtt5PublishBuilderBase<B extends Mqtt5PublishBuilderBase<B, C>
         @NotNull C responseTopic(@Nullable MqttTopic responseTopic);
 
         @Override
-        @NotNull MqttTopicBuilder<? extends C> responseTopic();
+        @NotNull MqttTopicBuilder.Nested<? extends C> responseTopic();
 
         @Override
         @NotNull C correlationData(@Nullable byte[] correlationData);

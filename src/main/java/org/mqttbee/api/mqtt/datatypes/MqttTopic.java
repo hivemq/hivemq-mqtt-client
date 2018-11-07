@@ -20,6 +20,7 @@ package org.mqttbee.api.mqtt.datatypes;
 import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
+import org.mqttbee.mqtt.datatypes.MqttTopicImplBuilder;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 
 /**
@@ -49,16 +50,12 @@ public interface MqttTopic extends MqttUTF8String {
         return MqttBuilderUtil.topic(string);
     }
 
-    static @NotNull MqttTopicBuilder<Void> builder() {
-        return new MqttTopicBuilder<>(null);
+    static @NotNull MqttTopicBuilder builder() {
+        return new MqttTopicImplBuilder.Default();
     }
 
-    static @NotNull MqttTopicBuilder<Void> builder(final @NotNull String topTopic) {
-        return new MqttTopicBuilder<>(topTopic, null);
-    }
-
-    static @NotNull MqttTopicBuilder<Void> extend(final @NotNull MqttTopic topic) {
-        return new MqttTopicBuilder<>(topic.toString(), null);
+    static @NotNull MqttTopicBuilder.Complete extend(final @NotNull MqttTopic topic) {
+        return new MqttTopicImplBuilder.Default(topic.toString());
     }
 
     /**

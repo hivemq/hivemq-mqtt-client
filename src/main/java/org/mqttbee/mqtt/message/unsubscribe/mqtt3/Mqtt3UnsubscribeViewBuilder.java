@@ -20,12 +20,12 @@ package org.mqttbee.mqtt.message.unsubscribe.mqtt3;
 import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
-import org.mqttbee.api.mqtt.datatypes.MqttTopicFilterBuilder;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscription;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubscribeBuilder;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
+import org.mqttbee.mqtt.datatypes.MqttTopicFilterImplBuilder;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 
@@ -62,8 +62,8 @@ public abstract class Mqtt3UnsubscribeViewBuilder<B extends Mqtt3UnsubscribeView
         return self();
     }
 
-    public @NotNull MqttTopicFilterBuilder<B> addTopicFilter() {
-        return new MqttTopicFilterBuilder<>(this::addTopicFilter);
+    public @NotNull MqttTopicFilterImplBuilder.Nested<B> addTopicFilter() {
+        return new MqttTopicFilterImplBuilder.Nested<>(this::addTopicFilter);
     }
 
     public @NotNull B reverse(final @NotNull Mqtt3Subscribe subscribe) {
@@ -82,8 +82,8 @@ public abstract class Mqtt3UnsubscribeViewBuilder<B extends Mqtt3UnsubscribeView
         return addTopicFilter(topicFilter);
     }
 
-    public @NotNull MqttTopicFilterBuilder<B> topicFilter() {
-        return new MqttTopicFilterBuilder<>(this::topicFilter);
+    public @NotNull MqttTopicFilterImplBuilder.Nested<B> topicFilter() {
+        return new MqttTopicFilterImplBuilder.Nested<>(this::topicFilter);
     }
 
     public @NotNull Mqtt3UnsubscribeView build() {

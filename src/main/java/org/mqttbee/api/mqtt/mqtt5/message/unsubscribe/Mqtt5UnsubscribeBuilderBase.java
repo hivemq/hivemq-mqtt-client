@@ -39,7 +39,7 @@ public interface Mqtt5UnsubscribeBuilderBase<
 
     @NotNull C addTopicFilter(@NotNull MqttTopicFilter topicFilter);
 
-    @NotNull MqttTopicFilterBuilder<? extends C> addTopicFilter();
+    @NotNull MqttTopicFilterBuilder.Nested<? extends C> addTopicFilter();
 
     @NotNull C reverse(@NotNull Mqtt5Subscribe subscribe);
 
@@ -73,7 +73,7 @@ public interface Mqtt5UnsubscribeBuilderBase<
 
         @NotNull C topicFilter(@NotNull MqttTopicFilter topicFilter);
 
-        @NotNull MqttTopicFilterBuilder<? extends C> topicFilter();
+        @NotNull MqttTopicFilterBuilder.Nested<? extends C> topicFilter();
 
         @Override
         @NotNull S userProperties(@NotNull Mqtt5UserProperties userProperties);

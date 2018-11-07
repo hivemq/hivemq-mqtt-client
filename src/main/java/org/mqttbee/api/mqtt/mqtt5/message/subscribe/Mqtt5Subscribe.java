@@ -33,7 +33,7 @@ import org.mqttbee.mqtt.message.subscribe.MqttSubscribeBuilder;
 @DoNotImplement
 public interface Mqtt5Subscribe extends Mqtt5Message {
 
-    static @NotNull Mqtt5SubscribeBuilder builder() {
+    static @NotNull Mqtt5SubscribeBuilder.Start builder() {
         return new MqttSubscribeBuilder.Default();
     }
 

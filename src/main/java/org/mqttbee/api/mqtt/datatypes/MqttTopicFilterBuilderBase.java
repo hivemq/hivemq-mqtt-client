@@ -15,41 +15,45 @@
  *
  */
 
-package org.mqttbee.api.mqtt.mqtt3.message.subscribe;
+package org.mqttbee.api.mqtt.datatypes;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.api.mqtt.datatypes.MqttQos;
-import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
-import org.mqttbee.api.mqtt.datatypes.MqttTopicFilterBuilder;
 
 /**
  * @author Silvio Giebl
  */
 // @formatter:off
 @DoNotImplement
-public interface Mqtt3SubscriptionBuilderBase<
-            B extends Mqtt3SubscriptionBuilderBase<B, C>,
-            C extends B> {
+public interface MqttTopicFilterBuilderBase<
+            B extends MqttTopicFilterBuilderBase<B, C, E, S>,
+            C extends B,
+            E extends MqttTopicFilterBuilderBase.End,
+            S> {
 // @formatter:on
 
-    @NotNull C topicFilter(final @NotNull String topicFilter);
+    @NotNull C addLevel(final @NotNull String topicLevel);
 
-    @NotNull C topicFilter(final @NotNull MqttTopicFilter topicFilter);
+    @NotNull C singleLevelWildcard();
 
-    @NotNull MqttTopicFilterBuilder.Nested<? extends C> topicFilter();
+    @NotNull E multiLevelWildcard();
 
-    @NotNull B qos(final @NotNull MqttQos qos);
+    @NotNull S share(final @NotNull String shareName);
 
     // @formatter:off
     @DoNotImplement
     interface Complete<
-                B extends Mqtt3SubscriptionBuilderBase<B, C>,
-                C extends B>
-            extends Mqtt3SubscriptionBuilderBase<B, C> {
+                B extends MqttTopicFilterBuilderBase<B, C, E, S>,
+                C extends B,
+                E extends MqttTopicFilterBuilderBase.End,
+                S,
+                SC extends S>
+            extends MqttTopicFilterBuilderBase<B, C, E, S>, End {
     // @formatter:on
 
-        @Override
-        @NotNull C qos(final @NotNull MqttQos qos);
+        @NotNull SC share(final @NotNull String shareName);
     }
+
+    @DoNotImplement
+    interface End {}
 }

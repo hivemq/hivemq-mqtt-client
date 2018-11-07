@@ -40,7 +40,7 @@ public interface Mqtt3PublishBuilderBase<
 
     @NotNull C topic(final @NotNull MqttTopic topic);
 
-    @NotNull MqttTopicBuilder<? extends C> topic();
+    @NotNull MqttTopicBuilder.Nested<? extends C> topic();
 
     @NotNull B payload(final @Nullable byte[] payload);
 
