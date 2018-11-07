@@ -38,7 +38,7 @@ public interface Mqtt5SubscribeBuilderBase<
 
     @NotNull B userProperties(@NotNull Mqtt5UserProperties userProperties);
 
-    @NotNull Mqtt5UserPropertiesBuilder<? extends B> userProperties();
+    @NotNull Mqtt5UserPropertiesBuilder.Nested<? extends B> userProperties();
 
     // @formatter:off
     @DoNotImplement
@@ -52,7 +52,7 @@ public interface Mqtt5SubscribeBuilderBase<
         @NotNull C userProperties(@NotNull Mqtt5UserProperties userProperties);
 
         @Override
-        @NotNull Mqtt5UserPropertiesBuilder<? extends C> userProperties();
+        @NotNull Mqtt5UserPropertiesBuilder.Nested<? extends C> userProperties();
     }
 
     // @formatter:off
@@ -80,7 +80,7 @@ public interface Mqtt5SubscribeBuilderBase<
         @NotNull S userProperties(@NotNull Mqtt5UserProperties userProperties);
 
         @Override
-        @NotNull Mqtt5UserPropertiesBuilder<? extends S> userProperties();
+        @NotNull Mqtt5UserPropertiesBuilder.Nested<? extends S> userProperties();
 
         // @formatter:off
         @DoNotImplement
@@ -99,7 +99,7 @@ public interface Mqtt5SubscribeBuilderBase<
             @NotNull SC userProperties(@NotNull Mqtt5UserProperties userProperties);
 
             @Override
-            @NotNull Mqtt5UserPropertiesBuilder<? extends SC> userProperties();
+            @NotNull Mqtt5UserPropertiesBuilder.Nested<? extends SC> userProperties();
         }
     }
 }

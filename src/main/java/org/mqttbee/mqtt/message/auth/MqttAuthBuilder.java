@@ -25,6 +25,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
+import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImplBuilder;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 import org.mqttbee.util.Checks;
 
@@ -76,6 +77,11 @@ public class MqttAuthBuilder implements Mqtt5AuthBuilder {
     public @NotNull MqttAuthBuilder userProperties(final @NotNull Mqtt5UserProperties userProperties) {
         this.userProperties = MqttBuilderUtil.userProperties(userProperties);
         return this;
+    }
+
+    @Override
+    public @NotNull MqttUserPropertiesImplBuilder.Nested<MqttAuthBuilder> userProperties() {
+        return new MqttUserPropertiesImplBuilder.Nested<>(this::userProperties);
     }
 
     public @NotNull MqttAuth build() {

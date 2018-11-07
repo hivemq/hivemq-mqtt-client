@@ -44,7 +44,5 @@ public interface Mqtt5AuthBuilder extends Mqtt5EnhancedAuthBuilder {
 
     @NotNull Mqtt5AuthBuilder userProperties(@NotNull Mqtt5UserProperties userProperties);
 
-    default @NotNull Mqtt5UserPropertiesBuilder<Mqtt5AuthBuilder> userProperties() {
-        return new Mqtt5UserPropertiesBuilder<>(this::userProperties);
-    }
+    @NotNull Mqtt5UserPropertiesBuilder.Nested<? extends Mqtt5AuthBuilder> userProperties();
 }

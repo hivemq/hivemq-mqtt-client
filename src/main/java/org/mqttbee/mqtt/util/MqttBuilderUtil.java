@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.*;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
+import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperty;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
 import org.mqttbee.mqtt.datatypes.*;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
@@ -159,6 +160,10 @@ public class MqttBuilderUtil {
         return MqttUserPropertyImpl.of(string(name), string(value));
     }
 
+    public static @NotNull MqttUserPropertyImpl userProperty(final @NotNull Mqtt5UserProperty userProperty) {
+        return MustNotBeImplementedUtil.checkNotImplemented(userProperty, MqttUserPropertyImpl.class);
+    }
+
     public static @Nullable MqttWillPublish willPublish(final @Nullable MqttPublish publish) {
         if (publish == null) {
             return null;
@@ -168,5 +173,4 @@ public class MqttBuilderUtil {
         }
         return (MqttWillPublish) Mqtt5WillPublish.extend(publish).build();
     }
-
 }

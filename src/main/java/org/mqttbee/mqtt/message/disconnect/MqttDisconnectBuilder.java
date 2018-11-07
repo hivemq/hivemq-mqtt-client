@@ -22,11 +22,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
-import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
+import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImplBuilder;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 import org.mqttbee.util.Checks;
 import org.mqttbee.util.UnsignedDataTypes;
@@ -87,8 +87,8 @@ public abstract class MqttDisconnectBuilder<B extends MqttDisconnectBuilder<B>> 
         return self();
     }
 
-    public @NotNull Mqtt5UserPropertiesBuilder<B> userProperties() {
-        return new Mqtt5UserPropertiesBuilder<>(this::userProperties);
+    public @NotNull MqttUserPropertiesImplBuilder.Nested<B> userProperties() {
+        return new MqttUserPropertiesImplBuilder.Nested<>(this::userProperties);
     }
 
     public @NotNull MqttDisconnect build() {

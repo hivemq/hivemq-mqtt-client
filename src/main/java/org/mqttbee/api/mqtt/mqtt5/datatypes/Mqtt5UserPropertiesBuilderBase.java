@@ -15,21 +15,21 @@
  *
  */
 
-package org.mqttbee.api.mqtt.mqtt5.message.auth;
+package org.mqttbee.api.mqtt.mqtt5.datatypes;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.DoNotImplement;
-
-import java.nio.ByteBuffer;
+import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 
 /**
  * @author Silvio Giebl
  */
 @DoNotImplement
-public interface Mqtt5EnhancedAuthBuilder {
+public interface Mqtt5UserPropertiesBuilderBase<B extends Mqtt5UserPropertiesBuilderBase<B>> {
 
-    @NotNull Mqtt5EnhancedAuthBuilder data(@Nullable byte[] data);
+    @NotNull B add(@NotNull String name, @NotNull String value);
 
-    @NotNull Mqtt5EnhancedAuthBuilder data(@Nullable ByteBuffer data);
+    @NotNull B add(@NotNull MqttUTF8String name, @NotNull MqttUTF8String value);
+
+    @NotNull B add(@NotNull Mqtt5UserProperty userProperty);
 }

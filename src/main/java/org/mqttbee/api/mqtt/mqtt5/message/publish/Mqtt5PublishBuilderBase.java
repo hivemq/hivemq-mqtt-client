@@ -70,7 +70,7 @@ public interface Mqtt5PublishBuilderBase<B extends Mqtt5PublishBuilderBase<B, C>
 
     @NotNull B userProperties(@NotNull Mqtt5UserProperties userProperties);
 
-    @NotNull Mqtt5UserPropertiesBuilder<? extends B> userProperties();
+    @NotNull Mqtt5UserPropertiesBuilder.Nested<? extends B> userProperties();
 
     @DoNotImplement
     interface Complete<B extends Mqtt5PublishBuilderBase<B, C>, C extends B> extends Mqtt5PublishBuilderBase<B, C> {
@@ -118,7 +118,7 @@ public interface Mqtt5PublishBuilderBase<B extends Mqtt5PublishBuilderBase<B, C>
         @NotNull C userProperties(@NotNull Mqtt5UserProperties userProperties);
 
         @Override
-        @NotNull Mqtt5UserPropertiesBuilder<? extends C> userProperties();
+        @NotNull Mqtt5UserPropertiesBuilder.Nested<? extends C> userProperties();
     }
 
     @DoNotImplement

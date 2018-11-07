@@ -36,8 +36,5 @@ public interface Mqtt5PubAckBuilder {
 
     @NotNull Mqtt5PubAckBuilder userProperties(@NotNull Mqtt5UserProperties userProperties);
 
-    default @NotNull Mqtt5UserPropertiesBuilder<Mqtt5PubAckBuilder> userProperties() {
-        return new Mqtt5UserPropertiesBuilder<>(this::userProperties);
-    }
-
+    @NotNull Mqtt5UserPropertiesBuilder.Nested<? extends Mqtt5PubAckBuilder> userProperties();
 }

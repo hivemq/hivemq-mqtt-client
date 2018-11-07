@@ -21,11 +21,10 @@ import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
+import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImplBuilder;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
+import org.mqttbee.mqtt.util.MqttBuilderUtil;
 import org.mqttbee.util.Checks;
-import org.mqttbee.util.MustNotBeImplementedUtil;
-
-import java.util.function.Function;
 
 /**
  * Collection of {@link Mqtt5UserProperty User Properties}.
@@ -54,17 +53,17 @@ public interface Mqtt5UserProperties {
         final ImmutableList.Builder<MqttUserPropertyImpl> builder =
                 ImmutableList.builderWithExpectedSize(userProperties.length);
         for (final Mqtt5UserProperty userProperty : userProperties) {
-            builder.add(MustNotBeImplementedUtil.checkNotImplemented(userProperty, MqttUserPropertyImpl.class));
+            builder.add(MqttBuilderUtil.userProperty(userProperty));
         }
         return MqttUserPropertiesImpl.of(builder.build());
     }
 
-    static @NotNull Mqtt5UserPropertiesBuilder<Void> builder() {
-        return new Mqtt5UserPropertiesBuilder<>((Function<Mqtt5UserProperties, Void>) null);
+    static @NotNull Mqtt5UserPropertiesBuilder builder() {
+        return new MqttUserPropertiesImplBuilder.Default();
     }
 
-    static @NotNull Mqtt5UserPropertiesBuilder<Void> extend(final @NotNull Mqtt5UserProperties userProperties) {
-        return new Mqtt5UserPropertiesBuilder<>(userProperties);
+    static @NotNull Mqtt5UserPropertiesBuilder extend(final @NotNull Mqtt5UserProperties userProperties) {
+        return new MqttUserPropertiesImplBuilder.Default(userProperties);
     }
 
     /**
