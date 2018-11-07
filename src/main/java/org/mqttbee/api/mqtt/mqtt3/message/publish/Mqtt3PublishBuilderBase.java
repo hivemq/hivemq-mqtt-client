@@ -36,19 +36,19 @@ public interface Mqtt3PublishBuilderBase<
             C extends B> {
 // @formatter:on
 
-    @NotNull C topic(final @NotNull String topic);
+    @NotNull C topic(@NotNull String topic);
 
-    @NotNull C topic(final @NotNull MqttTopic topic);
+    @NotNull C topic(@NotNull MqttTopic topic);
 
     @NotNull MqttTopicBuilder.Nested<? extends C> topic();
 
-    @NotNull B payload(final @Nullable byte[] payload);
+    @NotNull B payload(@Nullable byte[] payload);
 
-    @NotNull B payload(final @Nullable ByteBuffer payload);
+    @NotNull B payload(@Nullable ByteBuffer payload);
 
-    @NotNull B qos(final @NotNull MqttQos qos);
+    @NotNull B qos(@NotNull MqttQos qos);
 
-    @NotNull B retain(final boolean retain);
+    @NotNull B retain(boolean retain);
 
     // @formatter:off
     @DoNotImplement
@@ -59,15 +59,15 @@ public interface Mqtt3PublishBuilderBase<
     // @formatter:on
 
         @Override
-        @NotNull C payload(final @Nullable byte[] payload);
+        @NotNull C payload(@Nullable byte[] payload);
 
         @Override
-        @NotNull C payload(final @Nullable ByteBuffer payload);
+        @NotNull C payload(@Nullable ByteBuffer payload);
 
         @Override
-        @NotNull C qos(final @NotNull MqttQos qos);
+        @NotNull C qos(@NotNull MqttQos qos);
 
         @Override
-        @NotNull C retain(final boolean retain);
+        @NotNull C retain(boolean retain);
     }
 }

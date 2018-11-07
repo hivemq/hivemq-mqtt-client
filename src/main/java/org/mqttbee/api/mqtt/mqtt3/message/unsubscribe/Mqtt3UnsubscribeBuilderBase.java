@@ -33,13 +33,13 @@ public interface Mqtt3UnsubscribeBuilderBase<
             C extends B> {
 // @formatter:on
 
-    @NotNull C addTopicFilter(final @NotNull String topicFilter);
+    @NotNull C addTopicFilter(@NotNull String topicFilter);
 
-    @NotNull C addTopicFilter(final @NotNull MqttTopicFilter topicFilter);
+    @NotNull C addTopicFilter(@NotNull MqttTopicFilter topicFilter);
 
     @NotNull MqttTopicFilterBuilder.Nested<? extends C> addTopicFilter();
 
-    @NotNull C reverse(final @NotNull Mqtt3Subscribe subscribe);
+    @NotNull C reverse(@NotNull Mqtt3Subscribe subscribe);
 
     // @formatter:off
     @DoNotImplement
@@ -58,9 +58,9 @@ public interface Mqtt3UnsubscribeBuilderBase<
             extends Mqtt3UnsubscribeBuilderBase<B, C> {
     // @formatter:on
 
-        @NotNull C topicFilter(final @NotNull String topicFilter);
+        @NotNull C topicFilter(@NotNull String topicFilter);
 
-        @NotNull C topicFilter(final @NotNull MqttTopicFilter topicFilter);
+        @NotNull C topicFilter(@NotNull MqttTopicFilter topicFilter);
 
         @NotNull MqttTopicFilterBuilder.Nested<? extends C> topicFilter();
     }

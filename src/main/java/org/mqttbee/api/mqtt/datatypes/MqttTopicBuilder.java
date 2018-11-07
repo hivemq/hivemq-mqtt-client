@@ -28,7 +28,7 @@ public interface MqttTopicBuilder extends MqttTopicBuilderBase<MqttTopicBuilder,
 
     @NotNull MqttTopicFilterBuilder filter();
 
-    @NotNull MqttSharedTopicFilterBuilder share(final @NotNull String shareName);
+    @NotNull MqttSharedTopicFilterBuilder share(@NotNull String shareName);
 
     @DoNotImplement
     interface Complete
