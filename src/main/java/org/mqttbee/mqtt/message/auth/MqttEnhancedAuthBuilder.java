@@ -17,12 +17,12 @@
 
 package org.mqttbee.mqtt.message.auth;
 
-import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5EnhancedAuthBuilder;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
+import org.mqttbee.util.Checks;
 
 import java.nio.ByteBuffer;
 
@@ -31,30 +31,27 @@ import java.nio.ByteBuffer;
  */
 public class MqttEnhancedAuthBuilder implements Mqtt5EnhancedAuthBuilder {
 
-    private final MqttUTF8StringImpl method;
-    private ByteBuffer data;
+    private final @NotNull MqttUTF8StringImpl method;
+    private @Nullable ByteBuffer data;
 
-    public MqttEnhancedAuthBuilder(@NotNull final MqttUTF8StringImpl method) {
-        Preconditions.checkNotNull(method, "Method must not be null.");
+    public MqttEnhancedAuthBuilder(final @NotNull MqttUTF8StringImpl method) {
+        Checks.notNull(method, "Method");
         this.method = method;
     }
 
-    @NotNull
     @Override
-    public MqttEnhancedAuthBuilder data(@Nullable final byte[] data) {
+    public @NotNull MqttEnhancedAuthBuilder data(final @Nullable byte[] data) {
         this.data = MqttBuilderUtil.binaryDataOrNull(data);
         return this;
     }
 
-    @NotNull
     @Override
-    public MqttEnhancedAuthBuilder data(@Nullable final ByteBuffer data) {
+    public @NotNull MqttEnhancedAuthBuilder data(final @Nullable ByteBuffer data) {
         this.data = MqttBuilderUtil.binaryDataOrNull(data);
         return this;
     }
 
-    @NotNull
-    public MqttEnhancedAuth build() {
+    public @NotNull MqttEnhancedAuth build() {
         return new MqttEnhancedAuth(method, data);
     }
 

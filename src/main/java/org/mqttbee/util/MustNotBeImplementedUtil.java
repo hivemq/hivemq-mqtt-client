@@ -17,7 +17,6 @@
 
 package org.mqttbee.util;
 
-import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,7 +39,7 @@ public class MustNotBeImplementedUtil {
     @NotNull
     @SuppressWarnings("unchecked")
     public static <S, T extends S> T checkNotImplemented(@NotNull final S object, @NotNull final Class<T> type) {
-        Preconditions.checkNotNull(object, "Object must not be null.");
+        Checks.notNull(object, "Object");
         if (type.isInstance(object)) {
             return (T) object;
         }

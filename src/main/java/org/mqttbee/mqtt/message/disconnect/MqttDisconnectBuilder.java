@@ -28,9 +28,9 @@ import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
+import org.mqttbee.util.Checks;
 import org.mqttbee.util.UnsignedDataTypes;
 
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
@@ -48,7 +48,7 @@ public abstract class MqttDisconnectBuilder<B extends MqttDisconnectBuilder<B>> 
     abstract @NotNull B self();
 
     public @NotNull B reasonCode(final @NotNull Mqtt5DisconnectReasonCode reasonCode) {
-        this.reasonCode = Objects.requireNonNull(reasonCode, "Reason Code must not be null");
+        this.reasonCode = Checks.notNull(reasonCode, "Reason Code");
         return self();
     }
 

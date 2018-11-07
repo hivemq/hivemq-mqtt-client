@@ -35,9 +35,9 @@ import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribeBuilder;
 import org.mqttbee.rx.RxFutureConverter;
+import org.mqttbee.util.Checks;
 import org.reactivestreams.Subscription;
 
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
@@ -74,7 +74,7 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
     public @NotNull CompletableFuture<@NotNull Mqtt5SubAck> subscribe(
             final @NotNull Mqtt5Subscribe subscribe, final @NotNull Consumer<@NotNull Mqtt5Publish> callback) {
 
-        Objects.requireNonNull(callback, "Callback must not be null.");
+        Checks.notNull(callback, "Callback");
 
         return delegate.subscribeStream(subscribe)
                 .subscribeSingleFuture(new CallbackSubscriber(callback))
@@ -86,8 +86,8 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
             final @NotNull Mqtt5Subscribe subscribe, final @NotNull Consumer<@NotNull Mqtt5Publish> callback,
             final @NotNull Executor executor) {
 
-        Objects.requireNonNull(callback, "Callback must not be null.");
-        Objects.requireNonNull(executor, "Executor must not be null.");
+        Checks.notNull(callback, "Callback");
+        Checks.notNull(executor, "Executor");
 
         return delegate.subscribeStreamUnsafe(subscribe)
                 .observeOnBoth(Schedulers.from(executor))
@@ -99,7 +99,7 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
     public void publishes(
             final @NotNull MqttGlobalPublishFilter filter, final @NotNull Consumer<@NotNull Mqtt5Publish> callback) {
 
-        Objects.requireNonNull(callback, "Callback must not be null.");
+        Checks.notNull(callback, "Callback");
 
         delegate.publishes(filter).subscribe(new CallbackSubscriber(callback));
     }
@@ -109,8 +109,8 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
             final @NotNull MqttGlobalPublishFilter filter, final @NotNull Consumer<@NotNull Mqtt5Publish> callback,
             final @NotNull Executor executor) {
 
-        Objects.requireNonNull(callback, "Callback must not be null.");
-        Objects.requireNonNull(executor, "Executor must not be null.");
+        Checks.notNull(callback, "Callback");
+        Checks.notNull(executor, "Executor");
 
         delegate.publishesUnsafe(filter)
                 .observeOn(Schedulers.from(executor))
@@ -203,13 +203,13 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
         public Mqtt5SubscribeAndCallbackBuilder.Call.@NotNull Ex callback(
                 final @NotNull Consumer<Mqtt5Publish> callback) {
 
-            this.callback = Objects.requireNonNull(callback, "Callback must not be null.");
+            this.callback = Checks.notNull(callback, "Callback");
             return this;
         }
 
         @Override
         public Mqtt5SubscribeAndCallbackBuilder.Call.@NotNull Ex executor(final @NotNull Executor executor) {
-            this.executor = Objects.requireNonNull(executor, "Executor must not be null.");
+            this.executor = Checks.notNull(executor, "Executor");
             return this;
         }
 

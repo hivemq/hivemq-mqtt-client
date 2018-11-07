@@ -17,7 +17,6 @@
 
 package org.mqttbee.rx;
 
-import com.google.common.base.Preconditions;
 import io.reactivex.Flowable;
 import io.reactivex.Scheduler;
 import io.reactivex.annotations.BackpressureKind;
@@ -31,6 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.rx.reactivestreams.PublisherWithSingle;
 import org.mqttbee.rx.reactivestreams.WithSingleSubscriber;
+import org.mqttbee.util.Checks;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
@@ -162,7 +162,7 @@ public class FlowableWithSingle<F, S> extends Flowable<F> implements PublisherWi
     public <SM> @NotNull FlowableWithSingle<F, SM> mapSingle(
             final @NotNull Function<? super S, ? extends SM> singleMapper) {
 
-        Preconditions.checkNotNull(singleMapper, "Single mapper must not be null.");
+        Checks.notNull(singleMapper, "Single mapper");
         return new FlowableWithSingle<>(applySingleConsumer().map(new MapperSingle<>(singleMapper)));
     }
 
@@ -183,8 +183,8 @@ public class FlowableWithSingle<F, S> extends Flowable<F> implements PublisherWi
             final @NotNull Function<? super F, ? extends FM> flowableMapper,
             final @NotNull Function<? super S, ? extends SM> singleMapper) {
 
-        Preconditions.checkNotNull(singleMapper, "Single mapper must not be null.");
-        Preconditions.checkNotNull(flowableMapper, "Flowable mapper must not be null.");
+        Checks.notNull(singleMapper, "Single mapper");
+        Checks.notNull(flowableMapper, "Flowable mapper");
         return new FlowableWithSingle<>(applySingleConsumer().map(new MapperBoth<>(flowableMapper, singleMapper)));
     }
 
@@ -199,7 +199,7 @@ public class FlowableWithSingle<F, S> extends Flowable<F> implements PublisherWi
     public @NotNull FlowableWithSingle<F, S> mapError(
             final @NotNull Function<? super Throwable, ? extends Throwable> mapper) {
 
-        Preconditions.checkNotNull(mapper, "Mapper must not be null.");
+        Checks.notNull(mapper, "Mapper");
         final Function<Throwable, Flowable<?>> resumeMapper = throwable -> Flowable.error(mapper.apply(throwable));
         @SuppressWarnings("unchecked") final Flowable<Object> source = (Flowable<Object>) applySingleConsumer();
         return new FlowableWithSingle<>(source.onErrorResumeNext(resumeMapper));
@@ -214,7 +214,7 @@ public class FlowableWithSingle<F, S> extends Flowable<F> implements PublisherWi
     @BackpressureSupport(BackpressureKind.PASS_THROUGH)
     @SchedulerSupport(SchedulerSupport.NONE)
     public @NotNull FlowableWithSingle<F, S> doOnSingle(final @NotNull Consumer<? super S> singleConsumer) {
-        Preconditions.checkNotNull(singleConsumer, "Single consumer must not be null.");
+        Checks.notNull(singleConsumer, "Single consumer");
         return new FlowableWithSingle<>(applySingleConsumer(), singleConsumer);
     }
 

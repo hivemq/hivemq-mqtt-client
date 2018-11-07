@@ -17,12 +17,12 @@
 
 package org.mqttbee.api.mqtt.mqtt5.datatypes;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import org.mqttbee.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
+import org.mqttbee.util.Checks;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 
 import java.util.function.Function;
@@ -38,8 +38,7 @@ public interface Mqtt5UserProperties {
     /**
      * @return the empty collection of User Properties.
      */
-    @NotNull
-    static Mqtt5UserProperties of() {
+    static @NotNull Mqtt5UserProperties of() {
         return MqttUserPropertiesImpl.NO_USER_PROPERTIES;
     }
 
@@ -49,9 +48,8 @@ public interface Mqtt5UserProperties {
      * @param userProperties the User Properties.
      * @return the created collection of User Properties.
      */
-    @NotNull
-    static Mqtt5UserProperties of(@NotNull final Mqtt5UserProperty... userProperties) {
-        Preconditions.checkNotNull(userProperties, "User properties must not be null.");
+    static @NotNull Mqtt5UserProperties of(final @NotNull Mqtt5UserProperty... userProperties) {
+        Checks.notNull(userProperties, "User properties");
 
         final ImmutableList.Builder<MqttUserPropertyImpl> builder =
                 ImmutableList.builderWithExpectedSize(userProperties.length);
@@ -61,20 +59,17 @@ public interface Mqtt5UserProperties {
         return MqttUserPropertiesImpl.of(builder.build());
     }
 
-    @NotNull
-    static Mqtt5UserPropertiesBuilder<Void> builder() {
+    static @NotNull Mqtt5UserPropertiesBuilder<Void> builder() {
         return new Mqtt5UserPropertiesBuilder<>((Function<Mqtt5UserProperties, Void>) null);
     }
 
-    @NotNull
-    static Mqtt5UserPropertiesBuilder<Void> extend(@NotNull final Mqtt5UserProperties userProperties) {
+    static @NotNull Mqtt5UserPropertiesBuilder<Void> extend(final @NotNull Mqtt5UserProperties userProperties) {
         return new Mqtt5UserPropertiesBuilder<>(userProperties);
     }
 
     /**
      * @return the User Properties as an immutable list.
      */
-    @NotNull
-    ImmutableList<? extends Mqtt5UserProperty> asList();
+    @NotNull ImmutableList<? extends Mqtt5UserProperty> asList();
 
 }

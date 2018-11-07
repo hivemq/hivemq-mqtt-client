@@ -40,8 +40,8 @@ import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeView;
 import org.mqttbee.mqtt.message.subscribe.suback.mqtt3.Mqtt3SubAckView;
 import org.mqttbee.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeView;
 import org.mqttbee.mqtt.mqtt3.exceptions.Mqtt3ExceptionFactory;
+import org.mqttbee.util.Checks;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -147,7 +147,7 @@ public class Mqtt3BlockingClientView implements Mqtt3BlockingClient {
             if (timeout < 0) {
                 throw new IllegalArgumentException("Timeout must be greater than 0.");
             }
-            Objects.requireNonNull(timeUnit, "Time unit must not be null.");
+            Checks.notNull(timeUnit, "Time unit");
 
             try {
                 return delegate.receive(timeout, timeUnit).map(Mqtt3PublishView.JAVA_MAPPER);

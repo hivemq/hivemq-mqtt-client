@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt.message.auth;
 
-import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
@@ -27,6 +26,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
+import org.mqttbee.util.Checks;
 
 import java.nio.ByteBuffer;
 
@@ -42,8 +42,8 @@ public class MqttAuthBuilder implements Mqtt5AuthBuilder {
     private @NotNull MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
 
     public MqttAuthBuilder(final @NotNull Mqtt5AuthReasonCode reasonCode, final @NotNull MqttUTF8StringImpl method) {
-        Preconditions.checkNotNull(reasonCode, "Reason code must not be null.");
-        Preconditions.checkNotNull(method, "Method must not be null.");
+        Checks.notNull(reasonCode, "Reason code");
+        Checks.notNull(method, "Method");
         this.reasonCode = reasonCode;
         this.method = method;
     }
