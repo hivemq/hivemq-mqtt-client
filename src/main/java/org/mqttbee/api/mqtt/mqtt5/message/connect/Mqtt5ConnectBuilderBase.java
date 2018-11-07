@@ -65,5 +65,5 @@ public interface Mqtt5ConnectBuilderBase<B extends Mqtt5ConnectBuilderBase<B>> {
 
     @NotNull B userProperties(@NotNull Mqtt5UserProperties userProperties);
 
-    @NotNull Mqtt5UserPropertiesBuilder<? extends B> userProperties();
+    @NotNull Mqtt5UserPropertiesBuilder.Nested<? extends B> userProperties();
 }

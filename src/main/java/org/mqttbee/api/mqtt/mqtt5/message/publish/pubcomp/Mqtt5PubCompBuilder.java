@@ -34,10 +34,7 @@ public interface Mqtt5PubCompBuilder {
 
     @NotNull Mqtt5PubCompBuilder userProperties(@NotNull Mqtt5UserProperties userProperties);
 
-    default @NotNull Mqtt5UserPropertiesBuilder<Mqtt5PubCompBuilder> userProperties() {
-        return new Mqtt5UserPropertiesBuilder<>(this::userProperties);
-    }
+    @NotNull Mqtt5UserPropertiesBuilder.Nested<? extends Mqtt5PubCompBuilder> userProperties();
 
     @NotNull Mqtt5PubCompReasonCode getReasonCode();
-
 }

@@ -25,6 +25,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubCompBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubCompReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
+import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImplBuilder;
 import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRel;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 
@@ -38,7 +39,7 @@ public class MqttPubCompBuilder implements Mqtt5PubCompBuilder {
     private @Nullable MqttUTF8StringImpl reasonString;
     private @NotNull MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
 
-    public MqttPubCompBuilder(@NotNull final MqttPubRel pubRel) {
+    public MqttPubCompBuilder(final @NotNull MqttPubRel pubRel) {
         this.pubRel = pubRel;
     }
 
@@ -60,6 +61,11 @@ public class MqttPubCompBuilder implements Mqtt5PubCompBuilder {
     }
 
     @Override
+    public @NotNull MqttUserPropertiesImplBuilder.Nested<MqttPubCompBuilder> userProperties() {
+        return new MqttUserPropertiesImplBuilder.Nested<>(this::userProperties);
+    }
+
+    @Override
     public @NotNull Mqtt5PubCompReasonCode getReasonCode() {
         return reasonCode;
     }
@@ -71,5 +77,4 @@ public class MqttPubCompBuilder implements Mqtt5PubCompBuilder {
     public @NotNull MqttPubComp build() {
         return new MqttPubComp(pubRel.getPacketIdentifier(), reasonCode, reasonString, userProperties);
     }
-
 }

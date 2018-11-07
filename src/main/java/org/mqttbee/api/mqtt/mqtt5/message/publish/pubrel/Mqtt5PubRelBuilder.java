@@ -34,10 +34,7 @@ public interface Mqtt5PubRelBuilder {
 
     @NotNull Mqtt5PubRelBuilder userProperties(@NotNull Mqtt5UserProperties userProperties);
 
-    default @NotNull Mqtt5UserPropertiesBuilder<Mqtt5PubRelBuilder> userProperties() {
-        return new Mqtt5UserPropertiesBuilder<>(this::userProperties);
-    }
+    @NotNull Mqtt5UserPropertiesBuilder.Nested<? extends Mqtt5PubRelBuilder> userProperties();
 
     @NotNull Mqtt5PubRelReasonCode getReasonCode();
-
 }

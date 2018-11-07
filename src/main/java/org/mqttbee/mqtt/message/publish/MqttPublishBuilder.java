@@ -24,12 +24,8 @@ import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
-import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.*;
-import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
-import org.mqttbee.mqtt.datatypes.MqttTopicImplBuilder;
-import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
-import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
+import org.mqttbee.mqtt.datatypes.*;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 import org.mqttbee.util.ByteBufferUtil;
 import org.mqttbee.util.Checks;
@@ -155,8 +151,8 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
         return self();
     }
 
-    public @NotNull Mqtt5UserPropertiesBuilder<B> userProperties() {
-        return new Mqtt5UserPropertiesBuilder<>(this::userProperties);
+    public @NotNull MqttUserPropertiesImplBuilder.Nested<B> userProperties() {
+        return new MqttUserPropertiesImplBuilder.Nested<>(this::userProperties);
     }
 
     private static abstract class Base<B extends Base<B>> extends MqttPublishBuilder<B> {

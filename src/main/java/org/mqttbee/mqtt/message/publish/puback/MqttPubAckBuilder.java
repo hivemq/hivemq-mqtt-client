@@ -25,10 +25,10 @@ import org.mqttbee.api.mqtt.mqtt5.message.publish.puback.Mqtt5PubAckBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.puback.Mqtt5PubAckReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
+import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImplBuilder;
 import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
-
-import java.util.Objects;
+import org.mqttbee.util.Checks;
 
 /**
  * @author Silvio Giebl
@@ -46,7 +46,7 @@ public class MqttPubAckBuilder implements Mqtt5PubAckBuilder {
 
     @Override
     public @NotNull MqttPubAckBuilder reasonCode(final @NotNull Mqtt5PubAckReasonCode reasonCode) {
-        this.reasonCode = Objects.requireNonNull(reasonCode, "Reason Code must not be null");
+        this.reasonCode = Checks.notNull(reasonCode, "Reason code");
         return this;
     }
 
@@ -62,6 +62,11 @@ public class MqttPubAckBuilder implements Mqtt5PubAckBuilder {
         return this;
     }
 
+    @Override
+    public @NotNull MqttUserPropertiesImplBuilder.Nested<MqttPubAckBuilder> userProperties() {
+        return new MqttUserPropertiesImplBuilder.Nested<>(this::userProperties);
+    }
+
     public @NotNull MqttStatefulPublish getPublish() {
         return publish;
     }
@@ -69,5 +74,4 @@ public class MqttPubAckBuilder implements Mqtt5PubAckBuilder {
     public @NotNull MqttPubAck build() {
         return new MqttPubAck(publish.getPacketIdentifier(), reasonCode, reasonString, userProperties);
     }
-
 }
