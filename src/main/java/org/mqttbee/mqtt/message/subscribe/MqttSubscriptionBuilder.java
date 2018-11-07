@@ -22,11 +22,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
-import org.mqttbee.api.mqtt.datatypes.MqttTopicFilterBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5RetainHandling;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscription;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscriptionBuilder;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
+import org.mqttbee.mqtt.datatypes.MqttTopicFilterImplBuilder;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 
 import java.util.Objects;
@@ -55,8 +55,8 @@ public abstract class MqttSubscriptionBuilder<B extends MqttSubscriptionBuilder<
         return self();
     }
 
-    public @NotNull MqttTopicFilterBuilder<B> topicFilter() {
-        return new MqttTopicFilterBuilder<>(this::topicFilter);
+    public @NotNull MqttTopicFilterImplBuilder.Nested<B> topicFilter() {
+        return new MqttTopicFilterImplBuilder.Nested<>(this::topicFilter);
     }
 
     public @NotNull B qos(final @NotNull MqttQos qos) {

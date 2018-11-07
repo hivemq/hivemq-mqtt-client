@@ -22,12 +22,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
-import org.mqttbee.api.mqtt.datatypes.MqttTopicBuilder;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.*;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
+import org.mqttbee.mqtt.datatypes.MqttTopicImplBuilder;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
@@ -88,8 +88,8 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
         return self();
     }
 
-    public @NotNull MqttTopicBuilder<B> topic() {
-        return new MqttTopicBuilder<>(this::topic);
+    public @NotNull MqttTopicImplBuilder.Nested<B> topic() {
+        return new MqttTopicImplBuilder.Nested<>(this::topic);
     }
 
     public @NotNull B qos(final @NotNull MqttQos qos) {
@@ -136,8 +136,8 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
         return self();
     }
 
-    public @NotNull MqttTopicBuilder<B> responseTopic() {
-        return new MqttTopicBuilder<>(this::responseTopic);
+    public @NotNull MqttTopicImplBuilder.Nested<B> responseTopic() {
+        return new MqttTopicImplBuilder.Nested<>(this::responseTopic);
     }
 
     public @NotNull B correlationData(final @Nullable byte[] correlationData) {

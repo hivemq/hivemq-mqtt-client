@@ -20,6 +20,7 @@ package org.mqttbee.api.mqtt.datatypes;
 import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
+import org.mqttbee.mqtt.datatypes.MqttTopicFilterImplBuilder;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 
 /**
@@ -53,20 +54,16 @@ public interface MqttTopicFilter extends MqttUTF8String {
         return MqttBuilderUtil.topicFilter(string);
     }
 
-    static @NotNull MqttTopicFilterBuilder<Void> builder() {
-        return new MqttTopicFilterBuilder<>(null);
+    static @NotNull MqttTopicFilterBuilder builder() {
+        return new MqttTopicFilterImplBuilder.Default();
     }
 
-    static @NotNull MqttTopicFilterBuilder<Void> builder(final @NotNull String topTopic) {
-        return new MqttTopicFilterBuilder<>(topTopic, null);
+    static @NotNull MqttTopicFilterBuilder.Complete extend(final @NotNull MqttTopicFilter topicFilter) {
+        return new MqttTopicFilterImplBuilder.Default(topicFilter.toString());
     }
 
-    static @NotNull MqttTopicFilterBuilder<Void> extend(final @NotNull MqttTopicFilter topicFilter) {
-        return new MqttTopicFilterBuilder<>(topicFilter.toString(), null);
-    }
-
-    static @NotNull MqttTopicFilterBuilder<Void> filter(final @NotNull MqttTopic topic) {
-        return new MqttTopicFilterBuilder<>(topic.toString(), null);
+    static @NotNull MqttTopicFilterBuilder.Complete filter(final @NotNull MqttTopic topic) {
+        return new MqttTopicFilterImplBuilder.Default(topic.toString());
     }
 
     /**

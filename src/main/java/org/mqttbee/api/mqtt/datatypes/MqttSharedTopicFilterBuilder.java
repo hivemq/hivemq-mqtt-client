@@ -18,51 +18,69 @@
 package org.mqttbee.api.mqtt.datatypes;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.function.Function;
+import org.mqttbee.annotations.DoNotImplement;
 
 /**
  * @author Silvio Giebl
  */
-public class MqttSharedTopicFilterBuilder<P>
-        extends AbstractMqttTopicFilterBuilder<MqttSharedTopicFilterBuilder<P>, MqttSharedTopicFilter, P> {
+// @formatter:off
+@DoNotImplement
+public interface MqttSharedTopicFilterBuilder extends
+        MqttTopicFilterBuilderBase<
+            MqttSharedTopicFilterBuilder,
+            MqttSharedTopicFilterBuilder.Complete,
+            MqttSharedTopicFilterBuilder.End,
+            MqttSharedTopicFilterBuilder> {
+// @formatter:on
 
-    private @NotNull String shareName;
-
-    public MqttSharedTopicFilterBuilder(
-            final @NotNull String shareName,
-            final @Nullable Function<? super MqttSharedTopicFilter, P> parentConsumer) {
-
-        super(parentConsumer);
-        this.shareName = shareName;
+    // @formatter:off
+    @DoNotImplement
+    interface Complete extends
+            MqttSharedTopicFilterBuilder,
+            MqttSharedTopicFilterBuilder.End,
+            MqttTopicFilterBuilderBase.Complete<
+                MqttSharedTopicFilterBuilder,
+                MqttSharedTopicFilterBuilder.Complete,
+                MqttSharedTopicFilterBuilder.End,
+                MqttSharedTopicFilterBuilder,
+                MqttSharedTopicFilterBuilder.Complete> {
+    // @formatter:on
     }
 
-    MqttSharedTopicFilterBuilder(
-            final @NotNull String shareName, final @NotNull String base,
-            final @Nullable Function<? super MqttSharedTopicFilter, P> parentConsumer) {
+    @DoNotImplement
+    interface End extends MqttTopicFilterBuilderBase.End {
 
-        super(base, parentConsumer);
-        this.shareName = shareName;
+        @NotNull MqttSharedTopicFilter build();
     }
 
-    @Override
-    @NotNull MqttSharedTopicFilterBuilder<P> self() {
-        return this;
-    }
+    // @formatter:off
+    @DoNotImplement
+    interface Nested<P> extends
+            MqttTopicFilterBuilderBase<
+                Nested<P>,
+                Nested.Complete<P>,
+                Nested.End<P>,
+                Nested<P>> {
+    // @formatter:on
 
-    @Override
-    @NotNull MqttSharedTopicFilterBuilder<P> share(final @NotNull String shareName) {
-        this.shareName = shareName;
-        return this;
-    }
+        // @formatter:off
+        @DoNotImplement
+        interface Complete<P> extends
+                Nested<P>,
+                Nested.End<P>,
+                MqttTopicFilterBuilderBase.Complete<
+                    Nested<P>,
+                    Nested.Complete<P>,
+                    Nested.End<P>,
+                    Nested<P>,
+                    Nested.Complete<P>> {
+        // @formatter:on
+        }
 
-    @Override
-    public @NotNull MqttSharedTopicFilter build() {
-        return MqttSharedTopicFilter.from(shareName, stringBuilder.toString());
-    }
+        @DoNotImplement
+        interface End<P> extends MqttTopicFilterBuilderBase.End {
 
-    public @NotNull P applySharedTopicFilter() {
-        return apply();
+            @NotNull P applyTopicFilter();
+        }
     }
 }

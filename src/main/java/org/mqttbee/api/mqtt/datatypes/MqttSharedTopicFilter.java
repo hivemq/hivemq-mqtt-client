@@ -19,6 +19,7 @@ package org.mqttbee.api.mqtt.datatypes;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
+import org.mqttbee.mqtt.datatypes.MqttTopicFilterImplBuilder;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 
 /**
@@ -52,31 +53,27 @@ public interface MqttSharedTopicFilter extends MqttTopicFilter {
         return MqttBuilderUtil.sharedTopicFilter(shareName, topicFilter);
     }
 
-    static @NotNull MqttSharedTopicFilterBuilder<Void> builder(final @NotNull String shareName) {
-        return new MqttSharedTopicFilterBuilder<>(shareName, null);
+    static @NotNull MqttSharedTopicFilterBuilder builder(final @NotNull String shareName) {
+        return new MqttTopicFilterImplBuilder.SharedDefault(shareName);
     }
 
-    static @NotNull MqttSharedTopicFilterBuilder<Void> builder(
-            final @NotNull String shareName, final @NotNull String topTopic) {
+    static @NotNull MqttSharedTopicFilterBuilder.Complete extend(
+            final @NotNull MqttSharedTopicFilter sharedTopicFilter) {
 
-        return new MqttSharedTopicFilterBuilder<>(shareName, topTopic, null);
+        return new MqttTopicFilterImplBuilder.SharedDefault(
+                sharedTopicFilter.getShareName(), sharedTopicFilter.getTopicFilter());
     }
 
-    static @NotNull MqttSharedTopicFilterBuilder<Void> extend(final @NotNull MqttSharedTopicFilter sharedTopicFilter) {
-        return new MqttSharedTopicFilterBuilder<>(
-                sharedTopicFilter.getShareName(), sharedTopicFilter.getTopicFilter(), null);
-    }
-
-    static @NotNull MqttSharedTopicFilterBuilder<Void> share(
+    static @NotNull MqttSharedTopicFilterBuilder.Complete share(
             final @NotNull String shareName, final @NotNull MqttTopicFilter topicFilter) {
 
-        return new MqttSharedTopicFilterBuilder<>(shareName, topicFilter.toString(), null);
+        return new MqttTopicFilterImplBuilder.SharedDefault(shareName, topicFilter.toString());
     }
 
-    static @NotNull MqttSharedTopicFilterBuilder<Void> share(
+    static @NotNull MqttSharedTopicFilterBuilder.Complete share(
             final @NotNull String shareName, final @NotNull MqttTopic topic) {
 
-        return new MqttSharedTopicFilterBuilder<>(shareName, topic.toString(), null);
+        return new MqttTopicFilterImplBuilder.SharedDefault(shareName, topic.toString());
     }
 
     /**

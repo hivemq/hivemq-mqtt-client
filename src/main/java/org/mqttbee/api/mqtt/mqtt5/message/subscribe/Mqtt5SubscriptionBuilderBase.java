@@ -37,7 +37,7 @@ public interface Mqtt5SubscriptionBuilderBase<
 
     @NotNull C topicFilter(@NotNull MqttTopicFilter topicFilter);
 
-    @NotNull MqttTopicFilterBuilder<? extends C> topicFilter();
+    @NotNull MqttTopicFilterBuilder.Nested<? extends C> topicFilter();
 
     @NotNull B qos(@NotNull MqttQos qos);
 
