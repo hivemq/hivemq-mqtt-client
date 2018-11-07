@@ -87,12 +87,7 @@ public abstract class MqttSubscriptionBuilder<B extends MqttSubscriptionBuilder<
         return new MqttSubscription(topicFilter, qos, noLocal, retainHandling, retainAsPublished);
     }
 
-    // @formatter:off
-    public static class Default
-            extends MqttSubscriptionBuilder<Default>
-            implements Mqtt5SubscriptionBuilder,
-                       Mqtt5SubscriptionBuilder.Complete {
-    // @formatter:on
+    public static class Default extends MqttSubscriptionBuilder<Default> implements Mqtt5SubscriptionBuilder.Complete {
 
         @Override
         @NotNull Default self() {
@@ -100,12 +95,8 @@ public abstract class MqttSubscriptionBuilder<B extends MqttSubscriptionBuilder<
         }
     }
 
-    // @formatter:off
-    public static class Nested<P>
-            extends MqttSubscriptionBuilder<Nested<P>>
-            implements Mqtt5SubscriptionBuilder.Nested<P>,
-                       Mqtt5SubscriptionBuilder.Nested.Complete<P> {
-    // @formatter:on
+    public static class Nested<P> extends MqttSubscriptionBuilder<Nested<P>>
+            implements Mqtt5SubscriptionBuilder.Nested.Complete<P> {
 
         private final @NotNull Function<? super Mqtt5Subscription, P> parentConsumer;
 

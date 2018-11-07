@@ -105,7 +105,7 @@ public abstract class Mqtt3PublishViewBuilder<B extends Mqtt3PublishViewBuilder<
         }
     }
 
-    public static class Default extends Base<Default> implements Mqtt3PublishBuilder, Mqtt3PublishBuilder.Complete {
+    public static class Default extends Base<Default> implements Mqtt3PublishBuilder.Complete {
 
         public Default() {}
 
@@ -119,12 +119,7 @@ public abstract class Mqtt3PublishViewBuilder<B extends Mqtt3PublishViewBuilder<
         }
     }
 
-    // @formatter:off
-    public static class Nested<P>
-            extends Base<Nested<P>>
-            implements Mqtt3PublishBuilder.Nested<P>,
-                       Mqtt3PublishBuilder.Nested.Complete<P> {
-    // @formatter:on
+    public static class Nested<P> extends Base<Nested<P>> implements Mqtt3PublishBuilder.Nested.Complete<P> {
 
         private final @NotNull Function<? super Mqtt3PublishView, P> parentConsumer;
 
@@ -143,12 +138,7 @@ public abstract class Mqtt3PublishViewBuilder<B extends Mqtt3PublishViewBuilder<
         }
     }
 
-    // @formatter:off
-    public static class Send<P>
-            extends Base<Send<P>>
-            implements Mqtt3PublishBuilder.Send<P>,
-                       Mqtt3PublishBuilder.Send.Complete<P> {
-    // @formatter:on
+    public static class Send<P> extends Base<Send<P>> implements Mqtt3PublishBuilder.Send.Complete<P> {
 
         private final @NotNull Function<? super Mqtt3PublishView, P> parentConsumer;
 
@@ -181,12 +171,7 @@ public abstract class Mqtt3PublishViewBuilder<B extends Mqtt3PublishViewBuilder<
         }
     }
 
-    // @formatter:off
-    public static class WillDefault
-            extends WillBase<WillDefault>
-            implements Mqtt3WillPublishBuilder,
-                       Mqtt3WillPublishBuilder.Complete {
-    // @formatter:on
+    public static class WillDefault extends WillBase<WillDefault> implements Mqtt3WillPublishBuilder.Complete {
 
         public WillDefault() {}
 
@@ -200,12 +185,8 @@ public abstract class Mqtt3PublishViewBuilder<B extends Mqtt3PublishViewBuilder<
         }
     }
 
-    // @formatter:off
-    public static class WillNested<P>
-            extends WillBase<WillNested<P>>
-            implements Mqtt3WillPublishBuilder.Nested<P>,
-                       Mqtt3WillPublishBuilder.Nested.Complete<P> {
-    // @formatter:on
+    public static class WillNested<P> extends WillBase<WillNested<P>>
+            implements Mqtt3WillPublishBuilder.Nested.Complete<P> {
 
         private final @NotNull Function<? super Mqtt3PublishView, P> parentConsumer;
 
