@@ -39,8 +39,7 @@ public enum Mqtt3SubAckReturnCode {
         return code;
     }
 
-    @Nullable
-    public static Mqtt3SubAckReturnCode from(final int code) {
+    public static @Nullable Mqtt3SubAckReturnCode fromCode(final int code) {
         switch (code) {
             case 0:
                 return SUCCESS_MAXIMUM_QOS_0;
