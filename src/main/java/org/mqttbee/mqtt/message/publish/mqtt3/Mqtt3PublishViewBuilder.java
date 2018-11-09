@@ -41,7 +41,7 @@ public abstract class Mqtt3PublishViewBuilder<B extends Mqtt3PublishViewBuilder<
 
     @Nullable MqttTopicImpl topic;
     @Nullable ByteBuffer payload;
-    @NotNull MqttQos qos = Mqtt3Publish.DEFAULT_QOS;
+    @NotNull MqttQos qos = Mqtt3PublishView.DEFAULT_QOS;
     boolean retain;
 
     Mqtt3PublishViewBuilder() {}

@@ -42,18 +42,16 @@ import org.mqttbee.util.UnsignedDataTypes;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
-import static org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect.*;
-
 /**
  * @author Silvio Giebl
  */
 public abstract class MqttConnectBuilder<B extends MqttConnectBuilder<B>> {
 
-    private int keepAliveSeconds = DEFAULT_KEEP_ALIVE;
-    private boolean isCleanStart = DEFAULT_CLEAN_START;
-    private long sessionExpiryIntervalSeconds = DEFAULT_SESSION_EXPIRY_INTERVAL;
-    private boolean isResponseInformationRequested = DEFAULT_RESPONSE_INFORMATION_REQUESTED;
-    private boolean isProblemInformationRequested = DEFAULT_PROBLEM_INFORMATION_REQUESTED;
+    private int keepAliveSeconds = MqttConnect.DEFAULT_KEEP_ALIVE;
+    private boolean isCleanStart = MqttConnect.DEFAULT_CLEAN_START;
+    private long sessionExpiryIntervalSeconds = MqttConnect.DEFAULT_SESSION_EXPIRY_INTERVAL;
+    private boolean isResponseInformationRequested = MqttConnect.DEFAULT_RESPONSE_INFORMATION_REQUESTED;
+    private boolean isProblemInformationRequested = MqttConnect.DEFAULT_PROBLEM_INFORMATION_REQUESTED;
     private @NotNull MqttConnectRestrictions restrictions = MqttConnectRestrictions.DEFAULT;
     private @Nullable MqttSimpleAuth simpleAuth;
     private @Nullable Mqtt5EnhancedAuthProvider enhancedAuthProvider;

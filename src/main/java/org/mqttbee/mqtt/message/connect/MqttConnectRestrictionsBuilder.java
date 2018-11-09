@@ -19,7 +19,6 @@ package org.mqttbee.mqtt.message.connect;
 
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictionsBuilder;
 import org.mqttbee.util.UnsignedDataTypes;
 
@@ -30,9 +29,9 @@ import java.util.function.Function;
  */
 public abstract class MqttConnectRestrictionsBuilder<B extends MqttConnectRestrictionsBuilder<B>> {
 
-    private int receiveMaximum = Mqtt5ConnectRestrictions.DEFAULT_RECEIVE_MAXIMUM;
-    private int maximumPacketSize = Mqtt5ConnectRestrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT;
-    private int topicAliasMaximum = Mqtt5ConnectRestrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM;
+    private int receiveMaximum = MqttConnectRestrictions.DEFAULT_RECEIVE_MAXIMUM;
+    private int maximumPacketSize = MqttConnectRestrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT;
+    private int topicAliasMaximum = MqttConnectRestrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM;
 
     abstract @NotNull B self();
 

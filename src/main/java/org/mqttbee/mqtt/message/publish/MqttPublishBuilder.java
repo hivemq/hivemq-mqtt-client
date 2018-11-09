@@ -36,10 +36,6 @@ import java.nio.ByteBuffer;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
-import static org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish.DEFAULT_TOPIC_ALIAS_USAGE;
-import static org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5WillPublish.DEFAULT_DELAY_INTERVAL;
-import static org.mqttbee.mqtt.message.publish.MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY;
-
 /**
  * @author Silvio Giebl
  */
@@ -47,9 +43,9 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
 
     @Nullable MqttTopicImpl topic;
     @Nullable ByteBuffer payload;
-    @NotNull MqttQos qos = Mqtt5Publish.DEFAULT_QOS;
+    @NotNull MqttQos qos = MqttPublish.DEFAULT_QOS;
     boolean retain;
-    long messageExpiryIntervalSeconds = MESSAGE_EXPIRY_INTERVAL_INFINITY;
+    long messageExpiryIntervalSeconds = MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY;
     @Nullable Mqtt5PayloadFormatIndicator payloadFormatIndicator;
     @Nullable MqttUTF8StringImpl contentType;
     @Nullable MqttTopicImpl responseTopic;
@@ -157,7 +153,7 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
 
     private static abstract class Base<B extends Base<B>> extends MqttPublishBuilder<B> {
 
-        private @NotNull TopicAliasUsage topicAliasUsage = DEFAULT_TOPIC_ALIAS_USAGE;
+        private @NotNull TopicAliasUsage topicAliasUsage = MqttPublish.DEFAULT_TOPIC_ALIAS_USAGE;
 
         Base() {}
 
@@ -242,7 +238,7 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
 
     private static abstract class WillBase<B extends WillBase<B>> extends MqttPublishBuilder<B> {
 
-        private long delayInterval = DEFAULT_DELAY_INTERVAL;
+        private long delayInterval = MqttWillPublish.DEFAULT_DELAY_INTERVAL;
 
         WillBase() {}
 
