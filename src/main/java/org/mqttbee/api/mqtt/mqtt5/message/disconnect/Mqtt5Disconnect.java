@@ -35,7 +35,7 @@ import java.util.Optional;
 @DoNotImplement
 public interface Mqtt5Disconnect extends Mqtt5Message {
 
-    @NotNull Mqtt5Disconnect DEFAULT = builder().build();
+    @NotNull Mqtt5DisconnectReasonCode DEFAULT_REASON_CODE = Mqtt5DisconnectReasonCode.NORMAL_DISCONNECTION;
 
     static @NotNull Mqtt5DisconnectBuilder builder() {
         return new MqttDisconnectBuilder.Default();

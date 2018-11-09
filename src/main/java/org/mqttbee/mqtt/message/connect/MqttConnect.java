@@ -39,22 +39,27 @@ import java.util.Optional;
 @Immutable
 public class MqttConnect extends MqttMessageWithUserPropertiesImpl implements Mqtt5Connect {
 
+    public static final @NotNull MqttConnect DEFAULT =
+            new MqttConnect(DEFAULT_KEEP_ALIVE, DEFAULT_CLEAN_START, DEFAULT_SESSION_EXPIRY_INTERVAL,
+                    DEFAULT_RESPONSE_INFORMATION_REQUESTED, DEFAULT_PROBLEM_INFORMATION_REQUESTED,
+                    MqttConnectRestrictions.DEFAULT, null, null, null, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
+
     private final int keepAlive;
     private final boolean isCleanStart;
     private final long sessionExpiryInterval;
     private final boolean isResponseInformationRequested;
     private final boolean isProblemInformationRequested;
-    private final MqttConnectRestrictions restrictions;
-    private final MqttSimpleAuth simpleAuth;
-    private final Mqtt5EnhancedAuthProvider enhancedAuthProvider;
-    private final MqttWillPublish willPublish;
+    private final @NotNull MqttConnectRestrictions restrictions;
+    private final @Nullable MqttSimpleAuth simpleAuth;
+    private final @Nullable Mqtt5EnhancedAuthProvider enhancedAuthProvider;
+    private final @Nullable MqttWillPublish willPublish;
 
     public MqttConnect(
             final int keepAlive, final boolean isCleanStart, final long sessionExpiryInterval,
             final boolean isResponseInformationRequested, final boolean isProblemInformationRequested,
-            @NotNull final MqttConnectRestrictions restrictions, @Nullable final MqttSimpleAuth simpleAuth,
-            @Nullable final Mqtt5EnhancedAuthProvider enhancedAuthProvider, @Nullable final MqttWillPublish willPublish,
-            @NotNull final MqttUserPropertiesImpl userProperties) {
+            final @NotNull MqttConnectRestrictions restrictions, final @Nullable MqttSimpleAuth simpleAuth,
+            final @Nullable Mqtt5EnhancedAuthProvider enhancedAuthProvider, final @Nullable MqttWillPublish willPublish,
+            final @NotNull MqttUserPropertiesImpl userProperties) {
 
         super(userProperties);
         this.keepAlive = keepAlive;
@@ -93,47 +98,40 @@ public class MqttConnect extends MqttMessageWithUserPropertiesImpl implements Mq
         return isProblemInformationRequested;
     }
 
-    @NotNull
     @Override
-    public MqttConnectRestrictions getRestrictions() {
+    public @NotNull MqttConnectRestrictions getRestrictions() {
         return restrictions;
     }
 
-    @NotNull
     @Override
-    public Optional<Mqtt5SimpleAuth> getSimpleAuth() {
+    public @NotNull Optional<Mqtt5SimpleAuth> getSimpleAuth() {
         return Optional.ofNullable(simpleAuth);
     }
 
-    @Nullable
-    public MqttSimpleAuth getRawSimpleAuth() {
+    public @Nullable MqttSimpleAuth getRawSimpleAuth() {
         return simpleAuth;
     }
 
-    @NotNull
     @Override
-    public Optional<Mqtt5EnhancedAuthProvider> getEnhancedAuthProvider() {
+    public @NotNull Optional<Mqtt5EnhancedAuthProvider> getEnhancedAuthProvider() {
         return Optional.ofNullable(enhancedAuthProvider);
     }
 
-    @Nullable
-    public Mqtt5EnhancedAuthProvider getRawEnhancedAuthProvider() {
+    public @Nullable Mqtt5EnhancedAuthProvider getRawEnhancedAuthProvider() {
         return enhancedAuthProvider;
     }
 
-    @NotNull
     @Override
-    public Optional<Mqtt5WillPublish> getWillPublish() {
+    public @NotNull Optional<Mqtt5WillPublish> getWillPublish() {
         return Optional.ofNullable(willPublish);
     }
 
-    @Nullable
-    public MqttWillPublish getRawWillPublish() {
+    public @Nullable MqttWillPublish getRawWillPublish() {
         return willPublish;
     }
 
-    public MqttStatefulConnect createStateful(
-            @NotNull final MqttClientIdentifierImpl clientIdentifier, @Nullable final MqttEnhancedAuth enhancedAuth) {
+    public @NotNull MqttStatefulConnect createStateful(
+            final @NotNull MqttClientIdentifierImpl clientIdentifier, final @Nullable MqttEnhancedAuth enhancedAuth) {
 
         return new MqttStatefulConnect(this, clientIdentifier, enhancedAuth);
     }

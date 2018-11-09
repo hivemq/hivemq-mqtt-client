@@ -32,6 +32,7 @@ import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3SubscribeBuilder;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAck;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubscribeBuilder;
+import org.mqttbee.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
 import org.mqttbee.mqtt.message.connect.mqtt3.Mqtt3ConnectViewBuilder;
 import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeViewBuilder;
 import org.mqttbee.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeViewBuilder;
@@ -51,7 +52,7 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      * @see #connect(Mqtt3Connect)
      */
     default @NotNull Single<Mqtt3ConnAck> connect() {
-        return connect(Mqtt3Connect.DEFAULT);
+        return connect(Mqtt3ConnectView.DEFAULT);
     }
 
     /**

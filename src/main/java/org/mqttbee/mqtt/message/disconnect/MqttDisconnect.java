@@ -35,26 +35,26 @@ import java.util.Optional;
 @Immutable
 public class MqttDisconnect extends MqttMessageWithReasonCode<Mqtt5DisconnectReasonCode> implements Mqtt5Disconnect {
 
-    @NotNull
-    public static final Mqtt5DisconnectReasonCode DEFAULT_REASON_CODE = Mqtt5DisconnectReasonCode.NORMAL_DISCONNECTION;
     public static final long SESSION_EXPIRY_INTERVAL_FROM_CONNECT = -1;
+    public static final @NotNull MqttDisconnect DEFAULT =
+            new MqttDisconnect(DEFAULT_REASON_CODE, SESSION_EXPIRY_INTERVAL_FROM_CONNECT, null, null,
+                    MqttUserPropertiesImpl.NO_USER_PROPERTIES);
 
     private final long sessionExpiryInterval;
-    private final MqttUTF8StringImpl serverReference;
+    private final @Nullable MqttUTF8StringImpl serverReference;
 
     public MqttDisconnect(
-            @NotNull final Mqtt5DisconnectReasonCode reasonCode, final long sessionExpiryInterval,
-            @Nullable final MqttUTF8StringImpl serverReference, @Nullable final MqttUTF8StringImpl reasonString,
-            @NotNull final MqttUserPropertiesImpl userProperties) {
+            final @NotNull Mqtt5DisconnectReasonCode reasonCode, final long sessionExpiryInterval,
+            final @Nullable MqttUTF8StringImpl serverReference, final @Nullable MqttUTF8StringImpl reasonString,
+            final @NotNull MqttUserPropertiesImpl userProperties) {
 
         super(reasonCode, reasonString, userProperties);
         this.sessionExpiryInterval = sessionExpiryInterval;
         this.serverReference = serverReference;
     }
 
-    @NotNull
     @Override
-    public Optional<Long> getSessionExpiryInterval() {
+    public @NotNull Optional<Long> getSessionExpiryInterval() {
         return (sessionExpiryInterval == SESSION_EXPIRY_INTERVAL_FROM_CONNECT) ? Optional.empty() :
                 Optional.of(sessionExpiryInterval);
     }
@@ -63,14 +63,12 @@ public class MqttDisconnect extends MqttMessageWithReasonCode<Mqtt5DisconnectRea
         return sessionExpiryInterval;
     }
 
-    @NotNull
     @Override
-    public Optional<MqttUTF8String> getServerReference() {
+    public @NotNull Optional<MqttUTF8String> getServerReference() {
         return Optional.ofNullable(serverReference);
     }
 
-    @Nullable
-    public MqttUTF8StringImpl getRawServerReference() {
+    public @Nullable MqttUTF8StringImpl getRawServerReference() {
         return serverReference;
     }
 
