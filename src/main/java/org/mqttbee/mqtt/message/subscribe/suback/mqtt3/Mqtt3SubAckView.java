@@ -30,8 +30,6 @@ import org.mqttbee.util.MustNotBeImplementedUtil;
 
 import javax.annotation.concurrent.Immutable;
 
-import static org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAckReturnCode.*;
-
 /**
  * @author Silvio Giebl
  */
@@ -39,8 +37,6 @@ import static org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAckRet
 public class Mqtt3SubAckView implements Mqtt3SubAck {
 
     public static final @NotNull Function<Mqtt5SubAck, Mqtt3SubAck> MAPPER = Mqtt3SubAckView::of;
-    public static final @NotNull java.util.function.Function<Mqtt5SubAck, Mqtt3SubAck> JAVA_MAPPER =
-            Mqtt3SubAckView::of;
 
     public static @NotNull MqttSubAck delegate(
             final int packetIdentifier, final @NotNull ImmutableList<Mqtt3SubAckReturnCode> returnCodes) {
@@ -89,13 +85,13 @@ public class Mqtt3SubAckView implements Mqtt3SubAck {
     private static @NotNull Mqtt3SubAckReturnCode viewReasonCode(final @NotNull Mqtt5SubAckReasonCode reasonCode) {
         switch (reasonCode) {
             case GRANTED_QOS_0:
-                return SUCCESS_MAXIMUM_QOS_0;
+                return Mqtt3SubAckReturnCode.SUCCESS_MAXIMUM_QOS_0;
             case GRANTED_QOS_1:
-                return SUCCESS_MAXIMUM_QOS_1;
+                return Mqtt3SubAckReturnCode.SUCCESS_MAXIMUM_QOS_1;
             case GRANTED_QOS_2:
-                return SUCCESS_MAXIMUM_QOS_2;
+                return Mqtt3SubAckReturnCode.SUCCESS_MAXIMUM_QOS_2;
             case UNSPECIFIED_ERROR:
-                return FAILURE;
+                return Mqtt3SubAckReturnCode.FAILURE;
             default:
                 throw new IllegalStateException();
         }

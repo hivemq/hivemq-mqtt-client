@@ -37,10 +37,10 @@ import java.util.function.Function;
 public abstract class MqttSubscriptionBuilder<B extends MqttSubscriptionBuilder<B>> {
 
     private @Nullable MqttTopicFilterImpl topicFilter;
-    private @NotNull MqttQos qos = Mqtt5Subscription.DEFAULT_QOS;
-    private boolean noLocal = Mqtt5Subscription.DEFAULT_NO_LOCAL;
-    private @NotNull Mqtt5RetainHandling retainHandling = Mqtt5Subscription.DEFAULT_RETAIN_HANDLING;
-    private boolean retainAsPublished = Mqtt5Subscription.DEFAULT_RETAIN_AS_PUBLISHED;
+    private @NotNull MqttQos qos = MqttSubscription.DEFAULT_QOS;
+    private boolean noLocal = MqttSubscription.DEFAULT_NO_LOCAL;
+    private @NotNull Mqtt5RetainHandling retainHandling = MqttSubscription.DEFAULT_RETAIN_HANDLING;
+    private boolean retainAsPublished = MqttSubscription.DEFAULT_RETAIN_AS_PUBLISHED;
 
     abstract @NotNull B self();
 
