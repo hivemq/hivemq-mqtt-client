@@ -21,10 +21,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.AbstractMqttClientBuilder;
 import org.mqttbee.api.mqtt.mqtt5.advanced.Mqtt5AdvancedClientData;
+import org.mqttbee.api.mqtt.mqtt5.advanced.Mqtt5AdvancedClientDataBuilder;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.MqttRxClient;
 import org.mqttbee.mqtt.MqttVersion;
 import org.mqttbee.mqtt.advanced.MqttAdvancedClientData;
+import org.mqttbee.mqtt.advanced.MqttAdvancedClientDataBuilder;
 import org.mqttbee.util.MustNotBeImplementedUtil;
 
 /**
@@ -53,10 +55,14 @@ public class Mqtt5ClientBuilder extends AbstractMqttClientBuilder<Mqtt5ClientBui
         return this;
     }
 
-    public @NotNull Mqtt5ClientBuilder advancedClientData(final @Nullable Mqtt5AdvancedClientData advancedClientData) {
+    public @NotNull Mqtt5ClientBuilder advanced(final @Nullable Mqtt5AdvancedClientData advancedClientData) {
         this.advancedClientData =
                 MustNotBeImplementedUtil.checkNullOrNotImplemented(advancedClientData, MqttAdvancedClientData.class);
         return this;
+    }
+
+    public @NotNull Mqtt5AdvancedClientDataBuilder.Nested<? extends Mqtt5ClientBuilder> advanced() {
+        return new MqttAdvancedClientDataBuilder.Nested<>(this::advanced);
     }
 
     public @NotNull Mqtt5Client build() {
