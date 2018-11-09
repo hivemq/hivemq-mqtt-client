@@ -35,7 +35,9 @@ import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5UnsubscribeBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
 import org.mqttbee.mqtt.MqttAsyncClient;
+import org.mqttbee.mqtt.message.connect.MqttConnect;
 import org.mqttbee.mqtt.message.connect.MqttConnectBuilder;
+import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnectBuilder;
 import org.mqttbee.mqtt.message.publish.MqttPublishBuilder;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribeBuilder;
@@ -58,7 +60,7 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
      * @see #connect(Mqtt5Connect)
      */
     default @NotNull CompletableFuture<@NotNull Mqtt5ConnAck> connect() {
-        return connect(Mqtt5Connect.DEFAULT);
+        return connect(MqttConnect.DEFAULT);
     }
 
     /**
@@ -265,7 +267,7 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
      * @see #disconnect(Mqtt5Disconnect)
      */
     default @NotNull CompletableFuture<Void> disconnect() {
-        return disconnect(Mqtt5Disconnect.DEFAULT);
+        return disconnect(MqttDisconnect.DEFAULT);
     }
 
     /**

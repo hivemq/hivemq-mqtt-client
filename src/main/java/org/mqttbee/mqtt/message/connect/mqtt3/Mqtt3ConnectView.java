@@ -39,6 +39,8 @@ import java.util.Optional;
 @Immutable
 public class Mqtt3ConnectView implements Mqtt3Connect {
 
+    public static final @NotNull Mqtt3ConnectView DEFAULT = of(DEFAULT_KEEP_ALIVE, DEFAULT_CLEAN_SESSION, null, null);
+
     public static @NotNull MqttConnect delegate(
             final int keepAlive, final boolean isCleanSession, final @Nullable MqttSimpleAuth simpleAuth,
             final @Nullable MqttWillPublish willPublish) {

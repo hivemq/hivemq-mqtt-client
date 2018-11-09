@@ -38,7 +38,6 @@ import java.util.Optional;
 @DoNotImplement
 public interface Mqtt5Connect extends Mqtt5Message {
 
-    @NotNull Mqtt5Connect DEFAULT = builder().build();
     int NO_KEEP_ALIVE = 0;
     int DEFAULT_KEEP_ALIVE = 60;
     boolean DEFAULT_CLEAN_START = true;

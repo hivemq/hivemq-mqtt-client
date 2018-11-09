@@ -33,7 +33,6 @@ import java.util.Optional;
 @DoNotImplement
 public interface Mqtt3Connect extends Mqtt3Message {
 
-    @NotNull Mqtt3Connect DEFAULT = builder().build();
     int NO_KEEP_ALIVE = 0;
     int DEFAULT_KEEP_ALIVE = 60;
     boolean DEFAULT_CLEAN_SESSION = true;
