@@ -18,7 +18,6 @@
 package org.mqttbee.mqtt.codec.decoder.mqtt3;
 
 import org.junit.jupiter.api.Test;
-import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.mqtt.codec.decoder.AbstractMqttDecoderTest;
 import org.mqttbee.mqtt.codec.decoder.MqttPingRespDecoder;
 
@@ -44,7 +43,6 @@ class Mqtt3ClientMessageDecodersTest {
                         pubRelDecoder, pubCompDecoder, subAckDecoder, unsubAckDecoder, pingRespDecoder);
 
         assertNull(clientMessageDecoders.get(-1));
-        assertNull(clientMessageDecoders.get(Mqtt3MessageType.values().length));
         assertNull(clientMessageDecoders.get(0));
         assertNull(clientMessageDecoders.get(1));
         assertSame(connAckDecoder, clientMessageDecoders.get(2));
@@ -60,6 +58,7 @@ class Mqtt3ClientMessageDecodersTest {
         assertNull(clientMessageDecoders.get(12));
         assertSame(pingRespDecoder, clientMessageDecoders.get(13));
         assertNull(clientMessageDecoders.get(14));
+        assertNull(clientMessageDecoders.get(15));
     }
 
 }

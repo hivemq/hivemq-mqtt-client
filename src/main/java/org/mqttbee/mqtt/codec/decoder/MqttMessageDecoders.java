@@ -17,6 +17,7 @@
 
 package org.mqttbee.mqtt.codec.decoder;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -24,16 +25,21 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author Silvio Giebl
  */
-public interface MqttMessageDecoders {
+public abstract class MqttMessageDecoders {
+
+    protected final @NotNull MqttMessageDecoder @NotNull [] decoders = new MqttMessageDecoder[16];
 
     /**
      * Returns the corresponding decoder to the given MQTT message type code.
      *
      * @param code the MQTT message type code.
      * @return the corresponding decoder to the MQTT message type code or null if there is no decoder for the MQTT
-     * message type code.
+     *         message type code.
      */
-    @Nullable
-    MqttMessageDecoder get(final int code);
-
+    public final @Nullable MqttMessageDecoder get(final int code) {
+        if (code < 0 || code >= decoders.length) {
+            return null;
+        }
+        return decoders[code];
+    }
 }

@@ -19,10 +19,13 @@ package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrel.Mqtt5PubRelReasonCode;
+import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoders;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
@@ -38,7 +41,9 @@ import static org.mqttbee.mqtt.datatypes.MqttVariableByteInteger.MAXIMUM_PACKET_
 class Mqtt5PubRelEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest {
 
     Mqtt5PubRelEncoderTest() {
-        super(code -> new Mqtt5PubRelEncoder(), true);
+        super(new MqttMessageEncoders() {{
+            encoders[Mqtt5MessageType.PUBREL.getCode()] = new Mqtt5PubRelEncoder();
+        }}, true);
     }
 
     @Test
@@ -84,7 +89,7 @@ class Mqtt5PubRelEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
 
     @ParameterizedTest
     @EnumSource(value = Mqtt5PubRelReasonCode.class, mode = EXCLUDE, names = {"SUCCESS"})
-    void encode_reasonCodes(final Mqtt5PubRelReasonCode reasonCode) {
+    void encode_reasonCodes(final @NotNull Mqtt5PubRelReasonCode reasonCode) {
         final byte[] expected = {
                 // fixed header
                 //   type, flags
@@ -269,8 +274,7 @@ class Mqtt5PubRelEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
         expected.release();
     }
 
-
-    private void encode(final byte[] expected, final MqttPubRel pubRel) {
+    private void encode(final @NotNull byte[] expected, final @NotNull MqttPubRel pubRel) {
         encode(pubRel, expected);
     }
 

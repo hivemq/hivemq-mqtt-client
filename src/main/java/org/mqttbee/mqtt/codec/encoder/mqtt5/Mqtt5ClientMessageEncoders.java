@@ -17,9 +17,8 @@
 
 package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
-import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoder;
 import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoders;
 import org.mqttbee.mqtt.codec.encoder.MqttPingReqEncoder;
 
@@ -32,20 +31,17 @@ import javax.inject.Singleton;
  * @author Silvio Giebl
  */
 @Singleton
-public class Mqtt5ClientMessageEncoders implements MqttMessageEncoders {
-
-    private final MqttMessageEncoder[] encoders;
+public class Mqtt5ClientMessageEncoders extends MqttMessageEncoders {
 
     @Inject
     Mqtt5ClientMessageEncoders(
-            final Mqtt5ConnectEncoder connectEncoder, final Mqtt5PublishEncoder publishEncoder,
-            final Mqtt5PubAckEncoder pubAckEncoder, final Mqtt5PubRecEncoder pubRecEncoder,
-            final Mqtt5PubRelEncoder pubRelEncoder, final Mqtt5PubCompEncoder pubCompEncoder,
-            final Mqtt5SubscribeEncoder subscribeEncoder, final Mqtt5UnsubscribeEncoder unsubscribeEncoder,
-            final MqttPingReqEncoder pingReqEncoder, final Mqtt5DisconnectEncoder disconnectEncoder,
-            final Mqtt5AuthEncoder authEncoder) {
+            final @NotNull Mqtt5ConnectEncoder connectEncoder, final @NotNull Mqtt5PublishEncoder publishEncoder,
+            final @NotNull Mqtt5PubAckEncoder pubAckEncoder, final @NotNull Mqtt5PubRecEncoder pubRecEncoder,
+            final @NotNull Mqtt5PubRelEncoder pubRelEncoder, final @NotNull Mqtt5PubCompEncoder pubCompEncoder,
+            final @NotNull Mqtt5SubscribeEncoder subscribeEncoder,
+            final @NotNull Mqtt5UnsubscribeEncoder unsubscribeEncoder, final @NotNull MqttPingReqEncoder pingReqEncoder,
+            final @NotNull Mqtt5DisconnectEncoder disconnectEncoder, final @NotNull Mqtt5AuthEncoder authEncoder) {
 
-        encoders = new MqttMessageEncoder[Mqtt5MessageType.values().length];
         encoders[Mqtt5MessageType.CONNECT.getCode()] = connectEncoder;
         encoders[Mqtt5MessageType.PUBLISH.getCode()] = publishEncoder;
         encoders[Mqtt5MessageType.PUBACK.getCode()] = pubAckEncoder;
@@ -58,14 +54,4 @@ public class Mqtt5ClientMessageEncoders implements MqttMessageEncoders {
         encoders[Mqtt5MessageType.DISCONNECT.getCode()] = disconnectEncoder;
         encoders[Mqtt5MessageType.AUTH.getCode()] = authEncoder;
     }
-
-    @Nullable
-    @Override
-    public MqttMessageEncoder get(final int code) {
-        if (code < 0 || code >= encoders.length) {
-            return null;
-        }
-        return encoders[code];
-    }
-
 }

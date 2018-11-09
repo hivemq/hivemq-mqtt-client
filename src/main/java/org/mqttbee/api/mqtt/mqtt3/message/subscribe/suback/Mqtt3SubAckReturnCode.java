@@ -40,18 +40,15 @@ public enum Mqtt3SubAckReturnCode {
     }
 
     public static @Nullable Mqtt3SubAckReturnCode fromCode(final int code) {
-        switch (code) {
-            case 0:
-                return SUCCESS_MAXIMUM_QOS_0;
-            case 1:
-                return SUCCESS_MAXIMUM_QOS_1;
-            case 2:
-                return SUCCESS_MAXIMUM_QOS_2;
-            case 128:
-                return FAILURE;
-            default:
-                return null;
+        if (code == SUCCESS_MAXIMUM_QOS_0.code) {
+            return SUCCESS_MAXIMUM_QOS_0;
+        } else if (code == SUCCESS_MAXIMUM_QOS_1.code) {
+            return SUCCESS_MAXIMUM_QOS_1;
+        } else if (code == SUCCESS_MAXIMUM_QOS_2.code) {
+            return SUCCESS_MAXIMUM_QOS_2;
+        } else if (code == FAILURE.code) {
+            return FAILURE;
         }
+        return null;
     }
-
 }

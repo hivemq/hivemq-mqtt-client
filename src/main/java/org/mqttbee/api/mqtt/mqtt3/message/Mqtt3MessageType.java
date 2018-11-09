@@ -17,10 +17,12 @@
 
 package org.mqttbee.api.mqtt.mqtt3.message;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * MQTT message type according to the MQTT 3 specification.
+ * <p>
  * See also <a href="http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html">the official MQTT 3.1.1
  * specification</a>.
  *
@@ -28,7 +30,6 @@ import org.jetbrains.annotations.Nullable;
  */
 public enum Mqtt3MessageType {
 
-    RESERVED_ZERO,
     CONNECT,
     CONNACK,
     PUBLISH,
@@ -44,11 +45,13 @@ public enum Mqtt3MessageType {
     PINGRESP,
     DISCONNECT;
 
+    private static final @NotNull Mqtt3MessageType[] VALUES = values();
+
     /**
      * @return the byte code of this MQTT message type.
      */
     public int getCode() {
-        return ordinal();
+        return ordinal() + 1;
     }
 
     /**
@@ -56,15 +59,12 @@ public enum Mqtt3MessageType {
      *
      * @param code the byte code.
      * @return the MQTT message type belonging to the given byte code or null if the byte code is not a valid MQTT 3
-     * message type code.
+     *         message type code.
      */
-    @Nullable
-    public static Mqtt3MessageType fromCode(final int code) {
-        final Mqtt3MessageType[] values = values();
-        if (code < 0 || code >= values.length) {
+    public static @Nullable Mqtt3MessageType fromCode(final int code) {
+        if (code < 1 || code > VALUES.length) {
             return null;
         }
-        return values[code];
+        return VALUES[code - 1];
     }
-
 }

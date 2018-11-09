@@ -37,13 +37,15 @@ public enum Mqtt5UnsubAckReasonCode implements Mqtt5ReasonCode {
     TOPIC_FILTER_INVALID(MqttCommonReasonCode.TOPIC_FILTER_INVALID),
     PACKET_IDENTIFIER_IN_USE(MqttCommonReasonCode.PACKET_IDENTIFIER_IN_USE);
 
+    private static final @NotNull Mqtt5UnsubAckReasonCode[] VALUES = values();
+
     private final int code;
 
     Mqtt5UnsubAckReasonCode(final int code) {
         this.code = code;
     }
 
-    Mqtt5UnsubAckReasonCode(@NotNull final MqttCommonReasonCode reasonCode) {
+    Mqtt5UnsubAckReasonCode(final @NotNull MqttCommonReasonCode reasonCode) {
         this(reasonCode.getCode());
     }
 
@@ -59,16 +61,14 @@ public enum Mqtt5UnsubAckReasonCode implements Mqtt5ReasonCode {
      *
      * @param code the byte code.
      * @return the UNSUBACK Reason Code belonging to the given byte code or null if the byte code is not a valid
-     * UNSUBACK Reason Code code.
+     *         UNSUBACK Reason Code code.
      */
-    @Nullable
-    public static Mqtt5UnsubAckReasonCode fromCode(final int code) {
-        for (final Mqtt5UnsubAckReasonCode reasonCode : values()) {
+    public static @Nullable Mqtt5UnsubAckReasonCode fromCode(final int code) {
+        for (final Mqtt5UnsubAckReasonCode reasonCode : VALUES) {
             if (reasonCode.code == code) {
                 return reasonCode;
             }
         }
         return null;
     }
-
 }

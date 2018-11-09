@@ -17,9 +17,8 @@
 
 package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
-import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoders;
 import org.mqttbee.mqtt.codec.decoder.MqttPingRespDecoder;
 
@@ -32,20 +31,17 @@ import javax.inject.Singleton;
  * @author Silvio Giebl
  */
 @Singleton
-public class Mqtt5ClientMessageDecoders implements MqttMessageDecoders {
-
-    private final MqttMessageDecoder[] decoders;
+public class Mqtt5ClientMessageDecoders extends MqttMessageDecoders {
 
     @Inject
     Mqtt5ClientMessageDecoders(
-            final Mqtt5ConnAckDecoder connAckDecoder, final Mqtt5PublishDecoder publishDecoder,
-            final Mqtt5PubAckDecoder pubAckDecoder, final Mqtt5PubRecDecoder pubRecDecoder,
-            final Mqtt5PubRelDecoder pubRelDecoder, final Mqtt5PubCompDecoder pubCompDecoder,
-            final Mqtt5SubAckDecoder subAckDecoder, final Mqtt5UnsubAckDecoder unsubAckDecoder,
-            final MqttPingRespDecoder pingRespDecoder, final Mqtt5DisconnectDecoder disconnectDecoder,
-            final Mqtt5AuthDecoder authDecoder) {
+            final @NotNull Mqtt5ConnAckDecoder connAckDecoder, final @NotNull Mqtt5PublishDecoder publishDecoder,
+            final @NotNull Mqtt5PubAckDecoder pubAckDecoder, final @NotNull Mqtt5PubRecDecoder pubRecDecoder,
+            final @NotNull Mqtt5PubRelDecoder pubRelDecoder, final @NotNull Mqtt5PubCompDecoder pubCompDecoder,
+            final @NotNull Mqtt5SubAckDecoder subAckDecoder, final @NotNull Mqtt5UnsubAckDecoder unsubAckDecoder,
+            final @NotNull MqttPingRespDecoder pingRespDecoder, final @NotNull Mqtt5DisconnectDecoder disconnectDecoder,
+            final @NotNull Mqtt5AuthDecoder authDecoder) {
 
-        decoders = new MqttMessageDecoder[Mqtt5MessageType.values().length];
         decoders[Mqtt5MessageType.CONNACK.getCode()] = connAckDecoder;
         decoders[Mqtt5MessageType.PUBLISH.getCode()] = publishDecoder;
         decoders[Mqtt5MessageType.PUBACK.getCode()] = pubAckDecoder;
@@ -58,14 +54,4 @@ public class Mqtt5ClientMessageDecoders implements MqttMessageDecoders {
         decoders[Mqtt5MessageType.DISCONNECT.getCode()] = disconnectDecoder;
         decoders[Mqtt5MessageType.AUTH.getCode()] = authDecoder;
     }
-
-    @Nullable
-    @Override
-    public MqttMessageDecoder get(final int code) {
-        if (code < 0 || code >= decoders.length) {
-            return null;
-        }
-        return decoders[code];
-    }
-
 }

@@ -43,13 +43,14 @@ public enum Mqtt5RetainHandling {
      * @param code the byte code.
      * @return the Retain Handling belonging to the byte code or null if the byte code is not a valid Retain Handling.
      */
-    @Nullable
-    public static Mqtt5RetainHandling fromCode(final int code) {
-        final Mqtt5RetainHandling[] values = values();
-        if (code < 0 || code >= values.length) {
-            return null;
+    public static @Nullable Mqtt5RetainHandling fromCode(final int code) {
+        if (code == SEND.getCode()) {
+            return SEND;
+        } else if (code == SEND_IF_SUBSCRIPTION_DOES_NOT_EXIST.getCode()) {
+            return SEND_IF_SUBSCRIPTION_DOES_NOT_EXIST;
+        } else if (code == DO_NOT_SEND.getCode()) {
+            return DO_NOT_SEND;
         }
-        return values[code];
+        return null;
     }
-
 }

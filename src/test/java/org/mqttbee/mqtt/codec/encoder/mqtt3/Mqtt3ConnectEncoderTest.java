@@ -24,11 +24,11 @@ import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
-import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3Connect;
-import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3ConnectBuilder;
+import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
+import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoders;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
 import org.mqttbee.mqtt.message.connect.MqttStatefulConnect;
-import org.mqttbee.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
+import org.mqttbee.mqtt.message.connect.mqtt3.Mqtt3ConnectViewBuilder;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 
 import java.nio.charset.StandardCharsets;
@@ -41,7 +41,9 @@ import static org.junit.platform.commons.util.StringUtils.isNotBlank;
 class Mqtt3ConnectEncoderTest extends AbstractMqtt3EncoderTest {
 
     Mqtt3ConnectEncoderTest() {
-        super(code -> new Mqtt3ConnectEncoder(), false);
+        super(new MqttMessageEncoders() {{
+            encoders[Mqtt3MessageType.CONNECT.getCode()] = new Mqtt3ConnectEncoder();
+        }}, false);
     }
 
     @CsvFileSource(resources = "/testParams/mqtt3/Connect.csv")
@@ -56,8 +58,9 @@ class Mqtt3ConnectEncoderTest extends AbstractMqtt3EncoderTest {
         final boolean hasWill =
                 isNotBlank(willMessage) && isNotBlank(willTopic) && (willQos != null) && (willRetained != null);
 
-        Mqtt3ConnectBuilder connectBuilder =
-                Mqtt3Connect.builder().cleanSession(cleanSession).keepAlive(keepAliveInterval, TimeUnit.SECONDS);
+        Mqtt3ConnectViewBuilder.Default connectBuilder =
+                new Mqtt3ConnectViewBuilder.Default().cleanSession(cleanSession)
+                        .keepAlive(keepAliveInterval, TimeUnit.SECONDS);
         if (hasAuth) {
             connectBuilder = connectBuilder.simpleAuth()
                     .username(userName)
@@ -68,10 +71,12 @@ class Mqtt3ConnectEncoderTest extends AbstractMqtt3EncoderTest {
             connectBuilder = connectBuilder.willPublish()
                     .topic(willTopic)
                     .qos(Objects.requireNonNull(MqttQos.fromCode(willQos)))
-                    .payload(willMessage.getBytes(StandardCharsets.UTF_8)).retain(willRetained).applyWillPublish();
+                    .payload(willMessage.getBytes(StandardCharsets.UTF_8))
+                    .retain(willRetained)
+                    .applyWillPublish();
         }
 
-        final MqttConnect beeConnect = ((Mqtt3ConnectView) connectBuilder.build()).getDelegate();
+        final MqttConnect beeConnect = connectBuilder.build().getDelegate();
         final MqttStatefulConnect statefulConnect =
                 beeConnect.createStateful(MqttBuilderUtil.clientIdentifier(clientId), null);
 

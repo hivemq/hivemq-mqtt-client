@@ -19,6 +19,7 @@ package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -31,6 +32,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckReasonCode
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
+import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoders;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.message.connect.connack.MqttConnAck;
 import org.mqttbee.mqtt.message.connect.connack.MqttConnAckRestrictions;
@@ -46,12 +48,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
 
     Mqtt5ConnAckDecoderTest() {
-        super(code -> {
-            if (code == Mqtt5MessageType.CONNACK.getCode()) {
-                return new Mqtt5ConnAckDecoder();
-            }
-            return null;
-        });
+        super(new MqttMessageDecoders() {{
+            decoders[Mqtt5MessageType.CONNACK.getCode()] = new Mqtt5ConnAckDecoder();
+        }});
     }
 
     @Test
@@ -441,7 +440,7 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
 
     @ParameterizedTest
     @EnumSource(Mqtt5ConnAckReasonCode.class)
-    void decode_reason_codes(final Mqtt5ConnAckReasonCode reasonCode) {
+    void decode_reason_codes(final @NotNull Mqtt5ConnAckReasonCode reasonCode) {
         final byte[] encoded = {
                 // fixed header
                 //   type, flags
@@ -2059,7 +2058,7 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
         assertEquals(true, connAck.getRestrictions().isSharedSubscriptionAvailable());
     }
 
-    private void testDisconnect(final Mqtt5DisconnectReasonCode reasonCode, final boolean sendReasonString) {
+    private void testDisconnect(final @NotNull Mqtt5DisconnectReasonCode reasonCode, final boolean sendReasonString) {
         final Mqtt5ConnAck connAck = channel.readInbound();
         assertNull(connAck);
 
@@ -2070,7 +2069,7 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
     }
 
     private static final byte PROPERTIES_VALID_LENGTH = 119;
-    private static final byte[] PROPERTIES_VALID = {
+    private static final @NotNull byte[] PROPERTIES_VALID = {
             //     session expiry interval
             0x11, 0, 0, 0, 10,
             //     receive maximum

@@ -19,7 +19,8 @@ package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.Test;
-import org.mqttbee.mqtt.codec.encoder.MqttPingReqEncoder;
+import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
+import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoders;
 import org.mqttbee.mqtt.message.ping.MqttPingReq;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -28,8 +29,11 @@ import static org.junit.Assert.assertArrayEquals;
  * @author David Katz
  */
 class Mqtt5PingReqEncoderTest extends AbstractMqtt5EncoderTest {
+
     Mqtt5PingReqEncoderTest() {
-        super(code -> MqttPingReqEncoder.INSTANCE, true);
+        super(new MqttMessageEncoders() {{
+            encoders[Mqtt5MessageType.PINGREQ.getCode()] = createPingReqEncoder();
+        }}, true);
     }
 
     @Test

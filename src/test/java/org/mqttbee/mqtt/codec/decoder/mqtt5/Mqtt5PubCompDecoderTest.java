@@ -19,6 +19,7 @@ package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -26,6 +27,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubCompReasonCode;
+import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoders;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.message.publish.pubcomp.MqttPubComp;
 import org.mqttbee.mqtt.netty.ChannelAttributes;
@@ -38,12 +40,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class Mqtt5PubCompDecoderTest extends AbstractMqtt5DecoderTest {
 
     Mqtt5PubCompDecoderTest() {
-        super(code -> {
-            if (code == Mqtt5MessageType.PUBCOMP.getCode()) {
-                return new Mqtt5PubCompDecoder();
-            }
-            return null;
-        });
+        super(new MqttMessageDecoders() {{
+            decoders[Mqtt5MessageType.PUBCOMP.getCode()] = new Mqtt5PubCompDecoder();
+        }});
     }
 
     @Test
@@ -808,7 +807,7 @@ class Mqtt5PubCompDecoderTest extends AbstractMqtt5DecoderTest {
         testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    private void testDisconnect(final Mqtt5DisconnectReasonCode reasonCode, final boolean sendReasonString) {
+    private void testDisconnect(final @NotNull Mqtt5DisconnectReasonCode reasonCode, final boolean sendReasonString) {
         final MqttPubComp pubComp = channel.readInbound();
         assertNull(pubComp);
 
@@ -819,7 +818,7 @@ class Mqtt5PubCompDecoderTest extends AbstractMqtt5DecoderTest {
     }
 
     private static final int PROPERTIES_VALID_LENGTH = 54;
-    private static final byte[] PROPERTIES_VALID = {
+    private static final @NotNull byte[] PROPERTIES_VALID = {
             //     reason string
             0x1F, 0, 7, 's', 'u', 'c', 'c', 'e', 's', 's',
             //     user properties

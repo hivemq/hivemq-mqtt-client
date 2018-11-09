@@ -19,15 +19,16 @@ package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAckReasonCode;
+import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoders;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAck;
 
@@ -41,12 +42,9 @@ import static org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReaso
 class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
 
     Mqtt5SubAckDecoderTest() {
-        super(code -> {
-            if (code == Mqtt5MessageType.SUBACK.getCode()) {
-                return new Mqtt5SubAckDecoder();
-            }
-            return null;
-        });
+        super(new MqttMessageDecoders() {{
+            decoders[Mqtt5MessageType.SUBACK.getCode()] = new Mqtt5SubAckDecoder();
+        }});
     }
 
     @Test
@@ -195,7 +193,7 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
 
     @ParameterizedTest
     @EnumSource(Mqtt5SubAckReasonCode.class)
-    void encode_eachReasonCode(final Mqtt5SubAckReasonCode reasonCode) {
+    void encode_eachReasonCode(final @NotNull Mqtt5SubAckReasonCode reasonCode) {
         final byte[] encoded = {
                 // fixed header
                 //   type, flags
@@ -375,7 +373,6 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
         decodeNok(encoded, MALFORMED_PACKET);
     }
 
-
     @Test
     void encode_propertyLengthLongerThanEncoded_returnsNull() {
         final byte[] encoded = {
@@ -452,13 +449,13 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
     }
 
     @NotNull
-    private MqttSubAck decodeOk(final byte[] encoded) {
+    private MqttSubAck decodeOk(final @NotNull byte[] encoded) {
         final MqttSubAck subAck = decode(encoded);
         assertNotNull(subAck);
         return subAck;
     }
 
-    private void decodeNok(final byte[] encoded, final Mqtt5DisconnectReasonCode reasonCode) {
+    private void decodeNok(final @NotNull byte[] encoded, final @NotNull Mqtt5DisconnectReasonCode reasonCode) {
         final MqttSubAck subAck = decode(encoded);
         assertNull(subAck);
 
@@ -470,7 +467,7 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
     }
 
     @Nullable
-    private MqttSubAck decode(final byte[] encoded) {
+    private MqttSubAck decode(final @NotNull byte[] encoded) {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);

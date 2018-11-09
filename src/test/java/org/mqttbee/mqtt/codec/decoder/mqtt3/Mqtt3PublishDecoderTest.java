@@ -18,12 +18,11 @@
 package org.mqttbee.mqtt.codec.decoder.mqtt3;
 
 import io.netty.buffer.ByteBuf;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
-import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoders;
 import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
 import org.mqttbee.util.ByteBufferUtil;
@@ -32,17 +31,19 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class Mqtt3PublishDecoderTest extends AbstractMqtt3DecoderTest {
 
-    private static final Byte WELLFORMED_PUBLISH_BEGIN = 0b0011_0000;
-    private static final Byte DUP_BIT = 0b0000_1000;
-    private static final Byte RETAIN_BIT = 0b0000_001;
+    private static final byte WELLFORMED_PUBLISH_BEGIN = 0b0011_0000;
+    private static final byte DUP_BIT = 0b0000_1000;
+    private static final byte RETAIN_BIT = 0b0000_001;
 
     Mqtt3PublishDecoderTest() {
-        super(new Mqtt3PublishTestMessageDecoders());
+        super(new MqttMessageDecoders() {{
+            decoders[Mqtt3MessageType.PUBLISH.getCode()] = new Mqtt3PublishDecoder();
+        }});
     }
 
-    private ByteBuf createWellformedPublish(
+    private @NotNull ByteBuf createWellformedPublish(
             final boolean dup, final int qos, final boolean retained, final int packetId, final byte[] topic,
-            final byte[] payload) throws Exception {
+            final @NotNull byte[] payload) throws Exception {
 
         final ByteBuf byteBuf = channel.alloc().buffer();
 
@@ -75,7 +76,7 @@ class Mqtt3PublishDecoderTest extends AbstractMqtt3DecoderTest {
         }
         byteBuf.writeByte(fixedHeaderFirstByte);
 
-        final Byte fixedHeaderSecondByte = (byte) remainingLength;
+        final byte fixedHeaderSecondByte = (byte) remainingLength;
         byteBuf.writeByte(fixedHeaderSecondByte);
         byteBuf.writeShort(topicLength);
         byteBuf.writeBytes(topic);
@@ -178,10 +179,8 @@ class Mqtt3PublishDecoderTest extends AbstractMqtt3DecoderTest {
         //the wildcards 0x2b: + and 0x21: # must not be in topic
     void decode_INVALID_TOPIC(final int invalidLetter) throws Exception {
         final byte[] topic = "beispieltopic".getBytes();
-        final byte invalidByte = (byte) invalidLetter;
         topic[3] = (byte) invalidLetter;
         final String payload = "example";
-        final int packetId = 1;
         final ByteBuf byteBuf = createWellformedPublish(false, 1, false, 1, topic, payload.getBytes());
         channel.writeInbound(byteBuf);
         final MqttStatefulPublish publishInternal = channel.readInbound();
@@ -204,17 +203,6 @@ class Mqtt3PublishDecoderTest extends AbstractMqtt3DecoderTest {
         final MqttStatefulPublish publishInternal = channel.readInbound();
         assertNull(publishInternal);
         assertFalse(channel.isOpen());
-    }
-
-    private static class Mqtt3PublishTestMessageDecoders implements MqttMessageDecoders {
-        @Nullable
-        @Override
-        public MqttMessageDecoder get(final int code) {
-            if (code == Mqtt3MessageType.PUBLISH.getCode()) {
-                return new Mqtt3PublishDecoder();
-            }
-            return null;
-        }
     }
 
 }
