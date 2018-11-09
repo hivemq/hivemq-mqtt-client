@@ -17,6 +17,7 @@
 
 package org.mqttbee.api.mqtt.mqtt3.message.connect.connack;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -31,6 +32,8 @@ public enum Mqtt3ConnAckReturnCode {
     BAD_USER_NAME_OR_PASSWORD,
     NOT_AUTHORIZED;
 
+    private static final @NotNull Mqtt3ConnAckReturnCode[] VALUES = values();
+
     /**
      * @return the byte code of this CONNACK Return Code.
      */
@@ -43,15 +46,12 @@ public enum Mqtt3ConnAckReturnCode {
      *
      * @param code the byte code.
      * @return the CONNACK Return Code belonging to the given byte code or null if the byte code is not a valid CONNACK
-     * Return Code code.
+     *         Return Code code.
      */
-    @Nullable
-    public static Mqtt3ConnAckReturnCode fromCode(final int code) {
-        final Mqtt3ConnAckReturnCode[] values = values();
-        if (code < 0 || code >= values.length) {
+    public static @Nullable Mqtt3ConnAckReturnCode fromCode(final int code) {
+        if (code < 0 || code >= VALUES.length) {
             return null;
         }
-        return values[code];
+        return VALUES[code];
     }
-
 }

@@ -19,12 +19,11 @@ package org.mqttbee.mqtt.codec.decoder.mqtt3;
 
 import com.google.common.primitives.Bytes;
 import io.netty.buffer.ByteBuf;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAckReasonCode;
-import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoders;
 import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAck;
 
@@ -32,37 +31,38 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class Mqtt3SubAckDecoderTest extends AbstractMqtt3DecoderTest {
 
-    private static final byte[] WELLFORMED_SUBACK_BEGIN = {
+    private static final @NotNull byte[] WELLFORMED_SUBACK_BEGIN = {
             //   type, flags
             (byte) 0b1001_0000,
             //remaining length
             0b0000_0110
     };
-    private static final byte[] MALFORMED_SUBACK_BEGIN_WRONG_FLAGS = {
+    private static final @NotNull byte[] MALFORMED_SUBACK_BEGIN_WRONG_FLAGS = {
             //   type, flags
             (byte) 0b1001_0010,
             //remaining length
             0b0000_0010
     };
-    private static final byte[] MALFORMED_SUBACK_BEGIN_TOO_SHORT_LENGTH = {
+    private static final @NotNull byte[] MALFORMED_SUBACK_BEGIN_TOO_SHORT_LENGTH = {
             //   type, flags
             (byte) 0b1001_0010,
             //remaining length
             0b0000_0010
     };
 
-    private static final byte[] ENDING_TOO_LONG_MALFORMED = {0x01};
-    private static final byte[] REASON_CODE_QOS_0 = {0x00};
-    private static final byte[] REASON_CODE_QOS_1 = {0x01};
-    private static final byte[] REASON_CODE_QOS_2 = {0x02};
-    private static final byte[] REASON_CODE_FAILURE = {(byte) 0x80};
-    private static final byte[] REASON_CODE_MALFORMED = {0x8, 0x2};
+    private static final @NotNull byte[] REASON_CODE_QOS_0 = {0x00};
+    private static final @NotNull byte[] REASON_CODE_QOS_1 = {0x01};
+    private static final @NotNull byte[] REASON_CODE_QOS_2 = {0x02};
+    private static final @NotNull byte[] REASON_CODE_FAILURE = {(byte) 0x80};
+    private static final @NotNull byte[] REASON_CODE_MALFORMED = {0x8, 0x2};
 
-    private static final byte[] MAX_PACKET_ID = {(byte) 0b1111_1111, (byte) 0b1111_1111};
-    private static final byte[] MIN_PACKET_ID = {0x00, 0x00};
+    private static final @NotNull byte[] MAX_PACKET_ID = {(byte) 0b1111_1111, (byte) 0b1111_1111};
+    private static final @NotNull byte[] MIN_PACKET_ID = {0x00, 0x00};
 
     Mqtt3SubAckDecoderTest() {
-        super(new Mqtt3SubAckTestMessageDecoders());
+        super(new MqttMessageDecoders() {{
+            decoders[Mqtt3MessageType.SUBACK.getCode()] = new Mqtt3SubAckDecoder();
+        }});
     }
 
     @ParameterizedTest
@@ -116,16 +116,4 @@ class Mqtt3SubAckDecoderTest extends AbstractMqtt3DecoderTest {
         assertFalse(channel.isOpen());
         assertNull(subAckImpl);
     }
-
-    private static class Mqtt3SubAckTestMessageDecoders implements MqttMessageDecoders {
-        @Nullable
-        @Override
-        public MqttMessageDecoder get(final int code) {
-            if (code == Mqtt3MessageType.SUBACK.getCode()) {
-                return new Mqtt3SubAckDecoder();
-            }
-            return null;
-        }
-    }
-
 }

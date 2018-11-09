@@ -19,9 +19,9 @@ package org.mqttbee.mqtt.codec.encoder;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.embedded.EmbeddedChannel;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.MqttServerConnectionData;
@@ -34,17 +34,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public abstract class AbstractMqttEncoderTest {
 
-    private final MqttMessageEncoders messageEncoders;
+    private final @NotNull MqttMessageEncoders messageEncoders;
     private final boolean connected;
-    private final MqttClientData clientData;
+    private final @NotNull MqttClientData clientData;
 
+    @SuppressWarnings("NullabilityAnnotations")
     protected EmbeddedChannel channel;
 
     protected AbstractMqttEncoderTest(
-            @NotNull final MqttMessageEncoders messageEncoders,
-            final boolean connected,
-            @NotNull final MqttClientData clientData
-    ) {
+            final @NotNull MqttMessageEncoders messageEncoders, final boolean connected,
+            final @NotNull MqttClientData clientData) {
+
         this.messageEncoders = messageEncoders;
         this.connected = connected;
         this.clientData = clientData;
@@ -72,7 +72,7 @@ public abstract class AbstractMqttEncoderTest {
                 new MqttServerConnectionData(10, 3, maximumPacketSize, MqttQos.EXACTLY_ONCE, true, true, true, true));
     }
 
-    protected void encode(final Object message, final byte[] expected) {
+    protected void encode(final @NotNull Object message, final @NotNull byte[] expected) {
         channel.writeOutbound(message);
         final ByteBuf actual = channel.readOutbound();
 
@@ -87,4 +87,7 @@ public abstract class AbstractMqttEncoderTest {
         }
     }
 
+    protected static @NotNull MqttPingReqEncoder createPingReqEncoder() {
+        return new MqttPingReqEncoder();
+    }
 }

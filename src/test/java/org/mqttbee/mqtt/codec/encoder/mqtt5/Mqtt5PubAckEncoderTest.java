@@ -20,10 +20,13 @@ package org.mqttbee.mqtt.codec.encoder.mqtt5;
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.puback.Mqtt5PubAckReasonCode;
+import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoders;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
@@ -41,7 +44,9 @@ import static org.mqttbee.mqtt.datatypes.MqttVariableByteInteger.MAXIMUM_PACKET_
 class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest {
 
     Mqtt5PubAckEncoderTest() {
-        super(code -> new Mqtt5PubAckEncoder(), true);
+        super(new MqttMessageEncoders() {{
+            encoders[Mqtt5MessageType.PUBACK.getCode()] = new Mqtt5PubAckEncoder();
+        }}, true);
     }
 
     @Test
@@ -100,7 +105,7 @@ class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
 
     @ParameterizedTest
     @EnumSource(value = Mqtt5PubAckReasonCode.class, mode = EXCLUDE, names = {"SUCCESS"})
-    void encode_doNotOmitNonSuccessReasonCodes(final Mqtt5PubAckReasonCode reasonCode) {
+    void encode_doNotOmitNonSuccessReasonCodes(final @NotNull Mqtt5PubAckReasonCode reasonCode) {
         // MQTT v5.0 Spec §3.4.2.1
         final byte[] expected = {
                 // fixed header
@@ -420,7 +425,7 @@ class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
 
     @ParameterizedTest
     @EnumSource(Mqtt5PubAckReasonCode.class)
-    void encode_reasonCodes(final Mqtt5PubAckReasonCode reasonCode) {
+    void encode_reasonCodes(final @NotNull Mqtt5PubAckReasonCode reasonCode) {
         // MQTT v5.0 Spec §3.4.2.1
         final byte[] expected = {
                 // fixed header
@@ -449,7 +454,7 @@ class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
         encode(expected, pubAck);
     }
 
-    private void encode(final byte[] expected, final MqttPubAck pubAck) {
+    private void encode(final @NotNull byte[] expected, final @NotNull MqttPubAck pubAck) {
         encode(pubAck, expected);
     }
 

@@ -19,15 +19,16 @@ package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
 import com.google.common.collect.ImmutableList;
 import io.netty.handler.codec.EncoderException;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.exceptions.MqttBinaryDataExceededException;
 import org.mqttbee.api.mqtt.exceptions.MqttVariableByteIntegerExceededException;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientData;
 import org.mqttbee.api.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
+import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5Auth;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5EnhancedAuthBuilder;
@@ -35,6 +36,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
+import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoders;
 import org.mqttbee.mqtt.datatypes.*;
 import org.mqttbee.mqtt.message.auth.MqttEnhancedAuth;
 import org.mqttbee.mqtt.message.auth.MqttSimpleAuth;
@@ -63,7 +65,9 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
             (1 << (VARIABLE_BYTE_INTEGER_VALUE_BITS * 4)) - 1;
 
     Mqtt5ConnectEncoderTest() {
-        super(code -> new Mqtt5ConnectEncoder(new Mqtt5PublishEncoder()), false);
+        super(new MqttMessageEncoders() {{
+            encoders[Mqtt5MessageType.CONNECT.getCode()] = new Mqtt5ConnectEncoder(new Mqtt5PublishEncoder());
+        }}, false);
     }
 
     @Test
@@ -525,18 +529,19 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         encodeNok(connectWrapper, EncoderException.class, "variable byte integer size exceeded for property length");
     }
 
-    private void encode(final byte[] expected, final MqttStatefulConnect connectWrapper) {
+    private void encode(final @NotNull byte[] expected, final @NotNull MqttStatefulConnect connectWrapper) {
         encode(connectWrapper, expected);
     }
 
     private void encodeNok(
-            final MqttStatefulConnect connectWrapper, final Class<? extends Exception> expectedException,
-            final String reason) {
+            final @NotNull MqttStatefulConnect connectWrapper,
+            final @NotNull Class<? extends Exception> expectedException, final @NotNull String reason) {
 
         final Throwable exception = assertThrows(expectedException, () -> channel.writeOutbound(connectWrapper));
         assertTrue(exception.getMessage().contains(reason), () -> "found: " + exception.getMessage());
     }
 
+    @SuppressWarnings("NullabilityAnnotations")
     private class MaximumPacketBuilder {
 
         private ImmutableList.Builder<MqttUserPropertyImpl> userPropertiesBuilder;
@@ -601,10 +606,9 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         }
     }
 
-
     private static class TestEnhancedAuthProvider implements Mqtt5EnhancedAuthProvider {
 
-        private final MqttUTF8String method;
+        private final @NotNull MqttUTF8String method;
 
         TestEnhancedAuthProvider(@NotNull final MqttUTF8String method) {
             this.method = method;

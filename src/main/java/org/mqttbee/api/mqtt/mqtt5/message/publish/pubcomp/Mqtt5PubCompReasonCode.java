@@ -38,7 +38,7 @@ public enum Mqtt5PubCompReasonCode implements Mqtt5ReasonCode {
         this.code = code;
     }
 
-    Mqtt5PubCompReasonCode(@NotNull final MqttCommonReasonCode reasonCode) {
+    Mqtt5PubCompReasonCode(final @NotNull MqttCommonReasonCode reasonCode) {
         this(reasonCode.getCode());
     }
 
@@ -54,16 +54,14 @@ public enum Mqtt5PubCompReasonCode implements Mqtt5ReasonCode {
      *
      * @param code the byte code.
      * @return the PUBCOMP Reason Code belonging to the given byte code or null if the byte code is not a valid PUBCOMP
-     * Reason Code code.
+     *         Reason Code code.
      */
-    @Nullable
-    public static Mqtt5PubCompReasonCode fromCode(final int code) {
-        for (final Mqtt5PubCompReasonCode reasonCode : values()) {
-            if (reasonCode.code == code) {
-                return reasonCode;
-            }
+    public static @Nullable Mqtt5PubCompReasonCode fromCode(final int code) {
+        if (code == SUCCESS.code) {
+            return SUCCESS;
+        } else if (code == PACKET_IDENTIFIER_NOT_FOUND.code) {
+            return PACKET_IDENTIFIER_NOT_FOUND;
         }
         return null;
     }
-
 }

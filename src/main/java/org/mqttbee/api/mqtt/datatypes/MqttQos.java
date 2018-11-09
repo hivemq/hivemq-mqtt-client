@@ -17,6 +17,7 @@
 
 package org.mqttbee.api.mqtt.datatypes;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -39,6 +40,8 @@ public enum MqttQos {
      */
     EXACTLY_ONCE;
 
+    private static final @NotNull MqttQos[] VALUES = values();
+
     /**
      * @return the byte code of this QoS.
      */
@@ -52,13 +55,10 @@ public enum MqttQos {
      * @param code the byte code.
      * @return the QoS belonging to the given byte code or null if the byte code is not a valid QoS code.
      */
-    @Nullable
-    public static MqttQos fromCode(final int code) {
-        final MqttQos[] values = values();
-        if (code < 0 || code >= values.length) {
+    public static @Nullable MqttQos fromCode(final int code) {
+        if (code < 0 || code >= VALUES.length) {
             return null;
         }
-        return values[code];
+        return VALUES[code];
     }
-
 }

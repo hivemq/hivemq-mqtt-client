@@ -18,6 +18,7 @@
 package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,24 +31,19 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.MALFORMED_PACKET;
 import static org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode.PROTOCOL_ERROR;
 
-class Mqtt5MessageDecoderUtilTest extends AbstractMqtt5DecoderTest {
+@SuppressWarnings("NullabilityAnnotations")
+class Mqtt5MessageDecoderUtilTest {
 
     private ByteBuf in;
 
-    Mqtt5MessageDecoderUtilTest() {
-        super((code) -> null);
-    }
-
     @BeforeEach
-    protected void setUp() {
-        super.setUp();
-        in = channel.alloc().buffer();
+    void setUp() {
+        in = Unpooled.buffer();
     }
 
     @AfterEach
-    protected void tearDown() {
+    void tearDown() {
         in.release();
-        super.tearDown();
     }
 
     @Test

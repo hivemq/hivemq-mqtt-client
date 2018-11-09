@@ -105,7 +105,7 @@ public class Mqtt5MessageTypeTest {
 
     @Test
     public void test_fromCode_0() {
-        assertSame(Mqtt5MessageType.RESERVED_ZERO, Mqtt5MessageType.fromCode(0));
+        assertNull(Mqtt5MessageType.fromCode(0));
     }
 
     @Test

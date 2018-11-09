@@ -19,12 +19,14 @@ package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
+import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoders;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
 import org.mqttbee.mqtt.netty.ChannelAttributes;
@@ -37,12 +39,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
 
     Mqtt5DisconnectDecoderTest() {
-        super(code -> {
-            if (code == Mqtt5MessageType.DISCONNECT.getCode()) {
-                return new Mqtt5DisconnectDecoder();
-            }
-            return null;
-        });
+        super(new MqttMessageDecoders() {{
+            decoders[Mqtt5MessageType.DISCONNECT.getCode()] = new Mqtt5DisconnectDecoder();
+        }});
     }
 
     @Test
@@ -864,7 +863,7 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
         testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
     }
 
-    private void testDisconnect(final Mqtt5DisconnectReasonCode reasonCode, final boolean sendReasonString) {
+    private void testDisconnect(final @NotNull Mqtt5DisconnectReasonCode reasonCode, final boolean sendReasonString) {
         final Mqtt5Disconnect disconnectIn = channel.readInbound();
         assertNull(disconnectIn);
 
@@ -875,7 +874,7 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
     }
 
     private final int PROPERTIES_VALID_LENGTH = 71;
-    private final byte[] PROPERTIES_VALID = {
+    private final @NotNull byte[] PROPERTIES_VALID = {
             //     session expiry interval
             0x11, 0, 0, 0, 10,
             //     reason string

@@ -19,13 +19,16 @@ package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.exceptions.MqttMaximumPacketSizeExceededException;
+import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5RetainHandling;
+import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoders;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
@@ -44,7 +47,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscription.*;
 import static org.mqttbee.mqtt.datatypes.MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT;
 
-
 /**
  * @author David Katz
  */
@@ -55,7 +57,9 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTe
     private static final int UTF8_LENGTH_ENCODED = 2;
 
     Mqtt5SubscribeEncoderTest() {
-        super(code -> new Mqtt5SubscribeEncoder(), true);
+        super(new MqttMessageEncoders() {{
+            encoders[Mqtt5MessageType.SUBSCRIBE.getCode()] = new Mqtt5SubscribeEncoder();
+        }}, true);
     }
 
     @Test
@@ -169,7 +173,7 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTe
 
     @ParameterizedTest
     @EnumSource(MqttQos.class)
-    void encode_subscriptionOptionsQos(final MqttQos qos) {
+    void encode_subscriptionOptionsQos(final @NotNull MqttQos qos) {
         final byte[] expected = {
                 // fixed header
                 // type, reserved
@@ -232,7 +236,7 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTe
 
     @ParameterizedTest
     @EnumSource(Mqtt5RetainHandling.class)
-    void encode_subscriptionOptionsRetain(final Mqtt5RetainHandling retainHandling) {
+    void encode_subscriptionOptionsRetain(final @NotNull Mqtt5RetainHandling retainHandling) {
         final byte[] expected = {
                 // fixed header
                 // type, reserved
@@ -373,13 +377,15 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTe
                         "packet size exceeded for SUBSCRIBE, minimal possible encoded length: 268435461, maximum: 268435460"));
     }
 
-    private void encode(final byte[] expected, final MqttSubscribe subscribe, final int packetIdentifier) {
+    private void encode(final @NotNull byte[] expected, final MqttSubscribe subscribe, final int packetIdentifier) {
         final MqttStatefulSubscribe subscribeInternal =
                 subscribe.createStateful(packetIdentifier, MqttStatefulSubscribe.DEFAULT_NO_SUBSCRIPTION_IDENTIFIER);
         encodeInternal(expected, subscribeInternal);
     }
 
-    private void encodeInternal(final byte[] expected, final MqttStatefulSubscribe subscribeInternal) {
+    private void encodeInternal(
+            final @NotNull byte[] expected, final @NotNull MqttStatefulSubscribe subscribeInternal) {
+
         encode(subscribeInternal, expected);
     }
 

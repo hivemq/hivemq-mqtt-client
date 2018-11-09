@@ -19,11 +19,11 @@ package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperty;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
@@ -31,6 +31,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAckReasonCode;
+import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoders;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.message.unsubscribe.unsuback.MqttUnsubAck;
 
@@ -48,12 +49,9 @@ import static org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5Unsub
 class Mqtt5UnsubAckDecoderTest extends AbstractMqtt5DecoderTest {
 
     Mqtt5UnsubAckDecoderTest() {
-        super(code -> {
-            if (Mqtt5MessageType.UNSUBACK.getCode() == code) {
-                return new Mqtt5UnsubAckDecoder();
-            }
-            return null;
-        });
+        super(new MqttMessageDecoders() {{
+            decoders[Mqtt5MessageType.UNSUBACK.getCode()] = new Mqtt5UnsubAckDecoder();
+        }});
     }
 
     @Test
@@ -293,10 +291,9 @@ class Mqtt5UnsubAckDecoderTest extends AbstractMqtt5DecoderTest {
         assertEquals(SUCCESS, unsubAck.getReasonCodes().get(0));
     }
 
-
     @ParameterizedTest
     @EnumSource(Mqtt5UnsubAckReasonCode.class)
-    void decode_reasonCodes(final Mqtt5UnsubAckReasonCode reasonCode) {
+    void decode_reasonCodes(final @NotNull Mqtt5UnsubAckReasonCode reasonCode) {
         final byte[] encoded = {
                 // fixed header
                 //   type _ flags (reserved)
@@ -552,13 +549,13 @@ class Mqtt5UnsubAckDecoderTest extends AbstractMqtt5DecoderTest {
     }
 
     @NotNull
-    private MqttUnsubAck decodeOk(final byte[] encoded) {
+    private MqttUnsubAck decodeOk(final @NotNull byte[] encoded) {
         final MqttUnsubAck unsubAck = decode(encoded);
         assertNotNull(unsubAck);
         return unsubAck;
     }
 
-    private void decodeNok(final byte[] encoded, final Mqtt5DisconnectReasonCode reasonCode) {
+    private void decodeNok(final @NotNull byte[] encoded, final @NotNull Mqtt5DisconnectReasonCode reasonCode) {
         final MqttUnsubAck unsubAck = decode(encoded);
         assertNull(unsubAck);
 
@@ -570,7 +567,7 @@ class Mqtt5UnsubAckDecoderTest extends AbstractMqtt5DecoderTest {
     }
 
     @Nullable
-    private MqttUnsubAck decode(final byte[] encoded) {
+    private MqttUnsubAck decode(final @NotNull byte[] encoded) {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);

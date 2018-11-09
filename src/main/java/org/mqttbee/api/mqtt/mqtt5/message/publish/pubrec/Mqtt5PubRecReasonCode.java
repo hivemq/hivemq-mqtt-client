@@ -39,13 +39,15 @@ public enum Mqtt5PubRecReasonCode implements Mqtt5ReasonCode {
     QUOTA_EXCEEDED(MqttCommonReasonCode.QUOTA_EXCEEDED),
     PAYLOAD_FORMAT_INVALID(MqttCommonReasonCode.PAYLOAD_FORMAT_INVALID);
 
+    private static final @NotNull Mqtt5PubRecReasonCode[] VALUES = values();
+
     private final int code;
 
     Mqtt5PubRecReasonCode(final int code) {
         this.code = code;
     }
 
-    Mqtt5PubRecReasonCode(@NotNull final MqttCommonReasonCode reasonCode) {
+    Mqtt5PubRecReasonCode(final @NotNull MqttCommonReasonCode reasonCode) {
         this(reasonCode.getCode());
     }
 
@@ -61,16 +63,14 @@ public enum Mqtt5PubRecReasonCode implements Mqtt5ReasonCode {
      *
      * @param code the byte code.
      * @return the PUBREC Reason Code belonging to the given byte code or null if the byte code is not a valid PUBREC
-     * Reason Code code.
+     *         Reason Code code.
      */
-    @Nullable
-    public static Mqtt5PubRecReasonCode fromCode(final int code) {
-        for (final Mqtt5PubRecReasonCode reasonCode : values()) {
+    public static @Nullable Mqtt5PubRecReasonCode fromCode(final int code) {
+        for (final Mqtt5PubRecReasonCode reasonCode : VALUES) {
             if (reasonCode.code == code) {
                 return reasonCode;
             }
         }
         return null;
     }
-
 }

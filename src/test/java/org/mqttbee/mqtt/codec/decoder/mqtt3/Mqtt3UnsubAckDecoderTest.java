@@ -19,11 +19,10 @@ package org.mqttbee.mqtt.codec.decoder.mqtt3;
 
 import com.google.common.primitives.Bytes;
 import io.netty.buffer.ByteBuf;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
-import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoders;
 import org.mqttbee.mqtt.message.unsubscribe.unsuback.MqttUnsubAck;
 
@@ -31,32 +30,34 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class Mqtt3UnsubAckDecoderTest extends AbstractMqtt3DecoderTest {
 
-    private static final byte[] WELLFORMED_UNSUBACK_BEGIN = {
+    private static final @NotNull byte[] WELLFORMED_UNSUBACK_BEGIN = {
             //   type, flags
             (byte) 0b1011_0000,
             //remaining length
             0b0000_0010
     };
-    private static final byte[] MALFORMED_UNSUBACK_BEGIN_WRONG_FLAGS = {
+    private static final @NotNull byte[] MALFORMED_UNSUBACK_BEGIN_WRONG_FLAGS = {
             //   type, flags
             (byte) 0b1011_0100,
             //remaining length
             0b0000_0010
     };
-    private static final byte[] MALFORMED_UNSUBACK_BEGIN_TOO_LONG_LENGTH = {
+    private static final @NotNull byte[] MALFORMED_UNSUBACK_BEGIN_TOO_LONG_LENGTH = {
             //   type, flags
             (byte) 0b1011_0000,
             //remaining length
             0b0000_0011
     };
 
-    private static final byte[] ENDING_TOO_LONG_MALFORMED = {0x01};
+    private static final @NotNull byte[] ENDING_TOO_LONG_MALFORMED = {0x01};
 
-    private static final byte[] MAX_PACKET_ID = {(byte) 0b1111_1111, (byte) 0b1111_1111};
-    private static final byte[] MIN_PACKET_ID = {0x00, 0x00};
+    private static final @NotNull byte[] MAX_PACKET_ID = {(byte) 0b1111_1111, (byte) 0b1111_1111};
+    private static final @NotNull byte[] MIN_PACKET_ID = {0x00, 0x00};
 
     Mqtt3UnsubAckDecoderTest() {
-        super(new Mqtt3UnsubAckTestMessageDecoders());
+        super(new MqttMessageDecoders() {{
+            decoders[Mqtt3MessageType.UNSUBACK.getCode()] = new Mqtt3UnsubAckDecoder();
+        }});
     }
 
     @ParameterizedTest
@@ -94,16 +95,4 @@ class Mqtt3UnsubAckDecoderTest extends AbstractMqtt3DecoderTest {
         assertFalse(channel.isOpen());
         assertNull(unsubAck);
     }
-
-    private static class Mqtt3UnsubAckTestMessageDecoders implements MqttMessageDecoders {
-        @Nullable
-        @Override
-        public MqttMessageDecoder get(final int code) {
-            if (code == Mqtt3MessageType.UNSUBACK.getCode()) {
-                return new Mqtt3UnsubAckDecoder();
-            }
-            return null;
-        }
-    }
-
 }

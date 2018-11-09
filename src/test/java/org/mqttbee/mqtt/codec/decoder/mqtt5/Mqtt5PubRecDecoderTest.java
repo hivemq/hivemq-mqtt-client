@@ -19,15 +19,16 @@ package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrec.Mqtt5PubRecReasonCode;
+import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoders;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRec;
 
@@ -42,12 +43,9 @@ import static org.mqttbee.api.mqtt.mqtt5.message.publish.pubrec.Mqtt5PubRecReaso
 class Mqtt5PubRecDecoderTest extends AbstractMqtt5DecoderTest {
 
     Mqtt5PubRecDecoderTest() {
-        super(code -> {
-            if (code == Mqtt5MessageType.PUBREC.getCode()) {
-                return new Mqtt5PubRecDecoder();
-            }
-            return null;
-        });
+        super(new MqttMessageDecoders() {{
+            decoders[Mqtt5MessageType.PUBREC.getCode()] = new Mqtt5PubRecDecoder();
+        }});
     }
 
     @Test
@@ -405,13 +403,13 @@ class Mqtt5PubRecDecoderTest extends AbstractMqtt5DecoderTest {
     }
 
     @NotNull
-    private MqttPubRec decodeOk(final byte[] encoded) {
+    private MqttPubRec decodeOk(final @NotNull byte[] encoded) {
         final MqttPubRec pubRec = decode(encoded);
         assertNotNull(pubRec);
         return pubRec;
     }
 
-    private void decodeNok(final byte[] encoded, final Mqtt5DisconnectReasonCode reasonCode) {
+    private void decodeNok(final @NotNull byte[] encoded, final @NotNull Mqtt5DisconnectReasonCode reasonCode) {
         final MqttPubRec pubRec = decode(encoded);
         assertNull(pubRec);
 
@@ -423,7 +421,7 @@ class Mqtt5PubRecDecoderTest extends AbstractMqtt5DecoderTest {
     }
 
     @Nullable
-    private MqttPubRec decode(final byte[] encoded) {
+    private MqttPubRec decode(final @NotNull byte[] encoded) {
         final ByteBuf byteBuf = channel.alloc().buffer();
         byteBuf.writeBytes(encoded);
         channel.writeInbound(byteBuf);

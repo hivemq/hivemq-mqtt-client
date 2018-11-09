@@ -19,11 +19,14 @@ package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.mqttbee.api.mqtt.exceptions.MqttMaximumPacketSizeExceededException;
+import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubCompReasonCode;
+import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoders;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
@@ -42,7 +45,9 @@ import static org.mqttbee.mqtt.datatypes.MqttVariableByteInteger.MAXIMUM_PACKET_
 class Mqtt5PubCompEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest {
 
     Mqtt5PubCompEncoderTest() {
-        super(code -> new Mqtt5PubCompEncoder(), true);
+        super(new MqttMessageEncoders() {{
+            encoders[Mqtt5MessageType.PUBCOMP.getCode()] = new Mqtt5PubCompEncoder();
+        }}, true);
     }
 
     @Test
@@ -87,7 +92,7 @@ class Mqtt5PubCompEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
 
     @ParameterizedTest
     @EnumSource(value = Mqtt5PubCompReasonCode.class, mode = EXCLUDE, names = {"SUCCESS"})
-    void encode_reasonCodes(final Mqtt5PubCompReasonCode reasonCode) {
+    void encode_reasonCodes(final @NotNull Mqtt5PubCompReasonCode reasonCode) {
         final byte[] expected = {
                 // fixed header
                 //   type, flags
@@ -280,7 +285,7 @@ class Mqtt5PubCompEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
         expected.release();
     }
 
-    private void encode(final byte[] expected, final MqttPubComp pubComp) {
+    private void encode(final @NotNull byte[] expected, final @NotNull MqttPubComp pubComp) {
         encode(pubComp, expected);
     }
 

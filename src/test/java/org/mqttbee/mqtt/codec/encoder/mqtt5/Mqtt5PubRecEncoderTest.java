@@ -19,10 +19,13 @@ package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrec.Mqtt5PubRecReasonCode;
+import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoders;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRec;
@@ -37,7 +40,9 @@ import static org.mqttbee.mqtt.datatypes.MqttVariableByteInteger.MAXIMUM_PACKET_
 class Mqtt5PubRecEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest {
 
     Mqtt5PubRecEncoderTest() {
-        super(code -> new Mqtt5PubRecEncoder(), true);
+        super(new MqttMessageEncoders() {{
+            encoders[Mqtt5MessageType.PUBREC.getCode()] = new Mqtt5PubRecEncoder();
+        }}, true);
     }
 
     @Test
@@ -83,7 +88,7 @@ class Mqtt5PubRecEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
 
     @ParameterizedTest
     @EnumSource(value = Mqtt5PubRecReasonCode.class, mode = EXCLUDE, names = {"SUCCESS"})
-    void encode_reasonCodes(final Mqtt5PubRecReasonCode reasonCode) {
+    void encode_reasonCodes(final @NotNull Mqtt5PubRecReasonCode reasonCode) {
         final byte[] expected = {
                 // fixed header
                 //   type, flags
@@ -236,7 +241,8 @@ class Mqtt5PubRecEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
         final MqttUserPropertiesImpl maxUserProperties = maxPacket.getMaxPossibleUserProperties();
 
-        final ByteBuf expected = Unpooled.buffer(MAXIMUM_PACKET_SIZE_LIMIT - maxPacket.getRemainingPropertyBytes(),
+        final ByteBuf expected = Unpooled.buffer(
+                MAXIMUM_PACKET_SIZE_LIMIT - maxPacket.getRemainingPropertyBytes(),
                 MAXIMUM_PACKET_SIZE_LIMIT - maxPacket.getRemainingPropertyBytes());
 
         // fixed header
@@ -269,8 +275,7 @@ class Mqtt5PubRecEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
         expected.release();
     }
 
-
-    private void encode(final byte[] expected, final MqttPubRec pubRec) {
+    private void encode(final @NotNull byte[] expected, final @NotNull MqttPubRec pubRec) {
         encode(pubRec, expected);
     }
 

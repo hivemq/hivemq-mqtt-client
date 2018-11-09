@@ -18,8 +18,11 @@
 package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
 import com.google.common.collect.ImmutableList;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.mqttbee.api.mqtt.exceptions.MqttMaximumPacketSizeExceededException;
+import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
+import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoders;
 import org.mqttbee.mqtt.datatypes.*;
 import org.mqttbee.mqtt.message.unsubscribe.MqttStatefulUnsubscribe;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribe;
@@ -28,14 +31,15 @@ import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
 /**
  * @author David Katz
  */
 class Mqtt5UnsubscribeEncoderTest extends AbstractMqtt5EncoderTest {
 
     Mqtt5UnsubscribeEncoderTest() {
-        super(code -> new Mqtt5UnsubscribeEncoder(), true);
+        super(new MqttMessageEncoders() {{
+            encoders[Mqtt5MessageType.UNSUBSCRIBE.getCode()] = new Mqtt5UnsubscribeEncoder();
+        }}, true);
     }
 
     @Test
@@ -98,7 +102,6 @@ class Mqtt5UnsubscribeEncoderTest extends AbstractMqtt5EncoderTest {
                 ImmutableList.of(requireNonNull(MqttTopicFilterImpl.from("topic")));
         encodeUnsubscribe(expected, userProperties, topicFilters);
     }
-
 
     @Test
     void encode_maximumPacketSizeExceeded_omitUserProperties() {
@@ -171,8 +174,8 @@ class Mqtt5UnsubscribeEncoderTest extends AbstractMqtt5EncoderTest {
     }
 
     private void encodeUnsubscribe(
-            final byte[] expected, final MqttUserPropertiesImpl userProperties,
-            final ImmutableList<MqttTopicFilterImpl> topicFilters) {
+            final @NotNull byte[] expected, final @NotNull MqttUserPropertiesImpl userProperties,
+            final @NotNull ImmutableList<MqttTopicFilterImpl> topicFilters) {
         final MqttUnsubscribe unsubscribe = new MqttUnsubscribe(topicFilters, userProperties);
         final int packetIdentifier = 0x01;
         final MqttStatefulUnsubscribe unsubscribeInternal = unsubscribe.createStateful(packetIdentifier);
@@ -180,10 +183,12 @@ class Mqtt5UnsubscribeEncoderTest extends AbstractMqtt5EncoderTest {
         encodeInternal(expected, unsubscribeInternal);
     }
 
-    private void encodeInternal(final byte[] expected, final MqttStatefulUnsubscribe unsubscribeInternal) {
+    private void encodeInternal(
+            final @NotNull byte[] expected, final @NotNull MqttStatefulUnsubscribe unsubscribeInternal) {
         encode(unsubscribeInternal, expected);
     }
 
+    @SuppressWarnings("NullabilityAnnotations")
     private class MaximumPacketBuilder {
 
         private static final String TOPIC = "topic";

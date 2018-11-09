@@ -58,7 +58,7 @@ public enum Mqtt5ConnAckReasonCode implements Mqtt5ReasonCode {
         this.code = code;
     }
 
-    Mqtt5ConnAckReasonCode(@NotNull final MqttCommonReasonCode reasonCode) {
+    Mqtt5ConnAckReasonCode(final @NotNull MqttCommonReasonCode reasonCode) {
         this(reasonCode.getCode());
     }
 
@@ -69,10 +69,9 @@ public enum Mqtt5ConnAckReasonCode implements Mqtt5ReasonCode {
         return code;
     }
 
-
     private static final int ERROR_CODE_MIN = UNSPECIFIED_ERROR.code;
     private static final int ERROR_CODE_MAX = CONNECTION_RATE_EXCEEDED.code;
-    private static final Mqtt5ConnAckReasonCode[] ERROR_CODE_LOOKUP =
+    private static final @NotNull Mqtt5ConnAckReasonCode[] ERROR_CODE_LOOKUP =
             new Mqtt5ConnAckReasonCode[ERROR_CODE_MAX - ERROR_CODE_MIN + 1];
 
     static {
@@ -88,10 +87,9 @@ public enum Mqtt5ConnAckReasonCode implements Mqtt5ReasonCode {
      *
      * @param code the byte code.
      * @return the CONNACK Reason Code belonging to the given byte code or null if the byte code is not a valid CONNACK
-     * Reason Code code.
+     *         Reason Code code.
      */
-    @Nullable
-    public static Mqtt5ConnAckReasonCode fromCode(final int code) {
+    public static @Nullable Mqtt5ConnAckReasonCode fromCode(final int code) {
         if (code == SUCCESS.code) {
             return SUCCESS;
         }
@@ -100,5 +98,4 @@ public enum Mqtt5ConnAckReasonCode implements Mqtt5ReasonCode {
         }
         return ERROR_CODE_LOOKUP[code - ERROR_CODE_MIN];
     }
-
 }

@@ -20,10 +20,13 @@ package org.mqttbee.mqtt.codec.encoder.mqtt5;
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
+import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoders;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
@@ -43,7 +46,9 @@ import static org.mqttbee.mqtt.message.disconnect.MqttDisconnect.SESSION_EXPIRY_
 class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest {
 
     Mqtt5DisconnectEncoderTest() {
-        super(code -> new Mqtt5DisconnectEncoder(), true);
+        super(new MqttMessageEncoders() {{
+            encoders[Mqtt5MessageType.DISCONNECT.getCode()] = new Mqtt5DisconnectEncoder();
+        }}, true);
     }
 
     @Test
@@ -109,7 +114,7 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesT
 
     @ParameterizedTest
     @EnumSource(value = Mqtt5DisconnectReasonCode.class, mode = EXCLUDE, names = "NORMAL_DISCONNECTION")
-    void encode_allReasonCodes(final Mqtt5DisconnectReasonCode reasonCode) {
+    void encode_allReasonCodes(final @NotNull Mqtt5DisconnectReasonCode reasonCode) {
         final byte[] expected = {
                 // fixed header
                 //   type, flags
@@ -160,7 +165,6 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesT
                 //    Reason String
                 0x1F, 0, 6, 'r', 'e', 'a', 's', 'o', 'n'
 
-
         };
         final MqttUTF8StringImpl reasonString = MqttUTF8StringImpl.from("reason");
         final MqttDisconnect disconnect =
@@ -169,7 +173,6 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesT
 
         encode(expected, disconnect);
     }
-
 
     @Test
     void encode_serverReference() {
@@ -186,7 +189,6 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesT
                 9,
                 //    Server Reference
                 0x1C, 0, 6, 's', 'e', 'r', 'v', 'e', 'r',
-
 
         };
         final MqttUTF8StringImpl serverReference = MqttUTF8StringImpl.from("server");
@@ -363,7 +365,7 @@ class Mqtt5DisconnectEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesT
         expected.release();
     }
 
-    private void encode(final byte[] expected, final MqttDisconnect disconnect) {
+    private void encode(final @NotNull byte[] expected, final @NotNull MqttDisconnect disconnect) {
         encode(disconnect, expected);
     }
 

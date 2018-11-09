@@ -17,32 +17,31 @@
 
 package org.mqttbee.mqtt.codec.encoder.mqtt3;
 
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
-import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoder;
 import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoders;
 import org.mqttbee.mqtt.codec.encoder.MqttPingReqEncoder;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  * Collection of encoders for MQTT 3 messages a client can send.
  *
  * @author Silvio Giebl
  */
-public class Mqtt3ClientMessageEncoders implements MqttMessageEncoders {
-
-    private final MqttMessageEncoder[] encoders;
+@Singleton
+public class Mqtt3ClientMessageEncoders extends MqttMessageEncoders {
 
     @Inject
     Mqtt3ClientMessageEncoders(
-            final Mqtt3ConnectEncoder connectEncoder, final Mqtt3PublishEncoder publishEncoder,
-            final Mqtt3PubAckEncoder pubAckEncoder, final Mqtt3PubRecEncoder pubRecEncoder,
-            final Mqtt3PubRelEncoder pubRelEncoder, final Mqtt3PubCompEncoder pubCompEncoder,
-            final Mqtt3SubscribeEncoder subscribeEncoder, final Mqtt3UnsubscribeEncoder unsubscribeEncoder,
-            final MqttPingReqEncoder pingReqEncoder, final Mqtt3DisconnectEncoder disconnectEncoder) {
+            final @NotNull Mqtt3ConnectEncoder connectEncoder, final @NotNull Mqtt3PublishEncoder publishEncoder,
+            final @NotNull Mqtt3PubAckEncoder pubAckEncoder, final @NotNull Mqtt3PubRecEncoder pubRecEncoder,
+            final @NotNull Mqtt3PubRelEncoder pubRelEncoder, final @NotNull Mqtt3PubCompEncoder pubCompEncoder,
+            final @NotNull Mqtt3SubscribeEncoder subscribeEncoder,
+            final @NotNull Mqtt3UnsubscribeEncoder unsubscribeEncoder, final @NotNull MqttPingReqEncoder pingReqEncoder,
+            final @NotNull Mqtt3DisconnectEncoder disconnectEncoder) {
 
-        encoders = new MqttMessageEncoder[Mqtt3MessageType.values().length];
         encoders[Mqtt3MessageType.CONNECT.getCode()] = connectEncoder;
         encoders[Mqtt3MessageType.PUBLISH.getCode()] = publishEncoder;
         encoders[Mqtt3MessageType.PUBACK.getCode()] = pubAckEncoder;
@@ -54,14 +53,4 @@ public class Mqtt3ClientMessageEncoders implements MqttMessageEncoders {
         encoders[Mqtt3MessageType.PINGREQ.getCode()] = pingReqEncoder;
         encoders[Mqtt3MessageType.DISCONNECT.getCode()] = disconnectEncoder;
     }
-
-    @Nullable
-    @Override
-    public MqttMessageEncoder get(final int code) {
-        if (code < 0 || code >= encoders.length) {
-            return null;
-        }
-        return encoders[code];
-    }
-
 }

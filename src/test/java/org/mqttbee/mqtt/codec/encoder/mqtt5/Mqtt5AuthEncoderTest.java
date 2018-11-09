@@ -21,11 +21,14 @@ import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.EncoderException;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode;
+import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoders;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
@@ -49,7 +52,9 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
             (1 << (VARIABLE_BYTE_INTEGER_VALUE_BITS * 4)) - 1;
 
     Mqtt5AuthEncoderTest() {
-        super(code -> new Mqtt5AuthEncoder(), true);
+        super(new MqttMessageEncoders() {{
+            encoders[Mqtt5MessageType.AUTH.getCode()] = new Mqtt5AuthEncoder();
+        }}, true);
     }
 
     @Test
@@ -100,7 +105,7 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
 
     @ParameterizedTest
     @EnumSource(value = Mqtt5AuthReasonCode.class)
-    void encode_simple_reasonCodes(final Mqtt5AuthReasonCode reasonCode) {
+    void encode_simple_reasonCodes(final @NotNull Mqtt5AuthReasonCode reasonCode) {
         final byte[] expected = {
                 // fixed header
                 //   type, flags
@@ -232,17 +237,19 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
         encode(maxPacket.getWithOmittedUserPropertiesAndReasonString(), auth);
     }
 
-
-    private void encode(final byte[] expected, final MqttAuth auth) {
+    private void encode(final @NotNull byte[] expected, final @NotNull MqttAuth auth) {
         encode(auth, expected);
     }
 
     private void encodeNok(
-            final MqttAuth auth, final Class<? extends Exception> expectedException, final String reason) {
+            final @NotNull MqttAuth auth, final @NotNull Class<? extends Exception> expectedException,
+            final @NotNull String reason) {
+
         final Throwable exception = assertThrows(expectedException, () -> channel.writeOutbound(auth));
         assertTrue(exception.getMessage().contains(reason), () -> "found: " + exception.getMessage());
     }
 
+    @SuppressWarnings("NullabilityAnnotations")
     private class MaximumPacketBuilder {
 
         private ImmutableList.Builder<MqttUserPropertyImpl> userPropertiesBuilder;

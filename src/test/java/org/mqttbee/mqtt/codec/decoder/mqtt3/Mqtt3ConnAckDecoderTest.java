@@ -19,12 +19,11 @@ package org.mqttbee.mqtt.codec.decoder.mqtt3;
 
 import com.google.common.primitives.Bytes;
 import io.netty.buffer.ByteBuf;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckReasonCode;
-import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoders;
 import org.mqttbee.mqtt.message.connect.connack.MqttConnAck;
 
@@ -35,37 +34,39 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class Mqtt3ConnAckDecoderTest extends AbstractMqtt3DecoderTest {
 
-    private static final byte[] WELLFORMED_CONNACK_BEGIN = {
+    private static final @NotNull byte[] WELLFORMED_CONNACK_BEGIN = {
             //   type, flags
             0b0010_0000,
             //remaining length
             0b0000_0010
     };
-    private static final byte[] MALFORMED_CONNACK_BEGIN_WORNG_FLAGS = {
+    private static final @NotNull byte[] MALFORMED_CONNACK_BEGIN_WORNG_FLAGS = {
             //   type, flags
             0b0010_0100,
             //remaining length
             0b0000_0010
     };
-    private static final byte[] MALFORMED_CONNACK_BEGIN_TOO_LONG_LENGTH = {
+    private static final @NotNull byte[] MALFORMED_CONNACK_BEGIN_TOO_LONG_LENGTH = {
             //   type, flags
             0b0010_0100,
             //remaining length
             0b0000_0011
     };
-    private static final byte[] ENDING_TOO_LONG_MALFORMED = {0x01};
-    private static final byte[] SESSION_PRESENT_TRUE = {0b0000_0001};
-    private static final byte[] SESSION_PRESENT_FALSE = {0b0000_0000};
-    private static final byte[] REASON_CODE_SUCCESS = {0x00};
-    private static final byte[] REASON_CODE_UNACCEPTED_PROTOCOL_VERSION = {0x01};
-    private static final byte[] REASON_CODE_IDENTIFIER_REJECTED = {0x02};
-    private static final byte[] REASON_CODE_SERVER_UNAVAILABLE = {0x03};
-    private static final byte[] REASON_CODE_SERVER_BAD_USERNAME_OR_PASSWORD = {0x04};
-    private static final byte[] REASON_CODE_NOT_AUTHORIZED = {0x05};
-    private static final byte[] REASON_CODE_BAD = {0x13};
+    private static final @NotNull byte[] ENDING_TOO_LONG_MALFORMED = {0x01};
+    private static final @NotNull byte[] SESSION_PRESENT_TRUE = {0b0000_0001};
+    private static final @NotNull byte[] SESSION_PRESENT_FALSE = {0b0000_0000};
+    private static final @NotNull byte[] REASON_CODE_SUCCESS = {0x00};
+    private static final @NotNull byte[] REASON_CODE_UNACCEPTED_PROTOCOL_VERSION = {0x01};
+    private static final @NotNull byte[] REASON_CODE_IDENTIFIER_REJECTED = {0x02};
+    private static final @NotNull byte[] REASON_CODE_SERVER_UNAVAILABLE = {0x03};
+    private static final @NotNull byte[] REASON_CODE_SERVER_BAD_USERNAME_OR_PASSWORD = {0x04};
+    private static final @NotNull byte[] REASON_CODE_NOT_AUTHORIZED = {0x05};
+    private static final @NotNull byte[] REASON_CODE_BAD = {0x13};
 
     Mqtt3ConnAckDecoderTest() {
-        super(new Mqtt3ConnAckTestMessageDecoders());
+        super(new MqttMessageDecoders() {{
+            decoders[Mqtt3MessageType.CONNACK.getCode()] = new Mqtt3ConnAckDecoder();
+        }});
     }
 
     @ParameterizedTest
@@ -219,16 +220,4 @@ class Mqtt3ConnAckDecoderTest extends AbstractMqtt3DecoderTest {
         assertFalse(channel.isOpen());
         assertNull(connAck);
     }
-
-    private static class Mqtt3ConnAckTestMessageDecoders implements MqttMessageDecoders {
-        @Nullable
-        @Override
-        public MqttMessageDecoder get(final int code) {
-            if (code == Mqtt3MessageType.CONNACK.getCode()) {
-                return new Mqtt3ConnAckDecoder();
-            }
-            return null;
-        }
-    }
-
 }

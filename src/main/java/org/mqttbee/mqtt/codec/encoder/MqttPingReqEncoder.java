@@ -33,23 +33,18 @@ import javax.inject.Singleton;
 @Singleton
 public class MqttPingReqEncoder extends MqttMessageEncoder<MqttPingReq> {
 
-    public static final MqttPingReqEncoder INSTANCE = new MqttPingReqEncoder();
-
     private static final int ENCODED_LENGTH = 2;
-    private static final ByteBuf PACKET =
+    private static final @NotNull ByteBuf PACKET =
             Unpooled.directBuffer(ENCODED_LENGTH).writeByte(Mqtt5MessageType.PINGREQ.getCode() << 4).writeByte(0);
 
     @Inject
-    MqttPingReqEncoder() {
-    }
+    MqttPingReqEncoder() {}
 
-    @NotNull
     @Override
-    protected ByteBuf encode(
-            @NotNull final MqttPingReq message, @NotNull final ByteBufAllocator allocator,
+    protected @NotNull ByteBuf encode(
+            final @NotNull MqttPingReq message, final @NotNull ByteBufAllocator allocator,
             final int maximumPacketSize) {
 
         return PACKET.retainedDuplicate();
     }
-
 }

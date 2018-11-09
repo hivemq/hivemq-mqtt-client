@@ -19,13 +19,16 @@ package org.mqttbee.mqtt.codec.encoder.mqtt3;
 
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.junit.jupiter.api.Test;
-import org.mqttbee.mqtt.codec.encoder.MqttPingReqEncoder;
+import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
+import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoders;
 import org.mqttbee.mqtt.message.ping.MqttPingReq;
 
 class Mqtt3PingReqEncoderTest extends AbstractMqtt3EncoderTest {
 
     Mqtt3PingReqEncoderTest() {
-        super(code -> MqttPingReqEncoder.INSTANCE, true);
+        super(new MqttMessageEncoders() {{
+            encoders[Mqtt3MessageType.PINGREQ.getCode()] = createPingReqEncoder();
+        }}, true);
     }
 
     @Test

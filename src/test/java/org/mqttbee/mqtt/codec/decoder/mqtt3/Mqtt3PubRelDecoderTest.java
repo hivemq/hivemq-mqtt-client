@@ -19,11 +19,10 @@ package org.mqttbee.mqtt.codec.decoder.mqtt3;
 
 import com.google.common.primitives.Bytes;
 import io.netty.buffer.ByteBuf;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
-import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoders;
 import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRel;
 
@@ -31,30 +30,32 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class Mqtt3PubRelDecoderTest extends AbstractMqtt3DecoderTest {
 
-    private static final byte[] WELLFORMED_PUBREL_BEGIN = {
+    private static final @NotNull byte[] WELLFORMED_PUBREL_BEGIN = {
             //   type, flags
             0b0110_0010,
             //remaining length
             0b0000_0010
     };
-    private static final byte[] MALFORMED_PUBREL_BEGIN_WRONG_FLAGS = {
+    private static final @NotNull byte[] MALFORMED_PUBREL_BEGIN_WRONG_FLAGS = {
             //   type, flags
             0b0110_0100,
             //remaining length
             0b0000_0010
     };
-    private static final byte[] MALFORMED_PUBREL_BEGIN_TOO_LONG_LENGTH = {
+    private static final @NotNull byte[] MALFORMED_PUBREL_BEGIN_TOO_LONG_LENGTH = {
             //   type, flags
             0b0110_0100,
             //remaining length
             0b0000_0011
     };
-    private static final byte[] ENDING_TOO_LONG_MALFORMED = {0x01};
-    private static final byte[] MAX_PACKET_ID = {(byte) 0b1111_1111, (byte) 0b1111_1111};
-    private static final byte[] MIN_PACKET_ID = {0x00, 0x00};
+    private static final @NotNull byte[] ENDING_TOO_LONG_MALFORMED = {0x01};
+    private static final @NotNull byte[] MAX_PACKET_ID = {(byte) 0b1111_1111, (byte) 0b1111_1111};
+    private static final @NotNull byte[] MIN_PACKET_ID = {0x00, 0x00};
 
     Mqtt3PubRelDecoderTest() {
-        super(new Mqtt3PubRelTestMessageDecoders());
+        super(new MqttMessageDecoders() {{
+            decoders[Mqtt3MessageType.PUBREL.getCode()] = new Mqtt3PubRelDecoder();
+        }});
     }
 
     @ParameterizedTest
@@ -93,16 +94,4 @@ class Mqtt3PubRelDecoderTest extends AbstractMqtt3DecoderTest {
         assertFalse(channel.isOpen());
         assertNull(pubRel);
     }
-
-    private static class Mqtt3PubRelTestMessageDecoders implements MqttMessageDecoders {
-        @Nullable
-        @Override
-        public MqttMessageDecoder get(final int code) {
-            if (code == Mqtt3MessageType.PUBREL.getCode()) {
-                return new Mqtt3PubRelDecoder();
-            }
-            return null;
-        }
-    }
-
 }
