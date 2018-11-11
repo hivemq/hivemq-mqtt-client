@@ -16,10 +16,11 @@
 
 package org.mqttbee.mqtt.handler.ssl;
 
+import com.google.common.collect.ImmutableList;
 import io.netty.channel.Channel;
 import io.netty.handler.ssl.*;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.MqttClientSslConfig;
+import org.mqttbee.mqtt.MqttClientSslConfigImpl;
 
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLException;
@@ -30,7 +31,7 @@ import javax.net.ssl.SSLException;
 public class SslUtil {
 
     static @NotNull SSLEngine createSslEngine(
-            final @NotNull Channel channel, final @NotNull MqttClientSslConfig sslConfig) throws SSLException {
+            final @NotNull Channel channel, final @NotNull MqttClientSslConfigImpl sslConfig) throws SSLException {
 
         final SSLEngine sslEngine = createSslContext(sslConfig).newEngine(channel.alloc());
 
@@ -39,27 +40,25 @@ public class SslUtil {
         return sslEngine;
     }
 
-    private static @NotNull SslContext createSslContext(final @NotNull MqttClientSslConfig sslConfig)
+    private static @NotNull SslContext createSslContext(final @NotNull MqttClientSslConfigImpl sslConfig)
             throws SSLException {
 
         final SslContextBuilder sslContextBuilder = SslContextBuilder.forClient()
                 .sslProvider(SslProvider.JDK)
-                .trustManager(sslConfig.getTrustManagerFactory())
-                .keyManager(sslConfig.getKeyManagerFactory());
+                .trustManager(sslConfig.getRawTrustManagerFactory())
+                .keyManager(sslConfig.getRawKeyManagerFactory());
 
-        String[] protocols = null;
-        if (sslConfig.getProtocols() != null) {
-            protocols = sslConfig.getProtocols().toArray(new String[sslConfig.getProtocols().size()]);
-        }
-        sslContextBuilder.protocols(protocols);
+        final ImmutableList<String> protocols = sslConfig.getRawProtocols();
+        final String[] protocolArray = (protocols == null) ? null : protocols.toArray(new String[protocols.size()]);
+        sslContextBuilder.protocols(protocolArray);
 
-        sslContextBuilder.ciphers(sslConfig.getCipherSuites(), SupportedCipherSuiteFilter.INSTANCE);
+        sslContextBuilder.ciphers(sslConfig.getRawCipherSuites(), SupportedCipherSuiteFilter.INSTANCE);
 
         return sslContextBuilder.build();
     }
 
     public static @NotNull SslHandler createSslHandler(
-            final @NotNull Channel channel, final @NotNull MqttClientSslConfig sslConfig) throws SSLException {
+            final @NotNull Channel channel, final @NotNull MqttClientSslConfigImpl sslConfig) throws SSLException {
 
         final SSLEngine sslEngine = createSslEngine(channel, sslConfig);
         final SslHandler sslHandler = new SslHandler(sslEngine);

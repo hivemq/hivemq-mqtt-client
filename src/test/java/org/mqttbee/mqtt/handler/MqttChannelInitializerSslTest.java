@@ -24,9 +24,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mqttbee.api.mqtt.MqttClientSslConfig;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.mqtt.MqttClientData;
+import org.mqttbee.mqtt.MqttClientSslConfigImpl;
 import org.mqttbee.mqtt.MqttVersion;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
 
@@ -39,6 +39,7 @@ import static org.mockito.Mockito.when;
 /**
  * @author Christoph Schäbel
  */
+@SuppressWarnings("NullabilityAnnotations")
 public class MqttChannelInitializerSslTest {
 
     @Mock
@@ -63,7 +64,7 @@ public class MqttChannelInitializerSslTest {
     public void test_initialize_default_ssldata() {
         when(clientData.getMqttVersion()).thenReturn(MqttVersion.MQTT_5_0);
         when(clientData.usesSsl()).thenReturn(true);
-        final MqttClientSslConfig sslConfig = mock(MqttClientSslConfig.class);
+        final MqttClientSslConfigImpl sslConfig = mock(MqttClientSslConfigImpl.class);
         when(clientData.getSslConfig()).thenReturn(Optional.of(sslConfig));
         when(clientData.getRawSslConfig()).thenReturn(sslConfig);
 

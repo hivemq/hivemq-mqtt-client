@@ -41,7 +41,7 @@ public abstract class AbstractMqttClientBuilder<S extends AbstractMqttClientBuil
     protected @NotNull String serverHost = DEFAULT_SERVER_HOST;
     protected int serverPort = DEFAULT_SERVER_PORT;
     private boolean customServerPort = false;
-    protected @Nullable MqttClientSslConfig sslConfig;
+    protected @Nullable MqttClientSslConfigImpl sslConfig;
     protected @Nullable MqttWebSocketConfig webSocketConfig;
     protected @NotNull MqttClientExecutorConfigImpl executorConfig = MqttClientExecutorConfigImpl.DEFAULT;
 
@@ -91,7 +91,7 @@ public abstract class AbstractMqttClientBuilder<S extends AbstractMqttClientBuil
                 serverPort = DEFAULT_SERVER_PORT_WEBSOCKET_SSL;
             }
         }
-        this.sslConfig = Preconditions.checkNotNull(sslConfig, "SSL config must not be null.");
+        this.sslConfig = MustNotBeImplementedUtil.checkNotImplemented(sslConfig, MqttClientSslConfigImpl.class);
         return self();
     }
 
