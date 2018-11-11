@@ -39,12 +39,12 @@ public interface MqttClientSslConfigBuilderBase<B extends MqttClientSslConfigBui
     /**
      * @param cipherSuites if <code>null</code>, netty's default cipher suites will be used.
      */
-    @NotNull B cipherSuites(@Nullable List<String> cipherSuites);
+    @NotNull B cipherSuites(@Nullable List<@NotNull String> cipherSuites);
 
     /**
      * @param protocols if <code>null</code>, netty's default protocols will be used.
      */
-    @NotNull B protocols(@Nullable List<String> protocols);
+    @NotNull B protocols(@Nullable List<@NotNull String> protocols);
 
     @NotNull B handshakeTimeout(long timeout, @NotNull TimeUnit timeUnit);
 }

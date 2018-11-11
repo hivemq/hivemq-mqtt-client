@@ -17,30 +17,33 @@
 package org.mqttbee.mqtt;
 
 import com.google.common.collect.ImmutableList;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.MqttClientSslConfig;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
+import java.util.Optional;
 
 /**
  * @author David Katz
+ * @author Silvio Giebl
  */
 public class MqttClientSslConfigImpl implements MqttClientSslConfig {
 
-    public static final MqttClientSslConfigImpl DEFAULT =
+    public static final @NotNull MqttClientSslConfigImpl DEFAULT =
             new MqttClientSslConfigImpl(null, null, null, null, DEFAULT_HANDSHAKE_TIMEOUT_MS);
 
-    private final KeyManagerFactory keyManagerFactory;
-    private final TrustManagerFactory trustManagerFactory;
-    private final ImmutableList<String> cipherSuites;
-    private final ImmutableList<String> protocols;
+    private final @Nullable KeyManagerFactory keyManagerFactory;
+    private final @Nullable TrustManagerFactory trustManagerFactory;
+    private final @Nullable ImmutableList<String> cipherSuites;
+    private final @Nullable ImmutableList<String> protocols;
     private final long handshakeTimeoutMs;
 
-    public MqttClientSslConfigImpl(
-            @Nullable final KeyManagerFactory keyManagerFactory,
-            @Nullable final TrustManagerFactory trustManagerFactory, @Nullable final ImmutableList<String> cipherSuites,
-            @Nullable final ImmutableList<String> protocols, final long handshakeTimeoutMs) {
+    MqttClientSslConfigImpl(
+            final @Nullable KeyManagerFactory keyManagerFactory,
+            final @Nullable TrustManagerFactory trustManagerFactory, final @Nullable ImmutableList<String> cipherSuites,
+            final @Nullable ImmutableList<String> protocols, final long handshakeTimeoutMs) {
 
         this.keyManagerFactory = keyManagerFactory;
         this.trustManagerFactory = trustManagerFactory;
@@ -49,27 +52,39 @@ public class MqttClientSslConfigImpl implements MqttClientSslConfig {
         this.protocols = protocols;
     }
 
-    @Nullable
     @Override
-    public KeyManagerFactory getKeyManagerFactory() {
+    public @NotNull Optional<KeyManagerFactory> getKeyManagerFactory() {
+        return Optional.ofNullable(keyManagerFactory);
+    }
+
+    public @Nullable KeyManagerFactory getRawKeyManagerFactory() {
         return keyManagerFactory;
     }
 
-    @Nullable
     @Override
-    public TrustManagerFactory getTrustManagerFactory() {
+    public @NotNull Optional<TrustManagerFactory> getTrustManagerFactory() {
+        return Optional.ofNullable(trustManagerFactory);
+    }
+
+    public @Nullable TrustManagerFactory getRawTrustManagerFactory() {
         return trustManagerFactory;
     }
 
-    @Nullable
     @Override
-    public ImmutableList<String> getCipherSuites() {
+    public @NotNull Optional<ImmutableList<String>> getCipherSuites() {
+        return Optional.ofNullable(cipherSuites);
+    }
+
+    public @Nullable ImmutableList<String> getRawCipherSuites() {
         return cipherSuites;
     }
 
-    @Nullable
     @Override
-    public ImmutableList<String> getProtocols() {
+    public @NotNull Optional<ImmutableList<String>> getProtocols() {
+        return Optional.ofNullable(protocols);
+    }
+
+    public @Nullable ImmutableList<String> getRawProtocols() {
         return protocols;
     }
 

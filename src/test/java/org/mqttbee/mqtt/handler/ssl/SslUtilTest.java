@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.mqttbee.mqtt.handler.ssl;
 
 import com.google.common.collect.ImmutableList;
 import io.netty.channel.embedded.EmbeddedChannel;
+import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
-import org.mqttbee.api.mqtt.MqttClientSslConfig;
+import org.mqttbee.mqtt.MqttClientSslConfigImplBuilder;
 
-import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.TrustManagerFactory;
@@ -36,6 +37,7 @@ import static org.junit.Assert.*;
  */
 public class SslUtilTest {
 
+    @SuppressWarnings("NullabilityAnnotations")
     private EmbeddedChannel embeddedChannel;
 
     @Before
@@ -47,9 +49,9 @@ public class SslUtilTest {
     public void test_createSslEngine_null_values() throws Exception {
 
         final TrustManagerFactory tmf = null;
-        final TestSslConfig sslConfig = new TestSslConfig(null, tmf, null, null, 0);
 
-        final SSLEngine sslEngine = SslUtil.createSslEngine(embeddedChannel, sslConfig);
+        final SSLEngine sslEngine = SslUtil.createSslEngine(embeddedChannel,
+                new MqttClientSslConfigImplBuilder.Default().trustManagerFactory(tmf).build());
 
         assertNotNull(sslEngine);
         assertTrue(sslEngine.getUseClientMode());
@@ -63,9 +65,11 @@ public class SslUtilTest {
         final TrustManagerFactory tmf = null;
 
         final ImmutableList<String> cipherSuite = getFirstSupportedCipherSuite();
-        final TestSslConfig sslConfig = new TestSslConfig(null, tmf, cipherSuite, null, 0);
 
-        final SSLEngine sslEngine = SslUtil.createSslEngine(embeddedChannel, sslConfig);
+        final SSLEngine sslEngine = SslUtil.createSslEngine(embeddedChannel,
+                new MqttClientSslConfigImplBuilder.Default().trustManagerFactory(tmf)
+                        .cipherSuites(cipherSuite)
+                        .build());
 
         assertNotNull(sslEngine);
 
@@ -81,9 +85,11 @@ public class SslUtilTest {
         final TrustManagerFactory tmf = null;
 
         final ImmutableList<String> cipherSuites = getOtherSupportedCipherSuites();
-        final TestSslConfig sslConfig = new TestSslConfig(null, tmf, cipherSuites, null, 0);
 
-        final SSLEngine sslEngine = SslUtil.createSslEngine(embeddedChannel, sslConfig);
+        final SSLEngine sslEngine = SslUtil.createSslEngine(embeddedChannel,
+                new MqttClientSslConfigImplBuilder.Default().trustManagerFactory(tmf)
+                        .cipherSuites(cipherSuites)
+                        .build());
 
         assertNotNull(sslEngine);
 
@@ -102,9 +108,9 @@ public class SslUtilTest {
         final TrustManagerFactory tmf = null;
 
         final ImmutableList<String> protocol = ImmutableList.of("TLSv1");
-        final TestSslConfig sslConfig = new TestSslConfig(null, tmf, null, protocol, 0);
 
-        final SSLEngine sslEngine = SslUtil.createSslEngine(embeddedChannel, sslConfig);
+        final SSLEngine sslEngine = SslUtil.createSslEngine(embeddedChannel,
+                new MqttClientSslConfigImplBuilder.Default().trustManagerFactory(tmf).protocols(protocol).build());
 
         assertNotNull(sslEngine);
 
@@ -120,9 +126,9 @@ public class SslUtilTest {
         final TrustManagerFactory tmf = null;
 
         final ImmutableList<String> protocols = ImmutableList.of("TLSv1.1", "TLSv1.2");
-        final TestSslConfig sslConfig = new TestSslConfig(null, tmf, null, protocols, 0);
 
-        final SSLEngine sslEngine = SslUtil.createSslEngine(embeddedChannel, sslConfig);
+        final SSLEngine sslEngine = SslUtil.createSslEngine(embeddedChannel,
+                new MqttClientSslConfigImplBuilder.Default().trustManagerFactory(tmf).protocols(protocols).build());
 
         assertNotNull(sslEngine);
 
@@ -133,8 +139,7 @@ public class SslUtilTest {
         assertEquals(protocols.get(1), enabledProtocols[1]);
     }
 
-
-    private ImmutableList<String> getFirstSupportedCipherSuite() throws Exception {
+    private @NotNull ImmutableList<String> getFirstSupportedCipherSuite() throws Exception {
 
         final List<String> supportedCipherSuites = getEnabledCipherSuites();
 
@@ -144,7 +149,7 @@ public class SslUtilTest {
         return ImmutableList.copyOf(valueList);
     }
 
-    private ImmutableList<String> getOtherSupportedCipherSuites() throws Exception {
+    private @NotNull ImmutableList<String> getOtherSupportedCipherSuites() throws Exception {
 
         final List<String> supportedCipherSuites = getEnabledCipherSuites();
 
@@ -168,49 +173,4 @@ public class SslUtilTest {
         final SSLEngine sslEngine = context.createSSLEngine();
         return Arrays.asList(sslEngine.getEnabledProtocols());
     }
-
-    private static class TestSslConfig implements MqttClientSslConfig {
-
-        private final KeyManagerFactory keyManagerFactory;
-        private final TrustManagerFactory trustManagerFactory;
-        private final ImmutableList<String> cipherSuites;
-        private final ImmutableList<String> protocols;
-        private final int handshakeTimeout;
-
-        private TestSslConfig(
-                final KeyManagerFactory keyManagerFactory, final TrustManagerFactory trustManagerFactory,
-                final ImmutableList<String> cipherSuites, final ImmutableList<String> protocols, final int handshakeTimeout) {
-            this.keyManagerFactory = keyManagerFactory;
-            this.trustManagerFactory = trustManagerFactory;
-            this.cipherSuites = cipherSuites;
-            this.protocols = protocols;
-            this.handshakeTimeout = handshakeTimeout;
-        }
-
-        @Override
-        public KeyManagerFactory getKeyManagerFactory() {
-            return keyManagerFactory;
-        }
-
-        @Override
-        public TrustManagerFactory getTrustManagerFactory() {
-            return trustManagerFactory;
-        }
-
-        @Override
-        public ImmutableList<String> getCipherSuites() {
-            return cipherSuites;
-        }
-
-        @Override
-        public ImmutableList<String> getProtocols() {
-            return protocols;
-        }
-
-        @Override
-        public long getHandshakeTimeoutMs() {
-            return handshakeTimeout;
-        }
-    }
-
 }

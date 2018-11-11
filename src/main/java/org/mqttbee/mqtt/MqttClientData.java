@@ -42,7 +42,7 @@ public class MqttClientData implements Mqtt5ClientData {
     private final String serverHost;
     private final int serverPort;
     private final MqttWebSocketConfig webSocketConfig;
-    private final MqttClientSslConfig sslConfig;
+    private final MqttClientSslConfigImpl sslConfig;
     private final AtomicBoolean connecting;
     private final AtomicBoolean connected;
     private final boolean followsRedirects;
@@ -54,7 +54,7 @@ public class MqttClientData implements Mqtt5ClientData {
 
     public MqttClientData(
             @NotNull final MqttVersion mqttVersion, @Nullable final MqttClientIdentifierImpl clientIdentifier,
-            @NotNull final String serverHost, final int serverPort, @Nullable final MqttClientSslConfig sslConfig,
+            @NotNull final String serverHost, final int serverPort, @Nullable final MqttClientSslConfigImpl sslConfig,
             @Nullable final MqttWebSocketConfig webSocketConfig, final boolean followsRedirects,
             final boolean allowsServerReAuth, @NotNull final MqttClientExecutorConfigImpl executorConfig,
             @Nullable final MqttAdvancedClientData advancedClientData) {
@@ -117,7 +117,7 @@ public class MqttClientData implements Mqtt5ClientData {
     }
 
     @Nullable
-    public MqttClientSslConfig getRawSslConfig() {
+    public MqttClientSslConfigImpl getRawSslConfig() {
         return sslConfig;
     }
 

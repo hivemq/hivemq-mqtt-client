@@ -20,6 +20,9 @@ package org.mqttbee.util;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+import java.util.RandomAccess;
+
 /**
  * @author Silvio Giebl
  */
@@ -40,6 +43,32 @@ public class Checks {
             throw new IllegalArgumentException(name + " must not be empty.");
         }
         return string;
+    }
+
+    public static <T> @Nullable List<@NotNull T> elementsNotNull(
+            final @Nullable List<T> list, final @NotNull String name) {
+
+        if (list == null) {
+            return null;
+        }
+        if (list instanceof RandomAccess) {
+            for (int i = 0; i < list.size(); i++) {
+                elementNotNull(list.get(i), name, i);
+            }
+        } else {
+            int i = 0;
+            for (final T element : list) {
+                elementNotNull(element, name, i);
+                i++;
+            }
+        }
+        return list;
+    }
+
+    private static void elementNotNull(final @Nullable Object element, final @NotNull String name, final int index) {
+        if (element == null) {
+            throw new NullPointerException(name + " must not contain a null element at index " + index);
+        }
     }
 
     public static void state(final boolean condition, final @NotNull String message) {

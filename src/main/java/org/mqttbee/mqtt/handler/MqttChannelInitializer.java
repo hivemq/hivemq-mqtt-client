@@ -26,10 +26,10 @@ import io.netty.handler.ssl.SslHandler;
 import io.reactivex.SingleEmitter;
 import io.reactivex.exceptions.Exceptions;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.MqttClientSslConfig;
 import org.mqttbee.api.mqtt.MqttWebSocketConfig;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.mqtt.MqttClientData;
+import org.mqttbee.mqtt.MqttClientSslConfigImpl;
 import org.mqttbee.mqtt.codec.encoder.MqttEncoder;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.handler.auth.MqttAuthHandler;
@@ -75,7 +75,7 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
     @Override
     protected void initChannel(final Channel channel) {
         channelComponent = ChannelComponent.create(channel, clientData);
-        final MqttClientSslConfig sslConfig = clientData.getRawSslConfig();
+        final MqttClientSslConfigImpl sslConfig = clientData.getRawSslConfig();
         if (sslConfig != null) {
             initSsl(channel, sslConfig);
         }
@@ -120,7 +120,7 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
         }
     }
 
-    private void initSsl(@NotNull final Channel channel, @NotNull final MqttClientSslConfig sslConfig) {
+    private void initSsl(@NotNull final Channel channel, @NotNull final MqttClientSslConfigImpl sslConfig) {
         try {
             final SslHandler sslHandler = SslUtil.createSslHandler(channel, sslConfig);
             channel.pipeline().addFirst(sslHandler);

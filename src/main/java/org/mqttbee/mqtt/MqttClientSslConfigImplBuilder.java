@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.MqttClientSslConfig;
 import org.mqttbee.api.mqtt.MqttClientSslConfigBuilder;
+import org.mqttbee.util.Checks;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
@@ -52,17 +53,20 @@ public abstract class MqttClientSslConfigImplBuilder<B extends MqttClientSslConf
         return self();
     }
 
-    public @NotNull B cipherSuites(final @Nullable List<String> cipherSuites) {
+    public @NotNull B cipherSuites(final @Nullable List<@NotNull String> cipherSuites) {
+        Checks.elementsNotNull(cipherSuites, "Cipher suites");
         this.cipherSuites = (cipherSuites == null) ? null : ImmutableList.copyOf(cipherSuites);
         return self();
     }
 
-    public @NotNull B protocols(final @Nullable List<String> protocols) {
+    public @NotNull B protocols(final @Nullable List<@NotNull String> protocols) {
+        Checks.elementsNotNull(protocols, "Protocols");
         this.protocols = (protocols == null) ? null : ImmutableList.copyOf(protocols);
         return self();
     }
 
     public @NotNull B handshakeTimeout(final long timeout, final @NotNull TimeUnit timeUnit) {
+        Checks.notNull(timeUnit, "Time unit");
         this.handshakeTimeoutMs = TimeUnit.MILLISECONDS.convert(timeout, timeUnit);
         return self();
     }
