@@ -12,38 +12,39 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
  */
 
 package org.mqttbee.api.mqtt;
 
-import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.mqtt.MqttClientSslConfigImplBuilder;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
- * @author Christoph Schäbel
+ * @author Silvio Giebl
  */
 @DoNotImplement
-public interface MqttClientSslConfig {
+public interface MqttClientSslConfigBuilderBase<B extends MqttClientSslConfigBuilderBase<B>> {
 
-    long DEFAULT_HANDSHAKE_TIMEOUT_MS = 10_000;
+    @NotNull B keyManagerFactory(@Nullable KeyManagerFactory keyManagerFactory);
 
-    static @NotNull MqttClientSslConfigBuilder builder() {
-        return new MqttClientSslConfigImplBuilder.Default();
-    }
+    @NotNull B trustManagerFactory(@Nullable TrustManagerFactory trustManagerFactory);
 
-    @Nullable KeyManagerFactory getKeyManagerFactory();
+    /**
+     * @param cipherSuites if <code>null</code>, netty's default cipher suites will be used.
+     */
+    @NotNull B cipherSuites(@Nullable List<String> cipherSuites);
 
-    @Nullable TrustManagerFactory getTrustManagerFactory();
+    /**
+     * @param protocols if <code>null</code>, netty's default protocols will be used.
+     */
+    @NotNull B protocols(@Nullable List<String> protocols);
 
-    @Nullable ImmutableList<String> getCipherSuites();
-
-    @Nullable ImmutableList<String> getProtocols();
-
-    long getHandshakeTimeoutMs();
+    @NotNull B handshakeTimeout(long timeout, @NotNull TimeUnit timeUnit);
 }
