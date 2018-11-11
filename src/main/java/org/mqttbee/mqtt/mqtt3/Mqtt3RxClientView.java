@@ -71,7 +71,7 @@ public class Mqtt3RxClientView implements Mqtt3RxClient {
     private final @NotNull MqttRxClient delegate;
     private final @NotNull Mqtt3ClientDataView clientData;
 
-    public Mqtt3RxClientView(final @NotNull MqttRxClient delegate) {
+    Mqtt3RxClientView(final @NotNull MqttRxClient delegate) {
         this.delegate = delegate;
         clientData = new Mqtt3ClientDataView(delegate.getClientData());
     }

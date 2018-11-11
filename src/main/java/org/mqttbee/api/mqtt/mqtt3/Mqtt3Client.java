@@ -19,6 +19,7 @@ package org.mqttbee.api.mqtt.mqtt3;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttClient;
+import org.mqttbee.mqtt.mqtt3.Mqtt3RxClientViewBuilder;
 
 /**
  * MQTT client according to the MQTT 3.1.1 specification.
@@ -28,7 +29,7 @@ import org.mqttbee.api.mqtt.MqttClient;
 public interface Mqtt3Client extends MqttClient {
 
     static @NotNull Mqtt3ClientBuilder builder() {
-        return new Mqtt3ClientBuilder();
+        return new Mqtt3RxClientViewBuilder();
     }
 
     @Override
