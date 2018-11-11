@@ -178,13 +178,8 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
         public void onError(final @NotNull Throwable t) {}
     }
 
-    // @formatter:off
-    public static class MqttSubscribeAndCallbackBuilder
-            extends MqttSubscribeBuilder<MqttSubscribeAndCallbackBuilder>
-            implements Mqtt5SubscribeAndCallbackBuilder.Complete,
-                       Mqtt5SubscribeAndCallbackBuilder.Start.Complete,
-                       Mqtt5SubscribeAndCallbackBuilder.Call.Ex {
-    // @formatter:on
+    public static class MqttSubscribeAndCallbackBuilder extends MqttSubscribeBuilder<MqttSubscribeAndCallbackBuilder>
+            implements Mqtt5SubscribeAndCallbackBuilder.Start.Complete, Mqtt5SubscribeAndCallbackBuilder.Call.Ex {
 
         private final @NotNull Mqtt5AsyncClient client;
         private @Nullable Consumer<Mqtt5Publish> callback;
