@@ -19,25 +19,20 @@ package org.mqttbee.api.mqtt;
 
 import io.reactivex.Scheduler;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.mqtt.MqttClientExecutorConfigImplBuilder;
 
-import java.util.Optional;
 import java.util.concurrent.Executor;
 
 /**
  * @author Silvio Giebl
  */
 @DoNotImplement
-public interface MqttClientExecutorConfig {
+public interface MqttClientExecutorConfigBuilderBase<B extends MqttClientExecutorConfigBuilderBase<B>> {
 
-    static @NotNull MqttClientExecutorConfigBuilder builder() {
-        return new MqttClientExecutorConfigImplBuilder.Default();
-    }
+    @NotNull B nettyExecutor(@Nullable Executor nettyExecutor);
 
-    @NotNull Optional<Executor> getUserDefinedNettyExecutor();
+    @NotNull B nettyThreads(int nettyThreads);
 
-    @NotNull Optional<Integer> getUserDefinedNettyThreads();
-
-    @NotNull Scheduler getApplicationScheduler();
+    @NotNull B applicationScheduler(@NotNull Scheduler applicationScheduler);
 }

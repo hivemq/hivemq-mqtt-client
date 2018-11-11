@@ -17,59 +17,21 @@
 
 package org.mqttbee.api.mqtt;
 
-import com.google.common.base.Preconditions;
-import io.reactivex.Scheduler;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.mqttbee.mqtt.MqttClientExecutorConfigImpl;
-import org.mqttbee.util.FluentBuilder;
-
-import java.util.concurrent.Executor;
-import java.util.function.Function;
+import org.mqttbee.annotations.DoNotImplement;
 
 /**
  * @author Silvio Giebl
  */
-public class MqttClientExecutorConfigBuilder<P> extends FluentBuilder<MqttClientExecutorConfig, P> {
+@DoNotImplement
+public interface MqttClientExecutorConfigBuilder
+        extends MqttClientExecutorConfigBuilderBase<MqttClientExecutorConfigBuilder> {
 
-    private @Nullable Executor nettyExecutor;
-    private int nettyThreads = MqttClientExecutorConfigImpl.DEFAULT_NETTY_THREADS;
-    private @NotNull Scheduler applicationScheduler = MqttClientExecutorConfigImpl.DEFAULT_RX_JAVA_SCHEDULER;
+    @NotNull MqttClientExecutorConfig build();
 
-    public MqttClientExecutorConfigBuilder(
-            final @Nullable Function<? super MqttClientExecutorConfig, P> parentConsumer) {
+    @DoNotImplement
+    interface Nested<P> extends MqttClientExecutorConfigBuilderBase<Nested<P>> {
 
-        super(parentConsumer);
+        @NotNull P applyExecutorConfig();
     }
-
-    public @NotNull MqttClientExecutorConfigBuilder<P> nettyExecutor(final @NotNull Executor nettyExecutor) {
-        Preconditions.checkNotNull(nettyExecutor, "Netty executor must not be null.");
-        this.nettyExecutor = nettyExecutor;
-        return this;
-    }
-
-    public @NotNull MqttClientExecutorConfigBuilder<P> nettyThreads(final int nettyThreads) {
-        Preconditions.checkArgument(nettyThreads > 0, "Number of Netty threads must be bigger than 0. Found: %s.",
-                nettyThreads);
-        this.nettyThreads = nettyThreads;
-        return this;
-    }
-
-    public @NotNull MqttClientExecutorConfigBuilder<P> applicationScheduler(
-            final @NotNull Scheduler applicationScheduler) {
-
-        Preconditions.checkNotNull(applicationScheduler, "Application scheduler must not be null.");
-        this.applicationScheduler = applicationScheduler;
-        return this;
-    }
-
-    @Override
-    public @NotNull MqttClientExecutorConfig build() {
-        return new MqttClientExecutorConfigImpl(nettyExecutor, nettyThreads, applicationScheduler);
-    }
-
-    public @NotNull P applyExecutorConfig() {
-        return apply();
-    }
-
 }
