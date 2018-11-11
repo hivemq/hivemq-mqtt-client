@@ -53,7 +53,7 @@ public class Mqtt3BlockingClientView implements Mqtt3BlockingClient {
     private final @NotNull MqttBlockingClient delegate;
     private final @NotNull Mqtt3ClientDataView clientData;
 
-    public Mqtt3BlockingClientView(final @NotNull MqttBlockingClient delegate) {
+    Mqtt3BlockingClientView(final @NotNull MqttBlockingClient delegate) {
         this.delegate = delegate;
         clientData = new Mqtt3ClientDataView(delegate.getClientData());
     }

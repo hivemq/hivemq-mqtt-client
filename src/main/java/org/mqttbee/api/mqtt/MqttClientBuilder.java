@@ -18,28 +18,17 @@
 package org.mqttbee.api.mqtt;
 
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.mqtt3.Mqtt3Client;
+import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3ClientBuilder;
-import org.mqttbee.api.mqtt.mqtt5.Mqtt5Client;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientBuilder;
 
 /**
  * @author Silvio Giebl
  */
-public class MqttClientBuilder extends AbstractMqttClientBuilder<MqttClientBuilder> {
+@DoNotImplement
+public interface MqttClientBuilder extends MqttClientBuilderBase<MqttClientBuilder> {
 
-    MqttClientBuilder() {}
+    @NotNull Mqtt3ClientBuilder useMqttVersion3();
 
-    @Override
-    protected @NotNull MqttClientBuilder self() {
-        return this;
-    }
-
-    public @NotNull Mqtt3ClientBuilder useMqttVersion3() {
-        return ((AbstractMqttClientBuilder<Mqtt3ClientBuilder>) Mqtt3Client.builder()).init(this);
-    }
-
-    public @NotNull Mqtt5ClientBuilder useMqttVersion5() {
-        return ((AbstractMqttClientBuilder<Mqtt5ClientBuilder>) Mqtt5Client.builder()).init(this);
-    }
+    @NotNull Mqtt5ClientBuilder useMqttVersion5();
 }

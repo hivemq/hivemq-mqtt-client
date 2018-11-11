@@ -19,6 +19,7 @@ package org.mqttbee.api.mqtt;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
+import org.mqttbee.mqtt.MqttRxClientBuilderBase;
 
 /**
  * Common interface for MQTT clients.
@@ -35,7 +36,7 @@ public interface MqttClient {
     int DEFAULT_SERVER_PORT_WEBSOCKET_SSL = 443;
 
     static @NotNull MqttClientBuilder builder() {
-        return new MqttClientBuilder();
+        return new MqttRxClientBuilderBase.Choose();
     }
 
     /**

@@ -19,70 +19,30 @@ package org.mqttbee.api.mqtt.mqtt5;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.AbstractMqttClientBuilder;
+import org.mqttbee.annotations.DoNotImplement;
+import org.mqttbee.api.mqtt.MqttClientBuilderBase;
 import org.mqttbee.api.mqtt.mqtt5.advanced.Mqtt5AdvancedClientData;
 import org.mqttbee.api.mqtt.mqtt5.advanced.Mqtt5AdvancedClientDataBuilder;
-import org.mqttbee.mqtt.MqttClientData;
-import org.mqttbee.mqtt.MqttRxClient;
-import org.mqttbee.mqtt.MqttVersion;
-import org.mqttbee.mqtt.advanced.MqttAdvancedClientData;
-import org.mqttbee.mqtt.advanced.MqttAdvancedClientDataBuilder;
-import org.mqttbee.util.MustNotBeImplementedUtil;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5ClientBuilder extends AbstractMqttClientBuilder<Mqtt5ClientBuilder> {
+@DoNotImplement
+public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBuilder> {
 
-    private boolean followRedirects = false;
-    private boolean allowServerReAuth = false;
-    private @Nullable MqttAdvancedClientData advancedClientData;
+    @NotNull Mqtt5ClientBuilder followRedirects(boolean followRedirects);
 
-    Mqtt5ClientBuilder() {}
+    @NotNull Mqtt5ClientBuilder allowServerReAuth(boolean allowServerReAuth);
 
-    @Override
-    protected @NotNull Mqtt5ClientBuilder self() {
-        return this;
-    }
+    @NotNull Mqtt5ClientBuilder advanced(@Nullable Mqtt5AdvancedClientData advancedClientData);
 
-    public @NotNull Mqtt5ClientBuilder followRedirects(final boolean followRedirects) {
-        this.followRedirects = followRedirects;
-        return this;
-    }
+    @NotNull Mqtt5AdvancedClientDataBuilder.Nested<? extends Mqtt5ClientBuilder> advanced();
 
-    public @NotNull Mqtt5ClientBuilder allowServerReAuth(final boolean allowServerReAuth) {
-        this.allowServerReAuth = allowServerReAuth;
-        return this;
-    }
+    @NotNull Mqtt5Client build();
 
-    public @NotNull Mqtt5ClientBuilder advanced(final @Nullable Mqtt5AdvancedClientData advancedClientData) {
-        this.advancedClientData =
-                MustNotBeImplementedUtil.checkNullOrNotImplemented(advancedClientData, MqttAdvancedClientData.class);
-        return this;
-    }
+    @NotNull Mqtt5RxClient buildRx();
 
-    public @NotNull Mqtt5AdvancedClientDataBuilder.Nested<? extends Mqtt5ClientBuilder> advanced() {
-        return new MqttAdvancedClientDataBuilder.Nested<>(this::advanced);
-    }
+    @NotNull Mqtt5AsyncClient buildAsync();
 
-    public @NotNull Mqtt5Client build() {
-        return buildRx();
-    }
-
-    public @NotNull Mqtt5RxClient buildRx() {
-        return new MqttRxClient(buildClientData());
-    }
-
-    public @NotNull Mqtt5AsyncClient buildAsync() {
-        return buildRx().toAsync();
-    }
-
-    public @NotNull Mqtt5BlockingClient buildBlocking() {
-        return buildRx().toBlocking();
-    }
-
-    private @NotNull MqttClientData buildClientData() {
-        return new MqttClientData(MqttVersion.MQTT_5_0, identifier, serverHost, serverPort, sslConfig, webSocketConfig,
-                followRedirects, allowServerReAuth, executorConfig, advancedClientData);
-    }
+    @NotNull Mqtt5BlockingClient buildBlocking();
 }

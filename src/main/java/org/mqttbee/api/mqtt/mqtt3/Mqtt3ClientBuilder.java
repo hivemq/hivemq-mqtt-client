@@ -18,54 +18,20 @@
 package org.mqttbee.api.mqtt.mqtt3;
 
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.AbstractMqttClientBuilder;
-import org.mqttbee.mqtt.*;
-import org.mqttbee.mqtt.mqtt3.Mqtt3AsyncClientView;
-import org.mqttbee.mqtt.mqtt3.Mqtt3BlockingClientView;
-import org.mqttbee.mqtt.mqtt3.Mqtt3RxClientView;
+import org.mqttbee.annotations.DoNotImplement;
+import org.mqttbee.api.mqtt.MqttClientBuilderBase;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt3ClientBuilder extends AbstractMqttClientBuilder<Mqtt3ClientBuilder> {
+@DoNotImplement
+public interface Mqtt3ClientBuilder extends MqttClientBuilderBase<Mqtt3ClientBuilder> {
 
-    Mqtt3ClientBuilder() {}
+    @NotNull Mqtt3Client build();
 
-    @Override
-    protected @NotNull Mqtt3ClientBuilder self() {
-        return this;
-    }
+    @NotNull Mqtt3RxClient buildRx();
 
-    public @NotNull Mqtt3Client build() {
-        return buildRx();
-    }
+    @NotNull Mqtt3AsyncClient buildAsync();
 
-    public @NotNull Mqtt3RxClient buildRx() {
-        return new Mqtt3RxClientView(buildRxDelegate());
-    }
-
-    public @NotNull Mqtt3AsyncClient buildAsync() {
-        return new Mqtt3AsyncClientView(buildAsyncDelegate());
-    }
-
-    public @NotNull Mqtt3BlockingClient buildBlocking() {
-        return new Mqtt3BlockingClientView(buildBlockingDelegate());
-    }
-
-    private @NotNull MqttRxClient buildRxDelegate() {
-        return new MqttRxClient(buildClientData());
-    }
-
-    private @NotNull MqttAsyncClient buildAsyncDelegate() {
-        return buildRxDelegate().toAsync();
-    }
-
-    private @NotNull MqttBlockingClient buildBlockingDelegate() {
-        return buildRxDelegate().toBlocking();
-    }
-
-    private @NotNull MqttClientData buildClientData() {
-        return new MqttClientData(MqttVersion.MQTT_3_1_1, identifier, serverHost, serverPort, sslConfig,
-                webSocketConfig, false, false, executorConfig, null);
-    }
+    @NotNull Mqtt3BlockingClient buildBlocking();
 }

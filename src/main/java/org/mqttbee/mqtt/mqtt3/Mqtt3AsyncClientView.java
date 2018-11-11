@@ -102,7 +102,7 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
     private final @NotNull MqttAsyncClient delegate;
     private final @NotNull Mqtt3ClientDataView clientData;
 
-    public Mqtt3AsyncClientView(final @NotNull MqttAsyncClient delegate) {
+    Mqtt3AsyncClientView(final @NotNull MqttAsyncClient delegate) {
         this.delegate = delegate;
         clientData = new Mqtt3ClientDataView(delegate.getClientData());
     }
