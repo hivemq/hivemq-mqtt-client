@@ -123,7 +123,7 @@ public abstract class AbstractMqttClientBuilder<S extends AbstractMqttClientBuil
         return self();
     }
 
-    public @NotNull MqttClientExecutorConfigBuilder<S> executorConfig() {
-        return new MqttClientExecutorConfigBuilder<>(this::executorConfig);
+    public @NotNull MqttClientExecutorConfigBuilder.Nested<S> executorConfig() {
+        return new MqttClientExecutorConfigImplBuilder.Nested<>(this::executorConfig);
     }
 }
