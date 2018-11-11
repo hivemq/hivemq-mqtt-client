@@ -188,13 +188,9 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
         return new Mqtt3BlockingClientView(delegate.toBlocking());
     }
 
-    // @formatter:off
     public static class Mqtt3SubscribeViewAndCallbackBuilder
             extends Mqtt3SubscribeViewBuilder<Mqtt3SubscribeViewAndCallbackBuilder>
-            implements Mqtt3SubscribeAndCallbackBuilder.Complete,
-                       Mqtt3SubscribeAndCallbackBuilder.Start.Complete,
-                       Mqtt3SubscribeAndCallbackBuilder.Call.Ex {
-    // @formatter:on
+            implements Mqtt3SubscribeAndCallbackBuilder.Start.Complete, Mqtt3SubscribeAndCallbackBuilder.Call.Ex {
 
         private final @NotNull Mqtt3AsyncClient client;
         private @Nullable Consumer<Mqtt3Publish> callback;
