@@ -12,30 +12,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
  */
 
 package org.mqttbee.api.mqtt;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.mqtt.MqttWebSocketConfigImplBuilder;
 
 /**
- * @author Christian Hoff
  * @author Silvio Giebl
  */
 @DoNotImplement
-public interface MqttWebSocketConfig {
+public interface MqttWebSocketConfigBuilderBase<B extends MqttWebSocketConfigBuilderBase<B>> {
 
-    @NotNull String DEFAULT_SERVER_PATH = "";
-    @NotNull String DEFAULT_MQTT_SUBPROTOCOL = "mqtt";
-    // https://www.iana.org/assignments/websocket/websocket.xml#subprotocol-name
+    @NotNull B serverPath(@NotNull String serverPath);
 
-    static @NotNull MqttWebSocketConfigBuilder builder() {
-        return new MqttWebSocketConfigImplBuilder.Default();
-    }
-
-    @NotNull String getServerPath();
-
-    @NotNull String getSubprotocol();
+    @NotNull B subprotocol(@NotNull String subprotocol);
 }

@@ -12,47 +12,25 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
  */
 
 package org.mqttbee.api.mqtt;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.mqttbee.mqtt.MqttWebSocketConfigImpl;
-import org.mqttbee.util.FluentBuilder;
-
-import java.util.function.Function;
+import org.mqttbee.annotations.DoNotImplement;
 
 /**
- * @author Christian Hoff
+ * @author Silvio Giebl
  */
-public class MqttWebSocketConfigBuilder<P> extends FluentBuilder<MqttWebSocketConfig, P> {
+@DoNotImplement
+public interface MqttWebSocketConfigBuilder extends MqttWebSocketConfigBuilderBase<MqttWebSocketConfigBuilder> {
 
-    private @NotNull String serverPath = MqttWebSocketConfigImpl.DEFAULT_SERVER_PATH;
-    private @NotNull String subprotocol = MqttWebSocketConfigImpl.DEFAULT_MQTT_SUBPROTOCOL;
+    @NotNull MqttWebSocketConfig build();
 
-    public MqttWebSocketConfigBuilder(final @Nullable Function<? super MqttWebSocketConfig, P> parentConsumer) {
-        super(parentConsumer);
+    @DoNotImplement
+    interface Nested<P> extends MqttWebSocketConfigBuilderBase<Nested<P>> {
+
+        @NotNull P applyWebSicketConfig();
     }
-
-    public @NotNull MqttWebSocketConfigBuilder<P> serverPath(final @NotNull String serverPath) {
-        // remove any leading slashes
-        this.serverPath = serverPath.replaceAll("^/+", "");
-        return this;
-    }
-
-    public @NotNull MqttWebSocketConfigBuilder<P> subprotocol(final @NotNull String subprotocol) {
-        this.subprotocol = subprotocol;
-        return this;
-    }
-
-    @Override
-    public @NotNull MqttWebSocketConfig build() {
-        return new MqttWebSocketConfigImpl(serverPath, subprotocol);
-    }
-
-    public @NotNull P applyWebSocketConfig() {
-        return apply();
-    }
-
 }

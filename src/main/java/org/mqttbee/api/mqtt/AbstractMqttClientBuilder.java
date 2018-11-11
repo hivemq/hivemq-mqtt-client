@@ -21,10 +21,7 @@ import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
-import org.mqttbee.mqtt.MqttClientExecutorConfigImpl;
-import org.mqttbee.mqtt.MqttClientSslConfigImpl;
-import org.mqttbee.mqtt.MqttClientSslConfigImplBuilder;
-import org.mqttbee.mqtt.MqttWebSocketConfigImpl;
+import org.mqttbee.mqtt.*;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
 import org.mqttbee.util.MustNotBeImplementedUtil;
@@ -42,7 +39,7 @@ public abstract class AbstractMqttClientBuilder<S extends AbstractMqttClientBuil
     protected int serverPort = DEFAULT_SERVER_PORT;
     private boolean customServerPort = false;
     protected @Nullable MqttClientSslConfigImpl sslConfig;
-    protected @Nullable MqttWebSocketConfig webSocketConfig;
+    protected @Nullable MqttWebSocketConfigImpl webSocketConfig;
     protected @NotNull MqttClientExecutorConfigImpl executorConfig = MqttClientExecutorConfigImpl.DEFAULT;
 
     @NotNull S init(final @NotNull AbstractMqttClientBuilder<?> clientBuilder) {
@@ -111,12 +108,13 @@ public abstract class AbstractMqttClientBuilder<S extends AbstractMqttClientBuil
                 serverPort = DEFAULT_SERVER_PORT_WEBSOCKET_SSL;
             }
         }
-        this.webSocketConfig = Preconditions.checkNotNull(webSocketConfig, "WebSocket config must not be null.");
+        this.webSocketConfig =
+                MustNotBeImplementedUtil.checkNotImplemented(webSocketConfig, MqttWebSocketConfigImpl.class);
         return self();
     }
 
-    public @NotNull MqttWebSocketConfigBuilder<S> useWebSocket() {
-        return new MqttWebSocketConfigBuilder<>(this::useWebSocket);
+    public @NotNull MqttWebSocketConfigBuilder.Nested<S> useWebSocket() {
+        return new MqttWebSocketConfigImplBuilder.Nested<>(this::useWebSocket);
     }
 
     public @NotNull S executorConfig(final @NotNull MqttClientExecutorConfig executorConfig) {
