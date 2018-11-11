@@ -23,6 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
 import org.mqttbee.mqtt.MqttClientExecutorConfigImpl;
 import org.mqttbee.mqtt.MqttClientSslConfigImpl;
+import org.mqttbee.mqtt.MqttClientSslConfigImplBuilder;
 import org.mqttbee.mqtt.MqttWebSocketConfigImpl;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt.util.MqttBuilderUtil;
@@ -94,8 +95,8 @@ public abstract class AbstractMqttClientBuilder<S extends AbstractMqttClientBuil
         return self();
     }
 
-    public @NotNull MqttClientSslConfigBuilder<S> useSsl() {
-        return new MqttClientSslConfigBuilder<>(this::useSsl);
+    public @NotNull MqttClientSslConfigBuilder.Nested<S> useSsl() {
+        return new MqttClientSslConfigImplBuilder.Nested<>(this::useSsl);
     }
 
     public @NotNull S useWebSocketWithDefaultConfig() {
