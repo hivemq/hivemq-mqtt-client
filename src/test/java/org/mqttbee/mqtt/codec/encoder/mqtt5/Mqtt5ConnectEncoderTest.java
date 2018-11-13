@@ -385,8 +385,8 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         final ByteBuffer willPayload = ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
         final MqttClientIdentifierImpl clientIdentifier = requireNonNull(MqttClientIdentifierImpl.from("test"));
         final MqttWillPublish willPublish = new MqttWillPublish(willTopic, willPayload, MqttQos.AT_MOST_ONCE, false,
-                MqttWillPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null,
-                MqttUserPropertiesImpl.NO_USER_PROPERTIES, 0);
+                MqttWillPublish.NO_MESSAGE_EXPIRY, null, null, null, null, MqttUserPropertiesImpl.NO_USER_PROPERTIES,
+                0);
         final MqttConnect connect = new MqttConnect(0, false, 0, false, true, DEFAULT, null, null, willPublish,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES);
         final MqttStatefulConnect connectWrapper = connect.createStateful(clientIdentifier, null);
@@ -401,8 +401,8 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         final ByteBuffer willPayload = ByteBuffer.wrap(new byte[65536]);
         final MqttClientIdentifierImpl clientIdentifier = requireNonNull(MqttClientIdentifierImpl.from("test"));
         final MqttWillPublish willPublish = new MqttWillPublish(willTopic, willPayload, MqttQos.AT_MOST_ONCE, false,
-                MqttWillPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null,
-                MqttUserPropertiesImpl.NO_USER_PROPERTIES, 0);
+                MqttWillPublish.NO_MESSAGE_EXPIRY, null, null, null, null, MqttUserPropertiesImpl.NO_USER_PROPERTIES,
+                0);
         final MqttConnect connect = new MqttConnect(0, false, 0, false, true, DEFAULT, null, null, willPublish,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES);
         final MqttStatefulConnect connectWrapper = connect.createStateful(clientIdentifier, null);
@@ -416,9 +416,9 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         final MqttTopicImpl willTopic = requireNonNull(MqttTopicImpl.from("topic"));
         final ByteBuffer correlationData = ByteBuffer.wrap(new byte[65536]);
         final MqttClientIdentifierImpl clientIdentifier = requireNonNull(MqttClientIdentifierImpl.from("test"));
-        final MqttWillPublish willPublish = new MqttWillPublish(willTopic, null, MqttQos.AT_MOST_ONCE, false,
-                MqttWillPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, correlationData,
-                MqttUserPropertiesImpl.NO_USER_PROPERTIES, 0);
+        final MqttWillPublish willPublish =
+                new MqttWillPublish(willTopic, null, MqttQos.AT_MOST_ONCE, false, MqttWillPublish.NO_MESSAGE_EXPIRY,
+                        null, null, null, correlationData, MqttUserPropertiesImpl.NO_USER_PROPERTIES, 0);
         final MqttConnect connect = new MqttConnect(0, false, 0, false, true, DEFAULT, null, null, willPublish,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES);
         final MqttStatefulConnect connectWrapper = connect.createStateful(clientIdentifier, null);
@@ -434,8 +434,9 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
 
         final MqttTopicImpl willTopic = requireNonNull(MqttTopicImpl.from("topic"));
         final MqttClientIdentifierImpl clientIdentifier = requireNonNull(MqttClientIdentifierImpl.from("test"));
-        final MqttWillPublish willPublish = new MqttWillPublish(willTopic, null, MqttQos.AT_MOST_ONCE, false,
-                MqttWillPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null, null, null, tooManyUserProperties, 0);
+        final MqttWillPublish willPublish =
+                new MqttWillPublish(willTopic, null, MqttQos.AT_MOST_ONCE, false, MqttWillPublish.NO_MESSAGE_EXPIRY,
+                        null, null, null, null, tooManyUserProperties, 0);
         final MqttConnect connect = new MqttConnect(0, false, 0, false, true, DEFAULT, null, null, willPublish,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES);
         final MqttStatefulConnect connectWrapper = connect.createStateful(clientIdentifier, null);

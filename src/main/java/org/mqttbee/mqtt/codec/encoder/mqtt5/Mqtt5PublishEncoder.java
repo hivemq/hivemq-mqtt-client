@@ -34,7 +34,7 @@ import javax.inject.Singleton;
 import java.nio.ByteBuffer;
 
 import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.*;
-import static org.mqttbee.mqtt.message.publish.MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY;
+import static org.mqttbee.mqtt.message.publish.MqttPublish.NO_MESSAGE_EXPIRY;
 import static org.mqttbee.mqtt.message.publish.MqttPublishProperty.*;
 import static org.mqttbee.mqtt.message.publish.MqttStatefulPublish.DEFAULT_NO_TOPIC_ALIAS;
 
@@ -97,8 +97,7 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
     final int fixedPropertyLength(@NotNull final MqttPublish publish) {
         int propertyLength = 0;
 
-        propertyLength +=
-                intPropertyEncodedLength(publish.getRawMessageExpiryInterval(), MESSAGE_EXPIRY_INTERVAL_INFINITY);
+        propertyLength += intPropertyEncodedLength(publish.getRawMessageExpiryInterval(), NO_MESSAGE_EXPIRY);
         propertyLength += nullablePropertyEncodedLength(publish.getRawPayloadFormatIndicator());
         propertyLength += nullablePropertyEncodedLength(publish.getRawContentType());
         propertyLength += nullablePropertyEncodedLength(publish.getRawResponseTopic());
@@ -193,8 +192,7 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
     final void encodeFixedProperties(
             @NotNull final MqttPublish publish, @NotNull final ByteBuf out) {
 
-        encodeIntProperty(MESSAGE_EXPIRY_INTERVAL, publish.getRawMessageExpiryInterval(),
-                MESSAGE_EXPIRY_INTERVAL_INFINITY, out);
+        encodeIntProperty(MESSAGE_EXPIRY_INTERVAL, publish.getRawMessageExpiryInterval(), NO_MESSAGE_EXPIRY, out);
         encodeNullableProperty(PAYLOAD_FORMAT_INDICATOR, publish.getRawPayloadFormatIndicator(), out);
         encodeNullableProperty(CONTENT_TYPE, publish.getRawContentType(), out);
         encodeNullableProperty(RESPONSE_TOPIC, publish.getRawResponseTopic(), out);

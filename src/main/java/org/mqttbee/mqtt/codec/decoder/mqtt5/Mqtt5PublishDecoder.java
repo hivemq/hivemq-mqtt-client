@@ -44,7 +44,7 @@ import java.nio.ByteBuffer;
 
 import static org.mqttbee.mqtt.codec.decoder.MqttMessageDecoderUtil.*;
 import static org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.*;
-import static org.mqttbee.mqtt.message.publish.MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY;
+import static org.mqttbee.mqtt.message.publish.MqttPublish.NO_MESSAGE_EXPIRY;
 import static org.mqttbee.mqtt.message.publish.MqttPublishProperty.*;
 import static org.mqttbee.mqtt.message.publish.MqttStatefulPublish.DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS;
 import static org.mqttbee.mqtt.message.publish.MqttStatefulPublish.DEFAULT_NO_TOPIC_ALIAS;
@@ -93,7 +93,7 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
 
         final int propertyLength = decodePropertyLength(in);
 
-        long messageExpiryInterval = MESSAGE_EXPIRY_INTERVAL_INFINITY;
+        long messageExpiryInterval = NO_MESSAGE_EXPIRY;
         Mqtt5PayloadFormatIndicator payloadFormatIndicator = null;
         MqttUTF8StringImpl contentType = null;
         MqttTopicImpl responseTopic = null;
@@ -111,7 +111,7 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
 
             switch (propertyIdentifier) {
                 case MESSAGE_EXPIRY_INTERVAL:
-                    messageExpiryInterval = unsignedIntOnlyOnce(messageExpiryInterval, MESSAGE_EXPIRY_INTERVAL_INFINITY,
+                    messageExpiryInterval = unsignedIntOnlyOnce(messageExpiryInterval, NO_MESSAGE_EXPIRY,
                             "message expiry interval", in);
                     break;
 
