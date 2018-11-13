@@ -34,34 +34,29 @@ import java.util.Optional;
 @Immutable
 public class MqttSimpleAuth implements Mqtt5SimpleAuth {
 
-    private final MqttUTF8StringImpl username;
-    private final ByteBuffer password;
+    private final @Nullable MqttUTF8StringImpl username;
+    private final @Nullable ByteBuffer password;
 
-    public MqttSimpleAuth(@Nullable final MqttUTF8StringImpl username, @Nullable final ByteBuffer password) {
+    public MqttSimpleAuth(final @Nullable MqttUTF8StringImpl username, final @Nullable ByteBuffer password) {
         this.username = username;
         this.password = password;
     }
 
-    @NotNull
     @Override
-    public Optional<MqttUTF8String> getUsername() {
+    public @NotNull Optional<MqttUTF8String> getUsername() {
         return Optional.ofNullable(username);
     }
 
-    @Nullable
-    public MqttUTF8StringImpl getRawUsername() {
+    public @Nullable MqttUTF8StringImpl getRawUsername() {
         return username;
     }
 
-    @NotNull
     @Override
-    public Optional<ByteBuffer> getPassword() {
+    public @NotNull Optional<ByteBuffer> getPassword() {
         return ByteBufferUtil.optionalReadOnly(password);
     }
 
-    @Nullable
-    public ByteBuffer getRawPassword() {
+    public @Nullable ByteBuffer getRawPassword() {
         return password;
     }
-
 }

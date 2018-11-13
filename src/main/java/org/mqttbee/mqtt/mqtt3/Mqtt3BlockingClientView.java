@@ -18,6 +18,7 @@
 package org.mqttbee.mqtt.mqtt3;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.MqttGlobalPublishFilter;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3AsyncClient;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3BlockingClient;
@@ -33,13 +34,11 @@ import org.mqttbee.api.mqtt.mqtt5.Mqtt5BlockingClient;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.mqtt.MqttBlockingClient;
 import org.mqttbee.mqtt.message.connect.connack.mqtt3.Mqtt3ConnAckView;
-import org.mqttbee.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
 import org.mqttbee.mqtt.message.disconnect.mqtt3.Mqtt3DisconnectView;
 import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishView;
-import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeView;
 import org.mqttbee.mqtt.message.subscribe.suback.mqtt3.Mqtt3SubAckView;
-import org.mqttbee.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeView;
 import org.mqttbee.mqtt.mqtt3.exceptions.Mqtt3ExceptionFactory;
+import org.mqttbee.mqtt.util.MqttChecks;
 import org.mqttbee.util.Checks;
 
 import java.util.Optional;
@@ -59,41 +58,41 @@ public class Mqtt3BlockingClientView implements Mqtt3BlockingClient {
     }
 
     @Override
-    public @NotNull Mqtt3ConnAck connect(final @NotNull Mqtt3Connect connect) {
+    public @NotNull Mqtt3ConnAck connect(final @Nullable Mqtt3Connect connect) {
         try {
-            return Mqtt3ConnAckView.of(delegate.connect(Mqtt3ConnectView.delegate(connect)));
+            return Mqtt3ConnAckView.of(delegate.connect(MqttChecks.connect(connect)));
         } catch (final Mqtt5MessageException e) {
             throw Mqtt3ExceptionFactory.map(e);
         }
     }
 
     @Override
-    public @NotNull Mqtt3SubAck subscribe(final @NotNull Mqtt3Subscribe subscribe) {
+    public @NotNull Mqtt3SubAck subscribe(final @Nullable Mqtt3Subscribe subscribe) {
         try {
-            return Mqtt3SubAckView.of(delegate.subscribe(Mqtt3SubscribeView.delegate(subscribe)));
+            return Mqtt3SubAckView.of(delegate.subscribe(MqttChecks.subscribe(subscribe)));
         } catch (final Mqtt5MessageException e) {
             throw Mqtt3ExceptionFactory.map(e);
         }
     }
 
     @Override
-    public @NotNull Mqtt3Publishes publishes(final @NotNull MqttGlobalPublishFilter filter) {
+    public @NotNull Mqtt3Publishes publishes(final @Nullable MqttGlobalPublishFilter filter) {
         return new Mqtt3PublishesView(delegate.publishes(filter));
     }
 
     @Override
-    public void unsubscribe(final @NotNull Mqtt3Unsubscribe unsubscribe) {
+    public void unsubscribe(final @Nullable Mqtt3Unsubscribe unsubscribe) {
         try {
-            delegate.unsubscribe(Mqtt3UnsubscribeView.delegate(unsubscribe));
+            delegate.unsubscribe(MqttChecks.unsubscribe(unsubscribe));
         } catch (final Mqtt5MessageException e) {
             throw Mqtt3ExceptionFactory.map(e);
         }
     }
 
     @Override
-    public void publish(final @NotNull Mqtt3Publish publish) {
+    public void publish(final @Nullable Mqtt3Publish publish) {
         try {
-            delegate.publish(Mqtt3PublishView.delegate(publish));
+            delegate.publish(MqttChecks.publish(publish));
         } catch (final Mqtt5MessageException e) {
             throw Mqtt3ExceptionFactory.map(e);
         }
@@ -102,7 +101,7 @@ public class Mqtt3BlockingClientView implements Mqtt3BlockingClient {
     @Override
     public void disconnect() {
         try {
-            delegate.disconnect(Mqtt3DisconnectView.delegate());
+            delegate.disconnect(Mqtt3DisconnectView.DELEGATE);
         } catch (final Mqtt5MessageException e) {
             throw Mqtt3ExceptionFactory.map(e);
         }
@@ -142,7 +141,7 @@ public class Mqtt3BlockingClientView implements Mqtt3BlockingClient {
 
         @Override
         public @NotNull Optional<Mqtt3Publish> receive(
-                final long timeout, final @NotNull TimeUnit timeUnit) throws InterruptedException {
+                final long timeout, final @Nullable TimeUnit timeUnit) throws InterruptedException {
 
             if (timeout < 0) {
                 throw new IllegalArgumentException("Timeout must be greater than 0.");

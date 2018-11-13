@@ -71,6 +71,29 @@ public class Checks {
         }
     }
 
+    public static <S, T extends S> @NotNull T notImplemented(
+            final @Nullable S object, final @NotNull Class<T> type, final @NotNull String name) {
+
+        return notImplementedInternal(notNull(object, name), type, name);
+    }
+
+    public static <S, T extends S> @Nullable T notImplementedOrNull(
+            final @Nullable S object, final @NotNull Class<T> type, final @NotNull String name) {
+
+        return (object == null) ? null : notImplementedInternal(object, type, name);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T, I extends T> @NotNull I notImplementedInternal(
+            final @NotNull T object, final @NotNull Class<I> type, final @NotNull String name) {
+
+        if (!type.isInstance(object)) {
+            throw new IllegalArgumentException(name + " must not be implemented by the user, but was implemented by " +
+                    object.getClass().getTypeName());
+        }
+        return (I) object;
+    }
+
     public static void state(final boolean condition, final @NotNull String message) {
         if (!condition) {
             throw new IllegalStateException(message);

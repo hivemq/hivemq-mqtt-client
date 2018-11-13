@@ -30,8 +30,8 @@ import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscription;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImplBuilder;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImplBuilder;
-import org.mqttbee.mqtt.util.MqttBuilderUtil;
-import org.mqttbee.util.MustNotBeImplementedUtil;
+import org.mqttbee.mqtt.util.MqttChecks;
+import org.mqttbee.util.Checks;
 
 import java.util.function.Function;
 
@@ -48,19 +48,18 @@ public abstract class MqttSubscribeBuilder<B extends MqttSubscribeBuilder<B>> {
         subscriptionsBuilder = ImmutableList.builder();
     }
 
-    MqttSubscribeBuilder(final @NotNull Mqtt5Subscribe subscribe) {
-        final MqttSubscribe subscribeImpl =
-                MustNotBeImplementedUtil.checkNotImplemented(subscribe, MqttSubscribe.class);
-        final ImmutableList<MqttSubscription> subscriptions = subscribeImpl.getSubscriptions();
+    MqttSubscribeBuilder(final @Nullable Mqtt5Subscribe subscribe) {
+        final MqttSubscribe mqttSubscribe = MqttChecks.subscribe(subscribe);
+        final ImmutableList<MqttSubscription> subscriptions = mqttSubscribe.getSubscriptions();
         subscriptionsBuilder = ImmutableList.builderWithExpectedSize(subscriptions.size() + 1);
         subscriptionsBuilder.addAll(subscriptions);
     }
 
     protected abstract @NotNull B self();
 
-    public @NotNull B addSubscription(final @NotNull Mqtt5Subscription subscription) {
+    public @NotNull B addSubscription(final @Nullable Mqtt5Subscription subscription) {
         buildFirstSubscription();
-        subscriptionsBuilder.add(MustNotBeImplementedUtil.checkNotImplemented(subscription, MqttSubscription.class));
+        subscriptionsBuilder.add(Checks.notImplemented(subscription, MqttSubscription.class, "Subscription"));
         return self();
     }
 
@@ -68,8 +67,8 @@ public abstract class MqttSubscribeBuilder<B extends MqttSubscribeBuilder<B>> {
         return new MqttSubscriptionBuilder.Nested<>(this::addSubscription);
     }
 
-    public @NotNull B userProperties(final @NotNull Mqtt5UserProperties userProperties) {
-        this.userProperties = MqttBuilderUtil.userProperties(userProperties);
+    public @NotNull B userProperties(final @Nullable Mqtt5UserProperties userProperties) {
+        this.userProperties = MqttChecks.userProperties(userProperties);
         return self();
     }
 
@@ -91,12 +90,12 @@ public abstract class MqttSubscribeBuilder<B extends MqttSubscribeBuilder<B>> {
         return new MqttUserPropertiesImplBuilder.Nested<>(this::userProperties);
     }
 
-    public @NotNull B topicFilter(final @NotNull String topicFilter) {
+    public @NotNull B topicFilter(final @Nullable String topicFilter) {
         getFirstSubscriptionBuilder().topicFilter(topicFilter);
         return self();
     }
 
-    public @NotNull B topicFilter(final @NotNull MqttTopicFilter topicFilter) {
+    public @NotNull B topicFilter(final @Nullable MqttTopicFilter topicFilter) {
         getFirstSubscriptionBuilder().topicFilter(topicFilter);
         return self();
     }
@@ -105,7 +104,7 @@ public abstract class MqttSubscribeBuilder<B extends MqttSubscribeBuilder<B>> {
         return new MqttTopicFilterImplBuilder.Nested<>(this::topicFilter);
     }
 
-    public @NotNull B qos(final @NotNull MqttQos qos) {
+    public @NotNull B qos(final @Nullable MqttQos qos) {
         getFirstSubscriptionBuilder().qos(qos);
         return self();
     }
@@ -115,7 +114,7 @@ public abstract class MqttSubscribeBuilder<B extends MqttSubscribeBuilder<B>> {
         return self();
     }
 
-    public @NotNull B retainHandling(final @NotNull Mqtt5RetainHandling retainHandling) {
+    public @NotNull B retainHandling(final @Nullable Mqtt5RetainHandling retainHandling) {
         getFirstSubscriptionBuilder().retainHandling(retainHandling);
         return self();
     }
@@ -138,7 +137,7 @@ public abstract class MqttSubscribeBuilder<B extends MqttSubscribeBuilder<B>> {
 
         public Default() {}
 
-        public Default(final @NotNull Mqtt5Subscribe subscribe) {
+        public Default(final @Nullable Mqtt5Subscribe subscribe) {
             super(subscribe);
         }
 

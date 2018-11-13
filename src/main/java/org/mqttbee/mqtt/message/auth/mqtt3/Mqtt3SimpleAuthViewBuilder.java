@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt3.message.auth.Mqtt3SimpleAuthBuilder;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
-import org.mqttbee.mqtt.util.MqttBuilderUtil;
+import org.mqttbee.mqtt.util.MqttChecks;
 
 import java.nio.ByteBuffer;
 import java.util.function.Function;
@@ -37,23 +37,23 @@ public abstract class Mqtt3SimpleAuthViewBuilder<B extends Mqtt3SimpleAuthViewBu
 
     abstract @NotNull B self();
 
-    public @NotNull B username(final @NotNull String username) {
-        this.username = MqttBuilderUtil.string(username);
+    public @NotNull B username(final @Nullable String username) {
+        this.username = MqttChecks.stringNotNull(username, "Username");
         return self();
     }
 
-    public @NotNull B username(final @NotNull MqttUTF8String username) {
-        this.username = MqttBuilderUtil.string(username);
+    public @NotNull B username(final @Nullable MqttUTF8String username) {
+        this.username = MqttChecks.stringNotNull(username, "Username");
         return self();
     }
 
     public @NotNull B password(final @Nullable byte[] password) {
-        this.password = MqttBuilderUtil.binaryDataOrNull(password);
+        this.password = MqttChecks.binaryDataNotNull(password, "Password");
         return self();
     }
 
     public @NotNull B password(final @Nullable ByteBuffer password) {
-        this.password = MqttBuilderUtil.binaryDataOrNull(password);
+        this.password = MqttChecks.binaryDataNotNull(password, "Password");
         return self();
     }
 

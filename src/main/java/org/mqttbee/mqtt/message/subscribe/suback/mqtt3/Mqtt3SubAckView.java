@@ -26,7 +26,6 @@ import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAckReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAck;
-import org.mqttbee.util.MustNotBeImplementedUtil;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -97,14 +96,8 @@ public class Mqtt3SubAckView implements Mqtt3SubAck {
         }
     }
 
-    public static @NotNull Mqtt3SubAckView of(
-            final int packetIdentifier, final @NotNull ImmutableList<Mqtt3SubAckReturnCode> returnCodes) {
-
-        return new Mqtt3SubAckView(delegate(packetIdentifier, returnCodes));
-    }
-
     public static @NotNull Mqtt3SubAckView of(final @NotNull Mqtt5SubAck subAck) {
-        return new Mqtt3SubAckView(MustNotBeImplementedUtil.checkNotImplemented(subAck, MqttSubAck.class));
+        return new Mqtt3SubAckView((MqttSubAck) subAck);
     }
 
     public static @NotNull Mqtt3SubAckView of(final @NotNull MqttSubAck subAck) {

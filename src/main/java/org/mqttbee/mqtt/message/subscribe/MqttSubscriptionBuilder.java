@@ -26,7 +26,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscription;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscriptionBuilder;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImplBuilder;
-import org.mqttbee.mqtt.util.MqttBuilderUtil;
+import org.mqttbee.mqtt.util.MqttChecks;
 import org.mqttbee.util.Checks;
 
 import java.util.function.Function;
@@ -44,13 +44,13 @@ public abstract class MqttSubscriptionBuilder<B extends MqttSubscriptionBuilder<
 
     abstract @NotNull B self();
 
-    public @NotNull B topicFilter(final @NotNull String topicFilter) {
-        this.topicFilter = MqttBuilderUtil.topicFilter(topicFilter);
+    public @NotNull B topicFilter(final @Nullable String topicFilter) {
+        this.topicFilter = MqttChecks.topicFilterNotNull(topicFilter);
         return self();
     }
 
-    public @NotNull B topicFilter(final @NotNull MqttTopicFilter topicFilter) {
-        this.topicFilter = MqttBuilderUtil.topicFilter(topicFilter);
+    public @NotNull B topicFilter(final @Nullable MqttTopicFilter topicFilter) {
+        this.topicFilter = MqttChecks.topicFilterNotNull(topicFilter);
         return self();
     }
 
@@ -58,7 +58,7 @@ public abstract class MqttSubscriptionBuilder<B extends MqttSubscriptionBuilder<
         return new MqttTopicFilterImplBuilder.Nested<>(this::topicFilter);
     }
 
-    public @NotNull B qos(final @NotNull MqttQos qos) {
+    public @NotNull B qos(final @Nullable MqttQos qos) {
         this.qos = Checks.notNull(qos, "QoS");
         return self();
     }
@@ -68,7 +68,7 @@ public abstract class MqttSubscriptionBuilder<B extends MqttSubscriptionBuilder<
         return self();
     }
 
-    public @NotNull B retainHandling(final @NotNull Mqtt5RetainHandling retainHandling) {
+    public @NotNull B retainHandling(final @Nullable Mqtt5RetainHandling retainHandling) {
         this.retainHandling = Checks.notNull(retainHandling, "Retain handling");
         return self();
     }

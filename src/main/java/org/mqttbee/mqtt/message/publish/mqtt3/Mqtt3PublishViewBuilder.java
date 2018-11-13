@@ -26,10 +26,10 @@ import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3PublishBuilder;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3WillPublishBuilder;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.datatypes.MqttTopicImplBuilder;
-import org.mqttbee.mqtt.util.MqttBuilderUtil;
+import org.mqttbee.mqtt.message.publish.MqttPublish;
+import org.mqttbee.mqtt.util.MqttChecks;
 import org.mqttbee.util.ByteBufferUtil;
 import org.mqttbee.util.Checks;
-import org.mqttbee.util.MustNotBeImplementedUtil;
 
 import java.nio.ByteBuffer;
 import java.util.function.Function;
@@ -46,24 +46,23 @@ public abstract class Mqtt3PublishViewBuilder<B extends Mqtt3PublishViewBuilder<
 
     Mqtt3PublishViewBuilder() {}
 
-    Mqtt3PublishViewBuilder(final @NotNull Mqtt3Publish publish) {
-        final Mqtt3PublishView publishView =
-                MustNotBeImplementedUtil.checkNotImplemented(publish, Mqtt3PublishView.class);
-        topic = publishView.getDelegate().getTopic();
-        payload = publishView.getDelegate().getRawPayload();
+    Mqtt3PublishViewBuilder(final @Nullable Mqtt3Publish publish) {
+        final MqttPublish publishView = MqttChecks.publish(publish);
+        topic = publishView.getTopic();
+        payload = publishView.getRawPayload();
         qos = publishView.getQos();
         retain = publishView.isRetain();
     }
 
     protected abstract @NotNull B self();
 
-    public @NotNull B topic(final @NotNull String topic) {
-        this.topic = MqttBuilderUtil.topic(topic);
+    public @NotNull B topic(final @Nullable String topic) {
+        this.topic = MqttChecks.topicNotNull(topic);
         return self();
     }
 
-    public @NotNull B topic(final @NotNull MqttTopic topic) {
-        this.topic = MqttBuilderUtil.topic(topic);
+    public @NotNull B topic(final @Nullable MqttTopic topic) {
+        this.topic = MqttChecks.topicNotNull(topic);
         return self();
     }
 
@@ -81,7 +80,7 @@ public abstract class Mqtt3PublishViewBuilder<B extends Mqtt3PublishViewBuilder<
         return self();
     }
 
-    public @NotNull B qos(final @NotNull MqttQos qos) {
+    public @NotNull B qos(final @Nullable MqttQos qos) {
         this.qos = Checks.notNull(qos, "QoS");
         return self();
     }
@@ -95,7 +94,7 @@ public abstract class Mqtt3PublishViewBuilder<B extends Mqtt3PublishViewBuilder<
 
         Base() {}
 
-        Base(final @NotNull Mqtt3Publish publish) {
+        Base(final @Nullable Mqtt3Publish publish) {
             super(publish);
         }
 
@@ -109,7 +108,7 @@ public abstract class Mqtt3PublishViewBuilder<B extends Mqtt3PublishViewBuilder<
 
         public Default() {}
 
-        public Default(final @NotNull Mqtt3Publish publish) {
+        public Default(final @Nullable Mqtt3Publish publish) {
             super(publish);
         }
 
@@ -161,7 +160,7 @@ public abstract class Mqtt3PublishViewBuilder<B extends Mqtt3PublishViewBuilder<
 
         WillBase() {}
 
-        WillBase(final @NotNull Mqtt3Publish publish) {
+        WillBase(final @Nullable Mqtt3Publish publish) {
             super(publish);
         }
 
@@ -175,7 +174,7 @@ public abstract class Mqtt3PublishViewBuilder<B extends Mqtt3PublishViewBuilder<
 
         public WillDefault() {}
 
-        public WillDefault(final @NotNull Mqtt3Publish publish) {
+        public WillDefault(final @Nullable Mqtt3Publish publish) {
             super(publish);
         }
 

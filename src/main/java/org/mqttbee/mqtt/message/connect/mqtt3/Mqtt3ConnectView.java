@@ -41,7 +41,7 @@ public class Mqtt3ConnectView implements Mqtt3Connect {
 
     public static final @NotNull Mqtt3ConnectView DEFAULT = of(DEFAULT_KEEP_ALIVE, DEFAULT_CLEAN_SESSION, null, null);
 
-    public static @NotNull MqttConnect delegate(
+    private static @NotNull MqttConnect delegate(
             final int keepAlive, final boolean isCleanSession, final @Nullable MqttSimpleAuth simpleAuth,
             final @Nullable MqttWillPublish willPublish) {
 
@@ -51,11 +51,7 @@ public class Mqtt3ConnectView implements Mqtt3Connect {
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES);
     }
 
-    public static @NotNull MqttConnect delegate(final @NotNull Mqtt3Connect connect) {
-        return ((Mqtt3ConnectView) connect).getDelegate();
-    }
-
-    public static @NotNull Mqtt3ConnectView of(
+    static @NotNull Mqtt3ConnectView of(
             final int keepAlive, final boolean isCleanSession, final @Nullable MqttSimpleAuth simpleAuth,
             final @Nullable MqttWillPublish willPublish) {
 
@@ -97,5 +93,4 @@ public class Mqtt3ConnectView implements Mqtt3Connect {
     public @NotNull MqttConnect getDelegate() {
         return delegate;
     }
-
 }

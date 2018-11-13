@@ -20,11 +20,9 @@ package org.mqttbee.mqtt.message.subscribe.mqtt3;
 import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
-import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscription;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
-import org.mqttbee.util.MustNotBeImplementedUtil;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -38,11 +36,7 @@ public class Mqtt3SubscribeView implements Mqtt3Subscribe {
         return new MqttSubscribe(subscriptions, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
     }
 
-    public static @NotNull MqttSubscribe delegate(final @NotNull Mqtt3Subscribe subscribe) {
-        return MustNotBeImplementedUtil.checkNotImplemented(subscribe, Mqtt3SubscribeView.class).getDelegate();
-    }
-
-    public static @NotNull Mqtt3SubscribeView of(final @NotNull ImmutableList<MqttSubscription> subscriptions) {
+    static @NotNull Mqtt3SubscribeView of(final @NotNull ImmutableList<MqttSubscription> subscriptions) {
         return new Mqtt3SubscribeView(delegate(subscriptions));
     }
 
@@ -57,7 +51,7 @@ public class Mqtt3SubscribeView implements Mqtt3Subscribe {
     }
 
     @Override
-    public @NotNull ImmutableList<? extends Mqtt3Subscription> getSubscriptions() {
+    public @NotNull ImmutableList<Mqtt3SubscriptionView> getSubscriptions() {
         final ImmutableList<MqttSubscription> subscriptions = delegate.getSubscriptions();
         final ImmutableList.Builder<Mqtt3SubscriptionView> builder =
                 ImmutableList.builderWithExpectedSize(subscriptions.size());

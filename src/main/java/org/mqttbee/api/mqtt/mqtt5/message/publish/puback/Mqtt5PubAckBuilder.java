@@ -32,6 +32,8 @@ public interface Mqtt5PubAckBuilder {
 
     @NotNull Mqtt5PubAckBuilder reasonCode(@NotNull Mqtt5PubAckReasonCode reasonCode);
 
+    @NotNull Mqtt5PubAckBuilder reasonString(@Nullable String reasonString);
+
     @NotNull Mqtt5PubAckBuilder reasonString(@Nullable MqttUTF8String reasonString);
 
     @NotNull Mqtt5PubAckBuilder userProperties(@NotNull Mqtt5UserProperties userProperties);

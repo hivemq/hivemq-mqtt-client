@@ -61,18 +61,18 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
     }
 
     @Override
-    public @NotNull CompletableFuture<@NotNull Mqtt5ConnAck> connect(final @NotNull Mqtt5Connect connect) {
+    public @NotNull CompletableFuture<@NotNull Mqtt5ConnAck> connect(final @Nullable Mqtt5Connect connect) {
         return RxFutureConverter.toFuture(delegate.connect(connect));
     }
 
     @Override
-    public @NotNull CompletableFuture<@NotNull Mqtt5SubAck> subscribe(final @NotNull Mqtt5Subscribe subscribe) {
+    public @NotNull CompletableFuture<@NotNull Mqtt5SubAck> subscribe(final @Nullable Mqtt5Subscribe subscribe) {
         return RxFutureConverter.toFuture(delegate.subscribe(subscribe));
     }
 
     @Override
     public @NotNull CompletableFuture<@NotNull Mqtt5SubAck> subscribe(
-            final @NotNull Mqtt5Subscribe subscribe, final @NotNull Consumer<@NotNull Mqtt5Publish> callback) {
+            final @Nullable Mqtt5Subscribe subscribe, final @Nullable Consumer<@NotNull Mqtt5Publish> callback) {
 
         Checks.notNull(callback, "Callback");
 
@@ -83,8 +83,8 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
 
     @Override
     public @NotNull CompletableFuture<@NotNull Mqtt5SubAck> subscribe(
-            final @NotNull Mqtt5Subscribe subscribe, final @NotNull Consumer<@NotNull Mqtt5Publish> callback,
-            final @NotNull Executor executor) {
+            final @Nullable Mqtt5Subscribe subscribe, final @Nullable Consumer<@NotNull Mqtt5Publish> callback,
+            final @Nullable Executor executor) {
 
         Checks.notNull(callback, "Callback");
         Checks.notNull(executor, "Executor");
@@ -97,7 +97,7 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
 
     @Override
     public void publishes(
-            final @NotNull MqttGlobalPublishFilter filter, final @NotNull Consumer<@NotNull Mqtt5Publish> callback) {
+            final @Nullable MqttGlobalPublishFilter filter, final @Nullable Consumer<@NotNull Mqtt5Publish> callback) {
 
         Checks.notNull(callback, "Callback");
 
@@ -106,8 +106,8 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
 
     @Override
     public void publishes(
-            final @NotNull MqttGlobalPublishFilter filter, final @NotNull Consumer<@NotNull Mqtt5Publish> callback,
-            final @NotNull Executor executor) {
+            final @Nullable MqttGlobalPublishFilter filter, final @Nullable Consumer<@NotNull Mqtt5Publish> callback,
+            final @Nullable Executor executor) {
 
         Checks.notNull(callback, "Callback");
         Checks.notNull(executor, "Executor");
@@ -118,12 +118,15 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
     }
 
     @Override
-    public @NotNull CompletableFuture<@NotNull Mqtt5UnsubAck> unsubscribe(final @NotNull Mqtt5Unsubscribe unsubscribe) {
+    public @NotNull CompletableFuture<@NotNull Mqtt5UnsubAck> unsubscribe(
+            final @Nullable Mqtt5Unsubscribe unsubscribe) {
         return RxFutureConverter.toFuture(delegate.unsubscribe(unsubscribe)).thenApply(UNSUBACK_HANDLER);
     }
 
     @Override
-    public @NotNull CompletableFuture<@NotNull Mqtt5PublishResult> publish(final @NotNull Mqtt5Publish publish) {
+    public @NotNull CompletableFuture<@NotNull Mqtt5PublishResult> publish(final @Nullable Mqtt5Publish publish) {
+        Checks.notNull(publish, "Publish");
+
         return RxFutureConverter.toFuture(delegate.publishHalfSafe(Flowable.just(publish)).singleOrError())
                 .thenApply(PUBLISH_HANDLER);
     }
@@ -134,7 +137,7 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
     }
 
     @Override
-    public @NotNull CompletableFuture<Void> disconnect(final @NotNull Mqtt5Disconnect disconnect) {
+    public @NotNull CompletableFuture<Void> disconnect(final @Nullable Mqtt5Disconnect disconnect) {
         return RxFutureConverter.toFuture(delegate.disconnect(disconnect));
     }
 
@@ -195,15 +198,13 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
         }
 
         @Override
-        public Mqtt5SubscribeAndCallbackBuilder.Call.@NotNull Ex callback(
-                final @NotNull Consumer<Mqtt5Publish> callback) {
-
+        public @NotNull MqttSubscribeAndCallbackBuilder callback(final @Nullable Consumer<Mqtt5Publish> callback) {
             this.callback = Checks.notNull(callback, "Callback");
             return this;
         }
 
         @Override
-        public Mqtt5SubscribeAndCallbackBuilder.Call.@NotNull Ex executor(final @NotNull Executor executor) {
+        public @NotNull MqttSubscribeAndCallbackBuilder executor(final @Nullable Executor executor) {
             this.executor = Checks.notNull(executor, "Executor");
             return this;
         }

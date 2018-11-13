@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.exceptions.MqttBinaryDataExceededException;
+import org.mqttbee.util.Checks;
 
 import javax.annotation.concurrent.Immutable;
 import java.nio.ByteBuffer;
@@ -242,8 +243,8 @@ public class MqttUTF8StringImpl implements MqttUTF8String {
      *
      * @param byteBuf the byte buffer to encode to.
      */
-    public void to(@NotNull final ByteBuf byteBuf) {
-        MqttBinaryData.encode(toBinary(), byteBuf);
+    public void to(final @Nullable ByteBuf byteBuf) {
+        MqttBinaryData.encode(toBinary(), Checks.notNull(byteBuf, "Byte buffer"));
     }
 
     /**

@@ -88,12 +88,6 @@ public class Mqtt3ConnAckView implements Mqtt3ConnAck {
         }
     }
 
-    public static @NotNull Mqtt3ConnAckView of(
-            final @NotNull Mqtt3ConnAckReturnCode returnCode, final boolean isSessionPresent) {
-
-        return new Mqtt3ConnAckView(delegate(returnCode, isSessionPresent));
-    }
-
     public static @NotNull Mqtt3ConnAckView of(final @NotNull Mqtt5ConnAck connAck) {
         return new Mqtt3ConnAckView((MqttConnAck) connAck);
     }

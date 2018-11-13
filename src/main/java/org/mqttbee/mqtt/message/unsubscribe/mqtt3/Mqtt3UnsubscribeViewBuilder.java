@@ -19,15 +19,16 @@ package org.mqttbee.mqtt.message.unsubscribe.mqtt3;
 
 import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
-import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscription;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubscribeBuilder;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImplBuilder;
-import org.mqttbee.mqtt.util.MqttBuilderUtil;
-import org.mqttbee.util.MustNotBeImplementedUtil;
+import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
+import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribe;
+import org.mqttbee.mqtt.util.MqttChecks;
 
 import java.util.function.Function;
 
@@ -42,23 +43,22 @@ public abstract class Mqtt3UnsubscribeViewBuilder<B extends Mqtt3UnsubscribeView
         topicFiltersBuilder = ImmutableList.builder();
     }
 
-    Mqtt3UnsubscribeViewBuilder(final @NotNull Mqtt3Unsubscribe unsubscribe) {
-        final Mqtt3UnsubscribeView unsubscribeView =
-                MustNotBeImplementedUtil.checkNotImplemented(unsubscribe, Mqtt3UnsubscribeView.class);
-        final ImmutableList<MqttTopicFilterImpl> topicFilters = unsubscribeView.getDelegate().getTopicFilters();
+    Mqtt3UnsubscribeViewBuilder(final @Nullable Mqtt3Unsubscribe unsubscribe) {
+        final MqttUnsubscribe unsubscribeView = MqttChecks.unsubscribe(unsubscribe);
+        final ImmutableList<MqttTopicFilterImpl> topicFilters = unsubscribeView.getTopicFilters();
         topicFiltersBuilder = ImmutableList.builderWithExpectedSize(topicFilters.size() + 1);
         topicFiltersBuilder.addAll(topicFilters);
     }
 
     abstract @NotNull B self();
 
-    public @NotNull B addTopicFilter(final @NotNull String topicFilter) {
-        topicFiltersBuilder.add(MqttBuilderUtil.topicFilter(topicFilter));
+    public @NotNull B addTopicFilter(final @Nullable String topicFilter) {
+        topicFiltersBuilder.add(MqttChecks.topicFilterNotNull(topicFilter));
         return self();
     }
 
-    public @NotNull B addTopicFilter(final @NotNull MqttTopicFilter topicFilter) {
-        topicFiltersBuilder.add(MqttBuilderUtil.topicFilter(topicFilter));
+    public @NotNull B addTopicFilter(final @Nullable MqttTopicFilter topicFilter) {
+        topicFiltersBuilder.add(MqttChecks.topicFilterNotNull(topicFilter));
         return self();
     }
 
@@ -66,19 +66,19 @@ public abstract class Mqtt3UnsubscribeViewBuilder<B extends Mqtt3UnsubscribeView
         return new MqttTopicFilterImplBuilder.Nested<>(this::addTopicFilter);
     }
 
-    public @NotNull B reverse(final @NotNull Mqtt3Subscribe subscribe) {
-        final ImmutableList<? extends Mqtt3Subscription> subscriptions = subscribe.getSubscriptions();
-        for (final Mqtt3Subscription subscription : subscriptions) {
-            addTopicFilter(subscription.getTopicFilter());
+    public @NotNull B reverse(final @Nullable Mqtt3Subscribe subscribe) {
+        final ImmutableList<MqttSubscription> subscriptions = MqttChecks.subscribe(subscribe).getSubscriptions();
+        for (final MqttSubscription subscription : subscriptions) {
+            topicFiltersBuilder.add(subscription.getTopicFilter());
         }
         return self();
     }
 
-    public @NotNull B topicFilter(final @NotNull String topicFilter) {
+    public @NotNull B topicFilter(final @Nullable String topicFilter) {
         return addTopicFilter(topicFilter);
     }
 
-    public @NotNull B topicFilter(final @NotNull MqttTopicFilter topicFilter) {
+    public @NotNull B topicFilter(final @Nullable MqttTopicFilter topicFilter) {
         return addTopicFilter(topicFilter);
     }
 
@@ -99,7 +99,7 @@ public abstract class Mqtt3UnsubscribeViewBuilder<B extends Mqtt3UnsubscribeView
 
         public Default() {}
 
-        public Default(final @NotNull Mqtt3Unsubscribe unsubscribe) {
+        public Default(final @Nullable Mqtt3Unsubscribe unsubscribe) {
             super(unsubscribe);
         }
 

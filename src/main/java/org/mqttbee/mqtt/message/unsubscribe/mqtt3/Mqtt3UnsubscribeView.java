@@ -23,7 +23,6 @@ import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribe;
-import org.mqttbee.util.MustNotBeImplementedUtil;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -37,11 +36,7 @@ public class Mqtt3UnsubscribeView implements Mqtt3Unsubscribe {
         return new MqttUnsubscribe(topicFilters, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
     }
 
-    public static @NotNull MqttUnsubscribe delegate(final @NotNull Mqtt3Unsubscribe unsubscribe) {
-        return MustNotBeImplementedUtil.checkNotImplemented(unsubscribe, Mqtt3UnsubscribeView.class).getDelegate();
-    }
-
-    public static @NotNull Mqtt3UnsubscribeView of(final @NotNull ImmutableList<MqttTopicFilterImpl> topicFilters) {
+    static @NotNull Mqtt3UnsubscribeView of(final @NotNull ImmutableList<MqttTopicFilterImpl> topicFilters) {
         return new Mqtt3UnsubscribeView(delegate(topicFilters));
     }
 

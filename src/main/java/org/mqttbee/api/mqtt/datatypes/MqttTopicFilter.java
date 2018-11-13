@@ -21,7 +21,7 @@ import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImplBuilder;
-import org.mqttbee.mqtt.util.MqttBuilderUtil;
+import org.mqttbee.mqtt.util.MqttChecks;
 
 /**
  * MQTT Topic Filter according to the MQTT specification.
@@ -51,7 +51,7 @@ public interface MqttTopicFilter extends MqttUTF8String {
      * @throws IllegalArgumentException if the string is not a valid Topic Filter.
      */
     static @NotNull MqttTopicFilter from(final @NotNull String string) {
-        return MqttBuilderUtil.topicFilter(string);
+        return MqttChecks.topicFilterNotNull(string);
     }
 
     static @NotNull MqttTopicFilterBuilder builder() {

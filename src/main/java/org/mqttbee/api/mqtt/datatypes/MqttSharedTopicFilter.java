@@ -20,7 +20,7 @@ package org.mqttbee.api.mqtt.datatypes;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImplBuilder;
-import org.mqttbee.mqtt.util.MqttBuilderUtil;
+import org.mqttbee.mqtt.util.MqttChecks;
 
 /**
  * MQTT Shared Topic Filter according to the MQTT specification.
@@ -50,7 +50,7 @@ public interface MqttSharedTopicFilter extends MqttTopicFilter {
      *                                  Topic Filter.
      */
     static @NotNull MqttSharedTopicFilter from(final @NotNull String shareName, final @NotNull String topicFilter) {
-        return MqttBuilderUtil.sharedTopicFilter(shareName, topicFilter);
+        return MqttChecks.sharedTopicFilterNotNull(shareName, topicFilter);
     }
 
     static @NotNull MqttSharedTopicFilterBuilder builder(final @NotNull String shareName) {

@@ -23,7 +23,7 @@ import org.mqttbee.api.mqtt.datatypes.MqttSharedTopicFilterBuilder;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilterBuilder;
-import org.mqttbee.mqtt.util.MqttBuilderUtil;
+import org.mqttbee.mqtt.util.MqttChecks;
 import org.mqttbee.util.Checks;
 
 import java.util.function.Function;
@@ -44,7 +44,7 @@ public abstract class MqttTopicFilterImplBuilder<B extends MqttTopicFilterImplBu
 
     abstract @NotNull B self();
 
-    public @NotNull B addLevel(final @NotNull String topicLevel) {
+    public @NotNull B addLevel(final @Nullable String topicLevel) {
         Checks.notEmpty(topicLevel, "Topic level");
         if (stringBuilder == null) {
             stringBuilder = new StringBuilder(topicLevel);
@@ -74,13 +74,6 @@ public abstract class MqttTopicFilterImplBuilder<B extends MqttTopicFilterImplBu
         return self();
     }
 
-    public @NotNull MqttTopicFilterImpl build() {
-        Checks.state(stringBuilder != null, "At least one topic level must be added.");
-        final String string = stringBuilder.toString();
-        Checks.state(!string.isEmpty(), "Topic must be at least one character long.");
-        return MqttBuilderUtil.topicFilter(string);
-    }
-
     public static abstract class Base<B extends Base<B>> extends MqttTopicFilterImplBuilder<B> {
 
         Base() {}
@@ -93,7 +86,7 @@ public abstract class MqttTopicFilterImplBuilder<B extends MqttTopicFilterImplBu
             Checks.state(stringBuilder != null, "At least one topic level must be added.");
             final String string = stringBuilder.toString();
             Checks.state(!string.isEmpty(), "Topic must be at least one character long.");
-            return MqttBuilderUtil.topicFilter(string);
+            return MqttChecks.topicFilter(string);
         }
     }
 
@@ -112,7 +105,7 @@ public abstract class MqttTopicFilterImplBuilder<B extends MqttTopicFilterImplBu
 
         @NotNull
         @Override
-        public MqttTopicFilterImplBuilder.SharedDefault share(final @NotNull String shareName) {
+        public MqttTopicFilterImplBuilder.SharedDefault share(final @Nullable String shareName) {
             if (stringBuilder == null) {
                 return new MqttTopicFilterImplBuilder.SharedDefault(shareName);
             }
@@ -133,7 +126,7 @@ public abstract class MqttTopicFilterImplBuilder<B extends MqttTopicFilterImplBu
             return this;
         }
 
-        public @NotNull MqttTopicFilterImplBuilder.SharedNested<P> share(final @NotNull String shareName) {
+        public @NotNull MqttTopicFilterImplBuilder.SharedNested<P> share(final @Nullable String shareName) {
             if (stringBuilder == null) {
                 return new MqttTopicFilterImplBuilder.SharedNested<>(shareName, parentConsumer);
             }
@@ -148,39 +141,39 @@ public abstract class MqttTopicFilterImplBuilder<B extends MqttTopicFilterImplBu
 
     public static abstract class SharedBase<B extends SharedBase<B>> extends MqttTopicFilterImplBuilder<B> {
 
-        private final @NotNull String shareName;
+        private @NotNull String shareName;
 
-        SharedBase(final @NotNull String shareName) {
-            this.shareName = shareName;
+        SharedBase(final @Nullable String shareName) {
+            this.shareName = Checks.notNull(shareName, "Share name");
         }
 
-        SharedBase(final @NotNull String shareName, final @NotNull String baseTopicFilter) {
+        SharedBase(final @Nullable String shareName, final @NotNull String baseTopicFilter) {
             super(baseTopicFilter);
-            this.shareName = shareName;
+            this.shareName = Checks.notNull(shareName, "Share name");
+        }
+
+        public @NotNull B share(final @Nullable String shareName) {
+            this.shareName = Checks.notNull(shareName, "Share name");
+            return self();
         }
 
         public @NotNull MqttSharedTopicFilterImpl build() {
             Checks.state(stringBuilder != null, "At least one topic level must be added.");
             final String string = stringBuilder.toString();
             Checks.state(!string.isEmpty(), "Topic must be at least one character long.");
-            return MqttBuilderUtil.sharedTopicFilter(shareName, string);
+            return MqttChecks.sharedTopicFilter(shareName, string);
         }
     }
 
     public static class SharedDefault extends SharedBase<SharedDefault>
             implements MqttSharedTopicFilterBuilder.Complete {
 
-        public SharedDefault(final @NotNull String shareName) {
+        public SharedDefault(final @Nullable String shareName) {
             super(shareName);
         }
 
-        public SharedDefault(final @NotNull String shareName, final @NotNull String baseTopicFilter) {
+        public SharedDefault(final @Nullable String shareName, final @NotNull String baseTopicFilter) {
             super(shareName, baseTopicFilter);
-        }
-
-        @Override
-        public @NotNull MqttSharedTopicFilterBuilder.Complete share(final @NotNull String shareName) {
-            return this;
         }
 
         @Override
@@ -195,7 +188,7 @@ public abstract class MqttTopicFilterImplBuilder<B extends MqttTopicFilterImplBu
         private final @NotNull Function<? super MqttSharedTopicFilterImpl, P> parentConsumer;
 
         SharedNested(
-                final @NotNull String shareName,
+                final @Nullable String shareName,
                 final @NotNull Function<? super MqttSharedTopicFilterImpl, P> parentConsumer) {
 
             super(shareName);
@@ -203,16 +196,11 @@ public abstract class MqttTopicFilterImplBuilder<B extends MqttTopicFilterImplBu
         }
 
         SharedNested(
-                final @NotNull String shareName, final @NotNull String baseTopicFilter,
+                final @Nullable String shareName, final @NotNull String baseTopicFilter,
                 final @NotNull Function<? super MqttSharedTopicFilterImpl, P> parentConsumer) {
 
             super(shareName, baseTopicFilter);
             this.parentConsumer = parentConsumer;
-        }
-
-        @Override
-        public @NotNull MqttTopicFilterImplBuilder.SharedNested<P> share(final @NotNull String shareName) {
-            return this;
         }
 
         @Override

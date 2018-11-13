@@ -23,7 +23,6 @@ import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.message.auth.MqttSimpleAuth;
-import org.mqttbee.util.MustNotBeImplementedUtil;
 
 import javax.annotation.concurrent.Immutable;
 import java.nio.ByteBuffer;
@@ -41,11 +40,7 @@ public class Mqtt3SimpleAuthView implements Mqtt3SimpleAuth {
         return new MqttSimpleAuth(username, password);
     }
 
-    public static @NotNull MqttSimpleAuth delegate(final @NotNull Mqtt3SimpleAuth simpleAuth) {
-        return MustNotBeImplementedUtil.checkNotImplemented(simpleAuth, Mqtt3SimpleAuthView.class).getDelegate();
-    }
-
-    public static @NotNull Mqtt3SimpleAuthView of(
+    static @NotNull Mqtt3SimpleAuthView of(
             final @NotNull MqttUTF8StringImpl username, final @Nullable ByteBuffer password) {
 
         return new Mqtt3SimpleAuthView(delegate(username, password));

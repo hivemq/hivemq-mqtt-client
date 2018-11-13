@@ -26,9 +26,8 @@ import org.mqttbee.api.mqtt.MqttWebSocketConfig;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt.mqtt3.Mqtt3RxClientViewBuilder;
-import org.mqttbee.mqtt.util.MqttBuilderUtil;
+import org.mqttbee.mqtt.util.MqttChecks;
 import org.mqttbee.util.Checks;
-import org.mqttbee.util.MustNotBeImplementedUtil;
 
 import static org.mqttbee.api.mqtt.MqttClient.*;
 
@@ -60,17 +59,17 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
 
     protected abstract @NotNull B self();
 
-    public @NotNull B identifier(final @NotNull String identifier) {
-        this.identifier = MqttBuilderUtil.clientIdentifier(identifier);
+    public @NotNull B identifier(final @Nullable String identifier) {
+        this.identifier = MqttChecks.clientIdentifier(identifier);
         return self();
     }
 
-    public @NotNull B identifier(final @NotNull MqttClientIdentifier identifier) {
-        this.identifier = MqttBuilderUtil.clientIdentifier(identifier);
+    public @NotNull B identifier(final @Nullable MqttClientIdentifier identifier) {
+        this.identifier = MqttChecks.clientIdentifier(identifier);
         return self();
     }
 
-    public @NotNull B serverHost(final @NotNull String host) {
+    public @NotNull B serverHost(final @Nullable String host) {
         this.serverHost = Checks.notEmpty(host, "Server host");
         return self();
     }
@@ -92,7 +91,7 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
                 serverPort = (webSocketConfig == null) ? DEFAULT_SERVER_PORT : DEFAULT_SERVER_PORT_WEBSOCKET;
             }
         } else {
-            this.sslConfig = MustNotBeImplementedUtil.checkNotImplemented(sslConfig, MqttClientSslConfigImpl.class);
+            this.sslConfig = Checks.notImplemented(sslConfig, MqttClientSslConfigImpl.class, "SSL config");
             if (!customServerPort) {
                 serverPort = (webSocketConfig == null) ? DEFAULT_SERVER_PORT_SSL : DEFAULT_SERVER_PORT_WEBSOCKET_SSL;
             }
@@ -116,7 +115,7 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
             }
         } else {
             this.webSocketConfig =
-                    MustNotBeImplementedUtil.checkNotImplemented(webSocketConfig, MqttWebSocketConfigImpl.class);
+                    Checks.notImplemented(webSocketConfig, MqttWebSocketConfigImpl.class, "WebSocket config");
             if (!customServerPort) {
                 serverPort = (sslConfig == null) ? DEFAULT_SERVER_PORT_WEBSOCKET : DEFAULT_SERVER_PORT_WEBSOCKET_SSL;
             }
@@ -128,9 +127,9 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
         return new MqttWebSocketConfigImplBuilder.Nested<>(this::useWebSocket);
     }
 
-    public @NotNull B executorConfig(final @NotNull MqttClientExecutorConfig executorConfig) {
+    public @NotNull B executorConfig(final @Nullable MqttClientExecutorConfig executorConfig) {
         this.executorConfig =
-                MustNotBeImplementedUtil.checkNotImplemented(executorConfig, MqttClientExecutorConfigImpl.class);
+                Checks.notImplemented(executorConfig, MqttClientExecutorConfigImpl.class, "Executor config");
         return self();
     }
 

@@ -29,7 +29,7 @@ import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoders;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
 import org.mqttbee.mqtt.message.connect.MqttStatefulConnect;
 import org.mqttbee.mqtt.message.connect.mqtt3.Mqtt3ConnectViewBuilder;
-import org.mqttbee.mqtt.util.MqttBuilderUtil;
+import org.mqttbee.mqtt.util.MqttChecks;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
@@ -78,7 +78,7 @@ class Mqtt3ConnectEncoderTest extends AbstractMqtt3EncoderTest {
 
         final MqttConnect beeConnect = connectBuilder.build().getDelegate();
         final MqttStatefulConnect statefulConnect =
-                beeConnect.createStateful(MqttBuilderUtil.clientIdentifier(clientId), null);
+                beeConnect.createStateful(MqttChecks.clientIdentifier(clientId), null);
 
         final org.eclipse.paho.client.mqttv3.internal.wire.MqttConnect pahoConnect =
                 new org.eclipse.paho.client.mqttv3.internal.wire.MqttConnect(

@@ -31,15 +31,11 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public class Mqtt3PubCompView implements Mqtt3PubComp {
 
-    private static final @NotNull Mqtt3PubCompView INSTANCE = new Mqtt3PubCompView();
+    public static final @NotNull Mqtt3PubCompView INSTANCE = new Mqtt3PubCompView();
 
     public static @NotNull MqttPubComp delegate(final int packetIdentifier) {
         return new MqttPubComp(packetIdentifier, Mqtt5PubCompReasonCode.SUCCESS, null,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES);
-    }
-
-    public static @NotNull Mqtt3PubCompView of() {
-        return INSTANCE;
     }
 
     private Mqtt3PubCompView() {}

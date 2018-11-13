@@ -41,6 +41,10 @@ public interface Mqtt5Disconnect extends Mqtt5Message {
         return new MqttDisconnectBuilder.Default();
     }
 
+    static @NotNull Mqtt5DisconnectBuilder extend(final @NotNull Mqtt5Disconnect disconnect) {
+        return new MqttDisconnectBuilder.Default(disconnect);
+    }
+
     /**
      * @return the reason code of this DISCONNECT packet.
      */
@@ -71,5 +75,4 @@ public interface Mqtt5Disconnect extends Mqtt5Message {
     default @NotNull Mqtt5MessageType getType() {
         return Mqtt5MessageType.DISCONNECT;
     }
-
 }

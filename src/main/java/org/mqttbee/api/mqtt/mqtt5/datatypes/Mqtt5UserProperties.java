@@ -23,7 +23,7 @@ import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImplBuilder;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
-import org.mqttbee.mqtt.util.MqttBuilderUtil;
+import org.mqttbee.mqtt.util.MqttChecks;
 import org.mqttbee.util.Checks;
 
 /**
@@ -53,7 +53,7 @@ public interface Mqtt5UserProperties {
         final ImmutableList.Builder<MqttUserPropertyImpl> builder =
                 ImmutableList.builderWithExpectedSize(userProperties.length);
         for (final Mqtt5UserProperty userProperty : userProperties) {
-            builder.add(MqttBuilderUtil.userProperty(userProperty));
+            builder.add(MqttChecks.userProperty(userProperty));
         }
         return MqttUserPropertiesImpl.of(builder.build());
     }
@@ -70,5 +70,4 @@ public interface Mqtt5UserProperties {
      * @return the User Properties as an immutable list.
      */
     @NotNull ImmutableList<? extends Mqtt5UserProperty> asList();
-
 }

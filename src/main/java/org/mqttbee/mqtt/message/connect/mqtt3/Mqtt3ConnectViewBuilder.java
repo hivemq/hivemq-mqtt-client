@@ -27,11 +27,12 @@ import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import org.mqttbee.mqtt.message.auth.MqttSimpleAuth;
 import org.mqttbee.mqtt.message.auth.mqtt3.Mqtt3SimpleAuthView;
 import org.mqttbee.mqtt.message.auth.mqtt3.Mqtt3SimpleAuthViewBuilder;
+import org.mqttbee.mqtt.message.connect.MqttConnect;
 import org.mqttbee.mqtt.message.publish.MqttWillPublish;
 import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishView;
 import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishViewBuilder;
-import org.mqttbee.mqtt.util.MqttBuilderUtil;
-import org.mqttbee.util.MustNotBeImplementedUtil;
+import org.mqttbee.mqtt.util.MqttChecks;
+import org.mqttbee.util.Checks;
 import org.mqttbee.util.UnsignedDataTypes;
 
 import java.util.concurrent.TimeUnit;
@@ -49,18 +50,18 @@ public abstract class Mqtt3ConnectViewBuilder<B extends Mqtt3ConnectViewBuilder<
 
     Mqtt3ConnectViewBuilder() {}
 
-    Mqtt3ConnectViewBuilder(final @NotNull Mqtt3Connect connect) {
-        final Mqtt3ConnectView connectView =
-                MustNotBeImplementedUtil.checkNotImplemented(connect, Mqtt3ConnectView.class);
+    Mqtt3ConnectViewBuilder(final @Nullable Mqtt3Connect connect) {
+        final MqttConnect connectView = MqttChecks.connect(connect);
         keepAliveSeconds = connectView.getKeepAlive();
-        isCleanSession = connectView.isCleanSession();
-        simpleAuth = connectView.getDelegate().getRawSimpleAuth();
-        willPublish = connectView.getDelegate().getRawWillPublish();
+        isCleanSession = connectView.isCleanStart();
+        simpleAuth = connectView.getRawSimpleAuth();
+        willPublish = connectView.getRawWillPublish();
     }
 
     abstract @NotNull B self();
 
-    public @NotNull B keepAlive(final int keepAlive, final @NotNull TimeUnit timeUnit) {
+    public @NotNull B keepAlive(final int keepAlive, final @Nullable TimeUnit timeUnit) {
+        Checks.notNull(timeUnit, "Time unit");
         final long keepAliveSeconds = timeUnit.toSeconds(keepAlive);
         Preconditions.checkArgument(UnsignedDataTypes.isUnsignedShort(keepAliveSeconds),
                 "The value of keep alive converted in seconds must not exceed the value range of unsigned short. Found: %s which is bigger than %s (max unsigned short).",
@@ -75,7 +76,8 @@ public abstract class Mqtt3ConnectViewBuilder<B extends Mqtt3ConnectViewBuilder<
     }
 
     public @NotNull B simpleAuth(final @Nullable Mqtt3SimpleAuth simpleAuth) {
-        this.simpleAuth = (simpleAuth == null) ? null : Mqtt3SimpleAuthView.delegate(simpleAuth);
+        this.simpleAuth = (simpleAuth == null) ? null :
+                Checks.notImplemented(simpleAuth, Mqtt3SimpleAuthView.class, "Simple auth").getDelegate();
         return self();
     }
 
@@ -84,8 +86,8 @@ public abstract class Mqtt3ConnectViewBuilder<B extends Mqtt3ConnectViewBuilder<
     }
 
     public @NotNull B willPublish(final @Nullable Mqtt3Publish willPublish) {
-        this.willPublish =
-                (willPublish == null) ? null : MqttBuilderUtil.willPublish(Mqtt3PublishView.delegate(willPublish));
+        this.willPublish = (willPublish == null) ? null : MqttChecks.willPublish(
+                Checks.notImplemented(willPublish, Mqtt3PublishView.class, "Will publish").getDelegate());
         return self();
     }
 
@@ -99,9 +101,9 @@ public abstract class Mqtt3ConnectViewBuilder<B extends Mqtt3ConnectViewBuilder<
 
     public static class Default extends Mqtt3ConnectViewBuilder<Default> implements Mqtt3ConnectBuilder {
 
-        public Default() { }
+        public Default() {}
 
-        public Default(final @NotNull Mqtt3Connect connect) {
+        public Default(final @Nullable Mqtt3Connect connect) {
             super(connect);
         }
 

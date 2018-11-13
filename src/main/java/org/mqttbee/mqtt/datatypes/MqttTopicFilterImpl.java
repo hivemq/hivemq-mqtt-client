@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
-import org.mqttbee.util.MustNotBeImplementedUtil;
+import org.mqttbee.mqtt.util.MqttChecks;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -106,8 +106,8 @@ public class MqttTopicFilterImpl extends MqttUTF8StringImpl implements MqttTopic
      * @param binary the UTF-8 encoded byte array.
      * @param start  the index in the byte array to start validation at.
      * @return a combination of {@link #WILDCARD_FLAG_MULTI_LEVEL} and {@link #WILDCARD_FLAG_SINGLE_LEVEL} indicating
-     * that a multi-level and/or single-level wildcards are present in the byte array or {@link #WILDCARD_CHECK_FAILURE}
-     * if the wildcard characters are misplaced
+     *         that a multi-level and/or single-level wildcards are present in the byte array or {@link
+     *         #WILDCARD_CHECK_FAILURE} if the wildcard characters are misplaced
      */
     static int validateWildcards(@NotNull final byte[] binary, final int start) {
         int wildcardFlags = 0;
@@ -162,8 +162,8 @@ public class MqttTopicFilterImpl extends MqttUTF8StringImpl implements MqttTopic
      * @param string the UTF-16 encoded Java string.
      * @param start  the index in the byte array to start validation at.
      * @return a combination of {@link #WILDCARD_FLAG_MULTI_LEVEL} and {@link #WILDCARD_FLAG_SINGLE_LEVEL} indicating
-     * that a multi-level and/or single-level wildcards are present in the string or {@link #WILDCARD_CHECK_FAILURE} if
-     * the wildcard characters are misplaced
+     *         that a multi-level and/or single-level wildcards are present in the string or {@link
+     *         #WILDCARD_CHECK_FAILURE} if the wildcard characters are misplaced
      */
     static int validateWildcards(@NotNull final String string, final int start) {
         int wildcardFlags = 0;
@@ -212,7 +212,6 @@ public class MqttTopicFilterImpl extends MqttUTF8StringImpl implements MqttTopic
         return wildcardFlags;
     }
 
-
     private final int wildcardFlags;
 
     MqttTopicFilterImpl(@NotNull final byte[] binary, final int wildcardFlags) {
@@ -256,8 +255,8 @@ public class MqttTopicFilterImpl extends MqttUTF8StringImpl implements MqttTopic
     }
 
     @Override
-    public boolean matches(@NotNull final MqttTopic topic) {
-        return matches(MustNotBeImplementedUtil.checkNotImplemented(topic, MqttTopicImpl.class));
+    public boolean matches(final @Nullable MqttTopic topic) {
+        return matches(MqttChecks.topicNotNull(topic));
     }
 
     public boolean matches(@NotNull final MqttTopicImpl topic) {
@@ -293,8 +292,8 @@ public class MqttTopicFilterImpl extends MqttUTF8StringImpl implements MqttTopic
     }
 
     @Override
-    public boolean matches(@NotNull final MqttTopicFilter topicFilter) {
-        return matches(MustNotBeImplementedUtil.checkNotImplemented(topicFilter, MqttTopicFilterImpl.class));
+    public boolean matches(final @Nullable MqttTopicFilter topicFilter) {
+        return matches(MqttChecks.topicFilterNotNull(topicFilter));
     }
 
     public boolean matches(@NotNull final MqttTopicFilterImpl topicFilter) {

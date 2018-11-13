@@ -30,6 +30,8 @@ import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 @DoNotImplement
 public interface Mqtt5PubRelBuilder {
 
+    @NotNull Mqtt5PubRelBuilder reasonString(@Nullable String reasonString);
+
     @NotNull Mqtt5PubRelBuilder reasonString(@Nullable MqttUTF8String reasonString);
 
     @NotNull Mqtt5PubRelBuilder userProperties(@NotNull Mqtt5UserProperties userProperties);

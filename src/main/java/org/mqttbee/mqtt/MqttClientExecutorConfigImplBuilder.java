@@ -51,7 +51,7 @@ public abstract class MqttClientExecutorConfigImplBuilder<B extends MqttClientEx
         return self();
     }
 
-    public @NotNull B applicationScheduler(final @NotNull Scheduler applicationScheduler) {
+    public @NotNull B applicationScheduler(final @Nullable Scheduler applicationScheduler) {
         this.applicationScheduler = Checks.notNull(applicationScheduler, "Application scheduler");
         return self();
     }

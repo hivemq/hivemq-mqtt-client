@@ -18,6 +18,7 @@
 package org.mqttbee.mqtt;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.MqttWebSocketConfigBuilder;
 import org.mqttbee.util.Checks;
 
@@ -33,13 +34,13 @@ public abstract class MqttWebSocketConfigImplBuilder<B extends MqttWebSocketConf
 
     abstract @NotNull B self();
 
-    public @NotNull B serverPath(final @NotNull String serverPath) {
+    public @NotNull B serverPath(final @Nullable String serverPath) {
         // remove any leading slashes
         this.serverPath = Checks.notNull(serverPath, "Server path").replaceAll("^/+", "");
         return self();
     }
 
-    public @NotNull B subprotocol(final @NotNull String subprotocol) {
+    public @NotNull B subprotocol(final @Nullable String subprotocol) {
         this.subprotocol = Checks.notNull(subprotocol, "Subprotocol");
         return self();
     }

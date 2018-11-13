@@ -25,12 +25,16 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.CLASS;
 
 /**
- * Documents that interfaces must not be implemented outside the library.
+ * Documents that an interface MUST NOT be implemented by the user.
+ * <p>
+ * The implementation is provided by the library.
+ * <p>
+ * This allows the library to later add methods to the interface without breaking backwards compatibility with
+ * implementing classes.
  *
  * @author Silvio Giebl
  */
 @Documented
 @Retention(CLASS)
 @Target({TYPE})
-public @interface DoNotImplement {
-}
+public @interface DoNotImplement {}

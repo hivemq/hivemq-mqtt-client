@@ -25,7 +25,7 @@ import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscription;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3SubscriptionBuilder;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImplBuilder;
-import org.mqttbee.mqtt.util.MqttBuilderUtil;
+import org.mqttbee.mqtt.util.MqttChecks;
 import org.mqttbee.util.Checks;
 
 import java.util.function.Function;
@@ -40,13 +40,13 @@ public abstract class Mqtt3SubscriptionViewBuilder<B extends Mqtt3SubscriptionVi
 
     abstract @NotNull B self();
 
-    public @NotNull B topicFilter(final @NotNull String topicFilter) {
-        this.topicFilter = MqttBuilderUtil.topicFilter(topicFilter);
+    public @NotNull B topicFilter(final @Nullable String topicFilter) {
+        this.topicFilter = MqttChecks.topicFilterNotNull(topicFilter);
         return self();
     }
 
-    public @NotNull B topicFilter(final @NotNull MqttTopicFilter topicFilter) {
-        this.topicFilter = MqttBuilderUtil.topicFilter(topicFilter);
+    public @NotNull B topicFilter(final @Nullable MqttTopicFilter topicFilter) {
+        this.topicFilter = MqttChecks.topicFilterNotNull(topicFilter);
         return self();
     }
 
@@ -54,7 +54,7 @@ public abstract class Mqtt3SubscriptionViewBuilder<B extends Mqtt3SubscriptionVi
         return new MqttTopicFilterImplBuilder.Nested<>(this::topicFilter);
     }
 
-    public @NotNull B qos(final @NotNull MqttQos qos) {
+    public @NotNull B qos(final @Nullable MqttQos qos) {
         this.qos = Checks.notNull(qos, "QoS");
         return self();
     }

@@ -18,7 +18,6 @@
 package org.mqttbee.api.mqtt.mqtt3.message.auth;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 
@@ -34,18 +33,18 @@ public interface Mqtt3SimpleAuthBuilderBase<B extends Mqtt3SimpleAuthBuilderBase
 
     @NotNull C username(@NotNull MqttUTF8String username);
 
-    @NotNull B password(@Nullable byte[] password);
+    @NotNull B password(@NotNull byte[] password);
 
-    @NotNull B password(@Nullable ByteBuffer password);
+    @NotNull B password(@NotNull ByteBuffer password);
 
     @DoNotImplement
     interface Complete<B extends Mqtt3SimpleAuthBuilderBase<B, C>, C extends B>
             extends Mqtt3SimpleAuthBuilderBase<B, C> {
 
         @Override
-        @NotNull C password(@Nullable byte[] password);
+        @NotNull C password(@NotNull byte[] password);
 
         @Override
-        @NotNull C password(@Nullable ByteBuffer password);
+        @NotNull C password(@NotNull ByteBuffer password);
     }
 }

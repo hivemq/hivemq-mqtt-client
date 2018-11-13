@@ -17,9 +17,9 @@
 
 package org.mqttbee.api.mqtt.datatypes;
 
-import org.mqttbee.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.mqtt.util.MqttBuilderUtil;
+import org.mqttbee.annotations.DoNotImplement;
+import org.mqttbee.mqtt.util.MqttChecks;
 
 import java.nio.ByteBuffer;
 
@@ -42,9 +42,8 @@ public interface MqttUTF8String {
      * @return the created UTF-8 encoded String.
      * @throws IllegalArgumentException if the string is not a valid UTF-8 encoded String.
      */
-    @NotNull
-    static MqttUTF8String from(@NotNull final String string) {
-        return MqttBuilderUtil.string(string);
+    static @NotNull MqttUTF8String from(final @NotNull String string) {
+        return MqttChecks.stringNotNull(string, "String");
     }
 
     /**
@@ -62,7 +61,5 @@ public interface MqttUTF8String {
      *
      * @return the UTF-8 encoded read-only byte buffer.
      */
-    @NotNull
-    ByteBuffer toByteBuffer();
-
+    @NotNull ByteBuffer toByteBuffer();
 }

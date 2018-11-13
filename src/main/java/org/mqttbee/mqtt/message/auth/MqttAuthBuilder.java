@@ -26,7 +26,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImplBuilder;
-import org.mqttbee.mqtt.util.MqttBuilderUtil;
+import org.mqttbee.mqtt.util.MqttChecks;
 import org.mqttbee.util.Checks;
 
 import java.nio.ByteBuffer;
@@ -51,31 +51,31 @@ public class MqttAuthBuilder implements Mqtt5AuthBuilder {
 
     @Override
     public @NotNull MqttAuthBuilder data(final @Nullable byte[] data) {
-        this.data = MqttBuilderUtil.binaryDataOrNull(data);
+        this.data = MqttChecks.binaryDataOrNull(data);
         return this;
     }
 
     @Override
     public @NotNull MqttAuthBuilder data(final @Nullable ByteBuffer data) {
-        this.data = MqttBuilderUtil.binaryDataOrNull(data);
+        this.data = MqttChecks.binaryDataOrNull(data);
         return this;
     }
 
     @Override
     public @NotNull MqttAuthBuilder reasonString(final @Nullable String reasonString) {
-        this.reasonString = MqttBuilderUtil.stringOrNull(reasonString);
+        this.reasonString = MqttChecks.reasonString(reasonString);
         return this;
     }
 
     @Override
     public @NotNull MqttAuthBuilder reasonString(final @Nullable MqttUTF8String reasonString) {
-        this.reasonString = MqttBuilderUtil.stringOrNull(reasonString);
+        this.reasonString = MqttChecks.reasonString(reasonString);
         return this;
     }
 
     @Override
-    public @NotNull MqttAuthBuilder userProperties(final @NotNull Mqtt5UserProperties userProperties) {
-        this.userProperties = MqttBuilderUtil.userProperties(userProperties);
+    public @NotNull MqttAuthBuilder userProperties(final @Nullable Mqtt5UserProperties userProperties) {
+        this.userProperties = MqttChecks.userProperties(userProperties);
         return this;
     }
 
