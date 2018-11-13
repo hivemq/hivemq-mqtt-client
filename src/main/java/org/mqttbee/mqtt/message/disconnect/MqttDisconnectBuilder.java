@@ -67,7 +67,7 @@ public abstract class MqttDisconnectBuilder<B extends MqttDisconnectBuilder<B>> 
         return self();
     }
 
-    public @NotNull B noSessionExpiryInterval() {
+    public @NotNull B noSessionExpiry() {
         this.sessionExpiryInterval = MqttConnect.NO_SESSION_EXPIRY;
         return self();
     }

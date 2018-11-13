@@ -95,7 +95,7 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
         return self();
     }
 
-    public @NotNull B noMessageExpiryInterval() {
+    public @NotNull B noMessageExpiry() {
         this.messageExpiryInterval = MqttPublish.NO_MESSAGE_EXPIRY;
         return self();
     }
