@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt.message.publish;
 
-import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
@@ -29,10 +28,8 @@ import org.mqttbee.mqtt.datatypes.*;
 import org.mqttbee.mqtt.util.MqttChecks;
 import org.mqttbee.util.ByteBufferUtil;
 import org.mqttbee.util.Checks;
-import org.mqttbee.util.UnsignedDataTypes;
 
 import java.nio.ByteBuffer;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 /**
@@ -93,13 +90,8 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
         return self();
     }
 
-    public @NotNull B messageExpiryInterval(final long messageExpiryInterval, final @Nullable TimeUnit timeUnit) {
-        Checks.notNull(timeUnit, "Time unit");
-        final long messageExpiryIntervalSeconds = timeUnit.toSeconds(messageExpiryInterval);
-        Preconditions.checkArgument(UnsignedDataTypes.isUnsignedInt(messageExpiryIntervalSeconds),
-                "The value of session expiry interval converted in seconds must not exceed the value range of unsigned int. Found: %s which is bigger than %s (max unsigned int).",
-                messageExpiryIntervalSeconds, UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE);
-        this.messageExpiryInterval = messageExpiryIntervalSeconds;
+    public @NotNull B messageExpiryInterval(final long messageExpiryInterval) {
+        this.messageExpiryInterval = Checks.unsignedInt(messageExpiryInterval, "Message expiry interval");
         return self();
     }
 
@@ -133,12 +125,12 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
     }
 
     public @NotNull B correlationData(final @Nullable byte[] correlationData) {
-        this.correlationData = MqttChecks.binaryDataOrNull(correlationData);
+        this.correlationData = MqttChecks.binaryDataOrNull(correlationData, "Correlation data");
         return self();
     }
 
     public @NotNull B correlationData(final @Nullable ByteBuffer correlationData) {
-        this.correlationData = MqttChecks.binaryDataOrNull(correlationData);
+        this.correlationData = MqttChecks.binaryDataOrNull(correlationData, "Correlation data");
         return self();
     }
 
@@ -253,23 +245,17 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
         }
 
         public @NotNull B payload(final @Nullable byte[] payload) {
-            this.payload = MqttChecks.binaryDataOrNull(payload);
+            this.payload = MqttChecks.binaryDataOrNull(payload, "Payload");
             return self();
         }
 
         public @NotNull B payload(final @Nullable ByteBuffer payload) {
-            this.payload = MqttChecks.binaryDataOrNull(payload);
+            this.payload = MqttChecks.binaryDataOrNull(payload, "Payload");
             return self();
         }
 
-        public @NotNull B delayInterval(final long delayInterval, final @Nullable TimeUnit timeUnit) {
-            Checks.notNull(timeUnit, "Time unit");
-            final long delayIntervalSeconds = timeUnit.toSeconds(delayInterval);
-            Preconditions.checkArgument(UnsignedDataTypes.isUnsignedInt(delayIntervalSeconds),
-                    "The value of delay interval converted in seconds must not exceed the value range of unsigned int. Found: %s which is bigger than %s (max unsigned int).",
-                    delayIntervalSeconds, UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE);
-
-            this.delayInterval = delayIntervalSeconds;
+        public @NotNull B delayInterval(final long delayInterval) {
+            this.delayInterval = Checks.unsignedInt(delayInterval, "Will delay interval");
             return self();
         }
 

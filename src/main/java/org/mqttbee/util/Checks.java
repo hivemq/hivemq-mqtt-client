@@ -94,6 +94,24 @@ public class Checks {
         return (I) object;
     }
 
+    public static int unsignedShort(final int value, final @NotNull String name) {
+        if (!UnsignedDataTypes.isUnsignedShort(value)) {
+            throw new IllegalArgumentException(
+                    "The value of " + name + " must not exceed the value range of unsigned short [0, " +
+                            UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE + "], but was: " + value);
+        }
+        return value;
+    }
+
+    public static long unsignedInt(final long value, final @NotNull String name) {
+        if (!UnsignedDataTypes.isUnsignedInt(value)) {
+            throw new IllegalArgumentException(
+                    "The value of " + name + " must not exceed the value range of unsigned int [0, " +
+                            UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE + "], but was: " + value);
+        }
+        return value;
+    }
+
     public static void state(final boolean condition, final @NotNull String message) {
         if (!condition) {
             throw new IllegalStateException(message);

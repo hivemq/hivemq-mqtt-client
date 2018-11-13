@@ -25,15 +25,13 @@ import org.mqttbee.api.mqtt.mqtt3.message.auth.Mqtt3SimpleAuthBuilder;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3WillPublishBuilder;
 
-import java.util.concurrent.TimeUnit;
-
 /**
  * @author Silvio Giebl
  */
 @DoNotImplement
 public interface Mqtt3ConnectBuilderBase<B extends Mqtt3ConnectBuilderBase<B>> {
 
-    @NotNull B keepAlive(int keepAlive, @NotNull TimeUnit timeUnit);
+    @NotNull B keepAlive(int keepAlive);
 
     @NotNull B cleanSession(boolean isCleanSession);
 

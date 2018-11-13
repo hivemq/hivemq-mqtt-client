@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt.message.connect;
 
-import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
@@ -37,9 +36,7 @@ import org.mqttbee.mqtt.message.publish.MqttPublishBuilder;
 import org.mqttbee.mqtt.message.publish.MqttWillPublish;
 import org.mqttbee.mqtt.util.MqttChecks;
 import org.mqttbee.util.Checks;
-import org.mqttbee.util.UnsignedDataTypes;
 
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 /**
@@ -76,13 +73,8 @@ public abstract class MqttConnectBuilder<B extends MqttConnectBuilder<B>> {
 
     abstract @NotNull B self();
 
-    public @NotNull B keepAlive(final int keepAlive, final @Nullable TimeUnit timeUnit) {
-        Checks.notNull(timeUnit, "Time unit");
-        final long keepAliveSeconds = timeUnit.toSeconds(keepAlive);
-        Preconditions.checkArgument(UnsignedDataTypes.isUnsignedShort(keepAliveSeconds),
-                "The value of keep alive converted in seconds must not exceed the value range of unsigned short. Found: %s which is bigger than %s (max unsigned short).",
-                keepAliveSeconds, UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE);
-        this.keepAlive = (int) keepAliveSeconds;
+    public @NotNull B keepAlive(final int keepAlive) {
+        this.keepAlive = Checks.unsignedShort(keepAlive, "Keep alive");
         return self();
     }
 
@@ -91,13 +83,8 @@ public abstract class MqttConnectBuilder<B extends MqttConnectBuilder<B>> {
         return self();
     }
 
-    public @NotNull B sessionExpiryInterval(final long sessionExpiryInterval, final @Nullable TimeUnit timeUnit) {
-        Checks.notNull(timeUnit, "Time unit");
-        final long sessionExpiryIntervalSeconds = timeUnit.toSeconds(sessionExpiryInterval);
-        Preconditions.checkArgument(UnsignedDataTypes.isUnsignedInt(sessionExpiryIntervalSeconds),
-                "The value of session expiry interval converted in seconds must not exceed the value range of unsigned int. Found: %s which is bigger than %s (max unsigned int).",
-                sessionExpiryIntervalSeconds, UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE);
-        this.sessionExpiryInterval = sessionExpiryIntervalSeconds;
+    public @NotNull B sessionExpiryInterval(final long sessionExpiryInterval) {
+        this.sessionExpiryInterval = Checks.unsignedInt(sessionExpiryInterval, "Session expiry interval");
         return self();
     }
 

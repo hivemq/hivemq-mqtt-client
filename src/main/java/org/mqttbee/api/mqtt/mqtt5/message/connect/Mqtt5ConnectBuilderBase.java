@@ -29,19 +29,17 @@ import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5WillPublishBuilder;
 
-import java.util.concurrent.TimeUnit;
-
 /**
  * @author Silvio Giebl
  */
 @DoNotImplement
 public interface Mqtt5ConnectBuilderBase<B extends Mqtt5ConnectBuilderBase<B>> {
 
-    @NotNull B keepAlive(int keepAlive, @NotNull TimeUnit timeUnit);
+    @NotNull B keepAlive(int keepAlive);
 
     @NotNull B cleanStart(boolean isCleanStart);
 
-    @NotNull B sessionExpiryInterval(long sessionExpiryInterval, @NotNull TimeUnit timeUnit);
+    @NotNull B sessionExpiryInterval(long sessionExpiryInterval);
 
     @NotNull B responseInformationRequested(boolean isResponseInformationRequested);
 

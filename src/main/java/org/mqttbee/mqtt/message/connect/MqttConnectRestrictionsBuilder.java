@@ -17,10 +17,10 @@
 
 package org.mqttbee.mqtt.message.connect;
 
-import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictionsBuilder;
-import org.mqttbee.util.UnsignedDataTypes;
+import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
+import org.mqttbee.util.Checks;
 
 import java.util.function.Function;
 
@@ -36,26 +36,21 @@ public abstract class MqttConnectRestrictionsBuilder<B extends MqttConnectRestri
     abstract @NotNull B self();
 
     public @NotNull B receiveMaximum(final int receiveMaximum) {
-        Preconditions.checkArgument(UnsignedDataTypes.isUnsignedShort(receiveMaximum),
-                "The value of receive maximum must not exceed the value range of unsigned short. Found: %s which is bigger than %s (max unsigned short).",
-                receiveMaximum, UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE);
-        this.receiveMaximum = receiveMaximum;
+        this.receiveMaximum = Checks.unsignedShort(receiveMaximum, "Receive maximum");
         return self();
     }
 
     public @NotNull B maximumPacketSize(final int maximumPacketSize) {
-        Preconditions.checkArgument(UnsignedDataTypes.isUnsignedInt(maximumPacketSize),
-                "The value of maximum packet size must not exceed the value range of unsigned int. Found: %s which is bigger than %s (max unsigned int).",
-                maximumPacketSize, UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE);
+        if ((maximumPacketSize <= 0) || (maximumPacketSize > MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT)) {
+            throw new IllegalArgumentException("Maximum packet size must not exceed the value range of ]0, " +
+                    MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT + "], but was: " + maximumPacketSize);
+        }
         this.maximumPacketSize = maximumPacketSize;
         return self();
     }
 
     public @NotNull B topicAliasMaximum(final int topicAliasMaximum) {
-        Preconditions.checkArgument(UnsignedDataTypes.isUnsignedShort(topicAliasMaximum),
-                "The value of topic alias maximum must not exceed the value range of unsigned short. Found: %s which is bigger than %s (max unsigned short).",
-                topicAliasMaximum, UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE);
-        this.topicAliasMaximum = topicAliasMaximum;
+        this.topicAliasMaximum = Checks.unsignedShort(topicAliasMaximum, "Topic alias maximum");
         return self();
     }
 

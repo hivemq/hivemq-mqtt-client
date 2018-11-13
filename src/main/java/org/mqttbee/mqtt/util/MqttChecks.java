@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt.util;
 
-import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.*;
@@ -163,34 +162,38 @@ public class MqttChecks {
         return Checks.notImplemented(clientIdentifier, MqttClientIdentifierImpl.class, "Client identifier");
     }
 
-    private static @NotNull ByteBuffer binaryData(final @NotNull byte[] binary) {
-        Preconditions.checkArgument(MqttBinaryData.isInRange(binary),
-                "Cannot encode given byte array as binary data. Byte array to long. Found: %s bytes. Maximum length is %s.",
-                binary.length, MqttBinaryData.MAX_LENGTH);
+    private static @NotNull ByteBuffer binaryData(final @NotNull byte[] binary, final @NotNull String name) {
+        if (!MqttBinaryData.isInRange(binary)) {
+            throw new IllegalArgumentException(
+                    name + " can not be encoded as binary data. Maximum length is: " + MqttBinaryData.MAX_LENGTH +
+                            " bytes, but was: " + binary.length + " bytes");
+        }
         return ByteBuffer.wrap(binary);
     }
 
     public static @NotNull ByteBuffer binaryDataNotNull(final @Nullable byte[] binary, final @NotNull String name) {
-        return binaryData(Checks.notNull(binary, name));
+        return binaryData(Checks.notNull(binary, name), name);
     }
 
-    public static @Nullable ByteBuffer binaryDataOrNull(final @Nullable byte[] binary) {
-        return (binary == null) ? null : binaryData(binary);
+    public static @Nullable ByteBuffer binaryDataOrNull(final @Nullable byte[] binary, final @NotNull String name) {
+        return (binary == null) ? null : binaryData(binary, name);
     }
 
-    private static @NotNull ByteBuffer binaryData(final @NotNull ByteBuffer binary) {
-        Preconditions.checkArgument(MqttBinaryData.isInRange(binary),
-                "Cannot encode given byte buffer as binary data. Too many remaining bytes in byte buffer. Found: %s bytes. Maximum length is %s.",
-                binary.remaining(), MqttBinaryData.MAX_LENGTH);
+    private static @NotNull ByteBuffer binaryData(final @NotNull ByteBuffer binary, final @NotNull String name) {
+        if (!MqttBinaryData.isInRange(binary)) {
+            throw new IllegalArgumentException(
+                    name + " can not be encoded as binary data. Maximum length is: " + MqttBinaryData.MAX_LENGTH +
+                            " bytes, but was: " + binary.remaining() + " bytes");
+        }
         return binary.slice();
     }
 
     public static @NotNull ByteBuffer binaryDataNotNull(final @Nullable ByteBuffer binary, final @NotNull String name) {
-        return binaryData(Checks.notNull(binary, name));
+        return binaryData(Checks.notNull(binary, name), name);
     }
 
-    public static @Nullable ByteBuffer binaryDataOrNull(final @Nullable ByteBuffer binary) {
-        return (binary == null) ? null : binaryData(binary);
+    public static @Nullable ByteBuffer binaryDataOrNull(final @Nullable ByteBuffer binary, final @NotNull String name) {
+        return (binary == null) ? null : binaryData(binary, name);
     }
 
     public static @NotNull MqttUserPropertiesImpl userProperties(final @Nullable Mqtt5UserProperties userProperties) {
