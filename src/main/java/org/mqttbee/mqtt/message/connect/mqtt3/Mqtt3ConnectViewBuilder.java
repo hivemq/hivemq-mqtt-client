@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt.message.connect.mqtt3;
 
-import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
@@ -33,9 +32,7 @@ import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishView;
 import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishViewBuilder;
 import org.mqttbee.mqtt.util.MqttChecks;
 import org.mqttbee.util.Checks;
-import org.mqttbee.util.UnsignedDataTypes;
 
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 /**
@@ -60,13 +57,8 @@ public abstract class Mqtt3ConnectViewBuilder<B extends Mqtt3ConnectViewBuilder<
 
     abstract @NotNull B self();
 
-    public @NotNull B keepAlive(final int keepAlive, final @Nullable TimeUnit timeUnit) {
-        Checks.notNull(timeUnit, "Time unit");
-        final long keepAliveSeconds = timeUnit.toSeconds(keepAlive);
-        Preconditions.checkArgument(UnsignedDataTypes.isUnsignedShort(keepAliveSeconds),
-                "The value of keep alive converted in seconds must not exceed the value range of unsigned short. Found: %s which is bigger than %s (max unsigned short).",
-                keepAliveSeconds, UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE);
-        this.keepAliveSeconds = (int) keepAliveSeconds;
+    public @NotNull B keepAlive(final int keepAlive) {
+        this.keepAliveSeconds = Checks.unsignedShort(keepAlive, "Keep alive");
         return self();
     }
 

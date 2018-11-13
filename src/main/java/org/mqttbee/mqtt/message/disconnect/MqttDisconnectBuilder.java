@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt.message.disconnect;
 
-import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
@@ -30,9 +29,7 @@ import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImplBuilder;
 import org.mqttbee.mqtt.util.MqttChecks;
 import org.mqttbee.util.Checks;
-import org.mqttbee.util.UnsignedDataTypes;
 
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 /**
@@ -64,14 +61,8 @@ public abstract class MqttDisconnectBuilder<B extends MqttDisconnectBuilder<B>> 
         return self();
     }
 
-    public @NotNull B sessionExpiryInterval(final long sessionExpiryInterval, final @Nullable TimeUnit timeUnit) {
-        Checks.notNull(timeUnit, "Time unit");
-        final long sessionExpiryIntervalSeconds = timeUnit.toSeconds(sessionExpiryInterval);
-        Preconditions.checkArgument(UnsignedDataTypes.isUnsignedInt(sessionExpiryIntervalSeconds),
-                "The value of session expiry interval converted in seconds must not exceed the value range of unsigned int. Found: %s which is bigger than %s (max unsigned int).",
-                sessionExpiryInterval, UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE);
-
-        this.sessionExpiryInterval = sessionExpiryIntervalSeconds;
+    public @NotNull B sessionExpiryInterval(final long sessionExpiryInterval) {
+        this.sessionExpiryInterval = Checks.unsignedInt(sessionExpiryInterval, "Session expiry interval");
         return self();
     }
 

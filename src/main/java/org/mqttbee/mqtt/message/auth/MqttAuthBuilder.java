@@ -51,13 +51,13 @@ public class MqttAuthBuilder implements Mqtt5AuthBuilder {
 
     @Override
     public @NotNull MqttAuthBuilder data(final @Nullable byte[] data) {
-        this.data = MqttChecks.binaryDataOrNull(data);
+        this.data = MqttChecks.binaryDataOrNull(data, "Auth data");
         return this;
     }
 
     @Override
     public @NotNull MqttAuthBuilder data(final @Nullable ByteBuffer data) {
-        this.data = MqttChecks.binaryDataOrNull(data);
+        this.data = MqttChecks.binaryDataOrNull(data, "Auth data");
         return this;
     }
 

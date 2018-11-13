@@ -24,8 +24,6 @@ import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 
-import java.util.concurrent.TimeUnit;
-
 /**
  * @author Silvio Giebl
  */
@@ -34,7 +32,7 @@ public interface Mqtt5DisconnectBuilderBase<B extends Mqtt5DisconnectBuilderBase
 
     @NotNull B reasonCode(@NotNull Mqtt5DisconnectReasonCode reasonCode);
 
-    @NotNull B sessionExpiryInterval(long sessionExpiryInterval, @NotNull TimeUnit timeUnit);
+    @NotNull B sessionExpiryInterval(long sessionExpiryInterval);
 
     @NotNull B serverReference(@Nullable String serverReference);
 

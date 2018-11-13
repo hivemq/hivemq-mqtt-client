@@ -28,7 +28,6 @@ import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 
 import java.nio.ByteBuffer;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author Bilvio Giebl
@@ -50,7 +49,7 @@ public interface Mqtt5PublishBuilderBase<B extends Mqtt5PublishBuilderBase<B, C>
 
     @NotNull B retain(boolean retain);
 
-    @NotNull B messageExpiryInterval(long messageExpiryInterval, @NotNull TimeUnit timeUnit);
+    @NotNull B messageExpiryInterval(long messageExpiryInterval);
 
     @NotNull B payloadFormatIndicator(@Nullable Mqtt5PayloadFormatIndicator payloadFormatIndicator);
 
@@ -88,7 +87,7 @@ public interface Mqtt5PublishBuilderBase<B extends Mqtt5PublishBuilderBase<B, C>
         @NotNull C retain(boolean retain);
 
         @Override
-        @NotNull C messageExpiryInterval(long messageExpiryInterval, @NotNull TimeUnit timeUnit);
+        @NotNull C messageExpiryInterval(long messageExpiryInterval);
 
         @Override
         @NotNull C payloadFormatIndicator(@Nullable Mqtt5PayloadFormatIndicator payloadFormatIndicator);
@@ -138,14 +137,14 @@ public interface Mqtt5PublishBuilderBase<B extends Mqtt5PublishBuilderBase<B, C>
     @DoNotImplement
     interface WillBase<B extends Mqtt5PublishBuilderBase<B, C>, C extends B> extends Mqtt5PublishBuilderBase<B, C> {
 
-        @NotNull B delayInterval(long delayInterval, @NotNull TimeUnit timeUnit);
+        @NotNull B delayInterval(long delayInterval);
 
         @DoNotImplement
         interface Complete<B extends Mqtt5PublishBuilderBase<B, C>, C extends B>
                 extends Mqtt5PublishBuilderBase.WillBase<B, C>, Mqtt5PublishBuilderBase.Complete<B, C> {
 
             @Override
-            @NotNull C delayInterval(long delayInterval, @NotNull TimeUnit timeUnit);
+            @NotNull C delayInterval(long delayInterval);
         }
     }
 }

@@ -33,7 +33,6 @@ import org.mqttbee.mqtt.util.MqttChecks;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 import static org.eclipse.paho.client.mqttv3.MqttConnectOptions.MQTT_VERSION_3_1_1;
 import static org.junit.platform.commons.util.StringUtils.isNotBlank;
@@ -59,8 +58,7 @@ class Mqtt3ConnectEncoderTest extends AbstractMqtt3EncoderTest {
                 isNotBlank(willMessage) && isNotBlank(willTopic) && (willQos != null) && (willRetained != null);
 
         Mqtt3ConnectViewBuilder.Default connectBuilder =
-                new Mqtt3ConnectViewBuilder.Default().cleanSession(cleanSession)
-                        .keepAlive(keepAliveInterval, TimeUnit.SECONDS);
+                new Mqtt3ConnectViewBuilder.Default().cleanSession(cleanSession).keepAlive(keepAliveInterval);
         if (hasAuth) {
             connectBuilder = connectBuilder.simpleAuth()
                     .username(userName)
