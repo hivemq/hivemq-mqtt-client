@@ -23,7 +23,7 @@ import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientBuilder;
 import org.mqttbee.api.mqtt.mqtt5.advanced.Mqtt5AdvancedClientData;
 import org.mqttbee.mqtt.advanced.MqttAdvancedClientData;
 import org.mqttbee.mqtt.advanced.MqttAdvancedClientDataBuilder;
-import org.mqttbee.util.MustNotBeImplementedUtil;
+import org.mqttbee.util.Checks;
 
 /**
  * @author Silvio Giebl
@@ -60,7 +60,7 @@ public class MqttRxClientBuilder extends MqttRxClientBuilderBase<MqttRxClientBui
     @Override
     public @NotNull MqttRxClientBuilder advanced(final @Nullable Mqtt5AdvancedClientData advancedClientData) {
         this.advancedClientData =
-                MustNotBeImplementedUtil.checkNullOrNotImplemented(advancedClientData, MqttAdvancedClientData.class);
+                Checks.notImplementedOrNull(advancedClientData, MqttAdvancedClientData.class, "Advanced client data");
         return this;
     }
 

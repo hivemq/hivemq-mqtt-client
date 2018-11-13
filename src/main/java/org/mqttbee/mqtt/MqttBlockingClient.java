@@ -86,27 +86,28 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
     }
 
     @Override
-    public @NotNull Mqtt5ConnAck connect(final @NotNull Mqtt5Connect connect) {
+    public @NotNull Mqtt5ConnAck connect(final @Nullable Mqtt5Connect connect) {
         return delegate.connectUnsafe(connect).blockingGet();
     }
 
     @Override
-    public @NotNull Mqtt5SubAck subscribe(final @NotNull Mqtt5Subscribe subscribe) {
+    public @NotNull Mqtt5SubAck subscribe(final @Nullable Mqtt5Subscribe subscribe) {
         return handleSubAck(delegate.subscribeUnsafe(subscribe).blockingGet());
     }
 
     @Override
-    public @NotNull Mqtt5Publishes publishes(final @NotNull MqttGlobalPublishFilter filter) {
+    public @NotNull Mqtt5Publishes publishes(final @Nullable MqttGlobalPublishFilter filter) {
         return new MqttPublishes(delegate.publishesUnsafe(filter));
     }
 
     @Override
-    public @NotNull Mqtt5UnsubAck unsubscribe(final @NotNull Mqtt5Unsubscribe unsubscribe) {
+    public @NotNull Mqtt5UnsubAck unsubscribe(final @Nullable Mqtt5Unsubscribe unsubscribe) {
         return handleUnsubAck(delegate.unsubscribeUnsafe(unsubscribe).blockingGet());
     }
 
     @Override
-    public @NotNull Mqtt5PublishResult publish(final @NotNull Mqtt5Publish publish) {
+    public @NotNull Mqtt5PublishResult publish(final @Nullable Mqtt5Publish publish) {
+        Checks.notNull(publish, "Publish");
         return handlePublish(delegate.publishUnsafe(Flowable.just(publish)).singleOrError().blockingGet());
     }
 
@@ -237,7 +238,7 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
         }
 
         @Override
-        public @NotNull Optional<Mqtt5Publish> receive(final long timeout, final @NotNull TimeUnit timeUnit)
+        public @NotNull Optional<Mqtt5Publish> receive(final long timeout, final @Nullable TimeUnit timeUnit)
                 throws InterruptedException {
 
             if (timeout < 0) {

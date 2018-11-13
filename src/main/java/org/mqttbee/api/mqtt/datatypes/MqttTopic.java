@@ -21,7 +21,7 @@ import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.mqtt.datatypes.MqttTopicImplBuilder;
-import org.mqttbee.mqtt.util.MqttBuilderUtil;
+import org.mqttbee.mqtt.util.MqttChecks;
 
 /**
  * MQTT Topic Name according to the MQTT specification.
@@ -47,7 +47,7 @@ public interface MqttTopic extends MqttUTF8String {
      * @throws IllegalArgumentException if the string is not a valid Topic Name.
      */
     static @NotNull MqttTopic from(final @NotNull String string) {
-        return MqttBuilderUtil.topic(string);
+        return MqttChecks.topicNotNull(string);
     }
 
     static @NotNull MqttTopicBuilder builder() {
@@ -62,5 +62,4 @@ public interface MqttTopic extends MqttUTF8String {
      * @return the levels of this Topic Name.
      */
     @NotNull ImmutableList<String> getLevels();
-
 }

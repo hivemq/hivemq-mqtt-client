@@ -37,14 +37,12 @@ import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
 import org.mqttbee.mqtt.MqttAsyncClient;
 import org.mqttbee.mqtt.message.connect.connack.mqtt3.Mqtt3ConnAckView;
-import org.mqttbee.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
 import org.mqttbee.mqtt.message.disconnect.mqtt3.Mqtt3DisconnectView;
 import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishView;
-import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeView;
 import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeViewBuilder;
 import org.mqttbee.mqtt.message.subscribe.suback.mqtt3.Mqtt3SubAckView;
-import org.mqttbee.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeView;
 import org.mqttbee.mqtt.mqtt3.exceptions.Mqtt3ExceptionFactory;
+import org.mqttbee.mqtt.util.MqttChecks;
 import org.mqttbee.util.Checks;
 
 import java.util.concurrent.CompletableFuture;
@@ -108,39 +106,39 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
     }
 
     @Override
-    public @NotNull CompletableFuture<@NotNull Mqtt3ConnAck> connect(final @NotNull Mqtt3Connect connect) {
-        return delegate.connect(Mqtt3ConnectView.delegate(connect)).handle(CONNACK_MAPPER);
+    public @NotNull CompletableFuture<@NotNull Mqtt3ConnAck> connect(final @Nullable Mqtt3Connect connect) {
+        return delegate.connect(MqttChecks.connect(connect)).handle(CONNACK_MAPPER);
     }
 
     @Override
-    public @NotNull CompletableFuture<@NotNull Mqtt3SubAck> subscribe(final @NotNull Mqtt3Subscribe subscribe) {
-        return delegate.subscribe(Mqtt3SubscribeView.delegate(subscribe)).handle(SUBACK_MAPPER);
+    public @NotNull CompletableFuture<@NotNull Mqtt3SubAck> subscribe(final @Nullable Mqtt3Subscribe subscribe) {
+        return delegate.subscribe(MqttChecks.subscribe(subscribe)).handle(SUBACK_MAPPER);
     }
 
     @Override
     public @NotNull CompletableFuture<@NotNull Mqtt3SubAck> subscribe(
-            final @NotNull Mqtt3Subscribe subscribe, final @NotNull Consumer<@NotNull Mqtt3Publish> callback) {
+            final @Nullable Mqtt3Subscribe subscribe, final @Nullable Consumer<@NotNull Mqtt3Publish> callback) {
 
         Checks.notNull(callback, "Callback");
 
-        return delegate.subscribe(Mqtt3SubscribeView.delegate(subscribe), callbackView(callback)).handle(SUBACK_MAPPER);
+        return delegate.subscribe(MqttChecks.subscribe(subscribe), callbackView(callback)).handle(SUBACK_MAPPER);
     }
 
     @Override
     public @NotNull CompletableFuture<@NotNull Mqtt3SubAck> subscribe(
-            final @NotNull Mqtt3Subscribe subscribe, final @NotNull Consumer<@NotNull Mqtt3Publish> callback,
-            final @NotNull Executor executor) {
+            final @Nullable Mqtt3Subscribe subscribe, final @Nullable Consumer<@NotNull Mqtt3Publish> callback,
+            final @Nullable Executor executor) {
 
         Checks.notNull(callback, "Callback");
         Checks.notNull(executor, "Executor");
 
-        return delegate.subscribe(Mqtt3SubscribeView.delegate(subscribe), callbackView(callback), executor)
+        return delegate.subscribe(MqttChecks.subscribe(subscribe), callbackView(callback), executor)
                 .handle(SUBACK_MAPPER);
     }
 
     @Override
     public void publishes(
-            final @NotNull MqttGlobalPublishFilter filter, final @NotNull Consumer<@NotNull Mqtt3Publish> callback) {
+            final @Nullable MqttGlobalPublishFilter filter, final @Nullable Consumer<@NotNull Mqtt3Publish> callback) {
 
         Checks.notNull(callback, "Callback");
 
@@ -149,8 +147,8 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
 
     @Override
     public void publishes(
-            final @NotNull MqttGlobalPublishFilter filter, final @NotNull Consumer<@NotNull Mqtt3Publish> callback,
-            final @NotNull Executor executor) {
+            final @Nullable MqttGlobalPublishFilter filter, final @Nullable Consumer<@NotNull Mqtt3Publish> callback,
+            final @Nullable Executor executor) {
 
         Checks.notNull(callback, "Callback");
         Checks.notNull(executor, "Executor");
@@ -159,18 +157,18 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
     }
 
     @Override
-    public @NotNull CompletableFuture<Void> unsubscribe(final @NotNull Mqtt3Unsubscribe unsubscribe) {
-        return delegate.unsubscribe(Mqtt3UnsubscribeView.delegate(unsubscribe)).handle(UNSUBACK_MAPPER);
+    public @NotNull CompletableFuture<Void> unsubscribe(final @Nullable Mqtt3Unsubscribe unsubscribe) {
+        return delegate.unsubscribe(MqttChecks.unsubscribe(unsubscribe)).handle(UNSUBACK_MAPPER);
     }
 
     @Override
-    public @NotNull CompletableFuture<@NotNull Mqtt3Publish> publish(final @NotNull Mqtt3Publish publish) {
-        return delegate.publish(Mqtt3PublishView.delegate(publish)).handle(PUBLISH_RESULT_MAPPER);
+    public @NotNull CompletableFuture<@NotNull Mqtt3Publish> publish(final @Nullable Mqtt3Publish publish) {
+        return delegate.publish(MqttChecks.publish(publish)).handle(PUBLISH_RESULT_MAPPER);
     }
 
     @Override
     public @NotNull CompletableFuture<Void> disconnect() {
-        return delegate.disconnect(Mqtt3DisconnectView.delegate()).exceptionally(DISCONNECT_MAPPER);
+        return delegate.disconnect(Mqtt3DisconnectView.DELEGATE).exceptionally(DISCONNECT_MAPPER);
     }
 
     @Override
@@ -206,15 +204,13 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
         }
 
         @Override
-        public @NotNull Mqtt3SubscribeViewAndCallbackBuilder callback(
-                final @NotNull Consumer<Mqtt3Publish> callback) {
-
+        public @NotNull Mqtt3SubscribeViewAndCallbackBuilder callback(final @Nullable Consumer<Mqtt3Publish> callback) {
             this.callback = Checks.notNull(callback, "Callback");
             return this;
         }
 
         @Override
-        public @NotNull Mqtt3SubscribeViewAndCallbackBuilder executor(final @NotNull Executor executor) {
+        public @NotNull Mqtt3SubscribeViewAndCallbackBuilder executor(final @Nullable Executor executor) {
             this.executor = Checks.notNull(executor, "Executor");
             return this;
         }

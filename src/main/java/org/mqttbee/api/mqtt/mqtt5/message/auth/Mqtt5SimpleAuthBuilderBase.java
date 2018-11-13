@@ -18,7 +18,6 @@
 package org.mqttbee.api.mqtt.mqtt5.message.auth;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 
@@ -30,13 +29,13 @@ import java.nio.ByteBuffer;
 @DoNotImplement
 public interface Mqtt5SimpleAuthBuilderBase<B extends Mqtt5SimpleAuthBuilderBase<B, C>, C extends B> {
 
-    @NotNull C username(@Nullable String username);
+    @NotNull C username(@NotNull String username);
 
-    @NotNull C username(@Nullable MqttUTF8String username);
+    @NotNull C username(@NotNull MqttUTF8String username);
 
-    @NotNull C password(@Nullable byte[] password);
+    @NotNull C password(@NotNull byte[] password);
 
-    @NotNull C password(@Nullable ByteBuffer password);
+    @NotNull C password(@NotNull ByteBuffer password);
 
     @DoNotImplement
     interface Complete<B extends Mqtt5SimpleAuthBuilderBase<B, C>, C extends B> {}

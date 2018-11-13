@@ -19,11 +19,12 @@ package org.mqttbee.mqtt.datatypes;
 
 import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperty;
-import org.mqttbee.mqtt.util.MqttBuilderUtil;
+import org.mqttbee.mqtt.util.MqttChecks;
 
 import java.util.function.Function;
 
@@ -39,25 +40,25 @@ public abstract class MqttUserPropertiesImplBuilder<B extends MqttUserProperties
     }
 
     MqttUserPropertiesImplBuilder(final @NotNull Mqtt5UserProperties userProperties) {
-        final ImmutableList<MqttUserPropertyImpl> list = MqttBuilderUtil.userProperties(userProperties).asList();
+        final ImmutableList<MqttUserPropertyImpl> list = MqttChecks.userProperties(userProperties).asList();
         listBuilder = ImmutableList.builderWithExpectedSize(list.size() + 1);
         listBuilder.addAll(list);
     }
 
     abstract @NotNull B self();
 
-    public @NotNull B add(final @NotNull String name, final @NotNull String value) {
-        listBuilder.add(MqttBuilderUtil.userProperty(name, value));
+    public @NotNull B add(final @Nullable String name, final @Nullable String value) {
+        listBuilder.add(MqttChecks.userProperty(name, value));
         return self();
     }
 
-    public @NotNull B add(final @NotNull MqttUTF8String name, final @NotNull MqttUTF8String value) {
-        listBuilder.add(MqttBuilderUtil.userProperty(name, value));
+    public @NotNull B add(final @Nullable MqttUTF8String name, final @Nullable MqttUTF8String value) {
+        listBuilder.add(MqttChecks.userProperty(name, value));
         return self();
     }
 
-    public @NotNull B add(final @NotNull Mqtt5UserProperty userProperty) {
-        listBuilder.add(MqttBuilderUtil.userProperty(userProperty));
+    public @NotNull B add(final @Nullable Mqtt5UserProperty userProperty) {
+        listBuilder.add(MqttChecks.userProperty(userProperty));
         return self();
     }
 

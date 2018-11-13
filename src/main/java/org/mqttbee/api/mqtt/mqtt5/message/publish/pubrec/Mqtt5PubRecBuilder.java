@@ -32,6 +32,8 @@ public interface Mqtt5PubRecBuilder {
 
     @NotNull Mqtt5PubRecBuilder reasonCode(@NotNull Mqtt5PubRecReasonCode reasonCode);
 
+    @NotNull Mqtt5PubRecBuilder reasonString(@Nullable String reasonString);
+
     @NotNull Mqtt5PubRecBuilder reasonString(@Nullable MqttUTF8String reasonString);
 
     @NotNull Mqtt5PubRecBuilder userProperties(@NotNull Mqtt5UserProperties userProperties);

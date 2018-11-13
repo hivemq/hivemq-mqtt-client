@@ -27,7 +27,7 @@ import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImplBuilder;
 import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRec;
-import org.mqttbee.mqtt.util.MqttBuilderUtil;
+import org.mqttbee.mqtt.util.MqttChecks;
 
 /**
  * @author Silvio Giebl
@@ -49,14 +49,20 @@ public class MqttPubRelBuilder implements Mqtt5PubRelBuilder {
     }
 
     @Override
-    public @NotNull MqttPubRelBuilder reasonString(final @Nullable MqttUTF8String reasonString) {
-        this.reasonString = MqttBuilderUtil.stringOrNull(reasonString);
+    public @NotNull MqttPubRelBuilder reasonString(final @Nullable String reasonString) {
+        this.reasonString = MqttChecks.reasonString(reasonString);
         return this;
     }
 
     @Override
-    public @NotNull MqttPubRelBuilder userProperties(final @NotNull Mqtt5UserProperties userProperties) {
-        this.userProperties = MqttBuilderUtil.userProperties(userProperties);
+    public @NotNull MqttPubRelBuilder reasonString(final @Nullable MqttUTF8String reasonString) {
+        this.reasonString = MqttChecks.reasonString(reasonString);
+        return this;
+    }
+
+    @Override
+    public @NotNull MqttPubRelBuilder userProperties(final @Nullable Mqtt5UserProperties userProperties) {
+        this.userProperties = MqttChecks.userProperties(userProperties);
         return this;
     }
 

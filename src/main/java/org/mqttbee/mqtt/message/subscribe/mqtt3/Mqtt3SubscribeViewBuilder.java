@@ -28,6 +28,8 @@ import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscription;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImplBuilder;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
+import org.mqttbee.mqtt.util.MqttChecks;
+import org.mqttbee.util.Checks;
 
 import java.util.function.Function;
 
@@ -43,8 +45,8 @@ public abstract class Mqtt3SubscribeViewBuilder<B extends Mqtt3SubscribeViewBuil
         subscriptionsBuilder = ImmutableList.builder();
     }
 
-    Mqtt3SubscribeViewBuilder(final @NotNull Mqtt3Subscribe subscribe) {
-        final MqttSubscribe mqttSubscribe = Mqtt3SubscribeView.delegate(subscribe);
+    Mqtt3SubscribeViewBuilder(final @Nullable Mqtt3Subscribe subscribe) {
+        final MqttSubscribe mqttSubscribe = MqttChecks.subscribe(subscribe);
         final ImmutableList<MqttSubscription> subscriptions = mqttSubscribe.getSubscriptions();
         subscriptionsBuilder = ImmutableList.builderWithExpectedSize(subscriptions.size() + 1);
         subscriptionsBuilder.addAll(subscriptions);
@@ -52,9 +54,10 @@ public abstract class Mqtt3SubscribeViewBuilder<B extends Mqtt3SubscribeViewBuil
 
     protected abstract @NotNull B self();
 
-    public @NotNull B addSubscription(final @NotNull Mqtt3Subscription subscription) {
+    public @NotNull B addSubscription(final @Nullable Mqtt3Subscription subscription) {
         buildFirstSubscription();
-        subscriptionsBuilder.add(Mqtt3SubscriptionView.delegate(subscription));
+        subscriptionsBuilder.add(
+                Checks.notImplemented(subscription, Mqtt3SubscriptionView.class, "Subscription").getDelegate());
         return self();
     }
 
@@ -71,17 +74,17 @@ public abstract class Mqtt3SubscribeViewBuilder<B extends Mqtt3SubscribeViewBuil
 
     private void buildFirstSubscription() {
         if (firstSubscriptionBuilder != null) {
-            subscriptionsBuilder.add(Mqtt3SubscriptionView.delegate(firstSubscriptionBuilder.build()));
+            subscriptionsBuilder.add(firstSubscriptionBuilder.build().getDelegate());
             firstSubscriptionBuilder = null;
         }
     }
 
-    public @NotNull B topicFilter(final @NotNull String topicFilter) {
+    public @NotNull B topicFilter(final @Nullable String topicFilter) {
         getFirstSubscriptionBuilder().topicFilter(topicFilter);
         return self();
     }
 
-    public @NotNull B topicFilter(final @NotNull MqttTopicFilter topicFilter) {
+    public @NotNull B topicFilter(final @Nullable MqttTopicFilter topicFilter) {
         getFirstSubscriptionBuilder().topicFilter(topicFilter);
         return self();
     }
@@ -90,7 +93,7 @@ public abstract class Mqtt3SubscribeViewBuilder<B extends Mqtt3SubscribeViewBuil
         return new MqttTopicFilterImplBuilder.Nested<>(this::topicFilter);
     }
 
-    public @NotNull B qos(final @NotNull MqttQos qos) {
+    public @NotNull B qos(final @Nullable MqttQos qos) {
         getFirstSubscriptionBuilder().qos(qos);
         return self();
     }
@@ -109,7 +112,7 @@ public abstract class Mqtt3SubscribeViewBuilder<B extends Mqtt3SubscribeViewBuil
 
         public Default() {}
 
-        public Default(final @NotNull Mqtt3Subscribe subscribe) {
+        public Default(final @Nullable Mqtt3Subscribe subscribe) {
             super(subscribe);
         }
 

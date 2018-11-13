@@ -26,10 +26,9 @@ import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.*;
 import org.mqttbee.mqtt.datatypes.*;
-import org.mqttbee.mqtt.util.MqttBuilderUtil;
+import org.mqttbee.mqtt.util.MqttChecks;
 import org.mqttbee.util.ByteBufferUtil;
 import org.mqttbee.util.Checks;
-import org.mqttbee.util.MustNotBeImplementedUtil;
 import org.mqttbee.util.UnsignedDataTypes;
 
 import java.nio.ByteBuffer;
@@ -45,7 +44,7 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
     @Nullable ByteBuffer payload;
     @NotNull MqttQos qos = MqttPublish.DEFAULT_QOS;
     boolean retain;
-    long messageExpiryIntervalSeconds = MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY;
+    long messageExpiryInterval = MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY;
     @Nullable Mqtt5PayloadFormatIndicator payloadFormatIndicator;
     @Nullable MqttUTF8StringImpl contentType;
     @Nullable MqttTopicImpl responseTopic;
@@ -54,29 +53,29 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
 
     MqttPublishBuilder() {}
 
-    MqttPublishBuilder(final @NotNull Mqtt5Publish publish) {
-        final MqttPublish publishImpl = MustNotBeImplementedUtil.checkNotImplemented(publish, MqttPublish.class);
-        topic = publishImpl.getTopic();
-        payload = publishImpl.getRawPayload();
-        qos = publishImpl.getQos();
-        retain = publishImpl.isRetain();
-        messageExpiryIntervalSeconds = publishImpl.getRawMessageExpiryInterval();
-        payloadFormatIndicator = publishImpl.getRawPayloadFormatIndicator();
-        contentType = publishImpl.getRawContentType();
-        responseTopic = publishImpl.getRawResponseTopic();
-        correlationData = publishImpl.getRawCorrelationData();
-        userProperties = publishImpl.getUserProperties();
+    MqttPublishBuilder(final @Nullable Mqtt5Publish publish) {
+        final MqttPublish mqttPublish = MqttChecks.publish(publish);
+        topic = mqttPublish.getTopic();
+        payload = mqttPublish.getRawPayload();
+        qos = mqttPublish.getQos();
+        retain = mqttPublish.isRetain();
+        messageExpiryInterval = mqttPublish.getRawMessageExpiryInterval();
+        payloadFormatIndicator = mqttPublish.getRawPayloadFormatIndicator();
+        contentType = mqttPublish.getRawContentType();
+        responseTopic = mqttPublish.getRawResponseTopic();
+        correlationData = mqttPublish.getRawCorrelationData();
+        userProperties = mqttPublish.getUserProperties();
     }
 
     abstract @NotNull B self();
 
-    public @NotNull B topic(final @NotNull String topic) {
-        this.topic = MqttBuilderUtil.topic(topic);
+    public @NotNull B topic(final @Nullable String topic) {
+        this.topic = MqttChecks.topicNotNull(topic);
         return self();
     }
 
-    public @NotNull B topic(final @NotNull MqttTopic topic) {
-        this.topic = MqttBuilderUtil.topic(topic);
+    public @NotNull B topic(final @Nullable MqttTopic topic) {
+        this.topic = MqttChecks.topicNotNull(topic);
         return self();
     }
 
@@ -84,7 +83,7 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
         return new MqttTopicImplBuilder.Nested<>(this::topic);
     }
 
-    public @NotNull B qos(final @NotNull MqttQos qos) {
+    public @NotNull B qos(final @Nullable MqttQos qos) {
         this.qos = Checks.notNull(qos, "QoS");
         return self();
     }
@@ -94,12 +93,13 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
         return self();
     }
 
-    public @NotNull B messageExpiryInterval(final long messageExpiryInterval, final @NotNull TimeUnit timeUnit) {
+    public @NotNull B messageExpiryInterval(final long messageExpiryInterval, final @Nullable TimeUnit timeUnit) {
+        Checks.notNull(timeUnit, "Time unit");
         final long messageExpiryIntervalSeconds = timeUnit.toSeconds(messageExpiryInterval);
         Preconditions.checkArgument(UnsignedDataTypes.isUnsignedInt(messageExpiryIntervalSeconds),
                 "The value of session expiry interval converted in seconds must not exceed the value range of unsigned int. Found: %s which is bigger than %s (max unsigned int).",
                 messageExpiryIntervalSeconds, UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE);
-        this.messageExpiryIntervalSeconds = messageExpiryIntervalSeconds;
+        this.messageExpiryInterval = messageExpiryIntervalSeconds;
         return self();
     }
 
@@ -109,22 +109,22 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
     }
 
     public @NotNull B contentType(final @Nullable String contentType) {
-        this.contentType = MqttBuilderUtil.stringOrNull(contentType);
+        this.contentType = MqttChecks.stringOrNull(contentType, "Content type");
         return self();
     }
 
     public @NotNull B contentType(final @Nullable MqttUTF8String contentType) {
-        this.contentType = MqttBuilderUtil.stringOrNull(contentType);
+        this.contentType = MqttChecks.stringOrNull(contentType, "Content type");
         return self();
     }
 
     public @NotNull B responseTopic(final @Nullable String responseTopic) {
-        this.responseTopic = MqttBuilderUtil.topicOrNull(responseTopic);
+        this.responseTopic = (responseTopic == null) ? null : MqttChecks.topic(responseTopic, "Response topic");
         return self();
     }
 
     public @NotNull B responseTopic(final @Nullable MqttTopic responseTopic) {
-        this.responseTopic = MqttBuilderUtil.topicOrNull(responseTopic);
+        this.responseTopic = Checks.notImplementedOrNull(responseTopic, MqttTopicImpl.class, "Response topic");
         return self();
     }
 
@@ -133,17 +133,17 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
     }
 
     public @NotNull B correlationData(final @Nullable byte[] correlationData) {
-        this.correlationData = MqttBuilderUtil.binaryDataOrNull(correlationData);
+        this.correlationData = MqttChecks.binaryDataOrNull(correlationData);
         return self();
     }
 
     public @NotNull B correlationData(final @Nullable ByteBuffer correlationData) {
-        this.correlationData = MqttBuilderUtil.binaryDataOrNull(correlationData);
+        this.correlationData = MqttChecks.binaryDataOrNull(correlationData);
         return self();
     }
 
-    public @NotNull B userProperties(final @NotNull Mqtt5UserProperties userProperties) {
-        this.userProperties = MqttBuilderUtil.userProperties(userProperties);
+    public @NotNull B userProperties(final @Nullable Mqtt5UserProperties userProperties) {
+        this.userProperties = MqttChecks.userProperties(userProperties);
         return self();
     }
 
@@ -157,9 +157,9 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
 
         Base() {}
 
-        Base(final @NotNull Mqtt5Publish publish) {
+        Base(final @Nullable Mqtt5Publish publish) {
             super(publish);
-            topicAliasUsage = publish.usesTopicAlias();
+            topicAliasUsage = MqttChecks.publish(publish).usesTopicAlias();
         }
 
         public @NotNull B payload(final @Nullable byte[] payload) {
@@ -172,14 +172,14 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
             return self();
         }
 
-        public @NotNull B useTopicAlias(final @NotNull TopicAliasUsage topicAliasUsage) {
+        public @NotNull B useTopicAlias(final @Nullable TopicAliasUsage topicAliasUsage) {
             this.topicAliasUsage = Checks.notNull(topicAliasUsage, "Topic alias usage");
             return self();
         }
 
         public @NotNull MqttPublish build() {
             Checks.notNull(topic, "Topic");
-            return new MqttPublish(topic, payload, qos, retain, messageExpiryIntervalSeconds, payloadFormatIndicator,
+            return new MqttPublish(topic, payload, qos, retain, messageExpiryInterval, payloadFormatIndicator,
                     contentType, responseTopic, correlationData, topicAliasUsage, userProperties);
         }
     }
@@ -188,7 +188,7 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
 
         public Default() {}
 
-        public Default(final @NotNull Mqtt5Publish publish) {
+        public Default(final @Nullable Mqtt5Publish publish) {
             super(publish);
         }
 
@@ -242,27 +242,28 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
 
         WillBase() {}
 
-        WillBase(final @NotNull Mqtt5Publish publish) {
+        WillBase(final @Nullable Mqtt5Publish publish) {
             super(publish);
             if (publish instanceof Mqtt5WillPublish) {
                 delayInterval =
-                        MustNotBeImplementedUtil.checkNotImplemented(publish, MqttWillPublish.class).getDelayInterval();
+                        Checks.notImplemented(publish, MqttWillPublish.class, "Will publish").getDelayInterval();
             } else {
-                payload(payload);
+                payload(payload); // check payload size restriction
             }
         }
 
         public @NotNull B payload(final @Nullable byte[] payload) {
-            this.payload = MqttBuilderUtil.binaryDataOrNull(payload);
+            this.payload = MqttChecks.binaryDataOrNull(payload);
             return self();
         }
 
         public @NotNull B payload(final @Nullable ByteBuffer payload) {
-            this.payload = MqttBuilderUtil.binaryDataOrNull(payload);
+            this.payload = MqttChecks.binaryDataOrNull(payload);
             return self();
         }
 
-        public @NotNull B delayInterval(final long delayInterval, final @NotNull TimeUnit timeUnit) {
+        public @NotNull B delayInterval(final long delayInterval, final @Nullable TimeUnit timeUnit) {
+            Checks.notNull(timeUnit, "Time unit");
             final long delayIntervalSeconds = timeUnit.toSeconds(delayInterval);
             Preconditions.checkArgument(UnsignedDataTypes.isUnsignedInt(delayIntervalSeconds),
                     "The value of delay interval converted in seconds must not exceed the value range of unsigned int. Found: %s which is bigger than %s (max unsigned int).",
@@ -274,8 +275,8 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
 
         public @NotNull MqttWillPublish build() {
             Checks.notNull(topic, "Topic");
-            return new MqttWillPublish(topic, payload, qos, retain, messageExpiryIntervalSeconds,
-                    payloadFormatIndicator, contentType, responseTopic, correlationData, userProperties, delayInterval);
+            return new MqttWillPublish(topic, payload, qos, retain, messageExpiryInterval, payloadFormatIndicator,
+                    contentType, responseTopic, correlationData, userProperties, delayInterval);
         }
     }
 
@@ -283,7 +284,7 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
 
         public WillDefault() {}
 
-        public WillDefault(final @NotNull Mqtt5Publish publish) {
+        public WillDefault(final @Nullable Mqtt5Publish publish) {
             super(publish);
         }
 

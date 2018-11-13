@@ -31,7 +31,6 @@ import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
 import org.mqttbee.mqtt.message.publish.MqttWillPublish;
-import org.mqttbee.util.MustNotBeImplementedUtil;
 
 import javax.annotation.concurrent.Immutable;
 import java.nio.ByteBuffer;
@@ -43,7 +42,6 @@ import java.util.Optional;
 @Immutable
 public class Mqtt3PublishView implements Mqtt3Publish {
 
-    public static final @NotNull Function<Mqtt3Publish, Mqtt5Publish> DELEGATE_MAPPER = Mqtt3PublishView::delegate;
     public static final @NotNull Function<Mqtt5Publish, Mqtt3Publish> MAPPER = Mqtt3PublishView::of;
     public static final @NotNull java.util.function.Function<Mqtt5Publish, Mqtt3Publish> JAVA_MAPPER =
             Mqtt3PublishView::of;
@@ -63,18 +61,14 @@ public class Mqtt3PublishView implements Mqtt3Publish {
                 MqttStatefulPublish.DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
     }
 
-    public static @NotNull MqttPublish delegate(final @NotNull Mqtt3Publish publish) {
-        return MustNotBeImplementedUtil.checkNotImplemented(publish, Mqtt3PublishView.class).getDelegate();
-    }
-
-    public static @NotNull Mqtt3PublishView of(
+    static @NotNull Mqtt3PublishView of(
             final @NotNull MqttTopicImpl topic, final @Nullable ByteBuffer payload, final @NotNull MqttQos qos,
             final boolean isRetain) {
 
         return new Mqtt3PublishView(delegate(topic, payload, qos, isRetain));
     }
 
-    public static @NotNull Mqtt3PublishView willOf(
+    static @NotNull Mqtt3PublishView willOf(
             final @NotNull MqttTopicImpl topic, final @Nullable ByteBuffer payload, final @NotNull MqttQos qos,
             final boolean isRetain) {
 

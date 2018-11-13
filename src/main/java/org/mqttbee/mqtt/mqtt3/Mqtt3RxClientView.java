@@ -22,6 +22,7 @@ import io.reactivex.Flowable;
 import io.reactivex.Single;
 import io.reactivex.functions.Function;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.MqttGlobalPublishFilter;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3RxClient;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3Connect;
@@ -37,21 +38,23 @@ import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.mqtt.MqttRxClient;
 import org.mqttbee.mqtt.message.connect.connack.mqtt3.Mqtt3ConnAckView;
-import org.mqttbee.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
 import org.mqttbee.mqtt.message.disconnect.mqtt3.Mqtt3DisconnectView;
+import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishResultView;
 import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishView;
-import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeView;
 import org.mqttbee.mqtt.message.subscribe.suback.mqtt3.Mqtt3SubAckView;
-import org.mqttbee.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeView;
 import org.mqttbee.mqtt.mqtt3.exceptions.Mqtt3ExceptionFactory;
+import org.mqttbee.mqtt.util.MqttChecks;
 import org.mqttbee.rx.FlowableWithSingle;
+import org.mqttbee.util.Checks;
 
 /**
  * @author Silvio Giebl
  * @author David Katz
  */
 public class Mqtt3RxClientView implements Mqtt3RxClient {
+
+    private static final @NotNull Function<Mqtt3Publish, MqttPublish> PUBLISH_MAPPER = MqttChecks::publish;
 
     private static final @NotNull Function<Throwable, Completable> EXCEPTION_MAPPER_COMPLETABLE =
             e -> Completable.error(Mqtt3ExceptionFactory.map(e));
@@ -77,52 +80,53 @@ public class Mqtt3RxClientView implements Mqtt3RxClient {
     }
 
     @Override
-    public @NotNull Single<Mqtt3ConnAck> connect(final @NotNull Mqtt3Connect connect) {
-        return delegate.connect(Mqtt3ConnectView.delegate(connect))
+    public @NotNull Single<Mqtt3ConnAck> connect(final @Nullable Mqtt3Connect connect) {
+        return delegate.connect(MqttChecks.connect(connect))
                 .onErrorResumeNext(EXCEPTION_MAPPER_SINGLE_CONNACK)
                 .map(Mqtt3ConnAckView.MAPPER);
     }
 
     @Override
-    public @NotNull Single<Mqtt3SubAck> subscribe(final @NotNull Mqtt3Subscribe subscribe) {
-        return delegate.subscribe(Mqtt3SubscribeView.delegate(subscribe))
+    public @NotNull Single<Mqtt3SubAck> subscribe(final @Nullable Mqtt3Subscribe subscribe) {
+        return delegate.subscribe(MqttChecks.subscribe(subscribe))
                 .onErrorResumeNext(EXCEPTION_MAPPER_SINGLE_SUBACK)
                 .map(Mqtt3SubAckView.MAPPER);
     }
 
     @Override
     public @NotNull FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribeStream(
-            final @NotNull Mqtt3Subscribe subscribe) {
+            final @Nullable Mqtt3Subscribe subscribe) {
 
-        return delegate.subscribeStream(Mqtt3SubscribeView.delegate(subscribe))
+        return delegate.subscribeStream(MqttChecks.subscribe(subscribe))
                 .mapError(Mqtt3ExceptionFactory.MAPPER)
                 .mapBoth(Mqtt3PublishView.MAPPER, Mqtt3SubAckView.MAPPER);
     }
 
     @Override
-    public @NotNull Flowable<Mqtt3Publish> publishes(final @NotNull MqttGlobalPublishFilter filter) {
+    public @NotNull Flowable<Mqtt3Publish> publishes(final @Nullable MqttGlobalPublishFilter filter) {
         return delegate.publishes(filter)
                 .onErrorResumeNext(EXCEPTION_MAPPER_FLOWABLE_PUBLISH)
                 .map(Mqtt3PublishView.MAPPER);
     }
 
     @Override
-    public @NotNull Completable unsubscribe(final @NotNull Mqtt3Unsubscribe unsubscribe) {
-        return delegate.unsubscribe(Mqtt3UnsubscribeView.delegate(unsubscribe))
+    public @NotNull Completable unsubscribe(final @Nullable Mqtt3Unsubscribe unsubscribe) {
+        return delegate.unsubscribe(MqttChecks.unsubscribe(unsubscribe))
                 .toCompletable()
                 .onErrorResumeNext(EXCEPTION_MAPPER_COMPLETABLE);
     }
 
     @Override
-    public @NotNull Flowable<Mqtt3PublishResult> publish(final @NotNull Flowable<Mqtt3Publish> publishFlowable) {
-        return delegate.publish(publishFlowable.map(Mqtt3PublishView.DELEGATE_MAPPER))
+    public @NotNull Flowable<Mqtt3PublishResult> publish(final @Nullable Flowable<Mqtt3Publish> publishFlowable) {
+        Checks.notNull(publishFlowable, "Publish flowable");
+        return delegate.publish(publishFlowable.map(PUBLISH_MAPPER))
                 .onErrorResumeNext(EXCEPTION_MAPPER_FLOWABLE_PUBLISH_RESULT)
                 .map(Mqtt3PublishResultView.MAPPER);
     }
 
     @Override
     public @NotNull Completable disconnect() {
-        return delegate.disconnect(Mqtt3DisconnectView.delegate()).onErrorResumeNext(EXCEPTION_MAPPER_COMPLETABLE);
+        return delegate.disconnect(Mqtt3DisconnectView.DELEGATE).onErrorResumeNext(EXCEPTION_MAPPER_COMPLETABLE);
     }
 
     @Override

@@ -37,8 +37,8 @@ public abstract class MqttClientSslConfigImplBuilder<B extends MqttClientSslConf
 
     private @Nullable KeyManagerFactory keyManagerFactory;
     private @Nullable TrustManagerFactory trustManagerFactory;
-    private @Nullable ImmutableList<String> cipherSuites;
-    private @Nullable ImmutableList<String> protocols;
+    private @Nullable ImmutableList<@NotNull String> cipherSuites;
+    private @Nullable ImmutableList<@NotNull String> protocols;
     private long handshakeTimeoutMs = MqttClientSslConfig.DEFAULT_HANDSHAKE_TIMEOUT_MS;
 
     abstract @NotNull B self();
@@ -53,19 +53,19 @@ public abstract class MqttClientSslConfigImplBuilder<B extends MqttClientSslConf
         return self();
     }
 
-    public @NotNull B cipherSuites(final @Nullable List<@NotNull String> cipherSuites) {
+    public @NotNull B cipherSuites(final @Nullable List<String> cipherSuites) {
         Checks.elementsNotNull(cipherSuites, "Cipher suites");
         this.cipherSuites = (cipherSuites == null) ? null : ImmutableList.copyOf(cipherSuites);
         return self();
     }
 
-    public @NotNull B protocols(final @Nullable List<@NotNull String> protocols) {
+    public @NotNull B protocols(final @Nullable List<String> protocols) {
         Checks.elementsNotNull(protocols, "Protocols");
         this.protocols = (protocols == null) ? null : ImmutableList.copyOf(protocols);
         return self();
     }
 
-    public @NotNull B handshakeTimeout(final long timeout, final @NotNull TimeUnit timeUnit) {
+    public @NotNull B handshakeTimeout(final long timeout, final @Nullable TimeUnit timeUnit) {
         Checks.notNull(timeUnit, "Time unit");
         this.handshakeTimeoutMs = TimeUnit.MILLISECONDS.convert(timeout, timeUnit);
         return self();

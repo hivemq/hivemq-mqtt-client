@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5EnhancedAuthBuilder;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
-import org.mqttbee.mqtt.util.MqttBuilderUtil;
+import org.mqttbee.mqtt.util.MqttChecks;
 import org.mqttbee.util.Checks;
 
 import java.nio.ByteBuffer;
@@ -41,18 +41,17 @@ public class MqttEnhancedAuthBuilder implements Mqtt5EnhancedAuthBuilder {
 
     @Override
     public @NotNull MqttEnhancedAuthBuilder data(final @Nullable byte[] data) {
-        this.data = MqttBuilderUtil.binaryDataOrNull(data);
+        this.data = MqttChecks.binaryDataOrNull(data);
         return this;
     }
 
     @Override
     public @NotNull MqttEnhancedAuthBuilder data(final @Nullable ByteBuffer data) {
-        this.data = MqttBuilderUtil.binaryDataOrNull(data);
+        this.data = MqttChecks.binaryDataOrNull(data);
         return this;
     }
 
     public @NotNull MqttEnhancedAuth build() {
         return new MqttEnhancedAuth(method, data);
     }
-
 }
