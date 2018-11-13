@@ -51,6 +51,8 @@ public interface Mqtt5PublishBuilderBase<B extends Mqtt5PublishBuilderBase<B, C>
 
     @NotNull B messageExpiryInterval(long messageExpiryInterval);
 
+    @NotNull B noMessageExpiryInterval();
+
     @NotNull B payloadFormatIndicator(@Nullable Mqtt5PayloadFormatIndicator payloadFormatIndicator);
 
     @NotNull B contentType(@Nullable String contentType);
@@ -88,6 +90,9 @@ public interface Mqtt5PublishBuilderBase<B extends Mqtt5PublishBuilderBase<B, C>
 
         @Override
         @NotNull C messageExpiryInterval(long messageExpiryInterval);
+
+        @Override
+        @NotNull C noMessageExpiryInterval();
 
         @Override
         @NotNull C payloadFormatIndicator(@Nullable Mqtt5PayloadFormatIndicator payloadFormatIndicator);

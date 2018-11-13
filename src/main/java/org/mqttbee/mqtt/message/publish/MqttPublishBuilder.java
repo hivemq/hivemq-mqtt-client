@@ -95,6 +95,11 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
         return self();
     }
 
+    public @NotNull B noMessageExpiryInterval() {
+        this.messageExpiryInterval = MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY;
+        return self();
+    }
+
     public @NotNull B payloadFormatIndicator(final @Nullable Mqtt5PayloadFormatIndicator payloadFormatIndicator) {
         this.payloadFormatIndicator = payloadFormatIndicator;
         return self();
