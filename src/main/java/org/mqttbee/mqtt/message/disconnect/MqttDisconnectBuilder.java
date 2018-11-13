@@ -27,6 +27,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImplBuilder;
+import org.mqttbee.mqtt.message.connect.MqttConnect;
 import org.mqttbee.mqtt.util.MqttChecks;
 import org.mqttbee.util.Checks;
 
@@ -63,6 +64,11 @@ public abstract class MqttDisconnectBuilder<B extends MqttDisconnectBuilder<B>> 
 
     public @NotNull B sessionExpiryInterval(final long sessionExpiryInterval) {
         this.sessionExpiryInterval = Checks.unsignedInt(sessionExpiryInterval, "Session expiry interval");
+        return self();
+    }
+
+    public @NotNull B noSessionExpiryInterval() {
+        this.sessionExpiryInterval = MqttConnect.NO_SESSION_EXPIRY;
         return self();
     }
 

@@ -33,6 +33,8 @@ public interface Mqtt3ConnectBuilderBase<B extends Mqtt3ConnectBuilderBase<B>> {
 
     @NotNull B keepAlive(int keepAlive);
 
+    @NotNull B noKeepAlive();
+
     @NotNull B cleanSession(boolean isCleanSession);
 
     @NotNull B simpleAuth(@Nullable Mqtt3SimpleAuth simpleAuth);

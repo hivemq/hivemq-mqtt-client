@@ -62,6 +62,11 @@ public abstract class Mqtt3ConnectViewBuilder<B extends Mqtt3ConnectViewBuilder<
         return self();
     }
 
+    public @NotNull B noKeepAlive() {
+        this.keepAliveSeconds = Mqtt3ConnectView.NO_KEEP_ALIVE;
+        return self();
+    }
+
     public @NotNull B cleanSession(final boolean isCleanSession) {
         this.isCleanSession = isCleanSession;
         return self();

@@ -78,6 +78,11 @@ public abstract class MqttConnectBuilder<B extends MqttConnectBuilder<B>> {
         return self();
     }
 
+    public @NotNull B noKeepAlive() {
+        this.keepAlive = MqttConnect.NO_KEEP_ALIVE;
+        return self();
+    }
+
     public @NotNull B cleanStart(final boolean isCleanStart) {
         this.isCleanStart = isCleanStart;
         return self();
@@ -85,6 +90,11 @@ public abstract class MqttConnectBuilder<B extends MqttConnectBuilder<B>> {
 
     public @NotNull B sessionExpiryInterval(final long sessionExpiryInterval) {
         this.sessionExpiryInterval = Checks.unsignedInt(sessionExpiryInterval, "Session expiry interval");
+        return self();
+    }
+
+    public @NotNull B noSessionExpiryInterval() {
+        this.sessionExpiryInterval = MqttConnect.NO_SESSION_EXPIRY;
         return self();
     }
 
