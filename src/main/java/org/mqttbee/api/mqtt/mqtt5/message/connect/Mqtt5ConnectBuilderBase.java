@@ -43,7 +43,7 @@ public interface Mqtt5ConnectBuilderBase<B extends Mqtt5ConnectBuilderBase<B>> {
 
     @NotNull B sessionExpiryInterval(long sessionExpiryInterval);
 
-    @NotNull B noSessionExpiryInterval();
+    @NotNull B noSessionExpiry();
 
     @NotNull B responseInformationRequested(boolean isResponseInformationRequested);
 

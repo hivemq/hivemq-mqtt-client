@@ -34,7 +34,7 @@ public interface Mqtt5DisconnectBuilderBase<B extends Mqtt5DisconnectBuilderBase
 
     @NotNull B sessionExpiryInterval(long sessionExpiryInterval);
 
-    @NotNull B noSessionExpiryInterval();
+    @NotNull B noSessionExpiry();
 
     @NotNull B serverReference(@Nullable String serverReference);
 
