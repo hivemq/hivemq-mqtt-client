@@ -50,8 +50,8 @@ public class Mqtt3PublishView implements Mqtt3Publish {
             final @NotNull MqttTopicImpl topic, final @Nullable ByteBuffer payload, final @NotNull MqttQos qos,
             final boolean isRetain) {
 
-        return new MqttPublish(topic, payload, qos, isRetain, MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, null, null,
-                null, null, TopicAliasUsage.NO, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
+        return new MqttPublish(topic, payload, qos, isRetain, MqttPublish.NO_MESSAGE_EXPIRY, null, null, null, null,
+                TopicAliasUsage.NO, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
     }
 
     public static @NotNull MqttStatefulPublish statefulDelegate(
@@ -73,9 +73,8 @@ public class Mqtt3PublishView implements Mqtt3Publish {
             final boolean isRetain) {
 
         return new Mqtt3PublishView(
-                new MqttWillPublish(topic, payload, qos, isRetain, MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, null,
-                        null, null, null, MqttUserPropertiesImpl.NO_USER_PROPERTIES,
-                        Mqtt5WillPublish.DEFAULT_DELAY_INTERVAL));
+                new MqttWillPublish(topic, payload, qos, isRetain, MqttPublish.NO_MESSAGE_EXPIRY, null, null, null,
+                        null, MqttUserPropertiesImpl.NO_USER_PROPERTIES, Mqtt5WillPublish.DEFAULT_DELAY_INTERVAL));
     }
 
     public static @NotNull Mqtt3PublishView of(final @NotNull Mqtt5Publish publish) {

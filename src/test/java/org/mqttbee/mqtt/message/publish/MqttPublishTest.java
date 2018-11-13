@@ -18,40 +18,25 @@
 package org.mqttbee.mqtt.message.publish;
 
 import org.junit.Test;
-import org.mqttbee.api.mqtt.datatypes.MqttQos;
-import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
-import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 
-import java.nio.ByteBuffer;
-
-import static java.util.Objects.requireNonNull;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.mqttbee.api.mqtt.mqtt5.message.publish.TopicAliasUsage.NO;
-import static org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl.NO_USER_PROPERTIES;
+import static org.junit.Assert.*;
 
 /**
  * @author Christian Hoff
  */
 public class MqttPublishTest {
 
-    public static MqttPublish createPublishFromPayload(final ByteBuffer payload) {
-        return new MqttPublish(requireNonNull(MqttTopicImpl.from("topic")), payload, MqttQos.AT_MOST_ONCE, false,
-            MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY, Mqtt5PayloadFormatIndicator.UNSPECIFIED, null, null, null, NO,
-                NO_USER_PROPERTIES);
-    }
-
     @Test
     public void getPayloadAsBytes() {
-        byte[] expectedPayload = {1, 2, 3, 4, 5};
-        final MqttPublish publish = createPublishFromPayload(ByteBuffer.wrap(expectedPayload));
-        assertArrayEquals(expectedPayload, publish.getPayloadAsBytes());
+        final byte[] payload = {1, 2, 3, 4, 5};
+        final MqttPublish publish = new MqttPublishBuilder.Default().topic("topic").payload(payload).build();
+        assertArrayEquals(payload, publish.getPayloadAsBytes());
     }
 
     @Test
     public void getPayloadAsBytes_payloadIsNull() {
-        final MqttPublish publish = createPublishFromPayload(null);
+        final MqttPublish publish = new MqttPublishBuilder.Default().topic("topic").payload((byte[]) null).build();
+        assertNotNull(publish.getPayloadAsBytes());
         assertEquals(0, publish.getPayloadAsBytes().length);
     }
-
 }

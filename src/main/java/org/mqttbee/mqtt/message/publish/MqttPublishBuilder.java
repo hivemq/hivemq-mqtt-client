@@ -41,7 +41,7 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
     @Nullable ByteBuffer payload;
     @NotNull MqttQos qos = MqttPublish.DEFAULT_QOS;
     boolean retain;
-    long messageExpiryInterval = MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY;
+    long messageExpiryInterval = MqttPublish.NO_MESSAGE_EXPIRY;
     @Nullable Mqtt5PayloadFormatIndicator payloadFormatIndicator;
     @Nullable MqttUTF8StringImpl contentType;
     @Nullable MqttTopicImpl responseTopic;
@@ -96,7 +96,7 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
     }
 
     public @NotNull B noMessageExpiryInterval() {
-        this.messageExpiryInterval = MqttPublish.MESSAGE_EXPIRY_INTERVAL_INFINITY;
+        this.messageExpiryInterval = MqttPublish.NO_MESSAGE_EXPIRY;
         return self();
     }
 

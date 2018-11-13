@@ -42,26 +42,26 @@ import java.util.Optional;
 @Immutable
 public class MqttPublish extends MqttMessageWithUserPropertiesImpl implements Mqtt5Publish {
 
-    public static final long MESSAGE_EXPIRY_INTERVAL_INFINITY = Long.MAX_VALUE;
+    public static final long NO_MESSAGE_EXPIRY = Long.MAX_VALUE;
 
-    private final MqttTopicImpl topic;
-    private final ByteBuffer payload;
-    private final MqttQos qos;
+    private final @NotNull MqttTopicImpl topic;
+    private final @Nullable ByteBuffer payload;
+    private final @NotNull MqttQos qos;
     private final boolean isRetain;
     private final long messageExpiryInterval;
-    private final Mqtt5PayloadFormatIndicator payloadFormatIndicator;
-    private final MqttUTF8StringImpl contentType;
-    private final MqttTopicImpl responseTopic;
-    private final ByteBuffer correlationData;
-    private final TopicAliasUsage topicAliasUsage;
+    private final @Nullable Mqtt5PayloadFormatIndicator payloadFormatIndicator;
+    private final @Nullable MqttUTF8StringImpl contentType;
+    private final @Nullable MqttTopicImpl responseTopic;
+    private final @Nullable ByteBuffer correlationData;
+    private final @NotNull TopicAliasUsage topicAliasUsage;
 
     public MqttPublish(
-            @NotNull final MqttTopicImpl topic, @Nullable final ByteBuffer payload, @NotNull final MqttQos qos,
+            final @NotNull MqttTopicImpl topic, final @Nullable ByteBuffer payload, final @NotNull MqttQos qos,
             final boolean isRetain, final long messageExpiryInterval,
-            @Nullable final Mqtt5PayloadFormatIndicator payloadFormatIndicator,
-            @Nullable final MqttUTF8StringImpl contentType, @Nullable final MqttTopicImpl responseTopic,
-            @Nullable final ByteBuffer correlationData, @NotNull final TopicAliasUsage topicAliasUsage,
-            @NotNull final MqttUserPropertiesImpl userProperties) {
+            final @Nullable Mqtt5PayloadFormatIndicator payloadFormatIndicator,
+            final @Nullable MqttUTF8StringImpl contentType, final @Nullable MqttTopicImpl responseTopic,
+            final @Nullable ByteBuffer correlationData, final @NotNull TopicAliasUsage topicAliasUsage,
+            final @NotNull MqttUserPropertiesImpl userProperties) {
 
         super(userProperties);
         this.topic = topic;
@@ -76,35 +76,30 @@ public class MqttPublish extends MqttMessageWithUserPropertiesImpl implements Mq
         this.topicAliasUsage = topicAliasUsage;
     }
 
-    @NotNull
     @Override
-    public MqttTopicImpl getTopic() {
+    public @NotNull MqttTopicImpl getTopic() {
         return topic;
     }
 
-    @NotNull
     @Override
-    public Optional<ByteBuffer> getPayload() {
+    public @NotNull Optional<ByteBuffer> getPayload() {
         return ByteBufferUtil.optionalReadOnly(payload);
     }
 
-    @Nullable
-    public ByteBuffer getRawPayload() {
+    public @Nullable ByteBuffer getRawPayload() {
         return payload;
     }
 
-    @NotNull
     @Override
-    public byte[] getPayloadAsBytes() {
+    public @NotNull byte[] getPayloadAsBytes() {
         if (payload == null) {
             return new byte[0];
         }
         return ByteBufferUtil.getBytes(payload);
     }
 
-    @NotNull
     @Override
-    public MqttQos getQos() {
+    public @NotNull MqttQos getQos() {
         return qos;
     }
 
@@ -113,73 +108,61 @@ public class MqttPublish extends MqttMessageWithUserPropertiesImpl implements Mq
         return isRetain;
     }
 
-    @NotNull
     @Override
-    public Optional<Long> getMessageExpiryInterval() {
-        return (messageExpiryInterval == MESSAGE_EXPIRY_INTERVAL_INFINITY) ? Optional.empty() :
-                Optional.of(messageExpiryInterval);
+    public @NotNull Optional<Long> getMessageExpiryInterval() {
+        return (messageExpiryInterval == NO_MESSAGE_EXPIRY) ? Optional.empty() : Optional.of(messageExpiryInterval);
     }
 
     public long getRawMessageExpiryInterval() {
         return messageExpiryInterval;
     }
 
-    @NotNull
     @Override
-    public Optional<Mqtt5PayloadFormatIndicator> getPayloadFormatIndicator() {
+    public @NotNull Optional<Mqtt5PayloadFormatIndicator> getPayloadFormatIndicator() {
         return Optional.ofNullable(payloadFormatIndicator);
     }
 
-    @Nullable
-    public Mqtt5PayloadFormatIndicator getRawPayloadFormatIndicator() {
+    public @Nullable Mqtt5PayloadFormatIndicator getRawPayloadFormatIndicator() {
         return payloadFormatIndicator;
     }
 
-    @NotNull
     @Override
-    public Optional<MqttUTF8String> getContentType() {
+    public @NotNull Optional<MqttUTF8String> getContentType() {
         return Optional.ofNullable(contentType);
     }
 
-    @Nullable
-    public MqttUTF8StringImpl getRawContentType() {
+    public @Nullable MqttUTF8StringImpl getRawContentType() {
         return contentType;
     }
 
-    @NotNull
     @Override
-    public Optional<MqttTopic> getResponseTopic() {
+    public @NotNull Optional<MqttTopic> getResponseTopic() {
         return Optional.ofNullable(responseTopic);
     }
 
-    @Nullable
-    public MqttTopicImpl getRawResponseTopic() {
+    public @Nullable MqttTopicImpl getRawResponseTopic() {
         return responseTopic;
     }
 
-    @NotNull
     @Override
-    public Optional<ByteBuffer> getCorrelationData() {
+    public @NotNull Optional<ByteBuffer> getCorrelationData() {
         return ByteBufferUtil.optionalReadOnly(correlationData);
     }
 
-    @Nullable
-    public ByteBuffer getRawCorrelationData() {
+    public @Nullable ByteBuffer getRawCorrelationData() {
         return correlationData;
     }
 
-    @NotNull
     @Override
-    public TopicAliasUsage usesTopicAlias() {
+    public @NotNull TopicAliasUsage usesTopicAlias() {
         return topicAliasUsage;
     }
 
-    public MqttStatefulPublish createStateful(
+    public @NotNull MqttStatefulPublish createStateful(
             final int packetIdentifier, final boolean isDup, final int topicAlias, final boolean isNewTopicAlias,
-            @NotNull final ImmutableIntArray subscriptionIdentifiers) {
+            final @NotNull ImmutableIntArray subscriptionIdentifiers) {
 
         return new MqttStatefulPublish(
                 this, packetIdentifier, isDup, topicAlias, isNewTopicAlias, subscriptionIdentifiers);
     }
-
 }

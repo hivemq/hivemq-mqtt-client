@@ -19,13 +19,10 @@ package org.mqttbee.mqtt.message.publish.mqtt3;
 
 import org.junit.Test;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
-import org.mqttbee.mqtt.message.publish.MqttPublishTest;
+import org.mqttbee.mqtt.message.publish.MqttPublishBuilder;
 
-import java.nio.ByteBuffer;
-
-import static org.junit.Assert.assertArrayEquals;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Christian Hoff
@@ -33,10 +30,21 @@ import static org.mockito.Mockito.verify;
 public class Mqtt3PublishViewTest {
 
     @Test
-    public void getPayloadAsBytes_delegatesToWrappedMqttPublish() {
-        byte[] expectedPayload = {1, 2, 3, 4, 5};
-        final MqttPublish spyPublish = spy(MqttPublishTest.createPublishFromPayload(ByteBuffer.wrap(expectedPayload)));
-        assertArrayEquals(expectedPayload, spyPublish.getPayloadAsBytes());
+    public void getPayloadAsBytes_delegates() {
+        final byte[] payload = {1, 2, 3, 4, 5};
+        final MqttPublish spyPublish = spy(new MqttPublishBuilder.Default().topic("topic").payload(payload).build());
+        final Mqtt3PublishView publishView = Mqtt3PublishView.of(spyPublish);
+        assertArrayEquals(payload, publishView.getPayloadAsBytes());
         verify(spyPublish).getPayloadAsBytes();
+    }
+
+    @Test
+    public void getPayloadAsBytes_null_delegates() {
+        final MqttPublish spyPublish =
+                spy(new MqttPublishBuilder.Default().topic("topic").payload((byte[]) null).build());
+        final Mqtt3PublishView publishView = Mqtt3PublishView.of(spyPublish);
+        assertNotNull(publishView.getPayloadAsBytes());
+        assertEquals(0, publishView.getPayloadAsBytes().length);
+        verify(spyPublish, times(2)).getPayloadAsBytes();
     }
 }
