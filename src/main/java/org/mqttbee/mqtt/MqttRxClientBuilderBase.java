@@ -75,7 +75,7 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
     }
 
     public @NotNull B serverPort(final int port) {
-        this.serverPort = port;
+        this.serverPort = Checks.unsignedShort(port, "Server port");
         customServerPort = true;
         return self();
     }
