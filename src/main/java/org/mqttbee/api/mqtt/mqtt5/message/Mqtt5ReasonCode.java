@@ -36,7 +36,6 @@ public interface Mqtt5ReasonCode {
      * @return whether this Reason Code is an Error Code.
      */
     default boolean isError() {
-        return getCode() > 0x80;
+        return getCode() >= 0x80;
     }
-
 }
