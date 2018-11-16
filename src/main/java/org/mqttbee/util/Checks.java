@@ -40,7 +40,7 @@ public class Checks {
     public static @NotNull String notEmpty(final @Nullable String string, final @NotNull String name) {
         notNull(string, name);
         if (string.isEmpty()) {
-            throw new IllegalArgumentException(name + " must not be empty.");
+            throw new IllegalArgumentException(name + " must be at least one character long.");
         }
         return string;
     }
@@ -67,7 +67,7 @@ public class Checks {
 
     private static void elementNotNull(final @Nullable Object element, final @NotNull String name, final int index) {
         if (element == null) {
-            throw new NullPointerException(name + " must not contain a null element at index " + index);
+            throw new NullPointerException(name + " must not contain a null element, found at index " + index + ".");
         }
     }
 
@@ -89,25 +89,23 @@ public class Checks {
 
         if (!type.isInstance(object)) {
             throw new IllegalArgumentException(name + " must not be implemented by the user, but was implemented by " +
-                    object.getClass().getTypeName());
+                    object.getClass().getTypeName() + ".");
         }
         return (I) object;
     }
 
     public static int unsignedShort(final int value, final @NotNull String name) {
         if (!UnsignedDataTypes.isUnsignedShort(value)) {
-            throw new IllegalArgumentException(
-                    "The value of " + name + " must not exceed the value range of unsigned short [0, " +
-                            UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE + "], but was: " + value);
+            throw new IllegalArgumentException(name + " must not exceed the value range of unsigned short [0, " +
+                    UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE + "], but was: " + value + ".");
         }
         return value;
     }
 
     public static long unsignedInt(final long value, final @NotNull String name) {
         if (!UnsignedDataTypes.isUnsignedInt(value)) {
-            throw new IllegalArgumentException(
-                    "The value of " + name + " must not exceed the value range of unsigned int [0, " +
-                            UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE + "], but was: " + value);
+            throw new IllegalArgumentException(name + " must not exceed the value range of unsigned int [0, " +
+                    UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE + "], but was: " + value + ".");
         }
         return value;
     }

@@ -33,7 +33,7 @@ import java.nio.ByteBuffer;
  * @author Silvio Giebl
  */
 @DoNotImplement
-public interface MqttUtf8String {
+public interface MqttUtf8String extends Comparable<MqttUtf8String> {
 
     /**
      * Validates and creates a UTF-8 encoded String from the given string.

@@ -19,7 +19,10 @@ package org.mqttbee.mqtt.util;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.*;
+import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
+import org.mqttbee.api.mqtt.datatypes.MqttTopic;
+import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
+import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3Connect;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
@@ -54,18 +57,8 @@ public class MqttChecks {
 
     private MqttChecks() {}
 
-    private static @NotNull MqttUtf8StringImpl string(
-            final @NotNull String string, final @NotNull String name) {
-
-        final MqttUtf8StringImpl from = MqttUtf8StringImpl.from(string);
-        if (from == null) {
-            throw new IllegalArgumentException(name + " [" + string + "] is not a valid UTF-8 encoded String.");
-        }
-        return from;
-    }
-
     public static @NotNull MqttUtf8StringImpl stringNotNull(final @Nullable String string, final @NotNull String name) {
-        return string(Checks.notNull(string, name), name);
+        return MqttUtf8StringImpl.from(Checks.notNull(string, name), name);
     }
 
     public static @NotNull MqttUtf8StringImpl stringNotNull(
@@ -75,7 +68,7 @@ public class MqttChecks {
     }
 
     public static @Nullable MqttUtf8StringImpl stringOrNull(final @Nullable String string, final @NotNull String name) {
-        return (string == null) ? null : string(string, name);
+        return (string == null) ? null : MqttUtf8StringImpl.from(string, name);
     }
 
     public static @Nullable MqttUtf8StringImpl stringOrNull(
@@ -92,68 +85,31 @@ public class MqttChecks {
         return stringOrNull(reasonString, "Reason string");
     }
 
-    public static @NotNull MqttTopicImpl topic(final @NotNull String topic, final @NotNull String name) {
-        final MqttTopicImpl from = MqttTopicImpl.from(topic);
-        if (from == null) {
-            throw new IllegalArgumentException(name + " [" + topic + "] is not a valid Topic Name.");
-        }
-        return from;
-    }
-
-    public static @NotNull MqttTopicImpl topic(final @NotNull String topic) {
-        return topic(topic, "Topic");
-    }
-
     public static @NotNull MqttTopicImpl topicNotNull(final @Nullable String topic) {
-        return topic(Checks.notNull(topic, "Topic"), "Topic");
+        return MqttTopicImpl.from(Checks.notNull(topic, "Topic"), "Topic");
     }
 
     public static @NotNull MqttTopicImpl topicNotNull(final @Nullable MqttTopic topic) {
         return Checks.notImplemented(topic, MqttTopicImpl.class, "Topic");
     }
 
-    public static @NotNull MqttTopicFilterImpl topicFilter(final @NotNull String topicFilter) {
-        final MqttTopicFilterImpl from = MqttTopicFilterImpl.from(topicFilter);
-        if (from == null) {
-            throw new IllegalArgumentException("The string: [" + topicFilter + "] is not a valid Topic Filter.");
-        }
-        return from;
-    }
-
     public static @NotNull MqttTopicFilterImpl topicFilterNotNull(final @Nullable String topicFilter) {
-        return topicFilter(Checks.notNull(topicFilter, "Topic Filter"));
+        return MqttTopicFilterImpl.from(Checks.notNull(topicFilter, "Topic Filter"));
     }
 
     public static @NotNull MqttTopicFilterImpl topicFilterNotNull(final @Nullable MqttTopicFilter topicFilter) {
         return Checks.notImplemented(topicFilter, MqttTopicFilterImpl.class, "Topic filter");
     }
 
-    public static @NotNull MqttSharedTopicFilterImpl sharedTopicFilter(
-            final @NotNull String shareName, final @NotNull String topicFilter) {
-
-        final MqttSharedTopicFilterImpl sharedTopicFilter = MqttSharedTopicFilterImpl.from(shareName, topicFilter);
-        if (sharedTopicFilter == null) {
-            throw new IllegalArgumentException(
-                    "The string: [" + MqttSharedTopicFilter.SHARE_PREFIX + shareName + MqttTopic.TOPIC_LEVEL_SEPARATOR +
-                            topicFilter + "] is not a valid Shared Topic Filter.");
-        }
-        return sharedTopicFilter;
-    }
-
     public static @NotNull MqttSharedTopicFilterImpl sharedTopicFilterNotNull(
             final @Nullable String shareName, final @Nullable String topicFilter) {
 
-        return sharedTopicFilter(Checks.notNull(shareName, "Share name"), Checks.notNull(topicFilter, "Topic filter"));
+        return MqttSharedTopicFilterImpl.from(
+                Checks.notNull(shareName, "Share name"), Checks.notNull(topicFilter, "Topic filter"));
     }
 
     public static @NotNull MqttClientIdentifierImpl clientIdentifier(final @Nullable String clientIdentifier) {
-        Checks.notNull(clientIdentifier, "Client identifier");
-        final MqttClientIdentifierImpl from = MqttClientIdentifierImpl.from(clientIdentifier);
-        if (from == null) {
-            throw new IllegalArgumentException(
-                    "The string: [" + clientIdentifier + "] is not a valid Client Identifier.");
-        }
-        return from;
+        return MqttClientIdentifierImpl.from(Checks.notNull(clientIdentifier, "Client identifier"));
     }
 
     public static @NotNull MqttClientIdentifierImpl clientIdentifier(
@@ -165,8 +121,8 @@ public class MqttChecks {
     private static @NotNull ByteBuffer binaryData(final @NotNull byte[] binary, final @NotNull String name) {
         if (!MqttBinaryData.isInRange(binary)) {
             throw new IllegalArgumentException(
-                    name + " can not be encoded as binary data. Maximum length is: " + MqttBinaryData.MAX_LENGTH +
-                            " bytes, but was: " + binary.length + " bytes");
+                    name + " can not be encoded as binary data. Maximum length is " + MqttBinaryData.MAX_LENGTH +
+                            " bytes, but was " + binary.length + " bytes.");
         }
         return ByteBuffer.wrap(binary);
     }
@@ -182,8 +138,8 @@ public class MqttChecks {
     private static @NotNull ByteBuffer binaryData(final @NotNull ByteBuffer binary, final @NotNull String name) {
         if (!MqttBinaryData.isInRange(binary)) {
             throw new IllegalArgumentException(
-                    name + " can not be encoded as binary data. Maximum length is: " + MqttBinaryData.MAX_LENGTH +
-                            " bytes, but was: " + binary.remaining() + " bytes");
+                    name + " can not be encoded as binary data. Maximum length is " + MqttBinaryData.MAX_LENGTH +
+                            " bytes, but was " + binary.remaining() + " bytes.");
         }
         return binary.slice();
     }
@@ -202,6 +158,7 @@ public class MqttChecks {
 
     public static @NotNull MqttUserPropertyImpl userProperty(
             final @Nullable String name, final @Nullable String value) {
+
         return MqttUserPropertyImpl.of(
                 stringNotNull(name, "User property name"), stringNotNull(value, "User property value"));
     }

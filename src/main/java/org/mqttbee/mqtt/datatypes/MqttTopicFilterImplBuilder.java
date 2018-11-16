@@ -23,7 +23,6 @@ import org.mqttbee.api.mqtt.datatypes.MqttSharedTopicFilterBuilder;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilterBuilder;
-import org.mqttbee.mqtt.util.MqttChecks;
 import org.mqttbee.util.Checks;
 
 import java.util.function.Function;
@@ -86,7 +85,7 @@ public abstract class MqttTopicFilterImplBuilder<B extends MqttTopicFilterImplBu
             Checks.state(stringBuilder != null, "At least one topic level must be added.");
             final String string = stringBuilder.toString();
             Checks.state(!string.isEmpty(), "Topic must be at least one character long.");
-            return MqttChecks.topicFilter(string);
+            return MqttTopicFilterImpl.from(string);
         }
     }
 
@@ -161,7 +160,7 @@ public abstract class MqttTopicFilterImplBuilder<B extends MqttTopicFilterImplBu
             Checks.state(stringBuilder != null, "At least one topic level must be added.");
             final String string = stringBuilder.toString();
             Checks.state(!string.isEmpty(), "Topic must be at least one character long.");
-            return MqttChecks.sharedTopicFilter(shareName, string);
+            return MqttSharedTopicFilterImpl.from(shareName, string);
         }
     }
 

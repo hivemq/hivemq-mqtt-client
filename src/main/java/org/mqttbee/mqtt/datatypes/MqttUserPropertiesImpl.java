@@ -23,7 +23,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.exceptions.MqttBinaryDataExceededException;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
-import org.mqttbee.mqtt.message.MqttProperty;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -37,7 +36,8 @@ public class MqttUserPropertiesImpl implements Mqtt5UserProperties {
     /**
      * Empty collection of User Properties.
      */
-    public static final MqttUserPropertiesImpl NO_USER_PROPERTIES = new MqttUserPropertiesImpl(ImmutableList.of());
+    public static final @NotNull MqttUserPropertiesImpl NO_USER_PROPERTIES =
+            new MqttUserPropertiesImpl(ImmutableList.of());
 
     /**
      * Creates a collection of User Properties from the given immutable list of User Properties.
@@ -45,8 +45,9 @@ public class MqttUserPropertiesImpl implements Mqtt5UserProperties {
      * @param userProperties the immutable list of User Properties.
      * @return the created collection of User Properties or {@link #NO_USER_PROPERTIES} if the list is empty.
      */
-    @NotNull
-    public static MqttUserPropertiesImpl of(@NotNull final ImmutableList<MqttUserPropertyImpl> userProperties) {
+    public static @NotNull MqttUserPropertiesImpl of(
+            final @NotNull ImmutableList<MqttUserPropertyImpl> userProperties) {
+
         return userProperties.isEmpty() ? NO_USER_PROPERTIES : new MqttUserPropertiesImpl(userProperties);
     }
 
@@ -56,22 +57,21 @@ public class MqttUserPropertiesImpl implements Mqtt5UserProperties {
      * @param userPropertiesBuilder the builder for the User Properties.
      * @return the built collection of User Properties or {@link #NO_USER_PROPERTIES} if the builder is null.
      */
-    @NotNull
-    public static MqttUserPropertiesImpl build(
-            @Nullable final ImmutableList.Builder<MqttUserPropertyImpl> userPropertiesBuilder) {
+    public static @NotNull MqttUserPropertiesImpl build(
+            final @Nullable ImmutableList.Builder<MqttUserPropertyImpl> userPropertiesBuilder) {
+
         return (userPropertiesBuilder == null) ? NO_USER_PROPERTIES : of(userPropertiesBuilder.build());
     }
 
-    private final ImmutableList<MqttUserPropertyImpl> userProperties;
+    private final @NotNull ImmutableList<MqttUserPropertyImpl> userProperties;
     private int encodedLength = -1;
 
-    private MqttUserPropertiesImpl(@NotNull final ImmutableList<MqttUserPropertyImpl> userProperties) {
+    private MqttUserPropertiesImpl(final @NotNull ImmutableList<MqttUserPropertyImpl> userProperties) {
         this.userProperties = userProperties;
     }
 
-    @NotNull
     @Override
-    public ImmutableList<MqttUserPropertyImpl> asList() {
+    public @NotNull ImmutableList<MqttUserPropertyImpl> asList() {
         return userProperties;
     }
 
@@ -83,14 +83,9 @@ public class MqttUserPropertiesImpl implements Mqtt5UserProperties {
      *
      * @param out the byte buffer to encode to.
      */
-    public void encode(@NotNull final ByteBuf out) {
-        if (!userProperties.isEmpty()) {
-            for (int i = 0; i < userProperties.size(); i++) {
-                final MqttUserPropertyImpl userProperty = userProperties.get(i);
-                out.writeByte(MqttProperty.USER_PROPERTY);
-                userProperty.getName().to(out);
-                userProperty.getValue().to(out);
-            }
+    public void encode(final @NotNull ByteBuf out) {
+        for (int i = 0; i < userProperties.size(); i++) {
+            userProperties.get(i).encode(out);
         }
     }
 
@@ -109,11 +104,8 @@ public class MqttUserPropertiesImpl implements Mqtt5UserProperties {
 
     private int calculateEncodedLength() {
         int encodedLength = 0;
-        if (!userProperties.isEmpty()) {
-            for (int i = 0; i < userProperties.size(); i++) {
-                final MqttUserPropertyImpl userProperty = userProperties.get(i);
-                encodedLength += 1 + userProperty.getName().encodedLength() + userProperty.getValue().encodedLength();
-            }
+        for (int i = 0; i < userProperties.size(); i++) {
+            encodedLength += userProperties.get(i).encodedLength();
         }
         return encodedLength;
     }
@@ -134,5 +126,4 @@ public class MqttUserPropertiesImpl implements Mqtt5UserProperties {
     public int hashCode() {
         return userProperties.hashCode();
     }
-
 }

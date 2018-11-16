@@ -23,7 +23,6 @@ import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
 
 import javax.annotation.concurrent.Immutable;
-import java.util.regex.Pattern;
 
 /**
  * @author Silvio Giebl
@@ -36,10 +35,8 @@ public class MqttClientIdentifierImpl extends MqttUtf8StringImpl implements Mqtt
     /**
      * Placeholder for a Client Identifier to indicate that the MQTT broker should assign the Client Identifier.
      */
-    @NotNull
-    public static final MqttClientIdentifierImpl REQUEST_CLIENT_IDENTIFIER_FROM_SERVER =
-            new MqttClientIdentifierImpl(encode(""));
-    private static final Pattern MUST_BE_ALLOWED_BY_SERVER_PATTERN = Pattern.compile("([0-9]|[a-z]|[A-Z])*");
+    public static final @NotNull MqttClientIdentifierImpl REQUEST_CLIENT_IDENTIFIER_FROM_SERVER =
+            new MqttClientIdentifierImpl(new byte[0]);
     private static final int MUST_BE_ALLOWED_BY_SERVER_MIN_BYTES = 1;
     private static final int MUST_BE_ALLOWED_BY_SERVER_MAX_BYTES = 23;
 
@@ -50,10 +47,9 @@ public class MqttClientIdentifierImpl extends MqttUtf8StringImpl implements Mqtt
      *
      * @param binary the byte array with the UTF-8 encoded data to decode from.
      * @return the created Client Identifier or null if the byte array does not contain a well-formed encoded Client
-     * Identifier.
+     *         Identifier.
      */
-    @Nullable
-    public static MqttClientIdentifierImpl from(@NotNull final byte[] binary) {
+    public static @Nullable MqttClientIdentifierImpl from(final @NotNull byte[] binary) {
         return (!MqttBinaryData.isInRange(binary) || containsMustNotCharacters(binary)) ? null :
                 new MqttClientIdentifierImpl(binary);
     }
@@ -65,10 +61,9 @@ public class MqttClientIdentifierImpl extends MqttUtf8StringImpl implements Mqtt
      * @return the created Client Identifier.
      * @throws IllegalArgumentException if the given string contains forbidden characters.
      */
-    @Nullable
-    public static MqttClientIdentifierImpl from(@NotNull final String string) {
-        checkForbiddenCharacters(string);
-
+    public static @NotNull MqttClientIdentifierImpl from(final @NotNull String string) {
+        checkLength(string, "Client identifier");
+        checkForbiddenCharacters(string, "Client identifier");
         return new MqttClientIdentifierImpl(string);
     }
 
@@ -80,29 +75,34 @@ public class MqttClientIdentifierImpl extends MqttUtf8StringImpl implements Mqtt
      *
      * @param byteBuf the byte buffer with the UTF-8 encoded data to decode from.
      * @return the created Client Identifier or null if the byte buffer does not contain a well-formed encoded Client
-     * Identifier.
+     *         Identifier.
      */
-    @Nullable
-    public static MqttClientIdentifierImpl from(@NotNull final ByteBuf byteBuf) {
+    public static @Nullable MqttClientIdentifierImpl from(final @NotNull ByteBuf byteBuf) {
         final byte[] binary = MqttBinaryData.decode(byteBuf);
         return (binary == null) ? null : from(binary);
     }
 
-
-    private MqttClientIdentifierImpl(@NotNull final byte[] binary) {
+    private MqttClientIdentifierImpl(final @NotNull byte[] binary) {
         super(binary);
     }
 
-    private MqttClientIdentifierImpl(@NotNull final String string) {
+    private MqttClientIdentifierImpl(final @NotNull String string) {
         super(string);
     }
 
     @Override
     public boolean mustBeAllowedByServer() {
         final byte[] binary = toBinary();
-        return binary.length >= MUST_BE_ALLOWED_BY_SERVER_MIN_BYTES &&
-                binary.length <= MUST_BE_ALLOWED_BY_SERVER_MAX_BYTES &&
-                MUST_BE_ALLOWED_BY_SERVER_PATTERN.matcher(toString()).matches();
+        final int length = binary.length;
+        if ((length < MUST_BE_ALLOWED_BY_SERVER_MIN_BYTES) || (length > MUST_BE_ALLOWED_BY_SERVER_MAX_BYTES)) {
+            return false;
+        }
+        for (final byte b : binary) {
+            if (((b >= 'a') && (b <= 'z')) || ((b >= 'A') && (b <= 'Z')) || ((b >= '0') && (b <= '9'))) {
+                continue;
+            }
+            return false;
+        }
+        return true;
     }
-
 }
