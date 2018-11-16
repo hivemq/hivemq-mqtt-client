@@ -20,12 +20,14 @@ package org.mqttbee.mqtt.datatypes;
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -35,15 +37,15 @@ import static org.junit.Assert.*;
  * @author Silvio Giebl
  * @author Christian Hoff
  */
-public class MqttTopicImplTest {
+class MqttTopicImplTest {
 
-    private static Stream<Function<String, MqttTopicImpl>> topicFactoryMethodProvider() {
+    private static @NotNull Stream<Function<String, MqttTopicImpl>> topicFactoryMethodProvider() {
         return Stream.of(MqttTopicImplTest::createFromByteBuf, MqttTopicImpl::from);
     }
 
-    private static MqttTopicImpl createFromByteBuf(final String string) {
+    private static @Nullable MqttTopicImpl createFromByteBuf(final @NotNull String string) {
         final ByteBuf byteBuf = Unpooled.buffer();
-        final byte[] binary = string.getBytes(Charset.forName("UTF-8"));
+        final byte[] binary = string.getBytes(StandardCharsets.UTF_8);
         byteBuf.writeShort(binary.length);
         byteBuf.writeBytes(binary);
         final MqttTopicImpl mqtt5Topic = MqttTopicImpl.from(byteBuf);
@@ -52,24 +54,24 @@ public class MqttTopicImplTest {
     }
 
     @Test
-    public void from_emptyByteBuf_returnsNull() {
+    void from_emptyByteBuf_returnsNull() {
         final String string = "";
         final MqttTopicImpl mqtt5Topic = createFromByteBuf(string);
         assertNull(mqtt5Topic);
     }
 
     @Test
-    public void from_emptyString_throws() {
-        IllegalArgumentException exception =
+    void from_emptyString_throws() {
+        final IllegalArgumentException exception =
                 Assertions.assertThrows(IllegalArgumentException.class, () -> MqttTopicImpl.from(""));
         assertTrue(
                 "IllegalArgumentException must give hint that string must not be empty.",
-                exception.getMessage().contains("must not be empty"));
+                exception.getMessage().contains("must be at least one character long"));
     }
 
     @ParameterizedTest
     @MethodSource("topicFactoryMethodProvider")
-    public void from_mustBeCaseSensitive(Function<String, MqttTopicImpl> topicFactoryMethod) {
+    void from_mustBeCaseSensitive(final @NotNull Function<String, MqttTopicImpl> topicFactoryMethod) {
         final String string1 = "abc";
         final String string2 = "ABC";
         final MqttTopicImpl mqtt5Topic1 = topicFactoryMethod.apply(string1);
@@ -81,7 +83,7 @@ public class MqttTopicImplTest {
 
     @ParameterizedTest
     @MethodSource("topicFactoryMethodProvider")
-    public void from_containsSpace(Function<String, MqttTopicImpl> topicFactoryMethod) {
+    void from_containsSpace(final @NotNull Function<String, MqttTopicImpl> topicFactoryMethod) {
         final String string = "ab c/def";
         final MqttTopicImpl mqtt5Topic = topicFactoryMethod.apply(string);
         assertNotNull(mqtt5Topic);
@@ -89,7 +91,7 @@ public class MqttTopicImplTest {
 
     @ParameterizedTest
     @MethodSource("topicFactoryMethodProvider")
-    public void from_singleSpaceOnly(Function<String, MqttTopicImpl> topicFactoryMethod) {
+    void from_singleSpaceOnly(final @NotNull Function<String, MqttTopicImpl> topicFactoryMethod) {
         final String string = " ";
         final MqttTopicImpl mqtt5Topic = topicFactoryMethod.apply(string);
         assertNotNull(mqtt5Topic);
@@ -97,7 +99,7 @@ public class MqttTopicImplTest {
 
     @ParameterizedTest
     @MethodSource("topicFactoryMethodProvider")
-    public void from_topicLevelSeparatorOnly(Function<String, MqttTopicImpl> topicFactoryMethod) {
+    void from_topicLevelSeparatorOnly(final @NotNull Function<String, MqttTopicImpl> topicFactoryMethod) {
         final String string = "/";
         final MqttTopicImpl mqtt5Topic = topicFactoryMethod.apply(string);
         assertNotNull(mqtt5Topic);
@@ -108,15 +110,15 @@ public class MqttTopicImplTest {
     }
 
     @Test
-    public void from_byteBufWithMultiLevelWildcard_returnsNull() {
+    void from_byteBufWithMultiLevelWildcard_returnsNull() {
         final String string = "abc/def/#";
         final MqttTopicImpl mqtt5Topic = createFromByteBuf(string);
         assertNull(mqtt5Topic);
     }
 
     @Test
-    public void from_stringWithMultiLevelWildcard_throws() {
-        IllegalArgumentException exception =
+    void from_stringWithMultiLevelWildcard_throws() {
+        final IllegalArgumentException exception =
                 Assertions.assertThrows(IllegalArgumentException.class, () -> MqttTopicImpl.from("abc/def/#"));
         assertTrue(
                 "IllegalArgumentException must give hint that string contains a forbidden multi level wildcard character.",
@@ -124,15 +126,15 @@ public class MqttTopicImplTest {
     }
 
     @Test
-    public void from_byteBufWithSingleLevelWildcard_returnsNull() {
+    void from_byteBufWithSingleLevelWildcard_returnsNull() {
         final String string = "abc/+/def";
         final MqttTopicImpl mqtt5Topic = createFromByteBuf(string);
         assertNull(mqtt5Topic);
     }
 
     @Test
-    public void from_stringWithSingleLevelWildcard_throws() {
-        IllegalArgumentException exception =
+    void from_stringWithSingleLevelWildcard_throws() {
+        final IllegalArgumentException exception =
                 Assertions.assertThrows(IllegalArgumentException.class, () -> MqttTopicImpl.from("abc/+/def"));
         assertTrue(
                 "IllegalArgumentException must give hint that string contains a forbidden single level wildcard character.",
@@ -141,7 +143,7 @@ public class MqttTopicImplTest {
 
     @ParameterizedTest
     @MethodSource("topicFactoryMethodProvider")
-    public void getLevels_simple(Function<String, MqttTopicImpl> topicFactoryMethod) {
+    void getLevels_simple(final @NotNull Function<String, MqttTopicImpl> topicFactoryMethod) {
         final String string = "abc/def/ghi";
         final MqttTopicImpl mqtt5Topic = topicFactoryMethod.apply(string);
         assertNotNull(mqtt5Topic);
@@ -154,7 +156,7 @@ public class MqttTopicImplTest {
 
     @ParameterizedTest
     @MethodSource("topicFactoryMethodProvider")
-    public void getLevels_emptyLevels(Function<String, MqttTopicImpl> topicFactoryMethod) {
+    void getLevels_emptyLevels(final @NotNull Function<String, MqttTopicImpl> topicFactoryMethod) {
         final String string = "/abc//def///ghi/";
         final MqttTopicImpl mqtt5Topic = topicFactoryMethod.apply(string);
         assertNotNull(mqtt5Topic);
@@ -169,5 +171,4 @@ public class MqttTopicImplTest {
         assertEquals("ghi", levels.get(6));
         assertEquals("", levels.get(7));
     }
-
 }

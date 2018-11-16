@@ -21,6 +21,7 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Utf8;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -37,9 +38,9 @@ import static org.junit.Assert.*;
 /**
  * @author Silvio Giebl
  */
-public class MqttUtf8StringImplTest {
+class MqttUtf8StringImplTest {
 
-    private static Iterable stringWithGivenLengthProvider(int length) {
+    private static @NotNull Iterable<Arguments> stringWithGivenLengthProvider(final int length) {
         final List<Arguments> arguments = new ArrayList<Arguments>();
 
         final char[] chars = new char[length];
@@ -61,34 +62,35 @@ public class MqttUtf8StringImplTest {
         return arguments;
     }
 
-    private static Iterable tooLongStringProvider() {
+    private static Iterable<Arguments> tooLongStringProvider() {
         return stringWithGivenLengthProvider(MqttBinaryData.MAX_LENGTH + 1);
     }
 
     @ParameterizedTest(name = "{index}: length={1}, string={0}")
     @MethodSource("tooLongStringProvider")
-    public void from_stringTooLong_throws(final String tooLong, int expectedLength) {
-        IllegalArgumentException exception =
+    void from_stringTooLong_throws(final @NotNull String tooLong, final int expectedLength) {
+        final IllegalArgumentException exception =
                 Assertions.assertThrows(IllegalArgumentException.class, () -> MqttUtf8StringImpl.from(tooLong));
         assertTrue("IllegalArgumentException must give hint that string encoded in UTF-8 exceeds binary limit.",
-                exception.getMessage().contains("encoded in UTF-8 must not be longer than"));
+                exception.getMessage().contains("must not be longer than"));
         assertTrue("IllegalArgumentException contains actual length.",
                 exception.getMessage().contains(Integer.toString(expectedLength - 2)));
     }
 
     @Test
-    public void from_stringWithNullCharacter_throws() {
-        IllegalArgumentException exception =
+    void from_stringWithNullCharacter_throws() {
+        final IllegalArgumentException exception =
                 Assertions.assertThrows(IllegalArgumentException.class, () -> MqttUtf8StringImpl.from("abc\0def"));
         assertTrue("IllegalArgumentException must give hint that string contains a forbidden null character.",
-                exception.getMessage().contains("null character U+0000"));
+                exception.getMessage().contains("null character (U+0000)"));
     }
 
     @Test
-    public void from_stringWithUtf16Surrogates_throws() {
+    void from_stringWithUtf16Surrogates_throws() {
         for (char c = '\uD800'; c <= '\uDFFF'; c++) {
-            String stringWithSurrogate = "abc" + c + "def";
-            IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class,
+            final String stringWithSurrogate = "abc" + c + "def";
+            final IllegalArgumentException exception = Assertions.assertThrows(
+                    IllegalArgumentException.class,
                     () -> MqttUtf8StringImpl.from(stringWithSurrogate));
             assertTrue(
                     "IllegalArgumentException must give hint that string contains a forbidden UTF-16 surrogate.",
@@ -97,7 +99,7 @@ public class MqttUtf8StringImplTest {
     }
 
     @Test
-    public void from_bytesTooLong_returnsNull() {
+    void from_bytesTooLong_returnsNull() {
         final byte[] binary = new byte[MqttBinaryData.MAX_LENGTH + 1];
         Arrays.fill(binary, (byte) 1);
         final MqttUtf8StringImpl binaryString = MqttUtf8StringImpl.from(binary);
@@ -105,12 +107,12 @@ public class MqttUtf8StringImplTest {
     }
 
     @Test
-    public void from_bytesWithNullCharacter_returnsNull() {
+    void from_bytesWithNullCharacter_returnsNull() {
         assertNull(MqttUtf8StringImpl.from(new byte[]{'a', 'b', 'c', '\0', 'd', 'e', 'f'}));
     }
 
     @Test
-    public void from_bytesWithUtf16Surrogates_returnsNull() {
+    void from_bytesWithUtf16Surrogates_returnsNull() {
         for (int b = 0xA0; b <= 0xBF; b++) {
             for (int b2 = 0; b2 < 0xFF; b2++) {
                 assertNull(MqttUtf8StringImpl.from(
@@ -120,7 +122,7 @@ public class MqttUtf8StringImplTest {
     }
 
     @Test
-    public void containsShouldNotCharacters_stringWithControlCharacters() {
+    void containsShouldNotCharacters_stringWithControlCharacters() {
         for (char c = '\u0001'; c <= '\u001F'; c++) {
             final MqttUtf8StringImpl string = MqttUtf8StringImpl.from("abc" + c + "def");
             assertNotNull(string);
@@ -151,7 +153,7 @@ public class MqttUtf8StringImplTest {
     }
 
     @Test
-    public void containsShouldNotCharacters_stringWithNonCharacters() {
+    void containsShouldNotCharacters_stringWithNonCharacters() {
         for (int c = 0xFFFE; c <= 0x10_FFFE; c += 0x1_0000) {
             for (int i = 0; i < 2; i++) {
                 final String nonCharacterString = String.valueOf(Character.toChars(c + i));
@@ -176,7 +178,7 @@ public class MqttUtf8StringImplTest {
     }
 
     @Test
-    public void containsShouldNotCharacters_stringWithoutControlAndNonCharacters() {
+    void containsShouldNotCharacters_stringWithoutControlAndNonCharacters() {
         final MqttUtf8StringImpl string = MqttUtf8StringImpl.from("abcdef");
         assertNotNull(string);
         assertFalse(string.containsShouldNotCharacters());
@@ -187,7 +189,7 @@ public class MqttUtf8StringImplTest {
     }
 
     @Test
-    public void from_stringWithZeroWidthNoBreakSpaceCharacter() {
+    void from_stringWithZeroWidthNoBreakSpaceCharacter() {
         final MqttUtf8StringImpl string = MqttUtf8StringImpl.from("abc" + '\uFEFF' + "def");
         assertNotNull(string);
         assertTrue(string.toString().contains("\uFEFF"));
@@ -200,7 +202,7 @@ public class MqttUtf8StringImplTest {
     }
 
     @Test
-    public void from_byteBuf() {
+    void from_byteBuf() {
         final String string = "abcdef";
 
         final ByteBuf byteBuf = Unpooled.buffer();
@@ -213,7 +215,7 @@ public class MqttUtf8StringImplTest {
     }
 
     @Test
-    public void to_byteBuf() {
+    void to_byteBuf() {
         final String string = "abcdef";
         final byte[] expected = {0, 6, 'a', 'b', 'c', 'd', 'e', 'f'};
 
@@ -230,7 +232,7 @@ public class MqttUtf8StringImplTest {
     }
 
     @Test
-    public void toBinary_specificationExample() {
+    void toBinary_specificationExample() {
         final String string = "A\uD869\uDED4";
         final byte[] expected = {0x41, (byte) 0xF0, (byte) 0xAA, (byte) 0x9B, (byte) 0x94};
         final MqttUtf8StringImpl mqtt5UTF8String = MqttUtf8StringImpl.from(string);
@@ -240,7 +242,7 @@ public class MqttUtf8StringImplTest {
     }
 
     @Test
-    public void encodedLength_fromBytes() {
+    void encodedLength_fromBytes() {
         final byte[] binary = new byte[]{'a', 'b', 'c', 'd', 'e', 'f'};
         final MqttUtf8StringImpl binaryString = MqttUtf8StringImpl.from(binary);
         assertNotNull(binaryString);
@@ -248,23 +250,23 @@ public class MqttUtf8StringImplTest {
     }
 
     @Test
-    public void encodedLength_fromString() {
+    void encodedLength_fromString() {
         final String simple = "abcdef";
-        int expectedLength = 2 + Utf8.encodedLength(simple);
+        final int expectedLength = 2 + Utf8.encodedLength(simple);
         final MqttUtf8StringImpl string = MqttUtf8StringImpl.from(simple);
         assertNotNull(string);
         assertEquals(expectedLength, string.encodedLength());
 
     }
 
-    private static Iterable stringWithMaxLengthProvider() {
+    private static Iterable<Arguments> stringWithMaxLengthProvider() {
         return stringWithGivenLengthProvider(MqttBinaryData.MAX_LENGTH);
     }
 
     @ParameterizedTest(name = "{index}: length={1}, string={0}")
     @MethodSource("stringWithMaxLengthProvider")
-    public void encodedLength_fromStringWithMaxLength(String string, int expectedLength) {
-        MqttUtf8StringImpl utf8String = MqttUtf8StringImpl.from(string);
+    void encodedLength_fromStringWithMaxLength(final @NotNull String string, final int expectedLength) {
+        final MqttUtf8StringImpl utf8String = MqttUtf8StringImpl.from(string);
         assertNotNull(utf8String);
         assertEquals(expectedLength, utf8String.encodedLength());
     }
@@ -313,7 +315,7 @@ public class MqttUtf8StringImplTest {
     }
 
     @Test
-    public void hashCode_sameAsString() {
+    void hashCode_sameAsString() {
         final MqttUtf8StringImpl string = MqttUtf8StringImpl.from("test");
         final MqttUtf8StringImpl binary = MqttUtf8StringImpl.from(new byte[]{'t', 'e', 's', 't'});
         assertNotNull(string);

@@ -17,20 +17,16 @@
 
 package org.mqttbee.mqtt.datatypes;
 
-import com.google.common.base.Preconditions;
 import com.google.common.base.Utf8;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
-import org.mqttbee.api.mqtt.exceptions.MqttBinaryDataExceededException;
-import org.mqttbee.util.Checks;
 
 import javax.annotation.concurrent.Immutable;
 import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.regex.Pattern;
 
 /**
  * This class lazily en/decodes between UTF-8 and UTF-16 encoding, but performs validation upfront.
@@ -41,32 +37,11 @@ import java.util.regex.Pattern;
 @Immutable
 public class MqttUtf8StringImpl implements MqttUtf8String {
 
-    private static final Charset CHARSET = Charset.forName("UTF-8");
-    private static final Pattern SHOULD_NOT_CHARACTERS_PATTERN =
-            Pattern.compile("[\\u0001-\\u001F]|[\\u007F-\\u009F]" + // control characters
-                    "|[\\uFDD0-\\uFDEF]" +              // non characters
-                    "|\\uFFFE|\\uFFFF" +                //   U+FFFE|F
-                    "|\\uD83F\\uDFFE|\\uD83F\\uDFFF" +  //  U+1FFFE|F
-                    "|\\uD87F\\uDFFE|\\uD87F\\uDFFF" +  //  U+2FFFE|F
-                    "|\\uD8BF\\uDFFE|\\uD8BF\\uDFFF" +  //  U+3FFFE|F
-                    "|\\uD8FF\\uDFFE|\\uD8FF\\uDFFF" +  //  U+4FFFE|F
-                    "|\\uD93F\\uDFFE|\\uD93F\\uDFFF" +  //  U+5FFFE|F
-                    "|\\uD97F\\uDFFE|\\uD97F\\uDFFF" +  //  U+6FFFE|F
-                    "|\\uD9BF\\uDFFE|\\uD9BF\\uDFFF" +  //  U+7FFFE|F
-                    "|\\uD9FF\\uDFFE|\\uD9FF\\uDFFF" +  //  U+8FFFE|F
-                    "|\\uDA3F\\uDFFE|\\uDA3F\\uDFFF" +  //  U+9FFFE|F
-                    "|\\uDA7F\\uDFFE|\\uDA7F\\uDFFF" +  //  U+AFFFE|F
-                    "|\\uDABF\\uDFFE|\\uDABF\\uDFFF" +  //  U+BFFFE|F
-                    "|\\uDAFF\\uDFFE|\\uDAFF\\uDFFF" +  //  U+CFFFE|F
-                    "|\\uDB3F\\uDFFE|\\uDB3F\\uDFFF" +  //  U+DFFFE|F
-                    "|\\uDB7F\\uDFFE|\\uDB7F\\uDFFF" +  //  U+EFFFE|F
-                    "|\\uDBBF\\uDFFE|\\uDBBF\\uDFFF" +  //  U+FFFFE|F
-                    "|\\uDBFF\\uDFFE|\\uDBFF\\uDFFF");  // U+10FFFE|F
     /**
      * MQTT Protocol name as a UTF-8 encoded String.
      */
-    @NotNull
-    public static final MqttUtf8StringImpl PROTOCOL_NAME = new MqttUtf8StringImpl(encode("MQTT"));
+    public static final @NotNull MqttUtf8StringImpl PROTOCOL_NAME =
+            new MqttUtf8StringImpl("MQTT".getBytes(StandardCharsets.UTF_8));
 
     /**
      * Validates and decodes a UTF-8 encoded String from the given byte array.
@@ -75,10 +50,9 @@ public class MqttUtf8StringImpl implements MqttUtf8String {
      *
      * @param binary the byte array with the UTF-8 encoded data to decode from.
      * @return the created UTF-8 encoded String or null if the byte array does not contain a well-formed UTF-8 encoded
-     * String.
+     *         String.
      */
-    @Nullable
-    public static MqttUtf8StringImpl from(@NotNull final byte[] binary) {
+    public static @Nullable MqttUtf8StringImpl from(final @NotNull byte[] binary) {
         return (!MqttBinaryData.isInRange(binary) || containsMustNotCharacters(binary)) ? null :
                 new MqttUtf8StringImpl(binary);
     }
@@ -96,11 +70,13 @@ public class MqttUtf8StringImpl implements MqttUtf8String {
      * @throws IllegalArgumentException if the given string encoded in UTF-8 is longer than {@link
      *                                  MqttBinaryData#MAX_LENGTH} or contains forbidden characters.
      */
-    @NotNull
-    public static MqttUtf8StringImpl from(@NotNull final String string) {
-        checkUtf8EncodedLength(string);
-        checkForbiddenCharacters(string);
+    public static @NotNull MqttUtf8StringImpl from(final @NotNull String string) {
+        return from(string, "UTF-8 encoded string");
+    }
 
+    public static @NotNull MqttUtf8StringImpl from(final @NotNull String string, final @NotNull String name) {
+        checkLength(string, name);
+        checkForbiddenCharacters(string, name);
         return new MqttUtf8StringImpl(string);
     }
 
@@ -115,34 +91,11 @@ public class MqttUtf8StringImpl implements MqttUtf8String {
      *
      * @param byteBuf the byte buffer with the UTF-8 encoded data to decode from.
      * @return the created UTF-8 encoded String or null if the byte buffer does not contain a well-formed UTF-8 encoded
-     * String.
+     *         String.
      */
-    @Nullable
-    public static MqttUtf8StringImpl from(@NotNull final ByteBuf byteBuf) {
+    public static @Nullable MqttUtf8StringImpl from(final @NotNull ByteBuf byteBuf) {
         final byte[] binary = MqttBinaryData.decode(byteBuf);
         return (binary == null) ? null : from(binary);
-    }
-
-    /**
-     * Decodes from the given UTF-8 encoded byte array to a UTF-16 encoded Java string.
-     *
-     * @param binary the UTF-8 encoded byte array.
-     * @return the UTF-16 encoded Java string.
-     */
-    @NotNull
-    private static String decode(@NotNull final byte[] binary) {
-        return new String(binary, CHARSET);
-    }
-
-    /**
-     * Encodes from the given UTF-16 encoded Java string to a UTF-8 encoded byte array.
-     *
-     * @param string the UTF-16 encoded Java string.
-     * @return the UTF-8 encoded byte array.
-     */
-    @NotNull
-    static byte[] encode(@NotNull final String string) {
-        return string.getBytes(CHARSET);
     }
 
     /**
@@ -154,7 +107,7 @@ public class MqttUtf8StringImpl implements MqttUtf8String {
      * @param binary the UTF-8 encoded byte array.
      * @return whether the binary data contains characters a UTF-8 encoded String must not.
      */
-    static boolean containsMustNotCharacters(@NotNull final byte[] binary) {
+    static boolean containsMustNotCharacters(final @NotNull byte[] binary) {
         if (!Utf8.isWellFormed(binary)) {
             return true;
         }
@@ -174,26 +127,25 @@ public class MqttUtf8StringImpl implements MqttUtf8String {
      * @param string the UTF-16 encoded Java string.
      * @throws IllegalArgumentException if the given string contains forbidden characters.
      */
-    static void checkForbiddenCharacters(@NotNull final String string) {
+    static void checkForbiddenCharacters(final @NotNull String string, final @NotNull String name) {
         boolean previousCharIsHighSurrogate = false;
-        int unmatchedSurrogateIndex = -1;
-        for (int i = 0; (unmatchedSurrogateIndex < 0) && (i < string.length()); i++) {
+        for (int i = 0; i < string.length(); i++) {
             final char c = string.charAt(i);
             if (c == 0) {
-                throw new IllegalArgumentException("Found null character at index: " + i +
-                        ". String must not contain the null character U+0000, as it is forbidden according to the MQTT 5 Specification.");
+                throw new IllegalArgumentException(
+                        name + " [" + string + "] must not contain null character (U+0000), found at index " + i + ".");
             }
             if (previousCharIsHighSurrogate != Character.isLowSurrogate(c)) {
-                unmatchedSurrogateIndex = i;
+                throw new IllegalArgumentException(
+                        name + " [" + string + "] must not contain unmatched UTF-16 surrogate, found at index " + i +
+                                ".");
             }
             previousCharIsHighSurrogate = Character.isHighSurrogate(c);
         }
-        if ((unmatchedSurrogateIndex < 0) && previousCharIsHighSurrogate) {
-            unmatchedSurrogateIndex = string.length() - 1;
-        }
-        if (unmatchedSurrogateIndex >= 0) {
+        if (previousCharIsHighSurrogate) {
             throw new IllegalArgumentException(
-                    "Found unmatched UTF-16 surrogate at index: " + unmatchedSurrogateIndex + ".");
+                    name + " [" + string + "] must not contain unmatched UTF-16 surrogate, found at index " +
+                            (string.length() - 1) + ".");
         }
     }
 
@@ -204,7 +156,7 @@ public class MqttUtf8StringImpl implements MqttUtf8String {
      * @throws IllegalArgumentException if the given string encoded in UTF-8 is longer than {@link
      *                                  MqttBinaryData#MAX_LENGTH}.
      */
-    static void checkUtf8EncodedLength(@NotNull final String string) {
+    static void checkLength(final @NotNull String string, final @NotNull String name) {
         // Perform a quick check on string length, since calculating the exact number of bytes used in UTF-8 encoding
         // might be an expensive operation.
         // Note: Java strings are represented in UTF-16 (fixed-width 16-bit chars for code points U+0000 to U+FFFF).
@@ -216,34 +168,75 @@ public class MqttUtf8StringImpl implements MqttUtf8String {
         //       Hence, string.length() * 3 is an upper bound of the number of bytes needed to represent a Java string
         //       (UTF-16) in UTF-8.
         if (string.length() * 3 > MqttBinaryData.MAX_LENGTH) {
-            // have a closer look at the exact length of encoded string
-            int utf8Length = Utf8.encodedLength(string);
-            Preconditions.checkArgument(utf8Length <= MqttBinaryData.MAX_LENGTH,
-                    "String encoded in UTF-8 must not be longer than %s bytes. Actual string length encoded in UTF-8 is %s.",
-                    MqttBinaryData.MAX_LENGTH, utf8Length);
+            final int utf8Length = Utf8.encodedLength(string);
+            if (utf8Length > MqttBinaryData.MAX_LENGTH) {
+                throw new IllegalArgumentException(
+                        name + " [" + string.substring(0, 10) + "...] must not be longer than " +
+                                MqttBinaryData.MAX_LENGTH + " bytes, but was " + utf8Length + " bytes.");
+            }
         }
     }
 
-    private byte[] binary;
-    private String string;
+    private @Nullable byte[] binary;
+    private @Nullable String string;
     private int conversions;
 
-    MqttUtf8StringImpl(@NotNull final byte[] binary) {
+    MqttUtf8StringImpl(final @NotNull byte[] binary) {
         this.binary = binary;
     }
 
-    MqttUtf8StringImpl(@NotNull final String string) {
+    MqttUtf8StringImpl(final @NotNull String string) {
         this.string = string;
     }
 
     @Override
     public boolean containsShouldNotCharacters() {
-        return SHOULD_NOT_CHARACTERS_PATTERN.matcher(toString()).find();
+        final String string = toString();
+        boolean highSurrogate = false;
+        for (int i = 0; i < string.length(); i++) {
+            final char c = string.charAt(i);
+            if (Character.isISOControl(c)) { // control characters
+                return true;
+            }
+            if (!highSurrogate) {
+                if ((c >= '\uD83F')) {
+                    if ((c >= '\uFDD0') && (c <= '\uFDEF')) { // non characters
+                        return true;
+                    }
+                    if ((c & 0xFFFE) == 0xFFFE) { // U+FFFE|F
+                        return true;
+                    }
+                    if ((c == '\uD83F') || //       U+1FFFE|F
+                            (c == '\uD87F') || //   U+2FFFE|F
+                            (c == '\uD8BF') || //   U+3FFFE|F
+                            (c == '\uD8FF') || //   U+4FFFE|F
+                            (c == '\uD93F') || //   U+5FFFE|F
+                            (c == '\uD97F') || //   U+6FFFE|F
+                            (c == '\uD9BF') || //   U+7FFFE|F
+                            (c == '\uD9FF') || //   U+8FFFE|F
+                            (c == '\uDA3F') || //   U+9FFFE|F
+                            (c == '\uDA7F') || //   U+AFFFE|F
+                            (c == '\uDABF') || //   U+BFFFE|F
+                            (c == '\uDAFF') || //   U+CFFFE|F
+                            (c == '\uDB3F') || //   U+DFFFE|F
+                            (c == '\uDB7F') || //   U+EFFFE|F
+                            (c == '\uDBBF') || //   U+FFFFE|F
+                            (c == '\uDBFF')) { //  U+10FFFE|F
+                        highSurrogate = true;
+                    }
+                }
+            } else {
+                if ((c & 0xDFFE) == 0xDFFE) { // U+DFFE|F low surrogate for U+...FFFE|F
+                    return true;
+                }
+                highSurrogate = false;
+            }
+        }
+        return false;
     }
 
-    @NotNull
     @Override
-    public ByteBuffer toByteBuffer() {
+    public @NotNull ByteBuffer toByteBuffer() {
         return ByteBuffer.wrap(toBinary()).asReadOnlyBuffer();
     }
 
@@ -253,13 +246,18 @@ public class MqttUtf8StringImpl implements MqttUtf8String {
      *
      * @return the UTF-8 encoded byte array.
      */
-    @NotNull
-    byte[] toBinary() {
+    @NotNull byte[] toBinary() {
+        byte[] binary = this.binary;
         if (binary == null) {
-            binary = encode(string);
+            final String string = this.string;
+            if (string == null) {
+                return toBinary();
+            }
+            binary = string.getBytes(StandardCharsets.UTF_8);
+            this.binary = binary;
             conversions++;
             if (conversions < 3) {
-                string = null;
+                this.string = null;
             }
         }
         return binary;
@@ -271,14 +269,19 @@ public class MqttUtf8StringImpl implements MqttUtf8String {
      *
      * @return the UTF-16 encoded string.
      */
-    @NotNull
     @Override
-    public String toString() {
+    public @NotNull String toString() {
+        String string = this.string;
         if (string == null) {
-            string = decode(binary);
+            final byte[] binary = this.binary;
+            if (binary == null) {
+                return toString();
+            }
+            string = new String(binary, StandardCharsets.UTF_8);
+            this.string = string;
             conversions++;
             if (conversions < 3) {
-                binary = null;
+                this.binary = null;
             }
         }
         return string;
@@ -293,20 +296,17 @@ public class MqttUtf8StringImpl implements MqttUtf8String {
      *
      * @param byteBuf the byte buffer to encode to.
      */
-    public void to(final @Nullable ByteBuf byteBuf) {
-        MqttBinaryData.encode(toBinary(), Checks.notNull(byteBuf, "Byte buffer"));
+    public void to(final @NotNull ByteBuf byteBuf) {
+        MqttBinaryData.encode(toBinary(), byteBuf);
     }
 
     /**
      * Calculates the byte count of this UTF-8 encoded String according to the MQTT 5 specification.
      *
      * @return the encoded length of this UTF-8 encoded String.
-     * @throws MqttBinaryDataExceededException if this UTF-8 encoded String can not be encoded due to byte count
-     *                                         restrictions.
      */
     public int encodedLength() {
-        final byte[] binary = toBinary();
-        return MqttBinaryData.encodedLength(binary);
+        return MqttBinaryData.encodedLength(toBinary());
     }
 
     @Override
@@ -318,14 +318,17 @@ public class MqttUtf8StringImpl implements MqttUtf8String {
             return false;
         }
         final MqttUtf8StringImpl that = (MqttUtf8StringImpl) o;
-        if (string != null) {
-            if ((that.string == null) && (binary != null)) {
-                return Arrays.equals(binary, that.binary);
-            }
-            return string.equals(that.toString());
-        } else {
-            return Arrays.equals(binary, that.toBinary());
+        final String string = this.string;
+        final String thatString = that.string;
+        if ((string != null) && (thatString != null)) {
+            return string.equals(thatString);
         }
+        final byte[] binary = this.binary;
+        final byte[] thatBinary = that.binary;
+        if ((binary != null) && (thatBinary != null)) {
+            return Arrays.equals(binary, thatBinary);
+        }
+        return toString().equals(that.toString());
     }
 
     @Override
@@ -333,4 +336,8 @@ public class MqttUtf8StringImpl implements MqttUtf8String {
         return toString().hashCode();
     }
 
+    @Override
+    public int compareTo(final @NotNull MqttUtf8String that) {
+        return toString().compareTo(that.toString());
+    }
 }

@@ -30,7 +30,7 @@ import org.mqttbee.mqtt.util.MqttChecks;
  * @author Silvio Giebl
  */
 @DoNotImplement
-public interface Mqtt5UserProperty {
+public interface Mqtt5UserProperty extends Comparable<Mqtt5UserProperty> {
 
     /**
      * Creates an User Property of the given name and value.

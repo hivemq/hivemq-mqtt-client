@@ -17,12 +17,12 @@
 
 package org.mqttbee.mqtt.datatypes;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
+import org.mqttbee.util.Checks;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -40,8 +40,7 @@ public class MqttTopicImpl extends MqttUtf8StringImpl implements MqttTopic {
      * @param binary the byte array with the UTF-8 encoded data to decode from.
      * @return the created Topic Name or null if the byte array does not contain a well-formed Topic Name.
      */
-    @Nullable
-    public static MqttTopicImpl from(@NotNull final byte[] binary) {
+    public static @Nullable MqttTopicImpl from(final @NotNull byte[] binary) {
         return (binary.length == 0) || !MqttBinaryData.isInRange(binary) || containsMustNotCharacters(binary) ? null :
                 new MqttTopicImpl(binary);
     }
@@ -53,11 +52,13 @@ public class MqttTopicImpl extends MqttUtf8StringImpl implements MqttTopic {
      * @return the created Topic Name.
      * @throws IllegalArgumentException if the given string is not a valid Topic Name.
      */
-    @NotNull
-    public static MqttTopicImpl from(@NotNull final String string) {
-        Preconditions.checkArgument(!string.isEmpty(), "String must not be empty.");
-        checkForbiddenCharacters(string);
+    public static @NotNull MqttTopicImpl from(final @NotNull String string) {
+        return from(string, "Topic name");
+    }
 
+    public static @NotNull MqttTopicImpl from(final @NotNull String string, final @NotNull String name) {
+        checkLength(string, name);
+        checkForbiddenCharacters(string, name);
         return new MqttTopicImpl(string);
     }
 
@@ -70,8 +71,7 @@ public class MqttTopicImpl extends MqttUtf8StringImpl implements MqttTopic {
      * @param byteBuf the byte buffer with the UTF-8 encoded data to decode from.
      * @return the created Topic Name or null if the byte buffer does not contain a well-formed Topic Name.
      */
-    @Nullable
-    public static MqttTopicImpl from(@NotNull final ByteBuf byteBuf) {
+    public static @Nullable MqttTopicImpl from(final @NotNull ByteBuf byteBuf) {
         final byte[] binary = MqttBinaryData.decode(byteBuf);
         return (binary == null) ? null : from(binary);
     }
@@ -87,7 +87,7 @@ public class MqttTopicImpl extends MqttUtf8StringImpl implements MqttTopic {
      * @see MqttUtf8StringImpl#containsMustNotCharacters(byte[])
      * @see #containsWildcardCharacters(byte[])
      */
-    static boolean containsMustNotCharacters(@NotNull final byte[] binary) {
+    static boolean containsMustNotCharacters(final @NotNull byte[] binary) {
         return MqttUtf8StringImpl.containsMustNotCharacters(binary) || containsWildcardCharacters(binary);
     }
 
@@ -99,12 +99,13 @@ public class MqttTopicImpl extends MqttUtf8StringImpl implements MqttTopic {
      *
      * @param string the UTF-16 encoded Java string.
      * @throws IllegalArgumentException if the given string contains forbidden characters.
-     * @see MqttUtf8StringImpl#checkForbiddenCharacters(String)
-     * @see #checkWildcardCharacters(String)
+     * @see MqttUtf8StringImpl#checkForbiddenCharacters(String, String)
+     * @see #checkNoWildcardCharacters(String, String)
      */
-    static void checkForbiddenCharacters(@NotNull final String string) {
-        MqttUtf8StringImpl.checkForbiddenCharacters(string);
-        checkWildcardCharacters(string);
+    static void checkForbiddenCharacters(final @NotNull String string, final @NotNull String name) {
+        Checks.notEmpty(string, name);
+        MqttUtf8StringImpl.checkForbiddenCharacters(string, name);
+        checkNoWildcardCharacters(string, name);
     }
 
     /**
@@ -113,7 +114,7 @@ public class MqttTopicImpl extends MqttUtf8StringImpl implements MqttTopic {
      * @param binary the UTF-8 encoded byte array.
      * @return whether the byte array contains wildcard characters.
      */
-    private static boolean containsWildcardCharacters(@NotNull final byte[] binary) {
+    private static boolean containsWildcardCharacters(final @NotNull byte[] binary) {
         for (final byte b : binary) {
             if (b == MqttTopicFilterImpl.MULTI_LEVEL_WILDCARD || b == MqttTopicFilterImpl.SINGLE_LEVEL_WILDCARD) {
                 return true;
@@ -128,17 +129,17 @@ public class MqttTopicImpl extends MqttUtf8StringImpl implements MqttTopic {
      * @param string the UTF-16 encoded Java string.
      * @throws IllegalArgumentException if the given string contains wildcard characters.
      */
-    private static void checkWildcardCharacters(@NotNull final String string) {
-        Preconditions.checkArgument(!string.contains(String.valueOf(MqttTopicFilterImpl.MULTI_LEVEL_WILDCARD)),
-                String.format(
-                        "Found multi level wildcard at index: %d. String must not contain the multi level wildcard character '%c'.",
-                        string.indexOf(MqttTopicFilterImpl.MULTI_LEVEL_WILDCARD),
-                        MqttTopicFilterImpl.MULTI_LEVEL_WILDCARD));
-        Preconditions.checkArgument(!string.contains(String.valueOf(MqttTopicFilterImpl.SINGLE_LEVEL_WILDCARD)),
-                String.format(
-                        "Found single level wildcard at index: %d. String must not contain the single level wildcard character '%c'.",
-                        string.indexOf(MqttTopicFilterImpl.SINGLE_LEVEL_WILDCARD),
-                        MqttTopicFilterImpl.SINGLE_LEVEL_WILDCARD));
+    private static void checkNoWildcardCharacters(final @NotNull String string, final @NotNull String name) {
+        final int multiLevelIndex = string.indexOf(MqttTopicFilterImpl.MULTI_LEVEL_WILDCARD);
+        if (multiLevelIndex != -1) {
+            throw new IllegalArgumentException(name + " [" + string + "] must not contain multi level wildcard (" +
+                    MqttTopicFilterImpl.MULTI_LEVEL_WILDCARD + "), found at index " + multiLevelIndex + ".");
+        }
+        final int singleLevelIndex = string.indexOf(MqttTopicFilterImpl.SINGLE_LEVEL_WILDCARD);
+        if (singleLevelIndex != -1) {
+            throw new IllegalArgumentException(name + " [" + string + "] must not contain single level wildcard (" +
+                    MqttTopicFilterImpl.SINGLE_LEVEL_WILDCARD + "), found at index " + singleLevelIndex + ".");
+        }
     }
 
     /**
@@ -147,14 +148,13 @@ public class MqttTopicImpl extends MqttUtf8StringImpl implements MqttTopic {
      * @param string the Topic Name string.
      * @return the levels of the Topic Name string.
      */
-    @NotNull
-    static ImmutableList<String> splitLevels(@NotNull final String string) {
+    static @NotNull ImmutableList<String> splitLevels(final @NotNull String string) {
         final ImmutableList.Builder<String> levelsBuilder = ImmutableList.builder();
         int start = 0;
         while (true) {
             final int end = string.indexOf(TOPIC_LEVEL_SEPARATOR, start);
             if (end == -1) {
-                levelsBuilder.add(string.substring(start, string.length()));
+                levelsBuilder.add(string.substring(start));
                 return levelsBuilder.build();
             }
             levelsBuilder.add(string.substring(start, end));
@@ -162,19 +162,16 @@ public class MqttTopicImpl extends MqttUtf8StringImpl implements MqttTopic {
         }
     }
 
-
-    private MqttTopicImpl(@NotNull final byte[] binary) {
+    private MqttTopicImpl(final @NotNull byte[] binary) {
         super(binary);
     }
 
-    private MqttTopicImpl(@NotNull final String string) {
+    private MqttTopicImpl(final @NotNull String string) {
         super(string);
     }
 
-    @NotNull
     @Override
-    public ImmutableList<String> getLevels() {
+    public @NotNull ImmutableList<String> getLevels() {
         return splitLevels(toString());
     }
-
 }

@@ -21,6 +21,7 @@ import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperty;
+import org.mqttbee.mqtt.message.MqttProperty;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -38,8 +39,8 @@ public class MqttUserPropertyImpl implements Mqtt5UserProperty {
      * @param value the value of the User Property.
      * @return the created User Property.
      */
-    public static MqttUserPropertyImpl of(
-            @NotNull final MqttUtf8StringImpl name, @NotNull final MqttUtf8StringImpl value) {
+    public static @NotNull MqttUserPropertyImpl of(
+            final @NotNull MqttUtf8StringImpl name, final @NotNull MqttUtf8StringImpl value) {
 
         return new MqttUserPropertyImpl(name, value);
     }
@@ -50,8 +51,7 @@ public class MqttUserPropertyImpl implements Mqtt5UserProperty {
      * @param in the byte buffer to decode from.
      * @return the decoded User Property or null if the name and/or value are not valid UTF-8 encoded Strings.
      */
-    @Nullable
-    public static MqttUserPropertyImpl decode(@NotNull final ByteBuf in) {
+    public static @Nullable MqttUserPropertyImpl decode(final @NotNull ByteBuf in) {
         final MqttUtf8StringImpl name = MqttUtf8StringImpl.from(in);
         if (name == null) {
             return null;
@@ -63,24 +63,32 @@ public class MqttUserPropertyImpl implements Mqtt5UserProperty {
         return new MqttUserPropertyImpl(name, value);
     }
 
-    private final MqttUtf8StringImpl name;
-    private final MqttUtf8StringImpl value;
+    private final @NotNull MqttUtf8StringImpl name;
+    private final @NotNull MqttUtf8StringImpl value;
 
-    public MqttUserPropertyImpl(@NotNull final MqttUtf8StringImpl name, @NotNull final MqttUtf8StringImpl value) {
+    public MqttUserPropertyImpl(final @NotNull MqttUtf8StringImpl name, final @NotNull MqttUtf8StringImpl value) {
         this.name = name;
         this.value = value;
     }
 
-    @NotNull
     @Override
-    public MqttUtf8StringImpl getName() {
+    public @NotNull MqttUtf8StringImpl getName() {
         return name;
     }
 
-    @NotNull
     @Override
-    public MqttUtf8StringImpl getValue() {
+    public @NotNull MqttUtf8StringImpl getValue() {
         return value;
+    }
+
+    void encode(final @NotNull ByteBuf out) {
+        out.writeByte(MqttProperty.USER_PROPERTY);
+        name.to(out);
+        value.to(out);
+    }
+
+    int encodedLength() {
+        return 1 + name.encodedLength() + value.encodedLength();
     }
 
     @Override
@@ -100,4 +108,9 @@ public class MqttUserPropertyImpl implements Mqtt5UserProperty {
         return 31 * name.hashCode() + value.hashCode();
     }
 
+    @Override
+    public int compareTo(final @NotNull Mqtt5UserProperty that) {
+        final int nameComparison = name.compareTo(that.getName());
+        return (nameComparison != 0) ? nameComparison : value.compareTo(that.getValue());
+    }
 }

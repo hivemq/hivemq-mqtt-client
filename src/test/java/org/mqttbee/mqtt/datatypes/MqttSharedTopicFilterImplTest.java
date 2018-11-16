@@ -21,6 +21,8 @@ import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.hamcrest.CoreMatchers;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -38,7 +40,7 @@ import static org.junit.Assert.*;
 /**
  * @author Silvio Giebl
  */
-public class MqttSharedTopicFilterImplTest {
+class MqttSharedTopicFilterImplTest {
 
     enum SharedTopicFilterSource {
         STRING,
@@ -46,21 +48,20 @@ public class MqttSharedTopicFilterImplTest {
         SHARE_NAME_AND_TOPIC_FILTER
     }
 
-    private MqttTopicFilterImpl from(final String shareName, final String topicFilter) {
-        return from(SharedTopicFilterSource.STRING, shareName, topicFilter);
-    }
+    private @Nullable MqttTopicFilterImpl from(
+            final @NotNull SharedTopicFilterSource source, final @NotNull String shareName,
+            final @NotNull String topicFilter) {
 
-    private MqttTopicFilterImpl from(
-            final SharedTopicFilterSource source, final String shareName, final String topicFilter) {
         if (source == SharedTopicFilterSource.SHARE_NAME_AND_TOPIC_FILTER) {
             return MqttSharedTopicFilterImpl.from(shareName, topicFilter);
         } else {
-            final String sharedSubscriptionTopicFilter = "$share/" + shareName + "/" + topicFilter;
-            return from(source, sharedSubscriptionTopicFilter);
+            return from(source, "$share/" + shareName + "/" + topicFilter);
         }
     }
 
-    private MqttTopicFilterImpl from(final SharedTopicFilterSource source, final String sharedSubscriptionTopicFilter) {
+    private @Nullable MqttTopicFilterImpl from(
+            final @NotNull SharedTopicFilterSource source, final @NotNull String sharedSubscriptionTopicFilter) {
+
         switch (source) {
             case BYTE_BUF:
                 final ByteBuf byteBuf = Unpooled.buffer();
@@ -78,7 +79,7 @@ public class MqttSharedTopicFilterImplTest {
 
     @ParameterizedTest
     @EnumSource(SharedTopicFilterSource.class)
-    public void from_simple(SharedTopicFilterSource source) {
+    void from_simple(final @NotNull SharedTopicFilterSource source) {
         final String shareName = "group";
         final String topicFilter = "abc/def";
         final MqttTopicFilterImpl mqtt5TopicFilter = from(source, shareName, topicFilter);
@@ -91,111 +92,111 @@ public class MqttSharedTopicFilterImplTest {
         assertEquals(topicFilter, mqtt5SharedTopicFilter.getTopicFilter());
     }
 
-    private static List<Arguments> invalidSharedSubscriptions(final SharedTopicFilterSource source) {
+    private static @NotNull List<Arguments> invalidSharedSubscriptions() {
         final List<Arguments> testSpecs = new LinkedList<>();
-        // source, testDescription, sharedSubscriptionTopicFilter, errorMsg
+        // sharedTopicFilter, message
+        testSpecs.add(Arguments.of("$share/sharename", "Topic filter must be at least one character long"));
+        testSpecs.add(Arguments.of("$share/", "Share name must be at least one character long"));
         testSpecs.add(
-                Arguments.of(source, "missing topic filter", "$share/sharename", "Topic Filter must not be empty"));
-        testSpecs.add(Arguments.of(source, "missing share name", "$share/", "Share Name must not be empty"));
-        testSpecs.add(Arguments.of(source, "share name contains multi level wildcard", "$share/share#name",
-                "Share Name must not contain multi level wildcard"));
-        testSpecs.add(Arguments.of(source, "share name contains single level wildcard", "$share/share+name",
-                "Share Name must not contain single level wildcard"));
+                Arguments.of("$share/share#name", "Share name [share#name] must not contain multi level wildcard (#)"));
+        testSpecs.add(Arguments.of("$share/share+name",
+                "Share name [share+name] must not contain single level wildcard (+)"));
         return testSpecs;
     }
 
-    private static List<Arguments> invalidSharedSubscriptionsFromByteBuf() {
-        return invalidSharedSubscriptions(SharedTopicFilterSource.BYTE_BUF);
-    }
-
-    private static List<Arguments> invalidSharedSubscriptionsFromString() {
-        return invalidSharedSubscriptions(SharedTopicFilterSource.STRING);
-    }
-
     @ParameterizedTest
-    @MethodSource("invalidSharedSubscriptionsFromByteBuf")
-    public void from_invalidSharedSubscriptionByteBuf_returnsNull(
-            final SharedTopicFilterSource source, @SuppressWarnings("unused") final String testDescription,
-            final String sharedSubscriptionTopicFilter) {
-        final MqttTopicFilterImpl mqtt5TopicFilter = from(source, sharedSubscriptionTopicFilter);
+    @MethodSource("invalidSharedSubscriptions")
+    void from_invalidSharedSubscriptionByteBuf_returnsNull(
+            final @NotNull String sharedTopicFilter, @SuppressWarnings("unused") final @NotNull String message) {
+
+        final MqttTopicFilterImpl mqtt5TopicFilter = from(SharedTopicFilterSource.BYTE_BUF, sharedTopicFilter);
         assertNull(mqtt5TopicFilter);
     }
 
     @ParameterizedTest
-    @MethodSource("invalidSharedSubscriptionsFromString")
-    public void from_invalidSharedSubscriptionString_throws(
-            final SharedTopicFilterSource source, @SuppressWarnings("unused") final String testDescription,
-            final String sharedSubscriptionTopicFilter, final String errorMsg) {
+    @MethodSource("invalidSharedSubscriptions")
+    void from_invalidSharedSubscriptionString_throws(
+            final @NotNull String sharedTopicFilter, final @NotNull String message) {
+
         final IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class,
-                () -> from(source, sharedSubscriptionTopicFilter));
-        assertTrue("IllegalArgumentException must give hint that " + errorMsg,
-                exception.getMessage().contains(errorMsg));
+                () -> from(SharedTopicFilterSource.STRING, sharedTopicFilter));
+        System.out.println(exception.getMessage());
+        assertTrue("IllegalArgumentException must give hint that " + message, exception.getMessage().contains(message));
     }
 
-    private static List<Arguments> invalidShareNameOrTopicFilter(SharedTopicFilterSource source) {
+    private static @NotNull List<Arguments> invalidShareNameOrTopicFilter(
+            final @NotNull SharedTopicFilterSource source) {
+
         final List<Arguments> testSpecs = new LinkedList<>();
         // source, testDescription, shareName, topicFilter, errorMsg
-        testSpecs.add(Arguments.of(source, "empty topic filter", "group", "", "Topic Filter must not be empty"));
+        testSpecs.add(Arguments.of(source, "group", "abc/def/ghi/#/",
+                "Topic filter [abc/def/ghi/#/] contains misplaced wildcard characters. " +
+                        "Multi level wildcard (#) must be the last character."));
+        testSpecs.add(Arguments.of(source, "group", "abc/def/ghi#",
+                "Topic filter [abc/def/ghi#] contains misplaced wildcard characters. " +
+                        "Wildcard (#) at index 11 must follow a topic level separator."));
+        testSpecs.add(Arguments.of(source, "group", "abc+/def/ghi",
+                "Topic filter [abc+/def/ghi] contains misplaced wildcard characters. " +
+                        "Wildcard (+) at index 3 must follow a topic level separator."));
+        testSpecs.add(Arguments.of(source, "group", "abc/+def/ghi",
+                "Topic filter [abc/+def/ghi] contains misplaced wildcard characters. " +
+                        "Single level wildcard (+) at index 4 must be followed by a topic level separator."));
+        testSpecs.add(Arguments.of(source, "group", "abc/def/ghi/+#",
+                "Topic filter [abc/def/ghi/+#] contains misplaced wildcard characters. " +
+                        "Single level wildcard (+) at index 12 must be followed by a topic level separator."));
+        testSpecs.add(Arguments.of(source, "group", "abc/++/def/ghi",
+                "Topic filter [abc/++/def/ghi] contains misplaced wildcard characters. " +
+                        "Single level wildcard (+) at index 4 must be followed by a topic level separator."));
+        testSpecs.add(Arguments.of(source, "group", "", "Topic filter must be at least one character long"));
+        testSpecs.add(Arguments.of(source, "", "abc/def", "Share name must be at least one character long"));
         testSpecs.add(
-                Arguments.of(source, "topic filter with multi level wildcard not at end", "group", "abc/def/ghi/#/",
-                        "misplaced wildcard characters"));
-        testSpecs.add(Arguments.of(source, "topic filter with multi level wildcard after non separator", "group",
-                "abc/def/ghi#", "misplaced wildcard characters"));
-        testSpecs.add(Arguments.of(source, "topic filter with double single level wildcard", "group", "abc/++/def/ghi",
-                "misplaced wildcard characters"));
-        testSpecs.add(Arguments.of(source, "topic filter with single level wildcard after non separator", "group",
-                "abc+/def/ghi", "misplaced wildcard characters"));
-        testSpecs.add(Arguments.of(source, "topic filter with single level wildcard before non separator", "group",
-                "abc/+def/ghi", "misplaced wildcard characters"));
-        testSpecs.add(Arguments.of(source, "topic filter with single level before multi level wildcard", "group",
-                "abc/def/ghi/+#", "misplaced wildcard characters"));
-        testSpecs.add(Arguments.of(source, "empty share name", "", "abc/def", "Share Name must not be empty"));
-        testSpecs.add(Arguments.of(source, "share name with multi level wildcard at end", "group#", "abc/def",
-                "Share Name must not contain multi level wildcard"));
-        testSpecs.add(Arguments.of(source, "share name with multi level wildcard at start", "#group", "abc/def",
-                "Share Name must not contain multi level wildcard"));
-        testSpecs.add(Arguments.of(source, "share name with single level wildcard at end", "group+", "abc/def",
-                "Share Name must not contain single level wildcard"));
-        testSpecs.add(Arguments.of(source, "share name with single level wildcard at start", "+group", "abc/def",
-                "Share Name must not contain single level wildcard"));
+                Arguments.of(source, "group#", "abc/def", "Share name [group#] must not contain multi level wildcard"));
+        testSpecs.add(
+                Arguments.of(source, "#group", "abc/def", "Share name [#group] must not contain multi level wildcard"));
+        testSpecs.add(Arguments.of(source, "group+", "abc/def",
+                "Share name [group+] must not contain single level wildcard"));
+        testSpecs.add(Arguments.of(source, "+group", "abc/def",
+                "Share name [+group] must not contain single level wildcard"));
         return testSpecs;
     }
 
-    private static List<Arguments> invalidShareNameOrTopicFilterFromStringAndFromShareNameAndTopicFilter() {
+    private static @NotNull List<Arguments> invalidShareNameOrTopicFilterFromStringAndFromShareNameAndTopicFilter() {
         final List<Arguments> testSpecs = invalidShareNameOrTopicFilter(SharedTopicFilterSource.STRING);
         testSpecs.addAll(invalidShareNameOrTopicFilter(SharedTopicFilterSource.SHARE_NAME_AND_TOPIC_FILTER));
         return testSpecs;
     }
 
-    private static List<Arguments> invalidShareNameOrTopicFilterFromByteBuf() {
+    private static @NotNull List<Arguments> invalidShareNameOrTopicFilterFromByteBuf() {
         return invalidShareNameOrTopicFilter(SharedTopicFilterSource.BYTE_BUF);
     }
 
     @ParameterizedTest
     @MethodSource("invalidShareNameOrTopicFilterFromByteBuf")
-    public void from_invalidShareNameOrTopicFilterByteBuf_returnsNull(
-            final SharedTopicFilterSource source, @SuppressWarnings("unused") final String testDescription,
-            final String shareName, final String topicFilter) {
+    void from_invalidShareNameOrTopicFilterByteBuf_returnsNull(
+            final @NotNull SharedTopicFilterSource source, final @NotNull String shareName,
+            final @NotNull String topicFilter, @SuppressWarnings("unused") final @NotNull String message) {
+
         final MqttTopicFilterImpl mqtt5TopicFilter = from(source, shareName, topicFilter);
         assertNull(mqtt5TopicFilter);
     }
 
     @ParameterizedTest
     @MethodSource("invalidShareNameOrTopicFilterFromStringAndFromShareNameAndTopicFilter")
-    public void from_invalidShareNameOrTopicFilterString_throws(
-            final SharedTopicFilterSource source, @SuppressWarnings("unused") final String testDescription,
-            final String shareName, final String topicFilter, final String errorMsg) {
+    void from_invalidShareNameOrTopicFilterString_throws(
+            final @NotNull SharedTopicFilterSource source, final @NotNull String shareName,
+            final @NotNull String topicFilter, final @NotNull String message) {
+
         final IllegalArgumentException exception =
                 Assertions.assertThrows(IllegalArgumentException.class, () -> from(source, shareName, topicFilter));
-        assertTrue("IllegalArgumentException must give hint that " + errorMsg,
-                exception.getMessage().contains(errorMsg));
+        System.out.println(exception.getMessage());
+        assertTrue("IllegalArgumentException must give hint that " + message, exception.getMessage().contains(message));
     }
 
     @Test
-    public void from_shareNameWithTopicLevelSeparator_throws() {
+    void from_shareNameWithTopicLevelSeparator_throws() {
         final String shareName = "gro/up";
         final String topicFilter = "abc/def/ghi";
-        final String errorMsg = "Share Name must not contain topic level separator";
+        final String errorMsg = "Share name [gro/up] must not contain topic level separator";
         final IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class,
                 () -> from(SharedTopicFilterSource.SHARE_NAME_AND_TOPIC_FILTER, shareName, topicFilter));
         assertTrue("IllegalArgumentException must give hint that " + errorMsg,
@@ -203,31 +204,28 @@ public class MqttSharedTopicFilterImplTest {
     }
 
     @Test
-    public void test_shared_topic_filter_must_be_case_sensitive() {
+    void test_shared_topic_filter_must_be_case_sensitive() {
         final String shareName = "group";
         final String topicFilter1 = "abc";
         final String topicFilter2 = "ABC";
-        final MqttTopicFilterImpl mqtt5TopicFilter1 = from(shareName, topicFilter1);
-        final MqttTopicFilterImpl mqtt5TopicFilter2 = from(shareName, topicFilter2);
+        final MqttSharedTopicFilterImpl mqtt5TopicFilter1 = MqttSharedTopicFilterImpl.from(shareName, topicFilter1);
+        final MqttSharedTopicFilterImpl mqtt5TopicFilter2 = MqttSharedTopicFilterImpl.from(shareName, topicFilter2);
         assertNotNull(mqtt5TopicFilter1);
         assertNotNull(mqtt5TopicFilter2);
         assertTrue(mqtt5TopicFilter1.isShared());
-        assertTrue(mqtt5TopicFilter1 instanceof MqttSharedTopicFilterImpl);
         assertTrue(mqtt5TopicFilter2.isShared());
-        assertTrue(mqtt5TopicFilter2 instanceof MqttSharedTopicFilterImpl);
+        assertNotEquals(mqtt5TopicFilter1, mqtt5TopicFilter2);
         assertNotEquals(mqtt5TopicFilter1.toString(), mqtt5TopicFilter2.toString());
 
-        final MqttSharedTopicFilterImpl mqtt5SharedTopicFilter1 = (MqttSharedTopicFilterImpl) mqtt5TopicFilter1;
-        final MqttSharedTopicFilterImpl mqtt5SharedTopicFilter2 = (MqttSharedTopicFilterImpl) mqtt5TopicFilter2;
-        assertEquals(shareName, mqtt5SharedTopicFilter1.getShareName());
-        assertEquals(shareName, mqtt5SharedTopicFilter2.getShareName());
-        assertEquals(topicFilter1, mqtt5SharedTopicFilter1.getTopicFilter());
-        assertEquals(topicFilter2, mqtt5SharedTopicFilter2.getTopicFilter());
+        assertEquals(shareName, mqtt5TopicFilter1.getShareName());
+        assertEquals(shareName, mqtt5TopicFilter2.getShareName());
+        assertEquals(topicFilter1, mqtt5TopicFilter1.getTopicFilter());
+        assertEquals(topicFilter2, mqtt5TopicFilter2.getTopicFilter());
     }
 
-    private static List<Arguments> validShareNameAndTopicFilter() {
+    private static @NotNull List<Arguments> validShareNameAndTopicFilter() {
         final List<Arguments> testSpecs = new LinkedList<>();
-        for (SharedTopicFilterSource source : SharedTopicFilterSource.values()) {
+        for (final SharedTopicFilterSource source : SharedTopicFilterSource.values()) {
             // source, testDescription, shareName, topicFilter
             testSpecs.add(Arguments.of(source, "topic filter with space", "group", "ab c/def"));
             testSpecs.add(Arguments.of(source, "topic filter is single space", "group", " "));
@@ -245,9 +243,11 @@ public class MqttSharedTopicFilterImplTest {
 
     @ParameterizedTest
     @MethodSource("validShareNameAndTopicFilter")
-    public void from_validShareNameAndTopicFilter(
-            final SharedTopicFilterSource source, @SuppressWarnings("unused") final String testDescription,
-            final String shareName, final String topicFilter) {
+    void from_validShareNameAndTopicFilter(
+            final @NotNull SharedTopicFilterSource source,
+            @SuppressWarnings("unused") final @NotNull String testDescription, final @NotNull String shareName,
+            final @NotNull String topicFilter) {
+
         final MqttTopicFilterImpl mqtt5TopicFilter = from(source, shareName, topicFilter);
         assertNotNull(mqtt5TopicFilter);
         assertTrue(mqtt5TopicFilter.isShared());
@@ -260,7 +260,7 @@ public class MqttSharedTopicFilterImplTest {
 
     @ParameterizedTest
     @EnumSource(SharedTopicFilterSource.class)
-    public void getLevels_onlyTopicLevelSeparator(final SharedTopicFilterSource source) {
+    void getLevels_onlyTopicLevelSeparator(final @NotNull SharedTopicFilterSource source) {
         final String shareName = "group";
         final String topicFilter = "/";
         final MqttTopicFilterImpl mqtt5TopicFilter = from(source, shareName, topicFilter);
@@ -277,7 +277,7 @@ public class MqttSharedTopicFilterImplTest {
 
     @ParameterizedTest
     @EnumSource(SharedTopicFilterSource.class)
-    public void getLevels_simple(final SharedTopicFilterSource source) {
+    void getLevels_simple(final @NotNull SharedTopicFilterSource source) {
         final String shareName = "group";
         final String topicFilter = "abc/def/ghi";
         final MqttTopicFilterImpl mqtt5TopicFilter = from(source, shareName, topicFilter);
@@ -290,7 +290,7 @@ public class MqttSharedTopicFilterImplTest {
 
     @ParameterizedTest
     @EnumSource(SharedTopicFilterSource.class)
-    public void getLevels_multipleEmptyLevels(final SharedTopicFilterSource source) {
+    void getLevels_multipleEmptyLevels(final @NotNull SharedTopicFilterSource source) {
         final String shareName = "group";
         final String topicFilter = "/abc//def///ghi/";
         final MqttTopicFilterImpl mqtt5TopicFilter = from(source, shareName, topicFilter);
@@ -300,5 +300,4 @@ public class MqttSharedTopicFilterImplTest {
         final ImmutableList<String> levels = mqtt5TopicFilter.getLevels();
         assertThat(levels, CoreMatchers.is(Arrays.asList("", "abc", "", "def", "", "", "ghi", "")));
     }
-
 }

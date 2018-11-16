@@ -21,7 +21,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicBuilder;
-import org.mqttbee.mqtt.util.MqttChecks;
 import org.mqttbee.util.Checks;
 
 import java.util.function.Function;
@@ -56,7 +55,7 @@ public abstract class MqttTopicImplBuilder<B extends MqttTopicImplBuilder> {
         Checks.state(stringBuilder != null, "At least one topic level must be added.");
         final String string = stringBuilder.toString();
         Checks.state(!string.isEmpty(), "Topic must be at least one character long.");
-        return MqttChecks.topic(string);
+        return MqttTopicImpl.from(string);
     }
 
     public static class Default extends MqttTopicImplBuilder<Default> implements MqttTopicBuilder.Complete {
