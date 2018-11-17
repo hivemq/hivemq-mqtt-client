@@ -35,6 +35,7 @@ import java.nio.ByteBuffer;
  * <li>must not contain encodings of UTF-16 surrogates (U+D800..U+DFFF) and</li>
  * <li>must not contain non-shortest form encodings.</li>
  * </ul>
+ * </li>
  * </ul>
  * <p>
  * SHOULD requirements: An UTF-8 encoded String
