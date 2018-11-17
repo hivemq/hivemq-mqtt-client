@@ -26,8 +26,12 @@ import org.mqttbee.mqtt.util.MqttChecks;
 /**
  * MQTT Topic Filter according to the MQTT specification.
  * <p>
- * A Topic Filter has the restrictions from {@link MqttUtf8String}, must be at least one character long, may contain one
- * {@link #MULTI_LEVEL_WILDCARD} at the end and may contain multiple {@link #SINGLE_LEVEL_WILDCARD}s.
+ * A Topic Filter has the same requirements as an {@link MqttUtf8String UTF-8 encoded string}. Additionally it
+ * <ul>
+ * <li>must be at least one character long,</li>
+ * <li>may contain one multi-level wildcard character ({@value #MULTI_LEVEL_WILDCARD}) at the end and</li>
+ * <li>may contain multiple single-level wildcards ({@value #SINGLE_LEVEL_WILDCARD}).</li>
+ * </ul>
  *
  * @author Silvio Giebl
  */
@@ -44,13 +48,13 @@ public interface MqttTopicFilter extends MqttUtf8String {
     char SINGLE_LEVEL_WILDCARD = '+';
 
     /**
-     * Validates and creates a Topic Filter from the given string.
+     * Validates and creates a Topic Filter of the given string.
      *
      * @param string the UTF-16 encoded Java string.
      * @return the created Topic Filter.
      * @throws IllegalArgumentException if the string is not a valid Topic Filter.
      */
-    static @NotNull MqttTopicFilter from(final @NotNull String string) {
+    static @NotNull MqttTopicFilter of(final @NotNull String string) {
         return MqttChecks.topicFilterNotNull(string);
     }
 

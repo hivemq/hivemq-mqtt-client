@@ -126,7 +126,7 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
                     if (assignedClientIdentifier != null) {
                         throw moreThanOnce("client identifier");
                     }
-                    assignedClientIdentifier = MqttClientIdentifierImpl.from(in);
+                    assignedClientIdentifier = MqttClientIdentifierImpl.decode(in);
                     if (assignedClientIdentifier == null) {
                         throw malformedUTF8String("client identifier");
                     }
@@ -261,5 +261,4 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
                 assignedClientIdentifier, enhancedAuth, restrictions, responseInformation, serverReference,
                 reasonString, userProperties);
     }
-
 }

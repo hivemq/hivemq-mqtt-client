@@ -53,7 +53,7 @@ class MqttSharedTopicFilterImplTest {
             final @NotNull String topicFilter) {
 
         if (source == SharedTopicFilterSource.SHARE_NAME_AND_TOPIC_FILTER) {
-            return MqttSharedTopicFilterImpl.from(shareName, topicFilter);
+            return MqttSharedTopicFilterImpl.of(shareName, topicFilter);
         } else {
             return from(source, "$share/" + shareName + "/" + topicFilter);
         }
@@ -68,11 +68,11 @@ class MqttSharedTopicFilterImplTest {
                 final byte[] binary = sharedSubscriptionTopicFilter.getBytes(Charset.forName("UTF-8"));
                 byteBuf.writeShort(binary.length);
                 byteBuf.writeBytes(binary);
-                final MqttTopicFilterImpl mqtt5TopicFilter = MqttTopicFilterImpl.from(byteBuf);
+                final MqttTopicFilterImpl mqtt5TopicFilter = MqttTopicFilterImpl.decode(byteBuf);
                 byteBuf.release();
                 return mqtt5TopicFilter;
             case STRING:
-                return MqttTopicFilterImpl.from(sharedSubscriptionTopicFilter);
+                return MqttTopicFilterImpl.of(sharedSubscriptionTopicFilter);
         }
         throw new IllegalStateException();
     }
@@ -208,8 +208,8 @@ class MqttSharedTopicFilterImplTest {
         final String shareName = "group";
         final String topicFilter1 = "abc";
         final String topicFilter2 = "ABC";
-        final MqttSharedTopicFilterImpl mqtt5TopicFilter1 = MqttSharedTopicFilterImpl.from(shareName, topicFilter1);
-        final MqttSharedTopicFilterImpl mqtt5TopicFilter2 = MqttSharedTopicFilterImpl.from(shareName, topicFilter2);
+        final MqttSharedTopicFilterImpl mqtt5TopicFilter1 = MqttSharedTopicFilterImpl.of(shareName, topicFilter1);
+        final MqttSharedTopicFilterImpl mqtt5TopicFilter2 = MqttSharedTopicFilterImpl.of(shareName, topicFilter2);
         assertNotNull(mqtt5TopicFilter1);
         assertNotNull(mqtt5TopicFilter2);
         assertTrue(mqtt5TopicFilter1.isShared());

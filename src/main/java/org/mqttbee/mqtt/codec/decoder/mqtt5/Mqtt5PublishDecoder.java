@@ -77,7 +77,7 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
         }
         MqttTopicImpl topic = null;
         if (topicBinary.length != 0) {
-            topic = MqttTopicImpl.from(topicBinary);
+            topic = MqttTopicImpl.of(topicBinary);
             if (topic == null) {
                 throw malformedTopic();
             }
@@ -126,7 +126,7 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
                     if (responseTopic != null) {
                         throw moreThanOnce("response topic");
                     }
-                    responseTopic = MqttTopicImpl.from(in);
+                    responseTopic = MqttTopicImpl.decode(in);
                     if (responseTopic == null) {
                         throw new MqttDecoderException(
                                 Mqtt5DisconnectReasonCode.TOPIC_NAME_INVALID, "malformed response topic");
@@ -226,5 +226,4 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
 
         return publish.createStateful(packetIdentifier, dup, topicAlias, isNewTopicAlias, subscriptionIdentifiers);
     }
-
 }

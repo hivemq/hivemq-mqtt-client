@@ -91,7 +91,7 @@ public class Mqtt5UnsubscribeEncoder extends Mqtt5MessageWithUserPropertiesEncod
     private void encodePayload(final @NotNull MqttStatefulUnsubscribe message, final @NotNull ByteBuf out) {
         final ImmutableList<MqttTopicFilterImpl> topicFilters = message.stateless().getTopicFilters();
         for (int i = 0; i < topicFilters.size(); i++) {
-            topicFilters.get(i).to(out);
+            topicFilters.get(i).encode(out);
         }
     }
 }

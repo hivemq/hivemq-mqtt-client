@@ -28,8 +28,6 @@ import org.mqttbee.mqtt.codec.encoder.AbstractMqttEncoderTest;
 import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoders;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 
-import java.util.Objects;
-
 /**
  * @author Alex Stockinger
  */
@@ -40,9 +38,8 @@ abstract class AbstractMqtt3EncoderTest extends AbstractMqttEncoderTest {
     }
 
     private static MqttClientConfig createClientData() {
-        return new MqttClientConfig(MqttVersion.MQTT_3_1_1,
-                Objects.requireNonNull(MqttClientIdentifierImpl.from("test")), "localhost", 1883, null, null, false,
-                false, MqttClientExecutorConfigImpl.DEFAULT, null);
+        return new MqttClientConfig(MqttVersion.MQTT_3_1_1, MqttClientIdentifierImpl.of("test"), "localhost", 1883,
+                null, null, false, false, MqttClientExecutorConfigImpl.DEFAULT, null);
     }
 
     static @NotNull byte[] bytesOf(final @NotNull MqttWireMessage message) throws MqttException {

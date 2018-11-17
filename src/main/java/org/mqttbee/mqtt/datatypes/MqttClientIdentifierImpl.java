@@ -41,30 +41,28 @@ public class MqttClientIdentifierImpl extends MqttUtf8StringImpl implements Mqtt
     private static final int MUST_BE_ALLOWED_BY_SERVER_MAX_BYTES = 23;
 
     /**
-     * Validates and decodes a Client Identifier from the given byte array.
-     * <p>
-     * Note: the given byte array must not be longer than {@link MqttBinaryData#MAX_LENGTH}.
-     *
-     * @param binary the byte array with the UTF-8 encoded data to decode from.
-     * @return the created Client Identifier or null if the byte array does not contain a well-formed encoded Client
-     *         Identifier.
-     */
-    public static @Nullable MqttClientIdentifierImpl from(final @NotNull byte[] binary) {
-        return (!MqttBinaryData.isInRange(binary) || containsMustNotCharacters(binary)) ? null :
-                new MqttClientIdentifierImpl(binary);
-    }
-
-    /**
-     * Validates and creates a Client Identifier from the given string.
+     * Validates and creates a Client Identifier of the given UTF-16 encoded Java string.
      *
      * @param string the Client Identifier as a UTF-16 encoded Java string.
      * @return the created Client Identifier.
-     * @throws IllegalArgumentException if the given string contains forbidden characters.
+     * @throws IllegalArgumentException if the given string is not a valid Client Identifier.
      */
-    public static @NotNull MqttClientIdentifierImpl from(final @NotNull String string) {
+    public static @NotNull MqttClientIdentifierImpl of(final @NotNull String string) {
         checkLength(string, "Client identifier");
-        checkForbiddenCharacters(string, "Client identifier");
+        checkWellFormed(string, "Client identifier");
         return new MqttClientIdentifierImpl(string);
+    }
+
+    /**
+     * Validates and creates a Client Identifier of the given byte array with UTF-8 encoded data.
+     *
+     * @param binary the byte array with the UTF-8 encoded data.
+     * @return the created Client Identifier or <code>null</code> if the byte array does not represent a valid Client
+     *         Identifier.
+     */
+    public static @Nullable MqttClientIdentifierImpl of(final @NotNull byte[] binary) {
+        return (!MqttBinaryData.isInRange(binary) || isWellFormed(binary)) ? null :
+                new MqttClientIdentifierImpl(binary);
     }
 
     /**
@@ -74,12 +72,12 @@ public class MqttClientIdentifierImpl extends MqttUtf8StringImpl implements Mqtt
      * returns.
      *
      * @param byteBuf the byte buffer with the UTF-8 encoded data to decode from.
-     * @return the created Client Identifier or null if the byte buffer does not contain a well-formed encoded Client
+     * @return the created Client Identifier or <code>null</code> if the byte buffer does not contain a valid Client
      *         Identifier.
      */
-    public static @Nullable MqttClientIdentifierImpl from(final @NotNull ByteBuf byteBuf) {
+    public static @Nullable MqttClientIdentifierImpl decode(final @NotNull ByteBuf byteBuf) {
         final byte[] binary = MqttBinaryData.decode(byteBuf);
-        return (binary == null) ? null : from(binary);
+        return (binary == null) ? null : of(binary);
     }
 
     private MqttClientIdentifierImpl(final @NotNull byte[] binary) {
@@ -98,10 +96,9 @@ public class MqttClientIdentifierImpl extends MqttUtf8StringImpl implements Mqtt
             return false;
         }
         for (final byte b : binary) {
-            if (((b >= 'a') && (b <= 'z')) || ((b >= 'A') && (b <= 'Z')) || ((b >= '0') && (b <= '9'))) {
-                continue;
+            if (!(((b >= 'a') && (b <= 'z')) || ((b >= 'A') && (b <= 'Z')) || ((b >= '0') && (b <= '9')))) {
+                return false;
             }
-            return false;
         }
         return true;
     }

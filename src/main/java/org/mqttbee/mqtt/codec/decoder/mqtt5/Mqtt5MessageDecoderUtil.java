@@ -190,7 +190,7 @@ class Mqtt5MessageDecoderUtil {
         if (current != null) {
             throw moreThanOnce(name);
         }
-        final MqttUtf8StringImpl decoded = MqttUtf8StringImpl.from(in);
+        final MqttUtf8StringImpl decoded = MqttUtf8StringImpl.decode(in);
         if (decoded == null) {
             throw malformedUTF8String(name);
         }
@@ -265,5 +265,4 @@ class Mqtt5MessageDecoderUtil {
     static long decodeSessionExpiryInterval(final long current, final @NotNull ByteBuf in) throws MqttDecoderException {
         return unsignedIntOnlyOnce(current, SESSION_EXPIRY_INTERVAL_FROM_CONNECT, "session expiry interval", in);
     }
-
 }

@@ -112,7 +112,7 @@ public class Mqtt3PublishEncoder extends Mqtt3MessageEncoder<MqttStatefulPublish
     private void encodeVariableHeader(@NotNull final MqttStatefulPublish message, @NotNull final ByteBuf out) {
         final MqttPublish stateless = message.stateless();
 
-        stateless.getTopic().to(out);
+        stateless.getTopic().encode(out);
 
         if (stateless.getQos() != MqttQos.AT_MOST_ONCE) {
             out.writeShort(message.getPacketIdentifier());
@@ -125,5 +125,4 @@ public class Mqtt3PublishEncoder extends Mqtt3MessageEncoder<MqttStatefulPublish
             out.writeBytes(payload.duplicate());
         }
     }
-
 }

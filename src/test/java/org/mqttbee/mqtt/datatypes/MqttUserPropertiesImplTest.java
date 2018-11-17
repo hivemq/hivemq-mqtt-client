@@ -23,7 +23,6 @@ import io.netty.buffer.Unpooled;
 import org.junit.jupiter.api.Test;
 import org.mqttbee.mqtt.message.MqttProperty;
 
-import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -33,8 +32,8 @@ class MqttUserPropertiesImplTest {
 
     @Test
     void test_of() {
-        final MqttUtf8StringImpl name = requireNonNull(MqttUtf8StringImpl.from("name"));
-        final MqttUtf8StringImpl value = requireNonNull(MqttUtf8StringImpl.from("value"));
+        final MqttUtf8StringImpl name = MqttUtf8StringImpl.of("name");
+        final MqttUtf8StringImpl value = MqttUtf8StringImpl.of("value");
         final MqttUserPropertyImpl userProperty = new MqttUserPropertyImpl(name, value);
         final ImmutableList<MqttUserPropertyImpl> userPropertiesList = ImmutableList.of(userProperty);
         final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.of(userPropertiesList);
@@ -44,8 +43,8 @@ class MqttUserPropertiesImplTest {
     @Test
     void test_build_not_null() {
         final ImmutableList.Builder<MqttUserPropertyImpl> builder = ImmutableList.builder();
-        final MqttUtf8StringImpl name = requireNonNull(MqttUtf8StringImpl.from("name"));
-        final MqttUtf8StringImpl value = requireNonNull(MqttUtf8StringImpl.from("value"));
+        final MqttUtf8StringImpl name = MqttUtf8StringImpl.of("name");
+        final MqttUtf8StringImpl value = MqttUtf8StringImpl.of("value");
         builder.add(new MqttUserPropertyImpl(name, value));
         final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.build(builder);
         final ImmutableList<MqttUserPropertyImpl> userPropertiesList = userProperties.asList();
@@ -67,9 +66,9 @@ class MqttUserPropertiesImplTest {
                 MqttProperty.USER_PROPERTY, 0, 4, 'n', 'a', 'm', 'e', 0, 5, 'v', 'a', 'l', 'u', 'e',
                 MqttProperty.USER_PROPERTY, 0, 4, 'n', 'a', 'm', 'e', 0, 4, 't', 'e', 's', 't'
         };
-        final MqttUtf8StringImpl name = requireNonNull(MqttUtf8StringImpl.from("name"));
-        final MqttUtf8StringImpl value = requireNonNull(MqttUtf8StringImpl.from("value"));
-        final MqttUtf8StringImpl value2 = requireNonNull(MqttUtf8StringImpl.from("test"));
+        final MqttUtf8StringImpl name = MqttUtf8StringImpl.of("name");
+        final MqttUtf8StringImpl value = MqttUtf8StringImpl.of("value");
+        final MqttUtf8StringImpl value2 = MqttUtf8StringImpl.of("test");
         final MqttUserPropertyImpl userProperty1 = new MqttUserPropertyImpl(name, value);
         final MqttUserPropertyImpl userProperty2 = new MqttUserPropertyImpl(name, value2);
         final MqttUserPropertiesImpl userProperties =
@@ -86,9 +85,9 @@ class MqttUserPropertiesImplTest {
 
     @Test
     void test_encodedLength() {
-        final MqttUtf8StringImpl name = requireNonNull(MqttUtf8StringImpl.from("name"));
-        final MqttUtf8StringImpl value = requireNonNull(MqttUtf8StringImpl.from("value"));
-        final MqttUtf8StringImpl value2 = requireNonNull(MqttUtf8StringImpl.from("test"));
+        final MqttUtf8StringImpl name = MqttUtf8StringImpl.of("name");
+        final MqttUtf8StringImpl value = MqttUtf8StringImpl.of("value");
+        final MqttUtf8StringImpl value2 = MqttUtf8StringImpl.of("test");
         final MqttUserPropertyImpl userProperty1 = new MqttUserPropertyImpl(name, value);
         final MqttUserPropertyImpl userProperty2 = new MqttUserPropertyImpl(name, value2);
         final MqttUserPropertiesImpl userProperties =

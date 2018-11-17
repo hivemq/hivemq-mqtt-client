@@ -26,9 +26,22 @@ import java.nio.ByteBuffer;
 /**
  * UTF-8 encoded String according to the MQTT specification.
  * <p>
- * A UTF-8 encoded String must not contain the null character U+0000 and UTF-16 surrogates.
+ * MUST requirements: An UTF-8 encoded String
+ * <ul>
+ * <li>must not be longer than 65535 bytes in UTF-8 encoding,</li>
+ * <li>must not contain the null character (U+0000) and</li>
+ * <li>must be well-formed UTF-8 as defined by the Unicode specification, so
+ * <ul>
+ * <li>must not contain encodings of UTF-16 surrogates (U+D800..U+DFFF) and</li>
+ * <li>must not contain non-shortest form encodings.</li>
+ * </ul>
+ * </ul>
  * <p>
- * A UTF-8 encoded String should not contain control characters and non-characters.
+ * SHOULD requirements: An UTF-8 encoded String
+ * <ul>
+ * <li>should not contain control characters (U+0001..U+001F, U+007F..U+009F) and</li>
+ * <li>should not contain non-characters.</li>
+ * </ul>
  *
  * @author Silvio Giebl
  */
@@ -36,23 +49,23 @@ import java.nio.ByteBuffer;
 public interface MqttUtf8String extends Comparable<MqttUtf8String> {
 
     /**
-     * Validates and creates a UTF-8 encoded String from the given string.
+     * Validates and creates an UTF-8 encoded string of the given UTF-16 encoded Java string.
      *
      * @param string the UTF-16 encoded Java string.
-     * @return the created UTF-8 encoded String.
-     * @throws IllegalArgumentException if the string is not a valid UTF-8 encoded String.
+     * @return the created UTF-8 encoded string.
+     * @throws IllegalArgumentException if the string is not a valid UTF-8 encoded string.
      */
-    static @NotNull MqttUtf8String from(final @NotNull String string) {
+    static @NotNull MqttUtf8String of(final @NotNull String string) {
         return MqttChecks.stringNotNull(string, "String");
     }
 
     /**
-     * Checks whether this UTF-8 encoded String contains characters that it should not according to the MQTT
+     * Checks whether this UTF-8 encoded string contains characters that it should not according to the MQTT
      * specification.
      * <p>
-     * These characters are control characters and non-characters.
+     * These characters are control characters (U+0001..U+001F, U+007F..U+009F) and non-characters.
      *
-     * @return whether this UTF-8 encoded String contains characters that it should not.
+     * @return whether this UTF-8 encoded string contains characters that it should not.
      */
     boolean containsShouldNotCharacters();
 

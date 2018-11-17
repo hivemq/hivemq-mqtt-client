@@ -38,7 +38,6 @@ import org.mqttbee.mqtt.message.auth.MqttAuth;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
-import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -88,16 +87,16 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
                 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
         });
 
-        final MqttUtf8StringImpl reasonString = MqttUtf8StringImpl.from("continue");
-        final MqttUtf8StringImpl test = requireNonNull(MqttUtf8StringImpl.from("test"));
-        final MqttUtf8StringImpl test2 = requireNonNull(MqttUtf8StringImpl.from("test2"));
-        final MqttUtf8StringImpl value = requireNonNull(MqttUtf8StringImpl.from("value"));
-        final MqttUtf8StringImpl value2 = requireNonNull(MqttUtf8StringImpl.from("value2"));
+        final MqttUtf8StringImpl reasonString = MqttUtf8StringImpl.of("continue");
+        final MqttUtf8StringImpl test = MqttUtf8StringImpl.of("test");
+        final MqttUtf8StringImpl test2 = MqttUtf8StringImpl.of("test2");
+        final MqttUtf8StringImpl value = MqttUtf8StringImpl.of("value");
+        final MqttUtf8StringImpl value2 = MqttUtf8StringImpl.of("value2");
         final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.of(
                 ImmutableList.of(new MqttUserPropertyImpl(test, value), new MqttUserPropertyImpl(test, value2),
                         new MqttUserPropertyImpl(test2, value)));
 
-        final MqttUtf8StringImpl method = requireNonNull(MqttUtf8StringImpl.from("GS2-KRB5"));
+        final MqttUtf8StringImpl method = MqttUtf8StringImpl.of("GS2-KRB5");
         final MqttAuth auth =
                 new MqttAuth(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, method, data, reasonString, userProperties);
         encode(expected, auth);
@@ -121,7 +120,7 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
                 0x15, 0, 1, 'x'
         };
 
-        final MqttUtf8StringImpl method = requireNonNull(MqttUtf8StringImpl.from("x"));
+        final MqttUtf8StringImpl method = MqttUtf8StringImpl.of("x");
         final MqttAuth auth = new MqttAuth(reasonCode, method, null, null, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
         encode(expected, auth);
     }
@@ -146,7 +145,7 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
         };
 
         final ByteBuffer data = ByteBuffer.wrap(new byte[]{1});
-        final MqttUtf8StringImpl method = requireNonNull(MqttUtf8StringImpl.from("x"));
+        final MqttUtf8StringImpl method = MqttUtf8StringImpl.of("x");
         final MqttAuth auth = new MqttAuth(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, method, data, null,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES);
         encode(expected, auth);
@@ -156,7 +155,7 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
     @Disabled("auth data will be validated in the builder, remove this test")
     void encode_authenticationDataTooLarge_throwsEncoderException() {
         final ByteBuffer data = ByteBuffer.wrap(new byte[65536]);
-        final MqttUtf8StringImpl method = requireNonNull(MqttUtf8StringImpl.from("x"));
+        final MqttUtf8StringImpl method = MqttUtf8StringImpl.of("x");
         final MqttAuth auth = new MqttAuth(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, method, data, null,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES);
         encodeNok(auth, EncoderException.class, "binary data size exceeded for authentication data");
@@ -181,8 +180,8 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
                 0x1F, 0, 6, 'r', 'e', 'a', 's', 'o', 'n'
         };
 
-        final MqttUtf8StringImpl reasonString = MqttUtf8StringImpl.from("reason");
-        final MqttUtf8StringImpl method = requireNonNull(MqttUtf8StringImpl.from("x"));
+        final MqttUtf8StringImpl reasonString = MqttUtf8StringImpl.of("reason");
+        final MqttUtf8StringImpl method = MqttUtf8StringImpl.of("x");
         final MqttAuth auth = new MqttAuth(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, method, null, reasonString,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES);
         encode(expected, auth);
@@ -207,8 +206,8 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
                 0x1F, 0, 0
         };
 
-        final MqttUtf8StringImpl reasonString = MqttUtf8StringImpl.from("");
-        final MqttUtf8StringImpl method = requireNonNull(MqttUtf8StringImpl.from("x"));
+        final MqttUtf8StringImpl reasonString = MqttUtf8StringImpl.of("");
+        final MqttUtf8StringImpl method = MqttUtf8StringImpl.of("x");
         final MqttAuth auth = new MqttAuth(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, method, null, reasonString,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES);
         encode(expected, auth);
@@ -254,8 +253,7 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
 
         private ImmutableList.Builder<MqttUserPropertyImpl> userPropertiesBuilder;
         final MqttUserPropertyImpl userProperty =
-                new MqttUserPropertyImpl(requireNonNull(MqttUtf8StringImpl.from("user")),
-                        requireNonNull(MqttUtf8StringImpl.from("property")));
+                new MqttUserPropertyImpl(MqttUtf8StringImpl.of("user"), MqttUtf8StringImpl.of("property"));
 
         char[] reasonStringBytes;
         final int maxPropertyLength = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT - 1  // type, reserved
@@ -298,11 +296,11 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
         }
 
         MqttUtf8StringImpl getReasonStringTooLong() {
-            return MqttUtf8StringImpl.from("r" + new String(reasonStringBytes) + "x");
+            return MqttUtf8StringImpl.of("r" + new String(reasonStringBytes) + "x");
         }
 
         MqttUtf8StringImpl getMethod() {
-            return requireNonNull(MqttUtf8StringImpl.from("x"));
+            return MqttUtf8StringImpl.of("x");
         }
 
         byte[] getWithOmittedUserPropertiesAndReasonString() {

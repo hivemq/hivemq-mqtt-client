@@ -26,35 +26,31 @@ import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 
 import java.util.Arrays;
 
-import static java.util.Objects.requireNonNull;
-
 /**
  * @author David Katz
  */
 abstract class AbstractMqtt5EncoderWithUserPropertiesTest extends AbstractMqtt5EncoderTest {
-    static final private int VARIABLE_BYTE_INTEGER_VALUE_BITS = 7;
+
+    private static final int VARIABLE_BYTE_INTEGER_VALUE_BITS = 7;
     static final int VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE = (1 << (VARIABLE_BYTE_INTEGER_VALUE_BITS * 4)) - 1;
 
-    private ImmutableList.Builder<MqttUserPropertyImpl> userPropertiesBuilder;
-    private final MqttUtf8StringImpl user = requireNonNull(MqttUtf8StringImpl.from("user"));
-    private final MqttUtf8StringImpl property = requireNonNull(MqttUtf8StringImpl.from("property"));
+    private final @NotNull MqttUtf8StringImpl user = MqttUtf8StringImpl.of("user");
+    private final @NotNull MqttUtf8StringImpl property = MqttUtf8StringImpl.of("property");
     final int userPropertyBytes = 1 // identifier
             + 2 // key length
             + 4 // bytes to encode "user"
             + 2 // value length
             + 8; // bytes to encode "property"
 
-    final private MqttUserPropertyImpl userProperty = new MqttUserPropertyImpl(user, property);
+    private final @NotNull MqttUserPropertyImpl userProperty = new MqttUserPropertyImpl(user, property);
 
     AbstractMqtt5EncoderWithUserPropertiesTest(
-            @NotNull final MqttMessageEncoders messageEncoders,
-            final boolean connected
-    ) {
+            final @NotNull MqttMessageEncoders messageEncoders, final boolean connected) {
 
         super(messageEncoders, connected);
     }
 
-    MqttUserPropertiesImpl getUserProperties(final int totalCount) {
+    @NotNull MqttUserPropertiesImpl getUserProperties(final int totalCount) {
         final ImmutableList.Builder<MqttUserPropertyImpl> builder = new ImmutableList.Builder<>();
         for (int i = 0; i < totalCount; i++) {
             builder.add(userProperty);
@@ -64,40 +60,38 @@ abstract class AbstractMqtt5EncoderWithUserPropertiesTest extends AbstractMqtt5E
 
     abstract int getMaxPropertyLength();
 
-    MqttUtf8StringImpl getPaddedUtf8String(final int length) {
+    @NotNull MqttUtf8StringImpl getPaddedUtf8String(final int length) {
         final char[] reasonString = new char[length];
         Arrays.fill(reasonString, 'r');
-        return MqttUtf8StringImpl.from(new String(reasonString));
+        return MqttUtf8StringImpl.of(new String(reasonString));
     }
 
     class MaximumPacketBuilder {
-        int maxUserPropertyCount;
 
-        int remainingPropertyBytes;
+        private final @NotNull ImmutableList.Builder<MqttUserPropertyImpl> userPropertiesBuilder;
+        private final int maxUserPropertyCount;
+        private final int remainingPropertyBytes;
 
-
-        MaximumPacketBuilder build() {
+        MaximumPacketBuilder() {
             // MQTT v5.0 Spec §3.4.1
             final int maxPropertyLength = getMaxPropertyLength();
-
 
             remainingPropertyBytes = maxPropertyLength % userPropertyBytes;
 
             maxUserPropertyCount = maxPropertyLength / userPropertyBytes;
+
             userPropertiesBuilder = new ImmutableList.Builder<>();
             final MqttUserPropertyImpl userProperty = new MqttUserPropertyImpl(user, property);
             for (int i = 0; i < maxUserPropertyCount; i++) {
                 userPropertiesBuilder.add(userProperty);
             }
-
-            return this;
         }
 
-        MqttUserPropertiesImpl getMaxPossibleUserProperties() {
+        @NotNull MqttUserPropertiesImpl getMaxPossibleUserProperties() {
             return getTooManyUserProperties(0);
         }
 
-        MqttUserPropertiesImpl getTooManyUserProperties(final int withExtraUserProperties) {
+        @NotNull MqttUserPropertiesImpl getTooManyUserProperties(final int withExtraUserProperties) {
             for (int i = 0; i < withExtraUserProperties; i++) {
                 userPropertiesBuilder.add(new MqttUserPropertyImpl(user, property));
             }
@@ -112,7 +106,7 @@ abstract class AbstractMqtt5EncoderWithUserPropertiesTest extends AbstractMqtt5E
             return remainingPropertyBytes;
         }
 
-        MqttUtf8StringImpl getPaddedUtf8StringTooLong() {
+        @NotNull MqttUtf8StringImpl getPaddedUtf8StringTooLong() {
             return getPaddedUtf8String(getRemainingPropertyBytes() - 2 + 1);
         }
     }

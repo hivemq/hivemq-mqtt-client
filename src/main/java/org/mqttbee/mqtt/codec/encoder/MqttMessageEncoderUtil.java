@@ -70,7 +70,7 @@ public class MqttMessageEncoderUtil {
 
     public static void encodeNullable(@Nullable final MqttUtf8StringImpl string, @NotNull final ByteBuf out) {
         if (string != null) {
-            string.to(out);
+            string.encode(out);
         }
     }
 
@@ -87,5 +87,4 @@ public class MqttMessageEncoderUtil {
             MqttBinaryData.encodeEmpty(out);
         }
     }
-
 }

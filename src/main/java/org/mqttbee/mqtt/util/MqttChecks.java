@@ -58,7 +58,7 @@ public class MqttChecks {
     private MqttChecks() {}
 
     public static @NotNull MqttUtf8StringImpl stringNotNull(final @Nullable String string, final @NotNull String name) {
-        return MqttUtf8StringImpl.from(Checks.notNull(string, name), name);
+        return MqttUtf8StringImpl.of(Checks.notNull(string, name), name);
     }
 
     public static @NotNull MqttUtf8StringImpl stringNotNull(
@@ -68,7 +68,7 @@ public class MqttChecks {
     }
 
     public static @Nullable MqttUtf8StringImpl stringOrNull(final @Nullable String string, final @NotNull String name) {
-        return (string == null) ? null : MqttUtf8StringImpl.from(string, name);
+        return (string == null) ? null : MqttUtf8StringImpl.of(string, name);
     }
 
     public static @Nullable MqttUtf8StringImpl stringOrNull(
@@ -86,7 +86,7 @@ public class MqttChecks {
     }
 
     public static @NotNull MqttTopicImpl topicNotNull(final @Nullable String topic) {
-        return MqttTopicImpl.from(Checks.notNull(topic, "Topic"), "Topic");
+        return MqttTopicImpl.of(Checks.notNull(topic, "Topic"), "Topic");
     }
 
     public static @NotNull MqttTopicImpl topicNotNull(final @Nullable MqttTopic topic) {
@@ -94,7 +94,7 @@ public class MqttChecks {
     }
 
     public static @NotNull MqttTopicFilterImpl topicFilterNotNull(final @Nullable String topicFilter) {
-        return MqttTopicFilterImpl.from(Checks.notNull(topicFilter, "Topic Filter"));
+        return MqttTopicFilterImpl.of(Checks.notNull(topicFilter, "Topic Filter"));
     }
 
     public static @NotNull MqttTopicFilterImpl topicFilterNotNull(final @Nullable MqttTopicFilter topicFilter) {
@@ -104,12 +104,12 @@ public class MqttChecks {
     public static @NotNull MqttSharedTopicFilterImpl sharedTopicFilterNotNull(
             final @Nullable String shareName, final @Nullable String topicFilter) {
 
-        return MqttSharedTopicFilterImpl.from(
+        return MqttSharedTopicFilterImpl.of(
                 Checks.notNull(shareName, "Share name"), Checks.notNull(topicFilter, "Topic filter"));
     }
 
     public static @NotNull MqttClientIdentifierImpl clientIdentifier(final @Nullable String clientIdentifier) {
-        return MqttClientIdentifierImpl.from(Checks.notNull(clientIdentifier, "Client identifier"));
+        return MqttClientIdentifierImpl.of(Checks.notNull(clientIdentifier, "Client identifier"));
     }
 
     public static @NotNull MqttClientIdentifierImpl clientIdentifier(

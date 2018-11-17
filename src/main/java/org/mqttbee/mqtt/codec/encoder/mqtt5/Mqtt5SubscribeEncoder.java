@@ -106,7 +106,7 @@ public class Mqtt5SubscribeEncoder extends Mqtt5MessageWithUserPropertiesEncoder
         for (int i = 0; i < subscriptions.size(); i++) {
             final MqttSubscription subscription = subscriptions.get(i);
 
-            subscription.getTopicFilter().to(out);
+            subscription.getTopicFilter().encode(out);
 
             int subscriptionOptions = 0;
             subscriptionOptions |= subscription.getRetainHandling().getCode() << 4;

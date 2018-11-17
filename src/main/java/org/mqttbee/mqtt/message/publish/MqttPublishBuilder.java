@@ -116,7 +116,7 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
     }
 
     public @NotNull B responseTopic(final @Nullable String responseTopic) {
-        this.responseTopic = (responseTopic == null) ? null : MqttTopicImpl.from(responseTopic, "Response topic");
+        this.responseTopic = (responseTopic == null) ? null : MqttTopicImpl.of(responseTopic, "Response topic");
         return self();
     }
 

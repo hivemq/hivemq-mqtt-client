@@ -25,10 +25,17 @@ import org.mqttbee.mqtt.util.MqttChecks;
 /**
  * MQTT Shared Topic Filter according to the MQTT specification.
  * <p>
- * A Shared Topic Filter consists of the {@link #SHARE_PREFIX} a Share Name and a Topic Filter. The Share Name has the
- * restrictions from {@link MqttUtf8String}, must be at least 1 character long and mut not contain wildcards ({@link
- * MqttTopicFilter#MULTI_LEVEL_WILDCARD}, {@link MqttTopicFilter#SINGLE_LEVEL_WILDCARD}) and the {@link
- * MqttTopic#TOPIC_LEVEL_SEPARATOR}. The Topic Filter has the same restrictions from {@link MqttTopicFilter}.
+ * A Shared Topic Filter consists of the share prefix ({@value #SHARE_PREFIX}), a Share Name and a Topic Filter.
+ * <p>
+ * The Share Name has the same requirements as an {@link MqttUtf8String UTF-8 encoded string}. Additionally it
+ * <ul>
+ * <li>must be at least 1 character long,</li>
+ * <li>must not contain wildcard characters ({@value MqttTopicFilter#MULTI_LEVEL_WILDCARD}, {@value
+ * MqttTopicFilter#SINGLE_LEVEL_WILDCARD}) and</li>
+ * <li>must not contain a topic level separator ({@value MqttTopic#TOPIC_LEVEL_SEPARATOR})</li>
+ * </ul>
+ * <p>
+ * The Topic Filter has the same restrictions as a {@link MqttTopicFilter Topic Filter}.
  *
  * @author Silvio Giebl
  */
@@ -41,7 +48,7 @@ public interface MqttSharedTopicFilter extends MqttTopicFilter {
     @NotNull String SHARE_PREFIX = "$share" + MqttTopic.TOPIC_LEVEL_SEPARATOR;
 
     /**
-     * Validates and creates a Shared Topic Filter from the given Share Name and the given Topic Filter.
+     * Validates and creates a Shared Topic Filter of the given Share Name and Topic Filter.
      *
      * @param shareName   the Share Name.
      * @param topicFilter the Topic Filter.
@@ -49,7 +56,7 @@ public interface MqttSharedTopicFilter extends MqttTopicFilter {
      * @throws IllegalArgumentException if the Share Name is not a valid Share Name or the Topic Filter is not a valid
      *                                  Topic Filter.
      */
-    static @NotNull MqttSharedTopicFilter from(final @NotNull String shareName, final @NotNull String topicFilter) {
+    static @NotNull MqttSharedTopicFilter of(final @NotNull String shareName, final @NotNull String topicFilter) {
         return MqttChecks.sharedTopicFilterNotNull(shareName, topicFilter);
     }
 

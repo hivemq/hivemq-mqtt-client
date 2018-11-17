@@ -70,7 +70,7 @@ class MqttTopicFilterImplTest {
 
     private static final @NotNull NamedFunction[] topicFilterFactoryMethods = {
             new NamedFunction<>("ByteBuf", MqttTopicFilterImplTest::createFromByteBuf),
-            new NamedFunction<String, MqttTopicFilterImpl>("String", MqttTopicFilterImpl::from)
+            new NamedFunction<String, MqttTopicFilterImpl>("String", MqttTopicFilterImpl::of)
     };
 
     private static @Nullable MqttTopicFilterImpl createFromByteBuf(final @NotNull String string) {
@@ -78,7 +78,7 @@ class MqttTopicFilterImplTest {
         final byte[] binary = string.getBytes(Charset.forName("UTF-8"));
         byteBuf.writeShort(binary.length);
         byteBuf.writeBytes(binary);
-        final MqttTopicFilterImpl mqtt5TopicFilter = MqttTopicFilterImpl.from(byteBuf);
+        final MqttTopicFilterImpl mqtt5TopicFilter = MqttTopicFilterImpl.decode(byteBuf);
         byteBuf.release();
         return mqtt5TopicFilter;
     }
@@ -93,7 +93,7 @@ class MqttTopicFilterImplTest {
     @Test
     void from_emptyString_throws() {
         final IllegalArgumentException exception =
-                Assertions.assertThrows(IllegalArgumentException.class, () -> MqttTopicFilterImpl.from(""));
+                Assertions.assertThrows(IllegalArgumentException.class, () -> MqttTopicFilterImpl.of(""));
         assertTrue("IllegalArgumentException must give hint that string must not be empty.",
                 exception.getMessage().contains("must be at least one character long"));
     }
@@ -175,8 +175,7 @@ class MqttTopicFilterImplTest {
             @SuppressWarnings("unused") final @NotNull String testDescription,
             final @NotNull String topicFilterString) {
         final IllegalArgumentException exception = Assertions.assertThrows(
-                IllegalArgumentException.class,
-                () -> MqttTopicFilterImpl.from(topicFilterString));
+                IllegalArgumentException.class, () -> MqttTopicFilterImpl.of(topicFilterString));
         assertTrue("IllegalArgumentException must give hint that string contains misplaced wildcard characters.",
                 exception.getMessage().contains("misplaced wildcard characters"));
     }

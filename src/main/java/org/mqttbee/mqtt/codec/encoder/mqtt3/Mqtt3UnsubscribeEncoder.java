@@ -74,8 +74,7 @@ public class Mqtt3UnsubscribeEncoder extends Mqtt3MessageEncoder<MqttStatefulUns
     private void encodePayload(@NotNull final MqttStatefulUnsubscribe message, @NotNull final ByteBuf out) {
         final ImmutableList<MqttTopicFilterImpl> subscriptions = message.stateless().getTopicFilters();
         for (int i = 0; i < subscriptions.size(); i++) {
-            subscriptions.get(i).to(out);
+            subscriptions.get(i).encode(out);
         }
     }
-
 }
