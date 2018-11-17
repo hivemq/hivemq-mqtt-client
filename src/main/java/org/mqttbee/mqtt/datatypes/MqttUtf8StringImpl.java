@@ -83,11 +83,12 @@ public class MqttUtf8StringImpl implements MqttUtf8String {
      * <ul>
      * <li>must not be longer than {@value MqttBinaryData#MAX_LENGTH},</li>
      * <li>must not contain the null character (U+0000) and</li>
-     * <li>must be well-formed UTF-8 as defined by the Unicode specification, so</li>
+     * <li>must be well-formed UTF-8 as defined by the Unicode specification, so
      * <ul>
      * <li>must not contain encodings of UTF-16 surrogates (U+D800..U+DFFF) and</li>
      * <li>must not contain non-shortest form encodings.</li>
      * </ul>
+     * </li>
      * </ul>
      *
      * @param binary the byte array with the UTF-8 encoded data.
@@ -121,11 +122,12 @@ public class MqttUtf8StringImpl implements MqttUtf8String {
      * the MQTT specification, so
      * <ul>
      * <li>must not contain the null character (U+0000) and</li>
-     * <li>must be well-formed UTF-8 as defined by the Unicode specification, so</li>
+     * <li>must be well-formed UTF-8 as defined by the Unicode specification, so
      * <ul>
      * <li>must not contain encodings of UTF-16 surrogates (U+D800..U+DFFF) and</li>
      * <li>must not contain non-shortest form encodings.</li>
      * </ul>
+     * </li>
      * </ul>
      *
      * @param binary the byte array with UTF-8 encoded data.
