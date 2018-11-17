@@ -38,76 +38,100 @@ import java.util.Arrays;
 public class MqttUtf8StringImpl implements MqttUtf8String {
 
     /**
-     * MQTT Protocol name as a UTF-8 encoded String.
+     * MQTT protocol name as a UTF-8 encoded string.
      */
     public static final @NotNull MqttUtf8StringImpl PROTOCOL_NAME =
             new MqttUtf8StringImpl("MQTT".getBytes(StandardCharsets.UTF_8));
 
     /**
-     * Validates and decodes a UTF-8 encoded String from the given byte array.
+     * Validates and creates an UTF-8 encoded string of the given UTF-16 encoded Java string.
      * <p>
-     * Note: the given byte array must not be longer than {@link MqttBinaryData#MAX_LENGTH}.
+     * The given string
+     * <ul>
+     * <li>must not be longer than {@value MqttBinaryData#MAX_LENGTH} bytes in UTF-8 encoding,</li>
+     * <li>must not contain the null character (U+0000) and</li>
+     * <li>must not contain unmatched UTF-16 surrogates.</li>
+     * </ul>
      *
-     * @param binary the byte array with the UTF-8 encoded data to decode from.
-     * @return the created UTF-8 encoded String or null if the byte array does not contain a well-formed UTF-8 encoded
-     *         String.
+     * @param string the UTF-16 encoded Java string.
+     * @return the created UTF-8 encoded string.
+     * @throws IllegalArgumentException if the string is not a valid UTF-8 encoded string.
      */
-    public static @Nullable MqttUtf8StringImpl from(final @NotNull byte[] binary) {
-        return (!MqttBinaryData.isInRange(binary) || containsMustNotCharacters(binary)) ? null :
-                new MqttUtf8StringImpl(binary);
+    public static @NotNull MqttUtf8StringImpl of(final @NotNull String string) {
+        return of(string, "UTF-8 encoded string");
     }
 
     /**
-     * Validates and creates a UTF-8 encoded String from the given string.
-     * <p>
-     * Note: The given string
-     * <ul>encoded in UTF-8 must not be longer than {@link MqttBinaryData#MAX_LENGTH}</ul>
-     * <ul>and must not contain the null character U+0000 and UTF-16 surrogates, as these are forbidden according to
-     * the MQTT 5 Specification.</ul>
+     * Same function as {@link #of(String)}, but allows specifying a name to use in error messages.
      *
-     * @param string the UTF-16 encoded Java string.
-     * @return the created UTF-8 encoded String or null if the string is not a valid UTF-8 encoded String.
-     * @throws IllegalArgumentException if the given string encoded in UTF-8 is longer than {@link
-     *                                  MqttBinaryData#MAX_LENGTH} or contains forbidden characters.
+     * @param string see {@link #of(String)}.
+     * @param name   specific name used in error messages.
+     * @return see {@link #of(String)}.
+     * @throws IllegalArgumentException see {@link #of(String)}.
+     * @see #of(String)
      */
-    public static @NotNull MqttUtf8StringImpl from(final @NotNull String string) {
-        return from(string, "UTF-8 encoded string");
-    }
-
-    public static @NotNull MqttUtf8StringImpl from(final @NotNull String string, final @NotNull String name) {
+    public static @NotNull MqttUtf8StringImpl of(final @NotNull String string, final @NotNull String name) {
         checkLength(string, name);
-        checkForbiddenCharacters(string, name);
+        checkWellFormed(string, name);
         return new MqttUtf8StringImpl(string);
     }
 
     /**
-     * Validates and decodes a UTF-8 encoded String from the given byte buffer at the current reader index.
+     * Validates and creates a UTF-8 encoded string of the given byte array with UTF-8 encoded data.
+     * <p>
+     * The given byte array
+     * <ul>
+     * <li>must not be longer than {@value MqttBinaryData#MAX_LENGTH},</li>
+     * <li>must not contain the null character (U+0000) and</li>
+     * <li>must be well-formed UTF-8 as defined by the Unicode specification, so</li>
+     * <ul>
+     * <li>must not contain encodings of UTF-16 surrogates (U+D800..U+DFFF) and</li>
+     * <li>must not contain non-shortest form encodings.</li>
+     * </ul>
+     * </ul>
+     *
+     * @param binary the byte array with the UTF-8 encoded data.
+     * @return the created UTF-8 encoded string or <code>null</code> if the byte array does not represent a valid UTF-8
+     *         encoded String.
+     */
+    public static @Nullable MqttUtf8StringImpl of(final @NotNull byte[] binary) {
+        return (!MqttBinaryData.isInRange(binary) || isWellFormed(binary)) ? null : new MqttUtf8StringImpl(binary);
+    }
+
+    /**
+     * Validates and decodes a UTF-8 encoded string from the given byte buffer at the current reader index.
      * <p>
      * In case of a wrong encoding the reader index of the byte buffer will be in an undefined state after the method
      * returns.
      * <p>
      * Note: the first two bytes are interpreted as the length of the binary data to read. Thus the length is limited to
-     * {@link MqttBinaryData#MAX_LENGTH}.
+     * {@value MqttBinaryData#MAX_LENGTH}.
      *
      * @param byteBuf the byte buffer with the UTF-8 encoded data to decode from.
-     * @return the created UTF-8 encoded String or null if the byte buffer does not contain a well-formed UTF-8 encoded
-     *         String.
+     * @return the created UTF-8 encoded string or <code>null</code> if the byte buffer does not contain a valid UTF-8
+     *         encoded string.
      */
-    public static @Nullable MqttUtf8StringImpl from(final @NotNull ByteBuf byteBuf) {
+    public static @Nullable MqttUtf8StringImpl decode(final @NotNull ByteBuf byteBuf) {
         final byte[] binary = MqttBinaryData.decode(byteBuf);
-        return (binary == null) ? null : from(binary);
+        return (binary == null) ? null : of(binary);
     }
 
     /**
-     * Checks whether the given UTF-8 encoded byte array contains characters a UTF-8 encoded String must not according
-     * to the MQTT 5 specification.
-     * <p>
-     * These characters are the null character U+0000 and UTF-16 surrogates.
+     * Checks if the given byte array with UTF-8 encoded data represents a well-formed UTF-8 encoded string according to
+     * the MQTT specification, so
+     * <ul>
+     * <li>must not contain the null character (U+0000) and</li>
+     * <li>must be well-formed UTF-8 as defined by the Unicode specification, so</li>
+     * <ul>
+     * <li>must not contain encodings of UTF-16 surrogates (U+D800..U+DFFF) and</li>
+     * <li>must not contain non-shortest form encodings.</li>
+     * </ul>
+     * </ul>
      *
-     * @param binary the UTF-8 encoded byte array.
-     * @return whether the binary data contains characters a UTF-8 encoded String must not.
+     * @param binary the byte array with UTF-8 encoded data.
+     * @return whether the byte array represents a well-formed UTF-8 encoded string.
      */
-    static boolean containsMustNotCharacters(final @NotNull byte[] binary) {
+    static boolean isWellFormed(final @NotNull byte[] binary) {
         if (!Utf8.isWellFormed(binary)) {
             return true;
         }
@@ -120,14 +144,18 @@ public class MqttUtf8StringImpl implements MqttUtf8String {
     }
 
     /**
-     * Checks whether the given UTF-16 encoded Java string contains the null character U+0000 or unmatched UTF-16
-     * surrogates (U+D800 to U+DFFF), as these are forbidden in the UTF-8 encoded string according to the MQTT 5
-     * specification.
+     * Checks if the given UTF-16 encoded Java string is a well-formed UTF-8 encoded string according to the MQTT
+     * specification, so
+     * <ul>
+     * <li>must not contain the null character (U+0000) and</li>
+     * <li>must not contain unmatched UTF-16 surrogates.</li>
+     * </ul>
      *
      * @param string the UTF-16 encoded Java string.
-     * @throws IllegalArgumentException if the given string contains forbidden characters.
+     * @param name   specific name used in error messages.
+     * @throws IllegalArgumentException if the string is not a well-formed UTF-8 encoded string.
      */
-    static void checkForbiddenCharacters(final @NotNull String string, final @NotNull String name) {
+    static void checkWellFormed(final @NotNull String string, final @NotNull String name) {
         boolean previousCharIsHighSurrogate = false;
         for (int i = 0; i < string.length(); i++) {
             final char c = string.charAt(i);
@@ -150,11 +178,13 @@ public class MqttUtf8StringImpl implements MqttUtf8String {
     }
 
     /**
-     * Checks if the given UTF-16 Java string encoded in UTF-8 fits into {@link MqttBinaryData}.
+     * Checks if the given UTF-16 encoded Java string is not longer than {@value MqttBinaryData#MAX_LENGTH} bytes in
+     * UTF-8 encoding.
      *
      * @param string the UTF-16 encoded Java string.
-     * @throws IllegalArgumentException if the given string encoded in UTF-8 is longer than {@link
-     *                                  MqttBinaryData#MAX_LENGTH}.
+     * @param name   specific name used in error messages.
+     * @throws IllegalArgumentException if the string is longer than {@value MqttBinaryData#MAX_LENGTH} bytes in UTF-8
+     *                                  encoding.
      */
     static void checkLength(final @NotNull String string, final @NotNull String name) {
         // Perform a quick check on string length, since calculating the exact number of bytes used in UTF-8 encoding
@@ -288,22 +318,23 @@ public class MqttUtf8StringImpl implements MqttUtf8String {
     }
 
     /**
-     * Encodes this UTF-8 encoded String to the given byte buffer at the current writer index according to the MQTT 5
-     * specification. Converts from the UTF-16 encoded to the UTF-8 encoded representation if necessary.
+     * Encodes this UTF-8 encoded string to the given byte buffer at the current writer index according to the MQTT
+     * specification.
      * <p>
-     * This method does not check if this UTF-8 encoded String can not be encoded due to byte count restrictions. This
-     * check is performed with the method {@link #encodedLength()} which is generally called before this method.
+     * Converts from the UTF-16 encoded to the UTF-8 encoded representation if necessary.
      *
      * @param byteBuf the byte buffer to encode to.
      */
-    public void to(final @NotNull ByteBuf byteBuf) {
+    public void encode(final @NotNull ByteBuf byteBuf) {
         MqttBinaryData.encode(toBinary(), byteBuf);
     }
 
     /**
-     * Calculates the byte count of this UTF-8 encoded String according to the MQTT 5 specification.
+     * Calculates the byte count of this UTF-8 encoded string according to the MQTT specification.
+     * <p>
+     * Converts from the UTF-16 encoded to the UTF-8 encoded representation if necessary.
      *
-     * @return the encoded length of this UTF-8 encoded String.
+     * @return the encoded length of this UTF-8 encoded string.
      */
     public int encodedLength() {
         return MqttBinaryData.encodedLength(toBinary());

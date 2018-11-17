@@ -45,17 +45,34 @@ public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopic
     private static final int WILDCARD_CHECK_STATE_SINGLE_LEVEL = 3;
 
     /**
-     * Validates and decodes a Topic Filter from the given byte array.
+     * Validates and creates a Topic Filter of the given UTF-16 encoded Java string.
      *
-     * @param binary the byte array with the UTF-8 encoded data to decode from.
-     * @return the created Topic Filter or null if the byte array does not contain a well-formed Topic Filter.
+     * @param string the UTF-16 encoded Java string.
+     * @return the created Topic Filter.
+     * @throws IllegalArgumentException if the string is not a valid Topic Filter.
      */
-    public static @Nullable MqttTopicFilterImpl from(final @NotNull byte[] binary) {
-        if ((binary.length == 0) || !MqttBinaryData.isInRange(binary) || containsMustNotCharacters(binary)) {
+    public static @NotNull MqttTopicFilterImpl of(final @NotNull String string) {
+        checkLength(string, "Topic filter");
+        checkWellFormed(string);
+        if (MqttSharedTopicFilterImpl.isShared(string)) {
+            return MqttSharedTopicFilterImpl.ofInternal(string);
+        }
+        final int wildcardFlags = validateWildcards(string, 0);
+        return new MqttTopicFilterImpl(string, wildcardFlags);
+    }
+
+    /**
+     * Validates and creates a Topic Filter of the given byte array with UTF-8 encoded data.
+     *
+     * @param binary the byte array with the UTF-8 encoded data.
+     * @return the created Topic Filter or <code>null</code> if the byte array does not represent a valid Topic Filter.
+     */
+    public static @Nullable MqttTopicFilterImpl of(final @NotNull byte[] binary) {
+        if ((binary.length == 0) || !MqttBinaryData.isInRange(binary) || isWellFormed(binary)) {
             return null;
         }
         if (MqttSharedTopicFilterImpl.isShared(binary)) {
-            return MqttSharedTopicFilterImpl.fromInternal(binary);
+            return MqttSharedTopicFilterImpl.ofInternal(binary);
         }
         final int wildcardFlags = validateWildcards(binary, 0);
         if (wildcardFlags == WILDCARD_CHECK_FAILURE) {
@@ -65,50 +82,32 @@ public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopic
     }
 
     /**
-     * Validates and creates a Topic Filter from the given string.
-     *
-     * @param string the UTF-16 encoded Java string.
-     * @return the created Topic Filter.
-     * @throws IllegalArgumentException if the given string contains forbidden characters or misplaced wildcard
-     *                                  characters.
-     */
-    public static @NotNull MqttTopicFilterImpl from(final @NotNull String string) {
-        checkLength(string, "Topic filter");
-        checkForbiddenCharacters(string);
-        if (MqttSharedTopicFilterImpl.isShared(string)) {
-            return MqttSharedTopicFilterImpl.fromInternal(string);
-        }
-        final int wildcardFlags = validateWildcards(string, 0);
-        return new MqttTopicFilterImpl(string, wildcardFlags);
-    }
-
-    /**
      * Validates and decodes a Topic Filter from the given byte buffer at the current reader index.
      * <p>
      * In case of a wrong encoding the reader index of the byte buffer will be in an undefined state after the method
      * returns.
      *
      * @param byteBuf the byte buffer with the UTF-8 encoded data to decode from.
-     * @return the created Topic Filter or null if the byte buffer does not contain a well-formed Topic Filter.
+     * @return the created Topic Filter or <code>null</code> if the byte buffer does not contain a valid Topic Filter.
      */
-    public static @Nullable MqttTopicFilterImpl from(final @NotNull ByteBuf byteBuf) {
+    public static @Nullable MqttTopicFilterImpl decode(final @NotNull ByteBuf byteBuf) {
         final byte[] binary = MqttBinaryData.decode(byteBuf);
-        return (binary == null) ? null : from(binary);
+        return (binary == null) ? null : of(binary);
     }
 
-    static void checkForbiddenCharacters(final @NotNull String string) {
+    static void checkWellFormed(final @NotNull String string) {
         Checks.notEmpty(string, "Topic filter");
-        MqttUtf8StringImpl.checkForbiddenCharacters(string, "Topic filter");
+        MqttUtf8StringImpl.checkWellFormed(string, "Topic filter");
     }
 
     /**
-     * Validates the wildcards in the given UTF-8 encoded byte array.
+     * Validates the wildcards in the given byte array with UTF-8 encoded data.
      *
-     * @param binary the UTF-8 encoded byte array.
+     * @param binary the byte array with UTF-8 encoded data.
      * @param start  the index in the byte array to start validation at.
      * @return a combination of {@link #WILDCARD_FLAG_MULTI_LEVEL} and {@link #WILDCARD_FLAG_SINGLE_LEVEL} indicating
      *         that a multi-level and/or single-level wildcards are present in the byte array or {@link
-     *         #WILDCARD_CHECK_FAILURE} if the wildcard characters are misplaced
+     *         #WILDCARD_CHECK_FAILURE} if the wildcard characters are misplaced.
      */
     static int validateWildcards(final @NotNull byte[] binary, final int start) {
         int wildcardFlags = 0;
@@ -161,10 +160,10 @@ public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopic
      * Validates the wildcards in the given UTF-16 encoded Java string.
      *
      * @param string the UTF-16 encoded Java string.
-     * @param start  the index in the byte array to start validation at.
+     * @param start  the character index in the string to start validation at.
      * @return a combination of {@link #WILDCARD_FLAG_MULTI_LEVEL} and {@link #WILDCARD_FLAG_SINGLE_LEVEL} indicating
-     *         that a multi-level and/or single-level wildcards are present in the string or {@link
-     *         #WILDCARD_CHECK_FAILURE} if the wildcard characters are misplaced
+     *         that a multi-level and/or single-level wildcards are present in the string.
+     * @throws IllegalArgumentException if the wildcard characters are misplaced.
      */
     static int validateWildcards(final @NotNull String string, final int start) {
         int wildcardFlags = 0;

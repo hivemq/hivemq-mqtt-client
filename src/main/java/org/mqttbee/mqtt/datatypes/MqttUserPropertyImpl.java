@@ -52,11 +52,11 @@ public class MqttUserPropertyImpl implements Mqtt5UserProperty {
      * @return the decoded User Property or null if the name and/or value are not valid UTF-8 encoded Strings.
      */
     public static @Nullable MqttUserPropertyImpl decode(final @NotNull ByteBuf in) {
-        final MqttUtf8StringImpl name = MqttUtf8StringImpl.from(in);
+        final MqttUtf8StringImpl name = MqttUtf8StringImpl.decode(in);
         if (name == null) {
             return null;
         }
-        final MqttUtf8StringImpl value = MqttUtf8StringImpl.from(in);
+        final MqttUtf8StringImpl value = MqttUtf8StringImpl.decode(in);
         if (value == null) {
             return null;
         }
@@ -83,8 +83,8 @@ public class MqttUserPropertyImpl implements Mqtt5UserProperty {
 
     void encode(final @NotNull ByteBuf out) {
         out.writeByte(MqttProperty.USER_PROPERTY);
-        name.to(out);
-        value.to(out);
+        name.encode(out);
+        value.encode(out);
     }
 
     int encodedLength() {

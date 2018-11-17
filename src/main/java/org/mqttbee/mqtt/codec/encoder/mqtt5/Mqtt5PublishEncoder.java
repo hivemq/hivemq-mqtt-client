@@ -155,7 +155,7 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
         final MqttPublish stateless = message.stateless();
 
         if ((message.getTopicAlias() == DEFAULT_NO_TOPIC_ALIAS) || message.isNewTopicAlias()) {
-            stateless.getTopic().to(out);
+            stateless.getTopic().encode(out);
         } else {
             MqttBinaryData.encodeEmpty(out);
         }

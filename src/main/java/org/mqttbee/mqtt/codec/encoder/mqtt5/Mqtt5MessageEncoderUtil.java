@@ -77,7 +77,7 @@ class Mqtt5MessageEncoderUtil {
             final int propertyIdentifier, @NotNull final MqttUtf8StringImpl string, @NotNull final ByteBuf out) {
 
         out.writeByte(propertyIdentifier);
-        string.to(out);
+        string.encode(out);
     }
 
     static void encodeNullableProperty(
@@ -148,5 +148,4 @@ class Mqtt5MessageEncoderUtil {
             encodeVariableByteIntegerProperty(propertyIdentifier, value, out);
         }
     }
-
 }

@@ -26,8 +26,12 @@ import org.mqttbee.mqtt.util.MqttChecks;
 /**
  * MQTT Topic Name according to the MQTT specification.
  * <p>
- * A Topic Name has the restrictions from {@link MqttUtf8String}, must be at least 1 character long and mut not contain
- * wildcards ({@link MqttTopicFilter#MULTI_LEVEL_WILDCARD}, {@link MqttTopicFilter#SINGLE_LEVEL_WILDCARD}).
+ * A Topic Name has the same requirements as an {@link MqttUtf8String UTF-8 encoded string}. Additionally it
+ * <ul>
+ * <li>must be at least 1 character long and</li>
+ * <li>must not contain wildcard characters ({@value MqttTopicFilter#MULTI_LEVEL_WILDCARD}, {@value
+ * MqttTopicFilter#SINGLE_LEVEL_WILDCARD}).</li>
+ * </ul>
  *
  * @author Silvio Giebl
  */
@@ -40,13 +44,13 @@ public interface MqttTopic extends MqttUtf8String {
     char TOPIC_LEVEL_SEPARATOR = '/';
 
     /**
-     * Validates and creates a Topic Name from the given string.
+     * Validates and creates a Topic Name of the given string.
      *
      * @param string the UTF-16 encoded Java string.
      * @return the created Topic Name.
      * @throws IllegalArgumentException if the string is not a valid Topic Name.
      */
-    static @NotNull MqttTopic from(final @NotNull String string) {
+    static @NotNull MqttTopic of(final @NotNull String string) {
         return MqttChecks.topicNotNull(string);
     }
 

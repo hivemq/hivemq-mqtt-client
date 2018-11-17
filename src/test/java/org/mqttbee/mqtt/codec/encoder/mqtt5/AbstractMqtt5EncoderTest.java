@@ -25,17 +25,14 @@ import org.mqttbee.mqtt.codec.encoder.AbstractMqttEncoderTest;
 import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoders;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 
-import java.util.Objects;
-
 class AbstractMqtt5EncoderTest extends AbstractMqttEncoderTest {
 
-    AbstractMqtt5EncoderTest(
-            @NotNull final MqttMessageEncoders messageEncoders, final boolean connected) {
+    AbstractMqtt5EncoderTest(final @NotNull MqttMessageEncoders messageEncoders, final boolean connected) {
         super(messageEncoders, connected, createClientData());
     }
 
     private static MqttClientConfig createClientData() {
-        return new MqttClientConfig(MqttVersion.MQTT_5_0, Objects.requireNonNull(MqttClientIdentifierImpl.from("test")),
-                "localhost", 1883, null, null, false, false, MqttClientExecutorConfigImpl.DEFAULT, null);
+        return new MqttClientConfig(MqttVersion.MQTT_5_0, MqttClientIdentifierImpl.of("test"), "localhost", 1883, null,
+                null, false, false, MqttClientExecutorConfigImpl.DEFAULT, null);
     }
 }

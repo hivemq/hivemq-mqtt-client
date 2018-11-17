@@ -61,7 +61,7 @@ public class Mqtt3PublishDecoder implements MqttMessageDecoder {
             throw remainingLengthTooShort();
         }
 
-        final MqttTopicImpl topic = MqttTopicImpl.from(in);
+        final MqttTopicImpl topic = MqttTopicImpl.decode(in);
         if (topic == null) {
             throw malformedTopic();
         }
@@ -80,5 +80,4 @@ public class Mqtt3PublishDecoder implements MqttMessageDecoder {
 
         return Mqtt3PublishView.statefulDelegate(publish, packetIdentifier, dup);
     }
-
 }

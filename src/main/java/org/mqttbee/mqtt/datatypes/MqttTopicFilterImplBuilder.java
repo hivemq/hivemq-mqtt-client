@@ -85,7 +85,7 @@ public abstract class MqttTopicFilterImplBuilder<B extends MqttTopicFilterImplBu
             Checks.state(stringBuilder != null, "At least one topic level must be added.");
             final String string = stringBuilder.toString();
             Checks.state(!string.isEmpty(), "Topic must be at least one character long.");
-            return MqttTopicFilterImpl.from(string);
+            return MqttTopicFilterImpl.of(string);
         }
     }
 
@@ -160,7 +160,7 @@ public abstract class MqttTopicFilterImplBuilder<B extends MqttTopicFilterImplBu
             Checks.state(stringBuilder != null, "At least one topic level must be added.");
             final String string = stringBuilder.toString();
             Checks.state(!string.isEmpty(), "Topic must be at least one character long.");
-            return MqttSharedTopicFilterImpl.from(shareName, string);
+            return MqttSharedTopicFilterImpl.of(shareName, string);
         }
     }
 

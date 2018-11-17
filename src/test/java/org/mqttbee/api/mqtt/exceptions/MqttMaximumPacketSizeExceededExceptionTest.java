@@ -23,7 +23,6 @@ import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.message.auth.MqttAuth;
 
-import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class MqttMaximumPacketSizeExceededExceptionTest {
@@ -31,9 +30,7 @@ class MqttMaximumPacketSizeExceededExceptionTest {
     @Test
     void fillInStackTrace() {
         final MqttMaximumPacketSizeExceededException exception = new MqttMaximumPacketSizeExceededException(
-                new MqttAuth(
-                        Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, requireNonNull(MqttUtf8StringImpl.from("test")),
-                        null, null,
+                new MqttAuth(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION, MqttUtf8StringImpl.of("test"), null, null,
                         MqttUserPropertiesImpl.NO_USER_PROPERTIES), 200, 100);
         exception.fillInStackTrace();
         assertEquals(0, exception.getStackTrace().length);

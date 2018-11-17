@@ -211,7 +211,7 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
 
         final MqttConnect stateless = message.stateless();
 
-        MqttUtf8StringImpl.PROTOCOL_NAME.to(out);
+        MqttUtf8StringImpl.PROTOCOL_NAME.encode(out);
         out.writeByte(PROTOCOL_VERSION);
 
         int connectFlags = 0;
@@ -287,7 +287,7 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
 
         final MqttConnect stateless = message.stateless();
 
-        message.getClientIdentifier().to(out);
+        message.getClientIdentifier().encode(out);
 
         encodeWillPublish(stateless, out, willPropertyLength);
 
@@ -310,9 +310,8 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
             encodeIntProperty(MqttWillPublishProperty.WILL_DELAY_INTERVAL, willPublish.getDelayInterval(),
                     MqttWillPublish.DEFAULT_DELAY_INTERVAL, out);
 
-            willPublish.getTopic().to(out);
+            willPublish.getTopic().encode(out);
             encodeOrEmpty(willPublish.getRawPayload(), out);
         }
     }
-
 }

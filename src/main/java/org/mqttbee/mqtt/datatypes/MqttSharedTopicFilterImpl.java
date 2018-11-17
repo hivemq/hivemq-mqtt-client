@@ -36,10 +36,22 @@ public class MqttSharedTopicFilterImpl extends MqttTopicFilterImpl implements Mq
     private static final int SHARE_PREFIX_LENGTH = SHARE_PREFIX.length();
 
     /**
-     * Checks whether the given UTF-8 encoded byte array represents a Shared Topic Filter. This method does not validate
-     * whether it represents a valid Shared Topic Filter but only whether it starts with {@link #SHARE_PREFIX}.
+     * Checks if the given UTF-16 encoded Java string represents a Shared Topic Filter. This method does not validate
+     * whether it represents a valid Shared Topic Filter but only whether it starts with {@value #SHARE_PREFIX}.
      *
-     * @param binary the UTF-8 encoded byte array.
+     * @param string the given UTF-16 encoded Java string.
+     * @return whether the string represents a Shared Topic Filter.
+     */
+    static boolean isShared(final @NotNull String string) {
+        return string.startsWith(SHARE_PREFIX);
+    }
+
+    /**
+     * Checks if the given byte array with UTF-8 encoded data represents a Shared Topic Filter. This method does not
+     * validate whether it represents a valid Shared Topic Filter but only whether it starts with {@value
+     * #SHARE_PREFIX}.
+     *
+     * @param binary the byte array with UTF-8 encoded data.
      * @return whether the byte array represents a Shared Topic Filter.
      */
     static boolean isShared(final @NotNull byte[] binary) {
@@ -55,61 +67,16 @@ public class MqttSharedTopicFilterImpl extends MqttTopicFilterImpl implements Mq
     }
 
     /**
-     * Checks whether the given UTF-16 encoded Java string represents a Shared Topic Filter. This method does not
-     * validate whether it represents a valid Shared Topic Filter but only whether it starts with {@link
-     * #SHARE_PREFIX}.
-     *
-     * @param string the given UTF-16 encoded Java string.
-     * @return whether the string represents a Shared Topic Filter.
-     */
-    static boolean isShared(final @NotNull String string) {
-        return string.startsWith(SHARE_PREFIX);
-    }
-
-    /**
-     * Validates and creates a Shared Topic Filter from the given byte array.
+     * Validates and creates a Shared Topic Filter of the given UTF-16 encoded Java string.
      * <p>
-     * This method does not validate {@link MqttTopicFilterImpl#containsMustNotCharacters(byte[])} and {@link
-     * #isShared(byte[])}.
+     * This method does not validate {@link MqttTopicFilterImpl#checkWellFormed(String)} and {@link #isShared(String)}.
      *
-     * @param binary the UTF-8 encoded byte array staring with {@link #SHARE_PREFIX}.
-     * @return the created Shared Topic Filter or null if the byte array is not a valid Shared Topic Filter.
+     * @param string the UTF-16 encoded Java string staring with {@value #SHARE_PREFIX}.
+     * @return the created Shared Topic Filter.
+     * @throws IllegalArgumentException if the string is not a valid Shared Topic Filter.
      */
-    static @Nullable MqttSharedTopicFilterImpl fromInternal(final @NotNull byte[] binary) {
-        int shareNameEnd = SHARE_PREFIX_LENGTH;
-        while (shareNameEnd < binary.length) {
-            final byte b = binary[shareNameEnd];
-            if (b == MqttTopicImpl.TOPIC_LEVEL_SEPARATOR) {
-                break;
-            }
-            if ((b == MULTI_LEVEL_WILDCARD) || (b == SINGLE_LEVEL_WILDCARD)) {
-                return null;
-            }
-            shareNameEnd++;
-        }
-        if ((shareNameEnd == SHARE_PREFIX_LENGTH) || (shareNameEnd >= binary.length - 1)) {
-            return null;
-        }
-        final int wildcardFlags = validateWildcards(binary, shareNameEnd + 1);
-        if (wildcardFlags == WILDCARD_CHECK_FAILURE) {
-            return null;
-        }
-        return new MqttSharedTopicFilterImpl(binary, shareNameEnd, wildcardFlags);
-    }
-
-    /**
-     * Validates and creates a Shared Topic Filter from the given string.
-     * <p>
-     * This method does not validate {@link MqttTopicFilterImpl#containsMustNotCharacters(byte[])} and {@link
-     * #isShared(byte[])}.
-     *
-     * @param string the UTF-16 encoded Java string staring with {@link #SHARE_PREFIX}.
-     * @return the created Shared Topic Filter or null if the string is not a valid Shared Topic Filter.
-     * @throws IllegalArgumentException if the given string contains forbidden characters or misplaced wildcard
-     *                                  characters or the Share Name or Topic Filter parts are empty.
-     */
-    static @NotNull MqttSharedTopicFilterImpl fromInternal(final @NotNull String string) {
-        // no isShared, checkLength and checkForbiddenCharacters, already checked in TopicFilter
+    static @NotNull MqttSharedTopicFilterImpl ofInternal(final @NotNull String string) {
+        // no isShared, checkLength and checkWellFormed, already checked in TopicFilter
         int shareNameEnd = SHARE_PREFIX_LENGTH;
         while (shareNameEnd < string.length()) {
             final char c = string.charAt(shareNameEnd);
@@ -133,19 +100,50 @@ public class MqttSharedTopicFilterImpl extends MqttTopicFilterImpl implements Mq
     }
 
     /**
-     * Validates and creates a Shared Topic Filter from the given Share Name and the given Topic Filter.
+     * Validates and creates a Shared Topic Filter of the given byte array with UTF-8 encoded data.
+     * <p>
+     * This method does not validate {@link MqttTopicFilterImpl#isWellFormed(byte[])} and {@link #isShared(byte[])}.
      *
-     * @param shareName   the Share Name.
-     * @param topicFilter the Topic Filter.
-     * @return the created Shared Topic Filter.
-     * @throws IllegalArgumentException if the given Topic Filter contains forbidden characters or misplaced wildcard
-     *                                  characters or the Share Name is not a valid Share Name.
+     * @param binary the byte array with UTF-8 encoded data staring with {@value #SHARE_PREFIX}.
+     * @return the created Shared Topic Filter or <code>null</code> if the byte array is not a valid Shared Topic
+     *         Filter.
      */
-    public static @NotNull MqttSharedTopicFilterImpl from(
+    static @Nullable MqttSharedTopicFilterImpl ofInternal(final @NotNull byte[] binary) {
+        int shareNameEnd = SHARE_PREFIX_LENGTH;
+        while (shareNameEnd < binary.length) {
+            final byte b = binary[shareNameEnd];
+            if (b == MqttTopicImpl.TOPIC_LEVEL_SEPARATOR) {
+                break;
+            }
+            if ((b == MULTI_LEVEL_WILDCARD) || (b == SINGLE_LEVEL_WILDCARD)) {
+                return null;
+            }
+            shareNameEnd++;
+        }
+        if ((shareNameEnd == SHARE_PREFIX_LENGTH) || (shareNameEnd >= binary.length - 1)) {
+            return null;
+        }
+        final int wildcardFlags = validateWildcards(binary, shareNameEnd + 1);
+        if (wildcardFlags == WILDCARD_CHECK_FAILURE) {
+            return null;
+        }
+        return new MqttSharedTopicFilterImpl(binary, shareNameEnd, wildcardFlags);
+    }
+
+    /**
+     * Validates and creates a Shared Topic Filter of the given share name and topic filter.
+     *
+     * @param shareName   the share name string.
+     * @param topicFilter the topic filter string.
+     * @return the created Shared Topic Filter.
+     * @throws IllegalArgumentException if the share name string is not a valid Share Name or the topic filter string is
+     *                                  not a valid Topic Filter.
+     */
+    public static @NotNull MqttSharedTopicFilterImpl of(
             final @NotNull String shareName, final @NotNull String topicFilter) {
 
         checkShareName(shareName);
-        checkForbiddenCharacters(topicFilter);
+        checkWellFormed(topicFilter);
         final String sharedTopicFilter = SHARE_PREFIX + shareName + MqttTopicImpl.TOPIC_LEVEL_SEPARATOR + topicFilter;
         checkLength(sharedTopicFilter, "Shared topic filter");
         final int wildcardFlags = validateWildcards(topicFilter, 0);
@@ -154,14 +152,14 @@ public class MqttSharedTopicFilterImpl extends MqttTopicFilterImpl implements Mq
     }
 
     /**
-     * Checks if the given UTF-16 encoded Java string is a valid Share Name.
+     * Checks if the given UTF-16 encoded Java string is a well-formed share name.
      *
      * @param shareName the UTF-16 encoded Java string.
-     * @throws IllegalArgumentException if the given string is empty or contains forbidden characters.
+     * @throws IllegalArgumentException if the string is a well-formed share name.
      */
     private static void checkShareName(final @NotNull String shareName) {
         Checks.notEmpty(shareName, "Share name");
-        MqttUtf8StringImpl.checkForbiddenCharacters(shareName, "Share name");
+        MqttUtf8StringImpl.checkWellFormed(shareName, "Share name");
         for (int i = 0; i < shareName.length(); i++) {
             final char c = shareName.charAt(i);
             if (c == MULTI_LEVEL_WILDCARD) {

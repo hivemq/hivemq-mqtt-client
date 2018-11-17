@@ -55,7 +55,7 @@ public abstract class MqttTopicImplBuilder<B extends MqttTopicImplBuilder> {
         Checks.state(stringBuilder != null, "At least one topic level must be added.");
         final String string = stringBuilder.toString();
         Checks.state(!string.isEmpty(), "Topic must be at least one character long.");
-        return MqttTopicImpl.from(string);
+        return MqttTopicImpl.of(string);
     }
 
     public static class Default extends MqttTopicImplBuilder<Default> implements MqttTopicBuilder.Complete {

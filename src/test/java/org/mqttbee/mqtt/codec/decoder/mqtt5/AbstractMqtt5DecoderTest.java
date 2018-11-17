@@ -28,16 +28,14 @@ import org.mqttbee.mqtt.message.connect.MqttConnect;
 import org.mqttbee.mqtt.message.connect.MqttConnectBuilder;
 import org.mqttbee.mqtt.message.connect.MqttConnectRestrictions;
 
-import java.util.Objects;
-
 /**
  * @author Silvio Giebl
  */
 abstract class AbstractMqtt5DecoderTest extends AbstractMqttDecoderTest {
 
     private static @NotNull MqttClientConfig createClientData() {
-        return new MqttClientConfig(MqttVersion.MQTT_5_0, Objects.requireNonNull(MqttClientIdentifierImpl.from("test")),
-                "localhost", 1883, null, null, false, false, MqttClientExecutorConfigImpl.DEFAULT, null);
+        return new MqttClientConfig(MqttVersion.MQTT_5_0, MqttClientIdentifierImpl.of("test"), "localhost", 1883, null,
+                null, false, false, MqttClientExecutorConfigImpl.DEFAULT, null);
     }
 
     private static @NotNull MqttConnect createConnect(final int maximumPacketSize) {

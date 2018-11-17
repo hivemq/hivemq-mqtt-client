@@ -48,7 +48,6 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 
-import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mqttbee.mqtt.message.connect.MqttConnectRestrictions.DEFAULT;
@@ -139,32 +138,32 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
                 0, 4, 1, 5, 6, 3
         };
 
-        final MqttClientIdentifierImpl clientIdentifier = requireNonNull(MqttClientIdentifierImpl.from("test"));
+        final MqttClientIdentifierImpl clientIdentifier = MqttClientIdentifierImpl.of("test");
 
-        final MqttClientIdentifierImpl username = requireNonNull(MqttClientIdentifierImpl.from("username"));
+        final MqttClientIdentifierImpl username = MqttClientIdentifierImpl.of("username");
         final ByteBuffer password = ByteBuffer.wrap(new byte[]{1, 5, 6, 3});
         final MqttSimpleAuth simpleAuth = new MqttSimpleAuth(username, password);
 
-        final MqttUtf8StringImpl authMethod = requireNonNull(MqttUtf8StringImpl.from("GS2-KRB5"));
+        final MqttUtf8StringImpl authMethod = MqttUtf8StringImpl.of("GS2-KRB5");
         final ByteBuffer authData = ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
         final MqttEnhancedAuth enhancedAuth = new MqttEnhancedAuth(authMethod, authData);
         final Mqtt5EnhancedAuthProvider enhancedAuthProvider = new TestEnhancedAuthProvider(authMethod);
 
-        final MqttUtf8StringImpl test = requireNonNull(MqttUtf8StringImpl.from("test"));
-        final MqttUtf8StringImpl test2 = requireNonNull(MqttUtf8StringImpl.from("test2"));
-        final MqttUtf8StringImpl value = requireNonNull(MqttUtf8StringImpl.from("value"));
-        final MqttUtf8StringImpl value2 = requireNonNull(MqttUtf8StringImpl.from("value2"));
+        final MqttUtf8StringImpl test = MqttUtf8StringImpl.of("test");
+        final MqttUtf8StringImpl test2 = MqttUtf8StringImpl.of("test2");
+        final MqttUtf8StringImpl value = MqttUtf8StringImpl.of("value");
+        final MqttUtf8StringImpl value2 = MqttUtf8StringImpl.of("value2");
         final MqttUserPropertyImpl userProperty1 = new MqttUserPropertyImpl(test, value);
         final MqttUserPropertyImpl userProperty2 = new MqttUserPropertyImpl(test, value2);
         final MqttUserPropertyImpl userProperty3 = new MqttUserPropertyImpl(test2, value);
         final MqttUserPropertiesImpl userProperties =
                 MqttUserPropertiesImpl.of(ImmutableList.of(userProperty1, userProperty2, userProperty3));
 
-        final MqttTopicImpl willTopic = requireNonNull(MqttTopicImpl.from("topic"));
+        final MqttTopicImpl willTopic = MqttTopicImpl.of("topic");
         final ByteBuffer willPayload = ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
         final MqttQos willQos = MqttQos.AT_LEAST_ONCE;
-        final MqttUtf8StringImpl willContentType = requireNonNull(MqttUtf8StringImpl.from("text"));
-        final MqttTopicImpl willResponseTopic = requireNonNull(MqttTopicImpl.from("response"));
+        final MqttUtf8StringImpl willContentType = MqttUtf8StringImpl.of("text");
+        final MqttTopicImpl willResponseTopic = MqttTopicImpl.of("response");
         final ByteBuffer willCorrelationData = ByteBuffer.wrap(new byte[]{5, 4, 3, 2, 1});
         final MqttWillPublish willPublish =
                 new MqttWillPublish(willTopic, willPayload, willQos, true, 10, Mqtt5PayloadFormatIndicator.UTF_8,
@@ -204,7 +203,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
                 0, 4, 't', 'e', 's', 't'
         };
 
-        final MqttClientIdentifierImpl clientIdentifier = requireNonNull(MqttClientIdentifierImpl.from("test"));
+        final MqttClientIdentifierImpl clientIdentifier = MqttClientIdentifierImpl.of("test");
         final MqttConnect connect = new MqttConnect(0, false, 0, false, true, DEFAULT, null, null, null,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES);
         final MqttStatefulConnect connectWrapper = connect.createStateful(clientIdentifier, null);
@@ -238,8 +237,8 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
                 0, 8, 'u', 's', 'e', 'r', 'n', 'a', 'm', 'e'
         };
 
-        final MqttClientIdentifierImpl clientIdentifier = requireNonNull(MqttClientIdentifierImpl.from("test"));
-        final MqttUtf8StringImpl username = requireNonNull(MqttUtf8StringImpl.from("username"));
+        final MqttClientIdentifierImpl clientIdentifier = MqttClientIdentifierImpl.of("test");
+        final MqttUtf8StringImpl username = MqttUtf8StringImpl.of("username");
         final MqttSimpleAuth simpleAuth = new MqttSimpleAuth(username, null);
 
         final MqttConnect connect = new MqttConnect(0, false, 0, false, true, DEFAULT, simpleAuth, null, null,
@@ -276,7 +275,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
                 0, 4, 1, 5, 6, 3
         };
 
-        final MqttClientIdentifierImpl clientIdentifier = requireNonNull(MqttClientIdentifierImpl.from("test"));
+        final MqttClientIdentifierImpl clientIdentifier = MqttClientIdentifierImpl.of("test");
         final ByteBuffer password = ByteBuffer.wrap(new byte[]{1, 5, 6, 3});
         final MqttSimpleAuth simpleAuth = new MqttSimpleAuth(null, password);
 
@@ -290,7 +289,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
     @Test
     @Disabled("password will be validated in the builder, remove this test")
     void encode_passwordTooLong() {
-        final MqttClientIdentifierImpl clientIdentifier = requireNonNull(MqttClientIdentifierImpl.from("test"));
+        final MqttClientIdentifierImpl clientIdentifier = MqttClientIdentifierImpl.of("test");
         final ByteBuffer password = ByteBuffer.wrap(new byte[65536]);
         final MqttSimpleAuth simpleAuth = new MqttSimpleAuth(null, password);
 
@@ -325,7 +324,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
                 0, 0
         };
 
-        final MqttClientIdentifierImpl clientIdentifier = requireNonNull(MqttClientIdentifierImpl.from(""));
+        final MqttClientIdentifierImpl clientIdentifier = MqttClientIdentifierImpl.of("");
 
         final MqttConnect connect = new MqttConnect(0, false, 0, false, true, DEFAULT, null, null, null,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES);
@@ -364,9 +363,9 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
                 0, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
         };
 
-        final MqttTopicImpl willTopic = requireNonNull(MqttTopicImpl.from("topic"));
+        final MqttTopicImpl willTopic = MqttTopicImpl.of("topic");
         final ByteBuffer willPayload = ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
-        final MqttClientIdentifierImpl clientIdentifier = requireNonNull(MqttClientIdentifierImpl.from("test"));
+        final MqttClientIdentifierImpl clientIdentifier = MqttClientIdentifierImpl.of("test");
         final MqttWillPublish willPublish = new MqttWillPublish(willTopic, willPayload, MqttQos.AT_MOST_ONCE, false,
                 MqttWillPublish.NO_MESSAGE_EXPIRY, null, null, null, null, MqttUserPropertiesImpl.NO_USER_PROPERTIES,
                 0);
@@ -380,9 +379,9 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
     @Test
     @Disabled("will payload will be validated in the builder, remove this test")
     void encode_willPayloadTooLong() {
-        final MqttTopicImpl willTopic = requireNonNull(MqttTopicImpl.from("topic"));
+        final MqttTopicImpl willTopic = MqttTopicImpl.of("topic");
         final ByteBuffer willPayload = ByteBuffer.wrap(new byte[65536]);
-        final MqttClientIdentifierImpl clientIdentifier = requireNonNull(MqttClientIdentifierImpl.from("test"));
+        final MqttClientIdentifierImpl clientIdentifier = MqttClientIdentifierImpl.of("test");
         final MqttWillPublish willPublish = new MqttWillPublish(willTopic, willPayload, MqttQos.AT_MOST_ONCE, false,
                 MqttWillPublish.NO_MESSAGE_EXPIRY, null, null, null, null, MqttUserPropertiesImpl.NO_USER_PROPERTIES,
                 0);
@@ -396,9 +395,9 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
     @Test
     @Disabled("will correlation data will be validated in the builder, remove this test")
     void encode_willCorrelationDataTooLong() {
-        final MqttTopicImpl willTopic = requireNonNull(MqttTopicImpl.from("topic"));
+        final MqttTopicImpl willTopic = MqttTopicImpl.of("topic");
         final ByteBuffer correlationData = ByteBuffer.wrap(new byte[65536]);
-        final MqttClientIdentifierImpl clientIdentifier = requireNonNull(MqttClientIdentifierImpl.from("test"));
+        final MqttClientIdentifierImpl clientIdentifier = MqttClientIdentifierImpl.of("test");
         final MqttWillPublish willPublish =
                 new MqttWillPublish(willTopic, null, MqttQos.AT_MOST_ONCE, false, MqttWillPublish.NO_MESSAGE_EXPIRY,
                         null, null, null, correlationData, MqttUserPropertiesImpl.NO_USER_PROPERTIES, 0);
@@ -415,8 +414,8 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         final MqttUserPropertiesImpl tooManyUserProperties = maxPacket.getUserProperties(
                 (VARIABLE_BYTE_INTEGER_FOUR_BYTES_MAX_VALUE / maxPacket.userPropertyBytes) + 1);
 
-        final MqttTopicImpl willTopic = requireNonNull(MqttTopicImpl.from("topic"));
-        final MqttClientIdentifierImpl clientIdentifier = requireNonNull(MqttClientIdentifierImpl.from("test"));
+        final MqttTopicImpl willTopic = MqttTopicImpl.of("topic");
+        final MqttClientIdentifierImpl clientIdentifier = MqttClientIdentifierImpl.of("test");
         final MqttWillPublish willPublish =
                 new MqttWillPublish(willTopic, null, MqttQos.AT_MOST_ONCE, false, MqttWillPublish.NO_MESSAGE_EXPIRY,
                         null, null, null, null, tooManyUserProperties, 0);
@@ -456,8 +455,8 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
                 0, 4, 't', 'e', 's', 't'
         };
 
-        final MqttClientIdentifierImpl clientIdentifier = requireNonNull(MqttClientIdentifierImpl.from("test"));
-        final MqttUtf8StringImpl authMethod = requireNonNull(MqttUtf8StringImpl.from("GS2-KRB5"));
+        final MqttClientIdentifierImpl clientIdentifier = MqttClientIdentifierImpl.of("test");
+        final MqttUtf8StringImpl authMethod = MqttUtf8StringImpl.of("GS2-KRB5");
         final ByteBuffer authData = ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
         final MqttEnhancedAuth enhancedAuth = new MqttEnhancedAuth(authMethod, authData);
         final Mqtt5EnhancedAuthProvider enhancedAuthProvider = new TestEnhancedAuthProvider(authMethod);
@@ -472,8 +471,8 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
     @Test
     @Disabled("authentication data will be validated in the builder, remove this test")
     void encode_authenticationDataTooLong_throwsException() {
-        final MqttClientIdentifierImpl clientIdentifier = requireNonNull(MqttClientIdentifierImpl.from("test"));
-        final MqttUtf8StringImpl authMethod = requireNonNull(MqttUtf8StringImpl.from("GS2-KRB5"));
+        final MqttClientIdentifierImpl clientIdentifier = MqttClientIdentifierImpl.of("test");
+        final MqttUtf8StringImpl authMethod = MqttUtf8StringImpl.of("GS2-KRB5");
         final ByteBuffer authData = ByteBuffer.wrap(new byte[65536]);
         final MqttEnhancedAuth enhancedAuth = new MqttEnhancedAuth(authMethod, authData);
         final Mqtt5EnhancedAuthProvider enhancedAuthProvider = new TestEnhancedAuthProvider(authMethod);
@@ -490,8 +489,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
     void encode_maximumPacketSizeExceeded_throwsEncoderException() {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
 
-        final MqttClientIdentifierImpl clientIdentifier =
-                requireNonNull(MqttClientIdentifierImpl.from(maxPacket.getClientId("a")));
+        final MqttClientIdentifierImpl clientIdentifier = MqttClientIdentifierImpl.of(maxPacket.getClientId("a"));
         final MqttConnect connect = new MqttConnect(0, false, 0, false, true, DEFAULT, null, null, null,
                 maxPacket.getMaxPossibleUserProperties());
         final MqttStatefulConnect connectWrapper = connect.createStateful(clientIdentifier, null);
@@ -504,8 +502,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
     void encode_propertyLengthExceedsMax_throwsEncoderException() {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
 
-        final MqttClientIdentifierImpl clientIdentifier =
-                requireNonNull(MqttClientIdentifierImpl.from(maxPacket.getClientId()));
+        final MqttClientIdentifierImpl clientIdentifier = MqttClientIdentifierImpl.of(maxPacket.getClientId());
         final MqttConnect connect = new MqttConnect(0, false, 0, false, true, DEFAULT, null, null, null,
                 maxPacket.getMaxPossibleUserProperties(2));
         final MqttStatefulConnect connectWrapper = connect.createStateful(clientIdentifier, null);
@@ -530,8 +527,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
 
         private ImmutableList.Builder<MqttUserPropertyImpl> userPropertiesBuilder;
         final @NotNull MqttUserPropertyImpl userProperty =
-                new MqttUserPropertyImpl(requireNonNull(MqttUtf8StringImpl.from("user")),
-                        requireNonNull(MqttUtf8StringImpl.from("property")));
+                new MqttUserPropertyImpl(MqttUtf8StringImpl.of("user"), MqttUtf8StringImpl.of("property"));
         char[] clientIdBytes;
         final int maxPropertyLength = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT - 1  // type, reserved
                 - 4  // remaining length

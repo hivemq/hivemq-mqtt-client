@@ -40,7 +40,7 @@ import static org.junit.Assert.*;
 class MqttTopicImplTest {
 
     private static @NotNull Stream<Function<String, MqttTopicImpl>> topicFactoryMethodProvider() {
-        return Stream.of(MqttTopicImplTest::createFromByteBuf, MqttTopicImpl::from);
+        return Stream.of(MqttTopicImplTest::createFromByteBuf, MqttTopicImpl::of);
     }
 
     private static @Nullable MqttTopicImpl createFromByteBuf(final @NotNull String string) {
@@ -48,7 +48,7 @@ class MqttTopicImplTest {
         final byte[] binary = string.getBytes(StandardCharsets.UTF_8);
         byteBuf.writeShort(binary.length);
         byteBuf.writeBytes(binary);
-        final MqttTopicImpl mqtt5Topic = MqttTopicImpl.from(byteBuf);
+        final MqttTopicImpl mqtt5Topic = MqttTopicImpl.decode(byteBuf);
         byteBuf.release();
         return mqtt5Topic;
     }
@@ -63,7 +63,7 @@ class MqttTopicImplTest {
     @Test
     void from_emptyString_throws() {
         final IllegalArgumentException exception =
-                Assertions.assertThrows(IllegalArgumentException.class, () -> MqttTopicImpl.from(""));
+                Assertions.assertThrows(IllegalArgumentException.class, () -> MqttTopicImpl.of(""));
         assertTrue(
                 "IllegalArgumentException must give hint that string must not be empty.",
                 exception.getMessage().contains("must be at least one character long"));
@@ -119,7 +119,7 @@ class MqttTopicImplTest {
     @Test
     void from_stringWithMultiLevelWildcard_throws() {
         final IllegalArgumentException exception =
-                Assertions.assertThrows(IllegalArgumentException.class, () -> MqttTopicImpl.from("abc/def/#"));
+                Assertions.assertThrows(IllegalArgumentException.class, () -> MqttTopicImpl.of("abc/def/#"));
         assertTrue(
                 "IllegalArgumentException must give hint that string contains a forbidden multi level wildcard character.",
                 exception.getMessage().contains("multi level wildcard"));
@@ -135,7 +135,7 @@ class MqttTopicImplTest {
     @Test
     void from_stringWithSingleLevelWildcard_throws() {
         final IllegalArgumentException exception =
-                Assertions.assertThrows(IllegalArgumentException.class, () -> MqttTopicImpl.from("abc/+/def"));
+                Assertions.assertThrows(IllegalArgumentException.class, () -> MqttTopicImpl.of("abc/+/def"));
         assertTrue(
                 "IllegalArgumentException must give hint that string contains a forbidden single level wildcard character.",
                 exception.getMessage().contains("single level wildcard"));

@@ -35,31 +35,39 @@ import javax.annotation.concurrent.Immutable;
 public class MqttTopicImpl extends MqttUtf8StringImpl implements MqttTopic {
 
     /**
-     * Validates and decodes a Topic Name from the given byte array.
-     *
-     * @param binary the byte array with the UTF-8 encoded data to decode from.
-     * @return the created Topic Name or null if the byte array does not contain a well-formed Topic Name.
-     */
-    public static @Nullable MqttTopicImpl from(final @NotNull byte[] binary) {
-        return (binary.length == 0) || !MqttBinaryData.isInRange(binary) || containsMustNotCharacters(binary) ? null :
-                new MqttTopicImpl(binary);
-    }
-
-    /**
-     * Validates and creates a Topic Name from the given string.
+     * Validates and creates a Topic Name of the given UTF-16 encoded Java string.
      *
      * @param string the UTF-16 encoded Java string.
      * @return the created Topic Name.
      * @throws IllegalArgumentException if the given string is not a valid Topic Name.
      */
-    public static @NotNull MqttTopicImpl from(final @NotNull String string) {
-        return from(string, "Topic name");
+    public static @NotNull MqttTopicImpl of(final @NotNull String string) {
+        return of(string, "Topic name");
     }
 
-    public static @NotNull MqttTopicImpl from(final @NotNull String string, final @NotNull String name) {
+    /**
+     * Same function as {@link #of(String)}, but allows specifying a name to use in error messages.
+     *
+     * @param string see {@link #of(String)}.
+     * @param name   specific name used in error messages.
+     * @return see {@link #of(String)}.
+     * @see #of(String)
+     */
+    public static @NotNull MqttTopicImpl of(final @NotNull String string, final @NotNull String name) {
         checkLength(string, name);
-        checkForbiddenCharacters(string, name);
+        checkWellFormed(string, name);
         return new MqttTopicImpl(string);
+    }
+
+    /**
+     * Validates and creates a Topic Name of the given byte array with UTF-8 encoded data.
+     *
+     * @param binary the byte array with the UTF-8 encoded data.
+     * @return the created Topic Name or <code>null</code> if the byte array does not represent a valid Topic Name.
+     */
+    public static @Nullable MqttTopicImpl of(final @NotNull byte[] binary) {
+        return (binary.length == 0) || !MqttBinaryData.isInRange(binary) || isWellFormed(binary) ? null :
+                new MqttTopicImpl(binary);
     }
 
     /**
@@ -69,49 +77,45 @@ public class MqttTopicImpl extends MqttUtf8StringImpl implements MqttTopic {
      * returns.
      *
      * @param byteBuf the byte buffer with the UTF-8 encoded data to decode from.
-     * @return the created Topic Name or null if the byte buffer does not contain a well-formed Topic Name.
+     * @return the created Topic Name or <code>null</code> if the byte buffer does not contain a valid Topic Name.
      */
-    public static @Nullable MqttTopicImpl from(final @NotNull ByteBuf byteBuf) {
+    public static @Nullable MqttTopicImpl decode(final @NotNull ByteBuf byteBuf) {
         final byte[] binary = MqttBinaryData.decode(byteBuf);
-        return (binary == null) ? null : from(binary);
+        return (binary == null) ? null : of(binary);
     }
 
     /**
-     * Checks whether the given UTF-8 encoded byte array contains characters a Topic Name must not contain according to
-     * the MQTT 5 specification.
-     * <p>
-     * These characters are the characters a UTF-8 encoded String must not contain and wildcard characters.
+     * Checks if the given byte array with UTF-8 encoded data represents a well-formed Topic Name according to the MQTT
+     * specification.
      *
-     * @param binary the UTF-8 encoded byte array.
-     * @return whether the byte array contains characters a Topic Name must not contain.
-     * @see MqttUtf8StringImpl#containsMustNotCharacters(byte[])
+     * @param binary the byte array with UTF-8 encoded data.
+     * @return whether the byte array represents a well-formed Topic Name.
+     * @see MqttUtf8StringImpl#isWellFormed(byte[])
      * @see #containsWildcardCharacters(byte[])
      */
-    static boolean containsMustNotCharacters(final @NotNull byte[] binary) {
-        return MqttUtf8StringImpl.containsMustNotCharacters(binary) || containsWildcardCharacters(binary);
+    static boolean isWellFormed(final @NotNull byte[] binary) {
+        return MqttUtf8StringImpl.isWellFormed(binary) || containsWildcardCharacters(binary);
     }
 
     /**
-     * Checks whether the given UTF-16 encoded Java string contains characters a Topic Name must not contain according
-     * to the MQTT 5 specification.
-     * <p>
-     * These characters are the characters a UTF-8 encoded String must not contain and wildcard characters.
+     * Checks if the given UTF-16 encoded Java string is a well-formed Topic Name according to the MQTT specification.
      *
      * @param string the UTF-16 encoded Java string.
-     * @throws IllegalArgumentException if the given string contains forbidden characters.
-     * @see MqttUtf8StringImpl#checkForbiddenCharacters(String, String)
+     * @param name   specific name used in error messages.
+     * @throws IllegalArgumentException if the string is not a well-formed Topic Name.
+     * @see MqttUtf8StringImpl#checkWellFormed(String, String)
      * @see #checkNoWildcardCharacters(String, String)
      */
-    static void checkForbiddenCharacters(final @NotNull String string, final @NotNull String name) {
+    static void checkWellFormed(final @NotNull String string, final @NotNull String name) {
         Checks.notEmpty(string, name);
-        MqttUtf8StringImpl.checkForbiddenCharacters(string, name);
+        MqttUtf8StringImpl.checkWellFormed(string, name);
         checkNoWildcardCharacters(string, name);
     }
 
     /**
-     * Checks whether the given UTF-8 encoded byte array contains wildcard characters.
+     * Checks if the given byte array with UTF-8 encoded data contains wildcard characters.
      *
-     * @param binary the UTF-8 encoded byte array.
+     * @param binary the byte array with UTF-8 encoded data.
      * @return whether the byte array contains wildcard characters.
      */
     private static boolean containsWildcardCharacters(final @NotNull byte[] binary) {
@@ -124,9 +128,10 @@ public class MqttTopicImpl extends MqttUtf8StringImpl implements MqttTopic {
     }
 
     /**
-     * Checks whether the given UTF-16 encoded Java string contains wildcard characters.
+     * Checks if the given UTF-16 encoded Java string does not contain wildcard characters.
      *
      * @param string the UTF-16 encoded Java string.
+     * @param name   specific name used in error messages.
      * @throws IllegalArgumentException if the given string contains wildcard characters.
      */
     private static void checkNoWildcardCharacters(final @NotNull String string, final @NotNull String name) {

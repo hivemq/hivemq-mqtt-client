@@ -24,7 +24,7 @@ import org.mqttbee.mqtt.util.MqttChecks;
 /**
  * MQTT Client Identifier according to the MQTT specification.
  * <p>
- * A Client Identifier has the same restrictions from {@link MqttUtf8String}.
+ * A Client Identifier has the same requirements as an {@link MqttUtf8String UTF-8 encoded string}.
  *
  * @author Silvio Giebl
  */
@@ -32,13 +32,13 @@ import org.mqttbee.mqtt.util.MqttChecks;
 public interface MqttClientIdentifier extends MqttUtf8String {
 
     /**
-     * Validates and creates a Client Identifier from the given string.
+     * Validates and creates a Client Identifier of the given string.
      *
      * @param string the Client Identifier as a UTF-16 encoded Java string.
      * @return the created Client Identifier.
      * @throws IllegalArgumentException if the string is not a valid Client Identifier.
      */
-    static @NotNull MqttClientIdentifier from(final @NotNull String string) {
+    static @NotNull MqttClientIdentifier of(final @NotNull String string) {
         return MqttChecks.clientIdentifier(string);
     }
 

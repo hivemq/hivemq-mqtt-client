@@ -20,6 +20,8 @@ package org.mqttbee.mqtt.datatypes;
 import com.google.common.collect.ImmutableSet;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -36,7 +38,7 @@ import static org.junit.Assert.*;
 public class MqttClientIdentifierImplTest {
 
     @Parameterized.Parameters
-    public static Collection<Boolean> parameters() {
+    public static @NotNull Collection<Boolean> parameters() {
         return ImmutableSet.of(false, true);
     }
 
@@ -46,17 +48,17 @@ public class MqttClientIdentifierImplTest {
         this.isFromByteBuf = isFromByteBuf;
     }
 
-    private MqttClientIdentifierImpl from(final String string) {
+    private @Nullable MqttClientIdentifierImpl from(final @NotNull String string) {
         if (isFromByteBuf) {
             final ByteBuf byteBuf = Unpooled.buffer();
             final byte[] binary = string.getBytes(Charset.forName("UTF-8"));
             byteBuf.writeShort(binary.length);
             byteBuf.writeBytes(binary);
-            final MqttClientIdentifierImpl mqtt5ClientIdentifier = MqttClientIdentifierImpl.from(byteBuf);
+            final MqttClientIdentifierImpl mqtt5ClientIdentifier = MqttClientIdentifierImpl.decode(byteBuf);
             byteBuf.release();
             return mqtt5ClientIdentifier;
         } else {
-            return MqttClientIdentifierImpl.from(string);
+            return MqttClientIdentifierImpl.of(string);
         }
     }
 
