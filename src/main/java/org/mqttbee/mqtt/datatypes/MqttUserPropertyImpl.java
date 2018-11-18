@@ -33,10 +33,16 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public class MqttUserPropertyImpl implements Mqtt5UserProperty {
 
+    /**
+     * Creates an User Property of the given name and value.
+     *
+     * @param name  the name of the User Property.
+     * @param value the value of the User Property.
+     * @return the created User Property.
+     */
     @Contract("null, _ -> fail; _, null -> fail")
     public static @NotNull MqttUserPropertyImpl of(final @Nullable String name, final @Nullable String value) {
-        return of(
-                MqttUtf8StringImpl.of(name, "User property name"), MqttUtf8StringImpl.of(value, "User property value"));
+        return of(MqttUtf8StringImpl.of(name, "User property name"), MqttUtf8StringImpl.of(value, "User property value"));
     }
 
     /**
