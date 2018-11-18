@@ -18,9 +18,11 @@
 package org.mqttbee.mqtt.datatypes;
 
 import io.netty.buffer.ByteBuf;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
+import org.mqttbee.util.Checks;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -47,7 +49,9 @@ public class MqttClientIdentifierImpl extends MqttUtf8StringImpl implements Mqtt
      * @return the created Client Identifier.
      * @throws IllegalArgumentException if the given string is not a valid Client Identifier.
      */
-    public static @NotNull MqttClientIdentifierImpl of(final @NotNull String string) {
+    @Contract("null -> fail")
+    public static @NotNull MqttClientIdentifierImpl of(final @Nullable String string) {
+        Checks.notNull(string, "Client identifier");
         checkLength(string, "Client identifier");
         checkWellFormed(string, "Client identifier");
         return new MqttClientIdentifierImpl(string);

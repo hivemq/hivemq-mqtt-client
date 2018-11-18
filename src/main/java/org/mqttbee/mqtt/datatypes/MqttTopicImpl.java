@@ -19,6 +19,7 @@ package org.mqttbee.mqtt.datatypes;
 
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
@@ -41,8 +42,9 @@ public class MqttTopicImpl extends MqttUtf8StringImpl implements MqttTopic {
      * @return the created Topic Name.
      * @throws IllegalArgumentException if the given string is not a valid Topic Name.
      */
-    public static @NotNull MqttTopicImpl of(final @NotNull String string) {
-        return of(string, "Topic name");
+    @Contract("null -> fail")
+    public static @NotNull MqttTopicImpl of(final @Nullable String string) {
+        return of(string, "Topic");
     }
 
     /**
@@ -53,7 +55,9 @@ public class MqttTopicImpl extends MqttUtf8StringImpl implements MqttTopic {
      * @return see {@link #of(String)}.
      * @see #of(String)
      */
-    public static @NotNull MqttTopicImpl of(final @NotNull String string, final @NotNull String name) {
+    @Contract("null, _ -> fail")
+    public static @NotNull MqttTopicImpl of(final @Nullable String string, final @NotNull String name) {
+        Checks.notEmpty(string, name);
         checkLength(string, name);
         checkWellFormed(string, name);
         return new MqttTopicImpl(string);
@@ -107,7 +111,6 @@ public class MqttTopicImpl extends MqttUtf8StringImpl implements MqttTopic {
      * @see #checkNoWildcardCharacters(String, String)
      */
     static void checkWellFormed(final @NotNull String string, final @NotNull String name) {
-        Checks.notEmpty(string, name);
         MqttUtf8StringImpl.checkWellFormed(string, name);
         checkNoWildcardCharacters(string, name);
     }
@@ -178,5 +181,10 @@ public class MqttTopicImpl extends MqttUtf8StringImpl implements MqttTopic {
     @Override
     public @NotNull ImmutableList<String> getLevels() {
         return splitLevels(toString());
+    }
+
+    @Override
+    public @NotNull MqttTopicFilterImpl filter() {
+        return MqttTopicFilterImpl.of(this);
     }
 }

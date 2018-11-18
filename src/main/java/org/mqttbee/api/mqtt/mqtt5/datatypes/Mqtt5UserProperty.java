@@ -20,6 +20,7 @@ package org.mqttbee.api.mqtt.mqtt5.datatypes;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
+import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.util.MqttChecks;
 
 /**
@@ -40,7 +41,7 @@ public interface Mqtt5UserProperty extends Comparable<Mqtt5UserProperty> {
      * @return the created User Property.
      */
     static @NotNull Mqtt5UserProperty of(final @NotNull String name, final @NotNull String value) {
-        return MqttChecks.userProperty(name, value);
+        return MqttUserPropertyImpl.of(name, value);
     }
 
     /**

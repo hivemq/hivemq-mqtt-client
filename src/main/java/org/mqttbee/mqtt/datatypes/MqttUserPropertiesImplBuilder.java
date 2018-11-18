@@ -48,7 +48,7 @@ public abstract class MqttUserPropertiesImplBuilder<B extends MqttUserProperties
     abstract @NotNull B self();
 
     public @NotNull B add(final @Nullable String name, final @Nullable String value) {
-        listBuilder.add(MqttChecks.userProperty(name, value));
+        listBuilder.add(MqttUserPropertyImpl.of(name, value));
         return self();
     }
 

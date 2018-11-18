@@ -56,12 +56,12 @@ public abstract class MqttUnsubscribeBuilder<B extends MqttUnsubscribeBuilder<B>
     abstract @NotNull B self();
 
     public @NotNull B addTopicFilter(final @Nullable String topicFilter) {
-        topicFiltersBuilder.add(MqttChecks.topicFilterNotNull(topicFilter));
+        topicFiltersBuilder.add(MqttTopicFilterImpl.of(topicFilter));
         return self();
     }
 
     public @NotNull B addTopicFilter(final @Nullable MqttTopicFilter topicFilter) {
-        topicFiltersBuilder.add(MqttChecks.topicFilterNotNull(topicFilter));
+        topicFiltersBuilder.add(MqttChecks.topicFilter(topicFilter));
         return self();
     }
 

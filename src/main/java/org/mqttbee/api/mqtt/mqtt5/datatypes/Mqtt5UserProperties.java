@@ -22,9 +22,9 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImplBuilder;
-import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.util.MqttChecks;
-import org.mqttbee.util.Checks;
+
+import java.util.List;
 
 /**
  * Collection of {@link Mqtt5UserProperty User Properties}.
@@ -48,14 +48,11 @@ public interface Mqtt5UserProperties {
      * @return the created collection of User Properties.
      */
     static @NotNull Mqtt5UserProperties of(final @NotNull Mqtt5UserProperty... userProperties) {
-        Checks.notNull(userProperties, "User properties");
+        return MqttChecks.userProperties(userProperties);
+    }
 
-        final ImmutableList.Builder<MqttUserPropertyImpl> builder =
-                ImmutableList.builderWithExpectedSize(userProperties.length);
-        for (final Mqtt5UserProperty userProperty : userProperties) {
-            builder.add(MqttChecks.userProperty(userProperty));
-        }
-        return MqttUserPropertiesImpl.of(builder.build());
+    static @NotNull Mqtt5UserProperties of(final @NotNull List<@NotNull Mqtt5UserProperty> userProperties) {
+        return MqttChecks.userProperties(userProperties);
     }
 
     static @NotNull Mqtt5UserPropertiesBuilder builder() {
@@ -69,5 +66,5 @@ public interface Mqtt5UserProperties {
     /**
      * @return the User Properties as an immutable list.
      */
-    @NotNull ImmutableList<? extends Mqtt5UserProperty> asList();
+    @NotNull ImmutableList<@NotNull ? extends Mqtt5UserProperty> asList();
 }

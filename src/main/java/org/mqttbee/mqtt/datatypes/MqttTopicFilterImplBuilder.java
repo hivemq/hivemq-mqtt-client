@@ -19,10 +19,8 @@ package org.mqttbee.mqtt.datatypes;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttSharedTopicFilterBuilder;
-import org.mqttbee.api.mqtt.datatypes.MqttTopic;
-import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
-import org.mqttbee.api.mqtt.datatypes.MqttTopicFilterBuilder;
+import org.mqttbee.api.mqtt.datatypes.*;
+import org.mqttbee.mqtt.util.MqttChecks;
 import org.mqttbee.util.Checks;
 
 import java.util.function.Function;
@@ -37,8 +35,11 @@ public abstract class MqttTopicFilterImplBuilder<B extends MqttTopicFilterImplBu
     MqttTopicFilterImplBuilder() {}
 
     MqttTopicFilterImplBuilder(final @NotNull String baseTopicFilter) {
-        Checks.notEmpty(baseTopicFilter, "Base topic filter");
-        this.stringBuilder = new StringBuilder(baseTopicFilter);
+        stringBuilder = new StringBuilder(baseTopicFilter);
+    }
+
+    MqttTopicFilterImplBuilder(final @NotNull MqttTopicFilterImpl topicFilter) {
+        stringBuilder = new StringBuilder(topicFilter.getTopicFilterString());
     }
 
     abstract @NotNull B self();
@@ -81,6 +82,10 @@ public abstract class MqttTopicFilterImplBuilder<B extends MqttTopicFilterImplBu
             super(baseTopicFilter);
         }
 
+        Base(final @NotNull MqttTopicFilterImpl topicFilter) {
+            super(topicFilter);
+        }
+
         public @NotNull MqttTopicFilterImpl build() {
             Checks.state(stringBuilder != null, "At least one topic level must be added.");
             final String string = stringBuilder.toString();
@@ -93,8 +98,12 @@ public abstract class MqttTopicFilterImplBuilder<B extends MqttTopicFilterImplBu
 
         public Default() {}
 
-        public Default(final @NotNull String baseTopicFilter) {
+        Default(final @NotNull String baseTopicFilter) {
             super(baseTopicFilter);
+        }
+
+        public Default(final @Nullable MqttTopicFilter topicFilter) {
+            super(MqttChecks.topicFilter(topicFilter));
         }
 
         @Override
@@ -151,6 +160,11 @@ public abstract class MqttTopicFilterImplBuilder<B extends MqttTopicFilterImplBu
             this.shareName = Checks.notNull(shareName, "Share name");
         }
 
+        SharedBase(final @NotNull MqttSharedTopicFilterImpl sharedTopicFilter) {
+            super(sharedTopicFilter);
+            this.shareName = sharedTopicFilter.getShareName();
+        }
+
         public @NotNull B share(final @Nullable String shareName) {
             this.shareName = Checks.notNull(shareName, "Share name");
             return self();
@@ -171,8 +185,12 @@ public abstract class MqttTopicFilterImplBuilder<B extends MqttTopicFilterImplBu
             super(shareName);
         }
 
-        public SharedDefault(final @Nullable String shareName, final @NotNull String baseTopicFilter) {
+        SharedDefault(final @Nullable String shareName, final @NotNull String baseTopicFilter) {
             super(shareName, baseTopicFilter);
+        }
+
+        public SharedDefault(final @Nullable MqttSharedTopicFilter sharedTopicFilter) {
+            super(MqttChecks.sharedTopicFilter(sharedTopicFilter));
         }
 
         @Override

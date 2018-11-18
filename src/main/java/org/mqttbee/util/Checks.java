@@ -17,6 +17,8 @@
 
 package org.mqttbee.util;
 
+import com.google.common.collect.ImmutableList;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,6 +32,7 @@ public class Checks {
 
     private Checks() {}
 
+    @Contract("null, _ -> fail")
     public static <T> @NotNull T notNull(final @Nullable T object, final @NotNull String name) {
         if (object == null) {
             throw new NullPointerException(name + " must not be null.");
@@ -37,6 +40,7 @@ public class Checks {
         return object;
     }
 
+    @Contract("null, _ -> fail")
     public static @NotNull String notEmpty(final @Nullable String string, final @NotNull String name) {
         notNull(string, name);
         if (string.isEmpty()) {
@@ -45,8 +49,33 @@ public class Checks {
         return string;
     }
 
+    @Contract("null, _, _ -> fail")
+    public static <S, T extends S> @NotNull T notImplemented(
+            final @Nullable S object, final @NotNull Class<T> type, final @NotNull String name) {
+
+        return notImplementedInternal(notNull(object, name), type, name);
+    }
+
+    @Contract("null, _, _ -> null")
+    public static <S, T extends S> @Nullable T notImplementedOrNull(
+            final @Nullable S object, final @NotNull Class<T> type, final @NotNull String name) {
+
+        return (object == null) ? null : notImplementedInternal(object, type, name);
+    }
+
+    private static <T, I extends T> @NotNull I notImplementedInternal(
+            final @NotNull T object, final @NotNull Class<I> type, final @NotNull String name) {
+
+        if (!type.isInstance(object)) {
+            throw new IllegalArgumentException(name + " must not be implemented by the user, but was implemented by " +
+                    object.getClass().getTypeName() + ".");
+        }
+        //noinspection unchecked
+        return (I) object;
+    }
+
     public static <T> @Nullable List<@NotNull T> elementsNotNull(
-            final @Nullable List<T> list, final @NotNull String name) {
+            final @Nullable List<@Nullable T> list, final @NotNull String name) {
 
         if (list == null) {
             return null;
@@ -62,36 +91,25 @@ public class Checks {
                 i++;
             }
         }
+        //noinspection NullableProblems
         return list;
     }
 
+    @Contract("null, _, _ -> fail")
     private static void elementNotNull(final @Nullable Object element, final @NotNull String name, final int index) {
         if (element == null) {
             throw new NullPointerException(name + " must not contain a null element, found at index " + index + ".");
         }
     }
 
-    public static <S, T extends S> @NotNull T notImplemented(
-            final @Nullable S object, final @NotNull Class<T> type, final @NotNull String name) {
+    public static <T, I extends T> @NotNull ImmutableList<@NotNull I> elementsNotImplemented(
+            final @NotNull ImmutableList<@Nullable T> list, final @NotNull Class<I> type, final @NotNull String name) {
 
-        return notImplementedInternal(notNull(object, name), type, name);
-    }
-
-    public static <S, T extends S> @Nullable T notImplementedOrNull(
-            final @Nullable S object, final @NotNull Class<T> type, final @NotNull String name) {
-
-        return (object == null) ? null : notImplementedInternal(object, type, name);
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <T, I extends T> @NotNull I notImplementedInternal(
-            final @NotNull T object, final @NotNull Class<I> type, final @NotNull String name) {
-
-        if (!type.isInstance(object)) {
-            throw new IllegalArgumentException(name + " must not be implemented by the user, but was implemented by " +
-                    object.getClass().getTypeName() + ".");
+        for (int i = 0; i < list.size(); i++) {
+            notImplemented(list.get(i), type, name);
         }
-        return (I) object;
+        //noinspection unchecked
+        return (ImmutableList<I>) list;
     }
 
     public static int unsignedShort(final int value, final @NotNull String name) {
@@ -110,6 +128,7 @@ public class Checks {
         return value;
     }
 
+    @Contract("false, _ -> fail")
     public static void state(final boolean condition, final @NotNull String message) {
         if (!condition) {
             throw new IllegalStateException(message);

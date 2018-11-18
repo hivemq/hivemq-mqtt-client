@@ -38,22 +38,22 @@ public abstract class Mqtt3SimpleAuthViewBuilder<B extends Mqtt3SimpleAuthViewBu
     abstract @NotNull B self();
 
     public @NotNull B username(final @Nullable String username) {
-        this.username = MqttChecks.stringNotNull(username, "Username");
+        this.username = MqttUtf8StringImpl.of(username, "Username");
         return self();
     }
 
     public @NotNull B username(final @Nullable MqttUtf8String username) {
-        this.username = MqttChecks.stringNotNull(username, "Username");
+        this.username = MqttChecks.string(username, "Username");
         return self();
     }
 
     public @NotNull B password(final @Nullable byte[] password) {
-        this.password = MqttChecks.binaryDataNotNull(password, "Password");
+        this.password = MqttChecks.binaryData(password, "Password");
         return self();
     }
 
     public @NotNull B password(final @Nullable ByteBuffer password) {
-        this.password = MqttChecks.binaryDataNotNull(password, "Password");
+        this.password = MqttChecks.binaryData(password, "Password");
         return self();
     }
 

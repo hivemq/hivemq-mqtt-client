@@ -20,8 +20,8 @@ package org.mqttbee.api.mqtt.datatypes;
 import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
+import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.datatypes.MqttTopicImplBuilder;
-import org.mqttbee.mqtt.util.MqttChecks;
 
 /**
  * MQTT Topic Name according to the MQTT specification.
@@ -46,12 +46,12 @@ public interface MqttTopic extends MqttUtf8String {
     /**
      * Validates and creates a Topic Name of the given string.
      *
-     * @param string the UTF-16 encoded Java string.
+     * @param string the string representation of the Topic Name.
      * @return the created Topic Name.
      * @throws IllegalArgumentException if the string is not a valid Topic Name.
      */
     static @NotNull MqttTopic of(final @NotNull String string) {
-        return MqttChecks.topicNotNull(string);
+        return MqttTopicImpl.of(string);
     }
 
     static @NotNull MqttTopicBuilder builder() {
@@ -59,11 +59,16 @@ public interface MqttTopic extends MqttUtf8String {
     }
 
     static @NotNull MqttTopicBuilder.Complete extend(final @NotNull MqttTopic topic) {
-        return new MqttTopicImplBuilder.Default(topic.toString());
+        return new MqttTopicImplBuilder.Default(topic);
     }
 
     /**
      * @return the levels of this Topic Name.
      */
     @NotNull ImmutableList<String> getLevels();
+
+    /**
+     * @return a Topic Filter matching only this Topic Name.
+     */
+    @NotNull MqttTopicFilter filter();
 }

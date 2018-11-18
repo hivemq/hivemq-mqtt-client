@@ -46,7 +46,7 @@ public class MqttUserPropertiesImpl implements Mqtt5UserProperties {
      * @return the created collection of User Properties or {@link #NO_USER_PROPERTIES} if the list is empty.
      */
     public static @NotNull MqttUserPropertiesImpl of(
-            final @NotNull ImmutableList<MqttUserPropertyImpl> userProperties) {
+            final @NotNull ImmutableList<@NotNull MqttUserPropertyImpl> userProperties) {
 
         return userProperties.isEmpty() ? NO_USER_PROPERTIES : new MqttUserPropertiesImpl(userProperties);
     }
@@ -63,7 +63,7 @@ public class MqttUserPropertiesImpl implements Mqtt5UserProperties {
         return (userPropertiesBuilder == null) ? NO_USER_PROPERTIES : of(userPropertiesBuilder.build());
     }
 
-    private final @NotNull ImmutableList<MqttUserPropertyImpl> userProperties;
+    private final @NotNull ImmutableList<@NotNull MqttUserPropertyImpl> userProperties;
     private int encodedLength = -1;
 
     private MqttUserPropertiesImpl(final @NotNull ImmutableList<MqttUserPropertyImpl> userProperties) {
@@ -71,7 +71,7 @@ public class MqttUserPropertiesImpl implements Mqtt5UserProperties {
     }
 
     @Override
-    public @NotNull ImmutableList<MqttUserPropertyImpl> asList() {
+    public @NotNull ImmutableList<@NotNull MqttUserPropertyImpl> asList() {
         return userProperties;
     }
 
