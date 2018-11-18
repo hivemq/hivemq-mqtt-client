@@ -19,7 +19,7 @@ package org.mqttbee.api.mqtt.datatypes;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.mqtt.util.MqttChecks;
+import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 
 /**
  * MQTT Client Identifier according to the MQTT specification.
@@ -34,12 +34,12 @@ public interface MqttClientIdentifier extends MqttUtf8String {
     /**
      * Validates and creates a Client Identifier of the given string.
      *
-     * @param string the Client Identifier as a UTF-16 encoded Java string.
+     * @param string the string representation of the Client Identifier.
      * @return the created Client Identifier.
      * @throws IllegalArgumentException if the string is not a valid Client Identifier.
      */
     static @NotNull MqttClientIdentifier of(final @NotNull String string) {
-        return MqttChecks.clientIdentifier(string);
+        return MqttClientIdentifierImpl.of(string);
     }
 
     /**

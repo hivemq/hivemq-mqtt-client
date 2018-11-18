@@ -89,7 +89,7 @@ class MqttSharedTopicFilterImplTest {
 
         final MqttSharedTopicFilterImpl mqtt5SharedTopicFilter = (MqttSharedTopicFilterImpl) mqtt5TopicFilter;
         assertEquals(shareName, mqtt5SharedTopicFilter.getShareName());
-        assertEquals(topicFilter, mqtt5SharedTopicFilter.getTopicFilter());
+        assertEquals(topicFilter, mqtt5SharedTopicFilter.getTopicFilter().toString());
     }
 
     private static @NotNull List<Arguments> invalidSharedSubscriptions() {
@@ -219,8 +219,8 @@ class MqttSharedTopicFilterImplTest {
 
         assertEquals(shareName, mqtt5TopicFilter1.getShareName());
         assertEquals(shareName, mqtt5TopicFilter2.getShareName());
-        assertEquals(topicFilter1, mqtt5TopicFilter1.getTopicFilter());
-        assertEquals(topicFilter2, mqtt5TopicFilter2.getTopicFilter());
+        assertEquals(topicFilter1, mqtt5TopicFilter1.getTopicFilter().toString());
+        assertEquals(topicFilter2, mqtt5TopicFilter2.getTopicFilter().toString());
     }
 
     private static @NotNull List<Arguments> validShareNameAndTopicFilter() {
@@ -255,7 +255,7 @@ class MqttSharedTopicFilterImplTest {
 
         final MqttSharedTopicFilterImpl mqtt5SharedTopicFilter = (MqttSharedTopicFilterImpl) mqtt5TopicFilter;
         assertEquals(shareName, mqtt5SharedTopicFilter.getShareName());
-        assertEquals(topicFilter, mqtt5SharedTopicFilter.getTopicFilter());
+        assertEquals(topicFilter, mqtt5SharedTopicFilter.getTopicFilter().toString());
     }
 
     @ParameterizedTest
@@ -272,7 +272,7 @@ class MqttSharedTopicFilterImplTest {
 
         final MqttSharedTopicFilterImpl mqtt5SharedTopicFilter = (MqttSharedTopicFilterImpl) mqtt5TopicFilter;
         assertEquals(shareName, mqtt5SharedTopicFilter.getShareName());
-        assertEquals(topicFilter, mqtt5SharedTopicFilter.getTopicFilter());
+        assertEquals(topicFilter, mqtt5SharedTopicFilter.getTopicFilter().toString());
     }
 
     @ParameterizedTest

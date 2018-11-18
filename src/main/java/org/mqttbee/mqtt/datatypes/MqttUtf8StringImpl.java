@@ -19,9 +19,11 @@ package org.mqttbee.mqtt.datatypes;
 
 import com.google.common.base.Utf8;
 import io.netty.buffer.ByteBuf;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
+import org.mqttbee.util.Checks;
 
 import javax.annotation.concurrent.Immutable;
 import java.nio.ByteBuffer;
@@ -57,7 +59,8 @@ public class MqttUtf8StringImpl implements MqttUtf8String {
      * @return the created UTF-8 encoded string.
      * @throws IllegalArgumentException if the string is not a valid UTF-8 encoded string.
      */
-    public static @NotNull MqttUtf8StringImpl of(final @NotNull String string) {
+    @Contract("null -> fail")
+    public static @NotNull MqttUtf8StringImpl of(final @Nullable String string) {
         return of(string, "UTF-8 encoded string");
     }
 
@@ -70,7 +73,9 @@ public class MqttUtf8StringImpl implements MqttUtf8String {
      * @throws IllegalArgumentException see {@link #of(String)}.
      * @see #of(String)
      */
-    public static @NotNull MqttUtf8StringImpl of(final @NotNull String string, final @NotNull String name) {
+    @Contract("null, _ -> fail")
+    public static @NotNull MqttUtf8StringImpl of(final @Nullable String string, final @NotNull String name) {
+        Checks.notNull(string, name);
         checkLength(string, name);
         checkWellFormed(string, name);
         return new MqttUtf8StringImpl(string);

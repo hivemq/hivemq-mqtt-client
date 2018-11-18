@@ -18,6 +18,7 @@
 package org.mqttbee.mqtt.datatypes;
 
 import io.netty.buffer.ByteBuf;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperty;
@@ -31,6 +32,12 @@ import javax.annotation.concurrent.Immutable;
  */
 @Immutable
 public class MqttUserPropertyImpl implements Mqtt5UserProperty {
+
+    @Contract("null, _ -> fail; _, null -> fail")
+    public static @NotNull MqttUserPropertyImpl of(final @Nullable String name, final @Nullable String value) {
+        return of(
+                MqttUtf8StringImpl.of(name, "User property name"), MqttUtf8StringImpl.of(value, "User property value"));
+    }
 
     /**
      * Creates an User Property of the given name and value.

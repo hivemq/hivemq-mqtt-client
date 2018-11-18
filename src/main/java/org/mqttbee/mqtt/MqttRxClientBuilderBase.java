@@ -60,7 +60,7 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
     protected abstract @NotNull B self();
 
     public @NotNull B identifier(final @Nullable String identifier) {
-        this.identifier = MqttChecks.clientIdentifier(identifier);
+        this.identifier = MqttClientIdentifierImpl.of(identifier);
         return self();
     }
 

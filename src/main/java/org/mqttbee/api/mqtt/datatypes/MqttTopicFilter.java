@@ -20,8 +20,8 @@ package org.mqttbee.api.mqtt.datatypes;
 import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
+import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImplBuilder;
-import org.mqttbee.mqtt.util.MqttChecks;
 
 /**
  * MQTT Topic Filter according to the MQTT specification.
@@ -50,12 +50,12 @@ public interface MqttTopicFilter extends MqttUtf8String {
     /**
      * Validates and creates a Topic Filter of the given string.
      *
-     * @param string the UTF-16 encoded Java string.
+     * @param string the string representation of the Topic Filter.
      * @return the created Topic Filter.
      * @throws IllegalArgumentException if the string is not a valid Topic Filter.
      */
     static @NotNull MqttTopicFilter of(final @NotNull String string) {
-        return MqttChecks.topicFilterNotNull(string);
+        return MqttTopicFilterImpl.of(string);
     }
 
     static @NotNull MqttTopicFilterBuilder builder() {
@@ -63,11 +63,7 @@ public interface MqttTopicFilter extends MqttUtf8String {
     }
 
     static @NotNull MqttTopicFilterBuilder.Complete extend(final @NotNull MqttTopicFilter topicFilter) {
-        return new MqttTopicFilterImplBuilder.Default(topicFilter.toString());
-    }
-
-    static @NotNull MqttTopicFilterBuilder.Complete filter(final @NotNull MqttTopic topic) {
-        return new MqttTopicFilterImplBuilder.Default(topic.toString());
+        return new MqttTopicFilterImplBuilder.Default(topicFilter);
     }
 
     /**
@@ -94,6 +90,12 @@ public interface MqttTopicFilter extends MqttUtf8String {
      * @return whether this Topic Filter is shared.
      */
     boolean isShared();
+
+    /**
+     * @param shareName the string representation of the Share Name.
+     * @return a Shared Topic Filter which shares this Topic Filter with the given Share Name.
+     */
+    @NotNull MqttSharedTopicFilter share(@NotNull String shareName);
 
     /**
      * Matches this Topic Filter with the given Topic Name.

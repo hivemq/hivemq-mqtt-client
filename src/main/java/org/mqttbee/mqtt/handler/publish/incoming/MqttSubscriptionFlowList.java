@@ -19,7 +19,6 @@ package org.mqttbee.mqtt.handler.publish.incoming;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.util.collections.HandleList;
@@ -37,7 +36,7 @@ import java.util.function.Consumer;
 public class MqttSubscriptionFlowList implements MqttSubscriptionFlows {
 
     private final @NotNull HandleList<MqttSubscriptionFlow> flows;
-    private final @NotNull HashSet<MqttTopicFilter> subscribedTopicFilters;
+    private final @NotNull HashSet<MqttTopicFilterImpl> subscribedTopicFilters;
 
     @Inject
     MqttSubscriptionFlowList() {
@@ -106,7 +105,7 @@ public class MqttSubscriptionFlowList implements MqttSubscriptionFlows {
         if (!matchingFlows.isEmpty()) {
             return true;
         }
-        for (final MqttTopicFilter subscribedTopicFilter : subscribedTopicFilters) {
+        for (final MqttTopicFilterImpl subscribedTopicFilter : subscribedTopicFilters) {
             if (subscribedTopicFilter.matches(topic)) {
                 return true;
             }

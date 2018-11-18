@@ -21,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicBuilder;
+import org.mqttbee.mqtt.util.MqttChecks;
 import org.mqttbee.util.Checks;
 
 import java.util.function.Function;
@@ -34,9 +35,8 @@ public abstract class MqttTopicImplBuilder<B extends MqttTopicImplBuilder> {
 
     MqttTopicImplBuilder() {}
 
-    MqttTopicImplBuilder(final @NotNull String baseTopic) {
-        Checks.notEmpty(baseTopic, "Base topic");
-        this.stringBuilder = new StringBuilder(baseTopic);
+    MqttTopicImplBuilder(final @NotNull MqttTopicImpl topic) {
+        stringBuilder = new StringBuilder(topic.toString());
     }
 
     abstract @NotNull B self();
@@ -62,8 +62,8 @@ public abstract class MqttTopicImplBuilder<B extends MqttTopicImplBuilder> {
 
         public Default() {}
 
-        public Default(final @NotNull String base) {
-            super(base);
+        public Default(final @Nullable MqttTopic topic) {
+            super(MqttChecks.topic(topic));
         }
 
         @Override

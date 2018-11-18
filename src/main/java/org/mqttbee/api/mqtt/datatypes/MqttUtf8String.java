@@ -19,7 +19,7 @@ package org.mqttbee.api.mqtt.datatypes;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.mqtt.util.MqttChecks;
+import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 
 import java.nio.ByteBuffer;
 
@@ -50,14 +50,14 @@ import java.nio.ByteBuffer;
 public interface MqttUtf8String extends Comparable<MqttUtf8String> {
 
     /**
-     * Validates and creates an UTF-8 encoded string of the given UTF-16 encoded Java string.
+     * Validates and creates an UTF-8 encoded string of the given Java string.
      *
-     * @param string the UTF-16 encoded Java string.
+     * @param string the string representation of the UTF-8 encoded string.
      * @return the created UTF-8 encoded string.
      * @throws IllegalArgumentException if the string is not a valid UTF-8 encoded string.
      */
     static @NotNull MqttUtf8String of(final @NotNull String string) {
-        return MqttChecks.stringNotNull(string, "String");
+        return MqttUtf8StringImpl.of(string);
     }
 
     /**

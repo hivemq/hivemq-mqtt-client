@@ -41,12 +41,12 @@ public abstract class Mqtt3SubscriptionViewBuilder<B extends Mqtt3SubscriptionVi
     abstract @NotNull B self();
 
     public @NotNull B topicFilter(final @Nullable String topicFilter) {
-        this.topicFilter = MqttChecks.topicFilterNotNull(topicFilter);
+        this.topicFilter = MqttTopicFilterImpl.of(topicFilter);
         return self();
     }
 
     public @NotNull B topicFilter(final @Nullable MqttTopicFilter topicFilter) {
-        this.topicFilter = MqttChecks.topicFilterNotNull(topicFilter);
+        this.topicFilter = MqttChecks.topicFilter(topicFilter);
         return self();
     }
 

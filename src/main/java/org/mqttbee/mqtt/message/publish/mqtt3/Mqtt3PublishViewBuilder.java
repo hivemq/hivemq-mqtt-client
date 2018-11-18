@@ -57,12 +57,12 @@ public abstract class Mqtt3PublishViewBuilder<B extends Mqtt3PublishViewBuilder<
     protected abstract @NotNull B self();
 
     public @NotNull B topic(final @Nullable String topic) {
-        this.topic = MqttChecks.topicNotNull(topic);
+        this.topic = MqttTopicImpl.of(topic);
         return self();
     }
 
     public @NotNull B topic(final @Nullable MqttTopic topic) {
-        this.topic = MqttChecks.topicNotNull(topic);
+        this.topic = MqttChecks.topic(topic);
         return self();
     }
 

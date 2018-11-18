@@ -19,8 +19,10 @@ package org.mqttbee.mqtt.datatypes;
 
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mqttbee.api.mqtt.datatypes.MqttSharedTopicFilter;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
 import org.mqttbee.mqtt.util.MqttChecks;
@@ -51,14 +53,36 @@ public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopic
      * @return the created Topic Filter.
      * @throws IllegalArgumentException if the string is not a valid Topic Filter.
      */
-    public static @NotNull MqttTopicFilterImpl of(final @NotNull String string) {
+    @Contract("null -> fail")
+    public static @NotNull MqttTopicFilterImpl of(final @Nullable String string) {
+        Checks.notEmpty(string, "Topic filter");
         checkLength(string, "Topic filter");
-        checkWellFormed(string);
+        checkWellFormed(string, "Topic filter");
         if (MqttSharedTopicFilterImpl.isShared(string)) {
             return MqttSharedTopicFilterImpl.ofInternal(string);
         }
         final int wildcardFlags = validateWildcards(string, 0);
         return new MqttTopicFilterImpl(string, wildcardFlags);
+    }
+
+    /**
+     * Creates a Topic Filter of the given Topic Name.
+     *
+     * @param topic the Topic Name.
+     * @return the created Topic Filter.
+     */
+    public static @NotNull MqttTopicFilterImpl of(final @NotNull MqttTopicImpl topic) {
+        return new MqttTopicFilterImpl(topic.toString(), 0);
+    }
+
+    /**
+     * Creates a Topic Filter of the given Shared Topic Filter.
+     *
+     * @param sharedTopicFilter the Shared Topic Filter.
+     * @return the created Topic Filter.
+     */
+    public static @NotNull MqttTopicFilterImpl of(final @NotNull MqttSharedTopicFilterImpl sharedTopicFilter) {
+        return new MqttTopicFilterImpl(sharedTopicFilter.getTopicFilterString(), sharedTopicFilter.wildcardFlags);
     }
 
     /**
@@ -93,11 +117,6 @@ public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopic
     public static @Nullable MqttTopicFilterImpl decode(final @NotNull ByteBuf byteBuf) {
         final byte[] binary = MqttBinaryData.decode(byteBuf);
         return (binary == null) ? null : of(binary);
-    }
-
-    static void checkWellFormed(final @NotNull String string) {
-        Checks.notEmpty(string, "Topic filter");
-        MqttUtf8StringImpl.checkWellFormed(string, "Topic filter");
     }
 
     /**
@@ -219,7 +238,7 @@ public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopic
         return wildcardFlags;
     }
 
-    private final int wildcardFlags;
+    final int wildcardFlags;
 
     MqttTopicFilterImpl(final @NotNull byte[] binary, final int wildcardFlags) {
         super(binary);
@@ -256,13 +275,22 @@ public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopic
         return false;
     }
 
+    @Override
+    public @NotNull MqttSharedTopicFilter share(final @Nullable String shareName) {
+        return MqttSharedTopicFilterImpl.of(shareName, this);
+    }
+
     int getFilterByteStart() {
         return 0;
     }
 
+    public @NotNull String getTopicFilterString() {
+        return toString();
+    }
+
     @Override
     public boolean matches(final @Nullable MqttTopic topic) {
-        return matches(MqttChecks.topicNotNull(topic));
+        return matches(MqttChecks.topic(topic));
     }
 
     public boolean matches(final @NotNull MqttTopicImpl topic) {
@@ -299,7 +327,7 @@ public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopic
 
     @Override
     public boolean matches(final @Nullable MqttTopicFilter topicFilter) {
-        return matches(MqttChecks.topicFilterNotNull(topicFilter));
+        return matches(MqttChecks.topicFilter(topicFilter));
     }
 
     public boolean matches(final @NotNull MqttTopicFilterImpl topicFilter) {
