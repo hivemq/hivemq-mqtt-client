@@ -17,12 +17,14 @@
 
 package org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback;
 
-import com.google.common.collect.ImmutableList;
-import org.mqttbee.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.annotations.DoNotImplement;
+import org.mqttbee.annotations.Immutable;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3Message;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3SubscribeResult;
+
+import java.util.List;
 
 /**
  * MQTT 3 SUBACK packet.
@@ -32,16 +34,12 @@ public interface Mqtt3SubAck extends Mqtt3Message, Mqtt3SubscribeResult {
 
     /**
      * @return the Return Codes of this SUBACK packet, each belonging to a subscription in the corresponding SUBSCRIBE
-     * packet in the same order.
+     *         packet in the same order.
      */
-    @NotNull
-    ImmutableList<Mqtt3SubAckReturnCode> getReturnCodes();
+    @Immutable @NotNull List<@NotNull Mqtt3SubAckReturnCode> getReturnCodes();
 
-    @NotNull
     @Override
-    default Mqtt3MessageType getType() {
+    default @NotNull Mqtt3MessageType getType() {
         return Mqtt3MessageType.SUBACK;
     }
-
-
 }

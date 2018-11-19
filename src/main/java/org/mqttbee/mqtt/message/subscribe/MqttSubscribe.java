@@ -31,10 +31,10 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public class MqttSubscribe extends MqttMessageWithUserProperties implements Mqtt5Subscribe {
 
-    private final @NotNull ImmutableList<MqttSubscription> subscriptions;
+    private final @NotNull ImmutableList<@NotNull MqttSubscription> subscriptions;
 
     public MqttSubscribe(
-            final @NotNull ImmutableList<MqttSubscription> subscriptions,
+            final @NotNull ImmutableList<@NotNull MqttSubscription> subscriptions,
             final @NotNull MqttUserPropertiesImpl userProperties) {
 
         super(userProperties);
@@ -42,7 +42,7 @@ public class MqttSubscribe extends MqttMessageWithUserProperties implements Mqtt
     }
 
     @Override
-    public @NotNull ImmutableList<MqttSubscription> getSubscriptions() {
+    public @NotNull ImmutableList<@NotNull MqttSubscription> getSubscriptions() {
         return subscriptions;
     }
 

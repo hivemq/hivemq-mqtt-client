@@ -16,13 +16,14 @@
 
 package org.mqttbee.api.mqtt;
 
-import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
+import org.mqttbee.annotations.Immutable;
 import org.mqttbee.mqtt.MqttClientSslConfigImplBuilder;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -42,9 +43,9 @@ public interface MqttClientSslConfig {
 
     @NotNull Optional<TrustManagerFactory> getTrustManagerFactory();
 
-    @NotNull Optional<ImmutableList<String>> getCipherSuites();
+    @NotNull Optional<@Immutable List<@NotNull String>> getCipherSuites();
 
-    @NotNull Optional<ImmutableList<String>> getProtocols();
+    @NotNull Optional<@Immutable List<@NotNull String>> getProtocols();
 
     long getHandshakeTimeoutMs();
 }

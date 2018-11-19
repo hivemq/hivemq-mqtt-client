@@ -17,13 +17,15 @@
 
 package org.mqttbee.api.mqtt.mqtt5.message.subscribe;
 
-import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
+import org.mqttbee.annotations.Immutable;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribeBuilder;
+
+import java.util.List;
 
 /**
  * MQTT 5 SUBSCRIBE packet.
@@ -44,7 +46,7 @@ public interface Mqtt5Subscribe extends Mqtt5Message {
     /**
      * @return the {@link Mqtt5Subscription}s of this SUBSCRIBE packet. The list contains at least one subscription.
      */
-    @NotNull ImmutableList<? extends Mqtt5Subscription> getSubscriptions();
+    @Immutable @NotNull List<@NotNull ? extends Mqtt5Subscription> getSubscriptions();
 
     /**
      * @return the optional user properties of this SUBSCRIBE packet.
@@ -55,5 +57,4 @@ public interface Mqtt5Subscribe extends Mqtt5Message {
     default @NotNull Mqtt5MessageType getType() {
         return Mqtt5MessageType.SUBSCRIBE;
     }
-
 }

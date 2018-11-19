@@ -32,10 +32,10 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public class MqttUnsubscribe extends MqttMessageWithUserProperties implements Mqtt5Unsubscribe {
 
-    private final @NotNull ImmutableList<MqttTopicFilterImpl> topicFilters;
+    private final @NotNull ImmutableList<@NotNull MqttTopicFilterImpl> topicFilters;
 
     public MqttUnsubscribe(
-            final @NotNull ImmutableList<MqttTopicFilterImpl> topicFilters,
+            final @NotNull ImmutableList<@NotNull MqttTopicFilterImpl> topicFilters,
             final @NotNull MqttUserPropertiesImpl userProperties) {
 
         super(userProperties);
@@ -43,7 +43,7 @@ public class MqttUnsubscribe extends MqttMessageWithUserProperties implements Mq
     }
 
     @Override
-    public @NotNull ImmutableList<MqttTopicFilterImpl> getTopicFilters() {
+    public @NotNull ImmutableList<@NotNull MqttTopicFilterImpl> getTopicFilters() {
         return topicFilters;
     }
 

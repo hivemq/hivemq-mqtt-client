@@ -17,14 +17,15 @@
 
 package org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback;
 
-import com.google.common.collect.ImmutableList;
-import org.mqttbee.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.annotations.DoNotImplement;
+import org.mqttbee.annotations.Immutable;
 import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -37,27 +38,22 @@ public interface Mqtt5UnsubAck extends Mqtt5Message {
 
     /**
      * @return the reason codes of this UNSUBACK packet, each belonging to a topic filter in the corresponding
-     * UNSUBSCRIBE packet in the same order.
+     *         UNSUBSCRIBE packet in the same order.
      */
-    @NotNull
-    ImmutableList<Mqtt5UnsubAckReasonCode> getReasonCodes();
+    @Immutable @NotNull List<@NotNull Mqtt5UnsubAckReasonCode> getReasonCodes();
 
     /**
      * @return the optional reason string of this UNSUBACK packet.
      */
-    @NotNull
-    Optional<MqttUtf8String> getReasonString();
+    @NotNull Optional<MqttUtf8String> getReasonString();
 
     /**
      * @return the optional user properties of this UNSUBACK packet.
      */
-    @NotNull
-    Mqtt5UserProperties getUserProperties();
+    @NotNull Mqtt5UserProperties getUserProperties();
 
-    @NotNull
     @Override
-    default Mqtt5MessageType getType() {
+    default @NotNull Mqtt5MessageType getType() {
         return Mqtt5MessageType.UNSUBACK;
     }
-
 }

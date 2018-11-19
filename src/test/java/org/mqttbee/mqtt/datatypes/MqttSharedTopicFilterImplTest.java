@@ -120,7 +120,6 @@ class MqttSharedTopicFilterImplTest {
 
         final IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class,
                 () -> from(SharedTopicFilterSource.STRING, sharedTopicFilter));
-        System.out.println(exception.getMessage());
         assertTrue("IllegalArgumentException must give hint that " + message, exception.getMessage().contains(message));
     }
 
@@ -188,7 +187,6 @@ class MqttSharedTopicFilterImplTest {
 
         final IllegalArgumentException exception =
                 Assertions.assertThrows(IllegalArgumentException.class, () -> from(source, shareName, topicFilter));
-        System.out.println(exception.getMessage());
         assertTrue("IllegalArgumentException must give hint that " + message, exception.getMessage().contains(message));
     }
 

@@ -17,11 +17,13 @@
 
 package org.mqttbee.api.mqtt.datatypes;
 
-import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
+import org.mqttbee.annotations.Immutable;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.datatypes.MqttTopicImplBuilder;
+
+import java.util.List;
 
 /**
  * MQTT Topic Name according to the MQTT specification.
@@ -65,7 +67,7 @@ public interface MqttTopic extends MqttUtf8String {
     /**
      * @return the levels of this Topic Name.
      */
-    @NotNull ImmutableList<String> getLevels();
+    @Immutable @NotNull List<@NotNull String> getLevels();
 
     /**
      * @return a Topic Filter matching only this Topic Name.
