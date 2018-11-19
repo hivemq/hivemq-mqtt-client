@@ -111,7 +111,7 @@ public class Mqtt3SubAckView implements Mqtt3SubAck {
     }
 
     @Override
-    public @NotNull ImmutableList<Mqtt3SubAckReturnCode> getReturnCodes() {
+    public @NotNull ImmutableList<@NotNull Mqtt3SubAckReturnCode> getReturnCodes() {
         return viewReasonCodes(delegate.getReasonCodes());
     }
 

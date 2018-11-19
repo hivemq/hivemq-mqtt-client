@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
-import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -221,7 +220,7 @@ class Mqtt5UnsubAckDecoderTest extends AbstractMqtt5DecoderTest {
 
         final Mqtt5UnsubAck unsuback = decodeOk(encoded);
         assertNotNull(unsuback);
-        final ImmutableList<? extends Mqtt5UserProperty> userProperties = unsuback.getUserProperties().asList();
+        final List<? extends Mqtt5UserProperty> userProperties = unsuback.getUserProperties().asList();
         assertEquals(1, userProperties.size());
         assertEquals("name", userProperties.get(0).getName().toString());
         assertEquals("value", userProperties.get(0).getValue().toString());

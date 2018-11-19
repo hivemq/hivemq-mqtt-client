@@ -51,7 +51,7 @@ public class Mqtt3SubscribeView implements Mqtt3Subscribe {
     }
 
     @Override
-    public @NotNull ImmutableList<Mqtt3SubscriptionView> getSubscriptions() {
+    public @NotNull ImmutableList<@NotNull Mqtt3SubscriptionView> getSubscriptions() {
         final ImmutableList<MqttSubscription> subscriptions = delegate.getSubscriptions();
         final ImmutableList.Builder<Mqtt3SubscriptionView> builder =
                 ImmutableList.builderWithExpectedSize(subscriptions.size());

@@ -17,11 +17,13 @@
 
 package org.mqttbee.api.mqtt.datatypes;
 
-import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
+import org.mqttbee.annotations.Immutable;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImplBuilder;
+
+import java.util.List;
 
 /**
  * MQTT Topic Filter according to the MQTT specification.
@@ -69,7 +71,7 @@ public interface MqttTopicFilter extends MqttUtf8String {
     /**
      * @return the levels of this Topic Filter.
      */
-    @NotNull ImmutableList<String> getLevels();
+    @Immutable @NotNull List<@NotNull String> getLevels();
 
     /**
      * @return whether this Topic Filter contains wildcards.

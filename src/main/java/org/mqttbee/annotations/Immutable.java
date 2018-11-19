@@ -20,16 +20,12 @@ package org.mqttbee.annotations;
 import java.lang.annotation.*;
 
 /**
- * Documents that an interface MUST NOT be implemented by the user.
- * <p>
- * The implementation is provided by the library.
- * <p>
- * This allows the library to later add methods to the interface without breaking backwards compatibility with
- * implementing classes.
+ * Documents that the annotated type is immutable. This means that its state can not be seen to change and can not be
+ * changed by callers.
  *
  * @author Silvio Giebl
  */
 @Documented
 @Retention(RetentionPolicy.CLASS)
-@Target(ElementType.TYPE)
-public @interface DoNotImplement {}
+@Target({ElementType.TYPE, ElementType.TYPE_USE})
+public @interface Immutable {}

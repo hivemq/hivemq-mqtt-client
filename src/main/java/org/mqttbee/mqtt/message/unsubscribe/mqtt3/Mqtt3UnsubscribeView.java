@@ -51,7 +51,7 @@ public class Mqtt3UnsubscribeView implements Mqtt3Unsubscribe {
     }
 
     @Override
-    public @NotNull ImmutableList<MqttTopicFilterImpl> getTopicFilters() {
+    public @NotNull ImmutableList<@NotNull MqttTopicFilterImpl> getTopicFilters() {
         return delegate.getTopicFilters();
     }
 

@@ -17,9 +17,9 @@
 
 package org.mqttbee.api.mqtt.mqtt5.datatypes;
 
-import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
+import org.mqttbee.annotations.Immutable;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImplBuilder;
 import org.mqttbee.mqtt.util.MqttChecks;
@@ -66,5 +66,5 @@ public interface Mqtt5UserProperties {
     /**
      * @return the User Properties as an immutable list.
      */
-    @NotNull ImmutableList<@NotNull ? extends Mqtt5UserProperty> asList();
+    @Immutable @NotNull List<@NotNull ? extends Mqtt5UserProperty> asList();
 }

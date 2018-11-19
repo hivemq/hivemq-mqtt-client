@@ -23,6 +23,7 @@ import org.mqttbee.api.mqtt.MqttClientSslConfig;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -42,8 +43,9 @@ public class MqttClientSslConfigImpl implements MqttClientSslConfig {
 
     MqttClientSslConfigImpl(
             final @Nullable KeyManagerFactory keyManagerFactory,
-            final @Nullable TrustManagerFactory trustManagerFactory, final @Nullable ImmutableList<String> cipherSuites,
-            final @Nullable ImmutableList<String> protocols, final long handshakeTimeoutMs) {
+            final @Nullable TrustManagerFactory trustManagerFactory,
+            final @Nullable ImmutableList<@NotNull String> cipherSuites,
+            final @Nullable ImmutableList<@NotNull String> protocols, final long handshakeTimeoutMs) {
 
         this.keyManagerFactory = keyManagerFactory;
         this.trustManagerFactory = trustManagerFactory;
@@ -71,20 +73,20 @@ public class MqttClientSslConfigImpl implements MqttClientSslConfig {
     }
 
     @Override
-    public @NotNull Optional<ImmutableList<String>> getCipherSuites() {
+    public @NotNull Optional<List<@NotNull String>> getCipherSuites() {
         return Optional.ofNullable(cipherSuites);
     }
 
-    public @Nullable ImmutableList<String> getRawCipherSuites() {
+    public @Nullable ImmutableList<@NotNull String> getRawCipherSuites() {
         return cipherSuites;
     }
 
     @Override
-    public @NotNull Optional<ImmutableList<String>> getProtocols() {
+    public @NotNull Optional<List<@NotNull String>> getProtocols() {
         return Optional.ofNullable(protocols);
     }
 
-    public @Nullable ImmutableList<String> getRawProtocols() {
+    public @Nullable ImmutableList<@NotNull String> getRawProtocols() {
         return protocols;
     }
 
@@ -92,5 +94,4 @@ public class MqttClientSslConfigImpl implements MqttClientSslConfig {
     public long getHandshakeTimeoutMs() {
         return handshakeTimeoutMs;
     }
-
 }

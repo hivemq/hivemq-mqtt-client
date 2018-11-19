@@ -251,8 +251,8 @@ public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopic
     }
 
     @Override
-    public @NotNull ImmutableList<String> getLevels() {
-        return MqttTopicImpl.splitLevels(toString());
+    public @NotNull ImmutableList<@NotNull String> getLevels() {
+        return MqttTopicImpl.splitLevels(getTopicFilterString());
     }
 
     @Override

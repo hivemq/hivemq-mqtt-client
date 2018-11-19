@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt.datatypes;
 
-import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -240,11 +239,6 @@ public class MqttSharedTopicFilterImpl extends MqttTopicFilterImpl implements Mq
         super(string, wildcardFlags);
         filterByteStart = -1;
         this.filterCharStart = shareNameCharEnd + 1;
-    }
-
-    @Override
-    public @NotNull ImmutableList<String> getLevels() {
-        return MqttTopicImpl.splitLevels(getTopicFilterString());
     }
 
     @Override
