@@ -95,6 +95,17 @@ public class Checks {
         return list;
     }
 
+    public static <T> @NotNull T @NotNull [] elementsNotNull(
+            final @Nullable T @Nullable [] array, final @NotNull String name) {
+
+        notNull(array, name);
+        for (int i = 0; i < array.length; i++) {
+            elementNotNull(array[i], name, i);
+        }
+        //noinspection NullableProblems
+        return array;
+    }
+
     @Contract("null, _, _ -> fail")
     private static void elementNotNull(final @Nullable Object element, final @NotNull String name, final int index) {
         if (element == null) {
@@ -115,7 +126,7 @@ public class Checks {
     public static int unsignedShort(final int value, final @NotNull String name) {
         if (!UnsignedDataTypes.isUnsignedShort(value)) {
             throw new IllegalArgumentException(name + " must not exceed the value range of unsigned short [0, " +
-                    UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE + "], but was: " + value + ".");
+                    UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE + "], but was " + value + ".");
         }
         return value;
     }
@@ -123,9 +134,47 @@ public class Checks {
     public static long unsignedInt(final long value, final @NotNull String name) {
         if (!UnsignedDataTypes.isUnsignedInt(value)) {
             throw new IllegalArgumentException(name + " must not exceed the value range of unsigned int [0, " +
-                    UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE + "], but was: " + value + ".");
+                    UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE + "], but was " + value + ".");
         }
         return value;
+    }
+
+    public static int index(final int index, final int size) {
+        if ((index < 0) || (index >= size)) {
+            if (index < 0) {
+                throw new IndexOutOfBoundsException("Index must not be smaller than 0, but was " + index + ".");
+            } else {
+                throw new IndexOutOfBoundsException(
+                        "Index must not be greater than or equal to the size (" + size + "), but was " + index + ".");
+            }
+        }
+        return index;
+    }
+
+    public static int cursorIndex(final int index, final int size) {
+        if ((index < 0) || (index > size)) {
+            if (index < 0) {
+                throw new IndexOutOfBoundsException("Cursor index must not be smaller than 0, but was " + index + ".");
+            } else {
+                throw new IndexOutOfBoundsException(
+                        "Cursor index must not be greater than the size (" + size + "), but was " + index + ".");
+            }
+        }
+        return index;
+    }
+
+    public static void indexRange(final int start, final int end, final int size) {
+        if ((start < 0) || (start > end) || (end > size)) {
+            if (start < 0) {
+                throw new IndexOutOfBoundsException("Start index must not be smaller than 0, but was " + start + ".");
+            } else if (start > end) {
+                throw new IndexOutOfBoundsException(
+                        "Start index must be greater than the end index, but " + start + " > " + end + ".");
+            } else {
+                throw new IndexOutOfBoundsException(
+                        "End index must not be greater than or equal to the size (" + size + "), but was " + end + ".");
+            }
+        }
     }
 
     @Contract("false, _ -> fail")
