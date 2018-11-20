@@ -43,7 +43,7 @@ public abstract class MqttConnectRestrictionsBuilder<B extends MqttConnectRestri
     public @NotNull B maximumPacketSize(final int maximumPacketSize) {
         if ((maximumPacketSize <= 0) || (maximumPacketSize > MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT)) {
             throw new IllegalArgumentException("Maximum packet size must not exceed the value range of ]0, " +
-                    MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT + "], but was: " + maximumPacketSize);
+                    MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT + "], but was " + maximumPacketSize + ".");
         }
         this.maximumPacketSize = maximumPacketSize;
         return self();
