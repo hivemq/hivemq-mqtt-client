@@ -19,9 +19,8 @@ package org.mqttbee.mqtt.message.publish;
 
 import com.google.common.primitives.ImmutableIntArray;
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.annotations.Immutable;
 import org.mqttbee.mqtt.message.MqttStatefulMessage;
-
-import javax.annotation.concurrent.Immutable;
 
 /**
  * @author Silvio Giebl

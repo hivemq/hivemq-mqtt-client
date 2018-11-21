@@ -18,12 +18,11 @@
 package org.mqttbee.mqtt.message.publish.pubcomp.mqtt3;
 
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.annotations.Immutable;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.pubcomp.Mqtt3PubComp;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubCompReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.publish.pubcomp.MqttPubComp;
-
-import javax.annotation.concurrent.Immutable;
 
 /**
  * @author Silvio Giebl

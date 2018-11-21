@@ -20,6 +20,7 @@ package org.mqttbee.util.collections;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mqttbee.annotations.Immutable;
 import org.mqttbee.util.Checks;
 
 import java.lang.reflect.Array;
@@ -32,7 +33,7 @@ import java.util.function.Consumer;
 /**
  * @author Silvio Giebl
  */
-class ImmutableArray<E> implements ImmutableList<E> {
+@Immutable class ImmutableArray<E> implements ImmutableList<E> {
 
     @Contract("null -> fail")
     static <E> @NotNull ImmutableList<@NotNull E> of(final @Nullable Object @Nullable ... elements) {

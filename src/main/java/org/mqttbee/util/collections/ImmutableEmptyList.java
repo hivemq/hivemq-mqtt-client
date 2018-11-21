@@ -19,6 +19,7 @@ package org.mqttbee.util.collections;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mqttbee.annotations.Immutable;
 import org.mqttbee.util.Checks;
 
 import java.util.Collection;
@@ -29,7 +30,7 @@ import java.util.function.Consumer;
 /**
  * @author Silvio Giebl
  */
-class ImmutableEmptyList implements ImmutableList<Object> {
+@Immutable class ImmutableEmptyList implements ImmutableList<Object> {
 
     private static final @NotNull ImmutableEmptyList INSTANCE = new ImmutableEmptyList();
     private static final @NotNull Object @NotNull [] EMPTY = {};
