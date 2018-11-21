@@ -18,9 +18,8 @@
 package org.mqttbee.mqtt.message.subscribe;
 
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.annotations.Immutable;
 import org.mqttbee.mqtt.message.MqttStatefulMessage;
-
-import javax.annotation.concurrent.Immutable;
 
 /**
  * @author Silvio Giebl

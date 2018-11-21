@@ -20,6 +20,7 @@ package org.mqttbee.mqtt.message.publish;
 import com.google.common.primitives.ImmutableIntArray;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mqttbee.annotations.Immutable;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
 import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
@@ -32,7 +33,6 @@ import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.message.MqttMessageWithUserProperties;
 import org.mqttbee.util.ByteBufferUtil;
 
-import javax.annotation.concurrent.Immutable;
 import java.nio.ByteBuffer;
 import java.util.Optional;
 import java.util.OptionalLong;

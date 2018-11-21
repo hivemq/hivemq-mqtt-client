@@ -19,12 +19,11 @@ package org.mqttbee.mqtt.message.unsubscribe;
 
 import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.annotations.Immutable;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.MqttMessageWithUserProperties;
-
-import javax.annotation.concurrent.Immutable;
 
 /**
  * @author Silvio Giebl

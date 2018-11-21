@@ -18,12 +18,11 @@
 package org.mqttbee.mqtt.message.disconnect.mqtt3;
 
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.annotations.Immutable;
 import org.mqttbee.api.mqtt.mqtt3.message.disconnect.Mqtt3Disconnect;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
-
-import javax.annotation.concurrent.Immutable;
 
 /**
  * @author Silvio Giebl

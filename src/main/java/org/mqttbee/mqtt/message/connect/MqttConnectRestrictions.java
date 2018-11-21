@@ -18,9 +18,8 @@
 package org.mqttbee.mqtt.message.connect;
 
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.annotations.Immutable;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions;
-
-import javax.annotation.concurrent.Immutable;
 
 /**
  * @author Silvio Giebl
@@ -57,5 +56,4 @@ public class MqttConnectRestrictions implements Mqtt5ConnectRestrictions {
     public int getTopicAliasMaximum() {
         return topicAliasMaximum;
     }
-
 }

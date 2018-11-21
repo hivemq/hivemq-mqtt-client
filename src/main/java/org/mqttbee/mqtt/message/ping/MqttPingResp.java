@@ -17,10 +17,10 @@
 
 package org.mqttbee.mqtt.message.ping;
 
+import org.jetbrains.annotations.NotNull;
+import org.mqttbee.annotations.Immutable;
 import org.mqttbee.api.mqtt.mqtt5.message.ping.Mqtt5PingResp;
 import org.mqttbee.mqtt.message.MqttMessage;
-
-import javax.annotation.concurrent.Immutable;
 
 /**
  * @author Silvio Giebl
@@ -28,9 +28,7 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public class MqttPingResp implements MqttMessage, Mqtt5PingResp {
 
-    public static final MqttPingResp INSTANCE = new MqttPingResp();
+    public static final @NotNull MqttPingResp INSTANCE = new MqttPingResp();
 
-    private MqttPingResp() {
-    }
-
+    private MqttPingResp() {}
 }

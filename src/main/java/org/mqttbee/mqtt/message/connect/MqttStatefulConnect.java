@@ -19,11 +19,10 @@ package org.mqttbee.mqtt.message.connect;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mqttbee.annotations.Immutable;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt.message.MqttStatefulMessage;
 import org.mqttbee.mqtt.message.auth.MqttEnhancedAuth;
-
-import javax.annotation.concurrent.Immutable;
 
 /**
  * @author Silvio Giebl

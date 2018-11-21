@@ -19,6 +19,7 @@ package org.mqttbee.util.collections;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mqttbee.annotations.Immutable;
 import org.mqttbee.util.Checks;
 
 import java.util.*;
@@ -28,6 +29,7 @@ import java.util.function.UnaryOperator;
 /**
  * @author Silvio Giebl
  */
+@Immutable
 public interface ImmutableList<E> extends List<E>, RandomAccess {
 
     static <E> @NotNull ImmutableList<@NotNull E> of() {

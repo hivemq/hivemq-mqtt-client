@@ -21,10 +21,9 @@ import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mqttbee.annotations.Immutable;
 import org.mqttbee.api.mqtt.exceptions.MqttBinaryDataExceededException;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
-
-import javax.annotation.concurrent.Immutable;
 
 /**
  * @author Silvio Giebl

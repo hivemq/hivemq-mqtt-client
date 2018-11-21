@@ -18,12 +18,11 @@
 package org.mqttbee.mqtt.message.subscribe;
 
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.annotations.Immutable;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5RetainHandling;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscription;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
-
-import javax.annotation.concurrent.Immutable;
 
 /**
  * @author Silvio Giebl
@@ -31,15 +30,15 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public class MqttSubscription implements Mqtt5Subscription {
 
-    private final MqttTopicFilterImpl topicFilter;
-    private final MqttQos qos;
+    private final @NotNull MqttTopicFilterImpl topicFilter;
+    private final @NotNull MqttQos qos;
     private final boolean isNoLocal;
-    private final Mqtt5RetainHandling retainHandling;
+    private final @NotNull Mqtt5RetainHandling retainHandling;
     private final boolean isRetainAsPublished;
 
     public MqttSubscription(
-            @NotNull final MqttTopicFilterImpl topicFilter, @NotNull final MqttQos qos, final boolean isNoLocal,
-            @NotNull final Mqtt5RetainHandling retainHandling, final boolean isRetainAsPublished) {
+            final @NotNull MqttTopicFilterImpl topicFilter, final @NotNull MqttQos qos, final boolean isNoLocal,
+            final @NotNull Mqtt5RetainHandling retainHandling, final boolean isRetainAsPublished) {
 
         this.topicFilter = topicFilter;
         this.qos = qos;
@@ -48,15 +47,13 @@ public class MqttSubscription implements Mqtt5Subscription {
         this.isRetainAsPublished = isRetainAsPublished;
     }
 
-    @NotNull
     @Override
-    public MqttTopicFilterImpl getTopicFilter() {
+    public @NotNull MqttTopicFilterImpl getTopicFilter() {
         return topicFilter;
     }
 
-    @NotNull
     @Override
-    public MqttQos getQos() {
+    public @NotNull MqttQos getQos() {
         return qos;
     }
 
@@ -65,9 +62,8 @@ public class MqttSubscription implements Mqtt5Subscription {
         return isNoLocal;
     }
 
-    @NotNull
     @Override
-    public Mqtt5RetainHandling getRetainHandling() {
+    public @NotNull Mqtt5RetainHandling getRetainHandling() {
         return retainHandling;
     }
 
@@ -75,5 +71,4 @@ public class MqttSubscription implements Mqtt5Subscription {
     public boolean isRetainAsPublished() {
         return isRetainAsPublished;
     }
-
 }

@@ -18,10 +18,9 @@
 package org.mqttbee.mqtt.message.connect.connack;
 
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.annotations.Immutable;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions;
-
-import javax.annotation.concurrent.Immutable;
 
 /**
  * @author Silvio Giebl
@@ -99,5 +98,4 @@ public class MqttConnAckRestrictions implements Mqtt5ConnAckRestrictions {
     public boolean areSubscriptionIdentifiersAvailable() {
         return subscriptionIdentifiersAvailable;
     }
-
 }
