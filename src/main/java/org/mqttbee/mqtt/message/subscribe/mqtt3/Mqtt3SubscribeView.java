@@ -17,13 +17,13 @@
 
 package org.mqttbee.mqtt.message.subscribe.mqtt3;
 
-import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.Immutable;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
+import org.mqttbee.util.collections.ImmutableList;
 
 /**
  * @author Silvio Giebl
@@ -50,10 +50,10 @@ public class Mqtt3SubscribeView implements Mqtt3Subscribe {
     }
 
     @Override
-    public @NotNull ImmutableList<@NotNull Mqtt3SubscriptionView> getSubscriptions() {
+    public @NotNull ImmutableList<Mqtt3SubscriptionView> getSubscriptions() {
         final ImmutableList<MqttSubscription> subscriptions = delegate.getSubscriptions();
-        final ImmutableList.Builder<Mqtt3SubscriptionView> builder =
-                ImmutableList.builderWithExpectedSize(subscriptions.size());
+        final ImmutableList.Builder<Mqtt3SubscriptionView> builder = ImmutableList.builder(subscriptions.size());
+        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < subscriptions.size(); i++) {
             builder.add(Mqtt3SubscriptionView.of(subscriptions.get(i)));
         }

@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
-import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.EncoderException;
@@ -34,6 +33,7 @@ import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.auth.MqttAuth;
+import org.mqttbee.util.collections.ImmutableList;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -276,7 +276,7 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
             Arrays.fill(reasonStringBytes, 'r');
 
             final int numberOfUserProperties = maxPropertyLength / userPropertyBytes;
-            userPropertiesBuilder = new ImmutableList.Builder<>();
+            userPropertiesBuilder = ImmutableList.builder();
             for (int i = 0; i < numberOfUserProperties; i++) {
                 userPropertiesBuilder.add(userProperty);
             }
@@ -288,7 +288,7 @@ class Mqtt5AuthEncoderTest extends AbstractMqtt5EncoderTest {
         }
 
         MqttUserPropertiesImpl getUserProperties(final int totalCount) {
-            final ImmutableList.Builder<MqttUserPropertyImpl> builder = new ImmutableList.Builder<>();
+            final ImmutableList.Builder<MqttUserPropertyImpl> builder = ImmutableList.builder();
             for (int i = 0; i < totalCount; i++) {
                 builder.add(userProperty);
             }

@@ -17,12 +17,12 @@
 
 package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
-import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoders;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
+import org.mqttbee.util.collections.ImmutableList;
 
 import java.util.Arrays;
 
@@ -51,7 +51,7 @@ abstract class AbstractMqtt5EncoderWithUserPropertiesTest extends AbstractMqtt5E
     }
 
     @NotNull MqttUserPropertiesImpl getUserProperties(final int totalCount) {
-        final ImmutableList.Builder<MqttUserPropertyImpl> builder = new ImmutableList.Builder<>();
+        final ImmutableList.Builder<MqttUserPropertyImpl> builder = ImmutableList.builder();
         for (int i = 0; i < totalCount; i++) {
             builder.add(userProperty);
         }
@@ -80,7 +80,7 @@ abstract class AbstractMqtt5EncoderWithUserPropertiesTest extends AbstractMqtt5E
 
             maxUserPropertyCount = maxPropertyLength / userPropertyBytes;
 
-            userPropertiesBuilder = new ImmutableList.Builder<>();
+            userPropertiesBuilder = ImmutableList.builder();
             final MqttUserPropertyImpl userProperty = new MqttUserPropertyImpl(user, property);
             for (int i = 0; i < maxUserPropertyCount; i++) {
                 userPropertiesBuilder.add(userProperty);

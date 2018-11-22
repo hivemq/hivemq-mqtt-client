@@ -17,12 +17,12 @@
 
 package org.mqttbee.mqtt;
 
-import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.MqttClientSslConfig;
 import org.mqttbee.api.mqtt.MqttClientSslConfigBuilder;
 import org.mqttbee.util.Checks;
+import org.mqttbee.util.collections.ImmutableList;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
@@ -37,8 +37,8 @@ public abstract class MqttClientSslConfigImplBuilder<B extends MqttClientSslConf
 
     private @Nullable KeyManagerFactory keyManagerFactory;
     private @Nullable TrustManagerFactory trustManagerFactory;
-    private @Nullable ImmutableList<@NotNull String> cipherSuites;
-    private @Nullable ImmutableList<@NotNull String> protocols;
+    private @Nullable ImmutableList<String> cipherSuites;
+    private @Nullable ImmutableList<String> protocols;
     private long handshakeTimeoutMs = MqttClientSslConfig.DEFAULT_HANDSHAKE_TIMEOUT_MS;
 
     abstract @NotNull B self();
@@ -53,15 +53,13 @@ public abstract class MqttClientSslConfigImplBuilder<B extends MqttClientSslConf
         return self();
     }
 
-    public @NotNull B cipherSuites(final @Nullable List<String> cipherSuites) {
-        Checks.elementsNotNull(cipherSuites, "Cipher suites");
-        this.cipherSuites = (cipherSuites == null) ? null : ImmutableList.copyOf(cipherSuites);
+    public @NotNull B cipherSuites(final @Nullable List<@NotNull String> cipherSuites) {
+        this.cipherSuites = (cipherSuites == null) ? null : ImmutableList.copyOf(cipherSuites, "Cipher suites");
         return self();
     }
 
-    public @NotNull B protocols(final @Nullable List<String> protocols) {
-        Checks.elementsNotNull(protocols, "Protocols");
-        this.protocols = (protocols == null) ? null : ImmutableList.copyOf(protocols);
+    public @NotNull B protocols(final @Nullable List<@NotNull String> protocols) {
+        this.protocols = (protocols == null) ? null : ImmutableList.copyOf(protocols, "Protocols");
         return self();
     }
 

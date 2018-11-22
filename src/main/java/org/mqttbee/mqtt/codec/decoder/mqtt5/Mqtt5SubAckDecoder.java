@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
-import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAckReasonCode;
@@ -28,6 +27,7 @@ import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAck;
+import org.mqttbee.util.collections.ImmutableList;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -48,8 +48,7 @@ public class Mqtt5SubAckDecoder implements MqttMessageDecoder {
     private static final int MIN_REMAINING_LENGTH = 3;
 
     @Inject
-    Mqtt5SubAckDecoder() {
-    }
+    Mqtt5SubAckDecoder() {}
 
     @Override
     public @NotNull MqttSubAck decode(
@@ -98,8 +97,7 @@ public class Mqtt5SubAckDecoder implements MqttMessageDecoder {
             throw noReasonCodes();
         }
 
-        final ImmutableList.Builder<Mqtt5SubAckReasonCode> reasonCodesBuilder =
-                ImmutableList.builderWithExpectedSize(reasonCodeCount);
+        final ImmutableList.Builder<Mqtt5SubAckReasonCode> reasonCodesBuilder = ImmutableList.builder(reasonCodeCount);
         for (int i = 0; i < reasonCodeCount; i++) {
             final Mqtt5SubAckReasonCode reasonCode = Mqtt5SubAckReasonCode.fromCode(in.readUnsignedByte());
             if (reasonCode == null) {
@@ -113,5 +111,4 @@ public class Mqtt5SubAckDecoder implements MqttMessageDecoder {
 
         return new MqttSubAck(packetIdentifier, reasonCodes, reasonString, userProperties);
     }
-
 }

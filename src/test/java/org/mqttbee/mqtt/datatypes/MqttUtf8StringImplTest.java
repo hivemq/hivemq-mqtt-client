@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt.datatypes;
 
-import com.google.common.base.Charsets;
 import com.google.common.base.Utf8;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -29,6 +28,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -159,7 +159,7 @@ class MqttUtf8StringImplTest {
                 assertNotNull(string);
                 assertTrue(string.containsShouldNotCharacters());
 
-                final byte[] nonCharacterBinary = nonCharacterString.getBytes(Charsets.UTF_8);
+                final byte[] nonCharacterBinary = nonCharacterString.getBytes(StandardCharsets.UTF_8);
                 final byte[] binary = new byte[6 + nonCharacterBinary.length];
                 binary[0] = 'a';
                 binary[1] = 'b';

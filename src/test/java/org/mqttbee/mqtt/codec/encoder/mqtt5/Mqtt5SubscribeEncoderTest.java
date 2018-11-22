@@ -17,8 +17,6 @@
 
 package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -36,6 +34,7 @@ import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.message.subscribe.MqttStatefulSubscribe;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
+import org.mqttbee.util.collections.ImmutableList;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -356,10 +355,11 @@ class Mqtt5SubscribeEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTe
                 (new MqttSubscription(leftoverTopicFilter, qos, DEFAULT_NO_LOCAL, DEFAULT_RETAIN_HANDLING,
                         DEFAULT_RETAIN_AS_PUBLISHED)));
 
-        final Iterable<MqttSubscription> subscriptions = Iterables.concat(maxSizeSubscriptions, leftoverSubscription);
+        final ImmutableList.Builder<MqttSubscription> subscriptionsBuilder = ImmutableList.builder();
+        final ImmutableList<MqttSubscription> subscriptions =
+                subscriptionsBuilder.addAll(maxSizeSubscriptions).addAll(leftoverSubscription).build();
 
-        final MqttSubscribe subscribe =
-                new MqttSubscribe(ImmutableList.copyOf(subscriptions), MqttUserPropertiesImpl.NO_USER_PROPERTIES);
+        final MqttSubscribe subscribe = new MqttSubscribe(subscriptions, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
 
         final int packetIdentifier = 2;
         final MqttStatefulSubscribe subscribeInternal =

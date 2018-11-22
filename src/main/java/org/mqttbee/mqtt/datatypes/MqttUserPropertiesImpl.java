@@ -17,13 +17,13 @@
 
 package org.mqttbee.mqtt.datatypes;
 
-import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.Immutable;
 import org.mqttbee.api.mqtt.exceptions.MqttBinaryDataExceededException;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
+import org.mqttbee.util.collections.ImmutableList;
 
 /**
  * @author Silvio Giebl
@@ -45,7 +45,7 @@ public class MqttUserPropertiesImpl implements Mqtt5UserProperties {
      * @return the created collection of User Properties or {@link #NO_USER_PROPERTIES} if the list is empty.
      */
     public static @NotNull MqttUserPropertiesImpl of(
-            final @NotNull ImmutableList<@NotNull MqttUserPropertyImpl> userProperties) {
+            final @NotNull ImmutableList<MqttUserPropertyImpl> userProperties) {
 
         return userProperties.isEmpty() ? NO_USER_PROPERTIES : new MqttUserPropertiesImpl(userProperties);
     }
@@ -62,7 +62,7 @@ public class MqttUserPropertiesImpl implements Mqtt5UserProperties {
         return (userPropertiesBuilder == null) ? NO_USER_PROPERTIES : of(userPropertiesBuilder.build());
     }
 
-    private final @NotNull ImmutableList<@NotNull MqttUserPropertyImpl> userProperties;
+    private final @NotNull ImmutableList<MqttUserPropertyImpl> userProperties;
     private int encodedLength = -1;
 
     private MqttUserPropertiesImpl(final @NotNull ImmutableList<MqttUserPropertyImpl> userProperties) {
@@ -70,7 +70,7 @@ public class MqttUserPropertiesImpl implements Mqtt5UserProperties {
     }
 
     @Override
-    public @NotNull ImmutableList<@NotNull MqttUserPropertyImpl> asList() {
+    public @NotNull ImmutableList<MqttUserPropertyImpl> asList() {
         return userProperties;
     }
 
@@ -83,6 +83,7 @@ public class MqttUserPropertiesImpl implements Mqtt5UserProperties {
      * @param out the byte buffer to encode to.
      */
     public void encode(final @NotNull ByteBuf out) {
+        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < userProperties.size(); i++) {
             userProperties.get(i).encode(out);
         }
@@ -103,6 +104,7 @@ public class MqttUserPropertiesImpl implements Mqtt5UserProperties {
 
     private int calculateEncodedLength() {
         int encodedLength = 0;
+        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < userProperties.size(); i++) {
             encodedLength += userProperties.get(i).encodedLength();
         }

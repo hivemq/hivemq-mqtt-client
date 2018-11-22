@@ -17,6 +17,7 @@
 
 package org.mqttbee.util.collections;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.Immutable;
@@ -30,38 +31,69 @@ import java.util.function.UnaryOperator;
  * @author Silvio Giebl
  */
 @Immutable
-public interface ImmutableList<E> extends List<E>, RandomAccess {
+public interface ImmutableList<E> extends List<@NotNull E>, RandomAccess {
 
-    static <E> @NotNull ImmutableList<@NotNull E> of() {
+    static <E> @NotNull ImmutableList<E> of() {
         return ImmutableEmptyList.of();
     }
 
-    static <E> @NotNull ImmutableList<@NotNull E> of(final @NotNull E e) {
+    @Contract("null -> fail")
+    static <E> @NotNull ImmutableList<E> of(final @Nullable E e) {
         return ImmutableElement.of(e);
     }
 
-    static <E> @NotNull ImmutableList<@NotNull E> of(final @NotNull E e1, final @NotNull E e2) {
+    @Contract("null, _ -> fail; _, null -> fail")
+    static <E> @NotNull ImmutableList<E> of(final @Nullable E e1, final @Nullable E e2) {
         return ImmutableArray.of(e1, e2);
     }
 
-    static <E> @NotNull ImmutableList<@NotNull E> of(final @NotNull E e1, final @NotNull E e2, final @NotNull E e3) {
+    @Contract("null, _, _ -> fail; _, null, _ -> fail; _, _, null -> fail")
+    static <E> @NotNull ImmutableList<E> of(final @Nullable E e1, final @Nullable E e2, final @Nullable E e3) {
         return ImmutableArray.of(e1, e2, e3);
     }
 
-    static <E> @NotNull ImmutableList<@NotNull E> copyOf(final @NotNull E @NotNull [] elements) {
-        Checks.notNull(elements, "Immutable list elements");
+    @SafeVarargs
+    @Contract("null, _, _, _ -> fail; _, null, _, _ -> fail; _, _, null, _ -> fail; _, _, _, null -> fail")
+    static <E> @NotNull ImmutableList<E> of(
+            final @Nullable E e1, final @Nullable E e2, final @Nullable E e3, final @Nullable E @Nullable ... others) {
+
+        Checks.notNull(others, "Immutable list elements");
+        final Object[] array = new Object[3 + others.length];
+        array[0] = e1;
+        array[1] = e2;
+        array[2] = e3;
+        System.arraycopy(others, 0, array, 3, others.length);
+        return ImmutableArray.of(array);
+    }
+
+    @Contract("null -> fail")
+    static <E> @NotNull ImmutableList<E> copyOf(final @Nullable E @Nullable [] elements) {
+        return copyOf(elements, "Immutable list");
+    }
+
+    @Contract("null, _ -> fail")
+    static <E> @NotNull ImmutableList<E> copyOf(final @Nullable E @Nullable [] elements, final @NotNull String name) {
+        Checks.notNull(elements, name);
         switch (elements.length) {
             case 0:
                 return ImmutableEmptyList.of();
             case 1:
-                return ImmutableElement.of(elements[0]);
+                return ImmutableElement.of(elements[0], name);
             default:
-                return ImmutableArray.of(Arrays.copyOf(elements, elements.length, Object[].class));
+                return ImmutableArray.of(Arrays.copyOf(elements, elements.length, Object[].class), name);
         }
     }
 
-    static <E> @NotNull ImmutableList<@NotNull E> copyOf(final @NotNull Collection<? extends @NotNull E> elements) {
-        Checks.notNull(elements, "Immutable list elements");
+    @Contract("null -> fail")
+    static <E> @NotNull ImmutableList<E> copyOf(final @Nullable Collection<@Nullable ? extends E> elements) {
+        return copyOf(elements, "Immutable list");
+    }
+
+    @Contract("null, _ -> fail")
+    static <E> @NotNull ImmutableList<E> copyOf(
+            final @Nullable Collection<@Nullable ? extends E> elements, final @NotNull String name) {
+
+        Checks.notNull(elements, name);
         if (elements instanceof ImmutableList) {
             //noinspection unchecked
             return ((ImmutableList<E>) elements).trim();
@@ -70,11 +102,9 @@ public interface ImmutableList<E> extends List<E>, RandomAccess {
             case 0:
                 return ImmutableEmptyList.of();
             case 1:
-                //noinspection unchecked
-                return ImmutableElement.of((elements instanceof List) ? ((List<? extends E>) elements).get(0) :
-                        elements.iterator().next());
+                return ImmutableElement.of(Builder.first(elements), name);
             default:
-                return ImmutableArray.of(elements.toArray());
+                return ImmutableArray.of(elements.toArray(), name);
         }
     }
 
@@ -231,49 +261,99 @@ public interface ImmutableList<E> extends List<E>, RandomAccess {
 
     class Builder<E> {
 
+        private static final int INITIAL_CAPACITY = 4;
+
         private @Nullable E e;
-        private @NotNull Object @Nullable [] elements;
+        private @NotNull Object @Nullable [] array;
         private int size;
 
         private Builder() {}
 
         private Builder(final int capacity) {
             if (capacity > 1) {
-                elements = new Object[capacity];
+                array = new Object[capacity];
             }
+        }
+
+        private int newCapacity(final int capacity) {
+            return capacity + (capacity >> 1);
         }
 
         public @NotNull Builder<E> add(final @NotNull E e) {
             Checks.notNull(e, "Immutable list element");
-            if (this.e == null) {
+            if (size == 0) {
                 this.e = e;
                 size = 1;
             } else {
-                if (elements == null) {
-                    elements = new Object[4];
-                } else if (elements.length == size) {
-                    final int newLength = elements.length + (elements.length >> 1);
-                    elements = Arrays.copyOf(elements, newLength, Object[].class);
+                if (array == null) {
+                    array = new Object[INITIAL_CAPACITY];
+                } else if (size == array.length) {
+                    array = Arrays.copyOf(array, newCapacity(array.length), Object[].class);
                 }
-                if (size == 1) {
-                    elements[0] = this.e;
+                if (this.e != null) {
+                    array[0] = this.e;
+                    this.e = null;
                 }
-                elements[size++] = e;
+                array[size++] = e;
             }
             return this;
         }
 
-        public @NotNull ImmutableList<@NotNull E> build() {
-            if (e == null) {
-                return ImmutableEmptyList.of();
+        public @NotNull Builder<E> addAll(final @NotNull Collection<@NotNull ? extends E> elements) {
+            Checks.notNull(elements, "Immutable list elements");
+            final int elementsSize = elements.size();
+            switch (elementsSize) {
+                case 0:
+                    break;
+                case 1:
+                    add(first(elements));
+                    break;
+                default:
+                    final int newSize = size + elementsSize;
+                    if (array == null) {
+                        array = new Object[Math.max(INITIAL_CAPACITY, newSize)];
+                    } else if (newSize > array.length) {
+                        array = Arrays.copyOf(array, Math.max(newCapacity(array.length), newSize), Object[].class);
+                    }
+                    if (this.e != null) {
+                        array[0] = this.e;
+                        this.e = null;
+                    }
+                    if ((elements instanceof List) && (elements instanceof RandomAccess)) {
+                        //noinspection unchecked
+                        final List<? extends E> list = (List<? extends E>) elements;
+                        for (int i = 0; i < elementsSize; i++) {
+                            array[size + i] = Checks.notNull(list.get(i), "Immutable list");
+                        }
+                    } else {
+                        int i = size;
+                        for (final E e : elements) {
+                            array[i++] = Checks.notNull(e, "Immutable list");
+                        }
+                    }
+                    this.size = newSize;
             }
-            if (elements == null) {
-                return new ImmutableElement<>(e);
+            return this;
+        }
+
+        public @NotNull ImmutableList<E> build() {
+            switch (size) {
+                case 0:
+                    return ImmutableEmptyList.of();
+                case 1:
+                    assert e != null;
+                    return new ImmutableElement<>(e);
+                default:
+                    assert array != null;
+                    if (array.length == size) {
+                        return new ImmutableArray<>(array);
+                    }
+                    return new ImmutableArray<>(Arrays.copyOfRange(array, 0, size, Object[].class));
             }
-            if (elements.length == size) {
-                return new ImmutableArray<>(elements);
-            }
-            return new ImmutableArray<>(Arrays.copyOfRange(elements, 0, size, Object[].class));
+        }
+
+        static <E> @NotNull E first(final @NotNull Collection<@NotNull E> elements) {
+            return (elements instanceof List) ? ((List<E>) elements).get(0) : elements.iterator().next();
         }
     }
 }

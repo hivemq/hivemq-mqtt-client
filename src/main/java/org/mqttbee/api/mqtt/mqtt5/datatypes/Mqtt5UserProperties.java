@@ -47,7 +47,7 @@ public interface Mqtt5UserProperties {
      * @param userProperties the User Properties.
      * @return the created collection of User Properties.
      */
-    static @NotNull Mqtt5UserProperties of(final @NotNull Mqtt5UserProperty... userProperties) {
+    static @NotNull Mqtt5UserProperties of(final @NotNull Mqtt5UserProperty @NotNull ... userProperties) {
         return MqttChecks.userProperties(userProperties);
     }
 

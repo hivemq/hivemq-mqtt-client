@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt.codec.decoder.mqtt3;
 
-import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAckReturnCode;
@@ -26,6 +25,7 @@ import org.mqttbee.mqtt.codec.decoder.MqttDecoderException;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAck;
 import org.mqttbee.mqtt.message.subscribe.suback.mqtt3.Mqtt3SubAckView;
+import org.mqttbee.util.collections.ImmutableList;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -45,8 +45,7 @@ public class Mqtt3SubAckDecoder implements MqttMessageDecoder {
     private static final int MIN_REMAINING_LENGTH = 3; // 2 for the packetId + 1 for at least one Subscription
 
     @Inject
-    Mqtt3SubAckDecoder() {
-    }
+    Mqtt3SubAckDecoder() {}
 
     @Override
     public @NotNull MqttSubAck decode(
@@ -73,5 +72,4 @@ public class Mqtt3SubAckDecoder implements MqttMessageDecoder {
 
         return Mqtt3SubAckView.delegate(packetIdentifier, returnCodesBuilder.build());
     }
-
 }

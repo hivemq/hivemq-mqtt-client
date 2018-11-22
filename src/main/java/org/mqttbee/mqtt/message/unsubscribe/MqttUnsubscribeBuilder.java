@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt.message.unsubscribe;
 
-import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
@@ -31,6 +30,7 @@ import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImplBuilder;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
 import org.mqttbee.mqtt.util.MqttChecks;
+import org.mqttbee.util.collections.ImmutableList;
 
 import java.util.function.Function;
 
@@ -49,7 +49,7 @@ public abstract class MqttUnsubscribeBuilder<B extends MqttUnsubscribeBuilder<B>
     MqttUnsubscribeBuilder(final @Nullable Mqtt5Unsubscribe unsubscribe) {
         final MqttUnsubscribe mqttUnsubscribe = MqttChecks.unsubscribe(unsubscribe);
         final ImmutableList<MqttTopicFilterImpl> topicFilters = mqttUnsubscribe.getTopicFilters();
-        topicFiltersBuilder = ImmutableList.builderWithExpectedSize(topicFilters.size() + 1);
+        topicFiltersBuilder = ImmutableList.builder(topicFilters.size() + 1);
         topicFiltersBuilder.addAll(topicFilters);
     }
 

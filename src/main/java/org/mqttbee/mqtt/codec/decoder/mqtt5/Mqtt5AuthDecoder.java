@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
-import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode;
@@ -29,6 +28,7 @@ import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.message.auth.MqttAuth;
+import org.mqttbee.util.collections.ImmutableList;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -49,8 +49,7 @@ public class Mqtt5AuthDecoder implements MqttMessageDecoder {
     private static final int MIN_REMAINING_LENGTH = 2; // reason code (1) + property length (min 1)
 
     @Inject
-    Mqtt5AuthDecoder() {
-    }
+    Mqtt5AuthDecoder() {}
 
     @Override
     public @NotNull MqttAuth decode(
@@ -109,5 +108,4 @@ public class Mqtt5AuthDecoder implements MqttMessageDecoder {
 
         return new MqttAuth(reasonCode, method, data, reasonString, userProperties);
     }
-
 }

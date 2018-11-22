@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt.message.subscribe;
 
-import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
@@ -32,6 +31,7 @@ import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImplBuilder;
 import org.mqttbee.mqtt.util.MqttChecks;
 import org.mqttbee.util.Checks;
+import org.mqttbee.util.collections.ImmutableList;
 
 import java.util.function.Function;
 
@@ -51,7 +51,7 @@ public abstract class MqttSubscribeBuilder<B extends MqttSubscribeBuilder<B>> {
     MqttSubscribeBuilder(final @Nullable Mqtt5Subscribe subscribe) {
         final MqttSubscribe mqttSubscribe = MqttChecks.subscribe(subscribe);
         final ImmutableList<MqttSubscription> subscriptions = mqttSubscribe.getSubscriptions();
-        subscriptionsBuilder = ImmutableList.builderWithExpectedSize(subscriptions.size() + 1);
+        subscriptionsBuilder = ImmutableList.builder(subscriptions.size() + 1);
         subscriptionsBuilder.addAll(subscriptions);
     }
 

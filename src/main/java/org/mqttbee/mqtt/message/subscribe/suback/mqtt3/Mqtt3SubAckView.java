@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt.message.subscribe.suback.mqtt3;
 
-import com.google.common.collect.ImmutableList;
 import io.reactivex.functions.Function;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.Immutable;
@@ -27,6 +26,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAckReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAck;
+import org.mqttbee.util.collections.ImmutableList;
 
 /**
  * @author Silvio Giebl
@@ -46,8 +46,8 @@ public class Mqtt3SubAckView implements Mqtt3SubAck {
     private static @NotNull ImmutableList<Mqtt5SubAckReasonCode> delegateReturnCodes(
             final @NotNull ImmutableList<Mqtt3SubAckReturnCode> returnCodes) {
 
-        final ImmutableList.Builder<Mqtt5SubAckReasonCode> builder =
-                ImmutableList.builderWithExpectedSize(returnCodes.size());
+        final ImmutableList.Builder<Mqtt5SubAckReasonCode> builder = ImmutableList.builder(returnCodes.size());
+        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < returnCodes.size(); i++) {
             builder.add(delegateReturnCode(returnCodes.get(i)));
         }
@@ -72,8 +72,8 @@ public class Mqtt3SubAckView implements Mqtt3SubAck {
     private static @NotNull ImmutableList<Mqtt3SubAckReturnCode> viewReasonCodes(
             final @NotNull ImmutableList<Mqtt5SubAckReasonCode> reasonCodes) {
 
-        final ImmutableList.Builder<Mqtt3SubAckReturnCode> builder =
-                ImmutableList.builderWithExpectedSize(reasonCodes.size());
+        final ImmutableList.Builder<Mqtt3SubAckReturnCode> builder = ImmutableList.builder(reasonCodes.size());
+        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < reasonCodes.size(); i++) {
             builder.add(viewReasonCode(reasonCodes.get(i)));
         }

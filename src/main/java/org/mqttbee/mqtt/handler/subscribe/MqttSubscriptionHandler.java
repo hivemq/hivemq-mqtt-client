@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt.handler.subscribe;
 
-import com.google.common.collect.ImmutableList;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.EventLoop;
 import org.jctools.queues.MpscLinkedQueue;
@@ -45,6 +44,7 @@ import org.mqttbee.mqtt.message.unsubscribe.unsuback.mqtt3.Mqtt3UnsubAckView;
 import org.mqttbee.rx.SingleFlow;
 import org.mqttbee.util.Ranges;
 import org.mqttbee.util.UnsignedDataTypes;
+import org.mqttbee.util.collections.ImmutableList;
 import org.mqttbee.util.collections.IntMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

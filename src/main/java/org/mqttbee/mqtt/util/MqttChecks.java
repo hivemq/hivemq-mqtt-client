@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt.util;
 
-import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -46,9 +45,10 @@ import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeView;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribe;
 import org.mqttbee.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeView;
 import org.mqttbee.util.Checks;
+import org.mqttbee.util.collections.ImmutableList;
 
 import java.nio.ByteBuffer;
-import java.util.List;
+import java.util.Collection;
 
 /**
  * @author Silvio Giebl
@@ -156,19 +156,19 @@ public class MqttChecks {
     }
 
     @Contract("null -> fail")
-    public static @NotNull MqttUserPropertiesImpl userProperties(final @Nullable Mqtt5UserProperty... userProperties) {
-        Checks.notNull(userProperties, "User properties");
-        final ImmutableList<Mqtt5UserProperty> immutable = ImmutableList.copyOf(userProperties);
+    public static @NotNull MqttUserPropertiesImpl userProperties(
+            final @Nullable Mqtt5UserProperty @Nullable ... userProperties) {
+
+        final ImmutableList<Mqtt5UserProperty> immutable = ImmutableList.copyOf(userProperties, "User properties");
         return MqttUserPropertiesImpl.of(
                 Checks.elementsNotImplemented(immutable, MqttUserPropertyImpl.class, "User property"));
     }
 
     @Contract("null -> fail")
     public static @NotNull MqttUserPropertiesImpl userProperties(
-            final @Nullable List<Mqtt5UserProperty> userProperties) {
+            final @Nullable Collection<@Nullable Mqtt5UserProperty> userProperties) {
 
-        Checks.notNull(userProperties, "User properties");
-        final ImmutableList<Mqtt5UserProperty> immutable = ImmutableList.copyOf(userProperties);
+        final ImmutableList<Mqtt5UserProperty> immutable = ImmutableList.copyOf(userProperties, "User properties");
         return MqttUserPropertiesImpl.of(
                 Checks.elementsNotImplemented(immutable, MqttUserPropertyImpl.class, "User property"));
     }

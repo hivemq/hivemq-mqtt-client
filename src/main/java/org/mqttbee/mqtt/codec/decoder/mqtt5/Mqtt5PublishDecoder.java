@@ -18,7 +18,6 @@
 package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
 import com.google.common.base.Utf8;
-import com.google.common.collect.ImmutableList;
 import com.google.common.primitives.ImmutableIntArray;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
@@ -33,6 +32,7 @@ import org.mqttbee.mqtt.datatypes.*;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
 import org.mqttbee.util.ByteBufferUtil;
+import org.mqttbee.util.collections.ImmutableList;
 import org.mqttbee.util.collections.IntMap;
 
 import javax.inject.Inject;
@@ -55,8 +55,7 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
     private static final int MIN_REMAINING_LENGTH = 3; // topic name (min 2) + property length (min 1)
 
     @Inject
-    Mqtt5PublishDecoder() {
-    }
+    Mqtt5PublishDecoder() {}
 
     @Override
     public @NotNull MqttStatefulPublish decode(
