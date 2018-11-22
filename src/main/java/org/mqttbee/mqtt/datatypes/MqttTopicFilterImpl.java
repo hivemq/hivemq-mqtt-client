@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt.datatypes;
 
-import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -28,6 +27,7 @@ import org.mqttbee.api.mqtt.datatypes.MqttTopic;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
 import org.mqttbee.mqtt.util.MqttChecks;
 import org.mqttbee.util.Checks;
+import org.mqttbee.util.collections.ImmutableList;
 
 /**
  * @author Silvio Giebl
@@ -250,7 +250,7 @@ public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopic
     }
 
     @Override
-    public @NotNull ImmutableList<@NotNull String> getLevels() {
+    public @NotNull ImmutableList<String> getLevels() {
         return MqttTopicImpl.splitLevels(getTopicFilterString());
     }
 

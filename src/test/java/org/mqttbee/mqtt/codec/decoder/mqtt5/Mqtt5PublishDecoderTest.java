@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.primitives.ImmutableIntArray;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
@@ -33,6 +32,7 @@ import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
 import org.mqttbee.util.ByteBufferUtil;
+import org.mqttbee.util.collections.ImmutableList;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -1245,5 +1245,4 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
 
         createChannel();
     }
-
 }

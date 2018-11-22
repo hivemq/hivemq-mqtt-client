@@ -17,13 +17,10 @@
 
 package org.mqttbee.util;
 
-import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
-import java.util.RandomAccess;
+import org.mqttbee.util.collections.ImmutableList;
 
 /**
  * @author Silvio Giebl
@@ -74,27 +71,7 @@ public class Checks {
         return (I) object;
     }
 
-    public static <T> @Nullable List<@NotNull T> elementsNotNull(
-            final @Nullable List<@Nullable T> list, final @NotNull String name) {
-
-        if (list == null) {
-            return null;
-        }
-        if (list instanceof RandomAccess) {
-            for (int i = 0; i < list.size(); i++) {
-                elementNotNull(list.get(i), name, i);
-            }
-        } else {
-            int i = 0;
-            for (final T element : list) {
-                elementNotNull(element, name, i);
-                i++;
-            }
-        }
-        //noinspection NullableProblems
-        return list;
-    }
-
+    @Contract("null, _ -> fail")
     public static <T> @NotNull T @NotNull [] elementsNotNull(
             final @Nullable T @Nullable [] array, final @NotNull String name) {
 
@@ -107,17 +84,19 @@ public class Checks {
     }
 
     @Contract("null, _, _ -> fail")
-    private static void elementNotNull(final @Nullable Object element, final @NotNull String name, final int index) {
-        if (element == null) {
+    public static <E> @NotNull E elementNotNull(final @Nullable E e, final @NotNull String name, final int index) {
+        if (e == null) {
             throw new NullPointerException(name + " must not contain a null element, found at index " + index + ".");
         }
+        return e;
     }
 
-    public static <T, I extends T> @NotNull ImmutableList<@NotNull I> elementsNotImplemented(
-            final @NotNull ImmutableList<@Nullable T> list, final @NotNull Class<I> type, final @NotNull String name) {
+    public static <T, I extends T> @NotNull ImmutableList<I> elementsNotImplemented(
+            final @NotNull ImmutableList<T> list, final @NotNull Class<I> type, final @NotNull String name) {
 
+        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < list.size(); i++) {
-            notImplemented(list.get(i), type, name);
+            notImplementedInternal(list.get(i), type, name);
         }
         //noinspection unchecked
         return (ImmutableList<I>) list;

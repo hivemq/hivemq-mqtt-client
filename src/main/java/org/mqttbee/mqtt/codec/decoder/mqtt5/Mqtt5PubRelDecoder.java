@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
-import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrel.Mqtt5PubRelReasonCode;
@@ -28,6 +27,7 @@ import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRel;
+import org.mqttbee.util.collections.ImmutableList;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -49,8 +49,7 @@ public class Mqtt5PubRelDecoder implements MqttMessageDecoder {
     private static final int MIN_REMAINING_LENGTH = 2;
 
     @Inject
-    Mqtt5PubRelDecoder() {
-    }
+    Mqtt5PubRelDecoder() {}
 
     @Override
     public @NotNull MqttPubRel decode(
@@ -101,5 +100,4 @@ public class Mqtt5PubRelDecoder implements MqttMessageDecoder {
 
         return new MqttPubRel(packetIdentifier, reasonCode, reasonString, userProperties);
     }
-
 }

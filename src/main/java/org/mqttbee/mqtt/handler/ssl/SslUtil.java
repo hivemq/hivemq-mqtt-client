@@ -16,11 +16,11 @@
 
 package org.mqttbee.mqtt.handler.ssl;
 
-import com.google.common.collect.ImmutableList;
 import io.netty.channel.Channel;
 import io.netty.handler.ssl.*;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.mqtt.MqttClientSslConfigImpl;
+import org.mqttbee.util.collections.ImmutableList;
 
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLException;
@@ -49,6 +49,7 @@ public class SslUtil {
                 .keyManager(sslConfig.getRawKeyManagerFactory());
 
         final ImmutableList<String> protocols = sslConfig.getRawProtocols();
+        //noinspection ToArrayCallWithZeroLengthArrayArgument
         final String[] protocolArray = (protocols == null) ? null : protocols.toArray(new String[protocols.size()]);
         sslContextBuilder.protocols(protocolArray);
 
@@ -66,5 +67,4 @@ public class SslUtil {
         sslHandler.setHandshakeTimeoutMillis(sslConfig.getHandshakeTimeoutMs());
         return sslHandler;
     }
-
 }

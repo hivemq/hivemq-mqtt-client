@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
-import com.google.common.collect.ImmutableList;
 import io.netty.handler.codec.EncoderException;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Disabled;
@@ -43,6 +42,7 @@ import org.mqttbee.mqtt.message.connect.MqttConnect;
 import org.mqttbee.mqtt.message.connect.MqttConnectRestrictions;
 import org.mqttbee.mqtt.message.connect.MqttStatefulConnect;
 import org.mqttbee.mqtt.message.publish.MqttWillPublish;
+import org.mqttbee.util.collections.ImmutableList;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -550,7 +550,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
             Arrays.fill(clientIdBytes, 'c');
 
             final int numberOfUserProperties = maxPropertyLength / userPropertyBytes;
-            userPropertiesBuilder = new ImmutableList.Builder<>();
+            userPropertiesBuilder = ImmutableList.builder();
             for (int i = 0; i < numberOfUserProperties; i++) {
                 userPropertiesBuilder.add(userProperty);
             }
@@ -578,7 +578,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         }
 
         @NotNull MqttUserPropertiesImpl getUserProperties(final int totalCount) {
-            final ImmutableList.Builder<MqttUserPropertyImpl> builder = new ImmutableList.Builder<>();
+            final ImmutableList.Builder<MqttUserPropertyImpl> builder = ImmutableList.builder();
             for (int i = 0; i < totalCount; i++) {
                 builder.add(userProperty);
             }

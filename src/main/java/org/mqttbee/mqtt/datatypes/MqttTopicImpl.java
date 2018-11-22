@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt.datatypes;
 
-import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -25,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.Immutable;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
 import org.mqttbee.util.Checks;
+import org.mqttbee.util.collections.ImmutableList;
 
 /**
  * @author Silvio Giebl
@@ -155,7 +155,7 @@ public class MqttTopicImpl extends MqttUtf8StringImpl implements MqttTopic {
      * @param string the Topic Name string.
      * @return the levels of the Topic Name string.
      */
-    static @NotNull ImmutableList<@NotNull String> splitLevels(final @NotNull String string) {
+    static @NotNull ImmutableList<String> splitLevels(final @NotNull String string) {
         final ImmutableList.Builder<String> levelsBuilder = ImmutableList.builder();
         int start = 0;
         while (true) {
@@ -178,7 +178,7 @@ public class MqttTopicImpl extends MqttUtf8StringImpl implements MqttTopic {
     }
 
     @Override
-    public @NotNull ImmutableList<@NotNull String> getLevels() {
+    public @NotNull ImmutableList<String> getLevels() {
         return splitLevels(toString());
     }
 

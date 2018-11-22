@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
-import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAckReasonCode;
@@ -28,6 +27,7 @@ import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.message.unsubscribe.unsuback.MqttUnsubAck;
+import org.mqttbee.util.collections.ImmutableList;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -48,8 +48,7 @@ public class Mqtt5UnsubAckDecoder implements MqttMessageDecoder {
     private static final int MIN_REMAINING_LENGTH = 3;
 
     @Inject
-    Mqtt5UnsubAckDecoder() {
-    }
+    Mqtt5UnsubAckDecoder() {}
 
     @Override
     public @NotNull MqttUnsubAck decode(
@@ -99,7 +98,7 @@ public class Mqtt5UnsubAckDecoder implements MqttMessageDecoder {
         }
 
         final ImmutableList.Builder<Mqtt5UnsubAckReasonCode> reasonCodesBuilder =
-                ImmutableList.builderWithExpectedSize(reasonCodeCount);
+                ImmutableList.builder(reasonCodeCount);
         for (int i = 0; i < reasonCodeCount; i++) {
             final Mqtt5UnsubAckReasonCode reasonCode = Mqtt5UnsubAckReasonCode.fromCode(in.readUnsignedByte());
             if (reasonCode == null) {
@@ -113,5 +112,4 @@ public class Mqtt5UnsubAckDecoder implements MqttMessageDecoder {
 
         return new MqttUnsubAck(packetIdentifier, reasonCodes, reasonString, userProperties);
     }
-
 }

@@ -24,6 +24,7 @@ import org.mqttbee.annotations.Immutable;
 import org.mqttbee.util.Checks;
 
 import java.lang.reflect.Array;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Spliterator;
 import java.util.function.Consumer;
@@ -34,8 +35,13 @@ import java.util.function.Consumer;
 @Immutable class ImmutableElement<E> implements ImmutableList<E> {
 
     @Contract("null -> fail")
-    static <E> @NotNull ImmutableList<@NotNull E> of(final @Nullable E e) {
-        return new ImmutableElement<>(Checks.notNull(e, "Immutable list element"));
+    static <E> @NotNull ImmutableList<E> of(final @Nullable E e) {
+        return of(e, "Immutable list");
+    }
+
+    @Contract("null, _ -> fail")
+    static <E> @NotNull ImmutableList<E> of(final @Nullable E e, final @NotNull String name) {
+        return new ImmutableElement<>(Checks.elementNotNull(e, name, 0));
     }
 
     private final @NotNull E element;
@@ -113,6 +119,24 @@ import java.util.function.Consumer;
     public @NotNull ImmutableList<E> subList(final int fromIndex, final int toIndex) {
         Checks.indexRange(fromIndex, toIndex, 1);
         return (toIndex == fromIndex) ? ImmutableList.of() : this;
+    }
+
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof List)) {
+            return false;
+        }
+        final List<?> that = (List<?>) o;
+
+        return (that.size() == 1) && element.equals(Builder.first(that));
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 + element.hashCode();
     }
 
     @Override

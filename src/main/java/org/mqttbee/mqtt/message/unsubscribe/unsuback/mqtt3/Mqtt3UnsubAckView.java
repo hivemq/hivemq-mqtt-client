@@ -17,13 +17,13 @@
 
 package org.mqttbee.mqtt.message.unsubscribe.unsuback.mqtt3;
 
-import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.Immutable;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.unsuback.Mqtt3UnsubAck;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAckReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.unsubscribe.unsuback.MqttUnsubAck;
+import org.mqttbee.util.collections.ImmutableList;
 
 /**
  * @author Silvio Giebl

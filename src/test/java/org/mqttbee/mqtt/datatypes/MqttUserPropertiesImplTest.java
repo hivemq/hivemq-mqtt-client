@@ -17,11 +17,11 @@
 
 package org.mqttbee.mqtt.datatypes;
 
-import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.junit.jupiter.api.Test;
 import org.mqttbee.mqtt.message.MqttProperty;
+import org.mqttbee.util.collections.ImmutableList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -95,5 +95,4 @@ class MqttUserPropertiesImplTest {
 
         assertEquals(27, userProperties.encodedLength());
     }
-
 }

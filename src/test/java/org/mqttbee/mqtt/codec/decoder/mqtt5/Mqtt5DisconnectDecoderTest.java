@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
-import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
@@ -30,6 +29,7 @@ import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoders;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
 import org.mqttbee.mqtt.netty.ChannelAttributes;
+import org.mqttbee.util.collections.ImmutableList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -882,5 +882,4 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
             //     server reference
             0x1C, 0, 9, 'r', 'e', 'f', 'e', 'r', 'e', 'n', 'c', 'e'
     };
-
 }

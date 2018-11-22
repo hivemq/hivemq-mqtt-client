@@ -17,13 +17,13 @@
 
 package org.mqttbee.mqtt.codec.encoder.mqtt3;
 
-import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.subscribe.MqttStatefulSubscribe;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
+import org.mqttbee.util.collections.ImmutableList;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -38,42 +38,40 @@ public class Mqtt3SubscribeEncoder extends Mqtt3MessageEncoder<MqttStatefulSubsc
     private static final int VARIABLE_HEADER_FIXED_LENGTH = 2; // packet identifier
 
     @Inject
-    Mqtt3SubscribeEncoder() {
-    }
+    Mqtt3SubscribeEncoder() {}
 
     @Override
-    int remainingLength(@NotNull final MqttStatefulSubscribe message) {
+    int remainingLength(final @NotNull MqttStatefulSubscribe message) {
         int remainingLength = VARIABLE_HEADER_FIXED_LENGTH;
 
         final ImmutableList<MqttSubscription> subscriptions = message.stateless().getSubscriptions();
+        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < subscriptions.size(); i++) {
-            final MqttSubscription subscription = subscriptions.get(i);
-            remainingLength += subscription.getTopicFilter().encodedLength() + 1; // QoS
+            remainingLength += subscriptions.get(i).getTopicFilter().encodedLength() + 1; // QoS
         }
 
         return remainingLength;
     }
 
     @Override
-    void encode(
-            @NotNull final MqttStatefulSubscribe message, @NotNull final ByteBuf out, final int remainingLength) {
-
+    void encode(final @NotNull MqttStatefulSubscribe message, final @NotNull ByteBuf out, final int remainingLength) {
         encodeFixedHeader(out, remainingLength);
         encodeVariableHeader(message, out);
         encodePayload(message, out);
     }
 
-    private void encodeFixedHeader(@NotNull final ByteBuf out, final int remainingLength) {
+    private void encodeFixedHeader(final @NotNull ByteBuf out, final int remainingLength) {
         out.writeByte(FIXED_HEADER);
         MqttVariableByteInteger.encode(remainingLength, out);
     }
 
-    private void encodeVariableHeader(@NotNull final MqttStatefulSubscribe message, @NotNull final ByteBuf out) {
+    private void encodeVariableHeader(final @NotNull MqttStatefulSubscribe message, final @NotNull ByteBuf out) {
         out.writeShort(message.getPacketIdentifier());
     }
 
-    private void encodePayload(@NotNull final MqttStatefulSubscribe message, @NotNull final ByteBuf out) {
+    private void encodePayload(final @NotNull MqttStatefulSubscribe message, final @NotNull ByteBuf out) {
         final ImmutableList<MqttSubscription> subscriptions = message.stateless().getSubscriptions();
+        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < subscriptions.size(); i++) {
             final MqttSubscription subscription = subscriptions.get(i);
             subscription.getTopicFilter().encode(out);

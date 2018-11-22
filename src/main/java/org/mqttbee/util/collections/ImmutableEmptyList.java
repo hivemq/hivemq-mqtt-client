@@ -23,6 +23,7 @@ import org.mqttbee.annotations.Immutable;
 import org.mqttbee.util.Checks;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Spliterator;
 import java.util.function.Consumer;
@@ -35,7 +36,7 @@ import java.util.function.Consumer;
     private static final @NotNull ImmutableEmptyList INSTANCE = new ImmutableEmptyList();
     private static final @NotNull Object @NotNull [] EMPTY = {};
 
-    static <E> @NotNull ImmutableList<@NotNull E> of() {
+    static <E> @NotNull ImmutableList<E> of() {
         //noinspection unchecked
         return (ImmutableList<E>) ImmutableEmptyList.INSTANCE;
     }
@@ -113,6 +114,22 @@ import java.util.function.Consumer;
     public @NotNull ImmutableList<Object> subList(final int fromIndex, final int toIndex) {
         Checks.indexRange(fromIndex, toIndex, 0);
         return this;
+    }
+
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof List)) {
+            return false;
+        }
+        return ((List<?>) o).size() == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return 1;
     }
 
     @Override

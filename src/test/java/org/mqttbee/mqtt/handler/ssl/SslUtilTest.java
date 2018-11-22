@@ -16,12 +16,12 @@
 
 package org.mqttbee.mqtt.handler.ssl;
 
-import com.google.common.collect.ImmutableList;
 import io.netty.channel.embedded.EmbeddedChannel;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.mqttbee.mqtt.MqttClientSslConfigImplBuilder;
+import org.mqttbee.util.collections.ImmutableList;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;

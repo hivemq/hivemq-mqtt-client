@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
-import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
@@ -32,6 +31,7 @@ import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoders;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.message.auth.MqttAuth;
 import org.mqttbee.mqtt.netty.ChannelAttributes;
+import org.mqttbee.util.collections.ImmutableList;
 
 import java.nio.ByteBuffer;
 
@@ -1008,5 +1008,4 @@ class Mqtt5AuthDecoderTest extends AbstractMqtt5DecoderTest {
         assertEquals(reasonCode, disconnect.getReasonCode());
         assertEquals(sendReasonString, disconnect.getReasonString().isPresent());
     }
-
 }

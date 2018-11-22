@@ -17,12 +17,12 @@
 
 package org.mqttbee.mqtt.message.subscribe;
 
-import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.Immutable;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.MqttMessageWithUserProperties;
+import org.mqttbee.util.collections.ImmutableList;
 
 /**
  * @author Silvio Giebl
@@ -30,10 +30,10 @@ import org.mqttbee.mqtt.message.MqttMessageWithUserProperties;
 @Immutable
 public class MqttSubscribe extends MqttMessageWithUserProperties implements Mqtt5Subscribe {
 
-    private final @NotNull ImmutableList<@NotNull MqttSubscription> subscriptions;
+    private final @NotNull ImmutableList<MqttSubscription> subscriptions;
 
     public MqttSubscribe(
-            final @NotNull ImmutableList<@NotNull MqttSubscription> subscriptions,
+            final @NotNull ImmutableList<MqttSubscription> subscriptions,
             final @NotNull MqttUserPropertiesImpl userProperties) {
 
         super(userProperties);
@@ -41,7 +41,7 @@ public class MqttSubscribe extends MqttMessageWithUserProperties implements Mqtt
     }
 
     @Override
-    public @NotNull ImmutableList<@NotNull MqttSubscription> getSubscriptions() {
+    public @NotNull ImmutableList<MqttSubscription> getSubscriptions() {
         return subscriptions;
     }
 

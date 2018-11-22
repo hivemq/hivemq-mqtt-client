@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
-import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
@@ -37,6 +36,7 @@ import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.message.connect.connack.MqttConnAck;
 import org.mqttbee.mqtt.message.connect.connack.MqttConnAckRestrictions;
 import org.mqttbee.mqtt.netty.ChannelAttributes;
+import org.mqttbee.util.collections.ImmutableList;
 
 import java.nio.ByteBuffer;
 
@@ -2106,5 +2106,4 @@ class Mqtt5ConnAckDecoderTest extends AbstractMqtt5DecoderTest {
             //     auth data
             0x16, 0, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
     };
-
 }

@@ -17,13 +17,13 @@
 
 package org.mqttbee.mqtt.message.unsubscribe;
 
-import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.Immutable;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.message.MqttMessageWithUserProperties;
+import org.mqttbee.util.collections.ImmutableList;
 
 /**
  * @author Silvio Giebl
@@ -31,10 +31,10 @@ import org.mqttbee.mqtt.message.MqttMessageWithUserProperties;
 @Immutable
 public class MqttUnsubscribe extends MqttMessageWithUserProperties implements Mqtt5Unsubscribe {
 
-    private final @NotNull ImmutableList<@NotNull MqttTopicFilterImpl> topicFilters;
+    private final @NotNull ImmutableList<MqttTopicFilterImpl> topicFilters;
 
     public MqttUnsubscribe(
-            final @NotNull ImmutableList<@NotNull MqttTopicFilterImpl> topicFilters,
+            final @NotNull ImmutableList<MqttTopicFilterImpl> topicFilters,
             final @NotNull MqttUserPropertiesImpl userProperties) {
 
         super(userProperties);
@@ -42,7 +42,7 @@ public class MqttUnsubscribe extends MqttMessageWithUserProperties implements Mq
     }
 
     @Override
-    public @NotNull ImmutableList<@NotNull MqttTopicFilterImpl> getTopicFilters() {
+    public @NotNull ImmutableList<MqttTopicFilterImpl> getTopicFilters() {
         return topicFilters;
     }
 

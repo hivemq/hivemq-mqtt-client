@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
-import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
@@ -30,6 +29,7 @@ import org.mqttbee.mqtt.datatypes.*;
 import org.mqttbee.mqtt.message.auth.MqttEnhancedAuth;
 import org.mqttbee.mqtt.message.connect.connack.MqttConnAck;
 import org.mqttbee.mqtt.message.connect.connack.MqttConnAckRestrictions;
+import org.mqttbee.util.collections.ImmutableList;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -52,8 +52,7 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
     private static final int MIN_REMAINING_LENGTH = 3;
 
     @Inject
-    Mqtt5ConnAckDecoder() {
-    }
+    Mqtt5ConnAckDecoder() {}
 
     @Override
     public @NotNull MqttConnAck decode(

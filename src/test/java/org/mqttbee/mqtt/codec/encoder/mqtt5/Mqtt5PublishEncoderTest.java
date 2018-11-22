@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.primitives.ImmutableIntArray;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -33,6 +32,7 @@ import org.mqttbee.mqtt.datatypes.*;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.publish.MqttPublishProperty;
 import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
+import org.mqttbee.util.collections.ImmutableList;
 
 import java.nio.ByteBuffer;
 

@@ -24,10 +24,7 @@ import org.mqttbee.annotations.Immutable;
 import org.mqttbee.util.Checks;
 
 import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.NoSuchElementException;
-import java.util.Spliterator;
-import java.util.Spliterators;
+import java.util.*;
 import java.util.function.Consumer;
 
 /**
@@ -36,8 +33,13 @@ import java.util.function.Consumer;
 @Immutable class ImmutableArray<E> implements ImmutableList<E> {
 
     @Contract("null -> fail")
-    static <E> @NotNull ImmutableList<@NotNull E> of(final @Nullable Object @Nullable ... elements) {
-        return new ImmutableArray<>(Checks.elementsNotNull(elements, "Immutable list elements"));
+    static <E> @NotNull ImmutableList<E> of(final @Nullable Object @Nullable ... elements) {
+        return of(elements, "Immutable list");
+    }
+
+    @Contract("null, _ -> fail")
+    static <E> @NotNull ImmutableList<E> of(final @Nullable Object @Nullable [] elements, final @NotNull String name) {
+        return new ImmutableArray<>(Checks.elementsNotNull(elements, name));
     }
 
     private final @NotNull Object @NotNull [] array;
@@ -144,6 +146,45 @@ import java.util.function.Consumer;
             default:
                 return (size == array.length) ? this : new SubArray(fromIndex, toIndex);
         }
+    }
+
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof List)) {
+            return false;
+        }
+        final List<?> that = (List<?>) o;
+
+        if (array.length != that.size()) {
+            return false;
+        }
+        if (that instanceof RandomAccess) {
+            for (int i = 0; i < array.length; i++) {
+                if (!array[i].equals(that.get(i))) {
+                    return false;
+                }
+            }
+        } else {
+            int i = 0;
+            for (final Object e : that) {
+                if (!array[i++].equals(e)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hashCode = 1;
+        for (final Object e : array) {
+            hashCode = 31 * hashCode + e.hashCode();
+        }
+        return hashCode;
     }
 
     @Override

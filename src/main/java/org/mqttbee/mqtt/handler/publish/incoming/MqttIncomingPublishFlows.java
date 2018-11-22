@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt.handler.publish.incoming;
 
-import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.MqttGlobalPublishFilter;
@@ -34,6 +33,7 @@ import org.mqttbee.mqtt.message.unsubscribe.MqttStatefulUnsubscribe;
 import org.mqttbee.mqtt.message.unsubscribe.unsuback.MqttUnsubAck;
 import org.mqttbee.mqtt.message.unsubscribe.unsuback.mqtt3.Mqtt3UnsubAckView;
 import org.mqttbee.util.collections.HandleList;
+import org.mqttbee.util.collections.ImmutableList;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.inject.Inject;

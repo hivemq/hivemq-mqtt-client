@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
-import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
@@ -28,6 +27,7 @@ import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
+import org.mqttbee.util.collections.ImmutableList;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -47,8 +47,7 @@ public class Mqtt5DisconnectDecoder implements MqttMessageDecoder {
     private static final int FLAGS = 0b0000;
 
     @Inject
-    Mqtt5DisconnectDecoder() {
-    }
+    Mqtt5DisconnectDecoder() {}
 
     @Override
     public @NotNull MqttDisconnect decode(
@@ -103,5 +102,4 @@ public class Mqtt5DisconnectDecoder implements MqttMessageDecoder {
 
         return new MqttDisconnect(reasonCode, sessionExpiryInterval, serverReference, reasonString, userProperties);
     }
-
 }
