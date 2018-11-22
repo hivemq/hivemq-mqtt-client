@@ -31,7 +31,7 @@ import java.util.function.UnaryOperator;
  * @author Silvio Giebl
  */
 @Immutable
-public interface ImmutableList<E> extends List<@NotNull E>, RandomAccess {
+public interface ImmutableList<@NotNull E> extends List<E>, RandomAccess {
 
     static <E> @NotNull ImmutableList<E> of() {
         return ImmutableEmptyList.of();
