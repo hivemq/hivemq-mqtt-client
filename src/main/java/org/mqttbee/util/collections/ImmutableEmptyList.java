@@ -55,8 +55,7 @@ import java.util.function.Consumer;
 
     @Override
     public @NotNull Object get(final int index) {
-        throw new IndexOutOfBoundsException(
-                "Index must not be greater than or equal to the size (0), but was " + index + ".");
+        throw new IndexOutOfBoundsException("Empty list");
     }
 
     @Override

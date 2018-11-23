@@ -156,19 +156,23 @@ import java.util.function.Consumer;
         if (!(o instanceof List)) {
             return false;
         }
-        final List<?> that = (List<?>) o;
+        return equals(array, 0, array.length, (List<?>) o);
+    }
 
-        if (array.length != that.size()) {
+    private static boolean equals(
+            final @NotNull Object[] array, final int fromIndex, final int toIndex, final @NotNull List<?> that) {
+
+        if ((toIndex - fromIndex) != that.size()) {
             return false;
         }
         if (that instanceof RandomAccess) {
-            for (int i = 0; i < array.length; i++) {
+            for (int i = fromIndex; i < toIndex; i++) {
                 if (!array[i].equals(that.get(i))) {
                     return false;
                 }
             }
         } else {
-            int i = 0;
+            int i = fromIndex;
             for (final Object e : that) {
                 if (!array[i++].equals(e)) {
                     return false;
@@ -180,16 +184,32 @@ import java.util.function.Consumer;
 
     @Override
     public int hashCode() {
+        return hashCode(array, 0, array.length);
+    }
+
+    private static int hashCode(final @NotNull Object[] array, final int fromIndex, final int toIndex) {
         int hashCode = 1;
-        for (final Object e : array) {
-            hashCode = 31 * hashCode + e.hashCode();
+        for (int i = fromIndex; i < toIndex; i++) {
+            hashCode = 31 * hashCode + array[i].hashCode();
         }
         return hashCode;
     }
 
     @Override
     public @NotNull String toString() {
-        return Arrays.toString(array);
+        return toString(array, 0, array.length);
+    }
+
+    private static @NotNull String toString(final @NotNull Object[] array, final int fromIndex, final int toIndex) {
+        final StringBuilder sb = new StringBuilder().append('[');
+        int i = fromIndex;
+        while (true) {
+            sb.append(array[i++]);
+            if (i == toIndex) {
+                return sb.append(']').toString();
+            }
+            sb.append(", ");
+        }
     }
 
     private class SubArray implements ImmutableList<E> {
@@ -285,16 +305,24 @@ import java.util.function.Consumer;
         }
 
         @Override
-        public @NotNull String toString() {
-            final StringBuilder sb = new StringBuilder().append('[');
-            int i = fromIndex;
-            while (true) {
-                sb.append(array[i++]);
-                if (i == toIndex) {
-                    return sb.append(']').toString();
-                }
-                sb.append(',').append(' ');
+        public boolean equals(final @Nullable Object o) {
+            if (this == o) {
+                return true;
             }
+            if (!(o instanceof List)) {
+                return false;
+            }
+            return ImmutableArray.equals(array, fromIndex, toIndex, (List<?>) o);
+        }
+
+        @Override
+        public int hashCode() {
+            return ImmutableArray.hashCode(array, fromIndex, toIndex);
+        }
+
+        @Override
+        public @NotNull String toString() {
+            return ImmutableArray.toString(array, fromIndex, toIndex);
         }
     }
 
