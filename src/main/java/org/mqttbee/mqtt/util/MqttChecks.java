@@ -20,7 +20,10 @@ package org.mqttbee.mqtt.util;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.*;
+import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
+import org.mqttbee.api.mqtt.datatypes.MqttTopic;
+import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
+import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3Connect;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
@@ -94,13 +97,6 @@ public class MqttChecks {
     @Contract("null -> fail")
     public static @NotNull MqttTopicFilterImpl topicFilter(final @Nullable MqttTopicFilter topicFilter) {
         return Checks.notImplemented(topicFilter, MqttTopicFilterImpl.class, "Topic filter");
-    }
-
-    @Contract("null -> fail")
-    public static @NotNull MqttSharedTopicFilterImpl sharedTopicFilter(
-            final @Nullable MqttSharedTopicFilter sharedTopicFilter) {
-
-        return Checks.notImplemented(sharedTopicFilter, MqttSharedTopicFilterImpl.class, "Shared topic filter");
     }
 
     @Contract("null -> fail")

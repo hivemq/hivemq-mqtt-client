@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
-import com.google.common.primitives.ImmutableIntArray;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
@@ -32,6 +31,7 @@ import org.mqttbee.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
 import org.mqttbee.util.ByteBufferUtil;
+import org.mqttbee.util.collections.ImmutableIntList;
 import org.mqttbee.util.collections.ImmutableList;
 
 import java.nio.ByteBuffer;
@@ -95,9 +95,9 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
         assertEquals(12, publishInternal.getPacketIdentifier());
         assertEquals(3, publishInternal.getTopicAlias());
 
-        final ImmutableIntArray subscriptionIdentifiers = publishInternal.getSubscriptionIdentifiers();
-        assertEquals(1, subscriptionIdentifiers.length());
-        assertTrue(subscriptionIdentifiers.contains(123));
+        final ImmutableIntList subscriptionIdentifiers = publishInternal.getSubscriptionIdentifiers();
+        assertEquals(1, subscriptionIdentifiers.size());
+        assertEquals(123, subscriptionIdentifiers.get(0));
 
         final MqttPublish publish = publishInternal.stateless();
 
@@ -150,8 +150,8 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
 
         assertEquals(false, publishInternal.isDup());
 
-        final ImmutableIntArray subscriptionIdentifiers = publishInternal.getSubscriptionIdentifiers();
-        assertEquals(0, subscriptionIdentifiers.length());
+        final ImmutableIntList subscriptionIdentifiers = publishInternal.getSubscriptionIdentifiers();
+        assertEquals(0, subscriptionIdentifiers.size());
 
         final MqttPublish publish = publishInternal.stateless();
 
@@ -560,9 +560,9 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
                 0x01, 0
         };
         final MqttStatefulPublish publishInternal = decodeInternal(encoded);
-        final ImmutableIntArray subscriptionIdentifiers = publishInternal.getSubscriptionIdentifiers();
-        assertEquals(1, subscriptionIdentifiers.length());
-        assertTrue(subscriptionIdentifiers.contains(123));
+        final ImmutableIntList subscriptionIdentifiers = publishInternal.getSubscriptionIdentifiers();
+        assertEquals(1, subscriptionIdentifiers.size());
+        assertEquals(123, subscriptionIdentifiers.get(0));
     }
 
     @Test
@@ -632,9 +632,9 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
                 0x01, 0
         };
         final MqttStatefulPublish publishInternal = decodeInternal(encoded);
-        final ImmutableIntArray subscriptionIdentifiers = publishInternal.getSubscriptionIdentifiers();
-        assertEquals(1, subscriptionIdentifiers.length());
-        assertTrue(subscriptionIdentifiers.contains(268435455));
+        final ImmutableIntList subscriptionIdentifiers = publishInternal.getSubscriptionIdentifiers();
+        assertEquals(1, subscriptionIdentifiers.size());
+        assertEquals(268435455, subscriptionIdentifiers.get(0));
     }
 
     @Test
@@ -660,10 +660,10 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
                 0x01, 0
         };
         final MqttStatefulPublish publishInternal = decodeInternal(encoded);
-        final ImmutableIntArray subscriptionIdentifiers = publishInternal.getSubscriptionIdentifiers();
-        assertEquals(2, subscriptionIdentifiers.length());
-        assertTrue(subscriptionIdentifiers.contains(128));
-        assertTrue(subscriptionIdentifiers.contains(16));
+        final ImmutableIntList subscriptionIdentifiers = publishInternal.getSubscriptionIdentifiers();
+        assertEquals(2, subscriptionIdentifiers.size());
+        assertEquals(128, subscriptionIdentifiers.get(0));
+        assertEquals(16, subscriptionIdentifiers.get(1));
     }
 
     @Test

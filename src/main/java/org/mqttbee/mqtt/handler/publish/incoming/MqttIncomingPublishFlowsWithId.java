@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt.handler.publish.incoming;
 
-import com.google.common.primitives.ImmutableIntArray;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
@@ -26,6 +25,7 @@ import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
 import org.mqttbee.mqtt.message.subscribe.MqttStatefulSubscribe;
 import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAck;
 import org.mqttbee.util.collections.HandleList;
+import org.mqttbee.util.collections.ImmutableIntList;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.inject.Inject;
@@ -108,9 +108,9 @@ public class MqttIncomingPublishFlowsWithId extends MqttIncomingPublishFlows {
             final @NotNull MqttStatefulPublish publish,
             final @NotNull HandleList<MqttIncomingPublishFlow> matchingFlows) {
 
-        final ImmutableIntArray subscriptionIdentifiers = publish.getSubscriptionIdentifiers();
+        final ImmutableIntList subscriptionIdentifiers = publish.getSubscriptionIdentifiers();
         if (!subscriptionIdentifiers.isEmpty()) {
-            for (int i = 0; i < subscriptionIdentifiers.length(); i++) {
+            for (int i = 0; i < subscriptionIdentifiers.size(); i++) {
                 final int subscriptionIdentifier = subscriptionIdentifiers.get(i);
                 final MqttSubscriptionFlow flow = flowsWithIdsMap.get(subscriptionIdentifier);
                 if (flow != null) {
