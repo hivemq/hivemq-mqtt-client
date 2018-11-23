@@ -22,7 +22,6 @@ import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
-import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5UnsubscribeBuilder;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImplBuilder;
@@ -46,9 +45,8 @@ public abstract class MqttUnsubscribeBuilder<B extends MqttUnsubscribeBuilder<B>
         topicFiltersBuilder = ImmutableList.builder();
     }
 
-    MqttUnsubscribeBuilder(final @Nullable Mqtt5Unsubscribe unsubscribe) {
-        final MqttUnsubscribe mqttUnsubscribe = MqttChecks.unsubscribe(unsubscribe);
-        final ImmutableList<MqttTopicFilterImpl> topicFilters = mqttUnsubscribe.getTopicFilters();
+    MqttUnsubscribeBuilder(final @NotNull MqttUnsubscribe unsubscribe) {
+        final ImmutableList<MqttTopicFilterImpl> topicFilters = unsubscribe.getTopicFilters();
         topicFiltersBuilder = ImmutableList.builder(topicFilters.size() + 1);
         topicFiltersBuilder.addAll(topicFilters);
     }
@@ -111,7 +109,7 @@ public abstract class MqttUnsubscribeBuilder<B extends MqttUnsubscribeBuilder<B>
 
         public Default() {}
 
-        public Default(final @Nullable Mqtt5Unsubscribe unsubscribe) {
+        Default(final @NotNull MqttUnsubscribe unsubscribe) {
             super(unsubscribe);
         }
 

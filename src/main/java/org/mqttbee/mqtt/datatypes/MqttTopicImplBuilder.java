@@ -19,9 +19,7 @@ package org.mqttbee.mqtt.datatypes;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttTopic;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicBuilder;
-import org.mqttbee.mqtt.util.MqttChecks;
 import org.mqttbee.util.Checks;
 
 import java.util.function.Function;
@@ -46,7 +44,7 @@ public abstract class MqttTopicImplBuilder<B extends MqttTopicImplBuilder> {
         if (stringBuilder == null) {
             stringBuilder = new StringBuilder(topicLevel);
         } else {
-            stringBuilder.append(MqttTopic.TOPIC_LEVEL_SEPARATOR).append(topicLevel);
+            stringBuilder.append(MqttTopicImpl.TOPIC_LEVEL_SEPARATOR).append(topicLevel);
         }
         return self();
     }
@@ -62,8 +60,8 @@ public abstract class MqttTopicImplBuilder<B extends MqttTopicImplBuilder> {
 
         public Default() {}
 
-        public Default(final @Nullable MqttTopic topic) {
-            super(MqttChecks.topic(topic));
+        Default(final @NotNull MqttTopicImpl topic) {
+            super(topic);
         }
 
         @Override

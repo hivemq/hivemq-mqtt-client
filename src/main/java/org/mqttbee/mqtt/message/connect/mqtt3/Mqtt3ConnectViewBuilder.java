@@ -20,7 +20,6 @@ package org.mqttbee.mqtt.message.connect.mqtt3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
-import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3Connect;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3ConnectBuilder;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import org.mqttbee.mqtt.message.auth.MqttSimpleAuth;
@@ -40,19 +39,19 @@ import java.util.function.Function;
  */
 public abstract class Mqtt3ConnectViewBuilder<B extends Mqtt3ConnectViewBuilder<B>> {
 
-    private int keepAliveSeconds = Mqtt3Connect.DEFAULT_KEEP_ALIVE;
-    private boolean isCleanSession = Mqtt3Connect.DEFAULT_CLEAN_SESSION;
+    private int keepAliveSeconds = Mqtt3ConnectView.DEFAULT_KEEP_ALIVE;
+    private boolean isCleanSession = Mqtt3ConnectView.DEFAULT_CLEAN_SESSION;
     private @Nullable MqttSimpleAuth simpleAuth;
     private @Nullable MqttWillPublish willPublish;
 
     Mqtt3ConnectViewBuilder() {}
 
-    Mqtt3ConnectViewBuilder(final @Nullable Mqtt3Connect connect) {
-        final MqttConnect connectView = MqttChecks.connect(connect);
-        keepAliveSeconds = connectView.getKeepAlive();
-        isCleanSession = connectView.isCleanStart();
-        simpleAuth = connectView.getRawSimpleAuth();
-        willPublish = connectView.getRawWillPublish();
+    Mqtt3ConnectViewBuilder(final @NotNull Mqtt3ConnectView connect) {
+        final MqttConnect delegate = connect.getDelegate();
+        keepAliveSeconds = delegate.getKeepAlive();
+        isCleanSession = delegate.isCleanStart();
+        simpleAuth = delegate.getRawSimpleAuth();
+        willPublish = delegate.getRawWillPublish();
     }
 
     abstract @NotNull B self();
@@ -100,7 +99,7 @@ public abstract class Mqtt3ConnectViewBuilder<B extends Mqtt3ConnectViewBuilder<
 
         public Default() {}
 
-        public Default(final @Nullable Mqtt3Connect connect) {
+        Default(final @NotNull Mqtt3ConnectView connect) {
             super(connect);
         }
 

@@ -57,4 +57,9 @@ public class Mqtt3UnsubscribeView implements Mqtt3Unsubscribe {
     public @NotNull MqttUnsubscribe getDelegate() {
         return delegate;
     }
+
+    @Override
+    public @NotNull Mqtt3UnsubscribeViewBuilder.Default extend() {
+        return new Mqtt3UnsubscribeViewBuilder.Default(this);
+    }
 }

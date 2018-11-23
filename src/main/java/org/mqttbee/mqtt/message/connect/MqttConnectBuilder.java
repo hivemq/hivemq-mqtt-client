@@ -22,7 +22,6 @@ import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5SimpleAuth;
-import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5ConnectBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
@@ -57,7 +56,7 @@ public abstract class MqttConnectBuilder<B extends MqttConnectBuilder<B>> {
 
     MqttConnectBuilder() {}
 
-    MqttConnectBuilder(final @Nullable Mqtt5Connect connect) {
+    MqttConnectBuilder(final @NotNull MqttConnect connect) {
         final MqttConnect mqttConnect = MqttChecks.connect(connect);
         keepAlive = mqttConnect.getKeepAlive();
         isCleanStart = mqttConnect.isCleanStart();
@@ -165,7 +164,7 @@ public abstract class MqttConnectBuilder<B extends MqttConnectBuilder<B>> {
 
         public Default() {}
 
-        public Default(final @Nullable Mqtt5Connect connect) {
+        Default(final @NotNull MqttConnect connect) {
             super(connect);
         }
 

@@ -37,10 +37,6 @@ public interface Mqtt3Unsubscribe extends Mqtt3Message {
         return new Mqtt3UnsubscribeViewBuilder.Default();
     }
 
-    static @NotNull Mqtt3UnsubscribeBuilder.Complete extend(final @NotNull Mqtt3Unsubscribe unsubscribe) {
-        return new Mqtt3UnsubscribeViewBuilder.Default(unsubscribe);
-    }
-
     /**
      * @return the Topic Filters of this UNSUBSCRIBE packet. The list contains at least one Topic Filter.
      */
@@ -50,4 +46,6 @@ public interface Mqtt3Unsubscribe extends Mqtt3Message {
     default @NotNull Mqtt3MessageType getType() {
         return Mqtt3MessageType.UNSUBSCRIBE;
     }
+
+    @NotNull Mqtt3UnsubscribeBuilder.Complete extend();
 }

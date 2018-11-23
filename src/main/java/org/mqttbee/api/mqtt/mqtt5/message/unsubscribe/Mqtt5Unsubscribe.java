@@ -40,10 +40,6 @@ public interface Mqtt5Unsubscribe extends Mqtt5Message {
         return new MqttUnsubscribeBuilder.Default();
     }
 
-    static @NotNull Mqtt5UnsubscribeBuilder.Complete extend(final @NotNull Mqtt5Unsubscribe unsubscribe) {
-        return new MqttUnsubscribeBuilder.Default(unsubscribe);
-    }
-
     /**
      * @return the Topic Filters of this UNSUBSCRIBE packet. The list contains at least one Topic Filter.
      */
@@ -58,4 +54,6 @@ public interface Mqtt5Unsubscribe extends Mqtt5Message {
     default @NotNull Mqtt5MessageType getType() {
         return Mqtt5MessageType.UNSUBSCRIBE;
     }
+
+    @NotNull Mqtt5UnsubscribeBuilder.Complete extend();
 }

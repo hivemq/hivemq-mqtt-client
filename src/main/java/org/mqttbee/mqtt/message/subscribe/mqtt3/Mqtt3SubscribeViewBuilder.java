@@ -21,13 +21,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
-import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3SubscribeBuilder;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscription;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImplBuilder;
-import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
-import org.mqttbee.mqtt.util.MqttChecks;
 import org.mqttbee.util.Checks;
 import org.mqttbee.util.collections.ImmutableList;
 
@@ -45,9 +42,8 @@ public abstract class Mqtt3SubscribeViewBuilder<B extends Mqtt3SubscribeViewBuil
         subscriptionsBuilder = ImmutableList.builder();
     }
 
-    Mqtt3SubscribeViewBuilder(final @Nullable Mqtt3Subscribe subscribe) {
-        final MqttSubscribe mqttSubscribe = MqttChecks.subscribe(subscribe);
-        final ImmutableList<MqttSubscription> subscriptions = mqttSubscribe.getSubscriptions();
+    Mqtt3SubscribeViewBuilder(final @NotNull Mqtt3SubscribeView subscribe) {
+        final ImmutableList<MqttSubscription> subscriptions = subscribe.getDelegate().getSubscriptions();
         subscriptionsBuilder = ImmutableList.builder(subscriptions.size() + 1);
         subscriptionsBuilder.addAll(subscriptions);
     }
@@ -112,7 +108,7 @@ public abstract class Mqtt3SubscribeViewBuilder<B extends Mqtt3SubscribeViewBuil
 
         public Default() {}
 
-        public Default(final @Nullable Mqtt3Subscribe subscribe) {
+        Default(final @NotNull Mqtt3SubscribeView subscribe) {
             super(subscribe);
         }
 
@@ -125,9 +121,9 @@ public abstract class Mqtt3SubscribeViewBuilder<B extends Mqtt3SubscribeViewBuil
     public static class Nested<P> extends Mqtt3SubscribeViewBuilder<Nested<P>>
             implements Mqtt3SubscribeBuilder.Nested.Start.Complete<P> {
 
-        private final @NotNull Function<? super Mqtt3Subscribe, P> parentConsumer;
+        private final @NotNull Function<? super Mqtt3SubscribeView, P> parentConsumer;
 
-        public Nested(final @NotNull Function<? super Mqtt3Subscribe, P> parentConsumer) {
+        public Nested(final @NotNull Function<? super Mqtt3SubscribeView, P> parentConsumer) {
             this.parentConsumer = parentConsumer;
         }
 
@@ -145,9 +141,9 @@ public abstract class Mqtt3SubscribeViewBuilder<B extends Mqtt3SubscribeViewBuil
     public static class Send<P> extends Mqtt3SubscribeViewBuilder<Send<P>>
             implements Mqtt3SubscribeBuilder.Send.Start.Complete<P> {
 
-        private final @NotNull Function<? super Mqtt3Subscribe, P> parentConsumer;
+        private final @NotNull Function<? super Mqtt3SubscribeView, P> parentConsumer;
 
-        public Send(final @NotNull Function<? super Mqtt3Subscribe, P> parentConsumer) {
+        public Send(final @NotNull Function<? super Mqtt3SubscribeView, P> parentConsumer) {
             this.parentConsumer = parentConsumer;
         }
 

@@ -93,4 +93,9 @@ public class Mqtt3ConnectView implements Mqtt3Connect {
     public @NotNull MqttConnect getDelegate() {
         return delegate;
     }
+
+    @Override
+    public @NotNull Mqtt3ConnectViewBuilder.Default extend() {
+        return new Mqtt3ConnectViewBuilder.Default(this);
+    }
 }

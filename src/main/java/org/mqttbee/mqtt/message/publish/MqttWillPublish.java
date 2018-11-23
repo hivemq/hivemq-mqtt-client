@@ -55,4 +55,9 @@ public class MqttWillPublish extends MqttPublish implements Mqtt5WillPublish {
     public long getDelayInterval() {
         return delayInterval;
     }
+
+    @Override
+    public @NotNull MqttPublishBuilder.WillDefault extendAsWill() {
+        return new MqttPublishBuilder.WillDefault(this);
+    }
 }

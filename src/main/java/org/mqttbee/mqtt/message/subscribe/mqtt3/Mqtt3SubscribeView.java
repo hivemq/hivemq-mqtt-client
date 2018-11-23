@@ -63,4 +63,9 @@ public class Mqtt3SubscribeView implements Mqtt3Subscribe {
     public @NotNull MqttSubscribe getDelegate() {
         return delegate;
     }
+
+    @Override
+    public @NotNull Mqtt3SubscribeViewBuilder.Default extend() {
+        return new Mqtt3SubscribeViewBuilder.Default(this);
+    }
 }

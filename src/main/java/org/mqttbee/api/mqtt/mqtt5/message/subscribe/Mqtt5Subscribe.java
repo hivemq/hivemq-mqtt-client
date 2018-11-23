@@ -39,10 +39,6 @@ public interface Mqtt5Subscribe extends Mqtt5Message {
         return new MqttSubscribeBuilder.Default();
     }
 
-    static @NotNull Mqtt5SubscribeBuilder.Complete extend(final @NotNull Mqtt5Subscribe subscribe) {
-        return new MqttSubscribeBuilder.Default(subscribe);
-    }
-
     /**
      * @return the {@link Mqtt5Subscription}s of this SUBSCRIBE packet. The list contains at least one subscription.
      */
@@ -57,4 +53,6 @@ public interface Mqtt5Subscribe extends Mqtt5Message {
     default @NotNull Mqtt5MessageType getType() {
         return Mqtt5MessageType.SUBSCRIBE;
     }
+
+    @NotNull Mqtt5SubscribeBuilder.Complete extend();
 }

@@ -22,7 +22,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.Immutable;
-import org.mqttbee.api.mqtt.datatypes.MqttSharedTopicFilter;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
 import org.mqttbee.mqtt.util.MqttChecks;
@@ -275,7 +274,7 @@ public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopic
     }
 
     @Override
-    public @NotNull MqttSharedTopicFilter share(final @Nullable String shareName) {
+    public @NotNull MqttSharedTopicFilterImpl share(final @Nullable String shareName) {
         return MqttSharedTopicFilterImpl.of(shareName, this);
     }
 
@@ -305,7 +304,7 @@ public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopic
                 return true;
             } else if (fb == SINGLE_LEVEL_WILDCARD) {
                 while (ti < topic.length) { // loop until next topic level separator or end
-                    if (topic[ti] == MqttTopic.TOPIC_LEVEL_SEPARATOR) {
+                    if (topic[ti] == MqttTopicImpl.TOPIC_LEVEL_SEPARATOR) {
                         break;
                     }
                     ti++; // only increment when not topic level separator
@@ -313,7 +312,7 @@ public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopic
             } else {
                 if (ti == topic.length) {
                     // lookahead for "/#" as it includes the parent level
-                    return (fb == MqttTopic.TOPIC_LEVEL_SEPARATOR) && (fi + 1 == filter.length) &&
+                    return (fb == MqttTopicImpl.TOPIC_LEVEL_SEPARATOR) && (fi + 1 == filter.length) &&
                             (filter[fi] == MULTI_LEVEL_WILDCARD);
                 }
                 if (topic[ti++] != fb) {
@@ -347,7 +346,7 @@ public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopic
                     return false;
                 }
                 while (i2 < filter2.length) { // loop until next topic level separator or end
-                    if (filter2[i2] == MqttTopic.TOPIC_LEVEL_SEPARATOR) {
+                    if (filter2[i2] == MqttTopicImpl.TOPIC_LEVEL_SEPARATOR) {
                         break;
                     }
                     i2++; // only increment when not topic level separator
@@ -355,7 +354,7 @@ public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopic
             } else {
                 if (i2 == filter2.length) {
                     // lookahead for "/#" as it includes the parent level
-                    return (b1 == MqttTopic.TOPIC_LEVEL_SEPARATOR) && (i1 + 1 == filter1.length) &&
+                    return (b1 == MqttTopicImpl.TOPIC_LEVEL_SEPARATOR) && (i1 + 1 == filter1.length) &&
                             (filter1[i1] == MULTI_LEVEL_WILDCARD);
                 }
                 if (filter2[i2++] != b1) {
@@ -364,5 +363,10 @@ public class MqttTopicFilterImpl extends MqttUtf8StringImpl implements MqttTopic
             }
         }
         return (i1 == filter1.length) && (i2 == filter2.length);
+    }
+
+    @Override
+    public @NotNull MqttTopicFilterImplBuilder.Default extend() {
+        return new MqttTopicFilterImplBuilder.Default(this);
     }
 }

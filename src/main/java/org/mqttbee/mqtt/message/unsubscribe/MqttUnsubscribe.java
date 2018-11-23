@@ -46,6 +46,11 @@ public class MqttUnsubscribe extends MqttMessageWithUserProperties implements Mq
         return topicFilters;
     }
 
+    @Override
+    public @NotNull MqttUnsubscribeBuilder.Default extend() {
+        return new MqttUnsubscribeBuilder.Default(this);
+    }
+
     public @NotNull MqttStatefulUnsubscribe createStateful(final int packetIdentifier) {
         return new MqttStatefulUnsubscribe(this, packetIdentifier);
     }

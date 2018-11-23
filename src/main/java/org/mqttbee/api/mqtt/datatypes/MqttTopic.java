@@ -60,10 +60,6 @@ public interface MqttTopic extends MqttUtf8String {
         return new MqttTopicImplBuilder.Default();
     }
 
-    static @NotNull MqttTopicBuilder.Complete extend(final @NotNull MqttTopic topic) {
-        return new MqttTopicImplBuilder.Default(topic);
-    }
-
     /**
      * @return the levels of this Topic Name.
      */
@@ -73,4 +69,6 @@ public interface MqttTopic extends MqttUtf8String {
      * @return a Topic Filter matching only this Topic Name.
      */
     @NotNull MqttTopicFilter filter();
+
+    @NotNull MqttTopicBuilder.Complete extend();
 }

@@ -163,6 +163,11 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
         return topicAliasUsage;
     }
 
+    @Override
+    public @NotNull MqttPublishBuilder.Default extend() {
+        return new MqttPublishBuilder.Default(this);
+    }
+
     public @NotNull MqttStatefulPublish createStateful(
             final int packetIdentifier, final boolean isDup, final int topicAlias, final boolean isNewTopicAlias,
             final @NotNull ImmutableIntArray subscriptionIdentifiers) {

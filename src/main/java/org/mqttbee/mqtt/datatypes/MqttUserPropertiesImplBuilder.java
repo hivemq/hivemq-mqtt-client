@@ -20,7 +20,6 @@ package org.mqttbee.mqtt.datatypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
-import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperty;
 import org.mqttbee.mqtt.util.MqttChecks;
@@ -39,8 +38,8 @@ public abstract class MqttUserPropertiesImplBuilder<B extends MqttUserProperties
         listBuilder = ImmutableList.builder();
     }
 
-    MqttUserPropertiesImplBuilder(final @NotNull Mqtt5UserProperties userProperties) {
-        final ImmutableList<MqttUserPropertyImpl> list = MqttChecks.userProperties(userProperties).asList();
+    MqttUserPropertiesImplBuilder(final @NotNull MqttUserPropertiesImpl userProperties) {
+        final ImmutableList<MqttUserPropertyImpl> list = userProperties.asList();
         listBuilder = ImmutableList.builder(list.size() + 1);
         listBuilder.addAll(list);
     }
@@ -70,7 +69,7 @@ public abstract class MqttUserPropertiesImplBuilder<B extends MqttUserProperties
 
         public Default() {}
 
-        public Default(final @NotNull Mqtt5UserProperties userProperties) {
+        Default(final @NotNull MqttUserPropertiesImpl userProperties) {
             super(userProperties);
         }
 

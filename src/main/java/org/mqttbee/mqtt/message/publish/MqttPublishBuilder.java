@@ -23,7 +23,10 @@ import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
 import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
-import org.mqttbee.api.mqtt.mqtt5.message.publish.*;
+import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
+import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PublishBuilder;
+import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5WillPublishBuilder;
+import org.mqttbee.api.mqtt.mqtt5.message.publish.TopicAliasUsage;
 import org.mqttbee.mqtt.datatypes.*;
 import org.mqttbee.mqtt.util.MqttChecks;
 import org.mqttbee.util.ByteBufferUtil;
@@ -50,18 +53,17 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
 
     MqttPublishBuilder() {}
 
-    MqttPublishBuilder(final @Nullable Mqtt5Publish publish) {
-        final MqttPublish mqttPublish = MqttChecks.publish(publish);
-        topic = mqttPublish.getTopic();
-        payload = mqttPublish.getRawPayload();
-        qos = mqttPublish.getQos();
-        retain = mqttPublish.isRetain();
-        messageExpiryInterval = mqttPublish.getRawMessageExpiryInterval();
-        payloadFormatIndicator = mqttPublish.getRawPayloadFormatIndicator();
-        contentType = mqttPublish.getRawContentType();
-        responseTopic = mqttPublish.getRawResponseTopic();
-        correlationData = mqttPublish.getRawCorrelationData();
-        userProperties = mqttPublish.getUserProperties();
+    MqttPublishBuilder(final @NotNull MqttPublish publish) {
+        topic = publish.getTopic();
+        payload = publish.getRawPayload();
+        qos = publish.getQos();
+        retain = publish.isRetain();
+        messageExpiryInterval = publish.getRawMessageExpiryInterval();
+        payloadFormatIndicator = publish.getRawPayloadFormatIndicator();
+        contentType = publish.getRawContentType();
+        responseTopic = publish.getRawResponseTopic();
+        correlationData = publish.getRawCorrelationData();
+        userProperties = publish.getUserProperties();
     }
 
     abstract @NotNull B self();
@@ -154,9 +156,9 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
 
         Base() {}
 
-        Base(final @Nullable Mqtt5Publish publish) {
+        Base(final @NotNull MqttPublish publish) {
             super(publish);
-            topicAliasUsage = MqttChecks.publish(publish).usesTopicAlias();
+            topicAliasUsage = publish.usesTopicAlias();
         }
 
         public @NotNull B payload(final @Nullable byte[] payload) {
@@ -174,6 +176,10 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
             return self();
         }
 
+        public @NotNull WillDefault asWill() {
+            return new WillDefault(build());
+        }
+
         public @NotNull MqttPublish build() {
             Checks.notNull(topic, "Topic");
             return new MqttPublish(topic, payload, qos, retain, messageExpiryInterval, payloadFormatIndicator,
@@ -185,7 +191,7 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
 
         public Default() {}
 
-        public Default(final @Nullable Mqtt5Publish publish) {
+        Default(final @NotNull MqttPublish publish) {
             super(publish);
         }
 
@@ -239,11 +245,10 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
 
         WillBase() {}
 
-        WillBase(final @Nullable Mqtt5Publish publish) {
+        WillBase(final @NotNull MqttPublish publish) {
             super(publish);
-            if (publish instanceof Mqtt5WillPublish) {
-                delayInterval =
-                        Checks.notImplemented(publish, MqttWillPublish.class, "Will publish").getDelayInterval();
+            if (publish instanceof MqttWillPublish) {
+                delayInterval = ((MqttWillPublish) publish).getDelayInterval();
             } else {
                 payload(payload); // check payload size restriction
             }
@@ -275,7 +280,7 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
 
         public WillDefault() {}
 
-        public WillDefault(final @Nullable Mqtt5Publish publish) {
+        public WillDefault(final @NotNull MqttPublish publish) {
             super(publish);
         }
 

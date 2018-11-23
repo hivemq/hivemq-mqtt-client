@@ -127,4 +127,9 @@ public class MqttUserPropertiesImpl implements Mqtt5UserProperties {
     public int hashCode() {
         return userProperties.hashCode();
     }
+
+    @Override
+    public @NotNull MqttUserPropertiesImplBuilder.Default extend() {
+        return new MqttUserPropertiesImplBuilder.Default(this);
+    }
 }
