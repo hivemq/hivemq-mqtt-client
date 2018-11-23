@@ -130,6 +130,11 @@ public class MqttConnect extends MqttMessageWithUserProperties implements Mqtt5C
         return willPublish;
     }
 
+    @Override
+    public @NotNull MqttConnectBuilder.Default extend() {
+        return new MqttConnectBuilder.Default(this);
+    }
+
     public @NotNull MqttStatefulConnect createStateful(
             final @NotNull MqttClientIdentifierImpl clientIdentifier, final @Nullable MqttEnhancedAuth enhancedAuth) {
 

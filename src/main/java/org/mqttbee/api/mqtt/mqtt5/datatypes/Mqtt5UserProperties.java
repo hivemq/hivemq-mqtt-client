@@ -59,12 +59,10 @@ public interface Mqtt5UserProperties {
         return new MqttUserPropertiesImplBuilder.Default();
     }
 
-    static @NotNull Mqtt5UserPropertiesBuilder extend(final @NotNull Mqtt5UserProperties userProperties) {
-        return new MqttUserPropertiesImplBuilder.Default(userProperties);
-    }
-
     /**
      * @return the User Properties as an immutable list.
      */
     @Immutable @NotNull List<@NotNull ? extends Mqtt5UserProperty> asList();
+
+    @NotNull Mqtt5UserPropertiesBuilder extend();
 }

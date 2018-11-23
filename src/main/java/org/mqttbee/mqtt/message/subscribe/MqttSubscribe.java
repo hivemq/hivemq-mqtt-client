@@ -48,4 +48,9 @@ public class MqttSubscribe extends MqttMessageWithUserProperties implements Mqtt
     public @NotNull MqttStatefulSubscribe createStateful(final int packetIdentifier, final int subscriptionIdentifier) {
         return new MqttStatefulSubscribe(this, packetIdentifier, subscriptionIdentifier);
     }
+
+    @Override
+    public @NotNull MqttSubscribeBuilder.Default extend() {
+        return new MqttSubscribeBuilder.Default(this);
+    }
 }

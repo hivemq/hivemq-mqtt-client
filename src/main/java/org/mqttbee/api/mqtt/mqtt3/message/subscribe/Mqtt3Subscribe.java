@@ -36,10 +36,6 @@ public interface Mqtt3Subscribe extends Mqtt3Message {
         return new Mqtt3SubscribeViewBuilder.Default();
     }
 
-    static @NotNull Mqtt3SubscribeBuilder.Complete extend(final @NotNull Mqtt3Subscribe subscribe) {
-        return new Mqtt3SubscribeViewBuilder.Default(subscribe);
-    }
-
     /**
      * @return the {@link Mqtt3Subscription}s of this SUBSCRIBE packet. The list contains at least one subscription.
      */
@@ -49,4 +45,6 @@ public interface Mqtt3Subscribe extends Mqtt3Message {
     default @NotNull Mqtt3MessageType getType() {
         return Mqtt3MessageType.SUBSCRIBE;
     }
+
+    @NotNull Mqtt3SubscribeBuilder.Complete extend();
 }

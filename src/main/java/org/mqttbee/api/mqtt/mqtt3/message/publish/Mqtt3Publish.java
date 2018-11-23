@@ -41,10 +41,6 @@ public interface Mqtt3Publish extends Mqtt3Message, Mqtt3SubscribeResult {
         return new Mqtt3PublishViewBuilder.Default();
     }
 
-    static @NotNull Mqtt3PublishBuilder.Complete extend(@NotNull final Mqtt3Publish publish) {
-        return new Mqtt3PublishViewBuilder.Default(publish);
-    }
-
     /**
      * @return the topic of this PUBLISH packet.
      */
@@ -75,4 +71,5 @@ public interface Mqtt3Publish extends Mqtt3Message, Mqtt3SubscribeResult {
         return Mqtt3MessageType.PUBLISH;
     }
 
+    @NotNull Mqtt3PublishBuilder.Complete extend();
 }

@@ -38,13 +38,10 @@ public interface Mqtt5WillPublish extends Mqtt5Publish {
         return new MqttPublishBuilder.WillDefault();
     }
 
-    static @NotNull Mqtt5WillPublishBuilder.Complete extend(@NotNull final Mqtt5Publish publish) {
-        return new MqttPublishBuilder.WillDefault(publish);
-    }
-
     /**
      * @return the delay of this Will Publish. The default is {@link #DEFAULT_DELAY_INTERVAL}.
      */
     long getDelayInterval();
 
+    @NotNull Mqtt5WillPublishBuilder.Complete extendAsWill();
 }

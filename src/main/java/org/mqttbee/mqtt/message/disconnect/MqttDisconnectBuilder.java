@@ -21,7 +21,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
-import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
@@ -46,13 +45,12 @@ public abstract class MqttDisconnectBuilder<B extends MqttDisconnectBuilder<B>> 
 
     MqttDisconnectBuilder() {}
 
-    MqttDisconnectBuilder(final @Nullable Mqtt5Disconnect disconnect) {
-        final MqttDisconnect mqttDisconnect = MqttChecks.disconnect(disconnect);
-        reasonCode = mqttDisconnect.getReasonCode();
-        sessionExpiryInterval = mqttDisconnect.getRawSessionExpiryInterval();
-        serverReference = mqttDisconnect.getRawServerReference();
-        reasonString = mqttDisconnect.getRawReasonString();
-        userProperties = mqttDisconnect.getUserProperties();
+    MqttDisconnectBuilder(final @NotNull MqttDisconnect disconnect) {
+        reasonCode = disconnect.getReasonCode();
+        sessionExpiryInterval = disconnect.getRawSessionExpiryInterval();
+        serverReference = disconnect.getRawServerReference();
+        reasonString = disconnect.getRawReasonString();
+        userProperties = disconnect.getUserProperties();
     }
 
     abstract @NotNull B self();
@@ -109,7 +107,7 @@ public abstract class MqttDisconnectBuilder<B extends MqttDisconnectBuilder<B>> 
 
         public Default() {}
 
-        public Default(final @Nullable Mqtt5Disconnect disconnect) {
+        Default(final @NotNull MqttDisconnect disconnect) {
             super(disconnect);
         }
 

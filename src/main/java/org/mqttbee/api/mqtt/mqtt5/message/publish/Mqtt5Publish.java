@@ -51,10 +51,6 @@ public interface Mqtt5Publish extends Mqtt5Message, Mqtt5SubscribeResult {
         return new MqttPublishBuilder.Default();
     }
 
-    static @NotNull Mqtt5PublishBuilder.Complete extend(final @NotNull Mqtt5Publish publish) {
-        return new MqttPublishBuilder.Default(publish);
-    }
-
     /**
      * @return the topic of this PUBLISH packet.
      */
@@ -120,4 +116,5 @@ public interface Mqtt5Publish extends Mqtt5Message, Mqtt5SubscribeResult {
         return Mqtt5MessageType.PUBLISH;
     }
 
+    @NotNull Mqtt5PublishBuilder.Complete extend();
 }

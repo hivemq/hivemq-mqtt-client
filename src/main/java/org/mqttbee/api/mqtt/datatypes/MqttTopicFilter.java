@@ -64,10 +64,6 @@ public interface MqttTopicFilter extends MqttUtf8String {
         return new MqttTopicFilterImplBuilder.Default();
     }
 
-    static @NotNull MqttTopicFilterBuilder.Complete extend(final @NotNull MqttTopicFilter topicFilter) {
-        return new MqttTopicFilterImplBuilder.Default(topicFilter);
-    }
-
     /**
      * @return the levels of this Topic Filter.
      */
@@ -114,4 +110,6 @@ public interface MqttTopicFilter extends MqttUtf8String {
      * @return true if this Topic Filter matches the given Topic Filter, otherwise false.
      */
     boolean matches(@NotNull MqttTopicFilter topicFilter);
+
+    @NotNull MqttTopicFilterBuilder.Complete extend();
 }

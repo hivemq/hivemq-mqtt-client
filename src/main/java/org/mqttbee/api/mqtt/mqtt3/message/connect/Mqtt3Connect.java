@@ -41,10 +41,6 @@ public interface Mqtt3Connect extends Mqtt3Message {
         return new Mqtt3ConnectViewBuilder.Default();
     }
 
-    static @NotNull Mqtt3ConnectBuilder extend(final @NotNull Mqtt3Connect connect) {
-        return new Mqtt3ConnectViewBuilder.Default(connect);
-    }
-
     /**
      * @return the keep alive in seconds the client wants to use.
      */
@@ -71,4 +67,5 @@ public interface Mqtt3Connect extends Mqtt3Message {
         return Mqtt3MessageType.CONNECT;
     }
 
+    @NotNull Mqtt3ConnectBuilder extend();
 }

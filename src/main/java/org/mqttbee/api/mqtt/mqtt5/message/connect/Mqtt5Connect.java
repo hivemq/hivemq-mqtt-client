@@ -50,10 +50,6 @@ public interface Mqtt5Connect extends Mqtt5Message {
         return new MqttConnectBuilder.Default();
     }
 
-    static @NotNull Mqtt5ConnectBuilder extend(final @NotNull Mqtt5Connect connect) {
-        return new MqttConnectBuilder.Default(connect);
-    }
-
     /**
      * @return the keep alive in seconds the client wants to use.
      */
@@ -112,4 +108,5 @@ public interface Mqtt5Connect extends Mqtt5Message {
         return Mqtt5MessageType.CONNECT;
     }
 
+    @NotNull Mqtt5ConnectBuilder extend();
 }

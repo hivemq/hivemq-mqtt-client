@@ -23,7 +23,6 @@ import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5RetainHandling;
-import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscription;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImplBuilder;
@@ -48,9 +47,8 @@ public abstract class MqttSubscribeBuilder<B extends MqttSubscribeBuilder<B>> {
         subscriptionsBuilder = ImmutableList.builder();
     }
 
-    MqttSubscribeBuilder(final @Nullable Mqtt5Subscribe subscribe) {
-        final MqttSubscribe mqttSubscribe = MqttChecks.subscribe(subscribe);
-        final ImmutableList<MqttSubscription> subscriptions = mqttSubscribe.getSubscriptions();
+    MqttSubscribeBuilder(final @NotNull MqttSubscribe subscribe) {
+        final ImmutableList<MqttSubscription> subscriptions = subscribe.getSubscriptions();
         subscriptionsBuilder = ImmutableList.builder(subscriptions.size() + 1);
         subscriptionsBuilder.addAll(subscriptions);
     }
@@ -137,7 +135,7 @@ public abstract class MqttSubscribeBuilder<B extends MqttSubscribeBuilder<B>> {
 
         public Default() {}
 
-        public Default(final @Nullable Mqtt5Subscribe subscribe) {
+        Default(final @NotNull MqttSubscribe subscribe) {
             super(subscribe);
         }
 

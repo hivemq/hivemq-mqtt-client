@@ -31,6 +31,8 @@ public interface Mqtt5PublishBuilder extends
             Mqtt5PublishBuilder.Complete> {
 // @formatter:off
 
+    @NotNull Mqtt5WillPublishBuilder asWill();
+
     // @formatter:off
     @DoNotImplement
     interface Complete extends
@@ -39,6 +41,9 @@ public interface Mqtt5PublishBuilder extends
                 Mqtt5PublishBuilder,
                 Mqtt5PublishBuilder.Complete> {
     // @formatter:off
+
+        @Override
+        @NotNull Mqtt5WillPublishBuilder.Complete asWill();
 
         @NotNull Mqtt5Publish build();
     }

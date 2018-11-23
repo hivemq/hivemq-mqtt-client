@@ -119,4 +119,9 @@ public class Mqtt3PublishView implements Mqtt3Publish {
     public @NotNull MqttPublish getDelegate() {
         return delegate;
     }
+
+    @Override
+    public @NotNull Mqtt3PublishViewBuilder.Default extend() {
+        return new Mqtt3PublishViewBuilder.Default(this);
+    }
 }

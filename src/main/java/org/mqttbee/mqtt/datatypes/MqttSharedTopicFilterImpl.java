@@ -275,4 +275,9 @@ public class MqttSharedTopicFilterImpl extends MqttTopicFilterImpl implements Mq
         }
         return filterCharStart;
     }
+
+    @Override
+    public @NotNull MqttTopicFilterImplBuilder.SharedDefault extendShared() {
+        return new MqttTopicFilterImplBuilder.SharedDefault(this);
+    }
 }

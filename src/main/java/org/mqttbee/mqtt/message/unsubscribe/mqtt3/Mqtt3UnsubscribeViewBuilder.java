@@ -21,12 +21,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
-import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubscribeBuilder;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImplBuilder;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscription;
-import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribe;
 import org.mqttbee.mqtt.util.MqttChecks;
 import org.mqttbee.util.collections.ImmutableList;
 
@@ -43,9 +41,8 @@ public abstract class Mqtt3UnsubscribeViewBuilder<B extends Mqtt3UnsubscribeView
         topicFiltersBuilder = ImmutableList.builder();
     }
 
-    Mqtt3UnsubscribeViewBuilder(final @Nullable Mqtt3Unsubscribe unsubscribe) {
-        final MqttUnsubscribe unsubscribeView = MqttChecks.unsubscribe(unsubscribe);
-        final ImmutableList<MqttTopicFilterImpl> topicFilters = unsubscribeView.getTopicFilters();
+    Mqtt3UnsubscribeViewBuilder(final @NotNull Mqtt3UnsubscribeView unsubscribe) {
+        final ImmutableList<MqttTopicFilterImpl> topicFilters = unsubscribe.getDelegate().getTopicFilters();
         topicFiltersBuilder = ImmutableList.builder(topicFilters.size() + 1);
         topicFiltersBuilder.addAll(topicFilters);
     }
@@ -99,7 +96,7 @@ public abstract class Mqtt3UnsubscribeViewBuilder<B extends Mqtt3UnsubscribeView
 
         public Default() {}
 
-        public Default(final @Nullable Mqtt3Unsubscribe unsubscribe) {
+        Default(final @NotNull Mqtt3UnsubscribeView unsubscribe) {
             super(unsubscribe);
         }
 

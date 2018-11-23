@@ -21,7 +21,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.datatypes.MqttTopic;
-import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3PublishBuilder;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3WillPublishBuilder;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
@@ -46,12 +45,12 @@ public abstract class Mqtt3PublishViewBuilder<B extends Mqtt3PublishViewBuilder<
 
     Mqtt3PublishViewBuilder() {}
 
-    Mqtt3PublishViewBuilder(final @Nullable Mqtt3Publish publish) {
-        final MqttPublish publishView = MqttChecks.publish(publish);
-        topic = publishView.getTopic();
-        payload = publishView.getRawPayload();
-        qos = publishView.getQos();
-        retain = publishView.isRetain();
+    Mqtt3PublishViewBuilder(final @NotNull Mqtt3PublishView publish) {
+        final MqttPublish delegate = publish.getDelegate();
+        topic = delegate.getTopic();
+        payload = delegate.getRawPayload();
+        qos = delegate.getQos();
+        retain = delegate.isRetain();
     }
 
     protected abstract @NotNull B self();
@@ -94,7 +93,7 @@ public abstract class Mqtt3PublishViewBuilder<B extends Mqtt3PublishViewBuilder<
 
         Base() {}
 
-        Base(final @Nullable Mqtt3Publish publish) {
+        Base(final @NotNull Mqtt3PublishView publish) {
             super(publish);
         }
 
@@ -108,7 +107,7 @@ public abstract class Mqtt3PublishViewBuilder<B extends Mqtt3PublishViewBuilder<
 
         public Default() {}
 
-        public Default(final @Nullable Mqtt3Publish publish) {
+        Default(final @NotNull Mqtt3PublishView publish) {
             super(publish);
         }
 
@@ -160,7 +159,7 @@ public abstract class Mqtt3PublishViewBuilder<B extends Mqtt3PublishViewBuilder<
 
         WillBase() {}
 
-        WillBase(final @Nullable Mqtt3Publish publish) {
+        WillBase(final @NotNull Mqtt3PublishView publish) {
             super(publish);
         }
 
@@ -174,7 +173,7 @@ public abstract class Mqtt3PublishViewBuilder<B extends Mqtt3PublishViewBuilder<
 
         public WillDefault() {}
 
-        public WillDefault(final @Nullable Mqtt3Publish publish) {
+        WillDefault(final @NotNull Mqtt3PublishView publish) {
             super(publish);
         }
 

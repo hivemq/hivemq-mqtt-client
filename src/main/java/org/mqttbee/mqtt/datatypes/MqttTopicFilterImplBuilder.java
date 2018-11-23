@@ -19,8 +19,8 @@ package org.mqttbee.mqtt.datatypes;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.*;
-import org.mqttbee.mqtt.util.MqttChecks;
+import org.mqttbee.api.mqtt.datatypes.MqttSharedTopicFilterBuilder;
+import org.mqttbee.api.mqtt.datatypes.MqttTopicFilterBuilder;
 import org.mqttbee.util.Checks;
 
 import java.util.function.Function;
@@ -49,7 +49,7 @@ public abstract class MqttTopicFilterImplBuilder<B extends MqttTopicFilterImplBu
         if (stringBuilder == null) {
             stringBuilder = new StringBuilder(topicLevel);
         } else {
-            stringBuilder.append(MqttTopic.TOPIC_LEVEL_SEPARATOR).append(topicLevel);
+            stringBuilder.append(MqttTopicImpl.TOPIC_LEVEL_SEPARATOR).append(topicLevel);
         }
         return self();
     }
@@ -58,9 +58,9 @@ public abstract class MqttTopicFilterImplBuilder<B extends MqttTopicFilterImplBu
         if (stringBuilder == null) {
             stringBuilder = new StringBuilder();
         } else {
-            stringBuilder.append(MqttTopic.TOPIC_LEVEL_SEPARATOR);
+            stringBuilder.append(MqttTopicImpl.TOPIC_LEVEL_SEPARATOR);
         }
-        stringBuilder.append(MqttTopicFilter.SINGLE_LEVEL_WILDCARD);
+        stringBuilder.append(MqttTopicFilterImpl.SINGLE_LEVEL_WILDCARD);
         return self();
     }
 
@@ -68,9 +68,9 @@ public abstract class MqttTopicFilterImplBuilder<B extends MqttTopicFilterImplBu
         if (stringBuilder == null) {
             stringBuilder = new StringBuilder(1);
         } else {
-            stringBuilder.append(MqttTopic.TOPIC_LEVEL_SEPARATOR);
+            stringBuilder.append(MqttTopicImpl.TOPIC_LEVEL_SEPARATOR);
         }
-        stringBuilder.append(MqttTopicFilter.MULTI_LEVEL_WILDCARD);
+        stringBuilder.append(MqttTopicFilterImpl.MULTI_LEVEL_WILDCARD);
         return self();
     }
 
@@ -102,8 +102,8 @@ public abstract class MqttTopicFilterImplBuilder<B extends MqttTopicFilterImplBu
             super(baseTopicFilter);
         }
 
-        public Default(final @Nullable MqttTopicFilter topicFilter) {
-            super(MqttChecks.topicFilter(topicFilter));
+        Default(final @NotNull MqttTopicFilterImpl topicFilter) {
+            super(topicFilter);
         }
 
         @Override
@@ -113,11 +113,11 @@ public abstract class MqttTopicFilterImplBuilder<B extends MqttTopicFilterImplBu
 
         @NotNull
         @Override
-        public MqttTopicFilterImplBuilder.SharedDefault share(final @Nullable String shareName) {
+        public SharedDefault share(final @Nullable String shareName) {
             if (stringBuilder == null) {
-                return new MqttTopicFilterImplBuilder.SharedDefault(shareName);
+                return new SharedDefault(shareName);
             }
-            return new MqttTopicFilterImplBuilder.SharedDefault(shareName, stringBuilder.toString());
+            return new SharedDefault(shareName, stringBuilder.toString());
         }
     }
 
@@ -134,11 +134,11 @@ public abstract class MqttTopicFilterImplBuilder<B extends MqttTopicFilterImplBu
             return this;
         }
 
-        public @NotNull MqttTopicFilterImplBuilder.SharedNested<P> share(final @Nullable String shareName) {
+        public @NotNull SharedNested<P> share(final @Nullable String shareName) {
             if (stringBuilder == null) {
-                return new MqttTopicFilterImplBuilder.SharedNested<>(shareName, parentConsumer);
+                return new SharedNested<>(shareName, parentConsumer);
             }
-            return new MqttTopicFilterImplBuilder.SharedNested<>(shareName, stringBuilder.toString(), parentConsumer);
+            return new SharedNested<>(shareName, stringBuilder.toString(), parentConsumer);
         }
 
         @Override
@@ -189,8 +189,8 @@ public abstract class MqttTopicFilterImplBuilder<B extends MqttTopicFilterImplBu
             super(shareName, baseTopicFilter);
         }
 
-        public SharedDefault(final @Nullable MqttSharedTopicFilter sharedTopicFilter) {
-            super(MqttChecks.sharedTopicFilter(sharedTopicFilter));
+        SharedDefault(final @NotNull MqttSharedTopicFilterImpl sharedTopicFilter) {
+            super(sharedTopicFilter);
         }
 
         @Override

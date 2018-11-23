@@ -64,12 +64,6 @@ public interface MqttSharedTopicFilter extends MqttTopicFilter {
         return new MqttTopicFilterImplBuilder.SharedDefault(shareName);
     }
 
-    static @NotNull MqttSharedTopicFilterBuilder.Complete extend(
-            final @NotNull MqttSharedTopicFilter sharedTopicFilter) {
-
-        return new MqttTopicFilterImplBuilder.SharedDefault(sharedTopicFilter);
-    }
-
     /**
      * @return the Share Name of this Shared Topic Filter as a string.
      */
@@ -79,4 +73,6 @@ public interface MqttSharedTopicFilter extends MqttTopicFilter {
      * @return the Topic Filter of this Shared Topic Filter.
      */
     @NotNull MqttTopicFilter getTopicFilter();
+
+    @NotNull MqttSharedTopicFilterBuilder.Complete extendShared();
 }

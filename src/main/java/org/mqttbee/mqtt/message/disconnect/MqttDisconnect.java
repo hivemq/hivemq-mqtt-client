@@ -73,4 +73,9 @@ public class MqttDisconnect extends MqttMessageWithUserProperties.WithReason.Wit
     public @Nullable MqttUtf8StringImpl getRawServerReference() {
         return serverReference;
     }
+
+    @Override
+    public @NotNull MqttDisconnectBuilder.Default extend() {
+        return new MqttDisconnectBuilder.Default(this);
+    }
 }
