@@ -57,17 +57,16 @@ public abstract class MqttConnectBuilder<B extends MqttConnectBuilder<B>> {
     MqttConnectBuilder() {}
 
     MqttConnectBuilder(final @NotNull MqttConnect connect) {
-        final MqttConnect mqttConnect = MqttChecks.connect(connect);
-        keepAlive = mqttConnect.getKeepAlive();
-        isCleanStart = mqttConnect.isCleanStart();
-        sessionExpiryInterval = mqttConnect.getSessionExpiryInterval();
-        isResponseInformationRequested = mqttConnect.isResponseInformationRequested();
-        isProblemInformationRequested = mqttConnect.isProblemInformationRequested();
-        restrictions = mqttConnect.getRestrictions();
-        simpleAuth = mqttConnect.getRawSimpleAuth();
-        enhancedAuthProvider = mqttConnect.getRawEnhancedAuthProvider();
-        willPublish = mqttConnect.getRawWillPublish();
-        userProperties = mqttConnect.getUserProperties();
+        keepAlive = connect.getKeepAlive();
+        isCleanStart = connect.isCleanStart();
+        sessionExpiryInterval = connect.getSessionExpiryInterval();
+        isResponseInformationRequested = connect.isResponseInformationRequested();
+        isProblemInformationRequested = connect.isProblemInformationRequested();
+        restrictions = connect.getRestrictions();
+        simpleAuth = connect.getRawSimpleAuth();
+        enhancedAuthProvider = connect.getRawEnhancedAuthProvider();
+        willPublish = connect.getRawWillPublish();
+        userProperties = connect.getUserProperties();
     }
 
     abstract @NotNull B self();

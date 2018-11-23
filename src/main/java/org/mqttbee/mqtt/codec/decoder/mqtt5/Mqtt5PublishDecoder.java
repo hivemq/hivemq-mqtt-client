@@ -18,7 +18,6 @@
 package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
 import com.google.common.base.Utf8;
-import com.google.common.primitives.ImmutableIntArray;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
@@ -32,6 +31,7 @@ import org.mqttbee.mqtt.datatypes.*;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
 import org.mqttbee.util.ByteBufferUtil;
+import org.mqttbee.util.collections.ImmutableIntList;
 import org.mqttbee.util.collections.ImmutableList;
 import org.mqttbee.util.collections.IntMap;
 
@@ -94,7 +94,7 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
         ImmutableList.Builder<MqttUserPropertyImpl> userPropertiesBuilder = null;
         int topicAlias = DEFAULT_NO_TOPIC_ALIAS;
         TopicAliasUsage topicAliasUsage = TopicAliasUsage.NO;
-        ImmutableIntArray.Builder subscriptionIdentifiersBuilder = null;
+        ImmutableIntList.Builder subscriptionIdentifiersBuilder = null;
 
         final int propertiesStartIndex = in.readerIndex();
         int readPropertyLength;
@@ -104,8 +104,9 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
 
             switch (propertyIdentifier) {
                 case MESSAGE_EXPIRY_INTERVAL:
-                    messageExpiryInterval = unsignedIntOnlyOnce(messageExpiryInterval, NO_MESSAGE_EXPIRY,
-                            "message expiry interval", in);
+                    messageExpiryInterval =
+                            unsignedIntOnlyOnce(messageExpiryInterval, NO_MESSAGE_EXPIRY, "message expiry interval",
+                                    in);
                     break;
 
                 case PAYLOAD_FORMAT_INDICATOR:
@@ -152,7 +153,7 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
 
                 case SUBSCRIPTION_IDENTIFIER:
                     if (subscriptionIdentifiersBuilder == null) {
-                        subscriptionIdentifiersBuilder = ImmutableIntArray.builder();
+                        subscriptionIdentifiersBuilder = ImmutableIntList.builder();
                     }
                     final int subscriptionIdentifier = MqttVariableByteInteger.decode(in);
                     if (subscriptionIdentifier < 0) {
@@ -219,7 +220,7 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
                 new MqttPublish(topic, payload, qos, retain, messageExpiryInterval, payloadFormatIndicator, contentType,
                         responseTopic, correlationData, topicAliasUsage, userProperties);
 
-        final ImmutableIntArray subscriptionIdentifiers =
+        final ImmutableIntList subscriptionIdentifiers =
                 (subscriptionIdentifiersBuilder == null) ? DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS :
                         subscriptionIdentifiersBuilder.build();
 

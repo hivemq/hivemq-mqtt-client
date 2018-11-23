@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt.message.publish;
 
-import com.google.common.primitives.ImmutableIntArray;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.Immutable;
@@ -32,6 +31,7 @@ import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.message.MqttMessageWithUserProperties;
 import org.mqttbee.util.ByteBufferUtil;
+import org.mqttbee.util.collections.ImmutableIntList;
 
 import java.nio.ByteBuffer;
 import java.util.Optional;
@@ -170,7 +170,7 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
 
     public @NotNull MqttStatefulPublish createStateful(
             final int packetIdentifier, final boolean isDup, final int topicAlias, final boolean isNewTopicAlias,
-            final @NotNull ImmutableIntArray subscriptionIdentifiers) {
+            final @NotNull ImmutableIntList subscriptionIdentifiers) {
 
         return new MqttStatefulPublish(
                 this, packetIdentifier, isDup, topicAlias, isNewTopicAlias, subscriptionIdentifiers);

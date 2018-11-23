@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
-import com.google.common.primitives.ImmutableIntArray;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
@@ -28,6 +27,7 @@ import org.mqttbee.mqtt.datatypes.MqttBinaryData;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
+import org.mqttbee.util.collections.ImmutableIntList;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -82,8 +82,8 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
 
         propertyLength += shortPropertyEncodedLength(message.getTopicAlias(), DEFAULT_NO_TOPIC_ALIAS);
 
-        final ImmutableIntArray subscriptionIdentifiers = message.getSubscriptionIdentifiers();
-        for (int i = 0; i < subscriptionIdentifiers.length(); i++) {
+        final ImmutableIntList subscriptionIdentifiers = message.getSubscriptionIdentifiers();
+        for (int i = 0; i < subscriptionIdentifiers.size(); i++) {
             propertyLength += variableByteIntegerPropertyEncodedLength(subscriptionIdentifiers.get(i));
         }
 
@@ -178,8 +178,8 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
 
         encodeShortProperty(TOPIC_ALIAS, message.getTopicAlias(), DEFAULT_NO_TOPIC_ALIAS, out);
 
-        final ImmutableIntArray subscriptionIdentifiers = message.getSubscriptionIdentifiers();
-        for (int i = 0; i < subscriptionIdentifiers.length(); i++) {
+        final ImmutableIntList subscriptionIdentifiers = message.getSubscriptionIdentifiers();
+        for (int i = 0; i < subscriptionIdentifiers.size(); i++) {
             encodeVariableByteIntegerProperty(SUBSCRIPTION_IDENTIFIER, subscriptionIdentifiers.get(i), out);
         }
     }

@@ -105,6 +105,7 @@ public interface ImmutableIntList {
         public @NotNull Builder add(final int i) {
             if (size == 0) {
                 this.i = i;
+                size = 1;
             } else {
                 if (array == null) {
                     array = new int[INITIAL_CAPACITY];

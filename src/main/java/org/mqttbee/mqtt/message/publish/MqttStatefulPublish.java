@@ -17,10 +17,10 @@
 
 package org.mqttbee.mqtt.message.publish;
 
-import com.google.common.primitives.ImmutableIntArray;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.Immutable;
 import org.mqttbee.mqtt.message.MqttStatefulMessage;
+import org.mqttbee.util.collections.ImmutableIntList;
 
 /**
  * @author Silvio Giebl
@@ -30,16 +30,16 @@ public class MqttStatefulPublish extends MqttStatefulMessage.WithId<MqttPublish>
 
     public static final int NO_PACKET_IDENTIFIER_QOS_0 = -1;
     public static final int DEFAULT_NO_TOPIC_ALIAS = -1;
-    public static final @NotNull ImmutableIntArray DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS = ImmutableIntArray.of();
+    public static final @NotNull ImmutableIntList DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS = ImmutableIntList.of();
 
     private final boolean isDup;
     private final int topicAlias;
     private final boolean isNewTopicAlias;
-    private final @NotNull ImmutableIntArray subscriptionIdentifiers;
+    private final @NotNull ImmutableIntList subscriptionIdentifiers;
 
     MqttStatefulPublish(
             final @NotNull MqttPublish publish, final int packetIdentifier, final boolean isDup, final int topicAlias,
-            final boolean isNewTopicAlias, final @NotNull ImmutableIntArray subscriptionIdentifiers) {
+            final boolean isNewTopicAlias, final @NotNull ImmutableIntList subscriptionIdentifiers) {
 
         super(publish, packetIdentifier);
         this.isDup = isDup;
@@ -60,7 +60,7 @@ public class MqttStatefulPublish extends MqttStatefulMessage.WithId<MqttPublish>
         return isNewTopicAlias;
     }
 
-    public @NotNull ImmutableIntArray getSubscriptionIdentifiers() {
+    public @NotNull ImmutableIntList getSubscriptionIdentifiers() {
         return subscriptionIdentifiers;
     }
 }
