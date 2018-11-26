@@ -26,18 +26,14 @@ import org.mqttbee.annotations.DoNotImplement;
 // @formatter:off
 @DoNotImplement
 public interface Mqtt3WillPublishBuilder extends
-        Mqtt3PublishBuilderBase<
-            Mqtt3WillPublishBuilder,
-            Mqtt3WillPublishBuilder.Complete> {
+        Mqtt3PublishBuilderBase<Mqtt3WillPublishBuilder, Mqtt3WillPublishBuilder.Complete> {
 // @formatter:on
 
     // @formatter:off
     @DoNotImplement
     interface Complete extends
             Mqtt3WillPublishBuilder,
-            Mqtt3PublishBuilderBase.Complete<
-                Mqtt3WillPublishBuilder,
-                Mqtt3WillPublishBuilder.Complete> {
+            Mqtt3PublishBuilderBase.Complete<Mqtt3WillPublishBuilder.Complete> {
     // @formatter:on
 
         @NotNull Mqtt3Publish build();
@@ -46,18 +42,14 @@ public interface Mqtt3WillPublishBuilder extends
     // @formatter:off
     @DoNotImplement
     interface Nested<P> extends
-            Mqtt3PublishBuilderBase<
-                Nested<P>,
-                Nested.Complete<P>> {
+            Mqtt3PublishBuilderBase<Nested<P>, Nested.Complete<P>> {
     // @formatter:on
 
         // @formatter:off
         @DoNotImplement
         interface Complete<P> extends
                 Nested<P>,
-                Mqtt3PublishBuilderBase.Complete<
-                    Nested<P>,
-                    Nested.Complete<P>> {
+                Mqtt3PublishBuilderBase.Complete<Nested.Complete<P>> {
         // @formatter:on
 
             @NotNull P applyWillPublish();

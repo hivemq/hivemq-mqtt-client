@@ -26,18 +26,14 @@ import org.mqttbee.annotations.DoNotImplement;
 // @formatter:off
 @DoNotImplement
 public interface Mqtt5SubscriptionBuilder extends
-        Mqtt5SubscriptionBuilderBase<
-            Mqtt5SubscriptionBuilder,
-            Mqtt5SubscriptionBuilder.Complete> {
+        Mqtt5SubscriptionBuilderBase<Mqtt5SubscriptionBuilder, Mqtt5SubscriptionBuilder.Complete> {
 // @formatter:on
 
     // @formatter:off
     @DoNotImplement
     interface Complete extends
             Mqtt5SubscriptionBuilder,
-            Mqtt5SubscriptionBuilderBase.Complete<
-                Mqtt5SubscriptionBuilder,
-                Mqtt5SubscriptionBuilder.Complete> {
+            Mqtt5SubscriptionBuilderBase.Complete<Mqtt5SubscriptionBuilder.Complete> {
     // @formatter:on
 
         @NotNull Mqtt5Subscription build();
@@ -46,18 +42,14 @@ public interface Mqtt5SubscriptionBuilder extends
     // @formatter:off
     @DoNotImplement
     interface Nested<P> extends
-            Mqtt5SubscriptionBuilderBase<
-                Nested<P>,
-                Nested.Complete<P>> {
+            Mqtt5SubscriptionBuilderBase<Nested<P>, Nested.Complete<P>> {
     // @formatter:on
 
         // @formatter:off
         @DoNotImplement
         interface Complete<P> extends
                 Nested<P>,
-                Mqtt5SubscriptionBuilderBase.Complete<
-                    Nested<P>,
-                    Nested.Complete<P>> {
+                Mqtt5SubscriptionBuilderBase.Complete<Nested.Complete<P>> {
         // @formatter:on
 
             @NotNull P applySubscription();

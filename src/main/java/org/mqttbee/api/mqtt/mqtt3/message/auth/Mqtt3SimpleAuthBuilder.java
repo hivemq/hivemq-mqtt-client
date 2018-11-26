@@ -26,18 +26,14 @@ import org.mqttbee.annotations.DoNotImplement;
 // @formatter:off
 @DoNotImplement
 public interface Mqtt3SimpleAuthBuilder extends
-        Mqtt3SimpleAuthBuilderBase<
-            Mqtt3SimpleAuthBuilder,
-            Mqtt3SimpleAuthBuilder.Complete> {
+        Mqtt3SimpleAuthBuilderBase<Mqtt3SimpleAuthBuilder, Mqtt3SimpleAuthBuilder.Complete> {
 // @formatter:on
 
     // @formatter:off
     @DoNotImplement
     interface Complete extends
             Mqtt3SimpleAuthBuilder,
-            Mqtt3SimpleAuthBuilderBase.Complete<
-                Mqtt3SimpleAuthBuilder,
-                Mqtt3SimpleAuthBuilder.Complete> {
+            Mqtt3SimpleAuthBuilderBase.Complete<Mqtt3SimpleAuthBuilder.Complete> {
     // @formatter:on
 
         @NotNull Mqtt3SimpleAuth build();
@@ -46,18 +42,14 @@ public interface Mqtt3SimpleAuthBuilder extends
     // @formatter:off
     @DoNotImplement
     interface Nested<P> extends
-            Mqtt3SimpleAuthBuilderBase<
-                Nested<P>,
-                Nested.Complete<P>> {
+            Mqtt3SimpleAuthBuilderBase<Nested<P>, Nested.Complete<P>> {
     // @formatter:on
 
         // @formatter:off
         @DoNotImplement
         interface Complete<P> extends
                 Nested<P>,
-                Mqtt3SimpleAuthBuilderBase.Complete<
-                    Nested<P>,
-                    Nested.Complete<P>> {
+                Mqtt3SimpleAuthBuilderBase.Complete<Nested.Complete<P>> {
         // @formatter:on
 
             @NotNull P applySimpleAuth();

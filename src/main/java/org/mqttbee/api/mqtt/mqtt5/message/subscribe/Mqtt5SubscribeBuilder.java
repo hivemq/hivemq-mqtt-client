@@ -26,18 +26,14 @@ import org.mqttbee.annotations.DoNotImplement;
 // @formatter:off
 @DoNotImplement
 public interface Mqtt5SubscribeBuilder extends
-        Mqtt5SubscribeBuilderBase<
-            Mqtt5SubscribeBuilder,
-            Mqtt5SubscribeBuilder.Complete> {
+        Mqtt5SubscribeBuilderBase<Mqtt5SubscribeBuilder, Mqtt5SubscribeBuilder.Complete> {
 // @formatter:on
 
     // @formatter:off
     @DoNotImplement
     interface Complete extends
             Mqtt5SubscribeBuilder,
-            Mqtt5SubscribeBuilderBase.Complete<
-                Mqtt5SubscribeBuilder,
-                Mqtt5SubscribeBuilder.Complete> {
+            Mqtt5SubscribeBuilderBase.Complete<Mqtt5SubscribeBuilder.Complete> {
     // @formatter:on
 
         @NotNull Mqtt5Subscribe build();
@@ -47,55 +43,39 @@ public interface Mqtt5SubscribeBuilder extends
     @DoNotImplement
     interface First extends
             Mqtt5SubscribeBuilderBase.First<
-                Mqtt5SubscribeBuilder.First,
-                Mqtt5SubscribeBuilder.Start.Complete> {
+                    Mqtt5SubscribeBuilder.Complete, Mqtt5SubscribeBuilder.First,
+                    Mqtt5SubscribeBuilder.Start.Complete> {}
     // @formatter:on
-    }
 
     // @formatter:off
     @DoNotImplement
     interface Start extends
-            Mqtt5SubscribeBuilder,
-            Mqtt5SubscribeBuilder.First,
+            Mqtt5SubscribeBuilder, Mqtt5SubscribeBuilder.First,
             Mqtt5SubscribeBuilderBase.Start<
-                Mqtt5SubscribeBuilder,
-                Mqtt5SubscribeBuilder.Complete,
-                Mqtt5SubscribeBuilder.Start,
-                Mqtt5SubscribeBuilder.First,
-                Mqtt5SubscribeBuilder.Start.Complete> {
+                    Mqtt5SubscribeBuilder.Complete, Mqtt5SubscribeBuilder.Start, Mqtt5SubscribeBuilder.First,
+                    Mqtt5SubscribeBuilder.Start.Complete> {
     // @formatter:on
 
         // @formatter:off
         @DoNotImplement
         interface Complete extends
-                Mqtt5SubscribeBuilder.Start,
-                Mqtt5SubscribeBuilder.Complete,
+                Mqtt5SubscribeBuilder.Start, Mqtt5SubscribeBuilder.Complete,
                 Mqtt5SubscribeBuilderBase.Start.Complete<
-                    Mqtt5SubscribeBuilder,
-                    Mqtt5SubscribeBuilder.Complete,
-                    Mqtt5SubscribeBuilder.Start,
-                    Mqtt5SubscribeBuilder.Start.Complete,
-                    Mqtt5SubscribeBuilder.First,
-                    Mqtt5SubscribeBuilder.Start.Complete> {
+                        Mqtt5SubscribeBuilder.Complete, Mqtt5SubscribeBuilder.Start.Complete> {}
         // @formatter:on
-        }
     }
 
     // @formatter:off
     @DoNotImplement
     interface Nested<P> extends
-        Mqtt5SubscribeBuilderBase<
-            Nested<P>,
-            Nested.Complete<P>> {
+            Mqtt5SubscribeBuilderBase<Nested<P>, Nested.Complete<P>> {
     // @formatter:on
 
         // @formatter:off
         @DoNotImplement
         interface Complete<P> extends
                 Nested<P>,
-                Mqtt5SubscribeBuilderBase.Complete<
-                    Nested<P>,
-                    Nested.Complete<P>> {
+                Mqtt5SubscribeBuilderBase.Complete<Nested.Complete<P>> {
         // @formatter:on
 
             @NotNull P applySubscribe();
@@ -104,57 +84,37 @@ public interface Mqtt5SubscribeBuilder extends
         // @formatter:off
         @DoNotImplement
         interface First<P> extends
-                Mqtt5SubscribeBuilderBase.First<
-                    Nested.First<P>,
-                    Nested.Start.Complete<P>> {
+                Mqtt5SubscribeBuilderBase.First<Nested.Complete<P>, Nested.First<P>, Nested.Start.Complete<P>> {}
         // @formatter:on
-        }
 
         // @formatter:off
         @DoNotImplement
         interface Start<P> extends
-                Nested<P>,
-                Nested.First<P>,
+                Nested<P>, Nested.First<P>,
                 Mqtt5SubscribeBuilderBase.Start<
-                    Nested<P>,
-                    Nested.Complete<P>,
-                    Nested.Start<P>,
-                    Nested.First<P>,
-                    Nested.Start.Complete<P>> {
+                        Nested.Complete<P>, Nested.Start<P>, Nested.First<P>, Nested.Start.Complete<P>> {
         // @formatter:on
 
             // @formatter:off
             @DoNotImplement
             interface Complete<P> extends
-                    Nested.Start<P>,
-                    Nested.Complete<P>,
-                    Mqtt5SubscribeBuilderBase.Start.Complete<
-                        Nested<P>,
-                        Nested.Complete<P>,
-                        Nested.Start<P>,
-                        Nested.Start.Complete<P>,
-                        Nested.First<P>,
-                        Nested.Start.Complete<P>> {
+                    Nested.Start<P>, Nested.Complete<P>,
+                    Mqtt5SubscribeBuilderBase.Start.Complete<Nested.Complete<P>, Nested.Start.Complete<P>> {}
             // @formatter:on
-            }
         }
     }
 
     // @formatter:off
     @DoNotImplement
     interface Send<P> extends
-        Mqtt5SubscribeBuilderBase<
-            Send<P>,
-            Send.Complete<P>> {
+            Mqtt5SubscribeBuilderBase<Send<P>, Send.Complete<P>> {
     // @formatter:on
 
         // @formatter:off
         @DoNotImplement
         interface Complete<P> extends
                 Send<P>,
-                Mqtt5SubscribeBuilderBase.Complete<
-                    Send<P>,
-                    Send.Complete<P>> {
+                Mqtt5SubscribeBuilderBase.Complete<Send.Complete<P>> {
         // @formatter:on
 
             @NotNull P send();
@@ -163,39 +123,23 @@ public interface Mqtt5SubscribeBuilder extends
         // @formatter:off
         @DoNotImplement
         interface First<P> extends
-                Mqtt5SubscribeBuilderBase.First<
-                    Send.First<P>,
-                    Send.Start.Complete<P>> {
+                Mqtt5SubscribeBuilderBase.First<Send.Complete<P>, Send.First<P>, Send.Start.Complete<P>> {}
         // @formatter:on
-        }
 
         // @formatter:off
         @DoNotImplement
         interface Start<P> extends
-                Send<P>,
-                Send.First<P>,
+                Send<P>, Send.First<P>,
                 Mqtt5SubscribeBuilderBase.Start<
-                    Send<P>,
-                    Send.Complete<P>,
-                    Send.Start<P>,
-                    Send.First<P>,
-                    Send.Start.Complete<P>> {
+                        Send.Complete<P>, Send.Start<P>, Send.First<P>, Send.Start.Complete<P>> {
         // @formatter:on
 
             // @formatter:off
             @DoNotImplement
             interface Complete<P> extends
-                    Send.Start<P>,
-                    Send.Complete<P>,
-                    Mqtt5SubscribeBuilderBase.Start.Complete<
-                        Send<P>,
-                        Send.Complete<P>,
-                        Send.Start<P>,
-                        Send.Start.Complete<P>,
-                        Send.First<P>,
-                        Send.Start.Complete<P>> {
+                    Send.Start<P>, Send.Complete<P>,
+                    Mqtt5SubscribeBuilderBase.Start.Complete<Send.Complete<P>, Send.Start.Complete<P>> {}
             // @formatter:on
-            }
         }
     }
 }

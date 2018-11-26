@@ -30,7 +30,7 @@ import org.mqttbee.api.mqtt.datatypes.MqttTopicFilterBuilder;
 @DoNotImplement
 public interface Mqtt3SubscriptionBuilderBase<
             B extends Mqtt3SubscriptionBuilderBase<B, C>,
-            C extends B> {
+            C extends Mqtt3SubscriptionBuilderBase.Complete<C>> {
 // @formatter:on
 
     @NotNull C topicFilter(@NotNull String topicFilter);
@@ -41,15 +41,15 @@ public interface Mqtt3SubscriptionBuilderBase<
 
     @NotNull B qos(@NotNull MqttQos qos);
 
-    // @formatter:off
     @DoNotImplement
-    interface Complete<
-                B extends Mqtt3SubscriptionBuilderBase<B, C>,
-                C extends B>
-            extends Mqtt3SubscriptionBuilderBase<B, C> {
-    // @formatter:on
+    interface Complete<C extends Mqtt3SubscriptionBuilderBase.Complete<C>> {
 
-        @Override
+        @NotNull C topicFilter(@NotNull String topicFilter);
+
+        @NotNull C topicFilter(@NotNull MqttTopicFilter topicFilter);
+
+        @NotNull MqttTopicFilterBuilder.Nested<? extends C> topicFilter();
+
         @NotNull C qos(@NotNull MqttQos qos);
     }
 }

@@ -27,7 +27,7 @@ import java.nio.ByteBuffer;
  * @author Silvio Giebl
  */
 @DoNotImplement
-public interface Mqtt5SimpleAuthBuilderBase<B extends Mqtt5SimpleAuthBuilderBase<B, C>, C extends B> {
+public interface Mqtt5SimpleAuthBuilderBase<C extends Mqtt5SimpleAuthBuilderBase<C>> {
 
     @NotNull C username(@NotNull String username);
 
@@ -36,7 +36,4 @@ public interface Mqtt5SimpleAuthBuilderBase<B extends Mqtt5SimpleAuthBuilderBase
     @NotNull C password(@NotNull byte[] password);
 
     @NotNull C password(@NotNull ByteBuffer password);
-
-    @DoNotImplement
-    interface Complete<B extends Mqtt5SimpleAuthBuilderBase<B, C>, C extends B> {}
 }

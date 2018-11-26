@@ -32,8 +32,8 @@ import java.nio.ByteBuffer;
 // @formatter:off
 @DoNotImplement
 public interface Mqtt3PublishBuilderBase<
-            B extends Mqtt3PublishBuilderBase<B, C>,
-            C extends B> {
+        B extends Mqtt3PublishBuilderBase<B, C>,
+        C extends Mqtt3PublishBuilderBase.Complete<C>> {
 // @formatter:on
 
     @NotNull C topic(@NotNull String topic);
@@ -50,24 +50,21 @@ public interface Mqtt3PublishBuilderBase<
 
     @NotNull B retain(boolean retain);
 
-    // @formatter:off
     @DoNotImplement
-    interface Complete<
-                B extends Mqtt3PublishBuilderBase<B, C>,
-                C extends B>
-            extends Mqtt3PublishBuilderBase<B, C> {
-    // @formatter:on
+    interface Complete<C extends Mqtt3PublishBuilderBase.Complete<C>> {
 
-        @Override
+        @NotNull C topic(@NotNull String topic);
+
+        @NotNull C topic(@NotNull MqttTopic topic);
+
+        @NotNull MqttTopicBuilder.Nested<? extends C> topic();
+
         @NotNull C payload(@Nullable byte[] payload);
 
-        @Override
         @NotNull C payload(@Nullable ByteBuffer payload);
 
-        @Override
         @NotNull C qos(@NotNull MqttQos qos);
 
-        @Override
         @NotNull C retain(boolean retain);
     }
 }

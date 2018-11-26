@@ -26,19 +26,15 @@ import org.mqttbee.annotations.DoNotImplement;
 // @formatter:off
 @DoNotImplement
 public interface Mqtt5WillPublishBuilder extends
-        Mqtt5PublishBuilderBase.WillBase<
-            Mqtt5WillPublishBuilder,
-            Mqtt5WillPublishBuilder.Complete> {
-// @formatter:off
+        Mqtt5PublishBuilderBase.WillBase<Mqtt5WillPublishBuilder, Mqtt5WillPublishBuilder.Complete> {
+// @formatter:on
 
     // @formatter:off
     @DoNotImplement
     interface Complete extends
             Mqtt5WillPublishBuilder,
-            Mqtt5PublishBuilderBase.WillBase.Complete<
-                Mqtt5WillPublishBuilder,
-                Mqtt5WillPublishBuilder.Complete> {
-    // @formatter:off
+            Mqtt5PublishBuilderBase.WillBase.Complete<Mqtt5WillPublishBuilder.Complete> {
+    // @formatter:on
 
         @NotNull Mqtt5WillPublish build();
     }
@@ -46,19 +42,15 @@ public interface Mqtt5WillPublishBuilder extends
     // @formatter:off
     @DoNotImplement
     interface Nested<P> extends
-            Mqtt5PublishBuilderBase.WillBase<
-                Nested<P>,
-                Nested.Complete<P>> {
-    // @formatter:off
+            Mqtt5PublishBuilderBase.WillBase<Nested<P>, Nested.Complete<P>> {
+    // @formatter:on
 
         // @formatter:off
         @DoNotImplement
         interface Complete<P> extends
                 Nested<P>,
-                Mqtt5PublishBuilderBase.WillBase.Complete<
-                    Nested<P>,
-                    Nested.Complete<P>> {
-        // @formatter:off
+                Mqtt5PublishBuilderBase.WillBase.Complete<Nested.Complete<P>> {
+        // @formatter:on
 
             @NotNull P applyWillPublish();
         }

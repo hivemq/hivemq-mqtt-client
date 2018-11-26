@@ -23,12 +23,8 @@ import org.mqttbee.annotations.DoNotImplement;
 /**
  * @author Silvio Giebl
  */
-// @formatter:off
 @DoNotImplement
-public interface Mqtt3SubscribeBuilderBase<
-            B extends Mqtt3SubscribeBuilderBase<B, C>,
-            C extends B> {
-// @formatter:on
+public interface Mqtt3SubscribeBuilderBase<C extends Mqtt3SubscribeBuilderBase<C>> {
 
     @NotNull C addSubscription(@NotNull Mqtt3Subscription subscription);
 
@@ -36,44 +32,37 @@ public interface Mqtt3SubscribeBuilderBase<
 
     // @formatter:off
     @DoNotImplement
-    interface Complete<
-                B extends Mqtt3SubscribeBuilderBase<B, C>,
-                C extends B>
-            extends Mqtt3SubscribeBuilderBase<B, C> {
-    // @formatter:on
-    }
-
-    // @formatter:off
-    @DoNotImplement
     interface First<
-                F extends Mqtt3SubscribeBuilderBase.First<F, FC>,
-                FC extends F>
-            extends Mqtt3SubscriptionBuilderBase<F, FC> {
+            C extends Mqtt3SubscribeBuilderBase<C>,
+            F extends Mqtt3SubscribeBuilderBase.First<C, F, SC>,
+            SC extends Mqtt3SubscribeBuilderBase.Start.Complete<C, SC>>
+            extends Mqtt3SubscriptionBuilderBase<F, SC> {}
     // @formatter:on
-    }
 
     // @formatter:off
     @DoNotImplement
     interface Start<
-                B extends Mqtt3SubscribeBuilderBase<B, C>,
-                C extends B,
-                F extends Mqtt3SubscribeBuilderBase.First<F, FC>,
-                FC extends F>
-            extends Mqtt3SubscribeBuilderBase<B, C>,
-                    Mqtt3SubscribeBuilderBase.First<F, FC> {
+                C extends Mqtt3SubscribeBuilderBase<C>,
+                F extends Mqtt3SubscribeBuilderBase.First<C, F, SC>,
+                SC extends Mqtt3SubscribeBuilderBase.Start.Complete<C, SC>>
+            extends Mqtt3SubscriptionBuilderBase<F, SC> {
     // @formatter:on
+
+        @NotNull C addSubscription(@NotNull Mqtt3Subscription subscription);
+
+        @NotNull Mqtt3SubscriptionBuilder.Nested<? extends C> addSubscription();
 
         // @formatter:off
         @DoNotImplement
         interface Complete<
-                    B extends Mqtt3SubscribeBuilderBase<B, C>,
-                    C extends B,
-                    F extends Mqtt3SubscribeBuilderBase.First<F, FC>,
-                    FC extends F>
-                extends Mqtt3SubscribeBuilderBase.Start<B, C, F, FC>,
-                        Mqtt3SubscribeBuilderBase.Complete<B, C>,
-                        Mqtt3SubscriptionBuilderBase.Complete<F, FC> {
+                    C extends Mqtt3SubscribeBuilderBase<C>,
+                    SC extends Mqtt3SubscribeBuilderBase.Start.Complete<C, SC>>
+                extends Mqtt3SubscriptionBuilderBase.Complete<SC> {
         // @formatter:on
+
+            @NotNull C addSubscription(@NotNull Mqtt3Subscription subscription);
+
+            @NotNull Mqtt3SubscriptionBuilder.Nested<? extends C> addSubscription();
         }
     }
 }

@@ -31,8 +31,8 @@ import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
 // @formatter:off
 @DoNotImplement
 public interface Mqtt5UnsubscribeBuilderBase<
-            B extends Mqtt5UnsubscribeBuilderBase<B, C>,
-            C extends B> {
+        B extends Mqtt5UnsubscribeBuilderBase<B, C>,
+        C extends Mqtt5UnsubscribeBuilderBase.Complete<C>> {
 // @formatter:on
 
     @NotNull C addTopicFilter(@NotNull String topicFilter);
@@ -47,13 +47,16 @@ public interface Mqtt5UnsubscribeBuilderBase<
 
     @NotNull Mqtt5UserPropertiesBuilder.Nested<? extends B> userProperties();
 
-    // @formatter:off
     @DoNotImplement
-    interface Complete<
-                B extends Mqtt5UnsubscribeBuilderBase<B, C>,
-                C extends B>
-            extends Mqtt5UnsubscribeBuilderBase<B, C> {
-    // @formatter:on
+    interface Complete<C extends Mqtt5UnsubscribeBuilderBase.Complete<C>> {
+
+        @NotNull C addTopicFilter(@NotNull String topicFilter);
+
+        @NotNull C addTopicFilter(@NotNull MqttTopicFilter topicFilter);
+
+        @NotNull MqttTopicFilterBuilder.Nested<? extends C> addTopicFilter();
+
+        @NotNull C reverse(@NotNull Mqtt5Subscribe subscribe);
 
         @NotNull C userProperties(@NotNull Mqtt5UserProperties userProperties);
 
@@ -63,10 +66,8 @@ public interface Mqtt5UnsubscribeBuilderBase<
     // @formatter:off
     @DoNotImplement
     interface Start<
-                B extends Mqtt5UnsubscribeBuilderBase<B, C>,
-                C extends B,
-                S extends B>
-            extends Mqtt5UnsubscribeBuilderBase<B, C> {
+            C extends Mqtt5UnsubscribeBuilderBase.Complete<C>,
+            S extends Mqtt5UnsubscribeBuilderBase.Start<C, S>> {
     // @formatter:on
 
         @NotNull C topicFilter(@NotNull String topicFilter);
@@ -75,10 +76,16 @@ public interface Mqtt5UnsubscribeBuilderBase<
 
         @NotNull MqttTopicFilterBuilder.Nested<? extends C> topicFilter();
 
-        @Override
+        @NotNull C addTopicFilter(@NotNull String topicFilter);
+
+        @NotNull C addTopicFilter(@NotNull MqttTopicFilter topicFilter);
+
+        @NotNull MqttTopicFilterBuilder.Nested<? extends C> addTopicFilter();
+
+        @NotNull C reverse(@NotNull Mqtt5Subscribe subscribe);
+
         @NotNull S userProperties(@NotNull Mqtt5UserProperties userProperties);
 
-        @Override
         @NotNull Mqtt5UserPropertiesBuilder.Nested<? extends S> userProperties();
     }
 }
