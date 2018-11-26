@@ -24,24 +24,23 @@ import org.mqttbee.annotations.DoNotImplement;
  * @author Silvio Giebl
  */
 @DoNotImplement
-public interface MqttTopicBuilder extends MqttTopicBuilderBase<MqttTopicBuilder, MqttTopicBuilder.Complete> {
+public interface MqttTopicBuilder extends MqttTopicBuilderBase<MqttTopicBuilder.Complete> {
 
     @NotNull MqttTopicFilterBuilder filter();
 
     @NotNull MqttSharedTopicFilterBuilder share(@NotNull String shareName);
 
     @DoNotImplement
-    interface Complete
-            extends MqttTopicBuilder, MqttTopicBuilderBase.Complete<MqttTopicBuilder, MqttTopicBuilder.Complete> {
+    interface Complete extends MqttTopicBuilder, MqttTopicBuilderBase<MqttTopicBuilder.Complete> {
 
         @NotNull MqttTopic build();
     }
 
     @DoNotImplement
-    interface Nested<P> extends MqttTopicBuilderBase<Nested<P>, Nested.Complete<P>> {
+    interface Nested<P> extends MqttTopicBuilderBase<Nested.Complete<P>> {
 
         @DoNotImplement
-        interface Complete<P> extends Nested<P>, MqttTopicBuilderBase<Nested<P>, Nested.Complete<P>> {
+        interface Complete<P> extends Nested<P>, MqttTopicBuilderBase<Nested.Complete<P>> {
 
             @NotNull P applyTopic();
         }
