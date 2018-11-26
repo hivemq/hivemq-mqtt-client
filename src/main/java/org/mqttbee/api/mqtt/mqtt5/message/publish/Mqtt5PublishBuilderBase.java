@@ -32,8 +32,12 @@ import java.nio.ByteBuffer;
 /**
  * @author Bilvio Giebl
  */
+// @formatter:off
 @DoNotImplement
-public interface Mqtt5PublishBuilderBase<B extends Mqtt5PublishBuilderBase<B, C>, C extends B> {
+public interface Mqtt5PublishBuilderBase<
+        B extends Mqtt5PublishBuilderBase<B, C>,
+        C extends Mqtt5PublishBuilderBase.Complete<C>> {
+// @formatter:on
 
     @NotNull C topic(@NotNull String topic);
 
@@ -74,81 +78,67 @@ public interface Mqtt5PublishBuilderBase<B extends Mqtt5PublishBuilderBase<B, C>
     @NotNull Mqtt5UserPropertiesBuilder.Nested<? extends B> userProperties();
 
     @DoNotImplement
-    interface Complete<B extends Mqtt5PublishBuilderBase<B, C>, C extends B> extends Mqtt5PublishBuilderBase<B, C> {
+    interface Complete<C extends Mqtt5PublishBuilderBase.Complete<C>> {
 
-        @Override
+        @NotNull C topic(@NotNull String topic);
+
+        @NotNull C topic(@NotNull MqttTopic topic);
+
+        @NotNull MqttTopicBuilder.Nested<? extends C> topic();
+
         @NotNull C payload(@Nullable byte[] payload);
 
-        @Override
         @NotNull C payload(@Nullable ByteBuffer payload);
 
-        @Override
         @NotNull C qos(@NotNull MqttQos qos);
 
-        @Override
         @NotNull C retain(boolean retain);
 
-        @Override
         @NotNull C messageExpiryInterval(long messageExpiryInterval);
 
-        @Override
         @NotNull C noMessageExpiry();
 
-        @Override
         @NotNull C payloadFormatIndicator(@Nullable Mqtt5PayloadFormatIndicator payloadFormatIndicator);
 
-        @Override
         @NotNull C contentType(@Nullable String contentType);
 
-        @Override
         @NotNull C contentType(@Nullable MqttUtf8String contentType);
 
-        @Override
         @NotNull C responseTopic(@Nullable String responseTopic);
 
-        @Override
         @NotNull C responseTopic(@Nullable MqttTopic responseTopic);
 
-        @Override
         @NotNull MqttTopicBuilder.Nested<? extends C> responseTopic();
 
-        @Override
         @NotNull C correlationData(@Nullable byte[] correlationData);
 
-        @Override
         @NotNull C correlationData(@Nullable ByteBuffer correlationData);
 
-        @Override
         @NotNull C userProperties(@NotNull Mqtt5UserProperties userProperties);
 
-        @Override
         @NotNull Mqtt5UserPropertiesBuilder.Nested<? extends C> userProperties();
     }
 
     @DoNotImplement
-    interface Base<B extends Mqtt5PublishBuilderBase<B, C>, C extends B> extends Mqtt5PublishBuilderBase<B, C> {
+    interface Base<B extends Base<B, C>, C extends Base.Complete<C>> extends Mqtt5PublishBuilderBase<B, C> {
 
         @NotNull B useTopicAlias(@NotNull TopicAliasUsage topicAliasUsage);
 
         @DoNotImplement
-        interface Complete<B extends Mqtt5PublishBuilderBase<B, C>, C extends B>
-                extends Mqtt5PublishBuilderBase.Base<B, C>, Mqtt5PublishBuilderBase.Complete<B, C> {
+        interface Complete<C extends Base.Complete<C>> extends Mqtt5PublishBuilderBase.Complete<C> {
 
-            @Override
             @NotNull C useTopicAlias(@NotNull TopicAliasUsage topicAliasUsage);
         }
     }
 
     @DoNotImplement
-    interface WillBase<B extends Mqtt5PublishBuilderBase<B, C>, C extends B> extends Mqtt5PublishBuilderBase<B, C> {
+    interface WillBase<B extends WillBase<B, C>, C extends WillBase.Complete<C>> extends Mqtt5PublishBuilderBase<B, C> {
 
         @NotNull B delayInterval(long delayInterval);
 
         @DoNotImplement
-        interface Complete<B extends Mqtt5PublishBuilderBase<B, C>, C extends B>
-                extends Mqtt5PublishBuilderBase.WillBase<B, C>, Mqtt5PublishBuilderBase.Complete<B, C> {
+        interface Complete<C extends WillBase.Complete<C>> extends Mqtt5PublishBuilderBase.Complete<C> {
 
-            @Override
             @NotNull C delayInterval(long delayInterval);
         }
     }

@@ -26,12 +26,8 @@ import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 /**
  * @author Silvio Giebl
  */
-// @formatter:off
 @DoNotImplement
-public interface Mqtt3UnsubscribeBuilderBase<
-            B extends Mqtt3UnsubscribeBuilderBase<B, C>,
-            C extends B> {
-// @formatter:on
+public interface Mqtt3UnsubscribeBuilderBase<C extends Mqtt3UnsubscribeBuilderBase<C>> {
 
     @NotNull C addTopicFilter(@NotNull String topicFilter);
 
@@ -41,27 +37,21 @@ public interface Mqtt3UnsubscribeBuilderBase<
 
     @NotNull C reverse(@NotNull Mqtt3Subscribe subscribe);
 
-    // @formatter:off
     @DoNotImplement
-    interface Complete<
-                B extends Mqtt3UnsubscribeBuilderBase<B, C>,
-                C extends B>
-            extends Mqtt3UnsubscribeBuilderBase<B, C> {
-    // @formatter:on
-    }
-
-    // @formatter:off
-    @DoNotImplement
-    interface Start<
-                B extends Mqtt3UnsubscribeBuilderBase<B, C>,
-                C extends B>
-            extends Mqtt3UnsubscribeBuilderBase<B, C> {
-    // @formatter:on
+    interface Start<C extends Mqtt3UnsubscribeBuilderBase<C>> {
 
         @NotNull C topicFilter(@NotNull String topicFilter);
 
         @NotNull C topicFilter(@NotNull MqttTopicFilter topicFilter);
 
         @NotNull MqttTopicFilterBuilder.Nested<? extends C> topicFilter();
+
+        @NotNull C addTopicFilter(@NotNull String topicFilter);
+
+        @NotNull C addTopicFilter(@NotNull MqttTopicFilter topicFilter);
+
+        @NotNull MqttTopicFilterBuilder.Nested<? extends C> addTopicFilter();
+
+        @NotNull C reverse(@NotNull Mqtt3Subscribe subscribe);
     }
 }

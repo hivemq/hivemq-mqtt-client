@@ -26,18 +26,14 @@ import org.mqttbee.annotations.DoNotImplement;
 // @formatter:off
 @DoNotImplement
 public interface Mqtt3PublishBuilder extends
-        Mqtt3PublishBuilderBase<
-            Mqtt3PublishBuilder,
-            Mqtt3PublishBuilder.Complete> {
+        Mqtt3PublishBuilderBase<Mqtt3PublishBuilder, Mqtt3PublishBuilder.Complete> {
 // @formatter:on
 
     // @formatter:off
     @DoNotImplement
     interface Complete extends
             Mqtt3PublishBuilder,
-            Mqtt3PublishBuilderBase.Complete<
-                Mqtt3PublishBuilder,
-                Mqtt3PublishBuilder.Complete> {
+            Mqtt3PublishBuilderBase.Complete<Mqtt3PublishBuilder.Complete> {
     // @formatter:on
 
         @NotNull Mqtt3Publish build();
@@ -46,18 +42,14 @@ public interface Mqtt3PublishBuilder extends
     // @formatter:off
     @DoNotImplement
     interface Nested<P> extends
-            Mqtt3PublishBuilderBase<
-                Nested<P>,
-                Nested.Complete<P>> {
+            Mqtt3PublishBuilderBase<Nested<P>, Nested.Complete<P>> {
     // @formatter:on
 
         // @formatter:off
         @DoNotImplement
         interface Complete<P> extends
                 Nested<P>,
-                Mqtt3PublishBuilderBase.Complete<
-                    Nested<P>,
-                    Nested.Complete<P>> {
+                Mqtt3PublishBuilderBase.Complete<Nested.Complete<P>> {
         // @formatter:on
 
             @NotNull P applyPublish();
@@ -67,18 +59,14 @@ public interface Mqtt3PublishBuilder extends
     // @formatter:off
     @DoNotImplement
     interface Send<P> extends
-            Mqtt3PublishBuilderBase<
-                Send<P>,
-                Send.Complete<P>> {
+            Mqtt3PublishBuilderBase<Send<P>, Send.Complete<P>> {
     // @formatter:on
 
         // @formatter:off
         @DoNotImplement
         interface Complete<P> extends
                 Send<P>,
-                Mqtt3PublishBuilderBase.Complete<
-                    Send<P>,
-                    Send.Complete<P>> {
+                Mqtt3PublishBuilderBase.Complete<Send.Complete<P>> {
         // @formatter:on
 
             @NotNull P send();

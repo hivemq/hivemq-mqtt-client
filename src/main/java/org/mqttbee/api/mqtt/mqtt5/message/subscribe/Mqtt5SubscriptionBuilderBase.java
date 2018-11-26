@@ -29,8 +29,8 @@ import org.mqttbee.api.mqtt.datatypes.MqttTopicFilterBuilder;
 // @formatter:off
 @DoNotImplement
 public interface Mqtt5SubscriptionBuilderBase<
-            B extends Mqtt5SubscriptionBuilderBase<B, C>,
-            C extends B> {
+        B extends Mqtt5SubscriptionBuilderBase<B, C>,
+        C extends Mqtt5SubscriptionBuilderBase.Complete<C>> {
 // @formatter:on
 
     @NotNull C topicFilter(@NotNull String topicFilter);
@@ -47,24 +47,21 @@ public interface Mqtt5SubscriptionBuilderBase<
 
     @NotNull B retainAsPublished(boolean retainAsPublished);
 
-    // @formatter:off
     @DoNotImplement
-    interface Complete<
-                B extends Mqtt5SubscriptionBuilderBase<B, C>,
-                C extends B>
-            extends Mqtt5SubscriptionBuilderBase<B, C> {
-    // @formatter:on
+    interface Complete<C extends Mqtt5SubscriptionBuilderBase.Complete<C>> {
 
-        @Override
+        @NotNull C topicFilter(@NotNull String topicFilter);
+
+        @NotNull C topicFilter(@NotNull MqttTopicFilter topicFilter);
+
+        @NotNull MqttTopicFilterBuilder.Nested<? extends C> topicFilter();
+
         @NotNull C qos(@NotNull MqttQos qos);
 
-        @Override
         @NotNull C noLocal(boolean noLocal);
 
-        @Override
         @NotNull C retainHandling(@NotNull Mqtt5RetainHandling retainHandling);
 
-        @Override
         @NotNull C retainAsPublished(boolean retainAsPublished);
     }
 }
