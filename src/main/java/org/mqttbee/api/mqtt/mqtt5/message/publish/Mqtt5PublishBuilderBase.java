@@ -28,16 +28,13 @@ import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 
 import java.nio.ByteBuffer;
+import java.util.function.Function;
 
 /**
  * @author Bilvio Giebl
  */
-// @formatter:off
 @DoNotImplement
-public interface Mqtt5PublishBuilderBase<
-        B extends Mqtt5PublishBuilderBase<B, C>,
-        C extends Mqtt5PublishBuilderBase.Complete<C>> {
-// @formatter:on
+public interface Mqtt5PublishBuilderBase<C extends Mqtt5PublishBuilderBase.Complete<C>> {
 
     @NotNull C topic(@NotNull String topic);
 
@@ -45,46 +42,8 @@ public interface Mqtt5PublishBuilderBase<
 
     @NotNull MqttTopicBuilder.Nested<? extends C> topic();
 
-    @NotNull B payload(@Nullable byte[] payload);
-
-    @NotNull B payload(@Nullable ByteBuffer payload);
-
-    @NotNull B qos(@NotNull MqttQos qos);
-
-    @NotNull B retain(boolean retain);
-
-    @NotNull B messageExpiryInterval(long messageExpiryInterval);
-
-    @NotNull B noMessageExpiry();
-
-    @NotNull B payloadFormatIndicator(@Nullable Mqtt5PayloadFormatIndicator payloadFormatIndicator);
-
-    @NotNull B contentType(@Nullable String contentType);
-
-    @NotNull B contentType(@Nullable MqttUtf8String contentType);
-
-    @NotNull B responseTopic(@Nullable String responseTopic);
-
-    @NotNull B responseTopic(@Nullable MqttTopic responseTopic);
-
-    @NotNull MqttTopicBuilder.Nested<? extends B> responseTopic();
-
-    @NotNull B correlationData(@Nullable byte[] correlationData);
-
-    @NotNull B correlationData(@Nullable ByteBuffer correlationData);
-
-    @NotNull B userProperties(@NotNull Mqtt5UserProperties userProperties);
-
-    @NotNull Mqtt5UserPropertiesBuilder.Nested<? extends B> userProperties();
-
     @DoNotImplement
-    interface Complete<C extends Mqtt5PublishBuilderBase.Complete<C>> {
-
-        @NotNull C topic(@NotNull String topic);
-
-        @NotNull C topic(@NotNull MqttTopic topic);
-
-        @NotNull MqttTopicBuilder.Nested<? extends C> topic();
+    interface Complete<C extends Mqtt5PublishBuilderBase.Complete<C>> extends Mqtt5PublishBuilderBase<C> {
 
         @NotNull C payload(@Nullable byte[] payload);
 
@@ -120,24 +79,20 @@ public interface Mqtt5PublishBuilderBase<
     }
 
     @DoNotImplement
-    interface Base<B extends Base<B, C>, C extends Base.Complete<C>> extends Mqtt5PublishBuilderBase<B, C> {
-
-        @NotNull B useTopicAlias(@NotNull TopicAliasUsage topicAliasUsage);
+    interface Base<C extends Base.Complete<C>> extends Mqtt5PublishBuilderBase<C> {
 
         @DoNotImplement
-        interface Complete<C extends Base.Complete<C>> extends Mqtt5PublishBuilderBase.Complete<C> {
+        interface Complete<C extends Base.Complete<C>> extends Mqtt5PublishBuilderBase.Complete<C>, Base<C> {
 
             @NotNull C useTopicAlias(@NotNull TopicAliasUsage topicAliasUsage);
         }
     }
 
     @DoNotImplement
-    interface WillBase<B extends WillBase<B, C>, C extends WillBase.Complete<C>> extends Mqtt5PublishBuilderBase<B, C> {
-
-        @NotNull B delayInterval(long delayInterval);
+    interface WillBase<C extends WillBase.Complete<C>> extends Mqtt5PublishBuilderBase<C> {
 
         @DoNotImplement
-        interface Complete<C extends WillBase.Complete<C>> extends Mqtt5PublishBuilderBase.Complete<C> {
+        interface Complete<C extends WillBase.Complete<C>> extends Mqtt5PublishBuilderBase.Complete<C>, WillBase<C> {
 
             @NotNull C delayInterval(long delayInterval);
         }

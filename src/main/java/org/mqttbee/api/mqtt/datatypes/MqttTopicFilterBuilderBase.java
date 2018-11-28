@@ -26,11 +26,11 @@ import org.mqttbee.annotations.DoNotImplement;
 // @formatter:off
 @DoNotImplement
 public interface MqttTopicFilterBuilderBase<
-        C extends MqttTopicFilterBuilderBase.Complete<C, E, SC, SE>,
+        C extends MqttTopicFilterBuilderBase<C, E, S, SC, SE>,
         E extends MqttTopicFilterBuilderBase.End,
         S extends MqttTopicFilterBuilderBase.SharedBase<S, SC, SE>,
-        SC extends MqttTopicFilterBuilderBase.SharedBase.Complete<SC, SE>,
-        SE extends MqttTopicFilterBuilderBase.SharedBase.End> {
+        SC extends S,
+        SE extends MqttTopicFilterBuilderBase.End> {
 // @formatter:on
 
     @NotNull C addLevel(@NotNull String topicLevel);
@@ -44,17 +44,13 @@ public interface MqttTopicFilterBuilderBase<
     // @formatter:off
     @DoNotImplement
     interface Complete<
-            C extends MqttTopicFilterBuilderBase.Complete<C, E, SC, SE>,
+            C extends MqttTopicFilterBuilderBase<C, E, S, SC, SE>,
             E extends MqttTopicFilterBuilderBase.End,
-            SC extends MqttTopicFilterBuilderBase.SharedBase.Complete<SC, SE>,
-            SE extends MqttTopicFilterBuilderBase.SharedBase.End> {
+            S extends MqttTopicFilterBuilderBase.SharedBase<S, SC, SE>,
+            SC extends S,
+            SE extends MqttTopicFilterBuilderBase.End>
+            extends MqttTopicFilterBuilderBase<C, E, S, SC, SE> {
     // @formatter:on
-
-        @NotNull C addLevel(@NotNull String topicLevel);
-
-        @NotNull C singleLevelWildcard();
-
-        @NotNull E multiLevelWildcard();
 
         @NotNull SC share(@NotNull String shareName);
     }
@@ -66,20 +62,18 @@ public interface MqttTopicFilterBuilderBase<
     @DoNotImplement
     interface SharedBase<
             S extends SharedBase<S, SC, SE>,
-            SC extends SharedBase.Complete<SC, SE>,
-            SE extends SharedBase.End>
+            SC extends S,
+            SE extends MqttTopicFilterBuilderBase.End>
             extends MqttTopicFilterBuilderBase<SC, SE, S, SC, SE> {
     // @formatter:on
 
         // @formatter:off
         @DoNotImplement
         interface Complete<
-                SC extends SharedBase.Complete<SC, SE>,
-                SE extends SharedBase.End>
-                extends MqttTopicFilterBuilderBase.Complete<SC, SE, SC, SE> {}
+                S extends SharedBase<S, SC, SE>,
+                SC extends S,
+                SE extends MqttTopicFilterBuilderBase.End>
+                extends MqttTopicFilterBuilderBase.Complete<SC, SE, S, SC, SE> {}
         // @formatter:on
-
-        @DoNotImplement
-        interface End extends MqttTopicFilterBuilderBase.End {}
     }
 }

@@ -32,37 +32,18 @@ public interface Mqtt3SubscribeBuilderBase<C extends Mqtt3SubscribeBuilderBase<C
 
     // @formatter:off
     @DoNotImplement
-    interface First<
-            C extends Mqtt3SubscribeBuilderBase<C>,
-            F extends Mqtt3SubscribeBuilderBase.First<C, F, SC>,
-            SC extends Mqtt3SubscribeBuilderBase.Start.Complete<C, SC>>
-            extends Mqtt3SubscriptionBuilderBase<F, SC> {}
-    // @formatter:on
-
-    // @formatter:off
-    @DoNotImplement
     interface Start<
-                C extends Mqtt3SubscribeBuilderBase<C>,
-                F extends Mqtt3SubscribeBuilderBase.First<C, F, SC>,
-                SC extends Mqtt3SubscribeBuilderBase.Start.Complete<C, SC>>
-            extends Mqtt3SubscriptionBuilderBase<F, SC> {
+            C extends Mqtt3SubscribeBuilderBase<C>,
+            SC extends Mqtt3SubscribeBuilderBase.Start.Complete<C, SC>>
+            extends Mqtt3SubscribeBuilderBase<C>, Mqtt3SubscriptionBuilderBase<SC> {
     // @formatter:on
-
-        @NotNull C addSubscription(@NotNull Mqtt3Subscription subscription);
-
-        @NotNull Mqtt3SubscriptionBuilder.Nested<? extends C> addSubscription();
 
         // @formatter:off
         @DoNotImplement
         interface Complete<
-                    C extends Mqtt3SubscribeBuilderBase<C>,
-                    SC extends Mqtt3SubscribeBuilderBase.Start.Complete<C, SC>>
-                extends Mqtt3SubscriptionBuilderBase.Complete<SC> {
+                C extends Mqtt3SubscribeBuilderBase<C>,
+                SC extends Mqtt3SubscribeBuilderBase.Start.Complete<C, SC>>
+                extends Mqtt3SubscribeBuilderBase.Start<C, SC>, Mqtt3SubscriptionBuilderBase.Complete<SC> {}
         // @formatter:on
-
-            @NotNull C addSubscription(@NotNull Mqtt3Subscription subscription);
-
-            @NotNull Mqtt3SubscriptionBuilder.Nested<? extends C> addSubscription();
-        }
     }
 }
