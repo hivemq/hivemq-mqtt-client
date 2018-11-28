@@ -28,7 +28,6 @@ import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 
 import java.nio.ByteBuffer;
-import java.util.function.Function;
 
 /**
  * @author Bilvio Giebl

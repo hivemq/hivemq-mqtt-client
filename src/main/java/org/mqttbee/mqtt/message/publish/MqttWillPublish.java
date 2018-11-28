@@ -57,6 +57,11 @@ public class MqttWillPublish extends MqttPublish implements Mqtt5WillPublish {
     }
 
     @Override
+    public @NotNull MqttWillPublish asWill() {
+        return this;
+    }
+
+    @Override
     public @NotNull MqttPublishBuilder.WillDefault extendAsWill() {
         return new MqttPublishBuilder.WillDefault(this);
     }

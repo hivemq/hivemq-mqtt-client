@@ -60,15 +60,15 @@ public class Checks {
         return (object == null) ? null : notImplementedInternal(object, type, name);
     }
 
-    private static <T, I extends T> @NotNull I notImplementedInternal(
-            final @NotNull T object, final @NotNull Class<I> type, final @NotNull String name) {
+    private static <S, T extends S> @NotNull T notImplementedInternal(
+            final @NotNull S object, final @NotNull Class<T> type, final @NotNull String name) {
 
         if (!type.isInstance(object)) {
             throw new IllegalArgumentException(name + " must not be implemented by the user, but was implemented by " +
                     object.getClass().getTypeName() + ".");
         }
         //noinspection unchecked
-        return (I) object;
+        return (T) object;
     }
 
     @Contract("null, _ -> fail")
@@ -91,15 +91,15 @@ public class Checks {
         return e;
     }
 
-    public static <T, I extends T> @NotNull ImmutableList<I> elementsNotImplemented(
-            final @NotNull ImmutableList<T> list, final @NotNull Class<I> type, final @NotNull String name) {
+    public static <S, T extends S> @NotNull ImmutableList<T> elementsNotImplemented(
+            final @NotNull ImmutableList<S> list, final @NotNull Class<T> type, final @NotNull String name) {
 
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < list.size(); i++) {
             notImplementedInternal(list.get(i), type, name);
         }
         //noinspection unchecked
-        return (ImmutableList<I>) list;
+        return (ImmutableList<T>) list;
     }
 
     public static int unsignedShort(final int value, final @NotNull String name) {

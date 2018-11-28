@@ -131,7 +131,7 @@ public abstract class MqttConnectBuilder<B extends MqttConnectBuilder<B>> {
 
     public @NotNull B willPublish(final @Nullable Mqtt5Publish willPublish) {
         this.willPublish = (willPublish == null) ? null :
-                MqttChecks.willPublish(Checks.notImplemented(willPublish, MqttPublish.class, "Will publish"));
+                Checks.notImplemented(willPublish, MqttPublish.class, "Will publish").asWill();
         return self();
     }
 

@@ -116,5 +116,7 @@ public interface Mqtt5Publish extends Mqtt5Message, Mqtt5SubscribeResult {
         return Mqtt5MessageType.PUBLISH;
     }
 
+    @NotNull Mqtt5WillPublish asWill();
+
     @NotNull Mqtt5PublishBuilder.Complete extend();
 }
