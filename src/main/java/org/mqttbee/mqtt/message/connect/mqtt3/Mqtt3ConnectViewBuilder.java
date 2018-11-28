@@ -29,7 +29,6 @@ import org.mqttbee.mqtt.message.connect.MqttConnect;
 import org.mqttbee.mqtt.message.publish.MqttWillPublish;
 import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishView;
 import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishViewBuilder;
-import org.mqttbee.mqtt.util.MqttChecks;
 import org.mqttbee.util.Checks;
 
 import java.util.function.Function;
@@ -82,8 +81,8 @@ public abstract class Mqtt3ConnectViewBuilder<B extends Mqtt3ConnectViewBuilder<
     }
 
     public @NotNull B willPublish(final @Nullable Mqtt3Publish willPublish) {
-        this.willPublish = (willPublish == null) ? null : MqttChecks.willPublish(
-                Checks.notImplemented(willPublish, Mqtt3PublishView.class, "Will publish").getDelegate());
+        this.willPublish = (willPublish == null) ? null :
+                Checks.notImplemented(willPublish, Mqtt3PublishView.class, "Will publish").getDelegate().asWill();
         return self();
     }
 

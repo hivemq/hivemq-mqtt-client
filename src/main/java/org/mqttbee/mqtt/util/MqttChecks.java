@@ -40,8 +40,6 @@ import org.mqttbee.mqtt.message.connect.MqttConnect;
 import org.mqttbee.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
-import org.mqttbee.mqtt.message.publish.MqttPublishBuilder;
-import org.mqttbee.mqtt.message.publish.MqttWillPublish;
 import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishView;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
 import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeView;
@@ -190,13 +188,6 @@ public class MqttChecks {
     @Contract("null -> fail")
     public static @NotNull MqttConnect connect(final @Nullable Mqtt3Connect connect) {
         return Checks.notImplemented(connect, Mqtt3ConnectView.class, "Connect").getDelegate();
-    }
-
-    public static @NotNull MqttWillPublish willPublish(final @NotNull MqttPublish publish) {
-        if (publish instanceof MqttWillPublish) {
-            return (MqttWillPublish) publish;
-        }
-        return new MqttPublishBuilder.WillDefault(publish).build();
     }
 
     @Contract("null -> fail")

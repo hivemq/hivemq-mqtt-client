@@ -66,6 +66,19 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
         userProperties = publish.getUserProperties();
     }
 
+    MqttPublishBuilder(final @NotNull MqttPublishBuilder<?> publishBuilder) {
+        topic = publishBuilder.topic;
+        payload = publishBuilder.payload;
+        qos = publishBuilder.qos;
+        retain = publishBuilder.retain;
+        messageExpiryInterval = publishBuilder.messageExpiryInterval;
+        payloadFormatIndicator = publishBuilder.payloadFormatIndicator;
+        contentType = publishBuilder.contentType;
+        responseTopic = publishBuilder.responseTopic;
+        correlationData = publishBuilder.correlationData;
+        userProperties = publishBuilder.userProperties;
+    }
+
     abstract @NotNull B self();
 
     public @NotNull B topic(final @Nullable String topic) {
@@ -177,7 +190,7 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
         }
 
         public @NotNull WillDefault asWill() {
-            return new WillDefault(build());
+            return new WillDefault(this);
         }
 
         public @NotNull MqttPublish build() {
@@ -254,6 +267,13 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
             }
         }
 
+        WillBase(final @NotNull MqttPublishBuilder<?> publishBuilder) {
+            super(publishBuilder);
+            if (publishBuilder instanceof WillBase) {
+                delayInterval = ((WillBase<?>) publishBuilder).delayInterval;
+            }
+        }
+
         public @NotNull B payload(final @Nullable byte[] payload) {
             this.payload = MqttChecks.binaryDataOrNull(payload, "Payload");
             return self();
@@ -280,8 +300,12 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
 
         public WillDefault() {}
 
-        public WillDefault(final @NotNull MqttPublish publish) {
+        WillDefault(final @NotNull MqttPublish publish) {
             super(publish);
+        }
+
+        WillDefault(final @NotNull MqttPublishBuilder<?> publishBuilder) {
+            super(publishBuilder);
         }
 
         @Override
