@@ -35,31 +35,28 @@ public interface MqttSharedTopicFilterBuilder extends
     interface Complete extends
             MqttSharedTopicFilterBuilder, MqttSharedTopicFilterBuilder.End,
             MqttTopicFilterBuilderBase.SharedBase.Complete<
-                    MqttSharedTopicFilterBuilder.Complete, MqttSharedTopicFilterBuilder.End> {}
+                    MqttSharedTopicFilterBuilder, MqttSharedTopicFilterBuilder.Complete,
+                    MqttSharedTopicFilterBuilder.End> {}
     // @formatter:on
 
     @DoNotImplement
-    interface End extends MqttTopicFilterBuilderBase.SharedBase.End {
+    interface End extends MqttTopicFilterBuilderBase.End {
 
         @NotNull MqttSharedTopicFilter build();
     }
 
-    // @formatter:off
     @DoNotImplement
-    interface Nested<P> extends
-            MqttTopicFilterBuilderBase.SharedBase<Nested<P>, Nested.Complete<P>, Nested.End<P>> {
-    // @formatter:on
+    interface Nested<P> extends MqttTopicFilterBuilderBase.SharedBase<Nested<P>, Nested.Complete<P>, Nested.End<P>> {
 
         // @formatter:off
         @DoNotImplement
         interface Complete<P> extends
                 Nested<P>, Nested.End<P>,
-                MqttTopicFilterBuilderBase.SharedBase.Complete<Nested.Complete<P>, Nested.End<P>> {
+                MqttTopicFilterBuilderBase.SharedBase.Complete<Nested<P>, Nested.Complete<P>, Nested.End<P>> {}
         // @formatter:on
-        }
 
         @DoNotImplement
-        interface End<P> extends MqttTopicFilterBuilderBase.SharedBase.End {
+        interface End<P> extends MqttTopicFilterBuilderBase.End {
 
             @NotNull P applyTopicFilter();
         }

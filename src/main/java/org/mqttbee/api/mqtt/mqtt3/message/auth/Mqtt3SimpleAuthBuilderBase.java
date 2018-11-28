@@ -26,27 +26,15 @@ import java.nio.ByteBuffer;
 /**
  * @author Silvio Giebl
  */
-// @formatter:off
 @DoNotImplement
-public interface Mqtt3SimpleAuthBuilderBase<
-        B extends Mqtt3SimpleAuthBuilderBase<B, C>,
-        C extends Mqtt3SimpleAuthBuilderBase.Complete<C>> {
-// @formatter:on
+public interface Mqtt3SimpleAuthBuilderBase<C extends Mqtt3SimpleAuthBuilderBase.Complete<C>> {
 
     @NotNull C username(@NotNull String username);
 
     @NotNull C username(@NotNull MqttUtf8String username);
 
-    @NotNull B password(@NotNull byte[] password);
-
-    @NotNull B password(@NotNull ByteBuffer password);
-
     @DoNotImplement
-    interface Complete<C extends Mqtt3SimpleAuthBuilderBase.Complete<C>> {
-
-        @NotNull C username(@NotNull String username);
-
-        @NotNull C username(@NotNull MqttUtf8String username);
+    interface Complete<C extends Mqtt3SimpleAuthBuilderBase.Complete<C>> extends Mqtt3SimpleAuthBuilderBase<C> {
 
         @NotNull C password(@NotNull byte[] password);
 

@@ -26,26 +26,14 @@ import org.mqttbee.api.mqtt.datatypes.MqttTopicFilterBuilder;
 /**
  * @author Silvio Giebl
  */
-// @formatter:off
 @DoNotImplement
-public interface Mqtt5SubscriptionBuilderBase<
-        B extends Mqtt5SubscriptionBuilderBase<B, C>,
-        C extends Mqtt5SubscriptionBuilderBase.Complete<C>> {
-// @formatter:on
+public interface Mqtt5SubscriptionBuilderBase<C extends Mqtt5SubscriptionBuilderBase.Complete<C>> {
 
     @NotNull C topicFilter(@NotNull String topicFilter);
 
     @NotNull C topicFilter(@NotNull MqttTopicFilter topicFilter);
 
     @NotNull MqttTopicFilterBuilder.Nested<? extends C> topicFilter();
-
-    @NotNull B qos(@NotNull MqttQos qos);
-
-    @NotNull B noLocal(boolean noLocal);
-
-    @NotNull B retainHandling(@NotNull Mqtt5RetainHandling retainHandling);
-
-    @NotNull B retainAsPublished(boolean retainAsPublished);
 
     @DoNotImplement
     interface Complete<C extends Mqtt5SubscriptionBuilderBase.Complete<C>> {

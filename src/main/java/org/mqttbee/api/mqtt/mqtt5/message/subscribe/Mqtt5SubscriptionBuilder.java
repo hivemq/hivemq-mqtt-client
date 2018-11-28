@@ -23,34 +23,21 @@ import org.mqttbee.annotations.DoNotImplement;
 /**
  * @author Silvio Giebl
  */
-// @formatter:off
 @DoNotImplement
-public interface Mqtt5SubscriptionBuilder extends
-        Mqtt5SubscriptionBuilderBase<Mqtt5SubscriptionBuilder, Mqtt5SubscriptionBuilder.Complete> {
-// @formatter:on
+public interface Mqtt5SubscriptionBuilder extends Mqtt5SubscriptionBuilderBase<Mqtt5SubscriptionBuilder.Complete> {
 
-    // @formatter:off
     @DoNotImplement
-    interface Complete extends
-            Mqtt5SubscriptionBuilder,
-            Mqtt5SubscriptionBuilderBase.Complete<Mqtt5SubscriptionBuilder.Complete> {
-    // @formatter:on
+    interface Complete
+            extends Mqtt5SubscriptionBuilder, Mqtt5SubscriptionBuilderBase.Complete<Mqtt5SubscriptionBuilder.Complete> {
 
         @NotNull Mqtt5Subscription build();
     }
 
-    // @formatter:off
     @DoNotImplement
-    interface Nested<P> extends
-            Mqtt5SubscriptionBuilderBase<Nested<P>, Nested.Complete<P>> {
-    // @formatter:on
+    interface Nested<P> extends Mqtt5SubscriptionBuilderBase<Nested.Complete<P>> {
 
-        // @formatter:off
         @DoNotImplement
-        interface Complete<P> extends
-                Nested<P>,
-                Mqtt5SubscriptionBuilderBase.Complete<Nested.Complete<P>> {
-        // @formatter:on
+        interface Complete<P> extends Nested<P>, Mqtt5SubscriptionBuilderBase.Complete<Nested.Complete<P>> {
 
             @NotNull P applySubscription();
         }

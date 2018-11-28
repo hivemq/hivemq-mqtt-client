@@ -23,56 +23,35 @@ import org.mqttbee.annotations.DoNotImplement;
 /**
  * @author Silvio Giebl
  */
-// @formatter:off
 @DoNotImplement
-public interface Mqtt5PublishBuilder extends
-        Mqtt5PublishBuilderBase.Base<Mqtt5PublishBuilder, Mqtt5PublishBuilder.Complete> {
-// @formatter:on
+public interface Mqtt5PublishBuilder extends Mqtt5PublishBuilderBase.Base<Mqtt5PublishBuilder.Complete> {
 
     @NotNull Mqtt5WillPublishBuilder asWill();
 
-    // @formatter:off
     @DoNotImplement
-    interface Complete extends
-            Mqtt5PublishBuilder,
-            Mqtt5PublishBuilderBase.Base.Complete<Mqtt5PublishBuilder.Complete> {
-    // @formatter:on
+    interface Complete
+            extends Mqtt5PublishBuilder, Mqtt5PublishBuilderBase.Base.Complete<Mqtt5PublishBuilder.Complete> {
 
-        @Override
         @NotNull Mqtt5WillPublishBuilder.Complete asWill();
 
         @NotNull Mqtt5Publish build();
     }
 
-    // @formatter:off
     @DoNotImplement
-    interface Nested<P> extends
-            Mqtt5PublishBuilderBase.Base<Nested<P>, Nested.Complete<P>> {
-    // @formatter:on
+    interface Nested<P> extends Mqtt5PublishBuilderBase.Base<Nested.Complete<P>> {
 
-        // @formatter:off
         @DoNotImplement
-        interface Complete<P> extends
-                Nested<P>,
-                Mqtt5PublishBuilderBase.Base.Complete<Nested.Complete<P>> {
-        // @formatter:on
+        interface Complete<P> extends Nested<P>, Mqtt5PublishBuilderBase.Base.Complete<Nested.Complete<P>> {
 
             @NotNull P applyPublish();
         }
     }
 
-    // @formatter:off
     @DoNotImplement
-    interface Send<P> extends
-            Mqtt5PublishBuilderBase.Base<Send<P>, Send.Complete<P>> {
-    // @formatter:on
+    interface Send<P> extends Mqtt5PublishBuilderBase.Base<Send.Complete<P>> {
 
-        // @formatter:off
         @DoNotImplement
-        interface Complete<P> extends
-                Send<P>,
-                Mqtt5PublishBuilderBase.Base.Complete<Send.Complete<P>> {
-        // @formatter:on
+        interface Complete<P> extends Send<P>, Mqtt5PublishBuilderBase.Base.Complete<Send.Complete<P>> {
 
             @NotNull P send();
         }

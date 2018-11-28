@@ -38,20 +38,12 @@ public interface Mqtt3UnsubscribeBuilderBase<C extends Mqtt3UnsubscribeBuilderBa
     @NotNull C reverse(@NotNull Mqtt3Subscribe subscribe);
 
     @DoNotImplement
-    interface Start<C extends Mqtt3UnsubscribeBuilderBase<C>> {
+    interface Start<C extends Mqtt3UnsubscribeBuilderBase<C>> extends Mqtt3UnsubscribeBuilderBase<C> {
 
         @NotNull C topicFilter(@NotNull String topicFilter);
 
         @NotNull C topicFilter(@NotNull MqttTopicFilter topicFilter);
 
         @NotNull MqttTopicFilterBuilder.Nested<? extends C> topicFilter();
-
-        @NotNull C addTopicFilter(@NotNull String topicFilter);
-
-        @NotNull C addTopicFilter(@NotNull MqttTopicFilter topicFilter);
-
-        @NotNull MqttTopicFilterBuilder.Nested<? extends C> addTopicFilter();
-
-        @NotNull C reverse(@NotNull Mqtt3Subscribe subscribe);
     }
 }

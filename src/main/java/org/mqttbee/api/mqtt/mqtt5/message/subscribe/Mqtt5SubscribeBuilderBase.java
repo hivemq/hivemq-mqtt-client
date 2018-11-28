@@ -25,27 +25,15 @@ import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 /**
  * @author Silvio Giebl
  */
-// @formatter:off
 @DoNotImplement
-public interface Mqtt5SubscribeBuilderBase<
-        B extends Mqtt5SubscribeBuilderBase<B, C>,
-        C extends Mqtt5SubscribeBuilderBase.Complete<C>> {
-// @formatter:on
+public interface Mqtt5SubscribeBuilderBase<C extends Mqtt5SubscribeBuilderBase.Complete<C>> {
 
     @NotNull C addSubscription(@NotNull Mqtt5Subscription subscription);
 
     @NotNull Mqtt5SubscriptionBuilder.Nested<? extends C> addSubscription();
 
-    @NotNull B userProperties(@NotNull Mqtt5UserProperties userProperties);
-
-    @NotNull Mqtt5UserPropertiesBuilder.Nested<? extends B> userProperties();
-
     @DoNotImplement
     interface Complete<C extends Mqtt5SubscribeBuilderBase.Complete<C>> {
-
-        @NotNull C addSubscription(@NotNull Mqtt5Subscription subscription);
-
-        @NotNull Mqtt5SubscriptionBuilder.Nested<? extends C> addSubscription();
 
         @NotNull C userProperties(@NotNull Mqtt5UserProperties userProperties);
 
@@ -54,42 +42,19 @@ public interface Mqtt5SubscribeBuilderBase<
 
     // @formatter:off
     @DoNotImplement
-    interface First<
-            C extends Mqtt5SubscribeBuilderBase.Complete<C>,
-            F extends Mqtt5SubscribeBuilderBase.First<C, F, SC>,
-            SC extends Mqtt5SubscribeBuilderBase.Start.Complete<C, SC>>
-            extends Mqtt5SubscriptionBuilderBase<F, SC> {}
-    // @formatter:on
-
-    // @formatter:off
-    @DoNotImplement
     interface Start<
             C extends Mqtt5SubscribeBuilderBase.Complete<C>,
-            S extends Mqtt5SubscribeBuilderBase.Start<C, S, F, SC>,
-            F extends Mqtt5SubscribeBuilderBase.First<C, F, SC>,
             SC extends Mqtt5SubscribeBuilderBase.Start.Complete<C, SC>>
-            extends Mqtt5SubscriptionBuilderBase<F, SC> {
+            extends Mqtt5SubscribeBuilderBase<C>, Mqtt5SubscriptionBuilderBase<SC> {
     // @formatter:on
 
-        @NotNull C addSubscription(@NotNull Mqtt5Subscription subscription);
-
-        @NotNull Mqtt5SubscriptionBuilder.Nested<? extends C> addSubscription();
-
-        @NotNull S userProperties(@NotNull Mqtt5UserProperties userProperties);
-
-        @NotNull Mqtt5UserPropertiesBuilder.Nested<? extends S> userProperties();
-
+        // @formatter:off
         @DoNotImplement
-        interface Complete<C extends Mqtt5SubscribeBuilderBase.Complete<C>, SC extends Mqtt5SubscribeBuilderBase.Start.Complete<C, SC>>
-                extends Mqtt5SubscriptionBuilderBase.Complete<SC> {
-
-            @NotNull C addSubscription(@NotNull Mqtt5Subscription subscription);
-
-            @NotNull Mqtt5SubscriptionBuilder.Nested<? extends C> addSubscription();
-
-            @NotNull SC userProperties(@NotNull Mqtt5UserProperties userProperties);
-
-            @NotNull Mqtt5UserPropertiesBuilder.Nested<? extends SC> userProperties();
-        }
+        interface Complete<
+                C extends Mqtt5SubscribeBuilderBase.Complete<C>,
+                SC extends Mqtt5SubscribeBuilderBase.Start.Complete<C, SC>>
+                extends Mqtt5SubscribeBuilderBase.Start<C, SC>, Mqtt5SubscribeBuilderBase.Complete<C>,
+                        Mqtt5SubscriptionBuilderBase.Complete<SC> {}
+        // @formatter:on
     }
 }

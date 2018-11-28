@@ -303,7 +303,7 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
     // @formatter:off
     @DoNotImplement
     interface Mqtt5SubscribeAndCallbackBuilder extends
-            Mqtt5SubscribeBuilderBase<Mqtt5SubscribeAndCallbackBuilder, Mqtt5SubscribeAndCallbackBuilder.Complete> {
+            Mqtt5SubscribeBuilderBase<Mqtt5SubscribeAndCallbackBuilder.Complete> {
     // @formatter:on
 
         // @formatter:off
@@ -315,19 +315,10 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
 
         // @formatter:off
         @DoNotImplement
-        interface First extends
-                Mqtt5SubscribeBuilderBase.First<
-                        Mqtt5SubscribeAndCallbackBuilder.Complete, Mqtt5SubscribeAndCallbackBuilder.First,
-                        Mqtt5SubscribeAndCallbackBuilder.Start.Complete> {}
-        // @formatter:on
-
-        // @formatter:off
-        @DoNotImplement
         interface Start extends
-                Mqtt5SubscribeAndCallbackBuilder, Mqtt5SubscribeAndCallbackBuilder.First,
+                Mqtt5SubscribeAndCallbackBuilder,
                 Mqtt5SubscribeBuilderBase.Start<
-                        Mqtt5SubscribeAndCallbackBuilder.Complete, Mqtt5SubscribeAndCallbackBuilder.Start,
-                        Mqtt5SubscribeAndCallbackBuilder.First, Mqtt5SubscribeAndCallbackBuilder.Start.Complete> {
+                        Mqtt5SubscribeAndCallbackBuilder.Complete, Mqtt5SubscribeAndCallbackBuilder.Start.Complete> {
         // @formatter:on
 
             // @formatter:off

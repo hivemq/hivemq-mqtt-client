@@ -23,74 +23,42 @@ import org.mqttbee.annotations.DoNotImplement;
 /**
  * @author Silvio Giebl
  */
-// @formatter:off
 @DoNotImplement
-public interface Mqtt3UnsubscribeBuilder extends
-        Mqtt3UnsubscribeBuilderBase<Mqtt3UnsubscribeBuilder.Complete> {
-// @formatter:on
+public interface Mqtt3UnsubscribeBuilder extends Mqtt3UnsubscribeBuilderBase<Mqtt3UnsubscribeBuilder.Complete> {
 
-    // @formatter:off
     @DoNotImplement
-    interface Complete extends
-            Mqtt3UnsubscribeBuilder,
-            Mqtt3UnsubscribeBuilderBase<Mqtt3UnsubscribeBuilder.Complete> {
-    // @formatter:on
+    interface Complete extends Mqtt3UnsubscribeBuilder, Mqtt3UnsubscribeBuilderBase<Mqtt3UnsubscribeBuilder.Complete> {
 
         @NotNull Mqtt3Unsubscribe build();
     }
 
-    // @formatter:off
     @DoNotImplement
-    interface Start extends
-            Mqtt3UnsubscribeBuilder,
-            Mqtt3UnsubscribeBuilderBase.Start<Mqtt3UnsubscribeBuilder.Complete> {}
-    // @formatter:on
+    interface Start
+            extends Mqtt3UnsubscribeBuilder, Mqtt3UnsubscribeBuilderBase.Start<Mqtt3UnsubscribeBuilder.Complete> {}
 
-    // @formatter:off
     @DoNotImplement
-    interface Nested<P> extends
-            Mqtt3UnsubscribeBuilderBase<Nested.Complete<P>> {
-    // @formatter:on
+    interface Nested<P> extends Mqtt3UnsubscribeBuilderBase<Nested.Complete<P>> {
 
-        // @formatter:off
         @DoNotImplement
-        interface Complete<P> extends
-                Nested<P>,
-                Mqtt3UnsubscribeBuilderBase<Nested.Complete<P>> {
-        // @formatter:on
+        interface Complete<P> extends Nested<P>, Mqtt3UnsubscribeBuilderBase<Nested.Complete<P>> {
 
             @NotNull P applyUnsubscribe();
         }
 
-        // @formatter:off
         @DoNotImplement
-        interface Start<P> extends
-                Nested<P>,
-                Mqtt3UnsubscribeBuilderBase.Start<Nested.Complete<P>> {}
-        // @formatter:on
+        interface Start<P> extends Nested<P>, Mqtt3UnsubscribeBuilderBase.Start<Nested.Complete<P>> {}
     }
 
-    // @formatter:off
     @DoNotImplement
-    interface Send<P> extends
-            Mqtt3UnsubscribeBuilderBase<Send.Complete<P>> {
-    // @formatter:on
+    interface Send<P> extends Mqtt3UnsubscribeBuilderBase<Send.Complete<P>> {
 
-        // @formatter:off
         @DoNotImplement
-        interface Complete<P> extends
-                Send<P>,
-                Mqtt3UnsubscribeBuilderBase<Send.Complete<P>> {
-        // @formatter:on
+        interface Complete<P> extends Send<P>, Mqtt3UnsubscribeBuilderBase<Send.Complete<P>> {
 
             @NotNull P send();
         }
 
-        // @formatter:off
         @DoNotImplement
-        interface Start<P> extends
-                Send<P>,
-                Mqtt3UnsubscribeBuilderBase.Start<Send.Complete<P>> {}
-        // @formatter:on
+        interface Start<P> extends Send<P>, Mqtt3UnsubscribeBuilderBase.Start<Send.Complete<P>> {}
     }
 }

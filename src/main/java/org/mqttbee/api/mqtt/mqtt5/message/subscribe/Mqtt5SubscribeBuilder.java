@@ -23,11 +23,8 @@ import org.mqttbee.annotations.DoNotImplement;
 /**
  * @author Silvio Giebl
  */
-// @formatter:off
 @DoNotImplement
-public interface Mqtt5SubscribeBuilder extends
-        Mqtt5SubscribeBuilderBase<Mqtt5SubscribeBuilder, Mqtt5SubscribeBuilder.Complete> {
-// @formatter:on
+public interface Mqtt5SubscribeBuilder extends Mqtt5SubscribeBuilderBase<Mqtt5SubscribeBuilder.Complete> {
 
     // @formatter:off
     @DoNotImplement
@@ -41,19 +38,9 @@ public interface Mqtt5SubscribeBuilder extends
 
     // @formatter:off
     @DoNotImplement
-    interface First extends
-            Mqtt5SubscribeBuilderBase.First<
-                    Mqtt5SubscribeBuilder.Complete, Mqtt5SubscribeBuilder.First,
-                    Mqtt5SubscribeBuilder.Start.Complete> {}
-    // @formatter:on
-
-    // @formatter:off
-    @DoNotImplement
     interface Start extends
-            Mqtt5SubscribeBuilder, Mqtt5SubscribeBuilder.First,
-            Mqtt5SubscribeBuilderBase.Start<
-                    Mqtt5SubscribeBuilder.Complete, Mqtt5SubscribeBuilder.Start, Mqtt5SubscribeBuilder.First,
-                    Mqtt5SubscribeBuilder.Start.Complete> {
+            Mqtt5SubscribeBuilder,
+            Mqtt5SubscribeBuilderBase.Start<Mqtt5SubscribeBuilder.Complete, Mqtt5SubscribeBuilder.Start.Complete> {
     // @formatter:on
 
         // @formatter:off
@@ -65,34 +52,20 @@ public interface Mqtt5SubscribeBuilder extends
         // @formatter:on
     }
 
-    // @formatter:off
     @DoNotImplement
-    interface Nested<P> extends
-            Mqtt5SubscribeBuilderBase<Nested<P>, Nested.Complete<P>> {
-    // @formatter:on
+    interface Nested<P> extends Mqtt5SubscribeBuilderBase<Nested.Complete<P>> {
 
-        // @formatter:off
         @DoNotImplement
-        interface Complete<P> extends
-                Nested<P>,
-                Mqtt5SubscribeBuilderBase.Complete<Nested.Complete<P>> {
-        // @formatter:on
+        interface Complete<P> extends Nested<P>, Mqtt5SubscribeBuilderBase.Complete<Nested.Complete<P>> {
 
             @NotNull P applySubscribe();
         }
 
         // @formatter:off
         @DoNotImplement
-        interface First<P> extends
-                Mqtt5SubscribeBuilderBase.First<Nested.Complete<P>, Nested.First<P>, Nested.Start.Complete<P>> {}
-        // @formatter:on
-
-        // @formatter:off
-        @DoNotImplement
         interface Start<P> extends
-                Nested<P>, Nested.First<P>,
-                Mqtt5SubscribeBuilderBase.Start<
-                        Nested.Complete<P>, Nested.Start<P>, Nested.First<P>, Nested.Start.Complete<P>> {
+                Nested<P>,
+                Mqtt5SubscribeBuilderBase.Start<Nested.Complete<P>, Nested.Start.Complete<P>> {
         // @formatter:on
 
             // @formatter:off
@@ -104,35 +77,17 @@ public interface Mqtt5SubscribeBuilder extends
         }
     }
 
-    // @formatter:off
     @DoNotImplement
-    interface Send<P> extends
-            Mqtt5SubscribeBuilderBase<Send<P>, Send.Complete<P>> {
-    // @formatter:on
+    interface Send<P> extends Mqtt5SubscribeBuilderBase<Send.Complete<P>> {
 
-        // @formatter:off
         @DoNotImplement
-        interface Complete<P> extends
-                Send<P>,
-                Mqtt5SubscribeBuilderBase.Complete<Send.Complete<P>> {
-        // @formatter:on
+        interface Complete<P> extends Send<P>, Mqtt5SubscribeBuilderBase.Complete<Send.Complete<P>> {
 
             @NotNull P send();
         }
 
-        // @formatter:off
         @DoNotImplement
-        interface First<P> extends
-                Mqtt5SubscribeBuilderBase.First<Send.Complete<P>, Send.First<P>, Send.Start.Complete<P>> {}
-        // @formatter:on
-
-        // @formatter:off
-        @DoNotImplement
-        interface Start<P> extends
-                Send<P>, Send.First<P>,
-                Mqtt5SubscribeBuilderBase.Start<
-                        Send.Complete<P>, Send.Start<P>, Send.First<P>, Send.Start.Complete<P>> {
-        // @formatter:on
+        interface Start<P> extends Send<P>, Mqtt5SubscribeBuilderBase.Start<Send.Complete<P>, Send.Start.Complete<P>> {
 
             // @formatter:off
             @DoNotImplement

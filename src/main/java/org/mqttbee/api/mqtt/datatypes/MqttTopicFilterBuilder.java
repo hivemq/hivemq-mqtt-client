@@ -31,17 +31,14 @@ public interface MqttTopicFilterBuilder extends
                 MqttSharedTopicFilterBuilder.Complete, MqttSharedTopicFilterBuilder.End> {
 // @formatter:on
 
-    @NotNull MqttSharedTopicFilterBuilder share(final @NotNull String shareName);
-
     // @formatter:off
     @DoNotImplement
     interface Complete extends
             MqttTopicFilterBuilder, MqttTopicFilterBuilder.End,
             MqttTopicFilterBuilderBase.Complete<
-                    MqttTopicFilterBuilder.Complete, MqttTopicFilterBuilder.End,
-                    MqttSharedTopicFilterBuilder.Complete, MqttSharedTopicFilterBuilder.End> {
+                    MqttTopicFilterBuilder.Complete, MqttTopicFilterBuilder.End, MqttSharedTopicFilterBuilder,
+                    MqttSharedTopicFilterBuilder.Complete, MqttSharedTopicFilterBuilder.End> {}
     // @formatter:on
-    }
 
     @DoNotImplement
     interface End extends MqttTopicFilterBuilderBase.End {
@@ -57,17 +54,14 @@ public interface MqttTopicFilterBuilder extends
                     MqttSharedTopicFilterBuilder.Nested.Complete<P>, MqttSharedTopicFilterBuilder.Nested.End<P>> {
     // @formatter:on
 
-        @NotNull MqttSharedTopicFilterBuilder.Nested<P> share(final @NotNull String shareName);
-
         // @formatter:off
         @DoNotImplement
         interface Complete<P> extends
                 Nested<P>, Nested.End<P>,
                 MqttTopicFilterBuilderBase.Complete<
-                        Nested.Complete<P>, Nested.End<P>, MqttSharedTopicFilterBuilder.Nested.Complete<P>,
-                        MqttSharedTopicFilterBuilder.Nested.End<P>> {
+                        Nested.Complete<P>, Nested.End<P>, MqttSharedTopicFilterBuilder.Nested<P>,
+                        MqttSharedTopicFilterBuilder.Nested.Complete<P>, MqttSharedTopicFilterBuilder.Nested.End<P>> {}
         // @formatter:on
-        }
 
         @DoNotImplement
         interface End<P> extends MqttTopicFilterBuilderBase.End {

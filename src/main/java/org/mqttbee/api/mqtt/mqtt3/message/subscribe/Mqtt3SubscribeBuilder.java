@@ -23,36 +23,20 @@ import org.mqttbee.annotations.DoNotImplement;
 /**
  * @author Silvio Giebl
  */
-// @formatter:off
 @DoNotImplement
-public interface Mqtt3SubscribeBuilder extends
-        Mqtt3SubscribeBuilderBase<Mqtt3SubscribeBuilder.Complete> {
-// @formatter:on
+public interface Mqtt3SubscribeBuilder extends Mqtt3SubscribeBuilderBase<Mqtt3SubscribeBuilder.Complete> {
 
-    // @formatter:off
     @DoNotImplement
-    interface Complete extends
-            Mqtt3SubscribeBuilder,
-            Mqtt3SubscribeBuilderBase<Mqtt3SubscribeBuilder.Complete> {
-    // @formatter:on
+    interface Complete extends Mqtt3SubscribeBuilder, Mqtt3SubscribeBuilderBase<Mqtt3SubscribeBuilder.Complete> {
 
         @NotNull Mqtt3Subscribe build();
     }
 
     // @formatter:off
     @DoNotImplement
-    interface First extends
-            Mqtt3SubscribeBuilderBase.First<
-                    Mqtt3SubscribeBuilder.Complete, Mqtt3SubscribeBuilder.First,
-                    Mqtt3SubscribeBuilder.Start.Complete> {}
-    // @formatter:on
-
-    // @formatter:off
-    @DoNotImplement
     interface Start extends
-            Mqtt3SubscribeBuilder, Mqtt3SubscribeBuilder.First,
-            Mqtt3SubscribeBuilderBase.Start<
-                    Mqtt3SubscribeBuilder.Complete, Mqtt3SubscribeBuilder.First, Mqtt3SubscribeBuilder.Start.Complete> {
+            Mqtt3SubscribeBuilder,
+            Mqtt3SubscribeBuilderBase.Start<Mqtt3SubscribeBuilder.Complete, Mqtt3SubscribeBuilder.Start.Complete> {
     // @formatter:on
 
         // @formatter:off
@@ -64,33 +48,20 @@ public interface Mqtt3SubscribeBuilder extends
         // @formatter:on
     }
 
-    // @formatter:off
     @DoNotImplement
-    interface Nested<P> extends
-            Mqtt3SubscribeBuilderBase<Nested.Complete<P>> {
-    // @formatter:on
+    interface Nested<P> extends Mqtt3SubscribeBuilderBase<Nested.Complete<P>> {
 
-        // @formatter:off
         @DoNotImplement
-        interface Complete<P> extends
-                Nested<P>,
-                Mqtt3SubscribeBuilderBase<Nested.Complete<P>> {
-        // @formatter:on
+        interface Complete<P> extends Nested<P>, Mqtt3SubscribeBuilderBase<Nested.Complete<P>> {
 
             @NotNull P applySubscribe();
         }
 
         // @formatter:off
         @DoNotImplement
-        interface First<P> extends
-                Mqtt3SubscribeBuilderBase.First<Nested.Complete<P>, Nested.First<P>, Nested.Start.Complete<P>> {}
-        // @formatter:on
-
-        // @formatter:off
-        @DoNotImplement
         interface Start<P> extends
-                Nested<P>, Nested.First<P>,
-                Mqtt3SubscribeBuilderBase.Start<Nested.Complete<P>, Nested.First<P>, Nested.Start.Complete<P>> {
+                Nested<P>,
+                Mqtt3SubscribeBuilderBase.Start<Nested.Complete<P>, Nested.Start.Complete<P>> {
         // @formatter:on
 
             // @formatter:off
@@ -102,33 +73,20 @@ public interface Mqtt3SubscribeBuilder extends
         }
     }
 
-    // @formatter:off
     @DoNotImplement
-    interface Send<P> extends
-            Mqtt3SubscribeBuilderBase<Send.Complete<P>> {
-    // @formatter:on
+    interface Send<P> extends Mqtt3SubscribeBuilderBase<Send.Complete<P>> {
 
-        // @formatter:off
         @DoNotImplement
-        interface Complete<P> extends
-                Send<P>,
-                Mqtt3SubscribeBuilderBase<Send.Complete<P>> {
-        // @formatter:on
+        interface Complete<P> extends Send<P>, Mqtt3SubscribeBuilderBase<Send.Complete<P>> {
 
             @NotNull P send();
         }
 
         // @formatter:off
         @DoNotImplement
-        interface First<P> extends
-                Mqtt3SubscribeBuilderBase.First<Send.Complete<P>, Send.First<P>, Send.Start.Complete<P>> {}
-        // @formatter:on
-
-        // @formatter:off
-        @DoNotImplement
         interface Start<P> extends
-                Send<P>, Send.First<P>,
-                Mqtt3SubscribeBuilderBase.Start<Send.Complete<P>, Send.First<P>, Send.Start.Complete<P>> {
+                Send<P>,
+                Mqtt3SubscribeBuilderBase.Start<Send.Complete<P>, Send.Start.Complete<P>> {
         // @formatter:on
 
             // @formatter:off
