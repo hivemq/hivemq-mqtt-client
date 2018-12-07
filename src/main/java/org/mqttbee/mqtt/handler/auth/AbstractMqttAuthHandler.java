@@ -33,7 +33,7 @@ import org.mqttbee.mqtt.handler.util.ChannelInboundHandlerWithTimeout;
 import org.mqttbee.mqtt.message.auth.MqttAuth;
 import org.mqttbee.mqtt.message.auth.MqttAuthBuilder;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
-import org.mqttbee.util.MustNotBeImplementedUtil;
+import org.mqttbee.util.Checks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,7 +76,7 @@ abstract class AbstractMqttAuthHandler extends ChannelInboundHandlerWithTimeout 
     }
 
     private static @NotNull MqttUTF8StringImpl getMethod(final @NotNull Mqtt5EnhancedAuthProvider authProvider) {
-        return MustNotBeImplementedUtil.checkNotImplemented(authProvider.getMethod(), MqttUTF8StringImpl.class);
+        return Checks.notImplemented(authProvider.getMethod(), MqttUTF8StringImpl.class, "Auth method");
     }
 
     final @NotNull MqttClientData clientData;
