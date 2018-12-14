@@ -28,7 +28,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5Auth;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.mqtt.handler.disconnect.ChannelCloseEvent;
+import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectEvent;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.ioc.ConnectionScope;
 import org.mqttbee.mqtt.message.auth.MqttAuth;
@@ -188,17 +188,17 @@ public class MqttReAuthHandler extends AbstractMqttAuthHandler {
      * Calls {@link Mqtt5EnhancedAuthProvider#onReAuthError(Mqtt5ClientData, Throwable)} with the cause why the channel
      * was closed if reauth is still in progress.
      *
-     * @param channelCloseEvent the channel close event.
+     * @param disconnectEvent the channel close event.
      */
-    protected void handleChannelCloseEvent(final @NotNull ChannelCloseEvent channelCloseEvent) {
-        super.handleChannelCloseEvent(channelCloseEvent);
+    protected void handleDisconnectEvent(final @NotNull MqttDisconnectEvent disconnectEvent) {
+        super.handleDisconnectEvent(disconnectEvent);
 
         if (state != MqttAuthState.NONE) {
-            authProvider.onReAuthError(clientData, channelCloseEvent.getCause());
+            authProvider.onReAuthError(clientData, disconnectEvent.getCause());
             state = MqttAuthState.NONE;
         }
         if (flow != null) {
-            flow.onError(channelCloseEvent.getCause());
+            flow.onError(disconnectEvent.getCause());
             flow = null;
         }
     }

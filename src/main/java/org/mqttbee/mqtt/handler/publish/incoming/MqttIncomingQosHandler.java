@@ -29,7 +29,7 @@ import org.mqttbee.mqtt.MqttClientConnectionData;
 import org.mqttbee.mqtt.MqttClientConnectionState;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.advanced.MqttAdvancedClientData;
-import org.mqttbee.mqtt.handler.disconnect.ChannelCloseEvent;
+import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectEvent;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.ioc.ClientScope;
 import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
@@ -232,18 +232,18 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter impleme
 
     @Override
     public void userEventTriggered(final @NotNull ChannelHandlerContext ctx, final @NotNull Object evt) {
-        if (evt instanceof ChannelCloseEvent) {
-            handleChannelCloseEvent((ChannelCloseEvent) evt);
+        if (evt instanceof MqttDisconnectEvent) {
+            handleDisconnectEvent((MqttDisconnectEvent) evt);
         }
         ctx.fireUserEventTriggered(evt);
     }
 
-    private void handleChannelCloseEvent(final @NotNull ChannelCloseEvent evt) {
+    private void handleDisconnectEvent(final @NotNull MqttDisconnectEvent disconnectEvent) {
         ctx = null;
         pubAckQueue.clear();
 
         if (clientData.getConnectionState() == MqttClientConnectionState.DISCONNECTED) {
-            incomingPublishFlows.clear(evt.getCause());
+            incomingPublishFlows.clear(disconnectEvent.getCause());
         }
     }
 

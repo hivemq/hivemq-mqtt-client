@@ -24,7 +24,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.ScheduledFuture;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.mqtt.handler.disconnect.ChannelCloseEvent;
+import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectEvent;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.ioc.ConnectionScope;
 import org.mqttbee.mqtt.message.ping.MqttPingReq;
@@ -123,13 +123,13 @@ public class MqttPingHandler extends ChannelDuplexHandler implements Runnable, C
 
     @Override
     public void userEventTriggered(final @NotNull ChannelHandlerContext ctx, final @NotNull Object evt) {
-        if (evt instanceof ChannelCloseEvent) {
-            handleChannelCloseEvent();
+        if (evt instanceof MqttDisconnectEvent) {
+            handleDisconnectEvent();
         }
         ctx.fireUserEventTriggered(evt);
     }
 
-    private void handleChannelCloseEvent() {
+    private void handleDisconnectEvent() {
         ctx = null;
         if (timeoutFuture != null) {
             timeoutFuture.cancel(false);

@@ -30,7 +30,7 @@ import org.mqttbee.mqtt.netty.ChannelAttributes;
 
 /**
  * Util for sending a DISCONNECT message or channel closing without sending a DISCONNECT message from the client side.
- * Fires {@link ChannelCloseEvent}s.
+ * Fires {@link MqttDisconnectEvent}s.
  *
  * @author Silvio Giebl
  */
@@ -43,7 +43,7 @@ public class MqttDisconnectUtil {
      * @param cause   the cause why the channel is closed.
      */
     public static void close(final @NotNull Channel channel, final @NotNull Throwable cause) {
-        fireChannelCloseEvent(channel, cause, true);
+        fireDisconnectEvent(channel, cause, true);
     }
 
     /**
@@ -53,7 +53,7 @@ public class MqttDisconnectUtil {
      * @param reason  the reason why the channel is closed.
      */
     public static void close(final @NotNull Channel channel, final @NotNull String reason) {
-        fireChannelCloseEvent(channel, new ChannelClosedException(reason), true);
+        fireDisconnectEvent(channel, new ChannelClosedException(reason), true);
     }
 
     /**
@@ -68,7 +68,7 @@ public class MqttDisconnectUtil {
             final @NotNull String reasonString) {
 
         final MqttDisconnect disconnect = createDisconnect(channel, reasonCode, reasonString);
-        fireChannelCloseEvent(channel, new Mqtt5MessageException(disconnect, reasonString), true);
+        fireDisconnectEvent(channel, new Mqtt5MessageException(disconnect, reasonString), true);
     }
 
     /**
@@ -83,14 +83,14 @@ public class MqttDisconnectUtil {
             final @NotNull Throwable cause) {
 
         final MqttDisconnect disconnect = createDisconnect(channel, reasonCode, cause.getMessage());
-        fireChannelCloseEvent(channel, new Mqtt5MessageException(disconnect, cause), true);
+        fireDisconnectEvent(channel, new Mqtt5MessageException(disconnect, cause), true);
     }
 
-    static void fireChannelCloseEvent(
+    static void fireDisconnectEvent(
             final @NotNull Channel channel, final @NotNull Throwable cause, final boolean fromClient) {
 
         channel.config().setAutoRead(false);
-        channel.pipeline().fireUserEventTriggered(new ChannelCloseEvent(cause, fromClient));
+        channel.pipeline().fireUserEventTriggered(new MqttDisconnectEvent(cause, fromClient));
     }
 
     private static @NotNull MqttDisconnect createDisconnect(

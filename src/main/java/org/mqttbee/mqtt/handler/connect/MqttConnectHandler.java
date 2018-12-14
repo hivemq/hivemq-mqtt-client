@@ -33,13 +33,13 @@ import org.mqttbee.mqtt.MqttServerConnectionData;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoder;
 import org.mqttbee.mqtt.codec.encoder.MqttEncoder;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
-import org.mqttbee.mqtt.handler.disconnect.ChannelCloseEvent;
+import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectEvent;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.handler.ping.MqttPingHandler;
 import org.mqttbee.mqtt.handler.publish.incoming.MqttIncomingQosHandler;
 import org.mqttbee.mqtt.handler.publish.outgoing.MqttOutgoingQosHandler;
 import org.mqttbee.mqtt.handler.subscribe.MqttSubscriptionHandler;
-import org.mqttbee.mqtt.handler.util.ChannelInboundHandlerWithTimeout;
+import org.mqttbee.mqtt.handler.util.MqttTimeoutInboundHandler;
 import org.mqttbee.mqtt.ioc.ConnectionScope;
 import org.mqttbee.mqtt.message.MqttMessage;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
@@ -64,7 +64,7 @@ import javax.inject.Inject;
  * @author Silvio Giebl
  */
 @ConnectionScope
-public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
+public class MqttConnectHandler extends MqttTimeoutInboundHandler {
 
     public static final @NotNull String NAME = "connect";
     private static final @NotNull Logger LOGGER = LoggerFactory.getLogger(MqttConnectHandler.class);
@@ -316,9 +316,9 @@ public class MqttConnectHandler extends ChannelInboundHandlerWithTimeout {
     }
 
     @Override
-    protected void handleChannelCloseEvent(final @NotNull ChannelCloseEvent channelCloseEvent) {
-        super.handleChannelCloseEvent(channelCloseEvent);
-        connAckFlow.onError(channelCloseEvent.getCause());
+    protected void handleDisconnectEvent(final @NotNull MqttDisconnectEvent disconnectEvent) {
+        super.handleDisconnectEvent(disconnectEvent);
+        connAckFlow.onError(disconnectEvent.getCause());
     }
 
     @Override
