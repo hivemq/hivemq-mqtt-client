@@ -34,7 +34,7 @@ import org.mqttbee.mqtt.MqttClientConnectionState;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.MqttServerConnectionData;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
-import org.mqttbee.mqtt.handler.disconnect.ChannelCloseEvent;
+import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectEvent;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.handler.publish.incoming.MqttIncomingPublishFlows;
 import org.mqttbee.mqtt.handler.publish.incoming.MqttSubscriptionFlow;
@@ -312,15 +312,15 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter implem
 
     @Override
     public void userEventTriggered(final @NotNull ChannelHandlerContext ctx, final @NotNull Object evt) {
-        if (evt instanceof ChannelCloseEvent) {
-            handleChannelCloseEvent((ChannelCloseEvent) evt);
+        if (evt instanceof MqttDisconnectEvent) {
+            handleDisconnectEvent((MqttDisconnectEvent) evt);
         }
         ctx.fireUserEventTriggered(evt);
     }
 
-    private void handleChannelCloseEvent(final @NotNull ChannelCloseEvent channelCloseEvent) {
+    private void handleDisconnectEvent(final @NotNull MqttDisconnectEvent disconnectEvent) {
         ctx = null;
-        clear(channelCloseEvent.getCause());
+        clear(disconnectEvent.getCause());
     }
 
     private void clear(final @NotNull Throwable cause) {

@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.CallByThread;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.mqtt.handler.disconnect.ChannelCloseEvent;
+import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectEvent;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 
 import java.util.concurrent.TimeUnit;
@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Silvio Giebl
  */
-public abstract class ChannelInboundHandlerWithTimeout extends ChannelInboundHandlerAdapter
+public abstract class MqttTimeoutInboundHandler extends ChannelInboundHandlerAdapter
         implements Runnable, ChannelFutureListener {
 
     protected @Nullable ChannelHandlerContext ctx;
@@ -103,13 +103,13 @@ public abstract class ChannelInboundHandlerWithTimeout extends ChannelInboundHan
 
     @Override
     public void userEventTriggered(final @NotNull ChannelHandlerContext ctx, final @NotNull Object evt) {
-        if (evt instanceof ChannelCloseEvent) {
-            handleChannelCloseEvent((ChannelCloseEvent) evt);
+        if (evt instanceof MqttDisconnectEvent) {
+            handleDisconnectEvent((MqttDisconnectEvent) evt);
         }
         ctx.fireUserEventTriggered(evt);
     }
 
-    protected void handleChannelCloseEvent(final @NotNull ChannelCloseEvent channelCloseEvent) {
+    protected void handleDisconnectEvent(final @NotNull MqttDisconnectEvent disconnectEvent) {
         ctx = null;
         cancelTimeout();
     }

@@ -36,12 +36,12 @@ import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
  *
  * @author Silvio Giebl
  */
-public class ChannelCloseEvent {
+public class MqttDisconnectEvent {
 
     private final @NotNull Throwable cause;
     private final boolean fromClient;
 
-    ChannelCloseEvent(final @NotNull Throwable cause, final boolean fromClient) {
+    MqttDisconnectEvent(final @NotNull Throwable cause, final boolean fromClient) {
         this.cause = cause;
         this.fromClient = fromClient;
     }

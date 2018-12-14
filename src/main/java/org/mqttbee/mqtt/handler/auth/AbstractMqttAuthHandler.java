@@ -29,7 +29,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
-import org.mqttbee.mqtt.handler.util.ChannelInboundHandlerWithTimeout;
+import org.mqttbee.mqtt.handler.util.MqttTimeoutInboundHandler;
 import org.mqttbee.mqtt.message.auth.MqttAuth;
 import org.mqttbee.mqtt.message.auth.MqttAuthBuilder;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
@@ -44,7 +44,7 @@ import static org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode.CONTIN
  *
  * @author Silvio Giebl
  */
-abstract class AbstractMqttAuthHandler extends ChannelInboundHandlerWithTimeout implements MqttAuthHandler {
+abstract class AbstractMqttAuthHandler extends MqttTimeoutInboundHandler implements MqttAuthHandler {
 
     static final @NotNull Logger LOGGER = LoggerFactory.getLogger(AbstractMqttAuthHandler.class);
 

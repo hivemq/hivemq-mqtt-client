@@ -34,15 +34,14 @@ import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
 import org.mqttbee.rx.CompletableFlow;
 
 import javax.inject.Inject;
-import java.io.IOException;
 
-import static org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil.fireChannelCloseEvent;
+import static org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil.fireDisconnectEvent;
 
 /**
  * If the server initiated the closing of the channel (a Disconnect message is received or the channel is closed without
- * a Disconnect message), this handler fires a {@link ChannelCloseEvent}.
+ * a Disconnect message), this handler fires a {@link MqttDisconnectEvent}.
  * <p>
- * If the client initiated the closing of the channel (a {@link ChannelCloseEvent} was fired), the handler sends a
+ * If the client initiated the closing of the channel (a {@link MqttDisconnectEvent} was fired), the handler sends a
  * Disconnect message or closes the channel without a Disconnect message.
  *
  * @author Silvio Giebl
@@ -86,16 +85,12 @@ public class MqttDisconnectHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(final @NotNull ChannelHandlerContext ctx, final @NotNull Throwable cause) {
-        if (cause instanceof IOException) {
-            closeFromServer(ctx, new ChannelClosedException(cause));
-        } else {
-            ctx.fireExceptionCaught(cause);
-        }
+        closeFromServer(ctx, new ChannelClosedException(cause));
     }
 
     private void closeFromServer(final @NotNull ChannelHandlerContext ctx, final @NotNull Throwable cause) {
         setStateDisconnected(ctx);
-        fireChannelCloseEvent(ctx.channel(), cause, false);
+        fireDisconnectEvent(ctx.channel(), cause, false);
         ctx.channel().close();
     }
 
@@ -110,7 +105,7 @@ public class MqttDisconnectHandler extends ChannelInboundHandlerAdapter {
             return;
         }
         setStateDisconnected(ctx);
-        fireChannelCloseEvent(ctx.channel(), new Mqtt5MessageException(disconnect, "Client sent DISCONNECT"), true);
+        fireDisconnectEvent(ctx.channel(), new Mqtt5MessageException(disconnect, "Client sent DISCONNECT"), true);
         ctx.writeAndFlush(disconnect).addListener((ChannelFuture future) -> {
             future.channel().close();
             if (future.isSuccess()) {
@@ -124,17 +119,17 @@ public class MqttDisconnectHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void userEventTriggered(final @NotNull ChannelHandlerContext ctx, final @NotNull Object evt) {
         ctx.fireUserEventTriggered(evt);
-        if (evt instanceof ChannelCloseEvent) {
-            handleChannelCloseEvent(ctx, (ChannelCloseEvent) evt);
+        if (evt instanceof MqttDisconnectEvent) {
+            handleDisconnectEvent(ctx, (MqttDisconnectEvent) evt);
         }
     }
 
-    private void handleChannelCloseEvent(
-            final @NotNull ChannelHandlerContext ctx, final @NotNull ChannelCloseEvent channelCloseEvent) {
+    private void handleDisconnectEvent(
+            final @NotNull ChannelHandlerContext ctx, final @NotNull MqttDisconnectEvent disconnectEvent) {
 
         setStateDisconnected(ctx);
-        if (channelCloseEvent.fromClient()) {
-            final MqttDisconnect disconnect = channelCloseEvent.getDisconnect();
+        if (disconnectEvent.fromClient()) {
+            final MqttDisconnect disconnect = disconnectEvent.getDisconnect();
             if ((disconnect != null) && (clientData.getMqttVersion() == MqttVersion.MQTT_5_0)) {
                 ctx.writeAndFlush(disconnect).addListener(ChannelFutureListener.CLOSE);
             } else {
