@@ -17,6 +17,7 @@
 
 package org.mqttbee.mqtt.handler.publish.outgoing;
 
+import io.netty.channel.EventLoop;
 import io.reactivex.internal.util.BackpressureHelper;
 import io.reactivex.plugins.RxJavaPlugins;
 import org.jetbrains.annotations.NotNull;
@@ -24,13 +25,14 @@ import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.CallByThread;
 import org.mqttbee.mqtt.handler.publish.outgoing.MqttPublishFlowableAckLink.LinkCancellable;
 import org.mqttbee.mqtt.message.publish.MqttPublishResult;
+import org.mqttbee.util.ExecutorUtil;
 import org.mqttbee.util.collections.ChunkedArrayQueue;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author Silvio Giebl
@@ -41,31 +43,36 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
     private static final int STATE_NEW_REQUESTS = 1;
     private static final int STATE_BLOCKED = 2;
 
+    private static final int STATE_NOT_DONE = 0;
+    private static final int STATE_DONE = 1;
+    private static final int STATE_CANCELLED = 2;
+
     private final @NotNull Subscriber<? super MqttPublishResult> subscriber;
     private final @NotNull MqttOutgoingQosHandler outgoingQosHandler;
+    private final @NotNull EventLoop eventLoop;
 
     private long requestedNettyLocal;
     private final @NotNull AtomicLong newRequested = new AtomicLong();
-    private final @NotNull AtomicBoolean cancelled = new AtomicBoolean();
+    private final @NotNull AtomicInteger requestState = new AtomicInteger(STATE_NO_NEW_REQUESTS);
+    private final @NotNull AtomicInteger doneState = new AtomicInteger(STATE_NOT_DONE);
+
     private volatile long acknowledged;
     private long acknowledgedNettyLocal;
-
     private final @NotNull AtomicLong published = new AtomicLong();
     private @Nullable Throwable linkError; // synced over volatile published
     private @Nullable Throwable error; // synced over volatile published
-    private final @NotNull AtomicBoolean doneEmitted = new AtomicBoolean();
 
     private final @NotNull ChunkedArrayQueue<MqttPublishResult> queue = new ChunkedArrayQueue<>(32);
-    private final @NotNull AtomicInteger requestState = new AtomicInteger();
 
-    private volatile @Nullable LinkCancellable linkCancellable;
+    private final @NotNull AtomicReference<@Nullable LinkCancellable> linkCancellable = new AtomicReference<>();
 
     MqttIncomingAckFlow(
             final @NotNull Subscriber<? super MqttPublishResult> subscriber,
-            final @NotNull MqttOutgoingQosHandler outgoingQosHandler) {
+            final @NotNull MqttOutgoingQosHandler outgoingQosHandler, final @NotNull EventLoop eventLoop) {
 
         this.subscriber = subscriber;
         this.outgoingQosHandler = outgoingQosHandler;
+        this.eventLoop = eventLoop;
     }
 
     @CallByThread("Netty EventLoop")
@@ -76,7 +83,7 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
         if (!queue.isEmpty()) {
             outer:
             while (emitted < requested) {
-                while (emitted < requested) {
+                do {
                     final MqttPublishResult queuedResult = queue.poll();
                     if (queuedResult == null) {
                         break outer;
@@ -86,6 +93,10 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
                         acknowledged++;
                     }
                     emitted++;
+                } while (emitted < requested);
+                if (isCancelled()) {
+                    queue.clear();
+                    break;
                 }
                 requested = addNewRequested();
             }
@@ -96,7 +107,7 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
                 acknowledged++;
             }
             emitted++;
-        } else if (cancelled.get()) {
+        } else if (isCancelled()) {
             queue.clear();
         } else {
             queue.offer(result);
@@ -117,7 +128,7 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
         if (acknowledged > 0) {
             final long acknowledgedLocal = this.acknowledgedNettyLocal += acknowledged;
             this.acknowledged = acknowledgedLocal;
-            if ((acknowledgedLocal == published.get()) && doneEmitted.compareAndSet(false, true)) {
+            if ((acknowledgedLocal == published.get()) && doneState.compareAndSet(STATE_NOT_DONE, STATE_DONE)) {
                 if (error != null) {
                     subscriber.onError(error);
                 } else if (linkError != null) {
@@ -125,6 +136,7 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
                 } else {
                     subscriber.onComplete();
                 }
+                releaseEventLoop();
             }
             outgoingQosHandler.request(acknowledged);
         }
@@ -134,8 +146,9 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
         if (!this.published.compareAndSet(0, published)) {
             return;
         }
-        if ((acknowledged == published) && doneEmitted.compareAndSet(false, true)) {
+        if ((acknowledged == published) && doneState.compareAndSet(STATE_NOT_DONE, STATE_DONE)) {
             subscriber.onComplete();
+            releaseEventLoop();
         }
     }
 
@@ -145,29 +158,31 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
             RxJavaPlugins.onError(t);
             return;
         }
-        if ((acknowledged == published) && doneEmitted.compareAndSet(false, true)) {
+        if ((acknowledged == published) && doneState.compareAndSet(STATE_NOT_DONE, STATE_DONE)) {
             subscriber.onError(t);
+            releaseEventLoop();
         }
     }
 
     @CallByThread("Netty EventLoop")
     void onError(final @NotNull Throwable t) {
-        cancel();
+        cancelLink();
         final long acknowledged = acknowledgedNettyLocal;
         final long published = acknowledged + queue.size();
         error = t;
         this.published.set(published);
-        if ((acknowledged == published) && doneEmitted.compareAndSet(false, true)) {
+        if ((acknowledged == published) && doneState.compareAndSet(STATE_NOT_DONE, STATE_DONE)) {
             subscriber.onError(t);
+            releaseEventLoop();
         }
     }
 
     @Override
     public void request(final long n) {
-        if (n > 0) {
+        if ((n > 0) && !isCancelled()) {
             BackpressureHelper.add(newRequested, n);
             if (requestState.getAndSet(STATE_NEW_REQUESTS) == STATE_BLOCKED) {
-                outgoingQosHandler.getEventLoop().execute(this);
+                ExecutorUtil.execute(eventLoop, this);
             }
         }
     }
@@ -180,7 +195,7 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
         long requested = requested();
         outer:
         while (emitted < requested) {
-            while (emitted < requested) {
+            do {
                 final MqttPublishResult queuedResult = queue.poll();
                 if (queuedResult == null) {
                     break outer;
@@ -190,8 +205,8 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
                     acknowledged++;
                 }
                 emitted++;
-            }
-            if (cancelled.get()) {
+            } while (emitted < requested);
+            if (isCancelled()) {
                 queue.clear();
                 break;
             }
@@ -229,19 +244,30 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
 
     @Override
     public void cancel() {
-        if (cancelled.compareAndSet(false, true)) {
-            final LinkCancellable linkCancellable = this.linkCancellable;
-            if (linkCancellable != null) {
-                linkCancellable.cancelLink();
-            }
+        if (doneState.compareAndSet(STATE_NOT_DONE, STATE_CANCELLED)) {
+            cancelLink();
+            releaseEventLoop();
         }
     }
 
-    void link(final @NotNull LinkCancellable linkCancellable) {
-        this.linkCancellable = linkCancellable;
-        if (cancelled.get()) {
+    private boolean isCancelled() {
+        return doneState.get() == STATE_CANCELLED;
+    }
+
+    private void cancelLink() {
+        final LinkCancellable linkCancellable = this.linkCancellable.getAndSet(LinkCancellable.CANCELLED);
+        if (linkCancellable != null) {
             linkCancellable.cancelLink();
         }
     }
 
+    void link(final @NotNull LinkCancellable linkCancellable) {
+        if (!this.linkCancellable.compareAndSet(null, linkCancellable)) {
+            linkCancellable.cancelLink();
+        }
+    }
+
+    private void releaseEventLoop() {
+        outgoingQosHandler.getClientData().releaseEventLoop();
+    }
 }

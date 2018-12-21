@@ -15,31 +15,26 @@
  *
  */
 
-package org.mqttbee.mqtt;
+package org.mqttbee.util;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.EnumSet;
+import java.util.concurrent.Executor;
+import java.util.concurrent.RejectedExecutionException;
 
 /**
  * @author Silvio Giebl
  */
-public enum MqttClientConnectionState {
+public class ExecutorUtil {
 
-    DISCONNECTED,
-    CONNECTING,
-    CONNECTED,
-    DISCONNECTED_RECONNECT,
-    CONNECTING_RECONNECT;
+    private ExecutorUtil() {}
 
-    private static final @NotNull EnumSet<MqttClientConnectionState> CONNECTED_OR_RECONNECT =
-            EnumSet.of(CONNECTED, DISCONNECTED_RECONNECT, CONNECTING_RECONNECT);
-
-    public boolean isConnected() {
-        return this == CONNECTED;
-    }
-
-    public boolean isConnectedOrReconnect() {
-        return CONNECTED_OR_RECONNECT.contains(this);
+    public static boolean execute(final @NotNull Executor executor, final @NotNull Runnable runnable) {
+        try {
+            executor.execute(runnable);
+            return true;
+        } catch (final RejectedExecutionException e) {
+            return false;
+        }
     }
 }

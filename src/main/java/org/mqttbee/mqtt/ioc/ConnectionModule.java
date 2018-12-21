@@ -43,7 +43,7 @@ abstract class ConnectionModule {
             final @NotNull MqttClientData clientData, final @NotNull NettyEventLoopProvider nettyEventLoopProvider,
             final @NotNull MqttChannelInitializer channelInitializer) {
 
-        return new Bootstrap().group(clientData.getEventLoop())
+        return new Bootstrap().group(clientData.acquireEventLoop())
                 .channelFactory(nettyEventLoopProvider.getChannelFactory())
                 .option(ChannelOption.SO_KEEPALIVE, true)
                 .option(ChannelOption.TCP_NODELAY, true)
@@ -60,5 +60,4 @@ abstract class ConnectionModule {
         return (connect.getRawEnhancedAuthProvider() == null) ? disconnectOnAuthHandlerLazy.get() :
                 connectAuthHandlerLazy.get();
     }
-
 }

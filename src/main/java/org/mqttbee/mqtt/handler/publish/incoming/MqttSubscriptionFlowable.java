@@ -17,12 +17,12 @@
 
 package org.mqttbee.mqtt.handler.publish.incoming;
 
+import io.netty.channel.EventLoop;
 import io.reactivex.Flowable;
 import io.reactivex.internal.subscriptions.EmptySubscription;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeResult;
-import org.mqttbee.mqtt.MqttClientConnectionState;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.handler.subscribe.MqttSubscribeWithFlow;
 import org.mqttbee.mqtt.handler.subscribe.MqttSubscriptionHandler;
@@ -44,18 +44,19 @@ public class MqttSubscriptionFlowable extends Flowable<Mqtt5SubscribeResult> {
     }
 
     @Override
-    protected void subscribeActual(final @NotNull Subscriber<? super Mqtt5SubscribeResult> s) {
-        if (clientData.getConnectionState() == MqttClientConnectionState.DISCONNECTED) {
-            EmptySubscription.error(new NotConnectedException(), s);
-        } else {
+    protected void subscribeActual(final @NotNull Subscriber<? super Mqtt5SubscribeResult> subscriber) {
+        if (clientData.getConnectionState().isConnectedOrReconnect()) {
             final ClientComponent clientComponent = clientData.getClientComponent();
             final MqttIncomingQosHandler incomingQosHandler = clientComponent.incomingQosHandler();
             final MqttSubscriptionHandler subscriptionHandler = clientComponent.subscriptionHandler();
 
-            final MqttSubscriptionFlow flow = new MqttSubscriptionFlow(s, incomingQosHandler);
-            s.onSubscribe(flow);
-            subscriptionHandler.subscribe(new MqttSubscribeWithFlow(subscribe, flow));
+            final EventLoop eventLoop = clientData.acquireEventLoop();
+
+            final MqttSubscriptionFlow flow = new MqttSubscriptionFlow(subscriber, incomingQosHandler, eventLoop);
+            subscriber.onSubscribe(flow);
+            subscriptionHandler.subscribe(new MqttSubscribeWithFlow(subscribe, flow), eventLoop);
+        } else {
+            EmptySubscription.error(new NotConnectedException(), subscriber);
         }
     }
-
 }

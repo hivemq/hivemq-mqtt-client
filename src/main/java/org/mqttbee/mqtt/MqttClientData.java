@@ -31,6 +31,7 @@ import org.mqttbee.mqtt.advanced.MqttAdvancedClientData;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt.ioc.ClientComponent;
 import org.mqttbee.mqtt.ioc.MqttBeeComponent;
+import org.mqttbee.util.ExecutorUtil;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -49,10 +50,14 @@ public class MqttClientData implements Mqtt5ClientData {
     private final boolean followsRedirects;
     private final boolean allowsServerReAuth;
     private final @NotNull MqttClientExecutorConfigImpl executorConfig;
-    private final @NotNull EventLoop eventLoop;
     private final @Nullable MqttAdvancedClientData advancedClientData;
 
     private final @NotNull ClientComponent clientComponent;
+
+    private volatile @Nullable EventLoop eventLoop;
+    private int eventLoopAcquires;
+    private long eventLoopAcquireCount;
+    private final @NotNull Object eventLoopLock = new Object();
 
     private final @NotNull AtomicReference<@NotNull MqttClientConnectionState> connectionState;
     private volatile @Nullable MqttClientConnectionData clientConnectionData;
@@ -74,7 +79,6 @@ public class MqttClientData implements Mqtt5ClientData {
         this.followsRedirects = followsRedirects;
         this.allowsServerReAuth = allowsServerReAuth;
         this.executorConfig = executorConfig;
-        this.eventLoop = executorConfig.getNettyEventLoopGroup().next();
         this.advancedClientData = advancedClientData;
 
         clientComponent = MqttBeeComponent.INSTANCE.clientComponentBuilder().clientData(this).build();
@@ -153,16 +157,52 @@ public class MqttClientData implements Mqtt5ClientData {
         return executorConfig;
     }
 
-    public @NotNull EventLoop getEventLoop() {
-        return eventLoop;
-    }
-
     public @NotNull Optional<Mqtt5AdvancedClientData> getAdvancedClientData() {
         return Optional.ofNullable(advancedClientData);
     }
 
     public @Nullable MqttAdvancedClientData getRawAdvancedClientData() {
         return advancedClientData;
+    }
+
+    public @NotNull EventLoop acquireEventLoop() {
+        synchronized (eventLoopLock) {
+            eventLoopAcquires++;
+            eventLoopAcquireCount++;
+            EventLoop eventLoop = this.eventLoop;
+            if (eventLoop == null) {
+                this.eventLoop = eventLoop = MqttBeeComponent.INSTANCE.nettyEventLoopProvider()
+                        .acquireEventLoop(executorConfig.getRawNettyExecutor(), executorConfig.getRawNettyThreads());
+            }
+            return eventLoop;
+        }
+    }
+
+    public void releaseEventLoop() {
+        synchronized (eventLoopLock) {
+            if (--eventLoopAcquires == 0) {
+                final EventLoop eventLoop = this.eventLoop;
+                final long eventLoopAcquireCount = this.eventLoopAcquireCount;
+                assert eventLoop != null;
+                eventLoop.execute(() -> { // release eventLoop after all tasks are finished
+                    synchronized (eventLoopLock) {
+                        if (eventLoopAcquireCount == this.eventLoopAcquireCount) { // eventLoop has not been reacquired
+                            this.eventLoop = null;
+                            MqttBeeComponent.INSTANCE.nettyEventLoopProvider()
+                                    .releaseEventLoop(executorConfig.getRawNettyExecutor());
+                        }
+                    }
+                });
+            }
+        }
+    }
+
+    public boolean executeInEventLoop(final @NotNull Runnable runnable) {
+        final EventLoop eventLoop = this.eventLoop;
+        if (eventLoop == null) {
+            return false;
+        }
+        return ExecutorUtil.execute(eventLoop, runnable);
     }
 
     public @NotNull ClientComponent getClientComponent() {
@@ -203,5 +243,4 @@ public class MqttClientData implements Mqtt5ClientData {
     public void setServerConnectionData(final @Nullable MqttServerConnectionData serverConnectionData) {
         this.serverConnectionData = serverConnectionData;
     }
-
 }

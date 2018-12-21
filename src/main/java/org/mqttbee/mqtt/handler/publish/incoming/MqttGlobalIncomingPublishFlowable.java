@@ -17,6 +17,7 @@
 
 package org.mqttbee.mqtt.handler.publish.incoming;
 
+import io.netty.channel.EventLoop;
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttGlobalPublishFilter;
@@ -41,14 +42,16 @@ public class MqttGlobalIncomingPublishFlowable extends Flowable<Mqtt5Publish> {
     }
 
     @Override
-    protected void subscribeActual(final @NotNull Subscriber<? super Mqtt5Publish> s) {
+    protected void subscribeActual(final @NotNull Subscriber<? super Mqtt5Publish> subscriber) {
         final ClientComponent clientComponent = clientData.getClientComponent();
         final MqttIncomingQosHandler incomingQosHandler = clientComponent.incomingQosHandler();
         final MqttIncomingPublishFlows incomingPublishFlows = incomingQosHandler.getIncomingPublishFlows();
 
-        final MqttGlobalIncomingPublishFlow flow = new MqttGlobalIncomingPublishFlow(s, incomingQosHandler, filter);
-        s.onSubscribe(flow);
-        clientData.getEventLoop().execute(() -> incomingPublishFlows.subscribeGlobal(flow));
-    }
+        final EventLoop eventLoop = clientData.acquireEventLoop();
 
+        final MqttGlobalIncomingPublishFlow flow =
+                new MqttGlobalIncomingPublishFlow(subscriber, incomingQosHandler, filter, eventLoop);
+        subscriber.onSubscribe(flow);
+        eventLoop.execute(() -> incomingPublishFlows.subscribeGlobal(flow));
+    }
 }

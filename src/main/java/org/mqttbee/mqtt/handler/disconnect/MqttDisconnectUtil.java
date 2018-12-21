@@ -89,8 +89,14 @@ public class MqttDisconnectUtil {
     static void fireDisconnectEvent(
             final @NotNull Channel channel, final @NotNull Throwable cause, final boolean fromClient) {
 
+        fireDisconnectEvent(channel, new MqttDisconnectEvent(cause, fromClient));
+    }
+
+    static void fireDisconnectEvent(
+            final @NotNull Channel channel, final @NotNull MqttDisconnectEvent disconnectEvent) {
+
         channel.config().setAutoRead(false);
-        channel.pipeline().fireUserEventTriggered(new MqttDisconnectEvent(cause, fromClient));
+        channel.pipeline().fireUserEventTriggered(disconnectEvent);
     }
 
     private static @NotNull MqttDisconnect createDisconnect(
@@ -105,5 +111,4 @@ public class MqttDisconnectUtil {
         return new MqttDisconnect(reasonCode, MqttDisconnect.SESSION_EXPIRY_INTERVAL_FROM_CONNECT, null,
                 mqttReasonString, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
     }
-
 }

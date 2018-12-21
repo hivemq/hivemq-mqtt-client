@@ -17,6 +17,7 @@
 
 package org.mqttbee.mqtt.handler.publish.incoming;
 
+import io.netty.channel.EventLoop;
 import io.reactivex.Emitter;
 import io.reactivex.internal.util.BackpressureHelper;
 import io.reactivex.plugins.RxJavaPlugins;
@@ -24,10 +25,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.CallByThread;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
+import org.mqttbee.util.ExecutorUtil;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -41,23 +42,33 @@ public abstract class MqttIncomingPublishFlow<S extends Subscriber<? super Mqtt5
     private static final int STATE_NEW_REQUESTS = 1;
     private static final int STATE_BLOCKED = 2;
 
+    private static final int STATE_NOT_DONE = 0;
+    private static final int STATE_DONE = 1;
+    private static final int STATE_CANCELLED = 2;
+
     final @NotNull S subscriber;
     final @NotNull MqttIncomingQosHandler incomingQosHandler;
+    private final @NotNull EventLoop eventLoop;
 
     long requested;
     private final @NotNull AtomicLong newRequested = new AtomicLong();
-    private final @NotNull AtomicBoolean cancelled = new AtomicBoolean();
+    private final @NotNull AtomicInteger requestState = new AtomicInteger(STATE_NO_NEW_REQUESTS);
+    private final @NotNull AtomicInteger doneState = new AtomicInteger(STATE_NOT_DONE);
+
     boolean done;
     private @Nullable Throwable error;
 
     private int referenced;
     private long blockedIndex;
     private boolean blocking;
-    private final @NotNull AtomicInteger requestState = new AtomicInteger();
 
-    MqttIncomingPublishFlow(final @NotNull S subscriber, final @NotNull MqttIncomingQosHandler incomingQosHandler) {
+    MqttIncomingPublishFlow(
+            final @NotNull S subscriber, final @NotNull MqttIncomingQosHandler incomingQosHandler,
+            final @NotNull EventLoop eventLoop) {
+
         this.subscriber = subscriber;
         this.incomingQosHandler = incomingQosHandler;
+        this.eventLoop = eventLoop;
     }
 
     @CallByThread("Netty EventLoop")
@@ -78,6 +89,9 @@ public abstract class MqttIncomingPublishFlow<S extends Subscriber<? super Mqtt5
         done = true;
         if (referenced == 0) {
             subscriber.onComplete();
+            if (doneState.compareAndSet(STATE_NOT_DONE, STATE_DONE)) {
+                releaseEventLoop();
+            }
         } else {
             incomingQosHandler.getIncomingPublishService().drain();
         }
@@ -94,6 +108,9 @@ public abstract class MqttIncomingPublishFlow<S extends Subscriber<? super Mqtt5
         done = true;
         if (referenced == 0) {
             subscriber.onError(t);
+            if (doneState.compareAndSet(STATE_NOT_DONE, STATE_DONE)) {
+                releaseEventLoop();
+            }
         } else {
             incomingQosHandler.getIncomingPublishService().drain();
         }
@@ -107,15 +124,18 @@ public abstract class MqttIncomingPublishFlow<S extends Subscriber<? super Mqtt5
             } else {
                 subscriber.onComplete();
             }
+            if (doneState.compareAndSet(STATE_NOT_DONE, STATE_DONE)) {
+                releaseEventLoop();
+            }
         }
     }
 
     @Override
     public void request(final long n) {
-        if (n > 0) {
+        if ((n > 0) && !isCancelled()) {
             BackpressureHelper.add(newRequested, n);
             if (requestState.getAndSet(STATE_NEW_REQUESTS) == STATE_BLOCKED) {
-                incomingQosHandler.getEventLoop().execute(this);
+                ExecutorUtil.execute(eventLoop, this);
             }
         }
     }
@@ -160,8 +180,9 @@ public abstract class MqttIncomingPublishFlow<S extends Subscriber<? super Mqtt5
 
     @Override
     public void cancel() {
-        if (cancelled.compareAndSet(false, true)) {
-            incomingQosHandler.getEventLoop().execute(this::runCancel);
+        if (doneState.compareAndSet(STATE_NOT_DONE, STATE_CANCELLED)) {
+            eventLoop.execute(this::runCancel);
+            releaseEventLoop();
         }
     }
 
@@ -173,7 +194,7 @@ public abstract class MqttIncomingPublishFlow<S extends Subscriber<? super Mqtt5
     }
 
     public boolean isCancelled() {
-        return cancelled.get();
+        return doneState.get() == STATE_CANCELLED;
     }
 
     @CallByThread("Netty EventLoop")
@@ -186,4 +207,7 @@ public abstract class MqttIncomingPublishFlow<S extends Subscriber<? super Mqtt5
         return --referenced;
     }
 
+    private void releaseEventLoop() {
+        incomingQosHandler.getClientData().releaseEventLoop();
+    }
 }

@@ -37,6 +37,11 @@ import org.mqttbee.util.Checks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 import static org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION;
 
 /**
@@ -56,32 +61,8 @@ abstract class AbstractMqttAuthHandler extends MqttTimeoutInboundHandler impleme
         IN_PROGRESS_DONE
     }
 
-    static boolean enhancedAuthProviderAccepted(final @Nullable Throwable throwable) {
-        if (throwable != null) {
-            LOGGER.error("auth cancelled because of an unexpected exception", throwable);
-            return false;
-        }
-        return true;
-    }
-
-    static boolean enhancedAuthProviderAccepted(final @Nullable Boolean accepted, final @Nullable Throwable throwable) {
-        if (throwable != null) {
-            LOGGER.error("auth cancelled because of an unexpected exception", throwable);
-            return false;
-        } else if (accepted == null) {
-            LOGGER.error("auth cancelled because of an unexpected null value");
-            return false;
-        }
-        return accepted;
-    }
-
-    private static @NotNull MqttUTF8StringImpl getMethod(final @NotNull Mqtt5EnhancedAuthProvider authProvider) {
-        return Checks.notImplemented(authProvider.getMethod(), MqttUTF8StringImpl.class, "Auth method");
-    }
-
     final @NotNull MqttClientData clientData;
     final @NotNull Mqtt5EnhancedAuthProvider authProvider;
-    final @NotNull MqttUTF8StringImpl authMethod;
     @NotNull MqttAuthState state = MqttAuthState.NONE;
 
     AbstractMqttAuthHandler(final @NotNull MqttClientData clientData, final @NotNull MqttConnect connect) {
@@ -89,13 +70,11 @@ abstract class AbstractMqttAuthHandler extends MqttTimeoutInboundHandler impleme
         final Mqtt5EnhancedAuthProvider authProvider = connect.getRawEnhancedAuthProvider();
         assert authProvider != null;
         this.authProvider = authProvider;
-        authMethod = getMethod(authProvider);
     }
 
     AbstractMqttAuthHandler(final @NotNull MqttConnectAuthHandler connectAuthHandler) {
         this.clientData = connectAuthHandler.clientData;
         this.authProvider = connectAuthHandler.authProvider;
-        authMethod = getMethod(authProvider);
     }
 
     /**
@@ -132,9 +111,9 @@ abstract class AbstractMqttAuthHandler extends MqttTimeoutInboundHandler impleme
      * @return true if the AUTH message is valid, otherwise false.
      */
     private boolean validateAuth(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttAuth auth) {
-        if (!auth.getMethod().equals(authMethod)) {
+        if (!auth.getMethod().equals(getMethod())) {
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                    new Mqtt5MessageException(auth, "Auth method in AUTH must be the same as in the CONNECT"));
+                    new Mqtt5MessageException(auth, "Auth method in AUTH must be the same as in the CONNECT."));
             return false;
         }
         return true;
@@ -154,20 +133,19 @@ abstract class AbstractMqttAuthHandler extends MqttTimeoutInboundHandler impleme
     private void readAuthContinue(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttAuth auth) {
         if (state != MqttAuthState.WAIT_FOR_SERVER) {
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                    "Must not receive an AUTH with Reason Code CONTINUE_AUTHENTICATION in no response to a client message");
+                    new Mqtt5MessageException(auth, "Must not receive AUTH with reason code CONTINUE_AUTHENTICATION " +
+                            "in no response to a client message."));
+            return;
         }
 
-        final MqttAuthBuilder authBuilder = new MqttAuthBuilder(CONTINUE_AUTHENTICATION, authMethod);
+        final MqttAuthBuilder authBuilder = new MqttAuthBuilder(CONTINUE_AUTHENTICATION, getMethod());
         state = MqttAuthState.IN_PROGRESS_RESPONSE;
-        authProvider.onContinue(clientData, auth, authBuilder).whenCompleteAsync((accepted, throwable) -> {
-            if (enhancedAuthProviderAccepted(accepted, throwable)) {
-                state = MqttAuthState.WAIT_FOR_SERVER;
-                ctx.writeAndFlush(authBuilder.build()).addListener(this);
-            } else {
-                MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.NOT_AUTHORIZED,
-                        new Mqtt5MessageException(auth, "Server auth not accepted"));
-            }
-        }, clientData.getEventLoop());
+        callProviderFutureResult(() -> authProvider.onContinue(clientData, auth, authBuilder), ctx2 -> {
+            state = MqttAuthState.WAIT_FOR_SERVER;
+            ctx2.writeAndFlush(authBuilder.build()).addListener(this);
+
+        }, (ctx2, throwable) -> MqttDisconnectUtil.disconnect(ctx2.channel(), Mqtt5DisconnectReasonCode.NOT_AUTHORIZED,
+                new Mqtt5MessageException(auth, "Server auth not accepted.")));
     }
 
     /**
@@ -186,6 +164,75 @@ abstract class AbstractMqttAuthHandler extends MqttTimeoutInboundHandler impleme
      */
     abstract void readReAuth(@NotNull ChannelHandlerContext ctx, @NotNull MqttAuth auth);
 
+    void callProvider(final @NotNull Runnable call) {
+        try {
+            call.run();
+        } catch (final Throwable throwable) {
+            LOGGER.error("Auth cancelled. Unexpected exception thrown by auth provider.", throwable);
+        }
+    }
+
+    void callProviderFuture(
+            final @NotNull Supplier<@NotNull CompletableFuture<Void>> supplier,
+            final @NotNull Consumer<@NotNull ChannelHandlerContext> onSuccess,
+            final @NotNull BiConsumer<@NotNull ChannelHandlerContext, @NotNull Throwable> onError) {
+
+        if (ctx == null) {
+            return;
+        }
+        try {
+            supplier.get().whenComplete((aVoid, throwable) -> clientData.executeInEventLoop(() -> {
+                if (ctx == null) {
+                    return;
+                }
+                if (throwable != null) {
+                    LOGGER.error("Auth cancelled. Unexpected exception thrown by auth provider.", throwable);
+                    onError.accept(ctx, throwable);
+                } else {
+                    onSuccess.accept(ctx);
+                }
+            }));
+        } catch (final Throwable throwable) {
+            LOGGER.error("Auth cancelled. Unexpected exception thrown by auth provider.", throwable);
+            onError.accept(ctx, throwable);
+        }
+    }
+
+    void callProviderFutureResult(
+            final @NotNull Supplier<@NotNull CompletableFuture<Boolean>> supplier,
+            final @NotNull Consumer<@NotNull ChannelHandlerContext> onSuccess,
+            final @NotNull BiConsumer<@NotNull ChannelHandlerContext, @Nullable Throwable> onError) {
+
+        if (ctx == null) {
+            return;
+        }
+        try {
+            supplier.get().whenComplete((accepted, throwable) -> clientData.executeInEventLoop(() -> {
+                if (ctx == null) {
+                    return;
+                }
+                if (throwable != null) {
+                    LOGGER.error("Auth cancelled. Unexpected exception thrown by auth provider.", throwable);
+                    onError.accept(ctx, throwable);
+                } else if (accepted == null) {
+                    LOGGER.error("Auth cancelled. Unexpected null result returned by auth provider.");
+                    onError.accept(ctx, new NullPointerException("Result returned by auth provider must not be null."));
+                } else if (!accepted) {
+                    onError.accept(ctx, null);
+                } else {
+                    onSuccess.accept(ctx);
+                }
+            }));
+        } catch (final Throwable throwable) {
+            LOGGER.error("Auth cancelled. Unexpected exception thrown by auth provider.", throwable);
+            onError.accept(ctx, throwable);
+        }
+    }
+
+    @NotNull MqttUTF8StringImpl getMethod() {
+        return Checks.notImplemented(authProvider.getMethod(), MqttUTF8StringImpl.class, "Auth method");
+    }
+
     @Override
     protected final long getTimeout() {
         return authProvider.getTimeout();
@@ -195,5 +242,4 @@ abstract class AbstractMqttAuthHandler extends MqttTimeoutInboundHandler impleme
     protected final @NotNull Mqtt5DisconnectReasonCode getTimeoutReasonCode() {
         return Mqtt5DisconnectReasonCode.NOT_AUTHORIZED;
     }
-
 }

@@ -17,10 +17,14 @@
 
 package org.mqttbee.mqtt.netty;
 
-import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
 import io.netty.channel.epoll.Epoll;
+import io.netty.channel.epoll.EpollEventLoopGroup;
+import io.netty.channel.epoll.EpollSocketChannel;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioSocketChannel;
+import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Singleton;
 
@@ -32,15 +36,11 @@ public abstract class NettyModule {
 
     @Provides
     @Singleton
-    static NettyEventLoopProvider provideNettyEventLoopProvider(
-            final Lazy<NettyNioEventLoopProvider> nioEventLoopProviderLazy,
-            final Lazy<NettyEpollEventLoopProvider> epollEventLoopProviderLazy) {
-
+    static @NotNull NettyEventLoopProvider provideNettyEventLoopProvider() {
         if (Epoll.isAvailable()) {
-            return epollEventLoopProviderLazy.get();
+            return new NettyEventLoopProvider(EpollEventLoopGroup::new, EpollSocketChannel::new);
         } else {
-            return nioEventLoopProviderLazy.get();
+            return new NettyEventLoopProvider(NioEventLoopGroup::new, NioSocketChannel::new);
         }
     }
-
 }

@@ -22,6 +22,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
+import org.mqttbee.rx.CompletableFlow;
 
 /**
  * Event that is fired when the channel will be closed containing the cause.
@@ -73,4 +74,17 @@ public class MqttDisconnectEvent {
         return null;
     }
 
+    static class ByUser extends MqttDisconnectEvent {
+
+        private final @NotNull CompletableFlow flow;
+
+        ByUser(final @NotNull MqttDisconnect disconnect, final @NotNull CompletableFlow flow) {
+            super(new Mqtt5MessageException(disconnect, "Client sent DISCONNECT"), true);
+            this.flow = flow;
+        }
+
+        public @NotNull CompletableFlow getFlow() {
+            return flow;
+        }
+    }
 }

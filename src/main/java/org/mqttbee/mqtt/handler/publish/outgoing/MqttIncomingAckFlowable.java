@@ -17,12 +17,12 @@
 
 package org.mqttbee.mqtt.handler.publish.outgoing;
 
+import io.netty.channel.EventLoop;
 import io.reactivex.Flowable;
 import io.reactivex.internal.subscriptions.EmptySubscription;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
-import org.mqttbee.mqtt.MqttClientConnectionState;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.ioc.ClientComponent;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
@@ -44,18 +44,19 @@ public class MqttIncomingAckFlowable extends Flowable<Mqtt5PublishResult> {
     }
 
     @Override
-    protected void subscribeActual(final @NotNull Subscriber<? super Mqtt5PublishResult> s) {
-        if (clientData.getConnectionState() == MqttClientConnectionState.DISCONNECTED) {
-            EmptySubscription.error(new NotConnectedException(), s);
-        } else {
+    protected void subscribeActual(final @NotNull Subscriber<? super Mqtt5PublishResult> subscriber) {
+        if (clientData.getConnectionState().isConnectedOrReconnect()) {
             final ClientComponent clientComponent = clientData.getClientComponent();
             final MqttOutgoingQosHandler outgoingQosHandler = clientComponent.outgoingQosHandler();
             final MqttPublishFlowables publishFlowables = outgoingQosHandler.getPublishFlowables();
 
-            final MqttIncomingAckFlow incomingAckFlow = new MqttIncomingAckFlow(s, outgoingQosHandler);
-            s.onSubscribe(incomingAckFlow);
-            publishFlowables.add(new MqttPublishFlowableAckLink(publishFlowable, incomingAckFlow));
+            final EventLoop eventLoop = clientData.acquireEventLoop();
+
+            final MqttIncomingAckFlow flow = new MqttIncomingAckFlow(subscriber, outgoingQosHandler, eventLoop);
+            subscriber.onSubscribe(flow);
+            publishFlowables.add(new MqttPublishFlowableAckLink(publishFlowable, flow));
+        } else {
+            EmptySubscription.error(new NotConnectedException(), subscriber);
         }
     }
-
 }

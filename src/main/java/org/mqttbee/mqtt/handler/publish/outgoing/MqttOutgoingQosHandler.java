@@ -17,7 +17,10 @@
 
 package org.mqttbee.mqtt.handler.publish.outgoing;
 
-import io.netty.channel.*;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.reactivex.FlowableSubscriber;
 import org.jctools.queues.SpscUnboundedArrayQueue;
 import org.jetbrains.annotations.NotNull;
@@ -157,7 +160,7 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
     public void onNext(final @NotNull MqttPublishWithFlow publishWithFlow) {
         queue.offer(publishWithFlow);
         if (queuedCounter.getAndIncrement() == 0) {
-            clientData.getEventLoop().execute(this);
+            clientData.executeInEventLoop(this);
         }
     }
 
@@ -168,7 +171,7 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
 
     @Override
     public void onError(final @NotNull Throwable t) {
-        LOGGER.error("MqttPublishFlowables is global and must never error. This must not happen and is a bug.");
+        LOGGER.error("MqttPublishFlowables is global and must never error. This must not happen and is a bug.", t);
     }
 
     @CallByThread("Netty EventLoop")
@@ -196,7 +199,7 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
         }
         ctx.flush();
         if (queuedCounter.addAndGet(-working) > 0) {
-            clientData.getEventLoop().execute(this);
+            ctx.channel().eventLoop().execute(this);
         }
     }
 
@@ -482,8 +485,8 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
         }
     }
 
-    @NotNull EventLoop getEventLoop() {
-        return clientData.getEventLoop();
+    @NotNull MqttClientData getClientData() {
+        return clientData;
     }
 
     @NotNull MqttPublishFlowables getPublishFlowables() {
@@ -492,6 +495,6 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
 
     @Override
     public boolean isSharable() {
-        return clientData.getEventLoop().inEventLoop() && (ctx == null);
+        return ctx == null;
     }
 }

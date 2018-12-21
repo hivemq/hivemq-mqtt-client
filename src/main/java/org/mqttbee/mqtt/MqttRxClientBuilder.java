@@ -91,7 +91,6 @@ public class MqttRxClientBuilder extends MqttRxClientBuilderBase<MqttRxClientBui
 
     private @NotNull MqttClientData buildClientData() {
         return new MqttClientData(MqttVersion.MQTT_5_0, identifier, serverHost, serverPort, sslConfig, webSocketConfig,
-                followRedirects, allowServerReAuth, MqttClientExecutorConfigImpl.orDefault(executorConfig),
-                advancedClientData);
+                followRedirects, allowServerReAuth, executorConfig, advancedClientData);
     }
 }

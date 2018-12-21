@@ -59,8 +59,9 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
 
     interface LinkCancellable {
 
-        void cancelLink();
+        @NotNull LinkCancellable CANCELLED = () -> {};
 
+        void cancelLink();
     }
 
     static abstract class AbstractAckLinkSubscriber<S extends Subscriber<? super MqttPublishWithFlow>>
@@ -129,7 +130,6 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
                 subscriber.onComplete();
             }
         }
-
     }
 
     private static class AckLinkSubscriber extends AbstractAckLinkSubscriber<Subscriber<? super MqttPublishWithFlow>> {
@@ -153,7 +153,6 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
                 stopEmitting();
             }
         }
-
     }
 
     private static class AckLinkConditionalSubscriber
@@ -190,7 +189,5 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
             }
             return true;
         }
-
     }
-
 }
