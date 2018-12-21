@@ -17,6 +17,7 @@
 
 package org.mqttbee.mqtt.handler.publish.incoming;
 
+import io.netty.channel.EventLoop;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeResult;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
@@ -37,9 +38,9 @@ public class MqttSubscriptionFlow extends MqttIncomingPublishFlow<Subscriber<? s
 
     MqttSubscriptionFlow(
             final @NotNull Subscriber<? super Mqtt5SubscribeResult> subscriber,
-            final @NotNull MqttIncomingQosHandler incomingQosHandler) {
+            final @NotNull MqttIncomingQosHandler incomingQosHandler, final @NotNull EventLoop eventLoop) {
 
-        super(subscriber, incomingQosHandler);
+        super(subscriber, incomingQosHandler, eventLoop);
         this.topicFilters = new HandleList<>();
     }
 
@@ -71,5 +72,4 @@ public class MqttSubscriptionFlow extends MqttIncomingPublishFlow<Subscriber<? s
     void setSubscriptionIdentifier(final int subscriptionIdentifier) {
         this.subscriptionIdentifier = subscriptionIdentifier;
     }
-
 }

@@ -62,8 +62,17 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
 
         bootstrap.connect(clientData.getServerHost(), clientData.getServerPort()).addListener(future -> {
             if (!future.isSuccess()) {
-                flow.onError(future.cause());
+                onError(clientData, flow, future.cause());
             }
         });
+    }
+
+    public static void onError(
+            final @NotNull MqttClientData clientData, final @NotNull SingleFlow<Mqtt5ConnAck> flow,
+            final @NotNull Throwable cause) {
+
+        clientData.getRawConnectionState().set(MqttClientConnectionState.DISCONNECTED);
+        flow.onError(cause);
+        clientData.releaseEventLoop();
     }
 }

@@ -17,12 +17,10 @@
 
 package org.mqttbee.mqtt;
 
-import io.netty.channel.MultithreadEventLoopGroup;
 import io.reactivex.Scheduler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.MqttClientExecutorConfigBuilder;
-import org.mqttbee.mqtt.ioc.MqttBeeComponent;
 import org.mqttbee.util.Checks;
 
 import java.util.concurrent.Executor;
@@ -59,10 +57,7 @@ public abstract class MqttClientExecutorConfigImplBuilder<B extends MqttClientEx
     }
 
     public @NotNull MqttClientExecutorConfigImpl build() {
-
-        final MultithreadEventLoopGroup eventLoopGroup =
-                MqttBeeComponent.INSTANCE.nettyEventLoopProvider().getEventLoopGroup(nettyExecutor, nettyThreads);
-        return new MqttClientExecutorConfigImpl(eventLoopGroup, applicationScheduler);
+        return new MqttClientExecutorConfigImpl(nettyExecutor, nettyThreads, applicationScheduler);
     }
 
     public static class Default extends MqttClientExecutorConfigImplBuilder<Default>

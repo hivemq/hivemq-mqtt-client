@@ -27,12 +27,12 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttWebSocketConfig;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
-import org.mqttbee.mqtt.MqttClientConnectionState;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.MqttClientSslConfigImpl;
 import org.mqttbee.mqtt.codec.encoder.MqttEncoder;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.handler.auth.MqttAuthHandler;
+import org.mqttbee.mqtt.handler.connect.MqttConnAckSingle;
 import org.mqttbee.mqtt.handler.connect.MqttConnectHandler;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectHandler;
 import org.mqttbee.mqtt.handler.ssl.SslUtil;
@@ -136,9 +136,7 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
 
     @Override
     public void exceptionCaught(final @NotNull ChannelHandlerContext ctx, final @NotNull Throwable cause) {
-        clientData.getRawConnectionState().set(MqttClientConnectionState.DISCONNECTED);
-        connAckFlow.onError(cause);
         ctx.close();
+        MqttConnAckSingle.onError(clientData, connAckFlow, cause);
     }
-
 }

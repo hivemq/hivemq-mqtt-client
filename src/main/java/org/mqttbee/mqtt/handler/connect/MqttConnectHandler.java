@@ -26,10 +26,7 @@ import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.mqtt.MqttClientConnectionData;
-import org.mqttbee.mqtt.MqttClientConnectionState;
-import org.mqttbee.mqtt.MqttClientData;
-import org.mqttbee.mqtt.MqttServerConnectionData;
+import org.mqttbee.mqtt.*;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoder;
 import org.mqttbee.mqtt.codec.encoder.MqttEncoder;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
@@ -102,7 +99,7 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
     }
 
     @Override
-    public void channelActive(@NotNull final ChannelHandlerContext ctx) {
+    public void channelActive(final @NotNull ChannelHandlerContext ctx) {
         if (!connectCalled) {
             connectCalled = true;
             writeConnect(ctx);
@@ -111,7 +108,7 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
     }
 
     @Override
-    public void handlerAdded(@NotNull final ChannelHandlerContext ctx) {
+    public void handlerAdded(final @NotNull ChannelHandlerContext ctx) {
         super.handlerAdded(ctx);
 
         if (!connectCalled && ctx.channel().isActive()) {
@@ -130,7 +127,7 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
      *
      * @param ctx the channel handler context.
      */
-    private void writeConnect(@NotNull final ChannelHandlerContext ctx) {
+    private void writeConnect(final @NotNull ChannelHandlerContext ctx) {
         addClientData(ctx.channel());
 
         final MqttMessage message = (connect.getRawEnhancedAuthProvider() == null) ?
@@ -140,7 +137,7 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
     }
 
     @Override
-    public void operationComplete(@NotNull final ChannelFuture future) {
+    public void operationComplete(final @NotNull ChannelFuture future) {
         final Channel channel = future.channel();
         if (future.isSuccess()) {
             if (connect.getRawEnhancedAuthProvider() == null) {
@@ -157,7 +154,7 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
      *
      * @param channel the channel to add the client data to.
      */
-    private void addClientData(@NotNull final Channel channel) {
+    private void addClientData(final @NotNull Channel channel) {
         final MqttConnectRestrictions restrictions = connect.getRestrictions();
         final MqttClientConnectionData clientConnectionData =
                 new MqttClientConnectionData(connect.getKeepAlive(), connect.getSessionExpiryInterval(),
@@ -170,7 +167,7 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
     }
 
     @Override
-    public void channelRead(@NotNull final ChannelHandlerContext ctx, @NotNull final Object msg) {
+    public void channelRead(final @NotNull ChannelHandlerContext ctx, final @NotNull Object msg) {
         cancelTimeout();
 
         if (msg instanceof MqttConnAck) {
@@ -191,7 +188,7 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
      * @param connAck the CONNACK message.
      * @param channel the channel.
      */
-    private void handleConnAck(@NotNull final MqttConnAck connAck, @NotNull final Channel channel) {
+    private void handleConnAck(final @NotNull MqttConnAck connAck, final @NotNull Channel channel) {
         if (connAck.getReasonCode().isError()) {
             MqttDisconnectUtil.close(
                     channel, new Mqtt5MessageException(connAck, "Connection failed with CONNACK with Error Code"));
@@ -233,7 +230,7 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
      * @param msg     the received message other than CONNACK.
      * @param channel the channel.
      */
-    private void handleOtherThanConnAck(@NotNull final Object msg, @NotNull final Channel channel) {
+    private void handleOtherThanConnAck(final @NotNull Object msg, final @NotNull Channel channel) {
         if (msg instanceof Mqtt5Message) {
             final Mqtt5Message mqttMessage = (Mqtt5Message) msg;
             final String message = mqttMessage.getType() + " message must not be received before CONNACK";
@@ -253,12 +250,12 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
      * @param channel the channel.
      * @return true if the CONNACK message is valid, otherwise false.
      */
-    private boolean validateConnack(@NotNull final MqttConnAck connAck, @NotNull final Channel channel) {
+    private boolean validateConnack(final @NotNull MqttConnAck connAck, final @NotNull Channel channel) {
         final MqttClientIdentifierImpl clientIdentifier = clientData.getRawClientIdentifier();
         final MqttClientIdentifierImpl assignedClientIdentifier = connAck.getRawAssignedClientIdentifier();
 
         if (clientIdentifier == MqttClientIdentifierImpl.REQUEST_CLIENT_IDENTIFIER_FROM_SERVER) {
-            if (assignedClientIdentifier == null) {
+            if ((clientData.getMqttVersion() == MqttVersion.MQTT_5_0) && (assignedClientIdentifier == null)) {
                 MqttDisconnectUtil.disconnect(channel, Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
                         new Mqtt5MessageException(connAck, "Server did not assign a Client Identifier"));
                 return false;
@@ -277,7 +274,7 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
      *
      * @param connAck the CONNACK message.
      */
-    private @NotNull MqttClientConnectionData updateClientData(@NotNull final MqttConnAck connAck) {
+    private @NotNull MqttClientConnectionData updateClientData(final @NotNull MqttConnAck connAck) {
         final MqttClientIdentifierImpl assignedClientIdentifier = connAck.getRawAssignedClientIdentifier();
         if (assignedClientIdentifier != null) {
             clientData.setClientIdentifier(assignedClientIdentifier);
@@ -304,7 +301,7 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
      *
      * @param connAck the CONNACK message.
      */
-    private void addServerData(@NotNull final MqttConnAck connAck) {
+    private void addServerData(final @NotNull MqttConnAck connAck) {
         final MqttConnAckRestrictions restrictions = connAck.getRestrictions();
 
         clientData.setServerConnectionData(
@@ -326,16 +323,13 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
         return CONNACK_TIMEOUT;
     }
 
-    @NotNull
     @Override
-    protected Mqtt5DisconnectReasonCode getTimeoutReasonCode() {
+    protected @NotNull Mqtt5DisconnectReasonCode getTimeoutReasonCode() {
         return Mqtt5DisconnectReasonCode.PROTOCOL_ERROR;
     }
 
-    @NotNull
     @Override
-    protected String getTimeoutReasonString() {
+    protected @NotNull String getTimeoutReasonString() {
         return "Timeout while waiting for CONNACK";
     }
-
 }

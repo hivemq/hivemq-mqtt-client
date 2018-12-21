@@ -23,7 +23,6 @@ import io.reactivex.internal.disposables.EmptyDisposable;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
-import org.mqttbee.mqtt.MqttClientConnectionState;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.ioc.ClientComponent;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribe;
@@ -34,26 +33,25 @@ import org.mqttbee.rx.SingleFlow.DefaultSingleFlow;
  */
 public class MqttUnsubAckSingle extends Single<Mqtt5UnsubAck> {
 
-    private final MqttUnsubscribe unsubscribe;
-    private final MqttClientData clientData;
+    private final @NotNull MqttUnsubscribe unsubscribe;
+    private final @NotNull MqttClientData clientData;
 
-    public MqttUnsubAckSingle(@NotNull final MqttUnsubscribe unsubscribe, @NotNull final MqttClientData clientData) {
+    public MqttUnsubAckSingle(final @NotNull MqttUnsubscribe unsubscribe, final @NotNull MqttClientData clientData) {
         this.unsubscribe = unsubscribe;
         this.clientData = clientData;
     }
 
     @Override
-    protected void subscribeActual(final SingleObserver<? super Mqtt5UnsubAck> observer) {
-        if (clientData.getConnectionState() == MqttClientConnectionState.DISCONNECTED) {
-            EmptyDisposable.error(new NotConnectedException(), observer);
-        } else {
+    protected void subscribeActual(final @NotNull SingleObserver<? super Mqtt5UnsubAck> observer) {
+        if (clientData.getConnectionState().isConnectedOrReconnect()) {
             final ClientComponent clientComponent = clientData.getClientComponent();
             final MqttSubscriptionHandler subscriptionHandler = clientComponent.subscriptionHandler();
 
             final DefaultSingleFlow<Mqtt5UnsubAck> flow = new DefaultSingleFlow<>(observer);
             observer.onSubscribe(flow);
             subscriptionHandler.unsubscribe(new MqttUnsubscribeWithFlow(unsubscribe, flow));
+        } else {
+            EmptyDisposable.error(new NotConnectedException(), observer);
         }
     }
-
 }

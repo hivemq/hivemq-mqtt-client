@@ -20,6 +20,7 @@ package org.mqttbee.mqtt.handler.subscribe;
 import com.google.common.collect.ImmutableList;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.EventLoop;
 import org.jctools.queues.MpscLinkedQueue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -105,17 +106,22 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter implem
 
     public void subscribe(final @NotNull MqttSubscribeWithFlow subscribeWithFlow) {
         queued.offer(subscribeWithFlow);
-        trySchedule();
+        if (queuedCounter.getAndIncrement() == 0) {
+            clientData.executeInEventLoop(this);
+        }
+    }
+
+    public void subscribe(final @NotNull MqttSubscribeWithFlow subscribeWithFlow, final @NotNull EventLoop eventLoop) {
+        queued.offer(subscribeWithFlow);
+        if (queuedCounter.getAndIncrement() == 0) {
+            eventLoop.execute(this);
+        }
     }
 
     public void unsubscribe(final @NotNull MqttUnsubscribeWithFlow unsubscribeWithFlow) {
         queued.offer(unsubscribeWithFlow);
-        trySchedule();
-    }
-
-    private void trySchedule() {
         if (queuedCounter.getAndIncrement() == 0) {
-            clientData.getEventLoop().execute(this);
+            clientData.executeInEventLoop(this);
         }
     }
 
@@ -383,6 +389,6 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter implem
 
     @Override
     public boolean isSharable() {
-        return clientData.getEventLoop().inEventLoop() && (ctx == null);
+        return ctx == null;
     }
 }

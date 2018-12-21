@@ -54,7 +54,9 @@ public class MqttReAuthHandler extends AbstractMqttAuthHandler {
     }
 
     void reauth(final @NotNull CompletableFlow flow) {
-        clientData.getEventLoop().execute(() -> writeReAuth(flow));
+        if (!clientData.executeInEventLoop(() -> writeReAuth(flow))) {
+            flow.onError(new NotConnectedException());
+        }
     }
 
     /**
@@ -70,25 +72,23 @@ public class MqttReAuthHandler extends AbstractMqttAuthHandler {
             return;
         }
         if (state != MqttAuthState.NONE) {
-            flow.onError(new UnsupportedOperationException("Reauth is still pending"));
+            flow.onError(new UnsupportedOperationException("Reauth is still pending."));
             return;
         }
 
         this.flow = flow;
 
-        final MqttAuthBuilder authBuilder = new MqttAuthBuilder(REAUTHENTICATE, authMethod);
+        final MqttAuthBuilder authBuilder = new MqttAuthBuilder(REAUTHENTICATE, getMethod());
         state = MqttAuthState.IN_PROGRESS_INIT;
-        authProvider.onReAuth(clientData, authBuilder).whenCompleteAsync((aVoid, throwable) -> {
-            if (enhancedAuthProviderAccepted(throwable)) {
-                state = MqttAuthState.WAIT_FOR_SERVER;
-                ctx.writeAndFlush(authBuilder.build()).addListener(this);
-            } else {
-                state = MqttAuthState.NONE;
-                authProvider.onReAuthError(clientData, throwable);
-                this.flow.onError(throwable);
-                this.flow = null;
-            }
-        }, clientData.getEventLoop());
+        callProviderFuture(() -> authProvider.onReAuth(clientData, authBuilder), ctx -> {
+            state = MqttAuthState.WAIT_FOR_SERVER;
+            ctx.writeAndFlush(authBuilder.build()).addListener(this);
+        }, (ctx, throwable) -> {
+            callProvider(() -> authProvider.onReAuthError(clientData, throwable));
+            state = MqttAuthState.NONE;
+            this.flow.onError(throwable);
+            this.flow = null;
+        });
     }
 
     @Override
@@ -113,23 +113,26 @@ public class MqttReAuthHandler extends AbstractMqttAuthHandler {
      * @param auth the incoming AUTH message.
      */
     void readAuthSuccess(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttAuth auth) {
+        if (state != MqttAuthState.WAIT_FOR_SERVER) {
+            MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+                    new Mqtt5MessageException(auth,
+                            "Must not receive AUTH with reason code SUCCESS in no response to a client message."));
+            return;
+        }
+
         state = MqttAuthState.IN_PROGRESS_DONE;
-        authProvider.onReAuthSuccess(clientData, auth).whenCompleteAsync((accepted, throwable) -> {
-            if (enhancedAuthProviderAccepted(accepted, throwable)) {
-                state = MqttAuthState.NONE;
-                if (flow != null) {
-                    if (!flow.isCancelled()) {
-                        flow.onComplete();
-                    } else {
-                        LOGGER.warn("Reauth was successful but the Completable has been cancelled");
-                    }
-                    flow = null;
+        callProviderFutureResult(() -> authProvider.onReAuthSuccess(clientData, auth), ctx2 -> {
+            state = MqttAuthState.NONE;
+            if (flow != null) {
+                if (!flow.isCancelled()) {
+                    flow.onComplete();
+                } else {
+                    LOGGER.warn("Reauth was successful but the Completable has been cancelled.");
                 }
-            } else {
-                MqttDisconnectUtil.disconnect(
-                        ctx.channel(), Mqtt5DisconnectReasonCode.NOT_AUTHORIZED, "Server auth success not accepted");
+                flow = null;
             }
-        }, clientData.getEventLoop());
+        }, (ctx2, throwable) -> MqttDisconnectUtil.disconnect(ctx2.channel(), Mqtt5DisconnectReasonCode.NOT_AUTHORIZED,
+                new Mqtt5MessageException(auth, "Server auth success not accepted.")));
     }
 
     /**
@@ -148,21 +151,24 @@ public class MqttReAuthHandler extends AbstractMqttAuthHandler {
     void readReAuth(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttAuth auth) {
         if (!clientData.allowsServerReAuth()) {
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                    new Mqtt5MessageException(auth, "Must not receive AUTH with Reason Code REAUTHENTICATE"));
+                    new Mqtt5MessageException(auth, "Must not receive an AUTH with reason code REAUTHENTICATE."));
+            return;
+        }
+        if (state != MqttAuthState.NONE) {
+            MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
+                    new Mqtt5MessageException(auth,
+                            "Must not receive AUTH with reason code REAUTHENTICATE if reauth is still pending."));
             return;
         }
 
-        final MqttAuthBuilder authBuilder = new MqttAuthBuilder(CONTINUE_AUTHENTICATION, authMethod);
+        final MqttAuthBuilder authBuilder = new MqttAuthBuilder(CONTINUE_AUTHENTICATION, getMethod());
         state = MqttAuthState.IN_PROGRESS_INIT;
-        authProvider.onServerReAuth(clientData, auth, authBuilder).whenCompleteAsync((accepted, throwable) -> {
-            if (enhancedAuthProviderAccepted(accepted, throwable)) {
-                state = MqttAuthState.WAIT_FOR_SERVER;
-                ctx.writeAndFlush(authBuilder.build()).addListener(this);
-            } else {
-                MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.NOT_AUTHORIZED,
-                        new Mqtt5MessageException(auth, "Server reauth not accepted"));
-            }
-        }, clientData.getEventLoop());
+        callProviderFutureResult(() -> authProvider.onServerReAuth(clientData, auth, authBuilder), ctx2 -> {
+            state = MqttAuthState.WAIT_FOR_SERVER;
+            ctx2.writeAndFlush(authBuilder.build()).addListener(this);
+
+        }, (ctx2, throwable) -> MqttDisconnectUtil.disconnect(ctx2.channel(), Mqtt5DisconnectReasonCode.NOT_AUTHORIZED,
+                new Mqtt5MessageException(auth, "Server reauth not accepted.")));
     }
 
     /**
@@ -177,7 +183,7 @@ public class MqttReAuthHandler extends AbstractMqttAuthHandler {
         cancelTimeout();
 
         if (state != MqttAuthState.NONE) {
-            authProvider.onReAuthRejected(clientData, disconnect);
+            callProvider(() -> authProvider.onReAuthRejected(clientData, disconnect));
             state = MqttAuthState.NONE;
         }
 
@@ -194,7 +200,7 @@ public class MqttReAuthHandler extends AbstractMqttAuthHandler {
         super.handleDisconnectEvent(disconnectEvent);
 
         if (state != MqttAuthState.NONE) {
-            authProvider.onReAuthError(clientData, disconnectEvent.getCause());
+            callProvider(() -> authProvider.onReAuthError(clientData, disconnectEvent.getCause()));
             state = MqttAuthState.NONE;
         }
         if (flow != null) {
@@ -205,7 +211,6 @@ public class MqttReAuthHandler extends AbstractMqttAuthHandler {
 
     @Override
     protected @NotNull String getTimeoutReasonString() {
-        return "Timeout while waiting for AUTH or DISCONNECT";
+        return "Timeout while waiting for AUTH or DISCONNECT.";
     }
-
 }

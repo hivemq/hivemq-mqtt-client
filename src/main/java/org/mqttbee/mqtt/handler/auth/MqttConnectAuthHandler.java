@@ -62,7 +62,7 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
             final @NotNull ChannelPromise promise) {
 
         if (msg instanceof MqttConnect) {
-            writeConnect(ctx, (MqttConnect) msg, promise);
+            writeConnect((MqttConnect) msg, promise);
         } else {
             ctx.write(msg, promise);
         }
@@ -76,26 +76,19 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
      * <li>Sends the CONNECT message with the enhanced auth data.</li>
      * </ul>
      *
-     * @param ctx     the channel handler context.
      * @param connect the CONNECT message.
      * @param promise the write promise of the CONNECT message.
      */
-    private void writeConnect(
-            final @NotNull ChannelHandlerContext ctx, final @NotNull MqttConnect connect,
-            final @NotNull ChannelPromise promise) {
-
-        final MqttEnhancedAuthBuilder enhancedAuthBuilder = new MqttEnhancedAuthBuilder(authMethod);
+    private void writeConnect(final @NotNull MqttConnect connect, final @NotNull ChannelPromise promise) {
+        final MqttEnhancedAuthBuilder enhancedAuthBuilder = new MqttEnhancedAuthBuilder(getMethod());
         state = MqttAuthState.IN_PROGRESS_INIT;
-        authProvider.onAuth(clientData, connect, enhancedAuthBuilder).whenCompleteAsync((aVoid, throwable) -> {
-            if (enhancedAuthProviderAccepted(throwable)) {
-                state = MqttAuthState.WAIT_FOR_SERVER;
-                final MqttStatefulConnect statefulConnect =
-                        connect.createStateful(clientData.getRawClientIdentifier(), enhancedAuthBuilder.build());
-                ctx.writeAndFlush(statefulConnect, promise).addListener(this);
-            } else {
-                MqttDisconnectUtil.close(ctx.channel(), throwable);
-            }
-        }, clientData.getEventLoop());
+        callProviderFuture(() -> authProvider.onAuth(clientData, connect, enhancedAuthBuilder), ctx -> {
+            state = MqttAuthState.WAIT_FOR_SERVER;
+            final MqttStatefulConnect statefulConnect =
+                    connect.createStateful(clientData.getRawClientIdentifier(), enhancedAuthBuilder.build());
+            ctx.writeAndFlush(statefulConnect, promise).addListener(this);
+
+        }, (ctx, throwable) -> MqttDisconnectUtil.close(ctx.channel(), throwable));
     }
 
     @Override
@@ -125,32 +118,36 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
     private void readConnAck(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttConnAck connAck) {
         if (state != MqttAuthState.WAIT_FOR_SERVER) {
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                    "Must not receive a CONNACK in no response to a client message");
+                    new Mqtt5MessageException(connAck, "Must not receive CONNACK in no response to a client message."));
+            return;
         }
 
         cancelTimeout();
 
         if (connAck.getReasonCode().isError()) {
-            authProvider.onAuthRejected(clientData, connAck);
-            state = MqttAuthState.NONE;
-
-            MqttDisconnectUtil.close(ctx.channel(),
-                    new Mqtt5MessageException(connAck, "Connection failed with CONNACK with Error Code"));
-
+            readConnAckError(ctx, connAck);
         } else if (validateConnAck(ctx, connAck)) {
-            state = MqttAuthState.IN_PROGRESS_DONE;
-            authProvider.onAuthSuccess(clientData, connAck).whenCompleteAsync((accepted, throwable) -> {
-                if (enhancedAuthProviderAccepted(accepted, throwable)) {
-                    state = MqttAuthState.NONE;
-                } else {
-                    MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.NOT_AUTHORIZED,
-                            new Mqtt5MessageException(connAck, "Server auth success not accepted"));
-                }
-            }, clientData.getEventLoop());
+            readConnAckSuccess(connAck);
+        }
+    }
 
+    private void readConnAckError(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttConnAck connAck) {
+        callProvider(() -> authProvider.onAuthRejected(clientData, connAck));
+        state = MqttAuthState.NONE;
+
+        MqttDisconnectUtil.close(ctx.channel(),
+                new Mqtt5MessageException(connAck, "Connection failed. CONNACK contained Error Code."));
+    }
+
+    private void readConnAckSuccess(final @NotNull MqttConnAck connAck) {
+        state = MqttAuthState.IN_PROGRESS_DONE;
+        callProviderFutureResult(() -> authProvider.onAuthSuccess(clientData, connAck), ctx -> {
+            state = MqttAuthState.NONE;
             ctx.fireChannelRead(connAck);
             ctx.pipeline().replace(this, NAME, new MqttReAuthHandler(this));
-        }
+
+        }, (ctx, throwable) -> MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.NOT_AUTHORIZED,
+                new Mqtt5MessageException(connAck, "Server auth success not accepted.")));
     }
 
     /**
@@ -166,12 +163,12 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
         final Mqtt5EnhancedAuth enhancedAuth = connAck.getRawEnhancedAuth();
         if (enhancedAuth == null) {
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                    new Mqtt5MessageException(connAck, "Auth method in CONNACK must be present"));
+                    new Mqtt5MessageException(connAck, "Auth method in CONNACK must be present."));
             return false;
         }
-        if (!enhancedAuth.getMethod().equals(authMethod)) {
+        if (!enhancedAuth.getMethod().equals(getMethod())) {
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                    new Mqtt5MessageException(connAck, "Auth method in CONNACK must be the same as in the CONNECT"));
+                    new Mqtt5MessageException(connAck, "Auth method in CONNACK must be the same as in the CONNECT."));
             return false;
         }
         return true;
@@ -186,8 +183,7 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
     @Override
     void readAuthSuccess(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttAuth auth) {
         MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                new Mqtt5MessageException(auth,
-                        "Must not receive an AUTH with Reason Code SUCCESS during connect auth"));
+                new Mqtt5MessageException(auth, "Must not receive AUTH with reason code SUCCESS during connect auth."));
     }
 
     /**
@@ -200,7 +196,7 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
     void readReAuth(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttAuth auth) {
         MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
                 new Mqtt5MessageException(auth,
-                        "Must not receive an AUTH with Reason Code REAUTHENTICATE during connect auth"));
+                        "Must not receive AUTH with reason code REAUTHENTICATE during connect auth."));
     }
 
     /**
@@ -213,14 +209,13 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
         super.handleDisconnectEvent(disconnectEvent);
 
         if (state != MqttAuthState.NONE) {
-            authProvider.onAuthError(clientData, disconnectEvent.getCause());
+            callProvider(() -> authProvider.onAuthError(clientData, disconnectEvent.getCause()));
             state = MqttAuthState.NONE;
         }
     }
 
     @Override
     protected @NotNull String getTimeoutReasonString() {
-        return "Timeout while waiting for AUTH or CONNACK";
+        return "Timeout while waiting for AUTH or CONNACK.";
     }
-
 }

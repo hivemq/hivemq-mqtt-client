@@ -17,7 +17,10 @@
 
 package org.mqttbee.mqtt.handler.publish.incoming;
 
-import io.netty.channel.*;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.CallByThread;
@@ -280,8 +283,8 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter impleme
         return pubCompBuilder.build();
     }
 
-    @NotNull EventLoop getEventLoop() {
-        return clientData.getEventLoop();
+    @NotNull MqttClientData getClientData() {
+        return clientData;
     }
 
     @NotNull MqttIncomingPublishFlows getIncomingPublishFlows() {
@@ -294,6 +297,6 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter impleme
 
     @Override
     public boolean isSharable() {
-        return clientData.getEventLoop().inEventLoop() && (ctx == null);
+        return ctx == null;
     }
 }
