@@ -23,10 +23,10 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mqttbee.api.mqtt.MqttClientState;
 import org.mqttbee.api.mqtt.exceptions.ChannelClosedException;
 import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
-import org.mqttbee.mqtt.MqttClientConnectionState;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.MqttVersion;
 import org.mqttbee.mqtt.ioc.ConnectionScope;
@@ -134,7 +134,7 @@ public class MqttDisconnectHandler extends ChannelInboundHandlerAdapter {
         this.ctx = null;
         clientData.setClientConnectionData(null);
         clientData.setServerConnectionData(null);
-        clientData.getRawConnectionState().set(MqttClientConnectionState.DISCONNECTED);
+        clientData.getRawState().set(MqttClientState.DISCONNECTED);
 
         if (disconnectEvent.fromClient()) {
             final MqttDisconnect disconnect = disconnectEvent.getDisconnect();

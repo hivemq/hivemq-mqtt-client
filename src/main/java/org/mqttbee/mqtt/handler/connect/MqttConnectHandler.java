@@ -22,11 +22,15 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.api.mqtt.MqttClientState;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.mqtt.*;
+import org.mqttbee.mqtt.MqttClientConnectionData;
+import org.mqttbee.mqtt.MqttClientData;
+import org.mqttbee.mqtt.MqttServerConnectionData;
+import org.mqttbee.mqtt.MqttVersion;
 import org.mqttbee.mqtt.codec.decoder.MqttDecoder;
 import org.mqttbee.mqtt.codec.encoder.MqttEncoder;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
@@ -213,7 +217,7 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
                 pipeline.addAfter(beforeHandlerName, MqttOutgoingQosHandler.NAME, outgoingQosHandler);
                 pipeline.addLast(MqttDisconnectOnConnAckHandler.NAME, disconnectOnConnAckHandler);
 
-                clientData.getRawConnectionState().set(MqttClientConnectionState.CONNECTED);
+                clientData.getRawState().set(MqttClientState.CONNECTED);
                 connAckFlow.onSuccess(connAck);
             }
         }

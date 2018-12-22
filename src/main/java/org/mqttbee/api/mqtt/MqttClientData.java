@@ -17,10 +17,9 @@
 
 package org.mqttbee.api.mqtt;
 
-import org.mqttbee.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
-import org.mqttbee.mqtt.MqttClientConnectionState;
 
 import java.util.Optional;
 
@@ -30,27 +29,21 @@ import java.util.Optional;
 @DoNotImplement
 public interface MqttClientData {
 
-    @NotNull
-    Optional<MqttClientIdentifier> getClientIdentifier();
+    @NotNull Optional<MqttClientIdentifier> getClientIdentifier();
 
-    @NotNull
-    String getServerHost();
+    @NotNull String getServerHost();
 
     int getServerPort();
 
     boolean usesSsl();
 
-    @NotNull
-    Optional<MqttClientSslConfig> getSslConfig();
+    @NotNull Optional<MqttClientSslConfig> getSslConfig();
 
     boolean usesWebSocket();
 
-    @NotNull
-    Optional<MqttWebSocketConfig> getWebSocketConfig();
+    @NotNull Optional<MqttWebSocketConfig> getWebSocketConfig();
 
-    @NotNull
-    MqttClientExecutorConfig getExecutorConfig();
+    @NotNull MqttClientExecutorConfig getExecutorConfig();
 
-    MqttClientConnectionState getConnectionState();
-
+    @NotNull MqttClientState getState();
 }

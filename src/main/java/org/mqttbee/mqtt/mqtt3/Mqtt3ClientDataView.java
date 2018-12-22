@@ -20,12 +20,12 @@ package org.mqttbee.mqtt.mqtt3;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttClientExecutorConfig;
 import org.mqttbee.api.mqtt.MqttClientSslConfig;
+import org.mqttbee.api.mqtt.MqttClientState;
 import org.mqttbee.api.mqtt.MqttWebSocketConfig;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3ClientConnectionData;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3ClientData;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3ServerConnectionData;
-import org.mqttbee.mqtt.MqttClientConnectionState;
 import org.mqttbee.mqtt.MqttClientData;
 
 import java.util.Optional;
@@ -35,21 +35,19 @@ import java.util.Optional;
  */
 public class Mqtt3ClientDataView implements Mqtt3ClientData {
 
-    private final MqttClientData delegate;
+    private final @NotNull MqttClientData delegate;
 
     Mqtt3ClientDataView(@NotNull final MqttClientData delegate) {
         this.delegate = delegate;
     }
 
-    @NotNull
     @Override
-    public Optional<MqttClientIdentifier> getClientIdentifier() {
+    public @NotNull Optional<MqttClientIdentifier> getClientIdentifier() {
         return delegate.getClientIdentifier();
     }
 
-    @NotNull
     @Override
-    public String getServerHost() {
+    public @NotNull String getServerHost() {
         return delegate.getServerHost();
     }
 
@@ -63,9 +61,8 @@ public class Mqtt3ClientDataView implements Mqtt3ClientData {
         return delegate.usesSsl();
     }
 
-    @NotNull
     @Override
-    public Optional<MqttClientSslConfig> getSslConfig() {
+    public @NotNull Optional<MqttClientSslConfig> getSslConfig() {
         return delegate.getSslConfig();
     }
 
@@ -74,33 +71,28 @@ public class Mqtt3ClientDataView implements Mqtt3ClientData {
         return delegate.usesWebSocket();
     }
 
-    @NotNull
     @Override
-    public Optional<MqttWebSocketConfig> getWebSocketConfig() {
+    public @NotNull Optional<MqttWebSocketConfig> getWebSocketConfig() {
         return delegate.getWebSocketConfig();
     }
 
-    @NotNull
     @Override
-    public MqttClientExecutorConfig getExecutorConfig() {
+    public @NotNull MqttClientExecutorConfig getExecutorConfig() {
         return delegate.getExecutorConfig();
     }
 
     @Override
-    public MqttClientConnectionState getConnectionState() {
-        return delegate.getConnectionState();
+    public @NotNull MqttClientState getState() {
+        return delegate.getState();
     }
 
-    @NotNull
     @Override
-    public Optional<Mqtt3ClientConnectionData> getClientConnectionData() {
+    public @NotNull Optional<Mqtt3ClientConnectionData> getClientConnectionData() {
         return Optional.ofNullable(delegate.getRawClientConnectionData());
     }
 
-    @NotNull
     @Override
-    public Optional<Mqtt3ServerConnectionData> getServerConnectionData() {
+    public @NotNull Optional<Mqtt3ServerConnectionData> getServerConnectionData() {
         return Optional.ofNullable(delegate.getRawServerConnectionData());
     }
-
 }

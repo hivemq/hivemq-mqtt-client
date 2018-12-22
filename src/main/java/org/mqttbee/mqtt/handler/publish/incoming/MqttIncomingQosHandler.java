@@ -24,12 +24,12 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.CallByThread;
+import org.mqttbee.api.mqtt.MqttClientState;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5IncomingQos1Interceptor;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5IncomingQos2Interceptor;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubCompReasonCode;
 import org.mqttbee.mqtt.MqttClientConnectionData;
-import org.mqttbee.mqtt.MqttClientConnectionState;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.advanced.MqttAdvancedClientData;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectEvent;
@@ -245,7 +245,7 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter impleme
         ctx = null;
         pubAckQueue.clear();
 
-        if (clientData.getConnectionState() == MqttClientConnectionState.DISCONNECTED) {
+        if (clientData.getState() == MqttClientState.DISCONNECTED) {
             incomingPublishFlows.clear(disconnectEvent.getCause());
         }
     }
