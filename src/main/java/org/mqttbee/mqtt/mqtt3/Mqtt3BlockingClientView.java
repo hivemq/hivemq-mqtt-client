@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.MqttGlobalPublishFilter;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3AsyncClient;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3BlockingClient;
-import org.mqttbee.api.mqtt.mqtt3.Mqtt3ClientData;
+import org.mqttbee.api.mqtt.mqtt3.Mqtt3ClientConfig;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3RxClient;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3Connect;
 import org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck;
@@ -50,11 +50,11 @@ import java.util.concurrent.TimeUnit;
 public class Mqtt3BlockingClientView implements Mqtt3BlockingClient {
 
     private final @NotNull MqttBlockingClient delegate;
-    private final @NotNull Mqtt3ClientDataView clientData;
+    private final @NotNull Mqtt3ClientConfigView clientConfig;
 
     Mqtt3BlockingClientView(final @NotNull MqttBlockingClient delegate) {
         this.delegate = delegate;
-        clientData = new Mqtt3ClientDataView(delegate.getClientData());
+        clientConfig = new Mqtt3ClientConfigView(delegate.getConfig());
     }
 
     @Override
@@ -108,8 +108,8 @@ public class Mqtt3BlockingClientView implements Mqtt3BlockingClient {
     }
 
     @Override
-    public @NotNull Mqtt3ClientData getClientData() {
-        return clientData;
+    public @NotNull Mqtt3ClientConfig getConfig() {
+        return clientConfig;
     }
 
     @Override

@@ -22,8 +22,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.mqtt.MqttClientData;
-import org.mqttbee.mqtt.MqttServerConnectionData;
+import org.mqttbee.mqtt.MqttClientConfig;
+import org.mqttbee.mqtt.MqttServerConnectionConfig;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.ioc.ConnectionScope;
 import org.mqttbee.mqtt.message.MqttMessage;
@@ -40,14 +40,14 @@ public class MqttEncoder extends ChannelOutboundHandlerAdapter {
 
     public static final @NotNull String NAME = "encoder";
 
-    private final @NotNull MqttClientData clientData;
+    private final @NotNull MqttClientConfig clientConfig;
     private final @NotNull MqttMessageEncoders encoders;
 
     private int maximumPacketSize;
 
     @Inject
-    MqttEncoder(final @NotNull MqttClientData clientData, final @NotNull MqttMessageEncoders encoders) {
-        this.clientData = clientData;
+    MqttEncoder(final @NotNull MqttClientConfig clientConfig, final @NotNull MqttMessageEncoders encoders) {
+        this.clientConfig = clientConfig;
         this.encoders = encoders;
     }
 
@@ -74,10 +74,10 @@ public class MqttEncoder extends ChannelOutboundHandlerAdapter {
         if (maximumPacketSize != 0) {
             return maximumPacketSize;
         }
-        final MqttServerConnectionData serverConnectionData = clientData.getRawServerConnectionData();
-        if (serverConnectionData == null) {
+        final MqttServerConnectionConfig serverConnectionConfig = clientConfig.getRawServerConnectionConfig();
+        if (serverConnectionConfig == null) {
             return MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT;
         }
-        return this.maximumPacketSize = serverConnectionData.getMaximumPacketSize();
+        return this.maximumPacketSize = serverConnectionConfig.getMaximumPacketSize();
     }
 }

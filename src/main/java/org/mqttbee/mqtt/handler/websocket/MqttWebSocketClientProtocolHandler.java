@@ -21,7 +21,7 @@ import io.netty.handler.codec.http.websocketx.WebSocketClientProtocolHandler;
 import io.netty.handler.codec.http.websocketx.WebSocketVersion;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttWebSocketConfig;
-import org.mqttbee.mqtt.MqttClientData;
+import org.mqttbee.mqtt.MqttClientConfig;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.handler.MqttChannelInitializer;
 import org.mqttbee.mqtt.ioc.ConnectionScope;
@@ -36,33 +36,32 @@ import java.net.URISyntaxException;
 @ConnectionScope
 public class MqttWebSocketClientProtocolHandler extends WebSocketClientProtocolHandler {
 
-    public static final String NAME = "ws.mqtt";
-    private static final String WEBSOCKET_URI_SCHEME = "ws";
-    private static final String WEBSOCKET_TLS_URI_SCHEME = "wss";
+    public static final @NotNull String NAME = "ws.mqtt";
+    private static final @NotNull String WEBSOCKET_URI_SCHEME = "ws";
+    private static final @NotNull String WEBSOCKET_TLS_URI_SCHEME = "wss";
 
-    @NotNull
-    private static URI createURI(
-            @NotNull final MqttClientData clientData, @NotNull final MqttWebSocketConfig webSocketConfig)
+    private static @NotNull URI createURI(
+            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttWebSocketConfig webSocketConfig)
             throws URISyntaxException {
 
-        return new URI(clientData.usesSsl() ? WEBSOCKET_TLS_URI_SCHEME : WEBSOCKET_URI_SCHEME, null,
-                clientData.getServerHost(), clientData.getServerPort(), "/" + webSocketConfig.getServerPath(), null,
+        return new URI(clientConfig.usesSsl() ? WEBSOCKET_TLS_URI_SCHEME : WEBSOCKET_URI_SCHEME, null,
+                clientConfig.getServerHost(), clientConfig.getServerPort(), "/" + webSocketConfig.getServerPath(), null,
                 null);
     }
 
-    private final MqttChannelInitializer channelInitializer;
+    private final @NotNull MqttChannelInitializer channelInitializer;
 
     public MqttWebSocketClientProtocolHandler(
-            @NotNull final MqttClientData clientData, @NotNull final MqttWebSocketConfig webSocketConfig,
-            @NotNull final MqttChannelInitializer channelInitializer) throws URISyntaxException {
+            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttWebSocketConfig webSocketConfig,
+            final @NotNull MqttChannelInitializer channelInitializer) throws URISyntaxException {
 
-        super(createURI(clientData, webSocketConfig), WebSocketVersion.V13, webSocketConfig.getSubprotocol(), true,
+        super(createURI(clientConfig, webSocketConfig), WebSocketVersion.V13, webSocketConfig.getSubprotocol(), true,
                 null, MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT);
         this.channelInitializer = channelInitializer;
     }
 
     @Override
-    public void userEventTriggered(final ChannelHandlerContext ctx, final Object evt) {
+    public void userEventTriggered(final @NotNull ChannelHandlerContext ctx, final @NotNull Object evt) {
         if (evt == ClientHandshakeStateEvent.HANDSHAKE_COMPLETE) {
             channelInitializer.initMqttHandlers(ctx.pipeline());
         }

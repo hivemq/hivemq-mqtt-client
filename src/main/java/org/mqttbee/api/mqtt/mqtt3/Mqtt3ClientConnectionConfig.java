@@ -15,32 +15,17 @@
  *
  */
 
-package org.mqttbee.api.mqtt.mqtt5;
+package org.mqttbee.api.mqtt.mqtt3;
 
 import org.mqttbee.annotations.DoNotImplement;
-import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.MqttClientData;
-import org.mqttbee.api.mqtt.mqtt5.advanced.Mqtt5AdvancedClientData;
-
-import java.util.Optional;
 
 /**
  * @author Silvio Giebl
  */
 @DoNotImplement
-public interface Mqtt5ClientData extends MqttClientData {
+public interface Mqtt3ClientConnectionConfig {
 
-    boolean followsRedirects();
+    int getKeepAlive();
 
-    boolean allowsServerReAuth();
-
-    @NotNull
-    Optional<Mqtt5AdvancedClientData> getAdvancedClientData();
-
-    @NotNull
-    Optional<Mqtt5ClientConnectionData> getClientConnectionData();
-
-    @NotNull
-    Optional<Mqtt5ServerConnectionData> getServerConnectionData();
-
+    boolean hasWillPublish();
 }

@@ -24,8 +24,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.mqtt.MqttClientConnectionData;
-import org.mqttbee.mqtt.MqttClientData;
+import org.mqttbee.mqtt.MqttClientConfig;
+import org.mqttbee.mqtt.MqttClientConnectionConfig;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.ioc.ConnectionScope;
@@ -45,26 +45,26 @@ public class MqttDecoder extends ByteToMessageDecoder {
     public static final @NotNull String NAME = "decoder";
     private static final int MIN_FIXED_HEADER_LENGTH = 2;
 
-    private final @NotNull MqttClientData clientData;
+    private final @NotNull MqttClientConfig clientConfig;
     private final @NotNull MqttMessageDecoders decoders;
 
     @Nullable MqttDecoderContext context; // TODO make private when all decoder flags can be set via api
 
     @Inject
-    MqttDecoder(final @NotNull MqttClientData clientData, final @NotNull MqttMessageDecoders decoders) {
-        this.clientData = clientData;
+    MqttDecoder(final @NotNull MqttClientConfig clientConfig, final @NotNull MqttMessageDecoders decoders) {
+        this.clientConfig = clientConfig;
         this.decoders = decoders;
     }
 
     @Override
     public void handlerAdded(final @NotNull ChannelHandlerContext ctx) {
-        final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
-        assert clientConnectionData != null;
+        final MqttClientConnectionConfig clientConnectionConfig = clientConfig.getRawClientConnectionConfig();
+        assert clientConnectionConfig != null;
 
-        context = new MqttDecoderContext(clientConnectionData.getMaximumPacketSize(),
-                clientConnectionData.isProblemInformationRequested(),
-                clientConnectionData.isResponseInformationRequested(), false, false, false, false,
-                clientConnectionData.getTopicAliasMapping());
+        context = new MqttDecoderContext(clientConnectionConfig.getMaximumPacketSize(),
+                clientConnectionConfig.isProblemInformationRequested(),
+                clientConnectionConfig.isResponseInformationRequested(), false, false, false, false,
+                clientConnectionConfig.getTopicAliasMapping());
     }
 
     @Override
@@ -123,5 +123,4 @@ public class MqttDecoder extends ByteToMessageDecoder {
             MqttDisconnectUtil.disconnect(ctx.channel(), e.getReasonCode(), e);
         }
     }
-
 }

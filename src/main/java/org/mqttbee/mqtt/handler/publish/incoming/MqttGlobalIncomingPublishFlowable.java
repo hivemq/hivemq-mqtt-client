@@ -22,7 +22,7 @@ import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttGlobalPublishFilter;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
-import org.mqttbee.mqtt.MqttClientData;
+import org.mqttbee.mqtt.MqttClientConfig;
 import org.mqttbee.mqtt.ioc.ClientComponent;
 import org.reactivestreams.Subscriber;
 
@@ -32,22 +32,22 @@ import org.reactivestreams.Subscriber;
 public class MqttGlobalIncomingPublishFlowable extends Flowable<Mqtt5Publish> {
 
     private final @NotNull MqttGlobalPublishFilter filter;
-    private final @NotNull MqttClientData clientData;
+    private final @NotNull MqttClientConfig clientConfig;
 
     public MqttGlobalIncomingPublishFlowable(
-            final @NotNull MqttGlobalPublishFilter filter, final @NotNull MqttClientData clientData) {
+            final @NotNull MqttGlobalPublishFilter filter, final @NotNull MqttClientConfig clientConfig) {
 
         this.filter = filter;
-        this.clientData = clientData;
+        this.clientConfig = clientConfig;
     }
 
     @Override
     protected void subscribeActual(final @NotNull Subscriber<? super Mqtt5Publish> subscriber) {
-        final ClientComponent clientComponent = clientData.getClientComponent();
+        final ClientComponent clientComponent = clientConfig.getClientComponent();
         final MqttIncomingQosHandler incomingQosHandler = clientComponent.incomingQosHandler();
         final MqttIncomingPublishFlows incomingPublishFlows = incomingQosHandler.getIncomingPublishFlows();
 
-        final EventLoop eventLoop = clientData.acquireEventLoop();
+        final EventLoop eventLoop = clientConfig.acquireEventLoop();
 
         final MqttGlobalIncomingPublishFlow flow =
                 new MqttGlobalIncomingPublishFlow(subscriber, incomingQosHandler, filter, eventLoop);

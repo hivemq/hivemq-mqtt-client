@@ -123,8 +123,8 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
     }
 
     @Override
-    public @NotNull MqttClientData getClientData() {
-        return delegate.getClientData();
+    public @NotNull MqttClientConfig getConfig() {
+        return delegate.getConfig();
     }
 
     @Override

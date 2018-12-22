@@ -18,21 +18,12 @@
 package org.mqttbee.api.mqtt.mqtt3;
 
 import org.mqttbee.annotations.DoNotImplement;
-import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.MqttClientData;
-
-import java.util.Optional;
 
 /**
  * @author Silvio Giebl
  */
 @DoNotImplement
-public interface Mqtt3ClientData extends MqttClientData {
+public interface Mqtt3ServerConnectionConfig {
 
-    @NotNull
-    Optional<Mqtt3ClientConnectionData> getClientConnectionData();
-
-    @NotNull
-    Optional<Mqtt3ServerConnectionData> getServerConnectionData();
-
+    int getReceiveMaximum();
 }

@@ -23,8 +23,8 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
-import org.mqttbee.mqtt.MqttClientData;
-import org.mqttbee.mqtt.MqttServerConnectionData;
+import org.mqttbee.mqtt.MqttClientConfig;
+import org.mqttbee.mqtt.MqttServerConnectionConfig;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -36,14 +36,14 @@ public abstract class AbstractMqttEncoderTest {
 
     private final @NotNull MqttMessageEncoders messageEncoders;
     private final boolean connected;
-    private final @NotNull MqttClientData clientData;
+    private final @NotNull MqttClientConfig clientData;
 
     @SuppressWarnings("NullabilityAnnotations")
     protected EmbeddedChannel channel;
 
     protected AbstractMqttEncoderTest(
             final @NotNull MqttMessageEncoders messageEncoders, final boolean connected,
-            final @NotNull MqttClientData clientData) {
+            final @NotNull MqttClientConfig clientData) {
 
         this.messageEncoders = messageEncoders;
         this.connected = connected;
@@ -68,8 +68,8 @@ public abstract class AbstractMqttEncoderTest {
     }
 
     protected void createServerConnectionData(final int maximumPacketSize) {
-        clientData.setServerConnectionData(
-                new MqttServerConnectionData(10, maximumPacketSize, 3, MqttQos.EXACTLY_ONCE, true, true, true, true));
+        clientData.setServerConnectionConfig(
+                new MqttServerConnectionConfig(10, maximumPacketSize, 3, MqttQos.EXACTLY_ONCE, true, true, true, true));
     }
 
     protected void encode(final @NotNull Object message, final @NotNull byte[] expected) {

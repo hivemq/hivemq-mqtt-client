@@ -18,7 +18,7 @@
 package org.mqttbee.api.mqtt.mqtt5.advanced.qos2;
 
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientData;
+import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientConfig;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubCompBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrec.Mqtt5PubRecBuilder;
@@ -36,12 +36,12 @@ public interface Mqtt5IncomingQos2Interceptor {
      * <p>
      * This method must not block and just add some properties to the outgoing PUBREC message.
      *
-     * @param clientData    the data of the client.
+     * @param clientConfig  the config of the client.
      * @param publish       the Publish message with QoS 2 sent by the server.
      * @param pubRecBuilder the builder for the outgoing PUBREC message.
      */
     void onPublish(
-            @NotNull Mqtt5ClientData clientData, @NotNull Mqtt5Publish publish,
+            @NotNull Mqtt5ClientConfig clientConfig, @NotNull Mqtt5Publish publish,
             @NotNull Mqtt5PubRecBuilder pubRecBuilder);
 
     /**
@@ -49,12 +49,11 @@ public interface Mqtt5IncomingQos2Interceptor {
      * <p>
      * This method must not block and just add some properties to the outgoing PUBCOMP message.
      *
-     * @param clientData     the data of the client.
+     * @param clientConfig   the config of the client.
      * @param pubRel         the PubRel message sent by the server.
      * @param pubCompBuilder the builder for the outgoing PUBCOMP message.
      */
     void onPubRel(
-            @NotNull Mqtt5ClientData clientData, @NotNull Mqtt5PubRel pubRel,
+            @NotNull Mqtt5ClientConfig clientConfig, @NotNull Mqtt5PubRel pubRel,
             @NotNull Mqtt5PubCompBuilder pubCompBuilder);
-
 }

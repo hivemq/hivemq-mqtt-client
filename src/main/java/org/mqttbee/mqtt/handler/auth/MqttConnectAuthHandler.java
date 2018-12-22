@@ -20,7 +20,7 @@ package org.mqttbee.mqtt.handler.auth;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientData;
+import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientConfig;
 import org.mqttbee.api.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5EnhancedAuth;
@@ -28,7 +28,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5EnhancedAuthBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.mqtt.MqttClientData;
+import org.mqttbee.mqtt.MqttClientConfig;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectEvent;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.handler.util.DefaultChannelOutboundHandler;
@@ -52,8 +52,8 @@ import javax.inject.Inject;
 public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements DefaultChannelOutboundHandler {
 
     @Inject
-    MqttConnectAuthHandler(final @NotNull MqttClientData clientData, final @NotNull MqttConnect connect) {
-        super(clientData, connect);
+    MqttConnectAuthHandler(final @NotNull MqttClientConfig clientConfig, final @NotNull MqttConnect connect) {
+        super(clientConfig, connect);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
     /**
      * Handles the outgoing CONNECT message.
      * <ul>
-     * <li>Calls {@link Mqtt5EnhancedAuthProvider#onAuth(Mqtt5ClientData, Mqtt5Connect, Mqtt5EnhancedAuthBuilder)}
+     * <li>Calls {@link Mqtt5EnhancedAuthProvider#onAuth(Mqtt5ClientConfig, Mqtt5Connect, Mqtt5EnhancedAuthBuilder)}
      * which adds enhanced auth data to the CONNECT message.</li>
      * <li>Sends the CONNECT message with the enhanced auth data.</li>
      * </ul>
@@ -82,10 +82,10 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
     private void writeConnect(final @NotNull MqttConnect connect, final @NotNull ChannelPromise promise) {
         final MqttEnhancedAuthBuilder enhancedAuthBuilder = new MqttEnhancedAuthBuilder(getMethod());
         state = MqttAuthState.IN_PROGRESS_INIT;
-        callProviderFuture(() -> authProvider.onAuth(clientData, connect, enhancedAuthBuilder), ctx -> {
+        callProviderFuture(() -> authProvider.onAuth(clientConfig, connect, enhancedAuthBuilder), ctx -> {
             state = MqttAuthState.WAIT_FOR_SERVER;
             final MqttStatefulConnect statefulConnect =
-                    connect.createStateful(clientData.getRawClientIdentifier(), enhancedAuthBuilder.build());
+                    connect.createStateful(clientConfig.getRawClientIdentifier(), enhancedAuthBuilder.build());
             ctx.writeAndFlush(statefulConnect, promise).addListener(this);
 
         }, (ctx, throwable) -> MqttDisconnectUtil.close(ctx.channel(), throwable));
@@ -105,10 +105,11 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
     /**
      * Handles the incoming CONNACK message.
      * <ul>
-     * <li>Calls {@link Mqtt5EnhancedAuthProvider#onAuthRejected(Mqtt5ClientData, Mqtt5ConnAck)} and closes the channel
+     * <li>Calls {@link Mqtt5EnhancedAuthProvider#onAuthRejected(Mqtt5ClientConfig, Mqtt5ConnAck)} and closes the
+     * channel
      * if the CONNACK message contains an Error Code.</li>
      * <li>Sends a DISCONNECT message if the enhanced auth data of the CONNACK message is not valid.</li>
-     * <li>Otherwise calls {@link Mqtt5EnhancedAuthProvider#onAuthSuccess(Mqtt5ClientData, Mqtt5ConnAck)}.</li>
+     * <li>Otherwise calls {@link Mqtt5EnhancedAuthProvider#onAuthSuccess(Mqtt5ClientConfig, Mqtt5ConnAck)}.</li>
      * <li>Sends a DISCONNECT message if the enhanced auth provider did not accept the enhanced auth data.</li>
      * </ul>
      *
@@ -132,7 +133,7 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
     }
 
     private void readConnAckError(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttConnAck connAck) {
-        callProvider(() -> authProvider.onAuthRejected(clientData, connAck));
+        callProvider(() -> authProvider.onAuthRejected(clientConfig, connAck));
         state = MqttAuthState.NONE;
 
         MqttDisconnectUtil.close(ctx.channel(),
@@ -141,7 +142,7 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
 
     private void readConnAckSuccess(final @NotNull MqttConnAck connAck) {
         state = MqttAuthState.IN_PROGRESS_DONE;
-        callProviderFutureResult(() -> authProvider.onAuthSuccess(clientData, connAck), ctx -> {
+        callProviderFutureResult(() -> authProvider.onAuthSuccess(clientConfig, connAck), ctx -> {
             state = MqttAuthState.NONE;
             ctx.fireChannelRead(connAck);
             ctx.pipeline().replace(this, NAME, new MqttReAuthHandler(this));
@@ -200,7 +201,7 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
     }
 
     /**
-     * Calls {@link Mqtt5EnhancedAuthProvider#onAuthError(Mqtt5ClientData, Throwable)} with the cause why the channel
+     * Calls {@link Mqtt5EnhancedAuthProvider#onAuthError(Mqtt5ClientConfig, Throwable)} with the cause why the channel
      * was closed if auth is still in progress.
      *
      * @param disconnectEvent the channel close event.
@@ -209,7 +210,7 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
         super.handleDisconnectEvent(disconnectEvent);
 
         if (state != MqttAuthState.NONE) {
-            callProvider(() -> authProvider.onAuthError(clientData, disconnectEvent.getCause()));
+            callProvider(() -> authProvider.onAuthError(clientConfig, disconnectEvent.getCause()));
             state = MqttAuthState.NONE;
         }
     }

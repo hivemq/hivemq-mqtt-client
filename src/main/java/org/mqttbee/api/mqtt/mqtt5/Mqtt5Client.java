@@ -33,7 +33,7 @@ public interface Mqtt5Client extends MqttClient {
     }
 
     @Override
-    @NotNull Mqtt5ClientData getClientData();
+    @NotNull Mqtt5ClientConfig getConfig();
 
     /**
      * Turns the API of this client into a reactive API.

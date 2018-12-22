@@ -42,5 +42,5 @@ public interface MqttClient {
     /**
      * @return the client specific data.
      */
-    @NotNull MqttClientData getClientData();
+    @NotNull MqttClientConfig getConfig();
 }

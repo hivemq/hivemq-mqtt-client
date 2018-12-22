@@ -76,7 +76,7 @@ public class MqttRxClientBuilder extends MqttRxClientBuilderBase<MqttRxClientBui
 
     @Override
     public @NotNull MqttRxClient buildRx() {
-        return new MqttRxClient(buildClientData());
+        return new MqttRxClient(buildClientConfig());
     }
 
     @Override
@@ -89,8 +89,9 @@ public class MqttRxClientBuilder extends MqttRxClientBuilderBase<MqttRxClientBui
         return buildRx().toBlocking();
     }
 
-    private @NotNull MqttClientData buildClientData() {
-        return new MqttClientData(MqttVersion.MQTT_5_0, identifier, serverHost, serverPort, sslConfig, webSocketConfig,
+    private @NotNull MqttClientConfig buildClientConfig() {
+        return new MqttClientConfig(MqttVersion.MQTT_5_0, identifier, serverHost, serverPort, sslConfig,
+                webSocketConfig,
                 followRedirects, allowServerReAuth, executorConfig, advancedClientData);
     }
 }

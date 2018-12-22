@@ -32,8 +32,8 @@ import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5ReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
-import org.mqttbee.mqtt.MqttClientData;
-import org.mqttbee.mqtt.MqttServerConnectionData;
+import org.mqttbee.mqtt.MqttClientConfig;
+import org.mqttbee.mqtt.MqttServerConnectionConfig;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectEvent;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
@@ -67,7 +67,7 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter implem
     public static final int MAX_SUB_PENDING = 10; // TODO configurable
     private static final @NotNull Logger LOGGER = LoggerFactory.getLogger(MqttSubscriptionHandler.class);
 
-    private final @NotNull MqttClientData clientData;
+    private final @NotNull MqttClientConfig clientConfig;
     private final @NotNull MqttIncomingPublishFlows subscriptionFlows;
 
     private final @NotNull MpscLinkedQueue<Object> queued = MpscLinkedQueue.newMpscLinkedQueue();
@@ -82,9 +82,9 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter implem
 
     @Inject
     MqttSubscriptionHandler(
-            final @NotNull MqttClientData clientData, final @NotNull MqttIncomingPublishFlows subscriptionFlows) {
+            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttIncomingPublishFlows subscriptionFlows) {
 
-        this.clientData = clientData;
+        this.clientConfig = clientConfig;
         this.subscriptionFlows = subscriptionFlows;
 
         final int maxPacketIdentifier = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE;
@@ -98,16 +98,16 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter implem
     public void handlerAdded(final @NotNull ChannelHandlerContext ctx) {
         this.ctx = ctx;
 
-        final MqttServerConnectionData serverConnectionData = clientData.getRawServerConnectionData();
-        assert serverConnectionData != null;
+        final MqttServerConnectionConfig serverConnectionConfig = clientConfig.getRawServerConnectionConfig();
+        assert serverConnectionConfig != null;
 
-        subscriptionIdentifiersAvailable = serverConnectionData.areSubscriptionIdentifiersAvailable();
+        subscriptionIdentifiersAvailable = serverConnectionConfig.areSubscriptionIdentifiersAvailable();
     }
 
     public void subscribe(final @NotNull MqttSubscribeWithFlow subscribeWithFlow) {
         queued.offer(subscribeWithFlow);
         if (queuedCounter.getAndIncrement() == 0) {
-            clientData.executeInEventLoop(this);
+            clientConfig.executeInEventLoop(this);
         }
     }
 
@@ -121,7 +121,7 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter implem
     public void unsubscribe(final @NotNull MqttUnsubscribeWithFlow unsubscribeWithFlow) {
         queued.offer(unsubscribeWithFlow);
         if (queuedCounter.getAndIncrement() == 0) {
-            clientData.executeInEventLoop(this);
+            clientConfig.executeInEventLoop(this);
         }
     }
 
@@ -330,7 +330,7 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter implem
     }
 
     private void clear(final @NotNull Throwable cause) {
-        if (clientData.getState() != MqttClientState.DISCONNECTED) {
+        if (clientConfig.getState() != MqttClientState.DISCONNECTED) {
             return;
         }
 

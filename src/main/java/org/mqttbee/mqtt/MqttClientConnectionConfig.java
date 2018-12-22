@@ -20,8 +20,8 @@ package org.mqttbee.mqtt;
 import io.netty.channel.Channel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.mqtt3.Mqtt3ClientConnectionData;
-import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientConnectionData;
+import org.mqttbee.api.mqtt.mqtt3.Mqtt3ClientConnectionConfig;
+import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientConnectionConfig;
 import org.mqttbee.api.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.util.collections.IntMap;
@@ -31,7 +31,7 @@ import java.util.Optional;
 /**
  * @author Silvio Giebl
  */
-public class MqttClientConnectionData implements Mqtt5ClientConnectionData, Mqtt3ClientConnectionData {
+public class MqttClientConnectionConfig implements Mqtt5ClientConnectionConfig, Mqtt3ClientConnectionConfig {
 
     private volatile int keepAlive;
     private volatile long sessionExpiryInterval;
@@ -44,7 +44,7 @@ public class MqttClientConnectionData implements Mqtt5ClientConnectionData, Mqtt
     private final boolean responseInformationRequested;
     private final @NotNull Channel channel;
 
-    public MqttClientConnectionData(
+    public MqttClientConnectionConfig(
             final int keepAlive, final long sessionExpiryInterval, final int receiveMaximum,
             final int maximumPacketSize, final int topicAliasMaximum,
             final @Nullable Mqtt5EnhancedAuthProvider enhancedAuthProvider, final boolean hasWillPublish,
@@ -127,5 +127,4 @@ public class MqttClientConnectionData implements Mqtt5ClientConnectionData, Mqtt
     public @NotNull Channel getChannel() {
         return channel;
     }
-
 }

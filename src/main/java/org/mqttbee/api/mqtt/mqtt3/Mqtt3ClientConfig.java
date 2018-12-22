@@ -15,32 +15,21 @@
  *
  */
 
-package org.mqttbee.api.mqtt.mqtt5;
+package org.mqttbee.api.mqtt.mqtt3;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.api.mqtt.datatypes.MqttQos;
+import org.mqttbee.api.mqtt.MqttClientConfig;
+
+import java.util.Optional;
 
 /**
  * @author Silvio Giebl
  */
 @DoNotImplement
-public interface Mqtt5ServerConnectionData {
+public interface Mqtt3ClientConfig extends MqttClientConfig {
 
-    int getReceiveMaximum();
+    @NotNull Optional<Mqtt3ClientConnectionConfig> getClientConnectionConfig();
 
-    int getMaximumPacketSize();
-
-    int getTopicAliasMaximum();
-
-    @NotNull MqttQos getMaximumQos();
-
-    boolean isRetainAvailable();
-
-    boolean isWildcardSubscriptionAvailable();
-
-    boolean isSharedSubscriptionAvailable();
-
-    boolean areSubscriptionIdentifiersAvailable();
-
+    @NotNull Optional<Mqtt3ServerConnectionConfig> getServerConnectionConfig();
 }

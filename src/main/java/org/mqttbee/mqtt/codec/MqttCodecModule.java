@@ -20,7 +20,8 @@ package org.mqttbee.mqtt.codec;
 import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
-import org.mqttbee.mqtt.MqttClientData;
+import org.jetbrains.annotations.NotNull;
+import org.mqttbee.mqtt.MqttClientConfig;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoders;
 import org.mqttbee.mqtt.codec.decoder.mqtt3.Mqtt3ClientMessageDecoders;
 import org.mqttbee.mqtt.codec.decoder.mqtt5.Mqtt5ClientMessageDecoders;
@@ -37,11 +38,12 @@ public class MqttCodecModule {
 
     @Provides
     @ConnectionScope
-    static MqttMessageDecoders provideMessageDecoders(
-            final MqttClientData clientData, final Lazy<Mqtt5ClientMessageDecoders> mqtt5ClientMessageDecoders,
-            final Lazy<Mqtt3ClientMessageDecoders> mqtt3ClientMessageDecoders) {
+    static @NotNull MqttMessageDecoders provideMessageDecoders(
+            final @NotNull MqttClientConfig clientConfig,
+            final @NotNull Lazy<Mqtt5ClientMessageDecoders> mqtt5ClientMessageDecoders,
+            final @NotNull Lazy<Mqtt3ClientMessageDecoders> mqtt3ClientMessageDecoders) {
 
-        switch (clientData.getMqttVersion()) {
+        switch (clientConfig.getMqttVersion()) {
             case MQTT_5_0:
                 return mqtt5ClientMessageDecoders.get();
             case MQTT_3_1_1:
@@ -53,11 +55,12 @@ public class MqttCodecModule {
 
     @Provides
     @ConnectionScope
-    static MqttMessageEncoders provideMessageEncoders(
-            final MqttClientData clientData, final Lazy<Mqtt5ClientMessageEncoders> mqtt5ClientMessageEncoders,
-            final Lazy<Mqtt3ClientMessageEncoders> mqtt3ClientMessageEncoders) {
+    static @NotNull MqttMessageEncoders provideMessageEncoders(
+            final @NotNull MqttClientConfig clientConfig,
+            final @NotNull Lazy<Mqtt5ClientMessageEncoders> mqtt5ClientMessageEncoders,
+            final @NotNull Lazy<Mqtt3ClientMessageEncoders> mqtt3ClientMessageEncoders) {
 
-        switch (clientData.getMqttVersion()) {
+        switch (clientConfig.getMqttVersion()) {
             case MQTT_5_0:
                 return mqtt5ClientMessageEncoders.get();
             case MQTT_3_1_1:
@@ -66,5 +69,4 @@ public class MqttCodecModule {
                 throw new IllegalStateException();
         }
     }
-
 }

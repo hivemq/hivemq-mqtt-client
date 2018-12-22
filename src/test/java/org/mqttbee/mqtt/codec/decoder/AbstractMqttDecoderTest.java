@@ -21,7 +21,7 @@ import io.netty.channel.embedded.EmbeddedChannel;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.mqttbee.mqtt.MqttClientData;
+import org.mqttbee.mqtt.MqttClientConfig;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectHandler;
 
 /**
@@ -29,7 +29,7 @@ import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectHandler;
  */
 public abstract class AbstractMqttDecoderTest {
 
-    protected final @NotNull MqttClientData clientData;
+    protected final @NotNull MqttClientConfig clientData;
     private final @NotNull MqttMessageDecoders decoders;
 
     @SuppressWarnings("NullabilityAnnotations")
@@ -38,7 +38,7 @@ public abstract class AbstractMqttDecoderTest {
     private MqttDecoder decoder;
 
     public AbstractMqttDecoderTest(
-            final @NotNull MqttClientData clientData, final @NotNull MqttMessageDecoders decoders) {
+            final @NotNull MqttClientConfig clientData, final @NotNull MqttMessageDecoders decoders) {
 
         this.clientData = clientData;
         this.decoders = decoders;

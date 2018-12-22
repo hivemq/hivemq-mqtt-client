@@ -20,7 +20,7 @@ package org.mqttbee.mqtt.ioc;
 import dagger.BindsInstance;
 import dagger.Subcomponent;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.mqtt.MqttClientData;
+import org.mqttbee.mqtt.MqttClientConfig;
 import org.mqttbee.mqtt.handler.publish.incoming.MqttIncomingQosHandler;
 import org.mqttbee.mqtt.handler.publish.outgoing.MqttOutgoingQosHandler;
 import org.mqttbee.mqtt.handler.subscribe.MqttSubscriptionHandler;
@@ -46,10 +46,8 @@ public interface ClientComponent {
     interface Builder {
 
         @BindsInstance
-        @NotNull Builder clientData(@NotNull MqttClientData clientData);
+        @NotNull Builder clientConfig(@NotNull MqttClientConfig clientConfig);
 
         @NotNull ClientComponent build();
-
     }
-
 }

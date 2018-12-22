@@ -27,7 +27,7 @@ import org.mqttbee.api.mqtt.MqttClientState;
 import org.mqttbee.api.mqtt.exceptions.ChannelClosedException;
 import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
-import org.mqttbee.mqtt.MqttClientData;
+import org.mqttbee.mqtt.MqttClientConfig;
 import org.mqttbee.mqtt.MqttVersion;
 import org.mqttbee.mqtt.ioc.ConnectionScope;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
@@ -55,12 +55,12 @@ public class MqttDisconnectHandler extends ChannelInboundHandlerAdapter {
 
     public static final @NotNull String NAME = "disconnect";
 
-    private final @NotNull MqttClientData clientData;
+    private final @NotNull MqttClientConfig clientConfig;
     private @Nullable ChannelHandlerContext ctx;
 
     @Inject
-    public MqttDisconnectHandler(@NotNull final MqttClientData clientData) {
-        this.clientData = clientData;
+    public MqttDisconnectHandler(final @NotNull MqttClientConfig clientConfig) {
+        this.clientConfig = clientConfig;
     }
 
     @Override
@@ -105,7 +105,7 @@ public class MqttDisconnectHandler extends ChannelInboundHandlerAdapter {
     }
 
     public void disconnect(final @NotNull MqttDisconnect disconnect, final @NotNull CompletableFlow flow) {
-        if (!clientData.executeInEventLoop(() -> writeDisconnect(disconnect, flow))) {
+        if (!clientConfig.executeInEventLoop(() -> writeDisconnect(disconnect, flow))) {
             flow.onError(new NotConnectedException());
         }
     }
@@ -132,9 +132,9 @@ public class MqttDisconnectHandler extends ChannelInboundHandlerAdapter {
             final @NotNull ChannelHandlerContext ctx, final @NotNull MqttDisconnectEvent disconnectEvent) {
 
         this.ctx = null;
-        clientData.setClientConnectionData(null);
-        clientData.setServerConnectionData(null);
-        clientData.getRawState().set(MqttClientState.DISCONNECTED);
+        clientConfig.setClientConnectionConfig(null);
+        clientConfig.setServerConnectionConfig(null);
+        clientConfig.getRawState().set(MqttClientState.DISCONNECTED);
 
         if (disconnectEvent.fromClient()) {
             final MqttDisconnect disconnect = disconnectEvent.getDisconnect();
@@ -149,7 +149,7 @@ public class MqttDisconnectHandler extends ChannelInboundHandlerAdapter {
                             flow.onError(future.cause());
                         }
                     });
-                } else if (clientData.getMqttVersion() == MqttVersion.MQTT_5_0) {
+                } else if (clientConfig.getMqttVersion() == MqttVersion.MQTT_5_0) {
                     ctx.writeAndFlush(disconnect).addListener(ChannelFutureListener.CLOSE);
                 } else {
                     ctx.channel().close();
@@ -165,7 +165,7 @@ public class MqttDisconnectHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelUnregistered(final @NotNull ChannelHandlerContext ctx) {
         ctx.fireChannelUnregistered();
-        clientData.releaseEventLoop();
+        clientConfig.releaseEventLoop();
     }
 
     @Override

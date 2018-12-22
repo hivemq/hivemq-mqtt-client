@@ -23,21 +23,21 @@ import org.mqttbee.api.mqtt.MqttClientSslConfig;
 import org.mqttbee.api.mqtt.MqttClientState;
 import org.mqttbee.api.mqtt.MqttWebSocketConfig;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
-import org.mqttbee.api.mqtt.mqtt3.Mqtt3ClientConnectionData;
-import org.mqttbee.api.mqtt.mqtt3.Mqtt3ClientData;
-import org.mqttbee.api.mqtt.mqtt3.Mqtt3ServerConnectionData;
-import org.mqttbee.mqtt.MqttClientData;
+import org.mqttbee.api.mqtt.mqtt3.Mqtt3ClientConfig;
+import org.mqttbee.api.mqtt.mqtt3.Mqtt3ClientConnectionConfig;
+import org.mqttbee.api.mqtt.mqtt3.Mqtt3ServerConnectionConfig;
+import org.mqttbee.mqtt.MqttClientConfig;
 
 import java.util.Optional;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt3ClientDataView implements Mqtt3ClientData {
+public class Mqtt3ClientConfigView implements Mqtt3ClientConfig {
 
-    private final @NotNull MqttClientData delegate;
+    private final @NotNull MqttClientConfig delegate;
 
-    Mqtt3ClientDataView(@NotNull final MqttClientData delegate) {
+    Mqtt3ClientConfigView(@NotNull final MqttClientConfig delegate) {
         this.delegate = delegate;
     }
 
@@ -87,12 +87,12 @@ public class Mqtt3ClientDataView implements Mqtt3ClientData {
     }
 
     @Override
-    public @NotNull Optional<Mqtt3ClientConnectionData> getClientConnectionData() {
-        return Optional.ofNullable(delegate.getRawClientConnectionData());
+    public @NotNull Optional<Mqtt3ClientConnectionConfig> getClientConnectionConfig() {
+        return Optional.ofNullable(delegate.getRawClientConnectionConfig());
     }
 
     @Override
-    public @NotNull Optional<Mqtt3ServerConnectionData> getServerConnectionData() {
-        return Optional.ofNullable(delegate.getRawServerConnectionData());
+    public @NotNull Optional<Mqtt3ServerConnectionConfig> getServerConnectionConfig() {
+        return Optional.ofNullable(delegate.getRawServerConnectionConfig());
     }
 }

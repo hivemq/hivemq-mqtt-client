@@ -21,7 +21,7 @@ import com.google.common.primitives.Bytes;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.internal.wire.MqttWireMessage;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.mqtt.MqttClientData;
+import org.mqttbee.mqtt.MqttClientConfig;
 import org.mqttbee.mqtt.MqttClientExecutorConfigImpl;
 import org.mqttbee.mqtt.MqttVersion;
 import org.mqttbee.mqtt.codec.encoder.AbstractMqttEncoderTest;
@@ -39,9 +39,10 @@ abstract class AbstractMqtt3EncoderTest extends AbstractMqttEncoderTest {
         super(messageEncoders, connected, createClientData());
     }
 
-    private static MqttClientData createClientData() {
-        return new MqttClientData(MqttVersion.MQTT_3_1_1, Objects.requireNonNull(MqttClientIdentifierImpl.from("test")),
-                "localhost", 1883, null, null, false, false, MqttClientExecutorConfigImpl.DEFAULT, null);
+    private static MqttClientConfig createClientData() {
+        return new MqttClientConfig(MqttVersion.MQTT_3_1_1,
+                Objects.requireNonNull(MqttClientIdentifierImpl.from("test")), "localhost", 1883, null, null, false,
+                false, MqttClientExecutorConfigImpl.DEFAULT, null);
     }
 
     static @NotNull byte[] bytesOf(final @NotNull MqttWireMessage message) throws MqttException {

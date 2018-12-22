@@ -268,6 +268,6 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
     }
 
     private void releaseEventLoop() {
-        outgoingQosHandler.getClientData().releaseEventLoop();
+        outgoingQosHandler.getClientConfig().releaseEventLoop();
     }
 }

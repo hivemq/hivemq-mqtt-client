@@ -23,7 +23,7 @@ import io.reactivex.internal.disposables.EmptyDisposable;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
-import org.mqttbee.mqtt.MqttClientData;
+import org.mqttbee.mqtt.MqttClientConfig;
 import org.mqttbee.mqtt.ioc.ClientComponent;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribe;
 import org.mqttbee.rx.SingleFlow.DefaultSingleFlow;
@@ -34,17 +34,19 @@ import org.mqttbee.rx.SingleFlow.DefaultSingleFlow;
 public class MqttUnsubAckSingle extends Single<Mqtt5UnsubAck> {
 
     private final @NotNull MqttUnsubscribe unsubscribe;
-    private final @NotNull MqttClientData clientData;
+    private final @NotNull MqttClientConfig clientConfig;
 
-    public MqttUnsubAckSingle(final @NotNull MqttUnsubscribe unsubscribe, final @NotNull MqttClientData clientData) {
+    public MqttUnsubAckSingle(
+            final @NotNull MqttUnsubscribe unsubscribe, final @NotNull MqttClientConfig clientConfig) {
+
         this.unsubscribe = unsubscribe;
-        this.clientData = clientData;
+        this.clientConfig = clientConfig;
     }
 
     @Override
     protected void subscribeActual(final @NotNull SingleObserver<? super Mqtt5UnsubAck> observer) {
-        if (clientData.getState().isConnectedOrReconnect()) {
-            final ClientComponent clientComponent = clientData.getClientComponent();
+        if (clientConfig.getState().isConnectedOrReconnect()) {
+            final ClientComponent clientComponent = clientConfig.getClientComponent();
             final MqttSubscriptionHandler subscriptionHandler = clientComponent.subscriptionHandler();
 
             final DefaultSingleFlow<Mqtt5UnsubAck> flow = new DefaultSingleFlow<>(observer);

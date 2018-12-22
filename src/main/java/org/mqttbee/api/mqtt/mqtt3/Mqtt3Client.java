@@ -33,7 +33,7 @@ public interface Mqtt3Client extends MqttClient {
     }
 
     @Override
-    @NotNull Mqtt3ClientData getClientData();
+    @NotNull Mqtt3ClientConfig getConfig();
 
     /**
      * Turns the API of this client into a reactive API.

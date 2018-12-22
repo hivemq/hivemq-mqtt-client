@@ -27,7 +27,7 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttWebSocketConfig;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
-import org.mqttbee.mqtt.MqttClientData;
+import org.mqttbee.mqtt.MqttClientConfig;
 import org.mqttbee.mqtt.MqttClientSslConfigImpl;
 import org.mqttbee.mqtt.codec.encoder.MqttEncoder;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
@@ -63,7 +63,7 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
     private static final @NotNull String HTTP_CODEC_NAME = "http.codec";
     private static final @NotNull String HTTP_AGGREGATOR_NAME = "http.aggregator";
 
-    private final @NotNull MqttClientData clientData;
+    private final @NotNull MqttClientConfig clientConfig;
     private final @NotNull SingleFlow<Mqtt5ConnAck> connAckFlow;
 
     private final @NotNull MqttEncoder encoder;
@@ -76,13 +76,13 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
 
     @Inject
     MqttChannelInitializer(
-            final @NotNull MqttClientData clientData, final @NotNull SingleFlow<Mqtt5ConnAck> connAckFlow,
+            final @NotNull MqttClientConfig clientConfig, final @NotNull SingleFlow<Mqtt5ConnAck> connAckFlow,
             final @NotNull MqttEncoder encoder, final @NotNull MqttConnectHandler connectHandler,
             final @NotNull MqttDisconnectHandler disconnectHandler, final @NotNull MqttAuthHandler authHandler,
             final @NotNull Lazy<WebSocketBinaryFrameEncoder> webSocketBinaryFrameEncoder,
             final @NotNull Lazy<WebSocketBinaryFrameDecoder> webSocketBinaryFrameDecoder) {
 
-        this.clientData = clientData;
+        this.clientConfig = clientConfig;
         this.connAckFlow = connAckFlow;
         this.encoder = encoder;
         this.connectHandler = connectHandler;
@@ -94,11 +94,11 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
 
     @Override
     protected void initChannel(final @NotNull Channel channel) throws Exception {
-        final MqttClientSslConfigImpl sslConfig = clientData.getRawSslConfig();
+        final MqttClientSslConfigImpl sslConfig = clientConfig.getRawSslConfig();
         if (sslConfig != null) {
             initSsl(channel, sslConfig);
         }
-        final MqttWebSocketConfig webSocketConfig = clientData.getRawWebSocketConfig();
+        final MqttWebSocketConfig webSocketConfig = clientConfig.getRawWebSocketConfig();
         if (webSocketConfig != null) {
             initMqttOverWebSocket(channel.pipeline(), webSocketConfig);
         } else {
@@ -118,7 +118,7 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
             throws URISyntaxException {
 
         final MqttWebSocketClientProtocolHandler mqttWebSocketClientProtocolHandler =
-                new MqttWebSocketClientProtocolHandler(clientData, webSocketConfig, this);
+                new MqttWebSocketClientProtocolHandler(clientConfig, webSocketConfig, this);
 
         pipeline.addLast(HTTP_CODEC_NAME, new HttpClientCodec());
         pipeline.addLast(
@@ -137,6 +137,6 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
     @Override
     public void exceptionCaught(final @NotNull ChannelHandlerContext ctx, final @NotNull Throwable cause) {
         ctx.close();
-        MqttConnAckSingle.onError(clientData, connAckFlow, cause);
+        MqttConnAckSingle.onError(clientConfig, connAckFlow, cause);
     }
 }
