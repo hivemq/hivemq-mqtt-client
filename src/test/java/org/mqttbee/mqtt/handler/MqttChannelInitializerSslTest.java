@@ -25,7 +25,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
-import org.mqttbee.mqtt.MqttClientData;
+import org.mqttbee.mqtt.MqttClientConfig;
 import org.mqttbee.mqtt.MqttClientSslConfigImpl;
 import org.mqttbee.mqtt.MqttVersion;
 import org.mqttbee.mqtt.codec.encoder.MqttEncoder;
@@ -49,7 +49,7 @@ import static org.mockito.Mockito.when;
 public class MqttChannelInitializerSslTest {
 
     @Mock
-    private MqttClientData clientData;
+    private MqttClientConfig clientData;
     @Mock
     private SingleFlow<Mqtt5ConnAck> connAckFlow;
     @Mock

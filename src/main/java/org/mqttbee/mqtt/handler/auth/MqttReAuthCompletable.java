@@ -24,8 +24,8 @@ import io.reactivex.CompletableObserver;
 import io.reactivex.internal.disposables.EmptyDisposable;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
-import org.mqttbee.mqtt.MqttClientConnectionData;
-import org.mqttbee.mqtt.MqttClientData;
+import org.mqttbee.mqtt.MqttClientConfig;
+import org.mqttbee.mqtt.MqttClientConnectionConfig;
 import org.mqttbee.rx.CompletableFlow;
 
 /**
@@ -33,25 +33,25 @@ import org.mqttbee.rx.CompletableFlow;
  */
 public class MqttReAuthCompletable extends Completable {
 
-    private final @NotNull MqttClientData clientData;
+    private final @NotNull MqttClientConfig clientConfig;
 
-    public MqttReAuthCompletable(final @NotNull MqttClientData clientData) {
-        this.clientData = clientData;
+    public MqttReAuthCompletable(final @NotNull MqttClientConfig clientConfig) {
+        this.clientConfig = clientConfig;
     }
 
     @Override
     protected void subscribeActual(final @NotNull CompletableObserver s) {
-        final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
-        if (clientConnectionData == null) {
+        final MqttClientConnectionConfig clientConnectionConfig = clientConfig.getRawClientConnectionConfig();
+        if (clientConnectionConfig == null) {
             EmptyDisposable.error(new NotConnectedException(), s);
             return;
         }
-        if (clientConnectionData.getRawEnhancedAuthProvider() == null) {
+        if (clientConnectionConfig.getRawEnhancedAuthProvider() == null) {
             EmptyDisposable.error(new UnsupportedOperationException(
                     "Reauth is not available if enhanced auth was not used during connect"), s);
             return;
         }
-        final Channel channel = clientConnectionData.getChannel();
+        final Channel channel = clientConnectionConfig.getChannel();
         final ChannelHandler authHandler = channel.pipeline().get(MqttAuthHandler.NAME);
         if (authHandler == null) {
             EmptyDisposable.error(new NotConnectedException(), s);

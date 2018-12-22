@@ -21,7 +21,7 @@ import io.netty.channel.ChannelHandlerContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
-import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientData;
+import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientConfig;
 import org.mqttbee.api.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5Auth;
@@ -54,7 +54,7 @@ public class MqttReAuthHandler extends AbstractMqttAuthHandler {
     }
 
     void reauth(final @NotNull CompletableFlow flow) {
-        if (!clientData.executeInEventLoop(() -> writeReAuth(flow))) {
+        if (!clientConfig.executeInEventLoop(() -> writeReAuth(flow))) {
             flow.onError(new NotConnectedException());
         }
     }
@@ -62,7 +62,7 @@ public class MqttReAuthHandler extends AbstractMqttAuthHandler {
     /**
      * Sends a AUTH message with the Reason Code REAUTHENTICATE.
      * <p>
-     * Calls {@link Mqtt5EnhancedAuthProvider#onReAuth(Mqtt5ClientData, Mqtt5AuthBuilder)}.
+     * Calls {@link Mqtt5EnhancedAuthProvider#onReAuth(Mqtt5ClientConfig, Mqtt5AuthBuilder)}.
      *
      * @param flow the flow for the reauth result.
      */
@@ -80,11 +80,11 @@ public class MqttReAuthHandler extends AbstractMqttAuthHandler {
 
         final MqttAuthBuilder authBuilder = new MqttAuthBuilder(REAUTHENTICATE, getMethod());
         state = MqttAuthState.IN_PROGRESS_INIT;
-        callProviderFuture(() -> authProvider.onReAuth(clientData, authBuilder), ctx -> {
+        callProviderFuture(() -> authProvider.onReAuth(clientConfig, authBuilder), ctx -> {
             state = MqttAuthState.WAIT_FOR_SERVER;
             ctx.writeAndFlush(authBuilder.build()).addListener(this);
         }, (ctx, throwable) -> {
-            callProvider(() -> authProvider.onReAuthError(clientData, throwable));
+            callProvider(() -> authProvider.onReAuthError(clientConfig, throwable));
             state = MqttAuthState.NONE;
             this.flow.onError(throwable);
             this.flow = null;
@@ -105,7 +105,7 @@ public class MqttReAuthHandler extends AbstractMqttAuthHandler {
     /**
      * Handles an incoming AUTH message with the Reason Code SUCCESS.
      * <ul>
-     * <li>Calls {@link Mqtt5EnhancedAuthProvider#onReAuthSuccess(Mqtt5ClientData, Mqtt5Auth)}.</li>
+     * <li>Calls {@link Mqtt5EnhancedAuthProvider#onReAuthSuccess(Mqtt5ClientConfig, Mqtt5Auth)}.</li>
      * <li>Sends a DISCONNECT message if the enhanced auth provider did not accept the AUTH message.</li>
      * </ul>
      *
@@ -121,7 +121,7 @@ public class MqttReAuthHandler extends AbstractMqttAuthHandler {
         }
 
         state = MqttAuthState.IN_PROGRESS_DONE;
-        callProviderFutureResult(() -> authProvider.onReAuthSuccess(clientData, auth), ctx2 -> {
+        callProviderFutureResult(() -> authProvider.onReAuthSuccess(clientConfig, auth), ctx2 -> {
             state = MqttAuthState.NONE;
             if (flow != null) {
                 if (!flow.isCancelled()) {
@@ -140,7 +140,7 @@ public class MqttReAuthHandler extends AbstractMqttAuthHandler {
      * <ul>
      * <li>Sends a DISCONNECT message if server reauth is not allowed.</li>
      * <li>Otherwise calls
-     * {@link Mqtt5EnhancedAuthProvider#onServerReAuth(Mqtt5ClientData, Mqtt5Auth, Mqtt5AuthBuilder)}.</li>
+     * {@link Mqtt5EnhancedAuthProvider#onServerReAuth(Mqtt5ClientConfig, Mqtt5Auth, Mqtt5AuthBuilder)}.</li>
      * <li>Sends a new AUTH message if the enhanced auth provider accepted the incoming AUTH message.</li>
      * <li>Otherwise sends a DISCONNECT message.</li>
      * </ul>
@@ -149,7 +149,7 @@ public class MqttReAuthHandler extends AbstractMqttAuthHandler {
      * @param auth the incoming AUTH message.
      */
     void readReAuth(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttAuth auth) {
-        if (!clientData.allowsServerReAuth()) {
+        if (!clientConfig.allowsServerReAuth()) {
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
                     new Mqtt5MessageException(auth, "Must not receive an AUTH with reason code REAUTHENTICATE."));
             return;
@@ -163,7 +163,7 @@ public class MqttReAuthHandler extends AbstractMqttAuthHandler {
 
         final MqttAuthBuilder authBuilder = new MqttAuthBuilder(CONTINUE_AUTHENTICATION, getMethod());
         state = MqttAuthState.IN_PROGRESS_INIT;
-        callProviderFutureResult(() -> authProvider.onServerReAuth(clientData, auth, authBuilder), ctx2 -> {
+        callProviderFutureResult(() -> authProvider.onServerReAuth(clientConfig, auth, authBuilder), ctx2 -> {
             state = MqttAuthState.WAIT_FOR_SERVER;
             ctx2.writeAndFlush(authBuilder.build()).addListener(this);
 
@@ -174,7 +174,7 @@ public class MqttReAuthHandler extends AbstractMqttAuthHandler {
     /**
      * Handles an incoming DISCONNECT message.
      * <p>
-     * Calls {@link Mqtt5EnhancedAuthProvider#onReAuthRejected(Mqtt5ClientData, Mqtt5Disconnect)}.
+     * Calls {@link Mqtt5EnhancedAuthProvider#onReAuthRejected(Mqtt5ClientConfig, Mqtt5Disconnect)}.
      *
      * @param ctx        the channel handler context.
      * @param disconnect the incoming DISCONNECT message.
@@ -183,7 +183,7 @@ public class MqttReAuthHandler extends AbstractMqttAuthHandler {
         cancelTimeout();
 
         if (state != MqttAuthState.NONE) {
-            callProvider(() -> authProvider.onReAuthRejected(clientData, disconnect));
+            callProvider(() -> authProvider.onReAuthRejected(clientConfig, disconnect));
             state = MqttAuthState.NONE;
         }
 
@@ -191,8 +191,8 @@ public class MqttReAuthHandler extends AbstractMqttAuthHandler {
     }
 
     /**
-     * Calls {@link Mqtt5EnhancedAuthProvider#onReAuthError(Mqtt5ClientData, Throwable)} with the cause why the channel
-     * was closed if reauth is still in progress.
+     * Calls {@link Mqtt5EnhancedAuthProvider#onReAuthError(Mqtt5ClientConfig, Throwable)} with the cause why the
+     * channel was closed if reauth is still in progress.
      *
      * @param disconnectEvent the channel close event.
      */
@@ -200,7 +200,7 @@ public class MqttReAuthHandler extends AbstractMqttAuthHandler {
         super.handleDisconnectEvent(disconnectEvent);
 
         if (state != MqttAuthState.NONE) {
-            callProvider(() -> authProvider.onReAuthError(clientData, disconnectEvent.getCause()));
+            callProvider(() -> authProvider.onReAuthError(clientConfig, disconnectEvent.getCause()));
             state = MqttAuthState.NONE;
         }
         if (flow != null) {

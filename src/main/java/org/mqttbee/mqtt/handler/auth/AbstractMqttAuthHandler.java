@@ -20,13 +20,13 @@ package org.mqttbee.mqtt.handler.auth;
 import io.netty.channel.ChannelHandlerContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientData;
+import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientConfig;
 import org.mqttbee.api.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5Auth;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.mqtt.MqttClientData;
+import org.mqttbee.mqtt.MqttClientConfig;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.handler.util.MqttTimeoutInboundHandler;
@@ -61,20 +61,20 @@ abstract class AbstractMqttAuthHandler extends MqttTimeoutInboundHandler impleme
         IN_PROGRESS_DONE
     }
 
-    final @NotNull MqttClientData clientData;
+    final @NotNull MqttClientConfig clientConfig;
     final @NotNull Mqtt5EnhancedAuthProvider authProvider;
     @NotNull MqttAuthState state = MqttAuthState.NONE;
 
-    AbstractMqttAuthHandler(final @NotNull MqttClientData clientData, final @NotNull MqttConnect connect) {
-        this.clientData = clientData;
+    AbstractMqttAuthHandler(final @NotNull MqttClientConfig clientConfig, final @NotNull MqttConnect connect) {
+        this.clientConfig = clientConfig;
         final Mqtt5EnhancedAuthProvider authProvider = connect.getRawEnhancedAuthProvider();
         assert authProvider != null;
         this.authProvider = authProvider;
     }
 
     AbstractMqttAuthHandler(final @NotNull MqttConnectAuthHandler connectAuthHandler) {
-        this.clientData = connectAuthHandler.clientData;
-        this.authProvider = connectAuthHandler.authProvider;
+        clientConfig = connectAuthHandler.clientConfig;
+        authProvider = connectAuthHandler.authProvider;
     }
 
     /**
@@ -122,7 +122,7 @@ abstract class AbstractMqttAuthHandler extends MqttTimeoutInboundHandler impleme
     /**
      * Handles an incoming AUTH message with the Reason Code CONTINUE AUTHENTICATION.
      * <ul>
-     * <li>Calls {@link Mqtt5EnhancedAuthProvider#onContinue(Mqtt5ClientData, Mqtt5Auth, Mqtt5AuthBuilder)}.</li>
+     * <li>Calls {@link Mqtt5EnhancedAuthProvider#onContinue(Mqtt5ClientConfig, Mqtt5Auth, Mqtt5AuthBuilder)}.</li>
      * <li>Sends a new AUTH message if the enhanced auth provider accepted the incoming AUTH message.</li>
      * <li>Otherwise sends a DISCONNECT message.</li>
      * </ul>
@@ -140,7 +140,7 @@ abstract class AbstractMqttAuthHandler extends MqttTimeoutInboundHandler impleme
 
         final MqttAuthBuilder authBuilder = new MqttAuthBuilder(CONTINUE_AUTHENTICATION, getMethod());
         state = MqttAuthState.IN_PROGRESS_RESPONSE;
-        callProviderFutureResult(() -> authProvider.onContinue(clientData, auth, authBuilder), ctx2 -> {
+        callProviderFutureResult(() -> authProvider.onContinue(clientConfig, auth, authBuilder), ctx2 -> {
             state = MqttAuthState.WAIT_FOR_SERVER;
             ctx2.writeAndFlush(authBuilder.build()).addListener(this);
 
@@ -181,7 +181,7 @@ abstract class AbstractMqttAuthHandler extends MqttTimeoutInboundHandler impleme
             return;
         }
         try {
-            supplier.get().whenComplete((aVoid, throwable) -> clientData.executeInEventLoop(() -> {
+            supplier.get().whenComplete((aVoid, throwable) -> clientConfig.executeInEventLoop(() -> {
                 if (ctx == null) {
                     return;
                 }
@@ -207,7 +207,7 @@ abstract class AbstractMqttAuthHandler extends MqttTimeoutInboundHandler impleme
             return;
         }
         try {
-            supplier.get().whenComplete((accepted, throwable) -> clientData.executeInEventLoop(() -> {
+            supplier.get().whenComplete((accepted, throwable) -> clientConfig.executeInEventLoop(() -> {
                 if (ctx == null) {
                     return;
                 }

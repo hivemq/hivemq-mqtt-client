@@ -37,7 +37,7 @@ import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
-import org.mqttbee.mqtt.MqttClientData;
+import org.mqttbee.mqtt.MqttClientConfig;
 import org.mqttbee.mqtt.MqttRxClient;
 import org.mqttbee.rx.FlowableWithSingle;
 
@@ -56,7 +56,7 @@ class Mqtt3RxClientViewExceptionsTest {
     @BeforeEach
     void setUp() {
         mqtt5Client = mock(MqttRxClient.class);
-        when(mqtt5Client.getClientData()).thenReturn(mock(MqttClientData.class));
+        when(mqtt5Client.getConfig()).thenReturn(mock(MqttClientConfig.class));
         mqtt3Client = new Mqtt3RxClientView(mqtt5Client);
     }
 

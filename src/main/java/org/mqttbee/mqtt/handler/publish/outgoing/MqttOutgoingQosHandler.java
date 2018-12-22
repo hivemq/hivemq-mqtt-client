@@ -33,8 +33,8 @@ import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5OutgoingQos1Interceptor;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5OutgoingQos2Interceptor;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.mqtt.MqttClientData;
-import org.mqttbee.mqtt.MqttServerConnectionData;
+import org.mqttbee.mqtt.MqttClientConfig;
+import org.mqttbee.mqtt.MqttServerConnectionConfig;
 import org.mqttbee.mqtt.advanced.MqttAdvancedClientData;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectEvent;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
@@ -80,7 +80,7 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
     private static final int MAX_CONCURRENT_PUBLISH_FLOWABLES = 64; // TODO configurable
     private static final boolean QOS_2_COMPLETE_RESULT = false; // TODO configurable
 
-    private final @NotNull MqttClientData clientData;
+    private final @NotNull MqttClientConfig clientConfig;
     private final @NotNull MqttPublishFlowables publishFlowables;
 
     private final @NotNull SpscUnboundedArrayQueue<MqttPublishWithFlow> queue = new SpscUnboundedArrayQueue<>(32);
@@ -100,9 +100,9 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
 
     @Inject
     MqttOutgoingQosHandler(
-            final @NotNull MqttClientData clientData, final @NotNull MqttPublishFlowables publishFlowables) {
+            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttPublishFlowables publishFlowables) {
 
-        this.clientData = clientData;
+        this.clientConfig = clientConfig;
         this.publishFlowables = publishFlowables;
     }
 
@@ -110,12 +110,12 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
     public void handlerAdded(final ChannelHandlerContext ctx) {
         this.ctx = ctx;
 
-        final MqttServerConnectionData serverConnectionData = clientData.getRawServerConnectionData();
-        assert serverConnectionData != null;
+        final MqttServerConnectionConfig serverConnectionConfig = clientConfig.getRawServerConnectionConfig();
+        assert serverConnectionConfig != null;
 
         final int oldSendMaximum = sendMaximum;
         final int newSendMaximum = Math.min(
-                serverConnectionData.getReceiveMaximum(),
+                serverConnectionConfig.getReceiveMaximum(),
                 UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE - MqttSubscriptionHandler.MAX_SUB_PENDING);
         sendMaximum = newSendMaximum;
         if (oldSendMaximum == 0) {
@@ -138,7 +138,7 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
             }
 //            resend(); // TODO
         }
-        topicAliasMapping = serverConnectionData.getTopicAliasMapping();
+        topicAliasMapping = serverConnectionConfig.getTopicAliasMapping();
     }
 
     private void resize() {
@@ -160,7 +160,7 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
     public void onNext(final @NotNull MqttPublishWithFlow publishWithFlow) {
         queue.offer(publishWithFlow);
         if (queuedCounter.getAndIncrement() == 0) {
-            clientData.executeInEventLoop(this);
+            clientConfig.executeInEventLoop(this);
         }
     }
 
@@ -399,7 +399,7 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
     }
 
     private void clear(final @NotNull Throwable cause) {
-        if (clientData.getState() != MqttClientState.DISCONNECTED) {
+        if (clientConfig.getState() != MqttClientState.DISCONNECTED) {
             return;
         }
 
@@ -444,49 +444,49 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
     }
 
     private void onPubAck(final @NotNull MqttPublish publish, final @NotNull MqttPubAck pubAck) {
-        final MqttAdvancedClientData advanced = clientData.getRawAdvancedClientData();
+        final MqttAdvancedClientData advanced = clientConfig.getRawAdvancedClientData();
         if (advanced != null) {
             final Mqtt5OutgoingQos1Interceptor interceptor = advanced.getOutgoingQos1Interceptor();
             if (interceptor != null) {
-                interceptor.onPubAck(clientData, publish, pubAck);
+                interceptor.onPubAck(clientConfig, publish, pubAck);
             }
         }
     }
 
     private void onPubRecError(final @NotNull MqttPublish publish, final @NotNull MqttPubRec pubRec) {
-        final MqttAdvancedClientData advanced = clientData.getRawAdvancedClientData();
+        final MqttAdvancedClientData advanced = clientConfig.getRawAdvancedClientData();
         if (advanced != null) {
             final Mqtt5OutgoingQos2Interceptor interceptor = advanced.getOutgoingQos2Interceptor();
             if (interceptor != null) {
-                interceptor.onPubRecError(clientData, publish, pubRec);
+                interceptor.onPubRecError(clientConfig, publish, pubRec);
             }
         }
     }
 
     private @NotNull MqttPubRel buildPubRel(final @NotNull MqttPublish publish, final @NotNull MqttPubRec pubRec) {
         final MqttPubRelBuilder pubRelBuilder = new MqttPubRelBuilder(pubRec);
-        final MqttAdvancedClientData advanced = clientData.getRawAdvancedClientData();
+        final MqttAdvancedClientData advanced = clientConfig.getRawAdvancedClientData();
         if (advanced != null) {
             final Mqtt5OutgoingQos2Interceptor interceptor = advanced.getOutgoingQos2Interceptor();
             if (interceptor != null) {
-                interceptor.onPubRec(clientData, publish, pubRec, pubRelBuilder);
+                interceptor.onPubRec(clientConfig, publish, pubRec, pubRelBuilder);
             }
         }
         return pubRelBuilder.build();
     }
 
     private void onPubComp(final @NotNull MqttPubRel pubRel, final @NotNull MqttPubComp pubComp) {
-        final MqttAdvancedClientData advanced = clientData.getRawAdvancedClientData();
+        final MqttAdvancedClientData advanced = clientConfig.getRawAdvancedClientData();
         if (advanced != null) {
             final Mqtt5OutgoingQos2Interceptor interceptor = advanced.getOutgoingQos2Interceptor();
             if (interceptor != null) {
-                interceptor.onPubComp(clientData, pubRel, pubComp);
+                interceptor.onPubComp(clientConfig, pubRel, pubComp);
             }
         }
     }
 
-    @NotNull MqttClientData getClientData() {
-        return clientData;
+    @NotNull MqttClientConfig getClientConfig() {
+        return clientConfig;
     }
 
     @NotNull MqttPublishFlowables getPublishFlowables() {

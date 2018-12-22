@@ -26,7 +26,7 @@ import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.datatypes.MqttUTF8String;
 import org.mqttbee.api.mqtt.exceptions.MqttBinaryDataExceededException;
 import org.mqttbee.api.mqtt.exceptions.MqttVariableByteIntegerExceededException;
-import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientData;
+import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientConfig;
 import org.mqttbee.api.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5Auth;
@@ -547,7 +547,8 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
 
         private ImmutableList.Builder<MqttUserPropertyImpl> userPropertiesBuilder;
         final @NotNull MqttUserPropertyImpl userProperty =
-                new MqttUserPropertyImpl(requireNonNull(MqttUTF8StringImpl.from("user")), requireNonNull(MqttUTF8StringImpl.from("property")));
+                new MqttUserPropertyImpl(requireNonNull(MqttUTF8StringImpl.from("user")),
+                        requireNonNull(MqttUTF8StringImpl.from("property")));
         char[] clientIdBytes;
         final int maxPropertyLength = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT - 1  // type, reserved
                 - 4  // remaining length
@@ -628,7 +629,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         @NotNull
         @Override
         public CompletableFuture<Void> onAuth(
-                @NotNull final Mqtt5ClientData clientData, @NotNull final Mqtt5Connect connect,
+                @NotNull final Mqtt5ClientConfig clientConfig, @NotNull final Mqtt5Connect connect,
                 @NotNull final Mqtt5EnhancedAuthBuilder authBuilder) {
             throw new UnsupportedOperationException();
         }
@@ -636,14 +637,14 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         @NotNull
         @Override
         public CompletableFuture<Void> onReAuth(
-                @NotNull final Mqtt5ClientData clientData, @NotNull final Mqtt5AuthBuilder authBuilder) {
+                @NotNull final Mqtt5ClientConfig clientConfig, @NotNull final Mqtt5AuthBuilder authBuilder) {
             throw new UnsupportedOperationException();
         }
 
         @NotNull
         @Override
         public CompletableFuture<Boolean> onServerReAuth(
-                @NotNull final Mqtt5ClientData clientData, @NotNull final Mqtt5Auth auth,
+                @NotNull final Mqtt5ClientConfig clientConfig, @NotNull final Mqtt5Auth auth,
                 @NotNull final Mqtt5AuthBuilder authBuilder) {
             throw new UnsupportedOperationException();
         }
@@ -651,7 +652,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         @NotNull
         @Override
         public CompletableFuture<Boolean> onContinue(
-                @NotNull final Mqtt5ClientData clientData, @NotNull final Mqtt5Auth auth,
+                @NotNull final Mqtt5ClientConfig clientConfig, @NotNull final Mqtt5Auth auth,
                 @NotNull final Mqtt5AuthBuilder authBuilder) {
             throw new UnsupportedOperationException();
         }
@@ -659,37 +660,36 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         @NotNull
         @Override
         public CompletableFuture<Boolean> onAuthSuccess(
-                @NotNull final Mqtt5ClientData clientData, @NotNull final Mqtt5ConnAck connAck) {
+                @NotNull final Mqtt5ClientConfig clientConfig, @NotNull final Mqtt5ConnAck connAck) {
             throw new UnsupportedOperationException();
         }
 
         @NotNull
         @Override
         public CompletableFuture<Boolean> onReAuthSuccess(
-                @NotNull final Mqtt5ClientData clientData, @NotNull final Mqtt5Auth auth) {
+                @NotNull final Mqtt5ClientConfig clientConfig, @NotNull final Mqtt5Auth auth) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public void onAuthRejected(@NotNull final Mqtt5ClientData clientData, @NotNull final Mqtt5ConnAck connAck) {
+        public void onAuthRejected(@NotNull final Mqtt5ClientConfig clientConfig, @NotNull final Mqtt5ConnAck connAck) {
             throw new UnsupportedOperationException();
         }
 
         @Override
         public void onReAuthRejected(
-                @NotNull final Mqtt5ClientData clientData, @NotNull final Mqtt5Disconnect disconnect) {
+                @NotNull final Mqtt5ClientConfig clientConfig, @NotNull final Mqtt5Disconnect disconnect) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public void onAuthError(@NotNull final Mqtt5ClientData clientData, @NotNull final Throwable cause) {
+        public void onAuthError(@NotNull final Mqtt5ClientConfig clientConfig, @NotNull final Throwable cause) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public void onReAuthError(@NotNull final Mqtt5ClientData clientData, @NotNull final Throwable cause) {
+        public void onReAuthError(@NotNull final Mqtt5ClientConfig clientConfig, @NotNull final Throwable cause) {
             throw new UnsupportedOperationException();
         }
     }
-
 }

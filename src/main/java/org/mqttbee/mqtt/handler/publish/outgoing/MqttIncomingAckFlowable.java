@@ -23,7 +23,7 @@ import io.reactivex.internal.subscriptions.EmptySubscription;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
-import org.mqttbee.mqtt.MqttClientData;
+import org.mqttbee.mqtt.MqttClientConfig;
 import org.mqttbee.mqtt.ioc.ClientComponent;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
 import org.reactivestreams.Subscriber;
@@ -34,23 +34,23 @@ import org.reactivestreams.Subscriber;
 public class MqttIncomingAckFlowable extends Flowable<Mqtt5PublishResult> {
 
     private final @NotNull Flowable<MqttPublish> publishFlowable;
-    private final @NotNull MqttClientData clientData;
+    private final @NotNull MqttClientConfig clientConfig;
 
     public MqttIncomingAckFlowable(
-            final @NotNull Flowable<MqttPublish> publishFlowable, final @NotNull MqttClientData clientData) {
+            final @NotNull Flowable<MqttPublish> publishFlowable, final @NotNull MqttClientConfig clientConfig) {
 
         this.publishFlowable = publishFlowable;
-        this.clientData = clientData;
+        this.clientConfig = clientConfig;
     }
 
     @Override
     protected void subscribeActual(final @NotNull Subscriber<? super Mqtt5PublishResult> subscriber) {
-        if (clientData.getState().isConnectedOrReconnect()) {
-            final ClientComponent clientComponent = clientData.getClientComponent();
+        if (clientConfig.getState().isConnectedOrReconnect()) {
+            final ClientComponent clientComponent = clientConfig.getClientComponent();
             final MqttOutgoingQosHandler outgoingQosHandler = clientComponent.outgoingQosHandler();
             final MqttPublishFlowables publishFlowables = outgoingQosHandler.getPublishFlowables();
 
-            final EventLoop eventLoop = clientData.acquireEventLoop();
+            final EventLoop eventLoop = clientConfig.acquireEventLoop();
 
             final MqttIncomingAckFlow flow = new MqttIncomingAckFlow(subscriber, outgoingQosHandler, eventLoop);
             subscriber.onSubscribe(flow);

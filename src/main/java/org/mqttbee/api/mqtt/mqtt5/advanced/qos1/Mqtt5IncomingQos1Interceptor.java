@@ -18,7 +18,7 @@
 package org.mqttbee.api.mqtt.mqtt5.advanced.qos1;
 
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientData;
+import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientConfig;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.puback.Mqtt5PubAckBuilder;
 
@@ -34,12 +34,11 @@ public interface Mqtt5IncomingQos1Interceptor {
      * <p>
      * This method must not block and just add some properties to the outgoing PUBACK message.
      *
-     * @param clientData    the data of the client.
+     * @param clientConfig  the config of the client.
      * @param publish       the PUBLISH message with QoS 1 sent by the server.
      * @param pubAckBuilder the builder for the outgoing PUBACK message.
      */
     void onPublish(
-            @NotNull Mqtt5ClientData clientData, @NotNull Mqtt5Publish publish,
+            @NotNull Mqtt5ClientConfig clientConfig, @NotNull Mqtt5Publish publish,
             @NotNull Mqtt5PubAckBuilder pubAckBuilder);
-
 }

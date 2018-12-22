@@ -72,11 +72,11 @@ public class Mqtt3RxClientView implements Mqtt3RxClient {
             EXCEPTION_MAPPER_FLOWABLE_PUBLISH_RESULT = e -> Flowable.error(Mqtt3ExceptionFactory.map(e));
 
     private final @NotNull MqttRxClient delegate;
-    private final @NotNull Mqtt3ClientDataView clientData;
+    private final @NotNull Mqtt3ClientConfigView clientConfig;
 
     Mqtt3RxClientView(final @NotNull MqttRxClient delegate) {
         this.delegate = delegate;
-        clientData = new Mqtt3ClientDataView(delegate.getClientData());
+        clientConfig = new Mqtt3ClientConfigView(delegate.getConfig());
     }
 
     @Override
@@ -130,8 +130,8 @@ public class Mqtt3RxClientView implements Mqtt3RxClient {
     }
 
     @Override
-    public @NotNull Mqtt3ClientDataView getClientData() {
-        return clientData;
+    public @NotNull Mqtt3ClientConfigView getConfig() {
+        return clientConfig;
     }
 
     @Override

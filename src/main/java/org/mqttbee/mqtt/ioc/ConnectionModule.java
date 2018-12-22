@@ -24,7 +24,7 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.ChannelOption;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.mqtt.MqttClientData;
+import org.mqttbee.mqtt.MqttClientConfig;
 import org.mqttbee.mqtt.handler.MqttChannelInitializer;
 import org.mqttbee.mqtt.handler.auth.MqttAuthHandler;
 import org.mqttbee.mqtt.handler.auth.MqttConnectAuthHandler;
@@ -40,10 +40,10 @@ abstract class ConnectionModule {
 
     @Provides
     static @NotNull Bootstrap provideBootstrap(
-            final @NotNull MqttClientData clientData, final @NotNull NettyEventLoopProvider nettyEventLoopProvider,
+            final @NotNull MqttClientConfig clientConfig, final @NotNull NettyEventLoopProvider nettyEventLoopProvider,
             final @NotNull MqttChannelInitializer channelInitializer) {
 
-        return new Bootstrap().group(clientData.acquireEventLoop())
+        return new Bootstrap().group(clientConfig.acquireEventLoop())
                 .channelFactory(nettyEventLoopProvider.getChannelFactory())
                 .option(ChannelOption.SO_KEEPALIVE, true)
                 .option(ChannelOption.TCP_NODELAY, true)

@@ -23,8 +23,8 @@ import io.reactivex.CompletableObserver;
 import io.reactivex.internal.disposables.EmptyDisposable;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
-import org.mqttbee.mqtt.MqttClientConnectionData;
-import org.mqttbee.mqtt.MqttClientData;
+import org.mqttbee.mqtt.MqttClientConfig;
+import org.mqttbee.mqtt.MqttClientConnectionConfig;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
 import org.mqttbee.rx.CompletableFlow;
 
@@ -33,24 +33,24 @@ import org.mqttbee.rx.CompletableFlow;
  */
 public class MqttDisconnectCompletable extends Completable {
 
-    private final @NotNull MqttClientData clientData;
+    private final @NotNull MqttClientConfig clientConfig;
     private final @NotNull MqttDisconnect disconnect;
 
     public MqttDisconnectCompletable(
-            final @NotNull MqttClientData clientData, final @NotNull MqttDisconnect disconnect) {
+            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttDisconnect disconnect) {
 
-        this.clientData = clientData;
+        this.clientConfig = clientConfig;
         this.disconnect = disconnect;
     }
 
     @Override
     protected void subscribeActual(final @NotNull CompletableObserver s) {
-        final MqttClientConnectionData clientConnectionData = clientData.getRawClientConnectionData();
-        if (clientConnectionData == null) {
+        final MqttClientConnectionConfig clientConnectionConfig = clientConfig.getRawClientConnectionConfig();
+        if (clientConnectionConfig == null) {
             EmptyDisposable.error(new NotConnectedException(), s);
             return;
         }
-        final Channel channel = clientConnectionData.getChannel();
+        final Channel channel = clientConnectionConfig.getChannel();
         final MqttDisconnectHandler disconnectHandler =
                 (MqttDisconnectHandler) channel.pipeline().get(MqttDisconnectHandler.NAME);
         if (disconnectHandler == null) {

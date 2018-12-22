@@ -20,14 +20,14 @@ package org.mqttbee.mqtt;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
-import org.mqttbee.api.mqtt.mqtt3.Mqtt3ServerConnectionData;
-import org.mqttbee.api.mqtt.mqtt5.Mqtt5ServerConnectionData;
+import org.mqttbee.api.mqtt.mqtt3.Mqtt3ServerConnectionConfig;
+import org.mqttbee.api.mqtt.mqtt5.Mqtt5ServerConnectionConfig;
 import org.mqttbee.mqtt.message.publish.MqttTopicAliasMapping;
 
 /**
  * @author Silvio Giebl
  */
-public class MqttServerConnectionData implements Mqtt5ServerConnectionData, Mqtt3ServerConnectionData {
+public class MqttServerConnectionConfig implements Mqtt5ServerConnectionConfig, Mqtt3ServerConnectionConfig {
 
     private final int receiveMaximum;
     private final int maximumPacketSize;
@@ -38,7 +38,7 @@ public class MqttServerConnectionData implements Mqtt5ServerConnectionData, Mqtt
     private final boolean sharedSubscriptionAvailable;
     private final boolean subscriptionIdentifiersAvailable;
 
-    public MqttServerConnectionData(
+    public MqttServerConnectionConfig(
             final int receiveMaximum, final int maximumPacketSize, final int topicAliasMaximum,
             final @NotNull MqttQos maximumQos, final boolean retainAvailable,
             final boolean wildcardSubscriptionAvailable, final boolean sharedSubscriptionAvailable,
@@ -97,5 +97,4 @@ public class MqttServerConnectionData implements Mqtt5ServerConnectionData, Mqtt
     public boolean areSubscriptionIdentifiersAvailable() {
         return subscriptionIdentifiersAvailable;
     }
-
 }

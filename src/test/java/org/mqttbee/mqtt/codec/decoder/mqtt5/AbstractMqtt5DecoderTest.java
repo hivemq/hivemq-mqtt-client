@@ -19,8 +19,8 @@ package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions;
-import org.mqttbee.mqtt.MqttClientConnectionData;
-import org.mqttbee.mqtt.MqttClientData;
+import org.mqttbee.mqtt.MqttClientConfig;
+import org.mqttbee.mqtt.MqttClientConnectionConfig;
 import org.mqttbee.mqtt.MqttClientExecutorConfigImpl;
 import org.mqttbee.mqtt.MqttVersion;
 import org.mqttbee.mqtt.codec.decoder.AbstractMqttDecoderTest;
@@ -34,8 +34,8 @@ import java.util.Objects;
  */
 abstract class AbstractMqtt5DecoderTest extends AbstractMqttDecoderTest {
 
-    private static @NotNull MqttClientData createClientData() {
-        return new MqttClientData(MqttVersion.MQTT_5_0, Objects.requireNonNull(MqttClientIdentifierImpl.from("test")),
+    private static @NotNull MqttClientConfig createClientData() {
+        return new MqttClientConfig(MqttVersion.MQTT_5_0, Objects.requireNonNull(MqttClientIdentifierImpl.from("test")),
                 "localhost", 1883, null, null, false, false, MqttClientExecutorConfigImpl.DEFAULT, null);
     }
 
@@ -47,8 +47,8 @@ abstract class AbstractMqtt5DecoderTest extends AbstractMqttDecoderTest {
 
     @Override
     protected void initChannel() {
-        clientData.setClientConnectionData(
-                new MqttClientConnectionData(10, 10, Mqtt5ConnectRestrictions.DEFAULT_RECEIVE_MAXIMUM,
+        clientData.setClientConnectionConfig(
+                new MqttClientConnectionConfig(10, 10, Mqtt5ConnectRestrictions.DEFAULT_RECEIVE_MAXIMUM,
                         maximumPacketSize, 3, null, false, true, true, channel));
         super.initChannel();
     }

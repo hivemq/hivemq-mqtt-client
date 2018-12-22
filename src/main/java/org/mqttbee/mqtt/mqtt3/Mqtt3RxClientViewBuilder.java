@@ -55,7 +55,7 @@ public class Mqtt3RxClientViewBuilder extends MqttRxClientBuilderBase<Mqtt3RxCli
     }
 
     private @NotNull MqttRxClient buildRxDelegate() {
-        return new MqttRxClient(buildClientData());
+        return new MqttRxClient(buildClientConfig());
     }
 
     private @NotNull MqttAsyncClient buildAsyncDelegate() {
@@ -66,8 +66,8 @@ public class Mqtt3RxClientViewBuilder extends MqttRxClientBuilderBase<Mqtt3RxCli
         return buildRxDelegate().toBlocking();
     }
 
-    private @NotNull MqttClientData buildClientData() {
-        return new MqttClientData(MqttVersion.MQTT_3_1_1, identifier, serverHost, serverPort, sslConfig,
+    private @NotNull MqttClientConfig buildClientConfig() {
+        return new MqttClientConfig(MqttVersion.MQTT_3_1_1, identifier, serverHost, serverPort, sslConfig,
                 webSocketConfig, false, false, executorConfig, null);
     }
 }

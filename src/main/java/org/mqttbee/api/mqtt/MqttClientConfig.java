@@ -15,11 +15,11 @@
  *
  */
 
-package org.mqttbee.api.mqtt.mqtt5;
+package org.mqttbee.api.mqtt;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.api.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
+import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
 
 import java.util.Optional;
 
@@ -27,24 +27,23 @@ import java.util.Optional;
  * @author Silvio Giebl
  */
 @DoNotImplement
-public interface Mqtt5ClientConnectionData {
+public interface MqttClientConfig {
 
-    int getKeepAlive();
+    @NotNull Optional<MqttClientIdentifier> getClientIdentifier();
 
-    long getSessionExpiryInterval();
+    @NotNull String getServerHost();
 
-    int getReceiveMaximum();
+    int getServerPort();
 
-    int getMaximumPacketSize();
+    boolean usesSsl();
 
-    int getTopicAliasMaximum();
+    @NotNull Optional<MqttClientSslConfig> getSslConfig();
 
-    @NotNull Optional<Mqtt5EnhancedAuthProvider> getEnhancedAuthProvider();
+    boolean usesWebSocket();
 
-    boolean hasWillPublish();
+    @NotNull Optional<MqttWebSocketConfig> getWebSocketConfig();
 
-    boolean isProblemInformationRequested();
+    @NotNull MqttClientExecutorConfig getExecutorConfig();
 
-    boolean isResponseInformationRequested();
-
+    @NotNull MqttClientState getState();
 }

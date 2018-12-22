@@ -25,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttClientState;
 import org.mqttbee.api.mqtt.exceptions.AlreadyConnectedException;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
-import org.mqttbee.mqtt.MqttClientData;
+import org.mqttbee.mqtt.MqttClientConfig;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
 import org.mqttbee.rx.SingleFlow;
 
@@ -34,17 +34,17 @@ import org.mqttbee.rx.SingleFlow;
  */
 public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
 
-    private final @NotNull MqttClientData clientData;
+    private final @NotNull MqttClientConfig clientConfig;
     private final @NotNull MqttConnect connect;
 
-    public MqttConnAckSingle(final @NotNull MqttClientData clientData, final @NotNull MqttConnect connect) {
-        this.clientData = clientData;
+    public MqttConnAckSingle(final @NotNull MqttClientConfig clientConfig, final @NotNull MqttConnect connect) {
+        this.clientConfig = clientConfig;
         this.connect = connect;
     }
 
     @Override
     protected void subscribeActual(final @NotNull SingleObserver<? super Mqtt5ConnAck> observer) {
-        if (!clientData.getRawState().compareAndSet(MqttClientState.DISCONNECTED, MqttClientState.CONNECTING)) {
+        if (!clientConfig.getRawState().compareAndSet(MqttClientState.DISCONNECTED, MqttClientState.CONNECTING)) {
             EmptyDisposable.error(new AlreadyConnectedException(), observer);
             return;
         }
@@ -52,26 +52,26 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
         final SingleFlow.DefaultSingleFlow<Mqtt5ConnAck> flow = new SingleFlow.DefaultSingleFlow<>(observer);
         observer.onSubscribe(flow);
 
-        final Bootstrap bootstrap = clientData.getClientComponent()
+        final Bootstrap bootstrap = clientConfig.getClientComponent()
                 .connectionComponentBuilder()
                 .connect(connect)
                 .connAckFlow(flow)
                 .build()
                 .bootstrap();
 
-        bootstrap.connect(clientData.getServerHost(), clientData.getServerPort()).addListener(future -> {
+        bootstrap.connect(clientConfig.getServerHost(), clientConfig.getServerPort()).addListener(future -> {
             if (!future.isSuccess()) {
-                onError(clientData, flow, future.cause());
+                onError(clientConfig, flow, future.cause());
             }
         });
     }
 
     public static void onError(
-            final @NotNull MqttClientData clientData, final @NotNull SingleFlow<Mqtt5ConnAck> flow,
+            final @NotNull MqttClientConfig clientConfig, final @NotNull SingleFlow<Mqtt5ConnAck> flow,
             final @NotNull Throwable cause) {
 
-        clientData.getRawState().set(MqttClientState.DISCONNECTED);
+        clientConfig.getRawState().set(MqttClientState.DISCONNECTED);
         flow.onError(cause);
-        clientData.releaseEventLoop();
+        clientConfig.releaseEventLoop();
     }
 }

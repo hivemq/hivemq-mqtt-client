@@ -142,8 +142,8 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
     }
 
     @Override
-    public @NotNull MqttClientData getClientData() {
-        return delegate.getClientData();
+    public @NotNull MqttClientConfig getConfig() {
+        return delegate.getConfig();
     }
 
     @Override

@@ -208,6 +208,6 @@ public abstract class MqttIncomingPublishFlow<S extends Subscriber<? super Mqtt5
     }
 
     private void releaseEventLoop() {
-        incomingQosHandler.getClientData().releaseEventLoop();
+        incomingQosHandler.getClientConfig().releaseEventLoop();
     }
 }

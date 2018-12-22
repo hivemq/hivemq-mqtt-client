@@ -23,7 +23,7 @@ import io.reactivex.internal.subscriptions.EmptySubscription;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeResult;
-import org.mqttbee.mqtt.MqttClientData;
+import org.mqttbee.mqtt.MqttClientConfig;
 import org.mqttbee.mqtt.handler.subscribe.MqttSubscribeWithFlow;
 import org.mqttbee.mqtt.handler.subscribe.MqttSubscriptionHandler;
 import org.mqttbee.mqtt.ioc.ClientComponent;
@@ -36,21 +36,23 @@ import org.reactivestreams.Subscriber;
 public class MqttSubscriptionFlowable extends Flowable<Mqtt5SubscribeResult> {
 
     private final @NotNull MqttSubscribe subscribe;
-    private final @NotNull MqttClientData clientData;
+    private final @NotNull MqttClientConfig clientConfig;
 
-    public MqttSubscriptionFlowable(final @NotNull MqttSubscribe subscribe, final @NotNull MqttClientData clientData) {
+    public MqttSubscriptionFlowable(
+            final @NotNull MqttSubscribe subscribe, final @NotNull MqttClientConfig clientConfig) {
+
         this.subscribe = subscribe;
-        this.clientData = clientData;
+        this.clientConfig = clientConfig;
     }
 
     @Override
     protected void subscribeActual(final @NotNull Subscriber<? super Mqtt5SubscribeResult> subscriber) {
-        if (clientData.getState().isConnectedOrReconnect()) {
-            final ClientComponent clientComponent = clientData.getClientComponent();
+        if (clientConfig.getState().isConnectedOrReconnect()) {
+            final ClientComponent clientComponent = clientConfig.getClientComponent();
             final MqttIncomingQosHandler incomingQosHandler = clientComponent.incomingQosHandler();
             final MqttSubscriptionHandler subscriptionHandler = clientComponent.subscriptionHandler();
 
-            final EventLoop eventLoop = clientData.acquireEventLoop();
+            final EventLoop eventLoop = clientConfig.acquireEventLoop();
 
             final MqttSubscriptionFlow flow = new MqttSubscriptionFlow(subscriber, incomingQosHandler, eventLoop);
             subscriber.onSubscribe(flow);
