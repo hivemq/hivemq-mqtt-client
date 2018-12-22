@@ -17,8 +17,6 @@
 
 package org.mqttbee.mqtt.handler.publish.incoming;
 
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.jetbrains.annotations.NotNull;
@@ -44,8 +42,9 @@ import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRec;
 import org.mqttbee.mqtt.message.publish.pubrec.MqttPubRecBuilder;
 import org.mqttbee.mqtt.message.publish.pubrel.MqttPubRel;
 import org.mqttbee.util.UnsignedDataTypes;
-import org.mqttbee.util.collections.ChunkedIntArrayQueue;
 import org.mqttbee.util.collections.IntMap;
+import org.mqttbee.util.netty.ContextFuture;
+import org.mqttbee.util.netty.DefaultContextPromise;
 
 import javax.inject.Inject;
 
@@ -55,7 +54,7 @@ import static org.mqttbee.api.mqtt.datatypes.MqttQos.*;
  * @author Silvio Giebl
  */
 @ClientScope
-public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter implements ChannelFutureListener {
+public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter implements ContextFuture.Listener<MqttPubAck> {
 
     public static final @NotNull String NAME = "qos.incoming";
 
@@ -65,7 +64,6 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter impleme
 
     private final @NotNull IntMap<Object> messages = IntMap.range(1, UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE);
     // contains AT_LEAST_ONCE, EXACTLY_ONCE, MqttPubAck or MqttPubRec
-    private final @NotNull ChunkedIntArrayQueue pubAckQueue = new ChunkedIntArrayQueue(16);
 
     private @Nullable ChannelHandlerContext ctx;
     private int receiveMaximum;
@@ -196,14 +194,13 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter impleme
     }
 
     private void writePubAck(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttPubAck pubAck) {
-        pubAckQueue.offer(pubAck.getPacketIdentifier());
-        ctx.writeAndFlush(pubAck).addListener(this);
+        ctx.writeAndFlush(pubAck, new DefaultContextPromise<>(ctx.channel(), pubAck)).addListener(this);
     }
 
     @Override
-    public void operationComplete(final @NotNull ChannelFuture future) {
+    public void operationComplete(final @NotNull ContextFuture<MqttPubAck> future) {
         if (future.isSuccess()) {
-            messages.remove(pubAckQueue.poll(-1));
+            messages.remove(future.getContext().getPacketIdentifier());
         }
     }
 
@@ -244,7 +241,6 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter impleme
 
     private void handleDisconnectEvent(final @NotNull MqttDisconnectEvent disconnectEvent) {
         ctx = null;
-        pubAckQueue.clear();
 
         if (clientConfig.getState() == MqttClientState.DISCONNECTED) {
             incomingPublishFlows.clear(disconnectEvent.getCause());
