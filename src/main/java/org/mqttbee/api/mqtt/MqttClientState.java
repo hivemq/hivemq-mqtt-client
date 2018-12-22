@@ -15,7 +15,7 @@
  *
  */
 
-package org.mqttbee.mqtt;
+package org.mqttbee.api.mqtt;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -24,7 +24,7 @@ import java.util.EnumSet;
 /**
  * @author Silvio Giebl
  */
-public enum MqttClientConnectionState {
+public enum MqttClientState {
 
     DISCONNECTED,
     CONNECTING,
@@ -32,7 +32,7 @@ public enum MqttClientConnectionState {
     DISCONNECTED_RECONNECT,
     CONNECTING_RECONNECT;
 
-    private static final @NotNull EnumSet<MqttClientConnectionState> CONNECTED_OR_RECONNECT =
+    private static final @NotNull EnumSet<MqttClientState> CONNECTED_OR_RECONNECT =
             EnumSet.of(CONNECTED, DISCONNECTED_RECONNECT, CONNECTING_RECONNECT);
 
     public boolean isConnected() {

@@ -43,7 +43,7 @@ public class MqttSubAckSingle extends Single<Mqtt5SubAck> {
 
     @Override
     protected void subscribeActual(final @NotNull SingleObserver<? super Mqtt5SubAck> observer) {
-        if (clientData.getConnectionState().isConnectedOrReconnect()) {
+        if (clientData.getState().isConnectedOrReconnect()) {
             final ClientComponent clientComponent = clientData.getClientComponent();
             final MqttSubscriptionHandler subscriptionHandler = clientComponent.subscriptionHandler();
 

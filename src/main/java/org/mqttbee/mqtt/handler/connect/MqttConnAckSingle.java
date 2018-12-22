@@ -22,9 +22,9 @@ import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.internal.disposables.EmptyDisposable;
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.api.mqtt.MqttClientState;
 import org.mqttbee.api.mqtt.exceptions.AlreadyConnectedException;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
-import org.mqttbee.mqtt.MqttClientConnectionState;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
 import org.mqttbee.rx.SingleFlow;
@@ -44,8 +44,7 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
 
     @Override
     protected void subscribeActual(final @NotNull SingleObserver<? super Mqtt5ConnAck> observer) {
-        if (!clientData.getRawConnectionState()
-                .compareAndSet(MqttClientConnectionState.DISCONNECTED, MqttClientConnectionState.CONNECTING)) {
+        if (!clientData.getRawState().compareAndSet(MqttClientState.DISCONNECTED, MqttClientState.CONNECTING)) {
             EmptyDisposable.error(new AlreadyConnectedException(), observer);
             return;
         }
@@ -71,7 +70,7 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
             final @NotNull MqttClientData clientData, final @NotNull SingleFlow<Mqtt5ConnAck> flow,
             final @NotNull Throwable cause) {
 
-        clientData.getRawConnectionState().set(MqttClientConnectionState.DISCONNECTED);
+        clientData.getRawState().set(MqttClientState.DISCONNECTED);
         flow.onError(cause);
         clientData.releaseEventLoop();
     }

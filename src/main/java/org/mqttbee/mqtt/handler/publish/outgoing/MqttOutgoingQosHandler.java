@@ -26,13 +26,13 @@ import org.jctools.queues.SpscUnboundedArrayQueue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.CallByThread;
+import org.mqttbee.api.mqtt.MqttClientState;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5OutgoingQos1Interceptor;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5OutgoingQos2Interceptor;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.mqtt.MqttClientConnectionState;
 import org.mqttbee.mqtt.MqttClientData;
 import org.mqttbee.mqtt.MqttServerConnectionData;
 import org.mqttbee.mqtt.advanced.MqttAdvancedClientData;
@@ -399,7 +399,7 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
     }
 
     private void clear(final @NotNull Throwable cause) {
-        if (clientData.getConnectionState() != MqttClientConnectionState.DISCONNECTED) {
+        if (clientData.getState() != MqttClientState.DISCONNECTED) {
             return;
         }
 

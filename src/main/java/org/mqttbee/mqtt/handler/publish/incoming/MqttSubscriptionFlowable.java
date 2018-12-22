@@ -45,7 +45,7 @@ public class MqttSubscriptionFlowable extends Flowable<Mqtt5SubscribeResult> {
 
     @Override
     protected void subscribeActual(final @NotNull Subscriber<? super Mqtt5SubscribeResult> subscriber) {
-        if (clientData.getConnectionState().isConnectedOrReconnect()) {
+        if (clientData.getState().isConnectedOrReconnect()) {
             final ClientComponent clientComponent = clientData.getClientComponent();
             final MqttIncomingQosHandler incomingQosHandler = clientComponent.incomingQosHandler();
             final MqttSubscriptionHandler subscriptionHandler = clientComponent.subscriptionHandler();

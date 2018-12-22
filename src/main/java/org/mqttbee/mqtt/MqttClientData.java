@@ -21,6 +21,7 @@ import io.netty.channel.EventLoop;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.MqttClientSslConfig;
+import org.mqttbee.api.mqtt.MqttClientState;
 import org.mqttbee.api.mqtt.MqttWebSocketConfig;
 import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientConnectionData;
@@ -59,7 +60,7 @@ public class MqttClientData implements Mqtt5ClientData {
     private long eventLoopAcquireCount;
     private final @NotNull Object eventLoopLock = new Object();
 
-    private final @NotNull AtomicReference<@NotNull MqttClientConnectionState> connectionState;
+    private final @NotNull AtomicReference<@NotNull MqttClientState> state;
     private volatile @Nullable MqttClientConnectionData clientConnectionData;
     private volatile @Nullable MqttServerConnectionData serverConnectionData;
 
@@ -83,7 +84,7 @@ public class MqttClientData implements Mqtt5ClientData {
 
         clientComponent = MqttBeeComponent.INSTANCE.clientComponentBuilder().clientData(this).build();
 
-        connectionState = new AtomicReference<>(MqttClientConnectionState.DISCONNECTED);
+        state = new AtomicReference<>(MqttClientState.DISCONNECTED);
     }
 
     public @NotNull MqttVersion getMqttVersion() {
@@ -165,6 +166,10 @@ public class MqttClientData implements Mqtt5ClientData {
         return advancedClientData;
     }
 
+    public @NotNull ClientComponent getClientComponent() {
+        return clientComponent;
+    }
+
     public @NotNull EventLoop acquireEventLoop() {
         synchronized (eventLoopLock) {
             eventLoopAcquires++;
@@ -205,17 +210,13 @@ public class MqttClientData implements Mqtt5ClientData {
         return ExecutorUtil.execute(eventLoop, runnable);
     }
 
-    public @NotNull ClientComponent getClientComponent() {
-        return clientComponent;
-    }
-
     @Override
-    public @NotNull MqttClientConnectionState getConnectionState() {
-        return connectionState.get();
+    public @NotNull MqttClientState getState() {
+        return state.get();
     }
 
-    public @NotNull AtomicReference<@NotNull MqttClientConnectionState> getRawConnectionState() {
-        return connectionState;
+    public @NotNull AtomicReference<@NotNull MqttClientState> getRawState() {
+        return state;
     }
 
     @Override

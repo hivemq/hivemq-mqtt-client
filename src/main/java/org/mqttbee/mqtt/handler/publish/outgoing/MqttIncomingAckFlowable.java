@@ -45,7 +45,7 @@ public class MqttIncomingAckFlowable extends Flowable<Mqtt5PublishResult> {
 
     @Override
     protected void subscribeActual(final @NotNull Subscriber<? super Mqtt5PublishResult> subscriber) {
-        if (clientData.getConnectionState().isConnectedOrReconnect()) {
+        if (clientData.getState().isConnectedOrReconnect()) {
             final ClientComponent clientComponent = clientData.getClientComponent();
             final MqttOutgoingQosHandler outgoingQosHandler = clientComponent.outgoingQosHandler();
             final MqttPublishFlowables publishFlowables = outgoingQosHandler.getPublishFlowables();
