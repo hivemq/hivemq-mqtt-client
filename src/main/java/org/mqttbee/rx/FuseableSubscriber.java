@@ -19,8 +19,8 @@ package org.mqttbee.rx;
 
 import io.reactivex.FlowableSubscriber;
 import io.reactivex.internal.fuseable.QueueSubscription;
-import io.reactivex.plugins.RxJavaPlugins;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
@@ -35,86 +35,65 @@ import org.reactivestreams.Subscription;
 public abstract class FuseableSubscriber<U, D, S extends Subscriber<? super D>>
         implements FlowableSubscriber<U>, QueueSubscription<D> {
 
-    protected final S subscriber;
+    protected final @NotNull S subscriber;
 
-    protected Subscription subscription;
-    protected QueueSubscription<U> queueSubscription;
-    protected int sourceMode;
-    protected boolean done;
+    protected @Nullable Subscription subscription;
+    protected @Nullable QueueSubscription<U> queueSubscription;
+    protected int sourceMode = NONE;
 
     public FuseableSubscriber(@NotNull final S subscriber) {
         this.subscriber = subscriber;
     }
 
     @Override
-    public void onSubscribe(final Subscription s) {
-        this.subscription = s;
-        if (s instanceof QueueSubscription) {
-            @SuppressWarnings("unchecked") final QueueSubscription<U> qs = (QueueSubscription<U>) s;
-            this.queueSubscription = qs;
+    public void onSubscribe(final @NotNull Subscription subscription) {
+        this.subscription = subscription;
+        if (subscription instanceof QueueSubscription) {
+            //noinspection unchecked
+            this.queueSubscription = (QueueSubscription<U>) subscription;
         }
         subscriber.onSubscribe(this);
     }
 
     @Override
-    public void onComplete() {
-        if (done) {
-            return;
-        }
-        done = true;
-        subscriber.onComplete();
-    }
-
-    @Override
-    public void onError(final Throwable t) {
-        if (done) {
-            RxJavaPlugins.onError(t);
-            return;
-        }
-        done = true;
-        subscriber.onError(t);
-    }
-
-    @Override
     public void request(final long n) {
+        assert subscription != null;
         subscription.request(n);
     }
 
     @Override
     public void cancel() {
+        assert subscription != null;
         subscription.cancel();
     }
 
     @Override
     public int requestFusion(final int mode) {
         if ((queueSubscription != null) && (mode & BOUNDARY) == 0) {
-            final int m = queueSubscription.requestFusion(mode);
-            if (m != NONE) {
-                sourceMode = m;
-            }
-            return m;
+            sourceMode = queueSubscription.requestFusion(mode);
         }
-        return NONE;
+        return sourceMode;
     }
 
     @Override
     public boolean isEmpty() {
+        assert queueSubscription != null;
         return queueSubscription.isEmpty();
     }
 
     @Override
     public void clear() {
+        assert queueSubscription != null;
         queueSubscription.clear();
     }
 
     @Override
-    public final boolean offer(final D value) {
+    public final boolean offer(final @NotNull D value) {
         throw new UnsupportedOperationException("Should not be called!");
     }
 
     @Override
-    public final boolean offer(final D v1, final D v2) {
+    public final boolean offer(final @NotNull D v1, final @NotNull D v2) {
         throw new UnsupportedOperationException("Should not be called!");
     }
-
 }

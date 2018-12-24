@@ -23,6 +23,7 @@ import io.reactivex.exceptions.Exceptions;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 import io.reactivex.internal.fuseable.ConditionalSubscriber;
+import io.reactivex.plugins.RxJavaPlugins;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.reactivestreams.Subscriber;
@@ -81,6 +82,7 @@ public class FlowableMapFilter<T, U> extends Flowable<T> {
             extends FuseableSubscriber<U, T, S> implements ConditionalSubscriber<U> {
 
         private final @NotNull Function<? super U, ? extends T> mapper;
+        private boolean done;
 
         private AbstractMapFilterSubscriber(
                 final @NotNull S subscriber, final @NotNull Function<? super U, ? extends T> mapper) {
@@ -91,6 +93,7 @@ public class FlowableMapFilter<T, U> extends Flowable<T> {
 
         @Override
         public void onNext(final @NotNull U u) {
+            assert subscription != null;
             if (!tryOnNext(u)) {
                 subscription.request(1);
             }
@@ -98,20 +101,16 @@ public class FlowableMapFilter<T, U> extends Flowable<T> {
 
         @Override
         public boolean tryOnNext(final @NotNull U u) {
+            assert subscription != null;
             if (done) {
                 return true;
             }
-
-            if (sourceMode == ASYNC) {
+            if (sourceMode != NONE) {
                 return tryOnNextActual(null);
             }
-
             try {
                 final T t = mapper.apply(u);
-                if (t != null) {
-                    return tryOnNextActual(t);
-                }
-                return false;
+                return (t != null) && tryOnNextActual(t);
 
             } catch (final Throwable e) {
                 Exceptions.throwIfFatal(e);
@@ -124,7 +123,27 @@ public class FlowableMapFilter<T, U> extends Flowable<T> {
         abstract boolean tryOnNextActual(@Nullable T t);
 
         @Override
+        public void onComplete() {
+            if (done) {
+                return;
+            }
+            done = true;
+            subscriber.onComplete();
+        }
+
+        @Override
+        public void onError(final @NotNull Throwable t) {
+            if (done) {
+                RxJavaPlugins.onError(t);
+                return;
+            }
+            done = true;
+            subscriber.onError(t);
+        }
+
+        @Override
         public @Nullable T poll() throws Exception {
+            assert queueSubscription != null;
             for (; ; ) {
                 final U u = queueSubscription.poll();
                 if (u == null) {

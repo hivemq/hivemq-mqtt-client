@@ -54,7 +54,6 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
             ackLinkSubscriber = new AckLinkSubscriber(s, ackFlow);
         }
         source.subscribe(ackLinkSubscriber);
-        ackFlow.link(ackLinkSubscriber);
     }
 
     interface LinkCancellable {
@@ -70,14 +69,37 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
         static final int STATE_NONE = 0;
         static final int STATE_EMITTING = 1;
         static final int STATE_DONE = 2;
+        static final int STATE_CANCELLED = 3;
 
         final @NotNull MqttIncomingAckFlow ackFlow;
+        private boolean linked;
         private final @NotNull AtomicInteger state = new AtomicInteger();
+        private final @NotNull AtomicInteger pollState = new AtomicInteger();
         long published;
 
         AbstractAckLinkSubscriber(final @NotNull S subscriber, final @NotNull MqttIncomingAckFlow ackFlow) {
             super(subscriber);
             this.ackFlow = ackFlow;
+        }
+
+        boolean startEmitting() {
+            return startEmitting(state);
+        }
+
+        private boolean startEmitting(final @NotNull AtomicInteger state) {
+            return state.compareAndSet(STATE_NONE, STATE_EMITTING);
+        }
+
+        void stopEmitting() {
+            stopEmitting(state);
+        }
+
+        private void stopEmitting(final @NotNull AtomicInteger state) {
+            assert subscription != null;
+            if (!state.compareAndSet(STATE_EMITTING, STATE_NONE) && (state.get() == STATE_CANCELLED)) {
+                subscription.cancel();
+                subscriber.onComplete();
+            }
         }
 
         @Override
@@ -99,35 +121,72 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
         }
 
         @Override
-        public @Nullable MqttPublishWithFlow poll() throws Exception {
-            if (state.get() == STATE_DONE) {
-                subscription.cancel();
+        public void request(final long n) {
+            link();
+            super.request(n);
+        }
+
+        @Override
+        public int requestFusion(final int mode) {
+            if (queueSubscription != null) {
+                sourceMode = queueSubscription.requestFusion(mode);
+            }
+            link();
+            return sourceMode;
+        }
+
+        @Override
+        public @Nullable MqttPublishWithFlow poll() {
+            assert queueSubscription != null;
+            if (!startEmitting(pollState)) {
                 return null;
             }
-            final MqttPublish publish = queueSubscription.poll();
+            final MqttPublish publish;
+            try {
+                publish = queueSubscription.poll();
+            } catch (final Throwable e) {
+                queueSubscription.cancel();
+                pollState.set(STATE_DONE);
+                if (state.getAndSet(STATE_DONE) != STATE_DONE) {
+                    ackFlow.onError(e, published);
+                    if (sourceMode == ASYNC) {
+                        subscriber.onComplete();
+                    }
+                }
+                return null;
+            }
             if (publish == null) {
+                if (sourceMode == SYNC) {
+                    pollState.set(STATE_DONE);
+                    if (state.getAndSet(STATE_DONE) != STATE_DONE) {
+                        ackFlow.onComplete(published);
+                    }
+                } else {
+                    stopEmitting(pollState);
+                }
                 return null;
             }
+            stopEmitting(pollState);
             published++;
             return new MqttPublishWithFlow(publish, ackFlow);
         }
 
-        @Override
-        public void cancelLink() {
-            if ((state.getAndSet(STATE_DONE) == STATE_NONE) && (sourceMode != SYNC)) {
-                subscription.cancel();
-                subscriber.onComplete();
+        private void link() {
+            if (!linked) {
+                linked = true;
+                ackFlow.link(this);
             }
         }
 
-        boolean startEmitting() {
-            return state.compareAndSet(STATE_NONE, STATE_EMITTING);
-        }
-
-        void stopEmitting() {
-            if (!state.compareAndSet(STATE_EMITTING, STATE_NONE)) {
+        @Override
+        public void cancelLink() {
+            assert subscription != null;
+            if ((state.getAndSet(STATE_CANCELLED) == STATE_NONE) &&
+                    (pollState.getAndSet(STATE_CANCELLED) == STATE_NONE)) {
                 subscription.cancel();
-                subscriber.onComplete();
+                if (sourceMode != SYNC) {
+                    subscriber.onComplete();
+                }
             }
         }
     }
@@ -142,13 +201,14 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
         }
 
         @Override
-        public void onNext(final @NotNull MqttPublish publish) {
+        public void onNext(final @Nullable MqttPublish publish) {
             if (startEmitting()) {
-                if (sourceMode == ASYNC) {
-                    subscriber.onNext(null);
-                } else {
+                if (sourceMode == NONE) {
+                    assert publish != null;
                     subscriber.onNext(new MqttPublishWithFlow(publish, ackFlow));
                     published++;
+                } else {
+                    subscriber.onNext(null);
                 }
                 stopEmitting();
             }
@@ -167,22 +227,24 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
         }
 
         @Override
-        public void onNext(final @NotNull MqttPublish publish) {
+        public void onNext(final @Nullable MqttPublish publish) {
+            assert subscription != null;
             if (!tryOnNext(publish)) {
                 subscription.request(1);
             }
         }
 
         @Override
-        public boolean tryOnNext(final @NotNull MqttPublish publish) {
+        public boolean tryOnNext(final @Nullable MqttPublish publish) {
             if (startEmitting()) {
                 final boolean consumed;
-                if (sourceMode == ASYNC) {
-                    consumed = subscriber.tryOnNext(null);
-                } else {
+                if (sourceMode == NONE) {
+                    assert publish != null;
                     if (consumed = subscriber.tryOnNext(new MqttPublishWithFlow(publish, ackFlow))) {
                         published++;
                     }
+                } else {
+                    consumed = subscriber.tryOnNext(null);
                 }
                 stopEmitting();
                 return consumed;
