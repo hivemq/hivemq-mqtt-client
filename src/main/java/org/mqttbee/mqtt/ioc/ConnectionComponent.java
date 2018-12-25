@@ -47,7 +47,5 @@ public interface ConnectionComponent {
         @NotNull Builder connAckFlow(@NotNull SingleFlow<Mqtt5ConnAck> connAckFlow);
 
         @NotNull ConnectionComponent build();
-
     }
-
 }

@@ -31,7 +31,7 @@ import org.mqttbee.api.mqtt.mqtt5.advanced.Mqtt5AdvancedClientData;
 import org.mqttbee.mqtt.advanced.MqttAdvancedClientData;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt.ioc.ClientComponent;
-import org.mqttbee.mqtt.ioc.MqttBeeComponent;
+import org.mqttbee.mqtt.ioc.SingletonComponent;
 import org.mqttbee.util.ExecutorUtil;
 
 import java.util.Optional;
@@ -82,7 +82,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
         this.executorConfig = executorConfig;
         this.advancedClientData = advancedClientData;
 
-        clientComponent = MqttBeeComponent.INSTANCE.clientComponentBuilder().clientConfig(this).build();
+        clientComponent = SingletonComponent.INSTANCE.clientComponentBuilder().clientConfig(this).build();
 
         state = new AtomicReference<>(MqttClientState.DISCONNECTED);
     }
@@ -176,7 +176,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
             eventLoopAcquireCount++;
             EventLoop eventLoop = this.eventLoop;
             if (eventLoop == null) {
-                this.eventLoop = eventLoop = MqttBeeComponent.INSTANCE.nettyEventLoopProvider()
+                this.eventLoop = eventLoop = SingletonComponent.INSTANCE.nettyEventLoopProvider()
                         .acquireEventLoop(executorConfig.getRawNettyExecutor(), executorConfig.getRawNettyThreads());
             }
             return eventLoop;
@@ -193,7 +193,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
                     synchronized (eventLoopLock) {
                         if (eventLoopAcquireCount == this.eventLoopAcquireCount) { // eventLoop has not been reacquired
                             this.eventLoop = null;
-                            MqttBeeComponent.INSTANCE.nettyEventLoopProvider()
+                            SingletonComponent.INSTANCE.nettyEventLoopProvider()
                                     .releaseEventLoop(executorConfig.getRawNettyExecutor());
                         }
                     }
