@@ -18,6 +18,7 @@
 package org.mqttbee.mqtt.ioc;
 
 import dagger.Component;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.mqtt.netty.NettyEventLoopProvider;
 import org.mqttbee.mqtt.netty.NettyModule;
 
@@ -30,12 +31,11 @@ import javax.inject.Singleton;
  */
 @Component(modules = {NettyModule.class})
 @Singleton
-public interface MqttBeeComponent {
+public interface SingletonComponent {
 
-    MqttBeeComponent INSTANCE = DaggerMqttBeeComponent.create();
+    @NotNull SingletonComponent INSTANCE = DaggerSingletonComponent.create();
 
-    ClientComponent.Builder clientComponentBuilder();
+    @NotNull ClientComponent.Builder clientComponentBuilder();
 
-    NettyEventLoopProvider nettyEventLoopProvider();
-
+    @NotNull NettyEventLoopProvider nettyEventLoopProvider();
 }

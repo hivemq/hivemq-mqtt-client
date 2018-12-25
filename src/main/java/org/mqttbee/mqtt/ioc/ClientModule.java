@@ -31,5 +31,4 @@ abstract class ClientModule {
 
     @Binds
     abstract @NotNull MqttSubscriptionFlows provideSubscriptionFlows(final @NotNull MqttSubscriptionFlowTree tree);
-
 }
