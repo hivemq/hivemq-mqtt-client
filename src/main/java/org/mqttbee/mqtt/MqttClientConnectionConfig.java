@@ -23,8 +23,6 @@ import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt3.Mqtt3ClientConnectionConfig;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientConnectionConfig;
 import org.mqttbee.api.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
-import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
-import org.mqttbee.util.collections.IntMap;
 
 import java.util.Optional;
 
@@ -37,7 +35,7 @@ public class MqttClientConnectionConfig implements Mqtt5ClientConnectionConfig, 
     private volatile long sessionExpiryInterval;
     private final int receiveMaximum;
     private final int maximumPacketSize;
-    private final @Nullable IntMap<MqttTopicImpl> topicAliasMapping;
+    private final int topicAliasMaximum;
     private final @Nullable Mqtt5EnhancedAuthProvider enhancedAuthProvider;
     private final boolean hasWillPublish;
     private final boolean problemInformationRequested;
@@ -55,7 +53,7 @@ public class MqttClientConnectionConfig implements Mqtt5ClientConnectionConfig, 
         this.sessionExpiryInterval = sessionExpiryInterval;
         this.receiveMaximum = receiveMaximum;
         this.maximumPacketSize = maximumPacketSize;
-        this.topicAliasMapping = (topicAliasMaximum == 0) ? null : IntMap.range(1, topicAliasMaximum);
+        this.topicAliasMaximum = topicAliasMaximum;
         this.enhancedAuthProvider = enhancedAuthProvider;
         this.hasWillPublish = hasWillPublish;
         this.problemInformationRequested = problemInformationRequested;
@@ -93,11 +91,7 @@ public class MqttClientConnectionConfig implements Mqtt5ClientConnectionConfig, 
 
     @Override
     public int getTopicAliasMaximum() {
-        return (topicAliasMapping == null) ? 0 : topicAliasMapping.getMaxKey();
-    }
-
-    public @Nullable IntMap<MqttTopicImpl> getTopicAliasMapping() {
-        return topicAliasMapping;
+        return topicAliasMaximum;
     }
 
     @Override

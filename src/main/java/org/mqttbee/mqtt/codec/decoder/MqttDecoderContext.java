@@ -39,7 +39,7 @@ public class MqttDecoderContext {
             final int maximumPacketSize, final boolean problemInformationRequested,
             final boolean responseInformationRequested, final boolean validatePayloadFormat,
             final boolean directBufferPayload, final boolean directBufferAuth,
-            final boolean directBufferCorrelationData, final @Nullable IntMap<MqttTopicImpl> topicAliasMapping) {
+            final boolean directBufferCorrelationData, final int topicAliasMaximum) {
 
         this.maximumPacketSize = maximumPacketSize;
         this.problemInformationRequested = problemInformationRequested;
@@ -48,7 +48,7 @@ public class MqttDecoderContext {
         this.directBufferPayload = directBufferPayload;
         this.directBufferAuth = directBufferAuth;
         this.directBufferCorrelationData = directBufferCorrelationData;
-        this.topicAliasMapping = topicAliasMapping;
+        this.topicAliasMapping = (topicAliasMaximum == 0) ? null : IntMap.range(1, topicAliasMaximum);
     }
 
     public int getMaximumPacketSize() {

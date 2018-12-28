@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt.handler.publish.outgoing;
 
-import io.netty.channel.EventLoop;
 import io.reactivex.Flowable;
 import io.reactivex.internal.subscriptions.EmptySubscription;
 import org.jetbrains.annotations.NotNull;
@@ -50,9 +49,7 @@ public class MqttIncomingAckFlowable extends Flowable<Mqtt5PublishResult> {
             final MqttOutgoingQosHandler outgoingQosHandler = clientComponent.outgoingQosHandler();
             final MqttPublishFlowables publishFlowables = outgoingQosHandler.getPublishFlowables();
 
-            final EventLoop eventLoop = clientConfig.acquireEventLoop();
-
-            final MqttIncomingAckFlow flow = new MqttIncomingAckFlow(subscriber, outgoingQosHandler, eventLoop);
+            final MqttIncomingAckFlow flow = new MqttIncomingAckFlow(subscriber, outgoingQosHandler);
             subscriber.onSubscribe(flow);
             publishFlowables.add(new MqttPublishFlowableAckLink(publishFlowable, flow));
         } else {

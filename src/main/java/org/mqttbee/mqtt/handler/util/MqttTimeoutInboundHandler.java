@@ -17,12 +17,15 @@
 
 package org.mqttbee.mqtt.handler.util;
 
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.util.concurrent.ScheduledFuture;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.CallByThread;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
+import org.mqttbee.mqtt.handler.MqttConnectionAwareHandler;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectEvent;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 
@@ -33,16 +36,10 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Silvio Giebl
  */
-public abstract class MqttTimeoutInboundHandler extends ChannelInboundHandlerAdapter
+public abstract class MqttTimeoutInboundHandler extends MqttConnectionAwareHandler
         implements Runnable, ChannelFutureListener {
 
-    protected @Nullable ChannelHandlerContext ctx;
     private @Nullable ScheduledFuture<?> timeoutFuture;
-
-    @Override
-    public void handlerAdded(final ChannelHandlerContext ctx) {
-        this.ctx = ctx;
-    }
 
     /**
      * Schedules a timeout if the given future succeeded. Otherwise the channel is closed.
@@ -51,10 +48,13 @@ public abstract class MqttTimeoutInboundHandler extends ChannelInboundHandlerAda
      */
     @Override
     public void operationComplete(final @NotNull ChannelFuture future) {
+        if (ctx == null) {
+            return;
+        }
         if (future.isSuccess()) {
-            scheduleTimeout(future.channel());
+            scheduleTimeout(ctx.channel());
         } else {
-            MqttDisconnectUtil.close(future.channel(), future.cause());
+            MqttDisconnectUtil.close(ctx.channel(), future.cause());
         }
     }
 
@@ -102,15 +102,8 @@ public abstract class MqttTimeoutInboundHandler extends ChannelInboundHandlerAda
     }
 
     @Override
-    public void userEventTriggered(final @NotNull ChannelHandlerContext ctx, final @NotNull Object evt) {
-        if (evt instanceof MqttDisconnectEvent) {
-            handleDisconnectEvent((MqttDisconnectEvent) evt);
-        }
-        ctx.fireUserEventTriggered(evt);
-    }
-
-    protected void handleDisconnectEvent(final @NotNull MqttDisconnectEvent disconnectEvent) {
-        ctx = null;
+    protected void onDisconnectEvent(final @NotNull MqttDisconnectEvent disconnectEvent) {
+        super.onDisconnectEvent(disconnectEvent);
         cancelTimeout();
     }
 

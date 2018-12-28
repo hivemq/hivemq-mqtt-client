@@ -18,21 +18,19 @@
 package org.mqttbee.mqtt.handler.publish.outgoing;
 
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.mqtt.message.publish.MqttPublish;
 
 /**
  * @author Silvio Giebl
  */
-class MqttPublishWithFlow extends MqttPubOrRelWithFlow {
+abstract class MqttPubOrRelWithFlow {
 
-    private final @NotNull MqttPublish publish;
+    private final @NotNull MqttIncomingAckFlow ackFlow;
 
-    MqttPublishWithFlow(final @NotNull MqttPublish publish, final @NotNull MqttIncomingAckFlow incomingAckFlow) {
-        super(incomingAckFlow);
-        this.publish = publish;
+    MqttPubOrRelWithFlow(final @NotNull MqttIncomingAckFlow ackFlow) {
+        this.ackFlow = ackFlow;
     }
 
-    @NotNull MqttPublish getPublish() {
-        return publish;
+    @NotNull MqttIncomingAckFlow getIncomingAckFlow() {
+        return ackFlow;
     }
 }

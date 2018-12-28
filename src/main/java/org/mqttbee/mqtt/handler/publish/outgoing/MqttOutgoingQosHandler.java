@@ -18,13 +18,11 @@
 package org.mqttbee.mqtt.handler.publish.outgoing;
 
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.reactivex.FlowableSubscriber;
 import org.jctools.queues.SpscUnboundedArrayQueue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.CallByThread;
-import org.mqttbee.api.mqtt.MqttClientState;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5OutgoingQos1Interceptor;
@@ -32,9 +30,10 @@ import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5OutgoingQos2Interceptor;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.MqttClientConfig;
+import org.mqttbee.mqtt.MqttClientConnectionConfig;
 import org.mqttbee.mqtt.MqttServerConnectionConfig;
 import org.mqttbee.mqtt.advanced.MqttAdvancedClientData;
-import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectEvent;
+import org.mqttbee.mqtt.handler.MqttSessionAwareHandler;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.handler.publish.outgoing.MqttPubRelWithFlow.MqttQos2CompleteWithFlow;
 import org.mqttbee.mqtt.handler.publish.outgoing.MqttPubRelWithFlow.MqttQos2IntermediateWithFlow;
@@ -71,7 +70,7 @@ import static org.mqttbee.mqtt.message.publish.MqttStatefulPublish.NO_PACKET_IDE
  * @author Silvio Giebl
  */
 @ClientScope
-public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
+public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
         implements FlowableSubscriber<MqttPublishWithFlow>, Runnable, ContextFuture.Listener<MqttPublishWithFlow> {
 
     public static final @NotNull String NAME = "qos.outgoing";
@@ -86,10 +85,9 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
     private final @NotNull AtomicInteger queuedCounter = new AtomicInteger();
     private final @NotNull ChunkedIntArrayQueue qos1Or2Queue = new ChunkedIntArrayQueue(32);
 
-    private @Nullable ChannelHandlerContext ctx;
     private int sendMaximum;
     private @Nullable Ranges packetIdentifiers;
-    private @Nullable IntMap<Object> qos1Or2Map; // contains MqttPublishWithFlow, MqttPubRelWithFlow
+    private @Nullable IntMap<MqttPubOrRelWithFlow> qos1Or2Map;
     private @Nullable MqttTopicAliasMapping topicAliasMapping;
     private int shrinkIds;
     private int shrinkRequests;
@@ -105,11 +103,11 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
     }
 
     @Override
-    public void handlerAdded(final ChannelHandlerContext ctx) {
-        this.ctx = ctx;
+    public void onSessionStartOrResume(
+            final @NotNull MqttClientConnectionConfig clientConnectionConfig,
+            final @NotNull MqttServerConnectionConfig serverConnectionConfig) {
 
-        final MqttServerConnectionConfig serverConnectionConfig = clientConfig.getRawServerConnectionConfig();
-        assert serverConnectionConfig != null;
+        super.onSessionStartOrResume(clientConnectionConfig, serverConnectionConfig);
 
         final int oldSendMaximum = sendMaximum;
         final int newSendMaximum = Math.min(
@@ -185,8 +183,11 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
 
     @CallByThread("Netty EventLoop")
     public void run() {
+        if (!hasSession) {
+            clearQueued(new NotConnectedException());
+            return;
+        }
         if (ctx == null) {
-            clear(new NotConnectedException());
             return;
         }
         final int working = Math.min(queuedCounter.get(), 64);
@@ -197,7 +198,7 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
         }
         ctx.flush();
         if (queuedCounter.addAndGet(-working) > 0) {
-            ctx.channel().eventLoop().execute(this);
+            clientConfig.executeInEventLoop(this);
         }
     }
 
@@ -261,7 +262,7 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
         assert qos1Or2Map != null;
 
         final int packetIdentifier = pubAck.getPacketIdentifier();
-        final Object removed = qos1Or2Map.remove(packetIdentifier);
+        final MqttPubOrRelWithFlow removed = qos1Or2Map.remove(packetIdentifier);
 
         if (removed == null) {
             error(ctx, "PUBACK contained unknown packet identifier");
@@ -293,7 +294,7 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
         assert qos1Or2Map != null;
 
         final int packetIdentifier = pubRec.getPacketIdentifier();
-        final Object got = qos1Or2Map.get(packetIdentifier);
+        final MqttPubOrRelWithFlow got = qos1Or2Map.get(packetIdentifier);
 
         if (got == null) {
             error(ctx, "PUBREC contained unknown packet identifier");
@@ -340,7 +341,7 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
         assert qos1Or2Map != null;
 
         final int packetIdentifier = pubComp.getPacketIdentifier();
-        final Object removed = qos1Or2Map.remove(packetIdentifier);
+        final MqttPubOrRelWithFlow removed = qos1Or2Map.remove(packetIdentifier);
 
         if (removed == null) {
             error(ctx, "PUBCOMP contained unknown packet identifier");
@@ -386,22 +387,8 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
     }
 
     @Override
-    public void userEventTriggered(final @NotNull ChannelHandlerContext ctx, final @NotNull Object evt) {
-        if (evt instanceof MqttDisconnectEvent) {
-            handleDisconnectEvent((MqttDisconnectEvent) evt);
-        }
-        ctx.fireUserEventTriggered(evt);
-    }
-
-    private void handleDisconnectEvent(final @NotNull MqttDisconnectEvent disconnectEvent) {
-        ctx = null;
-        clear(disconnectEvent.getCause());
-    }
-
-    private void clear(final @NotNull Throwable cause) {
-        if (clientConfig.getState() != MqttClientState.DISCONNECTED) {
-            return;
-        }
+    public void onSessionEnd(final @NotNull Throwable cause) {
+        super.onSessionEnd(cause);
 
         int qos1Or2PacketId;
         while ((qos1Or2PacketId = qos1Or2Queue.poll(-1)) != -1) {
@@ -409,15 +396,15 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
             assert qos1Or2Map != null;
 
             packetIdentifiers.returnId(qos1Or2PacketId);
-            final Object removed = qos1Or2Map.remove(qos1Or2PacketId);
-
-            if (removed instanceof MqttPublishWithFlow) {
-                ((MqttPublishWithFlow) removed).getIncomingAckFlow().onError(cause);
-            } else if (removed instanceof MqttQos2CompleteWithFlow) {
-                ((MqttQos2CompleteWithFlow) removed).getIncomingAckFlow().onError(cause);
-            }
+            final MqttPubOrRelWithFlow removed = qos1Or2Map.remove(qos1Or2PacketId);
+            assert removed != null;
+            removed.getIncomingAckFlow().onError(cause);
         }
 
+        clearQueued(cause);
+    }
+
+    private void clearQueued(final @NotNull Throwable cause) {
         int polled = 0;
         while (true) {
             final MqttPublishWithFlow publishWithFlow = queue.poll();
@@ -486,10 +473,5 @@ public class MqttOutgoingQosHandler extends ChannelInboundHandlerAdapter
 
     @NotNull MqttPublishFlowables getPublishFlowables() {
         return publishFlowables;
-    }
-
-    @Override
-    public boolean isSharable() {
-        return ctx == null;
     }
 }

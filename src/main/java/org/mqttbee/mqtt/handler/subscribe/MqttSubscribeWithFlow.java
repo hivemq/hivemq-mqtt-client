@@ -19,30 +19,28 @@ package org.mqttbee.mqtt.handler.subscribe;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.mqtt.handler.publish.incoming.MqttSubscriptionFlow;
 import org.mqttbee.mqtt.message.subscribe.MqttStatefulSubscribe;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
+import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAck;
 import org.mqttbee.rx.SingleFlow;
 
 /**
  * @author Silvio Giebl
  */
-public class MqttSubscribeWithFlow {
+class MqttSubscribeWithFlow extends MqttSubOrUnsubWithFlow {
 
     private final @NotNull MqttSubscribe subscribe;
-    private final @NotNull SingleFlow<Mqtt5SubAck> subAckFlow;
+    private final @NotNull SingleFlow<MqttSubAck> subAckFlow;
     private final @Nullable MqttSubscriptionFlow subscriptionFlow;
 
-    MqttSubscribeWithFlow(
-            final @NotNull MqttSubscribe subscribe, final @NotNull SingleFlow<Mqtt5SubAck> subAckFlow) {
-
+    MqttSubscribeWithFlow(final @NotNull MqttSubscribe subscribe, final @NotNull SingleFlow<MqttSubAck> subAckFlow) {
         this.subscribe = subscribe;
         this.subAckFlow = subAckFlow;
         this.subscriptionFlow = null;
     }
 
-    public MqttSubscribeWithFlow(
+    MqttSubscribeWithFlow(
             final @NotNull MqttSubscribe subscribe, final @NotNull MqttSubscriptionFlow subscriptionFlow) {
 
         this.subscribe = subscribe;
@@ -50,24 +48,24 @@ public class MqttSubscribeWithFlow {
         this.subscriptionFlow = subscriptionFlow;
     }
 
-    @NotNull SingleFlow<Mqtt5SubAck> getSubAckFlow() {
+    @Override
+    @NotNull SingleFlow<MqttSubAck> getAckFlow() {
         return subAckFlow;
     }
 
-    @NotNull MqttStatefulSubscribeWithFlow createStateful(
-            final int packetIdentifier, final int subscriptionIdentifier) {
-        return new MqttStatefulSubscribeWithFlow(
+    @NotNull Stateful createStateful(final int packetIdentifier, final int subscriptionIdentifier) {
+        return new Stateful(
                 subscribe.createStateful(packetIdentifier, subscriptionIdentifier), subAckFlow, subscriptionFlow);
     }
 
-    static class MqttStatefulSubscribeWithFlow {
+    static class Stateful extends MqttSubOrUnsubWithFlow.Stateful {
 
         private final @NotNull MqttStatefulSubscribe subscribe;
-        private final @NotNull SingleFlow<Mqtt5SubAck> subAckFlow;
+        private final @NotNull SingleFlow<MqttSubAck> subAckFlow;
         private final @Nullable MqttSubscriptionFlow subscriptionFlow;
 
-        MqttStatefulSubscribeWithFlow(
-                final @NotNull MqttStatefulSubscribe subscribe, final @NotNull SingleFlow<Mqtt5SubAck> subAckFlow,
+        Stateful(
+                final @NotNull MqttStatefulSubscribe subscribe, final @NotNull SingleFlow<MqttSubAck> subAckFlow,
                 final @Nullable MqttSubscriptionFlow subscriptionFlow) {
 
             this.subscribe = subscribe;
@@ -79,14 +77,13 @@ public class MqttSubscribeWithFlow {
             return subscribe;
         }
 
-        @NotNull SingleFlow<Mqtt5SubAck> getSubAckFlow() {
+        @Override
+        @NotNull SingleFlow<MqttSubAck> getAckFlow() {
             return subAckFlow;
         }
 
         @Nullable MqttSubscriptionFlow getSubscriptionFlow() {
             return subscriptionFlow;
         }
-
     }
-
 }

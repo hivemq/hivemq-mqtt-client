@@ -20,15 +20,15 @@ package org.mqttbee.mqtt.handler.disconnect;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.MqttClientState;
 import org.mqttbee.api.mqtt.exceptions.ChannelClosedException;
 import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.mqtt.MqttClientConfig;
 import org.mqttbee.mqtt.MqttVersion;
+import org.mqttbee.mqtt.handler.MqttConnectionAwareHandler;
+import org.mqttbee.mqtt.handler.MqttSession;
 import org.mqttbee.mqtt.ioc.ConnectionScope;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
 import org.mqttbee.rx.CompletableFlow;
@@ -49,23 +49,19 @@ import static org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil.fireDisconn
  * @author Silvio Giebl
  */
 @ConnectionScope
-public class MqttDisconnectHandler extends ChannelInboundHandlerAdapter {
+public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
 
     private static final @NotNull Logger LOGGER = LoggerFactory.getLogger(MqttDisconnectHandler.class);
-
     public static final @NotNull String NAME = "disconnect";
 
     private final @NotNull MqttClientConfig clientConfig;
-    private @Nullable ChannelHandlerContext ctx;
+    private final @NotNull MqttSession session;
+    private boolean once = true;
 
     @Inject
-    public MqttDisconnectHandler(final @NotNull MqttClientConfig clientConfig) {
+    MqttDisconnectHandler(final @NotNull MqttClientConfig clientConfig, final @NotNull MqttSession session) {
         this.clientConfig = clientConfig;
-    }
-
-    @Override
-    public void handlerAdded(final @NotNull ChannelHandlerContext ctx) {
-        this.ctx = ctx;
+        this.session = session;
     }
 
     @Override
@@ -78,8 +74,8 @@ public class MqttDisconnectHandler extends ChannelInboundHandlerAdapter {
     }
 
     private void readDisconnect(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttDisconnect disconnect) {
-        if (this.ctx != null) {
-            this.ctx = null;
+        if (once) {
+            once = false;
             fireDisconnectEvent(ctx.channel(), new Mqtt5MessageException(disconnect, "Server sent DISCONNECT."), false);
         }
     }
@@ -87,8 +83,8 @@ public class MqttDisconnectHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelInactive(final @NotNull ChannelHandlerContext ctx) {
         ctx.fireChannelInactive();
-        if (this.ctx != null) {
-            this.ctx = null;
+        if (once) {
+            once = false;
             fireDisconnectEvent(
                     ctx.channel(), new ChannelClosedException("Server closed channel without DISCONNECT."), false);
         }
@@ -96,8 +92,8 @@ public class MqttDisconnectHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(final @NotNull ChannelHandlerContext ctx, final @NotNull Throwable cause) {
-        if (this.ctx != null) {
-            this.ctx = null;
+        if (once) {
+            once = false;
             fireDisconnectEvent(ctx.channel(), new ChannelClosedException(cause), false);
         } else {
             LOGGER.error("Exception while disconnecting.", cause);
@@ -112,8 +108,8 @@ public class MqttDisconnectHandler extends ChannelInboundHandlerAdapter {
 
     private void writeDisconnect(final @NotNull MqttDisconnect disconnect, final @NotNull CompletableFlow flow) {
         final ChannelHandlerContext ctx = this.ctx;
-        if (ctx != null) {
-            this.ctx = null;
+        if ((ctx != null) && once) {
+            once = false;
             fireDisconnectEvent(ctx.channel(), new MqttDisconnectEvent.ByUser(disconnect, flow));
         } else {
             flow.onError(new NotConnectedException());
@@ -121,17 +117,16 @@ public class MqttDisconnectHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-    public void userEventTriggered(final @NotNull ChannelHandlerContext ctx, final @NotNull Object evt) {
-        ctx.fireUserEventTriggered(evt);
-        if (evt instanceof MqttDisconnectEvent) {
-            handleDisconnectEvent(ctx, (MqttDisconnectEvent) evt);
+    protected void onDisconnectEvent(final @NotNull MqttDisconnectEvent disconnectEvent) {
+        final ChannelHandlerContext ctx = this.ctx;
+        if (ctx == null) {
+            return;
         }
-    }
+        super.onDisconnectEvent(disconnectEvent);
+        once = false;
 
-    private void handleDisconnectEvent(
-            final @NotNull ChannelHandlerContext ctx, final @NotNull MqttDisconnectEvent disconnectEvent) {
+        session.expire(disconnectEvent.getCause(), ctx.channel().eventLoop());
 
-        this.ctx = null;
         clientConfig.setClientConnectionConfig(null);
         clientConfig.setServerConnectionConfig(null);
         clientConfig.getRawState().set(MqttClientState.DISCONNECTED);

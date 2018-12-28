@@ -32,7 +32,6 @@ import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.handler.util.MqttTimeoutInboundHandler;
 import org.mqttbee.mqtt.message.auth.MqttAuth;
 import org.mqttbee.mqtt.message.auth.MqttAuthBuilder;
-import org.mqttbee.mqtt.message.connect.MqttConnect;
 import org.mqttbee.util.Checks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,16 +64,11 @@ abstract class AbstractMqttAuthHandler extends MqttTimeoutInboundHandler impleme
     final @NotNull Mqtt5EnhancedAuthProvider authProvider;
     @NotNull MqttAuthState state = MqttAuthState.NONE;
 
-    AbstractMqttAuthHandler(final @NotNull MqttClientConfig clientConfig, final @NotNull MqttConnect connect) {
-        this.clientConfig = clientConfig;
-        final Mqtt5EnhancedAuthProvider authProvider = connect.getRawEnhancedAuthProvider();
-        assert authProvider != null;
-        this.authProvider = authProvider;
-    }
+    AbstractMqttAuthHandler(
+            final @NotNull MqttClientConfig clientConfig, final @NotNull Mqtt5EnhancedAuthProvider authProvider) {
 
-    AbstractMqttAuthHandler(final @NotNull MqttConnectAuthHandler connectAuthHandler) {
-        clientConfig = connectAuthHandler.clientConfig;
-        authProvider = connectAuthHandler.authProvider;
+        this.clientConfig = clientConfig;
+        this.authProvider = authProvider;
     }
 
     /**

@@ -15,24 +15,20 @@
  *
  */
 
-package org.mqttbee.mqtt.handler.publish.outgoing;
+package org.mqttbee.mqtt.handler.subscribe;
 
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.mqtt.message.publish.MqttPublish;
+import org.mqttbee.rx.SingleFlow;
 
 /**
  * @author Silvio Giebl
  */
-class MqttPublishWithFlow extends MqttPubOrRelWithFlow {
+abstract class MqttSubOrUnsubWithFlow {
 
-    private final @NotNull MqttPublish publish;
+    abstract @NotNull SingleFlow<?> getAckFlow();
 
-    MqttPublishWithFlow(final @NotNull MqttPublish publish, final @NotNull MqttIncomingAckFlow incomingAckFlow) {
-        super(incomingAckFlow);
-        this.publish = publish;
-    }
+    static abstract class Stateful {
 
-    @NotNull MqttPublish getPublish() {
-        return publish;
+        abstract @NotNull SingleFlow<?> getAckFlow();
     }
 }

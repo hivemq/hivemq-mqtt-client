@@ -62,13 +62,10 @@ public abstract class MqttIncomingPublishFlow<S extends Subscriber<? super Mqtt5
     private long blockedIndex;
     private boolean blocking;
 
-    MqttIncomingPublishFlow(
-            final @NotNull S subscriber, final @NotNull MqttIncomingQosHandler incomingQosHandler,
-            final @NotNull EventLoop eventLoop) {
-
+    MqttIncomingPublishFlow(final @NotNull S subscriber, final @NotNull MqttIncomingQosHandler incomingQosHandler) {
         this.subscriber = subscriber;
         this.incomingQosHandler = incomingQosHandler;
-        this.eventLoop = eventLoop;
+        this.eventLoop = incomingQosHandler.getClientConfig().acquireEventLoop();
     }
 
     @CallByThread("Netty EventLoop")
@@ -205,6 +202,10 @@ public abstract class MqttIncomingPublishFlow<S extends Subscriber<? super Mqtt5
     @CallByThread("Netty EventLoop")
     int dereference() {
         return --referenced;
+    }
+
+    @NotNull EventLoop getEventLoop() {
+        return eventLoop;
     }
 
     private void releaseEventLoop() {

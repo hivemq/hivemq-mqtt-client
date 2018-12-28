@@ -17,20 +17,63 @@
 
 package org.mqttbee.mqtt.codec.decoder;
 
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.embedded.EmbeddedChannel;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
+import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
 import org.mqttbee.mqtt.MqttClientConfig;
-import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectHandler;
+import org.mqttbee.mqtt.MqttVersion;
+import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
+import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectEvent;
+import org.mqttbee.mqtt.message.connect.MqttConnect;
+import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
+import org.mqttbee.util.collections.IntMap;
 
 /**
  * @author Silvio Giebl
  */
 public abstract class AbstractMqttDecoderTest {
 
-    protected final @NotNull MqttClientConfig clientData;
     private final @NotNull MqttMessageDecoders decoders;
+    private final @NotNull MqttClientConfig clientData;
+    protected @NotNull MqttConnect connect;
+
+    protected final @NotNull ChannelHandler disconnectHandler = new ChannelInboundHandlerAdapter() {
+        @Override
+        public void userEventTriggered(
+                final @NotNull ChannelHandlerContext ctx, final @NotNull Object evt) {
+
+            if (evt instanceof MqttDisconnectEvent) {
+                if (clientData.getMqttVersion() == MqttVersion.MQTT_3_1_1) {
+                    ctx.channel().close();
+                } else {
+                    final Throwable cause = ((MqttDisconnectEvent) evt).getCause();
+                    if (cause instanceof Mqtt5MessageException) {
+                        final Mqtt5Message message = ((Mqtt5MessageException) cause).getMqttMessage();
+                        if (message instanceof MqttDisconnect) {
+                            ctx.writeAndFlush(message);
+                        } else {
+                            ctx.channel().close();
+                        }
+                    } else {
+                        ctx.channel().close();
+                    }
+                }
+            } else {
+                ctx.fireUserEventTriggered(evt);
+            }
+        }
+
+        @Override
+        public boolean isSharable() {
+            return true;
+        }
+    };
 
     @SuppressWarnings("NullabilityAnnotations")
     protected EmbeddedChannel channel;
@@ -38,10 +81,12 @@ public abstract class AbstractMqttDecoderTest {
     private MqttDecoder decoder;
 
     public AbstractMqttDecoderTest(
-            final @NotNull MqttClientConfig clientData, final @NotNull MqttMessageDecoders decoders) {
+            final @NotNull MqttMessageDecoders decoders, final @NotNull MqttClientConfig clientData,
+            final @NotNull MqttConnect connect) {
 
-        this.clientData = clientData;
         this.decoders = decoders;
+        this.clientData = clientData;
+        this.connect = connect;
     }
 
     @BeforeEach
@@ -56,25 +101,19 @@ public abstract class AbstractMqttDecoderTest {
 
     protected void createChannel() {
         channel = new EmbeddedChannel();
-        initChannel();
-    }
-
-    protected void initChannel() {
-        channel.pipeline()
-                .addLast(decoder = new MqttDecoder(clientData, decoders))
-                .addLast(new MqttDisconnectHandler(clientData));
+        channel.pipeline().addLast(decoder = new MqttDecoder(decoders, connect)).addLast(disconnectHandler);
     }
 
     protected void validatePayloadFormat() {
-        assert decoder.context != null;
+        final IntMap<MqttTopicImpl> topicAliasMapping = decoder.context.getTopicAliasMapping();
         decoder.context = new MqttDecoderContext(decoder.context.getMaximumPacketSize(),
                 decoder.context.isProblemInformationRequested(), decoder.context.isResponseInformationRequested(), true,
                 decoder.context.useDirectBufferPayload(), decoder.context.useDirectBufferAuth(),
-                decoder.context.useDirectBufferCorrelationData(), decoder.context.getTopicAliasMapping());
+                decoder.context.useDirectBufferCorrelationData(),
+                (topicAliasMapping == null) ? 0 : topicAliasMapping.getMaxKey());
     }
 
     public static @NotNull MqttPingRespDecoder createPingRespDecoder() {
         return new MqttPingRespDecoder();
     }
-
 }

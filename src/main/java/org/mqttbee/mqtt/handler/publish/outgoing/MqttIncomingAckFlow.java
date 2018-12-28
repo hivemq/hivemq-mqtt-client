@@ -68,11 +68,11 @@ public class MqttIncomingAckFlow implements Subscription, Runnable {
 
     MqttIncomingAckFlow(
             final @NotNull Subscriber<? super MqttPublishResult> subscriber,
-            final @NotNull MqttOutgoingQosHandler outgoingQosHandler, final @NotNull EventLoop eventLoop) {
+            final @NotNull MqttOutgoingQosHandler outgoingQosHandler) {
 
         this.subscriber = subscriber;
         this.outgoingQosHandler = outgoingQosHandler;
-        this.eventLoop = eventLoop;
+        this.eventLoop = outgoingQosHandler.getClientConfig().acquireEventLoop();
     }
 
     @CallByThread("Netty EventLoop")

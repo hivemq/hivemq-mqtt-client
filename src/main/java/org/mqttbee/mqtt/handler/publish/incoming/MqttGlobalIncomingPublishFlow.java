@@ -17,7 +17,6 @@
 
 package org.mqttbee.mqtt.handler.publish.incoming;
 
-import io.netty.channel.EventLoop;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.MqttGlobalPublishFilter;
@@ -35,10 +34,9 @@ class MqttGlobalIncomingPublishFlow extends MqttIncomingPublishFlow<Subscriber<?
 
     MqttGlobalIncomingPublishFlow(
             final @NotNull Subscriber<? super Mqtt5Publish> subscriber,
-            final @NotNull MqttIncomingQosHandler incomingQosHandler, final @NotNull MqttGlobalPublishFilter filter,
-            final @NotNull EventLoop eventLoop) {
+            final @NotNull MqttIncomingQosHandler incomingQosHandler, final @NotNull MqttGlobalPublishFilter filter) {
 
-        super(subscriber, incomingQosHandler, eventLoop);
+        super(subscriber, incomingQosHandler);
         this.filter = filter;
     }
 
