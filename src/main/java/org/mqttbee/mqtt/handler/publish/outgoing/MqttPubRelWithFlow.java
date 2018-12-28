@@ -27,22 +27,17 @@ import java.util.function.BooleanSupplier;
 /**
  * @author Silvio Giebl
  */
-class MqttPubRelWithFlow {
+abstract class MqttPubRelWithFlow extends MqttPubOrRelWithFlow {
 
     private final @NotNull MqttPubRel pubRel;
-    private final @NotNull MqttIncomingAckFlow incomingAckFlow;
 
     MqttPubRelWithFlow(final @NotNull MqttPubRel pubRel, final @NotNull MqttIncomingAckFlow incomingAckFlow) {
+        super(incomingAckFlow);
         this.pubRel = pubRel;
-        this.incomingAckFlow = incomingAckFlow;
     }
 
     @NotNull MqttPubRel getPubRel() {
         return pubRel;
-    }
-
-    @NotNull MqttIncomingAckFlow getIncomingAckFlow() {
-        return incomingAckFlow;
     }
 
     static class MqttQos2IntermediateWithFlow extends MqttPubRelWithFlow implements BooleanSupplier {

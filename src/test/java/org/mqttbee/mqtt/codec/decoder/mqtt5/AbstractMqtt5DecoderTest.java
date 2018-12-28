@@ -18,14 +18,15 @@
 package org.mqttbee.mqtt.codec.decoder.mqtt5;
 
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions;
 import org.mqttbee.mqtt.MqttClientConfig;
-import org.mqttbee.mqtt.MqttClientConnectionConfig;
 import org.mqttbee.mqtt.MqttClientExecutorConfigImpl;
 import org.mqttbee.mqtt.MqttVersion;
 import org.mqttbee.mqtt.codec.decoder.AbstractMqttDecoderTest;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoders;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
+import org.mqttbee.mqtt.message.connect.MqttConnect;
+import org.mqttbee.mqtt.message.connect.MqttConnectBuilder;
+import org.mqttbee.mqtt.message.connect.MqttConnectRestrictions;
 
 import java.util.Objects;
 
@@ -39,23 +40,22 @@ abstract class AbstractMqtt5DecoderTest extends AbstractMqttDecoderTest {
                 "localhost", 1883, null, null, false, false, MqttClientExecutorConfigImpl.DEFAULT, null);
     }
 
-    private int maximumPacketSize = Mqtt5ConnectRestrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT;
-
-    AbstractMqtt5DecoderTest(final @NotNull MqttMessageDecoders decoders) {
-        super(createClientData(), decoders);
+    private static @NotNull MqttConnect createConnect(final int maximumPacketSize) {
+        return new MqttConnectBuilder.Default().restrictions()
+                .maximumPacketSize(maximumPacketSize)
+                .topicAliasMaximum(3)
+                .applyRestrictions()
+                .responseInformationRequested(true)
+                .build();
     }
 
-    @Override
-    protected void initChannel() {
-        clientData.setClientConnectionConfig(
-                new MqttClientConnectionConfig(10, 10, Mqtt5ConnectRestrictions.DEFAULT_RECEIVE_MAXIMUM,
-                        maximumPacketSize, 3, null, false, true, true, channel));
-        super.initChannel();
+    AbstractMqtt5DecoderTest(final @NotNull MqttMessageDecoders decoders) {
+        super(decoders, createClientData(),
+                createConnect(MqttConnectRestrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT));
     }
 
     void setMaximumPacketSize(final int maximumPacketSize) {
-        this.maximumPacketSize = maximumPacketSize;
+        connect = createConnect(maximumPacketSize);
         createChannel();
     }
-
 }

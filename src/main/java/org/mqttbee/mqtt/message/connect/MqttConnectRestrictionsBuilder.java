@@ -55,7 +55,7 @@ public abstract class MqttConnectRestrictionsBuilder<B extends MqttConnectRestri
     }
 
     public @NotNull MqttConnectRestrictions build() {
-        return new MqttConnectRestrictions(receiveMaximum, topicAliasMaximum, maximumPacketSize);
+        return new MqttConnectRestrictions(receiveMaximum, maximumPacketSize, topicAliasMaximum);
     }
 
     public static class Default extends MqttConnectRestrictionsBuilder<Default>

@@ -26,6 +26,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.mqtt.MqttClientConfig;
 import org.mqttbee.mqtt.ioc.ClientComponent;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
+import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAck;
 import org.mqttbee.rx.SingleFlow.DefaultSingleFlow;
 
 /**
@@ -47,9 +48,9 @@ public class MqttSubAckSingle extends Single<Mqtt5SubAck> {
             final ClientComponent clientComponent = clientConfig.getClientComponent();
             final MqttSubscriptionHandler subscriptionHandler = clientComponent.subscriptionHandler();
 
-            final DefaultSingleFlow<Mqtt5SubAck> flow = new DefaultSingleFlow<>(observer);
+            final DefaultSingleFlow<MqttSubAck> flow = new DefaultSingleFlow<>(observer);
             observer.onSubscribe(flow);
-            subscriptionHandler.subscribe(new MqttSubscribeWithFlow(subscribe, flow));
+            subscriptionHandler.subscribe(subscribe, flow);
         } else {
             EmptyDisposable.error(new NotConnectedException(), observer);
         }

@@ -19,32 +19,27 @@ package org.mqttbee.mqtt.handler.subscribe;
 
 import com.google.common.collect.ImmutableList;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.channel.EventLoop;
 import org.jctools.queues.MpscLinkedQueue;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.CallByThread;
-import org.mqttbee.api.mqtt.MqttClientState;
 import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5ReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
-import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
 import org.mqttbee.mqtt.MqttClientConfig;
+import org.mqttbee.mqtt.MqttClientConnectionConfig;
 import org.mqttbee.mqtt.MqttServerConnectionConfig;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
-import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectEvent;
+import org.mqttbee.mqtt.handler.MqttSessionAwareHandler;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.handler.publish.incoming.MqttIncomingPublishFlows;
 import org.mqttbee.mqtt.handler.publish.incoming.MqttSubscriptionFlow;
-import org.mqttbee.mqtt.handler.subscribe.MqttSubscribeWithFlow.MqttStatefulSubscribeWithFlow;
-import org.mqttbee.mqtt.handler.subscribe.MqttUnsubscribeWithFlow.MqttStatefulUnsubscribeWithFlow;
 import org.mqttbee.mqtt.ioc.ClientScope;
 import org.mqttbee.mqtt.message.subscribe.MqttStatefulSubscribe;
+import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
 import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAck;
 import org.mqttbee.mqtt.message.unsubscribe.MqttStatefulUnsubscribe;
+import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribe;
 import org.mqttbee.mqtt.message.unsubscribe.unsuback.MqttUnsubAck;
 import org.mqttbee.mqtt.message.unsubscribe.unsuback.mqtt3.Mqtt3UnsubAckView;
 import org.mqttbee.rx.SingleFlow;
@@ -61,7 +56,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author Silvio Giebl
  */
 @ClientScope
-public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter implements Runnable {
+public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements Runnable {
 
     public static final @NotNull String NAME = "subscription";
     public static final int MAX_SUB_PENDING = 10; // TODO configurable
@@ -70,14 +65,12 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter implem
     private final @NotNull MqttClientConfig clientConfig;
     private final @NotNull MqttIncomingPublishFlows subscriptionFlows;
 
-    private final @NotNull MpscLinkedQueue<Object> queued = MpscLinkedQueue.newMpscLinkedQueue();
-    // contains Mqtt(Un)SubscribeWithFlow
+    private final @NotNull MpscLinkedQueue<MqttSubOrUnsubWithFlow> queued = MpscLinkedQueue.newMpscLinkedQueue();
     private final @NotNull AtomicInteger queuedCounter = new AtomicInteger();
-    private final @NotNull IntMap<Object> pending; // contains MqttStateful(Un)SubscribeWithFlow
+    private final @NotNull IntMap<MqttSubOrUnsubWithFlow.Stateful> pending;
     private final @NotNull Ranges packetIdentifiers;
     private final @NotNull Ranges subscriptionIdentifiers;
 
-    private @Nullable ChannelHandlerContext ctx;
     private boolean subscriptionIdentifiersAvailable;
 
     @Inject
@@ -95,41 +88,43 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter implem
     }
 
     @Override
-    public void handlerAdded(final @NotNull ChannelHandlerContext ctx) {
-        this.ctx = ctx;
+    public void onSessionStartOrResume(
+            final @NotNull MqttClientConnectionConfig clientConnectionConfig,
+            final @NotNull MqttServerConnectionConfig serverConnectionConfig) {
 
-        final MqttServerConnectionConfig serverConnectionConfig = clientConfig.getRawServerConnectionConfig();
-        assert serverConnectionConfig != null;
-
+        super.onSessionStartOrResume(clientConnectionConfig, serverConnectionConfig);
         subscriptionIdentifiersAvailable = serverConnectionConfig.areSubscriptionIdentifiersAvailable();
     }
 
-    public void subscribe(final @NotNull MqttSubscribeWithFlow subscribeWithFlow) {
-        queued.offer(subscribeWithFlow);
+    public void subscribe(final @NotNull MqttSubscribe subscribe, final @NotNull SingleFlow<MqttSubAck> flow) {
+        queued.offer(new MqttSubscribeWithFlow(subscribe, flow));
+        if (queuedCounter.getAndIncrement() == 0) {
+            clientConfig.acquireEventLoop().execute(this);
+        }
+    }
+
+    public void subscribe(final @NotNull MqttSubscribe subscribe, final @NotNull MqttSubscriptionFlow flow) {
+        queued.offer(new MqttSubscribeWithFlow(subscribe, flow));
         if (queuedCounter.getAndIncrement() == 0) {
             clientConfig.executeInEventLoop(this);
         }
     }
 
-    public void subscribe(final @NotNull MqttSubscribeWithFlow subscribeWithFlow, final @NotNull EventLoop eventLoop) {
-        queued.offer(subscribeWithFlow);
+    public void unsubscribe(final @NotNull MqttUnsubscribe unsubscribe, final @NotNull SingleFlow<MqttUnsubAck> flow) {
+        queued.offer(new MqttUnsubscribeWithFlow(unsubscribe, flow));
         if (queuedCounter.getAndIncrement() == 0) {
-            eventLoop.execute(this);
-        }
-    }
-
-    public void unsubscribe(final @NotNull MqttUnsubscribeWithFlow unsubscribeWithFlow) {
-        queued.offer(unsubscribeWithFlow);
-        if (queuedCounter.getAndIncrement() == 0) {
-            clientConfig.executeInEventLoop(this);
+            clientConfig.acquireEventLoop().execute(this);
         }
     }
 
     @CallByThread("Netty EventLoop")
     @Override
     public void run() {
+        if (!hasSession) {
+            clearQueued(new NotConnectedException());
+            return;
+        }
         if (ctx == null) {
-            clear(new NotConnectedException());
             return;
         }
         int newPending = 0;
@@ -138,8 +133,8 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter implem
                 queuedCounter.getAndAdd(-newPending);
                 return;
             }
-            final Object subscribeOrUnsubscribe = queued.poll();
-            if (subscribeOrUnsubscribe == null) {
+            final MqttSubOrUnsubWithFlow subOrUnsubWithFlow = queued.poll();
+            if (subOrUnsubWithFlow == null) {
                 if (queuedCounter.addAndGet(-newPending) == 0) {
                     return;
                 } else {
@@ -152,19 +147,19 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter implem
                 LOGGER.error("No Packet Identifier available for (UN)SUBSCRIBE. This must not happen and is a bug.");
                 return;
             }
-            writeSubscribeOrUnsubscribe(ctx, subscribeOrUnsubscribe, packetIdentifier);
+            writeSubscribeOrUnsubscribe(ctx, subOrUnsubWithFlow, packetIdentifier);
             newPending++;
         }
     }
 
     private void writeSubscribeOrUnsubscribe(
-            final @NotNull ChannelHandlerContext ctx, final @NotNull Object subscribeOrUnsubscribe,
+            final @NotNull ChannelHandlerContext ctx, final @NotNull MqttSubOrUnsubWithFlow subOrUnsubWithFlow,
             final int packetIdentifier) {
 
-        if (subscribeOrUnsubscribe instanceof MqttSubscribeWithFlow) {
-            writeSubscribe(ctx, (MqttSubscribeWithFlow) subscribeOrUnsubscribe, packetIdentifier);
+        if (subOrUnsubWithFlow instanceof MqttSubscribeWithFlow) {
+            writeSubscribe(ctx, (MqttSubscribeWithFlow) subOrUnsubWithFlow, packetIdentifier);
         } else {
-            writeUnsubscribe(ctx, (MqttUnsubscribeWithFlow) subscribeOrUnsubscribe, packetIdentifier);
+            writeUnsubscribe(ctx, (MqttUnsubscribeWithFlow) subOrUnsubWithFlow, packetIdentifier);
         }
     }
 
@@ -174,7 +169,7 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter implem
 
         final int subscriptionIdentifier = (subscriptionIdentifiersAvailable) ? subscriptionIdentifiers.getId() :
                 MqttStatefulSubscribe.DEFAULT_NO_SUBSCRIPTION_IDENTIFIER;
-        final MqttStatefulSubscribeWithFlow statefulSubscribeWithFlow =
+        final MqttSubscribeWithFlow.Stateful statefulSubscribeWithFlow =
                 subscribeWithFlow.createStateful(packetIdentifier, subscriptionIdentifier);
         pending.put(packetIdentifier, statefulSubscribeWithFlow);
         ctx.writeAndFlush(statefulSubscribeWithFlow.getSubscribe(), ctx.voidPromise());
@@ -184,7 +179,7 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter implem
             final @NotNull ChannelHandlerContext ctx, final @NotNull MqttUnsubscribeWithFlow unsubscribeWithFlow,
             final int packetIdentifier) {
 
-        final MqttStatefulUnsubscribeWithFlow statefulUnsubscribeWithFlow =
+        final MqttUnsubscribeWithFlow.Stateful statefulUnsubscribeWithFlow =
                 unsubscribeWithFlow.createStateful(packetIdentifier);
         pending.put(packetIdentifier, statefulUnsubscribeWithFlow);
         ctx.writeAndFlush(statefulUnsubscribeWithFlow.getUnsubscribe(), ctx.voidPromise());
@@ -203,22 +198,22 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter implem
 
     private void readSubAck(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttSubAck subAck) {
         final int packetIdentifier = subAck.getPacketIdentifier();
-        final Object subscribeOrUnsubscribe = pending.remove(packetIdentifier);
+        final MqttSubOrUnsubWithFlow.Stateful statefulSubOrUnsubWithFlow = pending.remove(packetIdentifier);
 
-        if (subscribeOrUnsubscribe == null) {
+        if (statefulSubOrUnsubWithFlow == null) {
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
                     "Unknown packet identifier for SUBACK");
             return;
         }
-        if (!(subscribeOrUnsubscribe instanceof MqttStatefulSubscribeWithFlow)) {
+        if (!(statefulSubOrUnsubWithFlow instanceof MqttSubscribeWithFlow.Stateful)) {
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
                     "SUBACK received for an UNSUBSCRIBE");
             return;
         }
-        final MqttStatefulSubscribeWithFlow statefulSubscribeWithFlow =
-                (MqttStatefulSubscribeWithFlow) subscribeOrUnsubscribe;
+        final MqttSubscribeWithFlow.Stateful statefulSubscribeWithFlow =
+                (MqttSubscribeWithFlow.Stateful) statefulSubOrUnsubWithFlow;
         final MqttStatefulSubscribe subscribe = statefulSubscribeWithFlow.getSubscribe();
-        final SingleFlow<Mqtt5SubAck> subAckFlow = statefulSubscribeWithFlow.getSubAckFlow();
+        final SingleFlow<MqttSubAck> subAckFlow = statefulSubscribeWithFlow.getAckFlow();
         final int subscriptionCount = subscribe.stateless().getSubscriptions().size();
         final ReasonCodesState reasonCodesState = validateReasonCodes(subscriptionCount, subAck.getReasonCodes());
 
@@ -252,27 +247,30 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter implem
             }
         }
 
+        if (statefulSubscribeWithFlow.getSubscriptionFlow() == null) {
+            clientConfig.releaseEventLoop();
+        }
         handleComplete(ctx, packetIdentifier);
     }
 
     private void readUnsubAck(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttUnsubAck unsubAck) {
         final int packetIdentifier = unsubAck.getPacketIdentifier();
-        final Object subscribeOrUnsubscribe = pending.remove(packetIdentifier);
+        final MqttSubOrUnsubWithFlow.Stateful statefulSubOrUnsubWithFlow = pending.remove(packetIdentifier);
 
-        if (subscribeOrUnsubscribe == null) {
+        if (statefulSubOrUnsubWithFlow == null) {
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
                     "Unknown packet identifier for UNSUBACK");
             return;
         }
-        if (!(subscribeOrUnsubscribe instanceof MqttStatefulUnsubscribeWithFlow)) {
+        if (!(statefulSubOrUnsubWithFlow instanceof MqttUnsubscribeWithFlow.Stateful)) {
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
                     "UNSUBACK received for a SUBSCRIBE");
             return;
         }
-        final MqttStatefulUnsubscribeWithFlow statefulUnsubscribeWithFlow =
-                (MqttStatefulUnsubscribeWithFlow) subscribeOrUnsubscribe;
+        final MqttUnsubscribeWithFlow.Stateful statefulUnsubscribeWithFlow =
+                (MqttUnsubscribeWithFlow.Stateful) statefulSubOrUnsubWithFlow;
         final MqttStatefulUnsubscribe unsubscribe = statefulUnsubscribeWithFlow.getUnsubscribe();
-        final SingleFlow<Mqtt5UnsubAck> unsubAckFlow = statefulUnsubscribeWithFlow.getUnsubAckFlow();
+        final SingleFlow<MqttUnsubAck> unsubAckFlow = statefulUnsubscribeWithFlow.getAckFlow();
         final int topicFilterCount = unsubscribe.stateless().getTopicFilters().size();
         final ReasonCodesState reasonCodesState = validateReasonCodes(topicFilterCount, unsubAck.getReasonCodes());
 
@@ -303,51 +301,38 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter implem
             }
         }
 
+        clientConfig.releaseEventLoop();
         handleComplete(ctx, packetIdentifier);
     }
 
     private void handleComplete(final @NotNull ChannelHandlerContext ctx, final int packetIdentifier) {
-        final Object subscribeOrUnsubscribe = queued.poll();
-        if (subscribeOrUnsubscribe == null) {
+        final MqttSubOrUnsubWithFlow subOrUnsubWithFlow = queued.poll();
+        if (subOrUnsubWithFlow == null) {
             packetIdentifiers.returnId(packetIdentifier);
         } else {
             queuedCounter.getAndDecrement();
-            writeSubscribeOrUnsubscribe(ctx, subscribeOrUnsubscribe, packetIdentifier);
+            writeSubscribeOrUnsubscribe(ctx, subOrUnsubWithFlow, packetIdentifier);
         }
     }
 
     @Override
-    public void userEventTriggered(final @NotNull ChannelHandlerContext ctx, final @NotNull Object evt) {
-        if (evt instanceof MqttDisconnectEvent) {
-            handleDisconnectEvent((MqttDisconnectEvent) evt);
-        }
-        ctx.fireUserEventTriggered(evt);
-    }
+    public void onSessionEnd(final @NotNull Throwable cause) {
+        super.onSessionEnd(cause);
 
-    private void handleDisconnectEvent(final @NotNull MqttDisconnectEvent disconnectEvent) {
-        ctx = null;
-        clear(disconnectEvent.getCause());
-    }
-
-    private void clear(final @NotNull Throwable cause) {
-        if (clientConfig.getState() != MqttClientState.DISCONNECTED) {
-            return;
-        }
-
-        pending.forEach((packetIdentifier, subscribeOrUnsubscribe) -> {
-            if (subscribeOrUnsubscribe instanceof MqttStatefulSubscribeWithFlow) {
-                ((MqttStatefulSubscribeWithFlow) subscribeOrUnsubscribe).getSubAckFlow().onError(cause);
-            } else {
-                ((MqttStatefulUnsubscribeWithFlow) subscribeOrUnsubscribe).getUnsubAckFlow().onError(cause);
-            }
+        pending.forEach((packetIdentifier, statefulSubOrUnsubWithFlow) -> {
+            statefulSubOrUnsubWithFlow.getAckFlow().onError(cause);
             return true;
         });
         pending.clear();
 
+        clearQueued(cause);
+    }
+
+    private void clearQueued(final @NotNull Throwable cause) {
         int polled = 0;
         while (true) {
-            final Object subscribeOrUnsubscribe = queued.poll();
-            if (subscribeOrUnsubscribe == null) {
+            final MqttSubOrUnsubWithFlow subOrUnsubWithFlow = queued.poll();
+            if (subOrUnsubWithFlow == null) {
                 if (queuedCounter.addAndGet(-polled) == 0) {
                     break;
                 } else {
@@ -355,11 +340,7 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter implem
                     continue;
                 }
             }
-            if (subscribeOrUnsubscribe instanceof MqttSubscribeWithFlow) {
-                ((MqttSubscribeWithFlow) subscribeOrUnsubscribe).getSubAckFlow().onError(cause);
-            } else {
-                ((MqttUnsubscribeWithFlow) subscribeOrUnsubscribe).getUnsubAckFlow().onError(cause);
-            }
+            subOrUnsubWithFlow.getAckFlow().onError(cause);
             polled++;
         }
     }
@@ -385,10 +366,5 @@ public class MqttSubscriptionHandler extends ChannelInboundHandlerAdapter implem
             }
         }
         return ReasonCodesState.ALL_ERRORS;
-    }
-
-    @Override
-    public boolean isSharable() {
-        return ctx == null;
     }
 }

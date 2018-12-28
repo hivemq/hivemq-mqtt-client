@@ -50,7 +50,7 @@ public class MqttReAuthHandler extends AbstractMqttAuthHandler {
     private @Nullable CompletableFlow flow;
 
     MqttReAuthHandler(final @NotNull MqttConnectAuthHandler connectAuthHandler) {
-        super(connectAuthHandler);
+        super(connectAuthHandler.clientConfig, connectAuthHandler.authProvider);
     }
 
     void reauth(final @NotNull CompletableFlow flow) {
@@ -196,8 +196,9 @@ public class MqttReAuthHandler extends AbstractMqttAuthHandler {
      *
      * @param disconnectEvent the channel close event.
      */
-    protected void handleDisconnectEvent(final @NotNull MqttDisconnectEvent disconnectEvent) {
-        super.handleDisconnectEvent(disconnectEvent);
+    @Override
+    protected void onDisconnectEvent(final @NotNull MqttDisconnectEvent disconnectEvent) {
+        super.onDisconnectEvent(disconnectEvent);
 
         if (state != MqttAuthState.NONE) {
             callProvider(() -> authProvider.onReAuthError(clientConfig, disconnectEvent.getCause()));

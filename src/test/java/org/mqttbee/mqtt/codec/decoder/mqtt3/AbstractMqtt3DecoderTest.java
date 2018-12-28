@@ -18,16 +18,14 @@
 package org.mqttbee.mqtt.codec.decoder.mqtt3;
 
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;
-import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions;
 import org.mqttbee.mqtt.MqttClientConfig;
-import org.mqttbee.mqtt.MqttClientConnectionConfig;
 import org.mqttbee.mqtt.MqttClientExecutorConfigImpl;
 import org.mqttbee.mqtt.MqttVersion;
 import org.mqttbee.mqtt.codec.decoder.AbstractMqttDecoderTest;
 import org.mqttbee.mqtt.codec.decoder.MqttMessageDecoders;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
-import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
+import org.mqttbee.mqtt.message.connect.MqttConnect;
+import org.mqttbee.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
 
 import java.util.Objects;
 
@@ -42,16 +40,11 @@ abstract class AbstractMqtt3DecoderTest extends AbstractMqttDecoderTest {
                 false, MqttClientExecutorConfigImpl.DEFAULT, null);
     }
 
+    private static @NotNull MqttConnect createConnect() {
+        return Mqtt3ConnectView.DEFAULT.getDelegate();
+    }
+
     AbstractMqtt3DecoderTest(final @NotNull MqttMessageDecoders decoders) {
-        super(createClientData(), decoders);
+        super(decoders, createClientData(), createConnect());
     }
-
-    @Override
-    protected void initChannel() {
-        clientData.setClientConnectionConfig(new MqttClientConnectionConfig(10, Mqtt5Connect.NO_SESSION_EXPIRY,
-                Mqtt5ConnectRestrictions.DEFAULT_RECEIVE_MAXIMUM, MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT, 0,
-                null, false, false, false, channel));
-        super.initChannel();
-    }
-
 }

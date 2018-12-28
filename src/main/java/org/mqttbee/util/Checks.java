@@ -117,4 +117,11 @@ public class Checks {
             throw new IllegalStateException(message);
         }
     }
+
+    public static <T> @NotNull T stateNotNull(final @Nullable T object, final @NotNull String name) {
+        if (object == null) {
+            throw new IllegalStateException(name + " must not be null. This must not happen and is a bug.");
+        }
+        return object;
+    }
 }

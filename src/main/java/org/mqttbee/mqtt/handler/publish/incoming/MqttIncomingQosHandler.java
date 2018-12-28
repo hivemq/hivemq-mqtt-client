@@ -18,19 +18,17 @@
 package org.mqttbee.mqtt.handler.publish.incoming;
 
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.CallByThread;
-import org.mqttbee.api.mqtt.MqttClientState;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5IncomingQos1Interceptor;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5IncomingQos2Interceptor;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubCompReasonCode;
 import org.mqttbee.mqtt.MqttClientConfig;
 import org.mqttbee.mqtt.MqttClientConnectionConfig;
+import org.mqttbee.mqtt.MqttServerConnectionConfig;
 import org.mqttbee.mqtt.advanced.MqttAdvancedClientData;
-import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectEvent;
+import org.mqttbee.mqtt.handler.MqttSessionAwareHandler;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.ioc.ClientScope;
 import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
@@ -54,7 +52,7 @@ import static org.mqttbee.api.mqtt.datatypes.MqttQos.*;
  * @author Silvio Giebl
  */
 @ClientScope
-public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter implements ContextFuture.Listener<MqttPubAck> {
+public class MqttIncomingQosHandler extends MqttSessionAwareHandler implements ContextFuture.Listener<MqttPubAck> {
 
     public static final @NotNull String NAME = "qos.incoming";
 
@@ -65,7 +63,6 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter impleme
     private final @NotNull IntMap<Object> messages = IntMap.range(1, UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE);
     // contains AT_LEAST_ONCE, EXACTLY_ONCE, MqttPubAck or MqttPubRec
 
-    private @Nullable ChannelHandlerContext ctx;
     private int receiveMaximum;
 
     @Inject
@@ -79,12 +76,11 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter impleme
     }
 
     @Override
-    public void handlerAdded(final @NotNull ChannelHandlerContext ctx) {
-        this.ctx = ctx;
+    public void onSessionStartOrResume(
+            final @NotNull MqttClientConnectionConfig clientConnectionConfig,
+            final @NotNull MqttServerConnectionConfig serverConnectionConfig) {
 
-        final MqttClientConnectionConfig clientConnectionConfig = clientConfig.getRawClientConnectionConfig();
-        assert clientConnectionConfig != null;
-
+        super.onSessionStartOrResume(clientConnectionConfig, serverConnectionConfig);
         receiveMaximum = clientConnectionConfig.getReceiveMaximum();
     }
 
@@ -232,19 +228,9 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter impleme
     }
 
     @Override
-    public void userEventTriggered(final @NotNull ChannelHandlerContext ctx, final @NotNull Object evt) {
-        if (evt instanceof MqttDisconnectEvent) {
-            handleDisconnectEvent((MqttDisconnectEvent) evt);
-        }
-        ctx.fireUserEventTriggered(evt);
-    }
-
-    private void handleDisconnectEvent(final @NotNull MqttDisconnectEvent disconnectEvent) {
-        ctx = null;
-
-        if (clientConfig.getState() == MqttClientState.DISCONNECTED) {
-            incomingPublishFlows.clear(disconnectEvent.getCause());
-        }
+    public void onSessionEnd(final @NotNull Throwable cause) {
+        super.onSessionEnd(cause);
+        incomingPublishFlows.clear(cause);
     }
 
     private @NotNull MqttPubAck buildPubAck(final @NotNull MqttPubAckBuilder pubAckBuilder) {
@@ -290,10 +276,5 @@ public class MqttIncomingQosHandler extends ChannelInboundHandlerAdapter impleme
 
     @NotNull MqttIncomingPublishService getIncomingPublishService() {
         return incomingPublishService;
-    }
-
-    @Override
-    public boolean isSharable() {
-        return ctx == null;
     }
 }

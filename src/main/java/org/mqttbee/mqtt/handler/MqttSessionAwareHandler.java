@@ -15,24 +15,32 @@
  *
  */
 
-package org.mqttbee.mqtt.handler.publish.outgoing;
+package org.mqttbee.mqtt.handler;
 
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.mqtt.message.publish.MqttPublish;
+import org.mqttbee.mqtt.MqttClientConnectionConfig;
+import org.mqttbee.mqtt.MqttServerConnectionConfig;
 
 /**
  * @author Silvio Giebl
  */
-class MqttPublishWithFlow extends MqttPubOrRelWithFlow {
+public abstract class MqttSessionAwareHandler extends MqttConnectionAwareHandler {
 
-    private final @NotNull MqttPublish publish;
+    protected boolean hasSession;
 
-    MqttPublishWithFlow(final @NotNull MqttPublish publish, final @NotNull MqttIncomingAckFlow incomingAckFlow) {
-        super(incomingAckFlow);
-        this.publish = publish;
+    public void onSessionStartOrResume(
+            final @NotNull MqttClientConnectionConfig clientConnectionConfig,
+            final @NotNull MqttServerConnectionConfig serverConnectionConfig) {
+
+        hasSession = true;
     }
 
-    @NotNull MqttPublish getPublish() {
-        return publish;
+    public void onSessionEnd(final @NotNull Throwable cause) {
+        hasSession = false;
+    }
+
+    @Override
+    public boolean isSharable() {
+        return ctx == null;
     }
 }

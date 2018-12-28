@@ -15,24 +15,16 @@
  *
  */
 
-package org.mqttbee.mqtt.handler.publish.outgoing;
+package org.mqttbee.api.mqtt.exceptions;
 
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.mqtt.message.publish.MqttPublish;
 
 /**
  * @author Silvio Giebl
  */
-class MqttPublishWithFlow extends MqttPubOrRelWithFlow {
+public class MqttSessionExpiredException extends RuntimeException {
 
-    private final @NotNull MqttPublish publish;
-
-    MqttPublishWithFlow(final @NotNull MqttPublish publish, final @NotNull MqttIncomingAckFlow incomingAckFlow) {
-        super(incomingAckFlow);
-        this.publish = publish;
-    }
-
-    @NotNull MqttPublish getPublish() {
-        return publish;
+    public MqttSessionExpiredException(final @NotNull String message, final @NotNull Throwable cause) {
+        super(message, cause, true, false);
     }
 }

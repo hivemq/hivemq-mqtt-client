@@ -17,14 +17,12 @@
 
 package org.mqttbee.mqtt.handler.publish.incoming;
 
-import io.netty.channel.EventLoop;
 import io.reactivex.Flowable;
 import io.reactivex.internal.subscriptions.EmptySubscription;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeResult;
 import org.mqttbee.mqtt.MqttClientConfig;
-import org.mqttbee.mqtt.handler.subscribe.MqttSubscribeWithFlow;
 import org.mqttbee.mqtt.handler.subscribe.MqttSubscriptionHandler;
 import org.mqttbee.mqtt.ioc.ClientComponent;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
@@ -52,11 +50,9 @@ public class MqttSubscriptionFlowable extends Flowable<Mqtt5SubscribeResult> {
             final MqttIncomingQosHandler incomingQosHandler = clientComponent.incomingQosHandler();
             final MqttSubscriptionHandler subscriptionHandler = clientComponent.subscriptionHandler();
 
-            final EventLoop eventLoop = clientConfig.acquireEventLoop();
-
-            final MqttSubscriptionFlow flow = new MqttSubscriptionFlow(subscriber, incomingQosHandler, eventLoop);
+            final MqttSubscriptionFlow flow = new MqttSubscriptionFlow(subscriber, incomingQosHandler);
+            subscriptionHandler.subscribe(subscribe, flow);
             subscriber.onSubscribe(flow);
-            subscriptionHandler.subscribe(new MqttSubscribeWithFlow(subscribe, flow), eventLoop);
         } else {
             EmptySubscription.error(new NotConnectedException(), subscriber);
         }

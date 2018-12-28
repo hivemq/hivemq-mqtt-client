@@ -17,12 +17,11 @@
 
 package org.mqttbee.mqtt.handler.publish.incoming;
 
-import io.netty.channel.EventLoop;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeResult;
-import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.message.subscribe.MqttStatefulSubscribe;
+import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAck;
 import org.mqttbee.rx.SingleFlow;
 import org.mqttbee.util.collections.HandleList;
 import org.reactivestreams.Subscriber;
@@ -31,21 +30,21 @@ import org.reactivestreams.Subscriber;
  * @author Silvio Giebl
  */
 public class MqttSubscriptionFlow extends MqttIncomingPublishFlow<Subscriber<? super Mqtt5SubscribeResult>>
-        implements SingleFlow<Mqtt5SubAck> {
+        implements SingleFlow<MqttSubAck> {
 
     private final @NotNull HandleList<MqttTopicFilterImpl> topicFilters;
     private int subscriptionIdentifier = MqttStatefulSubscribe.DEFAULT_NO_SUBSCRIPTION_IDENTIFIER;
 
     MqttSubscriptionFlow(
             final @NotNull Subscriber<? super Mqtt5SubscribeResult> subscriber,
-            final @NotNull MqttIncomingQosHandler incomingQosHandler, final @NotNull EventLoop eventLoop) {
+            final @NotNull MqttIncomingQosHandler incomingQosHandler) {
 
-        super(subscriber, incomingQosHandler, eventLoop);
+        super(subscriber, incomingQosHandler);
         this.topicFilters = new HandleList<>();
     }
 
     @Override
-    public void onSuccess(final @NotNull Mqtt5SubAck subAck) {
+    public void onSuccess(final @NotNull MqttSubAck subAck) {
         if (done) {
             return;
         }

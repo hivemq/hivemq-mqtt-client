@@ -26,6 +26,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
 import org.mqttbee.mqtt.MqttClientConfig;
 import org.mqttbee.mqtt.ioc.ClientComponent;
 import org.mqttbee.mqtt.message.unsubscribe.MqttUnsubscribe;
+import org.mqttbee.mqtt.message.unsubscribe.unsuback.MqttUnsubAck;
 import org.mqttbee.rx.SingleFlow.DefaultSingleFlow;
 
 /**
@@ -49,9 +50,9 @@ public class MqttUnsubAckSingle extends Single<Mqtt5UnsubAck> {
             final ClientComponent clientComponent = clientConfig.getClientComponent();
             final MqttSubscriptionHandler subscriptionHandler = clientComponent.subscriptionHandler();
 
-            final DefaultSingleFlow<Mqtt5UnsubAck> flow = new DefaultSingleFlow<>(observer);
+            final DefaultSingleFlow<MqttUnsubAck> flow = new DefaultSingleFlow<>(observer);
             observer.onSubscribe(flow);
-            subscriptionHandler.unsubscribe(new MqttUnsubscribeWithFlow(unsubscribe, flow));
+            subscriptionHandler.unsubscribe(unsubscribe, flow);
         } else {
             EmptyDisposable.error(new NotConnectedException(), observer);
         }

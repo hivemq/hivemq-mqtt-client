@@ -17,15 +17,16 @@
 
 package org.mqttbee.mqtt.handler.ping;
 
-import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.ScheduledFuture;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mqttbee.mqtt.handler.MqttConnectionAwareHandler;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectEvent;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
+import org.mqttbee.mqtt.handler.util.DefaultChannelOutboundHandler;
 import org.mqttbee.mqtt.ioc.ConnectionScope;
 import org.mqttbee.mqtt.message.ping.MqttPingReq;
 import org.mqttbee.mqtt.message.ping.MqttPingResp;
@@ -42,7 +43,8 @@ import java.util.concurrent.TimeUnit;
  * @author Silvio Giebl
  */
 @ConnectionScope
-public class MqttPingHandler extends ChannelDuplexHandler implements Runnable, ChannelFutureListener {
+public class MqttPingHandler extends MqttConnectionAwareHandler
+        implements DefaultChannelOutboundHandler, Runnable, ChannelFutureListener {
 
     public static final @NotNull String NAME = "ping";
     private static final boolean PINGRESP_REQUIRED = false; // TODO configurable
@@ -52,7 +54,6 @@ public class MqttPingHandler extends ChannelDuplexHandler implements Runnable, C
     private boolean pingReqWritten;
     private boolean pingReqFlushed;
     private boolean messageRead;
-    private @Nullable ChannelHandlerContext ctx;
     private @Nullable ScheduledFuture<?> timeoutFuture;
 
     public MqttPingHandler(final int keepAlive) {
@@ -61,7 +62,7 @@ public class MqttPingHandler extends ChannelDuplexHandler implements Runnable, C
 
     @Override
     public void handlerAdded(final @NotNull ChannelHandlerContext ctx) {
-        this.ctx = ctx;
+        super.handlerAdded(ctx);
         lastFlushTimeNanos = System.nanoTime();
         schedule(ctx, keepAliveNanos);
     }
@@ -122,19 +123,11 @@ public class MqttPingHandler extends ChannelDuplexHandler implements Runnable, C
     }
 
     @Override
-    public void userEventTriggered(final @NotNull ChannelHandlerContext ctx, final @NotNull Object evt) {
-        if (evt instanceof MqttDisconnectEvent) {
-            handleDisconnectEvent();
-        }
-        ctx.fireUserEventTriggered(evt);
-    }
-
-    private void handleDisconnectEvent() {
-        ctx = null;
+    protected void onDisconnectEvent(final @NotNull MqttDisconnectEvent disconnectEvent) {
+        super.onDisconnectEvent(disconnectEvent);
         if (timeoutFuture != null) {
             timeoutFuture.cancel(false);
             timeoutFuture = null;
         }
     }
-
 }

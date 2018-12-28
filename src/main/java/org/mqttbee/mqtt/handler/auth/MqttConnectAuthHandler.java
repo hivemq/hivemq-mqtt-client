@@ -38,6 +38,7 @@ import org.mqttbee.mqtt.message.auth.MqttEnhancedAuthBuilder;
 import org.mqttbee.mqtt.message.connect.MqttConnect;
 import org.mqttbee.mqtt.message.connect.MqttStatefulConnect;
 import org.mqttbee.mqtt.message.connect.connack.MqttConnAck;
+import org.mqttbee.util.Checks;
 
 import javax.inject.Inject;
 
@@ -53,7 +54,7 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
 
     @Inject
     MqttConnectAuthHandler(final @NotNull MqttClientConfig clientConfig, final @NotNull MqttConnect connect) {
-        super(clientConfig, connect);
+        super(clientConfig, Checks.stateNotNull(connect.getRawEnhancedAuthProvider(), "Auth provider"));
     }
 
     @Override
@@ -106,8 +107,7 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
      * Handles the incoming CONNACK message.
      * <ul>
      * <li>Calls {@link Mqtt5EnhancedAuthProvider#onAuthRejected(Mqtt5ClientConfig, Mqtt5ConnAck)} and closes the
-     * channel
-     * if the CONNACK message contains an Error Code.</li>
+     * channel if the CONNACK message contains an Error Code.</li>
      * <li>Sends a DISCONNECT message if the enhanced auth data of the CONNACK message is not valid.</li>
      * <li>Otherwise calls {@link Mqtt5EnhancedAuthProvider#onAuthSuccess(Mqtt5ClientConfig, Mqtt5ConnAck)}.</li>
      * <li>Sends a DISCONNECT message if the enhanced auth provider did not accept the enhanced auth data.</li>
@@ -206,8 +206,9 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
      *
      * @param disconnectEvent the channel close event.
      */
-    protected void handleDisconnectEvent(final @NotNull MqttDisconnectEvent disconnectEvent) {
-        super.handleDisconnectEvent(disconnectEvent);
+    @Override
+    protected void onDisconnectEvent(final @NotNull MqttDisconnectEvent disconnectEvent) {
+        super.onDisconnectEvent(disconnectEvent);
 
         if (state != MqttAuthState.NONE) {
             callProvider(() -> authProvider.onAuthError(clientConfig, disconnectEvent.getCause()));
