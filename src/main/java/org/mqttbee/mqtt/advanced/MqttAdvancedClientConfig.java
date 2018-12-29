@@ -18,7 +18,7 @@
 package org.mqttbee.mqtt.advanced;
 
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.mqtt5.advanced.Mqtt5AdvancedClientData;
+import org.mqttbee.api.mqtt.mqtt5.advanced.Mqtt5AdvancedClientConfig;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5IncomingQos1Interceptor;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5OutgoingQos1Interceptor;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5IncomingQos2Interceptor;
@@ -27,14 +27,14 @@ import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5OutgoingQos2Interceptor;
 /**
  * @author Silvio Giebl
  */
-public class MqttAdvancedClientData implements Mqtt5AdvancedClientData {
+public class MqttAdvancedClientConfig implements Mqtt5AdvancedClientConfig {
 
     private final @Nullable Mqtt5IncomingQos1Interceptor incomingQos1Interceptor;
     private final @Nullable Mqtt5OutgoingQos1Interceptor outgoingQos1Interceptor;
     private final @Nullable Mqtt5IncomingQos2Interceptor incomingQos2Interceptor;
     private final @Nullable Mqtt5OutgoingQos2Interceptor outgoingQos2Interceptor;
 
-    public MqttAdvancedClientData(
+    MqttAdvancedClientConfig(
             final @Nullable Mqtt5IncomingQos1Interceptor incomingQos1Interceptor,
             final @Nullable Mqtt5OutgoingQos1Interceptor outgoingQos1Interceptor,
             final @Nullable Mqtt5IncomingQos2Interceptor incomingQos2Interceptor,
@@ -61,5 +61,4 @@ public class MqttAdvancedClientData implements Mqtt5AdvancedClientData {
     public @Nullable Mqtt5OutgoingQos2Interceptor getOutgoingQos2Interceptor() {
         return outgoingQos2Interceptor;
     }
-
 }

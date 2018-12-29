@@ -29,7 +29,7 @@ import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5OutgoingQos2Interceptor;
  * @author Silvio Giebl
  */
 @DoNotImplement
-public interface Mqtt5AdvancedClientDataBuilderBase<B extends Mqtt5AdvancedClientDataBuilderBase<B>> {
+public interface Mqtt5AdvancedClientConfigBuilderBase<B extends Mqtt5AdvancedClientConfigBuilderBase<B>> {
 
     @NotNull B incomingQos1Interceptor(@Nullable Mqtt5IncomingQos1Interceptor incomingQos1Interceptor);
 

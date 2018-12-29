@@ -19,15 +19,15 @@ package org.mqttbee.api.mqtt.mqtt5.advanced;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.mqtt.advanced.MqttAdvancedClientDataBuilder;
+import org.mqttbee.mqtt.advanced.MqttAdvancedClientConfigBuilder;
 
 /**
  * @author Silvio Giebl
  */
 @DoNotImplement
-public interface Mqtt5AdvancedClientData {
+public interface Mqtt5AdvancedClientConfig {
 
-    static @NotNull Mqtt5AdvancedClientDataBuilder builder() {
-        return new MqttAdvancedClientDataBuilder.Default();
+    static @NotNull Mqtt5AdvancedClientConfigBuilder builder() {
+        return new MqttAdvancedClientConfigBuilder.Default();
     }
 }

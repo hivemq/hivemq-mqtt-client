@@ -20,9 +20,9 @@ package org.mqttbee.mqtt;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientBuilder;
-import org.mqttbee.api.mqtt.mqtt5.advanced.Mqtt5AdvancedClientData;
-import org.mqttbee.mqtt.advanced.MqttAdvancedClientData;
-import org.mqttbee.mqtt.advanced.MqttAdvancedClientDataBuilder;
+import org.mqttbee.api.mqtt.mqtt5.advanced.Mqtt5AdvancedClientConfig;
+import org.mqttbee.mqtt.advanced.MqttAdvancedClientConfig;
+import org.mqttbee.mqtt.advanced.MqttAdvancedClientConfigBuilder;
 import org.mqttbee.util.Checks;
 
 /**
@@ -32,7 +32,7 @@ public class MqttRxClientBuilder extends MqttRxClientBuilderBase<MqttRxClientBui
 
     private boolean followRedirects = false;
     private boolean allowServerReAuth = false;
-    private @Nullable MqttAdvancedClientData advancedClientData;
+    private @Nullable MqttAdvancedClientConfig advancedClientConfig;
 
     public MqttRxClientBuilder() {}
 
@@ -58,15 +58,15 @@ public class MqttRxClientBuilder extends MqttRxClientBuilderBase<MqttRxClientBui
     }
 
     @Override
-    public @NotNull MqttRxClientBuilder advanced(final @Nullable Mqtt5AdvancedClientData advancedClientData) {
-        this.advancedClientData =
-                Checks.notImplementedOrNull(advancedClientData, MqttAdvancedClientData.class, "Advanced client data");
+    public @NotNull MqttRxClientBuilder advanced(final @Nullable Mqtt5AdvancedClientConfig advancedClientConfig) {
+        this.advancedClientConfig = Checks.notImplementedOrNull(advancedClientConfig, MqttAdvancedClientConfig.class,
+                "Advanced client data");
         return this;
     }
 
     @Override
-    public @NotNull MqttAdvancedClientDataBuilder.Nested<MqttRxClientBuilder> advanced() {
-        return new MqttAdvancedClientDataBuilder.Nested<>(this::advanced);
+    public @NotNull MqttAdvancedClientConfigBuilder.Nested<MqttRxClientBuilder> advanced() {
+        return new MqttAdvancedClientConfigBuilder.Nested<>(this::advanced);
     }
 
     @Override
@@ -91,7 +91,6 @@ public class MqttRxClientBuilder extends MqttRxClientBuilderBase<MqttRxClientBui
 
     private @NotNull MqttClientConfig buildClientConfig() {
         return new MqttClientConfig(MqttVersion.MQTT_5_0, identifier, serverHost, serverPort, sslConfig,
-                webSocketConfig,
-                followRedirects, allowServerReAuth, executorConfig, advancedClientData);
+                webSocketConfig, followRedirects, allowServerReAuth, executorConfig, advancedClientConfig);
     }
 }

@@ -20,7 +20,7 @@ package org.mqttbee.api.mqtt.mqtt5;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.api.mqtt.MqttClientConfig;
-import org.mqttbee.api.mqtt.mqtt5.advanced.Mqtt5AdvancedClientData;
+import org.mqttbee.api.mqtt.mqtt5.advanced.Mqtt5AdvancedClientConfig;
 
 import java.util.Optional;
 
@@ -34,7 +34,7 @@ public interface Mqtt5ClientConfig extends MqttClientConfig {
 
     boolean allowsServerReAuth();
 
-    @NotNull Optional<Mqtt5AdvancedClientData> getAdvancedClientData();
+    @NotNull Optional<Mqtt5AdvancedClientConfig> getAdvancedClientConfig();
 
     @NotNull Optional<Mqtt5ClientConnectionConfig> getClientConnectionConfig();
 
