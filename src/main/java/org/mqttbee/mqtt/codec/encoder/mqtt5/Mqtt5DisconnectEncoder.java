@@ -21,7 +21,6 @@ import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageWithUserPropertiesEncoder.Mqtt5MessageWithOmissibleReasonCodeEncoder;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
 
 import javax.inject.Inject;
@@ -37,14 +36,13 @@ import static org.mqttbee.mqtt.message.disconnect.MqttDisconnectProperty.SESSION
  * @author Silvio Giebl
  */
 @Singleton
-public class Mqtt5DisconnectEncoder
-        extends Mqtt5MessageWithOmissibleReasonCodeEncoder<MqttDisconnect, Mqtt5DisconnectReasonCode> {
+public class Mqtt5DisconnectEncoder extends
+        Mqtt5MessageWithUserPropertiesEncoder.WithReason.WithOmissibleCode<MqttDisconnect, Mqtt5DisconnectReasonCode> {
 
     private static final int FIXED_HEADER = Mqtt5MessageType.DISCONNECT.getCode() << 4;
 
     @Inject
-    Mqtt5DisconnectEncoder() {
-    }
+    Mqtt5DisconnectEncoder() {}
 
     @Override
     int getFixedHeader() {
@@ -52,21 +50,20 @@ public class Mqtt5DisconnectEncoder
     }
 
     @Override
-    Mqtt5DisconnectReasonCode getDefaultReasonCode() {
+    @NotNull Mqtt5DisconnectReasonCode getDefaultReasonCode() {
         return DEFAULT_REASON_CODE;
     }
 
     @Override
-    int additionalPropertyLength(@NotNull final MqttDisconnect message) {
+    int additionalPropertyLength(final @NotNull MqttDisconnect message) {
         return intPropertyEncodedLength(message.getRawSessionExpiryInterval(), SESSION_EXPIRY_INTERVAL_FROM_CONNECT) +
                 nullablePropertyEncodedLength(message.getRawServerReference());
     }
 
     @Override
-    void encodeAdditionalProperties(@NotNull final MqttDisconnect message, @NotNull final ByteBuf out) {
+    void encodeAdditionalProperties(final @NotNull MqttDisconnect message, final @NotNull ByteBuf out) {
         encodeIntProperty(SESSION_EXPIRY_INTERVAL, message.getRawSessionExpiryInterval(),
                 SESSION_EXPIRY_INTERVAL_FROM_CONNECT, out);
         encodeNullableProperty(SERVER_REFERENCE, message.getRawServerReference(), out);
     }
-
 }

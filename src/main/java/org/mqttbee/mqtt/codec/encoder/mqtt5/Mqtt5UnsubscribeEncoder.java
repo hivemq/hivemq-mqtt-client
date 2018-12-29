@@ -38,11 +38,10 @@ public class Mqtt5UnsubscribeEncoder extends Mqtt5MessageWithUserPropertiesEncod
     private static final int VARIABLE_HEADER_FIXED_LENGTH = 2; // packet identifier
 
     @Inject
-    Mqtt5UnsubscribeEncoder() {
-    }
+    Mqtt5UnsubscribeEncoder() {}
 
     @Override
-    int remainingLengthWithoutProperties(@NotNull final MqttStatefulUnsubscribe message) {
+    int remainingLengthWithoutProperties(final @NotNull MqttStatefulUnsubscribe message) {
         int remainingLength = VARIABLE_HEADER_FIXED_LENGTH;
 
         final ImmutableList<MqttTopicFilterImpl> topicFilters = message.stateless().getTopicFilters();
@@ -54,13 +53,13 @@ public class Mqtt5UnsubscribeEncoder extends Mqtt5MessageWithUserPropertiesEncod
     }
 
     @Override
-    int propertyLength(@NotNull final MqttStatefulUnsubscribe message) {
+    int propertyLength(final @NotNull MqttStatefulUnsubscribe message) {
         return omissiblePropertyLength(message);
     }
 
     @Override
     void encode(
-            @NotNull final MqttStatefulUnsubscribe message, @NotNull final ByteBuf out, final int remainingLength,
+            final @NotNull MqttStatefulUnsubscribe message, final @NotNull ByteBuf out, final int remainingLength,
             final int propertyLength, final int omittedProperties) {
 
         encodeFixedHeader(out, remainingLength);
@@ -68,13 +67,13 @@ public class Mqtt5UnsubscribeEncoder extends Mqtt5MessageWithUserPropertiesEncod
         encodePayload(message, out);
     }
 
-    private void encodeFixedHeader(@NotNull final ByteBuf out, final int remainingLength) {
+    private void encodeFixedHeader(final @NotNull ByteBuf out, final int remainingLength) {
         out.writeByte(FIXED_HEADER);
         MqttVariableByteInteger.encode(remainingLength, out);
     }
 
     private void encodeVariableHeader(
-            @NotNull final MqttStatefulUnsubscribe message, @NotNull final ByteBuf out, final int propertyLength,
+            final @NotNull MqttStatefulUnsubscribe message, final @NotNull ByteBuf out, final int propertyLength,
             final int omittedProperties) {
 
         out.writeShort(message.getPacketIdentifier());
@@ -82,18 +81,17 @@ public class Mqtt5UnsubscribeEncoder extends Mqtt5MessageWithUserPropertiesEncod
     }
 
     private void encodeProperties(
-            @NotNull final MqttStatefulUnsubscribe message, @NotNull final ByteBuf out, final int propertyLength,
+            final @NotNull MqttStatefulUnsubscribe message, final @NotNull ByteBuf out, final int propertyLength,
             final int omittedProperties) {
 
         MqttVariableByteInteger.encode(propertyLength, out);
         encodeOmissibleProperties(message, out, omittedProperties);
     }
 
-    private void encodePayload(@NotNull final MqttStatefulUnsubscribe message, @NotNull final ByteBuf out) {
+    private void encodePayload(final @NotNull MqttStatefulUnsubscribe message, final @NotNull ByteBuf out) {
         final ImmutableList<MqttTopicFilterImpl> topicFilters = message.stateless().getTopicFilters();
         for (int i = 0; i < topicFilters.size(); i++) {
             topicFilters.get(i).to(out);
         }
     }
-
 }

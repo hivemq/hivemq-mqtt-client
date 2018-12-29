@@ -31,26 +31,23 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public class MqttStatefulConnect extends MqttStatefulMessage<MqttConnect> {
 
-    private final MqttClientIdentifierImpl clientIdentifier;
-    private final MqttEnhancedAuth enhancedAuth;
+    private final @NotNull MqttClientIdentifierImpl clientIdentifier;
+    private final @Nullable MqttEnhancedAuth enhancedAuth;
 
     MqttStatefulConnect(
-            @NotNull final MqttConnect connect, @NotNull final MqttClientIdentifierImpl clientIdentifier,
-            @Nullable final MqttEnhancedAuth enhancedAuth) {
+            final @NotNull MqttConnect connect, final @NotNull MqttClientIdentifierImpl clientIdentifier,
+            final @Nullable MqttEnhancedAuth enhancedAuth) {
 
         super(connect);
         this.clientIdentifier = clientIdentifier;
         this.enhancedAuth = enhancedAuth;
     }
 
-    @NotNull
-    public MqttClientIdentifierImpl getClientIdentifier() {
+    public @NotNull MqttClientIdentifierImpl getClientIdentifier() {
         return clientIdentifier;
     }
 
-    @Nullable
-    public MqttEnhancedAuth getEnhancedAuth() {
+    public @Nullable MqttEnhancedAuth getEnhancedAuth() {
         return enhancedAuth;
     }
-
 }

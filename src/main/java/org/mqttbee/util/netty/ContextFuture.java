@@ -31,5 +31,5 @@ public interface ContextFuture<C> extends ChannelFuture {
 
     interface Promise<C> extends ChannelPromise, ContextFuture<C> {}
 
-    interface Listener<C> extends GenericFutureListener<ContextFuture<C>> {}
+    interface Listener<C> extends GenericFutureListener<ContextFuture<? extends C>> {}
 }

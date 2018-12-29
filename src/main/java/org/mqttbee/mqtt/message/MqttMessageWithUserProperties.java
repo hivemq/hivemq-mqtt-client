@@ -28,136 +28,121 @@ import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import java.util.Optional;
 
 /**
- * MQTT message with optional User Properties.
+ * Base class for MQTT messages with optional User Properties.
  */
-public interface MqttMessageWithUserProperties extends MqttMessage {
+public abstract class MqttMessageWithUserProperties implements MqttMessage.WithUserProperties {
 
-    @NotNull
-    MqttUserPropertiesImpl getUserProperties();
+    private final @NotNull MqttUserPropertiesImpl userProperties;
 
-
-    /**
-     * Base class for MQTT messages with optional User Properties.
-     */
-    abstract class MqttMessageWithUserPropertiesImpl implements MqttMessageWithUserProperties {
-
-        private final MqttUserPropertiesImpl userProperties;
-
-        protected MqttMessageWithUserPropertiesImpl(@NotNull final MqttUserPropertiesImpl userProperties) {
-            this.userProperties = userProperties;
-        }
-
-        @NotNull
-        public MqttUserPropertiesImpl getUserProperties() {
-            return userProperties;
-        }
-
+    protected MqttMessageWithUserProperties(final @NotNull MqttUserPropertiesImpl userProperties) {
+        this.userProperties = userProperties;
     }
 
+    @Override
+    public @NotNull MqttUserPropertiesImpl getUserProperties() {
+        return userProperties;
+    }
 
     /**
      * Base class for MQTT messages with an optional Reason String and optional User Properties.
      */
-    abstract class MqttMessageWithReasonString extends MqttMessageWithUserPropertiesImpl {
+    public abstract static class WithReason extends MqttMessageWithUserProperties {
 
-        private final MqttUTF8StringImpl reasonString;
+        private final @Nullable MqttUTF8StringImpl reasonString;
 
-        MqttMessageWithReasonString(
-                @Nullable final MqttUTF8StringImpl reasonString, @NotNull final MqttUserPropertiesImpl userProperties) {
+        WithReason(
+                final @Nullable MqttUTF8StringImpl reasonString, final @NotNull MqttUserPropertiesImpl userProperties) {
 
             super(userProperties);
             this.reasonString = reasonString;
         }
 
-        @NotNull
-        public Optional<MqttUTF8String> getReasonString() {
+        public @NotNull Optional<MqttUTF8String> getReasonString() {
             return Optional.ofNullable(reasonString);
         }
 
-        @Nullable
-        public MqttUTF8StringImpl getRawReasonString() {
+        public @Nullable MqttUTF8StringImpl getRawReasonString() {
             return reasonString;
         }
 
+        /**
+         * Base class for MQTT messages with a Reason Code, an optional Reason String and optional User Properties.
+         *
+         * @param <R> the type of the Reason Code.
+         */
+        public abstract static class WithCode<R extends Mqtt5ReasonCode> extends WithReason {
+
+            private final @NotNull R reasonCode;
+
+            protected WithCode(
+                    final @NotNull R reasonCode, final @Nullable MqttUTF8StringImpl reasonString,
+                    final @NotNull MqttUserPropertiesImpl userProperties) {
+
+                super(reasonString, userProperties);
+                this.reasonCode = reasonCode;
+            }
+
+            public @NotNull R getReasonCode() {
+                return reasonCode;
+            }
+
+            /**
+             * Base class for MQTT messages with a Packet Identifier, a Reason Code, an optional Reason String and
+             * optional User Properties.
+             *
+             * @param <R> the type of the Reason Code.
+             */
+            public abstract static class WithId<R extends Mqtt5ReasonCode> extends WithCode<R>
+                    implements MqttMessage.WithId {
+
+                private final int packetIdentifier;
+
+                protected WithId(
+                        final int packetIdentifier, final @NotNull R reasonCode,
+                        final @Nullable MqttUTF8StringImpl reasonString,
+                        final @NotNull MqttUserPropertiesImpl userProperties) {
+
+                    super(reasonCode, reasonString, userProperties);
+                    this.packetIdentifier = packetIdentifier;
+                }
+
+                @Override
+                public int getPacketIdentifier() {
+                    return packetIdentifier;
+                }
+            }
+        }
+
+        /**
+         * Base class for MQTT messages with a Packet Identifier, Reason Codes, an optional Reason String and optional
+         * User Properties.
+         *
+         * @param <R> the type of the Reason Codes.
+         */
+        public abstract static class WithCodesAndId<R extends Mqtt5ReasonCode> extends WithReason
+                implements MqttMessage.WithId {
+
+            private final int packetIdentifier;
+            private final @NotNull ImmutableList<R> reasonCodes;
+
+            protected WithCodesAndId(
+                    final int packetIdentifier, final @NotNull ImmutableList<R> reasonCodes,
+                    final @Nullable MqttUTF8StringImpl reasonString,
+                    final @NotNull MqttUserPropertiesImpl userProperties) {
+
+                super(reasonString, userProperties);
+                this.packetIdentifier = packetIdentifier;
+                this.reasonCodes = reasonCodes;
+            }
+
+            @Override
+            public int getPacketIdentifier() {
+                return packetIdentifier;
+            }
+
+            public @NotNull ImmutableList<R> getReasonCodes() {
+                return reasonCodes;
+            }
+        }
     }
-
-
-    /**
-     * Base class for MQTT messages with a Reason Code, an optional Reason String and optional User Properties.
-     *
-     * @param <R> the type of the Reason Code.
-     */
-    abstract class MqttMessageWithReasonCode<R extends Mqtt5ReasonCode> extends MqttMessageWithReasonString {
-
-        private final R reasonCode;
-
-        protected MqttMessageWithReasonCode(
-                @NotNull final R reasonCode, @Nullable final MqttUTF8StringImpl reasonString, @NotNull final MqttUserPropertiesImpl userProperties) {
-
-            super(reasonString, userProperties);
-            this.reasonCode = reasonCode;
-        }
-
-        @NotNull
-        public R getReasonCode() {
-            return reasonCode;
-        }
-
-    }
-
-
-    /**
-     * Base class for MQTT messages with a Packet Identifier, a Reason Code, an optional Reason String and optional User
-     * Properties.
-     *
-     * @param <R> the type of the Reason Code.
-     */
-    abstract class MqttMessageWithIdAndReasonCode<R extends Mqtt5ReasonCode> extends MqttMessageWithReasonCode<R> {
-
-        private final int packetIdentifier;
-
-        protected MqttMessageWithIdAndReasonCode(
-                final int packetIdentifier, @NotNull final R reasonCode, @Nullable final MqttUTF8StringImpl reasonString, @NotNull final MqttUserPropertiesImpl userProperties) {
-
-            super(reasonCode, reasonString, userProperties);
-            this.packetIdentifier = packetIdentifier;
-        }
-
-        public int getPacketIdentifier() {
-            return packetIdentifier;
-        }
-
-    }
-
-
-    /**
-     * Base class for MQTT messages with a Packet Identifier, Reason Codes, an optional Reason String and optional User
-     * Properties.
-     *
-     * @param <R> the type of the Reason Codes.
-     */
-    abstract class MqttMessageWithIdAndReasonCodes<R extends Mqtt5ReasonCode> extends MqttMessageWithReasonString {
-
-        private final int packetIdentifier;
-        private final ImmutableList<R> reasonCodes;
-
-        protected MqttMessageWithIdAndReasonCodes(
-                final int packetIdentifier, @NotNull final ImmutableList<R> reasonCodes, @Nullable final MqttUTF8StringImpl reasonString, @NotNull final MqttUserPropertiesImpl userProperties) {
-
-            super(reasonString, userProperties);
-            this.packetIdentifier = packetIdentifier;
-            this.reasonCodes = reasonCodes;
-        }
-
-        public int getPacketIdentifier() {
-            return packetIdentifier;
-        }
-
-        @NotNull
-        public ImmutableList<R> getReasonCodes() {
-            return reasonCodes;
-        }
-
-    }
-
 }

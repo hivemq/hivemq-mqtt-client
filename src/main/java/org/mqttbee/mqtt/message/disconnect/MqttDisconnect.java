@@ -24,7 +24,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
-import org.mqttbee.mqtt.message.MqttMessageWithUserProperties.MqttMessageWithReasonCode;
+import org.mqttbee.mqtt.message.MqttMessageWithUserProperties;
 
 import javax.annotation.concurrent.Immutable;
 import java.util.Optional;
@@ -34,7 +34,8 @@ import java.util.OptionalLong;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttDisconnect extends MqttMessageWithReasonCode<Mqtt5DisconnectReasonCode> implements Mqtt5Disconnect {
+public class MqttDisconnect extends MqttMessageWithUserProperties.WithReason.WithCode<Mqtt5DisconnectReasonCode>
+        implements Mqtt5Disconnect {
 
     public static final long SESSION_EXPIRY_INTERVAL_FROM_CONNECT = -1;
     public static final @NotNull MqttDisconnect DEFAULT =
@@ -72,5 +73,4 @@ public class MqttDisconnect extends MqttMessageWithReasonCode<Mqtt5DisconnectRea
     public @Nullable MqttUTF8StringImpl getRawServerReference() {
         return serverReference;
     }
-
 }

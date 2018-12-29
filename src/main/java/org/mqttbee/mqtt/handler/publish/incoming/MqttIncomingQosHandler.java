@@ -31,6 +31,7 @@ import org.mqttbee.mqtt.advanced.MqttAdvancedClientConfig;
 import org.mqttbee.mqtt.handler.MqttSessionAwareHandler;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.ioc.ClientScope;
+import org.mqttbee.mqtt.message.MqttMessage;
 import org.mqttbee.mqtt.message.publish.MqttStatefulPublish;
 import org.mqttbee.mqtt.message.publish.puback.MqttPubAck;
 import org.mqttbee.mqtt.message.publish.puback.MqttPubAckBuilder;
@@ -52,7 +53,8 @@ import static org.mqttbee.api.mqtt.datatypes.MqttQos.*;
  * @author Silvio Giebl
  */
 @ClientScope
-public class MqttIncomingQosHandler extends MqttSessionAwareHandler implements ContextFuture.Listener<MqttPubAck> {
+public class MqttIncomingQosHandler extends MqttSessionAwareHandler
+        implements ContextFuture.Listener<MqttMessage.WithId> {
 
     public static final @NotNull String NAME = "qos.incoming";
 
@@ -193,15 +195,19 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler implements C
         ctx.writeAndFlush(pubAck, new DefaultContextPromise<>(ctx.channel(), pubAck)).addListener(this);
     }
 
-    @Override
-    public void operationComplete(final @NotNull ContextFuture<MqttPubAck> future) {
-        if (future.isSuccess()) {
-            messages.remove(future.getContext().getPacketIdentifier());
+    private void writePubRec(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttPubRec pubRec) {
+        if (pubRec.getReasonCode().isError()) {
+            ctx.writeAndFlush(pubRec, new DefaultContextPromise<>(ctx.channel(), pubRec)).addListener(this);
+        } else {
+            ctx.writeAndFlush(pubRec, ctx.voidPromise());
         }
     }
 
-    private void writePubRec(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttPubRec pubRec) {
-        ctx.writeAndFlush(pubRec, ctx.voidPromise());
+    @Override
+    public void operationComplete(final @NotNull ContextFuture<? extends MqttMessage.WithId> future) {
+        if (future.isSuccess()) {
+            messages.remove(future.getContext().getPacketIdentifier());
+        }
     }
 
     private void readPubRel(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttPubRel pubRel) {

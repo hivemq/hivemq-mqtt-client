@@ -27,7 +27,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckReasonCode
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
-import org.mqttbee.mqtt.message.MqttMessageWithUserProperties.MqttMessageWithReasonCode;
+import org.mqttbee.mqtt.message.MqttMessageWithUserProperties;
 
 import javax.annotation.concurrent.Immutable;
 import java.util.Optional;
@@ -38,7 +38,8 @@ import java.util.OptionalLong;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttConnAck extends MqttMessageWithReasonCode<Mqtt5ConnAckReasonCode> implements Mqtt5ConnAck {
+public class MqttConnAck extends MqttMessageWithUserProperties.WithReason.WithCode<Mqtt5ConnAckReasonCode>
+        implements Mqtt5ConnAck {
 
     public static final long SESSION_EXPIRY_INTERVAL_FROM_CONNECT = -1;
     public static final int KEEP_ALIVE_FROM_CONNECT = -1;
@@ -127,5 +128,4 @@ public class MqttConnAck extends MqttMessageWithReasonCode<Mqtt5ConnAckReasonCod
     public @NotNull Optional<MqttUTF8String> getServerReference() {
         return Optional.ofNullable(serverReference);
     }
-
 }

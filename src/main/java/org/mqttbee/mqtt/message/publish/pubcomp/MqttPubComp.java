@@ -23,7 +23,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubComp;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubCompReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
-import org.mqttbee.mqtt.message.MqttMessageWithUserProperties.MqttMessageWithIdAndReasonCode;
+import org.mqttbee.mqtt.message.MqttMessageWithUserProperties;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -31,7 +31,8 @@ import javax.annotation.concurrent.Immutable;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttPubComp extends MqttMessageWithIdAndReasonCode<Mqtt5PubCompReasonCode> implements Mqtt5PubComp {
+public class MqttPubComp extends MqttMessageWithUserProperties.WithReason.WithCode.WithId<Mqtt5PubCompReasonCode>
+        implements Mqtt5PubComp {
 
     public static final @NotNull Mqtt5PubCompReasonCode DEFAULT_REASON_CODE = Mqtt5PubCompReasonCode.SUCCESS;
 
@@ -41,5 +42,4 @@ public class MqttPubComp extends MqttMessageWithIdAndReasonCode<Mqtt5PubCompReas
 
         super(packetIdentifier, reasonCode, reasonString, userProperties);
     }
-
 }
