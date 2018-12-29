@@ -19,7 +19,7 @@ package org.mqttbee.mqtt.advanced;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.mqtt5.advanced.Mqtt5AdvancedClientDataBuilder;
+import org.mqttbee.api.mqtt.mqtt5.advanced.Mqtt5AdvancedClientConfigBuilder;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5IncomingQos1Interceptor;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5OutgoingQos1Interceptor;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5IncomingQos2Interceptor;
@@ -30,7 +30,7 @@ import java.util.function.Function;
 /**
  * @author Silvio Giebl
  */
-public abstract class MqttAdvancedClientDataBuilder<B extends MqttAdvancedClientDataBuilder<B>> {
+public abstract class MqttAdvancedClientConfigBuilder<B extends MqttAdvancedClientConfigBuilder<B>> {
 
     private @Nullable Mqtt5IncomingQos1Interceptor incomingQos1Interceptor;
     private @Nullable Mqtt5OutgoingQos1Interceptor outgoingQos1Interceptor;
@@ -67,13 +67,13 @@ public abstract class MqttAdvancedClientDataBuilder<B extends MqttAdvancedClient
         return self();
     }
 
-    public @NotNull MqttAdvancedClientData build() {
-        return new MqttAdvancedClientData(incomingQos1Interceptor, outgoingQos1Interceptor, incomingQos2Interceptor,
+    public @NotNull MqttAdvancedClientConfig build() {
+        return new MqttAdvancedClientConfig(incomingQos1Interceptor, outgoingQos1Interceptor, incomingQos2Interceptor,
                 outgoingQos2Interceptor);
     }
 
-    public static class Default extends MqttAdvancedClientDataBuilder<Default>
-            implements Mqtt5AdvancedClientDataBuilder {
+    public static class Default extends MqttAdvancedClientConfigBuilder<Default>
+            implements Mqtt5AdvancedClientConfigBuilder {
 
         @Override
         @NotNull Default self() {
@@ -81,12 +81,12 @@ public abstract class MqttAdvancedClientDataBuilder<B extends MqttAdvancedClient
         }
     }
 
-    public static class Nested<P> extends MqttAdvancedClientDataBuilder<Nested<P>>
-            implements Mqtt5AdvancedClientDataBuilder.Nested<P> {
+    public static class Nested<P> extends MqttAdvancedClientConfigBuilder<Nested<P>>
+            implements Mqtt5AdvancedClientConfigBuilder.Nested<P> {
 
-        private final @NotNull Function<? super MqttAdvancedClientData, P> parentConsumer;
+        private final @NotNull Function<? super MqttAdvancedClientConfig, P> parentConsumer;
 
-        public Nested(final @NotNull Function<? super MqttAdvancedClientData, P> parentConsumer) {
+        public Nested(final @NotNull Function<? super MqttAdvancedClientConfig, P> parentConsumer) {
             this.parentConsumer = parentConsumer;
         }
 

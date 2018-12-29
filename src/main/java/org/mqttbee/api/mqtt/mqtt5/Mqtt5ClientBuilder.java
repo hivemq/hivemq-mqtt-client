@@ -21,8 +21,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.api.mqtt.MqttClientBuilderBase;
-import org.mqttbee.api.mqtt.mqtt5.advanced.Mqtt5AdvancedClientData;
-import org.mqttbee.api.mqtt.mqtt5.advanced.Mqtt5AdvancedClientDataBuilder;
+import org.mqttbee.api.mqtt.mqtt5.advanced.Mqtt5AdvancedClientConfig;
+import org.mqttbee.api.mqtt.mqtt5.advanced.Mqtt5AdvancedClientConfigBuilder;
 
 /**
  * @author Silvio Giebl
@@ -34,9 +34,9 @@ public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBui
 
     @NotNull Mqtt5ClientBuilder allowServerReAuth(boolean allowServerReAuth);
 
-    @NotNull Mqtt5ClientBuilder advanced(@Nullable Mqtt5AdvancedClientData advancedClientData);
+    @NotNull Mqtt5ClientBuilder advanced(@Nullable Mqtt5AdvancedClientConfig advancedClientConfig);
 
-    @NotNull Mqtt5AdvancedClientDataBuilder.Nested<? extends Mqtt5ClientBuilder> advanced();
+    @NotNull Mqtt5AdvancedClientConfigBuilder.Nested<? extends Mqtt5ClientBuilder> advanced();
 
     @NotNull Mqtt5Client build();
 

@@ -24,13 +24,13 @@ import org.mqttbee.annotations.DoNotImplement;
  * @author Silvio Giebl
  */
 @DoNotImplement
-public interface Mqtt5AdvancedClientDataBuilder
-        extends Mqtt5AdvancedClientDataBuilderBase<Mqtt5AdvancedClientDataBuilder> {
+public interface Mqtt5AdvancedClientConfigBuilder
+        extends Mqtt5AdvancedClientConfigBuilderBase<Mqtt5AdvancedClientConfigBuilder> {
 
-    @NotNull Mqtt5AdvancedClientData build();
+    @NotNull Mqtt5AdvancedClientConfig build();
 
     @DoNotImplement
-    interface Nested<P> extends Mqtt5AdvancedClientDataBuilderBase<Nested<P>> {
+    interface Nested<P> extends Mqtt5AdvancedClientConfigBuilderBase<Nested<P>> {
 
         @NotNull P applyAdvanced();
     }

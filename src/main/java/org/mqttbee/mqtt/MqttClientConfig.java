@@ -27,8 +27,8 @@ import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientConfig;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientConnectionConfig;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ServerConnectionConfig;
-import org.mqttbee.api.mqtt.mqtt5.advanced.Mqtt5AdvancedClientData;
-import org.mqttbee.mqtt.advanced.MqttAdvancedClientData;
+import org.mqttbee.api.mqtt.mqtt5.advanced.Mqtt5AdvancedClientConfig;
+import org.mqttbee.mqtt.advanced.MqttAdvancedClientConfig;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.mqtt.ioc.ClientComponent;
 import org.mqttbee.mqtt.ioc.SingletonComponent;
@@ -51,7 +51,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
     private final boolean followsRedirects;
     private final boolean allowsServerReAuth;
     private final @NotNull MqttClientExecutorConfigImpl executorConfig;
-    private final @Nullable MqttAdvancedClientData advancedClientData;
+    private final @Nullable MqttAdvancedClientConfig advancedClientConfig;
 
     private final @NotNull ClientComponent clientComponent;
 
@@ -69,7 +69,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
             final @NotNull String serverHost, final int serverPort, final @Nullable MqttClientSslConfigImpl sslConfig,
             final @Nullable MqttWebSocketConfigImpl webSocketConfig, final boolean followsRedirects,
             final boolean allowsServerReAuth, final @NotNull MqttClientExecutorConfigImpl executorConfig,
-            final @Nullable MqttAdvancedClientData advancedClientData) {
+            final @Nullable MqttAdvancedClientConfig advancedClientConfig) {
 
         this.mqttVersion = mqttVersion;
         this.clientIdentifier = clientIdentifier;
@@ -80,7 +80,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
         this.followsRedirects = followsRedirects;
         this.allowsServerReAuth = allowsServerReAuth;
         this.executorConfig = executorConfig;
-        this.advancedClientData = advancedClientData;
+        this.advancedClientConfig = advancedClientConfig;
 
         clientComponent = SingletonComponent.INSTANCE.clientComponentBuilder().clientConfig(this).build();
 
@@ -158,12 +158,12 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
         return executorConfig;
     }
 
-    public @NotNull Optional<Mqtt5AdvancedClientData> getAdvancedClientData() {
-        return Optional.ofNullable(advancedClientData);
+    public @NotNull Optional<Mqtt5AdvancedClientConfig> getAdvancedClientConfig() {
+        return Optional.ofNullable(advancedClientConfig);
     }
 
-    public @Nullable MqttAdvancedClientData getRawAdvancedClientData() {
-        return advancedClientData;
+    public @Nullable MqttAdvancedClientConfig getRawAdvancedClientConfig() {
+        return advancedClientConfig;
     }
 
     public @NotNull ClientComponent getClientComponent() {
