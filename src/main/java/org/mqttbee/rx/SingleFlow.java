@@ -32,12 +32,12 @@ public interface SingleFlow<T> {
 
     boolean isCancelled();
 
-    class DefaultSingleFlow<T> implements SingleFlow<T>, Disposable {
+    class Default<T> implements SingleFlow<T>, Disposable {
 
         private final @NotNull SingleObserver<? super T> observer;
         private volatile boolean disposed;
 
-        public DefaultSingleFlow(final @NotNull SingleObserver<? super T> observer) {
+        public Default(final @NotNull SingleObserver<? super T> observer) {
             this.observer = observer;
         }
 
@@ -65,7 +65,5 @@ public interface SingleFlow<T> {
         public boolean isCancelled() {
             return isDisposed();
         }
-
     }
-
 }

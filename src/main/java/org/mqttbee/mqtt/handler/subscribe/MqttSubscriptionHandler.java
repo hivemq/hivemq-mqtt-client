@@ -19,6 +19,7 @@ package org.mqttbee.mqtt.handler.subscribe;
 
 import com.google.common.collect.ImmutableList;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.EventLoop;
 import org.jctools.queues.MpscLinkedQueue;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.CallByThread;
@@ -26,7 +27,6 @@ import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5ReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.mqtt.MqttClientConfig;
 import org.mqttbee.mqtt.MqttClientConnectionConfig;
 import org.mqttbee.mqtt.MqttServerConnectionConfig;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
@@ -62,7 +62,6 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
     public static final int MAX_SUB_PENDING = 10; // TODO configurable
     private static final @NotNull Logger LOGGER = LoggerFactory.getLogger(MqttSubscriptionHandler.class);
 
-    private final @NotNull MqttClientConfig clientConfig;
     private final @NotNull MqttIncomingPublishFlows subscriptionFlows;
 
     private final @NotNull MpscLinkedQueue<MqttSubOrUnsubWithFlow> queued = MpscLinkedQueue.newMpscLinkedQueue();
@@ -74,10 +73,7 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
     private boolean subscriptionIdentifiersAvailable;
 
     @Inject
-    MqttSubscriptionHandler(
-            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttIncomingPublishFlows subscriptionFlows) {
-
-        this.clientConfig = clientConfig;
+    MqttSubscriptionHandler(final @NotNull MqttIncomingPublishFlows subscriptionFlows) {
         this.subscriptionFlows = subscriptionFlows;
 
         final int maxPacketIdentifier = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE;
@@ -96,24 +92,28 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
         subscriptionIdentifiersAvailable = serverConnectionConfig.areSubscriptionIdentifiersAvailable();
     }
 
-    public void subscribe(final @NotNull MqttSubscribe subscribe, final @NotNull SingleFlow<MqttSubAck> flow) {
+    public void subscribe(
+            final @NotNull MqttSubscribe subscribe, final @NotNull MqttSubOrUnsubAckFlow<MqttSubAck> flow) {
+
         queued.offer(new MqttSubscribeWithFlow(subscribe, flow));
-        if (queuedCounter.getAndIncrement() == 0) {
-            clientConfig.acquireEventLoop().execute(this);
-        }
+        execute(flow.getEventLoop());
     }
 
     public void subscribe(final @NotNull MqttSubscribe subscribe, final @NotNull MqttSubscriptionFlow flow) {
         queued.offer(new MqttSubscribeWithFlow(subscribe, flow));
-        if (queuedCounter.getAndIncrement() == 0) {
-            clientConfig.executeInEventLoop(this);
-        }
+        execute(flow.getEventLoop());
     }
 
-    public void unsubscribe(final @NotNull MqttUnsubscribe unsubscribe, final @NotNull SingleFlow<MqttUnsubAck> flow) {
+    public void unsubscribe(
+            final @NotNull MqttUnsubscribe unsubscribe, final @NotNull MqttSubOrUnsubAckFlow<MqttUnsubAck> flow) {
+
         queued.offer(new MqttUnsubscribeWithFlow(unsubscribe, flow));
+        execute(flow.getEventLoop());
+    }
+
+    private void execute(final @NotNull EventLoop eventLoop) {
         if (queuedCounter.getAndIncrement() == 0) {
-            clientConfig.acquireEventLoop().execute(this);
+            eventLoop.execute(this);
         }
     }
 
@@ -247,9 +247,6 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
             }
         }
 
-        if (statefulSubscribeWithFlow.getSubscriptionFlow() == null) {
-            clientConfig.releaseEventLoop();
-        }
         handleComplete(ctx, packetIdentifier);
     }
 
@@ -301,7 +298,6 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
             }
         }
 
-        clientConfig.releaseEventLoop();
         handleComplete(ctx, packetIdentifier);
     }
 

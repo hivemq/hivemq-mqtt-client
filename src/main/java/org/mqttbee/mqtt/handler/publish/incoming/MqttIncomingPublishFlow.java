@@ -65,7 +65,7 @@ public abstract class MqttIncomingPublishFlow<S extends Subscriber<? super Mqtt5
     MqttIncomingPublishFlow(final @NotNull S subscriber, final @NotNull MqttIncomingQosHandler incomingQosHandler) {
         this.subscriber = subscriber;
         this.incomingQosHandler = incomingQosHandler;
-        this.eventLoop = incomingQosHandler.getClientConfig().acquireEventLoop();
+        eventLoop = incomingQosHandler.getClientConfig().acquireEventLoop();
     }
 
     @CallByThread("Netty EventLoop")
@@ -204,7 +204,7 @@ public abstract class MqttIncomingPublishFlow<S extends Subscriber<? super Mqtt5
         return --referenced;
     }
 
-    @NotNull EventLoop getEventLoop() {
+    public @NotNull EventLoop getEventLoop() {
         return eventLoop;
     }
 

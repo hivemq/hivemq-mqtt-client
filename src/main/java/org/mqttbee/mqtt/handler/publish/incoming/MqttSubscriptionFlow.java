@@ -40,7 +40,7 @@ public class MqttSubscriptionFlow extends MqttIncomingPublishFlow<Subscriber<? s
             final @NotNull MqttIncomingQosHandler incomingQosHandler) {
 
         super(subscriber, incomingQosHandler);
-        this.topicFilters = new HandleList<>();
+        topicFilters = new HandleList<>();
     }
 
     @Override
