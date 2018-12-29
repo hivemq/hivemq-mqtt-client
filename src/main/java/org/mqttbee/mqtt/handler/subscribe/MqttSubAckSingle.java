@@ -27,7 +27,6 @@ import org.mqttbee.mqtt.MqttClientConfig;
 import org.mqttbee.mqtt.ioc.ClientComponent;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
 import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAck;
-import org.mqttbee.rx.SingleFlow.DefaultSingleFlow;
 
 /**
  * @author Silvio Giebl
@@ -48,7 +47,7 @@ public class MqttSubAckSingle extends Single<Mqtt5SubAck> {
             final ClientComponent clientComponent = clientConfig.getClientComponent();
             final MqttSubscriptionHandler subscriptionHandler = clientComponent.subscriptionHandler();
 
-            final DefaultSingleFlow<MqttSubAck> flow = new DefaultSingleFlow<>(observer);
+            final MqttSubOrUnsubAckFlow<MqttSubAck> flow = new MqttSubOrUnsubAckFlow<>(observer, clientConfig);
             observer.onSubscribe(flow);
             subscriptionHandler.subscribe(subscribe, flow);
         } else {
