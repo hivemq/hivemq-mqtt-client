@@ -18,32 +18,12 @@
 package org.mqttbee.api.mqtt.mqtt5.exceptions;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
-
-import java.util.Objects;
-import java.util.function.Consumer;
 
 /**
  * @author Silvio Giebl
  */
 public class Mqtt5MessageException extends RuntimeException {
-
-    @SuppressWarnings("unchecked")
-    public static <M extends Mqtt5Message> void when(
-            final @Nullable Throwable throwable, final @NotNull Class<M> type, final @NotNull Consumer<M> consumer) {
-
-        Objects.requireNonNull(type, "Type must not be null");
-        Objects.requireNonNull(consumer, "Consumer must not be null");
-
-        if (throwable instanceof Mqtt5MessageException) {
-            final Mqtt5MessageException messageException = (Mqtt5MessageException) throwable;
-            final Mqtt5Message message = messageException.getMqttMessage();
-            if (type.isInstance(message)) {
-                consumer.accept((M) message);
-            }
-        }
-    }
 
     private final @NotNull Mqtt5Message mqtt5Message;
 

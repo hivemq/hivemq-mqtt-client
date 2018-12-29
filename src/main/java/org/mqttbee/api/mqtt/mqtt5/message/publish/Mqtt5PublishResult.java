@@ -24,9 +24,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubComp;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrec.Mqtt5PubRec;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrel.Mqtt5PubRel;
 
-import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 /**
  * @author Silvio Giebl
@@ -34,55 +32,24 @@ import java.util.function.Consumer;
 @DoNotImplement
 public interface Mqtt5PublishResult {
 
-    @SuppressWarnings("unchecked")
-    static <T extends Mqtt5PublishResult> void when(
-            final @NotNull Mqtt5PublishResult publishResult, final @NotNull Class<T> type,
-            final @NotNull Consumer<T> consumer) {
-
-        Objects.requireNonNull(publishResult, "Publish result must not be null");
-        Objects.requireNonNull(type, "Type must not be null");
-        Objects.requireNonNull(consumer, "Consumer must not be null");
-
-        if (type.isInstance(publishResult)) {
-            consumer.accept((T) publishResult);
-        }
-    }
-
     @NotNull Mqtt5Publish getPublish();
 
     @NotNull Optional<Throwable> getError();
 
     interface Mqtt5Qos1Result extends Mqtt5PublishResult {
 
-        static void when(
-                final @NotNull Mqtt5PublishResult publishResult, final @NotNull Consumer<Mqtt5Qos1Result> consumer) {
-            Mqtt5PublishResult.when(publishResult, Mqtt5Qos1Result.class, consumer);
-        }
-
         @NotNull Mqtt5PubAck getPubAck();
     }
 
     interface Mqtt5Qos2Result extends Mqtt5PublishResult {
-
-        static void when(
-                final @NotNull Mqtt5PublishResult publishResult, final @NotNull Consumer<Mqtt5Qos2Result> consumer) {
-            Mqtt5PublishResult.when(publishResult, Mqtt5Qos2Result.class, consumer);
-        }
 
         @NotNull Mqtt5PubRec getPubRec();
     }
 
     interface Mqtt5Qos2CompleteResult extends Mqtt5Qos2Result {
 
-        static void when(
-                final @NotNull Mqtt5PublishResult publishResult,
-                final @NotNull Consumer<Mqtt5Qos2CompleteResult> consumer) {
-            Mqtt5PublishResult.when(publishResult, Mqtt5Qos2CompleteResult.class, consumer);
-        }
-
         @NotNull Mqtt5PubRel getPubRel();
 
         @NotNull Mqtt5PubComp getPubComp();
     }
-
 }
