@@ -17,7 +17,9 @@
 
 package org.mqttbee.mqtt.message;
 
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
+import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 
 /**
  * MQTT message.
@@ -25,4 +27,14 @@ import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
  * @author Silvio Giebl
  */
 public interface MqttMessage extends Mqtt5Message {
+
+    interface WithUserProperties extends MqttMessage {
+
+        @NotNull MqttUserPropertiesImpl getUserProperties();
+    }
+
+    interface WithId extends MqttMessage {
+
+        int getPacketIdentifier();
+    }
 }

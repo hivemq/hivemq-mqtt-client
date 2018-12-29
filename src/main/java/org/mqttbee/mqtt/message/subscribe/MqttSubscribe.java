@@ -21,7 +21,7 @@ import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
-import org.mqttbee.mqtt.message.MqttMessageWithUserProperties.MqttMessageWithUserPropertiesImpl;
+import org.mqttbee.mqtt.message.MqttMessageWithUserProperties;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -29,26 +29,24 @@ import javax.annotation.concurrent.Immutable;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttSubscribe extends MqttMessageWithUserPropertiesImpl implements Mqtt5Subscribe {
+public class MqttSubscribe extends MqttMessageWithUserProperties implements Mqtt5Subscribe {
 
-    private final ImmutableList<MqttSubscription> subscriptions;
+    private final @NotNull ImmutableList<MqttSubscription> subscriptions;
 
     public MqttSubscribe(
-            @NotNull final ImmutableList<MqttSubscription> subscriptions,
-            @NotNull final MqttUserPropertiesImpl userProperties) {
+            final @NotNull ImmutableList<MqttSubscription> subscriptions,
+            final @NotNull MqttUserPropertiesImpl userProperties) {
 
         super(userProperties);
         this.subscriptions = subscriptions;
     }
 
-    @NotNull
     @Override
-    public ImmutableList<MqttSubscription> getSubscriptions() {
+    public @NotNull ImmutableList<MqttSubscription> getSubscriptions() {
         return subscriptions;
     }
 
-    public MqttStatefulSubscribe createStateful(final int packetIdentifier, final int subscriptionIdentifier) {
+    public @NotNull MqttStatefulSubscribe createStateful(final int packetIdentifier, final int subscriptionIdentifier) {
         return new MqttStatefulSubscribe(this, packetIdentifier, subscriptionIdentifier);
     }
-
 }

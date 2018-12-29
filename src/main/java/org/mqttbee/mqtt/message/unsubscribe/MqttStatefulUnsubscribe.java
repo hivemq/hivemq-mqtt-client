@@ -18,7 +18,7 @@
 package org.mqttbee.mqtt.message.unsubscribe;
 
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.mqtt.message.MqttStatefulMessage.MqttStatefulMessageWithId;
+import org.mqttbee.mqtt.message.MqttStatefulMessage;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -26,10 +26,9 @@ import javax.annotation.concurrent.Immutable;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttStatefulUnsubscribe extends MqttStatefulMessageWithId<MqttUnsubscribe> {
+public class MqttStatefulUnsubscribe extends MqttStatefulMessage.WithId<MqttUnsubscribe> {
 
-    MqttStatefulUnsubscribe(@NotNull final MqttUnsubscribe unsubscribe, final int packetIdentifier) {
+    MqttStatefulUnsubscribe(final @NotNull MqttUnsubscribe unsubscribe, final int packetIdentifier) {
         super(unsubscribe, packetIdentifier);
     }
-
 }

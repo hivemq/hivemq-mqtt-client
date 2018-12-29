@@ -17,9 +17,9 @@
 
 package org.mqttbee.mqtt.codec.encoder.mqtt5;
 
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubCompReasonCode;
-import org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageWithUserPropertiesEncoder.Mqtt5MessageWithIdAndOmissibleReasonCodeEncoder;
 import org.mqttbee.mqtt.message.publish.pubcomp.MqttPubComp;
 
 import javax.inject.Inject;
@@ -32,13 +32,12 @@ import static org.mqttbee.mqtt.message.publish.pubcomp.MqttPubComp.DEFAULT_REASO
  */
 @Singleton
 public class Mqtt5PubCompEncoder extends
-        Mqtt5MessageWithIdAndOmissibleReasonCodeEncoder<MqttPubComp, Mqtt5PubCompReasonCode> {
+        Mqtt5MessageWithUserPropertiesEncoder.WithReason.WithOmissibleCode.WithId<MqttPubComp, Mqtt5PubCompReasonCode> {
 
     private static final int FIXED_HEADER = Mqtt5MessageType.PUBCOMP.getCode() << 4;
 
     @Inject
-    Mqtt5PubCompEncoder() {
-    }
+    Mqtt5PubCompEncoder() {}
 
     @Override
     int getFixedHeader() {
@@ -46,8 +45,7 @@ public class Mqtt5PubCompEncoder extends
     }
 
     @Override
-    Mqtt5PubCompReasonCode getDefaultReasonCode() {
+    @NotNull Mqtt5PubCompReasonCode getDefaultReasonCode() {
         return DEFAULT_REASON_CODE;
     }
-
 }

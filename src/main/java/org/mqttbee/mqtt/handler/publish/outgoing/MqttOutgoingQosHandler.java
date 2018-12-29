@@ -221,7 +221,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     }
 
     @Override
-    public void operationComplete(final @NotNull ContextFuture<MqttPublishWithFlow> future) {
+    public void operationComplete(final @NotNull ContextFuture<? extends MqttPublishWithFlow> future) {
         final MqttPublishWithFlow publishWithFlow = future.getContext();
         publishWithFlow.getIncomingAckFlow()
                 .onNext(new MqttPublishResult(publishWithFlow.getPublish(), future.cause()));

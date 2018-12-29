@@ -19,7 +19,7 @@ package org.mqttbee.mqtt.message.publish;
 
 import com.google.common.primitives.ImmutableIntArray;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.mqtt.message.MqttStatefulMessage.MqttStatefulMessageWithId;
+import org.mqttbee.mqtt.message.MqttStatefulMessage;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -27,7 +27,7 @@ import javax.annotation.concurrent.Immutable;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttStatefulPublish extends MqttStatefulMessageWithId<MqttPublish> {
+public class MqttStatefulPublish extends MqttStatefulMessage.WithId<MqttPublish> {
 
     public static final int NO_PACKET_IDENTIFIER_QOS_0 = -1;
     public static final int DEFAULT_NO_TOPIC_ALIAS = -1;
@@ -64,5 +64,4 @@ public class MqttStatefulPublish extends MqttStatefulMessageWithId<MqttPublish> 
     public @NotNull ImmutableIntArray getSubscriptionIdentifiers() {
         return subscriptionIdentifiers;
     }
-
 }

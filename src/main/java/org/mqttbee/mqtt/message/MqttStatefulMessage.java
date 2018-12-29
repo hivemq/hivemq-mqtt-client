@@ -21,16 +21,14 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 
-import static org.mqttbee.mqtt.message.MqttMessageWithUserProperties.MqttMessageWithUserPropertiesImpl;
-
 /**
  * Base class for MQTT messages with state-specific data.
  *
  * @param <M> the type of the stateless MQTT message.
  * @author Silvio Giebl
  */
-public abstract class MqttStatefulMessage<M extends MqttMessageWithUserPropertiesImpl>
-        implements MqttMessageWithUserProperties {
+public abstract class MqttStatefulMessage<M extends MqttMessageWithUserProperties>
+        implements MqttMessage.WithUserProperties {
 
     private final @NotNull M statelessMessage;
 
@@ -61,20 +59,19 @@ public abstract class MqttStatefulMessage<M extends MqttMessageWithUserPropertie
      * @param <M> the type of the stateless MQTT message.
      * @author Silvio Giebl
      */
-    public abstract static class MqttStatefulMessageWithId<M extends MqttMessageWithUserPropertiesImpl>
-            extends MqttStatefulMessage<M> {
+    public abstract static class WithId<M extends MqttMessageWithUserProperties> extends MqttStatefulMessage<M>
+            implements MqttMessage.WithId {
 
         private final int packetIdentifier;
 
-        protected MqttStatefulMessageWithId(final @NotNull M statelessMessage, final int packetIdentifier) {
+        protected WithId(final @NotNull M statelessMessage, final int packetIdentifier) {
             super(statelessMessage);
             this.packetIdentifier = packetIdentifier;
         }
 
+        @Override
         public int getPacketIdentifier() {
             return packetIdentifier;
         }
-
     }
-
 }

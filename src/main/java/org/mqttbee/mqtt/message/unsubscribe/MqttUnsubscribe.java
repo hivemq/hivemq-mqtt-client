@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
-import org.mqttbee.mqtt.message.MqttMessageWithUserProperties.MqttMessageWithUserPropertiesImpl;
+import org.mqttbee.mqtt.message.MqttMessageWithUserProperties;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -30,26 +30,24 @@ import javax.annotation.concurrent.Immutable;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttUnsubscribe extends MqttMessageWithUserPropertiesImpl implements Mqtt5Unsubscribe {
+public class MqttUnsubscribe extends MqttMessageWithUserProperties implements Mqtt5Unsubscribe {
 
-    private final ImmutableList<MqttTopicFilterImpl> topicFilters;
+    private final @NotNull ImmutableList<MqttTopicFilterImpl> topicFilters;
 
     public MqttUnsubscribe(
-            @NotNull final ImmutableList<MqttTopicFilterImpl> topicFilters,
-            @NotNull final MqttUserPropertiesImpl userProperties) {
+            final @NotNull ImmutableList<MqttTopicFilterImpl> topicFilters,
+            final @NotNull MqttUserPropertiesImpl userProperties) {
 
         super(userProperties);
         this.topicFilters = topicFilters;
     }
 
-    @NotNull
     @Override
-    public ImmutableList<MqttTopicFilterImpl> getTopicFilters() {
+    public @NotNull ImmutableList<MqttTopicFilterImpl> getTopicFilters() {
         return topicFilters;
     }
 
-    public MqttStatefulUnsubscribe createStateful(final int packetIdentifier) {
+    public @NotNull MqttStatefulUnsubscribe createStateful(final int packetIdentifier) {
         return new MqttStatefulUnsubscribe(this, packetIdentifier);
     }
-
 }

@@ -24,7 +24,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAckReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUTF8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
-import org.mqttbee.mqtt.message.MqttMessageWithUserProperties.MqttMessageWithIdAndReasonCodes;
+import org.mqttbee.mqtt.message.MqttMessageWithUserProperties;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -32,13 +32,13 @@ import javax.annotation.concurrent.Immutable;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttUnsubAck extends MqttMessageWithIdAndReasonCodes<Mqtt5UnsubAckReasonCode> implements Mqtt5UnsubAck {
+public class MqttUnsubAck extends MqttMessageWithUserProperties.WithReason.WithCodesAndId<Mqtt5UnsubAckReasonCode>
+        implements Mqtt5UnsubAck {
 
     public MqttUnsubAck(
-            final int packetIdentifier, @NotNull final ImmutableList<Mqtt5UnsubAckReasonCode> reasonCodes,
-            @Nullable final MqttUTF8StringImpl reasonString, @NotNull final MqttUserPropertiesImpl userProperties) {
+            final int packetIdentifier, final @NotNull ImmutableList<Mqtt5UnsubAckReasonCode> reasonCodes,
+            final @Nullable MqttUTF8StringImpl reasonString, final @NotNull MqttUserPropertiesImpl userProperties) {
 
         super(packetIdentifier, reasonCodes, reasonString, userProperties);
     }
-
 }
