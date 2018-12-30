@@ -24,11 +24,11 @@ import org.jetbrains.annotations.NotNull;
  */
 public class ByteArray {
 
-    protected final byte[] array;
+    protected final @NotNull byte[] array;
     protected int start;
     protected int end;
 
-    public ByteArray(@NotNull final byte[] array, final int start, final int end) {
+    public ByteArray(final @NotNull byte[] array, final int start, final int end) {
         this.array = array;
         this.start = start;
         this.end = end;
@@ -54,5 +54,4 @@ public class ByteArray {
     public int hashCode() {
         return ByteArrayUtil.hashCode(array, start, end);
     }
-
 }

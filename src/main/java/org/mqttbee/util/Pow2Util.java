@@ -22,15 +22,9 @@ package org.mqttbee.util;
  */
 public class Pow2Util {
 
-    private Pow2Util() {
-    }
+    private Pow2Util() {}
 
     public static int roundToPowerOf2Bits(final int value) {
         return 32 - Integer.numberOfLeadingZeros(value - 1);
     }
-
-    public static int roundToPowerOf2(final int value) {
-        return 1 << roundToPowerOf2Bits(value);
-    }
-
 }

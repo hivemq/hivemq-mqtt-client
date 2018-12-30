@@ -26,10 +26,10 @@ import org.jetbrains.annotations.Nullable;
 import org.mqttbee.mqtt.handler.MqttConnectionAwareHandler;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectEvent;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
-import org.mqttbee.mqtt.handler.util.DefaultChannelOutboundHandler;
 import org.mqttbee.mqtt.ioc.ConnectionScope;
 import org.mqttbee.mqtt.message.ping.MqttPingReq;
 import org.mqttbee.mqtt.message.ping.MqttPingResp;
+import org.mqttbee.util.netty.DefaultChannelOutboundHandler;
 
 import java.util.concurrent.TimeUnit;
 

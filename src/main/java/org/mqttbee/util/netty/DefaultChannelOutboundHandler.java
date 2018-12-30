@@ -15,62 +15,69 @@
  *
  */
 
-package org.mqttbee.mqtt.handler.util;
+package org.mqttbee.util.netty;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandler;
 import io.netty.channel.ChannelPromise;
+import org.jetbrains.annotations.NotNull;
 
 import java.net.SocketAddress;
 
 /**
- * Default interface to make it easier to extend a subclass of {@link io.netty.channel.ChannelInboundHandlerAdapter}
- * and also implement {@link ChannelOutboundHandler}.
+ * Default interface to make it easier to extend a subclass of {@link io.netty.channel.ChannelInboundHandlerAdapter} and
+ * also implement {@link ChannelOutboundHandler}.
  *
  * @author Silvio Giebl
  */
 public interface DefaultChannelOutboundHandler extends ChannelOutboundHandler {
 
     @Override
-    default void bind(final ChannelHandlerContext ctx, final SocketAddress localAddress, final ChannelPromise promise) {
+    default void bind(
+            final @NotNull ChannelHandlerContext ctx, final @NotNull SocketAddress localAddress,
+            final @NotNull ChannelPromise promise) {
+
         ctx.bind(localAddress, promise);
     }
 
     @Override
     default void connect(
-            final ChannelHandlerContext ctx, final SocketAddress remoteAddress, final SocketAddress localAddress,
-            final ChannelPromise promise) {
+            final @NotNull ChannelHandlerContext ctx, final @NotNull SocketAddress remoteAddress,
+            final @NotNull SocketAddress localAddress, final @NotNull ChannelPromise promise) {
+
         ctx.connect(remoteAddress, localAddress, promise);
     }
 
     @Override
-    default void disconnect(final ChannelHandlerContext ctx, final ChannelPromise promise) {
+    default void disconnect(final @NotNull ChannelHandlerContext ctx, final @NotNull ChannelPromise promise) {
         ctx.disconnect(promise);
     }
 
     @Override
-    default void close(final ChannelHandlerContext ctx, final ChannelPromise promise) {
+    default void close(final @NotNull ChannelHandlerContext ctx, final @NotNull ChannelPromise promise) {
         ctx.close(promise);
     }
 
     @Override
-    default void deregister(final ChannelHandlerContext ctx, final ChannelPromise promise) {
+    default void deregister(final @NotNull ChannelHandlerContext ctx, final @NotNull ChannelPromise promise) {
         ctx.deregister(promise);
     }
 
     @Override
-    default void read(final ChannelHandlerContext ctx) {
+    default void read(final @NotNull ChannelHandlerContext ctx) {
         ctx.read();
     }
 
     @Override
-    default void write(final ChannelHandlerContext ctx, final Object msg, final ChannelPromise promise) {
+    default void write(
+            final @NotNull ChannelHandlerContext ctx, final @NotNull Object msg,
+            final @NotNull ChannelPromise promise) {
+
         ctx.write(msg, promise);
     }
 
     @Override
-    default void flush(final ChannelHandlerContext ctx) {
+    default void flush(final @NotNull ChannelHandlerContext ctx) {
         ctx.flush();
     }
-
 }
