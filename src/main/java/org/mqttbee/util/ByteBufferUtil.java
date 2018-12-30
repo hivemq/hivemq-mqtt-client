@@ -28,23 +28,21 @@ import java.util.Optional;
  */
 public class ByteBufferUtil {
 
-    @NotNull
-    public static ByteBuffer allocate(final int capacity, final boolean direct) {
+    private ByteBufferUtil() {}
+
+    public static @NotNull ByteBuffer allocate(final int capacity, final boolean direct) {
         return direct ? ByteBuffer.allocateDirect(capacity) : ByteBuffer.allocate(capacity);
     }
 
-    @Nullable
-    public static ByteBuffer wrap(@Nullable final byte[] binary) {
+    public static @Nullable ByteBuffer wrap(final @Nullable byte[] binary) {
         return (binary == null) ? null : ByteBuffer.wrap(binary);
     }
 
-    @Nullable
-    public static ByteBuffer slice(@Nullable final ByteBuffer byteBuffer) {
+    public static @Nullable ByteBuffer slice(final @Nullable ByteBuffer byteBuffer) {
         return (byteBuffer == null) ? null : byteBuffer.slice();
     }
 
-    @NotNull
-    public static Optional<ByteBuffer> optionalReadOnly(@Nullable final ByteBuffer byteBuffer) {
+    public static @NotNull Optional<ByteBuffer> optionalReadOnly(final @Nullable ByteBuffer byteBuffer) {
         if (byteBuffer == null) {
             return Optional.empty();
         }
@@ -53,11 +51,9 @@ public class ByteBufferUtil {
         return Optional.of(readOnlyBuffer);
     }
 
-    @NotNull
-    public static byte[] getBytes(@NotNull final ByteBuffer byteBuffer) {
+    public static @NotNull byte[] getBytes(final @NotNull ByteBuffer byteBuffer) {
         final byte[] binary = new byte[byteBuffer.remaining()];
         byteBuffer.get(binary).position(0);
         return binary;
     }
-
 }

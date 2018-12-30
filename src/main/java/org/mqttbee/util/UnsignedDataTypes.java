@@ -22,6 +22,8 @@ package org.mqttbee.util;
  */
 public class UnsignedDataTypes {
 
+    private UnsignedDataTypes() {}
+
     public static final int UNSIGNED_SHORT_MAX_VALUE = 0xFFFF;
     public static final long UNSIGNED_INT_MAX_VALUE = 0xFFFF_FFFFL;
 
@@ -32,5 +34,4 @@ public class UnsignedDataTypes {
     public static boolean isUnsignedInt(final long value) {
         return (value >= 0) && (value <= UNSIGNED_INT_MAX_VALUE);
     }
-
 }
