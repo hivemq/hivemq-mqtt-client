@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
-import org.mqttbee.api.mqtt.exceptions.MqttEncoderException;
+import org.mqttbee.api.mqtt.exceptions.MqttEncodeException;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientConfig;
 import org.mqttbee.api.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
@@ -423,7 +423,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES);
         final MqttStatefulConnect connectWrapper = connect.createStateful(clientIdentifier, null);
 
-        encodeNok(connectWrapper, MqttEncoderException.class, "Will properties exceeded maximum length.");
+        encodeNok(connectWrapper, MqttEncodeException.class, "Will properties exceeded maximum length.");
     }
 
     @Test
