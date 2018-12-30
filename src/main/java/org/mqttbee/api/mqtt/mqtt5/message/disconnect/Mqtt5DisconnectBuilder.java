@@ -39,4 +39,10 @@ public interface Mqtt5DisconnectBuilder extends Mqtt5DisconnectBuilderBase<Mqtt5
 
         @NotNull P send();
     }
+
+    @DoNotImplement
+    interface SendVoid extends Mqtt5DisconnectBuilderBase<SendVoid> {
+
+        void send();
+    }
 }

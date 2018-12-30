@@ -51,4 +51,14 @@ public interface Mqtt3PublishBuilder extends Mqtt3PublishBuilderBase<Mqtt3Publis
             @NotNull P send();
         }
     }
+
+    @DoNotImplement
+    interface SendVoid extends Mqtt3PublishBuilderBase<SendVoid.Complete> {
+
+        @DoNotImplement
+        interface Complete extends SendVoid, Mqtt3PublishBuilderBase.Complete<SendVoid.Complete> {
+
+            void send();
+        }
+    }
 }

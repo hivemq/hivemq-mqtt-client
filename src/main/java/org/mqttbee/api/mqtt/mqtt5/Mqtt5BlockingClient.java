@@ -191,17 +191,14 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
     /**
      * Fluent counterpart of {@link #disconnect(Mqtt5Disconnect)}.
      * <p>
-     * Calling {@link Mqtt5DisconnectBuilder.Send#send()} on the returned builder has the same effect as calling {@link
-     * #disconnect(Mqtt5Disconnect)} with the result of {@link Mqtt5DisconnectBuilder#build()}.
+     * Calling {@link Mqtt5DisconnectBuilder.SendVoid#send()} on the returned builder has the same effect as calling
+     * {@link #disconnect(Mqtt5Disconnect)} with the result of {@link Mqtt5DisconnectBuilder#build()}.
      *
      * @return the fluent builder for the Unsubscribe message.
      * @see #disconnect(Mqtt5Disconnect)
      */
-    default @NotNull Mqtt5DisconnectBuilder.Send<Void> disconnectWith() {
-        return new MqttDisconnectBuilder.Send<>(disconnect -> {
-            disconnect(disconnect);
-            return null;
-        });
+    default @NotNull Mqtt5DisconnectBuilder.SendVoid disconnectWith() {
+        return new MqttDisconnectBuilder.SendVoid(this::disconnect);
     }
 
     @Override

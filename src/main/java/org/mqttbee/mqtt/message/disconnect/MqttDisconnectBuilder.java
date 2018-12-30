@@ -30,6 +30,7 @@ import org.mqttbee.mqtt.message.connect.MqttConnect;
 import org.mqttbee.mqtt.util.MqttChecks;
 import org.mqttbee.util.Checks;
 
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -152,6 +153,25 @@ public abstract class MqttDisconnectBuilder<B extends MqttDisconnectBuilder<B>> 
         @Override
         public @NotNull P send() {
             return parentConsumer.apply(build());
+        }
+    }
+
+    public static class SendVoid extends MqttDisconnectBuilder<SendVoid> implements Mqtt5DisconnectBuilder.SendVoid {
+
+        private final @NotNull Consumer<? super MqttDisconnect> parentConsumer;
+
+        public SendVoid(final @NotNull Consumer<? super MqttDisconnect> parentConsumer) {
+            this.parentConsumer = parentConsumer;
+        }
+
+        @Override
+        @NotNull SendVoid self() {
+            return this;
+        }
+
+        @Override
+        public void send() {
+            parentConsumer.accept(build());
         }
     }
 }

@@ -61,4 +61,17 @@ public interface Mqtt3UnsubscribeBuilder extends Mqtt3UnsubscribeBuilderBase<Mqt
         @DoNotImplement
         interface Start<P> extends Send<P>, Mqtt3UnsubscribeBuilderBase.Start<Send.Complete<P>> {}
     }
+
+    @DoNotImplement
+    interface SendVoid extends Mqtt3UnsubscribeBuilderBase<SendVoid.Complete> {
+
+        @DoNotImplement
+        interface Complete extends SendVoid, Mqtt3UnsubscribeBuilderBase<SendVoid.Complete> {
+
+            void send();
+        }
+
+        @DoNotImplement
+        interface Start extends SendVoid, Mqtt3UnsubscribeBuilderBase.Start<SendVoid.Complete> {}
+    }
 }
