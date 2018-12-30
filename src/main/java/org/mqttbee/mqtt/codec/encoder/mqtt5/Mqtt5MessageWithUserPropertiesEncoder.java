@@ -20,15 +20,13 @@ package org.mqttbee.mqtt.codec.encoder.mqtt5;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.exceptions.MqttMaximumPacketSizeExceededException;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5ReasonCode;
 import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoder;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.message.MqttMessage;
 import org.mqttbee.mqtt.message.MqttMessageWithUserProperties;
 
-import static org.mqttbee.mqtt.codec.encoder.MqttMessageEncoderUtil.encodedLengthWithHeader;
-import static org.mqttbee.mqtt.codec.encoder.MqttMessageEncoderUtil.encodedPacketLength;
+import static org.mqttbee.mqtt.codec.encoder.MqttMessageEncoderUtil.*;
 import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.encodeNullableProperty;
 import static org.mqttbee.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.nullablePropertyEncodedLength;
 import static org.mqttbee.mqtt.message.MqttProperty.REASON_STRING;
@@ -54,7 +52,7 @@ abstract class Mqtt5MessageWithUserPropertiesEncoder<M extends MqttMessage.WithU
             omittedProperties++;
             propertyLength = propertyLength(message, propertyLength, omittedProperties);
             if (propertyLength < 0) {
-                throw new MqttMaximumPacketSizeExceededException(message, encodedLength, maximumPacketSize);
+                throw maximumPacketSizeExceeded(message, encodedLength, maximumPacketSize);
             }
             remainingLength = remainingLength(message, remainingLengthWithoutProperties, propertyLength);
             encodedLength = encodedPacketLength(remainingLength);

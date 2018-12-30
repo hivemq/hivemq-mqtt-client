@@ -22,7 +22,7 @@ import io.netty.buffer.Unpooled;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
-import org.mqttbee.api.mqtt.exceptions.MqttMaximumPacketSizeExceededException;
+import org.mqttbee.api.mqtt.exceptions.MqttEncoderException;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.TopicAliasUsage;
@@ -614,11 +614,11 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
                 publish.createStateful(-1, false, MqttStatefulPublish.DEFAULT_NO_TOPIC_ALIAS, false,
                         DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
 
-        final Throwable exception = assertThrows(MqttMaximumPacketSizeExceededException.class,
-                () -> channel.writeOutbound(publishInternal));
+        final Throwable exception =
+                assertThrows(MqttEncoderException.class, () -> channel.writeOutbound(publishInternal));
         System.err.println(exception.getMessage());
         assertTrue(exception.getMessage()
-                .contains("packet size exceeded for PUBLISH, minimal possible encoded length: 115, maximum: 100"));
+                .contains("PUBLISH exceeded maximum packet size, minimal possible encoded length: 115, maximum: 100"));
     }
 
     @Test

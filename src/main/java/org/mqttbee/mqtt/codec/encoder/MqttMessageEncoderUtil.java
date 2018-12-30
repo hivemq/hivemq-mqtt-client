@@ -20,9 +20,11 @@ package org.mqttbee.mqtt.codec.encoder;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mqttbee.api.mqtt.exceptions.MqttEncoderException;
 import org.mqttbee.mqtt.datatypes.MqttBinaryData;
 import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
+import org.mqttbee.mqtt.message.MqttMessage;
 
 import java.nio.ByteBuffer;
 
@@ -86,5 +88,13 @@ public class MqttMessageEncoderUtil {
         } else {
             MqttBinaryData.encodeEmpty(out);
         }
+    }
+
+    public static @NotNull MqttEncoderException maximumPacketSizeExceeded(
+            final @NotNull MqttMessage message, final int encodedLength, final int maxPacketSize) {
+
+        return new MqttEncoderException(
+                message.getType() + " exceeded maximum packet size, minimal possible encoded length: " + encodedLength +
+                        ", maximum: " + maxPacketSize + ".");
     }
 }

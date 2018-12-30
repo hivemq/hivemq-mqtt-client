@@ -21,7 +21,6 @@ import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.Immutable;
-import org.mqttbee.api.mqtt.exceptions.MqttBinaryDataExceededException;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.util.collections.ImmutableList;
 
@@ -93,7 +92,6 @@ public class MqttUserPropertiesImpl implements Mqtt5UserProperties {
      * Calculates the byte count of this collection of User Properties according to the MQTT 5 specification.
      *
      * @return the encoded length of this collection of User Properties.
-     * @throws MqttBinaryDataExceededException if name and/or value can not be encoded due to byte count restrictions.
      */
     public int encodedLength() {
         if (encodedLength == -1) {

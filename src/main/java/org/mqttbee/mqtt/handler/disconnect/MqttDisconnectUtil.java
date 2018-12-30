@@ -20,7 +20,7 @@ package org.mqttbee.mqtt.handler.disconnect;
 import io.netty.channel.Channel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.exceptions.ChannelClosedException;
+import org.mqttbee.api.mqtt.exceptions.ConnectionClosedException;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
@@ -53,7 +53,7 @@ public class MqttDisconnectUtil {
      * @param reason  the reason why the channel is closed.
      */
     public static void close(final @NotNull Channel channel, final @NotNull String reason) {
-        fireDisconnectEvent(channel, new ChannelClosedException(reason), true);
+        fireDisconnectEvent(channel, new ConnectionClosedException(reason), true);
     }
 
     /**

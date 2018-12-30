@@ -20,23 +20,24 @@ package org.mqttbee.api.mqtt.mqtt3.exceptions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3Message;
+import org.mqttbee.util.AsyncRuntimeException;
 
 /**
  * @author David Katz
  * @author Silvio Giebl
  */
-public class Mqtt3MessageException extends RuntimeException {
+public class Mqtt3MessageException extends AsyncRuntimeException {
 
-    private final @NotNull Mqtt3Message mqtt3Message;
+    private final @NotNull Mqtt3Message mqttMessage;
 
     public Mqtt3MessageException(
-            final @NotNull Mqtt3Message mqtt3Message, final @Nullable String message, final @Nullable Throwable cause) {
+            final @NotNull Mqtt3Message mqttMessage, final @Nullable String message, final @Nullable Throwable cause) {
 
         super(message, cause);
-        this.mqtt3Message = mqtt3Message;
+        this.mqttMessage = mqttMessage;
     }
 
     public @NotNull Mqtt3Message getMqttMessage() {
-        return mqtt3Message;
+        return mqttMessage;
     }
 }

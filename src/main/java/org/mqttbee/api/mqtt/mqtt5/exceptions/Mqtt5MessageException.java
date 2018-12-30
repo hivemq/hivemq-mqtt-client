@@ -19,25 +19,26 @@ package org.mqttbee.api.mqtt.mqtt5.exceptions;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
+import org.mqttbee.util.AsyncRuntimeException;
 
 /**
  * @author Silvio Giebl
  */
-public class Mqtt5MessageException extends RuntimeException {
+public class Mqtt5MessageException extends AsyncRuntimeException {
 
-    private final @NotNull Mqtt5Message mqtt5Message;
+    private final @NotNull Mqtt5Message mqttMessage;
 
-    public Mqtt5MessageException(final @NotNull Mqtt5Message mqtt5Message, final @NotNull String message) {
-        super(message);
-        this.mqtt5Message = mqtt5Message;
+    public Mqtt5MessageException(final @NotNull Mqtt5Message mqttMessage, final @NotNull String message) {
+        super(message, null);
+        this.mqttMessage = mqttMessage;
     }
 
-    public Mqtt5MessageException(final @NotNull Mqtt5Message mqtt5Message, final @NotNull Throwable cause) {
+    public Mqtt5MessageException(final @NotNull Mqtt5Message mqttMessage, final @NotNull Throwable cause) {
         super(cause.getMessage(), cause);
-        this.mqtt5Message = mqtt5Message;
+        this.mqttMessage = mqttMessage;
     }
 
     public @NotNull Mqtt5Message getMqttMessage() {
-        return mqtt5Message;
+        return mqttMessage;
     }
 }

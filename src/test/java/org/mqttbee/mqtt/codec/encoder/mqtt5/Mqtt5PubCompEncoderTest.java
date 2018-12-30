@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.mqttbee.api.mqtt.exceptions.MqttMaximumPacketSizeExceededException;
+import org.mqttbee.api.mqtt.exceptions.MqttEncoderException;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubCompReasonCode;
 import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoders;
@@ -170,9 +170,8 @@ class Mqtt5PubCompEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
 
         final MqttPubComp pubComp = new MqttPubComp(1, SUCCESS, null, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
 
-        final Throwable exception =
-                assertThrows(MqttMaximumPacketSizeExceededException.class, () -> channel.writeOutbound(pubComp));
-        assertTrue(exception.getMessage().contains("packet size exceeded for PUBCOMP"));
+        final Throwable exception = assertThrows(MqttEncoderException.class, () -> channel.writeOutbound(pubComp));
+        assertTrue(exception.getMessage().contains("PUBCOMP exceeded maximum packet size"));
     }
 
     @Test

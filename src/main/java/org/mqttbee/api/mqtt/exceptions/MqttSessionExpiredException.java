@@ -18,13 +18,14 @@
 package org.mqttbee.api.mqtt.exceptions;
 
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.util.AsyncRuntimeException;
 
 /**
  * @author Silvio Giebl
  */
-public class MqttSessionExpiredException extends RuntimeException {
+public class MqttSessionExpiredException extends AsyncRuntimeException {
 
     public MqttSessionExpiredException(final @NotNull String message, final @NotNull Throwable cause) {
-        super(message, cause, true, false);
+        super(message, cause);
     }
 }

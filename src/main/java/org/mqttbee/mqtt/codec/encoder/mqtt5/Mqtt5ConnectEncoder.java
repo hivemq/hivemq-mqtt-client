@@ -20,8 +20,7 @@ package org.mqttbee.mqtt.codec.encoder.mqtt5;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.exceptions.MqttMaximumPacketSizeExceededException;
-import org.mqttbee.api.mqtt.exceptions.MqttVariableByteIntegerExceededException;
+import org.mqttbee.api.mqtt.exceptions.MqttEncoderException;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt.codec.encoder.MqttMessageEncoder;
 import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
@@ -76,7 +75,7 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
             omittedProperties++;
             propertyLength = propertyLength(message, propertyLength, omittedProperties);
             if (propertyLength < 0) {
-                throw new MqttMaximumPacketSizeExceededException(message, encodedLength, maximumPacketSize);
+                throw maximumPacketSizeExceeded(message, encodedLength, maximumPacketSize);
             }
             remainingLength = remainingLength(remainingLengthWithoutProperties, propertyLength, willPropertyLength);
             encodedLength = encodedPacketLength(remainingLength);
@@ -185,7 +184,7 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
                 intPropertyEncodedLength(willPublish.getDelayInterval(), MqttWillPublish.DEFAULT_DELAY_INTERVAL);
 
         if (!MqttVariableByteInteger.isInRange(willPropertyLength)) {
-            throw new MqttVariableByteIntegerExceededException("will properties length"); // TODO
+            throw new MqttEncoderException("Will properties exceeded maximum length.");
         }
 
         return willPropertyLength;

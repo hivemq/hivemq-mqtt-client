@@ -18,17 +18,14 @@
 package org.mqttbee.api.mqtt.exceptions;
 
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.util.AsyncRuntimeException;
 
 /**
  * @author Silvio Giebl
  */
-public class ChannelClosedException extends Exception {
+public class MqttEncoderException extends AsyncRuntimeException {
 
-    public ChannelClosedException(@NotNull final String message) {
-        super(message);
-    }
-
-    public ChannelClosedException(@NotNull final Throwable cause) {
-        super(cause);
+    public MqttEncoderException(final @NotNull String message) {
+        super(message, null);
     }
 }

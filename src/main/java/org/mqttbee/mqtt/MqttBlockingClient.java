@@ -35,6 +35,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
+import org.mqttbee.util.AsyncRuntimeException;
 import org.mqttbee.util.Checks;
 import org.reactivestreams.Subscription;
 
@@ -88,12 +89,20 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
 
     @Override
     public @NotNull Mqtt5ConnAck connect(final @Nullable Mqtt5Connect connect) {
-        return delegate.connectUnsafe(connect).blockingGet();
+        try {
+            return delegate.connectUnsafe(connect).blockingGet();
+        } catch (final RuntimeException e) {
+            throw AsyncRuntimeException.fillInStackTrace(e);
+        }
     }
 
     @Override
     public @NotNull Mqtt5SubAck subscribe(final @Nullable Mqtt5Subscribe subscribe) {
-        return handleSubAck(delegate.subscribeUnsafe(subscribe).blockingGet());
+        try {
+            return handleSubAck(delegate.subscribeUnsafe(subscribe).blockingGet());
+        } catch (final RuntimeException e) {
+            throw AsyncRuntimeException.fillInStackTrace(e);
+        }
     }
 
     @Override
@@ -103,23 +112,39 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
 
     @Override
     public @NotNull Mqtt5UnsubAck unsubscribe(final @Nullable Mqtt5Unsubscribe unsubscribe) {
-        return handleUnsubAck(delegate.unsubscribeUnsafe(unsubscribe).blockingGet());
+        try {
+            return handleUnsubAck(delegate.unsubscribeUnsafe(unsubscribe).blockingGet());
+        } catch (final RuntimeException e) {
+            throw AsyncRuntimeException.fillInStackTrace(e);
+        }
     }
 
     @Override
     public @NotNull Mqtt5PublishResult publish(final @Nullable Mqtt5Publish publish) {
         Checks.notNull(publish, "Publish");
-        return handlePublish(delegate.publishUnsafe(Flowable.just(publish)).singleOrError().blockingGet());
+        try {
+            return handlePublish(delegate.publishUnsafe(Flowable.just(publish)).singleOrError().blockingGet());
+        } catch (final RuntimeException e) {
+            throw AsyncRuntimeException.fillInStackTrace(e);
+        }
     }
 
     @Override
     public void reauth() {
-        delegate.reauthUnsafe().blockingAwait();
+        try {
+            delegate.reauthUnsafe().blockingAwait();
+        } catch (final RuntimeException e) {
+            throw AsyncRuntimeException.fillInStackTrace(e);
+        }
     }
 
     @Override
     public void disconnect(final @NotNull Mqtt5Disconnect disconnect) {
-        delegate.disconnectUnsafe(disconnect).blockingAwait();
+        try {
+            delegate.disconnectUnsafe(disconnect).blockingAwait();
+        } catch (final RuntimeException e) {
+            throw AsyncRuntimeException.fillInStackTrace(e);
+        }
     }
 
     @Override
@@ -228,7 +253,7 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
             }
             if (result instanceof Throwable) {
                 if (result instanceof RuntimeException) {
-                    throw (RuntimeException) result;
+                    throw AsyncRuntimeException.fillInStackTrace((RuntimeException) result);
                 }
                 throw new RuntimeException((Throwable) result);
             }
@@ -272,7 +297,7 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
             }
             if (result instanceof Throwable) {
                 if (result instanceof RuntimeException) {
-                    throw (RuntimeException) result;
+                    throw AsyncRuntimeException.fillInStackTrace((RuntimeException) result);
                 }
                 throw new RuntimeException((Throwable) result);
             }

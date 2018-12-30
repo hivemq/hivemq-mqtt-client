@@ -22,7 +22,7 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttClientState;
-import org.mqttbee.api.mqtt.exceptions.ChannelClosedException;
+import org.mqttbee.api.mqtt.exceptions.ConnectionClosedException;
 import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.mqtt.MqttClientConfig;
@@ -85,8 +85,8 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
         ctx.fireChannelInactive();
         if (once) {
             once = false;
-            fireDisconnectEvent(
-                    ctx.channel(), new ChannelClosedException("Server closed channel without DISCONNECT."), false);
+            fireDisconnectEvent(ctx.channel(),
+                    new ConnectionClosedException("Server closed connection without DISCONNECT."), false);
         }
     }
 
@@ -94,7 +94,7 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
     public void exceptionCaught(final @NotNull ChannelHandlerContext ctx, final @NotNull Throwable cause) {
         if (once) {
             once = false;
-            fireDisconnectEvent(ctx.channel(), new ChannelClosedException(cause), false);
+            fireDisconnectEvent(ctx.channel(), new ConnectionClosedException(cause), false);
         } else {
             LOGGER.error("Exception while disconnecting.", cause);
         }
