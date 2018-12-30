@@ -165,8 +165,8 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
      */
     private void readConnAck(final @NotNull MqttConnAck connAck, final @NotNull Channel channel) {
         if (connAck.getReasonCode().isError()) {
-            MqttDisconnectUtil.close(
-                    channel, new Mqtt5MessageException(connAck, "Connection failed with CONNACK with Error Code"));
+            MqttDisconnectUtil.close(channel, new Mqtt5MessageException(connAck,
+                    "CONNECT failed as CONNACK contained an Error Code: " + connAck.getReasonCode() + "."));
 
         } else if (validateClientIdentifier(connAck, channel)) {
             final MqttClientConnectionConfig clientConnectionConfig = addClientConfig(connAck, channel);
