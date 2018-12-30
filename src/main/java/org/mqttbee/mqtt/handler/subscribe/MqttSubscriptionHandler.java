@@ -22,13 +22,13 @@ import io.netty.channel.EventLoop;
 import org.jctools.queues.MpscLinkedQueue;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.CallByThread;
-import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5ReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.MqttClientConnectionConfig;
 import org.mqttbee.mqtt.MqttServerConnectionConfig;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
+import org.mqttbee.mqtt.exceptions.MqttClientStateExceptions;
 import org.mqttbee.mqtt.handler.MqttSessionAwareHandler;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.handler.publish.incoming.MqttIncomingPublishFlows;
@@ -121,7 +121,7 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
     @Override
     public void run() {
         if (!hasSession) {
-            clearQueued(new NotConnectedException());
+            clearQueued(MqttClientStateExceptions.notConnected());
             return;
         }
         if (ctx == null) {

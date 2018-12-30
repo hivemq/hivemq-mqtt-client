@@ -22,9 +22,9 @@ import io.reactivex.Completable;
 import io.reactivex.CompletableObserver;
 import io.reactivex.internal.disposables.EmptyDisposable;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
 import org.mqttbee.mqtt.MqttClientConfig;
 import org.mqttbee.mqtt.MqttClientConnectionConfig;
+import org.mqttbee.mqtt.exceptions.MqttClientStateExceptions;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
 import org.mqttbee.rx.CompletableFlow;
 
@@ -47,14 +47,14 @@ public class MqttDisconnectCompletable extends Completable {
     protected void subscribeActual(final @NotNull CompletableObserver s) {
         final MqttClientConnectionConfig clientConnectionConfig = clientConfig.getRawClientConnectionConfig();
         if (clientConnectionConfig == null) {
-            EmptyDisposable.error(new NotConnectedException(), s);
+            EmptyDisposable.error(MqttClientStateExceptions.notConnected(), s);
             return;
         }
         final Channel channel = clientConnectionConfig.getChannel();
         final MqttDisconnectHandler disconnectHandler =
                 (MqttDisconnectHandler) channel.pipeline().get(MqttDisconnectHandler.NAME);
         if (disconnectHandler == null) {
-            EmptyDisposable.error(new NotConnectedException(), s);
+            EmptyDisposable.error(MqttClientStateExceptions.notConnected(), s);
             return;
         }
         final CompletableFlow flow = new CompletableFlow(s);

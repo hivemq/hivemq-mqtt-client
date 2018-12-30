@@ -23,9 +23,9 @@ import io.reactivex.Completable;
 import io.reactivex.CompletableObserver;
 import io.reactivex.internal.disposables.EmptyDisposable;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
 import org.mqttbee.mqtt.MqttClientConfig;
 import org.mqttbee.mqtt.MqttClientConnectionConfig;
+import org.mqttbee.mqtt.exceptions.MqttClientStateExceptions;
 import org.mqttbee.rx.CompletableFlow;
 
 /**
@@ -43,7 +43,7 @@ public class MqttReAuthCompletable extends Completable {
     protected void subscribeActual(final @NotNull CompletableObserver s) {
         final MqttClientConnectionConfig clientConnectionConfig = clientConfig.getRawClientConnectionConfig();
         if (clientConnectionConfig == null) {
-            EmptyDisposable.error(new NotConnectedException(), s);
+            EmptyDisposable.error(MqttClientStateExceptions.notConnected(), s);
             return;
         }
         if (clientConnectionConfig.getRawEnhancedAuthProvider() == null) {
@@ -54,7 +54,7 @@ public class MqttReAuthCompletable extends Completable {
         final Channel channel = clientConnectionConfig.getChannel();
         final ChannelHandler authHandler = channel.pipeline().get(MqttAuthHandler.NAME);
         if (authHandler == null) {
-            EmptyDisposable.error(new NotConnectedException(), s);
+            EmptyDisposable.error(MqttClientStateExceptions.notConnected(), s);
             return;
         }
         if (!(authHandler instanceof MqttReAuthHandler)) {

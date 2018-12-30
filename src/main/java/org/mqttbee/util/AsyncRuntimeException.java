@@ -40,7 +40,7 @@ public abstract class AsyncRuntimeException extends RuntimeException {
     }
 
     protected AsyncRuntimeException(final @Nullable String message) {
-        super(message);
+        super(message, null);
         afterSuper = true;
     }
 

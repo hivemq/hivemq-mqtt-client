@@ -24,7 +24,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.CallByThread;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
-import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5OutgoingQos1Interceptor;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5OutgoingQos2Interceptor;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
@@ -33,6 +32,7 @@ import org.mqttbee.mqtt.MqttClientConfig;
 import org.mqttbee.mqtt.MqttClientConnectionConfig;
 import org.mqttbee.mqtt.MqttServerConnectionConfig;
 import org.mqttbee.mqtt.advanced.MqttAdvancedClientConfig;
+import org.mqttbee.mqtt.exceptions.MqttClientStateExceptions;
 import org.mqttbee.mqtt.handler.MqttSessionAwareHandler;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.handler.publish.outgoing.MqttPubRelWithFlow.MqttQos2CompleteWithFlow;
@@ -184,7 +184,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     @CallByThread("Netty EventLoop")
     public void run() {
         if (!hasSession) {
-            clearQueued(new NotConnectedException());
+            clearQueued(MqttClientStateExceptions.notConnected());
             return;
         }
         if (ctx == null) {
