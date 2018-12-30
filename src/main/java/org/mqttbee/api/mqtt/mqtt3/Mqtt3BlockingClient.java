@@ -122,17 +122,14 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
     /**
      * Fluent counterpart of {@link #unsubscribe(Mqtt3Unsubscribe)}.
      * <p>
-     * Calling {@link Mqtt3UnsubscribeBuilder.Send.Complete#send()} on the returned builder has the same effect as
+     * Calling {@link Mqtt3UnsubscribeBuilder.SendVoid.Complete#send()} on the returned builder has the same effect as
      * calling {@link #unsubscribe(Mqtt3Unsubscribe)} with the result of {@link Mqtt3UnsubscribeBuilder.Complete#build()}.
      *
      * @return the fluent builder for the Unsubscribe message.
      * @see #unsubscribe(Mqtt3Unsubscribe)
      */
-    default @NotNull Mqtt3UnsubscribeBuilder.Send.Start<Void> unsubscribeWith() {
-        return new Mqtt3UnsubscribeViewBuilder.Send<>(unsubscribe -> {
-            unsubscribe(unsubscribe);
-            return null;
-        });
+    default @NotNull Mqtt3UnsubscribeBuilder.SendVoid.Start unsubscribeWith() {
+        return new Mqtt3UnsubscribeViewBuilder.SendVoid(this::unsubscribe);
     }
 
     /**
@@ -145,17 +142,14 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
     /**
      * Fluent counterpart of {@link #publish(Mqtt3Publish)}.
      * <p>
-     * Calling {@link Mqtt3PublishBuilder.Send.Complete#send()} on the returned builder has the same effect as calling
-     * {@link #publish(Mqtt3Publish)} with the result of {@link Mqtt3PublishBuilder.Complete#build()}.
+     * Calling {@link Mqtt3PublishBuilder.SendVoid.Complete#send()} on the returned builder has the same effect as
+     * calling {@link #publish(Mqtt3Publish)} with the result of {@link Mqtt3PublishBuilder.Complete#build()}.
      *
      * @return the fluent builder for the Unsubscribe message.
      * @see #publish(Mqtt3Publish)
      */
-    default @NotNull Mqtt3PublishBuilder.Send<Void> publishWith() {
-        return new Mqtt3PublishViewBuilder.Send<>(publish -> {
-            publish(publish);
-            return null;
-        });
+    default @NotNull Mqtt3PublishBuilder.SendVoid publishWith() {
+        return new Mqtt3PublishViewBuilder.SendVoid(this::publish);
     }
 
     /**
