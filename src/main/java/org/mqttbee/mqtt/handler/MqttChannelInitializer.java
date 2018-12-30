@@ -107,10 +107,10 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
     }
 
     public void initMqttHandlers(final @NotNull ChannelPipeline pipeline) {
-        pipeline.addLast(MqttEncoder.NAME, encoder);
-        pipeline.addLast(MqttAuthHandler.NAME, authHandler);
-        pipeline.addLast(MqttConnectHandler.NAME, connectHandler);
-        pipeline.addLast(MqttDisconnectHandler.NAME, disconnectHandler);
+        pipeline.addLast(MqttEncoder.NAME, encoder)
+                .addLast(MqttAuthHandler.NAME, authHandler)
+                .addLast(MqttConnectHandler.NAME, connectHandler)
+                .addLast(MqttDisconnectHandler.NAME, disconnectHandler);
     }
 
     private void initMqttOverWebSocket(
@@ -120,12 +120,12 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
         final MqttWebSocketClientProtocolHandler mqttWebSocketClientProtocolHandler =
                 new MqttWebSocketClientProtocolHandler(clientConfig, webSocketConfig, this);
 
-        pipeline.addLast(HTTP_CODEC_NAME, new HttpClientCodec());
-        pipeline.addLast(
-                HTTP_AGGREGATOR_NAME, new HttpObjectAggregator(MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT));
-        pipeline.addLast(MqttWebSocketClientProtocolHandler.NAME, mqttWebSocketClientProtocolHandler);
-        pipeline.addLast(WebSocketBinaryFrameEncoder.NAME, webSocketBinaryFrameEncoder.get());
-        pipeline.addLast(WebSocketBinaryFrameDecoder.NAME, webSocketBinaryFrameDecoder.get());
+        pipeline.addLast(HTTP_CODEC_NAME, new HttpClientCodec())
+                .addLast(HTTP_AGGREGATOR_NAME,
+                        new HttpObjectAggregator(MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT))
+                .addLast(MqttWebSocketClientProtocolHandler.NAME, mqttWebSocketClientProtocolHandler)
+                .addLast(WebSocketBinaryFrameEncoder.NAME, webSocketBinaryFrameEncoder.get())
+                .addLast(WebSocketBinaryFrameDecoder.NAME, webSocketBinaryFrameDecoder.get());
     }
 
     private void initSsl(final @NotNull Channel channel, final @NotNull MqttClientSslConfigImpl sslConfig)

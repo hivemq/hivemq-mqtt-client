@@ -28,6 +28,7 @@ import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.mqtt.MqttClientConfig;
 import org.mqttbee.mqtt.MqttClientConnectionConfig;
 import org.mqttbee.mqtt.MqttServerConnectionConfig;
+import org.mqttbee.mqtt.codec.decoder.MqttDecoder;
 import org.mqttbee.mqtt.handler.publish.incoming.MqttIncomingQosHandler;
 import org.mqttbee.mqtt.handler.publish.outgoing.MqttOutgoingQosHandler;
 import org.mqttbee.mqtt.handler.subscribe.MqttSubscriptionHandler;
@@ -66,7 +67,7 @@ public class MqttSession {
     @CallByThread("Netty EventLoop")
     public void startOrResume(
             final @NotNull MqttConnAck connAck, final @NotNull ChannelPipeline pipeline,
-            final @NotNull String beforeHandlerName, final @NotNull MqttClientConnectionConfig clientConnectionConfig,
+            final @NotNull MqttClientConnectionConfig clientConnectionConfig,
             final @NotNull MqttServerConnectionConfig serverConnectionConfig) {
 
         if (hasSession && !connAck.isSessionPresent()) {
@@ -80,9 +81,9 @@ public class MqttSession {
             expireFuture = null;
         }
 
-        pipeline.addAfter(beforeHandlerName, MqttSubscriptionHandler.NAME, subscriptionHandler);
-        pipeline.addAfter(beforeHandlerName, MqttIncomingQosHandler.NAME, incomingQosHandler);
-        pipeline.addAfter(beforeHandlerName, MqttOutgoingQosHandler.NAME, outgoingQosHandler);
+        pipeline.addAfter(MqttDecoder.NAME, MqttSubscriptionHandler.NAME, subscriptionHandler);
+        pipeline.addAfter(MqttDecoder.NAME, MqttIncomingQosHandler.NAME, incomingQosHandler);
+        pipeline.addAfter(MqttDecoder.NAME, MqttOutgoingQosHandler.NAME, outgoingQosHandler);
         subscriptionHandler.onSessionStartOrResume(clientConnectionConfig, serverConnectionConfig);
         incomingQosHandler.onSessionStartOrResume(clientConnectionConfig, serverConnectionConfig);
         outgoingQosHandler.onSessionStartOrResume(clientConnectionConfig, serverConnectionConfig);
