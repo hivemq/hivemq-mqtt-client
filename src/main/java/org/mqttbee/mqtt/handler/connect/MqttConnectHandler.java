@@ -20,7 +20,6 @@ package org.mqttbee.mqtt.handler.connect;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelPipeline;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttClientState;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
@@ -172,19 +171,14 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
             final MqttClientConnectionConfig clientConnectionConfig = addClientConfig(connAck, channel);
             final MqttServerConnectionConfig serverConnectionConfig = addServerConfig(connAck);
 
-            final ChannelPipeline pipeline = channel.pipeline();
-            pipeline.remove(this);
-            String beforeHandlerName = MqttDecoder.NAME;
+            channel.pipeline().remove(this).addLast(MqttDisconnectOnConnAckHandler.NAME, disconnectOnConnAckHandler);
+
+            session.startOrResume(connAck, channel.pipeline(), clientConnectionConfig, serverConnectionConfig);
 
             final int keepAlive = clientConnectionConfig.getKeepAlive();
             if (keepAlive > 0) {
-                pipeline.addAfter(beforeHandlerName, MqttPingHandler.NAME, new MqttPingHandler(keepAlive));
-                beforeHandlerName = MqttPingHandler.NAME;
+                channel.pipeline().addAfter(MqttDecoder.NAME, MqttPingHandler.NAME, new MqttPingHandler(keepAlive));
             }
-
-            session.startOrResume(connAck, pipeline, beforeHandlerName, clientConnectionConfig, serverConnectionConfig);
-
-            pipeline.addLast(MqttDisconnectOnConnAckHandler.NAME, disconnectOnConnAckHandler);
 
             clientConfig.getRawState().set(MqttClientState.CONNECTED);
             connAckFlow.onSuccess(connAck);
