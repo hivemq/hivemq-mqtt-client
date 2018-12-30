@@ -23,10 +23,10 @@ import io.netty.channel.ChannelHandlerContext;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttClientState;
 import org.mqttbee.api.mqtt.exceptions.ConnectionClosedException;
-import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.mqtt.MqttClientConfig;
 import org.mqttbee.mqtt.MqttVersion;
+import org.mqttbee.mqtt.exceptions.MqttClientStateExceptions;
 import org.mqttbee.mqtt.handler.MqttConnectionAwareHandler;
 import org.mqttbee.mqtt.handler.MqttSession;
 import org.mqttbee.mqtt.ioc.ConnectionScope;
@@ -102,7 +102,7 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
 
     public void disconnect(final @NotNull MqttDisconnect disconnect, final @NotNull CompletableFlow flow) {
         if (!clientConfig.executeInEventLoop(() -> writeDisconnect(disconnect, flow))) {
-            flow.onError(new NotConnectedException());
+            flow.onError(MqttClientStateExceptions.notConnected());
         }
     }
 
@@ -112,7 +112,7 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
             once = false;
             fireDisconnectEvent(ctx.channel(), new MqttDisconnectEvent.ByUser(disconnect, flow));
         } else {
-            flow.onError(new NotConnectedException());
+            flow.onError(MqttClientStateExceptions.notConnected());
         }
     }
 

@@ -20,9 +20,9 @@ package org.mqttbee.mqtt.handler.publish.incoming;
 import io.reactivex.Flowable;
 import io.reactivex.internal.subscriptions.EmptySubscription;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeResult;
 import org.mqttbee.mqtt.MqttClientConfig;
+import org.mqttbee.mqtt.exceptions.MqttClientStateExceptions;
 import org.mqttbee.mqtt.handler.subscribe.MqttSubscriptionHandler;
 import org.mqttbee.mqtt.ioc.ClientComponent;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
@@ -54,7 +54,7 @@ public class MqttSubscriptionFlowable extends Flowable<Mqtt5SubscribeResult> {
             subscriptionHandler.subscribe(subscribe, flow);
             subscriber.onSubscribe(flow);
         } else {
-            EmptySubscription.error(new NotConnectedException(), subscriber);
+            EmptySubscription.error(MqttClientStateExceptions.notConnected(), subscriber);
         }
     }
 }

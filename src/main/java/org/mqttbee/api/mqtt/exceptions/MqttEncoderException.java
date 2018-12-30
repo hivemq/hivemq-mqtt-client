@@ -26,6 +26,6 @@ import org.mqttbee.util.AsyncRuntimeException;
 public class MqttEncoderException extends AsyncRuntimeException {
 
     public MqttEncoderException(final @NotNull String message) {
-        super(message, null);
+        super(message);
     }
 }

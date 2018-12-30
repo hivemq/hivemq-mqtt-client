@@ -21,9 +21,9 @@ import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.internal.disposables.EmptyDisposable;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.mqtt.MqttClientConfig;
+import org.mqttbee.mqtt.exceptions.MqttClientStateExceptions;
 import org.mqttbee.mqtt.ioc.ClientComponent;
 import org.mqttbee.mqtt.message.subscribe.MqttSubscribe;
 import org.mqttbee.mqtt.message.subscribe.suback.MqttSubAck;
@@ -51,7 +51,7 @@ public class MqttSubAckSingle extends Single<Mqtt5SubAck> {
             observer.onSubscribe(flow);
             subscriptionHandler.subscribe(subscribe, flow);
         } else {
-            EmptyDisposable.error(new NotConnectedException(), observer);
+            EmptyDisposable.error(MqttClientStateExceptions.notConnected(), observer);
         }
     }
 }

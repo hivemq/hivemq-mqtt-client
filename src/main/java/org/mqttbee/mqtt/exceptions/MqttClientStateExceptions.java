@@ -15,15 +15,21 @@
  *
  */
 
-package org.mqttbee.api.mqtt.exceptions;
+package org.mqttbee.mqtt.exceptions;
+
+import org.jetbrains.annotations.NotNull;
+import org.mqttbee.api.mqtt.exceptions.MqttClientStateException;
 
 /**
  * @author Silvio Giebl
  */
-public class NotConnectedException extends Exception {
+public class MqttClientStateExceptions {
 
-    public NotConnectedException() {
-        super("MQTT client is not connected");
+    public static @NotNull MqttClientStateException notConnected() {
+        return new MqttClientStateException("MQTT client is not connected.");
     }
 
+    public static @NotNull MqttClientStateException alreadyConnected() {
+        return new MqttClientStateException("MQTT client is already connected or connecting.");
+    }
 }

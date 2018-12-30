@@ -29,7 +29,7 @@ public class Mqtt5MessageException extends AsyncRuntimeException {
     private final @NotNull Mqtt5Message mqttMessage;
 
     public Mqtt5MessageException(final @NotNull Mqtt5Message mqttMessage, final @NotNull String message) {
-        super(message, null);
+        super(message);
         this.mqttMessage = mqttMessage;
     }
 

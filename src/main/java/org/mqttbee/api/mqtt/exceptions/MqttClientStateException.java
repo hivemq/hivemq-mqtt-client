@@ -17,13 +17,15 @@
 
 package org.mqttbee.api.mqtt.exceptions;
 
+import org.jetbrains.annotations.Nullable;
+import org.mqttbee.util.AsyncRuntimeException;
+
 /**
  * @author Silvio Giebl
  */
-public class AlreadyConnectedException extends Exception {
+public class MqttClientStateException extends AsyncRuntimeException {
 
-    public AlreadyConnectedException() {
-        super("MQTT client is already connecting or connected");
+    public MqttClientStateException(final @Nullable String message) {
+        super(message);
     }
-
 }

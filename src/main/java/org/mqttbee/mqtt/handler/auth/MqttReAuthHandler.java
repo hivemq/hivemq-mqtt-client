@@ -20,7 +20,6 @@ package org.mqttbee.mqtt.handler.auth;
 import io.netty.channel.ChannelHandlerContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.exceptions.NotConnectedException;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientConfig;
 import org.mqttbee.api.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
@@ -28,6 +27,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5Auth;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
+import org.mqttbee.mqtt.exceptions.MqttClientStateExceptions;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectEvent;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.ioc.ConnectionScope;
@@ -55,7 +55,7 @@ public class MqttReAuthHandler extends AbstractMqttAuthHandler {
 
     void reauth(final @NotNull CompletableFlow flow) {
         if (!clientConfig.executeInEventLoop(() -> writeReAuth(flow))) {
-            flow.onError(new NotConnectedException());
+            flow.onError(MqttClientStateExceptions.notConnected());
         }
     }
 
@@ -68,7 +68,7 @@ public class MqttReAuthHandler extends AbstractMqttAuthHandler {
      */
     private void writeReAuth(final @NotNull CompletableFlow flow) {
         if (ctx == null) {
-            flow.onError(new NotConnectedException());
+            flow.onError(MqttClientStateExceptions.notConnected());
             return;
         }
         if (state != MqttAuthState.NONE) {

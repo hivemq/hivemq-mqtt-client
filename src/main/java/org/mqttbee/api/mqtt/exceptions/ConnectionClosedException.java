@@ -26,7 +26,7 @@ import org.mqttbee.util.AsyncRuntimeException;
 public class ConnectionClosedException extends AsyncRuntimeException {
 
     public ConnectionClosedException(final @NotNull String message) {
-        super(message, null);
+        super(message);
     }
 
     public ConnectionClosedException(final @NotNull Throwable cause) {
