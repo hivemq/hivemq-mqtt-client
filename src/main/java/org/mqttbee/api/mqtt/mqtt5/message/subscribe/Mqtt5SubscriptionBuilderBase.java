@@ -36,13 +36,7 @@ public interface Mqtt5SubscriptionBuilderBase<C extends Mqtt5SubscriptionBuilder
     @NotNull MqttTopicFilterBuilder.Nested<? extends C> topicFilter();
 
     @DoNotImplement
-    interface Complete<C extends Mqtt5SubscriptionBuilderBase.Complete<C>> {
-
-        @NotNull C topicFilter(@NotNull String topicFilter);
-
-        @NotNull C topicFilter(@NotNull MqttTopicFilter topicFilter);
-
-        @NotNull MqttTopicFilterBuilder.Nested<? extends C> topicFilter();
+    interface Complete<C extends Mqtt5SubscriptionBuilderBase.Complete<C>> extends Mqtt5SubscriptionBuilderBase<C> {
 
         @NotNull C qos(@NotNull MqttQos qos);
 
