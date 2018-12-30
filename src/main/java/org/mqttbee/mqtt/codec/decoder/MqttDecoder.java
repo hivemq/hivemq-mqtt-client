@@ -21,6 +21,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.api.mqtt.exceptions.MqttDecodeException;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
@@ -106,8 +107,10 @@ public class MqttDecoder extends ByteToMessageDecoder {
 
         } catch (final MqttDecoderException e) {
             in.clear();
-            e.setMessageType(Mqtt5MessageType.fromCode(messageType));
-            MqttDisconnectUtil.disconnect(ctx.channel(), e.getReasonCode(), e);
+            final Mqtt5MessageType type = Mqtt5MessageType.fromCode(messageType);
+            final String message =
+                    "Exception while decoding " + ((type == null) ? "UNKNOWN" : type) + ": " + e.getMessage();
+            MqttDisconnectUtil.disconnect(ctx.channel(), e.getReasonCode(), new MqttDecodeException(message));
         }
     }
 }
