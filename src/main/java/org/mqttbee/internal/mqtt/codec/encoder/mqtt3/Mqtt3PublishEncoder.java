@@ -74,7 +74,7 @@ public class Mqtt3PublishEncoder extends Mqtt3MessageEncoder<MqttStatefulPublish
             final int encodedLengthWithoutPayload = encodedLength - payload.remaining();
             final ByteBuf out = allocator.ioBuffer(encodedLengthWithoutPayload, encodedLengthWithoutPayload);
             encode(message, out, remainingLength);
-            return Unpooled.unmodifiableBuffer(out, Unpooled.wrappedBuffer(payload));
+            return Unpooled.wrappedUnmodifiableBuffer(out, Unpooled.wrappedBuffer(payload));
         }
         final ByteBuf out = allocator.ioBuffer(encodedLength, encodedLength);
         encode(message, out, remainingLength);
