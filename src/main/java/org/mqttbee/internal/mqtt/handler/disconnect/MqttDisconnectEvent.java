@@ -20,9 +20,9 @@ package org.mqttbee.internal.mqtt.handler.disconnect;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.internal.mqtt.message.disconnect.MqttDisconnect;
+import org.mqttbee.internal.rx.CompletableFlow;
 import org.mqttbee.mqtt.mqtt5.exceptions.Mqtt5DisconnectException;
 import org.mqttbee.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
-import org.mqttbee.rx.CompletableFlow;
 
 /**
  * Event that is fired when the channel will be closed containing the cause.

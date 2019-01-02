@@ -22,7 +22,7 @@ import io.reactivex.SingleObserver;
 import io.reactivex.disposables.Disposable;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.internal.mqtt.MqttClientConfig;
-import org.mqttbee.rx.SingleFlow;
+import org.mqttbee.internal.rx.SingleFlow;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 

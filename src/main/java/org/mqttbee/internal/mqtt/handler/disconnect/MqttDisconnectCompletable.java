@@ -26,7 +26,7 @@ import org.mqttbee.internal.mqtt.MqttClientConfig;
 import org.mqttbee.internal.mqtt.MqttClientConnectionConfig;
 import org.mqttbee.internal.mqtt.exceptions.MqttClientStateExceptions;
 import org.mqttbee.internal.mqtt.message.disconnect.MqttDisconnect;
-import org.mqttbee.rx.CompletableFlow;
+import org.mqttbee.internal.rx.CompletableFlow;
 
 /**
  * @author Silvio Giebl

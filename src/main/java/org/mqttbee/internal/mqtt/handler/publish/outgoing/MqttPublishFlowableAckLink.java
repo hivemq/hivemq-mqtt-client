@@ -23,7 +23,7 @@ import io.reactivex.plugins.RxJavaPlugins;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.internal.mqtt.message.publish.MqttPublish;
-import org.mqttbee.rx.FuseableSubscriber;
+import org.mqttbee.internal.rx.FuseableSubscriber;
 import org.reactivestreams.Subscriber;
 
 import java.util.concurrent.atomic.AtomicInteger;

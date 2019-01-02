@@ -23,7 +23,7 @@ import org.mqttbee.internal.mqtt.handler.publish.incoming.MqttSubscriptionFlow;
 import org.mqttbee.internal.mqtt.message.subscribe.MqttStatefulSubscribe;
 import org.mqttbee.internal.mqtt.message.subscribe.MqttSubscribe;
 import org.mqttbee.internal.mqtt.message.subscribe.suback.MqttSubAck;
-import org.mqttbee.rx.SingleFlow;
+import org.mqttbee.internal.rx.SingleFlow;
 
 /**
  * @author Silvio Giebl

@@ -33,8 +33,8 @@ import org.mqttbee.internal.mqtt.handler.connect.MqttConnectHandler;
 import org.mqttbee.internal.mqtt.handler.disconnect.MqttDisconnectHandler;
 import org.mqttbee.internal.mqtt.handler.websocket.WebSocketBinaryFrameDecoder;
 import org.mqttbee.internal.mqtt.handler.websocket.WebSocketBinaryFrameEncoder;
+import org.mqttbee.internal.rx.SingleFlow;
 import org.mqttbee.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
-import org.mqttbee.rx.SingleFlow;
 
 import java.util.Optional;
 

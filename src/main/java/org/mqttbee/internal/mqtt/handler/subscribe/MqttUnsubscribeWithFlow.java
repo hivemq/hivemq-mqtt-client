@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.internal.mqtt.message.unsubscribe.MqttStatefulUnsubscribe;
 import org.mqttbee.internal.mqtt.message.unsubscribe.MqttUnsubscribe;
 import org.mqttbee.internal.mqtt.message.unsubscribe.unsuback.MqttUnsubAck;
-import org.mqttbee.rx.SingleFlow;
+import org.mqttbee.internal.rx.SingleFlow;
 
 /**
  * @author Silvio Giebl

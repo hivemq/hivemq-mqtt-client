@@ -23,8 +23,8 @@ import io.netty.bootstrap.Bootstrap;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.internal.mqtt.codec.MqttCodecModule;
 import org.mqttbee.internal.mqtt.message.connect.MqttConnect;
+import org.mqttbee.internal.rx.SingleFlow;
 import org.mqttbee.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
-import org.mqttbee.rx.SingleFlow;
 
 /**
  * Component for a single client connection. A new one is created for each new client connection (also for reconnects).
