@@ -19,6 +19,7 @@ package org.mqttbee.internal.mqtt.handler.publish.incoming;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mqttbee.internal.annotations.NotThreadSafe;
 import org.mqttbee.internal.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.internal.mqtt.ioc.ClientScope;
 import org.mqttbee.internal.mqtt.message.publish.MqttStatefulPublish;
@@ -27,7 +28,6 @@ import org.mqttbee.internal.mqtt.message.subscribe.suback.MqttSubAck;
 import org.mqttbee.internal.util.collections.HandleList;
 import org.mqttbee.internal.util.collections.ImmutableIntList;
 
-import javax.annotation.concurrent.NotThreadSafe;
 import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.function.Consumer;

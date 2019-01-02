@@ -18,10 +18,10 @@
 package org.mqttbee.internal.mqtt.message.publish;
 
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.internal.annotations.NotThreadSafe;
 import org.mqttbee.internal.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.mqtt5.message.publish.TopicAliasUsage;
 
-import javax.annotation.concurrent.NotThreadSafe;
 import java.util.HashMap;
 import java.util.Random;
 

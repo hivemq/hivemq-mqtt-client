@@ -19,11 +19,11 @@ package org.mqttbee.internal.mqtt.handler.publish.incoming;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mqttbee.internal.annotations.NotThreadSafe;
 import org.mqttbee.internal.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.internal.util.collections.HandleList;
 
-import javax.annotation.concurrent.NotThreadSafe;
 import java.util.function.Consumer;
 
 /**
