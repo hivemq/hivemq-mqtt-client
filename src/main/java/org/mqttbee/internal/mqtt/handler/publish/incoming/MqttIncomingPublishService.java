@@ -18,7 +18,7 @@
 package org.mqttbee.internal.mqtt.handler.publish.incoming;
 
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.annotations.CallByThread;
+import org.mqttbee.internal.annotations.CallByThread;
 import org.mqttbee.internal.mqtt.ioc.ClientScope;
 import org.mqttbee.internal.mqtt.message.publish.MqttPublish;
 import org.mqttbee.internal.mqtt.message.publish.MqttStatefulPublish;
