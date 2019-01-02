@@ -61,7 +61,7 @@ public interface TypeSwitch<T> {
 
     class Never implements TypeSwitch<Object> {
 
-        static @NotNull Never INSTANCE = new Never();
+        static final @NotNull Never INSTANCE = new Never();
 
         private Never() {}
 
