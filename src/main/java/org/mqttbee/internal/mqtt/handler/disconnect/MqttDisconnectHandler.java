@@ -28,10 +28,10 @@ import org.mqttbee.internal.mqtt.handler.MqttConnectionAwareHandler;
 import org.mqttbee.internal.mqtt.handler.MqttSession;
 import org.mqttbee.internal.mqtt.ioc.ConnectionScope;
 import org.mqttbee.internal.mqtt.message.disconnect.MqttDisconnect;
+import org.mqttbee.internal.rx.CompletableFlow;
 import org.mqttbee.mqtt.MqttClientState;
 import org.mqttbee.mqtt.exceptions.ConnectionClosedException;
 import org.mqttbee.mqtt.mqtt5.exceptions.Mqtt5DisconnectException;
-import org.mqttbee.rx.CompletableFlow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

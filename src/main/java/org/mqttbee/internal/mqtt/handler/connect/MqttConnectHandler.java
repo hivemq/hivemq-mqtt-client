@@ -39,11 +39,11 @@ import org.mqttbee.internal.mqtt.message.connect.MqttConnect;
 import org.mqttbee.internal.mqtt.message.connect.MqttConnectRestrictions;
 import org.mqttbee.internal.mqtt.message.connect.connack.MqttConnAck;
 import org.mqttbee.internal.mqtt.message.connect.connack.MqttConnAckRestrictions;
+import org.mqttbee.internal.rx.SingleFlow;
 import org.mqttbee.mqtt.MqttClientState;
 import org.mqttbee.mqtt.mqtt5.exceptions.Mqtt5ConnAckException;
 import org.mqttbee.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.rx.SingleFlow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

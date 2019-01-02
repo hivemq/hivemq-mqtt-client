@@ -38,9 +38,9 @@ import org.mqttbee.internal.mqtt.handler.websocket.MqttWebSocketClientProtocolHa
 import org.mqttbee.internal.mqtt.handler.websocket.WebSocketBinaryFrameDecoder;
 import org.mqttbee.internal.mqtt.handler.websocket.WebSocketBinaryFrameEncoder;
 import org.mqttbee.internal.mqtt.ioc.ConnectionScope;
+import org.mqttbee.internal.rx.SingleFlow;
 import org.mqttbee.mqtt.MqttWebSocketConfig;
 import org.mqttbee.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
-import org.mqttbee.rx.SingleFlow;
 
 import javax.inject.Inject;
 import javax.net.ssl.SSLException;

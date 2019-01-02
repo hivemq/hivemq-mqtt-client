@@ -28,6 +28,7 @@ import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mqttbee.internal.rx.FlowableMapFilter;
 import org.mqttbee.rx.reactivestreams.PublisherWithSingle;
 import org.mqttbee.rx.reactivestreams.WithSingleSubscriber;
 import org.mqttbee.util.Checks;

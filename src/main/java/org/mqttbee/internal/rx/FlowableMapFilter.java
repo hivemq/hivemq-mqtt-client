@@ -15,7 +15,7 @@
  *
  */
 
-package org.mqttbee.rx;
+package org.mqttbee.internal.rx;
 
 import io.reactivex.Flowable;
 import io.reactivex.FlowableTransformer;

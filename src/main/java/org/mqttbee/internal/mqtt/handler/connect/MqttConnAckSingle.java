@@ -25,9 +25,9 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.internal.mqtt.MqttClientConfig;
 import org.mqttbee.internal.mqtt.exceptions.MqttClientStateExceptions;
 import org.mqttbee.internal.mqtt.message.connect.MqttConnect;
+import org.mqttbee.internal.rx.SingleFlow;
 import org.mqttbee.mqtt.MqttClientState;
 import org.mqttbee.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
-import org.mqttbee.rx.SingleFlow;
 
 /**
  * @author Silvio Giebl

@@ -18,7 +18,7 @@
 package org.mqttbee.internal.mqtt.handler.subscribe;
 
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.rx.SingleFlow;
+import org.mqttbee.internal.rx.SingleFlow;
 
 /**
  * @author Silvio Giebl

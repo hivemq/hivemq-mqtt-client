@@ -15,7 +15,7 @@
  *
  */
 
-package org.mqttbee.rx;
+package org.mqttbee.internal.rx;
 
 import io.reactivex.CompletableObserver;
 import io.reactivex.disposables.Disposable;
@@ -54,5 +54,4 @@ public class CompletableFlow implements Disposable {
     public boolean isCancelled() {
         return isDisposed();
     }
-
 }

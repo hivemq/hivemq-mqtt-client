@@ -23,6 +23,7 @@ import io.reactivex.schedulers.Schedulers;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.internal.mqtt.message.subscribe.MqttSubscribeBuilder;
+import org.mqttbee.internal.rx.RxFutureConverter;
 import org.mqttbee.mqtt.MqttGlobalPublishFilter;
 import org.mqttbee.mqtt.mqtt5.Mqtt5AsyncClient;
 import org.mqttbee.mqtt.mqtt5.message.connect.Mqtt5Connect;
@@ -34,7 +35,6 @@ import org.mqttbee.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
 import org.mqttbee.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
-import org.mqttbee.rx.RxFutureConverter;
 import org.mqttbee.util.Checks;
 import org.reactivestreams.Subscription;
 
