@@ -23,7 +23,7 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.util.concurrent.ScheduledFuture;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.annotations.CallByThread;
+import org.mqttbee.internal.annotations.CallByThread;
 import org.mqttbee.internal.mqtt.handler.MqttConnectionAwareHandler;
 import org.mqttbee.internal.mqtt.handler.disconnect.MqttDisconnectEvent;
 import org.mqttbee.internal.mqtt.handler.disconnect.MqttDisconnectUtil;

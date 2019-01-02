@@ -23,7 +23,7 @@ import io.reactivex.internal.util.BackpressureHelper;
 import io.reactivex.plugins.RxJavaPlugins;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.annotations.CallByThread;
+import org.mqttbee.internal.annotations.CallByThread;
 import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.util.ExecutorUtil;
 import org.reactivestreams.Subscriber;

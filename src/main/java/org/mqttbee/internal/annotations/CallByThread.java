@@ -15,7 +15,7 @@
  *
  */
 
-package org.mqttbee.annotations;
+package org.mqttbee.internal.annotations;
 
 import org.jetbrains.annotations.NotNull;
 
