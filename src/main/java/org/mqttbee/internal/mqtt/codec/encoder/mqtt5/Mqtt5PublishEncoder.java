@@ -112,7 +112,7 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
             final int encodedLengthWithoutPayload = encodedLength - payload.remaining();
             final ByteBuf out = allocator.ioBuffer(encodedLengthWithoutPayload, encodedLengthWithoutPayload);
             encode(message, out, remainingLength, propertyLength, omittedProperties);
-            return Unpooled.unmodifiableBuffer(out, Unpooled.wrappedBuffer(payload));
+            return Unpooled.wrappedUnmodifiableBuffer(out, Unpooled.wrappedBuffer(payload));
         }
         final ByteBuf out = allocator.ioBuffer(encodedLength, encodedLength);
         encode(message, out, remainingLength, propertyLength, omittedProperties);

@@ -68,7 +68,7 @@ class Mqtt3RxClientViewExceptionsTest {
         given(mqtt5Client.connect(any())).willReturn(Single.error(mqtt5MessageException));
 
         final Mqtt3Connect connect = Mqtt3Connect.builder().build();
-        assertMqtt3Exception(() -> mqtt3Client.connect(connect).toCompletable().blockingAwait(), mqtt5MessageException);
+        assertMqtt3Exception(() -> mqtt3Client.connect(connect).ignoreElement().blockingAwait(), mqtt5MessageException);
     }
 
     @Test
@@ -80,7 +80,8 @@ class Mqtt3RxClientViewExceptionsTest {
         final Mqtt3Subscribe subscribe = Mqtt3Subscribe.builder()
                 .addSubscription(Mqtt3Subscription.builder().topicFilter("topic").qos(MqttQos.AT_LEAST_ONCE).build())
                 .build();
-        assertMqtt3Exception(() -> mqtt3Client.subscribe(subscribe).toCompletable().blockingAwait(),
+        assertMqtt3Exception(
+                () -> mqtt3Client.subscribe(subscribe).ignoreElement().blockingAwait(),
                 mqtt5MessageException);
     }
 

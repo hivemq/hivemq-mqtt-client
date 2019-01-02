@@ -149,7 +149,7 @@ class Mqtt3ClientExample {
 
         // now say we want to connect first and then subscribe, this does not connect and subscribe yet
         // only take the first countToPublish publications and then disconnect
-        return connectScenario.toCompletable()
+        return connectScenario.ignoreElement()
                 .andThen(subscribeScenario)
                 .take(countToPublish)
                 .ignoreElements()
@@ -196,7 +196,7 @@ class Mqtt3ClientExample {
 
         // now we want to connect, then publish and take the corresponding number of pubAcks and disconnect
         // if we did not publish anything for 10 seconds also disconnect
-        return connectScenario.toCompletable().andThen(publishScenario).ignoreElements().andThen(disconnectScenario);
+        return connectScenario.ignoreElement().andThen(publishScenario).ignoreElements().andThen(disconnectScenario);
     }
 
     private Mqtt3RxClient getClient() {

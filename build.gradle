@@ -42,13 +42,13 @@ repositories {
 }
 
 ext {
-    rxJavaVersion = '2.1.12'
-    nettyVersion = '4.1.22.Final'
-    daggerVersion = '2.15'
+    rxJavaVersion = '2.2.5'
+    nettyVersion = '4.1.32.Final'
+    daggerVersion = '2.20'
     guavaVersion = '24.1-jre'
-    jcToolsVersion = '2.1.1'
+    jcToolsVersion = '2.1.2'
     slf4jVersion = '1.7.25'
-    jetbrainsAnnotationsVersion = '16.0.2'
+    jetbrainsAnnotationsVersion = '16.0.3'
 
     junit4Version = '4.12'
     junitVintageVersion = '4.12.3'

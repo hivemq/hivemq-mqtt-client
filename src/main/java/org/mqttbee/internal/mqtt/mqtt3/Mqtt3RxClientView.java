@@ -111,8 +111,7 @@ public class Mqtt3RxClientView implements Mqtt3RxClient {
 
     @Override
     public @NotNull Completable unsubscribe(final @Nullable Mqtt3Unsubscribe unsubscribe) {
-        return delegate.unsubscribe(MqttChecks.unsubscribe(unsubscribe))
-                .toCompletable()
+        return delegate.unsubscribe(MqttChecks.unsubscribe(unsubscribe)).ignoreElement()
                 .onErrorResumeNext(EXCEPTION_MAPPER_COMPLETABLE);
     }
 
