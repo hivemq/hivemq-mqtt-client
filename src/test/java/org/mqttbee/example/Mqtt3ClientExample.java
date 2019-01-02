@@ -22,7 +22,6 @@ import io.reactivex.Flowable;
 import io.reactivex.Single;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.util.KeyStoreUtil;
 import org.mqttbee.mqtt.MqttClient;
 import org.mqttbee.mqtt.MqttClientBuilder;
 import org.mqttbee.mqtt.MqttClientSslConfig;
@@ -37,6 +36,7 @@ import org.mqttbee.mqtt.mqtt3.message.publish.Mqtt3PublishResult;
 import org.mqttbee.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 import org.mqttbee.mqtt.mqtt3.message.subscribe.Mqtt3Subscription;
 import org.mqttbee.util.ByteBufferUtil;
+import org.mqttbee.util.KeyStoreUtil;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;

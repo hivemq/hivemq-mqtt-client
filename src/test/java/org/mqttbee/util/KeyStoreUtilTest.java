@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mqttbee.api.util;
+
+package org.mqttbee.util;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mqttbee.util.TestKeyStoreGenerator;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLException;
@@ -33,7 +33,6 @@ import static org.junit.Assert.assertNotNull;
 public class KeyStoreUtilTest {
 
     private TestKeyStoreGenerator testKeyStoreGenerator;
-
 
     @Before
     public void before() {

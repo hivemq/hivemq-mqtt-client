@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package org.mqttbee.api.util;
+package org.mqttbee.util;
 
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.util.Checks;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLException;
