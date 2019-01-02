@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 The MQTT Bee project
+ * Copyright 2018 The MQTT Bee project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
