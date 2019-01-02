@@ -20,7 +20,7 @@ package org.mqttbee.api.mqtt.mqtt5.message.publish.pubcomp;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5ReasonCode;
-import org.mqttbee.mqtt.message.MqttCommonReasonCode;
+import org.mqttbee.internal.mqtt.message.MqttCommonReasonCode;
 
 /**
  * MQTT Reason Codes that can be used in PUBCOMP packets according to the MQTT 5 specification.

@@ -19,8 +19,8 @@ package org.mqttbee.api.mqtt.datatypes;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.mqtt.datatypes.MqttSharedTopicFilterImpl;
-import org.mqttbee.mqtt.datatypes.MqttTopicFilterImplBuilder;
+import org.mqttbee.internal.mqtt.datatypes.MqttSharedTopicFilterImpl;
+import org.mqttbee.internal.mqtt.datatypes.MqttTopicFilterImplBuilder;
 
 /**
  * MQTT Shared Topic Filter according to the MQTT specification.

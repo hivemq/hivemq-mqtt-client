@@ -20,7 +20,7 @@ package org.mqttbee.api.mqtt.mqtt3.message.auth;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
-import org.mqttbee.mqtt.message.auth.mqtt3.Mqtt3SimpleAuthViewBuilder;
+import org.mqttbee.internal.mqtt.message.auth.mqtt3.Mqtt3SimpleAuthViewBuilder;
 
 import java.nio.ByteBuffer;
 import java.util.Optional;

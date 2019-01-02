@@ -20,9 +20,9 @@ package org.mqttbee.api.mqtt.mqtt5.datatypes;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.Immutable;
-import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
-import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImplBuilder;
-import org.mqttbee.mqtt.util.MqttChecks;
+import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertiesImpl;
+import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertiesImplBuilder;
+import org.mqttbee.internal.mqtt.util.MqttChecks;
 
 import java.util.List;
 

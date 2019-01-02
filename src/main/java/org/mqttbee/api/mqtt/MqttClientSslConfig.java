@@ -19,7 +19,7 @@ package org.mqttbee.api.mqtt;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.Immutable;
-import org.mqttbee.mqtt.MqttClientSslConfigImplBuilder;
+import org.mqttbee.internal.mqtt.MqttClientSslConfigImplBuilder;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;

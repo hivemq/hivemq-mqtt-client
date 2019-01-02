@@ -23,7 +23,7 @@ import org.mqttbee.annotations.Immutable;
 import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
-import org.mqttbee.mqtt.message.subscribe.MqttSubscribeBuilder;
+import org.mqttbee.internal.mqtt.message.subscribe.MqttSubscribeBuilder;
 
 import java.util.List;
 

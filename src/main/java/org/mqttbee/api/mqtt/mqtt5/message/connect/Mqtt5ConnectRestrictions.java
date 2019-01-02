@@ -19,8 +19,8 @@ package org.mqttbee.api.mqtt.mqtt5.message.connect;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
-import org.mqttbee.mqtt.message.connect.MqttConnectRestrictionsBuilder;
+import org.mqttbee.internal.mqtt.datatypes.MqttVariableByteInteger;
+import org.mqttbee.internal.mqtt.message.connect.MqttConnectRestrictionsBuilder;
 
 /**
  * Restrictions from the client in the MQTT 5 CONNECT packet.

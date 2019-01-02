@@ -20,7 +20,7 @@ package org.mqttbee.api.mqtt.mqtt3.exceptions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt3.message.disconnect.Mqtt3Disconnect;
-import org.mqttbee.mqtt.message.disconnect.mqtt3.Mqtt3DisconnectView;
+import org.mqttbee.internal.mqtt.message.disconnect.mqtt3.Mqtt3DisconnectView;
 
 /**
  * @author Silvio Giebl

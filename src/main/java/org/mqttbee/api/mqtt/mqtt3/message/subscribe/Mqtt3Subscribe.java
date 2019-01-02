@@ -22,7 +22,7 @@ import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.Immutable;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3Message;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
-import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeViewBuilder;
+import org.mqttbee.internal.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeViewBuilder;
 
 import java.util.List;
 

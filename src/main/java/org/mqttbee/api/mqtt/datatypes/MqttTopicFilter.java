@@ -20,8 +20,8 @@ package org.mqttbee.api.mqtt.datatypes;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.Immutable;
-import org.mqttbee.mqtt.datatypes.MqttTopicFilterImpl;
-import org.mqttbee.mqtt.datatypes.MqttTopicFilterImplBuilder;
+import org.mqttbee.internal.mqtt.datatypes.MqttTopicFilterImpl;
+import org.mqttbee.internal.mqtt.datatypes.MqttTopicFilterImplBuilder;
 
 import java.util.List;
 

@@ -19,7 +19,7 @@ package org.mqttbee.api.mqtt.datatypes;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.mqtt.datatypes.MqttClientIdentifierImpl;
+import org.mqttbee.internal.mqtt.datatypes.MqttClientIdentifierImpl;
 
 /**
  * MQTT Client Identifier according to the MQTT specification.
