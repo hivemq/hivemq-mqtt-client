@@ -24,8 +24,8 @@ import org.mqttbee.internal.mqtt.codec.decoder.MqttDecoderException;
 import org.mqttbee.internal.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.internal.mqtt.message.subscribe.suback.MqttSubAck;
 import org.mqttbee.internal.mqtt.message.subscribe.suback.mqtt3.Mqtt3SubAckView;
+import org.mqttbee.internal.util.collections.ImmutableList;
 import org.mqttbee.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAckReturnCode;
-import org.mqttbee.util.collections.ImmutableList;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

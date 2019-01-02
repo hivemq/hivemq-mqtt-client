@@ -21,6 +21,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.internal.mqtt.datatypes.*;
 import org.mqttbee.internal.mqtt.util.MqttChecks;
+import org.mqttbee.internal.util.ByteBufferUtil;
+import org.mqttbee.internal.util.Checks;
 import org.mqttbee.mqtt.datatypes.MqttQos;
 import org.mqttbee.mqtt.datatypes.MqttTopic;
 import org.mqttbee.mqtt.datatypes.MqttUtf8String;
@@ -29,8 +31,6 @@ import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5PublishBuilder;
 import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5WillPublishBuilder;
 import org.mqttbee.mqtt.mqtt5.message.publish.TopicAliasUsage;
-import org.mqttbee.util.ByteBufferUtil;
-import org.mqttbee.util.Checks;
 
 import java.nio.ByteBuffer;
 import java.util.function.Function;

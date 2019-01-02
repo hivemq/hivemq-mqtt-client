@@ -26,8 +26,8 @@ import org.mqttbee.internal.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.internal.mqtt.message.publish.MqttPublish;
 import org.mqttbee.internal.mqtt.message.publish.MqttStatefulPublish;
 import org.mqttbee.internal.mqtt.message.publish.mqtt3.Mqtt3PublishView;
+import org.mqttbee.internal.util.ByteBufferUtil;
 import org.mqttbee.mqtt.datatypes.MqttQos;
-import org.mqttbee.util.ByteBufferUtil;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

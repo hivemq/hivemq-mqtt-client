@@ -29,6 +29,7 @@ import org.mqttbee.internal.mqtt.message.connect.MqttConnect;
 import org.mqttbee.internal.mqtt.message.connect.MqttConnectRestrictions;
 import org.mqttbee.internal.mqtt.message.connect.MqttStatefulConnect;
 import org.mqttbee.internal.mqtt.message.publish.MqttWillPublish;
+import org.mqttbee.internal.util.collections.ImmutableList;
 import org.mqttbee.mqtt.datatypes.MqttQos;
 import org.mqttbee.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.mqtt.exceptions.MqttEncodeException;
@@ -42,7 +43,6 @@ import org.mqttbee.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
-import org.mqttbee.util.collections.ImmutableList;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;

@@ -22,8 +22,8 @@ import org.mqttbee.internal.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.internal.mqtt.message.subscribe.MqttStatefulSubscribe;
 import org.mqttbee.internal.mqtt.message.subscribe.suback.MqttSubAck;
 import org.mqttbee.internal.rx.SingleFlow;
+import org.mqttbee.internal.util.collections.HandleList;
 import org.mqttbee.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeResult;
-import org.mqttbee.util.collections.HandleList;
 import org.reactivestreams.Subscriber;
 
 /**

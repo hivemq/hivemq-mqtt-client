@@ -26,13 +26,13 @@ import org.mqttbee.internal.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.internal.mqtt.handler.util.MqttTimeoutInboundHandler;
 import org.mqttbee.internal.mqtt.message.auth.MqttAuth;
 import org.mqttbee.internal.mqtt.message.auth.MqttAuthBuilder;
+import org.mqttbee.internal.util.Checks;
 import org.mqttbee.mqtt.mqtt5.Mqtt5ClientConfig;
 import org.mqttbee.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
 import org.mqttbee.mqtt.mqtt5.exceptions.Mqtt5AuthException;
 import org.mqttbee.mqtt.mqtt5.message.auth.Mqtt5Auth;
 import org.mqttbee.mqtt.mqtt5.message.auth.Mqtt5AuthBuilder;
 import org.mqttbee.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.util.Checks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

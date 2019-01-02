@@ -30,6 +30,8 @@ import org.mqttbee.internal.mqtt.message.subscribe.MqttSubscribe;
 import org.mqttbee.internal.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeView;
 import org.mqttbee.internal.mqtt.message.unsubscribe.MqttUnsubscribe;
 import org.mqttbee.internal.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeView;
+import org.mqttbee.internal.util.Checks;
+import org.mqttbee.internal.util.collections.ImmutableList;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifier;
 import org.mqttbee.mqtt.datatypes.MqttTopic;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilter;
@@ -45,8 +47,6 @@ import org.mqttbee.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
 import org.mqttbee.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
-import org.mqttbee.util.Checks;
-import org.mqttbee.util.collections.ImmutableList;
 
 import java.nio.ByteBuffer;
 import java.util.Collection;

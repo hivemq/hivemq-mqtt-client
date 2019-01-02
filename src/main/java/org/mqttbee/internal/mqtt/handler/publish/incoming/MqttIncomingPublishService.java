@@ -22,8 +22,8 @@ import org.mqttbee.internal.annotations.CallByThread;
 import org.mqttbee.internal.mqtt.ioc.ClientScope;
 import org.mqttbee.internal.mqtt.message.publish.MqttPublish;
 import org.mqttbee.internal.mqtt.message.publish.MqttStatefulPublish;
-import org.mqttbee.util.collections.ChunkedArrayQueue;
-import org.mqttbee.util.collections.HandleList;
+import org.mqttbee.internal.util.collections.ChunkedArrayQueue;
+import org.mqttbee.internal.util.collections.HandleList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

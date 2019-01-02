@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mqttbee.util.collections.ImmutableList;
+import org.mqttbee.internal.util.collections.ImmutableList;
 
 import java.nio.charset.StandardCharsets;
 import java.util.function.Function;

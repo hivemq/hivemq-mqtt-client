@@ -19,10 +19,10 @@ package org.mqttbee.internal.mqtt.datatypes;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mqttbee.internal.util.ByteArray;
+import org.mqttbee.internal.util.ByteArrayUtil;
 import org.mqttbee.mqtt.datatypes.MqttTopic;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilter;
-import org.mqttbee.util.ByteArray;
-import org.mqttbee.util.ByteArrayUtil;
 
 import java.util.Arrays;
 

@@ -21,9 +21,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.internal.mqtt.advanced.MqttAdvancedClientConfig;
 import org.mqttbee.internal.mqtt.advanced.MqttAdvancedClientConfigBuilder;
+import org.mqttbee.internal.util.Checks;
 import org.mqttbee.mqtt.mqtt5.Mqtt5ClientBuilder;
 import org.mqttbee.mqtt.mqtt5.advanced.Mqtt5AdvancedClientConfig;
-import org.mqttbee.util.Checks;
 
 /**
  * @author Silvio Giebl

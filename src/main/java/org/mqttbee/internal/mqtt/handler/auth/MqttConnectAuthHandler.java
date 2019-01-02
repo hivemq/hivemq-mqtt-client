@@ -29,6 +29,8 @@ import org.mqttbee.internal.mqtt.message.auth.MqttEnhancedAuthBuilder;
 import org.mqttbee.internal.mqtt.message.connect.MqttConnect;
 import org.mqttbee.internal.mqtt.message.connect.MqttStatefulConnect;
 import org.mqttbee.internal.mqtt.message.connect.connack.MqttConnAck;
+import org.mqttbee.internal.util.Checks;
+import org.mqttbee.internal.util.netty.DefaultChannelOutboundHandler;
 import org.mqttbee.mqtt.mqtt5.Mqtt5ClientConfig;
 import org.mqttbee.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
 import org.mqttbee.mqtt.mqtt5.exceptions.Mqtt5AuthException;
@@ -38,8 +40,6 @@ import org.mqttbee.mqtt.mqtt5.message.auth.Mqtt5EnhancedAuthBuilder;
 import org.mqttbee.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.util.Checks;
-import org.mqttbee.util.netty.DefaultChannelOutboundHandler;
 
 import javax.inject.Inject;
 

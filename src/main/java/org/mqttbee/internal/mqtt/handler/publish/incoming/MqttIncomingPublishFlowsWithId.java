@@ -24,8 +24,8 @@ import org.mqttbee.internal.mqtt.ioc.ClientScope;
 import org.mqttbee.internal.mqtt.message.publish.MqttStatefulPublish;
 import org.mqttbee.internal.mqtt.message.subscribe.MqttStatefulSubscribe;
 import org.mqttbee.internal.mqtt.message.subscribe.suback.MqttSubAck;
-import org.mqttbee.util.collections.HandleList;
-import org.mqttbee.util.collections.ImmutableIntList;
+import org.mqttbee.internal.util.collections.HandleList;
+import org.mqttbee.internal.util.collections.ImmutableIntList;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.inject.Inject;

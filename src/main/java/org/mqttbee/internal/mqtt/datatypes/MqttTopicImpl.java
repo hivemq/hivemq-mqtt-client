@@ -22,9 +22,9 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.Immutable;
+import org.mqttbee.internal.util.Checks;
+import org.mqttbee.internal.util.collections.ImmutableList;
 import org.mqttbee.mqtt.datatypes.MqttTopic;
-import org.mqttbee.util.Checks;
-import org.mqttbee.util.collections.ImmutableList;
 
 /**
  * @author Silvio Giebl

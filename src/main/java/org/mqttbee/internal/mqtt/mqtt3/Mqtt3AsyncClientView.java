@@ -27,6 +27,7 @@ import org.mqttbee.internal.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeViewBuild
 import org.mqttbee.internal.mqtt.message.subscribe.suback.mqtt3.Mqtt3SubAckView;
 import org.mqttbee.internal.mqtt.mqtt3.exceptions.Mqtt3ExceptionFactory;
 import org.mqttbee.internal.mqtt.util.MqttChecks;
+import org.mqttbee.internal.util.Checks;
 import org.mqttbee.mqtt.MqttGlobalPublishFilter;
 import org.mqttbee.mqtt.mqtt3.Mqtt3AsyncClient;
 import org.mqttbee.mqtt.mqtt3.Mqtt3BlockingClient;
@@ -43,7 +44,6 @@ import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
 import org.mqttbee.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
-import org.mqttbee.util.Checks;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;

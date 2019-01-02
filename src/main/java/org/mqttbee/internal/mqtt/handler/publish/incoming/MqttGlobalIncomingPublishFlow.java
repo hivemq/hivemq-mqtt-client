@@ -19,9 +19,9 @@ package org.mqttbee.internal.mqtt.handler.publish.incoming;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mqttbee.internal.util.collections.HandleList;
 import org.mqttbee.mqtt.MqttGlobalPublishFilter;
 import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5Publish;
-import org.mqttbee.util.collections.HandleList;
 import org.reactivestreams.Subscriber;
 
 /**

@@ -21,8 +21,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.internal.mqtt.util.MqttChecks;
+import org.mqttbee.internal.util.Checks;
 import org.mqttbee.mqtt.mqtt5.message.auth.Mqtt5EnhancedAuthBuilder;
-import org.mqttbee.util.Checks;
 
 import java.nio.ByteBuffer;
 

@@ -19,8 +19,8 @@ package org.mqttbee.internal.mqtt.datatypes;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mqttbee.internal.util.Checks;
 import org.mqttbee.mqtt.datatypes.MqttTopicBuilder;
-import org.mqttbee.util.Checks;
 
 import java.util.function.Function;
 

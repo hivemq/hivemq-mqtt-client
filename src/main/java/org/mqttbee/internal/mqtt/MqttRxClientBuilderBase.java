@@ -22,12 +22,12 @@ import org.jetbrains.annotations.Nullable;
 import org.mqttbee.internal.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.internal.mqtt.mqtt3.Mqtt3RxClientViewBuilder;
 import org.mqttbee.internal.mqtt.util.MqttChecks;
+import org.mqttbee.internal.util.Checks;
 import org.mqttbee.mqtt.MqttClientBuilder;
 import org.mqttbee.mqtt.MqttClientExecutorConfig;
 import org.mqttbee.mqtt.MqttClientSslConfig;
 import org.mqttbee.mqtt.MqttWebSocketConfig;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifier;
-import org.mqttbee.util.Checks;
 
 import static org.mqttbee.mqtt.MqttClient.*;
 

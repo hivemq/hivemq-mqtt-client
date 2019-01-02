@@ -22,7 +22,7 @@ import org.mqttbee.internal.mqtt.codec.encoder.MqttMessageEncoders;
 import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttUtf8StringImpl;
-import org.mqttbee.util.collections.ImmutableList;
+import org.mqttbee.internal.util.collections.ImmutableList;
 
 import java.util.Arrays;
 

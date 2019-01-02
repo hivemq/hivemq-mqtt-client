@@ -20,7 +20,7 @@ import io.netty.channel.Channel;
 import io.netty.handler.ssl.*;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.internal.mqtt.MqttClientSslConfigImpl;
-import org.mqttbee.util.collections.ImmutableList;
+import org.mqttbee.internal.util.collections.ImmutableList;
 
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLException;

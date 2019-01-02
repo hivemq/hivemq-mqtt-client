@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.internal.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttTopicImpl;
-import org.mqttbee.util.collections.HandleList;
+import org.mqttbee.internal.util.collections.HandleList;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import java.util.function.Consumer;

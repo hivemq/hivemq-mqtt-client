@@ -22,11 +22,11 @@ import org.jetbrains.annotations.Nullable;
 import org.mqttbee.internal.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttTopicFilterImplBuilder;
 import org.mqttbee.internal.mqtt.util.MqttChecks;
+import org.mqttbee.internal.util.Checks;
 import org.mqttbee.mqtt.datatypes.MqttQos;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilter;
 import org.mqttbee.mqtt.mqtt3.message.subscribe.Mqtt3Subscription;
 import org.mqttbee.mqtt.mqtt3.message.subscribe.Mqtt3SubscriptionBuilder;
-import org.mqttbee.util.Checks;
 
 import java.util.function.Function;
 

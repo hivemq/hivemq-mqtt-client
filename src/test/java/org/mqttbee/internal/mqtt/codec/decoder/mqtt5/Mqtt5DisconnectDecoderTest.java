@@ -26,10 +26,10 @@ import org.mqttbee.internal.mqtt.codec.decoder.MqttMessageDecoders;
 import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.internal.mqtt.message.disconnect.MqttDisconnect;
 import org.mqttbee.internal.mqtt.netty.ChannelAttributes;
+import org.mqttbee.internal.util.collections.ImmutableList;
 import org.mqttbee.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.util.collections.ImmutableList;
 
 import static org.junit.jupiter.api.Assertions.*;
 

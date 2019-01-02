@@ -29,7 +29,7 @@ import org.mqttbee.internal.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.internal.mqtt.ioc.ConnectionScope;
 import org.mqttbee.internal.mqtt.message.ping.MqttPingReq;
 import org.mqttbee.internal.mqtt.message.ping.MqttPingResp;
-import org.mqttbee.util.netty.DefaultChannelOutboundHandler;
+import org.mqttbee.internal.util.netty.DefaultChannelOutboundHandler;
 
 import java.util.concurrent.TimeUnit;
 

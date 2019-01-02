@@ -25,11 +25,11 @@ import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertiesImplBuilder;
 import org.mqttbee.internal.mqtt.message.subscribe.MqttSubscription;
 import org.mqttbee.internal.mqtt.util.MqttChecks;
+import org.mqttbee.internal.util.collections.ImmutableList;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilter;
 import org.mqttbee.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
 import org.mqttbee.mqtt.mqtt5.message.unsubscribe.Mqtt5UnsubscribeBuilder;
-import org.mqttbee.util.collections.ImmutableList;
 
 import java.util.function.Function;
 

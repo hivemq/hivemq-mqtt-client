@@ -25,8 +25,8 @@ import org.jetbrains.annotations.Nullable;
 import org.mqttbee.internal.annotations.CallByThread;
 import org.mqttbee.internal.mqtt.handler.publish.outgoing.MqttPublishFlowableAckLink.LinkCancellable;
 import org.mqttbee.internal.mqtt.message.publish.MqttPublishResult;
-import org.mqttbee.util.ExecutorUtil;
-import org.mqttbee.util.collections.ChunkedArrayQueue;
+import org.mqttbee.internal.util.ExecutorUtil;
+import org.mqttbee.internal.util.collections.ChunkedArrayQueue;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 

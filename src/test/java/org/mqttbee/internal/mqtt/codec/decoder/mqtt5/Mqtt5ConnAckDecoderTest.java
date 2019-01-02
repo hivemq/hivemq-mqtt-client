@@ -28,6 +28,7 @@ import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.internal.mqtt.message.connect.connack.MqttConnAck;
 import org.mqttbee.internal.mqtt.message.connect.connack.MqttConnAckRestrictions;
 import org.mqttbee.internal.mqtt.netty.ChannelAttributes;
+import org.mqttbee.internal.util.collections.ImmutableList;
 import org.mqttbee.mqtt.datatypes.MqttQos;
 import org.mqttbee.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt.mqtt5.message.auth.Mqtt5EnhancedAuth;
@@ -36,7 +37,6 @@ import org.mqttbee.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckReasonCode;
 import org.mqttbee.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions;
 import org.mqttbee.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.util.collections.ImmutableList;
 
 import java.nio.ByteBuffer;
 

@@ -22,9 +22,9 @@ import org.junit.Test;
 import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttUtf8StringImpl;
+import org.mqttbee.internal.util.collections.ImmutableList;
 import org.mqttbee.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
 import org.mqttbee.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAckReasonCode;
-import org.mqttbee.util.collections.ImmutableList;
 
 import static org.junit.Assert.*;
 import static org.mqttbee.internal.mqtt.datatypes.MqttUserPropertiesImpl.NO_USER_PROPERTIES;

@@ -24,8 +24,8 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mqttbee.internal.mqtt.codec.decoder.MqttMessageDecoders;
 import org.mqttbee.internal.mqtt.message.publish.MqttStatefulPublish;
+import org.mqttbee.internal.util.ByteBufferUtil;
 import org.mqttbee.mqtt.mqtt3.message.Mqtt3MessageType;
-import org.mqttbee.util.ByteBufferUtil;
 
 import static org.junit.jupiter.api.Assertions.*;
 

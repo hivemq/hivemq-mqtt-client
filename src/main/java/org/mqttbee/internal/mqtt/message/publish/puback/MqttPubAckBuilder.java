@@ -24,11 +24,11 @@ import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertiesImplBuilder;
 import org.mqttbee.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.internal.mqtt.message.publish.MqttStatefulPublish;
 import org.mqttbee.internal.mqtt.util.MqttChecks;
+import org.mqttbee.internal.util.Checks;
 import org.mqttbee.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.mqtt.mqtt5.message.publish.puback.Mqtt5PubAckBuilder;
 import org.mqttbee.mqtt.mqtt5.message.publish.puback.Mqtt5PubAckReasonCode;
-import org.mqttbee.util.Checks;
 
 /**
  * @author Silvio Giebl
