@@ -48,10 +48,9 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
     private final int serverPort;
     private final @Nullable MqttClientSslConfigImpl sslConfig;
     private final @Nullable MqttWebSocketConfigImpl webSocketConfig;
-    private final boolean followsRedirects;
     private final boolean allowsServerReAuth;
     private final @NotNull MqttClientExecutorConfigImpl executorConfig;
-    private final @Nullable MqttAdvancedClientConfig advancedClientConfig;
+    private final @Nullable MqttAdvancedClientConfig advancedConfig;
 
     private final @NotNull ClientComponent clientComponent;
 
@@ -67,9 +66,9 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
     public MqttClientConfig(
             final @NotNull MqttVersion mqttVersion, final @NotNull MqttClientIdentifierImpl clientIdentifier,
             final @NotNull String serverHost, final int serverPort, final @Nullable MqttClientSslConfigImpl sslConfig,
-            final @Nullable MqttWebSocketConfigImpl webSocketConfig, final boolean followsRedirects,
-            final boolean allowsServerReAuth, final @NotNull MqttClientExecutorConfigImpl executorConfig,
-            final @Nullable MqttAdvancedClientConfig advancedClientConfig) {
+            final @Nullable MqttWebSocketConfigImpl webSocketConfig, final boolean allowsServerReAuth,
+            final @NotNull MqttClientExecutorConfigImpl executorConfig,
+            final @Nullable MqttAdvancedClientConfig advancedConfig) {
 
         this.mqttVersion = mqttVersion;
         this.clientIdentifier = clientIdentifier;
@@ -77,10 +76,9 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
         this.serverPort = serverPort;
         this.sslConfig = sslConfig;
         this.webSocketConfig = webSocketConfig;
-        this.followsRedirects = followsRedirects;
         this.allowsServerReAuth = allowsServerReAuth;
         this.executorConfig = executorConfig;
-        this.advancedClientConfig = advancedClientConfig;
+        this.advancedConfig = advancedConfig;
 
         clientComponent = SingletonComponent.INSTANCE.clientComponentBuilder().clientConfig(this).build();
 
@@ -144,11 +142,6 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
     }
 
     @Override
-    public boolean followsRedirects() {
-        return followsRedirects;
-    }
-
-    @Override
     public boolean allowsServerReAuth() {
         return allowsServerReAuth;
     }
@@ -158,12 +151,12 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
         return executorConfig;
     }
 
-    public @NotNull Optional<Mqtt5AdvancedClientConfig> getAdvancedClientConfig() {
-        return Optional.ofNullable(advancedClientConfig);
+    public @NotNull Optional<Mqtt5AdvancedClientConfig> getAdvancedConfig() {
+        return Optional.ofNullable(advancedConfig);
     }
 
-    public @Nullable MqttAdvancedClientConfig getRawAdvancedClientConfig() {
-        return advancedClientConfig;
+    public @Nullable MqttAdvancedClientConfig getRawAdvancedConfig() {
+        return advancedConfig;
     }
 
     public @NotNull ClientComponent getClientComponent() {

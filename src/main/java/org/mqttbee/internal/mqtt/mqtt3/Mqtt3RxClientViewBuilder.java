@@ -68,6 +68,6 @@ public class Mqtt3RxClientViewBuilder extends MqttRxClientBuilderBase<Mqtt3RxCli
 
     private @NotNull MqttClientConfig buildClientConfig() {
         return new MqttClientConfig(MqttVersion.MQTT_3_1_1, identifier, serverHost, serverPort, sslConfig,
-                webSocketConfig, false, false, executorConfig, null);
+                webSocketConfig, false, executorConfig, null);
     }
 }

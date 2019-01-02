@@ -30,9 +30,8 @@ import org.mqttbee.mqtt.mqtt5.advanced.Mqtt5AdvancedClientConfig;
  */
 public class MqttRxClientBuilder extends MqttRxClientBuilderBase<MqttRxClientBuilder> implements Mqtt5ClientBuilder {
 
-    private boolean followRedirects = false;
     private boolean allowServerReAuth = false;
-    private @Nullable MqttAdvancedClientConfig advancedClientConfig;
+    private @Nullable MqttAdvancedClientConfig advancedConfig;
 
     public MqttRxClientBuilder() {}
 
@@ -46,27 +45,21 @@ public class MqttRxClientBuilder extends MqttRxClientBuilderBase<MqttRxClientBui
     }
 
     @Override
-    public @NotNull MqttRxClientBuilder followRedirects(final boolean followRedirects) {
-        this.followRedirects = followRedirects;
-        return this;
-    }
-
-    @Override
     public @NotNull MqttRxClientBuilder allowServerReAuth(final boolean allowServerReAuth) {
         this.allowServerReAuth = allowServerReAuth;
         return this;
     }
 
     @Override
-    public @NotNull MqttRxClientBuilder advanced(final @Nullable Mqtt5AdvancedClientConfig advancedClientConfig) {
-        this.advancedClientConfig = Checks.notImplementedOrNull(advancedClientConfig, MqttAdvancedClientConfig.class,
+    public @NotNull MqttRxClientBuilder advancedConfig(final @Nullable Mqtt5AdvancedClientConfig advancedConfig) {
+        this.advancedConfig = Checks.notImplementedOrNull(advancedConfig, MqttAdvancedClientConfig.class,
                 "Advanced client data");
         return this;
     }
 
     @Override
-    public @NotNull MqttAdvancedClientConfigBuilder.Nested<MqttRxClientBuilder> advanced() {
-        return new MqttAdvancedClientConfigBuilder.Nested<>(this::advanced);
+    public @NotNull MqttAdvancedClientConfigBuilder.Nested<MqttRxClientBuilder> advancedConfig() {
+        return new MqttAdvancedClientConfigBuilder.Nested<>(this::advancedConfig);
     }
 
     @Override
@@ -91,6 +84,6 @@ public class MqttRxClientBuilder extends MqttRxClientBuilderBase<MqttRxClientBui
 
     private @NotNull MqttClientConfig buildClientConfig() {
         return new MqttClientConfig(MqttVersion.MQTT_5_0, identifier, serverHost, serverPort, sslConfig,
-                webSocketConfig, followRedirects, allowServerReAuth, executorConfig, advancedClientConfig);
+                webSocketConfig, allowServerReAuth, executorConfig, advancedConfig);
     }
 }
