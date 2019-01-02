@@ -27,6 +27,7 @@ import org.mqttbee.internal.mqtt.ioc.SingletonComponent;
 import org.mqttbee.internal.util.ExecutorUtil;
 import org.mqttbee.mqtt.MqttClientSslConfig;
 import org.mqttbee.mqtt.MqttClientState;
+import org.mqttbee.mqtt.MqttVersion;
 import org.mqttbee.mqtt.MqttWebSocketConfig;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifier;
 import org.mqttbee.mqtt.mqtt5.Mqtt5ClientConfig;
@@ -85,6 +86,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
         state = new AtomicReference<>(MqttClientState.DISCONNECTED);
     }
 
+    @Override
     public @NotNull MqttVersion getMqttVersion() {
         return mqttVersion;
     }

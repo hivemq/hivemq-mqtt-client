@@ -19,10 +19,7 @@ package org.mqttbee.internal.mqtt.mqtt3;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.internal.mqtt.MqttClientConfig;
-import org.mqttbee.mqtt.MqttClientExecutorConfig;
-import org.mqttbee.mqtt.MqttClientSslConfig;
-import org.mqttbee.mqtt.MqttClientState;
-import org.mqttbee.mqtt.MqttWebSocketConfig;
+import org.mqttbee.mqtt.*;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifier;
 import org.mqttbee.mqtt.mqtt3.Mqtt3ClientConfig;
 import org.mqttbee.mqtt.mqtt3.Mqtt3ClientConnectionConfig;
@@ -39,6 +36,11 @@ public class Mqtt3ClientConfigView implements Mqtt3ClientConfig {
 
     Mqtt3ClientConfigView(@NotNull final MqttClientConfig delegate) {
         this.delegate = delegate;
+    }
+
+    @Override
+    public @NotNull MqttVersion getMqttVersion() {
+        return delegate.getMqttVersion();
     }
 
     @Override

@@ -26,7 +26,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mqttbee.internal.mqtt.MqttClientConfig;
 import org.mqttbee.internal.mqtt.MqttClientSslConfigImpl;
-import org.mqttbee.internal.mqtt.MqttVersion;
 import org.mqttbee.internal.mqtt.codec.encoder.MqttEncoder;
 import org.mqttbee.internal.mqtt.handler.auth.MqttAuthHandler;
 import org.mqttbee.internal.mqtt.handler.connect.MqttConnectHandler;
@@ -34,6 +33,7 @@ import org.mqttbee.internal.mqtt.handler.disconnect.MqttDisconnectHandler;
 import org.mqttbee.internal.mqtt.handler.websocket.WebSocketBinaryFrameDecoder;
 import org.mqttbee.internal.mqtt.handler.websocket.WebSocketBinaryFrameEncoder;
 import org.mqttbee.internal.rx.SingleFlow;
+import org.mqttbee.mqtt.MqttVersion;
 import org.mqttbee.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 
 import java.util.Optional;

@@ -20,12 +20,12 @@ package org.mqttbee.internal.mqtt.codec.decoder.mqtt3;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.internal.mqtt.MqttClientConfig;
 import org.mqttbee.internal.mqtt.MqttClientExecutorConfigImpl;
-import org.mqttbee.internal.mqtt.MqttVersion;
 import org.mqttbee.internal.mqtt.codec.decoder.AbstractMqttDecoderTest;
 import org.mqttbee.internal.mqtt.codec.decoder.MqttMessageDecoders;
 import org.mqttbee.internal.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.internal.mqtt.message.connect.MqttConnect;
 import org.mqttbee.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
+import org.mqttbee.mqtt.MqttVersion;
 
 /**
  * @author Silvio Giebl

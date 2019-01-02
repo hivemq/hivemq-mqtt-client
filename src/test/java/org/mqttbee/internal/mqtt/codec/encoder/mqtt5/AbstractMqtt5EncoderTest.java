@@ -20,10 +20,10 @@ package org.mqttbee.internal.mqtt.codec.encoder.mqtt5;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.internal.mqtt.MqttClientConfig;
 import org.mqttbee.internal.mqtt.MqttClientExecutorConfigImpl;
-import org.mqttbee.internal.mqtt.MqttVersion;
 import org.mqttbee.internal.mqtt.codec.encoder.AbstractMqttEncoderTest;
 import org.mqttbee.internal.mqtt.codec.encoder.MqttMessageEncoders;
 import org.mqttbee.internal.mqtt.datatypes.MqttClientIdentifierImpl;
+import org.mqttbee.mqtt.MqttVersion;
 
 class AbstractMqtt5EncoderTest extends AbstractMqttEncoderTest {
 
