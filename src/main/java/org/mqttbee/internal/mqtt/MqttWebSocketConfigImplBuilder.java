@@ -72,7 +72,7 @@ public abstract class MqttWebSocketConfigImplBuilder<B extends MqttWebSocketConf
         }
 
         @Override
-        public @NotNull P applyWebSicketConfig() {
+        public @NotNull P applyWebSocketConfig() {
             return parentConsumer.apply(build());
         }
     }
