@@ -26,6 +26,7 @@ import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3WillPublishBuilder;
 import org.mqttbee.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.mqtt.datatypes.MqttTopicImplBuilder;
 import org.mqttbee.mqtt.message.publish.MqttPublish;
+import org.mqttbee.mqtt.message.publish.MqttWillPublish;
 import org.mqttbee.mqtt.util.MqttChecks;
 import org.mqttbee.util.ByteBufferUtil;
 import org.mqttbee.util.Checks;
@@ -70,16 +71,6 @@ public abstract class Mqtt3PublishViewBuilder<B extends Mqtt3PublishViewBuilder<
         return new MqttTopicImplBuilder.Nested<>(this::topic);
     }
 
-    public @NotNull B payload(final @Nullable byte[] payload) {
-        this.payload = ByteBufferUtil.wrap(payload);
-        return self();
-    }
-
-    public @NotNull B payload(final @Nullable ByteBuffer payload) {
-        this.payload = ByteBufferUtil.slice(payload);
-        return self();
-    }
-
     public @NotNull B qos(final @Nullable MqttQos qos) {
         this.qos = Checks.notNull(qos, "QoS");
         return self();
@@ -96,6 +87,16 @@ public abstract class Mqtt3PublishViewBuilder<B extends Mqtt3PublishViewBuilder<
 
         Base(final @NotNull Mqtt3PublishView publish) {
             super(publish);
+        }
+
+        public @NotNull B payload(final @Nullable byte[] payload) {
+            this.payload = ByteBufferUtil.wrap(payload);
+            return self();
+        }
+
+        public @NotNull B payload(final @Nullable ByteBuffer payload) {
+            this.payload = ByteBufferUtil.slice(payload);
+            return self();
         }
 
         public @NotNull Mqtt3PublishView build() {
@@ -181,6 +182,19 @@ public abstract class Mqtt3PublishViewBuilder<B extends Mqtt3PublishViewBuilder<
 
         WillBase(final @NotNull Mqtt3PublishView publish) {
             super(publish);
+            if (!(publish.getDelegate() instanceof MqttWillPublish)) {
+                payload(payload); // check payload size restriction
+            }
+        }
+
+        public @NotNull B payload(final @Nullable byte[] payload) {
+            this.payload = MqttChecks.binaryDataOrNull(payload, "Payload");
+            return self();
+        }
+
+        public @NotNull B payload(final @Nullable ByteBuffer payload) {
+            this.payload = MqttChecks.binaryDataOrNull(payload, "Payload");
+            return self();
         }
 
         public @NotNull Mqtt3PublishView build() {
