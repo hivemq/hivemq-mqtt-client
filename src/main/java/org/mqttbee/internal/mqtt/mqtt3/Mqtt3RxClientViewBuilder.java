@@ -19,6 +19,7 @@ package org.mqttbee.internal.mqtt.mqtt3;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.internal.mqtt.*;
+import org.mqttbee.mqtt.MqttVersion;
 import org.mqttbee.mqtt.mqtt3.Mqtt3ClientBuilder;
 
 /**

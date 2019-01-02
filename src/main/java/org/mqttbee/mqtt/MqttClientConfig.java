@@ -29,6 +29,8 @@ import java.util.Optional;
 @DoNotImplement
 public interface MqttClientConfig {
 
+    @NotNull MqttVersion getMqttVersion();
+
     @NotNull Optional<MqttClientIdentifier> getClientIdentifier();
 
     @NotNull String getServerHost();

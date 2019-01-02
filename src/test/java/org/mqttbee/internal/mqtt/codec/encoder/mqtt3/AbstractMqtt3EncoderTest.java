@@ -23,10 +23,10 @@ import org.eclipse.paho.client.mqttv3.internal.wire.MqttWireMessage;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.internal.mqtt.MqttClientConfig;
 import org.mqttbee.internal.mqtt.MqttClientExecutorConfigImpl;
-import org.mqttbee.internal.mqtt.MqttVersion;
 import org.mqttbee.internal.mqtt.codec.encoder.AbstractMqttEncoderTest;
 import org.mqttbee.internal.mqtt.codec.encoder.MqttMessageEncoders;
 import org.mqttbee.internal.mqtt.datatypes.MqttClientIdentifierImpl;
+import org.mqttbee.mqtt.MqttVersion;
 
 /**
  * @author Alex Stockinger

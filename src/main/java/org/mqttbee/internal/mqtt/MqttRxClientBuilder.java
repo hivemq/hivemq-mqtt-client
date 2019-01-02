@@ -22,6 +22,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mqttbee.internal.mqtt.advanced.MqttAdvancedClientConfig;
 import org.mqttbee.internal.mqtt.advanced.MqttAdvancedClientConfigBuilder;
 import org.mqttbee.internal.util.Checks;
+import org.mqttbee.mqtt.MqttVersion;
 import org.mqttbee.mqtt.mqtt5.Mqtt5ClientBuilder;
 import org.mqttbee.mqtt.mqtt5.advanced.Mqtt5AdvancedClientConfig;
 
@@ -52,8 +53,8 @@ public class MqttRxClientBuilder extends MqttRxClientBuilderBase<MqttRxClientBui
 
     @Override
     public @NotNull MqttRxClientBuilder advancedConfig(final @Nullable Mqtt5AdvancedClientConfig advancedConfig) {
-        this.advancedConfig = Checks.notImplementedOrNull(advancedConfig, MqttAdvancedClientConfig.class,
-                "Advanced client data");
+        this.advancedConfig =
+                Checks.notImplementedOrNull(advancedConfig, MqttAdvancedClientConfig.class, "Advanced client data");
         return this;
     }
 
