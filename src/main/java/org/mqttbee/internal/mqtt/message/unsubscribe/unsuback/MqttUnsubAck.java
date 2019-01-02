@@ -23,9 +23,9 @@ import org.mqttbee.annotations.Immutable;
 import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.internal.mqtt.message.MqttMessageWithUserProperties;
+import org.mqttbee.internal.util.collections.ImmutableList;
 import org.mqttbee.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
 import org.mqttbee.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAckReasonCode;
-import org.mqttbee.util.collections.ImmutableList;
 
 /**
  * @author Silvio Giebl

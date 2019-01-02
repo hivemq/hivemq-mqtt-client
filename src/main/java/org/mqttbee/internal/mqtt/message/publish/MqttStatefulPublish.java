@@ -20,7 +20,7 @@ package org.mqttbee.internal.mqtt.message.publish;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.Immutable;
 import org.mqttbee.internal.mqtt.message.MqttStatefulMessage;
-import org.mqttbee.util.collections.ImmutableIntList;
+import org.mqttbee.internal.util.collections.ImmutableIntList;
 
 /**
  * @author Silvio Giebl

@@ -23,10 +23,10 @@ import org.mqttbee.internal.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttTopicFilterImplBuilder;
 import org.mqttbee.internal.mqtt.message.subscribe.MqttSubscription;
 import org.mqttbee.internal.mqtt.util.MqttChecks;
+import org.mqttbee.internal.util.collections.ImmutableList;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilter;
 import org.mqttbee.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 import org.mqttbee.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubscribeBuilder;
-import org.mqttbee.util.collections.ImmutableList;
 
 import java.util.function.Consumer;
 import java.util.function.Function;

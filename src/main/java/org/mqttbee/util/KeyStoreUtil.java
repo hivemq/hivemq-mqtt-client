@@ -17,6 +17,7 @@
 package org.mqttbee.util;
 
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.internal.util.Checks;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLException;

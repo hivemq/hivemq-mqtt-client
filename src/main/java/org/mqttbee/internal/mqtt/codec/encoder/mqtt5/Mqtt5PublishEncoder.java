@@ -25,9 +25,9 @@ import org.mqttbee.internal.mqtt.datatypes.MqttBinaryData;
 import org.mqttbee.internal.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.internal.mqtt.message.publish.MqttPublish;
 import org.mqttbee.internal.mqtt.message.publish.MqttStatefulPublish;
+import org.mqttbee.internal.util.collections.ImmutableIntList;
 import org.mqttbee.mqtt.datatypes.MqttQos;
 import org.mqttbee.mqtt.mqtt5.message.Mqtt5MessageType;
-import org.mqttbee.util.collections.ImmutableIntList;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

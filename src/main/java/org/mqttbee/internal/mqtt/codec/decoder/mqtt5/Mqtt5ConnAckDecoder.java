@@ -26,10 +26,10 @@ import org.mqttbee.internal.mqtt.datatypes.*;
 import org.mqttbee.internal.mqtt.message.auth.MqttEnhancedAuth;
 import org.mqttbee.internal.mqtt.message.connect.connack.MqttConnAck;
 import org.mqttbee.internal.mqtt.message.connect.connack.MqttConnAckRestrictions;
+import org.mqttbee.internal.util.collections.ImmutableList;
 import org.mqttbee.mqtt.datatypes.MqttQos;
 import org.mqttbee.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckReasonCode;
 import org.mqttbee.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.util.collections.ImmutableList;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

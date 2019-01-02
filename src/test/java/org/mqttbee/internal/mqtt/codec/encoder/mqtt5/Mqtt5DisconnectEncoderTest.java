@@ -29,9 +29,9 @@ import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.internal.mqtt.message.disconnect.MqttDisconnect;
+import org.mqttbee.internal.util.collections.ImmutableList;
 import org.mqttbee.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.util.collections.ImmutableList;
 
 import java.util.Arrays;
 

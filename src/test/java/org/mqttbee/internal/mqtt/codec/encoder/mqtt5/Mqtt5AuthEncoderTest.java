@@ -31,9 +31,9 @@ import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.internal.mqtt.message.auth.MqttAuth;
+import org.mqttbee.internal.util.collections.ImmutableList;
 import org.mqttbee.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode;
-import org.mqttbee.util.collections.ImmutableList;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;

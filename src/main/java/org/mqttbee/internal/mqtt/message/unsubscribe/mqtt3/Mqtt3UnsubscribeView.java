@@ -22,8 +22,8 @@ import org.mqttbee.annotations.Immutable;
 import org.mqttbee.internal.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.internal.mqtt.message.unsubscribe.MqttUnsubscribe;
+import org.mqttbee.internal.util.collections.ImmutableList;
 import org.mqttbee.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
-import org.mqttbee.util.collections.ImmutableList;
 
 /**
  * @author Silvio Giebl

@@ -19,7 +19,7 @@ package org.mqttbee.internal.mqtt.codec.decoder;
 
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.internal.mqtt.datatypes.MqttTopicImpl;
-import org.mqttbee.util.collections.IntMap;
+import org.mqttbee.internal.util.collections.IntMap;
 
 /**
  * @author Silvio Giebl

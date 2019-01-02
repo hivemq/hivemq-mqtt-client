@@ -37,6 +37,7 @@ import org.mqttbee.internal.mqtt.message.publish.MqttPublish;
 import org.mqttbee.internal.mqtt.message.subscribe.MqttSubscribe;
 import org.mqttbee.internal.mqtt.message.unsubscribe.MqttUnsubscribe;
 import org.mqttbee.internal.mqtt.util.MqttChecks;
+import org.mqttbee.internal.util.Checks;
 import org.mqttbee.mqtt.MqttGlobalPublishFilter;
 import org.mqttbee.mqtt.mqtt5.Mqtt5RxClient;
 import org.mqttbee.mqtt.mqtt5.message.connect.Mqtt5Connect;
@@ -50,7 +51,6 @@ import org.mqttbee.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
 import org.mqttbee.rx.FlowableWithSingle;
-import org.mqttbee.util.Checks;
 
 /**
  * @author Silvio Giebl

@@ -22,8 +22,8 @@ import org.mqttbee.annotations.Immutable;
 import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.internal.mqtt.message.subscribe.MqttSubscribe;
 import org.mqttbee.internal.mqtt.message.subscribe.MqttSubscription;
+import org.mqttbee.internal.util.collections.ImmutableList;
 import org.mqttbee.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
-import org.mqttbee.util.collections.ImmutableList;
 
 /**
  * @author Silvio Giebl

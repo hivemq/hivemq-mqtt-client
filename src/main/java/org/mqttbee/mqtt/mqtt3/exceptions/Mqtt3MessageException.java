@@ -19,8 +19,8 @@ package org.mqttbee.mqtt.mqtt3.exceptions;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mqttbee.internal.util.AsyncRuntimeException;
 import org.mqttbee.mqtt.mqtt3.message.Mqtt3Message;
-import org.mqttbee.util.AsyncRuntimeException;
 
 /**
  * @author David Katz

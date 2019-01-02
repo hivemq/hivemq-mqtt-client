@@ -22,11 +22,11 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.Immutable;
 import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.internal.mqtt.message.subscribe.suback.MqttSubAck;
+import org.mqttbee.internal.util.collections.ImmutableList;
 import org.mqttbee.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAck;
 import org.mqttbee.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAckReturnCode;
 import org.mqttbee.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAckReasonCode;
-import org.mqttbee.util.collections.ImmutableList;
 
 /**
  * @author Silvio Giebl

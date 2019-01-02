@@ -19,10 +19,10 @@ package org.mqttbee.internal.mqtt;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mqttbee.internal.util.Checks;
+import org.mqttbee.internal.util.collections.ImmutableList;
 import org.mqttbee.mqtt.MqttClientSslConfig;
 import org.mqttbee.mqtt.MqttClientSslConfigBuilder;
-import org.mqttbee.util.Checks;
-import org.mqttbee.util.collections.ImmutableList;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;

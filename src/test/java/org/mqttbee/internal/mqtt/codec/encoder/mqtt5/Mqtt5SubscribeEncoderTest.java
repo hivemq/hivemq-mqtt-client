@@ -30,11 +30,11 @@ import org.mqttbee.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.internal.mqtt.message.subscribe.MqttStatefulSubscribe;
 import org.mqttbee.internal.mqtt.message.subscribe.MqttSubscribe;
 import org.mqttbee.internal.mqtt.message.subscribe.MqttSubscription;
+import org.mqttbee.internal.util.collections.ImmutableList;
 import org.mqttbee.mqtt.datatypes.MqttQos;
 import org.mqttbee.mqtt.exceptions.MqttEncodeException;
 import org.mqttbee.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt.mqtt5.message.subscribe.Mqtt5RetainHandling;
-import org.mqttbee.util.collections.ImmutableList;
 
 import java.util.Arrays;
 import java.util.Collections;

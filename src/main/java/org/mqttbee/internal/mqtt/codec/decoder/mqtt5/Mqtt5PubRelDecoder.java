@@ -26,8 +26,8 @@ import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.internal.mqtt.message.publish.pubrel.MqttPubRel;
+import org.mqttbee.internal.util.collections.ImmutableList;
 import org.mqttbee.mqtt.mqtt5.message.publish.pubrel.Mqtt5PubRelReasonCode;
-import org.mqttbee.util.collections.ImmutableList;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

@@ -24,14 +24,14 @@ import org.mqttbee.internal.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.internal.mqtt.message.MqttMessageWithUserProperties;
+import org.mqttbee.internal.util.ByteBufferUtil;
+import org.mqttbee.internal.util.collections.ImmutableIntList;
 import org.mqttbee.mqtt.datatypes.MqttQos;
 import org.mqttbee.mqtt.datatypes.MqttTopic;
 import org.mqttbee.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.mqtt.mqtt5.message.publish.TopicAliasUsage;
-import org.mqttbee.util.ByteBufferUtil;
-import org.mqttbee.util.collections.ImmutableIntList;
 
 import java.nio.ByteBuffer;
 import java.util.Optional;

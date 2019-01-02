@@ -21,7 +21,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.junit.jupiter.api.Test;
 import org.mqttbee.internal.mqtt.message.MqttProperty;
-import org.mqttbee.util.collections.ImmutableList;
+import org.mqttbee.internal.util.collections.ImmutableList;
 
 import static org.junit.jupiter.api.Assertions.*;
 

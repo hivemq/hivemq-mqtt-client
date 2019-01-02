@@ -29,9 +29,9 @@ import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.internal.mqtt.message.publish.puback.MqttPubAck;
+import org.mqttbee.internal.util.collections.ImmutableList;
 import org.mqttbee.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt.mqtt5.message.publish.puback.Mqtt5PubAckReasonCode;
-import org.mqttbee.util.collections.ImmutableList;
 
 import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
 import static org.mqttbee.internal.mqtt.datatypes.MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT;

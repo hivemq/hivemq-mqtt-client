@@ -26,13 +26,13 @@ import org.mqttbee.internal.mqtt.datatypes.*;
 import org.mqttbee.internal.mqtt.message.publish.MqttPublish;
 import org.mqttbee.internal.mqtt.message.publish.MqttPublishProperty;
 import org.mqttbee.internal.mqtt.message.publish.MqttStatefulPublish;
+import org.mqttbee.internal.util.collections.ImmutableIntList;
+import org.mqttbee.internal.util.collections.ImmutableList;
 import org.mqttbee.mqtt.datatypes.MqttQos;
 import org.mqttbee.mqtt.exceptions.MqttEncodeException;
 import org.mqttbee.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.mqtt.mqtt5.message.publish.TopicAliasUsage;
-import org.mqttbee.util.collections.ImmutableIntList;
-import org.mqttbee.util.collections.ImmutableList;
 
 import java.nio.ByteBuffer;
 

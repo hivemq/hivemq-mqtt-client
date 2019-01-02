@@ -20,10 +20,10 @@ package org.mqttbee.internal.mqtt.datatypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.internal.mqtt.util.MqttChecks;
+import org.mqttbee.internal.util.collections.ImmutableList;
 import org.mqttbee.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 import org.mqttbee.mqtt.mqtt5.datatypes.Mqtt5UserProperty;
-import org.mqttbee.util.collections.ImmutableList;
 
 import java.util.function.Function;
 

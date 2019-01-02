@@ -18,8 +18,8 @@
 package org.mqttbee.mqtt.mqtt5.exceptions;
 
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.internal.util.AsyncRuntimeException;
 import org.mqttbee.mqtt.mqtt5.message.Mqtt5Message;
-import org.mqttbee.util.AsyncRuntimeException;
 
 /**
  * @author Silvio Giebl

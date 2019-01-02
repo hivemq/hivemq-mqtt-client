@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.mqttbee.internal.mqtt.MqttClientSslConfigImplBuilder;
-import org.mqttbee.util.collections.ImmutableList;
+import org.mqttbee.internal.util.collections.ImmutableList;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;

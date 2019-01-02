@@ -24,6 +24,7 @@ import org.mqttbee.internal.mqtt.advanced.MqttAdvancedClientConfig;
 import org.mqttbee.internal.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.internal.mqtt.ioc.ClientComponent;
 import org.mqttbee.internal.mqtt.ioc.SingletonComponent;
+import org.mqttbee.internal.util.ExecutorUtil;
 import org.mqttbee.mqtt.MqttClientSslConfig;
 import org.mqttbee.mqtt.MqttClientState;
 import org.mqttbee.mqtt.MqttWebSocketConfig;
@@ -32,7 +33,6 @@ import org.mqttbee.mqtt.mqtt5.Mqtt5ClientConfig;
 import org.mqttbee.mqtt.mqtt5.Mqtt5ClientConnectionConfig;
 import org.mqttbee.mqtt.mqtt5.Mqtt5ServerConnectionConfig;
 import org.mqttbee.mqtt.mqtt5.advanced.Mqtt5AdvancedClientConfig;
-import org.mqttbee.util.ExecutorUtil;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;

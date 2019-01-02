@@ -21,8 +21,8 @@ import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.Immutable;
+import org.mqttbee.internal.util.collections.ImmutableList;
 import org.mqttbee.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
-import org.mqttbee.util.collections.ImmutableList;
 
 /**
  * @author Silvio Giebl

@@ -19,8 +19,8 @@ package org.mqttbee.internal.mqtt;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mqttbee.internal.util.Checks;
 import org.mqttbee.mqtt.MqttWebSocketConfigBuilder;
-import org.mqttbee.util.Checks;
 
 import java.util.function.Function;
 

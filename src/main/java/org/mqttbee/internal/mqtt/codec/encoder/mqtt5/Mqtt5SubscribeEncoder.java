@@ -22,8 +22,8 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.internal.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.internal.mqtt.message.subscribe.MqttStatefulSubscribe;
 import org.mqttbee.internal.mqtt.message.subscribe.MqttSubscription;
+import org.mqttbee.internal.util.collections.ImmutableList;
 import org.mqttbee.mqtt.mqtt5.message.Mqtt5MessageType;
-import org.mqttbee.util.collections.ImmutableList;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

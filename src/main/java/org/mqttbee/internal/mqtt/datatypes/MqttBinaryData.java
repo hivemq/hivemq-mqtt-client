@@ -20,7 +20,7 @@ package org.mqttbee.internal.mqtt.datatypes;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.util.ByteBufferUtil;
+import org.mqttbee.internal.util.ByteBufferUtil;
 
 import java.nio.ByteBuffer;
 

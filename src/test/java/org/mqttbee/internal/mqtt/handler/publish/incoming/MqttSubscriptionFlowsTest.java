@@ -27,7 +27,7 @@ import org.junit.jupiter.params.converter.SimpleArgumentConverter;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mqttbee.internal.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttTopicImpl;
-import org.mqttbee.util.collections.HandleList;
+import org.mqttbee.internal.util.collections.HandleList;
 
 import java.util.function.Supplier;
 

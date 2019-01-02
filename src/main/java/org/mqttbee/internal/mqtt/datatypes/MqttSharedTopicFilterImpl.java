@@ -21,9 +21,9 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.Immutable;
+import org.mqttbee.internal.util.ByteArrayUtil;
+import org.mqttbee.internal.util.Checks;
 import org.mqttbee.mqtt.datatypes.MqttSharedTopicFilter;
-import org.mqttbee.util.ByteArrayUtil;
-import org.mqttbee.util.Checks;
 
 /**
  * @author Silvio Giebl

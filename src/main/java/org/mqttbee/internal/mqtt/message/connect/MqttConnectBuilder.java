@@ -27,6 +27,7 @@ import org.mqttbee.internal.mqtt.message.publish.MqttPublish;
 import org.mqttbee.internal.mqtt.message.publish.MqttPublishBuilder;
 import org.mqttbee.internal.mqtt.message.publish.MqttWillPublish;
 import org.mqttbee.internal.mqtt.util.MqttChecks;
+import org.mqttbee.internal.util.Checks;
 import org.mqttbee.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
 import org.mqttbee.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.mqtt.mqtt5.message.auth.Mqtt5SimpleAuth;
@@ -34,7 +35,6 @@ import org.mqttbee.mqtt.mqtt5.message.connect.Mqtt5ConnectBuilder;
 import org.mqttbee.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions;
 import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
-import org.mqttbee.util.Checks;
 
 import java.util.function.Function;
 

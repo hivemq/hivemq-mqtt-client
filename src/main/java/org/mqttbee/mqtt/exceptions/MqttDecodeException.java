@@ -18,7 +18,7 @@
 package org.mqttbee.mqtt.exceptions;
 
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.util.AsyncRuntimeException;
+import org.mqttbee.internal.util.AsyncRuntimeException;
 
 /**
  * @author Silvio Giebl

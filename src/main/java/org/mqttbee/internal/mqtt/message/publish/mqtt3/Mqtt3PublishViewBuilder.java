@@ -24,12 +24,12 @@ import org.mqttbee.internal.mqtt.datatypes.MqttTopicImplBuilder;
 import org.mqttbee.internal.mqtt.message.publish.MqttPublish;
 import org.mqttbee.internal.mqtt.message.publish.MqttWillPublish;
 import org.mqttbee.internal.mqtt.util.MqttChecks;
+import org.mqttbee.internal.util.ByteBufferUtil;
+import org.mqttbee.internal.util.Checks;
 import org.mqttbee.mqtt.datatypes.MqttQos;
 import org.mqttbee.mqtt.datatypes.MqttTopic;
 import org.mqttbee.mqtt.mqtt3.message.publish.Mqtt3PublishBuilder;
 import org.mqttbee.mqtt.mqtt3.message.publish.Mqtt3WillPublishBuilder;
-import org.mqttbee.util.ByteBufferUtil;
-import org.mqttbee.util.Checks;
 
 import java.nio.ByteBuffer;
 import java.util.function.Consumer;
