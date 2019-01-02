@@ -31,6 +31,6 @@ public interface MqttWebSocketConfigBuilder extends MqttWebSocketConfigBuilderBa
     @DoNotImplement
     interface Nested<P> extends MqttWebSocketConfigBuilderBase<Nested<P>> {
 
-        @NotNull P applyWebSicketConfig();
+        @NotNull P applyWebSocketConfig();
     }
 }
