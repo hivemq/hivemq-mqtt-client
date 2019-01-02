@@ -54,7 +54,7 @@ public class MqttRxClientBuilder extends MqttRxClientBuilderBase<MqttRxClientBui
     @Override
     public @NotNull MqttRxClientBuilder advancedConfig(final @Nullable Mqtt5AdvancedClientConfig advancedConfig) {
         this.advancedConfig =
-                Checks.notImplementedOrNull(advancedConfig, MqttAdvancedClientConfig.class, "Advanced client data");
+                Checks.notImplementedOrNull(advancedConfig, MqttAdvancedClientConfig.class, "Advanced client config");
         return this;
     }
 
