@@ -20,13 +20,13 @@ package org.mqttbee.internal.mqtt.handler.disconnect;
 import io.netty.channel.Channel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.exceptions.ConnectionClosedException;
-import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5DisconnectException;
-import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.internal.mqtt.message.disconnect.MqttDisconnect;
 import org.mqttbee.internal.mqtt.netty.ChannelAttributes;
+import org.mqttbee.mqtt.exceptions.ConnectionClosedException;
+import org.mqttbee.mqtt.mqtt5.exceptions.Mqtt5DisconnectException;
+import org.mqttbee.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 
 /**
  * Util for sending a DISCONNECT message or channel closing without sending a DISCONNECT message from the client side.

@@ -17,9 +17,9 @@
 
 package org.mqttbee.internal.mqtt.codec.encoder.mqtt3;
 
-import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.internal.mqtt.codec.encoder.mqtt3.Mqtt3MessageEncoder.Mqtt3MessageWithIdEncoder;
 import org.mqttbee.internal.mqtt.message.publish.pubrec.MqttPubRec;
+import org.mqttbee.mqtt.mqtt3.message.Mqtt3MessageType;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

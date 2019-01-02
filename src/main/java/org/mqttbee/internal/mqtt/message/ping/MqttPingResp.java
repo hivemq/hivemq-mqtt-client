@@ -19,8 +19,8 @@ package org.mqttbee.internal.mqtt.message.ping;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.Immutable;
-import org.mqttbee.api.mqtt.mqtt5.message.ping.Mqtt5PingResp;
 import org.mqttbee.internal.mqtt.message.MqttMessage;
+import org.mqttbee.mqtt.mqtt5.message.ping.Mqtt5PingResp;
 
 /**
  * @author Silvio Giebl

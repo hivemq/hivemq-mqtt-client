@@ -20,13 +20,13 @@ package org.mqttbee.internal.mqtt.message.publish;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.Immutable;
-import org.mqttbee.api.mqtt.datatypes.MqttQos;
-import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
-import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
-import org.mqttbee.api.mqtt.mqtt5.message.publish.TopicAliasUsage;
 import org.mqttbee.internal.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttUtf8StringImpl;
+import org.mqttbee.mqtt.datatypes.MqttQos;
+import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
+import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
+import org.mqttbee.mqtt.mqtt5.message.publish.TopicAliasUsage;
 
 import java.nio.ByteBuffer;
 

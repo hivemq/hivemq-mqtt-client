@@ -22,10 +22,10 @@ import io.netty.channel.embedded.EmbeddedChannel;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.internal.mqtt.MqttClientConfig;
 import org.mqttbee.internal.mqtt.MqttServerConnectionConfig;
 import org.mqttbee.internal.mqtt.datatypes.MqttVariableByteInteger;
+import org.mqttbee.mqtt.datatypes.MqttQos;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

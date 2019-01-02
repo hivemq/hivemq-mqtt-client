@@ -20,18 +20,18 @@ package org.mqttbee.internal.mqtt.handler.auth;
 import io.netty.channel.ChannelHandlerContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientConfig;
-import org.mqttbee.api.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
-import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5AuthException;
-import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5Auth;
-import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthBuilder;
-import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.internal.mqtt.MqttClientConfig;
 import org.mqttbee.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.internal.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.internal.mqtt.handler.util.MqttTimeoutInboundHandler;
 import org.mqttbee.internal.mqtt.message.auth.MqttAuth;
 import org.mqttbee.internal.mqtt.message.auth.MqttAuthBuilder;
+import org.mqttbee.mqtt.mqtt5.Mqtt5ClientConfig;
+import org.mqttbee.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
+import org.mqttbee.mqtt.mqtt5.exceptions.Mqtt5AuthException;
+import org.mqttbee.mqtt.mqtt5.message.auth.Mqtt5Auth;
+import org.mqttbee.mqtt.mqtt5.message.auth.Mqtt5AuthBuilder;
+import org.mqttbee.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.util.Checks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +41,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import static org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION;
+import static org.mqttbee.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION;
 
 /**
  * Base for enhanced auth handling according to the MQTT 5 specification.

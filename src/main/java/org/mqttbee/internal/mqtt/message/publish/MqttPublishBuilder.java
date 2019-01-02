@@ -19,16 +19,16 @@ package org.mqttbee.internal.mqtt.message.publish;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttQos;
-import org.mqttbee.api.mqtt.datatypes.MqttTopic;
-import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
-import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
-import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
-import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PublishBuilder;
-import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5WillPublishBuilder;
-import org.mqttbee.api.mqtt.mqtt5.message.publish.TopicAliasUsage;
 import org.mqttbee.internal.mqtt.datatypes.*;
 import org.mqttbee.internal.mqtt.util.MqttChecks;
+import org.mqttbee.mqtt.datatypes.MqttQos;
+import org.mqttbee.mqtt.datatypes.MqttTopic;
+import org.mqttbee.mqtt.datatypes.MqttUtf8String;
+import org.mqttbee.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
+import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
+import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5PublishBuilder;
+import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5WillPublishBuilder;
+import org.mqttbee.mqtt.mqtt5.message.publish.TopicAliasUsage;
 import org.mqttbee.util.ByteBufferUtil;
 import org.mqttbee.util.Checks;
 

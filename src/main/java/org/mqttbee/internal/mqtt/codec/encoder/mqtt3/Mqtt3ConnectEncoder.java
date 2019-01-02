@@ -19,13 +19,13 @@ package org.mqttbee.internal.mqtt.codec.encoder.mqtt3;
 
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.internal.mqtt.message.auth.MqttSimpleAuth;
 import org.mqttbee.internal.mqtt.message.connect.MqttConnect;
 import org.mqttbee.internal.mqtt.message.connect.MqttStatefulConnect;
 import org.mqttbee.internal.mqtt.message.publish.MqttWillPublish;
+import org.mqttbee.mqtt.mqtt3.message.Mqtt3MessageType;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

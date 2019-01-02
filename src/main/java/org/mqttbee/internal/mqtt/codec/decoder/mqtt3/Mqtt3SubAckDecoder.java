@@ -19,12 +19,12 @@ package org.mqttbee.internal.mqtt.codec.decoder.mqtt3;
 
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAckReturnCode;
 import org.mqttbee.internal.mqtt.codec.decoder.MqttDecoderContext;
 import org.mqttbee.internal.mqtt.codec.decoder.MqttDecoderException;
 import org.mqttbee.internal.mqtt.codec.decoder.MqttMessageDecoder;
 import org.mqttbee.internal.mqtt.message.subscribe.suback.MqttSubAck;
 import org.mqttbee.internal.mqtt.message.subscribe.suback.mqtt3.Mqtt3SubAckView;
+import org.mqttbee.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAckReturnCode;
 import org.mqttbee.util.collections.ImmutableList;
 
 import javax.inject.Inject;

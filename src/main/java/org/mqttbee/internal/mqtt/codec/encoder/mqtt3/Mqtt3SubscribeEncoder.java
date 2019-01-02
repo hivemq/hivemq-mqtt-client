@@ -19,10 +19,10 @@ package org.mqttbee.internal.mqtt.codec.encoder.mqtt3;
 
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.internal.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.internal.mqtt.message.subscribe.MqttStatefulSubscribe;
 import org.mqttbee.internal.mqtt.message.subscribe.MqttSubscription;
+import org.mqttbee.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.util.collections.ImmutableList;
 
 import javax.inject.Inject;

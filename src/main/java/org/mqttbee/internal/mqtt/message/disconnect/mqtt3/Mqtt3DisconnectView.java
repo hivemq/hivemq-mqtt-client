@@ -19,10 +19,10 @@ package org.mqttbee.internal.mqtt.message.disconnect.mqtt3;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.Immutable;
-import org.mqttbee.api.mqtt.mqtt3.message.disconnect.Mqtt3Disconnect;
-import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.internal.mqtt.message.disconnect.MqttDisconnect;
+import org.mqttbee.mqtt.mqtt3.message.disconnect.Mqtt3Disconnect;
+import org.mqttbee.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 
 /**
  * @author Silvio Giebl

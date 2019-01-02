@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.Immutable;
-import org.mqttbee.api.mqtt.datatypes.MqttTopic;
+import org.mqttbee.mqtt.datatypes.MqttTopic;
 import org.mqttbee.util.Checks;
 import org.mqttbee.util.collections.ImmutableList;
 

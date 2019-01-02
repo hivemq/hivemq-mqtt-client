@@ -18,13 +18,13 @@ package org.mqttbee.internal.mqtt.mqtt3.exceptions;
 
 import io.reactivex.functions.Function;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.mqtt3.exceptions.*;
-import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
-import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
 import org.mqttbee.internal.mqtt.message.connect.connack.MqttConnAck;
 import org.mqttbee.internal.mqtt.message.connect.connack.mqtt3.Mqtt3ConnAckView;
 import org.mqttbee.internal.mqtt.message.subscribe.suback.MqttSubAck;
 import org.mqttbee.internal.mqtt.message.subscribe.suback.mqtt3.Mqtt3SubAckView;
+import org.mqttbee.mqtt.mqtt3.exceptions.*;
+import org.mqttbee.mqtt.mqtt5.exceptions.Mqtt5MessageException;
+import org.mqttbee.mqtt.mqtt5.message.Mqtt5Message;
 
 /**
  * @author David Katz

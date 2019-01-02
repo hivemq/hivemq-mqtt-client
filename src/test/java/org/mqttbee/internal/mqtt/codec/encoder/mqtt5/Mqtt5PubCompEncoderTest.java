@@ -23,21 +23,21 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.mqttbee.api.mqtt.exceptions.MqttEncodeException;
-import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
-import org.mqttbee.api.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubCompReasonCode;
 import org.mqttbee.internal.mqtt.codec.encoder.MqttMessageEncoders;
 import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.internal.mqtt.message.publish.pubcomp.MqttPubComp;
+import org.mqttbee.mqtt.exceptions.MqttEncodeException;
+import org.mqttbee.mqtt.mqtt5.message.Mqtt5MessageType;
+import org.mqttbee.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubCompReasonCode;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
-import static org.mqttbee.api.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubCompReasonCode.PACKET_IDENTIFIER_NOT_FOUND;
-import static org.mqttbee.api.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubCompReasonCode.SUCCESS;
 import static org.mqttbee.internal.mqtt.datatypes.MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT;
+import static org.mqttbee.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubCompReasonCode.PACKET_IDENTIFIER_NOT_FOUND;
+import static org.mqttbee.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubCompReasonCode.SUCCESS;
 
 /**
  * @author David Katz

@@ -19,15 +19,15 @@ package org.mqttbee.internal.mqtt.message.publish.mqtt3;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttQos;
-import org.mqttbee.api.mqtt.datatypes.MqttTopic;
-import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3PublishBuilder;
-import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3WillPublishBuilder;
 import org.mqttbee.internal.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttTopicImplBuilder;
 import org.mqttbee.internal.mqtt.message.publish.MqttPublish;
 import org.mqttbee.internal.mqtt.message.publish.MqttWillPublish;
 import org.mqttbee.internal.mqtt.util.MqttChecks;
+import org.mqttbee.mqtt.datatypes.MqttQos;
+import org.mqttbee.mqtt.datatypes.MqttTopic;
+import org.mqttbee.mqtt.mqtt3.message.publish.Mqtt3PublishBuilder;
+import org.mqttbee.mqtt.mqtt3.message.publish.Mqtt3WillPublishBuilder;
 import org.mqttbee.util.ByteBufferUtil;
 import org.mqttbee.util.Checks;
 

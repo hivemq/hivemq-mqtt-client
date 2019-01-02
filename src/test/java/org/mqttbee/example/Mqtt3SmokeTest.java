@@ -20,8 +20,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.util.KeyStoreUtil;
+import org.mqttbee.mqtt.datatypes.MqttQos;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;

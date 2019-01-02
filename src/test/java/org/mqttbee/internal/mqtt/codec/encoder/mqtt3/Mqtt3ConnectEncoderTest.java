@@ -23,13 +23,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
-import org.mqttbee.api.mqtt.datatypes.MqttQos;
-import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.internal.mqtt.codec.encoder.MqttMessageEncoders;
 import org.mqttbee.internal.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.internal.mqtt.message.connect.MqttConnect;
 import org.mqttbee.internal.mqtt.message.connect.MqttStatefulConnect;
 import org.mqttbee.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectViewBuilder;
+import org.mqttbee.mqtt.datatypes.MqttQos;
+import org.mqttbee.mqtt.mqtt3.message.Mqtt3MessageType;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;

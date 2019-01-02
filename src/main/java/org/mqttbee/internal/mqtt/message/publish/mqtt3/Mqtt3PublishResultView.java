@@ -19,11 +19,11 @@ package org.mqttbee.internal.mqtt.message.publish.mqtt3;
 
 import io.reactivex.functions.Function;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;
-import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3PublishResult;
-import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
 import org.mqttbee.internal.mqtt.message.publish.MqttPublishResult;
 import org.mqttbee.internal.mqtt.mqtt3.exceptions.Mqtt3ExceptionFactory;
+import org.mqttbee.mqtt.mqtt3.message.publish.Mqtt3Publish;
+import org.mqttbee.mqtt.mqtt3.message.publish.Mqtt3PublishResult;
+import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
 
 import java.util.Optional;
 

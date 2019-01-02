@@ -20,11 +20,11 @@ package org.mqttbee.internal.mqtt.message.auth;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.Immutable;
-import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5Auth;
-import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode;
 import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.internal.mqtt.message.MqttMessageWithUserProperties;
+import org.mqttbee.mqtt.mqtt5.message.auth.Mqtt5Auth;
+import org.mqttbee.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode;
 import org.mqttbee.util.ByteBufferUtil;
 
 import java.nio.ByteBuffer;

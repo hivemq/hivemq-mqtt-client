@@ -22,8 +22,8 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.Immutable;
-import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperty;
 import org.mqttbee.internal.mqtt.message.MqttProperty;
+import org.mqttbee.mqtt.mqtt5.datatypes.Mqtt5UserProperty;
 
 /**
  * @author Silvio Giebl

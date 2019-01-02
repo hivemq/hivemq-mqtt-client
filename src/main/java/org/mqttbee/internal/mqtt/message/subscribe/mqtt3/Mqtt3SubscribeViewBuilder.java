@@ -19,12 +19,12 @@ package org.mqttbee.internal.mqtt.message.subscribe.mqtt3;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttQos;
-import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
-import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3SubscribeBuilder;
-import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscription;
 import org.mqttbee.internal.mqtt.datatypes.MqttTopicFilterImplBuilder;
 import org.mqttbee.internal.mqtt.message.subscribe.MqttSubscription;
+import org.mqttbee.mqtt.datatypes.MqttQos;
+import org.mqttbee.mqtt.datatypes.MqttTopicFilter;
+import org.mqttbee.mqtt.mqtt3.message.subscribe.Mqtt3SubscribeBuilder;
+import org.mqttbee.mqtt.mqtt3.message.subscribe.Mqtt3Subscription;
 import org.mqttbee.util.Checks;
 import org.mqttbee.util.collections.ImmutableList;
 

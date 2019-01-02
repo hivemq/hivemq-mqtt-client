@@ -19,17 +19,17 @@ package org.mqttbee.internal.mqtt;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.MqttClientBuilder;
-import org.mqttbee.api.mqtt.MqttClientExecutorConfig;
-import org.mqttbee.api.mqtt.MqttClientSslConfig;
-import org.mqttbee.api.mqtt.MqttWebSocketConfig;
-import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
 import org.mqttbee.internal.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.internal.mqtt.mqtt3.Mqtt3RxClientViewBuilder;
 import org.mqttbee.internal.mqtt.util.MqttChecks;
+import org.mqttbee.mqtt.MqttClientBuilder;
+import org.mqttbee.mqtt.MqttClientExecutorConfig;
+import org.mqttbee.mqtt.MqttClientSslConfig;
+import org.mqttbee.mqtt.MqttWebSocketConfig;
+import org.mqttbee.mqtt.datatypes.MqttClientIdentifier;
 import org.mqttbee.util.Checks;
 
-import static org.mqttbee.api.mqtt.MqttClient.*;
+import static org.mqttbee.mqtt.MqttClient.*;
 
 /**
  * @author Silvio Giebl

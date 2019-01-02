@@ -19,12 +19,12 @@ package org.mqttbee.internal.mqtt.codec.encoder.mqtt5;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
-import org.mqttbee.api.mqtt.exceptions.MqttEncodeException;
-import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.internal.mqtt.codec.encoder.MqttMessageEncoders;
 import org.mqttbee.internal.mqtt.datatypes.*;
 import org.mqttbee.internal.mqtt.message.unsubscribe.MqttStatefulUnsubscribe;
 import org.mqttbee.internal.mqtt.message.unsubscribe.MqttUnsubscribe;
+import org.mqttbee.mqtt.exceptions.MqttEncodeException;
+import org.mqttbee.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.util.collections.ImmutableList;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;

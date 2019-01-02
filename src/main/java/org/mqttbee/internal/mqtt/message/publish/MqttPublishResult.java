@@ -19,11 +19,11 @@ package org.mqttbee.internal.mqtt.message.publish;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
 import org.mqttbee.internal.mqtt.message.publish.puback.MqttPubAck;
 import org.mqttbee.internal.mqtt.message.publish.pubcomp.MqttPubComp;
 import org.mqttbee.internal.mqtt.message.publish.pubrec.MqttPubRec;
 import org.mqttbee.internal.mqtt.message.publish.pubrel.MqttPubRel;
+import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
 
 import java.util.Optional;
 import java.util.function.BooleanSupplier;

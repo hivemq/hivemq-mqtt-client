@@ -20,11 +20,11 @@ package org.mqttbee.internal.mqtt.codec.encoder;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.exceptions.MqttEncodeException;
 import org.mqttbee.internal.mqtt.datatypes.MqttBinaryData;
 import org.mqttbee.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.internal.mqtt.message.MqttMessage;
+import org.mqttbee.mqtt.exceptions.MqttEncodeException;
 
 import java.nio.ByteBuffer;
 

@@ -18,9 +18,9 @@
 package org.mqttbee.internal.mqtt.codec.encoder.mqtt5;
 
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
-import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrec.Mqtt5PubRecReasonCode;
 import org.mqttbee.internal.mqtt.message.publish.pubrec.MqttPubRec;
+import org.mqttbee.mqtt.mqtt5.message.Mqtt5MessageType;
+import org.mqttbee.mqtt.mqtt5.message.publish.pubrec.Mqtt5PubRecReasonCode;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

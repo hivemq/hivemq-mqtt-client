@@ -19,7 +19,7 @@ package org.mqttbee.internal.mqtt.message.ping.mqtt3;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.Immutable;
-import org.mqttbee.api.mqtt.mqtt3.message.ping.Mqtt3PingResp;
+import org.mqttbee.mqtt.mqtt3.message.ping.Mqtt3PingResp;
 
 /**
  * @author Silvio Giebl

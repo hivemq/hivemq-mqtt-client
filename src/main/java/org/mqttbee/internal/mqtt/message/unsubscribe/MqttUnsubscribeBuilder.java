@@ -19,16 +19,16 @@ package org.mqttbee.internal.mqtt.message.unsubscribe;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
-import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
-import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
-import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.Mqtt5UnsubscribeBuilder;
 import org.mqttbee.internal.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttTopicFilterImplBuilder;
 import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertiesImplBuilder;
 import org.mqttbee.internal.mqtt.message.subscribe.MqttSubscription;
 import org.mqttbee.internal.mqtt.util.MqttChecks;
+import org.mqttbee.mqtt.datatypes.MqttTopicFilter;
+import org.mqttbee.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
+import org.mqttbee.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
+import org.mqttbee.mqtt.mqtt5.message.unsubscribe.Mqtt5UnsubscribeBuilder;
 import org.mqttbee.util.collections.ImmutableList;
 
 import java.util.function.Function;

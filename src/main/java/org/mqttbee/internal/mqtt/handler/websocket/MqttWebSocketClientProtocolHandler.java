@@ -20,11 +20,11 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.websocketx.WebSocketClientProtocolHandler;
 import io.netty.handler.codec.http.websocketx.WebSocketVersion;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.MqttWebSocketConfig;
 import org.mqttbee.internal.mqtt.MqttClientConfig;
 import org.mqttbee.internal.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.internal.mqtt.handler.MqttChannelInitializer;
 import org.mqttbee.internal.mqtt.ioc.ConnectionScope;
+import org.mqttbee.mqtt.MqttWebSocketConfig;
 
 import java.net.URI;
 import java.net.URISyntaxException;

@@ -20,12 +20,12 @@ package org.mqttbee.internal.mqtt.handler.publish.incoming;
 import io.reactivex.Flowable;
 import io.reactivex.internal.subscriptions.EmptySubscription;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeResult;
 import org.mqttbee.internal.mqtt.MqttClientConfig;
 import org.mqttbee.internal.mqtt.exceptions.MqttClientStateExceptions;
 import org.mqttbee.internal.mqtt.handler.subscribe.MqttSubscriptionHandler;
 import org.mqttbee.internal.mqtt.ioc.ClientComponent;
 import org.mqttbee.internal.mqtt.message.subscribe.MqttSubscribe;
+import org.mqttbee.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeResult;
 import org.reactivestreams.Subscriber;
 
 /**

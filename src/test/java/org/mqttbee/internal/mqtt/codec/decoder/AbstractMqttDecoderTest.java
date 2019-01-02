@@ -24,14 +24,14 @@ import io.netty.channel.embedded.EmbeddedChannel;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
-import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
 import org.mqttbee.internal.mqtt.MqttClientConfig;
 import org.mqttbee.internal.mqtt.MqttVersion;
 import org.mqttbee.internal.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.internal.mqtt.handler.disconnect.MqttDisconnectEvent;
 import org.mqttbee.internal.mqtt.message.connect.MqttConnect;
 import org.mqttbee.internal.mqtt.message.disconnect.MqttDisconnect;
+import org.mqttbee.mqtt.mqtt5.exceptions.Mqtt5MessageException;
+import org.mqttbee.mqtt.mqtt5.message.Mqtt5Message;
 import org.mqttbee.util.collections.IntMap;
 
 /**

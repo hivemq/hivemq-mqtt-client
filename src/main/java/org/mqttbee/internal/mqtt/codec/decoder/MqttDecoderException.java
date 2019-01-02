@@ -18,7 +18,7 @@
 package org.mqttbee.internal.mqtt.codec.decoder;
 
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
+import org.mqttbee.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 
 /**
  * Exception when decoding an invalid MQTT message.

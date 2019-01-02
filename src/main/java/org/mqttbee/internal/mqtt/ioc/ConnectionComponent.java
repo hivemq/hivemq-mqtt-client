@@ -21,9 +21,9 @@ import dagger.BindsInstance;
 import dagger.Subcomponent;
 import io.netty.bootstrap.Bootstrap;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.internal.mqtt.codec.MqttCodecModule;
 import org.mqttbee.internal.mqtt.message.connect.MqttConnect;
+import org.mqttbee.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.rx.SingleFlow;
 
 /**

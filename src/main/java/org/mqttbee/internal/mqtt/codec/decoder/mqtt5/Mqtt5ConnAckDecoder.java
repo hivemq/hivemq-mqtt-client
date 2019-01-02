@@ -19,9 +19,6 @@ package org.mqttbee.internal.mqtt.codec.decoder.mqtt5;
 
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.datatypes.MqttQos;
-import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckReasonCode;
-import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.internal.mqtt.codec.decoder.MqttDecoderContext;
 import org.mqttbee.internal.mqtt.codec.decoder.MqttDecoderException;
 import org.mqttbee.internal.mqtt.codec.decoder.MqttMessageDecoder;
@@ -29,18 +26,21 @@ import org.mqttbee.internal.mqtt.datatypes.*;
 import org.mqttbee.internal.mqtt.message.auth.MqttEnhancedAuth;
 import org.mqttbee.internal.mqtt.message.connect.connack.MqttConnAck;
 import org.mqttbee.internal.mqtt.message.connect.connack.MqttConnAckRestrictions;
+import org.mqttbee.mqtt.datatypes.MqttQos;
+import org.mqttbee.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckReasonCode;
+import org.mqttbee.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.util.collections.ImmutableList;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.nio.ByteBuffer;
 
-import static org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions.*;
 import static org.mqttbee.internal.mqtt.codec.decoder.MqttMessageDecoderUtil.*;
 import static org.mqttbee.internal.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.*;
 import static org.mqttbee.internal.mqtt.message.connect.connack.MqttConnAck.KEEP_ALIVE_FROM_CONNECT;
 import static org.mqttbee.internal.mqtt.message.connect.connack.MqttConnAck.SESSION_EXPIRY_INTERVAL_FROM_CONNECT;
 import static org.mqttbee.internal.mqtt.message.connect.connack.MqttConnAckProperty.*;
+import static org.mqttbee.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions.*;
 
 /**
  * @author Silvio Giebl

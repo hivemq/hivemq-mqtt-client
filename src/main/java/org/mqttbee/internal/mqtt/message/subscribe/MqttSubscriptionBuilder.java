@@ -19,14 +19,14 @@ package org.mqttbee.internal.mqtt.message.subscribe;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttQos;
-import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
-import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5RetainHandling;
-import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscription;
-import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscriptionBuilder;
 import org.mqttbee.internal.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttTopicFilterImplBuilder;
 import org.mqttbee.internal.mqtt.util.MqttChecks;
+import org.mqttbee.mqtt.datatypes.MqttQos;
+import org.mqttbee.mqtt.datatypes.MqttTopicFilter;
+import org.mqttbee.mqtt.mqtt5.message.subscribe.Mqtt5RetainHandling;
+import org.mqttbee.mqtt.mqtt5.message.subscribe.Mqtt5Subscription;
+import org.mqttbee.mqtt.mqtt5.message.subscribe.Mqtt5SubscriptionBuilder;
 import org.mqttbee.util.Checks;
 
 import java.util.function.Function;

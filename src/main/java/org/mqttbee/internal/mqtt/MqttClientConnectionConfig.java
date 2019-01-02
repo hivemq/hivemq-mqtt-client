@@ -20,9 +20,9 @@ package org.mqttbee.internal.mqtt;
 import io.netty.channel.Channel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.mqtt3.Mqtt3ClientConnectionConfig;
-import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientConnectionConfig;
-import org.mqttbee.api.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
+import org.mqttbee.mqtt.mqtt3.Mqtt3ClientConnectionConfig;
+import org.mqttbee.mqtt.mqtt5.Mqtt5ClientConnectionConfig;
+import org.mqttbee.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
 
 import java.util.Optional;
 

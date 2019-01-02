@@ -21,16 +21,16 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
-import org.mqttbee.api.mqtt.datatypes.MqttQos;
-import org.mqttbee.api.mqtt.exceptions.MqttEncodeException;
-import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
-import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
-import org.mqttbee.api.mqtt.mqtt5.message.publish.TopicAliasUsage;
 import org.mqttbee.internal.mqtt.codec.encoder.MqttMessageEncoders;
 import org.mqttbee.internal.mqtt.datatypes.*;
 import org.mqttbee.internal.mqtt.message.publish.MqttPublish;
 import org.mqttbee.internal.mqtt.message.publish.MqttPublishProperty;
 import org.mqttbee.internal.mqtt.message.publish.MqttStatefulPublish;
+import org.mqttbee.mqtt.datatypes.MqttQos;
+import org.mqttbee.mqtt.exceptions.MqttEncodeException;
+import org.mqttbee.mqtt.mqtt5.message.Mqtt5MessageType;
+import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
+import org.mqttbee.mqtt.mqtt5.message.publish.TopicAliasUsage;
 import org.mqttbee.util.collections.ImmutableIntList;
 import org.mqttbee.util.collections.ImmutableList;
 
@@ -38,10 +38,10 @@ import java.nio.ByteBuffer;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish.DEFAULT_TOPIC_ALIAS_USAGE;
 import static org.mqttbee.internal.mqtt.datatypes.MqttUserPropertiesImpl.NO_USER_PROPERTIES;
 import static org.mqttbee.internal.mqtt.message.publish.MqttStatefulPublish.DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS;
 import static org.mqttbee.internal.mqtt.message.publish.MqttStatefulPublish.DEFAULT_NO_TOPIC_ALIAS;
+import static org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5Publish.DEFAULT_TOPIC_ALIAS_USAGE;
 
 /**
  * @author David Katz

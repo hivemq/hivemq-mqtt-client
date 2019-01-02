@@ -22,10 +22,10 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.internal.wire.MqttPubRec;
 import org.eclipse.paho.client.mqttv3.internal.wire.MqttPublish;
 import org.junit.jupiter.api.Test;
-import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.internal.mqtt.codec.encoder.MqttMessageEncoders;
 import org.mqttbee.internal.mqtt.message.publish.pubrel.MqttPubRel;
 import org.mqttbee.internal.mqtt.message.publish.pubrel.mqtt3.Mqtt3PubRelView;
+import org.mqttbee.mqtt.mqtt3.message.Mqtt3MessageType;
 
 class Mqtt3PubRelEncoderTest extends AbstractMqtt3EncoderTest {
 

@@ -20,7 +20,7 @@ package org.mqttbee.internal.mqtt;
 import io.reactivex.Scheduler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.MqttClientExecutorConfigBuilder;
+import org.mqttbee.mqtt.MqttClientExecutorConfigBuilder;
 import org.mqttbee.util.Checks;
 
 import java.util.concurrent.Executor;

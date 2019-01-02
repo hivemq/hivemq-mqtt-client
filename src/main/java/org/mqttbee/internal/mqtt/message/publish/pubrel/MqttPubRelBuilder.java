@@ -19,15 +19,15 @@ package org.mqttbee.internal.mqtt.message.publish.pubrel;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
-import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
-import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrel.Mqtt5PubRelBuilder;
-import org.mqttbee.api.mqtt.mqtt5.message.publish.pubrel.Mqtt5PubRelReasonCode;
 import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertiesImplBuilder;
 import org.mqttbee.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.internal.mqtt.message.publish.pubrec.MqttPubRec;
 import org.mqttbee.internal.mqtt.util.MqttChecks;
+import org.mqttbee.mqtt.datatypes.MqttUtf8String;
+import org.mqttbee.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
+import org.mqttbee.mqtt.mqtt5.message.publish.pubrel.Mqtt5PubRelBuilder;
+import org.mqttbee.mqtt.mqtt5.message.publish.pubrel.Mqtt5PubRelReasonCode;
 
 /**
  * @author Silvio Giebl

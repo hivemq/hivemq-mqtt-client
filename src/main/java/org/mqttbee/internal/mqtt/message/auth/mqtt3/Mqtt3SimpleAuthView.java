@@ -20,10 +20,10 @@ package org.mqttbee.internal.mqtt.message.auth.mqtt3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.Immutable;
-import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
-import org.mqttbee.api.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
 import org.mqttbee.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.internal.mqtt.message.auth.MqttSimpleAuth;
+import org.mqttbee.mqtt.datatypes.MqttUtf8String;
+import org.mqttbee.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
 
 import java.nio.ByteBuffer;
 import java.util.Optional;

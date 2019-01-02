@@ -20,15 +20,15 @@ package org.mqttbee.internal.mqtt.message.connect.connack.mqtt3;
 import io.reactivex.functions.Function;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.Immutable;
-import org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck;
-import org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAckReturnCode;
-import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
-import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckReasonCode;
 import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.internal.mqtt.message.connect.connack.MqttConnAck;
 import org.mqttbee.internal.mqtt.message.connect.connack.MqttConnAckRestrictions;
+import org.mqttbee.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck;
+import org.mqttbee.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAckReturnCode;
+import org.mqttbee.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
+import org.mqttbee.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckReasonCode;
 
-import static org.mqttbee.api.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAckReturnCode.*;
+import static org.mqttbee.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAckReturnCode.*;
 
 /**
  * @author Silvio Giebl

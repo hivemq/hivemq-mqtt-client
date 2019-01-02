@@ -22,10 +22,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mqttbee.api.mqtt.datatypes.MqttQos;
-import org.mqttbee.api.mqtt.exceptions.MqttEncodeException;
-import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
-import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5RetainHandling;
 import org.mqttbee.internal.mqtt.codec.encoder.MqttMessageEncoders;
 import org.mqttbee.internal.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertiesImpl;
@@ -34,6 +30,10 @@ import org.mqttbee.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.internal.mqtt.message.subscribe.MqttStatefulSubscribe;
 import org.mqttbee.internal.mqtt.message.subscribe.MqttSubscribe;
 import org.mqttbee.internal.mqtt.message.subscribe.MqttSubscription;
+import org.mqttbee.mqtt.datatypes.MqttQos;
+import org.mqttbee.mqtt.exceptions.MqttEncodeException;
+import org.mqttbee.mqtt.mqtt5.message.Mqtt5MessageType;
+import org.mqttbee.mqtt.mqtt5.message.subscribe.Mqtt5RetainHandling;
 import org.mqttbee.util.collections.ImmutableList;
 
 import java.util.Arrays;
@@ -42,8 +42,8 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscription.*;
 import static org.mqttbee.internal.mqtt.datatypes.MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT;
+import static org.mqttbee.mqtt.mqtt5.message.subscribe.Mqtt5Subscription.*;
 
 /**
  * @author David Katz
