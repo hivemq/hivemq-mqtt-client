@@ -32,8 +32,9 @@ import org.mqttbee.mqtt.mqtt5.message.Mqtt5Message;
  */
 public class Mqtt3ExceptionFactory {
 
-    public static @NotNull Function<Throwable, Throwable> MAPPER = Mqtt3ExceptionFactory::map;
-    public static @NotNull java.util.function.Function<Throwable, Throwable> MAPPER_JAVA = Mqtt3ExceptionFactory::map;
+    public static final @NotNull Function<Throwable, Throwable> MAPPER = Mqtt3ExceptionFactory::map;
+    public static final @NotNull java.util.function.Function<Throwable, Throwable> MAPPER_JAVA =
+            Mqtt3ExceptionFactory::map;
 
     public static @NotNull Throwable map(final @NotNull Throwable throwable) {
         if (throwable instanceof Mqtt5MessageException) {
