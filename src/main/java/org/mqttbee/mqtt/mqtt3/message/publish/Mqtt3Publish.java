@@ -24,7 +24,6 @@ import org.mqttbee.mqtt.datatypes.MqttQos;
 import org.mqttbee.mqtt.datatypes.MqttTopic;
 import org.mqttbee.mqtt.mqtt3.message.Mqtt3Message;
 import org.mqttbee.mqtt.mqtt3.message.Mqtt3MessageType;
-import org.mqttbee.mqtt.mqtt3.message.subscribe.Mqtt3SubscribeResult;
 
 import java.nio.ByteBuffer;
 import java.util.Optional;
@@ -33,7 +32,7 @@ import java.util.Optional;
  * MQTT 3 PUBLISH packet.
  */
 @DoNotImplement
-public interface Mqtt3Publish extends Mqtt3Message, Mqtt3SubscribeResult {
+public interface Mqtt3Publish extends Mqtt3Message {
 
     @NotNull MqttQos DEFAULT_QOS = MqttQos.AT_MOST_ONCE;
 
