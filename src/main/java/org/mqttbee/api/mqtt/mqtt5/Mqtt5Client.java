@@ -19,7 +19,7 @@ package org.mqttbee.api.mqtt.mqtt5;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttClient;
-import org.mqttbee.mqtt.MqttRxClientBuilder;
+import org.mqttbee.internal.mqtt.MqttRxClientBuilder;
 
 /**
  * MQTT client according to the MQTT 5.0 specification.

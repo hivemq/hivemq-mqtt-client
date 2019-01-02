@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
-import org.mqttbee.mqtt.message.subscribe.MqttSubscriptionBuilder;
+import org.mqttbee.internal.mqtt.message.subscribe.MqttSubscriptionBuilder;
 
 /**
  * Subscription in the MQTT 5 SUBSCRIBE packet.

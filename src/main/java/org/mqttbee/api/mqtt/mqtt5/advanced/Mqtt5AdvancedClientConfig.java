@@ -19,7 +19,7 @@ package org.mqttbee.api.mqtt.mqtt5.advanced;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.mqtt.advanced.MqttAdvancedClientConfigBuilder;
+import org.mqttbee.internal.mqtt.advanced.MqttAdvancedClientConfigBuilder;
 
 /**
  * @author Silvio Giebl

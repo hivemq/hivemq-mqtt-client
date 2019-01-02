@@ -19,7 +19,7 @@ package org.mqttbee.api.mqtt.mqtt5.message.publish;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.mqtt.message.publish.MqttPublishBuilder;
+import org.mqttbee.internal.mqtt.message.publish.MqttPublishBuilder;
 
 /**
  * MQTT 5 Will Publish which can be a part of the CONNECT packet.

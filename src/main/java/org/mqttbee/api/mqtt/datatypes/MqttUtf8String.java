@@ -19,7 +19,7 @@ package org.mqttbee.api.mqtt.datatypes;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
+import org.mqttbee.internal.mqtt.datatypes.MqttUtf8StringImpl;
 
 import java.nio.ByteBuffer;
 

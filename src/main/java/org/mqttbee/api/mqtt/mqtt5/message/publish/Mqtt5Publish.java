@@ -26,7 +26,7 @@ import org.mqttbee.api.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeResult;
-import org.mqttbee.mqtt.message.publish.MqttPublishBuilder;
+import org.mqttbee.internal.mqtt.message.publish.MqttPublishBuilder;
 
 import java.nio.ByteBuffer;
 import java.util.Optional;

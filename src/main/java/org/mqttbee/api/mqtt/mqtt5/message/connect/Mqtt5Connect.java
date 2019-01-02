@@ -25,7 +25,7 @@ import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5SimpleAuth;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
-import org.mqttbee.mqtt.message.connect.MqttConnectBuilder;
+import org.mqttbee.internal.mqtt.message.connect.MqttConnectBuilder;
 import org.mqttbee.util.UnsignedDataTypes;
 
 import java.util.Optional;

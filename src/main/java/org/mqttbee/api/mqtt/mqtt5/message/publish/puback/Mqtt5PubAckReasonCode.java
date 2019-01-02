@@ -20,7 +20,7 @@ package org.mqttbee.api.mqtt.mqtt5.message.publish.puback;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5ReasonCode;
-import org.mqttbee.mqtt.message.MqttCommonReasonCode;
+import org.mqttbee.internal.mqtt.message.MqttCommonReasonCode;
 
 import java.util.EnumSet;
 

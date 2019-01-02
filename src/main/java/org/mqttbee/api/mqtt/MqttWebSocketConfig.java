@@ -18,7 +18,7 @@ package org.mqttbee.api.mqtt;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.mqtt.MqttWebSocketConfigImplBuilder;
+import org.mqttbee.internal.mqtt.MqttWebSocketConfigImplBuilder;
 
 /**
  * @author Christian Hoff

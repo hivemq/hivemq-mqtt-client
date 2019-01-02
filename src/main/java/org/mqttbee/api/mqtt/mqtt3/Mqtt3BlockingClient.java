@@ -30,11 +30,11 @@ import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3SubscribeBuilder;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAck;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubscribeBuilder;
-import org.mqttbee.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
-import org.mqttbee.mqtt.message.connect.mqtt3.Mqtt3ConnectViewBuilder;
-import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishViewBuilder;
-import org.mqttbee.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeViewBuilder;
-import org.mqttbee.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeViewBuilder;
+import org.mqttbee.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
+import org.mqttbee.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectViewBuilder;
+import org.mqttbee.internal.mqtt.message.publish.mqtt3.Mqtt3PublishViewBuilder;
+import org.mqttbee.internal.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeViewBuilder;
+import org.mqttbee.internal.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeViewBuilder;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;

@@ -23,7 +23,7 @@ import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3Message;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.api.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;
-import org.mqttbee.mqtt.message.connect.mqtt3.Mqtt3ConnectViewBuilder;
+import org.mqttbee.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectViewBuilder;
 
 import java.util.Optional;
 

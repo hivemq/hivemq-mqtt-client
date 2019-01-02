@@ -19,7 +19,7 @@ package org.mqttbee.api.mqtt.mqtt3;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttClient;
-import org.mqttbee.mqtt.mqtt3.Mqtt3RxClientViewBuilder;
+import org.mqttbee.internal.mqtt.mqtt3.Mqtt3RxClientViewBuilder;
 
 /**
  * MQTT client according to the MQTT 3.1.1 specification.

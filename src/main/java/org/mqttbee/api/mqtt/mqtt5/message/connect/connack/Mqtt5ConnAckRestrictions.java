@@ -20,7 +20,7 @@ package org.mqttbee.api.mqtt.mqtt5.message.connect.connack;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
-import org.mqttbee.mqtt.datatypes.MqttVariableByteInteger;
+import org.mqttbee.internal.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.util.UnsignedDataTypes;
 
 /**

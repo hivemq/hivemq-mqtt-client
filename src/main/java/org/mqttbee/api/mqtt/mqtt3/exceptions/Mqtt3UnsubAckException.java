@@ -20,7 +20,7 @@ package org.mqttbee.api.mqtt.mqtt3.exceptions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.unsuback.Mqtt3UnsubAck;
-import org.mqttbee.mqtt.message.unsubscribe.unsuback.mqtt3.Mqtt3UnsubAckView;
+import org.mqttbee.internal.mqtt.message.unsubscribe.unsuback.mqtt3.Mqtt3UnsubAckView;
 
 /**
  * @author Silvio Giebl

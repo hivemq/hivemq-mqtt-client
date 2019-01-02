@@ -21,7 +21,7 @@ import io.reactivex.Scheduler;
 import io.reactivex.schedulers.Schedulers;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.mqtt.MqttClientExecutorConfigImplBuilder;
+import org.mqttbee.internal.mqtt.MqttClientExecutorConfigImplBuilder;
 
 import java.util.Optional;
 import java.util.OptionalInt;

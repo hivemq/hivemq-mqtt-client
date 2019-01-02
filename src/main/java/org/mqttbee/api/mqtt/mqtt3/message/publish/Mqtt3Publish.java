@@ -24,7 +24,7 @@ import org.mqttbee.api.mqtt.datatypes.MqttTopic;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3Message;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3SubscribeResult;
-import org.mqttbee.mqtt.message.publish.mqtt3.Mqtt3PublishViewBuilder;
+import org.mqttbee.internal.mqtt.message.publish.mqtt3.Mqtt3PublishViewBuilder;
 
 import java.nio.ByteBuffer;
 import java.util.Optional;

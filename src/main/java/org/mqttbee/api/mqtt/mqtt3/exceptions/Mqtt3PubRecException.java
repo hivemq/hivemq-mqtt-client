@@ -20,7 +20,7 @@ package org.mqttbee.api.mqtt.mqtt3.exceptions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt3.message.publish.pubrec.Mqtt3PubRec;
-import org.mqttbee.mqtt.message.publish.pubrec.mqtt3.Mqtt3PubRecView;
+import org.mqttbee.internal.mqtt.message.publish.pubrec.mqtt3.Mqtt3PubRecView;
 
 /**
  * @author Silvio Giebl

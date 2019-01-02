@@ -19,7 +19,7 @@ package org.mqttbee.api.mqtt;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.mqtt.MqttRxClientBuilderBase;
+import org.mqttbee.internal.mqtt.MqttRxClientBuilderBase;
 
 /**
  * Common interface for MQTT clients.

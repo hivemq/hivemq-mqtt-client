@@ -23,7 +23,7 @@ import org.mqttbee.annotations.Immutable;
 import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3Message;
 import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
-import org.mqttbee.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeViewBuilder;
+import org.mqttbee.internal.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeViewBuilder;
 
 import java.util.List;
 
