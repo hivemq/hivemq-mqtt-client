@@ -24,7 +24,6 @@ import org.mqttbee.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.mqtt.mqtt5.message.Mqtt5Message;
 import org.mqttbee.mqtt.mqtt5.message.Mqtt5MessageType;
-import org.mqttbee.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeResult;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,7 +34,7 @@ import java.util.Optional;
  * @author Silvio Giebl
  */
 @DoNotImplement
-public interface Mqtt5SubAck extends Mqtt5Message, Mqtt5SubscribeResult {
+public interface Mqtt5SubAck extends Mqtt5Message {
 
     /**
      * @return the reason codes of this SUBACK packet, each belonging to a subscription in the corresponding SUBSCRIBE

@@ -25,13 +25,12 @@ import org.mqttbee.internal.mqtt.exceptions.MqttClientStateExceptions;
 import org.mqttbee.internal.mqtt.handler.subscribe.MqttSubscriptionHandler;
 import org.mqttbee.internal.mqtt.ioc.ClientComponent;
 import org.mqttbee.internal.mqtt.message.subscribe.MqttSubscribe;
-import org.mqttbee.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeResult;
 import org.reactivestreams.Subscriber;
 
 /**
  * @author Silvio Giebl
  */
-public class MqttSubscriptionFlowable extends Flowable<Mqtt5SubscribeResult> {
+public class MqttSubscriptionFlowable extends Flowable<Object> {
 
     private final @NotNull MqttSubscribe subscribe;
     private final @NotNull MqttClientConfig clientConfig;
@@ -44,7 +43,7 @@ public class MqttSubscriptionFlowable extends Flowable<Mqtt5SubscribeResult> {
     }
 
     @Override
-    protected void subscribeActual(final @NotNull Subscriber<? super Mqtt5SubscribeResult> subscriber) {
+    protected void subscribeActual(final @NotNull Subscriber<? super Object> subscriber) {
         if (clientConfig.getState().isConnectedOrReconnect()) {
             final ClientComponent clientComponent = clientConfig.getClientComponent();
             final MqttIncomingQosHandler incomingQosHandler = clientComponent.incomingQosHandler();

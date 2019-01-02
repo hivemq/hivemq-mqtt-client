@@ -22,7 +22,6 @@ import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.annotations.Immutable;
 import org.mqttbee.mqtt.mqtt3.message.Mqtt3Message;
 import org.mqttbee.mqtt.mqtt3.message.Mqtt3MessageType;
-import org.mqttbee.mqtt.mqtt3.message.subscribe.Mqtt3SubscribeResult;
 
 import java.util.List;
 
@@ -30,7 +29,7 @@ import java.util.List;
  * MQTT 3 SUBACK packet.
  */
 @DoNotImplement
-public interface Mqtt3SubAck extends Mqtt3Message, Mqtt3SubscribeResult {
+public interface Mqtt3SubAck extends Mqtt3Message {
 
     /**
      * @return the Return Codes of this SUBACK packet, each belonging to a subscription in the corresponding SUBSCRIBE

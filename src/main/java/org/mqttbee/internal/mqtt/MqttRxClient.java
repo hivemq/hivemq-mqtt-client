@@ -46,7 +46,6 @@ import org.mqttbee.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
 import org.mqttbee.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
-import org.mqttbee.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeResult;
 import org.mqttbee.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.mqttbee.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
@@ -100,8 +99,7 @@ public class MqttRxClient implements Mqtt5RxClient {
 
         final MqttSubscribe mqttSubscribe = MqttChecks.subscribe(subscribe);
 
-        final Flowable<Mqtt5SubscribeResult> subscriptionFlowable =
-                new MqttSubscriptionFlowable(mqttSubscribe, clientConfig);
+        final Flowable<Object> subscriptionFlowable = new MqttSubscriptionFlowable(mqttSubscribe, clientConfig);
         return FlowableWithSingle.split(subscriptionFlowable, Mqtt5Publish.class, Mqtt5SubAck.class);
     }
 

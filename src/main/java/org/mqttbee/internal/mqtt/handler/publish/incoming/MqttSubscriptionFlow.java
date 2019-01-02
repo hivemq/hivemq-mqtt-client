@@ -23,20 +23,19 @@ import org.mqttbee.internal.mqtt.message.subscribe.MqttStatefulSubscribe;
 import org.mqttbee.internal.mqtt.message.subscribe.suback.MqttSubAck;
 import org.mqttbee.internal.rx.SingleFlow;
 import org.mqttbee.internal.util.collections.HandleList;
-import org.mqttbee.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeResult;
 import org.reactivestreams.Subscriber;
 
 /**
  * @author Silvio Giebl
  */
-public class MqttSubscriptionFlow extends MqttIncomingPublishFlow<Subscriber<? super Mqtt5SubscribeResult>>
+public class MqttSubscriptionFlow extends MqttIncomingPublishFlow<Subscriber<? super Object>>
         implements SingleFlow<MqttSubAck> {
 
     private final @NotNull HandleList<MqttTopicFilterImpl> topicFilters;
     private int subscriptionIdentifier = MqttStatefulSubscribe.DEFAULT_NO_SUBSCRIPTION_IDENTIFIER;
 
     MqttSubscriptionFlow(
-            final @NotNull Subscriber<? super Mqtt5SubscribeResult> subscriber,
+            final @NotNull Subscriber<? super Object> subscriber,
             final @NotNull MqttIncomingQosHandler incomingQosHandler) {
 
         super(subscriber, incomingQosHandler);
