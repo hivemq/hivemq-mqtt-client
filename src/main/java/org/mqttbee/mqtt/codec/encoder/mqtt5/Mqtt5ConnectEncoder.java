@@ -59,10 +59,9 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
         this.publishEncoder = publishEncoder;
     }
 
-    @NotNull
     @Override
-    protected ByteBuf encode(
-            @NotNull final MqttStatefulConnect message, @NotNull final ByteBufAllocator allocator,
+    protected @NotNull ByteBuf encode(
+            final @NotNull MqttStatefulConnect message, final @NotNull ByteBufAllocator allocator,
             final int maximumPacketSize) {
 
         int propertyLength = propertyLength(message);
@@ -84,9 +83,8 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
                 omittedProperties);
     }
 
-    @NotNull
-    private ByteBuf encode(
-            @NotNull final MqttStatefulConnect message, @NotNull final ByteBufAllocator allocator,
+    private @NotNull ByteBuf encode(
+            final @NotNull MqttStatefulConnect message, final @NotNull ByteBufAllocator allocator,
             final int encodedLength, final int remainingLength, final int propertyLength, final int willPropertyLength,
             final int omittedProperties) {
 
@@ -102,7 +100,7 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
                 ((willPropertyLength == -1) ? 0 : encodedLengthWithHeader(willPropertyLength));
     }
 
-    private int remainingLengthWithoutProperties(@NotNull final MqttStatefulConnect message) {
+    private int remainingLengthWithoutProperties(final @NotNull MqttStatefulConnect message) {
         final MqttConnect stateless = message.stateless();
 
         int remainingLength = VARIABLE_HEADER_FIXED_LENGTH;
@@ -124,7 +122,7 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
         return remainingLength;
     }
 
-    private int propertyLength(@NotNull final MqttStatefulConnect message) {
+    private int propertyLength(final @NotNull MqttStatefulConnect message) {
         final MqttConnect stateless = message.stateless();
 
         int propertyLength = 0;
@@ -160,7 +158,7 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
     }
 
     private int propertyLength(
-            @NotNull final MqttStatefulConnect message, final int propertyLength, final int omittedProperties) {
+            final @NotNull MqttStatefulConnect message, final int propertyLength, final int omittedProperties) {
 
         switch (omittedProperties) {
             case 0:
@@ -191,7 +189,7 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
     }
 
     private void encode(
-            @NotNull final MqttStatefulConnect message, @NotNull final ByteBuf out, final int remainingLength,
+            final @NotNull MqttStatefulConnect message, final @NotNull ByteBuf out, final int remainingLength,
             final int propertyLength, final int willPropertyLength, final int omittedProperties) {
 
         encodeFixedHeader(out, remainingLength);
@@ -199,13 +197,13 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
         encodePayload(message, out, willPropertyLength);
     }
 
-    private void encodeFixedHeader(@NotNull final ByteBuf out, final int remainingLength) {
+    private void encodeFixedHeader(final @NotNull ByteBuf out, final int remainingLength) {
         out.writeByte(FIXED_HEADER);
         MqttVariableByteInteger.encode(remainingLength, out);
     }
 
     private void encodeVariableHeader(
-            @NotNull final MqttStatefulConnect message, @NotNull final ByteBuf out, final int propertyLength,
+            final @NotNull MqttStatefulConnect message, final @NotNull ByteBuf out, final int propertyLength,
             final int omittedProperties) {
 
         final MqttConnect stateless = message.stateless();
@@ -246,7 +244,7 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
     }
 
     private void encodeProperties(
-            @NotNull final MqttStatefulConnect message, @NotNull final ByteBuf out, final int propertyLength,
+            final @NotNull MqttStatefulConnect message, final @NotNull ByteBuf out, final int propertyLength,
             final int omittedProperties) {
 
         final MqttConnect stateless = message.stateless();
@@ -282,7 +280,7 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
     }
 
     private void encodePayload(
-            @NotNull final MqttStatefulConnect message, @NotNull final ByteBuf out, final int willPropertyLength) {
+            final @NotNull MqttStatefulConnect message, final @NotNull ByteBuf out, final int willPropertyLength) {
 
         final MqttConnect stateless = message.stateless();
 
@@ -298,7 +296,7 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
     }
 
     private void encodeWillPublish(
-            @NotNull final MqttConnect message, @NotNull final ByteBuf out, final int willPropertyLength) {
+            final @NotNull MqttConnect message, final @NotNull ByteBuf out, final int willPropertyLength) {
 
         final MqttWillPublish willPublish = message.getRawWillPublish();
         if (willPublish != null) {

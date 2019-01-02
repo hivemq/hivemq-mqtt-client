@@ -35,8 +35,7 @@ import java.nio.ByteBuffer;
  */
 public class MqttMessageEncoderUtil {
 
-    private MqttMessageEncoderUtil() {
-    }
+    private MqttMessageEncoderUtil() {}
 
     /**
      * Calculates the encoded length of a MQTT message with the given remaining length.
@@ -58,31 +57,31 @@ public class MqttMessageEncoderUtil {
         return MqttVariableByteInteger.encodedLength(encodedLength) + encodedLength;
     }
 
-    public static int nullableEncodedLength(@Nullable final MqttUtf8StringImpl string) {
+    public static int nullableEncodedLength(final @Nullable MqttUtf8StringImpl string) {
         return (string == null) ? 0 : string.encodedLength();
     }
 
-    public static int nullableEncodedLength(@Nullable final ByteBuffer byteBuffer) {
+    public static int nullableEncodedLength(final @Nullable ByteBuffer byteBuffer) {
         return (byteBuffer == null) ? 0 : MqttBinaryData.encodedLength(byteBuffer);
     }
 
-    public static int encodedOrEmptyLength(@Nullable final ByteBuffer byteBuffer) {
+    public static int encodedOrEmptyLength(final @Nullable ByteBuffer byteBuffer) {
         return (byteBuffer == null) ? MqttBinaryData.EMPTY_LENGTH : MqttBinaryData.encodedLength(byteBuffer);
     }
 
-    public static void encodeNullable(@Nullable final MqttUtf8StringImpl string, @NotNull final ByteBuf out) {
+    public static void encodeNullable(final @Nullable MqttUtf8StringImpl string, final @NotNull ByteBuf out) {
         if (string != null) {
             string.encode(out);
         }
     }
 
-    public static void encodeNullable(@Nullable final ByteBuffer byteBuffer, @NotNull final ByteBuf out) {
+    public static void encodeNullable(final @Nullable ByteBuffer byteBuffer, final @NotNull ByteBuf out) {
         if (byteBuffer != null) {
             MqttBinaryData.encode(byteBuffer, out);
         }
     }
 
-    public static void encodeOrEmpty(@Nullable final ByteBuffer byteBuffer, @NotNull final ByteBuf out) {
+    public static void encodeOrEmpty(final @Nullable ByteBuffer byteBuffer, final @NotNull ByteBuf out) {
         if (byteBuffer != null) {
             MqttBinaryData.encode(byteBuffer, out);
         } else {

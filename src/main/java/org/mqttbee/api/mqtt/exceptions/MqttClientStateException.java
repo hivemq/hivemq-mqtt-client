@@ -17,7 +17,7 @@
 
 package org.mqttbee.api.mqtt.exceptions;
 
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.util.AsyncRuntimeException;
 
 /**
@@ -25,7 +25,7 @@ import org.mqttbee.util.AsyncRuntimeException;
  */
 public class MqttClientStateException extends AsyncRuntimeException {
 
-    public MqttClientStateException(final @Nullable String message) {
+    public MqttClientStateException(final @NotNull String message) {
         super(message);
     }
 }
