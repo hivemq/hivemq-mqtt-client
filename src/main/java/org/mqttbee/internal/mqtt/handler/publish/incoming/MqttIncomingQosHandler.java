@@ -240,7 +240,7 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler
     }
 
     private @NotNull MqttPubAck buildPubAck(final @NotNull MqttPubAckBuilder pubAckBuilder) {
-        final MqttAdvancedClientConfig advanced = clientConfig.getRawAdvancedClientConfig();
+        final MqttAdvancedClientConfig advanced = clientConfig.getRawAdvancedConfig();
         if (advanced != null) {
             final Mqtt5IncomingQos1Interceptor interceptor = advanced.getIncomingQos1Interceptor();
             if (interceptor != null) {
@@ -251,7 +251,7 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler
     }
 
     private @NotNull MqttPubRec buildPubRec(final @NotNull MqttPubRecBuilder pubRecBuilder) {
-        final MqttAdvancedClientConfig advanced = clientConfig.getRawAdvancedClientConfig();
+        final MqttAdvancedClientConfig advanced = clientConfig.getRawAdvancedConfig();
         if (advanced != null) {
             final Mqtt5IncomingQos2Interceptor interceptor = advanced.getIncomingQos2Interceptor();
             if (interceptor != null) {
@@ -262,7 +262,7 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler
     }
 
     private @NotNull MqttPubComp buildPubComp(final @NotNull MqttPubCompBuilder pubCompBuilder) {
-        final MqttAdvancedClientConfig advanced = clientConfig.getRawAdvancedClientConfig();
+        final MqttAdvancedClientConfig advanced = clientConfig.getRawAdvancedConfig();
         if (advanced != null) {
             final Mqtt5IncomingQos2Interceptor interceptor = advanced.getIncomingQos2Interceptor();
             if (interceptor != null) {

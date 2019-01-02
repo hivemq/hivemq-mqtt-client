@@ -30,13 +30,11 @@ import org.mqttbee.mqtt.mqtt5.advanced.Mqtt5AdvancedClientConfigBuilder;
 @DoNotImplement
 public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBuilder> {
 
-    @NotNull Mqtt5ClientBuilder followRedirects(boolean followRedirects);
-
     @NotNull Mqtt5ClientBuilder allowServerReAuth(boolean allowServerReAuth);
 
-    @NotNull Mqtt5ClientBuilder advanced(@Nullable Mqtt5AdvancedClientConfig advancedClientConfig);
+    @NotNull Mqtt5ClientBuilder advancedConfig(@Nullable Mqtt5AdvancedClientConfig advancedConfig);
 
-    @NotNull Mqtt5AdvancedClientConfigBuilder.Nested<? extends Mqtt5ClientBuilder> advanced();
+    @NotNull Mqtt5AdvancedClientConfigBuilder.Nested<? extends Mqtt5ClientBuilder> advancedConfig();
 
     @NotNull Mqtt5Client build();
 

@@ -33,6 +33,6 @@ class AbstractMqtt5EncoderTest extends AbstractMqttEncoderTest {
 
     private static MqttClientConfig createClientData() {
         return new MqttClientConfig(MqttVersion.MQTT_5_0, MqttClientIdentifierImpl.of("test"), "localhost", 1883, null,
-                null, false, false, MqttClientExecutorConfigImpl.DEFAULT, null);
+                null, false, MqttClientExecutorConfigImpl.DEFAULT, null);
     }
 }

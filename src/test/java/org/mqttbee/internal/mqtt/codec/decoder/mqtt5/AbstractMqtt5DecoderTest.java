@@ -35,7 +35,7 @@ abstract class AbstractMqtt5DecoderTest extends AbstractMqttDecoderTest {
 
     private static @NotNull MqttClientConfig createClientData() {
         return new MqttClientConfig(MqttVersion.MQTT_5_0, MqttClientIdentifierImpl.of("test"), "localhost", 1883, null,
-                null, false, false, MqttClientExecutorConfigImpl.DEFAULT, null);
+                null, false, MqttClientExecutorConfigImpl.DEFAULT, null);
     }
 
     private static @NotNull MqttConnect createConnect(final int maximumPacketSize) {

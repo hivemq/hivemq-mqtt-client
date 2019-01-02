@@ -30,11 +30,9 @@ import java.util.Optional;
 @DoNotImplement
 public interface Mqtt5ClientConfig extends MqttClientConfig {
 
-    boolean followsRedirects();
-
     boolean allowsServerReAuth();
 
-    @NotNull Optional<Mqtt5AdvancedClientConfig> getAdvancedClientConfig();
+    @NotNull Optional<Mqtt5AdvancedClientConfig> getAdvancedConfig();
 
     @NotNull Optional<Mqtt5ClientConnectionConfig> getClientConnectionConfig();
 
