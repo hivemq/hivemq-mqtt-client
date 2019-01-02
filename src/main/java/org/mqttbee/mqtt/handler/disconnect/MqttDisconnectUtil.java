@@ -21,7 +21,7 @@ import io.netty.channel.Channel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.exceptions.ConnectionClosedException;
-import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
+import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5DisconnectException;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.mqtt.datatypes.MqttUtf8StringImpl;
@@ -68,7 +68,7 @@ public class MqttDisconnectUtil {
             final @NotNull String reasonString) {
 
         final MqttDisconnect disconnect = createDisconnect(channel, reasonCode, reasonString);
-        fireDisconnectEvent(channel, new Mqtt5MessageException(disconnect, reasonString), true);
+        fireDisconnectEvent(channel, new Mqtt5DisconnectException(disconnect, reasonString), true);
     }
 
     /**
@@ -83,7 +83,7 @@ public class MqttDisconnectUtil {
             final @NotNull Throwable cause) {
 
         final MqttDisconnect disconnect = createDisconnect(channel, reasonCode, cause.getMessage());
-        fireDisconnectEvent(channel, new Mqtt5MessageException(disconnect, cause), true);
+        fireDisconnectEvent(channel, new Mqtt5DisconnectException(disconnect, cause), true);
     }
 
     static void fireDisconnectEvent(

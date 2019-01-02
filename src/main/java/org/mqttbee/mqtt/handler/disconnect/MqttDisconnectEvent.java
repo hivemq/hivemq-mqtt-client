@@ -19,8 +19,8 @@ package org.mqttbee.mqtt.handler.disconnect;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
-import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
+import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5DisconnectException;
+import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
 import org.mqttbee.rx.CompletableFlow;
 
@@ -65,8 +65,8 @@ public class MqttDisconnectEvent {
      * @return the DISCONNECT message which was sent or received, otherwise null.
      */
     @Nullable MqttDisconnect getDisconnect() {
-        if (cause instanceof Mqtt5MessageException) {
-            final Mqtt5Message mqttMessage = ((Mqtt5MessageException) cause).getMqttMessage();
+        if (cause instanceof Mqtt5DisconnectException) {
+            final Mqtt5Disconnect mqttMessage = ((Mqtt5DisconnectException) cause).getMqttMessage();
             if (mqttMessage instanceof MqttDisconnect) {
                 return (MqttDisconnect) mqttMessage;
             }
@@ -79,7 +79,7 @@ public class MqttDisconnectEvent {
         private final @NotNull CompletableFlow flow;
 
         ByUser(final @NotNull MqttDisconnect disconnect, final @NotNull CompletableFlow flow) {
-            super(new Mqtt5MessageException(disconnect, "Client sent DISCONNECT"), true);
+            super(new Mqtt5DisconnectException(disconnect, "Client sent DISCONNECT"), true);
             this.flow = flow;
         }
 

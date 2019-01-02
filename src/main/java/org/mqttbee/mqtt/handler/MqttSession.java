@@ -24,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.CallByThread;
 import org.mqttbee.api.mqtt.exceptions.MqttSessionExpiredException;
-import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
+import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5ConnAckException;
 import org.mqttbee.mqtt.MqttClientConfig;
 import org.mqttbee.mqtt.MqttClientConnectionConfig;
 import org.mqttbee.mqtt.MqttServerConnectionConfig;
@@ -72,7 +72,7 @@ public class MqttSession {
 
         if (hasSession && !connAck.isSessionPresent()) {
             final String message = "Session expired as CONNACK did not contain the session present flag.";
-            end(new MqttSessionExpiredException(message, new Mqtt5MessageException(connAck, message)));
+            end(new MqttSessionExpiredException(message, new Mqtt5ConnAckException(connAck, message)));
         }
         hasSession = true;
 

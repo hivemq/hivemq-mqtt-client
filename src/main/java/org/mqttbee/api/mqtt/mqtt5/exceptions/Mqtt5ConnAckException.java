@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 The MQTT Bee project
+ * Copyright 2019 The MQTT Bee project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,21 +18,22 @@
 package org.mqttbee.api.mqtt.mqtt5.exceptions;
 
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
-import org.mqttbee.util.AsyncRuntimeException;
+import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 
 /**
  * @author Silvio Giebl
  */
-public abstract class Mqtt5MessageException extends AsyncRuntimeException {
+public class Mqtt5ConnAckException extends Mqtt5MessageException {
 
-    public Mqtt5MessageException(final @NotNull String message) {
+    private final @NotNull Mqtt5ConnAck connAck;
+
+    public Mqtt5ConnAckException(final @NotNull Mqtt5ConnAck connAck, final @NotNull String message) {
         super(message);
+        this.connAck = connAck;
     }
 
-    public Mqtt5MessageException(final @NotNull Throwable cause) {
-        super(cause.getMessage(), cause);
+    @Override
+    public @NotNull Mqtt5ConnAck getMqttMessage() {
+        return connAck;
     }
-
-    public abstract @NotNull Mqtt5Message getMqttMessage();
 }

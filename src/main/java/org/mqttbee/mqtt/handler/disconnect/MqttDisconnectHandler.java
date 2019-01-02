@@ -23,7 +23,7 @@ import io.netty.channel.ChannelHandlerContext;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttClientState;
 import org.mqttbee.api.mqtt.exceptions.ConnectionClosedException;
-import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
+import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5DisconnectException;
 import org.mqttbee.mqtt.MqttClientConfig;
 import org.mqttbee.mqtt.MqttVersion;
 import org.mqttbee.mqtt.exceptions.MqttClientStateExceptions;
@@ -76,7 +76,8 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
     private void readDisconnect(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttDisconnect disconnect) {
         if (once) {
             once = false;
-            fireDisconnectEvent(ctx.channel(), new Mqtt5MessageException(disconnect, "Server sent DISCONNECT."), false);
+            fireDisconnectEvent(
+                    ctx.channel(), new Mqtt5DisconnectException(disconnect, "Server sent DISCONNECT."), false);
         }
     }
 

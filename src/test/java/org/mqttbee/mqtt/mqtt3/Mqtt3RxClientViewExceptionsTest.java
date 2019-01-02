@@ -33,12 +33,13 @@ import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscription;
 import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
+import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5DisconnectException;
 import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
-import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.api.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.mqtt.MqttClientConfig;
 import org.mqttbee.mqtt.MqttRxClient;
+import org.mqttbee.mqtt.message.disconnect.MqttDisconnect;
 import org.mqttbee.rx.FlowableWithSingle;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -63,7 +64,7 @@ class Mqtt3RxClientViewExceptionsTest {
     @Test
     void connect() {
         final Mqtt5MessageException mqtt5MessageException =
-                new Mqtt5MessageException(Mqtt5Connect.builder().build(), "reason from original exception");
+                new Mqtt5DisconnectException(MqttDisconnect.DEFAULT, "reason from original exception");
         given(mqtt5Client.connect(any())).willReturn(Single.error(mqtt5MessageException));
 
         final Mqtt3Connect connect = Mqtt3Connect.builder().build();
@@ -73,7 +74,7 @@ class Mqtt3RxClientViewExceptionsTest {
     @Test
     void subscribe() {
         final Mqtt5MessageException mqtt5MessageException =
-                new Mqtt5MessageException(Mqtt5Connect.builder().build(), "reason from original exception");
+                new Mqtt5DisconnectException(MqttDisconnect.DEFAULT, "reason from original exception");
         given(mqtt5Client.subscribe(any())).willReturn(Single.error(mqtt5MessageException));
 
         final Mqtt3Subscribe subscribe = Mqtt3Subscribe.builder()
@@ -86,7 +87,7 @@ class Mqtt3RxClientViewExceptionsTest {
     @Test
     void subscribeWithStream() {
         final Mqtt5MessageException mqtt5MessageException =
-                new Mqtt5MessageException(Mqtt5Connect.builder().build(), "reason from original exception");
+                new Mqtt5DisconnectException(MqttDisconnect.DEFAULT, "reason from original exception");
         given(mqtt5Client.subscribeStream(any())).willReturn(
                 FlowableWithSingle.split(Flowable.error(mqtt5MessageException), Mqtt5Publish.class, Mqtt5SubAck.class));
 
@@ -100,7 +101,7 @@ class Mqtt3RxClientViewExceptionsTest {
     @EnumSource(MqttGlobalPublishFilter.class)
     void publishes(final @NotNull MqttGlobalPublishFilter filter) {
         final Mqtt5MessageException mqtt5MessageException =
-                new Mqtt5MessageException(Mqtt5Connect.builder().build(), "reason from original exception");
+                new Mqtt5DisconnectException(MqttDisconnect.DEFAULT, "reason from original exception");
         given(mqtt5Client.publishes(filter)).willReturn(Flowable.error(mqtt5MessageException));
 
         assertMqtt3Exception(() -> mqtt3Client.publishes(filter).blockingSubscribe(), mqtt5MessageException);
@@ -109,7 +110,7 @@ class Mqtt3RxClientViewExceptionsTest {
     @Test
     void unsubscribe() {
         final Mqtt5MessageException mqtt5MessageException =
-                new Mqtt5MessageException(Mqtt5Connect.builder().build(), "reason from original exception");
+                new Mqtt5DisconnectException(MqttDisconnect.DEFAULT, "reason from original exception");
         given(mqtt5Client.unsubscribe(any())).willReturn(Single.error(mqtt5MessageException));
 
         final Mqtt3Unsubscribe unsubscribe = Mqtt3Unsubscribe.builder().addTopicFilter("topic").build();
@@ -119,7 +120,7 @@ class Mqtt3RxClientViewExceptionsTest {
     @Test
     void publish() {
         final Mqtt5MessageException mqtt5MessageException =
-                new Mqtt5MessageException(Mqtt5Connect.builder().build(), "reason from original exception");
+                new Mqtt5DisconnectException(MqttDisconnect.DEFAULT, "reason from original exception");
         given(mqtt5Client.publish(any())).willReturn(Flowable.error(mqtt5MessageException));
 
         final Flowable<Mqtt3Publish> publish =
@@ -130,7 +131,7 @@ class Mqtt3RxClientViewExceptionsTest {
     @Test
     void disconnect() {
         final Mqtt5MessageException mqtt5MessageException =
-                new Mqtt5MessageException(Mqtt5Connect.builder().build(), "reason from original exception");
+                new Mqtt5DisconnectException(MqttDisconnect.DEFAULT, "reason from original exception");
         given(mqtt5Client.disconnect(any())).willReturn(Completable.error(mqtt5MessageException));
 
         assertMqtt3Exception(() -> mqtt3Client.disconnect().blockingAwait(), mqtt5MessageException);

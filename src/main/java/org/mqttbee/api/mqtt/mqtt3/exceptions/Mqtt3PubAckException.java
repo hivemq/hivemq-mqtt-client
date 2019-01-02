@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 The MQTT Bee project
+ * Copyright 2019 The MQTT Bee project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,24 +15,24 @@
  *
  */
 
-package org.mqttbee.api.mqtt.mqtt5.exceptions;
+package org.mqttbee.api.mqtt.mqtt3.exceptions;
 
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5Message;
-import org.mqttbee.util.AsyncRuntimeException;
+import org.jetbrains.annotations.Nullable;
+import org.mqttbee.api.mqtt.mqtt3.message.publish.puback.Mqtt3PubAck;
+import org.mqttbee.mqtt.message.publish.puback.mqtt3.Mqtt3PubAckView;
 
 /**
  * @author Silvio Giebl
  */
-public abstract class Mqtt5MessageException extends AsyncRuntimeException {
+public class Mqtt3PubAckException extends Mqtt3MessageException {
 
-    public Mqtt5MessageException(final @NotNull String message) {
-        super(message);
+    public Mqtt3PubAckException(final @Nullable String message, final @Nullable Throwable cause) {
+        super(message, cause);
     }
 
-    public Mqtt5MessageException(final @NotNull Throwable cause) {
-        super(cause.getMessage(), cause);
+    @Override
+    public @NotNull Mqtt3PubAck getMqttMessage() {
+        return Mqtt3PubAckView.INSTANCE;
     }
-
-    public abstract @NotNull Mqtt5Message getMqttMessage();
 }

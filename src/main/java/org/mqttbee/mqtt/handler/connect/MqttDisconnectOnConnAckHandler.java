@@ -21,7 +21,7 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
+import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5ConnAckException;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.mqtt.message.connect.connack.MqttConnAck;
@@ -39,14 +39,13 @@ import javax.inject.Singleton;
 @Singleton
 public class MqttDisconnectOnConnAckHandler extends ChannelInboundHandlerAdapter {
 
-    public static final String NAME = "disconnect.on.connack";
+    public static final @NotNull String NAME = "disconnect.on.connack";
 
     @Inject
-    MqttDisconnectOnConnAckHandler() {
-    }
+    MqttDisconnectOnConnAckHandler() {}
 
     @Override
-    public void channelRead(final ChannelHandlerContext ctx, final Object msg) {
+    public void channelRead(final @NotNull ChannelHandlerContext ctx, final @NotNull Object msg) {
         if (msg instanceof MqttConnAck) {
             readConnAck(ctx, (MqttConnAck) msg);
         } else {
@@ -54,9 +53,9 @@ public class MqttDisconnectOnConnAckHandler extends ChannelInboundHandlerAdapter
         }
     }
 
-    private void readConnAck(@NotNull final ChannelHandlerContext ctx, @NotNull final MqttConnAck connAck) {
+    private void readConnAck(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttConnAck connAck) {
         MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                new Mqtt5MessageException(connAck, "Must not receive second CONNACK"));
+                new Mqtt5ConnAckException(connAck, "Must not receive second CONNACK"));
     }
 
     @Override
