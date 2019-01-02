@@ -45,7 +45,6 @@ ext {
     rxJavaVersion = '2.2.5'
     nettyVersion = '4.1.32.Final'
     daggerVersion = '2.20'
-    guavaVersion = '24.1-jre'
     jcToolsVersion = '2.1.2'
     slf4jVersion = '1.7.25'
     jetbrainsAnnotationsVersion = '16.0.3'
@@ -61,7 +60,6 @@ dependencies {
     compile group: 'io.netty', name: 'netty-handler', version: nettyVersion
     compile group: 'io.netty', name: 'netty-codec-http', version: nettyVersion
     compile group: 'io.netty', name: 'netty-transport-native-epoll', version: nettyVersion, classifier: 'linux-x86_64'
-    compile group: 'com.google.guava', name: 'guava', version: guavaVersion
     compile group: 'org.jctools', name: 'jctools-core', version: jcToolsVersion
     compile group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion
     compile group: 'org.jetbrains', name: 'annotations', version: jetbrainsAnnotationsVersion
@@ -78,6 +76,7 @@ dependencies {
     testCompile group: 'org.mockito', name: 'mockito-core', version: '2.18.3'
     testCompile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.59'
     testCompile group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.59'
+    testCompile group: 'com.google.guava', name: 'guava', version: '24.1-jre'
 
     testRuntime group: 'org.junit.vintage', name: 'junit-vintage-engine', version: junitVintageVersion
     testRuntime group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junitJupiterVersion
