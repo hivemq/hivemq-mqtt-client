@@ -17,7 +17,6 @@
 
 package org.mqttbee.internal.mqtt.codec.decoder.mqtt5;
 
-import com.google.common.base.Utf8;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.internal.mqtt.codec.decoder.MqttDecoderContext;
@@ -27,6 +26,7 @@ import org.mqttbee.internal.mqtt.datatypes.*;
 import org.mqttbee.internal.mqtt.message.publish.MqttPublish;
 import org.mqttbee.internal.mqtt.message.publish.MqttStatefulPublish;
 import org.mqttbee.internal.util.ByteBufferUtil;
+import org.mqttbee.internal.util.Utf8Util;
 import org.mqttbee.internal.util.collections.ImmutableIntList;
 import org.mqttbee.internal.util.collections.ImmutableList;
 import org.mqttbee.internal.util.collections.IntMap;
@@ -208,7 +208,7 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
             payload.position(0);
 
             if ((payloadFormatIndicator == Mqtt5PayloadFormatIndicator.UTF_8) && context.validatePayloadFormat() &&
-                    !Utf8.isWellFormed(ByteBufferUtil.getBytes(payload))) {
+                    (Utf8Util.isWellFormed(ByteBufferUtil.getBytes(payload)) != 0)) {
                 throw new MqttDecoderException(Mqtt5DisconnectReasonCode.PAYLOAD_FORMAT_INVALID,
                         "payload is not valid UTF-8");
             }
