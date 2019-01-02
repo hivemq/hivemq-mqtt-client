@@ -17,13 +17,13 @@
 
 package org.mqttbee.internal.mqtt.datatypes;
 
-import com.google.common.base.Utf8;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.Immutable;
 import org.mqttbee.internal.util.Checks;
+import org.mqttbee.internal.util.Utf8Util;
 import org.mqttbee.mqtt.datatypes.MqttUtf8String;
 
 import java.nio.ByteBuffer;
@@ -139,7 +139,7 @@ public class MqttUtf8StringImpl implements MqttUtf8String {
      * @return whether the byte array represents a well-formed UTF-8 encoded string.
      */
     static boolean isWellFormed(final @NotNull byte[] binary) {
-        if (!Utf8.isWellFormed(binary)) {
+        if (Utf8Util.isWellFormed(binary) != 0) {
             return true;
         }
         for (final byte b : binary) {
@@ -205,7 +205,7 @@ public class MqttUtf8StringImpl implements MqttUtf8String {
         //       Hence, string.length() * 3 is an upper bound of the number of bytes needed to represent a Java string
         //       (UTF-16) in UTF-8.
         if (string.length() * 3 > MqttBinaryData.MAX_LENGTH) {
-            final int utf8Length = Utf8.encodedLength(string);
+            final int utf8Length = Utf8Util.encodedLength(string);
             if (utf8Length > MqttBinaryData.MAX_LENGTH) {
                 throw new IllegalArgumentException(
                         name + " [" + string.substring(0, 10) + "...] must not be longer than " +
