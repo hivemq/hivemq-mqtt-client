@@ -18,9 +18,9 @@
 package org.mqttbee.internal.mqtt.codec.encoder.mqtt5;
 
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.internal.mqtt.codec.encoder.MqttMessageEncoders;
 import org.mqttbee.internal.mqtt.codec.encoder.MqttPingReqEncoder;
+import org.mqttbee.mqtt.mqtt5.message.Mqtt5MessageType;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

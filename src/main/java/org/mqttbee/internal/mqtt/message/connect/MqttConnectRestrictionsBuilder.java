@@ -18,8 +18,8 @@
 package org.mqttbee.internal.mqtt.message.connect;
 
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictionsBuilder;
 import org.mqttbee.internal.mqtt.datatypes.MqttVariableByteInteger;
+import org.mqttbee.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictionsBuilder;
 import org.mqttbee.util.Checks;
 
 import java.util.function.Function;

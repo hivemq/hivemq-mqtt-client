@@ -18,9 +18,9 @@
 package org.mqttbee.internal.mqtt.codec.encoder.mqtt3;
 
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.internal.mqtt.codec.encoder.MqttMessageEncoders;
 import org.mqttbee.internal.mqtt.codec.encoder.MqttPingReqEncoder;
+import org.mqttbee.mqtt.mqtt3.message.Mqtt3MessageType;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

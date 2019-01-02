@@ -18,8 +18,8 @@
 package org.mqttbee.internal.mqtt.message;
 
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertiesImpl;
+import org.mqttbee.mqtt.mqtt5.message.Mqtt5MessageType;
 
 /**
  * Base class for MQTT messages with state-specific data.

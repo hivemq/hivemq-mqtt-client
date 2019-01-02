@@ -19,10 +19,10 @@ package org.mqttbee.internal.mqtt.message.auth;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
-import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5SimpleAuthBuilder;
 import org.mqttbee.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.internal.mqtt.util.MqttChecks;
+import org.mqttbee.mqtt.datatypes.MqttUtf8String;
+import org.mqttbee.mqtt.mqtt5.message.auth.Mqtt5SimpleAuthBuilder;
 
 import java.nio.ByteBuffer;
 import java.util.function.Function;

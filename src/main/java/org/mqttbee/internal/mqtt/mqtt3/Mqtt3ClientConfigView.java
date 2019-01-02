@@ -18,15 +18,15 @@
 package org.mqttbee.internal.mqtt.mqtt3;
 
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.MqttClientExecutorConfig;
-import org.mqttbee.api.mqtt.MqttClientSslConfig;
-import org.mqttbee.api.mqtt.MqttClientState;
-import org.mqttbee.api.mqtt.MqttWebSocketConfig;
-import org.mqttbee.api.mqtt.datatypes.MqttClientIdentifier;
-import org.mqttbee.api.mqtt.mqtt3.Mqtt3ClientConfig;
-import org.mqttbee.api.mqtt.mqtt3.Mqtt3ClientConnectionConfig;
-import org.mqttbee.api.mqtt.mqtt3.Mqtt3ServerConnectionConfig;
 import org.mqttbee.internal.mqtt.MqttClientConfig;
+import org.mqttbee.mqtt.MqttClientExecutorConfig;
+import org.mqttbee.mqtt.MqttClientSslConfig;
+import org.mqttbee.mqtt.MqttClientState;
+import org.mqttbee.mqtt.MqttWebSocketConfig;
+import org.mqttbee.mqtt.datatypes.MqttClientIdentifier;
+import org.mqttbee.mqtt.mqtt3.Mqtt3ClientConfig;
+import org.mqttbee.mqtt.mqtt3.Mqtt3ClientConnectionConfig;
+import org.mqttbee.mqtt.mqtt3.Mqtt3ServerConnectionConfig;
 
 import java.util.Optional;
 

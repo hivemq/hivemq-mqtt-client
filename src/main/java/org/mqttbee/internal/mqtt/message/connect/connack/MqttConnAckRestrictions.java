@@ -19,8 +19,8 @@ package org.mqttbee.internal.mqtt.message.connect.connack;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.Immutable;
-import org.mqttbee.api.mqtt.datatypes.MqttQos;
-import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions;
+import org.mqttbee.mqtt.datatypes.MqttQos;
+import org.mqttbee.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions;
 
 /**
  * @author Silvio Giebl

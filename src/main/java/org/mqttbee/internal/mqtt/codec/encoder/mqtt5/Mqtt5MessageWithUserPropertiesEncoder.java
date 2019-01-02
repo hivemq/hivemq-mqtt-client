@@ -20,11 +20,11 @@ package org.mqttbee.internal.mqtt.codec.encoder.mqtt5;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5ReasonCode;
 import org.mqttbee.internal.mqtt.codec.encoder.MqttMessageEncoder;
 import org.mqttbee.internal.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.internal.mqtt.message.MqttMessage;
 import org.mqttbee.internal.mqtt.message.MqttMessageWithUserProperties;
+import org.mqttbee.mqtt.mqtt5.message.Mqtt5ReasonCode;
 
 import static org.mqttbee.internal.mqtt.codec.encoder.MqttMessageEncoderUtil.*;
 import static org.mqttbee.internal.mqtt.codec.encoder.mqtt5.Mqtt5MessageEncoderUtil.encodeNullableProperty;

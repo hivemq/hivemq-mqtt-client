@@ -19,9 +19,6 @@ package org.mqttbee.internal.mqtt.message.connect.mqtt3;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
-import org.mqttbee.api.mqtt.mqtt3.message.connect.Mqtt3ConnectBuilder;
-import org.mqttbee.api.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import org.mqttbee.internal.mqtt.message.auth.MqttSimpleAuth;
 import org.mqttbee.internal.mqtt.message.auth.mqtt3.Mqtt3SimpleAuthView;
 import org.mqttbee.internal.mqtt.message.auth.mqtt3.Mqtt3SimpleAuthViewBuilder;
@@ -29,6 +26,9 @@ import org.mqttbee.internal.mqtt.message.connect.MqttConnect;
 import org.mqttbee.internal.mqtt.message.publish.MqttWillPublish;
 import org.mqttbee.internal.mqtt.message.publish.mqtt3.Mqtt3PublishView;
 import org.mqttbee.internal.mqtt.message.publish.mqtt3.Mqtt3PublishViewBuilder;
+import org.mqttbee.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
+import org.mqttbee.mqtt.mqtt3.message.connect.Mqtt3ConnectBuilder;
+import org.mqttbee.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import org.mqttbee.util.Checks;
 
 import java.util.function.Function;

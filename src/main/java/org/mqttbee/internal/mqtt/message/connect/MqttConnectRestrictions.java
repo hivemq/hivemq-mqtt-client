@@ -19,7 +19,7 @@ package org.mqttbee.internal.mqtt.message.connect;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.Immutable;
-import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions;
+import org.mqttbee.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions;
 
 /**
  * @author Silvio Giebl

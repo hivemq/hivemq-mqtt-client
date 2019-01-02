@@ -19,9 +19,9 @@ package org.mqttbee.internal.mqtt.codec.encoder.mqtt3;
 
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.junit.jupiter.api.Test;
-import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.internal.mqtt.codec.encoder.MqttMessageEncoders;
 import org.mqttbee.internal.mqtt.message.ping.MqttPingReq;
+import org.mqttbee.mqtt.mqtt3.message.Mqtt3MessageType;
 
 class Mqtt3PingReqEncoderTest extends AbstractMqtt3EncoderTest {
 

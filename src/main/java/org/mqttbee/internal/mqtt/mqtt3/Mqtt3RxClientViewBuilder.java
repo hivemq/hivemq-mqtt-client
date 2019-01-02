@@ -18,8 +18,8 @@
 package org.mqttbee.internal.mqtt.mqtt3;
 
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.mqtt3.Mqtt3ClientBuilder;
 import org.mqttbee.internal.mqtt.*;
+import org.mqttbee.mqtt.mqtt3.Mqtt3ClientBuilder;
 
 /**
  * @author Silvio Giebl

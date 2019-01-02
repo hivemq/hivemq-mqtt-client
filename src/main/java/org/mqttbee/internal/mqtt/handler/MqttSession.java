@@ -23,8 +23,6 @@ import io.netty.util.concurrent.ScheduledFuture;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.CallByThread;
-import org.mqttbee.api.mqtt.exceptions.MqttSessionExpiredException;
-import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5ConnAckException;
 import org.mqttbee.internal.mqtt.MqttClientConfig;
 import org.mqttbee.internal.mqtt.MqttClientConnectionConfig;
 import org.mqttbee.internal.mqtt.MqttServerConnectionConfig;
@@ -35,6 +33,8 @@ import org.mqttbee.internal.mqtt.handler.subscribe.MqttSubscriptionHandler;
 import org.mqttbee.internal.mqtt.ioc.ClientScope;
 import org.mqttbee.internal.mqtt.message.connect.MqttConnect;
 import org.mqttbee.internal.mqtt.message.connect.connack.MqttConnAck;
+import org.mqttbee.mqtt.exceptions.MqttSessionExpiredException;
+import org.mqttbee.mqtt.mqtt5.exceptions.Mqtt5ConnAckException;
 
 import javax.inject.Inject;
 import java.util.concurrent.TimeUnit;

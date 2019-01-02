@@ -19,8 +19,8 @@ package org.mqttbee.internal.mqtt.datatypes;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttTopic;
-import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
+import org.mqttbee.mqtt.datatypes.MqttTopic;
+import org.mqttbee.mqtt.datatypes.MqttTopicFilter;
 import org.mqttbee.util.ByteArray;
 import org.mqttbee.util.ByteArrayUtil;
 

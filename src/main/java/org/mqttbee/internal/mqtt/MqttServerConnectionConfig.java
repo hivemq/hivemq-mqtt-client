@@ -19,10 +19,10 @@ package org.mqttbee.internal.mqtt;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttQos;
-import org.mqttbee.api.mqtt.mqtt3.Mqtt3ServerConnectionConfig;
-import org.mqttbee.api.mqtt.mqtt5.Mqtt5ServerConnectionConfig;
 import org.mqttbee.internal.mqtt.message.publish.MqttTopicAliasMapping;
+import org.mqttbee.mqtt.datatypes.MqttQos;
+import org.mqttbee.mqtt.mqtt3.Mqtt3ServerConnectionConfig;
+import org.mqttbee.mqtt.mqtt5.Mqtt5ServerConnectionConfig;
 
 /**
  * @author Silvio Giebl

@@ -19,9 +19,9 @@ package org.mqttbee.internal.mqtt.codec.encoder.mqtt5;
 
 import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.Test;
-import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.internal.mqtt.codec.encoder.MqttMessageEncoders;
 import org.mqttbee.internal.mqtt.message.ping.MqttPingReq;
+import org.mqttbee.mqtt.mqtt5.message.Mqtt5MessageType;
 
 import static org.junit.Assert.assertArrayEquals;
 

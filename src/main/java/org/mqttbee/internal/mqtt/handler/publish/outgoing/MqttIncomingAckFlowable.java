@@ -20,11 +20,11 @@ package org.mqttbee.internal.mqtt.handler.publish.outgoing;
 import io.reactivex.Flowable;
 import io.reactivex.internal.subscriptions.EmptySubscription;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
 import org.mqttbee.internal.mqtt.MqttClientConfig;
 import org.mqttbee.internal.mqtt.exceptions.MqttClientStateExceptions;
 import org.mqttbee.internal.mqtt.ioc.ClientComponent;
 import org.mqttbee.internal.mqtt.message.publish.MqttPublish;
+import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
 import org.reactivestreams.Subscriber;
 
 /**

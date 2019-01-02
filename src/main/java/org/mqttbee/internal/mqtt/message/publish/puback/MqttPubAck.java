@@ -20,11 +20,11 @@ package org.mqttbee.internal.mqtt.message.publish.puback;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.Immutable;
-import org.mqttbee.api.mqtt.mqtt5.message.publish.puback.Mqtt5PubAck;
-import org.mqttbee.api.mqtt.mqtt5.message.publish.puback.Mqtt5PubAckReasonCode;
 import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.internal.mqtt.message.MqttMessageWithUserProperties;
+import org.mqttbee.mqtt.mqtt5.message.publish.puback.Mqtt5PubAck;
+import org.mqttbee.mqtt.mqtt5.message.publish.puback.Mqtt5PubAckReasonCode;
 
 /**
  * @author Silvio Giebl

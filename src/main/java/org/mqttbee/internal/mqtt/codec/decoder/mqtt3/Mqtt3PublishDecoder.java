@@ -19,7 +19,6 @@ package org.mqttbee.internal.mqtt.codec.decoder.mqtt3;
 
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.internal.mqtt.codec.decoder.MqttDecoderContext;
 import org.mqttbee.internal.mqtt.codec.decoder.MqttDecoderException;
 import org.mqttbee.internal.mqtt.codec.decoder.MqttMessageDecoder;
@@ -27,6 +26,7 @@ import org.mqttbee.internal.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.internal.mqtt.message.publish.MqttPublish;
 import org.mqttbee.internal.mqtt.message.publish.MqttStatefulPublish;
 import org.mqttbee.internal.mqtt.message.publish.mqtt3.Mqtt3PublishView;
+import org.mqttbee.mqtt.datatypes.MqttQos;
 import org.mqttbee.util.ByteBufferUtil;
 
 import javax.inject.Inject;

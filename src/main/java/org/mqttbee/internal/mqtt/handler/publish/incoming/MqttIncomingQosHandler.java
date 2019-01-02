@@ -20,10 +20,6 @@ package org.mqttbee.internal.mqtt.handler.publish.incoming;
 import io.netty.channel.ChannelHandlerContext;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.CallByThread;
-import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5IncomingQos1Interceptor;
-import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5IncomingQos2Interceptor;
-import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
-import org.mqttbee.api.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubCompReasonCode;
 import org.mqttbee.internal.mqtt.MqttClientConfig;
 import org.mqttbee.internal.mqtt.MqttClientConnectionConfig;
 import org.mqttbee.internal.mqtt.MqttServerConnectionConfig;
@@ -40,6 +36,10 @@ import org.mqttbee.internal.mqtt.message.publish.pubcomp.MqttPubCompBuilder;
 import org.mqttbee.internal.mqtt.message.publish.pubrec.MqttPubRec;
 import org.mqttbee.internal.mqtt.message.publish.pubrec.MqttPubRecBuilder;
 import org.mqttbee.internal.mqtt.message.publish.pubrel.MqttPubRel;
+import org.mqttbee.mqtt.mqtt5.advanced.qos1.Mqtt5IncomingQos1Interceptor;
+import org.mqttbee.mqtt.mqtt5.advanced.qos2.Mqtt5IncomingQos2Interceptor;
+import org.mqttbee.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
+import org.mqttbee.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubCompReasonCode;
 import org.mqttbee.util.UnsignedDataTypes;
 import org.mqttbee.util.collections.IntMap;
 import org.mqttbee.util.netty.ContextFuture;
@@ -47,7 +47,7 @@ import org.mqttbee.util.netty.DefaultContextPromise;
 
 import javax.inject.Inject;
 
-import static org.mqttbee.api.mqtt.datatypes.MqttQos.*;
+import static org.mqttbee.mqtt.datatypes.MqttQos.*;
 
 /**
  * @author Silvio Giebl

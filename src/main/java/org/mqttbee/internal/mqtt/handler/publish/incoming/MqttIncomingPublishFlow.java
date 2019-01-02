@@ -24,7 +24,7 @@ import io.reactivex.plugins.RxJavaPlugins;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.CallByThread;
-import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
+import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.util.ExecutorUtil;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;

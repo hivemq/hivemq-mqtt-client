@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.Immutable;
-import org.mqttbee.api.mqtt.datatypes.MqttUtf8String;
+import org.mqttbee.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.util.Checks;
 
 import java.nio.ByteBuffer;

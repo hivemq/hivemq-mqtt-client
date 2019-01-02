@@ -18,7 +18,7 @@
 package org.mqttbee.internal.mqtt.exceptions;
 
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.exceptions.MqttClientStateException;
+import org.mqttbee.mqtt.exceptions.MqttClientStateException;
 
 /**
  * @author Silvio Giebl

@@ -20,8 +20,6 @@ package org.mqttbee.internal.mqtt.codec.encoder.mqtt5;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.exceptions.MqttEncodeException;
-import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.internal.mqtt.codec.encoder.MqttMessageEncoder;
 import org.mqttbee.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttVariableByteInteger;
@@ -32,6 +30,8 @@ import org.mqttbee.internal.mqtt.message.connect.MqttConnectRestrictions;
 import org.mqttbee.internal.mqtt.message.connect.MqttStatefulConnect;
 import org.mqttbee.internal.mqtt.message.publish.MqttWillPublish;
 import org.mqttbee.internal.mqtt.message.publish.MqttWillPublishProperty;
+import org.mqttbee.mqtt.exceptions.MqttEncodeException;
+import org.mqttbee.mqtt.mqtt5.message.Mqtt5MessageType;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

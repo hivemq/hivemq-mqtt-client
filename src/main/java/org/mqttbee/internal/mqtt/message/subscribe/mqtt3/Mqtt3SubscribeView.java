@@ -19,10 +19,10 @@ package org.mqttbee.internal.mqtt.message.subscribe.mqtt3;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.Immutable;
-import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.internal.mqtt.message.subscribe.MqttSubscribe;
 import org.mqttbee.internal.mqtt.message.subscribe.MqttSubscription;
+import org.mqttbee.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 import org.mqttbee.util.collections.ImmutableList;
 
 /**

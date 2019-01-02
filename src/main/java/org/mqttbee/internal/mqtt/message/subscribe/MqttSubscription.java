@@ -19,10 +19,10 @@ package org.mqttbee.internal.mqtt.message.subscribe;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.Immutable;
-import org.mqttbee.api.mqtt.datatypes.MqttQos;
-import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5RetainHandling;
-import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5Subscription;
 import org.mqttbee.internal.mqtt.datatypes.MqttTopicFilterImpl;
+import org.mqttbee.mqtt.datatypes.MqttQos;
+import org.mqttbee.mqtt.mqtt5.message.subscribe.Mqtt5RetainHandling;
+import org.mqttbee.mqtt.mqtt5.message.subscribe.Mqtt5Subscription;
 
 /**
  * @author Silvio Giebl

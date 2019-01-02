@@ -19,10 +19,10 @@ package org.mqttbee.internal.mqtt.handler.publish.incoming;
 
 import io.reactivex.Flowable;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.MqttGlobalPublishFilter;
-import org.mqttbee.api.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.internal.mqtt.MqttClientConfig;
 import org.mqttbee.internal.mqtt.ioc.ClientComponent;
+import org.mqttbee.mqtt.MqttGlobalPublishFilter;
+import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.reactivestreams.Subscriber;
 
 /**

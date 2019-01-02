@@ -18,10 +18,10 @@
 package org.mqttbee.internal.mqtt.handler.publish.incoming;
 
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeResult;
 import org.mqttbee.internal.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.internal.mqtt.message.subscribe.MqttStatefulSubscribe;
 import org.mqttbee.internal.mqtt.message.subscribe.suback.MqttSubAck;
+import org.mqttbee.mqtt.mqtt5.message.subscribe.Mqtt5SubscribeResult;
 import org.mqttbee.rx.SingleFlow;
 import org.mqttbee.util.collections.HandleList;
 import org.reactivestreams.Subscriber;

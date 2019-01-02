@@ -22,9 +22,9 @@ import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.internal.mqtt.codec.decoder.MqttMessageDecoders;
 import org.mqttbee.internal.mqtt.message.publish.pubcomp.MqttPubComp;
+import org.mqttbee.mqtt.mqtt3.message.Mqtt3MessageType;
 
 import static org.junit.jupiter.api.Assertions.*;
 

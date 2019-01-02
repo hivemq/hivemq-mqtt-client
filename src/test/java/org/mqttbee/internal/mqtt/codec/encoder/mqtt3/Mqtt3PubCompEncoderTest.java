@@ -19,10 +19,10 @@ package org.mqttbee.internal.mqtt.codec.encoder.mqtt3;
 
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.junit.jupiter.api.Test;
-import org.mqttbee.api.mqtt.mqtt3.message.Mqtt3MessageType;
 import org.mqttbee.internal.mqtt.codec.encoder.MqttMessageEncoders;
 import org.mqttbee.internal.mqtt.message.publish.pubcomp.MqttPubComp;
 import org.mqttbee.internal.mqtt.message.publish.pubcomp.mqtt3.Mqtt3PubCompView;
+import org.mqttbee.mqtt.mqtt3.message.Mqtt3MessageType;
 
 class Mqtt3PubCompEncoderTest extends AbstractMqtt3EncoderTest {
 

@@ -18,15 +18,15 @@
 package org.mqttbee.internal.mqtt.message.publish;
 
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.mqtt5.message.publish.TopicAliasUsage;
 import org.mqttbee.internal.mqtt.datatypes.MqttTopicImpl;
+import org.mqttbee.mqtt.mqtt5.message.publish.TopicAliasUsage;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import java.util.HashMap;
 import java.util.Random;
 
-import static org.mqttbee.api.mqtt.mqtt5.message.publish.TopicAliasUsage.IF_AVAILABLE;
-import static org.mqttbee.api.mqtt.mqtt5.message.publish.TopicAliasUsage.YES;
+import static org.mqttbee.mqtt.mqtt5.message.publish.TopicAliasUsage.IF_AVAILABLE;
+import static org.mqttbee.mqtt.mqtt5.message.publish.TopicAliasUsage.YES;
 
 /**
  * @author Silvio Giebl

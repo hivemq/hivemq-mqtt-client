@@ -19,10 +19,10 @@ package org.mqttbee.internal.mqtt.message.unsubscribe.unsuback.mqtt3;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.Immutable;
-import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.unsuback.Mqtt3UnsubAck;
-import org.mqttbee.api.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAckReasonCode;
 import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.internal.mqtt.message.unsubscribe.unsuback.MqttUnsubAck;
+import org.mqttbee.mqtt.mqtt3.message.unsubscribe.unsuback.Mqtt3UnsubAck;
+import org.mqttbee.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAckReasonCode;
 import org.mqttbee.util.collections.ImmutableList;
 
 /**

@@ -19,13 +19,13 @@ package org.mqttbee.internal.mqtt.message.unsubscribe.mqtt3;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.datatypes.MqttTopicFilter;
-import org.mqttbee.api.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
-import org.mqttbee.api.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubscribeBuilder;
 import org.mqttbee.internal.mqtt.datatypes.MqttTopicFilterImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttTopicFilterImplBuilder;
 import org.mqttbee.internal.mqtt.message.subscribe.MqttSubscription;
 import org.mqttbee.internal.mqtt.util.MqttChecks;
+import org.mqttbee.mqtt.datatypes.MqttTopicFilter;
+import org.mqttbee.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
+import org.mqttbee.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubscribeBuilder;
 import org.mqttbee.util.collections.ImmutableList;
 
 import java.util.function.Consumer;

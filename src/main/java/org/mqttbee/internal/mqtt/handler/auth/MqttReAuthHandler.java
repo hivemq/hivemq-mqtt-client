@@ -20,13 +20,6 @@ package org.mqttbee.internal.mqtt.handler.auth;
 import io.netty.channel.ChannelHandlerContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientConfig;
-import org.mqttbee.api.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
-import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5AuthException;
-import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5Auth;
-import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthBuilder;
-import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
-import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.internal.mqtt.exceptions.MqttClientStateExceptions;
 import org.mqttbee.internal.mqtt.handler.disconnect.MqttDisconnectEvent;
 import org.mqttbee.internal.mqtt.handler.disconnect.MqttDisconnectUtil;
@@ -34,10 +27,17 @@ import org.mqttbee.internal.mqtt.ioc.ConnectionScope;
 import org.mqttbee.internal.mqtt.message.auth.MqttAuth;
 import org.mqttbee.internal.mqtt.message.auth.MqttAuthBuilder;
 import org.mqttbee.internal.mqtt.message.disconnect.MqttDisconnect;
+import org.mqttbee.mqtt.mqtt5.Mqtt5ClientConfig;
+import org.mqttbee.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
+import org.mqttbee.mqtt.mqtt5.exceptions.Mqtt5AuthException;
+import org.mqttbee.mqtt.mqtt5.message.auth.Mqtt5Auth;
+import org.mqttbee.mqtt.mqtt5.message.auth.Mqtt5AuthBuilder;
+import org.mqttbee.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
+import org.mqttbee.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.rx.CompletableFlow;
 
-import static org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION;
-import static org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode.REAUTHENTICATE;
+import static org.mqttbee.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION;
+import static org.mqttbee.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode.REAUTHENTICATE;
 
 /**
  * Enhanced reauth handling according during connection according to the MQTT 5 specification.

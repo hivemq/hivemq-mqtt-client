@@ -25,8 +25,6 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.api.mqtt.MqttWebSocketConfig;
-import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.internal.mqtt.MqttClientConfig;
 import org.mqttbee.internal.mqtt.MqttClientSslConfigImpl;
 import org.mqttbee.internal.mqtt.codec.encoder.MqttEncoder;
@@ -40,6 +38,8 @@ import org.mqttbee.internal.mqtt.handler.websocket.MqttWebSocketClientProtocolHa
 import org.mqttbee.internal.mqtt.handler.websocket.WebSocketBinaryFrameDecoder;
 import org.mqttbee.internal.mqtt.handler.websocket.WebSocketBinaryFrameEncoder;
 import org.mqttbee.internal.mqtt.ioc.ConnectionScope;
+import org.mqttbee.mqtt.MqttWebSocketConfig;
+import org.mqttbee.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.rx.SingleFlow;
 
 import javax.inject.Inject;
