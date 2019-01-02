@@ -48,7 +48,9 @@ ext {
     jcToolsVersion = '2.1.2'
     slf4jVersion = '1.7.25'
     jetbrainsAnnotationsVersion = '16.0.3'
+}
 
+ext {
     junit4Version = '4.12'
     junitVintageVersion = '4.12.3'
     junitJupiterVersion = '5.0.3'
@@ -92,7 +94,7 @@ test {
     useJUnitPlatform()
 }
 
-task execute(type:JavaExec) {
+task execute(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath + sourceSets.test.runtimeClasspath
     main = project.hasProperty("mainClass") ? project.getProperty("mainClass") : ""
     systemProperties = System.properties
