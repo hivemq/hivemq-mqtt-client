@@ -26,7 +26,8 @@ import org.mqttbee.annotations.CallByThread;
 import org.mqttbee.api.mqtt.datatypes.MqttQos;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos1.Mqtt5OutgoingQos1Interceptor;
 import org.mqttbee.api.mqtt.mqtt5.advanced.qos2.Mqtt5OutgoingQos2Interceptor;
-import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
+import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5PubAckException;
+import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5PubRecException;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.MqttClientConfig;
 import org.mqttbee.mqtt.MqttClientConnectionConfig;
@@ -286,7 +287,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
         onPubAck(publish, pubAck);
 
         final Throwable t = (pubAck.getReasonCode().isError()) ?
-                new Mqtt5MessageException(pubAck, "PUBACK contained an Error Code") : null;
+                new Mqtt5PubAckException(pubAck, "PUBACK contained an Error Code") : null;
         publishWithFlow.getIncomingAckFlow().onNext(new MqttQos1Result(publish, t, pubAck));
     }
 
@@ -318,7 +319,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
 
             onPubRecError(publish, pubRec);
 
-            final Throwable t = new Mqtt5MessageException(pubRec, "PUBREC contained an Error Code");
+            final Throwable t = new Mqtt5PubRecException(pubRec, "PUBREC contained an Error Code");
             ackFlow.onNext(new MqttQos2Result(publish, t, pubRec));
 
         } else {

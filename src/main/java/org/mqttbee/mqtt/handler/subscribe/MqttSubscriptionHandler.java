@@ -22,7 +22,8 @@ import io.netty.channel.EventLoop;
 import org.jctools.queues.MpscLinkedQueue;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.CallByThread;
-import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
+import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5SubAckException;
+import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5UnsubAckException;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5ReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.MqttClientConnectionConfig;
@@ -241,7 +242,7 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
                     errorMessage = "Unknown error";
             }
             if (!subAckFlow.isCancelled()) {
-                subAckFlow.onError(new Mqtt5MessageException(subAck, errorMessage));
+                subAckFlow.onError(new Mqtt5SubAckException(subAck, errorMessage));
             } else {
                 LOGGER.warn(errorMessage + " but the SubAckFlow has been cancelled");
             }
@@ -292,7 +293,7 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
                     errorMessage = "Unknown error";
             }
             if (!unsubAckFlow.isCancelled()) {
-                unsubAckFlow.onError(new Mqtt5MessageException(unsubAck, errorMessage));
+                unsubAckFlow.onError(new Mqtt5UnsubAckException(unsubAck, errorMessage));
             } else {
                 LOGGER.warn(errorMessage + " but the UnsubAckFlow has been cancelled");
             }

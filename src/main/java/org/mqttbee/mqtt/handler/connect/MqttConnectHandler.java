@@ -22,7 +22,7 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.api.mqtt.MqttClientState;
-import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
+import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5ConnAckException;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.MqttClientConfig;
@@ -164,7 +164,8 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
      */
     private void readConnAck(final @NotNull MqttConnAck connAck, final @NotNull Channel channel) {
         if (connAck.getReasonCode().isError()) {
-            MqttDisconnectUtil.close(channel, new Mqtt5MessageException(connAck,
+            MqttDisconnectUtil.close(channel, new Mqtt5ConnAckException(
+                    connAck,
                     "CONNECT failed as CONNACK contained an Error Code: " + connAck.getReasonCode() + "."));
 
         } else if (validateClientIdentifier(connAck, channel)) {
@@ -198,10 +199,8 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
      */
     private void readOtherThanConnAck(final @NotNull Object msg, final @NotNull Channel channel) {
         if (msg instanceof MqttMessage) {
-            final MqttMessage mqttMessage = (MqttMessage) msg;
-            final String message = mqttMessage.getType() + " message must not be received before CONNACK";
             MqttDisconnectUtil.disconnect(channel, Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                    new Mqtt5MessageException(mqttMessage, message));
+                    ((MqttMessage) msg).getType() + " message must not be received before CONNACK");
         } else {
             MqttDisconnectUtil.close(channel, "No data must be received before CONNECT is sent");
         }
@@ -223,7 +222,7 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
         if (clientIdentifier == MqttClientIdentifierImpl.REQUEST_CLIENT_IDENTIFIER_FROM_SERVER) {
             if ((clientConfig.getMqttVersion() == MqttVersion.MQTT_5_0) && (assignedClientIdentifier == null)) {
                 MqttDisconnectUtil.disconnect(channel, Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                        new Mqtt5MessageException(connAck, "Server did not assign a Client Identifier"));
+                        new Mqtt5ConnAckException(connAck, "Server did not assign a Client Identifier"));
                 return false;
             }
         } else {

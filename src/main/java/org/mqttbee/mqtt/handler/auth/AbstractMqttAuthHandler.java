@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5ClientConfig;
 import org.mqttbee.api.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
-import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
+import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5AuthException;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5Auth;
 import org.mqttbee.api.mqtt.mqtt5.message.auth.Mqtt5AuthBuilder;
 import org.mqttbee.api.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
@@ -107,7 +107,7 @@ abstract class AbstractMqttAuthHandler extends MqttTimeoutInboundHandler impleme
     private boolean validateAuth(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttAuth auth) {
         if (!auth.getMethod().equals(getMethod())) {
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                    new Mqtt5MessageException(auth, "Auth method in AUTH must be the same as in the CONNECT."));
+                    new Mqtt5AuthException(auth, "Auth method in AUTH must be the same as in the CONNECT."));
             return false;
         }
         return true;
@@ -127,7 +127,7 @@ abstract class AbstractMqttAuthHandler extends MqttTimeoutInboundHandler impleme
     private void readAuthContinue(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttAuth auth) {
         if (state != MqttAuthState.WAIT_FOR_SERVER) {
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                    new Mqtt5MessageException(auth, "Must not receive AUTH with reason code CONTINUE_AUTHENTICATION " +
+                    new Mqtt5AuthException(auth, "Must not receive AUTH with reason code CONTINUE_AUTHENTICATION " +
                             "in no response to a client message."));
             return;
         }
@@ -139,7 +139,7 @@ abstract class AbstractMqttAuthHandler extends MqttTimeoutInboundHandler impleme
             ctx2.writeAndFlush(authBuilder.build()).addListener(this);
 
         }, (ctx2, throwable) -> MqttDisconnectUtil.disconnect(ctx2.channel(), Mqtt5DisconnectReasonCode.NOT_AUTHORIZED,
-                new Mqtt5MessageException(auth, "Server auth not accepted.")));
+                new Mqtt5AuthException(auth, "Server auth not accepted.")));
     }
 
     /**

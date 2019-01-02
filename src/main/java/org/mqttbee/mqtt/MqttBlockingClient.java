@@ -24,7 +24,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.api.mqtt.MqttGlobalPublishFilter;
 import org.mqttbee.api.mqtt.mqtt5.Mqtt5BlockingClient;
-import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5MessageException;
+import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5SubAckException;
+import org.mqttbee.api.mqtt.mqtt5.exceptions.Mqtt5UnsubAckException;
 import org.mqttbee.api.mqtt.mqtt5.message.Mqtt5ReasonCode;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.api.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
@@ -54,7 +55,7 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
     static @NotNull Mqtt5SubAck handleSubAck(final @NotNull Mqtt5SubAck subAck) {
         for (final Mqtt5ReasonCode reasonCode : subAck.getReasonCodes()) {
             if (reasonCode.isError()) {
-                throw new Mqtt5MessageException(subAck, "SUBACK contains at least one error code");
+                throw new Mqtt5SubAckException(subAck, "SUBACK contains at least one error code.");
             }
         }
         return subAck;
@@ -63,7 +64,7 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
     static @NotNull Mqtt5UnsubAck handleUnsubAck(final @NotNull Mqtt5UnsubAck unsubAck) {
         for (final Mqtt5ReasonCode reasonCode : unsubAck.getReasonCodes()) {
             if (reasonCode.isError()) {
-                throw new Mqtt5MessageException(unsubAck, "UNSUBACK contains at least one error code");
+                throw new Mqtt5UnsubAckException(unsubAck, "UNSUBACK contains at least one error code.");
             }
         }
         return unsubAck;
