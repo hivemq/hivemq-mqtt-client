@@ -36,7 +36,7 @@ public class MqttDecoderException extends Exception {
      * @param message    the description of the decoder exception.
      */
     public MqttDecoderException(final @NotNull Mqtt5DisconnectReasonCode reasonCode, final @NotNull String message) {
-        super(message);
+        super(message, null, false, false);
         this.reasonCode = reasonCode;
     }
 
@@ -47,11 +47,6 @@ public class MqttDecoderException extends Exception {
      */
     public MqttDecoderException(final @NotNull String message) {
         this(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, message);
-    }
-
-    @Override
-    public synchronized @NotNull Throwable fillInStackTrace() {
-        return this;
     }
 
     /**

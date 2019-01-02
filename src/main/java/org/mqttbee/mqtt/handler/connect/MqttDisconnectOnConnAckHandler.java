@@ -55,7 +55,7 @@ public class MqttDisconnectOnConnAckHandler extends ChannelInboundHandlerAdapter
 
     private void readConnAck(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttConnAck connAck) {
         MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
-                new Mqtt5ConnAckException(connAck, "Must not receive second CONNACK"));
+                new Mqtt5ConnAckException(connAck, "Must not receive second CONNACK."));
     }
 
     @Override
