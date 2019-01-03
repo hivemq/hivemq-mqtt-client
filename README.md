@@ -160,7 +160,7 @@ try (Mqtt5BlockingClient.Mqtt5Publishes publishes = client.publishes(MqttGlobalP
 }
 ```
 
-`publishes` must be called before `subscribe` to ensure all messages no message is lost.
+`publishes` must be called before `subscribe` to ensure no message is lost.
 It can be called before `connect` to receive messages of a previous session.
 
 #### Disconnect
@@ -188,6 +188,64 @@ client.reauth();
 
  - Builder method: `buildAsync()`
  - Switch method: `client.toAsync()`
+
+#### Connect
+
+Methods calls are analog to the Blocking API but return `CompletableFuture`.
+
+#### Publish
+
+Methods calls are analog to the Blocking API but return `CompletableFuture`.
+
+#### Subscribe
+
+Methods calls are analog to the Blocking API but return `CompletableFuture`.
+
+Additionally messages can be consumed per subscribe:
+``` Java
+client.subscribeWith()
+        .topicFilter("test/topic")
+        .qos(MqttQos.EXACTLY_ONCE)
+        .callback(System.out::println)
+        .executor(executor) // optional
+        .send();
+```
+Or with pre-built SUBSCRIBE message:
+``` Java
+Mqtt5Subscribe subscribeMessage = Mqtt5Subscribe.builder()
+        .topicFilter("test/topic")
+        .qos(MqttQos.EXACTLY_ONCE)
+        .build();
+client.subscribe(subscribeMessage, System.out::println);
+client.subscribe(subscribeMessage, System.out::println, executor);
+```
+
+#### Unsubscribe
+
+Methods calls are analog to the Blocking API but return `CompletableFuture`.
+
+#### Consume messages
+
+Messages can either be consumed per subscribe (described above) or globally:
+
+``` Java
+client.publishes(MqttGlobalPublishFilter.ALL_PUBLISHES, System.out::println);
+```
+Or with executing the callback on a specified executor:
+``` Java
+client.publishes(MqttGlobalPublishFilter.ALL_PUBLISHES, System.out::println, executor);
+```
+
+`publishes` must be called before `subscribe` to ensure no message is lost.
+It can be called before `connect` to receive messages of a previous session.
+
+#### Disconnect
+
+Methods calls are analog to the Blocking API but return `CompletableFuture`.
+
+#### Reauth (only MQTT 5)
+
+Methods calls are analog to the Blocking API but return `CompletableFuture`.
 
 ### Reactive API
 
