@@ -344,27 +344,27 @@ final Flowable<Mqtt3PublishResult> publishScenario = client.publish(messagesToPu
 connectScenario.toCompletable().andThen(publishScenario).blockingSubscribe();
 ```
 
-## How to build
+# How to build
 
 JDK 8+ is required.
 
-## How to contribute
+# How to contribute
 
-### Branching model
+## Branching model
 
  - `master`: release branch
  - `develop`: snapshot branch, branch where features for the next release are merged into
  - Every feature or bugfix will have its own branch, branched from develop, merged back into develop after the code 
 review of the pull request
 
-### Branching guidelines
+## Branching guidelines
 
  - Branch types: feature, bugfix, improvement, cleanup (same as the label of a corresponding GitHub Issue)
  - Branch names:
    - Starting with type: `feature/`, `bugfix/`, `improvement/`, `cleanup/`
    - \+ task: lower case, spaces replaced with `-`
 
-### Commit message guidelines
+## Commit message guidelines
 
  - Commits should be as atomic as possible.
  - Commits do not have to follow strict guidelines, but they should describe the changes clearly.
