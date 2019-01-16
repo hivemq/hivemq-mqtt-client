@@ -35,8 +35,7 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * @author Silvio Giebl
  */
-public abstract class MqttIncomingPublishFlow<S extends Subscriber<? super Mqtt5Publish>>
-        implements Emitter<Mqtt5Publish>, Subscription, Runnable {
+public abstract class MqttIncomingPublishFlow implements Emitter<Mqtt5Publish>, Subscription, Runnable {
 
     private static final int STATE_NO_NEW_REQUESTS = 0;
     private static final int STATE_NEW_REQUESTS = 1;
@@ -46,23 +45,26 @@ public abstract class MqttIncomingPublishFlow<S extends Subscriber<? super Mqtt5
     private static final int STATE_DONE = 1;
     private static final int STATE_CANCELLED = 2;
 
-    final @NotNull S subscriber;
+    final @NotNull Subscriber<? super Mqtt5Publish> subscriber;
     final @NotNull MqttIncomingQosHandler incomingQosHandler;
     private final @NotNull EventLoop eventLoop;
 
-    long requested;
+    private long requested;
     private final @NotNull AtomicLong newRequested = new AtomicLong();
     private final @NotNull AtomicInteger requestState = new AtomicInteger(STATE_NO_NEW_REQUESTS);
     private final @NotNull AtomicInteger doneState = new AtomicInteger(STATE_NOT_DONE);
 
-    boolean done;
+    private boolean done;
     private @Nullable Throwable error;
 
     private int referenced;
     private long blockedIndex;
     private boolean blocking;
 
-    MqttIncomingPublishFlow(final @NotNull S subscriber, final @NotNull MqttIncomingQosHandler incomingQosHandler) {
+    MqttIncomingPublishFlow(
+            final @NotNull Subscriber<? super Mqtt5Publish> subscriber,
+            final @NotNull MqttIncomingQosHandler incomingQosHandler) {
+
         this.subscriber = subscriber;
         this.incomingQosHandler = incomingQosHandler;
         eventLoop = incomingQosHandler.getClientConfig().acquireEventLoop();

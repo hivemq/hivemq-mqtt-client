@@ -23,19 +23,21 @@ import org.mqttbee.internal.mqtt.message.subscribe.MqttStatefulSubscribe;
 import org.mqttbee.internal.mqtt.message.subscribe.suback.MqttSubAck;
 import org.mqttbee.internal.rx.SingleFlow;
 import org.mqttbee.internal.util.collections.HandleList;
+import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5Publish;
+import org.mqttbee.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
+import org.mqttbee.rx.FlowableWithSingleSubscriber;
 import org.reactivestreams.Subscriber;
 
 /**
  * @author Silvio Giebl
  */
-public class MqttSubscriptionFlow extends MqttIncomingPublishFlow<Subscriber<? super Object>>
-        implements SingleFlow<MqttSubAck> {
+public class MqttSubscriptionFlow extends MqttIncomingPublishFlow implements SingleFlow<MqttSubAck> {
 
     private final @NotNull HandleList<MqttTopicFilterImpl> topicFilters;
     private int subscriptionIdentifier = MqttStatefulSubscribe.DEFAULT_NO_SUBSCRIPTION_IDENTIFIER;
 
     MqttSubscriptionFlow(
-            final @NotNull Subscriber<? super Object> subscriber,
+            final @NotNull Subscriber<? super Mqtt5Publish> subscriber,
             final @NotNull MqttIncomingQosHandler incomingQosHandler) {
 
         super(subscriber, incomingQosHandler);
@@ -44,12 +46,9 @@ public class MqttSubscriptionFlow extends MqttIncomingPublishFlow<Subscriber<? s
 
     @Override
     public void onSuccess(final @NotNull MqttSubAck subAck) {
-        if (done) {
-            return;
-        }
-        subscriber.onNext(subAck);
-        if (requested != Long.MAX_VALUE) {
-            requested--;
+        if (subscriber instanceof FlowableWithSingleSubscriber) {
+            //noinspection unchecked
+            ((FlowableWithSingleSubscriber<? super Mqtt5Publish, ? super Mqtt5SubAck>) subscriber).onSingle(subAck);
         }
     }
 

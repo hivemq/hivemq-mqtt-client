@@ -99,8 +99,7 @@ public class MqttRxClient implements Mqtt5RxClient {
 
         final MqttSubscribe mqttSubscribe = MqttChecks.subscribe(subscribe);
 
-        final Flowable<Object> subscriptionFlowable = new MqttSubscriptionFlowable(mqttSubscribe, clientConfig);
-        return FlowableWithSingle.split(subscriptionFlowable, Mqtt5Publish.class, Mqtt5SubAck.class);
+        return new MqttSubscriptionFlowable(mqttSubscribe, clientConfig);
     }
 
     @Override

@@ -25,16 +25,17 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.ThrowingSupplier;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
 import java.time.Duration;
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -43,47 +44,27 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class FlowableWithSingleTest {
 
-    @Test
-    void split_single_extends_flow() {
-        assertThrows(IllegalArgumentException.class, () -> FlowableWithSingle.split(
-                Flowable.fromArray(new StringBuilder("single"), "next0", "next1", "next2"), CharSequence.class,
-                StringBuilder.class));
+    private static @NotNull Stream<FlowableWithSingle<String, StringBuilder>> singleNext3() {
+        return Stream.of(new FlowableWithSingleSplit<>(
+                        Flowable.fromArray(new StringBuilder("single"), "next0", "next1", "next2"), String.class,
+                        StringBuilder.class),
+                new FlowableWithSingleItem<>(Flowable.fromArray("next0", "next1", "next2"), new StringBuilder("single"),
+                        0));
     }
 
-    @Test
-    void split_flow_extends_single() {
-        assertThrows(IllegalArgumentException.class, () -> FlowableWithSingle.split(
-                Flowable.fromArray(new StringBuilder("single"), "next0", "next1", "next2"), String.class,
-                CharSequence.class));
-    }
-
-    @Test
-    void split_flow_equals_single() {
-        assertThrows(IllegalArgumentException.class, () -> FlowableWithSingle.split(
-                Flowable.fromArray(new StringBuilder("single"), "next0", "next1", "next2"), CharSequence.class,
-                CharSequence.class));
-    }
-
-    @Test
-    void doOnSingle() {
-        final Flowable<? extends CharSequence> flowable =
-                Flowable.fromArray(new StringBuilder("single"), "next0", "next1", "next2");
-        final FlowableWithSingle<String, StringBuilder> flowableWithSingle =
-                FlowableWithSingle.split(flowable, String.class, StringBuilder.class);
-
+    @MethodSource("singleNext3")
+    @ParameterizedTest
+    void doOnSingle(final @NotNull FlowableWithSingle<String, StringBuilder> flowableWithSingle) {
         final AtomicInteger count = new AtomicInteger();
         flowableWithSingle.doOnSingle(stringBuilder -> assertEquals("single", stringBuilder.toString()))
                 .doOnNext(string -> assertEquals("next" + count.getAndIncrement(), string))
                 .blockingSubscribe();
+        assertEquals(3, count.get());
     }
 
-    @Test
-    void observeOnBoth() {
-        final Flowable<? extends CharSequence> flowable =
-                Flowable.fromArray(new StringBuilder("single"), "next0", "next1", "next2");
-        final FlowableWithSingle<String, StringBuilder> flowableWithSingle =
-                FlowableWithSingle.split(flowable, String.class, StringBuilder.class);
-
+    @MethodSource("singleNext3")
+    @ParameterizedTest
+    void observeOnBoth(final @NotNull FlowableWithSingle<String, StringBuilder> flowableWithSingle) {
         final ExecutorService executorService =
                 Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setNameFormat("test_thread").build());
 
@@ -95,17 +76,14 @@ class FlowableWithSingleTest {
             assertEquals("next" + count.getAndIncrement(), string);
             assertEquals("test_thread", Thread.currentThread().getName());
         }).blockingSubscribe();
+        assertEquals(3, count.get());
 
         executorService.shutdown();
     }
 
-    @Test
-    void observeOnFlowable() {
-        final Flowable<? extends CharSequence> flowable =
-                Flowable.fromArray(new StringBuilder("single"), "next0", "next1", "next2");
-        final FlowableWithSingle<String, StringBuilder> flowableWithSingle =
-                FlowableWithSingle.split(flowable, String.class, StringBuilder.class);
-
+    @MethodSource("singleNext3")
+    @ParameterizedTest
+    void observeOnFlowable(final @NotNull FlowableWithSingle<String, StringBuilder> flowableWithSingle) {
         final ExecutorService executorService =
                 Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setNameFormat("test_thread").build());
 
@@ -117,31 +95,19 @@ class FlowableWithSingleTest {
             assertEquals("next" + count.getAndIncrement(), string);
             assertEquals("test_thread", Thread.currentThread().getName());
         }).blockingSubscribe();
+        assertEquals(3, count.get());
 
         executorService.shutdown();
     }
 
     @Test
     void observeOnBoth_delayError() throws InterruptedException {
-        final Flowable<? extends CharSequence> flowable = Flowable.fromIterable(() -> new Iterator<CharSequence>() {
-            int count = -1;
-
-            @Override
-            public boolean hasNext() {
-                return true;
-            }
-
-            @Override
-            public @NotNull CharSequence next() {
-                count++;
-                if (count == 4) {
-                    throw new IllegalArgumentException("test");
-                }
-                return (count == 0) ? new StringBuilder("single") : "next" + (count - 1);
-            }
-        }).hide();
+        final Flowable<? extends CharSequence> flowable =
+                Flowable.fromArray(new StringBuilder("single"), "next0", "next1", "next2")
+                        .concatWith(Flowable.error(new IllegalArgumentException("test")))
+                        .hide();
         final FlowableWithSingle<String, StringBuilder> flowableWithSingle =
-                FlowableWithSingle.split(flowable, String.class, StringBuilder.class);
+                new FlowableWithSingleSplit<>(flowable, String.class, StringBuilder.class);
 
         final ExecutorService executorService =
                 Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setNameFormat("test_thread").build());
@@ -172,25 +138,13 @@ class FlowableWithSingleTest {
 
     @Test
     void observeOnBoth_delayError_bufferSize() throws InterruptedException {
-        final Flowable<? extends CharSequence> flowable = Flowable.fromIterable(() -> new Iterator<CharSequence>() {
-            int count = -1;
-
-            @Override
-            public boolean hasNext() {
-                return true;
-            }
-
-            @Override
-            public @NotNull CharSequence next() {
-                count++;
-                if (count == 1024) {
-                    throw new IllegalArgumentException("test");
-                }
-                return (count == 0) ? new StringBuilder("single") : "next" + (count - 1);
-            }
-        }).hide();
+        final Flowable<? extends CharSequence> flowable =
+                Flowable.<CharSequence>just(new StringBuilder("single")).concatWith(
+                        Flowable.range(0, 1024).zipWith(Flowable.just("next").repeat(1024), (i, s) -> s + i))
+                        .concatWith(Flowable.error(new IllegalArgumentException("test")))
+                        .hide();
         final FlowableWithSingle<String, StringBuilder> flowableWithSingle =
-                FlowableWithSingle.split(flowable, String.class, StringBuilder.class);
+                new FlowableWithSingleSplit<>(flowable, String.class, StringBuilder.class);
 
         final ExecutorService executorService =
                 Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setNameFormat("test_thread").build());
@@ -218,27 +172,20 @@ class FlowableWithSingleTest {
         executorService.shutdown();
     }
 
-    @Test
-    void mapSingle() {
-        final Flowable<? extends CharSequence> flowable =
-                Flowable.fromArray(new StringBuilder("single"), "next0", "next1", "next2");
-        final FlowableWithSingle<String, StringBuilder> flowableWithSingle =
-                FlowableWithSingle.split(flowable, String.class, StringBuilder.class);
-
+    @MethodSource("singleNext3")
+    @ParameterizedTest
+    void mapSingle(final @NotNull FlowableWithSingle<String, StringBuilder> flowableWithSingle) {
         final AtomicInteger count = new AtomicInteger();
         flowableWithSingle.mapSingle(stringBuilder -> (double) stringBuilder.toString().length())
                 .doOnSingle(aDouble -> assertEquals((Double) 6d, aDouble))
                 .doOnNext(string -> assertEquals("next" + count.getAndIncrement(), string))
                 .blockingSubscribe();
+        assertEquals(3, count.get());
     }
 
-    @Test
-    void mapBoth() {
-        final Flowable<? extends CharSequence> flowable =
-                Flowable.fromArray(new StringBuilder("single"), "next0", "next1", "next2");
-        final FlowableWithSingle<String, StringBuilder> flowableWithSingle =
-                FlowableWithSingle.split(flowable, String.class, StringBuilder.class);
-
+    @MethodSource("singleNext3")
+    @ParameterizedTest
+    void mapBoth(final @NotNull FlowableWithSingle<String, StringBuilder> flowableWithSingle) {
         flowableWithSingle.mapBoth(String::length, stringBuilder -> (double) stringBuilder.toString().length())
                 .doOnSingle(aDouble -> assertEquals((Double) 6d, aDouble))
                 .doOnNext(integer -> assertEquals((Integer) 5, integer))
@@ -249,7 +196,7 @@ class FlowableWithSingleTest {
     void mapError() {
         final Flowable<? extends CharSequence> flowable = Flowable.error(new IllegalArgumentException("test"));
         final FlowableWithSingle<String, StringBuilder> flowableWithSingle =
-                FlowableWithSingle.split(flowable, String.class, StringBuilder.class);
+                new FlowableWithSingleSplit<>(flowable, String.class, StringBuilder.class);
 
         final IllegalStateException exception = assertThrows(IllegalStateException.class,
                 () -> flowableWithSingle.mapError(throwable -> new IllegalStateException(throwable.getMessage()))
@@ -257,13 +204,9 @@ class FlowableWithSingleTest {
         assertEquals("test", exception.getMessage());
     }
 
-    @Test
-    void doOnSingle_multiple() {
-        final Flowable<? extends CharSequence> flowable =
-                Flowable.fromArray(new StringBuilder("single"), "next0", "next1", "next2");
-        final FlowableWithSingle<String, StringBuilder> flowableWithSingle =
-                FlowableWithSingle.split(flowable, String.class, StringBuilder.class);
-
+    @MethodSource("singleNext3")
+    @ParameterizedTest
+    void doOnSingle_multiple(final @NotNull FlowableWithSingle<String, StringBuilder> flowableWithSingle) {
         final ExecutorService executorService =
                 Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setNameFormat("test_thread").build());
 
@@ -288,19 +231,14 @@ class FlowableWithSingleTest {
                     assertEquals("test_thread", Thread.currentThread().getName());
                 })
                 .blockingSubscribe();
-
         assertEquals(4, counter.get());
 
         executorService.shutdown();
     }
 
-    @Test
-    void mapBoth_multiple() {
-        final Flowable<? extends CharSequence> flowable =
-                Flowable.fromArray(new StringBuilder("single"), "next0", "next1", "next2");
-        final FlowableWithSingle<String, StringBuilder> flowableWithSingle =
-                FlowableWithSingle.split(flowable, String.class, StringBuilder.class);
-
+    @MethodSource("singleNext3")
+    @ParameterizedTest
+    void mapBoth_multiple(final @NotNull FlowableWithSingle<String, StringBuilder> flowableWithSingle) {
         final ExecutorService executorService =
                 Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setNameFormat("test_thread").build());
 
@@ -339,12 +277,10 @@ class FlowableWithSingleTest {
         executorService.shutdown();
     }
 
-    @Test
-    void subscribeBoth() throws InterruptedException {
-        final Flowable<? extends CharSequence> flowable =
-                Flowable.fromArray(new StringBuilder("single"), "next0", "next1", "next2");
-        final FlowableWithSingle<String, StringBuilder> flowableWithSingle =
-                FlowableWithSingle.split(flowable, String.class, StringBuilder.class);
+    @MethodSource("singleNext3")
+    @ParameterizedTest
+    void subscribeBoth(final @NotNull FlowableWithSingle<String, StringBuilder> flowableWithSingle)
+            throws InterruptedException {
 
         final CountDownLatch latch = new CountDownLatch(6);
         flowableWithSingle.subscribeBoth(new FlowableWithSingleSubscriber<String, StringBuilder>() {
@@ -385,7 +321,7 @@ class FlowableWithSingleTest {
         final Flowable<? extends CharSequence> flowable =
                 Flowable.fromArray(new StringBuilder("single"), "next0", "next1", "next2");
         final FlowableWithSingle<String, StringBuilder> flowableWithSingle =
-                FlowableWithSingle.split(flowable, String.class, StringBuilder.class);
+                new FlowableWithSingleSplit<>(flowable, String.class, StringBuilder.class);
 
         final AtomicInteger onNextCounter = new AtomicInteger();
         final AtomicInteger onErrorCounter = new AtomicInteger();
@@ -418,7 +354,7 @@ class FlowableWithSingleTest {
         final Flowable<? extends CharSequence> flowable =
                 Flowable.fromArray("next0", "next1", new StringBuilder("single"), "next2");
         final FlowableWithSingle<String, StringBuilder> flowableWithSingle =
-                FlowableWithSingle.split(flowable, String.class, StringBuilder.class);
+                new FlowableWithSingleSplit<>(flowable, String.class, StringBuilder.class);
 
         final AtomicInteger onNextCounter = new AtomicInteger();
         final AtomicInteger onErrorCounter = new AtomicInteger();
@@ -448,7 +384,7 @@ class FlowableWithSingleTest {
     void subscribeSingleFuture_immediate_no_single(final int args) {
         final Flowable<? extends CharSequence> flowable = Flowable.fromArray("next0", "next1", "next2");
         final FlowableWithSingle<String, StringBuilder> flowableWithSingle =
-                FlowableWithSingle.split(flowable, String.class, StringBuilder.class);
+                new FlowableWithSingleSplit<>(flowable, String.class, StringBuilder.class);
 
         final AtomicInteger onNextCounter = new AtomicInteger();
         final AtomicInteger onErrorCounter = new AtomicInteger();
@@ -479,7 +415,7 @@ class FlowableWithSingleTest {
     void subscribeSingleFuture_immediate_error(final int args) {
         final Flowable<? extends CharSequence> flowable = Flowable.error(new Exception("test"));
         final FlowableWithSingle<String, StringBuilder> flowableWithSingle =
-                FlowableWithSingle.split(flowable, String.class, StringBuilder.class);
+                new FlowableWithSingleSplit<>(flowable, String.class, StringBuilder.class);
 
         final AtomicInteger onNextCounter = new AtomicInteger();
         final AtomicInteger onErrorCounter = new AtomicInteger();
@@ -512,7 +448,7 @@ class FlowableWithSingleTest {
                 Flowable.fromArray(new StringBuilder("single"), "next0", "next1", "next2")
                         .zipWith(Flowable.interval(10, 10, TimeUnit.MILLISECONDS), (o, aLong) -> o);
         final FlowableWithSingle<String, StringBuilder> flowableWithSingle =
-                FlowableWithSingle.split(flowable, String.class, StringBuilder.class);
+                new FlowableWithSingleSplit<>(flowable, String.class, StringBuilder.class);
 
         final AtomicInteger onNextCounter = new AtomicInteger();
         final AtomicInteger onErrorCounter = new AtomicInteger();
@@ -548,7 +484,7 @@ class FlowableWithSingleTest {
                 Flowable.fromArray("next0", "next1", new StringBuilder("single"), "next2")
                         .zipWith(Flowable.interval(10, 10, TimeUnit.MILLISECONDS), (o, aLong) -> o);
         final FlowableWithSingle<String, StringBuilder> flowableWithSingle =
-                FlowableWithSingle.split(flowable, String.class, StringBuilder.class);
+                new FlowableWithSingleSplit<>(flowable, String.class, StringBuilder.class);
 
         final AtomicInteger onNextCounter = new AtomicInteger();
         final AtomicInteger onErrorCounter = new AtomicInteger();
@@ -583,7 +519,7 @@ class FlowableWithSingleTest {
         final Flowable<? extends CharSequence> flowable = Flowable.fromArray("next0", "next1", "next2")
                 .zipWith(Flowable.interval(10, 10, TimeUnit.MILLISECONDS), (o, aLong) -> o);
         final FlowableWithSingle<String, StringBuilder> flowableWithSingle =
-                FlowableWithSingle.split(flowable, String.class, StringBuilder.class);
+                new FlowableWithSingleSplit<>(flowable, String.class, StringBuilder.class);
 
         final AtomicInteger onNextCounter = new AtomicInteger();
         final AtomicInteger onErrorCounter = new AtomicInteger();
@@ -620,7 +556,7 @@ class FlowableWithSingleTest {
         final Flowable<? extends CharSequence> flowable =
                 Flowable.<CharSequence>error(new Exception("test")).delay(10, TimeUnit.MILLISECONDS);
         final FlowableWithSingle<String, StringBuilder> flowableWithSingle =
-                FlowableWithSingle.split(flowable, String.class, StringBuilder.class);
+                new FlowableWithSingleSplit<>(flowable, String.class, StringBuilder.class);
 
         final AtomicInteger onNextCounter = new AtomicInteger();
         final AtomicInteger onErrorCounter = new AtomicInteger();
@@ -668,7 +604,7 @@ class FlowableWithSingleTest {
         }, BackpressureStrategy.MISSING).subscribeOn(Schedulers.single());
 
         final FlowableWithSingle<String, StringBuilder> flowableWithSingle =
-                FlowableWithSingle.split(flowable, String.class, StringBuilder.class);
+                new FlowableWithSingleSplit<>(flowable, String.class, StringBuilder.class);
 
         final CompletableFuture<StringBuilder> future = flowableWithSingle.subscribeSingleFuture();
         assertTrue(subscribeLatch.await(100, TimeUnit.MILLISECONDS));
@@ -696,7 +632,7 @@ class FlowableWithSingleTest {
         }, BackpressureStrategy.MISSING).subscribeOn(Schedulers.single());
 
         final FlowableWithSingle<String, StringBuilder> flowableWithSingle =
-                FlowableWithSingle.split(flowable, String.class, StringBuilder.class);
+                new FlowableWithSingleSplit<>(flowable, String.class, StringBuilder.class);
 
         final CompletableFuture<StringBuilder> future = flowableWithSingle.subscribeSingleFuture();
         assertTimeout(Duration.ofMillis(100), () -> assertEquals("single", future.get().toString()));
@@ -725,7 +661,7 @@ class FlowableWithSingleTest {
         }, BackpressureStrategy.MISSING).subscribeOn(Schedulers.single());
 
         final FlowableWithSingle<String, StringBuilder> flowableWithSingle =
-                FlowableWithSingle.split(flowable, String.class, StringBuilder.class);
+                new FlowableWithSingleSplit<>(flowable, String.class, StringBuilder.class);
 
         final CountDownLatch onNextLatch = new CountDownLatch(1);
         final CompletableFuture<StringBuilder> future =
@@ -764,7 +700,7 @@ class FlowableWithSingleTest {
         };
 
         final FlowableWithSingle<String, StringBuilder> flowableWithSingle =
-                FlowableWithSingle.split(flowable, String.class, StringBuilder.class);
+                new FlowableWithSingleSplit<>(flowable, String.class, StringBuilder.class);
 
         final CompletableFuture<StringBuilder> future = flowableWithSingle.subscribeSingleFuture();
         future.cancel(false);
@@ -793,7 +729,7 @@ class FlowableWithSingleTest {
         };
 
         final FlowableWithSingle<String, StringBuilder> flowableWithSingle =
-                FlowableWithSingle.split(flowable, String.class, StringBuilder.class);
+                new FlowableWithSingleSplit<>(flowable, String.class, StringBuilder.class);
 
         final CompletableFuture<StringBuilder> future =
                 flowableWithSingle.subscribeSingleFuture(new Subscriber<String>() {
@@ -891,31 +827,18 @@ class FlowableWithSingleTest {
                 args, flowableWithSingle, onNextCounter, onErrorCounter, onCompleteCounter, new CountDownLatch(0));
     }
 
-    @Test
-    void conditional_fusion() {
-        final Flowable<? extends CharSequence> flowable =
-                Flowable.fromArray(new StringBuilder("single"), "next0", "next1", "next2");
-        final FlowableWithSingle<String, StringBuilder> flowableWithSingle =
-                FlowableWithSingle.split(flowable, String.class, StringBuilder.class);
-
+    @MethodSource("singleNext3")
+    @ParameterizedTest
+    void conditional_fusion(final @NotNull FlowableWithSingle<String, StringBuilder> flowableWithSingle) {
         final AtomicInteger count = new AtomicInteger(1);
         flowableWithSingle.doOnSingle(stringBuilder -> assertEquals("single", stringBuilder.toString()))
+                .mapBoth(s -> s, stringBuilder -> stringBuilder)
+                .doOnSingle(stringBuilder -> {})
+                .mapBoth(s -> s, stringBuilder -> stringBuilder)
                 .filter(string -> !string.equals("next0"))
                 .doOnNext(string -> assertEquals("next" + count.getAndIncrement(), string))
                 .blockingSubscribe();
-    }
-
-    @Test
-    void no_conditional_fusion_source() {
-        final Flowable<? extends CharSequence> flowable =
-                Flowable.fromArray(new StringBuilder("single"), "next0", "next1", "next2").hide();
-        final FlowableWithSingle<String, StringBuilder> flowableWithSingle =
-                FlowableWithSingle.split(flowable, String.class, StringBuilder.class);
-
-        final AtomicInteger count = new AtomicInteger(0);
-        flowableWithSingle.doOnSingle(stringBuilder -> assertEquals("single", stringBuilder.toString()))
-                .doOnNext(string -> assertEquals("next" + count.getAndIncrement(), string))
-                .blockingSubscribe();
+        assertEquals(3, count.get());
     }
 
     private static class TestSubscription implements Subscription {
@@ -933,5 +856,4 @@ class FlowableWithSingleTest {
             cancelled = true;
         }
     }
-
 }

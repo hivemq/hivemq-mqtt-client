@@ -15,24 +15,13 @@
  *
  */
 
-package org.mqttbee.rx.reactivestreams;
+package org.mqttbee.internal.rx;
 
-import org.jetbrains.annotations.NotNull;
-import org.reactivestreams.Subscriber;
+import io.reactivex.internal.fuseable.ConditionalSubscriber;
+import org.mqttbee.rx.FlowableWithSingleSubscriber;
 
 /**
- * A {@link Subscriber} which consumes also a single item of type {@link S} by {@link #onSingle(Object)} besides items
- * of type {@link T} by {@link #onNext(Object)}.
- *
  * @author Silvio Giebl
- * @see Subscriber
  */
-public interface WithSingleSubscriber<T, S> extends Subscriber<T> {
-
-    /**
-     * Single item sent by the {@link PublisherWithSingle}.
-     *
-     * @param s the single item.
-     */
-    void onSingle(@NotNull S s);
-}
+public interface WithSingleConditionalSubscriber<F, S>
+        extends FlowableWithSingleSubscriber<F, S>, ConditionalSubscriber<F> {}

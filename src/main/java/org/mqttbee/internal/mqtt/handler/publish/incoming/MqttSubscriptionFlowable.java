@@ -17,7 +17,6 @@
 
 package org.mqttbee.internal.mqtt.handler.publish.incoming;
 
-import io.reactivex.Flowable;
 import io.reactivex.internal.subscriptions.EmptySubscription;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.internal.mqtt.MqttClientConfig;
@@ -25,12 +24,16 @@ import org.mqttbee.internal.mqtt.exceptions.MqttClientStateExceptions;
 import org.mqttbee.internal.mqtt.handler.subscribe.MqttSubscriptionHandler;
 import org.mqttbee.internal.mqtt.ioc.ClientComponent;
 import org.mqttbee.internal.mqtt.message.subscribe.MqttSubscribe;
+import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5Publish;
+import org.mqttbee.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
+import org.mqttbee.rx.FlowableWithSingle;
+import org.mqttbee.rx.reactivestreams.WithSingleSubscriber;
 import org.reactivestreams.Subscriber;
 
 /**
  * @author Silvio Giebl
  */
-public class MqttSubscriptionFlowable extends Flowable<Object> {
+public class MqttSubscriptionFlowable extends FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> {
 
     private final @NotNull MqttSubscribe subscribe;
     private final @NotNull MqttClientConfig clientConfig;
@@ -43,7 +46,7 @@ public class MqttSubscriptionFlowable extends Flowable<Object> {
     }
 
     @Override
-    protected void subscribeActual(final @NotNull Subscriber<? super Object> subscriber) {
+    protected void subscribeActual(final @NotNull Subscriber<? super Mqtt5Publish> subscriber) {
         if (clientConfig.getState().isConnectedOrReconnect()) {
             final ClientComponent clientComponent = clientConfig.getClientComponent();
             final MqttIncomingQosHandler incomingQosHandler = clientComponent.incomingQosHandler();
@@ -55,5 +58,12 @@ public class MqttSubscriptionFlowable extends Flowable<Object> {
         } else {
             EmptySubscription.error(MqttClientStateExceptions.notConnected(), subscriber);
         }
+    }
+
+    @Override
+    protected void subscribeBothActual(
+            final @NotNull WithSingleSubscriber<? super Mqtt5Publish, ? super Mqtt5SubAck> subscriber) {
+
+        subscribeActual(subscriber);
     }
 }
