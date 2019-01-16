@@ -30,6 +30,4 @@ import org.mqttbee.rx.reactivestreams.WithSingleSubscriber;
  * @author Silvio Giebl
  * @see FlowableSubscriber
  */
-public interface FlowableWithSingleSubscriber<F, S> extends WithSingleSubscriber<F, S>, FlowableSubscriber<F> {
-
-}
+public interface FlowableWithSingleSubscriber<F, S> extends WithSingleSubscriber<F, S>, FlowableSubscriber<F> {}

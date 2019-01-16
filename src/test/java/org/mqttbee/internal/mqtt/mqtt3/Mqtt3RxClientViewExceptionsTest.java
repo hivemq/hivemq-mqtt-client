@@ -40,7 +40,7 @@ import org.mqttbee.mqtt.mqtt5.exceptions.Mqtt5DisconnectException;
 import org.mqttbee.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
-import org.mqttbee.rx.FlowableWithSingle;
+import org.mqttbee.rx.FlowableWithSingleSplit;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
@@ -90,7 +90,8 @@ class Mqtt3RxClientViewExceptionsTest {
         final Mqtt5MessageException mqtt5MessageException =
                 new Mqtt5DisconnectException(MqttDisconnect.DEFAULT, "reason from original exception");
         given(mqtt5Client.subscribeStream(any())).willReturn(
-                FlowableWithSingle.split(Flowable.error(mqtt5MessageException), Mqtt5Publish.class, Mqtt5SubAck.class));
+                new FlowableWithSingleSplit<>(Flowable.error(mqtt5MessageException), Mqtt5Publish.class,
+                        Mqtt5SubAck.class));
 
         final Mqtt3Subscribe subscribe = Mqtt3Subscribe.builder()
                 .addSubscription(Mqtt3Subscription.builder().topicFilter("topic").qos(MqttQos.AT_LEAST_ONCE).build())

@@ -27,7 +27,7 @@ import org.reactivestreams.Subscriber;
 /**
  * @author Silvio Giebl
  */
-class MqttGlobalIncomingPublishFlow extends MqttIncomingPublishFlow<Subscriber<? super Mqtt5Publish>> {
+class MqttGlobalIncomingPublishFlow extends MqttIncomingPublishFlow {
 
     private final @NotNull MqttGlobalPublishFilter filter;
     private @Nullable HandleList.Handle<MqttGlobalIncomingPublishFlow> handle;

@@ -40,5 +40,4 @@ public interface PublisherWithSingle<T, S> extends Publisher<T> {
      * @see Publisher#subscribe(Subscriber)
      */
     void subscribeBoth(@NotNull WithSingleSubscriber<? super T, ? super S> subscriber);
-
 }
