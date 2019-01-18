@@ -18,7 +18,9 @@
 package org.mqttbee.mqtt;
 
 /**
- * Global filter for Publish messages. Global means not filtering for individual subscriptions of a Subscribe message.
+ * Global filter for incoming Publish messages.
+ * <p>
+ * Global means not filtering for individual subscriptions of a Subscribe message.
  *
  * @author Silvio Giebl
  */
@@ -26,24 +28,40 @@ public enum MqttGlobalPublishFilter {
 
     /**
      * Filter matching all incoming Publish messages.
+     * <p>
+     * ALL = {@link #SUBSCRIBED} + {@link #UNSOLICITED}.
      */
-    ALL_PUBLISHES,
+    ALL,
 
     /**
-     * Filter matching all subscriptions made by the client.
+     * Filter matching the incoming Publish messages resulting from subscriptions made by the client.
+     * <p>
+     * SUBSCRIBED + {@link #UNSOLICITED} = {@link #ALL}.
      */
-    ALL_SUBSCRIPTIONS,
+    SUBSCRIBED,
 
     /**
-     * Filter matching all incoming Publish messages that are not consumed in per subscription or global {@link
-     * #ALL_SUBSCRIPTIONS} flows.
+     * Filter matching the incoming Publish messages not resulting from any subscription made by the client.
+     * <p>
+     * UNSOLICITED + {@link #SUBSCRIBED} = {@link #ALL}.
+     */
+    UNSOLICITED,
+
+    /**
+     * Filter matching the incoming Publish messages that are not consumed in per subscription or other global flows.
+     * <p>
+     * This filter will not match any messages if
+     * <ul>
+     * <li>the {@link #ALL} filter is used or</li>
+     * <li>both {@link #SUBSCRIBED} and {@link #UNSOLICITED} filters are used.</li>
+     * </ul>
      * <p>
      * Example (pseudo-code):
      * <ul>
      * <li><code>stream1 = client.subscribeWithStream("a/#")</code></li>
      * <li><code>client.subscribe("b/#")</code></li>
-     * <li><code>stream2 = client.publishes(ALL_SUBSCRIPTIONS)</code></li>
-     * <li><code>stream3 = client.publishes(REMAINING_PUBLISHES)</code></li>
+     * <li><code>stream2 = client.publishes(SUBSCRIBED)</code></li>
+     * <li><code>stream3 = client.publishes(REMAINING)</code></li>
      * </ul>
      * Result: incoming Publishes with topic
      * <ul>
@@ -53,6 +71,5 @@ public enum MqttGlobalPublishFilter {
      * topic.</li>
      * </ul>
      */
-    REMAINING_PUBLISHES
-
+    REMAINING
 }
