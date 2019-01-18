@@ -35,26 +35,37 @@ import java.util.List;
 public interface Mqtt5UserProperties {
 
     /**
-     * @return the empty collection of User Properties.
+     * @return an empty collection of User Properties.
      */
     static @NotNull Mqtt5UserProperties of() {
         return MqttUserPropertiesImpl.NO_USER_PROPERTIES;
     }
 
     /**
-     * Creates a collection of User Properties of the given User Properties.
+     * Creates a collection of User Properties of individual User Properties.
      *
-     * @param userProperties the User Properties.
+     * @param userProperties the individual User Properties.
      * @return the created collection of User Properties.
      */
     static @NotNull Mqtt5UserProperties of(final @NotNull Mqtt5UserProperty @NotNull ... userProperties) {
         return MqttChecks.userProperties(userProperties);
     }
 
+    /**
+     * Creates a collection of User Properties of a list of User Properties.
+     *
+     * @param userProperties the list of User Properties.
+     * @return the created collection of User Properties.
+     */
     static @NotNull Mqtt5UserProperties of(final @NotNull List<@NotNull Mqtt5UserProperty> userProperties) {
         return MqttChecks.userProperties(userProperties);
     }
 
+    /**
+     * Creates a builder for a collection of User Properties.
+     *
+     * @return the created builder for a collection of User Properties.
+     */
     static @NotNull Mqtt5UserPropertiesBuilder builder() {
         return new MqttUserPropertiesImplBuilder.Default();
     }
@@ -64,5 +75,8 @@ public interface Mqtt5UserProperties {
      */
     @Immutable @NotNull List<@NotNull ? extends Mqtt5UserProperty> asList();
 
+    /**
+     * @return a builder for extending this collection of User Properties.
+     */
     @NotNull Mqtt5UserPropertiesBuilder extend();
 }

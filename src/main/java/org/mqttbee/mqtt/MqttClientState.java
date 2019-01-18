@@ -22,23 +22,52 @@ import org.jetbrains.annotations.NotNull;
 import java.util.EnumSet;
 
 /**
+ * State of a {@link MqttClient}.
+ *
  * @author Silvio Giebl
  */
 public enum MqttClientState {
 
+    /**
+     * The client is disconnected.
+     */
     DISCONNECTED,
+    /**
+     * The client is connecting.
+     * <p>
+     * This means the client was {@link #DISCONNECTED}, a Connect message is sent, but the ConnAck message is not
+     * received yet.
+     */
     CONNECTING,
+    /**
+     * The client is connected.
+     */
     CONNECTED,
+    /**
+     * The client is disconnected but will reconnect.
+     */
     DISCONNECTED_RECONNECT,
+    /**
+     * The client is reconnecting.
+     * <p>
+     * This means the client was {@link #DISCONNECTED_RECONNECT}, a Connect message is sent, but the ConnAck message is
+     * not received yet.
+     */
     CONNECTING_RECONNECT;
 
     private static final @NotNull EnumSet<MqttClientState> CONNECTED_OR_RECONNECT =
             EnumSet.of(CONNECTED, DISCONNECTED_RECONNECT, CONNECTING_RECONNECT);
 
+    /**
+     * @return whether the client is connected.
+     */
     public boolean isConnected() {
         return this == CONNECTED;
     }
 
+    /**
+     * @return whether the client is connected or will reconnect.
+     */
     public boolean isConnectedOrReconnect() {
         return CONNECTED_OR_RECONNECT.contains(this);
     }

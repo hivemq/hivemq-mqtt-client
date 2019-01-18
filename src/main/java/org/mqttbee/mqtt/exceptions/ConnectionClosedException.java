@@ -21,6 +21,8 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.internal.util.AsyncRuntimeException;
 
 /**
+ * Exception that is used if a MQTT connection is closed without a DISCONNECT message.
+ *
  * @author Silvio Giebl
  */
 public class ConnectionClosedException extends AsyncRuntimeException {

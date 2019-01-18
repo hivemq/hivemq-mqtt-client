@@ -60,6 +60,11 @@ public interface MqttTopicFilter extends MqttUtf8String {
         return MqttTopicFilterImpl.of(string);
     }
 
+    /**
+     * Creates a builder for a Topic Filter.
+     *
+     * @return the created builder for a Topic Filter.
+     */
     static @NotNull MqttTopicFilterBuilder builder() {
         return new MqttTopicFilterImplBuilder.Default();
     }
@@ -111,5 +116,8 @@ public interface MqttTopicFilter extends MqttUtf8String {
      */
     boolean matches(@NotNull MqttTopicFilter topicFilter);
 
+    /**
+     * @return a builder for extending this Topic Filter.
+     */
     @NotNull MqttTopicFilterBuilder.Complete extend();
 }

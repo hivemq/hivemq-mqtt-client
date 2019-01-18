@@ -21,6 +21,8 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.internal.util.AsyncRuntimeException;
 
 /**
+ * Exception that is used if an MQTT session has expired.
+ *
  * @author Silvio Giebl
  */
 public class MqttSessionExpiredException extends AsyncRuntimeException {

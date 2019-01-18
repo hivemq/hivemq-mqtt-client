@@ -20,8 +20,8 @@ package org.mqttbee.mqtt.mqtt5.message.connect.connack;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.internal.mqtt.datatypes.MqttVariableByteInteger;
+import org.mqttbee.internal.util.UnsignedDataTypes;
 import org.mqttbee.mqtt.datatypes.MqttQos;
-import org.mqttbee.util.UnsignedDataTypes;
 
 /**
  * Restrictions from the server in the MQTT 5 CONNACK packet.

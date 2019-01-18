@@ -36,6 +36,7 @@ import org.mqttbee.internal.mqtt.message.publish.pubcomp.MqttPubCompBuilder;
 import org.mqttbee.internal.mqtt.message.publish.pubrec.MqttPubRec;
 import org.mqttbee.internal.mqtt.message.publish.pubrec.MqttPubRecBuilder;
 import org.mqttbee.internal.mqtt.message.publish.pubrel.MqttPubRel;
+import org.mqttbee.internal.util.UnsignedDataTypes;
 import org.mqttbee.internal.util.collections.IntMap;
 import org.mqttbee.internal.util.netty.ContextFuture;
 import org.mqttbee.internal.util.netty.DefaultContextPromise;
@@ -43,7 +44,6 @@ import org.mqttbee.mqtt.mqtt5.advanced.qos1.Mqtt5IncomingQos1Interceptor;
 import org.mqttbee.mqtt.mqtt5.advanced.qos2.Mqtt5IncomingQos2Interceptor;
 import org.mqttbee.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubCompReasonCode;
-import org.mqttbee.util.UnsignedDataTypes;
 
 import javax.inject.Inject;
 

@@ -21,6 +21,8 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.internal.util.AsyncRuntimeException;
 
 /**
+ * Exception that is used if an encoding error occurred.
+ *
  * @author Silvio Giebl
  */
 public class MqttEncodeException extends AsyncRuntimeException {
