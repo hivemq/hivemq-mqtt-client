@@ -117,11 +117,13 @@ public class MqttIncomingPublishFlows {
 
         final MqttTopicImpl topic = publish.stateless().getTopic();
         if (subscriptionFlows.findMatching(topic, matchingFlows) || !matchingFlows.isEmpty()) {
-            add(matchingFlows, globalFlows[MqttGlobalPublishFilter.ALL_SUBSCRIPTIONS.ordinal()]);
+            add(matchingFlows, globalFlows[MqttGlobalPublishFilter.SUBSCRIBED.ordinal()]);
+        } else {
+            add(matchingFlows, globalFlows[MqttGlobalPublishFilter.UNSOLICITED.ordinal()]);
         }
-        add(matchingFlows, globalFlows[MqttGlobalPublishFilter.ALL_PUBLISHES.ordinal()]);
+        add(matchingFlows, globalFlows[MqttGlobalPublishFilter.ALL.ordinal()]);
         if (matchingFlows.isEmpty()) {
-            add(matchingFlows, globalFlows[MqttGlobalPublishFilter.REMAINING_PUBLISHES.ordinal()]);
+            add(matchingFlows, globalFlows[MqttGlobalPublishFilter.REMAINING.ordinal()]);
         }
     }
 
