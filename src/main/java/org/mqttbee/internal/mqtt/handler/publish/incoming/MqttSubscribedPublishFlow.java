@@ -18,10 +18,11 @@
 package org.mqttbee.internal.mqtt.handler.publish.incoming;
 
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.internal.mqtt.MqttClientConfig;
 import org.mqttbee.internal.mqtt.datatypes.MqttTopicFilterImpl;
+import org.mqttbee.internal.mqtt.handler.subscribe.MqttSubscriptionFlow;
 import org.mqttbee.internal.mqtt.message.subscribe.MqttStatefulSubscribe;
 import org.mqttbee.internal.mqtt.message.subscribe.suback.MqttSubAck;
-import org.mqttbee.internal.rx.SingleFlow;
 import org.mqttbee.internal.util.collections.HandleList;
 import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
@@ -31,16 +32,16 @@ import org.reactivestreams.Subscriber;
 /**
  * @author Silvio Giebl
  */
-public class MqttSubscriptionFlow extends MqttIncomingPublishFlow implements SingleFlow<MqttSubAck> {
+public class MqttSubscribedPublishFlow extends MqttIncomingPublishFlow implements MqttSubscriptionFlow<MqttSubAck> {
 
     private final @NotNull HandleList<MqttTopicFilterImpl> topicFilters;
     private int subscriptionIdentifier = MqttStatefulSubscribe.DEFAULT_NO_SUBSCRIPTION_IDENTIFIER;
 
-    MqttSubscriptionFlow(
-            final @NotNull Subscriber<? super Mqtt5Publish> subscriber,
+    MqttSubscribedPublishFlow(
+            final @NotNull Subscriber<? super Mqtt5Publish> subscriber, final @NotNull MqttClientConfig clientConfig,
             final @NotNull MqttIncomingQosHandler incomingQosHandler) {
 
-        super(subscriber, incomingQosHandler);
+        super(subscriber, clientConfig, incomingQosHandler);
         topicFilters = new HandleList<>();
     }
 

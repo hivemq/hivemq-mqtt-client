@@ -21,7 +21,6 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.internal.mqtt.message.unsubscribe.MqttStatefulUnsubscribe;
 import org.mqttbee.internal.mqtt.message.unsubscribe.MqttUnsubscribe;
 import org.mqttbee.internal.mqtt.message.unsubscribe.unsuback.MqttUnsubAck;
-import org.mqttbee.internal.rx.SingleFlow;
 
 /**
  * @author Silvio Giebl
@@ -29,32 +28,33 @@ import org.mqttbee.internal.rx.SingleFlow;
 class MqttUnsubscribeWithFlow extends MqttSubOrUnsubWithFlow {
 
     private final @NotNull MqttUnsubscribe unsubscribe;
-    private final @NotNull SingleFlow<MqttUnsubAck> unsubAckFlow;
+    private final @NotNull MqttSubOrUnsubAckFlow<MqttUnsubAck> unsubAckFlow;
 
     MqttUnsubscribeWithFlow(
-            final @NotNull MqttUnsubscribe unsubscribe, final @NotNull SingleFlow<MqttUnsubAck> unsubAckFlow) {
+            final @NotNull MqttUnsubscribe unsubscribe,
+            final @NotNull MqttSubOrUnsubAckFlow<MqttUnsubAck> unsubAckFlow) {
 
         this.unsubscribe = unsubscribe;
         this.unsubAckFlow = unsubAckFlow;
     }
 
-    @Override
-    @NotNull SingleFlow<MqttUnsubAck> getAckFlow() {
-        return unsubAckFlow;
+    @NotNull MqttUnsubscribe getUnsubscribe() {
+        return unsubscribe;
     }
 
-    @NotNull Stateful createStateful(final int packetIdentifier) {
-        return new Stateful(unsubscribe.createStateful(packetIdentifier), unsubAckFlow);
+    @Override
+    @NotNull MqttSubOrUnsubAckFlow<MqttUnsubAck> getFlow() {
+        return unsubAckFlow;
     }
 
     static class Stateful extends MqttSubOrUnsubWithFlow.Stateful {
 
         private final @NotNull MqttStatefulUnsubscribe unsubscribe;
-        private final @NotNull SingleFlow<MqttUnsubAck> unsubAckFlow;
+        private final @NotNull MqttSubOrUnsubAckFlow<MqttUnsubAck> unsubAckFlow;
 
         Stateful(
                 final @NotNull MqttStatefulUnsubscribe unsubscribe,
-                final @NotNull SingleFlow<MqttUnsubAck> unsubAckFlow) {
+                final @NotNull MqttSubOrUnsubAckFlow<MqttUnsubAck> unsubAckFlow) {
 
             this.unsubscribe = unsubscribe;
             this.unsubAckFlow = unsubAckFlow;
@@ -65,7 +65,7 @@ class MqttUnsubscribeWithFlow extends MqttSubOrUnsubWithFlow {
         }
 
         @Override
-        @NotNull SingleFlow<MqttUnsubAck> getAckFlow() {
+        @NotNull MqttSubOrUnsubAckFlow<MqttUnsubAck> getFlow() {
             return unsubAckFlow;
         }
     }

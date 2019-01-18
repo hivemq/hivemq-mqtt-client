@@ -33,12 +33,12 @@ import org.reactivestreams.Subscriber;
 /**
  * @author Silvio Giebl
  */
-public class MqttSubscriptionFlowable extends FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> {
+public class MqttSubscribedPublishFlowable extends FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> {
 
     private final @NotNull MqttSubscribe subscribe;
     private final @NotNull MqttClientConfig clientConfig;
 
-    public MqttSubscriptionFlowable(
+    public MqttSubscribedPublishFlowable(
             final @NotNull MqttSubscribe subscribe, final @NotNull MqttClientConfig clientConfig) {
 
         this.subscribe = subscribe;
@@ -52,9 +52,10 @@ public class MqttSubscriptionFlowable extends FlowableWithSingle<Mqtt5Publish, M
             final MqttIncomingQosHandler incomingQosHandler = clientComponent.incomingQosHandler();
             final MqttSubscriptionHandler subscriptionHandler = clientComponent.subscriptionHandler();
 
-            final MqttSubscriptionFlow flow = new MqttSubscriptionFlow(subscriber, incomingQosHandler);
-            subscriptionHandler.subscribe(subscribe, flow);
+            final MqttSubscribedPublishFlow flow =
+                    new MqttSubscribedPublishFlow(subscriber, clientConfig, incomingQosHandler);
             subscriber.onSubscribe(flow);
+            subscriptionHandler.subscribe(subscribe, flow);
         } else {
             EmptySubscription.error(MqttClientStateExceptions.notConnected(), subscriber);
         }

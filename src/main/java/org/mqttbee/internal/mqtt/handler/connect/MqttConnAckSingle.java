@@ -49,7 +49,7 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
             return;
         }
 
-        final SingleFlow.Default<Mqtt5ConnAck> flow = new SingleFlow.Default<>(observer);
+        final SingleFlow<Mqtt5ConnAck> flow = new SingleFlow<>(observer);
         observer.onSubscribe(flow);
 
         final Bootstrap bootstrap = clientConfig.getClientComponent()

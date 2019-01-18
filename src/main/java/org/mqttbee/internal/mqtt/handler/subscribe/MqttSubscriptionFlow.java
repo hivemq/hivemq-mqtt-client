@@ -17,17 +17,21 @@
 
 package org.mqttbee.internal.mqtt.handler.subscribe;
 
+import io.netty.channel.EventLoop;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Silvio Giebl
  */
-abstract class MqttSubOrUnsubWithFlow {
+public interface MqttSubscriptionFlow<M> {
 
-    abstract @NotNull MqttSubscriptionFlow<?> getFlow();
+    boolean init();
 
-    static abstract class Stateful {
+    void onSuccess(@NotNull M m);
 
-        abstract @NotNull MqttSubscriptionFlow<?> getFlow();
-    }
+    void onError(@NotNull Throwable t);
+
+    boolean isCancelled();
+
+    @NotNull EventLoop getEventLoop();
 }

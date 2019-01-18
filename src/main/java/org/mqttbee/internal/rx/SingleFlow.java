@@ -24,46 +24,34 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author Silvio Giebl
  */
-public interface SingleFlow<T> {
+public class SingleFlow<T> implements Disposable {
 
-    void onSuccess(@NotNull T t);
+    private final @NotNull SingleObserver<? super T> observer;
+    private volatile boolean disposed;
 
-    void onError(@NotNull Throwable t);
+    public SingleFlow(final @NotNull SingleObserver<? super T> observer) {
+        this.observer = observer;
+    }
 
-    boolean isCancelled();
+    public void onSuccess(final @NotNull T t) {
+        observer.onSuccess(t);
+    }
 
-    class Default<T> implements SingleFlow<T>, Disposable {
+    public void onError(final @NotNull Throwable t) {
+        observer.onError(t);
+    }
 
-        private final @NotNull SingleObserver<? super T> observer;
-        private volatile boolean disposed;
+    @Override
+    public void dispose() {
+        disposed = true;
+    }
 
-        public Default(final @NotNull SingleObserver<? super T> observer) {
-            this.observer = observer;
-        }
+    @Override
+    public boolean isDisposed() {
+        return disposed;
+    }
 
-        @Override
-        public void onSuccess(final @NotNull T t) {
-            observer.onSuccess(t);
-        }
-
-        @Override
-        public void onError(final @NotNull Throwable t) {
-            observer.onError(t);
-        }
-
-        @Override
-        public void dispose() {
-            disposed = true;
-        }
-
-        @Override
-        public boolean isDisposed() {
-            return disposed;
-        }
-
-        @Override
-        public boolean isCancelled() {
-            return isDisposed();
-        }
+    public boolean isCancelled() {
+        return isDisposed();
     }
 }

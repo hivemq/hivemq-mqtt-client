@@ -17,13 +17,14 @@
 
 package org.mqttbee.internal.mqtt.handler.publish.incoming;
 
-import io.netty.channel.EventLoop;
 import io.reactivex.Emitter;
 import io.reactivex.internal.util.BackpressureHelper;
 import io.reactivex.plugins.RxJavaPlugins;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.internal.annotations.CallByThread;
+import org.mqttbee.internal.mqtt.MqttClientConfig;
+import org.mqttbee.internal.mqtt.handler.util.FlowWithEventLoop;
 import org.mqttbee.internal.util.ExecutorUtil;
 import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.reactivestreams.Subscriber;
@@ -35,24 +36,19 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * @author Silvio Giebl
  */
-public abstract class MqttIncomingPublishFlow implements Emitter<Mqtt5Publish>, Subscription, Runnable {
+public abstract class MqttIncomingPublishFlow extends FlowWithEventLoop
+        implements Emitter<Mqtt5Publish>, Subscription, Runnable {
 
     private static final int STATE_NO_NEW_REQUESTS = 0;
     private static final int STATE_NEW_REQUESTS = 1;
     private static final int STATE_BLOCKED = 2;
 
-    private static final int STATE_NOT_DONE = 0;
-    private static final int STATE_DONE = 1;
-    private static final int STATE_CANCELLED = 2;
-
     final @NotNull Subscriber<? super Mqtt5Publish> subscriber;
     final @NotNull MqttIncomingQosHandler incomingQosHandler;
-    private final @NotNull EventLoop eventLoop;
 
     private long requested;
     private final @NotNull AtomicLong newRequested = new AtomicLong();
     private final @NotNull AtomicInteger requestState = new AtomicInteger(STATE_NO_NEW_REQUESTS);
-    private final @NotNull AtomicInteger doneState = new AtomicInteger(STATE_NOT_DONE);
 
     private boolean done;
     private @Nullable Throwable error;
@@ -62,12 +58,12 @@ public abstract class MqttIncomingPublishFlow implements Emitter<Mqtt5Publish>, 
     private boolean blocking;
 
     MqttIncomingPublishFlow(
-            final @NotNull Subscriber<? super Mqtt5Publish> subscriber,
+            final @NotNull Subscriber<? super Mqtt5Publish> subscriber, final @NotNull MqttClientConfig clientConfig,
             final @NotNull MqttIncomingQosHandler incomingQosHandler) {
 
+        super(clientConfig);
         this.subscriber = subscriber;
         this.incomingQosHandler = incomingQosHandler;
-        eventLoop = incomingQosHandler.getClientConfig().acquireEventLoop();
     }
 
     @CallByThread("Netty EventLoop")
@@ -86,11 +82,8 @@ public abstract class MqttIncomingPublishFlow implements Emitter<Mqtt5Publish>, 
             return;
         }
         done = true;
-        if (referenced == 0) {
+        if ((referenced == 0) && setDone()) {
             subscriber.onComplete();
-            if (doneState.compareAndSet(STATE_NOT_DONE, STATE_DONE)) {
-                releaseEventLoop();
-            }
         } else {
             incomingQosHandler.getIncomingPublishService().drain();
         }
@@ -105,11 +98,8 @@ public abstract class MqttIncomingPublishFlow implements Emitter<Mqtt5Publish>, 
         }
         error = t;
         done = true;
-        if (referenced == 0) {
+        if ((referenced == 0) && setDone()) {
             subscriber.onError(t);
-            if (doneState.compareAndSet(STATE_NOT_DONE, STATE_DONE)) {
-                releaseEventLoop();
-            }
         } else {
             incomingQosHandler.getIncomingPublishService().drain();
         }
@@ -117,14 +107,11 @@ public abstract class MqttIncomingPublishFlow implements Emitter<Mqtt5Publish>, 
 
     @CallByThread("Netty EventLoop")
     void checkDone() {
-        if (done) {
+        if (done && setDone()) {
             if (error != null) {
                 subscriber.onError(error);
             } else {
                 subscriber.onComplete();
-            }
-            if (doneState.compareAndSet(STATE_NOT_DONE, STATE_DONE)) {
-                releaseEventLoop();
             }
         }
     }
@@ -178,11 +165,8 @@ public abstract class MqttIncomingPublishFlow implements Emitter<Mqtt5Publish>, 
     }
 
     @Override
-    public void cancel() {
-        if (doneState.compareAndSet(STATE_NOT_DONE, STATE_CANCELLED)) {
-            eventLoop.execute(this::runCancel);
-            releaseEventLoop();
-        }
+    protected void onCancel() {
+        eventLoop.execute(this::runCancel);
     }
 
     @CallByThread("Netty EventLoop")
@@ -190,10 +174,6 @@ public abstract class MqttIncomingPublishFlow implements Emitter<Mqtt5Publish>, 
         if (referenced > 0) { // is blocking
             incomingQosHandler.getIncomingPublishService().drain();
         }
-    }
-
-    public boolean isCancelled() {
-        return doneState.get() == STATE_CANCELLED;
     }
 
     @CallByThread("Netty EventLoop")
@@ -204,13 +184,5 @@ public abstract class MqttIncomingPublishFlow implements Emitter<Mqtt5Publish>, 
     @CallByThread("Netty EventLoop")
     int dereference() {
         return --referenced;
-    }
-
-    public @NotNull EventLoop getEventLoop() {
-        return eventLoop;
-    }
-
-    private void releaseEventLoop() {
-        incomingQosHandler.getClientConfig().releaseEventLoop();
     }
 }

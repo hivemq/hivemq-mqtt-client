@@ -27,7 +27,7 @@ import org.mqttbee.internal.mqtt.handler.auth.MqttReAuthCompletable;
 import org.mqttbee.internal.mqtt.handler.connect.MqttConnAckSingle;
 import org.mqttbee.internal.mqtt.handler.disconnect.MqttDisconnectCompletable;
 import org.mqttbee.internal.mqtt.handler.publish.incoming.MqttGlobalIncomingPublishFlowable;
-import org.mqttbee.internal.mqtt.handler.publish.incoming.MqttSubscriptionFlowable;
+import org.mqttbee.internal.mqtt.handler.publish.incoming.MqttSubscribedPublishFlowable;
 import org.mqttbee.internal.mqtt.handler.publish.outgoing.MqttIncomingAckFlowable;
 import org.mqttbee.internal.mqtt.handler.subscribe.MqttSubAckSingle;
 import org.mqttbee.internal.mqtt.handler.subscribe.MqttUnsubAckSingle;
@@ -99,7 +99,7 @@ public class MqttRxClient implements Mqtt5RxClient {
 
         final MqttSubscribe mqttSubscribe = MqttChecks.subscribe(subscribe);
 
-        return new MqttSubscriptionFlowable(mqttSubscribe, clientConfig);
+        return new MqttSubscribedPublishFlowable(mqttSubscribe, clientConfig);
     }
 
     @Override

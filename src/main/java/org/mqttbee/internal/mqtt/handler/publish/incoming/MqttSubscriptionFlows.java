@@ -32,12 +32,15 @@ import java.util.function.Consumer;
 @NotThreadSafe
 public interface MqttSubscriptionFlows {
 
-    void subscribe(@NotNull MqttTopicFilterImpl topicFilter, @Nullable MqttSubscriptionFlow flow);
+    void subscribe(@NotNull MqttTopicFilterImpl topicFilter, @Nullable MqttSubscribedPublishFlow flow);
+
+    void remove(@NotNull MqttTopicFilterImpl topicFilter, @Nullable MqttSubscribedPublishFlow flow);
 
     void unsubscribe(
-            @NotNull MqttTopicFilterImpl topicFilter, @Nullable Consumer<MqttSubscriptionFlow> unsubscribedCallback);
+            @NotNull MqttTopicFilterImpl topicFilter,
+            @Nullable Consumer<MqttSubscribedPublishFlow> unsubscribedCallback);
 
-    void cancel(@NotNull MqttSubscriptionFlow flow);
+    void cancel(@NotNull MqttSubscribedPublishFlow flow);
 
     boolean findMatching(@NotNull MqttTopicImpl topic, @NotNull HandleList<MqttIncomingPublishFlow> matchingFlows);
 

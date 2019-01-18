@@ -49,27 +49,41 @@ public class MqttIncomingPublishFlows {
     private final @Nullable HandleList<MqttGlobalIncomingPublishFlow> @NotNull [] globalFlows;
 
     @Inject
-    @SuppressWarnings("unchecked")
     MqttIncomingPublishFlows(final @NotNull MqttSubscriptionFlows subscriptionFlows) {
         this.subscriptionFlows = subscriptionFlows;
+        //noinspection unchecked
         globalFlows = new HandleList[MqttGlobalPublishFilter.values().length];
     }
 
     public void subscribe(
+            final @NotNull MqttStatefulSubscribe subscribe, final @Nullable MqttSubscribedPublishFlow flow) {
+
+        final ImmutableList<MqttSubscription> subscriptions = subscribe.stateless().getSubscriptions();
+        //noinspection ForLoopReplaceableByForEach
+        for (int i = 0; i < subscriptions.size(); i++) {
+            subscribe(subscriptions.get(i).getTopicFilter(), flow);
+        }
+    }
+
+    void subscribe(final @NotNull MqttTopicFilterImpl topicFilter, final @Nullable MqttSubscribedPublishFlow flow) {
+        subscriptionFlows.subscribe(topicFilter, flow);
+    }
+
+    public void subAck(
             final @NotNull MqttStatefulSubscribe subscribe, final @NotNull MqttSubAck subAck,
-            final @Nullable MqttSubscriptionFlow flow) {
+            final @Nullable MqttSubscribedPublishFlow flow) {
 
         final ImmutableList<MqttSubscription> subscriptions = subscribe.stateless().getSubscriptions();
         final ImmutableList<Mqtt5SubAckReasonCode> reasonCodes = subAck.getReasonCodes();
         for (int i = 0; i < subscriptions.size(); i++) {
-            if (!reasonCodes.get(i).isError()) {
-                subscribe(subscriptions.get(i).getTopicFilter(), flow);
+            if (reasonCodes.get(i).isError()) {
+                remove(subscriptions.get(i).getTopicFilter(), flow);
             }
         }
     }
 
-    void subscribe(final @NotNull MqttTopicFilterImpl topicFilter, final @Nullable MqttSubscriptionFlow flow) {
-        subscriptionFlows.subscribe(topicFilter, flow);
+    void remove(final @NotNull MqttTopicFilterImpl topicFilter, final @Nullable MqttSubscribedPublishFlow flow) {
+        subscriptionFlows.remove(topicFilter, flow);
     }
 
     public void unsubscribe(final @NotNull MqttStatefulUnsubscribe unsubscribe, final @NotNull MqttUnsubAck unsubAck) {
@@ -87,7 +101,7 @@ public class MqttIncomingPublishFlows {
         subscriptionFlows.unsubscribe(topicFilter, null);
     }
 
-    void cancel(final @NotNull MqttSubscriptionFlow flow) {
+    void cancel(final @NotNull MqttSubscribedPublishFlow flow) {
         subscriptionFlows.cancel(flow);
     }
 
