@@ -272,10 +272,6 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler
         return pubCompBuilder.build();
     }
 
-    @NotNull MqttClientConfig getClientConfig() {
-        return clientConfig;
-    }
-
     @NotNull MqttIncomingPublishFlows getIncomingPublishFlows() {
         return incomingPublishFlows;
     }

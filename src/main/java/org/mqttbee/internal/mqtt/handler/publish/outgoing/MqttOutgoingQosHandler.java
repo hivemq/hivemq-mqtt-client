@@ -468,10 +468,6 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
         }
     }
 
-    @NotNull MqttClientConfig getClientConfig() {
-        return clientConfig;
-    }
-
     @NotNull MqttPublishFlowables getPublishFlowables() {
         return publishFlowables;
     }

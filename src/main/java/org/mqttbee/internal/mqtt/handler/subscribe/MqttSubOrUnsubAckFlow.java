@@ -17,67 +17,42 @@
 
 package org.mqttbee.internal.mqtt.handler.subscribe;
 
-import io.netty.channel.EventLoop;
 import io.reactivex.SingleObserver;
 import io.reactivex.disposables.Disposable;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.internal.mqtt.MqttClientConfig;
-import org.mqttbee.internal.rx.SingleFlow;
-
-import java.util.concurrent.atomic.AtomicBoolean;
+import org.mqttbee.internal.mqtt.handler.util.FlowWithEventLoop;
 
 /**
  * @author Silvio Giebl
  */
-class MqttSubOrUnsubAckFlow<T> implements SingleFlow<T>, Disposable {
+class MqttSubOrUnsubAckFlow<T> extends FlowWithEventLoop implements MqttSubscriptionFlow<T>, Disposable {
 
     private final @NotNull SingleObserver<? super T> observer;
-    private final @NotNull MqttClientConfig clientConfig;
-    private final @NotNull EventLoop eventLoop;
-    private final @NotNull AtomicBoolean done = new AtomicBoolean();
 
     MqttSubOrUnsubAckFlow(
             final @NotNull SingleObserver<? super T> observer, final @NotNull MqttClientConfig clientConfig) {
 
+        super(clientConfig);
         this.observer = observer;
-        this.clientConfig = clientConfig;
-        eventLoop = clientConfig.acquireEventLoop();
     }
 
     @Override
     public void onSuccess(final @NotNull T t) {
-        if (done.compareAndSet(false, true)) {
+        if (setDone()) {
             observer.onSuccess(t);
-            clientConfig.releaseEventLoop();
         }
     }
 
     @Override
     public void onError(final @NotNull Throwable t) {
-        if (done.compareAndSet(false, true)) {
+        if (setDone()) {
             observer.onError(t);
-            clientConfig.releaseEventLoop();
         }
     }
 
     @Override
     public void dispose() {
-        if (done.compareAndSet(false, true)) {
-            clientConfig.releaseEventLoop();
-        }
-    }
-
-    @Override
-    public boolean isDisposed() {
-        return done.get();
-    }
-
-    @Override
-    public boolean isCancelled() {
-        return done.get();
-    }
-
-    @NotNull EventLoop getEventLoop() {
-        return eventLoop;
+        cancel();
     }
 }

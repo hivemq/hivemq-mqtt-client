@@ -47,8 +47,12 @@ public class MqttGlobalIncomingPublishFlowable extends Flowable<Mqtt5Publish> {
         final MqttIncomingPublishFlows incomingPublishFlows = incomingQosHandler.getIncomingPublishFlows();
 
         final MqttGlobalIncomingPublishFlow flow =
-                new MqttGlobalIncomingPublishFlow(subscriber, incomingQosHandler, filter);
-        flow.getEventLoop().execute(() -> incomingPublishFlows.subscribeGlobal(flow));
+                new MqttGlobalIncomingPublishFlow(subscriber, clientConfig, incomingQosHandler, filter);
         subscriber.onSubscribe(flow);
+        flow.getEventLoop().execute(() -> {
+            if (flow.init()) {
+                incomingPublishFlows.subscribeGlobal(flow);
+            }
+        });
     }
 }

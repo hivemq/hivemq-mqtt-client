@@ -29,8 +29,8 @@ import org.mqttbee.internal.mqtt.exceptions.MqttClientStateExceptions;
 import org.mqttbee.internal.mqtt.handler.MqttSessionAwareHandler;
 import org.mqttbee.internal.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.internal.mqtt.handler.publish.incoming.MqttIncomingPublishFlows;
-import org.mqttbee.internal.mqtt.handler.publish.incoming.MqttSubscriptionFlow;
 import org.mqttbee.internal.mqtt.ioc.ClientScope;
+import org.mqttbee.internal.mqtt.message.MqttCommonReasonCode;
 import org.mqttbee.internal.mqtt.message.subscribe.MqttStatefulSubscribe;
 import org.mqttbee.internal.mqtt.message.subscribe.MqttSubscribe;
 import org.mqttbee.internal.mqtt.message.subscribe.suback.MqttSubAck;
@@ -38,14 +38,14 @@ import org.mqttbee.internal.mqtt.message.unsubscribe.MqttStatefulUnsubscribe;
 import org.mqttbee.internal.mqtt.message.unsubscribe.MqttUnsubscribe;
 import org.mqttbee.internal.mqtt.message.unsubscribe.unsuback.MqttUnsubAck;
 import org.mqttbee.internal.mqtt.message.unsubscribe.unsuback.mqtt3.Mqtt3UnsubAckView;
-import org.mqttbee.internal.rx.SingleFlow;
 import org.mqttbee.internal.util.Ranges;
 import org.mqttbee.internal.util.collections.ImmutableList;
 import org.mqttbee.internal.util.collections.IntMap;
 import org.mqttbee.mqtt.mqtt5.exceptions.Mqtt5SubAckException;
 import org.mqttbee.mqtt.mqtt5.exceptions.Mqtt5UnsubAckException;
-import org.mqttbee.mqtt.mqtt5.message.Mqtt5ReasonCode;
 import org.mqttbee.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
+import org.mqttbee.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAckReasonCode;
+import org.mqttbee.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAckReasonCode;
 import org.mqttbee.util.UnsignedDataTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,7 +63,7 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
     public static final int MAX_SUB_PENDING = 10; // TODO configurable
     private static final @NotNull Logger LOGGER = LoggerFactory.getLogger(MqttSubscriptionHandler.class);
 
-    private final @NotNull MqttIncomingPublishFlows subscriptionFlows;
+    private final @NotNull MqttIncomingPublishFlows incomingPublishFlows;
 
     private final @NotNull MpscLinkedQueue<MqttSubOrUnsubWithFlow> queued = MpscLinkedQueue.newMpscLinkedQueue();
     private final @NotNull AtomicInteger queuedCounter = new AtomicInteger();
@@ -74,8 +74,8 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
     private boolean subscriptionIdentifiersAvailable;
 
     @Inject
-    MqttSubscriptionHandler(final @NotNull MqttIncomingPublishFlows subscriptionFlows) {
-        this.subscriptionFlows = subscriptionFlows;
+    MqttSubscriptionHandler(final @NotNull MqttIncomingPublishFlows incomingPublishFlows) {
+        this.incomingPublishFlows = incomingPublishFlows;
 
         final int maxPacketIdentifier = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE;
         final int minPacketIdentifier = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE - MAX_SUB_PENDING + 1;
@@ -94,13 +94,8 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
     }
 
     public void subscribe(
-            final @NotNull MqttSubscribe subscribe, final @NotNull MqttSubOrUnsubAckFlow<MqttSubAck> flow) {
+            final @NotNull MqttSubscribe subscribe, final @NotNull MqttSubscriptionFlow<MqttSubAck> flow) {
 
-        queued.offer(new MqttSubscribeWithFlow(subscribe, flow));
-        execute(flow.getEventLoop());
-    }
-
-    public void subscribe(final @NotNull MqttSubscribe subscribe, final @NotNull MqttSubscriptionFlow flow) {
         queued.offer(new MqttSubscribeWithFlow(subscribe, flow));
         execute(flow.getEventLoop());
     }
@@ -128,18 +123,18 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
         if (ctx == null) {
             return;
         }
-        int newPending = 0;
+        int removedFromQueue = 0;
         while (true) {
             if (pending.size() == MAX_SUB_PENDING) {
-                queuedCounter.getAndAdd(-newPending);
+                queuedCounter.getAndAdd(-removedFromQueue);
                 return;
             }
             final MqttSubOrUnsubWithFlow subOrUnsubWithFlow = queued.poll();
             if (subOrUnsubWithFlow == null) {
-                if (queuedCounter.addAndGet(-newPending) == 0) {
+                if (queuedCounter.addAndGet(-removedFromQueue) == 0) {
                     return;
                 } else {
-                    newPending = 0;
+                    removedFromQueue = 0;
                     continue;
                 }
             }
@@ -149,7 +144,7 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
                 return;
             }
             writeSubscribeOrUnsubscribe(ctx, subOrUnsubWithFlow, packetIdentifier);
-            newPending++;
+            removedFromQueue++;
         }
     }
 
@@ -168,10 +163,20 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
             final @NotNull ChannelHandlerContext ctx, final @NotNull MqttSubscribeWithFlow subscribeWithFlow,
             final int packetIdentifier) {
 
+        final MqttSubscriptionFlow<MqttSubAck> flow = subscribeWithFlow.getFlow();
+        if (!flow.init()) {
+            return;
+        }
+
         final int subscriptionIdentifier = (subscriptionIdentifiersAvailable) ? subscriptionIdentifiers.getId() :
                 MqttStatefulSubscribe.DEFAULT_NO_SUBSCRIPTION_IDENTIFIER;
+        final MqttStatefulSubscribe statefulSubscribe =
+                subscribeWithFlow.getSubscribe().createStateful(packetIdentifier, subscriptionIdentifier);
+
+        incomingPublishFlows.subscribe(statefulSubscribe, subscribeWithFlow.getPublishFlow());
+
         final MqttSubscribeWithFlow.Stateful statefulSubscribeWithFlow =
-                subscribeWithFlow.createStateful(packetIdentifier, subscriptionIdentifier);
+                new MqttSubscribeWithFlow.Stateful(statefulSubscribe, flow);
         pending.put(packetIdentifier, statefulSubscribeWithFlow);
         ctx.writeAndFlush(statefulSubscribeWithFlow.getSubscribe(), ctx.voidPromise());
     }
@@ -180,8 +185,13 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
             final @NotNull ChannelHandlerContext ctx, final @NotNull MqttUnsubscribeWithFlow unsubscribeWithFlow,
             final int packetIdentifier) {
 
-        final MqttUnsubscribeWithFlow.Stateful statefulUnsubscribeWithFlow =
-                unsubscribeWithFlow.createStateful(packetIdentifier);
+        final MqttSubOrUnsubAckFlow<MqttUnsubAck> flow = unsubscribeWithFlow.getFlow();
+        if (!flow.init()) {
+            return;
+        }
+
+        final MqttUnsubscribeWithFlow.Stateful statefulUnsubscribeWithFlow = new MqttUnsubscribeWithFlow.Stateful(
+                unsubscribeWithFlow.getUnsubscribe().createStateful(packetIdentifier), flow);
         pending.put(packetIdentifier, statefulUnsubscribeWithFlow);
         ctx.writeAndFlush(statefulUnsubscribeWithFlow.getUnsubscribe(), ctx.voidPromise());
     }
@@ -214,37 +224,31 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
         final MqttSubscribeWithFlow.Stateful statefulSubscribeWithFlow =
                 (MqttSubscribeWithFlow.Stateful) statefulSubOrUnsubWithFlow;
         final MqttStatefulSubscribe subscribe = statefulSubscribeWithFlow.getSubscribe();
-        final SingleFlow<MqttSubAck> subAckFlow = statefulSubscribeWithFlow.getAckFlow();
-        final int subscriptionCount = subscribe.stateless().getSubscriptions().size();
-        final ReasonCodesState reasonCodesState = validateReasonCodes(subscriptionCount, subAck.getReasonCodes());
+        final MqttSubscriptionFlow<MqttSubAck> flow = statefulSubscribeWithFlow.getFlow();
 
-        if (reasonCodesState == ReasonCodesState.AT_LEAST_ONE_SUCCESSFUL) {
-            if (!subAckFlow.isCancelled()) {
-                subAckFlow.onSuccess(subAck);
+        final ImmutableList<Mqtt5SubAckReasonCode> reasonCodes = subAck.getReasonCodes();
+        final boolean countNotMatching = subscribe.stateless().getSubscriptions().size() != reasonCodes.size();
+        final boolean allErrors = MqttCommonReasonCode.allErrors(subAck.getReasonCodes());
+
+        incomingPublishFlows.subAck(subscribe, subAck, statefulSubscribeWithFlow.getPublishFlow());
+
+        if (!(countNotMatching || allErrors)) {
+            if (!flow.isCancelled()) {
+                flow.onSuccess(subAck);
             } else {
-                LOGGER.warn("Subscribe was successful but the SubAckFlow has been cancelled");
+                LOGGER.warn("Subscribe was successful but the SubAck flow has been cancelled");
             }
-            MqttSubscriptionFlow subscriptionFlow = statefulSubscribeWithFlow.getSubscriptionFlow();
-            if ((subscriptionFlow != null) && subscriptionFlow.isCancelled()) {
-                subscriptionFlow = null;
-            }
-            subscriptionFlows.subscribe(subscribe, subAck, subscriptionFlow);
         } else {
             final String errorMessage;
-            switch (reasonCodesState) {
-                case COUNT_NOT_MATCHING:
-                    errorMessage = "Count of Reason Codes in SUBACK does not match count of subscriptions in SUBSCRIBE";
-                    break;
-                case ALL_ERRORS:
-                    errorMessage = "SUBACK contains only Error Codes";
-                    break;
-                default:
-                    errorMessage = "Unknown error";
+            if (countNotMatching) {
+                errorMessage = "Count of Reason Codes in SUBACK does not match count of subscriptions in SUBSCRIBE";
+            } else { // allErrors
+                errorMessage = "SUBACK contains only Error Codes";
             }
-            if (!subAckFlow.isCancelled()) {
-                subAckFlow.onError(new Mqtt5SubAckException(subAck, errorMessage));
+            if (!flow.isCancelled()) {
+                flow.onError(new Mqtt5SubAckException(subAck, errorMessage));
             } else {
-                LOGGER.warn(errorMessage + " but the SubAckFlow has been cancelled");
+                LOGGER.warn(errorMessage + " but the SubAck flow has been cancelled");
             }
         }
 
@@ -268,34 +272,32 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
         final MqttUnsubscribeWithFlow.Stateful statefulUnsubscribeWithFlow =
                 (MqttUnsubscribeWithFlow.Stateful) statefulSubOrUnsubWithFlow;
         final MqttStatefulUnsubscribe unsubscribe = statefulUnsubscribeWithFlow.getUnsubscribe();
-        final SingleFlow<MqttUnsubAck> unsubAckFlow = statefulUnsubscribeWithFlow.getAckFlow();
-        final int topicFilterCount = unsubscribe.stateless().getTopicFilters().size();
-        final ReasonCodesState reasonCodesState = validateReasonCodes(topicFilterCount, unsubAck.getReasonCodes());
+        final MqttSubOrUnsubAckFlow<MqttUnsubAck> flow = statefulUnsubscribeWithFlow.getFlow();
 
-        if (reasonCodesState == ReasonCodesState.AT_LEAST_ONE_SUCCESSFUL) {
-            if (!unsubAckFlow.isCancelled()) {
-                unsubAckFlow.onSuccess(unsubAck);
+        final ImmutableList<Mqtt5UnsubAckReasonCode> reasonCodes = unsubAck.getReasonCodes();
+        final boolean countNotMatching = unsubscribe.stateless().getTopicFilters().size() != reasonCodes.size();
+        final boolean allErrors = MqttCommonReasonCode.allErrors(unsubAck.getReasonCodes());
+
+        if ((reasonCodes == Mqtt3UnsubAckView.REASON_CODES_ALL_SUCCESS) || !(countNotMatching || allErrors)) {
+
+            incomingPublishFlows.unsubscribe(unsubscribe, unsubAck);
+
+            if (!flow.isCancelled()) {
+                flow.onSuccess(unsubAck);
             } else {
-                LOGGER.warn("Unsubscribe was successful but the UnsubAckFlow has been cancelled");
+                LOGGER.warn("Unsubscribe was successful but the UnsubAck flow has been cancelled");
             }
-            subscriptionFlows.unsubscribe(unsubscribe, unsubAck);
         } else {
             final String errorMessage;
-            switch (reasonCodesState) {
-                case COUNT_NOT_MATCHING:
-                    errorMessage =
-                            "Count of Reason Codes in UNSUBACK does not match count of Topic Filters in UNSUBSCRIBE";
-                    break;
-                case ALL_ERRORS:
-                    errorMessage = "UNSUBACK contains only Error Codes";
-                    break;
-                default:
-                    errorMessage = "Unknown error";
+            if (countNotMatching) {
+                errorMessage = "Count of Reason Codes in UNSUBACK does not match count of Topic Filters in UNSUBSCRIBE";
+            } else { // allErrors
+                errorMessage = "UNSUBACK contains only Error Codes";
             }
-            if (!unsubAckFlow.isCancelled()) {
-                unsubAckFlow.onError(new Mqtt5UnsubAckException(unsubAck, errorMessage));
+            if (!flow.isCancelled()) {
+                flow.onError(new Mqtt5UnsubAckException(unsubAck, errorMessage));
             } else {
-                LOGGER.warn(errorMessage + " but the UnsubAckFlow has been cancelled");
+                LOGGER.warn(errorMessage + " but the UnsubAck flow has been cancelled");
             }
         }
 
@@ -317,7 +319,7 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
         super.onSessionEnd(cause);
 
         pending.forEach((packetIdentifier, statefulSubOrUnsubWithFlow) -> {
-            statefulSubOrUnsubWithFlow.getAckFlow().onError(cause);
+            statefulSubOrUnsubWithFlow.getFlow().onError(cause);
             return true;
         });
         pending.clear();
@@ -337,31 +339,10 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
                     continue;
                 }
             }
-            subOrUnsubWithFlow.getAckFlow().onError(cause);
+            if (subOrUnsubWithFlow.getFlow().init()) {
+                subOrUnsubWithFlow.getFlow().onError(cause);
+            }
             polled++;
         }
-    }
-
-    private enum ReasonCodesState {
-        AT_LEAST_ONE_SUCCESSFUL,
-        COUNT_NOT_MATCHING,
-        ALL_ERRORS
-    }
-
-    private static @NotNull ReasonCodesState validateReasonCodes(
-            final int count, final @NotNull ImmutableList<? extends Mqtt5ReasonCode> reasonCodes) {
-
-        if (reasonCodes == Mqtt3UnsubAckView.REASON_CODES_ALL_SUCCESS) {
-            return ReasonCodesState.AT_LEAST_ONE_SUCCESSFUL;
-        }
-        if (reasonCodes.size() != count) {
-            return ReasonCodesState.COUNT_NOT_MATCHING;
-        }
-        for (final Mqtt5ReasonCode reasonCode : reasonCodes) {
-            if (!reasonCode.isError()) {
-                return ReasonCodesState.AT_LEAST_ONE_SUCCESSFUL;
-            }
-        }
-        return ReasonCodesState.ALL_ERRORS;
     }
 }

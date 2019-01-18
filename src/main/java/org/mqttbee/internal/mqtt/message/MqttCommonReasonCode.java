@@ -17,6 +17,8 @@
 
 package org.mqttbee.internal.mqtt.message;
 
+import org.jetbrains.annotations.NotNull;
+import org.mqttbee.internal.util.collections.ImmutableList;
 import org.mqttbee.mqtt.mqtt5.message.Mqtt5ReasonCode;
 
 /**
@@ -64,4 +66,13 @@ public enum MqttCommonReasonCode implements Mqtt5ReasonCode {
         return code;
     }
 
+    public static boolean allErrors(final @NotNull ImmutableList<? extends Mqtt5ReasonCode> reasonCodes) {
+        //noinspection ForLoopReplaceableByForEach
+        for (int i = 0; i < reasonCodes.size(); i++) {
+            if (!reasonCodes.get(i).isError()) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

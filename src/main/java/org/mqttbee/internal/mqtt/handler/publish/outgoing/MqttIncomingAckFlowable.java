@@ -49,7 +49,7 @@ public class MqttIncomingAckFlowable extends Flowable<Mqtt5PublishResult> {
             final MqttOutgoingQosHandler outgoingQosHandler = clientComponent.outgoingQosHandler();
             final MqttPublishFlowables publishFlowables = outgoingQosHandler.getPublishFlowables();
 
-            final MqttIncomingAckFlow flow = new MqttIncomingAckFlow(subscriber, outgoingQosHandler);
+            final MqttIncomingAckFlow flow = new MqttIncomingAckFlow(subscriber, clientConfig, outgoingQosHandler);
             subscriber.onSubscribe(flow);
             publishFlowables.add(new MqttPublishFlowableAckLink(publishFlowable, flow));
         } else {

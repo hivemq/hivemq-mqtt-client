@@ -43,9 +43,9 @@ import static org.mqttbee.internal.mqtt.message.subscribe.MqttStatefulSubscribe.
 @NotThreadSafe
 public class MqttIncomingPublishFlowsWithId extends MqttIncomingPublishFlows {
 
-    private final @NotNull HashMap<Integer, MqttSubscriptionFlow> flowsWithIdsMap = new HashMap<>();
+    private final @NotNull HashMap<Integer, MqttSubscribedPublishFlow> flowsWithIdsMap = new HashMap<>();
     private final @NotNull MqttSubscriptionFlows flowsWithIds;
-    private final @NotNull Consumer<MqttSubscriptionFlow> flowWithIdUnsubscribedCallback = this::unsubscribed;
+    private final @NotNull Consumer<MqttSubscribedPublishFlow> flowWithIdUnsubscribedCallback = this::unsubscribed;
 
     @Inject
     MqttIncomingPublishFlowsWithId(
@@ -57,8 +57,7 @@ public class MqttIncomingPublishFlowsWithId extends MqttIncomingPublishFlows {
 
     @Override
     public void subscribe(
-            final @NotNull MqttStatefulSubscribe subscribe, final @NotNull MqttSubAck subAck,
-            final @Nullable MqttSubscriptionFlow flow) {
+            final @NotNull MqttStatefulSubscribe subscribe, final @Nullable MqttSubscribedPublishFlow flow) {
 
         if (flow != null) {
             final int subscriptionIdentifier = subscribe.getSubscriptionIdentifier();
@@ -67,15 +66,38 @@ public class MqttIncomingPublishFlowsWithId extends MqttIncomingPublishFlows {
                 flow.setSubscriptionIdentifier(subscriptionIdentifier);
             }
         }
-        super.subscribe(subscribe, subAck, flow);
+        super.subscribe(subscribe, flow);
     }
 
     @Override
-    void subscribe(final @NotNull MqttTopicFilterImpl topicFilter, final @Nullable MqttSubscriptionFlow flow) {
+    void subscribe(final @NotNull MqttTopicFilterImpl topicFilter, final @Nullable MqttSubscribedPublishFlow flow) {
         if ((flow != null) && (flow.getSubscriptionIdentifier() != DEFAULT_NO_SUBSCRIPTION_IDENTIFIER)) {
             flowsWithIds.subscribe(topicFilter, flow);
         } else {
             super.subscribe(topicFilter, flow);
+        }
+    }
+
+    @Override
+    public void subAck(
+            final @NotNull MqttStatefulSubscribe subscribe, final @NotNull MqttSubAck subAck,
+            final @Nullable MqttSubscribedPublishFlow flow) {
+
+        super.subAck(subscribe, subAck, flow);
+        if (flow != null) {
+            final int subscriptionIdentifier = subscribe.getSubscriptionIdentifier();
+            if ((subscriptionIdentifier != DEFAULT_NO_SUBSCRIPTION_IDENTIFIER) && flow.getTopicFilters().isEmpty()) {
+                flowsWithIdsMap.remove(subscriptionIdentifier);
+            }
+        }
+    }
+
+    @Override
+    void remove(final @NotNull MqttTopicFilterImpl topicFilter, final @Nullable MqttSubscribedPublishFlow flow) {
+        if ((flow != null) && (flow.getSubscriptionIdentifier() != DEFAULT_NO_SUBSCRIPTION_IDENTIFIER)) {
+            flowsWithIds.remove(topicFilter, flow);
+        } else {
+            super.remove(topicFilter, flow);
         }
     }
 
@@ -85,7 +107,7 @@ public class MqttIncomingPublishFlowsWithId extends MqttIncomingPublishFlows {
         super.unsubscribe(topicFilter);
     }
 
-    private void unsubscribed(final @NotNull MqttSubscriptionFlow flow) {
+    private void unsubscribed(final @NotNull MqttSubscribedPublishFlow flow) {
         final int subscriptionIdentifier = flow.getSubscriptionIdentifier();
         if (subscriptionIdentifier != DEFAULT_NO_SUBSCRIPTION_IDENTIFIER) {
             flowsWithIdsMap.remove(subscriptionIdentifier);
@@ -93,7 +115,7 @@ public class MqttIncomingPublishFlowsWithId extends MqttIncomingPublishFlows {
     }
 
     @Override
-    void cancel(final @NotNull MqttSubscriptionFlow flow) {
+    void cancel(final @NotNull MqttSubscribedPublishFlow flow) {
         final int subscriptionIdentifier = flow.getSubscriptionIdentifier();
         if (subscriptionIdentifier != DEFAULT_NO_SUBSCRIPTION_IDENTIFIER) {
             flowsWithIdsMap.remove(subscriptionIdentifier);
@@ -112,7 +134,7 @@ public class MqttIncomingPublishFlowsWithId extends MqttIncomingPublishFlows {
         if (!subscriptionIdentifiers.isEmpty()) {
             for (int i = 0; i < subscriptionIdentifiers.size(); i++) {
                 final int subscriptionIdentifier = subscriptionIdentifiers.get(i);
-                final MqttSubscriptionFlow flow = flowsWithIdsMap.get(subscriptionIdentifier);
+                final MqttSubscribedPublishFlow flow = flowsWithIdsMap.get(subscriptionIdentifier);
                 if (flow != null) {
                     matchingFlows.add(flow);
                 }

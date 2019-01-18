@@ -19,6 +19,7 @@ package org.mqttbee.internal.mqtt.handler.publish.incoming;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mqttbee.internal.mqtt.MqttClientConfig;
 import org.mqttbee.internal.util.collections.HandleList;
 import org.mqttbee.mqtt.MqttGlobalPublishFilter;
 import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5Publish;
@@ -33,10 +34,10 @@ class MqttGlobalIncomingPublishFlow extends MqttIncomingPublishFlow {
     private @Nullable HandleList.Handle<MqttGlobalIncomingPublishFlow> handle;
 
     MqttGlobalIncomingPublishFlow(
-            final @NotNull Subscriber<? super Mqtt5Publish> subscriber,
+            final @NotNull Subscriber<? super Mqtt5Publish> subscriber, final @NotNull MqttClientConfig clientConfig,
             final @NotNull MqttIncomingQosHandler incomingQosHandler, final @NotNull MqttGlobalPublishFilter filter) {
 
-        super(subscriber, incomingQosHandler);
+        super(subscriber, clientConfig, incomingQosHandler);
         this.filter = filter;
     }
 
