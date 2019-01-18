@@ -21,6 +21,9 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.internal.util.AsyncRuntimeException;
 
 /**
+ * Exception that is used if an operation is called on a {@link org.mqttbee.mqtt.MqttClient MqttClient} that is not
+ * possible in its current state, e.g. a client can not publish if it is not connected.
+ *
  * @author Silvio Giebl
  */
 public class MqttClientStateException extends AsyncRuntimeException {

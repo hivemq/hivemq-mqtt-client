@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Optional;
 
 /**
+ * Configuration for the tls transport to use by {@link MqttClient MQTT clients}.
+ *
  * @author Christoph Schäbel
  * @author Silvio Giebl
  */

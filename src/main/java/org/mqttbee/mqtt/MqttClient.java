@@ -35,12 +35,17 @@ public interface MqttClient {
     int DEFAULT_SERVER_PORT_WEBSOCKET = 80;
     int DEFAULT_SERVER_PORT_WEBSOCKET_SSL = 443;
 
+    /**
+     * Creates a builder for a MQTT client.
+     *
+     * @return the created builder for a MQTT client.
+     */
     static @NotNull MqttClientBuilder builder() {
         return new MqttRxClientBuilderBase.Choose();
     }
 
     /**
-     * @return the client specific data.
+     * @return the configuration of this client.
      */
     @NotNull MqttClientConfig getConfig();
 }

@@ -20,13 +20,13 @@ package org.mqttbee.mqtt.mqtt5.message.connect;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.internal.mqtt.message.connect.MqttConnectBuilder;
+import org.mqttbee.internal.util.UnsignedDataTypes;
 import org.mqttbee.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
 import org.mqttbee.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.mqtt.mqtt5.message.Mqtt5Message;
 import org.mqttbee.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt.mqtt5.message.auth.Mqtt5SimpleAuth;
 import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
-import org.mqttbee.util.UnsignedDataTypes;
 
 import java.util.Optional;
 

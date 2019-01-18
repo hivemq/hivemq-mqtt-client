@@ -21,7 +21,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.internal.util.collections.ImmutableList;
-import org.mqttbee.util.UnsignedDataTypes;
 
 /**
  * @author Silvio Giebl

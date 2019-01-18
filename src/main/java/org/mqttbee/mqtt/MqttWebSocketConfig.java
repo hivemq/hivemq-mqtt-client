@@ -21,6 +21,8 @@ import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.internal.mqtt.MqttWebSocketConfigImplBuilder;
 
 /**
+ * Configuration for the websocket transport to use by {@link MqttClient MQTT clients}.
+ *
  * @author Christian Hoff
  * @author Silvio Giebl
  */

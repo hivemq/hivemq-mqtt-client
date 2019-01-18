@@ -21,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.internal.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.internal.mqtt.message.connect.MqttConnectRestrictionsBuilder;
+import org.mqttbee.internal.util.UnsignedDataTypes;
 
 /**
  * Restrictions from the client in the MQTT 5 CONNECT packet.
@@ -31,7 +32,7 @@ public interface Mqtt5ConnectRestrictions {
     /**
      * The default maximum amount of not acknowledged publishes with QoS 1 or 2 the client accepts concurrently.
      */
-    int DEFAULT_RECEIVE_MAXIMUM = 65_535;
+    int DEFAULT_RECEIVE_MAXIMUM = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE;
     /**
      * The default maximum packet size the client accepts from the server which indicates that the packet size is not
      * limited beyond the restrictions of the encoding.

@@ -32,6 +32,9 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 
 /**
+ * Util for creating {@link TrustManagerFactory TrustManagerFactories} and {@link KeyManagerFactory
+ * KeyManagerFactories}.
+ *
  * @author Christoph Schäbel
  */
 public class KeyStoreUtil {
@@ -83,5 +86,4 @@ public class KeyStoreUtil {
             throw new SSLException("Not able to read certificate from KeyStore '" + keyStoreFile.getAbsolutePath(), e3);
         }
     }
-
 }

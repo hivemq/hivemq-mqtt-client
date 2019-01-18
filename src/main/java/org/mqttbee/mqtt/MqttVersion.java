@@ -18,10 +18,18 @@
 package org.mqttbee.mqtt;
 
 /**
+ * Available MQTT versions of {@link MqttClient MQTT clients}.
+ *
  * @author Silvio Giebl
  */
 public enum MqttVersion {
 
+    /**
+     * MQTT Version 3.1.1
+     */
     MQTT_3_1_1,
+    /**
+     * MQTT version 5.0
+     */
     MQTT_5_0
 }
