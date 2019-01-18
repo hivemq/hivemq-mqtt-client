@@ -25,17 +25,13 @@ import org.jetbrains.annotations.NotNull;
 public class ByteArray {
 
     protected final @NotNull byte[] array;
-    protected int start;
-    protected int end;
 
-    public ByteArray(final @NotNull byte[] array, final int start, final int end) {
+    public ByteArray(final @NotNull byte[] array) {
         this.array = array;
-        this.start = start;
-        this.end = end;
     }
 
     public int length() {
-        return end - start;
+        return getEnd() - getStart();
     }
 
     @Override
@@ -46,12 +42,42 @@ public class ByteArray {
         if (!(o instanceof ByteArray)) {
             return false;
         }
-        final ByteArray byteArray = (ByteArray) o;
-        return ByteArrayUtil.equals(array, start, end, byteArray.array, byteArray.start, byteArray.end);
+        final ByteArray that = (ByteArray) o;
+        return ByteArrayUtil.equals(array, getStart(), getEnd(), that.array, that.getStart(), that.getEnd());
     }
 
     @Override
     public int hashCode() {
-        return ByteArrayUtil.hashCode(array, start, end);
+        return ByteArrayUtil.hashCode(array, getStart(), getEnd());
+    }
+
+    protected int getStart() {
+        return 0;
+    }
+
+    protected int getEnd() {
+        return array.length;
+    }
+
+    public static class Range extends ByteArray {
+
+        protected int start;
+        protected int end;
+
+        public Range(final @NotNull byte[] array, final int start, final int end) {
+            super(array);
+            this.start = start;
+            this.end = end;
+        }
+
+        @Override
+        protected int getStart() {
+            return start;
+        }
+
+        @Override
+        protected int getEnd() {
+            return end;
+        }
     }
 }

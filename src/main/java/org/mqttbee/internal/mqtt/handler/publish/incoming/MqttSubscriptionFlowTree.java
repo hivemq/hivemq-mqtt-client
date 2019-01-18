@@ -37,7 +37,7 @@ import java.util.function.Consumer;
 @NotThreadSafe
 public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
 
-    private static final @NotNull ByteArray ROOT_LEVEL = new ByteArray(new byte[0], 0, 0);
+    private static final @NotNull ByteArray ROOT_LEVEL = new ByteArray(new byte[0]);
 
     private @Nullable TopicTreeNode rootNode;
 
@@ -153,13 +153,10 @@ public class MqttSubscriptionFlowTree implements MqttSubscriptionFlows {
                     node = next.get(level);
                 }
                 if (node == null) {
-                    final ByteArray levelCopy;
                     if (level.isSingleLevelWildcard()) {
                         hasSingleLevelSubscription = true;
-                        levelCopy = MqttTopicLevel.SINGLE_LEVEL_WILDCARD;
-                    } else {
-                        levelCopy = level.copy();
                     }
+                    final ByteArray levelCopy = level.copy();
                     next.put(levelCopy, new TopicTreeNode(levelCopy, level.next(), entry));
                 } else {
                     node.subscribe(level.next(), entry);

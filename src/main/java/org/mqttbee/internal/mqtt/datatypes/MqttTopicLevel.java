@@ -29,10 +29,10 @@ import java.util.Arrays;
 /**
  * @author Silvio Giebl
  */
-public class MqttTopicLevel extends ByteArray {
+public class MqttTopicLevel extends ByteArray.Range {
 
-    public static final @NotNull MqttTopicLevel SINGLE_LEVEL_WILDCARD =
-            new MqttTopicLevel(new byte[]{MqttTopicFilter.SINGLE_LEVEL_WILDCARD}, 0, 1);
+    public static final @NotNull ByteArray SINGLE_LEVEL_WILDCARD =
+            new ByteArray(new byte[]{MqttTopicFilter.SINGLE_LEVEL_WILDCARD});
 
     public static @NotNull MqttTopicLevel root(final @NotNull MqttTopicImpl topic) {
         final byte[] binary = topic.toBinary();
@@ -66,8 +66,10 @@ public class MqttTopicLevel extends ByteArray {
     }
 
     public @NotNull ByteArray copy() {
-        final byte[] copy = Arrays.copyOfRange(array, start, end);
-        return new ByteArray(copy, 0, copy.length);
+        if (isSingleLevelWildcard()) {
+            return SINGLE_LEVEL_WILDCARD;
+        }
+        return new ByteArray(Arrays.copyOfRange(array, start, end));
     }
 
     public @NotNull MqttTopicLevel fork() {
@@ -81,5 +83,4 @@ public class MqttTopicLevel extends ByteArray {
     public boolean isMultiLevelWildcard() {
         return (length() == 1) && (array[start] == MqttTopicFilter.MULTI_LEVEL_WILDCARD);
     }
-
 }
