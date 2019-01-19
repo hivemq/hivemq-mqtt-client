@@ -63,7 +63,7 @@ public interface MqttTopicFilter extends MqttUtf8String {
     /**
      * Creates a builder for a Topic Filter.
      *
-     * @return the created builder for a Topic Filter.
+     * @return the created builder.
      */
     static @NotNull MqttTopicFilterBuilder builder() {
         return new MqttTopicFilterImplBuilder.Default();
@@ -117,7 +117,9 @@ public interface MqttTopicFilter extends MqttUtf8String {
     boolean matches(@NotNull MqttTopicFilter topicFilter);
 
     /**
-     * @return a builder for extending this Topic Filter.
+     * Creates a builder for extending this Topic Filter.
+     *
+     * @return the created builder.
      */
     @NotNull MqttTopicFilterBuilder.Complete extend();
 }

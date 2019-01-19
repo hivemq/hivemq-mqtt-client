@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 The MQTT Bee project
+ * Copyright 2019 The MQTT Bee project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,21 +15,22 @@
  *
  */
 
-package org.mqttbee.mqtt.mqtt3.message.unsubscribe.unsuback;
-
-import org.jetbrains.annotations.NotNull;
-import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.mqtt.mqtt3.message.Mqtt3Message;
-import org.mqttbee.mqtt.mqtt3.message.Mqtt3MessageType;
+package org.mqttbee.mqtt.mqtt3.message;
 
 /**
- * MQTT 3 UnsubAck message. This message is translated from and to a MQTT 3 UNSUBACK packet.
+ * Reason Code according to the MQTT 3 specification.
+ *
+ * @author Silvio Giebl
  */
-@DoNotImplement
-public interface Mqtt3UnsubAck extends Mqtt3Message {
+public interface Mqtt3ReturnCode {
 
-    @Override
-    default @NotNull Mqtt3MessageType getType() {
-        return Mqtt3MessageType.UNSUBACK;
-    }
+    /**
+     * @return the byte code of this Return Code.
+     */
+    int getCode();
+
+    /**
+     * @return whether this Return Code is an Error Code.
+     */
+    boolean isError();
 }

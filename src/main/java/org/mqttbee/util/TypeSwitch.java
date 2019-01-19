@@ -27,11 +27,12 @@ import java.util.function.Consumer;
  * <p>
  * Example:
  * <pre>
- * <code>Mqtt5MessageException e;
+ * {@code
+ * Mqtt5MessageException e;
  * TypeSwitch.when(e)
  *         .is(Mqtt5ConnAckException.class, c -> System.out.println(c.getMqttMessage().getReasonCode()))
  *         .is(Mqtt5DisconnectException.class, d -> System.out.println(d.getMqttMessage().getServerReference()));
- * </code>
+ * }
  * </pre>
  *
  * @param <T> the super type to switch over.

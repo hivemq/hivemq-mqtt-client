@@ -22,9 +22,6 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * MQTT message type according to the MQTT 3 specification.
- * <p>
- * See also <a href="http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html">the official MQTT 3.1.1
- * specification</a>.
  *
  * @author Silvio Giebl
  */
@@ -58,8 +55,8 @@ public enum Mqtt3MessageType {
      * Returns the MQTT message type belonging to the given byte code.
      *
      * @param code the byte code.
-     * @return the MQTT message type belonging to the given byte code or null if the byte code is not a valid MQTT 3
-     *         message type code.
+     * @return the MQTT message type belonging to the given byte code or <code>null</code> if the byte code is not a
+     *         valid MQTT message type.
      */
     public static @Nullable Mqtt3MessageType fromCode(final int code) {
         if (code < 1 || code > VALUES.length) {

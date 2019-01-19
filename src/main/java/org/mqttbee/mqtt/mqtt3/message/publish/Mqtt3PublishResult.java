@@ -23,13 +23,23 @@ import org.mqttbee.annotations.DoNotImplement;
 import java.util.Optional;
 
 /**
+ * Result for a {@link Mqtt3Publish MQTT 3 Publish message} sent by the client.
+ * <p>
+ * The result is provided if a Publish message is successfully delivered (sent or acknowledged respectively to its
+ * {@link org.mqttbee.mqtt.datatypes.MqttQos QoS} level).
+ *
  * @author Silvio Giebl
  */
 @DoNotImplement
 public interface Mqtt3PublishResult {
 
+    /**
+     * @return the Publish message this result is for.
+     */
     @NotNull Mqtt3Publish getPublish();
 
+    /**
+     * @return the optional error that is present if the Publish message was not successfully delivered.
+     */
     @NotNull Optional<Throwable> getError();
-
 }

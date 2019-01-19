@@ -25,11 +25,17 @@ package org.mqttbee.mqtt;
 public enum MqttVersion {
 
     /**
-     * MQTT Version 3.1.1
+     * MQTT Version 3.1.1.
+     * <p>
+     * See <a href="http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/mqtt-v3.1.1.html">the latest version of the MQTT 3.1.1
+     * specification</a>
      */
     MQTT_3_1_1,
     /**
-     * MQTT version 5.0
+     * MQTT version 5.0.
+     * <p>
+     * See <a href="http://docs.oasis-open.org/mqtt/mqtt/v5.0/mqtt-v5.0.html">the latest version of the MQTT 5.0
+     * specification</a>
      */
     MQTT_5_0
 }

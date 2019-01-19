@@ -64,7 +64,7 @@ public interface MqttSharedTopicFilter extends MqttTopicFilter {
      * Creates a builder for a Shared Topic Filter.
      *
      * @param shareName the string representation of the Share Name.
-     * @return the created builder for a Shared Topic Filter.
+     * @return the created builder.
      */
     static @NotNull MqttSharedTopicFilterBuilder builder(final @NotNull String shareName) {
         return new MqttTopicFilterImplBuilder.SharedDefault(shareName);
@@ -81,7 +81,9 @@ public interface MqttSharedTopicFilter extends MqttTopicFilter {
     @NotNull MqttTopicFilter getTopicFilter();
 
     /**
-     * @return a builder for extending this Shared Topic Filter.
+     * Creates a builder for extending this Shared Topic Filter.
+     *
+     * @return the created builder.
      */
     @NotNull MqttSharedTopicFilterBuilder.Complete extendShared();
 }

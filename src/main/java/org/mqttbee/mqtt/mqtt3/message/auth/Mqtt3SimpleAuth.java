@@ -26,11 +26,17 @@ import java.nio.ByteBuffer;
 import java.util.Optional;
 
 /**
- * Simple authentication and/or authorization related data in the MQTT 3 CONNECT packet.
+ * Simple authentication and/or authorization related data in a {@link org.mqttbee.mqtt.mqtt3.message.connect.Mqtt3Connect
+ * MQTT 3 Connect message}.
  */
 @DoNotImplement
 public interface Mqtt3SimpleAuth {
 
+    /**
+     * Creates a builder for simple authentication and/or authorization related data.
+     *
+     * @return the created builder.
+     */
     static @NotNull Mqtt3SimpleAuthBuilder builder() {
         return new Mqtt3SimpleAuthViewBuilder.Default();
     }

@@ -27,17 +27,23 @@ import org.mqttbee.mqtt.mqtt3.message.Mqtt3MessageType;
 import java.util.List;
 
 /**
- * MQTT 3 SUBSCRIBE packet.
+ * MQTT 3 Subscribe message. This message is translated from and to a MQTT 3 SUBSCRIBE packet.
  */
 @DoNotImplement
 public interface Mqtt3Subscribe extends Mqtt3Message {
 
+    /**
+     * Creates a builder for a Subscribe message.
+     *
+     * @return the created builder.
+     */
     static @NotNull Mqtt3SubscribeBuilder.Start builder() {
         return new Mqtt3SubscribeViewBuilder.Default();
     }
 
     /**
-     * @return the {@link Mqtt3Subscription}s of this SUBSCRIBE packet. The list contains at least one subscription.
+     * @return the {@link Mqtt3Subscription subscriptions} of this Subscribe message. The list contains at least one
+     *         subscription.
      */
     @Immutable @NotNull List<@NotNull ? extends Mqtt3Subscription> getSubscriptions();
 
@@ -46,5 +52,10 @@ public interface Mqtt3Subscribe extends Mqtt3Message {
         return Mqtt3MessageType.SUBSCRIBE;
     }
 
+    /**
+     * Creates a builder for extending this Subscribe message.
+     *
+     * @return the created builder.
+     */
     @NotNull Mqtt3SubscribeBuilder.Complete extend();
 }
