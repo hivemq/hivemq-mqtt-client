@@ -27,29 +27,73 @@ import org.mqttbee.mqtt.mqtt5.message.publish.pubrel.Mqtt5PubRel;
 import java.util.Optional;
 
 /**
+ * Result for a {@link Mqtt5Publish MQTT 5 Publish message} sent by the client.
+ * <p>
+ * The result is provided if a Publish message is successfully delivered (sent or acknowledged respectively to its
+ * {@link org.mqttbee.mqtt.datatypes.MqttQos QoS} level).
+ *
  * @author Silvio Giebl
  */
 @DoNotImplement
 public interface Mqtt5PublishResult {
 
+    /**
+     * @return the Publish message this result is for.
+     */
     @NotNull Mqtt5Publish getPublish();
 
+    /**
+     * @return the optional error that is present if the Publish message was not successfully delivered.
+     */
     @NotNull Optional<Throwable> getError();
 
+    /**
+     * Result for a {@link Mqtt5Publish MQTT 5 Publish message} with {@link org.mqttbee.mqtt.datatypes.MqttQos#AT_LEAST_ONCE
+     * QoS level 1} sent by the client.
+     * <p>
+     * This result additionally provides the {@link Mqtt5PubAck PubAck message} that acknowledged the Publish message.
+     */
     interface Mqtt5Qos1Result extends Mqtt5PublishResult {
 
+        /**
+         * @return the PubAck message that acknowledged the Publish message.
+         */
         @NotNull Mqtt5PubAck getPubAck();
     }
 
+    /**
+     * Result for a {@link Mqtt5Publish MQTT 5 Publish message} with {@link org.mqttbee.mqtt.datatypes.MqttQos#EXACTLY_ONCE
+     * QoS level 2} sent by the client.
+     * <p>
+     * This result additionally provides the {@link Mqtt5PubRec PubRec message} that acknowledged the Publish message.
+     */
     interface Mqtt5Qos2Result extends Mqtt5PublishResult {
 
+        /**
+         * @return the PubRec message that acknowledged the Publish message.
+         */
         @NotNull Mqtt5PubRec getPubRec();
     }
 
+    /**
+     * Result for a {@link Mqtt5Publish MQTT 5 Publish message} with {@link org.mqttbee.mqtt.datatypes.MqttQos#EXACTLY_ONCE
+     * QoS level 2} sent by the client.
+     * <p>
+     * This result additionally provides the {@link Mqtt5PubRec PubRec message}, {@link Mqtt5PubRel PubRel message} and
+     * {@link Mqtt5PubComp PubComp message} that acknowledged the Publish message.
+     * <p>
+     * By default just a {@link Mqtt5Qos2Result} is provided as a result for a Publish message with QoS level 2.
+     */
     interface Mqtt5Qos2CompleteResult extends Mqtt5Qos2Result {
 
+        /**
+         * @return the PubRel message that acknowledged the PubRec message.
+         */
         @NotNull Mqtt5PubRel getPubRel();
 
+        /**
+         * @return the PubComp message that acknowledged the PubRel message.
+         */
         @NotNull Mqtt5PubComp getPubComp();
     }
 }

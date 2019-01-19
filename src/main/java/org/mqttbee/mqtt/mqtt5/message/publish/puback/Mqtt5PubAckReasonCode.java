@@ -25,7 +25,7 @@ import org.mqttbee.mqtt.mqtt5.message.Mqtt5ReasonCode;
 import java.util.EnumSet;
 
 /**
- * MQTT Reason Codes that can be used in PUBACK packets according to the MQTT 5 specification.
+ * Reason Code of a {@link Mqtt5PubAck MQTT 5 PubAck message}.
  *
  * @author Silvio Giebl
  */
@@ -53,19 +53,17 @@ public enum Mqtt5PubAckReasonCode implements Mqtt5ReasonCode {
         this(reasonCode.getCode());
     }
 
-    /**
-     * @return the byte code of this PUBACK Reason Code.
-     */
+    @Override
     public int getCode() {
         return code;
     }
 
     /**
-     * Returns the PUBACK Reason Code belonging to the given byte code.
+     * Returns the PubAck Reason Code belonging to the given byte code.
      *
      * @param code the byte code.
-     * @return the PUBACK Reason Code belonging to the given byte code or null if the byte code is not a valid PUBACK
-     *         Reason Code code.
+     * @return the PubAck Reason Code belonging to the given byte code or <code>null</code> if the byte code is not a
+     *         valid PubAck Reason Code.
      */
     public static @Nullable Mqtt5PubAckReasonCode fromCode(final int code) {
         for (final Mqtt5PubAckReasonCode reasonCode : VALUES) {

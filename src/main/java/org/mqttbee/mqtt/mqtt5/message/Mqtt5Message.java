@@ -31,7 +31,5 @@ public interface Mqtt5Message {
     /**
      * @return the type of this MQTT message.
      */
-    @NotNull
-    Mqtt5MessageType getType();
-
+    @NotNull Mqtt5MessageType getType();
 }

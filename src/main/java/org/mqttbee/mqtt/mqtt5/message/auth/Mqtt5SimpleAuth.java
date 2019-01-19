@@ -26,11 +26,17 @@ import java.nio.ByteBuffer;
 import java.util.Optional;
 
 /**
- * Simple authentication and/or authorization related data in the MQTT 5 CONNECT packet.
+ * Simple authentication and/or authorization related data in the {@link org.mqttbee.mqtt.mqtt5.message.connect.Mqtt5Connect
+ * MQTT 5 Connect message}.
  */
 @DoNotImplement
 public interface Mqtt5SimpleAuth {
 
+    /**
+     * Creates a builder for simple authentication and/or authorization related data.
+     *
+     * @return the created builder.
+     */
     static @NotNull Mqtt5SimpleAuthBuilder builder() {
         return new MqttSimpleAuthBuilder.Default();
     }
@@ -44,5 +50,4 @@ public interface Mqtt5SimpleAuth {
      * @return the optional password.
      */
     @NotNull Optional<ByteBuffer> getPassword();
-
 }

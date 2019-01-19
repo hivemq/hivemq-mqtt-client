@@ -23,7 +23,7 @@ import org.mqttbee.internal.mqtt.message.MqttCommonReasonCode;
 import org.mqttbee.mqtt.mqtt5.message.Mqtt5ReasonCode;
 
 /**
- * MQTT Reason Codes that can be used in PUBCOMP packets according to the MQTT 5 specification.
+ * Reason Code of a {@link Mqtt5PubComp MQTT 5 PubComp message}.
  *
  * @author Silvio Giebl
  */
@@ -42,19 +42,17 @@ public enum Mqtt5PubCompReasonCode implements Mqtt5ReasonCode {
         this(reasonCode.getCode());
     }
 
-    /**
-     * @return the byte code of this PUBCOMP Reason Code.
-     */
+    @Override
     public int getCode() {
         return code;
     }
 
     /**
-     * Returns the AUTH Reason Code belonging to the given byte code.
+     * Returns the PubComp Reason Code belonging to the given byte code.
      *
      * @param code the byte code.
-     * @return the PUBCOMP Reason Code belonging to the given byte code or null if the byte code is not a valid PUBCOMP
-     *         Reason Code code.
+     * @return the PubComp Reason Code belonging to the given byte code or <code>null</code> if the byte code is not a
+     *         valid PubComp Reason Code.
      */
     public static @Nullable Mqtt5PubCompReasonCode fromCode(final int code) {
         if (code == SUCCESS.code) {

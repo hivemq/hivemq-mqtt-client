@@ -17,11 +17,14 @@
 
 package org.mqttbee.mqtt.mqtt3.message;
 
+import org.mqttbee.annotations.DoNotImplement;
+
 /**
- * Reason Code according to the MQTT 3 specification.
+ * Return Code according to the MQTT 3 specification.
  *
  * @author Silvio Giebl
  */
+@DoNotImplement
 public interface Mqtt3ReturnCode {
 
     /**

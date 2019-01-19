@@ -24,7 +24,7 @@ import org.mqttbee.internal.mqtt.message.connect.MqttConnectRestrictionsBuilder;
 import org.mqttbee.internal.util.UnsignedDataTypes;
 
 /**
- * Restrictions from the client in the MQTT 5 CONNECT packet.
+ * Restrictions from the client in a {@link Mqtt5Connect MQTT 5 Connect message}.
  */
 @DoNotImplement
 public interface Mqtt5ConnectRestrictions {
@@ -43,6 +43,11 @@ public interface Mqtt5ConnectRestrictions {
      */
     int DEFAULT_TOPIC_ALIAS_MAXIMUM = 0;
 
+    /**
+     * Creates a builder for Connect restrictions.
+     *
+     * @return the created builder.
+     */
     static @NotNull Mqtt5ConnectRestrictionsBuilder builder() {
         return new MqttConnectRestrictionsBuilder.Default();
     }
@@ -64,5 +69,4 @@ public interface Mqtt5ConnectRestrictions {
      *         #DEFAULT_TOPIC_ALIAS_MAXIMUM}.
      */
     int getTopicAliasMaximum();
-
 }

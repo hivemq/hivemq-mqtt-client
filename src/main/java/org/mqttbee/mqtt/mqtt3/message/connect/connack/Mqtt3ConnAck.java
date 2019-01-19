@@ -29,7 +29,7 @@ import org.mqttbee.mqtt.mqtt3.message.Mqtt3MessageType;
 public interface Mqtt3ConnAck extends Mqtt3Message {
 
     /**
-     * @return the {@link Mqtt3ConnAckReturnCode Return Code} of this ConnAck message.
+     * @return the Return Code of this ConnAck message.
      */
     @NotNull Mqtt3ConnAckReturnCode getReturnCode();
 

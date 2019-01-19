@@ -42,8 +42,8 @@ public interface Mqtt3Subscribe extends Mqtt3Message {
     }
 
     /**
-     * @return the {@link Mqtt3Subscription subscriptions} of this Subscribe message. The list contains at least one
-     *         subscription.
+     * @return the {@link Mqtt3Subscription Subscriptions} of this Subscribe message. The list contains at least one
+     *         Subscription.
      */
     @Immutable @NotNull List<@NotNull ? extends Mqtt3Subscription> getSubscriptions();
 

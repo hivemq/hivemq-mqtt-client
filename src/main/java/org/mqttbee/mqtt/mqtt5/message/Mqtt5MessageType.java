@@ -56,8 +56,8 @@ public enum Mqtt5MessageType {
      * Returns the MQTT message type belonging to the given byte code.
      *
      * @param code the byte code.
-     * @return the MQTT message type belonging to the given byte code or null if the byte code is not a valid MQTT
-     *         message type code.
+     * @return the MQTT message type belonging to the given byte code or <code>null</code> if the byte code is not a
+     *         valid MQTT message type.
      */
     public static @Nullable Mqtt5MessageType fromCode(final int code) {
         if (code < 1 || code > VALUES.length) {

@@ -26,46 +26,46 @@ import org.mqttbee.mqtt.mqtt5.message.publish.pubrel.Mqtt5PubRel;
 import org.mqttbee.mqtt.mqtt5.message.publish.pubrel.Mqtt5PubRelBuilder;
 
 /**
- * Interface for interceptors of the QoS 2 control flow of outgoing PUBLISH messages.
+ * Interface for interceptors of the QoS 2 control flow of outgoing Publish messages.
  *
  * @author Silvio Giebl
  */
 public interface Mqtt5OutgoingQos2Interceptor {
 
     /**
-     * Called when a server sent a PUBREC message for a PUBLISH with QoS 2.
+     * Called when a server sent a PubRec message for a Publish message with QoS 2.
      * <p>
      * This method must not block and just add some properties to the outgoing PubRel message.
      *
      * @param clientConfig  the config of the client.
-     * @param publish       the PUBLISH message with QoS 2 sent by the client.
-     * @param pubRec        the PUBREC message sent by the server.
-     * @param pubRelBuilder the builder for the outgoing PUBREL message.
+     * @param publish       the Publish message with QoS 2 sent by the client.
+     * @param pubRec        the PubRec message sent by the server.
+     * @param pubRelBuilder the builder for the outgoing PubRel message.
      */
     void onPubRec(
             @NotNull Mqtt5ClientConfig clientConfig, @NotNull Mqtt5Publish publish, @NotNull Mqtt5PubRec pubRec,
             @NotNull Mqtt5PubRelBuilder pubRelBuilder);
 
     /**
-     * Called when a server sent a PUBREC message for a PUBLISH with QoS 2 with an Error Code.
+     * Called when a server sent a PubRec message for a Publish message with QoS 2 with an Error Code.
      * <p>
      * This method must not block.
      *
      * @param clientConfig the config of the client.
-     * @param publish      the PUBLISH message with QoS 2 sent by the client.
-     * @param pubRec       the PUBREC message sent by the server.
+     * @param publish      the Publish message with QoS 2 sent by the client.
+     * @param pubRec       the PubRec message sent by the server.
      */
     void onPubRecError(
             @NotNull Mqtt5ClientConfig clientConfig, @NotNull Mqtt5Publish publish, @NotNull Mqtt5PubRec pubRec);
 
     /**
-     * Called when a server sent a PUBCOMP message for a PUBLISH with QoS 2.
+     * Called when a server sent a PubComp message for a Publish message with QoS 2.
      * <p>
      * This method must not block.
      *
      * @param clientConfig the config of the client.
-     * @param pubRel       the PUBREL message sent by the client.
-     * @param pubComp      the PUBCOMP message sent by the server.
+     * @param pubRel       the PubRel message sent by the client.
+     * @param pubComp      the PubComp message sent by the server.
      */
     void onPubComp(@NotNull Mqtt5ClientConfig clientConfig, @NotNull Mqtt5PubRel pubRel, @NotNull Mqtt5PubComp pubComp);
 }

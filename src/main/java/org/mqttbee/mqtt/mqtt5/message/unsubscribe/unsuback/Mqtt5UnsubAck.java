@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * MQTT 5 UNSUBACK packet.
+ * MQTT 5 UnsubAck message. This message is translated from and to a MQTT 5 UNSUBACK packet.
  *
  * @author Silvio Giebl
  */
@@ -37,18 +37,18 @@ import java.util.Optional;
 public interface Mqtt5UnsubAck extends Mqtt5Message {
 
     /**
-     * @return the reason codes of this UNSUBACK packet, each belonging to a topic filter in the corresponding
-     *         UNSUBSCRIBE packet in the same order.
+     * @return the Reason Codes of this UnsubAck message, each belonging to a Topic Filter in the corresponding {@link
+     *         org.mqttbee.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe Unsubscribe message} in the same order.
      */
     @Immutable @NotNull List<@NotNull Mqtt5UnsubAckReasonCode> getReasonCodes();
 
     /**
-     * @return the optional reason string of this UNSUBACK packet.
+     * @return the optional reason string of this UnsubAck message.
      */
     @NotNull Optional<MqttUtf8String> getReasonString();
 
     /**
-     * @return the optional user properties of this UNSUBACK packet.
+     * @return the optional user properties of this UnsubAck message.
      */
     @NotNull Mqtt5UserProperties getUserProperties();
 

@@ -28,24 +28,30 @@ import org.mqttbee.mqtt.mqtt5.message.Mqtt5MessageType;
 import java.util.List;
 
 /**
- * MQTT 5 SUBSCRIBE packet.
+ * MQTT 5 Subscribe message. This message is translated from and to a MQTT 5 SUBSCRIBE packet.
  *
  * @author Silvio Giebl
  */
 @DoNotImplement
 public interface Mqtt5Subscribe extends Mqtt5Message {
 
+    /**
+     * Creates a builder for a Subscribe message.
+     *
+     * @return the created builder.
+     */
     static @NotNull Mqtt5SubscribeBuilder.Start builder() {
         return new MqttSubscribeBuilder.Default();
     }
 
     /**
-     * @return the {@link Mqtt5Subscription}s of this SUBSCRIBE packet. The list contains at least one subscription.
+     * @return the {@link Mqtt5Subscription Subscriptions} of this Subscribe message. The list contains at least one
+     *         Subscription.
      */
     @Immutable @NotNull List<@NotNull ? extends Mqtt5Subscription> getSubscriptions();
 
     /**
-     * @return the optional user properties of this SUBSCRIBE packet.
+     * @return the optional user properties of this Subscribe message.
      */
     @NotNull Mqtt5UserProperties getUserProperties();
 
@@ -54,5 +60,10 @@ public interface Mqtt5Subscribe extends Mqtt5Message {
         return Mqtt5MessageType.SUBSCRIBE;
     }
 
+    /**
+     * Creates a builder for extending this Subscribe message.
+     *
+     * @return the created builder.
+     */
     @NotNull Mqtt5SubscribeBuilder.Complete extend();
 }

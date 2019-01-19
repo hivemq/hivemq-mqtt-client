@@ -31,7 +31,7 @@ import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
 import java.util.Optional;
 
 /**
- * MQTT 5 CONNECT packet.
+ * MQTT 5 Connect message. This message is translated from and to a MQTT 5 CONNECT packet.
  *
  * @author Silvio Giebl
  */
@@ -46,6 +46,11 @@ public interface Mqtt5Connect extends Mqtt5Message {
     boolean DEFAULT_RESPONSE_INFORMATION_REQUESTED = false;
     boolean DEFAULT_PROBLEM_INFORMATION_REQUESTED = true;
 
+    /**
+     * Creates a builder for a Connect message.
+     *
+     * @return the created builder.
+     */
     static @NotNull Mqtt5ConnectBuilder builder() {
         return new MqttConnectBuilder.Default();
     }
@@ -84,22 +89,22 @@ public interface Mqtt5Connect extends Mqtt5Message {
     @NotNull Mqtt5ConnectRestrictions getRestrictions();
 
     /**
-     * @return the optional simple authentication and/or authorization related data of this CONNECT packet.
+     * @return the optional simple authentication and/or authorization related data of this Connect message.
      */
     @NotNull Optional<Mqtt5SimpleAuth> getSimpleAuth();
 
     /**
-     * @return the optional enhanced authentication and/or authorization provider of this CONNECT packet.
+     * @return the optional enhanced authentication and/or authorization provider of this Connect message.
      */
     @NotNull Optional<Mqtt5EnhancedAuthProvider> getEnhancedAuthProvider();
 
     /**
-     * @return the optional Will Publish of this CONNECT packet.
+     * @return the optional Will Publish of this Connect message.
      */
     @NotNull Optional<Mqtt5WillPublish> getWillPublish();
 
     /**
-     * @return the optional user properties of this CONNECT packet.
+     * @return the optional user properties of this Connect message.
      */
     @NotNull Mqtt5UserProperties getUserProperties();
 
@@ -108,5 +113,10 @@ public interface Mqtt5Connect extends Mqtt5Message {
         return Mqtt5MessageType.CONNECT;
     }
 
+    /**
+     * Creates a builder for extending this Connect message.
+     *
+     * @return the created builder.
+     */
     @NotNull Mqtt5ConnectBuilder extend();
 }

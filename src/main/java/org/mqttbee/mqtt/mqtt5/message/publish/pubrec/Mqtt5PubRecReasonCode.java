@@ -25,7 +25,7 @@ import org.mqttbee.mqtt.mqtt5.message.Mqtt5ReasonCode;
 import java.util.EnumSet;
 
 /**
- * MQTT Reason Codes that can be used in PUBREC packets according to the MQTT 5 specification.
+ * Reason Code of a {@link Mqtt5PubRec MQTT 5 PubRec message}.
  *
  * @author Silvio Giebl
  */
@@ -53,19 +53,17 @@ public enum Mqtt5PubRecReasonCode implements Mqtt5ReasonCode {
         this(reasonCode.getCode());
     }
 
-    /**
-     * @return the byte code of this PUBREC Reason Code.
-     */
+    @Override
     public int getCode() {
         return code;
     }
 
     /**
-     * Returns the PUBREC Reason Code belonging to the given byte code.
+     * Returns the PubRec Reason Code belonging to the given byte code.
      *
      * @param code the byte code.
-     * @return the PUBREC Reason Code belonging to the given byte code or null if the byte code is not a valid PUBREC
-     *         Reason Code code.
+     * @return the PubRec Reason Code belonging to the given byte code or <code>null</code> if the byte code is not a
+     *         valid PubRec Reason Code.
      */
     public static @Nullable Mqtt5PubRecReasonCode fromCode(final int code) {
         for (final Mqtt5PubRecReasonCode reasonCode : VALUES) {
@@ -89,5 +87,4 @@ public enum Mqtt5PubRecReasonCode implements Mqtt5ReasonCode {
     public boolean canBeSetByUser() {
         return BY_USER.contains(this);
     }
-
 }

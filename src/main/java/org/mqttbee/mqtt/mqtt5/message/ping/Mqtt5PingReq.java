@@ -23,17 +23,15 @@ import org.mqttbee.mqtt.mqtt5.message.Mqtt5Message;
 import org.mqttbee.mqtt.mqtt5.message.Mqtt5MessageType;
 
 /**
- * MQTT 5 PINGREQ packet.
+ * MQTT 5 PingReq message. This message is translated from and to a MQTT 5 PINGREQ packet.
  *
  * @author Silvio Giebl
  */
 @DoNotImplement
 public interface Mqtt5PingReq extends Mqtt5Message {
 
-    @NotNull
     @Override
-    default Mqtt5MessageType getType() {
+    default @NotNull Mqtt5MessageType getType() {
         return Mqtt5MessageType.PINGREQ;
     }
-
 }

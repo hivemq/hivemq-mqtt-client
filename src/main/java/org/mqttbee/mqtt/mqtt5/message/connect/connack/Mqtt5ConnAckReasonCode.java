@@ -23,7 +23,7 @@ import org.mqttbee.internal.mqtt.message.MqttCommonReasonCode;
 import org.mqttbee.mqtt.mqtt5.message.Mqtt5ReasonCode;
 
 /**
- * MQTT Reason Codes that can be used in CONNACK packets according to the MQTT 5 specification.
+ * Reason Code of a {@link Mqtt5ConnAck MQTT 5 ConnAck message}.
  *
  * @author Silvio Giebl
  */
@@ -62,9 +62,7 @@ public enum Mqtt5ConnAckReasonCode implements Mqtt5ReasonCode {
         this(reasonCode.getCode());
     }
 
-    /**
-     * @return the byte code of this CONNACK Reason Code.
-     */
+    @Override
     public int getCode() {
         return code;
     }

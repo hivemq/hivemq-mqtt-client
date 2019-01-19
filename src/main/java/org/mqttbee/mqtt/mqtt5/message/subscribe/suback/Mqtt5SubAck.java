@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * MQTT 5 SUBACK packet.
+ * MQTT 5 SubAck message. This message is translated from and to a MQTT 5 SUBACK packet.
  *
  * @author Silvio Giebl
  */
@@ -37,18 +37,19 @@ import java.util.Optional;
 public interface Mqtt5SubAck extends Mqtt5Message {
 
     /**
-     * @return the reason codes of this SUBACK packet, each belonging to a subscription in the corresponding SUBSCRIBE
-     *         packet in the same order.
+     * @return the Reason Codes of this SubAck message, each belonging to a {@link org.mqttbee.mqtt.mqtt5.message.subscribe.Mqtt5Subscription
+     *         Subscription} in the corresponding {@link org.mqttbee.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe
+     *         Subscribe message} in the same order.
      */
     @Immutable @NotNull List<@NotNull Mqtt5SubAckReasonCode> getReasonCodes();
 
     /**
-     * @return the optional reason string of this SUBACK packet.
+     * @return the optional reason string of this SubAck message.
      */
     @NotNull Optional<MqttUtf8String> getReasonString();
 
     /**
-     * @return the optional user properties of this SUBACK packet.
+     * @return the optional user properties of this SubAck message.
      */
     @NotNull Mqtt5UserProperties getUserProperties();
 

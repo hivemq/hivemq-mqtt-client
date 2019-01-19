@@ -24,7 +24,7 @@ import org.mqttbee.internal.util.UnsignedDataTypes;
 import org.mqttbee.mqtt.datatypes.MqttQos;
 
 /**
- * Restrictions from the server in the MQTT 5 CONNACK packet.
+ * Restrictions from the server in a {@link Mqtt5ConnAck MQTT 5 Connect message}.
  */
 @DoNotImplement
 public interface Mqtt5ConnAckRestrictions {
@@ -107,5 +107,4 @@ public interface Mqtt5ConnAckRestrictions {
      *         #DEFAULT_SUBSCRIPTION_IDENTIFIERS_AVAILABLE}.
      */
     boolean areSubscriptionIdentifiersAvailable();
-
 }
