@@ -26,7 +26,6 @@ import org.mqttbee.internal.mqtt.message.publish.MqttPublishBuilder;
 import org.mqttbee.internal.mqtt.message.subscribe.MqttSubscribeBuilder;
 import org.mqttbee.internal.mqtt.message.unsubscribe.MqttUnsubscribeBuilder;
 import org.mqttbee.mqtt.MqttGlobalPublishFilter;
-import org.mqttbee.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.mqtt.mqtt5.message.connect.Mqtt5ConnectBuilder;
 import org.mqttbee.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
@@ -67,7 +66,8 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
      *
      * @param connect the Connect message sent to the broker.
      * @return the ConnAck message if it does not contain an Error Code (connected successfully).
-     * @throws Mqtt5MessageException wrapping the ConnAck message if it contains an Error Code.
+     * @throws org.mqttbee.mqtt.mqtt5.exceptions.Mqtt5ConnAckException wrapping the ConnAck message if it contains an
+     *                                                                 Error Code.
      */
     @NotNull Mqtt5ConnAck connect(@NotNull Mqtt5Connect connect);
 
@@ -92,7 +92,8 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
      * @param subscribe the Subscribe messages sent to the broker.
      * @return the SubAck message if all subscriptions of the Subscribe message were successful (the SubAck message
      *         contains no Error Codes).
-     * @throws Mqtt5MessageException wrapping the SubAck message if it contains at least one Error Code.
+     * @throws org.mqttbee.mqtt.mqtt5.exceptions.Mqtt5SubAckException wrapping the SubAck message if it contains at
+     *                                                                least one Error Code.
      */
     @NotNull Mqtt5SubAck subscribe(@NotNull Mqtt5Subscribe subscribe);
 
@@ -124,7 +125,8 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
      * @param unsubscribe the Unsubscribe message sent to the broker.
      * @return the UnsubAck message if all Topic Filters of the Unsubscribe message were successfully unsubscribed (the
      *         UnsubAck message contains no Error Codes).
-     * @throws Mqtt5MessageException wrapping the UnsubAck message if it contains at least one Error Code.
+     * @throws org.mqttbee.mqtt.mqtt5.exceptions.Mqtt5UnsubAckException wrapping the UnsubAck message if it contains at
+     *                                                                  least one Error Code.
      */
     @NotNull Mqtt5UnsubAck unsubscribe(@NotNull Mqtt5Unsubscribe unsubscribe);
 
@@ -147,7 +149,10 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
      * @param publish the Publish message sent to the broker.
      * @return the {@link Mqtt5PublishResult} if the Publish message was successfully published (no acknowledgement
      *         message contains an Error Code, {@link Mqtt5PublishResult#getError()} will always be absent).
-     * @throws Mqtt5MessageException wrapping the acknowledgement message if it contains an Error Code.
+     * @throws org.mqttbee.mqtt.mqtt5.exceptions.Mqtt5PubAckException wrapping the corresponding PubAck message if it
+     *                                                                contains an Error Code.
+     * @throws org.mqttbee.mqtt.mqtt5.exceptions.Mqtt5PubRecException wrapping the corresponding PubRec message if it
+     *                                                                contains an Error Code.
      */
     @NotNull Mqtt5PublishResult publish(@NotNull Mqtt5Publish publish);
 
@@ -167,8 +172,8 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
     /**
      * Re-authenticates this client.
      *
-     * @throws Mqtt5MessageException wrapping the Auth message with the Error Code if not re-authenticated
-     *                               successfully.
+     * @throws org.mqttbee.mqtt.mqtt5.exceptions.Mqtt5AuthException wrapping the Auth message with the Error Code if not
+     *                                                              re-authenticated successfully.
      */
     void reauth();
 

@@ -65,8 +65,8 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      *         <ul>
      *         <li>completes normally with the ConnAck message if it does not contain an Error Code (connected
      *         successfully),</li>
-     *         <li>completes exceptionally with a {@link org.mqttbee.mqtt.mqtt3.exceptions.Mqtt3MessageException
-     *         Mqtt3MessageException} wrapping the ConnAck message if it contains an Error Code or</li>
+     *         <li>completes exceptionally with a {@link org.mqttbee.mqtt.mqtt3.exceptions.Mqtt3ConnAckException
+     *         Mqtt3ConnAckException} wrapping the ConnAck message if it contains an Error Code or</li>
      *         <li>completes exceptionally with a different exception if an error occurred before the Connect message
      *         was sent or before the ConnAck message was received.</li>
      *         </ul>
@@ -99,8 +99,8 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      *         <ul>
      *         <li>completes normally with the SubAck message if all subscriptions of the Subscribe message were
      *         successful (the SubAck message contains no Error Codes),</li>
-     *         <li>completes exceptionally with a {@link org.mqttbee.mqtt.mqtt3.exceptions.Mqtt3MessageException
-     *         Mqtt3MessageException} wrapping the SubAck message if it contains at least one Error Code or</li>
+     *         <li>completes exceptionally with a {@link org.mqttbee.mqtt.mqtt3.exceptions.Mqtt3SubAckException
+     *         Mqtt3SubAckException} wrapping the SubAck message if it contains at least one Error Code or</li>
      *         <li>completes exceptionally with a different exception if an error occurred before the Subscribe message
      *         was sent or before a SubAck message was received.</li>
      *         </ul>
@@ -214,8 +214,8 @@ public interface Mqtt3AsyncClient extends Mqtt3Client {
      *         <ul>
      *         <li>completes normally with the same Publish message (for context) if the Publish message was
      *         successfully published or</li>
-     *         <li>completes exceptionally if an error occurred before the Publish
-     *         message was sent or before an acknowledgement message was received.</li>
+     *         <li>completes exceptionally if an error occurred before the Publish message was sent or before an
+     *         acknowledgement message was received.</li>
      *         </ul>
      */
     @NotNull CompletableFuture<@NotNull Mqtt3Publish> publish(@NotNull Mqtt3Publish publish);
