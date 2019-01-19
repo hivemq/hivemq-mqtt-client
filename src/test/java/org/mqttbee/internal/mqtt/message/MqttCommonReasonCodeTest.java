@@ -128,7 +128,7 @@ class MqttCommonReasonCodeTest {
 
     @Test
     void test_getCode_sharedSubscriptionNotSupported() {
-        assertEquals(0x9E, MqttCommonReasonCode.SHARED_SUBSCRIPTION_NOT_SUPPORTED.getCode());
+        assertEquals(0x9E, MqttCommonReasonCode.SHARED_SUBSCRIPTIONS_NOT_SUPPORTED.getCode());
     }
 
     @Test
@@ -143,7 +143,7 @@ class MqttCommonReasonCodeTest {
 
     @Test
     void test_getCode_wildcardSubscriptionNotSupported() {
-        assertEquals(0xA2, MqttCommonReasonCode.WILDCARD_SUBSCRIPTION_NOT_SUPPORTED.getCode());
+        assertEquals(0xA2, MqttCommonReasonCode.WILDCARD_SUBSCRIPTIONS_NOT_SUPPORTED.getCode());
     }
 
 }

@@ -78,9 +78,11 @@ public abstract class MqttTimeoutInboundHandler extends MqttConnectionAwareHandl
 
     /**
      * Schedules a timeout.
+     *
+     * @param channel the channel to schedule the timeout for.
      */
     @CallByThread("Netty EventLoop")
-    protected void scheduleTimeout(@NotNull final Channel channel) {
+    protected void scheduleTimeout(final @NotNull Channel channel) {
         if (timeoutFuture != null) {
             timeoutFuture.cancel(false);
             timeoutFuture = null;

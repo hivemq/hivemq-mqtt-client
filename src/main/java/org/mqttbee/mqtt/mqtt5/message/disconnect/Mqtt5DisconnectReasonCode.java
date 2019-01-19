@@ -56,11 +56,11 @@ public enum Mqtt5DisconnectReasonCode implements Mqtt5ReasonCode {
     QOS_NOT_SUPPORTED(MqttCommonReasonCode.QOS_NOT_SUPPORTED),
     USE_ANOTHER_SERVER(MqttCommonReasonCode.USE_ANOTHER_SERVER),
     SERVER_MOVED(MqttCommonReasonCode.SERVER_MOVED),
-    SHARED_SUBSCRIPTION_NOT_SUPPORTED(MqttCommonReasonCode.SHARED_SUBSCRIPTION_NOT_SUPPORTED),
+    SHARED_SUBSCRIPTIONS_NOT_SUPPORTED(MqttCommonReasonCode.SHARED_SUBSCRIPTIONS_NOT_SUPPORTED),
     CONNECTION_RATE_EXCEEDED(MqttCommonReasonCode.CONNECTION_RATE_EXCEEDED),
     MAXIMUM_CONNECT_TIME(0xA0),
     SUBSCRIPTION_IDENTIFIERS_NOT_SUPPORTED(MqttCommonReasonCode.SUBSCRIPTION_IDENTIFIERS_NOT_SUPPORTED),
-    WILDCARD_SUBSCRIPTION_NOT_SUPPORTED(MqttCommonReasonCode.WILDCARD_SUBSCRIPTION_NOT_SUPPORTED);
+    WILDCARD_SUBSCRIPTIONS_NOT_SUPPORTED(MqttCommonReasonCode.WILDCARD_SUBSCRIPTIONS_NOT_SUPPORTED);
 
     private final int code;
 
@@ -80,7 +80,7 @@ public enum Mqtt5DisconnectReasonCode implements Mqtt5ReasonCode {
     }
 
     private static final int ERROR_CODE_MIN = UNSPECIFIED_ERROR.code;
-    private static final int ERROR_CODE_MAX = WILDCARD_SUBSCRIPTION_NOT_SUPPORTED.code;
+    private static final int ERROR_CODE_MAX = WILDCARD_SUBSCRIPTIONS_NOT_SUPPORTED.code;
     private static final @NotNull Mqtt5DisconnectReasonCode[] ERROR_CODE_LOOKUP =
             new Mqtt5DisconnectReasonCode[ERROR_CODE_MAX - ERROR_CODE_MIN + 1];
 

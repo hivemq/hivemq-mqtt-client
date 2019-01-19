@@ -246,9 +246,9 @@ class Mqtt5SubAckDecoderTest extends AbstractMqtt5DecoderTest {
         assertEquals(Mqtt5SubAckReasonCode.TOPIC_FILTER_INVALID, reasonCodes.get(6));
         assertEquals(Mqtt5SubAckReasonCode.PACKET_IDENTIFIER_IN_USE, reasonCodes.get(7));
         assertEquals(Mqtt5SubAckReasonCode.QUOTA_EXCEEDED, reasonCodes.get(8));
-        assertEquals(Mqtt5SubAckReasonCode.SHARED_SUBSCRIPTION_NOT_SUPPORTED, reasonCodes.get(9));
+        assertEquals(Mqtt5SubAckReasonCode.SHARED_SUBSCRIPTIONS_NOT_SUPPORTED, reasonCodes.get(9));
         assertEquals(Mqtt5SubAckReasonCode.SUBSCRIPTION_IDENTIFIERS_NOT_SUPPORTED, reasonCodes.get(10));
-        assertEquals(Mqtt5SubAckReasonCode.WILDCARD_SUBSCRIPTION_NOT_SUPPORTED, reasonCodes.get(11));
+        assertEquals(Mqtt5SubAckReasonCode.WILDCARD_SUBSCRIPTIONS_NOT_SUPPORTED, reasonCodes.get(11));
     }
 
     @Test
