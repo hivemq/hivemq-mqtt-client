@@ -157,7 +157,7 @@ class Mqtt5DisconnectReasonCodeTest {
 
     @Test
     void test_getCode_sharedSubscriptionNotSupported() {
-        assertEquals(0x9E, Mqtt5DisconnectReasonCode.SHARED_SUBSCRIPTION_NOT_SUPPORTED.getCode());
+        assertEquals(0x9E, Mqtt5DisconnectReasonCode.SHARED_SUBSCRIPTIONS_NOT_SUPPORTED.getCode());
     }
 
     @Test
@@ -177,7 +177,7 @@ class Mqtt5DisconnectReasonCodeTest {
 
     @Test
     void test_getCode_wildcardSubscriptionNotSupported() {
-        assertEquals(0xA2, Mqtt5DisconnectReasonCode.WILDCARD_SUBSCRIPTION_NOT_SUPPORTED.getCode());
+        assertEquals(0xA2, Mqtt5DisconnectReasonCode.WILDCARD_SUBSCRIPTIONS_NOT_SUPPORTED.getCode());
     }
 
     @ParameterizedTest
