@@ -67,8 +67,8 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      *         <ul>
      *         <li>succeeds with the ConnAck message if it does not contain an Error Code (connected
      *         successfully),</li>
-     *         <li>errors with a {@link org.mqttbee.mqtt.mqtt3.exceptions.Mqtt3MessageException
-     *         Mqtt3MessageException} wrapping the ConnAck message if it contains an Error Code or</li>
+     *         <li>errors with a {@link org.mqttbee.mqtt.mqtt3.exceptions.Mqtt3ConnAckException
+     *         Mqtt3ConnAckException} wrapping the ConnAck message if it contains an Error Code or</li>
      *         <li>errors with a different exception if an error occurred before the Connect message was sent or before
      *         the ConnAck message was received.</li>
      *         </ul>
@@ -104,8 +104,8 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      *         <ul>
      *         <li>succeeds with the SubAck message if at least one subscription of the Subscribe message was
      *         successful (the SubAck message contains at least one Return Code that is not an Error Code),</li>
-     *         <li>errors with a {@link org.mqttbee.mqtt.mqtt3.exceptions.Mqtt3MessageException
-     *         Mqtt3MessageException} wrapping the SubAck message if it only contains Error Codes or</li>
+     *         <li>errors with a {@link org.mqttbee.mqtt.mqtt3.exceptions.Mqtt3SubAckException
+     *         Mqtt3SubAckException} wrapping the SubAck message if it only contains Error Codes or</li>
      *         <li>errors with a different exception if an error occurred before the Subscribe message was sent or
      *         before a SubAck message was received.</li>
      *         </ul>
@@ -142,11 +142,12 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      *         Error Code) and then emits the Publish messages matching the successful subscriptions of the Subscribe
      *         message,</li>
      *         <li>completes when all subscriptions of the Subscribe message were unsubscribed,</li>
-     *         <li>errors with a {@link org.mqttbee.mqtt.mqtt3.exceptions.Mqtt3MessageException
-     *         Mqtt3MessageException} wrapping the SubAck message if it only contains Error Codes or</li>
+     *         <li>errors with a {@link org.mqttbee.mqtt.mqtt3.exceptions.Mqtt3SubAckException
+     *         Mqtt3SubAckException} wrapping the SubAck message if it only contains Error Codes or</li>
      *         <li>errors with a different exception if an error occurred before the Subscribe message was sent,
      *         before a SubAck message was received or when a error occurs before all subscriptions of the Subscribe
-     *         message were unsubscribed.</li>
+     *         message were unsubscribed (e.g. {@link org.mqttbee.mqtt.exceptions.MqttSessionExpiredException
+     *         MqttSessionExpiredException}).</li>
      *         </ul>
      */
     @NotNull FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribeStream(@NotNull Mqtt3Subscribe subscribe);
@@ -175,8 +176,10 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      * @param filter the filter with which all incoming Publish messages are filtered.
      * @return the {@link Flowable} which
      *         <ul>
-     *         <li>emits the incoming Publish messages matching the given filter and</li>
-     *         <li>completes when this client is disconnected.</li>
+     *         <li>emits the incoming Publish messages matching the given filter,</li>
+     *         <li>never completes but</li>
+     *         <li>errors with a {@link org.mqttbee.mqtt.exceptions.MqttSessionExpiredException
+     *         MqttSessionExpiredException} when the MQTT session expires.</li>
      *         </ul>
      */
     @NotNull Flowable<Mqtt3Publish> publishes(@NotNull MqttGlobalPublishFilter filter);
@@ -224,8 +227,11 @@ public interface Mqtt3RxClient extends Mqtt3Client {
      * @return the {@link Flowable} which
      *         <ul>
      *         <li>emits {@link Mqtt3PublishResult}s each corresponding to a Publish message,</li>
-     *         <li>completes when the given {@link Flowable} completes or</li>
-     *         <li>errors with the same exception when the given {@link Flowable} errors.</li>
+     *         <li>completes when the given {@link Flowable} completes,</li>
+     *         <li>errors with the same exception when the given {@link Flowable} errors or</li>
+     *         <li>errors with a different exception if an error occurred before all Publish messages of the given
+     *         {@link Flowable} are answered by a {@link Mqtt3PublishResult} (e.g. {@link
+     *         org.mqttbee.mqtt.exceptions.MqttSessionExpiredException MqttSessionExpiredException}).</li>
      *         </ul>
      */
     @NotNull Flowable<Mqtt3PublishResult> publish(@NotNull Flowable<Mqtt3Publish> publishFlowable);

@@ -24,7 +24,6 @@ import org.mqttbee.internal.mqtt.message.publish.mqtt3.Mqtt3PublishViewBuilder;
 import org.mqttbee.internal.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeViewBuilder;
 import org.mqttbee.internal.mqtt.message.unsubscribe.mqtt3.Mqtt3UnsubscribeViewBuilder;
 import org.mqttbee.mqtt.MqttGlobalPublishFilter;
-import org.mqttbee.mqtt.mqtt3.exceptions.Mqtt3MessageException;
 import org.mqttbee.mqtt.mqtt3.message.connect.Mqtt3Connect;
 import org.mqttbee.mqtt.mqtt3.message.connect.Mqtt3ConnectBuilder;
 import org.mqttbee.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck;
@@ -61,7 +60,8 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
      *
      * @param connect the Connect message sent to the broker.
      * @return the ConnAck message if it does not contain an Error Code (connected successfully).
-     * @throws Mqtt3MessageException wrapping the ConnAck message if it contains an Error Code.
+     * @throws org.mqttbee.mqtt.mqtt3.exceptions.Mqtt3ConnAckException wrapping the ConnAck message if it contains an
+     *                                                                 Error Code.
      */
     @NotNull Mqtt3ConnAck connect(@NotNull Mqtt3Connect connect);
 
@@ -86,7 +86,8 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
      * @param subscribe the Subscribe messages sent to the broker.
      * @return the SubAck message if all subscriptions of the Subscribe message were successful (the SubAck message
      *         contains no Error Codes).
-     * @throws Mqtt3MessageException wrapping the SubAck message if it contains at least one Error Code.
+     * @throws org.mqttbee.mqtt.mqtt3.exceptions.Mqtt3SubAckException wrapping the SubAck message if it contains at
+     *                                                                least one Error Code.
      */
     @NotNull Mqtt3SubAck subscribe(@NotNull Mqtt3Subscribe subscribe);
 

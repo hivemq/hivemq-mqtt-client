@@ -71,8 +71,8 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
      *         <ul>
      *         <li>completes normally with the ConnAck message if it does not contain an Error Code (connected
      *         successfully),</li>
-     *         <li>completes exceptionally with a {@link org.mqttbee.mqtt.mqtt5.exceptions.Mqtt5MessageException
-     *         Mqtt5MessageException} wrapping the ConnAck message if it contains an Error Code or</li>
+     *         <li>completes exceptionally with a {@link org.mqttbee.mqtt.mqtt5.exceptions.Mqtt5ConnAckException
+     *         Mqtt5ConnAckException} wrapping the ConnAck message if it contains an Error Code or</li>
      *         <li>completes exceptionally with a different exception if an error occurred before the Connect message
      *         was sent or before the ConnAck message was received.</li>
      *         </ul>
@@ -105,8 +105,8 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
      *         <ul>
      *         <li>completes normally with the SubAck message if all subscriptions of the Subscribe message were
      *         successful (the SubAck message contains no Error Codes),</li>
-     *         <li>completes exceptionally with a {@link org.mqttbee.mqtt.mqtt5.exceptions.Mqtt5MessageException
-     *         Mqtt5MessageException} wrapping the SubAck message if it contains at least one Error Code or</li>
+     *         <li>completes exceptionally with a {@link org.mqttbee.mqtt.mqtt5.exceptions.Mqtt5SubAckException
+     *         Mqtt5SubAckException} wrapping the SubAck message if it contains at least one Error Code or</li>
      *         <li>completes exceptionally with a different exception if an error occurred before the Subscribe message
      *         was sent or before a SubAck message was received.</li>
      *         </ul>
@@ -194,8 +194,8 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
      *         <ul>
      *         <li>completes normally with the UnsubAck message if all Topic Filters of the Unsubscribe message were
      *         successfully unsubscribed (the UnsubAck message contains no Error Codes),</li>
-     *         <li>completes exceptionally with a {@link org.mqttbee.mqtt.mqtt5.exceptions.Mqtt5MessageException
-     *         Mqtt5MessageException} wrapping the UnsubAck message if it contains at least one Error Code or</li>
+     *         <li>completes exceptionally with a {@link org.mqttbee.mqtt.mqtt5.exceptions.Mqtt5UnsubAckException
+     *         Mqtt5UnsubAckException} wrapping the UnsubAck message if it contains at least one Error Code or</li>
      *         <li>completes exceptionally with a different exception if an error occurred before the Unsubscribe
      *         message was sent or before a UnsubAck message was received.</li>
      *         </ul>
@@ -224,10 +224,11 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
      *         <li>completes normally with the {@link Mqtt5PublishResult} if the Publish message was successfully
      *         published (no acknowledgement message contains an Error Code, {@link Mqtt5PublishResult#getError()} will
      *         always be absent),</li>
-     *         <li>completes exceptionally with a {@link org.mqttbee.mqtt.mqtt5.exceptions.Mqtt5MessageException
-     *         Mqtt5MessageException} wrapping the acknowledgement message if it contains an Error Code or</li>
-     *         <li>completes exceptionally with a different exception if an error occurred before the Publish
-     *         message was sent or before an acknowledgement message was received.</li>
+     *         <li>completes exceptionally with a {@link org.mqttbee.mqtt.mqtt5.exceptions.Mqtt5PubAckException
+     *         Mqtt5PubAckException} or {@link org.mqttbee.mqtt.mqtt5.exceptions.Mqtt5PubRecException
+     *         Mqtt5PubRecException} wrapping the acknowledgement message if it contains an Error Code or</li>
+     *         <li>completes exceptionally with a different exception if an error occurred before the Publish message
+     *         was sent or before an acknowledgement message was received.</li>
      *         </ul>
      */
     @NotNull CompletableFuture<@NotNull Mqtt5PublishResult> publish(@NotNull Mqtt5Publish publish);
@@ -251,8 +252,8 @@ public interface Mqtt5AsyncClient extends Mqtt5Client {
      * @return a {@link CompletableFuture} which
      *         <ul>
      *         <li>completes normally when the client was successfully re-authenticated,</li>
-     *         <li>errors with a {@link org.mqttbee.mqtt.mqtt5.exceptions.Mqtt5MessageException
-     *         Mqtt5MessageException} wrapping the Auth message with the Error Code if not re-authenticated successfully
+     *         <li>errors with a {@link org.mqttbee.mqtt.mqtt5.exceptions.Mqtt5AuthException
+     *         Mqtt5AuthException} wrapping the Auth message with the Error Code if not re-authenticated successfully
      *         or</li>
      *         <li>errors with a different exception if an error occurred before the first Auth message was sent or
      *         before the last Auth message was received.</li>
