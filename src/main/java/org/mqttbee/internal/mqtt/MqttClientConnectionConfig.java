@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.mqtt.mqtt3.Mqtt3ClientConnectionConfig;
 import org.mqttbee.mqtt.mqtt5.Mqtt5ClientConnectionConfig;
-import org.mqttbee.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
+import org.mqttbee.mqtt.mqtt5.auth.Mqtt5EnhancedAuthMechanism;
 
 import java.util.Optional;
 
@@ -36,7 +36,7 @@ public class MqttClientConnectionConfig implements Mqtt5ClientConnectionConfig, 
     private final int receiveMaximum;
     private final int maximumPacketSize;
     private final int topicAliasMaximum;
-    private final @Nullable Mqtt5EnhancedAuthProvider enhancedAuthProvider;
+    private final @Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism;
     private final boolean hasWillPublish;
     private final boolean problemInformationRequested;
     private final boolean responseInformationRequested;
@@ -45,7 +45,7 @@ public class MqttClientConnectionConfig implements Mqtt5ClientConnectionConfig, 
     public MqttClientConnectionConfig(
             final int keepAlive, final long sessionExpiryInterval, final int receiveMaximum,
             final int maximumPacketSize, final int topicAliasMaximum,
-            final @Nullable Mqtt5EnhancedAuthProvider enhancedAuthProvider, final boolean hasWillPublish,
+            final @Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism, final boolean hasWillPublish,
             final boolean problemInformationRequested, final boolean responseInformationRequested,
             final @NotNull Channel channel) {
 
@@ -54,7 +54,7 @@ public class MqttClientConnectionConfig implements Mqtt5ClientConnectionConfig, 
         this.receiveMaximum = receiveMaximum;
         this.maximumPacketSize = maximumPacketSize;
         this.topicAliasMaximum = topicAliasMaximum;
-        this.enhancedAuthProvider = enhancedAuthProvider;
+        this.enhancedAuthMechanism = enhancedAuthMechanism;
         this.hasWillPublish = hasWillPublish;
         this.problemInformationRequested = problemInformationRequested;
         this.responseInformationRequested = responseInformationRequested;
@@ -95,12 +95,12 @@ public class MqttClientConnectionConfig implements Mqtt5ClientConnectionConfig, 
     }
 
     @Override
-    public @NotNull Optional<Mqtt5EnhancedAuthProvider> getEnhancedAuthProvider() {
-        return Optional.ofNullable(enhancedAuthProvider);
+    public @NotNull Optional<Mqtt5EnhancedAuthMechanism> getEnhancedAuthMechanism() {
+        return Optional.ofNullable(enhancedAuthMechanism);
     }
 
-    public @Nullable Mqtt5EnhancedAuthProvider getRawEnhancedAuthProvider() {
-        return enhancedAuthProvider;
+    public @Nullable Mqtt5EnhancedAuthMechanism getRawEnhancedAuthMechanism() {
+        return enhancedAuthMechanism;
     }
 
     @Override

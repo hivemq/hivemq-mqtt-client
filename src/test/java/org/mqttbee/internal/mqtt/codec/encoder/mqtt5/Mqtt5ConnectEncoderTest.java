@@ -34,7 +34,7 @@ import org.mqttbee.mqtt.datatypes.MqttQos;
 import org.mqttbee.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.mqtt.exceptions.MqttEncodeException;
 import org.mqttbee.mqtt.mqtt5.Mqtt5ClientConfig;
-import org.mqttbee.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
+import org.mqttbee.mqtt.mqtt5.auth.Mqtt5EnhancedAuthMechanism;
 import org.mqttbee.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt.mqtt5.message.auth.Mqtt5Auth;
 import org.mqttbee.mqtt.mqtt5.message.auth.Mqtt5AuthBuilder;
@@ -147,7 +147,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         final MqttUtf8StringImpl authMethod = MqttUtf8StringImpl.of("GS2-KRB5");
         final ByteBuffer authData = ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
         final MqttEnhancedAuth enhancedAuth = new MqttEnhancedAuth(authMethod, authData);
-        final Mqtt5EnhancedAuthProvider enhancedAuthProvider = new TestEnhancedAuthProvider(authMethod);
+        final Mqtt5EnhancedAuthMechanism enhancedAuthProvider = new TestEnhancedAuthMechanism(authMethod);
 
         final MqttUtf8StringImpl test = MqttUtf8StringImpl.of("test");
         final MqttUtf8StringImpl test2 = MqttUtf8StringImpl.of("test2");
@@ -458,7 +458,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         final MqttUtf8StringImpl authMethod = MqttUtf8StringImpl.of("GS2-KRB5");
         final ByteBuffer authData = ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
         final MqttEnhancedAuth enhancedAuth = new MqttEnhancedAuth(authMethod, authData);
-        final Mqtt5EnhancedAuthProvider enhancedAuthProvider = new TestEnhancedAuthProvider(authMethod);
+        final Mqtt5EnhancedAuthMechanism enhancedAuthProvider = new TestEnhancedAuthMechanism(authMethod);
 
         final MqttConnect connect = new MqttConnect(0, false, 0, false, true, DEFAULT, null, enhancedAuthProvider, null,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES);
@@ -474,7 +474,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         final MqttUtf8StringImpl authMethod = MqttUtf8StringImpl.of("GS2-KRB5");
         final ByteBuffer authData = ByteBuffer.wrap(new byte[65536]);
         final MqttEnhancedAuth enhancedAuth = new MqttEnhancedAuth(authMethod, authData);
-        final Mqtt5EnhancedAuthProvider enhancedAuthProvider = new TestEnhancedAuthProvider(authMethod);
+        final Mqtt5EnhancedAuthMechanism enhancedAuthProvider = new TestEnhancedAuthMechanism(authMethod);
 
         final MqttConnect connect = new MqttConnect(0, false, 0, false, true, DEFAULT, null, enhancedAuthProvider, null,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES);
@@ -585,11 +585,11 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         }
     }
 
-    private static class TestEnhancedAuthProvider implements Mqtt5EnhancedAuthProvider {
+    private static class TestEnhancedAuthMechanism implements Mqtt5EnhancedAuthMechanism {
 
         private final @NotNull MqttUtf8String method;
 
-        TestEnhancedAuthProvider(@NotNull final MqttUtf8String method) {
+        TestEnhancedAuthMechanism(@NotNull final MqttUtf8String method) {
             this.method = method;
         }
 

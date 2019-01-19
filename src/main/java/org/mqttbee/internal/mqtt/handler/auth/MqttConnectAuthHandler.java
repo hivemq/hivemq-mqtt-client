@@ -32,7 +32,7 @@ import org.mqttbee.internal.mqtt.message.connect.connack.MqttConnAck;
 import org.mqttbee.internal.util.Checks;
 import org.mqttbee.internal.util.netty.DefaultChannelOutboundHandler;
 import org.mqttbee.mqtt.mqtt5.Mqtt5ClientConfig;
-import org.mqttbee.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
+import org.mqttbee.mqtt.mqtt5.auth.Mqtt5EnhancedAuthMechanism;
 import org.mqttbee.mqtt.mqtt5.exceptions.Mqtt5AuthException;
 import org.mqttbee.mqtt.mqtt5.exceptions.Mqtt5ConnAckException;
 import org.mqttbee.mqtt.mqtt5.message.auth.Mqtt5EnhancedAuth;
@@ -55,7 +55,7 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
 
     @Inject
     MqttConnectAuthHandler(final @NotNull MqttClientConfig clientConfig, final @NotNull MqttConnect connect) {
-        super(clientConfig, Checks.stateNotNull(connect.getRawEnhancedAuthProvider(), "Auth provider"));
+        super(clientConfig, Checks.stateNotNull(connect.getRawEnhancedAuthMechanism(), "Auth mechanism"));
     }
 
     @Override
@@ -73,7 +73,7 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
     /**
      * Handles the outgoing CONNECT message.
      * <ul>
-     * <li>Calls {@link Mqtt5EnhancedAuthProvider#onAuth(Mqtt5ClientConfig, Mqtt5Connect, Mqtt5EnhancedAuthBuilder)}
+     * <li>Calls {@link Mqtt5EnhancedAuthMechanism#onAuth(Mqtt5ClientConfig, Mqtt5Connect, Mqtt5EnhancedAuthBuilder)}
      * which adds enhanced auth data to the CONNECT message.</li>
      * <li>Sends the CONNECT message with the enhanced auth data.</li>
      * </ul>
@@ -84,7 +84,7 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
     private void writeConnect(final @NotNull MqttConnect connect, final @NotNull ChannelPromise promise) {
         final MqttEnhancedAuthBuilder enhancedAuthBuilder = new MqttEnhancedAuthBuilder(getMethod());
         state = MqttAuthState.IN_PROGRESS_INIT;
-        callProviderFuture(() -> authProvider.onAuth(clientConfig, connect, enhancedAuthBuilder), ctx -> {
+        callMechanismFuture(() -> authMechanism.onAuth(clientConfig, connect, enhancedAuthBuilder), ctx -> {
             state = MqttAuthState.WAIT_FOR_SERVER;
             final MqttStatefulConnect statefulConnect =
                     connect.createStateful(clientConfig.getRawClientIdentifier(), enhancedAuthBuilder.build());
@@ -107,11 +107,11 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
     /**
      * Handles the incoming CONNACK message.
      * <ul>
-     * <li>Calls {@link Mqtt5EnhancedAuthProvider#onAuthRejected(Mqtt5ClientConfig, Mqtt5ConnAck)} and closes the
+     * <li>Calls {@link Mqtt5EnhancedAuthMechanism#onAuthRejected(Mqtt5ClientConfig, Mqtt5ConnAck)} and closes the
      * channel if the CONNACK message contains an Error Code.</li>
      * <li>Sends a DISCONNECT message if the enhanced auth data of the CONNACK message is not valid.</li>
-     * <li>Otherwise calls {@link Mqtt5EnhancedAuthProvider#onAuthSuccess(Mqtt5ClientConfig, Mqtt5ConnAck)}.</li>
-     * <li>Sends a DISCONNECT message if the enhanced auth provider did not accept the enhanced auth data.</li>
+     * <li>Otherwise calls {@link Mqtt5EnhancedAuthMechanism#onAuthSuccess(Mqtt5ClientConfig, Mqtt5ConnAck)}.</li>
+     * <li>Sends a DISCONNECT message if the enhanced auth mechanism did not accept the enhanced auth data.</li>
      * </ul>
      *
      * @param ctx     the channel handler context.
@@ -134,7 +134,7 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
     }
 
     private void readConnAckError(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttConnAck connAck) {
-        callProvider(() -> authProvider.onAuthRejected(clientConfig, connAck));
+        callMechanism(() -> authMechanism.onAuthRejected(clientConfig, connAck));
         state = MqttAuthState.NONE;
 
         MqttDisconnectUtil.close(ctx.channel(),
@@ -143,7 +143,7 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
 
     private void readConnAckSuccess(final @NotNull MqttConnAck connAck) {
         state = MqttAuthState.IN_PROGRESS_DONE;
-        callProviderFutureResult(() -> authProvider.onAuthSuccess(clientConfig, connAck), ctx -> {
+        callMechanismFutureResult(() -> authMechanism.onAuthSuccess(clientConfig, connAck), ctx -> {
             state = MqttAuthState.NONE;
             ctx.fireChannelRead(connAck);
             ctx.pipeline().replace(this, NAME, new MqttReAuthHandler(this));
@@ -202,7 +202,7 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
     }
 
     /**
-     * Calls {@link Mqtt5EnhancedAuthProvider#onAuthError(Mqtt5ClientConfig, Throwable)} with the cause why the channel
+     * Calls {@link Mqtt5EnhancedAuthMechanism#onAuthError(Mqtt5ClientConfig, Throwable)} with the cause why the channel
      * was closed if auth is still in progress.
      *
      * @param disconnectEvent the channel close event.
@@ -212,7 +212,7 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
         super.onDisconnectEvent(disconnectEvent);
 
         if (state != MqttAuthState.NONE) {
-            callProvider(() -> authProvider.onAuthError(clientConfig, disconnectEvent.getCause()));
+            callMechanism(() -> authMechanism.onAuthError(clientConfig, disconnectEvent.getCause()));
             state = MqttAuthState.NONE;
         }
     }

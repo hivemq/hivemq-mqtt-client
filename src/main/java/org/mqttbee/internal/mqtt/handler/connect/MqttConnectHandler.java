@@ -121,7 +121,7 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
      * @param ctx the channel handler context.
      */
     private void writeConnect(final @NotNull ChannelHandlerContext ctx) {
-        ctx.writeAndFlush((connect.getRawEnhancedAuthProvider() == null) ?
+        ctx.writeAndFlush((connect.getRawEnhancedAuthMechanism() == null) ?
                 connect.createStateful(clientConfig.getRawClientIdentifier(), null) : connect).addListener(this);
     }
 
@@ -131,7 +131,7 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
             return;
         }
         if (future.isSuccess()) {
-            if (connect.getRawEnhancedAuthProvider() == null) {
+            if (connect.getRawEnhancedAuthMechanism() == null) {
                 scheduleTimeout(ctx.channel());
             }
             ctx.pipeline().addAfter(MqttEncoder.NAME, MqttDecoder.NAME, decoder);
@@ -255,7 +255,7 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
         final MqttClientConnectionConfig clientConnectionConfig =
                 new MqttClientConnectionConfig(keepAlive, sessionExpiryInterval, restrictions.getReceiveMaximum(),
                         restrictions.getMaximumPacketSize(), restrictions.getTopicAliasMaximum(),
-                        connect.getRawEnhancedAuthProvider(), connect.getRawWillPublish() != null,
+                        connect.getRawEnhancedAuthMechanism(), connect.getRawWillPublish() != null,
                         connect.isProblemInformationRequested(), connect.isResponseInformationRequested(), channel);
 
         clientConfig.setClientConnectionConfig(clientConnectionConfig);

@@ -26,7 +26,7 @@ import org.mqttbee.internal.mqtt.message.MqttMessageWithUserProperties;
 import org.mqttbee.internal.mqtt.message.auth.MqttEnhancedAuth;
 import org.mqttbee.internal.mqtt.message.auth.MqttSimpleAuth;
 import org.mqttbee.internal.mqtt.message.publish.MqttWillPublish;
-import org.mqttbee.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
+import org.mqttbee.mqtt.mqtt5.auth.Mqtt5EnhancedAuthMechanism;
 import org.mqttbee.mqtt.mqtt5.message.auth.Mqtt5SimpleAuth;
 import org.mqttbee.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
@@ -51,15 +51,15 @@ public class MqttConnect extends MqttMessageWithUserProperties implements Mqtt5C
     private final boolean isProblemInformationRequested;
     private final @NotNull MqttConnectRestrictions restrictions;
     private final @Nullable MqttSimpleAuth simpleAuth;
-    private final @Nullable Mqtt5EnhancedAuthProvider enhancedAuthProvider;
+    private final @Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism;
     private final @Nullable MqttWillPublish willPublish;
 
     public MqttConnect(
             final int keepAlive, final boolean isCleanStart, final long sessionExpiryInterval,
             final boolean isResponseInformationRequested, final boolean isProblemInformationRequested,
             final @NotNull MqttConnectRestrictions restrictions, final @Nullable MqttSimpleAuth simpleAuth,
-            final @Nullable Mqtt5EnhancedAuthProvider enhancedAuthProvider, final @Nullable MqttWillPublish willPublish,
-            final @NotNull MqttUserPropertiesImpl userProperties) {
+            final @Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism,
+            final @Nullable MqttWillPublish willPublish, final @NotNull MqttUserPropertiesImpl userProperties) {
 
         super(userProperties);
         this.keepAlive = keepAlive;
@@ -69,7 +69,7 @@ public class MqttConnect extends MqttMessageWithUserProperties implements Mqtt5C
         this.isProblemInformationRequested = isProblemInformationRequested;
         this.restrictions = restrictions;
         this.simpleAuth = simpleAuth;
-        this.enhancedAuthProvider = enhancedAuthProvider;
+        this.enhancedAuthMechanism = enhancedAuthMechanism;
         this.willPublish = willPublish;
     }
 
@@ -113,12 +113,12 @@ public class MqttConnect extends MqttMessageWithUserProperties implements Mqtt5C
     }
 
     @Override
-    public @NotNull Optional<Mqtt5EnhancedAuthProvider> getEnhancedAuthProvider() {
-        return Optional.ofNullable(enhancedAuthProvider);
+    public @NotNull Optional<Mqtt5EnhancedAuthMechanism> getEnhancedAuthMechanism() {
+        return Optional.ofNullable(enhancedAuthMechanism);
     }
 
-    public @Nullable Mqtt5EnhancedAuthProvider getRawEnhancedAuthProvider() {
-        return enhancedAuthProvider;
+    public @Nullable Mqtt5EnhancedAuthMechanism getRawEnhancedAuthMechanism() {
+        return enhancedAuthMechanism;
     }
 
     @Override

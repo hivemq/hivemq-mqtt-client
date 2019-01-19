@@ -28,7 +28,7 @@ import org.mqttbee.internal.mqtt.message.publish.MqttPublishBuilder;
 import org.mqttbee.internal.mqtt.message.publish.MqttWillPublish;
 import org.mqttbee.internal.mqtt.util.MqttChecks;
 import org.mqttbee.internal.util.Checks;
-import org.mqttbee.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
+import org.mqttbee.mqtt.mqtt5.auth.Mqtt5EnhancedAuthMechanism;
 import org.mqttbee.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.mqtt.mqtt5.message.auth.Mqtt5SimpleAuth;
 import org.mqttbee.mqtt.mqtt5.message.connect.Mqtt5ConnectBuilder;
@@ -50,7 +50,7 @@ public abstract class MqttConnectBuilder<B extends MqttConnectBuilder<B>> {
     private boolean isProblemInformationRequested = MqttConnect.DEFAULT_PROBLEM_INFORMATION_REQUESTED;
     private @NotNull MqttConnectRestrictions restrictions = MqttConnectRestrictions.DEFAULT;
     private @Nullable MqttSimpleAuth simpleAuth;
-    private @Nullable Mqtt5EnhancedAuthProvider enhancedAuthProvider;
+    private @Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism;
     private @Nullable MqttWillPublish willPublish;
     private @NotNull MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
 
@@ -64,7 +64,7 @@ public abstract class MqttConnectBuilder<B extends MqttConnectBuilder<B>> {
         isProblemInformationRequested = connect.isProblemInformationRequested();
         restrictions = connect.getRestrictions();
         simpleAuth = connect.getRawSimpleAuth();
-        enhancedAuthProvider = connect.getRawEnhancedAuthProvider();
+        enhancedAuthMechanism = connect.getRawEnhancedAuthMechanism();
         willPublish = connect.getRawWillPublish();
         userProperties = connect.getUserProperties();
     }
@@ -124,8 +124,8 @@ public abstract class MqttConnectBuilder<B extends MqttConnectBuilder<B>> {
         return new MqttSimpleAuthBuilder.Nested<>(this::simpleAuth);
     }
 
-    public @NotNull B enhancedAuth(final @Nullable Mqtt5EnhancedAuthProvider enhancedAuthProvider) {
-        this.enhancedAuthProvider = enhancedAuthProvider;
+    public @NotNull B enhancedAuth(final @Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism) {
+        this.enhancedAuthMechanism = enhancedAuthMechanism;
         return self();
     }
 
@@ -155,7 +155,7 @@ public abstract class MqttConnectBuilder<B extends MqttConnectBuilder<B>> {
 
     public @NotNull MqttConnect build() {
         return new MqttConnect(keepAlive, isCleanStart, sessionExpiryInterval, isResponseInformationRequested,
-                isProblemInformationRequested, restrictions, simpleAuth, enhancedAuthProvider, willPublish,
+                isProblemInformationRequested, restrictions, simpleAuth, enhancedAuthMechanism, willPublish,
                 userProperties);
     }
 
