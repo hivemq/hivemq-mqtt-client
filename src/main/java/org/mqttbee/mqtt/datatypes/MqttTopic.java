@@ -59,7 +59,7 @@ public interface MqttTopic extends MqttUtf8String {
     /**
      * Creates a builder for a Topic Name.
      *
-     * @return the created builder for a Topic Name.
+     * @return the created builder.
      */
     static @NotNull MqttTopicBuilder builder() {
         return new MqttTopicImplBuilder.Default();
@@ -76,7 +76,9 @@ public interface MqttTopic extends MqttUtf8String {
     @NotNull MqttTopicFilter filter();
 
     /**
-     * @return a builder for extending this Topic Name.
+     * Creates a builder for extending this Topic Name.
+     *
+     * @return the created builder.
      */
     @NotNull MqttTopicBuilder.Complete extend();
 }

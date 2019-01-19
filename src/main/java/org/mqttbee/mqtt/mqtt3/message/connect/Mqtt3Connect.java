@@ -28,7 +28,7 @@ import org.mqttbee.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import java.util.Optional;
 
 /**
- * MQTT 3 CONNECT packet.
+ * MQTT 3 Connect message. This message is translated from and to a MQTT 3 CONNECT packet.
  */
 @DoNotImplement
 public interface Mqtt3Connect extends Mqtt3Message {
@@ -37,6 +37,11 @@ public interface Mqtt3Connect extends Mqtt3Message {
     int DEFAULT_KEEP_ALIVE = 60;
     boolean DEFAULT_CLEAN_SESSION = true;
 
+    /**
+     * Creates a builder for a Connect message.
+     *
+     * @return the created builder.
+     */
     static @NotNull Mqtt3ConnectBuilder builder() {
         return new Mqtt3ConnectViewBuilder.Default();
     }
@@ -47,18 +52,17 @@ public interface Mqtt3Connect extends Mqtt3Message {
     int getKeepAlive();
 
     /**
-     * @return whether the client wants a clean session which lasts for the lifetime of the session. A present session
-     *         is cleared.
+     * @return whether the client wants a clean session. If <code>true</code> an existing session is cleared.
      */
     boolean isCleanSession();
 
     /**
-     * @return the optional simple authentication and/or authorization related data of this CONNECT packet.
+     * @return the optional simple authentication and/or authorization related data of this Connect message.
      */
     @NotNull Optional<Mqtt3SimpleAuth> getSimpleAuth();
 
     /**
-     * @return the optional Will Publish of this CONNECT packet.
+     * @return the optional Will Publish of this Connect message.
      */
     @NotNull Optional<Mqtt3Publish> getWillPublish();
 
@@ -67,5 +71,10 @@ public interface Mqtt3Connect extends Mqtt3Message {
         return Mqtt3MessageType.CONNECT;
     }
 
+    /**
+     * Creates a builder for extending this Connect message.
+     *
+     * @return the created builder.
+     */
     @NotNull Mqtt3ConnectBuilder extend();
 }

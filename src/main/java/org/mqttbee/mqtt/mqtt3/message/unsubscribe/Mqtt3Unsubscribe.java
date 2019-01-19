@@ -28,11 +28,16 @@ import org.mqttbee.mqtt.mqtt3.message.Mqtt3MessageType;
 import java.util.List;
 
 /**
- * MQTT 3 UNSUBSCRIBE packet.
+ * MQTT 3 Unsubscribe message. This message is translated from and to a MQTT 3 UNSUBSCRIBE packet.
  */
 @DoNotImplement
 public interface Mqtt3Unsubscribe extends Mqtt3Message {
 
+    /**
+     * Creates a builder for a Unsubscribe message.
+     *
+     * @return the created builder.
+     */
     static @NotNull Mqtt3UnsubscribeBuilder.Start builder() {
         return new Mqtt3UnsubscribeViewBuilder.Default();
     }
@@ -47,5 +52,10 @@ public interface Mqtt3Unsubscribe extends Mqtt3Message {
         return Mqtt3MessageType.UNSUBSCRIBE;
     }
 
+    /**
+     * Creates a builder for extending this Unsubscribe message.
+     *
+     * @return the created builder.
+     */
     @NotNull Mqtt3UnsubscribeBuilder.Complete extend();
 }

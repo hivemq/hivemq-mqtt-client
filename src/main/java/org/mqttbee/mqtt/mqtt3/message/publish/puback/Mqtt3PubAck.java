@@ -23,15 +23,13 @@ import org.mqttbee.mqtt.mqtt3.message.Mqtt3Message;
 import org.mqttbee.mqtt.mqtt3.message.Mqtt3MessageType;
 
 /**
- * MQTT 3 PUBACK packet.
+ * MQTT 3 PubAck message. This message is translated from and to a MQTT 3 PUBACK packet.
  */
 @DoNotImplement
 public interface Mqtt3PubAck extends Mqtt3Message {
 
-    @NotNull
     @Override
-    default Mqtt3MessageType getType() {
+    default @NotNull Mqtt3MessageType getType() {
         return Mqtt3MessageType.PUBACK;
     }
-
 }

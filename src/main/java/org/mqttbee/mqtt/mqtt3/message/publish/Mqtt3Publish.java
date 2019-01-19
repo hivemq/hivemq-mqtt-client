@@ -29,39 +29,48 @@ import java.nio.ByteBuffer;
 import java.util.Optional;
 
 /**
- * MQTT 3 PUBLISH packet.
+ * MQTT 3 Publish message. This message is translated from and to a MQTT 3 PUBLISH packet.
  */
 @DoNotImplement
 public interface Mqtt3Publish extends Mqtt3Message {
 
+    /**
+     * Default {@link MqttQos QoS} level of a Publish message. It is chosen as {@link MqttQos#AT_MOST_ONCE} as the QoS
+     * level should be explicitly specified if special delivery guarantees are needed.
+     */
     @NotNull MqttQos DEFAULT_QOS = MqttQos.AT_MOST_ONCE;
 
+    /**
+     * Creates a builder for a Publish message.
+     *
+     * @return the created builder.
+     */
     static @NotNull Mqtt3PublishBuilder builder() {
         return new Mqtt3PublishViewBuilder.Default();
     }
 
     /**
-     * @return the topic of this PUBLISH packet.
+     * @return the topic of this Publish message.
      */
     @NotNull MqttTopic getTopic();
 
     /**
-     * @return the optional payload of this PUBLISH packet.
+     * @return the optional payload of this Publish message.
      */
     @NotNull Optional<ByteBuffer> getPayload();
 
     /**
-     * @return the payload of this PUBLISH packet as byte array. Empty byte array if the payload is null.
+     * @return the payload of this Publish message as a byte array. Empty byte array if the payload is not present.
      */
     @NotNull byte[] getPayloadAsBytes();
 
     /**
-     * @return the QoS of this PUBLISH packet.
+     * @return the QoS of this Publish message.
      */
     @NotNull MqttQos getQos();
 
     /**
-     * @return whether this PUBLISH packet is a retained message.
+     * @return whether this Publish message is a retained message.
      */
     boolean isRetain();
 
@@ -70,5 +79,10 @@ public interface Mqtt3Publish extends Mqtt3Message {
         return Mqtt3MessageType.PUBLISH;
     }
 
+    /**
+     * Creates a builder for extending this Publish message.
+     *
+     * @return the created builder.
+     */
     @NotNull Mqtt3PublishBuilder.Complete extend();
 }

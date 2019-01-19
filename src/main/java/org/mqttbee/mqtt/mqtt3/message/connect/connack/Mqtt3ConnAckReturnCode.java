@@ -19,11 +19,12 @@ package org.mqttbee.mqtt.mqtt3.message.connect.connack;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mqttbee.mqtt.mqtt3.message.Mqtt3ReturnCode;
 
 /**
- * CONNACK Return Code according to the MQTT 3.1.1 specification.
+ * Return Code of a {@link Mqtt3ConnAck MQTT 3 ConnAck message}.
  */
-public enum Mqtt3ConnAckReturnCode {
+public enum Mqtt3ConnAckReturnCode implements Mqtt3ReturnCode {
 
     SUCCESS,
     UNSUPPORTED_PROTOCOL_VERSION,
@@ -34,19 +35,22 @@ public enum Mqtt3ConnAckReturnCode {
 
     private static final @NotNull Mqtt3ConnAckReturnCode[] VALUES = values();
 
-    /**
-     * @return the byte code of this CONNACK Return Code.
-     */
+    @Override
     public int getCode() {
         return ordinal();
     }
 
+    @Override
+    public boolean isError() {
+        return this != SUCCESS;
+    }
+
     /**
-     * Returns the CONNACK Return Code belonging to the given byte code.
+     * Returns the ConnAck Return Code belonging to the given byte code.
      *
      * @param code the byte code.
-     * @return the CONNACK Return Code belonging to the given byte code or null if the byte code is not a valid CONNACK
-     *         Return Code code.
+     * @return the ConnAck Return Code belonging to the given byte code or <code>null</code> if the byte code is not a
+     *         valid ConnAck Return Code.
      */
     public static @Nullable Mqtt3ConnAckReturnCode fromCode(final int code) {
         if (code < 0 || code >= VALUES.length) {

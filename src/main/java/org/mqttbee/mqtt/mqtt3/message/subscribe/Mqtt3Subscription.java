@@ -24,15 +24,24 @@ import org.mqttbee.mqtt.datatypes.MqttQos;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilter;
 
 /**
- * Subscription in the MQTT 3 SUBSCRIBE packet.
+ * Subscription in a {@link Mqtt3Subscribe MQTT 3 Subscribe message}.
  *
  * @author Silvio Giebl
  */
 @DoNotImplement
 public interface Mqtt3Subscription {
 
+    /**
+     * Default {@link MqttQos QoS} level of a Subscribe message. It is chosen as {@link MqttQos#EXACTLY_ONCE} as this
+     * leeds to subscribed Publish messages being delivered with its initial {@link MqttQos QoS} level.
+     */
     @NotNull MqttQos DEFAULT_QOS = MqttQos.EXACTLY_ONCE;
 
+    /**
+     * Creates a builder for a subscription.
+     *
+     * @return the created builder.
+     */
     static @NotNull Mqtt3SubscriptionBuilder builder() {
         return new Mqtt3SubscriptionViewBuilder.Default();
     }
@@ -46,5 +55,4 @@ public interface Mqtt3Subscription {
      * @return the QoS of this subscription.
      */
     @NotNull MqttQos getQos();
-
 }

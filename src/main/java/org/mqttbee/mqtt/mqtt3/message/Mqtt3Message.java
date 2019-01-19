@@ -31,7 +31,5 @@ public interface Mqtt3Message {
     /**
      * @return the type of this MQTT message.
      */
-    @NotNull
-    Mqtt3MessageType getType();
-
+    @NotNull Mqtt3MessageType getType();
 }

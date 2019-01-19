@@ -23,26 +23,23 @@ import org.mqttbee.mqtt.mqtt3.message.Mqtt3Message;
 import org.mqttbee.mqtt.mqtt3.message.Mqtt3MessageType;
 
 /**
- * MQTT 3 CONNACK packet.
+ * MQTT 3 ConnAck message. This message is translated from and to a MQTT 3 CONNACK packet.
  */
 @DoNotImplement
 public interface Mqtt3ConnAck extends Mqtt3Message {
 
     /**
-     * @return the return code of this CONNACK packet.
+     * @return the {@link Mqtt3ConnAckReturnCode Return Code} of this ConnAck message.
      */
-    @NotNull
-    Mqtt3ConnAckReturnCode getReturnCode();
+    @NotNull Mqtt3ConnAckReturnCode getReturnCode();
 
     /**
      * @return whether the server has a session present.
      */
     boolean isSessionPresent();
 
-    @NotNull
     @Override
-    default Mqtt3MessageType getType() {
+    default @NotNull Mqtt3MessageType getType() {
         return Mqtt3MessageType.CONNACK;
     }
-
 }
