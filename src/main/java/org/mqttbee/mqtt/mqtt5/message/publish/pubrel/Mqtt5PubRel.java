@@ -27,7 +27,7 @@ import org.mqttbee.mqtt.mqtt5.message.Mqtt5MessageType;
 import java.util.Optional;
 
 /**
- * MQTT 5 PUBREL packet.
+ * MQTT 5 PubRel message. This message is translated from and to a MQTT 5 PUBREL packet.
  *
  * @author Silvio Giebl
  */
@@ -35,27 +35,22 @@ import java.util.Optional;
 public interface Mqtt5PubRel extends Mqtt5Message {
 
     /**
-     * @return the reason code of this PUBREL packet.
+     * @return the Reason Code of this PubRel message.
      */
-    @NotNull
-    Mqtt5PubRelReasonCode getReasonCode();
+    @NotNull Mqtt5PubRelReasonCode getReasonCode();
 
     /**
-     * @return the optional reason string of this PUBREL packet.
+     * @return the optional reason string of this PubRel message.
      */
-    @NotNull
-    Optional<MqttUtf8String> getReasonString();
+    @NotNull Optional<MqttUtf8String> getReasonString();
 
     /**
-     * @return the optional user properties of this PUBREL packet.
+     * @return the optional user properties of this PubRel message.
      */
-    @NotNull
-    Mqtt5UserProperties getUserProperties();
+    @NotNull Mqtt5UserProperties getUserProperties();
 
-    @NotNull
     @Override
-    default Mqtt5MessageType getType() {
+    default @NotNull Mqtt5MessageType getType() {
         return Mqtt5MessageType.PUBREL;
     }
-
 }

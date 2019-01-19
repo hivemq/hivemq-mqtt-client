@@ -43,7 +43,7 @@ public interface Mqtt3Unsubscribe extends Mqtt3Message {
     }
 
     /**
-     * @return the Topic Filters of this UNSUBSCRIBE packet. The list contains at least one Topic Filter.
+     * @return the Topic Filters of this Unsubscribe message. The list contains at least one Topic Filter.
      */
     @Immutable @NotNull List<@NotNull ? extends MqttTopicFilter> getTopicFilters();
 

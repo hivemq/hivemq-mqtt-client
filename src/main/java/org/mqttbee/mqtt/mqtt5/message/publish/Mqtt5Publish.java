@@ -32,13 +32,17 @@ import java.util.Optional;
 import java.util.OptionalLong;
 
 /**
- * MQTT 5 PUBLISH packet.
+ * MQTT 5 Publish message. This message is translated from and to a MQTT 5 PUBLISH packet.
  *
  * @author Silvio Giebl
  */
 @DoNotImplement
 public interface Mqtt5Publish extends Mqtt5Message {
 
+    /**
+     * Default {@link MqttQos QoS} level of a Publish message. It is chosen as {@link MqttQos#AT_MOST_ONCE} as the QoS
+     * level should be explicitly specified if special delivery guarantees are needed.
+     */
     @NotNull MqttQos DEFAULT_QOS = MqttQos.AT_MOST_ONCE;
 
     /**
@@ -46,57 +50,62 @@ public interface Mqtt5Publish extends Mqtt5Message {
      */
     @NotNull TopicAliasUsage DEFAULT_TOPIC_ALIAS_USAGE = TopicAliasUsage.NO;
 
+    /**
+     * Creates a builder for a Publish message.
+     *
+     * @return the created builder.
+     */
     static @NotNull Mqtt5PublishBuilder builder() {
         return new MqttPublishBuilder.Default();
     }
 
     /**
-     * @return the topic of this PUBLISH packet.
+     * @return the topic of this Publish message.
      */
     @NotNull MqttTopic getTopic();
 
     /**
-     * @return the optional payload of this PUBLISH packet.
+     * @return the optional payload of this Publish message.
      */
     @NotNull Optional<ByteBuffer> getPayload();
 
     /**
-     * @return the payload of this PUBLISH packet as byte array. Empty byte array if the payload is null.
+     * @return the payload of this Publish message as a byte array. Empty byte array if the payload is not present.
      */
     @NotNull byte[] getPayloadAsBytes();
 
     /**
-     * @return the QoS of this PUBLISH packet.
+     * @return the QoS of this Publish message.
      */
     @NotNull MqttQos getQos();
 
     /**
-     * @return whether this PUBLISH packet is a retained message.
+     * @return whether this Publish message is a retained message.
      */
     boolean isRetain();
 
     /**
-     * @return the optional message expiry interval in seconds of this PUBLISH packet.
+     * @return the optional message expiry interval in seconds of this Publish message.
      */
     @NotNull OptionalLong getMessageExpiryInterval();
 
     /**
-     * @return the optional payload format indicator of this PUBLISH packet.
+     * @return the optional payload format indicator of this Publish message.
      */
     @NotNull Optional<Mqtt5PayloadFormatIndicator> getPayloadFormatIndicator();
 
     /**
-     * @return the optional content type of this PUBLISH packet.
+     * @return the optional content type of this Publish message.
      */
     @NotNull Optional<MqttUtf8String> getContentType();
 
     /**
-     * @return the optional response topic of this PUBLISH packet.
+     * @return the optional response topic of this Publish message.
      */
     @NotNull Optional<MqttTopic> getResponseTopic();
 
     /**
-     * @return the optional correlation data of this PUBLISH packet.
+     * @return the optional correlation data of this Publish message.
      */
     @NotNull Optional<ByteBuffer> getCorrelationData();
 
@@ -106,7 +115,7 @@ public interface Mqtt5Publish extends Mqtt5Message {
     @NotNull TopicAliasUsage usesTopicAlias();
 
     /**
-     * @return the optional user properties of this PUBLISH packet.
+     * @return the optional user properties of this Publish message.
      */
     @NotNull Mqtt5UserProperties getUserProperties();
 
@@ -115,7 +124,17 @@ public interface Mqtt5Publish extends Mqtt5Message {
         return Mqtt5MessageType.PUBLISH;
     }
 
+    /**
+     * Transforms this Publish message into a Will Publish with the same properties.
+     *
+     * @return the Will Publish.
+     */
     @NotNull Mqtt5WillPublish asWill();
 
+    /**
+     * Creates a builder for extending this Publish message.
+     *
+     * @return the created builder.
+     */
     @NotNull Mqtt5PublishBuilder.Complete extend();
 }

@@ -27,7 +27,7 @@ import org.mqttbee.mqtt.mqtt5.message.Mqtt5MessageType;
 import java.util.Optional;
 
 /**
- * MQTT 5 AUTH packet.
+ * MQTT 5 Auth message. This message is translated from and to a MQTT 5 AUTH packet.
  *
  * @author Silvio Giebl
  */
@@ -35,27 +35,22 @@ import java.util.Optional;
 public interface Mqtt5Auth extends Mqtt5Message, Mqtt5EnhancedAuth {
 
     /**
-     * @return the reason code of this AUTH packet.
+     * @return the Reason Code of this Auth message.
      */
-    @NotNull
-    Mqtt5AuthReasonCode getReasonCode();
+    @NotNull Mqtt5AuthReasonCode getReasonCode();
 
     /**
-     * @return the optional reason string of this AUTH packet.
+     * @return the optional reason string of this Auth message.
      */
-    @NotNull
-    Optional<MqttUtf8String> getReasonString();
+    @NotNull Optional<MqttUtf8String> getReasonString();
 
     /**
-     * @return the optional user properties of this AUTH packet.
+     * @return the optional user properties of this Auth message.
      */
-    @NotNull
-    Mqtt5UserProperties getUserProperties();
+    @NotNull Mqtt5UserProperties getUserProperties();
 
-    @NotNull
     @Override
-    default Mqtt5MessageType getType() {
+    default @NotNull Mqtt5MessageType getType() {
         return Mqtt5MessageType.AUTH;
     }
-
 }

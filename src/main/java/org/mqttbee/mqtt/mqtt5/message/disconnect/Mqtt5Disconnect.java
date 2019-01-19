@@ -29,7 +29,7 @@ import java.util.Optional;
 import java.util.OptionalLong;
 
 /**
- * MQTT 5 DISCONNECT packet.
+ * MQTT 5 Disconnect message. This message is translated from and to a MQTT 5 DISCONNECT packet.
  *
  * @author Silvio Giebl
  */
@@ -38,33 +38,38 @@ public interface Mqtt5Disconnect extends Mqtt5Message {
 
     @NotNull Mqtt5DisconnectReasonCode DEFAULT_REASON_CODE = Mqtt5DisconnectReasonCode.NORMAL_DISCONNECTION;
 
+    /**
+     * Creates a builder for a Disconnect message.
+     *
+     * @return the created builder.
+     */
     static @NotNull Mqtt5DisconnectBuilder builder() {
         return new MqttDisconnectBuilder.Default();
     }
 
     /**
-     * @return the reason code of this DISCONNECT packet.
+     * @return the Reason Code of this Disconnect message.
      */
     @NotNull Mqtt5DisconnectReasonCode getReasonCode();
 
     /**
-     * @return the optional session expiry interval in seconds, the client disconnects from with this DISCONNECT
-     *         packet.
+     * @return the optional session expiry interval in seconds, the client disconnects from with this Disconnect
+     *         message.
      */
     @NotNull OptionalLong getSessionExpiryInterval();
 
     /**
-     * @return the optional server reference, which can be used if the server sent this DISCONNECT packet.
+     * @return the optional server reference, which can be used if the server sent this Disconnect message.
      */
     @NotNull Optional<MqttUtf8String> getServerReference();
 
     /**
-     * @return the optional reason string of this DISCONNECT packet.
+     * @return the optional reason string of this Disconnect message.
      */
     @NotNull Optional<MqttUtf8String> getReasonString();
 
     /**
-     * @return the optional user properties of this DISCONNECT packet.
+     * @return the optional user properties of this Disconnect message.
      */
     @NotNull Mqtt5UserProperties getUserProperties();
 
@@ -73,5 +78,10 @@ public interface Mqtt5Disconnect extends Mqtt5Message {
         return Mqtt5MessageType.DISCONNECT;
     }
 
+    /**
+     * Creates a builder for extending this Disconnect message.
+     *
+     * @return the created builder.
+     */
     @NotNull Mqtt5DisconnectBuilder extend();
 }

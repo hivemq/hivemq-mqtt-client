@@ -32,13 +32,13 @@ import org.mqttbee.mqtt.datatypes.MqttTopicFilter;
 public interface Mqtt3Subscription {
 
     /**
-     * Default {@link MqttQos QoS} level of a Subscribe message. It is chosen as {@link MqttQos#EXACTLY_ONCE} as this
-     * leeds to subscribed Publish messages being delivered with its initial {@link MqttQos QoS} level.
+     * Default {@link MqttQos QoS} level of a Subscription. It is chosen as {@link MqttQos#EXACTLY_ONCE} as this leeds
+     * to subscribed Publish messages being delivered with its initial {@link MqttQos QoS} level.
      */
     @NotNull MqttQos DEFAULT_QOS = MqttQos.EXACTLY_ONCE;
 
     /**
-     * Creates a builder for a subscription.
+     * Creates a builder for a Subscription.
      *
      * @return the created builder.
      */
@@ -47,12 +47,12 @@ public interface Mqtt3Subscription {
     }
 
     /**
-     * @return the Topic Filter of this subscription.
+     * @return the Topic Filter of this Subscription.
      */
     @NotNull MqttTopicFilter getTopicFilter();
 
     /**
-     * @return the QoS of this subscription.
+     * @return the QoS of this Subscription.
      */
     @NotNull MqttQos getQos();
 }

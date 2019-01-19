@@ -35,13 +35,10 @@ public interface Mqtt5EnhancedAuth {
     /**
      * @return the authentication/authorization method.
      */
-    @NotNull
-    MqttUtf8String getMethod();
+    @NotNull MqttUtf8String getMethod();
 
     /**
      * @return the optional authentication/authorization data.
      */
-    @NotNull
-    Optional<ByteBuffer> getData();
-
+    @NotNull Optional<ByteBuffer> getData();
 }

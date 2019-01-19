@@ -24,13 +24,17 @@ import org.mqttbee.mqtt.datatypes.MqttQos;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilter;
 
 /**
- * Subscription in the MQTT 5 SUBSCRIBE packet.
+ * Subscription in a {@link Mqtt5Subscribe MQTT 5 Subscribe message}.
  *
  * @author Silvio Giebl
  */
 @DoNotImplement
 public interface Mqtt5Subscription {
 
+    /**
+     * Default {@link MqttQos QoS} level of a Subscription. It is chosen as {@link MqttQos#EXACTLY_ONCE} as this leeds
+     * to subscribed Publish messages being delivered with its initial {@link MqttQos QoS} level.
+     */
     @NotNull MqttQos DEFAULT_QOS = MqttQos.EXACTLY_ONCE;
 
     /**
@@ -42,21 +46,26 @@ public interface Mqtt5Subscription {
      */
     @NotNull Mqtt5RetainHandling DEFAULT_RETAIN_HANDLING = Mqtt5RetainHandling.SEND;
     /**
-     * The default for whether the retain flag for incoming publishes must be set to its original value.
+     * The default for whether the retain flag for incoming Publish messages must be set to its original value.
      */
     boolean DEFAULT_RETAIN_AS_PUBLISHED = false;
 
+    /**
+     * Creatse a builder for a Subscription.
+     *
+     * @return the created builder.
+     */
     static @NotNull Mqtt5SubscriptionBuilder builder() {
         return new MqttSubscriptionBuilder.Default();
     }
 
     /**
-     * @return the Topic Filter of this subscription.
+     * @return the Topic Filter of this Subscription.
      */
     @NotNull MqttTopicFilter getTopicFilter();
 
     /**
-     * @return the QoS of this subscription.
+     * @return the QoS of this Subscription.
      */
     @NotNull MqttQos getQos();
 
@@ -67,13 +76,12 @@ public interface Mqtt5Subscription {
     boolean isNoLocal();
 
     /**
-     * @return the handling of retained message for this subscription. The default is {@link #DEFAULT_RETAIN_HANDLING}.
+     * @return the handling of retained message for this Subscription. The default is {@link #DEFAULT_RETAIN_HANDLING}.
      */
     @NotNull Mqtt5RetainHandling getRetainHandling();
 
     /**
-     * @return whether the retain flag for incoming publishes must be set to its original value.
+     * @return whether the retain flag for incoming Publish messages must be set to its original value.
      */
     boolean isRetainAsPublished();
-
 }

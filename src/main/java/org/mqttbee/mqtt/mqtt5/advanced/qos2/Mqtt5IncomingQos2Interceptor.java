@@ -25,33 +25,33 @@ import org.mqttbee.mqtt.mqtt5.message.publish.pubrec.Mqtt5PubRecBuilder;
 import org.mqttbee.mqtt.mqtt5.message.publish.pubrel.Mqtt5PubRel;
 
 /**
- * Interface for interceptors of the QoS 2 control flow of incoming PUBLISH messages.
+ * Interface for interceptors of the QoS 2 control flow of incoming Publish messages.
  *
  * @author Silvio Giebl
  */
 public interface Mqtt5IncomingQos2Interceptor {
 
     /**
-     * Called when a server sent a PUBLISH message with QoS 2.
+     * Called when a server sent a Publish message with QoS 2.
      * <p>
-     * This method must not block and just add some properties to the outgoing PUBREC message.
+     * This method must not block and just add some properties to the outgoing PubRec message.
      *
      * @param clientConfig  the config of the client.
      * @param publish       the Publish message with QoS 2 sent by the server.
-     * @param pubRecBuilder the builder for the outgoing PUBREC message.
+     * @param pubRecBuilder the builder for the outgoing PubRec message.
      */
     void onPublish(
             @NotNull Mqtt5ClientConfig clientConfig, @NotNull Mqtt5Publish publish,
             @NotNull Mqtt5PubRecBuilder pubRecBuilder);
 
     /**
-     * Called when a server sent a PUBREL message for a PUBLISH with QoS 2.
+     * Called when a server sent a PubRel message for a Publish message with QoS 2.
      * <p>
-     * This method must not block and just add some properties to the outgoing PUBCOMP message.
+     * This method must not block and just add some properties to the outgoing PubComp message.
      *
      * @param clientConfig   the config of the client.
      * @param pubRel         the PubRel message sent by the server.
-     * @param pubCompBuilder the builder for the outgoing PUBCOMP message.
+     * @param pubCompBuilder the builder for the outgoing PubComp message.
      */
     void onPubRel(
             @NotNull Mqtt5ClientConfig clientConfig, @NotNull Mqtt5PubRel pubRel,

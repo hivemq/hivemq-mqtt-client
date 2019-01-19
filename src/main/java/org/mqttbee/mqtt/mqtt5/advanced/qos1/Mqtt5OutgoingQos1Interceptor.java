@@ -23,20 +23,20 @@ import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.mqtt.mqtt5.message.publish.puback.Mqtt5PubAck;
 
 /**
- * Interface for interceptors of the QoS 1 control flow for outgoing PUBLISH messages.
+ * Interface for interceptors of the QoS 1 control flow for outgoing Publish messages.
  *
  * @author Silvio Giebl
  */
 public interface Mqtt5OutgoingQos1Interceptor {
 
     /**
-     * Called when a server sent a PUBACK message for a Publish with QoS 1.
+     * Called when a server sent a PubAck message for a Publish message with QoS 1.
      * <p>
      * This method must not block.
      *
      * @param clientConfig the config of the client.
-     * @param publish      the PUBLISH message with QoS 1 sent by the client.
-     * @param pubAck       the PUBACK message sent by the server.
+     * @param publish      the Publish message with QoS 1 sent by the client.
+     * @param pubAck       the PubAck message sent by the server.
      */
     void onPubAck(@NotNull Mqtt5ClientConfig clientConfig, @NotNull Mqtt5Publish publish, @NotNull Mqtt5PubAck pubAck);
 }

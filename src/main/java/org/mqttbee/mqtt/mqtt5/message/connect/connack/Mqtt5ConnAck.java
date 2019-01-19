@@ -31,7 +31,7 @@ import java.util.OptionalInt;
 import java.util.OptionalLong;
 
 /**
- * MQTT 5 CONNACK packet.
+ * MQTT 5 ConnAck packet. This message is translated from and to a MQTT 5 CONNACK packet.
  *
  * @author Silvio Giebl
  */
@@ -39,7 +39,7 @@ import java.util.OptionalLong;
 public interface Mqtt5ConnAck extends Mqtt5Message {
 
     /**
-     * @return the reason code of this CONNACK packet.
+     * @return the Reason Code of this ConnAck message.
      */
     @NotNull Mqtt5ConnAckReasonCode getReasonCode();
 
@@ -50,23 +50,23 @@ public interface Mqtt5ConnAck extends Mqtt5Message {
 
     /**
      * @return the optional session expiry interval set from the server. If absent, the session expiry interval from the
-     *         CONNECT packet is used.
+     *         Connect message is used.
      */
     @NotNull OptionalLong getSessionExpiryInterval();
 
     /**
-     * @return the optional keep alive set from the server. If absent, the keep alive from the CONNECT packet is used.
+     * @return the optional keep alive set from the server. If absent, the keep alive from the Connect message is used.
      */
     @NotNull OptionalInt getServerKeepAlive();
 
     /**
-     * @return the optional client identifier assigned by the server. If absent, the client identifier from the CONNECT
-     *         packet is used.
+     * @return the optional client identifier assigned by the server. If absent, the client identifier from the Connect
+     *         message is used.
      */
     @NotNull Optional<MqttClientIdentifier> getAssignedClientIdentifier();
 
     /**
-     * @return the optional enhanced authentication and/or authorization related data of this CONNACK packet.
+     * @return the optional enhanced authentication and/or authorization related data of this ConnAck message.
      */
     @NotNull Optional<Mqtt5EnhancedAuth> getEnhancedAuth();
 
@@ -76,7 +76,7 @@ public interface Mqtt5ConnAck extends Mqtt5Message {
     @NotNull Mqtt5ConnAckRestrictions getRestrictions();
 
     /**
-     * @return the optional response information of this CONNACK packet to retrieve a response topic from.
+     * @return the optional response information of this ConnAck message to retrieve a response topic from.
      */
     @NotNull Optional<MqttUtf8String> getResponseInformation();
 
@@ -86,12 +86,12 @@ public interface Mqtt5ConnAck extends Mqtt5Message {
     @NotNull Optional<MqttUtf8String> getServerReference();
 
     /**
-     * @return the optional reason string of this CONNACK packet.
+     * @return the optional reason string of this ConnAck message.
      */
     @NotNull Optional<MqttUtf8String> getReasonString();
 
     /**
-     * @return the optional user properties of this CONNACK packet.
+     * @return the optional user properties of this ConnAck message.
      */
     @NotNull Mqtt5UserProperties getUserProperties();
 
@@ -99,5 +99,4 @@ public interface Mqtt5ConnAck extends Mqtt5Message {
     default @NotNull Mqtt5MessageType getType() {
         return Mqtt5MessageType.CONNACK;
     }
-
 }

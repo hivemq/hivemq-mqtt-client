@@ -27,7 +27,7 @@ import org.mqttbee.mqtt.mqtt5.message.Mqtt5MessageType;
 import java.util.Optional;
 
 /**
- * MQTT 5 PUBCOMP packet.
+ * MQTT 5 PubComp message. This message is translated from and to a MQTT 5 PUBCOMP packet.
  *
  * @author Silvio Giebl
  */
@@ -35,27 +35,22 @@ import java.util.Optional;
 public interface Mqtt5PubComp extends Mqtt5Message {
 
     /**
-     * @return the reason code of this PUBCOMP packet.
+     * @return the Reason Code of this PubComp message.
      */
-    @NotNull
-    Mqtt5PubCompReasonCode getReasonCode();
+    @NotNull Mqtt5PubCompReasonCode getReasonCode();
 
     /**
-     * @return the optional reason string of this PUBCOMP packet.
+     * @return the optional reason string of this PubComp message.
      */
-    @NotNull
-    Optional<MqttUtf8String> getReasonString();
+    @NotNull Optional<MqttUtf8String> getReasonString();
 
     /**
-     * @return the optional user properties of this PUBCOMP packet.
+     * @return the optional user properties of this PubComp message.
      */
-    @NotNull
-    Mqtt5UserProperties getUserProperties();
+    @NotNull Mqtt5UserProperties getUserProperties();
 
-    @NotNull
     @Override
-    default Mqtt5MessageType getType() {
+    default @NotNull Mqtt5MessageType getType() {
         return Mqtt5MessageType.PUBCOMP;
     }
-
 }

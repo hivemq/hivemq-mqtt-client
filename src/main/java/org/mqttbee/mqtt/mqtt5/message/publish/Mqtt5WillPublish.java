@@ -22,7 +22,8 @@ import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.internal.mqtt.message.publish.MqttPublishBuilder;
 
 /**
- * MQTT 5 Will Publish which can be a part of the CONNECT packet.
+ * MQTT 5 Will Publish which can be a part of a {@link org.mqttbee.mqtt.mqtt5.message.connect.Mqtt5Connect Connect
+ * message}.
  *
  * @author Silvio Giebl
  */
@@ -34,6 +35,11 @@ public interface Mqtt5WillPublish extends Mqtt5Publish {
      */
     long DEFAULT_DELAY_INTERVAL = 0;
 
+    /**
+     * Creates a builder for a Will Publish.
+     *
+     * @return the created builder.
+     */
     static @NotNull Mqtt5WillPublishBuilder builder() {
         return new MqttPublishBuilder.WillDefault();
     }
@@ -43,5 +49,10 @@ public interface Mqtt5WillPublish extends Mqtt5Publish {
      */
     long getDelayInterval();
 
+    /**
+     * Creates a builder for extending this Will Publish.
+     *
+     * @return the created builder.
+     */
     @NotNull Mqtt5WillPublishBuilder.Complete extendAsWill();
 }

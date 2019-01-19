@@ -32,9 +32,9 @@ import java.util.List;
 public interface Mqtt3SubAck extends Mqtt3Message {
 
     /**
-     * @return the {@link Mqtt3SubAckReturnCode Return Codes} of this SubAck message, each belonging to a {@link
-     *         org.mqttbee.mqtt.mqtt3.message.subscribe.Mqtt3Subscription subscription} in the corresponding {@link
-     *         org.mqttbee.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe Subscribe message} in the same order.
+     * @return the Return Codes of this SubAck message, each belonging to a {@link org.mqttbee.mqtt.mqtt3.message.subscribe.Mqtt3Subscription
+     *         Subscription} in the corresponding {@link org.mqttbee.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe
+     *         Subscribe message} in the same order.
      */
     @Immutable @NotNull List<@NotNull Mqtt3SubAckReturnCode> getReturnCodes();
 

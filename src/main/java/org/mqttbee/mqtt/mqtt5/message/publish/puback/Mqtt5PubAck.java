@@ -27,7 +27,7 @@ import org.mqttbee.mqtt.mqtt5.message.Mqtt5MessageType;
 import java.util.Optional;
 
 /**
- * MQTT 5 PUBACK packet.
+ * MQTT 5 PubAck message. This message is translated from and to a MQTT 5 PUBACK packet.
  *
  * @author Silvio Giebl
  */
@@ -35,27 +35,22 @@ import java.util.Optional;
 public interface Mqtt5PubAck extends Mqtt5Message {
 
     /**
-     * @return the reason code of this PUBACK packet.
+     * @return the Reason Code of this PubAck message.
      */
-    @NotNull
-    Mqtt5PubAckReasonCode getReasonCode();
+    @NotNull Mqtt5PubAckReasonCode getReasonCode();
 
     /**
-     * @return the optional reason string of this PUBACK packet.
+     * @return the optional reason string of this PubAck message.
      */
-    @NotNull
-    Optional<MqttUtf8String> getReasonString();
+    @NotNull Optional<MqttUtf8String> getReasonString();
 
     /**
-     * @return the optional user properties of this PUBACK packet.
+     * @return the optional user properties of this PubAck message.
      */
-    @NotNull
-    Mqtt5UserProperties getUserProperties();
+    @NotNull Mqtt5UserProperties getUserProperties();
 
-    @NotNull
     @Override
-    default Mqtt5MessageType getType() {
+    default @NotNull Mqtt5MessageType getType() {
         return Mqtt5MessageType.PUBACK;
     }
-
 }

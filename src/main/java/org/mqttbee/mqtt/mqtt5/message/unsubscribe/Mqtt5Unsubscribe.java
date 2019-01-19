@@ -29,24 +29,29 @@ import org.mqttbee.mqtt.mqtt5.message.Mqtt5MessageType;
 import java.util.List;
 
 /**
- * MQTT 5 UNSUBSCRIBE packet.
+ * MQTT 5 Unsubscribe message. This message is translated from and to a MQTT 5 UNSUBSCRIBE packet.
  *
  * @author Silvio Giebl
  */
 @DoNotImplement
 public interface Mqtt5Unsubscribe extends Mqtt5Message {
 
+    /**
+     * Creates a builder for a Unsubscribe message.
+     *
+     * @return the created builder.
+     */
     static @NotNull Mqtt5UnsubscribeBuilder.Start builder() {
         return new MqttUnsubscribeBuilder.Default();
     }
 
     /**
-     * @return the Topic Filters of this UNSUBSCRIBE packet. The list contains at least one Topic Filter.
+     * @return the Topic Filters of this Unsubscribe message. The list contains at least one Topic Filter.
      */
     @Immutable @NotNull List<@NotNull ? extends MqttTopicFilter> getTopicFilters();
 
     /**
-     * @return the optional user properties of this UNSUBSCRIBE packet.
+     * @return the optional user properties of this Unsubscribe message.
      */
     @NotNull Mqtt5UserProperties getUserProperties();
 
@@ -55,5 +60,10 @@ public interface Mqtt5Unsubscribe extends Mqtt5Message {
         return Mqtt5MessageType.UNSUBSCRIBE;
     }
 
+    /**
+     * Creates a builder for extending this Unsubscribe message.
+     *
+     * @return the created builder.
+     */
     @NotNull Mqtt5UnsubscribeBuilder.Complete extend();
 }
