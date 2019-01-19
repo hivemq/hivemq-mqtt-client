@@ -30,35 +30,46 @@ import org.mqttbee.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * Interface for providers for the enhanced authentication/authorization (auth) according to the MQTT 5 specification.
+ * Interface for enhanced authentication and/or authorization (auth) mechanisms.
  * <p>
- * If an implementation stores state, an object of the implementation can not be shared by different clients. If no
- * state is stored, it has to be thread safe that it can be shared.
+ * An enhanced auth mechanism object can be shared by different clients only if it does not store state and is
+ * thread-safe.
  * <p>
  * The enhanced auth has two life cycles:
  * <ul>
- * <li>Auth during connection: onAuth -&gt; (onContinue)* -&gt; (onAuthSuccess | onAuthRejected | onAuthError)</li>
- * <li>Reauth: (onReAuth | onServerReAuth) -&gt; (onContinue)* -&gt; (onReAuthSuccess | onReAuthRejected |
- * onReAuthError)</li>
+ * <li>Auth when connecting:
+ * <ol>
+ * <li>{@link #onAuth}</li>
+ * <li>({@link #onContinue})*</li>
+ * <li>({@link #onAuthSuccess} | {@link
+ * #onAuthRejected} | {@link #onAuthError})</li>
+ * </ol>
+ * </li>
+ * <li>Reauth when connected:
+ * <ol>
+ * <li>({@link #onReAuth} | {@link #onServerReAuth})</li>
+ * <li>({@link #onContinue})*</li>
+ * <li>({@link #onReAuthSuccess} | {@link #onReAuthRejected} | {@link #onReAuthError})</li>
+ * </ol>
  * </ul>
  *
  * @author Silvio Giebl
  */
-public interface Mqtt5EnhancedAuthProvider {
+public interface Mqtt5EnhancedAuthMechanism {
 
     /**
-     * @return the method of this enhanced auth provider. This method must always return the same string.
+     * @return the method of this enhanced auth mechanism. This method MUST always return the same name.
      */
     @NotNull MqttUtf8String getMethod();
 
     /**
-     * @return the maximum time interval in seconds between messages of the enhanced auth handshake (CONNECT, AUTH,
-     *         CONNACK, DISCONNECT). This method must always return the same value.
+     * @return the maximum time interval in seconds between messages of the enhanced auth handshake (Connect, Auth,
+     *         ConnAck, Disconnect). This method MUST always return the same value.
      */
     int getTimeout();
 
     /**
-     * Called when a client connects using this enhanced auth provider.
+     * Called when a client connects using this enhanced auth mechanism.
      *
      * @param clientConfig the config of the client.
      * @param connect      the Connect message.
@@ -70,7 +81,7 @@ public interface Mqtt5EnhancedAuthProvider {
             @NotNull Mqtt5EnhancedAuthBuilder authBuilder);
 
     /**
-     * Called when a client reauthenticates and used this enhanced auth provider during connection.
+     * Called when a client reauthenticates and used this enhanced auth mechanism during connection.
      *
      * @param clientConfig the config of the client.
      * @param authBuilder  the builder for the outgoing Auth message.
@@ -80,10 +91,11 @@ public interface Mqtt5EnhancedAuthProvider {
             @NotNull Mqtt5ClientConfig clientConfig, @NotNull Mqtt5AuthBuilder authBuilder);
 
     /**
-     * Called when a server reauthenticates a client and the client used this enhanced auth provider during connection.
+     * Called when a server reauthenticates a client and the client used this enhanced auth mechanism during
+     * connection.
      * <p>
      * This is an addition to the MQTT 5 specification and so defaults to {@link #onReAuth(Mqtt5ClientConfig,
-     * Mqtt5AuthBuilder)}. The feature must be enabled during client creation.
+     * Mqtt5AuthBuilder)}. The feature must be explicitly enabled during client creation.
      *
      * @param clientConfig the config of the client.
      * @param auth         the Auth message sent by the server.
@@ -99,7 +111,7 @@ public interface Mqtt5EnhancedAuthProvider {
     }
 
     /**
-     * Called when a server requires further data for auth from a client which used this enhanced auth provider during
+     * Called when a server requires further data for auth from a client which used this enhanced auth mechanism during
      * connection.
      *
      * @param clientConfig the config of the client.
@@ -112,7 +124,7 @@ public interface Mqtt5EnhancedAuthProvider {
             @NotNull Mqtt5ClientConfig clientConfig, @NotNull Mqtt5Auth auth, @NotNull Mqtt5AuthBuilder authBuilder);
 
     /**
-     * Called when a server accepted auth of a client which used this enhanced auth provider during connection.
+     * Called when a server accepted auth of a client which used this enhanced auth mechanism during connection.
      *
      * @param clientConfig the config of the client.
      * @param connAck      the ConnAck message sent by the server.
@@ -122,7 +134,7 @@ public interface Mqtt5EnhancedAuthProvider {
             @NotNull Mqtt5ClientConfig clientConfig, @NotNull Mqtt5ConnAck connAck);
 
     /**
-     * Called when a server accepted reauth of a client which used this enhanced auth provider during connection.
+     * Called when a server accepted reauth of a client which used this enhanced auth mechanism during connection.
      *
      * @param clientConfig the config of the client.
      * @param auth         the Auth message sent by the server.
@@ -132,7 +144,7 @@ public interface Mqtt5EnhancedAuthProvider {
             @NotNull Mqtt5ClientConfig clientConfig, @NotNull Mqtt5Auth auth);
 
     /**
-     * Called when a server rejected auth of a client which used this enhanced auth provider during connection.
+     * Called when a server rejected auth of a client which used this enhanced auth mechanism during connection.
      *
      * @param clientConfig the config of the client.
      * @param connAck      the ConnAck message sent by the server.
@@ -140,7 +152,7 @@ public interface Mqtt5EnhancedAuthProvider {
     void onAuthRejected(@NotNull Mqtt5ClientConfig clientConfig, @NotNull Mqtt5ConnAck connAck);
 
     /**
-     * Called when a server rejected reauth of a client which used this enhanced auth provider during connection.
+     * Called when a server rejected reauth of a client which used this enhanced auth mechanism during connection.
      *
      * @param clientConfig the config of the client.
      * @param disconnect   the Disconnect message sent by the server.
@@ -148,20 +160,19 @@ public interface Mqtt5EnhancedAuthProvider {
     void onReAuthRejected(@NotNull Mqtt5ClientConfig clientConfig, @NotNull Mqtt5Disconnect disconnect);
 
     /**
-     * Called when an exception occurred during auth of a client which used this enhanced auth provider during
-     * connection.
+     * Called when an error occurred during auth of a client which used this enhanced auth mechanism during connection.
      *
      * @param clientConfig the config of the client.
-     * @param cause        the exception.
+     * @param cause        the error.
      */
     void onAuthError(@NotNull Mqtt5ClientConfig clientConfig, @NotNull Throwable cause);
 
     /**
-     * Called when an exception occurred during reauth of a client which used this enhanced auth provider during
+     * Called when an error occurred during reauth of a client which used this enhanced auth mechanism during
      * connection.
      *
      * @param clientConfig the config of the client.
-     * @param cause        the exception.
+     * @param cause        the error.
      */
     void onReAuthError(@NotNull Mqtt5ClientConfig clientConfig, @NotNull Throwable cause);
 }

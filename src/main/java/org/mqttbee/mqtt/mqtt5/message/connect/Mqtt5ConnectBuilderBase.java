@@ -20,7 +20,7 @@ package org.mqttbee.mqtt.mqtt5.message.connect;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
+import org.mqttbee.mqtt.mqtt5.auth.Mqtt5EnhancedAuthMechanism;
 import org.mqttbee.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 import org.mqttbee.mqtt.mqtt5.message.auth.Mqtt5SimpleAuth;
@@ -57,7 +57,7 @@ public interface Mqtt5ConnectBuilderBase<B extends Mqtt5ConnectBuilderBase<B>> {
 
     @NotNull Mqtt5SimpleAuthBuilder.Nested<? extends B> simpleAuth();
 
-    @NotNull B enhancedAuth(@Nullable Mqtt5EnhancedAuthProvider enhancedAuthProvider);
+    @NotNull B enhancedAuth(@Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism);
 
     @NotNull B willPublish(@Nullable Mqtt5Publish willPublish);
 

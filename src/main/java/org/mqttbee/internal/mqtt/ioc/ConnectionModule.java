@@ -57,7 +57,7 @@ abstract class ConnectionModule {
             final @NotNull MqttConnect connect, final @NotNull Lazy<MqttConnectAuthHandler> connectAuthHandlerLazy,
             final @NotNull Lazy<MqttDisconnectOnAuthHandler> disconnectOnAuthHandlerLazy) {
 
-        return (connect.getRawEnhancedAuthProvider() == null) ? disconnectOnAuthHandlerLazy.get() :
+        return (connect.getRawEnhancedAuthMechanism() == null) ? disconnectOnAuthHandlerLazy.get() :
                 connectAuthHandlerLazy.get();
     }
 }

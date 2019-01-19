@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.internal.mqtt.message.connect.MqttConnectBuilder;
 import org.mqttbee.internal.util.UnsignedDataTypes;
-import org.mqttbee.mqtt.mqtt5.auth.Mqtt5EnhancedAuthProvider;
+import org.mqttbee.mqtt.mqtt5.auth.Mqtt5EnhancedAuthMechanism;
 import org.mqttbee.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.mqtt.mqtt5.message.Mqtt5Message;
 import org.mqttbee.mqtt.mqtt5.message.Mqtt5MessageType;
@@ -94,9 +94,9 @@ public interface Mqtt5Connect extends Mqtt5Message {
     @NotNull Optional<Mqtt5SimpleAuth> getSimpleAuth();
 
     /**
-     * @return the optional enhanced authentication and/or authorization provider of this Connect message.
+     * @return the optional enhanced authentication and/or authorization mechanism of this Connect message.
      */
-    @NotNull Optional<Mqtt5EnhancedAuthProvider> getEnhancedAuthProvider();
+    @NotNull Optional<Mqtt5EnhancedAuthMechanism> getEnhancedAuthMechanism();
 
     /**
      * @return the optional Will Publish of this Connect message.
