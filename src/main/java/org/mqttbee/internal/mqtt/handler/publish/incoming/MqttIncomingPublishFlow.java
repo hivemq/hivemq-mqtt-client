@@ -25,7 +25,6 @@ import org.jetbrains.annotations.Nullable;
 import org.mqttbee.internal.annotations.CallByThread;
 import org.mqttbee.internal.mqtt.MqttClientConfig;
 import org.mqttbee.internal.mqtt.handler.util.FlowWithEventLoop;
-import org.mqttbee.internal.util.ExecutorUtil;
 import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
@@ -121,7 +120,10 @@ public abstract class MqttIncomingPublishFlow extends FlowWithEventLoop
         if ((n > 0) && !isCancelled()) {
             BackpressureHelper.add(newRequested, n);
             if (requestState.getAndSet(STATE_NEW_REQUESTS) == STATE_BLOCKED) {
-                ExecutorUtil.execute(eventLoop, this);
+                eventLoop.execute(this);
+                // event loop is acquired even if done:
+                // - cancelled is checked
+                // - onComplete/onError wait for the queue to be empty -> requestState != STATE_BLOCKED
             }
         }
     }

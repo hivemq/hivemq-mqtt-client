@@ -69,13 +69,15 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
         static final int STATE_NONE = 0;
         static final int STATE_EMITTING = 1;
         static final int STATE_DONE = 2;
-        static final int STATE_CANCELLED = 3;
+        static final int STATE_CANCEL = 3;
+        static final int STATE_CANCELLED = 4;
 
         final @NotNull MqttIncomingAckFlow ackFlow;
         private boolean linked;
         private final @NotNull AtomicInteger state = new AtomicInteger();
         private final @NotNull AtomicInteger pollState = new AtomicInteger();
         long published;
+        private @Nullable Throwable error;
 
         AbstractAckLinkSubscriber(final @NotNull S subscriber, final @NotNull MqttIncomingAckFlow ackFlow) {
             super(subscriber);
@@ -96,9 +98,8 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
 
         private void stopEmitting(final @NotNull AtomicInteger state) {
             assert subscription != null;
-            if (!state.compareAndSet(STATE_EMITTING, STATE_NONE) && (state.get() == STATE_CANCELLED)) {
-                subscription.cancel();
-                subscriber.onComplete();
+            if (!state.compareAndSet(STATE_EMITTING, STATE_NONE)) {
+                cancelActual();
             }
         }
 
@@ -106,15 +107,20 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
         public void onComplete() {
             if (state.compareAndSet(STATE_NONE, STATE_DONE)) {
                 subscriber.onComplete();
-                ackFlow.onComplete(published);
+                if (sourceMode == NONE) {
+                    ackFlow.onComplete(published);
+                }
             }
         }
 
         @Override
         public void onError(final @NotNull Throwable t) {
+            error = t;
             if (state.compareAndSet(STATE_NONE, STATE_DONE)) {
                 subscriber.onComplete();
-                ackFlow.onError(t, published);
+                if (sourceMode == NONE) {
+                    ackFlow.onError(t, published);
+                }
             } else {
                 RxJavaPlugins.onError(t);
             }
@@ -161,7 +167,14 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
                     if (state.getAndSet(STATE_DONE) != STATE_DONE) {
                         ackFlow.onComplete(published);
                     }
-                } else {
+                } else { // ASYNC
+                    if (state.get() == STATE_DONE) {
+                        if (error == null) {
+                            ackFlow.onComplete(published);
+                        } else {
+                            ackFlow.onError(error);
+                        }
+                    }
                     stopEmitting(pollState);
                 }
                 return null;
@@ -180,13 +193,24 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
 
         @Override
         public void cancelLink() {
-            assert subscription != null;
-            if ((state.getAndSet(STATE_CANCELLED) == STATE_NONE) &&
-                    (pollState.getAndSet(STATE_CANCELLED) == STATE_NONE)) {
+            final int state = this.state.getAndSet(STATE_CANCEL);
+            if ((state == STATE_NONE) && (pollState.getAndSet(STATE_CANCEL) == STATE_NONE)) {
+                cancelActual();
+            } else if (state == STATE_DONE) {
+                if (this.state.compareAndSet(STATE_CANCEL, STATE_CANCELLED)) {
+                    ackFlow.onLinkCancelled();
+                }
+            }
+        }
+
+        private void cancelActual() {
+            if (state.compareAndSet(STATE_CANCEL, STATE_CANCELLED)) {
+                assert subscription != null;
                 subscription.cancel();
                 if (sourceMode != SYNC) {
                     subscriber.onComplete();
                 }
+                ackFlow.onLinkCancelled();
             }
         }
     }
