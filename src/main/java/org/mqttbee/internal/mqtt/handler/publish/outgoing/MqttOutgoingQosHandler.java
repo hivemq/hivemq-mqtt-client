@@ -157,7 +157,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     public void onNext(final @NotNull MqttPublishWithFlow publishWithFlow) {
         queue.offer(publishWithFlow);
         if (queuedCounter.getAndIncrement() == 0) {
-            clientConfig.executeInEventLoop(this);
+            publishWithFlow.getIncomingAckFlow().getEventLoop().execute(this);
         }
     }
 
@@ -172,13 +172,18 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     }
 
     @CallByThread("Netty EventLoop")
-    void request(final long amount) {
+    void request(final long n) {
         assert subscription != null;
 
         if (shrinkRequests == 0) {
-            subscription.request(amount);
+            subscription.request(n);
         } else {
-            shrinkRequests--;
+            if (n > shrinkRequests) {
+                subscription.request(n - shrinkRequests);
+                shrinkRequests = 0;
+            } else {
+                shrinkRequests -= n;
+            }
         }
     }
 
@@ -391,15 +396,20 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     public void onSessionEnd(final @NotNull Throwable cause) {
         super.onSessionEnd(cause);
 
-        int qos1Or2PacketId;
-        while ((qos1Or2PacketId = qos1Or2Queue.poll(-1)) != -1) {
+        final int pending = qos1Or2Queue.size();
+        if (pending > 0) {
             assert packetIdentifiers != null;
             assert qos1Or2Map != null;
 
-            packetIdentifiers.returnId(qos1Or2PacketId);
-            final MqttPubOrRelWithFlow removed = qos1Or2Map.remove(qos1Or2PacketId);
-            assert removed != null;
-            removed.getIncomingAckFlow().onError(cause);
+            for (int i = 0; i < pending; i++) {
+                final int qos1Or2PacketId = qos1Or2Queue.poll(-1);
+                assert qos1Or2PacketId != -1;
+                packetIdentifiers.returnId(qos1Or2PacketId);
+                final MqttPubOrRelWithFlow removed = qos1Or2Map.remove(qos1Or2PacketId);
+                assert removed != null;
+                removed.getIncomingAckFlow().onError(cause);
+            }
+            request(pending);
         }
 
         clearQueued(cause);
@@ -410,6 +420,9 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
         while (true) {
             final MqttPublishWithFlow publishWithFlow = queue.poll();
             if (publishWithFlow == null) {
+                if (polled > 0) {
+                    request(polled);
+                }
                 if (queuedCounter.addAndGet(-polled) == 0) {
                     break;
                 } else {
