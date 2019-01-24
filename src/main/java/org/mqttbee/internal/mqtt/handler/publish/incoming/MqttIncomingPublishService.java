@@ -36,10 +36,12 @@ import java.util.Iterator;
 class MqttIncomingPublishService {
 
     private static final @NotNull Logger LOGGER = LoggerFactory.getLogger(MqttIncomingPublishService.class);
+    private static final boolean QOS_0_DROP_LATEST = true; // TODO configurable
 
     private final @NotNull MqttIncomingQosHandler incomingQosHandler;
 
-    private final @NotNull ChunkedArrayQueue<QueueEntry> queue = new ChunkedArrayQueue<>(32);
+    private final @NotNull ChunkedArrayQueue<QueueEntry> qos0Queue = new ChunkedArrayQueue<>(32);
+    private final @NotNull ChunkedArrayQueue<QueueEntry> qos1Or2Queue = new ChunkedArrayQueue<>(32);
 
     private int referencedFlowCount;
     private int runIndex;
@@ -50,31 +52,50 @@ class MqttIncomingPublishService {
     }
 
     @CallByThread("Netty EventLoop")
-    boolean onPublish(final @NotNull MqttStatefulPublish publish, final int receiveMaximum) {
-        if (queue.size() >= receiveMaximum) {
+    void onPublishQos0(final @NotNull MqttStatefulPublish publish, final int receiveMaximum) {
+        if (qos0Queue.size() >= receiveMaximum) { // TODO receiveMaximum
+            LOGGER.warn("QoS 0 publish message dropped.");
+            if (QOS_0_DROP_LATEST) {
+                qos0Queue.poll();
+            } else {
+                return;
+            }
+        }
+        final HandleList<MqttIncomingPublishFlow> flows = onPublish(publish);
+        if (!flows.isEmpty()) {
+            qos0Queue.offer(new QueueEntry(publish, flows));
+        }
+    }
+
+    @CallByThread("Netty EventLoop")
+    boolean onPublishQos1Or2(final @NotNull MqttStatefulPublish publish, final int receiveMaximum) {
+        if (qos1Or2Queue.size() >= receiveMaximum) {
             return false; // flow control error
         }
+        final HandleList<MqttIncomingPublishFlow> flows = onPublish(publish);
+        if (qos1Or2Queue.isEmpty() && flows.isEmpty()) {
+            incomingQosHandler.ack(publish);
+        } else {
+            qos1Or2Queue.offer(new QueueEntry(publish, flows));
+        }
+        return true;
+    }
+
+    @CallByThread("Netty EventLoop")
+    private @NotNull HandleList<MqttIncomingPublishFlow> onPublish(final @NotNull MqttStatefulPublish publish) {
         final HandleList<MqttIncomingPublishFlow> flows =
                 incomingQosHandler.getIncomingPublishFlows().findMatching(publish);
         if (flows.isEmpty()) {
             LOGGER.warn("No publish flow registered for {}.", publish);
         }
-
         drain();
-        final boolean acknowledge = queue.isEmpty();
         for (final MqttIncomingPublishFlow flow : flows) {
             if (flow.reference() == 1) {
                 referencedFlowCount++;
             }
         }
         emit(publish.stateless(), flows);
-        if (acknowledge && flows.isEmpty()) {
-            incomingQosHandler.ack(publish);
-        } else {
-            queue.offer(new QueueEntry(publish, flows));
-        }
-
-        return true;
+        return flows;
     }
 
     @CallByThread("Netty EventLoop")
@@ -83,7 +104,7 @@ class MqttIncomingPublishService {
         blockingFlowCount = 0;
         boolean acknowledge = true;
 
-        final Iterator<QueueEntry> queueIt = queue.iterator();
+        final Iterator<QueueEntry> queueIt = qos1Or2Queue.iterator();
         while (queueIt.hasNext()) {
             final QueueEntry entry = queueIt.next();
             final MqttStatefulPublish publish = entry.publish;
@@ -95,8 +116,20 @@ class MqttIncomingPublishService {
             } else {
                 acknowledge = false;
                 if (blockingFlowCount == referencedFlowCount) {
-                    break;
+                    return;
                 }
+            }
+        }
+        final Iterator<QueueEntry> queueIt2 = qos0Queue.iterator();
+        while (queueIt2.hasNext()) {
+            final QueueEntry entry = queueIt2.next();
+            final MqttStatefulPublish publish = entry.publish;
+            final HandleList<MqttIncomingPublishFlow> flows = entry.flows;
+            emit(publish.stateless(), flows);
+            if (flows.isEmpty()) {
+                queueIt2.remove();
+            } else if (blockingFlowCount == referencedFlowCount) {
+                return;
             }
         }
     }
@@ -133,16 +166,14 @@ class MqttIncomingPublishService {
 
     private static class QueueEntry {
 
-        private final @NotNull MqttStatefulPublish publish;
-        private final @NotNull HandleList<MqttIncomingPublishFlow> flows;
+        final @NotNull MqttStatefulPublish publish;
+        final @NotNull HandleList<MqttIncomingPublishFlow> flows;
 
-        private QueueEntry(
+        QueueEntry(
                 final @NotNull MqttStatefulPublish publish, final @NotNull HandleList<MqttIncomingPublishFlow> flows) {
 
             this.publish = publish;
             this.flows = flows;
         }
-
     }
-
 }

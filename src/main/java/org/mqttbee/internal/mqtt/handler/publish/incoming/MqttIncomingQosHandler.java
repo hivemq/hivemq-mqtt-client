@@ -47,7 +47,8 @@ import org.mqttbee.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubCompReasonCode;
 
 import javax.inject.Inject;
 
-import static org.mqttbee.mqtt.datatypes.MqttQos.*;
+import static org.mqttbee.mqtt.datatypes.MqttQos.AT_LEAST_ONCE;
+import static org.mqttbee.mqtt.datatypes.MqttQos.EXACTLY_ONCE;
 
 /**
  * @author Silvio Giebl
@@ -112,7 +113,7 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler
     }
 
     private void readPublishQos0(final @NotNull MqttStatefulPublish publish) {
-        incomingPublishService.onPublish(publish, receiveMaximum); // TODO own queue for QoS 0
+        incomingPublishService.onPublishQos0(publish, receiveMaximum);
     }
 
     private void readPublishQos1(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttStatefulPublish publish) {
@@ -152,7 +153,7 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler
     private void readNewPublishQos1Or2(
             final @NotNull ChannelHandlerContext ctx, final @NotNull MqttStatefulPublish publish) {
 
-        if (!incomingPublishService.onPublish(publish, receiveMaximum)) {
+        if (!incomingPublishService.onPublishQos1Or2(publish, receiveMaximum)) {
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.RECEIVE_MAXIMUM_EXCEEDED,
                     "Received more QoS 1 and/or 2 PUBLISHes than allowed by Receive Maximum");
         }
@@ -173,21 +174,21 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler
 
     @CallByThread("Netty EventLoop")
     void ack(final @NotNull MqttStatefulPublish publish) {
-        if (publish.stateless().getQos() == AT_MOST_ONCE) { // TODO remove if own queue for QoS 0
-            return;
-        }
-        if (publish.stateless().getQos() == AT_LEAST_ONCE) {
-            final MqttPubAck pubAck = buildPubAck(new MqttPubAckBuilder(publish));
-            messages.put(publish.getPacketIdentifier(), pubAck);
-            if (ctx != null) {
-                writePubAck(ctx, pubAck);
-            }
-        } else { // EXACTLY_ONCE
-            final MqttPubRec pubRec = buildPubRec(new MqttPubRecBuilder(publish));
-            messages.put(publish.getPacketIdentifier(), pubRec);
-            if (ctx != null) {
-                writePubRec(ctx, pubRec);
-            }
+        switch (publish.stateless().getQos()) {
+            case AT_LEAST_ONCE:
+                final MqttPubAck pubAck = buildPubAck(new MqttPubAckBuilder(publish));
+                messages.put(publish.getPacketIdentifier(), pubAck);
+                if (ctx != null) {
+                    writePubAck(ctx, pubAck);
+                }
+                break;
+            case EXACTLY_ONCE:
+                final MqttPubRec pubRec = buildPubRec(new MqttPubRecBuilder(publish));
+                messages.put(publish.getPacketIdentifier(), pubRec);
+                if (ctx != null) {
+                    writePubRec(ctx, pubRec);
+                }
+                break;
         }
     }
 
