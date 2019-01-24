@@ -31,8 +31,9 @@ import java.util.NoSuchElementException;
 public class ChunkedArrayQueue<E> implements Iterable<E> {
 
     private final int chunkSize;
-    private @NotNull Chunk<E> producerChunk;
-    private @NotNull Chunk<E> consumerChunk;
+    private @Nullable E single;
+    private @Nullable Chunk<E> producerChunk;
+    private @Nullable Chunk<E> consumerChunk;
     private int producerIndex;
     private int consumerIndex;
     private int size;
@@ -40,7 +41,6 @@ public class ChunkedArrayQueue<E> implements Iterable<E> {
 
     public ChunkedArrayQueue(final int chunkSize) {
         this.chunkSize = chunkSize;
-        producerChunk = consumerChunk = new Chunk<>(chunkSize);
     }
 
     public int size() {
@@ -52,7 +52,28 @@ public class ChunkedArrayQueue<E> implements Iterable<E> {
     }
 
     public void offer(final @NotNull E e) {
+        if (size == 0) {
+            size = 1;
+            single = e;
+            return;
+        }
+        if (size == 1) {
+            if (producerChunk == null) {
+                producerChunk = consumerChunk = new Chunk<>(chunkSize);
+            }
+            final E single = this.single;
+            if (single != null) {
+                size = 0;
+                this.single = null;
+                offerQueue(single);
+            }
+        }
+        offerQueue(e);
+    }
+
+    private void offerQueue(final @NotNull E e) {
         Chunk<E> producerChunk = this.producerChunk;
+        assert producerChunk != null;
         int producerIndex = this.producerIndex;
         if ((producerIndex == chunkSize) ||
                 ((producerChunk == consumerChunk) && (producerChunk.values[producerIndex] != null))) {
@@ -71,6 +92,15 @@ public class ChunkedArrayQueue<E> implements Iterable<E> {
     }
 
     public @Nullable E poll() {
+        final E single = this.single;
+        if (single != null) {
+            size = 0;
+            this.single = null;
+            return single;
+        }
+        if (consumerChunk == null) {
+            return null;
+        }
         final Chunk<E> consumerChunk = this.consumerChunk;
         int consumerIndex = this.consumerIndex;
         final E e = consumerChunk.values[consumerIndex];
@@ -94,6 +124,12 @@ public class ChunkedArrayQueue<E> implements Iterable<E> {
     }
 
     public @Nullable E peek() {
+        if (single != null) {
+            return single;
+        }
+        if (consumerChunk == null) {
+            return null;
+        }
         return consumerChunk.values[consumerIndex];
     }
 
@@ -123,11 +159,13 @@ public class ChunkedArrayQueue<E> implements Iterable<E> {
 
     private class ChunkedArrayQueueIterator implements Iterator<E> {
 
+        private @Nullable E iteratorSingle;
         private @Nullable Chunk<E> iteratorChunk;
         private int iteratorIndex;
         private int iterated;
 
         void clear() {
+            iteratorSingle = single;
             iteratorChunk = consumerChunk;
             iteratorIndex = consumerIndex;
             iterated = 0;
@@ -140,6 +178,12 @@ public class ChunkedArrayQueue<E> implements Iterable<E> {
 
         @Override
         public @NotNull E next() {
+            final E iteratorSingle = this.iteratorSingle;
+            if (iteratorSingle != null) {
+                iterated = 1;
+                this.iteratorSingle = null;
+                return iteratorSingle;
+            }
             if (iteratorChunk == null) {
                 throw new NoSuchElementException();
             }
