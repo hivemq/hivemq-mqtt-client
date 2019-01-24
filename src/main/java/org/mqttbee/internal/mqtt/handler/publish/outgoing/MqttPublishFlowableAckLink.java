@@ -193,13 +193,11 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
 
         @Override
         public void cancelLink() {
-            final int state = this.state.getAndSet(STATE_CANCEL);
-            if ((state == STATE_NONE) && (pollState.getAndSet(STATE_CANCEL) == STATE_NONE)) {
+            final int previousState = state.getAndSet(STATE_CANCEL);
+            if ((previousState == STATE_NONE) && (pollState.getAndSet(STATE_CANCEL) == STATE_NONE)) {
                 cancelActual();
-            } else if (state == STATE_DONE) {
-                if (this.state.compareAndSet(STATE_CANCEL, STATE_CANCELLED)) {
-                    ackFlow.onLinkCancelled();
-                }
+            } else if ((previousState == STATE_DONE) && state.compareAndSet(STATE_CANCEL, STATE_CANCELLED)) {
+                ackFlow.onLinkCancelled();
             }
         }
 

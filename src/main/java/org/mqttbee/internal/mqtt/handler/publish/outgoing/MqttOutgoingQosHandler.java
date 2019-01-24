@@ -204,7 +204,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
         }
         ctx.flush();
         if (queuedCounter.addAndGet(-working) > 0) {
-            clientConfig.executeInEventLoop(this);
+            ctx.channel().eventLoop().execute(this);
         }
     }
 
