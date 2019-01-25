@@ -57,7 +57,7 @@ public class Mqtt3PublishView implements Mqtt3Publish {
     public static @NotNull MqttStatefulPublish statefulDelegate(
             final @NotNull MqttPublish publish, final int packetIdentifier, final boolean isDup) {
 
-        return publish.createStateful(packetIdentifier, isDup, MqttStatefulPublish.DEFAULT_NO_TOPIC_ALIAS, false,
+        return publish.createStateful(packetIdentifier, isDup, MqttStatefulPublish.DEFAULT_NO_TOPIC_ALIAS,
                 MqttStatefulPublish.DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
     }
 

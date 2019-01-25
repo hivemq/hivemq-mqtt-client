@@ -43,8 +43,7 @@ import static org.mqttbee.internal.mqtt.codec.decoder.MqttMessageDecoderUtil.*;
 import static org.mqttbee.internal.mqtt.codec.decoder.mqtt5.Mqtt5MessageDecoderUtil.*;
 import static org.mqttbee.internal.mqtt.message.publish.MqttPublish.NO_MESSAGE_EXPIRY;
 import static org.mqttbee.internal.mqtt.message.publish.MqttPublishProperty.*;
-import static org.mqttbee.internal.mqtt.message.publish.MqttStatefulPublish.DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS;
-import static org.mqttbee.internal.mqtt.message.publish.MqttStatefulPublish.DEFAULT_NO_TOPIC_ALIAS;
+import static org.mqttbee.internal.mqtt.message.publish.MqttStatefulPublish.*;
 
 /**
  * @author Silvio Giebl
@@ -176,7 +175,6 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
             throw malformedPropertyLength();
         }
 
-        boolean isNewTopicAlias = false;
         if (topicAlias != DEFAULT_NO_TOPIC_ALIAS) {
             final IntMap<MqttTopicImpl> topicAliasMapping = context.getTopicAliasMapping();
             if ((topicAliasMapping == null) || (topicAlias > topicAliasMapping.getMaxKey())) {
@@ -192,7 +190,7 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
                 }
             } else {
                 topicAliasMapping.put(topicAlias, topic);
-                isNewTopicAlias = true;
+                topicAlias |= TOPIC_ALIAS_FLAG_NEW;
             }
         } else if (topic == null) {
             throw new MqttDecoderException(
@@ -224,6 +222,6 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
                 (subscriptionIdentifiersBuilder == null) ? DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS :
                         subscriptionIdentifiersBuilder.build();
 
-        return publish.createStateful(packetIdentifier, dup, topicAlias, isNewTopicAlias, subscriptionIdentifiers);
+        return publish.createStateful(packetIdentifier, dup, topicAlias, subscriptionIdentifiers);
     }
 }

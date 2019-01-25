@@ -23,6 +23,7 @@ import org.mqttbee.annotations.Immutable;
 import org.mqttbee.internal.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttUtf8StringImpl;
+import org.mqttbee.internal.mqtt.handler.publish.outgoing.MqttTopicAliasMapping;
 import org.mqttbee.internal.mqtt.message.MqttMessageWithUserProperties;
 import org.mqttbee.internal.util.ByteBufferUtil;
 import org.mqttbee.internal.util.collections.ImmutableIntList;
@@ -174,31 +175,17 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
     }
 
     public @NotNull MqttStatefulPublish createStateful(
-            final int packetIdentifier, final boolean isDup, final int topicAlias, final boolean isNewTopicAlias,
+            final int packetIdentifier, final boolean isDup, final int topicAlias,
             final @NotNull ImmutableIntList subscriptionIdentifiers) {
 
-        return new MqttStatefulPublish(
-                this, packetIdentifier, isDup, topicAlias, isNewTopicAlias, subscriptionIdentifiers);
+        return new MqttStatefulPublish(this, packetIdentifier, isDup, topicAlias, subscriptionIdentifiers);
     }
 
     public @NotNull MqttStatefulPublish createStateful(
             final int packetIdentifier, final boolean isDup, final @Nullable MqttTopicAliasMapping topicAliasMapping) {
 
-        int topicAlias;
-        final boolean isNewTopicAlias;
-        if (topicAliasMapping == null) {
-            topicAlias = DEFAULT_NO_TOPIC_ALIAS;
-            isNewTopicAlias = false;
-        } else {
-            topicAlias = topicAliasMapping.get(topic);
-            if (topicAlias != DEFAULT_NO_TOPIC_ALIAS) {
-                isNewTopicAlias = false;
-            } else {
-                topicAlias = topicAliasMapping.set(topic, topicAliasUsage);
-                isNewTopicAlias = topicAlias != DEFAULT_NO_TOPIC_ALIAS;
-            }
-        }
-        return createStateful(
-                packetIdentifier, isDup, topicAlias, isNewTopicAlias, DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
+        final int topicAlias =
+                (topicAliasMapping == null) ? DEFAULT_NO_TOPIC_ALIAS : topicAliasMapping.onPublish(topic);
+        return createStateful(packetIdentifier, isDup, topicAlias, DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
     }
 }

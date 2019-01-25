@@ -40,7 +40,6 @@ import org.mqttbee.internal.mqtt.message.publish.MqttPublishResult.MqttQos1Resul
 import org.mqttbee.internal.mqtt.message.publish.MqttPublishResult.MqttQos2CompleteResult;
 import org.mqttbee.internal.mqtt.message.publish.MqttPublishResult.MqttQos2IntermediateResult;
 import org.mqttbee.internal.mqtt.message.publish.MqttPublishResult.MqttQos2Result;
-import org.mqttbee.internal.mqtt.message.publish.MqttTopicAliasMapping;
 import org.mqttbee.internal.mqtt.message.publish.puback.MqttPubAck;
 import org.mqttbee.internal.mqtt.message.publish.pubcomp.MqttPubComp;
 import org.mqttbee.internal.mqtt.message.publish.pubrec.MqttPubRec;
