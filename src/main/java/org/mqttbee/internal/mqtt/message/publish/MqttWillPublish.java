@@ -26,7 +26,6 @@ import org.mqttbee.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.mqtt.datatypes.MqttQos;
 import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
-import org.mqttbee.mqtt.mqtt5.message.publish.TopicAliasUsage;
 
 import java.nio.ByteBuffer;
 
@@ -47,7 +46,7 @@ public class MqttWillPublish extends MqttPublish implements Mqtt5WillPublish {
             final long delayInterval) {
 
         super(topic, payload, qos, isRetain, messageExpiryInterval, payloadFormatIndicator, contentType, responseTopic,
-                correlationData, TopicAliasUsage.NO, userProperties);
+                correlationData, userProperties);
         this.delayInterval = delayInterval;
     }
 

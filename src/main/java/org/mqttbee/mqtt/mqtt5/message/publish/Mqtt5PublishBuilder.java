@@ -24,13 +24,12 @@ import org.mqttbee.annotations.DoNotImplement;
  * @author Silvio Giebl
  */
 @DoNotImplement
-public interface Mqtt5PublishBuilder extends Mqtt5PublishBuilderBase.Base<Mqtt5PublishBuilder.Complete> {
+public interface Mqtt5PublishBuilder extends Mqtt5PublishBuilderBase<Mqtt5PublishBuilder.Complete> {
 
     @NotNull Mqtt5WillPublishBuilder asWill();
 
     @DoNotImplement
-    interface Complete
-            extends Mqtt5PublishBuilder, Mqtt5PublishBuilderBase.Base.Complete<Mqtt5PublishBuilder.Complete> {
+    interface Complete extends Mqtt5PublishBuilder, Mqtt5PublishBuilderBase.Complete<Mqtt5PublishBuilder.Complete> {
 
         @NotNull Mqtt5WillPublishBuilder.Complete asWill();
 
@@ -38,20 +37,20 @@ public interface Mqtt5PublishBuilder extends Mqtt5PublishBuilderBase.Base<Mqtt5P
     }
 
     @DoNotImplement
-    interface Nested<P> extends Mqtt5PublishBuilderBase.Base<Nested.Complete<P>> {
+    interface Nested<P> extends Mqtt5PublishBuilderBase<Nested.Complete<P>> {
 
         @DoNotImplement
-        interface Complete<P> extends Nested<P>, Mqtt5PublishBuilderBase.Base.Complete<Nested.Complete<P>> {
+        interface Complete<P> extends Nested<P>, Mqtt5PublishBuilderBase.Complete<Nested.Complete<P>> {
 
             @NotNull P applyPublish();
         }
     }
 
     @DoNotImplement
-    interface Send<P> extends Mqtt5PublishBuilderBase.Base<Send.Complete<P>> {
+    interface Send<P> extends Mqtt5PublishBuilderBase<Send.Complete<P>> {
 
         @DoNotImplement
-        interface Complete<P> extends Send<P>, Mqtt5PublishBuilderBase.Base.Complete<Send.Complete<P>> {
+        interface Complete<P> extends Send<P>, Mqtt5PublishBuilderBase.Complete<Send.Complete<P>> {
 
             @NotNull P send();
         }

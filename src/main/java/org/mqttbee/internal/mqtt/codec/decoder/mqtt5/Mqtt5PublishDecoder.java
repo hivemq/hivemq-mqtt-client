@@ -33,7 +33,6 @@ import org.mqttbee.internal.util.collections.IntMap;
 import org.mqttbee.mqtt.datatypes.MqttQos;
 import org.mqttbee.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
-import org.mqttbee.mqtt.mqtt5.message.publish.TopicAliasUsage;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -92,7 +91,6 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
         ByteBuffer correlationData = null;
         ImmutableList.Builder<MqttUserPropertyImpl> userPropertiesBuilder = null;
         int topicAlias = DEFAULT_NO_TOPIC_ALIAS;
-        TopicAliasUsage topicAliasUsage = TopicAliasUsage.NO;
         ImmutableIntList.Builder subscriptionIdentifiersBuilder = null;
 
         final int propertiesStartIndex = in.readerIndex();
@@ -147,7 +145,6 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
                         throw new MqttDecoderException(
                                 Mqtt5DisconnectReasonCode.TOPIC_ALIAS_INVALID, "topic alias must not be 0");
                     }
-                    topicAliasUsage = TopicAliasUsage.YES;
                     break;
 
                 case SUBSCRIPTION_IDENTIFIER:
@@ -216,7 +213,7 @@ public class Mqtt5PublishDecoder implements MqttMessageDecoder {
 
         final MqttPublish publish =
                 new MqttPublish(topic, payload, qos, retain, messageExpiryInterval, payloadFormatIndicator, contentType,
-                        responseTopic, correlationData, topicAliasUsage, userProperties);
+                        responseTopic, correlationData, userProperties);
 
         final ImmutableIntList subscriptionIdentifiers =
                 (subscriptionIdentifiersBuilder == null) ? DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS :
