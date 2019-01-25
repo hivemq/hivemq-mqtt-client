@@ -20,6 +20,7 @@ package org.mqttbee.internal.mqtt.message.publish;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.Immutable;
 import org.mqttbee.internal.mqtt.message.MqttStatefulMessage;
+import org.mqttbee.internal.util.UnsignedDataTypes;
 import org.mqttbee.internal.util.collections.ImmutableIntList;
 
 /**
@@ -29,22 +30,22 @@ import org.mqttbee.internal.util.collections.ImmutableIntList;
 public class MqttStatefulPublish extends MqttStatefulMessage.WithId<MqttPublish> {
 
     public static final int NO_PACKET_IDENTIFIER_QOS_0 = -1;
-    public static final int DEFAULT_NO_TOPIC_ALIAS = -1;
+    public static final int DEFAULT_NO_TOPIC_ALIAS = 0;
+    public static final int TOPIC_ALIAS_FLAG = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE;
+    public static final int TOPIC_ALIAS_FLAG_NEW = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE + 1;
     public static final @NotNull ImmutableIntList DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS = ImmutableIntList.of();
 
     private final boolean isDup;
     private final int topicAlias;
-    private final boolean isNewTopicAlias;
     private final @NotNull ImmutableIntList subscriptionIdentifiers;
 
     MqttStatefulPublish(
             final @NotNull MqttPublish publish, final int packetIdentifier, final boolean isDup, final int topicAlias,
-            final boolean isNewTopicAlias, final @NotNull ImmutableIntList subscriptionIdentifiers) {
+            final @NotNull ImmutableIntList subscriptionIdentifiers) {
 
         super(publish, packetIdentifier);
         this.isDup = isDup;
         this.topicAlias = topicAlias;
-        this.isNewTopicAlias = isNewTopicAlias;
         this.subscriptionIdentifiers = subscriptionIdentifiers;
     }
 
@@ -53,11 +54,11 @@ public class MqttStatefulPublish extends MqttStatefulMessage.WithId<MqttPublish>
     }
 
     public int getTopicAlias() {
-        return topicAlias;
+        return topicAlias & TOPIC_ALIAS_FLAG;
     }
 
     public boolean isNewTopicAlias() {
-        return isNewTopicAlias;
+        return (topicAlias & TOPIC_ALIAS_FLAG_NEW) != 0;
     }
 
     public @NotNull ImmutableIntList getSubscriptionIdentifiers() {

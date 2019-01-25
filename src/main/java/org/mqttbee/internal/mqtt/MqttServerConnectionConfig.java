@@ -19,7 +19,8 @@ package org.mqttbee.internal.mqtt;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.internal.mqtt.message.publish.MqttTopicAliasMapping;
+import org.mqttbee.internal.mqtt.handler.publish.outgoing.MqttTopicAliasAutoMapping;
+import org.mqttbee.internal.mqtt.handler.publish.outgoing.MqttTopicAliasMapping;
 import org.mqttbee.mqtt.datatypes.MqttQos;
 import org.mqttbee.mqtt.mqtt3.Mqtt3ServerConnectionConfig;
 import org.mqttbee.mqtt.mqtt5.Mqtt5ServerConnectionConfig;
@@ -46,7 +47,7 @@ public class MqttServerConnectionConfig implements Mqtt5ServerConnectionConfig, 
 
         this.receiveMaximum = receiveMaximum;
         this.maximumPacketSize = maximumPacketSize;
-        this.topicAliasMapping = (topicAliasMaximum == 0) ? null : new MqttTopicAliasMapping(topicAliasMaximum);
+        this.topicAliasMapping = (topicAliasMaximum == 0) ? null : new MqttTopicAliasAutoMapping(topicAliasMaximum);
         this.maximumQos = maximumQos;
         this.retainAvailable = retainAvailable;
         this.wildcardSubscriptionAvailable = wildcardSubscriptionAvailable;
