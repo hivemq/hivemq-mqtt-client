@@ -32,7 +32,6 @@ import org.mqttbee.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
-import org.mqttbee.mqtt.mqtt5.message.publish.TopicAliasUsage;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -116,7 +115,6 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
         assertEquals("response", publish.getResponseTopic().get().toString());
         assertTrue(publish.getCorrelationData().isPresent());
         assertEquals(ByteBuffer.wrap(new byte[]{5, 4, 3, 2, 1}), publish.getCorrelationData().get());
-        assertEquals(TopicAliasUsage.YES, publish.usesTopicAlias());
 
         final ImmutableList<MqttUserPropertyImpl> userProperties = publish.getUserProperties().asList();
         assertEquals(1, userProperties.size());
@@ -163,7 +161,6 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
         assertFalse(publish.getMessageExpiryInterval().isPresent());
         assertTrue(publish.getPayloadFormatIndicator().isPresent());
         assertEquals(Mqtt5PayloadFormatIndicator.UNSPECIFIED, publish.getPayloadFormatIndicator().get());
-        assertEquals(TopicAliasUsage.NO, publish.usesTopicAlias());
 
         assertTrue(publish.getPayload().isPresent());
         assertEquals(ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}), publish.getPayload().get());

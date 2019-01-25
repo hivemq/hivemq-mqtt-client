@@ -46,11 +46,6 @@ public interface Mqtt5Publish extends Mqtt5Message {
     @NotNull MqttQos DEFAULT_QOS = MqttQos.AT_MOST_ONCE;
 
     /**
-     * The default handling for using a topic alias.
-     */
-    @NotNull TopicAliasUsage DEFAULT_TOPIC_ALIAS_USAGE = TopicAliasUsage.NO;
-
-    /**
      * Creates a builder for a Publish message.
      *
      * @return the created builder.
@@ -108,11 +103,6 @@ public interface Mqtt5Publish extends Mqtt5Message {
      * @return the optional correlation data of this Publish message.
      */
     @NotNull Optional<ByteBuffer> getCorrelationData();
-
-    /**
-     * @return the handling for using a topic alias.
-     */
-    @NotNull TopicAliasUsage usesTopicAlias();
 
     /**
      * @return the optional user properties of this Publish message.

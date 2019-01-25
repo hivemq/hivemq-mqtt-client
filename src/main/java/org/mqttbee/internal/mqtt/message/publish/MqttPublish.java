@@ -32,7 +32,6 @@ import org.mqttbee.mqtt.datatypes.MqttTopic;
 import org.mqttbee.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5Publish;
-import org.mqttbee.mqtt.mqtt5.message.publish.TopicAliasUsage;
 
 import java.nio.ByteBuffer;
 import java.util.Optional;
@@ -58,15 +57,13 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
     private final @Nullable MqttUtf8StringImpl contentType;
     private final @Nullable MqttTopicImpl responseTopic;
     private final @Nullable ByteBuffer correlationData;
-    private final @NotNull TopicAliasUsage topicAliasUsage;
 
     public MqttPublish(
             final @NotNull MqttTopicImpl topic, final @Nullable ByteBuffer payload, final @NotNull MqttQos qos,
             final boolean isRetain, final long messageExpiryInterval,
             final @Nullable Mqtt5PayloadFormatIndicator payloadFormatIndicator,
             final @Nullable MqttUtf8StringImpl contentType, final @Nullable MqttTopicImpl responseTopic,
-            final @Nullable ByteBuffer correlationData, final @NotNull TopicAliasUsage topicAliasUsage,
-            final @NotNull MqttUserPropertiesImpl userProperties) {
+            final @Nullable ByteBuffer correlationData, final @NotNull MqttUserPropertiesImpl userProperties) {
 
         super(userProperties);
         this.topic = topic;
@@ -78,7 +75,6 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
         this.contentType = contentType;
         this.responseTopic = responseTopic;
         this.correlationData = correlationData;
-        this.topicAliasUsage = topicAliasUsage;
     }
 
     @Override
@@ -157,11 +153,6 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
 
     public @Nullable ByteBuffer getRawCorrelationData() {
         return correlationData;
-    }
-
-    @Override
-    public @NotNull TopicAliasUsage usesTopicAlias() {
-        return topicAliasUsage;
     }
 
     @Override

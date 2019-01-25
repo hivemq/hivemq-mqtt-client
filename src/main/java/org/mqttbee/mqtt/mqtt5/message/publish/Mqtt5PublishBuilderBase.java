@@ -78,16 +78,6 @@ public interface Mqtt5PublishBuilderBase<C extends Mqtt5PublishBuilderBase.Compl
     }
 
     @DoNotImplement
-    interface Base<C extends Base.Complete<C>> extends Mqtt5PublishBuilderBase<C> {
-
-        @DoNotImplement
-        interface Complete<C extends Base.Complete<C>> extends Mqtt5PublishBuilderBase.Complete<C>, Base<C> {
-
-            @NotNull C useTopicAlias(@NotNull TopicAliasUsage topicAliasUsage);
-        }
-    }
-
-    @DoNotImplement
     interface WillBase<C extends WillBase.Complete<C>> extends Mqtt5PublishBuilderBase<C> {
 
         @DoNotImplement

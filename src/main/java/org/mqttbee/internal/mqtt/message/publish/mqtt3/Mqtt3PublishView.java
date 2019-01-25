@@ -31,7 +31,6 @@ import org.mqttbee.mqtt.datatypes.MqttTopic;
 import org.mqttbee.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
-import org.mqttbee.mqtt.mqtt5.message.publish.TopicAliasUsage;
 
 import java.nio.ByteBuffer;
 import java.util.Optional;
@@ -51,7 +50,7 @@ public class Mqtt3PublishView implements Mqtt3Publish {
             final boolean isRetain) {
 
         return new MqttPublish(topic, payload, qos, isRetain, MqttPublish.NO_MESSAGE_EXPIRY, null, null, null, null,
-                TopicAliasUsage.NO, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
+                MqttUserPropertiesImpl.NO_USER_PROPERTIES);
     }
 
     public static @NotNull MqttStatefulPublish statefulDelegate(

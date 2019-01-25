@@ -30,7 +30,6 @@ import org.mqttbee.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5PayloadFormatIndicator;
 import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5PublishBuilder;
 import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5WillPublishBuilder;
-import org.mqttbee.mqtt.mqtt5.message.publish.TopicAliasUsage;
 
 import java.nio.ByteBuffer;
 import java.util.function.Function;
@@ -165,13 +164,10 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
 
     private static abstract class Base<B extends Base<B>> extends MqttPublishBuilder<B> {
 
-        private @NotNull TopicAliasUsage topicAliasUsage = MqttPublish.DEFAULT_TOPIC_ALIAS_USAGE;
-
         Base() {}
 
         Base(final @NotNull MqttPublish publish) {
             super(publish);
-            topicAliasUsage = publish.usesTopicAlias();
         }
 
         public @NotNull B payload(final @Nullable byte[] payload) {
@@ -184,11 +180,6 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
             return self();
         }
 
-        public @NotNull B useTopicAlias(final @Nullable TopicAliasUsage topicAliasUsage) {
-            this.topicAliasUsage = Checks.notNull(topicAliasUsage, "Topic alias usage");
-            return self();
-        }
-
         public @NotNull WillDefault asWill() {
             return new WillDefault(this);
         }
@@ -196,7 +187,7 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
         public @NotNull MqttPublish build() {
             Checks.notNull(topic, "Topic");
             return new MqttPublish(topic, payload, qos, retain, messageExpiryInterval, payloadFormatIndicator,
-                    contentType, responseTopic, correlationData, topicAliasUsage, userProperties);
+                    contentType, responseTopic, correlationData, userProperties);
         }
     }
 

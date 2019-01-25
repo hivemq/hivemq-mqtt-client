@@ -64,10 +64,8 @@ public class MqttTopicAliasAutoMapping implements MqttTopicAliasMapping {
                 if (overwriteTries > 0) {
                     overwriteTries--; // reduce chance to overwrite entry with lowest priority & topic alias if accessed
                 }
-            } else if (entry == lowest) {
-                if (fullOverwriteTries > 0) {
-                    fullOverwriteTries--; // reduce chance to overwrite entry with lowest priority if accessed
-                }
+            } else if ((entry == lowest) && (fullOverwriteTries > 0)) {
+                fullOverwriteTries--; // reduce chance to overwrite entry with lowest priority if accessed
             }
             swapNewer(entry, priority);
             return entry.topicAlias; // topic alias is 0 if entry is part of oversize
