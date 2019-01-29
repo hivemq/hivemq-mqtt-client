@@ -31,4 +31,8 @@ public interface Mqtt5ConnectRestrictionsBuilderBase<B extends Mqtt5ConnectRestr
     @NotNull B maximumPacketSize(int maximumPacketSize);
 
     @NotNull B topicAliasMaximum(int topicAliasMaximum);
+
+    @NotNull B responseInformationRequested(boolean responseInformationRequested);
+
+    @NotNull B problemInformationRequested(boolean problemInformationRequested);
 }

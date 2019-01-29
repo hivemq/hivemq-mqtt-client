@@ -46,7 +46,6 @@ public class Mqtt3ConnectView implements Mqtt3Connect {
             final @Nullable MqttWillPublish willPublish) {
 
         return new MqttConnect(keepAlive, isCleanSession, isCleanSession ? 0 : MqttConnect.NO_SESSION_EXPIRY,
-                MqttConnect.DEFAULT_RESPONSE_INFORMATION_REQUESTED, MqttConnect.DEFAULT_PROBLEM_INFORMATION_REQUESTED,
                 MqttConnectRestrictions.DEFAULT, simpleAuth, null, willPublish,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES);
     }

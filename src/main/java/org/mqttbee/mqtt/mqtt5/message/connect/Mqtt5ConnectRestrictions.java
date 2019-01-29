@@ -29,6 +29,9 @@ import org.mqttbee.internal.util.UnsignedDataTypes;
 @DoNotImplement
 public interface Mqtt5ConnectRestrictions {
 
+    boolean DEFAULT_RESPONSE_INFORMATION_REQUESTED = false;
+    boolean DEFAULT_PROBLEM_INFORMATION_REQUESTED = true;
+
     /**
      * The default maximum amount of not acknowledged publishes with QoS 1 or 2 the client accepts concurrently.
      */
@@ -69,4 +72,16 @@ public interface Mqtt5ConnectRestrictions {
      *         #DEFAULT_TOPIC_ALIAS_MAXIMUM}.
      */
     int getTopicAliasMaximum();
+
+    /**
+     * @return whether the client requests response information from the server. The default is {@link
+     *         #DEFAULT_RESPONSE_INFORMATION_REQUESTED}.
+     */
+    boolean isResponseInformationRequested();
+
+    /**
+     * @return whether the client requests problem information from the server. The default is {@link
+     *         #DEFAULT_PROBLEM_INFORMATION_REQUESTED}.
+     */
+    boolean isProblemInformationRequested();
 }

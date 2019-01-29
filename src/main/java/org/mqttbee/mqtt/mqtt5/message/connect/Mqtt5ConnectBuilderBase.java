@@ -39,15 +39,11 @@ public interface Mqtt5ConnectBuilderBase<B extends Mqtt5ConnectBuilderBase<B>> {
 
     @NotNull B noKeepAlive();
 
-    @NotNull B cleanStart(boolean isCleanStart);
+    @NotNull B cleanStart(boolean cleanStart);
 
     @NotNull B sessionExpiryInterval(long sessionExpiryInterval);
 
     @NotNull B noSessionExpiry();
-
-    @NotNull B responseInformationRequested(boolean isResponseInformationRequested);
-
-    @NotNull B problemInformationRequested(boolean isProblemInformationRequested);
 
     @NotNull B restrictions(@NotNull Mqtt5ConnectRestrictions restrictions);
 
