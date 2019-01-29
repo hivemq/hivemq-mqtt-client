@@ -44,10 +44,8 @@ import java.util.function.Function;
 public abstract class MqttConnectBuilder<B extends MqttConnectBuilder<B>> {
 
     private int keepAlive = MqttConnect.DEFAULT_KEEP_ALIVE;
-    private boolean isCleanStart = MqttConnect.DEFAULT_CLEAN_START;
+    private boolean cleanStart = MqttConnect.DEFAULT_CLEAN_START;
     private long sessionExpiryInterval = MqttConnect.DEFAULT_SESSION_EXPIRY_INTERVAL;
-    private boolean isResponseInformationRequested = MqttConnect.DEFAULT_RESPONSE_INFORMATION_REQUESTED;
-    private boolean isProblemInformationRequested = MqttConnect.DEFAULT_PROBLEM_INFORMATION_REQUESTED;
     private @NotNull MqttConnectRestrictions restrictions = MqttConnectRestrictions.DEFAULT;
     private @Nullable MqttSimpleAuth simpleAuth;
     private @Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism;
@@ -58,10 +56,8 @@ public abstract class MqttConnectBuilder<B extends MqttConnectBuilder<B>> {
 
     MqttConnectBuilder(final @NotNull MqttConnect connect) {
         keepAlive = connect.getKeepAlive();
-        isCleanStart = connect.isCleanStart();
+        cleanStart = connect.isCleanStart();
         sessionExpiryInterval = connect.getSessionExpiryInterval();
-        isResponseInformationRequested = connect.isResponseInformationRequested();
-        isProblemInformationRequested = connect.isProblemInformationRequested();
         restrictions = connect.getRestrictions();
         simpleAuth = connect.getRawSimpleAuth();
         enhancedAuthMechanism = connect.getRawEnhancedAuthMechanism();
@@ -81,8 +77,8 @@ public abstract class MqttConnectBuilder<B extends MqttConnectBuilder<B>> {
         return self();
     }
 
-    public @NotNull B cleanStart(final boolean isCleanStart) {
-        this.isCleanStart = isCleanStart;
+    public @NotNull B cleanStart(final boolean cleanStart) {
+        this.cleanStart = cleanStart;
         return self();
     }
 
@@ -93,16 +89,6 @@ public abstract class MqttConnectBuilder<B extends MqttConnectBuilder<B>> {
 
     public @NotNull B noSessionExpiry() {
         this.sessionExpiryInterval = MqttConnect.NO_SESSION_EXPIRY;
-        return self();
-    }
-
-    public @NotNull B responseInformationRequested(final boolean isResponseInformationRequested) {
-        this.isResponseInformationRequested = isResponseInformationRequested;
-        return self();
-    }
-
-    public @NotNull B problemInformationRequested(final boolean isProblemInformationRequested) {
-        this.isProblemInformationRequested = isProblemInformationRequested;
         return self();
     }
 
@@ -154,9 +140,8 @@ public abstract class MqttConnectBuilder<B extends MqttConnectBuilder<B>> {
     }
 
     public @NotNull MqttConnect build() {
-        return new MqttConnect(keepAlive, isCleanStart, sessionExpiryInterval, isResponseInformationRequested,
-                isProblemInformationRequested, restrictions, simpleAuth, enhancedAuthMechanism, willPublish,
-                userProperties);
+        return new MqttConnect(keepAlive, cleanStart, sessionExpiryInterval, restrictions, simpleAuth,
+                enhancedAuthMechanism, willPublish, userProperties);
     }
 
     public static class Default extends MqttConnectBuilder<Default> implements Mqtt5ConnectBuilder {

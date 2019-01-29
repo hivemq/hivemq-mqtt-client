@@ -42,8 +42,7 @@ abstract class AbstractMqtt5DecoderTest extends AbstractMqttDecoderTest {
         return new MqttConnectBuilder.Default().restrictions()
                 .maximumPacketSize(maximumPacketSize)
                 .topicAliasMaximum(3)
-                .applyRestrictions()
-                .responseInformationRequested(true)
+                .responseInformationRequested(true).applyRestrictions()
                 .build();
     }
 

@@ -41,32 +41,26 @@ public class MqttConnect extends MqttMessageWithUserProperties implements Mqtt5C
 
     public static final @NotNull MqttConnect DEFAULT =
             new MqttConnect(DEFAULT_KEEP_ALIVE, DEFAULT_CLEAN_START, DEFAULT_SESSION_EXPIRY_INTERVAL,
-                    DEFAULT_RESPONSE_INFORMATION_REQUESTED, DEFAULT_PROBLEM_INFORMATION_REQUESTED,
                     MqttConnectRestrictions.DEFAULT, null, null, null, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
 
     private final int keepAlive;
-    private final boolean isCleanStart;
+    private final boolean cleanStart;
     private final long sessionExpiryInterval;
-    private final boolean isResponseInformationRequested;
-    private final boolean isProblemInformationRequested;
     private final @NotNull MqttConnectRestrictions restrictions;
     private final @Nullable MqttSimpleAuth simpleAuth;
     private final @Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism;
     private final @Nullable MqttWillPublish willPublish;
 
     public MqttConnect(
-            final int keepAlive, final boolean isCleanStart, final long sessionExpiryInterval,
-            final boolean isResponseInformationRequested, final boolean isProblemInformationRequested,
+            final int keepAlive, final boolean cleanStart, final long sessionExpiryInterval,
             final @NotNull MqttConnectRestrictions restrictions, final @Nullable MqttSimpleAuth simpleAuth,
             final @Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism,
             final @Nullable MqttWillPublish willPublish, final @NotNull MqttUserPropertiesImpl userProperties) {
 
         super(userProperties);
         this.keepAlive = keepAlive;
-        this.isCleanStart = isCleanStart;
+        this.cleanStart = cleanStart;
         this.sessionExpiryInterval = sessionExpiryInterval;
-        this.isResponseInformationRequested = isResponseInformationRequested;
-        this.isProblemInformationRequested = isProblemInformationRequested;
         this.restrictions = restrictions;
         this.simpleAuth = simpleAuth;
         this.enhancedAuthMechanism = enhancedAuthMechanism;
@@ -80,22 +74,12 @@ public class MqttConnect extends MqttMessageWithUserProperties implements Mqtt5C
 
     @Override
     public boolean isCleanStart() {
-        return isCleanStart;
+        return cleanStart;
     }
 
     @Override
     public long getSessionExpiryInterval() {
         return sessionExpiryInterval;
-    }
-
-    @Override
-    public boolean isResponseInformationRequested() {
-        return isResponseInformationRequested;
-    }
-
-    @Override
-    public boolean isProblemInformationRequested() {
-        return isProblemInformationRequested;
     }
 
     @Override

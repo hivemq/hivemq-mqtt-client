@@ -43,8 +43,6 @@ public interface Mqtt5Connect extends Mqtt5Message {
     boolean DEFAULT_CLEAN_START = true;
     long DEFAULT_SESSION_EXPIRY_INTERVAL = 0;
     long NO_SESSION_EXPIRY = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE;
-    boolean DEFAULT_RESPONSE_INFORMATION_REQUESTED = false;
-    boolean DEFAULT_PROBLEM_INFORMATION_REQUESTED = true;
 
     /**
      * Creates a builder for a Connect message.
@@ -70,18 +68,6 @@ public interface Mqtt5Connect extends Mqtt5Message {
      *         #DEFAULT_SESSION_EXPIRY_INTERVAL}. If it is {@link #NO_SESSION_EXPIRY} the session does not expire.
      */
     long getSessionExpiryInterval();
-
-    /**
-     * @return whether the client requests response information from the server. The default is {@link
-     *         #DEFAULT_RESPONSE_INFORMATION_REQUESTED}.
-     */
-    boolean isResponseInformationRequested();
-
-    /**
-     * @return whether the client requests problem information from the server. The default is {@link
-     *         #DEFAULT_PROBLEM_INFORMATION_REQUESTED}.
-     */
-    boolean isProblemInformationRequested();
 
     /**
      * @return the restrictions set from the client.

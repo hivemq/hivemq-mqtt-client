@@ -89,20 +89,20 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
                 88,
                 //     session expiry interval
                 0x11, 0, 0, 0, 10,
-                //     request response information
-                0x19, 1,
-                //     request problem information
-                0x17, 0,
                 //     auth method
                 0x15, 0, 8, 'G', 'S', '2', '-', 'K', 'R', 'B', '5',
                 //     auth data
                 0x16, 0, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
                 //     receive maximum
                 0x21, 0, 5,
-                //     topic alias maximum
-                0x22, 0, 10,
                 //     maximum packet size
                 0x27, 0, 0, 0, 100,
+                //     topic alias maximum
+                0x22, 0, 10,
+                //     request response information
+                0x19, 1,
+                //     request problem information
+                0x17, 0,
                 //     user properties
                 0x26, 0, 4, 't', 'e', 's', 't', 0, 5, 'v', 'a', 'l', 'u', 'e', //
                 0x26, 0, 4, 't', 'e', 's', 't', 0, 6, 'v', 'a', 'l', 'u', 'e', '2', //
@@ -169,10 +169,10 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
                 new MqttWillPublish(willTopic, willPayload, willQos, true, 10, Mqtt5PayloadFormatIndicator.UTF_8,
                         willContentType, willResponseTopic, willCorrelationData, userProperties, 5);
 
-        final MqttConnectRestrictions restrictions = new MqttConnectRestrictions(5, 100, 10);
+        final MqttConnectRestrictions restrictions = new MqttConnectRestrictions(5, 100, 10, true, false);
 
         final MqttConnect connect =
-                new MqttConnect(10, true, 10, true, false, restrictions, simpleAuth, enhancedAuthProvider, willPublish,
+                new MqttConnect(10, true, 10, restrictions, simpleAuth, enhancedAuthProvider, willPublish,
                         userProperties);
         final MqttStatefulConnect connectWrapper = connect.createStateful(clientIdentifier, enhancedAuth);
 
@@ -204,7 +204,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         };
 
         final MqttClientIdentifierImpl clientIdentifier = MqttClientIdentifierImpl.of("test");
-        final MqttConnect connect = new MqttConnect(0, false, 0, false, true, DEFAULT, null, null, null,
+        final MqttConnect connect = new MqttConnect(0, false, 0, DEFAULT, null, null, null,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES);
         final MqttStatefulConnect connectWrapper = connect.createStateful(clientIdentifier, null);
 
@@ -241,7 +241,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         final MqttUtf8StringImpl username = MqttUtf8StringImpl.of("username");
         final MqttSimpleAuth simpleAuth = new MqttSimpleAuth(username, null);
 
-        final MqttConnect connect = new MqttConnect(0, false, 0, false, true, DEFAULT, simpleAuth, null, null,
+        final MqttConnect connect = new MqttConnect(0, false, 0, DEFAULT, simpleAuth, null, null,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES);
         final MqttStatefulConnect connectWrapper = connect.createStateful(clientIdentifier, null);
 
@@ -279,7 +279,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         final ByteBuffer password = ByteBuffer.wrap(new byte[]{1, 5, 6, 3});
         final MqttSimpleAuth simpleAuth = new MqttSimpleAuth(null, password);
 
-        final MqttConnect connect = new MqttConnect(0, false, 0, false, true, DEFAULT, simpleAuth, null, null,
+        final MqttConnect connect = new MqttConnect(0, false, 0, DEFAULT, simpleAuth, null, null,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES);
         final MqttStatefulConnect connectWrapper = connect.createStateful(clientIdentifier, null);
 
@@ -293,7 +293,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         final ByteBuffer password = ByteBuffer.wrap(new byte[65536]);
         final MqttSimpleAuth simpleAuth = new MqttSimpleAuth(null, password);
 
-        final MqttConnect connect = new MqttConnect(0, false, 0, false, true, DEFAULT, simpleAuth, null, null,
+        final MqttConnect connect = new MqttConnect(0, false, 0, DEFAULT, simpleAuth, null, null,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES);
         final MqttStatefulConnect connectWrapper = connect.createStateful(clientIdentifier, null);
 
@@ -326,7 +326,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
 
         final MqttClientIdentifierImpl clientIdentifier = MqttClientIdentifierImpl.of("");
 
-        final MqttConnect connect = new MqttConnect(0, false, 0, false, true, DEFAULT, null, null, null,
+        final MqttConnect connect = new MqttConnect(0, false, 0, DEFAULT, null, null, null,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES);
         final MqttStatefulConnect connectWrapper = connect.createStateful(clientIdentifier, null);
 
@@ -369,7 +369,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         final MqttWillPublish willPublish = new MqttWillPublish(willTopic, willPayload, MqttQos.AT_MOST_ONCE, false,
                 MqttWillPublish.NO_MESSAGE_EXPIRY, null, null, null, null, MqttUserPropertiesImpl.NO_USER_PROPERTIES,
                 0);
-        final MqttConnect connect = new MqttConnect(0, false, 0, false, true, DEFAULT, null, null, willPublish,
+        final MqttConnect connect = new MqttConnect(0, false, 0, DEFAULT, null, null, willPublish,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES);
         final MqttStatefulConnect connectWrapper = connect.createStateful(clientIdentifier, null);
 
@@ -385,7 +385,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         final MqttWillPublish willPublish = new MqttWillPublish(willTopic, willPayload, MqttQos.AT_MOST_ONCE, false,
                 MqttWillPublish.NO_MESSAGE_EXPIRY, null, null, null, null, MqttUserPropertiesImpl.NO_USER_PROPERTIES,
                 0);
-        final MqttConnect connect = new MqttConnect(0, false, 0, false, true, DEFAULT, null, null, willPublish,
+        final MqttConnect connect = new MqttConnect(0, false, 0, DEFAULT, null, null, willPublish,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES);
         final MqttStatefulConnect connectWrapper = connect.createStateful(clientIdentifier, null);
 
@@ -401,7 +401,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         final MqttWillPublish willPublish =
                 new MqttWillPublish(willTopic, null, MqttQos.AT_MOST_ONCE, false, MqttWillPublish.NO_MESSAGE_EXPIRY,
                         null, null, null, correlationData, MqttUserPropertiesImpl.NO_USER_PROPERTIES, 0);
-        final MqttConnect connect = new MqttConnect(0, false, 0, false, true, DEFAULT, null, null, willPublish,
+        final MqttConnect connect = new MqttConnect(0, false, 0, DEFAULT, null, null, willPublish,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES);
         final MqttStatefulConnect connectWrapper = connect.createStateful(clientIdentifier, null);
 
@@ -419,7 +419,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         final MqttWillPublish willPublish =
                 new MqttWillPublish(willTopic, null, MqttQos.AT_MOST_ONCE, false, MqttWillPublish.NO_MESSAGE_EXPIRY,
                         null, null, null, null, tooManyUserProperties, 0);
-        final MqttConnect connect = new MqttConnect(0, false, 0, false, true, DEFAULT, null, null, willPublish,
+        final MqttConnect connect = new MqttConnect(0, false, 0, DEFAULT, null, null, willPublish,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES);
         final MqttStatefulConnect connectWrapper = connect.createStateful(clientIdentifier, null);
 
@@ -460,7 +460,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         final MqttEnhancedAuth enhancedAuth = new MqttEnhancedAuth(authMethod, authData);
         final Mqtt5EnhancedAuthMechanism enhancedAuthProvider = new TestEnhancedAuthMechanism(authMethod);
 
-        final MqttConnect connect = new MqttConnect(0, false, 0, false, true, DEFAULT, null, enhancedAuthProvider, null,
+        final MqttConnect connect = new MqttConnect(0, false, 0, DEFAULT, null, enhancedAuthProvider, null,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES);
         final MqttStatefulConnect connectWrapper = connect.createStateful(clientIdentifier, enhancedAuth);
 
@@ -476,7 +476,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         final MqttEnhancedAuth enhancedAuth = new MqttEnhancedAuth(authMethod, authData);
         final Mqtt5EnhancedAuthMechanism enhancedAuthProvider = new TestEnhancedAuthMechanism(authMethod);
 
-        final MqttConnect connect = new MqttConnect(0, false, 0, false, true, DEFAULT, null, enhancedAuthProvider, null,
+        final MqttConnect connect = new MqttConnect(0, false, 0, DEFAULT, null, enhancedAuthProvider, null,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES);
         final MqttStatefulConnect connectWrapper = connect.createStateful(clientIdentifier, enhancedAuth);
 
@@ -489,7 +489,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
 
         final MqttClientIdentifierImpl clientIdentifier = MqttClientIdentifierImpl.of(maxPacket.getClientId("a"));
-        final MqttConnect connect = new MqttConnect(0, false, 0, false, true, DEFAULT, null, null, null,
+        final MqttConnect connect = new MqttConnect(0, false, 0, DEFAULT, null, null, null,
                 maxPacket.getMaxPossibleUserProperties());
         final MqttStatefulConnect connectWrapper = connect.createStateful(clientIdentifier, null);
 
@@ -502,7 +502,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
 
         final MqttClientIdentifierImpl clientIdentifier = MqttClientIdentifierImpl.of(maxPacket.getClientId());
-        final MqttConnect connect = new MqttConnect(0, false, 0, false, true, DEFAULT, null, null, null,
+        final MqttConnect connect = new MqttConnect(0, false, 0, DEFAULT, null, null, null,
                 maxPacket.getMaxPossibleUserProperties(2));
         final MqttStatefulConnect connectWrapper = connect.createStateful(clientIdentifier, null);
 
