@@ -264,14 +264,17 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
     }
 
     private @NotNull MqttServerConnectionConfig addServerConfig(final @NotNull MqttConnAck connAck) {
-        final MqttConnAckRestrictions restrictions = connAck.getRestrictions();
+        final MqttConnectRestrictions connectRestrictions = connect.getRestrictions();
+        final MqttConnAckRestrictions connAckRestrictions = connAck.getRestrictions();
 
-        final MqttServerConnectionConfig serverConnectionConfig =
-                new MqttServerConnectionConfig(restrictions.getReceiveMaximum(), restrictions.getMaximumPacketSize(),
-                        restrictions.getTopicAliasMaximum(), restrictions.getMaximumQos(),
-                        restrictions.isRetainAvailable(), restrictions.isWildcardSubscriptionAvailable(),
-                        restrictions.isSharedSubscriptionAvailable(),
-                        restrictions.areSubscriptionIdentifiersAvailable());
+        final MqttServerConnectionConfig serverConnectionConfig = new MqttServerConnectionConfig(
+                Math.min(connectRestrictions.getSendMaximum(), connAckRestrictions.getReceiveMaximum()),
+                Math.min(connectRestrictions.getSendMaximumPacketSize(), connAckRestrictions.getMaximumPacketSize()),
+                Math.min(connectRestrictions.getSendTopicAliasMaximum(), connAckRestrictions.getTopicAliasMaximum()),
+                connAckRestrictions.getMaximumQos(), connAckRestrictions.isRetainAvailable(),
+                connAckRestrictions.isWildcardSubscriptionAvailable(),
+                connAckRestrictions.isSharedSubscriptionAvailable(),
+                connAckRestrictions.areSubscriptionIdentifiersAvailable());
 
         clientConfig.setServerConnectionConfig(serverConnectionConfig);
         return serverConnectionConfig;
