@@ -180,6 +180,14 @@ public class MqttChecks {
                 MqttChecks.string(name, "User property name"), MqttChecks.string(value, "User property value"));
     }
 
+    public static int packetSize(final int packetSize, final @NotNull String name) {
+        if ((packetSize <= 0) || (packetSize > MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT)) {
+            throw new IllegalArgumentException(name + " must not exceed the value range of ]0, " +
+                    MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT + "], but was " + packetSize + ".");
+        }
+        return packetSize;
+    }
+
     @Contract("null -> fail")
     public static @NotNull MqttConnect connect(final @Nullable Mqtt5Connect connect) {
         return Checks.notImplemented(connect, MqttConnect.class, "Connect");

@@ -18,7 +18,7 @@
 package org.mqttbee.internal.mqtt.message.connect;
 
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.internal.mqtt.datatypes.MqttVariableByteInteger;
+import org.mqttbee.internal.mqtt.util.MqttChecks;
 import org.mqttbee.internal.util.Checks;
 import org.mqttbee.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictionsBuilder;
 
@@ -30,9 +30,13 @@ import java.util.function.Function;
 public abstract class MqttConnectRestrictionsBuilder<B extends MqttConnectRestrictionsBuilder<B>> {
 
     private int receiveMaximum = MqttConnectRestrictions.DEFAULT_RECEIVE_MAXIMUM;
-    private int maximumPacketSize = MqttConnectRestrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT;
+    private int sendMaximum = MqttConnectRestrictions.DEFAULT_SEND_MAXIMUM;
+    private int maximumPacketSize = MqttConnectRestrictions.DEFAULT_MAXIMUM_PACKET_SIZE;
+    private int sendMaximumPacketSize = MqttConnectRestrictions.DEFAULT_SEND_MAXIMUM_PACKET_SIZE;
     private int topicAliasMaximum = MqttConnectRestrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM;
+    private int sendTopicAliasMaximum = MqttConnectRestrictions.DEFAULT_SEND_TOPIC_ALIAS_MAXIMUM;
     private boolean requestProblemInformation = MqttConnectRestrictions.DEFAULT_REQUEST_PROBLEM_INFORMATION;
+    private boolean sendProblemInformation = MqttConnectRestrictions.DEFAULT_SEND_PROBLEM_INFORMATION;
     private boolean requestResponseInformation = MqttConnectRestrictions.DEFAULT_REQUEST_RESPONSE_INFORMATION;
 
     abstract @NotNull B self();
@@ -42,12 +46,18 @@ public abstract class MqttConnectRestrictionsBuilder<B extends MqttConnectRestri
         return self();
     }
 
+    public @NotNull B sendMaximum(final int sendMaximum) {
+        this.sendMaximum = Checks.unsignedShort(sendMaximum, "Send maximum");
+        return self();
+    }
+
     public @NotNull B maximumPacketSize(final int maximumPacketSize) {
-        if ((maximumPacketSize <= 0) || (maximumPacketSize > MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT)) {
-            throw new IllegalArgumentException("Maximum packet size must not exceed the value range of ]0, " +
-                    MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT + "], but was " + maximumPacketSize + ".");
-        }
-        this.maximumPacketSize = maximumPacketSize;
+        this.maximumPacketSize = MqttChecks.packetSize(maximumPacketSize, "Maximum packet size");
+        return self();
+    }
+
+    public @NotNull B sendMaximumPacketSize(final int sendMaximumPacketSize) {
+        this.sendMaximumPacketSize = MqttChecks.packetSize(sendMaximumPacketSize, "Send maximum packet size");
         return self();
     }
 
@@ -56,8 +66,18 @@ public abstract class MqttConnectRestrictionsBuilder<B extends MqttConnectRestri
         return self();
     }
 
+    public @NotNull B sendTopicAliasMaximum(final int sendTopicAliasMaximum) {
+        this.sendTopicAliasMaximum = Checks.unsignedShort(sendTopicAliasMaximum, "Send topic alias maximum");
+        return self();
+    }
+
     public @NotNull B requestProblemInformation(final boolean requestProblemInformation) {
         this.requestProblemInformation = requestProblemInformation;
+        return self();
+    }
+
+    public @NotNull B sendProblemInformation(final boolean sendProblemInformation) {
+        this.sendProblemInformation = sendProblemInformation;
         return self();
     }
 
@@ -67,8 +87,9 @@ public abstract class MqttConnectRestrictionsBuilder<B extends MqttConnectRestri
     }
 
     public @NotNull MqttConnectRestrictions build() {
-        return new MqttConnectRestrictions(receiveMaximum, maximumPacketSize, topicAliasMaximum,
-                requestProblemInformation, requestResponseInformation);
+        return new MqttConnectRestrictions(receiveMaximum, sendMaximum, maximumPacketSize, sendMaximumPacketSize,
+                topicAliasMaximum, sendTopicAliasMaximum, requestProblemInformation, sendProblemInformation,
+                requestResponseInformation);
     }
 
     public static class Default extends MqttConnectRestrictionsBuilder<Default>

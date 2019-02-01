@@ -28,24 +28,35 @@ import org.mqttbee.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions;
 public class MqttConnectRestrictions implements Mqtt5ConnectRestrictions {
 
     public static final @NotNull MqttConnectRestrictions DEFAULT =
-            new MqttConnectRestrictions(DEFAULT_RECEIVE_MAXIMUM, DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT,
-                    DEFAULT_TOPIC_ALIAS_MAXIMUM, DEFAULT_REQUEST_PROBLEM_INFORMATION,
+            new MqttConnectRestrictions(DEFAULT_RECEIVE_MAXIMUM, DEFAULT_SEND_MAXIMUM, DEFAULT_MAXIMUM_PACKET_SIZE,
+                    DEFAULT_SEND_MAXIMUM_PACKET_SIZE, DEFAULT_TOPIC_ALIAS_MAXIMUM, DEFAULT_SEND_TOPIC_ALIAS_MAXIMUM,
+                    DEFAULT_REQUEST_PROBLEM_INFORMATION, DEFAULT_SEND_PROBLEM_INFORMATION,
                     DEFAULT_REQUEST_RESPONSE_INFORMATION);
 
     private final int receiveMaximum;
+    private final int sendMaximum;
     private final int maximumPacketSize;
+    private final int sendMaximumPacketSize;
     private final int topicAliasMaximum;
+    private final int sendTopicAliasMaximum;
     private final boolean requestProblemInformation;
+    private final boolean sendProblemInformation;
     private final boolean requestResponseInformation;
 
     public MqttConnectRestrictions(
-            final int receiveMaximum, final int maximumPacketSize, final int topicAliasMaximum,
-            final boolean requestProblemInformation, final boolean requestResponseInformation) {
+            final int receiveMaximum, final int sendMaximum, final int maximumPacketSize,
+            final int sendMaximumPacketSize, final int topicAliasMaximum, final int sendTopicAliasMaximum,
+            final boolean requestProblemInformation, final boolean sendProblemInformation,
+            final boolean requestResponseInformation) {
 
         this.receiveMaximum = receiveMaximum;
+        this.sendMaximum = sendMaximum;
         this.maximumPacketSize = maximumPacketSize;
+        this.sendMaximumPacketSize = sendMaximumPacketSize;
         this.topicAliasMaximum = topicAliasMaximum;
+        this.sendTopicAliasMaximum = sendTopicAliasMaximum;
         this.requestProblemInformation = requestProblemInformation;
+        this.sendProblemInformation = sendProblemInformation;
         this.requestResponseInformation = requestResponseInformation;
     }
 
@@ -55,8 +66,18 @@ public class MqttConnectRestrictions implements Mqtt5ConnectRestrictions {
     }
 
     @Override
+    public int getSendMaximum() {
+        return sendMaximum;
+    }
+
+    @Override
     public int getMaximumPacketSize() {
         return maximumPacketSize;
+    }
+
+    @Override
+    public int getSendMaximumPacketSize() {
+        return sendMaximumPacketSize;
     }
 
     @Override
@@ -65,8 +86,18 @@ public class MqttConnectRestrictions implements Mqtt5ConnectRestrictions {
     }
 
     @Override
+    public int getSendTopicAliasMaximum() {
+        return sendTopicAliasMaximum;
+    }
+
+    @Override
     public boolean isRequestProblemInformation() {
         return requestProblemInformation;
+    }
+
+    @Override
+    public boolean isSendProblemInformation() {
+        return sendProblemInformation;
     }
 
     @Override
