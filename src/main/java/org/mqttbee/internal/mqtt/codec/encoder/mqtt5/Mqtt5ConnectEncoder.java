@@ -138,10 +138,10 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
                     MqttConnectRestrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT);
             propertyLength += shortPropertyEncodedLength(restrictions.getTopicAliasMaximum(),
                     MqttConnectRestrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM);
-            propertyLength += booleanPropertyEncodedLength(restrictions.isResponseInformationRequested(),
-                    MqttConnectRestrictions.DEFAULT_RESPONSE_INFORMATION_REQUESTED);
-            propertyLength += booleanPropertyEncodedLength(restrictions.isProblemInformationRequested(),
-                    MqttConnectRestrictions.DEFAULT_PROBLEM_INFORMATION_REQUESTED);
+            propertyLength += booleanPropertyEncodedLength(restrictions.isRequestResponseInformation(),
+                    MqttConnectRestrictions.DEFAULT_REQUEST_RESPONSE_INFORMATION);
+            propertyLength += booleanPropertyEncodedLength(restrictions.isRequestProblemInformation(),
+                    MqttConnectRestrictions.DEFAULT_REQUEST_PROBLEM_INFORMATION);
         }
 
         propertyLength += message.getUserProperties().encodedLength();
@@ -266,10 +266,10 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
                     MqttConnectRestrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT, out);
             encodeShortProperty(TOPIC_ALIAS_MAXIMUM, restrictions.getTopicAliasMaximum(),
                     MqttConnectRestrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM, out);
-            encodeBooleanProperty(REQUEST_RESPONSE_INFORMATION, restrictions.isResponseInformationRequested(),
-                    MqttConnectRestrictions.DEFAULT_RESPONSE_INFORMATION_REQUESTED, out);
-            encodeBooleanProperty(REQUEST_PROBLEM_INFORMATION, restrictions.isProblemInformationRequested(),
-                    MqttConnectRestrictions.DEFAULT_PROBLEM_INFORMATION_REQUESTED, out);
+            encodeBooleanProperty(REQUEST_RESPONSE_INFORMATION, restrictions.isRequestResponseInformation(),
+                    MqttConnectRestrictions.DEFAULT_REQUEST_RESPONSE_INFORMATION, out);
+            encodeBooleanProperty(REQUEST_PROBLEM_INFORMATION, restrictions.isRequestProblemInformation(),
+                    MqttConnectRestrictions.DEFAULT_REQUEST_PROBLEM_INFORMATION, out);
         }
 
         if (omittedProperties == 0) {

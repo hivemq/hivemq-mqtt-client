@@ -27,27 +27,26 @@ import org.mqttbee.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions;
 @Immutable
 public class MqttConnectRestrictions implements Mqtt5ConnectRestrictions {
 
-    @NotNull
-    public static final MqttConnectRestrictions DEFAULT =
+    public static final @NotNull MqttConnectRestrictions DEFAULT =
             new MqttConnectRestrictions(DEFAULT_RECEIVE_MAXIMUM, DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT,
-                    DEFAULT_TOPIC_ALIAS_MAXIMUM, DEFAULT_RESPONSE_INFORMATION_REQUESTED,
-                    DEFAULT_PROBLEM_INFORMATION_REQUESTED);
+                    DEFAULT_TOPIC_ALIAS_MAXIMUM, DEFAULT_REQUEST_PROBLEM_INFORMATION,
+                    DEFAULT_REQUEST_RESPONSE_INFORMATION);
 
     private final int receiveMaximum;
     private final int maximumPacketSize;
     private final int topicAliasMaximum;
-    private final boolean responseInformationRequested;
-    private final boolean problemInformationRequested;
+    private final boolean requestProblemInformation;
+    private final boolean requestResponseInformation;
 
     public MqttConnectRestrictions(
             final int receiveMaximum, final int maximumPacketSize, final int topicAliasMaximum,
-            final boolean responseInformationRequested, final boolean problemInformationRequested) {
+            final boolean requestProblemInformation, final boolean requestResponseInformation) {
 
         this.receiveMaximum = receiveMaximum;
         this.maximumPacketSize = maximumPacketSize;
         this.topicAliasMaximum = topicAliasMaximum;
-        this.responseInformationRequested = responseInformationRequested;
-        this.problemInformationRequested = problemInformationRequested;
+        this.requestProblemInformation = requestProblemInformation;
+        this.requestResponseInformation = requestResponseInformation;
     }
 
     @Override
@@ -66,12 +65,12 @@ public class MqttConnectRestrictions implements Mqtt5ConnectRestrictions {
     }
 
     @Override
-    public boolean isResponseInformationRequested() {
-        return responseInformationRequested;
+    public boolean isRequestProblemInformation() {
+        return requestProblemInformation;
     }
 
     @Override
-    public boolean isProblemInformationRequested() {
-        return problemInformationRequested;
+    public boolean isRequestResponseInformation() {
+        return requestResponseInformation;
     }
 }

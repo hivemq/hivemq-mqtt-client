@@ -32,7 +32,7 @@ public interface Mqtt5ConnectRestrictionsBuilderBase<B extends Mqtt5ConnectRestr
 
     @NotNull B topicAliasMaximum(int topicAliasMaximum);
 
-    @NotNull B responseInformationRequested(boolean responseInformationRequested);
+    @NotNull B requestProblemInformation(boolean requestProblemInformation);
 
-    @NotNull B problemInformationRequested(boolean problemInformationRequested);
+    @NotNull B requestResponseInformation(boolean requestResponseInformation);
 }
