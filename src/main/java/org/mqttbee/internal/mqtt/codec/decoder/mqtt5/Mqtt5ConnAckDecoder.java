@@ -166,6 +166,7 @@ public class Mqtt5ConnAckDecoder implements MqttMessageDecoder {
                         throw new MqttDecoderException(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, "wrong maximum Qos");
                     }
                     maximumQos = MqttQos.fromCode(maximumQosCode);
+                    assert maximumQos != null;
                     maximumQosPresent = true;
                     restrictionsPresent |= maximumQos != DEFAULT_MAXIMUM_QOS;
                     break;

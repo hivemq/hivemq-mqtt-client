@@ -53,7 +53,7 @@ public class MqttDecoder extends ByteToMessageDecoder {
         this.decoders = decoders;
         final MqttConnectRestrictions restrictions = connect.getRestrictions();
         context = new MqttDecoderContext(restrictions.getMaximumPacketSize(),
-                restrictions.isProblemInformationRequested(), restrictions.isResponseInformationRequested(), false,
+                restrictions.isRequestProblemInformation(), restrictions.isRequestResponseInformation(), false,
                 false, false, false, restrictions.getTopicAliasMaximum());
     }
 

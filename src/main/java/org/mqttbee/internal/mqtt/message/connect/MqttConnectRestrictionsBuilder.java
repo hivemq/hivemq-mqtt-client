@@ -32,8 +32,8 @@ public abstract class MqttConnectRestrictionsBuilder<B extends MqttConnectRestri
     private int receiveMaximum = MqttConnectRestrictions.DEFAULT_RECEIVE_MAXIMUM;
     private int maximumPacketSize = MqttConnectRestrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT;
     private int topicAliasMaximum = MqttConnectRestrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM;
-    private boolean responseInformationRequested = MqttConnectRestrictions.DEFAULT_RESPONSE_INFORMATION_REQUESTED;
-    private boolean problemInformationRequested = MqttConnectRestrictions.DEFAULT_PROBLEM_INFORMATION_REQUESTED;
+    private boolean requestProblemInformation = MqttConnectRestrictions.DEFAULT_REQUEST_PROBLEM_INFORMATION;
+    private boolean requestResponseInformation = MqttConnectRestrictions.DEFAULT_REQUEST_RESPONSE_INFORMATION;
 
     abstract @NotNull B self();
 
@@ -56,19 +56,19 @@ public abstract class MqttConnectRestrictionsBuilder<B extends MqttConnectRestri
         return self();
     }
 
-    public @NotNull B responseInformationRequested(final boolean responseInformationRequested) {
-        this.responseInformationRequested = responseInformationRequested;
+    public @NotNull B requestProblemInformation(final boolean requestProblemInformation) {
+        this.requestProblemInformation = requestProblemInformation;
         return self();
     }
 
-    public @NotNull B problemInformationRequested(final boolean problemInformationRequested) {
-        this.problemInformationRequested = problemInformationRequested;
+    public @NotNull B requestResponseInformation(final boolean requestResponseInformation) {
+        this.requestResponseInformation = requestResponseInformation;
         return self();
     }
 
     public @NotNull MqttConnectRestrictions build() {
         return new MqttConnectRestrictions(receiveMaximum, maximumPacketSize, topicAliasMaximum,
-                responseInformationRequested, problemInformationRequested);
+                requestProblemInformation, requestResponseInformation);
     }
 
     public static class Default extends MqttConnectRestrictionsBuilder<Default>

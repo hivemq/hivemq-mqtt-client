@@ -256,7 +256,7 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
                 new MqttClientConnectionConfig(keepAlive, sessionExpiryInterval, restrictions.getReceiveMaximum(),
                         restrictions.getMaximumPacketSize(), restrictions.getTopicAliasMaximum(),
                         connect.getRawEnhancedAuthMechanism(), connect.getRawWillPublish() != null,
-                        restrictions.isProblemInformationRequested(), restrictions.isResponseInformationRequested(),
+                        restrictions.isRequestProblemInformation(), restrictions.isRequestResponseInformation(),
                         channel);
 
         clientConfig.setClientConnectionConfig(clientConnectionConfig);

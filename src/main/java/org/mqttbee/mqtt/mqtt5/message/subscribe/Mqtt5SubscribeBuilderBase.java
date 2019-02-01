@@ -33,7 +33,7 @@ public interface Mqtt5SubscribeBuilderBase<C extends Mqtt5SubscribeBuilderBase.C
     @NotNull Mqtt5SubscriptionBuilder.Nested<? extends C> addSubscription();
 
     @DoNotImplement
-    interface Complete<C extends Mqtt5SubscribeBuilderBase.Complete<C>> {
+    interface Complete<C extends Mqtt5SubscribeBuilderBase.Complete<C>> extends Mqtt5SubscribeBuilderBase<C> {
 
         @NotNull C userProperties(@NotNull Mqtt5UserProperties userProperties);
 
