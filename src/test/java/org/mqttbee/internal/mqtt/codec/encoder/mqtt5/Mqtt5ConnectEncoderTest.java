@@ -169,7 +169,7 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
                 new MqttWillPublish(willTopic, willPayload, willQos, true, 10, Mqtt5PayloadFormatIndicator.UTF_8,
                         willContentType, willResponseTopic, willCorrelationData, userProperties, 5);
 
-        final MqttConnectRestrictions restrictions = new MqttConnectRestrictions(5, 100, 10, true, false);
+        final MqttConnectRestrictions restrictions = new MqttConnectRestrictions(5, 100, 10, false, true);
 
         final MqttConnect connect =
                 new MqttConnect(10, true, 10, restrictions, simpleAuth, enhancedAuthProvider, willPublish,
