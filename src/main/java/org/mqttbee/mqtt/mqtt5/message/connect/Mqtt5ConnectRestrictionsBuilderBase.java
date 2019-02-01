@@ -28,11 +28,19 @@ public interface Mqtt5ConnectRestrictionsBuilderBase<B extends Mqtt5ConnectRestr
 
     @NotNull B receiveMaximum(int receiveMaximum);
 
+    @NotNull B sendMaximum(int receiveMaximum);
+
     @NotNull B maximumPacketSize(int maximumPacketSize);
+
+    @NotNull B sendMaximumPacketSize(int maximumPacketSize);
 
     @NotNull B topicAliasMaximum(int topicAliasMaximum);
 
+    @NotNull B sendTopicAliasMaximum(int topicAliasMaximum);
+
     @NotNull B requestProblemInformation(boolean requestProblemInformation);
+
+    @NotNull B sendProblemInformation(boolean requestProblemInformation);
 
     @NotNull B requestResponseInformation(boolean requestResponseInformation);
 }

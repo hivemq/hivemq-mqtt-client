@@ -27,6 +27,7 @@ import org.mqttbee.internal.mqtt.message.auth.MqttEnhancedAuth;
 import org.mqttbee.internal.mqtt.message.auth.MqttSimpleAuth;
 import org.mqttbee.internal.mqtt.message.connect.MqttConnect;
 import org.mqttbee.internal.mqtt.message.connect.MqttConnectRestrictions;
+import org.mqttbee.internal.mqtt.message.connect.MqttConnectRestrictionsBuilder;
 import org.mqttbee.internal.mqtt.message.connect.MqttStatefulConnect;
 import org.mqttbee.internal.mqtt.message.publish.MqttWillPublish;
 import org.mqttbee.internal.util.collections.ImmutableList;
@@ -169,7 +170,12 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
                 new MqttWillPublish(willTopic, willPayload, willQos, true, 10, Mqtt5PayloadFormatIndicator.UTF_8,
                         willContentType, willResponseTopic, willCorrelationData, userProperties, 5);
 
-        final MqttConnectRestrictions restrictions = new MqttConnectRestrictions(5, 100, 10, false, true);
+        final MqttConnectRestrictions restrictions = new MqttConnectRestrictionsBuilder.Default().receiveMaximum(5)
+                .maximumPacketSize(100)
+                .topicAliasMaximum(10)
+                .requestProblemInformation(false)
+                .requestResponseInformation(true)
+                .build();
 
         final MqttConnect connect =
                 new MqttConnect(10, true, 10, restrictions, simpleAuth, enhancedAuthProvider, willPublish,
@@ -204,8 +210,8 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         };
 
         final MqttClientIdentifierImpl clientIdentifier = MqttClientIdentifierImpl.of("test");
-        final MqttConnect connect = new MqttConnect(0, false, 0, DEFAULT, null, null, null,
-                MqttUserPropertiesImpl.NO_USER_PROPERTIES);
+        final MqttConnect connect =
+                new MqttConnect(0, false, 0, DEFAULT, null, null, null, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
         final MqttStatefulConnect connectWrapper = connect.createStateful(clientIdentifier, null);
 
         encode(expected, connectWrapper);
@@ -326,8 +332,8 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
 
         final MqttClientIdentifierImpl clientIdentifier = MqttClientIdentifierImpl.of("");
 
-        final MqttConnect connect = new MqttConnect(0, false, 0, DEFAULT, null, null, null,
-                MqttUserPropertiesImpl.NO_USER_PROPERTIES);
+        final MqttConnect connect =
+                new MqttConnect(0, false, 0, DEFAULT, null, null, null, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
         final MqttStatefulConnect connectWrapper = connect.createStateful(clientIdentifier, null);
 
         encode(expected, connectWrapper);
@@ -489,8 +495,8 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
 
         final MqttClientIdentifierImpl clientIdentifier = MqttClientIdentifierImpl.of(maxPacket.getClientId("a"));
-        final MqttConnect connect = new MqttConnect(0, false, 0, DEFAULT, null, null, null,
-                maxPacket.getMaxPossibleUserProperties());
+        final MqttConnect connect =
+                new MqttConnect(0, false, 0, DEFAULT, null, null, null, maxPacket.getMaxPossibleUserProperties());
         final MqttStatefulConnect connectWrapper = connect.createStateful(clientIdentifier, null);
 
         encodeNok(connectWrapper, EncoderException.class, "variable byte integer size exceeded for remaining length");
@@ -502,8 +508,8 @@ class Mqtt5ConnectEncoderTest extends AbstractMqtt5EncoderTest {
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder().build();
 
         final MqttClientIdentifierImpl clientIdentifier = MqttClientIdentifierImpl.of(maxPacket.getClientId());
-        final MqttConnect connect = new MqttConnect(0, false, 0, DEFAULT, null, null, null,
-                maxPacket.getMaxPossibleUserProperties(2));
+        final MqttConnect connect =
+                new MqttConnect(0, false, 0, DEFAULT, null, null, null, maxPacket.getMaxPossibleUserProperties(2));
         final MqttStatefulConnect connectWrapper = connect.createStateful(clientIdentifier, null);
 
         encodeNok(connectWrapper, EncoderException.class, "variable byte integer size exceeded for property length");

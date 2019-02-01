@@ -41,13 +41,14 @@ abstract class AbstractMqtt5DecoderTest extends AbstractMqttDecoderTest {
     private static @NotNull MqttConnect createConnect(final int maximumPacketSize) {
         return new MqttConnectBuilder.Default().restrictions()
                 .maximumPacketSize(maximumPacketSize)
-                .topicAliasMaximum(3).requestResponseInformation(true).applyRestrictions()
+                .topicAliasMaximum(3)
+                .requestResponseInformation(true)
+                .applyRestrictions()
                 .build();
     }
 
     AbstractMqtt5DecoderTest(final @NotNull MqttMessageDecoders decoders) {
-        super(decoders, createClientData(),
-                createConnect(MqttConnectRestrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT));
+        super(decoders, createClientData(), createConnect(MqttConnectRestrictions.DEFAULT_MAXIMUM_PACKET_SIZE));
     }
 
     void setMaximumPacketSize(final int maximumPacketSize) {

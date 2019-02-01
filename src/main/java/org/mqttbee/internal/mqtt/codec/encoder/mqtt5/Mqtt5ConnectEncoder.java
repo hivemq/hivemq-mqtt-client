@@ -135,7 +135,7 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
             propertyLength += shortPropertyEncodedLength(restrictions.getReceiveMaximum(),
                     MqttConnectRestrictions.DEFAULT_RECEIVE_MAXIMUM);
             propertyLength += intPropertyEncodedLength(restrictions.getMaximumPacketSize(),
-                    MqttConnectRestrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT);
+                    MqttConnectRestrictions.DEFAULT_MAXIMUM_PACKET_SIZE);
             propertyLength += shortPropertyEncodedLength(restrictions.getTopicAliasMaximum(),
                     MqttConnectRestrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM);
             propertyLength += booleanPropertyEncodedLength(restrictions.isRequestResponseInformation(),
@@ -263,7 +263,7 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
             encodeShortProperty(RECEIVE_MAXIMUM, restrictions.getReceiveMaximum(),
                     MqttConnectRestrictions.DEFAULT_RECEIVE_MAXIMUM, out);
             encodeIntProperty(MAXIMUM_PACKET_SIZE, restrictions.getMaximumPacketSize(),
-                    MqttConnectRestrictions.DEFAULT_MAXIMUM_PACKET_SIZE_NO_LIMIT, out);
+                    MqttConnectRestrictions.DEFAULT_MAXIMUM_PACKET_SIZE, out);
             encodeShortProperty(TOPIC_ALIAS_MAXIMUM, restrictions.getTopicAliasMaximum(),
                     MqttConnectRestrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM, out);
             encodeBooleanProperty(REQUEST_RESPONSE_INFORMATION, restrictions.isRequestResponseInformation(),
