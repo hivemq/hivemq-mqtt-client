@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.internal.annotations.CallByThread;
 import org.mqttbee.internal.mqtt.MqttClientConfig;
 import org.mqttbee.internal.mqtt.MqttClientConnectionConfig;
-import org.mqttbee.internal.mqtt.advanced.MqttAdvancedClientConfig;
+import org.mqttbee.internal.mqtt.advanced.MqttClientAdvancedConfig;
 import org.mqttbee.internal.mqtt.handler.MqttSessionAwareHandler;
 import org.mqttbee.internal.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.internal.mqtt.ioc.ClientScope;
@@ -237,7 +237,7 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler
     }
 
     private @NotNull MqttPubAck buildPubAck(final @NotNull MqttPubAckBuilder pubAckBuilder) {
-        final MqttAdvancedClientConfig advanced = clientConfig.getRawAdvancedConfig();
+        final MqttClientAdvancedConfig advanced = clientConfig.getRawAdvancedConfig();
         if (advanced != null) {
             final Mqtt5IncomingQos1Interceptor interceptor = advanced.getIncomingQos1Interceptor();
             if (interceptor != null) {
@@ -248,7 +248,7 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler
     }
 
     private @NotNull MqttPubRec buildPubRec(final @NotNull MqttPubRecBuilder pubRecBuilder) {
-        final MqttAdvancedClientConfig advanced = clientConfig.getRawAdvancedConfig();
+        final MqttClientAdvancedConfig advanced = clientConfig.getRawAdvancedConfig();
         if (advanced != null) {
             final Mqtt5IncomingQos2Interceptor interceptor = advanced.getIncomingQos2Interceptor();
             if (interceptor != null) {
@@ -259,7 +259,7 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler
     }
 
     private @NotNull MqttPubComp buildPubComp(final @NotNull MqttPubCompBuilder pubCompBuilder) {
-        final MqttAdvancedClientConfig advanced = clientConfig.getRawAdvancedConfig();
+        final MqttClientAdvancedConfig advanced = clientConfig.getRawAdvancedConfig();
         if (advanced != null) {
             final Mqtt5IncomingQos2Interceptor interceptor = advanced.getIncomingQos2Interceptor();
             if (interceptor != null) {
