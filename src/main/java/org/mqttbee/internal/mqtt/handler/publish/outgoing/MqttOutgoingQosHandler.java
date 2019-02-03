@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mqttbee.internal.annotations.CallByThread;
 import org.mqttbee.internal.mqtt.MqttClientConfig;
 import org.mqttbee.internal.mqtt.MqttClientConnectionConfig;
-import org.mqttbee.internal.mqtt.advanced.MqttAdvancedClientConfig;
+import org.mqttbee.internal.mqtt.advanced.MqttClientAdvancedConfig;
 import org.mqttbee.internal.mqtt.exceptions.MqttClientStateExceptions;
 import org.mqttbee.internal.mqtt.handler.MqttSessionAwareHandler;
 import org.mqttbee.internal.mqtt.handler.disconnect.MqttDisconnectUtil;
@@ -435,7 +435,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     }
 
     private void onPubAck(final @NotNull MqttPublish publish, final @NotNull MqttPubAck pubAck) {
-        final MqttAdvancedClientConfig advanced = clientConfig.getRawAdvancedConfig();
+        final MqttClientAdvancedConfig advanced = clientConfig.getRawAdvancedConfig();
         if (advanced != null) {
             final Mqtt5OutgoingQos1Interceptor interceptor = advanced.getOutgoingQos1Interceptor();
             if (interceptor != null) {
@@ -445,7 +445,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     }
 
     private void onPubRecError(final @NotNull MqttPublish publish, final @NotNull MqttPubRec pubRec) {
-        final MqttAdvancedClientConfig advanced = clientConfig.getRawAdvancedConfig();
+        final MqttClientAdvancedConfig advanced = clientConfig.getRawAdvancedConfig();
         if (advanced != null) {
             final Mqtt5OutgoingQos2Interceptor interceptor = advanced.getOutgoingQos2Interceptor();
             if (interceptor != null) {
@@ -456,7 +456,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
 
     private @NotNull MqttPubRel buildPubRel(final @NotNull MqttPublish publish, final @NotNull MqttPubRec pubRec) {
         final MqttPubRelBuilder pubRelBuilder = new MqttPubRelBuilder(pubRec);
-        final MqttAdvancedClientConfig advanced = clientConfig.getRawAdvancedConfig();
+        final MqttClientAdvancedConfig advanced = clientConfig.getRawAdvancedConfig();
         if (advanced != null) {
             final Mqtt5OutgoingQos2Interceptor interceptor = advanced.getOutgoingQos2Interceptor();
             if (interceptor != null) {
@@ -467,7 +467,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     }
 
     private void onPubComp(final @NotNull MqttPubRel pubRel, final @NotNull MqttPubComp pubComp) {
-        final MqttAdvancedClientConfig advanced = clientConfig.getRawAdvancedConfig();
+        final MqttClientAdvancedConfig advanced = clientConfig.getRawAdvancedConfig();
         if (advanced != null) {
             final Mqtt5OutgoingQos2Interceptor interceptor = advanced.getOutgoingQos2Interceptor();
             if (interceptor != null) {

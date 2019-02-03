@@ -19,15 +19,19 @@ package org.mqttbee.mqtt.mqtt5.advanced;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.internal.mqtt.advanced.MqttAdvancedClientConfigBuilder;
 
 /**
  * @author Silvio Giebl
  */
 @DoNotImplement
-public interface Mqtt5AdvancedClientConfig {
+public interface Mqtt5ClientAdvancedConfigBuilder
+        extends Mqtt5ClientAdvancedConfigBuilderBase<Mqtt5ClientAdvancedConfigBuilder> {
 
-    static @NotNull Mqtt5AdvancedClientConfigBuilder builder() {
-        return new MqttAdvancedClientConfigBuilder.Default();
+    @NotNull Mqtt5ClientAdvancedConfig build();
+
+    @DoNotImplement
+    interface Nested<P> extends Mqtt5ClientAdvancedConfigBuilderBase<Nested<P>> {
+
+        @NotNull P applyAdvanced();
     }
 }

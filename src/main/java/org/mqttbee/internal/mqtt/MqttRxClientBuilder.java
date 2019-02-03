@@ -19,12 +19,12 @@ package org.mqttbee.internal.mqtt;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mqttbee.internal.mqtt.advanced.MqttAdvancedClientConfig;
-import org.mqttbee.internal.mqtt.advanced.MqttAdvancedClientConfigBuilder;
+import org.mqttbee.internal.mqtt.advanced.MqttClientAdvancedConfig;
+import org.mqttbee.internal.mqtt.advanced.MqttClientAdvancedConfigBuilder;
 import org.mqttbee.internal.util.Checks;
 import org.mqttbee.mqtt.MqttVersion;
 import org.mqttbee.mqtt.mqtt5.Mqtt5ClientBuilder;
-import org.mqttbee.mqtt.mqtt5.advanced.Mqtt5AdvancedClientConfig;
+import org.mqttbee.mqtt.mqtt5.advanced.Mqtt5ClientAdvancedConfig;
 
 /**
  * @author Silvio Giebl
@@ -32,7 +32,7 @@ import org.mqttbee.mqtt.mqtt5.advanced.Mqtt5AdvancedClientConfig;
 public class MqttRxClientBuilder extends MqttRxClientBuilderBase<MqttRxClientBuilder> implements Mqtt5ClientBuilder {
 
     private boolean allowServerReAuth = false;
-    private @Nullable MqttAdvancedClientConfig advancedConfig;
+    private @Nullable MqttClientAdvancedConfig advancedConfig;
 
     public MqttRxClientBuilder() {}
 
@@ -52,15 +52,15 @@ public class MqttRxClientBuilder extends MqttRxClientBuilderBase<MqttRxClientBui
     }
 
     @Override
-    public @NotNull MqttRxClientBuilder advancedConfig(final @Nullable Mqtt5AdvancedClientConfig advancedConfig) {
+    public @NotNull MqttRxClientBuilder advancedConfig(final @Nullable Mqtt5ClientAdvancedConfig advancedConfig) {
         this.advancedConfig =
-                Checks.notImplementedOrNull(advancedConfig, MqttAdvancedClientConfig.class, "Advanced client config");
+                Checks.notImplementedOrNull(advancedConfig, MqttClientAdvancedConfig.class, "Advanced config");
         return this;
     }
 
     @Override
-    public @NotNull MqttAdvancedClientConfigBuilder.Nested<MqttRxClientBuilder> advancedConfig() {
-        return new MqttAdvancedClientConfigBuilder.Nested<>(this::advancedConfig);
+    public @NotNull MqttClientAdvancedConfigBuilder.Nested<MqttRxClientBuilder> advancedConfig() {
+        return new MqttClientAdvancedConfigBuilder.Nested<>(this::advancedConfig);
     }
 
     @Override
