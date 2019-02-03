@@ -46,10 +46,10 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
     private volatile @NotNull MqttClientIdentifierImpl clientIdentifier;
     private final @NotNull String serverHost;
     private final int serverPort;
+    private final @NotNull MqttClientExecutorConfigImpl executorConfig;
     private final @Nullable MqttClientSslConfigImpl sslConfig;
     private final @Nullable MqttWebSocketConfigImpl webSocketConfig;
     private final boolean allowsServerReAuth;
-    private final @NotNull MqttClientExecutorConfigImpl executorConfig;
     private final @Nullable MqttAdvancedClientConfig advancedConfig;
 
     private final @NotNull ClientComponent clientComponent;
@@ -64,10 +64,10 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
 
     public MqttClientConfig(
             final @NotNull MqttVersion mqttVersion, final @NotNull MqttClientIdentifierImpl clientIdentifier,
-            final @NotNull String serverHost, final int serverPort, final @Nullable MqttClientSslConfigImpl sslConfig,
-            final @Nullable MqttWebSocketConfigImpl webSocketConfig, final boolean allowsServerReAuth,
+            final @NotNull String serverHost, final int serverPort,
             final @NotNull MqttClientExecutorConfigImpl executorConfig,
-            final @Nullable MqttAdvancedClientConfig advancedConfig) {
+            final @Nullable MqttClientSslConfigImpl sslConfig, final @Nullable MqttWebSocketConfigImpl webSocketConfig,
+            final boolean allowsServerReAuth, final @Nullable MqttAdvancedClientConfig advancedConfig) {
 
         this.mqttVersion = mqttVersion;
         this.clientIdentifier = clientIdentifier;
@@ -114,8 +114,8 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
     }
 
     @Override
-    public boolean usesSsl() {
-        return sslConfig != null;
+    public @NotNull MqttClientExecutorConfigImpl getExecutorConfig() {
+        return executorConfig;
     }
 
     @Override
@@ -125,11 +125,6 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
 
     public @Nullable MqttClientSslConfigImpl getRawSslConfig() {
         return sslConfig;
-    }
-
-    @Override
-    public boolean usesWebSocket() {
-        return webSocketConfig != null;
     }
 
     @Override
@@ -144,11 +139,6 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
     @Override
     public boolean allowsServerReAuth() {
         return allowsServerReAuth;
-    }
-
-    @Override
-    public @NotNull MqttClientExecutorConfigImpl getExecutorConfig() {
-        return executorConfig;
     }
 
     public @NotNull Optional<Mqtt5AdvancedClientConfig> getAdvancedConfig() {

@@ -77,7 +77,6 @@ public class MqttChannelInitializerSslTest {
     @Test
     public void test_initialize_default_ssldata() throws Exception {
         when(clientData.getMqttVersion()).thenReturn(MqttVersion.MQTT_5_0);
-        when(clientData.usesSsl()).thenReturn(true);
         final MqttClientSslConfigImpl sslConfig = mock(MqttClientSslConfigImpl.class);
         when(clientData.getSslConfig()).thenReturn(Optional.of(sslConfig));
         when(clientData.getRawSslConfig()).thenReturn(sslConfig);

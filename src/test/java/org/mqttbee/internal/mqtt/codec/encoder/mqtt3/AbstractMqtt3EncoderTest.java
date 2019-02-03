@@ -39,7 +39,7 @@ abstract class AbstractMqtt3EncoderTest extends AbstractMqttEncoderTest {
 
     private static MqttClientConfig createClientData() {
         return new MqttClientConfig(MqttVersion.MQTT_3_1_1, MqttClientIdentifierImpl.of("test"), "localhost", 1883,
-                null, null, false, MqttClientExecutorConfigImpl.DEFAULT, null);
+                MqttClientExecutorConfigImpl.DEFAULT, null, null, false, null);
     }
 
     static @NotNull byte[] bytesOf(final @NotNull MqttWireMessage message) throws MqttException {
