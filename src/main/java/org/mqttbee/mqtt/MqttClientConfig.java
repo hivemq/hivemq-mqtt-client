@@ -50,4 +50,6 @@ public interface MqttClientConfig {
     @NotNull MqttClientExecutorConfig getExecutorConfig();
 
     @NotNull MqttClientState getState();
+
+    @NotNull Optional<? extends MqttClientConnectionConfig> getConnectionConfig();
 }

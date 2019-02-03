@@ -25,7 +25,6 @@ import org.jetbrains.annotations.Nullable;
 import org.mqttbee.internal.annotations.CallByThread;
 import org.mqttbee.internal.mqtt.MqttClientConfig;
 import org.mqttbee.internal.mqtt.MqttClientConnectionConfig;
-import org.mqttbee.internal.mqtt.MqttServerConnectionConfig;
 import org.mqttbee.internal.mqtt.codec.decoder.MqttDecoder;
 import org.mqttbee.internal.mqtt.handler.publish.incoming.MqttIncomingQosHandler;
 import org.mqttbee.internal.mqtt.handler.publish.outgoing.MqttOutgoingQosHandler;
@@ -67,8 +66,7 @@ public class MqttSession {
     @CallByThread("Netty EventLoop")
     public void startOrResume(
             final @NotNull MqttConnAck connAck, final @NotNull ChannelPipeline pipeline,
-            final @NotNull MqttClientConnectionConfig clientConnectionConfig,
-            final @NotNull MqttServerConnectionConfig serverConnectionConfig) {
+            final @NotNull MqttClientConnectionConfig connectionConfig) {
 
         if (hasSession && !connAck.isSessionPresent()) {
             final String message = "Session expired as CONNACK did not contain the session present flag.";
@@ -84,16 +82,16 @@ public class MqttSession {
         pipeline.addAfter(MqttDecoder.NAME, MqttSubscriptionHandler.NAME, subscriptionHandler);
         pipeline.addAfter(MqttDecoder.NAME, MqttIncomingQosHandler.NAME, incomingQosHandler);
         pipeline.addAfter(MqttDecoder.NAME, MqttOutgoingQosHandler.NAME, outgoingQosHandler);
-        subscriptionHandler.onSessionStartOrResume(clientConnectionConfig, serverConnectionConfig);
-        incomingQosHandler.onSessionStartOrResume(clientConnectionConfig, serverConnectionConfig);
-        outgoingQosHandler.onSessionStartOrResume(clientConnectionConfig, serverConnectionConfig);
+        subscriptionHandler.onSessionStartOrResume(connectionConfig);
+        incomingQosHandler.onSessionStartOrResume(connectionConfig);
+        outgoingQosHandler.onSessionStartOrResume(connectionConfig);
     }
 
     @CallByThread("Netty EventLoop")
     public void expire(final @NotNull Throwable cause, final @NotNull EventLoop eventLoop) {
-        final MqttClientConnectionConfig clientConnectionConfig = clientConfig.getRawClientConnectionConfig();
-        if (clientConnectionConfig != null) {
-            final long expiryInterval = clientConnectionConfig.getSessionExpiryInterval();
+        final MqttClientConnectionConfig connectionConfig = clientConfig.getRawConnectionConfig();
+        if (connectionConfig != null) {
+            final long expiryInterval = connectionConfig.getSessionExpiryInterval();
 
             if (expiryInterval == 0) {
                 end(new MqttSessionExpiredException("Session expired as connection was closed.", cause));

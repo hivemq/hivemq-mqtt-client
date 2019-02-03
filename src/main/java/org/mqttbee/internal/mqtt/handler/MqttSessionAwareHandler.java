@@ -19,7 +19,6 @@ package org.mqttbee.internal.mqtt.handler;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.internal.mqtt.MqttClientConnectionConfig;
-import org.mqttbee.internal.mqtt.MqttServerConnectionConfig;
 
 /**
  * @author Silvio Giebl
@@ -28,10 +27,7 @@ public abstract class MqttSessionAwareHandler extends MqttConnectionAwareHandler
 
     protected boolean hasSession;
 
-    public void onSessionStartOrResume(
-            final @NotNull MqttClientConnectionConfig clientConnectionConfig,
-            final @NotNull MqttServerConnectionConfig serverConnectionConfig) {
-
+    public void onSessionStartOrResume(final @NotNull MqttClientConnectionConfig connectionConfig) {
         hasSession = true;
     }
 

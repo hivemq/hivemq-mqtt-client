@@ -45,12 +45,12 @@ public class MqttDisconnectCompletable extends Completable {
 
     @Override
     protected void subscribeActual(final @NotNull CompletableObserver s) {
-        final MqttClientConnectionConfig clientConnectionConfig = clientConfig.getRawClientConnectionConfig();
-        if (clientConnectionConfig == null) {
+        final MqttClientConnectionConfig connectionConfig = clientConfig.getRawConnectionConfig();
+        if (connectionConfig == null) {
             EmptyDisposable.error(MqttClientStateExceptions.notConnected(), s);
             return;
         }
-        final Channel channel = clientConnectionConfig.getChannel();
+        final Channel channel = connectionConfig.getChannel();
         final MqttDisconnectHandler disconnectHandler =
                 (MqttDisconnectHandler) channel.pipeline().get(MqttDisconnectHandler.NAME);
         if (disconnectHandler == null) {

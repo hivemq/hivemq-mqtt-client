@@ -29,7 +29,6 @@ import java.util.Optional;
 @DoNotImplement
 public interface Mqtt3ClientConfig extends MqttClientConfig {
 
-    @NotNull Optional<Mqtt3ClientConnectionConfig> getClientConnectionConfig();
-
-    @NotNull Optional<Mqtt3ServerConnectionConfig> getServerConnectionConfig();
+    @Override
+    @NotNull Optional<Mqtt3ClientConnectionConfig> getConnectionConfig();
 }

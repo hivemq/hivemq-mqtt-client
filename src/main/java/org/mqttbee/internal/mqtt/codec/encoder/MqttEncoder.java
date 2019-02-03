@@ -23,7 +23,7 @@ import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.internal.mqtt.MqttClientConfig;
-import org.mqttbee.internal.mqtt.MqttServerConnectionConfig;
+import org.mqttbee.internal.mqtt.MqttClientConnectionConfig;
 import org.mqttbee.internal.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.internal.mqtt.ioc.ConnectionScope;
 import org.mqttbee.internal.mqtt.message.MqttMessage;
@@ -74,10 +74,10 @@ public class MqttEncoder extends ChannelOutboundHandlerAdapter {
         if (maximumPacketSize != 0) {
             return maximumPacketSize;
         }
-        final MqttServerConnectionConfig serverConnectionConfig = clientConfig.getRawServerConnectionConfig();
-        if (serverConnectionConfig == null) {
+        final MqttClientConnectionConfig connectionConfig = clientConfig.getRawConnectionConfig();
+        if (connectionConfig == null) {
             return MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT;
         }
-        return this.maximumPacketSize = serverConnectionConfig.getMaximumPacketSize();
+        return this.maximumPacketSize = connectionConfig.getSendMaximumPacketSize();
     }
 }

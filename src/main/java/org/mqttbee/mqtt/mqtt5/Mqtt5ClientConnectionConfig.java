@@ -19,6 +19,8 @@ package org.mqttbee.mqtt.mqtt5;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
+import org.mqttbee.mqtt.MqttClientConnectionConfig;
+import org.mqttbee.mqtt.datatypes.MqttQos;
 import org.mqttbee.mqtt.mqtt5.auth.Mqtt5EnhancedAuthMechanism;
 
 import java.util.Optional;
@@ -27,23 +29,49 @@ import java.util.Optional;
  * @author Silvio Giebl
  */
 @DoNotImplement
-public interface Mqtt5ClientConnectionConfig {
-
-    int getKeepAlive();
+public interface Mqtt5ClientConnectionConfig extends MqttClientConnectionConfig {
 
     long getSessionExpiryInterval();
 
-    int getReceiveMaximum();
-
-    int getMaximumPacketSize();
-
-    int getTopicAliasMaximum();
-
     @NotNull Optional<Mqtt5EnhancedAuthMechanism> getEnhancedAuthMechanism();
 
-    boolean hasWillPublish();
+    @NotNull ReceiveConfig getReceiveConfig();
 
-    boolean isProblemInformationRequested();
+    @NotNull SendConfig getSendConfig();
 
-    boolean isResponseInformationRequested();
+    @DoNotImplement
+    interface ReceiveConfig {
+
+        int getReceiveMaximum();
+
+        int getMaximumPacketSize();
+
+        int getTopicAliasMaximum();
+
+        boolean isProblemInformationRequested();
+
+        boolean isResponseInformationRequested();
+    }
+
+    @DoNotImplement
+    interface SendConfig {
+
+        int getSendMaximum();
+
+        int getSendMaximumPacketSize();
+
+        int getSendTopicAliasMaximum();
+
+        boolean isSendProblemInformation();
+
+        @NotNull MqttQos getMaximumQos();
+
+        boolean isRetainAvailable();
+
+        boolean isWildcardSubscriptionAvailable();
+
+        boolean isSharedSubscriptionAvailable();
+
+        boolean areSubscriptionIdentifiersAvailable();
+    }
 }

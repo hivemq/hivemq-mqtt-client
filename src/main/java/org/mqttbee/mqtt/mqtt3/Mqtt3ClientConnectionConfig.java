@@ -17,15 +17,21 @@
 
 package org.mqttbee.mqtt.mqtt3;
 
+import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
+import org.mqttbee.mqtt.MqttClientConnectionConfig;
 
 /**
  * @author Silvio Giebl
  */
 @DoNotImplement
-public interface Mqtt3ClientConnectionConfig {
+public interface Mqtt3ClientConnectionConfig extends MqttClientConnectionConfig {
 
-    int getKeepAlive();
+    @NotNull SendConfig getSendConfig();
 
-    boolean hasWillPublish();
+    @DoNotImplement
+    interface SendConfig {
+
+        int getSendMaximum();
+    }
 }

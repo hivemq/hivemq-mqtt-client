@@ -25,7 +25,6 @@ import org.jetbrains.annotations.Nullable;
 import org.mqttbee.internal.annotations.CallByThread;
 import org.mqttbee.internal.mqtt.MqttClientConfig;
 import org.mqttbee.internal.mqtt.MqttClientConnectionConfig;
-import org.mqttbee.internal.mqtt.MqttServerConnectionConfig;
 import org.mqttbee.internal.mqtt.advanced.MqttAdvancedClientConfig;
 import org.mqttbee.internal.mqtt.exceptions.MqttClientStateExceptions;
 import org.mqttbee.internal.mqtt.handler.MqttSessionAwareHandler;
@@ -103,15 +102,12 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     }
 
     @Override
-    public void onSessionStartOrResume(
-            final @NotNull MqttClientConnectionConfig clientConnectionConfig,
-            final @NotNull MqttServerConnectionConfig serverConnectionConfig) {
-
-        super.onSessionStartOrResume(clientConnectionConfig, serverConnectionConfig);
+    public void onSessionStartOrResume(final @NotNull MqttClientConnectionConfig connectionConfig) {
+        super.onSessionStartOrResume(connectionConfig);
 
         final int oldSendMaximum = sendMaximum;
         final int newSendMaximum = Math.min(
-                serverConnectionConfig.getReceiveMaximum(),
+                connectionConfig.getSendMaximum(),
                 UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE - MqttSubscriptionHandler.MAX_SUB_PENDING);
         sendMaximum = newSendMaximum;
         if (oldSendMaximum == 0) {
@@ -134,7 +130,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
             }
 //            resend(); // TODO
         }
-        topicAliasMapping = serverConnectionConfig.getTopicAliasMapping();
+        topicAliasMapping = connectionConfig.getSendTopicAliasMapping();
     }
 
     private void resize() {

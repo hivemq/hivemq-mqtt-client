@@ -23,7 +23,6 @@ import io.netty.channel.ChannelHandlerContext;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.internal.mqtt.MqttClientConfig;
 import org.mqttbee.internal.mqtt.MqttClientConnectionConfig;
-import org.mqttbee.internal.mqtt.MqttServerConnectionConfig;
 import org.mqttbee.internal.mqtt.codec.decoder.MqttDecoder;
 import org.mqttbee.internal.mqtt.codec.encoder.MqttEncoder;
 import org.mqttbee.internal.mqtt.datatypes.MqttClientIdentifierImpl;
@@ -169,14 +168,13 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
                     "CONNECT failed as CONNACK contained an Error Code: " + connAck.getReasonCode() + "."));
 
         } else if (validateClientIdentifier(connAck, channel)) {
-            final MqttClientConnectionConfig clientConnectionConfig = addClientConfig(connAck, channel);
-            final MqttServerConnectionConfig serverConnectionConfig = addServerConfig(connAck);
+            final MqttClientConnectionConfig connectionConfig = addConnectionConfig(connAck, channel);
 
             channel.pipeline().remove(this).addLast(MqttDisconnectOnConnAckHandler.NAME, disconnectOnConnAckHandler);
 
-            session.startOrResume(connAck, channel.pipeline(), clientConnectionConfig, serverConnectionConfig);
+            session.startOrResume(connAck, channel.pipeline(), connectionConfig);
 
-            final int keepAlive = clientConnectionConfig.getKeepAlive();
+            final int keepAlive = connectionConfig.getKeepAlive();
             if (keepAlive > 0) {
                 channel.pipeline().addAfter(MqttDecoder.NAME, MqttPingHandler.NAME, new MqttPingHandler(keepAlive));
             }
@@ -237,7 +235,7 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
         return true;
     }
 
-    private @NotNull MqttClientConnectionConfig addClientConfig(
+    private @NotNull MqttClientConnectionConfig addConnectionConfig(
             final @NotNull MqttConnAck connAck, final @NotNull Channel channel) {
 
         int keepAlive = connAck.getRawServerKeepAlive();
@@ -251,33 +249,30 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
         }
 
         final MqttConnectRestrictions restrictions = connect.getRestrictions();
-
-        final MqttClientConnectionConfig clientConnectionConfig =
-                new MqttClientConnectionConfig(keepAlive, sessionExpiryInterval, restrictions.getReceiveMaximum(),
-                        restrictions.getMaximumPacketSize(), restrictions.getTopicAliasMaximum(),
-                        connect.getRawEnhancedAuthMechanism(), connect.getRawWillPublish() != null,
-                        restrictions.isRequestProblemInformation(), restrictions.isRequestResponseInformation(),
-                        channel);
-
-        clientConfig.setClientConnectionConfig(clientConnectionConfig);
-        return clientConnectionConfig;
-    }
-
-    private @NotNull MqttServerConnectionConfig addServerConfig(final @NotNull MqttConnAck connAck) {
-        final MqttConnectRestrictions connectRestrictions = connect.getRestrictions();
         final MqttConnAckRestrictions connAckRestrictions = connAck.getRestrictions();
 
-        final MqttServerConnectionConfig serverConnectionConfig = new MqttServerConnectionConfig(
-                Math.min(connectRestrictions.getSendMaximum(), connAckRestrictions.getReceiveMaximum()),
-                Math.min(connectRestrictions.getSendMaximumPacketSize(), connAckRestrictions.getMaximumPacketSize()),
-                Math.min(connectRestrictions.getSendTopicAliasMaximum(), connAckRestrictions.getTopicAliasMaximum()),
-                connAckRestrictions.getMaximumQos(), connAckRestrictions.isRetainAvailable(),
+        // @formatter:off
+        final MqttClientConnectionConfig connectionConfig = new MqttClientConnectionConfig(
+                keepAlive, sessionExpiryInterval,
+                connect.getRawWillPublish() != null, connect.getRawEnhancedAuthMechanism(),
+                restrictions.getReceiveMaximum(),
+                restrictions.getMaximumPacketSize(),
+                restrictions.getTopicAliasMaximum(),
+                restrictions.isRequestProblemInformation(),
+                restrictions.isRequestResponseInformation(),
+                Math.min(restrictions.getSendMaximum(), connAckRestrictions.getReceiveMaximum()),
+                Math.min(restrictions.getSendMaximumPacketSize(), connAckRestrictions.getMaximumPacketSize()),
+                Math.min(restrictions.getSendTopicAliasMaximum(), connAckRestrictions.getTopicAliasMaximum()),
+                restrictions.isSendProblemInformation(),
+                connAckRestrictions.getMaximumQos(),
+                connAckRestrictions.isRetainAvailable(),
                 connAckRestrictions.isWildcardSubscriptionAvailable(),
                 connAckRestrictions.isSharedSubscriptionAvailable(),
-                connAckRestrictions.areSubscriptionIdentifiersAvailable());
+                connAckRestrictions.areSubscriptionIdentifiersAvailable(), channel);
+        // @formatter:on
 
-        clientConfig.setServerConnectionConfig(serverConnectionConfig);
-        return serverConnectionConfig;
+        clientConfig.setConnectionConfig(connectionConfig);
+        return connectionConfig;
     }
 
     @Override

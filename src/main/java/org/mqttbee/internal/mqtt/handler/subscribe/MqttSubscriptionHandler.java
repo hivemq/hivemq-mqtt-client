@@ -23,7 +23,6 @@ import org.jctools.queues.MpscLinkedQueue;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.internal.annotations.CallByThread;
 import org.mqttbee.internal.mqtt.MqttClientConnectionConfig;
-import org.mqttbee.internal.mqtt.MqttServerConnectionConfig;
 import org.mqttbee.internal.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.internal.mqtt.exceptions.MqttClientStateExceptions;
 import org.mqttbee.internal.mqtt.handler.MqttSessionAwareHandler;
@@ -85,12 +84,9 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
     }
 
     @Override
-    public void onSessionStartOrResume(
-            final @NotNull MqttClientConnectionConfig clientConnectionConfig,
-            final @NotNull MqttServerConnectionConfig serverConnectionConfig) {
-
-        super.onSessionStartOrResume(clientConnectionConfig, serverConnectionConfig);
-        subscriptionIdentifiersAvailable = serverConnectionConfig.areSubscriptionIdentifiersAvailable();
+    public void onSessionStartOrResume(final @NotNull MqttClientConnectionConfig connectionConfig) {
+        super.onSessionStartOrResume(connectionConfig);
+        subscriptionIdentifiersAvailable = connectionConfig.areSubscriptionIdentifiersAvailable();
     }
 
     public void subscribe(
