@@ -39,15 +39,11 @@ public interface MqttClientConfig {
 
     int getServerPort();
 
-    boolean usesSsl();
+    @NotNull MqttClientExecutorConfig getExecutorConfig();
 
     @NotNull Optional<MqttClientSslConfig> getSslConfig();
 
-    boolean usesWebSocket();
-
     @NotNull Optional<MqttWebSocketConfig> getWebSocketConfig();
-
-    @NotNull MqttClientExecutorConfig getExecutorConfig();
 
     @NotNull MqttClientState getState();
 

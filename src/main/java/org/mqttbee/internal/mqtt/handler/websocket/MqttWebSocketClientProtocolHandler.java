@@ -44,7 +44,7 @@ public class MqttWebSocketClientProtocolHandler extends WebSocketClientProtocolH
             final @NotNull MqttClientConfig clientConfig, final @NotNull MqttWebSocketConfig webSocketConfig)
             throws URISyntaxException {
 
-        return new URI(clientConfig.usesSsl() ? WEBSOCKET_TLS_URI_SCHEME : WEBSOCKET_URI_SCHEME, null,
+        return new URI((clientConfig.getRawSslConfig() == null) ? WEBSOCKET_URI_SCHEME : WEBSOCKET_TLS_URI_SCHEME, null,
                 clientConfig.getServerHost(), clientConfig.getServerPort(), "/" + webSocketConfig.getServerPath(), null,
                 null);
     }

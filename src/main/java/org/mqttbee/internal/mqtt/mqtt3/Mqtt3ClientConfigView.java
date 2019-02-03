@@ -58,8 +58,8 @@ public class Mqtt3ClientConfigView implements Mqtt3ClientConfig {
     }
 
     @Override
-    public boolean usesSsl() {
-        return delegate.usesSsl();
+    public @NotNull MqttClientExecutorConfig getExecutorConfig() {
+        return delegate.getExecutorConfig();
     }
 
     @Override
@@ -68,18 +68,8 @@ public class Mqtt3ClientConfigView implements Mqtt3ClientConfig {
     }
 
     @Override
-    public boolean usesWebSocket() {
-        return delegate.usesWebSocket();
-    }
-
-    @Override
     public @NotNull Optional<MqttWebSocketConfig> getWebSocketConfig() {
         return delegate.getWebSocketConfig();
-    }
-
-    @Override
-    public @NotNull MqttClientExecutorConfig getExecutorConfig() {
-        return delegate.getExecutorConfig();
     }
 
     @Override
