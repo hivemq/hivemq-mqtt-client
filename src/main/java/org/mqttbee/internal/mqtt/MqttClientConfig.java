@@ -32,7 +32,6 @@ import org.mqttbee.mqtt.MqttWebSocketConfig;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifier;
 import org.mqttbee.mqtt.mqtt5.Mqtt5ClientConfig;
 import org.mqttbee.mqtt.mqtt5.Mqtt5ClientConnectionConfig;
-import org.mqttbee.mqtt.mqtt5.Mqtt5ServerConnectionConfig;
 import org.mqttbee.mqtt.mqtt5.advanced.Mqtt5AdvancedClientConfig;
 
 import java.util.Optional;
@@ -61,8 +60,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
     private final @NotNull Object eventLoopLock = new Object();
 
     private final @NotNull AtomicReference<@NotNull MqttClientState> state;
-    private volatile @Nullable MqttClientConnectionConfig clientConnectionConfig;
-    private volatile @Nullable MqttServerConnectionConfig serverConnectionConfig;
+    private volatile @Nullable MqttClientConnectionConfig connectionConfig;
 
     public MqttClientConfig(
             final @NotNull MqttVersion mqttVersion, final @NotNull MqttClientIdentifierImpl clientIdentifier,
@@ -215,28 +213,15 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
     }
 
     @Override
-    public @NotNull Optional<Mqtt5ClientConnectionConfig> getClientConnectionConfig() {
-        return Optional.ofNullable(clientConnectionConfig);
+    public @NotNull Optional<Mqtt5ClientConnectionConfig> getConnectionConfig() {
+        return Optional.ofNullable(connectionConfig);
     }
 
-    public @Nullable MqttClientConnectionConfig getRawClientConnectionConfig() {
-        return clientConnectionConfig;
+    public @Nullable MqttClientConnectionConfig getRawConnectionConfig() {
+        return connectionConfig;
     }
 
-    public void setClientConnectionConfig(final @Nullable MqttClientConnectionConfig clientConnectionConfig) {
-        this.clientConnectionConfig = clientConnectionConfig;
-    }
-
-    @Override
-    public @NotNull Optional<Mqtt5ServerConnectionConfig> getServerConnectionConfig() {
-        return Optional.ofNullable(serverConnectionConfig);
-    }
-
-    public @Nullable MqttServerConnectionConfig getRawServerConnectionConfig() {
-        return serverConnectionConfig;
-    }
-
-    public void setServerConnectionConfig(final @Nullable MqttServerConnectionConfig serverConnectionConfig) {
-        this.serverConnectionConfig = serverConnectionConfig;
+    public void setConnectionConfig(final @Nullable MqttClientConnectionConfig connectionConfig) {
+        this.connectionConfig = connectionConfig;
     }
 }

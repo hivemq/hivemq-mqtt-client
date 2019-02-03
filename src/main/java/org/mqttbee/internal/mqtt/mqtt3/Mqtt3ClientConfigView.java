@@ -23,7 +23,6 @@ import org.mqttbee.mqtt.*;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifier;
 import org.mqttbee.mqtt.mqtt3.Mqtt3ClientConfig;
 import org.mqttbee.mqtt.mqtt3.Mqtt3ClientConnectionConfig;
-import org.mqttbee.mqtt.mqtt3.Mqtt3ServerConnectionConfig;
 
 import java.util.Optional;
 
@@ -89,12 +88,7 @@ public class Mqtt3ClientConfigView implements Mqtt3ClientConfig {
     }
 
     @Override
-    public @NotNull Optional<Mqtt3ClientConnectionConfig> getClientConnectionConfig() {
-        return Optional.ofNullable(delegate.getRawClientConnectionConfig());
-    }
-
-    @Override
-    public @NotNull Optional<Mqtt3ServerConnectionConfig> getServerConnectionConfig() {
-        return Optional.ofNullable(delegate.getRawServerConnectionConfig());
+    public @NotNull Optional<Mqtt3ClientConnectionConfig> getConnectionConfig() {
+        return Optional.ofNullable(delegate.getRawConnectionConfig());
     }
 }

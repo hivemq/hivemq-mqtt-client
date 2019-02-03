@@ -22,7 +22,6 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.internal.annotations.CallByThread;
 import org.mqttbee.internal.mqtt.MqttClientConfig;
 import org.mqttbee.internal.mqtt.MqttClientConnectionConfig;
-import org.mqttbee.internal.mqtt.MqttServerConnectionConfig;
 import org.mqttbee.internal.mqtt.advanced.MqttAdvancedClientConfig;
 import org.mqttbee.internal.mqtt.handler.MqttSessionAwareHandler;
 import org.mqttbee.internal.mqtt.handler.disconnect.MqttDisconnectUtil;
@@ -79,12 +78,9 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler
     }
 
     @Override
-    public void onSessionStartOrResume(
-            final @NotNull MqttClientConnectionConfig clientConnectionConfig,
-            final @NotNull MqttServerConnectionConfig serverConnectionConfig) {
-
-        super.onSessionStartOrResume(clientConnectionConfig, serverConnectionConfig);
-        receiveMaximum = clientConnectionConfig.getReceiveMaximum();
+    public void onSessionStartOrResume(final @NotNull MqttClientConnectionConfig connectionConfig) {
+        super.onSessionStartOrResume(connectionConfig);
+        receiveMaximum = connectionConfig.getReceiveMaximum();
     }
 
     @Override

@@ -15,7 +15,7 @@
  *
  */
 
-package org.mqttbee.mqtt.mqtt3;
+package org.mqttbee.mqtt;
 
 import org.mqttbee.annotations.DoNotImplement;
 
@@ -23,7 +23,9 @@ import org.mqttbee.annotations.DoNotImplement;
  * @author Silvio Giebl
  */
 @DoNotImplement
-public interface Mqtt3ServerConnectionConfig {
+public interface MqttClientConnectionConfig {
 
-    int getReceiveMaximum();
+    int getKeepAlive();
+
+    boolean hasWillPublish();
 }

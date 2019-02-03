@@ -41,17 +41,17 @@ public class MqttReAuthCompletable extends Completable {
 
     @Override
     protected void subscribeActual(final @NotNull CompletableObserver s) {
-        final MqttClientConnectionConfig clientConnectionConfig = clientConfig.getRawClientConnectionConfig();
-        if (clientConnectionConfig == null) {
+        final MqttClientConnectionConfig connectionConfig = clientConfig.getRawConnectionConfig();
+        if (connectionConfig == null) {
             EmptyDisposable.error(MqttClientStateExceptions.notConnected(), s);
             return;
         }
-        if (clientConnectionConfig.getRawEnhancedAuthMechanism() == null) {
+        if (connectionConfig.getRawEnhancedAuthMechanism() == null) {
             EmptyDisposable.error(new UnsupportedOperationException(
                     "Reauth is not available if enhanced auth was not used during connect"), s);
             return;
         }
-        final Channel channel = clientConnectionConfig.getChannel();
+        final Channel channel = connectionConfig.getChannel();
         final ChannelHandler authHandler = channel.pipeline().get(MqttAuthHandler.NAME);
         if (authHandler == null) {
             EmptyDisposable.error(MqttClientStateExceptions.notConnected(), s);
