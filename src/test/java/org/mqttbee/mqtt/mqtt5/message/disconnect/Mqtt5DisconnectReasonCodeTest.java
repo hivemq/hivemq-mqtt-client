@@ -194,5 +194,4 @@ class Mqtt5DisconnectReasonCodeTest {
         assertNull(Mqtt5DisconnectReasonCode.fromCode(0xFF));
     }
 
-
 }

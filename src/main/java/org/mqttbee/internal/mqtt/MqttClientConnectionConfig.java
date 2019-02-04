@@ -59,12 +59,12 @@ public class MqttClientConnectionConfig
     public MqttClientConnectionConfig(
             final int keepAlive, final long sessionExpiryInterval, final boolean hasWillPublish,
             final @Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism, final int receiveMaximum,
-            final int maximumPacketSize, final int topicAliasMaximum,
-            final boolean problemInformationRequested, final boolean responseInformationRequested,
-            final int sendMaximum, final int sendMaximumPacketSize, final int sendTopicAliasMaximum,
-            final boolean sendProblemInformation, final @NotNull MqttQos maximumQos, final boolean retainAvailable,
-            final boolean wildcardSubscriptionAvailable, final boolean sharedSubscriptionAvailable,
-            final boolean subscriptionIdentifiersAvailable, final @NotNull Channel channel) {
+            final int maximumPacketSize, final int topicAliasMaximum, final boolean problemInformationRequested,
+            final boolean responseInformationRequested, final int sendMaximum, final int sendMaximumPacketSize,
+            final int sendTopicAliasMaximum, final boolean sendProblemInformation, final @NotNull MqttQos maximumQos,
+            final boolean retainAvailable, final boolean wildcardSubscriptionAvailable,
+            final boolean sharedSubscriptionAvailable, final boolean subscriptionIdentifiersAvailable,
+            final @NotNull Channel channel) {
 
         this.keepAlive = keepAlive;
         this.sessionExpiryInterval = sessionExpiryInterval;

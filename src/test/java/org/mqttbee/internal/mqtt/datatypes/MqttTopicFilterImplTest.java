@@ -174,8 +174,8 @@ class MqttTopicFilterImplTest {
     void from_stringWithMisplacedWildcards_throws(
             @SuppressWarnings("unused") final @NotNull String testDescription,
             final @NotNull String topicFilterString) {
-        final IllegalArgumentException exception = Assertions.assertThrows(
-                IllegalArgumentException.class, () -> MqttTopicFilterImpl.of(topicFilterString));
+        final IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class,
+                () -> MqttTopicFilterImpl.of(topicFilterString));
         assertTrue("IllegalArgumentException must give hint that string contains misplaced wildcard characters.",
                 exception.getMessage().contains("misplaced wildcard characters"));
     }

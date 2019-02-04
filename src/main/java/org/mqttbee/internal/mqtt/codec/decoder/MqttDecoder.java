@@ -52,9 +52,10 @@ public class MqttDecoder extends ByteToMessageDecoder {
     MqttDecoder(final @NotNull MqttMessageDecoders decoders, final @NotNull MqttConnect connect) {
         this.decoders = decoders;
         final MqttConnectRestrictions restrictions = connect.getRestrictions();
-        context = new MqttDecoderContext(restrictions.getMaximumPacketSize(),
-                restrictions.isRequestProblemInformation(), restrictions.isRequestResponseInformation(), false,
-                false, false, false, restrictions.getTopicAliasMaximum());
+        context =
+                new MqttDecoderContext(restrictions.getMaximumPacketSize(), restrictions.isRequestProblemInformation(),
+                        restrictions.isRequestResponseInformation(), false, false, false, false,
+                        restrictions.getTopicAliasMaximum());
     }
 
     @Override
