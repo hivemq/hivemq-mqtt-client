@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.mqttbee.util;
 
 import org.bouncycastle.asn1.x500.X500Name;

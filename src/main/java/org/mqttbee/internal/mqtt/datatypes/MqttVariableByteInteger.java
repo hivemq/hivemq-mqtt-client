@@ -50,10 +50,9 @@ public class MqttVariableByteInteger {
      * returns.
      *
      * @param byteBuf the buffer to decode from.
-     * @return the decoded integer value or {@link #NOT_ENOUGH_BYTES} if there are not enough
-     * bytes in the byte buffer or {@link #TOO_LARGE} if the encoded variable byte integer has
-     * more than 4 bytes or {@link #NOT_MINIMUM_BYTES} if the value is not encoded with a minimum
-     * number of bytes.
+     * @return the decoded integer value or {@link #NOT_ENOUGH_BYTES} if there are not enough bytes in the byte buffer
+     *         or {@link #TOO_LARGE} if the encoded variable byte integer has more than 4 bytes or {@link
+     *         #NOT_MINIMUM_BYTES} if the value is not encoded with a minimum number of bytes.
      */
     public static int decode(@NotNull final ByteBuf byteBuf) {
         byte encodedByte;

@@ -89,8 +89,8 @@ class MqttUtf8StringImplTest {
     void from_stringWithUtf16Surrogates_throws() {
         for (char c = '\uD800'; c <= '\uDFFF'; c++) {
             final String stringWithSurrogate = "abc" + c + "def";
-            final IllegalArgumentException exception = Assertions.assertThrows(
-                    IllegalArgumentException.class, () -> MqttUtf8StringImpl.of(stringWithSurrogate));
+            final IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class,
+                    () -> MqttUtf8StringImpl.of(stringWithSurrogate));
             assertTrue(
                     "IllegalArgumentException must give hint that string contains a forbidden UTF-16 surrogate.",
                     exception.getMessage().contains("UTF-16 surrogate"));

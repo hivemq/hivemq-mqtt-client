@@ -243,7 +243,8 @@ class Mqtt5PubRelEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
         final MaximumPacketBuilder maxPacket = new MaximumPacketBuilder();
         final MqttUserPropertiesImpl maxUserProperties = maxPacket.getMaxPossibleUserProperties();
 
-        final ByteBuf expected = Unpooled.buffer(MAXIMUM_PACKET_SIZE_LIMIT - maxPacket.getRemainingPropertyBytes(),
+        final ByteBuf expected = Unpooled.buffer(
+                MAXIMUM_PACKET_SIZE_LIMIT - maxPacket.getRemainingPropertyBytes(),
                 MAXIMUM_PACKET_SIZE_LIMIT - maxPacket.getRemainingPropertyBytes());
 
         // fixed header
