@@ -42,8 +42,7 @@ public class Mqtt3PubCompDecoder implements MqttMessageDecoder {
     private static final int REMAINING_LENGTH = 2;
 
     @Inject
-    Mqtt3PubCompDecoder() {
-    }
+    Mqtt3PubCompDecoder() {}
 
     @Override
     public @NotNull MqttPubComp decode(
@@ -57,5 +56,4 @@ public class Mqtt3PubCompDecoder implements MqttMessageDecoder {
 
         return Mqtt3PubCompView.delegate(packetIdentifier);
     }
-
 }

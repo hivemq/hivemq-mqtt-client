@@ -34,12 +34,10 @@ public class Mqtt3PubCompEncoder extends Mqtt3MessageWithIdEncoder<MqttPubComp> 
     private static final int FIXED_HEADER = Mqtt3MessageType.PUBCOMP.getCode() << 4;
 
     @Inject
-    Mqtt3PubCompEncoder() {
-    }
+    Mqtt3PubCompEncoder() {}
 
     @Override
     int getFixedHeader() {
         return FIXED_HEADER;
     }
-
 }

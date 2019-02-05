@@ -77,7 +77,7 @@ public class Ranges {
             this.end = end;
         }
 
-        Range(final int start, final int end, @NotNull final Range next) {
+        Range(final int start, final int end, final @NotNull Range next) {
             this.start = start;
             this.end = end;
             this.next = next;

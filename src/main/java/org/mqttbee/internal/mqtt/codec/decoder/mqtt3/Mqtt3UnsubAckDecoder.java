@@ -42,8 +42,7 @@ public class Mqtt3UnsubAckDecoder implements MqttMessageDecoder {
     private static final int REMAINING_LENGTH = 2; // 2 for the packetId
 
     @Inject
-    Mqtt3UnsubAckDecoder() {
-    }
+    Mqtt3UnsubAckDecoder() {}
 
     @Override
     public @NotNull MqttUnsubAck decode(
@@ -57,5 +56,4 @@ public class Mqtt3UnsubAckDecoder implements MqttMessageDecoder {
 
         return Mqtt3UnsubAckView.delegate(packetIdentifier);
     }
-
 }

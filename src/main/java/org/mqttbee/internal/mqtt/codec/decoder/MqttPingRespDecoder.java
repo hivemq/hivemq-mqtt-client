@@ -38,8 +38,7 @@ public class MqttPingRespDecoder implements MqttMessageDecoder {
     private static final int REMAINING_LENGTH = 0;
 
     @Inject
-    MqttPingRespDecoder() {
-    }
+    MqttPingRespDecoder() {}
 
     @Override
     public @NotNull MqttPingResp decode(
@@ -51,5 +50,4 @@ public class MqttPingRespDecoder implements MqttMessageDecoder {
 
         return INSTANCE;
     }
-
 }

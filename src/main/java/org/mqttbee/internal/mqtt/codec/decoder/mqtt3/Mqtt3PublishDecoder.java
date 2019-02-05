@@ -45,8 +45,7 @@ public class Mqtt3PublishDecoder implements MqttMessageDecoder {
     private static final int MIN_REMAINING_LENGTH = 2; // 2 for the packetIdentifier
 
     @Inject
-    Mqtt3PublishDecoder() {
-    }
+    Mqtt3PublishDecoder() {}
 
     @Override
     public @NotNull MqttStatefulPublish decode(

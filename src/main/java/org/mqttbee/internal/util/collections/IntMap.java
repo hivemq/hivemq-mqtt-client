@@ -111,7 +111,7 @@ public abstract class IntMap<E> {
         private final int minKey;
         private final int maxKey;
 
-        IntMapCheck(@NotNull final IntMap<E> delegate, final int minKey, final int maxKey) {
+        IntMapCheck(final @NotNull IntMap<E> delegate, final int minKey, final int maxKey) {
             this.delegate = delegate;
             this.minKey = minKey;
             this.maxKey = maxKey;
