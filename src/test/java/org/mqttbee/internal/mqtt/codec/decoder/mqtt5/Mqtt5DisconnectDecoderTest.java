@@ -20,12 +20,9 @@ package org.mqttbee.internal.mqtt.codec.decoder.mqtt5;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.mqttbee.internal.mqtt.codec.decoder.MqttMessageDecoders;
 import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertyImpl;
 import org.mqttbee.internal.mqtt.message.disconnect.MqttDisconnect;
-import org.mqttbee.internal.mqtt.netty.ChannelAttributes;
 import org.mqttbee.internal.util.collections.ImmutableList;
 import org.mqttbee.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
@@ -172,11 +169,8 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
         assertNull(disconnectOut);
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"false", "true"})
-    void decode_wrong_flags(final boolean sendReasonString) {
-        ChannelAttributes.sendReasonString(sendReasonString, channel);
-
+    @Test
+    void decode_wrong_flags() {
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -186,14 +180,11 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"false", "true"})
-    void decode_remaining_length_too_short(final boolean sendReasonString) {
-        ChannelAttributes.sendReasonString(sendReasonString, channel);
-
+    @Test
+    void decode_remaining_length_too_short() {
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -209,14 +200,11 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"false", "true"})
-    void decode_remaining_length_too_long(final boolean sendReasonString) {
-        ChannelAttributes.sendReasonString(sendReasonString, channel);
-
+    @Test
+    void decode_remaining_length_too_long() {
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -234,14 +222,11 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"false", "true"})
-    void decode_remaining_length_not_minimum_bytes(final boolean sendReasonString) {
-        ChannelAttributes.sendReasonString(sendReasonString, channel);
-
+    @Test
+    void decode_remaining_length_not_minimum_bytes() {
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -257,14 +242,11 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"false", "true"})
-    void decode_remaining_length_too_large(final boolean sendReasonString) {
-        ChannelAttributes.sendReasonString(sendReasonString, channel);
-
+    @Test
+    void decode_remaining_length_too_large() {
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -280,14 +262,11 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"false", "true"})
-    void decode_wrong_reason_code(final boolean sendReasonString) {
-        ChannelAttributes.sendReasonString(sendReasonString, channel);
-
+    @Test
+    void decode_wrong_reason_code() {
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -303,14 +282,11 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"false", "true"})
-    void decode_property_length_too_short(final boolean sendReasonString) {
-        ChannelAttributes.sendReasonString(sendReasonString, channel);
-
+    @Test
+    void decode_property_length_too_short() {
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -326,14 +302,11 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"false", "true"})
-    void decode_property_length_too_long(final boolean sendReasonString) {
-        ChannelAttributes.sendReasonString(sendReasonString, channel);
-
+    @Test
+    void decode_property_length_too_long() {
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -351,14 +324,11 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"false", "true"})
-    void decode_property_length_not_minimum_bytes(final boolean sendReasonString) {
-        ChannelAttributes.sendReasonString(sendReasonString, channel);
-
+    @Test
+    void decode_property_length_not_minimum_bytes() {
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -374,14 +344,11 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"false", "true"})
-    void decode_property_length_too_large(final boolean sendReasonString) {
-        ChannelAttributes.sendReasonString(sendReasonString, channel);
-
+    @Test
+    void decode_property_length_too_large() {
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -397,14 +364,11 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"false", "true"})
-    void decode_wrong_property(final boolean sendReasonString) {
-        ChannelAttributes.sendReasonString(sendReasonString, channel);
-
+    @Test
+    void decode_wrong_property() {
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -421,14 +385,11 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"false", "true"})
-    void decode_malformed_property(final boolean sendReasonString) {
-        ChannelAttributes.sendReasonString(sendReasonString, channel);
-
+    @Test
+    void decode_malformed_property() {
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -445,14 +406,11 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"false", "true"})
-    void decode_must_not_multiple_session_expiry_interval(final boolean sendReasonString) {
-        ChannelAttributes.sendReasonString(sendReasonString, channel);
-
+    @Test
+    void decode_must_not_multiple_session_expiry_interval() {
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -470,14 +428,11 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, sendReasonString);
+        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR);
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"false", "true"})
-    void decode_must_not_multiple_server_reference(final boolean sendReasonString) {
-        ChannelAttributes.sendReasonString(sendReasonString, channel);
-
+    @Test
+    void decode_must_not_multiple_server_reference() {
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -495,14 +450,11 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, sendReasonString);
+        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR);
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"false", "true"})
-    void decode_must_not_multiple_reason_string(final boolean sendReasonString) {
-        ChannelAttributes.sendReasonString(sendReasonString, channel);
-
+    @Test
+    void decode_must_not_multiple_reason_string() {
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -520,7 +472,7 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR, sendReasonString);
+        testDisconnect(Mqtt5DisconnectReasonCode.PROTOCOL_ERROR);
     }
 
     @Test
@@ -555,11 +507,8 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
         assertEquals("value", userProperties.get(1).getValue().toString());
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"false", "true"})
-    void decode_server_reference_length_too_short(final boolean sendReasonString) {
-        ChannelAttributes.sendReasonString(sendReasonString, channel);
-
+    @Test
+    void decode_server_reference_length_too_short() {
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -576,14 +525,11 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"false", "true"})
-    void decode_server_reference_length_too_long(final boolean sendReasonString) {
-        ChannelAttributes.sendReasonString(sendReasonString, channel);
-
+    @Test
+    void decode_server_reference_length_too_long() {
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -602,14 +548,11 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"false", "true"})
-    void decode_server_reference_must_not_character(final boolean sendReasonString) {
-        ChannelAttributes.sendReasonString(sendReasonString, channel);
-
+    @Test
+    void decode_server_reference_must_not_character() {
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -626,14 +569,11 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"false", "true"})
-    void decode_reason_string_length_too_short(final boolean sendReasonString) {
-        ChannelAttributes.sendReasonString(sendReasonString, channel);
-
+    @Test
+    void decode_reason_string_length_too_short() {
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -650,14 +590,11 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"false", "true"})
-    void decode_reason_string_length_too_long(final boolean sendReasonString) {
-        ChannelAttributes.sendReasonString(sendReasonString, channel);
-
+    @Test
+    void decode_reason_string_length_too_long() {
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -676,14 +613,11 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"false", "true"})
-    void decode_reason_string_must_not_character(final boolean sendReasonString) {
-        ChannelAttributes.sendReasonString(sendReasonString, channel);
-
+    @Test
+    void decode_reason_string_must_not_character() {
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -700,14 +634,11 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"false", "true"})
-    void decode_user_property_name_length_too_short(final boolean sendReasonString) {
-        ChannelAttributes.sendReasonString(sendReasonString, channel);
-
+    @Test
+    void decode_user_property_name_length_too_short() {
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -724,14 +655,11 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"false", "true"})
-    void decode_user_property_name_length_too_long(final boolean sendReasonString) {
-        ChannelAttributes.sendReasonString(sendReasonString, channel);
-
+    @Test
+    void decode_user_property_name_length_too_long() {
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -750,14 +678,11 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"false", "true"})
-    void decode_user_property_name_must_not_character(final boolean sendReasonString) {
-        ChannelAttributes.sendReasonString(sendReasonString, channel);
-
+    @Test
+    void decode_user_property_name_must_not_character() {
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -774,14 +699,11 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"false", "true"})
-    void decode_user_property_value_length_too_short(final boolean sendReasonString) {
-        ChannelAttributes.sendReasonString(sendReasonString, channel);
-
+    @Test
+    void decode_user_property_value_length_too_short() {
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -798,14 +720,11 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"false", "true"})
-    void decode_user_property_value_length_too_long(final boolean sendReasonString) {
-        ChannelAttributes.sendReasonString(sendReasonString, channel);
-
+    @Test
+    void decode_user_property_value_length_too_long() {
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -824,14 +743,11 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"false", "true"})
-    void decode_user_property_value_must_not_character(final boolean sendReasonString) {
-        ChannelAttributes.sendReasonString(sendReasonString, channel);
-
+    @Test
+    void decode_user_property_value_must_not_character() {
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -848,7 +764,7 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
     }
 
     private @NotNull MqttDisconnect testOk(final @NotNull ByteBuf byteBuf) {
@@ -859,14 +775,14 @@ class Mqtt5DisconnectDecoderTest extends AbstractMqtt5DecoderTest {
         return disconnect;
     }
 
-    private void testDisconnect(final @NotNull Mqtt5DisconnectReasonCode reasonCode, final boolean sendReasonString) {
+    private void testDisconnect(final @NotNull Mqtt5DisconnectReasonCode reasonCode) {
         final Mqtt5Disconnect disconnectIn = channel.readInbound();
         assertNull(disconnectIn);
 
         final Mqtt5Disconnect disconnectOut = channel.readOutbound();
         assertNotNull(disconnectOut);
         assertEquals(reasonCode, disconnectOut.getReasonCode());
-        assertEquals(sendReasonString, disconnectOut.getReasonString().isPresent());
+        assertTrue(disconnectOut.getReasonString().isPresent());
     }
 
     private final int PROPERTIES_VALID_LENGTH = 71;
