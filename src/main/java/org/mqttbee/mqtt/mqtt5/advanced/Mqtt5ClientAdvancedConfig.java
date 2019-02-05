@@ -35,5 +35,7 @@ public interface Mqtt5ClientAdvancedConfig {
 
     boolean isAllowServerReAuth();
 
+    boolean isValidatePayloadFormat();
+
     @Nullable Mqtt5ClientInterceptors getInterceptors();
 }

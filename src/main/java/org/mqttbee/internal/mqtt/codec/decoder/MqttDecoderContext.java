@@ -27,32 +27,36 @@ import org.mqttbee.internal.util.collections.IntMap;
 public class MqttDecoderContext {
 
     private final int maximumPacketSize;
+    private final @Nullable IntMap<MqttTopicImpl> topicAliasMapping;
     private final boolean problemInformationRequested;
     private final boolean responseInformationRequested;
     private final boolean validatePayloadFormat;
     private final boolean directBufferPayload;
     private final boolean directBufferAuth;
     private final boolean directBufferCorrelationData;
-    private final @Nullable IntMap<MqttTopicImpl> topicAliasMapping;
 
     MqttDecoderContext(
-            final int maximumPacketSize, final boolean problemInformationRequested,
+            final int maximumPacketSize, final int topicAliasMaximum, final boolean problemInformationRequested,
             final boolean responseInformationRequested, final boolean validatePayloadFormat,
             final boolean directBufferPayload, final boolean directBufferAuth,
-            final boolean directBufferCorrelationData, final int topicAliasMaximum) {
+            final boolean directBufferCorrelationData) {
 
         this.maximumPacketSize = maximumPacketSize;
+        this.topicAliasMapping = (topicAliasMaximum == 0) ? null : IntMap.range(1, topicAliasMaximum);
         this.problemInformationRequested = problemInformationRequested;
         this.responseInformationRequested = responseInformationRequested;
         this.validatePayloadFormat = validatePayloadFormat;
         this.directBufferPayload = directBufferPayload;
         this.directBufferAuth = directBufferAuth;
         this.directBufferCorrelationData = directBufferCorrelationData;
-        this.topicAliasMapping = (topicAliasMaximum == 0) ? null : IntMap.range(1, topicAliasMaximum);
     }
 
     public int getMaximumPacketSize() {
         return maximumPacketSize;
+    }
+
+    public @Nullable IntMap<MqttTopicImpl> getTopicAliasMapping() {
+        return topicAliasMapping;
     }
 
     public boolean isProblemInformationRequested() {
@@ -77,9 +81,5 @@ public class MqttDecoderContext {
 
     public boolean useDirectBufferCorrelationData() {
         return directBufferCorrelationData;
-    }
-
-    public @Nullable IntMap<MqttTopicImpl> getTopicAliasMapping() {
-        return topicAliasMapping;
     }
 }

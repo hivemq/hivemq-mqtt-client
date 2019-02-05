@@ -33,12 +33,18 @@ import java.util.function.Function;
 public abstract class MqttClientAdvancedConfigBuilder<B extends MqttClientAdvancedConfigBuilder<B>> {
 
     private boolean allowServerReAuth;
+    private boolean validatePayloadFormat;
     private @Nullable MqttClientInterceptors interceptors;
 
     abstract @NotNull B self();
 
     public @NotNull B allowServerReAuth(final boolean allowServerReAuth) {
         this.allowServerReAuth = allowServerReAuth;
+        return self();
+    }
+
+    public @NotNull B validatePayloadFormat(final boolean validatePayloadFormat) {
+        this.validatePayloadFormat = validatePayloadFormat;
         return self();
     }
 
@@ -52,7 +58,7 @@ public abstract class MqttClientAdvancedConfigBuilder<B extends MqttClientAdvanc
     }
 
     public @NotNull MqttClientAdvancedConfig build() {
-        return new MqttClientAdvancedConfig(allowServerReAuth, interceptors);
+        return new MqttClientAdvancedConfig(allowServerReAuth, validatePayloadFormat, interceptors);
     }
 
     public static class Default extends MqttClientAdvancedConfigBuilder<Default>

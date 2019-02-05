@@ -21,6 +21,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.internal.mqtt.MqttClientConfig;
 import org.mqttbee.internal.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.internal.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.internal.mqtt.ioc.ConnectionScope;
@@ -46,16 +47,18 @@ public class MqttDecoder extends ByteToMessageDecoder {
     private static final int MIN_FIXED_HEADER_LENGTH = 2;
 
     private final @NotNull MqttMessageDecoders decoders;
-    @NotNull MqttDecoderContext context; // TODO make private final when all decoder flags can be set via api
+    private final @NotNull MqttDecoderContext context;
 
     @Inject
-    MqttDecoder(final @NotNull MqttMessageDecoders decoders, final @NotNull MqttConnect connect) {
+    MqttDecoder(
+            final @NotNull MqttMessageDecoders decoders, final @NotNull MqttClientConfig clientConfig,
+            final @NotNull MqttConnect connect) {
+
         this.decoders = decoders;
         final MqttConnectRestrictions restrictions = connect.getRestrictions();
-        context =
-                new MqttDecoderContext(restrictions.getMaximumPacketSize(), restrictions.isRequestProblemInformation(),
-                        restrictions.isRequestResponseInformation(), false, false, false, false,
-                        restrictions.getTopicAliasMaximum());
+        context = new MqttDecoderContext(restrictions.getMaximumPacketSize(), restrictions.getTopicAliasMaximum(),
+                restrictions.isRequestProblemInformation(), restrictions.isRequestResponseInformation(),
+                clientConfig.getAdvancedConfig().isValidatePayloadFormat(), false, false, false);
     }
 
     @Override
