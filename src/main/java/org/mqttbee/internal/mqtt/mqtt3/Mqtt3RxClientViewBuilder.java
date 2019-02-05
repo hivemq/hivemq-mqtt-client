@@ -19,6 +19,7 @@ package org.mqttbee.internal.mqtt.mqtt3;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.internal.mqtt.*;
+import org.mqttbee.internal.mqtt.advanced.MqttClientAdvancedConfig;
 import org.mqttbee.mqtt.MqttVersion;
 import org.mqttbee.mqtt.mqtt3.Mqtt3ClientBuilder;
 
@@ -69,6 +70,6 @@ public class Mqtt3RxClientViewBuilder extends MqttRxClientBuilderBase<Mqtt3RxCli
 
     private @NotNull MqttClientConfig buildClientConfig() {
         return new MqttClientConfig(MqttVersion.MQTT_3_1_1, identifier, serverHost, serverPort, executorConfig,
-                sslConfig, webSocketConfig, false, null);
+                sslConfig, webSocketConfig, MqttClientAdvancedConfig.DEFAULT);
     }
 }

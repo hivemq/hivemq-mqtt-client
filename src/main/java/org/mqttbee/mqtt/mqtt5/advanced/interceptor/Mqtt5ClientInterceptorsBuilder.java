@@ -15,29 +15,23 @@
  *
  */
 
-package org.mqttbee.mqtt.mqtt5;
+package org.mqttbee.mqtt.mqtt5.advanced.interceptor;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.mqtt.MqttClientBuilderBase;
-import org.mqttbee.mqtt.mqtt5.advanced.Mqtt5ClientAdvancedConfig;
-import org.mqttbee.mqtt.mqtt5.advanced.Mqtt5ClientAdvancedConfigBuilder;
 
 /**
  * @author Silvio Giebl
  */
 @DoNotImplement
-public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBuilder> {
+public interface Mqtt5ClientInterceptorsBuilder
+        extends Mqtt5ClientInterceptorsBuilderBase<Mqtt5ClientInterceptorsBuilder> {
 
-    @NotNull Mqtt5ClientBuilder advancedConfig(@NotNull Mqtt5ClientAdvancedConfig advancedConfig);
+    @NotNull Mqtt5ClientInterceptors build();
 
-    @NotNull Mqtt5ClientAdvancedConfigBuilder.Nested<? extends Mqtt5ClientBuilder> advancedConfig();
+    @DoNotImplement
+    interface Nested<P> extends Mqtt5ClientInterceptorsBuilderBase<Nested<P>> {
 
-    @NotNull Mqtt5Client build();
-
-    @NotNull Mqtt5RxClient buildRx();
-
-    @NotNull Mqtt5AsyncClient buildAsync();
-
-    @NotNull Mqtt5BlockingClient buildBlocking();
+        @NotNull P applyInterceptors();
+    }
 }

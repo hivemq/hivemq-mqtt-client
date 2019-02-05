@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mqttbee.internal.annotations.CallByThread;
 import org.mqttbee.internal.mqtt.MqttClientConfig;
 import org.mqttbee.internal.mqtt.MqttClientConnectionConfig;
-import org.mqttbee.internal.mqtt.advanced.MqttClientAdvancedConfig;
+import org.mqttbee.internal.mqtt.advanced.interceptor.MqttClientInterceptors;
 import org.mqttbee.internal.mqtt.exceptions.MqttClientStateExceptions;
 import org.mqttbee.internal.mqtt.handler.MqttSessionAwareHandler;
 import org.mqttbee.internal.mqtt.handler.disconnect.MqttDisconnectUtil;
@@ -51,8 +51,8 @@ import org.mqttbee.internal.util.collections.IntMap;
 import org.mqttbee.internal.util.netty.ContextFuture;
 import org.mqttbee.internal.util.netty.DefaultContextPromise;
 import org.mqttbee.mqtt.datatypes.MqttQos;
-import org.mqttbee.mqtt.mqtt5.advanced.qos1.Mqtt5OutgoingQos1Interceptor;
-import org.mqttbee.mqtt.mqtt5.advanced.qos2.Mqtt5OutgoingQos2Interceptor;
+import org.mqttbee.mqtt.mqtt5.advanced.interceptor.qos1.Mqtt5OutgoingQos1Interceptor;
+import org.mqttbee.mqtt.mqtt5.advanced.interceptor.qos2.Mqtt5OutgoingQos2Interceptor;
 import org.mqttbee.mqtt.mqtt5.exceptions.Mqtt5PubAckException;
 import org.mqttbee.mqtt.mqtt5.exceptions.Mqtt5PubRecException;
 import org.mqttbee.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
@@ -435,9 +435,9 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     }
 
     private void onPubAck(final @NotNull MqttPublish publish, final @NotNull MqttPubAck pubAck) {
-        final MqttClientAdvancedConfig advanced = clientConfig.getRawAdvancedConfig();
-        if (advanced != null) {
-            final Mqtt5OutgoingQos1Interceptor interceptor = advanced.getOutgoingQos1Interceptor();
+        final MqttClientInterceptors interceptors = clientConfig.getAdvancedConfig().getInterceptors();
+        if (interceptors != null) {
+            final Mqtt5OutgoingQos1Interceptor interceptor = interceptors.getOutgoingQos1Interceptor();
             if (interceptor != null) {
                 interceptor.onPubAck(clientConfig, publish, pubAck);
             }
@@ -445,9 +445,9 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     }
 
     private void onPubRecError(final @NotNull MqttPublish publish, final @NotNull MqttPubRec pubRec) {
-        final MqttClientAdvancedConfig advanced = clientConfig.getRawAdvancedConfig();
-        if (advanced != null) {
-            final Mqtt5OutgoingQos2Interceptor interceptor = advanced.getOutgoingQos2Interceptor();
+        final MqttClientInterceptors interceptors = clientConfig.getAdvancedConfig().getInterceptors();
+        if (interceptors != null) {
+            final Mqtt5OutgoingQos2Interceptor interceptor = interceptors.getOutgoingQos2Interceptor();
             if (interceptor != null) {
                 interceptor.onPubRecError(clientConfig, publish, pubRec);
             }
@@ -456,9 +456,9 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
 
     private @NotNull MqttPubRel buildPubRel(final @NotNull MqttPublish publish, final @NotNull MqttPubRec pubRec) {
         final MqttPubRelBuilder pubRelBuilder = new MqttPubRelBuilder(pubRec);
-        final MqttClientAdvancedConfig advanced = clientConfig.getRawAdvancedConfig();
-        if (advanced != null) {
-            final Mqtt5OutgoingQos2Interceptor interceptor = advanced.getOutgoingQos2Interceptor();
+        final MqttClientInterceptors interceptors = clientConfig.getAdvancedConfig().getInterceptors();
+        if (interceptors != null) {
+            final Mqtt5OutgoingQos2Interceptor interceptor = interceptors.getOutgoingQos2Interceptor();
             if (interceptor != null) {
                 interceptor.onPubRec(clientConfig, publish, pubRec, pubRelBuilder);
             }
@@ -467,9 +467,9 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     }
 
     private void onPubComp(final @NotNull MqttPubRel pubRel, final @NotNull MqttPubComp pubComp) {
-        final MqttClientAdvancedConfig advanced = clientConfig.getRawAdvancedConfig();
-        if (advanced != null) {
-            final Mqtt5OutgoingQos2Interceptor interceptor = advanced.getOutgoingQos2Interceptor();
+        final MqttClientInterceptors interceptors = clientConfig.getAdvancedConfig().getInterceptors();
+        if (interceptors != null) {
+            final Mqtt5OutgoingQos2Interceptor interceptor = interceptors.getOutgoingQos2Interceptor();
             if (interceptor != null) {
                 interceptor.onPubComp(clientConfig, pubRel, pubComp);
             }

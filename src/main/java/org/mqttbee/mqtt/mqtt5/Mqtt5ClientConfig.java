@@ -33,7 +33,5 @@ public interface Mqtt5ClientConfig extends MqttClientConfig {
     @Override
     @NotNull Optional<Mqtt5ClientConnectionConfig> getConnectionConfig();
 
-    boolean allowsServerReAuth();
-
-    @NotNull Optional<Mqtt5ClientAdvancedConfig> getAdvancedConfig();
+    @NotNull Mqtt5ClientAdvancedConfig getAdvancedConfig();
 }

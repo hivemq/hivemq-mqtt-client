@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.internal.annotations.CallByThread;
 import org.mqttbee.internal.mqtt.MqttClientConfig;
 import org.mqttbee.internal.mqtt.MqttClientConnectionConfig;
-import org.mqttbee.internal.mqtt.advanced.MqttClientAdvancedConfig;
+import org.mqttbee.internal.mqtt.advanced.interceptor.MqttClientInterceptors;
 import org.mqttbee.internal.mqtt.handler.MqttSessionAwareHandler;
 import org.mqttbee.internal.mqtt.handler.disconnect.MqttDisconnectUtil;
 import org.mqttbee.internal.mqtt.ioc.ClientScope;
@@ -39,8 +39,8 @@ import org.mqttbee.internal.util.UnsignedDataTypes;
 import org.mqttbee.internal.util.collections.IntMap;
 import org.mqttbee.internal.util.netty.ContextFuture;
 import org.mqttbee.internal.util.netty.DefaultContextPromise;
-import org.mqttbee.mqtt.mqtt5.advanced.qos1.Mqtt5IncomingQos1Interceptor;
-import org.mqttbee.mqtt.mqtt5.advanced.qos2.Mqtt5IncomingQos2Interceptor;
+import org.mqttbee.mqtt.mqtt5.advanced.interceptor.qos1.Mqtt5IncomingQos1Interceptor;
+import org.mqttbee.mqtt.mqtt5.advanced.interceptor.qos2.Mqtt5IncomingQos2Interceptor;
 import org.mqttbee.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.mqttbee.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubCompReasonCode;
 
@@ -237,9 +237,9 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler
     }
 
     private @NotNull MqttPubAck buildPubAck(final @NotNull MqttPubAckBuilder pubAckBuilder) {
-        final MqttClientAdvancedConfig advanced = clientConfig.getRawAdvancedConfig();
-        if (advanced != null) {
-            final Mqtt5IncomingQos1Interceptor interceptor = advanced.getIncomingQos1Interceptor();
+        final MqttClientInterceptors interceptors = clientConfig.getAdvancedConfig().getInterceptors();
+        if (interceptors != null) {
+            final Mqtt5IncomingQos1Interceptor interceptor = interceptors.getIncomingQos1Interceptor();
             if (interceptor != null) {
                 interceptor.onPublish(clientConfig, pubAckBuilder.getPublish().stateless(), pubAckBuilder);
             }
@@ -248,9 +248,9 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler
     }
 
     private @NotNull MqttPubRec buildPubRec(final @NotNull MqttPubRecBuilder pubRecBuilder) {
-        final MqttClientAdvancedConfig advanced = clientConfig.getRawAdvancedConfig();
-        if (advanced != null) {
-            final Mqtt5IncomingQos2Interceptor interceptor = advanced.getIncomingQos2Interceptor();
+        final MqttClientInterceptors interceptors = clientConfig.getAdvancedConfig().getInterceptors();
+        if (interceptors != null) {
+            final Mqtt5IncomingQos2Interceptor interceptor = interceptors.getIncomingQos2Interceptor();
             if (interceptor != null) {
                 interceptor.onPublish(clientConfig, pubRecBuilder.getPublish().stateless(), pubRecBuilder);
             }
@@ -259,9 +259,9 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler
     }
 
     private @NotNull MqttPubComp buildPubComp(final @NotNull MqttPubCompBuilder pubCompBuilder) {
-        final MqttClientAdvancedConfig advanced = clientConfig.getRawAdvancedConfig();
-        if (advanced != null) {
-            final Mqtt5IncomingQos2Interceptor interceptor = advanced.getIncomingQos2Interceptor();
+        final MqttClientInterceptors interceptors = clientConfig.getAdvancedConfig().getInterceptors();
+        if (interceptors != null) {
+            final Mqtt5IncomingQos2Interceptor interceptor = interceptors.getIncomingQos2Interceptor();
             if (interceptor != null) {
                 interceptor.onPubRel(clientConfig, pubCompBuilder.getPubRel(), pubCompBuilder);
             }
