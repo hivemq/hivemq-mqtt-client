@@ -62,10 +62,6 @@ public interface Mqtt5ConnectRestrictions {
      */
     boolean DEFAULT_REQUEST_PROBLEM_INFORMATION = true;
     /**
-     * Default whether the client sends problem information to the server.
-     */
-    boolean DEFAULT_SEND_PROBLEM_INFORMATION = true;
-    /**
      * Default whether the client requests problem information from the server.
      */
     boolean DEFAULT_REQUEST_RESPONSE_INFORMATION = false;
@@ -148,14 +144,6 @@ public interface Mqtt5ConnectRestrictions {
      * @return whether the client accepts problem information from the server.
      */
     boolean isRequestProblemInformation();
-
-    /**
-     * Returns whether the client sends problem information to the server. The default is {@link
-     * #DEFAULT_SEND_PROBLEM_INFORMATION}.
-     *
-     * @return whether the client accepts problem information from the server.
-     */
-    boolean isSendProblemInformation();
 
     /**
      * Returns whether the client requests response information from the server. The default is {@link

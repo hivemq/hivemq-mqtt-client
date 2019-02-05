@@ -48,7 +48,6 @@ public class MqttClientConnectionConfig
     private final int sendMaximum;
     private final int sendMaximumPacketSize;
     private final @Nullable MqttTopicAliasMapping sendTopicAliasMapping;
-    private final boolean sendProblemInformation;
     private final @NotNull MqttQos maximumQos;
     private final boolean retainAvailable;
     private final boolean wildcardSubscriptionAvailable;
@@ -61,10 +60,9 @@ public class MqttClientConnectionConfig
             final @Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism, final int receiveMaximum,
             final int maximumPacketSize, final int topicAliasMaximum, final boolean problemInformationRequested,
             final boolean responseInformationRequested, final int sendMaximum, final int sendMaximumPacketSize,
-            final int sendTopicAliasMaximum, final boolean sendProblemInformation, final @NotNull MqttQos maximumQos,
-            final boolean retainAvailable, final boolean wildcardSubscriptionAvailable,
-            final boolean sharedSubscriptionAvailable, final boolean subscriptionIdentifiersAvailable,
-            final @NotNull Channel channel) {
+            final int sendTopicAliasMaximum, final @NotNull MqttQos maximumQos, final boolean retainAvailable,
+            final boolean wildcardSubscriptionAvailable, final boolean sharedSubscriptionAvailable,
+            final boolean subscriptionIdentifiersAvailable, final @NotNull Channel channel) {
 
         this.keepAlive = keepAlive;
         this.sessionExpiryInterval = sessionExpiryInterval;
@@ -79,7 +77,6 @@ public class MqttClientConnectionConfig
         this.sendMaximumPacketSize = sendMaximumPacketSize;
         this.sendTopicAliasMapping =
                 (sendTopicAliasMaximum == 0) ? null : new MqttTopicAliasAutoMapping(sendTopicAliasMaximum);
-        this.sendProblemInformation = sendProblemInformation;
         this.maximumQos = maximumQos;
         this.retainAvailable = retainAvailable;
         this.wildcardSubscriptionAvailable = wildcardSubscriptionAvailable;
@@ -164,11 +161,6 @@ public class MqttClientConnectionConfig
 
     public @Nullable MqttTopicAliasMapping getSendTopicAliasMapping() {
         return sendTopicAliasMapping;
-    }
-
-    @Override
-    public boolean isSendProblemInformation() {
-        return sendProblemInformation;
     }
 
     @Override

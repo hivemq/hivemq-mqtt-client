@@ -40,7 +40,5 @@ public interface Mqtt5ConnectRestrictionsBuilderBase<B extends Mqtt5ConnectRestr
 
     @NotNull B requestProblemInformation(boolean requestProblemInformation);
 
-    @NotNull B sendProblemInformation(boolean requestProblemInformation);
-
     @NotNull B requestResponseInformation(boolean requestResponseInformation);
 }
