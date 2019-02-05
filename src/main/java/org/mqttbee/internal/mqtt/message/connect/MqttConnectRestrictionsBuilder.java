@@ -103,7 +103,7 @@ public abstract class MqttConnectRestrictionsBuilder<B extends MqttConnectRestri
 
         public Default() {}
 
-        Default(@NotNull final MqttConnectRestrictions restrictions) {
+        Default(final @NotNull MqttConnectRestrictions restrictions) {
             super(restrictions);
         }
 
