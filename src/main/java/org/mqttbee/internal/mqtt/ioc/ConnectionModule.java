@@ -46,7 +46,8 @@ abstract class ConnectionModule {
         return new Bootstrap().group(clientConfig.acquireEventLoop())
                 .channelFactory(nettyEventLoopProvider.getChannelFactory())
                 .option(ChannelOption.SO_KEEPALIVE, true)
-                .option(ChannelOption.TCP_NODELAY, true).option(ChannelOption.ALLOCATOR, ByteBufAllocator.DEFAULT)
+                .option(ChannelOption.TCP_NODELAY, true)
+                .option(ChannelOption.ALLOCATOR, ByteBufAllocator.DEFAULT)
                 .handler(channelInitializer);
     }
 
