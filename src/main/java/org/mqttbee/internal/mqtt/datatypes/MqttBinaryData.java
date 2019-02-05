@@ -44,7 +44,7 @@ public class MqttBinaryData {
      * @return the decoded binary data or null if there are not enough bytes in the byte buffer.
      */
     @Nullable
-    public static byte[] decode(@NotNull final ByteBuf byteBuf) {
+    public static byte[] decode(final @NotNull ByteBuf byteBuf) {
         if (byteBuf.readableBytes() < 2) {
             return null;
         }
@@ -65,7 +65,7 @@ public class MqttBinaryData {
      * @return the decoded binary data or null if there are not enough bytes in the byte buffer.
      */
     @Nullable
-    public static ByteBuffer decode(@NotNull final ByteBuf byteBuf, final boolean direct) {
+    public static ByteBuffer decode(final @NotNull ByteBuf byteBuf, final boolean direct) {
         if (byteBuf.readableBytes() < 2) {
             return null;
         }
@@ -87,7 +87,7 @@ public class MqttBinaryData {
      * @param binary  the byte array to encode.
      * @param byteBuf the byte buffer to encode to.
      */
-    public static void encode(@NotNull final byte[] binary, @NotNull final ByteBuf byteBuf) {
+    public static void encode(final @NotNull byte[] binary, final @NotNull ByteBuf byteBuf) {
         byteBuf.writeShort(binary.length);
         byteBuf.writeBytes(binary);
     }
@@ -100,7 +100,7 @@ public class MqttBinaryData {
      * @param byteBuffer the byte buffer to encode.
      * @param byteBuf    the byte buffer to encode to.
      */
-    public static void encode(@NotNull final ByteBuffer byteBuffer, @NotNull final ByteBuf byteBuf) {
+    public static void encode(final @NotNull ByteBuffer byteBuffer, final @NotNull ByteBuf byteBuf) {
         byteBuf.writeShort(byteBuffer.remaining());
         byteBuf.writeBytes(byteBuffer.duplicate());
     }
@@ -110,7 +110,7 @@ public class MqttBinaryData {
      *
      * @param byteBuf the byte buffer to encode to.
      */
-    public static void encodeEmpty(@NotNull final ByteBuf byteBuf) {
+    public static void encodeEmpty(final @NotNull ByteBuf byteBuf) {
         byteBuf.writeShort(0);
     }
 
@@ -120,7 +120,7 @@ public class MqttBinaryData {
      * @param binary the byte array to check.
      * @return whether the byte array can be encoded as binary data.
      */
-    public static boolean isInRange(@NotNull final byte[] binary) {
+    public static boolean isInRange(final @NotNull byte[] binary) {
         return binary.length <= MAX_LENGTH;
     }
 
@@ -130,7 +130,7 @@ public class MqttBinaryData {
      * @param byteBuffer the byte buffer to check.
      * @return whether the byte buffer can be encoded as binary data.
      */
-    public static boolean isInRange(@NotNull final ByteBuffer byteBuffer) {
+    public static boolean isInRange(final @NotNull ByteBuffer byteBuffer) {
         return byteBuffer.remaining() <= MAX_LENGTH;
     }
 
@@ -142,7 +142,7 @@ public class MqttBinaryData {
      * @param binary the byte array to calculate the encoded length for.
      * @return the encoded length of the byte array.
      */
-    public static int encodedLength(@NotNull final byte[] binary) {
+    public static int encodedLength(final @NotNull byte[] binary) {
         return 2 + binary.length;
     }
 
@@ -154,7 +154,7 @@ public class MqttBinaryData {
      * @param byteBuffer the byte buffer to calculate the encoded length for.
      * @return the encoded length of the byte buffer.
      */
-    public static int encodedLength(@NotNull final ByteBuffer byteBuffer) {
+    public static int encodedLength(final @NotNull ByteBuffer byteBuffer) {
         return 2 + byteBuffer.remaining();
     }
 

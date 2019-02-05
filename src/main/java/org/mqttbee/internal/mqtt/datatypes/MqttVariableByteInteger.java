@@ -54,7 +54,7 @@ public class MqttVariableByteInteger {
      *         or {@link #TOO_LARGE} if the encoded variable byte integer has more than 4 bytes or {@link
      *         #NOT_MINIMUM_BYTES} if the value is not encoded with a minimum number of bytes.
      */
-    public static int decode(@NotNull final ByteBuf byteBuf) {
+    public static int decode(final @NotNull ByteBuf byteBuf) {
         byte encodedByte;
         int value = 0;
         byte shift = 0;
@@ -87,7 +87,7 @@ public class MqttVariableByteInteger {
      * @param value   the value to encode.
      * @param byteBuf the byte buffer to encode to.
      */
-    public static void encode(int value, @NotNull final ByteBuf byteBuf) {
+    public static void encode(int value, final @NotNull ByteBuf byteBuf) {
         do {
             int encodedByte = value & VALUE_MASK;
             value >>>= 7;

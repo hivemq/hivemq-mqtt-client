@@ -33,7 +33,7 @@ public class Mqtt3ClientConfigView implements Mqtt3ClientConfig {
 
     private final @NotNull MqttClientConfig delegate;
 
-    Mqtt3ClientConfigView(@NotNull final MqttClientConfig delegate) {
+    Mqtt3ClientConfigView(final @NotNull MqttClientConfig delegate) {
         this.delegate = delegate;
     }
 

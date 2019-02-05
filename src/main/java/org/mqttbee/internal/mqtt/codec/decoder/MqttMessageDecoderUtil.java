@@ -31,8 +31,7 @@ import static org.mqttbee.internal.mqtt.message.publish.MqttStatefulPublish.NO_P
  */
 public class MqttMessageDecoderUtil {
 
-    private MqttMessageDecoderUtil() {
-    }
+    private MqttMessageDecoderUtil() {}
 
     public static void checkFixedHeaderFlags(final int expected, final int actual) throws MqttDecoderException {
         if (expected != actual) {
@@ -80,5 +79,4 @@ public class MqttMessageDecoderUtil {
         }
         return in.readUnsignedShort();
     }
-
 }

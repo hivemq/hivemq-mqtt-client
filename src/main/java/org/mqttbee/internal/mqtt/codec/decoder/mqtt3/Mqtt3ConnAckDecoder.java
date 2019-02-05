@@ -44,8 +44,7 @@ public class Mqtt3ConnAckDecoder implements MqttMessageDecoder {
     private static final int REMAINING_LENGTH = 2;
 
     @Inject
-    Mqtt3ConnAckDecoder() {
-    }
+    Mqtt3ConnAckDecoder() {}
 
     @Override
     public @NotNull MqttConnAck decode(
@@ -74,5 +73,4 @@ public class Mqtt3ConnAckDecoder implements MqttMessageDecoder {
 
         return Mqtt3ConnAckView.delegate(returnCode, sessionPresent);
     }
-
 }

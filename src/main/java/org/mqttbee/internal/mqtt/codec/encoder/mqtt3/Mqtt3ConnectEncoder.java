@@ -44,11 +44,10 @@ public class Mqtt3ConnectEncoder extends Mqtt3MessageEncoder<MqttStatefulConnect
     private static final byte PROTOCOL_VERSION = 4;
 
     @Inject
-    Mqtt3ConnectEncoder() {
-    }
+    Mqtt3ConnectEncoder() {}
 
     @Override
-    int remainingLength(@NotNull final MqttStatefulConnect message) {
+    int remainingLength(final @NotNull MqttStatefulConnect message) {
         final MqttConnect stateless = message.stateless();
 
         int remainingLength = VARIABLE_HEADER_FIXED_LENGTH;
@@ -71,20 +70,18 @@ public class Mqtt3ConnectEncoder extends Mqtt3MessageEncoder<MqttStatefulConnect
     }
 
     @Override
-    void encode(
-            @NotNull final MqttStatefulConnect message, @NotNull final ByteBuf out, final int remainingLength) {
-
+    void encode(final @NotNull MqttStatefulConnect message, final @NotNull ByteBuf out, final int remainingLength) {
         encodeFixedHeader(out, remainingLength);
         encodeVariableHeader(message, out);
         encodePayload(message, out);
     }
 
-    private void encodeFixedHeader(@NotNull final ByteBuf out, final int remainingLength) {
+    private void encodeFixedHeader(final @NotNull ByteBuf out, final int remainingLength) {
         out.writeByte(FIXED_HEADER);
         MqttVariableByteInteger.encode(remainingLength, out);
     }
 
-    private void encodeVariableHeader(@NotNull final MqttStatefulConnect message, @NotNull final ByteBuf out) {
+    private void encodeVariableHeader(final @NotNull MqttStatefulConnect message, final @NotNull ByteBuf out) {
         final MqttConnect stateless = message.stateless();
 
         MqttUtf8StringImpl.PROTOCOL_NAME.encode(out);
@@ -120,7 +117,7 @@ public class Mqtt3ConnectEncoder extends Mqtt3MessageEncoder<MqttStatefulConnect
         out.writeShort(stateless.getKeepAlive());
     }
 
-    private void encodePayload(@NotNull final MqttStatefulConnect message, @NotNull final ByteBuf out) {
+    private void encodePayload(final @NotNull MqttStatefulConnect message, final @NotNull ByteBuf out) {
         message.getClientIdentifier().encode(out);
 
         encodeWillPublish(message, out);
@@ -132,7 +129,7 @@ public class Mqtt3ConnectEncoder extends Mqtt3MessageEncoder<MqttStatefulConnect
         }
     }
 
-    private void encodeWillPublish(@NotNull final MqttStatefulConnect message, @NotNull final ByteBuf out) {
+    private void encodeWillPublish(final @NotNull MqttStatefulConnect message, final @NotNull ByteBuf out) {
         final MqttWillPublish willPublish = message.stateless().getRawWillPublish();
         if (willPublish != null) {
             willPublish.getTopic().encode(out);

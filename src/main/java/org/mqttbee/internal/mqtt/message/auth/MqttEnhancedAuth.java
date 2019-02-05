@@ -36,7 +36,7 @@ public class MqttEnhancedAuth implements Mqtt5EnhancedAuth {
     private final @NotNull MqttUtf8StringImpl method;
     private final @Nullable ByteBuffer data;
 
-    public MqttEnhancedAuth(@NotNull final MqttUtf8StringImpl method, @Nullable final ByteBuffer data) {
+    public MqttEnhancedAuth(final @NotNull MqttUtf8StringImpl method, final @Nullable ByteBuffer data) {
         this.method = method;
         this.data = data;
     }

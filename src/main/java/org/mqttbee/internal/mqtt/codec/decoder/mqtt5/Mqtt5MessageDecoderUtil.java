@@ -42,8 +42,7 @@ import static org.mqttbee.internal.mqtt.message.connect.connack.MqttConnAck.SESS
  */
 class Mqtt5MessageDecoderUtil {
 
-    private Mqtt5MessageDecoderUtil() {
-    }
+    private Mqtt5MessageDecoderUtil() {}
 
     static @NotNull MqttDecoderException wrongReasonCode() {
         return new MqttDecoderException("wrong reason code");

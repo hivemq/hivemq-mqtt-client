@@ -41,7 +41,7 @@ public abstract class FuseableSubscriber<U, D, S extends Subscriber<? super D>>
     protected @Nullable QueueSubscription<U> queueSubscription;
     protected int sourceMode = NONE;
 
-    public FuseableSubscriber(@NotNull final S subscriber) {
+    public FuseableSubscriber(final @NotNull S subscriber) {
         this.subscriber = subscriber;
     }
 

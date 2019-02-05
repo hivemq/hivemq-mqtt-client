@@ -118,7 +118,7 @@ public class ChunkedIntArrayQueue {
         return false;
     }
 
-    private void remove(@NotNull final IntChunk chunk, final int index) {
+    private void remove(final @NotNull IntChunk chunk, final int index) {
         IntChunk currentChunk = this.consumerChunk;
         int currentIndex = this.consumerIndex;
         int lastValue = currentChunk.values[currentIndex];

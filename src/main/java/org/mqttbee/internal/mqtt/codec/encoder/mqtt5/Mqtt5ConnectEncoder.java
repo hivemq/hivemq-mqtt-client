@@ -167,7 +167,7 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
         }
     }
 
-    private int willPropertyLength(@NotNull final MqttStatefulConnect message) {
+    private int willPropertyLength(final @NotNull MqttStatefulConnect message) {
         final MqttWillPublish willPublish = message.stateless().getRawWillPublish();
         if (willPublish == null) {
             return -1;
