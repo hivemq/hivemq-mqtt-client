@@ -70,7 +70,7 @@ public class MqttPubRecBuilder implements Mqtt5PubRecBuilder {
 
     @Override
     public @NotNull MqttUserPropertiesImplBuilder.Nested<MqttPubRecBuilder> userProperties() {
-        return new MqttUserPropertiesImplBuilder.Nested<>(this::userProperties);
+        return new MqttUserPropertiesImplBuilder.Nested<>(userProperties, this::userProperties);
     }
 
     public @NotNull MqttStatefulPublish getPublish() {

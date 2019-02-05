@@ -81,7 +81,7 @@ public abstract class MqttUnsubscribeBuilder<B extends MqttUnsubscribeBuilder<B>
     }
 
     public @NotNull MqttUserPropertiesImplBuilder.Nested<B> userProperties() {
-        return new MqttUserPropertiesImplBuilder.Nested<>(this::userProperties);
+        return new MqttUserPropertiesImplBuilder.Nested<>(userProperties, this::userProperties);
     }
 
     public @NotNull B topicFilter(final @Nullable String topicFilter) {

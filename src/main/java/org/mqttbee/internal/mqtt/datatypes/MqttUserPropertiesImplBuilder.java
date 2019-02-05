@@ -84,7 +84,11 @@ public abstract class MqttUserPropertiesImplBuilder<B extends MqttUserProperties
 
         private final @NotNull Function<? super MqttUserPropertiesImpl, P> parentConsumer;
 
-        public Nested(final @NotNull Function<? super MqttUserPropertiesImpl, P> parentConsumer) {
+        public Nested(
+                final @NotNull MqttUserPropertiesImpl userProperties,
+                final @NotNull Function<? super MqttUserPropertiesImpl, P> parentConsumer) {
+
+            super(userProperties);
             this.parentConsumer = parentConsumer;
         }
 

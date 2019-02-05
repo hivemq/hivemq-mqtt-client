@@ -159,7 +159,7 @@ public abstract class MqttPublishBuilder<B extends MqttPublishBuilder<B>> {
     }
 
     public @NotNull MqttUserPropertiesImplBuilder.Nested<B> userProperties() {
-        return new MqttUserPropertiesImplBuilder.Nested<>(this::userProperties);
+        return new MqttUserPropertiesImplBuilder.Nested<>(userProperties, this::userProperties);
     }
 
     private static abstract class Base<B extends Base<B>> extends MqttPublishBuilder<B> {

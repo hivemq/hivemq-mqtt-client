@@ -136,7 +136,7 @@ public abstract class MqttConnectBuilder<B extends MqttConnectBuilder<B>> {
     }
 
     public @NotNull MqttUserPropertiesImplBuilder.Nested<B> userProperties() {
-        return new MqttUserPropertiesImplBuilder.Nested<>(this::userProperties);
+        return new MqttUserPropertiesImplBuilder.Nested<>(userProperties, this::userProperties);
     }
 
     public @NotNull MqttConnect build() {
