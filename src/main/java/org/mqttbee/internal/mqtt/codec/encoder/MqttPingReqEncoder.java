@@ -18,7 +18,6 @@
 package org.mqttbee.internal.mqtt.codec.encoder;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.internal.mqtt.message.ping.MqttPingReq;
@@ -41,10 +40,7 @@ public class MqttPingReqEncoder extends MqttMessageEncoder<MqttPingReq> {
     MqttPingReqEncoder() {}
 
     @Override
-    protected @NotNull ByteBuf encode(
-            final @NotNull MqttPingReq message, final @NotNull ByteBufAllocator allocator,
-            final int maximumPacketSize) {
-
+    protected @NotNull ByteBuf encode(final @NotNull MqttPingReq message, final @NotNull MqttEncoderContext context) {
         return PACKET.retainedDuplicate();
     }
 }

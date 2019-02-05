@@ -18,12 +18,8 @@
 package org.mqttbee.internal.mqtt.codec.decoder.mqtt3;
 
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.internal.mqtt.MqttClientConfig;
-import org.mqttbee.internal.mqtt.MqttClientExecutorConfigImpl;
 import org.mqttbee.internal.mqtt.codec.decoder.AbstractMqttDecoderTest;
 import org.mqttbee.internal.mqtt.codec.decoder.MqttMessageDecoders;
-import org.mqttbee.internal.mqtt.datatypes.MqttClientIdentifierImpl;
-import org.mqttbee.internal.mqtt.message.connect.MqttConnect;
 import org.mqttbee.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
 import org.mqttbee.mqtt.MqttVersion;
 
@@ -32,16 +28,7 @@ import org.mqttbee.mqtt.MqttVersion;
  */
 abstract class AbstractMqtt3DecoderTest extends AbstractMqttDecoderTest {
 
-    private static @NotNull MqttClientConfig createClientData() {
-        return new MqttClientConfig(MqttVersion.MQTT_3_1_1, MqttClientIdentifierImpl.of("test"), "localhost", 1883,
-                MqttClientExecutorConfigImpl.DEFAULT, null, null, false, null);
-    }
-
-    private static @NotNull MqttConnect createConnect() {
-        return Mqtt3ConnectView.DEFAULT.getDelegate();
-    }
-
     AbstractMqtt3DecoderTest(final @NotNull MqttMessageDecoders decoders) {
-        super(decoders, createClientData(), createConnect());
+        super(decoders, MqttVersion.MQTT_3_1_1, Mqtt3ConnectView.DEFAULT.getDelegate());
     }
 }

@@ -117,7 +117,7 @@ class Mqtt5UnsubscribeEncoderTest extends AbstractMqtt5EncoderTest {
                 0, 7, 't', 'o', 'p', 'i', 'c', '/', '#'
         };
 
-        createServerConnectionData(expected.length + 2);
+        connected(expected.length + 2);
 
         final MqttUtf8StringImpl user = MqttUtf8StringImpl.of("user");
         final MqttUtf8StringImpl property = MqttUtf8StringImpl.of("property");
@@ -131,7 +131,7 @@ class Mqtt5UnsubscribeEncoderTest extends AbstractMqtt5EncoderTest {
     @Test
     void encode_maximumPacketSizeExceeded_throwsEncoderException() {
 
-        createServerConnectionData(12);
+        connected(12);
 
         final ImmutableList<MqttTopicFilterImpl> topicFilters = ImmutableList.of(MqttTopicFilterImpl.of("topic/#"));
         final MqttUnsubscribe unsubscribe =

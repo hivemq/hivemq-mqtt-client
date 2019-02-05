@@ -24,7 +24,6 @@ import io.netty.channel.embedded.EmbeddedChannel;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.mqttbee.internal.mqtt.MqttClientConfig;
 import org.mqttbee.internal.mqtt.datatypes.MqttTopicImpl;
 import org.mqttbee.internal.mqtt.handler.disconnect.MqttDisconnectEvent;
 import org.mqttbee.internal.mqtt.message.connect.MqttConnect;
@@ -40,7 +39,7 @@ import org.mqttbee.mqtt.mqtt5.message.Mqtt5Message;
 public abstract class AbstractMqttDecoderTest {
 
     private final @NotNull MqttMessageDecoders decoders;
-    private final @NotNull MqttClientConfig clientData;
+    private final @NotNull MqttVersion mqttVersion;
     protected @NotNull MqttConnect connect;
 
     protected final @NotNull ChannelHandler disconnectHandler = new ChannelInboundHandlerAdapter() {
@@ -49,7 +48,7 @@ public abstract class AbstractMqttDecoderTest {
                 final @NotNull ChannelHandlerContext ctx, final @NotNull Object evt) {
 
             if (evt instanceof MqttDisconnectEvent) {
-                if (clientData.getMqttVersion() == MqttVersion.MQTT_3_1_1) {
+                if (mqttVersion == MqttVersion.MQTT_3_1_1) {
                     ctx.channel().close();
                 } else {
                     final Throwable cause = ((MqttDisconnectEvent) evt).getCause();
@@ -80,22 +79,22 @@ public abstract class AbstractMqttDecoderTest {
     @SuppressWarnings("NullabilityAnnotations")
     private MqttDecoder decoder;
 
-    public AbstractMqttDecoderTest(
-            final @NotNull MqttMessageDecoders decoders, final @NotNull MqttClientConfig clientData,
+    protected AbstractMqttDecoderTest(
+            final @NotNull MqttMessageDecoders decoders, final @NotNull MqttVersion mqttVersion,
             final @NotNull MqttConnect connect) {
 
         this.decoders = decoders;
-        this.clientData = clientData;
+        this.mqttVersion = mqttVersion;
         this.connect = connect;
     }
 
     @BeforeEach
-    protected void setUp() {
+    void setUp() {
         createChannel();
     }
 
     @AfterEach
-    protected void tearDown() {
+    void tearDown() {
         channel.close();
     }
 

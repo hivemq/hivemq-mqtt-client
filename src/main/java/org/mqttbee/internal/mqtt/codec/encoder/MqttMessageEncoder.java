@@ -18,7 +18,6 @@
 package org.mqttbee.internal.mqtt.codec.encoder;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.internal.mqtt.message.MqttMessage;
 
@@ -33,30 +32,21 @@ public abstract class MqttMessageEncoder<M extends MqttMessage> {
     /**
      * Casts and encodes the given MQTT message.
      *
-     * @param message           the MQTT message to encode.
-     * @param allocator         the allocator for allocating the byte buffer to encode to.
-     * @param maximumPacketSize the maximum packet size for the MQTT message.
+     * @param message the MQTT message to encode.
+     * @param context the encoder context.
      * @return the byte buffer the MQTT message is encoded to.
      */
-    @NotNull
     @SuppressWarnings("unchecked")
-    public ByteBuf castAndEncode(
-            @NotNull final MqttMessage message, @NotNull final ByteBufAllocator allocator,
-            final int maximumPacketSize) {
-
-        return encode((M) message, allocator, maximumPacketSize);
+    @NotNull ByteBuf castAndEncode(final @NotNull MqttMessage message, final @NotNull MqttEncoderContext context) {
+        return encode((M) message, context);
     }
 
     /**
      * Encodes the given MQTT message.
      *
-     * @param message           the MQTT message to encode.
-     * @param allocator         the allocator for allocating the byte buffer to encode to.
-     * @param maximumPacketSize the maximum packet size for the MQTT message.
+     * @param message the MQTT message to encode.
+     * @param context the encoder context.
      * @return the byte buffer the MQTT message is encoded to.
      */
-    @NotNull
-    protected abstract ByteBuf encode(
-            @NotNull final M message, @NotNull final ByteBufAllocator allocator, final int maximumPacketSize);
-
+    protected abstract @NotNull ByteBuf encode(final @NotNull M message, final @NotNull MqttEncoderContext context);
 }

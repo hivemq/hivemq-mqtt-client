@@ -18,8 +18,8 @@
 package org.mqttbee.internal.mqtt.codec.encoder.mqtt5;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.internal.mqtt.codec.encoder.MqttEncoderContext;
 import org.mqttbee.internal.mqtt.codec.encoder.MqttMessageEncoder;
 import org.mqttbee.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttVariableByteInteger;
@@ -61,8 +61,7 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
 
     @Override
     protected @NotNull ByteBuf encode(
-            final @NotNull MqttStatefulConnect message, final @NotNull ByteBufAllocator allocator,
-            final int maximumPacketSize) {
+            final @NotNull MqttStatefulConnect message, final @NotNull MqttEncoderContext context) {
 
         int propertyLength = propertyLength(message);
         final int willPropertyLength = willPropertyLength(message);
@@ -70,25 +69,25 @@ public class Mqtt5ConnectEncoder extends MqttMessageEncoder<MqttStatefulConnect>
         int remainingLength = remainingLength(remainingLengthWithoutProperties, propertyLength, willPropertyLength);
         int encodedLength = encodedPacketLength(remainingLength);
         int omittedProperties = 0;
-        while (encodedLength > maximumPacketSize) {
+        while (encodedLength > context.getMaximumPacketSize()) {
             omittedProperties++;
             propertyLength = propertyLength(message, propertyLength, omittedProperties);
             if (propertyLength < 0) {
-                throw maximumPacketSizeExceeded(message, encodedLength, maximumPacketSize);
+                throw maximumPacketSizeExceeded(message, encodedLength, context.getMaximumPacketSize());
             }
             remainingLength = remainingLength(remainingLengthWithoutProperties, propertyLength, willPropertyLength);
             encodedLength = encodedPacketLength(remainingLength);
         }
-        return encode(message, allocator, encodedLength, remainingLength, propertyLength, willPropertyLength,
+        return encode(message, context, encodedLength, remainingLength, propertyLength, willPropertyLength,
                 omittedProperties);
     }
 
     private @NotNull ByteBuf encode(
-            final @NotNull MqttStatefulConnect message, final @NotNull ByteBufAllocator allocator,
+            final @NotNull MqttStatefulConnect message, final @NotNull MqttEncoderContext context,
             final int encodedLength, final int remainingLength, final int propertyLength, final int willPropertyLength,
             final int omittedProperties) {
 
-        final ByteBuf out = allocator.ioBuffer(encodedLength, encodedLength);
+        final ByteBuf out = context.getAllocator().ioBuffer(encodedLength, encodedLength);
         encode(message, out, remainingLength, propertyLength, willPropertyLength, omittedProperties);
         return out;
     }

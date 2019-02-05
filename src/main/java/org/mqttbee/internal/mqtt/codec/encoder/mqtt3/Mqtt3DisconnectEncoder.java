@@ -18,9 +18,9 @@
 package org.mqttbee.internal.mqtt.codec.encoder.mqtt3;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.internal.mqtt.codec.encoder.MqttEncoderContext;
 import org.mqttbee.internal.mqtt.codec.encoder.MqttMessageEncoder;
 import org.mqttbee.internal.mqtt.message.disconnect.MqttDisconnect;
 import org.mqttbee.mqtt.mqtt3.message.Mqtt3MessageType;
@@ -43,8 +43,7 @@ public class Mqtt3DisconnectEncoder extends MqttMessageEncoder<MqttDisconnect> {
 
     @Override
     protected @NotNull ByteBuf encode(
-            final @NotNull MqttDisconnect message, final @NotNull ByteBufAllocator allocator,
-            final int maximumPacketSize) {
+            final @NotNull MqttDisconnect message, final @NotNull MqttEncoderContext context) {
 
         return PACKET.retainedDuplicate();
     }

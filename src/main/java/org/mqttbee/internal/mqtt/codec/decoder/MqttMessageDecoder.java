@@ -39,5 +39,4 @@ public interface MqttMessageDecoder {
      */
     @NotNull MqttMessage decode(int flags, @NotNull ByteBuf in, @NotNull MqttDecoderContext context)
             throws MqttDecoderException;
-
 }

@@ -18,8 +18,8 @@
 package org.mqttbee.internal.mqtt.codec.encoder.mqtt3;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.internal.mqtt.codec.encoder.MqttEncoderContext;
 import org.mqttbee.internal.mqtt.codec.encoder.MqttMessageEncoder;
 import org.mqttbee.internal.mqtt.message.MqttMessage;
 
@@ -35,22 +35,20 @@ import static org.mqttbee.internal.mqtt.codec.encoder.MqttMessageEncoderUtil.max
 abstract class Mqtt3MessageEncoder<M extends MqttMessage> extends MqttMessageEncoder<M> {
 
     @Override
-    protected @NotNull ByteBuf encode(
-            final @NotNull M message, final @NotNull ByteBufAllocator allocator, final int maximumPacketSize) {
-
+    protected @NotNull ByteBuf encode(final @NotNull M message, final @NotNull MqttEncoderContext context) {
         final int remainingLength = remainingLength(message);
         final int encodedLength = encodedPacketLength(remainingLength);
-        if (encodedLength > maximumPacketSize) {
-            throw maximumPacketSizeExceeded(message, encodedLength, maximumPacketSize);
+        if (encodedLength > context.getMaximumPacketSize()) {
+            throw maximumPacketSizeExceeded(message, encodedLength, context.getMaximumPacketSize());
         }
-        return encode(message, allocator, encodedLength, remainingLength);
+        return encode(message, context, encodedLength, remainingLength);
     }
 
     @NotNull ByteBuf encode(
-            final @NotNull M message, final @NotNull ByteBufAllocator allocator, final int encodedLength,
+            final @NotNull M message, final @NotNull MqttEncoderContext context, final int encodedLength,
             final int remainingLength) {
 
-        final ByteBuf out = allocator.ioBuffer(encodedLength, encodedLength);
+        final ByteBuf out = context.getAllocator().ioBuffer(encodedLength, encodedLength);
         encode(message, out, remainingLength);
         return out;
     }
@@ -70,13 +68,11 @@ abstract class Mqtt3MessageEncoder<M extends MqttMessage> extends MqttMessageEnc
         private static final int ENCODED_LENGTH = 2 + REMAINING_LENGTH;
 
         @Override
-        protected @NotNull ByteBuf encode(
-                final @NotNull M message, final @NotNull ByteBufAllocator allocator, final int maximumPacketSize) {
-
-            if (ENCODED_LENGTH > maximumPacketSize) {
-                throw maximumPacketSizeExceeded(message, ENCODED_LENGTH, maximumPacketSize);
+        protected @NotNull ByteBuf encode(final @NotNull M message, final @NotNull MqttEncoderContext context) {
+            if (ENCODED_LENGTH > context.getMaximumPacketSize()) {
+                throw maximumPacketSizeExceeded(message, ENCODED_LENGTH, context.getMaximumPacketSize());
             }
-            final ByteBuf out = allocator.ioBuffer(ENCODED_LENGTH, ENCODED_LENGTH);
+            final ByteBuf out = context.getAllocator().ioBuffer(ENCODED_LENGTH, ENCODED_LENGTH);
             encode(message, out);
             return out;
         }

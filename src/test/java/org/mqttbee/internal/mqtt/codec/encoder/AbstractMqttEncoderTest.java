@@ -22,7 +22,6 @@ import io.netty.channel.embedded.EmbeddedChannel;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.mqttbee.internal.mqtt.MqttClientConfig;
 import org.mqttbee.internal.mqtt.MqttClientConnectionConfig;
 import org.mqttbee.internal.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.mqtt.datatypes.MqttQos;
@@ -36,18 +35,15 @@ public abstract class AbstractMqttEncoderTest {
 
     private final @NotNull MqttMessageEncoders messageEncoders;
     private final boolean connected;
-    private final @NotNull MqttClientConfig clientData;
 
     @SuppressWarnings("NullabilityAnnotations")
     protected EmbeddedChannel channel;
+    @SuppressWarnings("NullabilityAnnotations")
+    protected MqttEncoder encoder;
 
-    protected AbstractMqttEncoderTest(
-            final @NotNull MqttMessageEncoders messageEncoders, final boolean connected,
-            final @NotNull MqttClientConfig clientData) {
-
+    protected AbstractMqttEncoderTest(final @NotNull MqttMessageEncoders messageEncoders, final boolean connected) {
         this.messageEncoders = messageEncoders;
         this.connected = connected;
-        this.clientData = clientData;
     }
 
     @BeforeEach
@@ -61,14 +57,14 @@ public abstract class AbstractMqttEncoderTest {
     }
 
     private void createChannel() {
-        channel = new EmbeddedChannel(new MqttEncoder(clientData, messageEncoders));
+        channel = new EmbeddedChannel(encoder = new MqttEncoder(messageEncoders));
         if (connected) {
-            createServerConnectionData(MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT);
+            connected(MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT);
         }
     }
 
-    protected void createServerConnectionData(final int maximumPacketSize) {
-        clientData.setConnectionConfig(new MqttClientConnectionConfig(10, 0, false, null, 10,
+    protected void connected(final int maximumPacketSize) {
+        encoder.onConnected(new MqttClientConnectionConfig(10, 0, false, null, 10,
                 MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT, 0, true, false, 10, maximumPacketSize, 3, false,
                 MqttQos.EXACTLY_ONCE, true, true, true, true, channel));
     }
