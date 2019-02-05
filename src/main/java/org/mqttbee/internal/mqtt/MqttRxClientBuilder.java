@@ -18,7 +18,6 @@
 package org.mqttbee.internal.mqtt;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.mqttbee.internal.mqtt.advanced.MqttClientAdvancedConfig;
 import org.mqttbee.internal.mqtt.advanced.MqttClientAdvancedConfigBuilder;
 import org.mqttbee.internal.util.Checks;
@@ -31,8 +30,7 @@ import org.mqttbee.mqtt.mqtt5.advanced.Mqtt5ClientAdvancedConfig;
  */
 public class MqttRxClientBuilder extends MqttRxClientBuilderBase<MqttRxClientBuilder> implements Mqtt5ClientBuilder {
 
-    private boolean allowServerReAuth = false;
-    private @Nullable MqttClientAdvancedConfig advancedConfig;
+    private @NotNull MqttClientAdvancedConfig advancedConfig = MqttClientAdvancedConfig.DEFAULT;
 
     public MqttRxClientBuilder() {}
 
@@ -46,15 +44,8 @@ public class MqttRxClientBuilder extends MqttRxClientBuilderBase<MqttRxClientBui
     }
 
     @Override
-    public @NotNull MqttRxClientBuilder allowServerReAuth(final boolean allowServerReAuth) {
-        this.allowServerReAuth = allowServerReAuth;
-        return this;
-    }
-
-    @Override
-    public @NotNull MqttRxClientBuilder advancedConfig(final @Nullable Mqtt5ClientAdvancedConfig advancedConfig) {
-        this.advancedConfig =
-                Checks.notImplementedOrNull(advancedConfig, MqttClientAdvancedConfig.class, "Advanced config");
+    public @NotNull MqttRxClientBuilder advancedConfig(final @NotNull Mqtt5ClientAdvancedConfig advancedConfig) {
+        this.advancedConfig = Checks.notImplemented(advancedConfig, MqttClientAdvancedConfig.class, "Advanced config");
         return this;
     }
 
@@ -85,6 +76,6 @@ public class MqttRxClientBuilder extends MqttRxClientBuilderBase<MqttRxClientBui
 
     private @NotNull MqttClientConfig buildClientConfig() {
         return new MqttClientConfig(MqttVersion.MQTT_5_0, identifier, serverHost, serverPort, executorConfig, sslConfig,
-                webSocketConfig, allowServerReAuth, advancedConfig);
+                webSocketConfig, advancedConfig);
     }
 }

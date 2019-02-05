@@ -18,8 +18,10 @@
 package org.mqttbee.mqtt.mqtt5.advanced;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.internal.mqtt.advanced.MqttClientAdvancedConfigBuilder;
+import org.mqttbee.mqtt.mqtt5.advanced.interceptor.Mqtt5ClientInterceptors;
 
 /**
  * @author Silvio Giebl
@@ -30,4 +32,8 @@ public interface Mqtt5ClientAdvancedConfig {
     static @NotNull Mqtt5ClientAdvancedConfigBuilder builder() {
         return new MqttClientAdvancedConfigBuilder.Default();
     }
+
+    boolean isAllowServerReAuth();
+
+    @Nullable Mqtt5ClientInterceptors getInterceptors();
 }

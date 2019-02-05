@@ -20,10 +20,8 @@ package org.mqttbee.mqtt.mqtt5.advanced;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.annotations.DoNotImplement;
-import org.mqttbee.mqtt.mqtt5.advanced.qos1.Mqtt5IncomingQos1Interceptor;
-import org.mqttbee.mqtt.mqtt5.advanced.qos1.Mqtt5OutgoingQos1Interceptor;
-import org.mqttbee.mqtt.mqtt5.advanced.qos2.Mqtt5IncomingQos2Interceptor;
-import org.mqttbee.mqtt.mqtt5.advanced.qos2.Mqtt5OutgoingQos2Interceptor;
+import org.mqttbee.mqtt.mqtt5.advanced.interceptor.Mqtt5ClientInterceptors;
+import org.mqttbee.mqtt.mqtt5.advanced.interceptor.Mqtt5ClientInterceptorsBuilder;
 
 /**
  * @author Silvio Giebl
@@ -31,11 +29,9 @@ import org.mqttbee.mqtt.mqtt5.advanced.qos2.Mqtt5OutgoingQos2Interceptor;
 @DoNotImplement
 public interface Mqtt5ClientAdvancedConfigBuilderBase<B extends Mqtt5ClientAdvancedConfigBuilderBase<B>> {
 
-    @NotNull B incomingQos1Interceptor(@Nullable Mqtt5IncomingQos1Interceptor incomingQos1Interceptor);
+    @NotNull B allowServerReAuth(boolean allowServerReAuth);
 
-    @NotNull B outgoingQos1Interceptor(@Nullable Mqtt5OutgoingQos1Interceptor outgoingQos1Interceptor);
+    @NotNull B interceptors(@Nullable Mqtt5ClientInterceptors interceptors);
 
-    @NotNull B incomingQos2Interceptor(@Nullable Mqtt5IncomingQos2Interceptor incomingQos2Interceptor);
-
-    @NotNull B outgoingQos2Interceptor(@Nullable Mqtt5OutgoingQos2Interceptor outgoingQos2Interceptor);
+    @NotNull Mqtt5ClientInterceptorsBuilder.Nested<? extends B> interceptors();
 }

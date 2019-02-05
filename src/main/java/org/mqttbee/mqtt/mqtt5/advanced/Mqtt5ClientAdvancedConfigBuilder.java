@@ -32,6 +32,6 @@ public interface Mqtt5ClientAdvancedConfigBuilder
     @DoNotImplement
     interface Nested<P> extends Mqtt5ClientAdvancedConfigBuilderBase<Nested<P>> {
 
-        @NotNull P applyAdvanced();
+        @NotNull P applyAdvancedConfig();
     }
 }

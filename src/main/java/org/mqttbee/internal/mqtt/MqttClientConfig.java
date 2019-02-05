@@ -32,7 +32,6 @@ import org.mqttbee.mqtt.MqttWebSocketConfig;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifier;
 import org.mqttbee.mqtt.mqtt5.Mqtt5ClientConfig;
 import org.mqttbee.mqtt.mqtt5.Mqtt5ClientConnectionConfig;
-import org.mqttbee.mqtt.mqtt5.advanced.Mqtt5ClientAdvancedConfig;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -49,8 +48,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
     private final @NotNull MqttClientExecutorConfigImpl executorConfig;
     private final @Nullable MqttClientSslConfigImpl sslConfig;
     private final @Nullable MqttWebSocketConfigImpl webSocketConfig;
-    private final boolean allowsServerReAuth;
-    private final @Nullable MqttClientAdvancedConfig advancedConfig;
+    private final @NotNull MqttClientAdvancedConfig advancedConfig;
 
     private final @NotNull ClientComponent clientComponent;
 
@@ -67,7 +65,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
             final @NotNull String serverHost, final int serverPort,
             final @NotNull MqttClientExecutorConfigImpl executorConfig,
             final @Nullable MqttClientSslConfigImpl sslConfig, final @Nullable MqttWebSocketConfigImpl webSocketConfig,
-            final boolean allowsServerReAuth, final @Nullable MqttClientAdvancedConfig advancedConfig) {
+            final @NotNull MqttClientAdvancedConfig advancedConfig) {
 
         this.mqttVersion = mqttVersion;
         this.clientIdentifier = clientIdentifier;
@@ -75,7 +73,6 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
         this.serverPort = serverPort;
         this.sslConfig = sslConfig;
         this.webSocketConfig = webSocketConfig;
-        this.allowsServerReAuth = allowsServerReAuth;
         this.executorConfig = executorConfig;
         this.advancedConfig = advancedConfig;
 
@@ -136,16 +133,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
         return webSocketConfig;
     }
 
-    @Override
-    public boolean allowsServerReAuth() {
-        return allowsServerReAuth;
-    }
-
-    public @NotNull Optional<Mqtt5ClientAdvancedConfig> getAdvancedConfig() {
-        return Optional.ofNullable(advancedConfig);
-    }
-
-    public @Nullable MqttClientAdvancedConfig getRawAdvancedConfig() {
+    public @NotNull MqttClientAdvancedConfig getAdvancedConfig() {
         return advancedConfig;
     }
 

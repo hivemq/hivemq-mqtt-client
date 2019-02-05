@@ -15,7 +15,7 @@
  *
  */
 
-package org.mqttbee.mqtt.mqtt5.advanced.qos2;
+package org.mqttbee.mqtt.mqtt5.advanced.interceptor.qos2;
 
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.mqtt.mqtt5.Mqtt5ClientConfig;

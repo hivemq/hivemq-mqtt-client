@@ -19,11 +19,11 @@ package org.mqttbee.internal.mqtt.advanced;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mqttbee.internal.mqtt.advanced.interceptor.MqttClientInterceptors;
+import org.mqttbee.internal.mqtt.advanced.interceptor.MqttClientInterceptorsBuilder;
+import org.mqttbee.internal.util.Checks;
 import org.mqttbee.mqtt.mqtt5.advanced.Mqtt5ClientAdvancedConfigBuilder;
-import org.mqttbee.mqtt.mqtt5.advanced.qos1.Mqtt5IncomingQos1Interceptor;
-import org.mqttbee.mqtt.mqtt5.advanced.qos1.Mqtt5OutgoingQos1Interceptor;
-import org.mqttbee.mqtt.mqtt5.advanced.qos2.Mqtt5IncomingQos2Interceptor;
-import org.mqttbee.mqtt.mqtt5.advanced.qos2.Mqtt5OutgoingQos2Interceptor;
+import org.mqttbee.mqtt.mqtt5.advanced.interceptor.Mqtt5ClientInterceptors;
 
 import java.util.function.Function;
 
@@ -32,44 +32,27 @@ import java.util.function.Function;
  */
 public abstract class MqttClientAdvancedConfigBuilder<B extends MqttClientAdvancedConfigBuilder<B>> {
 
-    private @Nullable Mqtt5IncomingQos1Interceptor incomingQos1Interceptor;
-    private @Nullable Mqtt5OutgoingQos1Interceptor outgoingQos1Interceptor;
-    private @Nullable Mqtt5IncomingQos2Interceptor incomingQos2Interceptor;
-    private @Nullable Mqtt5OutgoingQos2Interceptor outgoingQos2Interceptor;
+    private boolean allowServerReAuth;
+    private @Nullable MqttClientInterceptors interceptors;
 
     abstract @NotNull B self();
 
-    public @NotNull B incomingQos1Interceptor(
-            final @Nullable Mqtt5IncomingQos1Interceptor incomingQos1Interceptor) {
-
-        this.incomingQos1Interceptor = incomingQos1Interceptor;
+    public @NotNull B allowServerReAuth(final boolean allowServerReAuth) {
+        this.allowServerReAuth = allowServerReAuth;
         return self();
     }
 
-    public @NotNull B outgoingQos1Interceptor(
-            final @Nullable Mqtt5OutgoingQos1Interceptor outgoingQos1Interceptor) {
-
-        this.outgoingQos1Interceptor = outgoingQos1Interceptor;
+    public @NotNull B interceptors(final @Nullable Mqtt5ClientInterceptors interceptors) {
+        this.interceptors = Checks.notImplementedOrNull(interceptors, MqttClientInterceptors.class, "Interceptors");
         return self();
     }
 
-    public @NotNull B incomingQos2Interceptor(
-            final @Nullable Mqtt5IncomingQos2Interceptor incomingQos2Interceptor) {
-
-        this.incomingQos2Interceptor = incomingQos2Interceptor;
-        return self();
-    }
-
-    public @NotNull B outgoingQos2Interceptor(
-            final @Nullable Mqtt5OutgoingQos2Interceptor outgoingQos2Interceptor) {
-
-        this.outgoingQos2Interceptor = outgoingQos2Interceptor;
-        return self();
+    public @NotNull MqttClientInterceptorsBuilder.Nested<B> interceptors() {
+        return new MqttClientInterceptorsBuilder.Nested<>(this::interceptors);
     }
 
     public @NotNull MqttClientAdvancedConfig build() {
-        return new MqttClientAdvancedConfig(incomingQos1Interceptor, outgoingQos1Interceptor, incomingQos2Interceptor,
-                outgoingQos2Interceptor);
+        return new MqttClientAdvancedConfig(allowServerReAuth, interceptors);
     }
 
     public static class Default extends MqttClientAdvancedConfigBuilder<Default>
@@ -96,7 +79,7 @@ public abstract class MqttClientAdvancedConfigBuilder<B extends MqttClientAdvanc
         }
 
         @Override
-        public @NotNull P applyAdvanced() {
+        public @NotNull P applyAdvancedConfig() {
             return parentConsumer.apply(build());
         }
     }
