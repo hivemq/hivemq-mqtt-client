@@ -95,4 +95,9 @@ public class MqttConnectRestrictions implements Mqtt5ConnectRestrictions {
     public boolean isRequestResponseInformation() {
         return requestResponseInformation;
     }
+
+    @Override
+    public @NotNull MqttConnectRestrictionsBuilder.Default extend() {
+        return new MqttConnectRestrictionsBuilder.Default(this);
+    }
 }

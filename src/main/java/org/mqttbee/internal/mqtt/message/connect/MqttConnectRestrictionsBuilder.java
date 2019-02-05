@@ -38,6 +38,19 @@ public abstract class MqttConnectRestrictionsBuilder<B extends MqttConnectRestri
     private boolean requestProblemInformation = MqttConnectRestrictions.DEFAULT_REQUEST_PROBLEM_INFORMATION;
     private boolean requestResponseInformation = MqttConnectRestrictions.DEFAULT_REQUEST_RESPONSE_INFORMATION;
 
+    MqttConnectRestrictionsBuilder() {}
+
+    MqttConnectRestrictionsBuilder(final @NotNull MqttConnectRestrictions restrictions) {
+        receiveMaximum = restrictions.getReceiveMaximum();
+        sendMaximum = restrictions.getSendMaximum();
+        maximumPacketSize = restrictions.getMaximumPacketSize();
+        sendMaximumPacketSize = restrictions.getSendMaximumPacketSize();
+        topicAliasMaximum = restrictions.getTopicAliasMaximum();
+        sendTopicAliasMaximum = restrictions.getSendTopicAliasMaximum();
+        requestProblemInformation = restrictions.isRequestProblemInformation();
+        requestResponseInformation = restrictions.isRequestResponseInformation();
+    }
+
     abstract @NotNull B self();
 
     public @NotNull B receiveMaximum(final int receiveMaximum) {
@@ -88,6 +101,12 @@ public abstract class MqttConnectRestrictionsBuilder<B extends MqttConnectRestri
     public static class Default extends MqttConnectRestrictionsBuilder<Default>
             implements Mqtt5ConnectRestrictionsBuilder {
 
+        public Default() {}
+
+        Default(@NotNull final MqttConnectRestrictions restrictions) {
+            super(restrictions);
+        }
+
         @Override
         @NotNull Default self() {
             return this;
@@ -97,7 +116,11 @@ public abstract class MqttConnectRestrictionsBuilder<B extends MqttConnectRestri
     public static class Nested<P> extends MqttConnectRestrictionsBuilder<Nested<P>>
             implements Mqtt5ConnectRestrictionsBuilder.Nested<P> {
 
-        public Nested(final @NotNull Function<? super MqttConnectRestrictions, P> parentConsumer) {
+        Nested(
+                final @NotNull MqttConnectRestrictions restrictions,
+                final @NotNull Function<? super MqttConnectRestrictions, P> parentConsumer) {
+
+            super(restrictions);
             this.parentConsumer = parentConsumer;
         }
 

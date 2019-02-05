@@ -98,7 +98,7 @@ public abstract class MqttConnectBuilder<B extends MqttConnectBuilder<B>> {
     }
 
     public @NotNull MqttConnectRestrictionsBuilder.Nested<B> restrictions() {
-        return new MqttConnectRestrictionsBuilder.Nested<>(this::restrictions);
+        return new MqttConnectRestrictionsBuilder.Nested<>(restrictions, this::restrictions);
     }
 
     public @NotNull B simpleAuth(final @Nullable Mqtt5SimpleAuth simpleAuth) {

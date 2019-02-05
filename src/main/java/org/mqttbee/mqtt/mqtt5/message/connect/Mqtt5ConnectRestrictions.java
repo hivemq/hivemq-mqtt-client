@@ -152,4 +152,11 @@ public interface Mqtt5ConnectRestrictions {
      * @return whether the client requests response information from the server.
      */
     boolean isRequestResponseInformation();
+
+    /**
+     * Creates a builder for extending this Connect restrictions.
+     *
+     * @return the created builder.
+     */
+    @NotNull Mqtt5ConnectRestrictionsBuilder extend();
 }
