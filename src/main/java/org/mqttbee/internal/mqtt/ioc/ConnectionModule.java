@@ -21,7 +21,7 @@ import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.PooledByteBufAllocator;
+import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.ChannelOption;
 import org.jetbrains.annotations.NotNull;
 import org.mqttbee.internal.mqtt.MqttClientConfig;
@@ -46,8 +46,7 @@ abstract class ConnectionModule {
         return new Bootstrap().group(clientConfig.acquireEventLoop())
                 .channelFactory(nettyEventLoopProvider.getChannelFactory())
                 .option(ChannelOption.SO_KEEPALIVE, true)
-                .option(ChannelOption.TCP_NODELAY, true)
-                .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
+                .option(ChannelOption.TCP_NODELAY, true).option(ChannelOption.ALLOCATOR, ByteBufAllocator.DEFAULT)
                 .handler(channelInitializer);
     }
 

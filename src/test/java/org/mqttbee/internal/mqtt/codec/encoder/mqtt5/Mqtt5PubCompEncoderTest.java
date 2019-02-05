@@ -166,7 +166,7 @@ class Mqtt5PubCompEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
 
     @Test
     void encode_maximumPacketSizeExceeded_throwsEncoderException() {
-        createServerConnectionData(3);
+        connected(3);
 
         final MqttPubComp pubComp = new MqttPubComp(1, SUCCESS, null, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
 
@@ -188,7 +188,7 @@ class Mqtt5PubCompEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
                 //   reason code
                 (byte) 0x92
         };
-        createServerConnectionData(expected.length + 2);
+        connected(expected.length + 2);
 
         final MqttUserPropertiesImpl userProperties = getUserProperties(1);
         final MqttPubComp pubComp = new MqttPubComp(5, PACKET_IDENTIFIER_NOT_FOUND, null, userProperties);
@@ -214,7 +214,7 @@ class Mqtt5PubCompEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
                 // user Property
                 0x26, 0, 4, 'u', 's', 'e', 'r', 0, 8, 'p', 'r', 'o', 'p', 'e', 'r', 't', 'y'
         };
-        createServerConnectionData(expected.length + 2);
+        connected(expected.length + 2);
 
         final MqttUserPropertiesImpl userProperties = getUserProperties(1);
         final MqttPubComp pubComp =

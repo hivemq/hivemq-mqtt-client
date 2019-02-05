@@ -18,13 +18,12 @@
 package org.mqttbee.internal.mqtt.codec.encoder;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.internal.mqtt.MqttClientConfig;
 import org.mqttbee.internal.mqtt.MqttClientConnectionConfig;
-import org.mqttbee.internal.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.internal.mqtt.ioc.ConnectionScope;
 import org.mqttbee.internal.mqtt.message.MqttMessage;
 
@@ -40,15 +39,17 @@ public class MqttEncoder extends ChannelOutboundHandlerAdapter {
 
     public static final @NotNull String NAME = "encoder";
 
-    private final @NotNull MqttClientConfig clientConfig;
     private final @NotNull MqttMessageEncoders encoders;
-
-    private int maximumPacketSize;
+    private final @NotNull MqttEncoderContext context;
 
     @Inject
-    MqttEncoder(final @NotNull MqttClientConfig clientConfig, final @NotNull MqttMessageEncoders encoders) {
-        this.clientConfig = clientConfig;
+    MqttEncoder(final @NotNull MqttMessageEncoders encoders) {
         this.encoders = encoders;
+        context = new MqttEncoderContext(ByteBufAllocator.DEFAULT);
+    }
+
+    public void onConnected(final @NotNull MqttClientConnectionConfig connectionConfig) {
+        context.setMaximumPacketSize(connectionConfig.getSendMaximumPacketSize());
     }
 
     @Override
@@ -62,22 +63,10 @@ public class MqttEncoder extends ChannelOutboundHandlerAdapter {
             if (messageEncoder == null) {
                 throw new UnsupportedOperationException();
             }
-            final ByteBuf out = messageEncoder.castAndEncode(message, ctx.alloc(), getMaximumPacketSize());
+            final ByteBuf out = messageEncoder.castAndEncode(message, context);
             ctx.write(out, promise);
         } else {
             ctx.write(msg, promise);
         }
-    }
-
-    private int getMaximumPacketSize() {
-        final int maximumPacketSize = this.maximumPacketSize;
-        if (maximumPacketSize != 0) {
-            return maximumPacketSize;
-        }
-        final MqttClientConnectionConfig connectionConfig = clientConfig.getRawConnectionConfig();
-        if (connectionConfig == null) {
-            return MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT;
-        }
-        return this.maximumPacketSize = connectionConfig.getSendMaximumPacketSize();
     }
 }

@@ -175,7 +175,7 @@ class Mqtt5PubRecEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
                 // reason code
                 (byte) 0x90
         };
-        createServerConnectionData(expected.length + 2);
+        connected(expected.length + 2);
 
         final Mqtt5PubRecReasonCode reasonCode = Mqtt5PubRecReasonCode.TOPIC_NAME_INVALID;
         final MqttUtf8StringImpl reasonString = null;
@@ -203,7 +203,7 @@ class Mqtt5PubRecEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
                 // user Property
                 0x26, 0, 4, 'u', 's', 'e', 'r', 0, 8, 'p', 'r', 'o', 'p', 'e', 'r', 't', 'y'
         };
-        createServerConnectionData(expected.length + 2);
+        connected(expected.length + 2);
         final Mqtt5PubRecReasonCode reasonCode = Mqtt5PubRecReasonCode.TOPIC_NAME_INVALID;
         final MqttUserPropertiesImpl userProperties = getUserProperties(1);
         final MqttUtf8StringImpl reasonString = getPaddedUtf8String(1);

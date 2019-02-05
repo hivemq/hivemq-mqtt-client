@@ -18,8 +18,8 @@
 package org.mqttbee.internal.mqtt.codec.encoder.mqtt5;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.internal.mqtt.codec.encoder.MqttEncoderContext;
 import org.mqttbee.internal.mqtt.codec.encoder.MqttMessageEncoder;
 import org.mqttbee.internal.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.internal.mqtt.message.MqttMessage;
@@ -40,31 +40,29 @@ abstract class Mqtt5MessageWithUserPropertiesEncoder<M extends MqttMessage.WithU
         extends MqttMessageEncoder<M> {
 
     @Override
-    protected @NotNull ByteBuf encode(
-            final @NotNull M message, final @NotNull ByteBufAllocator allocator, final int maximumPacketSize) {
-
+    protected @NotNull ByteBuf encode(final @NotNull M message, final @NotNull MqttEncoderContext context) {
         int propertyLength = propertyLength(message);
         final int remainingLengthWithoutProperties = remainingLengthWithoutProperties(message);
         int remainingLength = remainingLength(message, remainingLengthWithoutProperties, propertyLength);
         int encodedLength = encodedPacketLength(remainingLength);
         int omittedProperties = 0;
-        while (encodedLength > maximumPacketSize) {
+        while (encodedLength > context.getMaximumPacketSize()) {
             omittedProperties++;
             propertyLength = propertyLength(message, propertyLength, omittedProperties);
             if (propertyLength < 0) {
-                throw maximumPacketSizeExceeded(message, encodedLength, maximumPacketSize);
+                throw maximumPacketSizeExceeded(message, encodedLength, context.getMaximumPacketSize());
             }
             remainingLength = remainingLength(message, remainingLengthWithoutProperties, propertyLength);
             encodedLength = encodedPacketLength(remainingLength);
         }
-        return encode(message, allocator, encodedLength, remainingLength, propertyLength, omittedProperties);
+        return encode(message, context, encodedLength, remainingLength, propertyLength, omittedProperties);
     }
 
     /**
      * Encodes the given MQTT message.
      *
      * @param message           the MQTT message to encode.
-     * @param allocator         the allocator for allocating the byte buffer to encode to.
+     * @param context           the encoder context.
      * @param encodedLength     the encoded length the MQTT message.
      * @param remainingLength   the remaining length of the MQTT message.
      * @param propertyLength    the property length of the MQTT message.
@@ -72,10 +70,10 @@ abstract class Mqtt5MessageWithUserPropertiesEncoder<M extends MqttMessage.WithU
      * @return the byte buffer the MQTT message is encoded to.
      */
     @NotNull ByteBuf encode(
-            final @NotNull M message, final @NotNull ByteBufAllocator allocator, final int encodedLength,
+            final @NotNull M message, final @NotNull MqttEncoderContext context, final int encodedLength,
             final int remainingLength, final int propertyLength, final int omittedProperties) {
 
-        final ByteBuf out = allocator.ioBuffer(encodedLength, encodedLength);
+        final ByteBuf out = context.getAllocator().ioBuffer(encodedLength, encodedLength);
         encode(message, out, remainingLength, propertyLength, omittedProperties);
         return out;
     }

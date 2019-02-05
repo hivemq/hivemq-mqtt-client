@@ -18,9 +18,9 @@
 package org.mqttbee.internal.mqtt.codec.encoder.mqtt5;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.internal.mqtt.codec.encoder.MqttEncoderContext;
 import org.mqttbee.internal.mqtt.datatypes.MqttBinaryData;
 import org.mqttbee.internal.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.internal.mqtt.message.publish.MqttPublish;
@@ -104,17 +104,18 @@ public class Mqtt5PublishEncoder extends Mqtt5MessageWithUserPropertiesEncoder<M
 
     @Override
     @NotNull ByteBuf encode(
-            final @NotNull MqttStatefulPublish message, final @NotNull ByteBufAllocator allocator,
+            final @NotNull MqttStatefulPublish message, final @NotNull MqttEncoderContext context,
             final int encodedLength, final int remainingLength, final int propertyLength, final int omittedProperties) {
 
         final ByteBuffer payload = message.stateless().getRawPayload();
         if ((payload != null) && payload.isDirect()) {
             final int encodedLengthWithoutPayload = encodedLength - payload.remaining();
-            final ByteBuf out = allocator.ioBuffer(encodedLengthWithoutPayload, encodedLengthWithoutPayload);
+            final ByteBuf out =
+                    context.getAllocator().ioBuffer(encodedLengthWithoutPayload, encodedLengthWithoutPayload);
             encode(message, out, remainingLength, propertyLength, omittedProperties);
             return Unpooled.wrappedUnmodifiableBuffer(out, Unpooled.wrappedBuffer(payload));
         }
-        final ByteBuf out = allocator.ioBuffer(encodedLength, encodedLength);
+        final ByteBuf out = context.getAllocator().ioBuffer(encodedLength, encodedLength);
         encode(message, out, remainingLength, propertyLength, omittedProperties);
         return out;
     }

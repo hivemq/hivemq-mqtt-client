@@ -18,9 +18,9 @@
 package org.mqttbee.internal.mqtt.codec.encoder.mqtt3;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.internal.mqtt.codec.encoder.MqttEncoderContext;
 import org.mqttbee.internal.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.internal.mqtt.message.publish.MqttPublish;
 import org.mqttbee.internal.mqtt.message.publish.MqttStatefulPublish;
@@ -40,11 +40,10 @@ public class Mqtt3PublishEncoder extends Mqtt3MessageEncoder<MqttStatefulPublish
     private static final int FIXED_HEADER = Mqtt3MessageType.PUBLISH.getCode() << 4;
 
     @Inject
-    Mqtt3PublishEncoder() {
-    }
+    Mqtt3PublishEncoder() {}
 
     @Override
-    int remainingLength(@NotNull final MqttStatefulPublish message) {
+    int remainingLength(final @NotNull MqttStatefulPublish message) {
         final MqttPublish stateless = message.stateless();
 
         int remainingLength = 0;
@@ -63,35 +62,33 @@ public class Mqtt3PublishEncoder extends Mqtt3MessageEncoder<MqttStatefulPublish
         return remainingLength;
     }
 
-    @NotNull
     @Override
-    ByteBuf encode(
-            @NotNull final MqttStatefulPublish message, @NotNull final ByteBufAllocator allocator,
+    @NotNull ByteBuf encode(
+            final @NotNull MqttStatefulPublish message, final @NotNull MqttEncoderContext context,
             final int encodedLength, final int remainingLength) {
 
         final ByteBuffer payload = message.stateless().getRawPayload();
         if ((payload != null) && payload.isDirect()) {
             final int encodedLengthWithoutPayload = encodedLength - payload.remaining();
-            final ByteBuf out = allocator.ioBuffer(encodedLengthWithoutPayload, encodedLengthWithoutPayload);
+            final ByteBuf out =
+                    context.getAllocator().ioBuffer(encodedLengthWithoutPayload, encodedLengthWithoutPayload);
             encode(message, out, remainingLength);
             return Unpooled.wrappedUnmodifiableBuffer(out, Unpooled.wrappedBuffer(payload));
         }
-        final ByteBuf out = allocator.ioBuffer(encodedLength, encodedLength);
+        final ByteBuf out = context.getAllocator().ioBuffer(encodedLength, encodedLength);
         encode(message, out, remainingLength);
         return out;
     }
 
     @Override
-    void encode(
-            @NotNull final MqttStatefulPublish message, @NotNull final ByteBuf out, final int remainingLength) {
-
+    void encode(final @NotNull MqttStatefulPublish message, final @NotNull ByteBuf out, final int remainingLength) {
         encodeFixedHeader(message, out, remainingLength);
         encodeVariableHeader(message, out);
         encodePayload(message, out);
     }
 
     private void encodeFixedHeader(
-            @NotNull final MqttStatefulPublish message, @NotNull final ByteBuf out, final int remainingLength) {
+            final @NotNull MqttStatefulPublish message, final @NotNull ByteBuf out, final int remainingLength) {
 
         final MqttPublish stateless = message.stateless();
 
@@ -109,7 +106,7 @@ public class Mqtt3PublishEncoder extends Mqtt3MessageEncoder<MqttStatefulPublish
         MqttVariableByteInteger.encode(remainingLength, out);
     }
 
-    private void encodeVariableHeader(@NotNull final MqttStatefulPublish message, @NotNull final ByteBuf out) {
+    private void encodeVariableHeader(final @NotNull MqttStatefulPublish message, final @NotNull ByteBuf out) {
         final MqttPublish stateless = message.stateless();
 
         stateless.getTopic().encode(out);
@@ -119,7 +116,7 @@ public class Mqtt3PublishEncoder extends Mqtt3MessageEncoder<MqttStatefulPublish
         }
     }
 
-    private void encodePayload(@NotNull final MqttStatefulPublish message, @NotNull final ByteBuf out) {
+    private void encodePayload(final @NotNull MqttStatefulPublish message, final @NotNull ByteBuf out) {
         final ByteBuffer payload = message.stateless().getRawPayload();
         if ((payload != null) && !payload.isDirect()) {
             out.writeBytes(payload.duplicate());

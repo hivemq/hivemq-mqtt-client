@@ -596,7 +596,7 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
 
     @Test
     void encode_maximumOutgoingPacketSizeExceeded_throwsEncoderException() {
-        createServerConnectionData(100);
+        connected(100);
         final ByteBuffer correlationData = ByteBuffer.wrap(new byte[100]);
         final MqttPublish publish = new MqttPublish(MqttTopicImpl.of("topic"), null, MqttQos.AT_MOST_ONCE, false,
                 MqttPublish.NO_MESSAGE_EXPIRY, Mqtt5PayloadFormatIndicator.UNSPECIFIED, null, null, correlationData,
@@ -633,7 +633,7 @@ class Mqtt5PublishEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest
         };
 
         // big enough to fit one of the user properties, but not both. Should then omit both.
-        createServerConnectionData(expected.length + 2 + userPropertyBytes);
+        connected(expected.length + 2 + userPropertyBytes);
         final MqttUserPropertiesImpl userProperties = getUserProperties(2);
 
         final MqttPublish publish =

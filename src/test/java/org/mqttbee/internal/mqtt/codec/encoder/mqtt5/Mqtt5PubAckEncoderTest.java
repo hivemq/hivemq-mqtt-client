@@ -140,7 +140,7 @@ class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
                 //   PUBACK reason code
                 0x10
         };
-        createServerConnectionData(expected.length + 2);
+        connected(expected.length + 2);
 
         final MqttUtf8StringImpl reasonString = MqttUtf8StringImpl.of("reason");
         final MqttUserPropertiesImpl userProperties = MqttUserPropertiesImpl.NO_USER_PROPERTIES;
@@ -165,7 +165,7 @@ class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
                 //   PUBACK reason code
                 0x10
         };
-        createServerConnectionData(expected.length + 2);
+        connected(expected.length + 2);
 
         final MqttUserPropertiesImpl userProperties = getUserProperties(1);
 
@@ -189,7 +189,7 @@ class Mqtt5PubAckEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
                 //   PUBACK reason code
                 0x10
         };
-        createServerConnectionData(expected.length + 2);
+        connected(expected.length + 2);
 
         final MqttUtf8StringImpl reasonString = MqttUtf8StringImpl.of("reason");
         final MqttUserPropertiesImpl userProperties = getUserProperties(1);

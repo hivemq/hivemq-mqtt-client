@@ -18,21 +18,15 @@
 package org.mqttbee.internal.mqtt.codec.encoder.mqtt5;
 
 import org.jetbrains.annotations.NotNull;
-import org.mqttbee.internal.mqtt.MqttClientConfig;
-import org.mqttbee.internal.mqtt.MqttClientExecutorConfigImpl;
 import org.mqttbee.internal.mqtt.codec.encoder.AbstractMqttEncoderTest;
 import org.mqttbee.internal.mqtt.codec.encoder.MqttMessageEncoders;
-import org.mqttbee.internal.mqtt.datatypes.MqttClientIdentifierImpl;
-import org.mqttbee.mqtt.MqttVersion;
 
-class AbstractMqtt5EncoderTest extends AbstractMqttEncoderTest {
+/**
+ * @author Silvio Giebl
+ */
+abstract class AbstractMqtt5EncoderTest extends AbstractMqttEncoderTest {
 
     AbstractMqtt5EncoderTest(final @NotNull MqttMessageEncoders messageEncoders, final boolean connected) {
-        super(messageEncoders, connected, createClientData());
-    }
-
-    private static MqttClientConfig createClientData() {
-        return new MqttClientConfig(MqttVersion.MQTT_5_0, MqttClientIdentifierImpl.of("test"), "localhost", 1883,
-                MqttClientExecutorConfigImpl.DEFAULT, null, null, false, null);
+        super(messageEncoders, connected);
     }
 }

@@ -177,7 +177,7 @@ class Mqtt5PubRelEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
                 (byte) 0x92
         };
 
-        createServerConnectionData(expected.length + 2);
+        connected(expected.length + 2);
         final Mqtt5PubRelReasonCode reasonCode = Mqtt5PubRelReasonCode.PACKET_IDENTIFIER_NOT_FOUND;
         final MqttUtf8StringImpl reasonString = null;
         final MqttUserPropertiesImpl userProperties = getUserProperties(1);
@@ -204,7 +204,7 @@ class Mqtt5PubRelEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
                 // user Property
                 0x26, 0, 4, 'u', 's', 'e', 'r', 0, 8, 'p', 'r', 'o', 'p', 'e', 'r', 't', 'y'
         };
-        createServerConnectionData(expected.length + 2);
+        connected(expected.length + 2);
         final Mqtt5PubRelReasonCode reasonCode = Mqtt5PubRelReasonCode.PACKET_IDENTIFIER_NOT_FOUND;
         final MqttUserPropertiesImpl userProperties = getUserProperties(1);
         final MqttPubRel pubRel = new MqttPubRel(5, reasonCode, null, userProperties);
@@ -227,7 +227,7 @@ class Mqtt5PubRelEncoderTest extends AbstractMqtt5EncoderWithUserPropertiesTest 
                 (byte) 0x92
         };
 
-        createServerConnectionData(expected.length + 2);
+        connected(expected.length + 2);
         final Mqtt5PubRelReasonCode reasonCode = Mqtt5PubRelReasonCode.PACKET_IDENTIFIER_NOT_FOUND;
         final MqttUtf8StringImpl reasonString = null;
         final MqttUserPropertiesImpl userProperties =
