@@ -265,7 +265,6 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
                 Math.min(restrictions.getSendMaximum(), connAckRestrictions.getReceiveMaximum()),
                 Math.min(restrictions.getSendMaximumPacketSize(), connAckRestrictions.getMaximumPacketSize()),
                 Math.min(restrictions.getSendTopicAliasMaximum(), connAckRestrictions.getTopicAliasMaximum()),
-                restrictions.isSendProblemInformation(),
                 connAckRestrictions.getMaximumQos(),
                 connAckRestrictions.isRetainAvailable(),
                 connAckRestrictions.isWildcardSubscriptionAvailable(),

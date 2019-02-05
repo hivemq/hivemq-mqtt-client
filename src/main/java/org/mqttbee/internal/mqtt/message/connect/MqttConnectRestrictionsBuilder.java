@@ -36,7 +36,6 @@ public abstract class MqttConnectRestrictionsBuilder<B extends MqttConnectRestri
     private int topicAliasMaximum = MqttConnectRestrictions.DEFAULT_TOPIC_ALIAS_MAXIMUM;
     private int sendTopicAliasMaximum = MqttConnectRestrictions.DEFAULT_SEND_TOPIC_ALIAS_MAXIMUM;
     private boolean requestProblemInformation = MqttConnectRestrictions.DEFAULT_REQUEST_PROBLEM_INFORMATION;
-    private boolean sendProblemInformation = MqttConnectRestrictions.DEFAULT_SEND_PROBLEM_INFORMATION;
     private boolean requestResponseInformation = MqttConnectRestrictions.DEFAULT_REQUEST_RESPONSE_INFORMATION;
 
     abstract @NotNull B self();
@@ -76,11 +75,6 @@ public abstract class MqttConnectRestrictionsBuilder<B extends MqttConnectRestri
         return self();
     }
 
-    public @NotNull B sendProblemInformation(final boolean sendProblemInformation) {
-        this.sendProblemInformation = sendProblemInformation;
-        return self();
-    }
-
     public @NotNull B requestResponseInformation(final boolean requestResponseInformation) {
         this.requestResponseInformation = requestResponseInformation;
         return self();
@@ -88,8 +82,7 @@ public abstract class MqttConnectRestrictionsBuilder<B extends MqttConnectRestri
 
     public @NotNull MqttConnectRestrictions build() {
         return new MqttConnectRestrictions(receiveMaximum, sendMaximum, maximumPacketSize, sendMaximumPacketSize,
-                topicAliasMaximum, sendTopicAliasMaximum, requestProblemInformation, sendProblemInformation,
-                requestResponseInformation);
+                topicAliasMaximum, sendTopicAliasMaximum, requestProblemInformation, requestResponseInformation);
     }
 
     public static class Default extends MqttConnectRestrictionsBuilder<Default>

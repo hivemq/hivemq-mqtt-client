@@ -62,8 +62,6 @@ public interface Mqtt5ClientConnectionConfig extends MqttClientConnectionConfig 
 
         int getSendTopicAliasMaximum();
 
-        boolean isSendProblemInformation();
-
         @NotNull MqttQos getMaximumQos();
 
         boolean isRetainAvailable();

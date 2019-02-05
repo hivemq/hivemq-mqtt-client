@@ -30,8 +30,7 @@ public class MqttConnectRestrictions implements Mqtt5ConnectRestrictions {
     public static final @NotNull MqttConnectRestrictions DEFAULT =
             new MqttConnectRestrictions(DEFAULT_RECEIVE_MAXIMUM, DEFAULT_SEND_MAXIMUM, DEFAULT_MAXIMUM_PACKET_SIZE,
                     DEFAULT_SEND_MAXIMUM_PACKET_SIZE, DEFAULT_TOPIC_ALIAS_MAXIMUM, DEFAULT_SEND_TOPIC_ALIAS_MAXIMUM,
-                    DEFAULT_REQUEST_PROBLEM_INFORMATION, DEFAULT_SEND_PROBLEM_INFORMATION,
-                    DEFAULT_REQUEST_RESPONSE_INFORMATION);
+                    DEFAULT_REQUEST_PROBLEM_INFORMATION, DEFAULT_REQUEST_RESPONSE_INFORMATION);
 
     private final int receiveMaximum;
     private final int sendMaximum;
@@ -40,14 +39,12 @@ public class MqttConnectRestrictions implements Mqtt5ConnectRestrictions {
     private final int topicAliasMaximum;
     private final int sendTopicAliasMaximum;
     private final boolean requestProblemInformation;
-    private final boolean sendProblemInformation;
     private final boolean requestResponseInformation;
 
     public MqttConnectRestrictions(
             final int receiveMaximum, final int sendMaximum, final int maximumPacketSize,
             final int sendMaximumPacketSize, final int topicAliasMaximum, final int sendTopicAliasMaximum,
-            final boolean requestProblemInformation, final boolean sendProblemInformation,
-            final boolean requestResponseInformation) {
+            final boolean requestProblemInformation, final boolean requestResponseInformation) {
 
         this.receiveMaximum = receiveMaximum;
         this.sendMaximum = sendMaximum;
@@ -56,7 +53,6 @@ public class MqttConnectRestrictions implements Mqtt5ConnectRestrictions {
         this.topicAliasMaximum = topicAliasMaximum;
         this.sendTopicAliasMaximum = sendTopicAliasMaximum;
         this.requestProblemInformation = requestProblemInformation;
-        this.sendProblemInformation = sendProblemInformation;
         this.requestResponseInformation = requestResponseInformation;
     }
 
@@ -93,11 +89,6 @@ public class MqttConnectRestrictions implements Mqtt5ConnectRestrictions {
     @Override
     public boolean isRequestProblemInformation() {
         return requestProblemInformation;
-    }
-
-    @Override
-    public boolean isSendProblemInformation() {
-        return sendProblemInformation;
     }
 
     @Override
