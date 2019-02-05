@@ -20,10 +20,7 @@ package org.mqttbee.internal.mqtt.codec.decoder.mqtt5;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.mqttbee.internal.mqtt.codec.decoder.MqttMessageDecoders;
-import org.mqttbee.internal.mqtt.netty.ChannelAttributes;
 import org.mqttbee.mqtt.mqtt5.message.Mqtt5MessageType;
 import org.mqttbee.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
@@ -74,11 +71,8 @@ class Mqtt5PingRespDecoderTest extends AbstractMqtt5DecoderTest {
         assertNull(disconnect);
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"false", "true"})
-    void decode_wrong_flags(final boolean sendReasonString) {
-        ChannelAttributes.sendReasonString(sendReasonString, channel);
-
+    @Test
+    void decode_wrong_flags() {
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -88,14 +82,11 @@ class Mqtt5PingRespDecoderTest extends AbstractMqtt5DecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"false", "true"})
-    void decode_remaining_length_not_0(final boolean sendReasonString) {
-        ChannelAttributes.sendReasonString(sendReasonString, channel);
-
+    @Test
+    void decode_remaining_length_not_0() {
         final ByteBuf byteBuf = channel.alloc().buffer();
         // fixed header
         //   type, flags
@@ -106,17 +97,16 @@ class Mqtt5PingRespDecoderTest extends AbstractMqtt5DecoderTest {
 
         channel.writeInbound(byteBuf);
 
-        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET, sendReasonString);
+        testDisconnect(Mqtt5DisconnectReasonCode.MALFORMED_PACKET);
     }
 
-    private void testDisconnect(final @NotNull Mqtt5DisconnectReasonCode reasonCode, final boolean sendReasonString) {
+    private void testDisconnect(final @NotNull Mqtt5DisconnectReasonCode reasonCode) {
         final Mqtt5PingResp pingResp = channel.readInbound();
         assertNull(pingResp);
 
         final Mqtt5Disconnect disconnect = channel.readOutbound();
         assertNotNull(disconnect);
         assertEquals(reasonCode, disconnect.getReasonCode());
-        assertEquals(sendReasonString, disconnect.getReasonString().isPresent());
+        assertTrue(disconnect.getReasonString().isPresent());
     }
-
 }
