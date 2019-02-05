@@ -24,11 +24,14 @@ import io.netty.channel.embedded.EmbeddedChannel;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.mqttbee.internal.mqtt.datatypes.MqttTopicImpl;
+import org.mqttbee.internal.mqtt.MqttClientConfig;
+import org.mqttbee.internal.mqtt.MqttClientExecutorConfigImpl;
+import org.mqttbee.internal.mqtt.advanced.MqttClientAdvancedConfig;
+import org.mqttbee.internal.mqtt.advanced.MqttClientAdvancedConfigBuilder;
+import org.mqttbee.internal.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.internal.mqtt.handler.disconnect.MqttDisconnectEvent;
 import org.mqttbee.internal.mqtt.message.connect.MqttConnect;
 import org.mqttbee.internal.mqtt.message.disconnect.MqttDisconnect;
-import org.mqttbee.internal.util.collections.IntMap;
 import org.mqttbee.mqtt.MqttVersion;
 import org.mqttbee.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import org.mqttbee.mqtt.mqtt5.message.Mqtt5Message;
@@ -99,17 +102,24 @@ public abstract class AbstractMqttDecoderTest {
     }
 
     protected void createChannel() {
+        createChannel(false);
+    }
+
+    private void createChannel(final boolean validatePayloadFormat) {
+        final MqttClientAdvancedConfig advancedConfig =
+                new MqttClientAdvancedConfigBuilder.Default().validatePayloadFormat(validatePayloadFormat).build();
+        final MqttClientConfig clientConfig =
+                new MqttClientConfig(MqttVersion.MQTT_5_0, MqttClientIdentifierImpl.of("test"), "localhost", 1883,
+                        MqttClientExecutorConfigImpl.DEFAULT, null, null, advancedConfig);
+
         channel = new EmbeddedChannel();
-        channel.pipeline().addLast(decoder = new MqttDecoder(decoders, connect)).addLast(disconnectHandler);
+        channel.pipeline()
+                .addLast(decoder = new MqttDecoder(decoders, clientConfig, connect))
+                .addLast(disconnectHandler);
     }
 
     protected void validatePayloadFormat() {
-        final IntMap<MqttTopicImpl> topicAliasMapping = decoder.context.getTopicAliasMapping();
-        decoder.context = new MqttDecoderContext(decoder.context.getMaximumPacketSize(),
-                decoder.context.isProblemInformationRequested(), decoder.context.isResponseInformationRequested(), true,
-                decoder.context.useDirectBufferPayload(), decoder.context.useDirectBufferAuth(),
-                decoder.context.useDirectBufferCorrelationData(),
-                (topicAliasMapping == null) ? 0 : topicAliasMapping.getMaxKey());
+        createChannel(true);
     }
 
     public static @NotNull MqttPingRespDecoder createPingRespDecoder() {

@@ -27,19 +27,29 @@ import org.mqttbee.mqtt.mqtt5.advanced.Mqtt5ClientAdvancedConfig;
  */
 public class MqttClientAdvancedConfig implements Mqtt5ClientAdvancedConfig {
 
-    public static final @NotNull MqttClientAdvancedConfig DEFAULT = new MqttClientAdvancedConfig(false, null);
+    public static final @NotNull MqttClientAdvancedConfig DEFAULT = new MqttClientAdvancedConfig(false, false, null);
 
     private final boolean allowServerReAuth;
+    private final boolean validatePayloadFormat;
     private final @Nullable MqttClientInterceptors interceptors;
 
-    MqttClientAdvancedConfig(final boolean allowServerReAuth, final @Nullable MqttClientInterceptors interceptors) {
+    MqttClientAdvancedConfig(
+            final boolean allowServerReAuth, final boolean validatePayloadFormat,
+            final @Nullable MqttClientInterceptors interceptors) {
+
         this.allowServerReAuth = allowServerReAuth;
+        this.validatePayloadFormat = validatePayloadFormat;
         this.interceptors = interceptors;
     }
 
     @Override
     public boolean isAllowServerReAuth() {
         return allowServerReAuth;
+    }
+
+    @Override
+    public boolean isValidatePayloadFormat() {
+        return validatePayloadFormat;
     }
 
     @Override

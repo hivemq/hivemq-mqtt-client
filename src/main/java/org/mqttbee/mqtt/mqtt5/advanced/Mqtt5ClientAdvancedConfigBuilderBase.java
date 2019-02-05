@@ -31,6 +31,8 @@ public interface Mqtt5ClientAdvancedConfigBuilderBase<B extends Mqtt5ClientAdvan
 
     @NotNull B allowServerReAuth(boolean allowServerReAuth);
 
+    @NotNull B validatePayloadFormat(boolean validatePayloadFormat);
+
     @NotNull B interceptors(@Nullable Mqtt5ClientInterceptors interceptors);
 
     @NotNull Mqtt5ClientInterceptorsBuilder.Nested<? extends B> interceptors();
