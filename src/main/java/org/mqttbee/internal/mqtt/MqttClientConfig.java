@@ -71,9 +71,9 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
         this.clientIdentifier = clientIdentifier;
         this.serverHost = serverHost;
         this.serverPort = serverPort;
+        this.executorConfig = executorConfig;
         this.sslConfig = sslConfig;
         this.webSocketConfig = webSocketConfig;
-        this.executorConfig = executorConfig;
         this.advancedConfig = advancedConfig;
 
         clientComponent = SingletonComponent.INSTANCE.clientComponentBuilder().clientConfig(this).build();
