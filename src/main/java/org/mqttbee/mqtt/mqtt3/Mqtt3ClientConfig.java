@@ -24,6 +24,8 @@ import org.mqttbee.mqtt.MqttClientConfig;
 import java.util.Optional;
 
 /**
+ * Configuration of a {@link Mqtt3Client MQTT 3 client}.
+ *
  * @author Silvio Giebl
  * @since 1.0
  */
