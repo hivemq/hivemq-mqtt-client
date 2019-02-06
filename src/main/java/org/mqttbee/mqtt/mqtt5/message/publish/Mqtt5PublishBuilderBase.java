@@ -31,6 +31,7 @@ import java.nio.ByteBuffer;
 
 /**
  * @author Bilvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt5PublishBuilderBase<C extends Mqtt5PublishBuilderBase.Complete<C>> {

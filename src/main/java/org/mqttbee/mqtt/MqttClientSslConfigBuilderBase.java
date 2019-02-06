@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface MqttClientSslConfigBuilderBase<B extends MqttClientSslConfigBuilderBase<B>> {

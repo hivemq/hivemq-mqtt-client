@@ -25,6 +25,7 @@ import java.util.EnumSet;
  * State of a {@link MqttClient}.
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 public enum MqttClientState {
 

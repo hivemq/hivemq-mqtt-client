@@ -28,6 +28,9 @@ import java.util.Optional;
 /**
  * Simple authentication and/or authorization related data in a {@link org.mqttbee.mqtt.mqtt3.message.connect.Mqtt3Connect
  * MQTT 3 Connect message}.
+ *
+ * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt3SimpleAuth {

@@ -23,6 +23,7 @@ package org.mqttbee.mqtt;
  * Global means not filtering for individual subscriptions of a Subscribe message.
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 public enum MqttGlobalPublishFilter {
 

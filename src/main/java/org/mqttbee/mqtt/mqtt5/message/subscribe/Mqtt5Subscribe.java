@@ -31,6 +31,7 @@ import java.util.List;
  * MQTT 5 Subscribe message. This message is translated from and to a MQTT 5 SUBSCRIBE packet.
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt5Subscribe extends Mqtt5Message {

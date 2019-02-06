@@ -25,6 +25,7 @@ import org.mqttbee.internal.mqtt.MqttWebSocketConfigImplBuilder;
  *
  * @author Christian Hoff
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface MqttWebSocketConfig {

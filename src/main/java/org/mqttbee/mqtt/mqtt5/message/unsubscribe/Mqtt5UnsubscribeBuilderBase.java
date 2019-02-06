@@ -27,6 +27,7 @@ import org.mqttbee.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
 
 /**
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt5UnsubscribeBuilderBase<C extends Mqtt5UnsubscribeBuilderBase.Complete<C>> {

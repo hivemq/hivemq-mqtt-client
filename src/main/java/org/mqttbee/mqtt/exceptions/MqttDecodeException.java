@@ -24,6 +24,7 @@ import org.mqttbee.internal.util.AsyncRuntimeException;
  * Exception that is used if an decoding error occurred.
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 public class MqttDecodeException extends AsyncRuntimeException {
 

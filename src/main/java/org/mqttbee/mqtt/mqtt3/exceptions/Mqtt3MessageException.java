@@ -25,10 +25,11 @@ import org.mqttbee.mqtt.mqtt3.message.Mqtt3Message;
 /**
  * @author David Katz
  * @author Silvio Giebl
+ * @since 1.0
  */
 public abstract class Mqtt3MessageException extends AsyncRuntimeException {
 
-    public Mqtt3MessageException(final @Nullable String message, final @Nullable Throwable cause) {
+    Mqtt3MessageException(final @Nullable String message, final @Nullable Throwable cause) {
         super(message, cause);
     }
 

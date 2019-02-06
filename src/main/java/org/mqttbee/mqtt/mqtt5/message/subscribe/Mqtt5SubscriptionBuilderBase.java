@@ -25,6 +25,7 @@ import org.mqttbee.mqtt.datatypes.MqttTopicFilterBuilder;
 
 /**
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt5SubscriptionBuilderBase<C extends Mqtt5SubscriptionBuilderBase.Complete<C>> {

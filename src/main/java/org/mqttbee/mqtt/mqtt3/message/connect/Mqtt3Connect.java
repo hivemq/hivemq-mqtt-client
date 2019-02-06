@@ -29,6 +29,9 @@ import java.util.Optional;
 
 /**
  * MQTT 3 Connect message. This message is translated from and to a MQTT 3 CONNECT packet.
+ *
+ * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt3Connect extends Mqtt3Message {

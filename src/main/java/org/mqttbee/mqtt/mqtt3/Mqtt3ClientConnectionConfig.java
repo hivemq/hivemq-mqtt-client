@@ -23,6 +23,7 @@ import org.mqttbee.mqtt.MqttClientConnectionConfig;
 
 /**
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt3ClientConnectionConfig extends MqttClientConnectionConfig {

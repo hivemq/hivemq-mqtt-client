@@ -22,6 +22,10 @@ import org.mqttbee.mqtt.mqtt3.message.Mqtt3ReturnCode;
 
 /**
  * Return Code of a {@link Mqtt3SubAck MQTT 3 SubAck message}.
+ *
+ * @author Daniel Krüger
+ * @author Silvio Giebl
+ * @since 1.0
  */
 public enum Mqtt3SubAckReturnCode implements Mqtt3ReturnCode {
 

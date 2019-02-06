@@ -25,6 +25,7 @@ import org.mqttbee.mqtt.mqtt5.advanced.interceptor.Mqtt5ClientInterceptors;
 
 /**
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt5ClientAdvancedConfig {

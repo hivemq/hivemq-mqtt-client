@@ -25,6 +25,7 @@ import org.mqttbee.mqtt.MqttClient;
  * MQTT client according to the MQTT 5.0 specification.
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 public interface Mqtt5Client extends MqttClient {
 

@@ -26,6 +26,7 @@ import org.mqttbee.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 
 /**
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt5PubRecBuilder {

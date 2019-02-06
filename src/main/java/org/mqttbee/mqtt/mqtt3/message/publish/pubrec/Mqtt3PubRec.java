@@ -24,6 +24,10 @@ import org.mqttbee.mqtt.mqtt3.message.Mqtt3MessageType;
 
 /**
  * MQTT 3 PubRec message. This message is translated from and to a MQTT 3 PUBREC packet.
+ *
+ * @author Daniel Krüger
+ * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt3PubRec extends Mqtt3Message {

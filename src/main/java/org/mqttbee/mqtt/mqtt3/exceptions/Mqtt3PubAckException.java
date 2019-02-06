@@ -24,6 +24,7 @@ import org.mqttbee.mqtt.mqtt3.message.publish.puback.Mqtt3PubAck;
 
 /**
  * @author Silvio Giebl
+ * @since 1.0
  */
 public class Mqtt3PubAckException extends Mqtt3MessageException {
 

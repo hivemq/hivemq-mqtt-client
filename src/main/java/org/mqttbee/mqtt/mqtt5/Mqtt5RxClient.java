@@ -47,6 +47,7 @@ import org.mqttbee.rx.FlowableWithSingle;
  * Reactive API of a {@link Mqtt5Client}.
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 public interface Mqtt5RxClient extends Mqtt5Client {
 

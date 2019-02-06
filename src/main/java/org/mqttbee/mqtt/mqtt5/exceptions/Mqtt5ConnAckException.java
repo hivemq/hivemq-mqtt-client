@@ -22,6 +22,7 @@ import org.mqttbee.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 
 /**
  * @author Silvio Giebl
+ * @since 1.0
  */
 public class Mqtt5ConnAckException extends Mqtt5MessageException {
 

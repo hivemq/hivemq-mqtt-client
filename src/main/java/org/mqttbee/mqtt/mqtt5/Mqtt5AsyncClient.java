@@ -50,6 +50,7 @@ import java.util.function.Consumer;
  * Asynchronous API of a {@link Mqtt5Client} based on futures and callbacks.
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 public interface Mqtt5AsyncClient extends Mqtt5Client {
 

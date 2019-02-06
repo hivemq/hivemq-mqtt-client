@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
  * MQTT message type according to the MQTT 3 specification.
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 public enum Mqtt3MessageType {
 

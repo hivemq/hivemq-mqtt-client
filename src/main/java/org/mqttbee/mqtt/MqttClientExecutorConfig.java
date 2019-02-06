@@ -31,6 +31,7 @@ import java.util.concurrent.Executor;
  * Configuration for the executors and threads to use by {@link MqttClient MQTT clients}.
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface MqttClientExecutorConfig {

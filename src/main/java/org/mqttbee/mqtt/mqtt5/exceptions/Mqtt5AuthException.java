@@ -22,6 +22,7 @@ import org.mqttbee.mqtt.mqtt5.message.auth.Mqtt5Auth;
 
 /**
  * @author Silvio Giebl
+ * @since 1.0
  */
 public class Mqtt5AuthException extends Mqtt5MessageException {
 

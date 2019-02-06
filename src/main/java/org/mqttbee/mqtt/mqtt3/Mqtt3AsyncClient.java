@@ -44,6 +44,7 @@ import java.util.function.Consumer;
  * Asynchronous API of a {@link Mqtt3Client} based on futures and callbacks.
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 public interface Mqtt3AsyncClient extends Mqtt3Client {
 

@@ -21,6 +21,7 @@ package org.mqttbee.mqtt;
  * Available MQTT versions of {@link MqttClient MQTT clients}.
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 public enum MqttVersion {
 

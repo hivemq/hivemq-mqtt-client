@@ -23,6 +23,7 @@ import org.mqttbee.annotations.DoNotImplement;
  * Reason Code according to the MQTT 5 specification.
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt5ReasonCode {

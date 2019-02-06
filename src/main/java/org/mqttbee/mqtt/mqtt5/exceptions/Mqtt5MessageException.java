@@ -23,14 +23,15 @@ import org.mqttbee.mqtt.mqtt5.message.Mqtt5Message;
 
 /**
  * @author Silvio Giebl
+ * @since 1.0
  */
 public abstract class Mqtt5MessageException extends AsyncRuntimeException {
 
-    public Mqtt5MessageException(final @NotNull String message) {
+    Mqtt5MessageException(final @NotNull String message) {
         super(message);
     }
 
-    public Mqtt5MessageException(final @NotNull Throwable cause) {
+    Mqtt5MessageException(final @NotNull Throwable cause) {
         super(cause.getMessage(), cause);
     }
 

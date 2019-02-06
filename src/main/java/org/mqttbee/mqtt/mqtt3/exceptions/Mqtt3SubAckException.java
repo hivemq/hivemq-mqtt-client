@@ -23,6 +23,7 @@ import org.mqttbee.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAck;
 
 /**
  * @author Silvio Giebl
+ * @since 1.0
  */
 public class Mqtt3SubAckException extends Mqtt3MessageException {
 

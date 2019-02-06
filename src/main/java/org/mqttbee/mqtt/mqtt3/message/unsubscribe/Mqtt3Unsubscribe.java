@@ -29,6 +29,10 @@ import java.util.List;
 
 /**
  * MQTT 3 Unsubscribe message. This message is translated from and to a MQTT 3 UNSUBSCRIBE packet.
+ *
+ * @author Daniel Krüger
+ * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt3Unsubscribe extends Mqtt3Message {

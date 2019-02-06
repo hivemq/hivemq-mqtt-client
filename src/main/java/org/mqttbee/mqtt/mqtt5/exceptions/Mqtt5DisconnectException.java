@@ -22,6 +22,7 @@ import org.mqttbee.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 
 /**
  * @author Silvio Giebl
+ * @since 1.0
  */
 public class Mqtt5DisconnectException extends Mqtt5MessageException {
 

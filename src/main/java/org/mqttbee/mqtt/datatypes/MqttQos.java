@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
  * MQTT Quality of Service according to the MQTT 5 specification.
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 public enum MqttQos {
 

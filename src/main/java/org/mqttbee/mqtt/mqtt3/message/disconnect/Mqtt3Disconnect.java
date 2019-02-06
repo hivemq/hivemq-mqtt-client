@@ -24,6 +24,9 @@ import org.mqttbee.mqtt.mqtt3.message.Mqtt3MessageType;
 
 /**
  * MQTT 3 Disconnect message. This message is translated from and to a MQTT 3 DISCONNECT packet.
+ *
+ * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt3Disconnect extends Mqtt3Message {

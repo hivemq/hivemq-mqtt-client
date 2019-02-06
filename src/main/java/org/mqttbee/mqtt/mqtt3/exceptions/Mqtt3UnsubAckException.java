@@ -24,6 +24,7 @@ import org.mqttbee.mqtt.mqtt3.message.unsubscribe.unsuback.Mqtt3UnsubAck;
 
 /**
  * @author Silvio Giebl
+ * @since 1.0
  */
 public class Mqtt3UnsubAckException extends Mqtt3MessageException {
 

@@ -29,6 +29,7 @@ import org.mqttbee.mqtt.datatypes.MqttUtf8String;
  * A User Property consists of a name and value UTF-8 encoded String Pair.
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt5UserProperty extends Comparable<Mqtt5UserProperty> {

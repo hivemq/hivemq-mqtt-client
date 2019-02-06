@@ -23,6 +23,7 @@ import org.mqttbee.annotations.DoNotImplement;
  * Return Code according to the MQTT 3 specification.
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt3ReturnCode {

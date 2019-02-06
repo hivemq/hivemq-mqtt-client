@@ -26,6 +26,7 @@ import org.mqttbee.mqtt.mqtt5.message.Mqtt5MessageType;
  * MQTT 5 PingResp message. This message is translated from and to a MQTT 5 PINGRESP packet.
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt5PingResp extends Mqtt5Message {

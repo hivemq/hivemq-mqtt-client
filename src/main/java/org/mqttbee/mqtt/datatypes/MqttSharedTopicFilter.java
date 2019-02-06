@@ -38,6 +38,7 @@ import org.mqttbee.internal.mqtt.datatypes.MqttTopicFilterImplBuilder;
  * The Topic Filter has the same restrictions as a {@link MqttTopicFilter Topic Filter}.
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface MqttSharedTopicFilter extends MqttTopicFilter {

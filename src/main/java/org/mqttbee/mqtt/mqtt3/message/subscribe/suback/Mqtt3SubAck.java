@@ -27,6 +27,10 @@ import java.util.List;
 
 /**
  * MQTT 3 SubAck message. This message is translated from and to a MQTT 3 SUBACK packet.
+ *
+ * @author Daniel Krüger
+ * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt3SubAck extends Mqtt3Message {

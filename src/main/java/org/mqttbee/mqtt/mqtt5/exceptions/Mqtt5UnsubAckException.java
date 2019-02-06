@@ -22,6 +22,7 @@ import org.mqttbee.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
 
 /**
  * @author Silvio Giebl
+ * @since 1.0
  */
 public class Mqtt5UnsubAckException extends Mqtt5MessageException {
 

@@ -32,6 +32,7 @@ import java.util.Optional;
  * MQTT 5 SubAck message. This message is translated from and to a MQTT 5 SUBACK packet.
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt5SubAck extends Mqtt5Message {

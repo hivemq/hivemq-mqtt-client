@@ -34,6 +34,7 @@ import java.util.Optional;
  * MQTT 5 Connect message. This message is translated from and to a MQTT 5 CONNECT packet.
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt5Connect extends Mqtt5Message {

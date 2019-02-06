@@ -26,6 +26,7 @@ import org.mqttbee.mqtt.mqtt5.message.Mqtt5ReasonCode;
  * Reason Code of a {@link Mqtt5Auth MQTT 5 Auth message}.
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 public enum Mqtt5AuthReasonCode implements Mqtt5ReasonCode {
 

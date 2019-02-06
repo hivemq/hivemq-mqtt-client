@@ -54,6 +54,7 @@ import java.util.concurrent.CompletableFuture;
  * </ul>
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 public interface Mqtt5EnhancedAuthMechanism {
 

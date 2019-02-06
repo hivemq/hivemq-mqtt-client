@@ -31,6 +31,7 @@ import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5WillPublishBuilder;
 
 /**
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt5ConnectBuilderBase<B extends Mqtt5ConnectBuilderBase<B>> {

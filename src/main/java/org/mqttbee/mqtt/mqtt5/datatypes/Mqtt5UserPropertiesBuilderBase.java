@@ -23,6 +23,7 @@ import org.mqttbee.mqtt.datatypes.MqttUtf8String;
 
 /**
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt5UserPropertiesBuilderBase<B extends Mqtt5UserPropertiesBuilderBase<B>> {
