@@ -38,4 +38,9 @@ public class Mqtt3PubAckView implements Mqtt3PubAck {
     }
 
     private Mqtt3PubAckView() {}
+
+    @Override
+    public @NotNull String toString() {
+        return "MqttPubAck{}";
+    }
 }

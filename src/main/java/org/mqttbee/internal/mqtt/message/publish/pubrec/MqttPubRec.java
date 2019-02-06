@@ -41,4 +41,9 @@ public class MqttPubRec extends MqttMessageWithUserProperties.WithReason.WithCod
 
         super(packetIdentifier, reasonCode, reasonString, userProperties);
     }
+
+    @Override
+    public @NotNull String toString() {
+        return "MqttPubRec{" + toAttributeString() + "}";
+    }
 }

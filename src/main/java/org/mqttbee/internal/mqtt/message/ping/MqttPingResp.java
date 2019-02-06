@@ -31,4 +31,9 @@ public class MqttPingResp implements MqttMessage, Mqtt5PingResp {
     public static final @NotNull MqttPingResp INSTANCE = new MqttPingResp();
 
     private MqttPingResp() {}
+
+    @Override
+    public @NotNull String toString() {
+        return "MqttPingResp{}";
+    }
 }

@@ -68,4 +68,13 @@ public class Mqtt3SubscribeView implements Mqtt3Subscribe {
     public @NotNull Mqtt3SubscribeViewBuilder.Default extend() {
         return new Mqtt3SubscribeViewBuilder.Default(this);
     }
+
+    private @NotNull String toAttributeString() {
+        return "subscriptions=" + getSubscriptions();
+    }
+
+    @Override
+    public @NotNull String toString() {
+        return "MqttSubscribe{" + toAttributeString() + '}';
+    }
 }

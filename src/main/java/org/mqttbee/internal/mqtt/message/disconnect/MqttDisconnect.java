@@ -78,4 +78,16 @@ public class MqttDisconnect extends MqttMessageWithUserProperties.WithReason.Wit
     public @NotNull MqttDisconnectBuilder.Default extend() {
         return new MqttDisconnectBuilder.Default(this);
     }
+
+    @Override
+    protected @NotNull String toAttributeString() {
+        return "reasonCode=" + getReasonCode() + ((sessionExpiryInterval == SESSION_EXPIRY_INTERVAL_FROM_CONNECT) ? "" :
+                ", sessionExpiryInterval=" + sessionExpiryInterval) +
+                ((serverReference == null) ? "" : ", serverReference=" + serverReference) + super.toAttributeString();
+    }
+
+    @Override
+    public @NotNull String toString() {
+        return "MqttDisconnect{" + toAttributeString() + '}';
+    }
 }

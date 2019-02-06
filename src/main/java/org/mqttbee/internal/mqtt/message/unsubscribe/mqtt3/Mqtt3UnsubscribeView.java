@@ -62,4 +62,13 @@ public class Mqtt3UnsubscribeView implements Mqtt3Unsubscribe {
     public @NotNull Mqtt3UnsubscribeViewBuilder.Default extend() {
         return new Mqtt3UnsubscribeViewBuilder.Default(this);
     }
+
+    private @NotNull String toAttributeString() {
+        return "topicFilters=" + getTopicFilters();
+    }
+
+    @Override
+    public @NotNull String toString() {
+        return "MqttUnsubscribe{" + toAttributeString() + '}';
+    }
 }

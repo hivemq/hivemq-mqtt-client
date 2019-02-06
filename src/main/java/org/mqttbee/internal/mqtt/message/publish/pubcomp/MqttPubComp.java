@@ -41,4 +41,9 @@ public class MqttPubComp extends MqttMessageWithUserProperties.WithReason.WithCo
 
         super(packetIdentifier, reasonCode, reasonString, userProperties);
     }
+
+    @Override
+    public @NotNull String toString() {
+        return "MqttPubComp{" + toAttributeString() + "}";
+    }
 }

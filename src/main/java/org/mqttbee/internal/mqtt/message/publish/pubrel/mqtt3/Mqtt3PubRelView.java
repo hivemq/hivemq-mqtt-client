@@ -38,4 +38,9 @@ public class Mqtt3PubRelView implements Mqtt3PubRel {
     }
 
     private Mqtt3PubRelView() {}
+
+    @Override
+    public @NotNull String toString() {
+        return "MqttPubRel{}";
+    }
 }

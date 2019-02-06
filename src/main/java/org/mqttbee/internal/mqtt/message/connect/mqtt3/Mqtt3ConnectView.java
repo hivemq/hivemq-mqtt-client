@@ -79,14 +79,22 @@ public class Mqtt3ConnectView implements Mqtt3Connect {
 
     @Override
     public @NotNull Optional<Mqtt3SimpleAuth> getSimpleAuth() {
+        return Optional.ofNullable(getRawSimpleAuth());
+    }
+
+    private @Nullable Mqtt3SimpleAuth getRawSimpleAuth() {
         final MqttSimpleAuth simpleAuth = delegate.getRawSimpleAuth();
-        return (simpleAuth == null) ? Optional.empty() : Optional.of(Mqtt3SimpleAuthView.of(simpleAuth));
+        return (simpleAuth == null) ? null : Mqtt3SimpleAuthView.of(simpleAuth);
     }
 
     @Override
     public @NotNull Optional<Mqtt3Publish> getWillPublish() {
+        return Optional.ofNullable(getRawWillPublish());
+    }
+
+    private @Nullable Mqtt3Publish getRawWillPublish() {
         final MqttWillPublish willPublish = delegate.getRawWillPublish();
-        return (willPublish == null) ? Optional.empty() : Optional.of(Mqtt3PublishView.of(willPublish));
+        return (willPublish == null) ? null : Mqtt3PublishView.of(willPublish);
     }
 
     public @NotNull MqttConnect getDelegate() {
@@ -96,5 +104,18 @@ public class Mqtt3ConnectView implements Mqtt3Connect {
     @Override
     public @NotNull Mqtt3ConnectViewBuilder.Default extend() {
         return new Mqtt3ConnectViewBuilder.Default(this);
+    }
+
+    private @NotNull String toAttributeString() {
+        final Mqtt3SimpleAuth simpleAuth = getRawSimpleAuth();
+        final Mqtt3Publish willPublish = getRawWillPublish();
+        return "keepAlive=" + getKeepAlive() + ", cleanSession=" + isCleanSession() +
+                ((simpleAuth == null) ? "" : ", simpleAuth=" + simpleAuth) +
+                ((willPublish == null) ? "" : ", willPublish=" + willPublish);
+    }
+
+    @Override
+    public @NotNull String toString() {
+        return "MqttConnect{" + toAttributeString() + '}';
     }
 }

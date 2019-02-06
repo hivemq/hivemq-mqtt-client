@@ -59,4 +59,14 @@ public class MqttSimpleAuth implements Mqtt5SimpleAuth {
     public @Nullable ByteBuffer getRawPassword() {
         return password;
     }
+
+    private @NotNull String toAttributeString() {
+        return ((username == null) ? (password == null ? "" : "password") :
+                (password == null) ? "username" : "username and password");
+    }
+
+    @Override
+    public @NotNull String toString() {
+        return "MqttSimpleAuth{" + toAttributeString() + '}';
+    }
 }

@@ -43,6 +43,10 @@ public abstract class MqttMessageWithUserProperties implements MqttMessage.WithU
         return userProperties;
     }
 
+    protected @NotNull String toAttributeString() {
+        return userProperties.asList().isEmpty() ? "" : ", userProperties=" + userProperties;
+    }
+
     /**
      * Base class for MQTT messages with an optional Reason String and optional User Properties.
      */
@@ -63,6 +67,11 @@ public abstract class MqttMessageWithUserProperties implements MqttMessage.WithU
 
         public @Nullable MqttUtf8StringImpl getRawReasonString() {
             return reasonString;
+        }
+
+        @Override
+        protected @NotNull String toAttributeString() {
+            return ((reasonString == null) ? "" : ", reasonString=" + reasonString) + super.toAttributeString();
         }
 
         /**
@@ -110,6 +119,11 @@ public abstract class MqttMessageWithUserProperties implements MqttMessage.WithU
                 public int getPacketIdentifier() {
                     return packetIdentifier;
                 }
+
+                @Override
+                protected @NotNull String toAttributeString() {
+                    return ", packetIdentifier=" + packetIdentifier + super.toAttributeString();
+                }
             }
         }
 
@@ -142,6 +156,11 @@ public abstract class MqttMessageWithUserProperties implements MqttMessage.WithU
 
             public @NotNull ImmutableList<@NotNull R> getReasonCodes() {
                 return reasonCodes;
+            }
+
+            @Override
+            protected @NotNull String toAttributeString() {
+                return ", packetIdentifier=" + packetIdentifier + super.toAttributeString();
             }
         }
     }

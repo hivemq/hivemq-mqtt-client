@@ -32,19 +32,19 @@ public class MqttSubscription implements Mqtt5Subscription {
 
     private final @NotNull MqttTopicFilterImpl topicFilter;
     private final @NotNull MqttQos qos;
-    private final boolean isNoLocal;
+    private final boolean noLocal;
     private final @NotNull Mqtt5RetainHandling retainHandling;
-    private final boolean isRetainAsPublished;
+    private final boolean retainAsPublished;
 
     public MqttSubscription(
-            final @NotNull MqttTopicFilterImpl topicFilter, final @NotNull MqttQos qos, final boolean isNoLocal,
-            final @NotNull Mqtt5RetainHandling retainHandling, final boolean isRetainAsPublished) {
+            final @NotNull MqttTopicFilterImpl topicFilter, final @NotNull MqttQos qos, final boolean noLocal,
+            final @NotNull Mqtt5RetainHandling retainHandling, final boolean retainAsPublished) {
 
         this.topicFilter = topicFilter;
         this.qos = qos;
-        this.isNoLocal = isNoLocal;
+        this.noLocal = noLocal;
         this.retainHandling = retainHandling;
-        this.isRetainAsPublished = isRetainAsPublished;
+        this.retainAsPublished = retainAsPublished;
     }
 
     @Override
@@ -59,7 +59,7 @@ public class MqttSubscription implements Mqtt5Subscription {
 
     @Override
     public boolean isNoLocal() {
-        return isNoLocal;
+        return noLocal;
     }
 
     @Override
@@ -69,6 +69,16 @@ public class MqttSubscription implements Mqtt5Subscription {
 
     @Override
     public boolean isRetainAsPublished() {
-        return isRetainAsPublished;
+        return retainAsPublished;
+    }
+
+    public @NotNull String toAttributeString() {
+        return "topicFilter=" + topicFilter + ", qos=" + qos + ", noLocal=" + noLocal + ", retainHandling=" +
+                retainHandling + ", retainAsPublished=" + retainAsPublished;
+    }
+
+    @Override
+    public @NotNull String toString() {
+        return "MqttSubscription{" + toAttributeString() + '}';
     }
 }

@@ -53,4 +53,13 @@ public class Mqtt3PublishResultView implements Mqtt3PublishResult {
     public @NotNull Optional<Throwable> getError() {
         return delegate.getError().map(Mqtt3ExceptionFactory.MAPPER_JAVA);
     }
+
+    private @NotNull String toAttributeString() {
+        return "publish=" + getPublish() + ((!getError().isPresent()) ? "" : ", error=" + getError().get());
+    }
+
+    @Override
+    public @NotNull String toString() {
+        return "MqttPublishResult{" + toAttributeString() + '}';
+    }
 }

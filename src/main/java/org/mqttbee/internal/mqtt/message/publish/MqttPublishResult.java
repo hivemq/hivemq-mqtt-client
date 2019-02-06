@@ -55,6 +55,15 @@ public class MqttPublishResult implements Mqtt5PublishResult {
         return true;
     }
 
+    @NotNull String toAttributeString() {
+        return "publish=" + publish + ((error == null) ? "" : ", error=" + error);
+    }
+
+    @Override
+    public @NotNull String toString() {
+        return "MqttPublishResult{" + toAttributeString() + '}';
+    }
+
     public static class MqttQos1Result extends MqttPublishResult implements Mqtt5Qos1Result {
 
         private final @NotNull MqttPubAck pubAck;
@@ -69,6 +78,16 @@ public class MqttPublishResult implements Mqtt5PublishResult {
         @Override
         public @NotNull MqttPubAck getPubAck() {
             return pubAck;
+        }
+
+        @Override
+        @NotNull String toAttributeString() {
+            return super.toAttributeString() + ", pubAck=" + pubAck;
+        }
+
+        @Override
+        public @NotNull String toString() {
+            return "MqttQos1Result{" + toAttributeString() + '}';
         }
     }
 
@@ -86,6 +105,16 @@ public class MqttPublishResult implements Mqtt5PublishResult {
         @Override
         public @NotNull MqttPubRec getPubRec() {
             return pubRec;
+        }
+
+        @Override
+        @NotNull String toAttributeString() {
+            return super.toAttributeString() + ", pubRec=" + pubRec;
+        }
+
+        @Override
+        public @NotNull String toString() {
+            return "MqttQos2PublishResult{" + toAttributeString() + '}';
         }
     }
 
@@ -129,6 +158,15 @@ public class MqttPublishResult implements Mqtt5PublishResult {
         public @NotNull MqttPubComp getPubComp() {
             return pubComp;
         }
-    }
 
+        @Override
+        @NotNull String toAttributeString() {
+            return super.toAttributeString() + ", pubRel=" + pubRel + ", pubComp=" + pubComp;
+        }
+
+        @Override
+        public @NotNull String toString() {
+            return "MqttQos2CompleteResult{" + toAttributeString() + '}';
+        }
+    }
 }

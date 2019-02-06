@@ -30,4 +30,9 @@ public class MqttStatefulUnsubscribe extends MqttStatefulMessage.WithId<MqttUnsu
     MqttStatefulUnsubscribe(final @NotNull MqttUnsubscribe unsubscribe, final int packetIdentifier) {
         super(unsubscribe, packetIdentifier);
     }
+
+    @Override
+    public @NotNull String toString() {
+        return "MqttStatefulUnsubscribe{" + toAttributeString() + "}";
+    }
 }

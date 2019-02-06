@@ -51,7 +51,7 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
     private final @NotNull MqttTopicImpl topic;
     private final @Nullable ByteBuffer payload;
     private final @NotNull MqttQos qos;
-    private final boolean isRetain;
+    private final boolean retain;
     private final long messageExpiryInterval;
     private final @Nullable Mqtt5PayloadFormatIndicator payloadFormatIndicator;
     private final @Nullable MqttUtf8StringImpl contentType;
@@ -60,7 +60,7 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
 
     public MqttPublish(
             final @NotNull MqttTopicImpl topic, final @Nullable ByteBuffer payload, final @NotNull MqttQos qos,
-            final boolean isRetain, final long messageExpiryInterval,
+            final boolean retain, final long messageExpiryInterval,
             final @Nullable Mqtt5PayloadFormatIndicator payloadFormatIndicator,
             final @Nullable MqttUtf8StringImpl contentType, final @Nullable MqttTopicImpl responseTopic,
             final @Nullable ByteBuffer correlationData, final @NotNull MqttUserPropertiesImpl userProperties) {
@@ -69,7 +69,7 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
         this.topic = topic;
         this.payload = payload;
         this.qos = qos;
-        this.isRetain = isRetain;
+        this.retain = retain;
         this.messageExpiryInterval = messageExpiryInterval;
         this.payloadFormatIndicator = payloadFormatIndicator;
         this.contentType = contentType;
@@ -106,7 +106,7 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
 
     @Override
     public boolean isRetain() {
-        return isRetain;
+        return retain;
     }
 
     @Override
@@ -166,17 +166,33 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
     }
 
     public @NotNull MqttStatefulPublish createStateful(
-            final int packetIdentifier, final boolean isDup, final int topicAlias,
+            final int packetIdentifier, final boolean dup, final int topicAlias,
             final @NotNull ImmutableIntList subscriptionIdentifiers) {
 
-        return new MqttStatefulPublish(this, packetIdentifier, isDup, topicAlias, subscriptionIdentifiers);
+        return new MqttStatefulPublish(this, packetIdentifier, dup, topicAlias, subscriptionIdentifiers);
     }
 
     public @NotNull MqttStatefulPublish createStateful(
-            final int packetIdentifier, final boolean isDup, final @Nullable MqttTopicAliasMapping topicAliasMapping) {
+            final int packetIdentifier, final boolean dup, final @Nullable MqttTopicAliasMapping topicAliasMapping) {
 
         final int topicAlias =
                 (topicAliasMapping == null) ? DEFAULT_NO_TOPIC_ALIAS : topicAliasMapping.onPublish(topic);
-        return createStateful(packetIdentifier, isDup, topicAlias, DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
+        return createStateful(packetIdentifier, dup, topicAlias, DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
+    }
+
+    @Override
+    protected @NotNull String toAttributeString() {
+        return "topic=" + topic + ((payload == null) ? "" : ", payload=" + payload) + ", qos=" + qos + ", retain=" +
+                retain + ((messageExpiryInterval == NO_MESSAGE_EXPIRY) ? "" :
+                ", messageExpiryInterval=" + messageExpiryInterval) +
+                ((payloadFormatIndicator == null) ? "" : ", payloadFormatIndicator=" + payloadFormatIndicator) +
+                ((contentType == null) ? "" : ", contentType=" + contentType) +
+                ((responseTopic == null) ? "" : ", responseTopic=" + responseTopic) +
+                ((correlationData == null) ? "" : ", correlationData=" + correlationData) + super.toAttributeString();
+    }
+
+    @Override
+    public @NotNull String toString() {
+        return "MqttPublish{" + toAttributeString() + '}';
     }
 }

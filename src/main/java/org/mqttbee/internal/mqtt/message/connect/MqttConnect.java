@@ -124,4 +124,19 @@ public class MqttConnect extends MqttMessageWithUserProperties implements Mqtt5C
 
         return new MqttStatefulConnect(this, clientIdentifier, enhancedAuth);
     }
+
+    @Override
+    protected @NotNull String toAttributeString() {
+        return "keepAlive=" + keepAlive + ", cleanStart=" + cleanStart + ", sessionExpiryInterval=" +
+                sessionExpiryInterval +
+                ((restrictions == MqttConnectRestrictions.DEFAULT) ? "" : ", restrictions=" + restrictions) +
+                ((simpleAuth == null) ? "" : ", simpleAuth=" + simpleAuth) +
+                ((enhancedAuthMechanism == null) ? "" : ", enhancedAuthMechanism=" + enhancedAuthMechanism) +
+                ((willPublish == null) ? "" : ", willPublish=" + willPublish) + super.toAttributeString();
+    }
+
+    @Override
+    public @NotNull String toString() {
+        return "MqttConnect{" + toAttributeString() + '}';
+    }
 }

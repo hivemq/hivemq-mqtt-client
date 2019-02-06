@@ -49,4 +49,15 @@ public class MqttStatefulConnect extends MqttStatefulMessage<MqttConnect> {
     public @Nullable MqttEnhancedAuth getEnhancedAuth() {
         return enhancedAuth;
     }
+
+    @Override
+    protected @NotNull String toAttributeString() {
+        return super.toAttributeString() + ", clientIdentifier=" + clientIdentifier +
+                ((enhancedAuth == null) ? "" : ", enhancedAuth=" + enhancedAuth);
+    }
+
+    @Override
+    public @NotNull String toString() {
+        return "MqttStatefulConnect{" + toAttributeString() + '}';
+    }
 }

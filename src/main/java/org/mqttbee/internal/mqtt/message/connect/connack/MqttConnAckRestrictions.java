@@ -98,4 +98,17 @@ public class MqttConnAckRestrictions implements Mqtt5ConnAckRestrictions {
     public boolean areSubscriptionIdentifiersAvailable() {
         return subscriptionIdentifiersAvailable;
     }
+
+    private @NotNull String toAttributeString() {
+        return "receiveMaximum=" + receiveMaximum + ", maximumPacketSize=" + maximumPacketSize +
+                ", topicAliasMaximum=" + topicAliasMaximum + ", maximumQos=" + maximumQos + ", retainAvailable=" +
+                retainAvailable + ", wildcardSubscriptionAvailable=" + wildcardSubscriptionAvailable +
+                ", sharedSubscriptionAvailable=" + sharedSubscriptionAvailable + ", subscriptionIdentifiersAvailable=" +
+                subscriptionIdentifiersAvailable;
+    }
+
+    @Override
+    public @NotNull String toString() {
+        return "MqttConnAckRestrictions{" + toAttributeString() + '}';
+    }
 }

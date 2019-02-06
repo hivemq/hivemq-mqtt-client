@@ -44,7 +44,7 @@ public class MqttConnAck extends MqttMessageWithUserProperties.WithReason.WithCo
     public static final long SESSION_EXPIRY_INTERVAL_FROM_CONNECT = -1;
     public static final int KEEP_ALIVE_FROM_CONNECT = -1;
 
-    private final boolean isSessionPresent;
+    private final boolean sessionPresent;
     private final long sessionExpiryInterval;
     private final int serverKeepAlive;
     private final @Nullable MqttClientIdentifierImpl assignedClientIdentifier;
@@ -54,7 +54,7 @@ public class MqttConnAck extends MqttMessageWithUserProperties.WithReason.WithCo
     private final @Nullable MqttUtf8StringImpl serverReference;
 
     public MqttConnAck(
-            final @NotNull Mqtt5ConnAckReasonCode reasonCode, final boolean isSessionPresent,
+            final @NotNull Mqtt5ConnAckReasonCode reasonCode, final boolean sessionPresent,
             final long sessionExpiryInterval, final int serverKeepAlive,
             final @Nullable MqttClientIdentifierImpl assignedClientIdentifier,
             final @Nullable Mqtt5EnhancedAuth enhancedAuth, final @NotNull MqttConnAckRestrictions restrictions,
@@ -62,7 +62,7 @@ public class MqttConnAck extends MqttMessageWithUserProperties.WithReason.WithCo
             final @Nullable MqttUtf8StringImpl reasonString, final @NotNull MqttUserPropertiesImpl userProperties) {
 
         super(reasonCode, reasonString, userProperties);
-        this.isSessionPresent = isSessionPresent;
+        this.sessionPresent = sessionPresent;
         this.sessionExpiryInterval = sessionExpiryInterval;
         this.serverKeepAlive = serverKeepAlive;
         this.assignedClientIdentifier = assignedClientIdentifier;
@@ -74,7 +74,7 @@ public class MqttConnAck extends MqttMessageWithUserProperties.WithReason.WithCo
 
     @Override
     public boolean isSessionPresent() {
-        return isSessionPresent;
+        return sessionPresent;
     }
 
     @Override
@@ -127,5 +127,24 @@ public class MqttConnAck extends MqttMessageWithUserProperties.WithReason.WithCo
     @Override
     public @NotNull Optional<MqttUtf8String> getServerReference() {
         return Optional.ofNullable(serverReference);
+    }
+
+    @Override
+    protected @NotNull String toAttributeString() {
+        return "reasonCode=" + getReasonCode() + ", sessionPresent=" + sessionPresent +
+                ((sessionExpiryInterval == SESSION_EXPIRY_INTERVAL_FROM_CONNECT) ? "" :
+                        ", sessionExpiryInterval=" + sessionExpiryInterval) +
+                ((serverKeepAlive == SESSION_EXPIRY_INTERVAL_FROM_CONNECT) ? "" :
+                        ", serverKeepAlive=" + serverKeepAlive) +
+                ((assignedClientIdentifier == null) ? "" : ", assignedClientIdentifier=" + assignedClientIdentifier) +
+                ((enhancedAuth == null) ? "" : ", enhancedAuth=" + enhancedAuth) +
+                ((restrictions == MqttConnAckRestrictions.DEFAULT) ? "" : ", restrictions=" + restrictions) +
+                ((responseInformation == null) ? "" : ", responseInformation=" + responseInformation) +
+                ((serverReference == null) ? "" : ", serverReference=" + serverReference) + super.toAttributeString();
+    }
+
+    @Override
+    public @NotNull String toString() {
+        return "MqttConnAck{" + toAttributeString() + '}';
     }
 }

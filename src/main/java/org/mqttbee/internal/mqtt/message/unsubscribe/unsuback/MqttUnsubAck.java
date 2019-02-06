@@ -40,4 +40,14 @@ public class MqttUnsubAck extends MqttMessageWithUserProperties.WithReason.WithC
 
         super(packetIdentifier, reasonCodes, reasonString, userProperties);
     }
+
+    @Override
+    protected @NotNull String toAttributeString() {
+        return "reasonCodes=" + getReasonCodes() + super.toAttributeString();
+    }
+
+    @Override
+    public @NotNull String toString() {
+        return "MqttUnsubAck{" + toAttributeString() + "}";
+    }
 }
