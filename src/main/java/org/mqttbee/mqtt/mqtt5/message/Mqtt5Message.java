@@ -24,6 +24,7 @@ import org.mqttbee.annotations.DoNotImplement;
  * MQTT message according to the MQTT 5 specification.
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt5Message {

@@ -33,6 +33,7 @@ import java.util.Optional;
  * {@link org.mqttbee.mqtt.datatypes.MqttQos QoS} level).
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt5PublishResult {

@@ -28,6 +28,7 @@ import org.mqttbee.mqtt.mqtt5.message.publish.pubrel.Mqtt5PubRel;
  * Interface for interceptors of the QoS 2 control flow of incoming Publish messages.
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 public interface Mqtt5IncomingQos2Interceptor {
 

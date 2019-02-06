@@ -25,6 +25,7 @@ import org.mqttbee.internal.mqtt.MqttRxClientBuilderBase;
  * Common interface for MQTT clients.
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface MqttClient {

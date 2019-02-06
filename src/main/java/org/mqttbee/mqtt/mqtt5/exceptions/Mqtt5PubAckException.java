@@ -22,6 +22,7 @@ import org.mqttbee.mqtt.mqtt5.message.publish.puback.Mqtt5PubAck;
 
 /**
  * @author Silvio Giebl
+ * @since 1.0
  */
 public class Mqtt5PubAckException extends Mqtt5MessageException {
 

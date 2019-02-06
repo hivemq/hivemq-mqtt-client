@@ -25,6 +25,7 @@ import org.mqttbee.mqtt.MqttClient;
  * MQTT client according to the MQTT 3.1.1 specification.
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 public interface Mqtt3Client extends MqttClient {
 

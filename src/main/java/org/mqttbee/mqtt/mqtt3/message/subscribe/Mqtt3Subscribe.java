@@ -28,6 +28,9 @@ import java.util.List;
 
 /**
  * MQTT 3 Subscribe message. This message is translated from and to a MQTT 3 SUBSCRIBE packet.
+ *
+ * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt3Subscribe extends Mqtt3Message {

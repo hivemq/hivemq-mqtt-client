@@ -42,6 +42,7 @@ import java.util.concurrent.TimeUnit;
  * Blocking API of a {@link Mqtt3Client}.
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 public interface Mqtt3BlockingClient extends Mqtt3Client {
 

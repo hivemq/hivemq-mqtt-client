@@ -24,6 +24,9 @@ import org.mqttbee.mqtt.mqtt3.message.Mqtt3MessageType;
 
 /**
  * MQTT 3 PingReq message. This message is translated from and to a MQTT 3 PINGREQ packet.
+ *
+ * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt3PingReq extends Mqtt3Message {

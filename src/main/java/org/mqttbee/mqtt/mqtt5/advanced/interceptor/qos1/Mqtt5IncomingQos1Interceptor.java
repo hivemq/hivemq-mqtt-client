@@ -26,6 +26,7 @@ import org.mqttbee.mqtt.mqtt5.message.publish.puback.Mqtt5PubAckBuilder;
  * Interface for interceptors of the QoS 1 control flow for incoming Publish messages.
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 public interface Mqtt5IncomingQos1Interceptor {
 

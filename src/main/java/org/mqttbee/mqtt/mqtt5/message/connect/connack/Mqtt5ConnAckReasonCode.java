@@ -26,6 +26,7 @@ import org.mqttbee.mqtt.mqtt5.message.Mqtt5ReasonCode;
  * Reason Code of a {@link Mqtt5ConnAck MQTT 5 ConnAck message}.
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 public enum Mqtt5ConnAckReasonCode implements Mqtt5ReasonCode {
 

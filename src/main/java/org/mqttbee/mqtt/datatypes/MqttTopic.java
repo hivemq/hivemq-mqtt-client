@@ -36,6 +36,7 @@ import java.util.List;
  * </ul>
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface MqttTopic extends MqttUtf8String {

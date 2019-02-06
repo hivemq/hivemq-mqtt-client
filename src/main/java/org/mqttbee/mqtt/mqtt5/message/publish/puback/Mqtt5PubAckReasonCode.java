@@ -28,6 +28,7 @@ import java.util.EnumSet;
  * Reason Code of a {@link Mqtt5PubAck MQTT 5 PubAck message}.
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 public enum Mqtt5PubAckReasonCode implements Mqtt5ReasonCode {
 

@@ -24,6 +24,7 @@ import org.mqttbee.mqtt.datatypes.MqttClientIdentifier;
 
 /**
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {

@@ -27,6 +27,7 @@ import org.mqttbee.mqtt.datatypes.MqttTopicFilter;
  * Subscription in a {@link Mqtt3Subscribe MQTT 3 Subscribe message}.
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt3Subscription {

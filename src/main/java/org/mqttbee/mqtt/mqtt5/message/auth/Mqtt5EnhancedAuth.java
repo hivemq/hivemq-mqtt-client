@@ -28,6 +28,7 @@ import java.util.Optional;
  * Data for enhanced authentication and/or authorization.
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt5EnhancedAuth {

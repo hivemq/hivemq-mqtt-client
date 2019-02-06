@@ -30,6 +30,7 @@ import java.util.Optional;
  * MQTT 5 Auth message. This message is translated from and to a MQTT 5 AUTH packet.
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt5Auth extends Mqtt5Message, Mqtt5EnhancedAuth {

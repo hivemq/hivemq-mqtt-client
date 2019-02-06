@@ -23,6 +23,7 @@ import org.mqttbee.mqtt.MqttClientBuilderBase;
 
 /**
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt3ClientBuilder extends MqttClientBuilderBase<Mqtt3ClientBuilder> {

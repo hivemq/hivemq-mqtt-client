@@ -30,6 +30,7 @@ import java.util.Optional;
  * MQTT 5 PubRel message. This message is translated from and to a MQTT 5 PUBREL packet.
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt5PubRel extends Mqtt5Message {

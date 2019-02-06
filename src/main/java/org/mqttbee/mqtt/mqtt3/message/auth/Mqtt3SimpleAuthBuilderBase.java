@@ -25,6 +25,7 @@ import java.nio.ByteBuffer;
 
 /**
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt3SimpleAuthBuilderBase<C extends Mqtt3SimpleAuthBuilderBase.Complete<C>> {

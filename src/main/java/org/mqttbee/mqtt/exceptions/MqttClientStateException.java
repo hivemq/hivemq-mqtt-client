@@ -25,6 +25,7 @@ import org.mqttbee.internal.util.AsyncRuntimeException;
  * possible in its current state, e.g. a client can not publish if it is not connected.
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 public class MqttClientStateException extends AsyncRuntimeException {
 

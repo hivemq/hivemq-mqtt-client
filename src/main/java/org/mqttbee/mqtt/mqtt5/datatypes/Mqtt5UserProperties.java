@@ -30,6 +30,7 @@ import java.util.List;
  * Collection of {@link Mqtt5UserProperty User Properties}.
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt5UserProperties {

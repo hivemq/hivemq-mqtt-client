@@ -30,6 +30,7 @@ import java.util.Optional;
  * MQTT 5 PubComp message. This message is translated from and to a MQTT 5 PUBCOMP packet.
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt5PubComp extends Mqtt5Message {

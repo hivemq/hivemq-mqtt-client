@@ -26,6 +26,7 @@ import java.util.concurrent.Executor;
 
 /**
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface MqttClientExecutorConfigBuilderBase<B extends MqttClientExecutorConfigBuilderBase<B>> {

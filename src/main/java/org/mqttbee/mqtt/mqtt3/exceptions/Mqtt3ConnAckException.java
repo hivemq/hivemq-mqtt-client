@@ -23,6 +23,7 @@ import org.mqttbee.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck;
 
 /**
  * @author Silvio Giebl
+ * @since 1.0
  */
 public class Mqtt3ConnAckException extends Mqtt3MessageException {
 

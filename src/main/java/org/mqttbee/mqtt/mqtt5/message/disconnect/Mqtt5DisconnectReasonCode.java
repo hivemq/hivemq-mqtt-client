@@ -28,6 +28,7 @@ import java.util.EnumSet;
  * Reason Code of {@link Mqtt5Disconnect MQTT 5 Disconnect message}.
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 public enum Mqtt5DisconnectReasonCode implements Mqtt5ReasonCode {
 

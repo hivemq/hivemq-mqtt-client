@@ -22,6 +22,7 @@ import org.mqttbee.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 
 /**
  * @author Silvio Giebl
+ * @since 1.0
  */
 public class Mqtt5SubAckException extends Mqtt5MessageException {
 

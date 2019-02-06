@@ -25,6 +25,7 @@ import org.mqttbee.mqtt.mqtt5.advanced.interceptor.Mqtt5ClientInterceptorsBuilde
 
 /**
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt5ClientAdvancedConfigBuilderBase<B extends Mqtt5ClientAdvancedConfigBuilderBase<B>> {

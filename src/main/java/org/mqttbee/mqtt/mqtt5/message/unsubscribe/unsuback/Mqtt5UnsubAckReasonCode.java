@@ -26,6 +26,7 @@ import org.mqttbee.mqtt.mqtt5.message.Mqtt5ReasonCode;
  * Reason Code of a {@link Mqtt5UnsubAck MQTT 5 UnsubAck message}.
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 public enum Mqtt5UnsubAckReasonCode implements Mqtt5ReasonCode {
 

@@ -23,6 +23,10 @@ import org.mqttbee.mqtt.mqtt3.message.Mqtt3ReturnCode;
 
 /**
  * Return Code of a {@link Mqtt3ConnAck MQTT 3 ConnAck message}.
+ *
+ * @author Daniel Krüger
+ * @author Silvio Giebl
+ * @since 1.0
  */
 public enum Mqtt3ConnAckReturnCode implements Mqtt3ReturnCode {
 

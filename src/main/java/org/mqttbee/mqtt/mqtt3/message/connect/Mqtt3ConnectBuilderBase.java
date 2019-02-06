@@ -27,6 +27,7 @@ import org.mqttbee.mqtt.mqtt3.message.publish.Mqtt3WillPublishBuilder;
 
 /**
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt3ConnectBuilderBase<B extends Mqtt3ConnectBuilderBase<B>> {

@@ -35,6 +35,7 @@ import java.util.OptionalLong;
  * MQTT 5 Publish message. This message is translated from and to a MQTT 5 PUBLISH packet.
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt5Publish extends Mqtt5Message {

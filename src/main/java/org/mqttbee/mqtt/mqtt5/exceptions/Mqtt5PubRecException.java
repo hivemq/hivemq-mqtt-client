@@ -22,6 +22,7 @@ import org.mqttbee.mqtt.mqtt5.message.publish.pubrec.Mqtt5PubRec;
 
 /**
  * @author Silvio Giebl
+ * @since 1.0
  */
 public class Mqtt5PubRecException extends Mqtt5MessageException {
 

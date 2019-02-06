@@ -24,6 +24,7 @@ import org.mqttbee.mqtt.mqtt5.Mqtt5ClientBuilder;
 
 /**
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface MqttClientBuilder extends MqttClientBuilderBase<MqttClientBuilder> {

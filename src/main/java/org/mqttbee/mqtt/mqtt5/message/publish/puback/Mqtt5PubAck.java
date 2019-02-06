@@ -30,6 +30,7 @@ import java.util.Optional;
  * MQTT 5 PubAck message. This message is translated from and to a MQTT 5 PUBACK packet.
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt5PubAck extends Mqtt5Message {

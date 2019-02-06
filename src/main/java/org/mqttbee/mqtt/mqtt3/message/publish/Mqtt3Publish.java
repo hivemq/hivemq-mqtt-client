@@ -30,6 +30,10 @@ import java.util.Optional;
 
 /**
  * MQTT 3 Publish message. This message is translated from and to a MQTT 3 PUBLISH packet.
+ *
+ * @author Daniel Krüger
+ * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt3Publish extends Mqtt3Message {

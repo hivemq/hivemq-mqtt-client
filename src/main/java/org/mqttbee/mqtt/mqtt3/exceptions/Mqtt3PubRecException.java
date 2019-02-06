@@ -24,6 +24,7 @@ import org.mqttbee.mqtt.mqtt3.message.publish.pubrec.Mqtt3PubRec;
 
 /**
  * @author Silvio Giebl
+ * @since 1.0
  */
 public class Mqtt3PubRecException extends Mqtt3MessageException {
 

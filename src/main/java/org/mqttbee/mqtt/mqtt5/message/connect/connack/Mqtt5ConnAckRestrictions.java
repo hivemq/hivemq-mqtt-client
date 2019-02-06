@@ -25,6 +25,9 @@ import org.mqttbee.mqtt.datatypes.MqttQos;
 
 /**
  * Restrictions from the server in a {@link Mqtt5ConnAck MQTT 5 Connect message}.
+ *
+ * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt5ConnAckRestrictions {

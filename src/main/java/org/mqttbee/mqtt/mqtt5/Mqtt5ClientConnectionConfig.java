@@ -27,6 +27,7 @@ import java.util.Optional;
 
 /**
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt5ClientConnectionConfig extends MqttClientConnectionConfig {

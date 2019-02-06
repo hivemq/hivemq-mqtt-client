@@ -25,6 +25,7 @@ import org.mqttbee.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 
 /**
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt3UnsubscribeBuilderBase<C extends Mqtt3UnsubscribeBuilderBase<C>> {

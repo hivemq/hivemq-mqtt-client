@@ -27,6 +27,7 @@ import org.mqttbee.internal.mqtt.datatypes.MqttClientIdentifierImpl;
  * A Client Identifier has the same requirements as an {@link MqttUtf8String UTF-8 encoded string}.
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface MqttClientIdentifier extends MqttUtf8String {

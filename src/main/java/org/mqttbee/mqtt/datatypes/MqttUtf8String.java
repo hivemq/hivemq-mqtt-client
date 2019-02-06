@@ -45,6 +45,7 @@ import java.nio.ByteBuffer;
  * </ul>
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface MqttUtf8String extends Comparable<MqttUtf8String> {

@@ -31,6 +31,7 @@ import java.util.Optional;
  *
  * @author Christoph Schäbel
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface MqttClientSslConfig {

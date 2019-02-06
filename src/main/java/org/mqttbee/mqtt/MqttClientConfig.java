@@ -27,6 +27,7 @@ import java.util.Optional;
  * Configuration for a MQTT client.
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface MqttClientConfig {

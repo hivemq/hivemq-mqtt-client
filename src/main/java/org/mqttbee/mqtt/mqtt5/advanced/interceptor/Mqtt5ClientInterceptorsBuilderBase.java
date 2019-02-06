@@ -27,6 +27,7 @@ import org.mqttbee.mqtt.mqtt5.advanced.interceptor.qos2.Mqtt5OutgoingQos2Interce
 
 /**
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt5ClientInterceptorsBuilderBase<B extends Mqtt5ClientInterceptorsBuilderBase<B>> {

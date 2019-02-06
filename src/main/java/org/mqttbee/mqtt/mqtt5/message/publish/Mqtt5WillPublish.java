@@ -26,6 +26,7 @@ import org.mqttbee.internal.mqtt.message.publish.MqttPublishBuilder;
  * message}.
  *
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt5WillPublish extends Mqtt5Publish {

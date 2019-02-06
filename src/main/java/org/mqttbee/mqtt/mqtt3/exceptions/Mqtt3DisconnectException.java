@@ -24,6 +24,7 @@ import org.mqttbee.mqtt.mqtt3.message.disconnect.Mqtt3Disconnect;
 
 /**
  * @author Silvio Giebl
+ * @since 1.0
  */
 public class Mqtt3DisconnectException extends Mqtt3MessageException {
 

@@ -25,6 +25,9 @@ import org.mqttbee.internal.util.UnsignedDataTypes;
 
 /**
  * Restrictions from the client in a {@link Mqtt5Connect MQTT 5 Connect message}.
+ *
+ * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt5ConnectRestrictions {

@@ -22,6 +22,7 @@ import org.mqttbee.annotations.DoNotImplement;
 
 /**
  * @author Silvio Giebl
+ * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt5DisconnectBuilder extends Mqtt5DisconnectBuilderBase<Mqtt5DisconnectBuilder> {
