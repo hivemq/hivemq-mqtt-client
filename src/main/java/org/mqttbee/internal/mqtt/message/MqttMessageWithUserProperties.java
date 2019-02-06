@@ -21,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttUtf8StringImpl;
+import org.mqttbee.internal.util.StringUtil;
 import org.mqttbee.internal.util.collections.ImmutableList;
 import org.mqttbee.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.mqtt.mqtt5.message.Mqtt5ReasonCode;
@@ -44,7 +45,7 @@ public abstract class MqttMessageWithUserProperties implements MqttMessage.WithU
     }
 
     protected @NotNull String toAttributeString() {
-        return userProperties.asList().isEmpty() ? "" : ", userProperties=" + userProperties;
+        return userProperties.asList().isEmpty() ? "" : "userProperties=" + userProperties;
     }
 
     /**
@@ -71,7 +72,8 @@ public abstract class MqttMessageWithUserProperties implements MqttMessage.WithU
 
         @Override
         protected @NotNull String toAttributeString() {
-            return ((reasonString == null) ? "" : ", reasonString=" + reasonString) + super.toAttributeString();
+            return ((reasonString == null) ? super.toAttributeString() :
+                    "reasonString=" + reasonString + StringUtil.prepend(", ", super.toAttributeString()));
         }
 
         /**
@@ -122,7 +124,7 @@ public abstract class MqttMessageWithUserProperties implements MqttMessage.WithU
 
                 @Override
                 protected @NotNull String toAttributeString() {
-                    return ", packetIdentifier=" + packetIdentifier + super.toAttributeString();
+                    return "packetIdentifier=" + packetIdentifier + StringUtil.prepend(", ", super.toAttributeString());
                 }
             }
         }
@@ -160,7 +162,7 @@ public abstract class MqttMessageWithUserProperties implements MqttMessage.WithU
 
             @Override
             protected @NotNull String toAttributeString() {
-                return ", packetIdentifier=" + packetIdentifier + super.toAttributeString();
+                return "packetIdentifier=" + packetIdentifier + StringUtil.prepend(", ", super.toAttributeString());
             }
         }
     }

@@ -24,6 +24,7 @@ import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.internal.mqtt.message.MqttMessageWithUserProperties;
 import org.mqttbee.internal.util.ByteBufferUtil;
+import org.mqttbee.internal.util.StringUtil;
 import org.mqttbee.mqtt.mqtt5.message.auth.Mqtt5Auth;
 import org.mqttbee.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode;
 
@@ -67,7 +68,8 @@ public class MqttAuth extends MqttMessageWithUserProperties.WithReason.WithCode<
     @Override
     protected @NotNull String toAttributeString() {
         return "reasonCode= " + getReasonCode() + ", method=" + method +
-                ((data == null) ? "" : ", data=" + data.remaining() + "byte") + super.toAttributeString();
+                ((data == null) ? "" : ", data=" + data.remaining() + "byte") +
+                StringUtil.prepend(", ", super.toAttributeString());
     }
 
     @Override
