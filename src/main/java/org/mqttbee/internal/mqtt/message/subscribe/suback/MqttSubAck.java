@@ -40,4 +40,14 @@ public class MqttSubAck extends MqttMessageWithUserProperties.WithReason.WithCod
 
         super(packetIdentifier, reasonCodes, reasonString, userProperties);
     }
+
+    @Override
+    protected @NotNull String toAttributeString() {
+        return "reasonCodes=" + getReasonCodes() + super.toAttributeString();
+    }
+
+    @Override
+    public @NotNull String toString() {
+        return "MqttSubAck{" + toAttributeString() + "}";
+    }
 }

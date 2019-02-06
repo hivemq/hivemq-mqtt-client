@@ -47,33 +47,33 @@ public class Mqtt3PublishView implements Mqtt3Publish {
 
     public static @NotNull MqttPublish delegate(
             final @NotNull MqttTopicImpl topic, final @Nullable ByteBuffer payload, final @NotNull MqttQos qos,
-            final boolean isRetain) {
+            final boolean retain) {
 
-        return new MqttPublish(topic, payload, qos, isRetain, MqttPublish.NO_MESSAGE_EXPIRY, null, null, null, null,
+        return new MqttPublish(topic, payload, qos, retain, MqttPublish.NO_MESSAGE_EXPIRY, null, null, null, null,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES);
     }
 
     public static @NotNull MqttStatefulPublish statefulDelegate(
-            final @NotNull MqttPublish publish, final int packetIdentifier, final boolean isDup) {
+            final @NotNull MqttPublish publish, final int packetIdentifier, final boolean dup) {
 
-        return publish.createStateful(packetIdentifier, isDup, MqttStatefulPublish.DEFAULT_NO_TOPIC_ALIAS,
+        return publish.createStateful(packetIdentifier, dup, MqttStatefulPublish.DEFAULT_NO_TOPIC_ALIAS,
                 MqttStatefulPublish.DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS);
     }
 
     static @NotNull Mqtt3PublishView of(
             final @NotNull MqttTopicImpl topic, final @Nullable ByteBuffer payload, final @NotNull MqttQos qos,
-            final boolean isRetain) {
+            final boolean retain) {
 
-        return new Mqtt3PublishView(delegate(topic, payload, qos, isRetain));
+        return new Mqtt3PublishView(delegate(topic, payload, qos, retain));
     }
 
     static @NotNull Mqtt3PublishView willOf(
             final @NotNull MqttTopicImpl topic, final @Nullable ByteBuffer payload, final @NotNull MqttQos qos,
-            final boolean isRetain) {
+            final boolean retain) {
 
         return new Mqtt3PublishView(
-                new MqttWillPublish(topic, payload, qos, isRetain, MqttPublish.NO_MESSAGE_EXPIRY, null, null, null,
-                        null, MqttUserPropertiesImpl.NO_USER_PROPERTIES, Mqtt5WillPublish.DEFAULT_DELAY_INTERVAL));
+                new MqttWillPublish(topic, payload, qos, retain, MqttPublish.NO_MESSAGE_EXPIRY, null, null, null, null,
+                        MqttUserPropertiesImpl.NO_USER_PROPERTIES, Mqtt5WillPublish.DEFAULT_DELAY_INTERVAL));
     }
 
     public static @NotNull Mqtt3PublishView of(final @NotNull Mqtt5Publish publish) {
@@ -122,5 +122,16 @@ public class Mqtt3PublishView implements Mqtt3Publish {
     @Override
     public @NotNull Mqtt3PublishViewBuilder.Default extend() {
         return new Mqtt3PublishViewBuilder.Default(this);
+    }
+
+    private @NotNull String toAttributeString() {
+        return "topic=" + getTopic() +
+                ((delegate.getRawPayload() == null) ? "" : ", payload=" + delegate.getRawPayload()) + ", qos=" +
+                getQos() + ", retain=" + isRetain();
+    }
+
+    @Override
+    public @NotNull String toString() {
+        return "MqttPublish{" + toAttributeString() + '}';
     }
 }

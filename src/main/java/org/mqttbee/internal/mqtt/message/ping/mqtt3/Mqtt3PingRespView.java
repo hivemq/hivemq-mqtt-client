@@ -30,4 +30,9 @@ public class Mqtt3PingRespView implements Mqtt3PingResp {
     public static final @NotNull Mqtt3PingRespView INSTANCE = new Mqtt3PingRespView();
 
     private Mqtt3PingRespView() {}
+
+    @Override
+    public @NotNull String toString() {
+        return "MqttPingResp{}";
+    }
 }

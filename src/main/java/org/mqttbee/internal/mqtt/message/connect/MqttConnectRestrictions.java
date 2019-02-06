@@ -100,4 +100,17 @@ public class MqttConnectRestrictions implements Mqtt5ConnectRestrictions {
     public @NotNull MqttConnectRestrictionsBuilder.Default extend() {
         return new MqttConnectRestrictionsBuilder.Default(this);
     }
+
+    private @NotNull String toAttributeString() {
+        return "receiveMaximum=" + receiveMaximum + ", sendMaximum=" + sendMaximum + ", maximumPacketSize=" +
+                maximumPacketSize + ", sendMaximumPacketSize=" + sendMaximumPacketSize + ", topicAliasMaximum=" +
+                topicAliasMaximum + ", sendTopicAliasMaximum=" + sendTopicAliasMaximum +
+                ", requestProblemInformation=" + requestProblemInformation + ", requestResponseInformation=" +
+                requestResponseInformation;
+    }
+
+    @Override
+    public @NotNull String toString() {
+        return "MqttConnectRestrictions{" + toAttributeString() + '}';
+    }
 }

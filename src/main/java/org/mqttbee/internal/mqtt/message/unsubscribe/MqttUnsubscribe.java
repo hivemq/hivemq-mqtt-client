@@ -54,4 +54,14 @@ public class MqttUnsubscribe extends MqttMessageWithUserProperties implements Mq
     public @NotNull MqttStatefulUnsubscribe createStateful(final int packetIdentifier) {
         return new MqttStatefulUnsubscribe(this, packetIdentifier);
     }
+
+    @Override
+    protected @NotNull String toAttributeString() {
+        return "topicFilters=" + topicFilters + super.toAttributeString();
+    }
+
+    @Override
+    public @NotNull String toString() {
+        return "MqttUnsubscribe{" + toAttributeString() + '}';
+    }
 }

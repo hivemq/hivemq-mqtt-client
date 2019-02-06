@@ -30,4 +30,9 @@ public class Mqtt3PingReqView implements Mqtt3PingReq {
     public static final @NotNull Mqtt3PingReqView INSTANCE = new Mqtt3PingReqView();
 
     private Mqtt3PingReqView() {}
+
+    @Override
+    public @NotNull String toString() {
+        return "MqttPingReq{}";
+    }
 }

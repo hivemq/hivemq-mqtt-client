@@ -35,22 +35,22 @@ public class MqttStatefulPublish extends MqttStatefulMessage.WithId<MqttPublish>
     public static final int TOPIC_ALIAS_FLAG_NEW = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE + 1;
     public static final @NotNull ImmutableIntList DEFAULT_NO_SUBSCRIPTION_IDENTIFIERS = ImmutableIntList.of();
 
-    private final boolean isDup;
+    private final boolean dup;
     private final int topicAlias;
     private final @NotNull ImmutableIntList subscriptionIdentifiers;
 
     MqttStatefulPublish(
-            final @NotNull MqttPublish publish, final int packetIdentifier, final boolean isDup, final int topicAlias,
+            final @NotNull MqttPublish publish, final int packetIdentifier, final boolean dup, final int topicAlias,
             final @NotNull ImmutableIntList subscriptionIdentifiers) {
 
         super(publish, packetIdentifier);
-        this.isDup = isDup;
+        this.dup = dup;
         this.topicAlias = topicAlias;
         this.subscriptionIdentifiers = subscriptionIdentifiers;
     }
 
     public boolean isDup() {
-        return isDup;
+        return dup;
     }
 
     public int getTopicAlias() {
@@ -63,5 +63,16 @@ public class MqttStatefulPublish extends MqttStatefulMessage.WithId<MqttPublish>
 
     public @NotNull ImmutableIntList getSubscriptionIdentifiers() {
         return subscriptionIdentifiers;
+    }
+
+    @Override
+    protected @NotNull String toAttributeString() {
+        return super.toAttributeString() + ", dup=" + dup + ", topicAlias=" + topicAlias +
+                ", subscriptionIdentifiers=" + subscriptionIdentifiers;
+    }
+
+    @Override
+    public @NotNull String toString() {
+        return "MqttStatefulPublish{" + toAttributeString() + '}';
     }
 }

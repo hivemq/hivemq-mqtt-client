@@ -41,4 +41,9 @@ public class Mqtt3DisconnectView implements Mqtt3Disconnect {
     public @NotNull MqttDisconnect getDelegate() {
         return DELEGATE;
     }
+
+    @Override
+    public @NotNull String toString() {
+        return "MqttDisconnect{}";
+    }
 }

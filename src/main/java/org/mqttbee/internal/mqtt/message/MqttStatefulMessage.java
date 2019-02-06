@@ -53,6 +53,10 @@ public abstract class MqttStatefulMessage<M extends MqttMessageWithUserPropertie
         return statelessMessage;
     }
 
+    protected @NotNull String toAttributeString() {
+        return "stateless=" + statelessMessage;
+    }
+
     /**
      * Base class for MQTT messages with a packet identifier and other state-specific data.
      *
@@ -72,6 +76,11 @@ public abstract class MqttStatefulMessage<M extends MqttMessageWithUserPropertie
         @Override
         public int getPacketIdentifier() {
             return packetIdentifier;
+        }
+
+        @Override
+        protected @NotNull String toAttributeString() {
+            return super.toAttributeString() + ", packetIdentifier=" + packetIdentifier;
         }
     }
 }

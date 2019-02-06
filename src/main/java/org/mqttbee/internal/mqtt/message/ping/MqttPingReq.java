@@ -31,4 +31,9 @@ public class MqttPingReq implements MqttMessage, Mqtt5PingReq {
     public static final @NotNull MqttPingReq INSTANCE = new MqttPingReq();
 
     private MqttPingReq() {}
+
+    @Override
+    public @NotNull String toString() {
+        return "MqttPingReq{}";
+    }
 }

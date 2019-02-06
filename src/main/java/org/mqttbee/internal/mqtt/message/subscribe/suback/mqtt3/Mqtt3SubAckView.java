@@ -117,4 +117,13 @@ public class Mqtt3SubAckView implements Mqtt3SubAck {
     public @NotNull MqttSubAck getDelegate() {
         return delegate;
     }
+
+    private @NotNull String toAttributeString() {
+        return "returnCodes=" + getReturnCodes();
+    }
+
+    @Override
+    public @NotNull String toString() {
+        return "MqttSubAck{" + toAttributeString() + "}";
+    }
 }

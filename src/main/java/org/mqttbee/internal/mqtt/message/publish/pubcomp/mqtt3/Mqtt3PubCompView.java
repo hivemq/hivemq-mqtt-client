@@ -38,4 +38,9 @@ public class Mqtt3PubCompView implements Mqtt3PubComp {
     }
 
     private Mqtt3PubCompView() {}
+
+    @Override
+    public @NotNull String toString() {
+        return "MqttPubComp{}";
+    }
 }

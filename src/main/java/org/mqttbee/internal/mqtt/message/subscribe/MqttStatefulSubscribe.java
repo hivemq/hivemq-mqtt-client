@@ -41,4 +41,15 @@ public class MqttStatefulSubscribe extends MqttStatefulMessage.WithId<MqttSubscr
     public int getSubscriptionIdentifier() {
         return subscriptionIdentifier;
     }
+
+    @Override
+    protected @NotNull String toAttributeString() {
+        return ((subscriptionIdentifier == DEFAULT_NO_SUBSCRIPTION_IDENTIFIER) ? "" :
+                "subscriptionIdentifier=" + subscriptionIdentifier) + super.toAttributeString();
+    }
+
+    @Override
+    public @NotNull String toString() {
+        return "MqttStatefulSubscribe{" + toAttributeString() + '}';
+    }
 }

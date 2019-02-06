@@ -64,4 +64,14 @@ public class MqttWillPublish extends MqttPublish implements Mqtt5WillPublish {
     public @NotNull MqttPublishBuilder.WillDefault extendAsWill() {
         return new MqttPublishBuilder.WillDefault(this);
     }
+
+    @Override
+    protected @NotNull String toAttributeString() {
+        return super.toAttributeString() + ", delayInterval=" + delayInterval;
+    }
+
+    @Override
+    public @NotNull String toString() {
+        return "MqttWillPublish{" + toAttributeString() + '}';
+    }
 }

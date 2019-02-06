@@ -39,9 +39,9 @@ public class Mqtt3ConnAckView implements Mqtt3ConnAck {
     public static final @NotNull Function<Mqtt5ConnAck, Mqtt3ConnAck> MAPPER = Mqtt3ConnAckView::of;
 
     public static @NotNull MqttConnAck delegate(
-            final @NotNull Mqtt3ConnAckReturnCode returnCode, final boolean isSessionPresent) {
+            final @NotNull Mqtt3ConnAckReturnCode returnCode, final boolean sessionPresent) {
 
-        return new MqttConnAck(delegateReasonCode(returnCode), isSessionPresent,
+        return new MqttConnAck(delegateReasonCode(returnCode), sessionPresent,
                 MqttConnAck.SESSION_EXPIRY_INTERVAL_FROM_CONNECT, MqttConnAck.KEEP_ALIVE_FROM_CONNECT, null, null,
                 MqttConnAckRestrictions.DEFAULT, null, null, null, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
     }
@@ -112,5 +112,14 @@ public class Mqtt3ConnAckView implements Mqtt3ConnAck {
 
     public @NotNull MqttConnAck getDelegate() {
         return delegate;
+    }
+
+    private @NotNull String toAttributeString() {
+        return "returnCode=" + getReturnCode() + ", sessionPresent=" + isSessionPresent();
+    }
+
+    @Override
+    public @NotNull String toString() {
+        return "MqttConnAck{" + toAttributeString() + '}';
     }
 }

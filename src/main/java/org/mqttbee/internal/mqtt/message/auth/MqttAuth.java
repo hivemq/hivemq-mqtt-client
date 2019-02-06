@@ -63,4 +63,15 @@ public class MqttAuth extends MqttMessageWithUserProperties.WithReason.WithCode<
     public @Nullable ByteBuffer getRawData() {
         return data;
     }
+
+    @Override
+    protected @NotNull String toAttributeString() {
+        return "reasonCode= " + getReasonCode() + ", method=" + method +
+                ((data == null) ? "" : ", data=" + data.remaining() + "byte") + super.toAttributeString();
+    }
+
+    @Override
+    public @NotNull String toString() {
+        return "MqttAuth{" + toAttributeString() + '}';
+    }
 }

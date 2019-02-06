@@ -54,4 +54,13 @@ public class MqttEnhancedAuth implements Mqtt5EnhancedAuth {
     public @Nullable ByteBuffer getRawData() {
         return data;
     }
+
+    private @NotNull String toAttributeString() {
+        return "method=" + method + ((data == null) ? "" : ", data=" + data.remaining() + "byte");
+    }
+
+    @Override
+    public @NotNull String toString() {
+        return "MqttEnhancedAuth{" + toAttributeString() + '}';
+    }
 }

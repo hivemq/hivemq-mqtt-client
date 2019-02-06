@@ -126,4 +126,9 @@ public class MqttUserPropertyImpl implements Mqtt5UserProperty {
         final int nameComparison = name.compareTo(that.getName());
         return (nameComparison != 0) ? nameComparison : value.compareTo(that.getValue());
     }
+
+    @Override
+    public @NotNull String toString() {
+        return "(" + name + ", " + value + ")";
+    }
 }

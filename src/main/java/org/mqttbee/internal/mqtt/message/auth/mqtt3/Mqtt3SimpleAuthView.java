@@ -73,4 +73,9 @@ public class Mqtt3SimpleAuthView implements Mqtt3SimpleAuth {
     public @NotNull MqttSimpleAuth getDelegate() {
         return delegate;
     }
+
+    @Override
+    public @NotNull String toString() {
+        return delegate.toString();
+    }
 }

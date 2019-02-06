@@ -53,4 +53,14 @@ public class MqttSubscribe extends MqttMessageWithUserProperties implements Mqtt
     public @NotNull MqttSubscribeBuilder.Default extend() {
         return new MqttSubscribeBuilder.Default(this);
     }
+
+    @Override
+    protected @NotNull String toAttributeString() {
+        return "subscriptions=" + subscriptions + super.toAttributeString();
+    }
+
+    @Override
+    public @NotNull String toString() {
+        return "MqttSubscribe{" + toAttributeString() + '}';
+    }
 }

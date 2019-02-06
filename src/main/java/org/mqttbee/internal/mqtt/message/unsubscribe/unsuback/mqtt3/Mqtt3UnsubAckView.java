@@ -38,4 +38,9 @@ public class Mqtt3UnsubAckView implements Mqtt3UnsubAck {
         return new MqttUnsubAck(
                 packetIdentifier, REASON_CODES_ALL_SUCCESS, null, MqttUserPropertiesImpl.NO_USER_PROPERTIES);
     }
+
+    @Override
+    public @NotNull String toString() {
+        return "MqttUnsubAck{}";
+    }
 }
