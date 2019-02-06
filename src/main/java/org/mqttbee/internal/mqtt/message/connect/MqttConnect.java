@@ -26,6 +26,7 @@ import org.mqttbee.internal.mqtt.message.MqttMessageWithUserProperties;
 import org.mqttbee.internal.mqtt.message.auth.MqttEnhancedAuth;
 import org.mqttbee.internal.mqtt.message.auth.MqttSimpleAuth;
 import org.mqttbee.internal.mqtt.message.publish.MqttWillPublish;
+import org.mqttbee.internal.util.StringUtil;
 import org.mqttbee.mqtt.mqtt5.auth.Mqtt5EnhancedAuthMechanism;
 import org.mqttbee.mqtt.mqtt5.message.auth.Mqtt5SimpleAuth;
 import org.mqttbee.mqtt.mqtt5.message.connect.Mqtt5Connect;
@@ -132,7 +133,8 @@ public class MqttConnect extends MqttMessageWithUserProperties implements Mqtt5C
                 ((restrictions == MqttConnectRestrictions.DEFAULT) ? "" : ", restrictions=" + restrictions) +
                 ((simpleAuth == null) ? "" : ", simpleAuth=" + simpleAuth) +
                 ((enhancedAuthMechanism == null) ? "" : ", enhancedAuthMechanism=" + enhancedAuthMechanism) +
-                ((willPublish == null) ? "" : ", willPublish=" + willPublish) + super.toAttributeString();
+                ((willPublish == null) ? "" : ", willPublish=" + willPublish) +
+                StringUtil.prepend(", ", super.toAttributeString());
     }
 
     @Override

@@ -23,6 +23,7 @@ import org.mqttbee.annotations.Immutable;
 import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.internal.mqtt.message.MqttMessageWithUserProperties;
+import org.mqttbee.internal.util.StringUtil;
 import org.mqttbee.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.mqttbee.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
@@ -83,7 +84,8 @@ public class MqttDisconnect extends MqttMessageWithUserProperties.WithReason.Wit
     protected @NotNull String toAttributeString() {
         return "reasonCode=" + getReasonCode() + ((sessionExpiryInterval == SESSION_EXPIRY_INTERVAL_FROM_CONNECT) ? "" :
                 ", sessionExpiryInterval=" + sessionExpiryInterval) +
-                ((serverReference == null) ? "" : ", serverReference=" + serverReference) + super.toAttributeString();
+                ((serverReference == null) ? "" : ", serverReference=" + serverReference) +
+                StringUtil.prepend(", ", super.toAttributeString());
     }
 
     @Override

@@ -21,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.Immutable;
 import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.internal.mqtt.message.MqttMessageWithUserProperties;
+import org.mqttbee.internal.util.StringUtil;
 import org.mqttbee.internal.util.collections.ImmutableList;
 import org.mqttbee.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
 
@@ -56,7 +57,7 @@ public class MqttSubscribe extends MqttMessageWithUserProperties implements Mqtt
 
     @Override
     protected @NotNull String toAttributeString() {
-        return "subscriptions=" + subscriptions + super.toAttributeString();
+        return "subscriptions=" + subscriptions + StringUtil.prepend(", ", super.toAttributeString());
     }
 
     @Override

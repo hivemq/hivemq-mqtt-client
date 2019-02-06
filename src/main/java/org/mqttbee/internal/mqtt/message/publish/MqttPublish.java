@@ -26,6 +26,7 @@ import org.mqttbee.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.internal.mqtt.handler.publish.outgoing.MqttTopicAliasMapping;
 import org.mqttbee.internal.mqtt.message.MqttMessageWithUserProperties;
 import org.mqttbee.internal.util.ByteBufferUtil;
+import org.mqttbee.internal.util.StringUtil;
 import org.mqttbee.internal.util.collections.ImmutableIntList;
 import org.mqttbee.mqtt.datatypes.MqttQos;
 import org.mqttbee.mqtt.datatypes.MqttTopic;
@@ -188,7 +189,8 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
                 ((payloadFormatIndicator == null) ? "" : ", payloadFormatIndicator=" + payloadFormatIndicator) +
                 ((contentType == null) ? "" : ", contentType=" + contentType) +
                 ((responseTopic == null) ? "" : ", responseTopic=" + responseTopic) +
-                ((correlationData == null) ? "" : ", correlationData=" + correlationData) + super.toAttributeString();
+                ((correlationData == null) ? "" : ", correlationData=" + correlationData) +
+                StringUtil.prepend(", ", super.toAttributeString());
     }
 
     @Override

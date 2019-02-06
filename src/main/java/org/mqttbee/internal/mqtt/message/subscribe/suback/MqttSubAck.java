@@ -23,6 +23,7 @@ import org.mqttbee.annotations.Immutable;
 import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.internal.mqtt.message.MqttMessageWithUserProperties;
+import org.mqttbee.internal.util.StringUtil;
 import org.mqttbee.internal.util.collections.ImmutableList;
 import org.mqttbee.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.mqttbee.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAckReasonCode;
@@ -43,7 +44,7 @@ public class MqttSubAck extends MqttMessageWithUserProperties.WithReason.WithCod
 
     @Override
     protected @NotNull String toAttributeString() {
-        return "reasonCodes=" + getReasonCodes() + super.toAttributeString();
+        return "reasonCodes=" + getReasonCodes() + StringUtil.prepend(", ", super.toAttributeString());
     }
 
     @Override

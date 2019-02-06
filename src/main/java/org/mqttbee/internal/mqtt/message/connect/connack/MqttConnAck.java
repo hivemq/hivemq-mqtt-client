@@ -24,6 +24,7 @@ import org.mqttbee.internal.mqtt.datatypes.MqttClientIdentifierImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import org.mqttbee.internal.mqtt.message.MqttMessageWithUserProperties;
+import org.mqttbee.internal.util.StringUtil;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifier;
 import org.mqttbee.mqtt.datatypes.MqttUtf8String;
 import org.mqttbee.mqtt.mqtt5.message.auth.Mqtt5EnhancedAuth;
@@ -140,7 +141,8 @@ public class MqttConnAck extends MqttMessageWithUserProperties.WithReason.WithCo
                 ((enhancedAuth == null) ? "" : ", enhancedAuth=" + enhancedAuth) +
                 ((restrictions == MqttConnAckRestrictions.DEFAULT) ? "" : ", restrictions=" + restrictions) +
                 ((responseInformation == null) ? "" : ", responseInformation=" + responseInformation) +
-                ((serverReference == null) ? "" : ", serverReference=" + serverReference) + super.toAttributeString();
+                ((serverReference == null) ? "" : ", serverReference=" + serverReference) +
+                StringUtil.prepend(", ", super.toAttributeString());
     }
 
     @Override
