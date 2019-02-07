@@ -21,7 +21,7 @@ import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.internal.mqtt.MqttWebSocketConfigImplBuilder;
 
 /**
- * Configuration for the websocket transport to use by {@link MqttClient MQTT clients}.
+ * Configuration for the WebSocket transport to use by {@link MqttClient MQTT clients}.
  *
  * @author Christian Hoff
  * @author Silvio Giebl
@@ -34,11 +34,22 @@ public interface MqttWebSocketConfig {
     @NotNull String DEFAULT_MQTT_SUBPROTOCOL = "mqtt";
     // https://www.iana.org/assignments/websocket/websocket.xml#subprotocol-name
 
+    /**
+     * Creates a builder for a WebSocket configuration.
+     *
+     * @return the created builder for a WebSocket configuration.
+     */
     static @NotNull MqttWebSocketConfigBuilder builder() {
         return new MqttWebSocketConfigImplBuilder.Default();
     }
 
+    /**
+     * @return the WebSocket server path.
+     */
     @NotNull String getServerPath();
 
+    /**
+     * @return the WebSocket subprotocol.
+     */
     @NotNull String getSubprotocol();
 }

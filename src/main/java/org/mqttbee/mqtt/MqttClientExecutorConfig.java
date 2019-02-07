@@ -38,13 +38,27 @@ public interface MqttClientExecutorConfig {
 
     @NotNull Scheduler DEFAULT_APPLICATION_SCHEDULER = Schedulers.computation();
 
+    /**
+     * Creates a builder for a executor configuration.
+     *
+     * @return the created builder for a executor configuration.
+     */
     static @NotNull MqttClientExecutorConfigBuilder builder() {
         return new MqttClientExecutorConfigImplBuilder.Default();
     }
 
+    /**
+     * @return the optional user defined executor for Netty (network communication framework).
+     */
     @NotNull Optional<Executor> getNettyExecutor();
 
+    /**
+     * @return the optional user defined amount of threads Netty (network communication framework) will use.
+     */
     @NotNull OptionalInt getNettyThreads();
 
+    /**
+     * @return the {@link Scheduler} used for executing application specific code, such as callbacks.
+     */
     @NotNull Scheduler getApplicationScheduler();
 }

@@ -38,12 +38,14 @@ public interface MqttClientSslConfigBuilderBase<B extends MqttClientSslConfigBui
     @NotNull B trustManagerFactory(@Nullable TrustManagerFactory trustManagerFactory);
 
     /**
-     * @param cipherSuites if <code>null</code>, netty's default cipher suites will be used.
+     * @param cipherSuites if <code>null</code>, the default cipher suites of Netty (network communication framework)
+     *                     will be used.
      */
     @NotNull B cipherSuites(@Nullable List<@NotNull String> cipherSuites);
 
     /**
-     * @param protocols if <code>null</code>, netty's default protocols will be used.
+     * @param protocols if <code>null</code>, the default protocols of Netty (network communication framework) will be
+     *                  used.
      */
     @NotNull B protocols(@Nullable List<@NotNull String> protocols);
 
