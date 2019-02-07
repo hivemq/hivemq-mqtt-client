@@ -24,19 +24,38 @@ import org.mqttbee.internal.mqtt.advanced.MqttClientAdvancedConfigBuilder;
 import org.mqttbee.mqtt.mqtt5.advanced.interceptor.Mqtt5ClientInterceptors;
 
 /**
+ * Advanced configuration of a {@link org.mqttbee.mqtt.mqtt5.Mqtt5Client Mqtt5Client}.
+ *
  * @author Silvio Giebl
  * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt5ClientAdvancedConfig {
 
+    /**
+     * Creates a builder for an advanced configuration.
+     *
+     * @return the created builder for an advanced configuration.
+     */
     static @NotNull Mqtt5ClientAdvancedConfigBuilder builder() {
         return new MqttClientAdvancedConfigBuilder.Default();
     }
 
+    /**
+     * @return whether server re-authentication is allowed.
+     */
     boolean isAllowServerReAuth();
 
+    /**
+     * Returns whether the payload format is validated if {@link org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5Publish#getPayloadFormatIndicator
+     * Mqtt5Publish#getPayloadFormatIndicator()} is present.
+     *
+     * @return whether the payload format is validated.
+     */
     boolean isValidatePayloadFormat();
 
+    /**
+     * @return the optional interceptors of messages.
+     */
     @Nullable Mqtt5ClientInterceptors getInterceptors();
 }

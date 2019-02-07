@@ -27,12 +27,19 @@ import org.mqttbee.mqtt.mqtt5.advanced.interceptor.qos2.Mqtt5IncomingQos2Interce
 import org.mqttbee.mqtt.mqtt5.advanced.interceptor.qos2.Mqtt5OutgoingQos2Interceptor;
 
 /**
+ * Collection of Interceptors of MQTT messages received or sent by a {@link org.mqttbee.mqtt.mqtt5.Mqtt5Client}.
+ *
  * @author Silvio Giebl
  * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt5ClientInterceptors {
 
+    /**
+     * Creates a builder for a collection of interceptors.
+     *
+     * @return the created builder for a collection of interceptors.
+     */
     static @NotNull Mqtt5ClientInterceptorsBuilder builder() {
         return new MqttClientInterceptorsBuilder.Default();
     }
