@@ -5,9 +5,6 @@
 MQTT 5.0 and 3.1.1 compatible and feature-rich high-performance Java client library with different API flavours and 
 backpressure support.
 
-# Status
-IMPORTANT: PRE RELEASE STATUS, DO NOT USE IN PRODUCTION YET!
-
 # Features
 
 ## Available
@@ -16,20 +13,24 @@ IMPORTANT: PRE RELEASE STATUS, DO NOT USE IN PRODUCTION YET!
    - Reactive, Async and Blocking
    - Flexible switching
    - Consistent and clearly separated
- - Backpressure support for QoS 1 and 2
+ - Backpressure support
+   - QoS 1 and 2
+   - QoS 0 (dropping incoming messages if necessary)
  - SSL/TLS
  - WebSocket
  - Automatic and configurable thread management
  - MQTT 5 specific:
-   - Pluggable enhanced auth support
-   - Additional to MQTT specification: server-triggered reauth
+   - Pluggable Enhanced Auth support
+     - Additional to MQTT specification: server-triggered reauth
+   - Automatic Topic Alias mapping
    - Interceptors for QoS flows
 
 ## Done soon
  - Automatic reconnect handling and message redelivery
- - Backpressure support for QoS 0
 
 # How to use
+
+Java 8+ is required.
 
 ## Dependency
 
@@ -39,7 +40,7 @@ Every time a PR is merged into the `develop` branch, a new snapshot is published
 A snapshot can be included as a normal dependency if the snapshot repository is added to the build file.
 
 #### Gradle
-```
+```groovy
 repositories {
     jcenter()
     mavenCentral()
@@ -49,6 +50,32 @@ repositories {
 dependencies {
     compile(group: 'org.mqttbee', name: 'mqtt-bee', version: '1.0.0-SNAPSHOT')
 }
+```
+
+#### Maven
+If you use Maven, you have to set the compiler version to `1.8` or higher.
+```xml
+<project>
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+    
+    <repositories>
+        <repository>
+            <id>oss.jfrog.org</id>
+            <url>https://oss.jfrog.org/artifactory/oss-snapshot-local</url>
+        </repository>
+    </repositories>
+    
+    <dependencies>
+        <dependency>
+            <groupId>org.mqttbee</groupId>
+            <artifactId>mqtt-bee</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+</project>
 ```
 
 ## General principles
@@ -63,7 +90,7 @@ dependencies {
 
 Base classes: `Mqtt3Client`, `Mqtt5Client`
 
-``` Java
+```Java
 Mqtt5Client client = MqttClient.builder()
         .identifier(UUID.randomUUID().toString())
         .serverHost("broker.hivemq.com")
@@ -72,7 +99,7 @@ Mqtt5Client client = MqttClient.builder()
 Mqtt3Client client = MqttClient.builder()...useMqttVersion3().build();
 ```
 Or if the version is known upfront:
-``` Java
+```Java
 Mqtt5Client client = Mqtt5Client.builder()...build();
 Mqtt3Client client = Mqtt3Client.builder()...build();
 ```
@@ -91,30 +118,30 @@ At any time it is possible to switch the API style.
 
 #### Connect
 
-``` Java
+```Java
 client.connect();
 ```
-Or with customized properties of the CONNECT message:
-``` Java
+Or with customized properties of the Connect message:
+```Java
 client.connectWith().keepAlice(10).send();
 ```
-Or with pre-built CONNECT message:
-``` Java
+Or with pre-built Connect message:
+```Java
 Mqtt5Connect connectMessage = Mqtt5Connect.builder().keepAlice(10).build();
 client.connect(connectMessage);
 ```
 
 #### Publish
 
-``` Java
+```Java
 client.publishWith()
         .topic("test/topic")
         .qos(MqttQos.AT_LEAST_ONCE)
         .payload("payload".getBytes())
         .send();
 ```
-Or with pre-built PUBLISH message:
-``` Java
+Or with pre-built Publish message:
+```Java
 Mqtt5Publish publishMessage = Mqtt5Publish.builder()
         .topic("test/topic")
         .qos(MqttQos.AT_LEAST_ONCE)
@@ -125,11 +152,11 @@ client.publish(publishMessage);
 
 #### Subscribe
 
-``` Java
+```Java
 client.subscribeWith().topicFilter("test/topic").qos(MqttQos.EXACTLY_ONCE).send();
 ```
-Or with pre-built SUBSCRIBE message:
-``` Java
+Or with pre-built Subscribe message:
+```Java
 Mqtt5Subscribe subscribeMessage = Mqtt5Subscribe.builder()
         .topicFilter("test/topic")
         .qos(MqttQos.EXACTLY_ONCE)
@@ -139,19 +166,19 @@ client.subscribe(subscribeMessage);
 
 #### Unsubscribe
 
-``` Java
+```Java
 client.unsubscribeWith().topicFilter("test/topic").send();
 ```
-Or with pre-built UNSUBSCRIBE message:
-``` Java
+Or with pre-built Unsubscribe message:
+```Java
 Mqtt5Unsubscribe unsubscribeMessage = Mqtt5Unsubscribe.builder().topicFilter("test/topic").build();
 client.unsubscribe(unsubscribeMessage);
 ```
 
 #### Consume messages
 
-``` Java
-try (Mqtt5BlockingClient.Mqtt5Publishes publishes = client.publishes(MqttGlobalPublishFilter.ALL_PUBLISHES)) {
+```Java
+try (Mqtt5BlockingClient.Mqtt5Publishes publishes = client.publishes(MqttGlobalPublishFilter.ALL)) {
     Mqtt5Publish publishMessage = publishes.receive();
     // or with timeout
     Optional<Mqtt5Publish> publishMessage = publishes.receive(10, TimeUnit.SECONDS);
@@ -165,22 +192,22 @@ It can be called before `connect` to receive messages of a previous session.
 
 #### Disconnect
 
-``` Java
+```Java
 client.disconnect();
 ```
 Or with customized properties of the DISCONNECT message (only MQTT 5):
-``` Java
+```Java
 client.disconnectWith().reasonString("test").send();
 ```
-Or with pre-built DISCONNECT message (only MQTT 5):
-``` Java
+Or with pre-built Disconnect message (only MQTT 5):
+```Java
 Mqtt5Disconnect disconnectMessage = Mqtt5Disconnect.builder().disconnectWith().reasonString("test").build();
-client.disconnect();
+client.disconnect(disconnectMessage);
 ```
 
 #### Reauth (only MQTT 5)
 
-``` Java
+```Java
 client.reauth();
 ```
 
@@ -191,18 +218,18 @@ client.reauth();
 
 #### Connect
 
-Methods calls are analog to the Blocking API but return `CompletableFuture`.
+Method calls are analog to the Blocking API but return `CompletableFuture`.
 
 #### Publish
 
-Methods calls are analog to the Blocking API but return `CompletableFuture`.
+Method calls are analog to the Blocking API but return `CompletableFuture`.
 
 #### Subscribe
 
-Methods calls are analog to the Blocking API but return `CompletableFuture`.
+Method calls are analog to the Blocking API but return `CompletableFuture`.
 
 Additionally messages can be consumed per subscribe:
-``` Java
+```Java
 client.subscribeWith()
         .topicFilter("test/topic")
         .qos(MqttQos.EXACTLY_ONCE)
@@ -210,8 +237,8 @@ client.subscribeWith()
         .executor(executor) // optional
         .send();
 ```
-Or with pre-built SUBSCRIBE message:
-``` Java
+Or with pre-built Subscribe message:
+```Java
 Mqtt5Subscribe subscribeMessage = Mqtt5Subscribe.builder()
         .topicFilter("test/topic")
         .qos(MqttQos.EXACTLY_ONCE)
@@ -222,18 +249,18 @@ client.subscribe(subscribeMessage, System.out::println, executor);
 
 #### Unsubscribe
 
-Methods calls are analog to the Blocking API but return `CompletableFuture`.
+Method calls are analog to the Blocking API but return `CompletableFuture`.
 
 #### Consume messages
 
-Messages can either be consumed per subscribe (described above) or globally:
+Messages can either be consumed per Subscribe (described above) or globally:
 
-``` Java
-client.publishes(MqttGlobalPublishFilter.ALL_PUBLISHES, System.out::println);
+```Java
+client.publishes(MqttGlobalPublishFilter.ALL, System.out::println);
 ```
 Or with executing the callback on a specified executor:
-``` Java
-client.publishes(MqttGlobalPublishFilter.ALL_PUBLISHES, System.out::println, executor);
+```Java
+client.publishes(MqttGlobalPublishFilter.ALL, System.out::println, executor);
 ```
 
 `publishes` must be called before `subscribe` to ensure no message is lost.
@@ -241,11 +268,11 @@ It can be called before `connect` to receive messages of a previous session.
 
 #### Disconnect
 
-Methods calls are analog to the Blocking API but return `CompletableFuture`.
+Method calls are analog to the Blocking API but return `CompletableFuture`.
 
 #### Reauth (only MQTT 5)
 
-Methods calls are analog to the Blocking API but return `CompletableFuture`.
+Method calls are analog to the Blocking API but return `CompletableFuture`.
 
 ### Reactive API
 
@@ -343,10 +370,6 @@ final Flowable<Mqtt3PublishResult> publishScenario = client.publish(messagesToPu
 
 connectScenario.toCompletable().andThen(publishScenario).blockingSubscribe();
 ```
-
-# How to build
-
-JDK 8+ is required.
 
 # How to contribute
 
