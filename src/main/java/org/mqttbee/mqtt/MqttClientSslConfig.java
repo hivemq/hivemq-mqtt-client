@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Configuration for the tls transport to use by {@link MqttClient MQTT clients}.
+ * Configuration for a secure transport to use by {@link MqttClient MQTT clients}.
  *
  * @author Christoph Schäbel
  * @author Silvio Giebl
@@ -38,17 +38,43 @@ public interface MqttClientSslConfig {
 
     long DEFAULT_HANDSHAKE_TIMEOUT_MS = 10_000;
 
+    /**
+     * Creates a builder for a secure transport configuration.
+     *
+     * @return the created builder for a secure transport configuration.
+     */
     static @NotNull MqttClientSslConfigBuilder builder() {
         return new MqttClientSslConfigImplBuilder.Default();
     }
 
+    /**
+     * @return the optional user defined {@link KeyManagerFactory}.
+     */
     @NotNull Optional<KeyManagerFactory> getKeyManagerFactory();
 
+    /**
+     * @return the optional user defined {@link TrustManagerFactory}.
+     */
     @NotNull Optional<TrustManagerFactory> getTrustManagerFactory();
 
+    /**
+     * The optional user defined cipher suites. If absent, the default cipher suites of Netty (network communication
+     * framework) will be used.
+     *
+     * @return the optional user defined cipher suites.
+     */
     @NotNull Optional<@Immutable List<@NotNull String>> getCipherSuites();
 
+    /**
+     * The optional user defined protocols. If absent, the default protocols of Netty (network communication framework)
+     * will be used.
+     *
+     * @return the optional user defined protocols.
+     */
     @NotNull Optional<@Immutable List<@NotNull String>> getProtocols();
 
+    /**
+     * @return the handshake timeout in milliseconds.
+     */
     long getHandshakeTimeoutMs();
 }
