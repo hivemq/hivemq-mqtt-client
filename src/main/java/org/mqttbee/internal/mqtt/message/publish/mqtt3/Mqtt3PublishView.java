@@ -125,9 +125,9 @@ public class Mqtt3PublishView implements Mqtt3Publish {
     }
 
     private @NotNull String toAttributeString() {
-        return "topic=" + getTopic() +
-                ((delegate.getRawPayload() == null) ? "" : ", payload=" + delegate.getRawPayload()) + ", qos=" +
-                getQos() + ", retain=" + isRetain();
+        return "topic=" + getTopic() + ((delegate.getRawPayload() == null) ? "" :
+                ", payload=" + delegate.getRawPayload().remaining() + "byte") + ", qos=" + getQos() + ", retain=" +
+                isRetain();
     }
 
     @Override

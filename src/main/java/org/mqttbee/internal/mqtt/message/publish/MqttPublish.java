@@ -183,8 +183,8 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
 
     @Override
     protected @NotNull String toAttributeString() {
-        return "topic=" + topic + ((payload == null) ? "" : ", payload=" + payload) + ", qos=" + qos + ", retain=" +
-                retain + ((messageExpiryInterval == NO_MESSAGE_EXPIRY) ? "" :
+        return "topic=" + topic + ((payload == null) ? "" : ", payload=" + payload.remaining() + "byte") + ", qos=" +
+                qos + ", retain=" + retain + ((messageExpiryInterval == NO_MESSAGE_EXPIRY) ? "" :
                 ", messageExpiryInterval=" + messageExpiryInterval) +
                 ((payloadFormatIndicator == null) ? "" : ", payloadFormatIndicator=" + payloadFormatIndicator) +
                 ((contentType == null) ? "" : ", contentType=" + contentType) +
