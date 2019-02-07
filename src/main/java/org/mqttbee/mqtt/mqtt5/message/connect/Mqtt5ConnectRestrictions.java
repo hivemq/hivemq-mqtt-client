@@ -92,7 +92,7 @@ public interface Mqtt5ConnectRestrictions {
      * concurrently. The default is {@link #DEFAULT_SEND_MAXIMUM}.
      * <p>
      * The actual amount a connected client will use is determined by the minimum of this value and {@link
-     * org.mqttbee.internal.mqtt.message.connect.connack.MqttConnAckRestrictions#getReceiveMaximum()
+     * org.mqttbee.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions#getReceiveMaximum()
      * MqttConnAckRestrictions#getReceiveMaximum()}.
      *
      * @return the maximum amount of not acknowledged publishes with QoS 1 or 2 the client sends to the server
@@ -113,7 +113,7 @@ public interface Mqtt5ConnectRestrictions {
      * #DEFAULT_SEND_MAXIMUM_PACKET_SIZE}.
      * <p>
      * The actual size a connected client will use is determined by the minimum of this value and {@link
-     * org.mqttbee.internal.mqtt.message.connect.connack.MqttConnAckRestrictions#getMaximumPacketSize()
+     * org.mqttbee.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions#getMaximumPacketSize()
      * MqttConnAckRestrictions#getMaximumPacketSize()}.
      *
      * @return the maximum packet size the client sends to the server.
@@ -133,7 +133,7 @@ public interface Mqtt5ConnectRestrictions {
      * #DEFAULT_SEND_TOPIC_ALIAS_MAXIMUM}.
      * <p>
      * The actual amount a connected client will use is determined by the minimum of this value and {@link
-     * org.mqttbee.internal.mqtt.message.connect.connack.MqttConnAckRestrictions#getTopicAliasMaximum()
+     * org.mqttbee.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions#getTopicAliasMaximum()
      * MqttConnAckRestrictions#getTopicAliasMaximum()}.
      *
      * @return the maximum amount of topic aliases the client sends to the server.
@@ -141,10 +141,10 @@ public interface Mqtt5ConnectRestrictions {
     int getSendTopicAliasMaximum();
 
     /**
-     * Returns whether the client accepts problem information from the server. The default is {@link
+     * Returns whether the client requests problem information from the server. The default is {@link
      * #DEFAULT_REQUEST_PROBLEM_INFORMATION}.
      *
-     * @return whether the client accepts problem information from the server.
+     * @return whether the client requests problem information from the server.
      */
     boolean isRequestProblemInformation();
 
