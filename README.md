@@ -116,6 +116,41 @@ At any time it is possible to switch the API style.
  - Builder method: `buildBlocking()`
  - Switch method: `client.toBlocking()`
 
+#### Examples
+
+##### Subscribe example
+```Java
+final Mqtt5BlockingClient client = Mqtt5Client.builder()
+        .identifier(UUID.randomUUID().toString())
+        .serverHost("broker.hivemq.com")
+        .buildBlocking();
+
+client.connect();
+
+try (final Mqtt5Publishes publishes = client.publishes(MqttGlobalPublishFilter.ALL)) {
+
+    client.subscribeWith().topicFilter("test/topic").qos(MqttQos.AT_LEAST_ONCE).send();
+
+    publishes.receive(1, TimeUnit.SECONDS).ifPresent(System.out::println);
+    publishes.receive(100, TimeUnit.MILLISECONDS).ifPresent(System.out::println);
+
+} finally {
+    client.disconnect();
+}
+```
+
+##### Publish example
+```Java
+Mqtt5BlockingClient client = Mqtt5Client.builder()
+        .identifier(UUID.randomUUID().toString())
+        .serverHost("broker.hivemq.com")
+        .buildBlocking();
+
+client.connect();
+client.publishWith().topic("test/topic").qos(MqttQos.AT_LEAST_ONCE).payload("1".getBytes()).send();
+client.disconnect();
+```
+
 #### Connect
 
 ```Java
@@ -215,6 +250,36 @@ client.reauth();
 
  - Builder method: `buildAsync()`
  - Switch method: `client.toAsync()`
+
+#### Examples
+
+##### Subscribe example
+```Java
+Mqtt5BlockingClient client = Mqtt5Client.builder()
+        .identifier(UUID.randomUUID().toString())
+        .serverHost("broker.hivemq.com")
+        .buildBlocking();
+
+client.connect();
+
+client.toAsync().subscribeWith()
+        .topicFilter("test/topic")
+        .qos(MqttQos.AT_LEAST_ONCE)
+        .callback(System.out::println)
+        .send();
+```
+
+##### Publish example
+```Java
+Mqtt5AsyncClient client = Mqtt5Client.builder()
+        .identifier(UUID.randomUUID().toString())
+        .serverHost("broker.hivemq.com")
+        .buildAsync();
+
+client.connect()
+        .thenCompose(connAck -> client.publishWith().topic("test/topic").payload("1".getBytes()).send())
+        .thenCompose(publish -> client.disconnect());
+```
 
 #### Connect
 
