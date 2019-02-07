@@ -22,17 +22,32 @@ import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.mqtt.MqttClientConnectionConfig;
 
 /**
+ * Connection configuration of a {@link Mqtt3Client}.
+ *
  * @author Silvio Giebl
  * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt3ClientConnectionConfig extends MqttClientConnectionConfig {
 
+    /**
+     * @return the configuration for messages the client sends.
+     */
     @NotNull SendConfig getSendConfig();
 
+    /**
+     * Configuration for messages a {@link Mqtt3Client} sends.
+     */
     @DoNotImplement
     interface SendConfig {
 
+        /**
+         * Returns the maximum amount of not acknowledged publishes with QoS 1 or 2 the client sends to the server
+         * concurrently.
+         *
+         * @return the maximum amount of not acknowledged publishes with QoS 1 or 2 the client sends to the server
+         *         concurrently.
+         */
         int getSendMaximum();
     }
 }

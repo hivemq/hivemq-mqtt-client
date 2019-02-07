@@ -25,7 +25,7 @@ import org.mqttbee.mqtt.mqtt5.advanced.Mqtt5ClientAdvancedConfig;
 import java.util.Optional;
 
 /**
- * Configuration of a {@link Mqtt5Client MQTT 5 client}.
+ * Configuration of a {@link Mqtt5Client}.
  *
  * @author Silvio Giebl
  * @since 1.0

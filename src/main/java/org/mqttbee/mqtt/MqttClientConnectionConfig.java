@@ -20,13 +20,21 @@ package org.mqttbee.mqtt;
 import org.mqttbee.annotations.DoNotImplement;
 
 /**
+ * Connection configuration of a {@link MqttClient}.
+ *
  * @author Silvio Giebl
  * @since 1.0
  */
 @DoNotImplement
 public interface MqttClientConnectionConfig {
 
+    /**
+     * @return the keep alive in seconds that is used while the client is connected.
+     */
     int getKeepAlive();
 
+    /**
+     * @return whether the client connected with a Will Publish message.
+     */
     boolean hasWillPublish();
 }

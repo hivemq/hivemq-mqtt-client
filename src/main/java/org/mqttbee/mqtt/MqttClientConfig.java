@@ -24,7 +24,7 @@ import org.mqttbee.mqtt.datatypes.MqttClientIdentifier;
 import java.util.Optional;
 
 /**
- * Configuration of a {@link MqttClient MQTT client}.
+ * Configuration of a {@link MqttClient}.
  *
  * @author Silvio Giebl
  * @since 1.0

@@ -29,6 +29,11 @@ import org.mqttbee.mqtt.MqttClient;
  */
 public interface Mqtt3Client extends MqttClient {
 
+    /**
+     * Creates a builder for a MQTT 3 client.
+     *
+     * @return the created builder for a MQTT 3 client.
+     */
     static @NotNull Mqtt3ClientBuilder builder() {
         return new Mqtt3RxClientViewBuilder();
     }
