@@ -5,15 +5,20 @@
 MQTT 5.0 and 3.1.1 compatible and feature-rich high-performance Java client library with different API flavours and 
 backpressure support.
 
+# Documentation
+
+A detailed documentation can be found  [here](https://mqtt-bee.github.io)
+
 # Features
 
 ## Available
+
  - All MQTT 3.1.1 and MQTT 5.0 features
  - API flavors:
    - Reactive, Async and Blocking
    - Flexible switching
    - Consistent and clearly separated
- - Backpressure support
+ - Backpressure support:
    - QoS 1 and 2
    - QoS 0 (dropping incoming messages if necessary)
  - SSL/TLS
@@ -26,6 +31,7 @@ backpressure support.
    - Interceptors for QoS flows
 
 ## Done soon
+
  - Automatic reconnect handling and message redelivery
 
 # How to use
@@ -40,6 +46,7 @@ Every time a PR is merged into the `develop` branch, a new snapshot is published
 A snapshot can be included as a normal dependency if the snapshot repository is added to the build file.
 
 #### Gradle
+
 ```groovy
 repositories {
     jcenter()
@@ -53,6 +60,7 @@ dependencies {
 ```
 
 #### Maven
+
 If you use Maven, you have to set the compiler version to `1.8` or higher.
 ```xml
 <project>
@@ -90,7 +98,7 @@ If you use Maven, you have to set the compiler version to `1.8` or higher.
 
 Base classes: `Mqtt3Client`, `Mqtt5Client`
 
-```Java
+```java
 Mqtt5Client client = MqttClient.builder()
         .identifier(UUID.randomUUID().toString())
         .serverHost("broker.hivemq.com")
@@ -99,7 +107,7 @@ Mqtt5Client client = MqttClient.builder()
 Mqtt3Client client = MqttClient.builder()...useMqttVersion3().build();
 ```
 Or if the version is known upfront:
-```Java
+```java
 Mqtt5Client client = Mqtt5Client.builder()...build();
 Mqtt3Client client = Mqtt3Client.builder()...build();
 ```
@@ -119,7 +127,8 @@ At any time it is possible to switch the API style.
 #### Examples
 
 ##### Subscribe example
-```Java
+
+```java
 final Mqtt5BlockingClient client = Mqtt5Client.builder()
         .identifier(UUID.randomUUID().toString())
         .serverHost("broker.hivemq.com")
@@ -140,7 +149,8 @@ try (final Mqtt5Publishes publishes = client.publishes(MqttGlobalPublishFilter.A
 ```
 
 ##### Publish example
-```Java
+
+```java
 Mqtt5BlockingClient client = Mqtt5Client.builder()
         .identifier(UUID.randomUUID().toString())
         .serverHost("broker.hivemq.com")
@@ -153,22 +163,22 @@ client.disconnect();
 
 #### Connect
 
-```Java
+```java
 client.connect();
 ```
 Or with customized properties of the Connect message:
-```Java
+```java
 client.connectWith().keepAlice(10).send();
 ```
 Or with pre-built Connect message:
-```Java
+```java
 Mqtt5Connect connectMessage = Mqtt5Connect.builder().keepAlice(10).build();
 client.connect(connectMessage);
 ```
 
 #### Publish
 
-```Java
+```java
 client.publishWith()
         .topic("test/topic")
         .qos(MqttQos.AT_LEAST_ONCE)
@@ -176,7 +186,7 @@ client.publishWith()
         .send();
 ```
 Or with pre-built Publish message:
-```Java
+```java
 Mqtt5Publish publishMessage = Mqtt5Publish.builder()
         .topic("test/topic")
         .qos(MqttQos.AT_LEAST_ONCE)
@@ -187,11 +197,11 @@ client.publish(publishMessage);
 
 #### Subscribe
 
-```Java
+```java
 client.subscribeWith().topicFilter("test/topic").qos(MqttQos.EXACTLY_ONCE).send();
 ```
 Or with pre-built Subscribe message:
-```Java
+```java
 Mqtt5Subscribe subscribeMessage = Mqtt5Subscribe.builder()
         .topicFilter("test/topic")
         .qos(MqttQos.EXACTLY_ONCE)
@@ -201,18 +211,18 @@ client.subscribe(subscribeMessage);
 
 #### Unsubscribe
 
-```Java
+```java
 client.unsubscribeWith().topicFilter("test/topic").send();
 ```
 Or with pre-built Unsubscribe message:
-```Java
+```java
 Mqtt5Unsubscribe unsubscribeMessage = Mqtt5Unsubscribe.builder().topicFilter("test/topic").build();
 client.unsubscribe(unsubscribeMessage);
 ```
 
 #### Consume messages
 
-```Java
+```java
 try (Mqtt5BlockingClient.Mqtt5Publishes publishes = client.publishes(MqttGlobalPublishFilter.ALL)) {
     Mqtt5Publish publishMessage = publishes.receive();
     // or with timeout
@@ -227,22 +237,22 @@ It can be called before `connect` to receive messages of a previous session.
 
 #### Disconnect
 
-```Java
+```java
 client.disconnect();
 ```
 Or with customized properties of the DISCONNECT message (only MQTT 5):
-```Java
+```java
 client.disconnectWith().reasonString("test").send();
 ```
 Or with pre-built Disconnect message (only MQTT 5):
-```Java
+```java
 Mqtt5Disconnect disconnectMessage = Mqtt5Disconnect.builder().disconnectWith().reasonString("test").build();
 client.disconnect(disconnectMessage);
 ```
 
 #### Reauth (only MQTT 5)
 
-```Java
+```java
 client.reauth();
 ```
 
@@ -254,7 +264,8 @@ client.reauth();
 #### Examples
 
 ##### Subscribe example
-```Java
+
+```java
 Mqtt5BlockingClient client = Mqtt5Client.builder()
         .identifier(UUID.randomUUID().toString())
         .serverHost("broker.hivemq.com")
@@ -270,7 +281,8 @@ client.toAsync().subscribeWith()
 ```
 
 ##### Publish example
-```Java
+
+```java
 Mqtt5AsyncClient client = Mqtt5Client.builder()
         .identifier(UUID.randomUUID().toString())
         .serverHost("broker.hivemq.com")
@@ -294,7 +306,7 @@ Method calls are analog to the Blocking API but return `CompletableFuture`.
 Method calls are analog to the Blocking API but return `CompletableFuture`.
 
 Additionally messages can be consumed per subscribe:
-```Java
+```java
 client.subscribeWith()
         .topicFilter("test/topic")
         .qos(MqttQos.EXACTLY_ONCE)
@@ -303,7 +315,7 @@ client.subscribeWith()
         .send();
 ```
 Or with pre-built Subscribe message:
-```Java
+```java
 Mqtt5Subscribe subscribeMessage = Mqtt5Subscribe.builder()
         .topicFilter("test/topic")
         .qos(MqttQos.EXACTLY_ONCE)
@@ -318,13 +330,13 @@ Method calls are analog to the Blocking API but return `CompletableFuture`.
 
 #### Consume messages
 
-Messages can either be consumed per Subscribe (described above) or globally:
+Messages can either be consumed per subscribe (described above) or globally:
 
-```Java
+```java
 client.publishes(MqttGlobalPublishFilter.ALL, System.out::println);
 ```
 Or with executing the callback on a specified executor:
-```Java
+```java
 client.publishes(MqttGlobalPublishFilter.ALL, System.out::println, executor);
 ```
 
@@ -346,7 +358,7 @@ Method calls are analog to the Blocking API but return `CompletableFuture`.
 
 #### Subscribe example
 
-``` Java
+```java
 final Mqtt3RxClient client = MqttClient.builder()
         .identifier(UUID.randomUUID().toString())
         .serverHost("broker.hivemq.com")
@@ -401,7 +413,7 @@ connectAndSubscribe.blockingSubscribe();
 
 #### Publish example
 
-``` Java
+```java
 final Mqtt3RxClient client = MqttClient.builder()
         .identifier(UUID.randomUUID().toString())
         .serverHost("broker.hivemq.com")
@@ -433,7 +445,7 @@ final Single<Mqtt3ConnAck> connectScenario = connAckSingle
 final Flowable<Mqtt3PublishResult> publishScenario = client.publish(messagesToPublish)
         .doOnNext(publishResult -> System.out.println("Publish acknowledged: " + new String(publishResult.getPublish().getPayloadAsBytes())));
 
-connectScenario.toCompletable().andThen(publishScenario).blockingSubscribe();
+connectScenario.ignoreElement().andThen(publishScenario).blockingSubscribe();
 ```
 
 # How to contribute
