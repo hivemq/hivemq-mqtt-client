@@ -134,7 +134,7 @@ artifactory {
             password = bintray_apiKey
         }
         defaults {
-            publications('mavenJava')
+            publications('normal', 'shaded')
         }
     }
     resolve {
