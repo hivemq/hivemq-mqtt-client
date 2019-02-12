@@ -92,52 +92,15 @@ shadowJar {
     // - org.slf4j
     relocate 'io.reactivex', shadePrefix + 'io.reactivex'
     relocate 'io.netty', shadePrefix + 'io.netty'
+    relocate 'META-INF/native/libnetty', 'META-INF/native/liborg_mqttbee_shaded_netty'
+    exclude 'META-INF/io.netty.versions.properties'
     relocate 'org.jctools', shadePrefix + 'org.jctools'
     relocate 'org.jetbrains', shadePrefix + 'org.jetbrains'
     relocate 'org.intellij', shadePrefix + 'org.intellij'
     relocate 'dagger', shadePrefix + 'dagger'
     relocate 'javax.inject', shadePrefix + 'javax.inject'
 
-    exclude 'META-INF/io.netty.versions.properties'
-    transform(MoveTransformer) {
-        from = 'META-INF/native/libnetty_transport_native_epoll_x86_64.so'
-        to = 'META-INF/native/liborg_mqttbee_shaded_netty_transport_native_epoll_x86_64.so'
-    }
-
     minimize()
-}
-
-import com.github.jengelman.gradle.plugins.shadow.transformers.Transformer
-import com.github.jengelman.gradle.plugins.shadow.transformers.TransformerContext
-import org.codehaus.plexus.util.IOUtil
-import shadow.org.apache.tools.zip.ZipEntry
-import shadow.org.apache.tools.zip.ZipOutputStream
-
-class MoveTransformer implements Transformer {
-
-    String from
-    String to
-    private ByteArrayOutputStream data = new ByteArrayOutputStream()
-
-    boolean canTransformResource(FileTreeElement element) {
-        return element.relativePath.pathString == from
-    }
-
-    void transform(TransformerContext context) {
-        IOUtil.copy(context.is, data)
-        context.is.close()
-    }
-
-    boolean hasTransformedResource() {
-        return true
-    }
-
-    void modifyOutputStream(ZipOutputStream os, boolean preserveFileTimestamps) {
-        ZipEntry entry = new ZipEntry(to)
-        entry.time = TransformerContext.getEntryTimestamp(preserveFileTimestamps, entry.time)
-        os.putNextEntry(entry)
-        IOUtil.copy(new ByteArrayInputStream(data.toByteArray()), os)
-    }
 }
 
 license {
