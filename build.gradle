@@ -1,5 +1,5 @@
 plugins {
-    id 'java'
+    id 'java-library'
     id 'maven-publish'
     id 'com.jfrog.bintray' version '1.8.4'
     id 'com.jfrog.artifactory' version '4.7.5'
@@ -7,6 +7,7 @@ plugins {
     id 'eclipse'
     id 'net.ltgt.apt-idea' version '0.15'
     id 'net.ltgt.apt-eclipse' version '0.15'
+    id 'com.github.johnrengelman.shadow' version '4.0.4'
     id 'com.github.hierynomus.license' version '0.14.0'
     id 'pmd'
 }
@@ -22,12 +23,12 @@ ext {
     githubOrg = 'mqtt-bee'
     githubRepo = 'mqtt-bee'
     githubUrl = 'https://github.com/' + githubOrg + '/' + githubRepo
+    scmConnection = 'scm:git:git://github.com/' + githubOrg + '/' + githubRepo + '.git'
+    scmDeveloperConnection = 'scm:git:ssh://git@github.com/' + githubOrg + '/' + githubRepo + '.git'
     licenseShortName = 'Apache-2.0'
     licenseReadableName = 'The Apache License, Version 2.0'
     licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
 }
-
-apply from: 'publishing.gradle'
 
 sourceCompatibility = 1.8
 
@@ -50,40 +51,93 @@ ext {
     jetbrainsAnnotationsVersion = '16.0.3'
 }
 
-ext {
-    junit4Version = '4.12'
-    junitVintageVersion = '4.12.3'
-    junitJupiterVersion = '5.0.3'
-    junitPlatformVersion = '1.0.3'
-}
-
 dependencies {
-    compile group: 'io.reactivex.rxjava2', name: 'rxjava', version: rxJavaVersion
-    compile group: 'io.netty', name: 'netty-handler', version: nettyVersion
-    compile group: 'io.netty', name: 'netty-codec-http', version: nettyVersion
-    compile group: 'io.netty', name: 'netty-transport-native-epoll', version: nettyVersion, classifier: 'linux-x86_64'
-    compile group: 'org.jctools', name: 'jctools-core', version: jcToolsVersion
-    compile group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion
-    compile group: 'org.jetbrains', name: 'annotations', version: jetbrainsAnnotationsVersion
-
+    api group: 'io.reactivex.rxjava2', name: 'rxjava', version: rxJavaVersion
+    api group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion
+    implementation group: 'io.netty', name: 'netty-handler', version: nettyVersion
+    implementation group: 'io.netty', name: 'netty-codec-http', version: nettyVersion
+    implementation group: 'io.netty', name: 'netty-transport-native-epoll', version: nettyVersion, classifier: 'linux-x86_64'
+    implementation group: 'org.jctools', name: 'jctools-core', version: jcToolsVersion
+    implementation group: 'org.jetbrains', name: 'annotations', version: jetbrainsAnnotationsVersion
     implementation group: 'com.google.dagger', name: 'dagger', version: daggerVersion
     annotationProcessor group: 'com.google.dagger', name: 'dagger-compiler', version: daggerVersion
 
-    testCompile group: 'junit', name: 'junit', version: junit4Version
-    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junitJupiterVersion
-    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junitJupiterVersion
+    def junit4Version = '4.12'
+    def junitVintageVersion = '4.12.3'
+    def junitJupiterVersion = '5.0.3'
+    def junitPlatformVersion = '1.0.3'
 
-    testCompile group: 'org.eclipse.paho', name: 'org.eclipse.paho.client.mqttv3', version: '1.2.0'
-    testCompile group: 'nl.jqno.equalsverifier', name: 'equalsverifier', version: '2.4.1'
-    testCompile group: 'org.mockito', name: 'mockito-core', version: '2.18.3'
-    testCompile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.59'
-    testCompile group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.59'
-    testCompile group: 'com.google.guava', name: 'guava', version: '24.1-jre'
+    testImplementation group: 'junit', name: 'junit', version: junit4Version
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junitJupiterVersion
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junitJupiterVersion
+    testRuntimeOnly group: 'org.junit.vintage', name: 'junit-vintage-engine', version: junitVintageVersion
+    testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junitJupiterVersion
+    testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-launcher', version: junitPlatformVersion
+    testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-runner', version: junitPlatformVersion
 
-    testRuntime group: 'org.junit.vintage', name: 'junit-vintage-engine', version: junitVintageVersion
-    testRuntime group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junitJupiterVersion
-    testRuntime group: 'org.junit.platform', name: 'junit-platform-launcher', version: junitPlatformVersion
-    testRuntime group: 'org.junit.platform', name: 'junit-platform-runner', version: junitPlatformVersion
+    testImplementation group: 'org.eclipse.paho', name: 'org.eclipse.paho.client.mqttv3', version: '1.2.0'
+    testImplementation group: 'nl.jqno.equalsverifier', name: 'equalsverifier', version: '2.4.1'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '2.18.3'
+    testImplementation group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.59'
+    testImplementation group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.59'
+    testImplementation group: 'com.google.guava', name: 'guava', version: '24.1-jre'
+}
+
+apply from: 'publishing.gradle'
+
+shadowJar {
+    def shadePrefix = 'org.mqttbee.shaded.'
+    // not relocated:
+    // - org.reactivestreams
+    // - org.slf4j
+    relocate 'io.reactivex', shadePrefix + 'io.reactivex'
+    relocate 'io.netty', shadePrefix + 'io.netty'
+    relocate 'org.jctools', shadePrefix + 'org.jctools'
+    relocate 'org.jetbrains', shadePrefix + 'org.jetbrains'
+    relocate 'org.intellij', shadePrefix + 'org.intellij'
+    relocate 'dagger', shadePrefix + 'dagger'
+    relocate 'javax.inject', shadePrefix + 'javax.inject'
+
+    exclude 'META-INF/io.netty.versions.properties'
+    transform(MoveTransformer) {
+        from = 'META-INF/native/libnetty_transport_native_epoll_x86_64.so'
+        to = 'META-INF/native/liborg_mqttbee_shaded_netty_transport_native_epoll_x86_64.so'
+    }
+
+    minimize()
+}
+
+import com.github.jengelman.gradle.plugins.shadow.transformers.Transformer
+import com.github.jengelman.gradle.plugins.shadow.transformers.TransformerContext
+import org.codehaus.plexus.util.IOUtil
+import shadow.org.apache.tools.zip.ZipEntry
+import shadow.org.apache.tools.zip.ZipOutputStream
+
+class MoveTransformer implements Transformer {
+
+    String from
+    String to
+    private ByteArrayOutputStream data = new ByteArrayOutputStream()
+
+    boolean canTransformResource(FileTreeElement element) {
+        return element.relativePath.pathString == from
+    }
+
+    void transform(TransformerContext context) {
+        IOUtil.copy(context.is, data)
+        context.is.close()
+    }
+
+    boolean hasTransformedResource() {
+        return true
+    }
+
+    void modifyOutputStream(ZipOutputStream os, boolean preserveFileTimestamps) {
+        ZipEntry entry = new ZipEntry(to)
+        entry.time = TransformerContext.getEntryTimestamp(preserveFileTimestamps, entry.time)
+        os.putNextEntry(entry)
+        IOUtil.copy(new ByteArrayInputStream(data.toByteArray()), os)
+    }
 }
 
 license {
