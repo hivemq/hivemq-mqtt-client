@@ -88,7 +88,7 @@ publishing {
             addPom(publication)
         }
         shaded(MavenPublication) { publication ->
-            artifactId 'mqtt-bee-all'
+            artifactId project.name + '-' + project.shadedAppendix
             project.shadow.component(publication)
             artifact javadocJar
             artifact sourcesJar
