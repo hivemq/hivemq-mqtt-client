@@ -87,7 +87,7 @@ dependencies {
 apply from: 'publishing.gradle'
 
 shadowJar {
-    appendix project.shadedAppendix
+    appendix shadedAppendix
     classifier null
 
     def shadePrefix = 'org.mqttbee.shaded.'
