@@ -99,7 +99,7 @@ public abstract class MqttConnectRestrictionsBuilder<B extends MqttConnectRestri
     }
 
     public static class Default extends MqttConnectRestrictionsBuilder<Default>
-            implements Mqtt5ConnectRestrictionsBuilder {
+            implements Mqtt5ConnectRestrictionsBuilder, Mqtt5ConnectRestrictionsBuilder.AdvancedBuilder {
 
         public Default() {}
 
@@ -111,10 +111,21 @@ public abstract class MqttConnectRestrictionsBuilder<B extends MqttConnectRestri
         @NotNull Default self() {
             return this;
         }
+
+        @Override
+        public @NotNull Default advanced() {
+            return this;
+        }
+
+        @Override
+        public @NotNull Default applyAdvanced() {
+            return this;
+        }
     }
 
     public static class Nested<P> extends MqttConnectRestrictionsBuilder<Nested<P>>
-            implements Mqtt5ConnectRestrictionsBuilder.Nested<P> {
+            implements Mqtt5ConnectRestrictionsBuilder.Nested<P>,
+            Mqtt5ConnectRestrictionsBuilder.AdvancedBuilder.Nested<P> {
 
         Nested(
                 final @NotNull MqttConnectRestrictions restrictions,
@@ -128,6 +139,16 @@ public abstract class MqttConnectRestrictionsBuilder<B extends MqttConnectRestri
 
         @Override
         @NotNull Nested<P> self() {
+            return this;
+        }
+
+        @Override
+        public @NotNull Nested<P> advanced() {
+            return this;
+        }
+
+        @Override
+        public @NotNull Nested<P> applyAdvanced() {
             return this;
         }
 

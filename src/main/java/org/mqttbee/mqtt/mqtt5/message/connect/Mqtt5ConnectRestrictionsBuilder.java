@@ -30,6 +30,8 @@ import org.mqttbee.annotations.DoNotImplement;
 public interface Mqtt5ConnectRestrictionsBuilder
         extends Mqtt5ConnectRestrictionsBuilderBase<Mqtt5ConnectRestrictionsBuilder> {
 
+    @NotNull AdvancedBuilder advanced();
+
     /**
      * Builds the {@link Mqtt5ConnectRestrictions}.
      *
@@ -45,11 +47,29 @@ public interface Mqtt5ConnectRestrictionsBuilder
     @DoNotImplement
     interface Nested<P> extends Mqtt5ConnectRestrictionsBuilderBase<Nested<P>> {
 
+        @NotNull AdvancedBuilder.Nested<P> advanced();
+
         /**
          * Builds the {@link Mqtt5ConnectRestrictions} and applies it to the parent.
          *
          * @return the result when the built {@link Mqtt5ConnectRestrictions} is applied to the parent.
          */
         @NotNull P applyRestrictions();
+    }
+
+    @DoNotImplement
+    interface AdvancedBuilder extends Mqtt5ConnectRestrictionsBuilderBase.AdvancedBuilderBase<AdvancedBuilder> {
+
+        @NotNull Mqtt5ConnectRestrictionsBuilder applyAdvanced();
+
+        @NotNull Mqtt5ConnectRestrictions build();
+
+        @DoNotImplement
+        interface Nested<P> extends Mqtt5ConnectRestrictionsBuilderBase.AdvancedBuilderBase<Nested<P>> {
+
+            @NotNull Mqtt5ConnectRestrictionsBuilder.Nested<P> applyAdvanced();
+
+            @NotNull P applyRestrictions();
+        }
     }
 }
