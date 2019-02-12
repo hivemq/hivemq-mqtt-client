@@ -45,46 +45,54 @@ javadoc {
 
 task javadocJar(type: Jar) {
     from javadoc
-    classifier = 'javadoc'
+    archiveClassifier.set('javadoc')
 }
 
 task sourcesJar(type: Jar) {
     from sourceSets.main.allJava
-    classifier = 'sources'
+    archiveClassifier.set('sources')
+}
+
+void addPom(MavenPublication publication) {
+    publication.pom {
+        name = project.readableName
+        description = project.description
+        url = project.url
+        licenses {
+            license {
+                name = project.licenseReadableName
+                url = project.licenseUrl
+            }
+        }
+        developers {
+            developer { // TODO
+                id = ''
+                name = ''
+                email = ''
+            }
+        }
+        scm {
+            connection = project.scmConnection
+            developerConnection = project.scmDeveloperConnection
+            url = project.githubUrl
+        }
+    }
 }
 
 publishing {
     publications {
-        mavenJava(MavenPublication) {
+        normal(MavenPublication) { publication ->
             from components.java
             artifact javadocJar
             artifact sourcesJar
-            pom.withXml {
-                asNode().children().last() + {
-                    resolveStrategy = DELEGATE_FIRST
-                    name readableName
-                    description description
-                    url url
-                    licenses {
-                        license {
-                            name licenseReadableName
-                            url licenseUrl
-                        }
-                    }
-                    scm {
-                        url githubUrl
-                        connection 'scm:git:git://github.com/' + githubOrg + '/' + githubRepo + '.git'
-                        developerConnection 'scm:git:ssh://git@github.com/' + githubOrg + '/' + githubRepo + '.git'
-                    }
-                    developers {
-                        developer { // TODO
-                            id ''
-                            name ''
-                            email ''
-                        }
-                    }
-                }
-            }
+            addPom(publication)
+        }
+        shaded(MavenPublication) { publication ->
+            artifactId 'mqtt-bee-all'
+            project.shadow.component(publication)
+            artifact javadocJar
+            artifact sourcesJar
+            addPom(publication)
         }
     }
 }
@@ -92,7 +100,7 @@ publishing {
 bintray {
     user = bintray_username
     key = bintray_apiKey
-    publications = ['mavenJava']
+    publications = ['normal', 'shaded']
     // publish = true
     pkg {
         userOrg = 'mqtt-bee'
