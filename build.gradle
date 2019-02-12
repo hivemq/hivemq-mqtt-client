@@ -90,7 +90,7 @@ shadowJar {
     appendix shadedAppendix
     classifier null
 
-    def shadePrefix = 'org.mqttbee.shaded.'
+    def shadePrefix = project.group.toString() + '.shaded.'
     // api not relocated:
     // - io.reactivex > org.reactivestreams
     // - org.slf4j
