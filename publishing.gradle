@@ -65,10 +65,10 @@ void addPom(MavenPublication publication) {
             }
         }
         developers {
-            developer { // TODO
-                id = ''
-                name = ''
-                email = ''
+            developer {
+                id = 'SG'
+                name = 'Silvio Giebl'
+                email = 'silvio.giebl@dc-square.de'
             }
         }
         scm {
