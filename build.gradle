@@ -91,11 +91,12 @@ shadowJar {
     classifier null
 
     def shadePrefix = project.group.toString() + '.shaded.'
+    def shadeFilePrefix = shadePrefix.replace('.', '_')
     // api not relocated:
     // - io.reactivex > org.reactivestreams
     // - org.slf4j
     relocate 'io.netty', shadePrefix + 'io.netty'
-    relocate 'META-INF/native/libnetty', 'META-INF/native/liborg_mqttbee_shaded_netty'
+    relocate 'META-INF/native/libnetty', 'META-INF/native/lib' + shadeFilePrefix + 'netty'
     exclude 'META-INF/io.netty.versions.properties'
     relocate 'org.jctools', shadePrefix + 'org.jctools'
     relocate 'org.jetbrains', shadePrefix + 'org.jetbrains'
