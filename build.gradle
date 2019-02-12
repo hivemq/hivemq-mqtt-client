@@ -91,16 +91,14 @@ shadowJar {
     classifier null
 
     def shadePrefix = 'org.mqttbee.shaded.'
-    // not relocated:
-    // - org.reactivestreams
+    // api not relocated:
+    // - io.reactivex > org.reactivestreams
     // - org.slf4j
-    relocate 'io.reactivex', shadePrefix + 'io.reactivex'
     relocate 'io.netty', shadePrefix + 'io.netty'
     relocate 'META-INF/native/libnetty', 'META-INF/native/liborg_mqttbee_shaded_netty'
     exclude 'META-INF/io.netty.versions.properties'
     relocate 'org.jctools', shadePrefix + 'org.jctools'
     relocate 'org.jetbrains', shadePrefix + 'org.jetbrains'
-    relocate 'org.intellij', shadePrefix + 'org.intellij'
     relocate 'dagger', shadePrefix + 'dagger'
     relocate 'javax.inject', shadePrefix + 'javax.inject'
 
