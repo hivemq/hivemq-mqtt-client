@@ -45,12 +45,12 @@ javadoc {
 
 task javadocJar(type: Jar) {
     from javadoc
-    archiveClassifier.set('javadoc')
+    classifier 'javadoc'
 }
 
 task sourcesJar(type: Jar) {
     from sourceSets.main.allJava
-    archiveClassifier.set('sources')
+    classifier 'sources'
 }
 
 void addPom(MavenPublication publication) {

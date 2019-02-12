@@ -28,7 +28,7 @@ ext {
     licenseShortName = 'Apache-2.0'
     licenseReadableName = 'The Apache License, Version 2.0'
     licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-    shadedAppendix = 'all'
+    shadedAppendix = 'shaded'
 }
 
 sourceCompatibility = 1.8
@@ -87,8 +87,7 @@ dependencies {
 apply from: 'publishing.gradle'
 
 shadowJar {
-    archiveAppendix.set(project.shadedAppendix)
-    archiveClassifier.set(null)
+    appendix project.shadedAppendix
     classifier null
 
     def shadePrefix = 'org.mqttbee.shaded.'
