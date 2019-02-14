@@ -86,15 +86,20 @@ dependencies {
 
 apply from: 'publishing.gradle'
 
-shadowJar {
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+shadowJar { ShadowJar shadowJar ->
     appendix shadedAppendix
     classifier null
 
+    // api: not shaded and relocated, added as dependencies in pom
+    shadowJar.dependencies {
+        it.exclude(it.dependency('io.reactivex.rxjava2:rxjava'))
+        it.exclude(it.dependency('org.reactivestreams:reactive-streams'))
+        it.exclude(it.dependency('org.slf4j:slf4j-api'))
+    }
+
     def shadePrefix = project.group.toString() + '.shaded.'
     def shadeFilePrefix = shadePrefix.replace('.', '_')
-    // api not relocated:
-    // - io.reactivex > org.reactivestreams
-    // - org.slf4j
     relocate 'io.netty', shadePrefix + 'io.netty'
     relocate 'META-INF/native/libnetty', 'META-INF/native/lib' + shadeFilePrefix + 'netty'
     exclude 'META-INF/io.netty.versions.properties'
