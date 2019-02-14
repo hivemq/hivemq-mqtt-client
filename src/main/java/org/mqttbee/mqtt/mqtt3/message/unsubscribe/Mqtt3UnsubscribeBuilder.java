@@ -47,7 +47,8 @@ public interface Mqtt3UnsubscribeBuilder extends Mqtt3UnsubscribeBuilderBase<Mqt
      * {@link Mqtt3UnsubscribeBuilder} that provides additional methods for the first Topic Filter.
      */
     @DoNotImplement
-    interface Start extends Mqtt3UnsubscribeBuilder, Mqtt3UnsubscribeBuilderBase.Start<Mqtt3UnsubscribeBuilder.Complete> {}
+    interface Start
+            extends Mqtt3UnsubscribeBuilder, Mqtt3UnsubscribeBuilderBase.Start<Mqtt3UnsubscribeBuilder.Complete> {}
 
     /**
      * Builder for a {@link Mqtt3Unsubscribe} that is applied to a parent.
