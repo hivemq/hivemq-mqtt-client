@@ -35,7 +35,7 @@ public interface Mqtt3SubscribeBuilderBase<C extends Mqtt3SubscribeBuilderBase<C
      * one subscription is mandatory.
      *
      * @param subscription the subscription.
-     * @return the builder that is now complete as the mandatory username is set.
+     * @return the builder that is now complete as at least one subscription is set.
      */
     @NotNull C addSubscription(@NotNull Mqtt3Subscription subscription);
 

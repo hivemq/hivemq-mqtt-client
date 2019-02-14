@@ -37,7 +37,7 @@ public interface Mqtt3SubscriptionBuilderBase<C extends Mqtt3SubscriptionBuilder
      * Sets the mandatory {@link Mqtt3Subscription#getTopicFilter() Topic Filter}.
      *
      * @param topicFilter the string representation of the Topic Filter.
-     * @return the builder that is now complete as the mandatory username is set.
+     * @return the builder that is now complete as the mandatory Topic Filter is set.
      */
     @NotNull C topicFilter(@NotNull String topicFilter);
 
@@ -45,7 +45,7 @@ public interface Mqtt3SubscriptionBuilderBase<C extends Mqtt3SubscriptionBuilder
      * Sets the mandatory {@link Mqtt3Subscription#getTopicFilter() Topic Filter}.
      *
      * @param topicFilter the Topic Filter.
-     * @return the builder that is now complete as the mandatory username is set.
+     * @return the builder that is now complete as the mandatory Topic Filter is set.
      */
     @NotNull C topicFilter(@NotNull MqttTopicFilter topicFilter);
 

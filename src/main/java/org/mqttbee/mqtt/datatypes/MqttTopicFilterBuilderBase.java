@@ -45,14 +45,14 @@ public interface MqttTopicFilterBuilderBase<
      * Adds a {@link MqttTopicFilter#getLevels() Topic level}.
      *
      * @param topicLevel the level.
-     * @return the builder that is now complete as the mandatory username is set.
+     * @return the builder that is now complete as at least one Topic level is set.
      */
     @NotNull C addLevel(@NotNull String topicLevel);
 
     /**
      * Adds a {@link MqttTopicFilter#SINGLE_LEVEL_WILDCARD}.
      *
-     * @return the builder that is now complete as the mandatory username is set.
+     * @return the builder that is now complete as at least one single-level wildcard is set.
      */
     @NotNull C singleLevelWildcard();
 

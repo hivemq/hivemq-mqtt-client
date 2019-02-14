@@ -34,7 +34,7 @@ public interface MqttTopicBuilderBase<C extends MqttTopicBuilderBase<C>> {
      * Adds a {@link MqttTopic#getLevels() Topic level}.
      *
      * @param topicLevel the level.
-     * @return the builder that is now complete as the mandatory username is set.
+     * @return the builder that is now complete as at least one Topic level is set.
      */
     @NotNull C addLevel(@NotNull String topicLevel);
 }

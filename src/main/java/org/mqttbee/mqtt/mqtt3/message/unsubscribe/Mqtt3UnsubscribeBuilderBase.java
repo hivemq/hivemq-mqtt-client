@@ -38,7 +38,7 @@ public interface Mqtt3UnsubscribeBuilderBase<C extends Mqtt3UnsubscribeBuilderBa
      * Filters}. At least one Topic Filter is mandatory.
      *
      * @param topicFilter the string representation of the Topic Filter.
-     * @return the builder that is now complete as the mandatory username is set.
+     * @return the builder that is now complete as at least one Topic Filter is set.
      */
     @NotNull C addTopicFilter(@NotNull String topicFilter);
 
@@ -47,7 +47,7 @@ public interface Mqtt3UnsubscribeBuilderBase<C extends Mqtt3UnsubscribeBuilderBa
      * Filters}. At least one Topic Filter is mandatory.
      *
      * @param topicFilter the Topic Filter.
-     * @return the builder that is now complete as the mandatory username is set.
+     * @return the builder that is now complete as at least one Topic Filter is set.
      */
     @NotNull C addTopicFilter(@NotNull MqttTopicFilter topicFilter);
 
@@ -67,7 +67,7 @@ public interface Mqtt3UnsubscribeBuilderBase<C extends Mqtt3UnsubscribeBuilderBa
      * Reverses the subscriptions of a Subscribe message by adding their Topic Filters.
      *
      * @param subscribe the Subscribe message.
-     * @return the builder that is now complete as the mandatory username is set.
+     * @return the builder that is now complete as at least one Topic Filter is set.
      */
     @NotNull C reverse(@NotNull Mqtt3Subscribe subscribe);
 
@@ -83,7 +83,7 @@ public interface Mqtt3UnsubscribeBuilderBase<C extends Mqtt3UnsubscribeBuilderBa
          * Sets the mandatory {@link Mqtt3Unsubscribe#getTopicFilters() first Topic Filter}.
          *
          * @param topicFilter the string representation of the Topic Filter.
-         * @return the builder that is now complete as the mandatory username is set.
+         * @return the builder that is now complete as the mandatory Topic Filter is set.
          */
         @NotNull C topicFilter(@NotNull String topicFilter);
 
@@ -91,7 +91,7 @@ public interface Mqtt3UnsubscribeBuilderBase<C extends Mqtt3UnsubscribeBuilderBa
          * Sets the mandatory {@link Mqtt3Unsubscribe#getTopicFilters() first Topic Filter}.
          *
          * @param topicFilter the Topic Filter.
-         * @return the builder that is now complete as the mandatory username is set.
+         * @return the builder that is now complete as the mandatory Topic Filter is set.
          */
         @NotNull C topicFilter(@NotNull MqttTopicFilter topicFilter);
 

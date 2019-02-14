@@ -21,17 +21,34 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 
 /**
+ * Builder for {@link Mqtt5UserProperties}.
+ *
  * @author Silvio Giebl
  * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt5UserPropertiesBuilder extends Mqtt5UserPropertiesBuilderBase<Mqtt5UserPropertiesBuilder> {
 
+    /**
+     * Builds the {@link Mqtt5UserProperties}.
+     *
+     * @return the built {@link Mqtt5UserProperties}.
+     */
     @NotNull Mqtt5UserProperties build();
 
+    /**
+     * Builder for {@link Mqtt5UserProperties} that are applied to a parent.
+     *
+     * @param <P> the type of the result when the built {@link Mqtt5UserProperties} are applied to the parent.
+     */
     @DoNotImplement
     interface Nested<P> extends Mqtt5UserPropertiesBuilderBase<Nested<P>> {
 
+        /**
+         * Builds the {@link Mqtt5UserProperties} and applies them to the parent.
+         *
+         * @return the result when the built {@link Mqtt5UserProperties} are applied to the parent.
+         */
         @NotNull P applyUserProperties();
     }
 }
