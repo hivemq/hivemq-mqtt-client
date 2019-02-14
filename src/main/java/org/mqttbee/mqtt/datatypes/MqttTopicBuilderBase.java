@@ -21,11 +21,20 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 
 /**
+ * Builder base for a {@link MqttTopic}.
+ *
+ * @param <C> the type of the complete builder.
  * @author Silvio Giebl
  * @since 1.0
  */
 @DoNotImplement
 public interface MqttTopicBuilderBase<C extends MqttTopicBuilderBase<C>> {
 
+    /**
+     * Adds a {@link MqttTopic#getLevels() Topic level}.
+     *
+     * @param topicLevel the level.
+     * @return the builder that is now complete as the mandatory username is set.
+     */
     @NotNull C addLevel(@NotNull String topicLevel);
 }

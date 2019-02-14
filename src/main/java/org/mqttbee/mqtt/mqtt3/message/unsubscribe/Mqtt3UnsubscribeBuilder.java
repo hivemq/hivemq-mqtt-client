@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 
 /**
- * Builder or a {@link Mqtt3Unsubscribe}.
+ * Builder for a {@link Mqtt3Unsubscribe}.
  *
  * @author Silvio Giebl
  * @since 1.0

@@ -21,6 +21,8 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 
 /**
+ * Builder for a {@link MqttSharedTopicFilter}.
+ *
  * @author Silvio Giebl
  * @since 1.0
  */
@@ -31,6 +33,9 @@ public interface MqttSharedTopicFilterBuilder extends
                 MqttSharedTopicFilterBuilder, MqttSharedTopicFilterBuilder.Complete, MqttSharedTopicFilterBuilder.End> {
 // @formatter:on
 
+    /**
+     * {@link MqttSharedTopicFilterBuilder} that is complete which means all mandatory fields are set.
+     */
     // @formatter:off
     @DoNotImplement
     interface Complete extends
@@ -40,15 +45,33 @@ public interface MqttSharedTopicFilterBuilder extends
                     MqttSharedTopicFilterBuilder.End> {}
     // @formatter:on
 
+    /**
+     * End of a {@link MqttSharedTopicFilterBuilder} that does not allow to add any more levels or wildcards.
+     */
     @DoNotImplement
     interface End extends MqttTopicFilterBuilderBase.End {
 
+        /**
+         * Builds the {@link MqttSharedTopicFilter}.
+         *
+         * @return the built {@link MqttSharedTopicFilter}.
+         */
         @NotNull MqttSharedTopicFilter build();
     }
 
+    /**
+     * Builder for a {@link MqttSharedTopicFilter} that is applied to a parent.
+     *
+     * @param <P> the type of the result when the built {@link MqttSharedTopicFilter} is applied to the parent.
+     */
     @DoNotImplement
     interface Nested<P> extends MqttTopicFilterBuilderBase.SharedBase<Nested<P>, Nested.Complete<P>, Nested.End<P>> {
 
+        /**
+         * {@link Nested} that is complete which means all mandatory fields are set.
+         *
+         * @param <P> the type of the result when the built {@link MqttTopicFilter} is applied to the parent.
+         */
         // @formatter:off
         @DoNotImplement
         interface Complete<P> extends
@@ -56,9 +79,17 @@ public interface MqttSharedTopicFilterBuilder extends
                 MqttTopicFilterBuilderBase.SharedBase.Complete<Nested<P>, Nested.Complete<P>, Nested.End<P>> {}
         // @formatter:on
 
+        /**
+         * End of a {@link Nested} that does not allow to add any more levels or wildcards.
+         */
         @DoNotImplement
         interface End<P> extends MqttTopicFilterBuilderBase.End {
 
+            /**
+             * Builds the {@link MqttSharedTopicFilter} and applies it to the parent.
+             *
+             * @return the result when the built {@link MqttSharedTopicFilter} is applied to the parent.
+             */
             @NotNull P applyTopicFilter();
         }
     }

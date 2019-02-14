@@ -24,7 +24,7 @@ import org.mqttbee.mqtt.datatypes.MqttTopicFilterBuilder;
 import org.mqttbee.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 
 /**
- * Base builder for a {@link Mqtt3Unsubscribe}.
+ * Builder base for a {@link Mqtt3Unsubscribe}.
  *
  * @param <C> the type of the complete builder.
  * @author Silvio Giebl
