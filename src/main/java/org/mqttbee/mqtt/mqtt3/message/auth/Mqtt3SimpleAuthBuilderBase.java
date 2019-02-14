@@ -24,21 +24,53 @@ import org.mqttbee.mqtt.datatypes.MqttUtf8String;
 import java.nio.ByteBuffer;
 
 /**
+ * Builder base for a {@link Mqtt3SimpleAuth}.
+ *
+ * @param <C> the type of the complete builder.
  * @author Silvio Giebl
  * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt3SimpleAuthBuilderBase<C extends Mqtt3SimpleAuthBuilderBase.Complete<C>> {
 
+    /**
+     * Sets the mandatory {@link Mqtt3SimpleAuth#getUsername() username}.
+     *
+     * @param username the username string.
+     * @return the builder that is now complete as the mandatory username is set.
+     */
     @NotNull C username(@NotNull String username);
 
+    /**
+     * Sets the mandatory {@link Mqtt3SimpleAuth#getUsername() username}.
+     *
+     * @param username the username string.
+     * @return the builder that is now complete as the mandatory username is set.
+     */
     @NotNull C username(@NotNull MqttUtf8String username);
 
+    /**
+     * {@link Mqtt3SimpleAuthBuilderBase} that is complete which means all mandatory fields are set.
+     *
+     * @param <C> the type of the complete builder.
+     */
     @DoNotImplement
     interface Complete<C extends Mqtt3SimpleAuthBuilderBase.Complete<C>> extends Mqtt3SimpleAuthBuilderBase<C> {
 
+        /**
+         * Sets the optional {@link Mqtt3SimpleAuth#getPassword() password}.
+         *
+         * @param password the password as byte array.
+         * @return the builder.
+         */
         @NotNull C password(@NotNull byte[] password);
 
+        /**
+         * Sets the optional {@link Mqtt3SimpleAuth#getPassword() password}.
+         *
+         * @param password the password as {@link ByteBuffer}.
+         * @return the builder.
+         */
         @NotNull C password(@NotNull ByteBuffer password);
     }
 }

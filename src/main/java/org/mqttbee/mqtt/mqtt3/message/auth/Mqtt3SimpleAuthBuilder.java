@@ -21,25 +21,49 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 
 /**
+ * Builder for a {@link Mqtt3SimpleAuth}.
+ *
  * @author Silvio Giebl
  * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt3SimpleAuthBuilder extends Mqtt3SimpleAuthBuilderBase<Mqtt3SimpleAuthBuilder.Complete> {
 
+    /**
+     * {@link Mqtt3SimpleAuthBuilder} that is complete which means all mandatory fields are set.
+     */
     @DoNotImplement
-    interface Complete
-            extends Mqtt3SimpleAuthBuilder, Mqtt3SimpleAuthBuilderBase.Complete<Mqtt3SimpleAuthBuilder.Complete> {
+    interface Complete extends Mqtt3SimpleAuthBuilder, Mqtt3SimpleAuthBuilderBase.Complete<Mqtt3SimpleAuthBuilder.Complete> {
 
+        /**
+         * Builds the {@link Mqtt3SimpleAuth}.
+         *
+         * @return the built {@link Mqtt3SimpleAuth}.
+         */
         @NotNull Mqtt3SimpleAuth build();
     }
 
+    /**
+     * Builder for a {@link Mqtt3SimpleAuth} that is applied to a parent.
+     *
+     * @param <P> the type of the result when the built {@link Mqtt3SimpleAuth} is applied to the parent.
+     */
     @DoNotImplement
     interface Nested<P> extends Mqtt3SimpleAuthBuilderBase<Nested.Complete<P>> {
 
+        /**
+         * {@link Nested} that is complete which means all mandatory fields are set.
+         *
+         * @param <P> the type of the result when the built {@link Mqtt3SimpleAuth} is applied to the parent.
+         */
         @DoNotImplement
         interface Complete<P> extends Nested<P>, Mqtt3SimpleAuthBuilderBase.Complete<Nested.Complete<P>> {
 
+            /**
+             * Builds the {@link Mqtt3SimpleAuth} and applies it to the parent.
+             *
+             * @return the result when the built {@link Mqtt3SimpleAuth} is applied to the parent.
+             */
             @NotNull P applySimpleAuth();
         }
     }
