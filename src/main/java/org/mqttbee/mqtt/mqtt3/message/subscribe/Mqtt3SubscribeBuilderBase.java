@@ -21,16 +21,42 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 
 /**
+ * Base builder for a {@link Mqtt3Subscribe}.
+ *
+ * @param <C> the type of the complete builder.
  * @author Silvio Giebl
  * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt3SubscribeBuilderBase<C extends Mqtt3SubscribeBuilderBase<C>> {
 
+    /**
+     * Adds a {@link Mqtt3Subscription} to the {@link Mqtt3Subscribe#getSubscriptions() list of subscriptions}. At least
+     * one subscription is mandatory.
+     *
+     * @param subscription the subscription.
+     * @return the builder that is now complete as the mandatory username is set.
+     */
     @NotNull C addSubscription(@NotNull Mqtt3Subscription subscription);
 
+    /**
+     * Fluent counterpart of {@link #addSubscription(Mqtt3Subscription)}.
+     * <p>
+     * Calling {@link Mqtt3SubscriptionBuilder.Nested.Complete#applySubscription()} on the returned builder has the same
+     * effect as calling {@link #addSubscription(Mqtt3Subscription)} with the result of {@link
+     * Mqtt3SubscriptionBuilder.Complete#build()}.
+     *
+     * @return the fluent builder for the subscription.
+     * @see #addSubscription(Mqtt3Subscription)
+     */
     @NotNull Mqtt3SubscriptionBuilder.Nested<? extends C> addSubscription();
 
+    /**
+     * {@link Mqtt3SubscribeBuilderBase} that provides additional methods for the first subscription.
+     *
+     * @param <C>  the type of the complete builder.
+     * @param <SC> the type of the complete start builder.
+     */
     // @formatter:off
     @DoNotImplement
     interface Start<
@@ -39,6 +65,12 @@ public interface Mqtt3SubscribeBuilderBase<C extends Mqtt3SubscribeBuilderBase<C
             extends Mqtt3SubscribeBuilderBase<C>, Mqtt3SubscriptionBuilderBase<SC> {
     // @formatter:on
 
+        /**
+         * {@link Start} that is complete which means all mandatory fields are set.
+         *
+         * @param <C>  the type of the complete builder.
+         * @param <SC> the type of the complete start builder.
+         */
         // @formatter:off
         @DoNotImplement
         interface Complete<

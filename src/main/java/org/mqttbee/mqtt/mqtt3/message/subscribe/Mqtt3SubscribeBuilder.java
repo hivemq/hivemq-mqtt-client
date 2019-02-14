@@ -21,18 +21,31 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 
 /**
+ * Builder for a {@link Mqtt3Subscribe}.
+ *
  * @author Silvio Giebl
  * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt3SubscribeBuilder extends Mqtt3SubscribeBuilderBase<Mqtt3SubscribeBuilder.Complete> {
 
+    /**
+     * {@link Mqtt3SubscribeBuilder} that is complete which means all mandatory fields are set.
+     */
     @DoNotImplement
     interface Complete extends Mqtt3SubscribeBuilder, Mqtt3SubscribeBuilderBase<Mqtt3SubscribeBuilder.Complete> {
 
+        /**
+         * Builds the {@link Mqtt3Subscribe}.
+         *
+         * @return the built {@link Mqtt3Subscribe}.
+         */
         @NotNull Mqtt3Subscribe build();
     }
 
+    /**
+     * {@link Mqtt3SubscribeBuilder} that provides additional methods for the first subscription.
+     */
     // @formatter:off
     @DoNotImplement
     interface Start extends
@@ -40,6 +53,9 @@ public interface Mqtt3SubscribeBuilder extends Mqtt3SubscribeBuilderBase<Mqtt3Su
             Mqtt3SubscribeBuilderBase.Start<Mqtt3SubscribeBuilder.Complete, Mqtt3SubscribeBuilder.Start.Complete> {
     // @formatter:on
 
+        /**
+         * {@link Mqtt3SubscribeBuilder.Start} that is complete which means all mandatory fields are set.
+         */
         // @formatter:off
         @DoNotImplement
         interface Complete extends
@@ -49,15 +65,35 @@ public interface Mqtt3SubscribeBuilder extends Mqtt3SubscribeBuilderBase<Mqtt3Su
         // @formatter:on
     }
 
+    /**
+     * Builder for a {@link Mqtt3Subscribe} that is applied to a parent.
+     *
+     * @param <P> the type of the result when the built {@link Mqtt3Subscribe} is applied to the parent.
+     */
     @DoNotImplement
     interface Nested<P> extends Mqtt3SubscribeBuilderBase<Nested.Complete<P>> {
 
+        /**
+         * {@link Nested} that is complete which means all mandatory fields are set.
+         *
+         * @param <P> the type of the result when the built {@link Mqtt3Subscribe} is applied to the parent.
+         */
         @DoNotImplement
         interface Complete<P> extends Nested<P>, Mqtt3SubscribeBuilderBase<Nested.Complete<P>> {
 
+            /**
+             * Builds the {@link Mqtt3Subscribe} and applies it to the parent.
+             *
+             * @return the result when the built {@link Mqtt3Subscribe} is applied to the parent.
+             */
             @NotNull P applySubscribe();
         }
 
+        /**
+         * {@link Nested} that provides additional methods for the first subscription.
+         *
+         * @param <P> the type of the result when the built {@link Mqtt3Subscribe} is applied to the parent.
+         */
         // @formatter:off
         @DoNotImplement
         interface Start<P> extends
@@ -65,6 +101,11 @@ public interface Mqtt3SubscribeBuilder extends Mqtt3SubscribeBuilderBase<Mqtt3Su
                 Mqtt3SubscribeBuilderBase.Start<Nested.Complete<P>, Nested.Start.Complete<P>> {
         // @formatter:on
 
+            /**
+             * {@link Nested.Start} that is complete which means all mandatory fields are set.
+             *
+             * @param <P> the type of the result when the built {@link Mqtt3Subscribe} is applied to the parent.
+             */
             // @formatter:off
             @DoNotImplement
             interface Complete<P> extends
@@ -74,15 +115,36 @@ public interface Mqtt3SubscribeBuilder extends Mqtt3SubscribeBuilderBase<Mqtt3Su
         }
     }
 
+    /**
+     * Builder for a {@link Mqtt3Subscribe} that is applied to a parent {@link org.mqttbee.mqtt.mqtt3.Mqtt3Client} which
+     * then sends the Subscribe message.
+     *
+     * @param <P> the type of the result when the built {@link Mqtt3Subscribe} is sent by the parent.
+     */
     @DoNotImplement
     interface Send<P> extends Mqtt3SubscribeBuilderBase<Send.Complete<P>> {
 
+        /**
+         * {@link Send} that is complete which means all mandatory fields are set.
+         *
+         * @param <P> the type of the result when the built {@link Mqtt3Subscribe} is sent by the parent.
+         */
         @DoNotImplement
         interface Complete<P> extends Send<P>, Mqtt3SubscribeBuilderBase<Send.Complete<P>> {
 
+            /**
+             * Builds the {@link Mqtt3Subscribe} and applies it to the parent which then sends the Subscribe message.
+             *
+             * @return the result when the built {@link Mqtt3Subscribe} is sent by the parent.
+             */
             @NotNull P send();
         }
 
+        /**
+         * {@link Send} that provides additional methods for the first subscription.
+         *
+         * @param <P> the type of the result when the built {@link Mqtt3Subscribe} is sent by the parent.
+         */
         // @formatter:off
         @DoNotImplement
         interface Start<P> extends
@@ -90,6 +152,11 @@ public interface Mqtt3SubscribeBuilder extends Mqtt3SubscribeBuilderBase<Mqtt3Su
                 Mqtt3SubscribeBuilderBase.Start<Send.Complete<P>, Send.Start.Complete<P>> {
         // @formatter:on
 
+            /**
+             * {@link Send.Start} that is complete which means all mandatory fields are set.
+             *
+             * @param <P> the type of the result when the built {@link Mqtt3Subscribe} is sent by the parent.
+             */
             // @formatter:off
             @DoNotImplement
             interface Complete<P> extends

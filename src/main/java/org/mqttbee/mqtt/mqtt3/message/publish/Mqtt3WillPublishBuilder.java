@@ -21,25 +21,49 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 
 /**
+ * Builder for a {@link Mqtt3Publish} used as a Will Publish.
+ *
  * @author Silvio Giebl
  * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt3WillPublishBuilder extends Mqtt3PublishBuilderBase<Mqtt3WillPublishBuilder.Complete> {
 
+    /**
+     * {@link Mqtt3WillPublishBuilder} that is complete which means all mandatory fields are set.
+     */
     @DoNotImplement
-    interface Complete
-            extends Mqtt3WillPublishBuilder, Mqtt3PublishBuilderBase.Complete<Mqtt3WillPublishBuilder.Complete> {
+    interface Complete extends Mqtt3WillPublishBuilder, Mqtt3PublishBuilderBase.Complete<Mqtt3WillPublishBuilder.Complete> {
 
+        /**
+         * Builds the {@link Mqtt3Publish} as a Will Publish.
+         *
+         * @return the built {@link Mqtt3Publish}.
+         */
         @NotNull Mqtt3Publish build();
     }
 
+    /**
+     * Builder for a {@link Mqtt3Publish} that is applied to a parent as a Will Publish.
+     *
+     * @param <P> the type of the result when the built {@link Mqtt3Publish} is applied to the parent.
+     */
     @DoNotImplement
     interface Nested<P> extends Mqtt3PublishBuilderBase<Nested.Complete<P>> {
 
+        /**
+         * {@link Nested} that is complete which means all mandatory fields are set.
+         *
+         * @param <P> the type of the result when the built {@link Mqtt3Publish} is applied to the parent.
+         */
         @DoNotImplement
         interface Complete<P> extends Nested<P>, Mqtt3PublishBuilderBase.Complete<Nested.Complete<P>> {
 
+            /**
+             * Builds the {@link Mqtt3Publish} and applies it to the parent as a Will Publish.
+             *
+             * @return the result when the built {@link Mqtt3Publish} is applied to the parent.
+             */
             @NotNull P applyWillPublish();
         }
     }

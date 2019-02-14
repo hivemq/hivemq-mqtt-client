@@ -24,27 +24,87 @@ import org.mqttbee.mqtt.datatypes.MqttTopicFilterBuilder;
 import org.mqttbee.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 
 /**
+ * Base builder for a {@link Mqtt3Unsubscribe}.
+ *
+ * @param <C> the type of the complete builder.
  * @author Silvio Giebl
  * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt3UnsubscribeBuilderBase<C extends Mqtt3UnsubscribeBuilderBase<C>> {
 
+    /**
+     * Adds a {@link MqttTopicFilter Topic Filter} to the {@link Mqtt3Unsubscribe#getTopicFilters() list of Topic
+     * Filters}. At least one Topic Filter is mandatory.
+     *
+     * @param topicFilter the string representation of the Topic Filter.
+     * @return the builder that is now complete as the mandatory username is set.
+     */
     @NotNull C addTopicFilter(@NotNull String topicFilter);
 
+    /**
+     * Adds a {@link MqttTopicFilter Topic Filter} to the {@link Mqtt3Unsubscribe#getTopicFilters() list of Topic
+     * Filters}. At least one Topic Filter is mandatory.
+     *
+     * @param topicFilter the Topic Filter.
+     * @return the builder that is now complete as the mandatory username is set.
+     */
     @NotNull C addTopicFilter(@NotNull MqttTopicFilter topicFilter);
 
+    /**
+     * Fluent counterpart of {@link #addTopicFilter(MqttTopicFilter)}.
+     * <p>
+     * Calling {@link MqttTopicFilterBuilder.Nested.Complete#applyTopicFilter()} on the returned builder has the same
+     * effect as calling {@link #addTopicFilter(MqttTopicFilter)} with the result of {@link
+     * MqttTopicFilterBuilder.Complete#build()}.
+     *
+     * @return the fluent builder for the Topic Filter.
+     * @see #addTopicFilter(MqttTopicFilter)
+     */
     @NotNull MqttTopicFilterBuilder.Nested<? extends C> addTopicFilter();
 
+    /**
+     * Reverses the subscriptions of a Subscribe message by adding their Topic Filters.
+     *
+     * @param subscribe the Subscribe message.
+     * @return the builder that is now complete as the mandatory username is set.
+     */
     @NotNull C reverse(@NotNull Mqtt3Subscribe subscribe);
 
+    /**
+     * {@link Mqtt3UnsubscribeBuilderBase} that provides additional methods for the first Topic Filter.
+     *
+     * @param <C> the type of the complete builder.
+     */
     @DoNotImplement
     interface Start<C extends Mqtt3UnsubscribeBuilderBase<C>> extends Mqtt3UnsubscribeBuilderBase<C> {
 
+        /**
+         * Sets the mandatory {@link Mqtt3Unsubscribe#getTopicFilters() first Topic Filter}.
+         *
+         * @param topicFilter the string representation of the Topic Filter.
+         * @return the builder that is now complete as the mandatory username is set.
+         */
         @NotNull C topicFilter(@NotNull String topicFilter);
 
+        /**
+         * Sets the mandatory {@link Mqtt3Unsubscribe#getTopicFilters() first Topic Filter}.
+         *
+         * @param topicFilter the Topic Filter.
+         * @return the builder that is now complete as the mandatory username is set.
+         */
         @NotNull C topicFilter(@NotNull MqttTopicFilter topicFilter);
 
+        /**
+         * Fluent counterpart of {@link #topicFilter(MqttTopicFilter)}.
+         * <p>
+         * Calling {@link MqttTopicFilterBuilder.Nested.Complete#applyTopicFilter()} on the returned builder has the
+         * same effect as calling {@link #topicFilter(MqttTopicFilter)} with the result of {@link
+         * MqttTopicFilterBuilder.Complete#build()}.
+         *
+         * @return the fluent builder for the Topic Filter.
+         * @see #addTopicFilter(MqttTopicFilter)
+         */
         @NotNull MqttTopicFilterBuilder.Nested<? extends C> topicFilter();
     }
 }
