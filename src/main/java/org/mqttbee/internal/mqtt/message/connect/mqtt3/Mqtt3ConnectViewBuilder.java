@@ -39,7 +39,7 @@ import java.util.function.Function;
 public abstract class Mqtt3ConnectViewBuilder<B extends Mqtt3ConnectViewBuilder<B>> {
 
     private int keepAliveSeconds = Mqtt3ConnectView.DEFAULT_KEEP_ALIVE;
-    private boolean isCleanSession = Mqtt3ConnectView.DEFAULT_CLEAN_SESSION;
+    private boolean cleanSession = Mqtt3ConnectView.DEFAULT_CLEAN_SESSION;
     private @Nullable MqttSimpleAuth simpleAuth;
     private @Nullable MqttWillPublish willPublish;
 
@@ -48,7 +48,7 @@ public abstract class Mqtt3ConnectViewBuilder<B extends Mqtt3ConnectViewBuilder<
     Mqtt3ConnectViewBuilder(final @NotNull Mqtt3ConnectView connect) {
         final MqttConnect delegate = connect.getDelegate();
         keepAliveSeconds = delegate.getKeepAlive();
-        isCleanSession = delegate.isCleanStart();
+        cleanSession = delegate.isCleanStart();
         simpleAuth = delegate.getRawSimpleAuth();
         willPublish = delegate.getRawWillPublish();
     }
@@ -65,8 +65,8 @@ public abstract class Mqtt3ConnectViewBuilder<B extends Mqtt3ConnectViewBuilder<
         return self();
     }
 
-    public @NotNull B cleanSession(final boolean isCleanSession) {
-        this.isCleanSession = isCleanSession;
+    public @NotNull B cleanSession(final boolean cleanSession) {
+        this.cleanSession = cleanSession;
         return self();
     }
 
@@ -91,7 +91,7 @@ public abstract class Mqtt3ConnectViewBuilder<B extends Mqtt3ConnectViewBuilder<
     }
 
     public @NotNull Mqtt3ConnectView build() {
-        return Mqtt3ConnectView.of(keepAliveSeconds, isCleanSession, simpleAuth, willPublish);
+        return Mqtt3ConnectView.of(keepAliveSeconds, cleanSession, simpleAuth, willPublish);
     }
 
     public static class Default extends Mqtt3ConnectViewBuilder<Default> implements Mqtt3ConnectBuilder {

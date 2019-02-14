@@ -42,19 +42,19 @@ public class Mqtt3ConnectView implements Mqtt3Connect {
     public static final @NotNull Mqtt3ConnectView DEFAULT = of(DEFAULT_KEEP_ALIVE, DEFAULT_CLEAN_SESSION, null, null);
 
     private static @NotNull MqttConnect delegate(
-            final int keepAlive, final boolean isCleanSession, final @Nullable MqttSimpleAuth simpleAuth,
+            final int keepAlive, final boolean cleanSession, final @Nullable MqttSimpleAuth simpleAuth,
             final @Nullable MqttWillPublish willPublish) {
 
-        return new MqttConnect(keepAlive, isCleanSession, isCleanSession ? 0 : MqttConnect.NO_SESSION_EXPIRY,
+        return new MqttConnect(keepAlive, cleanSession, cleanSession ? 0 : MqttConnect.NO_SESSION_EXPIRY,
                 MqttConnectRestrictions.DEFAULT, simpleAuth, null, willPublish,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES);
     }
 
     static @NotNull Mqtt3ConnectView of(
-            final int keepAlive, final boolean isCleanSession, final @Nullable MqttSimpleAuth simpleAuth,
+            final int keepAlive, final boolean cleanSession, final @Nullable MqttSimpleAuth simpleAuth,
             final @Nullable MqttWillPublish willPublish) {
 
-        return new Mqtt3ConnectView(delegate(keepAlive, isCleanSession, simpleAuth, willPublish));
+        return new Mqtt3ConnectView(delegate(keepAlive, cleanSession, simpleAuth, willPublish));
     }
 
     public static @NotNull Mqtt3ConnectView of(final @NotNull MqttConnect delegate) {
