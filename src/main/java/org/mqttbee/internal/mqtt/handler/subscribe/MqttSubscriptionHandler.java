@@ -313,13 +313,7 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
     @Override
     public void onSessionEnd(final @NotNull Throwable cause) {
         super.onSessionEnd(cause);
-
-        pending.forEach((packetIdentifier, statefulSubOrUnsubWithFlow) -> {
-            statefulSubOrUnsubWithFlow.getFlow().onError(cause);
-            return true;
-        });
         pending.clear();
-
         clearQueued(cause);
     }
 

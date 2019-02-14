@@ -234,6 +234,7 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler
     public void onSessionEnd(final @NotNull Throwable cause) {
         super.onSessionEnd(cause);
         incomingPublishFlows.clear(cause);
+        messages.clear();
     }
 
     private @NotNull MqttPubAck buildPubAck(final @NotNull MqttPubAckBuilder pubAckBuilder) {
