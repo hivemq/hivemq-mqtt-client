@@ -24,7 +24,7 @@ import org.mqttbee.mqtt.datatypes.MqttTopicFilter;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterBuilder;
 
 /**
- * Base builder for a {@link Mqtt3Subscription}.
+ * Builder base for a {@link Mqtt3Subscription}.
  *
  * @param <C> the type of the complete builder.
  * @author Silvio Giebl

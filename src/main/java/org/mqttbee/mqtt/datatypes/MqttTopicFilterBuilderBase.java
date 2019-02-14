@@ -21,6 +21,13 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 
 /**
+ * Builder base for a {@link MqttTopicFilter}.
+ *
+ * @param <C>  the type of the complete builder.
+ * @param <E>  the type of the end builder.
+ * @param <S>  the type of the builder for a {@link MqttSharedTopicFilter}.
+ * @param <SC> the type of the complete builder for a {@link MqttSharedTopicFilter}.
+ * @param <SE> the type of the end builder for a {@link MqttSharedTopicFilter}.
  * @author Silvio Giebl
  * @since 1.0
  */
@@ -34,14 +41,45 @@ public interface MqttTopicFilterBuilderBase<
         SE extends MqttTopicFilterBuilderBase.End> {
 // @formatter:on
 
+    /**
+     * Adds a {@link MqttTopicFilter#getLevels() Topic level}.
+     *
+     * @param topicLevel the level.
+     * @return the builder that is now complete as the mandatory username is set.
+     */
     @NotNull C addLevel(@NotNull String topicLevel);
 
+    /**
+     * Adds a {@link MqttTopicFilter#SINGLE_LEVEL_WILDCARD}.
+     *
+     * @return the builder that is now complete as the mandatory username is set.
+     */
     @NotNull C singleLevelWildcard();
 
+    /**
+     * Adds a {@link MqttTopicFilter#MULTI_LEVEL_WILDCARD}.
+     *
+     * @return the end builder.
+     */
     @NotNull E multiLevelWildcard();
 
+    /**
+     * Creates a builder for a {@link MqttSharedTopicFilter} that extends the current Topic Filter of this builder.
+     *
+     * @param shareName the Share Name.
+     * @return the created builder for a Shared Topic Filter.
+     */
     @NotNull S share(@NotNull String shareName);
 
+    /**
+     * {@link MqttTopicFilterBuilderBase} that is complete which means all mandatory fields are set.
+     *
+     * @param <C>  the type of the complete builder.
+     * @param <E>  the type of the end builder.
+     * @param <S>  the type of the builder for a {@link MqttSharedTopicFilter}.
+     * @param <SC> the type of the complete builder for a {@link MqttSharedTopicFilter}.
+     * @param <SE> the type of the end builder for a {@link MqttSharedTopicFilter}.
+     */
     // @formatter:off
     @DoNotImplement
     interface Complete<
@@ -53,12 +91,28 @@ public interface MqttTopicFilterBuilderBase<
             extends MqttTopicFilterBuilderBase<C, E, S, SC, SE> {
     // @formatter:on
 
+        /**
+         * Creates a builder for a {@link MqttSharedTopicFilter} that extends the current Topic Filter of this builder.
+         *
+         * @param shareName the Share Name.
+         * @return the created complete builder for a Shared Topic Filter.
+         */
         @NotNull SC share(@NotNull String shareName);
     }
 
+    /**
+     * End of a {@link MqttTopicFilterBuilderBase} that does not allow to add any more levels or wildcards.
+     */
     @DoNotImplement
     interface End {}
 
+    /**
+     * Builder base for a {@link MqttSharedTopicFilter}.
+     *
+     * @param <S>  the type of the builder.
+     * @param <SC> the type of the complete builder.
+     * @param <SE> the type of the end builder.
+     */
     // @formatter:off
     @DoNotImplement
     interface SharedBase<
@@ -68,6 +122,13 @@ public interface MqttTopicFilterBuilderBase<
             extends MqttTopicFilterBuilderBase<SC, SE, S, SC, SE> {
     // @formatter:on
 
+        /**
+         * {@link SharedBase} that is complete which means all mandatory fields are set.
+         *
+         * @param <S>  the type of the builder.
+         * @param <SC> the type of the complete builder.
+         * @param <SE> the type of the end builder.
+         */
         // @formatter:off
         @DoNotImplement
         interface Complete<

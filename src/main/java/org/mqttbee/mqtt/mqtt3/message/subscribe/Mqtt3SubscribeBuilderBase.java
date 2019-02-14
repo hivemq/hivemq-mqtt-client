@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 
 /**
- * Base builder for a {@link Mqtt3Subscribe}.
+ * Builder base for a {@link Mqtt3Subscribe}.
  *
  * @param <C> the type of the complete builder.
  * @author Silvio Giebl
