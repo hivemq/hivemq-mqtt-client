@@ -35,7 +35,7 @@ public interface Mqtt5EnhancedAuthBuilder {
     /**
      * Sets the optional auth data.
      *
-     * @param data the auth data as byte array or <code>null</null> to cancel any previously set auth data.
+     * @param data the auth data as byte array or <code>null</code> to cancel any previously set auth data.
      * @return the builder.
      */
     @NotNull Mqtt5EnhancedAuthBuilder data(@Nullable byte[] data);
@@ -43,7 +43,7 @@ public interface Mqtt5EnhancedAuthBuilder {
     /**
      * Sets the optional auth data.
      *
-     * @param data the auth data as {@link ByteBuffer} or <code>null</null> to cancel any previously set auth data.
+     * @param data the auth data as {@link ByteBuffer} or <code>null</code> to cancel any previously set auth data.
      * @return the builder.
      */
     @NotNull Mqtt5EnhancedAuthBuilder data(@Nullable ByteBuffer data);
