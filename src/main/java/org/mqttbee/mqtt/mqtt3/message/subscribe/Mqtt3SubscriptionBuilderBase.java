@@ -24,21 +24,57 @@ import org.mqttbee.mqtt.datatypes.MqttTopicFilter;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterBuilder;
 
 /**
+ * Base builder for a {@link Mqtt3Subscription}.
+ *
+ * @param <C> the type of the complete builder.
  * @author Silvio Giebl
  * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt3SubscriptionBuilderBase<C extends Mqtt3SubscriptionBuilderBase.Complete<C>> {
 
+    /**
+     * Sets the mandatory {@link Mqtt3Subscription#getTopicFilter() Topic Filter}.
+     *
+     * @param topicFilter the string representation of the Topic Filter.
+     * @return the builder that is now complete as the mandatory username is set.
+     */
     @NotNull C topicFilter(@NotNull String topicFilter);
 
+    /**
+     * Sets the mandatory {@link Mqtt3Subscription#getTopicFilter() Topic Filter}.
+     *
+     * @param topicFilter the Topic Filter.
+     * @return the builder that is now complete as the mandatory username is set.
+     */
     @NotNull C topicFilter(@NotNull MqttTopicFilter topicFilter);
 
+    /**
+     * Fluent counterpart of {@link #topicFilter(MqttTopicFilter)}.
+     * <p>
+     * Calling {@link MqttTopicFilterBuilder.Nested.Complete#applyTopicFilter()} on the returned builder has the same
+     * effect as calling {@link #topicFilter(MqttTopicFilter)} with the result of {@link
+     * MqttTopicFilterBuilder.Complete#build()}.
+     *
+     * @return the fluent builder for the Topic Filter.
+     * @see #topicFilter(MqttTopicFilter)
+     */
     @NotNull MqttTopicFilterBuilder.Nested<? extends C> topicFilter();
 
+    /**
+     * {@link Mqtt3SubscriptionBuilderBase} that is complete which means all mandatory fields are set.
+     *
+     * @param <C> the type of the complete builder.
+     */
     @DoNotImplement
     interface Complete<C extends Mqtt3SubscriptionBuilderBase.Complete<C>> extends Mqtt3SubscriptionBuilderBase<C> {
 
+        /**
+         * Sets the {@link Mqtt3Subscription#getQos() QoS}.
+         *
+         * @param qos the QoS.
+         * @return the builder.
+         */
         @NotNull C qos(@NotNull MqttQos qos);
     }
 }

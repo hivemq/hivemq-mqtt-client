@@ -82,7 +82,7 @@ public interface Mqtt3ConnectBuilderBase<B extends Mqtt3ConnectBuilderBase<B>> {
     /**
      * Sets the optional {@link Mqtt3Connect#getWillPublish() Will Publish}.
      *
-     * @param willPublish the Will Publish of <code>null</code> to cancel any previously set Will Publish.
+     * @param willPublish the Will Publish or <code>null</code> to cancel any previously set Will Publish.
      * @return the builder.
      */
     @NotNull B willPublish(@Nullable Mqtt3Publish willPublish);
@@ -94,7 +94,7 @@ public interface Mqtt3ConnectBuilderBase<B extends Mqtt3ConnectBuilderBase<B>> {
      * effect as calling {@link #willPublish(Mqtt3Publish)} with the result of {@link
      * Mqtt3WillPublishBuilder.Complete#build()}.
      *
-     * @return the fluent builder for the simple auth related data.
+     * @return the fluent builder for the Will Publish.
      * @see #willPublish(Mqtt3Publish)
      */
     @NotNull Mqtt3WillPublishBuilder.Nested<? extends B> willPublish();

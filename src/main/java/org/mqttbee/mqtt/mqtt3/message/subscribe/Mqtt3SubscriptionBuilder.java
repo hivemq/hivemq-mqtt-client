@@ -21,25 +21,49 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 
 /**
+ * Builder for a {@link Mqtt3Subscription}.
+ *
  * @author Silvio Giebl
  * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt3SubscriptionBuilder extends Mqtt3SubscriptionBuilderBase<Mqtt3SubscriptionBuilder.Complete> {
 
+    /**
+     * {@link Mqtt3SubscriptionBuilder} that is complete which means all mandatory fields are set.
+     */
     @DoNotImplement
-    interface Complete
-            extends Mqtt3SubscriptionBuilder, Mqtt3SubscriptionBuilderBase.Complete<Mqtt3SubscriptionBuilder.Complete> {
+    interface Complete extends Mqtt3SubscriptionBuilder, Mqtt3SubscriptionBuilderBase.Complete<Mqtt3SubscriptionBuilder.Complete> {
 
+        /**
+         * Builds the {@link Mqtt3Subscription}.
+         *
+         * @return the built {@link Mqtt3Subscription}.
+         */
         @NotNull Mqtt3Subscription build();
     }
 
+    /**
+     * Builder for a {@link Mqtt3Subscription} that is applied to a parent.
+     *
+     * @param <P> the type of the result when the built {@link Mqtt3Subscription} is applied to the parent.
+     */
     @DoNotImplement
     interface Nested<P> extends Mqtt3SubscriptionBuilderBase<Nested.Complete<P>> {
 
+        /**
+         * {@link Nested} that is complete which means all mandatory fields are set.
+         *
+         * @param <P> the type of the result when the built {@link Mqtt3Subscription} is applied to the parent.
+         */
         @DoNotImplement
         interface Complete<P> extends Nested<P>, Mqtt3SubscriptionBuilderBase.Complete<Nested.Complete<P>> {
 
+            /**
+             * Builds the {@link Mqtt3Subscription} and applies it to the parent.
+             *
+             * @return the result when the built {@link Mqtt3Subscription} is applied to the parent.
+             */
             @NotNull P applySubscription();
         }
     }
