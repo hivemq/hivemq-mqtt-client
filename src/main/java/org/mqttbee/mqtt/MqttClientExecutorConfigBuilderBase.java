@@ -38,7 +38,7 @@ public interface MqttClientExecutorConfigBuilderBase<B extends MqttClientExecuto
      * Sets the optional user defined {@link MqttClientExecutorConfig#getNettyExecutor() executor for Netty} (network
      * communication framework).
      *
-     * @param nettyExecutor the user defined executor for Netty or null to use the default executor.
+     * @param nettyExecutor the user defined executor for Netty or <code>null</code> to use the default executor.
      * @return the builder.
      */
     @NotNull B nettyExecutor(@Nullable Executor nettyExecutor);

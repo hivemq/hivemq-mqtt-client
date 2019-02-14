@@ -54,6 +54,7 @@ public interface Mqtt5PublishResult {
      * <p>
      * This result additionally provides the {@link Mqtt5PubAck PubAck message} that acknowledged the Publish message.
      */
+    @DoNotImplement
     interface Mqtt5Qos1Result extends Mqtt5PublishResult {
 
         /**
@@ -68,6 +69,7 @@ public interface Mqtt5PublishResult {
      * <p>
      * This result additionally provides the {@link Mqtt5PubRec PubRec message} that acknowledged the Publish message.
      */
+    @DoNotImplement
     interface Mqtt5Qos2Result extends Mqtt5PublishResult {
 
         /**
@@ -85,6 +87,7 @@ public interface Mqtt5PublishResult {
      * <p>
      * By default just a {@link Mqtt5Qos2Result} is provided as a result for a Publish message with QoS level 2.
      */
+    @DoNotImplement
     interface Mqtt5Qos2CompleteResult extends Mqtt5Qos2Result {
 
         /**

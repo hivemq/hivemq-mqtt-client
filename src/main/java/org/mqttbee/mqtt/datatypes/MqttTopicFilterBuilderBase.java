@@ -97,6 +97,7 @@ public interface MqttTopicFilterBuilderBase<
          * @param shareName the Share Name.
          * @return the created complete builder for a Shared Topic Filter.
          */
+        @Override
         @NotNull SC share(@NotNull String shareName);
     }
 

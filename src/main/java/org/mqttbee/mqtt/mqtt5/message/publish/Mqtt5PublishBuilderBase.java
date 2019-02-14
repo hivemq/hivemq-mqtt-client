@@ -151,7 +151,7 @@ public interface Mqtt5PublishBuilderBase<C extends Mqtt5PublishBuilderBase.Compl
         /**
          * Sets the optional {@link Mqtt5Publish#getResponseTopic() response topic}.
          *
-         * @param responseTopic the response topic of <code>null</code> to remove any previously set response topic.
+         * @param responseTopic the response topic or <code>null</code> to remove any previously set response topic.
          * @return the builder.
          */
         @NotNull C responseTopic(@Nullable String responseTopic);
@@ -159,7 +159,7 @@ public interface Mqtt5PublishBuilderBase<C extends Mqtt5PublishBuilderBase.Compl
         /**
          * Sets the optional {@link Mqtt5Publish#getResponseTopic() response topic}.
          *
-         * @param responseTopic the response topic of <code>null</code> to remove any previously set response topic.
+         * @param responseTopic the response topic or <code>null</code> to remove any previously set response topic.
          * @return the builder.
          */
         @NotNull C responseTopic(@Nullable MqttTopic responseTopic);
