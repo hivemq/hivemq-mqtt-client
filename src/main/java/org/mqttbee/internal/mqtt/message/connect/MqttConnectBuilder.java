@@ -34,7 +34,6 @@ import org.mqttbee.mqtt.mqtt5.message.auth.Mqtt5SimpleAuth;
 import org.mqttbee.mqtt.mqtt5.message.connect.Mqtt5ConnectBuilder;
 import org.mqttbee.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions;
 import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5Publish;
-import org.mqttbee.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
 
 import java.util.function.Function;
 
@@ -118,11 +117,6 @@ public abstract class MqttConnectBuilder<B extends MqttConnectBuilder<B>> {
     public @NotNull B willPublish(final @Nullable Mqtt5Publish willPublish) {
         this.willPublish = (willPublish == null) ? null :
                 Checks.notImplemented(willPublish, MqttPublish.class, "Will publish").asWill();
-        return self();
-    }
-
-    public @NotNull B willPublish(final @Nullable Mqtt5WillPublish willPublish) {
-        this.willPublish = Checks.notImplementedOrNull(willPublish, MqttWillPublish.class, "Will publish");
         return self();
     }
 

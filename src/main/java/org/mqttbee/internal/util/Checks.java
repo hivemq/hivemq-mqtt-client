@@ -110,6 +110,14 @@ public class Checks {
         return value;
     }
 
+    public static int unsignedShortNotZero(final int value, final @NotNull String name) {
+        if (value == 0) {
+            throw new IllegalArgumentException(name + " must not be zero.");
+        }
+        unsignedShort(value, name);
+        return value;
+    }
+
     public static long unsignedInt(final long value, final @NotNull String name) {
         if (!UnsignedDataTypes.isUnsignedInt(value)) {
             throw new IllegalArgumentException(name + " must not exceed the value range of unsigned int [0, " +

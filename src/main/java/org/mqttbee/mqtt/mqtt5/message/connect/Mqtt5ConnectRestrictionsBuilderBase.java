@@ -21,25 +21,84 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 
 /**
+ * Builder base for {@link Mqtt5ConnectRestrictions}.
+ *
+ * @param <B> the type of the builder.
  * @author Silvio Giebl
  * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt5ConnectRestrictionsBuilderBase<B extends Mqtt5ConnectRestrictionsBuilderBase<B>> {
 
+    /**
+     * Sets the {@link Mqtt5ConnectRestrictions#getReceiveMaximum() receive maximum}.
+     * <p>
+     * The value must not be zero and must be in the range of an unsigned short: [1, 65_535].
+     *
+     * @param receiveMaximum the receive maximum.
+     * @return the builder.
+     */
     @NotNull B receiveMaximum(int receiveMaximum);
 
+    /**
+     * Sets the {@link Mqtt5ConnectRestrictions#getSendMaximum() send maximum}.
+     * <p>
+     * The value must not be zero and must be in the range of an unsigned short: [1, 65_535].
+     *
+     * @param receiveMaximum the send maximum.
+     * @return the builder.
+     */
     @NotNull B sendMaximum(int receiveMaximum);
 
+    /**
+     * Sets the {@link Mqtt5ConnectRestrictions#getMaximumPacketSize() maximum packet size}.
+     * <p>
+     * The value must not be zero and in the range: [1, 268_435_460].
+     *
+     * @param maximumPacketSize the maximum packet size.
+     * @return the builder.
+     */
     @NotNull B maximumPacketSize(int maximumPacketSize);
 
+    /**
+     * Sets the {@link Mqtt5ConnectRestrictions#getSendMaximumPacketSize() maximum packet size for sending}.
+     * <p>
+     * The value must not be zero and in the range: [1, 268_435_460].
+     *
+     * @param maximumPacketSize the maximum packet size for sending.
+     * @return the builder.
+     */
     @NotNull B sendMaximumPacketSize(int maximumPacketSize);
 
+    /**
+     * Sets the {@link Mqtt5ConnectRestrictions#getTopicAliasMaximum() topic alias maximum}.
+     *
+     * @param topicAliasMaximum the topic alias maximum.
+     * @return the builder.
+     */
     @NotNull B topicAliasMaximum(int topicAliasMaximum);
 
+    /**
+     * Sets the {@link Mqtt5ConnectRestrictions#getTopicAliasMaximum() topic alias maximum for sending}.
+     *
+     * @param topicAliasMaximum the topic alias maximum for sending.
+     * @return the builder.
+     */
     @NotNull B sendTopicAliasMaximum(int topicAliasMaximum);
 
+    /**
+     * Sets whether {@link Mqtt5ConnectRestrictions#isRequestProblemInformation() problem information is requested}.
+     *
+     * @param requestProblemInformation whether problem information is requested.
+     * @return the builder.
+     */
     @NotNull B requestProblemInformation(boolean requestProblemInformation);
 
+    /**
+     * Sets whether {@link Mqtt5ConnectRestrictions#isRequestResponseInformation() response information is requested}.
+     *
+     * @param requestResponseInformation whether response information is requested.
+     * @return the builder.
+     */
     @NotNull B requestResponseInformation(boolean requestResponseInformation);
 }

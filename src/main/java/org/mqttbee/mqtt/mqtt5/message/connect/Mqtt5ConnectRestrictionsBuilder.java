@@ -21,6 +21,8 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 
 /**
+ * Builder for {@link Mqtt5ConnectRestrictions}.
+ *
  * @author Silvio Giebl
  * @since 1.0
  */
@@ -28,11 +30,26 @@ import org.mqttbee.annotations.DoNotImplement;
 public interface Mqtt5ConnectRestrictionsBuilder
         extends Mqtt5ConnectRestrictionsBuilderBase<Mqtt5ConnectRestrictionsBuilder> {
 
+    /**
+     * Builds the {@link Mqtt5ConnectRestrictions}.
+     *
+     * @return the built {@link Mqtt5ConnectRestrictions}.
+     */
     @NotNull Mqtt5ConnectRestrictions build();
 
+    /**
+     * Builder for a {@link Mqtt5ConnectRestrictions} that is applied to a parent.
+     *
+     * @param <P> the type of the result when the built {@link Mqtt5ConnectRestrictions} is applied to the parent.
+     */
     @DoNotImplement
     interface Nested<P> extends Mqtt5ConnectRestrictionsBuilderBase<Nested<P>> {
 
+        /**
+         * Builds the {@link Mqtt5ConnectRestrictions} and applies it to the parent.
+         *
+         * @return the result when the built {@link Mqtt5ConnectRestrictions} is applied to the parent.
+         */
         @NotNull P applyRestrictions();
     }
 }
