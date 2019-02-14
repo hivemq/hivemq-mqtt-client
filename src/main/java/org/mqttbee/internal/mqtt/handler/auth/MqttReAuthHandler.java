@@ -112,6 +112,7 @@ public class MqttReAuthHandler extends AbstractMqttAuthHandler {
      * @param ctx  the channel handler context.
      * @param auth the incoming AUTH message.
      */
+    @Override
     void readAuthSuccess(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttAuth auth) {
         if (state != MqttAuthState.WAIT_FOR_SERVER) {
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,
@@ -149,6 +150,7 @@ public class MqttReAuthHandler extends AbstractMqttAuthHandler {
      * @param ctx  the channel handler context.
      * @param auth the incoming AUTH message.
      */
+    @Override
     void readReAuth(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttAuth auth) {
         if (!clientConfig.getAdvancedConfig().isAllowServerReAuth()) {
             MqttDisconnectUtil.disconnect(ctx.channel(), Mqtt5DisconnectReasonCode.PROTOCOL_ERROR,

@@ -69,6 +69,7 @@ public abstract class MqttTopicImplBuilder<B extends MqttTopicImplBuilder> {
             return this;
         }
 
+        @Override
         public @NotNull MqttTopicFilterImplBuilder.Default filter() {
             if (stringBuilder == null) {
                 return new MqttTopicFilterImplBuilder.Default();
@@ -76,6 +77,7 @@ public abstract class MqttTopicImplBuilder<B extends MqttTopicImplBuilder> {
             return new MqttTopicFilterImplBuilder.Default(stringBuilder.toString());
         }
 
+        @Override
         public @NotNull MqttTopicFilterImplBuilder.SharedDefault share(final @Nullable String shareName) {
             if (stringBuilder == null) {
                 return new MqttTopicFilterImplBuilder.SharedDefault(shareName);

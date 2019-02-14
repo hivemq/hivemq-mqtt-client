@@ -133,6 +133,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
         return webSocketConfig;
     }
 
+    @Override
     public @NotNull MqttClientAdvancedConfig getAdvancedConfig() {
         return advancedConfig;
     }

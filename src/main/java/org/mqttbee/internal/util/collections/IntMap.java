@@ -180,6 +180,7 @@ public abstract class IntMap<E> {
             this.values = (E[]) new Object[size];
         }
 
+        @Override
         public @Nullable E put(final int key, final @NotNull E value) {
             final E previousValue = values[key];
             values[key] = value;
@@ -189,10 +190,12 @@ public abstract class IntMap<E> {
             return previousValue;
         }
 
+        @Override
         public @Nullable E get(final int key) {
             return values[key];
         }
 
+        @Override
         public @Nullable E remove(final int key) {
             final E previousValue = values[key];
             values[key] = null;
@@ -311,6 +314,7 @@ public abstract class IntMap<E> {
             this.allocator = allocator;
         }
 
+        @Override
         public @Nullable E put(final int key, final @NotNull E value) {
             final int index = key >> shift;
             IntMap<E> subLevel = subLevels[index];
@@ -325,6 +329,7 @@ public abstract class IntMap<E> {
             return put;
         }
 
+        @Override
         public @Nullable E get(final int key) {
             final IntMap<E> subLevel = subLevels[key >> shift];
             if (subLevel == null) {
@@ -333,6 +338,7 @@ public abstract class IntMap<E> {
             return subLevel.get(key & mask);
         }
 
+        @Override
         public @Nullable E remove(final int key) {
             final int index = key >> shift;
             final IntMap<E> subLevel = subLevels[index];

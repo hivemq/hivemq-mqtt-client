@@ -130,6 +130,7 @@ public class MqttPublishResult implements Mqtt5PublishResult {
             this.acknowledgedCallback = acknowledgedCallback;
         }
 
+        @Override
         public boolean acknowledged() {
             return acknowledgedCallback.getAsBoolean();
         }
