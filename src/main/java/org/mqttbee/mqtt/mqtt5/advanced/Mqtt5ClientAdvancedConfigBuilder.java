@@ -21,6 +21,8 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 
 /**
+ * Builder for a {@link Mqtt5ClientAdvancedConfig}.
+ *
  * @author Silvio Giebl
  * @since 1.0
  */
@@ -28,11 +30,26 @@ import org.mqttbee.annotations.DoNotImplement;
 public interface Mqtt5ClientAdvancedConfigBuilder
         extends Mqtt5ClientAdvancedConfigBuilderBase<Mqtt5ClientAdvancedConfigBuilder> {
 
+    /**
+     * Builds the {@link Mqtt5ClientAdvancedConfig}.
+     *
+     * @return the built {@link Mqtt5ClientAdvancedConfig}.
+     */
     @NotNull Mqtt5ClientAdvancedConfig build();
 
+    /**
+     * Builder for a {@link Mqtt5ClientAdvancedConfig} that is applied to a parent.
+     *
+     * @param <P> the type of the result when the built {@link Mqtt5ClientAdvancedConfig} is applied to the parent.
+     */
     @DoNotImplement
     interface Nested<P> extends Mqtt5ClientAdvancedConfigBuilderBase<Nested<P>> {
 
+        /**
+         * Builds the {@link Mqtt5ClientAdvancedConfig} and applies it to the parent.
+         *
+         * @return the result when the built {@link Mqtt5ClientAdvancedConfig} is applied to the parent.
+         */
         @NotNull P applyAdvancedConfig();
     }
 }

@@ -27,7 +27,8 @@ import org.mqttbee.mqtt.mqtt5.advanced.interceptor.qos2.Mqtt5IncomingQos2Interce
 import org.mqttbee.mqtt.mqtt5.advanced.interceptor.qos2.Mqtt5OutgoingQos2Interceptor;
 
 /**
- * Collection of Interceptors of MQTT messages received or sent by a {@link org.mqttbee.mqtt.mqtt5.Mqtt5Client}.
+ * Collection of interceptors of MQTT messages received or sent by a {@link org.mqttbee.mqtt.mqtt5.Mqtt5Client
+ * MQTT5Client}.
  *
  * @author Silvio Giebl
  * @since 1.0
