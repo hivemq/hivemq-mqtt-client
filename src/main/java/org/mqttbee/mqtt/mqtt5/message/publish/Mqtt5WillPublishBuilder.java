@@ -21,25 +21,49 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 
 /**
+ * Builder for a {@link Mqtt5WillPublish}.
+ *
  * @author Silvio Giebl
  * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt5WillPublishBuilder extends Mqtt5PublishBuilderBase.WillBase<Mqtt5WillPublishBuilder.Complete> {
 
+    /**
+     * {@link Mqtt5WillPublishBuilder} that is complete which means all mandatory fields are set.
+     */
     @DoNotImplement
-    interface Complete extends Mqtt5WillPublishBuilder,
-            Mqtt5PublishBuilderBase.WillBase.Complete<Mqtt5WillPublishBuilder.Complete> {
+    interface Complete extends Mqtt5WillPublishBuilder, Mqtt5PublishBuilderBase.WillBase.Complete<Mqtt5WillPublishBuilder.Complete> {
 
+        /**
+         * Builds the {@link Mqtt5WillPublish}.
+         *
+         * @return the built {@link Mqtt5WillPublish}.
+         */
         @NotNull Mqtt5WillPublish build();
     }
 
+    /**
+     * Builder for a {@link Mqtt5WillPublish} that is applied to a parent.
+     *
+     * @param <P> the type of the result when the built {@link Mqtt5WillPublish} is applied to the parent.
+     */
     @DoNotImplement
     interface Nested<P> extends Mqtt5PublishBuilderBase.WillBase<Nested.Complete<P>> {
 
+        /**
+         * {@link Nested} that is complete which means all mandatory fields are set.
+         *
+         * @param <P> the type of the result when the built {@link Mqtt5WillPublish} is applied to the parent.
+         */
         @DoNotImplement
         interface Complete<P> extends Nested<P>, Mqtt5PublishBuilderBase.WillBase.Complete<Nested.Complete<P>> {
 
+            /**
+             * Builds the {@link Mqtt5WillPublish} and applies it to the parent.
+             *
+             * @return the result when the built {@link Mqtt5WillPublish} is applied to the parent.
+             */
             @NotNull P applyWillPublish();
         }
     }

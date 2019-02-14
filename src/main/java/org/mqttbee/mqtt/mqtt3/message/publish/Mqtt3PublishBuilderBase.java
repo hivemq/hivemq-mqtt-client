@@ -74,7 +74,7 @@ public interface Mqtt3PublishBuilderBase<C extends Mqtt3PublishBuilderBase.Compl
         /**
          * Sets the optional {@link Mqtt3Publish#getPayload() payload}.
          *
-         * @param payload the payload as a byte array or <code>null</code> to remove any previously set payload.
+         * @param payload the payload as byte array or <code>null</code> to remove any previously set payload.
          * @return the builder.
          */
         @NotNull C payload(@Nullable byte[] payload);
@@ -82,8 +82,7 @@ public interface Mqtt3PublishBuilderBase<C extends Mqtt3PublishBuilderBase.Compl
         /**
          * Sets the optional {@link Mqtt3Publish#getPayload() payload}.
          *
-         * @param payload the payload as a {@link ByteBuffer} or <code>null</code> to remove any previously set
-         *                payload.
+         * @param payload the payload as {@link ByteBuffer} or <code>null</code> to remove any previously set payload.
          * @return the builder.
          */
         @NotNull C payload(@Nullable ByteBuffer payload);
