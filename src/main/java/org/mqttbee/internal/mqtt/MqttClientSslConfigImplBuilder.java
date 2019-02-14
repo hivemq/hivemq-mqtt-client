@@ -41,6 +41,18 @@ public abstract class MqttClientSslConfigImplBuilder<B extends MqttClientSslConf
     private @Nullable ImmutableList<String> protocols;
     private long handshakeTimeoutMs = MqttClientSslConfig.DEFAULT_HANDSHAKE_TIMEOUT_MS;
 
+    MqttClientSslConfigImplBuilder() {}
+
+    MqttClientSslConfigImplBuilder(final @Nullable MqttClientSslConfigImpl sslConfig) {
+        if (sslConfig != null) {
+            keyManagerFactory = sslConfig.getRawKeyManagerFactory();
+            trustManagerFactory = sslConfig.getRawTrustManagerFactory();
+            cipherSuites = sslConfig.getRawCipherSuites();
+            protocols = sslConfig.getRawProtocols();
+            handshakeTimeoutMs = sslConfig.getHandshakeTimeoutMs();
+        }
+    }
+
     abstract @NotNull B self();
 
     public @NotNull B keyManagerFactory(final @Nullable KeyManagerFactory keyManagerFactory) {
@@ -87,7 +99,11 @@ public abstract class MqttClientSslConfigImplBuilder<B extends MqttClientSslConf
 
         private final @NotNull Function<? super MqttClientSslConfigImpl, P> parentConsumer;
 
-        public Nested(final @NotNull Function<? super MqttClientSslConfigImpl, P> parentConsumer) {
+        public Nested(
+                final @Nullable MqttClientSslConfigImpl sslConfig,
+                final @NotNull Function<? super MqttClientSslConfigImpl, P> parentConsumer) {
+
+            super(sslConfig);
             this.parentConsumer = parentConsumer;
         }
 

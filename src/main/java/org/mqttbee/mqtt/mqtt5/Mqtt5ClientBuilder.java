@@ -24,21 +24,58 @@ import org.mqttbee.mqtt.mqtt5.advanced.Mqtt5ClientAdvancedConfig;
 import org.mqttbee.mqtt.mqtt5.advanced.Mqtt5ClientAdvancedConfigBuilder;
 
 /**
+ * Builder for a {@link Mqtt5Client}.
+ *
  * @author Silvio Giebl
  * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBuilder> {
 
+    /**
+     * Sets the {@link Mqtt5ClientConfig#getAdvancedConfig() advanced configuration}.
+     *
+     * @param advancedConfig the advanced configuration.
+     * @return the builder.
+     */
     @NotNull Mqtt5ClientBuilder advancedConfig(@NotNull Mqtt5ClientAdvancedConfig advancedConfig);
 
+    /**
+     * Fluent counterpart of {@link #advancedConfig(Mqtt5ClientAdvancedConfig)}.
+     * <p>
+     * Calling {@link Mqtt5ClientAdvancedConfigBuilder.Nested#applyAdvancedConfig()} on the returned builder has the
+     * effect of extending the current advanced configuration.
+     *
+     * @return the fluent builder for the advanced configuration.
+     * @see #advancedConfig(Mqtt5ClientAdvancedConfig)
+     */
     @NotNull Mqtt5ClientAdvancedConfigBuilder.Nested<? extends Mqtt5ClientBuilder> advancedConfig();
 
+    /**
+     * ø Builds the {@link Mqtt5Client}.
+     *
+     * @return the built {@link Mqtt5Client}.
+     */
     @NotNull Mqtt5Client build();
 
+    /**
+     * Builds the {@link Mqtt5RxClient}.
+     *
+     * @return the built {@link Mqtt5RxClient}.
+     */
     @NotNull Mqtt5RxClient buildRx();
 
+    /**
+     * Builds the {@link Mqtt5AsyncClient}.
+     *
+     * @return the built {@link Mqtt5AsyncClient}.
+     */
     @NotNull Mqtt5AsyncClient buildAsync();
 
+    /**
+     * Builds the {@link Mqtt5BlockingClient}.
+     *
+     * @return the built {@link Mqtt5BlockingClient}.
+     */
     @NotNull Mqtt5BlockingClient buildBlocking();
 }

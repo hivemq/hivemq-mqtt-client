@@ -23,13 +23,25 @@ import org.mqttbee.mqtt.mqtt3.Mqtt3ClientBuilder;
 import org.mqttbee.mqtt.mqtt5.Mqtt5ClientBuilder;
 
 /**
+ * Builder for a {@link MqttClient}.
+ *
  * @author Silvio Giebl
  * @since 1.0
  */
 @DoNotImplement
 public interface MqttClientBuilder extends MqttClientBuilderBase<MqttClientBuilder> {
 
+    /**
+     * Uses {@link MqttVersion#MQTT_3_1_1 MQTT version 3}.
+     *
+     * @return the builder for the {@link org.mqttbee.mqtt.mqtt3.Mqtt3Client Mqtt3Client}.
+     */
     @NotNull Mqtt3ClientBuilder useMqttVersion3();
 
+    /**
+     * Uses {@link MqttVersion#MQTT_5_0 MQTT version 5}.
+     *
+     * @return the builder for the {@link org.mqttbee.mqtt.mqtt5.Mqtt5Client Mqtt5Client}.
+     */
     @NotNull Mqtt5ClientBuilder useMqttVersion5();
 }

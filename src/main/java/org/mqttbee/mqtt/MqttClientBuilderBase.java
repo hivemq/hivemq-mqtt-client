@@ -23,33 +23,116 @@ import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.mqtt.datatypes.MqttClientIdentifier;
 
 /**
+ * Builder base for a {@link MqttClient}.
+ *
+ * @param <B> the type of the builder.
  * @author Silvio Giebl
  * @since 1.0
  */
 @DoNotImplement
 public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
 
+    /**
+     * Sets the {@link MqttClientConfig#getClientIdentifier() Client Identifier}.
+     *
+     * @param identifier the string representation of the Client Identifier.
+     * @return the builder.
+     */
     @NotNull B identifier(@NotNull String identifier);
 
+    /**
+     * Sets the {@link MqttClientConfig#getClientIdentifier() Client Identifier}.
+     *
+     * @param identifier the Client Identifier.
+     * @return the builder.
+     */
     @NotNull B identifier(@NotNull MqttClientIdentifier identifier);
 
+    /**
+     * Sets the {@link MqttClientConfig#getServerHost() server host} to connect to.
+     *
+     * @param host the server host.
+     * @return the builder.
+     */
     @NotNull B serverHost(@NotNull String host);
 
+    /**
+     * Sets the {@link MqttClientConfig#getServerPort() server port} to connect to.
+     *
+     * @param port the server port.
+     * @return the builder.
+     */
     @NotNull B serverPort(int port);
 
+    /**
+     * Uses SSL with the default configuration.
+     *
+     * @return the builder.
+     */
     @NotNull B useSslWithDefaultConfig();
 
+    /**
+     * Sets the optional {@link MqttClientConfig#getSslConfig() SSL configuration}.
+     *
+     * @param sslConfig the SSL configuration or <code>null</code> to remove any previously set SSL configuration.
+     * @return the builder.
+     */
     @NotNull B useSsl(@Nullable MqttClientSslConfig sslConfig);
 
+    /**
+     * Fluent counterpart of {@link #useSsl(MqttClientSslConfig)}.
+     * <p>
+     * Calling {@link MqttClientSslConfigBuilder.Nested#applySslConfig()} on the returned builder has the effect of
+     * extending the current SSL configuration.
+     *
+     * @return the fluent builder for the SSL configuration.
+     * @see #useSsl(MqttClientSslConfig)
+     */
     @NotNull MqttClientSslConfigBuilder.Nested<? extends B> useSsl();
 
+    /**
+     * Uses WebSocket with the default configuration.
+     *
+     * @return the builder.
+     */
     @NotNull B useWebSocketWithDefaultConfig();
 
+    /**
+     * Sets the optional {@link MqttClientConfig#getWebSocketConfig() WebSocket configuration}.
+     *
+     * @param webSocketConfig the WebSocket configuration or <code>null</code> to remove any previously set WebSocket
+     *                        configuration.
+     * @return the builder.
+     */
     @NotNull B useWebSocket(@Nullable MqttWebSocketConfig webSocketConfig);
 
+    /**
+     * Fluent counterpart of {@link #useWebSocket(MqttWebSocketConfig)}.
+     * <p>
+     * Calling {@link MqttWebSocketConfigBuilder.Nested#applyWebSocketConfig()} on the returned builder has the effect
+     * of extending the current WebSocket configuration.
+     *
+     * @return the fluent builder for the WebSocket configuration.
+     * @see #useWebSocket(MqttWebSocketConfig)
+     */
     @NotNull MqttWebSocketConfigBuilder.Nested<? extends B> useWebSocket();
 
+    /**
+     * Sets the {@link MqttClientConfig#getExecutorConfig() executor configuration}.
+     *
+     * @param executorConfig the executor configuration.
+     * @return the builder.
+     */
     @NotNull B executorConfig(@NotNull MqttClientExecutorConfig executorConfig);
 
+    /**
+     * Fluent counterpart of {@link #executorConfig(MqttClientExecutorConfig)}.
+     * <p>
+     * Calling {@link MqttClientExecutorConfigBuilder.Nested#applyExecutorConfig()} on the returned builder has the
+     * effect of extending the current executor configuration.
+     *
+     * @return the fluent builder for the executor configuration.
+     * @see #executorConfig(MqttClientExecutorConfig)
+     */
     @NotNull MqttClientExecutorConfigBuilder.Nested<? extends B> executorConfig();
 }

@@ -35,6 +35,14 @@ public abstract class MqttClientExecutorConfigImplBuilder<B extends MqttClientEx
     private int nettyThreads = MqttClientExecutorConfigImpl.DEFAULT_NETTY_THREADS;
     private @NotNull Scheduler applicationScheduler = MqttClientExecutorConfigImpl.DEFAULT_APPLICATION_SCHEDULER;
 
+    MqttClientExecutorConfigImplBuilder() {}
+
+    MqttClientExecutorConfigImplBuilder(final @NotNull MqttClientExecutorConfigImpl executorConfig) {
+        nettyExecutor = executorConfig.getRawNettyExecutor();
+        nettyThreads = executorConfig.getRawNettyThreads();
+        applicationScheduler = executorConfig.getApplicationScheduler();
+    }
+
     abstract @NotNull B self();
 
     public @NotNull B nettyExecutor(final @Nullable Executor nettyExecutor) {
@@ -74,7 +82,11 @@ public abstract class MqttClientExecutorConfigImplBuilder<B extends MqttClientEx
 
         private final @NotNull Function<? super MqttClientExecutorConfigImpl, P> parentConsumer;
 
-        public Nested(final @NotNull Function<? super MqttClientExecutorConfigImpl, P> parentConsumer) {
+        public Nested(
+                final @NotNull MqttClientExecutorConfigImpl executorConfig,
+                final @NotNull Function<? super MqttClientExecutorConfigImpl, P> parentConsumer) {
+
+            super(executorConfig);
             this.parentConsumer = parentConsumer;
         }
 

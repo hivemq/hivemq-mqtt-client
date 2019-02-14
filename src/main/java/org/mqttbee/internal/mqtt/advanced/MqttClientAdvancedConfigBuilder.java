@@ -36,6 +36,14 @@ public abstract class MqttClientAdvancedConfigBuilder<B extends MqttClientAdvanc
     private boolean validatePayloadFormat;
     private @Nullable MqttClientInterceptors interceptors;
 
+    MqttClientAdvancedConfigBuilder() {}
+
+    MqttClientAdvancedConfigBuilder(final @NotNull MqttClientAdvancedConfig advancedConfig) {
+        allowServerReAuth = advancedConfig.isAllowServerReAuth();
+        validatePayloadFormat = advancedConfig.isValidatePayloadFormat();
+        interceptors = advancedConfig.getInterceptors();
+    }
+
     abstract @NotNull B self();
 
     public @NotNull B allowServerReAuth(final boolean allowServerReAuth) {
@@ -75,7 +83,11 @@ public abstract class MqttClientAdvancedConfigBuilder<B extends MqttClientAdvanc
 
         private final @NotNull Function<? super MqttClientAdvancedConfig, P> parentConsumer;
 
-        public Nested(final @NotNull Function<? super MqttClientAdvancedConfig, P> parentConsumer) {
+        public Nested(
+                final @NotNull MqttClientAdvancedConfig advancedConfig,
+                final @NotNull Function<? super MqttClientAdvancedConfig, P> parentConsumer) {
+
+            super(advancedConfig);
             this.parentConsumer = parentConsumer;
         }
 

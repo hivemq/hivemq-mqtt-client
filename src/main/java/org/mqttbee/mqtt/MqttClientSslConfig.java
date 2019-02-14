@@ -36,6 +36,9 @@ import java.util.Optional;
 @DoNotImplement
 public interface MqttClientSslConfig {
 
+    /**
+     * The default handshake timeout in milliseconds.
+     */
     long DEFAULT_HANDSHAKE_TIMEOUT_MS = 10_000;
 
     /**
