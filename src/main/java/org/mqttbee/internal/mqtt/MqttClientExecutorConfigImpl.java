@@ -66,6 +66,7 @@ public class MqttClientExecutorConfigImpl implements MqttClientExecutorConfig {
         return nettyThreads;
     }
 
+    @Override
     public @NotNull Scheduler getApplicationScheduler() {
         return applicationScheduler;
     }

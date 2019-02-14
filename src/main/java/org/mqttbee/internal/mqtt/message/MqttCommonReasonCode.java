@@ -62,6 +62,7 @@ public enum MqttCommonReasonCode implements Mqtt5ReasonCode {
     /**
      * @return the byte code of this Reason Code.
      */
+    @Override
     public int getCode() {
         return code;
     }

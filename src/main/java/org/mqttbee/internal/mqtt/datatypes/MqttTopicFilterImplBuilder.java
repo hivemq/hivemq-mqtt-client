@@ -134,6 +134,7 @@ public abstract class MqttTopicFilterImplBuilder<B extends MqttTopicFilterImplBu
             return this;
         }
 
+        @Override
         public @NotNull SharedNested<P> share(final @Nullable String shareName) {
             if (stringBuilder == null) {
                 return new SharedNested<>(shareName, parentConsumer);

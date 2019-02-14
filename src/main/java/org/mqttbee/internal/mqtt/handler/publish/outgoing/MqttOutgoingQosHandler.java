@@ -183,6 +183,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     }
 
     @CallByThread("Netty EventLoop")
+    @Override
     public void run() {
         if (!hasSession) {
             clearQueued(MqttClientStateExceptions.notConnected());

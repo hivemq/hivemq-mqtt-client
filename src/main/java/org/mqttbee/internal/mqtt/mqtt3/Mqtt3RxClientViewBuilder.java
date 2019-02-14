@@ -40,18 +40,22 @@ public class Mqtt3RxClientViewBuilder extends MqttRxClientBuilderBase<Mqtt3RxCli
         return this;
     }
 
+    @Override
     public @NotNull Mqtt3RxClientView build() {
         return buildRx();
     }
 
+    @Override
     public @NotNull Mqtt3RxClientView buildRx() {
         return new Mqtt3RxClientView(buildRxDelegate());
     }
 
+    @Override
     public @NotNull Mqtt3AsyncClientView buildAsync() {
         return new Mqtt3AsyncClientView(buildAsyncDelegate());
     }
 
+    @Override
     public @NotNull Mqtt3BlockingClientView buildBlocking() {
         return new Mqtt3BlockingClientView(buildBlockingDelegate());
     }
