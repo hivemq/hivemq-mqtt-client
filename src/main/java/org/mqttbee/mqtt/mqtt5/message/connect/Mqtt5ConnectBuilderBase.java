@@ -124,7 +124,7 @@ public interface Mqtt5ConnectBuilderBase<B extends Mqtt5ConnectBuilderBase<B>> {
     /**
      * Sets the {@link Mqtt5Connect#getEnhancedAuthMechanism() enhanced authentication and/or authorization mechanism}.
      *
-     * @param enhancedAuthMechanism the enhanced auth mechanism of <code>null</code> to remove any previously set
+     * @param enhancedAuthMechanism the enhanced auth mechanism or <code>null</code> to remove any previously set
      *                              enhanced auth mechanism.
      * @return the builder.
      */
