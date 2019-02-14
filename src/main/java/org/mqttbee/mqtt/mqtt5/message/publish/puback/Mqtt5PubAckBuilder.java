@@ -25,19 +25,54 @@ import org.mqttbee.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import org.mqttbee.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 
 /**
+ * Builder for a {@link Mqtt5PubAck}.
+ *
  * @author Silvio Giebl
  * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt5PubAckBuilder {
 
+    /**
+     * Sets the {@link Mqtt5PubAck#getReasonCode() Reason Code}.
+     *
+     * @param reasonCode the Reason Code.
+     * @return the builder.
+     */
     @NotNull Mqtt5PubAckBuilder reasonCode(@NotNull Mqtt5PubAckReasonCode reasonCode);
 
+    /**
+     * Set the optional {@link Mqtt5PubAck#getReasonString() Reason String}.
+     *
+     * @param reasonString the Reason String or <code>null</code> to remove any previously set Reason String.
+     * @return the builder.
+     */
     @NotNull Mqtt5PubAckBuilder reasonString(@Nullable String reasonString);
 
+    /**
+     * Set the optional {@link Mqtt5PubAck#getReasonString() Reason String}.
+     *
+     * @param reasonString the Reason String or <code>null</code> to remove any previously set Reason String.
+     * @return the builder.
+     */
     @NotNull Mqtt5PubAckBuilder reasonString(@Nullable MqttUtf8String reasonString);
 
+    /**
+     * Sets the {@link Mqtt5PubAck#getUserProperties() User Properties}.
+     *
+     * @param userProperties the User Properties.
+     * @return the builder.
+     */
     @NotNull Mqtt5PubAckBuilder userProperties(@NotNull Mqtt5UserProperties userProperties);
 
+    /**
+     * Fluent counterpart of {@link #userProperties(Mqtt5UserProperties)}.
+     * <p>
+     * Calling {@link Mqtt5UserPropertiesBuilder.Nested#applyUserProperties()} on the returned builder has the effect of
+     * {@link Mqtt5UserProperties#extend() extending} the current User Properties.
+     *
+     * @return the fluent builder for the User Properties.
+     * @see #userProperties(Mqtt5UserProperties)
+     */
     @NotNull Mqtt5UserPropertiesBuilder.Nested<? extends Mqtt5PubAckBuilder> userProperties();
 }

@@ -21,28 +21,59 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 
 /**
+ * Builder for a {@link Mqtt5Publish}.
+ *
  * @author Silvio Giebl
  * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt5PublishBuilder extends Mqtt5PublishBuilderBase<Mqtt5PublishBuilder.Complete> {
 
+    /**
+     * Creates a builder for a {@link Mqtt5WillPublish} that extends the current Publish message of this builder.
+     *
+     * @return the created builder for a Will Publish.
+     */
     @NotNull Mqtt5WillPublishBuilder asWill();
 
+    /**
+     * {@link Mqtt5PublishBuilder} that is complete which means all mandatory fields are set.
+     */
     @DoNotImplement
     interface Complete extends Mqtt5PublishBuilder, Mqtt5PublishBuilderBase.Complete<Mqtt5PublishBuilder.Complete> {
 
+        /**
+         * Creates a builder for a {@link Mqtt5WillPublish} that extends the current Publish message of this builder.
+         *
+         * @return the created complete builder for a Will Publish.
+         */
+        @Override
         @NotNull Mqtt5WillPublishBuilder.Complete asWill();
 
+        /**
+         * Builds the {@link Mqtt5Publish}.
+         *
+         * @return the built {@link Mqtt5Publish}.
+         */
         @NotNull Mqtt5Publish build();
     }
 
     @DoNotImplement
     interface Nested<P> extends Mqtt5PublishBuilderBase<Nested.Complete<P>> {
 
+        /**
+         * {@link Nested} that is complete which means all mandatory fields are set.
+         *
+         * @param <P> the type of the result when the built {@link Mqtt5Publish} is applied to the parent.
+         */
         @DoNotImplement
         interface Complete<P> extends Nested<P>, Mqtt5PublishBuilderBase.Complete<Nested.Complete<P>> {
 
+            /**
+             * Builds the {@link Mqtt5Publish} and applies it to the parent.
+             *
+             * @return the result when the built {@link Mqtt5Publish} is applied to the parent.
+             */
             @NotNull P applyPublish();
         }
     }
@@ -50,9 +81,19 @@ public interface Mqtt5PublishBuilder extends Mqtt5PublishBuilderBase<Mqtt5Publis
     @DoNotImplement
     interface Send<P> extends Mqtt5PublishBuilderBase<Send.Complete<P>> {
 
+        /**
+         * {@link Send} that is complete which means all mandatory fields are set.
+         *
+         * @param <P> the type of the result when the built {@link Mqtt5Publish} is sent by the parent.
+         */
         @DoNotImplement
         interface Complete<P> extends Send<P>, Mqtt5PublishBuilderBase.Complete<Send.Complete<P>> {
 
+            /**
+             * Builds the {@link Mqtt5Publish} and applies it to the parent which then sends the Publish message.
+             *
+             * @return the result when the built {@link Mqtt5Publish} is sent by the parent.
+             */
             @NotNull P send();
         }
     }
