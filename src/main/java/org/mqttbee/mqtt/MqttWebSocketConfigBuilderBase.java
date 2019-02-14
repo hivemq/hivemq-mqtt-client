@@ -21,13 +21,28 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 
 /**
+ * Builder base for a {@link MqttWebSocketConfig}.
+ *
+ * @param <B> the type of the builder.
  * @author Silvio Giebl
  * @since 1.0
  */
 @DoNotImplement
 public interface MqttWebSocketConfigBuilderBase<B extends MqttWebSocketConfigBuilderBase<B>> {
 
+    /**
+     * Sets the {@link MqttWebSocketConfig#getServerPath() server path}.
+     *
+     * @param serverPath the server path.
+     * @return the builder.
+     */
     @NotNull B serverPath(@NotNull String serverPath);
 
+    /**
+     * Sets the {@link MqttWebSocketConfig#getSubprotocol() subprotocol}.
+     *
+     * @param subprotocol the subprotocol.
+     * @return the builder.
+     */
     @NotNull B subprotocol(@NotNull String subprotocol);
 }

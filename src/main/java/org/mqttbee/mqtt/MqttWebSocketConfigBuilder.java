@@ -21,17 +21,34 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 
 /**
+ * Builder for a {@link MqttWebSocketConfig}.
+ *
  * @author Silvio Giebl
  * @since 1.0
  */
 @DoNotImplement
 public interface MqttWebSocketConfigBuilder extends MqttWebSocketConfigBuilderBase<MqttWebSocketConfigBuilder> {
 
+    /**
+     * Builds the {@link MqttWebSocketConfig}.
+     *
+     * @return the built {@link MqttWebSocketConfig}.
+     */
     @NotNull MqttWebSocketConfig build();
 
+    /**
+     * Builder for a {@link MqttWebSocketConfig} that is applied to a parent.
+     *
+     * @param <P> the type of the result when the built {@link MqttWebSocketConfig} is applied to the parent.
+     */
     @DoNotImplement
     interface Nested<P> extends MqttWebSocketConfigBuilderBase<Nested<P>> {
 
+        /**
+         * Builds the {@link MqttWebSocketConfig} and applies it to the parent.
+         *
+         * @return the result when the built {@link MqttWebSocketConfig} is applied to the parent.
+         */
         @NotNull P applyWebSocketConfig();
     }
 }
