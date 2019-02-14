@@ -26,35 +26,115 @@ import org.mqttbee.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 import org.mqttbee.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
 
 /**
+ * Builder base for a {@link Mqtt5Unsubscribe}.
+ *
+ * @param <C> the type of the complete builder.
  * @author Silvio Giebl
  * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt5UnsubscribeBuilderBase<C extends Mqtt5UnsubscribeBuilderBase.Complete<C>> {
 
+    /**
+     * Adds a {@link MqttTopicFilter Topic Filter} to the {@link Mqtt5Unsubscribe#getTopicFilters() list of Topic
+     * Filters}. At least one Topic Filter is mandatory.
+     *
+     * @param topicFilter the string representation of the Topic Filter.
+     * @return the builder that is now complete as at least one Topic Filter is set.
+     */
     @NotNull C addTopicFilter(@NotNull String topicFilter);
 
+    /**
+     * Adds a {@link MqttTopicFilter Topic Filter} to the {@link Mqtt5Unsubscribe#getTopicFilters() list of Topic
+     * Filters}. At least one Topic Filter is mandatory.
+     *
+     * @param topicFilter the Topic Filter.
+     * @return the builder that is now complete as at least one Topic Filter is set.
+     */
     @NotNull C addTopicFilter(@NotNull MqttTopicFilter topicFilter);
 
+    /**
+     * Fluent counterpart of {@link #addTopicFilter(MqttTopicFilter)}.
+     * <p>
+     * Calling {@link MqttTopicFilterBuilder.Nested.Complete#applyTopicFilter()} on the returned builder has the same
+     * effect as calling {@link #addTopicFilter(MqttTopicFilter)} with the result of {@link
+     * MqttTopicFilterBuilder.Complete#build()}.
+     *
+     * @return the fluent builder for the Topic Filter.
+     * @see #addTopicFilter(MqttTopicFilter)
+     */
     @NotNull MqttTopicFilterBuilder.Nested<? extends C> addTopicFilter();
 
+    /**
+     * Reverses the subscriptions of a Subscribe message by adding their Topic Filters.
+     *
+     * @param subscribe the Subscribe message.
+     * @return the builder that is now complete as at least one Topic Filter is set.
+     */
     @NotNull C reverse(@NotNull Mqtt5Subscribe subscribe);
 
+    /**
+     * {@link Mqtt5UnsubscribeBuilderBase} that is complete which means all mandatory fields are set.
+     *
+     * @param <C> the type of the complete builder.
+     */
     @DoNotImplement
     interface Complete<C extends Mqtt5UnsubscribeBuilderBase.Complete<C>> extends Mqtt5UnsubscribeBuilderBase<C> {
 
+        /**
+         * Sets the {@link Mqtt5Unsubscribe#getUserProperties() User Properties}.
+         *
+         * @param userProperties the User Properties.
+         * @return the builder.
+         */
         @NotNull C userProperties(@NotNull Mqtt5UserProperties userProperties);
 
+        /**
+         * Fluent counterpart of {@link #userProperties(Mqtt5UserProperties)}.
+         * <p>
+         * Calling {@link Mqtt5UserPropertiesBuilder.Nested#applyUserProperties()} on the returned builder has the
+         * effect of {@link Mqtt5UserProperties#extend() extending} the current User Properties.
+         *
+         * @return the fluent builder for the User Properties.
+         * @see #userProperties(Mqtt5UserProperties)
+         */
         @NotNull Mqtt5UserPropertiesBuilder.Nested<? extends C> userProperties();
     }
 
+    /**
+     * {@link Mqtt5UnsubscribeBuilderBase} that provides additional methods for the first Topic Filter.
+     *
+     * @param <C> the type of the complete builder.
+     */
     @DoNotImplement
     interface Start<C extends Mqtt5UnsubscribeBuilderBase.Complete<C>> extends Mqtt5UnsubscribeBuilderBase<C> {
 
+        /**
+         * Sets the mandatory {@link Mqtt5Unsubscribe#getTopicFilters() first Topic Filter}.
+         *
+         * @param topicFilter the string representation of the Topic Filter.
+         * @return the builder that is now complete as the mandatory Topic Filter is set.
+         */
         @NotNull C topicFilter(@NotNull String topicFilter);
 
+        /**
+         * Sets the mandatory {@link Mqtt5Unsubscribe#getTopicFilters() first Topic Filter}.
+         *
+         * @param topicFilter the Topic Filter.
+         * @return the builder that is now complete as the mandatory Topic Filter is set.
+         */
         @NotNull C topicFilter(@NotNull MqttTopicFilter topicFilter);
 
+        /**
+         * Fluent counterpart of {@link #topicFilter(MqttTopicFilter)}.
+         * <p>
+         * Calling {@link MqttTopicFilterBuilder.Nested.Complete#applyTopicFilter()} on the returned builder has the
+         * same effect as calling {@link #topicFilter(MqttTopicFilter)} with the result of {@link
+         * MqttTopicFilterBuilder.Complete#build()}.
+         *
+         * @return the fluent builder for the Topic Filter.
+         * @see #addTopicFilter(MqttTopicFilter)
+         */
         @NotNull MqttTopicFilterBuilder.Nested<? extends C> topicFilter();
     }
 }
