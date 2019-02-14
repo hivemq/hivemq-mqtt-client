@@ -36,8 +36,17 @@ import java.util.Optional;
 @DoNotImplement
 public interface Mqtt3Connect extends Mqtt3Message {
 
+    /**
+     * The value that disables keep alive.
+     */
     int NO_KEEP_ALIVE = 0;
+    /**
+     * The default keep alive in seconds a client wants to use.
+     */
     int DEFAULT_KEEP_ALIVE = 60;
+    /**
+     * The default whether a client wants a clean session.
+     */
     boolean DEFAULT_CLEAN_SESSION = true;
 
     /**

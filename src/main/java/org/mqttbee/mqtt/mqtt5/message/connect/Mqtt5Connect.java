@@ -39,10 +39,25 @@ import java.util.Optional;
 @DoNotImplement
 public interface Mqtt5Connect extends Mqtt5Message {
 
+    /**
+     * The value that disables keep alive.
+     */
     int NO_KEEP_ALIVE = 0;
+    /**
+     * The default keep alive in seconds a client wants to use.
+     */
     int DEFAULT_KEEP_ALIVE = 60;
+    /**
+     * The default whether a client wants to start a clean session.
+     */
     boolean DEFAULT_CLEAN_START = true;
+    /**
+     * The default session expiry interval in seconds a client wants to use.
+     */
     long DEFAULT_SESSION_EXPIRY_INTERVAL = 0;
+    /**
+     * The value that disables session expiry.
+     */
     long NO_SESSION_EXPIRY = UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE;
 
     /**
