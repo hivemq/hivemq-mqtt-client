@@ -40,7 +40,7 @@ public interface Mqtt3PublishBuilderBase<C extends Mqtt3PublishBuilderBase.Compl
      * Sets the mandatory {@link Mqtt3Publish#getTopic() Topic}.
      *
      * @param topic the string representation of the Topic.
-     * @return the builder that is now complete as the mandatory username is set.
+     * @return the builder that is now complete as the mandatory Topic is set.
      */
     @NotNull C topic(@NotNull String topic);
 
@@ -48,7 +48,7 @@ public interface Mqtt3PublishBuilderBase<C extends Mqtt3PublishBuilderBase.Compl
      * Sets the mandatory {@link Mqtt3Publish#getTopic() Topic}.
      *
      * @param topic the Topic.
-     * @return the builder that is now complete as the mandatory username is set.
+     * @return the builder that is now complete as the mandatory Topic is set.
      */
     @NotNull C topic(@NotNull MqttTopic topic);
 

@@ -22,15 +22,38 @@ import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.mqtt.datatypes.MqttUtf8String;
 
 /**
+ * Builder base for {@link Mqtt5UserProperties}.
+ *
+ * @param <B> the type of the builder.
  * @author Silvio Giebl
  * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt5UserPropertiesBuilderBase<B extends Mqtt5UserPropertiesBuilderBase<B>> {
 
+    /**
+     * Adds a {@link Mqtt5UserProperty User Property}.
+     *
+     * @param name  the name of the User Property.
+     * @param value the value of the User Property.
+     * @return the builder.
+     */
     @NotNull B add(@NotNull String name, @NotNull String value);
 
+    /**
+     * Adds a {@link Mqtt5UserProperty User Property}.
+     *
+     * @param name  the name of the User Property.
+     * @param value the value of the User Property.
+     * @return the builder.
+     */
     @NotNull B add(@NotNull MqttUtf8String name, @NotNull MqttUtf8String value);
 
+    /**
+     * Adds a {@link Mqtt5UserProperty User Property}.
+     *
+     * @param userProperty the User Property.
+     * @return the builder.
+     */
     @NotNull B add(@NotNull Mqtt5UserProperty userProperty);
 }
