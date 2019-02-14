@@ -33,7 +33,8 @@ public interface Mqtt5WillPublishBuilder extends Mqtt5PublishBuilderBase.WillBas
      * {@link Mqtt5WillPublishBuilder} that is complete which means all mandatory fields are set.
      */
     @DoNotImplement
-    interface Complete extends Mqtt5WillPublishBuilder, Mqtt5PublishBuilderBase.WillBase.Complete<Mqtt5WillPublishBuilder.Complete> {
+    interface Complete extends Mqtt5WillPublishBuilder,
+            Mqtt5PublishBuilderBase.WillBase.Complete<Mqtt5WillPublishBuilder.Complete> {
 
         /**
          * Builds the {@link Mqtt5WillPublish}.

@@ -24,27 +24,83 @@ import org.mqttbee.mqtt.datatypes.MqttTopicFilter;
 import org.mqttbee.mqtt.datatypes.MqttTopicFilterBuilder;
 
 /**
+ * Builder base for a {@link Mqtt5Subscription}.
+ *
+ * @param <C> the type of the complete builder.
  * @author Silvio Giebl
  * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt5SubscriptionBuilderBase<C extends Mqtt5SubscriptionBuilderBase.Complete<C>> {
 
+    /**
+     * Sets the mandatory {@link Mqtt5Subscription#getTopicFilter() Topic Filter}.
+     *
+     * @param topicFilter the string representation of the Topic Filter.
+     * @return the builder that is now complete as the mandatory Topic Filter is set.
+     */
     @NotNull C topicFilter(@NotNull String topicFilter);
 
+    /**
+     * Sets the mandatory {@link Mqtt5Subscription#getTopicFilter() Topic Filter}.
+     *
+     * @param topicFilter the Topic Filter.
+     * @return the builder that is now complete as the mandatory Topic Filter is set.
+     */
     @NotNull C topicFilter(@NotNull MqttTopicFilter topicFilter);
 
+    /**
+     * Fluent counterpart of {@link #topicFilter(MqttTopicFilter)}.
+     * <p>
+     * Calling {@link MqttTopicFilterBuilder.Nested.Complete#applyTopicFilter()} on the returned builder has the same
+     * effect as calling {@link #topicFilter(MqttTopicFilter)} with the result of {@link
+     * MqttTopicFilterBuilder.Complete#build()}.
+     *
+     * @return the fluent builder for the Topic Filter.
+     * @see #topicFilter(MqttTopicFilter)
+     */
     @NotNull MqttTopicFilterBuilder.Nested<? extends C> topicFilter();
 
+    /**
+     * {@link Mqtt5SubscriptionBuilderBase} that is complete which means all mandatory fields are set.
+     *
+     * @param <C> the type of the complete builder.
+     */
     @DoNotImplement
     interface Complete<C extends Mqtt5SubscriptionBuilderBase.Complete<C>> extends Mqtt5SubscriptionBuilderBase<C> {
 
+        /**
+         * Sets the {@link Mqtt5Subscription#getQos() QoS}.
+         *
+         * @param qos the QoS.
+         * @return the builder.
+         */
         @NotNull C qos(@NotNull MqttQos qos);
 
+        /**
+         * Sets whether the subscription is {@link Mqtt5Subscription#isNoLocal() not local}.
+         *
+         * @param noLocal whether the subscription is not local.
+         * @return the builder.
+         */
         @NotNull C noLocal(boolean noLocal);
 
+        /**
+         * Sets the {@link Mqtt5Subscription#getRetainHandling() retain handling}.
+         *
+         * @param retainHandling the retain handling.
+         * @return the builder.
+         */
         @NotNull C retainHandling(@NotNull Mqtt5RetainHandling retainHandling);
 
+        /**
+         * Sets whether the Publish messages for the subscription are {@link Mqtt5Subscription#isRetainAsPublished()
+         * published with the retain flag}.
+         *
+         * @param retainAsPublished whether the Publish messages for the subscription are published with the retain
+         *                          flag.
+         * @return the builder.
+         */
         @NotNull C retainAsPublished(boolean retainAsPublished);
     }
 }
