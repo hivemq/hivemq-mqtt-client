@@ -21,6 +21,8 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 
 /**
+ * Builder for a {@link MqttClientExecutorConfig}.
+ *
  * @author Silvio Giebl
  * @since 1.0
  */
@@ -28,11 +30,26 @@ import org.mqttbee.annotations.DoNotImplement;
 public interface MqttClientExecutorConfigBuilder
         extends MqttClientExecutorConfigBuilderBase<MqttClientExecutorConfigBuilder> {
 
+    /**
+     * Builds the {@link MqttClientExecutorConfig}.
+     *
+     * @return the built {@link MqttClientExecutorConfig}.
+     */
     @NotNull MqttClientExecutorConfig build();
 
+    /**
+     * Builder for a {@link MqttClientExecutorConfig} that is applied to a parent.
+     *
+     * @param <P> the type of the result when the built {@link MqttClientExecutorConfig} is applied to the parent.
+     */
     @DoNotImplement
     interface Nested<P> extends MqttClientExecutorConfigBuilderBase<Nested<P>> {
 
+        /**
+         * Builds the {@link MqttClientExecutorConfig} and applies it to the parent.
+         *
+         * @return the result when the built {@link MqttClientExecutorConfig} is applied to the parent.
+         */
         @NotNull P applyExecutorConfig();
     }
 }

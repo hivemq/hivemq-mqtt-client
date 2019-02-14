@@ -24,6 +24,7 @@ import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import org.mqttbee.internal.mqtt.datatypes.MqttUserPropertiesImplBuilder;
 import org.mqttbee.internal.mqtt.util.MqttChecks;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -58,7 +59,7 @@ public interface Mqtt5UserProperties {
      * @param userProperties the list of User Properties.
      * @return the created collection of User Properties.
      */
-    static @NotNull Mqtt5UserProperties of(final @NotNull List<@NotNull Mqtt5UserProperty> userProperties) {
+    static @NotNull Mqtt5UserProperties of(final @NotNull Collection<@NotNull Mqtt5UserProperty> userProperties) {
         return MqttChecks.userProperties(userProperties);
     }
 

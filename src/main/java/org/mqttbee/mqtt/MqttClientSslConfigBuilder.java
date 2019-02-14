@@ -21,17 +21,34 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 
 /**
+ * Builder for a {@link MqttClientSslConfig}.
+ *
  * @author Silvio Giebl
  * @since 1.0
  */
 @DoNotImplement
 public interface MqttClientSslConfigBuilder extends MqttClientSslConfigBuilderBase<MqttClientSslConfigBuilder> {
 
+    /**
+     * Builds the {@link MqttClientSslConfig}.
+     *
+     * @return the built {@link MqttClientSslConfig}.
+     */
     @NotNull MqttClientSslConfig build();
 
+    /**
+     * Builder for a {@link MqttClientSslConfig} that is applied to a parent.
+     *
+     * @param <P> the type of the result when the built {@link MqttClientSslConfig} is applied to the parent.
+     */
     @DoNotImplement
     interface Nested<P> extends MqttClientSslConfigBuilderBase<Nested<P>> {
 
+        /**
+         * Builds the {@link MqttClientSslConfig} and applies it to the parent.
+         *
+         * @return the result when the built {@link MqttClientSslConfig} is applied to the parent.
+         */
         @NotNull P applySslConfig();
     }
 }

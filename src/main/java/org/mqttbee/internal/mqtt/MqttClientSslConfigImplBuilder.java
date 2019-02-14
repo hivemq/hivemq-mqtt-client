@@ -26,7 +26,7 @@ import org.mqttbee.mqtt.MqttClientSslConfigBuilder;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
-import java.util.List;
+import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
@@ -53,12 +53,12 @@ public abstract class MqttClientSslConfigImplBuilder<B extends MqttClientSslConf
         return self();
     }
 
-    public @NotNull B cipherSuites(final @Nullable List<@NotNull String> cipherSuites) {
+    public @NotNull B cipherSuites(final @Nullable Collection<@Nullable String> cipherSuites) {
         this.cipherSuites = (cipherSuites == null) ? null : ImmutableList.copyOf(cipherSuites, "Cipher suites");
         return self();
     }
 
-    public @NotNull B protocols(final @Nullable List<@NotNull String> protocols) {
+    public @NotNull B protocols(final @Nullable Collection<@Nullable String> protocols) {
         this.protocols = (protocols == null) ? null : ImmutableList.copyOf(protocols, "Protocols");
         return self();
     }

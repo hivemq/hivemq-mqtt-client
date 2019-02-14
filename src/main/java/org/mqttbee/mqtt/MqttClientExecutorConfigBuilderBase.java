@@ -25,15 +25,39 @@ import org.mqttbee.annotations.DoNotImplement;
 import java.util.concurrent.Executor;
 
 /**
+ * Builder base for a {@link MqttClientExecutorConfig}.
+ *
+ * @param <B> the type of the builder.
  * @author Silvio Giebl
  * @since 1.0
  */
 @DoNotImplement
 public interface MqttClientExecutorConfigBuilderBase<B extends MqttClientExecutorConfigBuilderBase<B>> {
 
+    /**
+     * Sets the optional user defined {@link MqttClientExecutorConfig#getNettyExecutor() executor for Netty} (network
+     * communication framework).
+     *
+     * @param nettyExecutor the user defined executor for Netty or null to use the default executor.
+     * @return the builder.
+     */
     @NotNull B nettyExecutor(@Nullable Executor nettyExecutor);
 
+    /**
+     * Sets the optional user defined {@link MqttClientExecutorConfig#getNettyThreads() amount of threads Netty}
+     * (network communication framework).
+     *
+     * @param nettyThreads the user defined amount of threads Netty.
+     * @return the builder.
+     */
     @NotNull B nettyThreads(int nettyThreads);
 
+    /**
+     * Sets the {@link MqttClientExecutorConfig#getApplicationScheduler() scheduler used for executing application
+     * specific code}.
+     *
+     * @param applicationScheduler the scheduler used for executing application specific code.
+     * @return the builder.
+     */
     @NotNull B applicationScheduler(@NotNull Scheduler applicationScheduler);
 }
