@@ -21,25 +21,49 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 
 /**
+ * Builder for a {@link Mqtt5Subscription}.
+ *
  * @author Silvio Giebl
  * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt5SubscriptionBuilder extends Mqtt5SubscriptionBuilderBase<Mqtt5SubscriptionBuilder.Complete> {
 
+    /**
+     * {@link Mqtt5Subscription} that is complete which means all mandatory fields are set.
+     */
     @DoNotImplement
-    interface Complete
-            extends Mqtt5SubscriptionBuilder, Mqtt5SubscriptionBuilderBase.Complete<Mqtt5SubscriptionBuilder.Complete> {
+    interface Complete extends Mqtt5SubscriptionBuilder, Mqtt5SubscriptionBuilderBase.Complete<Mqtt5SubscriptionBuilder.Complete> {
 
+        /**
+         * Builds the {@link Mqtt5Subscription}.
+         *
+         * @return the built {@link Mqtt5Subscription}.
+         */
         @NotNull Mqtt5Subscription build();
     }
 
+    /**
+     * Builder for a {@link Mqtt5Subscription} that is applied to a parent.
+     *
+     * @param <P> the type of the result when the built {@link Mqtt5Subscription} is applied to the parent.
+     */
     @DoNotImplement
     interface Nested<P> extends Mqtt5SubscriptionBuilderBase<Nested.Complete<P>> {
 
+        /**
+         * {@link Nested} that is complete which means all mandatory fields are set.
+         *
+         * @param <P> the type of the result when the built {@link Mqtt5Subscription} is applied to the parent.
+         */
         @DoNotImplement
         interface Complete<P> extends Nested<P>, Mqtt5SubscriptionBuilderBase.Complete<Nested.Complete<P>> {
 
+            /**
+             * Builds the {@link Mqtt5Subscription} and applies it to the parent.
+             *
+             * @return the result when the built {@link Mqtt5Subscription} is applied to the parent.
+             */
             @NotNull P applySubscription();
         }
     }

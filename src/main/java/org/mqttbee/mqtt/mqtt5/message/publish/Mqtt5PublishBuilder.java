@@ -58,6 +58,12 @@ public interface Mqtt5PublishBuilder extends Mqtt5PublishBuilderBase<Mqtt5Publis
         @NotNull Mqtt5Publish build();
     }
 
+    /**
+     * Builder for a {@link Mqtt5Publish} that is applied to a parent {@link org.mqttbee.mqtt.mqtt5.Mqtt5Client} which
+     * then sends the Publish message.
+     *
+     * @param <P> the type of the result when the built {@link Mqtt5Publish} is sent by the parent.
+     */
     @DoNotImplement
     interface Nested<P> extends Mqtt5PublishBuilderBase<Nested.Complete<P>> {
 
@@ -78,6 +84,10 @@ public interface Mqtt5PublishBuilder extends Mqtt5PublishBuilderBase<Mqtt5Publis
         }
     }
 
+    /**
+     * Builder for a {@link Mqtt5Publish} that is applied to a parent {@link org.mqttbee.mqtt.mqtt5.Mqtt5Client} which
+     * then sends the Publish message without returning a result.
+     */
     @DoNotImplement
     interface Send<P> extends Mqtt5PublishBuilderBase<Send.Complete<P>> {
 

@@ -94,12 +94,9 @@ public interface Mqtt3SubscribeBuilder extends Mqtt3SubscribeBuilderBase<Mqtt3Su
          *
          * @param <P> the type of the result when the built {@link Mqtt3Subscribe} is applied to the parent.
          */
-        // @formatter:off
         @DoNotImplement
-        interface Start<P> extends
-                Nested<P>,
-                Mqtt3SubscribeBuilderBase.Start<Nested.Complete<P>, Nested.Start.Complete<P>> {
-        // @formatter:on
+        interface Start<P>
+                extends Nested<P>, Mqtt3SubscribeBuilderBase.Start<Nested.Complete<P>, Nested.Start.Complete<P>> {
 
             /**
              * {@link Nested.Start} that is complete which means all mandatory fields are set.
@@ -145,12 +142,8 @@ public interface Mqtt3SubscribeBuilder extends Mqtt3SubscribeBuilderBase<Mqtt3Su
          *
          * @param <P> the type of the result when the built {@link Mqtt3Subscribe} is sent by the parent.
          */
-        // @formatter:off
         @DoNotImplement
-        interface Start<P> extends
-                Send<P>,
-                Mqtt3SubscribeBuilderBase.Start<Send.Complete<P>, Send.Start.Complete<P>> {
-        // @formatter:on
+        interface Start<P> extends Send<P>, Mqtt3SubscribeBuilderBase.Start<Send.Complete<P>, Send.Start.Complete<P>> {
 
             /**
              * {@link Send.Start} that is complete which means all mandatory fields are set.
