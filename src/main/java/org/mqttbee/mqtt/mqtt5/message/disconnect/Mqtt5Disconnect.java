@@ -37,6 +37,9 @@ import java.util.OptionalLong;
 @DoNotImplement
 public interface Mqtt5Disconnect extends Mqtt5Message {
 
+    /**
+     * Default Reason Code of a Disconnect message.
+     */
     @NotNull Mqtt5DisconnectReasonCode DEFAULT_REASON_CODE = Mqtt5DisconnectReasonCode.NORMAL_DISCONNECTION;
 
     /**
