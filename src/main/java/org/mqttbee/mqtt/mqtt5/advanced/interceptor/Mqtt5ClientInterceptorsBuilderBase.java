@@ -26,6 +26,9 @@ import org.mqttbee.mqtt.mqtt5.advanced.interceptor.qos2.Mqtt5IncomingQos2Interce
 import org.mqttbee.mqtt.mqtt5.advanced.interceptor.qos2.Mqtt5OutgoingQos2Interceptor;
 
 /**
+ * Builder base for a {@link Mqtt5ClientInterceptors}.
+ *
+ * @param <B> the type of the builder.
  * @author Silvio Giebl
  * @since 1.0
  */

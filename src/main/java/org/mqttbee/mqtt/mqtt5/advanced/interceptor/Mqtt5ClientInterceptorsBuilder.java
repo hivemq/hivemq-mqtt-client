@@ -21,6 +21,8 @@ import org.jetbrains.annotations.NotNull;
 import org.mqttbee.annotations.DoNotImplement;
 
 /**
+ * Builder for a {@link Mqtt5ClientInterceptors}.
+ *
  * @author Silvio Giebl
  * @since 1.0
  */
@@ -28,11 +30,26 @@ import org.mqttbee.annotations.DoNotImplement;
 public interface Mqtt5ClientInterceptorsBuilder
         extends Mqtt5ClientInterceptorsBuilderBase<Mqtt5ClientInterceptorsBuilder> {
 
+    /**
+     * Builds the {@link Mqtt5ClientInterceptors}.
+     *
+     * @return the built {@link Mqtt5ClientInterceptors}.
+     */
     @NotNull Mqtt5ClientInterceptors build();
 
+    /**
+     * Builder for a {@link Mqtt5ClientInterceptors} that is applied to a parent.
+     *
+     * @param <P> the type of the result when the built {@link Mqtt5ClientInterceptors} is applied to the parent.
+     */
     @DoNotImplement
     interface Nested<P> extends Mqtt5ClientInterceptorsBuilderBase<Nested<P>> {
 
+        /**
+         * Builds the {@link Mqtt5ClientInterceptors} and applies it to the parent.
+         *
+         * @return the result when the built {@link Mqtt5ClientInterceptors} is applied to the parent.
+         */
         @NotNull P applyInterceptors();
     }
 }

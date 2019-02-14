@@ -54,7 +54,7 @@ public abstract class MqttClientAdvancedConfigBuilder<B extends MqttClientAdvanc
     }
 
     public @NotNull MqttClientInterceptorsBuilder.Nested<B> interceptors() {
-        return new MqttClientInterceptorsBuilder.Nested<>(this::interceptors);
+        return new MqttClientInterceptorsBuilder.Nested<>(interceptors, this::interceptors);
     }
 
     public @NotNull MqttClientAdvancedConfig build() {
