@@ -51,7 +51,7 @@ public class MqttRxClientBuilder extends MqttRxClientBuilderBase<MqttRxClientBui
 
     @Override
     public @NotNull MqttClientAdvancedConfigBuilder.Nested<MqttRxClientBuilder> advancedConfig() {
-        return new MqttClientAdvancedConfigBuilder.Nested<>(this::advancedConfig);
+        return new MqttClientAdvancedConfigBuilder.Nested<>(advancedConfig, this::advancedConfig);
     }
 
     @Override

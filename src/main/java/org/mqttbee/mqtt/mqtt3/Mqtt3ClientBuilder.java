@@ -22,17 +22,39 @@ import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.mqtt.MqttClientBuilderBase;
 
 /**
+ * Builder for a {@link Mqtt3Client}.
+ *
  * @author Silvio Giebl
  * @since 1.0
  */
 @DoNotImplement
 public interface Mqtt3ClientBuilder extends MqttClientBuilderBase<Mqtt3ClientBuilder> {
 
+    /**
+     * Builds the {@link Mqtt3Client}.
+     *
+     * @return the built {@link Mqtt3Client}.
+     */
     @NotNull Mqtt3Client build();
 
+    /**
+     * Builds the {@link Mqtt3RxClient}.
+     *
+     * @return the built {@link Mqtt3RxClient}.
+     */
     @NotNull Mqtt3RxClient buildRx();
 
+    /**
+     * Builds the {@link Mqtt3AsyncClient}.
+     *
+     * @return the built {@link Mqtt3AsyncClient}.
+     */
     @NotNull Mqtt3AsyncClient buildAsync();
 
+    /**
+     * Builds the {@link Mqtt3BlockingClient}.
+     *
+     * @return the built {@link Mqtt3BlockingClient}.
+     */
     @NotNull Mqtt3BlockingClient buildBlocking();
 }

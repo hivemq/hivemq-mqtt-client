@@ -30,9 +30,17 @@ import org.mqttbee.internal.mqtt.MqttWebSocketConfigImplBuilder;
 @DoNotImplement
 public interface MqttWebSocketConfig {
 
+    /**
+     * The default WebSocket server path.
+     */
     @NotNull String DEFAULT_SERVER_PATH = "";
+    /**
+     * The default WebSocket subprotocol.
+     * <p>
+     * See the <a href="https://www.iana.org/assignments/websocket/websocket.xml#subprotocol-name">WebSocket Subprotocol
+     * Name Registry</a>
+     */
     @NotNull String DEFAULT_MQTT_SUBPROTOCOL = "mqtt";
-    // https://www.iana.org/assignments/websocket/websocket.xml#subprotocol-name
 
     /**
      * Creates a builder for a WebSocket configuration.

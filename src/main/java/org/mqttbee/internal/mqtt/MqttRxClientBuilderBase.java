@@ -100,7 +100,7 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
     }
 
     public @NotNull MqttClientSslConfigImplBuilder.Nested<B> useSsl() {
-        return new MqttClientSslConfigImplBuilder.Nested<>(this::useSsl);
+        return new MqttClientSslConfigImplBuilder.Nested<>(sslConfig, this::useSsl);
     }
 
     public @NotNull B useWebSocketWithDefaultConfig() {
@@ -124,7 +124,7 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
     }
 
     public @NotNull MqttWebSocketConfigImplBuilder.Nested<B> useWebSocket() {
-        return new MqttWebSocketConfigImplBuilder.Nested<>(this::useWebSocket);
+        return new MqttWebSocketConfigImplBuilder.Nested<>(webSocketConfig, this::useWebSocket);
     }
 
     public @NotNull B executorConfig(final @Nullable MqttClientExecutorConfig executorConfig) {
@@ -134,7 +134,7 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
     }
 
     public @NotNull MqttClientExecutorConfigImplBuilder.Nested<B> executorConfig() {
-        return new MqttClientExecutorConfigImplBuilder.Nested<>(this::executorConfig);
+        return new MqttClientExecutorConfigImplBuilder.Nested<>(executorConfig, this::executorConfig);
     }
 
     public static class Choose extends MqttRxClientBuilderBase<Choose> implements MqttClientBuilder {

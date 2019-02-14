@@ -32,6 +32,15 @@ public abstract class MqttWebSocketConfigImplBuilder<B extends MqttWebSocketConf
     private @NotNull String serverPath = MqttWebSocketConfigImpl.DEFAULT_SERVER_PATH;
     private @NotNull String subprotocol = MqttWebSocketConfigImpl.DEFAULT_MQTT_SUBPROTOCOL;
 
+    MqttWebSocketConfigImplBuilder() {}
+
+    MqttWebSocketConfigImplBuilder(final @Nullable MqttWebSocketConfigImpl webSocketConfig) {
+        if (webSocketConfig != null) {
+            serverPath = webSocketConfig.getServerPath();
+            subprotocol = webSocketConfig.getSubprotocol();
+        }
+    }
+
     abstract @NotNull B self();
 
     public @NotNull B serverPath(final @Nullable String serverPath) {
@@ -62,7 +71,11 @@ public abstract class MqttWebSocketConfigImplBuilder<B extends MqttWebSocketConf
 
         private final @NotNull Function<? super MqttWebSocketConfigImpl, P> parentConsumer;
 
-        public Nested(final @NotNull Function<? super MqttWebSocketConfigImpl, P> parentConsumer) {
+        public Nested(
+                final @Nullable MqttWebSocketConfigImpl webSocketConfig,
+                final @NotNull Function<? super MqttWebSocketConfigImpl, P> parentConsumer) {
+
+            super(webSocketConfig);
             this.parentConsumer = parentConsumer;
         }
 
