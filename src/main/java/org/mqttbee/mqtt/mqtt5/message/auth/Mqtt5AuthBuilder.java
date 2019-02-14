@@ -44,7 +44,7 @@ public interface Mqtt5AuthBuilder extends Mqtt5EnhancedAuthBuilder {
     /**
      * Sets the optional {@link Mqtt5Auth#getReasonString() Reason String}.
      *
-     * @param reasonString the reason string or <code>null</code> to cancel any previously set Reason String.
+     * @param reasonString the reason string or <code>null</code> to remove any previously set Reason String.
      * @return the builder.
      */
     @NotNull Mqtt5AuthBuilder reasonString(@Nullable String reasonString);
@@ -52,7 +52,7 @@ public interface Mqtt5AuthBuilder extends Mqtt5EnhancedAuthBuilder {
     /**
      * Sets the optional {@link Mqtt5Auth#getReasonString() Reason String}.
      *
-     * @param reasonString the reason string or <code>null</code> to cancel any previously set Reason String.
+     * @param reasonString the reason string or <code>null</code> to remove any previously set Reason String.
      * @return the builder.
      */
     @NotNull Mqtt5AuthBuilder reasonString(@Nullable MqttUtf8String reasonString);
@@ -71,7 +71,7 @@ public interface Mqtt5AuthBuilder extends Mqtt5EnhancedAuthBuilder {
      * Calling {@link Mqtt5UserPropertiesBuilder.Nested#applyUserProperties()} on the returned builder has the effect of
      * {@link Mqtt5UserProperties#extend() extending} the current User Properties.
      *
-     * @return the fluent builder for the simple auth related data.
+     * @return the fluent builder for the User Properties.
      * @see #userProperties(Mqtt5UserProperties)
      */
     @NotNull Mqtt5UserPropertiesBuilder.Nested<? extends Mqtt5AuthBuilder> userProperties();

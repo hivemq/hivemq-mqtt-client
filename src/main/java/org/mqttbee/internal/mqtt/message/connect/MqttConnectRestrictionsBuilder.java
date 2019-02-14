@@ -54,12 +54,12 @@ public abstract class MqttConnectRestrictionsBuilder<B extends MqttConnectRestri
     abstract @NotNull B self();
 
     public @NotNull B receiveMaximum(final int receiveMaximum) {
-        this.receiveMaximum = Checks.unsignedShort(receiveMaximum, "Receive maximum");
+        this.receiveMaximum = Checks.unsignedShortNotZero(receiveMaximum, "Receive maximum");
         return self();
     }
 
     public @NotNull B sendMaximum(final int sendMaximum) {
-        this.sendMaximum = Checks.unsignedShort(sendMaximum, "Send maximum");
+        this.sendMaximum = Checks.unsignedShortNotZero(sendMaximum, "Send maximum");
         return self();
     }
 

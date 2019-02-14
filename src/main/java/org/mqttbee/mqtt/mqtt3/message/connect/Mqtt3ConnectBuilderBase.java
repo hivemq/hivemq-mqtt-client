@@ -37,6 +37,8 @@ public interface Mqtt3ConnectBuilderBase<B extends Mqtt3ConnectBuilderBase<B>> {
 
     /**
      * Sets the {@link Mqtt3Connect#getKeepAlive() keep alive} in seconds.
+     * <p>
+     * The value must be in the range of an unsigned short: [0, 65_535].
      *
      * @param keepAlive tbe keep alive in seconds.
      * @return the builder.
@@ -61,7 +63,7 @@ public interface Mqtt3ConnectBuilderBase<B extends Mqtt3ConnectBuilderBase<B>> {
     /**
      * Sets the optional {@link Mqtt3Connect#getSimpleAuth() simple authentication and/or authorization related data}.
      *
-     * @param simpleAuth the simple auth related data or <code>null</code> to cancel any previously set simple auth
+     * @param simpleAuth the simple auth related data or <code>null</code> to remove any previously set simple auth
      *                   related data.
      * @return the builder.
      */
@@ -82,7 +84,7 @@ public interface Mqtt3ConnectBuilderBase<B extends Mqtt3ConnectBuilderBase<B>> {
     /**
      * Sets the optional {@link Mqtt3Connect#getWillPublish() Will Publish}.
      *
-     * @param willPublish the Will Publish or <code>null</code> to cancel any previously set Will Publish.
+     * @param willPublish the Will Publish or <code>null</code> to remove any previously set Will Publish.
      * @return the builder.
      */
     @NotNull B willPublish(@Nullable Mqtt3Publish willPublish);
