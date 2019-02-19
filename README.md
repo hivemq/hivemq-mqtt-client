@@ -227,11 +227,11 @@ client.connect();
 ```
 Or with customized properties of the Connect message:
 ```java
-client.connectWith().keepAlice(10).send();
+client.connectWith().keepAlive(10).send();
 ```
 Or with pre-built Connect message:
 ```java
-Mqtt5Connect connectMessage = Mqtt5Connect.builder().keepAlice(10).build();
+Mqtt5Connect connectMessage = Mqtt5Connect.builder().keepAlive(10).build();
 client.connect(connectMessage);
 ```
 
@@ -415,96 +415,81 @@ Method calls are analog to the Blocking API but return `CompletableFuture`.
  - Builder method: `buildRx()`
  - Switch method: `client.toRx()`
 
-#### Subscribe example
+#### Examples
+
+##### Subscribe example
 
 ```java
-final Mqtt3RxClient client = MqttClient.builder()
+Mqtt5RxClient client = Mqtt5Client.builder()
         .identifier(UUID.randomUUID().toString())
         .serverHost("broker.hivemq.com")
-        .serverPort(1883)
-        .useMqttVersion3()
         .buildRx();
 
-/*
- * As we use the reactive API, the following line does not connect yet, but return a reactive type.
- * e.g. Single is something like a lazy and reusable future.
- */
-final Single<Mqtt3ConnAck> connAckSingle = client.connectWith().keepAlive(10).applyConnect();
+// As we use the reactive API, the following line does not connect yet, but returns a reactive type.
+// e.g. Single is something like a lazy and reusable future. Think of it as a source for the ConnAck message.
+Single<Mqtt5ConnAck> connAckSingle = client.connect();
 
-/*
- * Same here: the following line does not subscribe yet, but return a reactive type.
- * FlowableWithSingle is a combination of the single SUBACK message and a Flowable of PUBLISH messages.
- * A Flowable is an asynchronous stream, that enables back pressure from the application over MQTT Bee to the broker.
- */
-final FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck> subAckAndMatchingPublishes = client.subscribeStreamWith()
+// Same here: the following line does not subscribe yet, but returns a reactive type.
+// FlowableWithSingle is a combination of the single SubAck message and a Flowable of Publish messages.
+// A Flowable is an asynchronous stream, that enables back pressure from the application over MQTT Bee to the broker.
+FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subAckAndMatchingPublishes = client.subscribeStreamWith()
         .topicFilter("a/b/c").qos(MqttQos.AT_LEAST_ONCE)
         .addSubscription().topicFilter("a/b/c/d").qos(MqttQos.EXACTLY_ONCE).applySubscription()
         .applySubscribe();
 
-/*
- * The reactive types offer as many operators that will not be covered here.
- * Here we register simple callbacks to print messages when we received the CONNACK, SUBACK and matching PUBLISH messages.
- */
-final Single<Mqtt3ConnAck> connectScenario = connAckSingle
-        .doOnSuccess(connAck -> System.out.println("Connected with return code " + connAck.getReturnCode()))
-        .doOnError(throwable -> System.out.println("Connection failed, " + throwable.getMessage()));
+// The reactive types offer many operators that will not be covered here.
+// Here we register callbacks to print messages when we received the CONNACK, SUBACK and matching PUBLISH messages.
+Completable connectScenario = connAckSingle
+        .doOnSuccess(connAck -> System.out.println("Connected, " + connAck.getReasonCode()))
+        .doOnError(throwable -> System.out.println("Connection failed, " + throwable.getMessage()))
+        .ignoreElement();
 
-final Flowable<Mqtt3Publish> subscribeScenario = subAckAndMatchingPublishes
-        .doOnSingle(subAck -> System.out.println("Subscribed with return codes " + subAck.getReturnCodes()))
-        .doOnNext(publish ->
-                System.out.println("Received publish" +
-                        ", topic: " + publish.getTopic() +
-                        ", QoS: " + publish.getQos() +
-                        ", payload: " + new String(publish.getPayloadAsBytes())
-                )
-        );
+Completable subscribeScenario = subAckAndMatchingPublishes
+        .doOnSingle(subAck -> System.out.println("Subscribed, " + subAck.getReasonCodes()))
+        .doOnNext(publish -> System.out.println(
+                "Received publish" + ", topic: " + publish.getTopic() + ", QoS: " + publish.getQos() +
+                        ", payload: " + new String(publish.getPayloadAsBytes())))
+        .ignoreElements();
 
-/*
- * Reactive types let us compose a sequence of actions
- */
-final Flowable<Mqtt3Publish> connectAndSubscribe = connectScenario.ignoreElement().andThen(subscribeScenario);
-
-/*
- * By subscribing to reactive types, the sequence is executed
- */
-connectAndSubscribe.blockingSubscribe();
+// Reactive types can be easily and flexibly combined
+connectScenario.andThen(subscribeScenario).blockingAwait();
 ```
 
-#### Publish example
+##### Publish example
 
 ```java
-final Mqtt3RxClient client = MqttClient.builder()
+Mqtt5RxClient client = Mqtt5Client.builder()
         .identifier(UUID.randomUUID().toString())
         .serverHost("broker.hivemq.com")
-        .serverPort(1883)
-        .useMqttVersion3()
         .buildRx();
 
-final Single<Mqtt3ConnAck> connAckSingle = client.connectWith().keepAlive(10).applyConnect();
+// As we use the reactive API, the following line does not connect yet, but returns a reactive type.
+Completable connectScenario = client.connect()
+        .doOnSuccess(connAck -> System.out.println("Connected, " + connAck.getReasonCode()))
+        .doOnError(throwable -> System.out.println("Connection failed, " + throwable.getMessage()))
+        .ignoreElement();
 
-/*
- * Fake a stream of PUBLISH messages to publish with incrementing ids
- */
-final AtomicInteger counter = new AtomicInteger();
-Flowable<Mqtt3Publish> messagesToPublish = Flowable.generate(emitter -> {
-    final int id = counter.incrementAndGet();
-    final Mqtt3Publish publishMessage = Mqtt3Publish.builder()
-            .topic("a/b/c").qos(MqttQos.AT_LEAST_ONCE).payload(("test " + id).getBytes()).build();
-    emitter.onNext(publishMessage);
-});
-/*
- * Emit 1 message only every 100 milliseconds
- */
-messagesToPublish = messagesToPublish.zipWith(Flowable.interval(100, TimeUnit.MILLISECONDS), (publish, aLong) -> publish);
+// Fake a stream of Publish messages with an incrementing number in the payload
+Flowable<Mqtt5Publish> messagesToPublish = Flowable.range(0, 10_000)
+        .map(i -> Mqtt5Publish.builder()
+                .topic("a/b/c")
+                .qos(MqttQos.AT_LEAST_ONCE)
+                .payload(("test " + i).getBytes())
+                .build())
+        // Emit 1 message only every 100 milliseconds
+        .zipWith(Flowable.interval(100, TimeUnit.MILLISECONDS), (publish, i) -> publish);
 
-final Single<Mqtt3ConnAck> connectScenario = connAckSingle
-        .doOnSuccess(connAck -> System.out.println("Connected with return code " + connAck.getReturnCode()))
-        .doOnError(throwable -> System.out.println("Connection failed, " + throwable.getMessage()));
+// As we use the reactive API, the following line does not publish yet, but returns a reactive type.
+Completable publishScenario = client.publish(messagesToPublish)
+        .doOnNext(publishResult -> System.out.println(
+                "Publish acknowledged: " + new String(publishResult.getPublish().getPayloadAsBytes())))
+        .ignoreElements();
 
-final Flowable<Mqtt3PublishResult> publishScenario = client.publish(messagesToPublish)
-        .doOnNext(publishResult -> System.out.println("Publish acknowledged: " + new String(publishResult.getPublish().getPayloadAsBytes())));
+// As we use the reactive API, the following line does not disconnect yet, but returns a reactive type.
+Completable disconnectScenario = client.disconnect().doOnComplete(() -> System.out.println("Disconnected"));
 
-connectScenario.ignoreElement().andThen(publishScenario).blockingSubscribe();
+// Reactive types can be easily and flexibly combined
+connectScenario.andThen(publishScenario).andThen(disconnectScenario).blockingAwait();
 ```
 
 # How to contribute
