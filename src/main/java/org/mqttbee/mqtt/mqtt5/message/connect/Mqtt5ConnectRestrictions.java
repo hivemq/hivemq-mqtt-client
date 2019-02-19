@@ -25,9 +25,18 @@ import org.mqttbee.internal.util.UnsignedDataTypes;
 import org.mqttbee.mqtt.mqtt5.Mqtt5ClientConnectionConfig;
 
 /**
- * Restrictions for the server set by the client in a {@link Mqtt5Connect MQTT 5 Connect message}.
+ * Restrictions set by the client in a {@link Mqtt5Connect MQTT 5 Connect message}.
  * <p>
- * These restrictions are used to form the {@link Mqtt5ClientConnectionConfig.RestrictionsForServer}.
+ * These restrictions consist of:
+ * <ul>
+ * <li>Restrictions for the server.
+ * <p>
+ * These are used to form the {@link Mqtt5ClientConnectionConfig.RestrictionsForServer}</li>
+ * <li>Restrictions for the client set by the client itself.
+ * <p>
+ * These restrictions are used in conjunction with the {@link org.mqttbee.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions
+ * Mqtt5ConnAckRestrictions} to form the {@link Mqtt5ClientConnectionConfig.RestrictionsForClient}.</li>
+ * </ul>
  *
  * @author Silvio Giebl
  * @since 1.0
@@ -41,14 +50,28 @@ public interface Mqtt5ConnectRestrictions {
      */
     int DEFAULT_RECEIVE_MAXIMUM = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE;
     /**
+     * The default maximum amount of not acknowledged publishes with QoS 1 or 2 the client sends to the server
+     * concurrently.
+     */
+    int DEFAULT_SEND_MAXIMUM = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE;
+    /**
      * The default maximum packet size the client accepts from the server. By default the packet size is not limited
      * beyond the restrictions of the encoding.
      */
     int DEFAULT_MAXIMUM_PACKET_SIZE = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT;
     /**
+     * The default maximum packet size the client sends to the server. By default the packet size is not limited beyond
+     * the restrictions of the encoding.
+     */
+    int DEFAULT_SEND_MAXIMUM_PACKET_SIZE = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT;
+    /**
      * The default maximum amount of topic aliases the client accepts from the server.
      */
     int DEFAULT_TOPIC_ALIAS_MAXIMUM = 0;
+    /**
+     * The default maximum amount of topic aliases the client sends to the server.
+     */
+    int DEFAULT_SEND_TOPIC_ALIAS_MAXIMUM = 16;
     /**
      * Default whether the client accepts problem information from the server.
      */
@@ -77,6 +100,19 @@ public interface Mqtt5ConnectRestrictions {
     int getReceiveMaximum();
 
     /**
+     * Returns the maximum amount of not acknowledged publishes with QoS 1 or 2 the client sends to the server
+     * concurrently. The default is {@link #DEFAULT_SEND_MAXIMUM}.
+     * <p>
+     * The actual amount a connected client will use is determined by the minimum of this value and {@link
+     * org.mqttbee.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions#getReceiveMaximum()
+     * MqttConnAckRestrictions#getReceiveMaximum()}.
+     *
+     * @return the maximum amount of not acknowledged publishes with QoS 1 or 2 the client sends to the server
+     *         concurrently.
+     */
+    int getSendMaximum();
+
+    /**
      * Returns the maximum packet size the client accepts from the server. The default is {@link
      * #DEFAULT_MAXIMUM_PACKET_SIZE}.
      *
@@ -85,12 +121,36 @@ public interface Mqtt5ConnectRestrictions {
     int getMaximumPacketSize();
 
     /**
+     * Returns the maximum packet size the client sends to the server. The default is {@link
+     * #DEFAULT_SEND_MAXIMUM_PACKET_SIZE}.
+     * <p>
+     * The actual size a connected client will use is determined by the minimum of this value and {@link
+     * org.mqttbee.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions#getMaximumPacketSize()
+     * MqttConnAckRestrictions#getMaximumPacketSize()}.
+     *
+     * @return the maximum packet size the client sends to the server.
+     */
+    int getSendMaximumPacketSize();
+
+    /**
      * Returns the maximum amount of topic aliases the client accepts from the server. The default is {@link
      * #DEFAULT_TOPIC_ALIAS_MAXIMUM}.
      *
      * @return the maximum amount of topic aliases the client accepts from the server.
      */
     int getTopicAliasMaximum();
+
+    /**
+     * Returns the maximum amount of topic aliases the client sends to the server. The default is {@link
+     * #DEFAULT_SEND_TOPIC_ALIAS_MAXIMUM}.
+     * <p>
+     * The actual amount a connected client will use is determined by the minimum of this value and {@link
+     * org.mqttbee.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions#getTopicAliasMaximum()
+     * MqttConnAckRestrictions#getTopicAliasMaximum()}.
+     *
+     * @return the maximum amount of topic aliases the client sends to the server.
+     */
+    int getSendTopicAliasMaximum();
 
     /**
      * Returns whether the client requests problem information from the server. The default is {@link
@@ -109,76 +169,9 @@ public interface Mqtt5ConnectRestrictions {
     boolean isRequestResponseInformation();
 
     /**
-     * @return the restrictions for the client set by the client itself.
-     */
-    @NotNull ForClient forClient();
-
-    /**
      * Creates a builder for extending this Connect restrictions.
      *
      * @return the created builder.
      */
     @NotNull Mqtt5ConnectRestrictionsBuilder extend();
-
-    /**
-     * Restrictions for the client set by the client itself.
-     * <p>
-     * These restrictions are used in conjunction with the {@link org.mqttbee.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions
-     * Mqtt5ConnAckRestrictions} to form the {@link Mqtt5ClientConnectionConfig.RestrictionsForClient}.
-     */
-    @DoNotImplement
-    interface ForClient {
-
-        /**
-         * The default maximum amount of not acknowledged publishes with QoS 1 or 2 the client sends to the server
-         * concurrently.
-         */
-        int DEFAULT_SEND_MAXIMUM = UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE;
-        /**
-         * The default maximum packet size the client sends to the server. By default the packet size is not limited
-         * beyond the restrictions of the encoding.
-         */
-        int DEFAULT_SEND_MAXIMUM_PACKET_SIZE = MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT;
-        /**
-         * The default maximum amount of topic aliases the client sends to the server.
-         */
-        int DEFAULT_SEND_TOPIC_ALIAS_MAXIMUM = 16;
-
-        /**
-         * Returns the maximum amount of not acknowledged publishes with QoS 1 or 2 the client sends to the server
-         * concurrently. The default is {@link #DEFAULT_SEND_MAXIMUM}.
-         * <p>
-         * The actual amount a connected client will use is determined by the minimum of this value and {@link
-         * org.mqttbee.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions#getReceiveMaximum()
-         * MqttConnAckRestrictions#getReceiveMaximum()}.
-         *
-         * @return the maximum amount of not acknowledged publishes with QoS 1 or 2 the client sends to the server
-         *         concurrently.
-         */
-        int getSendMaximum();
-
-        /**
-         * Returns the maximum packet size the client sends to the server. The default is {@link
-         * #DEFAULT_SEND_MAXIMUM_PACKET_SIZE}.
-         * <p>
-         * The actual size a connected client will use is determined by the minimum of this value and {@link
-         * org.mqttbee.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions#getMaximumPacketSize()
-         * MqttConnAckRestrictions#getMaximumPacketSize()}.
-         *
-         * @return the maximum packet size the client sends to the server.
-         */
-        int getSendMaximumPacketSize();
-
-        /**
-         * Returns the maximum amount of topic aliases the client sends to the server. The default is {@link
-         * #DEFAULT_SEND_TOPIC_ALIAS_MAXIMUM}.
-         * <p>
-         * The actual amount a connected client will use is determined by the minimum of this value and {@link
-         * org.mqttbee.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions#getTopicAliasMaximum()
-         * MqttConnAckRestrictions#getTopicAliasMaximum()}.
-         *
-         * @return the maximum amount of topic aliases the client sends to the server.
-         */
-        int getSendTopicAliasMaximum();
-    }
 }

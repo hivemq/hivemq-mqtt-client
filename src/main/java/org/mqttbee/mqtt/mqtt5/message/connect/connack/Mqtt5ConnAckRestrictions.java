@@ -27,8 +27,8 @@ import org.mqttbee.mqtt.mqtt5.Mqtt5ClientConnectionConfig;
 /**
  * Restrictions for the client set by the server in a {@link Mqtt5ConnAck MQTT 5 ConnAck message}.
  * <p>
- * These restrictions are used in conjunction with the {@link org.mqttbee.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions.ForClient
- * Mqtt5ConnectRestrictions.ForClient} to form the {@link Mqtt5ClientConnectionConfig.RestrictionsForClient}.
+ * These restrictions are used in conjunction with the {@link org.mqttbee.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions
+ * Mqtt5ConnectRestrictions} to form the {@link Mqtt5ClientConnectionConfig.RestrictionsForClient}.
  *
  * @author Silvio Giebl
  * @since 1.0
