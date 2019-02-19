@@ -43,6 +43,7 @@ Java 8 or higher is required.
 ### Gradle
 
 If you use Gradle, just include the following inside your `build.gradle` file.
+
 ```groovy
 dependencies {
     compile group: 'org.mqttbee', name: 'mqtt-bee', version: '1.0.0'
@@ -52,7 +53,9 @@ dependencies {
 ### Maven
 
 If you use Maven, just include the following inside your `pom.xml` file.
+
 NOTE: You have to set the compiler version to `1.8` or higher.
+
 ```xml
 <project>
     ...
@@ -123,7 +126,6 @@ dependencies {
 
 #### Maven
 
-If you use Maven, you have to set the compiler version to `1.8` or higher.
 ```xml
 <project>
     ...
