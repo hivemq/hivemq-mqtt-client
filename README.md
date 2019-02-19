@@ -36,9 +36,71 @@ A detailed documentation can be found  [here](https://mqtt-bee.github.io)
 
 # How to use
 
-Java 8+ is required.
+Java 8 or higher is required.
 
 ## Dependency
+
+### Gradle
+
+If you use Gradle, just include the following inside your `build.gradle` file.
+```groovy
+dependencies {
+    compile group: 'org.mqttbee', name: 'mqtt-bee', version: '1.0.0'
+}
+```
+
+### Maven
+
+If you use Maven, just include the following inside your `pom.xml` file.
+NOTE: You have to set the compiler version to `1.8` or higher.
+```xml
+<project>
+    ...
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+    
+    <dependencies>
+        <dependency>
+            <groupId>org.mqttbee</groupId>
+            <artifactId>mqtt-bee</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+    </dependencies>
+    ...
+</project>
+```
+
+### Shaded version
+
+If you are experiencing problems with transitive dependencies, you can try the shaded version.
+This version packs the transitive dependencies which are only used internal under a different package name.
+To use the shaded version just append `-shaded` to the artifact name.
+
+#### Gradle
+
+```groovy
+dependencies {
+    compile group: 'org.mqttbee', name: 'mqtt-bee-shaded', version: '1.0.0'
+}
+```
+
+#### Maven
+
+```xml
+<project>
+    ...
+    <dependencies>
+        <dependency>
+            <groupId>org.mqttbee</groupId>
+            <artifactId>mqtt-bee-shaded</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+    </dependencies>
+    ...
+</project>
+```
 
 ### Snapshots
 
@@ -55,7 +117,7 @@ repositories {
 }
 
 dependencies {
-    compile(group: 'org.mqttbee', name: 'mqtt-bee', version: '1.0.0-SNAPSHOT')
+    compile group: 'org.mqttbee', name: 'mqtt-bee', version: '1.0.0-SNAPSHOT'
 }
 ```
 
@@ -64,11 +126,7 @@ dependencies {
 If you use Maven, you have to set the compiler version to `1.8` or higher.
 ```xml
 <project>
-    <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-    </properties>
-    
+    ...
     <repositories>
         <repository>
             <id>oss.jfrog.org</id>
@@ -83,6 +141,7 @@ If you use Maven, you have to set the compiler version to `1.8` or higher.
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
+    ...
 </project>
 ```
 
