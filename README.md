@@ -600,6 +600,6 @@ review of the pull request
 
 ## Code style guidelines
 
- - Please import the code style settings found in the codeStyle folder.
- - The project uses Nullability annotations to avoid NullPointerExceptions: `@NotNull`, `@Nullable`,
-every non-primitive parameter/return type/field should be annotated with one of them.
+ - The project uses Nullability annotations to avoid NullPointerExceptions: `@NotNull`, `@Nullable`.
+Every non-primitive parameter/return type/field should be annotated with one of them.
+ - For IntelliJ IDEA the codeStyleConfig and the inspectionProfile are provided in the `.idea` folder.
