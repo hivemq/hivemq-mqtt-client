@@ -204,6 +204,8 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler
     public void operationComplete(final @NotNull ContextFuture<? extends MqttMessage.WithId> future) {
         if (future.isSuccess()) {
             messages.remove(future.getContext().getPacketIdentifier());
+        } else {
+            future.channel().pipeline().fireExceptionCaught(future.cause());
         }
     }
 

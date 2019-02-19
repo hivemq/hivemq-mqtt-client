@@ -38,7 +38,7 @@ class MqttUnsubscribeWithFlow extends MqttSubOrUnsubWithFlow {
         this.unsubAckFlow = unsubAckFlow;
     }
 
-    @NotNull MqttUnsubscribe getUnsubscribe() {
+    @NotNull MqttUnsubscribe getMessage() {
         return unsubscribe;
     }
 
@@ -60,7 +60,8 @@ class MqttUnsubscribeWithFlow extends MqttSubOrUnsubWithFlow {
             this.unsubAckFlow = unsubAckFlow;
         }
 
-        @NotNull MqttStatefulUnsubscribe getUnsubscribe() {
+        @Override
+        @NotNull MqttStatefulUnsubscribe getMessage() {
             return unsubscribe;
         }
 

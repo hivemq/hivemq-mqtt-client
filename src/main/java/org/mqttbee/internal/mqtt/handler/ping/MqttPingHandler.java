@@ -119,6 +119,8 @@ public class MqttPingHandler extends MqttConnectionAwareHandler
     public void operationComplete(final @NotNull ChannelFuture future) {
         if (future.isSuccess()) {
             pingReqFlushed = true;
+        } else {
+            MqttDisconnectUtil.close(future.channel(), future.cause());
         }
     }
 
