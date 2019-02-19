@@ -22,9 +22,12 @@ import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.internal.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.internal.mqtt.message.connect.MqttConnectRestrictionsBuilder;
 import org.mqttbee.internal.util.UnsignedDataTypes;
+import org.mqttbee.mqtt.mqtt5.Mqtt5ClientConnectionConfig;
 
 /**
- * Restrictions from the client in a {@link Mqtt5Connect MQTT 5 Connect message}.
+ * Restrictions for the server set by the client in a {@link Mqtt5Connect MQTT 5 Connect message}.
+ * <p>
+ * These restrictions are used to form the {@link Mqtt5ClientConnectionConfig.RestrictionsForServer}.
  *
  * @author Silvio Giebl
  * @since 1.0
@@ -106,9 +109,9 @@ public interface Mqtt5ConnectRestrictions {
     boolean isRequestResponseInformation();
 
     /**
-     * @return the advanced restrictions set from the client.
+     * @return the restrictions for the client set by the client itself.
      */
-    @NotNull Advanced getAdvanced();
+    @NotNull ForClient forClient();
 
     /**
      * Creates a builder for extending this Connect restrictions.
@@ -118,10 +121,13 @@ public interface Mqtt5ConnectRestrictions {
     @NotNull Mqtt5ConnectRestrictionsBuilder extend();
 
     /**
-     * Advanced restrictions set from the client.
+     * Restrictions for the client set by the client itself.
+     * <p>
+     * These restrictions are used in conjunction with the {@link org.mqttbee.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions
+     * Mqtt5ConnAckRestrictions} to form the {@link Mqtt5ClientConnectionConfig.RestrictionsForClient}.
      */
     @DoNotImplement
-    interface Advanced {
+    interface ForClient {
 
         /**
          * The default maximum amount of not acknowledged publishes with QoS 1 or 2 the client sends to the server
@@ -136,7 +142,7 @@ public interface Mqtt5ConnectRestrictions {
         /**
          * The default maximum amount of topic aliases the client sends to the server.
          */
-        int DEFAULT_SEND_TOPIC_ALIAS_MAXIMUM = 0;
+        int DEFAULT_SEND_TOPIC_ALIAS_MAXIMUM = 16;
 
         /**
          * Returns the maximum amount of not acknowledged publishes with QoS 1 or 2 the client sends to the server

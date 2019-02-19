@@ -31,15 +31,15 @@ import org.mqttbee.mqtt.MqttClientConnectionConfig;
 public interface Mqtt3ClientConnectionConfig extends MqttClientConnectionConfig {
 
     /**
-     * @return the configuration for messages the client sends.
+     * @return the restrictions for messages the client sends.
      */
-    @NotNull SendConfig getSendConfig();
+    @NotNull RestrictionsForClient getRestrictionsForClient();
 
     /**
-     * Configuration for messages a {@link Mqtt3Client} sends.
+     * Restrictions for messages a {@link Mqtt3Client} sends.
      */
     @DoNotImplement
-    interface SendConfig {
+    interface RestrictionsForClient {
 
         /**
          * Returns the maximum amount of not acknowledged publishes with QoS 1 or 2 the client sends to the server
