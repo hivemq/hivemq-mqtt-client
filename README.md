@@ -356,7 +356,8 @@ client.connect()
 
 #### Connect
 
-Method calls are analog to the Blocking API but return `CompletableFuture`.
+`connect()`, `connectWith()` and `connect(Mqtt3/5Connect)` method calls are analog to the Blocking API but return
+`CompletableFuture`.
 
 #### Publish
 
@@ -364,7 +365,8 @@ Method calls are analog to the Blocking API but return `CompletableFuture`.
 
 #### Subscribe
 
-Method calls are analog to the Blocking API but return `CompletableFuture`.
+`subscribeWith()` and `subscribe(Mqtt3/5Subscribe)` method calls are analog to the Blocking API but return
+`CompletableFuture`.
 
 Additionally messages can be consumed per subscribe:
 ```java
@@ -387,7 +389,8 @@ client.subscribe(subscribeMessage, System.out::println, executor);
 
 #### Unsubscribe
 
-Method calls are analog to the Blocking API but return `CompletableFuture`.
+`unsubscribeWith()` and `unsubscribe(Mqtt3/5Unsubscribe)` method calls are analog to the Blocking API but return
+`CompletableFuture`.
 
 #### Consume messages
 
@@ -406,11 +409,12 @@ It can be called before `connect` to receive messages of a previous session.
 
 #### Disconnect
 
-Method calls are analog to the Blocking API but return `CompletableFuture`.
+`disconnect()`, `disconnectWith()` and `disconnect(Mqtt5Disconnect)` method calls are analog to the Blocking API but
+return `CompletableFuture`.
 
 #### Reauth (only MQTT 5)
 
-Method calls are analog to the Blocking API but return `CompletableFuture`.
+`reauth()` method call is analog to the Blocking API but return `CompletableFuture`.
 
 ### Reactive API
 
@@ -493,6 +497,82 @@ Completable disconnectScenario = client.disconnect().doOnComplete(() -> System.o
 // Reactive types can be easily and flexibly combined
 connectScenario.andThen(publishScenario).andThen(disconnectScenario).blockingAwait();
 ```
+
+#### Connect
+
+`connect()`, `connectWith()` and `connect(Mqtt3/5Connect)` method calls are analog to the Async and Blocking API but
+return `Single<ConnAck>`.
+
+#### Publish
+
+`publish` takes a reactive stream of Publish messages (`Flowable`) and returns a reactive stream of Publish results
+(`Flowable`).
+
+The Reactive API is usually not used for publishing single messages.
+Nevertheless it is possible with the following code.
+
+```java
+Single<Mqtt5PublishResult> result =
+        client.publish(Flowable.just(Mqtt5Publish.builder()
+                .topic("test/topic")
+                .qos(MqttQos.AT_LEAST_ONCE)
+                .payload("payload".getBytes())
+                .build())).singleOrError();
+
+```
+
+#### Subscribe
+
+`subscribeWith()` and `subscribe(Mqtt3/5Subscribe)` method calls are analog to the Async and Blocking API but return
+`Single<SubAck>`.
+
+Additionally messages can be consumed per subscribe:
+```java
+Flowable<Mqtt5Publish> result =
+        client.subscribeStreamWith()
+                .topicFilter("test/topic")
+                .qos(MqttQos.EXACTLY_ONCE)
+                .applySubscribe()
+                .doOnSingle(subAck -> System.out.println("subscribed"))
+                .doOnNext(publish -> System.out.println("received publish"));
+```
+Or with pre-built Subscribe message:
+```java
+Mqtt5Subscribe subscribeMessage = Mqtt5Subscribe.builder()
+        .topicFilter("test/topic")
+        .qos(MqttQos.EXACTLY_ONCE)
+        .build();
+Flowable<Mqtt5Publish> result =
+        client.subscribeStreamWith(subscribeMessage)
+                .doOnSingle(subAck -> System.out.println("subscribed"))
+                .doOnNext(publish -> System.out.println("received publish"));
+```
+
+#### Unsubscribe
+
+`unsubscribeWith()` and `unsubscribe(Mqtt3/5Unsubscribe)` method calls are analog to the Async and Blocking API but
+return `Single<UnsubAck>`.
+
+#### Consume messages
+
+Messages can either be consumed per subscribe (described above) or globally:
+
+```java
+Flowable<Mqtt5Publish> result =
+        client.publishes(MqttGlobalPublishFilter.ALL);
+```
+
+`publishes` must be called before `subscribe` to ensure no message is lost.
+It can be called before `connect` to receive messages of a previous session.
+
+#### Disconnect
+
+`disconnect()`, `disconnectWith()` and `disconnect(Mqtt5Disconnect)` method calls are analog to the Async and Blocking
+API but return `Completable`.
+
+#### Reauth (only MQTT 5)
+
+`reauth()` method call is analog to the Async and Blocking API but return `Completable`.
 
 # How to contribute
 
