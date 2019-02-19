@@ -38,9 +38,9 @@ public interface Mqtt5ConnectRestrictionsBuilder
     @NotNull Mqtt5ConnectRestrictions build();
 
     /**
-     * Builder for a {@link Mqtt5ConnectRestrictions} that are applied to a parent.
+     * Builder for {@link Mqtt5ConnectRestrictions} that are applied to a parent.
      *
-     * @param <P> the type of the result when the built {@link Mqtt5ConnectRestrictions} is applied to the parent.
+     * @param <P> the type of the result when the built {@link Mqtt5ConnectRestrictions} are applied to the parent.
      */
     @DoNotImplement
     interface Nested<P> extends Mqtt5ConnectRestrictionsBuilderBase<Nested<P>> {
