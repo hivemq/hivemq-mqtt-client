@@ -33,8 +33,9 @@ import java.util.Optional;
  * @author Silvio Giebl
  */
 public class MqttClientConnectionConfig
-        implements Mqtt5ClientConnectionConfig, Mqtt5ClientConnectionConfig.ReceiveConfig,
-        Mqtt5ClientConnectionConfig.SendConfig, Mqtt3ClientConnectionConfig, Mqtt3ClientConnectionConfig.SendConfig {
+        implements Mqtt5ClientConnectionConfig, Mqtt5ClientConnectionConfig.RestrictionsForServer,
+        Mqtt5ClientConnectionConfig.RestrictionsForClient, Mqtt3ClientConnectionConfig,
+        Mqtt3ClientConnectionConfig.RestrictionsForClient {
 
     private final int keepAlive;
     private final long sessionExpiryInterval;
@@ -110,12 +111,12 @@ public class MqttClientConnectionConfig
     }
 
     @Override
-    public @NotNull MqttClientConnectionConfig getReceiveConfig() {
+    public @NotNull MqttClientConnectionConfig getRestrictionsForServer() {
         return this;
     }
 
     @Override
-    public @NotNull MqttClientConnectionConfig getSendConfig() {
+    public @NotNull MqttClientConnectionConfig getRestrictionsForClient() {
         return this;
     }
 

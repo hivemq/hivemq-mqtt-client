@@ -99,7 +99,7 @@ public abstract class MqttConnectRestrictionsBuilder<B extends MqttConnectRestri
     }
 
     public static class Default extends MqttConnectRestrictionsBuilder<Default>
-            implements Mqtt5ConnectRestrictionsBuilder, Mqtt5ConnectRestrictionsBuilder.AdvancedBuilder {
+            implements Mqtt5ConnectRestrictionsBuilder, Mqtt5ConnectRestrictionsBuilder.ForClient {
 
         public Default() {}
 
@@ -113,19 +113,18 @@ public abstract class MqttConnectRestrictionsBuilder<B extends MqttConnectRestri
         }
 
         @Override
-        public @NotNull Default advanced() {
+        public @NotNull Default forClient() {
             return this;
         }
 
         @Override
-        public @NotNull Default applyAdvanced() {
+        public @NotNull Default forServer() {
             return this;
         }
     }
 
     public static class Nested<P> extends MqttConnectRestrictionsBuilder<Nested<P>>
-            implements Mqtt5ConnectRestrictionsBuilder.Nested<P>,
-            Mqtt5ConnectRestrictionsBuilder.AdvancedBuilder.Nested<P> {
+            implements Mqtt5ConnectRestrictionsBuilder.Nested<P>, Mqtt5ConnectRestrictionsBuilder.Nested.ForClient<P> {
 
         Nested(
                 final @NotNull MqttConnectRestrictions restrictions,
@@ -143,12 +142,12 @@ public abstract class MqttConnectRestrictionsBuilder<B extends MqttConnectRestri
         }
 
         @Override
-        public @NotNull Nested<P> advanced() {
+        public @NotNull Nested<P> forClient() {
             return this;
         }
 
         @Override
-        public @NotNull Nested<P> applyAdvanced() {
+        public @NotNull Nested<P> forServer() {
             return this;
         }
 

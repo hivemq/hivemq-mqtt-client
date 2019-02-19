@@ -25,7 +25,7 @@ import org.mqttbee.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions;
  * @author Silvio Giebl
  */
 @Immutable
-public class MqttConnectRestrictions implements Mqtt5ConnectRestrictions, Mqtt5ConnectRestrictions.Advanced {
+public class MqttConnectRestrictions implements Mqtt5ConnectRestrictions, Mqtt5ConnectRestrictions.ForClient {
 
     public static final @NotNull MqttConnectRestrictions DEFAULT =
             new MqttConnectRestrictions(DEFAULT_RECEIVE_MAXIMUM, DEFAULT_SEND_MAXIMUM, DEFAULT_MAXIMUM_PACKET_SIZE,
@@ -97,7 +97,7 @@ public class MqttConnectRestrictions implements Mqtt5ConnectRestrictions, Mqtt5C
     }
 
     @Override
-    public @NotNull MqttConnectRestrictions getAdvanced() {
+    public @NotNull MqttConnectRestrictions forClient() {
         return this;
     }
 

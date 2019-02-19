@@ -74,11 +74,16 @@ public interface Mqtt5ConnectRestrictionsBuilderBase<B extends Mqtt5ConnectRestr
      */
     @NotNull B requestResponseInformation(boolean requestResponseInformation);
 
+    /**
+     * Builder base for {@link Mqtt5ConnectRestrictions.ForClient} as part of {@link Mqtt5ConnectRestrictions}.
+     *
+     * @param <B> the type of the builder.
+     */
     @DoNotImplement
-    interface AdvancedBuilderBase<B extends AdvancedBuilderBase<B>> {
+    interface ForClient<B extends ForClient<B>> {
 
         /**
-         * Sets the {@link Mqtt5ConnectRestrictions.Advanced#getSendMaximum() send maximum}.
+         * Sets the {@link Mqtt5ConnectRestrictions.ForClient#getSendMaximum() send maximum}.
          * <p>
          * The value must not be zero and must be in the range of an unsigned short: [1, 65_535].
          *
@@ -88,7 +93,7 @@ public interface Mqtt5ConnectRestrictionsBuilderBase<B extends Mqtt5ConnectRestr
         @NotNull B sendMaximum(int receiveMaximum);
 
         /**
-         * Sets the {@link Mqtt5ConnectRestrictions.Advanced#getSendMaximumPacketSize() maximum packet size for
+         * Sets the {@link Mqtt5ConnectRestrictions.ForClient#getSendMaximumPacketSize() maximum packet size for
          * sending}.
          * <p>
          * The value must not be zero and in the range: [1, 268_435_460].
@@ -99,7 +104,7 @@ public interface Mqtt5ConnectRestrictionsBuilderBase<B extends Mqtt5ConnectRestr
         @NotNull B sendMaximumPacketSize(int maximumPacketSize);
 
         /**
-         * Sets the {@link Mqtt5ConnectRestrictions.Advanced#getSendTopicAliasMaximum() topic alias maximum for
+         * Sets the {@link Mqtt5ConnectRestrictions.ForClient#getSendTopicAliasMaximum() topic alias maximum for
          * sending}.
          *
          * @param topicAliasMaximum the topic alias maximum for sending.
