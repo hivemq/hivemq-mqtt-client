@@ -61,6 +61,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.mqttbee.internal.mqtt.message.publish.MqttStatefulPublish.NO_PACKET_IDENTIFIER_QOS_0;
@@ -92,6 +93,8 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     private int shrinkRequests;
 
     private @Nullable Subscription subscription;
+
+    private int currentWrite = -1;
 
     @Inject
     MqttOutgoingQosHandler(
@@ -189,6 +192,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
             clearQueued(MqttClientStateExceptions.notConnected());
             return;
         }
+        final ChannelHandlerContext ctx = this.ctx;
         if (ctx == null) {
             return;
         }
@@ -224,9 +228,13 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
 
     @Override
     public void operationComplete(final @NotNull ContextFuture<? extends MqttPublishWithFlow> future) {
-        final MqttPublishWithFlow publishWithFlow = future.getContext();
-        publishWithFlow.getIncomingAckFlow()
-                .onNext(new MqttPublishResult(publishWithFlow.getPublish(), future.cause()));
+        final Throwable cause = future.cause();
+        if (!(cause instanceof IOException)) {
+            final MqttPublishWithFlow publishWithFlow = future.getContext();
+            publishWithFlow.getIncomingAckFlow().onNext(new MqttPublishResult(publishWithFlow.getPublish(), cause));
+        } else {
+            future.channel().pipeline().fireExceptionCaught(cause);
+        }
     }
 
     private void writeQos1Or2Publish(
@@ -242,9 +250,12 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
         }
         qos1Or2Map.put(packetIdentifier, publishWithFlow);
         qos1Or2Queue.offer(packetIdentifier);
+
+        currentWrite = packetIdentifier;
         ctx.write(
                 publishWithFlow.getPublish().createStateful(packetIdentifier, false, topicAliasMapping),
                 ctx.voidPromise());
+        currentWrite = -1;
     }
 
     @Override
@@ -385,6 +396,20 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
         packetIdentifiers.returnId(packetIdentifier);
         if ((packetIdentifier > sendMaximum) && (--shrinkIds == 0)) {
             resize();
+        }
+    }
+
+    @Override
+    public void exceptionCaught(final @NotNull ChannelHandlerContext ctx, final @NotNull Throwable cause) {
+        if (!(cause instanceof IOException) && (currentWrite != -1)) {
+            assert qos1Or2Map != null;
+            final MqttPublishWithFlow publishWithFlow = (MqttPublishWithFlow) qos1Or2Map.remove(currentWrite);
+            assert publishWithFlow != null;
+            publishWithFlow.getIncomingAckFlow().onError(cause);
+            removed(currentWrite);
+            currentWrite = -1;
+        } else {
+            ctx.fireExceptionCaught(cause);
         }
     }
 

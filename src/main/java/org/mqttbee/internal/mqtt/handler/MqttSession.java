@@ -94,7 +94,9 @@ public class MqttSession {
             final long expiryInterval = connectionConfig.getSessionExpiryInterval();
 
             if (expiryInterval == 0) {
-                end(new MqttSessionExpiredException("Session expired as connection was closed.", cause));
+                // execute later to finish any current write before clearing the session state
+                eventLoop.execute(
+                        () -> end(new MqttSessionExpiredException("Session expired as connection was closed.", cause)));
             } else if (expiryInterval != MqttConnect.NO_SESSION_EXPIRY) {
                 expireFuture = eventLoop.schedule(() -> {
                     if (expireFuture != null) {

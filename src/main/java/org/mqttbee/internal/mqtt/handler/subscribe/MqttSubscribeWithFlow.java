@@ -39,7 +39,7 @@ class MqttSubscribeWithFlow extends MqttSubOrUnsubWithFlow {
         this.flow = flow;
     }
 
-    @NotNull MqttSubscribe getSubscribe() {
+    @NotNull MqttSubscribe getMessage() {
         return subscribe;
     }
 
@@ -62,7 +62,8 @@ class MqttSubscribeWithFlow extends MqttSubOrUnsubWithFlow {
             this.flow = flow;
         }
 
-        @NotNull MqttStatefulSubscribe getSubscribe() {
+        @Override
+        @NotNull MqttStatefulSubscribe getMessage() {
             return subscribe;
         }
 

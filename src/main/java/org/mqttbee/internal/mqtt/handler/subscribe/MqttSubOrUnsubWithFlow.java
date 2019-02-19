@@ -18,6 +18,7 @@
 package org.mqttbee.internal.mqtt.handler.subscribe;
 
 import org.jetbrains.annotations.NotNull;
+import org.mqttbee.internal.mqtt.message.MqttStatefulMessage;
 
 /**
  * @author Silvio Giebl
@@ -27,6 +28,8 @@ abstract class MqttSubOrUnsubWithFlow {
     abstract @NotNull MqttSubscriptionFlow<?> getFlow();
 
     static abstract class Stateful {
+
+        abstract @NotNull MqttStatefulMessage.WithId<?> getMessage();
 
         abstract @NotNull MqttSubscriptionFlow<?> getFlow();
     }
