@@ -33,7 +33,8 @@ public interface Mqtt3SimpleAuthBuilder extends Mqtt3SimpleAuthBuilderBase<Mqtt3
      * {@link Mqtt3SimpleAuthBuilder} that is complete which means all mandatory fields are set.
      */
     @DoNotImplement
-    interface Complete extends Mqtt3SimpleAuthBuilder, Mqtt3SimpleAuthBuilderBase.Complete<Mqtt3SimpleAuthBuilder.Complete> {
+    interface Complete
+            extends Mqtt3SimpleAuthBuilder, Mqtt3SimpleAuthBuilderBase.Complete<Mqtt3SimpleAuthBuilder.Complete> {
 
         /**
          * Builds the {@link Mqtt3SimpleAuth}.

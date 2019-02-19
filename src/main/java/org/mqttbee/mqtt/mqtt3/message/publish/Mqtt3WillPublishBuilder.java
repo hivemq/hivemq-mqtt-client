@@ -33,7 +33,8 @@ public interface Mqtt3WillPublishBuilder extends Mqtt3PublishBuilderBase<Mqtt3Wi
      * {@link Mqtt3WillPublishBuilder} that is complete which means all mandatory fields are set.
      */
     @DoNotImplement
-    interface Complete extends Mqtt3WillPublishBuilder, Mqtt3PublishBuilderBase.Complete<Mqtt3WillPublishBuilder.Complete> {
+    interface Complete
+            extends Mqtt3WillPublishBuilder, Mqtt3PublishBuilderBase.Complete<Mqtt3WillPublishBuilder.Complete> {
 
         /**
          * Builds the {@link Mqtt3Publish} as a Will Publish.
