@@ -7,7 +7,7 @@ backpressure support.
 
 # Documentation
 
-A detailed documentation can be found  [here](https://mqtt-bee.github.io)
+A detailed documentation can be found [here](https://mqtt-bee.github.io)
 
 # Features
 
@@ -39,6 +39,8 @@ A detailed documentation can be found  [here](https://mqtt-bee.github.io)
 Java 8 or higher is required.
 
 ## Dependency
+
+IMPORTANT: The library is not released to Maven Central yet, so only the snapshot versions are working for now.
 
 ### Gradle
 
