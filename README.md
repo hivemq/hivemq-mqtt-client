@@ -560,7 +560,7 @@ Messages can either be consumed per subscribe (described above) or globally:
 
 ```java
 Flowable<Mqtt5Publish> result =
-        client.publishes(MqttGlobalPublishFilter.ALL);
+        client.publishes(MqttGlobalPublishFilter.ALL).doOnNext(System.out::println);
 ```
 
 `publishes` must be called before `subscribe` to ensure no message is lost.
