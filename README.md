@@ -361,7 +361,8 @@ client.connect()
 
 #### Publish
 
-Method calls are analog to the Blocking API but return `CompletableFuture`.
+`publishWith()` and `publish(Mqtt3/5Publish)` method calls are analog to the Blocking API but return
+`CompletableFuture`.
 
 #### Subscribe
 
