@@ -33,7 +33,8 @@ public interface Mqtt5SubscriptionBuilder extends Mqtt5SubscriptionBuilderBase<M
      * {@link Mqtt5Subscription} that is complete which means all mandatory fields are set.
      */
     @DoNotImplement
-    interface Complete extends Mqtt5SubscriptionBuilder, Mqtt5SubscriptionBuilderBase.Complete<Mqtt5SubscriptionBuilder.Complete> {
+    interface Complete
+            extends Mqtt5SubscriptionBuilder, Mqtt5SubscriptionBuilderBase.Complete<Mqtt5SubscriptionBuilder.Complete> {
 
         /**
          * Builds the {@link Mqtt5Subscription}.
