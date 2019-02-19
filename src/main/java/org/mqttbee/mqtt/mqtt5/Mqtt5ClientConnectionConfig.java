@@ -136,8 +136,7 @@ public interface Mqtt5ClientConnectionConfig extends MqttClientConnectionConfig 
          * Returns the maximum packet size the client sends to the server.
          * <p>
          * The value is determined by the minimum of {@link org.mqttbee.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions#getSendMaximumPacketSize
-         * Mqtt5ConnectRestrictions#getSendMaximumPacketSize()} and {@link
-         * org.mqttbee.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions#getMaximumPacketSize()
+         * Mqtt5ConnectRestrictions#getSendMaximumPacketSize()} and {@link org.mqttbee.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions#getMaximumPacketSize()
          * MqttConnAckRestrictions#getMaximumPacketSize()}.
          *
          * @return the maximum packet size the client sends to the server.
@@ -148,8 +147,7 @@ public interface Mqtt5ClientConnectionConfig extends MqttClientConnectionConfig 
          * Returns the maximum amount of topic aliases the client sends to the server.
          * <p>
          * The value is determined by the minimum of {@link org.mqttbee.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions#getSendTopicAliasMaximum
-         * Mqtt5ConnectRestrictions#getSendTopicAliasMaximum()} and {@link
-         * org.mqttbee.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions#getTopicAliasMaximum()
+         * Mqtt5ConnectRestrictions#getSendTopicAliasMaximum()} and {@link org.mqttbee.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions#getTopicAliasMaximum()
          * MqttConnAckRestrictions#getTopicAliasMaximum()}.
          *
          * @return the maximum amount of topic aliases the client sends to the server.
