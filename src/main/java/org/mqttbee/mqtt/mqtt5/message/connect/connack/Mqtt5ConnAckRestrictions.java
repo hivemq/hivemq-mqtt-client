@@ -22,13 +22,13 @@ import org.mqttbee.annotations.DoNotImplement;
 import org.mqttbee.internal.mqtt.datatypes.MqttVariableByteInteger;
 import org.mqttbee.internal.util.UnsignedDataTypes;
 import org.mqttbee.mqtt.datatypes.MqttQos;
-import org.mqttbee.mqtt.mqtt5.Mqtt5ClientConnectionConfig;
 
 /**
  * Restrictions for the client set by the server in a {@link Mqtt5ConnAck MQTT 5 ConnAck message}.
  * <p>
  * These restrictions are used in conjunction with the {@link org.mqttbee.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions
- * Mqtt5ConnectRestrictions} to form the {@link Mqtt5ClientConnectionConfig.RestrictionsForClient}.
+ * Mqtt5ConnectRestrictions} to form the {@link org.mqttbee.mqtt.mqtt5.Mqtt5ClientConnectionConfig.RestrictionsForClient
+ * Mqtt5ClientConnectionConfig.RestrictionsForClient}.
  *
  * @author Silvio Giebl
  * @since 1.0
