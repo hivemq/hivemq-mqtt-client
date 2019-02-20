@@ -57,7 +57,7 @@ void addPom(MavenPublication publication) {
     publication.pom {
         name = project.readableName
         description = project.description
-        url = project.url
+        url = project.githubUrl
         licenses {
             license {
                 name = project.licenseReadableName
@@ -118,7 +118,7 @@ bintray {
         repo = 'mqtt-bee'
         name = 'mqtt-bee'
         desc = project.description
-        websiteUrl = url
+        websiteUrl = githubUrl
         issueTrackerUrl = githubUrl + '/issues'
         vcsUrl = githubUrl + '.git'
         licenses = [licenseShortName]

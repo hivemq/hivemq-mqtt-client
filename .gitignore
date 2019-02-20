@@ -2,7 +2,7 @@
 /out/
 /build/
 .DS_Store
-mqtt-bee.iml
+*.iml
 .idea/*
 !.idea/codeStyles
 !.idea/inspectionProfiles
