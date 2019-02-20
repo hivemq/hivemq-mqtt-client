@@ -1,4 +1,4 @@
-# MQTT Bee
+# HiveMQ MQTT Client
 
 [![Build Status](https://travis-ci.org/mqtt-bee/mqtt-bee.svg?branch=develop)](https://travis-ci.org/mqtt-bee/mqtt-bee)
 
@@ -48,7 +48,7 @@ If you use Gradle, just include the following inside your `build.gradle` file.
 
 ```groovy
 dependencies {
-    compile group: 'org.mqttbee', name: 'mqtt-bee', version: '1.0.0'
+    compile group: 'com.hivemq', name: 'hivemq-mqtt-client', version: '1.0.0'
 }
 ```
 
@@ -68,8 +68,8 @@ NOTE: You have to set the compiler version to `1.8` or higher.
     
     <dependencies>
         <dependency>
-            <groupId>org.mqttbee</groupId>
-            <artifactId>mqtt-bee</artifactId>
+            <groupId>com.hivemq</groupId>
+            <artifactId>hivemq-mqtt-client</artifactId>
             <version>1.0.0</version>
         </dependency>
     </dependencies>
@@ -87,7 +87,7 @@ To use the shaded version just append `-shaded` to the artifact name.
 
 ```groovy
 dependencies {
-    compile group: 'org.mqttbee', name: 'mqtt-bee-shaded', version: '1.0.0'
+    compile group: 'com.hivemq', name: 'hivemq-mqtt-client-shaded', version: '1.0.0'
 }
 ```
 
@@ -98,8 +98,8 @@ dependencies {
     ...
     <dependencies>
         <dependency>
-            <groupId>org.mqttbee</groupId>
-            <artifactId>mqtt-bee-shaded</artifactId>
+            <groupId>com.hivemq</groupId>
+            <artifactId>hivemq-mqtt-client-shaded</artifactId>
             <version>1.0.0</version>
         </dependency>
     </dependencies>
@@ -122,7 +122,7 @@ repositories {
 }
 
 dependencies {
-    compile group: 'org.mqttbee', name: 'mqtt-bee', version: '1.0.0-SNAPSHOT'
+    compile group: 'com.hivemq', name: 'hivemq-mqtt-client', version: '1.0.0-SNAPSHOT'
 }
 ```
 
@@ -140,8 +140,8 @@ dependencies {
     
     <dependencies>
         <dependency>
-            <groupId>org.mqttbee</groupId>
-            <artifactId>mqtt-bee</artifactId>
+            <groupId>com.hivemq</groupId>
+            <artifactId>hivemq-mqtt-client</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
@@ -440,7 +440,7 @@ Single<Mqtt5ConnAck> connAckSingle = client.connect();
 
 // Same here: the following line does not subscribe yet, but returns a reactive type.
 // FlowableWithSingle is a combination of the single SubAck message and a Flowable of Publish messages.
-// A Flowable is an asynchronous stream, that enables back pressure from the application over MQTT Bee to the broker.
+// A Flowable is an asynchronous stream that enables backpressure from the application over the client to the broker.
 FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subAckAndMatchingPublishes = client.subscribeStreamWith()
         .topicFilter("a/b/c").qos(MqttQos.AT_LEAST_ONCE)
         .addSubscription().topicFilter("a/b/c/d").qos(MqttQos.EXACTLY_ONCE).applySubscription()

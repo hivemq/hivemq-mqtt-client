@@ -44,7 +44,7 @@ import java.util.Date;
  */
 public class TestKeyStoreGenerator {
 
-    private static final String KEY_ALIAS = "mqttbeekey";
+    private static final String KEY_ALIAS = "hivemq-mqtt-client-key";
 
     public TestKeyStoreGenerator() {
         Security.addProvider(new BouncyCastleProvider());
