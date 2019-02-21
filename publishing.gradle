@@ -125,10 +125,10 @@ bintray {
         labels = ['mqtt', 'mqtt-client', 'iot', 'internet-of-things', 'rxjava2', 'reactive-streams', 'backpressure']
         version {
             released = new Date()
-            /*gpg {
+            gpg {
                 sign = true
             }
-            mavenCentralSync {
+            /*mavenCentralSync {
                 user = ''
                 password = ''
             }*/
