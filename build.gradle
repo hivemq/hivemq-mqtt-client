@@ -1,16 +1,127 @@
-group 'org.mqtt-bee'
-version '1.0-SNAPSHOT'
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'com.jfrog.bintray' version '1.8.4'
+    id 'com.jfrog.artifactory' version '4.7.5'
+    id 'idea'
+    id 'eclipse'
+    id 'net.ltgt.apt-idea' version '0.15'
+    id 'net.ltgt.apt-eclipse' version '0.15'
+    id 'com.github.johnrengelman.shadow' version '4.0.4'
+    id 'com.github.hierynomus.license' version '0.14.0'
+    id 'pmd'
+}
 
-apply plugin: 'java'
+group 'com.hivemq'
+version '1.0.0' + (Boolean.valueOf(System.getProperty("snapshot")) ? "-SNAPSHOT" : "")
+description 'HiveMQ MQTT Client is a MQTT 5.0 and MQTT 3.1.1 compatible and feature-rich high-performance Java client ' +
+        'library with different API flavours and backpressure support'
+
+ext {
+    readableName = 'HiveMQ MQTT Client'
+    githubOrg = 'hivemq'
+    githubRepo = 'hivemq-mqtt-client'
+    githubUrl = 'https://github.com/' + githubOrg + '/' + githubRepo
+    scmConnection = 'scm:git:git://github.com/' + githubOrg + '/' + githubRepo + '.git'
+    scmDeveloperConnection = 'scm:git:ssh://git@github.com/' + githubOrg + '/' + githubRepo + '.git'
+    licenseShortName = 'Apache-2.0'
+    licenseReadableName = 'The Apache License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    shadedAppendix = 'shaded'
+}
 
 sourceCompatibility = 1.8
 
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
 repositories {
+    mavenLocal()
     mavenCentral()
+    jcenter()
+}
+
+ext {
+    rxJavaVersion = '2.2.5'
+    nettyVersion = '4.1.32.Final'
+    daggerVersion = '2.20'
+    jcToolsVersion = '2.1.2'
+    slf4jVersion = '1.7.25'
+    jetbrainsAnnotationsVersion = '16.0.3'
 }
 
 dependencies {
-    compile 'group': 'io.reactivex.rxjava2', 'name': 'rxjava', 'version': '2.1.7'
-    compile 'group': 'io.netty', 'name': 'netty-handler', 'version': '4.0.18.Final'
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    api group: 'io.reactivex.rxjava2', name: 'rxjava', version: rxJavaVersion
+    implementation group: 'io.netty', name: 'netty-handler', version: nettyVersion
+    implementation group: 'io.netty', name: 'netty-codec-http', version: nettyVersion
+    implementation group: 'io.netty', name: 'netty-transport-native-epoll', version: nettyVersion, classifier: 'linux-x86_64'
+    implementation group: 'org.jctools', name: 'jctools-core', version: jcToolsVersion
+    implementation group: 'org.jetbrains', name: 'annotations', version: jetbrainsAnnotationsVersion
+    implementation group: 'com.google.dagger', name: 'dagger', version: daggerVersion
+    annotationProcessor group: 'com.google.dagger', name: 'dagger-compiler', version: daggerVersion
+    compileOnly group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion
+
+    def junit4Version = '4.12'
+    def junitVintageVersion = '4.12.3'
+    def junitJupiterVersion = '5.0.3'
+    def junitPlatformVersion = '1.0.3'
+
+    testImplementation group: 'junit', name: 'junit', version: junit4Version
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junitJupiterVersion
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junitJupiterVersion
+    testRuntimeOnly group: 'org.junit.vintage', name: 'junit-vintage-engine', version: junitVintageVersion
+    testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junitJupiterVersion
+    testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-launcher', version: junitPlatformVersion
+    testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-runner', version: junitPlatformVersion
+
+    testImplementation group: 'org.eclipse.paho', name: 'org.eclipse.paho.client.mqttv3', version: '1.2.0'
+    testImplementation group: 'nl.jqno.equalsverifier', name: 'equalsverifier', version: '2.4.1'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '2.18.3'
+    testImplementation group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.59'
+    testImplementation group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.59'
+    testImplementation group: 'com.google.guava', name: 'guava', version: '24.1-jre'
+    testRuntimeOnly group: 'org.slf4j', name: 'slf4j-simple', version: slf4jVersion
+}
+
+apply from: 'publishing.gradle'
+
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
+shadowJar { ShadowJar shadowJar ->
+    appendix shadedAppendix
+    classifier null
+
+    // api: not shaded and relocated, added as dependencies in pom
+    shadowJar.dependencies {
+        it.exclude(it.dependency('io.reactivex.rxjava2:rxjava'))
+        it.exclude(it.dependency('org.reactivestreams:reactive-streams'))
+        it.exclude(it.dependency('org.slf4j:slf4j-api'))
+    }
+
+    def shadePrefix = project.group.toString() + '.shaded.'
+    def shadeFilePrefix = shadePrefix.replace('.', '_')
+    relocate 'io.netty', shadePrefix + 'io.netty'
+    relocate 'META-INF/native/libnetty', 'META-INF/native/lib' + shadeFilePrefix + 'netty'
+    exclude 'META-INF/io.netty.versions.properties'
+    relocate 'org.jctools', shadePrefix + 'org.jctools'
+    relocate 'org.jetbrains', shadePrefix + 'org.jetbrains'
+    relocate 'dagger', shadePrefix + 'dagger'
+    relocate 'javax.inject', shadePrefix + 'javax.inject'
+
+    minimize()
+}
+
+license {
+    header file('license-header/license-header.txt')
+}
+
+test {
+    useJUnitPlatform()
+}
+
+task execute(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath + sourceSets.test.runtimeClasspath
+    main = project.hasProperty("mainClass") ? project.getProperty("mainClass") : ""
+    systemProperties = System.properties
 }

@@ -1,0 +1,61 @@
+/*
+ * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+package com.hivemq.client.mqtt.mqtt5.advanced;
+
+import com.hivemq.client.annotations.DoNotImplement;
+import com.hivemq.client.internal.mqtt.advanced.MqttClientAdvancedConfigBuilder;
+import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.Mqtt5ClientInterceptors;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+/**
+ * Advanced configuration of a {@link com.hivemq.client.mqtt.mqtt5.Mqtt5Client Mqtt5Client}.
+ *
+ * @author Silvio Giebl
+ * @since 1.0
+ */
+@DoNotImplement
+public interface Mqtt5ClientAdvancedConfig {
+
+    /**
+     * Creates a builder for an advanced configuration.
+     *
+     * @return the created builder for an advanced configuration.
+     */
+    static @NotNull Mqtt5ClientAdvancedConfigBuilder builder() {
+        return new MqttClientAdvancedConfigBuilder.Default();
+    }
+
+    /**
+     * @return whether server re-authentication is allowed.
+     */
+    boolean isAllowServerReAuth();
+
+    /**
+     * Returns whether the payload format is validated if {@link com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish#getPayloadFormatIndicator
+     * Mqtt5Publish#getPayloadFormatIndicator()} is present.
+     *
+     * @return whether the payload format is validated.
+     */
+    boolean isValidatePayloadFormat();
+
+    /**
+     * @return the optional interceptors of messages.
+     */
+    @Nullable Mqtt5ClientInterceptors getInterceptors();
+}

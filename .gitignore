@@ -1,3 +1,9 @@
-.idea
 .gradle
+/out/
 /build/
+.DS_Store
+*.iml
+.idea/*
+!.idea/codeStyles
+!.idea/inspectionProfiles
+bintray.gradle

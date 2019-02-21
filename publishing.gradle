@@ -1,0 +1,155 @@
+/*
+Bintray credentials can be stored in a local file named bintray.gradle, which will be ignored by git, in the following
+format:
+
+ext {
+    bintray_username = '<username>'
+    bintray_apiKey = '<api key>'
+}
+*/
+if (file('bintray.gradle').exists()) {
+    apply from: 'bintray.gradle'
+}
+
+/*
+Alternatively they can be specified via environment variables:
+
+e.g. via shell script, then either source that script in your shell or call gradle from the script:
+
+#!/bin/sh
+export bintray_username="<username>"
+export bintray_apiKey="<api key>"
+
+Safe Configuration for Travis CI:
+Credentials in Travis must be stored in the repository settings (https://travis-ci.org/hivemq/hivemq-mqtt-client/settings)
+The environment variables are encrypted by Travis and get decrypted before each build.
+They are available to all builds but not for pull requests from forks.
+To restrict the availability to the branches master and develop (only where they are needed for publishing releases and
+snapshots) you have to define the environment variables in the following way (utilizing the fact that Travis does not
+escape the values):
+
+name:  bintray_credentials
+value: dummy; if ( ( test "$TRAVIS_BRANCH" = "master" || test "$TRAVIS_BRANCH" = "develop" ) &&
+       "$TRAVIS_EVENT_TYPE" != "pull_request" ); then export bintray_username=...; export bintray_apiKey=...; fi
+*/
+['bintray_username', 'bintray_apiKey'].each { propName ->
+    if (!project.hasProperty(propName)) {
+        project.ext.setProperty(propName, "${System.getenv()[propName]}")
+    }
+}
+
+javadoc {
+    source = sourceSets.main.allJava
+    classpath = configurations.compileClasspath
+}
+
+task javadocJar(type: Jar) {
+    from javadoc
+    classifier 'javadoc'
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allJava
+    classifier 'sources'
+}
+
+void addPom(MavenPublication publication) {
+    publication.pom {
+        name = project.readableName
+        description = project.description
+        url = project.githubUrl
+        licenses {
+            license {
+                name = project.licenseReadableName
+                url = project.licenseUrl
+            }
+        }
+        developers {
+            developer {
+                id = 'SG'
+                name = 'Silvio Giebl'
+                email = 'silvio.giebl@dc-square.de'
+            }
+        }
+        scm {
+            connection = project.scmConnection
+            developerConnection = project.scmDeveloperConnection
+            url = project.githubUrl
+        }
+    }
+}
+
+publishing {
+    publications {
+        normal(MavenPublication) { publication ->
+            from components.java
+            artifact javadocJar
+            artifact sourcesJar
+            addPom(publication)
+        }
+        shaded(MavenPublication) { publication ->
+            artifactId project.name + '-' + project.shadedAppendix
+            artifact shadowJar
+            artifact javadocJar
+            artifact sourcesJar
+            addPom(publication)
+            pom.withXml { xml ->
+                def dependenciesNode = xml.asNode().appendNode('dependencies')
+
+                project.configurations.api.allDependencies.each {
+                    def dependencyNode = dependenciesNode.appendNode('dependency')
+                    dependencyNode.appendNode('groupId', it.group)
+                    dependencyNode.appendNode('artifactId', it.name)
+                    dependencyNode.appendNode('version', it.version)
+                    dependencyNode.appendNode('scope', 'compile')
+                }
+            }
+        }
+    }
+}
+
+bintray {
+    user = bintray_username
+    key = bintray_apiKey
+    publications = ['normal', 'shaded']
+    // publish = true
+    pkg {
+        userOrg = 'hivemq'
+        repo = 'hivemq-mqtt-client-repo'
+        name = 'hivemq-mqtt-client'
+        desc = project.description
+        websiteUrl = githubUrl
+        issueTrackerUrl = githubUrl + '/issues'
+        vcsUrl = githubUrl + '.git'
+        licenses = [licenseShortName]
+        labels = ['mqtt', 'mqtt-client', 'iot', 'internet-of-things', 'rxjava2', 'reactive-streams', 'backpressure']
+        version {
+            released = new Date()
+            gpg {
+                sign = true
+            }
+            /*mavenCentralSync {
+                user = ''
+                password = ''
+            }*/
+        }
+    }
+}
+
+artifactory {
+    contextUrl = 'http://oss.jfrog.org'
+    publish {
+        repository {
+            repoKey = 'oss-snapshot-local'
+            username = bintray_username
+            password = bintray_apiKey
+        }
+        defaults {
+            publications('normal', 'shaded')
+        }
+    }
+    resolve {
+        repoKey = 'jcenter'
+    }
+    clientConfig.info.setBuildNumber(System.getenv()['TRAVIS_BUILD_NUMBER'])
+}

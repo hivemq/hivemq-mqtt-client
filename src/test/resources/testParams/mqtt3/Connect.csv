@@ -1,0 +1,4 @@
+client42, true, 10, , , , , ,
+client42, true, 10, userName, password, , , ,
+client42, true, 10, userName, password, willMessage, my/will/topic, 1, true
+
