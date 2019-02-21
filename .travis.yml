@@ -15,9 +15,9 @@ script: ./gradlew check javadoc
 
 jobs:
   include:
-    - stage: snapshot
-      install: true
-      script: ./gradlew artifactoryPublish -x test -Dsnapshot=true
+    #- stage: snapshot
+    #  install: true
+    #  script: ./gradlew artifactoryPublish -x test -Dsnapshot=true
     - stage: release
       install: true
       script: ./gradlew bintrayUpload -x test
