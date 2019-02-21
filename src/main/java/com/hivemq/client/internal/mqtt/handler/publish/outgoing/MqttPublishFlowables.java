@@ -17,6 +17,8 @@
 
 package com.hivemq.client.internal.mqtt.handler.publish.outgoing;
 
+import com.hivemq.client.internal.logging.InternalLogger;
+import com.hivemq.client.internal.logging.InternalLoggerFactory;
 import com.hivemq.client.internal.mqtt.ioc.ClientScope;
 import io.reactivex.Flowable;
 import io.reactivex.internal.util.BackpressureHelper;
@@ -24,8 +26,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
@@ -35,7 +35,7 @@ import javax.inject.Inject;
 @ClientScope
 public class MqttPublishFlowables extends Flowable<Flowable<MqttPublishWithFlow>> implements Subscription {
 
-    private static final @NotNull Logger LOGGER = LoggerFactory.getLogger(MqttPublishFlowables.class);
+    private static final @NotNull InternalLogger LOGGER = InternalLoggerFactory.getLogger(MqttPublishFlowables.class);
 
     private @Nullable Subscriber<? super Flowable<MqttPublishWithFlow>> subscriber;
     private long requested;

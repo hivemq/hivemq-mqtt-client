@@ -18,14 +18,14 @@
 package com.hivemq.client.internal.mqtt.netty;
 
 import com.hivemq.client.internal.annotations.ThreadSafe;
+import com.hivemq.client.internal.logging.InternalLogger;
+import com.hivemq.client.internal.logging.InternalLoggerFactory;
 import com.hivemq.client.internal.mqtt.MqttClientExecutorConfigImpl;
 import io.netty.channel.ChannelFactory;
 import io.netty.channel.EventLoop;
 import io.netty.channel.MultithreadEventLoopGroup;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +39,7 @@ import java.util.function.BiFunction;
 @ThreadSafe
 public class NettyEventLoopProvider {
 
-    private static final @NotNull Logger LOGGER = LoggerFactory.getLogger(NettyEventLoopProvider.class);
+    private static final @NotNull InternalLogger LOGGER = InternalLoggerFactory.getLogger(NettyEventLoopProvider.class);
 
     private final @NotNull Map<@Nullable Executor, @NotNull Entry> entries = new HashMap<>();
     private final @NotNull BiFunction<Integer, Executor, MultithreadEventLoopGroup> eventLoopGroupFactory;
@@ -53,9 +53,7 @@ public class NettyEventLoopProvider {
         this.channelFactory = channelFactory;
     }
 
-    public synchronized @NotNull EventLoop acquireEventLoop(
-            final @Nullable Executor executor, final int threadCount) {
-
+    public synchronized @NotNull EventLoop acquireEventLoop(final @Nullable Executor executor, final int threadCount) {
         Entry entry = entries.get(executor);
         if (entry == null) {
             entry = new Entry(eventLoopGroupFactory.apply(threadCount, executor));

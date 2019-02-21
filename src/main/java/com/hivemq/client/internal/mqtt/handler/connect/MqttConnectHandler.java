@@ -17,6 +17,8 @@
 
 package com.hivemq.client.internal.mqtt.handler.connect;
 
+import com.hivemq.client.internal.logging.InternalLogger;
+import com.hivemq.client.internal.logging.InternalLoggerFactory;
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
 import com.hivemq.client.internal.mqtt.MqttClientConnectionConfig;
 import com.hivemq.client.internal.mqtt.codec.decoder.MqttDecoder;
@@ -43,8 +45,6 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
@@ -63,7 +63,7 @@ import javax.inject.Inject;
 public class MqttConnectHandler extends MqttTimeoutInboundHandler {
 
     public static final @NotNull String NAME = "connect";
-    private static final @NotNull Logger LOGGER = LoggerFactory.getLogger(MqttConnectHandler.class);
+    private static final @NotNull InternalLogger LOGGER = InternalLoggerFactory.getLogger(MqttConnectHandler.class);
     private static final int CONNACK_TIMEOUT = 60; // TODO configurable
 
     private final @NotNull MqttConnect connect;

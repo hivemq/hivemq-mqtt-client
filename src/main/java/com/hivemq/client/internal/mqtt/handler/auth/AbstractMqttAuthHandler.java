@@ -17,6 +17,8 @@
 
 package com.hivemq.client.internal.mqtt.handler.auth;
 
+import com.hivemq.client.internal.logging.InternalLogger;
+import com.hivemq.client.internal.logging.InternalLoggerFactory;
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import com.hivemq.client.internal.mqtt.handler.disconnect.MqttDisconnectUtil;
@@ -33,8 +35,6 @@ import com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode
 import io.netty.channel.ChannelHandlerContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
@@ -50,7 +50,7 @@ import static com.hivemq.client.mqtt.mqtt5.message.auth.Mqtt5AuthReasonCode.CONT
  */
 abstract class AbstractMqttAuthHandler extends MqttTimeoutInboundHandler implements MqttAuthHandler {
 
-    static final @NotNull Logger LOGGER = LoggerFactory.getLogger(AbstractMqttAuthHandler.class);
+    static final @NotNull InternalLogger LOGGER = InternalLoggerFactory.getLogger(AbstractMqttAuthHandler.class);
 
     enum MqttAuthState {
         NONE,

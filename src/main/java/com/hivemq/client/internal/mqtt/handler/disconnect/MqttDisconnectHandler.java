@@ -17,6 +17,8 @@
 
 package com.hivemq.client.internal.mqtt.handler.disconnect;
 
+import com.hivemq.client.internal.logging.InternalLogger;
+import com.hivemq.client.internal.logging.InternalLoggerFactory;
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
 import com.hivemq.client.internal.mqtt.exceptions.MqttClientStateExceptions;
 import com.hivemq.client.internal.mqtt.handler.MqttConnectionAwareHandler;
@@ -32,8 +34,6 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
@@ -51,7 +51,7 @@ import static com.hivemq.client.internal.mqtt.handler.disconnect.MqttDisconnectU
 @ConnectionScope
 public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
 
-    private static final @NotNull Logger LOGGER = LoggerFactory.getLogger(MqttDisconnectHandler.class);
+    private static final @NotNull InternalLogger LOGGER = InternalLoggerFactory.getLogger(MqttDisconnectHandler.class);
     public static final @NotNull String NAME = "disconnect";
 
     private final @NotNull MqttClientConfig clientConfig;
