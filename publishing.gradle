@@ -112,10 +112,10 @@ bintray {
     user = bintray_username
     key = bintray_apiKey
     publications = ['normal', 'shaded']
-    // publish = true
+    publish = true
     pkg {
         userOrg = 'hivemq'
-        repo = 'hivemq-mqtt-client-repo'
+        repo = 'HiveMQ'
         name = 'hivemq-mqtt-client'
         desc = project.description
         websiteUrl = githubUrl
