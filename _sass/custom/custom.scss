@@ -1,0 +1,163 @@
+//
+// Syntax highlighting
+//
+
+/*
+default/dot/operator/label/predefined symbol/global variable/parameter/local variable/function call/interface name/class name: #A9B7C6
+line/block comment: #808080
+keyword/comma/semicolon: #CC7832
+string: #6A8759
+number: #6897BB
+constant: #9876AA, italic
+doc comment: #629755
+function decl: #FFC66D
+field: #9876AA
+metadata: #BBB529
+type parameter: #507874
+*/
+
+.highlight { color: #A9B7C6; }
+
+.highlight .o { color: #A9B7C6; } // operator //
+.highlight .ow { color: #A9B7C6; } // operator.word //
+//.highlight .w { color: ; } // text.whitespace //
+//.highlight .x { color: ; } // other //
+//.highlight .p { color: ; } // punctuation //
+//.highlight .err { color: ; } // error //
+
+.highlight .c { color: #808080; } // comment //
+.highlight .cm { color: #808080; } // comment.multiline //
+.highlight .c1 { color: #808080; } // comment.single //
+//.highlight .cp { color: ; } // comment.preproc //
+//.highlight .cs { color: ; } // comment.special //
+
+.highlight .g { color: #A9B7C6; } // generic //
+//.highlight .gd { color: ; } // generic.deleted //
+//.highlight .ge { font-style: italic; color: ; } // generic.emph //
+//.highlight .gr { color: ; } // generic.error //
+//.highlight .gh { color: ; } // generic.heading //
+//.highlight .gi { color: ; } // generic.inserted //
+//.highlight .go { color: ; } // generic.output //
+//.highlight .gp { color: ; } // generic.prompt //
+//.highlight .gs { font-weight: bold; color: ; } // generic.strong //
+//.highlight .gu { color: ; } // generic.subheading //
+//.highlight .gt { color: ; } // generic.traceback //
+
+.highlight .k { color: #CC7832; } // keyword //
+.highlight .kc { color: #CC7832; } // keyword.constant //
+.highlight .kd { color: #CC7832; } // keyword.declaration //
+.highlight .kn { color: #CC7832; } // keyword.namespace //
+.highlight .kp { color: #CC7832; } // keyword.pseudo //
+.highlight .kr { color: #CC7832; } // keyword.reserved //
+.highlight .kt { color: #CC7832; } // keyword.type //
+
+.highlight .n { color: #A9B7C6; } // name //
+.highlight .na { color: #A9B7C6; } // name.attribute //
+//.highlight .nb { color: ; } // name.builtin //
+.highlight .nc { color: #A9B7C6; } // name.class //
+.highlight .no { color: #9876AA; } // name.constant //
+.highlight .nd { color: #BBB529; } // name.decorator //
+.highlight .ni { color: #A9B7C6; } // name.entity //
+.highlight .ne { color: #A9B7C6; } // name.exception //
+.highlight .nf { color: #FFC66D; } // name.function //
+.highlight .nl { color: #A9B7C6; } // name.label //
+.highlight .nn { color: #A9B7C6; } // name.namespace //
+//.highlight .nx { color: ; } // name.other //
+//.highlight .py { color: ; } // name.property //
+.highlight .nt { color: #CC7832; } // name.tag //
+.highlight .nv { color: #A9B7C6; } // name.variable //
+.highlight .vc { color: #A9B7C6; } // name.variable.class //
+.highlight .vg { color: #9876AA; } // name.variable.global //
+.highlight .vi { color: #9876AA; } // name.variable.instance //
+//.highlight .bp { color: ; } // name.builtin.pseudo //
+
+.highlight .l { color: #6897BB; } // literal //
+.highlight .m { color: #6897BB; } // literal.number //
+.highlight .mf { color: #6897BB; } // literal.number.float //
+.highlight .mh { color: #6897BB; } // literal.number.hex //
+.highlight .mi { color: #6897BB; } // literal.number.integer //
+.highlight .mo { color: #6897BB; } // literal.number.oct //
+.highlight .il { color: #6897BB; } // literal.number.integer.long //
+
+.highlight .s { color: #6A8759; } // literal.string //
+//.highlight .sb { color: ; } // literal.string.backtick //
+.highlight .sc { color: #6A8759; } // literal.string.char //
+.highlight .sd { color: #629755; } // literal.string.doc //
+//.highlight .s2 { color: ; } // literal.string.double //
+//.highlight .se { color: ; } // literal.string.escape //
+//.highlight .sh { color: ; } // literal.string.heredoc //
+//.highlight .si { color: ; } // literal.string.interpol //
+//.highlight .sx { color: ; } // literal.string.other //
+//.highlight .sr { color: ; } // literal.string.regex //
+.highlight .s1 { color: #6A8759; } // literal.string.single //
+.highlight .ss { color: #6A8759; } // literal.string.symbol //
+
+//.highlight .ld { color: ; } // literal.date //
+
+
+//
+// Overrides
+//
+
+::selection {
+  color: $grey-dk-300;
+  background: $yellow-200;
+}
+
+.search {
+  background-color: $body-background-color;
+}
+
+b, strong {
+  color: $yellow-300;
+}
+
+
+//
+// Buttons
+//
+
+.btn-yellow {
+  @include btn-color(#000000, $yellow-300);
+}
+
+
+//
+// Banner for logo
+//
+
+.banner {
+  text-align: center;
+  background-color: $grey-lt-000;
+  border-radius: $border-radius;
+}
+
+
+//
+// Post
+//
+
+.post-date, .post-author, .post-tags {
+  color: $grey-dk-000;
+}
+
+.post-navigation {
+  display: block;
+  font-size: 14px;
+  text-align: center;
+}
+
+.post-navigation a {
+  display: inline-block;
+  margin: 1em 0;
+}
+
+.post-navigation .post-prev {
+  float: left;
+  text-align: left;
+}
+
+.post-navigation .post-next {
+  float: right;
+  text-align: right;
+}
