@@ -18,6 +18,8 @@
 package com.hivemq.client.internal.mqtt.handler.publish.outgoing;
 
 import com.hivemq.client.internal.annotations.CallByThread;
+import com.hivemq.client.internal.logging.InternalLogger;
+import com.hivemq.client.internal.logging.InternalLoggerFactory;
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
 import com.hivemq.client.internal.mqtt.MqttClientConnectionConfig;
 import com.hivemq.client.internal.mqtt.advanced.interceptor.MqttClientInterceptors;
@@ -57,8 +59,6 @@ import org.jctools.queues.SpscUnboundedArrayQueue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.reactivestreams.Subscription;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -74,7 +74,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
         implements FlowableSubscriber<MqttPublishWithFlow>, Runnable, ContextFuture.Listener<MqttPublishWithFlow> {
 
     public static final @NotNull String NAME = "qos.outgoing";
-    private static final @NotNull Logger LOGGER = LoggerFactory.getLogger(MqttOutgoingQosHandler.class);
+    private static final @NotNull InternalLogger LOGGER = InternalLoggerFactory.getLogger(MqttOutgoingQosHandler.class);
     private static final int MAX_CONCURRENT_PUBLISH_FLOWABLES = 64; // TODO configurable
     private static final boolean QOS_2_COMPLETE_RESULT = false; // TODO configurable
 

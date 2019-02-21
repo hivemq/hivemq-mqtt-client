@@ -53,7 +53,6 @@ ext {
 
 dependencies {
     api group: 'io.reactivex.rxjava2', name: 'rxjava', version: rxJavaVersion
-    api group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion
     implementation group: 'io.netty', name: 'netty-handler', version: nettyVersion
     implementation group: 'io.netty', name: 'netty-codec-http', version: nettyVersion
     implementation group: 'io.netty', name: 'netty-transport-native-epoll', version: nettyVersion, classifier: 'linux-x86_64'
@@ -61,6 +60,7 @@ dependencies {
     implementation group: 'org.jetbrains', name: 'annotations', version: jetbrainsAnnotationsVersion
     implementation group: 'com.google.dagger', name: 'dagger', version: daggerVersion
     annotationProcessor group: 'com.google.dagger', name: 'dagger-compiler', version: daggerVersion
+    compileOnly group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion
 
     def junit4Version = '4.12'
     def junitVintageVersion = '4.12.3'
@@ -81,11 +81,13 @@ dependencies {
     testImplementation group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.59'
     testImplementation group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.59'
     testImplementation group: 'com.google.guava', name: 'guava', version: '24.1-jre'
+    testRuntimeOnly group: 'org.slf4j', name: 'slf4j-simple', version: slf4jVersion
 }
 
 apply from: 'publishing.gradle'
 
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 shadowJar { ShadowJar shadowJar ->
     appendix shadedAppendix
     classifier null

@@ -18,14 +18,14 @@
 package com.hivemq.client.internal.mqtt.handler.publish.incoming;
 
 import com.hivemq.client.internal.annotations.CallByThread;
+import com.hivemq.client.internal.logging.InternalLogger;
+import com.hivemq.client.internal.logging.InternalLoggerFactory;
 import com.hivemq.client.internal.mqtt.ioc.ClientScope;
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublish;
 import com.hivemq.client.internal.mqtt.message.publish.MqttStatefulPublish;
 import com.hivemq.client.internal.util.collections.ChunkedArrayQueue;
 import com.hivemq.client.internal.util.collections.HandleList;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Iterator;
 
@@ -35,7 +35,8 @@ import java.util.Iterator;
 @ClientScope
 class MqttIncomingPublishService {
 
-    private static final @NotNull Logger LOGGER = LoggerFactory.getLogger(MqttIncomingPublishService.class);
+    private static final @NotNull InternalLogger LOGGER =
+            InternalLoggerFactory.getLogger(MqttIncomingPublishService.class);
     private static final boolean QOS_0_DROP_LATEST = true; // TODO configurable
 
     private final @NotNull MqttIncomingQosHandler incomingQosHandler;

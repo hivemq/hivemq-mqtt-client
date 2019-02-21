@@ -18,6 +18,8 @@
 package com.hivemq.client.internal.mqtt.handler.subscribe;
 
 import com.hivemq.client.internal.annotations.CallByThread;
+import com.hivemq.client.internal.logging.InternalLogger;
+import com.hivemq.client.internal.logging.InternalLoggerFactory;
 import com.hivemq.client.internal.mqtt.MqttClientConnectionConfig;
 import com.hivemq.client.internal.mqtt.datatypes.MqttVariableByteInteger;
 import com.hivemq.client.internal.mqtt.exceptions.MqttClientStateExceptions;
@@ -48,8 +50,6 @@ import io.netty.channel.EventLoop;
 import org.jctools.queues.MpscLinkedQueue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -63,7 +63,8 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
 
     public static final @NotNull String NAME = "subscription";
     public static final int MAX_SUB_PENDING = 10; // TODO configurable
-    private static final @NotNull Logger LOGGER = LoggerFactory.getLogger(MqttSubscriptionHandler.class);
+    private static final @NotNull InternalLogger LOGGER =
+            InternalLoggerFactory.getLogger(MqttSubscriptionHandler.class);
 
     private final @NotNull MqttIncomingPublishFlows incomingPublishFlows;
 
