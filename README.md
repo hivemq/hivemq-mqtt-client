@@ -1,13 +1,13 @@
 # HiveMQ MQTT Client
 
-[![Build Status](https://travis-ci.org/mqtt-bee/mqtt-bee.svg?branch=develop)](https://travis-ci.org/mqtt-bee/mqtt-bee)
+[![Build Status](https://travis-ci.org/hivemq/hivemq-mqtt-client.svg?branch=develop)](https://travis-ci.org/hivemq/hivemq-mqtt-client)
 
 MQTT 5.0 and 3.1.1 compatible and feature-rich high-performance Java client library with different API flavours and 
 backpressure support.
 
 # Documentation
 
-A detailed documentation can be found [here](https://mqtt-bee.github.io)
+A detailed documentation can be found [here](https://hivemq.github.io/hivemq-mqtt-client)
 
 # Features
 

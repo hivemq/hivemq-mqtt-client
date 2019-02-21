@@ -19,8 +19,8 @@ description 'HiveMQ MQTT Client is a MQTT 5.0 and MQTT 3.1.1 compatible and feat
 
 ext {
     readableName = 'HiveMQ MQTT Client'
-    githubOrg = 'mqtt-bee'
-    githubRepo = 'mqtt-bee'
+    githubOrg = 'hivemq'
+    githubRepo = 'hivemq-mqtt-client'
     githubUrl = 'https://github.com/' + githubOrg + '/' + githubRepo
     scmConnection = 'scm:git:git://github.com/' + githubOrg + '/' + githubRepo + '.git'
     scmDeveloperConnection = 'scm:git:ssh://git@github.com/' + githubOrg + '/' + githubRepo + '.git'

@@ -21,7 +21,7 @@ export bintray_username="<username>"
 export bintray_apiKey="<api key>"
 
 Safe Configuration for Travis CI:
-Credentials in Travis must be stored in the repository settings (https://travis-ci.org/mqtt-bee/mqtt-bee/settings)
+Credentials in Travis must be stored in the repository settings (https://travis-ci.org/hivemq/hivemq-mqtt-client/settings)
 The environment variables are encrypted by Travis and get decrypted before each build.
 They are available to all builds but not for pull requests from forks.
 To restrict the availability to the branches master and develop (only where they are needed for publishing releases and
@@ -114,9 +114,9 @@ bintray {
     publications = ['normal', 'shaded']
     // publish = true
     pkg {
-        userOrg = 'mqtt-bee'
-        repo = 'mqtt-bee'
-        name = 'mqtt-bee'
+        userOrg = 'hivemq'
+        repo = 'hivemq-mqtt-client-repo'
+        name = 'hivemq-mqtt-client'
         desc = project.description
         websiteUrl = githubUrl
         issueTrackerUrl = githubUrl + '/issues'
