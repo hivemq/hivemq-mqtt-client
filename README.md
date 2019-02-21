@@ -1,6 +1,7 @@
 # HiveMQ MQTT Client
 
 [![Build Status](https://travis-ci.org/hivemq/hivemq-mqtt-client.svg?branch=develop)](https://travis-ci.org/hivemq/hivemq-mqtt-client)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.hivemq/hivemq-mqtt-client/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.hivemq/hivemq-mqtt-client)
 
 MQTT 5.0 and 3.1.1 compatible and feature-rich high-performance Java client library with different API flavours and 
 backpressure support.
@@ -39,8 +40,6 @@ A detailed documentation can be found [here](https://hivemq.github.io/hivemq-mqt
 Java 8 or higher is required.
 
 ## Dependency
-
-IMPORTANT: The library is not released to Maven Central yet, so only the snapshot versions are working for now.
 
 ### Gradle
 
@@ -111,6 +110,8 @@ dependencies {
 
 Every time a PR is merged into the `develop` branch, a new snapshot is published.
 A snapshot can be included as a normal dependency if the snapshot repository is added to the build file.
+
+IMPORTANT: The snapshot versions are not available for now.
 
 #### Gradle
 
