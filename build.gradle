@@ -113,7 +113,7 @@ shadowJar { ShadowJar shadowJar ->
 }
 
 license {
-    header file('license-header/license-header.txt')
+    header file('HEADER')
 }
 
 test {
