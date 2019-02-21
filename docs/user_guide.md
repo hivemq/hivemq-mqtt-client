@@ -13,14 +13,14 @@ to get you up and running in no time!
 
 ## Installation
 
-In order to use mqtt-bee, you can use one of the popular build tools like Gradle or Maven in order
+In order to use the HiveMQ MQTT Client library, you can use one of the popular build tools like Gradle or Maven in order
 to include it as a dependency in your project, or you can also build it yourself and manually
 include all of the necessary JARs in your project.
 
-Releases of mqtt-bee are published to Maven Central, so any build tool which supports Maven style
-dependency management should be able to include mqtt-bee via that.
+Releases of the HiveMQ MQTT Client library are published to Maven Central, so any build tool which supports Maven style
+dependency management should be able to include it via that.
 
-Snapshot / nightly builds of mqtt-bee are also published to the JFrog OSS Artifactory Maven
+Snapshot / nightly builds of the HiveMQ MQTT Client library are also published to the JFrog OSS Artifactory Maven
 repository. So if you want to get a build with the latest features, then you can configure this
 repository (see below). Be aware that the SNAPSHOT version is unstable and not recommended for us in
 production.
@@ -28,7 +28,7 @@ production.
 
 ### Gradle
 
-Simply add `compile 'org.mqttbee:mqtt-bee:1.0.0'` to your dependencies, and you're good to go.
+Simply add `compile 'com.hivemq:hivemq-mqtt-client:1.0.0'` to your dependencies, and you're good to go.
 
 If you want to use the nightly snapshot, then include this repository:
 
@@ -38,7 +38,7 @@ repositories {
 }
 ```
 
-And then add `compile 'org.mqttbee:mqtt-bee:1.0.0-SNAPSHOT'` to your dependencies.
+And then add `compile 'com.hivemq:hivemq-mqtt-client:1.0.0-SNAPSHOT'` to your dependencies.
 
 
 ### Maven
@@ -47,8 +47,8 @@ Include the following dependency in your `pom.xml`:
 
 ```xml
 <dependency>
-    <groupId>org.mqttbee</groupId>
-    <artifactId>mqtt-bee</artifactId>
+    <groupId>com.hivemq</groupId>
+    <artifactId>hivemq-mqtt-client</artifactId>
     <version>1.0.0</version>
 </dependency>
 ```
@@ -69,8 +69,8 @@ and then include this dependency:
 
 ```xml
 <dependency>
-    <groupId>org.mqttbee</groupId>
-    <artifactId>mqtt-bee</artifactId>
+    <groupId>com.hivemq</groupId>
+    <artifactId>hivemq-mqtt-client</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 </dependency>
 ```
@@ -78,16 +78,16 @@ and then include this dependency:
 
 ### Building from source
 
-The mqtt-bee project uses Gradle to build. A gradle wrapper configuration is included, so after
+The HiveMQ MQTT Client project uses Gradle to build. A gradle wrapper configuration is included, so after
 cloning the repository from github, simply change into the directory containing the project and
 execute `./gradlew build`.
 
 
 ## The API flavours
 
-mqtt-bee offers three distinct API flavours: async, blocking and reactive. The first two are
+The HiveMQ MQTT Client library offers three distinct API flavours: async, blocking and reactive. The first two are
 primarily targeted at application developers, the latter is targeted at people who like the reactive
-API or who are looking to integrate mqtt-bee in a framework or library, as it gives you more control
+API or who are looking to integrate the HiveMQ MQTT Client library in a framework or library, as it gives you more control
 over the inner workings.
 
 All three API flavours are based around a fluent, builder based API, and differ primarily in the
@@ -140,13 +140,13 @@ if no message was received (it returns an `Optional` with the message, hence cou
 
 ### Reactive
 
-The reactive API is based on `rxJava` and is intended for use by those who want access to the
-nitty-gritty inside features of mqtt-bee. Or if you simply dig the reactive API.
+The reactive API is based on `RxJava` and is intended for use by those who want access to the
+nitty-gritty inside features of the HiveMQ MQTT Client library. Or if you simply dig the reactive API.
 
-An explanation of how rxJava works or is to be used is outside the purview of this documentation. We
+An explanation of how RxJava works or is to be used is outside the purview of this documentation. We
 refer you to the [official site](https://github.com/ReactiveX/RxJava) if you are interested in
-learning more about rxJava.
+learning more about RxJava.
 
-One caveat when using this API is being aware of both rxJava and mqtt-bee having the concept of
+One caveat when using this API is being aware of both RxJava and the HiveMQ MQTT Client library having the concept of
 'subscribing'. You have to be careful not to confuse subscribing to a stream with subscribing to an
 mqtt topic.

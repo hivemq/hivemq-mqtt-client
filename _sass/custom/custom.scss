@@ -99,6 +99,11 @@ type parameter: #507874
 // Overrides
 //
 
+.site-title {
+  font-size: 18px !important;
+  padding-top: 1.3rem;
+}
+
 ::selection {
   color: $grey-dk-300;
   background: $yellow-200;

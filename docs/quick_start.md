@@ -6,9 +6,9 @@ nav_order: 1
 
 # Quick Start
 
-The following contains all the steps necessary to integrate mqtt-bee into a project, connect to a
+The following contains all the steps necessary to integrate the HiveMQ MQTT Client library into a project, connect to a
 broker and then subscribe to a topic and publish messages to a topic using the MQTT 3 asynchronous
-API flavour of mqtt-bee.
+API flavour of the HiveMQ MQTT Client library.
 
 To see more examples, including usage of the other API flavours, see the examples project repository
 here: [https://github.com/mqtt-bee/mqtt-bee-examples](https://github.com/mqtt-bee/mqtt-bee-examples)
@@ -17,17 +17,17 @@ For a more detailed description of how to use the client, its API flavours and t
 features, see the [User Guide](user_guide.md).
 
 
-## Adding mqtt-bee to your project
+## Adding the HiveMQ MQTT Client library to your project
 
-In order to include mqtt-bee in your gradle project, add the following dependency:
+In order to include the HiveMQ MQTT Client library in your gradle project, add the following dependency:
 
 ```groovy
 dependencies {
-    compile 'org.mqttbee:mqtt-bee:1.0.0'
+    compile 'com.hivemq:hivemq-mqtt-client:1.0.0'
 }
 ```
 
-In order to get the nightly snapshots, include `compile 'org.mqttbee:mqtt-bee:1.0.0-SNAPSHOT'`
+In order to get the nightly snapshots, include `compile 'com.hivemq-hivemq-mqtt-client:1.0.0-SNAPSHOT'`
 instead and also add the following repository:
 
 ```groovy
@@ -41,8 +41,8 @@ Similarly, for Maven, include the following dependency:
 ```xml
 <dependencies>
     <dependency>
-        <groupId>org.mqttbee</groupId>
-        <artifactId>mqtt-bee</artifactId>
+        <groupId>com.hivemq</groupId>
+        <artifactId>hivemq-mqtt-client</artifactId>
         <version>1.0.0</version>
     </dependency>
 </dependencies>
@@ -63,7 +63,7 @@ the following repository:
 
 ## Creating the client
 
-Using the builder accessible from the `org.mqttbee.api.mqtt.MqttClient` class you are able to
+Using the builder accessible from the `com.hivemq.client.mqtt.MqttClient` class you are able to
 configure and create an mqtt client, which you can then use to connect to the broker, subscribe to
 topics and publish messages. The following example shows connecting to a local mqtt broker using SSL
 and the v3 mqtt protocol:
@@ -78,7 +78,7 @@ Mqtt3AsyncClient mqttClient = MqttClient.builder()
         .buildAsync();
 ```
 
-Similarly you can build mqtt v5 clients, rxJava API clients, blocking clients, etc. Check out the
+Similarly you can build mqtt v5 clients, RxJava API clients, blocking clients, etc. Check out the
 JavaDoc for all available features.
 
 ## Connecting to the broker

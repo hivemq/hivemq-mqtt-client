@@ -1,4 +1,4 @@
-title: MQTT Bee
+title: HiveMQ MQTT Client
 description: A fast, asynchronous, reactive mqtt client library
 #theme: just-the-docs
 remote_theme: pmarsceill/just-the-docs
@@ -11,8 +11,8 @@ color_scheme: dark
 aux_links:
   "News":
     - "/news"
-  "MQTT Bee on GitHub":
-    - "https://github.com/mqtt-bee/mqtt-bee"
+  "HiveMQ MQTT Client on GitHub":
+    - "https://github.com/hivemq/hivemq-mqtt-client"
 
 plugins:
   - jekyll-relative-links
