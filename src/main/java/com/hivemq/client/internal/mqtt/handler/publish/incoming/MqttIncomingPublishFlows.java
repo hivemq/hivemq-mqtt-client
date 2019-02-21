@@ -151,12 +151,14 @@ public class MqttIncomingPublishFlows {
 
     void clear(final @NotNull Throwable cause) {
         subscriptionFlows.clear(cause);
-        for (final HandleList<MqttGlobalIncomingPublishFlow> globalFlow : globalFlows) {
+        for (int i = 0; i < globalFlows.length; i++) {
+            final HandleList<MqttGlobalIncomingPublishFlow> globalFlow = globalFlows[i];
             if (globalFlow != null) {
                 for (final MqttGlobalIncomingPublishFlow flow : globalFlow) {
                     flow.onError(cause);
                 }
             }
+            globalFlows[i] = null;
         }
     }
 
