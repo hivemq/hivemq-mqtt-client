@@ -134,8 +134,6 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
                 scheduleTimeout(ctx.channel());
             }
             ctx.pipeline().addAfter(MqttEncoder.NAME, MqttDecoder.NAME, decoder);
-        } else {
-            MqttDisconnectUtil.close(ctx.channel(), future.cause());
         }
     }
 
