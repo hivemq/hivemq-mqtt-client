@@ -141,7 +141,7 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
                         if (future.isSuccess()) {
                             flow.onComplete();
                         } else {
-                            flow.onError(future.cause());
+                            flow.onError(new ConnectionClosedException(future.cause()));
                         }
                     });
                 } else if (clientConfig.getMqttVersion() == MqttVersion.MQTT_5_0) {

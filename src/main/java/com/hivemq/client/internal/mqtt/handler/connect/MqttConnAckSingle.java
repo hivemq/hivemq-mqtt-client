@@ -22,6 +22,7 @@ import com.hivemq.client.internal.mqtt.exceptions.MqttClientStateExceptions;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
 import com.hivemq.client.internal.rx.SingleFlow;
 import com.hivemq.client.mqtt.MqttClientState;
+import com.hivemq.client.mqtt.exceptions.ConnectionFailedException;
 import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import io.netty.bootstrap.Bootstrap;
 import io.reactivex.Single;
@@ -61,7 +62,7 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
 
         bootstrap.connect(clientConfig.getServerHost(), clientConfig.getServerPort()).addListener(future -> {
             if (!future.isSuccess()) {
-                onError(clientConfig, flow, future.cause());
+                onError(clientConfig, flow, new ConnectionFailedException(future.cause()));
             }
         });
     }
