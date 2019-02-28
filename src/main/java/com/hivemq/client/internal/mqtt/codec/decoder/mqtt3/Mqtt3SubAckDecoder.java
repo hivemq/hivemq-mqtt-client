@@ -61,7 +61,7 @@ public class Mqtt3SubAckDecoder implements MqttMessageDecoder {
         final int packetIdentifier = in.readUnsignedShort();
 
         final int returnCodeCount = in.readableBytes();
-        final ImmutableList.Builder<Mqtt3SubAckReturnCode> returnCodesBuilder = ImmutableList.builder();
+        final ImmutableList.Builder<Mqtt3SubAckReturnCode> returnCodesBuilder = ImmutableList.builder(returnCodeCount);
         for (int i = 0; i < returnCodeCount; i++) {
             final Mqtt3SubAckReturnCode returnCode = Mqtt3SubAckReturnCode.fromCode(in.readUnsignedByte());
             if (returnCode == null) {
