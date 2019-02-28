@@ -16,12 +16,12 @@ module Jekyll
         super
 
         template = ERB.new <<-EOF
-<ul class="tab" tab-group="<%= @group %>">
+<ul class="tab" data-tab-group="<%= @group %>">
 <% environment['tabs'].each_with_index do |(key, _), index| %>
 	<li<%= index == 0 ? ' class="tab-active"' : ''%>><a href="#"><%= key %></a></li>
 <% end %>
 </ul>
-<ul class="tab-content" tab-group="<%= @group %>">
+<ul class="tab-content" data-tab-group="<%= @group %>">
 <% environment['tabs'].each_with_index do |(_, value), index| %>
 	<li<%= index == 0 ? ' class="tab-active"' : ''%>><%= value %></li>
 <% end %>

@@ -9,9 +9,10 @@ nav_order: 2
 The HiveMQ MQTT Client library is available in the Maven Central repository and therefore can be setup easily in your
 project by using a dependency management tool like Gradle or Maven.
 
-{% tabs build-tool %}
+{% capture tab_content %}
 
-{% tab Gradle %}
+Gradle
+===
 
 If you use Gradle, just include the following inside your `build.gradle` file.
 
@@ -21,9 +22,10 @@ dependencies {
 }
 ```
 
-{% endtab %}
+====
 
-{% tab Maven %}
+Maven
+===
 
 If you use Maven, just include the following inside your `pom.xml` file.
 
@@ -56,10 +58,8 @@ You have to set the compiler version to `1.8` or higher.
 </project>
 ```
 
-{% endtab %}
-
-{% endtabs %}
-
+{% endcapture %}
+{% include tabs.html tab_group="build-tool" %}
 
 ## Shaded version
 
@@ -67,9 +67,11 @@ If you are experiencing problems with transitive dependencies, you can try the s
 This version packs the transitive dependencies which are only used internal under a different package name.
 To use the shaded version just append `-shaded` to the artifact name.
 
-{% tabs build-tool %}
 
-{% tab Gradle %}
+{% capture tab_content %}
+
+Gradle
+===
 
 ```groovy
 dependencies {
@@ -77,9 +79,10 @@ dependencies {
 }
 ```
 
-{% endtab %}
+====
 
-{% tab Maven %}
+Maven
+===
 
 ```xml
 <project>
@@ -95,6 +98,5 @@ dependencies {
 </project>
 ```
 
-{% endtab %}
-
-{% endtabs %}
+{% endcapture %}
+{% include tabs.html tab_group="build-tool" %}

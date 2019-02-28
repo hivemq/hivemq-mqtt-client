@@ -8,18 +8,13 @@
             var cookie = custom.util.readCookie('tabs');
             tabGroups = JSON.parse(cookie) || {};
 
-            for (var tabGroup in tabGroups) {
-                if (tabGroups.hasOwnProperty(tabGroup)) {
-                    tabs.setActive(tabGroup, tabGroups[tabGroup]);
-                }
-            }
-
             var tabHeaders = document.querySelectorAll('.tab');
             for (var i = 0, l = tabHeaders.length; i < l; i++) {
                 var tabButtons = tabHeaders[i].querySelectorAll('li > a');
-                var tabGroup = tabHeaders[i].getAttribute('tab-group');
+                var tabGroup = tabHeaders[i].getAttribute('data-tab-group');
                 for (var j = 0, l2 = tabButtons.length; j < l2; j++) {
                     (function(tabButton, tabGroup, index) {
+                        tabs.setActive(tabGroup, 0);
                         addEvent(tabButton, 'click', function(e) {
                             tabs.setActive(tabGroup, index);
                             e.preventDefault();
@@ -28,17 +23,29 @@
                     })(tabButtons[j], tabGroup, j);
                 }
             }
+
+            for (var tabGroup in tabGroups) {
+                if (tabGroups.hasOwnProperty(tabGroup)) {
+                    tabs.setActive(tabGroup, tabGroups[tabGroup]);
+                }
+            }
         }
 
         tabs.setActive = function(str_group, index) {
-            var tabHeaders = document.querySelectorAll('.tab[tab-group=' + str_group + ']');
+            var tabHeaders = document.querySelectorAll('.tab[data-tab-group=' + str_group + ']');
             for (var i = 0, l = tabHeaders.length; i < l; i++) {
-                tabHeaders[i].getElementsByClassName('tab-active')[0].classList.remove('tab-active');
+                var activeTabHeader = tabHeaders[i].getElementsByClassName('tab-active');
+                if (activeTabHeader.length != 0) {
+                    activeTabHeader[0].classList.remove('tab-active');
+                }
                 tabHeaders[i].getElementsByTagName('li')[index].classList.add('tab-active');
             }
-            var tabContents = document.querySelectorAll('.tab-content[tab-group=' + str_group + ']');
+            var tabContents = document.querySelectorAll('.tab-content[data-tab-group=' + str_group + ']');
             for (var i = 0, l = tabContents.length; i < l; i++) {
-                tabContents[i].getElementsByClassName('tab-active')[0].classList.remove('tab-active');
+                var activeTabContent = tabContents[i].getElementsByClassName('tab-active');
+                if (activeTabContent.length != 0) {
+                    activeTabContent[0].classList.remove('tab-active');
+                }
                 tabContents[i].getElementsByTagName('li')[index].classList.add('tab-active');
             }
             tabGroups[str_group] = index;
