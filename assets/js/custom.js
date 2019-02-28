@@ -10,11 +10,13 @@
 
             var tabHeaders = document.querySelectorAll('.tab');
             for (var i = 0, l = tabHeaders.length; i < l; i++) {
-                var tabButtons = tabHeaders[i].querySelectorAll('li > a');
+
                 var tabGroup = tabHeaders[i].getAttribute('data-tab-group');
+                tabs.setActive(tabGroup, tabGroups[tabGroup] || 0);
+
+                var tabButtons = tabHeaders[i].querySelectorAll('li > a');
                 for (var j = 0, l2 = tabButtons.length; j < l2; j++) {
                     (function(tabButton, tabGroup, index) {
-                        tabs.setActive(tabGroup, 0);
                         addEvent(tabButton, 'click', function(e) {
                             tabs.setActive(tabGroup, index);
                             e.preventDefault();
@@ -23,30 +25,24 @@
                     })(tabButtons[j], tabGroup, j);
                 }
             }
-
-            for (var tabGroup in tabGroups) {
-                if (tabGroups.hasOwnProperty(tabGroup)) {
-                    tabs.setActive(tabGroup, tabGroups[tabGroup]);
-                }
-            }
         }
 
         tabs.setActive = function(str_group, index) {
             var tabHeaders = document.querySelectorAll('.tab[data-tab-group=' + str_group + ']');
             for (var i = 0, l = tabHeaders.length; i < l; i++) {
-                var activeTabHeader = tabHeaders[i].getElementsByClassName('tab-active');
+                var activeTabHeader = tabHeaders[i].querySelectorAll(':scope > li.tab-active');
                 if (activeTabHeader.length != 0) {
                     activeTabHeader[0].classList.remove('tab-active');
                 }
-                tabHeaders[i].getElementsByTagName('li')[index].classList.add('tab-active');
+                tabHeaders[i].querySelectorAll(':scope > li')[index].classList.add('tab-active');
             }
             var tabContents = document.querySelectorAll('.tab-content[data-tab-group=' + str_group + ']');
             for (var i = 0, l = tabContents.length; i < l; i++) {
-                var activeTabContent = tabContents[i].getElementsByClassName('tab-active');
+                var activeTabContent = tabContents[i].querySelectorAll(':scope > li.tab-active');
                 if (activeTabContent.length != 0) {
                     activeTabContent[0].classList.remove('tab-active');
                 }
-                tabContents[i].getElementsByTagName('li')[index].classList.add('tab-active');
+                tabContents[i].querySelectorAll(':scope > li')[index].classList.add('tab-active');
             }
             tabGroups[str_group] = index;
             var cookie = JSON.stringify(tabGroups);

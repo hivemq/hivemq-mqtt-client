@@ -187,12 +187,13 @@ ul.tab {
     flex-wrap: wrap;
     border-bottom: 1px solid $border-color;
     list-style-type: none;
+    margin-bottom: 1rem;
 
-    li {
+    > li {
         display: flex;
         margin: 0 10px -1px 0;
 
-        a {
+        > a {
             display: block;
             padding: 0.4rem 1rem;
             border-bottom: 1px solid $border-color;
@@ -200,15 +201,15 @@ ul.tab {
             background: none;
         }
 
-        a:hover {
+        > a:hover {
             background: none;
             border-bottom: 1px solid $link-color;
             color: $link-color;
         }
     }
 
-    li.tab-active {
-        a {
+    > li.tab-active {
+        > a {
             background-size: 1px 2px;
             border-bottom: 2px solid $link-color;
             color: $link-color;
@@ -217,11 +218,11 @@ ul.tab {
 }
 
 ul.tab-content {
-    li {
+    > li {
         display: none;
     }
 
-    li.tab-active {
+    > li.tab-active {
         display: initial;
     }
 }
