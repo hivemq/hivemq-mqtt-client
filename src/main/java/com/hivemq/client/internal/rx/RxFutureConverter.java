@@ -32,8 +32,7 @@ import java.util.function.BiConsumer;
  */
 public class RxFutureConverter {
 
-    private RxFutureConverter() {
-    }
+    private RxFutureConverter() {}
 
     public static @NotNull CompletableFuture<Void> toFuture(final @NotNull Completable completable) {
         return new RxJavaCompletableFuture(completable);

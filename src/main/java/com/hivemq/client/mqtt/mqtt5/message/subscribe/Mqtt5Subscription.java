@@ -51,7 +51,7 @@ public interface Mqtt5Subscription {
     boolean DEFAULT_RETAIN_AS_PUBLISHED = false;
 
     /**
-     * Creatse a builder for a Subscription.
+     * Creates a builder for a Subscription.
      *
      * @return the created builder.
      */

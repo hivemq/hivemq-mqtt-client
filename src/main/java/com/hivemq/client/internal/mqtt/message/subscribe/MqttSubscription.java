@@ -73,7 +73,7 @@ public class MqttSubscription implements Mqtt5Subscription {
         return retainAsPublished;
     }
 
-    public @NotNull String toAttributeString() {
+    private @NotNull String toAttributeString() {
         return "topicFilter=" + topicFilter + ", qos=" + qos + ", noLocal=" + noLocal + ", retainHandling=" +
                 retainHandling + ", retainAsPublished=" + retainAsPublished;
     }
