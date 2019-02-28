@@ -100,21 +100,21 @@ type parameter: #507874
 //
 
 .site-title {
-  font-size: 18px !important;
-  padding-top: 1.3rem;
+    font-size: 18px !important;
+    padding-top: 1.3rem;
 }
 
 ::selection {
-  color: $grey-dk-300;
-  background: $yellow-200;
+    color: $grey-dk-300;
+    background: $yellow-200;
 }
 
 .search {
-  background-color: $body-background-color;
+    background-color: $body-background-color;
 }
 
 b, strong {
-  color: $yellow-300;
+    color: $yellow-300;
 }
 
 
@@ -123,7 +123,7 @@ b, strong {
 //
 
 .btn-yellow {
-  @include btn-color(#000000, $yellow-300);
+    @include btn-color(#000000, $yellow-300);
 }
 
 
@@ -132,9 +132,9 @@ b, strong {
 //
 
 .banner {
-  text-align: center;
-  background-color: $grey-lt-000;
-  border-radius: $border-radius;
+    text-align: center;
+    background-color: $grey-lt-000;
+    border-radius: $border-radius;
 }
 
 
@@ -143,26 +143,85 @@ b, strong {
 //
 
 .post-date, .post-author, .post-tags {
-  color: $grey-dk-000;
+    color: $grey-dk-000;
 }
 
 .post-navigation {
-  display: block;
-  font-size: 14px;
-  text-align: center;
+    display: block;
+    font-size: 14px;
+    text-align: center;
 }
 
-.post-navigation a {
-  display: inline-block;
-  margin: 1em 0;
+.post-navigation {
+    a {
+        display: inline-block;
+        margin: 1em 0;
+    }
+
+    .post-prev {
+        float: left;
+        text-align: left;
+    }
+
+    .post-next {
+        float: right;
+        text-align: right;
+    }
 }
 
-.post-navigation .post-prev {
-  float: left;
-  text-align: left;
+
+//
+// Tabs
+//
+
+ul.tab, ul.tab-content {
+    padding: 0;
+
+    li::before {
+        content: none;
+    }
 }
 
-.post-navigation .post-next {
-  float: right;
-  text-align: right;
+ul.tab {
+    display: flex;
+    flex-wrap: wrap;
+    border-bottom: 1px solid $border-color;
+    list-style-type: none;
+
+    li {
+        display: flex;
+        margin: 0 10px -1px 0;
+
+        a {
+            display: block;
+            padding: 0.4rem 1rem;
+            border-bottom: 1px solid $border-color;
+            color: $body-text-color;
+            background: none;
+        }
+
+        a:hover {
+            background: none;
+            border-bottom: 1px solid $link-color;
+            color: $link-color;
+        }
+    }
+
+    li.tab-active {
+        a {
+            background-size: 1px 2px;
+            border-bottom: 2px solid $link-color;
+            color: $link-color;
+        }
+    }
+}
+
+ul.tab-content {
+    li {
+        display: none;
+    }
+
+    li.tab-active {
+        display: initial;
+    }
 }
