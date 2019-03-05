@@ -30,19 +30,19 @@
         tabs.setActive = function(str_group, index) {
             var tabHeaders = document.querySelectorAll('.tab[data-tab-group=' + str_group + ']');
             for (var i = 0, l = tabHeaders.length; i < l; i++) {
-                var activeTabHeader = tabHeaders[i].querySelectorAll(':scope > li.tab-active');
+                var activeTabHeader = custom.util.queryChildren(tabHeaders[i], 'li.tab-active');
                 if (activeTabHeader.length != 0) {
                     activeTabHeader[0].classList.remove('tab-active');
                 }
-                tabHeaders[i].querySelectorAll(':scope > li')[index].classList.add('tab-active');
+                custom.util.queryChildren(tabHeaders[i], 'li')[index].classList.add('tab-active');
             }
             var tabContents = document.querySelectorAll('.tab-content[data-tab-group=' + str_group + ']');
             for (var i = 0, l = tabContents.length; i < l; i++) {
-                var activeTabContent = tabContents[i].querySelectorAll(':scope > li.tab-active');
+                var activeTabContent = custom.util.queryChildren(tabContents[i], 'li.tab-active');
                 if (activeTabContent.length != 0) {
                     activeTabContent[0].classList.remove('tab-active');
                 }
-                tabContents[i].querySelectorAll(':scope > li')[index].classList.add('tab-active');
+                custom.util.queryChildren(tabContents[i], 'li')[index].classList.add('tab-active');
             }
             tabGroups[str_group] = index;
             var cookie = JSON.stringify(tabGroups);
@@ -77,6 +77,19 @@
 
         util.deleteCookie = function (str_name) {
             util.setCookie(str_name, '', -1);
+        }
+
+        var queryChildrenCount = 0;
+        util.queryChildren = function(element, str_selector) {
+            var id = element.id;
+            if (!id) {
+                element.id = 'query_children_' + queryChildrenCount++;
+            }
+            var result = element.parentNode.querySelectorAll('#' + element.id + ' > ' + str_selector);
+            if (!id) {
+                element.removeAttribute('id');
+            }
+            return result;
         }
 
     })(custom.util = custom.util || {});
