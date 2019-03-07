@@ -23,7 +23,7 @@ HiveMQT MQTT Client is an Open Source project backed by dc-square (the company b
 
 - **All MQTT 3.1.1 and MQTT 5.0 features**
 - API flavors:
-  - **Reactive**, **Async** and **Blocking**
+  - **Reactive**, **Asynchronous** and **Blocking**
   - Flexible switching
   - Consistent and clearly separated
 - **Backpressure support**:
