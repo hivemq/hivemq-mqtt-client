@@ -23,8 +23,8 @@ The following configuration methods are available for all MQTT clients:
 | `identifier` | The unique identifier of the MQTT client | The server creates an identifier for the client |
 | `serverHost` | The host name or IP address of the MQTT server | `localhost` |
 | `serverPort` | The port of the MQTT server | `1883` <br/> `8883` for SSL/TLS <br/> `80` for WebSocket <br/> `443` for WebSocket + SSL/TLS |
-| `useSsl` <br/> `useSslWithDefaultConfig` | Whether SSL/TLS is used, see [Security](security.md) | - |
-| `useWebSocket` <br/> `useWebSocketWithDefaultConfig` | Whether WebSocket transport is used, see [Transports](transports.md) | - |
+| `useSsl` <br/> `useSslWithDefaultConfig` | Whether SSL/TLS is used, see [Security](security/ssl_tls.md) | - |
+| `useWebSocket` <br/> `useWebSocketWithDefaultConfig` | Whether WebSocket transport is used, see [Transports](transports/websocket.md) | - |
 | `executorConfig` | Configuration of used Threads, see [Thread Management](thread_management.md) | Default Netty event loop and `Schedulers.comutation()` for callbacks |
 
 You can not build an instance of `MqttClient` directly, but a version specific `Mqtt5Client` or `Mqtt3Client`.

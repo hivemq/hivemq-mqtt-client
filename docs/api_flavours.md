@@ -141,8 +141,8 @@ The reactive API flavour uses [RxJava](https://github.com/ReactiveX/RxJava) whic
 As RxJava is compliant to the Reactive Streams specification it is easily interoperable with other reactive libraries 
 such as Reactor Core.
 
-The reactive API flavour uses the RxJava data types `Flowable`, `Single` and `Completable` to precisely declare return 
-types.
+The reactive API flavour uses the RxJava data types `Flowable`, `Single` and `Completable` to expressively declare 
+return types.
 
 {% capture tab_content %}
 
