@@ -1,15 +1,15 @@
 {%- assign parts = tab_content | split: "====" -%}
 <ul class="tab" data-tab-group="{{ include.tab_group }}">
-    {%- for part in parts -%}
+    {% for part in parts %}
     {%- assign header = part | split: "===" -%}
     {%- assign header = header[0] -%}
     <li><a href="#">{{ header | strip }}</a></li>
-    {%- endfor %}
+    {% endfor %}
 </ul>
 <ul class="tab-content" data-tab-group="{{ include.tab_group }}">
-    {%- for part in parts -%}
+    {% for part in parts %}
     {%- assign content = part | split: "===" -%}
     {%- assign content = content[1] -%}
     <li>{{ content | markdownify }}</li>
-    {%- endfor -%}
+    {% endfor %}
 </ul>

@@ -11,7 +11,7 @@ color_scheme: dark
 aux_links:
   "News":
     - "https://hivemq.github.io/hivemq-mqtt-client/news"
-  "HiveMQ MQTT Client on GitHub":
+  "GitHub":
     - "https://github.com/hivemq/hivemq-mqtt-client"
 
 plugins:

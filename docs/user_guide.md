@@ -1,7 +1,8 @@
 ---
 layout: default
 title: User Guide
-nav_order: 3
+nav_order: 100
+search_exclude: true
 ---
 
 # User Guide
