@@ -7,15 +7,17 @@ nav_exclude: true
 ![Logo]({{ site.logo }})
 {: .banner }
 
+
 # What is HiveMQ MQTT Client?
 
-HiveMQ MQTT Client is a MQTT 5.0 and MQTT 3.1.1 compatible and feature-rich high-performance Java client library with
+HiveMQ MQTT Client is a MQTT 5.0 and MQTT 3.1.1 compatible and feature-rich high-performance Java client library with 
 different API flavours and backpressure support.
 
 HiveMQT MQTT Client is an Open Source project backed by dc-square (the company behind the MQTT Broker 
 [HiveMQ](https://www.hivemq.com/)) and BMW CarIT.
 
 [View it on GitHub](https://github.com/hivemq/hivemq-mqtt-client){: .btn .btn-yellow }
+
 
 # Features
 

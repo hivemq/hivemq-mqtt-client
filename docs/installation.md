@@ -61,12 +61,12 @@ You have to set the compiler version to `1.8` or higher.
 {% endcapture %}
 {% include tabs.html tab_group="build-tool" %}
 
+
 ## Shaded version
 
 If you are experiencing problems with transitive dependencies, you can try the shaded version.
 This version packs the transitive dependencies which are only used internal under a different package name.
 To use the shaded version just append `-shaded` to the artifact name.
-
 
 {% capture tab_content %}
 
@@ -100,6 +100,7 @@ Maven
 
 {% endcapture %}
 {% include tabs.html tab_group="build-tool" %}
+
 
 ## Building from source
 
