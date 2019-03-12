@@ -81,6 +81,29 @@ class FlowableWithSingleTest {
         executorService.shutdown();
     }
 
+    @Test
+    void observeOnBoth_request() {
+        final ExecutorService executorService =
+                Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setNameFormat("test_thread").build());
+
+        final FlowableWithSingle<String, StringBuilder> flowableWithSingle =
+                new FlowableWithSingleItem<>(Flowable.range(0, 10).map(i -> "next" + i), new StringBuilder("single"),
+                        0);
+
+        final AtomicInteger count = new AtomicInteger();
+        // bufferSize 4 -> requests 3 -> checks if request for single item leads to request 2 upstream
+        flowableWithSingle.observeOnBoth(Schedulers.from(executorService), false, 4).doOnSingle(stringBuilder -> {
+            assertEquals("single", stringBuilder.toString());
+            assertEquals("test_thread", Thread.currentThread().getName());
+        }).doOnNext(string -> {
+            assertEquals("next" + count.getAndIncrement(), string);
+            assertEquals("test_thread", Thread.currentThread().getName());
+        }).blockingSubscribe();
+        assertEquals(10, count.get());
+
+        executorService.shutdown();
+    }
+
     @MethodSource("singleNext3")
     @ParameterizedTest
     void observeOnFlowable(final @NotNull FlowableWithSingle<String, StringBuilder> flowableWithSingle) {

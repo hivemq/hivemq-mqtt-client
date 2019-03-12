@@ -99,14 +99,20 @@ class FlowableWithSingleCombine<F, S> extends Flowable<Object> {
         }
 
         @Override
-        public void request(final long n) {
-            final Object next;
-            if ((requested.get() == 0) && ((next = queued.getAndSet(null)) != null)) {
-                subscriber.onNext(next);
-            } else {
-                assert subscription != null;
-                BackpressureHelper.add(requested, n);
-                subscription.request(n);
+        public void request(long n) {
+            assert subscription != null;
+            if (n > 0) {
+                if (requested.get() == 0) {
+                    final Object next = queued.getAndSet(null);
+                    if (next != null) {
+                        subscriber.onNext(next);
+                        n--;
+                    }
+                }
+                if (n > 0) {
+                    BackpressureHelper.add(requested, n);
+                    subscription.request(n);
+                }
             }
         }
 
