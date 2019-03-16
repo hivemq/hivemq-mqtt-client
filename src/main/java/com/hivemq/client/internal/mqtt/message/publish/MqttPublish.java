@@ -94,10 +94,7 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
 
     @Override
     public @NotNull byte[] getPayloadAsBytes() {
-        if (payload == null) {
-            return new byte[0];
-        }
-        return ByteBufferUtil.getBytes(payload);
+        return ByteBufferUtil.copyBytes(payload);
     }
 
     @Override
