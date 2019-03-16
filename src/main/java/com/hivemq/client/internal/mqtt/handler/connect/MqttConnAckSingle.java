@@ -62,7 +62,7 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
 
         bootstrap.connect(clientConfig.getServerHost(), clientConfig.getServerPort()).addListener(future -> {
             if (!future.isSuccess()) {
-                onError(clientConfig, flow, new ConnectionFailedException(future.cause()));
+                onError(clientConfig, flow, future.cause());
             }
         });
     }
@@ -72,7 +72,7 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
             final @NotNull Throwable cause) {
 
         clientConfig.getRawState().set(MqttClientState.DISCONNECTED);
-        flow.onError(cause);
+        flow.onError(new ConnectionFailedException(cause));
         clientConfig.releaseEventLoop();
     }
 }
