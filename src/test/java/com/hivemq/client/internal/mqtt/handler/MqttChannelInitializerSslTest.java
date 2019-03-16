@@ -22,8 +22,7 @@ import com.hivemq.client.internal.mqtt.codec.encoder.MqttEncoder;
 import com.hivemq.client.internal.mqtt.handler.auth.MqttAuthHandler;
 import com.hivemq.client.internal.mqtt.handler.connect.MqttConnectHandler;
 import com.hivemq.client.internal.mqtt.handler.disconnect.MqttDisconnectHandler;
-import com.hivemq.client.internal.mqtt.handler.websocket.WebSocketBinaryFrameDecoder;
-import com.hivemq.client.internal.mqtt.handler.websocket.WebSocketBinaryFrameEncoder;
+import com.hivemq.client.internal.mqtt.handler.websocket.MqttWebSocketInitializer;
 import com.hivemq.client.internal.rx.SingleFlow;
 import com.hivemq.client.mqtt.MqttVersion;
 import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
@@ -61,9 +60,7 @@ public class MqttChannelInitializerSslTest {
     @Mock
     private MqttAuthHandler authHandler;
     @Mock
-    private Lazy<WebSocketBinaryFrameEncoder> webSocketBinaryFrameEncoder;
-    @Mock
-    private Lazy<WebSocketBinaryFrameDecoder> webSocketBinaryFrameDecoder;
+    private Lazy<MqttWebSocketInitializer> webSocketInitializer;
 
     private Channel channel;
 
@@ -83,7 +80,7 @@ public class MqttChannelInitializerSslTest {
 
         final MqttChannelInitializer mqttChannelInitializer =
                 new MqttChannelInitializer(clientData, connAckFlow, encoder, connectHandler, disconnectHandler,
-                        authHandler, webSocketBinaryFrameEncoder, webSocketBinaryFrameDecoder);
+                        authHandler, webSocketInitializer);
 
         mqttChannelInitializer.initChannel(channel);
 

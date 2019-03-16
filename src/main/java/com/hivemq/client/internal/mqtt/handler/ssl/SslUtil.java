@@ -27,8 +27,27 @@ import javax.net.ssl.SSLException;
 
 /**
  * @author Christoph Schäbel
+ * @author Silvio Giebl
  */
 public class SslUtil {
+
+    private static final @NotNull String SSL_HANDLER_NAME = "ssl";
+
+    public static void initChannel(final @NotNull Channel channel, final @NotNull MqttClientSslConfigImpl sslConfig)
+            throws SSLException {
+
+        channel.pipeline().addFirst(SSL_HANDLER_NAME, createSslHandler(channel, sslConfig));
+    }
+
+    private static @NotNull SslHandler createSslHandler(
+            final @NotNull Channel channel, final @NotNull MqttClientSslConfigImpl sslConfig) throws SSLException {
+
+        final SSLEngine sslEngine = createSslEngine(channel, sslConfig);
+        final SslHandler sslHandler = new SslHandler(sslEngine);
+
+        sslHandler.setHandshakeTimeoutMillis(sslConfig.getHandshakeTimeoutMs());
+        return sslHandler;
+    }
 
     static @NotNull SSLEngine createSslEngine(
             final @NotNull Channel channel, final @NotNull MqttClientSslConfigImpl sslConfig) throws SSLException {
@@ -56,15 +75,5 @@ public class SslUtil {
         sslContextBuilder.ciphers(sslConfig.getRawCipherSuites(), SupportedCipherSuiteFilter.INSTANCE);
 
         return sslContextBuilder.build();
-    }
-
-    public static @NotNull SslHandler createSslHandler(
-            final @NotNull Channel channel, final @NotNull MqttClientSslConfigImpl sslConfig) throws SSLException {
-
-        final SSLEngine sslEngine = createSslEngine(channel, sslConfig);
-        final SslHandler sslHandler = new SslHandler(sslEngine);
-
-        sslHandler.setHandshakeTimeoutMillis(sslConfig.getHandshakeTimeoutMs());
-        return sslHandler;
     }
 }
