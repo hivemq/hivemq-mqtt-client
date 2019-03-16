@@ -17,26 +17,42 @@
 
 package com.hivemq.client.internal.mqtt.message.publish;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
-import static org.junit.Assert.*;
+import java.util.stream.IntStream;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Christian Hoff
+ * @author Silvio Giebl
  */
-public class MqttPublishTest {
+class MqttPublishTest {
 
     @Test
-    public void getPayloadAsBytes() {
+    void getPayloadAsBytes() {
         final byte[] payload = {1, 2, 3, 4, 5};
         final MqttPublish publish = new MqttPublishBuilder.Default().topic("topic").payload(payload).build();
         assertArrayEquals(payload, publish.getPayloadAsBytes());
     }
 
     @Test
-    public void getPayloadAsBytes_payloadIsNull() {
-        final MqttPublish publish = new MqttPublishBuilder.Default().topic("topic").payload((byte[]) null).build();
+    void getPayloadAsBytes_payloadIsNull() {
+        final MqttPublish publish = new MqttPublishBuilder.Default().topic("topic").build();
         assertNotNull(publish.getPayloadAsBytes());
         assertEquals(0, publish.getPayloadAsBytes().length);
+    }
+
+    @Test
+    void getPayloadAsBytes_concurrent() {
+        final byte[] payload = new byte[1_000_000];
+        final MqttPublish publish = new MqttPublishBuilder.Default().topic("topic").payload(payload).build();
+        final Executable executable = () -> {
+            for (int i = 0; i < 100; i++) {
+                assertArrayEquals(payload, publish.getPayloadAsBytes());
+            }
+        };
+        assertAll(IntStream.range(0, 16).mapToObj(i -> executable).parallel());
     }
 }

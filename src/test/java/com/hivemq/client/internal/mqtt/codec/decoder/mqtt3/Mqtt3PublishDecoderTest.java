@@ -19,7 +19,6 @@ package com.hivemq.client.internal.mqtt.codec.decoder.mqtt3;
 
 import com.hivemq.client.internal.mqtt.codec.decoder.MqttMessageDecoders;
 import com.hivemq.client.internal.mqtt.message.publish.MqttStatefulPublish;
-import com.hivemq.client.internal.util.ByteBufferUtil;
 import com.hivemq.client.mqtt.mqtt3.message.Mqtt3MessageType;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
@@ -106,7 +105,7 @@ class Mqtt3PublishDecoderTest extends AbstractMqtt3DecoderTest {
         assertNotNull(publishInternal);
         assertEquals(topic, publishInternal.stateless().getTopic().toString());
         assertTrue(publishInternal.stateless().getPayload().isPresent());
-        assertArrayEquals(payload.getBytes(), ByteBufferUtil.getBytes(publishInternal.stateless().getPayload().get()));
+        assertArrayEquals(payload.getBytes(), publishInternal.stateless().getPayloadAsBytes());
         assertEquals(isDup, publishInternal.isDup());
         assertEquals(qos, publishInternal.stateless().getQos().getCode());
         if (qos == 0) {
@@ -161,7 +160,7 @@ class Mqtt3PublishDecoderTest extends AbstractMqtt3DecoderTest {
         final MqttStatefulPublish publishInternal = channel.readInbound();
         assertNotNull(publishInternal);
         assertTrue(publishInternal.stateless().getPayload().isPresent());
-        assertArrayEquals(payload.getBytes(), ByteBufferUtil.getBytes(publishInternal.stateless().getPayload().get()));
+        assertArrayEquals(payload.getBytes(), publishInternal.stateless().getPayloadAsBytes());
         assertEquals(isDup, publishInternal.isDup());
         assertEquals(qos, publishInternal.stateless().getQos().getCode());
         if (qos == 0) {
