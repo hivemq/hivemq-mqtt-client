@@ -117,7 +117,7 @@ public class MqttClientSslConfigImpl implements MqttClientSslConfig {
         result = 31 * result + Objects.hashCode(trustManagerFactory);
         result = 31 * result + Objects.hashCode(cipherSuites);
         result = 31 * result + Objects.hashCode(protocols);
-        result = 31 * result + (int) (handshakeTimeoutMs ^ (handshakeTimeoutMs >>> 32));
+        result = 31 * result + Long.hashCode(handshakeTimeoutMs);
         return result;
     }
 }
