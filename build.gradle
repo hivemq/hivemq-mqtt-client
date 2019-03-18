@@ -76,7 +76,7 @@ dependencies {
     testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-runner', version: junitPlatformVersion
 
     testImplementation group: 'org.eclipse.paho', name: 'org.eclipse.paho.client.mqttv3', version: '1.2.0'
-    testImplementation group: 'nl.jqno.equalsverifier', name: 'equalsverifier', version: '2.4.1'
+    testImplementation group: 'nl.jqno.equalsverifier', name: 'equalsverifier', version: '3.1.7'
     testImplementation group: 'org.mockito', name: 'mockito-core', version: '2.18.3'
     testImplementation group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.59'
     testImplementation group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.59'

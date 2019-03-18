@@ -22,6 +22,7 @@ import io.reactivex.Scheduler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.concurrent.Executor;
@@ -69,5 +70,27 @@ public class MqttClientExecutorConfigImpl implements MqttClientExecutorConfig {
     @Override
     public @NotNull Scheduler getApplicationScheduler() {
         return applicationScheduler;
+    }
+
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof MqttClientExecutorConfigImpl)) {
+            return false;
+        }
+        final MqttClientExecutorConfigImpl that = (MqttClientExecutorConfigImpl) o;
+
+        return Objects.equals(nettyExecutor, that.nettyExecutor) && (nettyThreads == that.nettyThreads) &&
+                applicationScheduler.equals(that.applicationScheduler);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hashCode(nettyExecutor);
+        result = 31 * result + nettyThreads;
+        result = 31 * result + applicationScheduler.hashCode();
+        return result;
     }
 }
