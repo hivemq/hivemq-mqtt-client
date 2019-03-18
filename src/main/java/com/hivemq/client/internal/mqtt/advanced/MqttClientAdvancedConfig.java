@@ -22,6 +22,8 @@ import com.hivemq.client.mqtt.mqtt5.advanced.Mqtt5ClientAdvancedConfig;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
 /**
  * @author Silvio Giebl
  */
@@ -55,5 +57,27 @@ public class MqttClientAdvancedConfig implements Mqtt5ClientAdvancedConfig {
     @Override
     public @Nullable MqttClientInterceptors getInterceptors() {
         return interceptors;
+    }
+
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof MqttClientAdvancedConfig)) {
+            return false;
+        }
+        final MqttClientAdvancedConfig that = (MqttClientAdvancedConfig) o;
+
+        return (allowServerReAuth == that.allowServerReAuth) && (validatePayloadFormat == that.validatePayloadFormat) &&
+                Objects.equals(interceptors, that.interceptors);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Boolean.hashCode(allowServerReAuth);
+        result = 31 * result + Boolean.hashCode(validatePayloadFormat);
+        result = 31 * result + Objects.hashCode(interceptors);
+        return result;
     }
 }
