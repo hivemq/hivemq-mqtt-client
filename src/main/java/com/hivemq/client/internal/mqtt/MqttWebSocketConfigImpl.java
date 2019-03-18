@@ -18,6 +18,7 @@ package com.hivemq.client.internal.mqtt;
 
 import com.hivemq.client.mqtt.MqttWebSocketConfig;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author David Katz
@@ -46,4 +47,23 @@ public class MqttWebSocketConfigImpl implements MqttWebSocketConfig {
         return subprotocol;
     }
 
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof MqttWebSocketConfigImpl)) {
+            return false;
+        }
+        final MqttWebSocketConfigImpl that = (MqttWebSocketConfigImpl) o;
+
+        return serverPath.equals(that.serverPath) && subprotocol.equals(that.subprotocol);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = serverPath.hashCode();
+        result = 31 * result + subprotocol.hashCode();
+        return result;
+    }
 }

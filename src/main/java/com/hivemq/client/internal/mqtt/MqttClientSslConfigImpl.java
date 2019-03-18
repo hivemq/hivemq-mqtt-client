@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -49,8 +50,8 @@ public class MqttClientSslConfigImpl implements MqttClientSslConfig {
         this.keyManagerFactory = keyManagerFactory;
         this.trustManagerFactory = trustManagerFactory;
         this.cipherSuites = cipherSuites;
-        this.handshakeTimeoutMs = handshakeTimeoutMs;
         this.protocols = protocols;
+        this.handshakeTimeoutMs = handshakeTimeoutMs;
     }
 
     @Override
@@ -92,5 +93,31 @@ public class MqttClientSslConfigImpl implements MqttClientSslConfig {
     @Override
     public long getHandshakeTimeoutMs() {
         return handshakeTimeoutMs;
+    }
+
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof MqttClientSslConfigImpl)) {
+            return false;
+        }
+        final MqttClientSslConfigImpl that = (MqttClientSslConfigImpl) o;
+
+        return Objects.equals(keyManagerFactory, that.keyManagerFactory) &&
+                Objects.equals(trustManagerFactory, that.trustManagerFactory) &&
+                Objects.equals(cipherSuites, that.cipherSuites) && Objects.equals(protocols, that.protocols) &&
+                (handshakeTimeoutMs == that.handshakeTimeoutMs);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hashCode(keyManagerFactory);
+        result = 31 * result + Objects.hashCode(trustManagerFactory);
+        result = 31 * result + Objects.hashCode(cipherSuites);
+        result = 31 * result + Objects.hashCode(protocols);
+        result = 31 * result + (int) (handshakeTimeoutMs ^ (handshakeTimeoutMs >>> 32));
+        return result;
     }
 }

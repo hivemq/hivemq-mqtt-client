@@ -110,7 +110,7 @@ public class MqttUserPropertiesImpl implements Mqtt5UserProperties {
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(final @Nullable Object o) {
         if (this == o) {
             return true;
         }
