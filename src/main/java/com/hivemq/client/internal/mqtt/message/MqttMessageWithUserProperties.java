@@ -26,6 +26,7 @@ import com.hivemq.client.mqtt.mqtt5.message.Mqtt5ReasonCode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -46,6 +47,15 @@ public abstract class MqttMessageWithUserProperties implements MqttMessage.WithU
 
     protected @NotNull String toAttributeString() {
         return userProperties.asList().isEmpty() ? "" : "userProperties=" + userProperties;
+    }
+
+    public boolean equals(final @NotNull MqttMessageWithUserProperties that) {
+        return userProperties.equals(that.userProperties);
+    }
+
+    @Override
+    public int hashCode() {
+        return userProperties.hashCode();
     }
 
     /**
@@ -76,6 +86,15 @@ public abstract class MqttMessageWithUserProperties implements MqttMessage.WithU
                     "reasonString=" + reasonString + StringUtil.prepend(", ", super.toAttributeString()));
         }
 
+        public boolean equals(final @NotNull WithReason that) {
+            return super.equals(that) && Objects.equals(reasonString, that.reasonString);
+        }
+
+        @Override
+        public int hashCode() {
+            return 31 * super.hashCode() + Objects.hashCode(reasonString);
+        }
+
         /**
          * Base class for MQTT messages with a Reason Code, an optional Reason String and optional User Properties.
          *
@@ -95,6 +114,15 @@ public abstract class MqttMessageWithUserProperties implements MqttMessage.WithU
 
             public @NotNull R getReasonCode() {
                 return reasonCode;
+            }
+
+            public boolean equals(final @NotNull WithCode that) {
+                return super.equals(that) && reasonCode.equals(that.reasonCode);
+            }
+
+            @Override
+            public int hashCode() {
+                return 31 * super.hashCode() + reasonCode.hashCode();
             }
 
             /**
@@ -163,6 +191,15 @@ public abstract class MqttMessageWithUserProperties implements MqttMessage.WithU
             @Override
             protected @NotNull String toAttributeString() {
                 return "packetIdentifier=" + packetIdentifier + StringUtil.prepend(", ", super.toAttributeString());
+            }
+
+            public boolean equals(final @NotNull WithCodesAndId<R> that) {
+                return super.equals(that) && reasonCodes.equals(that.reasonCodes);
+            }
+
+            @Override
+            public int hashCode() {
+                return 31 * super.hashCode() + reasonCodes.hashCode();
             }
         }
     }

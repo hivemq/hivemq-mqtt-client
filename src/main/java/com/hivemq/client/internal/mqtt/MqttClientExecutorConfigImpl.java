@@ -89,7 +89,7 @@ public class MqttClientExecutorConfigImpl implements MqttClientExecutorConfig {
     @Override
     public int hashCode() {
         int result = Objects.hashCode(nettyExecutor);
-        result = 31 * result + Integer.hashCode(nettyThreads);
+        result = 31 * result + nettyThreads;
         result = 31 * result + applicationScheduler.hashCode();
         return result;
     }
