@@ -25,6 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.ByteBuffer;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -62,5 +63,25 @@ public class MqttEnhancedAuth implements Mqtt5EnhancedAuth {
     @Override
     public @NotNull String toString() {
         return "MqttEnhancedAuth{" + toAttributeString() + '}';
+    }
+
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof MqttEnhancedAuth)) {
+            return false;
+        }
+        final MqttEnhancedAuth that = (MqttEnhancedAuth) o;
+
+        return method.equals(that.method) && Objects.equals(data, that.data);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = method.hashCode();
+        result = 31 * result + (data != null ? data.hashCode() : 0);
+        return result;
     }
 }
