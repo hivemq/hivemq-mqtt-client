@@ -78,4 +78,22 @@ public class Mqtt3SimpleAuthView implements Mqtt3SimpleAuth {
     public @NotNull String toString() {
         return delegate.toString();
     }
+
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Mqtt3SimpleAuthView)) {
+            return false;
+        }
+        final Mqtt3SimpleAuthView that = (Mqtt3SimpleAuthView) o;
+
+        return delegate.equals(that.delegate);
+    }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
 }
