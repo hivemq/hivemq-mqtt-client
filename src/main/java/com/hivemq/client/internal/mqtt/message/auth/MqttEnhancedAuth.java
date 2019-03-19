@@ -81,7 +81,7 @@ public class MqttEnhancedAuth implements Mqtt5EnhancedAuth {
     @Override
     public int hashCode() {
         int result = method.hashCode();
-        result = 31 * result + (data != null ? data.hashCode() : 0);
+        result = 31 * result + Objects.hashCode(data);
         return result;
     }
 }

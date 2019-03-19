@@ -86,14 +86,15 @@ public class MqttAuth extends MqttMessageWithUserProperties.WithReason.WithCode<
         if (!(o instanceof MqttAuth)) {
             return false;
         }
-        final MqttAuth mqttAuth = (MqttAuth) o;
+        final MqttAuth that = (MqttAuth) o;
 
-        return method.equals(mqttAuth.method) && Objects.equals(data, mqttAuth.data);
+        return super.equals(that) && method.equals(that.method) && Objects.equals(data, that.data);
     }
 
     @Override
     public int hashCode() {
-        int result = method.hashCode();
+        int result = super.hashCode();
+        result = 31 * result + method.hashCode();
         result = 31 * result + Objects.hashCode(data);
         return result;
     }
