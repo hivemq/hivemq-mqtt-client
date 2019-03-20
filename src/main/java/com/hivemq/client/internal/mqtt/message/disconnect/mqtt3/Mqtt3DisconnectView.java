@@ -20,6 +20,7 @@ package com.hivemq.client.internal.mqtt.message.disconnect.mqtt3;
 import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.client.internal.mqtt.message.disconnect.MqttDisconnect;
+import com.hivemq.client.mqtt.mqtt3.message.Mqtt3MessageType;
 import com.hivemq.client.mqtt.mqtt3.message.disconnect.Mqtt3Disconnect;
 import com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.jetbrains.annotations.NotNull;
@@ -50,14 +51,11 @@ public class Mqtt3DisconnectView implements Mqtt3Disconnect {
 
     @Override
     public boolean equals(final @Nullable Object o) {
-        if (this == o) {
-            return true;
-        }
-        return o instanceof Mqtt3DisconnectView;
+        return this == o;
     }
 
     @Override
     public int hashCode() {
-        return DELEGATE.hashCode();
+        return Mqtt3MessageType.DISCONNECT.ordinal();
     }
 }
