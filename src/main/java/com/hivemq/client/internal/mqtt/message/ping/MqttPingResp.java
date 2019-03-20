@@ -19,8 +19,10 @@ package com.hivemq.client.internal.mqtt.message.ping;
 
 import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.mqtt.message.MqttMessage;
+import com.hivemq.client.mqtt.mqtt5.message.Mqtt5MessageType;
 import com.hivemq.client.mqtt.mqtt5.message.ping.Mqtt5PingResp;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Silvio Giebl
@@ -35,5 +37,15 @@ public class MqttPingResp implements MqttMessage, Mqtt5PingResp {
     @Override
     public @NotNull String toString() {
         return "MqttPingResp{}";
+    }
+
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        return this == o;
+    }
+
+    @Override
+    public int hashCode() {
+        return Mqtt5MessageType.PINGRESP.ordinal();
     }
 }
