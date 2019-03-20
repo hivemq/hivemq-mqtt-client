@@ -23,6 +23,7 @@ import com.hivemq.client.internal.mqtt.message.disconnect.MqttDisconnect;
 import com.hivemq.client.mqtt.mqtt3.message.disconnect.Mqtt3Disconnect;
 import com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Silvio Giebl
@@ -45,5 +46,18 @@ public class Mqtt3DisconnectView implements Mqtt3Disconnect {
     @Override
     public @NotNull String toString() {
         return "MqttDisconnect{}";
+    }
+
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        if (this == o) {
+            return true;
+        }
+        return o instanceof Mqtt3DisconnectView;
+    }
+
+    @Override
+    public int hashCode() {
+        return DELEGATE.hashCode();
     }
 }

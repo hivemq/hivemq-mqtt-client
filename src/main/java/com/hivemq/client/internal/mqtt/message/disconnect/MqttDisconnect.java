@@ -28,6 +28,7 @@ import com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalLong;
 
@@ -91,5 +92,27 @@ public class MqttDisconnect extends MqttMessageWithUserProperties.WithReason.Wit
     @Override
     public @NotNull String toString() {
         return "MqttDisconnect{" + toAttributeString() + '}';
+    }
+
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof MqttDisconnect)) {
+            return false;
+        }
+        final MqttDisconnect that = (MqttDisconnect) o;
+
+        return partialEquals(that) && (sessionExpiryInterval == that.sessionExpiryInterval) &&
+                Objects.equals(serverReference, that.serverReference);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = partialHashCode();
+        result = 31 * result + Long.hashCode(sessionExpiryInterval);
+        result = 31 * result + Objects.hashCode(serverReference);
+        return result;
     }
 }
