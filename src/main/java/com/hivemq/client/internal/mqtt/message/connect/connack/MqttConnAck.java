@@ -31,6 +31,7 @@ import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckReasonCo
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.OptionalLong;
@@ -148,5 +149,37 @@ public class MqttConnAck extends MqttMessageWithUserProperties.WithReason.WithCo
     @Override
     public @NotNull String toString() {
         return "MqttConnAck{" + toAttributeString() + '}';
+    }
+
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof MqttConnAck)) {
+            return false;
+        }
+        final MqttConnAck that = (MqttConnAck) o;
+
+        return partialEquals(that) && (sessionPresent == that.sessionPresent) &&
+                (sessionExpiryInterval == that.sessionExpiryInterval) && (serverKeepAlive == that.serverKeepAlive) &&
+                Objects.equals(assignedClientIdentifier, that.assignedClientIdentifier) &&
+                Objects.equals(enhancedAuth, that.enhancedAuth) && restrictions.equals(that.restrictions) &&
+                Objects.equals(responseInformation, that.responseInformation) &&
+                Objects.equals(serverReference, that.serverReference);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = partialHashCode();
+        result = 31 * result + Boolean.hashCode(sessionPresent);
+        result = 31 * result + Long.hashCode(sessionExpiryInterval);
+        result = 31 * result + serverKeepAlive;
+        result = 31 * result + Objects.hashCode(assignedClientIdentifier);
+        result = 31 * result + Objects.hashCode(enhancedAuth);
+        result = 31 * result + restrictions.hashCode();
+        result = 31 * result + Objects.hashCode(responseInformation);
+        result = 31 * result + Objects.hashCode(serverReference);
+        return result;
     }
 }

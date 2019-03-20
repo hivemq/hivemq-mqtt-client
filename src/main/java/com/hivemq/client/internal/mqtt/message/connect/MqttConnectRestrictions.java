@@ -20,6 +20,7 @@ package com.hivemq.client.internal.mqtt.message.connect;
 import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnectRestrictions;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Silvio Giebl
@@ -112,5 +113,37 @@ public class MqttConnectRestrictions implements Mqtt5ConnectRestrictions {
     @Override
     public @NotNull String toString() {
         return "MqttConnectRestrictions{" + toAttributeString() + '}';
+    }
+
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof MqttConnectRestrictions)) {
+            return false;
+        }
+        final MqttConnectRestrictions that = (MqttConnectRestrictions) o;
+
+        return (receiveMaximum == that.receiveMaximum) && (sendMaximum == that.sendMaximum) &&
+                (maximumPacketSize == that.maximumPacketSize) &&
+                (sendMaximumPacketSize == that.sendMaximumPacketSize) &&
+                (topicAliasMaximum == that.topicAliasMaximum) &&
+                (sendTopicAliasMaximum == that.sendTopicAliasMaximum) &&
+                (requestProblemInformation == that.requestProblemInformation) &&
+                (requestResponseInformation == that.requestResponseInformation);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = receiveMaximum;
+        result = 31 * result + sendMaximum;
+        result = 31 * result + maximumPacketSize;
+        result = 31 * result + sendMaximumPacketSize;
+        result = 31 * result + topicAliasMaximum;
+        result = 31 * result + sendTopicAliasMaximum;
+        result = 31 * result + Boolean.hashCode(requestProblemInformation);
+        result = 31 * result + Boolean.hashCode(requestResponseInformation);
+        return result;
     }
 }

@@ -32,6 +32,7 @@ import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -140,5 +141,35 @@ public class MqttConnect extends MqttMessageWithUserProperties implements Mqtt5C
     @Override
     public @NotNull String toString() {
         return "MqttConnect{" + toAttributeString() + '}';
+    }
+
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof MqttConnect)) {
+            return false;
+        }
+        final MqttConnect that = (MqttConnect) o;
+
+        return partialEquals(that) && (keepAlive == that.keepAlive) && (cleanStart == that.cleanStart) &&
+                (sessionExpiryInterval == that.sessionExpiryInterval) && restrictions.equals(that.restrictions) &&
+                Objects.equals(simpleAuth, that.simpleAuth) &&
+                Objects.equals(enhancedAuthMechanism, that.enhancedAuthMechanism) &&
+                Objects.equals(willPublish, that.willPublish);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = partialHashCode();
+        result = 31 * result + keepAlive;
+        result = 31 * result + Boolean.hashCode(cleanStart);
+        result = 31 * result + Long.hashCode(sessionExpiryInterval);
+        result = 31 * result + restrictions.hashCode();
+        result = 31 * result + Objects.hashCode(simpleAuth);
+        result = 31 * result + Objects.hashCode(enhancedAuthMechanism);
+        result = 31 * result + Objects.hashCode(willPublish);
+        return result;
     }
 }
