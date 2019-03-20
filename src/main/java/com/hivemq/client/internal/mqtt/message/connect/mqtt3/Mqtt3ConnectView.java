@@ -118,4 +118,22 @@ public class Mqtt3ConnectView implements Mqtt3Connect {
     public @NotNull String toString() {
         return "MqttConnect{" + toAttributeString() + '}';
     }
+
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Mqtt3ConnectView)) {
+            return false;
+        }
+        final Mqtt3ConnectView that = (Mqtt3ConnectView) o;
+
+        return delegate.equals(that.delegate);
+    }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
 }

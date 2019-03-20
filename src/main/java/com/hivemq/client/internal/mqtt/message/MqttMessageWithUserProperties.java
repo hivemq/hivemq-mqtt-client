@@ -49,12 +49,11 @@ public abstract class MqttMessageWithUserProperties implements MqttMessage.WithU
         return userProperties.asList().isEmpty() ? "" : "userProperties=" + userProperties;
     }
 
-    public boolean equals(final @NotNull MqttMessageWithUserProperties that) {
+    protected boolean partialEquals(final @NotNull MqttMessageWithUserProperties that) {
         return userProperties.equals(that.userProperties);
     }
 
-    @Override
-    public int hashCode() {
+    protected int partialHashCode() {
         return userProperties.hashCode();
     }
 
@@ -86,13 +85,12 @@ public abstract class MqttMessageWithUserProperties implements MqttMessage.WithU
                     "reasonString=" + reasonString + StringUtil.prepend(", ", super.toAttributeString()));
         }
 
-        public boolean equals(final @NotNull WithReason that) {
-            return super.equals(that) && Objects.equals(reasonString, that.reasonString);
+        protected boolean partialEquals(final @NotNull WithReason that) {
+            return super.partialEquals(that) && Objects.equals(reasonString, that.reasonString);
         }
 
-        @Override
-        public int hashCode() {
-            return 31 * super.hashCode() + Objects.hashCode(reasonString);
+        protected int partialHashCode() {
+            return 31 * super.partialHashCode() + Objects.hashCode(reasonString);
         }
 
         /**
@@ -116,13 +114,12 @@ public abstract class MqttMessageWithUserProperties implements MqttMessage.WithU
                 return reasonCode;
             }
 
-            public boolean equals(final @NotNull WithCode that) {
-                return super.equals(that) && reasonCode.equals(that.reasonCode);
+            protected boolean partialEquals(final @NotNull WithCode that) {
+                return super.partialEquals(that) && reasonCode.equals(that.reasonCode);
             }
 
-            @Override
-            public int hashCode() {
-                return 31 * super.hashCode() + reasonCode.hashCode();
+            protected int partialHashCode() {
+                return 31 * super.partialHashCode() + reasonCode.hashCode();
             }
 
             /**
@@ -193,13 +190,12 @@ public abstract class MqttMessageWithUserProperties implements MqttMessage.WithU
                 return "packetIdentifier=" + packetIdentifier + StringUtil.prepend(", ", super.toAttributeString());
             }
 
-            public boolean equals(final @NotNull WithCodesAndId<R> that) {
-                return super.equals(that) && reasonCodes.equals(that.reasonCodes);
+            protected boolean partialEquals(final @NotNull WithCodesAndId<R> that) {
+                return super.partialEquals(that) && reasonCodes.equals(that.reasonCodes);
             }
 
-            @Override
-            public int hashCode() {
-                return 31 * super.hashCode() + reasonCodes.hashCode();
+            protected int partialHashCode() {
+                return 31 * super.partialHashCode() + reasonCodes.hashCode();
             }
         }
     }

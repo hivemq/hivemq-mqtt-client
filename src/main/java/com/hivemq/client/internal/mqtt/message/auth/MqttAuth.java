@@ -88,12 +88,12 @@ public class MqttAuth extends MqttMessageWithUserProperties.WithReason.WithCode<
         }
         final MqttAuth that = (MqttAuth) o;
 
-        return super.equals(that) && method.equals(that.method) && Objects.equals(data, that.data);
+        return partialEquals(that) && method.equals(that.method) && Objects.equals(data, that.data);
     }
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
+        int result = partialHashCode();
         result = 31 * result + method.hashCode();
         result = 31 * result + Objects.hashCode(data);
         return result;
