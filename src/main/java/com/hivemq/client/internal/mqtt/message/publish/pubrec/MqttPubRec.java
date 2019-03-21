@@ -46,4 +46,22 @@ public class MqttPubRec extends MqttMessageWithUserProperties.WithReason.WithCod
     public @NotNull String toString() {
         return "MqttPubRec{" + toAttributeString() + "}";
     }
+
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof MqttPubRec)) {
+            return false;
+        }
+        final MqttPubRec that = (MqttPubRec) o;
+
+        return partialEquals(that);
+    }
+
+    @Override
+    public int hashCode() {
+        return partialHashCode();
+    }
 }

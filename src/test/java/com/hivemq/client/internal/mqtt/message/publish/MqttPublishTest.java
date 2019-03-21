@@ -17,6 +17,8 @@
 
 package com.hivemq.client.internal.mqtt.message.publish;
 
+import nl.jqno.equalsverifier.EqualsVerifier;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
@@ -29,6 +31,15 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Silvio Giebl
  */
 class MqttPublishTest {
+
+    @Test
+    void equals() {
+        EqualsVerifier.forClass(MqttPublish.class)
+                .withIgnoredAnnotations(NotNull.class) // EqualsVerifier thinks @NotNull Optional is @NotNull
+                .withNonnullFields("topic", "qos", "userProperties")
+                .withRedefinedSubclass(MqttWillPublish.class)
+                .verify();
+    }
 
     @Test
     void getPayloadAsBytes() {

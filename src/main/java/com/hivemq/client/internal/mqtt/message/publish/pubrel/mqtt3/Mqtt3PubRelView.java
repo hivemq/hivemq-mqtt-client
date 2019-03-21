@@ -20,9 +20,11 @@ package com.hivemq.client.internal.mqtt.message.publish.pubrel.mqtt3;
 import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.client.internal.mqtt.message.publish.pubrel.MqttPubRel;
+import com.hivemq.client.mqtt.mqtt3.message.Mqtt3MessageType;
 import com.hivemq.client.mqtt.mqtt3.message.publish.pubrel.Mqtt3PubRel;
 import com.hivemq.client.mqtt.mqtt5.message.publish.pubrel.Mqtt5PubRelReasonCode;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Silvio Giebl
@@ -42,5 +44,15 @@ public class Mqtt3PubRelView implements Mqtt3PubRel {
     @Override
     public @NotNull String toString() {
         return "MqttPubRel{}";
+    }
+
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        return this == o;
+    }
+
+    @Override
+    public int hashCode() {
+        return Mqtt3MessageType.PUBREL.ordinal();
     }
 }

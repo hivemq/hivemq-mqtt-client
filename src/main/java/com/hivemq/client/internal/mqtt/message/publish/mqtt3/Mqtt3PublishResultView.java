@@ -24,6 +24,7 @@ import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3PublishResult;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
 import io.reactivex.functions.Function;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
@@ -61,5 +62,23 @@ public class Mqtt3PublishResultView implements Mqtt3PublishResult {
     @Override
     public @NotNull String toString() {
         return "MqttPublishResult{" + toAttributeString() + '}';
+    }
+
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Mqtt3PublishResultView)) {
+            return false;
+        }
+        final Mqtt3PublishResultView that = (Mqtt3PublishResultView) o;
+
+        return delegate.equals(that.delegate);
+    }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
     }
 }

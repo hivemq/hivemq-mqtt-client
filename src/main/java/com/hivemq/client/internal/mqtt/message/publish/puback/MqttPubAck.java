@@ -46,4 +46,22 @@ public class MqttPubAck extends MqttMessageWithUserProperties.WithReason.WithCod
     public @NotNull String toString() {
         return "MqttPubAck{" + toAttributeString() + "}";
     }
+
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof MqttPubAck)) {
+            return false;
+        }
+        final MqttPubAck that = (MqttPubAck) o;
+
+        return partialEquals(that);
+    }
+
+    @Override
+    public int hashCode() {
+        return partialHashCode();
+    }
 }
