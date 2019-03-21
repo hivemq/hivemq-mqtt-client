@@ -51,4 +51,22 @@ public class MqttSubAck extends MqttMessageWithUserProperties.WithReason.WithCod
     public @NotNull String toString() {
         return "MqttSubAck{" + toAttributeString() + "}";
     }
+
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof MqttSubAck)) {
+            return false;
+        }
+        final MqttSubAck that = (MqttSubAck) o;
+
+        return partialEquals(that);
+    }
+
+    @Override
+    public int hashCode() {
+        return partialHashCode();
+    }
 }

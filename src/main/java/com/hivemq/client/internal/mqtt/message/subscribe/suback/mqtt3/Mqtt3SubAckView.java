@@ -27,6 +27,7 @@ import com.hivemq.client.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import com.hivemq.client.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAckReasonCode;
 import io.reactivex.functions.Function;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Silvio Giebl
@@ -125,5 +126,23 @@ public class Mqtt3SubAckView implements Mqtt3SubAck {
     @Override
     public @NotNull String toString() {
         return "MqttSubAck{" + toAttributeString() + "}";
+    }
+
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Mqtt3SubAckView)) {
+            return false;
+        }
+        final Mqtt3SubAckView that = (Mqtt3SubAckView) o;
+
+        return delegate.equals(that.delegate);
+    }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
     }
 }
