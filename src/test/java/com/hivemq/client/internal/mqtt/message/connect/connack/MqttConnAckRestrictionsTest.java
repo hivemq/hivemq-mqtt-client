@@ -19,6 +19,7 @@ package com.hivemq.client.internal.mqtt.message.connect.connack;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -28,6 +29,10 @@ class MqttConnAckRestrictionsTest {
 
     @Test
     void equals() {
-        EqualsVerifier.forClass(MqttConnAckRestrictions.class).suppress(Warning.STRICT_INHERITANCE).verify();
+        EqualsVerifier.forClass(MqttConnAckRestrictions.class)
+                .withIgnoredAnnotations(NotNull.class) // EqualsVerifier thinks @NotNull Optional is @NotNull
+                .withNonnullFields("maximumQos")
+                .suppress(Warning.STRICT_INHERITANCE)
+                .verify();
     }
 }
