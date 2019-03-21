@@ -20,9 +20,11 @@ package com.hivemq.client.internal.mqtt.message.publish.pubcomp.mqtt3;
 import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.client.internal.mqtt.message.publish.pubcomp.MqttPubComp;
+import com.hivemq.client.mqtt.mqtt3.message.Mqtt3MessageType;
 import com.hivemq.client.mqtt.mqtt3.message.publish.pubcomp.Mqtt3PubComp;
 import com.hivemq.client.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubCompReasonCode;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Silvio Giebl
@@ -42,5 +44,15 @@ public class Mqtt3PubCompView implements Mqtt3PubComp {
     @Override
     public @NotNull String toString() {
         return "MqttPubComp{}";
+    }
+
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        return this == o;
+    }
+
+    @Override
+    public int hashCode() {
+        return Mqtt3MessageType.PUBCOMP.ordinal();
     }
 }

@@ -46,4 +46,22 @@ public class MqttPubComp extends MqttMessageWithUserProperties.WithReason.WithCo
     public @NotNull String toString() {
         return "MqttPubComp{" + toAttributeString() + "}";
     }
+
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof MqttPubComp)) {
+            return false;
+        }
+        final MqttPubComp that = (MqttPubComp) o;
+
+        return partialEquals(that);
+    }
+
+    @Override
+    public int hashCode() {
+        return partialHashCode();
+    }
 }
