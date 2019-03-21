@@ -21,9 +21,11 @@ import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.client.internal.mqtt.message.unsubscribe.unsuback.MqttUnsubAck;
 import com.hivemq.client.internal.util.collections.ImmutableList;
+import com.hivemq.client.mqtt.mqtt3.message.Mqtt3MessageType;
 import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.unsuback.Mqtt3UnsubAck;
 import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAckReasonCode;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Silvio Giebl
@@ -42,5 +44,15 @@ public class Mqtt3UnsubAckView implements Mqtt3UnsubAck {
     @Override
     public @NotNull String toString() {
         return "MqttUnsubAck{}";
+    }
+
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        return this == o;
+    }
+
+    @Override
+    public int hashCode() {
+        return Mqtt3MessageType.UNSUBACK.ordinal();
     }
 }

@@ -25,6 +25,7 @@ import com.hivemq.client.internal.util.StringUtil;
 import com.hivemq.client.internal.util.collections.ImmutableList;
 import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Silvio Giebl
@@ -64,5 +65,23 @@ public class MqttUnsubscribe extends MqttMessageWithUserProperties implements Mq
     @Override
     public @NotNull String toString() {
         return "MqttUnsubscribe{" + toAttributeString() + '}';
+    }
+
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof MqttUnsubscribe)) {
+            return false;
+        }
+        final MqttUnsubscribe that = (MqttUnsubscribe) o;
+
+        return partialEquals(that) && topicFilters.equals(that.topicFilters);
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 * partialHashCode() + topicFilters.hashCode();
     }
 }
