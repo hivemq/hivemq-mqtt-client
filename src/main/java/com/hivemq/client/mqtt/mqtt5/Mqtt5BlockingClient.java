@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt.mqtt5;
 
+import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnectBuilder;
 import com.hivemq.client.internal.mqtt.message.disconnect.MqttDisconnect;
@@ -50,6 +51,7 @@ import java.util.concurrent.TimeUnit;
  * @author Silvio Giebl
  * @since 1.0
  */
+@DoNotImplement
 public interface Mqtt5BlockingClient extends Mqtt5Client {
 
     /**

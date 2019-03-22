@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt.mqtt5;
 
+import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.internal.mqtt.MqttRxClientBuilder;
 import com.hivemq.client.mqtt.MqttClient;
 import org.jetbrains.annotations.NotNull;
@@ -27,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Silvio Giebl
  * @since 1.0
  */
+@DoNotImplement
 public interface Mqtt5Client extends MqttClient {
 
     /**
