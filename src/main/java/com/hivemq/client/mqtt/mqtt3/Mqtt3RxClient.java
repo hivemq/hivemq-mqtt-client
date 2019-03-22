@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt.mqtt3;
 
+import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
 import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectViewBuilder;
 import com.hivemq.client.internal.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeViewBuilder;
@@ -44,6 +45,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Silvio Giebl
  * @since 1.0
  */
+@DoNotImplement
 public interface Mqtt3RxClient extends Mqtt3Client {
 
     /**
