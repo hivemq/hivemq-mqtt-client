@@ -20,11 +20,8 @@ package com.hivemq.client.internal.mqtt.handler.websocket;
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
 import com.hivemq.client.internal.mqtt.datatypes.MqttVariableByteInteger;
 import com.hivemq.client.internal.mqtt.handler.MqttChannelInitializer;
-import com.hivemq.client.internal.mqtt.handler.connect.MqttConnAckSingle;
 import com.hivemq.client.internal.mqtt.ioc.ConnectionScope;
-import com.hivemq.client.internal.rx.SingleFlow;
 import com.hivemq.client.mqtt.MqttWebSocketConfig;
-import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -53,7 +50,6 @@ public class MqttWebSocketInitializer extends ChannelInboundHandlerAdapter {
     private static final @NotNull String WEBSOCKET_TLS_URI_SCHEME = "wss";
 
     private final @NotNull MqttClientConfig clientConfig;
-    private final @NotNull SingleFlow<Mqtt5ConnAck> connAckFlow;
 
     private final @NotNull MqttChannelInitializer mqttChannelInitializer;
     private final @NotNull WebSocketBinaryFrameEncoder webSocketBinaryFrameEncoder;
@@ -61,13 +57,11 @@ public class MqttWebSocketInitializer extends ChannelInboundHandlerAdapter {
 
     @Inject
     MqttWebSocketInitializer(
-            final @NotNull MqttClientConfig clientConfig, final @NotNull SingleFlow<Mqtt5ConnAck> connAckFlow,
-            final @NotNull MqttChannelInitializer mqttChannelInitializer,
+            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttChannelInitializer mqttChannelInitializer,
             final @NotNull WebSocketBinaryFrameEncoder webSocketBinaryFrameEncoder,
             final @NotNull WebSocketBinaryFrameDecoder webSocketBinaryFrameDecoder) {
 
         this.clientConfig = clientConfig;
-        this.connAckFlow = connAckFlow;
         this.mqttChannelInitializer = mqttChannelInitializer;
         this.webSocketBinaryFrameEncoder = webSocketBinaryFrameEncoder;
         this.webSocketBinaryFrameDecoder = webSocketBinaryFrameDecoder;
@@ -110,8 +104,7 @@ public class MqttWebSocketInitializer extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(final @NotNull ChannelHandlerContext ctx, final @NotNull Throwable cause) {
-        ctx.close();
-        MqttConnAckSingle.onError(clientConfig, connAckFlow, cause);
+        mqttChannelInitializer.exceptionCaught(ctx, cause);
     }
 
     @Override

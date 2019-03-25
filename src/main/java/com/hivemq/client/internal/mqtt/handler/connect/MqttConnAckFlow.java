@@ -15,8 +15,9 @@
  *
  */
 
-package com.hivemq.client.internal.rx;
+package com.hivemq.client.internal.mqtt.handler.connect;
 
+import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import io.reactivex.SingleObserver;
 import io.reactivex.disposables.Disposable;
 import org.jetbrains.annotations.NotNull;
@@ -24,21 +25,27 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author Silvio Giebl
  */
-public class SingleFlow<T> implements Disposable {
+public class MqttConnAckFlow implements Disposable {
 
-    private final @NotNull SingleObserver<? super T> observer;
+    private final @NotNull SingleObserver<? super Mqtt5ConnAck> observer;
+    private boolean error;
     private volatile boolean disposed;
 
-    public SingleFlow(final @NotNull SingleObserver<? super T> observer) {
+    MqttConnAckFlow(final @NotNull SingleObserver<? super Mqtt5ConnAck> observer) {
         this.observer = observer;
     }
 
-    public void onSuccess(final @NotNull T t) {
+    public void onSuccess(final @NotNull Mqtt5ConnAck t) {
         observer.onSuccess(t);
     }
 
-    public void onError(final @NotNull Throwable t) {
+    public boolean onError(final @NotNull Throwable t) {
+        if (error) {
+            return false;
+        }
+        error = true;
         observer.onError(t);
+        return true;
     }
 
     @Override
@@ -49,9 +56,5 @@ public class SingleFlow<T> implements Disposable {
     @Override
     public boolean isDisposed() {
         return disposed;
-    }
-
-    public boolean isCancelled() {
-        return isDisposed();
     }
 }
