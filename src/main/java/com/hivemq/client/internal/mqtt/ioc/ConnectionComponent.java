@@ -18,9 +18,8 @@
 package com.hivemq.client.internal.mqtt.ioc;
 
 import com.hivemq.client.internal.mqtt.codec.MqttCodecModule;
+import com.hivemq.client.internal.mqtt.handler.connect.MqttConnAckFlow;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
-import com.hivemq.client.internal.rx.SingleFlow;
-import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import dagger.BindsInstance;
 import dagger.Subcomponent;
 import io.netty.bootstrap.Bootstrap;
@@ -44,7 +43,7 @@ public interface ConnectionComponent {
         @NotNull Builder connect(@NotNull MqttConnect connect);
 
         @BindsInstance
-        @NotNull Builder connAckFlow(@NotNull SingleFlow<Mqtt5ConnAck> connAckFlow);
+        @NotNull Builder connAckFlow(@NotNull MqttConnAckFlow connAckFlow);
 
         @NotNull ConnectionComponent build();
     }

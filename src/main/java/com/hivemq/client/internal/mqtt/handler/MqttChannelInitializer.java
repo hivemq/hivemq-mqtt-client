@@ -21,15 +21,14 @@ import com.hivemq.client.internal.mqtt.MqttClientConfig;
 import com.hivemq.client.internal.mqtt.MqttClientSslConfigImpl;
 import com.hivemq.client.internal.mqtt.codec.encoder.MqttEncoder;
 import com.hivemq.client.internal.mqtt.handler.auth.MqttAuthHandler;
+import com.hivemq.client.internal.mqtt.handler.connect.MqttConnAckFlow;
 import com.hivemq.client.internal.mqtt.handler.connect.MqttConnAckSingle;
 import com.hivemq.client.internal.mqtt.handler.connect.MqttConnectHandler;
 import com.hivemq.client.internal.mqtt.handler.disconnect.MqttDisconnectHandler;
 import com.hivemq.client.internal.mqtt.handler.ssl.SslUtil;
 import com.hivemq.client.internal.mqtt.handler.websocket.MqttWebSocketInitializer;
 import com.hivemq.client.internal.mqtt.ioc.ConnectionScope;
-import com.hivemq.client.internal.rx.SingleFlow;
 import com.hivemq.client.mqtt.MqttWebSocketConfig;
-import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import dagger.Lazy;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -55,7 +54,7 @@ import java.net.URISyntaxException;
 public class MqttChannelInitializer extends ChannelInitializer<Channel> {
 
     private final @NotNull MqttClientConfig clientConfig;
-    private final @NotNull SingleFlow<Mqtt5ConnAck> connAckFlow;
+    private final @NotNull MqttConnAckFlow connAckFlow;
 
     private final @NotNull MqttEncoder encoder;
     private final @NotNull MqttConnectHandler connectHandler;
@@ -66,7 +65,7 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
 
     @Inject
     MqttChannelInitializer(
-            final @NotNull MqttClientConfig clientConfig, final @NotNull SingleFlow<Mqtt5ConnAck> connAckFlow,
+            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttConnAckFlow connAckFlow,
             final @NotNull MqttEncoder encoder, final @NotNull MqttConnectHandler connectHandler,
             final @NotNull MqttDisconnectHandler disconnectHandler, final @NotNull MqttAuthHandler authHandler,
             final @NotNull Lazy<MqttWebSocketInitializer> webSocketInitializer) {
@@ -115,7 +114,11 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
 
     @Override
     public void exceptionCaught(final @NotNull ChannelHandlerContext ctx, final @NotNull Throwable cause) {
+        if (ctx.pipeline().get(MqttDisconnectHandler.NAME) != null) {
+            ctx.pipeline().remove(MqttDisconnectHandler.NAME);
+        }
         ctx.close();
         MqttConnAckSingle.onError(clientConfig, connAckFlow, cause);
+        clientConfig.releaseEventLoop();
     }
 }

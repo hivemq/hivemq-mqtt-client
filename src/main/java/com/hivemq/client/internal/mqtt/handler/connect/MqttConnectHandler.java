@@ -35,11 +35,9 @@ import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnectRestrictions;
 import com.hivemq.client.internal.mqtt.message.connect.connack.MqttConnAck;
 import com.hivemq.client.internal.mqtt.message.connect.connack.MqttConnAckRestrictions;
-import com.hivemq.client.internal.rx.SingleFlow;
 import com.hivemq.client.mqtt.MqttClientState;
 import com.hivemq.client.mqtt.MqttVersion;
 import com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5ConnAckException;
-import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -67,7 +65,7 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
     private static final int CONNACK_TIMEOUT = 60; // TODO configurable
 
     private final @NotNull MqttConnect connect;
-    private final @NotNull SingleFlow<Mqtt5ConnAck> connAckFlow;
+    private final @NotNull MqttConnAckFlow connAckFlow;
     private final @NotNull MqttClientConfig clientConfig;
     private final @NotNull MqttSession session;
     private final @NotNull MqttDecoder decoder;
@@ -77,7 +75,7 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
 
     @Inject
     MqttConnectHandler(
-            final @NotNull MqttConnect connect, final @NotNull SingleFlow<Mqtt5ConnAck> connAckFlow,
+            final @NotNull MqttConnect connect, final @NotNull MqttConnAckFlow connAckFlow,
             final @NotNull MqttClientConfig clientConfig, final @NotNull MqttSession session,
             final @NotNull MqttDecoder decoder,
             final @NotNull MqttDisconnectOnConnAckHandler disconnectOnConnAckHandler) {
