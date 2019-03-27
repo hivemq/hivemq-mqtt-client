@@ -94,7 +94,8 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
     }
 
     public void initMqtt(final @NotNull Channel channel) {
-        channel.pipeline().addLast(MqttEncoder.NAME, encoder)
+        channel.pipeline()
+                .addLast(MqttEncoder.NAME, encoder)
                 .addLast(MqttAuthHandler.NAME, authHandler)
                 .addLast(MqttConnectHandler.NAME, connectHandler)
                 .addLast(MqttDisconnectHandler.NAME, disconnectHandler);
