@@ -22,9 +22,10 @@ import com.hivemq.client.internal.mqtt.message.MqttProperty;
 /**
  * @author Silvio Giebl
  */
-public interface MqttSubscribeProperty {
+public final class MqttSubscribeProperty {
 
-    int SUBSCRIPTION_IDENTIFIER = MqttProperty.SUBSCRIPTION_IDENTIFIER;
-    int USER_PROPERTY = MqttProperty.USER_PROPERTY;
+    public static final int SUBSCRIPTION_IDENTIFIER = MqttProperty.SUBSCRIPTION_IDENTIFIER;
+    public static final int USER_PROPERTY = MqttProperty.USER_PROPERTY;
 
+    private MqttSubscribeProperty() {}
 }

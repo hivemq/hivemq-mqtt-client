@@ -26,7 +26,7 @@ import java.util.Optional;
 /**
  * @author Silvio Giebl
  */
-public class ByteBufferUtil {
+public final class ByteBufferUtil {
 
     private static final @NotNull byte[] EMPTY_BYTE_ARRAY = new byte[0];
 

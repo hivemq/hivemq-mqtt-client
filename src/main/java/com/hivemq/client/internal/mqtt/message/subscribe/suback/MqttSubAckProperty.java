@@ -24,9 +24,10 @@ import com.hivemq.client.internal.mqtt.message.MqttProperty;
  *
  * @author Silvio Giebl
  */
-public interface MqttSubAckProperty {
+public final class MqttSubAckProperty {
 
-    int REASON_STRING = MqttProperty.REASON_STRING;
-    int USER_PROPERTY = MqttProperty.USER_PROPERTY;
+    public static final int REASON_STRING = MqttProperty.REASON_STRING;
+    public static final int USER_PROPERTY = MqttProperty.USER_PROPERTY;
 
+    private MqttSubAckProperty() {}
 }

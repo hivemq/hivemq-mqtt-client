@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * @author Silvio Giebl
  */
-public class Checks {
+public final class Checks {
 
     private Checks() {}
 

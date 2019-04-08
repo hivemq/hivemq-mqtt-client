@@ -80,5 +80,4 @@ public class MqttPublishFlowables extends Flowable<Flowable<MqttPublishWithFlow>
     public void cancel() {
         subscriber = null;
     }
-
 }

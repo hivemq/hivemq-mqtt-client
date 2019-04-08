@@ -24,11 +24,12 @@ import com.hivemq.client.internal.mqtt.message.MqttProperty;
  *
  * @author Silvio Giebl
  */
-public interface MqttDisconnectProperty {
+public final class MqttDisconnectProperty {
 
-    int SESSION_EXPIRY_INTERVAL = MqttProperty.SESSION_EXPIRY_INTERVAL;
-    int SERVER_REFERENCE = MqttProperty.SERVER_REFERENCE;
-    int REASON_STRING = MqttProperty.REASON_STRING;
-    int USER_PROPERTY = MqttProperty.USER_PROPERTY;
+    public static final int SESSION_EXPIRY_INTERVAL = MqttProperty.SESSION_EXPIRY_INTERVAL;
+    public static final int SERVER_REFERENCE = MqttProperty.SERVER_REFERENCE;
+    public static final int REASON_STRING = MqttProperty.REASON_STRING;
+    public static final int USER_PROPERTY = MqttProperty.USER_PROPERTY;
 
+    private MqttDisconnectProperty() {}
 }

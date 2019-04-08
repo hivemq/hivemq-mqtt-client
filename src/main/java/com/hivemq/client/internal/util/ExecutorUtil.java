@@ -25,7 +25,7 @@ import java.util.concurrent.RejectedExecutionException;
 /**
  * @author Silvio Giebl
  */
-public class ExecutorUtil {
+public final class ExecutorUtil {
 
     private ExecutorUtil() {}
 

@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author Silvio Giebl
  */
-public class Utf8Util {
+public final class Utf8Util {
 
     private Utf8Util() {}
 

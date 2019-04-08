@@ -54,7 +54,7 @@ import java.util.Collection;
 /**
  * @author Silvio Giebl
  */
-public class MqttChecks {
+public final class MqttChecks {
 
     private MqttChecks() {}
 

@@ -24,14 +24,15 @@ import com.hivemq.client.internal.mqtt.message.MqttProperty;
  *
  * @author Silvio Giebl
  */
-public interface MqttWillPublishProperty {
+public final class MqttWillPublishProperty {
 
-    int PAYLOAD_FORMAT_INDICATOR = MqttProperty.PAYLOAD_FORMAT_INDICATOR;
-    int MESSAGE_EXPIRY_INTERVAL = MqttProperty.MESSAGE_EXPIRY_INTERVAL;
-    int CORRELATION_DATA = MqttProperty.CORRELATION_DATA;
-    int CONTENT_TYPE = MqttProperty.CONTENT_TYPE;
-    int RESPONSE_TOPIC = MqttProperty.RESPONSE_TOPIC;
-    int WILL_DELAY_INTERVAL = MqttProperty.WILL_DELAY_INTERVAL;
-    int USER_PROPERTY = MqttProperty.USER_PROPERTY;
+    public static final int PAYLOAD_FORMAT_INDICATOR = MqttProperty.PAYLOAD_FORMAT_INDICATOR;
+    public static final int MESSAGE_EXPIRY_INTERVAL = MqttProperty.MESSAGE_EXPIRY_INTERVAL;
+    public static final int CORRELATION_DATA = MqttProperty.CORRELATION_DATA;
+    public static final int CONTENT_TYPE = MqttProperty.CONTENT_TYPE;
+    public static final int RESPONSE_TOPIC = MqttProperty.RESPONSE_TOPIC;
+    public static final int WILL_DELAY_INTERVAL = MqttProperty.WILL_DELAY_INTERVAL;
+    public static final int USER_PROPERTY = MqttProperty.USER_PROPERTY;
 
+    private MqttWillPublishProperty() {}
 }
