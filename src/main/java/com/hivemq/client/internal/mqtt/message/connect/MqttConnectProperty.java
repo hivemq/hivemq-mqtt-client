@@ -24,16 +24,17 @@ import com.hivemq.client.internal.mqtt.message.MqttProperty;
  *
  * @author Silvio Giebl
  */
-public interface MqttConnectProperty {
+public final class MqttConnectProperty {
 
-    int SESSION_EXPIRY_INTERVAL = MqttProperty.SESSION_EXPIRY_INTERVAL;
-    int AUTHENTICATION_METHOD = MqttProperty.AUTHENTICATION_METHOD;
-    int AUTHENTICATION_DATA = MqttProperty.AUTHENTICATION_DATA;
-    int REQUEST_PROBLEM_INFORMATION = MqttProperty.REQUEST_PROBLEM_INFORMATION;
-    int REQUEST_RESPONSE_INFORMATION = MqttProperty.REQUEST_RESPONSE_INFORMATION;
-    int RECEIVE_MAXIMUM = MqttProperty.RECEIVE_MAXIMUM;
-    int TOPIC_ALIAS_MAXIMUM = MqttProperty.TOPIC_ALIAS_MAXIMUM;
-    int USER_PROPERTY = MqttProperty.USER_PROPERTY;
-    int MAXIMUM_PACKET_SIZE = MqttProperty.MAXIMUM_PACKET_SIZE;
+    public static final int SESSION_EXPIRY_INTERVAL = MqttProperty.SESSION_EXPIRY_INTERVAL;
+    public static final int AUTHENTICATION_METHOD = MqttProperty.AUTHENTICATION_METHOD;
+    public static final int AUTHENTICATION_DATA = MqttProperty.AUTHENTICATION_DATA;
+    public static final int REQUEST_PROBLEM_INFORMATION = MqttProperty.REQUEST_PROBLEM_INFORMATION;
+    public static final int REQUEST_RESPONSE_INFORMATION = MqttProperty.REQUEST_RESPONSE_INFORMATION;
+    public static final int RECEIVE_MAXIMUM = MqttProperty.RECEIVE_MAXIMUM;
+    public static final int TOPIC_ALIAS_MAXIMUM = MqttProperty.TOPIC_ALIAS_MAXIMUM;
+    public static final int USER_PROPERTY = MqttProperty.USER_PROPERTY;
+    public static final int MAXIMUM_PACKET_SIZE = MqttProperty.MAXIMUM_PACKET_SIZE;
 
+    private MqttConnectProperty() {}
 }

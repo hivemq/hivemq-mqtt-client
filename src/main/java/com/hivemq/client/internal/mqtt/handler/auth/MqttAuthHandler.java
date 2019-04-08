@@ -26,5 +26,4 @@ import org.jetbrains.annotations.NotNull;
 public interface MqttAuthHandler extends ChannelHandler {
 
     @NotNull String NAME = "auth";
-
 }

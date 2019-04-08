@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author Silvio Giebl
  */
-public class ByteArrayUtil {
+public final class ByteArrayUtil {
 
     private ByteArrayUtil() {}
 

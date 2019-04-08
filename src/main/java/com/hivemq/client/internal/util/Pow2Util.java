@@ -20,7 +20,7 @@ package com.hivemq.client.internal.util;
 /**
  * @author Silvio Giebl
  */
-public class Pow2Util {
+public final class Pow2Util {
 
     private Pow2Util() {}
 

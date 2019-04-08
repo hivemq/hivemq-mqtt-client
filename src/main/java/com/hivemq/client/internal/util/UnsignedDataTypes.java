@@ -20,7 +20,7 @@ package com.hivemq.client.internal.util;
 /**
  * @author Silvio Giebl
  */
-public class UnsignedDataTypes {
+public final class UnsignedDataTypes {
 
     private UnsignedDataTypes() {}
 
