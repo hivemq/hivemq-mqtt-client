@@ -25,11 +25,11 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Silvio Giebl
  */
-class Mqtt3MessageDecoderUtil {
-
-    private Mqtt3MessageDecoderUtil() {}
+final class Mqtt3MessageDecoderUtil {
 
     static @NotNull MqttDecoderException wrongReturnCode() {
         return new MqttDecoderException("wrong return code");
     }
+
+    private Mqtt3MessageDecoderUtil() {}
 }

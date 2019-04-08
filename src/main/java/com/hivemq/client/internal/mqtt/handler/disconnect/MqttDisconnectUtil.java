@@ -31,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Silvio Giebl
  */
-public class MqttDisconnectUtil {
+public final class MqttDisconnectUtil {
 
     /**
      * Closes the channel from the client side without sending a DISCONNECT message.
@@ -97,4 +97,6 @@ public class MqttDisconnectUtil {
         channel.config().setAutoRead(false);
         channel.pipeline().fireUserEventTriggered(disconnectEvent);
     }
+
+    private MqttDisconnectUtil() {}
 }

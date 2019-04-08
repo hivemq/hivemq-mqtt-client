@@ -29,12 +29,10 @@ import java.nio.ByteBuffer;
  *
  * @author Silvio Giebl
  */
-public class MqttBinaryData {
+public final class MqttBinaryData {
 
     public static final int MAX_LENGTH = 65_535;
     public static final int EMPTY_LENGTH = 2;
-
-    private MqttBinaryData() {}
 
     /**
      * Decodes binary data from the given byte buffer at the current reader index.
@@ -154,4 +152,6 @@ public class MqttBinaryData {
     public static int encodedLength(final @NotNull ByteBuffer byteBuffer) {
         return 2 + byteBuffer.remaining();
     }
+
+    private MqttBinaryData() {}
 }

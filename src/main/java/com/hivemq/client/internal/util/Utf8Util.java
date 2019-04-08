@@ -24,8 +24,6 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class Utf8Util {
 
-    private Utf8Util() {}
-
     private static final long NON_SHORTEST_FORM = 0b1000_0000L << 56;
     private static final long NO_FOLLOWING_BYTE = 0b1100_0000L << 56;
     private static final long UTF_16_SURROGATES = 0b1110_0000L << 56;
@@ -115,4 +113,6 @@ public final class Utf8Util {
         }
         return utf8Length;
     }
+
+    private Utf8Util() {}
 }

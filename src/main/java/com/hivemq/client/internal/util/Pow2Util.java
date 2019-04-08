@@ -22,9 +22,9 @@ package com.hivemq.client.internal.util;
  */
 public final class Pow2Util {
 
-    private Pow2Util() {}
-
     public static int roundToPowerOf2Bits(final int value) {
         return 32 - Integer.numberOfLeadingZeros(value - 1);
     }
+
+    private Pow2Util() {}
 }
