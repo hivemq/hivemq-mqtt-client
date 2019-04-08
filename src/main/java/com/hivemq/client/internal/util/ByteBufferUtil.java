@@ -30,8 +30,6 @@ public final class ByteBufferUtil {
 
     private static final @NotNull byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
-    private ByteBufferUtil() {}
-
     public static @NotNull ByteBuffer allocate(final int capacity, final boolean direct) {
         return direct ? ByteBuffer.allocateDirect(capacity) : ByteBuffer.allocate(capacity);
     }
@@ -69,4 +67,6 @@ public final class ByteBufferUtil {
         byteBuffer.duplicate().get(binary);
         return binary;
     }
+
+    private ByteBufferUtil() {}
 }

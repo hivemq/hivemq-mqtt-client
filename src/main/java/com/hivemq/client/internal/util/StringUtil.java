@@ -24,9 +24,9 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class StringUtil {
 
-    private StringUtil() {}
-
     public static @NotNull String prepend(final @NotNull String prefix, final @NotNull String s) {
         return (s.isEmpty()) ? "" : prefix + s;
     }
+
+    private StringUtil() {}
 }

@@ -27,8 +27,6 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class Checks {
 
-    private Checks() {}
-
     @Contract("null, _ -> fail")
     public static <T> @NotNull T notNull(final @Nullable T object, final @NotNull String name) {
         if (object == null) {
@@ -177,4 +175,6 @@ public final class Checks {
         }
         return object;
     }
+
+    private Checks() {}
 }

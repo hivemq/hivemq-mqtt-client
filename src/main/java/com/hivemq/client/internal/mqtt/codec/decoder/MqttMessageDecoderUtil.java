@@ -29,9 +29,7 @@ import static com.hivemq.client.internal.mqtt.message.publish.MqttStatefulPublis
  *
  * @author Silvio Giebl
  */
-public class MqttMessageDecoderUtil {
-
-    private MqttMessageDecoderUtil() {}
+public final class MqttMessageDecoderUtil {
 
     public static void checkFixedHeaderFlags(final int expected, final int actual) throws MqttDecoderException {
         if (expected != actual) {
@@ -79,4 +77,6 @@ public class MqttMessageDecoderUtil {
         }
         return in.readUnsignedShort();
     }
+
+    private MqttMessageDecoderUtil() {}
 }

@@ -40,9 +40,7 @@ import static com.hivemq.client.internal.mqtt.message.connect.connack.MqttConnAc
  *
  * @author Silvio Giebl
  */
-class Mqtt5MessageDecoderUtil {
-
-    private Mqtt5MessageDecoderUtil() {}
+final class Mqtt5MessageDecoderUtil {
 
     static @NotNull MqttDecoderException wrongReasonCode() {
         return new MqttDecoderException("wrong reason code");
@@ -264,4 +262,6 @@ class Mqtt5MessageDecoderUtil {
     static long decodeSessionExpiryInterval(final long current, final @NotNull ByteBuf in) throws MqttDecoderException {
         return unsignedIntOnlyOnce(current, SESSION_EXPIRY_INTERVAL_FROM_CONNECT, "session expiry interval", in);
     }
+
+    private Mqtt5MessageDecoderUtil() {}
 }

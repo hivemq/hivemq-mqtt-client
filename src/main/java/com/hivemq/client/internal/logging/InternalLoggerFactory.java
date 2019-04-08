@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author Silvio Giebl
  */
-public class InternalLoggerFactory {
+public final class InternalLoggerFactory {
 
     private static final boolean SLF4J_AVAILABLE;
 
@@ -44,4 +44,6 @@ public class InternalLoggerFactory {
         }
         return new InternalNoopLogger(clazz);
     }
+
+    private InternalLoggerFactory() {}
 }

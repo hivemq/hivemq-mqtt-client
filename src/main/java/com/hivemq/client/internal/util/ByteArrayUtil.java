@@ -24,8 +24,6 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class ByteArrayUtil {
 
-    private ByteArrayUtil() {}
-
     public static boolean equals(
             final @NotNull byte[] array1, final int start1, final int end1, final @NotNull byte[] array2,
             final int start2, final int end2) {
@@ -64,4 +62,6 @@ public final class ByteArrayUtil {
         }
         return -1;
     }
+
+    private ByteArrayUtil() {}
 }

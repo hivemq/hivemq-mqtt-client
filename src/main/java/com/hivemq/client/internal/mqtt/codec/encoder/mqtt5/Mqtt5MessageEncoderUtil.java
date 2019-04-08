@@ -32,9 +32,7 @@ import java.nio.ByteBuffer;
  *
  * @author Silvio Giebl
  */
-class Mqtt5MessageEncoderUtil {
-
-    private Mqtt5MessageEncoderUtil() {}
+final class Mqtt5MessageEncoderUtil {
 
     static int propertyEncodedLength(final @NotNull MqttUtf8StringImpl string) {
         return 1 + string.encodedLength();
@@ -147,4 +145,6 @@ class Mqtt5MessageEncoderUtil {
             encodeVariableByteIntegerProperty(propertyIdentifier, value, out);
         }
     }
+
+    private Mqtt5MessageEncoderUtil() {}
 }

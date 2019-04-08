@@ -29,7 +29,7 @@ import javax.net.ssl.SSLException;
  * @author Christoph Schäbel
  * @author Silvio Giebl
  */
-public class SslUtil {
+public final class SslUtil {
 
     private static final @NotNull String SSL_HANDLER_NAME = "ssl";
 
@@ -76,4 +76,6 @@ public class SslUtil {
 
         return sslContextBuilder.build();
     }
+
+    private SslUtil() {}
 }

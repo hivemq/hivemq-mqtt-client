@@ -30,9 +30,7 @@ import java.util.function.BiConsumer;
 /**
  * @author Silvio Giebl
  */
-public class RxFutureConverter {
-
-    private RxFutureConverter() {}
+public final class RxFutureConverter {
 
     public static @NotNull CompletableFuture<Void> toFuture(final @NotNull Completable completable) {
         return new RxJavaCompletableFuture(completable);
@@ -330,4 +328,6 @@ public class RxFutureConverter {
             }
         }
     }
+
+    private RxFutureConverter() {}
 }
