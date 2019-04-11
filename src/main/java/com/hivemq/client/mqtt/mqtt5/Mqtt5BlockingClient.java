@@ -217,6 +217,7 @@ public interface Mqtt5BlockingClient extends Mqtt5Client {
     /**
      * Resource which queues incoming Publish messages until they are received.
      */
+    @DoNotImplement
     interface Mqtt5Publishes extends AutoCloseable {
 
         /**

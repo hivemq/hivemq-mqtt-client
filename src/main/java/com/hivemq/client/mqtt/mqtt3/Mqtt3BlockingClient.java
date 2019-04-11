@@ -169,6 +169,7 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
     /**
      * Resource which queues incoming Publish messages until they are received.
      */
+    @DoNotImplement
     interface Mqtt3Publishes extends AutoCloseable {
 
         /**
