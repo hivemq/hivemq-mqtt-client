@@ -44,20 +44,15 @@ task japicc {
                 def packageName = f.relativePath.parent.pathString.replace('/', '.').replace('\\', '.')
 
                 def content = f.file.getText("UTF-8")
-                content = content.replaceAll('\n', ' ')
+                content = content.replaceAll('//.*\n', ' ') // remove line comments
+                content = content.replaceAll('\n', ' ') // remove new lines
+                content = content.replaceAll('/\\*.*?\\*/', ' ') // remove multi line comments
+                content = content.replaceAll(' +', ' ') // remove unnecessary spaces
 
                 def index = 0
                 def classNames = []
                 while (true) {
-                    def start
-                    while (true) {
-                        start = content.indexOf(' interface ', index)
-                        if (start == -1) break
-
-                        def comment = content.indexOf('/*', index)
-                        if ((comment == -1) || (comment > start)) break
-                        index = content.indexOf('*/', index + 2) + 2
-                    }
+                    def start = content.indexOf(' interface ', index)
                     if (start == -1) break
 
                     def sub = content.substring(0, start)
@@ -82,7 +77,8 @@ task japicc {
 
                         def rest = interfaceDef.substring(className.length()).trim()
                         if (rest.startsWith('<')) {
-                            rest = rest.replaceAll('extends [^ <,]+', '<>')
+                            rest = rest.replaceAll('extends [^ <,]+', '') // remove all extends ...
+                            rest = rest.replaceAll('@.*? ', '') // remove all annotations
                             def generics = '<'
                             def nesting = 0
                             for (def c : rest.chars) {
