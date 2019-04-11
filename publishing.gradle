@@ -44,11 +44,17 @@ javadoc {
 }
 
 task javadocJar(type: Jar) {
+    group 'publishing'
+    description 'Assembles a jar archive containing the javadoc.'
+
     from javadoc
     classifier 'javadoc'
 }
 
 task sourcesJar(type: Jar) {
+    group 'publishing'
+    description 'Assembles a jar archive containing the main sources.'
+
     from sourceSets.main.allJava
     classifier 'sources'
 }
