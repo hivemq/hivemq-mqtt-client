@@ -17,6 +17,7 @@
 
 package com.hivemq.client.mqtt.mqtt3;
 
+import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
 import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectViewBuilder;
 import com.hivemq.client.internal.mqtt.message.publish.mqtt3.Mqtt3PublishViewBuilder;
@@ -44,6 +45,7 @@ import java.util.concurrent.TimeUnit;
  * @author Silvio Giebl
  * @since 1.0
  */
+@DoNotImplement
 public interface Mqtt3BlockingClient extends Mqtt3Client {
 
     /**
@@ -167,6 +169,7 @@ public interface Mqtt3BlockingClient extends Mqtt3Client {
     /**
      * Resource which queues incoming Publish messages until they are received.
      */
+    @DoNotImplement
     interface Mqtt3Publishes extends AutoCloseable {
 
         /**

@@ -24,11 +24,12 @@ import com.hivemq.client.internal.mqtt.message.MqttProperty;
  *
  * @author Silvio Giebl
  */
-public interface MqttAuthProperty {
+public final class MqttAuthProperty {
 
-    int AUTHENTICATION_METHOD = MqttProperty.AUTHENTICATION_METHOD;
-    int AUTHENTICATION_DATA = MqttProperty.AUTHENTICATION_DATA;
-    int REASON_STRING = MqttProperty.REASON_STRING;
-    int USER_PROPERTY = MqttProperty.USER_PROPERTY;
+    public static final int AUTHENTICATION_METHOD = MqttProperty.AUTHENTICATION_METHOD;
+    public static final int AUTHENTICATION_DATA = MqttProperty.AUTHENTICATION_DATA;
+    public static final int REASON_STRING = MqttProperty.REASON_STRING;
+    public static final int USER_PROPERTY = MqttProperty.USER_PROPERTY;
 
+    private MqttAuthProperty() {}
 }

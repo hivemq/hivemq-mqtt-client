@@ -1,0 +1,204 @@
+task japicc {
+    group 'verification'
+    description 'Checks for binary and source incompatibility.'
+
+    dependsOn jar, shadowJar
+
+    def japiccVersion = '2.4'
+    def workingDir = new File(project.buildDir, 'japicc')
+    def executable = new File(workingDir, 'japi-compliance-checker-' + japiccVersion + '/japi-compliance-checker.pl')
+
+    def lastSemVer = lastSemVer()
+    def shadedName = project.name + '-' + shadedAppendix
+    def lastJar = new File(workingDir, project.name + '-' + lastSemVer + '.jar')
+    def lastShadedJar = new File(workingDir, shadedName + '-' + lastSemVer + '.jar')
+
+    def nonImplFile = new File(workingDir, 'non-impl')
+
+    def reportDir = new File(workingDir, 'compat_reports')
+    def versions = lastSemVer + '_to_' + project.version
+    def report = new File(new File(new File(reportDir, project.name), versions), 'compat_report.html')
+    def shadedReport = new File(new File(new File(reportDir, shadedName), versions), 'compat_report.html')
+
+    inputs.files jar, shadowJar
+    outputs.files files(report, shadedReport)
+
+    doFirst {
+        description 'Check if last semantic version is available'
+        println(description)
+
+        if (project.version == lastSemVer) {
+            throw new StopExecutionException('No last semantic version available')
+        }
+    }
+
+    doLast {
+        description 'List non impl interfaces'
+        println(description)
+
+        nonImplFile.delete()
+        nonImplFile.createNewFile()
+
+        sourceSets.main.java.visit { FileTreeElement f ->
+            if (f.file.isFile()) {
+                def packageName = f.relativePath.parent.pathString.replace('/', '.').replace('\\', '.')
+
+                def content = f.file.getText("UTF-8")
+                content = content.replaceAll('//.*\n', ' ') // remove line comments
+                content = content.replaceAll('\n', ' ') // remove new lines
+                content = content.replaceAll('/\\*.*?\\*/', ' ') // remove multi line comments
+                content = content.replaceAll(' +', ' ') // remove unnecessary spaces
+
+                def index = 0
+                def classNames = []
+                while (true) {
+                    def start = content.indexOf(' interface ', index)
+                    if (start == -1) break
+
+                    def sub = content.substring(0, start)
+                    def level = sub.count('{') - sub.count('}')
+                    while (level < classNames.size()) {
+                        classNames.remove(classNames.size() - 1)
+                    }
+
+                    start += ' interface '.length()
+                    def end = content.indexOf('{', start)
+                    if (end == -1) break
+
+                    def interfaceDef = content.substring(start, end)
+                    def className = interfaceDef.split('[ <{]', 2)[0]
+                    classNames.add(className)
+
+                    def annotationIndex = content.indexOf('@DoNotImplement', index)
+                    if (annotationIndex == -1) break
+
+                    if (annotationIndex < start) {
+                        def qualifiedName = packageName + "." + classNames.join('.')
+
+                        def rest = interfaceDef.substring(className.length()).trim()
+                        if (rest.startsWith('<')) {
+                            rest = rest.replaceAll('extends [^ <,]+', '') // remove all extends ...
+                            rest = rest.replaceAll('@.*? ', '') // remove all annotations
+                            def generics = '<'
+                            def nesting = 0
+                            for (def c : rest.chars) {
+                                if (c == '<') {
+                                    nesting++
+                                } else if (c == '>') {
+                                    nesting--
+                                } else if (nesting == 1) {
+                                    generics += c
+                                } else if (nesting == 0) {
+                                    break
+                                }
+                            }
+                            generics += '>'
+                            generics = generics.replace(' ', '')
+                            qualifiedName += generics
+                        }
+
+                        nonImplFile.append(qualifiedName + '\n')
+                    }
+
+                    index = end + 1
+                }
+            }
+        }
+    }
+
+    doLast {
+        description 'Download Java API Compliance Checker'
+        println(description)
+
+        def archive = new File(workingDir, 'japi-compliance-checker-' + japiccVersion + '.zip')
+        archive.parentFile.mkdirs()
+        if (!archive.exists()) {
+            new URL('https://github.com/lvc/japi-compliance-checker/archive/' + japiccVersion + '.zip')
+                    .withInputStream { i -> archive.withOutputStream { it << i } }
+
+            copy {
+                from zipTree(archive)
+                into workingDir
+            }
+        }
+    }
+
+    doLast {
+        description 'Download last version'
+        println(description)
+
+        lastJar.parentFile.mkdirs()
+        if (!lastJar.exists()) {
+            String path = project.group.replace('.', '/')
+            path += '/' + project.name + '/' + lastSemVer + '/'
+            path += project.name + '-' + lastSemVer + '.jar'
+            new URL('http://central.maven.org/maven2/' + path)
+                    .withInputStream { i -> lastJar.withOutputStream { it << i } }
+        }
+    }
+
+    doLast {
+        description 'Download last shaded version'
+        println(description)
+
+        lastShadedJar.parentFile.mkdirs()
+        if (!lastShadedJar.exists()) {
+            String path = project.group.replace('.', '/')
+            path += '/' + shadedName + '/' + lastSemVer + '/'
+            path += shadedName + '-' + lastSemVer + '.jar'
+            new URL('http://central.maven.org/maven2/' + path)
+                    .withInputStream { i -> lastShadedJar.withOutputStream { it << i } }
+        }
+    }
+
+    doLast {
+        description 'Check binary and source compatibility for last version'
+        println(description)
+
+        def command = ['perl', executable.getPath(), '-lib', project.name,
+                       '-skip-internal-packages', 'com.hivemq.client.internal',
+                       '-non-impl', nonImplFile.getPath(),
+                       '-check-annotations', '-s',
+                       lastJar.getPath(), jar.archivePath.getPath()]
+
+        def process = new ProcessBuilder(command).directory(workingDir).start()
+        def returnCode = process.waitFor()
+        if (returnCode != 0) {
+            throw new GradleException('Binary or source incompatibilities, code ' + returnCode)
+        }
+    }
+
+    doLast {
+        description 'Check binary and source compatibility for last shaded version'
+        println(description)
+
+        def command = ['perl', executable.getPath(), '-lib', shadedName,
+                       '-skip-internal-packages', 'com.hivemq.client.internal',
+                       '-skip-internal-packages', 'com.hivemq.shaded',
+                       '-non-impl', nonImplFile.getPath(),
+                       '-check-annotations', '-s',
+                       lastShadedJar.getPath(), shadowJar.archivePath.getPath()]
+
+        def process = new ProcessBuilder(command).directory(workingDir).start()
+        def returnCode = process.waitFor()
+        if (returnCode != 0) {
+            throw new GradleException('Binary or source incompatibilities in shaded, code ' + returnCode)
+        }
+    }
+}
+
+tasks.check.dependsOn(japicc)
+
+String lastSemVer() {
+    String version = project.version
+    def split = version.split('-')[0].split('\\.')
+    def major = Integer.valueOf(split[0])
+    def minor = Integer.valueOf(split[1])
+    def patch = Integer.valueOf(split[2])
+    if (patch > 0) {
+        patch--
+    } else if (minor > 0) {
+        minor--
+    }
+    return major + '.' + minor + '.' + patch
+}

@@ -20,8 +20,8 @@ package com.hivemq.client.internal.mqtt.handler.connect;
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
 import com.hivemq.client.internal.mqtt.exceptions.MqttClientStateExceptions;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
-import com.hivemq.client.internal.rx.SingleFlow;
 import com.hivemq.client.mqtt.MqttClientState;
+import com.hivemq.client.mqtt.exceptions.ConnectionFailedException;
 import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import io.netty.bootstrap.Bootstrap;
 import io.reactivex.Single;
@@ -49,7 +49,7 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
             return;
         }
 
-        final SingleFlow<Mqtt5ConnAck> flow = new SingleFlow<>(observer);
+        final MqttConnAckFlow flow = new MqttConnAckFlow(observer);
         observer.onSubscribe(flow);
 
         final Bootstrap bootstrap = clientConfig.getClientComponent()
@@ -67,11 +67,11 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
     }
 
     public static void onError(
-            final @NotNull MqttClientConfig clientConfig, final @NotNull SingleFlow<Mqtt5ConnAck> flow,
+            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttConnAckFlow flow,
             final @NotNull Throwable cause) {
 
-        clientConfig.getRawState().set(MqttClientState.DISCONNECTED);
-        flow.onError(cause);
-        clientConfig.releaseEventLoop();
+        if (flow.onError(new ConnectionFailedException(cause))) {
+            clientConfig.getRawState().set(MqttClientState.DISCONNECTED);
+        }
     }
 }

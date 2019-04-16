@@ -24,6 +24,8 @@ import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos2.Mqtt5IncomingQos2I
 import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos2.Mqtt5OutgoingQos2Interceptor;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
 /**
  * @author Silvio Giebl
  */
@@ -64,5 +66,30 @@ public class MqttClientInterceptors implements Mqtt5ClientInterceptors {
     @Override
     public @Nullable Mqtt5OutgoingQos2Interceptor getOutgoingQos2Interceptor() {
         return outgoingQos2Interceptor;
+    }
+
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof MqttClientInterceptors)) {
+            return false;
+        }
+        final MqttClientInterceptors that = (MqttClientInterceptors) o;
+
+        return Objects.equals(incomingQos1Interceptor, that.incomingQos1Interceptor) &&
+                Objects.equals(outgoingQos1Interceptor, that.outgoingQos1Interceptor) &&
+                Objects.equals(incomingQos2Interceptor, that.incomingQos2Interceptor) &&
+                Objects.equals(outgoingQos2Interceptor, that.outgoingQos2Interceptor);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hashCode(incomingQos1Interceptor);
+        result = 31 * result + Objects.hashCode(outgoingQos1Interceptor);
+        result = 31 * result + Objects.hashCode(incomingQos2Interceptor);
+        result = 31 * result + Objects.hashCode(outgoingQos2Interceptor);
+        return result;
     }
 }

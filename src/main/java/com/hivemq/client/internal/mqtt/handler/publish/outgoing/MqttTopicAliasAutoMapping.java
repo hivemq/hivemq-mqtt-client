@@ -153,7 +153,7 @@ public class MqttTopicAliasAutoMapping implements MqttTopicAliasMapping {
         return s.toString();
     }
 
-    public static class Entry {
+    static class Entry {
 
         int topicAlias;
         long used; // number of accesses, decays over time

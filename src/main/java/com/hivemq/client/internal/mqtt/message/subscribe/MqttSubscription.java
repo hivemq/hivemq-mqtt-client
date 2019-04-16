@@ -23,6 +23,7 @@ import com.hivemq.client.mqtt.datatypes.MqttQos;
 import com.hivemq.client.mqtt.mqtt5.message.subscribe.Mqtt5RetainHandling;
 import com.hivemq.client.mqtt.mqtt5.message.subscribe.Mqtt5Subscription;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Silvio Giebl
@@ -72,7 +73,7 @@ public class MqttSubscription implements Mqtt5Subscription {
         return retainAsPublished;
     }
 
-    public @NotNull String toAttributeString() {
+    private @NotNull String toAttributeString() {
         return "topicFilter=" + topicFilter + ", qos=" + qos + ", noLocal=" + noLocal + ", retainHandling=" +
                 retainHandling + ", retainAsPublished=" + retainAsPublished;
     }
@@ -80,5 +81,29 @@ public class MqttSubscription implements Mqtt5Subscription {
     @Override
     public @NotNull String toString() {
         return "MqttSubscription{" + toAttributeString() + '}';
+    }
+
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof MqttSubscription)) {
+            return false;
+        }
+        final MqttSubscription that = (MqttSubscription) o;
+
+        return topicFilter.equals(that.topicFilter) && (qos == that.qos) && (noLocal == that.noLocal) &&
+                (retainHandling == that.retainHandling) && (retainAsPublished == that.retainAsPublished);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = topicFilter.hashCode();
+        result = 31 * result + qos.hashCode();
+        result = 31 * result + Boolean.hashCode(noLocal);
+        result = 31 * result + retainHandling.hashCode();
+        result = 31 * result + Boolean.hashCode(retainAsPublished);
+        return result;
     }
 }

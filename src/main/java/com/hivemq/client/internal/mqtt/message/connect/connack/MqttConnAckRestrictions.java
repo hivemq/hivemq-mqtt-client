@@ -21,6 +21,7 @@ import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
 import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAckRestrictions;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Silvio Giebl
@@ -110,5 +111,36 @@ public class MqttConnAckRestrictions implements Mqtt5ConnAckRestrictions {
     @Override
     public @NotNull String toString() {
         return "MqttConnAckRestrictions{" + toAttributeString() + '}';
+    }
+
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof MqttConnAckRestrictions)) {
+            return false;
+        }
+        final MqttConnAckRestrictions that = (MqttConnAckRestrictions) o;
+
+        return (receiveMaximum == that.receiveMaximum) && (maximumPacketSize == that.maximumPacketSize) &&
+                (topicAliasMaximum == that.topicAliasMaximum) && (maximumQos == that.maximumQos) &&
+                (retainAvailable == that.retainAvailable) &&
+                (wildcardSubscriptionAvailable == that.wildcardSubscriptionAvailable) &&
+                (sharedSubscriptionAvailable == that.sharedSubscriptionAvailable) &&
+                (subscriptionIdentifiersAvailable == that.subscriptionIdentifiersAvailable);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = receiveMaximum;
+        result = 31 * result + maximumPacketSize;
+        result = 31 * result + topicAliasMaximum;
+        result = 31 * result + maximumQos.hashCode();
+        result = 31 * result + Boolean.hashCode(retainAvailable);
+        result = 31 * result + Boolean.hashCode(wildcardSubscriptionAvailable);
+        result = 31 * result + Boolean.hashCode(sharedSubscriptionAvailable);
+        result = 31 * result + Boolean.hashCode(subscriptionIdentifiersAvailable);
+        return result;
     }
 }

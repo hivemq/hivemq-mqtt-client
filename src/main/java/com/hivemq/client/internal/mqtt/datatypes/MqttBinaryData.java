@@ -29,13 +29,10 @@ import java.nio.ByteBuffer;
  *
  * @author Silvio Giebl
  */
-public class MqttBinaryData {
+public final class MqttBinaryData {
 
     public static final int MAX_LENGTH = 65_535;
     public static final int EMPTY_LENGTH = 2;
-
-    private MqttBinaryData() {
-    }
 
     /**
      * Decodes binary data from the given byte buffer at the current reader index.
@@ -43,8 +40,7 @@ public class MqttBinaryData {
      * @param byteBuf the byte buffer to decode from.
      * @return the decoded binary data or null if there are not enough bytes in the byte buffer.
      */
-    @Nullable
-    public static byte[] decode(final @NotNull ByteBuf byteBuf) {
+    public static @Nullable byte[] decode(final @NotNull ByteBuf byteBuf) {
         if (byteBuf.readableBytes() < 2) {
             return null;
         }
@@ -64,8 +60,7 @@ public class MqttBinaryData {
      * @param direct  whether the created byte buffer should be direct.
      * @return the decoded binary data or null if there are not enough bytes in the byte buffer.
      */
-    @Nullable
-    public static ByteBuffer decode(final @NotNull ByteBuf byteBuf, final boolean direct) {
+    public static @Nullable ByteBuffer decode(final @NotNull ByteBuf byteBuf, final boolean direct) {
         if (byteBuf.readableBytes() < 2) {
             return null;
         }
@@ -158,4 +153,5 @@ public class MqttBinaryData {
         return 2 + byteBuffer.remaining();
     }
 
+    private MqttBinaryData() {}
 }

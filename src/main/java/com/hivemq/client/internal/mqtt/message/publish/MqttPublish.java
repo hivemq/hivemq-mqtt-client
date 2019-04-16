@@ -35,6 +35,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.ByteBuffer;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalLong;
 
@@ -94,10 +95,7 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
 
     @Override
     public @NotNull byte[] getPayloadAsBytes() {
-        if (payload == null) {
-            return new byte[0];
-        }
-        return ByteBufferUtil.getBytes(payload);
+        return ByteBufferUtil.copyBytes(payload);
     }
 
     @Override
@@ -196,5 +194,42 @@ public class MqttPublish extends MqttMessageWithUserProperties implements Mqtt5P
     @Override
     public @NotNull String toString() {
         return "MqttPublish{" + toAttributeString() + '}';
+    }
+
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof MqttPublish)) {
+            return false;
+        }
+        final MqttPublish that = (MqttPublish) o;
+
+        return that.canEqual(this) && partialEquals(that) && topic.equals(that.topic) &&
+                Objects.equals(payload, that.payload) && (qos == that.qos) && (retain == that.retain) &&
+                (messageExpiryInterval == that.messageExpiryInterval) &&
+                (payloadFormatIndicator == that.payloadFormatIndicator) &&
+                Objects.equals(contentType, that.contentType) && Objects.equals(responseTopic, that.responseTopic) &&
+                Objects.equals(correlationData, that.correlationData);
+    }
+
+    protected boolean canEqual(final @Nullable Object o) {
+        return o instanceof MqttPublish;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = partialHashCode();
+        result = 31 * result + topic.hashCode();
+        result = 31 * result + Objects.hashCode(payload);
+        result = 31 * result + qos.hashCode();
+        result = 31 * result + Boolean.hashCode(retain);
+        result = 31 * result + Long.hashCode(messageExpiryInterval);
+        result = 31 * result + Objects.hashCode(payloadFormatIndicator);
+        result = 31 * result + Objects.hashCode(contentType);
+        result = 31 * result + Objects.hashCode(responseTopic);
+        result = 31 * result + Objects.hashCode(correlationData);
+        return result;
     }
 }

@@ -25,9 +25,7 @@ import java.util.concurrent.RejectedExecutionException;
 /**
  * @author Silvio Giebl
  */
-public class ExecutorUtil {
-
-    private ExecutorUtil() {}
+public final class ExecutorUtil {
 
     public static boolean execute(final @NotNull Executor executor, final @NotNull Runnable runnable) {
         try {
@@ -37,4 +35,6 @@ public class ExecutorUtil {
             return false;
         }
     }
+
+    private ExecutorUtil() {}
 }

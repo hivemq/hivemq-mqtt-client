@@ -26,6 +26,7 @@ import com.hivemq.client.mqtt.mqtt5.message.Mqtt5ReasonCode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -46,6 +47,14 @@ public abstract class MqttMessageWithUserProperties implements MqttMessage.WithU
 
     protected @NotNull String toAttributeString() {
         return userProperties.asList().isEmpty() ? "" : "userProperties=" + userProperties;
+    }
+
+    protected boolean partialEquals(final @NotNull MqttMessageWithUserProperties that) {
+        return userProperties.equals(that.userProperties);
+    }
+
+    protected int partialHashCode() {
+        return userProperties.hashCode();
     }
 
     /**
@@ -76,6 +85,14 @@ public abstract class MqttMessageWithUserProperties implements MqttMessage.WithU
                     "reasonString=" + reasonString + StringUtil.prepend(", ", super.toAttributeString()));
         }
 
+        protected boolean partialEquals(final @NotNull WithReason that) {
+            return super.partialEquals(that) && Objects.equals(reasonString, that.reasonString);
+        }
+
+        protected int partialHashCode() {
+            return 31 * super.partialHashCode() + Objects.hashCode(reasonString);
+        }
+
         /**
          * Base class for MQTT messages with a Reason Code, an optional Reason String and optional User Properties.
          *
@@ -95,6 +112,14 @@ public abstract class MqttMessageWithUserProperties implements MqttMessage.WithU
 
             public @NotNull R getReasonCode() {
                 return reasonCode;
+            }
+
+            protected boolean partialEquals(final @NotNull WithCode that) {
+                return super.partialEquals(that) && reasonCode.equals(that.reasonCode);
+            }
+
+            protected int partialHashCode() {
+                return 31 * super.partialHashCode() + reasonCode.hashCode();
             }
 
             /**
@@ -163,6 +188,14 @@ public abstract class MqttMessageWithUserProperties implements MqttMessage.WithU
             @Override
             protected @NotNull String toAttributeString() {
                 return "packetIdentifier=" + packetIdentifier + StringUtil.prepend(", ", super.toAttributeString());
+            }
+
+            protected boolean partialEquals(final @NotNull WithCodesAndId<R> that) {
+                return super.partialEquals(that) && reasonCodes.equals(that.reasonCodes);
+            }
+
+            protected int partialHashCode() {
+                return 31 * super.partialHashCode() + reasonCodes.hashCode();
             }
         }
     }

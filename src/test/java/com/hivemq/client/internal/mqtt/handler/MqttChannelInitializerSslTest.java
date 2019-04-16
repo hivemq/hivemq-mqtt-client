@@ -20,13 +20,11 @@ import com.hivemq.client.internal.mqtt.MqttClientConfig;
 import com.hivemq.client.internal.mqtt.MqttClientSslConfigImpl;
 import com.hivemq.client.internal.mqtt.codec.encoder.MqttEncoder;
 import com.hivemq.client.internal.mqtt.handler.auth.MqttAuthHandler;
+import com.hivemq.client.internal.mqtt.handler.connect.MqttConnAckFlow;
 import com.hivemq.client.internal.mqtt.handler.connect.MqttConnectHandler;
 import com.hivemq.client.internal.mqtt.handler.disconnect.MqttDisconnectHandler;
-import com.hivemq.client.internal.mqtt.handler.websocket.WebSocketBinaryFrameDecoder;
-import com.hivemq.client.internal.mqtt.handler.websocket.WebSocketBinaryFrameEncoder;
-import com.hivemq.client.internal.rx.SingleFlow;
+import com.hivemq.client.internal.mqtt.handler.websocket.MqttWebSocketInitializer;
 import com.hivemq.client.mqtt.MqttVersion;
-import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import dagger.Lazy;
 import io.netty.channel.Channel;
 import io.netty.channel.embedded.EmbeddedChannel;
@@ -51,7 +49,7 @@ public class MqttChannelInitializerSslTest {
     @Mock
     private MqttClientConfig clientData;
     @Mock
-    private SingleFlow<Mqtt5ConnAck> connAckFlow;
+    private MqttConnAckFlow connAckFlow;
     @Mock
     private MqttEncoder encoder;
     @Mock
@@ -61,9 +59,7 @@ public class MqttChannelInitializerSslTest {
     @Mock
     private MqttAuthHandler authHandler;
     @Mock
-    private Lazy<WebSocketBinaryFrameEncoder> webSocketBinaryFrameEncoder;
-    @Mock
-    private Lazy<WebSocketBinaryFrameDecoder> webSocketBinaryFrameDecoder;
+    private Lazy<MqttWebSocketInitializer> webSocketInitializer;
 
     private Channel channel;
 
@@ -83,7 +79,7 @@ public class MqttChannelInitializerSslTest {
 
         final MqttChannelInitializer mqttChannelInitializer =
                 new MqttChannelInitializer(clientData, connAckFlow, encoder, connectHandler, disconnectHandler,
-                        authHandler, webSocketBinaryFrameEncoder, webSocketBinaryFrameDecoder);
+                        authHandler, webSocketInitializer);
 
         mqttChannelInitializer.initChannel(channel);
 

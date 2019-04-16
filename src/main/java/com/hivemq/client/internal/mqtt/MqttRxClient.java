@@ -91,7 +91,7 @@ public class MqttRxClient implements Mqtt5RxClient {
             final @Nullable Mqtt5Subscribe subscribe) {
 
         return subscribeStreamUnsafe(subscribe).observeOnBoth(
-                clientConfig.getExecutorConfig().getApplicationScheduler());
+                clientConfig.getExecutorConfig().getApplicationScheduler(), true);
     }
 
     @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeStreamUnsafe(
@@ -104,7 +104,7 @@ public class MqttRxClient implements Mqtt5RxClient {
 
     @Override
     public @NotNull Flowable<Mqtt5Publish> publishes(final @Nullable MqttGlobalPublishFilter filter) {
-        return publishesUnsafe(filter).observeOn(clientConfig.getExecutorConfig().getApplicationScheduler());
+        return publishesUnsafe(filter).observeOn(clientConfig.getExecutorConfig().getApplicationScheduler(), true);
     }
 
     @NotNull Flowable<Mqtt5Publish> publishesUnsafe(final @Nullable MqttGlobalPublishFilter filter) {
@@ -132,7 +132,8 @@ public class MqttRxClient implements Mqtt5RxClient {
     }
 
     @NotNull Flowable<Mqtt5PublishResult> publishHalfSafe(final @NotNull Flowable<Mqtt5Publish> publishFlowable) {
-        return publishUnsafe(publishFlowable).observeOn(clientConfig.getExecutorConfig().getApplicationScheduler());
+        return publishUnsafe(publishFlowable).observeOn(
+                clientConfig.getExecutorConfig().getApplicationScheduler(), true);
     }
 
     @NotNull Flowable<Mqtt5PublishResult> publishUnsafe(final @NotNull Flowable<Mqtt5Publish> publishFlowable) {

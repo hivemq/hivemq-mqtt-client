@@ -54,9 +54,7 @@ import java.util.Collection;
 /**
  * @author Silvio Giebl
  */
-public class MqttChecks {
-
-    private MqttChecks() {}
+public final class MqttChecks {
 
     @Contract("null, _ -> fail")
     public static @NotNull MqttUtf8StringImpl string(
@@ -232,4 +230,6 @@ public class MqttChecks {
     public static @NotNull MqttDisconnect disconnect(final @Nullable Mqtt5Disconnect disconnect) {
         return Checks.notImplemented(disconnect, MqttDisconnect.class, "Disconnect");
     }
+
+    private MqttChecks() {}
 }

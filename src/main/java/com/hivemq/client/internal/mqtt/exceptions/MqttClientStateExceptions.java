@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author Silvio Giebl
  */
-public class MqttClientStateExceptions {
+public final class MqttClientStateExceptions {
 
     public static @NotNull MqttClientStateException notConnected() {
         return new MqttClientStateException("MQTT client is not connected.");
@@ -32,4 +32,6 @@ public class MqttClientStateExceptions {
     public static @NotNull MqttClientStateException alreadyConnected() {
         return new MqttClientStateException("MQTT client is already connected or connecting.");
     }
+
+    private MqttClientStateExceptions() {}
 }

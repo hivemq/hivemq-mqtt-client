@@ -23,31 +23,43 @@ import com.hivemq.client.internal.mqtt.datatypes.MqttUtf8StringImpl;
 import com.hivemq.client.internal.util.collections.ImmutableList;
 import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
 import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAckReasonCode;
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
 import org.jetbrains.annotations.NotNull;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertiesImpl.NO_USER_PROPERTIES;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author David Katz
+ * @author Silvio Giebl
  */
+class MqttUnsubAckTest {
 
-public class MqttUnsubAckTest {
+    @Test
+    void equals() {
+        EqualsVerifier.forClass(MqttUnsubAck.class)
+                .withIgnoredAnnotations(NotNull.class) // EqualsVerifier thinks @NotNull Optional is @NotNull
+                .withNonnullFields("reasonCodes", "userProperties")
+                .withIgnoredFields("packetIdentifier")
+                .suppress(Warning.STRICT_INHERITANCE)
+                .verify();
+    }
 
     private final @NotNull MqttUtf8StringImpl reasonString = MqttUtf8StringImpl.of("reasonString");
     private final @NotNull ImmutableList<Mqtt5UnsubAckReasonCode> reasonCodes =
             ImmutableList.of(Mqtt5UnsubAckReasonCode.SUCCESS);
 
     @Test
-    public void constructor_reasonCodesEmpty_throwsException() {
+    void constructor_reasonCodesEmpty_throwsException() {
         final ImmutableList<Mqtt5UnsubAckReasonCode> emptyReasonCodes = ImmutableList.of();
         final Mqtt5UnsubAck mqtt5UnsubAck = new MqttUnsubAck(1, emptyReasonCodes, reasonString, NO_USER_PROPERTIES);
         assertEquals(emptyReasonCodes, mqtt5UnsubAck.getReasonCodes());
     }
 
     @Test
-    public void constructor_reasonCodesSingle() {
+    void constructor_reasonCodesSingle() {
         final ImmutableList<Mqtt5UnsubAckReasonCode> singleReasonCodes =
                 ImmutableList.of(Mqtt5UnsubAckReasonCode.IMPLEMENTATION_SPECIFIC_ERROR);
         final Mqtt5UnsubAck mqtt5UnsubAck = new MqttUnsubAck(1, singleReasonCodes, reasonString, NO_USER_PROPERTIES);
@@ -55,7 +67,7 @@ public class MqttUnsubAckTest {
     }
 
     @Test
-    public void constructor_reasonCodesMultiple() {
+    void constructor_reasonCodesMultiple() {
         final ImmutableList<Mqtt5UnsubAckReasonCode> multipleReasonCodes =
                 ImmutableList.of(Mqtt5UnsubAckReasonCode.NO_SUBSCRIPTIONS_EXISTED,
                         Mqtt5UnsubAckReasonCode.NOT_AUTHORIZED);
@@ -64,27 +76,27 @@ public class MqttUnsubAckTest {
     }
 
     @Test
-    public void constructor_reasonStringNull() {
+    void constructor_reasonStringNull() {
         final Mqtt5UnsubAck mqtt5UnsubAck = new MqttUnsubAck(1, reasonCodes, null, NO_USER_PROPERTIES);
         assertFalse(mqtt5UnsubAck.getReasonString().isPresent());
     }
 
     @Test
-    public void constructor_reasonString() {
+    void constructor_reasonString() {
         final Mqtt5UnsubAck mqtt5UnsubAck = new MqttUnsubAck(1, reasonCodes, reasonString, NO_USER_PROPERTIES);
         assertTrue(mqtt5UnsubAck.getReasonString().isPresent());
         assertEquals(reasonString, mqtt5UnsubAck.getReasonString().get());
     }
 
     @Test
-    public void constructor_userPropertiesEmpty() {
+    void constructor_userPropertiesEmpty() {
         final MqttUserPropertiesImpl emptyUserProperties = NO_USER_PROPERTIES;
         final Mqtt5UnsubAck mqtt5UnsubAck = new MqttUnsubAck(1, reasonCodes, reasonString, emptyUserProperties);
         assertEquals(emptyUserProperties, mqtt5UnsubAck.getUserProperties());
     }
 
     @Test
-    public void constructor_userPropertiesMultiple() {
+    void constructor_userPropertiesMultiple() {
         final MqttUtf8StringImpl name1 = MqttUtf8StringImpl.of("name1");
         final MqttUtf8StringImpl name2 = MqttUtf8StringImpl.of("name2");
         final MqttUtf8StringImpl name3 = MqttUtf8StringImpl.of("name3");

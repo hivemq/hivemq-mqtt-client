@@ -21,7 +21,6 @@ import com.hivemq.client.internal.mqtt.codec.decoder.MqttMessageDecoders;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertyImpl;
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublish;
 import com.hivemq.client.internal.mqtt.message.publish.MqttStatefulPublish;
-import com.hivemq.client.internal.util.ByteBufferUtil;
 import com.hivemq.client.internal.util.collections.ImmutableIntList;
 import com.hivemq.client.internal.util.collections.ImmutableList;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
@@ -383,7 +382,7 @@ class Mqtt5PublishDecoderTest extends AbstractMqtt5DecoderTest {
         assertTrue(publish.getPayloadFormatIndicator().isPresent());
         assertEquals(Mqtt5PayloadFormatIndicator.UTF_8, publish.getPayloadFormatIndicator().get());
         assertTrue(publish.getPayload().isPresent());
-        assertEquals("你 好", new String(ByteBufferUtil.getBytes(publish.getPayload().get()), StandardCharsets.UTF_8));
+        assertEquals("你 好", new String(publish.getPayloadAsBytes(), StandardCharsets.UTF_8));
     }
 
     @Test

@@ -25,6 +25,7 @@ import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 
@@ -60,6 +61,30 @@ public class MqttPublishResult implements Mqtt5PublishResult {
     }
 
     @Override
+    public boolean equals(final @Nullable Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof MqttPublishResult)) {
+            return false;
+        }
+        final MqttPublishResult that = (MqttPublishResult) o;
+
+        return that.canEqual(this) && publish.equals(that.publish) && Objects.equals(error, that.error);
+    }
+
+    protected boolean canEqual(final @Nullable Object o) {
+        return o instanceof MqttPublishResult;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = publish.hashCode();
+        result = 31 * result + Objects.hashCode(error);
+        return result;
+    }
+
+    @Override
     public @NotNull String toString() {
         return "MqttPublishResult{" + toAttributeString() + '}';
     }
@@ -89,6 +114,31 @@ public class MqttPublishResult implements Mqtt5PublishResult {
         public @NotNull String toString() {
             return "MqttQos1Result{" + toAttributeString() + '}';
         }
+
+        @Override
+        public boolean equals(final @Nullable Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof MqttQos1Result) || !super.equals(o)) {
+                return false;
+            }
+            final MqttQos1Result that = (MqttQos1Result) o;
+
+            return pubAck.equals(that.pubAck);
+        }
+
+        @Override
+        protected boolean canEqual(final @Nullable Object o) {
+            return o instanceof MqttQos1Result;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = super.hashCode();
+            result = 31 * result + pubAck.hashCode();
+            return result;
+        }
     }
 
     public static class MqttQos2Result extends MqttPublishResult implements Mqtt5Qos2Result {
@@ -115,6 +165,31 @@ public class MqttPublishResult implements Mqtt5PublishResult {
         @Override
         public @NotNull String toString() {
             return "MqttQos2PublishResult{" + toAttributeString() + '}';
+        }
+
+        @Override
+        public boolean equals(final @Nullable Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof MqttQos2Result) || !super.equals(o)) {
+                return false;
+            }
+            final MqttQos2Result that = (MqttQos2Result) o;
+
+            return pubRec.equals(that.pubRec);
+        }
+
+        @Override
+        protected boolean canEqual(final @Nullable Object o) {
+            return o instanceof MqttQos2Result;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = super.hashCode();
+            result = 31 * result + pubRec.hashCode();
+            return result;
         }
     }
 
@@ -168,6 +243,32 @@ public class MqttPublishResult implements Mqtt5PublishResult {
         @Override
         public @NotNull String toString() {
             return "MqttQos2CompleteResult{" + toAttributeString() + '}';
+        }
+
+        @Override
+        public boolean equals(final @Nullable Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof MqttQos2CompleteResult) || !super.equals(o)) {
+                return false;
+            }
+            final MqttQos2CompleteResult that = (MqttQos2CompleteResult) o;
+
+            return pubRel.equals(that.pubRel) && pubComp.equals(that.pubComp);
+        }
+
+        @Override
+        protected boolean canEqual(final @Nullable Object o) {
+            return o instanceof MqttQos2CompleteResult;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = super.hashCode();
+            result = 31 * result + pubRel.hashCode();
+            result = 31 * result + pubComp.hashCode();
+            return result;
         }
     }
 }

@@ -33,9 +33,7 @@ import java.nio.ByteBuffer;
  *
  * @author Silvio Giebl
  */
-public class MqttMessageEncoderUtil {
-
-    private MqttMessageEncoderUtil() {}
+public final class MqttMessageEncoderUtil {
 
     /**
      * Calculates the encoded length of a MQTT message with the given remaining length.
@@ -96,4 +94,6 @@ public class MqttMessageEncoderUtil {
                 message.getType() + " exceeded maximum packet size, minimal possible encoded length: " + encodedLength +
                         ", maximum: " + maxPacketSize + ".");
     }
+
+    private MqttMessageEncoderUtil() {}
 }

@@ -26,9 +26,9 @@ import java.util.Optional;
 /**
  * @author Silvio Giebl
  */
-public class ByteBufferUtil {
+public final class ByteBufferUtil {
 
-    private ByteBufferUtil() {}
+    private static final @NotNull byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
     public static @NotNull ByteBuffer allocate(final int capacity, final boolean direct) {
         return direct ? ByteBuffer.allocateDirect(capacity) : ByteBuffer.allocate(capacity);
@@ -46,14 +46,27 @@ public class ByteBufferUtil {
         if (byteBuffer == null) {
             return Optional.empty();
         }
-        final ByteBuffer readOnlyBuffer = byteBuffer.asReadOnlyBuffer();
-        readOnlyBuffer.clear();
-        return Optional.of(readOnlyBuffer);
+        return Optional.of(byteBuffer.asReadOnlyBuffer());
     }
 
     public static @NotNull byte[] getBytes(final @NotNull ByteBuffer byteBuffer) {
+        if (byteBuffer.hasArray()) {
+            final byte[] array = byteBuffer.array();
+            if ((byteBuffer.arrayOffset() == 0) && (array.length == byteBuffer.remaining())) {
+                return array;
+            }
+        }
+        return copyBytes(byteBuffer);
+    }
+
+    public static @NotNull byte[] copyBytes(final @Nullable ByteBuffer byteBuffer) {
+        if (byteBuffer == null) {
+            return EMPTY_BYTE_ARRAY;
+        }
         final byte[] binary = new byte[byteBuffer.remaining()];
-        byteBuffer.get(binary).position(0);
+        byteBuffer.duplicate().get(binary);
         return binary;
     }
+
+    private ByteBufferUtil() {}
 }

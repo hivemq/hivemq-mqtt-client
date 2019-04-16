@@ -19,18 +19,26 @@ package com.hivemq.client.internal.mqtt.message.publish.mqtt3;
 
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublish;
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublishBuilder;
-import org.junit.Test;
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 /**
  * @author Christian Hoff
+ * @author Silvio Giebl
  */
-public class Mqtt3PublishViewTest {
+class Mqtt3PublishViewTest {
 
     @Test
-    public void getPayloadAsBytes_delegates() {
+    void equals() {
+        EqualsVerifier.forClass(Mqtt3PublishView.class).suppress(Warning.STRICT_INHERITANCE).verify();
+    }
+
+    @Test
+    void getPayloadAsBytes_delegates() {
         final byte[] payload = {1, 2, 3, 4, 5};
         final MqttPublish spyPublish = spy(new MqttPublishBuilder.Default().topic("topic").payload(payload).build());
         final Mqtt3PublishView publishView = Mqtt3PublishView.of(spyPublish);
@@ -39,7 +47,7 @@ public class Mqtt3PublishViewTest {
     }
 
     @Test
-    public void getPayloadAsBytes_null_delegates() {
+    void getPayloadAsBytes_null_delegates() {
         final MqttPublish spyPublish =
                 spy(new MqttPublishBuilder.Default().topic("topic").payload((byte[]) null).build());
         final Mqtt3PublishView publishView = Mqtt3PublishView.of(spyPublish);

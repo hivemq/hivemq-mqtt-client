@@ -18,8 +18,10 @@
 package com.hivemq.client.internal.mqtt.message.ping.mqtt3;
 
 import com.hivemq.client.annotations.Immutable;
+import com.hivemq.client.mqtt.mqtt3.message.Mqtt3MessageType;
 import com.hivemq.client.mqtt.mqtt3.message.ping.Mqtt3PingReq;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Silvio Giebl
@@ -34,5 +36,15 @@ public class Mqtt3PingReqView implements Mqtt3PingReq {
     @Override
     public @NotNull String toString() {
         return "MqttPingReq{}";
+    }
+
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        return this == o;
+    }
+
+    @Override
+    public int hashCode() {
+        return Mqtt3MessageType.PINGREQ.ordinal();
     }
 }

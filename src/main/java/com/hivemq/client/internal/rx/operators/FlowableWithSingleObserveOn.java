@@ -29,27 +29,27 @@ import org.reactivestreams.Subscriber;
 public class FlowableWithSingleObserveOn<F, S> extends FlowableWithSingleOperator<F, S, F, S> {
 
     private final @NotNull Scheduler scheduler;
-    private final boolean delayErrors;
+    private final boolean delayError;
     private final int bufferSize;
 
     public FlowableWithSingleObserveOn(
             final @NotNull FlowableWithSingle<F, S> source, final @NotNull Scheduler scheduler,
-            final boolean delayErrors, final int bufferSize) {
+            final boolean delayError, final int bufferSize) {
 
         super(source);
         this.scheduler = scheduler;
-        this.delayErrors = delayErrors;
+        this.delayError = delayError;
         this.bufferSize = bufferSize;
     }
 
     @Override
     protected void subscribeActual(final @NotNull Subscriber<? super F> subscriber) {
-        source.observeOn(scheduler, delayErrors, bufferSize).subscribe(subscriber);
+        source.observeOn(scheduler, delayError, bufferSize).subscribe(subscriber);
     }
 
     @Override
     protected void subscribeBothActual(final @NotNull WithSingleSubscriber<? super F, ? super S> subscriber) {
         FlowableWithSingleCombine.split(
-                new FlowableWithSingleCombine<>(source).observeOn(scheduler, delayErrors, bufferSize), subscriber);
+                new FlowableWithSingleCombine<>(source).observeOn(scheduler, delayError, bufferSize), subscriber);
     }
 }

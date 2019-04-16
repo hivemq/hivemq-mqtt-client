@@ -24,24 +24,25 @@ import com.hivemq.client.internal.mqtt.message.MqttProperty;
  *
  * @author Silvio Giebl
  */
-public interface MqttConnAckProperty {
+public final class MqttConnAckProperty {
 
-    int SESSION_EXPIRY_INTERVAL = MqttProperty.SESSION_EXPIRY_INTERVAL;
-    int ASSIGNED_CLIENT_IDENTIFIER = MqttProperty.ASSIGNED_CLIENT_IDENTIFIER;
-    int SERVER_KEEP_ALIVE = MqttProperty.SERVER_KEEP_ALIVE;
-    int AUTHENTICATION_METHOD = MqttProperty.AUTHENTICATION_METHOD;
-    int AUTHENTICATION_DATA = MqttProperty.AUTHENTICATION_DATA;
-    int RESPONSE_INFORMATION = MqttProperty.RESPONSE_INFORMATION;
-    int SERVER_REFERENCE = MqttProperty.SERVER_REFERENCE;
-    int REASON_STRING = MqttProperty.REASON_STRING;
-    int RECEIVE_MAXIMUM = MqttProperty.RECEIVE_MAXIMUM;
-    int TOPIC_ALIAS_MAXIMUM = MqttProperty.TOPIC_ALIAS_MAXIMUM;
-    int MAXIMUM_QOS = MqttProperty.MAXIMUM_QOS;
-    int RETAIN_AVAILABLE = MqttProperty.RETAIN_AVAILABLE;
-    int USER_PROPERTY = MqttProperty.USER_PROPERTY;
-    int MAXIMUM_PACKET_SIZE = MqttProperty.MAXIMUM_PACKET_SIZE;
-    int WILDCARD_SUBSCRIPTION_AVAILABLE = MqttProperty.WILDCARD_SUBSCRIPTION_AVAILABLE;
-    int SUBSCRIPTION_IDENTIFIERS_AVAILABLE = MqttProperty.SUBSCRIPTION_IDENTIFIERS_AVAILABLE;
-    int SHARED_SUBSCRIPTION_AVAILABLE = MqttProperty.SHARED_SUBSCRIPTION_AVAILABLE;
+    public static final int SESSION_EXPIRY_INTERVAL = MqttProperty.SESSION_EXPIRY_INTERVAL;
+    public static final int ASSIGNED_CLIENT_IDENTIFIER = MqttProperty.ASSIGNED_CLIENT_IDENTIFIER;
+    public static final int SERVER_KEEP_ALIVE = MqttProperty.SERVER_KEEP_ALIVE;
+    public static final int AUTHENTICATION_METHOD = MqttProperty.AUTHENTICATION_METHOD;
+    public static final int AUTHENTICATION_DATA = MqttProperty.AUTHENTICATION_DATA;
+    public static final int RESPONSE_INFORMATION = MqttProperty.RESPONSE_INFORMATION;
+    public static final int SERVER_REFERENCE = MqttProperty.SERVER_REFERENCE;
+    public static final int REASON_STRING = MqttProperty.REASON_STRING;
+    public static final int RECEIVE_MAXIMUM = MqttProperty.RECEIVE_MAXIMUM;
+    public static final int TOPIC_ALIAS_MAXIMUM = MqttProperty.TOPIC_ALIAS_MAXIMUM;
+    public static final int MAXIMUM_QOS = MqttProperty.MAXIMUM_QOS;
+    public static final int RETAIN_AVAILABLE = MqttProperty.RETAIN_AVAILABLE;
+    public static final int USER_PROPERTY = MqttProperty.USER_PROPERTY;
+    public static final int MAXIMUM_PACKET_SIZE = MqttProperty.MAXIMUM_PACKET_SIZE;
+    public static final int WILDCARD_SUBSCRIPTION_AVAILABLE = MqttProperty.WILDCARD_SUBSCRIPTION_AVAILABLE;
+    public static final int SUBSCRIPTION_IDENTIFIERS_AVAILABLE = MqttProperty.SUBSCRIPTION_IDENTIFIERS_AVAILABLE;
+    public static final int SHARED_SUBSCRIPTION_AVAILABLE = MqttProperty.SHARED_SUBSCRIPTION_AVAILABLE;
 
+    private MqttConnAckProperty() {}
 }

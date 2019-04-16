@@ -51,4 +51,22 @@ public class MqttUnsubAck extends MqttMessageWithUserProperties.WithReason.WithC
     public @NotNull String toString() {
         return "MqttUnsubAck{" + toAttributeString() + "}";
     }
+
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof MqttUnsubAck)) {
+            return false;
+        }
+        final MqttUnsubAck that = (MqttUnsubAck) o;
+
+        return partialEquals(that);
+    }
+
+    @Override
+    public int hashCode() {
+        return partialHashCode();
+    }
 }

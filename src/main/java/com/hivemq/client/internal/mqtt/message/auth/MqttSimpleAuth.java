@@ -26,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.ByteBuffer;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -68,5 +69,25 @@ public class MqttSimpleAuth implements Mqtt5SimpleAuth {
     @Override
     public @NotNull String toString() {
         return "MqttSimpleAuth{" + toAttributeString() + '}';
+    }
+
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof MqttSimpleAuth)) {
+            return false;
+        }
+        final MqttSimpleAuth that = (MqttSimpleAuth) o;
+
+        return Objects.equals(username, that.username) && Objects.equals(password, that.password);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hashCode(username);
+        result = 31 * result + Objects.hashCode(password);
+        return result;
     }
 }

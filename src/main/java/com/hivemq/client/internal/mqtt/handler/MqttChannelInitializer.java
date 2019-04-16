@@ -20,26 +20,19 @@ package com.hivemq.client.internal.mqtt.handler;
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
 import com.hivemq.client.internal.mqtt.MqttClientSslConfigImpl;
 import com.hivemq.client.internal.mqtt.codec.encoder.MqttEncoder;
-import com.hivemq.client.internal.mqtt.datatypes.MqttVariableByteInteger;
 import com.hivemq.client.internal.mqtt.handler.auth.MqttAuthHandler;
+import com.hivemq.client.internal.mqtt.handler.connect.MqttConnAckFlow;
 import com.hivemq.client.internal.mqtt.handler.connect.MqttConnAckSingle;
 import com.hivemq.client.internal.mqtt.handler.connect.MqttConnectHandler;
 import com.hivemq.client.internal.mqtt.handler.disconnect.MqttDisconnectHandler;
 import com.hivemq.client.internal.mqtt.handler.ssl.SslUtil;
-import com.hivemq.client.internal.mqtt.handler.websocket.MqttWebSocketClientProtocolHandler;
-import com.hivemq.client.internal.mqtt.handler.websocket.WebSocketBinaryFrameDecoder;
-import com.hivemq.client.internal.mqtt.handler.websocket.WebSocketBinaryFrameEncoder;
+import com.hivemq.client.internal.mqtt.handler.websocket.MqttWebSocketInitializer;
 import com.hivemq.client.internal.mqtt.ioc.ConnectionScope;
-import com.hivemq.client.internal.rx.SingleFlow;
 import com.hivemq.client.mqtt.MqttWebSocketConfig;
-import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import dagger.Lazy;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelPipeline;
-import io.netty.handler.codec.http.HttpClientCodec;
-import io.netty.handler.codec.http.HttpObjectAggregator;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
@@ -60,27 +53,22 @@ import java.net.URISyntaxException;
 @ConnectionScope
 public class MqttChannelInitializer extends ChannelInitializer<Channel> {
 
-    private static final @NotNull String HTTP_CODEC_NAME = "http.codec";
-    private static final @NotNull String HTTP_AGGREGATOR_NAME = "http.aggregator";
-
     private final @NotNull MqttClientConfig clientConfig;
-    private final @NotNull SingleFlow<Mqtt5ConnAck> connAckFlow;
+    private final @NotNull MqttConnAckFlow connAckFlow;
 
     private final @NotNull MqttEncoder encoder;
     private final @NotNull MqttConnectHandler connectHandler;
     private final @NotNull MqttDisconnectHandler disconnectHandler;
     private final @NotNull MqttAuthHandler authHandler;
 
-    private final @NotNull Lazy<WebSocketBinaryFrameEncoder> webSocketBinaryFrameEncoder;
-    private final @NotNull Lazy<WebSocketBinaryFrameDecoder> webSocketBinaryFrameDecoder;
+    private final @NotNull Lazy<MqttWebSocketInitializer> webSocketInitializer;
 
     @Inject
     MqttChannelInitializer(
-            final @NotNull MqttClientConfig clientConfig, final @NotNull SingleFlow<Mqtt5ConnAck> connAckFlow,
+            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttConnAckFlow connAckFlow,
             final @NotNull MqttEncoder encoder, final @NotNull MqttConnectHandler connectHandler,
             final @NotNull MqttDisconnectHandler disconnectHandler, final @NotNull MqttAuthHandler authHandler,
-            final @NotNull Lazy<WebSocketBinaryFrameEncoder> webSocketBinaryFrameEncoder,
-            final @NotNull Lazy<WebSocketBinaryFrameDecoder> webSocketBinaryFrameDecoder) {
+            final @NotNull Lazy<MqttWebSocketInitializer> webSocketInitializer) {
 
         this.clientConfig = clientConfig;
         this.connAckFlow = connAckFlow;
@@ -88,8 +76,7 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
         this.connectHandler = connectHandler;
         this.disconnectHandler = disconnectHandler;
         this.authHandler = authHandler;
-        this.webSocketBinaryFrameEncoder = webSocketBinaryFrameEncoder;
-        this.webSocketBinaryFrameDecoder = webSocketBinaryFrameDecoder;
+        this.webSocketInitializer = webSocketInitializer;
     }
 
     @Override
@@ -100,43 +87,39 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
         }
         final MqttWebSocketConfig webSocketConfig = clientConfig.getRawWebSocketConfig();
         if (webSocketConfig != null) {
-            initMqttOverWebSocket(channel.pipeline(), webSocketConfig);
+            initWebSocketMqtt(channel, webSocketConfig);
         } else {
-            initMqttHandlers(channel.pipeline());
+            initMqtt(channel);
         }
     }
 
-    public void initMqttHandlers(final @NotNull ChannelPipeline pipeline) {
-        pipeline.addLast(MqttEncoder.NAME, encoder)
+    public void initMqtt(final @NotNull Channel channel) {
+        channel.pipeline()
+                .addLast(MqttEncoder.NAME, encoder)
                 .addLast(MqttAuthHandler.NAME, authHandler)
                 .addLast(MqttConnectHandler.NAME, connectHandler)
                 .addLast(MqttDisconnectHandler.NAME, disconnectHandler);
     }
 
-    private void initMqttOverWebSocket(
-            final @NotNull ChannelPipeline pipeline, final @NotNull MqttWebSocketConfig webSocketConfig)
+    private void initWebSocketMqtt(final @NotNull Channel channel, final @NotNull MqttWebSocketConfig webSocketConfig)
             throws URISyntaxException {
 
-        final MqttWebSocketClientProtocolHandler mqttWebSocketClientProtocolHandler =
-                new MqttWebSocketClientProtocolHandler(clientConfig, webSocketConfig, this);
-
-        pipeline.addLast(HTTP_CODEC_NAME, new HttpClientCodec())
-                .addLast(HTTP_AGGREGATOR_NAME,
-                        new HttpObjectAggregator(MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT))
-                .addLast(MqttWebSocketClientProtocolHandler.NAME, mqttWebSocketClientProtocolHandler)
-                .addLast(WebSocketBinaryFrameEncoder.NAME, webSocketBinaryFrameEncoder.get())
-                .addLast(WebSocketBinaryFrameDecoder.NAME, webSocketBinaryFrameDecoder.get());
+        webSocketInitializer.get().initChannel(channel, webSocketConfig);
     }
 
     private void initSsl(final @NotNull Channel channel, final @NotNull MqttClientSslConfigImpl sslConfig)
             throws SSLException {
 
-        channel.pipeline().addFirst(SslUtil.createSslHandler(channel, sslConfig));
+        SslUtil.initChannel(channel, sslConfig);
     }
 
     @Override
     public void exceptionCaught(final @NotNull ChannelHandlerContext ctx, final @NotNull Throwable cause) {
+        if (ctx.pipeline().get(MqttDisconnectHandler.NAME) != null) {
+            ctx.pipeline().remove(MqttDisconnectHandler.NAME);
+        }
         ctx.close();
         MqttConnAckSingle.onError(clientConfig, connAckFlow, cause);
+        clientConfig.releaseEventLoop();
     }
 }

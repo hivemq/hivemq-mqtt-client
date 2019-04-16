@@ -46,6 +46,7 @@ import java.util.function.Consumer;
  * @author Silvio Giebl
  * @since 1.0
  */
+@DoNotImplement
 public interface Mqtt3AsyncClient extends Mqtt3Client {
 
     /**

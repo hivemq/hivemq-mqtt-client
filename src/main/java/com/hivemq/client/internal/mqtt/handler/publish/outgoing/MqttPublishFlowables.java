@@ -41,8 +41,7 @@ public class MqttPublishFlowables extends Flowable<Flowable<MqttPublishWithFlow>
     private long requested;
 
     @Inject
-    MqttPublishFlowables() {
-    }
+    MqttPublishFlowables() {}
 
     @Override
     protected void subscribeActual(final @NotNull Subscriber<? super Flowable<MqttPublishWithFlow>> s) {
@@ -81,5 +80,4 @@ public class MqttPublishFlowables extends Flowable<Flowable<MqttPublishWithFlow>
     public void cancel() {
         subscriber = null;
     }
-
 }

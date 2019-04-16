@@ -1,6 +1,9 @@
 # HiveMQ MQTT Client
 
+<img src="https://www.hivemq.com/img/svg/hivemq-mqtt-client.svg" width="500">
+
 [![Build Status](https://travis-ci.org/hivemq/hivemq-mqtt-client.svg?branch=develop)](https://travis-ci.org/hivemq/hivemq-mqtt-client)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.hivemq/hivemq-mqtt-client/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.hivemq/hivemq-mqtt-client)
 
 MQTT 5.0 and 3.1.1 compatible and feature-rich high-performance Java client library with different API flavours and 
 backpressure support.
@@ -39,8 +42,6 @@ A detailed documentation can be found [here](https://hivemq.github.io/hivemq-mqt
 Java 8 or higher is required.
 
 ## Dependency
-
-IMPORTANT: The library is not released to Maven Central yet, so only the snapshot versions are working for now.
 
 ### Gradle
 
@@ -111,6 +112,8 @@ dependencies {
 
 Every time a PR is merged into the `develop` branch, a new snapshot is published.
 A snapshot can be included as a normal dependency if the snapshot repository is added to the build file.
+
+IMPORTANT: The snapshot versions are not available for now.
 
 #### Gradle
 
@@ -577,29 +580,13 @@ API but return `Completable`.
 
 `reauth()` method call is analog to the Async and Blocking API but return `Completable`.
 
-# How to contribute
+# Versioning
 
-## Branching model
+[Semantic Versioning](https://semver.org/) is used.
 
- - `master`: release branch
- - `develop`: snapshot branch, branch where features for the next release are merged into
- - Every feature or bugfix will have its own branch, branched from develop, merged back into develop after the code 
-review of the pull request
+All code inside `com.hivemq.client.internal` packages must not be used directly. It can change at any time and is not
+part of the public API.
 
-## Branching guidelines
+# Contributing
 
- - Branch types: feature, bugfix, improvement, cleanup (same as the label of a corresponding GitHub Issue)
- - Branch names:
-   - Starting with type: `feature/`, `bugfix/`, `improvement/`, `cleanup/`
-   - \+ task: lower case, spaces replaced with `-`
-
-## Commit message guidelines
-
- - Commits should be as atomic as possible.
- - Commits do not have to follow strict guidelines, but they should describe the changes clearly.
-
-## Code style guidelines
-
- - The project uses Nullability annotations to avoid NullPointerExceptions: `@NotNull`, `@Nullable`.
-Every non-primitive parameter/return type/field should be annotated with one of them.
- - For IntelliJ IDEA the codeStyleConfig and the inspectionProfile are provided in the `.idea` folder.
+See [CONTRIBUTING.md](CONTRIBUTING.md)

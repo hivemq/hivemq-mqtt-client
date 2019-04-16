@@ -22,8 +22,9 @@ import com.hivemq.client.internal.mqtt.message.MqttProperty;
 /**
  * @author Silvio Giebl
  */
-public interface MqttUnsubscribeProperty {
+public final class MqttUnsubscribeProperty {
 
-    int USER_PROPERTY = MqttProperty.USER_PROPERTY;
+    public static final int USER_PROPERTY = MqttProperty.USER_PROPERTY;
 
+    private MqttUnsubscribeProperty() {}
 }

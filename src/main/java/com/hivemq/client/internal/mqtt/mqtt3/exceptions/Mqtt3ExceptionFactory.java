@@ -30,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
  * @author David Katz
  * @author Silvio Giebl
  */
-public class Mqtt3ExceptionFactory {
+public final class Mqtt3ExceptionFactory {
 
     public static final @NotNull Function<Throwable, Throwable> MAPPER = Mqtt3ExceptionFactory::map;
     public static final @NotNull java.util.function.Function<Throwable, Throwable> MAPPER_JAVA =
@@ -64,4 +64,6 @@ public class Mqtt3ExceptionFactory {
                 throw new IllegalStateException();
         }
     }
+
+    private Mqtt3ExceptionFactory() {}
 }

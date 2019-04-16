@@ -24,6 +24,7 @@ import com.hivemq.client.internal.mqtt.message.unsubscribe.MqttUnsubscribe;
 import com.hivemq.client.internal.util.collections.ImmutableList;
 import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Silvio Giebl
@@ -70,5 +71,23 @@ public class Mqtt3UnsubscribeView implements Mqtt3Unsubscribe {
     @Override
     public @NotNull String toString() {
         return "MqttUnsubscribe{" + toAttributeString() + '}';
+    }
+
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Mqtt3UnsubscribeView)) {
+            return false;
+        }
+        final Mqtt3UnsubscribeView that = (Mqtt3UnsubscribeView) o;
+
+        return delegate.equals(that.delegate);
+    }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
     }
 }

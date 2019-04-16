@@ -24,6 +24,7 @@ import com.hivemq.client.internal.util.StringUtil;
 import com.hivemq.client.internal.util.collections.ImmutableList;
 import com.hivemq.client.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Silvio Giebl
@@ -63,5 +64,23 @@ public class MqttSubscribe extends MqttMessageWithUserProperties implements Mqtt
     @Override
     public @NotNull String toString() {
         return "MqttSubscribe{" + toAttributeString() + '}';
+    }
+
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof MqttSubscribe)) {
+            return false;
+        }
+        final MqttSubscribe that = (MqttSubscribe) o;
+
+        return partialEquals(that) && subscriptions.equals(that.subscriptions);
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 * partialHashCode() + subscriptions.hashCode();
     }
 }

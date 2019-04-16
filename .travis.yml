@@ -21,3 +21,8 @@ jobs:
     - stage: release
       install: true
       script: ./gradlew bintrayUpload -x test
+
+addons:
+  apt:
+    packages:
+      - perl

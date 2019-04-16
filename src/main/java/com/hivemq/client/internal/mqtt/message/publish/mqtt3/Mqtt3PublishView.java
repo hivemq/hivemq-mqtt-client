@@ -134,4 +134,22 @@ public class Mqtt3PublishView implements Mqtt3Publish {
     public @NotNull String toString() {
         return "MqttPublish{" + toAttributeString() + '}';
     }
+
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Mqtt3PublishView)) {
+            return false;
+        }
+        final Mqtt3PublishView that = (Mqtt3PublishView) o;
+
+        return delegate.equals(that.delegate);
+    }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
 }

@@ -29,6 +29,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.ByteBuffer;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -75,5 +76,26 @@ public class MqttAuth extends MqttMessageWithUserProperties.WithReason.WithCode<
     @Override
     public @NotNull String toString() {
         return "MqttAuth{" + toAttributeString() + '}';
+    }
+
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof MqttAuth)) {
+            return false;
+        }
+        final MqttAuth that = (MqttAuth) o;
+
+        return partialEquals(that) && method.equals(that.method) && Objects.equals(data, that.data);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = partialHashCode();
+        result = 31 * result + method.hashCode();
+        result = 31 * result + Objects.hashCode(data);
+        return result;
     }
 }

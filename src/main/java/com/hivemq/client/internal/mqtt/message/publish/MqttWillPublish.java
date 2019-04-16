@@ -74,4 +74,29 @@ public class MqttWillPublish extends MqttPublish implements Mqtt5WillPublish {
     public @NotNull String toString() {
         return "MqttWillPublish{" + toAttributeString() + '}';
     }
+
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof MqttWillPublish) || !super.equals(o)) {
+            return false;
+        }
+        final MqttWillPublish that = (MqttWillPublish) o;
+
+        return delayInterval == that.delayInterval;
+    }
+
+    @Override
+    protected boolean canEqual(final @Nullable Object o) {
+        return o instanceof MqttWillPublish;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + Long.hashCode(delayInterval);
+        return result;
+    }
 }

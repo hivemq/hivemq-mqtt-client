@@ -24,6 +24,7 @@ import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscription;
 import com.hivemq.client.internal.util.collections.ImmutableList;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Silvio Giebl
@@ -76,5 +77,23 @@ public class Mqtt3SubscribeView implements Mqtt3Subscribe {
     @Override
     public @NotNull String toString() {
         return "MqttSubscribe{" + toAttributeString() + '}';
+    }
+
+    @Override
+    public boolean equals(final @Nullable Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Mqtt3SubscribeView)) {
+            return false;
+        }
+        final Mqtt3SubscribeView that = (Mqtt3SubscribeView) o;
+
+        return delegate.equals(that.delegate);
+    }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
     }
 }

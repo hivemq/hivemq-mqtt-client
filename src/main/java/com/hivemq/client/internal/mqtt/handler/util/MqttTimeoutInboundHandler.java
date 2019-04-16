@@ -53,8 +53,6 @@ public abstract class MqttTimeoutInboundHandler extends MqttConnectionAwareHandl
         }
         if (future.isSuccess()) {
             scheduleTimeout(ctx.channel());
-        } else {
-            MqttDisconnectUtil.close(ctx.channel(), future.cause());
         }
     }
 

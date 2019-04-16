@@ -17,7 +17,6 @@
 
 package com.hivemq.client.example;
 
-import com.hivemq.client.internal.util.ByteBufferUtil;
 import com.hivemq.client.mqtt.MqttClient;
 import com.hivemq.client.mqtt.MqttClientBuilder;
 import com.hivemq.client.mqtt.MqttClientSslConfig;
@@ -42,8 +41,6 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
 import java.io.File;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -132,10 +129,9 @@ class Mqtt3ClientExample {
             subscribedLatch.countDown();
             System.out.println("subscribed to " + topic + ": return codes: " + subAck.getReturnCodes());
         }).doOnNext(publish -> {
-            final Optional<ByteBuffer> payload = publish.getPayload();
-            if (payload.isPresent()) {
+            if (publish.getPayload().isPresent()) {
                 final int receivedCount = this.receivedCount.incrementAndGet();
-                final String message = new String(ByteBufferUtil.getBytes(payload.get()));
+                final String message = new String(publish.getPayloadAsBytes());
                 System.out.println("received message with payload '" + message + "' on topic '" + publish.getTopic() +
                         "' received count: " + receivedCount);
             } else {
@@ -184,10 +180,9 @@ class Mqtt3ClientExample {
         // define what to publish and what to do when we published a message (e.g. PUBACK received), this does not publish yet
         final Flowable<Mqtt3PublishResult> publishScenario = client.publish(publishFlowable).doOnNext(publishResult -> {
             final int publishedCount = this.publishedCount.incrementAndGet();
-            final Optional<ByteBuffer> payload = publishResult.getPublish().getPayload();
-            payload.ifPresent(byteBuffer -> System.out.println(
-                    "published " + new String(ByteBufferUtil.getBytes(byteBuffer)) + " published count: " +
-                            publishedCount));
+            final Mqtt3Publish publish = publishResult.getPublish();
+            System.out.println(
+                    "published " + new String(publish.getPayloadAsBytes()) + " published count: " + publishedCount);
         });
 
         // define what to do when we disconnect, this does not disconnect yet

@@ -22,11 +22,11 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author Silvio Giebl
  */
-public class StringUtil {
-
-    private StringUtil() {}
+public final class StringUtil {
 
     public static @NotNull String prepend(final @NotNull String prefix, final @NotNull String s) {
         return (s.isEmpty()) ? "" : prefix + s;
     }
+
+    private StringUtil() {}
 }
