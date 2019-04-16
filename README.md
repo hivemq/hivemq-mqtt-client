@@ -1,5 +1,7 @@
 # HiveMQ MQTT Client
 
+<img src="https://www.hivemq.com/img/svg/hivemq-mqtt-client.svg" width="500">
+
 [![Build Status](https://travis-ci.org/hivemq/hivemq-mqtt-client.svg?branch=develop)](https://travis-ci.org/hivemq/hivemq-mqtt-client)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.hivemq/hivemq-mqtt-client/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.hivemq/hivemq-mqtt-client)
 
