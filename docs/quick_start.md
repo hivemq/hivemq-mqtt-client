@@ -70,11 +70,11 @@ topics and publish messages. The following example shows connecting to a local m
 and the v3 mqtt protocol:
 
 ```java
-Mqtt3AsyncClient mqttClient = MqttClient.builder()
+Mqtt3AsyncClient client = MqttClient.builder()
         .useMqttVersion3()
         .identifier("my-mqtt-client-id")
         .serverHost("localhost")
-        .serverPort(1883);
+        .serverPort(1883)
         .useSslWithDefaultConfig()
         .buildAsync();
 ```
