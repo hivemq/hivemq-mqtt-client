@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: default_anchor_headings
 title: API Flavours
 nav_order: 4
 ---

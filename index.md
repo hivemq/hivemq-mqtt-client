@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: default_anchor_headings
 title: Home
 nav_exclude: true
 ---

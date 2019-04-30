@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: default_anchor_headings
 title: Quick Start
 nav_order: 1
 search_exclude: true

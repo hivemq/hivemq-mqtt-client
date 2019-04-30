@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: default_anchor_headings
 title: Installation
 nav_order: 2
 ---

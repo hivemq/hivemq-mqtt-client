@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: default_anchor_headings
 title: Client Configuration
 nav_order: 3
 ---
