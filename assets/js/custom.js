@@ -24,7 +24,7 @@
                             var afterTop = tabButton.getBoundingClientRect().top;
                             var scrollParent = custom.util.getScrollParent(tabButton);
                             if (scrollParent != null) {
-                                scrollParent.scrollBy(0, afterTop - beforeTop);
+                                scrollParent.scrollTop += afterTop - beforeTop;
                             }
                         });
                     })(tabButtons[j], tabGroup, j);
