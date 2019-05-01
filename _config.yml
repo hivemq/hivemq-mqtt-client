@@ -1,8 +1,7 @@
 title: HiveMQ MQTT Client
 description: A fast, asynchronous, reactive mqtt client library
 
-#theme: just-the-docs
-remote_theme: pmarsceill/just-the-docs
+remote_theme: pmarsceill/just-the-docs@v0.2.3
 
 logo: assets/img/hivemq-mqtt-client-banner-neg.svg
 
@@ -17,4 +16,7 @@ aux_links:
     - "https://github.com/hivemq/hivemq-mqtt-client"
 
 plugins:
+  - jekyll-remote-theme
   - jekyll-relative-links
+
+github: [metadata]
