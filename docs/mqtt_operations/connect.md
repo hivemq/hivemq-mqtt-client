@@ -173,9 +173,9 @@ Single<Mqtt5ConnAck> connAckSingle = client.connect(connectMessage);
 
 * [Clean start](#clean-start)
 * [Session expiry interval](#session-expiry-interval)
-* [Keep alive](#keep-alive)
-* [Authentication/Authorization](#authenticationauthorization)
-* [Will](#will)
+* [Keep alive](#keep-alive-5)
+* [Authentication/Authorization](#authenticationauthorization-5)
+* [Will](#will-5)
 * [Restrictions](#restrictions)
 * [User properties](#user-properties)
 
@@ -187,7 +187,7 @@ if present (`false`).
 
 | Property | Values | Default | MQTT Specification |
 | -------- | ------ | ------------- | ------------------ |
-| `cleanStart` | `true`/`false` | `true` | [Link](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901039) |
+| `cleanStart` | `true`/`false` | `true` | [3.1.2.4](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901039) |
 
 {% capture tab_content %}
 
@@ -217,7 +217,7 @@ The session expiry interval is the time interval (in seconds) the session will p
 
 | Property | Values | Default | MQTT Specification |
 | -------- | ------ | ------------- | ------------------ |
-| `sessionExpiryInterval` | [`0` - `4_294_967_295`] | `0` | [Link](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901048) |
+| `sessionExpiryInterval` | [`0` - `4_294_967_295`] | `0` | [3.1.2.11.2](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901048) |
 
 {% capture tab_content %}
 
@@ -264,7 +264,7 @@ Mqtt5Connect connectMessage = Mqtt5ConnectMessage.builder().noSessionExpiry()...
 {% include tabs.html tab_group="mqtt-operation-style" tab_no_header=true %}
 
 
-## Keep alive
+## Keep alive <span>5</span>
 
 The keep alive is the time interval (in seconds) in which the client sends a ping to the broker if no other MQTT packets 
 are sent during this period of time.
@@ -272,7 +272,7 @@ It is used to determine if the connection is still up.
 
 | Property | Values | Default | MQTT Specification |
 | -------- | ------ | ------------- | ------------------ |
-| `keepAlive` | [`0` - `65_535`] | `60` | [Link](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901045) |
+| `keepAlive` | [`0` - `65_535`] | `60` | [3.1.2.10](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901045) |
 
 {% capture tab_content %}
 
@@ -319,14 +319,14 @@ Mqtt5Connect connectMessage = Mqtt5ConnectMessage.builder().noKeepAlive()...buil
 {% include tabs.html tab_group="mqtt-operation-style" tab_no_header=true %}
 
 
-## Authentication/authorization
+## Authentication/authorization <span>5</span>
 
-### Simple auth (username/password)
+### Simple auth (username/password) <span>5</span>
 
 | Property | Values | Default | MQTT Specification |
 | -------- | ------ | ------------- | ------------------ |
-| `simpleAuth.username` | `String`/`MqttUtf8String` | - | [Link](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901071) |
-| `simpleAuth.password` | `byte[]`/`ByteBuffer` | - | [Link](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901072) |
+| `simpleAuth.username` | `String`/`MqttUtf8String` | - | [3.1.3.5](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901071) |
+| `simpleAuth.password` | `byte[]`/`ByteBuffer` | - | [3.1.3.6](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901072) |
 
 {% capture tab_content %}
 
@@ -370,7 +370,7 @@ Simple and enhanced auth can be used both at the same time.
 
 | Property | Values | Default | MQTT Specification |
 | -------- | ------ | ------------- | ------------------ |
-| `enhancedAuth` | `Mqtt5EnhancedAuthMechanism` | - | [Link](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901055) |
+| `enhancedAuth` | `Mqtt5EnhancedAuthMechanism` | - | [3.1.2.11.9/10](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901055) |
 
 {% capture tab_content %}
 
@@ -403,7 +403,7 @@ Mqtt5Connect connectMessage = Mqtt5ConnectMessage.builder()
 {% include tabs.html tab_group="mqtt-operation-style" %}
 
 
-## Will
+## Will <span>5</span>
 
 The Will publish message is also known as Last Will and Testament (LWT).
 It is the message that is published by the broker if the client disconnected ungracefully or with the reason code 
@@ -413,17 +413,17 @@ It is the message that is published by the broker if the client disconnected ung
 
 | Property | Values | Default | MQTT Specification |
 | -------- | ------ | ------------- | ------------------ |
-| `willPublish.topic` | `String`/`MqttTopic` | mandatory | [Link](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901069) |
-| `willPublish.qos` | `MqttQos` | `AT_MOST_ONCE` | [Link](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901041) |
-| `willPublish.payload` | `byte[]`/`ByteBuffer` | - | [Link](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901070) |
-| `willPublish.retain` | `true`/`false` | `false` | [Link](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901042) |
-| `willPublish.messageExpiryInterval` | [`0` - `4_294_967_295`] | `4_294_967_295` | [Link](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901064) |
-| `willPublish.delayInterval` | [`0`, `4_294_967_295`] | `0` | [Link](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901062) |
-| `willPublish.payloadFormatIndicator` | `Mqtt5PayloadFormatIndicator` | - | [Link](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901063) |
-| `willPublish.contentType` | `String`/`MqttUtf8String` | - | [Link](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901065) |
-| `willPublish.responseTopic` | `String`/`MqttTopic` | - | [Link](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901066) |
-| `willPublish.correlationData` | `byte[]`/`ByteBuffer` | - | [Link](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901067) |
-| `willPublish.userProperties` | `Mqtt5UserProperties` | - | [Link](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901068) |
+| `willPublish.topic` | `String`/`MqttTopic` | mandatory | [3.1.3.3](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901069) |
+| `willPublish.qos` | `MqttQos` | `AT_MOST_ONCE` | [3.1.2.6](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901041) |
+| `willPublish.payload` | `byte[]`/`ByteBuffer` | - | [3.1.3.4](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901070) |
+| `willPublish.retain` | `true`/`false` | `false` | [3.1.2.7](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901042) |
+| `willPublish.messageExpiryInterval` | [`0` - `4_294_967_295`] | `4_294_967_295` | [3.1.3.2.4](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901064) |
+| `willPublish.delayInterval` | [`0`, `4_294_967_295`] | `0` | [3.1.3.2.2](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901062) |
+| `willPublish.payloadFormatIndicator` | `Mqtt5PayloadFormatIndicator` | - | [3.1.3.2.3](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901063) |
+| `willPublish.contentType` | `String`/`MqttUtf8String` | - | [3.1.3.2.5](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901065) |
+| `willPublish.responseTopic` | `String`/`MqttTopic` | - | [3.1.3.2.6](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901066) |
+| `willPublish.correlationData` | `byte[]`/`ByteBuffer` | - | [3.1.3.2.7](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901067) |
+| `willPublish.userProperties` | `Mqtt5UserProperties` | - | [3.1.3.2.8](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901068) |
 
 {% capture tab_content %}
 
@@ -506,8 +506,8 @@ Mqtt5Connect connectMessage = Mqtt5ConnectMessage.builder()
 
 Message expiry can be disabled by setting it to `4_294_967_295` (default) or using the method `noMessageExpiry`.
 
-All properties of a Will publish message are the same as of a normal [`Mqtt5Publish` message](publish.md) with the addition of 
-the `delayInterval`.
+All properties of a Will publish message are the same as of a normal [`Mqtt5Publish` message](publish.md) with the 
+addition of the `delayInterval`.
 
 
 ## Restrictions
@@ -519,14 +519,14 @@ the `Mqtt5ConnAck` message to determine the actual client side restrictions.
 
 | Property | Values | Default | MQTT Specification |
 | -------- | ------ | ------------- | ------------------ |
-| `restrictions.receiveMaximum` | [`1`, `65_535`] | `65_535` | [Link](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901049) |
+| `restrictions.receiveMaximum` | [`1`, `65_535`] | `65_535` | [3.1.2.11.3](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901049) |
 | `restrictions.sendMaximum` | [`1`, `65_535`] | `65_535` | - |
-| `restrictions.maximumPacketSize` | [`1`, `268_435_460`] | `268_435_460` | [Link](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901050) |
+| `restrictions.maximumPacketSize` | [`1`, `268_435_460`] | `268_435_460` | [3.1.2.11.4](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901050) |
 | `restrictions.sendMaximumPacketSize` | [`1`, `268_435_460`] | `268_435_460` | - |
-| `restrictions.topicAliasMaximum` | [`0`, `65_535`] | `0` | [Link](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901051) |
+| `restrictions.topicAliasMaximum` | [`0`, `65_535`] | `0` | [3.1.2.11.5](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901051) |
 | `restrictions.sendTopicAliasMaximum` | [`0`, `65_535`] | `16` | - |
-| `restrictions.requestProblemInformation` | `true`/`false` | `true` | [Link](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901053) |
-| `restrictions.requestResponseInformation` | `true`/`false` | `false` | [Link](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901052) |
+| `restrictions.requestProblemInformation` | `true`/`false` | `true` | [3.1.2.11.7](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901053) |
+| `restrictions.requestResponseInformation` | `true`/`false` | `false` | [3.1.2.11.6](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901052) |
 
 {% capture tab_content %}
 
@@ -599,7 +599,7 @@ User Properties are user defined name and value pairs which are sent with the `M
 
 | Method | Values | MQTT Specification |
 | ------ | ------ | ------------------ |
-| `userProperties.add` | `String, String`<br/>`MqttUtf8String, MqttUtf8String`<br/>`Mqtt5UserProperty` | [Link](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901054) |
+| `userProperties.add` | `String, String`<br/>`MqttUtf8String, MqttUtf8String`<br/>`Mqtt5UserProperty` | [3.1.2.11.8](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901054) |
 
 {% capture tab_content %}
 
@@ -637,7 +637,357 @@ Mqtt5Connect connectMessage = Mqtt5ConnectMessage.builder()
 MQTT 3.1.1
 ===
 
+{% capture tab_content %}
 
+Blocking
+===
+
+The blocking API directly returns a `Mqtt3ConnAck` message (which contains data from the broker) if the connect was 
+successful.
+
+```java
+Mqtt3ConnAck connAckMessage = client.connect();
+```
+
+====
+
+Async
+===
+
+The asynchronous API returns a `CompletableFuture` which succeeds with a `Mqtt3ConnAck` message (which contains data 
+from the broker) if the connect was successful.
+
+```java
+CompletableFuture<Mqtt3ConnAck> connAckFuture = client.connect();
+```
+
+====
+
+Reactive
+===
+
+The reactive API returns a `Single` which succeeds with a `Mqtt3ConnAck` message (which contains data 
+from the broker) if the connect was successful.
+As the `Single` is a reactive type the following line does not connect immediately but only after you subscribe to it 
+(in terms of Reactive Streams).
+
+```java
+Single<Mqtt3ConnAck> connAckSingle = client.connect();
+```
+
+{% endcapture %}
+{% include tabs.html tab_group="api-flavour" %}
+
+***
+
+The rest of this section describes all possible properties of a `Mqtt3Connect` message.
+They can be set via a fluent builder API.
+
+{% capture tab_content %}
+
+Blocking
+===
+
+{% capture tab_content %}
+
+Fluent
+===
+
+```java
+Mqtt3ConnAck connAckMessage = client.connectWith()
+        ... // here you can specify multiple properties which are described below
+        .send();
+```
+
+====
+
+Prebuilt message
+===
+
+```java
+Mqtt3Connect connectMessage = Mqtt3Connect.builder()
+        ... // here you can specify multiple properties which are described below
+        .build();
+
+Mqtt3ConnAck connAckMessage = client.connect(connectMessage);
+```
+
+{% endcapture %}
+{% include tabs.html tab_group="mqtt-operation-style" %}
+
+====
+
+
+Async
+===
+
+{% capture tab_content %}
+
+Fluent
+===
+
+```java
+CompletableFuture<Mqtt3ConnAck> connAckFuture = client.connectWith()
+        ... // here you can specify multiple properties described below
+        .send();
+```
+
+====
+
+Prebuilt message
+===
+
+```java
+Mqtt3Connect connectMessage = Mqtt3Connect.builder()
+        ... // here you can specify multiple properties described below
+        .build();
+
+CompletableFuture<Mqtt3ConnAck> connAckFuture = client.connect(connectMessage);
+```
+
+{% endcapture %}
+{% include tabs.html tab_group="mqtt-operation-style" %}
+
+====
+
+
+Reactive
+===
+
+{% capture tab_content %}
+
+Fluent
+===
+
+```java
+Single<Mqtt3ConnAck> connAckSingle = client.connectWith()
+        ... // here you can specify multiple properties described below
+        .applyConnect();
+```
+
+====
+
+Prebuilt message
+===
+
+```java
+Mqtt3Connect connectMessage = Mqtt3Connect.builder()
+        ... // here you can specify multiple properties described below
+        .build();
+
+Single<Mqtt3ConnAck> connAckSingle = client.connect(connectMessage);
+```
+
+{% endcapture %}
+{% include tabs.html tab_group="mqtt-operation-style" %}
+
+{% endcapture %}
+{% include tabs.html tab_group="api-flavour" tab_merge=true %}
+
+
+#### List of connect properties
+
+* [Clean session](#clean-session)
+* [Keep alive](#keep-alive-3)
+* [Authentication/Authorization](#authenticationauthorization-3)
+* [Will](#will-3)
+
+
+## Clean session
+
+Clean session determines if the client wants to start a new "clean" session (`true`) or wants to resume a previous 
+session which will persist when the client is disconnected (`false`).
+
+| Property | Values | Default | MQTT Specification |
+| -------- | ------ | ------------- | ------------------ |
+| `cleanSession` | `true`/`false` | `true` | [3.1.2.4](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc442180843) |
+
+{% capture tab_content %}
+
+Fluent
+===
+
+```java
+client.connectWith().cleanSession(false)...;
+```
+
+====
+
+Prebuilt message
+===
+
+```java
+Mqtt3Connect connectMessage = Mqtt3Connect.builder().cleanSession(false)...build();
+```
+
+{% endcapture %}
+{% include tabs.html tab_group="mqtt-operation-style" %}
+
+
+## Keep alive <span>3</span>
+
+The keep alive is the time interval (in seconds) in which the client sends a ping to the broker if no other MQTT packets 
+are sent during this period of time.
+It is used to determine if the connection is still up.
+
+| Property | Values | Default | MQTT Specification |
+| -------- | ------ | ------------- | ------------------ |
+| `keepAlive` | [`0` - `65_535`] | `60` | [3.1.2.10](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc442180843) |
+
+{% capture tab_content %}
+
+Fluent
+===
+
+```java
+client.connectWith().keepAlive(30)...;
+```
+
+====
+
+Prebuilt message
+===
+
+```java
+Mqtt3Connect connectMessage = Mqtt3Connect.builder().keepAlive(30)...build();
+```
+
+{% endcapture %}
+{% include tabs.html tab_group="mqtt-operation-style" %}
+
+Keep alive can be disabled by setting it to `0` or using the method `noKeepAlive`.
+
+{% capture tab_content %}
+
+Fluent
+===
+
+```java
+client.connectWith().noKeepAlive()...;
+```
+
+====
+
+Prebuilt message
+===
+
+```java
+Mqtt3Connect connectMessage = Mqtt3Connect.builder().noKeepAlive()...build();
+```
+
+{% endcapture %}
+{% include tabs.html tab_group="mqtt-operation-style" tab_no_header=true %}
+
+
+## Authentication/authorization <span>3</span>
+
+### Simple auth (username/password) <span>3</span>
+
+| Property | Values | Default | MQTT Specification |
+| -------- | ------ | ------------- | ------------------ |
+| `simpleAuth.username` | `String`/`MqttUtf8String` | - | [3.1.3.4](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc442180844) |
+| `simpleAuth.password` | `byte[]`/`ByteBuffer` | - | [3.1.3.5](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc442180844) |
+
+{% capture tab_content %}
+
+Fluent
+===
+
+```java
+client.connectWith()
+        .simpleAuth()
+            .username("username")
+            .password("password".getBytes())
+            .applySimpleAuth()
+        ...;
+```
+
+====
+
+Prebuilt message
+===
+
+```java
+Mqtt3Connect connectMessage = Mqtt3Connect.builder()
+        .simpleAuth()
+            .username("username")
+            .password("password".getBytes())
+            .applySimpleAuth()
+        ...
+        .build();
+```
+
+{% endcapture %}
+{% include tabs.html tab_group="mqtt-operation-style" %}
+
+
+## Will <span>3</span>
+
+The Will publish message is also known as Last Will and Testament (LWT).
+It is the message that is published by the broker if the client disconnected ungracefully.
+
+`topic` is the only mandatory property for a Will publish message, all others have defaults or are optional.
+
+| Property | Values | Default | MQTT Specification |
+| -------- | ------ | ------------- | ------------------ |
+| `willPublish.topic` | `String`/`MqttTopic` | mandatory | [3.1.3.2](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc442180844) |
+| `willPublish.qos` | `MqttQos` | `AT_MOST_ONCE` | [3.1.2.6](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc442180843) |
+| `willPublish.payload` | `byte[]`/`ByteBuffer` | - | [3.1.3.3](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc442180844) |
+| `willPublish.retain` | `true`/`false` | `false` | [3.1.2.7](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc442180843) |
+
+{% capture tab_content %}
+
+Fluent
+===
+
+```java
+client.connectWith()
+        .willPublish()
+            .topic("test/topic")
+            .qos(MqttQos.AT_LEAST_ONCE)
+            .payload("payload".getBytes())
+            .retain(true)
+            .applyWillPublish()
+        ...
+```
+
+====
+
+Prebuilt message
+===
+
+```java
+Mqtt3Connect connectMessage = Mqtt3Connect.builder()
+        .willPublish()
+            .topic("test/topic")
+            .qos(MqttQos.AT_LEAST_ONCE)
+            .payload("payload".getBytes())
+            .retain(true)
+            .applyWillPublish()
+        ...
+        .build();
+```
+
+You can also prebuild the `Mqtt5WillPublish`.
+
+```java
+Mqtt3Publish willPublishMessage = Mqtt3Publish.builder()
+        .topic("test/topic")
+        .qos(MqttQos.AT_LEAST_ONCE)
+        .payload("payload".getBytes())
+        .retain(true)
+        .build()
+
+Mqtt3Connect connectMessage = Mqtt3Connect.builder()
+        .willPublish(willPublishMessage)
+        ...
+        .build();
+```
+
+{% endcapture %}
+{% include tabs.html tab_group="mqtt-operation-style" %}
+
+All properties of a Will publish message are the same as of a normal [`Mqtt3Publish` message](publish.md).
 
 {% endcapture %}
 {% include tabs.html tab_group="mqtt-version" %}
