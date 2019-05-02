@@ -286,3 +286,17 @@ h5:hover > a.anchor_heading,
 h6:hover > a.anchor_heading {
     visibility: visible;
 }
+
+
+//
+// Table wrapper
+//
+
+table {
+    display: table;
+}
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}

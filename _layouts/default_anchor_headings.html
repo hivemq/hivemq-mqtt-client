@@ -2,4 +2,6 @@
 layout: default
 ---
 
+{% assign content = content | replace: '<table', '<div class="table-wrapper"><table' %}
+{% assign content = content | replace: '</table>', '</table></div>' %}
 {% include anchor_headings.html html=content anchorBody="#" anchorClass="anchor_heading" %}
