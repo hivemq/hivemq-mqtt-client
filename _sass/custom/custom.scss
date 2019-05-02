@@ -113,6 +113,11 @@ type parameter: #507874
     background-color: $body-background-color;
 }
 
+.search-results-wrap.active {
+    width: auto;
+    max-width: 100%;
+}
+
 b, strong {
     color: $yellow-300;
 }
@@ -187,7 +192,7 @@ ul.tab {
     flex-wrap: wrap;
     border-bottom: 1px solid $border-color;
     list-style-type: none;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
 
     > li {
         display: flex;
@@ -218,12 +223,49 @@ ul.tab {
 }
 
 ul.tab-content {
+    margin-bottom: 1.5rem;
+
     > li {
         display: none;
+
+        .highlight {
+            margin-top: 0;
+        }
+
+        ul:not(.tab):not(.tab-content) > li::before {
+            position: absolute;
+            margin-left: -1.4em;
+            color: #959396;
+            content: "•";
+        }
     }
 
     > li.tab-active {
-        display: initial;
+        display: block;
+    }
+
+    ul.tab > li > a {
+        font-size: 0.8rem;
+        padding: 0.3rem 0.9rem;
+    }
+}
+
+ul.tab.tab-merge {
+    width: 50%;
+    float: left;
+
+    + ul.tab-content > li > ul.tab {
+        width: 50%;
+        flex-direction: row-reverse;
+        margin-left: 50%;
+
+        > li {
+            margin: 0 0 -1px 10px;
+        }
+
+        + ul.tab-content {
+            clear: both;
+        }
     }
 }
 
