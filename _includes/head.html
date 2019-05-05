@@ -26,8 +26,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- added favicon -->
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ '/favicon-32x32.png' | absolute_url }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ '/favicon-16x16.png' | absolute_url }}">
+    <link rel="icon" href="/favicon.ico">
+    <!-- Touch icon for iOS 2.0+ and Android 2.1+ -->
+    <link rel="apple-touch-icon-precomposed" href="{{ 'favicon-152.png' | absolute_url }}">
+    <!-- Touch bar -->
+    <link rel="mask-icon" href="{{ '/mask-icon.svg' | absolute_url }}" color="#e7af06">
+    <!-- Windows Metro -->
+    <meta name="msapplication-TileColor" content="#e7af06">
+    <meta name="msapplication-TileImage" content="{{ 'favicon-144.png' | absolute_url }}">
+    <!-- Chrome for Android -->
+    <link rel="shortcut icon" sizes="196x196" href="{{ 'favicon-196.png' | absolute_url }}">
 
     <!-- custom js -->
     <script type="text/javascript" src="{{ '/assets/js/custom.js' | absolute_url }}"></script>
