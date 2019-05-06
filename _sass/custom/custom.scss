@@ -223,8 +223,6 @@ ul.tab {
 }
 
 ul.tab-content {
-    margin-bottom: 1.5rem;
-
     > li {
         display: none;
 
@@ -299,18 +297,4 @@ table {
 .table-wrapper {
     width: 100%;
     overflow-x: auto;
-}
-
-
-//
-// Header distinction
-//
-
-h1 span,
-h2 span,
-h3 span,
-h4 span,
-h5 span,
-h6 span {
-    display: none;
 }
