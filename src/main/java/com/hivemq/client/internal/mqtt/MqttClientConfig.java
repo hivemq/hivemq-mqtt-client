@@ -33,6 +33,7 @@ import io.netty.channel.EventLoop;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.net.InetSocketAddress;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -43,8 +44,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
 
     private final @NotNull MqttVersion mqttVersion;
     private volatile @NotNull MqttClientIdentifierImpl clientIdentifier;
-    private final @NotNull String serverHost;
-    private final int serverPort;
+    private final @NotNull InetSocketAddress serverAddress;
     private final @NotNull MqttClientExecutorConfigImpl executorConfig;
     private final @Nullable MqttClientSslConfigImpl sslConfig;
     private final @Nullable MqttWebSocketConfigImpl webSocketConfig;
@@ -62,15 +62,13 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
 
     public MqttClientConfig(
             final @NotNull MqttVersion mqttVersion, final @NotNull MqttClientIdentifierImpl clientIdentifier,
-            final @NotNull String serverHost, final int serverPort,
-            final @NotNull MqttClientExecutorConfigImpl executorConfig,
+            final @NotNull InetSocketAddress serverAddress, final @NotNull MqttClientExecutorConfigImpl executorConfig,
             final @Nullable MqttClientSslConfigImpl sslConfig, final @Nullable MqttWebSocketConfigImpl webSocketConfig,
             final @NotNull MqttClientAdvancedConfig advancedConfig) {
 
         this.mqttVersion = mqttVersion;
         this.clientIdentifier = clientIdentifier;
-        this.serverHost = serverHost;
-        this.serverPort = serverPort;
+        this.serverAddress = serverAddress;
         this.executorConfig = executorConfig;
         this.sslConfig = sslConfig;
         this.webSocketConfig = webSocketConfig;
@@ -101,13 +99,18 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
     }
 
     @Override
+    public @NotNull InetSocketAddress getServerAddress() {
+        return serverAddress;
+    }
+
+    @Override
     public @NotNull String getServerHost() {
-        return serverHost;
+        return serverAddress.getHostString();
     }
 
     @Override
     public int getServerPort() {
-        return serverPort;
+        return serverAddress.getPort();
     }
 
     @Override

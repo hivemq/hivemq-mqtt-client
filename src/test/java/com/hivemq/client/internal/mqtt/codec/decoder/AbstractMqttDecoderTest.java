@@ -36,6 +36,8 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
+import java.net.InetSocketAddress;
+
 /**
  * @author Silvio Giebl
  */
@@ -109,8 +111,9 @@ public abstract class AbstractMqttDecoderTest {
         final MqttClientAdvancedConfig advancedConfig =
                 new MqttClientAdvancedConfigBuilder.Default().validatePayloadFormat(validatePayloadFormat).build();
         final MqttClientConfig clientConfig =
-                new MqttClientConfig(MqttVersion.MQTT_5_0, MqttClientIdentifierImpl.of("test"), "localhost", 1883,
-                        MqttClientExecutorConfigImpl.DEFAULT, null, null, advancedConfig);
+                new MqttClientConfig(MqttVersion.MQTT_5_0, MqttClientIdentifierImpl.of("test"),
+                        new InetSocketAddress("localhost", 1883), MqttClientExecutorConfigImpl.DEFAULT, null, null,
+                        advancedConfig);
 
         channel = new EmbeddedChannel();
         channel.pipeline()
