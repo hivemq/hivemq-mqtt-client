@@ -755,7 +755,7 @@ It is the message that is published by the broker if the client disconnected ung
 | `willPublish.payload` | `byte[]`/`ByteBuffer` | - | [3.1.3.4](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901070) |
 | `willPublish.retain` | `true`/`false` | `false` | [3.1.2.7](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901042) |
 | `willPublish.messageExpiryInterval` | [`0` - `4_294_967_295`] | `4_294_967_295` | [3.1.3.2.4](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901064) |
-| `willPublish.delayInterval` | [`0`, `4_294_967_295`] | `0` | [3.1.3.2.2](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901062) |
+| `willPublish.delayInterval` | [`0` - `4_294_967_295`] | `0` | [3.1.3.2.2](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901062) |
 | `willPublish.payloadFormatIndicator` | `Mqtt5PayloadFormatIndicator` | - | [3.1.3.2.3](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901063) |
 | `willPublish.contentType` | `String`/`MqttUtf8String` | - | [3.1.3.2.5](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901065) |
 | `willPublish.responseTopic` | `String`/`MqttTopic` | - | [3.1.3.2.6](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901066) |
@@ -775,6 +775,7 @@ client.connectWith()
             .payload("payload".getBytes())
             .retain(true)
             .messageExpiryInterval(100)
+            .delayInterval(10)
             .payloadFormatIndicator(Mqtt5PayloadFormatIndicator.UTF_8)
             .contentType("text/plain")
             .responseTopic("response/topic")
@@ -800,6 +801,7 @@ Mqtt5Connect connectMessage = Mqtt5ConnectMessage.builder()
             .payload("payload".getBytes())
             .retain(true)
             .messageExpiryInterval(100)
+            .delayInterval(10)
             .payloadFormatIndicator(Mqtt5PayloadFormatIndicator.UTF_8)
             .contentType("text/plain")
             .responseTopic("response/topic")
@@ -822,6 +824,7 @@ Mqtt5WillPublish willPublishMessage = Mqtt5WillPublish.builder()
         .payload("payload".getBytes())
         .retain(true)
         .messageExpiryInterval(100)
+        .delayInterval(10)
         .payloadFormatIndicator(Mqtt5PayloadFormatIndicator.UTF_8)
         .contentType("text/plain")
         .responseTopic("response/topic")
@@ -938,12 +941,12 @@ the `Mqtt5ConnAck` message to determine the actual client side restrictions.
 
 | Property | Values | Default | MQTT Specification |
 | -------- | ------ | ------------- | ------------------ |
-| `restrictions.receiveMaximum` | [`1`, `65_535`] | `65_535` | [3.1.2.11.3](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901049) |
-| `restrictions.sendMaximum` | [`1`, `65_535`] | `65_535` | - |
-| `restrictions.maximumPacketSize` | [`1`, `268_435_460`] | `268_435_460` | [3.1.2.11.4](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901050) |
-| `restrictions.sendMaximumPacketSize` | [`1`, `268_435_460`] | `268_435_460` | - |
-| `restrictions.topicAliasMaximum` | [`0`, `65_535`] | `0` | [3.1.2.11.5](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901051) |
-| `restrictions.sendTopicAliasMaximum` | [`0`, `65_535`] | `16` | - |
+| `restrictions.receiveMaximum` | [`1` - `65_535`] | `65_535` | [3.1.2.11.3](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901049) |
+| `restrictions.sendMaximum` | [`1` - `65_535`] | `65_535` | - |
+| `restrictions.maximumPacketSize` | [`1` - `268_435_460`] | `268_435_460` | [3.1.2.11.4](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901050) |
+| `restrictions.sendMaximumPacketSize` | [`1` - `268_435_460`] | `268_435_460` | - |
+| `restrictions.topicAliasMaximum` | [`0` - `65_535`] | `0` | [3.1.2.11.5](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901051) |
+| `restrictions.sendTopicAliasMaximum` | [`0` - `65_535`] | `16` | - |
 | `restrictions.requestProblemInformation` | `true`/`false` | `true` | [3.1.2.11.7](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901053) |
 | `restrictions.requestResponseInformation` | `true`/`false` | `false` | [3.1.2.11.6](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901052) |
 
@@ -1044,6 +1047,7 @@ client.connectWith()
         .userProperties()
             .add("key1", "value1")
             .add(Mqtt5UserProperty.of("key2", "value2"))
+            .applyUserProperties()
         ...
 ```
 
@@ -1057,6 +1061,21 @@ Mqtt5Connect connectMessage = Mqtt5ConnectMessage.builder()
         .userProperties()
             .add("key1", "value1")
             .add(Mqtt5UserProperty.of("key2", "value2"))
+            .applyUserProperties()
+        ...
+        .build();
+```
+
+You can also prebuild the `Mqtt5UserProperties`.
+
+```java
+Mqtt5UserProperties connectUserProperties = Mqtt5UserProperties.builder()
+        .add("key1", "value1")
+        .add(Mqtt5UserProperty.of("key2", "value2"))
+        .build();
+
+Mqtt5Connect connectMessage = Mqtt5ConnectMessage.builder()
+        .userProperties(connectUserProperties)
         ...
         .build();
 ```
