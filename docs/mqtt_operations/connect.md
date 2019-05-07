@@ -901,7 +901,7 @@ Mqtt3Connect connectMessage = Mqtt3Connect.builder()
         .build();
 ```
 
-You can also prebuild the `Mqtt5WillPublish`.
+You can also prebuild the Will publish message.
 
 ```java
 Mqtt3Publish willPublishMessage = Mqtt3Publish.builder()
