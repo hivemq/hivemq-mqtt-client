@@ -21,6 +21,7 @@ import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.datatypes.MqttClientIdentifier;
 import org.jetbrains.annotations.NotNull;
 
+import java.net.InetSocketAddress;
 import java.util.Optional;
 
 /**
@@ -44,6 +45,12 @@ public interface MqttClientConfig {
      * @return the (currently not present) identifier of the client.
      */
     @NotNull Optional<MqttClientIdentifier> getClientIdentifier();
+
+    /**
+     * @return the server address the client connects to or is connected to.
+     * @since 1.1
+     */
+    @NotNull InetSocketAddress getServerAddress();
 
     /**
      * @return the server host the clients connects to or is connected to.

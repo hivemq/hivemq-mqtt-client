@@ -24,6 +24,7 @@ import com.hivemq.client.mqtt.mqtt3.Mqtt3ClientConfig;
 import com.hivemq.client.mqtt.mqtt3.Mqtt3ClientConnectionConfig;
 import org.jetbrains.annotations.NotNull;
 
+import java.net.InetSocketAddress;
 import java.util.Optional;
 
 /**
@@ -45,6 +46,11 @@ public class Mqtt3ClientConfigView implements Mqtt3ClientConfig {
     @Override
     public @NotNull Optional<MqttClientIdentifier> getClientIdentifier() {
         return delegate.getClientIdentifier();
+    }
+
+    @Override
+    public @NotNull InetSocketAddress getServerAddress() {
+        return delegate.getServerAddress();
     }
 
     @Override

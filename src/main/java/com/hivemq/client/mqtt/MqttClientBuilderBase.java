@@ -22,6 +22,9 @@ import com.hivemq.client.mqtt.datatypes.MqttClientIdentifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+
 /**
  * Builder base for a {@link MqttClient}.
  *
@@ -49,12 +52,30 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
     @NotNull B identifier(@NotNull MqttClientIdentifier identifier);
 
     /**
+     * Sets the {@link MqttClientConfig#getServerAddress() server address} to connect to.
+     *
+     * @param address the server address.
+     * @return the builder
+     * @since 1.1
+     */
+    @NotNull B serverAddress(@NotNull InetSocketAddress address);
+
+    /**
      * Sets the {@link MqttClientConfig#getServerHost() server host} to connect to.
      *
      * @param host the server host.
      * @return the builder.
      */
     @NotNull B serverHost(@NotNull String host);
+
+    /**
+     * Sets the {@link MqttClientConfig#getServerHost() server host} to connect to.
+     *
+     * @param host the server host.
+     * @return the builder.
+     * @since 1.1
+     */
+    @NotNull B serverHost(@NotNull InetAddress host);
 
     /**
      * Sets the {@link MqttClientConfig#getServerPort() server port} to connect to.
