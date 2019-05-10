@@ -155,9 +155,7 @@ b, strong {
     display: block;
     font-size: 14px;
     text-align: center;
-}
 
-.post-navigation {
     a {
         display: inline-block;
         margin: 1em 0;
@@ -182,7 +180,7 @@ b, strong {
 ul.tab, ul.tab-content {
     padding: 0;
 
-    li::before {
+    > li::before {
         content: none;
     }
 }
@@ -211,10 +209,8 @@ ul.tab {
             border-bottom: 1px solid $link-color;
             color: $link-color;
         }
-    }
 
-    > li.tab-active {
-        > a {
+        &.tab-active > a {
             background-size: 1px 2px;
             border-bottom: 2px solid $link-color;
             color: $link-color;
@@ -226,20 +222,13 @@ ul.tab-content {
     > li {
         display: none;
 
+        &.tab-active {
+            display: block;
+        }
+
         .highlight {
             margin-top: 0;
         }
-
-        ul:not(.tab):not(.tab-content) > li::before {
-            position: absolute;
-            margin-left: -1.4em;
-            color: #959396;
-            content: "•";
-        }
-    }
-
-    > li.tab-active {
-        display: block;
     }
 
     ul.tab > li > a {
