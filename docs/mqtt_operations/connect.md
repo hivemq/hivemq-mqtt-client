@@ -1,5 +1,5 @@
 ---
-layout: default_anchor_headings
+layout: default
 title: Connect
 parent: MQTT Operations
 nav_order: 1

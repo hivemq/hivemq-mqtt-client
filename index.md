@@ -1,10 +1,10 @@
 ---
-layout: default_anchor_headings
+layout: default
 title: Home
 nav_exclude: true
 ---
 
-![Logo]({{ site.logo }})
+![Logo]({{ site.logo | absolute_url }})
 {: .banner }
 
 

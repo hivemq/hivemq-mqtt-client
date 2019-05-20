@@ -28,9 +28,8 @@
         {%- endif -%}
   {%- unless first -%},{%- endunless -%}
   "{{ i }}": {
-    "id": "{{ i }}",
     "title": "{{ title | replace: '&amp;', '&' }}",
-    "content": "{{ content | markdownify | strip_html | escape_once | remove: 'Table of contents' | remove: '```'  | remove: '---' | replace: '\', ' ' | normalize_whitespace }}",
+    "content": "{{ content | markdownify | replace: '</h', ' . </h' | replace: '<hr', ' . <hr' | replace: '</p', ' . </p' | replace: '</ul', ' . </ul' | replace: '</tr', ' . </tr' | replace: '</li', ' | </li' | replace: '</td', ' | </td' | strip_html | escape_once | remove: 'Table of contents' | remove: '```'  | remove: '---' | replace: '\', ' ' | replace: ' .  .  . ', ' . ' | replace: ' .  . ', ' . ' | normalize_whitespace }}",
     "url": "{{ url | absolute_url }}",
     "relUrl": "{{ url }}"
   }

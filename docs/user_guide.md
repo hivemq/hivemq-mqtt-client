@@ -1,5 +1,5 @@
 ---
-layout: default_anchor_headings
+layout: default
 title: User Guide
 nav_order: 100
 search_exclude: true

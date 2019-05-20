@@ -101,21 +101,11 @@ type parameter: #507874
 
 .site-title {
     font-size: 18px !important;
-    padding-top: 1.3rem;
 }
 
 ::selection {
     color: $grey-dk-300;
     background: $yellow-200;
-}
-
-.search {
-    background-color: $body-background-color;
-}
-
-.search-results-wrap.active {
-    width: auto;
-    max-width: 100%;
 }
 
 b, strong {
@@ -254,36 +244,4 @@ ul.tab.tab-merge {
             clear: both;
         }
     }
-}
-
-
-//
-// Anchor headings
-//
-
-a.anchor_heading {
-    visibility: hidden;
-}
-
-h1:hover > a.anchor_heading,
-h2:hover > a.anchor_heading,
-h3:hover > a.anchor_heading,
-h4:hover > a.anchor_heading,
-h5:hover > a.anchor_heading,
-h6:hover > a.anchor_heading {
-    visibility: visible;
-}
-
-
-//
-// Table wrapper
-//
-
-table {
-    display: table;
-}
-
-.table-wrapper {
-    width: 100%;
-    overflow-x: auto;
 }

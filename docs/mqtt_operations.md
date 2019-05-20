@@ -1,5 +1,5 @@
 ---
-layout: default_anchor_headings
+layout: default
 title: MQTT Operations
 nav_order: 5
 has_children: true
