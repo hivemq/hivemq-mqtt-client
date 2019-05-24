@@ -11,7 +11,7 @@ If you would like to contribute code, do the following:
 - Fork the repository on GitHub
 - Open a pull request targeting the `develop` branch
 
-## License
+### License
 By contributing your code, you agree to license your contribution under the terms of the
 [Apache License, Version 2.0](https://github.com/hivemq/hivemq-mqtt-client/blob/develop/LICENSE).
 
