@@ -17,7 +17,9 @@
 
 package com.hivemq.client.internal.mqtt;
 
+import com.hivemq.client.internal.mqtt.message.publish.MqttPublish;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscribeBuilder;
+import com.hivemq.client.internal.mqtt.util.MqttChecks;
 import com.hivemq.client.internal.rx.RxFutureConverter;
 import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
@@ -125,9 +127,9 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
 
     @Override
     public @NotNull CompletableFuture<@NotNull Mqtt5PublishResult> publish(final @Nullable Mqtt5Publish publish) {
-        Checks.notNull(publish, "Publish");
+        final MqttPublish mqttPublish = MqttChecks.publish(publish);
 
-        return RxFutureConverter.toFuture(delegate.publishHalfSafe(Flowable.just(publish)).singleOrError())
+        return RxFutureConverter.toFuture(delegate.publishHalfSafe(Flowable.just(mqttPublish)).singleOrError())
                 .thenApply(PUBLISH_HANDLER);
     }
 

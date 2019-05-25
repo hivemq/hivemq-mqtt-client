@@ -23,6 +23,7 @@ import com.hivemq.client.internal.mqtt.ioc.ClientComponent;
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublish;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
 import io.reactivex.Flowable;
+import io.reactivex.internal.fuseable.ScalarCallable;
 import io.reactivex.internal.subscriptions.EmptySubscription;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Subscriber;
@@ -51,7 +52,15 @@ public class MqttIncomingAckFlowable extends Flowable<Mqtt5PublishResult> {
 
             final MqttIncomingAckFlow flow = new MqttIncomingAckFlow(subscriber, clientConfig, outgoingQosHandler);
             subscriber.onSubscribe(flow);
-            publishFlowables.add(new MqttPublishFlowableAckLink(publishFlowable, flow));
+            if (publishFlowable instanceof ScalarCallable) {
+                flow.link(flow::onLinkCancelled); // TODO remove when individual publishes are errored
+                flow.onComplete(1); // TODO special subclasses of MqttIncomingAckFlow
+                //noinspection unchecked
+                publishFlowables.add(Flowable.just(
+                        new MqttPublishWithFlow(((ScalarCallable<MqttPublish>) publishFlowable).call(), flow)));
+            } else {
+                publishFlowables.add(new MqttPublishFlowableAckLink(publishFlowable, flow));
+            }
         } else {
             EmptySubscription.error(MqttClientStateExceptions.notConnected(), subscriber);
         }
