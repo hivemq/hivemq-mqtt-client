@@ -148,12 +148,6 @@ public class MqttIncomingAckFlow extends FlowWithEventLoop implements Subscripti
         }
     }
 
-    @CallByThread("Netty EventLoop")
-    void onError(final @NotNull Throwable t) {
-        error = t;
-        cancelLink(); // subscriber.onError called in onLinkCancelled
-    }
-
     @Override
     public void request(final long n) {
         if ((n > 0) && !isCancelled()) {
@@ -205,18 +199,6 @@ public class MqttIncomingAckFlow extends FlowWithEventLoop implements Subscripti
         final LinkCancellable linkCancellable = this.linkCancellable.getAndSet(LinkCancellable.CANCELLED);
         if (linkCancellable != null) {
             linkCancellable.cancelLink();
-        }
-    }
-
-    void onLinkCancelled() {
-        final Throwable error = this.error;
-        if (error != null) {
-            final long acknowledged = acknowledgedNettyLocal;
-            final long published = acknowledged + queue.size();
-            this.published.set(published);
-            if ((acknowledged == published) && setDone()) {
-                subscriber.onError(error);
-            }
         }
     }
 

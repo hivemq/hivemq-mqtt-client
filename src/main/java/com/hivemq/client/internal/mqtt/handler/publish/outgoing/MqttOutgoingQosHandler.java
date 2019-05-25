@@ -48,6 +48,7 @@ import com.hivemq.client.internal.util.collections.IntMap;
 import com.hivemq.client.internal.util.netty.ContextFuture;
 import com.hivemq.client.internal.util.netty.DefaultContextPromise;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
+import com.hivemq.client.mqtt.exceptions.ConnectionClosedException;
 import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos1.Mqtt5OutgoingQos1Interceptor;
 import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos2.Mqtt5OutgoingQos2Interceptor;
 import com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5PubAckException;
@@ -228,11 +229,14 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
 
     @Override
     public void operationComplete(final @NotNull ContextFuture<? extends MqttPublishWithFlow> future) {
+        final MqttPublishWithFlow publishWithFlow = future.getContext();
+        final MqttPublish publish = publishWithFlow.getPublish();
+        final MqttIncomingAckFlow ackFlow = publishWithFlow.getIncomingAckFlow();
         final Throwable cause = future.cause();
         if (!(cause instanceof IOException)) {
-            final MqttPublishWithFlow publishWithFlow = future.getContext();
-            publishWithFlow.getIncomingAckFlow().onNext(new MqttPublishResult(publishWithFlow.getPublish(), cause));
+            ackFlow.onNext(new MqttPublishResult(publish, cause));
         } else {
+            ackFlow.onNext(new MqttPublishResult(publish, new ConnectionClosedException(cause)));
             future.channel().pipeline().fireExceptionCaught(cause);
         }
     }
@@ -405,7 +409,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
             assert qos1Or2Map != null;
             final MqttPublishWithFlow publishWithFlow = (MqttPublishWithFlow) qos1Or2Map.remove(currentWrite);
             assert publishWithFlow != null;
-            publishWithFlow.getIncomingAckFlow().onError(cause);
+            publishWithFlow.getIncomingAckFlow().onNext(new MqttPublishResult(publishWithFlow.getPublish(), cause));
             removed(currentWrite);
             currentWrite = -1;
         } else {
@@ -428,9 +432,20 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
                 packetIdentifiers.returnId(qos1Or2PacketId);
                 final MqttPubOrRelWithFlow removed = qos1Or2Map.remove(qos1Or2PacketId);
                 assert removed != null;
-                removed.getIncomingAckFlow().onError(cause);
+
+                if (removed instanceof MqttPublishWithFlow) {
+                    final MqttPublishWithFlow publishWithFlow = (MqttPublishWithFlow) removed;
+                    removed.getIncomingAckFlow().onNext(new MqttPublishResult(publishWithFlow.getPublish(), cause));
+                } else if (QOS_2_COMPLETE_RESULT) {
+                    final MqttQos2CompleteWithFlow publishWithFlow = (MqttQos2CompleteWithFlow) removed;
+                    removed.getIncomingAckFlow().onNext(new MqttPublishResult(publishWithFlow.getPublish(), cause));
+                } else {
+                    final MqttQos2IntermediateWithFlow intermediate = (MqttQos2IntermediateWithFlow) removed;
+                    if (intermediate.getAsBoolean()) {
+                        intermediate.getIncomingAckFlow().acknowledged(1);
+                    }
+                }
             }
-            request(pending);
         }
 
         clearQueued(cause);
@@ -441,9 +456,6 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
         while (true) {
             final MqttPublishWithFlow publishWithFlow = queue.poll();
             if (publishWithFlow == null) {
-                if (polled > 0) {
-                    request(polled);
-                }
                 if (queuedCounter.addAndGet(-polled) == 0) {
                     break;
                 } else {
@@ -451,7 +463,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
                     continue;
                 }
             }
-            publishWithFlow.getIncomingAckFlow().onError(cause);
+            publishWithFlow.getIncomingAckFlow().onNext(new MqttPublishResult(publishWithFlow.getPublish(), cause));
             polled++;
         }
     }
