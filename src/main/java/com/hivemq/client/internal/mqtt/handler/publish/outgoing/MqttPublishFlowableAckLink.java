@@ -20,7 +20,6 @@ package com.hivemq.client.internal.mqtt.handler.publish.outgoing;
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublish;
 import com.hivemq.client.internal.rx.FuseableSubscriber;
 import io.reactivex.Flowable;
-import io.reactivex.internal.fuseable.ConditionalSubscriber;
 import io.reactivex.plugins.RxJavaPlugins;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -45,15 +44,7 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
 
     @Override
     protected void subscribeActual(final @NotNull Subscriber<? super MqttPublishWithFlow> s) {
-        final AbstractAckLinkSubscriber<? extends Subscriber<? super MqttPublishWithFlow>> ackLinkSubscriber;
-        if (s instanceof ConditionalSubscriber) {
-            @SuppressWarnings("unchecked") final ConditionalSubscriber<? super MqttPublishWithFlow> cs =
-                    (ConditionalSubscriber<? super MqttPublishWithFlow>) s;
-            ackLinkSubscriber = new AckLinkConditionalSubscriber(cs, ackFlow);
-        } else {
-            ackLinkSubscriber = new AckLinkSubscriber(s, ackFlow);
-        }
-        source.subscribe(ackLinkSubscriber);
+        source.subscribe(new AckLinkSubscriber(s, ackFlow));
     }
 
     interface LinkCancellable {
@@ -63,8 +54,9 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
         void cancelLink();
     }
 
-    static abstract class AbstractAckLinkSubscriber<S extends Subscriber<? super MqttPublishWithFlow>>
-            extends FuseableSubscriber<MqttPublish, MqttPublishWithFlow, S> implements LinkCancellable {
+    private static class AckLinkSubscriber
+            extends FuseableSubscriber<MqttPublish, MqttPublishWithFlow, Subscriber<? super MqttPublishWithFlow>>
+            implements LinkCancellable {
 
         static final int STATE_NONE = 0;
         static final int STATE_EMITTING = 1;
@@ -72,34 +64,42 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
         static final int STATE_CANCEL = 3;
         static final int STATE_CANCELLED = 4;
 
-        final @NotNull MqttIncomingAckFlow ackFlow;
+        private final @NotNull MqttIncomingAckFlow ackFlow;
         private boolean linked;
         private final @NotNull AtomicInteger state = new AtomicInteger();
         private final @NotNull AtomicInteger pollState = new AtomicInteger();
-        long published;
+        private long published;
         private @Nullable Throwable error;
 
-        AbstractAckLinkSubscriber(final @NotNull S subscriber, final @NotNull MqttIncomingAckFlow ackFlow) {
+        AckLinkSubscriber(
+                final @NotNull Subscriber<? super MqttPublishWithFlow> subscriber,
+                final @NotNull MqttIncomingAckFlow ackFlow) {
+
             super(subscriber);
             this.ackFlow = ackFlow;
-        }
-
-        boolean startEmitting() {
-            return startEmitting(state);
         }
 
         private boolean startEmitting(final @NotNull AtomicInteger state) {
             return state.compareAndSet(STATE_NONE, STATE_EMITTING);
         }
 
-        void stopEmitting() {
-            stopEmitting(state);
-        }
-
         private void stopEmitting(final @NotNull AtomicInteger state) {
-            assert subscription != null;
             if (!state.compareAndSet(STATE_EMITTING, STATE_NONE)) {
                 cancelActual();
+            }
+        }
+
+        @Override
+        public void onNext(final @Nullable MqttPublish publish) {
+            if (startEmitting(state)) {
+                if (sourceMode == NONE) {
+                    assert publish != null;
+                    subscriber.onNext(new MqttPublishWithFlow(publish, ackFlow));
+                    published++;
+                } else {
+                    subscriber.onNext(null);
+                }
+                stopEmitting(state);
             }
         }
 
@@ -208,68 +208,6 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
                     subscriber.onComplete();
                 }
             }
-        }
-    }
-
-    private static class AckLinkSubscriber extends AbstractAckLinkSubscriber<Subscriber<? super MqttPublishWithFlow>> {
-
-        AckLinkSubscriber(
-                final @NotNull Subscriber<? super MqttPublishWithFlow> subscriber,
-                final @NotNull MqttIncomingAckFlow ackFlow) {
-
-            super(subscriber, ackFlow);
-        }
-
-        @Override
-        public void onNext(final @Nullable MqttPublish publish) {
-            if (startEmitting()) {
-                if (sourceMode == NONE) {
-                    assert publish != null;
-                    subscriber.onNext(new MqttPublishWithFlow(publish, ackFlow));
-                    published++;
-                } else {
-                    subscriber.onNext(null);
-                }
-                stopEmitting();
-            }
-        }
-    }
-
-    private static class AckLinkConditionalSubscriber
-            extends AbstractAckLinkSubscriber<ConditionalSubscriber<? super MqttPublishWithFlow>>
-            implements ConditionalSubscriber<MqttPublish> {
-
-        AckLinkConditionalSubscriber(
-                final @NotNull ConditionalSubscriber<? super MqttPublishWithFlow> subscriber,
-                final @NotNull MqttIncomingAckFlow ackFlow) {
-
-            super(subscriber, ackFlow);
-        }
-
-        @Override
-        public void onNext(final @Nullable MqttPublish publish) {
-            assert subscription != null;
-            if (!tryOnNext(publish)) {
-                subscription.request(1);
-            }
-        }
-
-        @Override
-        public boolean tryOnNext(final @Nullable MqttPublish publish) {
-            if (startEmitting()) {
-                final boolean consumed;
-                if (sourceMode == NONE) {
-                    assert publish != null;
-                    if (consumed = subscriber.tryOnNext(new MqttPublishWithFlow(publish, ackFlow))) {
-                        published++;
-                    }
-                } else {
-                    consumed = subscriber.tryOnNext(null);
-                }
-                stopEmitting();
-                return consumed;
-            }
-            return true;
         }
     }
 }
