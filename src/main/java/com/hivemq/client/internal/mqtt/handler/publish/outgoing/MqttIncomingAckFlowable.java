@@ -53,7 +53,6 @@ public class MqttIncomingAckFlowable extends Flowable<Mqtt5PublishResult> {
             final MqttIncomingAckFlow flow = new MqttIncomingAckFlow(subscriber, clientConfig, outgoingQosHandler);
             subscriber.onSubscribe(flow);
             if (publishFlowable instanceof ScalarCallable) {
-                flow.link(flow::onLinkCancelled); // TODO remove when individual publishes are errored
                 flow.onComplete(1); // TODO special subclasses of MqttIncomingAckFlow
                 //noinspection unchecked
                 publishFlowables.add(Flowable.just(
