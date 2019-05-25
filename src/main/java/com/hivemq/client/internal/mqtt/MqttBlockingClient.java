@@ -17,6 +17,8 @@
 
 package com.hivemq.client.internal.mqtt;
 
+import com.hivemq.client.internal.mqtt.message.publish.MqttPublish;
+import com.hivemq.client.internal.mqtt.util.MqttChecks;
 import com.hivemq.client.internal.util.AsyncRuntimeException;
 import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
@@ -122,9 +124,9 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
 
     @Override
     public @NotNull Mqtt5PublishResult publish(final @Nullable Mqtt5Publish publish) {
-        Checks.notNull(publish, "Publish");
+        final MqttPublish mqttPublish = MqttChecks.publish(publish);
         try {
-            return handlePublish(delegate.publishUnsafe(Flowable.just(publish)).singleOrError().blockingGet());
+            return handlePublish(delegate.publishUnsafe(Flowable.just(mqttPublish)).singleOrError().blockingGet());
         } catch (final RuntimeException e) {
             throw AsyncRuntimeException.fillInStackTrace(e);
         }

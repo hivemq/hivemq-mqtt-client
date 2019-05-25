@@ -45,6 +45,7 @@ import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 import io.reactivex.functions.Function;
+import io.reactivex.internal.fuseable.ScalarCallable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -118,6 +119,11 @@ public class Mqtt3RxClientView implements Mqtt3RxClient {
     @Override
     public @NotNull Flowable<Mqtt3PublishResult> publish(final @Nullable Flowable<Mqtt3Publish> publishFlowable) {
         Checks.notNull(publishFlowable, "Publish flowable");
+        if (publishFlowable instanceof ScalarCallable) {
+            return delegate.publishHalfSafe(publishFlowable.map(PUBLISH_MAPPER))
+                    .onErrorResumeNext(EXCEPTION_MAPPER_FLOWABLE_PUBLISH_RESULT)
+                    .map(Mqtt3PublishResultView.MAPPER); // TODO
+        }
         return delegate.publish(publishFlowable.map(PUBLISH_MAPPER))
                 .onErrorResumeNext(EXCEPTION_MAPPER_FLOWABLE_PUBLISH_RESULT)
                 .map(Mqtt3PublishResultView.MAPPER);

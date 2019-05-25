@@ -48,6 +48,7 @@ import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 import io.reactivex.functions.Function;
+import io.reactivex.internal.fuseable.ScalarCallable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -128,16 +129,20 @@ public class MqttRxClient implements Mqtt5RxClient {
     public @NotNull Flowable<Mqtt5PublishResult> publish(final @Nullable Flowable<Mqtt5Publish> publishFlowable) {
         Checks.notNull(publishFlowable, "Publish flowable");
 
-        return publishHalfSafe(publishFlowable.subscribeOn(clientConfig.getExecutorConfig().getApplicationScheduler()));
+        if (publishFlowable instanceof ScalarCallable) {
+            return publishHalfSafe(publishFlowable.map(PUBLISH_MAPPER)); // TODO
+        }
+        return publishHalfSafe(publishFlowable.subscribeOn(clientConfig.getExecutorConfig().getApplicationScheduler())
+                .map(PUBLISH_MAPPER));
     }
 
-    @NotNull Flowable<Mqtt5PublishResult> publishHalfSafe(final @NotNull Flowable<Mqtt5Publish> publishFlowable) {
+    public @NotNull Flowable<Mqtt5PublishResult> publishHalfSafe(final @NotNull Flowable<MqttPublish> publishFlowable) {
         return publishUnsafe(publishFlowable).observeOn(
                 clientConfig.getExecutorConfig().getApplicationScheduler(), true);
     }
 
-    @NotNull Flowable<Mqtt5PublishResult> publishUnsafe(final @NotNull Flowable<Mqtt5Publish> publishFlowable) {
-        return new MqttIncomingAckFlowable(publishFlowable.map(PUBLISH_MAPPER), clientConfig);
+    @NotNull Flowable<Mqtt5PublishResult> publishUnsafe(final @NotNull Flowable<MqttPublish> publishFlowable) {
+        return new MqttIncomingAckFlowable(publishFlowable, clientConfig);
     }
 
     @Override
