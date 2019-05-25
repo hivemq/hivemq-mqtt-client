@@ -169,10 +169,11 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
                     }
                 } else { // ASYNC
                     if (state.get() == STATE_DONE) {
+                        final Throwable error = this.error;
                         if (error == null) {
                             ackFlow.onComplete(published);
                         } else {
-                            ackFlow.onError(error);
+                            ackFlow.onError(error, published);
                         }
                     }
                     stopEmitting(pollState);
