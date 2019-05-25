@@ -197,8 +197,6 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
             final int previousState = state.getAndSet(STATE_CANCEL);
             if ((previousState == STATE_NONE) && (pollState.getAndSet(STATE_CANCEL) == STATE_NONE)) {
                 cancelActual();
-            } else if ((previousState == STATE_DONE) && state.compareAndSet(STATE_CANCEL, STATE_CANCELLED)) {
-                ackFlow.onLinkCancelled();
             }
         }
 
@@ -209,7 +207,6 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
                 if (sourceMode != SYNC) {
                     subscriber.onComplete();
                 }
-                ackFlow.onLinkCancelled();
             }
         }
     }
