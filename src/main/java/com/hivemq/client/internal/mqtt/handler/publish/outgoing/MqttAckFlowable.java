@@ -23,7 +23,6 @@ import com.hivemq.client.internal.mqtt.ioc.ClientComponent;
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublish;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
 import io.reactivex.Flowable;
-import io.reactivex.internal.fuseable.ScalarCallable;
 import io.reactivex.internal.subscriptions.EmptySubscription;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Subscriber;
@@ -31,16 +30,16 @@ import org.reactivestreams.Subscriber;
 /**
  * @author Silvio Giebl
  */
-public class MqttIncomingAckFlowable extends Flowable<Mqtt5PublishResult> {
+public class MqttAckFlowable extends Flowable<Mqtt5PublishResult> {
 
-    private final @NotNull Flowable<MqttPublish> publishFlowable;
     private final @NotNull MqttClientConfig clientConfig;
+    private final @NotNull Flowable<MqttPublish> publishFlowable;
 
-    public MqttIncomingAckFlowable(
-            final @NotNull Flowable<MqttPublish> publishFlowable, final @NotNull MqttClientConfig clientConfig) {
+    public MqttAckFlowable(
+            final @NotNull MqttClientConfig clientConfig, final @NotNull Flowable<MqttPublish> publishFlowable) {
 
-        this.publishFlowable = publishFlowable;
         this.clientConfig = clientConfig;
+        this.publishFlowable = publishFlowable;
     }
 
     @Override
@@ -50,16 +49,9 @@ public class MqttIncomingAckFlowable extends Flowable<Mqtt5PublishResult> {
             final MqttOutgoingQosHandler outgoingQosHandler = clientComponent.outgoingQosHandler();
             final MqttPublishFlowables publishFlowables = outgoingQosHandler.getPublishFlowables();
 
-            final MqttIncomingAckFlow flow = new MqttIncomingAckFlow(subscriber, clientConfig, outgoingQosHandler);
+            final MqttAckFlowableFlow flow = new MqttAckFlowableFlow(subscriber, clientConfig, outgoingQosHandler);
             subscriber.onSubscribe(flow);
-            if (publishFlowable instanceof ScalarCallable) {
-                flow.onComplete(1); // TODO special subclasses of MqttIncomingAckFlow
-                //noinspection unchecked
-                publishFlowables.add(Flowable.just(
-                        new MqttPublishWithFlow(((ScalarCallable<MqttPublish>) publishFlowable).call(), flow)));
-            } else {
-                publishFlowables.add(new MqttPublishFlowableAckLink(publishFlowable, flow));
-            }
+            publishFlowables.add(new MqttPublishFlowableAckLink(publishFlowable, flow));
         } else {
             EmptySubscription.error(MqttClientStateExceptions.notConnected(), subscriber);
         }

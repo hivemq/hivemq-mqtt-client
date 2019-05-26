@@ -27,8 +27,8 @@ class MqttPublishWithFlow extends MqttPubOrRelWithFlow {
 
     private final @NotNull MqttPublish publish;
 
-    MqttPublishWithFlow(final @NotNull MqttPublish publish, final @NotNull MqttIncomingAckFlow incomingAckFlow) {
-        super(incomingAckFlow);
+    MqttPublishWithFlow(final @NotNull MqttPublish publish, final @NotNull MqttAckFlow ackFlow) {
+        super(ackFlow);
         this.publish = publish;
     }
 

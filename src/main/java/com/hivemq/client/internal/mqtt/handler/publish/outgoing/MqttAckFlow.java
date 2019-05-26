@@ -15,39 +15,26 @@
  *
  */
 
-package com.hivemq.client.internal.mqtt.handler.subscribe;
+package com.hivemq.client.internal.mqtt.handler.publish.outgoing;
 
+import com.hivemq.client.internal.annotations.CallByThread;
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
 import com.hivemq.client.internal.mqtt.handler.util.FlowWithEventLoop;
-import io.reactivex.SingleObserver;
-import io.reactivex.disposables.Disposable;
+import com.hivemq.client.internal.mqtt.message.publish.MqttPublishResult;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Silvio Giebl
  */
-class MqttSubOrUnsubAckFlow<T> extends FlowWithEventLoop implements MqttSubscriptionFlow<T>, Disposable {
+abstract class MqttAckFlow extends FlowWithEventLoop {
 
-    private final @NotNull SingleObserver<? super T> observer;
-
-    MqttSubOrUnsubAckFlow(
-            final @NotNull SingleObserver<? super T> observer, final @NotNull MqttClientConfig clientConfig) {
-
+    MqttAckFlow(final @NotNull MqttClientConfig clientConfig) {
         super(clientConfig);
-        this.observer = observer;
     }
 
-    @Override
-    public void onSuccess(final @NotNull T t) {
-        if (setDone()) {
-            observer.onSuccess(t);
-        }
-    }
+    @CallByThread("Netty EventLoop")
+    abstract void onNext(final @NotNull MqttPublishResult result);
 
-    @Override
-    public void onError(final @NotNull Throwable t) {
-        if (setDone()) {
-            observer.onError(t);
-        }
-    }
+    @CallByThread("Netty EventLoop")
+    abstract void acknowledged(final long acknowledged);
 }
