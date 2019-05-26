@@ -70,62 +70,70 @@ public class MqttRxClient implements Mqtt5RxClient {
 
     @Override
     public @NotNull Single<Mqtt5ConnAck> connect(final @Nullable Mqtt5Connect connect) {
+        return connect(MqttChecks.connect(connect));
+    }
+
+    @NotNull Single<Mqtt5ConnAck> connect(final @NotNull MqttConnect connect) {
         return connectUnsafe(connect).observeOn(clientConfig.getExecutorConfig().getApplicationScheduler());
     }
 
-    @NotNull Single<Mqtt5ConnAck> connectUnsafe(final @Nullable Mqtt5Connect connect) {
-        final MqttConnect mqttConnect = MqttChecks.connect(connect);
-
-        return new MqttConnAckSingle(clientConfig, mqttConnect);
+    @NotNull Single<Mqtt5ConnAck> connectUnsafe(final @NotNull MqttConnect connect) {
+        return new MqttConnAckSingle(clientConfig, connect);
     }
 
     @Override
     public @NotNull Single<Mqtt5SubAck> subscribe(final @Nullable Mqtt5Subscribe subscribe) {
+        return subscribe(MqttChecks.subscribe(subscribe));
+    }
+
+    @NotNull Single<Mqtt5SubAck> subscribe(final @NotNull MqttSubscribe subscribe) {
         return subscribeUnsafe(subscribe).observeOn(clientConfig.getExecutorConfig().getApplicationScheduler());
     }
 
-    @NotNull Single<Mqtt5SubAck> subscribeUnsafe(final @Nullable Mqtt5Subscribe subscribe) {
-        final MqttSubscribe mqttSubscribe = MqttChecks.subscribe(subscribe);
-
-        return new MqttSubAckSingle(mqttSubscribe, clientConfig);
+    @NotNull Single<Mqtt5SubAck> subscribeUnsafe(final @NotNull MqttSubscribe subscribe) {
+        return new MqttSubAckSingle(subscribe, clientConfig);
     }
 
     @Override
     public @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeStream(
             final @Nullable Mqtt5Subscribe subscribe) {
 
+        return subscribeStream(MqttChecks.subscribe(subscribe));
+    }
+
+    @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeStream(final @NotNull MqttSubscribe subscribe) {
         return subscribeStreamUnsafe(subscribe).observeOnBoth(
                 clientConfig.getExecutorConfig().getApplicationScheduler(), true);
     }
 
     @NotNull FlowableWithSingle<Mqtt5Publish, Mqtt5SubAck> subscribeStreamUnsafe(
-            final @Nullable Mqtt5Subscribe subscribe) {
+            final @NotNull MqttSubscribe subscribe) {
 
-        final MqttSubscribe mqttSubscribe = MqttChecks.subscribe(subscribe);
-
-        return new MqttSubscribedPublishFlowable(mqttSubscribe, clientConfig);
+        return new MqttSubscribedPublishFlowable(subscribe, clientConfig);
     }
 
     @Override
     public @NotNull Flowable<Mqtt5Publish> publishes(final @Nullable MqttGlobalPublishFilter filter) {
+        Checks.notNull(filter, "Global publish filter");
+
         return publishesUnsafe(filter).observeOn(clientConfig.getExecutorConfig().getApplicationScheduler(), true);
     }
 
-    @NotNull Flowable<Mqtt5Publish> publishesUnsafe(final @Nullable MqttGlobalPublishFilter filter) {
-        Checks.notNull(filter, "Global publish filter");
-
+    @NotNull Flowable<Mqtt5Publish> publishesUnsafe(final @NotNull MqttGlobalPublishFilter filter) {
         return new MqttGlobalIncomingPublishFlowable(filter, clientConfig);
     }
 
     @Override
     public @NotNull Single<Mqtt5UnsubAck> unsubscribe(final @Nullable Mqtt5Unsubscribe unsubscribe) {
+        return unsubscribe(MqttChecks.unsubscribe(unsubscribe));
+    }
+
+    @NotNull Single<Mqtt5UnsubAck> unsubscribe(final @NotNull MqttUnsubscribe unsubscribe) {
         return unsubscribeUnsafe(unsubscribe).observeOn(clientConfig.getExecutorConfig().getApplicationScheduler());
     }
 
-    @NotNull Single<Mqtt5UnsubAck> unsubscribeUnsafe(final @Nullable Mqtt5Unsubscribe unsubscribe) {
-        final MqttUnsubscribe mqttUnsubscribe = MqttChecks.unsubscribe(unsubscribe);
-
-        return new MqttUnsubAckSingle(mqttUnsubscribe, clientConfig);
+    @NotNull Single<Mqtt5UnsubAck> unsubscribeUnsafe(final @NotNull MqttUnsubscribe unsubscribe) {
+        return new MqttUnsubAckSingle(unsubscribe, clientConfig);
     }
 
     @NotNull Single<Mqtt5PublishResult> publish(final @NotNull MqttPublish publish) {
@@ -138,13 +146,13 @@ public class MqttRxClient implements Mqtt5RxClient {
 
     @Override
     public @NotNull Flowable<Mqtt5PublishResult> publish(final @Nullable Flowable<Mqtt5Publish> publishFlowable) {
+        Checks.notNull(publishFlowable, "Publish flowable");
+
         return publish(publishFlowable, PUBLISH_MAPPER);
     }
 
     public <P> @NotNull Flowable<Mqtt5PublishResult> publish(
-            final @Nullable Flowable<P> publishFlowable, final @NotNull Function<P, MqttPublish> publishMapper) {
-
-        Checks.notNull(publishFlowable, "Publish flowable");
+            final @NotNull Flowable<P> publishFlowable, final @NotNull Function<P, MqttPublish> publishMapper) {
 
         final Scheduler applicationScheduler = clientConfig.getExecutorConfig().getApplicationScheduler();
         if (publishFlowable instanceof ScalarCallable) {
@@ -177,13 +185,15 @@ public class MqttRxClient implements Mqtt5RxClient {
 
     @Override
     public @NotNull Completable disconnect(final @Nullable Mqtt5Disconnect disconnect) {
+        return disconnect(MqttChecks.disconnect(disconnect));
+    }
+
+    @NotNull Completable disconnect(final @NotNull MqttDisconnect disconnect) {
         return disconnectUnsafe(disconnect).observeOn(clientConfig.getExecutorConfig().getApplicationScheduler());
     }
 
-    @NotNull Completable disconnectUnsafe(final @Nullable Mqtt5Disconnect disconnect) {
-        final MqttDisconnect mqttDisconnect = MqttChecks.disconnect(disconnect);
-
-        return new MqttDisconnectCompletable(clientConfig, mqttDisconnect);
+    @NotNull Completable disconnectUnsafe(final @NotNull MqttDisconnect disconnect) {
+        return new MqttDisconnectCompletable(clientConfig, disconnect);
     }
 
     @Override
