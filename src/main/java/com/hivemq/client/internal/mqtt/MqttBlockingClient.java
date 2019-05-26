@@ -17,7 +17,11 @@
 
 package com.hivemq.client.internal.mqtt;
 
+import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
+import com.hivemq.client.internal.mqtt.message.disconnect.MqttDisconnect;
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublish;
+import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscribe;
+import com.hivemq.client.internal.mqtt.message.unsubscribe.MqttUnsubscribe;
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
 import com.hivemq.client.internal.util.AsyncRuntimeException;
 import com.hivemq.client.internal.util.Checks;
@@ -80,8 +84,9 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
 
     @Override
     public @NotNull Mqtt5ConnAck connect(final @Nullable Mqtt5Connect connect) {
+        final MqttConnect mqttConnect = MqttChecks.connect(connect);
         try {
-            return delegate.connectUnsafe(connect).blockingGet();
+            return delegate.connectUnsafe(mqttConnect).blockingGet();
         } catch (final RuntimeException e) {
             throw AsyncRuntimeException.fillInStackTrace(e);
         }
@@ -89,8 +94,9 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
 
     @Override
     public @NotNull Mqtt5SubAck subscribe(final @Nullable Mqtt5Subscribe subscribe) {
+        final MqttSubscribe mqttSubscribe = MqttChecks.subscribe(subscribe);
         try {
-            return handleSubAck(delegate.subscribeUnsafe(subscribe).blockingGet());
+            return handleSubAck(delegate.subscribeUnsafe(mqttSubscribe).blockingGet());
         } catch (final RuntimeException e) {
             throw AsyncRuntimeException.fillInStackTrace(e);
         }
@@ -98,13 +104,16 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
 
     @Override
     public @NotNull Mqtt5Publishes publishes(final @Nullable MqttGlobalPublishFilter filter) {
+        Checks.notNull(filter, "Global publish filter");
+
         return new MqttPublishes(delegate.publishesUnsafe(filter));
     }
 
     @Override
     public @NotNull Mqtt5UnsubAck unsubscribe(final @Nullable Mqtt5Unsubscribe unsubscribe) {
+        final MqttUnsubscribe mqttUnsubscribe = MqttChecks.unsubscribe(unsubscribe);
         try {
-            return handleUnsubAck(delegate.unsubscribeUnsafe(unsubscribe).blockingGet());
+            return handleUnsubAck(delegate.unsubscribeUnsafe(mqttUnsubscribe).blockingGet());
         } catch (final RuntimeException e) {
             throw AsyncRuntimeException.fillInStackTrace(e);
         }
@@ -131,8 +140,9 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
 
     @Override
     public void disconnect(final @NotNull Mqtt5Disconnect disconnect) {
+        final MqttDisconnect mqttDisconnect = MqttChecks.disconnect(disconnect);
         try {
-            delegate.disconnectUnsafe(disconnect).blockingAwait();
+            delegate.disconnectUnsafe(mqttDisconnect).blockingAwait();
         } catch (final RuntimeException e) {
             throw AsyncRuntimeException.fillInStackTrace(e);
         }
