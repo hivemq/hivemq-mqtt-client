@@ -24,13 +24,13 @@ import org.jetbrains.annotations.NotNull;
  */
 abstract class MqttPubOrRelWithFlow {
 
-    private final @NotNull MqttIncomingAckFlow ackFlow;
+    private final @NotNull MqttAckFlow ackFlow;
 
-    MqttPubOrRelWithFlow(final @NotNull MqttIncomingAckFlow ackFlow) {
+    MqttPubOrRelWithFlow(final @NotNull MqttAckFlow ackFlow) {
         this.ackFlow = ackFlow;
     }
 
-    @NotNull MqttIncomingAckFlow getIncomingAckFlow() {
+    @NotNull MqttAckFlow getAckFlow() {
         return ackFlow;
     }
 }

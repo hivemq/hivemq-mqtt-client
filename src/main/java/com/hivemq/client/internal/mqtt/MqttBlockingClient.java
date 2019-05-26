@@ -72,18 +72,6 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
         return unsubAck;
     }
 
-    static @NotNull Mqtt5PublishResult handlePublish(final @NotNull Mqtt5PublishResult publishResult) {
-        final Optional<Throwable> error = publishResult.getError();
-        if (error.isPresent()) {
-            final Throwable throwable = error.get();
-            if (throwable instanceof RuntimeException) {
-                throw (RuntimeException) throwable;
-            }
-            throw new RuntimeException(throwable);
-        }
-        return publishResult;
-    }
-
     private final @NotNull MqttRxClient delegate;
 
     MqttBlockingClient(final @NotNull MqttRxClient delegate) {
@@ -126,7 +114,7 @@ public class MqttBlockingClient implements Mqtt5BlockingClient {
     public @NotNull Mqtt5PublishResult publish(final @Nullable Mqtt5Publish publish) {
         final MqttPublish mqttPublish = MqttChecks.publish(publish);
         try {
-            return handlePublish(delegate.publishUnsafe(Flowable.just(mqttPublish)).singleOrError().blockingGet());
+            return delegate.publishUnsafe(mqttPublish).blockingGet();
         } catch (final RuntimeException e) {
             throw AsyncRuntimeException.fillInStackTrace(e);
         }

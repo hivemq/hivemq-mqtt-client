@@ -20,7 +20,6 @@ package com.hivemq.client.internal.mqtt.handler.publish.outgoing;
 import com.hivemq.client.internal.annotations.CallByThread;
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
 import com.hivemq.client.internal.mqtt.handler.publish.outgoing.MqttPublishFlowableAckLink.LinkCancellable;
-import com.hivemq.client.internal.mqtt.handler.util.FlowWithEventLoop;
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublishResult;
 import com.hivemq.client.internal.util.collections.ChunkedArrayQueue;
 import io.reactivex.internal.util.BackpressureHelper;
@@ -37,7 +36,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * @author Silvio Giebl
  */
-public class MqttIncomingAckFlow extends FlowWithEventLoop implements Subscription, Runnable {
+class MqttAckFlowableFlow extends MqttAckFlow implements Subscription, Runnable {
 
     private static final int STATE_NO_NEW_REQUESTS = 0;
     private static final int STATE_NEW_REQUESTS = 1;
@@ -59,7 +58,7 @@ public class MqttIncomingAckFlow extends FlowWithEventLoop implements Subscripti
 
     private final @NotNull AtomicReference<@Nullable LinkCancellable> linkCancellable = new AtomicReference<>();
 
-    MqttIncomingAckFlow(
+    MqttAckFlowableFlow(
             final @NotNull Subscriber<? super MqttPublishResult> subscriber,
             final @NotNull MqttClientConfig clientConfig, final @NotNull MqttOutgoingQosHandler outgoingQosHandler) {
 
@@ -70,6 +69,7 @@ public class MqttIncomingAckFlow extends FlowWithEventLoop implements Subscripti
     }
 
     @CallByThread("Netty EventLoop")
+    @Override
     void onNext(final @NotNull MqttPublishResult result) {
         queue.offer(result);
         run();
@@ -113,6 +113,7 @@ public class MqttIncomingAckFlow extends FlowWithEventLoop implements Subscripti
     }
 
     @CallByThread("Netty EventLoop")
+    @Override
     void acknowledged(final long acknowledged) {
         if (acknowledged > 0) {
             final long acknowledgedLocal = this.acknowledgedNettyLocal += acknowledged;

@@ -33,10 +33,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
 
     private final @NotNull Flowable<MqttPublish> source;
-    private final @NotNull MqttIncomingAckFlow ackFlow;
+    private final @NotNull MqttAckFlowableFlow ackFlow;
 
     MqttPublishFlowableAckLink(
-            final @NotNull Flowable<MqttPublish> source, final @NotNull MqttIncomingAckFlow ackFlow) {
+            final @NotNull Flowable<MqttPublish> source, final @NotNull MqttAckFlowableFlow ackFlow) {
 
         this.source = source;
         this.ackFlow = ackFlow;
@@ -64,7 +64,7 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
         static final int STATE_CANCEL = 3;
         static final int STATE_CANCELLED = 4;
 
-        private final @NotNull MqttIncomingAckFlow ackFlow;
+        private final @NotNull MqttAckFlowableFlow ackFlow;
         private boolean linked;
         private final @NotNull AtomicInteger state = new AtomicInteger();
         private final @NotNull AtomicInteger pollState = new AtomicInteger();
@@ -73,7 +73,7 @@ public class MqttPublishFlowableAckLink extends Flowable<MqttPublishWithFlow> {
 
         AckLinkSubscriber(
                 final @NotNull Subscriber<? super MqttPublishWithFlow> subscriber,
-                final @NotNull MqttIncomingAckFlow ackFlow) {
+                final @NotNull MqttAckFlowableFlow ackFlow) {
 
             super(subscriber);
             this.ackFlow = ackFlow;

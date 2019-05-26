@@ -65,6 +65,10 @@ public abstract class FlowWithEventLoop {
         }
     }
 
+    public void dispose() {
+        cancel();
+    }
+
     protected void onCancel() {}
 
     public boolean isCancelled() {

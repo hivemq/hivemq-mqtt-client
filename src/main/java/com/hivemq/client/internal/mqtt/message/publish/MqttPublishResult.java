@@ -52,6 +52,10 @@ public class MqttPublishResult implements Mqtt5PublishResult {
         return Optional.ofNullable(error);
     }
 
+    public @Nullable Throwable getRawError() {
+        return error;
+    }
+
     public boolean acknowledged() {
         return true;
     }

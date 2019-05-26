@@ -33,7 +33,6 @@ import com.hivemq.client.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
 import com.hivemq.client.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
-import io.reactivex.Flowable;
 import io.reactivex.FlowableSubscriber;
 import io.reactivex.schedulers.Schedulers;
 import org.jetbrains.annotations.NotNull;
@@ -53,8 +52,6 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
     private static final @NotNull Function<Mqtt5SubAck, Mqtt5SubAck> SUBACK_HANDLER = MqttBlockingClient::handleSubAck;
     private static final @NotNull Function<Mqtt5UnsubAck, Mqtt5UnsubAck> UNSUBACK_HANDLER =
             MqttBlockingClient::handleUnsubAck;
-    private static final @NotNull Function<Mqtt5PublishResult, Mqtt5PublishResult> PUBLISH_HANDLER =
-            MqttBlockingClient::handlePublish;
 
     private final @NotNull MqttRxClient delegate;
 
@@ -69,7 +66,7 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
 
     @Override
     public @NotNull CompletableFuture<@NotNull Mqtt5SubAck> subscribe(final @Nullable Mqtt5Subscribe subscribe) {
-        return RxFutureConverter.toFuture(delegate.subscribe(subscribe));
+        return RxFutureConverter.toFuture(delegate.subscribe(subscribe)).thenApply(SUBACK_HANDLER);
     }
 
     @Override
@@ -122,15 +119,14 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
     @Override
     public @NotNull CompletableFuture<@NotNull Mqtt5UnsubAck> unsubscribe(
             final @Nullable Mqtt5Unsubscribe unsubscribe) {
+
         return RxFutureConverter.toFuture(delegate.unsubscribe(unsubscribe)).thenApply(UNSUBACK_HANDLER);
     }
 
     @Override
     public @NotNull CompletableFuture<@NotNull Mqtt5PublishResult> publish(final @Nullable Mqtt5Publish publish) {
         final MqttPublish mqttPublish = MqttChecks.publish(publish);
-
-        return RxFutureConverter.toFuture(delegate.publishHalfSafe(Flowable.just(mqttPublish)).singleOrError())
-                .thenApply(PUBLISH_HANDLER);
+        return RxFutureConverter.toFuture(delegate.publish(mqttPublish));
     }
 
     @Override

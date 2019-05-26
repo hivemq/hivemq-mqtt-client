@@ -22,7 +22,9 @@ import com.hivemq.client.internal.mqtt.handler.connect.MqttConnAckSingle;
 import com.hivemq.client.internal.mqtt.handler.disconnect.MqttDisconnectCompletable;
 import com.hivemq.client.internal.mqtt.handler.publish.incoming.MqttGlobalIncomingPublishFlowable;
 import com.hivemq.client.internal.mqtt.handler.publish.incoming.MqttSubscribedPublishFlowable;
-import com.hivemq.client.internal.mqtt.handler.publish.outgoing.MqttIncomingAckFlowable;
+import com.hivemq.client.internal.mqtt.handler.publish.outgoing.MqttAckFlowable;
+import com.hivemq.client.internal.mqtt.handler.publish.outgoing.MqttAckSingle;
+import com.hivemq.client.internal.mqtt.handler.publish.outgoing.MqttAckSingleFlowable;
 import com.hivemq.client.internal.mqtt.handler.subscribe.MqttSubAckSingle;
 import com.hivemq.client.internal.mqtt.handler.subscribe.MqttUnsubAckSingle;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
@@ -46,6 +48,7 @@ import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
 import com.hivemq.client.rx.FlowableWithSingle;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
+import io.reactivex.Scheduler;
 import io.reactivex.Single;
 import io.reactivex.functions.Function;
 import io.reactivex.internal.fuseable.ScalarCallable;
@@ -125,24 +128,42 @@ public class MqttRxClient implements Mqtt5RxClient {
         return new MqttUnsubAckSingle(mqttUnsubscribe, clientConfig);
     }
 
+    @NotNull Single<Mqtt5PublishResult> publish(final @NotNull MqttPublish publish) {
+        return publishUnsafe(publish).observeOn(clientConfig.getExecutorConfig().getApplicationScheduler());
+    }
+
+    @NotNull Single<Mqtt5PublishResult> publishUnsafe(final @NotNull MqttPublish publish) {
+        return new MqttAckSingle(clientConfig, publish);
+    }
+
     @Override
     public @NotNull Flowable<Mqtt5PublishResult> publish(final @Nullable Flowable<Mqtt5Publish> publishFlowable) {
+        return publish(publishFlowable, PUBLISH_MAPPER);
+    }
+
+    public <P> @NotNull Flowable<Mqtt5PublishResult> publish(
+            final @Nullable Flowable<P> publishFlowable, final @NotNull Function<P, MqttPublish> publishMapper) {
+
         Checks.notNull(publishFlowable, "Publish flowable");
 
+        final Scheduler applicationScheduler = clientConfig.getExecutorConfig().getApplicationScheduler();
         if (publishFlowable instanceof ScalarCallable) {
-            return publishHalfSafe(publishFlowable.map(PUBLISH_MAPPER)); // TODO
+            //noinspection unchecked
+            final P publish = ((ScalarCallable<P>) publishFlowable).call();
+            if (publish == null) {
+                return Flowable.empty();
+            }
+            final MqttPublish mqttPublish;
+            try {
+                mqttPublish = publishMapper.apply(publish);
+            } catch (final Throwable t) {
+                return Flowable.error(t);
+            }
+            return new MqttAckSingleFlowable(clientConfig, mqttPublish).observeOn(applicationScheduler, true);
         }
-        return publishHalfSafe(publishFlowable.subscribeOn(clientConfig.getExecutorConfig().getApplicationScheduler())
-                .map(PUBLISH_MAPPER));
-    }
-
-    public @NotNull Flowable<Mqtt5PublishResult> publishHalfSafe(final @NotNull Flowable<MqttPublish> publishFlowable) {
-        return publishUnsafe(publishFlowable).observeOn(
-                clientConfig.getExecutorConfig().getApplicationScheduler(), true);
-    }
-
-    @NotNull Flowable<Mqtt5PublishResult> publishUnsafe(final @NotNull Flowable<MqttPublish> publishFlowable) {
-        return new MqttIncomingAckFlowable(publishFlowable, clientConfig);
+        return new MqttAckFlowable(
+                clientConfig, publishFlowable.subscribeOn(applicationScheduler).map(publishMapper)).observeOn(
+                applicationScheduler, true);
     }
 
     @Override

@@ -156,7 +156,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     public void onNext(final @NotNull MqttPublishWithFlow publishWithFlow) {
         queue.offer(publishWithFlow);
         if (queuedCounter.getAndIncrement() == 0) {
-            publishWithFlow.getIncomingAckFlow().getEventLoop().execute(this);
+            publishWithFlow.getAckFlow().getEventLoop().execute(this);
         }
     }
 
@@ -231,7 +231,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     public void operationComplete(final @NotNull ContextFuture<? extends MqttPublishWithFlow> future) {
         final MqttPublishWithFlow publishWithFlow = future.getContext();
         final MqttPublish publish = publishWithFlow.getPublish();
-        final MqttIncomingAckFlow ackFlow = publishWithFlow.getIncomingAckFlow();
+        final MqttAckFlow ackFlow = publishWithFlow.getAckFlow();
         final Throwable cause = future.cause();
         if (!(cause instanceof IOException)) {
             ackFlow.onNext(new MqttPublishResult(publish, cause));
@@ -304,7 +304,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
 
         final Throwable t = (pubAck.getReasonCode().isError()) ?
                 new Mqtt5PubAckException(pubAck, "PUBACK contained an Error Code") : null;
-        publishWithFlow.getIncomingAckFlow().onNext(new MqttQos1Result(publish, t, pubAck));
+        publishWithFlow.getAckFlow().onNext(new MqttQos1Result(publish, t, pubAck));
     }
 
     private void readPubRec(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttPubRec pubRec) {
@@ -327,7 +327,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
             error(ctx, "PUBREC must not be received for a QoS 1 PUBLISH");
             return;
         }
-        final MqttIncomingAckFlow ackFlow = publishWithFlow.getIncomingAckFlow();
+        final MqttAckFlow ackFlow = publishWithFlow.getAckFlow();
 
         if (pubRec.getReasonCode().isError()) {
             qos1Or2Map.remove(packetIdentifier);
@@ -376,7 +376,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
         }
         final MqttPubRelWithFlow pubRelWithFlow = (MqttPubRelWithFlow) removed;
         final MqttPubRel pubRel = pubRelWithFlow.getPubRel();
-        final MqttIncomingAckFlow ackFlow = pubRelWithFlow.getIncomingAckFlow();
+        final MqttAckFlow ackFlow = pubRelWithFlow.getAckFlow();
 
         removed(packetIdentifier);
 
@@ -409,7 +409,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
             assert qos1Or2Map != null;
             final MqttPublishWithFlow publishWithFlow = (MqttPublishWithFlow) qos1Or2Map.remove(currentWrite);
             assert publishWithFlow != null;
-            publishWithFlow.getIncomingAckFlow().onNext(new MqttPublishResult(publishWithFlow.getPublish(), cause));
+            publishWithFlow.getAckFlow().onNext(new MqttPublishResult(publishWithFlow.getPublish(), cause));
             removed(currentWrite);
             currentWrite = -1;
         } else {
@@ -435,14 +435,15 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
 
                 if (removed instanceof MqttPublishWithFlow) {
                     final MqttPublishWithFlow publishWithFlow = (MqttPublishWithFlow) removed;
-                    removed.getIncomingAckFlow().onNext(new MqttPublishResult(publishWithFlow.getPublish(), cause));
+                    removed.getAckFlow().onNext(new MqttPublishResult(publishWithFlow.getPublish(), cause));
                 } else if (QOS_2_COMPLETE_RESULT) {
-                    final MqttQos2CompleteWithFlow publishWithFlow = (MqttQos2CompleteWithFlow) removed;
-                    removed.getIncomingAckFlow().onNext(new MqttPublishResult(publishWithFlow.getPublish(), cause));
+                    final MqttQos2CompleteWithFlow complete = (MqttQos2CompleteWithFlow) removed;
+                    removed.getAckFlow().onNext(new MqttQos2Result(complete.getPublish(), cause, complete.getPubRec()));
+                    // TODO actually not an error, default PubComp?
                 } else {
                     final MqttQos2IntermediateWithFlow intermediate = (MqttQos2IntermediateWithFlow) removed;
                     if (intermediate.getAsBoolean()) {
-                        intermediate.getIncomingAckFlow().acknowledged(1);
+                        intermediate.getAckFlow().acknowledged(1);
                     }
                 }
             }
@@ -463,7 +464,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
                     continue;
                 }
             }
-            publishWithFlow.getIncomingAckFlow().onNext(new MqttPublishResult(publishWithFlow.getPublish(), cause));
+            publishWithFlow.getAckFlow().onNext(new MqttPublishResult(publishWithFlow.getPublish(), cause));
             polled++;
         }
     }
