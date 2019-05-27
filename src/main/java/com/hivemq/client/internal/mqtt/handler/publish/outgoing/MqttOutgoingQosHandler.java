@@ -55,6 +55,7 @@ import com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5PubAckException;
 import com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5PubRecException;
 import com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import io.netty.channel.ChannelHandlerContext;
+import io.reactivex.Flowable;
 import io.reactivex.FlowableSubscriber;
 import org.jctools.queues.SpscUnboundedArrayQueue;
 import org.jetbrains.annotations.NotNull;
@@ -115,7 +116,9 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
                 UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE - MqttSubscriptionHandler.MAX_SUB_PENDING);
         sendMaximum = newSendMaximum;
         if (oldSendMaximum == 0) {
-            publishFlowables.flatMap(f -> f, true, MAX_CONCURRENT_PUBLISH_FLOWABLES).subscribe(this);
+            publishFlowables.flatMap(
+                    f -> f, true, MAX_CONCURRENT_PUBLISH_FLOWABLES, Math.min(newSendMaximum, Flowable.bufferSize()))
+                    .subscribe(this);
             assert subscription != null;
             packetIdentifiers = new Ranges(1, newSendMaximum);
             qos1Or2Map = IntMap.range(1, newSendMaximum);
