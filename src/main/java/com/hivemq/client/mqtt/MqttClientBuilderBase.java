@@ -19,6 +19,8 @@ package com.hivemq.client.mqtt;
 
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.datatypes.MqttClientIdentifier;
+import com.hivemq.client.mqtt.lifecycle.MqttClientAutoReconnect;
+import com.hivemq.client.mqtt.lifecycle.MqttClientAutoReconnectBuilder;
 import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedListener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -157,6 +159,35 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      * @see #executorConfig(MqttClientExecutorConfig)
      */
     @NotNull MqttClientExecutorConfigBuilder.Nested<? extends B> executorConfig();
+
+    /**
+     * Uses automatic reconnect with the default configuration.
+     *
+     * @return the builder.
+     * @since 1.1
+     */
+    @NotNull B useAutomaticReconnectWithDefaultConfig();
+
+    /**
+     * Sets the optional {@link MqttClientConfig#getAutomaticReconnect() automatic reconnect strategy}.
+     *
+     * @param autoReconnect the automatic reconnect strategy.
+     * @return the builder.
+     * @since 1.1
+     */
+    @NotNull B useAutomaticReconnect(@NotNull MqttClientAutoReconnect autoReconnect);
+
+    /**
+     * Fluent counterpart of {@link #useAutomaticReconnect(MqttClientAutoReconnect)}.
+     * <p>
+     * Calling {@link MqttClientAutoReconnectBuilder.Nested#applyAutomaticReconnect()} on the returned builder has the
+     * effect of extending the current automatic reconnect strategy.
+     *
+     * @return the fluent builder for the automatic reconnect strategy.
+     * @see #useAutomaticReconnect(MqttClientAutoReconnect)
+     * @since 1.1
+     */
+    @NotNull MqttClientAutoReconnectBuilder.Nested<? extends B> useAutomaticReconnect();
 
     /**
      * Adds a listener which is notified when the client is disconnected (with or without a Disconnect message) or the
