@@ -22,23 +22,50 @@ import com.hivemq.client.mqtt.MqttClientConfig;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * Listener which is notified when the client is disconnected (with or without a Disconnect message) or the connection
+ * fails.
+ *
  * @author Silvio Giebl
  * @since 1.1
  */
 @FunctionalInterface
 public interface MqttClientDisconnectedListener {
 
+    /**
+     * Listener method which is notified when the client is disconnected (with or without a Disconnect message) or the
+     * connection fails.
+     * <p>
+     * This method must not block. If you want to reconnect you have to use the supplied {@link
+     * Context#getReconnector()}.
+     *
+     * @param context provides context about the client and the cause for disconnection and allows reconnecting.
+     */
     void onDisconnect(@NotNull Context context);
 
+    /**
+     * Provides context about the client and the cause for disconnection and allows reconnecting.
+     */
     @DoNotImplement
     interface Context {
 
+        /**
+         * @return the config of the client that is disconnected.
+         */
         @NotNull MqttClientConfig getClientConfig();
 
+        /**
+         * @return the source which triggered the disconnection.
+         */
         @NotNull MqttDisconnectSource getSource();
 
+        /**
+         * @return the cause for disconnection.
+         */
         @NotNull Throwable getCause();
 
+        /**
+         * @return the reconnector which can be used for reconnecting.
+         */
         @NotNull MqttClientReconnector getReconnector();
     }
 }

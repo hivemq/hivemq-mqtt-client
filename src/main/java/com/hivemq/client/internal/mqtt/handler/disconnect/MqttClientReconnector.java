@@ -76,13 +76,14 @@ public class MqttClientReconnector implements Mqtt5ClientReconnector {
 
     @Override
     public <T> @NotNull Mqtt5ClientReconnector reconnectWhen(
-            @NotNull CompletableFuture<T> future, final @NotNull BiConsumer<? super T, ? super Throwable> consumer) {
+            @NotNull CompletableFuture<T> future, final @Nullable BiConsumer<? super T, ? super Throwable> callback) {
 
         checkThread();
         Checks.notNull(future, "Future");
-        Checks.notNull(consumer, "Consumer");
         this.reconnect = true;
-        future = future.whenCompleteAsync(consumer, eventLoop);
+        if (callback != null) {
+            future = future.whenCompleteAsync(callback, eventLoop);
+        }
         if (this.future == null) {
             this.future = future;
         } else {
