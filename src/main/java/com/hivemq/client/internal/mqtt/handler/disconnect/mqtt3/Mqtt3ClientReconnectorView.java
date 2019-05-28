@@ -25,6 +25,7 @@ import com.hivemq.client.mqtt.mqtt3.lifecycle.Mqtt3ClientReconnector;
 import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3Connect;
 import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3ConnectBuilder;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.CompletableFuture;
@@ -51,9 +52,9 @@ public class Mqtt3ClientReconnectorView implements Mqtt3ClientReconnector {
     @Override
     public @NotNull <T> Mqtt3ClientReconnector reconnectWhen(
             final @NotNull CompletableFuture<T> future,
-            final @NotNull BiConsumer<? super T, ? super Throwable> consumer) {
+            final @Nullable BiConsumer<? super T, ? super Throwable> callback) {
 
-        delegate.reconnectWhen(future, consumer);
+        delegate.reconnectWhen(future, callback);
         return this;
     }
 

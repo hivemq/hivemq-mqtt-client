@@ -22,6 +22,7 @@ import com.hivemq.client.mqtt.lifecycle.MqttClientReconnector;
 import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnectBuilder;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.CompletableFuture;
@@ -29,6 +30,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 
 /**
+ * A {@link MqttClientReconnector} with methods specific to a {@link com.hivemq.client.mqtt.mqtt5.Mqtt5Client
+ * Mqtt5Client}.
+ *
  * @author Silvio Giebl
  * @since 1.1
  */
@@ -40,7 +44,7 @@ public interface Mqtt5ClientReconnector extends MqttClientReconnector {
 
     @Override
     <T> @NotNull Mqtt5ClientReconnector reconnectWhen(
-            @NotNull CompletableFuture<T> future, @NotNull BiConsumer<? super T, ? super Throwable> consumer);
+            @NotNull CompletableFuture<T> future, @Nullable BiConsumer<? super T, ? super Throwable> callback);
 
     @Override
     @NotNull Mqtt5ClientReconnector delay(long delay, @NotNull TimeUnit timeUnit);
@@ -48,9 +52,35 @@ public interface Mqtt5ClientReconnector extends MqttClientReconnector {
     @Override
     @NotNull Mqtt5ClientReconnector serverAddress(@NotNull InetSocketAddress address);
 
+    /**
+     * Sets a different Connect message the client will try to reconnect with.
+     *
+     * @param connect the Connect message.
+     * @return this reconnector.
+     */
     @NotNull Mqtt5ClientReconnector connect(@NotNull Mqtt5Connect connect);
 
+    /**
+     * Fluent counterpart of {@link #connect(Mqtt5Connect)}.
+     * <p>
+     * Calling {@link Mqtt5ConnectBuilder.Nested#applyConnect()} on the returned builder has the same effect as calling
+     * {@link #connect(Mqtt5Connect)} with the result of {@link Mqtt5ConnectBuilder#build()}.
+     *
+     * @return the fluent builder for the Connect message.
+     * @see #connect(Mqtt5Connect)
+     */
     @NotNull Mqtt5ConnectBuilder.Nested<? extends Mqtt5ClientReconnector> connectWith();
 
+    /**
+     * Returns the currently set Connect message the client will try to reconnect with.
+     * <p>
+     * If the {@link #connect(Mqtt5Connect)} method has not been called before (including previous {@link
+     * com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedListener MqttClientDisconnectedListeners}) it will be the
+     * Connect message that is reconstructed from the {@link com.hivemq.client.mqtt.mqtt5.Mqtt5ClientConnectionConfig
+     * Mqtt5ClientConnectionConfig} or the Connect message of the previous connect try if it has not been successfully
+     * connected.
+     *
+     * @return the Connect message.
+     */
     @NotNull Mqtt5Connect getConnect();
 }

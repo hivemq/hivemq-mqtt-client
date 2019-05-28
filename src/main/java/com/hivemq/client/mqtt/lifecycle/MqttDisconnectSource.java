@@ -18,11 +18,34 @@
 package com.hivemq.client.mqtt.lifecycle;
 
 /**
+ * Source which triggers disconnection.
+ *
  * @author Silvio Giebl
  * @since 1.1
  */
 public enum MqttDisconnectSource {
+
+    /**
+     * The user explicitly called disconnect.
+     */
     USER,
+
+    /**
+     * The client itself (without interaction of the user) sent a Disconnect message or closed the connection without a
+     * Disconnect message.
+     * <p>
+     * This can happen if
+     * <ul>
+     * <li>an initialization error occurs (e.g. unknown host)</li>
+     * <li>an operation times out (e.g. connect, ping)</li>
+     * <li>a network error occurs</li>
+     * <li>the server does not conform to the MQTT specification (e.g. malformed packet, protocol error)</li>
+     * </ul>
+     */
     CLIENT,
+
+    /**
+     * The server sent a Disconnect message or closed the connection without a Disconnect message.
+     */
     SERVER
 }
