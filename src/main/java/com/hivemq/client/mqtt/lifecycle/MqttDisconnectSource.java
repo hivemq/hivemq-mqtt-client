@@ -17,28 +17,12 @@
 
 package com.hivemq.client.mqtt.lifecycle;
 
-import com.hivemq.client.annotations.DoNotImplement;
-import com.hivemq.client.mqtt.MqttClientConfig;
-import org.jetbrains.annotations.NotNull;
-
 /**
  * @author Silvio Giebl
  * @since 1.1
  */
-@FunctionalInterface
-public interface MqttClientDisconnectedListener {
-
-    void onDisconnect(@NotNull Context context);
-
-    @DoNotImplement
-    interface Context {
-
-        @NotNull MqttClientConfig getClientConfig();
-
-        @NotNull MqttDisconnectSource getSource();
-
-        @NotNull Throwable getCause();
-
-        @NotNull MqttClientReconnector getReconnector();
-    }
+public enum MqttDisconnectSource {
+    USER,
+    CLIENT,
+    SERVER
 }

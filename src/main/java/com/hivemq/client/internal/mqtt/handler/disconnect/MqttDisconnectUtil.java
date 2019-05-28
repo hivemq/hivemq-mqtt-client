@@ -20,6 +20,7 @@ package com.hivemq.client.internal.mqtt.handler.disconnect;
 import com.hivemq.client.internal.mqtt.message.disconnect.MqttDisconnect;
 import com.hivemq.client.internal.mqtt.message.disconnect.MqttDisconnectBuilder;
 import com.hivemq.client.mqtt.exceptions.ConnectionClosedException;
+import com.hivemq.client.mqtt.lifecycle.MqttDisconnectSource;
 import com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5DisconnectException;
 import com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import io.netty.channel.Channel;
@@ -40,7 +41,7 @@ public final class MqttDisconnectUtil {
      * @param cause   the cause why the channel is closed.
      */
     public static void close(final @NotNull Channel channel, final @NotNull Throwable cause) {
-        fireDisconnectEvent(channel, cause, true);
+        fireDisconnectEvent(channel, cause, MqttDisconnectSource.CLIENT);
     }
 
     /**
@@ -50,7 +51,7 @@ public final class MqttDisconnectUtil {
      * @param reason  the reason why the channel is closed.
      */
     public static void close(final @NotNull Channel channel, final @NotNull String reason) {
-        fireDisconnectEvent(channel, new ConnectionClosedException(reason), true);
+        fireDisconnectEvent(channel, new ConnectionClosedException(reason), MqttDisconnectSource.CLIENT);
     }
 
     /**
@@ -66,7 +67,8 @@ public final class MqttDisconnectUtil {
 
         final MqttDisconnect disconnect =
                 new MqttDisconnectBuilder.Default().reasonCode(reasonCode).reasonString(reasonString).build();
-        fireDisconnectEvent(channel, new Mqtt5DisconnectException(disconnect, reasonString), true);
+        fireDisconnectEvent(
+                channel, new Mqtt5DisconnectException(disconnect, reasonString), MqttDisconnectSource.CLIENT);
     }
 
     /**
@@ -82,13 +84,14 @@ public final class MqttDisconnectUtil {
 
         final MqttDisconnect disconnect =
                 new MqttDisconnectBuilder.Default().reasonCode(reasonCode).reasonString(cause.getMessage()).build();
-        fireDisconnectEvent(channel, new Mqtt5DisconnectException(disconnect, cause), true);
+        fireDisconnectEvent(channel, new Mqtt5DisconnectException(disconnect, cause), MqttDisconnectSource.CLIENT);
     }
 
     static void fireDisconnectEvent(
-            final @NotNull Channel channel, final @NotNull Throwable cause, final boolean fromClient) {
+            final @NotNull Channel channel, final @NotNull Throwable cause,
+            final @NotNull MqttDisconnectSource source) {
 
-        fireDisconnectEvent(channel, new MqttDisconnectEvent(cause, fromClient));
+        fireDisconnectEvent(channel, new MqttDisconnectEvent(cause, source));
     }
 
     static void fireDisconnectEvent(

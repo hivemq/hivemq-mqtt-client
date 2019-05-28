@@ -31,7 +31,7 @@ import com.hivemq.client.internal.mqtt.ioc.ConnectionScope;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
 import com.hivemq.client.mqtt.MqttWebSocketConfig;
 import com.hivemq.client.mqtt.exceptions.ConnectionFailedException;
-import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedListener;
+import com.hivemq.client.mqtt.lifecycle.MqttDisconnectSource;
 import dagger.Lazy;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -125,8 +125,8 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
             ctx.pipeline().remove(MqttDisconnectHandler.NAME);
         }
         ctx.close();
-        MqttConnAckSingle.reconnect(clientConfig, MqttClientDisconnectedListener.Source.CLIENT,
-                new ConnectionFailedException(cause), connect, connAckFlow, ctx.channel().eventLoop());
+        MqttConnAckSingle.reconnect(clientConfig, MqttDisconnectSource.CLIENT, new ConnectionFailedException(cause),
+                connect, connAckFlow, ctx.channel().eventLoop());
         clientConfig.releaseEventLoop();
     }
 }

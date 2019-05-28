@@ -37,7 +37,6 @@ import com.hivemq.client.internal.mqtt.message.connect.connack.MqttConnAck;
 import com.hivemq.client.internal.mqtt.message.connect.connack.MqttConnAckRestrictions;
 import com.hivemq.client.mqtt.MqttClientState;
 import com.hivemq.client.mqtt.MqttVersion;
-import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedListener;
 import com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5ConnAckException;
 import com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import io.netty.channel.Channel;
@@ -282,10 +281,8 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
             return;
         }
         super.onDisconnectEvent(disconnectEvent);
-        MqttConnAckSingle.reconnect(
-                clientConfig, disconnectEvent.fromClient() ? MqttClientDisconnectedListener.Source.CLIENT :
-                        MqttClientDisconnectedListener.Source.SERVER, disconnectEvent.getCause(), connect, connAckFlow,
-                ctx.channel().eventLoop());
+        MqttConnAckSingle.reconnect(clientConfig, disconnectEvent.getSource(), disconnectEvent.getCause(), connect,
+                connAckFlow, ctx.channel().eventLoop());
     }
 
     @Override

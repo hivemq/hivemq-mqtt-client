@@ -33,7 +33,7 @@ import com.hivemq.client.internal.mqtt.message.disconnect.MqttDisconnect;
 import com.hivemq.client.internal.rx.CompletableFlow;
 import com.hivemq.client.mqtt.MqttVersion;
 import com.hivemq.client.mqtt.exceptions.ConnectionClosedException;
-import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedListener;
+import com.hivemq.client.mqtt.lifecycle.MqttDisconnectSource;
 import com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5DisconnectException;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -82,8 +82,8 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
     private void readDisconnect(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttDisconnect disconnect) {
         if (once) {
             once = false;
-            fireDisconnectEvent(
-                    ctx.channel(), new Mqtt5DisconnectException(disconnect, "Server sent DISCONNECT."), false);
+            fireDisconnectEvent(ctx.channel(), new Mqtt5DisconnectException(disconnect, "Server sent DISCONNECT."),
+                    MqttDisconnectSource.SERVER);
         }
     }
 
@@ -93,7 +93,8 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
         if (once) {
             once = false;
             fireDisconnectEvent(ctx.channel(),
-                    new ConnectionClosedException("Server closed connection without DISCONNECT."), false);
+                    new ConnectionClosedException("Server closed connection without DISCONNECT."),
+                    MqttDisconnectSource.SERVER);
         }
     }
 
@@ -101,7 +102,7 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
     public void exceptionCaught(final @NotNull ChannelHandlerContext ctx, final @NotNull Throwable cause) {
         if (once) {
             once = false;
-            fireDisconnectEvent(ctx.channel(), new ConnectionClosedException(cause), false);
+            fireDisconnectEvent(ctx.channel(), new ConnectionClosedException(cause), MqttDisconnectSource.CLIENT);
         } else {
             LOGGER.error("Exception while disconnecting.", cause);
         }
@@ -141,7 +142,9 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
             reconnect(disconnectEvent, connectionConfig, ctx.channel().eventLoop());
         }
 
-        if (disconnectEvent.fromClient()) {
+        if (disconnectEvent.getSource() == MqttDisconnectSource.SERVER) {
+            ctx.channel().close();
+        } else {
             final MqttDisconnect disconnect = disconnectEvent.getDisconnect();
             if (disconnect != null) {
                 if (disconnectEvent instanceof MqttDisconnectEvent.ByUser) {
@@ -162,8 +165,6 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
             } else {
                 ctx.channel().close();
             }
-        } else {
-            ctx.channel().close();
         }
     }
 
@@ -171,16 +172,6 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
             final @NotNull MqttDisconnectEvent disconnectEvent,
             final @NotNull MqttClientConnectionConfig connectionConfig, final @NotNull EventLoop eventLoop) {
 
-        final MqttClientDisconnectedListener.Source source;
-        if (disconnectEvent.fromClient()) {
-            if (disconnectEvent instanceof MqttDisconnectEvent.ByUser) {
-                source = MqttClientDisconnectedListener.Source.USER;
-            } else {
-                source = MqttClientDisconnectedListener.Source.CLIENT;
-            }
-        } else {
-            source = MqttClientDisconnectedListener.Source.SERVER;
-        }
         // @formatter:off
         final MqttConnect connect = new MqttConnect(connectionConfig.getKeepAlive(),
                 connectionConfig.getSessionExpiryInterval() > 0,
@@ -200,7 +191,7 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
                 null,
                 MqttUserPropertiesImpl.NO_USER_PROPERTIES); // TODO simpleAuth, willPublish
         // @formatter:on
-        MqttConnAckSingle.reconnect(clientConfig, source, disconnectEvent.getCause(), connect,
+        MqttConnAckSingle.reconnect(clientConfig, disconnectEvent.getSource(), disconnectEvent.getCause(), connect,
                 connectionConfig.getServerAddress(), eventLoop);
     }
 
