@@ -23,9 +23,10 @@ import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3Connect;
 import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3ConnectBuilder;
 import org.jetbrains.annotations.NotNull;
 
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiConsumer;
 
 /**
  * @author Silvio Giebl
@@ -35,19 +36,17 @@ import java.util.concurrent.TimeUnit;
 public interface Mqtt3ClientReconnector extends MqttClientReconnector {
 
     @Override
+    @NotNull Mqtt3ClientReconnector reconnect(boolean reconnect);
+
+    @Override
+    <T> @NotNull Mqtt3ClientReconnector reconnectWhen(
+            @NotNull CompletableFuture<T> future, @NotNull BiConsumer<? super T, ? super Throwable> consumer);
+
+    @Override
     @NotNull Mqtt3ClientReconnector delay(long delay, @NotNull TimeUnit timeUnit);
 
     @Override
     @NotNull Mqtt3ClientReconnector serverAddress(@NotNull InetSocketAddress address);
-
-    @Override
-    @NotNull Mqtt3ClientReconnector serverHost(@NotNull String host);
-
-    @Override
-    @NotNull Mqtt3ClientReconnector serverHost(@NotNull InetAddress host);
-
-    @Override
-    @NotNull Mqtt3ClientReconnector serverPort(int port);
 
     @NotNull Mqtt3ClientReconnector connect(@NotNull Mqtt3Connect connect);
 

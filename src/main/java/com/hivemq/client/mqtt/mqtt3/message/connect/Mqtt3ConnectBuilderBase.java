@@ -40,7 +40,7 @@ public interface Mqtt3ConnectBuilderBase<B extends Mqtt3ConnectBuilderBase<B>> {
      * <p>
      * The value must be in the range of an unsigned short: [0, 65_535].
      *
-     * @param keepAlive tbe keep alive in seconds.
+     * @param keepAlive the keep alive in seconds.
      * @return the builder.
      */
     @NotNull B keepAlive(int keepAlive);

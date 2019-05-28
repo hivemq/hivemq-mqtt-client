@@ -27,6 +27,7 @@ import io.netty.channel.Channel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.net.InetSocketAddress;
 import java.util.Optional;
 
 /**
@@ -37,6 +38,7 @@ public class MqttClientConnectionConfig
         Mqtt5ClientConnectionConfig.RestrictionsForClient, Mqtt3ClientConnectionConfig,
         Mqtt3ClientConnectionConfig.RestrictionsForClient {
 
+    private final @NotNull InetSocketAddress serverAddress;
     private final int keepAlive;
     private final long sessionExpiryInterval;
     private final boolean hasWillPublish;
@@ -56,15 +58,30 @@ public class MqttClientConnectionConfig
     private final boolean subscriptionIdentifiersAvailable;
     private final @NotNull Channel channel;
 
+    // @formatter:off
     public MqttClientConnectionConfig(
-            final int keepAlive, final long sessionExpiryInterval, final boolean hasWillPublish,
-            final @Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism, final int receiveMaximum,
-            final int maximumPacketSize, final int topicAliasMaximum, final boolean problemInformationRequested,
-            final boolean responseInformationRequested, final int sendMaximum, final int sendMaximumPacketSize,
-            final int sendTopicAliasMaximum, final @NotNull MqttQos maximumQos, final boolean retainAvailable,
-            final boolean wildcardSubscriptionAvailable, final boolean sharedSubscriptionAvailable,
-            final boolean subscriptionIdentifiersAvailable, final @NotNull Channel channel) {
+            final @NotNull InetSocketAddress serverAddress,
+            final int keepAlive,
+            final long sessionExpiryInterval,
+            final boolean hasWillPublish,
+            final @Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism,
+            final int receiveMaximum,
+            final int maximumPacketSize,
+            final int topicAliasMaximum,
+            final boolean problemInformationRequested,
+            final boolean responseInformationRequested,
+            final int sendMaximum,
+            final int sendMaximumPacketSize,
+            final int sendTopicAliasMaximum,
+            final @NotNull MqttQos maximumQos,
+            final boolean retainAvailable,
+            final boolean wildcardSubscriptionAvailable,
+            final boolean sharedSubscriptionAvailable,
+            final boolean subscriptionIdentifiersAvailable,
+            final @NotNull Channel channel) {
+    // @formatter:on
 
+        this.serverAddress = serverAddress;
         this.keepAlive = keepAlive;
         this.sessionExpiryInterval = sessionExpiryInterval;
         this.hasWillPublish = hasWillPublish;
@@ -76,14 +93,18 @@ public class MqttClientConnectionConfig
         this.responseInformationRequested = responseInformationRequested;
         this.sendMaximum = sendMaximum;
         this.sendMaximumPacketSize = sendMaximumPacketSize;
-        this.sendTopicAliasMapping =
-                (sendTopicAliasMaximum == 0) ? null : new MqttTopicAliasAutoMapping(sendTopicAliasMaximum);
+        this.sendTopicAliasMapping = (sendTopicAliasMaximum == 0) ? null : new MqttTopicAliasAutoMapping(sendTopicAliasMaximum);
         this.maximumQos = maximumQos;
         this.retainAvailable = retainAvailable;
         this.wildcardSubscriptionAvailable = wildcardSubscriptionAvailable;
         this.sharedSubscriptionAvailable = sharedSubscriptionAvailable;
         this.subscriptionIdentifiersAvailable = subscriptionIdentifiersAvailable;
         this.channel = channel;
+    }
+
+    @Override
+    public @NotNull InetSocketAddress getServerAddress() {
+        return serverAddress;
     }
 
     @Override

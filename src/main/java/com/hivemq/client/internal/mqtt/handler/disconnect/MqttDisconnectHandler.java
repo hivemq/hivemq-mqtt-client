@@ -20,19 +20,25 @@ package com.hivemq.client.internal.mqtt.handler.disconnect;
 import com.hivemq.client.internal.logging.InternalLogger;
 import com.hivemq.client.internal.logging.InternalLoggerFactory;
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
+import com.hivemq.client.internal.mqtt.MqttClientConnectionConfig;
+import com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.client.internal.mqtt.exceptions.MqttClientStateExceptions;
 import com.hivemq.client.internal.mqtt.handler.MqttConnectionAwareHandler;
 import com.hivemq.client.internal.mqtt.handler.MqttSession;
+import com.hivemq.client.internal.mqtt.handler.connect.MqttConnAckSingle;
 import com.hivemq.client.internal.mqtt.ioc.ConnectionScope;
+import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
+import com.hivemq.client.internal.mqtt.message.connect.MqttConnectRestrictions;
 import com.hivemq.client.internal.mqtt.message.disconnect.MqttDisconnect;
 import com.hivemq.client.internal.rx.CompletableFlow;
-import com.hivemq.client.mqtt.MqttClientState;
 import com.hivemq.client.mqtt.MqttVersion;
 import com.hivemq.client.mqtt.exceptions.ConnectionClosedException;
+import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedListener;
 import com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5DisconnectException;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.EventLoop;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
@@ -126,10 +132,14 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
         super.onDisconnectEvent(disconnectEvent);
         once = false;
 
-        session.expire(disconnectEvent.getCause(), ctx.channel().eventLoop());
+        final MqttClientConnectionConfig connectionConfig = clientConfig.getRawConnectionConfig();
+        if (connectionConfig != null) {
+            clientConfig.setConnectionConfig(null);
 
-        clientConfig.setConnectionConfig(null);
-        clientConfig.getRawState().set(MqttClientState.DISCONNECTED);
+            session.expire(disconnectEvent.getCause(), connectionConfig, ctx.channel().eventLoop());
+
+            reconnect(disconnectEvent, connectionConfig, ctx.channel().eventLoop());
+        }
 
         if (disconnectEvent.fromClient()) {
             final MqttDisconnect disconnect = disconnectEvent.getDisconnect();
@@ -155,6 +165,43 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
         } else {
             ctx.channel().close();
         }
+    }
+
+    private void reconnect(
+            final @NotNull MqttDisconnectEvent disconnectEvent,
+            final @NotNull MqttClientConnectionConfig connectionConfig, final @NotNull EventLoop eventLoop) {
+
+        final MqttClientDisconnectedListener.Source source;
+        if (disconnectEvent.fromClient()) {
+            if (disconnectEvent instanceof MqttDisconnectEvent.ByUser) {
+                source = MqttClientDisconnectedListener.Source.USER;
+            } else {
+                source = MqttClientDisconnectedListener.Source.CLIENT;
+            }
+        } else {
+            source = MqttClientDisconnectedListener.Source.SERVER;
+        }
+        // @formatter:off
+        final MqttConnect connect = new MqttConnect(connectionConfig.getKeepAlive(),
+                connectionConfig.getSessionExpiryInterval() > 0,
+                connectionConfig.getSessionExpiryInterval(),
+                new MqttConnectRestrictions(
+                        connectionConfig.getReceiveMaximum(),
+                        connectionConfig.getSendMaximum(),
+                        connectionConfig.getMaximumPacketSize(),
+                        connectionConfig.getSendMaximumPacketSize(),
+                        connectionConfig.getTopicAliasMaximum(),
+                        connectionConfig.getSendTopicAliasMaximum(),
+                        connectionConfig.isProblemInformationRequested(),
+                        connectionConfig.isResponseInformationRequested()
+                ),
+                null,
+                connectionConfig.getRawEnhancedAuthMechanism(),
+                null,
+                MqttUserPropertiesImpl.NO_USER_PROPERTIES); // TODO simpleAuth, willPublish
+        // @formatter:on
+        MqttConnAckSingle.reconnect(clientConfig, source, disconnectEvent.getCause(), connect,
+                connectionConfig.getServerAddress(), eventLoop);
     }
 
     @Override

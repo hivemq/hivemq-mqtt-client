@@ -18,10 +18,13 @@
 package com.hivemq.client.mqtt;
 
 import com.hivemq.client.annotations.DoNotImplement;
+import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.mqtt.datatypes.MqttClientIdentifier;
+import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.InetSocketAddress;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -47,18 +50,18 @@ public interface MqttClientConfig {
     @NotNull Optional<MqttClientIdentifier> getClientIdentifier();
 
     /**
-     * @return the server address the client connects to or is connected to.
+     * @return the server address the client connects to.
      * @since 1.1
      */
     @NotNull InetSocketAddress getServerAddress();
 
     /**
-     * @return the server host the clients connects to or is connected to.
+     * @return the server host the clients connects to.
      */
     @NotNull String getServerHost();
 
     /**
-     * @return the server port the client connects to or is connected to.
+     * @return the server port the client connects to.
      */
     int getServerPort();
 
@@ -76,6 +79,13 @@ public interface MqttClientConfig {
      * @return the optional WebSocket configuration of the client.
      */
     @NotNull Optional<MqttWebSocketConfig> getWebSocketConfig();
+
+    /**
+     * @return the listeners which are notified (in the order of the list) when this client is disconnected (with or
+     *         without a Disconnect message) or the connection fails.
+     * @since 1.1
+     */
+    @Immutable @NotNull List<@NotNull MqttClientDisconnectedListener> getDisconnectedListeners();
 
     /**
      * @return the state of the client.

@@ -24,6 +24,7 @@ import com.hivemq.client.internal.mqtt.handler.connect.MqttConnAckFlow;
 import com.hivemq.client.internal.mqtt.handler.connect.MqttConnectHandler;
 import com.hivemq.client.internal.mqtt.handler.disconnect.MqttDisconnectHandler;
 import com.hivemq.client.internal.mqtt.handler.websocket.MqttWebSocketInitializer;
+import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
 import com.hivemq.client.mqtt.MqttVersion;
 import dagger.Lazy;
 import io.netty.channel.Channel;
@@ -48,6 +49,8 @@ public class MqttChannelInitializerSslTest {
 
     @Mock
     private MqttClientConfig clientData;
+    @Mock
+    private MqttConnect connect;
     @Mock
     private MqttConnAckFlow connAckFlow;
     @Mock
@@ -78,7 +81,7 @@ public class MqttChannelInitializerSslTest {
         when(clientData.getRawSslConfig()).thenReturn(sslConfig);
 
         final MqttChannelInitializer mqttChannelInitializer =
-                new MqttChannelInitializer(clientData, connAckFlow, encoder, connectHandler, disconnectHandler,
+                new MqttChannelInitializer(clientData, connect, connAckFlow, encoder, connectHandler, disconnectHandler,
                         authHandler, webSocketInitializer);
 
         mqttChannelInitializer.initChannel(channel);

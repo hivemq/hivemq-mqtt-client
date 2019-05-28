@@ -57,7 +57,7 @@ public class MqttDisconnectEvent {
     /**
      * @return whether the client initiated closing of the channel.
      */
-    boolean fromClient() {
+    public boolean fromClient() {
         return fromClient;
     }
 

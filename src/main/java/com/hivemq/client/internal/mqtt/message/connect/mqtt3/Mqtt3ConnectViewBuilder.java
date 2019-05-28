@@ -116,6 +116,14 @@ public abstract class Mqtt3ConnectViewBuilder<B extends Mqtt3ConnectViewBuilder<
             this.parentConsumer = parentConsumer;
         }
 
+        public Nested(
+                final @NotNull Mqtt3ConnectView connect,
+                final @NotNull Function<? super Mqtt3ConnectView, P> parentConsumer) {
+
+            super(connect);
+            this.parentConsumer = parentConsumer;
+        }
+
         @Override
         @NotNull Nested<P> self() {
             return this;

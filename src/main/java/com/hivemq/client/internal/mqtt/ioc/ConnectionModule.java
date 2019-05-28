@@ -17,7 +17,6 @@
 
 package com.hivemq.client.internal.mqtt.ioc;
 
-import com.hivemq.client.internal.mqtt.MqttClientConfig;
 import com.hivemq.client.internal.mqtt.handler.MqttChannelInitializer;
 import com.hivemq.client.internal.mqtt.handler.auth.MqttAuthHandler;
 import com.hivemq.client.internal.mqtt.handler.auth.MqttConnectAuthHandler;
@@ -40,11 +39,10 @@ abstract class ConnectionModule {
 
     @Provides
     static @NotNull Bootstrap provideBootstrap(
-            final @NotNull MqttClientConfig clientConfig, final @NotNull NettyEventLoopProvider nettyEventLoopProvider,
+            final @NotNull NettyEventLoopProvider nettyEventLoopProvider,
             final @NotNull MqttChannelInitializer channelInitializer) {
 
-        return new Bootstrap().group(clientConfig.acquireEventLoop())
-                .channelFactory(nettyEventLoopProvider.getChannelFactory())
+        return new Bootstrap().channelFactory(nettyEventLoopProvider.getChannelFactory())
                 .option(ChannelOption.SO_KEEPALIVE, true)
                 .option(ChannelOption.TCP_NODELAY, true)
                 .option(ChannelOption.ALLOCATOR, ByteBufAllocator.DEFAULT)

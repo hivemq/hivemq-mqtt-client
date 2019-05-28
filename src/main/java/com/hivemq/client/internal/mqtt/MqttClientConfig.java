@@ -21,12 +21,15 @@ import com.hivemq.client.internal.mqtt.advanced.MqttClientAdvancedConfig;
 import com.hivemq.client.internal.mqtt.datatypes.MqttClientIdentifierImpl;
 import com.hivemq.client.internal.mqtt.ioc.ClientComponent;
 import com.hivemq.client.internal.mqtt.ioc.SingletonComponent;
+import com.hivemq.client.internal.mqtt.mqtt3.Mqtt3ClientConfigView;
 import com.hivemq.client.internal.util.ExecutorUtil;
+import com.hivemq.client.internal.util.collections.ImmutableList;
 import com.hivemq.client.mqtt.MqttClientSslConfig;
 import com.hivemq.client.mqtt.MqttClientState;
 import com.hivemq.client.mqtt.MqttVersion;
 import com.hivemq.client.mqtt.MqttWebSocketConfig;
 import com.hivemq.client.mqtt.datatypes.MqttClientIdentifier;
+import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedListener;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5ClientConfig;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5ClientConnectionConfig;
 import io.netty.channel.EventLoop;
@@ -49,6 +52,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
     private final @Nullable MqttClientSslConfigImpl sslConfig;
     private final @Nullable MqttWebSocketConfigImpl webSocketConfig;
     private final @NotNull MqttClientAdvancedConfig advancedConfig;
+    private final @NotNull ImmutableList<MqttClientDisconnectedListener> disconnectedListeners;
 
     private final @NotNull ClientComponent clientComponent;
 
@@ -64,7 +68,8 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
             final @NotNull MqttVersion mqttVersion, final @NotNull MqttClientIdentifierImpl clientIdentifier,
             final @NotNull InetSocketAddress serverAddress, final @NotNull MqttClientExecutorConfigImpl executorConfig,
             final @Nullable MqttClientSslConfigImpl sslConfig, final @Nullable MqttWebSocketConfigImpl webSocketConfig,
-            final @NotNull MqttClientAdvancedConfig advancedConfig) {
+            final @NotNull MqttClientAdvancedConfig advancedConfig,
+            final @NotNull ImmutableList<MqttClientDisconnectedListener> disconnectedListeners) {
 
         this.mqttVersion = mqttVersion;
         this.clientIdentifier = clientIdentifier;
@@ -73,6 +78,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
         this.sslConfig = sslConfig;
         this.webSocketConfig = webSocketConfig;
         this.advancedConfig = advancedConfig;
+        this.disconnectedListeners = disconnectedListeners;
 
         clientComponent = SingletonComponent.INSTANCE.clientComponentBuilder().clientConfig(this).build();
 
@@ -141,6 +147,11 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
         return advancedConfig;
     }
 
+    @Override
+    public @NotNull ImmutableList<MqttClientDisconnectedListener> getDisconnectedListeners() {
+        return disconnectedListeners;
+    }
+
     public @NotNull ClientComponent getClientComponent() {
         return clientComponent;
     }
@@ -205,5 +216,12 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
 
     public void setConnectionConfig(final @Nullable MqttClientConnectionConfig connectionConfig) {
         this.connectionConfig = connectionConfig;
+    }
+
+    public @NotNull com.hivemq.client.mqtt.MqttClientConfig toVersionSpecific() {
+        if (mqttVersion == MqttVersion.MQTT_3_1_1) {
+            return new Mqtt3ClientConfigView(this);
+        }
+        return this;
     }
 }

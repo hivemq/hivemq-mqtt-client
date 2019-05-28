@@ -20,9 +20,10 @@ package com.hivemq.client.mqtt.lifecycle;
 import com.hivemq.client.annotations.DoNotImplement;
 import org.jetbrains.annotations.NotNull;
 
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiConsumer;
 
 /**
  * @author Silvio Giebl
@@ -31,23 +32,20 @@ import java.util.concurrent.TimeUnit;
 @DoNotImplement
 public interface MqttClientReconnector {
 
+    int getAttempts();
+
     @NotNull MqttClientReconnector reconnect(boolean reconnect);
 
-    boolean isReconnect();
+    <T> @NotNull MqttClientReconnector reconnectWhen(
+            @NotNull CompletableFuture<T> future, @NotNull BiConsumer<? super T, ? super Throwable> consumer);
 
-    int getAttempts();
+    boolean isReconnect();
 
     @NotNull MqttClientReconnector delay(long delay, @NotNull TimeUnit timeUnit);
 
     long getDelay(@NotNull TimeUnit timeUnit);
 
     @NotNull MqttClientReconnector serverAddress(@NotNull InetSocketAddress address);
-
-    @NotNull MqttClientReconnector serverHost(@NotNull String host);
-
-    @NotNull MqttClientReconnector serverHost(@NotNull InetAddress host);
-
-    @NotNull MqttClientReconnector serverPort(int port);
 
     @NotNull InetSocketAddress getServerAddress();
 }

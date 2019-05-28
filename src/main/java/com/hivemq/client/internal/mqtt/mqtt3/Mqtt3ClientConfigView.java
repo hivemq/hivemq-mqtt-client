@@ -17,14 +17,17 @@
 
 package com.hivemq.client.internal.mqtt.mqtt3;
 
+import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
 import com.hivemq.client.mqtt.*;
 import com.hivemq.client.mqtt.datatypes.MqttClientIdentifier;
+import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedListener;
 import com.hivemq.client.mqtt.mqtt3.Mqtt3ClientConfig;
 import com.hivemq.client.mqtt.mqtt3.Mqtt3ClientConnectionConfig;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.InetSocketAddress;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -34,7 +37,7 @@ public class Mqtt3ClientConfigView implements Mqtt3ClientConfig {
 
     private final @NotNull MqttClientConfig delegate;
 
-    Mqtt3ClientConfigView(final @NotNull MqttClientConfig delegate) {
+    public Mqtt3ClientConfigView(final @NotNull MqttClientConfig delegate) {
         this.delegate = delegate;
     }
 
@@ -76,6 +79,11 @@ public class Mqtt3ClientConfigView implements Mqtt3ClientConfig {
     @Override
     public @NotNull Optional<MqttWebSocketConfig> getWebSocketConfig() {
         return delegate.getWebSocketConfig();
+    }
+
+    @Override
+    public @Immutable @NotNull List<@NotNull MqttClientDisconnectedListener> getDisconnectedListeners() {
+        return delegate.getDisconnectedListeners();
     }
 
     @Override
