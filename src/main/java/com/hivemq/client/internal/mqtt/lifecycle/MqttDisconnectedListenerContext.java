@@ -15,7 +15,7 @@
  *
  */
 
-package com.hivemq.client.internal.mqtt.handler.disconnect;
+package com.hivemq.client.internal.mqtt.lifecycle;
 
 import com.hivemq.client.mqtt.MqttClientConfig;
 import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedListener;
@@ -36,7 +36,7 @@ public class MqttDisconnectedListenerContext implements MqttClientDisconnectedLi
     public MqttDisconnectedListenerContext(
             final @NotNull com.hivemq.client.internal.mqtt.MqttClientConfig clientConfig,
             final @NotNull MqttDisconnectSource source, final @NotNull Throwable cause,
-            final @NotNull com.hivemq.client.internal.mqtt.handler.disconnect.MqttClientReconnector reconnector) {
+            final @NotNull com.hivemq.client.internal.mqtt.lifecycle.MqttClientReconnector reconnector) {
 
         this.clientConfig = clientConfig.toVersionSpecific();
         this.source = source;

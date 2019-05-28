@@ -19,8 +19,8 @@ package com.hivemq.client.internal.mqtt.handler.connect;
 
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
 import com.hivemq.client.internal.mqtt.exceptions.MqttClientStateExceptions;
-import com.hivemq.client.internal.mqtt.handler.disconnect.MqttClientReconnector;
-import com.hivemq.client.internal.mqtt.handler.disconnect.MqttDisconnectedListenerContext;
+import com.hivemq.client.internal.mqtt.lifecycle.MqttClientReconnector;
+import com.hivemq.client.internal.mqtt.lifecycle.MqttDisconnectedListenerContext;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
 import com.hivemq.client.mqtt.exceptions.ConnectionFailedException;
 import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedListener;
