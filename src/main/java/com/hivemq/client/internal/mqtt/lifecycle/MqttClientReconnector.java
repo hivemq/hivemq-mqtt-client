@@ -15,10 +15,10 @@
  *
  */
 
-package com.hivemq.client.internal.mqtt.handler.disconnect;
+package com.hivemq.client.internal.mqtt.lifecycle;
 
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
-import com.hivemq.client.internal.mqtt.handler.disconnect.mqtt3.Mqtt3ClientReconnectorView;
+import com.hivemq.client.internal.mqtt.lifecycle.mqtt3.Mqtt3ClientReconnectorView;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnectBuilder;
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
