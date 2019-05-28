@@ -25,6 +25,9 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Automatic reconnect strategy using an exponential backoff with configurable initial and maximum delays.
+ * <p>
+ * The initial delay will be doubled for every unsuccessful connect attempt. The actual delay will be capped at the
+ * maximum delay. Additionally a random delay of +-25% will be added.
  *
  * @author Silvio Giebl
  * @since 1.1

@@ -54,6 +54,9 @@ public abstract class MqttClientAutoReconnectImplBuilder<B extends MqttClientAut
     }
 
     public @NotNull B maxDelay(final long maxDelay, final @Nullable TimeUnit timeUnit) {
+        if (maxDelay < 0) {
+            throw new IllegalArgumentException("Maximum delay must be positive or zero.");
+        }
         Checks.notNull(timeUnit, "Time unit");
         this.maxDelayNanos = TimeUnit.NANOSECONDS.convert(maxDelay, timeUnit);
         return self();

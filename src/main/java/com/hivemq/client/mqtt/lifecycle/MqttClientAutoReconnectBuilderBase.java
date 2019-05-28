@@ -44,6 +44,8 @@ public interface MqttClientAutoReconnectBuilderBase<B extends MqttClientAutoReco
 
     /**
      * Sets the maximum delay the client will wait before it tries to reconnect.
+     * <p>
+     * It must be positive or zero.
      *
      * @param maxDelay the maximum delay.
      * @param timeUnit the time unit of the given maximum delay.
