@@ -20,6 +20,7 @@ package com.hivemq.client.internal.mqtt.handler.disconnect;
 import com.hivemq.client.mqtt.MqttClientConfig;
 import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedListener;
 import com.hivemq.client.mqtt.lifecycle.MqttClientReconnector;
+import com.hivemq.client.mqtt.lifecycle.MqttDisconnectSource;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -28,13 +29,13 @@ import org.jetbrains.annotations.NotNull;
 public class MqttDisconnectedListenerContext implements MqttClientDisconnectedListener.Context {
 
     private final @NotNull MqttClientConfig clientConfig;
-    private final @NotNull MqttClientDisconnectedListener.Source source;
+    private final @NotNull MqttDisconnectSource source;
     private final @NotNull Throwable cause;
     private final @NotNull MqttClientReconnector reconnector;
 
     public MqttDisconnectedListenerContext(
             final @NotNull com.hivemq.client.internal.mqtt.MqttClientConfig clientConfig,
-            final @NotNull MqttClientDisconnectedListener.Source source, final @NotNull Throwable cause,
+            final @NotNull MqttDisconnectSource source, final @NotNull Throwable cause,
             final @NotNull com.hivemq.client.internal.mqtt.handler.disconnect.MqttClientReconnector reconnector) {
 
         this.clientConfig = clientConfig.toVersionSpecific();
@@ -49,7 +50,7 @@ public class MqttDisconnectedListenerContext implements MqttClientDisconnectedLi
     }
 
     @Override
-    public @NotNull MqttClientDisconnectedListener.Source getSource() {
+    public @NotNull MqttDisconnectSource getSource() {
         return source;
     }
 

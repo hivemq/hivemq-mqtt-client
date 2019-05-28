@@ -28,6 +28,7 @@ import com.hivemq.client.internal.mqtt.message.connect.MqttStatefulConnect;
 import com.hivemq.client.internal.mqtt.message.connect.connack.MqttConnAck;
 import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.internal.util.netty.DefaultChannelOutboundHandler;
+import com.hivemq.client.mqtt.exceptions.ConnectionFailedException;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5ClientConfig;
 import com.hivemq.client.mqtt.mqtt5.auth.Mqtt5EnhancedAuthMechanism;
 import com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5AuthException;
@@ -90,7 +91,7 @@ public class MqttConnectAuthHandler extends AbstractMqttAuthHandler implements D
                     connect.createStateful(clientConfig.getRawClientIdentifier(), enhancedAuthBuilder.build());
             ctx.writeAndFlush(statefulConnect, promise).addListener(this);
 
-        }, (ctx, throwable) -> MqttDisconnectUtil.close(ctx.channel(), throwable));
+        }, (ctx, throwable) -> MqttDisconnectUtil.close(ctx.channel(), new ConnectionFailedException(throwable)));
     }
 
     @Override

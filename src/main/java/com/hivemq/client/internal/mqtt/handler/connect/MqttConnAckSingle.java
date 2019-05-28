@@ -24,6 +24,7 @@ import com.hivemq.client.internal.mqtt.handler.disconnect.MqttDisconnectedListen
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
 import com.hivemq.client.mqtt.exceptions.ConnectionFailedException;
 import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedListener;
+import com.hivemq.client.mqtt.lifecycle.MqttDisconnectSource;
 import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.EventLoop;
@@ -79,14 +80,14 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
         bootstrap.group(eventLoop).connect(flow.getServerAddress()).addListener(future -> {
             final Throwable cause = future.cause();
             if (cause != null) {
-                reconnect(clientConfig, MqttClientDisconnectedListener.Source.CLIENT,
-                        new ConnectionFailedException(cause), connect, flow, eventLoop);
+                reconnect(clientConfig, MqttDisconnectSource.CLIENT, new ConnectionFailedException(cause), connect,
+                        flow, eventLoop);
             }
         });
     }
 
     public static void reconnect(
-            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttClientDisconnectedListener.Source source,
+            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttDisconnectSource source,
             final @NotNull Throwable cause, final @NotNull MqttConnect connect, final @NotNull MqttConnAckFlow flow,
             final @NotNull EventLoop eventLoop) {
 
@@ -99,7 +100,7 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
     }
 
     public static void reconnect(
-            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttClientDisconnectedListener.Source source,
+            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttDisconnectSource source,
             final @NotNull Throwable cause, final @NotNull MqttConnect connect,
             final @NotNull InetSocketAddress serverAddress, final @NotNull EventLoop eventLoop) {
 
@@ -109,7 +110,7 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
     }
 
     private static boolean reconnect(
-            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttClientDisconnectedListener.Source source,
+            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttDisconnectSource source,
             final @NotNull Throwable cause, final @NotNull MqttConnect connect,
             final @NotNull InetSocketAddress serverAddress, final int attempts, final @Nullable MqttConnAckFlow flow,
             final @NotNull EventLoop eventLoop) {
