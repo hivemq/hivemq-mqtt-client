@@ -21,11 +21,13 @@ import com.hivemq.client.internal.mqtt.datatypes.MqttClientIdentifierImpl;
 import com.hivemq.client.internal.mqtt.mqtt3.Mqtt3RxClientViewBuilder;
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
 import com.hivemq.client.internal.util.Checks;
+import com.hivemq.client.internal.util.collections.ImmutableList;
 import com.hivemq.client.mqtt.MqttClientBuilder;
 import com.hivemq.client.mqtt.MqttClientExecutorConfig;
 import com.hivemq.client.mqtt.MqttClientSslConfig;
 import com.hivemq.client.mqtt.MqttWebSocketConfig;
 import com.hivemq.client.mqtt.datatypes.MqttClientIdentifier;
+import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedListener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -47,16 +49,19 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
     protected @Nullable MqttClientSslConfigImpl sslConfig;
     protected @Nullable MqttWebSocketConfigImpl webSocketConfig;
     protected @NotNull MqttClientExecutorConfigImpl executorConfig = MqttClientExecutorConfigImpl.DEFAULT;
+    private @Nullable ImmutableList.Builder<MqttClientDisconnectedListener> disconnectedListenersBuilder;
 
     protected MqttRxClientBuilderBase() {}
 
-    protected MqttRxClientBuilderBase(final @NotNull MqttRxClientBuilderBase clientBuilder) {
+    protected MqttRxClientBuilderBase(final @NotNull MqttRxClientBuilderBase<?> clientBuilder) {
         this.identifier = clientBuilder.identifier;
         this.serverHost = clientBuilder.serverHost;
         this.serverPort = clientBuilder.serverPort;
+        this.serverAddress = clientBuilder.serverAddress;
         this.sslConfig = clientBuilder.sslConfig;
         this.webSocketConfig = clientBuilder.webSocketConfig;
         this.executorConfig = clientBuilder.executorConfig;
+        this.disconnectedListenersBuilder = clientBuilder.disconnectedListenersBuilder;
     }
 
     protected abstract @NotNull B self();
@@ -147,6 +152,15 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
         return new MqttClientExecutorConfigImplBuilder.Nested<>(executorConfig, this::executorConfig);
     }
 
+    public @NotNull B addDisconnectedListener(final @NotNull MqttClientDisconnectedListener disconnectedListener) {
+        Checks.notNull(disconnectedListener, "Disconnected listener");
+        if (disconnectedListenersBuilder == null) {
+            disconnectedListenersBuilder = ImmutableList.builder();
+        }
+        disconnectedListenersBuilder.add(disconnectedListener);
+        return self();
+    }
+
     protected @NotNull InetSocketAddress getServerAddress() {
         if (serverAddress != null) {
             return serverAddress;
@@ -154,7 +168,7 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
         if (serverHost instanceof InetAddress) {
             return new InetSocketAddress((InetAddress) serverHost, getServerPort());
         }
-        return new InetSocketAddress((String) serverHost, getServerPort());
+        return InetSocketAddress.createUnresolved((String) serverHost, getServerPort());
     }
 
     private int getServerPort() {
@@ -171,6 +185,13 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
             return DEFAULT_SERVER_PORT_SSL;
         }
         return DEFAULT_SERVER_PORT_WEBSOCKET_SSL;
+    }
+
+    protected @NotNull ImmutableList<MqttClientDisconnectedListener> buildDisconnectedListeners() {
+        if (disconnectedListenersBuilder == null) {
+            return ImmutableList.of();
+        }
+        return disconnectedListenersBuilder.build();
     }
 
     public static class Choose extends MqttRxClientBuilderBase<Choose> implements MqttClientBuilder {

@@ -37,6 +37,7 @@ import com.hivemq.client.internal.mqtt.message.connect.connack.MqttConnAck;
 import com.hivemq.client.internal.mqtt.message.connect.connack.MqttConnAckRestrictions;
 import com.hivemq.client.mqtt.MqttClientState;
 import com.hivemq.client.mqtt.MqttVersion;
+import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedListener;
 import com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5ConnAckException;
 import com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import io.netty.channel.Channel;
@@ -251,6 +252,7 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
 
         // @formatter:off
         final MqttClientConnectionConfig connectionConfig = new MqttClientConnectionConfig(
+                connAckFlow.getServerAddress(),
                 keepAlive, sessionExpiryInterval,
                 connect.getRawWillPublish() != null, connect.getRawEnhancedAuthMechanism(),
                 restrictions.getReceiveMaximum(),
@@ -265,7 +267,8 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
                 connAckRestrictions.isRetainAvailable(),
                 connAckRestrictions.isWildcardSubscriptionAvailable(),
                 connAckRestrictions.isSharedSubscriptionAvailable(),
-                connAckRestrictions.areSubscriptionIdentifiersAvailable(), channel);
+                connAckRestrictions.areSubscriptionIdentifiersAvailable(),
+                channel);
         // @formatter:on
 
         clientConfig.setConnectionConfig(connectionConfig);
@@ -274,8 +277,15 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
 
     @Override
     protected void onDisconnectEvent(final @NotNull MqttDisconnectEvent disconnectEvent) {
+        final ChannelHandlerContext ctx = this.ctx;
+        if (ctx == null) {
+            return;
+        }
         super.onDisconnectEvent(disconnectEvent);
-        connAckFlow.onError(disconnectEvent.getCause());
+        MqttConnAckSingle.reconnect(
+                clientConfig, disconnectEvent.fromClient() ? MqttClientDisconnectedListener.Source.CLIENT :
+                        MqttClientDisconnectedListener.Source.SERVER, disconnectEvent.getCause(), connect, connAckFlow,
+                ctx.channel().eventLoop());
     }
 
     @Override

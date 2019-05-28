@@ -19,6 +19,7 @@ package com.hivemq.client.mqtt;
 
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.datatypes.MqttClientIdentifier;
+import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedListener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -156,4 +157,16 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      * @see #executorConfig(MqttClientExecutorConfig)
      */
     @NotNull MqttClientExecutorConfigBuilder.Nested<? extends B> executorConfig();
+
+    /**
+     * Adds a listener which is notified when the client is disconnected (with or without a Disconnect message) or the
+     * connection fails.
+     * <p>
+     * The listeners are called in the same order in which they are added.
+     *
+     * @param disconnectedListener the listener to add.
+     * @return the builder.
+     * @since 1.1
+     */
+    @NotNull B addDisconnectedListener(@NotNull MqttClientDisconnectedListener disconnectedListener);
 }

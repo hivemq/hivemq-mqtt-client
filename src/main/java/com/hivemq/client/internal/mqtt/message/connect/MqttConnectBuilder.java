@@ -160,6 +160,13 @@ public abstract class MqttConnectBuilder<B extends MqttConnectBuilder<B>> {
             this.parentConsumer = parentConsumer;
         }
 
+        public Nested(
+                final @NotNull MqttConnect connect, final @NotNull Function<? super MqttConnect, P> parentConsumer) {
+
+            super(connect);
+            this.parentConsumer = parentConsumer;
+        }
+
         @Override
         @NotNull Nested<P> self() {
             return this;

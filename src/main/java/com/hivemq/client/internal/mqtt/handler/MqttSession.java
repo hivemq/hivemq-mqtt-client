@@ -18,7 +18,6 @@
 package com.hivemq.client.internal.mqtt.handler;
 
 import com.hivemq.client.internal.annotations.CallByThread;
-import com.hivemq.client.internal.mqtt.MqttClientConfig;
 import com.hivemq.client.internal.mqtt.MqttClientConnectionConfig;
 import com.hivemq.client.internal.mqtt.codec.decoder.MqttDecoder;
 import com.hivemq.client.internal.mqtt.handler.publish.incoming.MqttIncomingQosHandler;
@@ -44,7 +43,6 @@ import java.util.concurrent.TimeUnit;
 @ClientScope
 public class MqttSession {
 
-    private final @NotNull MqttClientConfig clientConfig;
     private final @NotNull MqttSubscriptionHandler subscriptionHandler;
     private final @NotNull MqttIncomingQosHandler incomingQosHandler;
     private final @NotNull MqttOutgoingQosHandler outgoingQosHandler;
@@ -53,11 +51,10 @@ public class MqttSession {
 
     @Inject
     MqttSession(
-            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttSubscriptionHandler subscriptionHandler,
+            final @NotNull MqttSubscriptionHandler subscriptionHandler,
             final @NotNull MqttIncomingQosHandler incomingQosHandler,
             final @NotNull MqttOutgoingQosHandler outgoingQosHandler) {
 
-        this.clientConfig = clientConfig;
         this.subscriptionHandler = subscriptionHandler;
         this.incomingQosHandler = incomingQosHandler;
         this.outgoingQosHandler = outgoingQosHandler;
@@ -88,23 +85,23 @@ public class MqttSession {
     }
 
     @CallByThread("Netty EventLoop")
-    public void expire(final @NotNull Throwable cause, final @NotNull EventLoop eventLoop) {
-        final MqttClientConnectionConfig connectionConfig = clientConfig.getRawConnectionConfig();
-        if (connectionConfig != null) {
-            final long expiryInterval = connectionConfig.getSessionExpiryInterval();
+    public void expire(
+            final @NotNull Throwable cause, final @NotNull MqttClientConnectionConfig connectionConfig,
+            final @NotNull EventLoop eventLoop) {
 
-            if (expiryInterval == 0) {
-                // execute later to finish any current write before clearing the session state
-                eventLoop.execute(
-                        () -> end(new MqttSessionExpiredException("Session expired as connection was closed.", cause)));
-            } else if (expiryInterval != MqttConnect.NO_SESSION_EXPIRY) {
-                expireFuture = eventLoop.schedule(() -> {
-                    if (expireFuture != null) {
-                        expireFuture = null;
-                        end(new MqttSessionExpiredException("Session expired after expiry interval", cause));
-                    }
-                }, (long) (TimeUnit.SECONDS.toMillis(expiryInterval) * 1.1), TimeUnit.MILLISECONDS);
-            }
+        final long expiryInterval = connectionConfig.getSessionExpiryInterval();
+
+        if (expiryInterval == 0) {
+            // execute later to finish any current write before clearing the session state
+            eventLoop.execute(
+                    () -> end(new MqttSessionExpiredException("Session expired as connection was closed.", cause)));
+        } else if (expiryInterval != MqttConnect.NO_SESSION_EXPIRY) {
+            expireFuture = eventLoop.schedule(() -> {
+                if (expireFuture != null) {
+                    expireFuture = null;
+                    end(new MqttSessionExpiredException("Session expired after expiry interval", cause));
+                }
+            }, (long) (TimeUnit.SECONDS.toMillis(expiryInterval) * 1.1), TimeUnit.MILLISECONDS);
         }
     }
 

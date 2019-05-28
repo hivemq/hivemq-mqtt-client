@@ -21,31 +21,67 @@ import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import io.reactivex.SingleObserver;
 import io.reactivex.disposables.Disposable;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.net.InetSocketAddress;
 
 /**
  * @author Silvio Giebl
  */
 public class MqttConnAckFlow implements Disposable {
 
-    private final @NotNull SingleObserver<? super Mqtt5ConnAck> observer;
-    private boolean error;
+    private final @Nullable SingleObserver<? super Mqtt5ConnAck> observer;
+    private final @NotNull InetSocketAddress serverAddress;
+    private final int attempts;
+    private boolean done;
     private volatile boolean disposed;
 
-    MqttConnAckFlow(final @NotNull SingleObserver<? super Mqtt5ConnAck> observer) {
+    MqttConnAckFlow(
+            final @NotNull SingleObserver<? super Mqtt5ConnAck> observer,
+            final @NotNull InetSocketAddress serverAddress) {
+
         this.observer = observer;
+        this.serverAddress = serverAddress;
+        attempts = 0;
     }
 
-    public void onSuccess(final @NotNull Mqtt5ConnAck t) {
-        observer.onSuccess(t);
+    MqttConnAckFlow(final @Nullable MqttConnAckFlow oldFlow, final @NotNull InetSocketAddress serverAddress) {
+        this.serverAddress = serverAddress;
+        if (oldFlow == null) {
+            observer = null;
+            attempts = 0;
+        } else {
+            observer = oldFlow.observer;
+            attempts = oldFlow.attempts + 1;
+        }
     }
 
-    public boolean onError(final @NotNull Throwable t) {
-        if (error) {
+    boolean setDone() {
+        if (done) {
             return false;
         }
-        error = true;
-        observer.onError(t);
+        done = true;
         return true;
+    }
+
+    void onSuccess(final @NotNull Mqtt5ConnAck t) {
+        if (observer != null) {
+            observer.onSuccess(t);
+        }
+    }
+
+    void onError(final @NotNull Throwable t) {
+        if (observer != null) {
+            observer.onError(t);
+        }
+    }
+
+    @NotNull InetSocketAddress getServerAddress() {
+        return serverAddress;
+    }
+
+    int getAttempts() {
+        return attempts;
     }
 
     @Override

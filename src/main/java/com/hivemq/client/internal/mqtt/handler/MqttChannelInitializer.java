@@ -28,7 +28,10 @@ import com.hivemq.client.internal.mqtt.handler.disconnect.MqttDisconnectHandler;
 import com.hivemq.client.internal.mqtt.handler.ssl.SslUtil;
 import com.hivemq.client.internal.mqtt.handler.websocket.MqttWebSocketInitializer;
 import com.hivemq.client.internal.mqtt.ioc.ConnectionScope;
+import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
 import com.hivemq.client.mqtt.MqttWebSocketConfig;
+import com.hivemq.client.mqtt.exceptions.ConnectionFailedException;
+import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedListener;
 import dagger.Lazy;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -54,6 +57,7 @@ import java.net.URISyntaxException;
 public class MqttChannelInitializer extends ChannelInitializer<Channel> {
 
     private final @NotNull MqttClientConfig clientConfig;
+    private final @NotNull MqttConnect connect;
     private final @NotNull MqttConnAckFlow connAckFlow;
 
     private final @NotNull MqttEncoder encoder;
@@ -65,12 +69,14 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
 
     @Inject
     MqttChannelInitializer(
-            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttConnAckFlow connAckFlow,
-            final @NotNull MqttEncoder encoder, final @NotNull MqttConnectHandler connectHandler,
-            final @NotNull MqttDisconnectHandler disconnectHandler, final @NotNull MqttAuthHandler authHandler,
+            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttConnect connect,
+            final @NotNull MqttConnAckFlow connAckFlow, final @NotNull MqttEncoder encoder,
+            final @NotNull MqttConnectHandler connectHandler, final @NotNull MqttDisconnectHandler disconnectHandler,
+            final @NotNull MqttAuthHandler authHandler,
             final @NotNull Lazy<MqttWebSocketInitializer> webSocketInitializer) {
 
         this.clientConfig = clientConfig;
+        this.connect = connect;
         this.connAckFlow = connAckFlow;
         this.encoder = encoder;
         this.connectHandler = connectHandler;
@@ -119,7 +125,8 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
             ctx.pipeline().remove(MqttDisconnectHandler.NAME);
         }
         ctx.close();
-        MqttConnAckSingle.onError(clientConfig, connAckFlow, cause);
+        MqttConnAckSingle.reconnect(clientConfig, MqttClientDisconnectedListener.Source.CLIENT,
+                new ConnectionFailedException(cause), connect, connAckFlow, ctx.channel().eventLoop());
         clientConfig.releaseEventLoop();
     }
 }

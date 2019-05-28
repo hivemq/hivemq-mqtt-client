@@ -26,6 +26,8 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
+import java.net.InetSocketAddress;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -64,9 +66,10 @@ public abstract class AbstractMqttEncoderTest {
     }
 
     protected void connected(final int maximumPacketSize) {
-        encoder.onConnected(new MqttClientConnectionConfig(10, 0, false, null, 10,
-                MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT, 0, true, false, 10, maximumPacketSize, 3,
-                MqttQos.EXACTLY_ONCE, true, true, true, true, channel));
+        encoder.onConnected(
+                new MqttClientConnectionConfig(new InetSocketAddress("localhost", 1883), 10, 0, false, null, 10,
+                        MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT, 0, true, false, 10, maximumPacketSize, 3,
+                        MqttQos.EXACTLY_ONCE, true, true, true, true, channel));
     }
 
     protected void encode(final @NotNull Object message, final @NotNull byte[] expected) {

@@ -18,6 +18,9 @@
 package com.hivemq.client.mqtt;
 
 import com.hivemq.client.annotations.DoNotImplement;
+import org.jetbrains.annotations.NotNull;
+
+import java.net.InetSocketAddress;
 
 /**
  * Connection configuration of a {@link MqttClient}.
@@ -27,6 +30,12 @@ import com.hivemq.client.annotations.DoNotImplement;
  */
 @DoNotImplement
 public interface MqttClientConnectionConfig {
+
+    /**
+     * @return the server address the client is currently connected to.
+     * @since 1.1
+     */
+    @NotNull InetSocketAddress getServerAddress();
 
     /**
      * @return the keep alive in seconds that is used while the client is connected.

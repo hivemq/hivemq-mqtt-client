@@ -23,9 +23,10 @@ import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnectBuilder;
 import org.jetbrains.annotations.NotNull;
 
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiConsumer;
 
 /**
  * @author Silvio Giebl
@@ -35,19 +36,17 @@ import java.util.concurrent.TimeUnit;
 public interface Mqtt5ClientReconnector extends MqttClientReconnector {
 
     @Override
+    @NotNull Mqtt5ClientReconnector reconnect(boolean reconnect);
+
+    @Override
+    <T> @NotNull Mqtt5ClientReconnector reconnectWhen(
+            @NotNull CompletableFuture<T> future, @NotNull BiConsumer<? super T, ? super Throwable> consumer);
+
+    @Override
     @NotNull Mqtt5ClientReconnector delay(long delay, @NotNull TimeUnit timeUnit);
 
     @Override
     @NotNull Mqtt5ClientReconnector serverAddress(@NotNull InetSocketAddress address);
-
-    @Override
-    @NotNull Mqtt5ClientReconnector serverHost(@NotNull String host);
-
-    @Override
-    @NotNull Mqtt5ClientReconnector serverHost(@NotNull InetAddress host);
-
-    @Override
-    @NotNull Mqtt5ClientReconnector serverPort(int port);
 
     @NotNull Mqtt5ClientReconnector connect(@NotNull Mqtt5Connect connect);
 
