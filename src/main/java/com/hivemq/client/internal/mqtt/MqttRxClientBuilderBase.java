@@ -18,6 +18,8 @@
 package com.hivemq.client.internal.mqtt;
 
 import com.hivemq.client.internal.mqtt.datatypes.MqttClientIdentifierImpl;
+import com.hivemq.client.internal.mqtt.lifecycle.MqttClientAutoReconnectImpl;
+import com.hivemq.client.internal.mqtt.lifecycle.MqttClientAutoReconnectImplBuilder;
 import com.hivemq.client.internal.mqtt.mqtt3.Mqtt3RxClientViewBuilder;
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
 import com.hivemq.client.internal.util.Checks;
@@ -27,6 +29,7 @@ import com.hivemq.client.mqtt.MqttClientExecutorConfig;
 import com.hivemq.client.mqtt.MqttClientSslConfig;
 import com.hivemq.client.mqtt.MqttWebSocketConfig;
 import com.hivemq.client.mqtt.datatypes.MqttClientIdentifier;
+import com.hivemq.client.mqtt.lifecycle.MqttClientAutoReconnect;
 import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedListener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -49,6 +52,7 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
     protected @Nullable MqttClientSslConfigImpl sslConfig;
     protected @Nullable MqttWebSocketConfigImpl webSocketConfig;
     protected @NotNull MqttClientExecutorConfigImpl executorConfig = MqttClientExecutorConfigImpl.DEFAULT;
+    private @Nullable MqttClientAutoReconnectImpl autoReconnect;
     private @Nullable ImmutableList.Builder<MqttClientDisconnectedListener> disconnectedListenersBuilder;
 
     protected MqttRxClientBuilderBase() {}
@@ -61,6 +65,7 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
         this.sslConfig = clientBuilder.sslConfig;
         this.webSocketConfig = clientBuilder.webSocketConfig;
         this.executorConfig = clientBuilder.executorConfig;
+        this.autoReconnect = clientBuilder.autoReconnect;
         this.disconnectedListenersBuilder = clientBuilder.disconnectedListenersBuilder;
     }
 
@@ -152,6 +157,21 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
         return new MqttClientExecutorConfigImplBuilder.Nested<>(executorConfig, this::executorConfig);
     }
 
+    public @NotNull B useAutomaticReconnectWithDefaultConfig() {
+        this.autoReconnect = MqttClientAutoReconnectImpl.DEFAULT;
+        return self();
+    }
+
+    public @NotNull B useAutomaticReconnect(final @Nullable MqttClientAutoReconnect autoReconnect) {
+        this.autoReconnect =
+                Checks.notImplementedOrNull(autoReconnect, MqttClientAutoReconnectImpl.class, "Automatic reconnect");
+        return self();
+    }
+
+    public @NotNull MqttClientAutoReconnectImplBuilder.Nested<B> useAutomaticReconnect() {
+        return new MqttClientAutoReconnectImplBuilder.Nested<>(autoReconnect, this::useAutomaticReconnect);
+    }
+
     public @NotNull B addDisconnectedListener(final @NotNull MqttClientDisconnectedListener disconnectedListener) {
         Checks.notNull(disconnectedListener, "Disconnected listener");
         if (disconnectedListenersBuilder == null) {
@@ -189,9 +209,17 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
 
     protected @NotNull ImmutableList<MqttClientDisconnectedListener> buildDisconnectedListeners() {
         if (disconnectedListenersBuilder == null) {
-            return ImmutableList.of();
+            if (autoReconnect == null) {
+                return ImmutableList.of();
+            }
+            return ImmutableList.of(autoReconnect);
         }
-        return disconnectedListenersBuilder.build();
+        if (autoReconnect == null) {
+            return disconnectedListenersBuilder.build();
+        }
+        return ImmutableList.<MqttClientDisconnectedListener>builder().add(autoReconnect)
+                .addAll(disconnectedListenersBuilder.build())
+                .build();
     }
 
     public static class Choose extends MqttRxClientBuilderBase<Choose> implements MqttClientBuilder {

@@ -51,7 +51,7 @@ public class Mqtt3ClientReconnectorView implements Mqtt3ClientReconnector {
 
     @Override
     public @NotNull <T> Mqtt3ClientReconnector reconnectWhen(
-            final @NotNull CompletableFuture<T> future,
+            final @Nullable CompletableFuture<T> future,
             final @Nullable BiConsumer<? super T, ? super Throwable> callback) {
 
         delegate.reconnectWhen(future, callback);
@@ -69,7 +69,7 @@ public class Mqtt3ClientReconnectorView implements Mqtt3ClientReconnector {
     }
 
     @Override
-    public @NotNull Mqtt3ClientReconnectorView delay(final long delay, final @NotNull TimeUnit timeUnit) {
+    public @NotNull Mqtt3ClientReconnectorView delay(final long delay, final @Nullable TimeUnit timeUnit) {
         delegate.delay(delay, timeUnit);
         return this;
     }
@@ -80,7 +80,7 @@ public class Mqtt3ClientReconnectorView implements Mqtt3ClientReconnector {
     }
 
     @Override
-    public @NotNull Mqtt3ClientReconnectorView serverAddress(final @NotNull InetSocketAddress address) {
+    public @NotNull Mqtt3ClientReconnectorView serverAddress(final @Nullable InetSocketAddress address) {
         delegate.serverAddress(address);
         return this;
     }
@@ -91,7 +91,7 @@ public class Mqtt3ClientReconnectorView implements Mqtt3ClientReconnector {
     }
 
     @Override
-    public @NotNull Mqtt3ClientReconnectorView connect(final @NotNull Mqtt3Connect connect) {
+    public @NotNull Mqtt3ClientReconnectorView connect(final @Nullable Mqtt3Connect connect) {
         delegate.connect(MqttChecks.connect(connect));
         return this;
     }

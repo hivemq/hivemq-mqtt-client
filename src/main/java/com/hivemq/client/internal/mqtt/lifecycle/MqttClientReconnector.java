@@ -76,7 +76,7 @@ public class MqttClientReconnector implements Mqtt5ClientReconnector {
 
     @Override
     public <T> @NotNull Mqtt5ClientReconnector reconnectWhen(
-            @NotNull CompletableFuture<T> future, final @Nullable BiConsumer<? super T, ? super Throwable> callback) {
+            @Nullable CompletableFuture<T> future, final @Nullable BiConsumer<? super T, ? super Throwable> callback) {
 
         checkThread();
         Checks.notNull(future, "Future");
@@ -104,7 +104,7 @@ public class MqttClientReconnector implements Mqtt5ClientReconnector {
     }
 
     @Override
-    public @NotNull MqttClientReconnector delay(final long delay, final @NotNull TimeUnit timeUnit) {
+    public @NotNull MqttClientReconnector delay(final long delay, final @Nullable TimeUnit timeUnit) {
         checkThread();
         Checks.notNull(timeUnit, "Time unit");
         this.delayNanos = timeUnit.toNanos(delay);
@@ -119,7 +119,7 @@ public class MqttClientReconnector implements Mqtt5ClientReconnector {
     }
 
     @Override
-    public @NotNull MqttClientReconnector serverAddress(final @NotNull InetSocketAddress address) {
+    public @NotNull MqttClientReconnector serverAddress(final @Nullable InetSocketAddress address) {
         checkThread();
         this.serverAddress = Checks.notNull(address, "Server address");
         return this;
@@ -132,7 +132,7 @@ public class MqttClientReconnector implements Mqtt5ClientReconnector {
     }
 
     @Override
-    public @NotNull MqttClientReconnector connect(final @NotNull Mqtt5Connect connect) {
+    public @NotNull MqttClientReconnector connect(final @Nullable Mqtt5Connect connect) {
         checkThread();
         this.connect = MqttChecks.connect(connect);
         return this;
