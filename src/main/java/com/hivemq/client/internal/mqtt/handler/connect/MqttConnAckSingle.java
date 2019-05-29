@@ -60,30 +60,33 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
         }
 
         final MqttConnAckFlow flow = new MqttConnAckFlow(observer, clientConfig.getServerAddress());
-        observer.onSubscribe(flow);
-        if (!flow.isDisposed()) {
-            connect(clientConfig, connect, flow, clientConfig.acquireEventLoop());
-        }
+        observer.onSubscribe(flow.getDisposable());
+        connect(clientConfig, connect, flow, clientConfig.acquireEventLoop());
     }
 
-    public static void connect(
+    private static void connect(
             final @NotNull MqttClientConfig clientConfig, final @NotNull MqttConnect connect,
             final @NotNull MqttConnAckFlow flow, final @NotNull EventLoop eventLoop) {
 
-        final Bootstrap bootstrap = clientConfig.getClientComponent()
-                .connectionComponentBuilder()
-                .connect(connect)
-                .connAckFlow(flow)
-                .build()
-                .bootstrap();
+        if (flow.getDisposable().isDisposed()) {
+            clientConfig.releaseEventLoop();
+            clientConfig.getRawState().set(DISCONNECTED);
+        } else {
+            final Bootstrap bootstrap = clientConfig.getClientComponent()
+                    .connectionComponentBuilder()
+                    .connect(connect)
+                    .connAckFlow(flow)
+                    .build()
+                    .bootstrap();
 
-        bootstrap.group(eventLoop).connect(flow.getServerAddress()).addListener(future -> {
-            final Throwable cause = future.cause();
-            if (cause != null) {
-                reconnect(clientConfig, MqttDisconnectSource.CLIENT, new ConnectionFailedException(cause), connect,
-                        flow, eventLoop);
-            }
-        });
+            bootstrap.group(eventLoop).connect(flow.getServerAddress()).addListener(future -> {
+                final Throwable cause = future.cause();
+                if (cause != null) {
+                    reconnect(clientConfig, MqttDisconnectSource.CLIENT, new ConnectionFailedException(cause), connect,
+                            flow, eventLoop);
+                }
+            });
+        }
     }
 
     public static void reconnect(
@@ -91,11 +94,9 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
             final @NotNull Throwable cause, final @NotNull MqttConnect connect, final @NotNull MqttConnAckFlow flow,
             final @NotNull EventLoop eventLoop) {
 
-        if (flow.setDone() &&
-                !reconnect(clientConfig, source, cause, connect, flow.getServerAddress(), flow.getAttempts() + 1, flow,
-                        eventLoop)) {
-            clientConfig.getRawState().set(DISCONNECTED);
-            flow.onError(cause);
+        if (flow.setDone()) {
+            reconnect(clientConfig, source, cause, connect, flow.getServerAddress(), flow.getAttempts() + 1, flow,
+                    eventLoop);
         }
     }
 
@@ -104,12 +105,10 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
             final @NotNull Throwable cause, final @NotNull MqttConnect connect,
             final @NotNull InetSocketAddress serverAddress, final @NotNull EventLoop eventLoop) {
 
-        if (!reconnect(clientConfig, source, cause, connect, serverAddress, 0, null, eventLoop)) {
-            clientConfig.getRawState().set(DISCONNECTED);
-        }
+        reconnect(clientConfig, source, cause, connect, serverAddress, 0, null, eventLoop);
     }
 
-    private static boolean reconnect(
+    private static void reconnect(
             final @NotNull MqttClientConfig clientConfig, final @NotNull MqttDisconnectSource source,
             final @NotNull Throwable cause, final @NotNull MqttConnect connect,
             final @NotNull InetSocketAddress serverAddress, final int attempts, final @Nullable MqttConnAckFlow flow,
@@ -124,33 +123,36 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
             disconnectedListener.onDisconnect(context);
         }
 
-        if (!reconnector.isReconnect()) {
-            return false;
-        }
-        clientConfig.getRawState().set(DISCONNECTED_RECONNECT);
-        clientConfig.acquireEventLoop();
-        eventLoop.schedule(() -> {
-            reconnector.getFuture().whenComplete((ignored, throwable) -> {
-                if (reconnector.isReconnect()) {
-                    if (clientConfig.getRawState().compareAndSet(DISCONNECTED_RECONNECT, CONNECTING_RECONNECT)) {
+        if (reconnector.isReconnect()) {
+            clientConfig.getRawState().set(DISCONNECTED_RECONNECT);
+            clientConfig.acquireEventLoop();
+            eventLoop.schedule(() -> {
+                reconnector.getFuture().whenComplete((ignored, throwable) -> {
+                    if (reconnector.isReconnect()) {
+                        if (clientConfig.getRawState().compareAndSet(DISCONNECTED_RECONNECT, CONNECTING_RECONNECT)) {
 
-                        final MqttConnAckFlow newFlow = new MqttConnAckFlow(flow, reconnector.getServerAddress());
-                        connect(clientConfig, reconnector.getConnect(), newFlow, eventLoop);
-                    }
+                            final MqttConnAckFlow newFlow = new MqttConnAckFlow(flow, reconnector.getServerAddress());
+                            connect(clientConfig, reconnector.getConnect(), newFlow, eventLoop);
+                        }
 
-                } else if (clientConfig.getRawState().compareAndSet(DISCONNECTED_RECONNECT, DISCONNECTED)) {
-                    clientConfig.releaseEventLoop();
-                    if (flow != null) {
-                        clientConfig.getRawState().set(DISCONNECTED);
-                        if (throwable == null) {
-                            flow.onError(new ConnectionFailedException("Reconnect was cancelled."));
-                        } else {
-                            flow.onError(new ConnectionFailedException(throwable));
+                    } else if (clientConfig.getRawState().compareAndSet(DISCONNECTED_RECONNECT, DISCONNECTED)) {
+                        clientConfig.releaseEventLoop();
+                        if (flow != null) {
+                            clientConfig.getRawState().set(DISCONNECTED);
+                            if (throwable == null) {
+                                flow.onError(new ConnectionFailedException("Reconnect was cancelled."));
+                            } else {
+                                flow.onError(new ConnectionFailedException(throwable));
+                            }
                         }
                     }
-                }
-            });
-        }, reconnector.getDelay(TimeUnit.NANOSECONDS), TimeUnit.NANOSECONDS);
-        return true;
+                });
+            }, reconnector.getDelay(TimeUnit.NANOSECONDS), TimeUnit.NANOSECONDS);
+        } else {
+            clientConfig.getRawState().set(DISCONNECTED);
+            if (flow != null) {
+                flow.onError(cause);
+            }
+        }
     }
 }

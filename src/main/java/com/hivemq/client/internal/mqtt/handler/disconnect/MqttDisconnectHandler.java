@@ -173,7 +173,8 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
             final @NotNull MqttClientConnectionConfig connectionConfig, final @NotNull EventLoop eventLoop) {
 
         // @formatter:off
-        final MqttConnect connect = new MqttConnect(connectionConfig.getKeepAlive(),
+        final MqttConnect connect = new MqttConnect(
+                connectionConfig.getKeepAlive(),
                 connectionConfig.getSessionExpiryInterval() > 0,
                 connectionConfig.getSessionExpiryInterval(),
                 new MqttConnectRestrictions(

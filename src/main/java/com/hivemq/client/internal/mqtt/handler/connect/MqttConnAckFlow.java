@@ -28,32 +28,35 @@ import java.net.InetSocketAddress;
 /**
  * @author Silvio Giebl
  */
-public class MqttConnAckFlow implements Disposable {
+public class MqttConnAckFlow {
 
     private final @Nullable SingleObserver<? super Mqtt5ConnAck> observer;
+    private final @NotNull Disposable disposable;
     private final @NotNull InetSocketAddress serverAddress;
     private final int attempts;
     private boolean done;
-    private volatile boolean disposed;
 
     MqttConnAckFlow(
             final @NotNull SingleObserver<? super Mqtt5ConnAck> observer,
             final @NotNull InetSocketAddress serverAddress) {
 
         this.observer = observer;
+        disposable = new MqttConnAckDisposable();
         this.serverAddress = serverAddress;
         attempts = 0;
     }
 
     MqttConnAckFlow(final @Nullable MqttConnAckFlow oldFlow, final @NotNull InetSocketAddress serverAddress) {
-        this.serverAddress = serverAddress;
         if (oldFlow == null) {
             observer = null;
+            disposable = new MqttConnAckDisposable();
             attempts = 0;
         } else {
             observer = oldFlow.observer;
+            disposable = oldFlow.disposable;
             attempts = oldFlow.attempts + 1;
         }
+        this.serverAddress = serverAddress;
     }
 
     boolean setDone() {
@@ -76,6 +79,10 @@ public class MqttConnAckFlow implements Disposable {
         }
     }
 
+    @NotNull Disposable getDisposable() {
+        return disposable;
+    }
+
     @NotNull InetSocketAddress getServerAddress() {
         return serverAddress;
     }
@@ -84,13 +91,18 @@ public class MqttConnAckFlow implements Disposable {
         return attempts;
     }
 
-    @Override
-    public void dispose() {
-        disposed = true;
-    }
+    private static class MqttConnAckDisposable implements Disposable {
 
-    @Override
-    public boolean isDisposed() {
-        return disposed;
+        private volatile boolean disposed;
+
+        @Override
+        public void dispose() {
+            disposed = true;
+        }
+
+        @Override
+        public boolean isDisposed() {
+            return disposed;
+        }
     }
 }
