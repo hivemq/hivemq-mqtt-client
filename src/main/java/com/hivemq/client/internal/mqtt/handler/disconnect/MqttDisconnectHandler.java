@@ -175,7 +175,7 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
         // @formatter:off
         final MqttConnect connect = new MqttConnect(
                 connectionConfig.getKeepAlive(),
-                connectionConfig.getSessionExpiryInterval() > 0,
+                connectionConfig.getSessionExpiryInterval() == 0,
                 connectionConfig.getSessionExpiryInterval(),
                 new MqttConnectRestrictions(
                         connectionConfig.getReceiveMaximum(),
