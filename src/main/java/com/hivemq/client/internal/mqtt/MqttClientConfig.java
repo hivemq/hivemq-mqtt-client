@@ -21,7 +21,6 @@ import com.hivemq.client.internal.mqtt.advanced.MqttClientAdvancedConfig;
 import com.hivemq.client.internal.mqtt.datatypes.MqttClientIdentifierImpl;
 import com.hivemq.client.internal.mqtt.ioc.ClientComponent;
 import com.hivemq.client.internal.mqtt.ioc.SingletonComponent;
-import com.hivemq.client.internal.mqtt.mqtt3.Mqtt3ClientConfigView;
 import com.hivemq.client.internal.util.ExecutorUtil;
 import com.hivemq.client.internal.util.collections.ImmutableList;
 import com.hivemq.client.mqtt.MqttClientSslConfig;
@@ -227,12 +226,5 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
 
     public void setConnectionConfig(final @Nullable MqttClientConnectionConfig connectionConfig) {
         this.connectionConfig = connectionConfig;
-    }
-
-    public @NotNull com.hivemq.client.mqtt.MqttClientConfig toVersionSpecific() {
-        if (mqttVersion == MqttVersion.MQTT_3_1_1) {
-            return new Mqtt3ClientConfigView(this);
-        }
-        return this;
     }
 }

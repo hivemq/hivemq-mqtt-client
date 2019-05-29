@@ -17,13 +17,10 @@
 
 package com.hivemq.client.internal.mqtt.lifecycle;
 
-import com.hivemq.client.internal.mqtt.MqttClientConfig;
-import com.hivemq.client.internal.mqtt.lifecycle.mqtt3.Mqtt3ClientReconnectorView;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnectBuilder;
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
 import com.hivemq.client.internal.util.Checks;
-import com.hivemq.client.mqtt.MqttVersion;
 import com.hivemq.client.mqtt.mqtt5.lifecycle.Mqtt5ClientReconnector;
 import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnectBuilder;
@@ -41,7 +38,6 @@ import java.util.function.BiConsumer;
  */
 public class MqttClientReconnector implements Mqtt5ClientReconnector {
 
-    private final @NotNull MqttClientConfig clientConfig;
     private final @NotNull EventLoop eventLoop;
     private final int attempts;
     private boolean reconnect;
@@ -51,10 +47,9 @@ public class MqttClientReconnector implements Mqtt5ClientReconnector {
     private @NotNull MqttConnect connect;
 
     public MqttClientReconnector(
-            final @NotNull MqttClientConfig clientConfig, final @NotNull EventLoop eventLoop, final int attempts,
-            final @NotNull MqttConnect connect, final @NotNull InetSocketAddress serverAddress) {
+            final @NotNull EventLoop eventLoop, final int attempts, final @NotNull MqttConnect connect,
+            final @NotNull InetSocketAddress serverAddress) {
 
-        this.clientConfig = clientConfig;
         this.eventLoop = eventLoop;
         this.attempts = attempts;
         this.connect = connect;
@@ -148,13 +143,6 @@ public class MqttClientReconnector implements Mqtt5ClientReconnector {
     public @NotNull MqttConnect getConnect() {
         checkThread();
         return connect;
-    }
-
-    @NotNull com.hivemq.client.mqtt.lifecycle.MqttClientReconnector toVersionSpecific() {
-        if (clientConfig.getMqttVersion() == MqttVersion.MQTT_3_1_1) {
-            return new Mqtt3ClientReconnectorView(this);
-        }
-        return this;
     }
 
     private void checkThread() {
