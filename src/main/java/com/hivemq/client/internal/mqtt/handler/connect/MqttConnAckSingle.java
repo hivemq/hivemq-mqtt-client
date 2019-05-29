@@ -115,7 +115,7 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
             final @NotNull EventLoop eventLoop) {
 
         final MqttClientReconnector reconnector =
-                new MqttClientReconnector(clientConfig, eventLoop, attempts, connect, serverAddress);
+                new MqttClientReconnector(eventLoop, attempts, connect, serverAddress);
         final MqttDisconnectedListenerContext context =
                 new MqttDisconnectedListenerContext(clientConfig, source, cause, reconnector);
 

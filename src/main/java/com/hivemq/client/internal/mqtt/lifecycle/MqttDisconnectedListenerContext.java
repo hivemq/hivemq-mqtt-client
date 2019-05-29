@@ -17,7 +17,11 @@
 
 package com.hivemq.client.internal.mqtt.lifecycle;
 
+import com.hivemq.client.internal.mqtt.lifecycle.mqtt3.Mqtt3ClientReconnectorView;
+import com.hivemq.client.internal.mqtt.mqtt3.Mqtt3ClientConfigView;
+import com.hivemq.client.internal.mqtt.mqtt3.exceptions.Mqtt3ExceptionFactory;
 import com.hivemq.client.mqtt.MqttClientConfig;
+import com.hivemq.client.mqtt.MqttVersion;
 import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedListener;
 import com.hivemq.client.mqtt.lifecycle.MqttClientReconnector;
 import com.hivemq.client.mqtt.lifecycle.MqttDisconnectSource;
@@ -38,10 +42,16 @@ public class MqttDisconnectedListenerContext implements MqttClientDisconnectedLi
             final @NotNull MqttDisconnectSource source, final @NotNull Throwable cause,
             final @NotNull com.hivemq.client.internal.mqtt.lifecycle.MqttClientReconnector reconnector) {
 
-        this.clientConfig = clientConfig.toVersionSpecific();
         this.source = source;
-        this.cause = cause;
-        this.reconnector = reconnector.toVersionSpecific();
+        if (clientConfig.getMqttVersion() == MqttVersion.MQTT_3_1_1) {
+            this.clientConfig = new Mqtt3ClientConfigView(clientConfig);
+            this.cause = Mqtt3ExceptionFactory.map(cause);
+            this.reconnector = new Mqtt3ClientReconnectorView(reconnector);
+        } else {
+            this.clientConfig = clientConfig;
+            this.cause = cause;
+            this.reconnector = reconnector;
+        }
     }
 
     @Override
