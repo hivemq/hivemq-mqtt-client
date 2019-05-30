@@ -41,6 +41,7 @@ public class MqttClientConnectionConfig
     private final @NotNull InetSocketAddress serverAddress;
     private final int keepAlive;
     private final long sessionExpiryInterval;
+    private final boolean hasSimpleAuth;
     private final boolean hasWillPublish;
     private final @Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism;
     private final int receiveMaximum;
@@ -63,6 +64,7 @@ public class MqttClientConnectionConfig
             final @NotNull InetSocketAddress serverAddress,
             final int keepAlive,
             final long sessionExpiryInterval,
+            final boolean hasSimpleAuth,
             final boolean hasWillPublish,
             final @Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism,
             final int receiveMaximum,
@@ -84,6 +86,7 @@ public class MqttClientConnectionConfig
         this.serverAddress = serverAddress;
         this.keepAlive = keepAlive;
         this.sessionExpiryInterval = sessionExpiryInterval;
+        this.hasSimpleAuth = hasSimpleAuth;
         this.hasWillPublish = hasWillPublish;
         this.enhancedAuthMechanism = enhancedAuthMechanism;
         this.receiveMaximum = receiveMaximum;
@@ -115,6 +118,11 @@ public class MqttClientConnectionConfig
     @Override
     public long getSessionExpiryInterval() {
         return sessionExpiryInterval;
+    }
+
+    @Override
+    public boolean hasSimpleAuth() {
+        return hasSimpleAuth;
     }
 
     @Override
