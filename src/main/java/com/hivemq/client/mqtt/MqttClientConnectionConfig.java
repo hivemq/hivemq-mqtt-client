@@ -43,6 +43,12 @@ public interface MqttClientConnectionConfig {
     int getKeepAlive();
 
     /**
+     * @return whether the client connected with simple authentication and/or authorization related data.
+     * @since 1.1
+     */
+    boolean hasSimpleAuth();
+
+    /**
      * @return whether the client connected with a Will Publish message.
      */
     boolean hasWillPublish();

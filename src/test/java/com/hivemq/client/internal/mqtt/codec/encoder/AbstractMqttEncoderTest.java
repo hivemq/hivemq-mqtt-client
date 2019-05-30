@@ -67,7 +67,7 @@ public abstract class AbstractMqttEncoderTest {
 
     protected void connected(final int maximumPacketSize) {
         encoder.onConnected(
-                new MqttClientConnectionConfig(new InetSocketAddress("localhost", 1883), 10, 0, false, null, 10,
+                new MqttClientConnectionConfig(new InetSocketAddress("localhost", 1883), 10, 0, false, false, null, 10,
                         MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT, 0, true, false, 10, maximumPacketSize, 3,
                         MqttQos.EXACTLY_ONCE, true, true, true, true, channel));
     }
