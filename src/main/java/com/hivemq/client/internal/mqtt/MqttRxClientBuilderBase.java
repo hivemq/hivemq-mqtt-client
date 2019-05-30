@@ -172,7 +172,7 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
         return new MqttClientAutoReconnectImplBuilder.Nested<>(autoReconnect, this::useAutomaticReconnect);
     }
 
-    public @NotNull B addDisconnectedListener(final @NotNull MqttClientDisconnectedListener disconnectedListener) {
+    public @NotNull B addDisconnectedListener(final @Nullable MqttClientDisconnectedListener disconnectedListener) {
         Checks.notNull(disconnectedListener, "Disconnected listener");
         if (disconnectedListenersBuilder == null) {
             disconnectedListenersBuilder = ImmutableList.builder();

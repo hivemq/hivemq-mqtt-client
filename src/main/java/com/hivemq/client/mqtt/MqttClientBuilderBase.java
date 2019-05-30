@@ -171,11 +171,12 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
     /**
      * Sets the optional {@link MqttClientConfig#getAutomaticReconnect() automatic reconnect strategy}.
      *
-     * @param autoReconnect the automatic reconnect strategy.
+     * @param autoReconnect the automatic reconnect strategy or <code>null</code> to remove any previously set automatic
+     *                      reconnect strategy.
      * @return the builder.
      * @since 1.1
      */
-    @NotNull B useAutomaticReconnect(@NotNull MqttClientAutoReconnect autoReconnect);
+    @NotNull B useAutomaticReconnect(@Nullable MqttClientAutoReconnect autoReconnect);
 
     /**
      * Fluent counterpart of {@link #useAutomaticReconnect(MqttClientAutoReconnect)}.
