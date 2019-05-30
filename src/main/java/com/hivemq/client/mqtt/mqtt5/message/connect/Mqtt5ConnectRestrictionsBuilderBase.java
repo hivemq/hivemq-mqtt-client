@@ -76,6 +76,8 @@ public interface Mqtt5ConnectRestrictionsBuilderBase<B extends Mqtt5ConnectRestr
 
     /**
      * Sets the {@link Mqtt5ConnectRestrictions#getTopicAliasMaximum() topic alias maximum}.
+     * <p>
+     * The value must be in the range of an unsigned short: [1, 65_535].
      *
      * @param topicAliasMaximum the topic alias maximum.
      * @return the builder.
@@ -84,6 +86,8 @@ public interface Mqtt5ConnectRestrictionsBuilderBase<B extends Mqtt5ConnectRestr
 
     /**
      * Sets the {@link Mqtt5ConnectRestrictions#getSendTopicAliasMaximum() topic alias maximum for sending}.
+     * <p>
+     * The value must be in the range of an unsigned short: [1, 65_535].
      * <p>
      * WARNING: Do not confuse this with {@link #topicAliasMaximum(int)}.
      *

@@ -59,7 +59,6 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
     private volatile @Nullable EventLoop eventLoop;
     private int eventLoopAcquires;
     private long eventLoopAcquireCount;
-    private final @NotNull Object eventLoopLock = new Object();
 
     private final @NotNull AtomicReference<@NotNull MqttClientState> state;
     private volatile @Nullable MqttClientConnectionConfig connectionConfig;
@@ -167,7 +166,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
     }
 
     public @NotNull EventLoop acquireEventLoop() {
-        synchronized (eventLoopLock) {
+        synchronized (state) {
             eventLoopAcquires++;
             eventLoopAcquireCount++;
             EventLoop eventLoop = this.eventLoop;
@@ -180,13 +179,13 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
     }
 
     public void releaseEventLoop() {
-        synchronized (eventLoopLock) {
+        synchronized (state) {
             if (--eventLoopAcquires == 0) {
                 final EventLoop eventLoop = this.eventLoop;
                 final long eventLoopAcquireCount = this.eventLoopAcquireCount;
                 assert eventLoop != null;
                 eventLoop.execute(() -> { // release eventLoop after all tasks are finished
-                    synchronized (eventLoopLock) {
+                    synchronized (state) {
                         if (eventLoopAcquireCount == this.eventLoopAcquireCount) { // eventLoop has not been reacquired
                             this.eventLoop = null;
                             SingletonComponent.INSTANCE.nettyEventLoopProvider()

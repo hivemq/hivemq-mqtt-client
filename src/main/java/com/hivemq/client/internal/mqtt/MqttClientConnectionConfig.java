@@ -19,6 +19,7 @@ package com.hivemq.client.internal.mqtt;
 
 import com.hivemq.client.internal.mqtt.handler.publish.outgoing.MqttTopicAliasAutoMapping;
 import com.hivemq.client.internal.mqtt.handler.publish.outgoing.MqttTopicAliasMapping;
+import com.hivemq.client.internal.util.UnsignedDataTypes;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
 import com.hivemq.client.mqtt.mqtt3.Mqtt3ClientConnectionConfig;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5ClientConnectionConfig;
@@ -38,26 +39,28 @@ public class MqttClientConnectionConfig
         Mqtt5ClientConnectionConfig.RestrictionsForClient, Mqtt3ClientConnectionConfig,
         Mqtt3ClientConnectionConfig.RestrictionsForClient {
 
+    private static final int FLAG_HAS_SIMPLE_AUTH = 1;
+    private static final int FLAG_HAS_WILL_PUBLISH = 1 << 1;
+    private static final int FLAG_PROBLEM_INFORMATION_REQUESTED = 1 << 2;
+    private static final int FLAG_RESPONSE_INFORMATION_REQUESTED = 1 << 3;
+    private static final int FLAG_RETAIN_AVAILABLE = 1 << 4;
+    private static final int FLAG_WILDCARD_SUBSCRIPTION_AVAILABLE = 1 << 5;
+    private static final int FLAG_SHARED_SUBSCRIPTION_AVAILABLE = 1 << 6;
+    private static final int FLAG_SUBSCRIPTION_IDENTIFIERS_AVAILABLE = 1 << 7;
+
     private final @NotNull InetSocketAddress serverAddress;
-    private final int keepAlive;
-    private final long sessionExpiryInterval;
-    private final boolean hasSimpleAuth;
-    private final boolean hasWillPublish;
+    private final short keepAlive;
+    private final int sessionExpiryInterval;
     private final @Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism;
-    private final int receiveMaximum;
+    private final short receiveMaximum;
     private final int maximumPacketSize;
-    private final int topicAliasMaximum;
-    private final boolean problemInformationRequested;
-    private final boolean responseInformationRequested;
-    private final int sendMaximum;
+    private final short topicAliasMaximum;
+    private final short sendMaximum;
     private final int sendMaximumPacketSize;
     private final @Nullable MqttTopicAliasMapping sendTopicAliasMapping;
     private final @NotNull MqttQos maximumQos;
-    private final boolean retainAvailable;
-    private final boolean wildcardSubscriptionAvailable;
-    private final boolean sharedSubscriptionAvailable;
-    private final boolean subscriptionIdentifiersAvailable;
     private final @NotNull Channel channel;
+    private final int flags;
 
     // @formatter:off
     public MqttClientConnectionConfig(
@@ -84,25 +87,45 @@ public class MqttClientConnectionConfig
     // @formatter:on
 
         this.serverAddress = serverAddress;
-        this.keepAlive = keepAlive;
-        this.sessionExpiryInterval = sessionExpiryInterval;
-        this.hasSimpleAuth = hasSimpleAuth;
-        this.hasWillPublish = hasWillPublish;
+        this.keepAlive = (short) keepAlive;
+        this.sessionExpiryInterval = (int) sessionExpiryInterval;
         this.enhancedAuthMechanism = enhancedAuthMechanism;
-        this.receiveMaximum = receiveMaximum;
+        this.receiveMaximum = (short) receiveMaximum;
         this.maximumPacketSize = maximumPacketSize;
-        this.topicAliasMaximum = topicAliasMaximum;
-        this.problemInformationRequested = problemInformationRequested;
-        this.responseInformationRequested = responseInformationRequested;
-        this.sendMaximum = sendMaximum;
+        this.topicAliasMaximum = (short) topicAliasMaximum;
+        this.sendMaximum = (short) sendMaximum;
         this.sendMaximumPacketSize = sendMaximumPacketSize;
-        this.sendTopicAliasMapping = (sendTopicAliasMaximum == 0) ? null : new MqttTopicAliasAutoMapping(sendTopicAliasMaximum);
+        this.sendTopicAliasMapping =
+                (sendTopicAliasMaximum == 0) ? null : new MqttTopicAliasAutoMapping(sendTopicAliasMaximum);
         this.maximumQos = maximumQos;
-        this.retainAvailable = retainAvailable;
-        this.wildcardSubscriptionAvailable = wildcardSubscriptionAvailable;
-        this.sharedSubscriptionAvailable = sharedSubscriptionAvailable;
-        this.subscriptionIdentifiersAvailable = subscriptionIdentifiersAvailable;
         this.channel = channel;
+
+        int flags = 0;
+        if (hasSimpleAuth) {
+            flags |= FLAG_HAS_SIMPLE_AUTH;
+        }
+        if (hasWillPublish) {
+            flags |= FLAG_HAS_WILL_PUBLISH;
+        }
+        if (problemInformationRequested) {
+            flags |= FLAG_PROBLEM_INFORMATION_REQUESTED;
+        }
+        if (responseInformationRequested) {
+            flags |= FLAG_RESPONSE_INFORMATION_REQUESTED;
+        }
+        if (retainAvailable) {
+            flags |= FLAG_RETAIN_AVAILABLE;
+        }
+        if (wildcardSubscriptionAvailable) {
+            flags |= FLAG_WILDCARD_SUBSCRIPTION_AVAILABLE;
+        }
+        if (sharedSubscriptionAvailable) {
+            flags |= FLAG_SHARED_SUBSCRIPTION_AVAILABLE;
+        }
+        if (subscriptionIdentifiersAvailable) {
+            flags |= FLAG_SUBSCRIPTION_IDENTIFIERS_AVAILABLE;
+        }
+        this.flags = flags;
     }
 
     @Override
@@ -112,22 +135,22 @@ public class MqttClientConnectionConfig
 
     @Override
     public int getKeepAlive() {
-        return keepAlive;
+        return keepAlive & UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE;
     }
 
     @Override
     public long getSessionExpiryInterval() {
-        return sessionExpiryInterval;
+        return sessionExpiryInterval & UnsignedDataTypes.UNSIGNED_INT_MAX_VALUE;
     }
 
     @Override
     public boolean hasSimpleAuth() {
-        return hasSimpleAuth;
+        return (flags & FLAG_HAS_SIMPLE_AUTH) != 0;
     }
 
     @Override
     public boolean hasWillPublish() {
-        return hasWillPublish;
+        return (flags & FLAG_HAS_WILL_PUBLISH) != 0;
     }
 
     @Override
@@ -151,7 +174,7 @@ public class MqttClientConnectionConfig
 
     @Override
     public int getReceiveMaximum() {
-        return receiveMaximum;
+        return receiveMaximum & UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE;
     }
 
     @Override
@@ -161,22 +184,22 @@ public class MqttClientConnectionConfig
 
     @Override
     public int getTopicAliasMaximum() {
-        return topicAliasMaximum;
+        return topicAliasMaximum & UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE;
     }
 
     @Override
     public boolean isProblemInformationRequested() {
-        return problemInformationRequested;
+        return (flags & FLAG_PROBLEM_INFORMATION_REQUESTED) != 0;
     }
 
     @Override
     public boolean isResponseInformationRequested() {
-        return responseInformationRequested;
+        return (flags & FLAG_RESPONSE_INFORMATION_REQUESTED) != 0;
     }
 
     @Override
     public int getSendMaximum() {
-        return sendMaximum;
+        return sendMaximum & UnsignedDataTypes.UNSIGNED_SHORT_MAX_VALUE;
     }
 
     @Override
@@ -200,22 +223,22 @@ public class MqttClientConnectionConfig
 
     @Override
     public boolean isRetainAvailable() {
-        return retainAvailable;
+        return (flags & FLAG_RETAIN_AVAILABLE) != 0;
     }
 
     @Override
     public boolean isWildcardSubscriptionAvailable() {
-        return wildcardSubscriptionAvailable;
+        return (flags & FLAG_WILDCARD_SUBSCRIPTION_AVAILABLE) != 0;
     }
 
     @Override
     public boolean isSharedSubscriptionAvailable() {
-        return sharedSubscriptionAvailable;
+        return (flags & FLAG_SHARED_SUBSCRIPTION_AVAILABLE) != 0;
     }
 
     @Override
     public boolean areSubscriptionIdentifiersAvailable() {
-        return subscriptionIdentifiersAvailable;
+        return (flags & FLAG_SUBSCRIPTION_IDENTIFIERS_AVAILABLE) != 0;
     }
 
     public @NotNull Channel getChannel() {
