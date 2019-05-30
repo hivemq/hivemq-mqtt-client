@@ -37,6 +37,21 @@ public interface MqttClientDisconnectedListener {
      * <p>
      * This method must not block. If you want to reconnect you have to use the supplied {@link
      * Context#getReconnector()}.
+     * <p>
+     * Important: the {@link com.hivemq.client.mqtt.MqttClientState client state} will still be
+     * <ul>
+     * <li>{@link com.hivemq.client.mqtt.MqttClientState#CONNECTED CONNECTED} if the client was disconnected,</li>
+     * <li>{@link com.hivemq.client.mqtt.MqttClientState#CONNECTING CONNECTING} if a connect attempt failed or</li>
+     * <li>{@link com.hivemq.client.mqtt.MqttClientState#CONNECTING_RECONNECT CONNECTING_RECONNECT} if a reconnect
+     * attempt failed</li>
+     * </ul>
+     * and will be updated after all {@link MqttClientDisconnectedListener MqttClientDisconnectedListeners} are called
+     * to
+     * <ul>
+     * <li>{@link com.hivemq.client.mqtt.MqttClientState#DISCONNECTED DISCONNECTED} or</li>
+     * <li>{@link com.hivemq.client.mqtt.MqttClientState#DISCONNECTED_RECONNECT DISCONNECTED_RECONNECT} if the client
+     * is instructed to reconnect.</li>
+     * </ul>
      *
      * @param context provides context about the client and the cause for disconnection and allows reconnecting.
      */
