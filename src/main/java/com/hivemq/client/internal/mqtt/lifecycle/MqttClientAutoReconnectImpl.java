@@ -46,7 +46,7 @@ public class MqttClientAutoReconnectImpl implements MqttClientAutoReconnect {
     }
 
     @Override
-    public void onDisconnect(final @NotNull Context context) {
+    public void onDisconnected(final @NotNull Context context) {
         if (context.getSource() != MqttDisconnectSource.USER) {
             final MqttClientReconnector reconnector = context.getReconnector();
             final long delay =
