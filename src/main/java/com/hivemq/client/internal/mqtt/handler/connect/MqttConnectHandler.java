@@ -186,7 +186,11 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
             if (!connectedListeners.isEmpty()) {
                 final MqttConnectedListenerContext context = new MqttConnectedListenerContext(clientConfig);
                 for (final MqttClientConnectedListener connectedListener : connectedListeners) {
-                    connectedListener.onConnected(context);
+                    try {
+                        connectedListener.onConnected(context);
+                    } catch (final Throwable t) {
+                        LOGGER.error("Unexpected exception thrown by connected listener.", t);
+                    }
                 }
             }
 

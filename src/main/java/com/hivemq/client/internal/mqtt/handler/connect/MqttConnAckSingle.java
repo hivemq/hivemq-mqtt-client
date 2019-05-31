@@ -17,6 +17,8 @@
 
 package com.hivemq.client.internal.mqtt.handler.connect;
 
+import com.hivemq.client.internal.logging.InternalLogger;
+import com.hivemq.client.internal.logging.InternalLoggerFactory;
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
 import com.hivemq.client.internal.mqtt.exceptions.MqttClientStateExceptions;
 import com.hivemq.client.internal.mqtt.lifecycle.MqttClientReconnector;
@@ -43,6 +45,8 @@ import static com.hivemq.client.mqtt.MqttClientState.*;
  * @author Silvio Giebl
  */
 public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
+
+    private static final @NotNull InternalLogger LOGGER = InternalLoggerFactory.getLogger(MqttConnAckSingle.class);
 
     private final @NotNull MqttClientConfig clientConfig;
     private final @NotNull MqttConnect connect;
@@ -120,7 +124,11 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
                 new MqttDisconnectedListenerContext(clientConfig, source, cause, reconnector);
 
         for (final MqttClientDisconnectedListener disconnectedListener : clientConfig.getDisconnectedListeners()) {
-            disconnectedListener.onDisconnected(context);
+            try {
+                disconnectedListener.onDisconnected(context);
+            } catch (final Throwable t) {
+                LOGGER.error("Unexpected exception thrown by disconnected listener.", t);
+            }
         }
 
         if (reconnector.isReconnect()) {
