@@ -32,7 +32,7 @@ import java.util.function.BiConsumer;
  * The client will reconnect only if at least one of the methods {@link #reconnect(boolean)} or {@link
  * #reconnectWhen(CompletableFuture, BiConsumer)} are called.
  * <p>
- * All methods must only be called in {@link MqttClientDisconnectedListener#onDisconnect(MqttClientDisconnectedListener.Context)}
+ * All methods must only be called in {@link MqttClientDisconnectedListener#onDisconnected(MqttClientDisconnectedListener.Context)}
  * or in the callback of the {@link #reconnectWhen(CompletableFuture, BiConsumer)} method.
  *
  * @author Silvio Giebl

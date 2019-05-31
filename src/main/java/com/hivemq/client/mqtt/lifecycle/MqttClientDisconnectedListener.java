@@ -55,7 +55,7 @@ public interface MqttClientDisconnectedListener {
      *
      * @param context provides context about the client and the cause for disconnection and allows reconnecting.
      */
-    void onDisconnect(@NotNull Context context);
+    void onDisconnected(@NotNull Context context);
 
     /**
      * Provides context about the client and the cause for disconnection and allows reconnecting.

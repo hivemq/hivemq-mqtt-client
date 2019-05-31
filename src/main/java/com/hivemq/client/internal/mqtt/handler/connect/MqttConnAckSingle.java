@@ -120,7 +120,7 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
                 new MqttDisconnectedListenerContext(clientConfig, source, cause, reconnector);
 
         for (final MqttClientDisconnectedListener disconnectedListener : clientConfig.getDisconnectedListeners()) {
-            disconnectedListener.onDisconnect(context);
+            disconnectedListener.onDisconnected(context);
         }
 
         if (reconnector.isReconnect()) {
