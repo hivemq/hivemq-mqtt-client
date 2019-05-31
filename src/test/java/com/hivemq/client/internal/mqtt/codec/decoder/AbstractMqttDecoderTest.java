@@ -114,7 +114,7 @@ public abstract class AbstractMqttDecoderTest {
         final MqttClientConfig clientConfig =
                 new MqttClientConfig(MqttVersion.MQTT_5_0, MqttClientIdentifierImpl.of("test"),
                         new InetSocketAddress("localhost", 1883), MqttClientExecutorConfigImpl.DEFAULT, null, null,
-                        advancedConfig, ImmutableList.of());
+                        advancedConfig, ImmutableList.of(), ImmutableList.of());
 
         channel = new EmbeddedChannel();
         channel.pipeline()

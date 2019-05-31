@@ -29,6 +29,7 @@ import com.hivemq.client.mqtt.MqttVersion;
 import com.hivemq.client.mqtt.MqttWebSocketConfig;
 import com.hivemq.client.mqtt.datatypes.MqttClientIdentifier;
 import com.hivemq.client.mqtt.lifecycle.MqttClientAutoReconnect;
+import com.hivemq.client.mqtt.lifecycle.MqttClientConnectedListener;
 import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedListener;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5ClientConfig;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5ClientConnectionConfig;
@@ -52,6 +53,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
     private final @Nullable MqttClientSslConfigImpl sslConfig;
     private final @Nullable MqttWebSocketConfigImpl webSocketConfig;
     private final @NotNull MqttClientAdvancedConfig advancedConfig;
+    private final @NotNull ImmutableList<MqttClientConnectedListener> connectedListeners;
     private final @NotNull ImmutableList<MqttClientDisconnectedListener> disconnectedListeners;
 
     private final @NotNull ClientComponent clientComponent;
@@ -68,6 +70,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
             final @NotNull InetSocketAddress serverAddress, final @NotNull MqttClientExecutorConfigImpl executorConfig,
             final @Nullable MqttClientSslConfigImpl sslConfig, final @Nullable MqttWebSocketConfigImpl webSocketConfig,
             final @NotNull MqttClientAdvancedConfig advancedConfig,
+            final @NotNull ImmutableList<MqttClientConnectedListener> connectedListeners,
             final @NotNull ImmutableList<MqttClientDisconnectedListener> disconnectedListeners) {
 
         this.mqttVersion = mqttVersion;
@@ -77,6 +80,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
         this.sslConfig = sslConfig;
         this.webSocketConfig = webSocketConfig;
         this.advancedConfig = advancedConfig;
+        this.connectedListeners = connectedListeners;
         this.disconnectedListeners = disconnectedListeners;
 
         clientComponent = SingletonComponent.INSTANCE.clientComponentBuilder().clientConfig(this).build();
@@ -154,6 +158,11 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
             }
         }
         return Optional.empty();
+    }
+
+    @Override
+    public @NotNull ImmutableList<MqttClientConnectedListener> getConnectedListeners() {
+        return connectedListeners;
     }
 
     @Override
