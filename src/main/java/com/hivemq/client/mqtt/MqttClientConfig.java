@@ -21,6 +21,7 @@ import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.mqtt.datatypes.MqttClientIdentifier;
 import com.hivemq.client.mqtt.lifecycle.MqttClientAutoReconnect;
+import com.hivemq.client.mqtt.lifecycle.MqttClientConnectedListener;
 import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedListener;
 import org.jetbrains.annotations.NotNull;
 
@@ -86,6 +87,13 @@ public interface MqttClientConfig {
      * @since 1.1
      */
     @NotNull Optional<MqttClientAutoReconnect> getAutomaticReconnect();
+
+    /**
+     * @return the listeners which are notified (in the order of the list) when this client is connected (a successful
+     *         ConnAck message is received).
+     * @since 1.1
+     */
+    @Immutable @NotNull List<@NotNull MqttClientConnectedListener> getConnectedListeners();
 
     /**
      * @return the listeners which are notified (in the order of the list) when this client is disconnected (with or
