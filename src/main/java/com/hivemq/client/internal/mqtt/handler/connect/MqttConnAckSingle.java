@@ -21,10 +21,11 @@ import com.hivemq.client.internal.logging.InternalLogger;
 import com.hivemq.client.internal.logging.InternalLoggerFactory;
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
 import com.hivemq.client.internal.mqtt.exceptions.MqttClientStateExceptions;
+import com.hivemq.client.internal.mqtt.lifecycle.MqttClientDisconnectedContextImpl;
 import com.hivemq.client.internal.mqtt.lifecycle.MqttClientReconnector;
-import com.hivemq.client.internal.mqtt.lifecycle.MqttDisconnectedListenerContext;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
 import com.hivemq.client.mqtt.exceptions.ConnectionFailedException;
+import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedContext;
 import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedListener;
 import com.hivemq.client.mqtt.lifecycle.MqttDisconnectSource;
 import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
@@ -120,8 +121,8 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
 
         final MqttClientReconnector reconnector =
                 new MqttClientReconnector(eventLoop, attempts, connect, serverAddress);
-        final MqttDisconnectedListenerContext context =
-                new MqttDisconnectedListenerContext(clientConfig, source, cause, reconnector);
+        final MqttClientDisconnectedContext context =
+                MqttClientDisconnectedContextImpl.of(clientConfig, source, cause, reconnector);
 
         for (final MqttClientDisconnectedListener disconnectedListener : clientConfig.getDisconnectedListeners()) {
             try {

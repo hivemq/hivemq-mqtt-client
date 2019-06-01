@@ -39,7 +39,7 @@ public class Mqtt3ClientReconnectorView implements Mqtt3ClientReconnector {
 
     private final @NotNull MqttClientReconnector delegate;
 
-    public Mqtt3ClientReconnectorView(final @NotNull MqttClientReconnector delegate) {
+    Mqtt3ClientReconnectorView(final @NotNull MqttClientReconnector delegate) {
         this.delegate = delegate;
     }
 

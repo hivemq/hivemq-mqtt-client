@@ -27,12 +27,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 
 /**
- * A reconnector is supplied by a {@link MqttClientDisconnectedListener.Context} and can be used for reconnecting.
+ * A reconnector is supplied by a {@link MqttClientDisconnectedContext} and can be used for reconnecting.
  * <p>
  * The client will reconnect only if at least one of the methods {@link #reconnect(boolean)} or {@link
  * #reconnectWhen(CompletableFuture, BiConsumer)} are called.
  * <p>
- * All methods must only be called in {@link MqttClientDisconnectedListener#onDisconnected(MqttClientDisconnectedListener.Context)}
+ * All methods must only be called in {@link MqttClientDisconnectedListener#onDisconnected(MqttClientDisconnectedContext)}
  * or in the callback of the {@link #reconnectWhen(CompletableFuture, BiConsumer)} method.
  *
  * @author Silvio Giebl

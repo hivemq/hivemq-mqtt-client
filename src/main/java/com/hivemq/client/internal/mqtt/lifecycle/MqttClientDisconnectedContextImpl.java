@@ -17,41 +17,42 @@
 
 package com.hivemq.client.internal.mqtt.lifecycle;
 
-import com.hivemq.client.internal.mqtt.lifecycle.mqtt3.Mqtt3ClientReconnectorView;
-import com.hivemq.client.internal.mqtt.mqtt3.Mqtt3ClientConfigView;
-import com.hivemq.client.internal.mqtt.mqtt3.exceptions.Mqtt3ExceptionFactory;
-import com.hivemq.client.mqtt.MqttClientConfig;
+import com.hivemq.client.internal.mqtt.MqttClientConfig;
+import com.hivemq.client.internal.mqtt.lifecycle.mqtt3.Mqtt3ClientDisconnectedContextView;
 import com.hivemq.client.mqtt.MqttVersion;
-import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedListener;
-import com.hivemq.client.mqtt.lifecycle.MqttClientReconnector;
+import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedContext;
 import com.hivemq.client.mqtt.lifecycle.MqttDisconnectSource;
+import com.hivemq.client.mqtt.mqtt5.lifecycle.Mqtt5ClientDisconnectedContext;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Silvio Giebl
  */
-public class MqttDisconnectedListenerContext implements MqttClientDisconnectedListener.Context {
+public class MqttClientDisconnectedContextImpl implements Mqtt5ClientDisconnectedContext {
+
+    public static @NotNull MqttClientDisconnectedContext of(
+            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttDisconnectSource source,
+            final @NotNull Throwable cause, final @NotNull MqttClientReconnector reconnector) {
+
+        if (clientConfig.getMqttVersion() == MqttVersion.MQTT_3_1_1) {
+            return Mqtt3ClientDisconnectedContextView.of(clientConfig, source, cause, reconnector);
+        }
+        return new MqttClientDisconnectedContextImpl(clientConfig, source, cause, reconnector);
+    }
 
     private final @NotNull MqttClientConfig clientConfig;
     private final @NotNull MqttDisconnectSource source;
     private final @NotNull Throwable cause;
     private final @NotNull MqttClientReconnector reconnector;
 
-    public MqttDisconnectedListenerContext(
-            final @NotNull com.hivemq.client.internal.mqtt.MqttClientConfig clientConfig,
-            final @NotNull MqttDisconnectSource source, final @NotNull Throwable cause,
-            final @NotNull com.hivemq.client.internal.mqtt.lifecycle.MqttClientReconnector reconnector) {
+    private MqttClientDisconnectedContextImpl(
+            final @NotNull MqttClientConfig clientConfig, final @NotNull MqttDisconnectSource source,
+            final @NotNull Throwable cause, final @NotNull MqttClientReconnector reconnector) {
 
+        this.clientConfig = clientConfig;
         this.source = source;
-        if (clientConfig.getMqttVersion() == MqttVersion.MQTT_3_1_1) {
-            this.clientConfig = new Mqtt3ClientConfigView(clientConfig);
-            this.cause = Mqtt3ExceptionFactory.map(cause);
-            this.reconnector = new Mqtt3ClientReconnectorView(reconnector);
-        } else {
-            this.clientConfig = clientConfig;
-            this.cause = cause;
-            this.reconnector = reconnector;
-        }
+        this.cause = cause;
+        this.reconnector = reconnector;
     }
 
     @Override

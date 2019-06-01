@@ -15,25 +15,23 @@
  *
  */
 
-package com.hivemq.client.internal.mqtt.lifecycle;
+package com.hivemq.client.mqtt.lifecycle;
 
+import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.MqttClientConfig;
-import com.hivemq.client.mqtt.lifecycle.MqttClientConnectedListener;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * Provides context about the client that is now connected.
+ *
  * @author Silvio Giebl
+ * @since 1.1
  */
-public class MqttConnectedListenerContext implements MqttClientConnectedListener.Context {
+@DoNotImplement
+public interface MqttClientConnectedContext {
 
-    private final @NotNull MqttClientConfig clientConfig;
-
-    public MqttConnectedListenerContext(final @NotNull MqttClientConfig clientConfig) {
-        this.clientConfig = clientConfig;
-    }
-
-    @Override
-    public @NotNull MqttClientConfig getClientConfig() {
-        return clientConfig;
-    }
+    /**
+     * @return the config of the client that is now connected.
+     */
+    @NotNull MqttClientConfig getClientConfig();
 }
