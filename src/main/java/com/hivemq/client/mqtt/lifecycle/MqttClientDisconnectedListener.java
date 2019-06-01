@@ -17,8 +17,6 @@
 
 package com.hivemq.client.mqtt.lifecycle;
 
-import com.hivemq.client.annotations.DoNotImplement;
-import com.hivemq.client.mqtt.MqttClientConfig;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -52,38 +50,10 @@ public interface MqttClientDisconnectedListener {
      * </ul>
      * <p>
      * This method must not block. If you want to reconnect you have to use the supplied {@link
-     * Context#getReconnector()}.
+     * MqttClientDisconnectedContext#getReconnector()}.
      *
      * @param context provides context about the client that is now disconnected and the cause for disconnection and
      *                allows reconnecting.
      */
-    void onDisconnected(@NotNull Context context);
-
-    /**
-     * Provides context about the client that is now disconnected and the cause for disconnection and allows
-     * reconnecting.
-     */
-    @DoNotImplement
-    interface Context {
-
-        /**
-         * @return the config of the client that is now disconnected.
-         */
-        @NotNull MqttClientConfig getClientConfig();
-
-        /**
-         * @return the source which triggered the disconnection.
-         */
-        @NotNull MqttDisconnectSource getSource();
-
-        /**
-         * @return the cause for disconnection.
-         */
-        @NotNull Throwable getCause();
-
-        /**
-         * @return the reconnector which can be used for reconnecting.
-         */
-        @NotNull MqttClientReconnector getReconnector();
-    }
+    void onDisconnected(@NotNull MqttClientDisconnectedContext context);
 }

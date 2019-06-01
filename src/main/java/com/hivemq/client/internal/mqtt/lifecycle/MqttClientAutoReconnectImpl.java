@@ -18,6 +18,7 @@
 package com.hivemq.client.internal.mqtt.lifecycle;
 
 import com.hivemq.client.mqtt.lifecycle.MqttClientAutoReconnect;
+import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedContext;
 import com.hivemq.client.mqtt.lifecycle.MqttClientReconnector;
 import com.hivemq.client.mqtt.lifecycle.MqttDisconnectSource;
 import org.jetbrains.annotations.NotNull;
@@ -46,7 +47,7 @@ public class MqttClientAutoReconnectImpl implements MqttClientAutoReconnect {
     }
 
     @Override
-    public void onDisconnected(final @NotNull Context context) {
+    public void onDisconnected(final @NotNull MqttClientDisconnectedContext context) {
         if (context.getSource() != MqttDisconnectSource.USER) {
             final MqttClientReconnector reconnector = context.getReconnector();
             final long delay =

@@ -15,25 +15,26 @@
  *
  */
 
-package com.hivemq.client.mqtt.lifecycle;
+package com.hivemq.client.mqtt.mqtt3.lifecycle;
 
+import com.hivemq.client.annotations.DoNotImplement;
+import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedContext;
+import com.hivemq.client.mqtt.mqtt3.Mqtt3ClientConfig;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Listener which is notified when a client is connected (a successful ConnAck message is received).
+ * A {@link MqttClientDisconnectedContext} with methods specific to a {@link com.hivemq.client.mqtt.mqtt3.Mqtt3Client
+ * Mqtt3Client}.
  *
  * @author Silvio Giebl
  * @since 1.1
  */
-@FunctionalInterface
-public interface MqttClientConnectedListener {
+@DoNotImplement
+public interface Mqtt3ClientDisconnectedContext extends MqttClientDisconnectedContext {
 
-    /**
-     * Listener method which is notified when a client is connected (a successful ConnAck message is received).
-     * <p>
-     * This method must not block.
-     *
-     * @param context provides context about the client that is now connected.
-     */
-    void onConnected(@NotNull MqttClientConnectedContext context);
+    @Override
+    @NotNull Mqtt3ClientConfig getClientConfig();
+
+    @Override
+    @NotNull Mqtt3ClientReconnector getReconnector();
 }

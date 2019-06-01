@@ -30,7 +30,7 @@ import com.hivemq.client.internal.mqtt.handler.disconnect.MqttDisconnectUtil;
 import com.hivemq.client.internal.mqtt.handler.ping.MqttPingHandler;
 import com.hivemq.client.internal.mqtt.handler.util.MqttTimeoutInboundHandler;
 import com.hivemq.client.internal.mqtt.ioc.ConnectionScope;
-import com.hivemq.client.internal.mqtt.lifecycle.MqttConnectedListenerContext;
+import com.hivemq.client.internal.mqtt.lifecycle.MqttClientConnectedContextImpl;
 import com.hivemq.client.internal.mqtt.message.MqttMessage;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnectRestrictions;
@@ -39,6 +39,7 @@ import com.hivemq.client.internal.mqtt.message.connect.connack.MqttConnAckRestri
 import com.hivemq.client.internal.util.collections.ImmutableList;
 import com.hivemq.client.mqtt.MqttClientState;
 import com.hivemq.client.mqtt.MqttVersion;
+import com.hivemq.client.mqtt.lifecycle.MqttClientConnectedContext;
 import com.hivemq.client.mqtt.lifecycle.MqttClientConnectedListener;
 import com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5ConnAckException;
 import com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
@@ -184,7 +185,8 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
 
             final ImmutableList<MqttClientConnectedListener> connectedListeners = clientConfig.getConnectedListeners();
             if (!connectedListeners.isEmpty()) {
-                final MqttConnectedListenerContext context = new MqttConnectedListenerContext(clientConfig);
+                final MqttClientConnectedContext context =
+                        MqttClientConnectedContextImpl.of(clientConfig, connect, connAck);
                 for (final MqttClientConnectedListener connectedListener : connectedListeners) {
                     try {
                         connectedListener.onConnected(context);
