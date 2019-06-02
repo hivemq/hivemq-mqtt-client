@@ -167,7 +167,7 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      * @return the builder.
      * @since 1.1
      */
-    @NotNull B useAutomaticReconnectWithDefaultConfig();
+    @NotNull B automaticReconnectWithDefaultConfig();
 
     /**
      * Sets the optional {@link MqttClientConfig#getAutomaticReconnect() automatic reconnect strategy}.
@@ -177,19 +177,19 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      * @return the builder.
      * @since 1.1
      */
-    @NotNull B useAutomaticReconnect(@Nullable MqttClientAutoReconnect autoReconnect);
+    @NotNull B automaticReconnect(@Nullable MqttClientAutoReconnect autoReconnect);
 
     /**
-     * Fluent counterpart of {@link #useAutomaticReconnect(MqttClientAutoReconnect)}.
+     * Fluent counterpart of {@link #automaticReconnect(MqttClientAutoReconnect)}.
      * <p>
      * Calling {@link MqttClientAutoReconnectBuilder.Nested#applyAutomaticReconnect()} on the returned builder has the
      * effect of extending the current automatic reconnect strategy.
      *
      * @return the fluent builder for the automatic reconnect strategy.
-     * @see #useAutomaticReconnect(MqttClientAutoReconnect)
+     * @see #automaticReconnect(MqttClientAutoReconnect)
      * @since 1.1
      */
-    @NotNull MqttClientAutoReconnectBuilder.Nested<? extends B> useAutomaticReconnect();
+    @NotNull MqttClientAutoReconnectBuilder.Nested<? extends B> automaticReconnect();
 
     /**
      * Adds a listener which is notified when the client is connected (a successful ConnAck message is received).
