@@ -52,7 +52,7 @@ public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBui
     @NotNull Mqtt5ClientAdvancedConfigBuilder.Nested<? extends Mqtt5ClientBuilder> advancedConfig();
 
     /**
-     * ø Builds the {@link Mqtt5Client}.
+     * Builds the {@link Mqtt5Client}.
      *
      * @return the built {@link Mqtt5Client}.
      */

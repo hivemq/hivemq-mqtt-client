@@ -43,14 +43,14 @@ import static com.hivemq.client.mqtt.MqttClient.*;
  */
 public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<B>> {
 
-    protected @NotNull MqttClientIdentifierImpl identifier =
+    private @NotNull MqttClientIdentifierImpl identifier =
             MqttClientIdentifierImpl.REQUEST_CLIENT_IDENTIFIER_FROM_SERVER;
     private @NotNull Object serverHost = DEFAULT_SERVER_HOST; // String or InetAddress
     private int serverPort = -1;
     private @Nullable InetSocketAddress serverAddress;
-    protected @Nullable MqttClientSslConfigImpl sslConfig;
-    protected @Nullable MqttWebSocketConfigImpl webSocketConfig;
-    protected @NotNull MqttClientExecutorConfigImpl executorConfig = MqttClientExecutorConfigImpl.DEFAULT;
+    private @Nullable MqttClientSslConfigImpl sslConfig;
+    private @Nullable MqttWebSocketConfigImpl webSocketConfig;
+    private @NotNull MqttClientExecutorConfigImpl executorConfig = MqttClientExecutorConfigImpl.DEFAULT;
     private @Nullable MqttClientAutoReconnectImpl autoReconnect;
     private @Nullable ImmutableList.Builder<MqttClientConnectedListener> connectedListenersBuilder;
     private @Nullable ImmutableList.Builder<MqttClientDisconnectedListener> disconnectedListenersBuilder;
@@ -158,19 +158,19 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
         return new MqttClientExecutorConfigImplBuilder.Nested<>(executorConfig, this::executorConfig);
     }
 
-    public @NotNull B useAutomaticReconnectWithDefaultConfig() {
+    public @NotNull B automaticReconnectWithDefaultConfig() {
         this.autoReconnect = MqttClientAutoReconnectImpl.DEFAULT;
         return self();
     }
 
-    public @NotNull B useAutomaticReconnect(final @Nullable MqttClientAutoReconnect autoReconnect) {
+    public @NotNull B automaticReconnect(final @Nullable MqttClientAutoReconnect autoReconnect) {
         this.autoReconnect =
                 Checks.notImplementedOrNull(autoReconnect, MqttClientAutoReconnectImpl.class, "Automatic reconnect");
         return self();
     }
 
-    public @NotNull MqttClientAutoReconnectImplBuilder.Nested<B> useAutomaticReconnect() {
-        return new MqttClientAutoReconnectImplBuilder.Nested<>(autoReconnect, this::useAutomaticReconnect);
+    public @NotNull MqttClientAutoReconnectImplBuilder.Nested<B> automaticReconnect() {
+        return new MqttClientAutoReconnectImplBuilder.Nested<>(autoReconnect, this::automaticReconnect);
     }
 
     public @NotNull B addConnectedListener(final @Nullable MqttClientConnectedListener connectedListener) {
