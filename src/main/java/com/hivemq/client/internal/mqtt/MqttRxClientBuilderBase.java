@@ -240,10 +240,12 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
     }
 
     protected @NotNull MqttClientConfig buildClientConfig(
-            final @NotNull MqttVersion mqttVersion, final @NotNull MqttClientAdvancedConfig advancedConfig) {
+            final @NotNull MqttVersion mqttVersion, final @NotNull MqttClientAdvancedConfig advancedConfig,
+            final @NotNull MqttClientConfig.ConnectDefaults connectDefaults) {
 
         return new MqttClientConfig(mqttVersion, identifier, getServerAddress(), executorConfig, sslConfig,
-                webSocketConfig, advancedConfig, buildConnectedListeners(), buildDisconnectedListeners());
+                webSocketConfig, advancedConfig, connectDefaults, buildConnectedListeners(),
+                buildDisconnectedListeners());
     }
 
     public static class Choose extends MqttRxClientBuilderBase<Choose> implements MqttClientBuilder {

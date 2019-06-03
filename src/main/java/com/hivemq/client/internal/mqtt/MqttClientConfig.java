@@ -21,6 +21,8 @@ import com.hivemq.client.internal.mqtt.advanced.MqttClientAdvancedConfig;
 import com.hivemq.client.internal.mqtt.datatypes.MqttClientIdentifierImpl;
 import com.hivemq.client.internal.mqtt.ioc.ClientComponent;
 import com.hivemq.client.internal.mqtt.ioc.SingletonComponent;
+import com.hivemq.client.internal.mqtt.message.auth.MqttSimpleAuth;
+import com.hivemq.client.internal.mqtt.message.publish.MqttWillPublish;
 import com.hivemq.client.internal.util.ExecutorUtil;
 import com.hivemq.client.internal.util.collections.ImmutableList;
 import com.hivemq.client.mqtt.MqttClientSslConfig;
@@ -33,6 +35,9 @@ import com.hivemq.client.mqtt.lifecycle.MqttClientConnectedListener;
 import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedListener;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5ClientConfig;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5ClientConnectionConfig;
+import com.hivemq.client.mqtt.mqtt5.auth.Mqtt5EnhancedAuthMechanism;
+import com.hivemq.client.mqtt.mqtt5.message.auth.Mqtt5SimpleAuth;
+import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
 import io.netty.channel.EventLoop;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -53,6 +58,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
     private final @Nullable MqttClientSslConfigImpl sslConfig;
     private final @Nullable MqttWebSocketConfigImpl webSocketConfig;
     private final @NotNull MqttClientAdvancedConfig advancedConfig;
+    private final @NotNull ConnectDefaults connectDefaults;
     private final @NotNull ImmutableList<MqttClientConnectedListener> connectedListeners;
     private final @NotNull ImmutableList<MqttClientDisconnectedListener> disconnectedListeners;
 
@@ -69,7 +75,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
             final @NotNull MqttVersion mqttVersion, final @NotNull MqttClientIdentifierImpl clientIdentifier,
             final @NotNull InetSocketAddress serverAddress, final @NotNull MqttClientExecutorConfigImpl executorConfig,
             final @Nullable MqttClientSslConfigImpl sslConfig, final @Nullable MqttWebSocketConfigImpl webSocketConfig,
-            final @NotNull MqttClientAdvancedConfig advancedConfig,
+            final @NotNull MqttClientAdvancedConfig advancedConfig, final @NotNull ConnectDefaults connectDefaults,
             final @NotNull ImmutableList<MqttClientConnectedListener> connectedListeners,
             final @NotNull ImmutableList<MqttClientDisconnectedListener> disconnectedListeners) {
 
@@ -80,6 +86,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
         this.sslConfig = sslConfig;
         this.webSocketConfig = webSocketConfig;
         this.advancedConfig = advancedConfig;
+        this.connectDefaults = connectDefaults;
         this.connectedListeners = connectedListeners;
         this.disconnectedListeners = disconnectedListeners;
 
@@ -148,6 +155,25 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
     @Override
     public @NotNull MqttClientAdvancedConfig getAdvancedConfig() {
         return advancedConfig;
+    }
+
+    @Override
+    public @NotNull Optional<Mqtt5SimpleAuth> getSimpleAuth() {
+        return Optional.ofNullable(connectDefaults.simpleAuth);
+    }
+
+    @Override
+    public @NotNull Optional<Mqtt5EnhancedAuthMechanism> getEnhancedAuthMechanism() {
+        return Optional.ofNullable(connectDefaults.enhancedAuthMechanism);
+    }
+
+    @Override
+    public @NotNull Optional<Mqtt5WillPublish> getWillPublish() {
+        return Optional.ofNullable(connectDefaults.willPublish);
+    }
+
+    public @NotNull ConnectDefaults getConnectDefaults() {
+        return connectDefaults;
     }
 
     @Override
@@ -234,5 +260,47 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
 
     public void setConnectionConfig(final @Nullable MqttClientConnectionConfig connectionConfig) {
         this.connectionConfig = connectionConfig;
+    }
+
+    public static class ConnectDefaults {
+
+        private static final @NotNull ConnectDefaults EMPTY = new ConnectDefaults(null, null, null);
+
+        public static @NotNull ConnectDefaults of(
+                final @Nullable MqttSimpleAuth simpleAuth,
+                final @Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism,
+                final @Nullable MqttWillPublish willPublish) {
+
+            if ((simpleAuth == null) && (enhancedAuthMechanism == null) && (willPublish == null)) {
+                return EMPTY;
+            }
+            return new ConnectDefaults(simpleAuth, enhancedAuthMechanism, willPublish);
+        }
+
+        final @Nullable MqttSimpleAuth simpleAuth;
+        final @Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism;
+        final @Nullable MqttWillPublish willPublish;
+
+        private ConnectDefaults(
+                final @Nullable MqttSimpleAuth simpleAuth,
+                final @Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism,
+                final @Nullable MqttWillPublish willPublish) {
+
+            this.simpleAuth = simpleAuth;
+            this.enhancedAuthMechanism = enhancedAuthMechanism;
+            this.willPublish = willPublish;
+        }
+
+        public @Nullable MqttSimpleAuth getSimpleAuth() {
+            return simpleAuth;
+        }
+
+        public @Nullable Mqtt5EnhancedAuthMechanism getEnhancedAuthMechanism() {
+            return enhancedAuthMechanism;
+        }
+
+        public @Nullable MqttWillPublish getWillPublish() {
+            return willPublish;
+        }
     }
 }

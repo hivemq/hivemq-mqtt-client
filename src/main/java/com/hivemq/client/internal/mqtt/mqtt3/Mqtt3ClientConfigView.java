@@ -19,6 +19,10 @@ package com.hivemq.client.internal.mqtt.mqtt3;
 
 import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
+import com.hivemq.client.internal.mqtt.message.auth.MqttSimpleAuth;
+import com.hivemq.client.internal.mqtt.message.auth.mqtt3.Mqtt3SimpleAuthView;
+import com.hivemq.client.internal.mqtt.message.publish.MqttWillPublish;
+import com.hivemq.client.internal.mqtt.message.publish.mqtt3.Mqtt3PublishView;
 import com.hivemq.client.mqtt.*;
 import com.hivemq.client.mqtt.datatypes.MqttClientIdentifier;
 import com.hivemq.client.mqtt.lifecycle.MqttClientAutoReconnect;
@@ -26,7 +30,10 @@ import com.hivemq.client.mqtt.lifecycle.MqttClientConnectedListener;
 import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedListener;
 import com.hivemq.client.mqtt.mqtt3.Mqtt3ClientConfig;
 import com.hivemq.client.mqtt.mqtt3.Mqtt3ClientConnectionConfig;
+import com.hivemq.client.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
+import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.net.InetSocketAddress;
 import java.util.List;
@@ -86,6 +93,26 @@ public class Mqtt3ClientConfigView implements Mqtt3ClientConfig {
     @Override
     public @NotNull Optional<MqttClientAutoReconnect> getAutomaticReconnect() {
         return delegate.getAutomaticReconnect();
+    }
+
+    @Override
+    public @NotNull Optional<Mqtt3SimpleAuth> getSimpleAuth() {
+        return Optional.ofNullable(getRawSimpleAuth());
+    }
+
+    private @Nullable Mqtt3SimpleAuth getRawSimpleAuth() {
+        final MqttSimpleAuth simpleAuth = delegate.getConnectDefaults().getSimpleAuth();
+        return (simpleAuth == null) ? null : Mqtt3SimpleAuthView.of(simpleAuth);
+    }
+
+    @Override
+    public @NotNull Optional<Mqtt3Publish> getWillPublish() {
+        return Optional.ofNullable(getRawWillPublish());
+    }
+
+    private @Nullable Mqtt3Publish getRawWillPublish() {
+        final MqttWillPublish willPublish = delegate.getConnectDefaults().getWillPublish();
+        return (willPublish == null) ? null : Mqtt3PublishView.of(willPublish);
     }
 
     @Override

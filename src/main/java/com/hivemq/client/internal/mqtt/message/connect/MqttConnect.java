@@ -18,6 +18,7 @@
 package com.hivemq.client.internal.mqtt.message.connect;
 
 import com.hivemq.client.annotations.Immutable;
+import com.hivemq.client.internal.mqtt.MqttClientConfig;
 import com.hivemq.client.internal.mqtt.datatypes.MqttClientIdentifierImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttUserPropertiesImpl;
 import com.hivemq.client.internal.mqtt.message.MqttMessageWithUserProperties;
@@ -119,6 +120,23 @@ public class MqttConnect extends MqttMessageWithUserProperties implements Mqtt5C
     @Override
     public @NotNull MqttConnectBuilder.Default extend() {
         return new MqttConnectBuilder.Default(this);
+    }
+
+    public @NotNull MqttConnect setDefaults(final @NotNull MqttClientConfig clientConfig) {
+        final MqttClientConfig.ConnectDefaults connectDefaults = clientConfig.getConnectDefaults();
+        final MqttSimpleAuth defaultSimpleAuth = connectDefaults.getSimpleAuth();
+        final Mqtt5EnhancedAuthMechanism defaultEnhancedAuthMechanism = connectDefaults.getEnhancedAuthMechanism();
+        final MqttWillPublish defaultWillPublish = connectDefaults.getWillPublish();
+
+        if (((defaultSimpleAuth == null) || (simpleAuth != null)) &&
+                ((defaultEnhancedAuthMechanism == null) || (enhancedAuthMechanism != null)) &&
+                ((defaultWillPublish == null) || (willPublish != null))) {
+            return this;
+        }
+        return new MqttConnect(keepAlive, cleanStart, sessionExpiryInterval, restrictions,
+                (simpleAuth == null) ? defaultSimpleAuth : simpleAuth,
+                (enhancedAuthMechanism == null) ? defaultEnhancedAuthMechanism : enhancedAuthMechanism,
+                (willPublish == null) ? defaultWillPublish : willPublish, getUserProperties());
     }
 
     public @NotNull MqttStatefulConnect createStateful(

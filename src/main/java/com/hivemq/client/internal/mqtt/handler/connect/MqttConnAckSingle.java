@@ -54,7 +54,7 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
 
     public MqttConnAckSingle(final @NotNull MqttClientConfig clientConfig, final @NotNull MqttConnect connect) {
         this.clientConfig = clientConfig;
-        this.connect = connect;
+        this.connect = connect.setDefaults(clientConfig);
     }
 
     @Override

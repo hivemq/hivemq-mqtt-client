@@ -34,6 +34,7 @@ import com.hivemq.client.internal.rx.CompletableFlow;
 import com.hivemq.client.mqtt.MqttVersion;
 import com.hivemq.client.mqtt.exceptions.ConnectionClosedException;
 import com.hivemq.client.mqtt.lifecycle.MqttDisconnectSource;
+import com.hivemq.client.mqtt.mqtt5.auth.Mqtt5EnhancedAuthMechanism;
 import com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5DisconnectException;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -172,6 +173,8 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
             final @NotNull MqttDisconnectEvent disconnectEvent,
             final @NotNull MqttClientConnectionConfig connectionConfig, final @NotNull EventLoop eventLoop) {
 
+        final MqttClientConfig.ConnectDefaults connectDefaults = clientConfig.getConnectDefaults();
+        final Mqtt5EnhancedAuthMechanism enhancedAuthMechanism = connectionConfig.getRawEnhancedAuthMechanism();
         // @formatter:off
         final MqttConnect connect = new MqttConnect(
                 connectionConfig.getKeepAlive(),
@@ -187,10 +190,10 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
                         connectionConfig.isProblemInformationRequested(),
                         connectionConfig.isResponseInformationRequested()
                 ),
-                null,
-                connectionConfig.getRawEnhancedAuthMechanism(),
-                null,
-                MqttUserPropertiesImpl.NO_USER_PROPERTIES); // TODO simpleAuth, willPublish
+                connectDefaults.getSimpleAuth(),
+                (enhancedAuthMechanism == null) ? connectDefaults.getEnhancedAuthMechanism() : enhancedAuthMechanism,
+                connectDefaults.getWillPublish(),
+                MqttUserPropertiesImpl.NO_USER_PROPERTIES);
         // @formatter:on
         MqttConnAckSingle.reconnect(clientConfig, disconnectEvent.getSource(), disconnectEvent.getCause(), connect,
                 connectionConfig.getServerAddress(), eventLoop);
