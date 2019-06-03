@@ -19,7 +19,12 @@ package com.hivemq.client.mqtt.mqtt3;
 
 import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.MqttClientBuilderBase;
+import com.hivemq.client.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
+import com.hivemq.client.mqtt.mqtt3.message.auth.Mqtt3SimpleAuthBuilder;
+import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3Publish;
+import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3WillPublishBuilder;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Builder for a {@link Mqtt3Client}.
@@ -29,6 +34,48 @@ import org.jetbrains.annotations.NotNull;
  */
 @DoNotImplement
 public interface Mqtt3ClientBuilder extends MqttClientBuilderBase<Mqtt3ClientBuilder> {
+
+    /**
+     * Sets the optional {@link Mqtt3ClientConfig#getSimpleAuth() simple authentication and/or authorization related
+     * data}.
+     *
+     * @param simpleAuth the simple auth related data or <code>null</code> to remove any previously set simple auth
+     *                   related data.
+     * @return the builder.
+     */
+    @NotNull Mqtt3ClientBuilder simpleAuth(@Nullable Mqtt3SimpleAuth simpleAuth);
+
+    /**
+     * Fluent counterpart of {@link #simpleAuth(Mqtt3SimpleAuth)}.
+     * <p>
+     * Calling {@link Mqtt3SimpleAuthBuilder.Nested.Complete#applySimpleAuth()} on the returned builder has the same
+     * effect as calling {@link #simpleAuth(Mqtt3SimpleAuth)} with the result of {@link
+     * Mqtt3SimpleAuthBuilder.Complete#build()}.
+     *
+     * @return the fluent builder for the simple auth related data.
+     * @see #simpleAuth(Mqtt3SimpleAuth)
+     */
+    @NotNull Mqtt3SimpleAuthBuilder.Nested<? extends Mqtt3ClientBuilder> simpleAuth();
+
+    /**
+     * Sets the optional {@link Mqtt3ClientConfig#getWillPublish() Will Publish}.
+     *
+     * @param willPublish the Will Publish or <code>null</code> to remove any previously set Will Publish.
+     * @return the builder.
+     */
+    @NotNull Mqtt3ClientBuilder willPublish(@Nullable Mqtt3Publish willPublish);
+
+    /**
+     * Fluent counterpart of {@link #willPublish(Mqtt3Publish)}.
+     * <p>
+     * Calling {@link Mqtt3WillPublishBuilder.Nested.Complete#applyWillPublish()} on the returned builder has the same
+     * effect as calling {@link #willPublish(Mqtt3Publish)} with the result of {@link
+     * Mqtt3WillPublishBuilder.Complete#build()}.
+     *
+     * @return the fluent builder for the Will Publish.
+     * @see #willPublish(Mqtt3Publish)
+     */
+    @NotNull Mqtt3WillPublishBuilder.Nested<? extends Mqtt3ClientBuilder> willPublish();
 
     /**
      * Builds the {@link Mqtt3Client}.
