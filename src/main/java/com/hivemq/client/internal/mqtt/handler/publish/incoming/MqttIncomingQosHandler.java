@@ -42,6 +42,7 @@ import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos2.Mqtt5IncomingQos2I
 import com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import com.hivemq.client.mqtt.mqtt5.message.publish.pubcomp.Mqtt5PubCompReasonCode;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.EventLoop;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
@@ -78,8 +79,10 @@ public class MqttIncomingQosHandler extends MqttSessionAwareHandler
     }
 
     @Override
-    public void onSessionStartOrResume(final @NotNull MqttClientConnectionConfig connectionConfig) {
-        super.onSessionStartOrResume(connectionConfig);
+    public void onSessionStartOrResume(
+            final @NotNull MqttClientConnectionConfig connectionConfig, final @NotNull EventLoop eventLoop) {
+
+        super.onSessionStartOrResume(connectionConfig, eventLoop);
         receiveMaximum = connectionConfig.getReceiveMaximum();
     }
 

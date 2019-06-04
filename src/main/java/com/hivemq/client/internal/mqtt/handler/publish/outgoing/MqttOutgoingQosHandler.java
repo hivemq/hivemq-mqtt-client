@@ -55,6 +55,7 @@ import com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5PubAckException;
 import com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5PubRecException;
 import com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.EventLoop;
 import io.reactivex.Flowable;
 import io.reactivex.FlowableSubscriber;
 import org.jctools.queues.SpscUnboundedArrayQueue;
@@ -107,8 +108,10 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     }
 
     @Override
-    public void onSessionStartOrResume(final @NotNull MqttClientConnectionConfig connectionConfig) {
-        super.onSessionStartOrResume(connectionConfig);
+    public void onSessionStartOrResume(
+            final @NotNull MqttClientConnectionConfig connectionConfig, final @NotNull EventLoop eventLoop) {
+
+        super.onSessionStartOrResume(connectionConfig, eventLoop);
 
         final int oldSendMaximum = sendMaximum;
         final int newSendMaximum = Math.min(
@@ -130,8 +133,8 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
             resize();
             final int newRequests = newSendMaximum - oldSendMaximum - shrinkRequests;
             if (newRequests > 0) {
-                subscription.request(newRequests);
                 shrinkRequests = 0;
+                subscription.request(newRequests);
             } else {
                 shrinkRequests = -newRequests;
             }
@@ -177,15 +180,14 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     void request(final long n) {
         assert subscription != null;
 
-        if (shrinkRequests == 0) {
+        final int shrinkRequests = this.shrinkRequests;
+        if (this.shrinkRequests == 0) {
             subscription.request(n);
+        } else if (n > shrinkRequests) {
+            this.shrinkRequests = 0;
+            subscription.request(n - shrinkRequests);
         } else {
-            if (n > shrinkRequests) {
-                subscription.request(n - shrinkRequests);
-                shrinkRequests = 0;
-            } else {
-                shrinkRequests -= n;
-            }
+            this.shrinkRequests -= n;
         }
     }
 
