@@ -19,6 +19,7 @@ package com.hivemq.client.internal.mqtt.handler.subscribe;
 
 import com.hivemq.client.internal.mqtt.message.MqttStatefulMessage;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Silvio Giebl
@@ -28,6 +29,8 @@ abstract class MqttSubOrUnsubWithFlow {
     abstract @NotNull MqttSubscriptionFlow<?> getFlow();
 
     static abstract class Stateful {
+
+        @Nullable Stateful next;
 
         abstract @NotNull MqttStatefulMessage.WithId<?> getMessage();
 

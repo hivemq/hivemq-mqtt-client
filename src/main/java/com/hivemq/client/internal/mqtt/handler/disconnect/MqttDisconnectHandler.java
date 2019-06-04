@@ -72,11 +72,11 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
     }
 
     @Override
-    public void channelRead(final @NotNull ChannelHandlerContext ctx, final @NotNull Object msg) throws Exception {
+    public void channelRead(final @NotNull ChannelHandlerContext ctx, final @NotNull Object msg) {
         if (msg instanceof MqttDisconnect) {
             readDisconnect(ctx, (MqttDisconnect) msg);
         } else {
-            super.channelRead(ctx, msg);
+            ctx.fireChannelRead(msg);
         }
     }
 
