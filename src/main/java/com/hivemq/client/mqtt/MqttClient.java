@@ -64,4 +64,11 @@ public interface MqttClient {
      * @return the configuration of this client.
      */
     @NotNull MqttClientConfig getConfig();
+
+    /**
+     * @return the state of the client.
+     */
+    default @NotNull MqttClientState getState() {
+        return getConfig().getState();
+    }
 }
