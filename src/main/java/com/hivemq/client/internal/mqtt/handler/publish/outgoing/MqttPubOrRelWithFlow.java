@@ -18,6 +18,7 @@
 package com.hivemq.client.internal.mqtt.handler.publish.outgoing;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Silvio Giebl
@@ -25,6 +26,8 @@ import org.jetbrains.annotations.NotNull;
 abstract class MqttPubOrRelWithFlow {
 
     private final @NotNull MqttAckFlow ackFlow;
+    int packetIdentifier;
+    @Nullable MqttPubOrRelWithFlow next, prev;
 
     MqttPubOrRelWithFlow(final @NotNull MqttAckFlow ackFlow) {
         this.ackFlow = ackFlow;

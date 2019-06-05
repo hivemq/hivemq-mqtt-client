@@ -36,6 +36,7 @@ import com.hivemq.client.internal.mqtt.message.publish.MqttPublishResult.MqttQos
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublishResult.MqttQos2CompleteResult;
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublishResult.MqttQos2IntermediateResult;
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublishResult.MqttQos2Result;
+import com.hivemq.client.internal.mqtt.message.publish.MqttStatefulPublish;
 import com.hivemq.client.internal.mqtt.message.publish.puback.MqttPubAck;
 import com.hivemq.client.internal.mqtt.message.publish.pubcomp.MqttPubComp;
 import com.hivemq.client.internal.mqtt.message.publish.pubrec.MqttPubRec;
@@ -43,7 +44,6 @@ import com.hivemq.client.internal.mqtt.message.publish.pubrel.MqttPubRel;
 import com.hivemq.client.internal.mqtt.message.publish.pubrel.MqttPubRelBuilder;
 import com.hivemq.client.internal.util.Ranges;
 import com.hivemq.client.internal.util.UnsignedDataTypes;
-import com.hivemq.client.internal.util.collections.ChunkedIntArrayQueue;
 import com.hivemq.client.internal.util.collections.IntMap;
 import com.hivemq.client.internal.util.netty.ContextFuture;
 import com.hivemq.client.internal.util.netty.DefaultContextPromise;
@@ -86,18 +86,17 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
 
     private final @NotNull SpscUnboundedArrayQueue<MqttPublishWithFlow> queue = new SpscUnboundedArrayQueue<>(32);
     private final @NotNull AtomicInteger queuedCounter = new AtomicInteger();
-    private final @NotNull ChunkedIntArrayQueue qos1Or2Queue = new ChunkedIntArrayQueue(32);
 
     private int sendMaximum;
     private @Nullable Ranges packetIdentifiers;
-    private @Nullable IntMap<MqttPubOrRelWithFlow> qos1Or2Map;
+    private @Nullable IntMap<MqttPubOrRelWithFlow> pending;
+    private @Nullable MqttPubOrRelWithFlow firstPending, lastPending, resendPending;
+    private @Nullable MqttPublishWithFlow currentPending;
     private @Nullable MqttTopicAliasMapping topicAliasMapping;
     private int shrinkIds;
     private int shrinkRequests;
 
     private @Nullable Subscription subscription;
-
-    private int currentWrite = -1;
 
     @Inject
     MqttOutgoingQosHandler(
@@ -124,11 +123,11 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
                     .subscribe(this);
             assert subscription != null;
             packetIdentifiers = new Ranges(1, newSendMaximum);
-            qos1Or2Map = IntMap.range(1, newSendMaximum);
+            pending = IntMap.range(1, newSendMaximum);
             subscription.request(newSendMaximum);
         } else {
             assert packetIdentifiers != null;
-            assert qos1Or2Map != null;
+            assert pending != null;
             assert subscription != null;
             resize();
             final int newRequests = newSendMaximum - oldSendMaximum - shrinkRequests;
@@ -138,18 +137,22 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
             } else {
                 shrinkRequests = -newRequests;
             }
-//            resend(); // TODO
         }
         topicAliasMapping = connectionConfig.getSendTopicAliasMapping();
+
+        if ((firstPending != null) || queuedCounter.get() > 0) {
+            resendPending = firstPending;
+            eventLoop.execute(this);
+        }
     }
 
     private void resize() {
         assert packetIdentifiers != null;
-        assert qos1Or2Map != null;
+        assert pending != null;
 
         shrinkIds = packetIdentifiers.resize(sendMaximum);
         if (shrinkIds == 0) {
-            qos1Or2Map = IntMap.resize(qos1Or2Map, sendMaximum);
+            pending = IntMap.resize(pending, sendMaximum);
         }
     }
 
@@ -202,7 +205,30 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
         if (ctx == null) {
             return;
         }
+        assert pending != null;
+//        int resent = 0;
+        while (resendPending != null) {
+//            if (resent == sendMaximum) {
+//                ctx.flush();
+//                if (queuedCounter.get() > 0) {
+//                    ctx.channel().eventLoop().execute(this);
+//                }
+//                return;
+//            }
+            if (resendPending instanceof MqttPublishWithFlow) {
+                final MqttPublishWithFlow publishWithFlow = (MqttPublishWithFlow) this.resendPending;
+                final MqttStatefulPublish publish = publishWithFlow.getPublish()
+                        .createStateful(publishWithFlow.packetIdentifier, true, topicAliasMapping);
+                writeQos1Or2Publish(ctx, publish, publishWithFlow);
+            } else {
+                final MqttPubRelWithFlow pubRelWithFlow = (MqttPubRelWithFlow) this.resendPending;
+                writePubRel(ctx, pubRelWithFlow.getPubRel());
+            }
+//            resent++;
+            resendPending = resendPending.next;
+        }
         final int working = Math.min(queuedCounter.get(), 64);
+//        final int working = Math.min(Math.min(queuedCounter.get(), 64), sendMaximum - pending.size());
         for (int i = 0; i < working; i++) {
             final MqttPublishWithFlow publishWithFlow = queue.poll();
             assert publishWithFlow != null; // ensured by queuedCounter
@@ -250,21 +276,37 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
             final @NotNull ChannelHandlerContext ctx, final @NotNull MqttPublishWithFlow publishWithFlow) {
 
         assert packetIdentifiers != null;
-        assert qos1Or2Map != null;
+        assert pending != null;
 
         final int packetIdentifier = packetIdentifiers.getId();
         if (packetIdentifier < 0) {
             LOGGER.error("No Packet Identifier available for QoS 1 or 2 PUBLISH. This must not happen and is a bug.");
             return;
         }
-        qos1Or2Map.put(packetIdentifier, publishWithFlow);
-        qos1Or2Queue.offer(packetIdentifier);
+        publishWithFlow.packetIdentifier = packetIdentifier;
+        pending.put(packetIdentifier, publishWithFlow);
+        final MqttPubOrRelWithFlow lastPending = this.lastPending;
+        if (lastPending == null) {
+            firstPending = this.lastPending = publishWithFlow;
+        } else {
+            lastPending.next = publishWithFlow;
+            publishWithFlow.prev = lastPending;
+            this.lastPending = publishWithFlow;
+        }
 
-        currentWrite = packetIdentifier;
-        ctx.write(
+        writeQos1Or2Publish(
+                ctx,
                 publishWithFlow.getPublish().createStateful(packetIdentifier, false, topicAliasMapping),
-                ctx.voidPromise());
-        currentWrite = -1;
+                publishWithFlow);
+    }
+
+    private void writeQos1Or2Publish(
+            final @NotNull ChannelHandlerContext ctx, final @NotNull MqttStatefulPublish publish,
+            final @NotNull MqttPublishWithFlow publishWithFlow) {
+
+        currentPending = publishWithFlow;
+        ctx.write(publish, ctx.voidPromise());
+        currentPending = null;
     }
 
     @Override
@@ -281,29 +323,29 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     }
 
     private void readPubAck(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttPubAck pubAck) {
-        assert qos1Or2Map != null;
+        assert pending != null;
 
         final int packetIdentifier = pubAck.getPacketIdentifier();
-        final MqttPubOrRelWithFlow removed = qos1Or2Map.remove(packetIdentifier);
+        final MqttPubOrRelWithFlow removed = pending.remove(packetIdentifier);
 
         if (removed == null) {
             error(ctx, "PUBACK contained unknown packet identifier");
             return;
         }
         if (!(removed instanceof MqttPublishWithFlow)) { // MqttPubRelWithFlow
-            qos1Or2Map.put(packetIdentifier, removed); // revert
+            pending.put(packetIdentifier, removed); // revert
             error(ctx, "PUBACK must not be received for a PUBREL");
             return;
         }
         final MqttPublishWithFlow publishWithFlow = (MqttPublishWithFlow) removed;
         final MqttPublish publish = publishWithFlow.getPublish();
         if (publish.getQos() != MqttQos.AT_LEAST_ONCE) { // EXACTLY_ONCE
-            qos1Or2Map.put(packetIdentifier, removed); // revert
+            pending.put(packetIdentifier, removed); // revert
             error(ctx, "PUBACK must not be received for a QoS 2 PUBLISH");
             return;
         }
 
-        removed(packetIdentifier);
+        completePending(publishWithFlow);
 
         onPubAck(publish, pubAck);
 
@@ -313,10 +355,10 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     }
 
     private void readPubRec(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttPubRec pubRec) {
-        assert qos1Or2Map != null;
+        assert pending != null;
 
         final int packetIdentifier = pubRec.getPacketIdentifier();
-        final MqttPubOrRelWithFlow got = qos1Or2Map.get(packetIdentifier);
+        final MqttPubOrRelWithFlow got = pending.get(packetIdentifier);
 
         if (got == null) {
             error(ctx, "PUBREC contained unknown packet identifier");
@@ -335,8 +377,8 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
         final MqttAckFlow ackFlow = publishWithFlow.getAckFlow();
 
         if (pubRec.getReasonCode().isError()) {
-            qos1Or2Map.remove(packetIdentifier);
-            removed(packetIdentifier);
+            pending.remove(packetIdentifier);
+            completePending(publishWithFlow);
 
             onPubRecError(publish, pubRec);
 
@@ -347,30 +389,59 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
             final MqttPubRel pubRel = buildPubRel(publish, pubRec);
 
             if (QOS_2_COMPLETE_RESULT) {
-                qos1Or2Map.put(packetIdentifier, new MqttQos2CompleteWithFlow(publish, pubRec, pubRel, ackFlow));
+                replacePending(publishWithFlow, new MqttQos2CompleteWithFlow(publish, pubRec, pubRel, ackFlow));
             } else {
                 final MqttQos2IntermediateWithFlow pubRelWithFlow = new MqttQos2IntermediateWithFlow(pubRel, ackFlow);
-                qos1Or2Map.put(packetIdentifier, pubRelWithFlow);
+                replacePending(publishWithFlow, pubRelWithFlow);
 
                 ackFlow.onNext(new MqttQos2IntermediateResult(publish, pubRec, pubRelWithFlow));
             }
 
-            ctx.writeAndFlush(pubRel, ctx.voidPromise());
+            writePubRel(ctx, pubRel);
+        }
+    }
+
+    private void writePubRel(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttPubRel pubRel) {
+        ctx.writeAndFlush(pubRel, ctx.voidPromise());
+    }
+
+    private void replacePending(
+            final @NotNull MqttPublishWithFlow publishWithFlow, final @NotNull MqttPubRelWithFlow pubRelWithFlow) {
+
+        assert pending != null;
+
+        final int packetIdentifier = publishWithFlow.packetIdentifier;
+        pubRelWithFlow.packetIdentifier = packetIdentifier;
+        pending.put(packetIdentifier, pubRelWithFlow);
+
+        final MqttPubOrRelWithFlow prev = publishWithFlow.prev;
+        final MqttPubOrRelWithFlow next = publishWithFlow.next;
+        pubRelWithFlow.prev = prev;
+        pubRelWithFlow.next = next;
+        if (prev == null) {
+            firstPending = pubRelWithFlow;
+        } else {
+            prev.next = pubRelWithFlow;
+        }
+        if (next == null) {
+            lastPending = pubRelWithFlow;
+        } else {
+            next.prev = pubRelWithFlow;
         }
     }
 
     private void readPubComp(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttPubComp pubComp) {
-        assert qos1Or2Map != null;
+        assert pending != null;
 
         final int packetIdentifier = pubComp.getPacketIdentifier();
-        final MqttPubOrRelWithFlow removed = qos1Or2Map.remove(packetIdentifier);
+        final MqttPubOrRelWithFlow removed = pending.remove(packetIdentifier);
 
         if (removed == null) {
             error(ctx, "PUBCOMP contained unknown packet identifier");
             return;
         }
         if (!(removed instanceof MqttPubRelWithFlow)) { // MqttPublishWithFlow
-            qos1Or2Map.put(packetIdentifier, removed); // revert
+            pending.put(packetIdentifier, removed); // revert
             final MqttPublishWithFlow publishWithFlow = (MqttPublishWithFlow) removed;
             if (publishWithFlow.getPublish().getQos() == MqttQos.AT_LEAST_ONCE) {
                 error(ctx, "PUBCOMP must not be received for a QoS 1 PUBLISH");
@@ -383,7 +454,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
         final MqttPubRel pubRel = pubRelWithFlow.getPubRel();
         final MqttAckFlow ackFlow = pubRelWithFlow.getAckFlow();
 
-        removed(packetIdentifier);
+        completePending(pubRelWithFlow);
 
         onPubComp(pubRel, pubComp);
 
@@ -398,10 +469,23 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
         }
     }
 
-    private void removed(final int packetIdentifier) {
+    private void completePending(final @NotNull MqttPubOrRelWithFlow oldPending) {
         assert packetIdentifiers != null;
 
-        qos1Or2Queue.removeFirst(packetIdentifier);
+        final MqttPubOrRelWithFlow prev = oldPending.prev;
+        final MqttPubOrRelWithFlow next = oldPending.next;
+        if (prev == null) {
+            firstPending = next;
+        } else {
+            prev.next = next;
+        }
+        if (next == null) {
+            lastPending = prev;
+        } else {
+            next.prev = prev;
+        }
+
+        final int packetIdentifier = oldPending.packetIdentifier;
         packetIdentifiers.returnId(packetIdentifier);
         if ((packetIdentifier > sendMaximum) && (--shrinkIds == 0)) {
             resize();
@@ -410,13 +494,12 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
 
     @Override
     public void exceptionCaught(final @NotNull ChannelHandlerContext ctx, final @NotNull Throwable cause) {
-        if (!(cause instanceof IOException) && (currentWrite != -1)) {
-            assert qos1Or2Map != null;
-            final MqttPublishWithFlow publishWithFlow = (MqttPublishWithFlow) qos1Or2Map.remove(currentWrite);
-            assert publishWithFlow != null;
-            publishWithFlow.getAckFlow().onNext(new MqttPublishResult(publishWithFlow.getPublish(), cause));
-            removed(currentWrite);
-            currentWrite = -1;
+        if (!(cause instanceof IOException) && (currentPending != null)) {
+            assert pending != null;
+            pending.remove(currentPending.packetIdentifier);
+            currentPending.getAckFlow().onNext(new MqttPublishResult(currentPending.getPublish(), cause));
+            completePending(currentPending);
+            currentPending = null;
         } else {
             ctx.fireExceptionCaught(cause);
         }
@@ -426,33 +509,29 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
     public void onSessionEnd(final @NotNull Throwable cause) {
         super.onSessionEnd(cause);
 
-        final int pending = qos1Or2Queue.size();
-        if (pending > 0) {
-            assert packetIdentifiers != null;
-            assert qos1Or2Map != null;
+        assert packetIdentifiers != null;
+        assert pending != null;
 
-            for (int i = 0; i < pending; i++) {
-                final int qos1Or2PacketId = qos1Or2Queue.poll(-1);
-                assert qos1Or2PacketId != -1;
-                packetIdentifiers.returnId(qos1Or2PacketId);
-                final MqttPubOrRelWithFlow removed = qos1Or2Map.remove(qos1Or2PacketId);
-                assert removed != null;
-
-                if (removed instanceof MqttPublishWithFlow) {
-                    final MqttPublishWithFlow publishWithFlow = (MqttPublishWithFlow) removed;
-                    removed.getAckFlow().onNext(new MqttPublishResult(publishWithFlow.getPublish(), cause));
-                } else if (QOS_2_COMPLETE_RESULT) {
-                    final MqttQos2CompleteWithFlow complete = (MqttQos2CompleteWithFlow) removed;
-                    removed.getAckFlow().onNext(new MqttQos2Result(complete.getPublish(), cause, complete.getPubRec()));
-                    // TODO actually not an error, default PubComp?
-                } else {
-                    final MqttQos2IntermediateWithFlow intermediate = (MqttQos2IntermediateWithFlow) removed;
-                    if (intermediate.getAsBoolean()) {
-                        intermediate.getAckFlow().acknowledged(1);
-                    }
+        MqttPubOrRelWithFlow current = firstPending;
+        while (current != null) {
+            packetIdentifiers.returnId(current.packetIdentifier);
+            if (current instanceof MqttPublishWithFlow) {
+                final MqttPublishWithFlow publishWithFlow = (MqttPublishWithFlow) current;
+                current.getAckFlow().onNext(new MqttPublishResult(publishWithFlow.getPublish(), cause));
+            } else if (QOS_2_COMPLETE_RESULT) {
+                final MqttQos2CompleteWithFlow complete = (MqttQos2CompleteWithFlow) current;
+                current.getAckFlow().onNext(new MqttQos2Result(complete.getPublish(), cause, complete.getPubRec()));
+                // TODO actually not an error, default PubComp?
+            } else {
+                final MqttQos2IntermediateWithFlow intermediate = (MqttQos2IntermediateWithFlow) current;
+                if (intermediate.getAsBoolean()) {
+                    intermediate.getAckFlow().acknowledged(1);
                 }
             }
+            current = current.next;
         }
+        pending.clear();
+        firstPending = lastPending = resendPending = null;
 
         clearQueued(cause);
     }
