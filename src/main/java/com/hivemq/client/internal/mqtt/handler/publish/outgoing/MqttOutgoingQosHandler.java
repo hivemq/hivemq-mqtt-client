@@ -206,15 +206,12 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
             return;
         }
         assert pending != null;
-//        int resent = 0;
+        int resent = 0;
         while (resendPending != null) {
-//            if (resent == sendMaximum) {
-//                ctx.flush();
-//                if (queuedCounter.get() > 0) {
-//                    ctx.channel().eventLoop().execute(this);
-//                }
-//                return;
-//            }
+            if (resent == sendMaximum) {
+                ctx.flush();
+                return;
+            }
             if (resendPending instanceof MqttPublishWithFlow) {
                 final MqttPublishWithFlow publishWithFlow = (MqttPublishWithFlow) this.resendPending;
                 final MqttStatefulPublish publish = publishWithFlow.getPublish()
@@ -224,11 +221,10 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
                 final MqttPubRelWithFlow pubRelWithFlow = (MqttPubRelWithFlow) this.resendPending;
                 writePubRel(ctx, pubRelWithFlow.getPubRel());
             }
-//            resent++;
+            resent++;
             resendPending = resendPending.next;
         }
-        final int working = Math.min(queuedCounter.get(), 64);
-//        final int working = Math.min(Math.min(queuedCounter.get(), 64), sendMaximum - pending.size());
+        final int working = Math.min(Math.min(queuedCounter.get(), 64), sendMaximum - pending.size());
         for (int i = 0; i < working; i++) {
             final MqttPublishWithFlow publishWithFlow = queue.poll();
             assert publishWithFlow != null; // ensured by queuedCounter
@@ -345,7 +341,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
             return;
         }
 
-        completePending(publishWithFlow);
+        completePending(ctx, publishWithFlow);
 
         onPubAck(publish, pubAck);
 
@@ -378,7 +374,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
 
         if (pubRec.getReasonCode().isError()) {
             pending.remove(packetIdentifier);
-            completePending(publishWithFlow);
+            completePending(ctx, publishWithFlow);
 
             onPubRecError(publish, pubRec);
 
@@ -454,7 +450,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
         final MqttPubRel pubRel = pubRelWithFlow.getPubRel();
         final MqttAckFlow ackFlow = pubRelWithFlow.getAckFlow();
 
-        completePending(pubRelWithFlow);
+        completePending(ctx, pubRelWithFlow);
 
         onPubComp(pubRel, pubComp);
 
@@ -469,7 +465,9 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
         }
     }
 
-    private void completePending(final @NotNull MqttPubOrRelWithFlow oldPending) {
+    private void completePending(
+            final @NotNull ChannelHandlerContext ctx, final @NotNull MqttPubOrRelWithFlow oldPending) {
+
         assert packetIdentifiers != null;
 
         final MqttPubOrRelWithFlow prev = oldPending.prev;
@@ -490,6 +488,10 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
         if ((packetIdentifier > sendMaximum) && (--shrinkIds == 0)) {
             resize();
         }
+
+        if (resendPending != null) {
+            ctx.channel().eventLoop().execute(this);
+        }
     }
 
     @Override
@@ -498,7 +500,7 @@ public class MqttOutgoingQosHandler extends MqttSessionAwareHandler
             assert pending != null;
             pending.remove(currentPending.packetIdentifier);
             currentPending.getAckFlow().onNext(new MqttPublishResult(currentPending.getPublish(), cause));
-            completePending(currentPending);
+            completePending(ctx, currentPending);
             currentPending = null;
         } else {
             ctx.fireExceptionCaught(cause);
