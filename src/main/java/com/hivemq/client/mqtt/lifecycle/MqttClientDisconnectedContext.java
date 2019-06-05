@@ -61,13 +61,13 @@ public interface MqttClientDisconnectedContext {
      * </ul>
      * <p>
      * Example: You can use the following code to extract the Disconnect message:
-     * <code><pre>
-     * TypeSwitch.when(context.getCause()).is(Mqtt5DisconnectException.class, disconnectException -> {
+     * <pre>
+     * TypeSwitch.when(context.getCause()).is(Mqtt5DisconnectException.class, disconnectException -&gt; {
      *     Mqtt5Disconnect disconnect = disconnectException.getMqttMessage();
-     * }).is(Mqtt3DisconnectException.class, disconnectException -> {
+     * }).is(Mqtt3DisconnectException.class, disconnectException -&gt; {
      *     Mqtt3Disconnect disconnect = disconnectException.getMqttMessage();
      * });
-     * </pre></code>
+     * </pre>
      *
      * @return the cause for disconnection.
      */
