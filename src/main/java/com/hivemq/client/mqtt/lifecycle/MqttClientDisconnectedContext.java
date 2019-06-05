@@ -41,6 +41,34 @@ public interface MqttClientDisconnectedContext {
     @NotNull MqttDisconnectSource getSource();
 
     /**
+     * Returns the cause for disconnection.
+     * <p>
+     * This can be:
+     * <ul>
+     * <li>{@link com.hivemq.client.mqtt.exceptions.ConnectionFailedException ConnectionFailedException} if a connect
+     * attempt failed</li>
+     * <li>{@link com.hivemq.client.mqtt.mqtt3.exceptions.Mqtt3ConnAckException Mqtt3ConnAckException} or {@link
+     * com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5ConnAckException Mqtt5ConnAckException} (depending on the MQTT
+     * version of the client) if the ConnAck message contained an error code, which means that the connect was
+     * rejected</li>
+     * <li>{@link com.hivemq.client.mqtt.exceptions.ConnectionClosedException ConnectionClosedException} if the
+     * connection was closed without sending a Disconnect message (use {@link #getSource()} to determine if the server
+     * or the client closed the connection)</li>
+     * <li>{@link com.hivemq.client.mqtt.mqtt3.exceptions.Mqtt3DisconnectException Mqtt3DisconnectException} or {@link
+     * com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5DisconnectException Mqtt5DisconnectException} (depending on the MQTT
+     * version of the client) if the connection was closed with a Disconnect message (use {@link #getSource()} to
+     * determine if the server, the user or the client sent the Disconnect message)</li>
+     * </ul>
+     * <p>
+     * Example: You can use the following code to extract the Disconnect message:
+     * <code><pre>
+     * TypeSwitch.when(context.getCause()).is(Mqtt5DisconnectException.class, disconnectException -> {
+     *     Mqtt5Disconnect disconnect = disconnectException.getMqttMessage();
+     * }).is(Mqtt3DisconnectException.class, disconnectException -> {
+     *     Mqtt3Disconnect disconnect = disconnectException.getMqttMessage();
+     * });
+     * </pre></code>
+     *
      * @return the cause for disconnection.
      */
     @NotNull Throwable getCause();
