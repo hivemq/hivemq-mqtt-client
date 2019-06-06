@@ -196,11 +196,29 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      *
      * @return the fluent builder for the WebSocket configuration.
      * @see #webSocketConfig(MqttWebSocketConfig)
+     * @since 1.1
      */
     @NotNull MqttWebSocketConfigBuilder.Nested<? extends B> webSocketConfig();
 
+    /**
+     * Sets the {@link MqttClientConfig#getTransportConfig() transport configuration}.
+     *
+     * @param transportConfig the transport configuration.
+     * @return the builder.
+     * @since 1.1
+     */
     @NotNull B transportConfig(@NotNull MqttClientTransportConfig transportConfig);
 
+    /**
+     * Fluent counterpart of {@link #transportConfig(MqttClientTransportConfig)}.
+     * <p>
+     * Calling {@link MqttClientTransportConfigBuilder.Nested#applyTransportConfig()} on the returned builder has the
+     * effect of extending the current transport configuration.
+     *
+     * @return the fluent builder for the transport configuration.
+     * @see #transportConfig(MqttClientTransportConfig)
+     * @since 1.1
+     */
     @NotNull MqttClientTransportConfigBuilder.Nested<? extends B> transportConfig();
 
     /**

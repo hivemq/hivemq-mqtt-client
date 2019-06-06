@@ -21,7 +21,7 @@ import com.hivemq.client.internal.mqtt.MqttWebSocketConfigImplBuilder;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Configuration for the WebSocket transport to use by {@link MqttClient MQTT clients}.
+ * Configuration for a WebSocket transport to use by {@link MqttClient MQTT clients}.
  *
  * @author Christian Hoff
  * @author Silvio Giebl

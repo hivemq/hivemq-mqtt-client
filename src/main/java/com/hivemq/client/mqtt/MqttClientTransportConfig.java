@@ -25,21 +25,42 @@ import java.net.InetSocketAddress;
 import java.util.Optional;
 
 /**
+ * Configuration for a transport to use by {@link MqttClient MQTT clients}.
+ *
  * @author Silvio Giebl
  * @since 1.1
  */
 @DoNotImplement
 public interface MqttClientTransportConfig {
 
+    /**
+     * Creates a builder for a transport configuration.
+     *
+     * @return the created builder for a transport configuration.
+     */
     static @NotNull MqttClientTransportConfigBuilder builder() {
         return new MqttClientTransportConfigImplBuilder.Default();
     }
 
+    /**
+     * @return the server address to connect to.
+     */
     @NotNull InetSocketAddress getServerAddress();
 
+    /**
+     * @return the optional secure transport configuration.
+     */
     @NotNull Optional<MqttClientSslConfig> getSslConfig();
 
+    /**
+     * @return the optional WebSocket transport configuration.
+     */
     @NotNull Optional<MqttWebSocketConfig> getWebSocketConfig();
 
+    /**
+     * Creates a builder for extending this transport configuration.
+     *
+     * @return the created builder.
+     */
     @NotNull MqttClientTransportConfigBuilder extend();
 }
