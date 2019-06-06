@@ -71,4 +71,11 @@ public interface MqttClientAutoReconnect extends MqttClientDisconnectedListener 
      * @return the maximum delay in the given time unit.
      */
     long getMaxDelay(@NotNull TimeUnit timeUnit);
+
+    /**
+     * Creates a builder for extending this automatic reconnect strategy.
+     *
+     * @return the created builder.
+     */
+    @NotNull MqttClientAutoReconnectBuilder extend();
 }

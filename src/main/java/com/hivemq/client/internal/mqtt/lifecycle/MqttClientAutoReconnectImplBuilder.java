@@ -69,6 +69,12 @@ public abstract class MqttClientAutoReconnectImplBuilder<B extends MqttClientAut
     public static class Default extends MqttClientAutoReconnectImplBuilder<Default>
             implements MqttClientAutoReconnectBuilder {
 
+        public Default() {}
+
+        Default(final @Nullable MqttClientAutoReconnectImpl autoReconnect) {
+            super(autoReconnect);
+        }
+
         @Override
         @NotNull Default self() {
             return this;

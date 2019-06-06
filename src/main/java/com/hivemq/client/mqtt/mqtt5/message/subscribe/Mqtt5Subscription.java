@@ -84,4 +84,12 @@ public interface Mqtt5Subscription {
      * @return whether the retain flag for incoming Publish messages must be set to its original value.
      */
     boolean isRetainAsPublished();
+
+    /**
+     * Creates a builder for extending this Subscription.
+     *
+     * @return the created builder.
+     * @since 1.1
+     */
+    @NotNull Mqtt5SubscriptionBuilder extend();
 }

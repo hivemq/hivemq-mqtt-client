@@ -66,4 +66,9 @@ public class MqttClientAutoReconnectImpl implements MqttClientAutoReconnect {
     public long getMaxDelay(final @NotNull TimeUnit timeUnit) {
         return timeUnit.convert(maxDelayNanos, TimeUnit.NANOSECONDS);
     }
+
+    @Override
+    public @NotNull MqttClientAutoReconnectImplBuilder.Default extend() {
+        return new MqttClientAutoReconnectImplBuilder.Default(this);
+    }
 }

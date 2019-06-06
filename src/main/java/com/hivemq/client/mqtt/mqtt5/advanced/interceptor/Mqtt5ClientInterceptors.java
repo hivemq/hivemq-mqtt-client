@@ -52,4 +52,12 @@ public interface Mqtt5ClientInterceptors {
     @Nullable Mqtt5IncomingQos2Interceptor getIncomingQos2Interceptor();
 
     @Nullable Mqtt5OutgoingQos2Interceptor getOutgoingQos2Interceptor();
+
+    /**
+     * Creates a builder for extending this collection of interceptors.
+     *
+     * @return the created builder.
+     * @since 1.1
+     */
+    @NotNull Mqtt5ClientInterceptorsBuilder extend();
 }

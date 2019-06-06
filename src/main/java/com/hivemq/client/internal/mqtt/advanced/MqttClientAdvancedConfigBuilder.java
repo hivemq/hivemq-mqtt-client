@@ -72,6 +72,12 @@ public abstract class MqttClientAdvancedConfigBuilder<B extends MqttClientAdvanc
     public static class Default extends MqttClientAdvancedConfigBuilder<Default>
             implements Mqtt5ClientAdvancedConfigBuilder {
 
+        public Default() {}
+
+        Default(final @NotNull MqttClientAdvancedConfig advancedConfig) {
+            super(advancedConfig);
+        }
+
         @Override
         @NotNull Default self() {
             return this;

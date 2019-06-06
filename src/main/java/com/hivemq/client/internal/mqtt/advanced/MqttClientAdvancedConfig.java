@@ -60,6 +60,11 @@ public class MqttClientAdvancedConfig implements Mqtt5ClientAdvancedConfig {
     }
 
     @Override
+    public @NotNull MqttClientAdvancedConfigBuilder.Default extend() {
+        return new MqttClientAdvancedConfigBuilder.Default(this);
+    }
+
+    @Override
     public boolean equals(final @Nullable Object o) {
         if (this == o) {
             return true;
