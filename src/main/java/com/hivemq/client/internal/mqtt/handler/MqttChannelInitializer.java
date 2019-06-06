@@ -88,7 +88,7 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
 
     @Override
     protected void initChannel(final @NotNull Channel channel) throws Exception {
-        final MqttClientTransportConfigImpl transportConfig = clientConfig.getTransportConfig();
+        final MqttClientTransportConfigImpl transportConfig = connAckFlow.getTransportConfig();
         final MqttClientSslConfigImpl sslConfig = transportConfig.getRawSslConfig();
         if (sslConfig != null) {
             initSsl(channel, sslConfig);
