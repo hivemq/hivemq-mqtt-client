@@ -30,7 +30,7 @@ abstract class MqttSubOrUnsubWithFlow {
 
     static abstract class Stateful {
 
-        @Nullable Stateful next;
+        @Nullable Stateful next, prev;
 
         abstract @NotNull MqttStatefulMessage.WithId<?> getMessage();
 

@@ -204,11 +204,13 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
 
     private void addPending(final @NotNull MqttSubOrUnsubWithFlow.Stateful newPending) {
         pending.put(newPending.getMessage().getPacketIdentifier(), newPending);
+        final MqttSubOrUnsubWithFlow.Stateful lastPending = this.lastPending;
         if (lastPending == null) {
-            firstPending = lastPending = newPending;
+            firstPending = this.lastPending = newPending;
         } else {
             lastPending.next = newPending;
-            lastPending = newPending;
+            newPending.prev = lastPending;
+            this.lastPending = newPending;
         }
     }
 
@@ -346,22 +348,17 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
     private void completePending(
             final @NotNull ChannelHandlerContext ctx, final @NotNull MqttSubOrUnsubWithFlow.Stateful oldPending) {
 
-        if (firstPending == oldPending) {
-            firstPending = oldPending.next;
-            if (lastPending == oldPending) {
-                lastPending = null;
-            }
+        final MqttSubOrUnsubWithFlow.Stateful prev = oldPending.prev;
+        final MqttSubOrUnsubWithFlow.Stateful next = oldPending.next;
+        if (prev == null) {
+            firstPending = next;
         } else {
-            MqttSubOrUnsubWithFlow.Stateful beforePending = firstPending;
-            assert beforePending != null;
-            while (beforePending.next != oldPending) {
-                beforePending = beforePending.next;
-                assert beforePending != null;
-            }
-            beforePending.next = oldPending.next;
-            if (lastPending == oldPending) {
-                lastPending = beforePending;
-            }
+            prev.next = next;
+        }
+        if (next == null) {
+            lastPending = prev;
+        } else {
+            next.prev = prev;
         }
 
         final int packetIdentifier = oldPending.getMessage().getPacketIdentifier();
