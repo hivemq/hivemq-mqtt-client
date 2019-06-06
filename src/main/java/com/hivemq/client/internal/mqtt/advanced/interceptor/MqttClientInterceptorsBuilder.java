@@ -80,6 +80,10 @@ public abstract class MqttClientInterceptorsBuilder<B extends MqttClientIntercep
 
         public Default() {}
 
+        Default(final @Nullable MqttClientInterceptors interceptors) {
+            super(interceptors);
+        }
+
         @Override
         @NotNull Default self() {
             return this;

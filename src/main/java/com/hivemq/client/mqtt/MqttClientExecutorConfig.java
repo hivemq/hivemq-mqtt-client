@@ -39,9 +39,9 @@ public interface MqttClientExecutorConfig {
     @NotNull Scheduler DEFAULT_APPLICATION_SCHEDULER = Schedulers.computation();
 
     /**
-     * Creates a builder for a executor configuration.
+     * Creates a builder for an executor configuration.
      *
-     * @return the created builder for a executor configuration.
+     * @return the created builder for an executor configuration.
      */
     static @NotNull MqttClientExecutorConfigBuilder builder() {
         return new MqttClientExecutorConfigImplBuilder.Default();
@@ -61,4 +61,12 @@ public interface MqttClientExecutorConfig {
      * @return the {@link Scheduler} used for executing application specific code, such as callbacks.
      */
     @NotNull Scheduler getApplicationScheduler();
+
+    /**
+     * Creates a builder for extending this executor configuration.
+     *
+     * @return the created builder.
+     * @since 1.1
+     */
+    @NotNull MqttClientExecutorConfigBuilder extend();
 }

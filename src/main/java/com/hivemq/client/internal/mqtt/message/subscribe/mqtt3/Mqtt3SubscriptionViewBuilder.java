@@ -19,6 +19,7 @@ package com.hivemq.client.internal.mqtt.message.subscribe.mqtt3;
 
 import com.hivemq.client.internal.mqtt.datatypes.MqttTopicFilterImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttTopicFilterImplBuilder;
+import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscription;
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
 import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
@@ -37,6 +38,14 @@ public abstract class Mqtt3SubscriptionViewBuilder<B extends Mqtt3SubscriptionVi
 
     private @Nullable MqttTopicFilterImpl topicFilter;
     private @NotNull MqttQos qos = Mqtt3SubscriptionView.DEFAULT_QOS;
+
+    Mqtt3SubscriptionViewBuilder() {}
+
+    Mqtt3SubscriptionViewBuilder(final @NotNull Mqtt3SubscriptionView subscription) {
+        final MqttSubscription delegate = subscription.getDelegate();
+        topicFilter = delegate.getTopicFilter();
+        qos = delegate.getQos();
+    }
 
     abstract @NotNull B self();
 
@@ -66,6 +75,12 @@ public abstract class Mqtt3SubscriptionViewBuilder<B extends Mqtt3SubscriptionVi
 
     public static class Default extends Mqtt3SubscriptionViewBuilder<Default>
             implements Mqtt3SubscriptionBuilder.Complete {
+
+        public Default() {}
+
+        Default(final @NotNull Mqtt3SubscriptionView subscription) {
+            super(subscription);
+        }
 
         @Override
         @NotNull Default self() {

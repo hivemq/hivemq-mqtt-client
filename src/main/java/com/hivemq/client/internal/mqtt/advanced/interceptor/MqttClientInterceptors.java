@@ -22,6 +22,7 @@ import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos1.Mqtt5IncomingQos1I
 import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos1.Mqtt5OutgoingQos1Interceptor;
 import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos2.Mqtt5IncomingQos2Interceptor;
 import com.hivemq.client.mqtt.mqtt5.advanced.interceptor.qos2.Mqtt5OutgoingQos2Interceptor;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -66,6 +67,11 @@ public class MqttClientInterceptors implements Mqtt5ClientInterceptors {
     @Override
     public @Nullable Mqtt5OutgoingQos2Interceptor getOutgoingQos2Interceptor() {
         return outgoingQos2Interceptor;
+    }
+
+    @Override
+    public @NotNull MqttClientInterceptorsBuilder.Default extend() {
+        return new MqttClientInterceptorsBuilder.Default(this);
     }
 
     @Override

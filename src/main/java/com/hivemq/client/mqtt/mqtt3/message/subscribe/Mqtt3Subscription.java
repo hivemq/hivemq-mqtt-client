@@ -56,4 +56,12 @@ public interface Mqtt3Subscription {
      * @return the QoS of this Subscription.
      */
     @NotNull MqttQos getQos();
+
+    /**
+     * Creates a builder for extending this Subscription.
+     *
+     * @return the created builder.
+     * @since 1.1
+     */
+    @NotNull Mqtt3SubscriptionBuilder extend();
 }

@@ -60,4 +60,12 @@ public interface MqttWebSocketConfig {
      * @return the WebSocket subprotocol.
      */
     @NotNull String getSubprotocol();
+
+    /**
+     * Creates a builder for extending this WebSocket configuration.
+     *
+     * @return the created builder.
+     * @since 1.1
+     */
+    @NotNull MqttWebSocketConfigBuilder extend();
 }

@@ -48,6 +48,11 @@ public class MqttWebSocketConfigImpl implements MqttWebSocketConfig {
     }
 
     @Override
+    public @NotNull MqttWebSocketConfigImplBuilder.Default extend() {
+        return new MqttWebSocketConfigImplBuilder.Default(this);
+    }
+
+    @Override
     public boolean equals(final @Nullable Object o) {
         if (this == o) {
             return true;

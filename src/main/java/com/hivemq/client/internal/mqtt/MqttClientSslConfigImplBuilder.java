@@ -88,6 +88,12 @@ public abstract class MqttClientSslConfigImplBuilder<B extends MqttClientSslConf
 
     public static class Default extends MqttClientSslConfigImplBuilder<Default> implements MqttClientSslConfigBuilder {
 
+        public Default() {}
+
+        Default(final @Nullable MqttClientSslConfigImpl sslConfig) {
+            super(sslConfig);
+        }
+
         @Override
         @NotNull Default self() {
             return this;

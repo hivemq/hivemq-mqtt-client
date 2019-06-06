@@ -96,6 +96,11 @@ public class MqttClientSslConfigImpl implements MqttClientSslConfig {
     }
 
     @Override
+    public @NotNull MqttClientSslConfigImplBuilder.Default extend() {
+        return new MqttClientSslConfigImplBuilder.Default(this);
+    }
+
+    @Override
     public boolean equals(final @Nullable Object o) {
         if (this == o) {
             return true;
