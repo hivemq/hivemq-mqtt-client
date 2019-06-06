@@ -25,10 +25,8 @@ import com.hivemq.client.internal.mqtt.message.auth.MqttSimpleAuth;
 import com.hivemq.client.internal.mqtt.message.publish.MqttWillPublish;
 import com.hivemq.client.internal.util.ExecutorUtil;
 import com.hivemq.client.internal.util.collections.ImmutableList;
-import com.hivemq.client.mqtt.MqttClientSslConfig;
 import com.hivemq.client.mqtt.MqttClientState;
 import com.hivemq.client.mqtt.MqttVersion;
-import com.hivemq.client.mqtt.MqttWebSocketConfig;
 import com.hivemq.client.mqtt.datatypes.MqttClientIdentifier;
 import com.hivemq.client.mqtt.lifecycle.MqttClientAutoReconnect;
 import com.hivemq.client.mqtt.lifecycle.MqttClientConnectedListener;
@@ -42,7 +40,6 @@ import io.netty.channel.EventLoop;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.net.InetSocketAddress;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -53,10 +50,8 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
 
     private final @NotNull MqttVersion mqttVersion;
     private volatile @NotNull MqttClientIdentifierImpl clientIdentifier;
-    private final @NotNull InetSocketAddress serverAddress;
+    private final @NotNull MqttClientTransportConfigImpl transportConfig;
     private final @NotNull MqttClientExecutorConfigImpl executorConfig;
-    private final @Nullable MqttClientSslConfigImpl sslConfig;
-    private final @Nullable MqttWebSocketConfigImpl webSocketConfig;
     private final @NotNull MqttClientAdvancedConfig advancedConfig;
     private final @NotNull ConnectDefaults connectDefaults;
     private final @NotNull ImmutableList<MqttClientConnectedListener> connectedListeners;
@@ -73,18 +68,16 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
 
     public MqttClientConfig(
             final @NotNull MqttVersion mqttVersion, final @NotNull MqttClientIdentifierImpl clientIdentifier,
-            final @NotNull InetSocketAddress serverAddress, final @NotNull MqttClientExecutorConfigImpl executorConfig,
-            final @Nullable MqttClientSslConfigImpl sslConfig, final @Nullable MqttWebSocketConfigImpl webSocketConfig,
+            final @NotNull MqttClientTransportConfigImpl transportConfig,
+            final @NotNull MqttClientExecutorConfigImpl executorConfig,
             final @NotNull MqttClientAdvancedConfig advancedConfig, final @NotNull ConnectDefaults connectDefaults,
             final @NotNull ImmutableList<MqttClientConnectedListener> connectedListeners,
             final @NotNull ImmutableList<MqttClientDisconnectedListener> disconnectedListeners) {
 
         this.mqttVersion = mqttVersion;
         this.clientIdentifier = clientIdentifier;
-        this.serverAddress = serverAddress;
+        this.transportConfig = transportConfig;
         this.executorConfig = executorConfig;
-        this.sslConfig = sslConfig;
-        this.webSocketConfig = webSocketConfig;
         this.advancedConfig = advancedConfig;
         this.connectDefaults = connectDefaults;
         this.connectedListeners = connectedListeners;
@@ -115,41 +108,13 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
     }
 
     @Override
-    public @NotNull InetSocketAddress getServerAddress() {
-        return serverAddress;
-    }
-
-    @Override
-    public @NotNull String getServerHost() {
-        return serverAddress.getHostString();
-    }
-
-    @Override
-    public int getServerPort() {
-        return serverAddress.getPort();
+    public @NotNull MqttClientTransportConfigImpl getTransportConfig() {
+        return transportConfig;
     }
 
     @Override
     public @NotNull MqttClientExecutorConfigImpl getExecutorConfig() {
         return executorConfig;
-    }
-
-    @Override
-    public @NotNull Optional<MqttClientSslConfig> getSslConfig() {
-        return Optional.ofNullable(sslConfig);
-    }
-
-    public @Nullable MqttClientSslConfigImpl getRawSslConfig() {
-        return sslConfig;
-    }
-
-    @Override
-    public @NotNull Optional<MqttWebSocketConfig> getWebSocketConfig() {
-        return Optional.ofNullable(webSocketConfig);
-    }
-
-    public @Nullable MqttWebSocketConfigImpl getRawWebSocketConfig() {
-        return webSocketConfig;
     }
 
     @Override

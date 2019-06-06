@@ -36,20 +36,15 @@ import org.jetbrains.annotations.Nullable;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
-import static com.hivemq.client.mqtt.MqttClient.*;
-
 /**
  * @author Silvio Giebl
  */
-public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<B>> {
+public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<B>>
+        extends MqttClientTransportConfigImplBuilder<B> {
 
     private @NotNull MqttClientIdentifierImpl identifier =
             MqttClientIdentifierImpl.REQUEST_CLIENT_IDENTIFIER_FROM_SERVER;
-    private @NotNull Object serverHost = DEFAULT_SERVER_HOST; // String or InetAddress
-    private int serverPort = -1;
-    private @Nullable InetSocketAddress serverAddress;
-    private @Nullable MqttClientSslConfigImpl sslConfig;
-    private @Nullable MqttWebSocketConfigImpl webSocketConfig;
+    private @Nullable MqttClientTransportConfigImpl transportConfig = MqttClientTransportConfigImpl.DEFAULT;
     private @NotNull MqttClientExecutorConfigImpl executorConfig = MqttClientExecutorConfigImpl.DEFAULT;
     private @Nullable MqttClientAutoReconnectImpl autoReconnect;
     private @Nullable ImmutableList.Builder<MqttClientConnectedListener> connectedListenersBuilder;
@@ -58,16 +53,17 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
     protected MqttRxClientBuilderBase() {}
 
     protected MqttRxClientBuilderBase(final @NotNull MqttRxClientBuilderBase<?> clientBuilder) {
-        this.identifier = clientBuilder.identifier;
-        this.serverHost = clientBuilder.serverHost;
-        this.serverPort = clientBuilder.serverPort;
-        this.serverAddress = clientBuilder.serverAddress;
-        this.sslConfig = clientBuilder.sslConfig;
-        this.webSocketConfig = clientBuilder.webSocketConfig;
-        this.executorConfig = clientBuilder.executorConfig;
-        this.autoReconnect = clientBuilder.autoReconnect;
-        this.connectedListenersBuilder = clientBuilder.connectedListenersBuilder;
-        this.disconnectedListenersBuilder = clientBuilder.disconnectedListenersBuilder;
+        identifier = clientBuilder.identifier;
+        serverAddress = clientBuilder.serverAddress;
+        serverHost = clientBuilder.serverHost;
+        serverPort = clientBuilder.serverPort;
+        sslConfig = clientBuilder.sslConfig;
+        webSocketConfig = clientBuilder.webSocketConfig;
+        transportConfig = clientBuilder.transportConfig;
+        executorConfig = clientBuilder.executorConfig;
+        autoReconnect = clientBuilder.autoReconnect;
+        connectedListenersBuilder = clientBuilder.connectedListenersBuilder;
+        disconnectedListenersBuilder = clientBuilder.disconnectedListenersBuilder;
     }
 
     protected abstract @NotNull B self();
@@ -82,70 +78,62 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
         return self();
     }
 
-    public @NotNull B serverAddress(final @NotNull InetSocketAddress address) {
-        this.serverAddress = Checks.notNull(address, "Server address");
-        return self();
+    @Override
+    public @NotNull B serverAddress(final @Nullable InetSocketAddress address) {
+        transportConfig = null;
+        return super.serverAddress(address);
     }
 
+    @Override
     public @NotNull B serverHost(final @Nullable String host) {
-        setServerHost(Checks.notEmpty(host, "Server host"));
-        return self();
+        transportConfig = null;
+        return super.serverHost(host);
     }
 
+    @Override
     public @NotNull B serverHost(final @Nullable InetAddress host) {
-        setServerHost(Checks.notNull(host, "Server host"));
-        return self();
+        transportConfig = null;
+        return super.serverHost(host);
     }
 
-    private void setServerHost(final @NotNull Object serverHost) {
-        this.serverHost = serverHost;
-        if (serverAddress != null) {
-            serverPort = serverAddress.getPort();
-            serverAddress = null;
-        }
-    }
-
+    @Override
     public @NotNull B serverPort(final int port) {
-        this.serverPort = Checks.unsignedShort(port, "Server port");
-        if (serverAddress != null) {
-            final InetAddress inetAddress = serverAddress.getAddress();
-            if (inetAddress != null) {
-                serverHost = inetAddress;
-            } else {
-                serverHost = serverAddress.getHostString();
-            }
-            serverAddress = null;
-        }
+        transportConfig = null;
+        return super.serverPort(port);
+    }
+
+    @Override
+    public @NotNull B sslWithDefaultConfig() {
+        transportConfig = null;
+        return super.sslWithDefaultConfig();
+    }
+
+    @Override
+    public @NotNull B sslConfig(final @Nullable MqttClientSslConfig sslConfig) {
+        return super.sslConfig(sslConfig);
+    }
+
+    @Override
+    public @NotNull B webSocketWithDefaultConfig() {
+        transportConfig = null;
+        return super.webSocketWithDefaultConfig();
+    }
+
+    @Override
+    public @NotNull B webSocketConfig(final @Nullable MqttWebSocketConfig webSocketConfig) {
+        transportConfig = null;
+        return super.webSocketConfig(webSocketConfig);
+    }
+
+    public @NotNull B transportConfig(final @Nullable MqttClientTransportConfig transportConfig) {
+        this.transportConfig =
+                Checks.notImplemented(transportConfig, MqttClientTransportConfigImpl.class, "Transport config");
+        set(this.transportConfig);
         return self();
     }
 
-    public @NotNull B useSslWithDefaultConfig() {
-        this.sslConfig = MqttClientSslConfigImpl.DEFAULT;
-        return self();
-    }
-
-    public @NotNull B useSsl(final @Nullable MqttClientSslConfig sslConfig) {
-        this.sslConfig = Checks.notImplementedOrNull(sslConfig, MqttClientSslConfigImpl.class, "SSL config");
-        return self();
-    }
-
-    public @NotNull MqttClientSslConfigImplBuilder.Nested<B> useSsl() {
-        return new MqttClientSslConfigImplBuilder.Nested<>(sslConfig, this::useSsl);
-    }
-
-    public @NotNull B useWebSocketWithDefaultConfig() {
-        this.webSocketConfig = MqttWebSocketConfigImpl.DEFAULT;
-        return self();
-    }
-
-    public @NotNull B useWebSocket(final @Nullable MqttWebSocketConfig webSocketConfig) {
-        this.webSocketConfig =
-                Checks.notImplementedOrNull(webSocketConfig, MqttWebSocketConfigImpl.class, "WebSocket config");
-        return self();
-    }
-
-    public @NotNull MqttWebSocketConfigImplBuilder.Nested<B> useWebSocket() {
-        return new MqttWebSocketConfigImplBuilder.Nested<>(webSocketConfig, this::useWebSocket);
+    public @NotNull MqttClientTransportConfigImplBuilder.Nested<B> transportConfig() {
+        return new MqttClientTransportConfigImplBuilder.Nested<>(buildTransportConfig(), this::transportConfig);
     }
 
     public @NotNull B executorConfig(final @Nullable MqttClientExecutorConfig executorConfig) {
@@ -191,30 +179,12 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
         return self();
     }
 
-    private @NotNull InetSocketAddress getServerAddress() {
-        if (serverAddress != null) {
-            return serverAddress;
+    @Override
+    @NotNull MqttClientTransportConfigImpl buildTransportConfig() {
+        if (transportConfig == null) {
+            return super.buildTransportConfig();
         }
-        if (serverHost instanceof InetAddress) {
-            return new InetSocketAddress((InetAddress) serverHost, getServerPort());
-        }
-        return InetSocketAddress.createUnresolved((String) serverHost, getServerPort());
-    }
-
-    private int getServerPort() {
-        if (serverPort != -1) {
-            return serverPort;
-        }
-        if (sslConfig == null) {
-            if (webSocketConfig == null) {
-                return DEFAULT_SERVER_PORT;
-            }
-            return DEFAULT_SERVER_PORT_WEBSOCKET;
-        }
-        if (webSocketConfig == null) {
-            return DEFAULT_SERVER_PORT_SSL;
-        }
-        return DEFAULT_SERVER_PORT_WEBSOCKET_SSL;
+        return transportConfig;
     }
 
     private @NotNull ImmutableList<MqttClientConnectedListener> buildConnectedListeners() {
@@ -243,9 +213,8 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
             final @NotNull MqttVersion mqttVersion, final @NotNull MqttClientAdvancedConfig advancedConfig,
             final @NotNull MqttClientConfig.ConnectDefaults connectDefaults) {
 
-        return new MqttClientConfig(mqttVersion, identifier, getServerAddress(), executorConfig, sslConfig,
-                webSocketConfig, advancedConfig, connectDefaults, buildConnectedListeners(),
-                buildDisconnectedListeners());
+        return new MqttClientConfig(mqttVersion, identifier, buildTransportConfig(), executorConfig, advancedConfig,
+                connectDefaults, buildConnectedListeners(), buildDisconnectedListeners());
     }
 
     public static class Choose extends MqttRxClientBuilderBase<Choose> implements MqttClientBuilder {

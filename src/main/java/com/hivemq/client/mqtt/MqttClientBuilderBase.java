@@ -37,7 +37,8 @@ import java.net.InetSocketAddress;
  * @since 1.0
  */
 @DoNotImplement
-public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
+public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>>
+        extends MqttClientTransportConfigBuilderBase<B> {
 
     /**
      * Sets the {@link MqttClientConfig#getClientIdentifier() Client Identifier}.
@@ -93,16 +94,30 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      * Uses SSL with the default configuration.
      *
      * @return the builder.
+     * @deprecated use {@link #sslWithDefaultConfig()}.
      */
-    @NotNull B useSslWithDefaultConfig();
+    @Deprecated
+    default @NotNull B useSslWithDefaultConfig() {
+        return sslWithDefaultConfig();
+    }
+
+    @Override
+    @NotNull B sslWithDefaultConfig();
 
     /**
      * Sets the optional {@link MqttClientConfig#getSslConfig() SSL configuration}.
      *
      * @param sslConfig the SSL configuration or <code>null</code> to remove any previously set SSL configuration.
      * @return the builder.
+     * @deprecated use {@link #sslConfig(MqttClientSslConfig)}.
      */
-    @NotNull B useSsl(@Nullable MqttClientSslConfig sslConfig);
+    @Deprecated
+    default @NotNull B useSsl(final @Nullable MqttClientSslConfig sslConfig) {
+        return sslConfig(sslConfig);
+    }
+
+    @Override
+    @NotNull B sslConfig(@Nullable MqttClientSslConfig sslConfig);
 
     /**
      * Fluent counterpart of {@link #useSsl(MqttClientSslConfig)}.
@@ -112,15 +127,29 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      *
      * @return the fluent builder for the SSL configuration.
      * @see #useSsl(MqttClientSslConfig)
+     * @deprecated use {@link #sslConfig()}.
      */
-    @NotNull MqttClientSslConfigBuilder.Nested<? extends B> useSsl();
+    @Deprecated
+    default @NotNull MqttClientSslConfigBuilder.Nested<? extends B> useSsl() {
+        return sslConfig();
+    }
+
+    @Override
+    @NotNull MqttClientSslConfigBuilder.Nested<? extends B> sslConfig();
 
     /**
      * Uses WebSocket with the default configuration.
      *
      * @return the builder.
+     * @deprecated use {@link #webSocketWithDefaultConfig()}.
      */
-    @NotNull B useWebSocketWithDefaultConfig();
+    @Deprecated
+    default @NotNull B useWebSocketWithDefaultConfig() {
+        return webSocketWithDefaultConfig();
+    }
+
+    @Override
+    @NotNull B webSocketWithDefaultConfig();
 
     /**
      * Sets the optional {@link MqttClientConfig#getWebSocketConfig() WebSocket configuration}.
@@ -128,8 +157,15 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      * @param webSocketConfig the WebSocket configuration or <code>null</code> to remove any previously set WebSocket
      *                        configuration.
      * @return the builder.
+     * @deprecated use {@link #webSocketConfig(MqttWebSocketConfig)}.
      */
-    @NotNull B useWebSocket(@Nullable MqttWebSocketConfig webSocketConfig);
+    @Deprecated
+    default @NotNull B useWebSocket(final @Nullable MqttWebSocketConfig webSocketConfig) {
+        return webSocketConfig(webSocketConfig);
+    }
+
+    @Override
+    @NotNull B webSocketConfig(@Nullable MqttWebSocketConfig webSocketConfig);
 
     /**
      * Fluent counterpart of {@link #useWebSocket(MqttWebSocketConfig)}.
@@ -139,8 +175,19 @@ public interface MqttClientBuilderBase<B extends MqttClientBuilderBase<B>> {
      *
      * @return the fluent builder for the WebSocket configuration.
      * @see #useWebSocket(MqttWebSocketConfig)
+     * @deprecated use {@link #webSocketConfig()}.
      */
-    @NotNull MqttWebSocketConfigBuilder.Nested<? extends B> useWebSocket();
+    @Deprecated
+    default @NotNull MqttWebSocketConfigBuilder.Nested<? extends B> useWebSocket() {
+        return webSocketConfig();
+    }
+
+    @Override
+    @NotNull MqttWebSocketConfigBuilder.Nested<? extends B> webSocketConfig();
+
+    @NotNull B transportConfig(@NotNull MqttClientTransportConfig transportConfig);
+
+    @NotNull MqttClientTransportConfigBuilder.Nested<? extends B> transportConfig();
 
     /**
      * Sets the {@link MqttClientConfig#getExecutorConfig() executor configuration}.

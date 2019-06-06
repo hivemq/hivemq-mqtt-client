@@ -23,7 +23,10 @@ import com.hivemq.client.internal.mqtt.message.auth.MqttSimpleAuth;
 import com.hivemq.client.internal.mqtt.message.auth.mqtt3.Mqtt3SimpleAuthView;
 import com.hivemq.client.internal.mqtt.message.publish.MqttWillPublish;
 import com.hivemq.client.internal.mqtt.message.publish.mqtt3.Mqtt3PublishView;
-import com.hivemq.client.mqtt.*;
+import com.hivemq.client.mqtt.MqttClientExecutorConfig;
+import com.hivemq.client.mqtt.MqttClientState;
+import com.hivemq.client.mqtt.MqttClientTransportConfig;
+import com.hivemq.client.mqtt.MqttVersion;
 import com.hivemq.client.mqtt.datatypes.MqttClientIdentifier;
 import com.hivemq.client.mqtt.lifecycle.MqttClientAutoReconnect;
 import com.hivemq.client.mqtt.lifecycle.MqttClientConnectedListener;
@@ -35,7 +38,6 @@ import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,33 +63,13 @@ public class Mqtt3ClientConfigView implements Mqtt3ClientConfig {
     }
 
     @Override
-    public @NotNull InetSocketAddress getServerAddress() {
-        return delegate.getServerAddress();
-    }
-
-    @Override
-    public @NotNull String getServerHost() {
-        return delegate.getServerHost();
-    }
-
-    @Override
-    public int getServerPort() {
-        return delegate.getServerPort();
+    public @NotNull MqttClientTransportConfig getTransportConfig() {
+        return delegate.getTransportConfig();
     }
 
     @Override
     public @NotNull MqttClientExecutorConfig getExecutorConfig() {
         return delegate.getExecutorConfig();
-    }
-
-    @Override
-    public @NotNull Optional<MqttClientSslConfig> getSslConfig() {
-        return delegate.getSslConfig();
-    }
-
-    @Override
-    public @NotNull Optional<MqttWebSocketConfig> getWebSocketConfig() {
-        return delegate.getWebSocketConfig();
     }
 
     @Override
