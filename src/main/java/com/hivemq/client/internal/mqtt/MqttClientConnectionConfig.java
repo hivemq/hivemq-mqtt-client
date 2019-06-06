@@ -28,7 +28,6 @@ import io.netty.channel.Channel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.net.InetSocketAddress;
 import java.util.Optional;
 
 /**
@@ -48,7 +47,7 @@ public class MqttClientConnectionConfig
     private static final int FLAG_SHARED_SUBSCRIPTION_AVAILABLE = 1 << 6;
     private static final int FLAG_SUBSCRIPTION_IDENTIFIERS_AVAILABLE = 1 << 7;
 
-    private final @NotNull InetSocketAddress serverAddress;
+    private final @NotNull MqttClientTransportConfigImpl transportConfig;
     private final short keepAlive;
     private final int sessionExpiryInterval;
     private final @Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism;
@@ -64,7 +63,7 @@ public class MqttClientConnectionConfig
 
     // @formatter:off
     public MqttClientConnectionConfig(
-            final @NotNull InetSocketAddress serverAddress,
+            final @NotNull MqttClientTransportConfigImpl transportConfig,
             final int keepAlive,
             final long sessionExpiryInterval,
             final boolean hasSimpleAuth,
@@ -86,7 +85,7 @@ public class MqttClientConnectionConfig
             final @NotNull Channel channel) {
     // @formatter:on
 
-        this.serverAddress = serverAddress;
+        this.transportConfig = transportConfig;
         this.keepAlive = (short) keepAlive;
         this.sessionExpiryInterval = (int) sessionExpiryInterval;
         this.enhancedAuthMechanism = enhancedAuthMechanism;
@@ -129,8 +128,8 @@ public class MqttClientConnectionConfig
     }
 
     @Override
-    public @NotNull InetSocketAddress getServerAddress() {
-        return serverAddress;
+    public @NotNull MqttClientTransportConfigImpl getTransportConfig() {
+        return transportConfig;
     }
 
     @Override

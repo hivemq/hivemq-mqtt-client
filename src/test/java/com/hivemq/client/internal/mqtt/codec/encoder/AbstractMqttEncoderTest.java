@@ -18,6 +18,7 @@
 package com.hivemq.client.internal.mqtt.codec.encoder;
 
 import com.hivemq.client.internal.mqtt.MqttClientConnectionConfig;
+import com.hivemq.client.internal.mqtt.MqttClientTransportConfigImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttVariableByteInteger;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
 import io.netty.buffer.ByteBuf;
@@ -25,8 +26,6 @@ import io.netty.channel.embedded.EmbeddedChannel;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-
-import java.net.InetSocketAddress;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -67,7 +66,7 @@ public abstract class AbstractMqttEncoderTest {
 
     protected void connected(final int maximumPacketSize) {
         encoder.onConnected(
-                new MqttClientConnectionConfig(new InetSocketAddress("localhost", 1883), 10, 0, false, false, null, 10,
+                new MqttClientConnectionConfig(MqttClientTransportConfigImpl.DEFAULT, 10, 0, false, false, null, 10,
                         MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT, 0, true, false, 10, maximumPacketSize, 3,
                         MqttQos.EXACTLY_ONCE, true, true, true, true, channel));
     }

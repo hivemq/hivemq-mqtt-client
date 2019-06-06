@@ -20,6 +20,7 @@ package com.hivemq.client.internal.mqtt.handler.connect;
 import com.hivemq.client.internal.logging.InternalLogger;
 import com.hivemq.client.internal.logging.InternalLoggerFactory;
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
+import com.hivemq.client.internal.mqtt.MqttClientTransportConfigImpl;
 import com.hivemq.client.internal.mqtt.exceptions.MqttClientStateExceptions;
 import com.hivemq.client.internal.mqtt.lifecycle.MqttClientDisconnectedContextImpl;
 import com.hivemq.client.internal.mqtt.lifecycle.MqttClientReconnector;
@@ -37,7 +38,6 @@ import io.reactivex.internal.disposables.EmptyDisposable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
 
 import static com.hivemq.client.mqtt.MqttClientState.*;
@@ -64,7 +64,7 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
             return;
         }
 
-        final MqttConnAckFlow flow = new MqttConnAckFlow(observer, clientConfig.getServerAddress());
+        final MqttConnAckFlow flow = new MqttConnAckFlow(observer, clientConfig.getTransportConfig());
         observer.onSubscribe(flow.getDisposable());
         connect(clientConfig, connect, flow, clientConfig.acquireEventLoop());
     }
@@ -84,7 +84,7 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
                     .build()
                     .bootstrap();
 
-            bootstrap.group(eventLoop).connect(flow.getServerAddress()).addListener(future -> {
+            bootstrap.group(eventLoop).connect(flow.getTransportConfig().getServerAddress()).addListener(future -> {
                 final Throwable cause = future.cause();
                 if (cause != null) {
                     reconnect(clientConfig, MqttDisconnectSource.CLIENT, new ConnectionFailedException(cause), connect,
@@ -100,7 +100,7 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
             final @NotNull EventLoop eventLoop) {
 
         if (flow.setDone()) {
-            reconnect(clientConfig, source, cause, connect, flow.getServerAddress(), flow.getAttempts() + 1, flow,
+            reconnect(clientConfig, source, cause, connect, flow.getTransportConfig(), flow.getAttempts() + 1, flow,
                     eventLoop);
         }
     }
@@ -108,19 +108,19 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
     public static void reconnect(
             final @NotNull MqttClientConfig clientConfig, final @NotNull MqttDisconnectSource source,
             final @NotNull Throwable cause, final @NotNull MqttConnect connect,
-            final @NotNull InetSocketAddress serverAddress, final @NotNull EventLoop eventLoop) {
+            final @NotNull MqttClientTransportConfigImpl transportConfig, final @NotNull EventLoop eventLoop) {
 
-        reconnect(clientConfig, source, cause, connect, serverAddress, 0, null, eventLoop);
+        reconnect(clientConfig, source, cause, connect, transportConfig, 0, null, eventLoop);
     }
 
     private static void reconnect(
             final @NotNull MqttClientConfig clientConfig, final @NotNull MqttDisconnectSource source,
             final @NotNull Throwable cause, final @NotNull MqttConnect connect,
-            final @NotNull InetSocketAddress serverAddress, final int attempts, final @Nullable MqttConnAckFlow flow,
-            final @NotNull EventLoop eventLoop) {
+            final @NotNull MqttClientTransportConfigImpl transportConfig, final int attempts,
+            final @Nullable MqttConnAckFlow flow, final @NotNull EventLoop eventLoop) {
 
         final MqttClientReconnector reconnector =
-                new MqttClientReconnector(eventLoop, attempts, connect, serverAddress);
+                new MqttClientReconnector(eventLoop, attempts, connect, transportConfig);
         final MqttClientDisconnectedContext context =
                 MqttClientDisconnectedContextImpl.of(clientConfig, source, cause, reconnector);
 
@@ -140,7 +140,7 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
                     if (reconnector.isReconnect()) {
                         if (clientConfig.getRawState().compareAndSet(DISCONNECTED_RECONNECT, CONNECTING_RECONNECT)) {
 
-                            final MqttConnAckFlow newFlow = new MqttConnAckFlow(flow, reconnector.getServerAddress());
+                            final MqttConnAckFlow newFlow = new MqttConnAckFlow(flow, reconnector.getTransportConfig());
                             connect(clientConfig, reconnector.getConnect(), newFlow, eventLoop);
                         }
 

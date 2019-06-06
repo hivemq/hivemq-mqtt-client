@@ -18,10 +18,11 @@
 package com.hivemq.client.mqtt.lifecycle;
 
 import com.hivemq.client.annotations.DoNotImplement;
+import com.hivemq.client.mqtt.MqttClientTransportConfig;
+import com.hivemq.client.mqtt.MqttClientTransportConfigBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.net.InetSocketAddress;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
@@ -100,22 +101,33 @@ public interface MqttClientReconnector {
     long getDelay(@NotNull TimeUnit timeUnit);
 
     /**
-     * Sets a different server address the client will try to reconnect to.
+     * Sets a different transport configuration the client will try to reconnect with.
      *
-     * @param address the server address the client will try to reconnect to.
+     * @param transportConfig the transport configuration the client will try to reconnect with.
      * @return this reconnector.
      */
-    @NotNull MqttClientReconnector serverAddress(@NotNull InetSocketAddress address);
+    @NotNull MqttClientReconnector transportConfig(@NotNull MqttClientTransportConfig transportConfig);
 
     /**
-     * Returns the currently set server address the client will try to reconnect to.
+     * Fluent counterpart of {@link #transportConfig(MqttClientTransportConfig)}.
      * <p>
-     * If the {@link #serverAddress(InetSocketAddress)} method has not been called before (including previous {@link
-     * MqttClientDisconnectedListener MqttClientDisconnectedListeners}) it will be the server address the client was
-     * connected to or the {@link com.hivemq.client.mqtt.MqttClientConfig#getServerAddress() default server address} if
-     * it has not been connected yet.
+     * Calling {@link MqttClientTransportConfigBuilder.Nested#applyTransportConfig()} on the returned builder has the
+     * effect of extending the current transport configuration.
      *
-     * @return the server address.
+     * @return the fluent builder for the transport configuration.
+     * @see #transportConfig(MqttClientTransportConfig)
      */
-    @NotNull InetSocketAddress getServerAddress();
+    @NotNull MqttClientTransportConfigBuilder.Nested<? extends MqttClientReconnector> transportConfig();
+
+    /**
+     * Returns the currently set transport configuration the client will try to reconnect with.
+     * <p>
+     * If the {@link #transportConfig(MqttClientTransportConfig)} method has not been called before (including previous
+     * {@link MqttClientDisconnectedListener MqttClientDisconnectedListeners}) it will be the transport configuration
+     * the client was connected with or the {@link com.hivemq.client.mqtt.MqttClientConfig#getTransportConfig() default
+     * transport configuration} if it has not been connected yet.
+     *
+     * @return the transport configuration.
+     */
+    @NotNull MqttClientTransportConfig getTransportConfig();
 }
