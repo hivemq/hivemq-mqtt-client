@@ -66,7 +66,7 @@ public interface MqttClient {
     @NotNull MqttClientConfig getConfig();
 
     /**
-     * @return the state of the client.
+     * @return the state of this client.
      */
     default @NotNull MqttClientState getState() {
         return getConfig().getState();

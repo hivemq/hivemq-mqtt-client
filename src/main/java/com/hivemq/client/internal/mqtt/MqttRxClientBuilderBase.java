@@ -53,12 +53,8 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
     protected MqttRxClientBuilderBase() {}
 
     protected MqttRxClientBuilderBase(final @NotNull MqttRxClientBuilderBase<?> clientBuilder) {
+        super(clientBuilder);
         identifier = clientBuilder.identifier;
-        serverAddress = clientBuilder.serverAddress;
-        serverHost = clientBuilder.serverHost;
-        serverPort = clientBuilder.serverPort;
-        sslConfig = clientBuilder.sslConfig;
-        webSocketConfig = clientBuilder.webSocketConfig;
         transportConfig = clientBuilder.transportConfig;
         executorConfig = clientBuilder.executorConfig;
         autoReconnect = clientBuilder.autoReconnect;
@@ -133,7 +129,7 @@ public abstract class MqttRxClientBuilderBase<B extends MqttRxClientBuilderBase<
     }
 
     public @NotNull MqttClientTransportConfigImplBuilder.Nested<B> transportConfig() {
-        return new MqttClientTransportConfigImplBuilder.Nested<>(buildTransportConfig(), this::transportConfig);
+        return new MqttClientTransportConfigImplBuilder.Nested<>(this, this::transportConfig);
     }
 
     public @NotNull B executorConfig(final @Nullable MqttClientExecutorConfig executorConfig) {

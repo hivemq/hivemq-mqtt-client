@@ -35,16 +35,24 @@ import static com.hivemq.client.mqtt.MqttClient.*;
  */
 public abstract class MqttClientTransportConfigImplBuilder<B extends MqttClientTransportConfigImplBuilder<B>> {
 
-    @Nullable InetSocketAddress serverAddress;
-    @NotNull Object serverHost = DEFAULT_SERVER_HOST; // String or InetAddress
-    int serverPort = -1;
-    @Nullable MqttClientSslConfigImpl sslConfig;
-    @Nullable MqttWebSocketConfigImpl webSocketConfig;
+    private @Nullable InetSocketAddress serverAddress;
+    private @NotNull Object serverHost = DEFAULT_SERVER_HOST; // String or InetAddress
+    private int serverPort = -1;
+    private @Nullable MqttClientSslConfigImpl sslConfig;
+    private @Nullable MqttWebSocketConfigImpl webSocketConfig;
 
     MqttClientTransportConfigImplBuilder() {}
 
     MqttClientTransportConfigImplBuilder(final @NotNull MqttClientTransportConfigImpl transportConfig) {
         set(transportConfig);
+    }
+
+    MqttClientTransportConfigImplBuilder(final @NotNull MqttClientTransportConfigImplBuilder<?> builder) {
+        serverAddress = builder.serverAddress;
+        serverHost = builder.serverHost;
+        serverPort = builder.serverPort;
+        sslConfig = builder.sslConfig;
+        webSocketConfig = builder.webSocketConfig;
     }
 
     void set(final @NotNull MqttClientTransportConfigImpl transportConfig) {
@@ -176,11 +184,15 @@ public abstract class MqttClientTransportConfigImplBuilder<B extends MqttClientT
 
         private final @NotNull Function<? super MqttClientTransportConfigImpl, P> parentConsumer;
 
-        public Nested(
-                final @NotNull MqttClientTransportConfigImpl transportConfig,
+        public Nested(final @NotNull Function<? super MqttClientTransportConfigImpl, P> parentConsumer) {
+            this.parentConsumer = parentConsumer;
+        }
+
+        Nested(
+                final @NotNull MqttClientTransportConfigImplBuilder<?> builder,
                 final @NotNull Function<? super MqttClientTransportConfigImpl, P> parentConsumer) {
 
-            super(transportConfig);
+            super(builder);
             this.parentConsumer = parentConsumer;
         }
 
