@@ -84,7 +84,7 @@ public class MqttConnAckFlow {
         return disposable;
     }
 
-    @NotNull MqttClientTransportConfigImpl getTransportConfig() {
+    public @NotNull MqttClientTransportConfigImpl getTransportConfig() {
         return transportConfig;
     }
 
