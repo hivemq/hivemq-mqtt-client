@@ -55,32 +55,48 @@ public interface MqttClientConfig {
      * @return the server address the client connects to.
      * @since 1.1
      */
-    @NotNull InetSocketAddress getServerAddress();
+    default @NotNull InetSocketAddress getServerAddress() {
+        return getTransportConfig().getServerAddress();
+    }
 
     /**
      * @return the server host the clients connects to.
      */
-    @NotNull String getServerHost();
+    default @NotNull String getServerHost() {
+        return getServerAddress().getHostString();
+    }
 
     /**
      * @return the server port the client connects to.
      */
-    int getServerPort();
+    default int getServerPort() {
+        return getServerAddress().getPort();
+    }
+
+    /**
+     * @return the optional secure transport configuration of the client.
+     */
+    default @NotNull Optional<MqttClientSslConfig> getSslConfig() {
+        return getTransportConfig().getSslConfig();
+    }
+
+    /**
+     * @return the optional WebSocket configuration of the client.
+     */
+    default @NotNull Optional<MqttWebSocketConfig> getWebSocketConfig() {
+        return getTransportConfig().getWebSocketConfig();
+    }
+
+    /**
+     * @return the transport configuration of the client.
+     * @since 1.1
+     */
+    @NotNull MqttClientTransportConfig getTransportConfig();
 
     /**
      * @return the executor configuration of the client.
      */
     @NotNull MqttClientExecutorConfig getExecutorConfig();
-
-    /**
-     * @return the optional secure transport configuration of the client.
-     */
-    @NotNull Optional<MqttClientSslConfig> getSslConfig();
-
-    /**
-     * @return the optional WebSocket configuration of the client.
-     */
-    @NotNull Optional<MqttWebSocketConfig> getWebSocketConfig();
 
     /**
      * @return the optional automatic reconnect strategy of the client.

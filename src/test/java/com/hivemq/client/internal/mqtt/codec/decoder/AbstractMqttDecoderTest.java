@@ -19,6 +19,7 @@ package com.hivemq.client.internal.mqtt.codec.decoder;
 
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
 import com.hivemq.client.internal.mqtt.MqttClientExecutorConfigImpl;
+import com.hivemq.client.internal.mqtt.MqttClientTransportConfigImpl;
 import com.hivemq.client.internal.mqtt.advanced.MqttClientAdvancedConfig;
 import com.hivemq.client.internal.mqtt.advanced.MqttClientAdvancedConfigBuilder;
 import com.hivemq.client.internal.mqtt.datatypes.MqttClientIdentifierImpl;
@@ -36,8 +37,6 @@ import io.netty.channel.embedded.EmbeddedChannel;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-
-import java.net.InetSocketAddress;
 
 /**
  * @author Silvio Giebl
@@ -111,13 +110,11 @@ public abstract class AbstractMqttDecoderTest {
                 new MqttClientAdvancedConfigBuilder.Default().validatePayloadFormat(validatePayloadFormat).build();
         final MqttClientConfig clientConfig =
                 new MqttClientConfig(MqttVersion.MQTT_5_0, MqttClientIdentifierImpl.of("test"),
-                        new InetSocketAddress("localhost", 1883), MqttClientExecutorConfigImpl.DEFAULT, null, null,
-                        advancedConfig, MqttClientConfig.ConnectDefaults.of(null, null, null), ImmutableList.of(),
-                        ImmutableList.of());
+                        MqttClientTransportConfigImpl.DEFAULT, MqttClientExecutorConfigImpl.DEFAULT, advancedConfig,
+                        MqttClientConfig.ConnectDefaults.of(null, null, null), ImmutableList.of(), ImmutableList.of());
 
         channel = new EmbeddedChannel();
-        channel.pipeline().addLast(new MqttDecoder(decoders, clientConfig, connect))
-                .addLast(disconnectHandler);
+        channel.pipeline().addLast(new MqttDecoder(decoders, clientConfig, connect)).addLast(disconnectHandler);
     }
 
     protected void validatePayloadFormat() {

@@ -33,7 +33,7 @@ import java.util.Optional;
  */
 public class MqttClientSslConfigImpl implements MqttClientSslConfig {
 
-    public static final @NotNull MqttClientSslConfigImpl DEFAULT =
+    static final @NotNull MqttClientSslConfigImpl DEFAULT =
             new MqttClientSslConfigImpl(null, null, null, null, DEFAULT_HANDSHAKE_TIMEOUT_MS);
 
     private final @Nullable KeyManagerFactory keyManagerFactory;
