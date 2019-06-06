@@ -17,13 +17,12 @@
 
 package com.hivemq.client.internal.mqtt.handler.connect;
 
+import com.hivemq.client.internal.mqtt.MqttClientTransportConfigImpl;
 import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import io.reactivex.SingleObserver;
 import io.reactivex.disposables.Disposable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.net.InetSocketAddress;
 
 /**
  * @author Silvio Giebl
@@ -32,21 +31,23 @@ public class MqttConnAckFlow {
 
     private final @Nullable SingleObserver<? super Mqtt5ConnAck> observer;
     private final @NotNull Disposable disposable;
-    private final @NotNull InetSocketAddress serverAddress;
+    private final @NotNull MqttClientTransportConfigImpl transportConfig;
     private final int attempts;
     private boolean done;
 
     MqttConnAckFlow(
             final @NotNull SingleObserver<? super Mqtt5ConnAck> observer,
-            final @NotNull InetSocketAddress serverAddress) {
+            final @NotNull MqttClientTransportConfigImpl transportConfig) {
 
         this.observer = observer;
         disposable = new MqttConnAckDisposable();
-        this.serverAddress = serverAddress;
+        this.transportConfig = transportConfig;
         attempts = 0;
     }
 
-    MqttConnAckFlow(final @Nullable MqttConnAckFlow oldFlow, final @NotNull InetSocketAddress serverAddress) {
+    MqttConnAckFlow(
+            final @Nullable MqttConnAckFlow oldFlow, final @NotNull MqttClientTransportConfigImpl transportConfig) {
+
         if (oldFlow == null) {
             observer = null;
             disposable = new MqttConnAckDisposable();
@@ -56,7 +57,7 @@ public class MqttConnAckFlow {
             disposable = oldFlow.disposable;
             attempts = oldFlow.attempts + 1;
         }
-        this.serverAddress = serverAddress;
+        this.transportConfig = transportConfig;
     }
 
     boolean setDone() {
@@ -83,8 +84,8 @@ public class MqttConnAckFlow {
         return disposable;
     }
 
-    @NotNull InetSocketAddress getServerAddress() {
-        return serverAddress;
+    @NotNull MqttClientTransportConfigImpl getTransportConfig() {
+        return transportConfig;
     }
 
     int getAttempts() {

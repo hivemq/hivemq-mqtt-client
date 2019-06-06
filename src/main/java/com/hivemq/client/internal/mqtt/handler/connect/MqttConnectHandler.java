@@ -269,7 +269,7 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
 
         // @formatter:off
         final MqttClientConnectionConfig connectionConfig = new MqttClientConnectionConfig(
-                connAckFlow.getServerAddress(),
+                connAckFlow.getTransportConfig(),
                 keepAlive,
                 sessionExpiryInterval,
                 connect.getRawSimpleAuth() != null,

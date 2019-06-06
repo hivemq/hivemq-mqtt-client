@@ -17,17 +17,18 @@
 
 package com.hivemq.client.internal.mqtt.lifecycle.mqtt3;
 
+import com.hivemq.client.internal.mqtt.MqttClientTransportConfigImpl;
+import com.hivemq.client.internal.mqtt.MqttClientTransportConfigImplBuilder;
 import com.hivemq.client.internal.mqtt.lifecycle.MqttClientReconnector;
 import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectView;
 import com.hivemq.client.internal.mqtt.message.connect.mqtt3.Mqtt3ConnectViewBuilder;
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
+import com.hivemq.client.mqtt.MqttClientTransportConfig;
 import com.hivemq.client.mqtt.mqtt3.lifecycle.Mqtt3ClientReconnector;
 import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3Connect;
-import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3ConnectBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.net.InetSocketAddress;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
@@ -80,14 +81,21 @@ public class Mqtt3ClientReconnectorView implements Mqtt3ClientReconnector {
     }
 
     @Override
-    public @NotNull Mqtt3ClientReconnectorView serverAddress(final @Nullable InetSocketAddress address) {
-        delegate.serverAddress(address);
+    public @NotNull Mqtt3ClientReconnectorView transportConfig(
+            final @Nullable MqttClientTransportConfig transportConfig) {
+
+        delegate.transportConfig(transportConfig);
         return this;
     }
 
     @Override
-    public @NotNull InetSocketAddress getServerAddress() {
-        return delegate.getServerAddress();
+    public @NotNull MqttClientTransportConfigImplBuilder.Nested<Mqtt3ClientReconnectorView> transportConfig() {
+        return new MqttClientTransportConfigImplBuilder.Nested<>(getTransportConfig(), this::transportConfig);
+    }
+
+    @Override
+    public @NotNull MqttClientTransportConfigImpl getTransportConfig() {
+        return delegate.getTransportConfig();
     }
 
     @Override
@@ -97,7 +105,7 @@ public class Mqtt3ClientReconnectorView implements Mqtt3ClientReconnector {
     }
 
     @Override
-    public @NotNull Mqtt3ConnectBuilder.Nested<? extends Mqtt3ClientReconnectorView> connectWith() {
+    public @NotNull Mqtt3ConnectViewBuilder.Nested<Mqtt3ClientReconnectorView> connectWith() {
         return new Mqtt3ConnectViewBuilder.Nested<>(getConnect(), this::connect);
     }
 

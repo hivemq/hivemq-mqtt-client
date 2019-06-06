@@ -18,13 +18,14 @@
 package com.hivemq.client.mqtt.mqtt5.lifecycle;
 
 import com.hivemq.client.annotations.DoNotImplement;
+import com.hivemq.client.mqtt.MqttClientTransportConfig;
+import com.hivemq.client.mqtt.MqttClientTransportConfigBuilder;
 import com.hivemq.client.mqtt.lifecycle.MqttClientReconnector;
 import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5Connect;
 import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnectBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.net.InetSocketAddress;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
@@ -50,7 +51,10 @@ public interface Mqtt5ClientReconnector extends MqttClientReconnector {
     @NotNull Mqtt5ClientReconnector delay(long delay, @NotNull TimeUnit timeUnit);
 
     @Override
-    @NotNull Mqtt5ClientReconnector serverAddress(@NotNull InetSocketAddress address);
+    @NotNull Mqtt5ClientReconnector transportConfig(@NotNull MqttClientTransportConfig transportConfig);
+
+    @Override
+    @NotNull MqttClientTransportConfigBuilder.Nested<? extends Mqtt5ClientReconnector> transportConfig();
 
     /**
      * Sets a different Connect message the client will try to reconnect with.

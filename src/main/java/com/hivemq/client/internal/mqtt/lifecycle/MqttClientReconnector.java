@@ -17,18 +17,19 @@
 
 package com.hivemq.client.internal.mqtt.lifecycle;
 
+import com.hivemq.client.internal.mqtt.MqttClientTransportConfigImpl;
+import com.hivemq.client.internal.mqtt.MqttClientTransportConfigImplBuilder;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnectBuilder;
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
 import com.hivemq.client.internal.util.Checks;
+import com.hivemq.client.mqtt.MqttClientTransportConfig;
 import com.hivemq.client.mqtt.mqtt5.lifecycle.Mqtt5ClientReconnector;
 import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5Connect;
-import com.hivemq.client.mqtt.mqtt5.message.connect.Mqtt5ConnectBuilder;
 import io.netty.channel.EventLoop;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.net.InetSocketAddress;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
@@ -43,17 +44,17 @@ public class MqttClientReconnector implements Mqtt5ClientReconnector {
     private boolean reconnect;
     private @Nullable CompletableFuture<?> future;
     private long delayNanos;
-    private @NotNull InetSocketAddress serverAddress;
+    private @NotNull MqttClientTransportConfigImpl transportConfig;
     private @NotNull MqttConnect connect;
 
     public MqttClientReconnector(
             final @NotNull EventLoop eventLoop, final int attempts, final @NotNull MqttConnect connect,
-            final @NotNull InetSocketAddress serverAddress) {
+            final @NotNull MqttClientTransportConfigImpl transportConfig) {
 
         this.eventLoop = eventLoop;
         this.attempts = attempts;
         this.connect = connect;
-        this.serverAddress = serverAddress;
+        this.transportConfig = transportConfig;
     }
 
     @Override
@@ -114,16 +115,23 @@ public class MqttClientReconnector implements Mqtt5ClientReconnector {
     }
 
     @Override
-    public @NotNull MqttClientReconnector serverAddress(final @Nullable InetSocketAddress address) {
+    public @NotNull MqttClientReconnector transportConfig(final @Nullable MqttClientTransportConfig transportConfig) {
         checkThread();
-        this.serverAddress = Checks.notNull(address, "Server address");
+        this.transportConfig =
+                Checks.notImplemented(transportConfig, MqttClientTransportConfigImpl.class, "Transport config");
         return this;
     }
 
     @Override
-    public @NotNull InetSocketAddress getServerAddress() {
+    public @NotNull MqttClientTransportConfigImplBuilder.Nested<MqttClientReconnector> transportConfig() {
         checkThread();
-        return serverAddress;
+        return new MqttClientTransportConfigImplBuilder.Nested<>(transportConfig, this::transportConfig);
+    }
+
+    @Override
+    public @NotNull MqttClientTransportConfigImpl getTransportConfig() {
+        checkThread();
+        return transportConfig;
     }
 
     @Override
@@ -134,7 +142,7 @@ public class MqttClientReconnector implements Mqtt5ClientReconnector {
     }
 
     @Override
-    public @NotNull Mqtt5ConnectBuilder.Nested<MqttClientReconnector> connectWith() {
+    public @NotNull MqttConnectBuilder.Nested<MqttClientReconnector> connectWith() {
         checkThread();
         return new MqttConnectBuilder.Nested<>(connect, this::connect);
     }
