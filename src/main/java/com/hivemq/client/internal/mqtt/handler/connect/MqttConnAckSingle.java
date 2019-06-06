@@ -147,7 +147,6 @@ public class MqttConnAckSingle extends Single<Mqtt5ConnAck> {
                     } else if (clientConfig.getRawState().compareAndSet(DISCONNECTED_RECONNECT, DISCONNECTED)) {
                         clientConfig.releaseEventLoop();
                         if (flow != null) {
-                            clientConfig.getRawState().set(DISCONNECTED);
                             if (throwable == null) {
                                 flow.onError(new ConnectionFailedException("Reconnect was cancelled."));
                             } else {
