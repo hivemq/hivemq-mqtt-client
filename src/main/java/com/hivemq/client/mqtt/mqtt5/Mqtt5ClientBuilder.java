@@ -64,6 +64,7 @@ public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBui
      * @param simpleAuth the simple auth related data or <code>null</code> to remove any previously set simple auth
      *                   related data.
      * @return the builder.
+     * @since 1.1
      */
     @NotNull Mqtt5ClientBuilder simpleAuth(@Nullable Mqtt5SimpleAuth simpleAuth);
 
@@ -76,6 +77,7 @@ public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBui
      *
      * @return the fluent builder for the simple auth related data.
      * @see #simpleAuth(Mqtt5SimpleAuth)
+     * @since 1.1
      */
     @NotNull Mqtt5SimpleAuthBuilder.Nested<? extends Mqtt5ClientBuilder> simpleAuth();
 
@@ -86,6 +88,7 @@ public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBui
      * @param enhancedAuthMechanism the enhanced auth mechanism or <code>null</code> to remove any previously set
      *                              enhanced auth mechanism.
      * @return the builder.
+     * @since 1.1
      */
     @NotNull Mqtt5ClientBuilder enhancedAuth(@Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism);
 
@@ -94,6 +97,7 @@ public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBui
      *
      * @param willPublish the Will Publish or <code>null</code> to remove any previously set Will Publish.
      * @return the builder.
+     * @since 1.1
      */
     @NotNull Mqtt5ClientBuilder willPublish(@Nullable Mqtt5Publish willPublish);
 
@@ -106,6 +110,7 @@ public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBui
      *
      * @return the fluent builder for the Will Publish.
      * @see #willPublish(Mqtt5Publish)
+     * @since 1.1
      */
     @NotNull Mqtt5WillPublishBuilder.Nested<? extends Mqtt5ClientBuilder> willPublish();
 

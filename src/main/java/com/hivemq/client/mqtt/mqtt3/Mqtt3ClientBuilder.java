@@ -42,6 +42,7 @@ public interface Mqtt3ClientBuilder extends MqttClientBuilderBase<Mqtt3ClientBui
      * @param simpleAuth the simple auth related data or <code>null</code> to remove any previously set simple auth
      *                   related data.
      * @return the builder.
+     * @since 1.1
      */
     @NotNull Mqtt3ClientBuilder simpleAuth(@Nullable Mqtt3SimpleAuth simpleAuth);
 
@@ -54,6 +55,7 @@ public interface Mqtt3ClientBuilder extends MqttClientBuilderBase<Mqtt3ClientBui
      *
      * @return the fluent builder for the simple auth related data.
      * @see #simpleAuth(Mqtt3SimpleAuth)
+     * @since 1.1
      */
     @NotNull Mqtt3SimpleAuthBuilder.Nested<? extends Mqtt3ClientBuilder> simpleAuth();
 
@@ -62,6 +64,7 @@ public interface Mqtt3ClientBuilder extends MqttClientBuilderBase<Mqtt3ClientBui
      *
      * @param willPublish the Will Publish or <code>null</code> to remove any previously set Will Publish.
      * @return the builder.
+     * @since 1.1
      */
     @NotNull Mqtt3ClientBuilder willPublish(@Nullable Mqtt3Publish willPublish);
 
@@ -74,6 +77,7 @@ public interface Mqtt3ClientBuilder extends MqttClientBuilderBase<Mqtt3ClientBui
      *
      * @return the fluent builder for the Will Publish.
      * @see #willPublish(Mqtt3Publish)
+     * @since 1.1
      */
     @NotNull Mqtt3WillPublishBuilder.Nested<? extends Mqtt3ClientBuilder> willPublish();
 
