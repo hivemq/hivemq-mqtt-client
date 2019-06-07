@@ -14,8 +14,6 @@ A detailed documentation can be found [here](https://hivemq.github.io/hivemq-mqt
 
 # Features
 
-## Available
-
  - All MQTT 3.1.1 and MQTT 5.0 features
  - API flavors:
    - Reactive, Async and Blocking
@@ -24,18 +22,17 @@ A detailed documentation can be found [here](https://hivemq.github.io/hivemq-mqt
  - Backpressure support:
    - QoS 1 and 2
    - QoS 0 (dropping incoming messages if necessary)
- - SSL/TLS
- - WebSocket
+ - Transports:
+   - TCP
+   - SSL/TLS
+   - WebSocket, Secure WebSocket
  - Automatic and configurable thread management
+ - Automatic and configurable reconnect handling and message redelivery
  - MQTT 5 specific:
    - Pluggable Enhanced Auth support
      - Additional to MQTT specification: server-triggered reauth
    - Automatic Topic Alias mapping
    - Interceptors for QoS flows
-
-## Done soon
-
- - Automatic reconnect handling and message redelivery
 
 # How to use
 
