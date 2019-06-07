@@ -19,6 +19,7 @@ package com.hivemq.client.internal.mqtt.handler.disconnect;
 
 import com.hivemq.client.internal.mqtt.message.disconnect.MqttDisconnect;
 import com.hivemq.client.internal.rx.CompletableFlow;
+import com.hivemq.client.mqtt.lifecycle.MqttDisconnectSource;
 import com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5DisconnectException;
 import com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.jetbrains.annotations.NotNull;
@@ -40,11 +41,11 @@ import org.jetbrains.annotations.Nullable;
 public class MqttDisconnectEvent {
 
     private final @NotNull Throwable cause;
-    private final boolean fromClient;
+    private final @NotNull MqttDisconnectSource source;
 
-    MqttDisconnectEvent(final @NotNull Throwable cause, final boolean fromClient) {
+    MqttDisconnectEvent(final @NotNull Throwable cause, final @NotNull MqttDisconnectSource source) {
         this.cause = cause;
-        this.fromClient = fromClient;
+        this.source = source;
     }
 
     /**
@@ -57,8 +58,8 @@ public class MqttDisconnectEvent {
     /**
      * @return whether the client initiated closing of the channel.
      */
-    boolean fromClient() {
-        return fromClient;
+    public @NotNull MqttDisconnectSource getSource() {
+        return source;
     }
 
     /**
@@ -79,7 +80,7 @@ public class MqttDisconnectEvent {
         private final @NotNull CompletableFlow flow;
 
         ByUser(final @NotNull MqttDisconnect disconnect, final @NotNull CompletableFlow flow) {
-            super(new Mqtt5DisconnectException(disconnect, "Client sent DISCONNECT"), true);
+            super(new Mqtt5DisconnectException(disconnect, "Client sent DISCONNECT"), MqttDisconnectSource.USER);
             this.flow = flow;
         }
 

@@ -30,16 +30,16 @@ import org.reactivestreams.Subscriber;
 /**
  * @author Silvio Giebl
  */
-public class MqttIncomingAckFlowable extends Flowable<Mqtt5PublishResult> {
+public class MqttAckFlowable extends Flowable<Mqtt5PublishResult> {
 
-    private final @NotNull Flowable<MqttPublish> publishFlowable;
     private final @NotNull MqttClientConfig clientConfig;
+    private final @NotNull Flowable<MqttPublish> publishFlowable;
 
-    public MqttIncomingAckFlowable(
-            final @NotNull Flowable<MqttPublish> publishFlowable, final @NotNull MqttClientConfig clientConfig) {
+    public MqttAckFlowable(
+            final @NotNull MqttClientConfig clientConfig, final @NotNull Flowable<MqttPublish> publishFlowable) {
 
-        this.publishFlowable = publishFlowable;
         this.clientConfig = clientConfig;
+        this.publishFlowable = publishFlowable;
     }
 
     @Override
@@ -49,7 +49,7 @@ public class MqttIncomingAckFlowable extends Flowable<Mqtt5PublishResult> {
             final MqttOutgoingQosHandler outgoingQosHandler = clientComponent.outgoingQosHandler();
             final MqttPublishFlowables publishFlowables = outgoingQosHandler.getPublishFlowables();
 
-            final MqttIncomingAckFlow flow = new MqttIncomingAckFlow(subscriber, clientConfig, outgoingQosHandler);
+            final MqttAckFlowableFlow flow = new MqttAckFlowableFlow(subscriber, clientConfig, outgoingQosHandler);
             subscriber.onSubscribe(flow);
             publishFlowables.add(new MqttPublishFlowableAckLink(publishFlowable, flow));
         } else {

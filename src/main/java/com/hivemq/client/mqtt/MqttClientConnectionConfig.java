@@ -18,6 +18,7 @@
 package com.hivemq.client.mqtt;
 
 import com.hivemq.client.annotations.DoNotImplement;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Connection configuration of a {@link MqttClient}.
@@ -29,9 +30,21 @@ import com.hivemq.client.annotations.DoNotImplement;
 public interface MqttClientConnectionConfig {
 
     /**
+     * @return the transport configuration the client is connected with.
+     * @since 1.1
+     */
+    @NotNull MqttClientTransportConfig getTransportConfig();
+
+    /**
      * @return the keep alive in seconds that is used while the client is connected.
      */
     int getKeepAlive();
+
+    /**
+     * @return whether the client connected with simple authentication and/or authorization related data.
+     * @since 1.1
+     */
+    boolean hasSimpleAuth();
 
     /**
      * @return whether the client connected with a Will Publish message.

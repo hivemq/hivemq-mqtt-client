@@ -123,7 +123,7 @@ class Mqtt3RxClientViewExceptionsTest {
     void publish() {
         final Mqtt5MessageException mqtt5MessageException =
                 new Mqtt5DisconnectException(MqttDisconnect.DEFAULT, "reason from original exception");
-        given(mqtt5Client.publish(any())).willReturn(Flowable.error(mqtt5MessageException));
+        given(mqtt5Client.publish(any(), any())).willReturn(Flowable.error(mqtt5MessageException));
 
         final Flowable<Mqtt3Publish> publish =
                 Flowable.just(Mqtt3Publish.builder().topic("topic").qos(MqttQos.AT_LEAST_ONCE).build());

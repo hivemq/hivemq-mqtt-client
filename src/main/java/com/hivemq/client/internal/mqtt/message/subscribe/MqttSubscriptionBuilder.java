@@ -42,6 +42,16 @@ public abstract class MqttSubscriptionBuilder<B extends MqttSubscriptionBuilder<
     private @NotNull Mqtt5RetainHandling retainHandling = MqttSubscription.DEFAULT_RETAIN_HANDLING;
     private boolean retainAsPublished = MqttSubscription.DEFAULT_RETAIN_AS_PUBLISHED;
 
+    MqttSubscriptionBuilder() {}
+
+    MqttSubscriptionBuilder(final @NotNull MqttSubscription subscription) {
+        topicFilter = subscription.getTopicFilter();
+        qos = subscription.getQos();
+        noLocal = subscription.isNoLocal();
+        retainHandling = subscription.getRetainHandling();
+        retainAsPublished = subscription.isRetainAsPublished();
+    }
+
     abstract @NotNull B self();
 
     public @NotNull B topicFilter(final @Nullable String topicFilter) {
@@ -87,6 +97,12 @@ public abstract class MqttSubscriptionBuilder<B extends MqttSubscriptionBuilder<
     }
 
     public static class Default extends MqttSubscriptionBuilder<Default> implements Mqtt5SubscriptionBuilder.Complete {
+
+        public Default() {}
+
+        Default(final @NotNull MqttSubscription subscription) {
+            super(subscription);
+        }
 
         @Override
         @NotNull Default self() {

@@ -17,44 +17,93 @@
 
 package com.hivemq.client.internal.mqtt.handler.connect;
 
+import com.hivemq.client.internal.mqtt.MqttClientTransportConfigImpl;
 import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import io.reactivex.SingleObserver;
 import io.reactivex.disposables.Disposable;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Silvio Giebl
  */
-public class MqttConnAckFlow implements Disposable {
+public class MqttConnAckFlow {
 
-    private final @NotNull SingleObserver<? super Mqtt5ConnAck> observer;
-    private boolean error;
-    private volatile boolean disposed;
+    private final @Nullable SingleObserver<? super Mqtt5ConnAck> observer;
+    private final @NotNull Disposable disposable;
+    private final @NotNull MqttClientTransportConfigImpl transportConfig;
+    private final int attempts;
+    private boolean done;
 
-    MqttConnAckFlow(final @NotNull SingleObserver<? super Mqtt5ConnAck> observer) {
+    MqttConnAckFlow(
+            final @NotNull SingleObserver<? super Mqtt5ConnAck> observer,
+            final @NotNull MqttClientTransportConfigImpl transportConfig) {
+
         this.observer = observer;
+        disposable = new MqttConnAckDisposable();
+        this.transportConfig = transportConfig;
+        attempts = 0;
     }
 
-    public void onSuccess(final @NotNull Mqtt5ConnAck t) {
-        observer.onSuccess(t);
+    MqttConnAckFlow(
+            final @Nullable MqttConnAckFlow oldFlow, final @NotNull MqttClientTransportConfigImpl transportConfig) {
+
+        if (oldFlow == null) {
+            observer = null;
+            disposable = new MqttConnAckDisposable();
+            attempts = 0;
+        } else {
+            observer = oldFlow.observer;
+            disposable = oldFlow.disposable;
+            attempts = oldFlow.attempts + 1;
+        }
+        this.transportConfig = transportConfig;
     }
 
-    public boolean onError(final @NotNull Throwable t) {
-        if (error) {
+    boolean setDone() {
+        if (done) {
             return false;
         }
-        error = true;
-        observer.onError(t);
+        done = true;
         return true;
     }
 
-    @Override
-    public void dispose() {
-        disposed = true;
+    void onSuccess(final @NotNull Mqtt5ConnAck t) {
+        if (observer != null) {
+            observer.onSuccess(t);
+        }
     }
 
-    @Override
-    public boolean isDisposed() {
-        return disposed;
+    void onError(final @NotNull Throwable t) {
+        if (observer != null) {
+            observer.onError(t);
+        }
+    }
+
+    @NotNull Disposable getDisposable() {
+        return disposable;
+    }
+
+    public @NotNull MqttClientTransportConfigImpl getTransportConfig() {
+        return transportConfig;
+    }
+
+    int getAttempts() {
+        return attempts;
+    }
+
+    private static class MqttConnAckDisposable implements Disposable {
+
+        private volatile boolean disposed;
+
+        @Override
+        public void dispose() {
+            disposed = true;
+        }
+
+        @Override
+        public boolean isDisposed() {
+            return disposed;
+        }
     }
 }

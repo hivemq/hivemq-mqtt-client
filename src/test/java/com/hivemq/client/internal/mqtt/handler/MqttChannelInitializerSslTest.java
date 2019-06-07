@@ -18,13 +18,14 @@ package com.hivemq.client.internal.mqtt.handler;
 
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
 import com.hivemq.client.internal.mqtt.MqttClientSslConfigImpl;
+import com.hivemq.client.internal.mqtt.MqttClientTransportConfigImpl;
 import com.hivemq.client.internal.mqtt.codec.encoder.MqttEncoder;
 import com.hivemq.client.internal.mqtt.handler.auth.MqttAuthHandler;
 import com.hivemq.client.internal.mqtt.handler.connect.MqttConnAckFlow;
 import com.hivemq.client.internal.mqtt.handler.connect.MqttConnectHandler;
 import com.hivemq.client.internal.mqtt.handler.disconnect.MqttDisconnectHandler;
 import com.hivemq.client.internal.mqtt.handler.websocket.MqttWebSocketInitializer;
-import com.hivemq.client.mqtt.MqttVersion;
+import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
 import dagger.Lazy;
 import io.netty.channel.Channel;
 import io.netty.channel.embedded.EmbeddedChannel;
@@ -33,8 +34,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import java.util.Optional;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
@@ -48,6 +47,8 @@ public class MqttChannelInitializerSslTest {
 
     @Mock
     private MqttClientConfig clientData;
+    @Mock
+    private MqttConnect connect;
     @Mock
     private MqttConnAckFlow connAckFlow;
     @Mock
@@ -67,18 +68,17 @@ public class MqttChannelInitializerSslTest {
     public void before() {
         MockitoAnnotations.initMocks(this);
         channel = new EmbeddedChannel();
-        when(clientData.getSslConfig()).thenReturn(Optional.empty());
     }
 
     @Test
     public void test_initialize_default_ssldata() throws Exception {
-        when(clientData.getMqttVersion()).thenReturn(MqttVersion.MQTT_5_0);
+        final MqttClientTransportConfigImpl transportConfig = mock(MqttClientTransportConfigImpl.class);
         final MqttClientSslConfigImpl sslConfig = mock(MqttClientSslConfigImpl.class);
-        when(clientData.getSslConfig()).thenReturn(Optional.of(sslConfig));
-        when(clientData.getRawSslConfig()).thenReturn(sslConfig);
+        when(connAckFlow.getTransportConfig()).thenReturn(transportConfig);
+        when(transportConfig.getRawSslConfig()).thenReturn(sslConfig);
 
         final MqttChannelInitializer mqttChannelInitializer =
-                new MqttChannelInitializer(clientData, connAckFlow, encoder, connectHandler, disconnectHandler,
+                new MqttChannelInitializer(clientData, connect, connAckFlow, encoder, connectHandler, disconnectHandler,
                         authHandler, webSocketInitializer);
 
         mqttChannelInitializer.initChannel(channel);

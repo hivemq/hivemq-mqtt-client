@@ -58,4 +58,12 @@ public interface Mqtt5ClientAdvancedConfig {
      * @return the optional interceptors of messages.
      */
     @Nullable Mqtt5ClientInterceptors getInterceptors();
+
+    /**
+     * Creates a builder for extending this advanced configuration.
+     *
+     * @return the created builder.
+     * @since 1.1
+     */
+    @NotNull Mqtt5ClientAdvancedConfigBuilder extend();
 }

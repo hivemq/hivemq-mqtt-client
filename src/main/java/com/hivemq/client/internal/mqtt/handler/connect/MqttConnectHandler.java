@@ -30,13 +30,17 @@ import com.hivemq.client.internal.mqtt.handler.disconnect.MqttDisconnectUtil;
 import com.hivemq.client.internal.mqtt.handler.ping.MqttPingHandler;
 import com.hivemq.client.internal.mqtt.handler.util.MqttTimeoutInboundHandler;
 import com.hivemq.client.internal.mqtt.ioc.ConnectionScope;
+import com.hivemq.client.internal.mqtt.lifecycle.MqttClientConnectedContextImpl;
 import com.hivemq.client.internal.mqtt.message.MqttMessage;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnectRestrictions;
 import com.hivemq.client.internal.mqtt.message.connect.connack.MqttConnAck;
 import com.hivemq.client.internal.mqtt.message.connect.connack.MqttConnAckRestrictions;
+import com.hivemq.client.internal.util.collections.ImmutableList;
 import com.hivemq.client.mqtt.MqttClientState;
 import com.hivemq.client.mqtt.MqttVersion;
+import com.hivemq.client.mqtt.lifecycle.MqttClientConnectedContext;
+import com.hivemq.client.mqtt.lifecycle.MqttClientConnectedListener;
 import com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5ConnAckException;
 import com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5DisconnectReasonCode;
 import io.netty.channel.Channel;
@@ -170,7 +174,7 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
 
             ((MqttEncoder) channel.pipeline().get(MqttEncoder.NAME)).onConnected(connectionConfig);
 
-            session.startOrResume(connAck, channel.pipeline(), connectionConfig);
+            session.startOrResume(connAck, connectionConfig, channel.pipeline(), channel.eventLoop());
 
             final int keepAlive = connectionConfig.getKeepAlive();
             if (keepAlive > 0) {
@@ -178,6 +182,20 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
             }
 
             clientConfig.getRawState().set(MqttClientState.CONNECTED);
+
+            final ImmutableList<MqttClientConnectedListener> connectedListeners = clientConfig.getConnectedListeners();
+            if (!connectedListeners.isEmpty()) {
+                final MqttClientConnectedContext context =
+                        MqttClientConnectedContextImpl.of(clientConfig, connect, connAck);
+                for (final MqttClientConnectedListener connectedListener : connectedListeners) {
+                    try {
+                        connectedListener.onConnected(context);
+                    } catch (final Throwable t) {
+                        LOGGER.error("Unexpected exception thrown by connected listener.", t);
+                    }
+                }
+            }
+
             connAckFlow.onSuccess(connAck);
         }
     }
@@ -251,8 +269,12 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
 
         // @formatter:off
         final MqttClientConnectionConfig connectionConfig = new MqttClientConnectionConfig(
-                keepAlive, sessionExpiryInterval,
-                connect.getRawWillPublish() != null, connect.getRawEnhancedAuthMechanism(),
+                connAckFlow.getTransportConfig(),
+                keepAlive,
+                sessionExpiryInterval,
+                connect.getRawSimpleAuth() != null,
+                connect.getRawWillPublish() != null,
+                connect.getRawEnhancedAuthMechanism(),
                 restrictions.getReceiveMaximum(),
                 restrictions.getMaximumPacketSize(),
                 restrictions.getTopicAliasMaximum(),
@@ -265,7 +287,8 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
                 connAckRestrictions.isRetainAvailable(),
                 connAckRestrictions.isWildcardSubscriptionAvailable(),
                 connAckRestrictions.isSharedSubscriptionAvailable(),
-                connAckRestrictions.areSubscriptionIdentifiersAvailable(), channel);
+                connAckRestrictions.areSubscriptionIdentifiersAvailable(),
+                channel);
         // @formatter:on
 
         clientConfig.setConnectionConfig(connectionConfig);
@@ -274,8 +297,13 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
 
     @Override
     protected void onDisconnectEvent(final @NotNull MqttDisconnectEvent disconnectEvent) {
+        final ChannelHandlerContext ctx = this.ctx;
+        if (ctx == null) {
+            return;
+        }
         super.onDisconnectEvent(disconnectEvent);
-        connAckFlow.onError(disconnectEvent.getCause());
+        MqttConnAckSingle.reconnect(clientConfig, disconnectEvent.getSource(), disconnectEvent.getCause(), connect,
+                connAckFlow, ctx.channel().eventLoop());
     }
 
     @Override

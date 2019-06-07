@@ -18,11 +18,15 @@
 package com.hivemq.client.internal.mqtt.mqtt3;
 
 import com.hivemq.client.internal.mqtt.MqttAsyncClient;
+import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
 import com.hivemq.client.internal.mqtt.message.connect.connack.mqtt3.Mqtt3ConnAckView;
 import com.hivemq.client.internal.mqtt.message.disconnect.mqtt3.Mqtt3DisconnectView;
+import com.hivemq.client.internal.mqtt.message.publish.MqttPublish;
 import com.hivemq.client.internal.mqtt.message.publish.mqtt3.Mqtt3PublishView;
+import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscribe;
 import com.hivemq.client.internal.mqtt.message.subscribe.mqtt3.Mqtt3SubscribeViewBuilder;
 import com.hivemq.client.internal.mqtt.message.subscribe.suback.mqtt3.Mqtt3SubAckView;
+import com.hivemq.client.internal.mqtt.message.unsubscribe.MqttUnsubscribe;
 import com.hivemq.client.internal.mqtt.mqtt3.exceptions.Mqtt3ExceptionFactory;
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
 import com.hivemq.client.internal.util.Checks;
@@ -107,21 +111,26 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
 
     @Override
     public @NotNull CompletableFuture<@NotNull Mqtt3ConnAck> connect(final @Nullable Mqtt3Connect connect) {
-        return delegate.connect(MqttChecks.connect(connect)).handle(CONNACK_MAPPER);
+        final MqttConnect mqttConnect = MqttChecks.connect(connect);
+
+        return delegate.connect(mqttConnect).handle(CONNACK_MAPPER);
     }
 
     @Override
     public @NotNull CompletableFuture<@NotNull Mqtt3SubAck> subscribe(final @Nullable Mqtt3Subscribe subscribe) {
-        return delegate.subscribe(MqttChecks.subscribe(subscribe)).handle(SUBACK_MAPPER);
+        final MqttSubscribe mqttSubscribe = MqttChecks.subscribe(subscribe);
+
+        return delegate.subscribe(mqttSubscribe).handle(SUBACK_MAPPER);
     }
 
     @Override
     public @NotNull CompletableFuture<@NotNull Mqtt3SubAck> subscribe(
             final @Nullable Mqtt3Subscribe subscribe, final @Nullable Consumer<@NotNull Mqtt3Publish> callback) {
 
+        final MqttSubscribe mqttSubscribe = MqttChecks.subscribe(subscribe);
         Checks.notNull(callback, "Callback");
 
-        return delegate.subscribe(MqttChecks.subscribe(subscribe), callbackView(callback)).handle(SUBACK_MAPPER);
+        return delegate.subscribe(mqttSubscribe, callbackView(callback)).handle(SUBACK_MAPPER);
     }
 
     @Override
@@ -129,17 +138,18 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
             final @Nullable Mqtt3Subscribe subscribe, final @Nullable Consumer<@NotNull Mqtt3Publish> callback,
             final @Nullable Executor executor) {
 
+        final MqttSubscribe mqttSubscribe = MqttChecks.subscribe(subscribe);
         Checks.notNull(callback, "Callback");
         Checks.notNull(executor, "Executor");
 
-        return delegate.subscribe(MqttChecks.subscribe(subscribe), callbackView(callback), executor)
-                .handle(SUBACK_MAPPER);
+        return delegate.subscribe(mqttSubscribe, callbackView(callback), executor).handle(SUBACK_MAPPER);
     }
 
     @Override
     public void publishes(
             final @Nullable MqttGlobalPublishFilter filter, final @Nullable Consumer<@NotNull Mqtt3Publish> callback) {
 
+        Checks.notNull(filter, "Global publish filter");
         Checks.notNull(callback, "Callback");
 
         delegate.publishes(filter, callbackView(callback));
@@ -150,6 +160,7 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
             final @Nullable MqttGlobalPublishFilter filter, final @Nullable Consumer<@NotNull Mqtt3Publish> callback,
             final @Nullable Executor executor) {
 
+        Checks.notNull(filter, "Global publish filter");
         Checks.notNull(callback, "Callback");
         Checks.notNull(executor, "Executor");
 
@@ -158,12 +169,16 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
 
     @Override
     public @NotNull CompletableFuture<Void> unsubscribe(final @Nullable Mqtt3Unsubscribe unsubscribe) {
-        return delegate.unsubscribe(MqttChecks.unsubscribe(unsubscribe)).handle(UNSUBACK_MAPPER);
+        final MqttUnsubscribe mqttUnsubscribe = MqttChecks.unsubscribe(unsubscribe);
+
+        return delegate.unsubscribe(mqttUnsubscribe).handle(UNSUBACK_MAPPER);
     }
 
     @Override
     public @NotNull CompletableFuture<@NotNull Mqtt3Publish> publish(final @Nullable Mqtt3Publish publish) {
-        return delegate.publish(MqttChecks.publish(publish)).handle(PUBLISH_RESULT_MAPPER);
+        final MqttPublish mqttPublish = MqttChecks.publish(publish);
+
+        return delegate.publish(mqttPublish).handle(PUBLISH_RESULT_MAPPER);
     }
 
     @Override

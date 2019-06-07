@@ -1,0 +1,55 @@
+/*
+ * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+package com.hivemq.client.mqtt.lifecycle;
+
+import com.hivemq.client.annotations.DoNotImplement;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.concurrent.TimeUnit;
+
+/**
+ * Builder base for a {@link MqttClientAutoReconnect}.
+ *
+ * @author Silvio Giebl
+ * @since 1.1
+ */
+@DoNotImplement
+public interface MqttClientAutoReconnectBuilderBase<B extends MqttClientAutoReconnectBuilderBase<B>> {
+
+    /**
+     * Sets the initial delay the client will wait before it tries to reconnect.
+     * <p>
+     * It must be positive.
+     *
+     * @param initialDelay the initial delay.
+     * @param timeUnit     the time unit of the given initial delay.
+     * @return the builder.
+     */
+    @NotNull B initialDelay(final long initialDelay, @NotNull TimeUnit timeUnit);
+
+    /**
+     * Sets the maximum delay the client will wait before it tries to reconnect.
+     * <p>
+     * It must be positive or zero.
+     *
+     * @param maxDelay the maximum delay.
+     * @param timeUnit the time unit of the given maximum delay.
+     * @return the builder.
+     */
+    @NotNull B maxDelay(final long maxDelay, @NotNull TimeUnit timeUnit);
+}

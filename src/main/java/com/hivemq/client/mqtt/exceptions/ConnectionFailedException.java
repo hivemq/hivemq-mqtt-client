@@ -28,6 +28,10 @@ import org.jetbrains.annotations.NotNull;
  */
 public class ConnectionFailedException extends AsyncRuntimeException {
 
+    public ConnectionFailedException(final @NotNull String message) {
+        super(message);
+    }
+
     public ConnectionFailedException(final @NotNull Throwable cause) {
         super(cause);
     }

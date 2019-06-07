@@ -60,6 +60,12 @@ public abstract class MqttWebSocketConfigImplBuilder<B extends MqttWebSocketConf
 
     public static class Default extends MqttWebSocketConfigImplBuilder<Default> implements MqttWebSocketConfigBuilder {
 
+        public Default() {}
+
+        Default(final @Nullable MqttWebSocketConfigImpl webSocketConfig) {
+            super(webSocketConfig);
+        }
+
         @Override
         @NotNull Default self() {
             return this;

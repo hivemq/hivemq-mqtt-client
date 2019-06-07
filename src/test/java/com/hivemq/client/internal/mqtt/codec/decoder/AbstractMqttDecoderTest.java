@@ -19,12 +19,14 @@ package com.hivemq.client.internal.mqtt.codec.decoder;
 
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
 import com.hivemq.client.internal.mqtt.MqttClientExecutorConfigImpl;
+import com.hivemq.client.internal.mqtt.MqttClientTransportConfigImpl;
 import com.hivemq.client.internal.mqtt.advanced.MqttClientAdvancedConfig;
 import com.hivemq.client.internal.mqtt.advanced.MqttClientAdvancedConfigBuilder;
 import com.hivemq.client.internal.mqtt.datatypes.MqttClientIdentifierImpl;
 import com.hivemq.client.internal.mqtt.handler.disconnect.MqttDisconnectEvent;
 import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
 import com.hivemq.client.internal.mqtt.message.disconnect.MqttDisconnect;
+import com.hivemq.client.internal.util.collections.ImmutableList;
 import com.hivemq.client.mqtt.MqttVersion;
 import com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import com.hivemq.client.mqtt.mqtt5.message.Mqtt5Message;
@@ -79,8 +81,6 @@ public abstract class AbstractMqttDecoderTest {
 
     @SuppressWarnings("NullabilityAnnotations")
     protected EmbeddedChannel channel;
-    @SuppressWarnings("NullabilityAnnotations")
-    private MqttDecoder decoder;
 
     protected AbstractMqttDecoderTest(
             final @NotNull MqttMessageDecoders decoders, final @NotNull MqttVersion mqttVersion,
@@ -109,13 +109,12 @@ public abstract class AbstractMqttDecoderTest {
         final MqttClientAdvancedConfig advancedConfig =
                 new MqttClientAdvancedConfigBuilder.Default().validatePayloadFormat(validatePayloadFormat).build();
         final MqttClientConfig clientConfig =
-                new MqttClientConfig(MqttVersion.MQTT_5_0, MqttClientIdentifierImpl.of("test"), "localhost", 1883,
-                        MqttClientExecutorConfigImpl.DEFAULT, null, null, advancedConfig);
+                new MqttClientConfig(MqttVersion.MQTT_5_0, MqttClientIdentifierImpl.of("test"),
+                        MqttClientTransportConfigImpl.DEFAULT, MqttClientExecutorConfigImpl.DEFAULT, advancedConfig,
+                        MqttClientConfig.ConnectDefaults.of(null, null, null), ImmutableList.of(), ImmutableList.of());
 
         channel = new EmbeddedChannel();
-        channel.pipeline()
-                .addLast(decoder = new MqttDecoder(decoders, clientConfig, connect))
-                .addLast(disconnectHandler);
+        channel.pipeline().addLast(new MqttDecoder(decoders, clientConfig, connect)).addLast(disconnectHandler);
     }
 
     protected void validatePayloadFormat() {

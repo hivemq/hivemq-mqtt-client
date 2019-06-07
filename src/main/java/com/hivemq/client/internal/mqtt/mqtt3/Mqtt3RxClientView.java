@@ -18,12 +18,15 @@
 package com.hivemq.client.internal.mqtt.mqtt3;
 
 import com.hivemq.client.internal.mqtt.MqttRxClient;
+import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
 import com.hivemq.client.internal.mqtt.message.connect.connack.mqtt3.Mqtt3ConnAckView;
 import com.hivemq.client.internal.mqtt.message.disconnect.mqtt3.Mqtt3DisconnectView;
 import com.hivemq.client.internal.mqtt.message.publish.MqttPublish;
 import com.hivemq.client.internal.mqtt.message.publish.mqtt3.Mqtt3PublishResultView;
 import com.hivemq.client.internal.mqtt.message.publish.mqtt3.Mqtt3PublishView;
+import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscribe;
 import com.hivemq.client.internal.mqtt.message.subscribe.suback.mqtt3.Mqtt3SubAckView;
+import com.hivemq.client.internal.mqtt.message.unsubscribe.MqttUnsubscribe;
 import com.hivemq.client.internal.mqtt.mqtt3.exceptions.Mqtt3ExceptionFactory;
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
 import com.hivemq.client.internal.util.Checks;
@@ -81,14 +84,18 @@ public class Mqtt3RxClientView implements Mqtt3RxClient {
 
     @Override
     public @NotNull Single<Mqtt3ConnAck> connect(final @Nullable Mqtt3Connect connect) {
-        return delegate.connect(MqttChecks.connect(connect))
+        final MqttConnect mqttConnect = MqttChecks.connect(connect);
+
+        return delegate.connect(mqttConnect)
                 .onErrorResumeNext(EXCEPTION_MAPPER_SINGLE_CONNACK)
                 .map(Mqtt3ConnAckView.MAPPER);
     }
 
     @Override
     public @NotNull Single<Mqtt3SubAck> subscribe(final @Nullable Mqtt3Subscribe subscribe) {
-        return delegate.subscribe(MqttChecks.subscribe(subscribe))
+        final MqttSubscribe mqttSubscribe = MqttChecks.subscribe(subscribe);
+
+        return delegate.subscribe(mqttSubscribe)
                 .onErrorResumeNext(EXCEPTION_MAPPER_SINGLE_SUBACK)
                 .map(Mqtt3SubAckView.MAPPER);
     }
@@ -97,13 +104,17 @@ public class Mqtt3RxClientView implements Mqtt3RxClient {
     public @NotNull FlowableWithSingle<Mqtt3Publish, Mqtt3SubAck> subscribeStream(
             final @Nullable Mqtt3Subscribe subscribe) {
 
-        return delegate.subscribeStream(MqttChecks.subscribe(subscribe))
+        final MqttSubscribe mqttSubscribe = MqttChecks.subscribe(subscribe);
+
+        return delegate.subscribeStream(mqttSubscribe)
                 .mapError(Mqtt3ExceptionFactory.MAPPER)
                 .mapBoth(Mqtt3PublishView.MAPPER, Mqtt3SubAckView.MAPPER);
     }
 
     @Override
     public @NotNull Flowable<Mqtt3Publish> publishes(final @Nullable MqttGlobalPublishFilter filter) {
+        Checks.notNull(filter, "Global publish filter");
+
         return delegate.publishes(filter)
                 .onErrorResumeNext(EXCEPTION_MAPPER_FLOWABLE_PUBLISH)
                 .map(Mqtt3PublishView.MAPPER);
@@ -111,14 +122,16 @@ public class Mqtt3RxClientView implements Mqtt3RxClient {
 
     @Override
     public @NotNull Completable unsubscribe(final @Nullable Mqtt3Unsubscribe unsubscribe) {
-        return delegate.unsubscribe(MqttChecks.unsubscribe(unsubscribe)).ignoreElement()
-                .onErrorResumeNext(EXCEPTION_MAPPER_COMPLETABLE);
+        final MqttUnsubscribe mqttUnsubscribe = MqttChecks.unsubscribe(unsubscribe);
+
+        return delegate.unsubscribe(mqttUnsubscribe).ignoreElement().onErrorResumeNext(EXCEPTION_MAPPER_COMPLETABLE);
     }
 
     @Override
     public @NotNull Flowable<Mqtt3PublishResult> publish(final @Nullable Flowable<Mqtt3Publish> publishFlowable) {
         Checks.notNull(publishFlowable, "Publish flowable");
-        return delegate.publish(publishFlowable.map(PUBLISH_MAPPER))
+
+        return delegate.publish(publishFlowable, PUBLISH_MAPPER)
                 .onErrorResumeNext(EXCEPTION_MAPPER_FLOWABLE_PUBLISH_RESULT)
                 .map(Mqtt3PublishResultView.MAPPER);
     }

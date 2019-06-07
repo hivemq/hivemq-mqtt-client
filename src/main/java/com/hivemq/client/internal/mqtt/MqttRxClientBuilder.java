@@ -19,11 +19,20 @@ package com.hivemq.client.internal.mqtt;
 
 import com.hivemq.client.internal.mqtt.advanced.MqttClientAdvancedConfig;
 import com.hivemq.client.internal.mqtt.advanced.MqttClientAdvancedConfigBuilder;
+import com.hivemq.client.internal.mqtt.message.auth.MqttSimpleAuth;
+import com.hivemq.client.internal.mqtt.message.auth.MqttSimpleAuthBuilder;
+import com.hivemq.client.internal.mqtt.message.publish.MqttPublish;
+import com.hivemq.client.internal.mqtt.message.publish.MqttPublishBuilder;
+import com.hivemq.client.internal.mqtt.message.publish.MqttWillPublish;
 import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.mqtt.MqttVersion;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5ClientBuilder;
 import com.hivemq.client.mqtt.mqtt5.advanced.Mqtt5ClientAdvancedConfig;
+import com.hivemq.client.mqtt.mqtt5.auth.Mqtt5EnhancedAuthMechanism;
+import com.hivemq.client.mqtt.mqtt5.message.auth.Mqtt5SimpleAuth;
+import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Silvio Giebl
@@ -31,6 +40,9 @@ import org.jetbrains.annotations.NotNull;
 public class MqttRxClientBuilder extends MqttRxClientBuilderBase<MqttRxClientBuilder> implements Mqtt5ClientBuilder {
 
     private @NotNull MqttClientAdvancedConfig advancedConfig = MqttClientAdvancedConfig.DEFAULT;
+    private @Nullable MqttSimpleAuth simpleAuth;
+    private @Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism;
+    private @Nullable MqttWillPublish willPublish;
 
     public MqttRxClientBuilder() {}
 
@@ -55,6 +67,35 @@ public class MqttRxClientBuilder extends MqttRxClientBuilderBase<MqttRxClientBui
     }
 
     @Override
+    public @NotNull MqttRxClientBuilder simpleAuth(final @Nullable Mqtt5SimpleAuth simpleAuth) {
+        this.simpleAuth = Checks.notImplementedOrNull(simpleAuth, MqttSimpleAuth.class, "Simple auth");
+        return this;
+    }
+
+    @Override
+    public @NotNull MqttSimpleAuthBuilder.Nested<MqttRxClientBuilder> simpleAuth() {
+        return new MqttSimpleAuthBuilder.Nested<>(this::simpleAuth);
+    }
+
+    @Override
+    public @NotNull MqttRxClientBuilder enhancedAuth(final @Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism) {
+        this.enhancedAuthMechanism = enhancedAuthMechanism;
+        return this;
+    }
+
+    @Override
+    public @NotNull MqttRxClientBuilder willPublish(final @Nullable Mqtt5Publish willPublish) {
+        this.willPublish = (willPublish == null) ? null :
+                Checks.notImplemented(willPublish, MqttPublish.class, "Will publish").asWill();
+        return this;
+    }
+
+    @Override
+    public @NotNull MqttPublishBuilder.WillNested<MqttRxClientBuilder> willPublish() {
+        return new MqttPublishBuilder.WillNested<>(this::willPublish);
+    }
+
+    @Override
     public @NotNull MqttRxClient build() {
         return buildRx();
     }
@@ -75,7 +116,7 @@ public class MqttRxClientBuilder extends MqttRxClientBuilderBase<MqttRxClientBui
     }
 
     private @NotNull MqttClientConfig buildClientConfig() {
-        return new MqttClientConfig(MqttVersion.MQTT_5_0, identifier, serverHost, serverPort, executorConfig, sslConfig,
-                webSocketConfig, advancedConfig);
+        return buildClientConfig(MqttVersion.MQTT_5_0, advancedConfig,
+                MqttClientConfig.ConnectDefaults.of(simpleAuth, enhancedAuthMechanism, willPublish));
     }
 }

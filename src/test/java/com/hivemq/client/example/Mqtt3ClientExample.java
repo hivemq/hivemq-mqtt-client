@@ -199,14 +199,14 @@ class Mqtt3ClientExample {
                 MqttClient.builder().identifier(UUID.randomUUID().toString()).serverHost(server).serverPort(port);
 
         if (usesSsl) {
-            mqttClientBuilder.useSsl(MqttClientSslConfig.builder()
+            mqttClientBuilder.sslConfig(MqttClientSslConfig.builder()
                     .keyManagerFactory(keyManagerFactory)
                     .trustManagerFactory(trustManagerFactory)
                     .build());
         }
 
         if (isNotUsingMqttPort(port)) {
-            mqttClientBuilder.useWebSocket(MqttWebSocketConfig.builder().serverPath(serverPath).build());
+            mqttClientBuilder.webSocketConfig(MqttWebSocketConfig.builder().serverPath(serverPath).build());
         }
 
         return mqttClientBuilder.useMqttVersion3().buildRx();

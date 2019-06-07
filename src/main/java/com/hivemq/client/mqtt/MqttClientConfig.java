@@ -18,9 +18,15 @@
 package com.hivemq.client.mqtt;
 
 import com.hivemq.client.annotations.DoNotImplement;
+import com.hivemq.client.annotations.Immutable;
 import com.hivemq.client.mqtt.datatypes.MqttClientIdentifier;
+import com.hivemq.client.mqtt.lifecycle.MqttClientAutoReconnect;
+import com.hivemq.client.mqtt.lifecycle.MqttClientConnectedListener;
+import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedListener;
 import org.jetbrains.annotations.NotNull;
 
+import java.net.InetSocketAddress;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -46,14 +52,46 @@ public interface MqttClientConfig {
     @NotNull Optional<MqttClientIdentifier> getClientIdentifier();
 
     /**
-     * @return the server host the clients connects to or is connected to.
+     * @return the server address the client connects to.
+     * @since 1.1
      */
-    @NotNull String getServerHost();
+    default @NotNull InetSocketAddress getServerAddress() {
+        return getTransportConfig().getServerAddress();
+    }
 
     /**
-     * @return the server port the client connects to or is connected to.
+     * @return the server host the clients connects to.
      */
-    int getServerPort();
+    default @NotNull String getServerHost() {
+        return getServerAddress().getHostString();
+    }
+
+    /**
+     * @return the server port the client connects to.
+     */
+    default int getServerPort() {
+        return getServerAddress().getPort();
+    }
+
+    /**
+     * @return the optional secure transport configuration of the client.
+     */
+    default @NotNull Optional<MqttClientSslConfig> getSslConfig() {
+        return getTransportConfig().getSslConfig();
+    }
+
+    /**
+     * @return the optional WebSocket configuration of the client.
+     */
+    default @NotNull Optional<MqttWebSocketConfig> getWebSocketConfig() {
+        return getTransportConfig().getWebSocketConfig();
+    }
+
+    /**
+     * @return the transport configuration of the client.
+     * @since 1.1
+     */
+    @NotNull MqttClientTransportConfig getTransportConfig();
 
     /**
      * @return the executor configuration of the client.
@@ -61,14 +99,24 @@ public interface MqttClientConfig {
     @NotNull MqttClientExecutorConfig getExecutorConfig();
 
     /**
-     * @return the optional secure transport configuration of the client.
+     * @return the optional automatic reconnect strategy of the client.
+     * @since 1.1
      */
-    @NotNull Optional<MqttClientSslConfig> getSslConfig();
+    @NotNull Optional<MqttClientAutoReconnect> getAutomaticReconnect();
 
     /**
-     * @return the optional WebSocket configuration of the client.
+     * @return the listeners which are notified (in the order of the list) when this client is connected (a successful
+     *         ConnAck message is received).
+     * @since 1.1
      */
-    @NotNull Optional<MqttWebSocketConfig> getWebSocketConfig();
+    @Immutable @NotNull List<@NotNull MqttClientConnectedListener> getConnectedListeners();
+
+    /**
+     * @return the listeners which are notified (in the order of the list) when this client is disconnected (with or
+     *         without a Disconnect message) or the connection fails.
+     * @since 1.1
+     */
+    @Immutable @NotNull List<@NotNull MqttClientDisconnectedListener> getDisconnectedListeners();
 
     /**
      * @return the state of the client.

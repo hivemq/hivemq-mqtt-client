@@ -48,10 +48,6 @@ class MqttSubscribeWithFlow extends MqttSubOrUnsubWithFlow {
         return flow;
     }
 
-    @Nullable MqttSubscribedPublishFlow getPublishFlow() {
-        return (flow instanceof MqttSubscribedPublishFlow) ? (MqttSubscribedPublishFlow) flow : null;
-    }
-
     static class Stateful extends MqttSubOrUnsubWithFlow.Stateful {
 
         private final @NotNull MqttStatefulSubscribe subscribe;

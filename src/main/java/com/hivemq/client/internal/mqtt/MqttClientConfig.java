@@ -21,14 +21,21 @@ import com.hivemq.client.internal.mqtt.advanced.MqttClientAdvancedConfig;
 import com.hivemq.client.internal.mqtt.datatypes.MqttClientIdentifierImpl;
 import com.hivemq.client.internal.mqtt.ioc.ClientComponent;
 import com.hivemq.client.internal.mqtt.ioc.SingletonComponent;
+import com.hivemq.client.internal.mqtt.message.auth.MqttSimpleAuth;
+import com.hivemq.client.internal.mqtt.message.publish.MqttWillPublish;
 import com.hivemq.client.internal.util.ExecutorUtil;
-import com.hivemq.client.mqtt.MqttClientSslConfig;
+import com.hivemq.client.internal.util.collections.ImmutableList;
 import com.hivemq.client.mqtt.MqttClientState;
 import com.hivemq.client.mqtt.MqttVersion;
-import com.hivemq.client.mqtt.MqttWebSocketConfig;
 import com.hivemq.client.mqtt.datatypes.MqttClientIdentifier;
+import com.hivemq.client.mqtt.lifecycle.MqttClientAutoReconnect;
+import com.hivemq.client.mqtt.lifecycle.MqttClientConnectedListener;
+import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedListener;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5ClientConfig;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5ClientConnectionConfig;
+import com.hivemq.client.mqtt.mqtt5.auth.Mqtt5EnhancedAuthMechanism;
+import com.hivemq.client.mqtt.mqtt5.message.auth.Mqtt5SimpleAuth;
+import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5WillPublish;
 import io.netty.channel.EventLoop;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -43,38 +50,38 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
 
     private final @NotNull MqttVersion mqttVersion;
     private volatile @NotNull MqttClientIdentifierImpl clientIdentifier;
-    private final @NotNull String serverHost;
-    private final int serverPort;
+    private final @NotNull MqttClientTransportConfigImpl transportConfig;
     private final @NotNull MqttClientExecutorConfigImpl executorConfig;
-    private final @Nullable MqttClientSslConfigImpl sslConfig;
-    private final @Nullable MqttWebSocketConfigImpl webSocketConfig;
     private final @NotNull MqttClientAdvancedConfig advancedConfig;
+    private final @NotNull ConnectDefaults connectDefaults;
+    private final @NotNull ImmutableList<MqttClientConnectedListener> connectedListeners;
+    private final @NotNull ImmutableList<MqttClientDisconnectedListener> disconnectedListeners;
 
     private final @NotNull ClientComponent clientComponent;
 
     private volatile @Nullable EventLoop eventLoop;
     private int eventLoopAcquires;
     private long eventLoopAcquireCount;
-    private final @NotNull Object eventLoopLock = new Object();
 
     private final @NotNull AtomicReference<@NotNull MqttClientState> state;
     private volatile @Nullable MqttClientConnectionConfig connectionConfig;
 
     public MqttClientConfig(
             final @NotNull MqttVersion mqttVersion, final @NotNull MqttClientIdentifierImpl clientIdentifier,
-            final @NotNull String serverHost, final int serverPort,
+            final @NotNull MqttClientTransportConfigImpl transportConfig,
             final @NotNull MqttClientExecutorConfigImpl executorConfig,
-            final @Nullable MqttClientSslConfigImpl sslConfig, final @Nullable MqttWebSocketConfigImpl webSocketConfig,
-            final @NotNull MqttClientAdvancedConfig advancedConfig) {
+            final @NotNull MqttClientAdvancedConfig advancedConfig, final @NotNull ConnectDefaults connectDefaults,
+            final @NotNull ImmutableList<MqttClientConnectedListener> connectedListeners,
+            final @NotNull ImmutableList<MqttClientDisconnectedListener> disconnectedListeners) {
 
         this.mqttVersion = mqttVersion;
         this.clientIdentifier = clientIdentifier;
-        this.serverHost = serverHost;
-        this.serverPort = serverPort;
+        this.transportConfig = transportConfig;
         this.executorConfig = executorConfig;
-        this.sslConfig = sslConfig;
-        this.webSocketConfig = webSocketConfig;
         this.advancedConfig = advancedConfig;
+        this.connectDefaults = connectDefaults;
+        this.connectedListeners = connectedListeners;
+        this.disconnectedListeners = disconnectedListeners;
 
         clientComponent = SingletonComponent.INSTANCE.clientComponentBuilder().clientConfig(this).build();
 
@@ -101,13 +108,8 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
     }
 
     @Override
-    public @NotNull String getServerHost() {
-        return serverHost;
-    }
-
-    @Override
-    public int getServerPort() {
-        return serverPort;
+    public @NotNull MqttClientTransportConfigImpl getTransportConfig() {
+        return transportConfig;
     }
 
     @Override
@@ -116,26 +118,47 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
     }
 
     @Override
-    public @NotNull Optional<MqttClientSslConfig> getSslConfig() {
-        return Optional.ofNullable(sslConfig);
-    }
-
-    public @Nullable MqttClientSslConfigImpl getRawSslConfig() {
-        return sslConfig;
-    }
-
-    @Override
-    public @NotNull Optional<MqttWebSocketConfig> getWebSocketConfig() {
-        return Optional.ofNullable(webSocketConfig);
-    }
-
-    public @Nullable MqttWebSocketConfigImpl getRawWebSocketConfig() {
-        return webSocketConfig;
-    }
-
-    @Override
     public @NotNull MqttClientAdvancedConfig getAdvancedConfig() {
         return advancedConfig;
+    }
+
+    @Override
+    public @NotNull Optional<Mqtt5SimpleAuth> getSimpleAuth() {
+        return Optional.ofNullable(connectDefaults.simpleAuth);
+    }
+
+    @Override
+    public @NotNull Optional<Mqtt5EnhancedAuthMechanism> getEnhancedAuthMechanism() {
+        return Optional.ofNullable(connectDefaults.enhancedAuthMechanism);
+    }
+
+    @Override
+    public @NotNull Optional<Mqtt5WillPublish> getWillPublish() {
+        return Optional.ofNullable(connectDefaults.willPublish);
+    }
+
+    public @NotNull ConnectDefaults getConnectDefaults() {
+        return connectDefaults;
+    }
+
+    @Override
+    public @NotNull Optional<MqttClientAutoReconnect> getAutomaticReconnect() {
+        for (final MqttClientDisconnectedListener disconnectedListener : disconnectedListeners) {
+            if (disconnectedListener instanceof MqttClientAutoReconnect) {
+                return Optional.of((MqttClientAutoReconnect) disconnectedListener);
+            }
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public @NotNull ImmutableList<MqttClientConnectedListener> getConnectedListeners() {
+        return connectedListeners;
+    }
+
+    @Override
+    public @NotNull ImmutableList<MqttClientDisconnectedListener> getDisconnectedListeners() {
+        return disconnectedListeners;
     }
 
     public @NotNull ClientComponent getClientComponent() {
@@ -143,7 +166,7 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
     }
 
     public @NotNull EventLoop acquireEventLoop() {
-        synchronized (eventLoopLock) {
+        synchronized (state) {
             eventLoopAcquires++;
             eventLoopAcquireCount++;
             EventLoop eventLoop = this.eventLoop;
@@ -156,13 +179,13 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
     }
 
     public void releaseEventLoop() {
-        synchronized (eventLoopLock) {
+        synchronized (state) {
             if (--eventLoopAcquires == 0) {
                 final EventLoop eventLoop = this.eventLoop;
                 final long eventLoopAcquireCount = this.eventLoopAcquireCount;
                 assert eventLoop != null;
                 eventLoop.execute(() -> { // release eventLoop after all tasks are finished
-                    synchronized (eventLoopLock) {
+                    synchronized (state) {
                         if (eventLoopAcquireCount == this.eventLoopAcquireCount) { // eventLoop has not been reacquired
                             this.eventLoop = null;
                             SingletonComponent.INSTANCE.nettyEventLoopProvider()
@@ -202,5 +225,47 @@ public class MqttClientConfig implements Mqtt5ClientConfig {
 
     public void setConnectionConfig(final @Nullable MqttClientConnectionConfig connectionConfig) {
         this.connectionConfig = connectionConfig;
+    }
+
+    public static class ConnectDefaults {
+
+        private static final @NotNull ConnectDefaults EMPTY = new ConnectDefaults(null, null, null);
+
+        public static @NotNull ConnectDefaults of(
+                final @Nullable MqttSimpleAuth simpleAuth,
+                final @Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism,
+                final @Nullable MqttWillPublish willPublish) {
+
+            if ((simpleAuth == null) && (enhancedAuthMechanism == null) && (willPublish == null)) {
+                return EMPTY;
+            }
+            return new ConnectDefaults(simpleAuth, enhancedAuthMechanism, willPublish);
+        }
+
+        final @Nullable MqttSimpleAuth simpleAuth;
+        final @Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism;
+        final @Nullable MqttWillPublish willPublish;
+
+        private ConnectDefaults(
+                final @Nullable MqttSimpleAuth simpleAuth,
+                final @Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism,
+                final @Nullable MqttWillPublish willPublish) {
+
+            this.simpleAuth = simpleAuth;
+            this.enhancedAuthMechanism = enhancedAuthMechanism;
+            this.willPublish = willPublish;
+        }
+
+        public @Nullable MqttSimpleAuth getSimpleAuth() {
+            return simpleAuth;
+        }
+
+        public @Nullable Mqtt5EnhancedAuthMechanism getEnhancedAuthMechanism() {
+            return enhancedAuthMechanism;
+        }
+
+        public @Nullable MqttWillPublish getWillPublish() {
+            return willPublish;
+        }
     }
 }

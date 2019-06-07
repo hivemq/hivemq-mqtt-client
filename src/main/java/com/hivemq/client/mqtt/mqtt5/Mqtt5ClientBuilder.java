@@ -21,7 +21,13 @@ import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.MqttClientBuilderBase;
 import com.hivemq.client.mqtt.mqtt5.advanced.Mqtt5ClientAdvancedConfig;
 import com.hivemq.client.mqtt.mqtt5.advanced.Mqtt5ClientAdvancedConfigBuilder;
+import com.hivemq.client.mqtt.mqtt5.auth.Mqtt5EnhancedAuthMechanism;
+import com.hivemq.client.mqtt.mqtt5.message.auth.Mqtt5SimpleAuth;
+import com.hivemq.client.mqtt.mqtt5.message.auth.Mqtt5SimpleAuthBuilder;
+import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish;
+import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5WillPublishBuilder;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Builder for a {@link Mqtt5Client}.
@@ -52,7 +58,64 @@ public interface Mqtt5ClientBuilder extends MqttClientBuilderBase<Mqtt5ClientBui
     @NotNull Mqtt5ClientAdvancedConfigBuilder.Nested<? extends Mqtt5ClientBuilder> advancedConfig();
 
     /**
-     * ø Builds the {@link Mqtt5Client}.
+     * Sets the optional {@link Mqtt5ClientConfig#getSimpleAuth() simple authentication and/or authorization related
+     * data}.
+     *
+     * @param simpleAuth the simple auth related data or <code>null</code> to remove any previously set simple auth
+     *                   related data.
+     * @return the builder.
+     * @since 1.1
+     */
+    @NotNull Mqtt5ClientBuilder simpleAuth(@Nullable Mqtt5SimpleAuth simpleAuth);
+
+    /**
+     * Fluent counterpart of {@link #simpleAuth(Mqtt5SimpleAuth)}.
+     * <p>
+     * Calling {@link Mqtt5SimpleAuthBuilder.Nested.Complete#applySimpleAuth()} on the returned builder has the same
+     * effect as calling {@link #simpleAuth(Mqtt5SimpleAuth)} with the result of {@link
+     * Mqtt5SimpleAuthBuilder.Complete#build()}.
+     *
+     * @return the fluent builder for the simple auth related data.
+     * @see #simpleAuth(Mqtt5SimpleAuth)
+     * @since 1.1
+     */
+    @NotNull Mqtt5SimpleAuthBuilder.Nested<? extends Mqtt5ClientBuilder> simpleAuth();
+
+    /**
+     * Sets the {@link Mqtt5ClientConfig#getEnhancedAuthMechanism() enhanced authentication and/or authorization
+     * mechanism}.
+     *
+     * @param enhancedAuthMechanism the enhanced auth mechanism or <code>null</code> to remove any previously set
+     *                              enhanced auth mechanism.
+     * @return the builder.
+     * @since 1.1
+     */
+    @NotNull Mqtt5ClientBuilder enhancedAuth(@Nullable Mqtt5EnhancedAuthMechanism enhancedAuthMechanism);
+
+    /**
+     * Sets the optional {@link Mqtt5ClientConfig#getWillPublish() Will Publish}.
+     *
+     * @param willPublish the Will Publish or <code>null</code> to remove any previously set Will Publish.
+     * @return the builder.
+     * @since 1.1
+     */
+    @NotNull Mqtt5ClientBuilder willPublish(@Nullable Mqtt5Publish willPublish);
+
+    /**
+     * Fluent counterpart of {@link #willPublish(Mqtt5Publish)}.
+     * <p>
+     * Calling {@link Mqtt5WillPublishBuilder.Nested.Complete#applyWillPublish()} on the returned builder has the same
+     * effect as calling {@link #willPublish(Mqtt5Publish)} with the result of {@link
+     * Mqtt5WillPublishBuilder.Complete#build()}.
+     *
+     * @return the fluent builder for the Will Publish.
+     * @see #willPublish(Mqtt5Publish)
+     * @since 1.1
+     */
+    @NotNull Mqtt5WillPublishBuilder.Nested<? extends Mqtt5ClientBuilder> willPublish();
+
+    /**
+     * Builds the {@link Mqtt5Client}.
      *
      * @return the built {@link Mqtt5Client}.
      */

@@ -80,4 +80,12 @@ public interface MqttClientSslConfig {
      * @return the handshake timeout in milliseconds.
      */
     long getHandshakeTimeoutMs();
+
+    /**
+     * Creates a builder for extending this secure transport configuration.
+     *
+     * @return the created builder.
+     * @since 1.1
+     */
+    @NotNull MqttClientSslConfigBuilder extend();
 }

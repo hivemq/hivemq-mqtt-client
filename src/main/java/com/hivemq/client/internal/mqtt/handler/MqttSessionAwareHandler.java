@@ -18,6 +18,7 @@
 package com.hivemq.client.internal.mqtt.handler;
 
 import com.hivemq.client.internal.mqtt.MqttClientConnectionConfig;
+import io.netty.channel.EventLoop;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -27,7 +28,9 @@ public abstract class MqttSessionAwareHandler extends MqttConnectionAwareHandler
 
     protected boolean hasSession;
 
-    public void onSessionStartOrResume(final @NotNull MqttClientConnectionConfig connectionConfig) {
+    public void onSessionStartOrResume(
+            final @NotNull MqttClientConnectionConfig connectionConfig, final @NotNull EventLoop eventLoop) {
+
         hasSession = true;
     }
 

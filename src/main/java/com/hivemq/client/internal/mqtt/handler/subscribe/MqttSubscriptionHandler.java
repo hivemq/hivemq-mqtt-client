@@ -71,10 +71,9 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
     private final @NotNull MpscLinkedQueue<MqttSubOrUnsubWithFlow> queued = MpscLinkedQueue.newMpscLinkedQueue();
     private final @NotNull AtomicInteger queuedCounter = new AtomicInteger();
     private final @NotNull IntMap<MqttSubOrUnsubWithFlow.Stateful> pending;
+    private @Nullable MqttSubOrUnsubWithFlow.Stateful firstPending, lastPending, resendPending, currentPending;
     private final @NotNull Ranges packetIdentifiers;
     private @Nullable Ranges subscriptionIdentifiers;
-
-    private int currentWrite;
 
     @Inject
     MqttSubscriptionHandler(final @NotNull MqttIncomingPublishFlows incomingPublishFlows) {
@@ -87,10 +86,16 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
     }
 
     @Override
-    public void onSessionStartOrResume(final @NotNull MqttClientConnectionConfig connectionConfig) {
-        super.onSessionStartOrResume(connectionConfig);
+    public void onSessionStartOrResume(
+            final @NotNull MqttClientConnectionConfig connectionConfig, final @NotNull EventLoop eventLoop) {
+
+        super.onSessionStartOrResume(connectionConfig, eventLoop);
         if (connectionConfig.areSubscriptionIdentifiersAvailable() && (subscriptionIdentifiers == null)) {
             subscriptionIdentifiers = new Ranges(1, MqttVariableByteInteger.FOUR_BYTES_MAX_VALUE);
+        }
+        if ((firstPending != null) || (queuedCounter.get() > 0)) {
+            resendPending = firstPending;
+            eventLoop.execute(this);
         }
     }
 
@@ -125,6 +130,14 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
         if (ctx == null) {
             return;
         }
+        while (resendPending != null) {
+            if (resendPending instanceof MqttSubscribeWithFlow.Stateful) {
+                writeSubscribe(ctx, (MqttSubscribeWithFlow.Stateful) resendPending);
+            } else {
+                writeUnsubscribe(ctx, (MqttUnsubscribeWithFlow.Stateful) resendPending);
+            }
+            resendPending = resendPending.next;
+        }
         int removedFromQueue = 0;
         while (true) {
             if (pending.size() == MAX_SUB_PENDING) {
@@ -154,58 +167,74 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
             final @NotNull ChannelHandlerContext ctx, final @NotNull MqttSubOrUnsubWithFlow subOrUnsubWithFlow,
             final int packetIdentifier) {
 
-        if (subOrUnsubWithFlow instanceof MqttSubscribeWithFlow) {
-            writeSubscribe(ctx, (MqttSubscribeWithFlow) subOrUnsubWithFlow, packetIdentifier);
-        } else {
-            writeUnsubscribe(ctx, (MqttUnsubscribeWithFlow) subOrUnsubWithFlow, packetIdentifier);
-        }
-    }
-
-    private void writeSubscribe(
-            final @NotNull ChannelHandlerContext ctx, final @NotNull MqttSubscribeWithFlow subscribeWithFlow,
-            final int packetIdentifier) {
-
-        final MqttSubscriptionFlow<MqttSubAck> flow = subscribeWithFlow.getFlow();
-        if (!flow.init()) {
+        if (!subOrUnsubWithFlow.getFlow().init()) {
             return;
         }
 
-        final int subscriptionIdentifier = (subscriptionIdentifiers != null) ? subscriptionIdentifiers.getId() :
-                MqttStatefulSubscribe.DEFAULT_NO_SUBSCRIPTION_IDENTIFIER;
-        final MqttStatefulSubscribe statefulSubscribe =
-                subscribeWithFlow.getMessage().createStateful(packetIdentifier, subscriptionIdentifier);
+        if (subOrUnsubWithFlow instanceof MqttSubscribeWithFlow) {
+            final MqttSubscribeWithFlow subscribeWithFlow = (MqttSubscribeWithFlow) subOrUnsubWithFlow;
 
-        final MqttSubscribeWithFlow.Stateful statefulSubscribeWithFlow =
-                new MqttSubscribeWithFlow.Stateful(statefulSubscribe, flow);
-        pending.put(packetIdentifier, statefulSubscribeWithFlow);
+            final int subscriptionIdentifier = (subscriptionIdentifiers != null) ? subscriptionIdentifiers.getId() :
+                    MqttStatefulSubscribe.DEFAULT_NO_SUBSCRIPTION_IDENTIFIER;
+            final MqttStatefulSubscribe statefulSubscribe =
+                    subscribeWithFlow.getMessage().createStateful(packetIdentifier, subscriptionIdentifier);
 
-        currentWrite = packetIdentifier;
-        ctx.writeAndFlush(statefulSubscribeWithFlow.getMessage(), ctx.voidPromise());
-        if (currentWrite != -1) { // no exception was handled
-            incomingPublishFlows.subscribe(statefulSubscribe, subscribeWithFlow.getPublishFlow());
-            currentWrite = -1;
+            final MqttSubscribeWithFlow.Stateful statefulSubscribeWithFlow =
+                    new MqttSubscribeWithFlow.Stateful(statefulSubscribe, subscribeWithFlow.getFlow());
+
+            addPending(statefulSubscribeWithFlow);
+
+            if (writeSubscribe(ctx, statefulSubscribeWithFlow)) {
+                incomingPublishFlows.subscribe(statefulSubscribe, statefulSubscribeWithFlow.getPublishFlow());
+            }
+        } else {
+            final MqttUnsubscribeWithFlow unsubscribeWithFlow = (MqttUnsubscribeWithFlow) subOrUnsubWithFlow;
+
+            final MqttStatefulUnsubscribe statefulUnsubscribe =
+                    unsubscribeWithFlow.getMessage().createStateful(packetIdentifier);
+
+            final MqttUnsubscribeWithFlow.Stateful statefulUnsubscribeWithFlow =
+                    new MqttUnsubscribeWithFlow.Stateful(statefulUnsubscribe, unsubscribeWithFlow.getFlow());
+
+            addPending(statefulUnsubscribeWithFlow);
+
+            writeUnsubscribe(ctx, statefulUnsubscribeWithFlow);
         }
+    }
+
+    private void addPending(final @NotNull MqttSubOrUnsubWithFlow.Stateful newPending) {
+        pending.put(newPending.getMessage().getPacketIdentifier(), newPending);
+        final MqttSubOrUnsubWithFlow.Stateful lastPending = this.lastPending;
+        if (lastPending == null) {
+            firstPending = this.lastPending = newPending;
+        } else {
+            lastPending.next = newPending;
+            newPending.prev = lastPending;
+            this.lastPending = newPending;
+        }
+    }
+
+    private boolean writeSubscribe(
+            final @NotNull ChannelHandlerContext ctx,
+            final @NotNull MqttSubscribeWithFlow.Stateful statefulSubscribeWithFlow) {
+
+        final MqttStatefulSubscribe statefulSubscribe = statefulSubscribeWithFlow.getMessage();
+        currentPending = statefulSubscribeWithFlow;
+        ctx.writeAndFlush(statefulSubscribe, ctx.voidPromise());
+        if (currentPending == null) { // exception was handled
+            return false;
+        }
+        currentPending = null;
+        return true;
     }
 
     private void writeUnsubscribe(
-            final @NotNull ChannelHandlerContext ctx, final @NotNull MqttUnsubscribeWithFlow unsubscribeWithFlow,
-            final int packetIdentifier) {
+            final @NotNull ChannelHandlerContext ctx,
+            final @NotNull MqttUnsubscribeWithFlow.Stateful statefulUnsubscribeWithFlow) {
 
-        final MqttSubOrUnsubAckFlow<MqttUnsubAck> flow = unsubscribeWithFlow.getFlow();
-        if (!flow.init()) {
-            return;
-        }
-
-        final MqttStatefulUnsubscribe statefulUnsubscribe =
-                unsubscribeWithFlow.getMessage().createStateful(packetIdentifier);
-
-        final MqttUnsubscribeWithFlow.Stateful statefulUnsubscribeWithFlow =
-                new MqttUnsubscribeWithFlow.Stateful(statefulUnsubscribe, flow);
-        pending.put(packetIdentifier, statefulUnsubscribeWithFlow);
-
-        currentWrite = packetIdentifier;
+        currentPending = statefulUnsubscribeWithFlow;
         ctx.writeAndFlush(statefulUnsubscribeWithFlow.getMessage(), ctx.voidPromise());
-        currentWrite = -1;
+        currentPending = null;
     }
 
     @Override
@@ -264,7 +293,7 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
             }
         }
 
-        handleComplete(ctx, packetIdentifier);
+        completePending(ctx, statefulSubscribeWithFlow);
     }
 
     private void readUnsubAck(final @NotNull ChannelHandlerContext ctx, final @NotNull MqttUnsubAck unsubAck) {
@@ -313,10 +342,26 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
             }
         }
 
-        handleComplete(ctx, packetIdentifier);
+        completePending(ctx, statefulUnsubscribeWithFlow);
     }
 
-    private void handleComplete(final @NotNull ChannelHandlerContext ctx, final int packetIdentifier) {
+    private void completePending(
+            final @NotNull ChannelHandlerContext ctx, final @NotNull MqttSubOrUnsubWithFlow.Stateful oldPending) {
+
+        final MqttSubOrUnsubWithFlow.Stateful prev = oldPending.prev;
+        final MqttSubOrUnsubWithFlow.Stateful next = oldPending.next;
+        if (prev == null) {
+            firstPending = next;
+        } else {
+            prev.next = next;
+        }
+        if (next == null) {
+            lastPending = prev;
+        } else {
+            next.prev = prev;
+        }
+
+        final int packetIdentifier = oldPending.getMessage().getPacketIdentifier();
         final MqttSubOrUnsubWithFlow subOrUnsubWithFlow = queued.poll();
         if (subOrUnsubWithFlow == null) {
             packetIdentifiers.returnId(packetIdentifier);
@@ -328,12 +373,11 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
 
     @Override
     public void exceptionCaught(final @NotNull ChannelHandlerContext ctx, final @NotNull Throwable cause) {
-        if (!(cause instanceof IOException) && (currentWrite != -1)) {
-            final MqttSubOrUnsubWithFlow.Stateful statefulSubOrUnsubWithFlow = pending.remove(currentWrite);
-            assert statefulSubOrUnsubWithFlow != null;
-            statefulSubOrUnsubWithFlow.getFlow().onError(cause);
-            handleComplete(ctx, currentWrite);
-            currentWrite = -1;
+        if (!(cause instanceof IOException) && (currentPending != null)) {
+            pending.remove(currentPending.getMessage().getPacketIdentifier());
+            currentPending.getFlow().onError(cause);
+            completePending(ctx, currentPending);
+            currentPending = null;
         } else {
             ctx.fireExceptionCaught(cause);
         }
@@ -343,14 +387,16 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
     public void onSessionEnd(final @NotNull Throwable cause) {
         super.onSessionEnd(cause);
 
-        pending.forEach((packetIdentifier, statefulSubOrUnsubWithFlow) -> {
-            packetIdentifiers.returnId(statefulSubOrUnsubWithFlow.getMessage().getPacketIdentifier());
-            if (!(statefulSubOrUnsubWithFlow.getFlow() instanceof MqttSubscribedPublishFlow)) {
-                statefulSubOrUnsubWithFlow.getFlow().onError(cause);
+        MqttSubOrUnsubWithFlow.Stateful current = firstPending;
+        while (current != null) {
+            packetIdentifiers.returnId(current.getMessage().getPacketIdentifier());
+            if (!(current.getFlow() instanceof MqttSubscribedPublishFlow)) {
+                current.getFlow().onError(cause);
             } // else flow.onError is already called via incomingPublishFlows.clear() in IncomingQosHandler
-            return true;
-        });
+            current = current.next;
+        }
         pending.clear();
+        firstPending = lastPending = resendPending = null;
         subscriptionIdentifiers = null;
 
         clearQueued(cause);

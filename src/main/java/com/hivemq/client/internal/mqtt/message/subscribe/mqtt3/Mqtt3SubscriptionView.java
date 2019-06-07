@@ -67,6 +67,11 @@ public class Mqtt3SubscriptionView implements Mqtt3Subscription {
         return delegate;
     }
 
+    @Override
+    public @NotNull Mqtt3SubscriptionViewBuilder.Default extend() {
+        return new Mqtt3SubscriptionViewBuilder.Default(this);
+    }
+
     private @NotNull String toAttributeString() {
         return "topicFilter=" + getTopicFilter() + ", qos=" + getQos();
     }

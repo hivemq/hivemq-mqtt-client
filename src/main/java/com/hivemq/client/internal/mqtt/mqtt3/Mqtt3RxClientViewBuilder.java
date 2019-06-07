@@ -19,9 +19,19 @@ package com.hivemq.client.internal.mqtt.mqtt3;
 
 import com.hivemq.client.internal.mqtt.*;
 import com.hivemq.client.internal.mqtt.advanced.MqttClientAdvancedConfig;
+import com.hivemq.client.internal.mqtt.message.auth.MqttSimpleAuth;
+import com.hivemq.client.internal.mqtt.message.auth.mqtt3.Mqtt3SimpleAuthView;
+import com.hivemq.client.internal.mqtt.message.auth.mqtt3.Mqtt3SimpleAuthViewBuilder;
+import com.hivemq.client.internal.mqtt.message.publish.MqttWillPublish;
+import com.hivemq.client.internal.mqtt.message.publish.mqtt3.Mqtt3PublishView;
+import com.hivemq.client.internal.mqtt.message.publish.mqtt3.Mqtt3PublishViewBuilder;
+import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.mqtt.MqttVersion;
 import com.hivemq.client.mqtt.mqtt3.Mqtt3ClientBuilder;
+import com.hivemq.client.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
+import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Silvio Giebl
@@ -29,10 +39,37 @@ import org.jetbrains.annotations.NotNull;
 public class Mqtt3RxClientViewBuilder extends MqttRxClientBuilderBase<Mqtt3RxClientViewBuilder>
         implements Mqtt3ClientBuilder {
 
+    private @Nullable MqttSimpleAuth simpleAuth;
+    private @Nullable MqttWillPublish willPublish;
+
     public Mqtt3RxClientViewBuilder() {}
 
     public Mqtt3RxClientViewBuilder(final @NotNull MqttRxClientBuilderBase clientBuilder) {
         super(clientBuilder);
+    }
+
+    @Override
+    public @NotNull Mqtt3RxClientViewBuilder simpleAuth(final @Nullable Mqtt3SimpleAuth simpleAuth) {
+        this.simpleAuth = (simpleAuth == null) ? null :
+                Checks.notImplemented(simpleAuth, Mqtt3SimpleAuthView.class, "Simple auth").getDelegate();
+        return this;
+    }
+
+    @Override
+    public @NotNull Mqtt3SimpleAuthViewBuilder.Nested<Mqtt3RxClientViewBuilder> simpleAuth() {
+        return new Mqtt3SimpleAuthViewBuilder.Nested<>(this::simpleAuth);
+    }
+
+    @Override
+    public @NotNull Mqtt3RxClientViewBuilder willPublish(final @Nullable Mqtt3Publish willPublish) {
+        this.willPublish = (willPublish == null) ? null :
+                Checks.notImplemented(willPublish, Mqtt3PublishView.class, "Will publish").getDelegate().asWill();
+        return this;
+    }
+
+    @Override
+    public @NotNull Mqtt3PublishViewBuilder.WillNested<Mqtt3RxClientViewBuilder> willPublish() {
+        return new Mqtt3PublishViewBuilder.WillNested<>(this::willPublish);
     }
 
     @Override
@@ -73,7 +110,7 @@ public class Mqtt3RxClientViewBuilder extends MqttRxClientBuilderBase<Mqtt3RxCli
     }
 
     private @NotNull MqttClientConfig buildClientConfig() {
-        return new MqttClientConfig(MqttVersion.MQTT_3_1_1, identifier, serverHost, serverPort, executorConfig,
-                sslConfig, webSocketConfig, MqttClientAdvancedConfig.DEFAULT);
+        return buildClientConfig(MqttVersion.MQTT_3_1_1, MqttClientAdvancedConfig.DEFAULT,
+                MqttClientConfig.ConnectDefaults.of(simpleAuth, null, willPublish));
     }
 }

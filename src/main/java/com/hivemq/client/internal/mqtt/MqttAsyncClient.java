@@ -17,7 +17,13 @@
 
 package com.hivemq.client.internal.mqtt;
 
+import com.hivemq.client.internal.mqtt.message.connect.MqttConnect;
+import com.hivemq.client.internal.mqtt.message.disconnect.MqttDisconnect;
+import com.hivemq.client.internal.mqtt.message.publish.MqttPublish;
+import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscribe;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscribeBuilder;
+import com.hivemq.client.internal.mqtt.message.unsubscribe.MqttUnsubscribe;
+import com.hivemq.client.internal.mqtt.util.MqttChecks;
 import com.hivemq.client.internal.rx.RxFutureConverter;
 import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
@@ -31,7 +37,6 @@ import com.hivemq.client.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
 import com.hivemq.client.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.Mqtt5Unsubscribe;
 import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
-import io.reactivex.Flowable;
 import io.reactivex.FlowableSubscriber;
 import io.reactivex.schedulers.Schedulers;
 import org.jetbrains.annotations.NotNull;
@@ -51,8 +56,6 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
     private static final @NotNull Function<Mqtt5SubAck, Mqtt5SubAck> SUBACK_HANDLER = MqttBlockingClient::handleSubAck;
     private static final @NotNull Function<Mqtt5UnsubAck, Mqtt5UnsubAck> UNSUBACK_HANDLER =
             MqttBlockingClient::handleUnsubAck;
-    private static final @NotNull Function<Mqtt5PublishResult, Mqtt5PublishResult> PUBLISH_HANDLER =
-            MqttBlockingClient::handlePublish;
 
     private final @NotNull MqttRxClient delegate;
 
@@ -62,21 +65,26 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
 
     @Override
     public @NotNull CompletableFuture<@NotNull Mqtt5ConnAck> connect(final @Nullable Mqtt5Connect connect) {
-        return RxFutureConverter.toFuture(delegate.connect(connect));
+        final MqttConnect mqttConnect = MqttChecks.connect(connect);
+
+        return RxFutureConverter.toFuture(delegate.connect(mqttConnect));
     }
 
     @Override
     public @NotNull CompletableFuture<@NotNull Mqtt5SubAck> subscribe(final @Nullable Mqtt5Subscribe subscribe) {
-        return RxFutureConverter.toFuture(delegate.subscribe(subscribe));
+        final MqttSubscribe mqttSubscribe = MqttChecks.subscribe(subscribe);
+
+        return RxFutureConverter.toFuture(delegate.subscribe(mqttSubscribe)).thenApply(SUBACK_HANDLER);
     }
 
     @Override
     public @NotNull CompletableFuture<@NotNull Mqtt5SubAck> subscribe(
             final @Nullable Mqtt5Subscribe subscribe, final @Nullable Consumer<@NotNull Mqtt5Publish> callback) {
 
+        final MqttSubscribe mqttSubscribe = MqttChecks.subscribe(subscribe);
         Checks.notNull(callback, "Callback");
 
-        return delegate.subscribeStream(subscribe)
+        return delegate.subscribeStream(mqttSubscribe)
                 .subscribeSingleFuture(new CallbackSubscriber(callback))
                 .thenApply(SUBACK_HANDLER);
     }
@@ -86,10 +94,11 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
             final @Nullable Mqtt5Subscribe subscribe, final @Nullable Consumer<@NotNull Mqtt5Publish> callback,
             final @Nullable Executor executor) {
 
+        final MqttSubscribe mqttSubscribe = MqttChecks.subscribe(subscribe);
         Checks.notNull(callback, "Callback");
         Checks.notNull(executor, "Executor");
 
-        return delegate.subscribeStreamUnsafe(subscribe)
+        return delegate.subscribeStreamUnsafe(mqttSubscribe)
                 .observeOnBoth(Schedulers.from(executor), true)
                 .subscribeSingleFuture(new CallbackSubscriber(callback))
                 .thenApply(SUBACK_HANDLER);
@@ -99,6 +108,7 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
     public void publishes(
             final @Nullable MqttGlobalPublishFilter filter, final @Nullable Consumer<@NotNull Mqtt5Publish> callback) {
 
+        Checks.notNull(filter, "Global publish filter");
         Checks.notNull(callback, "Callback");
 
         delegate.publishes(filter).subscribe(new CallbackSubscriber(callback));
@@ -109,6 +119,7 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
             final @Nullable MqttGlobalPublishFilter filter, final @Nullable Consumer<@NotNull Mqtt5Publish> callback,
             final @Nullable Executor executor) {
 
+        Checks.notNull(filter, "Global publish filter");
         Checks.notNull(callback, "Callback");
         Checks.notNull(executor, "Executor");
 
@@ -120,15 +131,17 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
     @Override
     public @NotNull CompletableFuture<@NotNull Mqtt5UnsubAck> unsubscribe(
             final @Nullable Mqtt5Unsubscribe unsubscribe) {
-        return RxFutureConverter.toFuture(delegate.unsubscribe(unsubscribe)).thenApply(UNSUBACK_HANDLER);
+
+        final MqttUnsubscribe mqttUnsubscribe = MqttChecks.unsubscribe(unsubscribe);
+
+        return RxFutureConverter.toFuture(delegate.unsubscribe(mqttUnsubscribe)).thenApply(UNSUBACK_HANDLER);
     }
 
     @Override
     public @NotNull CompletableFuture<@NotNull Mqtt5PublishResult> publish(final @Nullable Mqtt5Publish publish) {
-        Checks.notNull(publish, "Publish");
+        final MqttPublish mqttPublish = MqttChecks.publish(publish);
 
-        return RxFutureConverter.toFuture(delegate.publishHalfSafe(Flowable.just(publish)).singleOrError())
-                .thenApply(PUBLISH_HANDLER);
+        return RxFutureConverter.toFuture(delegate.publish(mqttPublish));
     }
 
     @Override
@@ -138,7 +151,9 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
 
     @Override
     public @NotNull CompletableFuture<Void> disconnect(final @Nullable Mqtt5Disconnect disconnect) {
-        return RxFutureConverter.toFuture(delegate.disconnect(disconnect));
+        final MqttDisconnect mqttDisconnect = MqttChecks.disconnect(disconnect);
+
+        return RxFutureConverter.toFuture(delegate.disconnect(mqttDisconnect));
     }
 
     @Override

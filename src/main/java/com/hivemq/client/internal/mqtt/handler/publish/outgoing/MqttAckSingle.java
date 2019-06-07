@@ -1,0 +1,116 @@
+/*
+ * Copyright 2018 dc-square and the HiveMQ MQTT Client Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+package com.hivemq.client.internal.mqtt.handler.publish.outgoing;
+
+import com.hivemq.client.internal.annotations.CallByThread;
+import com.hivemq.client.internal.mqtt.MqttClientConfig;
+import com.hivemq.client.internal.mqtt.exceptions.MqttClientStateExceptions;
+import com.hivemq.client.internal.mqtt.ioc.ClientComponent;
+import com.hivemq.client.internal.mqtt.message.publish.MqttPublish;
+import com.hivemq.client.internal.mqtt.message.publish.MqttPublishResult;
+import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
+import io.reactivex.Flowable;
+import io.reactivex.Single;
+import io.reactivex.SingleObserver;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.internal.disposables.EmptyDisposable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+/**
+ * @author Silvio Giebl
+ */
+public class MqttAckSingle extends Single<Mqtt5PublishResult> {
+
+    private final @NotNull MqttClientConfig clientConfig;
+    private final @NotNull MqttPublish publish;
+
+    public MqttAckSingle(final @NotNull MqttClientConfig clientConfig, final @NotNull MqttPublish publish) {
+        this.clientConfig = clientConfig;
+        this.publish = publish;
+    }
+
+    @Override
+    protected void subscribeActual(final @NotNull SingleObserver<? super Mqtt5PublishResult> observer) {
+        if (clientConfig.getState().isConnectedOrReconnect()) {
+            final ClientComponent clientComponent = clientConfig.getClientComponent();
+            final MqttOutgoingQosHandler outgoingQosHandler = clientComponent.outgoingQosHandler();
+            final MqttPublishFlowables publishFlowables = outgoingQosHandler.getPublishFlowables();
+
+            final Flow flow = new Flow(observer, clientConfig, outgoingQosHandler);
+            observer.onSubscribe(flow);
+            publishFlowables.add(Flowable.just(new MqttPublishWithFlow(publish, flow)));
+        } else {
+            EmptyDisposable.error(MqttClientStateExceptions.notConnected(), observer);
+        }
+    }
+
+    private static class Flow extends MqttAckFlow implements Disposable {
+
+        private final @NotNull SingleObserver<? super Mqtt5PublishResult> observer;
+        private final @NotNull MqttOutgoingQosHandler outgoingQosHandler;
+
+        private @Nullable MqttPublishResult result;
+
+        Flow(
+                final @NotNull SingleObserver<? super Mqtt5PublishResult> observer,
+                final @NotNull MqttClientConfig clientConfig,
+                final @NotNull MqttOutgoingQosHandler outgoingQosHandler) {
+
+            super(clientConfig);
+            this.observer = observer;
+            this.outgoingQosHandler = outgoingQosHandler;
+            init();
+        }
+
+        @CallByThread("Netty EventLoop")
+        @Override
+        void onNext(final @NotNull MqttPublishResult result) {
+            if (result.acknowledged()) {
+                onNextUnsafe(result);
+            } else {
+                this.result = result;
+            }
+        }
+
+        @CallByThread("Netty EventLoop")
+        private void onNextUnsafe(final @NotNull MqttPublishResult result) {
+            if (setDone()) {
+                final Throwable error = result.getRawError();
+                if (error == null) {
+                    observer.onSuccess(result);
+                } else {
+                    observer.onError(error);
+                }
+            }
+            outgoingQosHandler.request(1);
+        }
+
+        @CallByThread("Netty EventLoop")
+        @Override
+        void acknowledged(final long acknowledged) {
+            final MqttPublishResult result = this.result;
+            if ((acknowledged != 1) || (result == null)) {
+                throw new IllegalStateException(
+                        "A single publish must be acknowledged exactly once. This must not happen and is a bug.");
+            }
+            this.result = null;
+            onNextUnsafe(result);
+        }
+    }
+}

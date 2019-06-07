@@ -21,7 +21,7 @@ import com.hivemq.client.internal.mqtt.MqttWebSocketConfigImplBuilder;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Configuration for the WebSocket transport to use by {@link MqttClient MQTT clients}.
+ * Configuration for a WebSocket transport to use by {@link MqttClient MQTT clients}.
  *
  * @author Christian Hoff
  * @author Silvio Giebl
@@ -60,4 +60,12 @@ public interface MqttWebSocketConfig {
      * @return the WebSocket subprotocol.
      */
     @NotNull String getSubprotocol();
+
+    /**
+     * Creates a builder for extending this WebSocket configuration.
+     *
+     * @return the created builder.
+     * @since 1.1
+     */
+    @NotNull MqttWebSocketConfigBuilder extend();
 }

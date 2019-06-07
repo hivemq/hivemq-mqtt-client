@@ -26,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public class MqttWebSocketConfigImpl implements MqttWebSocketConfig {
 
-    public static final @NotNull MqttWebSocketConfigImpl DEFAULT =
+    static final @NotNull MqttWebSocketConfigImpl DEFAULT =
             new MqttWebSocketConfigImpl(DEFAULT_SERVER_PATH, DEFAULT_MQTT_SUBPROTOCOL);
 
     private final @NotNull String serverPath;
@@ -45,6 +45,11 @@ public class MqttWebSocketConfigImpl implements MqttWebSocketConfig {
     @Override
     public @NotNull String getSubprotocol() {
         return subprotocol;
+    }
+
+    @Override
+    public @NotNull MqttWebSocketConfigImplBuilder.Default extend() {
+        return new MqttWebSocketConfigImplBuilder.Default(this);
     }
 
     @Override

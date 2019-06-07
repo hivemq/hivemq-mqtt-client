@@ -73,6 +73,11 @@ public class MqttClientExecutorConfigImpl implements MqttClientExecutorConfig {
     }
 
     @Override
+    public @NotNull MqttClientExecutorConfigImplBuilder.Default extend() {
+        return new MqttClientExecutorConfigImplBuilder.Default(this);
+    }
+
+    @Override
     public boolean equals(final @Nullable Object o) {
         if (this == o) {
             return true;

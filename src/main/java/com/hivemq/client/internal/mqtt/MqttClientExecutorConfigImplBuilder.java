@@ -71,6 +71,12 @@ public abstract class MqttClientExecutorConfigImplBuilder<B extends MqttClientEx
     public static class Default extends MqttClientExecutorConfigImplBuilder<Default>
             implements MqttClientExecutorConfigBuilder {
 
+        public Default() {}
+
+        Default(final @NotNull MqttClientExecutorConfigImpl executorConfig) {
+            super(executorConfig);
+        }
+
         @Override
         @NotNull Default self() {
             return this;

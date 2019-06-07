@@ -18,10 +18,10 @@
 package com.hivemq.client.internal.mqtt.handler.websocket;
 
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
+import com.hivemq.client.internal.mqtt.MqttWebSocketConfigImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttVariableByteInteger;
 import com.hivemq.client.internal.mqtt.handler.MqttChannelInitializer;
 import com.hivemq.client.internal.mqtt.ioc.ConnectionScope;
-import com.hivemq.client.mqtt.MqttWebSocketConfig;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -67,17 +67,16 @@ public class MqttWebSocketInitializer extends ChannelInboundHandlerAdapter {
         this.webSocketBinaryFrameDecoder = webSocketBinaryFrameDecoder;
     }
 
-    public void initChannel(final @NotNull Channel channel, final @NotNull MqttWebSocketConfig webSocketConfig)
+    public void initChannel(final @NotNull Channel channel, final @NotNull MqttWebSocketConfigImpl webSocketConfig)
             throws URISyntaxException {
 
         final HttpClientCodec httpCodec = new HttpClientCodec();
         final HttpObjectAggregator httpAggregator =
                 new HttpObjectAggregator(MqttVariableByteInteger.MAXIMUM_PACKET_SIZE_LIMIT);
 
-        final URI uri =
-                new URI((clientConfig.getRawSslConfig() == null) ? WEBSOCKET_URI_SCHEME : WEBSOCKET_TLS_URI_SCHEME,
-                        null, clientConfig.getServerHost(), clientConfig.getServerPort(),
-                        "/" + webSocketConfig.getServerPath(), null, null);
+        final URI uri = new URI((clientConfig.getTransportConfig().getRawSslConfig() == null) ? WEBSOCKET_URI_SCHEME :
+                WEBSOCKET_TLS_URI_SCHEME, null, clientConfig.getServerHost(), clientConfig.getServerPort(),
+                "/" + webSocketConfig.getServerPath(), null, null);
 
         final WebSocketClientProtocolHandler webSocketClientProtocolHandler =
                 new WebSocketClientProtocolHandler(uri, WebSocketVersion.V13, webSocketConfig.getSubprotocol(), true,

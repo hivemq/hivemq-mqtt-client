@@ -50,9 +50,4 @@ class MqttSubOrUnsubAckFlow<T> extends FlowWithEventLoop implements MqttSubscrip
             observer.onError(t);
         }
     }
-
-    @Override
-    public void dispose() {
-        cancel();
-    }
 }
