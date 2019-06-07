@@ -29,7 +29,7 @@ production.
 
 ### Gradle
 
-Simply add `compile 'com.hivemq:hivemq-mqtt-client:1.0.0'` to your dependencies, and you're good to go.
+Simply add `compile 'com.hivemq:hivemq-mqtt-client:{{ site.version }}'` to your dependencies, and you're good to go.
 
 If you want to use the nightly snapshot, then include this repository:
 
@@ -39,7 +39,7 @@ repositories {
 }
 ```
 
-And then add `compile 'com.hivemq:hivemq-mqtt-client:1.0.0-SNAPSHOT'` to your dependencies.
+And then add `compile 'com.hivemq:hivemq-mqtt-client:{{ site.version }}-SNAPSHOT'` to your dependencies.
 
 
 ### Maven
@@ -50,7 +50,7 @@ Include the following dependency in your `pom.xml`:
 <dependency>
     <groupId>com.hivemq</groupId>
     <artifactId>hivemq-mqtt-client</artifactId>
-    <version>1.0.0</version>
+    <version>{{ site.version }}</version>
 </dependency>
 ```
 
@@ -72,7 +72,7 @@ and then include this dependency:
 <dependency>
     <groupId>com.hivemq</groupId>
     <artifactId>hivemq-mqtt-client</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>{{ site.version }}-SNAPSHOT</version>
 </dependency>
 ```
 

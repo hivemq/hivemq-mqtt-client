@@ -18,7 +18,7 @@ If you use Gradle, just include the following inside your `build.gradle` file.
 
 ```groovy
 dependencies {
-    compile group: 'com.hivemq', name: 'hivemq-mqtt-client', version: '1.0.0'
+    compile group: 'com.hivemq', name: 'hivemq-mqtt-client', version: '{{ site.version }}'
 }
 ```
 
@@ -36,7 +36,7 @@ If you use Maven, just include the following inside your `pom.xml` file.
         <dependency>
             <groupId>com.hivemq</groupId>
             <artifactId>hivemq-mqtt-client</artifactId>
-            <version>1.0.0</version>
+            <version>{{ site.version }}</version>
         </dependency>
     </dependencies>
     ...
@@ -75,7 +75,7 @@ Gradle
 
 ```groovy
 dependencies {
-    compile group: 'com.hivemq', name: 'hivemq-mqtt-client-shaded', version: '1.0.0'
+    compile group: 'com.hivemq', name: 'hivemq-mqtt-client-shaded', version: '{{ site.version }}'
 }
 ```
 
@@ -91,7 +91,7 @@ Maven
         <dependency>
             <groupId>com.hivemq</groupId>
             <artifactId>hivemq-mqtt-client-shaded</artifactId>
-            <version>1.0.0</version>
+            <version>{{ site.version }}</version>
         </dependency>
     </dependencies>
     ...

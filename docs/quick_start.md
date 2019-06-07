@@ -24,11 +24,11 @@ In order to include the HiveMQ MQTT Client library in your gradle project, add t
 
 ```groovy
 dependencies {
-    compile 'com.hivemq:hivemq-mqtt-client:1.0.0'
+    compile 'com.hivemq:hivemq-mqtt-client:{{ site.version }}'
 }
 ```
 
-In order to get the nightly snapshots, include `compile 'com.hivemq-hivemq-mqtt-client:1.0.0-SNAPSHOT'`
+In order to get the nightly snapshots, include `compile 'com.hivemq-hivemq-mqtt-client:{{ site.version }}-SNAPSHOT'`
 instead and also add the following repository:
 
 ```groovy
@@ -44,12 +44,12 @@ Similarly, for Maven, include the following dependency:
     <dependency>
         <groupId>com.hivemq</groupId>
         <artifactId>hivemq-mqtt-client</artifactId>
-        <version>1.0.0</version>
+        <version>{{ site.version }}</version>
     </dependency>
 </dependencies>
 ```
 
-For the nightly snapshot change the version to `<version>1.0.0-SNAPSHOT</version>` and also setup
+For the nightly snapshot change the version to `<version>{{ site.version }}-SNAPSHOT</version>` and also setup
 the following repository:
 
 ```xml

@@ -1,9 +1,9 @@
 title: HiveMQ MQTT Client
 description: A fast, asynchronous, reactive mqtt client library
+logo: assets/images/hivemq-mqtt-client-banner-neg.svg
+version: 1.1.0
 
 remote_theme: SgtSilvio/just-the-docs
-
-logo: assets/images/hivemq-mqtt-client-banner-neg.svg
 
 search_enabled: true
 
