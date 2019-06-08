@@ -8,11 +8,11 @@
 MQTT 5.0 and 3.1.1 compatible and feature-rich high-performance Java client library with different API flavours and 
 backpressure support.
 
-# Documentation
+## Documentation
 
 A detailed documentation can be found [here](https://hivemq.github.io/hivemq-mqtt-client)
 
-# Features
+## Features
 
  - All MQTT 3.1.1 and MQTT 5.0 features
  - API flavors:
@@ -34,13 +34,13 @@ A detailed documentation can be found [here](https://hivemq.github.io/hivemq-mqt
    - Automatic Topic Alias mapping
    - Interceptors for QoS flows
 
-# How to use
+## How to use
 
 Java 8 or higher is required.
 
-## Dependency
+### Dependency
 
-### Gradle
+#### Gradle
 
 If you use Gradle, just include the following inside your `build.gradle` file.
 
@@ -50,7 +50,7 @@ dependencies {
 }
 ```
 
-### Maven
+#### Maven
 
 If you use Maven, just include the following inside your `pom.xml` file.
 
@@ -309,7 +309,7 @@ client.disconnectWith().reasonString("test").send();
 ```
 Or with pre-built Disconnect message (only MQTT 5):
 ```java
-Mqtt5Disconnect disconnectMessage = Mqtt5Disconnect.builder().disconnectWith().reasonString("test").build();
+Mqtt5Disconnect disconnectMessage = Mqtt5Disconnect.builder().reasonString("test").build();
 client.disconnect(disconnectMessage);
 ```
 
@@ -353,7 +353,7 @@ Mqtt5AsyncClient client = Mqtt5Client.builder()
 
 client.connect()
         .thenCompose(connAck -> client.publishWith().topic("test/topic").payload("1".getBytes()).send())
-        .thenCompose(publish -> client.disconnect());
+        .thenCompose(publishResult -> client.disconnect());
 ```
 
 #### Connect
@@ -417,7 +417,7 @@ return `CompletableFuture`.
 
 #### Reauth (only MQTT 5)
 
-`reauth()` method call is analog to the Blocking API but return `CompletableFuture`.
+`reauth()` method call is analog to the Blocking API but returns `CompletableFuture`.
 
 ### Reactive API
 
@@ -575,19 +575,23 @@ API but return `Completable`.
 
 #### Reauth (only MQTT 5)
 
-`reauth()` method call is analog to the Async and Blocking API but return `Completable`.
+`reauth()` method call is analog to the Async and Blocking API but returns `Completable`.
 
-# Versioning
+## Versioning
 
 [Semantic Versioning](https://semver.org/) is used.
 
 All code inside `com.hivemq.client.internal` packages must not be used directly. It can change at any time and is not
 part of the public API.
 
-# Contributing
+Interfaces annotated with `DoNotImplement` must not be implemented. The implementation is provided by the library.
+This allows the library to later add methods to the interface without breaking backwards compatibility with implementing
+classes.
+
+## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md)
 
-# License
+## License
 
 See [LICENSE](LICENSE)
