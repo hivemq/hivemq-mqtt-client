@@ -1,0 +1,2 @@
+install:
+  ./gradlew clean build publishToMavenLocal -xtest -xjapicc
