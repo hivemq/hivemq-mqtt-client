@@ -107,22 +107,18 @@ dependencies {
 
 ### Snapshots
 
-Every time a PR is merged into the `develop` branch, a new snapshot is published.
-A snapshot can be included as a normal dependency if the snapshot repository is added to the build file.
-
-IMPORTANT: The snapshot versions are not available for now.
+Snapshots can be obtained using [JitPack](https://jitpack.io/#hivemq/hivemq-mqtt-client).
 
 #### Gradle
 
 ```groovy
 repositories {
-    jcenter()
-    mavenCentral()
-    maven { url 'https://oss.jfrog.org/artifactory/oss-snapshot-local' }
+    ...
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
-    compile group: 'com.hivemq', name: 'hivemq-mqtt-client', version: '1.1.0-SNAPSHOT'
+    implementation 'com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client:develop-SNAPSHOT'
 }
 ```
 
@@ -133,21 +129,25 @@ dependencies {
     ...
     <repositories>
         <repository>
-            <id>oss.jfrog.org</id>
-            <url>https://oss.jfrog.org/artifactory/oss-snapshot-local</url>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
         </repository>
     </repositories>
     
     <dependencies>
         <dependency>
-            <groupId>com.hivemq</groupId>
+            <groupId>com.github.hivemq.hivemq-mqtt-client</groupId>
             <artifactId>hivemq-mqtt-client</artifactId>
-            <version>1.1.0-SNAPSHOT</version>
+            <version>develop-SNAPSHOT</version>
         </dependency>
     </dependencies>
     ...
 </project>
 ```
+
+Change the artifact name to `hivemq-mqtt-client-shaded` to get snapshots of the shaded version, 
+
+JitPack works for all branches and also specific commits by specifying in the version.
 
 ## General principles
 
