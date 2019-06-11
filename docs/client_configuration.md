@@ -16,16 +16,33 @@ MqttClient.builder()
         ...;
 ```
 
-The following configuration methods are available for all MQTT clients:
+## General configuration
 
 | Method name | Description | Default value |
 | ----------- | ----------- | ------------- |
 | `identifier` | The unique identifier of the MQTT client | The server creates an identifier for the client |
-| `serverHost` | The host name or IP address of the MQTT server | `localhost` |
-| `serverPort` | The port of the MQTT server | `1883` <br/> `8883` for SSL/TLS <br/> `80` for WebSocket <br/> `443` for WebSocket + SSL/TLS |
-| `useSsl` <br/> `useSslWithDefaultConfig` | Whether SSL/TLS is used, see [Security](security/ssl_tls.md) | - |
-| `useWebSocket` <br/> `useWebSocketWithDefaultConfig` | Whether WebSocket transport is used, see [Transports](transports/websocket.md) | - |
 | `executorConfig` | Configuration of used Threads, see [Thread Management](thread_management.md) | Default Netty event loop and `Schedulers.comutation()` for callbacks |
+
+## Transport configuration
+
+| Method name | Description | Default value |
+| ----------- | ----------- | ------------- |
+| `serverAddress` | The address (host + port) of the MQTT server | See `serverHost` and `serverPort` |
+| `serverHost` | The host name or IP address of the MQTT server | `localhost` |
+| `serverPort` | The port of the MQTT server | - `1883` <br/> - `8883` (SSL/TLS) <br/> - `80` (WebSocket) <br/> - `443` (Secure WebSocket) |
+| `sslConfig` <br/> `sslWithDefaultConfig` | Secure transport configuration (SSL/TLS), see [Security](security/ssl_tls.md) | none |
+| `webSocketConfig` <br/> `webSocketWithDefaultConfig` | WebSocket transport configuration, see [Transports](transports/websocket.md) | none |
+| `transportConfig` | Transport configuration which combines: <br/> - server address (host + port) <br/> - secure transport configuration <br/> - WebSocket transport configuration | See <br/> - `serverAddress` /`Host` /`Port` <br/> - `sslConfig` <br/> - `webSocketConfig` |
+
+## Lifecycle configuration
+
+| Method name | Description | Default value |
+| ----------- | ----------- | ------------- |
+| `automaticReconnect` <br/> `automaticReconnectWithDefaultConfig` | Automatic reconnect configuration | none |
+| `addConnectedListener` | Adds a listener that is notified when the client is connected | none |
+| `addDisconnectedListener` | Adds a listener that is notified when the client is disconnected | none |
+
+---
 
 You can not build an instance of `MqttClient` directly, but a version specific `Mqtt5Client` or `Mqtt3Client`.
 
