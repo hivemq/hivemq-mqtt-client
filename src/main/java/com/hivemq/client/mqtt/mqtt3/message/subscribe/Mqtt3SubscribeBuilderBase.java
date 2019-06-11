@@ -18,7 +18,10 @@
 package com.hivemq.client.mqtt.mqtt3.message.subscribe;
 
 import com.hivemq.client.annotations.DoNotImplement;
+import com.hivemq.client.internal.util.collections.ImmutableList;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 /**
  * Builder base for a {@link Mqtt3Subscribe}.
@@ -38,6 +41,15 @@ public interface Mqtt3SubscribeBuilderBase<C extends Mqtt3SubscribeBuilderBase<C
      * @return the builder that is now complete as at least one subscription is set.
      */
     @NotNull C addSubscription(@NotNull Mqtt3Subscription subscription);
+
+    /**
+     * Adds a list of {@link Mqtt3Subscription} to the {@link Mqtt3Subscribe#getSubscriptions() list of subscriptions}.
+     * At least one subscription in the list is mandatory.
+     *
+     * @param subscriptions the subscriptions.
+     * @return the builder that is now complete as at least one subscription is set.
+     */
+    @NotNull C addSubscriptions(@NotNull List<Mqtt3Subscription> subscriptions);
 
     /**
      * Fluent counterpart of {@link #addSubscription(Mqtt3Subscription)}.
