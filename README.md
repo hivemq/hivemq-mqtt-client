@@ -14,25 +14,25 @@ A detailed documentation can be found [here](https://hivemq.github.io/hivemq-mqt
 
 ## Features
 
- - All MQTT 3.1.1 and MQTT 5.0 features
- - API flavors:
-   - Reactive, Async and Blocking
-   - Flexible switching
-   - Consistent and clearly separated
- - Backpressure support:
-   - QoS 1 and 2
-   - QoS 0 (dropping incoming messages if necessary)
- - Transports:
-   - TCP
-   - SSL/TLS
-   - WebSocket, Secure WebSocket
- - Automatic and configurable thread management
- - Automatic and configurable reconnect handling and message redelivery
- - MQTT 5 specific:
-   - Pluggable Enhanced Auth support
-     - Additional to MQTT specification: server-triggered reauth
-   - Automatic Topic Alias mapping
-   - Interceptors for QoS flows
+- All MQTT 3.1.1 and MQTT 5.0 features
+- API flavors:
+  - Reactive, Async and Blocking
+  - Flexible switching
+  - Consistent and clearly separated
+- Backpressure support:
+  - QoS 1 and 2
+  - QoS 0 (dropping incoming messages, if necessary)
+- Transports:
+  - TCP
+  - SSL/TLS
+  - WebSocket, Secure WebSocket
+- Automatic and configurable thread management
+- Automatic and configurable reconnect handling and message redelivery
+- Lifecycle listeners (connected, disconnected)
+- MQTT 5 specific:
+  - Pluggable Enhanced Auth support (additional to MQTT specification: server-triggered reauth)
+  - Automatic Topic Alias mapping
+  - Interceptors for QoS flows
 
 ## How to use
 
@@ -145,17 +145,17 @@ dependencies {
 </project>
 ```
 
-Change the artifact name to `hivemq-mqtt-client-shaded` to get snapshots of the shaded version, 
+Change the artifact name to `hivemq-mqtt-client-shaded` to get snapshots of the shaded version.
 
 JitPack works for all branches and also specific commits by specifying in the version.
 
 ## General principles
 
- - API and implementation are clearly separated. All classes inside `internal` packages must not be used directly.
- - The API is mostly fluent and uses fluent builders to create clients, configurations and messages.
- - The API is designed to be consistent:
-   - The same principles are used throughout the library.
-   - The MQTT 3 and 5 interfaces are as consistent as possible with only version-specific differences.
+- API and implementation are clearly separated. All classes inside `internal` packages must not be used directly.
+- The API is mostly fluent and uses fluent builders to create clients, configurations and messages.
+- The API is designed to be consistent:
+  - The same principles are used throughout the library.
+  - The MQTT 3 and 5 interfaces are as consistent as possible with only version-specific differences.
 
 ## Creation of clients
 
