@@ -18,7 +18,6 @@
 package com.hivemq.client.mqtt.mqtt5.message.subscribe;
 
 import com.hivemq.client.annotations.DoNotImplement;
-import com.hivemq.client.internal.util.collections.ImmutableList;
 import com.hivemq.client.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import com.hivemq.client.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 import org.jetbrains.annotations.NotNull;

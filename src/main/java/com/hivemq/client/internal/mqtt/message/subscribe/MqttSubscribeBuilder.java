@@ -67,7 +67,8 @@ public abstract class MqttSubscribeBuilder<B extends MqttSubscribeBuilder<B>> {
 
         Checks.atLeastOneElement(subscriptions, "Subscriptions");
 
-        subscriptionsBuilder.addAll(Checks.elementsNotNullAndNotImplemented(subscriptions, MqttSubscription.class, "Subscriptions"));
+        subscriptionsBuilder.addAll(
+                Checks.elementsNotNullAndNotImplemented(subscriptions, MqttSubscription.class, "Subscriptions"));
         return self();
     }
 

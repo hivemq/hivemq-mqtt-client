@@ -18,7 +18,6 @@
 package com.hivemq.client.mqtt.mqtt3.message.subscribe;
 
 import com.hivemq.client.annotations.DoNotImplement;
-import com.hivemq.client.internal.util.collections.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
