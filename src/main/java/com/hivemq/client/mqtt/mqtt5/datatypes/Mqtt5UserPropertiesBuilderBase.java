@@ -18,7 +18,6 @@
 package com.hivemq.client.mqtt.mqtt5.datatypes;
 
 import com.hivemq.client.annotations.DoNotImplement;
-import com.hivemq.client.internal.util.collections.ImmutableList;
 import com.hivemq.client.mqtt.datatypes.MqttUtf8String;
 import org.jetbrains.annotations.NotNull;
 
