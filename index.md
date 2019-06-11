@@ -34,9 +34,9 @@ HiveMQ MQTT Client is an Open Source project backed by [HiveMQ](https://www.hive
   - WebSocket, Secure WebSocket
 - Automatic and configurable **thread management**
 - Automatic and configurable **reconnect handling** and message redelivery
+- Lifecycle listeners (connected, disconnected)
 - MQTT 5 specific:
-  - Pluggable Enhanced Auth support
-    - Additional to MQTT specification: server-triggered reauth
+  - Pluggable Enhanced Auth support (additional to MQTT specification: server-triggered reauth)
   - Automatic Topic Alias mapping
   - Interceptors for QoS flows
 
