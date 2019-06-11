@@ -18,12 +18,15 @@
 package com.hivemq.client.mqtt.mqtt5.message.unsubscribe;
 
 import com.hivemq.client.annotations.DoNotImplement;
+import com.hivemq.client.internal.util.collections.ImmutableList;
 import com.hivemq.client.mqtt.datatypes.MqttTopicFilter;
 import com.hivemq.client.mqtt.datatypes.MqttTopicFilterBuilder;
 import com.hivemq.client.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import com.hivemq.client.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 import com.hivemq.client.mqtt.mqtt5.message.subscribe.Mqtt5Subscribe;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 /**
  * Builder base for a {@link Mqtt5Unsubscribe}.
@@ -52,6 +55,24 @@ public interface Mqtt5UnsubscribeBuilderBase<C extends Mqtt5UnsubscribeBuilderBa
      * @return the builder that is now complete as at least one Topic Filter is set.
      */
     @NotNull C addTopicFilter(@NotNull MqttTopicFilter topicFilter);
+
+    /**
+     * Adds a list of {@link MqttTopicFilter Topic Filter} to the {@link Mqtt5Unsubscribe#getTopicFilters() list of
+     * Topic Filters}. At least one Topic Filter is mandatory.
+     *
+     * @param topicFilters the strings representing of the Topic Filter's.
+     * @return the builder that is now complete as at least one Topic Filter is set.
+     */
+    @NotNull C addTopicFilters(@NotNull List<String> topicFilters);
+
+    /**
+     * Adds a {@link MqttTopicFilter Topic Filter} to the {@link Mqtt5Unsubscribe#getTopicFilters() list of Topic
+     * Filters}. At least one Topic Filter is mandatory.
+     *
+     * @param topicFilters the Topic Filter's.
+     * @return the builder that is now complete as at least one Topic Filter is set.
+     */
+    @NotNull C addMqttTopicFilters(@NotNull List<MqttTopicFilter> topicFilters);
 
     /**
      * Fluent counterpart of {@link #addTopicFilter(MqttTopicFilter)}.

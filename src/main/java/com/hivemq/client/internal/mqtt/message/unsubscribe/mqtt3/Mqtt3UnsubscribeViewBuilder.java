@@ -21,6 +21,7 @@ import com.hivemq.client.internal.mqtt.datatypes.MqttTopicFilterImpl;
 import com.hivemq.client.internal.mqtt.datatypes.MqttTopicFilterImplBuilder;
 import com.hivemq.client.internal.mqtt.message.subscribe.MqttSubscription;
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
+import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.internal.util.collections.ImmutableList;
 import com.hivemq.client.mqtt.datatypes.MqttTopicFilter;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
@@ -28,6 +29,7 @@ import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubscribeBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -57,6 +59,23 @@ public abstract class Mqtt3UnsubscribeViewBuilder<B extends Mqtt3UnsubscribeView
 
     public @NotNull B addTopicFilter(final @Nullable MqttTopicFilter topicFilter) {
         topicFiltersBuilder.add(MqttChecks.topicFilter(topicFilter));
+        return self();
+    }
+
+
+    public @NotNull B addTopicFilters(final @NotNull List<String> topicFilters) {
+        Checks.atLeastOneElement(topicFilters, "Topic Filters");
+        Checks.elementsNotNull(topicFilters, "Topic Filters");
+
+        topicFilters.forEach(topicFilter -> topicFiltersBuilder.add(MqttTopicFilterImpl.of(topicFilter)));
+        return self();
+    }
+
+    public @NotNull B addMqttTopicFilters(final @NotNull List<MqttTopicFilter> topicFilters) {
+        Checks.atLeastOneElement(topicFilters, "Topic Filters");
+        Checks.elementsNotNull(topicFilters, "Topic Filters");
+
+        topicFilters.forEach(topicFilter -> topicFiltersBuilder.add(MqttChecks.topicFilter(topicFilter)));
         return self();
     }
 

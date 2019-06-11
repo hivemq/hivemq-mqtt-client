@@ -100,6 +100,17 @@ public final class Checks {
         return array;
     }
 
+    @Contract("null, _ -> fail")
+    public static <T> @NotNull List<T> elementsNotNull(final @Nullable List<T> list, final @NotNull String name) {
+
+        notNull(list, name);
+        for (int i = 0; i < list.size(); i++) {
+            elementNotNull(list.get(i), name, i);
+        }
+        //noinspection NullableProblems
+        return list;
+    }
+
     @Contract("null, _, _ -> fail")
     public static <E> @NotNull E elementNotNull(final @Nullable E e, final @NotNull String name, final int index) {
         if (e == null) {
@@ -124,7 +135,7 @@ public final class Checks {
 
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < list.size(); i++) {
-            notNull(list.get(i),name);
+            notNull(list.get(i), name);
             notImplementedInternal(list.get(i), type, name);
         }
 
