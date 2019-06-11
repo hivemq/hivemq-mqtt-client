@@ -32,6 +32,7 @@ import com.hivemq.client.mqtt.mqtt5.message.subscribe.Mqtt5Subscription;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.function.Function;
 
 /**
@@ -55,9 +56,18 @@ public abstract class MqttSubscribeBuilder<B extends MqttSubscribeBuilder<B>> {
 
     protected abstract @NotNull B self();
 
-    public @NotNull B addSubscription(final @Nullable Mqtt5Subscription subscription) {
+    public @NotNull B addSubscription(final @NotNull Mqtt5Subscription subscription) {
         buildFirstSubscription();
         subscriptionsBuilder.add(Checks.notImplemented(subscription, MqttSubscription.class, "Subscription"));
+        return self();
+    }
+
+    public @NotNull B addSubscriptions(final @NotNull List<Mqtt5Subscription> subscriptions) {
+        buildFirstSubscription();
+
+        Checks.atLeastOneElement(subscriptions, "Subscriptions");
+
+        subscriptionsBuilder.addAll(Checks.elementsNotNullAndNotImplemented(subscriptions, MqttSubscription.class, "Subscriptions"));
         return self();
     }
 

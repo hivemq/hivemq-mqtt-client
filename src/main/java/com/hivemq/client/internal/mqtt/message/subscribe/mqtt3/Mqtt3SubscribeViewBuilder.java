@@ -28,6 +28,7 @@ import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3Subscription;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.function.Function;
 
 /**
@@ -54,6 +55,19 @@ public abstract class Mqtt3SubscribeViewBuilder<B extends Mqtt3SubscribeViewBuil
         buildFirstSubscription();
         subscriptionsBuilder.add(
                 Checks.notImplemented(subscription, Mqtt3SubscriptionView.class, "Subscription").getDelegate());
+        return self();
+    }
+
+    public @NotNull B addSubscriptions(final @NotNull List<Mqtt3Subscription> subscriptions) {
+        buildFirstSubscription();
+
+        Checks.atLeastOneElement(subscriptions, "Subscriptions");
+
+        final ImmutableList<Mqtt3SubscriptionView> mqtt3SubscriptionViews =
+                Checks.elementsNotNullAndNotImplemented(subscriptions, Mqtt3SubscriptionView.class, "Subscriptions");
+
+        mqtt3SubscriptionViews.forEach(subscription -> subscriptionsBuilder.add(subscription.getDelegate()));
+
         return self();
     }
 

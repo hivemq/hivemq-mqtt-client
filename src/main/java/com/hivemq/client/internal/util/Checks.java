@@ -22,6 +22,8 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
 /**
  * @author Silvio Giebl
  */
@@ -70,8 +72,25 @@ public final class Checks {
     }
 
     @Contract("null, _ -> fail")
-    public static <T> @NotNull T @NotNull [] elementsNotNull(
-            final @Nullable T @Nullable [] array, final @NotNull String name) {
+    public static <T> void atLeastOneElement(final @Nullable T[] array, final @NotNull String name) {
+
+        notNull(array, name);
+        if (array.length == 0) {
+            throw new IllegalArgumentException(name + " must contain at least one element.");
+        }
+    }
+
+    @Contract("null, _ -> fail")
+    public static <T> void atLeastOneElement(final @Nullable List<T> list, final @NotNull String name) {
+
+        notNull(list, name);
+        if (list.size() == 0) {
+            throw new IllegalArgumentException(name + " must contain at least one element.");
+        }
+    }
+
+    @Contract("null, _ -> fail")
+    public static <T> @NotNull T[] elementsNotNull(final @Nullable T[] array, final @NotNull String name) {
 
         notNull(array, name);
         for (int i = 0; i < array.length; i++) {
@@ -98,6 +117,21 @@ public final class Checks {
         }
         //noinspection unchecked
         return (ImmutableList<T>) list;
+    }
+
+    public static <S, T extends S> @NotNull ImmutableList<T> elementsNotNullAndNotImplemented(
+            final @NotNull List<S> list, final @NotNull Class<T> type, final @NotNull String name) {
+
+        //noinspection ForLoopReplaceableByForEach
+        for (int i = 0; i < list.size(); i++) {
+            notNull(list.get(i),name);
+            notImplementedInternal(list.get(i), type, name);
+        }
+
+        final ImmutableList<S> immutableList = ImmutableList.copyOf(list);
+
+        //noinspection unchecked
+        return (ImmutableList<T>) immutableList;
     }
 
     public static int unsignedShort(final int value, final @NotNull String name) {
