@@ -82,9 +82,7 @@ class MqttUserPropertiesImplBuilderTest {
         userProperties.add(userProperty2);
         userProperties.add(userProperty3);
 
-        final Mqtt5UserProperties properties = Mqtt5UserProperties.builder()
-                .addAll(userProperties)
-                .build();
+        final Mqtt5UserProperties properties = Mqtt5UserProperties.builder().addAll(userProperties).build();
 
         final List<@NotNull ? extends Mqtt5UserProperty> mqtt5UserProperties = properties.asList();
 
@@ -102,7 +100,7 @@ class MqttUserPropertiesImplBuilderTest {
         final Mqtt5UserProperty userProperty3 = Mqtt5UserProperty.of("key3", "value3");
 
         final Mqtt5UserProperties properties = Mqtt5UserProperties.builder()
-                .addAll(ImmutableList.of(userProperty,userProperty2,userProperty3))
+                .addAll(ImmutableList.of(userProperty, userProperty2, userProperty3))
                 .build();
 
         final List<@NotNull ? extends Mqtt5UserProperty> mqtt5UserProperties = properties.asList();

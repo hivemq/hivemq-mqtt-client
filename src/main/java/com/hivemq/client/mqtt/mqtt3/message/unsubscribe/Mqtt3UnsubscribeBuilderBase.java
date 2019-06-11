@@ -18,7 +18,6 @@
 package com.hivemq.client.mqtt.mqtt3.message.unsubscribe;
 
 import com.hivemq.client.annotations.DoNotImplement;
-import com.hivemq.client.internal.util.collections.ImmutableList;
 import com.hivemq.client.mqtt.datatypes.MqttTopicFilter;
 import com.hivemq.client.mqtt.datatypes.MqttTopicFilterBuilder;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
