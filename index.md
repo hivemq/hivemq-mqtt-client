@@ -27,7 +27,7 @@ HiveMQ MQTT Client is an Open Source project backed by [HiveMQ](https://www.hive
   - Consistent and clearly separated
 - **Backpressure support**:
   - QoS 1 and 2
-  - QoS 0 (dropping incoming messages if necessary)
+  - QoS 0 (dropping incoming messages, if necessary)
 - Transports:
   - TCP
   - **SSL/TLS**
