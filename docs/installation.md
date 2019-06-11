@@ -102,6 +102,60 @@ Maven
 {% include tabs.html tab_group="build-tool" %}
 
 
+## Snapshots
+
+Snapshots can be obtained using [JitPack](https://jitpack.io/#hivemq/hivemq-mqtt-client).
+
+{% capture tab_content %}
+
+Gradle
+===
+
+```groovy
+repositories {
+    ...
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    implementation 'com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client:develop-SNAPSHOT'
+}
+```
+
+====
+
+Maven
+===
+
+```xml
+<project>
+    ...
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+    
+    <dependencies>
+        <dependency>
+            <groupId>com.github.hivemq.hivemq-mqtt-client</groupId>
+            <artifactId>hivemq-mqtt-client</artifactId>
+            <version>develop-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+    ...
+</project>
+```
+
+{% endcapture %}
+{% include tabs.html tab_group="build-tool" %}
+
+Change the artifact name to `hivemq-mqtt-client-shaded` to get snapshots of the shaded version.
+
+JitPack works for all branches and also specific commits by specifying in the version.
+
+
 ## Building from source
 
 The HiveMQ MQTT Client project uses Gradle to build. A gradle wrapper configuration is included, so after cloning the 
