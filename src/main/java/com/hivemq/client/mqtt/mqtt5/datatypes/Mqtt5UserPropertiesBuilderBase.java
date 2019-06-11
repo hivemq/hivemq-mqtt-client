@@ -18,8 +18,11 @@
 package com.hivemq.client.mqtt.mqtt5.datatypes;
 
 import com.hivemq.client.annotations.DoNotImplement;
+import com.hivemq.client.internal.util.collections.ImmutableList;
 import com.hivemq.client.mqtt.datatypes.MqttUtf8String;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 /**
  * Builder base for {@link Mqtt5UserProperties}.
@@ -56,4 +59,12 @@ public interface Mqtt5UserPropertiesBuilderBase<B extends Mqtt5UserPropertiesBui
      * @return the builder.
      */
     @NotNull B add(@NotNull Mqtt5UserProperty userProperty);
+
+    /**
+     * Adds a list of {@link Mqtt5UserProperty User Property}.
+     *
+     * @param userProperties the User Properties.
+     * @return the builder.
+     */
+    @NotNull B addAll(@NotNull List<Mqtt5UserProperty> userProperties);
 }
