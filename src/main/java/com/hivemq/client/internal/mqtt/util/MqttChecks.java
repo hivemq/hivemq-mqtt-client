@@ -50,6 +50,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.nio.ByteBuffer;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Silvio Giebl
@@ -163,6 +164,18 @@ public final class MqttChecks {
         final ImmutableList<Mqtt5UserProperty> immutable = ImmutableList.copyOf(userProperties, "User properties");
         return MqttUserPropertiesImpl.of(
                 Checks.elementsNotImplemented(immutable, MqttUserPropertyImpl.class, "User property"));
+    }
+
+    @Contract("null -> fail")
+    public static @NotNull ImmutableList<MqttUserPropertyImpl> userProperties(
+            final @Nullable List<@Nullable Mqtt5UserProperty> userProperties) {
+
+        Checks.notNull(userProperties, "User Properties");
+
+        final MqttUserPropertiesImpl tempUserProperties = MqttUserPropertiesImpl.of(
+                Checks.elementsNotNullAndNotImplemented(userProperties, MqttUserPropertyImpl.class, "User property"));
+
+        return tempUserProperties.asList();
     }
 
     @Contract("null -> fail")
