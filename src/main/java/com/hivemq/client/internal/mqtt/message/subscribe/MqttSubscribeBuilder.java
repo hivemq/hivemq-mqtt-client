@@ -56,13 +56,13 @@ public abstract class MqttSubscribeBuilder<B extends MqttSubscribeBuilder<B>> {
 
     protected abstract @NotNull B self();
 
-    public @NotNull B addSubscription(final @NotNull Mqtt5Subscription subscription) {
+    public @NotNull B addSubscription(final @Nullable Mqtt5Subscription subscription) {
         buildFirstSubscription();
         subscriptionsBuilder.add(Checks.notImplemented(subscription, MqttSubscription.class, "Subscription"));
         return self();
     }
 
-    public @NotNull B addSubscriptions(final @NotNull List<Mqtt5Subscription> subscriptions) {
+    public @NotNull B addSubscriptions(final @Nullable List<Mqtt5Subscription> subscriptions) {
         buildFirstSubscription();
 
         Checks.atLeastOneElement(subscriptions, "Subscriptions");

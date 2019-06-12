@@ -40,7 +40,7 @@ class MqttSubscribeBuilderTest {
 
     @Test
     void addSubscription_error_when_subscription_is_null() {
-        assertThrows(IllegalArgumentException.class, () -> Mqtt5Subscribe.builder().addSubscription(null));
+        assertThrows(NullPointerException.class, () -> Mqtt5Subscribe.builder().addSubscription(null));
     }
 
     @Test
@@ -159,7 +159,7 @@ class MqttSubscribeBuilderTest {
 
     @Test
     void addSubscriptions_error_when_subscriptions_is_null() {
-        assertThrows(IllegalArgumentException.class, () -> Mqtt5Subscribe.builder().addSubscriptions(null));
+        assertThrows(NullPointerException.class, () -> Mqtt5Subscribe.builder().addSubscriptions(null));
     }
 
     @Test
