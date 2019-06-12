@@ -211,7 +211,7 @@ class MqttUnsubscribeBuilderTest {
     @Test
     void addTopicFilters_error_when_topic_string_is_null() {
 
-        assertThrows(IllegalArgumentException.class, () -> Mqtt5Unsubscribe.builder().addTopicFilters(null));
+        assertThrows(NullPointerException.class, () -> Mqtt5Unsubscribe.builder().addTopicFilters(null));
     }
 
     @Test
@@ -314,7 +314,7 @@ class MqttUnsubscribeBuilderTest {
     @Test
     void addMqttTopicFilters_error_when_topic_string_is_null() {
 
-        assertThrows(IllegalArgumentException.class, () -> Mqtt5Unsubscribe.builder().addMqttTopicFilters(null));
+        assertThrows(NullPointerException.class, () -> Mqtt5Unsubscribe.builder().addMqttTopicFilters(null));
     }
 
     @Test

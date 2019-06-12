@@ -147,7 +147,7 @@ class Mqtt3SubscribeViewBuilderTest {
 
     @Test
     void addSubscriptions_error_when_subscriptions_is_null() {
-        assertThrows(IllegalArgumentException.class, () -> Mqtt3Subscribe.builder().addSubscriptions(null));
+        assertThrows(NullPointerException.class, () -> Mqtt3Subscribe.builder().addSubscriptions(null));
     }
 
     @Test

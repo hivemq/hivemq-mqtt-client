@@ -58,7 +58,7 @@ public abstract class Mqtt3SubscribeViewBuilder<B extends Mqtt3SubscribeViewBuil
         return self();
     }
 
-    public @NotNull B addSubscriptions(final @NotNull List<Mqtt3Subscription> subscriptions) {
+    public @NotNull B addSubscriptions(final @Nullable List<Mqtt3Subscription> subscriptions) {
         buildFirstSubscription();
 
         Checks.atLeastOneElement(subscriptions, "Subscriptions");

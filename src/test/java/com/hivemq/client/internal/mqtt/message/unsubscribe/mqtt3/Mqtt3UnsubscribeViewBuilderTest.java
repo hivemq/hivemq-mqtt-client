@@ -211,7 +211,7 @@ class Mqtt3UnsubscribeViewBuilderTest {
     @Test
     void addTopicFilters_error_when_topic_string_is_null() {
 
-        assertThrows(IllegalArgumentException.class, () -> Mqtt3Unsubscribe.builder().addTopicFilters(null));
+        assertThrows(NullPointerException.class, () -> Mqtt3Unsubscribe.builder().addTopicFilters(null));
     }
 
     @Test
@@ -314,7 +314,7 @@ class Mqtt3UnsubscribeViewBuilderTest {
     @Test
     void addMqttTopicFilters_error_when_topic_string_is_null() {
 
-        assertThrows(IllegalArgumentException.class, () -> Mqtt3Unsubscribe.builder().addMqttTopicFilters(null));
+        assertThrows(NullPointerException.class, () -> Mqtt3Unsubscribe.builder().addMqttTopicFilters(null));
     }
 
     @Test

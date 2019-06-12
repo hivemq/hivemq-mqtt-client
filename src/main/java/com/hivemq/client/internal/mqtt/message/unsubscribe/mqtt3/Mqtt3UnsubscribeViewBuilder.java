@@ -62,7 +62,7 @@ public abstract class Mqtt3UnsubscribeViewBuilder<B extends Mqtt3UnsubscribeView
         return self();
     }
 
-    public @NotNull B addTopicFilters(final @NotNull List<String> topicFilters) {
+    public @NotNull B addTopicFilters(final @Nullable List<String> topicFilters) {
         Checks.atLeastOneElement(topicFilters, "Topic Filters");
         Checks.elementsNotNull(topicFilters, "Topic Filters");
 
@@ -70,7 +70,7 @@ public abstract class Mqtt3UnsubscribeViewBuilder<B extends Mqtt3UnsubscribeView
         return self();
     }
 
-    public @NotNull B addMqttTopicFilters(final @NotNull List<MqttTopicFilter> topicFilters) {
+    public @NotNull B addMqttTopicFilters(final @Nullable List<MqttTopicFilter> topicFilters) {
         Checks.atLeastOneElement(topicFilters, "Topic Filters");
         Checks.elementsNotNull(topicFilters, "Topic Filters");
 
