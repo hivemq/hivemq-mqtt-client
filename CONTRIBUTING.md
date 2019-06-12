@@ -1,17 +1,24 @@
 # Contributing
+
 ## Contributing to the HiveMQ Community Projects
 
-Welcome to the HiveMQ Community! Glad to see your interest in contributing to HiveMQ MQTT Client. Please checkout our [Contribution Guide](https://github.com/hivemq/hivemq-community/blob/master/CONTRIBUTING.adoc) to make sure your contribution will be accepted by the HiveMQ team.
+Welcome to the HiveMQ Community! Glad to see your interest in contributing to HiveMQ MQTT Client.
+Please checkout our [Contribution Guide](https://github.com/hivemq/hivemq-community/blob/master/CONTRIBUTING.adoc) to 
+make sure your contribution will be accepted by the HiveMQ team.
 
-For information on how the HiveMQ Community is organized and how contributions will be accepted please have a look at our [HiveMQ Community Repo](https://github.com/hivemq/hivemq-community). 
+For information on how the HiveMQ Community is organized and how contributions will be accepted please have a look at 
+our [HiveMQ Community Repo](https://github.com/hivemq/hivemq-community). 
 
-##Contributing to HiveMQ MQTT Client
+## Contributing to HiveMQ MQTT Client
+
 ### External contributors
+
 If you would like to contribute code, do the following:
 - Fork the repository on GitHub
 - Open a pull request targeting the `develop` branch
 
 ### License
+
 By contributing your code, you agree to license your contribution under the terms of the
 [Apache License, Version 2.0](https://github.com/hivemq/hivemq-mqtt-client/blob/develop/LICENSE).
 
@@ -30,6 +37,7 @@ All files must contain the license header from the
   - Branched off from `develop`
   - Pull request targeting the `develop` branch
   - Mandatory code review of the pull request
+- `gh-pages`: documentation branch, protected
 
 ### Branching guidelines
 
