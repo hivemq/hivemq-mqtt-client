@@ -1,8 +1,10 @@
+dist: trusty
+
 language: java
 
 jdk:
-  - openjdk8
-  - openjdk9
+  - oraclejdk8
+  - oraclejdk9
 
 stages:
   - test
