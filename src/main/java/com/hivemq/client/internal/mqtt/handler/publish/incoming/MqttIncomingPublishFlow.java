@@ -92,7 +92,9 @@ public abstract class MqttIncomingPublishFlow extends FlowWithEventLoop
     @Override
     public void onError(final @NotNull Throwable t) {
         if (done) {
-            RxJavaPlugins.onError(t);
+            if (t != error) {
+                RxJavaPlugins.onError(t);
+            }
             return;
         }
         error = t;
