@@ -28,8 +28,9 @@ import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3Subscription;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 /**
  * @author Silvio Giebl
@@ -58,13 +59,43 @@ public abstract class Mqtt3SubscribeViewBuilder<B extends Mqtt3SubscribeViewBuil
         return self();
     }
 
-    public @NotNull B addSubscriptions(final @Nullable List<Mqtt3Subscription> subscriptions) {
+    public @NotNull B addSubscriptions(final @Nullable Collection<Mqtt3Subscription> subscriptions) {
         buildFirstSubscription();
 
+        Checks.notNull(subscriptions, "Subscriptions");
         Checks.atLeastOneElement(subscriptions, "Subscriptions");
 
         final ImmutableList<Mqtt3SubscriptionView> mqtt3SubscriptionViews =
                 Checks.elementsNotNullAndNotImplemented(subscriptions, Mqtt3SubscriptionView.class, "Subscriptions");
+
+        mqtt3SubscriptionViews.forEach(subscription -> subscriptionsBuilder.add(subscription.getDelegate()));
+
+        return self();
+    }
+
+    public @NotNull B addSubscriptions(final @Nullable Mqtt3Subscription... subscriptions) {
+        buildFirstSubscription();
+
+        Checks.notNull(subscriptions, "Subscriptions");
+        Checks.atLeastOneElement(subscriptions, "Subscriptions");
+
+        //noinspection NullableProblems
+        final ImmutableList<Mqtt3SubscriptionView> mqtt3SubscriptionViews =
+                Checks.elementsNotNullAndNotImplemented(subscriptions, Mqtt3SubscriptionView.class, "Subscriptions");
+
+        mqtt3SubscriptionViews.forEach(subscription -> subscriptionsBuilder.add(subscription.getDelegate()));
+        return self();
+    }
+
+    public @NotNull B addSubscriptions(final @Nullable Stream<Mqtt3Subscription> subscriptions) {
+        buildFirstSubscription();
+
+        Checks.notNull(subscriptions, "Subscriptions");
+
+        final ImmutableList<Mqtt3SubscriptionView> mqtt3SubscriptionViews =
+                Checks.elementsNotNullAndNotImplemented(subscriptions, Mqtt3SubscriptionView.class, "Subscriptions");
+
+        Checks.atLeastOneElement(mqtt3SubscriptionViews, "Subscriptions");
 
         mqtt3SubscriptionViews.forEach(subscription -> subscriptionsBuilder.add(subscription.getDelegate()));
 

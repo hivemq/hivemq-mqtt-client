@@ -32,8 +32,9 @@ import com.hivemq.client.mqtt.mqtt5.message.subscribe.Mqtt5Subscription;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 /**
  * @author Silvio Giebl
@@ -62,13 +63,40 @@ public abstract class MqttSubscribeBuilder<B extends MqttSubscribeBuilder<B>> {
         return self();
     }
 
-    public @NotNull B addSubscriptions(final @Nullable List<Mqtt5Subscription> subscriptions) {
+    public @NotNull B addSubscriptions(final @Nullable Collection<Mqtt5Subscription> subscriptions) {
         buildFirstSubscription();
 
+        Checks.notNull(subscriptions, "Subscriptions");
         Checks.atLeastOneElement(subscriptions, "Subscriptions");
 
         subscriptionsBuilder.addAll(
                 Checks.elementsNotNullAndNotImplemented(subscriptions, MqttSubscription.class, "Subscriptions"));
+        return self();
+    }
+
+    public @NotNull B addSubscriptions(final @Nullable Mqtt5Subscription... subscriptions) {
+        buildFirstSubscription();
+
+        Checks.notNull(subscriptions, "Subscriptions");
+        Checks.atLeastOneElement(subscriptions, "Subscriptions");
+
+        //noinspection NullableProblems
+        subscriptionsBuilder.addAll(
+                Checks.elementsNotNullAndNotImplemented(subscriptions, MqttSubscription.class, "Subscriptions"));
+        return self();
+    }
+
+    public @NotNull B addSubscriptions(final @Nullable Stream<Mqtt5Subscription> subscriptions) {
+        buildFirstSubscription();
+
+        Checks.notNull(subscriptions, "Subscriptions");
+
+        final ImmutableList<MqttSubscription> subscriptionImmutableList =
+                Checks.elementsNotNullAndNotImplemented(subscriptions, MqttSubscription.class, "Subscriptions");
+
+        Checks.atLeastOneElement(subscriptionImmutableList, "Subscriptions");
+
+        subscriptionsBuilder.addAll(subscriptionImmutableList);
         return self();
     }
 
