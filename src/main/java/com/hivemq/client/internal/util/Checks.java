@@ -22,7 +22,8 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.stream.Stream;
 
 /**
  * @author Silvio Giebl
@@ -81,10 +82,10 @@ public final class Checks {
     }
 
     @Contract("null, _ -> fail")
-    public static <T> void atLeastOneElement(final @Nullable List<T> list, final @NotNull String name) {
+    public static <T> void atLeastOneElement(final @Nullable Collection<T> collection, final @NotNull String name) {
 
-        notNull(list, name);
-        if (list.size() == 0) {
+        notNull(collection, name);
+        if (collection.size() == 0) {
             throw new IllegalArgumentException(name + " must contain at least one element.");
         }
     }
@@ -96,19 +97,21 @@ public final class Checks {
         for (int i = 0; i < array.length; i++) {
             elementNotNull(array[i], name, i);
         }
-        //noinspection NullableProblems
         return array;
     }
 
     @Contract("null, _ -> fail")
-    public static <T> @NotNull List<T> elementsNotNull(final @Nullable List<T> list, final @NotNull String name) {
+    public static <T> @NotNull Collection<T> elementsNotNull(
+            final @Nullable Collection<T> collection, final @NotNull String name) {
 
-        notNull(list, name);
-        for (int i = 0; i < list.size(); i++) {
-            elementNotNull(list.get(i), name, i);
+        notNull(collection, name);
+
+        int i = 0;
+        for (final T element : collection) {
+            elementNotNull(element, name, i++);
         }
-        //noinspection NullableProblems
-        return list;
+
+        return collection;
     }
 
     @Contract("null, _, _ -> fail")
@@ -131,18 +134,47 @@ public final class Checks {
     }
 
     public static <S, T extends S> @NotNull ImmutableList<T> elementsNotNullAndNotImplemented(
-            final @NotNull List<S> list, final @NotNull Class<T> type, final @NotNull String name) {
+            final @NotNull Collection<S> collection, final @NotNull Class<T> type, final @NotNull String name) {
 
-        //noinspection ForLoopReplaceableByForEach
-        for (int i = 0; i < list.size(); i++) {
-            notNull(list.get(i), name);
-            notImplementedInternal(list.get(i), type, name);
+        for (final S element : collection) {
+            notNull(element, name);
+            notImplementedInternal(element, type, name);
         }
 
-        final ImmutableList<S> immutableList = ImmutableList.copyOf(list);
+        final ImmutableList<S> immutableList = ImmutableList.copyOf(collection);
 
         //noinspection unchecked
         return (ImmutableList<T>) immutableList;
+    }
+
+    public static <S, T extends S> @NotNull ImmutableList<T> elementsNotNullAndNotImplemented(
+            final @NotNull S[] array, final @NotNull Class<T> type, final @NotNull String name) {
+
+        for (final S element : array) {
+            notNull(element, name);
+            notImplementedInternal(element, type, name);
+        }
+
+        final ImmutableList<S> immutableList = ImmutableList.copyOf(array);
+
+        //noinspection unchecked
+        return (ImmutableList<T>) immutableList;
+    }
+
+    public static <S, T extends S> @NotNull ImmutableList<T> elementsNotNullAndNotImplemented(
+            final @NotNull Stream<S> stream, final @NotNull Class<T> type, final @NotNull String name) {
+
+        final ImmutableList.Builder<T> listBuilder = ImmutableList.builder();
+
+        stream.forEach(element -> {
+            notNull(element, name);
+            notImplementedInternal(element, type, name);
+
+            //noinspection unchecked
+            listBuilder.add((T) element);
+        });
+
+        return listBuilder.build();
     }
 
     public static int unsignedShort(final int value, final @NotNull String name) {

@@ -22,7 +22,8 @@ import com.hivemq.client.mqtt.mqtt5.datatypes.Mqtt5UserProperties;
 import com.hivemq.client.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.stream.Stream;
 
 /**
  * Builder base for a {@link Mqtt5Subscribe}.
@@ -44,13 +45,31 @@ public interface Mqtt5SubscribeBuilderBase<C extends Mqtt5SubscribeBuilderBase.C
     @NotNull C addSubscription(@NotNull Mqtt5Subscription subscription);
 
     /**
-     * Adds a list of {@link Mqtt5Subscription} to the {@link Mqtt5Subscribe#getSubscriptions() list of subscriptions}.
-     * At least one subscription in the list is mandatory.
+     * Adds a collection of {@link Mqtt5Subscription} to the {@link Mqtt5Subscribe#getSubscriptions() list of
+     * subscriptions}. At least one subscription in the collection is mandatory.
      *
      * @param subscriptions the subscriptions.
      * @return the builder that is now complete as at least one subscription is set.
      */
-    @NotNull C addSubscriptions(@NotNull List<Mqtt5Subscription> subscriptions);
+    @NotNull C addSubscriptions(@NotNull Collection<Mqtt5Subscription> subscriptions);
+
+    /**
+     * Adds {@link Mqtt5Subscription}s to the {@link Mqtt5Subscribe#getSubscriptions() list of subscriptions}. At least
+     * one subscription is mandatory.
+     *
+     * @param subscriptions the subscriptions.
+     * @return the builder that is now complete as at least one subscription is set.
+     */
+    @NotNull C addSubscriptions(@NotNull Mqtt5Subscription... subscriptions);
+
+    /**
+     * Adds a stream of {@link Mqtt5Subscription}s to the {@link Mqtt5Subscribe#getSubscriptions() list of
+     * subscriptions}. At least one subscription is mandatory.
+     *
+     * @param subscriptions the subscriptions.
+     * @return the builder that is now complete as at least one subscription is set.
+     */
+    @NotNull C addSubscriptions(@NotNull Stream<Mqtt5Subscription> subscriptions);
 
     /**
      * Fluent counterpart of {@link #addSubscription(Mqtt5Subscription)}.

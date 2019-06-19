@@ -29,9 +29,12 @@ import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.Mqtt3UnsubscribeBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Silvio Giebl
@@ -62,19 +65,35 @@ public abstract class Mqtt3UnsubscribeViewBuilder<B extends Mqtt3UnsubscribeView
         return self();
     }
 
-    public @NotNull B addTopicFilters(final @Nullable List<String> topicFilters) {
-        Checks.atLeastOneElement(topicFilters, "Topic Filters");
-        Checks.elementsNotNull(topicFilters, "Topic Filters");
-
-        topicFilters.forEach(topicFilter -> topicFiltersBuilder.add(MqttTopicFilterImpl.of(topicFilter)));
-        return self();
-    }
-
-    public @NotNull B addMqttTopicFilters(final @Nullable List<MqttTopicFilter> topicFilters) {
+    public @NotNull B addTopicFilters(final @Nullable Collection<MqttTopicFilter> topicFilters) {
         Checks.atLeastOneElement(topicFilters, "Topic Filters");
         Checks.elementsNotNull(topicFilters, "Topic Filters");
 
         topicFilters.forEach(topicFilter -> topicFiltersBuilder.add(MqttChecks.topicFilter(topicFilter)));
+        return self();
+    }
+
+    public @NotNull B addTopicFilters(final @Nullable MqttTopicFilter... topicFilters) {
+        Checks.notNull(topicFilters, "Topic Filters");
+        Checks.atLeastOneElement(topicFilters, "Topic Filters");
+        Checks.elementsNotNull(topicFilters, "Topic Filters");
+
+        for (final MqttTopicFilter topicFilter : topicFilters) {
+            topicFiltersBuilder.add(MqttChecks.topicFilter(topicFilter));
+        }
+
+        return self();
+    }
+
+    public @NotNull B addTopicFilters(final @Nullable Stream<MqttTopicFilter> topicFilters) {
+        Checks.notNull(topicFilters, "Topic Filters");
+
+        final List<MqttTopicFilter> topicFilterList = topicFilters.collect(Collectors.toList());
+
+        Checks.atLeastOneElement(topicFilterList, "Topic Filters");
+        Checks.elementsNotNull(topicFilterList, "Topic Filters");
+
+        topicFilterList.forEach(topicFilter -> topicFiltersBuilder.add(MqttChecks.topicFilter(topicFilter)));
         return self();
     }
 

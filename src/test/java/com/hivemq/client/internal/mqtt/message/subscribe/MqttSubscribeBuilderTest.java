@@ -27,9 +27,8 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import util.implementations.CustomMqtt5Subscription;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -159,7 +158,9 @@ class MqttSubscribeBuilderTest {
 
     @Test
     void addSubscriptions_error_when_subscriptions_is_null() {
-        assertThrows(NullPointerException.class, () -> Mqtt5Subscribe.builder().addSubscriptions(null));
+        assertThrows(
+                NullPointerException.class,
+                () -> Mqtt5Subscribe.builder().addSubscriptions((Stream<Mqtt5Subscription>) null));
     }
 
     @Test
@@ -190,7 +191,7 @@ class MqttSubscribeBuilderTest {
     }
 
     @Test
-    void addSubscriptions_correct_use() {
+    void addSubscriptions_correct_use_list() {
 
         final Mqtt5Subscription subscription =
                 Mqtt5Subscription.builder().topicFilter("test").qos(MqttQos.AT_LEAST_ONCE).build();
@@ -213,6 +214,94 @@ class MqttSubscribeBuilderTest {
         assertEquals(subscription, mqtt5Subscriptions.get(0));
         assertEquals(subscription2, mqtt5Subscriptions.get(1));
         assertEquals(subscription3, mqtt5Subscriptions.get(2));
+    }
+
+    @Test
+    void addSubscriptions_correct_use_set() {
+
+        final Mqtt5Subscription subscription =
+                Mqtt5Subscription.builder().topicFilter("test").qos(MqttQos.AT_LEAST_ONCE).build();
+
+        final Mqtt5Subscription subscription2 =
+                Mqtt5Subscription.builder().topicFilter("multiple").qos(MqttQos.AT_MOST_ONCE).build();
+
+        final Mqtt5Subscription subscription3 =
+                Mqtt5Subscription.builder().topicFilter("subscriptions").qos(MqttQos.EXACTLY_ONCE).build();
+
+        final Set<Mqtt5Subscription> subscriptions = new HashSet<>();
+        subscriptions.add(subscription);
+        subscriptions.add(subscription2);
+        subscriptions.add(subscription3);
+
+        final Mqtt5Subscribe subscribe = Mqtt5Subscribe.builder().addSubscriptions(subscriptions).build();
+
+        compareSubscriptions(subscriptions, subscribe.getSubscriptions());
+    }
+
+    @Test
+    void addSubscriptions_correct_use_map() {
+
+        final Mqtt5Subscription subscription =
+                Mqtt5Subscription.builder().topicFilter("test").qos(MqttQos.AT_LEAST_ONCE).build();
+
+        final Mqtt5Subscription subscription2 =
+                Mqtt5Subscription.builder().topicFilter("multiple").qos(MqttQos.AT_MOST_ONCE).build();
+
+        final Mqtt5Subscription subscription3 =
+                Mqtt5Subscription.builder().topicFilter("subscriptions").qos(MqttQos.EXACTLY_ONCE).build();
+
+        final Map<String, Mqtt5Subscription> subscriptions = new LinkedHashMap<>();
+        subscriptions.put("1", subscription);
+        subscriptions.put("2", subscription2);
+        subscriptions.put("3", subscription3);
+
+        final Mqtt5Subscribe subscribe = Mqtt5Subscribe.builder().addSubscriptions(subscriptions.values()).build();
+
+        compareSubscriptions(subscriptions.values(), subscribe.getSubscriptions());
+    }
+
+    @Test
+    void addSubscriptions_correct_use_array() {
+
+        final Mqtt5Subscription subscription =
+                Mqtt5Subscription.builder().topicFilter("test").qos(MqttQos.AT_LEAST_ONCE).build();
+
+        final Mqtt5Subscription subscription2 =
+                Mqtt5Subscription.builder().topicFilter("multiple").qos(MqttQos.AT_MOST_ONCE).build();
+
+        final Mqtt5Subscription subscription3 =
+                Mqtt5Subscription.builder().topicFilter("subscriptions").qos(MqttQos.EXACTLY_ONCE).build();
+
+        final Mqtt5Subscription[] subscriptions = new Mqtt5Subscription[]{
+                subscription, subscription2, subscription3
+        };
+
+        final Mqtt5Subscribe subscribe = Mqtt5Subscribe.builder().addSubscriptions(subscriptions).build();
+
+        compareSubscriptions(subscriptions, subscribe.getSubscriptions());
+    }
+
+    @Test
+    void addSubscriptions_correct_use_stream() {
+
+        final List<String> subscriptions = new ArrayList<>();
+        subscriptions.add("test");
+        subscriptions.add("multiple");
+        subscriptions.add("subscriptions");
+
+        final Mqtt5Subscribe subscribe = Mqtt5Subscribe.builder()
+                .addSubscriptions(subscriptions.stream()
+                        .map(topicFilter -> Mqtt5Subscription.builder()
+                                .topicFilter(topicFilter)
+                                .qos(MqttQos.AT_LEAST_ONCE)
+                                .build()))
+                .build();
+
+        final List<@NotNull ? extends Mqtt5Subscription> Mqtt5Subscriptions = subscribe.getSubscriptions();
+        assertEquals(3, Mqtt5Subscriptions.size());
+        assertTrue(Mqtt5Subscriptions.get(0).getTopicFilter().toString().contains(subscriptions.get(0)));
+        assertTrue(Mqtt5Subscriptions.get(1).getTopicFilter().toString().contains(subscriptions.get(1)));
+        assertTrue(Mqtt5Subscriptions.get(2).getTopicFilter().toString().contains(subscriptions.get(2)));
     }
 
     @Test
@@ -308,4 +397,24 @@ class MqttSubscribeBuilderTest {
         assertEquals(subscription3, mqtt5Subscriptions.get(4));
     }
 
+    void compareSubscriptions(
+            final @NotNull Mqtt5Subscription[] expected, final List<@NotNull ? extends Mqtt5Subscription> actual) {
+
+        assertEquals(expected.length, actual.size());
+
+        for (final Mqtt5Subscription expectedSubscription : expected) {
+            assertTrue(actual.contains(expectedSubscription));
+        }
+    }
+
+    void compareSubscriptions(
+            final @NotNull Collection<Mqtt5Subscription> expected,
+            final List<@NotNull ? extends Mqtt5Subscription> actual) {
+
+        assertEquals(expected.size(), actual.size());
+
+        for (final Mqtt5Subscription expectedSubscription : expected) {
+            assertTrue(actual.contains(expectedSubscription));
+        }
+    }
 }

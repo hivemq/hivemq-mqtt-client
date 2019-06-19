@@ -25,8 +25,9 @@ import com.hivemq.client.mqtt.mqtt5.datatypes.Mqtt5UserProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 /**
  * @author Silvio Giebl
@@ -62,8 +63,18 @@ public abstract class MqttUserPropertiesImplBuilder<B extends MqttUserProperties
         return self();
     }
 
-    public @NotNull B addAll(final @Nullable List<Mqtt5UserProperty> userProperties) {
-        listBuilder.addAll(MqttChecks.userProperties(userProperties));
+    public @NotNull B addAll(final @Nullable Collection<Mqtt5UserProperty> userProperties) {
+        listBuilder.addAll(MqttChecks.userPropertiesInCollection(userProperties));
+        return self();
+    }
+
+    public @NotNull B addAll(final @Nullable Mqtt5UserProperty... userProperties) {
+        listBuilder.addAll(MqttChecks.userPropertiesInArray(userProperties));
+        return self();
+    }
+
+    public @NotNull B addAll(final @Nullable Stream<Mqtt5UserProperty> userProperties) {
+        listBuilder.addAll(MqttChecks.userPropertiesInStream(userProperties));
         return self();
     }
 
