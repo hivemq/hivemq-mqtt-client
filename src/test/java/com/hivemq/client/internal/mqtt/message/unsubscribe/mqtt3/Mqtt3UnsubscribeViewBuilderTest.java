@@ -25,8 +25,8 @@ import org.junit.jupiter.api.Test;
 import util.implementations.CustomMqttTopicFilter;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -209,25 +209,54 @@ class Mqtt3UnsubscribeViewBuilderTest {
     }
 
     @Test
-    void addTopicFilters_error_when_topic_string_is_null() {
+    void addTopicFilters_error_when_collection_is_null() {
 
-        assertThrows(NullPointerException.class, () -> Mqtt3Unsubscribe.builder().addTopicFilters(null));
+        assertThrows(NullPointerException.class,
+                () -> Mqtt3Unsubscribe.builder().addTopicFilters((ArrayList<MqttTopicFilter>) null));
     }
 
     @Test
-    void addTopicFilters_error_when_list_is_empty() {
+    void addTopicFilters_error_when_varagrs_is_null() {
 
         assertThrows(
-                IllegalArgumentException.class, () -> Mqtt3Unsubscribe.builder().addTopicFilters(ImmutableList.of()));
+                NullPointerException.class, () -> Mqtt3Unsubscribe.builder().addTopicFilters((MqttTopicFilter[]) null));
+    }
+
+    @Test
+    void addTopicFilters_error_when_stream_is_null() {
+
+        assertThrows(NullPointerException.class,
+                () -> Mqtt3Unsubscribe.builder().addTopicFilters((Stream<MqttTopicFilter>) null));
+    }
+
+    @Test
+    void addTopicFilters_error_when_collection_is_empty() {
+
+        final List<MqttTopicFilter> emptyList = new ArrayList<>();
+
+        assertThrows(IllegalArgumentException.class, () -> Mqtt3Unsubscribe.builder().addTopicFilters(emptyList));
+    }
+
+    @Test
+    void addTopicFilters_error_when_varargs_is_empty() {
+
+        assertThrows(IllegalArgumentException.class, () -> Mqtt3Unsubscribe.builder().addTopicFilters());
+    }
+
+    @Test
+    void addTopicFilters_error_when_stream_is_empty() {
+
+        final List<MqttTopicFilter> emptyList = new ArrayList<>();
+
+        assertThrows(IllegalArgumentException.class,
+                () -> Mqtt3Unsubscribe.builder().addTopicFilters(emptyList.stream()));
     }
 
     @Test
     void addTopicFilters_correct_use() {
 
-        final List<String> topics = new ArrayList<>();
-        topics.add("test");
-        topics.add("list");
-        topics.add("element");
+        final ImmutableList<MqttTopicFilter> topics =
+                ImmutableList.of(MqttTopicFilter.of("test"), MqttTopicFilter.of("list"), MqttTopicFilter.of("element"));
 
         final Mqtt3Unsubscribe subscribe = Mqtt3Unsubscribe.builder().addTopicFilters(topics).build();
 
@@ -240,12 +269,58 @@ class Mqtt3UnsubscribeViewBuilderTest {
     }
 
     @Test
+    void addTopicFilters_correct_use_collection() {
+
+        final ImmutableList<MqttTopicFilter> topics =
+                ImmutableList.of(MqttTopicFilter.of("test"), MqttTopicFilter.of("list"), MqttTopicFilter.of("element"));
+
+        final Mqtt3Unsubscribe subscribe = Mqtt3Unsubscribe.builder().addTopicFilters(topics).build();
+
+        final List<@NotNull ? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
+        assertEquals(3, unsubscribeTopics.size());
+
+        assertEquals("test", unsubscribeTopics.get(0).toString());
+        assertEquals("list", unsubscribeTopics.get(1).toString());
+        assertEquals("element", unsubscribeTopics.get(2).toString());
+    }
+
+    @Test
+    void addTopicFilters_correct_use_varargs() {
+
+        final MqttTopicFilter[] topics =
+                {MqttTopicFilter.of("test"), MqttTopicFilter.of("list"), MqttTopicFilter.of("element")};
+
+        final Mqtt3Unsubscribe subscribe = Mqtt3Unsubscribe.builder().addTopicFilters(topics).build();
+
+        final List<@NotNull ? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
+        assertEquals(3, unsubscribeTopics.size());
+
+        assertEquals("test", unsubscribeTopics.get(0).toString());
+        assertEquals("list", unsubscribeTopics.get(1).toString());
+        assertEquals("element", unsubscribeTopics.get(2).toString());
+    }
+
+    @Test
+    void addTopicFilters_correct_use_stream() {
+
+        final ImmutableList<String> topics = ImmutableList.of("test", "list", "element");
+
+        final Mqtt3Unsubscribe subscribe =
+                Mqtt3Unsubscribe.builder().addTopicFilters(topics.stream().map(MqttTopicFilter::of)).build();
+
+        final List<@NotNull ? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
+        assertEquals(3, unsubscribeTopics.size());
+
+        assertEquals("test", unsubscribeTopics.get(0).toString());
+        assertEquals("list", unsubscribeTopics.get(1).toString());
+        assertEquals("element", unsubscribeTopics.get(2).toString());
+    }
+
+    @Test
     void addTopicFilters_fluent_topic_is_finished_if_addTopicFilters_is_used() {
 
-        final List<String> topics = new LinkedList<>();
-        topics.add("test");
-        topics.add("list");
-        topics.add("element");
+        final ImmutableList<MqttTopicFilter> topics =
+                ImmutableList.of(MqttTopicFilter.of("test"), MqttTopicFilter.of("list"), MqttTopicFilter.of("element"));
 
         final Mqtt3Unsubscribe subscribe =
                 Mqtt3Unsubscribe.builder().topicFilter("fluent").addTopicFilters(topics).build();
@@ -262,18 +337,14 @@ class Mqtt3UnsubscribeViewBuilderTest {
     @Test
     void addTopicFilters_nested_topic_builder_is_used_and_then_addTopicFilters() {
 
-        final List<String> topics = new ArrayList<>();
-        topics.add("test");
-        topics.add("list");
-        topics.add("element");
+        final ImmutableList<MqttTopicFilter> topics =
+                ImmutableList.of(MqttTopicFilter.of("test"), MqttTopicFilter.of("list"), MqttTopicFilter.of("element"));
 
         final Mqtt3Unsubscribe subscribe = Mqtt3Unsubscribe.builder()
                 .topicFilter()
                 .addLevel("first")
                 .addLevel("second")
-                .multiLevelWildcard()
-                .applyTopicFilter()
-                .addTopicFilters(topics)
+                .multiLevelWildcard().applyTopicFilter().addTopicFilters(topics)
                 .build();
 
         final List<@NotNull ? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
@@ -288,114 +359,13 @@ class Mqtt3UnsubscribeViewBuilderTest {
     @Test
     void addTopicFilters_fluent_topic_is_finished_if_addTopicFilters_is_used_second_time() {
 
-        final ImmutableList<String> topics = ImmutableList.of("test", "list", "element");
-        final ImmutableList<String> topics2 = ImmutableList.of("second");
-
-        final Mqtt3Unsubscribe subscribe = Mqtt3Unsubscribe.builder()
-                .topicFilter("fluent")
-                .addTopicFilters(topics)
-                .addTopicFilter()
-                .addLevel("nested")
-                .applyTopicFilter()
-                .addTopicFilters(topics2)
-                .build();
-
-        final List<@NotNull ? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
-        assertEquals(6, unsubscribeTopics.size());
-
-        assertEquals("fluent", unsubscribeTopics.get(0).toString());
-        assertEquals("test", unsubscribeTopics.get(1).toString());
-        assertEquals("list", unsubscribeTopics.get(2).toString());
-        assertEquals("element", unsubscribeTopics.get(3).toString());
-        assertEquals("nested", unsubscribeTopics.get(4).toString());
-        assertEquals("second", unsubscribeTopics.get(5).toString());
-    }
-
-    @Test
-    void addMqttTopicFilters_error_when_topic_string_is_null() {
-
-        assertThrows(NullPointerException.class, () -> Mqtt3Unsubscribe.builder().addMqttTopicFilters(null));
-    }
-
-    @Test
-    void addMqttTopicFilterss_error_when_list_is_empty() {
-
-        assertThrows(IllegalArgumentException.class,
-                () -> Mqtt3Unsubscribe.builder().addMqttTopicFilters(ImmutableList.of()));
-    }
-
-    @Test
-    void addMqttTopicFilters_correct_use() {
-
-        final ImmutableList<MqttTopicFilter> topics =
-                ImmutableList.of(MqttTopicFilter.of("test"), MqttTopicFilter.of("list"), MqttTopicFilter.of("element"));
-
-        final Mqtt3Unsubscribe subscribe = Mqtt3Unsubscribe.builder().addMqttTopicFilters(topics).build();
-
-        final List<@NotNull ? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
-        assertEquals(3, unsubscribeTopics.size());
-
-        assertEquals("test", unsubscribeTopics.get(0).toString());
-        assertEquals("list", unsubscribeTopics.get(1).toString());
-        assertEquals("element", unsubscribeTopics.get(2).toString());
-    }
-
-    @Test
-    void addMqttTopicFilters_fluent_topic_is_finished_if_addMqttTopicFilters_is_used() {
-
-        final ImmutableList<MqttTopicFilter> topics =
-                ImmutableList.of(MqttTopicFilter.of("test"), MqttTopicFilter.of("list"), MqttTopicFilter.of("element"));
-
-        final Mqtt3Unsubscribe subscribe =
-                Mqtt3Unsubscribe.builder().topicFilter("fluent").addMqttTopicFilters(topics).build();
-
-        final List<@NotNull ? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
-        assertEquals(4, unsubscribeTopics.size());
-
-        assertEquals("fluent", unsubscribeTopics.get(0).toString());
-        assertEquals("test", unsubscribeTopics.get(1).toString());
-        assertEquals("list", unsubscribeTopics.get(2).toString());
-        assertEquals("element", unsubscribeTopics.get(3).toString());
-    }
-
-    @Test
-    void addMqttTopicFilters_nested_topic_builder_is_used_and_then_addMqttTopicFilters() {
-
-        final ImmutableList<MqttTopicFilter> topics =
-                ImmutableList.of(MqttTopicFilter.of("test"), MqttTopicFilter.of("list"), MqttTopicFilter.of("element"));
-
-        final Mqtt3Unsubscribe subscribe = Mqtt3Unsubscribe.builder()
-                .topicFilter()
-                .addLevel("first")
-                .addLevel("second")
-                .multiLevelWildcard()
-                .applyTopicFilter()
-                .addMqttTopicFilters(topics)
-                .build();
-
-        final List<@NotNull ? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
-        assertEquals(4, unsubscribeTopics.size());
-
-        assertEquals("first/second/#", unsubscribeTopics.get(0).toString());
-        assertEquals("test", unsubscribeTopics.get(1).toString());
-        assertEquals("list", unsubscribeTopics.get(2).toString());
-        assertEquals("element", unsubscribeTopics.get(3).toString());
-    }
-
-    @Test
-    void addMqttTopicFilters_fluent_topic_is_finished_if_addMqttTopicFilters_is_used_second_time() {
-
         final ImmutableList<MqttTopicFilter> topics =
                 ImmutableList.of(MqttTopicFilter.of("test"), MqttTopicFilter.of("list"), MqttTopicFilter.of("element"));
         final ImmutableList<MqttTopicFilter> topics2 = ImmutableList.of(MqttTopicFilter.of("second"));
 
-        final Mqtt3Unsubscribe subscribe = Mqtt3Unsubscribe.builder()
-                .topicFilter("fluent")
-                .addMqttTopicFilters(topics)
+        final Mqtt3Unsubscribe subscribe = Mqtt3Unsubscribe.builder().topicFilter("fluent").addTopicFilters(topics)
                 .addTopicFilter()
-                .addLevel("nested")
-                .applyTopicFilter()
-                .addMqttTopicFilters(topics2)
+                .addLevel("nested").applyTopicFilter().addTopicFilters(topics2)
                 .build();
 
         final List<@NotNull ? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
@@ -410,13 +380,12 @@ class Mqtt3UnsubscribeViewBuilderTest {
     }
 
     @Test
-    void addMqttTopicFilters_error_when_topic_object_is_implemented() {
+    void addTopicFilters_error_when_topic_object_is_implemented() {
 
         final ImmutableList<MqttTopicFilter> topicFilters =
                 ImmutableList.of(MqttTopicFilter.of("test"), new CustomMqttTopicFilter());
 
-        assertThrows(
-                IllegalArgumentException.class, () -> Mqtt3Unsubscribe.builder().addMqttTopicFilters(topicFilters));
+        assertThrows(IllegalArgumentException.class, () -> Mqtt3Unsubscribe.builder().addTopicFilters(topicFilters));
     }
 
 }

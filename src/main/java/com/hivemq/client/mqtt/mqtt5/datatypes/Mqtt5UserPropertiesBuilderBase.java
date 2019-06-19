@@ -21,7 +21,8 @@ import com.hivemq.client.annotations.DoNotImplement;
 import com.hivemq.client.mqtt.datatypes.MqttUtf8String;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.stream.Stream;
 
 /**
  * Builder base for {@link Mqtt5UserProperties}.
@@ -60,10 +61,26 @@ public interface Mqtt5UserPropertiesBuilderBase<B extends Mqtt5UserPropertiesBui
     @NotNull B add(@NotNull Mqtt5UserProperty userProperty);
 
     /**
-     * Adds a list of {@link Mqtt5UserProperty User Property}.
+     * Adds a collection of {@link Mqtt5UserProperty User Property}.
      *
      * @param userProperties the User Properties.
      * @return the builder.
      */
-    @NotNull B addAll(@NotNull List<Mqtt5UserProperty> userProperties);
+    @NotNull B addAll(@NotNull Collection<Mqtt5UserProperty> userProperties);
+
+    /**
+     * Add {@link Mqtt5UserProperty User Properties}.
+     *
+     * @param userProperties the User Properties.
+     * @return the builder.
+     */
+    @NotNull B addAll(@NotNull Mqtt5UserProperty... userProperties);
+
+    /**
+     * Adds a stream of {@link Mqtt5UserProperty User Property}.
+     *
+     * @param userProperties the User Properties.
+     * @return the builder.
+     */
+    @NotNull B addAll(@NotNull Stream<Mqtt5UserProperty> userProperties);
 }
