@@ -45,33 +45,6 @@ public interface Mqtt5SubscribeBuilderBase<C extends Mqtt5SubscribeBuilderBase.C
     @NotNull C addSubscription(@NotNull Mqtt5Subscription subscription);
 
     /**
-     * Adds a collection of {@link Mqtt5Subscription} to the {@link Mqtt5Subscribe#getSubscriptions() list of
-     * subscriptions}. At least one subscription in the collection is mandatory.
-     *
-     * @param subscriptions the subscriptions.
-     * @return the builder that is now complete as at least one subscription is set.
-     */
-    @NotNull C addSubscriptions(@NotNull Collection<Mqtt5Subscription> subscriptions);
-
-    /**
-     * Adds {@link Mqtt5Subscription}s to the {@link Mqtt5Subscribe#getSubscriptions() list of subscriptions}. At least
-     * one subscription is mandatory.
-     *
-     * @param subscriptions the subscriptions.
-     * @return the builder that is now complete as at least one subscription is set.
-     */
-    @NotNull C addSubscriptions(@NotNull Mqtt5Subscription... subscriptions);
-
-    /**
-     * Adds a stream of {@link Mqtt5Subscription}s to the {@link Mqtt5Subscribe#getSubscriptions() list of
-     * subscriptions}. At least one subscription is mandatory.
-     *
-     * @param subscriptions the subscriptions.
-     * @return the builder that is now complete as at least one subscription is set.
-     */
-    @NotNull C addSubscriptions(@NotNull Stream<Mqtt5Subscription> subscriptions);
-
-    /**
      * Fluent counterpart of {@link #addSubscription(Mqtt5Subscription)}.
      * <p>
      * Calling {@link Mqtt5SubscriptionBuilder.Nested.Complete#applySubscription()} on the returned builder has the same
@@ -82,6 +55,36 @@ public interface Mqtt5SubscribeBuilderBase<C extends Mqtt5SubscribeBuilderBase.C
      * @see #addSubscription(Mqtt5Subscription)
      */
     @NotNull Mqtt5SubscriptionBuilder.Nested<? extends C> addSubscription();
+
+    /**
+     * Adds {@link Mqtt5Subscription}s to the {@link Mqtt5Subscribe#getSubscriptions() list of subscriptions}. At least
+     * one subscription is mandatory.
+     *
+     * @param subscriptions the subscriptions.
+     * @return the builder that is now complete as at least one subscription is set.
+     * @since 1.2
+     */
+    @NotNull C addSubscriptions(@NotNull Mqtt5Subscription @NotNull ... subscriptions);
+
+    /**
+     * Adds a collection of {@link Mqtt5Subscription}s to the {@link Mqtt5Subscribe#getSubscriptions() list of
+     * subscriptions}. At least one subscription in the collection is mandatory.
+     *
+     * @param subscriptions the collection of subscriptions.
+     * @return the builder that is now complete as at least one subscription is set.
+     * @since 1.2
+     */
+    @NotNull C addSubscriptions(@NotNull Collection<@NotNull Mqtt5Subscription> subscriptions);
+
+    /**
+     * Adds a stream of {@link Mqtt5Subscription}s to the {@link Mqtt5Subscribe#getSubscriptions() list of
+     * subscriptions}. At least one subscription is mandatory.
+     *
+     * @param subscriptions the stream of subscriptions.
+     * @return the builder that is now complete as at least one subscription is set.
+     * @since 1.2
+     */
+    @NotNull C addSubscriptions(@NotNull Stream<@NotNull Mqtt5Subscription> subscriptions);
 
     /**
      * {@link Mqtt5SubscribeBuilderBase} that is complete which means all mandatory fields are set.

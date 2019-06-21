@@ -43,33 +43,6 @@ public interface Mqtt3SubscribeBuilderBase<C extends Mqtt3SubscribeBuilderBase<C
     @NotNull C addSubscription(@NotNull Mqtt3Subscription subscription);
 
     /**
-     * Adds a collection of {@link Mqtt3Subscription} to the {@link Mqtt3Subscribe#getSubscriptions() list of
-     * subscriptions}. At least one subscription in the collection is mandatory.
-     *
-     * @param subscriptions the subscriptions.
-     * @return the builder that is now complete as at least one subscription is set.
-     */
-    @NotNull C addSubscriptions(@NotNull Collection<Mqtt3Subscription> subscriptions);
-
-    /**
-     * Adds {@link Mqtt3Subscription}s to the {@link Mqtt3Subscribe#getSubscriptions() list of subscriptions}. At least
-     * one subscription is mandatory.
-     *
-     * @param subscriptions the subscriptions.
-     * @return the builder that is now complete as at least one subscription is set.
-     */
-    @NotNull C addSubscriptions(@NotNull Mqtt3Subscription... subscriptions);
-
-    /**
-     * Adds a stream of {@link Mqtt3Subscription}s to the {@link Mqtt3Subscribe#getSubscriptions() list of
-     * subscriptions}. At least one subscription is mandatory.
-     *
-     * @param subscriptions the subscriptions.
-     * @return the builder that is now complete as at least one subscription is set.
-     */
-    @NotNull C addSubscriptions(@NotNull Stream<Mqtt3Subscription> subscriptions);
-
-    /**
      * Fluent counterpart of {@link #addSubscription(Mqtt3Subscription)}.
      * <p>
      * Calling {@link Mqtt3SubscriptionBuilder.Nested.Complete#applySubscription()} on the returned builder has the same
@@ -80,6 +53,36 @@ public interface Mqtt3SubscribeBuilderBase<C extends Mqtt3SubscribeBuilderBase<C
      * @see #addSubscription(Mqtt3Subscription)
      */
     @NotNull Mqtt3SubscriptionBuilder.Nested<? extends C> addSubscription();
+
+    /**
+     * Adds {@link Mqtt3Subscription}s to the {@link Mqtt3Subscribe#getSubscriptions() list of subscriptions}. At least
+     * one subscription is mandatory.
+     *
+     * @param subscriptions the subscriptions.
+     * @return the builder that is now complete as at least one subscription is set.
+     * @since 1.2
+     */
+    @NotNull C addSubscriptions(@NotNull Mqtt3Subscription @NotNull ... subscriptions);
+
+    /**
+     * Adds a collection of {@link Mqtt3Subscription}s to the {@link Mqtt3Subscribe#getSubscriptions() list of
+     * subscriptions}. At least one subscription is mandatory.
+     *
+     * @param subscriptions the collection of subscriptions.
+     * @return the builder that is now complete as at least one subscription is set.
+     * @since 1.2
+     */
+    @NotNull C addSubscriptions(@NotNull Collection<@NotNull Mqtt3Subscription> subscriptions);
+
+    /**
+     * Adds a stream of {@link Mqtt3Subscription}s to the {@link Mqtt3Subscribe#getSubscriptions() list of
+     * subscriptions}. At least one subscription is mandatory.
+     *
+     * @param subscriptions the stream of subscriptions.
+     * @return the builder that is now complete as at least one subscription is set.
+     * @since 1.2
+     */
+    @NotNull C addSubscriptions(@NotNull Stream<@NotNull Mqtt3Subscription> subscriptions);
 
     /**
      * {@link Mqtt3SubscribeBuilderBase} that provides additional methods for the first subscription.
