@@ -111,8 +111,9 @@ public abstract class MqttTimeoutInboundHandler extends MqttConnectionAwareHandl
     }
 
     @Override
-    protected void onDisconnectEvent(final @NotNull MqttDisconnectEvent disconnectEvent) {
-        super.onDisconnectEvent(disconnectEvent);
+    protected void onDisconnectEvent(
+            final @NotNull ChannelHandlerContext ctx, final @NotNull MqttDisconnectEvent disconnectEvent) {
+
         cancelTimeout();
     }
 
@@ -133,9 +134,4 @@ public abstract class MqttTimeoutInboundHandler extends MqttConnectionAwareHandl
      * @return the Reason String that will be used to notify the API and may also be sent with a DISCONNECT message.
      */
     protected abstract @NotNull String getTimeoutReasonString();
-
-    @Override
-    public final boolean isSharable() {
-        return false;
-    }
 }

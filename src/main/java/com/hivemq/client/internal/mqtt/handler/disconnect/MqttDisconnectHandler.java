@@ -149,12 +149,9 @@ public class MqttDisconnectHandler extends MqttConnectionAwareHandler {
     }
 
     @Override
-    protected void onDisconnectEvent(final @NotNull MqttDisconnectEvent disconnectEvent) {
-        final ChannelHandlerContext ctx = this.ctx;
-        if (ctx == null) {
-            return;
-        }
-        super.onDisconnectEvent(disconnectEvent);
+    protected void onDisconnectEvent(
+            final @NotNull ChannelHandlerContext ctx, final @NotNull MqttDisconnectEvent disconnectEvent) {
+
         state = State.CLOSED;
 
         final Channel channel = ctx.channel();

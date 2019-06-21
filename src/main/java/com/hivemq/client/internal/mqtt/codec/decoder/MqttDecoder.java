@@ -117,4 +117,9 @@ public class MqttDecoder extends ByteToMessageDecoder {
             MqttDisconnectUtil.disconnect(ctx.channel(), e.getReasonCode(), new MqttDecodeException(message));
         }
     }
+
+    @Override
+    public boolean isSharable() {
+        return false;
+    }
 }
