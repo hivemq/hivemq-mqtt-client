@@ -36,7 +36,7 @@ import com.hivemq.client.mqtt.lifecycle.MqttDisconnectSource;
 import dagger.Lazy;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
@@ -53,7 +53,7 @@ import javax.inject.Inject;
  * @author David Katz
  */
 @ConnectionScope
-public class MqttChannelInitializer extends ChannelInitializer<Channel> {
+public class MqttChannelInitializer extends ChannelInboundHandlerAdapter {
 
     private final @NotNull MqttClientConfig clientConfig;
     private final @NotNull MqttConnect connect;
@@ -85,7 +85,16 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
     }
 
     @Override
-    protected void initChannel(final @NotNull Channel channel) throws Exception {
+    public void handlerAdded(final ChannelHandlerContext ctx) {
+        try {
+            initChannel(ctx.channel());
+            ctx.pipeline().remove(this);
+        } catch (final Throwable cause) {
+            exceptionCaught(ctx, cause);
+        }
+    }
+
+    void initChannel(final @NotNull Channel channel) throws Exception {
         final MqttClientTransportConfigImpl transportConfig = connAckFlow.getTransportConfig();
         final MqttClientSslConfigImpl sslConfig = transportConfig.getRawSslConfig();
         if (sslConfig != null) {
@@ -115,5 +124,10 @@ public class MqttChannelInitializer extends ChannelInitializer<Channel> {
         ctx.close();
         MqttConnAckSingle.reconnect(clientConfig, MqttDisconnectSource.CLIENT, new ConnectionFailedException(cause),
                 connect, connAckFlow, ctx.channel().eventLoop());
+    }
+
+    @Override
+    public boolean isSharable() {
+        return false;
     }
 }
