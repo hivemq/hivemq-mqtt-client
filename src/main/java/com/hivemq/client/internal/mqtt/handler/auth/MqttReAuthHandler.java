@@ -200,8 +200,10 @@ public class MqttReAuthHandler extends AbstractMqttAuthHandler {
      * @param disconnectEvent the channel close event.
      */
     @Override
-    protected void onDisconnectEvent(final @NotNull MqttDisconnectEvent disconnectEvent) {
-        super.onDisconnectEvent(disconnectEvent);
+    protected void onDisconnectEvent(
+            final @NotNull ChannelHandlerContext ctx, final @NotNull MqttDisconnectEvent disconnectEvent) {
+
+        super.onDisconnectEvent(ctx, disconnectEvent);
 
         if (state != MqttAuthState.NONE) {
             callMechanism(() -> authMechanism.onReAuthError(clientConfig, disconnectEvent.getCause()));

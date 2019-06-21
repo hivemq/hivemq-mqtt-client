@@ -69,4 +69,9 @@ public class MqttEncoder extends ChannelOutboundHandlerAdapter {
             ctx.write(msg, promise);
         }
     }
+
+    @Override
+    public boolean isSharable() {
+        return false;
+    }
 }

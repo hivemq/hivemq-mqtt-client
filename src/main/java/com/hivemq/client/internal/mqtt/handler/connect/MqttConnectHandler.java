@@ -293,12 +293,11 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
     }
 
     @Override
-    protected void onDisconnectEvent(final @NotNull MqttDisconnectEvent disconnectEvent) {
-        final ChannelHandlerContext ctx = this.ctx;
-        if (ctx == null) {
-            return;
-        }
-        super.onDisconnectEvent(disconnectEvent);
+    protected void onDisconnectEvent(
+            final @NotNull ChannelHandlerContext ctx, final @NotNull MqttDisconnectEvent disconnectEvent) {
+
+        super.onDisconnectEvent(ctx, disconnectEvent);
+
         MqttConnAckSingle.reconnect(clientConfig, disconnectEvent.getSource(), disconnectEvent.getCause(), connect,
                 connAckFlow, ctx.channel().eventLoop());
     }
