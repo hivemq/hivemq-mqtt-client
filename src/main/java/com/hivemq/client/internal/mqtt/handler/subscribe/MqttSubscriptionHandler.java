@@ -47,12 +47,12 @@ import com.hivemq.client.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAckReasonCo
 import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAckReasonCode;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.EventLoop;
-import org.jctools.queues.MpscLinkedQueue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -68,7 +68,7 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
 
     private final @NotNull MqttIncomingPublishFlows incomingPublishFlows;
 
-    private final @NotNull MpscLinkedQueue<MqttSubOrUnsubWithFlow> queued = MpscLinkedQueue.newMpscLinkedQueue();
+    private final @NotNull ConcurrentLinkedQueue<MqttSubOrUnsubWithFlow> queued = new ConcurrentLinkedQueue<>();
     private final @NotNull AtomicInteger queuedCounter = new AtomicInteger();
     private final @NotNull IntMap<MqttSubOrUnsubWithFlow.Stateful> pending;
     private @Nullable MqttSubOrUnsubWithFlow.Stateful firstPending, lastPending, resendPending, currentPending;
@@ -102,20 +102,19 @@ public class MqttSubscriptionHandler extends MqttSessionAwareHandler implements 
     public void subscribe(
             final @NotNull MqttSubscribe subscribe, final @NotNull MqttSubscriptionFlow<MqttSubAck> flow) {
 
-        queued.offer(new MqttSubscribeWithFlow(subscribe, flow));
-        execute(flow.getEventLoop());
+        queue(new MqttSubscribeWithFlow(subscribe, flow));
     }
 
     public void unsubscribe(
             final @NotNull MqttUnsubscribe unsubscribe, final @NotNull MqttSubOrUnsubAckFlow<MqttUnsubAck> flow) {
 
-        queued.offer(new MqttUnsubscribeWithFlow(unsubscribe, flow));
-        execute(flow.getEventLoop());
+        queue(new MqttUnsubscribeWithFlow(unsubscribe, flow));
     }
 
-    private void execute(final @NotNull EventLoop eventLoop) {
+    private void queue(final @NotNull MqttSubOrUnsubWithFlow subOrUnsubWithFlow) {
+        queued.offer(subOrUnsubWithFlow);
         if (queuedCounter.getAndIncrement() == 0) {
-            eventLoop.execute(this);
+            subOrUnsubWithFlow.getFlow().getEventLoop().execute(this);
         }
     }
 
