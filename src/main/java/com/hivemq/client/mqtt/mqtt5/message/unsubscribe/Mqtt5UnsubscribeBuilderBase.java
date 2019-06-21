@@ -57,33 +57,6 @@ public interface Mqtt5UnsubscribeBuilderBase<C extends Mqtt5UnsubscribeBuilderBa
     @NotNull C addTopicFilter(@NotNull MqttTopicFilter topicFilter);
 
     /**
-     * Adds a collection of {@link MqttTopicFilter Topic Filter} to the {@link Mqtt5Unsubscribe#getTopicFilters() list
-     * of Topic Filters}. At least one Topic Filter is mandatory.
-     *
-     * @param topicFilters the Topic Filter's.
-     * @return the builder that is now complete as at least one Topic Filter is set.
-     */
-    @NotNull C addTopicFilters(@NotNull Collection<MqttTopicFilter> topicFilters);
-
-    /**
-     * Adds {@link MqttTopicFilter Topic Filter}s to the {@link Mqtt5Unsubscribe#getTopicFilters() list of Topic
-     * Filters}. At least one Topic Filter is mandatory.
-     *
-     * @param topicFilters the Topic Filter's.
-     * @return the builder that is now complete as at least one Topic Filter is set.
-     */
-    @NotNull C addTopicFilters(@NotNull MqttTopicFilter... topicFilters);
-
-    /**
-     * Adds a stream of {@link MqttTopicFilter Topic Filter} to the {@link Mqtt5Unsubscribe#getTopicFilters() list of
-     * Topic Filters}. At least one Topic Filter is mandatory.
-     *
-     * @param topicFilters the Topic Filter's.
-     * @return the builder that is now complete as at least one Topic Filter is set.
-     */
-    @NotNull C addTopicFilters(@NotNull Stream<MqttTopicFilter> topicFilters);
-
-    /**
      * Fluent counterpart of {@link #addTopicFilter(MqttTopicFilter)}.
      * <p>
      * Calling {@link MqttTopicFilterBuilder.Nested.Complete#applyTopicFilter()} on the returned builder has the same
@@ -94,6 +67,36 @@ public interface Mqtt5UnsubscribeBuilderBase<C extends Mqtt5UnsubscribeBuilderBa
      * @see #addTopicFilter(MqttTopicFilter)
      */
     @NotNull MqttTopicFilterBuilder.Nested<? extends C> addTopicFilter();
+
+    /**
+     * Adds {@link MqttTopicFilter Topic Filters} to the {@link Mqtt5Unsubscribe#getTopicFilters() list of Topic
+     * Filters}. At least one Topic Filter is mandatory.
+     *
+     * @param topicFilters the Topic Filters.
+     * @return the builder that is now complete as at least one Topic Filter is set.
+     * @since 1.2
+     */
+    @NotNull C addTopicFilters(@NotNull MqttTopicFilter @NotNull ... topicFilters);
+
+    /**
+     * Adds a collection of {@link MqttTopicFilter Topic Filters} to the {@link Mqtt5Unsubscribe#getTopicFilters() list
+     * of Topic Filters}. At least one Topic Filter is mandatory.
+     *
+     * @param topicFilters the collection of Topic Filters.
+     * @return the builder that is now complete as at least one Topic Filter is set.
+     * @since 1.2
+     */
+    @NotNull C addTopicFilters(@NotNull Collection<@NotNull MqttTopicFilter> topicFilters);
+
+    /**
+     * Adds a stream of {@link MqttTopicFilter Topic Filters} to the {@link Mqtt5Unsubscribe#getTopicFilters() list of
+     * Topic Filters}. At least one Topic Filter is mandatory.
+     *
+     * @param topicFilters the stream of Topic Filters.
+     * @return the builder that is now complete as at least one Topic Filter is set.
+     * @since 1.2
+     */
+    @NotNull C addTopicFilters(@NotNull Stream<@NotNull MqttTopicFilter> topicFilters);
 
     /**
      * Reverses the subscriptions of a Subscribe message by adding their Topic Filters.
