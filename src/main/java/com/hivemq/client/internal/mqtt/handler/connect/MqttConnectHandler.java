@@ -73,7 +73,6 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
     private final @NotNull MqttClientConfig clientConfig;
     private final @NotNull MqttSession session;
     private final @NotNull MqttDecoder decoder;
-    private final @NotNull MqttDisconnectOnConnAckHandler disconnectOnConnAckHandler;
 
     private boolean connectCalled = false;
     private long connectFlushTime;
@@ -82,15 +81,13 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
     MqttConnectHandler(
             final @NotNull MqttConnect connect, final @NotNull MqttConnAckFlow connAckFlow,
             final @NotNull MqttClientConfig clientConfig, final @NotNull MqttSession session,
-            final @NotNull MqttDecoder decoder,
-            final @NotNull MqttDisconnectOnConnAckHandler disconnectOnConnAckHandler) {
+            final @NotNull MqttDecoder decoder) {
 
         this.connect = connect;
         this.connAckFlow = connAckFlow;
         this.clientConfig = clientConfig;
         this.session = session;
         this.decoder = decoder;
-        this.disconnectOnConnAckHandler = disconnectOnConnAckHandler;
     }
 
     @Override
@@ -152,8 +149,8 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
      * <p>
      * If it contains an Error Code, the channel is closed.
      * <p>
-     * Otherwise it is validated. Then this handler is removed from the pipeline and the {@link MqttPingHandler} and
-     * {@link MqttDisconnectOnConnAckHandler} are added to the pipeline.
+     * Otherwise it is validated. Then this handler is removed from the pipeline and the {@link MqttPingHandler} is
+     * added to the pipeline.
      *
      * @param connAck the CONNACK message.
      * @param channel the channel.
@@ -167,7 +164,7 @@ public class MqttConnectHandler extends MqttTimeoutInboundHandler {
         } else if (validateClientIdentifier(connAck, channel)) {
             final MqttClientConnectionConfig connectionConfig = addConnectionConfig(connAck, channel);
 
-            channel.pipeline().remove(this).addLast(MqttDisconnectOnConnAckHandler.NAME, disconnectOnConnAckHandler);
+            channel.pipeline().remove(this);
 
             ((MqttEncoder) channel.pipeline().get(MqttEncoder.NAME)).onConnected(connectionConfig);
 
