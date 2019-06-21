@@ -61,26 +61,29 @@ public interface Mqtt5UserPropertiesBuilderBase<B extends Mqtt5UserPropertiesBui
     @NotNull B add(@NotNull Mqtt5UserProperty userProperty);
 
     /**
-     * Adds a collection of {@link Mqtt5UserProperty User Property}.
+     * Adds {@link Mqtt5UserProperty User Properties}.
      *
      * @param userProperties the User Properties.
      * @return the builder.
+     * @since 1.2
      */
-    @NotNull B addAll(@NotNull Collection<Mqtt5UserProperty> userProperties);
+    @NotNull B addAll(@NotNull Mqtt5UserProperty @NotNull ... userProperties);
 
     /**
-     * Add {@link Mqtt5UserProperty User Properties}.
+     * Adds a collection of {@link Mqtt5UserProperty User Properties}.
      *
-     * @param userProperties the User Properties.
+     * @param userProperties the collection of User Properties.
      * @return the builder.
+     * @since 1.2
      */
-    @NotNull B addAll(@NotNull Mqtt5UserProperty... userProperties);
+    @NotNull B addAll(@NotNull Collection<@NotNull Mqtt5UserProperty> userProperties);
 
     /**
-     * Adds a stream of {@link Mqtt5UserProperty User Property}.
+     * Adds a stream of {@link Mqtt5UserProperty User Properties}.
      *
-     * @param userProperties the User Properties.
+     * @param userProperties the stream of User Properties.
      * @return the builder.
+     * @since 1.2
      */
-    @NotNull B addAll(@NotNull Stream<Mqtt5UserProperty> userProperties);
+    @NotNull B addAll(@NotNull Stream<@NotNull Mqtt5UserProperty> userProperties);
 }
