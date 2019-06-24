@@ -59,51 +59,36 @@ public abstract class Mqtt3SubscribeViewBuilder<B extends Mqtt3SubscribeViewBuil
         return self();
     }
 
-    public @NotNull B addSubscriptions(final @Nullable Collection<Mqtt3Subscription> subscriptions) {
-        buildFirstSubscription();
-
-        Checks.notNull(subscriptions, "Subscriptions");
-        Checks.atLeastOneElement(subscriptions, "Subscriptions");
-
-        final ImmutableList<Mqtt3SubscriptionView> mqtt3SubscriptionViews =
-                Checks.elementsNotNullAndNotImplemented(subscriptions, Mqtt3SubscriptionView.class, "Subscriptions");
-
-        mqtt3SubscriptionViews.forEach(subscription -> subscriptionsBuilder.add(subscription.getDelegate()));
-
-        return self();
-    }
-
-    public @NotNull B addSubscriptions(final @Nullable Mqtt3Subscription... subscriptions) {
-        buildFirstSubscription();
-
-        Checks.notNull(subscriptions, "Subscriptions");
-        Checks.atLeastOneElement(subscriptions, "Subscriptions");
-
-        //noinspection NullableProblems
-        final ImmutableList<Mqtt3SubscriptionView> mqtt3SubscriptionViews =
-                Checks.elementsNotNullAndNotImplemented(subscriptions, Mqtt3SubscriptionView.class, "Subscriptions");
-
-        mqtt3SubscriptionViews.forEach(subscription -> subscriptionsBuilder.add(subscription.getDelegate()));
-        return self();
-    }
-
-    public @NotNull B addSubscriptions(final @Nullable Stream<Mqtt3Subscription> subscriptions) {
-        buildFirstSubscription();
-
-        Checks.notNull(subscriptions, "Subscriptions");
-
-        final ImmutableList<Mqtt3SubscriptionView> mqtt3SubscriptionViews =
-                Checks.elementsNotNullAndNotImplemented(subscriptions, Mqtt3SubscriptionView.class, "Subscriptions");
-
-        Checks.atLeastOneElement(mqtt3SubscriptionViews, "Subscriptions");
-
-        mqtt3SubscriptionViews.forEach(subscription -> subscriptionsBuilder.add(subscription.getDelegate()));
-
-        return self();
-    }
-
     public @NotNull Mqtt3SubscriptionViewBuilder.Nested<B> addSubscription() {
         return new Mqtt3SubscriptionViewBuilder.Nested<>(this::addSubscription);
+    }
+
+    public @NotNull B addSubscriptions(final @Nullable Mqtt3Subscription @Nullable ... subscriptions) {
+        Checks.notNull(subscriptions, "Subscriptions");
+        buildFirstSubscription();
+        subscriptionsBuilder.ensureFree(subscriptions.length);
+        for (final Mqtt3Subscription subscription : subscriptions) {
+            addSubscription(subscription);
+        }
+        ensureAtLeastOneSubscription();
+        return self();
+    }
+
+    public @NotNull B addSubscriptions(final @Nullable Collection<@Nullable Mqtt3Subscription> subscriptions) {
+        Checks.notNull(subscriptions, "Subscriptions");
+        buildFirstSubscription();
+        subscriptionsBuilder.ensureFree(subscriptions.size());
+        subscriptions.forEach(this::addSubscription);
+        ensureAtLeastOneSubscription();
+        return self();
+    }
+
+    public @NotNull B addSubscriptions(final @Nullable Stream<@Nullable Mqtt3Subscription> subscriptions) {
+        Checks.notNull(subscriptions, "Subscriptions");
+        buildFirstSubscription();
+        subscriptions.forEach(this::addSubscription);
+        ensureAtLeastOneSubscription();
+        return self();
     }
 
     private @NotNull Mqtt3SubscriptionViewBuilder.Default getFirstSubscriptionBuilder() {
@@ -139,13 +124,16 @@ public abstract class Mqtt3SubscribeViewBuilder<B extends Mqtt3SubscribeViewBuil
         return self();
     }
 
-    public @NotNull Mqtt3SubscribeView build() {
-        buildFirstSubscription();
-        final ImmutableList<MqttSubscription> subscriptions = subscriptionsBuilder.build();
-        if (subscriptions.isEmpty()) {
+    private void ensureAtLeastOneSubscription() {
+        if (subscriptionsBuilder.getSize() == 0) {
             throw new IllegalStateException("At least one subscription must be added.");
         }
-        return Mqtt3SubscribeView.of(subscriptions);
+    }
+
+    public @NotNull Mqtt3SubscribeView build() {
+        buildFirstSubscription();
+        ensureAtLeastOneSubscription();
+        return Mqtt3SubscribeView.of(subscriptionsBuilder.build());
     }
 
     public static class Default extends Mqtt3SubscribeViewBuilder<Default>

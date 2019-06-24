@@ -18,6 +18,7 @@
 package com.hivemq.client.internal.mqtt.datatypes;
 
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
+import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.internal.util.collections.ImmutableList;
 import com.hivemq.client.mqtt.datatypes.MqttUtf8String;
 import com.hivemq.client.mqtt.mqtt5.datatypes.Mqtt5UserPropertiesBuilder;
@@ -63,18 +64,25 @@ public abstract class MqttUserPropertiesImplBuilder<B extends MqttUserProperties
         return self();
     }
 
-    public @NotNull B addAll(final @Nullable Collection<Mqtt5UserProperty> userProperties) {
-        listBuilder.addAll(MqttChecks.userPropertiesInCollection(userProperties));
+    public @NotNull B addAll(final @Nullable Mqtt5UserProperty @Nullable ... userProperties) {
+        Checks.notNull(userProperties, "User Properties");
+        listBuilder.ensureFree(userProperties.length);
+        for (final Mqtt5UserProperty userProperty : userProperties) {
+            add(userProperty);
+        }
         return self();
     }
 
-    public @NotNull B addAll(final @Nullable Mqtt5UserProperty... userProperties) {
-        listBuilder.addAll(MqttChecks.userPropertiesInArray(userProperties));
+    public @NotNull B addAll(final @Nullable Collection<@Nullable Mqtt5UserProperty> userProperties) {
+        Checks.notNull(userProperties, "User Properties");
+        listBuilder.ensureFree(userProperties.size());
+        userProperties.forEach(this::add);
         return self();
     }
 
-    public @NotNull B addAll(final @Nullable Stream<Mqtt5UserProperty> userProperties) {
-        listBuilder.addAll(MqttChecks.userPropertiesInStream(userProperties));
+    public @NotNull B addAll(final @Nullable Stream<@Nullable Mqtt5UserProperty> userProperties) {
+        Checks.notNull(userProperties, "User Properties");
+        userProperties.forEach(this::add);
         return self();
     }
 

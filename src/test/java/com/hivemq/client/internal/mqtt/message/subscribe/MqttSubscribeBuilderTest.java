@@ -44,8 +44,8 @@ class MqttSubscribeBuilderTest {
 
     @Test
     void addSubscription_error_when_subscription_is_implemented() {
-
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(
+                IllegalArgumentException.class,
                 () -> Mqtt5Subscribe.builder().addSubscription(new CustomMqtt5Subscription()));
     }
 
@@ -56,7 +56,7 @@ class MqttSubscribeBuilderTest {
 
         final Mqtt5Subscribe subscribe = Mqtt5Subscribe.builder().addSubscription(subscription).build();
 
-        final List<@NotNull ? extends Mqtt5Subscription> subscriptions = subscribe.getSubscriptions();
+        final List<? extends Mqtt5Subscription> subscriptions = subscribe.getSubscriptions();
         assertEquals(1, subscriptions.size());
 
         final Mqtt5Subscription mqtt5Subscription = subscriptions.get(0);
@@ -81,7 +81,7 @@ class MqttSubscribeBuilderTest {
 
         final Mqtt5Subscribe subscribe = Mqtt5Subscribe.builder().addSubscription(subscription).build();
 
-        final List<@NotNull ? extends Mqtt5Subscription> subscriptions = subscribe.getSubscriptions();
+        final List<? extends Mqtt5Subscription> subscriptions = subscribe.getSubscriptions();
         assertEquals(1, subscriptions.size());
 
         final Mqtt5Subscription mqtt5Subscription = subscriptions.get(0);
@@ -103,7 +103,7 @@ class MqttSubscribeBuilderTest {
         subscribeBuilder.topicFilter("fluent");
         final Mqtt5Subscribe mqtt5Subscribe = subscribeBuilder.addSubscription(subscription).build();
 
-        final List<@NotNull ? extends Mqtt5Subscription> subscriptions = mqtt5Subscribe.getSubscriptions();
+        final List<? extends Mqtt5Subscription> subscriptions = mqtt5Subscribe.getSubscriptions();
         assertEquals(2, subscriptions.size());
         assertTrue(subscriptions.get(0).getTopicFilter().toString().contains("fluent"));
         assertEquals(subscription, subscriptions.get(1));
@@ -124,7 +124,7 @@ class MqttSubscribeBuilderTest {
         subscribeBuilder.topicFilter("again_fluent");
         final Mqtt5Subscribe mqtt5Subscribe = subscribeBuilder.addSubscription(subscription2).build();
 
-        final List<@NotNull ? extends Mqtt5Subscription> subscriptions = mqtt5Subscribe.getSubscriptions();
+        final List<? extends Mqtt5Subscription> subscriptions = mqtt5Subscribe.getSubscriptions();
 
         assertEquals(4, subscriptions.size());
         assertTrue(subscriptions.get(0).getTopicFilter().toString().contains("fluent"));
@@ -140,7 +140,7 @@ class MqttSubscribeBuilderTest {
         final Mqtt5Subscribe mqtt5Subscribe =
                 subscribeBuilder.addSubscription().topicFilter("test").applySubscription().build();
 
-        final List<@NotNull ? extends Mqtt5Subscription> subscriptions = mqtt5Subscribe.getSubscriptions();
+        final List<? extends Mqtt5Subscription> subscriptions = mqtt5Subscribe.getSubscriptions();
         assertEquals(2, subscriptions.size());
         assertTrue(subscriptions.get(0).getTopicFilter().toString().contains("fluent"));
         assertTrue(subscriptions.get(1).getTopicFilter().toString().contains("test"));
@@ -151,7 +151,7 @@ class MqttSubscribeBuilderTest {
 
         final Mqtt5Subscribe mqtt5Subscribe = Mqtt5Subscribe.builder().topicFilter("fluent").build();
 
-        final List<@NotNull ? extends Mqtt5Subscription> subscriptions = mqtt5Subscribe.getSubscriptions();
+        final List<? extends Mqtt5Subscription> subscriptions = mqtt5Subscribe.getSubscriptions();
         assertEquals(1, subscriptions.size());
         assertTrue(subscriptions.get(0).getTopicFilter().toString().contains("fluent"));
     }
@@ -165,8 +165,7 @@ class MqttSubscribeBuilderTest {
 
     @Test
     void addSubscriptions_error_when_list_is_empty() {
-        assertThrows(
-                IllegalArgumentException.class, () -> Mqtt5Subscribe.builder().addSubscriptions(ImmutableList.of()));
+        assertThrows(IllegalStateException.class, () -> Mqtt5Subscribe.builder().addSubscriptions(ImmutableList.of()));
     }
 
     @Test
@@ -180,14 +179,7 @@ class MqttSubscribeBuilderTest {
         subscriptions.add(new CustomMqtt5Subscription());
 
         final Mqtt5SubscribeBuilder.Complete builder = Mqtt5Subscribe.builder().topicFilter("first");
-        assertThrows(IllegalArgumentException.class, () -> {
-            builder.addSubscriptions(subscriptions);
-        });
-
-        final Mqtt5Subscribe subscribe = builder.build();
-
-        assertEquals(1, subscribe.getSubscriptions().size());
-        assertTrue(subscribe.getSubscriptions().get(0).getTopicFilter().toString().contains("first"));
+        assertThrows(IllegalArgumentException.class, () -> builder.addSubscriptions(subscriptions));
     }
 
     @Test
@@ -209,7 +201,7 @@ class MqttSubscribeBuilderTest {
 
         final Mqtt5Subscribe subscribe = Mqtt5Subscribe.builder().addSubscriptions(subscriptions).build();
 
-        final List<@NotNull ? extends Mqtt5Subscription> mqtt5Subscriptions = subscribe.getSubscriptions();
+        final List<? extends Mqtt5Subscription> mqtt5Subscriptions = subscribe.getSubscriptions();
         assertEquals(subscriptions.size(), mqtt5Subscriptions.size());
         assertEquals(subscription, mqtt5Subscriptions.get(0));
         assertEquals(subscription2, mqtt5Subscriptions.get(1));
@@ -297,7 +289,7 @@ class MqttSubscribeBuilderTest {
                                 .build()))
                 .build();
 
-        final List<@NotNull ? extends Mqtt5Subscription> Mqtt5Subscriptions = subscribe.getSubscriptions();
+        final List<? extends Mqtt5Subscription> Mqtt5Subscriptions = subscribe.getSubscriptions();
         assertEquals(3, Mqtt5Subscriptions.size());
         assertTrue(Mqtt5Subscriptions.get(0).getTopicFilter().toString().contains(subscriptions.get(0)));
         assertTrue(Mqtt5Subscriptions.get(1).getTopicFilter().toString().contains(subscriptions.get(1)));
@@ -323,7 +315,7 @@ class MqttSubscribeBuilderTest {
         subscribeBuilder.topicFilter("fluent");
         final Mqtt5Subscribe mqtt5Subscribe = subscribeBuilder.addSubscriptions(subscriptions).build();
 
-        final List<@NotNull ? extends Mqtt5Subscription> mqtt5Subscriptions = mqtt5Subscribe.getSubscriptions();
+        final List<? extends Mqtt5Subscription> mqtt5Subscriptions = mqtt5Subscribe.getSubscriptions();
         assertEquals(4, mqtt5Subscriptions.size());
         assertTrue(mqtt5Subscriptions.get(0).getTopicFilter().toString().contains("fluent"));
         assertEquals(subscriptions.get(0), mqtt5Subscriptions.get(1));
@@ -355,7 +347,7 @@ class MqttSubscribeBuilderTest {
         subscribeBuilder.topicFilter("again_fluent");
         final Mqtt5Subscribe mqtt5Subscribe = subscribeBuilder.addSubscriptions(subscriptions2).build();
 
-        final List<@NotNull ? extends Mqtt5Subscription> mqtt5Subscriptions = mqtt5Subscribe.getSubscriptions();
+        final List<? extends Mqtt5Subscription> mqtt5Subscriptions = mqtt5Subscribe.getSubscriptions();
 
         assertEquals(5, mqtt5Subscriptions.size());
         assertTrue(mqtt5Subscriptions.get(0).getTopicFilter().toString().contains("fluent"));
@@ -387,7 +379,7 @@ class MqttSubscribeBuilderTest {
         subscribeBuilder.topicFilter("again_fluent");
         final Mqtt5Subscribe mqtt5Subscribe = subscribeBuilder.addSubscription(subscription3).build();
 
-        final List<@NotNull ? extends Mqtt5Subscription> mqtt5Subscriptions = mqtt5Subscribe.getSubscriptions();
+        final List<? extends Mqtt5Subscription> mqtt5Subscriptions = mqtt5Subscribe.getSubscriptions();
 
         assertEquals(5, mqtt5Subscriptions.size());
         assertTrue(mqtt5Subscriptions.get(0).getTopicFilter().toString().contains("fluent"));
@@ -398,7 +390,7 @@ class MqttSubscribeBuilderTest {
     }
 
     void compareSubscriptions(
-            final @NotNull Mqtt5Subscription[] expected, final List<@NotNull ? extends Mqtt5Subscription> actual) {
+            final @NotNull Mqtt5Subscription[] expected, final @NotNull List<? extends Mqtt5Subscription> actual) {
 
         assertEquals(expected.length, actual.size());
 
@@ -409,7 +401,7 @@ class MqttSubscribeBuilderTest {
 
     void compareSubscriptions(
             final @NotNull Collection<Mqtt5Subscription> expected,
-            final List<@NotNull ? extends Mqtt5Subscription> actual) {
+            final @NotNull List<? extends Mqtt5Subscription> actual) {
 
         assertEquals(expected.size(), actual.size());
 

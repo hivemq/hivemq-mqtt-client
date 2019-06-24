@@ -63,50 +63,45 @@ public abstract class MqttSubscribeBuilder<B extends MqttSubscribeBuilder<B>> {
         return self();
     }
 
-    public @NotNull B addSubscriptions(final @Nullable Collection<Mqtt5Subscription> subscriptions) {
-        buildFirstSubscription();
-
-        Checks.notNull(subscriptions, "Subscriptions");
-        Checks.atLeastOneElement(subscriptions, "Subscriptions");
-
-        subscriptionsBuilder.addAll(
-                Checks.elementsNotNullAndNotImplemented(subscriptions, MqttSubscription.class, "Subscriptions"));
-        return self();
-    }
-
-    public @NotNull B addSubscriptions(final @Nullable Mqtt5Subscription... subscriptions) {
-        buildFirstSubscription();
-
-        Checks.notNull(subscriptions, "Subscriptions");
-        Checks.atLeastOneElement(subscriptions, "Subscriptions");
-
-        //noinspection NullableProblems
-        subscriptionsBuilder.addAll(
-                Checks.elementsNotNullAndNotImplemented(subscriptions, MqttSubscription.class, "Subscriptions"));
-        return self();
-    }
-
-    public @NotNull B addSubscriptions(final @Nullable Stream<Mqtt5Subscription> subscriptions) {
-        buildFirstSubscription();
-
-        Checks.notNull(subscriptions, "Subscriptions");
-
-        final ImmutableList<MqttSubscription> subscriptionImmutableList =
-                Checks.elementsNotNullAndNotImplemented(subscriptions, MqttSubscription.class, "Subscriptions");
-
-        Checks.atLeastOneElement(subscriptionImmutableList, "Subscriptions");
-
-        subscriptionsBuilder.addAll(subscriptionImmutableList);
-        return self();
-    }
-
     public @NotNull MqttSubscriptionBuilder.Nested<B> addSubscription() {
         return new MqttSubscriptionBuilder.Nested<>(this::addSubscription);
+    }
+
+    public @NotNull B addSubscriptions(final @Nullable Mqtt5Subscription @Nullable ... subscriptions) {
+        Checks.notNull(subscriptions, "Subscriptions");
+        buildFirstSubscription();
+        subscriptionsBuilder.ensureFree(subscriptions.length);
+        for (final Mqtt5Subscription subscription : subscriptions) {
+            addSubscription(subscription);
+        }
+        ensureAtLeastOneSubscription();
+        return self();
+    }
+
+    public @NotNull B addSubscriptions(final @Nullable Collection<@Nullable Mqtt5Subscription> subscriptions) {
+        Checks.notNull(subscriptions, "Subscriptions");
+        buildFirstSubscription();
+        subscriptionsBuilder.ensureFree(subscriptions.size());
+        subscriptions.forEach(this::addSubscription);
+        ensureAtLeastOneSubscription();
+        return self();
+    }
+
+    public @NotNull B addSubscriptions(final @Nullable Stream<@Nullable Mqtt5Subscription> subscriptions) {
+        Checks.notNull(subscriptions, "Subscriptions");
+        buildFirstSubscription();
+        subscriptions.forEach(this::addSubscription);
+        ensureAtLeastOneSubscription();
+        return self();
     }
 
     public @NotNull B userProperties(final @Nullable Mqtt5UserProperties userProperties) {
         this.userProperties = MqttChecks.userProperties(userProperties);
         return self();
+    }
+
+    public @NotNull MqttUserPropertiesImplBuilder.Nested<B> userProperties() {
+        return new MqttUserPropertiesImplBuilder.Nested<>(userProperties, this::userProperties);
     }
 
     private @NotNull MqttSubscriptionBuilder.Default getFirstSubscriptionBuilder() {
@@ -121,10 +116,6 @@ public abstract class MqttSubscribeBuilder<B extends MqttSubscribeBuilder<B>> {
             subscriptionsBuilder.add(firstSubscriptionBuilder.build());
             firstSubscriptionBuilder = null;
         }
-    }
-
-    public @NotNull MqttUserPropertiesImplBuilder.Nested<B> userProperties() {
-        return new MqttUserPropertiesImplBuilder.Nested<>(userProperties, this::userProperties);
     }
 
     public @NotNull B topicFilter(final @Nullable String topicFilter) {
@@ -161,13 +152,16 @@ public abstract class MqttSubscribeBuilder<B extends MqttSubscribeBuilder<B>> {
         return self();
     }
 
-    public @NotNull MqttSubscribe build() {
-        buildFirstSubscription();
-        final ImmutableList<MqttSubscription> subscriptions = subscriptionsBuilder.build();
-        if (subscriptions.isEmpty()) {
+    private void ensureAtLeastOneSubscription() {
+        if (subscriptionsBuilder.getSize() == 0) {
             throw new IllegalStateException("At least one subscription must be added.");
         }
-        return new MqttSubscribe(subscriptions, userProperties);
+    }
+
+    public @NotNull MqttSubscribe build() {
+        buildFirstSubscription();
+        ensureAtLeastOneSubscription();
+        return new MqttSubscribe(subscriptionsBuilder.build(), userProperties);
     }
 
     public static class Default extends MqttSubscribeBuilder<Default> implements Mqtt5SubscribeBuilder.Start.Complete {

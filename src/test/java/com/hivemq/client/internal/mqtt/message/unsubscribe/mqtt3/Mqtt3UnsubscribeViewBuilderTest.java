@@ -20,7 +20,6 @@ package com.hivemq.client.internal.mqtt.message.unsubscribe.mqtt3;
 import com.hivemq.client.internal.util.collections.ImmutableList;
 import com.hivemq.client.mqtt.datatypes.MqttTopicFilter;
 import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import util.implementations.CustomMqttTopicFilter;
 
@@ -38,23 +37,18 @@ class Mqtt3UnsubscribeViewBuilderTest {
 
     @Test
     void addTopicFilter_error_when_topic_string_is_null() {
-
         final String topic = null;
-
         assertThrows(NullPointerException.class, () -> Mqtt3Unsubscribe.builder().addTopicFilter(topic));
     }
 
     @Test
     void addTopicFilter_error_when_mqtt_topic_is_null() {
-
         final MqttTopicFilter topic = null;
-
         assertThrows(NullPointerException.class, () -> Mqtt3Unsubscribe.builder().addTopicFilter(topic));
     }
 
     @Test
     void addTopicFilter_error_when_topic_object_is_implemented() {
-
         assertThrows(IllegalArgumentException.class,
                 () -> Mqtt3Unsubscribe.builder().addTopicFilter(new CustomMqttTopicFilter()));
     }
@@ -65,7 +59,7 @@ class Mqtt3UnsubscribeViewBuilderTest {
         final Mqtt3Unsubscribe subscribe =
                 Mqtt3Unsubscribe.builder().addTopicFilter("test").addTopicFilter(MqttTopicFilter.of("topics")).build();
 
-        final List<@NotNull ? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
+        final List<? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
         assertEquals(2, unsubscribeTopics.size());
 
         assertEquals("test", unsubscribeTopics.get(0).toString());
@@ -78,7 +72,7 @@ class Mqtt3UnsubscribeViewBuilderTest {
         final Mqtt3Unsubscribe subscribe =
                 Mqtt3Unsubscribe.builder().topicFilter("test").addTopicFilter(MqttTopicFilter.of("topics")).build();
 
-        final List<@NotNull ? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
+        final List<? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
         assertEquals(2, unsubscribeTopics.size());
 
         assertEquals("test", unsubscribeTopics.get(0).toString());
@@ -91,7 +85,7 @@ class Mqtt3UnsubscribeViewBuilderTest {
         final Mqtt3Unsubscribe subscribe =
                 Mqtt3Unsubscribe.builder().topicFilter("test").addTopicFilter("topics").build();
 
-        final List<@NotNull ? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
+        final List<? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
         assertEquals(2, unsubscribeTopics.size());
 
         assertEquals("test", unsubscribeTopics.get(0).toString());
@@ -110,7 +104,7 @@ class Mqtt3UnsubscribeViewBuilderTest {
                 .addTopicFilter(MqttTopicFilter.of("topics"))
                 .build();
 
-        final List<@NotNull ? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
+        final List<? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
         assertEquals(2, unsubscribeTopics.size());
 
         assertEquals("first/second/#", unsubscribeTopics.get(0).toString());
@@ -129,7 +123,7 @@ class Mqtt3UnsubscribeViewBuilderTest {
                 .addTopicFilter("topics")
                 .build();
 
-        final List<@NotNull ? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
+        final List<? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
         assertEquals(2, unsubscribeTopics.size());
 
         assertEquals("first/second/#", unsubscribeTopics.get(0).toString());
@@ -148,7 +142,7 @@ class Mqtt3UnsubscribeViewBuilderTest {
                 .addTopicFilter(MqttTopicFilter.of("secondAdd"))
                 .build();
 
-        final List<@NotNull ? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
+        final List<? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
         assertEquals(4, unsubscribeTopics.size());
 
         assertEquals("test", unsubscribeTopics.get(0).toString());
@@ -169,7 +163,7 @@ class Mqtt3UnsubscribeViewBuilderTest {
                 .addTopicFilter("secondAdd")
                 .build();
 
-        final List<@NotNull ? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
+        final List<? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
         assertEquals(4, unsubscribeTopics.size());
 
         assertEquals("test", unsubscribeTopics.get(0).toString());
@@ -190,7 +184,7 @@ class Mqtt3UnsubscribeViewBuilderTest {
                 .applyTopicFilter()
                 .build();
 
-        final List<@NotNull ? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
+        final List<? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
         assertEquals(2, unsubscribeTopics.size());
 
         assertEquals("test", unsubscribeTopics.get(0).toString());
@@ -202,7 +196,7 @@ class Mqtt3UnsubscribeViewBuilderTest {
 
         final Mqtt3Unsubscribe subscribe = Mqtt3Unsubscribe.builder().topicFilter("test").build();
 
-        final List<@NotNull ? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
+        final List<? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
         assertEquals(1, unsubscribeTopics.size());
 
         assertEquals("test", unsubscribeTopics.get(0).toString());
@@ -210,46 +204,35 @@ class Mqtt3UnsubscribeViewBuilderTest {
 
     @Test
     void addTopicFilters_error_when_collection_is_null() {
-
         assertThrows(NullPointerException.class,
                 () -> Mqtt3Unsubscribe.builder().addTopicFilters((ArrayList<MqttTopicFilter>) null));
     }
 
     @Test
-    void addTopicFilters_error_when_varagrs_is_null() {
-
+    void addTopicFilters_error_when_varargs_is_null() {
         assertThrows(
                 NullPointerException.class, () -> Mqtt3Unsubscribe.builder().addTopicFilters((MqttTopicFilter[]) null));
     }
 
     @Test
     void addTopicFilters_error_when_stream_is_null() {
-
         assertThrows(NullPointerException.class,
                 () -> Mqtt3Unsubscribe.builder().addTopicFilters((Stream<MqttTopicFilter>) null));
     }
 
     @Test
     void addTopicFilters_error_when_collection_is_empty() {
-
-        final List<MqttTopicFilter> emptyList = new ArrayList<>();
-
-        assertThrows(IllegalArgumentException.class, () -> Mqtt3Unsubscribe.builder().addTopicFilters(emptyList));
+        assertThrows(IllegalStateException.class, () -> Mqtt3Unsubscribe.builder().addTopicFilters(new ArrayList<>()));
     }
 
     @Test
     void addTopicFilters_error_when_varargs_is_empty() {
-
-        assertThrows(IllegalArgumentException.class, () -> Mqtt3Unsubscribe.builder().addTopicFilters());
+        assertThrows(IllegalStateException.class, () -> Mqtt3Unsubscribe.builder().addTopicFilters());
     }
 
     @Test
     void addTopicFilters_error_when_stream_is_empty() {
-
-        final List<MqttTopicFilter> emptyList = new ArrayList<>();
-
-        assertThrows(IllegalArgumentException.class,
-                () -> Mqtt3Unsubscribe.builder().addTopicFilters(emptyList.stream()));
+        assertThrows(IllegalStateException.class, () -> Mqtt3Unsubscribe.builder().addTopicFilters(Stream.of()));
     }
 
     @Test
@@ -260,7 +243,7 @@ class Mqtt3UnsubscribeViewBuilderTest {
 
         final Mqtt3Unsubscribe subscribe = Mqtt3Unsubscribe.builder().addTopicFilters(topics).build();
 
-        final List<@NotNull ? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
+        final List<? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
         assertEquals(3, unsubscribeTopics.size());
 
         assertEquals("test", unsubscribeTopics.get(0).toString());
@@ -276,7 +259,7 @@ class Mqtt3UnsubscribeViewBuilderTest {
 
         final Mqtt3Unsubscribe subscribe = Mqtt3Unsubscribe.builder().addTopicFilters(topics).build();
 
-        final List<@NotNull ? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
+        final List<? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
         assertEquals(3, unsubscribeTopics.size());
 
         assertEquals("test", unsubscribeTopics.get(0).toString());
@@ -292,7 +275,7 @@ class Mqtt3UnsubscribeViewBuilderTest {
 
         final Mqtt3Unsubscribe subscribe = Mqtt3Unsubscribe.builder().addTopicFilters(topics).build();
 
-        final List<@NotNull ? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
+        final List<? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
         assertEquals(3, unsubscribeTopics.size());
 
         assertEquals("test", unsubscribeTopics.get(0).toString());
@@ -308,7 +291,7 @@ class Mqtt3UnsubscribeViewBuilderTest {
         final Mqtt3Unsubscribe subscribe =
                 Mqtt3Unsubscribe.builder().addTopicFilters(topics.stream().map(MqttTopicFilter::of)).build();
 
-        final List<@NotNull ? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
+        final List<? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
         assertEquals(3, unsubscribeTopics.size());
 
         assertEquals("test", unsubscribeTopics.get(0).toString());
@@ -325,7 +308,7 @@ class Mqtt3UnsubscribeViewBuilderTest {
         final Mqtt3Unsubscribe subscribe =
                 Mqtt3Unsubscribe.builder().topicFilter("fluent").addTopicFilters(topics).build();
 
-        final List<@NotNull ? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
+        final List<? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
         assertEquals(4, unsubscribeTopics.size());
 
         assertEquals("fluent", unsubscribeTopics.get(0).toString());
@@ -342,12 +325,10 @@ class Mqtt3UnsubscribeViewBuilderTest {
 
         final Mqtt3Unsubscribe subscribe = Mqtt3Unsubscribe.builder()
                 .topicFilter()
-                .addLevel("first")
-                .addLevel("second")
-                .multiLevelWildcard().applyTopicFilter().addTopicFilters(topics)
+                .addLevel("first").addLevel("second").multiLevelWildcard().applyTopicFilter().addTopicFilters(topics)
                 .build();
 
-        final List<@NotNull ? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
+        final List<? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
         assertEquals(4, unsubscribeTopics.size());
 
         assertEquals("first/second/#", unsubscribeTopics.get(0).toString());
@@ -365,10 +346,12 @@ class Mqtt3UnsubscribeViewBuilderTest {
 
         final Mqtt3Unsubscribe subscribe = Mqtt3Unsubscribe.builder().topicFilter("fluent").addTopicFilters(topics)
                 .addTopicFilter()
-                .addLevel("nested").applyTopicFilter().addTopicFilters(topics2)
+                .addLevel("nested")
+                .applyTopicFilter()
+                .addTopicFilters(topics2)
                 .build();
 
-        final List<@NotNull ? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
+        final List<? extends MqttTopicFilter> unsubscribeTopics = subscribe.getTopicFilters();
         assertEquals(6, unsubscribeTopics.size());
 
         assertEquals("fluent", unsubscribeTopics.get(0).toString());
@@ -387,5 +370,4 @@ class Mqtt3UnsubscribeViewBuilderTest {
 
         assertThrows(IllegalArgumentException.class, () -> Mqtt3Unsubscribe.builder().addTopicFilters(topicFilters));
     }
-
 }
