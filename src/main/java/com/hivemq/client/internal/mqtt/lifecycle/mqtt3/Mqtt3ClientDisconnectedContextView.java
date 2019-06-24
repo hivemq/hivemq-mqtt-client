@@ -20,6 +20,7 @@ package com.hivemq.client.internal.mqtt.lifecycle.mqtt3;
 import com.hivemq.client.internal.mqtt.MqttClientConfig;
 import com.hivemq.client.internal.mqtt.lifecycle.MqttClientReconnector;
 import com.hivemq.client.internal.mqtt.mqtt3.Mqtt3ClientConfigView;
+import com.hivemq.client.internal.mqtt.mqtt3.exceptions.Mqtt3ExceptionFactory;
 import com.hivemq.client.mqtt.lifecycle.MqttClientDisconnectedContext;
 import com.hivemq.client.mqtt.lifecycle.MqttDisconnectSource;
 import com.hivemq.client.mqtt.mqtt3.lifecycle.Mqtt3ClientDisconnectedContext;
@@ -34,8 +35,8 @@ public class Mqtt3ClientDisconnectedContextView implements Mqtt3ClientDisconnect
             final @NotNull MqttClientConfig clientConfig, final @NotNull MqttDisconnectSource source,
             final @NotNull Throwable cause, final @NotNull MqttClientReconnector reconnector) {
 
-        return new Mqtt3ClientDisconnectedContextView(
-                new Mqtt3ClientConfigView(clientConfig), source, cause, new Mqtt3ClientReconnectorView(reconnector));
+        return new Mqtt3ClientDisconnectedContextView(new Mqtt3ClientConfigView(clientConfig), source,
+                Mqtt3ExceptionFactory.map(cause), new Mqtt3ClientReconnectorView(reconnector));
     }
 
     private final @NotNull Mqtt3ClientConfigView clientConfig;
