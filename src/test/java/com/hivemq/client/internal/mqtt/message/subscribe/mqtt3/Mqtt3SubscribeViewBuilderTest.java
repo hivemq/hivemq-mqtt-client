@@ -43,8 +43,8 @@ class Mqtt3SubscribeViewBuilderTest {
 
     @Test
     void addSubscription_error_when_subscription_is_implemented() {
-
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(
+                IllegalArgumentException.class,
                 () -> Mqtt3Subscribe.builder().addSubscription(new CustomMqtt3Subscription()));
     }
 
@@ -55,7 +55,7 @@ class Mqtt3SubscribeViewBuilderTest {
 
         final Mqtt3Subscribe subscribe = Mqtt3Subscribe.builder().addSubscription(subscription).build();
 
-        final List<@NotNull ? extends Mqtt3Subscription> subscriptions = subscribe.getSubscriptions();
+        final List<? extends Mqtt3Subscription> subscriptions = subscribe.getSubscriptions();
         assertEquals(1, subscriptions.size());
 
         final Mqtt3Subscription mqtt3Subscription = subscriptions.get(0);
@@ -72,7 +72,7 @@ class Mqtt3SubscribeViewBuilderTest {
 
         final Mqtt3Subscribe subscribe = Mqtt3Subscribe.builder().addSubscription(subscription).build();
 
-        final List<@NotNull ? extends Mqtt3Subscription> subscriptions = subscribe.getSubscriptions();
+        final List<? extends Mqtt3Subscription> subscriptions = subscribe.getSubscriptions();
         assertEquals(1, subscriptions.size());
 
         final Mqtt3Subscription mqtt3Subscription = subscriptions.get(0);
@@ -91,7 +91,7 @@ class Mqtt3SubscribeViewBuilderTest {
         subscribeBuilder.topicFilter("fluent");
         final Mqtt3Subscribe Mqtt3Subscribe = subscribeBuilder.addSubscription(subscription).build();
 
-        final List<@NotNull ? extends Mqtt3Subscription> subscriptions = Mqtt3Subscribe.getSubscriptions();
+        final List<? extends Mqtt3Subscription> subscriptions = Mqtt3Subscribe.getSubscriptions();
         assertEquals(2, subscriptions.size());
         assertTrue(subscriptions.get(0).getTopicFilter().toString().contains("fluent"));
         assertEquals(subscription, subscriptions.get(1));
@@ -112,7 +112,7 @@ class Mqtt3SubscribeViewBuilderTest {
         subscribeBuilder.topicFilter("again_fluent");
         final Mqtt3Subscribe Mqtt3Subscribe = subscribeBuilder.addSubscription(subscription2).build();
 
-        final List<@NotNull ? extends Mqtt3Subscription> subscriptions = Mqtt3Subscribe.getSubscriptions();
+        final List<? extends Mqtt3Subscription> subscriptions = Mqtt3Subscribe.getSubscriptions();
 
         assertEquals(4, subscriptions.size());
         assertTrue(subscriptions.get(0).getTopicFilter().toString().contains("fluent"));
@@ -128,7 +128,7 @@ class Mqtt3SubscribeViewBuilderTest {
         final Mqtt3Subscribe Mqtt3Subscribe =
                 subscribeBuilder.addSubscription().topicFilter("test").applySubscription().build();
 
-        final List<@NotNull ? extends Mqtt3Subscription> subscriptions = Mqtt3Subscribe.getSubscriptions();
+        final List<? extends Mqtt3Subscription> subscriptions = Mqtt3Subscribe.getSubscriptions();
         assertEquals(2, subscriptions.size());
         assertTrue(subscriptions.get(0).getTopicFilter().toString().contains("fluent"));
         assertTrue(subscriptions.get(1).getTopicFilter().toString().contains("test"));
@@ -139,7 +139,7 @@ class Mqtt3SubscribeViewBuilderTest {
 
         final Mqtt3Subscribe mqtt3Subscribe = Mqtt3Subscribe.builder().topicFilter("fluent").build();
 
-        final List<@NotNull ? extends Mqtt3Subscription> subscriptions = mqtt3Subscribe.getSubscriptions();
+        final List<? extends Mqtt3Subscription> subscriptions = mqtt3Subscribe.getSubscriptions();
         assertEquals(1, subscriptions.size());
         assertTrue(subscriptions.get(0).getTopicFilter().toString().contains("fluent"));
     }
@@ -153,8 +153,7 @@ class Mqtt3SubscribeViewBuilderTest {
 
     @Test
     void addSubscriptions_error_when_list_is_empty() {
-        assertThrows(
-                IllegalArgumentException.class, () -> Mqtt3Subscribe.builder().addSubscriptions(ImmutableList.of()));
+        assertThrows(IllegalStateException.class, () -> Mqtt3Subscribe.builder().addSubscriptions(ImmutableList.of()));
     }
 
     @Test
@@ -168,14 +167,7 @@ class Mqtt3SubscribeViewBuilderTest {
         subscriptions.add(new CustomMqtt3Subscription());
 
         final Mqtt3SubscribeBuilder.Complete builder = Mqtt3Subscribe.builder().topicFilter("first");
-        assertThrows(IllegalArgumentException.class, () -> {
-            builder.addSubscriptions(subscriptions);
-        });
-
-        final Mqtt3Subscribe subscribe = builder.build();
-
-        assertEquals(1, subscribe.getSubscriptions().size());
-        assertTrue(subscribe.getSubscriptions().get(0).getTopicFilter().toString().contains("first"));
+        assertThrows(IllegalArgumentException.class, () -> builder.addSubscriptions(subscriptions));
     }
 
     @Test
@@ -281,7 +273,7 @@ class Mqtt3SubscribeViewBuilderTest {
                                 .build()))
                 .build();
 
-        final List<@NotNull ? extends Mqtt3Subscription> mqtt3Subscriptions = subscribe.getSubscriptions();
+        final List<? extends Mqtt3Subscription> mqtt3Subscriptions = subscribe.getSubscriptions();
         assertEquals(3, mqtt3Subscriptions.size());
         assertTrue(mqtt3Subscriptions.get(0).getTopicFilter().toString().contains(subscriptions.get(0)));
         assertTrue(mqtt3Subscriptions.get(1).getTopicFilter().toString().contains(subscriptions.get(1)));
@@ -309,7 +301,7 @@ class Mqtt3SubscribeViewBuilderTest {
         subscribeBuilder.topicFilter("fluent");
         final Mqtt3Subscribe Mqtt3Subscribe = subscribeBuilder.addSubscriptions(subscriptions).build();
 
-        final List<@NotNull ? extends Mqtt3Subscription> mqtt3Subscriptions = Mqtt3Subscribe.getSubscriptions();
+        final List<? extends Mqtt3Subscription> mqtt3Subscriptions = Mqtt3Subscribe.getSubscriptions();
         assertEquals(4, mqtt3Subscriptions.size());
         assertTrue(mqtt3Subscriptions.get(0).getTopicFilter().toString().contains("fluent"));
         assertEquals(subscriptions.get(0), mqtt3Subscriptions.get(1));
@@ -339,7 +331,7 @@ class Mqtt3SubscribeViewBuilderTest {
         subscribeBuilder.topicFilter("again_fluent");
         final Mqtt3Subscribe Mqtt3Subscribe = subscribeBuilder.addSubscriptions(subscriptions2).build();
 
-        final List<@NotNull ? extends Mqtt3Subscription> mqtt3Subscriptions = Mqtt3Subscribe.getSubscriptions();
+        final List<? extends Mqtt3Subscription> mqtt3Subscriptions = Mqtt3Subscribe.getSubscriptions();
 
         assertEquals(5, mqtt3Subscriptions.size());
         assertTrue(mqtt3Subscriptions.get(0).getTopicFilter().toString().contains("fluent"));
@@ -371,7 +363,7 @@ class Mqtt3SubscribeViewBuilderTest {
         subscribeBuilder.topicFilter("again_fluent");
         final Mqtt3Subscribe Mqtt3Subscribe = subscribeBuilder.addSubscription(subscription3).build();
 
-        final List<@NotNull ? extends Mqtt3Subscription> mqtt3Subscriptions = Mqtt3Subscribe.getSubscriptions();
+        final List<? extends Mqtt3Subscription> mqtt3Subscriptions = Mqtt3Subscribe.getSubscriptions();
 
         assertEquals(5, mqtt3Subscriptions.size());
         assertTrue(mqtt3Subscriptions.get(0).getTopicFilter().toString().contains("fluent"));
@@ -382,7 +374,7 @@ class Mqtt3SubscribeViewBuilderTest {
     }
 
     void compareSubscriptions(
-            final @NotNull Mqtt3Subscription[] expected, final List<@NotNull ? extends Mqtt3Subscription> actual) {
+            final @NotNull Mqtt3Subscription[] expected, final @NotNull List<? extends Mqtt3Subscription> actual) {
 
         assertEquals(expected.length, actual.size());
 
@@ -393,7 +385,7 @@ class Mqtt3SubscribeViewBuilderTest {
 
     void compareSubscriptions(
             final @NotNull Collection<Mqtt3Subscription> expected,
-            final List<@NotNull ? extends Mqtt3Subscription> actual) {
+            final @NotNull List<? extends Mqtt3Subscription> actual) {
 
         assertEquals(expected.size(), actual.size());
 

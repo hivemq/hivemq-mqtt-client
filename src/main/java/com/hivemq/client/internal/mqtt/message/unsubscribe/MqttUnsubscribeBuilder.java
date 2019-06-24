@@ -33,9 +33,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -68,41 +66,33 @@ public abstract class MqttUnsubscribeBuilder<B extends MqttUnsubscribeBuilder<B>
         return self();
     }
 
-    public @NotNull B addTopicFilters(final @Nullable Collection<MqttTopicFilter> topicFilters) {
-        Checks.notNull(topicFilters, "Topic Filters");
-        Checks.atLeastOneElement(topicFilters, "Topic Filters");
-        Checks.elementsNotNull(topicFilters, "Topic Filters");
-
-        topicFilters.forEach(topicFilter -> topicFiltersBuilder.add(MqttChecks.topicFilter(topicFilter)));
-        return self();
-    }
-
-    public @NotNull B addTopicFilters(final @Nullable MqttTopicFilter... topicFilters) {
-        Checks.notNull(topicFilters, "Topic Filters");
-        Checks.atLeastOneElement(topicFilters, "Topic Filters");
-        Checks.elementsNotNull(topicFilters, "Topic Filters");
-
-        for (final MqttTopicFilter topicFilter : topicFilters) {
-            topicFiltersBuilder.add(MqttChecks.topicFilter(topicFilter));
-        }
-
-        return self();
-    }
-
-    public @NotNull B addTopicFilters(final @Nullable Stream<MqttTopicFilter> topicFilters) {
-        Checks.notNull(topicFilters, "Topic Filters");
-
-        final List<MqttTopicFilter> topicFilterList = topicFilters.collect(Collectors.toList());
-
-        Checks.atLeastOneElement(topicFilterList, "Topic Filters");
-        Checks.elementsNotNull(topicFilterList, "Topic Filters");
-
-        topicFilterList.forEach(topicFilter -> topicFiltersBuilder.add(MqttChecks.topicFilter(topicFilter)));
-        return self();
-    }
-
     public @NotNull MqttTopicFilterImplBuilder.Nested<B> addTopicFilter() {
         return new MqttTopicFilterImplBuilder.Nested<>(this::addTopicFilter);
+    }
+
+    public @NotNull B addTopicFilters(final @Nullable MqttTopicFilter @Nullable ... topicFilters) {
+        Checks.notNull(topicFilters, "Topic Filters");
+        topicFiltersBuilder.ensureFree(topicFilters.length);
+        for (final MqttTopicFilter topicFilter : topicFilters) {
+            addTopicFilter(topicFilter);
+        }
+        ensureAtLeastOneSubscription();
+        return self();
+    }
+
+    public @NotNull B addTopicFilters(final @Nullable Collection<@Nullable MqttTopicFilter> topicFilters) {
+        Checks.notNull(topicFilters, "Topic Filters");
+        topicFiltersBuilder.ensureFree(topicFilters.size());
+        topicFilters.forEach(this::addTopicFilter);
+        ensureAtLeastOneSubscription();
+        return self();
+    }
+
+    public @NotNull B addTopicFilters(final @Nullable Stream<@Nullable MqttTopicFilter> topicFilters) {
+        Checks.notNull(topicFilters, "Topic Filters");
+        topicFilters.forEach(this::addTopicFilter);
+        ensureAtLeastOneSubscription();
+        return self();
     }
 
     public @NotNull B reverse(final @Nullable Mqtt5Subscribe subscribe) {
@@ -134,12 +124,15 @@ public abstract class MqttUnsubscribeBuilder<B extends MqttUnsubscribeBuilder<B>
         return new MqttTopicFilterImplBuilder.Nested<>(this::topicFilter);
     }
 
-    public @NotNull MqttUnsubscribe build() {
-        final ImmutableList<MqttTopicFilterImpl> topicFilters = topicFiltersBuilder.build();
-        if (topicFilters.isEmpty()) {
+    private void ensureAtLeastOneSubscription() {
+        if (topicFiltersBuilder.getSize() == 0) {
             throw new IllegalStateException("At least one topic filter must be added.");
         }
-        return new MqttUnsubscribe(topicFilters, userProperties);
+    }
+
+    public @NotNull MqttUnsubscribe build() {
+        ensureAtLeastOneSubscription();
+        return new MqttUnsubscribe(topicFiltersBuilder.build(), userProperties);
     }
 
     public static class Default extends MqttUnsubscribeBuilder<Default>
