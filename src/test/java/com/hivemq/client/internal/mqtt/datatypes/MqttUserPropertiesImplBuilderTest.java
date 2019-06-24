@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Test;
 import util.implementations.CustomUserProperty;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -53,43 +54,29 @@ class MqttUserPropertiesImplBuilderTest {
         final Mqtt5UserPropertiesBuilder userPropertiesBuilder = Mqtt5UserProperties.builder();
 
         assertThrows(IllegalArgumentException.class, () -> userPropertiesBuilder.addAll(userProperties));
-
-        final Mqtt5UserProperties properties = userPropertiesBuilder.build();
-
-        assertTrue(properties.asList().isEmpty());
     }
 
     @Test
     void addAll_empty_list_allowed() {
-
         final Mqtt5UserProperties properties = Mqtt5UserProperties.builder().addAll(new ArrayList<>()).build();
-
         assertTrue(properties.asList().isEmpty());
     }
 
     @Test
     void addAll_empty_stream_allowed() {
-
-        final List<Mqtt5UserProperty> userProperties = new ArrayList<>();
-
-        final Mqtt5UserProperties properties = Mqtt5UserProperties.builder().addAll(userProperties.stream()).build();
-
+        final Mqtt5UserProperties properties = Mqtt5UserProperties.builder().addAll(Stream.of()).build();
         assertTrue(properties.asList().isEmpty());
     }
 
     @Test
     void addAll_empty_array_allowed() {
-
         final Mqtt5UserProperties properties = Mqtt5UserProperties.builder().addAll(new Mqtt5UserProperty[0]).build();
-
         assertTrue(properties.asList().isEmpty());
     }
 
     @Test
     void addAll_empty_set_allowed() {
-
         final Mqtt5UserProperties properties = Mqtt5UserProperties.builder().addAll(new HashSet<>()).build();
-
         assertTrue(properties.asList().isEmpty());
     }
 
@@ -107,7 +94,7 @@ class MqttUserPropertiesImplBuilderTest {
 
         final Mqtt5UserProperties properties = Mqtt5UserProperties.builder().addAll(userProperties).build();
 
-        final List<@NotNull ? extends Mqtt5UserProperty> mqtt5UserProperties = properties.asList();
+        final List<? extends Mqtt5UserProperty> mqtt5UserProperties = properties.asList();
 
         compareProperties(userProperties, mqtt5UserProperties);
     }
@@ -126,7 +113,7 @@ class MqttUserPropertiesImplBuilderTest {
 
         final Mqtt5UserProperties properties = Mqtt5UserProperties.builder().addAll(userProperties.values()).build();
 
-        final List<@NotNull ? extends Mqtt5UserProperty> mqtt5UserProperties = properties.asList();
+        final List<? extends Mqtt5UserProperty> mqtt5UserProperties = properties.asList();
 
         compareProperties(userProperties.values(), mqtt5UserProperties);
     }
@@ -145,7 +132,7 @@ class MqttUserPropertiesImplBuilderTest {
 
         final Mqtt5UserProperties properties = Mqtt5UserProperties.builder().addAll(userProperties).build();
 
-        final List<@NotNull ? extends Mqtt5UserProperty> mqtt5UserProperties = properties.asList();
+        final List<? extends Mqtt5UserProperty> mqtt5UserProperties = properties.asList();
 
         compareProperties(userProperties, mqtt5UserProperties);
     }
@@ -161,7 +148,7 @@ class MqttUserPropertiesImplBuilderTest {
 
         final Mqtt5UserProperties properties = Mqtt5UserProperties.builder().addAll(userProperties).build();
 
-        final List<@NotNull ? extends Mqtt5UserProperty> mqtt5UserProperties = properties.asList();
+        final List<? extends Mqtt5UserProperty> mqtt5UserProperties = properties.asList();
 
         compareProperties(userProperties, mqtt5UserProperties);
     }
@@ -180,7 +167,7 @@ class MqttUserPropertiesImplBuilderTest {
 
         final Mqtt5UserProperties properties = Mqtt5UserProperties.builder().addAll(userProperties.stream()).build();
 
-        final List<@NotNull ? extends Mqtt5UserProperty> mqtt5UserProperties = properties.asList();
+        final List<? extends Mqtt5UserProperty> mqtt5UserProperties = properties.asList();
 
         compareProperties(userProperties, mqtt5UserProperties);
     }
@@ -196,7 +183,7 @@ class MqttUserPropertiesImplBuilderTest {
                 .addAll(ImmutableList.of(userProperty, userProperty2, userProperty3))
                 .build();
 
-        final List<@NotNull ? extends Mqtt5UserProperty> mqtt5UserProperties = properties.asList();
+        final List<? extends Mqtt5UserProperty> mqtt5UserProperties = properties.asList();
 
         assertEquals(3, mqtt5UserProperties.size());
         assertEquals(userProperty, mqtt5UserProperties.get(0));
@@ -205,7 +192,7 @@ class MqttUserPropertiesImplBuilderTest {
     }
 
     void compareProperties(
-            final @NotNull Mqtt5UserProperty[] expected, final List<@NotNull ? extends Mqtt5UserProperty> actual) {
+            final @NotNull Mqtt5UserProperty[] expected, final @NotNull List<? extends Mqtt5UserProperty> actual) {
 
         assertEquals(expected.length, actual.size());
 
@@ -219,7 +206,7 @@ class MqttUserPropertiesImplBuilderTest {
 
     void compareProperties(
             final @NotNull Collection<Mqtt5UserProperty> expected,
-            final List<@NotNull ? extends Mqtt5UserProperty> actual) {
+            final @NotNull List<? extends Mqtt5UserProperty> actual) {
         compareProperties(expected.toArray(new Mqtt5UserProperty[0]), actual);
     }
 }

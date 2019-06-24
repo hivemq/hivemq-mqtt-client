@@ -50,7 +50,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.nio.ByteBuffer;
 import java.util.Collection;
-import java.util.stream.Stream;
 
 /**
  * @author Silvio Giebl
@@ -164,42 +163,6 @@ public final class MqttChecks {
         final ImmutableList<Mqtt5UserProperty> immutable = ImmutableList.copyOf(userProperties, "User properties");
         return MqttUserPropertiesImpl.of(
                 Checks.elementsNotImplemented(immutable, MqttUserPropertyImpl.class, "User property"));
-    }
-
-    @Contract("null -> fail")
-    public static @NotNull ImmutableList<MqttUserPropertyImpl> userPropertiesInCollection(
-            final @Nullable Collection<@Nullable Mqtt5UserProperty> userProperties) {
-
-        Checks.notNull(userProperties, "User Properties");
-
-        final MqttUserPropertiesImpl tempUserProperties = MqttUserPropertiesImpl.of(
-                Checks.elementsNotNullAndNotImplemented(userProperties, MqttUserPropertyImpl.class, "User property"));
-
-        return tempUserProperties.asList();
-    }
-
-    @Contract("null -> fail")
-    public static @NotNull ImmutableList<MqttUserPropertyImpl> userPropertiesInArray(
-            final @Nullable Mqtt5UserProperty... userProperties) {
-
-        Checks.notNull(userProperties, "User Properties");
-
-        final MqttUserPropertiesImpl tempUserProperties = MqttUserPropertiesImpl.of(
-                Checks.elementsNotNullAndNotImplemented(userProperties, MqttUserPropertyImpl.class, "User property"));
-
-        return tempUserProperties.asList();
-    }
-
-    @Contract("null -> fail")
-    public static @NotNull ImmutableList<MqttUserPropertyImpl> userPropertiesInStream(
-            final @Nullable Stream<Mqtt5UserProperty> userProperties) {
-
-        Checks.notNull(userProperties, "User Properties");
-
-        final MqttUserPropertiesImpl tempUserProperties = MqttUserPropertiesImpl.of(
-                Checks.elementsNotNullAndNotImplemented(userProperties, MqttUserPropertyImpl.class, "User property"));
-
-        return tempUserProperties.asList();
     }
 
     @Contract("null -> fail")
