@@ -22,7 +22,7 @@ import com.hivemq.client.internal.mqtt.codec.encoder.MqttMessageEncoder;
 import com.hivemq.client.internal.mqtt.message.disconnect.MqttDisconnect;
 import com.hivemq.client.mqtt.mqtt3.message.Mqtt3MessageType;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import io.netty.buffer.UnpooledByteBufAllocator;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
@@ -35,8 +35,9 @@ import javax.inject.Singleton;
 public class Mqtt3DisconnectEncoder extends MqttMessageEncoder<MqttDisconnect> {
 
     private static final int ENCODED_LENGTH = 2;
-    private static final @NotNull ByteBuf PACKET =
-            Unpooled.directBuffer(ENCODED_LENGTH).writeByte(Mqtt3MessageType.DISCONNECT.getCode() << 4).writeByte(0);
+    private static final @NotNull ByteBuf PACKET = UnpooledByteBufAllocator.DEFAULT.ioBuffer(ENCODED_LENGTH)
+            .writeByte(Mqtt3MessageType.DISCONNECT.getCode() << 4)
+            .writeByte(0);
 
     @Inject
     Mqtt3DisconnectEncoder() {}
