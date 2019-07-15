@@ -20,7 +20,7 @@ package com.hivemq.client.internal.mqtt.codec.encoder;
 import com.hivemq.client.internal.mqtt.message.ping.MqttPingReq;
 import com.hivemq.client.mqtt.mqtt5.message.Mqtt5MessageType;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import io.netty.buffer.UnpooledByteBufAllocator;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
@@ -33,8 +33,9 @@ import javax.inject.Singleton;
 public class MqttPingReqEncoder extends MqttMessageEncoder<MqttPingReq> {
 
     private static final int ENCODED_LENGTH = 2;
-    private static final @NotNull ByteBuf PACKET =
-            Unpooled.directBuffer(ENCODED_LENGTH).writeByte(Mqtt5MessageType.PINGREQ.getCode() << 4).writeByte(0);
+    private static final @NotNull ByteBuf PACKET = UnpooledByteBufAllocator.DEFAULT.ioBuffer(ENCODED_LENGTH)
+            .writeByte(Mqtt5MessageType.PINGREQ.getCode() << 4)
+            .writeByte(0);
 
     @Inject
     MqttPingReqEncoder() {}

@@ -8,52 +8,49 @@
 MQTT 5.0 and 3.1.1 compatible and feature-rich high-performance Java client library with different API flavours and 
 backpressure support.
 
-# Documentation
+## Documentation
 
 A detailed documentation can be found [here](https://hivemq.github.io/hivemq-mqtt-client)
 
-# Features
+## Features
 
-## Available
+- All MQTT 3.1.1 and MQTT 5.0 features
+- API flavors:
+  - Reactive, Async and Blocking
+  - Flexible switching
+  - Consistent and clearly separated
+- Backpressure support:
+  - QoS 1 and 2
+  - QoS 0 (dropping incoming messages, if necessary)
+- Transports:
+  - TCP
+  - SSL/TLS
+  - WebSocket, Secure WebSocket
+- Automatic and configurable thread management
+- Automatic and configurable reconnect handling and message redelivery
+- Lifecycle listeners (connected, disconnected)
+- MQTT 5 specific:
+  - Pluggable Enhanced Auth support (additional to MQTT specification: server-triggered reauth)
+  - Automatic Topic Alias mapping
+  - Interceptors for QoS flows
 
- - All MQTT 3.1.1 and MQTT 5.0 features
- - API flavors:
-   - Reactive, Async and Blocking
-   - Flexible switching
-   - Consistent and clearly separated
- - Backpressure support:
-   - QoS 1 and 2
-   - QoS 0 (dropping incoming messages if necessary)
- - SSL/TLS
- - WebSocket
- - Automatic and configurable thread management
- - MQTT 5 specific:
-   - Pluggable Enhanced Auth support
-     - Additional to MQTT specification: server-triggered reauth
-   - Automatic Topic Alias mapping
-   - Interceptors for QoS flows
-
-## Done soon
-
- - Automatic reconnect handling and message redelivery
-
-# How to use
+## How to use
 
 Java 8 or higher is required.
 
-## Dependency
+### Dependency
 
-### Gradle
+#### Gradle
 
 If you use Gradle, just include the following inside your `build.gradle` file.
 
 ```groovy
 dependencies {
-    compile group: 'com.hivemq', name: 'hivemq-mqtt-client', version: '1.0.1'
+    compile group: 'com.hivemq', name: 'hivemq-mqtt-client', version: '1.1.1'
 }
 ```
 
-### Maven
+#### Maven
 
 If you use Maven, just include the following inside your `pom.xml` file.
 
@@ -71,7 +68,7 @@ NOTE: You have to set the compiler version to `1.8` or higher.
         <dependency>
             <groupId>com.hivemq</groupId>
             <artifactId>hivemq-mqtt-client</artifactId>
-            <version>1.0.1</version>
+            <version>1.1.1</version>
         </dependency>
     </dependencies>
     ...
@@ -88,7 +85,7 @@ To use the shaded version just append `-shaded` to the artifact name.
 
 ```groovy
 dependencies {
-    compile group: 'com.hivemq', name: 'hivemq-mqtt-client-shaded', version: '1.0.1'
+    compile group: 'com.hivemq', name: 'hivemq-mqtt-client-shaded', version: '1.1.1'
 }
 ```
 
@@ -101,7 +98,7 @@ dependencies {
         <dependency>
             <groupId>com.hivemq</groupId>
             <artifactId>hivemq-mqtt-client-shaded</artifactId>
-            <version>1.0.1</version>
+            <version>1.1.1</version>
         </dependency>
     </dependencies>
     ...
@@ -110,22 +107,18 @@ dependencies {
 
 ### Snapshots
 
-Every time a PR is merged into the `develop` branch, a new snapshot is published.
-A snapshot can be included as a normal dependency if the snapshot repository is added to the build file.
-
-IMPORTANT: The snapshot versions are not available for now.
+Snapshots can be obtained using [JitPack](https://jitpack.io/#hivemq/hivemq-mqtt-client).
 
 #### Gradle
 
 ```groovy
 repositories {
-    jcenter()
-    mavenCentral()
-    maven { url 'https://oss.jfrog.org/artifactory/oss-snapshot-local' }
+    ...
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
-    compile group: 'com.hivemq', name: 'hivemq-mqtt-client', version: '1.0.1-SNAPSHOT'
+    implementation 'com.github.hivemq.hivemq-mqtt-client:hivemq-mqtt-client:develop-SNAPSHOT'
 }
 ```
 
@@ -136,29 +129,33 @@ dependencies {
     ...
     <repositories>
         <repository>
-            <id>oss.jfrog.org</id>
-            <url>https://oss.jfrog.org/artifactory/oss-snapshot-local</url>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
         </repository>
     </repositories>
     
     <dependencies>
         <dependency>
-            <groupId>com.hivemq</groupId>
+            <groupId>com.github.hivemq.hivemq-mqtt-client</groupId>
             <artifactId>hivemq-mqtt-client</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
+            <version>develop-SNAPSHOT</version>
         </dependency>
     </dependencies>
     ...
 </project>
 ```
 
+Change the artifact name to `hivemq-mqtt-client-shaded` to get snapshots of the shaded version.
+
+JitPack works for all branches and also specific commits by specifying in the version.
+
 ## General principles
 
- - API and implementation are clearly separated. All classes inside `internal` packages must not be used directly.
- - The API is mostly fluent and uses fluent builders to create clients, configurations and messages.
- - The API is designed to be consistent:
-   - The same principles are used throughout the library.
-   - The MQTT 3 and 5 interfaces are as consistent as possible with only version-specific differences.
+- API and implementation are clearly separated. All classes inside `internal` packages must not be used directly.
+- The API is mostly fluent and uses fluent builders to create clients, configurations and messages.
+- The API is designed to be consistent:
+  - The same principles are used throughout the library.
+  - The MQTT 3 and 5 interfaces are as consistent as possible with only version-specific differences.
 
 ## Creation of clients
 
@@ -312,7 +309,7 @@ client.disconnectWith().reasonString("test").send();
 ```
 Or with pre-built Disconnect message (only MQTT 5):
 ```java
-Mqtt5Disconnect disconnectMessage = Mqtt5Disconnect.builder().disconnectWith().reasonString("test").build();
+Mqtt5Disconnect disconnectMessage = Mqtt5Disconnect.builder().reasonString("test").build();
 client.disconnect(disconnectMessage);
 ```
 
@@ -356,7 +353,7 @@ Mqtt5AsyncClient client = Mqtt5Client.builder()
 
 client.connect()
         .thenCompose(connAck -> client.publishWith().topic("test/topic").payload("1".getBytes()).send())
-        .thenCompose(publish -> client.disconnect());
+        .thenCompose(publishResult -> client.disconnect());
 ```
 
 #### Connect
@@ -420,7 +417,7 @@ return `CompletableFuture`.
 
 #### Reauth (only MQTT 5)
 
-`reauth()` method call is analog to the Blocking API but return `CompletableFuture`.
+`reauth()` method call is analog to the Blocking API but returns `CompletableFuture`.
 
 ### Reactive API
 
@@ -578,19 +575,23 @@ API but return `Completable`.
 
 #### Reauth (only MQTT 5)
 
-`reauth()` method call is analog to the Async and Blocking API but return `Completable`.
+`reauth()` method call is analog to the Async and Blocking API but returns `Completable`.
 
-# Versioning
+## Versioning
 
 [Semantic Versioning](https://semver.org/) is used.
 
 All code inside `com.hivemq.client.internal` packages must not be used directly. It can change at any time and is not
 part of the public API.
 
-# Contributing
+Interfaces annotated with `DoNotImplement` must not be implemented. The implementation is provided by the library.
+This allows the library to later add methods to the interface without breaking backwards compatibility with implementing
+classes.
+
+## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md)
 
-# License
+## License
 
 See [LICENSE](LICENSE)

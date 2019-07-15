@@ -13,7 +13,7 @@ plugins {
 }
 
 group 'com.hivemq'
-version '1.1.0' + (Boolean.valueOf(System.getProperty("snapshot")) ? "-SNAPSHOT" : "")
+version '1.1.1' + (Boolean.valueOf(System.getProperty("snapshot")) ? "-SNAPSHOT" : "")
 description 'HiveMQ MQTT Client is a MQTT 5.0 and MQTT 3.1.1 compatible and feature-rich high-performance Java client ' +
         'library with different API flavours and backpressure support'
 

@@ -1,3 +1,5 @@
+dist: trusty
+
 language: java
 
 jdk:
@@ -6,8 +8,6 @@ jdk:
 
 stages:
   - test
-  #- name: snapshot
-  #  if: branch = develop && type != pull_request
   - name: release
     if: branch = master && type != pull_request
 
@@ -15,9 +15,6 @@ script: ./gradlew check javadoc
 
 jobs:
   include:
-    #- stage: snapshot
-    #  install: true
-    #  script: ./gradlew artifactoryPublish -x test -Dsnapshot=true
     - stage: release
       install: true
       script: ./gradlew bintrayUpload -x test
@@ -26,3 +23,11 @@ addons:
   apt:
     packages:
       - perl
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
