@@ -4,6 +4,7 @@
 
 [![Build Status](https://travis-ci.org/hivemq/hivemq-mqtt-client.svg?branch=develop)](https://travis-ci.org/hivemq/hivemq-mqtt-client)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.hivemq/hivemq-mqtt-client/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.hivemq/hivemq-mqtt-client)
+[![JitPack](https://jitpack.io/v/hivemq/hivemq-mqtt-client.svg)](https://jitpack.io/#hivemq/hivemq-mqtt-client)
 
 MQTT 5.0 and 3.1.1 compatible and feature-rich high-performance Java client library with different API flavours and 
 backpressure support.
