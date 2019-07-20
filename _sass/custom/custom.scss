@@ -99,10 +99,6 @@ type parameter: #507874
 // Overrides
 //
 
-.site-title {
-    font-size: 18px !important;
-}
-
 ::selection {
     color: $grey-dk-300;
     background: $yellow-200;
@@ -123,13 +119,27 @@ b, strong {
 
 
 //
-// Banner for logo
+// Logo
 //
 
+.site-logo {
+    width: 100%;
+    height: 100%;
+    background-image: url($logo);
+    background-size: contain;
+    background-position: left center;
+    background-repeat: no-repeat;
+}
+
 .banner {
+    padding: 1.6rem 2rem;
     text-align: center;
     background-color: $grey-dk-250;
     border-radius: $border-radius;
+
+    @include mq(md) {
+        padding: 4rem 5rem;
+    }
 }
 
 
