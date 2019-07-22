@@ -22,6 +22,7 @@ As the HiveMQ MQTT Client uses Java 8 language features, you also have to specif
 `build.grade` file that is typically located at `$PROJECT_DIR/app/build.gradle`:
 
 ```groovy
+...
 android {
     ...
     compileOptions {
@@ -33,12 +34,15 @@ android {
         exclude 'META-INF/io.netty.versions.properties'
     }
 }
+...
 ```
 
 Additionally you have to set some proguard rules in the app's proguard rules file that is typically located at 
 `$PROJECT_DIR/app/proguard-rules.pro`:
 
 ```
+...
+
 -keepclassmembernames class io.netty.** {
     *;
 }
@@ -46,11 +50,14 @@ Additionally you have to set some proguard rules in the app's proguard rules fil
 -keepclassmembernames class org.jctools.** {
     *;
 }
+
+...
 ```
 
 Please make sure that the `proguard-rules.pro` file is referenced in the app's `build.grade` file:
 
 ```groovy
+...
 android {
     ...
     buildTypes {
@@ -62,6 +69,7 @@ android {
     }
     ...
 }
+...
 ```
 
 
@@ -102,5 +110,5 @@ dependencies {
 ```
 
 The Android RetroFix plugin enables you to use the Java 8 APIs even if you have to support lower Android versions.
-If you increase the Android API level to 24+ in the future, you only need to remove the plugin and the backport 
+When you increase the Android API level to 24+ in the future, you only need to remove the plugin and the backport 
 dependencies. You do not have to change your code.
