@@ -47,7 +47,7 @@ Additionally you have to set some proguard rules in the app's proguard rules fil
 ...
 ```
 
-Please make sure that the `proguard-rules.pro` file is referenced in the app's `build.grade` file:
+Please make sure that the `proguard-rules.pro` file is referenced in the app's `build.gradle` file:
 
 ```groovy
 ...
@@ -75,7 +75,7 @@ If you are targeting API levels smaller than 24, you have to use the
 [Android RetroFix gradle plugin](https://github.com/SgtSilvio/android-retrofix) to backport these APIs automatically.
 The minimum supported API level is 19. This covers almost 100% of all Android devices.
 
-Add the following to the app's `build.grade` file:
+Add the following to the app's `build.gradle` file:
 
 ```groovy
 buildscript {
