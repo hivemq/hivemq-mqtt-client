@@ -42,15 +42,8 @@ Additionally you have to set some proguard rules in the app's proguard rules fil
 
 ```
 ...
-
--keepclassmembernames class io.netty.** {
-    *;
-}
-
--keepclassmembernames class org.jctools.** {
-    *;
-}
-
+-keepclassmembernames class io.netty.** { *; }
+-keepclassmembernames class org.jctools.** { *; }
 ...
 ```
 
