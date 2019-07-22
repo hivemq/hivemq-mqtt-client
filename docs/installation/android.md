@@ -101,7 +101,7 @@ apply plugin: 'com.github.sgtsilvio.gradle.android-retrofix'
 ...
 
 dependencies {
-    implementation 'com.hivemq:hivemq-mqtt-client:1.1.1'
+    implementation 'com.hivemq:hivemq-mqtt-client:{{ site.version }}'
     
     implementation 'net.sourceforge.streamsupport:android-retrostreams:1.7.1'
     implementation 'net.sourceforge.streamsupport:android-retrofuture:1.7.1'
