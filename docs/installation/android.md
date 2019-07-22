@@ -74,7 +74,7 @@ android {
 ## Android API levels below 24
 
 The above configuration is enough if your minimum supported Android API level is at least 24 (7.0 Nougat).
-Targeting lower Android versions requires additional configuration as Android still lacks support of Java 8 APIs like 
+Targeting lower Android versions requires additional configuration as Android still lacks support for Java 8 APIs like 
 `java.util.Optional`, `java.util.function.*` and `java.util.concurrent.CompletableFuture` on versions below 24.
 
 You can use the [Android RetroFix gradle plugin](https://github.com/SgtSilvio/android-retrofix) to backport these APIs 
