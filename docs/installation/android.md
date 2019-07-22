@@ -7,8 +7,13 @@ nav_order: 1
 
 # Installation on Android
 
-To use the HiveMQ MQTT Client on Android, you have to enable the permission to use internet communication in the 
-`AndroidManifest.xml` that is typically located at `$PROJECT_DIR/app/src/main/AndroidManifest.xml`:
+The HiveMQ MQTT Client library is supported on Android 4.4 (API level 19) and higher versions.
+This covers almost 100% of all Android devices.
+
+To be able to use the HiveMQ MQTT Client on Android, you have to grant your app the permission to use internet 
+communication.
+You configure this permission in the `AndroidManifest.xml` that is typically located at 
+`$PROJECT_DIR/app/src/main/AndroidManifest.xml`:
 
 ```xml
 <manifest>
@@ -19,7 +24,7 @@ To use the HiveMQ MQTT Client on Android, you have to enable the permission to u
 ```
 
 As the HiveMQ MQTT Client uses Java 8 language features, you also have to specify the following in the app's 
-`build.grade` file that is typically located at `$PROJECT_DIR/app/build.gradle`:
+`build.gradle` file that is typically located at `$PROJECT_DIR/app/build.gradle`:
 
 ```groovy
 ...
@@ -66,16 +71,18 @@ android {
 ```
 
 
-## Android API levels < 24
+## Android API levels below 24
 
-The HiveMQ MQTT Client uses Java 8 APIs such as `java.util.Optional`, `java.util.function.*` and 
-`java.util.concurrent.CompletableFuture`.
-Unfortunately, Android still lacks support of theses APIs on Android versions lower than 7.0 Nougat (API level 24).
-If you are targeting API levels smaller than 24, you have to use the 
-[Android RetroFix gradle plugin](https://github.com/SgtSilvio/android-retrofix) to backport these APIs automatically.
-The minimum supported API level is 19. This covers almost 100% of all Android devices.
+The above configuration is enough if your minimum supported Android API level is at least 24 (7.0 Nougat).
+Targeting lower Android versions requires additional configuration as Android still lacks support of Java 8 APIs like 
+`java.util.Optional`, `java.util.function.*` and `java.util.concurrent.CompletableFuture` on versions below 24.
 
-Add the following to the app's `build.gradle` file:
+You can use the [Android RetroFix gradle plugin](https://github.com/SgtSilvio/android-retrofix) to backport these APIs 
+automatically.
+This plugin enables you to use the Java 8 APIs even if you have to support lower Android versions.
+
+The following shows how to configure the Android RetroFix plugin in the app’s `build.gradle` file.
+You have to add the plugin and the two backport dependencies `android-retrostreams` and `android-retrofuture`:
 
 ```groovy
 buildscript {
@@ -102,6 +109,6 @@ dependencies {
 }
 ```
 
-The Android RetroFix plugin enables you to use the Java 8 APIs even if you have to support lower Android versions.
 When you increase the Android API level to 24+ in the future, you will only need to remove the plugin and the backport 
-dependencies. You do not have to change your code.
+dependencies.
+You do not have to change your code.
