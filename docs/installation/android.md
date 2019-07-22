@@ -103,5 +103,5 @@ dependencies {
 ```
 
 The Android RetroFix plugin enables you to use the Java 8 APIs even if you have to support lower Android versions.
-When you increase the Android API level to 24+ in the future, you only need to remove the plugin and the backport 
+When you increase the Android API level to 24+ in the future, you will only need to remove the plugin and the backport 
 dependencies. You do not have to change your code.
