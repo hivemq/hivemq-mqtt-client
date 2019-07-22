@@ -72,6 +72,7 @@ The HiveMQ MQTT Client uses Java 8 APIs such as `java.util.Optional`, `java.util
 Unfortunately, Android still lacks support of theses APIs on Android versions lower than 7.0 Nougat (API level 24).
 If you are targeting API levels smaller than 24, you have to use the 
 [Android RetroFix gradle plugin](https://github.com/SgtSilvio/android-retrofix) to backport these APIs automatically.
+The minimum supported API level is 19. This covers almost 100% of all Android devices.
 
 Add the following to the app's `build.grade` file:
 
@@ -100,6 +101,6 @@ dependencies {
 }
 ```
 
-This plugin enables you to use the Java 8 features even if you have to support lower Android versions.
+The Android RetroFix plugin enables you to use the Java 8 APIs even if you have to support lower Android versions.
 If you increase the Android API level to 24+ in the future, you only need to remove the plugin and the backport 
 dependencies. You do not have to change your code.
