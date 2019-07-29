@@ -20,6 +20,7 @@ import com.hivemq.client.internal.mqtt.message.connect.connack.MqttConnAck;
 import com.hivemq.client.internal.mqtt.message.connect.connack.mqtt3.Mqtt3ConnAckView;
 import com.hivemq.client.internal.mqtt.message.subscribe.suback.MqttSubAck;
 import com.hivemq.client.internal.mqtt.message.subscribe.suback.mqtt3.Mqtt3SubAckView;
+import com.hivemq.client.mqtt.exceptions.MqttSessionExpiredException;
 import com.hivemq.client.mqtt.mqtt3.exceptions.*;
 import com.hivemq.client.mqtt.mqtt5.exceptions.Mqtt5MessageException;
 import com.hivemq.client.mqtt.mqtt5.message.Mqtt5Message;
@@ -37,10 +38,23 @@ public final class Mqtt3ExceptionFactory {
             Mqtt3ExceptionFactory::map;
 
     public static @NotNull Throwable map(final @NotNull Throwable throwable) {
-        if (throwable instanceof Mqtt5MessageException) {
-            return map((Mqtt5MessageException) throwable);
+        if (throwable instanceof RuntimeException) {
+            return map((RuntimeException) throwable);
         }
         return throwable;
+    }
+
+    public static @NotNull RuntimeException map(final @NotNull RuntimeException e) {
+        if (e instanceof Mqtt5MessageException) {
+            return map((Mqtt5MessageException) e);
+        }
+        if (e instanceof MqttSessionExpiredException) {
+            final Throwable cause = e.getCause();
+            if (cause instanceof Mqtt5MessageException) {
+                return new MqttSessionExpiredException(e.getMessage(), map((Mqtt5MessageException) cause));
+            }
+        }
+        return e;
     }
 
     public static @NotNull Mqtt3MessageException map(final @NotNull Mqtt5MessageException mqtt5MessageException) {

@@ -145,7 +145,7 @@ public class Mqtt3BlockingClientView implements Mqtt3BlockingClient {
         public @NotNull Mqtt3Publish receive() throws InterruptedException {
             try {
                 return Mqtt3PublishView.of(delegate.receive());
-            } catch (final Mqtt5MessageException e) {
+            } catch (final RuntimeException e) {
                 throw AsyncRuntimeException.fillInStackTrace(Mqtt3ExceptionFactory.map(e));
             }
         }
@@ -161,7 +161,7 @@ public class Mqtt3BlockingClientView implements Mqtt3BlockingClient {
 
             try {
                 return delegate.receive(timeout, timeUnit).map(Mqtt3PublishView.JAVA_MAPPER);
-            } catch (final Mqtt5MessageException e) {
+            } catch (final RuntimeException e) {
                 throw AsyncRuntimeException.fillInStackTrace(Mqtt3ExceptionFactory.map(e));
             }
         }
@@ -170,7 +170,7 @@ public class Mqtt3BlockingClientView implements Mqtt3BlockingClient {
         public @NotNull Optional<Mqtt3Publish> receiveNow() {
             try {
                 return delegate.receiveNow().map(Mqtt3PublishView.JAVA_MAPPER);
-            } catch (final Mqtt5MessageException e) {
+            } catch (final RuntimeException e) {
                 throw AsyncRuntimeException.fillInStackTrace(Mqtt3ExceptionFactory.map(e));
             }
         }
