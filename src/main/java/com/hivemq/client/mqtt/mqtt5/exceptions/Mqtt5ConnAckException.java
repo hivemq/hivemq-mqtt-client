@@ -19,6 +19,7 @@ package com.hivemq.client.mqtt.mqtt5.exceptions;
 
 import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Silvio Giebl
@@ -31,6 +32,18 @@ public class Mqtt5ConnAckException extends Mqtt5MessageException {
     public Mqtt5ConnAckException(final @NotNull Mqtt5ConnAck connAck, final @NotNull String message) {
         super(message);
         this.connAck = connAck;
+    }
+
+    private Mqtt5ConnAckException(
+            final @NotNull Mqtt5ConnAck connAck, final @Nullable String message, final @Nullable Throwable cause) {
+
+        super(message, cause);
+        this.connAck = connAck;
+    }
+
+    @Override
+    protected @NotNull Mqtt5ConnAckException copy() {
+        return new Mqtt5ConnAckException(connAck, getMessage(), getCause());
     }
 
     @Override

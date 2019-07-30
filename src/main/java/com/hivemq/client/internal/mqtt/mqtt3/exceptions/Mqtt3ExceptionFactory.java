@@ -57,6 +57,14 @@ public final class Mqtt3ExceptionFactory {
         return e;
     }
 
+    public static @NotNull RuntimeException mapWithStackTrace(final @NotNull RuntimeException e) {
+        final RuntimeException mapped = map(e);
+        if (mapped != e) {
+            mapped.setStackTrace(e.getStackTrace());
+        }
+        return mapped;
+    }
+
     public static @NotNull Mqtt3MessageException map(final @NotNull Mqtt5MessageException mqtt5MessageException) {
         final Mqtt5Message mqttMessage = mqtt5MessageException.getMqttMessage();
         final String message = mqtt5MessageException.getMessage();

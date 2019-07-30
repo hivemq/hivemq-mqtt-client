@@ -19,6 +19,7 @@ package com.hivemq.client.mqtt.mqtt5.exceptions;
 
 import com.hivemq.client.mqtt.mqtt5.message.disconnect.Mqtt5Disconnect;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Silvio Giebl
@@ -36,6 +37,19 @@ public class Mqtt5DisconnectException extends Mqtt5MessageException {
     public Mqtt5DisconnectException(final @NotNull Mqtt5Disconnect disconnect, final @NotNull Throwable cause) {
         super(cause);
         this.disconnect = disconnect;
+    }
+
+    private Mqtt5DisconnectException(
+            final @NotNull Mqtt5Disconnect disconnect, final @Nullable String message,
+            final @Nullable Throwable cause) {
+
+        super(message, cause);
+        this.disconnect = disconnect;
+    }
+
+    @Override
+    protected @NotNull Mqtt5DisconnectException copy() {
+        return new Mqtt5DisconnectException(disconnect, getMessage(), getCause());
     }
 
     @Override

@@ -37,6 +37,11 @@ public class Mqtt3ConnAckException extends Mqtt3MessageException {
     }
 
     @Override
+    protected @NotNull Mqtt3ConnAckException copy() {
+        return new Mqtt3ConnAckException(connAck, getMessage(), getCause());
+    }
+
+    @Override
     public @NotNull Mqtt3ConnAck getMqttMessage() {
         return connAck;
     }

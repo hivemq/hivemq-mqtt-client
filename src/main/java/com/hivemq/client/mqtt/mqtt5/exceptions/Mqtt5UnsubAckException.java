@@ -19,6 +19,7 @@ package com.hivemq.client.mqtt.mqtt5.exceptions;
 
 import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Silvio Giebl
@@ -31,6 +32,18 @@ public class Mqtt5UnsubAckException extends Mqtt5MessageException {
     public Mqtt5UnsubAckException(final @NotNull Mqtt5UnsubAck unsubAck, final @NotNull String message) {
         super(message);
         this.unsubAck = unsubAck;
+    }
+
+    private Mqtt5UnsubAckException(
+            final @NotNull Mqtt5UnsubAck unsubAck, final @Nullable String message, final @Nullable Throwable cause) {
+
+        super(message, cause);
+        this.unsubAck = unsubAck;
+    }
+
+    @Override
+    protected @NotNull Mqtt5UnsubAckException copy() {
+        return new Mqtt5UnsubAckException(unsubAck, getMessage(), getCause());
     }
 
     @Override

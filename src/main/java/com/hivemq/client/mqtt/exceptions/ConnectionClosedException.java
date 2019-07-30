@@ -19,6 +19,7 @@ package com.hivemq.client.mqtt.exceptions;
 
 import com.hivemq.client.internal.util.AsyncRuntimeException;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Exception that is used if a MQTT connection is closed without a Disconnect message.
@@ -34,5 +35,14 @@ public class ConnectionClosedException extends AsyncRuntimeException {
 
     public ConnectionClosedException(final @NotNull Throwable cause) {
         super(cause);
+    }
+
+    private ConnectionClosedException(final @Nullable String message, final @Nullable Throwable cause) {
+        super(message, cause);
+    }
+
+    @Override
+    protected @NotNull ConnectionClosedException copy() {
+        return new ConnectionClosedException(getMessage(), getCause());
     }
 }

@@ -19,6 +19,7 @@ package com.hivemq.client.mqtt.mqtt5.exceptions;
 
 import com.hivemq.client.mqtt.mqtt5.message.publish.pubrec.Mqtt5PubRec;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Silvio Giebl
@@ -31,6 +32,18 @@ public class Mqtt5PubRecException extends Mqtt5MessageException {
     public Mqtt5PubRecException(final @NotNull Mqtt5PubRec pubRec, final @NotNull String message) {
         super(message);
         this.pubRec = pubRec;
+    }
+
+    private Mqtt5PubRecException(
+            final @NotNull Mqtt5PubRec pubRec, final @Nullable String message, final @Nullable Throwable cause) {
+
+        super(message, cause);
+        this.pubRec = pubRec;
+    }
+
+    @Override
+    protected @NotNull Mqtt5PubRecException copy() {
+        return new Mqtt5PubRecException(pubRec, getMessage(), getCause());
     }
 
     @Override

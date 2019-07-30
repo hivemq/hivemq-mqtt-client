@@ -20,6 +20,8 @@ package com.hivemq.client.internal.util;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
+
 /**
  * @author Silvio Giebl
  */
@@ -27,38 +29,36 @@ public abstract class AsyncRuntimeException extends RuntimeException {
 
     public static @NotNull RuntimeException fillInStackTrace(final @NotNull RuntimeException e) {
         if (e instanceof AsyncRuntimeException) {
-            e.fillInStackTrace();
+            final AsyncRuntimeException copy = ((AsyncRuntimeException) e).copy().superFillInStackTrace();
+            final StackTraceElement[] stackTrace = copy.getStackTrace();
+            // remove the sync and superFillInStackTrace method calls from the trace
+            copy.setStackTrace(Arrays.copyOfRange(stackTrace, 2, stackTrace.length));
+            return copy;
         }
         return e;
     }
 
-    private final boolean afterSuper;
-
-    protected AsyncRuntimeException() {
-        super();
-        afterSuper = true;
-    }
-
     protected AsyncRuntimeException(final @Nullable String message) {
         super(message, null);
-        afterSuper = true;
     }
 
     protected AsyncRuntimeException(final @Nullable String message, final @Nullable Throwable cause) {
         super(message, cause);
-        afterSuper = true;
     }
 
     protected AsyncRuntimeException(final @Nullable Throwable cause) {
         super(cause);
-        afterSuper = true;
     }
 
     @Override
     public synchronized @NotNull Throwable fillInStackTrace() {
-        if (afterSuper) {
-            return super.fillInStackTrace();
-        }
         return this;
     }
+
+    private @NotNull AsyncRuntimeException superFillInStackTrace() {
+        super.fillInStackTrace();
+        return this;
+    }
+
+    protected abstract @NotNull AsyncRuntimeException copy();
 }
