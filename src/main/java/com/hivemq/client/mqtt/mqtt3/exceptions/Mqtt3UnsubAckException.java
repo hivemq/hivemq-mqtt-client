@@ -33,6 +33,11 @@ public class Mqtt3UnsubAckException extends Mqtt3MessageException {
     }
 
     @Override
+    protected @NotNull Mqtt3UnsubAckException copy() {
+        return new Mqtt3UnsubAckException(getMessage(), getCause());
+    }
+
+    @Override
     public @NotNull Mqtt3UnsubAck getMqttMessage() {
         return Mqtt3UnsubAckView.INSTANCE;
     }

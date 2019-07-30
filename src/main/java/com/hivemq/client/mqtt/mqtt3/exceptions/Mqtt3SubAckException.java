@@ -37,6 +37,11 @@ public class Mqtt3SubAckException extends Mqtt3MessageException {
     }
 
     @Override
+    protected @NotNull Mqtt3SubAckException copy() {
+        return new Mqtt3SubAckException(subAck, getMessage(), getCause());
+    }
+
+    @Override
     public @NotNull Mqtt3SubAck getMqttMessage() {
         return subAck;
     }

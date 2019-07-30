@@ -28,7 +28,6 @@ import com.hivemq.client.internal.mqtt.message.subscribe.suback.mqtt3.Mqtt3SubAc
 import com.hivemq.client.internal.mqtt.message.unsubscribe.MqttUnsubscribe;
 import com.hivemq.client.internal.mqtt.mqtt3.exceptions.Mqtt3ExceptionFactory;
 import com.hivemq.client.internal.mqtt.util.MqttChecks;
-import com.hivemq.client.internal.util.AsyncRuntimeException;
 import com.hivemq.client.internal.util.Checks;
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
 import com.hivemq.client.mqtt.mqtt3.Mqtt3AsyncClient;
@@ -68,7 +67,7 @@ public class Mqtt3BlockingClientView implements Mqtt3BlockingClient {
         try {
             return Mqtt3ConnAckView.of(delegate.connect(mqttConnect));
         } catch (final Mqtt5MessageException e) {
-            throw AsyncRuntimeException.fillInStackTrace(Mqtt3ExceptionFactory.map(e));
+            throw Mqtt3ExceptionFactory.mapWithStackTrace(e);
         }
     }
 
@@ -78,7 +77,7 @@ public class Mqtt3BlockingClientView implements Mqtt3BlockingClient {
         try {
             return Mqtt3SubAckView.of(delegate.subscribe(mqttSubscribe));
         } catch (final Mqtt5MessageException e) {
-            throw AsyncRuntimeException.fillInStackTrace(Mqtt3ExceptionFactory.map(e));
+            throw Mqtt3ExceptionFactory.mapWithStackTrace(e);
         }
     }
 
@@ -95,7 +94,7 @@ public class Mqtt3BlockingClientView implements Mqtt3BlockingClient {
         try {
             delegate.unsubscribe(mqttUnsubscribe);
         } catch (final Mqtt5MessageException e) {
-            throw AsyncRuntimeException.fillInStackTrace(Mqtt3ExceptionFactory.map(e));
+            throw Mqtt3ExceptionFactory.mapWithStackTrace(e);
         }
     }
 
@@ -105,7 +104,7 @@ public class Mqtt3BlockingClientView implements Mqtt3BlockingClient {
         try {
             delegate.publish(mqttPublish);
         } catch (final Mqtt5MessageException e) {
-            throw AsyncRuntimeException.fillInStackTrace(Mqtt3ExceptionFactory.map(e));
+            throw Mqtt3ExceptionFactory.mapWithStackTrace(e);
         }
     }
 
@@ -114,7 +113,7 @@ public class Mqtt3BlockingClientView implements Mqtt3BlockingClient {
         try {
             delegate.disconnect(Mqtt3DisconnectView.DELEGATE);
         } catch (final Mqtt5MessageException e) {
-            throw AsyncRuntimeException.fillInStackTrace(Mqtt3ExceptionFactory.map(e));
+            throw Mqtt3ExceptionFactory.mapWithStackTrace(e);
         }
     }
 
@@ -146,7 +145,7 @@ public class Mqtt3BlockingClientView implements Mqtt3BlockingClient {
             try {
                 return Mqtt3PublishView.of(delegate.receive());
             } catch (final RuntimeException e) {
-                throw AsyncRuntimeException.fillInStackTrace(Mqtt3ExceptionFactory.map(e));
+                throw Mqtt3ExceptionFactory.mapWithStackTrace(e);
             }
         }
 
@@ -162,7 +161,7 @@ public class Mqtt3BlockingClientView implements Mqtt3BlockingClient {
             try {
                 return delegate.receive(timeout, timeUnit).map(Mqtt3PublishView.JAVA_MAPPER);
             } catch (final RuntimeException e) {
-                throw AsyncRuntimeException.fillInStackTrace(Mqtt3ExceptionFactory.map(e));
+                throw Mqtt3ExceptionFactory.mapWithStackTrace(e);
             }
         }
 
@@ -171,7 +170,7 @@ public class Mqtt3BlockingClientView implements Mqtt3BlockingClient {
             try {
                 return delegate.receiveNow().map(Mqtt3PublishView.JAVA_MAPPER);
             } catch (final RuntimeException e) {
-                throw AsyncRuntimeException.fillInStackTrace(Mqtt3ExceptionFactory.map(e));
+                throw Mqtt3ExceptionFactory.mapWithStackTrace(e);
             }
         }
 

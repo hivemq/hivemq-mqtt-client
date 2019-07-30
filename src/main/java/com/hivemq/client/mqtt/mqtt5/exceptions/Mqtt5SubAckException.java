@@ -19,6 +19,7 @@ package com.hivemq.client.mqtt.mqtt5.exceptions;
 
 import com.hivemq.client.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Silvio Giebl
@@ -31,6 +32,18 @@ public class Mqtt5SubAckException extends Mqtt5MessageException {
     public Mqtt5SubAckException(final @NotNull Mqtt5SubAck subAck, final @NotNull String message) {
         super(message);
         this.subAck = subAck;
+    }
+
+    private Mqtt5SubAckException(
+            final @NotNull Mqtt5SubAck subAck, final @Nullable String message, final @Nullable Throwable cause) {
+
+        super(message, cause);
+        this.subAck = subAck;
+    }
+
+    @Override
+    protected @NotNull Mqtt5SubAckException copy() {
+        return new Mqtt5SubAckException(subAck, getMessage(), getCause());
     }
 
     @Override
