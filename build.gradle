@@ -8,52 +8,68 @@ buildscript {
 }
 
 plugins {
-    id 'java-library'
-    id 'maven-publish'
-    id 'com.jfrog.bintray' version '1.8.4'
-    id 'com.jfrog.artifactory' version '4.7.5'
+    id 'com.jfrog.bintray' version '1.8.4' apply false
+    id 'com.github.johnrengelman.shadow' version '4.0.4' apply false
+    id 'com.github.hierynomus.license' version '0.14.0' apply false
+    id 'biz.aQute.bnd.builder' version '4.2.0' apply false
     id 'idea'
     id 'eclipse'
     id 'net.ltgt.apt-idea' version '0.15'
     id 'net.ltgt.apt-eclipse' version '0.15'
-    id 'com.github.johnrengelman.shadow' version '4.0.4'
-    id 'com.github.hierynomus.license' version '0.14.0'
-    id 'pmd'
-    id 'biz.aQute.bnd.builder' version '4.2.0'
 }
 
-group 'com.hivemq'
-version '1.1.2' + (Boolean.valueOf(System.getProperty("snapshot")) ? "-SNAPSHOT" : "")
-description 'HiveMQ MQTT Client is a MQTT 5.0 and MQTT 3.1.1 compatible and feature-rich high-performance Java client ' +
-        'library with different API flavours and backpressure support'
-
-ext {
-    moduleName = 'com.hivemq.client.mqtt'
-    readableName = 'HiveMQ MQTT Client'
-    githubOrg = 'hivemq'
-    githubRepo = 'hivemq-mqtt-client'
-    githubUrl = 'https://github.com/' + githubOrg + '/' + githubRepo
-    scmConnection = 'scm:git:git://github.com/' + githubOrg + '/' + githubRepo + '.git'
-    scmDeveloperConnection = 'scm:git:ssh://git@github.com/' + githubOrg + '/' + githubRepo + '.git'
-    issuesUrl = githubUrl + '/issues'
-    docUrl = 'https://' + githubOrg + '.github.io/' + githubRepo + '/'
-    licenseShortName = 'Apache-2.0'
-    licenseReadableName = 'The Apache License, Version 2.0'
-    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-    shadedAppendix = 'shaded'
-    prevVersion = '1.1.1'
+allprojects {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+    }
 }
 
-sourceCompatibility = 1.8
+allprojects {
+    group 'com.hivemq'
+    version '1.1.2'
 
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
+    description 'HiveMQ MQTT Client is a MQTT 5.0 and MQTT 3.1.1 compatible and feature-rich high-performance Java ' +
+            'client library with different API flavours and backpressure support'
+
+    ext {
+        moduleName = 'com.hivemq.client.mqtt'
+        readableName = 'HiveMQ MQTT Client'
+        githubOrg = 'hivemq'
+        githubRepo = 'hivemq-mqtt-client'
+        githubUrl = 'https://github.com/' + githubOrg + '/' + githubRepo
+        scmConnection = 'scm:git:git://github.com/' + githubOrg + '/' + githubRepo + '.git'
+        scmDeveloperConnection = 'scm:git:ssh://git@github.com/' + githubOrg + '/' + githubRepo + '.git'
+        issuesUrl = githubUrl + '/issues'
+        docUrl = 'https://' + githubOrg + '.github.io/' + githubRepo + '/'
+        licenseShortName = 'Apache-2.0'
+        licenseReadableName = 'The Apache License, Version 2.0'
+        licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+        shadedAppendix = 'shaded'
+        prevVersion = '1.1.1'
+    }
 }
 
-repositories {
-    mavenLocal()
-    mavenCentral()
-    jcenter()
+allprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'maven-publish'
+    apply plugin: 'com.jfrog.bintray'
+    apply plugin: 'com.github.johnrengelman.shadow'
+    apply plugin: 'com.github.hierynomus.license'
+    apply plugin: 'pmd'
+}
+
+apply from: "${rootDir}/gradle/publishing.gradle"
+apply from: "${rootDir}/gradle/japicc.gradle"
+
+allprojects {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+    }
 }
 
 ext {
@@ -75,20 +91,30 @@ dependencies {
     implementation group: 'com.google.dagger', name: 'dagger', version: daggerVersion
     annotationProcessor group: 'com.google.dagger', name: 'dagger-compiler', version: daggerVersion
     compileOnly group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion
+}
 
-    def junit4Version = '4.12'
-    def junitVintageVersion = '4.12.3'
-    def junitJupiterVersion = '5.0.3'
-    def junitPlatformVersion = '1.0.3'
+allprojects {
+    dependencies {
+        def junit4Version = '4.12'
+        def junitVintageVersion = '4.12.3'
+        def junitJupiterVersion = '5.0.3'
+        def junitPlatformVersion = '1.0.3'
 
-    testImplementation group: 'junit', name: 'junit', version: junit4Version
-    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junitJupiterVersion
-    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junitJupiterVersion
-    testRuntimeOnly group: 'org.junit.vintage', name: 'junit-vintage-engine', version: junitVintageVersion
-    testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junitJupiterVersion
-    testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-launcher', version: junitPlatformVersion
-    testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-runner', version: junitPlatformVersion
+        testImplementation group: 'junit', name: 'junit', version: junit4Version
+        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junitJupiterVersion
+        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junitJupiterVersion
+        testRuntimeOnly group: 'org.junit.vintage', name: 'junit-vintage-engine', version: junitVintageVersion
+        testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junitJupiterVersion
+        testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-launcher', version: junitPlatformVersion
+        testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-runner', version: junitPlatformVersion
+    }
 
+    test {
+        useJUnitPlatform()
+    }
+}
+
+dependencies {
     testImplementation group: 'org.eclipse.paho', name: 'org.eclipse.paho.client.mqttv3', version: '1.2.0'
     testImplementation group: 'nl.jqno.equalsverifier', name: 'equalsverifier', version: '3.1.7'
     testImplementation group: 'org.mockito', name: 'mockito-core', version: '2.18.3'
@@ -98,10 +124,11 @@ dependencies {
     testRuntimeOnly group: 'org.slf4j', name: 'slf4j-simple', version: slf4jVersion
 }
 
-apply from: 'publishing.gradle'
-apply from: 'japicc.gradle'
-
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+allprojects {
+    license {
+        header file("${rootDir}/HEADER")
+    }
+}
 
 jar {
     bnd('Automatic-Module-Name': project.moduleName,
@@ -117,12 +144,12 @@ jar {
             '-removeheaders': 'Private-Package')
 }
 
-shadowJar { ShadowJar shadowJar ->
-    appendix shadedAppendix
+shadowJar {
+    appendix project.shadedAppendix
     classifier null
 
     // api: not shaded and relocated, added as dependencies in pom
-    shadowJar.dependencies {
+    dependencies {
         it.exclude(it.dependency('io.reactivex.rxjava2:rxjava'))
         it.exclude(it.dependency('org.reactivestreams:reactive-streams'))
         it.exclude(it.dependency('org.slf4j:slf4j-api'))
@@ -141,16 +168,20 @@ shadowJar { ShadowJar shadowJar ->
     minimize()
 }
 
-license {
-    header file('HEADER')
-}
+allprojects {
+    task javadocJar(type: Jar) {
+        group 'documentation'
+        description 'Assembles a jar archive containing the javadoc.'
 
-test {
-    useJUnitPlatform()
-}
+        from javadoc
+        classifier 'javadoc'
+    }
 
-task execute(type: JavaExec) {
-    classpath = sourceSets.main.runtimeClasspath + sourceSets.test.runtimeClasspath
-    main = project.hasProperty("mainClass") ? project.getProperty("mainClass") : ""
-    systemProperties = System.properties
+    task sourcesJar(type: Jar) {
+        group 'build'
+        description 'Assembles a jar archive containing the main sources.'
+
+        from sourceSets.main.allSource
+        classifier 'sources'
+    }
 }

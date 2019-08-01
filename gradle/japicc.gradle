@@ -9,7 +9,7 @@ task japicc {
     def executable = new File(workingDir, 'japi-compliance-checker-' + japiccVersion + '/japi-compliance-checker.pl')
 
     def lastSemVer = project.prevVersion == null ? lastSemVer() : project.prevVersion
-    def shadedName = project.name + '-' + shadedAppendix
+    def shadedName = project.name + '-' + project.shadedAppendix
     def lastJar = new File(workingDir, project.name + '-' + lastSemVer + '.jar')
     def lastShadedJar = new File(workingDir, shadedName + '-' + lastSemVer + '.jar')
 
