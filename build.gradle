@@ -130,8 +130,7 @@ allprojects {
     apply plugin: 'pmd'
 
     pmd {
-        ruleSetFiles = files("${rootDir}/gradle/pmd-rules.xml")
-        ruleSets = []
+        toolVersion '5.7.0'
     }
 }
 
