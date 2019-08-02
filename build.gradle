@@ -57,11 +57,7 @@ allprojects {
     apply plugin: 'com.jfrog.bintray'
     apply plugin: 'com.github.johnrengelman.shadow'
     apply plugin: 'com.github.hierynomus.license'
-    apply plugin: 'pmd'
 }
-
-apply from: "${rootDir}/gradle/publishing.gradle"
-apply from: "${rootDir}/gradle/japicc.gradle"
 
 allprojects {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -96,20 +92,20 @@ dependencies {
 allprojects {
     dependencies {
         def junit4Version = '4.12'
-        def junitVintageVersion = '4.12.3'
-        def junitJupiterVersion = '5.0.3'
-        def junitPlatformVersion = '1.0.3'
+        def junit5Version = '5.5.1'
+        def junitPlatformVersion = '1.5.1'
 
         testImplementation group: 'junit', name: 'junit', version: junit4Version
-        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junitJupiterVersion
-        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junitJupiterVersion
-        testRuntimeOnly group: 'org.junit.vintage', name: 'junit-vintage-engine', version: junitVintageVersion
-        testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junitJupiterVersion
+        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junit5Version
+        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junit5Version
+        testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit5Version
+        testRuntimeOnly group: 'org.junit.vintage', name: 'junit-vintage-engine', version: junit5Version
         testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-launcher', version: junitPlatformVersion
         testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-runner', version: junitPlatformVersion
     }
 
     test {
+        maxHeapSize = "2048m"
         useJUnitPlatform()
     }
 }
@@ -127,6 +123,15 @@ dependencies {
 allprojects {
     license {
         header file("${rootDir}/HEADER")
+    }
+}
+
+allprojects {
+    apply plugin: 'pmd'
+
+    pmd {
+        ruleSetFiles = files("${rootDir}/gradle/pmd-rules.xml")
+        ruleSets = []
     }
 }
 
@@ -185,3 +190,6 @@ allprojects {
         classifier 'sources'
     }
 }
+
+apply from: "${rootDir}/gradle/publishing.gradle"
+apply from: "${rootDir}/gradle/japicc.gradle"
