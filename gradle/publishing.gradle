@@ -70,18 +70,18 @@ void addPom(MavenPublication publication) {
 
 publishing {
     publications {
-        normal(MavenPublication) { publication ->
+        normal(MavenPublication) {
             from components.java
             artifact javadocJar
             artifact sourcesJar
-            addPom(publication)
+            addPom(it)
         }
-        shaded(MavenPublication) { publication ->
+        shaded(MavenPublication) {
             artifactId project.name + '-' + project.shadedAppendix
             artifact shadowJar
             artifact javadocJar
             artifact sourcesJar
-            addPom(publication)
+            addPom(it)
             pom.withXml { xml ->
                 def dependenciesNode = xml.asNode().appendNode('dependencies')
 
