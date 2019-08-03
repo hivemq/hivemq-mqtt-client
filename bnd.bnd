@@ -1,0 +1,10 @@
+Bundle-Description: HiveMQ Java MQTT Client 
+Bundle-License: Apache 2.0 License
+Export-Package: \
+  com.hivemq.client.mqtt.*, \
+  com.hivemq.client.mqtt.rx.*, \
+  com.hivemq.client.mqtt.rx.reactivestreams.*, \
+  com.hivemq.client.mqtt.util.*
+Import-Package: \
+  *
+-consumer-policy: ${range;[==,=+)}

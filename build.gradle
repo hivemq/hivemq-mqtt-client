@@ -1,3 +1,12 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'biz.aQute.bnd:biz.aQute.bnd.gradle:4.2.0'
+    }
+}
+
 plugins {
     id 'java-library'
     id 'maven-publish'
@@ -87,6 +96,8 @@ dependencies {
 
 apply from: 'publishing.gradle'
 apply from: 'japicc.gradle'
+
+apply plugin: 'biz.aQute.bnd.builder'
 
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
