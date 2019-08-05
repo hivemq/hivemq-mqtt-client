@@ -19,6 +19,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '4.0.4'
     id 'com.github.hierynomus.license' version '0.14.0'
     id 'pmd'
+    id 'biz.aQute.bnd.builder' version '4.2.0'
 }
 
 group 'com.hivemq'
@@ -96,8 +97,6 @@ dependencies {
 
 apply from: 'publishing.gradle'
 apply from: 'japicc.gradle'
-
-apply plugin: 'biz.aQute.bnd.builder'
 
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
