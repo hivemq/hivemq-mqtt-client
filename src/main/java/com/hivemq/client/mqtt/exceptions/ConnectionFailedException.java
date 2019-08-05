@@ -19,7 +19,6 @@ package com.hivemq.client.mqtt.exceptions;
 
 import com.hivemq.client.internal.util.AsyncRuntimeException;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Exception that is used if a MQTT connection could not be established.
@@ -37,12 +36,12 @@ public class ConnectionFailedException extends AsyncRuntimeException {
         super(cause);
     }
 
-    private ConnectionFailedException(final @Nullable String message, final @Nullable Throwable cause) {
-        super(message, cause);
+    private ConnectionFailedException(final @NotNull ConnectionFailedException e) {
+        super(e);
     }
 
     @Override
     protected @NotNull ConnectionFailedException copy() {
-        return new ConnectionFailedException(getMessage(), getCause());
+        return new ConnectionFailedException(this);
     }
 }

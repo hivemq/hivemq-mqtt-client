@@ -32,8 +32,12 @@ public class MqttEncodeException extends AsyncRuntimeException {
         super(message);
     }
 
+    private MqttEncodeException(final @NotNull MqttEncodeException e) {
+        super(e);
+    }
+
     @Override
     protected @NotNull MqttEncodeException copy() {
-        return new MqttEncodeException(getMessage());
+        return new MqttEncodeException(this);
     }
 }

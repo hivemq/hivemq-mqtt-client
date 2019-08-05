@@ -36,9 +36,14 @@ public class Mqtt3SubAckException extends Mqtt3MessageException {
         this.subAck = subAck;
     }
 
+    private Mqtt3SubAckException(final @NotNull Mqtt3SubAckException e) {
+        super(e);
+        subAck = e.subAck;
+    }
+
     @Override
     protected @NotNull Mqtt3SubAckException copy() {
-        return new Mqtt3SubAckException(subAck, getMessage(), getCause());
+        return new Mqtt3SubAckException(this);
     }
 
     @Override
