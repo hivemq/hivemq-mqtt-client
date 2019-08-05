@@ -19,7 +19,6 @@ package com.hivemq.client.mqtt.mqtt5.exceptions;
 
 import com.hivemq.client.mqtt.mqtt5.message.publish.puback.Mqtt5PubAck;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Silvio Giebl
@@ -34,16 +33,14 @@ public class Mqtt5PubAckException extends Mqtt5MessageException {
         this.pubAck = pubAck;
     }
 
-    private Mqtt5PubAckException(
-            final @NotNull Mqtt5PubAck pubAck, final @Nullable String message, final @Nullable Throwable cause) {
-
-        super(message, cause);
-        this.pubAck = pubAck;
+    private Mqtt5PubAckException(final @NotNull Mqtt5PubAckException e) {
+        super(e);
+        pubAck = e.pubAck;
     }
 
     @Override
     protected @NotNull Mqtt5PubAckException copy() {
-        return new Mqtt5PubAckException(pubAck, getMessage(), getCause());
+        return new Mqtt5PubAckException(this);
     }
 
     @Override

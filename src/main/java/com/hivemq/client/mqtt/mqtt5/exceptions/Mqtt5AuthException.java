@@ -19,7 +19,6 @@ package com.hivemq.client.mqtt.mqtt5.exceptions;
 
 import com.hivemq.client.mqtt.mqtt5.message.auth.Mqtt5Auth;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Silvio Giebl
@@ -34,16 +33,14 @@ public class Mqtt5AuthException extends Mqtt5MessageException {
         this.auth = auth;
     }
 
-    private Mqtt5AuthException(
-            final @NotNull Mqtt5Auth auth, final @Nullable String message, final @Nullable Throwable cause) {
-
-        super(message, cause);
-        this.auth = auth;
+    private Mqtt5AuthException(final @NotNull Mqtt5AuthException e) {
+        super(e);
+        auth = e.auth;
     }
 
     @Override
     protected @NotNull Mqtt5AuthException copy() {
-        return new Mqtt5AuthException(auth, getMessage(), getCause());
+        return new Mqtt5AuthException(this);
     }
 
     @Override

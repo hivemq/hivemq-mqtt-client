@@ -29,10 +29,19 @@ public abstract class AsyncRuntimeException extends RuntimeException {
 
     public static @NotNull RuntimeException fillInStackTrace(final @NotNull RuntimeException e) {
         if (e instanceof AsyncRuntimeException) {
-            final AsyncRuntimeException copy = ((AsyncRuntimeException) e).copy().superFillInStackTrace();
+            final AsyncRuntimeException copy = ((AsyncRuntimeException) e).copy();
             final StackTraceElement[] stackTrace = copy.getStackTrace();
-            // remove the sync and superFillInStackTrace method calls from the trace
-            copy.setStackTrace(Arrays.copyOfRange(stackTrace, 2, stackTrace.length));
+            // remove the copy and fillInStackTrace method calls from the trace
+            int remove = 0;
+            while (remove < stackTrace.length) {
+                final StackTraceElement stackTraceElement = stackTrace[remove];
+                remove++;
+                if (stackTraceElement.getClassName().equals(AsyncRuntimeException.class.getCanonicalName()) &&
+                        stackTraceElement.getMethodName().equals("fillInStackTrace")) {
+                    break;
+                }
+            }
+            copy.setStackTrace(Arrays.copyOfRange(stackTrace, remove, stackTrace.length));
             return copy;
         }
         return e;
@@ -50,13 +59,13 @@ public abstract class AsyncRuntimeException extends RuntimeException {
         super(cause);
     }
 
-    @Override
-    public synchronized @NotNull Throwable fillInStackTrace() {
-        return this;
+    protected AsyncRuntimeException(final @NotNull AsyncRuntimeException e) {
+        super(e.getMessage(), e.getCause());
+        super.fillInStackTrace();
     }
 
-    private @NotNull AsyncRuntimeException superFillInStackTrace() {
-        super.fillInStackTrace();
+    @Override
+    public synchronized @NotNull Throwable fillInStackTrace() {
         return this;
     }
 

@@ -32,8 +32,12 @@ public class MqttSessionExpiredException extends AsyncRuntimeException {
         super(message, cause);
     }
 
+    private MqttSessionExpiredException(final @NotNull MqttSessionExpiredException e) {
+        super(e);
+    }
+
     @Override
     protected @NotNull MqttSessionExpiredException copy() {
-        return new MqttSessionExpiredException(getMessage(), getCause());
+        return new MqttSessionExpiredException(this);
     }
 }

@@ -20,7 +20,6 @@ package com.hivemq.client.mqtt.mqtt5.exceptions;
 import com.hivemq.client.internal.util.AsyncRuntimeException;
 import com.hivemq.client.mqtt.mqtt5.message.Mqtt5Message;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Silvio Giebl
@@ -36,8 +35,8 @@ public abstract class Mqtt5MessageException extends AsyncRuntimeException {
         super(cause.getMessage(), cause);
     }
 
-    Mqtt5MessageException(final @Nullable String message, final @Nullable Throwable cause) {
-        super(message, cause);
+    Mqtt5MessageException(final @NotNull Mqtt5MessageException e) {
+        super(e);
     }
 
     public abstract @NotNull Mqtt5Message getMqttMessage();

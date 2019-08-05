@@ -33,5 +33,9 @@ public abstract class Mqtt3MessageException extends AsyncRuntimeException {
         super(message, cause);
     }
 
+    Mqtt3MessageException(final @NotNull Mqtt3MessageException e) {
+        super(e);
+    }
+
     public abstract @NotNull Mqtt3Message getMqttMessage();
 }
