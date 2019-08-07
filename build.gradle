@@ -105,7 +105,7 @@ jar {
         'Bundle-Name': readableName,
         'Bundle-Description': rootProject.description,
         'Bundle-Vendor': 'dc-square and the HiveMQ MQTT Client Project',
-        'Bundle-License': licenseShortName + ';description="' + licenseReadableName + '"link="' + licenseUrl + '"',
+        'Bundle-License': licenseShortName + ';description="' + licenseReadableName + '";link="' + licenseUrl + '"',
         'Bundle-DocURL': 'https://hivemq.github.io/hivemq-mqtt-client/',
         'Bundle-SCM': 'url="' + githubUrl + '";connection="' + scmConnection + '";developerConnection="' +scmDeveloperConnection + '"',
         'Export-Package': 'com.hivemq.client.annotations.*, com.hivemq.client.mqtt.*, com.hivemq.client.rx.*, com.hivemq.client.util.*',
