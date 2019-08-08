@@ -82,6 +82,10 @@ void addPom(MavenPublication publication) {
             developerConnection = project.scmDeveloperConnection
             url = project.githubUrl
         }
+        issueManagement {
+            system = 'github'
+            url = project.issuesUrl
+        }
     }
 }
 
@@ -124,10 +128,10 @@ bintray {
         repo = 'HiveMQ'
         name = 'hivemq-mqtt-client'
         desc = project.description
-        websiteUrl = githubUrl
-        issueTrackerUrl = githubUrl + '/issues'
-        vcsUrl = githubUrl + '.git'
-        licenses = [licenseShortName]
+        websiteUrl = project.githubUrl
+        issueTrackerUrl = project.issuesUrl
+        vcsUrl = project.githubUrl + '.git'
+        licenses = [project.licenseShortName]
         labels = ['mqtt', 'mqtt-client', 'iot', 'internet-of-things', 'rxjava2', 'reactive-streams', 'backpressure']
         version {
             released = new Date()
