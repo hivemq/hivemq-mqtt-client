@@ -28,17 +28,20 @@ description 'HiveMQ MQTT Client is a MQTT 5.0 and MQTT 3.1.1 compatible and feat
         'library with different API flavours and backpressure support'
 
 ext {
+    moduleName = 'com.hivemq.client.mqtt'
     readableName = 'HiveMQ MQTT Client'
     githubOrg = 'hivemq'
     githubRepo = 'hivemq-mqtt-client'
     githubUrl = 'https://github.com/' + githubOrg + '/' + githubRepo
     scmConnection = 'scm:git:git://github.com/' + githubOrg + '/' + githubRepo + '.git'
     scmDeveloperConnection = 'scm:git:ssh://git@github.com/' + githubOrg + '/' + githubRepo + '.git'
+    issuesUrl = githubUrl + '/issues'
+    docUrl = 'https://' + githubOrg + '.github.io/' + githubRepo + '/'
     licenseShortName = 'Apache-2.0'
     licenseReadableName = 'The Apache License, Version 2.0'
     licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
     shadedAppendix = 'shaded'
-    prevVersion = '1.0.1'
+    prevVersion = '1.1.0'
 }
 
 sourceCompatibility = 1.8
@@ -101,15 +104,17 @@ apply from: 'japicc.gradle'
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 jar {
-    bnd('Automatic-Module-Name' : jar.baseName,
-        'Bundle-Name': readableName,
-        'Bundle-Description': rootProject.description,
-        'Bundle-Vendor': 'dc-square and the HiveMQ MQTT Client Project',
-        'Bundle-License': licenseShortName + ';description="' + licenseReadableName + '";link="' + licenseUrl + '"',
-        'Bundle-DocURL': 'https://hivemq.github.io/hivemq-mqtt-client/',
-        'Bundle-SCM': 'url="' + githubUrl + '";connection="' + scmConnection + '";developerConnection="' +scmDeveloperConnection + '"',
-        'Export-Package': 'com.hivemq.client.annotations.*, com.hivemq.client.mqtt.*, com.hivemq.client.rx.*, com.hivemq.client.util.*',
-        '-consumer-policy': '${range;[==,=+)}')
+    bnd('Automatic-Module-Name': project.moduleName,
+            'Bundle-Name': project.name,
+            'Bundle-SymbolicName': project.moduleName,
+            'Bundle-Description': project.description,
+            'Bundle-Vendor': 'HiveMQ and the HiveMQ Community',
+            'Bundle-License': project.licenseShortName + ';description="' + project.licenseReadableName + '";link="' + project.licenseUrl + '"',
+            'Bundle-DocURL': project.docUrl,
+            'Bundle-SCM': 'url="' + project.githubUrl + '";connection="' + project.scmConnection + '";developerConnection="' + project.scmDeveloperConnection + '"',
+            'Export-Package': 'com.hivemq.client.annotations.*, com.hivemq.client.mqtt.*, com.hivemq.client.rx.*, com.hivemq.client.util.*',
+            '-consumer-policy': '${range;[==,=+)}',
+            '-removeheaders': 'Private-Package')
 }
 
 shadowJar { ShadowJar shadowJar ->
