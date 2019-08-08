@@ -1,3 +1,12 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'biz.aQute.bnd:biz.aQute.bnd.gradle:4.2.0'
+    }
+}
+
 plugins {
     id 'java-library'
     id 'maven-publish'
@@ -10,6 +19,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '4.0.4'
     id 'com.github.hierynomus.license' version '0.14.0'
     id 'pmd'
+    id 'biz.aQute.bnd.builder' version '4.2.0'
 }
 
 group 'com.hivemq'
@@ -89,6 +99,18 @@ apply from: 'publishing.gradle'
 apply from: 'japicc.gradle'
 
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
+jar {
+    bnd('Automatic-Module-Name' : jar.baseName,
+        'Bundle-Name': readableName,
+        'Bundle-Description': rootProject.description,
+        'Bundle-Vendor': 'dc-square and the HiveMQ MQTT Client Project',
+        'Bundle-License': licenseShortName + ';description="' + licenseReadableName + '";link="' + licenseUrl + '"',
+        'Bundle-DocURL': 'https://hivemq.github.io/hivemq-mqtt-client/',
+        'Bundle-SCM': 'url="' + githubUrl + '";connection="' + scmConnection + '";developerConnection="' +scmDeveloperConnection + '"',
+        'Export-Package': 'com.hivemq.client.annotations.*, com.hivemq.client.mqtt.*, com.hivemq.client.rx.*, com.hivemq.client.util.*',
+        '-consumer-policy': '${range;[==,=+)}')
+}
 
 shadowJar { ShadowJar shadowJar ->
     appendix shadedAppendix
