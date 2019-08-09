@@ -46,16 +46,54 @@ import org.reactivestreams.Subscription;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 /**
  * @author Silvio Giebl
  */
 public class MqttAsyncClient implements Mqtt5AsyncClient {
 
-    private static final @NotNull Function<Mqtt5SubAck, Mqtt5SubAck> SUBACK_HANDLER = MqttBlockingClient::handleSubAck;
-    private static final @NotNull Function<Mqtt5UnsubAck, Mqtt5UnsubAck> UNSUBACK_HANDLER =
-            MqttBlockingClient::handleUnsubAck;
+    private static @NotNull CompletableFuture<@NotNull Mqtt5SubAck> handleSubAck(
+            final @NotNull CompletableFuture<@NotNull Mqtt5SubAck> future, final @NotNull MqttSubscribe subscribe) {
+
+        if (subscribe.getSubscriptions().size() == 1) {
+            return future;
+        }
+        final CompletableFuture<Mqtt5SubAck> mappedFuture = new CompletableFuture<>();
+        future.whenComplete((subAck, throwable) -> {
+            if (throwable != null) {
+                mappedFuture.completeExceptionally(throwable);
+            } else {
+                try {
+                    mappedFuture.complete(MqttBlockingClient.handleSubAck(subAck));
+                } catch (final Throwable t) {
+                    mappedFuture.completeExceptionally(t);
+                }
+            }
+        });
+        return mappedFuture;
+    }
+
+    private static @NotNull CompletableFuture<@NotNull Mqtt5UnsubAck> handleUnsubAck(
+            final @NotNull CompletableFuture<@NotNull Mqtt5UnsubAck> future,
+            final @NotNull MqttUnsubscribe unsubscribe) {
+
+        if (unsubscribe.getTopicFilters().size() == 1) {
+            return future;
+        }
+        final CompletableFuture<Mqtt5UnsubAck> mappedFuture = new CompletableFuture<>();
+        future.whenComplete((unsubAck, throwable) -> {
+            if (throwable != null) {
+                mappedFuture.completeExceptionally(throwable);
+            } else {
+                try {
+                    mappedFuture.complete(MqttBlockingClient.handleUnsubAck(unsubAck));
+                } catch (final Throwable t) {
+                    mappedFuture.completeExceptionally(t);
+                }
+            }
+        });
+        return mappedFuture;
+    }
 
     private final @NotNull MqttRxClient delegate;
 
@@ -74,7 +112,7 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
     public @NotNull CompletableFuture<@NotNull Mqtt5SubAck> subscribe(final @Nullable Mqtt5Subscribe subscribe) {
         final MqttSubscribe mqttSubscribe = MqttChecks.subscribe(subscribe);
 
-        return RxFutureConverter.toFuture(delegate.subscribe(mqttSubscribe)).thenApply(SUBACK_HANDLER);
+        return handleSubAck(RxFutureConverter.toFuture(delegate.subscribe(mqttSubscribe)), mqttSubscribe);
     }
 
     @Override
@@ -84,9 +122,9 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
         final MqttSubscribe mqttSubscribe = MqttChecks.subscribe(subscribe);
         Checks.notNull(callback, "Callback");
 
-        return delegate.subscribeStream(mqttSubscribe)
-                .subscribeSingleFuture(new CallbackSubscriber(callback))
-                .thenApply(SUBACK_HANDLER);
+        return handleSubAck(
+                delegate.subscribeStream(mqttSubscribe).subscribeSingleFuture(new CallbackSubscriber(callback)),
+                mqttSubscribe);
     }
 
     @Override
@@ -98,10 +136,10 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
         Checks.notNull(callback, "Callback");
         Checks.notNull(executor, "Executor");
 
-        return delegate.subscribeStreamUnsafe(mqttSubscribe)
-                .observeOnBoth(Schedulers.from(executor), true)
-                .subscribeSingleFuture(new CallbackSubscriber(callback))
-                .thenApply(SUBACK_HANDLER);
+        return handleSubAck(
+                delegate.subscribeStreamUnsafe(mqttSubscribe)
+                .observeOnBoth(Schedulers.from(executor), true).subscribeSingleFuture(new CallbackSubscriber(callback)),
+                mqttSubscribe);
     }
 
     @Override
@@ -134,7 +172,7 @@ public class MqttAsyncClient implements Mqtt5AsyncClient {
 
         final MqttUnsubscribe mqttUnsubscribe = MqttChecks.unsubscribe(unsubscribe);
 
-        return RxFutureConverter.toFuture(delegate.unsubscribe(mqttUnsubscribe)).thenApply(UNSUBACK_HANDLER);
+        return handleUnsubAck(RxFutureConverter.toFuture(delegate.unsubscribe(mqttUnsubscribe)), mqttUnsubscribe);
     }
 
     @Override

@@ -41,61 +41,33 @@ import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3Publish;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.Mqtt3Subscribe;
 import com.hivemq.client.mqtt.mqtt3.message.subscribe.suback.Mqtt3SubAck;
 import com.hivemq.client.mqtt.mqtt3.message.unsubscribe.Mqtt3Unsubscribe;
-import com.hivemq.client.mqtt.mqtt5.message.connect.connack.Mqtt5ConnAck;
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish;
-import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5PublishResult;
 import com.hivemq.client.mqtt.mqtt5.message.subscribe.suback.Mqtt5SubAck;
-import com.hivemq.client.mqtt.mqtt5.message.unsubscribe.unsuback.Mqtt5UnsubAck;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 import java.util.concurrent.Executor;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 /**
  * @author Silvio Giebl
  */
 public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
 
-    private static final @NotNull BiFunction<Mqtt5ConnAck, Throwable, Mqtt3ConnAck> CONNACK_MAPPER =
-            (connAck, throwable) -> {
-                if (throwable != null) {
-                    throw new CompletionException(Mqtt3ExceptionFactory.map(throwable));
-                }
-                return Mqtt3ConnAckView.of(connAck);
-            };
+    private static @NotNull CompletableFuture<@NotNull Mqtt3SubAck> handleSubAck(
+            final @NotNull CompletableFuture<@NotNull Mqtt5SubAck> future) {
 
-    private static final @NotNull BiFunction<Mqtt5SubAck, Throwable, Mqtt3SubAck> SUBACK_MAPPER =
-            (subAck, throwable) -> {
-                if (throwable != null) {
-                    throw new CompletionException(Mqtt3ExceptionFactory.map(throwable));
-                }
-                return Mqtt3SubAckView.of(subAck);
-            };
-
-    private static final @NotNull BiFunction<Mqtt5UnsubAck, Throwable, Void> UNSUBACK_MAPPER =
-            (unsubAck, throwable) -> {
-                if (throwable != null) {
-                    throw new CompletionException(Mqtt3ExceptionFactory.map(throwable));
-                }
-                return null;
-            };
-
-    private static final @NotNull BiFunction<Mqtt5PublishResult, Throwable, Mqtt3Publish> PUBLISH_RESULT_MAPPER =
-            (publishResult, throwable) -> {
-                if (throwable != null) {
-                    throw new CompletionException(Mqtt3ExceptionFactory.map(throwable));
-                }
-                return Mqtt3PublishView.of(publishResult.getPublish());
-            };
-
-    private static final @NotNull Function<Throwable, Void> DISCONNECT_MAPPER = throwable -> {
-        throw new CompletionException(Mqtt3ExceptionFactory.map(throwable));
-    };
+        final CompletableFuture<Mqtt3SubAck> mappedFuture = new CompletableFuture<>();
+        future.whenComplete((subAck, throwable) -> {
+            if (throwable != null) {
+                mappedFuture.completeExceptionally(Mqtt3ExceptionFactory.map(throwable));
+            } else {
+                mappedFuture.complete(Mqtt3SubAckView.of(subAck));
+            }
+        });
+        return mappedFuture;
+    }
 
     private static @NotNull Consumer<Mqtt5Publish> callbackView(final @NotNull Consumer<Mqtt3Publish> callback) {
         return publish -> callback.accept(Mqtt3PublishView.of(publish));
@@ -113,14 +85,22 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
     public @NotNull CompletableFuture<@NotNull Mqtt3ConnAck> connect(final @Nullable Mqtt3Connect connect) {
         final MqttConnect mqttConnect = MqttChecks.connect(connect);
 
-        return delegate.connect(mqttConnect).handle(CONNACK_MAPPER);
+        final CompletableFuture<Mqtt3ConnAck> future = new CompletableFuture<>();
+        delegate.connect(mqttConnect).whenComplete((connAck, throwable) -> {
+            if (throwable != null) {
+                future.completeExceptionally(Mqtt3ExceptionFactory.map(throwable));
+            } else {
+                future.complete(Mqtt3ConnAckView.of(connAck));
+            }
+        });
+        return future;
     }
 
     @Override
     public @NotNull CompletableFuture<@NotNull Mqtt3SubAck> subscribe(final @Nullable Mqtt3Subscribe subscribe) {
         final MqttSubscribe mqttSubscribe = MqttChecks.subscribe(subscribe);
 
-        return delegate.subscribe(mqttSubscribe).handle(SUBACK_MAPPER);
+        return handleSubAck(delegate.subscribe(mqttSubscribe));
     }
 
     @Override
@@ -130,7 +110,7 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
         final MqttSubscribe mqttSubscribe = MqttChecks.subscribe(subscribe);
         Checks.notNull(callback, "Callback");
 
-        return delegate.subscribe(mqttSubscribe, callbackView(callback)).handle(SUBACK_MAPPER);
+        return handleSubAck(delegate.subscribe(mqttSubscribe, callbackView(callback)));
     }
 
     @Override
@@ -142,7 +122,7 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
         Checks.notNull(callback, "Callback");
         Checks.notNull(executor, "Executor");
 
-        return delegate.subscribe(mqttSubscribe, callbackView(callback), executor).handle(SUBACK_MAPPER);
+        return handleSubAck(delegate.subscribe(mqttSubscribe, callbackView(callback), executor));
     }
 
     @Override
@@ -171,19 +151,43 @@ public class Mqtt3AsyncClientView implements Mqtt3AsyncClient {
     public @NotNull CompletableFuture<Void> unsubscribe(final @Nullable Mqtt3Unsubscribe unsubscribe) {
         final MqttUnsubscribe mqttUnsubscribe = MqttChecks.unsubscribe(unsubscribe);
 
-        return delegate.unsubscribe(mqttUnsubscribe).handle(UNSUBACK_MAPPER);
+        final CompletableFuture<Void> future = new CompletableFuture<>();
+        delegate.unsubscribe(mqttUnsubscribe).whenComplete((unsubAck, throwable) -> {
+            if (throwable != null) {
+                future.completeExceptionally(Mqtt3ExceptionFactory.map(throwable));
+            } else {
+                future.complete(null);
+            }
+        });
+        return future;
     }
 
     @Override
     public @NotNull CompletableFuture<@NotNull Mqtt3Publish> publish(final @Nullable Mqtt3Publish publish) {
         final MqttPublish mqttPublish = MqttChecks.publish(publish);
 
-        return delegate.publish(mqttPublish).handle(PUBLISH_RESULT_MAPPER);
+        final CompletableFuture<Mqtt3Publish> future = new CompletableFuture<>();
+        delegate.publish(mqttPublish).whenComplete((publishResult, throwable) -> {
+            if (throwable != null) {
+                future.completeExceptionally(Mqtt3ExceptionFactory.map(throwable));
+            } else {
+                future.complete(Mqtt3PublishView.of(publishResult.getPublish()));
+            }
+        });
+        return future;
     }
 
     @Override
     public @NotNull CompletableFuture<Void> disconnect() {
-        return delegate.disconnect(Mqtt3DisconnectView.DELEGATE).exceptionally(DISCONNECT_MAPPER);
+        final CompletableFuture<Void> future = new CompletableFuture<>();
+        delegate.disconnect(Mqtt3DisconnectView.DELEGATE).whenComplete((ignored, throwable) -> {
+            if (throwable != null) {
+                future.completeExceptionally(Mqtt3ExceptionFactory.map(throwable));
+            } else {
+                future.complete(null);
+            }
+        });
+        return future;
     }
 
     @Override
